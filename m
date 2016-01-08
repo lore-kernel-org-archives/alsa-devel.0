@@ -1,19 +1,21 @@
-From: Jyri Sarha <jsarha@ti.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
 Subject: Re: [RFC v2 6/6] ASoC: hdmi-codec: Use HDMI
  notifications to add jack support
-Date: Fri, 8 Jan 2016 11:57:11 +0200
-Message-ID: <568F87F7.3010409@ti.com>
+Date: Fri, 8 Jan 2016 10:46:23 +0000
+Message-ID: <20160108104623.GF19062@n2100.arm.linux.org.uk>
 References: <1451934551-21333-1-git-send-email-p.zabel@pengutronix.de>
  <1451935145-24861-1-git-send-email-p.zabel@pengutronix.de>
  <568E9BE1.6050209@ti.com> <1452242629.3347.12.camel@pengutronix.de>
+ <568F87F7.3010409@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id C503226040E
- for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2016 10:57:20 +0100 (CET)
-In-Reply-To: <1452242629.3347.12.camel@pengutronix.de>
+Received: from pandora.arm.linux.org.uk (pandora.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 7851A26040E
+ for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2016 11:46:39 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <568F87F7.3010409@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +25,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Koro Chen <koro.chen@mediatek.com>, Daniel Kurtz <djkurtz@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, kernel@pengutronix.de, Matthias Brugger <matthias.bgg@gmail.com>, Cawa Cheng <cawa.cheng@mediatek.com>
+To: Jyri Sarha <jsarha@ti.com>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, kernel@pengutronix.de, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Koro Chen <koro.chen@mediatek.com>, Daniel Kurtz <djkurtz@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, Philipp Zabel <p.zabel@pengutronix.de>, Matthias Brugger <matthias.bgg@gmail.com>, Cawa Cheng <cawa.cheng@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/08/16 10:43, Philipp Zabel wrote:
-> Hi Jyri,
->
-> Am Donnerstag, den 07.01.2016, 19:09 +0200 schrieb Jyri Sarha:
->> On 01/04/16 21:19, Philipp Zabel wrote:
->>> Use HDMI connection / disconnection notifications to update an ALSA
->>> jack object. Also make a copy of the ELD block after every change.
->>>
->>
->> The jack part looks good to me AFAIU,
->
-> If this is in principle an acceptable idea, this leaves the issue that
-> the jack has an initial state and right now we can't query it but
-> instead would have to wait for the first HDMI_(DIS)CONNECTED
-> notification before it can be set. Would it make sense to add an
-> is_connected callback to the hdmi_codec_ops or does this rather belong
-> somewhere else?
->
+On Fri, Jan 08, 2016 at 11:57:11AM +0200, Jyri Sarha wrote:
+> On 01/08/16 10:43, Philipp Zabel wrote:
+> >Possibly the HDMI driver itself should just mute if the format is not
+> >supported, and userspace should be notified?
+> 
+> Another option would be simply aborting the playback. However having a mute
+> control, that is forced to mute if the current stream is not supported, is
+> an interesting idea. That would provide a way to notify the userspace
+> without intrusively killing the stream.
 
-To me it would feel best if the hdmi notification would send the current 
-edid, eld, and connection state when the hdmi notification is 
-registered. But then again, I may not see the full picture.
+Firstly, remember that the sequence you'll likely see is:
 
-BTW, if we are going this way, the hdmi notification should be 
-registered always in probe phase. I don't think the 
-hdmi_codec_set_jack_detect() should be needed at all. Simple simple 
-flags in struct hdmi_codec_pdata that tells if the jack detection is 
-supported should do. Hmm, I am not sure if we need even that.
+- disconnect
+- connect
+- new edid
+- new eld
 
->> but I think we should just update
->> the local ELD copy with data given in the ELD notification. It then
->> depends on the implementation details whether the get_eld() callback is
->> needed at all or if it should be called once at the probe time.
->
-> Thanks, that sounds reasonable.
->
->> Then it is a separate issue to check if the currently played stream is
->> still supported after an ELD update, and to decide what to do about it
->> if it is not.
-> [...]
->
-> Possibly the HDMI driver itself should just mute if the format is not
-> supported, and userspace should be notified?
->
+The disconnect/connect cycle is HDMI protocol for "please re-read
+the EDID" and is used (eg) by AV receivers to signal a change.  When
+they change from HDMI pass-through mode in standby, to being powered
+on, they typically switch from passing the displays EDID through
+unmodified, to a modified version with their audio capabilities
+included - and vice versa when they're placed back into standby.
 
-Another option would be simply aborting the playback. However having a 
-mute control, that is forced to mute if the current stream is not 
-supported, is an interesting idea. That would provide a way to notify 
-the userspace without intrusively killing the stream.
+The kernel's audio driver doesn't have any knowledge about the kind
+of audio being passed through it: while it knows the alleged sample
+rate, bits per sample, and number of channels, these are PCM details,
+and not compressed audio details.  Compressed audio is normally sent
+with the kernel driver configured for 16 bit, 2 channel and an
+appropriate sample rate, with the IEC958 channel status data setup
+by the application (via libasound) to indicate non-audio amongst
+other details.  Therefore, the kernel driver doesn't know a
+nature of the compressed audio stream, and can't "mute" the stream
+if the ELD indicates that the compressed audio stream has gone
+away.
 
-Cheers,
-Jyri
+Given that, I'd like to throw in here another detail: iirc, i915's
+HDMI exports the ELD to userspace via a control called "ELD" - see
+eld_bytes_ctl in sound/pci/hda/patch_hdmi.c.  This allows userspace
+to monitor, and read the ELD including which compressed audio formats
+are supported.  I'm not currently aware of anything that makes use of
+this, but as there is this precedent for exporting this information,
+maybe it should become a standard way, so that video playback
+applications can then select an appropriate audio stream depending on
+the current properties of the connected device?
+
+-- 
+RMK's Patch system: http://www.arm.linux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
+according to speedtest.net.
