@@ -1,49 +1,45 @@
-From: Alex Deucher <alexdeucher@gmail.com>
-Subject: Re: [PATCH 6/8] ASoC: AMD: add AMD ASoC ACP 2.x DMA driver
-Date: Sat, 9 Jan 2016 14:53:50 -0500
-Message-ID: <CADnq5_M6L+bMjgxf-30bYpb5zk4y7YDrhKSoAN5yMFzKsbCvpg@mail.gmail.com>
-References: <1450897275-17152-1-git-send-email-alexander.deucher@amd.com>
- <1450897275-17152-6-git-send-email-alexander.deucher@amd.com>
- <20160105184343.GL6588@sirena.org.uk>
- <CADnq5_NE4BBYMfLNfFM=eonNy2Lny-5R_dV24UCS5Htioiqz5Q@mail.gmail.com>
- <20160109194138.GU6588@sirena.org.uk>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 2/5] clk: bcm2835: enable management of PCM
+	clock
+Date: Sat, 09 Jan 2016 21:56:39 +0100
+Message-ID: <4332640.jBKM55TPAo@wuerfel>
+References: <1452331558-2520-1-git-send-email-kernel@martin.sperl.org>
+ <1452331558-2520-3-git-send-email-kernel@martin.sperl.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20160109194138.GU6588@sirena.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Bayyavarapu,
- Maruthi" <maruthi.bayyavarapu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, rajeev kumar <rajeevkumar.linux@gmail.com>, Alex Deucher <alexander.deucher@amd.com>, perex@perex.cz
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.74])
+ by alsa0.perex.cz (Postfix) with ESMTP id ABE1D26052B
+ for <alsa-devel@alsa-project.org>; Sat,  9 Jan 2016 21:56:58 +0100 (CET)
+In-Reply-To: <1452331558-2520-3-git-send-email-kernel@martin.sperl.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: kernel@martin.sperl.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, Stephen Warren <swarren@wwwdotorg.org>, Michael Turquette <mturquette@baylibre.com>, Lee Jones <lee@kernel.org>, Takashi Iwai <tiwai@suse.com>, Eric Anholt <eric@anholt.net>, Remi Pommarel <repk@triplefau.lt>, Mark Brown <broonie@kernel.org>, linux-rpi-kernel@lists.infradead.org, lFlorian Meier <florian.meier@koalo.de>, Matthias Reichl <hias@horus.com>, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBKYW4gOSwgMjAxNiBhdCAyOjQxIFBNLCBNYXJrIEJyb3duIDxicm9vbmllQGtlcm5l
-bC5vcmc+IHdyb3RlOgo+IE9uIEZyaSwgSmFuIDA4LCAyMDE2IGF0IDA2OjAzOjE5UE0gLTA1MDAs
-IEFsZXggRGV1Y2hlciB3cm90ZToKPj4gT24gVHVlLCBKYW4gNSwgMjAxNiBhdCAxOjQzIFBNLCBN
-YXJrIEJyb3duIDxicm9vbmllQGtlcm5lbC5vcmc+IHdyb3RlOgo+PiA+IE9uIFdlZCwgRGVjIDIz
-LCAyMDE1IGF0IDAyOjAxOjEzUE0gLTA1MDAsIEFsZXggRGV1Y2hlciB3cm90ZToKPgo+PiA+PiAt
-LS0gL2Rldi9udWxsCj4+ID4+ICsrKyBiL3NvdW5kL3NvYy9hbWQvS2NvbmZpZwo+PiA+PiBAQCAt
-MCwwICsxLDQgQEAKPj4gPj4gK2NvbmZpZyBTTkRfU09DX0FNRF9BQ1AKPj4gPj4gKyAgICAgdHJp
-c3RhdGUgIkFNRCBBdWRpbyBDb3Byb2Nlc3NvciBzdXBwb3J0Igo+PiA+PiArICAgICBoZWxwCj4+
-ID4+ICsgICAgICBUaGlzIG9wdGlvbiBlbmFibGVzIEFDUCBETUEgc3VwcG9ydCBvbiBBTUQgcGxh
-dGZvcm0uCj4KPj4gPiBUaGlzIGhhcyBubyBkZXBlbmRlbmNpZXM/Cj4KPj4gTm8gZGVwZW5kZW5j
-aWVzLiAgVGhlIEFDUCBkZXZpY2UgZGlzY292ZXJ5IGlzIHRyaWdnZXJlZCBmcm9tIEdQVQo+PiBk
-cml2ZXIsIGJ1dCB0aGUgQUNQIGRyaXZlciBoYXMgbm8gZGlyZWN0IGRlcGVuZGVuY2llcyBvbiBp
-dC4KPj4gVGhlb3JldGljYWxseSBpdCBjb3VsZCBhY3QgYXMgYSBzdGFuZGFsb25lIGRyaXZlci4K
-Pgo+IEluIHRoYXQgY2FzZSB0aGVyZSdzIG5vIG5lZWQgdG8gbWVyZ2UgZXZlcnl0aGluZyB0aHJv
-dWdoIHRoZSBEUk0gdHJlZSwKPiBlYWNoIGJpdCBjYW4gZ28gaW4gc2VwYXJhdGVseS4gIFRoYXQg
-bWFrZXMgbGlmZSBhIGJpdCBlYXNpZXIgcHJvY2Vzcwo+IHdpc2UsIHBlb3BsZSB3aWxsIG5lZWQg
-dG8gbWVyZ2UgdGhlIHR3byB0byBydW4gdGhpbmdzIGJ1dCB0aGF0J3MgZmluZS4KClNvdW5kcyBn
-b29kLiAgVGhhbmtzIQoKQWxleApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVz
-a3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Ry
-aS1kZXZlbAo=
+On Saturday 09 January 2016 09:25:54 kernel@martin.sperl.org wrote:
+> --- a/include/dt-bindings/clock/bcm2835.h
+> +++ b/include/dt-bindings/clock/bcm2835.h
+> @@ -44,5 +44,6 @@
+>  #define BCM2835_CLOCK_EMMC             28
+>  #define BCM2835_CLOCK_PERI_IMAGE       29
+>  #define BCM2835_CLOCK_PWM              30
+> +#define BCM2835_CLOCK_PCM              31
+>  
+> -#define BCM2835_CLOCK_COUNT            31
+> +#define BCM2835_CLOCK_COUNT            32
+
+The last line contains an incompatible change, please don't do that.
+If you have to add another clock, do that after the BCM2835_CLOCK_COUNT
+definition to avoid changing dts files that use that number.
+
+	Arnd
