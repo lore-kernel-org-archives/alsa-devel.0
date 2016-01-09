@@ -1,38 +1,68 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 5/5] dt-bindings: bsm2835: fix bindings documentation to
- use new clock framework
-Date: Sat, 9 Jan 2016 16:45:23 -0600
-Message-ID: <20160109224523.GA17329@rob-hp-laptop>
-References: <1452331558-2520-1-git-send-email-kernel@martin.sperl.org>
- <1452331558-2520-6-git-send-email-kernel@martin.sperl.org>
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Subject: [PATCH] ASoC: rockchip: i2s: Add
+	SNDRV_PCM_FMTBIT_S32_LE support
+Date: Sat,  9 Jan 2016 23:47:58 +0100
+Message-ID: <1452379678-14160-1-git-send-email-michael@amarulasolutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-clk-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1452331558-2520-6-git-send-email-kernel@martin.sperl.org>
-Sender: linux-clk-owner@vger.kernel.org
-To: kernel@martin.sperl.org
-Cc: Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Russell King <linux@arm.linux.org.uk>, Michael Turquette <mturquette@baylibre.com>, Remi Pommarel <repk@triplefau.lt>, devicetree@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Matthias Reichl <hias@horus.com>, lFlorian Meier <florian.meier@koalo.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f52.google.com (mail-wm0-f52.google.com [74.125.82.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 37A8926052B
+ for <alsa-devel@alsa-project.org>; Sat,  9 Jan 2016 23:48:01 +0100 (CET)
+Received: by mail-wm0-f52.google.com with SMTP id b14so218856032wmb.1
+ for <alsa-devel@alsa-project.org>; Sat, 09 Jan 2016 14:48:01 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, heiko@sntech.de
+Cc: linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, michael@amarulasolutions.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jan 09, 2016 at 09:25:57AM +0000, kernel@martin.sperl.org wrote:
-> From: Martin Sperl <kernel@martin.sperl.org>
-> 
-> The bcm2835-i2s driver has been updated to use the new clock framework
-> for the bcm2835 SOC.
+Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+---
+ sound/soc/rockchip/rockchip_i2s.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-You are breaking compatibility with the driver change. New kernels will 
-not work with old dtbs as you have found. What should be done is fix the 
-driver to work with the old and new dtb.
- 
-> This patch documents the required changes to the bindings.
-> 
-> Signed-off-by: Martin Sperl <kernel@martin.sperl.org>
-> ---
->  Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt |    7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-
-But I leave it to platform maintainers to decide if breaking 
-compatibility is okay, so:
-
-Acked-by: Rob Herring <robh@kernel.org>
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 58ee645..c35700f 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -242,6 +242,9 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_FORMAT_S24_LE:
+ 		val |= I2S_TXCR_VDW(24);
+ 		break;
++	case SNDRV_PCM_FORMAT_S32_LE:
++		val |= I2S_TXCR_VDW(32);
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -360,7 +363,8 @@ static struct snd_soc_dai_driver rockchip_i2s_dai = {
+ 		.formats = (SNDRV_PCM_FMTBIT_S8 |
+ 			    SNDRV_PCM_FMTBIT_S16_LE |
+ 			    SNDRV_PCM_FMTBIT_S20_3LE |
+-			    SNDRV_PCM_FMTBIT_S24_LE),
++			    SNDRV_PCM_FMTBIT_S24_LE |
++			    SNDRV_PCM_FMTBIT_S32_LE),
+ 	},
+ 	.capture = {
+ 		.stream_name = "Capture",
+@@ -370,7 +374,8 @@ static struct snd_soc_dai_driver rockchip_i2s_dai = {
+ 		.formats = (SNDRV_PCM_FMTBIT_S8 |
+ 			    SNDRV_PCM_FMTBIT_S16_LE |
+ 			    SNDRV_PCM_FMTBIT_S20_3LE |
+-			    SNDRV_PCM_FMTBIT_S24_LE),
++			    SNDRV_PCM_FMTBIT_S24_LE |
++			    SNDRV_PCM_FMTBIT_S32_LE),
+ 	},
+ 	.ops = &rockchip_i2s_dai_ops,
+ 	.symmetric_rates = 1,
+-- 
+2.7.0
