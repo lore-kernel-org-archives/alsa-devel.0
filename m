@@ -1,20 +1,22 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: [PATCH 0/5] ASoC: fsl_ssi: Fixing various channel
- slips and bad samples insertions
-Date: Fri, 8 Jan 2016 16:47:15 -0800
-Message-ID: <CAG5mAdw_+BiDppzpKF0ZBG1NXreGob6+jZd6SLjS1+zdmEE4ZA@mail.gmail.com>
-References: <1448546842-4584-1-git-send-email-arnaud.mouiche@invoxia.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v4 04/14] ASoC: hdac_hdmi: Add hotplug
+ notification and read eld
+Date: Sat, 9 Jan 2016 11:09:26 +0530
+Message-ID: <20160109053926.GO11778@localhost>
+References: <1449677405-7907-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1449677781-7997-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1449677781-7997-4-git-send-email-subhransu.s.prusty@intel.com>
+ <20160108134217.GR6588@sirena.org.uk>
+ <20160108135949.GN11778@localhost> <s5hk2nkdvih.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f193.google.com (mail-io0-f193.google.com
- [209.85.223.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7FCF22604EB
- for <alsa-devel@alsa-project.org>; Sat,  9 Jan 2016 02:55:36 +0100 (CET)
-Received: by mail-io0-f193.google.com with SMTP id 77so7175904ioc.2
- for <alsa-devel@alsa-project.org>; Fri, 08 Jan 2016 17:55:36 -0800 (PST)
-In-Reply-To: <1448546842-4584-1-git-send-email-arnaud.mouiche@invoxia.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id DDB31260509
+ for <alsa-devel@alsa-project.org>; Sat,  9 Jan 2016 06:35:53 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hk2nkdvih.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,237 +26,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Markus Pargmann <mpa@pengutronix.de>, Mark Brown <broonie@kernel.org>, Roberto Fichera <kernel@tekno-soft.it>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: patches.audio@intel.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 26, 2015 at 6:07 AM, Arnaud Mouiche
-<arnaud.mouiche@invoxia.com> wrote:
-> This series of patch is an attempt to fix the fsl_ssi driver to use it in TDM mode (DSP A or B) with a large number of channels/slots.
->
-> Bugs are detected and fixed on a imx6sl platform with linux 4.3, where 2 SSI interfaces are used. SSI3 configured as a master of the bus, SSI2 as a slave.
->
-> Various loopback scenario are tested:
-> * scenario 1: SSI3 (master) with TXD to RXD loopback
->
->                  |
->                  |---> TXD  --\
->         SSI3     |<--- RXD  --/
->         (master) |---> SYNC
->                  |---> BCLK
->                  |
->
-> * scenario 2: SSI3 connected to SSI2
->                  |
->                  |---> TXD  --------\
->         SSI3     |<--- RXD  -----\  |
->         (master) |---> SYNC --\  |  |
->                  |---> BCLK   |  |  |
->                  |       |    |  |  |
->                  |       |    |  |  |
->                  |<--- BCLK   |  |  |
->         SSI2     |<--- SYNC --/  |  |
->         (slave)  |---> TXD ------/  |
->                  |<--- RXD  --------/
->                  |
->
->
->
-> A test software (called atest) was developed and available. [1]
-> It basically generate/check specials frames with S16_LE sequence samples
->        NNN0, NNN1, NNN2 ... NNNC     with NNN = frame number, and C the number of channels-1
->
->
->
-> Patch 1:
->         Limitation fix. Prerequisite to use the fsl_ssi driver with up to 32 channels / slots
->
-> Patch 2:
->         Bug fix. Prerequisite to setup a relative high bitclk for our tests in 8ch / 16bits / 48kHz
->
-> Patch 3:
->         Simply save a 'dev' reference inside ssi_private for dev_err() purpose.
->         (ssi_private is only available in lot of places, and
->          ssi_private->pdev is deprecated and NULL indeed)
->
-> Patch 4:
->         Fix playback samples being dropped because the TX fifo was not ready at
->         the time the DMA starts filling (only in case where playback is started AFTER the capture)
->
->         Detected in loopback scenario 1, with following script (> 80 % of reproducibility)
->         $ atest -D SSI3 -c 8 -r 48000 capture play
->         dbg: set period size: 960
->         dbg: SSI3: capture_start
->         dbg: SSI3: playback_start
->         err: invalid frame after 1 null frames
->         err:   0000 0000 0013 0014 0015 0016 0017 0020
->         dbg: SIGINT
->         total number of sequence errors: 21119
->
->         here we see that samples 0000 0001 ... 0012 are not present in the output.
->         In addition, this the number of samples dropped is not a multiple of
->         the number of channel, we have a a channel slip.
->
->
-> Patch 5:
->         This is the Caleb Crome's case [2], where the SSI starts to generate samples while
->         the TX FIFO is not filled by the DMA yet. Void samples can be inserted before DMA streaming.
->
->         Detected in loopback scenario 2, with following script (reproducibility < 1%)
->         $ atest -D SSI3 -c 8 -r 48000 capture &
->         $ sleep 0.2
->         $ atest -d 1 -D SSI2 -c 8 -r 48000 play
->         dbg: SSI3: capture_start
->         dbg: set period size: 960
->         dbg: SSI2: playback_start
->         dbg: start a 1 seconds duration timer
->         err: invalid frame after 11568 null frames
->         err:   0000 0010 0011 0012 0013 0014 0015 0016
->         err:   0017 0020 0021 0022 0023 0024 0025 0026
->
->
->
-> Patch 6:
->         Deals with Capture restart whereas Playback is still running
->         (or the opposite, Playback restart whereas Capture is till running).
->
->         Capture restart whereas Playback case is detected in
->         loopback scenario 1 (reproducibility 100%).
->         A playback session is running in background, and
->         2 consecutive Captures are performed.
->         The first is fine, the second fails.
->
->         We see at the 2nd capture startup that we receive 15 samples
->         still pending in the RX FIFO from the previous capture session.
->         => We are receiving invalid samples + slips the channels
->
->         $ atest -D SSI3 -c 8 -r 48000 play &
->         dbg: SSI3: playback_start
->         $ atest -d 1 -D SSI3 -c 8 -r 48000 capture
->         dbg: SSI3: capture_start
->         dbg: start a 1 seconds duration timer
->         warn: Valid frame after 1 null frames
->         warn:   3a90 3a91 3a92 3a93 3a94 3a95 3a96 3a97
->         total number of sequence errors: 0
->
->         $ atest -I 5 -d 1 -D SSI3 -c 8 -r 48000 capture  # restart the capture
->         dbg: SSI3: capture_start
->         dbg: start a 1 seconds duration timer
->         err: invalid frame after 1 null frames
->         err:   8dd6 8dd7 8de0 8de1 8de2 8de3 8de4 8de5
->         err:   8de6 8de7 8df0 8df1 8df2 8df3 8df4 c0c0
->         err:   c0c1 c0c2 c0c3 c0c4 c0c5 c0c6 c0c7 c0d0
->         err:   c0d1 c0d2 c0d3 c0d4 c0d5 c0d6 c0d7 c0e0
->         err:   c0e1 c0e2 c0e3 c0e4 c0e5 c0e6 c0e7 c0f0
->
->
->         Playback restart whereas Capture case is also detected with
->         loopback scenario 1 (reproducibility 100%), capturing continuously,
->         and playing by periods of time.
->
->         $ atest -a -D SSI3 -c 8 -r 48000 capture play -r 1000,200
->         dbg: SSI3: capture_start
->         dbg: SSI3: playback_start
->         dbg: SSI3: will stop every 1000 ms during 200 ms
->         warn: Valid frame after 4 null frames
->         warn:   0010 0011 0012 0013 0014 0015 0016 0017
->         warn: SSI3: PT_W4_STOP
->         warn: SSI3: PT_W4_RESTART
->         err: invalid frame after 1602 null frames
->         err:   eaa1 eaa2 eaa3 eaa4 eaa5 eaa6 eaa7 eab0
->         err:   eab1 eab2 eab3 eab4 5810 5811 5812 5813
->         dbg: stop on first error
->         total number of sequence errors: 143
->
->
->
->         Both cases are resolved by using the mostly undocumented SOR.RX_CLR and
->         SOR TX_CLR (we can find the documentation in IMX51 reference manual
->         at section 56.3.3.15).
->
->
-> Arnaud
->
->
->
-> [1] https://github.com/amouiche/atest
-> [2] http://mailman.alsa-project.org/pipermail/alsa-devel/2015-October/099221.html
->
->
-> Arnaud Mouiche (5):
->   ASoC: fsl_ssi: The IPG/5 limitation concerns the bitclk, not the
->     sysclk.
->   ASoC: fsl_ssi: Save a dev reference for dev_err() purpose.
->   ASoC: fsl_ssi: Fix samples being dropped as Playback startup
->   ASoC: fsl_ssi: Fix channel slipping in Playback at startup
->   ASoC: fsl_ssi: Fix channel slipping on capture (or playback) restart
->     in full duplex.
->
->  sound/soc/fsl/fsl_ssi.c | 69 ++++++++++++++++++++++++++++++++++++++++++-------
->  1 file changed, 60 insertions(+), 9 deletions(-)
->
-> --
-> 1.9.1
->
-Hello Arnaud,
-  I have finally gotten to test your patches, and I'm still having
-trouble with channel slips.
+On Fri, Jan 08, 2016 at 02:57:10PM +0100, Takashi Iwai wrote:
+> On Fri, 08 Jan 2016 14:59:50 +0100,
+> Vinod Koul wrote:
+> > 
+> > On Fri, Jan 08, 2016 at 01:42:17PM +0000, Mark Brown wrote:
+> > > On Wed, Dec 09, 2015 at 09:46:11PM +0530, Subhransu S. Prusty wrote:
+> > > 
+> > > > This patch uses i915 component framework to register for hotplug
+> > > > notification. And once it identifies valid pin sense and valid eld,
+> > > 
+> > > You say this patch uses the i915 component framework but...
+> > > 
+> > > > +	if (pin->eld.monitor_present && pin->eld.eld_valid) {
+> > > > +		/* TODO: Use i915 cmpnt framework when available */
+> > > > +		if (hdac_hdmi_get_eld(&edev->hdac, pin->nid,
+> > > 
+> > > ...that's a TODO according to the code?
+> > 
+> > ah sorry, Shubranshu meant use i915 eld presence fwk when available.
+> > Takashi was working on it so we will convert this to use shiny new
+> > framework a bit later :)
+> 
+> FYI, the framework has been already merged to for-next branch.
 
-I applied your v2 patch set, along with your changes for using a dummy codec.
+Thanks for update, Yes this is next task for Shubranshu to do this and
+multichannel support
 
-The full changes are here:
-https://github.com/ccrome/linux-caleb-dev/tree/v4.4-rc8-armv7-x3
-
-This ignores most of my previous patches, and uses your code to bring
-up the SSI (without a codec) on a wandboard.
-
-I am using SSI3, and doing a hardware loopback between TX and RX.
-
-Here's what I run:
-./atest -r 16000 -c 8 -p 2048   -D default play
-
-which plays continuously.
-
-and in another shell:
-./atest -r 16000 -c 8 -p 2048  -D default -d 10 capture
-
-which captures for 10 seconds.
-
-
-The first time I run the capture command, it succeeds, no problem.
-> dbg: dev: 'default'
-> dbg: default: capture_start
-> dbg: start a 10 seconds duration timer
-> warn: First valid frame
-> warn:   3400 3401 3402 3403 3404 3405 3406 3407
-> dbg: end of tests
-> total number of sequence errors: 0
-> global tests exit status: OK
-
-But the second and all subsequent captures, it fails with channel slips:
-
-> dbg: dev: 'default'
-> dbg: default: capture_start
-> dbg: start a 10 seconds duration timer
-> err: invalid frame after 0 null frames
-> err:   d2a1 d2a2 d2a3 d2a4 d2a5 d2a6 d2a7 d2c0
-> err:   d2c1 d2c2 d2c3 d2c4 d2c5 d2c6 d2c7 78e0
-> dbg: end of tests
-> total number of sequence errors: 430080
-> global tests exit status: OK
-
-I verified with a scope that the data on the data bus is correct, the
-problem is with restarting RX, the RX doesn't synchronize to the frame
-sync.  BTW, the RX slot is random. 1/8 times or so, the restarted
-capture actually works.
-
-My setup is a single core wandboard (i.mx6 solo), with J1.16 jumpered
-over to J1.20 (tx->rx)
-
-Thanks for the patches and for the atest program!  It's really handy :-)
-
-So, I have not messed with water marks, dual fifo, etc with your patches yet.
-
-Any other patches that you think might need to be applied to make the
-RX restart work?
--Caleb
+-- 
+~Vinod
