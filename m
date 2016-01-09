@@ -1,85 +1,59 @@
-From: kernel@martin.sperl.org
-Subject: [PATCH 2/5] clk: bcm2835: enable management of PCM clock
-Date: Sat,  9 Jan 2016 09:25:54 +0000
-Message-ID: <1452331558-2520-3-git-send-email-kernel@martin.sperl.org>
+From: kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org
+Subject: [PATCH 1/5] ASoC: bcm2835: cleanup includes by ordering them alphabetically
+Date: Sat,  9 Jan 2016 09:25:53 +0000
+Message-ID: <1452331558-2520-2-git-send-email-kernel@martin.sperl.org>
 References: <1452331558-2520-1-git-send-email-kernel@martin.sperl.org>
-Return-path: <linux-clk-owner@vger.kernel.org>
-In-Reply-To: <1452331558-2520-1-git-send-email-kernel@martin.sperl.org>
-Sender: linux-clk-owner@vger.kernel.org
-To: Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Russell King <linux@arm.linux.org.uk>, Michael Turquette <mturquette@baylibre.com>, Remi Pommarel <repk@triplefau.lt>, devicetree@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Matthias Reichl <hias@horus.com>, lFlorian Meier <florian.meier@koalo.de>
-Cc: Martin Sperl <kernel@martin.sperl.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1452331558-2520-1-git-send-email-kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Lee Jones <lee-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Eric Anholt <eric-WhKQ6XTQaPysTnJN9+BGXg@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Michael Turquette <mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, Remi Pommarel <repk-lovNVp52yxIDGOk2Oe9MvA@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Matthias Reichl <hias-vtPv7MOkFPkAvxtiuMwx3w@public.gmane.org>, lFlorian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+Cc: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Martin Sperl <kernel@martin.sperl.org>
+From: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
 
-Enable the PCM clock in the SOC, which is used by the
-bcm2835-i2s driver.
+Cleanup of includes so that they are ordered alphabetically.
 
-Signed-off-by: Martin Sperl <kernel@martin.sperl.org>
+Signed-off-by: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
 ---
- drivers/clk/bcm/clk-bcm2835.c       |   15 +++++++++++++++
- include/dt-bindings/clock/bcm2835.h |    3 ++-
- 2 files changed, 17 insertions(+), 1 deletion(-)
+ sound/soc/bcm/bcm2835-i2s.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/clk/bcm/clk-bcm2835.c b/drivers/clk/bcm/clk-bcm2835.c
-index 015e687..5d45457 100644
---- a/drivers/clk/bcm/clk-bcm2835.c
-+++ b/drivers/clk/bcm/clk-bcm2835.c
-@@ -88,6 +88,8 @@
- #define CM_HSMDIV		0x08c
- #define CM_OTPCTL		0x090
- #define CM_OTPDIV		0x094
-+#define CM_PCMCTL		0x098
-+#define CM_PCMDIV		0x09c
- #define CM_PWMCTL		0x0a0
- #define CM_PWMDIV		0x0a4
- #define CM_SMICTL		0x0b0
-@@ -817,6 +819,16 @@ static const struct bcm2835_clock_data bcm2835_clock_pwm_data = {
- 	.frac_bits = 12,
- };
+diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+index 8c435be..3303d5f 100644
+--- a/sound/soc/bcm/bcm2835-i2s.c
++++ b/sound/soc/bcm/bcm2835-i2s.c
+@@ -31,20 +31,20 @@
+  * General Public License for more details.
+  */
  
-+static const struct bcm2835_clock_data bcm2835_clock_pcm_data = {
-+	.name = "pcm",
-+	.num_mux_parents = ARRAY_SIZE(bcm2835_clock_per_parents),
-+	.parents = bcm2835_clock_per_parents,
-+	.ctl_reg = CM_PCMCTL,
-+	.div_reg = CM_PCMDIV,
-+	.int_bits = 12,
-+	.frac_bits = 12,
-+};
-+
- struct bcm2835_pll {
- 	struct clk_hw hw;
- 	struct bcm2835_cprman *cprman;
-@@ -1515,6 +1527,7 @@ static int bcm2835_clk_probe(struct platform_device *pdev)
- 	cprman->regs = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(cprman->regs))
- 		return PTR_ERR(cprman->regs);
-+	pr_info("CLK: %pK %zx\n", cprman->regs, res->start);
++#include <linux/clk.h>
++#include <linux/delay.h>
++#include <linux/device.h>
+ #include <linux/init.h>
++#include <linux/io.h>
+ #include <linux/module.h>
+-#include <linux/device.h>
+ #include <linux/slab.h>
+-#include <linux/delay.h>
+-#include <linux/io.h>
+-#include <linux/clk.h>
  
- 	cprman->osc_name = of_clk_get_parent_name(dev->of_node, 0);
- 	if (!cprman->osc_name)
-@@ -1581,6 +1594,8 @@ static int bcm2835_clk_probe(struct platform_device *pdev)
- 		bcm2835_register_clock(cprman, &bcm2835_clock_hsm_data);
- 	clks[BCM2835_CLOCK_EMMC] =
- 		bcm2835_register_clock(cprman, &bcm2835_clock_emmc_data);
-+	clks[BCM2835_CLOCK_PCM] =
-+		bcm2835_register_clock(cprman, &bcm2835_clock_pcm_data);
+ #include <sound/core.h>
++#include <sound/dmaengine_pcm.h>
++#include <sound/initval.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+-#include <sound/initval.h>
+ #include <sound/soc.h>
+-#include <sound/dmaengine_pcm.h>
  
- 	/*
- 	 * CM_PERIICTL (and CM_PERIACTL, CM_SYSCTL and CM_VPUCTL if
-diff --git a/include/dt-bindings/clock/bcm2835.h b/include/dt-bindings/clock/bcm2835.h
-index 61f1d20..0ec850e 100644
---- a/include/dt-bindings/clock/bcm2835.h
-+++ b/include/dt-bindings/clock/bcm2835.h
-@@ -44,5 +44,6 @@
- #define BCM2835_CLOCK_EMMC		28
- #define BCM2835_CLOCK_PERI_IMAGE	29
- #define BCM2835_CLOCK_PWM		30
-+#define BCM2835_CLOCK_PCM		31
- 
--#define BCM2835_CLOCK_COUNT		31
-+#define BCM2835_CLOCK_COUNT		32
+ /* Clock registers */
+ #define BCM2835_CLK_PCMCTL_REG  0x00
 -- 
 1.7.10.4
 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
