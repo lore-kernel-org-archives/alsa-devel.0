@@ -1,76 +1,260 @@
-From: Alex Deucher <alexdeucher@gmail.com>
-Subject: [PATCH 8/9] ASoC: AMD: add pm ops
-Date: Fri,  8 Jan 2016 18:22:10 -0500
-Message-ID: <1452295331-28476-9-git-send-email-alexander.deucher@amd.com>
-References: <1452295331-28476-1-git-send-email-alexander.deucher@amd.com>
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: [PATCH 0/5] ASoC: fsl_ssi: Fixing various channel
+ slips and bad samples insertions
+Date: Fri, 8 Jan 2016 16:47:15 -0800
+Message-ID: <CAG5mAdw_+BiDppzpKF0ZBG1NXreGob6+jZd6SLjS1+zdmEE4ZA@mail.gmail.com>
+References: <1448546842-4584-1-git-send-email-arnaud.mouiche@invoxia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <1452295331-28476-1-git-send-email-alexander.deucher@amd.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: airlied@gmail.com, dri-devel@lists.freedesktop.org, broonie@kernel.org, alsa-devel@alsa-project.org, maruthi.bayyavarapu@amd.com, rajeevkumar.linux@gmail.com
-Cc: Alex Deucher <alexander.deucher@amd.com>, Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>, lgirdwood@gmail.com, perex@perex.cz
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-io0-f193.google.com (mail-io0-f193.google.com
+ [209.85.223.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7FCF22604EB
+ for <alsa-devel@alsa-project.org>; Sat,  9 Jan 2016 02:55:36 +0100 (CET)
+Received: by mail-io0-f193.google.com with SMTP id 77so7175904ioc.2
+ for <alsa-devel@alsa-project.org>; Fri, 08 Jan 2016 17:55:36 -0800 (PST)
+In-Reply-To: <1448546842-4584-1-git-send-email-arnaud.mouiche@invoxia.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Markus Pargmann <mpa@pengutronix.de>, Mark Brown <broonie@kernel.org>, Roberto Fichera <kernel@tekno-soft.it>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogTWFydXRoaSBTcmluaXZhcyBCYXl5YXZhcmFwdSA8TWFydXRoaS5CYXl5YXZhcmFwdUBh
-bWQuY29tPgoKZ2VucGQgd2lsbCBwb3dlciBvZmYvb24gQUNQIHRvIG1hbmFnZSBydW50aW1lIEFD
-UCBQTS4gQUNQIHJ1bnRpbWUgUE0KaG9va3MgYXJlIGFkZGVkIHRvIGdldCBpdCBkZWluaXRpYWxp
-emVkIGFuZCBpbml0aWFsaXplZCByZXNwZWN0aXZlbHksCmFmdGVyIGl0IGlzIHBvd2VyZWQgb2Zm
-L29uLgoKV2hlbiBzeXN0ZW0gZ29lcyB0byBzdXNwZW5kIHdoZW4gYXVkaW8gdXNlY2FzZSBpcyBh
-Y3RpdmUsIEFDUCB3aWxsCmJlIHBvd2VyZWQgb2ZmIHRocm91Z2ggZ2VucGQuIFdoZW4gaXQgcmVz
-dW1lcywgQUNQIG5lZWRzIHRvIGJlCmluaXRpYWxpemVkIGFuZCByZWNvbmZpZ3VyZWQuCgpTaWdu
-ZWQtb2ZmLWJ5OiBNYXJ1dGhpIEJheXlhdmFyYXB1IDxtYXJ1dGhpLmJheXlhdmFyYXB1QGFtZC5j
-b20+ClJldmlld2VkLWJ5OiBBbGV4IERldWNoZXIgPGFsZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+
-ClNpZ25lZC1vZmYtYnk6IEFsZXggRGV1Y2hlciA8YWxleGFuZGVyLmRldWNoZXJAYW1kLmNvbT4K
-LS0tCgp2MjogcmVwbGFjZSB0ZXJuZXJ5IG9wZXJhdG9yIHVzYWdlCgogc291bmQvc29jL2FtZC9h
-Y3AtcGNtLWRtYS5jIHwgNDggKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrCiAxIGZpbGUgY2hhbmdlZCwgNDggaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL3Nv
-dW5kL3NvYy9hbWQvYWNwLXBjbS1kbWEuYyBiL3NvdW5kL3NvYy9hbWQvYWNwLXBjbS1kbWEuYwpp
-bmRleCAwNzI0ZDc4Li5jMDgxOWI1IDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvYW1kL2FjcC1wY20t
-ZG1hLmMKKysrIGIvc291bmQvc29jL2FtZC9hY3AtcGNtLWRtYS5jCkBAIC0xNiw2ICsxNiw3IEBA
-CiAjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+CiAjaW5jbHVkZSA8bGludXgvZGVsYXkuaD4KICNp
-bmNsdWRlIDxsaW51eC9zaXplcy5oPgorI2luY2x1ZGUgPGxpbnV4L3BtX3J1bnRpbWUuaD4KIAog
-I2luY2x1ZGUgPHNvdW5kL3NvYy5oPgogCkBAIC04ODUsNiArODg2LDEwIEBAIHN0YXRpYyBpbnQg
-YWNwX2F1ZGlvX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCiAJCXJldHVybiBz
-dGF0dXM7CiAJfQogCisJcG1fcnVudGltZV9zZXRfYXV0b3N1c3BlbmRfZGVsYXkoJnBkZXYtPmRl
-diwgMTAwMDApOworCXBtX3J1bnRpbWVfdXNlX2F1dG9zdXNwZW5kKCZwZGV2LT5kZXYpOworCXBt
-X3J1bnRpbWVfZW5hYmxlKCZwZGV2LT5kZXYpOworCiAJcmV0dXJuIHN0YXR1czsKIH0KIApAQCAt
-ODk0LDE1ICs4OTksNTggQEAgc3RhdGljIGludCBhY3BfYXVkaW9fcmVtb3ZlKHN0cnVjdCBwbGF0
-Zm9ybV9kZXZpY2UgKnBkZXYpCiAKIAlhY3BfZGVpbml0KGFkYXRhLT5hY3BfbW1pbyk7CiAJc25k
-X3NvY191bnJlZ2lzdGVyX3BsYXRmb3JtKCZwZGV2LT5kZXYpOworCXBtX3J1bnRpbWVfZGlzYWJs
-ZSgmcGRldi0+ZGV2KTsKIAogCXJldHVybiAwOwogfQogCitzdGF0aWMgaW50IGFjcF9wY21fcmVz
-dW1lKHN0cnVjdCBkZXZpY2UgKmRldikKK3sKKwlzdHJ1Y3QgYXVkaW9fZHJ2X2RhdGEgKmFkYXRh
-ID0gZGV2X2dldF9kcnZkYXRhKGRldik7CisKKwlhY3BfaW5pdChhZGF0YS0+YWNwX21taW8pOwor
-CisJaWYgKGFkYXRhLT5wbGF5X3N0cmVhbSAmJiBhZGF0YS0+cGxheV9zdHJlYW0tPnJ1bnRpbWUp
-CisJCWNvbmZpZ19hY3BfZG1hKGFkYXRhLT5hY3BfbW1pbywKKwkJCQlhZGF0YS0+cGxheV9zdHJl
-YW0tPnJ1bnRpbWUtPnByaXZhdGVfZGF0YSk7CisJaWYgKGFkYXRhLT5jYXB0dXJlX3N0cmVhbSAm
-JiBhZGF0YS0+Y2FwdHVyZV9zdHJlYW0tPnJ1bnRpbWUpCisJCWNvbmZpZ19hY3BfZG1hKGFkYXRh
-LT5hY3BfbW1pbywKKwkJCQlhZGF0YS0+Y2FwdHVyZV9zdHJlYW0tPnJ1bnRpbWUtPnByaXZhdGVf
-ZGF0YSk7CisKKwlhY3BfcmVnX3dyaXRlKDEsIGFkYXRhLT5hY3BfbW1pbywgbW1BQ1BfRVhURVJO
-QUxfSU5UUl9FTkIpOworCXJldHVybiAwOworfQorCitzdGF0aWMgaW50IGFjcF9wY21fcnVudGlt
-ZV9zdXNwZW5kKHN0cnVjdCBkZXZpY2UgKmRldikKK3sKKwlzdHJ1Y3QgYXVkaW9fZHJ2X2RhdGEg
-KmFkYXRhID0gZGV2X2dldF9kcnZkYXRhKGRldik7CisKKwlhY3BfZGVpbml0KGFkYXRhLT5hY3Bf
-bW1pbyk7CisJYWNwX3JlZ193cml0ZSgwLCBhZGF0YS0+YWNwX21taW8sIG1tQUNQX0VYVEVSTkFM
-X0lOVFJfRU5CKTsKKwlyZXR1cm4gMDsKK30KKworc3RhdGljIGludCBhY3BfcGNtX3J1bnRpbWVf
-cmVzdW1lKHN0cnVjdCBkZXZpY2UgKmRldikKK3sKKwlzdHJ1Y3QgYXVkaW9fZHJ2X2RhdGEgKmFk
-YXRhID0gZGV2X2dldF9kcnZkYXRhKGRldik7CisKKwlhY3BfaW5pdChhZGF0YS0+YWNwX21taW8p
-OworCWFjcF9yZWdfd3JpdGUoMSwgYWRhdGEtPmFjcF9tbWlvLCBtbUFDUF9FWFRFUk5BTF9JTlRS
-X0VOQik7CisJcmV0dXJuIDA7Cit9CisKK3N0YXRpYyBjb25zdCBzdHJ1Y3QgZGV2X3BtX29wcyBh
-Y3BfcG1fb3BzID0geworCS5yZXN1bWUgPSBhY3BfcGNtX3Jlc3VtZSwKKwkucnVudGltZV9zdXNw
-ZW5kID0gYWNwX3BjbV9ydW50aW1lX3N1c3BlbmQsCisJLnJ1bnRpbWVfcmVzdW1lID0gYWNwX3Bj
-bV9ydW50aW1lX3Jlc3VtZSwKK307CisKIHN0YXRpYyBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIGFj
-cF9kbWFfZHJpdmVyID0gewogCS5wcm9iZSA9IGFjcF9hdWRpb19wcm9iZSwKIAkucmVtb3ZlID0g
-YWNwX2F1ZGlvX3JlbW92ZSwKIAkuZHJpdmVyID0gewogCQkubmFtZSA9ICJhY3BfYXVkaW9fZG1h
-IiwKKwkJLnBtID0gJmFjcF9wbV9vcHMsCiAJfSwKIH07CiAKLS0gCjIuNS4wCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBs
-aXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNr
-dG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
+On Thu, Nov 26, 2015 at 6:07 AM, Arnaud Mouiche
+<arnaud.mouiche@invoxia.com> wrote:
+> This series of patch is an attempt to fix the fsl_ssi driver to use it in TDM mode (DSP A or B) with a large number of channels/slots.
+>
+> Bugs are detected and fixed on a imx6sl platform with linux 4.3, where 2 SSI interfaces are used. SSI3 configured as a master of the bus, SSI2 as a slave.
+>
+> Various loopback scenario are tested:
+> * scenario 1: SSI3 (master) with TXD to RXD loopback
+>
+>                  |
+>                  |---> TXD  --\
+>         SSI3     |<--- RXD  --/
+>         (master) |---> SYNC
+>                  |---> BCLK
+>                  |
+>
+> * scenario 2: SSI3 connected to SSI2
+>                  |
+>                  |---> TXD  --------\
+>         SSI3     |<--- RXD  -----\  |
+>         (master) |---> SYNC --\  |  |
+>                  |---> BCLK   |  |  |
+>                  |       |    |  |  |
+>                  |       |    |  |  |
+>                  |<--- BCLK   |  |  |
+>         SSI2     |<--- SYNC --/  |  |
+>         (slave)  |---> TXD ------/  |
+>                  |<--- RXD  --------/
+>                  |
+>
+>
+>
+> A test software (called atest) was developed and available. [1]
+> It basically generate/check specials frames with S16_LE sequence samples
+>        NNN0, NNN1, NNN2 ... NNNC     with NNN = frame number, and C the number of channels-1
+>
+>
+>
+> Patch 1:
+>         Limitation fix. Prerequisite to use the fsl_ssi driver with up to 32 channels / slots
+>
+> Patch 2:
+>         Bug fix. Prerequisite to setup a relative high bitclk for our tests in 8ch / 16bits / 48kHz
+>
+> Patch 3:
+>         Simply save a 'dev' reference inside ssi_private for dev_err() purpose.
+>         (ssi_private is only available in lot of places, and
+>          ssi_private->pdev is deprecated and NULL indeed)
+>
+> Patch 4:
+>         Fix playback samples being dropped because the TX fifo was not ready at
+>         the time the DMA starts filling (only in case where playback is started AFTER the capture)
+>
+>         Detected in loopback scenario 1, with following script (> 80 % of reproducibility)
+>         $ atest -D SSI3 -c 8 -r 48000 capture play
+>         dbg: set period size: 960
+>         dbg: SSI3: capture_start
+>         dbg: SSI3: playback_start
+>         err: invalid frame after 1 null frames
+>         err:   0000 0000 0013 0014 0015 0016 0017 0020
+>         dbg: SIGINT
+>         total number of sequence errors: 21119
+>
+>         here we see that samples 0000 0001 ... 0012 are not present in the output.
+>         In addition, this the number of samples dropped is not a multiple of
+>         the number of channel, we have a a channel slip.
+>
+>
+> Patch 5:
+>         This is the Caleb Crome's case [2], where the SSI starts to generate samples while
+>         the TX FIFO is not filled by the DMA yet. Void samples can be inserted before DMA streaming.
+>
+>         Detected in loopback scenario 2, with following script (reproducibility < 1%)
+>         $ atest -D SSI3 -c 8 -r 48000 capture &
+>         $ sleep 0.2
+>         $ atest -d 1 -D SSI2 -c 8 -r 48000 play
+>         dbg: SSI3: capture_start
+>         dbg: set period size: 960
+>         dbg: SSI2: playback_start
+>         dbg: start a 1 seconds duration timer
+>         err: invalid frame after 11568 null frames
+>         err:   0000 0010 0011 0012 0013 0014 0015 0016
+>         err:   0017 0020 0021 0022 0023 0024 0025 0026
+>
+>
+>
+> Patch 6:
+>         Deals with Capture restart whereas Playback is still running
+>         (or the opposite, Playback restart whereas Capture is till running).
+>
+>         Capture restart whereas Playback case is detected in
+>         loopback scenario 1 (reproducibility 100%).
+>         A playback session is running in background, and
+>         2 consecutive Captures are performed.
+>         The first is fine, the second fails.
+>
+>         We see at the 2nd capture startup that we receive 15 samples
+>         still pending in the RX FIFO from the previous capture session.
+>         => We are receiving invalid samples + slips the channels
+>
+>         $ atest -D SSI3 -c 8 -r 48000 play &
+>         dbg: SSI3: playback_start
+>         $ atest -d 1 -D SSI3 -c 8 -r 48000 capture
+>         dbg: SSI3: capture_start
+>         dbg: start a 1 seconds duration timer
+>         warn: Valid frame after 1 null frames
+>         warn:   3a90 3a91 3a92 3a93 3a94 3a95 3a96 3a97
+>         total number of sequence errors: 0
+>
+>         $ atest -I 5 -d 1 -D SSI3 -c 8 -r 48000 capture  # restart the capture
+>         dbg: SSI3: capture_start
+>         dbg: start a 1 seconds duration timer
+>         err: invalid frame after 1 null frames
+>         err:   8dd6 8dd7 8de0 8de1 8de2 8de3 8de4 8de5
+>         err:   8de6 8de7 8df0 8df1 8df2 8df3 8df4 c0c0
+>         err:   c0c1 c0c2 c0c3 c0c4 c0c5 c0c6 c0c7 c0d0
+>         err:   c0d1 c0d2 c0d3 c0d4 c0d5 c0d6 c0d7 c0e0
+>         err:   c0e1 c0e2 c0e3 c0e4 c0e5 c0e6 c0e7 c0f0
+>
+>
+>         Playback restart whereas Capture case is also detected with
+>         loopback scenario 1 (reproducibility 100%), capturing continuously,
+>         and playing by periods of time.
+>
+>         $ atest -a -D SSI3 -c 8 -r 48000 capture play -r 1000,200
+>         dbg: SSI3: capture_start
+>         dbg: SSI3: playback_start
+>         dbg: SSI3: will stop every 1000 ms during 200 ms
+>         warn: Valid frame after 4 null frames
+>         warn:   0010 0011 0012 0013 0014 0015 0016 0017
+>         warn: SSI3: PT_W4_STOP
+>         warn: SSI3: PT_W4_RESTART
+>         err: invalid frame after 1602 null frames
+>         err:   eaa1 eaa2 eaa3 eaa4 eaa5 eaa6 eaa7 eab0
+>         err:   eab1 eab2 eab3 eab4 5810 5811 5812 5813
+>         dbg: stop on first error
+>         total number of sequence errors: 143
+>
+>
+>
+>         Both cases are resolved by using the mostly undocumented SOR.RX_CLR and
+>         SOR TX_CLR (we can find the documentation in IMX51 reference manual
+>         at section 56.3.3.15).
+>
+>
+> Arnaud
+>
+>
+>
+> [1] https://github.com/amouiche/atest
+> [2] http://mailman.alsa-project.org/pipermail/alsa-devel/2015-October/099221.html
+>
+>
+> Arnaud Mouiche (5):
+>   ASoC: fsl_ssi: The IPG/5 limitation concerns the bitclk, not the
+>     sysclk.
+>   ASoC: fsl_ssi: Save a dev reference for dev_err() purpose.
+>   ASoC: fsl_ssi: Fix samples being dropped as Playback startup
+>   ASoC: fsl_ssi: Fix channel slipping in Playback at startup
+>   ASoC: fsl_ssi: Fix channel slipping on capture (or playback) restart
+>     in full duplex.
+>
+>  sound/soc/fsl/fsl_ssi.c | 69 ++++++++++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 60 insertions(+), 9 deletions(-)
+>
+> --
+> 1.9.1
+>
+Hello Arnaud,
+  I have finally gotten to test your patches, and I'm still having
+trouble with channel slips.
+
+I applied your v2 patch set, along with your changes for using a dummy codec.
+
+The full changes are here:
+https://github.com/ccrome/linux-caleb-dev/tree/v4.4-rc8-armv7-x3
+
+This ignores most of my previous patches, and uses your code to bring
+up the SSI (without a codec) on a wandboard.
+
+I am using SSI3, and doing a hardware loopback between TX and RX.
+
+Here's what I run:
+./atest -r 16000 -c 8 -p 2048   -D default play
+
+which plays continuously.
+
+and in another shell:
+./atest -r 16000 -c 8 -p 2048  -D default -d 10 capture
+
+which captures for 10 seconds.
+
+
+The first time I run the capture command, it succeeds, no problem.
+> dbg: dev: 'default'
+> dbg: default: capture_start
+> dbg: start a 10 seconds duration timer
+> warn: First valid frame
+> warn:   3400 3401 3402 3403 3404 3405 3406 3407
+> dbg: end of tests
+> total number of sequence errors: 0
+> global tests exit status: OK
+
+But the second and all subsequent captures, it fails with channel slips:
+
+> dbg: dev: 'default'
+> dbg: default: capture_start
+> dbg: start a 10 seconds duration timer
+> err: invalid frame after 0 null frames
+> err:   d2a1 d2a2 d2a3 d2a4 d2a5 d2a6 d2a7 d2c0
+> err:   d2c1 d2c2 d2c3 d2c4 d2c5 d2c6 d2c7 78e0
+> dbg: end of tests
+> total number of sequence errors: 430080
+> global tests exit status: OK
+
+I verified with a scope that the data on the data bus is correct, the
+problem is with restarting RX, the RX doesn't synchronize to the frame
+sync.  BTW, the RX slot is random. 1/8 times or so, the restarted
+capture actually works.
+
+My setup is a single core wandboard (i.mx6 solo), with J1.16 jumpered
+over to J1.20 (tx->rx)
+
+Thanks for the patches and for the atest program!  It's really handy :-)
+
+So, I have not messed with water marks, dual fifo, etc with your patches yet.
+
+Any other patches that you think might need to be applied to make the
+RX restart work?
+-Caleb
