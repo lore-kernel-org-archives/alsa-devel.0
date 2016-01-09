@@ -1,83 +1,125 @@
-From: "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>
-Subject: Re: [PATCH 0/5] ASoC: fsl_ssi: Fixing various channel
- slips and bad samples insertions
-Date: Sat, 9 Jan 2016 12:02:39 +0100
-Message-ID: <5690E8CF.8070700@invoxia.com>
-References: <1448546842-4584-1-git-send-email-arnaud.mouiche@invoxia.com>
- <CAG5mAdw_+BiDppzpKF0ZBG1NXreGob6+jZd6SLjS1+zdmEE4ZA@mail.gmail.com>
+From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Subject: Re: Re: [PATCH v8 2/2] ASoc: sun4i-codec: Add FM, Line
+ and Mic inputs
+Date: Sat, 9 Jan 2016 16:48:32 +0100
+Message-ID: <20160109164832.515d69b0@dayas>
+References: <20151221123148.1ab6480b@dayas>
+	<20151221123416.51aa938e@dayas>
+	<20151227182157.GI30359@lukather>
+	<20151228040649.475a742f@dayas>
+	<20160106220908.GE9631@lukather>
+Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f43.google.com (mail-wm0-f43.google.com [74.125.82.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 38F1826051B
- for <alsa-devel@alsa-project.org>; Sat,  9 Jan 2016 12:02:43 +0100 (CET)
-Received: by mail-wm0-f43.google.com with SMTP id f206so161666356wmf.0
- for <alsa-devel@alsa-project.org>; Sat, 09 Jan 2016 03:02:43 -0800 (PST)
-In-Reply-To: <CAG5mAdw_+BiDppzpKF0ZBG1NXreGob6+jZd6SLjS1+zdmEE4ZA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Markus Pargmann <mpa@pengutronix.de>, Mark Brown <broonie@kernel.org>, Roberto Fichera <kernel@tekno-soft.it>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBCPKHTHNWIPBBVGXYS2AKGQE4BOEE6Y-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+In-Reply-To: <20160106220908.GE9631@lukather>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8gQ2FsZWIKCkxlIDA5LzAxLzIwMTYgMDE6NDcsIENhbGViIENyb21lIGEgw6ljcml0IDoK
-PiBbLi4uXQo+IEhlbGxvIEFybmF1ZCwKPiAgICBJIGhhdmUgZmluYWxseSBnb3R0ZW4gdG8gdGVz
-dCB5b3VyIHBhdGNoZXMsIGFuZCBJJ20gc3RpbGwgaGF2aW5nCj4gdHJvdWJsZSB3aXRoIGNoYW5u
-ZWwgc2xpcHMuCj4KPiBJIGFwcGxpZWQgeW91ciB2MiBwYXRjaCBzZXQsIGFsb25nIHdpdGggeW91
-ciBjaGFuZ2VzIGZvciB1c2luZyBhIGR1bW15IGNvZGVjLgo+Cj4gVGhlIGZ1bGwgY2hhbmdlcyBh
-cmUgaGVyZToKPiBodHRwczovL2dpdGh1Yi5jb20vY2Nyb21lL2xpbnV4LWNhbGViLWRldi90cmVl
-L3Y0LjQtcmM4LWFybXY3LXgzCj4KPiBUaGlzIGlnbm9yZXMgbW9zdCBvZiBteSBwcmV2aW91cyBw
-YXRjaGVzLCBhbmQgdXNlcyB5b3VyIGNvZGUgdG8gYnJpbmcKPiB1cCB0aGUgU1NJICh3aXRob3V0
-IGEgY29kZWMpIG9uIGEgd2FuZGJvYXJkLgo+Cj4gSSBhbSB1c2luZyBTU0kzLCBhbmQgZG9pbmcg
-YSBoYXJkd2FyZSBsb29wYmFjayBiZXR3ZWVuIFRYIGFuZCBSWC4KPgo+IEhlcmUncyB3aGF0IEkg
-cnVuOgo+IC4vYXRlc3QgLXIgMTYwMDAgLWMgOCAtcCAyMDQ4ICAgLUQgZGVmYXVsdCBwbGF5Cj4K
-PiB3aGljaCBwbGF5cyBjb250aW51b3VzbHkuCj4KPiBhbmQgaW4gYW5vdGhlciBzaGVsbDoKPiAu
-L2F0ZXN0IC1yIDE2MDAwIC1jIDggLXAgMjA0OCAgLUQgZGVmYXVsdCAtZCAxMCBjYXB0dXJlCj4K
-PiB3aGljaCBjYXB0dXJlcyBmb3IgMTAgc2Vjb25kcy4KPgo+Cj4gVGhlIGZpcnN0IHRpbWUgSSBy
-dW4gdGhlIGNhcHR1cmUgY29tbWFuZCwgaXQgc3VjY2VlZHMsIG5vIHByb2JsZW0uCj4+IGRiZzog
-ZGV2OiAnZGVmYXVsdCcKPj4gZGJnOiBkZWZhdWx0OiBjYXB0dXJlX3N0YXJ0Cj4+IGRiZzogc3Rh
-cnQgYSAxMCBzZWNvbmRzIGR1cmF0aW9uIHRpbWVyCj4+IHdhcm46IEZpcnN0IHZhbGlkIGZyYW1l
-Cj4+IHdhcm46ICAgMzQwMCAzNDAxIDM0MDIgMzQwMyAzNDA0IDM0MDUgMzQwNiAzNDA3Cj4+IGRi
-ZzogZW5kIG9mIHRlc3RzCj4+IHRvdGFsIG51bWJlciBvZiBzZXF1ZW5jZSBlcnJvcnM6IDAKPj4g
-Z2xvYmFsIHRlc3RzIGV4aXQgc3RhdHVzOiBPSwo+IEJ1dCB0aGUgc2Vjb25kIGFuZCBhbGwgc3Vi
-c2VxdWVudCBjYXB0dXJlcywgaXQgZmFpbHMgd2l0aCBjaGFubmVsIHNsaXBzOgo+Cj4+IGRiZzog
-ZGV2OiAnZGVmYXVsdCcKPj4gZGJnOiBkZWZhdWx0OiBjYXB0dXJlX3N0YXJ0Cj4+IGRiZzogc3Rh
-cnQgYSAxMCBzZWNvbmRzIGR1cmF0aW9uIHRpbWVyCj4+IGVycjogaW52YWxpZCBmcmFtZSBhZnRl
-ciAwIG51bGwgZnJhbWVzCj4+IGVycjogICBkMmExIGQyYTIgZDJhMyBkMmE0IGQyYTUgZDJhNiBk
-MmE3IGQyYzAKPj4gZXJyOiAgIGQyYzEgZDJjMiBkMmMzIGQyYzQgZDJjNSBkMmM2IGQyYzcgNzhl
-MAo+PiBkYmc6IGVuZCBvZiB0ZXN0cwo+PiB0b3RhbCBudW1iZXIgb2Ygc2VxdWVuY2UgZXJyb3Jz
-OiA0MzAwODAKPj4gZ2xvYmFsIHRlc3RzIGV4aXQgc3RhdHVzOiBPSwoKQ2FuIHlvdSB1c2UgLUkg
-b3B0aW9uIHRvIGdldCBhIGxpdHRsZSBtb3JlIGxvZyBvZiB0aGUgZXJyb3IKJCAuL2F0ZXN0IC1y
-IDE2MDAwIC1jIDggLXAgMjA0OCAgLUQgZGVmYXVsdCAtZCAxMCAtSSAxMCBjYXB0dXJlCgpKdXN0
-IHRvIGtub3cgaWYgdGhlIHdyb25nIGZyYW1lcyBjb21lcyBmcm9tIHRoZSBwcmV2aW91cyByZWNv
-cmQgc2Vzc2lvbiwgCm1lYW5pbmcgdGhlIFJYIGZpZm8gd2FzIG5vdCBjbGVhcmVkIGNvcnJlY3Rs
-eSwKYXMgaWYgdGhlIENDU1JfU1NJX1NPUl9SWF9DTFIgYml0IGlzIG5vdCB3b3JraW5nIGFzIHdl
-IG1pZ2h0IGV4cGVjdC4KKGllLiBkMmExIC4uIGQyYzcgbWF5IGNvbWUgZnJvbSB0aGUgcHJldmlv
-dXMgcmVjb3JkaW5nLCBhbmQgNzhlMCAuLiBtYXkgCmJlIHRoZSBzdGFydCBvZiB0aGUgbmV3IHJl
-Y29yZGluZyBzZXNzaW9uKQoKTWF5IGJlIHlvdSBjYW4gcmVhZCB0aGUgUlggZmlmbyBsZXZlbCBq
-dXN0IGF2ZWMgYXBwbHlpbmcgCkNDU1JfU1NJX1NPUl9SWF9DTFIgdG8gYXNzZXJ0IHRoZSBmaWZv
-IGlzIHJlYWxseSBlbXB0eSA/CgpJbiBjYXNlIGl0IGlzIHN0aWxsIG5vdCBlbXB0eSwgd2Ugd2ls
-bCBzdGlsbCBoYXZlIHRoZSBwb3NzaWJpbGl0eSB0byAKZW1wdHkgdGhlIGZpZm8gYnkgcmVhZHkg
-dGhlIHNhbXBsZXMgb25lIGJ5IG9uZSBtYW51YWxseS4KClJlZ2FyZHMsCmFybmF1ZAo+IEkgdmVy
-aWZpZWQgd2l0aCBhIHNjb3BlIHRoYXQgdGhlIGRhdGEgb24gdGhlIGRhdGEgYnVzIGlzIGNvcnJl
-Y3QsIHRoZQo+IHByb2JsZW0gaXMgd2l0aCByZXN0YXJ0aW5nIFJYLCB0aGUgUlggZG9lc24ndCBz
-eW5jaHJvbml6ZSB0byB0aGUgZnJhbWUKPiBzeW5jLiAgQlRXLCB0aGUgUlggc2xvdCBpcyByYW5k
-b20uIDEvOCB0aW1lcyBvciBzbywgdGhlIHJlc3RhcnRlZAo+IGNhcHR1cmUgYWN0dWFsbHkgd29y
-a3MuCj4KPiBNeSBzZXR1cCBpcyBhIHNpbmdsZSBjb3JlIHdhbmRib2FyZCAoaS5teDYgc29sbyks
-IHdpdGggSjEuMTYganVtcGVyZWQKPiBvdmVyIHRvIEoxLjIwICh0eC0+cngpCj4KPiBUaGFua3Mg
-Zm9yIHRoZSBwYXRjaGVzIGFuZCBmb3IgdGhlIGF0ZXN0IHByb2dyYW0hICBJdCdzIHJlYWxseSBo
-YW5keSA6LSkKPgo+IFNvLCBJIGhhdmUgbm90IG1lc3NlZCB3aXRoIHdhdGVyIG1hcmtzLCBkdWFs
-IGZpZm8sIGV0YyB3aXRoIHlvdXIgcGF0Y2hlcyB5ZXQuCj4KPiBBbnkgb3RoZXIgcGF0Y2hlcyB0
-aGF0IHlvdSB0aGluayBtaWdodCBuZWVkIHRvIGJlIGFwcGxpZWQgdG8gbWFrZSB0aGUKPiBSWCBy
-ZXN0YXJ0IHdvcms/Cj4gLUNhbGViCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+Hi Maxime,
+Hi Mark,
+
+On Wed, 6 Jan 2016 23:09:08 +0100
+Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
+
+> I find the sun4i_*_a10 and sun4i highly redundant. If there the same
+> define for sun7i, then you know that it's not meant to be used for the
+> A20, and that's it.
+> 
+> My point is also that it will just be an ever growing list of suffixes
+> when we will support more SoCs, for example for symbols that might be
+> in the A10, not the A20, but the A31.
+
+Okay. I will remove the "_a10" and "_A10" suffixes for v9. 
+There are not many places it's used anyway.
+
+> > > Isn't it possible to expose this as two (shared) muxes with different
+> > > names to make it clear what will go to the left ADC and what will go
+> > > to the right?
+
+That is possible and is working correctly so far. It will probably be in v9.
+
+> Yeah, the case where two widgets share the same bits is handled iirc
+> but sharing the controls.
+
+Yeah. The struct kcontrol_new address (of a dapm control) is compared in order 
+to find out whether to share the control or not. 
+
+> Judging from ControlNames.txt, the Power Amplifier Volume should
+> probably called Headphone Playback Volume then.
+
+Yeah. I'll rename it to "Headphone Playback Volume" for v9.
+
+> > >and it should probably be two different shared controls for mic1 and mic2
+
+Once a control is shared there's just one control to the user.
+
+I now have Mic Playback Volume shared between Left Mixer and Right Mixer 
+(Note: was not in v8).
+So far so good. (the name will be neither "Left Mixer Mic Playback 
+Volume" nor "Right Mixer Mic Playback Volume" but rather "Mic Playback 
+Volume" - because of the sharing)
+
+But I can't get having a control for Mic2 Playback Volume that does the same 
+as Mic1 Playback Volume (and updates the same register bitrange) to work 
+[yet?] instead.
+
+Sharing uses the same control for two different mixers, muxes etc.
+
+The other direction (making two controls which both do the same and update 
+each other's value) doesn't seem to be easily available. 
+Should I write a _put handler that does it manually?
+
+(Or should that be handled by alsa-lib mixer modules instead?)
+
+Or, come to think of it, did you mean something else?
+
+And something related but different:
+
+Is it possible to merge the "Left Mixer" control and respective 
+"Right Mixer" control into one selem in alsamixer?
+
+Because alsamixer actually has support for one-sided muting.
+
+For example:
+
+Left Mixer Left FM Playback Switch and Right Mixer Right FM Playback Switch and 
+FM Playback Volume could be one selem "FM Playback". Muting the left mixer left 
+fm playback would be done by pressing "," and the right mixer right fm playback 
+would be done by pressing ".".
+
+Right now they are 3 different selem for that. So it would help reduce a lot of 
+clutter.
+
+(Right Mixer Left DAC Playback Switch - not a typo - would be the odd duck 
+ and still be an extra selem)
+
+For Mic there's:
+- Left Mixer Mic1 Playback Switch
+- Left Mixer Mic2 Playback Switch
+- Right Mixer Mic1 Playback Switch
+- Right Mixer Mic2 Playback Switch
+- Mic Playback Volume
+
+If possible, it could also then be collected together as:
+- Mic1 Playback:
+    Left Mixer Mic1 Playback Switch, 
+    Right Mixer Mic1 Playback Switch, 
+    Mic Playback Volume
+- Mic2 Playback:
+    Left Mixer Mic2 Playback Switch, 
+    Right Mixer Mic2 Playback Switch, 
+    Mic Playback Volume [note: there it is again]
+
+Is it possible?
+
+Regards,
+    Danny
