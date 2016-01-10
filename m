@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ALSA: hdac: add
-	snd_hdac_ext_bus_link_power_up_all" to the asoc tree
-Date: Sun, 10 Jan 2016 12:07:41 +0000
-Message-ID: <E1aIEmb-0007OQ-O0@debutante>
-References: <1449816267-11910-8-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ALSA: hdac: couple the hda DMA stream in
+	cleanup" to the asoc tree
+Date: Sun, 10 Jan 2016 12:07:43 +0000
+Message-ID: <E1aIEmd-0007PM-IV@debutante>
+References: <1449816267-11910-5-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 965902605EF
- for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2016 13:07:47 +0100 (CET)
-In-Reply-To: <1449816267-11910-8-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id ED1A2260614
+ for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2016 13:07:48 +0100 (CET)
+In-Reply-To: <1449816267-11910-5-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jayachandran B <jayachandran.b@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ALSA: hdac: add snd_hdac_ext_bus_link_power_up_all
+   ALSA: hdac: couple the hda DMA stream in cleanup
 
 has been applied to the asoc tree at
 
@@ -53,67 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From 6706a19747eb693ff35ce140f5cbee66dcfec0c4 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Fri, 18 Dec 2015 15:12:02 +0530
-Subject: [PATCH] ALSA: hdac: add snd_hdac_ext_bus_link_power_up_all
+>From 88888155c555487037b894a97a2a4c6a8155cda0 Mon Sep 17 00:00:00 2001
+From: Jeeja KP <jeeja.kp@intel.com>
+Date: Fri, 18 Dec 2015 15:12:00 +0530
+Subject: [PATCH] ALSA: hdac: couple the hda DMA stream in cleanup
 
-We have an API for powering down all links, we need a similar one
-for powering up links, so add for power up as well
+A stream is by default in coupled mode, in DSP operation we move
+it to decoupled mode. On cleanup HW expects that we leave it back
+to default state so couple the DMA on cleanup.
 
-Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/hdaudio_ext.h         |  1 +
- sound/hda/ext/hdac_ext_controller.c | 21 +++++++++++++++++++++
- 2 files changed, 22 insertions(+)
+ sound/hda/ext/hdac_ext_stream.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
-index f3454950ee0b..07fa59237feb 100644
---- a/include/sound/hdaudio_ext.h
-+++ b/include/sound/hdaudio_ext.h
-@@ -147,6 +147,7 @@ struct hdac_ext_link {
- 
- int snd_hdac_ext_bus_link_power_up(struct hdac_ext_link *link);
- int snd_hdac_ext_bus_link_power_down(struct hdac_ext_link *link);
-+int snd_hdac_ext_bus_link_power_up_all(struct hdac_ext_bus *ebus);
- int snd_hdac_ext_bus_link_power_down_all(struct hdac_ext_bus *ebus);
- void snd_hdac_ext_link_set_stream_id(struct hdac_ext_link *link,
- 				 int stream);
-diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
-index 1a55a781270d..548cc1e4114b 100644
---- a/sound/hda/ext/hdac_ext_controller.c
-+++ b/sound/hda/ext/hdac_ext_controller.c
-@@ -288,6 +288,27 @@ int snd_hdac_ext_bus_link_power_down(struct hdac_ext_link *link)
- EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_power_down);
- 
- /**
-+ * snd_hdac_ext_bus_link_power_up_all -power up all hda link
-+ * @ebus: HD-audio extended bus
-+ */
-+int snd_hdac_ext_bus_link_power_up_all(struct hdac_ext_bus *ebus)
-+{
-+	struct hdac_ext_link *hlink = NULL;
-+	int ret;
-+
-+	list_for_each_entry(hlink, &ebus->hlink_list, list) {
-+		snd_hdac_updatel(hlink->ml_addr,
-+				AZX_REG_ML_LCTL, 0, AZX_MLCTL_SPA);
-+		ret = check_hdac_link_power_active(hlink, true);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_power_up_all);
-+
-+/**
-  * snd_hdac_ext_bus_link_power_down_all -power down all hda link
-  * @ebus: HD-audio extended bus
-  */
+diff --git a/sound/hda/ext/hdac_ext_stream.c b/sound/hda/ext/hdac_ext_stream.c
+index 8f30e8836818..023cc4cad5c1 100644
+--- a/sound/hda/ext/hdac_ext_stream.c
++++ b/sound/hda/ext/hdac_ext_stream.c
+@@ -111,6 +111,7 @@ void snd_hdac_stream_free_all(struct hdac_ext_bus *ebus)
+ 	while (!list_empty(&bus->stream_list)) {
+ 		s = list_first_entry(&bus->stream_list, struct hdac_stream, list);
+ 		stream = stream_to_hdac_ext_stream(s);
++		snd_hdac_ext_stream_decouple(ebus, stream, false);
+ 		list_del(&s->list);
+ 		kfree(stream);
+ 	}
 -- 
 2.7.0.rc3
