@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Reconfigure Link stream
-	on suspend/resume" to the asoc tree
+Subject: Applied "ASoC: Intel: Skylake: Add Resume capability
+	in PCM info." to the asoc tree
 Date: Sun, 10 Jan 2016 12:22:28 +0000
-Message-ID: <E1aIF0u-0008Pw-VH@debutante>
-References: <1449816267-11910-14-git-send-email-vinod.koul@intel.com>
+Message-ID: <E1aIF0u-0008PT-1Z@debutante>
+References: <1448297789-6524-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 85AA42605EF
+ by alsa0.perex.cz (Postfix) with ESMTP id 5EF912605EA
  for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2016 13:22:34 +0100 (CET)
-In-Reply-To: <1449816267-11910-14-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <1448297789-6524-2-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Reconfigure Link stream on suspend/resume
+   ASoC: Intel: Skylake: Add Resume capability in PCM info.
 
 has been applied to the asoc tree at
 
@@ -53,85 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From 920982c93c26a9a94d1e90221953a2ce16e91c0b Mon Sep 17 00:00:00 2001
+>From 3637976b8975afb0a55a1fc88a2c320a2839a9da Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Fri, 18 Dec 2015 15:12:08 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Reconfigure Link stream on
- suspend/resume
+Date: Fri, 18 Dec 2015 15:12:09 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add Resume capability in PCM info.
 
-On suspend the link register are lost so we need to reconfigure
-them in resume. This patch adds the reconfiguration of the link
-register in trigger resume.
+This patch adds pcm capability to support Resume.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 5a532224cb47..17a64362b283 100644
+index 17a64362b283..f3553258091a 100644
 --- a/sound/soc/intel/skylake/skl-pcm.c
 +++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -496,11 +496,6 @@ static int skl_link_pcm_prepare(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct hdac_ext_link *link;
- 
--	if (link_dev->link_prepared) {
--		dev_dbg(dai->dev, "already stream is prepared - returning\n");
--		return 0;
--	}
--
- 	dma_params  = (struct skl_dma_params *)
- 			snd_soc_dai_get_dma_data(codec_dai, substream);
- 	if (dma_params)
-@@ -508,14 +503,15 @@ static int skl_link_pcm_prepare(struct snd_pcm_substream *substream,
- 	dev_dbg(dai->dev, "stream_tag=%d formatvalue=%d codec_dai_name=%s\n",
- 			hdac_stream(link_dev)->stream_tag, format_val, codec_dai->name);
- 
--	snd_hdac_ext_link_stream_reset(link_dev);
--
--	snd_hdac_ext_link_stream_setup(link_dev, format_val);
--
- 	link = snd_hdac_ext_bus_get_link(ebus, rtd->codec->component.name);
- 	if (!link)
- 		return -EINVAL;
- 
-+	snd_hdac_ext_bus_link_power_up(link);
-+	snd_hdac_ext_link_stream_reset(link_dev);
-+
-+	snd_hdac_ext_link_stream_setup(link_dev, format_val);
-+
- 	snd_hdac_ext_link_set_stream_id(link, hdac_stream(link_dev)->stream_tag);
- 	link_dev->link_prepared = 1;
- 
-@@ -527,12 +523,16 @@ static int skl_link_pcm_trigger(struct snd_pcm_substream *substream,
- {
- 	struct hdac_ext_stream *link_dev =
- 				snd_soc_dai_get_dma_data(dai, substream);
-+	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
-+	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
- 
- 	dev_dbg(dai->dev, "In %s cmd=%d\n", __func__, cmd);
- 	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		skl_link_pcm_prepare(substream, dai);
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--	case SNDRV_PCM_TRIGGER_RESUME:
-+		snd_hdac_ext_stream_decouple(ebus, stream, true);
- 		snd_hdac_ext_link_stream_start(link_dev);
- 		break;
- 
-@@ -540,6 +540,8 @@ static int skl_link_pcm_trigger(struct snd_pcm_substream *substream,
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		snd_hdac_ext_link_stream_clear(link_dev);
-+		if (cmd == SNDRV_PCM_TRIGGER_SUSPEND)
-+			snd_hdac_ext_stream_decouple(ebus, stream, false);
- 		break;
- 
- 	default:
+@@ -38,6 +38,7 @@ static struct snd_pcm_hardware azx_pcm_hw = {
+ 				 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 				 SNDRV_PCM_INFO_MMAP_VALID |
+ 				 SNDRV_PCM_INFO_PAUSE |
++				 SNDRV_PCM_INFO_RESUME |
+ 				 SNDRV_PCM_INFO_SYNC_START |
+ 				 SNDRV_PCM_INFO_HAS_WALL_CLOCK | /* legacy */
+ 				 SNDRV_PCM_INFO_HAS_LINK_ATIME |
 -- 
 2.7.0.rc3
