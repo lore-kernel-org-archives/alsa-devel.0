@@ -1,101 +1,105 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dwc: add quirk to override COMP_PARAM_1
-	register" to the asoc tree
-Date: Sun, 10 Jan 2016 12:22:34 +0000
-Message-ID: <E1aIF10-0008Sl-Eb@debutante>
-References: <1452295331-28476-4-git-send-email-alexander.deucher@amd.com>
+From: Remi Pommarel <repk@triplefau.lt>
+Subject: Re: [PATCH 2/5] clk: bcm2835: enable management of PCM clock
+Date: Sun, 10 Jan 2016 13:30:14 +0100
+Message-ID: <20160110123014.GA1764@cruxbox>
+References: <1452331558-2520-1-git-send-email-kernel@martin.sperl.org>
+ <1452331558-2520-3-git-send-email-kernel@martin.sperl.org>
+ <4332640.jBKM55TPAo@wuerfel>
+ <CAMuHMdWOt4aCzu8Ode0ZrQ-c80nqAhwD5dd17nhgVbLrRYT5og@mail.gmail.com>
+ <4B891DE1-6340-4D3D-BEE3-F61D9A5D289B@martin.sperl.org>
+ <20160110115858.GV6588@sirena.org.uk>
+ <39E8C95F-C7DC-46C3-B29A-93A865485942@martin.sperl.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1958726067F
- for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2016 13:22:42 +0100 (CET)
-In-Reply-To: <1452295331-28476-4-git-send-email-alexander.deucher@amd.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-clk-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <39E8C95F-C7DC-46C3-B29A-93A865485942@martin.sperl.org>
+Sender: linux-clk-owner@vger.kernel.org
+To: Martin Sperl <kernel@martin.sperl.org>
+Cc: Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Russell King <linux@arm.linux.org.uk>, Michael Turquette <mturquette@baylibre.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, linux-rpi-kernel@lists.infradead.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-clk <linux-clk@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Matthias Reichl <hias@horus.com>, lFlorian Meier <florian.meier@koalo.de>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Sun, Jan 10, 2016 at 01:17:17PM +0100, Martin Sperl wrote:
+> >=20
+> > Presumably just making the code not rely on having a define for the
+> > number of clocks would deal with the problem (eg, using ARRAY_SIZE
+> > internally).
+> ARRAY_SIZE would work fine, but the code is:=20
+>=20
+> #include <dt-bindings/clock/bcm2835.h>
+> ...
+> struct bcm2835_cprman {
+> 	struct device *dev;
+> 	void __iomem *regs;
+> 	spinlock_t regs_lock;
+> 	const char *osc_name;
+>=20
+> 	struct clk_onecell_data onecell;
+> 	struct clk *clks[BCM2835_CLOCK_COUNT];
+> };
+> ...
+> static int bcm2835_clk_probe(struct platform_device *pdev)
+> {
+> ...
+> 	clks[BCM2835_PLLA_CORE] =3D
+> 		bcm2835_register_pll_divider(cprman, &bcm2835_plla_core_data);
+> ...
+>         clks[BCM2835_CLOCK_PCM] =3D
+>                 bcm2835_register_clock(cprman, &bcm2835_clock_pcm_dat=
+a);
+> ...
+> }
+>=20
+> So the Array size is defined by the dt-bindings.
+>=20
+> What you propose is a major change to the clock framework, so I would
+> hope that Eric (the original author of this clock-driver) would addre=
+ss
+> it.
+>=20
+> Maybe someone has a better idea for a pattern to use to achieve=20
+> the required while maintaining =E2=80=9Csynchronization=E2=80=9D betw=
+een defines
+> inside the dt-binding and the driver.
+>=20
 
-   ASoC: dwc: add quirk to override COMP_PARAM_1 register
+Why not just get rid of BCM2835_CLOCK_COUNT and use an internal clock
+count ? Something like the patch attached at the end of the mail. This
+has the downside to be more careful when adding a new clock.
 
-has been applied to the asoc tree at
+If it is not ok, I could try to modify the clk driver to use Mark's
+solution if you want.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Regards,
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+--=20
+Remi
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From a242cac1d3aa098fbe51097d2b1dcae8b662b761 Mon Sep 17 00:00:00 2001
-From: Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>
-Date: Fri, 8 Jan 2016 18:22:05 -0500
-Subject: [PATCH] ASoC: dwc: add quirk to override COMP_PARAM_1 register
-
-DWC for capture in ACP 2.x IP reports playback and capture capabilities
-though it supports only capture. Added a quirk to override default value
-to represent capture capability only.
-
-Signed-off-by: Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+--------------------------------->8------------------------------------=
 ---
- include/sound/designware_i2s.h | 1 +
- sound/soc/dwc/designware_i2s.c | 4 ++++
- 2 files changed, 5 insertions(+)
-
-diff --git a/include/sound/designware_i2s.h b/include/sound/designware_i2s.h
-index e0bb45807f29..5681855396c4 100644
---- a/include/sound/designware_i2s.h
-+++ b/include/sound/designware_i2s.h
-@@ -46,6 +46,7 @@ struct i2s_platform_data {
- 	u32 snd_rates;
- 
- 	#define DW_I2S_QUIRK_COMP_REG_OFFSET	(1 << 0)
-+	#define DW_I2S_QUIRK_COMP_PARAM1	(1 << 1)
- 	unsigned int quirks;
- 	unsigned int i2s_reg_comp1;
- 	unsigned int i2s_reg_comp2;
-diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
-index 825a1f480aab..ce664c239be3 100644
---- a/sound/soc/dwc/designware_i2s.c
-+++ b/sound/soc/dwc/designware_i2s.c
-@@ -500,6 +500,10 @@ static int dw_configure_dai(struct dw_i2s_dev *dev,
- 	u32 comp2 = i2s_read_reg(dev->i2s_base, dev->i2s_reg_comp2);
- 	u32 idx;
- 
-+	if (dev->capability & DWC_I2S_RECORD &&
-+			dev->quirks & DW_I2S_QUIRK_COMP_PARAM1)
-+		comp1 = comp1 & ~BIT(5);
+diff --git a/drivers/clk/bcm/clk-bcm2835.c b/drivers/clk/bcm/clk-bcm283=
+5.c
+index 015e687..f558c5b 100644
+--- a/drivers/clk/bcm/clk-bcm2835.c
++++ b/drivers/clk/bcm/clk-bcm2835.c
+@@ -281,6 +281,8 @@
+ #define LOCK_TIMEOUT_NS                100000000
+ #define BCM2835_MAX_FB_RATE    1750000000u
+=20
++#define BCM2835_CLOCK_MAX BCM2835_CLOCK_PCM
 +
- 	if (COMP1_TX_ENABLED(comp1)) {
- 		dev_dbg(dev->dev, " designware: play supported\n");
- 		idx = COMP1_TX_WORDSIZE_0(comp1);
--- 
-2.7.0.rc3
+ struct bcm2835_cprman {
+        struct device *dev;
+        void __iomem *regs;
+@@ -288,7 +290,7 @@ struct bcm2835_cprman {
+        const char *osc_name;
+=20
+        struct clk_onecell_data onecell;
+-       struct clk *clks[BCM2835_CLOCK_COUNT];
++       struct clk *clks[BCM2835_CLOCK_MAX + 1];
+ };
+=20
+ static inline void cprman_write(struct bcm2835_cprman *cprman, u32 reg=
+, u32 val)
+
