@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ALSA: hdac: Increase timeout value for link
-	power check" to the asoc tree
-Date: Sun, 10 Jan 2016 12:07:42 +0000
-Message-ID: <E1aIEmc-0007Ot-Kk@debutante>
-References: <1449816267-11910-7-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ALSA: hdac: Add support for hda DMA Resume
+	capability" to the asoc tree
+Date: Sun, 10 Jan 2016 12:07:44 +0000
+Message-ID: <E1aIEme-0007Pp-Ga@debutante>
+References: <1449816267-11910-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 22BB82605FF
- for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2016 13:07:48 +0100 (CET)
-In-Reply-To: <1449816267-11910-7-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7260426061E
+ for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2016 13:07:50 +0100 (CET)
+In-Reply-To: <1449816267-11910-4-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jayachandran B <jayachandran.b@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ALSA: hdac: Increase timeout value for link power check
+   ALSA: hdac: Add support for hda DMA Resume capability
 
 has been applied to the asoc tree at
 
@@ -53,35 +53,208 @@ to this mail.
 Thanks,
 Mark
 
->From cf8fe58b1066cea668e030d0ab61e4b8eef8b219 Mon Sep 17 00:00:00 2001
-From: Jayachandran B <jayachandran.b@intel.com>
-Date: Fri, 18 Dec 2015 15:12:01 +0530
-Subject: [PATCH] ALSA: hdac: Increase timeout value for link power check
+>From a9c48f7f5906d02d4ec4aa50b1c20fccbce53eec Mon Sep 17 00:00:00 2001
+From: Jeeja KP <jeeja.kp@intel.com>
+Date: Fri, 18 Dec 2015 15:11:59 +0530
+Subject: [PATCH] ALSA: hdac: Add support for hda DMA Resume capability
 
-HW recommends 180us for worst case values for link power up
-delay, so change the current delay value from 50 (150us) to 150
-(450us)
+Skylake sports new capability of DMA resume, DRSM where we can
+resume the DMA. This capability is defined by presence of
+AZX_DRSM_CAP_ID.
 
-Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
+If this capability is present, we use this capability.
+So we add:
+
+snd_hdac_ext_stream_drsm_enable() - DMA resume caps
+snd_hdac_ext_stream_set_dpibr() - set the DMA position
+snd_hdac_ext_stream_set_lpib() - set the lpib
+
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/hda/ext/hdac_ext_controller.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/sound/hda_register.h        |  9 +++++
+ include/sound/hdaudio_ext.h         | 14 ++++++++
+ sound/hda/ext/hdac_ext_controller.c |  6 ++++
+ sound/hda/ext/hdac_ext_stream.c     | 71 +++++++++++++++++++++++++++++++++++++
+ 4 files changed, 100 insertions(+)
 
+diff --git a/include/sound/hda_register.h b/include/sound/hda_register.h
+index 2ae8812d7b1a..28ac1f9a18ac 100644
+--- a/include/sound/hda_register.h
++++ b/include/sound/hda_register.h
+@@ -230,6 +230,15 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
+ #define AZX_MLCTL_SPA			(1<<16)
+ #define AZX_MLCTL_CPA			23
+ 
++
++/* registers for DMA Resume Capability Structure */
++#define AZX_DRSM_CAP_ID			0x5
++#define AZX_REG_DRSM_CTL		0x4
++/* Base used to calculate the iterating register offset */
++#define AZX_DRSM_BASE			0x08
++/* Interval used to calculate the iterating register offset */
++#define AZX_DRSM_INTERVAL		0x08
++
+ /*
+  * helpers to read the stream position
+  */
+diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
+index 425af0674557..f3454950ee0b 100644
+--- a/include/sound/hdaudio_ext.h
++++ b/include/sound/hdaudio_ext.h
+@@ -12,6 +12,7 @@
+  * @spbcap: SPIB capabilities pointer
+  * @mlcap: MultiLink capabilities pointer
+  * @gtscap: gts capabilities pointer
++ * @drsmcap: dma resume capabilities pointer
+  * @hlink_list: link list of HDA links
+  */
+ struct hdac_ext_bus {
+@@ -23,6 +24,7 @@ struct hdac_ext_bus {
+ 	void __iomem *spbcap;
+ 	void __iomem *mlcap;
+ 	void __iomem *gtscap;
++	void __iomem *drsmcap;
+ 
+ 	struct list_head hlink_list;
+ };
+@@ -72,6 +74,9 @@ enum hdac_ext_stream_type {
+  * @pplc_addr: processing pipe link stream pointer
+  * @spib_addr: software position in buffers stream pointer
+  * @fifo_addr: software position Max fifos stream pointer
++ * @dpibr_addr: DMA position in buffer resume pointer
++ * @dpib: DMA position in buffer
++ * @lpib: Linear position in buffer
+  * @decoupled: stream host and link is decoupled
+  * @link_locked: link is locked
+  * @link_prepared: link is prepared
+@@ -86,6 +91,10 @@ struct hdac_ext_stream {
+ 	void __iomem *spib_addr;
+ 	void __iomem *fifo_addr;
+ 
++	void __iomem *dpibr_addr;
++
++	u32 dpib;
++	u32 lpib;
+ 	bool decoupled:1;
+ 	bool link_locked:1;
+ 	bool link_prepared;
+@@ -116,6 +125,11 @@ int snd_hdac_ext_stream_set_spib(struct hdac_ext_bus *ebus,
+ 				 struct hdac_ext_stream *stream, u32 value);
+ int snd_hdac_ext_stream_get_spbmaxfifo(struct hdac_ext_bus *ebus,
+ 				 struct hdac_ext_stream *stream);
++void snd_hdac_ext_stream_drsm_enable(struct hdac_ext_bus *ebus,
++				bool enable, int index);
++int snd_hdac_ext_stream_set_dpibr(struct hdac_ext_bus *ebus,
++				struct hdac_ext_stream *stream, u32 value);
++int snd_hdac_ext_stream_set_lpib(struct hdac_ext_stream *stream, u32 value);
+ 
+ void snd_hdac_ext_link_stream_start(struct hdac_ext_stream *hstream);
+ void snd_hdac_ext_link_stream_clear(struct hdac_ext_stream *hstream);
 diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
-index 556267e75591..1a55a781270d 100644
+index 63215b17247c..556267e75591 100644
 --- a/sound/hda/ext/hdac_ext_controller.c
 +++ b/sound/hda/ext/hdac_ext_controller.c
-@@ -246,7 +246,7 @@ static int check_hdac_link_power_active(struct hdac_ext_link *link, bool enable)
- 	int mask = (1 << AZX_MLCTL_CPA);
+@@ -77,6 +77,12 @@ int snd_hdac_ext_bus_parse_capabilities(struct hdac_ext_bus *ebus)
+ 			ebus->spbcap = bus->remap_addr + offset;
+ 			break;
  
- 	udelay(3);
--	timeout = 50;
-+	timeout = 150;
++		case AZX_DRSM_CAP_ID:
++			/* DMA resume  capability found, handler function */
++			dev_dbg(bus->dev, "Found DRSM capability\n");
++			ebus->drsmcap = bus->remap_addr + offset;
++			break;
++
+ 		default:
+ 			dev_dbg(bus->dev, "Unknown capability %d\n", cur_cap);
+ 			break;
+diff --git a/sound/hda/ext/hdac_ext_stream.c b/sound/hda/ext/hdac_ext_stream.c
+index cb89ec7c8147..8f30e8836818 100644
+--- a/sound/hda/ext/hdac_ext_stream.c
++++ b/sound/hda/ext/hdac_ext_stream.c
+@@ -59,6 +59,10 @@ void snd_hdac_ext_stream_init(struct hdac_ext_bus *ebus,
+ 					AZX_SPB_MAXFIFO;
+ 	}
  
- 	do {
- 		val = readl(link->ml_addr + AZX_REG_ML_LCTL);
++	if (ebus->drsmcap)
++		stream->dpibr_addr = ebus->drsmcap + AZX_DRSM_BASE +
++					AZX_DRSM_INTERVAL * idx;
++
+ 	stream->decoupled = false;
+ 	snd_hdac_stream_init(bus, &stream->hstream, idx, direction, tag);
+ }
+@@ -497,3 +501,70 @@ void snd_hdac_ext_stop_streams(struct hdac_ext_bus *ebus)
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(snd_hdac_ext_stop_streams);
++
++/**
++ * snd_hdac_ext_stream_drsm_enable - enable DMA resume for a stream
++ * @ebus: HD-audio ext core bus
++ * @enable: flag to enable/disable DRSM
++ * @index: stream index for which DRSM need to be enabled
++ */
++void snd_hdac_ext_stream_drsm_enable(struct hdac_ext_bus *ebus,
++				bool enable, int index)
++{
++	u32 mask = 0;
++	u32 register_mask = 0;
++	struct hdac_bus *bus = &ebus->bus;
++
++	if (!ebus->drsmcap) {
++		dev_err(bus->dev, "Address of DRSM capability is NULL");
++		return;
++	}
++
++	mask |= (1 << index);
++
++	register_mask = readl(ebus->drsmcap + AZX_REG_SPB_SPBFCCTL);
++
++	mask |= register_mask;
++
++	if (enable)
++		snd_hdac_updatel(ebus->drsmcap, AZX_REG_DRSM_CTL, 0, mask);
++	else
++		snd_hdac_updatel(ebus->drsmcap, AZX_REG_DRSM_CTL, mask, 0);
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_drsm_enable);
++
++/**
++ * snd_hdac_ext_stream_set_dpibr - sets the dpibr value of a stream
++ * @ebus: HD-audio ext core bus
++ * @stream: hdac_ext_stream
++ * @value: dpib value to set
++ */
++int snd_hdac_ext_stream_set_dpibr(struct hdac_ext_bus *ebus,
++				 struct hdac_ext_stream *stream, u32 value)
++{
++	struct hdac_bus *bus = &ebus->bus;
++
++	if (!ebus->drsmcap) {
++		dev_err(bus->dev, "Address of DRSM capability is NULL");
++		return -EINVAL;
++	}
++
++	writel(value, stream->dpibr_addr);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_set_dpibr);
++
++/**
++ * snd_hdac_ext_stream_set_lpib - sets the lpib value of a stream
++ * @ebus: HD-audio ext core bus
++ * @stream: hdac_ext_stream
++ * @value: lpib value to set
++ */
++int snd_hdac_ext_stream_set_lpib(struct hdac_ext_stream *stream, u32 value)
++{
++	snd_hdac_stream_writel(&stream->hstream, SD_LPIB, value);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_set_lpib);
 -- 
 2.7.0.rc3
