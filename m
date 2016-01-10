@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Define soc_add_dai() to add a DAI to a
-	component" to the asoc tree
-Date: Sun, 10 Jan 2016 12:07:40 +0000
-Message-ID: <E1aIEma-0007Nx-Qf@debutante>
-References: <e5451d9a299337e2a565ff17fbfec60a9597799f.1451550513.git.mengdong.lin@linux.intel.com>
+Subject: Applied "ALSA: hdac: add
+	snd_hdac_ext_bus_link_power_up_all" to the asoc tree
+Date: Sun, 10 Jan 2016 12:07:41 +0000
+Message-ID: <E1aIEmb-0007OQ-O0@debutante>
+References: <1449816267-11910-8-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 77D1D2605EA
- for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2016 13:07:46 +0100 (CET)
-In-Reply-To: <e5451d9a299337e2a565ff17fbfec60a9597799f.1451550513.git.mengdong.lin@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 965902605EF
+ for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2016 13:07:47 +0100 (CET)
+In-Reply-To: <1449816267-11910-8-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mengdong Lin <mengdong.lin@linux.intel.com>, Mark Brown <broonie@kernel.org>
+To: Jayachandran B <jayachandran.b@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Define soc_add_dai() to add a DAI to a component
+   ALSA: hdac: add snd_hdac_ext_bus_link_power_up_all
 
 has been applied to the asoc tree at
 
@@ -53,132 +53,67 @@ to this mail.
 Thanks,
 Mark
 
->From 5e4fb372117f476e0c7f85418ed3e39506fbb75c Mon Sep 17 00:00:00 2001
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Date: Thu, 31 Dec 2015 16:40:20 +0800
-Subject: [PATCH] ASoC: Define soc_add_dai() to add a DAI to a component
+>From 6706a19747eb693ff35ce140f5cbee66dcfec0c4 Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Fri, 18 Dec 2015 15:12:02 +0530
+Subject: [PATCH] ALSA: hdac: add snd_hdac_ext_bus_link_power_up_all
 
-Define soc_add_dai() as a wrapper to add a single DAI to a component.
-It can be reused to register a DAI dynamically by topology.
+We have an API for powering down all links, we need a similar one
+for powering up links, so add for power up as well
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 88 +++++++++++++++++++++++++++++++---------------------
- 1 file changed, 52 insertions(+), 36 deletions(-)
+ include/sound/hdaudio_ext.h         |  1 +
+ sound/hda/ext/hdac_ext_controller.c | 21 +++++++++++++++++++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 6b1982dcedf1..1bd0b37b907f 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2744,6 +2744,56 @@ static void snd_soc_unregister_dais(struct snd_soc_component *component)
- 	}
- }
+diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
+index f3454950ee0b..07fa59237feb 100644
+--- a/include/sound/hdaudio_ext.h
++++ b/include/sound/hdaudio_ext.h
+@@ -147,6 +147,7 @@ struct hdac_ext_link {
  
-+/* Create a DAI and add it to the component's DAI list */
-+static struct snd_soc_dai *soc_add_dai(struct snd_soc_component *component,
-+	struct snd_soc_dai_driver *dai_drv,
-+	bool legacy_dai_naming)
-+{
-+	struct device *dev = component->dev;
-+	struct snd_soc_dai *dai;
-+
-+	dev_dbg(dev, "ASoC: dynamically register DAI %s\n", dev_name(dev));
-+
-+	dai = kzalloc(sizeof(struct snd_soc_dai), GFP_KERNEL);
-+	if (dai == NULL)
-+		return NULL;
-+
-+	/*
-+	 * Back in the old days when we still had component-less DAIs,
-+	 * instead of having a static name, component-less DAIs would
-+	 * inherit the name of the parent device so it is possible to
-+	 * register multiple instances of the DAI. We still need to keep
-+	 * the same naming style even though those DAIs are not
-+	 * component-less anymore.
-+	 */
-+	if (legacy_dai_naming &&
-+	   (dai_drv->id == 0 || dai_drv->name == NULL)) {
-+		dai->name = fmt_single_name(dev, &dai->id);
-+	} else {
-+		dai->name = fmt_multiple_name(dev, dai_drv);
-+		if (dai_drv->id)
-+			dai->id = dai_drv->id;
-+		else
-+			dai->id = component->num_dai;
-+	}
-+	if (dai->name == NULL) {
-+		kfree(dai);
-+		return NULL;
-+	}
-+
-+	dai->component = component;
-+	dai->dev = dev;
-+	dai->driver = dai_drv;
-+	if (!dai->driver->ops)
-+		dai->driver->ops = &null_dai_ops;
-+
-+	list_add(&dai->list, &component->dai_list);
-+	component->num_dai++;
-+
-+	dev_dbg(dev, "ASoC: Registered DAI '%s'\n", dai->name);
-+	return dai;
-+}
-+
+ int snd_hdac_ext_bus_link_power_up(struct hdac_ext_link *link);
+ int snd_hdac_ext_bus_link_power_down(struct hdac_ext_link *link);
++int snd_hdac_ext_bus_link_power_up_all(struct hdac_ext_bus *ebus);
+ int snd_hdac_ext_bus_link_power_down_all(struct hdac_ext_bus *ebus);
+ void snd_hdac_ext_link_set_stream_id(struct hdac_ext_link *link,
+ 				 int stream);
+diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
+index 1a55a781270d..548cc1e4114b 100644
+--- a/sound/hda/ext/hdac_ext_controller.c
++++ b/sound/hda/ext/hdac_ext_controller.c
+@@ -288,6 +288,27 @@ int snd_hdac_ext_bus_link_power_down(struct hdac_ext_link *link)
+ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_power_down);
+ 
  /**
-  * snd_soc_register_dais - Register a DAI with the ASoC core
-  *
-@@ -2765,49 +2815,15 @@ static int snd_soc_register_dais(struct snd_soc_component *component,
- 	dev_dbg(dev, "ASoC: dai register %s #%Zu\n", dev_name(dev), count);
- 
- 	component->dai_drv = dai_drv;
--	component->num_dai = count;
- 
- 	for (i = 0; i < count; i++) {
- 
--		dai = kzalloc(sizeof(struct snd_soc_dai), GFP_KERNEL);
-+		dai = soc_add_dai(component, dai_drv + i,
-+				count == 1 && legacy_dai_naming);
- 		if (dai == NULL) {
- 			ret = -ENOMEM;
- 			goto err;
- 		}
--
--		/*
--		 * Back in the old days when we still had component-less DAIs,
--		 * instead of having a static name, component-less DAIs would
--		 * inherit the name of the parent device so it is possible to
--		 * register multiple instances of the DAI. We still need to keep
--		 * the same naming style even though those DAIs are not
--		 * component-less anymore.
--		 */
--		if (count == 1 && legacy_dai_naming &&
--			(dai_drv[i].id == 0 || dai_drv[i].name == NULL)) {
--			dai->name = fmt_single_name(dev, &dai->id);
--		} else {
--			dai->name = fmt_multiple_name(dev, &dai_drv[i]);
--			if (dai_drv[i].id)
--				dai->id = dai_drv[i].id;
--			else
--				dai->id = i;
--		}
--		if (dai->name == NULL) {
--			kfree(dai);
--			ret = -ENOMEM;
--			goto err;
--		}
--
--		dai->component = component;
--		dai->dev = dev;
--		dai->driver = &dai_drv[i];
--		if (!dai->driver->ops)
--			dai->driver->ops = &null_dai_ops;
--
--		list_add(&dai->list, &component->dai_list);
--
--		dev_dbg(dev, "ASoC: Registered DAI '%s'\n", dai->name);
- 	}
- 
- 	return 0;
++ * snd_hdac_ext_bus_link_power_up_all -power up all hda link
++ * @ebus: HD-audio extended bus
++ */
++int snd_hdac_ext_bus_link_power_up_all(struct hdac_ext_bus *ebus)
++{
++	struct hdac_ext_link *hlink = NULL;
++	int ret;
++
++	list_for_each_entry(hlink, &ebus->hlink_list, list) {
++		snd_hdac_updatel(hlink->ml_addr,
++				AZX_REG_ML_LCTL, 0, AZX_MLCTL_SPA);
++		ret = check_hdac_link_power_active(hlink, true);
++		if (ret < 0)
++			return ret;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_power_up_all);
++
++/**
+  * snd_hdac_ext_bus_link_power_down_all -power down all hda link
+  * @ebus: HD-audio extended bus
+  */
 -- 
 2.7.0.rc3
