@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ALSA: hdac: couple the hda DMA stream in
-	cleanup" to the asoc tree
-Date: Sun, 10 Jan 2016 12:07:43 +0000
-Message-ID: <E1aIEmd-0007PM-IV@debutante>
-References: <1449816267-11910-5-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: pcm1792a: Rename pcm1792a to pcm179x"
+	to the asoc tree
+Date: Sun, 10 Jan 2016 12:07:45 +0000
+Message-ID: <E1aIEmf-0007QI-8l@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id ED1A2260614
- for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2016 13:07:48 +0100 (CET)
-In-Reply-To: <1449816267-11910-5-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id EC91A260631
+ for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2016 13:07:51 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Michael Trimarchi <michael@amarulasolutions.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ALSA: hdac: couple the hda DMA stream in cleanup
+   ASoC: pcm1792a: Rename pcm1792a to pcm179x
 
 has been applied to the asoc tree at
 
@@ -53,34 +52,93 @@ to this mail.
 Thanks,
 Mark
 
->From 88888155c555487037b894a97a2a4c6a8155cda0 Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Fri, 18 Dec 2015 15:12:00 +0530
-Subject: [PATCH] ALSA: hdac: couple the hda DMA stream in cleanup
+>From 0471cd938e244e22f3ead77d2b82230f83e35f69 Mon Sep 17 00:00:00 2001
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Date: Sun, 10 Jan 2016 00:38:04 +0100
+Subject: [PATCH] ASoC: pcm1792a: Rename pcm1792a to pcm179x
 
-A stream is by default in coupled mode, in DSP operation we move
-it to decoupled mode. On cleanup HW expects that we leave it back
-to default state so couple the DMA on cleanup.
+pcm1792a is compatible with pcm1795 and pcm1796 so it's
+better to have them under the common name pcm179x
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/hda/ext/hdac_ext_stream.c | 1 +
- 1 file changed, 1 insertion(+)
+ .../devicetree/bindings/sound/{pcm1792a.txt => pcm179x.txt}         | 2 +-
+ sound/soc/codecs/Kconfig                                            | 6 +++---
+ sound/soc/codecs/Makefile                                           | 4 ++--
+ sound/soc/codecs/{pcm1792a.c => pcm179x.c}                          | 0
+ sound/soc/codecs/{pcm1792a.h => pcm179x.h}                          | 0
+ 5 files changed, 6 insertions(+), 6 deletions(-)
+ rename Documentation/devicetree/bindings/sound/{pcm1792a.txt => pcm179x.txt} (88%)
+ rename sound/soc/codecs/{pcm1792a.c => pcm179x.c} (100%)
+ rename sound/soc/codecs/{pcm1792a.h => pcm179x.h} (100%)
 
-diff --git a/sound/hda/ext/hdac_ext_stream.c b/sound/hda/ext/hdac_ext_stream.c
-index 8f30e8836818..023cc4cad5c1 100644
---- a/sound/hda/ext/hdac_ext_stream.c
-+++ b/sound/hda/ext/hdac_ext_stream.c
-@@ -111,6 +111,7 @@ void snd_hdac_stream_free_all(struct hdac_ext_bus *ebus)
- 	while (!list_empty(&bus->stream_list)) {
- 		s = list_first_entry(&bus->stream_list, struct hdac_stream, list);
- 		stream = stream_to_hdac_ext_stream(s);
-+		snd_hdac_ext_stream_decouple(ebus, stream, false);
- 		list_del(&s->list);
- 		kfree(stream);
- 	}
+diff --git a/Documentation/devicetree/bindings/sound/pcm1792a.txt b/Documentation/devicetree/bindings/sound/pcm179x.txt
+similarity index 88%
+rename from Documentation/devicetree/bindings/sound/pcm1792a.txt
+rename to Documentation/devicetree/bindings/sound/pcm179x.txt
+index 970ba1ed576f..4ae70d3462d6 100644
+--- a/Documentation/devicetree/bindings/sound/pcm1792a.txt
++++ b/Documentation/devicetree/bindings/sound/pcm179x.txt
+@@ -1,4 +1,4 @@
+-Texas Instruments pcm1792a DT bindings
++Texas Instruments pcm179x DT bindings
+ 
+ This driver supports the SPI bus.
+ 
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index cfdafc4c11ea..b28060e55006 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -83,7 +83,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_ML26124 if I2C
+ 	select SND_SOC_NAU8825 if I2C
+ 	select SND_SOC_PCM1681 if I2C
+-	select SND_SOC_PCM1792A if SPI_MASTER
++	select SND_SOC_PCM179X if SPI_MASTER
+ 	select SND_SOC_PCM3008
+ 	select SND_SOC_PCM512x_I2C if I2C
+ 	select SND_SOC_PCM512x_SPI if SPI_MASTER
+@@ -499,8 +499,8 @@ config SND_SOC_PCM1681
+ 	tristate "Texas Instruments PCM1681 CODEC"
+ 	depends on I2C
+ 
+-config SND_SOC_PCM1792A
+-	tristate "Texas Instruments PCM1792A CODEC"
++config SND_SOC_PCM179X
++	tristate "Texas Instruments PCM179X CODEC"
+ 	depends on SPI_MASTER
+ 
+ config SND_SOC_PCM3008
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index f632fc42f59f..e4256039ff80 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -76,7 +76,7 @@ snd-soc-mc13783-objs := mc13783.o
+ snd-soc-ml26124-objs := ml26124.o
+ snd-soc-nau8825-objs := nau8825.o
+ snd-soc-pcm1681-objs := pcm1681.o
+-snd-soc-pcm1792a-codec-objs := pcm1792a.o
++snd-soc-pcm179x-codec-objs := pcm179x.o
+ snd-soc-pcm3008-objs := pcm3008.o
+ snd-soc-pcm512x-objs := pcm512x.o
+ snd-soc-pcm512x-i2c-objs := pcm512x-i2c.o
+@@ -271,7 +271,7 @@ obj-$(CONFIG_SND_SOC_MC13783)	+= snd-soc-mc13783.o
+ obj-$(CONFIG_SND_SOC_ML26124)	+= snd-soc-ml26124.o
+ obj-$(CONFIG_SND_SOC_NAU8825)   += snd-soc-nau8825.o
+ obj-$(CONFIG_SND_SOC_PCM1681)	+= snd-soc-pcm1681.o
+-obj-$(CONFIG_SND_SOC_PCM1792A)	+= snd-soc-pcm1792a-codec.o
++obj-$(CONFIG_SND_SOC_PCM179X)	+= snd-soc-pcm179x-codec.o
+ obj-$(CONFIG_SND_SOC_PCM3008)	+= snd-soc-pcm3008.o
+ obj-$(CONFIG_SND_SOC_PCM512x)	+= snd-soc-pcm512x.o
+ obj-$(CONFIG_SND_SOC_PCM512x_I2C)	+= snd-soc-pcm512x-i2c.o
+diff --git a/sound/soc/codecs/pcm1792a.c b/sound/soc/codecs/pcm179x.c
+similarity index 100%
+rename from sound/soc/codecs/pcm1792a.c
+rename to sound/soc/codecs/pcm179x.c
+diff --git a/sound/soc/codecs/pcm1792a.h b/sound/soc/codecs/pcm179x.h
+similarity index 100%
+rename from sound/soc/codecs/pcm1792a.h
+rename to sound/soc/codecs/pcm179x.h
 -- 
 2.7.0.rc3
