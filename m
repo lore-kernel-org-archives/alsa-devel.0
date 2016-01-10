@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: enable interrupt as
-	wake source in active suspend" to the asoc tree
-Date: Sun, 10 Jan 2016 12:22:30 +0000
-Message-ID: <E1aIF0w-0008Qs-P2@debutante>
-References: <1449816267-11910-12-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Use CGCTL.MISCBDCGE for
+	Phrase detection notification" to the asoc tree
+Date: Sun, 10 Jan 2016 12:22:32 +0000
+Message-ID: <E1aIF0y-0008Rp-JG@debutante>
+References: <1450431729-27259-9-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 151F42605EA
- for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2016 13:22:41 +0100 (CET)
-In-Reply-To: <1449816267-11910-12-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E2DD26063D
+ for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2016 13:22:38 +0100 (CET)
+In-Reply-To: <1450431729-27259-9-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: "Dharageswari.R" <dharageswari.r@intel.com>, Jayachandran B <jayachandran.b@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: enable interrupt as wake source in active suspend
+   ASoC: Intel: Skylake: Use CGCTL.MISCBDCGE for Phrase detection notification
 
 has been applied to the asoc tree at
 
@@ -53,59 +53,97 @@ to this mail.
 Thanks,
 Mark
 
->From 1f4956fd96c98e3fbe9a2818014cf36854398db0 Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Fri, 18 Dec 2015 15:12:06 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: enable interrupt as wake source in
- active suspend
+>From 721c3e36f774150f453216efcf5e1895577ac68c Mon Sep 17 00:00:00 2001
+From: "Dharageswari.R" <dharageswari.r@intel.com>
+Date: Fri, 18 Dec 2015 15:12:04 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Use CGCTL.MISCBDCGE for Phrase
+ detection notification
 
-In active suspend, any HDA interrupt should wake the system. When device
-enters active suspend, we need to enable HDA controller interrupt as wake
-source. Similarly disable HDA controller interrupt as wake source when
-exiting active suspend.
+Per HW recommendation, SW shall clear the CGCTL.MISCBDCGE and set
+it back once data is transferred. So clear this when we get the
+IPC and track using a driver flag, and set back on closure
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Dharageswari.R <dharageswari.r@intel.com>
+Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/intel/skylake/skl-pcm.c     | 13 +++++++++++++
+ sound/soc/intel/skylake/skl-sst-ipc.c | 15 +++++++++++++++
+ 2 files changed, 28 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 80a5f6456aca..443a15de94b5 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -218,6 +218,7 @@ static int skl_suspend(struct device *dev)
- 	struct pci_dev *pci = to_pci_dev(dev);
- 	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
- 	struct skl *skl  = ebus_to_skl(ebus);
-+	struct hdac_bus *bus = ebus_to_hbus(ebus);
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index b89ae6f7c096..8039a0479053 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -25,6 +25,8 @@
+ #include <sound/soc.h>
+ #include "skl.h"
+ #include "skl-topology.h"
++#include "skl-sst-dsp.h"
++#include "skl-sst-ipc.h"
  
- 	/*
- 	 * Do not suspend if streams which are marked ignore suspend are
-@@ -225,6 +226,7 @@ static int skl_suspend(struct device *dev)
- 	 */
- 	if (skl->supend_active) {
- 		snd_hdac_ext_bus_link_power_down_all(ebus);
-+		enable_irq_wake(bus->irq);
- 		pci_save_state(pci);
- 		pci_disable_device(pci);
- 		return 0;
-@@ -238,6 +240,7 @@ static int skl_resume(struct device *dev)
- 	struct pci_dev *pci = to_pci_dev(dev);
- 	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
- 	struct skl *skl  = ebus_to_skl(ebus);
-+	struct hdac_bus *bus = ebus_to_hbus(ebus);
- 	int ret;
+ #define HDA_MONO 1
+ #define HDA_STEREO 2
+@@ -272,6 +274,7 @@ static void skl_pcm_close(struct snd_pcm_substream *substream,
+ 	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
+ 	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
+ 	struct skl_dma_params *dma_params = NULL;
++	struct skl *skl = ebus_to_skl(ebus);
  
- 	/*
-@@ -248,6 +251,7 @@ static int skl_resume(struct device *dev)
- 		pci_restore_state(pci);
- 		ret = pci_enable_device(pci);
- 		snd_hdac_ext_bus_link_power_up_all(ebus);
-+		disable_irq_wake(bus->irq);
- 	} else {
- 		ret = _skl_resume(ebus);
- 	}
+ 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
+ 
+@@ -285,6 +288,16 @@ static void skl_pcm_close(struct snd_pcm_substream *substream,
+ 	snd_soc_dai_set_dma_data(dai, substream, NULL);
+ 	skl_set_suspend_active(substream, dai, false);
+ 
++	/*
++	 * check if close is for "Reference Pin" and set back the
++	 * CGCTL.MISCBDCGE if disabled by driver
++	 */
++	if (!strncmp(dai->name, "Reference Pin", 13) &&
++			skl->skl_sst->miscbdcg_disabled) {
++		skl->skl_sst->enable_miscbdcge(dai->dev, true);
++		skl->skl_sst->miscbdcg_disabled = false;
++	}
++
+ 	kfree(dma_params);
+ }
+ 
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
+index 62e665a3b8f7..543460293b00 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.c
++++ b/sound/soc/intel/skylake/skl-sst-ipc.c
+@@ -16,8 +16,10 @@
+ 
+ #include "../common/sst-dsp.h"
+ #include "../common/sst-dsp-priv.h"
++#include "skl.h"
+ #include "skl-sst-dsp.h"
+ #include "skl-sst-ipc.h"
++#include "sound/hdaudio_ext.h"
+ 
+ 
+ #define IPC_IXC_STATUS_BITS		24
+@@ -322,6 +324,19 @@ static int skl_ipc_process_notification(struct sst_generic_ipc *ipc,
+ 			wake_up(&skl->boot_wait);
+ 			break;
+ 
++		case IPC_GLB_NOTIFY_PHRASE_DETECTED:
++			dev_dbg(ipc->dev, "***** Phrase Detected **********\n");
++
++			/*
++			 * Per HW recomendation, After phrase detection,
++			 * clear the CGCTL.MISCBDCGE.
++			 *
++			 * This will be set back on stream closure
++			 */
++			skl->enable_miscbdcge(ipc->dev, false);
++			skl->miscbdcg_disabled = true;
++			break;
++
+ 		default:
+ 			dev_err(ipc->dev, "ipc: Unhandled error msg=%x",
+ 						header.primary);
 -- 
 2.7.0.rc3
