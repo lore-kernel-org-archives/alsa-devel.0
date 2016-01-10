@@ -1,178 +1,238 @@
-From: Michael Trimarchi <michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>
-Subject: [PATCH V2] ASoC: pcm179x: Add support for pcm1795 and pcm1796
-Date: Sun, 10 Jan 2016 18:38:18 +0100
-Message-ID: <20160110173812.GA16304@panicking>
-References: <1452382685-18009-1-git-send-email-michael@amarulasolutions.com>
- <1452382685-18009-4-git-send-email-michael@amarulasolutions.com>
- <20160110120045.GW6588@sirena.org.uk>
-Mime-Version: 1.0
+From: Martin Sperl <kernel@martin.sperl.org>
+Subject: Re: [PATCH 2/5] clk: bcm2835: enable management of PCM clock
+Date: Sun, 10 Jan 2016 19:01:30 +0100
+Message-ID: <D415BD6A-6BE1-4B87-B0D4-D0AC6D39785A@martin.sperl.org>
+References: <1452331558-2520-1-git-send-email-kernel@martin.sperl.org> <1452331558-2520-3-git-send-email-kernel@martin.sperl.org> <4332640.jBKM55TPAo@wuerfel> <CAMuHMdWOt4aCzu8Ode0ZrQ-c80nqAhwD5dd17nhgVbLrRYT5og@mail.gmail.com> <4B891DE1-6340-4D3D-BEE3-F61D9A5D289B@martin.sperl.org> <20160110115858.GV6588@sirena.org.uk> <39E8C95F-C7DC-46C3-B29A-93A865485942@martin.sperl.org> <CAMuHMdXan4aM76aAx_wbnrib7wH5W7tkg60jgRkyQjGFmUEo=A@mail.gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
 Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20160110120045.GW6588-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-clk-owner@vger.kernel.org>
+In-Reply-To: <CAMuHMdXan4aM76aAx_wbnrib7wH5W7tkg60jgRkyQjGFmUEo=A@mail.gmail.com>
+Sender: linux-clk-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Russell King <linux@arm.linux.org.uk>, Michael Turquette <mturquette@baylibre.com>, Remi Pommarel <repk@triplefau.lt>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, linux-rpi-kernel@lists.infradead.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-clk <linux-clk@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Matthias Reichl <hias@horus.com>, lFlorian Meier <florian.meier@koalo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Michael Trimarchi <michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>
----
-Changes v1 -> v2:
-	- Use switch for support new variants
-	- sort the compatible list
 
- sound/soc/codecs/pcm179x.c | 56 ++++++++++++++++++++++++++++++++++++++++++----
- sound/soc/codecs/pcm179x.h | 14 +++++++-----
- 2 files changed, 61 insertions(+), 9 deletions(-)
+> On 10.01.2016, at 14:02, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> 
+> I wrote:
+> | Hence it can better be replaced (it seems to be unused in dts files, but you
+> | can keep the definition to be 100% sure) by an ARRAY_SIZE() in the C driver.
+> | This requires changing the driver to e.g. initialize clks[] in
+> |bcm2835_clk_probe() based on a table instead of explicit code.
+> 
+> If you fill in clks[] from a static table, you can take ARRAY_SIZE of
+> the static table.
 
-diff --git a/sound/soc/codecs/pcm179x.c b/sound/soc/codecs/pcm179x.c
-index a56c7b7..8784d52 100644
---- a/sound/soc/codecs/pcm179x.c
-+++ b/sound/soc/codecs/pcm179x.c
-@@ -74,8 +74,31 @@ struct pcm179x_private {
- 	struct regmap *regmap;
- 	unsigned int format;
- 	unsigned int rate;
-+#define PCM1795	1
-+	unsigned int codec_model;
+You mean something like the below?
+(note: copy/paste from console issues - spaces instead of tabs)
+
+diff --git a/drivers/clk/bcm/clk-bcm2835.c b/drivers/clk/bcm/clk-bcm2835.c
+index dee67b3..5ce5e7f 100644
+--- a/drivers/clk/bcm/clk-bcm2835.c
++++ b/drivers/clk/bcm/clk-bcm2835.c
+@@ -294,7 +294,7 @@ struct bcm2835_cprman {
+        const char *osc_name;
+
+        struct clk_onecell_data onecell;
+-       struct clk *clks[BCM2835_CLOCK_COUNT];
++       struct clk *clks[];
  };
- 
-+static int pcm179x_startup(struct snd_pcm_substream *substream,
-+			    struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct pcm179x_private *priv = snd_soc_codec_get_drvdata(codec);
-+	u64 formats;
-+
-+	switch (priv->codec_model) {
-+	case PCM1795:
-+		formats = PCM1795_FORMATS;
-+		break;
-+	default:
-+		formats = PCM1792A_FORMATS;
-+	}
-+
-+	snd_pcm_hw_constraint_mask64(substream->runtime,
-+				     SNDRV_PCM_HW_PARAM_FORMAT, formats);
-+
-+	return 0;
-+}
-+
- static int pcm179x_set_dai_fmt(struct snd_soc_dai *codec_dai,
-                              unsigned int format)
- {
-@@ -114,8 +137,10 @@ static int pcm179x_hw_params(struct snd_pcm_substream *substream,
- 	switch (priv->format & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_RIGHT_J:
- 		switch (params_width(params)) {
--		case 24:
- 		case 32:
-+			val = 1;
-+			break;
-+		case 24:
- 			val = 2;
- 			break;
- 		case 16:
-@@ -127,8 +152,10 @@ static int pcm179x_hw_params(struct snd_pcm_substream *substream,
- 		break;
- 	case SND_SOC_DAIFMT_I2S:
- 		switch (params_width(params)) {
--		case 24:
- 		case 32:
-+			val = 4;
-+			break;
-+		case 24:
- 			val = 5;
- 			break;
- 		case 16:
-@@ -154,6 +181,7 @@ static int pcm179x_hw_params(struct snd_pcm_substream *substream,
- }
- 
- static const struct snd_soc_dai_ops pcm179x_dai_ops = {
-+	.startup	= pcm179x_startup,
- 	.set_fmt	= pcm179x_set_dai_fmt,
- 	.hw_params	= pcm179x_hw_params,
- 	.digital_mute	= pcm179x_digital_mute,
-@@ -189,13 +217,19 @@ static struct snd_soc_dai_driver pcm179x_dai = {
- 		.stream_name = "Playback",
- 		.channels_min = 2,
- 		.channels_max = 2,
--		.rates = PCM1792A_RATES,
--		.formats = PCM1792A_FORMATS, },
-+		.rates = PCM179X_RATES,
-+		.formats = PCM179X_FORMATS, },
- 	.ops = &pcm179x_dai_ops,
+
+ static inline void cprman_write(struct bcm2835_cprman *cprman, u32 reg, u32 val
+@@ -496,6 +496,14 @@ static const struct bcm2835_pll_data bcm2835_pllh_data = {
+        .max_fb_rate = BCM2835_MAX_FB_RATE,
  };
- 
-+static const unsigned int codec_model = PCM1795;
+
++static const struct bcm2835_pll_data *bcm2835_plls[] = {
++       [BCM2835_PLLA] = &bcm2835_plla_data,
++       [BCM2835_PLLB] = &bcm2835_pllb_data,
++       [BCM2835_PLLC] = &bcm2835_pllc_data,
++       [BCM2835_PLLD] = &bcm2835_plld_data,
++       [BCM2835_PLLH] = &bcm2835_pllh_data,
++};
 +
- static const struct of_device_id pcm179x_of_match[] = {
- 	{ .compatible = "ti,pcm1792a", },
-+	{ .compatible = "ti,pcm1795",
-+	  .data = &codec_model,
-+	},
-+	{ .compatible = "ti,pcm1796", },
- 	{ }
+ struct bcm2835_pll_divider_data {
+        const char *name;
+        const struct bcm2835_pll_data *source_pll;
+@@ -625,6 +633,20 @@ static const struct bcm2835_pll_divider_data bcm2835_pllh_p
+        .fixed_divider = 10,
  };
- MODULE_DEVICE_TABLE(of, pcm179x_of_match);
-@@ -222,8 +256,19 @@ static struct snd_soc_codec_driver soc_codec_dev_pcm179x = {
- static int pcm179x_spi_probe(struct spi_device *spi)
- {
- 	struct pcm179x_private *pcm179x;
-+	struct device *dev = &spi->dev;
-+	struct device_node *np = spi->dev.of_node;
-+	const unsigned int *codec_model = NULL;
- 	int ret;
- 
-+	if (np) {
-+		const struct of_device_id *of_id;
+
++static const struct bcm2835_pll_divider_data *bcm2835_pll_divs[] = {
++       [BCM2835_PLLA_CORE]     = &bcm2835_plla_core_data,
++       [BCM2835_PLLA_PER]      = &bcm2835_plla_per_data,
++       [BCM2835_PLLC_CORE0]    = &bcm2835_pllc_core0_data,
++       [BCM2835_PLLC_CORE1]    = &bcm2835_pllc_core1_data,
++       [BCM2835_PLLC_CORE2]    = &bcm2835_pllc_core2_data,
++       [BCM2835_PLLC_PER]      = &bcm2835_pllc_per_data,
++       [BCM2835_PLLD_CORE]     = &bcm2835_plld_core_data,
++       [BCM2835_PLLD_PER]      = &bcm2835_plld_per_data,
++       [BCM2835_PLLH_RCAL]     = &bcm2835_pllh_rcal_data,
++       [BCM2835_PLLH_AUX]      = &bcm2835_pllh_aux_data,
++       [BCM2835_PLLH_PIX]      = &bcm2835_pllh_pix_data,
++};
 +
-+		of_id = of_match_device(pcm179x_of_match, dev);
-+		if (of_id)
-+			codec_model = of_id->data;
-+	}
+ struct bcm2835_clock_data {
+        const char *name;
+
+@@ -837,6 +859,24 @@ static const struct bcm2835_clock_data bcm2835_clock_pcm_da
+        .mash = 1,
+ };
+
++static const struct bcm2835_clock_data *bcm2835_clks[] = {
++       [BCM2835_CLOCK_TIMER]   = &bcm2835_clock_timer_data,
++       [BCM2835_CLOCK_OTP]     = &bcm2835_clock_otp_data,
++       [BCM2835_CLOCK_TSENS]   = &bcm2835_clock_tsens_data,
++       [BCM2835_CLOCK_VPU]     = &bcm2835_clock_vpu_data,
++       [BCM2835_CLOCK_V3D]     = &bcm2835_clock_v3d_data,
++       [BCM2835_CLOCK_ISP]     = &bcm2835_clock_isp_data,
++       [BCM2835_CLOCK_H264]    = &bcm2835_clock_h264_data,
++       [BCM2835_CLOCK_V3D]     = &bcm2835_clock_v3d_data,
++       [BCM2835_CLOCK_SDRAM]   = &bcm2835_clock_sdram_data,
++       [BCM2835_CLOCK_UART]    = &bcm2835_clock_uart_data,
++       [BCM2835_CLOCK_VEC]     = &bcm2835_clock_vec_data,
++       [BCM2835_CLOCK_HSM]     = &bcm2835_clock_hsm_data,
++       [BCM2835_CLOCK_EMMC]    = &bcm2835_clock_emmc_data,
++       [BCM2835_CLOCK_PWM]     = &bcm2835_clock_pwm_data,
++       [BCM2835_CLOCK_PCM]     = &bcm2835_clock_pcm_data,
++};
 +
- 	pcm179x = devm_kzalloc(&spi->dev, sizeof(struct pcm179x_private),
- 				GFP_KERNEL);
- 	if (!pcm179x)
-@@ -238,6 +283,9 @@ static int pcm179x_spi_probe(struct spi_device *spi)
- 		return ret;
- 	}
- 
-+	if (codec_model)
-+		pcm179x->codec_model =  *codec_model;
+ struct bcm2835_pll {
+        struct clk_hw hw;
+        struct bcm2835_cprman *cprman;
+@@ -1560,8 +1600,13 @@ static int bcm2835_clk_probe(struct platform_device *pdev)
+        struct clk **clks;
+        struct bcm2835_cprman *cprman;
+        struct resource *res;
++       const int clks_cnt = max(ARRAY_SIZE(bcm2835_plls),
++                                max(ARRAY_SIZE(bcm2835_pll_divs),
++                                    ARRAY_SIZE(bcm2835_clks))) + 1;
++       size_t alloc = sizeof(*cprman) + clks_cnt * sizeof(*clks);
++       size_t i;
+
+-       cprman = devm_kzalloc(dev, sizeof(*cprman), GFP_KERNEL);
++       cprman = devm_kzalloc(dev, alloc , GFP_KERNEL);
+        if (!cprman)
+                return -ENOMEM;
+
+@@ -1578,67 +1623,43 @@ static int bcm2835_clk_probe(struct platform_device *pdev)
+
+        platform_set_drvdata(pdev, cprman);
+
+-       cprman->onecell.clk_num = BCM2835_CLOCK_COUNT;
++       cprman->onecell.clk_num = clks_cnt;
+        cprman->onecell.clks = cprman->clks;
+        clks = cprman->clks;
+
+-       clks[BCM2835_PLLA] = bcm2835_register_pll(cprman, &bcm2835_plla_data);
+-       clks[BCM2835_PLLB] = bcm2835_register_pll(cprman, &bcm2835_pllb_data);
+-       clks[BCM2835_PLLC] = bcm2835_register_pll(cprman, &bcm2835_pllc_data);
+-       clks[BCM2835_PLLD] = bcm2835_register_pll(cprman, &bcm2835_plld_data);
+-       clks[BCM2835_PLLH] = bcm2835_register_pll(cprman, &bcm2835_pllh_data);
+-
+-       clks[BCM2835_PLLA_CORE] =
+-               bcm2835_register_pll_divider(cprman, &bcm2835_plla_core_data);
+-       clks[BCM2835_PLLA_PER] =
+-               bcm2835_register_pll_divider(cprman, &bcm2835_plla_per_data);
+-       clks[BCM2835_PLLC_CORE0] =
+-               bcm2835_register_pll_divider(cprman, &bcm2835_pllc_core0_data);
+-       clks[BCM2835_PLLC_CORE1] =
+-               bcm2835_register_pll_divider(cprman, &bcm2835_pllc_core1_data);
+-       clks[BCM2835_PLLC_CORE2] =
+-               bcm2835_register_pll_divider(cprman, &bcm2835_pllc_core2_data);
+-       clks[BCM2835_PLLC_PER] =
+-               bcm2835_register_pll_divider(cprman, &bcm2835_pllc_per_data);
+-       clks[BCM2835_PLLD_CORE] =
+-               bcm2835_register_pll_divider(cprman, &bcm2835_plld_core_data);
+-       clks[BCM2835_PLLD_PER] =
+-               bcm2835_register_pll_divider(cprman, &bcm2835_plld_per_data);
+-       clks[BCM2835_PLLH_RCAL] =
+-               bcm2835_register_pll_divider(cprman, &bcm2835_pllh_rcal_data);
+-       clks[BCM2835_PLLH_AUX] =
+-               bcm2835_register_pll_divider(cprman, &bcm2835_pllh_aux_data);
+-       clks[BCM2835_PLLH_PIX] =
+-               bcm2835_register_pll_divider(cprman, &bcm2835_pllh_pix_data);
+-
+-       clks[BCM2835_CLOCK_TIMER] =
+-               bcm2835_register_clock(cprman, &bcm2835_clock_timer_data);
+-       clks[BCM2835_CLOCK_OTP] =
+-               bcm2835_register_clock(cprman, &bcm2835_clock_otp_data);
+-       clks[BCM2835_CLOCK_TSENS] =
+-               bcm2835_register_clock(cprman, &bcm2835_clock_tsens_data);
+-       clks[BCM2835_CLOCK_VPU] =
+-               bcm2835_register_clock(cprman, &bcm2835_clock_vpu_data);
+-       clks[BCM2835_CLOCK_V3D] =
+-               bcm2835_register_clock(cprman, &bcm2835_clock_v3d_data);
+-       clks[BCM2835_CLOCK_ISP] =
+-               bcm2835_register_clock(cprman, &bcm2835_clock_isp_data);
+-       clks[BCM2835_CLOCK_H264] =
+-               bcm2835_register_clock(cprman, &bcm2835_clock_h264_data);
+-       clks[BCM2835_CLOCK_V3D] =
+-               bcm2835_register_clock(cprman, &bcm2835_clock_v3d_data);
+-       clks[BCM2835_CLOCK_SDRAM] =
+-               bcm2835_register_clock(cprman, &bcm2835_clock_sdram_data);
+-       clks[BCM2835_CLOCK_UART] =
+-               bcm2835_register_clock(cprman, &bcm2835_clock_uart_data);
+-       clks[BCM2835_CLOCK_VEC] =
+-               bcm2835_register_clock(cprman, &bcm2835_clock_vec_data);
+-       clks[BCM2835_CLOCK_HSM] =
+-               bcm2835_register_clock(cprman, &bcm2835_clock_hsm_data);
+-       clks[BCM2835_CLOCK_EMMC] =
+-               bcm2835_register_clock(cprman, &bcm2835_clock_emmc_data);
+-       clks[BCM2835_CLOCK_PCM] =
+-               bcm2835_register_clock(cprman, &bcm2835_clock_pcm_data);
++       /*  register pll */
++       for(i = 0; i< ARRAY_SIZE(bcm2835_plls); i++) {
++               if (!bcm2835_plls[i])
++                       continue;
++               clks[i] = bcm2835_register_pll( cprman, bcm2835_plls[i]);
++       }
 +
- 	return snd_soc_register_codec(&spi->dev,
- 			&soc_codec_dev_pcm179x, &pcm179x_dai, 1);
- }
-diff --git a/sound/soc/codecs/pcm179x.h b/sound/soc/codecs/pcm179x.h
-index c6fdc06..d4b384d 100644
---- a/sound/soc/codecs/pcm179x.h
-+++ b/sound/soc/codecs/pcm179x.h
-@@ -17,11 +17,15 @@
- #ifndef __PCM179X_H__
- #define __PCM179X_H__
- 
--#define PCM1792A_RATES (SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_8000_48000 | \
--			SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 | \
--			SNDRV_PCM_RATE_192000)
-+#define PCM179X_RATES (SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_8000_48000 | \
-+		       SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 | \
-+		       SNDRV_PCM_RATE_192000)
- 
--#define PCM1792A_FORMATS (SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S24_LE | \
--			  SNDRV_PCM_FMTBIT_S16_LE)
-+#define PCM179X_FORMATS (SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S24_LE | \
-+			 SNDRV_PCM_FMTBIT_S16_LE)
++       /* register pll divider */
++       for(i = 0; i< ARRAY_SIZE(bcm2835_pll_divs); i++) {
++               if (!bcm2835_pll_divs[i])
++                       continue;
++               if (clks[i]) {
++                       dev_err(dev,
++                               "Could not register pll_div_id %i - is already defined as: %pC\n",
++                               i, clks[i]);
++                       continue;
++               }
++               clks[i] = bcm2835_register_pll_divider(cprman,
++                                                      bcm2835_pll_divs[i]);
++       }
 +
-+#define PCM1792A_FORMATS (SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S16_LE)
-+
-+#define PCM1795_FORMATS (SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S24_LE)
- 
- #endif
--- 
-2.7.0
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
++       /* register clocks */
++       for(i = 0; i< ARRAY_SIZE(bcm2835_clks); i++) {
++               if (!bcm2835_clks[i])
++                       continue;
++               if (clks[i]) {
++                       dev_err(dev,
++                               "Could not register clock_id %i - is already defined as: %pC\n",
++                               i, clks[i]);
++                       continue;
++               }
++               clks[i] = bcm2835_register_clock(cprman, bcm2835_clks[i]);
++       }
+
+        /*
+         * CM_PERIICTL (and CM_PERIACTL, CM_SYSCTL and CM_VPUCTL if
+@@ -1652,8 +1673,6 @@ static int bcm2835_clk_probe(struct platform_device *pdev)
+                                  cprman->regs + CM_PERIICTL, CM_GATE_BIT,
+                                  0, &cprman->regs_lock);
+
+-       clks[BCM2835_CLOCK_PWM] =
+-               bcm2835_register_clock(cprman, &bcm2835_clock_pwm_data);
+
+        return of_clk_add_provider(dev->of_node, of_clk_src_onecell_get,
+                                   &cprman->onecell);
+
+
+If so, then I will send it as a patch plus the PCM patch after I have
+finished testing the patch.
+
+This patch-set would also include the complete list of clocks still 
+missing from dt-bindings.h as well as the patch that adds all the
+clock registers, which I had sent earlier.
