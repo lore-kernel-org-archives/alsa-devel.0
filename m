@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/5] ALSA: pcm: Add
-	snd_pcm_rate_range_to_bits()
-Date: Sun, 10 Jan 2016 12:03:53 +0000
-Message-ID: <20160110120353.GX6588@sirena.org.uk>
-References: <cover.1451550513.git.mengdong.lin@linux.intel.com>
- <712e57698a4144889318549d3b20ba2eaaa9c36b.1451550513.git.mengdong.lin@linux.intel.com>
+Subject: Applied "ASoC: Support registering a DAI dynamically"
+	to the asoc tree
+Date: Sun, 10 Jan 2016 12:07:39 +0000
+Message-ID: <E1aIEmZ-0007NU-T8@debutante>
+References: <ce77885082109fef7b6a7694d9c02156381b9b81.1451550513.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0167235953721995019=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F61F2602F1
- for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2016 13:06:07 +0100 (CET)
-In-Reply-To: <712e57698a4144889318549d3b20ba2eaaa9c36b.1451550513.git.mengdong.lin@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9DE142602F1
+ for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2016 13:07:45 +0100 (CET)
+In-Reply-To: <ce77885082109fef7b6a7694d9c02156381b9b81.1451550513.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,54 +22,138 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@linux.intel.com
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
+To: Mengdong Lin <mengdong.lin@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============0167235953721995019==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="O82bwzp7nMTZS6dV"
-Content-Disposition: inline
+   ASoC: Support registering a DAI dynamically
 
+has been applied to the asoc tree at
 
---O82bwzp7nMTZS6dV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Dec 31, 2015 at 04:40:50PM +0800, mengdong.lin@linux.intel.com wrot=
-e:
-> From: Mengdong Lin <mengdong.lin@linux.intel.com>
->=20
-> This helper function can convert a given sample rate range to
-> SNDRV_PCM_RATE_xxx bits.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Please CC any core ALSA changes to Takashi and Jaroslav, I'll generally
-want to see some review from them before I apply anything.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---O82bwzp7nMTZS6dV
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEcBAEBCAAGBQJWkkioAAoJECTWi3JdVIfQw6YIAIE7o0UN12Ccv8zFleKE39M6
-VcgXb0iV+kjAG3NDSKXn01AfsiO1UoNHl8zeBTS+u6FJq+fARAumvCydjIcXT9rr
-aS8TfL26D5sOmFBNizOZp1nZHHOT7gH3h1WPtSqmEJ1AVo+gzFBUkGZatr5Pd2GD
-M9VxNk7tWIMFXDRDqosQCYbwxEjicSvJM7BILT9+d1HEqV3lJd9dQlZ1n31WWytf
-iRfx7z+Nnd4zUtPDHGJAtqEymBfoOENDksvcWM+p1r8+oMkmvVMQ9M/okndh7rIh
-RnRcUxutbpaIjU2QZFCYOoWVKy1yn8ar9Zv3g0JPh7sTt1AzgVTmcqukak/83FA=
-=V9Cy
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---O82bwzp7nMTZS6dV--
+>From 68003e6cf2bbd239a322bd8a28dacfaf8174fdee Mon Sep 17 00:00:00 2001
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Date: Thu, 31 Dec 2015 16:40:43 +0800
+Subject: [PATCH] ASoC: Support registering a DAI dynamically
 
---===============0167235953721995019==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Define API snd_soc_register_dai() to add a DAI dynamically and
+create the DAI widgets. Topology can use this API to register DAIs
+when probing a component with topology info. These DAIs's playback
+& capture widgets will be freed when the sound card is unregistered
+and the DAIs will be freed when cleaning up the component.
 
+And a dobj is embedded into the struct snd_soc_dai_driver. Topology
+can use the dobj to find the DAI drivers created by it and free them
+when the topology component is removed.
 
---===============0167235953721995019==--
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ include/sound/soc-dai.h |  1 +
+ include/sound/soc.h     |  3 +++
+ sound/soc/soc-core.c    | 42 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 46 insertions(+)
+
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 212eaaf172ed..964b7de1a1cc 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -222,6 +222,7 @@ struct snd_soc_dai_driver {
+ 	const char *name;
+ 	unsigned int id;
+ 	unsigned int base;
++	struct snd_soc_dobj dobj;
+ 
+ 	/* DAI driver callbacks */
+ 	int (*probe)(struct snd_soc_dai *dai);
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index af347bcdc2f6..9d1383e8d039 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1663,6 +1663,9 @@ int snd_soc_add_dai_link(struct snd_soc_card *card,
+ void snd_soc_remove_dai_link(struct snd_soc_card *card,
+ 			     struct snd_soc_dai_link *dai_link);
+ 
++int snd_soc_register_dai(struct snd_soc_component *component,
++	struct snd_soc_dai_driver *dai_drv);
++
+ #include <sound/soc-dai.h>
+ 
+ #ifdef CONFIG_DEBUG_FS
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 1bd0b37b907f..c572673a5a24 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2834,6 +2834,48 @@ err:
+ 	return ret;
+ }
+ 
++/**
++ * snd_soc_register_dai - Register a DAI dynamically & create its widgets
++ *
++ * @component: The component the DAIs are registered for
++ * @dai_drv: DAI driver to use for the DAI
++ *
++ * Topology can use this API to register DAIs when probing a component.
++ * These DAIs's widgets will be freed in the card cleanup and the DAIs
++ * will be freed in the component cleanup.
++ */
++int snd_soc_register_dai(struct snd_soc_component *component,
++	struct snd_soc_dai_driver *dai_drv)
++{
++	struct snd_soc_dapm_context *dapm =
++		snd_soc_component_get_dapm(component);
++	struct snd_soc_dai *dai;
++	int ret;
++
++	if (dai_drv->dobj.type != SND_SOC_DOBJ_PCM) {
++		dev_err(component->dev, "Invalid dai type %d\n",
++			dai_drv->dobj.type);
++		return -EINVAL;
++	}
++
++	lockdep_assert_held(&client_mutex);
++	dai = soc_add_dai(component, dai_drv, false);
++	if (!dai)
++		return -ENOMEM;
++
++	/* Create the DAI widgets here. After adding DAIs, topology may
++	 * also add routes that need these widgets as source or sink.
++	 */
++	ret = snd_soc_dapm_new_dai_widgets(dapm, dai);
++	if (ret != 0) {
++		dev_err(component->dev,
++			"Failed to create DAI widgets %d\n", ret);
++	}
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(snd_soc_register_dai);
++
+ static void snd_soc_component_seq_notifier(struct snd_soc_dapm_context *dapm,
+ 	enum snd_soc_dapm_type type, int subseq)
+ {
+-- 
+2.7.0.rc3
