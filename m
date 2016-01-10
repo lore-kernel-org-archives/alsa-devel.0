@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: AMD: Manage ACP 2.x SRAM banks power"
-	to the asoc tree
-Date: Sun, 10 Jan 2016 12:50:46 +0000
-Message-ID: <E1aIFSI-0001IV-K0@debutante>
-References: <1452295331-28476-10-git-send-email-alexander.deucher@amd.com>
+Subject: Applied "ASoC: bcm2835: cleanup includes by ordering
+	them alphabetically" to the asoc tree
+Date: Sun, 10 Jan 2016 12:50:45 +0000
+Message-ID: <E1aIFSH-0001I2-MO@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0707A260614
- for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2016 13:50:57 +0100 (CET)
-In-Reply-To: <1452295331-28476-10-git-send-email-alexander.deucher@amd.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 79C742605FF
+ for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2016 13:50:56 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Mark Brown <broonie@kernel.org>
+To: Martin Sperl <kernel@martin.sperl.org>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: AMD: Manage ACP 2.x SRAM banks power
+   ASoC: bcm2835: cleanup includes by ordering them alphabetically
 
 has been applied to the asoc tree at
 
@@ -53,192 +52,50 @@ to this mail.
 Thanks,
 Mark
 
->From c36d9b3f6de7c6aefed5fdf6ad752773bdafa60c Mon Sep 17 00:00:00 2001
-From: Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>
-Date: Fri, 8 Jan 2016 18:22:11 -0500
-Subject: [PATCH] ASoC: AMD: Manage ACP 2.x SRAM banks power
+>From 7905f08247131ac5d5c0e2f057e0cf19da40e5da Mon Sep 17 00:00:00 2001
+From: Martin Sperl <kernel@martin.sperl.org>
+Date: Sat, 9 Jan 2016 09:25:53 +0000
+Subject: [PATCH] ASoC: bcm2835: cleanup includes by ordering them
+ alphabetically
 
-ACP SRAM banks gets turned on when ACP is powered on.
-Not all banks are used for playback/capture. So, power on
-required banks during audio device open and power off during
-audio device close.
+Cleanup of includes so that they are ordered alphabetically.
 
-Signed-off-by: Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Martin Sperl <kernel@martin.sperl.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-pcm-dma.c | 94 +++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 87 insertions(+), 7 deletions(-)
+ sound/soc/bcm/bcm2835-i2s.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index c0819b5f8ba5..cc8b841b69b6 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -376,9 +376,57 @@ static int acp_dma_stop(void __iomem *acp_mmio, u8 ch_num)
- 	return 0;
- }
+diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+index 8c435beb263d..3303d5f58082 100644
+--- a/sound/soc/bcm/bcm2835-i2s.c
++++ b/sound/soc/bcm/bcm2835-i2s.c
+@@ -31,20 +31,20 @@
+  * General Public License for more details.
+  */
  
-+static void acp_set_sram_bank_state(void __iomem *acp_mmio, u16 bank,
-+					bool power_on)
-+{
-+	u32 val, req_reg, sts_reg, sts_reg_mask;
-+	u32 loops = 1000;
-+
-+	if (bank < 32) {
-+		req_reg = mmACP_MEM_SHUT_DOWN_REQ_LO;
-+		sts_reg = mmACP_MEM_SHUT_DOWN_STS_LO;
-+		sts_reg_mask = 0xFFFFFFFF;
-+
-+	} else {
-+		bank -= 32;
-+		req_reg = mmACP_MEM_SHUT_DOWN_REQ_HI;
-+		sts_reg = mmACP_MEM_SHUT_DOWN_STS_HI;
-+		sts_reg_mask = 0x0000FFFF;
-+	}
-+
-+	val = acp_reg_read(acp_mmio, req_reg);
-+	if (val & (1 << bank)) {
-+		/* bank is in off state */
-+		if (power_on == true)
-+			/* request to on */
-+			val &= ~(1 << bank);
-+		else
-+			/* request to off */
-+			return;
-+	} else {
-+		/* bank is in on state */
-+		if (power_on == false)
-+			/* request to off */
-+			val |= 1 << bank;
-+		else
-+			/* request to on */
-+			return;
-+	}
-+	acp_reg_write(val, acp_mmio, req_reg);
-+
-+	while (acp_reg_read(acp_mmio, sts_reg) != sts_reg_mask) {
-+		if (!loops--) {
-+			pr_err("ACP SRAM bank %d state change failed\n", bank);
-+			break;
-+		}
-+		cpu_relax();
-+	}
-+}
-+
- /* Initialize and bring ACP hardware to default state. */
- static int acp_init(void __iomem *acp_mmio)
- {
-+	u16 bank;
- 	u32 val, count, sram_pte_offset;
++#include <linux/clk.h>
++#include <linux/delay.h>
++#include <linux/device.h>
+ #include <linux/init.h>
++#include <linux/io.h>
+ #include <linux/module.h>
+-#include <linux/device.h>
+ #include <linux/slab.h>
+-#include <linux/delay.h>
+-#include <linux/io.h>
+-#include <linux/clk.h>
  
- 	/* Assert Soft reset of ACP */
-@@ -447,6 +495,13 @@ static int acp_init(void __iomem *acp_mmio)
- 	acp_reg_write(ACP_EXTERNAL_INTR_CNTL__DMAIOCMask_MASK,
- 		acp_mmio, mmACP_EXTERNAL_INTR_CNTL);
+ #include <sound/core.h>
++#include <sound/dmaengine_pcm.h>
++#include <sound/initval.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+-#include <sound/initval.h>
+ #include <sound/soc.h>
+-#include <sound/dmaengine_pcm.h>
  
-+       /* When ACP_TILE_P1 is turned on, all SRAM banks get turned on.
-+	* Now, turn off all of them. This can't be done in 'poweron' of
-+	* ACP pm domain, as this requires ACP to be initialized.
-+	*/
-+	for (bank = 1; bank < 48; bank++)
-+		acp_set_sram_bank_state(acp_mmio, bank, false);
-+
- 	return 0;
- }
- 
-@@ -559,6 +614,7 @@ static irqreturn_t dma_irq_handler(int irq, void *arg)
- 
- static int acp_dma_open(struct snd_pcm_substream *substream)
- {
-+	u16 bank;
- 	int ret = 0;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_pcm_runtime *prtd = substream->private_data;
-@@ -592,10 +648,17 @@ static int acp_dma_open(struct snd_pcm_substream *substream)
- 	if (!intr_data->play_stream && !intr_data->capture_stream)
- 		acp_reg_write(1, adata->acp_mmio, mmACP_EXTERNAL_INTR_ENB);
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		intr_data->play_stream = substream;
--	else
-+		for (bank = 1; bank <= 4; bank++)
-+			acp_set_sram_bank_state(intr_data->acp_mmio, bank,
-+						true);
-+	} else {
- 		intr_data->capture_stream = substream;
-+		for (bank = 5; bank <= 8; bank++)
-+			acp_set_sram_bank_state(intr_data->acp_mmio, bank,
-+						true);
-+	}
- 
- 	return 0;
- }
-@@ -627,6 +690,7 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
- 	pg = virt_to_page(substream->dma_buffer.area);
- 
- 	if (pg != NULL) {
-+		acp_set_sram_bank_state(rtd->acp_mmio, 0, true);
- 		/* Save for runtime private data */
- 		rtd->pg = pg;
- 		rtd->order = get_order(size);
-@@ -802,6 +866,7 @@ static int acp_dma_new(struct snd_soc_pcm_runtime *rtd)
- 
- static int acp_dma_close(struct snd_pcm_substream *substream)
- {
-+	u16 bank;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct audio_substream_data *rtd = runtime->private_data;
- 	struct snd_soc_pcm_runtime *prtd = substream->private_data;
-@@ -809,10 +874,17 @@ static int acp_dma_close(struct snd_pcm_substream *substream)
- 
- 	kfree(rtd);
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		adata->play_stream = NULL;
--	else
-+		for (bank = 1; bank <= 4; bank++)
-+			acp_set_sram_bank_state(adata->acp_mmio, bank,
-+						false);
-+	} else {
- 		adata->capture_stream = NULL;
-+		for (bank = 5; bank <= 8; bank++)
-+			acp_set_sram_bank_state(adata->acp_mmio, bank,
-+						false);
-+	}
- 
- 	/* Disable ACP irq, when the current stream is being closed and
- 	 * another stream is also not active.
-@@ -906,17 +978,25 @@ static int acp_audio_remove(struct platform_device *pdev)
- 
- static int acp_pcm_resume(struct device *dev)
- {
-+	u16 bank;
- 	struct audio_drv_data *adata = dev_get_drvdata(dev);
- 
- 	acp_init(adata->acp_mmio);
- 
--	if (adata->play_stream && adata->play_stream->runtime)
-+	if (adata->play_stream && adata->play_stream->runtime) {
-+		for (bank = 1; bank <= 4; bank++)
-+			acp_set_sram_bank_state(adata->acp_mmio, bank,
-+						true);
- 		config_acp_dma(adata->acp_mmio,
- 				adata->play_stream->runtime->private_data);
--	if (adata->capture_stream && adata->capture_stream->runtime)
-+	}
-+	if (adata->capture_stream && adata->capture_stream->runtime) {
-+		for (bank = 5; bank <= 8; bank++)
-+			acp_set_sram_bank_state(adata->acp_mmio, bank,
-+						true);
- 		config_acp_dma(adata->acp_mmio,
- 				adata->capture_stream->runtime->private_data);
--
-+	}
- 	acp_reg_write(1, adata->acp_mmio, mmACP_EXTERNAL_INTR_ENB);
- 	return 0;
- }
+ /* Clock registers */
+ #define BCM2835_CLK_PCMCTL_REG  0x00
 -- 
 2.7.0.rc3
