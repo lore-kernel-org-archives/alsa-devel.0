@@ -1,55 +1,60 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/5] clk: bcm2835: enable management of PCM clock
-Date: Sun, 10 Jan 2016 11:58:58 +0000
-Message-ID: <20160110115858.GV6588@sirena.org.uk>
-References: <1452331558-2520-1-git-send-email-kernel@martin.sperl.org>
- <1452331558-2520-3-git-send-email-kernel@martin.sperl.org>
- <4332640.jBKM55TPAo@wuerfel>
- <CAMuHMdWOt4aCzu8Ode0ZrQ-c80nqAhwD5dd17nhgVbLrRYT5og@mail.gmail.com>
- <4B891DE1-6340-4D3D-BEE3-F61D9A5D289B@martin.sperl.org>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [RFC PATCH 3/3] ASoC: pcm179x: Add support for pcm1795 and
+ pcm1796
+Date: Sun, 10 Jan 2016 12:00:45 +0000
+Message-ID: <20160110120045.GW6588@sirena.org.uk>
+References: <1452382685-18009-1-git-send-email-michael@amarulasolutions.com>
+ <1452382685-18009-4-git-send-email-michael@amarulasolutions.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="iFtobK8oO579scb0"
-Return-path: <linux-clk-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="f3bMXCeKxSopGW1v"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <4B891DE1-6340-4D3D-BEE3-F61D9A5D289B@martin.sperl.org>
-Sender: linux-clk-owner@vger.kernel.org
-To: Martin Sperl <kernel@martin.sperl.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Russell King <linux@arm.linux.org.uk>, Michael Turquette <mturquette@baylibre.com>, Remi Pommarel <repk@triplefau.lt>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, linux-rpi-kernel@lists.infradead.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-clk <linux-clk@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Matthias Reichl <hias@horus.com>, lFlorian Meier <florian.meier@koalo.de>
+In-Reply-To: <1452382685-18009-4-git-send-email-michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Michael Trimarchi <michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---iFtobK8oO579scb0
+--f3bMXCeKxSopGW1v
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Jan 10, 2016 at 11:55:48AM +0100, Martin Sperl wrote:
+On Sun, Jan 10, 2016 at 12:38:05AM +0100, Michael Trimarchi wrote:
 
-> So if someone with a better idea how to keep those dt-binding includes
-> synchronized with the definitions used by the code step forward and
-> propose a better solution how to get that implemented?
+> +	if (priv->codec_model == PCM1795)
+> +		formats = PCM1795_FORMATS;
 
-> I guess there will be a few more occurrences of clocks that are
-> currently not defined, which will need to get introduced in the future
-> PWM and PCM were just the last in this series.
+This should be a switch statement to handle any future variations.
 
-Presumably just making the code not rely on having a define for the
-number of clocks would deal with the problem (eg, using ARRAY_SIZE
-internally).
+>  static const struct of_device_id pcm179x_of_match[] = {
+>  	{ .compatible = "ti,pcm1792a", },
+> +	{ .compatible = "ti,pcm1796", },
+> +	{ .compatible = "ti,pcm1795",
+> +	  .data = &codec_model,
+> +	},
 
---iFtobK8oO579scb0
+Please keep tables sorted, it avoid conflicts and merge issues when
+adding new entries.
+
+--f3bMXCeKxSopGW1v
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWkkeCAAoJECTWi3JdVIfQWOAH/2E/d7rl4agqhkmZevCjxAkS
-TaESt6F6YFn308HEuTvcBlqOP5YEvoCZ1rJ8wlkXC1LUdISEknBXaqY2XIHioe2P
-mF5Qj/p4REkgsaA404SyEE3nLsInnnANUuJfO3Wx2fsSCD3cDKxotS0nr2yGHlDx
-3VaQpZNN92tSnSsZzJtGFsRINtkQeJXbSTswaEYwQggJlqF5VaK1o0MjqQWHrl2Y
-fEvyWb57TFduXmtJLTkxgbt3H6bA52OyK5ffN0GtxfvJAHc/cGZmcgv2kq9krYsm
-Iy610rqi+NkDJQg/TeGM+VG8A+SWF25EbqoauEY95z7GtVEgtsg5+Zww56SBwT8=
-=Jt0m
+iQEcBAEBCAAGBQJWkkfsAAoJECTWi3JdVIfQp7oH/1TnOIht9/d4Uv+FJrz2zAsc
+ZuY4YyT6Xu9DCxKsOkNLufQIMcfFqRtyISrSjGk0tcKhqGoRiV+lDSpwyh7bJYJ5
+iUrF38U7b9FQItVvUeIExqyLEOTrXsHhMbZjjjdBfhtIi5STfXmYhS2huiEEu5Y6
+xT7tKzMYiI4Ab5IXxDqiBFYWYdAnzQLDAaZkomh3sbm+1phmyCj2lCqvaF61BCoM
+x6CBxXuLFC2cks2rsNPcIaNZWVICy29oMJCiGR3+NI9wDf1E3Jz+3wb5JoHUEGow
+G9YFhkwmJJoec5RX4zKnAszehNXk3ICqZ/tCx8Zfn/63VntzCfTACsSx68H+DoA=
+=j0V3
 -----END PGP SIGNATURE-----
 
---iFtobK8oO579scb0--
+--f3bMXCeKxSopGW1v--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
