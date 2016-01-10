@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Use CGCTL.MISCBDCGE for
-	Phrase detection notification" to the asoc tree
-Date: Sun, 10 Jan 2016 12:22:32 +0000
-Message-ID: <E1aIF0y-0008Rp-JG@debutante>
-References: <1450431729-27259-9-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: dwc: add quirk to override COMP_PARAM_1
+	register" to the asoc tree
+Date: Sun, 10 Jan 2016 12:22:34 +0000
+Message-ID: <E1aIF10-0008Sl-Eb@debutante>
+References: <1452295331-28476-4-git-send-email-alexander.deucher@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E2DD26063D
- for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2016 13:22:38 +0100 (CET)
-In-Reply-To: <1450431729-27259-9-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1958726067F
+ for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2016 13:22:42 +0100 (CET)
+In-Reply-To: <1452295331-28476-4-git-send-email-alexander.deucher@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Dharageswari.R" <dharageswari.r@intel.com>, Jayachandran B <jayachandran.b@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Use CGCTL.MISCBDCGE for Phrase detection notification
+   ASoC: dwc: add quirk to override COMP_PARAM_1 register
 
 has been applied to the asoc tree at
 
@@ -53,97 +53,49 @@ to this mail.
 Thanks,
 Mark
 
->From 721c3e36f774150f453216efcf5e1895577ac68c Mon Sep 17 00:00:00 2001
-From: "Dharageswari.R" <dharageswari.r@intel.com>
-Date: Fri, 18 Dec 2015 15:12:04 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Use CGCTL.MISCBDCGE for Phrase
- detection notification
+>From a242cac1d3aa098fbe51097d2b1dcae8b662b761 Mon Sep 17 00:00:00 2001
+From: Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>
+Date: Fri, 8 Jan 2016 18:22:05 -0500
+Subject: [PATCH] ASoC: dwc: add quirk to override COMP_PARAM_1 register
 
-Per HW recommendation, SW shall clear the CGCTL.MISCBDCGE and set
-it back once data is transferred. So clear this when we get the
-IPC and track using a driver flag, and set back on closure
+DWC for capture in ACP 2.x IP reports playback and capture capabilities
+though it supports only capture. Added a quirk to override default value
+to represent capture capability only.
 
-Signed-off-by: Dharageswari.R <dharageswari.r@intel.com>
-Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c     | 13 +++++++++++++
- sound/soc/intel/skylake/skl-sst-ipc.c | 15 +++++++++++++++
- 2 files changed, 28 insertions(+)
+ include/sound/designware_i2s.h | 1 +
+ sound/soc/dwc/designware_i2s.c | 4 ++++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index b89ae6f7c096..8039a0479053 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -25,6 +25,8 @@
- #include <sound/soc.h>
- #include "skl.h"
- #include "skl-topology.h"
-+#include "skl-sst-dsp.h"
-+#include "skl-sst-ipc.h"
+diff --git a/include/sound/designware_i2s.h b/include/sound/designware_i2s.h
+index e0bb45807f29..5681855396c4 100644
+--- a/include/sound/designware_i2s.h
++++ b/include/sound/designware_i2s.h
+@@ -46,6 +46,7 @@ struct i2s_platform_data {
+ 	u32 snd_rates;
  
- #define HDA_MONO 1
- #define HDA_STEREO 2
-@@ -272,6 +274,7 @@ static void skl_pcm_close(struct snd_pcm_substream *substream,
- 	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
- 	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
- 	struct skl_dma_params *dma_params = NULL;
-+	struct skl *skl = ebus_to_skl(ebus);
+ 	#define DW_I2S_QUIRK_COMP_REG_OFFSET	(1 << 0)
++	#define DW_I2S_QUIRK_COMP_PARAM1	(1 << 1)
+ 	unsigned int quirks;
+ 	unsigned int i2s_reg_comp1;
+ 	unsigned int i2s_reg_comp2;
+diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
+index 825a1f480aab..ce664c239be3 100644
+--- a/sound/soc/dwc/designware_i2s.c
++++ b/sound/soc/dwc/designware_i2s.c
+@@ -500,6 +500,10 @@ static int dw_configure_dai(struct dw_i2s_dev *dev,
+ 	u32 comp2 = i2s_read_reg(dev->i2s_base, dev->i2s_reg_comp2);
+ 	u32 idx;
  
- 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
- 
-@@ -285,6 +288,16 @@ static void skl_pcm_close(struct snd_pcm_substream *substream,
- 	snd_soc_dai_set_dma_data(dai, substream, NULL);
- 	skl_set_suspend_active(substream, dai, false);
- 
-+	/*
-+	 * check if close is for "Reference Pin" and set back the
-+	 * CGCTL.MISCBDCGE if disabled by driver
-+	 */
-+	if (!strncmp(dai->name, "Reference Pin", 13) &&
-+			skl->skl_sst->miscbdcg_disabled) {
-+		skl->skl_sst->enable_miscbdcge(dai->dev, true);
-+		skl->skl_sst->miscbdcg_disabled = false;
-+	}
++	if (dev->capability & DWC_I2S_RECORD &&
++			dev->quirks & DW_I2S_QUIRK_COMP_PARAM1)
++		comp1 = comp1 & ~BIT(5);
 +
- 	kfree(dma_params);
- }
- 
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
-index 62e665a3b8f7..543460293b00 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.c
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.c
-@@ -16,8 +16,10 @@
- 
- #include "../common/sst-dsp.h"
- #include "../common/sst-dsp-priv.h"
-+#include "skl.h"
- #include "skl-sst-dsp.h"
- #include "skl-sst-ipc.h"
-+#include "sound/hdaudio_ext.h"
- 
- 
- #define IPC_IXC_STATUS_BITS		24
-@@ -322,6 +324,19 @@ static int skl_ipc_process_notification(struct sst_generic_ipc *ipc,
- 			wake_up(&skl->boot_wait);
- 			break;
- 
-+		case IPC_GLB_NOTIFY_PHRASE_DETECTED:
-+			dev_dbg(ipc->dev, "***** Phrase Detected **********\n");
-+
-+			/*
-+			 * Per HW recomendation, After phrase detection,
-+			 * clear the CGCTL.MISCBDCGE.
-+			 *
-+			 * This will be set back on stream closure
-+			 */
-+			skl->enable_miscbdcge(ipc->dev, false);
-+			skl->miscbdcg_disabled = true;
-+			break;
-+
- 		default:
- 			dev_err(ipc->dev, "ipc: Unhandled error msg=%x",
- 						header.primary);
+ 	if (COMP1_TX_ENABLED(comp1)) {
+ 		dev_dbg(dev->dev, " designware: play supported\n");
+ 		idx = COMP1_TX_WORDSIZE_0(comp1);
 -- 
 2.7.0.rc3
