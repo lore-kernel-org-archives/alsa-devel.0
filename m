@@ -1,17 +1,22 @@
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [GIT PULL]: Update sst audio firmware for Skylake
-Date: Sun, 10 Jan 2016 14:38:03 -0500
-Message-ID: <20160110193803.GD32062@merlin.infradead.org>
-References: <20160105134848.GN2940@localhost>
+From: Owen Williams <owilliams@mixxx.org>
+Subject: Re: Regression in Traktor Audio10 driver
+ (snd-usb-audio) mixer flags
+Date: Sun, 10 Jan 2016 15:20:17 -0500
+Message-ID: <1452457217.18937.9.camel@mixxx.org>
+References: <1451586418.9097.8.camel@mixxx.org>
+ <1452262738.27231.46.camel@legoogs.cam.corp.google.com>
+ <s5h37u78ah9.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
- by alsa0.perex.cz (Postfix) with ESMTP id 19FA42605FF
- for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2016 20:38:05 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20160105134848.GN2940@localhost>
+Received: from mail-qg0-f48.google.com (mail-qg0-f48.google.com
+ [209.85.192.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E58F2605FF
+ for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2016 21:20:30 +0100 (CET)
+Received: by mail-qg0-f48.google.com with SMTP id b35so259921639qge.0
+ for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2016 12:20:30 -0800 (PST)
+In-Reply-To: <s5h37u78ah9.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,25 +26,118 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: patches.audio@intel.com, alsa-devel@alsa-project.org, linux-firmware@kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 05, 2016 at 07:18:48PM +0530, Vinod Koul wrote:
-> Hello Linux firmware maintainers,
-> 
-> Please PULL to receive the updated version of Skylake audio firmware.
-> This version contains some odd fixes and support for MCLK configuration.
-> 
-> The following changes since commit bbe4917c054eb0a73e250c6363341e3bf6725839:
-> 
->   WHENCE: use https://linuxtv.org for LinuxTV URLs (2015-12-07 02:17:20 +0000)
-> 
-> are available in the git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git skl
-> 
+Unfortunately I can't narrow the problem down more specifically than
+the changes from Ubuntu-3.18.0-14.14 to Ubuntu-3.19.0-1.1.  If I try to
+git bisect between those, I end up with commits that don't have the
+proper debian packaging information so I can't build packages.  Any
+ideas?  I see a bunch of merges for the sound subsystem in the 3.19
+branch so if can figure out how to build debs I bet the problem is in
+there.
 
-pulled, thanks.
-
-regards, --Kyle
+On Sat, 2016-01-09 at 08:42 +0100, Takashi Iwai wrote:
+> On Fri, 08 Jan 2016 15:18:58 +0100,
+> Owen Williams wrote:
+> > 
+> > Sorry to bump my own thread, but I don't know how else to report
+> > bugs to
+> > ALSA (I think the bug tracker was abandoned a while back?).  I'm
+> > willing
+> > to do work to diagnose and fix this problem (I'm comfortable
+> > building
+> > kernels, doing git bisect, using gdb, etc) but I need some guidance
+> > about how to start.
+> 
+> If the problem is easily reproducible, could you try bisection?
+> This is the best way to spot out the cause.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> > On Thu, 2015-12-31 at 13:26 -0500, Owen Williams wrote:
+> > > Sometime between kernels 3.13 (ubuntu 14.04) and 3.19 (15.04)
+> > > there was
+> > > a regression that caused the mixer elements of the Traktor
+> > > Audio10
+> > > driver to stop responding to changes to True.  I have an older
+> > > machine
+> > > still running 14.04, and if I open alsamixer I can see and
+> > > interact
+> > > with the 8 basic boolean switches:
+> > > 
+> > > numid=3,iface=MIXER,name='Direct Thru Channel A'
+> > >   ; type=BOOLEAN,access=rw------,values=1
+> > >   : values=off
+> > > numid=4,iface=MIXER,name='Direct Thru Channel B'
+> > >   ; type=BOOLEAN,access=rw------,values=1
+> > >   : values=off
+> > > numid=5,iface=MIXER,name='Direct Thru Channel C'
+> > >   ; type=BOOLEAN,access=rw------,values=1
+> > >   : values=off
+> > > numid=6,iface=MIXER,name='Direct Thru Channel D'
+> > >   ; type=BOOLEAN,access=rw------,values=1
+> > >   : values=off
+> > > numid=7,iface=MIXER,name='Phono Input Channel A'
+> > >   ; type=BOOLEAN,access=rw------,values=1
+> > >   : values=off
+> > > numid=8,iface=MIXER,name='Phono Input Channel B'
+> > >   ; type=BOOLEAN,access=rw------,values=1
+> > >   : values=off
+> > > numid=9,iface=MIXER,name='Phono Input Channel C'
+> > >   ; type=BOOLEAN,access=rw------,values=1
+> > >   : values=off
+> > > numid=10,iface=MIXER,name='Phono Input Channel D'
+> > >   ; type=BOOLEAN,access=rw------,values=1
+> > >   : values=off
+> > > 
+> > > 
+> > > or I can use amixer:
+> > > amixer -c T10 cset numid=8 on
+> > > 
+> > > 
+> > > however on my newer machine, with ubuntu 15.04 and 15.10, I am
+> > > unable
+> > > to change the values to true.  I am a member of the audio group
+> > > and I
+> > > have also tried with sudo, but when I try to set the value on
+> > > nothing
+> > > happens:
+> > > 
+> > > $ amixer -c T10 cset numid=8 on
+> > > numid=8,iface=MIXER,name='Phono Input Channel B'
+> > >   ; type=BOOLEAN,access=rw------,values=1
+> > >   : values=off
+> > > 
+> > > The fun part is, if I connect the card to my mac I can set
+> > > startup
+> > > conditions for these flags.  I can set them to true, and when I
+> > > connect
+> > > to my linux machines the flags start up as true.  And then, even
+> > > on the
+> > > newer kernel, I can turn them off!  But I can't turn them back on
+> > > again.
+> > > 
+> > > This sound card is the one I'd like to recommend officially for
+> > > the
+> > > Mixxx DJ project so I'd really like to get to the bottom of this
+> > > issue.
+> > > 
+> > > 
+> > > thanks,
+> > > Owen Williams
+> > > 
+> > > A Lead Developer, Mixxx.org
+> > 
+> > 
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > 
+> 
+> 
