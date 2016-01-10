@@ -1,60 +1,86 @@
-From: Martin Sperl <kernel@martin.sperl.org>
-Subject: Re: [PATCH 2/5] clk: bcm2835: enable management of PCM clock
-Date: Sun, 10 Jan 2016 11:55:48 +0100
-Message-ID: <4B891DE1-6340-4D3D-BEE3-F61D9A5D289B@martin.sperl.org>
-References: <1452331558-2520-1-git-send-email-kernel@martin.sperl.org> <1452331558-2520-3-git-send-email-kernel@martin.sperl.org> <4332640.jBKM55TPAo@wuerfel> <CAMuHMdWOt4aCzu8Ode0ZrQ-c80nqAhwD5dd17nhgVbLrRYT5og@mail.gmail.com>
+From: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
+Subject: Re: [PATCH 5/5] dt-bindings: bsm2835: fix bindings documentation to use new clock framework
+Date: Sun, 10 Jan 2016 12:05:52 +0100
+Message-ID: <ED21A42A-EE91-495D-857E-04C533CD718C@martin.sperl.org>
+References: <1452331558-2520-1-git-send-email-kernel@martin.sperl.org> <1452331558-2520-6-git-send-email-kernel@martin.sperl.org> <20160109224523.GA17329@rob-hp-laptop>
 Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-clk-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdWOt4aCzu8Ode0ZrQ-c80nqAhwD5dd17nhgVbLrRYT5og@mail.gmail.com>
-Sender: linux-clk-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Russell King <linux@arm.linux.org.uk>, Michael Turquette <mturquette@baylibre.com>, Remi Pommarel <repk@triplefau.lt>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, linux-rpi-kernel@lists.infradead.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-clk <linux-clk@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Matthias Reichl <hias@horus.com>, lFlorian Meier <florian.meier@koalo.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20160109224523.GA17329@rob-hp-laptop>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Lee Jones <lee-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Eric Anholt <eric-WhKQ6XTQaPysTnJN9+BGXg@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Michael Turquette <mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, Remi Pommarel <repk-lovNVp52yxIDGOk2Oe9MvA@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Matthias Reichl <hias-vtPv7MOkFPkAvxtiuMwx3w@public.gmane.org>, lFlorian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
-> On 10.01.2016, at 10:30, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> 
-> Hi Arnd,
-> 
-> On Sat, Jan 9, 2016 at 9:56 PM, Arnd Bergmann <arnd@arndb.de> wrote:
->> On Saturday 09 January 2016 09:25:54 kernel@martin.sperl.org wrote:
->>> --- a/include/dt-bindings/clock/bcm2835.h
->>> +++ b/include/dt-bindings/clock/bcm2835.h
->>> @@ -44,5 +44,6 @@
->>> #define BCM2835_CLOCK_EMMC             28
->>> #define BCM2835_CLOCK_PERI_IMAGE       29
->>> #define BCM2835_CLOCK_PWM              30
->>> +#define BCM2835_CLOCK_PCM              31
->>> 
->>> -#define BCM2835_CLOCK_COUNT            31
->>> +#define BCM2835_CLOCK_COUNT            32
->> 
->> The last line contains an incompatible change, please don't do that.
->> If you have to add another clock, do that after the BCM2835_CLOCK_COUNT
->> definition to avoid changing dts files that use that number.
-> 
-> While I agree this changes dts files (in an unexpected way?), not updating
-> BCM2835_CLOCK_COUNT makes it definition useless. Which teaches that
-> having such definitions in DT headers is not a good idea in the first place...
-> 
-> Hence it can better be replaced (it seems to be unused in dts files, but you
-> can keep the definition to be 100% sure) by an ARRAY_SIZE() in the C driver.
-> This requires changing the driver to e.g. initialize clks[] in
-> bcm2835_clk_probe() based on a table instead of explicit code.
+> On 09.01.2016, at 23:45, Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+>=20
+> On Sat, Jan 09, 2016 at 09:25:57AM +0000, kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org wro=
+te:
+>> From: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
+>>=20
+>> The bcm2835-i2s driver has been updated to use the new clock framewo=
+rk
+>> for the bcm2835 SOC.
+>=20
+> You are breaking compatibility with the driver change. New kernels wi=
+ll=20
+> not work with old dtbs as you have found. What should be done is fix =
+the=20
+> driver to work with the old and new dtb.
 
-That is a more general issue with the clock driver (and there
-have been already some discussions around this when implementing
-the PWM clock.
+Actually the driver/device-tree is already broken with commit 94cb7f76c=
+aa0
+("ARM: bcm2835: Switch to using the new clock driver support=E2=80=9D)
 
-So if someone with a better idea how to keep those dt-binding includes
-synchronized with the definitions used by the code step forward and
-propose a better solution how to get that implemented?
+Because there we already have the following conflicting definitions:
 
-I guess there will be a few more occurrences of clocks that are
-currently not defined, which will need to get introduced in the future
-PWM and PCM were just the last in this series.
+clocks: cprman@7e101000 {
+	compatible =3D "brcm,bcm2835-cprman";
+	#clock-cells =3D <1>;
+	reg =3D <0x7e101000 0x2000>;
+	/* CPRMAN derives everything from the platform's
+	* oscillator.
+	*/
+	clocks =3D <&clk_osc>;
+};
+
+i2s: i2s@7e203000 {
+	compatible =3D "brcm,bcm2835-i2s";
+	reg =3D <0x7e203000 0x20>,
+	      <0x7e101098 0x02>;
+	dmas =3D <&dma 2>,
+	       <&dma 3>;
+	dma-names =3D "tx", "rx";
+	status =3D "disabled";
+};
+
+The i2s driver fails to load because the second reg range
+overlaps with the range from clocks (which was introduced
+with the commit mentioned above.
+
+This patch only changes the driver to work again without
+this second reg address range and using the clocks property
+instead.
+
+>=20
+>> This patch documents the required changes to the bindings.
+>>=20
+>> Signed-off-by: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
+>> ---
+>> Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt |    7 =
++++----
+>> 1 file changed, 3 insertions(+), 4 deletions(-)
+>=20
+> But I leave it to platform maintainers to decide if breaking=20
+> compatibility is okay, so:
+>=20
+> Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 
 Thanks,
-	Martin
+	Martin--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
