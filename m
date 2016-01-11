@@ -1,66 +1,31 @@
-From: Mark Brown <broonie@kernel.org>
+From: Fabio Estevam <festevam@gmail.com>
 Subject: Re: [PATCH 3/3] ASoC: fsl_ssi: remove register defaults
-Date: Mon, 11 Jan 2016 14:00:38 +0000
-Message-ID: <20160111140038.GC6588@sirena.org.uk>
+Date: Mon, 11 Jan 2016 12:05:26 -0200
+Message-ID: <CAOMZO5DVKrnufV_PLD_+7FgA=ePhn1DSpzYDQPy5FZvHyGOJ-g@mail.gmail.com>
 References: <5677107C.60904@maciej.szmigiero.name>
- <CAOMZO5C+32Nn6+Nv9KeVrd_Qeso-wEZZNU45G8h+e6LHdMoQYw@mail.gmail.com>
- <CAOMZO5BE7=EdmEyMOq5WH=qv_0H3AGcyyDMJFoemLRJ=O5YLNw@mail.gmail.com>
+	<CAOMZO5C+32Nn6+Nv9KeVrd_Qeso-wEZZNU45G8h+e6LHdMoQYw@mail.gmail.com>
+	<CAOMZO5BE7=EdmEyMOq5WH=qv_0H3AGcyyDMJFoemLRJ=O5YLNw@mail.gmail.com>
+	<5693B4C1.4060400@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="hI0LKvM4dmXJ5Wy2"
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAOMZO5BE7=EdmEyMOq5WH=qv_0H3AGcyyDMJFoemLRJ=O5YLNw@mail.gmail.com>
+In-Reply-To: <5693B4C1.4060400@maciej.szmigiero.name>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-kernel <linux-kernel@vger.kernel.org>
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Maciej,
 
---hI0LKvM4dmXJ5Wy2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Mon, Jan 11, 2016 at 11:57 AM, Maciej S. Szmigiero
+<mail@maciej.szmigiero.name> wrote:
+> Hi Fabio,
 
-On Mon, Jan 11, 2016 at 10:10:56AM -0200, Fabio Estevam wrote:
-> On Mon, Jan 11, 2016 at 10:04 AM, Fabio Estevam <festevam@gmail.com> wrote:
+> This will disable register cache so it isn't right.
+> Could you try REGCACHE_FLAT instead, please?
 
-> > [    2.526984] ------------[ cut here ]------------
-> > [    2.531632] WARNING: CPU: 1 PID: 1 at kernel/locking/lockdep.c:2755
-> > lockdep_trace_alloc+0xf4/0x124()
+Yes, with REGCACHE_FLAT I don't get the warning.
 
-> This fixes the warning:
+Regards,
 
-> --- a/sound/soc/fsl/fsl_ssi.c
-> +++ b/sound/soc/fsl/fsl_ssi.c
-> @@ -180,7 +180,6 @@ static const struct regmap_config fsl_ssi_regconfig = {
->         .volatile_reg = fsl_ssi_volatile_reg,
->         .precious_reg = fsl_ssi_precious_reg,
->         .writeable_reg = fsl_ssi_writeable_reg,
-> -       .cache_type = REGCACHE_RBTREE,
->  };
-
-> Is this the correct fix?
-
-I suspect not, it looks like the driver is using the cache for
-suspend/resume handling.  I've dropped the patch for now.  Either the
-driver should explicitly write to the relevant registers outside of
-interrupt context to ensure the cache entry exists or it should keep the
-defaults and explicitly write them to hardware at startup to ensure
-sync (the former is more likely to be safe).
-
---hI0LKvM4dmXJ5Wy2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWk7WFAAoJECTWi3JdVIfQqwMH/igsSpD64+/Csx8zYZBUH/pX
-CmUjBDptMDMUTqpKcUd/eo7wCnAuFClaMjI50f06Gr12FMvCjfqmxAbCR+dvUBfk
-MfLE7ofTq8cgzkmXYpMFaIxvkkeIxwF5PBlhIfPGTNuZ86V4MRtf4P8uOKLNW7EF
-5HB3tzw+ehuQt+aolGy3rx6Db9JiCX5ad6oT5ZfJC4tVAcQFiW5Bo+YnK67ON1m9
-fp7wyoDW8n+zkbJsgonDHNIvtTtPvfwmkqU6HKy9suhaIycMHCUI8nprHbUwNC6C
-mxe2so2kRfNrwk9UCeQWsKcXlYGHcCd4Pe3pT3WCeHFQj1k+m04TjyeCce2dtYo=
-=h59D
------END PGP SIGNATURE-----
-
---hI0LKvM4dmXJ5Wy2--
+Fabio Estevam
