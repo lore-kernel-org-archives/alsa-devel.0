@@ -1,17 +1,17 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: bat: naming conflict in distribution packages
-	with	Bareos/Bacula
-Date: Mon, 11 Jan 2016 15:53:46 +0000
-Message-ID: <1452527626.2473.28.camel@loki>
-References: <n5e2br$fdp$1@ger.gmane.org> <s5hh9ikyx25.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] ASoC updates for v4.5
+Date: Mon, 11 Jan 2016 16:02:02 +0000
+Message-ID: <20160111160202.GI6588@sirena.org.uk>
+References: <20160111152020.GG6588@sirena.org.uk>
+ <s5hd1t8yw0w.wl-tiwai@suse.de> <s5ha8ocyvm8.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============2352344195128188647=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 1211C260569
- for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2016 16:53:48 +0100 (CET)
-In-Reply-To: <s5hh9ikyx25.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 62B672604BE
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2016 17:02:09 +0100 (CET)
+In-Reply-To: <s5ha8ocyvm8.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: J6rg Steffens <joerg.steffens@bareos.com>, alsa-devel@alsa-project.org, Bernard Gautier <bernard.gautier@intel.com>, "Lu, Han" <han.lu@intel.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAyMDE2LTAxLTExIGF0IDE2OjA3ICswMTAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
-SGksCj4gCj4gc29ycnkgZm9yIHRoZSBsYXRlIHJlc3BvbnNlLCBhcyB0aGlzIHBvc3QgYnVyaWVk
-IGJlaGluZCBtYW55IENocmlzdG1hcwo+IHRyZWUgZGVjb3JhdGlvbnMuLi4KClNvcnJ5LCBkaWRu
-J3Qgc2VlIHRoaXMgZWl0aGVyLi4uLgoKPiAKPiBPbiBXZWQsIDIzIERlYyAyMDE1IDEyOjU5OjU1
-ICswMTAwLAo+IEo2cmcgU3RlZmZlbnMgd3JvdGU6Cj4gPiAKPiA+IAo+ID4gSGVsbG8sCj4gPiAK
-PiA+IG15IG5hbWUgaXMgSsO2cmcgU3RlZmZlbnMgYW5kIEknbSBvbmUgb2YgdGhlIG1haW50YWlu
-ZXJzIG9mIHRoZSBCYXJlb3MKPiA+IGJhY2t1cCBzb2Z0d2FyZSBwcm9qZWN0LiBCYXJlb3MgaXMg
-YSBmb3JrIEJhY3VsYS4KPiA+IAo+ID4gQmFyZW9zIGluY2x1ZGVzIGEgR1VJIHByb2dyYW0gY2Fs
-bGVkIGJhdCAoYmFyZW9zIGFkbWluaXN0cmF0aW9uIHRvb2wpLgo+ID4gYmF0IGhhdmUgYmVlbiBh
-cm91bmQgc2luY2UgMjAwNy4KPiA+IAo+ID4gYWxzYS11dGlscyBhcyB3ZWxsIGFzIGJhcmVvcy1i
-YXQgKGFzIHdlbGwgYSBzb21lIEJhY3VsYSBwYWNrYWdlcykgYWxsCj4gPiBjb250YWluIGEgcHJv
-Z3JhbSBjYWxsZWQgL3Vzci9iaW4vYmF0LCB3aGljaCBjYXVzZXMgY29uZmxpY3RzIG9uIHZhcmlv
-dXMKPiA+IGRpc3RyaWJ1dGlvbnMgKCJiYXNpYyBhdWRpbyB0ZXN0ZXIiIHZzICJiYXJlb3MgYWRt
-aW5pc3RyYXRpb24gdG9vbCIKPiA+ICgiYmFjdWxhIGFkbWluaXN0cmF0aW9uIHRvb2wiKSkuCj4g
-PiBTZWUgaHR0cDovL3BrZ3Mub3JnL3NlYXJjaC8vdXNyL2Jpbi9iYXQKPiA+IAo+ID4gV2UgcmVj
-ZWl2ZWQgYSBidWcgcmVwb3J0L2ZlYXR1cmUgcmVxdWVzdAo+ID4gaHR0cHM6Ly9idWdzLmJhcmVv
-cy5vcmcvdmlldy5waHA/aWQ9NTc2IGZyb20gTWljaGVsLCB0aGUgbWFpbnRhaW5lciBvZgo+ID4g
-QmFyZW9zIGZvciBBcmNoIExpbnV4IGFib3V0IGhvdyB0byBzb2x2ZSB0aGUgbmFtaW5nIGNvbmZs
-aWN0IHdpdGggd2UKPiA+IGxhdGVzdCBBTFNBIDEuMS4wLgo+ID4gCj4gPiBJIHdhbnRlZCB0byBy
-YWlzZSB0aGUgcXVlc3Rpb24sIGlmIHlvdSBhcmUgYXdhcmUgb2YgdGhpcyBwb3RlbnRpYWwKPiA+
-IHByb2JsZW0/IE1heWJlIHlvdSBoYXZlIGd1aWRlbGluZXMgZm9yIHBhY2thZ2UgbWFpbnRhaW5l
-cnMgaG93IHRvIHNvbHZlCj4gPiB0aGlzLgo+ID4gU29tZSBkaXN0cmlidXRpb25zIGhhdmUgc2Vw
-YXJhdGVkICJiYXNpYyBhdWRpbyB0ZXN0ZXIiIGZyb20gdGhlCj4gPiBhbHNhLXV0aWxzIHBhY2th
-Z2UsIGxpa2UgRmVkb3JhIHdpdGggYWxzYS11dGlscy1iYXQuCj4gPiBJIHRoaW5rLCB0aGlzIHdp
-bGwgd29yayBvdXQgd2VsbCwgYXMgSSBhc3N1bWUgImJhc2ljIGF1ZGlvIHRlc3RlciIgaXMKPiA+
-IG5vdCBzdHJpY2x5IHJlcXVpcmVkIG9uIGFsbCBzeXN0ZW1zLiAiYmFyZW9zIGFkbWluaXN0cmF0
-aW9uIHRvb2wiIGF0Cj4gPiBsZWFzdCBpcyBvcHRpb25hbCBhbmQgdHlwaWNhbCBpbnN0YWxsZWQg
-b24gYWRtaW5pc3RyYXRpdmUgd29ya3N0YXRpb25zLgo+IAo+IEl0J3MgYmFkIHRvIGhhdmUgc3Vj
-aCBhIG5hbWluZyBjb25mbGljdCwgaW5kZWVkLiAgVGhpcyB3YXNuJ3QKPiBpbnRlbnRpb25hbCwg
-b2YgY291cnNlLgoKSXQgY2VydGFpbmx5IHdhc24ndCwgSSBkaWQgY2hlY2sgZm9yIGNvbGxpc2lv
-bnMgb24gYSBmZXcgZGlzdHJvcyBidXQKbm9uZSBvZiB0aGVuIGhhZCBCYXJlb3MgaW5zdGFsbGVk
-LgoKPiAKPiBJLCBhcyBvbmUgb2YgbWFpbnRhaW5lcnMsIGFtIG5ldXRyYWwgYWJvdXQgcmVuYW1p
-bmc6IGlmIG90aGVyIHBlb3BsZQo+IHByZWZlciBrZWVwaW5nIHRoaXMsIEknZCBzYXkgc2ltcGx5
-IHRvIHB1c2ggdGhpcyB0byBlYWNoIGRpc3Rybwo+IHBhY2thZ2VyLiAgSG93IHRvIHNvbHZlIHN1
-Y2ggYW4gaXNzdWUgcHJldHR5IGRlcGVuZHMgb24gdGhlCj4gZGlzdHJpYnV0aW9uLiAgQW5kIHRo
-ZXkgKG11c3QpIGtub3cgd2VsbCBzdWNoIGEgY2FzZS4KPiAKPiBPVE9ILCBpZiB3ZSBhbGwgYWdy
-ZWUgd2l0aCByZW5hbWluZyB0byBzb21ldGhpbmcgbGVzcyBsaWtlbHkKPiBjb25mbGljdGluZywg
-SSdtIGFsbCBmaW5lIHdpdGggaXQuICBJdCdzIGEgbmV3IHByb2dyYW0sIHNvIG5vdCB0b28KPiBt
-dWNoIGltcGFjdCB5ZXQgYnkgYSByZW5hbWUsIEkgc3VwcG9zZS4KPiAKPiBMZXQncyBmaXJzdCBh
-c2sgSW50ZWwgcGVvcGxlIHdobyBhcmUgdGhlIGF1dGhvciBvZiBvdXIgQkFULgo+IAoKV2hhdCBh
-Ym91dCBwcmVmaXhpbmcgImFsc2EiIG9yICJhIiB0byB0byBiYXQgPyBXZSBhbHJlYWR5IGhhdmUK
-YWxzYW1peGVyLCBhcGxheSwgYWxzYWN0bC4uLi4KClRoYW5rcwoKTGlhbQoKPiAKPiB0aGFua3Ms
-Cj4gCj4gVGFrYXNoaQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+
+--===============2352344195128188647==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="3fquP/57BBR2yLsK"
+Content-Disposition: inline
+
+
+--3fquP/57BBR2yLsK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jan 11, 2016 at 04:38:23PM +0100, Takashi Iwai wrote:
+
+> Looking more closely now at the commits, I don't find new drivers
+> except for AMD ACP.  All others have been already merged in the
+> previous pull request, and now we have only fixes, as it seems.
+
+Interesting...  git is being very strange, if I generate a pull request
+against your for-next or upstream branches it shows all ASoC changes
+including those in asoc-v4.5 which are already in those branches.  If I
+explicitly generate one against asoc-v4.5 it's just the AMD drivers.
+
+--3fquP/57BBR2yLsK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWk9H5AAoJECTWi3JdVIfQr8AH/1U6G8x7+dKF24JoYBOrBtTI
+JsMJ6tiG+OQHLF2svXzuOJWiwnOmwg4Z+GNyhtSxzD5fZzSdi5Qb71EC8GbRrk4p
+KDlewh9YoXkSsCKI2y3Mn1t0Bqz730Q7bZYSa9T7wSWAGkHwylMNTitHCFMmR1Sr
+un1fULvmzD/QBPkoyPlFytnARWT5JHL6QVWzXDd5dQtgt/Xj46NiEPCjetFVMIEJ
++lpiOzcF4iwWSqu8MyBbeeRxaG0odUZ/hK4MPCE28id9zs60qokVElsY2jnNVpxI
+WPTg3Cc3dW3EY3jzTAUkwk93mi4xn75jdQGwpvarVnEOJIUTNY5iDOx4Vz62Ai8=
+=Xp5k
+-----END PGP SIGNATURE-----
+
+--3fquP/57BBR2yLsK--
+
+--===============2352344195128188647==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2352344195128188647==--
