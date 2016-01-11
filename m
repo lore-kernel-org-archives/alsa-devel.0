@@ -1,84 +1,54 @@
-From: mengdong.lin@linux.intel.com
-Subject: [RESEND PATCH 3/5] ALSA: pcm: Add
-	snd_pcm_rate_range_to_bits()
-Date: Mon, 11 Jan 2016 13:22:19 +0800
-Message-ID: <1452489739-25720-1-git-send-email-mengdong.lin@linux.intel.com>
-References: <712e57698a4144889318549d3b20ba2eaaa9c36b.1451550513.git.mengdong.lin@linux.intel.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v3 3/5] gpio: arizona: Support Cirrus Logic CS47L24 and
+ WM1831
+Date: Mon, 11 Jan 2016 06:26:19 +0000
+Message-ID: <20160111062619.GP3331@x1>
+References: <1446563316-28878-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <1446563316-28878-4-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 71BA5260429
- for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2016 06:22:16 +0100 (CET)
-In-Reply-To: <712e57698a4144889318549d3b20ba2eaaa9c36b.1451550513.git.mengdong.lin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1446563316-28878-4-git-send-email-rf@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: linus.walleij@linaro.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+On Tue, 03 Nov 2015, Richard Fitzgerald wrote:
 
-This helper function can convert a given sample rate range to
-SNDRV_PCM_RATE_xxx bits.
+> The CS47L24 and WM1831 codecs only have two GPIO lines, but are
+> otherwise similar to the WM8280.
+>=20
+> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+>  drivers/gpio/gpio-arizona.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+Applied, thanks.
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index b0be092..af1fb37 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -1093,6 +1093,8 @@ unsigned int snd_pcm_rate_to_rate_bit(unsigned int rate);
- unsigned int snd_pcm_rate_bit_to_rate(unsigned int rate_bit);
- unsigned int snd_pcm_rate_mask_intersect(unsigned int rates_a,
- 					 unsigned int rates_b);
-+unsigned int snd_pcm_rate_range_to_bits(unsigned int rate_min,
-+					unsigned int rate_max);
- 
- /**
-  * snd_pcm_set_runtime_buffer - Set the PCM runtime buffer
-diff --git a/sound/core/pcm_misc.c b/sound/core/pcm_misc.c
-index ebe8444..0b98f51 100644
---- a/sound/core/pcm_misc.c
-+++ b/sound/core/pcm_misc.c
-@@ -565,3 +565,30 @@ unsigned int snd_pcm_rate_mask_intersect(unsigned int rates_a,
- 	return rates_a & rates_b;
- }
- EXPORT_SYMBOL_GPL(snd_pcm_rate_mask_intersect);
-+
-+/**
-+ * snd_pcm_rate_range_to_bits - converts rate range to SNDRV_PCM_RATE_xxx bit
-+ * @rate_min: the minimum sample rate
-+ * @rate_max: the maximum sample rate
-+ *
-+ * Return: The SNDRV_PCM_RATE_xxx flag that corresponds to the given rate range,
-+ * or SNDRV_PCM_RATE_KNOT for an unknown range.
-+ */
-+unsigned int snd_pcm_rate_range_to_bits(unsigned int rate_min,
-+	unsigned int rate_max)
-+{
-+	unsigned int rates = 0;
-+	int i;
-+
-+	for (i = 0; i < snd_pcm_known_rates.count; i++) {
-+		if (snd_pcm_known_rates.list[i] >= rate_min
-+			&& snd_pcm_known_rates.list[i] <= rate_max)
-+			rates |= 1 << i;
-+	}
-+
-+	if (!rates)
-+		rates = SNDRV_PCM_RATE_KNOT;
-+
-+	return rates;
-+}
-+EXPORT_SYMBOL_GPL(snd_pcm_rate_range_to_bits);
--- 
-2.5.0
+> diff --git a/drivers/gpio/gpio-arizona.c b/drivers/gpio/gpio-arizona.=
+c
+> index ca00273..624ea54 100644
+> --- a/drivers/gpio/gpio-arizona.c
+> +++ b/drivers/gpio/gpio-arizona.c
+> @@ -122,6 +122,10 @@ static int arizona_gpio_probe(struct platform_de=
+vice *pdev)
+>  	case WM1814:
+>  		arizona_gpio->gpio_chip.ngpio =3D 5;
+>  		break;
+> +	case WM1831:
+> +	case CS47L24:
+> +		arizona_gpio->gpio_chip.ngpio =3D 2;
+> +		break;
+>  	default:
+>  		dev_err(&pdev->dev, "Unknown chip variant %d\n",
+>  			arizona->type);
+
+--=20
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
