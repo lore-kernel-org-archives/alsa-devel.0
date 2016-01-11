@@ -1,17 +1,17 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH 1/3] ASoC: fsl_ssi: mark SACNT register
-	volatile
-Date: Mon, 11 Jan 2016 16:52:18 +0100
-Message-ID: <5693CFB2.3090301@maciej.szmigiero.name>
-References: <56770FE1.4060202@maciej.szmigiero.name> <5692CE43.20708@tabi.org>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: bat: naming conflict in distribution packages
+	with	Bareos/Bacula
+Date: Mon, 11 Jan 2016 15:53:46 +0000
+Message-ID: <1452527626.2473.28.camel@loki>
+References: <n5e2br$fdp$1@ger.gmane.org> <s5hh9ikyx25.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vps-vb.mhejs.net (vi37-28-154-113.vibiznes.pl [37.28.154.113])
- by alsa0.perex.cz (Postfix) with ESMTP id 797FF2604BE
- for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2016 16:52:30 +0100 (CET)
-In-Reply-To: <5692CE43.20708@tabi.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1211C260569
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2016 16:53:48 +0100 (CET)
+In-Reply-To: <s5hh9ikyx25.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,47 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Zidan Wang <zidan.wang@freescale.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: J6rg Steffens <joerg.steffens@bareos.com>, alsa-devel@alsa-project.org, Bernard Gautier <bernard.gautier@intel.com>, "Lu, Han" <han.lu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Timur,
-
-Thanks for review.
-
-On 10.01.2016 22:33, Timur Tabi wrote:
-> Maciej S. Szmigiero wrote:
->> +    regmap_write(regs, CCSR_SSI_SACNT,
->> +            ssi_private->regcache_sacnt);
-> 
-> So I'm not familiar with all of the regcache features, but I understand this patch.
-> I was wondering if it makes sense to write the same exact value that was read previously.
-> Isn't it possible for the WR or RD bits to change between fsl_ssi_suspend() and fsl_ssi_resume()?
-
-These bits are only set in fsl_ssi_ac97_{read,write} which then wait 100usecs
-before returning. This should be enough for SSI core to finish the relevant
-operation and clear the bits again, so theoretically they shouldn't be set
-outside these functions.
-
-However, if AC'97 register access is done concurrently with suspend or resume
-the read / written reg data might be corrupted.
-
-It looks to me this is indeed possible since SSI PM callbacks are set in its
-platform driver struct but ASoC core only calls PM callbacks in snd_soc_dai_driver
-(which SSI driver don't set).
-
-If I am correct with this reasoning then these callbacks need to be added to
-snd_soc_dai_driver but platform driver ones should still be provided in case
-the driver is loaded but the sound card is not yet registered.
-
-I've CCed Zidan since he originally added PM support to this driver.
-
-> That is, should we be doing this instead?
-> 
-> u32 temp;
-> regmap_read(regs, CCSR_SSI_SACNT, &temp);
-> temp &= 0x18; // preserve WR and RD
-> regmap_write(regs, CCSR_SSI_SACNT, (ssi_private->regcache_sacnt & ~0x18) | temp);
-> 
-
-Maciej
+T24gTW9uLCAyMDE2LTAxLTExIGF0IDE2OjA3ICswMTAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
+SGksCj4gCj4gc29ycnkgZm9yIHRoZSBsYXRlIHJlc3BvbnNlLCBhcyB0aGlzIHBvc3QgYnVyaWVk
+IGJlaGluZCBtYW55IENocmlzdG1hcwo+IHRyZWUgZGVjb3JhdGlvbnMuLi4KClNvcnJ5LCBkaWRu
+J3Qgc2VlIHRoaXMgZWl0aGVyLi4uLgoKPiAKPiBPbiBXZWQsIDIzIERlYyAyMDE1IDEyOjU5OjU1
+ICswMTAwLAo+IEo2cmcgU3RlZmZlbnMgd3JvdGU6Cj4gPiAKPiA+IAo+ID4gSGVsbG8sCj4gPiAK
+PiA+IG15IG5hbWUgaXMgSsO2cmcgU3RlZmZlbnMgYW5kIEknbSBvbmUgb2YgdGhlIG1haW50YWlu
+ZXJzIG9mIHRoZSBCYXJlb3MKPiA+IGJhY2t1cCBzb2Z0d2FyZSBwcm9qZWN0LiBCYXJlb3MgaXMg
+YSBmb3JrIEJhY3VsYS4KPiA+IAo+ID4gQmFyZW9zIGluY2x1ZGVzIGEgR1VJIHByb2dyYW0gY2Fs
+bGVkIGJhdCAoYmFyZW9zIGFkbWluaXN0cmF0aW9uIHRvb2wpLgo+ID4gYmF0IGhhdmUgYmVlbiBh
+cm91bmQgc2luY2UgMjAwNy4KPiA+IAo+ID4gYWxzYS11dGlscyBhcyB3ZWxsIGFzIGJhcmVvcy1i
+YXQgKGFzIHdlbGwgYSBzb21lIEJhY3VsYSBwYWNrYWdlcykgYWxsCj4gPiBjb250YWluIGEgcHJv
+Z3JhbSBjYWxsZWQgL3Vzci9iaW4vYmF0LCB3aGljaCBjYXVzZXMgY29uZmxpY3RzIG9uIHZhcmlv
+dXMKPiA+IGRpc3RyaWJ1dGlvbnMgKCJiYXNpYyBhdWRpbyB0ZXN0ZXIiIHZzICJiYXJlb3MgYWRt
+aW5pc3RyYXRpb24gdG9vbCIKPiA+ICgiYmFjdWxhIGFkbWluaXN0cmF0aW9uIHRvb2wiKSkuCj4g
+PiBTZWUgaHR0cDovL3BrZ3Mub3JnL3NlYXJjaC8vdXNyL2Jpbi9iYXQKPiA+IAo+ID4gV2UgcmVj
+ZWl2ZWQgYSBidWcgcmVwb3J0L2ZlYXR1cmUgcmVxdWVzdAo+ID4gaHR0cHM6Ly9idWdzLmJhcmVv
+cy5vcmcvdmlldy5waHA/aWQ9NTc2IGZyb20gTWljaGVsLCB0aGUgbWFpbnRhaW5lciBvZgo+ID4g
+QmFyZW9zIGZvciBBcmNoIExpbnV4IGFib3V0IGhvdyB0byBzb2x2ZSB0aGUgbmFtaW5nIGNvbmZs
+aWN0IHdpdGggd2UKPiA+IGxhdGVzdCBBTFNBIDEuMS4wLgo+ID4gCj4gPiBJIHdhbnRlZCB0byBy
+YWlzZSB0aGUgcXVlc3Rpb24sIGlmIHlvdSBhcmUgYXdhcmUgb2YgdGhpcyBwb3RlbnRpYWwKPiA+
+IHByb2JsZW0/IE1heWJlIHlvdSBoYXZlIGd1aWRlbGluZXMgZm9yIHBhY2thZ2UgbWFpbnRhaW5l
+cnMgaG93IHRvIHNvbHZlCj4gPiB0aGlzLgo+ID4gU29tZSBkaXN0cmlidXRpb25zIGhhdmUgc2Vw
+YXJhdGVkICJiYXNpYyBhdWRpbyB0ZXN0ZXIiIGZyb20gdGhlCj4gPiBhbHNhLXV0aWxzIHBhY2th
+Z2UsIGxpa2UgRmVkb3JhIHdpdGggYWxzYS11dGlscy1iYXQuCj4gPiBJIHRoaW5rLCB0aGlzIHdp
+bGwgd29yayBvdXQgd2VsbCwgYXMgSSBhc3N1bWUgImJhc2ljIGF1ZGlvIHRlc3RlciIgaXMKPiA+
+IG5vdCBzdHJpY2x5IHJlcXVpcmVkIG9uIGFsbCBzeXN0ZW1zLiAiYmFyZW9zIGFkbWluaXN0cmF0
+aW9uIHRvb2wiIGF0Cj4gPiBsZWFzdCBpcyBvcHRpb25hbCBhbmQgdHlwaWNhbCBpbnN0YWxsZWQg
+b24gYWRtaW5pc3RyYXRpdmUgd29ya3N0YXRpb25zLgo+IAo+IEl0J3MgYmFkIHRvIGhhdmUgc3Vj
+aCBhIG5hbWluZyBjb25mbGljdCwgaW5kZWVkLiAgVGhpcyB3YXNuJ3QKPiBpbnRlbnRpb25hbCwg
+b2YgY291cnNlLgoKSXQgY2VydGFpbmx5IHdhc24ndCwgSSBkaWQgY2hlY2sgZm9yIGNvbGxpc2lv
+bnMgb24gYSBmZXcgZGlzdHJvcyBidXQKbm9uZSBvZiB0aGVuIGhhZCBCYXJlb3MgaW5zdGFsbGVk
+LgoKPiAKPiBJLCBhcyBvbmUgb2YgbWFpbnRhaW5lcnMsIGFtIG5ldXRyYWwgYWJvdXQgcmVuYW1p
+bmc6IGlmIG90aGVyIHBlb3BsZQo+IHByZWZlciBrZWVwaW5nIHRoaXMsIEknZCBzYXkgc2ltcGx5
+IHRvIHB1c2ggdGhpcyB0byBlYWNoIGRpc3Rybwo+IHBhY2thZ2VyLiAgSG93IHRvIHNvbHZlIHN1
+Y2ggYW4gaXNzdWUgcHJldHR5IGRlcGVuZHMgb24gdGhlCj4gZGlzdHJpYnV0aW9uLiAgQW5kIHRo
+ZXkgKG11c3QpIGtub3cgd2VsbCBzdWNoIGEgY2FzZS4KPiAKPiBPVE9ILCBpZiB3ZSBhbGwgYWdy
+ZWUgd2l0aCByZW5hbWluZyB0byBzb21ldGhpbmcgbGVzcyBsaWtlbHkKPiBjb25mbGljdGluZywg
+SSdtIGFsbCBmaW5lIHdpdGggaXQuICBJdCdzIGEgbmV3IHByb2dyYW0sIHNvIG5vdCB0b28KPiBt
+dWNoIGltcGFjdCB5ZXQgYnkgYSByZW5hbWUsIEkgc3VwcG9zZS4KPiAKPiBMZXQncyBmaXJzdCBh
+c2sgSW50ZWwgcGVvcGxlIHdobyBhcmUgdGhlIGF1dGhvciBvZiBvdXIgQkFULgo+IAoKV2hhdCBh
+Ym91dCBwcmVmaXhpbmcgImFsc2EiIG9yICJhIiB0byB0byBiYXQgPyBXZSBhbHJlYWR5IGhhdmUK
+YWxzYW1peGVyLCBhcGxheSwgYWxzYWN0bC4uLi4KClRoYW5rcwoKTGlhbQoKPiAKPiB0aGFua3Ms
+Cj4gCj4gVGFrYXNoaQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
