@@ -1,14 +1,17 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH] add power management S3 solution
-Date: Mon, 11 Jan 2016 11:16:43 +0800
-Message-ID: <1452482203-13723-1-git-send-email-KCHSU0@nuvoton.com>
+From: mengdong.lin@linux.intel.com
+Subject: [RESEND PATCH 3/5] ALSA: pcm: Add
+	snd_pcm_rate_range_to_bits()
+Date: Mon, 11 Jan 2016 13:22:19 +0800
+Message-ID: <1452489739-25720-1-git-send-email-mengdong.lin@linux.intel.com>
+References: <712e57698a4144889318549d3b20ba2eaaa9c36b.1451550513.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 87858260410
- for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2016 04:17:11 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 71BA5260429
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2016 06:22:16 +0100 (CET)
+In-Reply-To: <712e57698a4144889318549d3b20ba2eaaa9c36b.1451550513.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,97 +21,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch is to fix interrupt fails when resume back.
-In solution, we add IRQ re-initiation,
-and reconstruct suspend and resume with set_bias_level function.
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
----
- sound/soc/codecs/nau8825.c | 42 ++++++++++++++++++++++++++++++++++++------
- 1 file changed, 36 insertions(+), 6 deletions(-)
+This helper function can convert a given sample rate range to
+SNDRV_PCM_RATE_xxx bits.
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 504c969..2e2e11a 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -1092,6 +1092,36 @@ static int nau8825_set_sysclk(struct snd_soc_codec *codec, int clk_id,
- 	return nau8825_configure_sysclk(nau8825, clk_id, freq);
- }
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index b0be092..af1fb37 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -1093,6 +1093,8 @@ unsigned int snd_pcm_rate_to_rate_bit(unsigned int rate);
+ unsigned int snd_pcm_rate_bit_to_rate(unsigned int rate_bit);
+ unsigned int snd_pcm_rate_mask_intersect(unsigned int rates_a,
+ 					 unsigned int rates_b);
++unsigned int snd_pcm_rate_range_to_bits(unsigned int rate_min,
++					unsigned int rate_max);
  
-+static int nau8825_resume_setup(struct nau8825 *nau8825)
+ /**
+  * snd_pcm_set_runtime_buffer - Set the PCM runtime buffer
+diff --git a/sound/core/pcm_misc.c b/sound/core/pcm_misc.c
+index ebe8444..0b98f51 100644
+--- a/sound/core/pcm_misc.c
++++ b/sound/core/pcm_misc.c
+@@ -565,3 +565,30 @@ unsigned int snd_pcm_rate_mask_intersect(unsigned int rates_a,
+ 	return rates_a & rates_b;
+ }
+ EXPORT_SYMBOL_GPL(snd_pcm_rate_mask_intersect);
++
++/**
++ * snd_pcm_rate_range_to_bits - converts rate range to SNDRV_PCM_RATE_xxx bit
++ * @rate_min: the minimum sample rate
++ * @rate_max: the maximum sample rate
++ *
++ * Return: The SNDRV_PCM_RATE_xxx flag that corresponds to the given rate range,
++ * or SNDRV_PCM_RATE_KNOT for an unknown range.
++ */
++unsigned int snd_pcm_rate_range_to_bits(unsigned int rate_min,
++	unsigned int rate_max)
 +{
-+	struct regmap *regmap = nau8825->regmap;
++	unsigned int rates = 0;
++	int i;
 +
-+	/* IRQ Output Enable */
-+	regmap_update_bits(regmap, NAU8825_REG_INTERRUPT_MASK,
-+		NAU8825_IRQ_OUTPUT_EN, NAU8825_IRQ_OUTPUT_EN);
++	for (i = 0; i < snd_pcm_known_rates.count; i++) {
++		if (snd_pcm_known_rates.list[i] >= rate_min
++			&& snd_pcm_known_rates.list[i] <= rate_max)
++			rates |= 1 << i;
++	}
 +
-+	/* Enable internal VCO needed for interruptions */
-+	nau8825_configure_sysclk(nau8825, NAU8825_CLK_INTERNAL, 0);
++	if (!rates)
++		rates = SNDRV_PCM_RATE_KNOT;
 +
-+	/* Enable DDACR needed for interrupts */
-+	regmap_update_bits(regmap, NAU8825_REG_ENA_CTRL,
-+		NAU8825_ENABLE_DACR, NAU8825_ENABLE_DACR);
-+
-+	/* Chip needs one FSCLK cycle in order to generate interrupts,
-+	 * as we cannot guarantee one will be provided by the system. Turning
-+	 * master mode on then off enables us to generate that FSCLK cycle
-+	 * with a minimum of contention on the clock bus.
-+	 */
-+	regmap_update_bits(regmap, NAU8825_REG_I2S_PCM_CTRL2,
-+		NAU8825_I2S_MS_MASK, NAU8825_I2S_MS_MASTER);
-+	regmap_update_bits(regmap, NAU8825_REG_I2S_PCM_CTRL2,
-+		NAU8825_I2S_MS_MASK, NAU8825_I2S_MS_SLAVE);
-+
-+	nau8825_restart_jack_detection(regmap);
-+
-+	return 0;
++	return rates;
 +}
-+
- static int nau8825_set_bias_level(struct snd_soc_codec *codec,
- 				   enum snd_soc_bias_level level)
- {
-@@ -1121,6 +1151,8 @@ static int nau8825_set_bias_level(struct snd_soc_codec *codec,
- 					"Failed to sync cache: %d\n", ret);
- 				return ret;
- 			}
-+			if (nau8825->irq)
-+				nau8825_resume_setup(nau8825);
- 		}
- 
- 		break;
-@@ -1330,24 +1362,22 @@ static int nau8825_i2c_remove(struct i2c_client *client)
- #ifdef CONFIG_PM_SLEEP
- static int nau8825_suspend(struct device *dev)
- {
--	struct i2c_client *client = to_i2c_client(dev);
- 	struct nau8825 *nau8825 = dev_get_drvdata(dev);
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(nau8825->dapm);
- 
--	disable_irq(client->irq);
-+	disable_irq(nau8825->irq);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_OFF);
- 	regcache_cache_only(nau8825->regmap, true);
--	regcache_mark_dirty(nau8825->regmap);
- 
- 	return 0;
- }
- 
- static int nau8825_resume(struct device *dev)
- {
--	struct i2c_client *client = to_i2c_client(dev);
- 	struct nau8825 *nau8825 = dev_get_drvdata(dev);
- 
- 	regcache_cache_only(nau8825->regmap, false);
--	regcache_sync(nau8825->regmap);
--	enable_irq(client->irq);
-+	enable_irq(nau8825->irq);
- 
- 	return 0;
- }
++EXPORT_SYMBOL_GPL(snd_pcm_rate_range_to_bits);
 -- 
-2.6.4
+2.5.0
