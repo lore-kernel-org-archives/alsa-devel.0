@@ -1,74 +1,66 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] ASoC updates for v4.5
-Date: Mon, 11 Jan 2016 16:02:02 +0000
-Message-ID: <20160111160202.GI6588@sirena.org.uk>
-References: <20160111152020.GG6588@sirena.org.uk>
- <s5hd1t8yw0w.wl-tiwai@suse.de> <s5ha8ocyvm8.wl-tiwai@suse.de>
+Subject: Re: [PATCH 3/3] ASoC: fsl_ssi: remove register defaults
+Date: Mon, 11 Jan 2016 16:12:25 +0000
+Message-ID: <20160111161225.GJ6588@sirena.org.uk>
+References: <5677107C.60904@maciej.szmigiero.name>
+ <CAOMZO5C+32Nn6+Nv9KeVrd_Qeso-wEZZNU45G8h+e6LHdMoQYw@mail.gmail.com>
+ <CAOMZO5BE7=EdmEyMOq5WH=qv_0H3AGcyyDMJFoemLRJ=O5YLNw@mail.gmail.com>
+ <20160111140038.GC6588@sirena.org.uk>
+ <5693B7CC.8000905@maciej.szmigiero.name>
+ <20160111145430.GE6588@sirena.org.uk>
+ <5693CE21.8010009@tabi.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2352344195128188647=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 62B672604BE
- for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2016 17:02:09 +0100 (CET)
-In-Reply-To: <s5ha8ocyvm8.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="JhY86nTAwD/oWhC3"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5693CE21.8010009@tabi.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Timur Tabi <timur@tabi.org>
+Cc: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, Fabio Estevam <festevam@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2352344195128188647==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="3fquP/57BBR2yLsK"
-Content-Disposition: inline
-
-
---3fquP/57BBR2yLsK
+--JhY86nTAwD/oWhC3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jan 11, 2016 at 04:38:23PM +0100, Takashi Iwai wrote:
+On Mon, Jan 11, 2016 at 09:45:37AM -0600, Timur Tabi wrote:
 
-> Looking more closely now at the commits, I don't find new drivers
-> except for AMD ACP.  All others have been already merged in the
-> previous pull request, and now we have only fixes, as it seems.
+> Ok, I'm confused.  Granted, all of this regcache stuff was added after I
+> stopped working on this driver, so I'm out of the loop.  But it appears that
+> the regcache cannot properly handle an uninitialized cache.  I would expect
+> it to know to perform hard reads of any registers that are uninitialized.
 
-Interesting...  git is being very strange, if I generate a pull request
-against your for-next or upstream branches it shows all ASoC changes
-including those in asoc-v4.5 which are already in those branches.  If I
-explicitly generate one against asoc-v4.5 it's just the AMD drivers.
+regcache handles this fine, it's perfectly happy to just go and allocate
+the cache as registers get used (this is why the code that's doing the
+allocation exists...).  What is causing problems here is that the first
+access to the register is happening in interrupt context so we can't do
+a GFP_KERNEL allocation for it.  Most users don't do anything at all in
+interrupt context so it's not an issue for them, drivers that want to
+use regmap in interrupt context need to handle this.
 
---3fquP/57BBR2yLsK
+We can't rely on knowing which registers are valid and which registers
+can be read without side effects, it's optional for drivers to provide
+that information.  Even with that information it's not always clear that
+we want to stop and read every single value when we are initialising the
+device, that might be excessively slow (remember a lot of regmap devices
+are I2C or SPI connected, some with large register maps).  We should
+have a helper to do that though for drivers where it does make sense.
+
+--JhY86nTAwD/oWhC3
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWk9H5AAoJECTWi3JdVIfQr8AH/1U6G8x7+dKF24JoYBOrBtTI
-JsMJ6tiG+OQHLF2svXzuOJWiwnOmwg4Z+GNyhtSxzD5fZzSdi5Qb71EC8GbRrk4p
-KDlewh9YoXkSsCKI2y3Mn1t0Bqz730Q7bZYSa9T7wSWAGkHwylMNTitHCFMmR1Sr
-un1fULvmzD/QBPkoyPlFytnARWT5JHL6QVWzXDd5dQtgt/Xj46NiEPCjetFVMIEJ
-+lpiOzcF4iwWSqu8MyBbeeRxaG0odUZ/hK4MPCE28id9zs60qokVElsY2jnNVpxI
-WPTg3Cc3dW3EY3jzTAUkwk93mi4xn75jdQGwpvarVnEOJIUTNY5iDOx4Vz62Ai8=
-=Xp5k
+iQEcBAEBCAAGBQJWk9RpAAoJECTWi3JdVIfQEPAH/jIOBJmZ1/Z2SFx81KB5qmQH
+QcGhPJaDgyxMz21DsqXKX7hxg6NNYWVh7yE51QPSDk8nzygvtl/fHNqMXth9blOO
+2/7S9BOY3CfYxXQZ9qfu/2Uy4cTgDRauF6TvoH510LQqgu0f6dq8OBfGGngPRsOZ
+8wfQCM8k9jaO1L512EULIDiKP29mGmHhHN33tzfPrCDfcXWkoQkAP8/vG/P+xu/p
+lsrvnCq5hNGMXJi4T8mvykE/JDNKBS1b22A8501j0WYmG6oKO2U3P6/sEYaRAa6B
+p/qdtrxNM2pKjhJHLavJSSfWFVZdQ6Rl2IwI86G1EFBShyWgnV2OO3p20BwephY=
+=E/U9
 -----END PGP SIGNATURE-----
 
---3fquP/57BBR2yLsK--
-
---===============2352344195128188647==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2352344195128188647==--
+--JhY86nTAwD/oWhC3--
