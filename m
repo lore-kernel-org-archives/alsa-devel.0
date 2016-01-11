@@ -1,48 +1,43 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ASoC: AMD: add missing include
-Date: Mon, 11 Jan 2016 13:13:01 +0100
-Message-ID: <4595844.NIUnxKiA0y@wuerfel>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: AMD: add missing include
+Date: Mon, 11 Jan 2016 13:03:28 +0000
+Message-ID: <20160111130328.GB6588@sirena.org.uk>
+References: <4595844.NIUnxKiA0y@wuerfel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
- by alsa0.perex.cz (Postfix) with ESMTP id E6A97260412
- for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2016 13:13:09 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Alex Deucher <alexander.deucher@amd.com>, Murali Krishna Vemuri <murali-krishna.vemuri@amd.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="wDZUCI/4a1lIuQdD"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <4595844.NIUnxKiA0y@wuerfel>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Alex Deucher <alexander.deucher@amd.com>, Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>, Murali Krishna Vemuri <murali-krishna.vemuri@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-The newly added AMD acp driver is missing an include for linux/io.h
-and fails to build on ARM:
 
-sound/soc/amd/acp-pcm-dma.c: In function 'acp_reg_read':
-sound/soc/amd/acp-pcm-dma.c:83:9: error: implicit declaration of function 'readl' [-Werror=implicit-function-declaration]
+--wDZUCI/4a1lIuQdD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This adds the missing line.
+On Mon, Jan 11, 2016 at 01:13:01PM +0100, Arnd Bergmann wrote:
+> The newly added AMD acp driver is missing an include for linux/io.h
+> and fails to build on ARM:
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-This build error also appeared today on linux-next with ARM randconfig
+Guenter sent a fix for this first.
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index cc8b841b69b6..fa0311e4faed 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -17,6 +17,7 @@
- #include <linux/delay.h>
- #include <linux/sizes.h>
- #include <linux/pm_runtime.h>
-+#include <linux/io.h>
- 
- #include <sound/soc.h>
- 
+--wDZUCI/4a1lIuQdD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWk6gfAAoJECTWi3JdVIfQL/AH/RHKKTdU9aBHhZSVY9PWUcHq
+wceXUb/40QK8n8q74dJEPiYdLPmym3n5vLvhNDPtT2+xSS467JCQ3S3wOr+4rZ5Y
+H+f2CWlkciRaMSyAc3KNDd4oL5fmqHCWnpQsoliRel8E/070lvByu/zBIT8lLtIa
+4nlXfXj9kxyDsmVWdZrDBX2JOmzm/YanO6uF76IpTSjJAIuwF6dMfSAUrRRFeYnv
+v50bsFbv8ci1dY4dnfGNmBWXSYnhV7DN3GmjMeCwdGbyI4CejqIZ9zugJkHgGKXJ
+JOO8uvSthtN+H4j0a3ZzLlWXbAZkEuTEFXa/HUHfIg2SSXA6SvAxhrni2JXVwnU=
+=ceUC
+-----END PGP SIGNATURE-----
+
+--wDZUCI/4a1lIuQdD--
