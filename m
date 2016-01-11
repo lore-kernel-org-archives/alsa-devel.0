@@ -1,84 +1,80 @@
-From: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
-Subject: Re: [PATCH 2/5] clk: bcm2835: enable management of PCM clock
-Date: Mon, 11 Jan 2016 14:53:36 +0100
-Message-ID: <A156F37A-76CF-4ECF-8C85-162A71877EC5@martin.sperl.org>
-References: <1452331558-2520-1-git-send-email-kernel@martin.sperl.org> <20160110115858.GV6588@sirena.org.uk> <39E8C95F-C7DC-46C3-B29A-93A865485942@martin.sperl.org> <4412078.STjb1rKkbV@wuerfel>
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <4412078.STjb1rKkbV@wuerfel>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Lee Jones <lee-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Eric Anholt <eric-WhKQ6XTQaPysTnJN9+BGXg@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Michael Turquette <mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, Remi Pommarel <repk-lovNVp52yxIDGOk2Oe9MvA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-clk <linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, ALSA Development Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Matthias Reichl <hias-vtPv7MOkFPkAvxtiuMwx3w@public.gmane.org>, lFlorian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH 3/3] ASoC: fsl_ssi: remove register defaults
+Date: Mon, 11 Jan 2016 14:57:21 +0100
+Message-ID: <5693B4C1.4060400@maciej.szmigiero.name>
+References: <5677107C.60904@maciej.szmigiero.name>	<CAOMZO5C+32Nn6+Nv9KeVrd_Qeso-wEZZNU45G8h+e6LHdMoQYw@mail.gmail.com> <CAOMZO5BE7=EdmEyMOq5WH=qv_0H3AGcyyDMJFoemLRJ=O5YLNw@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAOMZO5BE7=EdmEyMOq5WH=qv_0H3AGcyyDMJFoemLRJ=O5YLNw@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Fabio,
 
-> On 11.01.2016, at 14:38, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org> wrote:
->=20
-> On Sunday 10 January 2016 13:17:17 Martin Sperl wrote:
->>=20
->> What you propose is a major change to the clock framework, so I woul=
-d
->> hope that Eric (the original author of this clock-driver) would addr=
-ess
->> it.
->>=20
->> Maybe someone has a better idea for a pattern to use to achieve=20
->> the required while maintaining =E2=80=9Csynchronization=E2=80=9D bet=
-ween defines
->> inside the dt-binding and the driver.
->=20
-> It's funny to look at the register list:
->=20
-> #define CM_VPUCTL               0x008
-> #define CM_VPUDIV               0x00c
-> #define CM_SYSCTL               0x010
-> #define CM_SYSDIV               0x014
-> #define CM_PERIACTL             0x018
-> #define CM_PERIADIV             0x01c
-> #define CM_PERIICTL             0x020
-> #define CM_PERIIDIV             0x024
-> #define CM_H264CTL              0x028
-> #define CM_H264DIV              0x02c
->=20
-> This one seems completely regular, there is always a pair of CTL and =
-DIV
-> registers, so I would have guessed that we could just take the index
-> of that to completely avoid the need for the header file and just hav=
-e
-> a lookup table of each index.
->=20
-> I can see two possible ways forward:
->=20
-> a) deprecate the existing binding and write a new simpler driver to
->   replace it with one that does not need the header. We probably need
->   to keep both drivers around indefinitely though to deal with people
->   that have their own dtb files, so this is a bit awkward.
-I was thinking about this as well, but am concerned about the dt-change=
-s.
+Thanks for testing.
 
-Also initialization order may be an issue, so I have avoided that.
+On 11.01.2016 13:10, Fabio Estevam wrote:
+> On Mon, Jan 11, 2016 at 10:04 AM, Fabio Estevam <festevam@gmail.com> wrote:
+> 
+>> This patch causes the following issue in linux-next:
+>>
+>> [    2.526984] ------------[ cut here ]------------
+>> [    2.531632] WARNING: CPU: 1 PID: 1 at kernel/locking/lockdep.c:2755
+>> lockdep_trace_alloc+0xf4/0x124()
+>> [    2.540771] DEBUG_LOCKS_WARN_ON(irqs_disabled_flags(flags))
+>> [    2.546175] Modules linked in:
+>> [    2.549447] CPU: 1 PID: 1 Comm: swapper/0 Not tainted
+>> 4.4.0-rc8-next-20160111 #204
+>> [    2.557021] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+>> [    2.563553] Backtrace:
+>> [    2.566040] [<c00136d8>] (dump_backtrace) from [<c0013874>]
+>> (show_stack+0x18/0x1c)
+>> [    2.573615]  r6:00000ac3 r5:00000000 r4:00000000 r3:00000000
+>> [    2.579362] [<c001385c>] (show_stack) from [<c02de89c>]
+>> (dump_stack+0x88/0xa4)
+>> [    2.586607] [<c02de814>] (dump_stack) from [<c002bcac>]
+>> (warn_slowpath_common+0x80/0xbc)
+>> [    2.594702]  r5:c0071ed0 r4:ef055b90
+>> [    2.598326] [<c002bc2c>] (warn_slowpath_common) from [<c002bd8c>]
+>> (warn_slowpath_fmt+0x38/0x40)
+>> [    2.607028]  r8:00000004 r7:00000004 r6:024080c0 r5:024080c0 r4:60000093
+>> [    2.613829] [<c002bd58>] (warn_slowpath_fmt) from [<c0071ed0>]
+>> (lockdep_trace_alloc+0xf4/0x124)
+>> [    2.622532]  r3:c09a1634 r2:c099dc0c
+>> [    2.626161] [<c0071ddc>] (lockdep_trace_alloc) from [<c010bc0c>]
+>> (kmem_cache_alloc+0x30/0x174)
+>> [    2.634778]  r4:ef001f00 r3:c0b02a88
+>> [    2.638407] [<c010bbdc>] (kmem_cache_alloc) from [<c03edac8>]
+>> (regcache_rbtree_write+0x150/0x724)
+>> [    2.647283]  r10:00000000 r9:00000010 r8:00000004 r7:00000004
+>> r6:0000002c r5:00000000
+>> [    2.655203]  r4:00000000
+>> [    2.657767] [<c03ed978>] (regcache_rbtree_write) from [<c03ec7d8>]
+>> (regcache_write+0x5c/0x64)
+> 
+> This fixes the warning:
+> 
+> --- a/sound/soc/fsl/fsl_ssi.c
+> +++ b/sound/soc/fsl/fsl_ssi.c
+> @@ -180,7 +180,6 @@ static const struct regmap_config fsl_ssi_regconfig = {
+>         .volatile_reg = fsl_ssi_volatile_reg,
+>         .precious_reg = fsl_ssi_precious_reg,
+>         .writeable_reg = fsl_ssi_writeable_reg,
+> -       .cache_type = REGCACHE_RBTREE,
+>  };
+> 
+> Is this the correct fix?
+> 
 
-> b) look at all the holes in the table and define new numbers for them
->   now, then remove the count as the driver can simply hardcode the
->   maximum number as it knows it will never change.
-There are clocks for most of them - See my patch I sent some time ago.
+This will disable register cache so it isn't right.
+Could you try REGCACHE_FLAT instead, please?
 
-Right now I have got a working version with the following patches:
-817176d clk: bcm2835: add missing clocks
-8f74701 clk: bcm2835: enable management of PCM clock
-62a7d94 clk: bcm2835: move to a different initialization scheme.
+Looks like the problem here is rbtree cache does some non-atomic allocations in
+read / write path when not supplied with default register values.
 
-There is one more thing that I would like to do before submitting those
-as a patch-set: enable the fractual divider, because right now
-we calculate the fractual divider value correctly, but we do not set
-the flag to enable it, so we are actually running too fast most
-of the times...
-
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Best regards,
+Maciej Szmigiero
