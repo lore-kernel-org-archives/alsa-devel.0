@@ -1,156 +1,58 @@
-From: PC Liao <pc.liao@mediatek.com>
-Subject: [PATCH] ASoC: mediatek: Enable 33bit memory address to support 4GB DRAM
-Date: Mon, 11 Jan 2016 16:00:50 +0800
-Message-ID: <1452499250-5202-1-git-send-email-pc.liao@mediatek.com>
-Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, tiwai@suse.de
-Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, koro.chen@mediatek.com, PC Liao <pc.liao@mediatek.com>, Hidalgo Huang <hidalgo.huang@mediatek.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - Fixup inverted internal mic for Lenovo E50-80
+Date: Mon, 11 Jan 2016 09:33:14 +0100
+Message-ID: <1452501194-5461-1-git-send-email-david.henningsson@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: 1529624@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-If platform is embedded with memory more than 3GB, the address will
-go out of the scope that 32-bit can handle with. This patch sets the
-dma_mask and MSB properly to describe its address to 33-bit.
+Inform userspace that one channel of the internal mic has reversed
+polarity, so it does not attempt to add both channels together and
+end up with silence.
 
-Signed-off-by: Hidalgo Huang <hidalgo.huang@mediatek.com>
-Signed-off-by: PC Liao <pc.liao@mediatek.com>
+Cc: stable@vger.kernel.org
+Reported-by: Andrzej Mendel <andrzej.mendel@gmail.com>
+Alsa-info: http://www.alsa-project.org/db/?f=3088f82a0cf977855f92af9db8ad406c04f71efa
+BugLink: https://bugs.launchpad.net/bugs/1529624
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- sound/soc/mediatek/mtk-afe-common.h |    1 +
- sound/soc/mediatek/mtk-afe-pcm.c    |   24 +++++++++++++++++++++++-
- 2 files changed, 24 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/mediatek/mtk-afe-common.h b/sound/soc/mediatek/mtk-afe-common.h
-index 9b1af1a..f341f62 100644
---- a/sound/soc/mediatek/mtk-afe-common.h
-+++ b/sound/soc/mediatek/mtk-afe-common.h
-@@ -87,6 +87,7 @@ struct mtk_afe_memif_data {
- 	int irq_en_shift;
- 	int irq_fs_shift;
- 	int irq_clr_shift;
-+	int msb_shift;
- };
- 
- struct mtk_afe_memif {
-diff --git a/sound/soc/mediatek/mtk-afe-pcm.c b/sound/soc/mediatek/mtk-afe-pcm.c
-index 08af9f5..60c38db 100644
---- a/sound/soc/mediatek/mtk-afe-pcm.c
-+++ b/sound/soc/mediatek/mtk-afe-pcm.c
-@@ -21,6 +21,7 @@
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
-+#include <linux/dma-mapping.h>
- #include <linux/pm_runtime.h>
- #include <sound/soc.h>
- #include "mtk-afe-common.h"
-@@ -35,6 +36,7 @@
- #define AFE_I2S_CON1		0x0034
- #define AFE_I2S_CON2		0x0038
- #define AFE_CONN_24BIT		0x006c
-+#define AFE_MEMIF_MSB		0x00cc
- 
- #define AFE_CONN1		0x0024
- #define AFE_CONN2		0x0028
-@@ -592,6 +594,7 @@ static int mtk_afe_dais_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct mtk_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
- 	struct mtk_afe_memif *memif = &afe->memif[rtd->cpu_dai->id];
-+	int msb_at_bit33 = 0;
- 	int ret;
- 
- 	dev_dbg(afe->dev,
-@@ -603,7 +606,10 @@ static int mtk_afe_dais_hw_params(struct snd_pcm_substream *substream,
- 	if (ret < 0)
- 		return ret;
- 
--	memif->phys_buf_addr = substream->runtime->dma_addr;
-+	if (sizeof(dma_addr_t) > 4)
-+		msb_at_bit33 = (substream->runtime->dma_addr & 0x100000000) ? 1 : 0;
-+
-+	memif->phys_buf_addr = substream->runtime->dma_addr & 0xffffffff;
- 	memif->buffer_size = substream->runtime->dma_bytes;
- 
- 	/* start */
-@@ -614,6 +620,11 @@ static int mtk_afe_dais_hw_params(struct snd_pcm_substream *substream,
- 		     memif->data->reg_ofs_base + AFE_BASE_END_OFFSET,
- 		     memif->phys_buf_addr + memif->buffer_size - 1);
- 
-+	/* set MSB to 33-bit */
-+	regmap_update_bits(afe->regmap, AFE_MEMIF_MSB,
-+			   1 << memif->data->msb_shift,
-+			   msb_at_bit33 << memif->data->msb_shift);
-+
- 	/* set channel */
- 	if (memif->data->mono_shift >= 0) {
- 		unsigned int mono = (params_channels(params) == 1) ? 1 : 0;
-@@ -978,6 +989,7 @@ static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
- 		.irq_en_shift = 0,
- 		.irq_fs_shift = 4,
- 		.irq_clr_shift = 0,
-+		.msb_shift = 0,
- 	}, {
- 		.name = "DL2",
- 		.id = MTK_AFE_MEMIF_DL2,
-@@ -991,6 +1003,7 @@ static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
- 		.irq_en_shift = 2,
- 		.irq_fs_shift = 16,
- 		.irq_clr_shift = 2,
-+		.msb_shift = 1,
- 	}, {
- 		.name = "VUL",
- 		.id = MTK_AFE_MEMIF_VUL,
-@@ -1004,6 +1017,7 @@ static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
- 		.irq_en_shift = 1,
- 		.irq_fs_shift = 8,
- 		.irq_clr_shift = 1,
-+		.msb_shift = 6,
- 	}, {
- 		.name = "DAI",
- 		.id = MTK_AFE_MEMIF_DAI,
-@@ -1017,6 +1031,7 @@ static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
- 		.irq_en_shift = 3,
- 		.irq_fs_shift = 20,
- 		.irq_clr_shift = 3,
-+		.msb_shift = 5,
- 	}, {
- 		.name = "AWB",
- 		.id = MTK_AFE_MEMIF_AWB,
-@@ -1030,6 +1045,7 @@ static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
- 		.irq_en_shift = 14,
- 		.irq_fs_shift = 24,
- 		.irq_clr_shift = 6,
-+		.msb_shift = 3,
- 	}, {
- 		.name = "MOD_DAI",
- 		.id = MTK_AFE_MEMIF_MOD_DAI,
-@@ -1043,6 +1059,7 @@ static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
- 		.irq_en_shift = 3,
- 		.irq_fs_shift = 20,
- 		.irq_clr_shift = 3,
-+		.msb_shift = 4,
- 	}, {
- 		.name = "HDMI",
- 		.id = MTK_AFE_MEMIF_HDMI,
-@@ -1056,6 +1073,7 @@ static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
- 		.irq_en_shift = 12,
- 		.irq_fs_shift = -1,
- 		.irq_clr_shift = 4,
-+		.msb_shift = 8,
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 3a89d82..2fdda51 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4666,6 +4666,7 @@ enum {
+ 	ALC290_FIXUP_SUBWOOFER,
+ 	ALC290_FIXUP_SUBWOOFER_HSJACK,
+ 	ALC269_FIXUP_THINKPAD_ACPI,
++	ALC269_FIXUP_DMIC_THINKPAD_ACPI,
+ 	ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 	ALC255_FIXUP_DELL2_MIC_NO_PRESENCE,
+ 	ALC255_FIXUP_HEADSET_MODE,
+@@ -5103,6 +5104,12 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = hda_fixup_thinkpad_acpi,
  	},
- };
- 
-@@ -1189,6 +1207,10 @@ static int mtk_afe_pcm_dev_probe(struct platform_device *pdev)
- 	struct mtk_afe *afe;
- 	struct resource *res;
- 
-+	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(33));
-+	if (ret)
-+		return ret;
-+
- 	afe = devm_kzalloc(&pdev->dev, sizeof(*afe), GFP_KERNEL);
- 	if (!afe)
- 		return -ENOMEM;
++	[ALC269_FIXUP_DMIC_THINKPAD_ACPI] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_inv_dmic,
++		.chained = true,
++		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
++	},
+ 	[ALC255_FIXUP_DELL1_MIC_NO_PRESENCE] = {
+ 		.type = HDA_FIXUP_PINS,
+ 		.v.pins = (const struct hda_pintbl[]) {
+@@ -5457,6 +5464,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x2226, "ThinkPad X250", ALC292_FIXUP_TPT440_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2233, "Thinkpad", ALC293_FIXUP_LENOVO_SPK_NOISE),
+ 	SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
++	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
+ 	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
+ 	SND_PCI_QUIRK(0x17aa, 0x3978, "IdeaPad Y410P", ALC269_FIXUP_NO_SHUTUP),
+ 	SND_PCI_QUIRK(0x17aa, 0x5013, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
 -- 
-1.7.9.5
+1.9.1
