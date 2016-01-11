@@ -1,37 +1,67 @@
-From: Timur Tabi <timur@tabi.org>
-Subject: Re: [PATCH 3/3] ASoC: fsl_ssi: remove register defaults
-Date: Mon, 11 Jan 2016 09:45:37 -0600
-Message-ID: <5693CE21.8010009@tabi.org>
-References: <5677107C.60904@maciej.szmigiero.name>
- <CAOMZO5C+32Nn6+Nv9KeVrd_Qeso-wEZZNU45G8h+e6LHdMoQYw@mail.gmail.com>
- <CAOMZO5BE7=EdmEyMOq5WH=qv_0H3AGcyyDMJFoemLRJ=O5YLNw@mail.gmail.com>
- <20160111140038.GC6588@sirena.org.uk>
- <5693B7CC.8000905@maciej.szmigiero.name>
- <20160111145430.GE6588@sirena.org.uk>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH 1/3] ASoC: fsl_ssi: mark SACNT register
+	volatile
+Date: Mon, 11 Jan 2016 16:52:18 +0100
+Message-ID: <5693CFB2.3090301@maciej.szmigiero.name>
+References: <56770FE1.4060202@maciej.szmigiero.name> <5692CE43.20708@tabi.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160111145430.GE6588@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc: Fabio Estevam <festevam@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-kernel <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from vps-vb.mhejs.net (vi37-28-154-113.vibiznes.pl [37.28.154.113])
+ by alsa0.perex.cz (Postfix) with ESMTP id 797FF2604BE
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2016 16:52:30 +0100 (CET)
+In-Reply-To: <5692CE43.20708@tabi.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Timur Tabi <timur@tabi.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Zidan Wang <zidan.wang@freescale.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> That's possibly problematic because the flat cache will of necessity end
-> up with defaults (of 0 from the kzalloc()) for all the registers.
-> You'll still have default values in the cache, though some of the
-> behaviour around optimising syncs does change without them explicitly
-> given.  It does deal with the allocation issue but given that the issue
-> was incorrect defaults I'd be a bit concerned.
+Hi Timur,
 
-Ok, I'm confused.  Granted, all of this regcache stuff was added after I 
-stopped working on this driver, so I'm out of the loop.  But it appears 
-that the regcache cannot properly handle an uninitialized cache.  I 
-would expect it to know to perform hard reads of any registers that are 
-uninitialized.
+Thanks for review.
 
-If the regcache wants to have an initialized cache, then it should 
-automatically perform reads an all non-volatile, non-precious registers 
-at initialization.
+On 10.01.2016 22:33, Timur Tabi wrote:
+> Maciej S. Szmigiero wrote:
+>> +    regmap_write(regs, CCSR_SSI_SACNT,
+>> +            ssi_private->regcache_sacnt);
+> 
+> So I'm not familiar with all of the regcache features, but I understand this patch.
+> I was wondering if it makes sense to write the same exact value that was read previously.
+> Isn't it possible for the WR or RD bits to change between fsl_ssi_suspend() and fsl_ssi_resume()?
+
+These bits are only set in fsl_ssi_ac97_{read,write} which then wait 100usecs
+before returning. This should be enough for SSI core to finish the relevant
+operation and clear the bits again, so theoretically they shouldn't be set
+outside these functions.
+
+However, if AC'97 register access is done concurrently with suspend or resume
+the read / written reg data might be corrupted.
+
+It looks to me this is indeed possible since SSI PM callbacks are set in its
+platform driver struct but ASoC core only calls PM callbacks in snd_soc_dai_driver
+(which SSI driver don't set).
+
+If I am correct with this reasoning then these callbacks need to be added to
+snd_soc_dai_driver but platform driver ones should still be provided in case
+the driver is loaded but the sound card is not yet registered.
+
+I've CCed Zidan since he originally added PM support to this driver.
+
+> That is, should we be doing this instead?
+> 
+> u32 temp;
+> regmap_read(regs, CCSR_SSI_SACNT, &temp);
+> temp &= 0x18; // preserve WR and RD
+> regmap_write(regs, CCSR_SSI_SACNT, (ssi_private->regcache_sacnt & ~0x18) | temp);
+> 
+
+Maciej
