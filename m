@@ -1,54 +1,47 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v3 3/5] gpio: arizona: Support Cirrus Logic CS47L24 and
- WM1831
-Date: Mon, 11 Jan 2016 06:26:19 +0000
-Message-ID: <20160111062619.GP3331@x1>
-References: <1446563316-28878-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1446563316-28878-4-git-send-email-rf@opensource.wolfsonmicro.com>
+From: Jurgen Kramer <gtmkramer@xs4all.nl>
+Subject: [PATCH] usb: Add native DSD support for Oppo HA-1
+Date: Mon, 11 Jan 2016 08:16:58 +0100
+Message-ID: <1452496618-14452-1-git-send-email-gtmkramer@xs4all.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1446563316-28878-4-git-send-email-rf@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: linus.walleij@linaro.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lb2-smtp-cloud6.xs4all.net (lb2-smtp-cloud6.xs4all.net
+ [194.109.24.28])
+ by alsa0.perex.cz (Postfix) with ESMTP id BF263260541
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2016 08:19:04 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Jurgen Kramer <gtmkramer@xs4all.nl>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 03 Nov 2015, Richard Fitzgerald wrote:
+This patch adds native DSD support for the Oppo HA-1. It uses a XMOS chipset
+but they use their own vendor ID.
 
-> The CS47L24 and WM1831 codecs only have two GPIO lines, but are
-> otherwise similar to the WM8280.
->=20
-> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
->  drivers/gpio/gpio-arizona.c | 4 ++++
->  1 file changed, 4 insertions(+)
+Signed-off-by: Jurgen Kramer <gtmkramer@xs4all.nl>
+---
+ sound/usb/quirks.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Applied, thanks.
-
-> diff --git a/drivers/gpio/gpio-arizona.c b/drivers/gpio/gpio-arizona.=
-c
-> index ca00273..624ea54 100644
-> --- a/drivers/gpio/gpio-arizona.c
-> +++ b/drivers/gpio/gpio-arizona.c
-> @@ -122,6 +122,10 @@ static int arizona_gpio_probe(struct platform_de=
-vice *pdev)
->  	case WM1814:
->  		arizona_gpio->gpio_chip.ngpio =3D 5;
->  		break;
-> +	case WM1831:
-> +	case CS47L24:
-> +		arizona_gpio->gpio_chip.ngpio =3D 2;
-> +		break;
->  	default:
->  		dev_err(&pdev->dev, "Unknown chip variant %d\n",
->  			arizona->type);
-
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index b6c0c8e..23ea6d8 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1269,6 +1269,7 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
+ 	case USB_ID(0x20b1, 0x3008): /* iFi Audio micro/nano iDSD */
+ 	case USB_ID(0x20b1, 0x2008): /* Matrix Audio X-Sabre */
+ 	case USB_ID(0x20b1, 0x300a): /* Matrix Audio Mini-i Pro */
++	case USB_ID(0x22d8, 0x0416): /* OPPO HA-1*/
+ 		if (fp->altsetting == 2)
+ 			return SNDRV_PCM_FMTBIT_DSD_U32_BE;
+ 		break;
+-- 
+2.5.0
