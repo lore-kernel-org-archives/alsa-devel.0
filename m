@@ -1,48 +1,156 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] hda-emu: Add keycode* to input_dev
-Date: Mon, 11 Jan 2016 09:01:48 +0100
-Message-ID: <1452499308-5239-1-git-send-email-david.henningsson@canonical.com>
+From: PC Liao <pc.liao@mediatek.com>
+Subject: [PATCH] ASoC: mediatek: Enable 33bit memory address to support 4GB DRAM
+Date: Mon, 11 Jan 2016 16:00:50 +0800
+Message-ID: <1452499250-5202-1-git-send-email-pc.liao@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 978A9260522
- for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2016 09:01:51 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, tiwai@suse.de
+Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, koro.chen@mediatek.com, PC Liao <pc.liao@mediatek.com>, Hidalgo Huang <hidalgo.huang@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- include/linux/input.h | 5 +++++
- 1 file changed, 5 insertions(+)
+If platform is embedded with memory more than 3GB, the address will
+go out of the scope that 32-bit can handle with. This patch sets the
+dma_mask and MSB properly to describe its address to 33-bit.
 
-diff --git a/include/linux/input.h b/include/linux/input.h
-index 213c12b..c710fe4 100644
---- a/include/linux/input.h
-+++ b/include/linux/input.h
-@@ -26,6 +26,11 @@ struct input_dev {
- 	unsigned long keybit[0x300 / (sizeof(long) * 8)];
- 	/* ... */
+Signed-off-by: Hidalgo Huang <hidalgo.huang@mediatek.com>
+Signed-off-by: PC Liao <pc.liao@mediatek.com>
+---
+ sound/soc/mediatek/mtk-afe-common.h |    1 +
+ sound/soc/mediatek/mtk-afe-pcm.c    |   24 +++++++++++++++++++++++-
+ 2 files changed, 24 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/mediatek/mtk-afe-common.h b/sound/soc/mediatek/mtk-afe-common.h
+index 9b1af1a..f341f62 100644
+--- a/sound/soc/mediatek/mtk-afe-common.h
++++ b/sound/soc/mediatek/mtk-afe-common.h
+@@ -87,6 +87,7 @@ struct mtk_afe_memif_data {
+ 	int irq_en_shift;
+ 	int irq_fs_shift;
+ 	int irq_clr_shift;
++	int msb_shift;
+ };
  
-+        unsigned int keycodemax;
-+        unsigned int keycodesize;
-+        void *keycode;
-+	/* ... */
+ struct mtk_afe_memif {
+diff --git a/sound/soc/mediatek/mtk-afe-pcm.c b/sound/soc/mediatek/mtk-afe-pcm.c
+index 08af9f5..60c38db 100644
+--- a/sound/soc/mediatek/mtk-afe-pcm.c
++++ b/sound/soc/mediatek/mtk-afe-pcm.c
+@@ -21,6 +21,7 @@
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/of_address.h>
++#include <linux/dma-mapping.h>
+ #include <linux/pm_runtime.h>
+ #include <sound/soc.h>
+ #include "mtk-afe-common.h"
+@@ -35,6 +36,7 @@
+ #define AFE_I2S_CON1		0x0034
+ #define AFE_I2S_CON2		0x0038
+ #define AFE_CONN_24BIT		0x006c
++#define AFE_MEMIF_MSB		0x00cc
+ 
+ #define AFE_CONN1		0x0024
+ #define AFE_CONN2		0x0028
+@@ -592,6 +594,7 @@ static int mtk_afe_dais_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct mtk_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
+ 	struct mtk_afe_memif *memif = &afe->memif[rtd->cpu_dai->id];
++	int msb_at_bit33 = 0;
+ 	int ret;
+ 
+ 	dev_dbg(afe->dev,
+@@ -603,7 +606,10 @@ static int mtk_afe_dais_hw_params(struct snd_pcm_substream *substream,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	memif->phys_buf_addr = substream->runtime->dma_addr;
++	if (sizeof(dma_addr_t) > 4)
++		msb_at_bit33 = (substream->runtime->dma_addr & 0x100000000) ? 1 : 0;
 +
- 	int (*open)(struct input_dev *dev);
- 	void (*close)(struct input_dev *dev);
- 	int (*flush)(struct input_dev *dev, struct file *file);
++	memif->phys_buf_addr = substream->runtime->dma_addr & 0xffffffff;
+ 	memif->buffer_size = substream->runtime->dma_bytes;
+ 
+ 	/* start */
+@@ -614,6 +620,11 @@ static int mtk_afe_dais_hw_params(struct snd_pcm_substream *substream,
+ 		     memif->data->reg_ofs_base + AFE_BASE_END_OFFSET,
+ 		     memif->phys_buf_addr + memif->buffer_size - 1);
+ 
++	/* set MSB to 33-bit */
++	regmap_update_bits(afe->regmap, AFE_MEMIF_MSB,
++			   1 << memif->data->msb_shift,
++			   msb_at_bit33 << memif->data->msb_shift);
++
+ 	/* set channel */
+ 	if (memif->data->mono_shift >= 0) {
+ 		unsigned int mono = (params_channels(params) == 1) ? 1 : 0;
+@@ -978,6 +989,7 @@ static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
+ 		.irq_en_shift = 0,
+ 		.irq_fs_shift = 4,
+ 		.irq_clr_shift = 0,
++		.msb_shift = 0,
+ 	}, {
+ 		.name = "DL2",
+ 		.id = MTK_AFE_MEMIF_DL2,
+@@ -991,6 +1003,7 @@ static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
+ 		.irq_en_shift = 2,
+ 		.irq_fs_shift = 16,
+ 		.irq_clr_shift = 2,
++		.msb_shift = 1,
+ 	}, {
+ 		.name = "VUL",
+ 		.id = MTK_AFE_MEMIF_VUL,
+@@ -1004,6 +1017,7 @@ static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
+ 		.irq_en_shift = 1,
+ 		.irq_fs_shift = 8,
+ 		.irq_clr_shift = 1,
++		.msb_shift = 6,
+ 	}, {
+ 		.name = "DAI",
+ 		.id = MTK_AFE_MEMIF_DAI,
+@@ -1017,6 +1031,7 @@ static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
+ 		.irq_en_shift = 3,
+ 		.irq_fs_shift = 20,
+ 		.irq_clr_shift = 3,
++		.msb_shift = 5,
+ 	}, {
+ 		.name = "AWB",
+ 		.id = MTK_AFE_MEMIF_AWB,
+@@ -1030,6 +1045,7 @@ static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
+ 		.irq_en_shift = 14,
+ 		.irq_fs_shift = 24,
+ 		.irq_clr_shift = 6,
++		.msb_shift = 3,
+ 	}, {
+ 		.name = "MOD_DAI",
+ 		.id = MTK_AFE_MEMIF_MOD_DAI,
+@@ -1043,6 +1059,7 @@ static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
+ 		.irq_en_shift = 3,
+ 		.irq_fs_shift = 20,
+ 		.irq_clr_shift = 3,
++		.msb_shift = 4,
+ 	}, {
+ 		.name = "HDMI",
+ 		.id = MTK_AFE_MEMIF_HDMI,
+@@ -1056,6 +1073,7 @@ static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
+ 		.irq_en_shift = 12,
+ 		.irq_fs_shift = -1,
+ 		.irq_clr_shift = 4,
++		.msb_shift = 8,
+ 	},
+ };
+ 
+@@ -1189,6 +1207,10 @@ static int mtk_afe_pcm_dev_probe(struct platform_device *pdev)
+ 	struct mtk_afe *afe;
+ 	struct resource *res;
+ 
++	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(33));
++	if (ret)
++		return ret;
++
+ 	afe = devm_kzalloc(&pdev->dev, sizeof(*afe), GFP_KERNEL);
+ 	if (!afe)
+ 		return -ENOMEM;
 -- 
-1.9.1
+1.7.9.5
