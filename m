@@ -1,18 +1,18 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH 1/1] alsabat: rename to avoid naming
- conflict
-Date: Tue, 12 Jan 2016 19:43:43 +0000
-Message-ID: <1452627823.8097.13.camel@loki>
-References: <1452567984-18047-1-git-send-email-han.lu@intel.com>
- <s5hpox6wx4a.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Fix white noise on Dell Latitude
+	E5550
+Date: Tue, 12 Jan 2016 21:09:55 +0100
+Message-ID: <1452629395-20652-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 73863260508
- for <alsa-devel@alsa-project.org>; Tue, 12 Jan 2016 20:43:48 +0100 (CET)
-In-Reply-To: <s5hpox6wx4a.wl-tiwai@suse.de>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 27AFF260508
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jan 2016 21:10:03 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 32F8AAD0B
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jan 2016 20:10:02 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,31 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: han.lu@intel.com, clemens@ladisch.de, joerg.steffens@bareos.com, alsa-devel@alsa-project.org, bernard.gautier@intel.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2016-01-12 at 18:01 +0100, Takashi Iwai wrote:
-> On Tue, 12 Jan 2016 04:06:24 +0100,
-> han.lu@intel.com wrote:
-> > 
-> > From: "Lu, Han" <han.lu@intel.com>
-> > 
-> > alsa-utils as well as bareos-bat (as well a some Bacula packages)
-> > all contain a program called /usr/bin/bat, which causes conflicts on
-> > various distributions ("basic audio tester" vs "bareos administration
-> > tool"("bacula administration tool")).
-> > Rename to avoid conflict.
-> 
-> We should get consensus at first.
+Dell Latitude E5550 (1028:062c) has a white noise problem like other
+Latitude E models, and it gets fixed by the very same quirk as well.
 
-+1 for alsabat as it should never collide with anything :)
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=110591
+Cc: <stable@vger.kernel.org> # v4.1+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> 
-> Also, we don't need to rename the directory or the source files in the
-> tree.  What we need to rename is only the target binary.
-> 
-> 
-> thanks,
-> 
-> Takashi
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 2fdda51d07c4..f0ed41e1a884 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5339,6 +5339,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x05f6, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0615, "Dell Vostro 5470", ALC290_FIXUP_SUBWOOFER_HSJACK),
+ 	SND_PCI_QUIRK(0x1028, 0x0616, "Dell Vostro 5470", ALC290_FIXUP_SUBWOOFER_HSJACK),
++	SND_PCI_QUIRK(0x1028, 0x062c, "Dell Latitude E5550", ALC292_FIXUP_DELL_E7X),
+ 	SND_PCI_QUIRK(0x1028, 0x062e, "Dell Latitude E7450", ALC292_FIXUP_DELL_E7X),
+ 	SND_PCI_QUIRK(0x1028, 0x0638, "Dell Inspiron 5439", ALC290_FIXUP_MONO_SPEAKERS_HSJACK),
+ 	SND_PCI_QUIRK(0x1028, 0x064a, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+-- 
+2.7.0
