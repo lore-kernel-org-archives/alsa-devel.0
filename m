@@ -1,7 +1,7 @@
 From: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [RFC v3 2/7] ASoC: mediatek: address dai link array entries by enum
-Date: Tue, 12 Jan 2016 16:38:11 +0100
-Message-ID: <1452613096-8116-3-git-send-email-p.zabel@pengutronix.de>
+Subject: [RFC v3 7/7] ASoC: hdmi-codec: Add ELD control
+Date: Tue, 12 Jan 2016 16:38:16 +0100
+Message-ID: <1452613096-8116-8-git-send-email-p.zabel@pengutronix.de>
 References: <1452613096-8116-1-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,73 +21,68 @@ To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This should be more robust to future changes than adressing
-array entries by index number.
+Exporting the ELD bytes to userspace allows an application to select
+an appropriate audio format depending on the current capabilities of
+the connected HDMI sink device.
 
 Signed-off-by: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 ---
- sound/soc/mediatek/mt8173-rt5650-rt5676.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ sound/soc/codecs/hdmi-codec.c | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-diff --git a/sound/soc/mediatek/mt8173-rt5650-rt5676.c b/sound/soc/mediatek/mt8173-rt5650-rt5676.c
-index 50ba538..5c4c58c 100644
---- a/sound/soc/mediatek/mt8173-rt5650-rt5676.c
-+++ b/sound/soc/mediatek/mt8173-rt5650-rt5676.c
-@@ -131,10 +131,17 @@ static struct snd_soc_dai_link_component mt8173_rt5650_rt5676_codecs[] = {
- 	},
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 6b327e2..6cb7217 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -54,6 +54,40 @@ enum {
+ 	DAI_ID_SPDIF,
  };
  
-+enum {
-+	DAI_LINK_PLAYBACK,
-+	DAI_LINK_CAPTURE,
-+	DAI_LINK_CODEC_I2S,
-+	DAI_LINK_INTERCODEC
++static int hdmi_eld_ctl_info(struct snd_kcontrol *kcontrol,
++			     struct snd_ctl_elem_info *uinfo)
++{
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
++	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
++
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
++	uinfo->count = sizeof(hcp->eld);
++
++	return 0;
++}
++
++static int hdmi_eld_ctl_get(struct snd_kcontrol *kcontrol,
++			    struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
++	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
++
++	memcpy(ucontrol->value.bytes.data, hcp->eld, sizeof(hcp->eld));
++
++	return 0;
++}
++
++static const struct snd_kcontrol_new hdmi_controls[] = {
++	{
++		.access = SNDRV_CTL_ELEM_ACCESS_READ |
++			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
++		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
++		.name = "ELD",
++		.info = hdmi_eld_ctl_info,
++		.get = hdmi_eld_ctl_get,
++	},
 +};
 +
- /* Digital audio interface glue - connects codec <---> CPU */
- static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
- 	/* Front End DAI links */
--	{
-+	[DAI_LINK_PLAYBACK] = {
- 		.name = "rt5650_rt5676 Playback",
- 		.stream_name = "rt5650_rt5676 Playback",
- 		.cpu_dai_name = "DL1",
-@@ -144,7 +151,7 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
- 		.dynamic = 1,
- 		.dpcm_playback = 1,
- 	},
--	{
-+	[DAI_LINK_CAPTURE] = {
- 		.name = "rt5650_rt5676 Capture",
- 		.stream_name = "rt5650_rt5676 Capture",
- 		.cpu_dai_name = "VUL",
-@@ -156,7 +163,7 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
- 	},
+ static void hdmi_codec_abort(struct device *dev)
+ {
+ 	struct hdmi_codec_priv *hcp = dev_get_drvdata(dev);
+@@ -327,6 +361,8 @@ static const struct snd_soc_dai_driver hdmi_spdif_dai = {
+ };
  
- 	/* Back End DAI links */
--	{
-+	[DAI_LINK_CODEC_I2S] = {
- 		.name = "Codec",
- 		.cpu_dai_name = "I2S",
- 		.no_pcm = 1,
-@@ -170,7 +177,8 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
- 	},
--	{ /* rt5676 <-> rt5650 intercodec link: Sets rt5676 I2S2 as master */
-+	/* rt5676 <-> rt5650 intercodec link: Sets rt5676 I2S2 as master */
-+	[DAI_LINK_INTERCODEC] = {
- 		.name = "rt5650_rt5676 intercodec",
- 		.stream_name = "rt5650_rt5676 intercodec",
- 		.cpu_dai_name = "snd-soc-dummy-dai",
-@@ -240,7 +248,7 @@ static int mt8173_rt5650_rt5676_dev_probe(struct platform_device *pdev)
- 	mt8173_rt5650_rt5676_codec_conf[0].of_node =
- 		mt8173_rt5650_rt5676_codecs[1].of_node;
- 
--	mt8173_rt5650_rt5676_dais[3].codec_of_node =
-+	mt8173_rt5650_rt5676_dais[DAI_LINK_INTERCODEC].codec_of_node =
- 		mt8173_rt5650_rt5676_codecs[1].of_node;
- 
- 	card->dev = &pdev->dev;
+ static struct snd_soc_codec_driver hdmi_codec = {
++	.controls = hdmi_controls,
++	.num_controls = ARRAY_SIZE(hdmi_controls),
+ 	.dapm_widgets = hdmi_widgets,
+ 	.num_dapm_widgets = ARRAY_SIZE(hdmi_widgets),
+ 	.dapm_routes = hdmi_routes,
 -- 
 2.6.4
