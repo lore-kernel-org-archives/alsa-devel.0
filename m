@@ -1,7 +1,7 @@
 From: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [RFC v3 4/7] video: rmk's HDMI notification prototype
-Date: Tue, 12 Jan 2016 16:38:13 +0100
-Message-ID: <1452613096-8116-5-git-send-email-p.zabel@pengutronix.de>
+Subject: [RFC v3 5/7] drm/mediatek: hdmi: issue notifications
+Date: Tue, 12 Jan 2016 16:38:14 +0100
+Message-ID: <1452613096-8116-6-git-send-email-p.zabel@pengutronix.de>
 References: <1452613096-8116-1-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,146 +21,77 @@ To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is extracted from Russell's food for thought HDMI notification
-prototype [1]. I've put it into drivers/video for the time being because
-my kernels don't have drivers/cec yet.
+Issue hot-plug detection, EDID update, and ELD update notifications
+from the CEC and HDMI drivers.
 
-The current use case for the notifications on MediaTek MT8173 is to
-let the (dis)connection notifications control an ALSA jack object.
-
-Still no Signed-off-by, this patch is not supposed to be merged.
-
-[1] https://patchwork.kernel.org/patch/7339011/
+Signed-off-by: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 ---
- drivers/video/Makefile   |  2 +-
- drivers/video/hdmi-not.c | 61 ++++++++++++++++++++++++++++++++++++++++++++++++
- include/linux/hdmi-not.h | 39 +++++++++++++++++++++++++++++++
- 3 files changed, 101 insertions(+), 1 deletion(-)
- create mode 100644 drivers/video/hdmi-not.c
- create mode 100644 include/linux/hdmi-not.h
+Changes since v2:
+ - Send an initial notification to set the correct jack state.
+---
+ drivers/gpu/drm/mediatek/mtk_cec.c          | 11 +++++++++++
+ drivers/gpu/drm/mediatek/mtk_drm_hdmi_drv.c |  3 +++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/drivers/video/Makefile b/drivers/video/Makefile
-index 9ad3c17..bf25760 100644
---- a/drivers/video/Makefile
-+++ b/drivers/video/Makefile
-@@ -1,5 +1,5 @@
- obj-$(CONFIG_VGASTATE)            += vgastate.o
--obj-$(CONFIG_HDMI)                += hdmi.o
-+obj-$(CONFIG_HDMI)                += hdmi.o hdmi-not.o
- 
- obj-$(CONFIG_VT)		  += console/
- obj-$(CONFIG_LOGO)		  += logo/
-diff --git a/drivers/video/hdmi-not.c b/drivers/video/hdmi-not.c
-new file mode 100644
-index 0000000..ba3be8a
---- /dev/null
-+++ b/drivers/video/hdmi-not.c
-@@ -0,0 +1,61 @@
-+#include <linux/export.h>
+diff --git a/drivers/gpu/drm/mediatek/mtk_cec.c b/drivers/gpu/drm/mediatek/mtk_cec.c
+index cba3647..c309920 100644
+--- a/drivers/gpu/drm/mediatek/mtk_cec.c
++++ b/drivers/gpu/drm/mediatek/mtk_cec.c
+@@ -13,6 +13,7 @@
+  */
+ #include <linux/clk.h>
+ #include <linux/delay.h>
 +#include <linux/hdmi-not.h>
-+#include <linux/notifier.h>
-+#include <linux/string.h>
+ #include <linux/io.h>
+ #include <linux/interrupt.h>
+ #include <linux/platform_device.h>
+@@ -79,6 +80,12 @@ void mtk_cec_set_hpd_event(struct device *dev,
+ 
+ 	cec->hdmi_dev = hdmi_dev;
+ 	cec->hpd_event = hpd_event;
 +
-+static BLOCKING_NOTIFIER_HEAD(hdmi_notifier);
-+
-+int hdmi_register_notifier(struct notifier_block *nb)
-+{
-+	return blocking_notifier_chain_register(&hdmi_notifier, nb);
-+}
-+EXPORT_SYMBOL_GPL(hdmi_register_notifier);
-+
-+int hdmi_unregister_notifier(struct notifier_block *nb)
-+{
-+	return blocking_notifier_chain_unregister(&hdmi_notifier, nb);
-+}
-+EXPORT_SYMBOL_GPL(hdmi_unregister_notifier);
-+
-+void hdmi_event_connect(struct device *dev)
-+{
-+	struct hdmi_event_base base;
-+
-+	base.source = dev;
-+
-+	blocking_notifier_call_chain(&hdmi_notifier, HDMI_CONNECTED, &base);
-+}
-+EXPORT_SYMBOL_GPL(hdmi_event_connect);
-+
-+void hdmi_event_disconnect(struct device *dev)
-+{
-+	struct hdmi_event_base base;
-+
-+	base.source = dev;
-+
-+	blocking_notifier_call_chain(&hdmi_notifier, HDMI_DISCONNECTED, &base);
-+}
-+EXPORT_SYMBOL_GPL(hdmi_event_disconnect);
-+
-+void hdmi_event_new_edid(struct device *dev, const void *edid, size_t size)
-+{
-+	struct hdmi_event_new_edid new_edid;
-+
-+	new_edid.base.source = dev;
-+	new_edid.edid = edid;
-+	new_edid.size = size;
-+
-+	blocking_notifier_call_chain(&hdmi_notifier, HDMI_NEW_EDID, &new_edid);
-+}
-+EXPORT_SYMBOL_GPL(hdmi_event_new_edid);
-+
-+void hdmi_event_new_eld(struct device *dev, const void *eld)
-+{
-+	struct hdmi_event_new_eld new_eld;
-+
-+	new_eld.base.source = dev;
-+	memcpy(new_eld.eld, eld, sizeof(new_eld.eld));
-+
-+	blocking_notifier_call_chain(&hdmi_notifier, HDMI_NEW_ELD, &new_eld);
-+}
-+EXPORT_SYMBOL_GPL(hdmi_event_new_eld);
-diff --git a/include/linux/hdmi-not.h b/include/linux/hdmi-not.h
-new file mode 100644
-index 0000000..940ece45
---- /dev/null
-+++ b/include/linux/hdmi-not.h
-@@ -0,0 +1,39 @@
-+#include <linux/types.h>
-+
-+enum {
-+	HDMI_CONNECTED,
-+	HDMI_DISCONNECTED,
-+	HDMI_NEW_EDID,
-+	HDMI_NEW_ELD,
-+};
-+
-+struct hdmi_event_base {
-+	struct device *source;
-+};
-+
-+struct hdmi_event_new_edid {
-+	struct hdmi_event_base base;
-+	const void *edid;
-+	size_t size;
-+};
-+
-+struct hdmi_event_new_eld {
-+	struct hdmi_event_base base;
-+	unsigned char eld[128];
-+};
-+
-+union hdmi_event {
-+	struct hdmi_event_base base;
-+	struct hdmi_event_new_edid edid;
-+	struct hdmi_event_new_eld eld;
-+};
-+
-+struct notifier_block;
-+
-+int hdmi_register_notifier(struct notifier_block *nb);
-+int hdmi_unregister_notifier(struct notifier_block *nb);
-+
-+void hdmi_event_connect(struct device *dev);
-+void hdmi_event_disconnect(struct device *dev);
-+void hdmi_event_new_edid(struct device *dev, const void *edid, size_t size);
-+void hdmi_event_new_eld(struct device *dev, const void *eld);
++	/* Initial notification event to set jack state */
++	if (mtk_cec_hpd_high(dev))
++		hdmi_event_connect(hdmi_dev);
++	else
++		hdmi_event_disconnect(hdmi_dev);
+ }
+ 
+ bool mtk_cec_hpd_high(struct device *dev)
+@@ -160,6 +167,10 @@ static irqreturn_t mtk_cec_htplg_isr_thread(int irq, void *arg)
+ 	if (cec->hpd != hpd) {
+ 		dev_info(dev, "hotplug event!,cur hpd = %d, hpd = %d\n",
+ 			 cec->hpd, hpd);
++		if (hpd)
++			hdmi_event_connect(cec->hdmi_dev);
++		else
++			hdmi_event_disconnect(cec->hdmi_dev);
+ 		cec->hpd = hpd;
+ 		if (cec->hpd_event)
+ 			cec->hpd_event(hpd, cec->hdmi_dev);
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_hdmi_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_hdmi_drv.c
+index 0d4a646..1a128c5 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_hdmi_drv.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_hdmi_drv.c
+@@ -17,6 +17,7 @@
+ #include <drm/drm_crtc_helper.h>
+ #include <drm/drm_edid.h>
+ #include <linux/clk.h>
++#include <linux/hdmi-not.h>
+ #include <linux/i2c.h>
+ #include <linux/kernel.h>
+ #include <linux/mfd/syscon.h>
+@@ -122,9 +123,11 @@ static int mtk_hdmi_conn_get_modes(struct drm_connector *conn)
+ 	hdmi->dvi_mode = !drm_detect_hdmi_monitor(edid);
+ 
+ 	drm_mode_connector_update_edid_property(conn, edid);
++	hdmi_event_new_edid(hdmi->dev, edid, sizeof(*edid));
+ 
+ 	ret = drm_add_edid_modes(conn, edid);
+ 	drm_edid_to_eld(conn, edid);
++	hdmi_event_new_eld(hdmi->dev, conn->eld);
+ 	kfree(edid);
+ 	return ret;
+ }
 -- 
 2.6.4
