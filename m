@@ -1,59 +1,83 @@
-From: kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org
-Subject: [PATCH V2 3/3] dt-bindings: bsm2835: fix bindings documentation to use new clock framework
-Date: Tue, 12 Jan 2016 12:35:48 +0000
-Message-ID: <1452602149-5875-4-git-send-email-kernel@martin.sperl.org>
-References: <1452602149-5875-1-git-send-email-kernel@martin.sperl.org>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1452602149-5875-1-git-send-email-kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Lee Jones <lee-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Eric Anholt <eric-WhKQ6XTQaPysTnJN9+BGXg@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: usb-audio: Avoid calling
+	usb_autopm_put_interface() at disconnect
+Date: Tue, 12 Jan 2016 14:13:14 +0100
+Message-ID: <1452604394-13330-1-git-send-email-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 54F23265465
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jan 2016 14:13:17 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 4D803AD78
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jan 2016 13:13:14 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
+ALSA PCM may still have a leftover instance after disconnection and
+it delays its release.  The problem is that the PCM close code path of
+USB-audio driver has a call of snd_usb_autosuspend().  This involves
+with the call of usb_autopm_put_interface() and it may lead to a
+kernel Oops due to the NULL object like:
 
-The bcm2835-i2s driver has been updated to use the new clock framework
-for the bcm2835 SOC.
+ BUG: unable to handle kernel NULL pointer dereference at 0000000000000190
+ IP: [<ffffffff815ae7ef>] usb_autopm_put_interface+0xf/0x30 PGD 0
+ Call Trace:
+  [<ffffffff8173bd94>] snd_usb_autosuspend+0x14/0x20
+  [<ffffffff817461bc>] snd_usb_pcm_close.isra.14+0x5c/0x90
+  [<ffffffff8174621f>] snd_usb_playback_close+0xf/0x20
+  [<ffffffff816ef58a>] snd_pcm_release_substream.part.36+0x3a/0x90
+  [<ffffffff816ef6b3>] snd_pcm_release+0xa3/0xb0
+  [<ffffffff816debb0>] snd_disconnect_release+0xd0/0xe0
+  [<ffffffff8114d417>] __fput+0x97/0x1d0
+  [<ffffffff8114d589>] ____fput+0x9/0x10
+  [<ffffffff8109e452>] task_work_run+0x72/0x90
+  [<ffffffff81088510>] do_exit+0x280/0xa80
+  [<ffffffff8108996a>] do_group_exit+0x3a/0xa0
+  [<ffffffff8109261f>] get_signal+0x1df/0x540
+  [<ffffffff81040903>] do_signal+0x23/0x620
+  [<ffffffff8114c128>] ? do_readv_writev+0x128/0x200
+  [<ffffffff810012e1>] prepare_exit_to_usermode+0x91/0xd0
+  [<ffffffff810013ba>] syscall_return_slowpath+0x9a/0x120
+  [<ffffffff817587cd>] ? __sys_recvmsg+0x5d/0x70
+  [<ffffffff810d2765>] ? ktime_get_ts64+0x45/0xe0
+  [<ffffffff8115dea0>] ? SyS_poll+0x60/0xf0
+  [<ffffffff818d2327>] int_ret_from_sys_call+0x25/0x8f
 
-This patch documents the required changes to the bindings.
+We have already a check of disconnection in snd_usb_autoresume(), but
+the check is missing its counterpart.  The fix is just to put the same
+check in snd_usb_autosuspend(), too.
 
-Signed-off-by: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=109431
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt |    7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ sound/usb/card.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt b/Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt
-index 65783de..b331f26 100644
---- a/Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt
-@@ -4,11 +4,10 @@ Required properties:
- - compatible: "brcm,bcm2835-i2s"
- - reg: A list of base address and size entries:
- 	* The first entry should cover the PCM registers
--	* The second entry should cover the PCM clock registers
-+- clocks: the (PCM) clock to use
- - dmas: List of DMA controller phandle and DMA request line ordered pairs.
- - dma-names: Identifier string for each DMA request line in the dmas property.
-   These strings correspond 1:1 with the ordered pairs in dmas.
--
-   One of the DMA channels will be responsible for transmission (should be
-   named "tx") and one for reception (should be named "rx").
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 18f56646ce86..1f09d9591276 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -675,6 +675,8 @@ int snd_usb_autoresume(struct snd_usb_audio *chip)
  
-@@ -16,8 +15,8 @@ Example:
- 
- bcm2835_i2s: i2s@7e203000 {
- 	compatible = "brcm,bcm2835-i2s";
--	reg = <0x7e203000 0x20>,
--	      <0x7e101098 0x02>;
-+	reg = <0x7e203000 0x24>;
-+	clocks = <&clocks BCM2835_CLOCK_PCM>;
- 
- 	dmas = <&dma 2>,
- 	       <&dma 3>;
+ void snd_usb_autosuspend(struct snd_usb_audio *chip)
+ {
++	if (atomic_read(&chip->shutdown))
++		return;
+ 	if (atomic_dec_and_test(&chip->active))
+ 		usb_autopm_put_interface(chip->pm_intf);
+ }
 -- 
-1.7.10.4
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+2.7.0
