@@ -1,7 +1,8 @@
 From: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [RFC v3 7/7] ASoC: hdmi-codec: Add ELD control
-Date: Tue, 12 Jan 2016 16:38:16 +0100
-Message-ID: <1452613096-8116-8-git-send-email-p.zabel@pengutronix.de>
+Subject: [RFC v3 6/7] ASoC: hdmi-codec: Use HDMI notifications to add jack
+ support
+Date: Tue, 12 Jan 2016 16:38:15 +0100
+Message-ID: <1452613096-8116-7-git-send-email-p.zabel@pengutronix.de>
 References: <1452613096-8116-1-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,68 +22,155 @@ To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Exporting the ELD bytes to userspace allows an application to select
-an appropriate audio format depending on the current capabilities of
-the connected HDMI sink device.
+Use HDMI connection / disconnection notifications to update an ALSA
+jack object. Also make a copy of the ELD block after every change.
 
 Signed-off-by: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 ---
- sound/soc/codecs/hdmi-codec.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+Changes since v2:
+ - Don't call get_eld, copy the ELD contained in the notification instead.
+---
+ include/sound/hdmi-codec.h    |  6 ++++
+ sound/soc/codecs/hdmi-codec.c | 69 ++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 74 insertions(+), 1 deletion(-)
 
+diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
+index 15fe70f..8b6219d 100644
+--- a/include/sound/hdmi-codec.h
++++ b/include/sound/hdmi-codec.h
+@@ -99,6 +99,12 @@ struct hdmi_codec_pdata {
+ 	int max_i2s_channels;
+ };
+ 
++struct snd_soc_codec;
++struct snd_soc_jack;
++
++int hdmi_codec_set_jack_detect(struct snd_soc_codec *codec,
++			       struct snd_soc_jack *jack);
++
+ #define HDMI_CODEC_DRV_NAME "hdmi-audio-codec"
+ 
+ #endif /* __HDMI_CODEC_H__ */
 diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 6b327e2..6cb7217 100644
+index 687332d..6b327e2 100644
 --- a/sound/soc/codecs/hdmi-codec.c
 +++ b/sound/soc/codecs/hdmi-codec.c
-@@ -54,6 +54,40 @@ enum {
- 	DAI_ID_SPDIF,
+@@ -12,9 +12,12 @@
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+  * General Public License for more details.
+  */
++#include <linux/hdmi-not.h>
+ #include <linux/module.h>
++#include <linux/notifier.h>
+ #include <linux/string.h>
+ #include <sound/core.h>
++#include <sound/jack.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+@@ -27,11 +30,15 @@
+ struct hdmi_codec_priv {
+ 	struct hdmi_codec_pdata hcd;
+ 	struct snd_soc_dai_driver *daidrv;
++	struct snd_soc_jack *jack;
+ 	struct hdmi_codec_daifmt daifmt[2];
+ 	struct mutex current_stream_lock;
+ 	struct snd_pcm_substream *current_stream;
+ 	struct snd_pcm_hw_constraint_list ratec;
+ 	uint8_t eld[MAX_ELD_BYTES];
++	struct device *dev;
++	struct notifier_block nb;
++	unsigned int jack_status;
  };
  
-+static int hdmi_eld_ctl_info(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_info *uinfo)
+ static const struct snd_soc_dapm_widget hdmi_widgets[] = {
+@@ -326,6 +333,60 @@ static struct snd_soc_codec_driver hdmi_codec = {
+ 	.num_dapm_routes = ARRAY_SIZE(hdmi_routes),
+ };
+ 
++static void hdmi_codec_jack_report(struct hdmi_codec_priv *hcp,
++				   unsigned int jack_status)
 +{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
++	if (!hcp->jack)
++		return;
 +
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
-+	uinfo->count = sizeof(hcp->eld);
++	if (jack_status != hcp->jack_status) {
++		snd_soc_jack_report(hcp->jack, jack_status, SND_JACK_LINEOUT);
++		hcp->jack_status = jack_status;
++	}
++}
++
++static int hdmi_codec_notify(struct notifier_block *nb, unsigned long event,
++			     void *data)
++{
++	struct hdmi_codec_priv *hcp = container_of(nb, struct hdmi_codec_priv,
++						   nb);
++	union hdmi_event *event_block = data;
++
++	if (hcp->dev->parent != event_block->base.source)
++		return NOTIFY_OK;
++
++	if (!hcp->jack)
++		return NOTIFY_OK;
++
++	switch (event) {
++	case HDMI_CONNECTED:
++		hdmi_codec_jack_report(hcp, SND_JACK_LINEOUT);
++		break;
++	case HDMI_DISCONNECTED:
++		hdmi_codec_jack_report(hcp, 0);
++		break;
++	case HDMI_NEW_ELD:
++		memcpy(hcp->eld, event_block->eld.eld, sizeof(hcp->eld));
++		break;
++	}
++
++	return NOTIFY_OK;
++}
++
++int hdmi_codec_set_jack_detect(struct snd_soc_codec *codec,
++			       struct snd_soc_jack *jack)
++{
++	struct hdmi_codec_priv *hcp = snd_soc_codec_get_drvdata(codec);
++
++	hcp->jack = jack;
++	hcp->nb.notifier_call = hdmi_codec_notify;
++
++	hdmi_register_notifier(&hcp->nb);
 +
 +	return 0;
 +}
++EXPORT_SYMBOL_GPL(hdmi_codec_set_jack_detect);
 +
-+static int hdmi_eld_ctl_get(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
-+
-+	memcpy(ucontrol->value.bytes.data, hcp->eld, sizeof(hcp->eld));
-+
-+	return 0;
-+}
-+
-+static const struct snd_kcontrol_new hdmi_controls[] = {
-+	{
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ |
-+			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name = "ELD",
-+		.info = hdmi_eld_ctl_info,
-+		.get = hdmi_eld_ctl_get,
-+	},
-+};
-+
- static void hdmi_codec_abort(struct device *dev)
+ static int hdmi_codec_probe(struct platform_device *pdev)
  {
- 	struct hdmi_codec_priv *hcp = dev_get_drvdata(dev);
-@@ -327,6 +361,8 @@ static const struct snd_soc_dai_driver hdmi_spdif_dai = {
- };
+ 	struct hdmi_codec_pdata *hcd = pdev->dev.platform_data;
+@@ -370,6 +431,8 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 	if (hcd->spdif)
+ 		hcp->daidrv[i] = hdmi_spdif_dai;
  
- static struct snd_soc_codec_driver hdmi_codec = {
-+	.controls = hdmi_controls,
-+	.num_controls = ARRAY_SIZE(hdmi_controls),
- 	.dapm_widgets = hdmi_widgets,
- 	.num_dapm_widgets = ARRAY_SIZE(hdmi_widgets),
- 	.dapm_routes = hdmi_routes,
++	dev_set_drvdata(dev, hcp);
++
+ 	ret = snd_soc_register_codec(dev, &hdmi_codec, hcp->daidrv,
+ 				     dai_count);
+ 	if (ret) {
+@@ -378,12 +441,16 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	dev_set_drvdata(dev, hcp);
++	hcp->dev = dev;
++
+ 	return 0;
+ }
+ 
+ static int hdmi_codec_remove(struct platform_device *pdev)
+ {
++	struct hdmi_codec_priv *hcp = platform_get_drvdata(pdev);
++
++	hdmi_unregister_notifier(&hcp->nb);
+ 	snd_soc_unregister_codec(&pdev->dev);
+ 	return 0;
+ }
 -- 
 2.6.4
