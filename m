@@ -1,38 +1,78 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH] ALSA: hda - fix the headset mic detection problem for a Dell laptop
-Date: Wed, 13 Jan 2016 11:51:38 +0800
-Message-ID: <1452657098-5887-1-git-send-email-hui.wang@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: stable@vger.kernel.org, hui.wang@canonical.com
+From: Owen Williams <owilliams@mixxx.org>
+Subject: Re: Regression in Traktor Audio10 driver
+ (snd-usb-audio) mixer flags
+Date: Tue, 12 Jan 2016 23:23:53 -0500
+Message-ID: <1452659033.4470.2.camel@mixxx.org>
+References: <1451586418.9097.8.camel@mixxx.org>
+ <1452262738.27231.46.camel@legoogs.cam.corp.google.com>
+ <s5h37u78ah9.wl-tiwai@suse.de> <1452457217.18937.9.camel@mixxx.org>
+ <s5htwmjnwot.wl-tiwai@suse.de>
+ <1452633881.10729.31.camel@legoogs.cam.corp.google.com>
+ <s5h1t9mo32n.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qg0-f51.google.com (mail-qg0-f51.google.com
+ [209.85.192.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 671B726048C
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2016 05:23:56 +0100 (CET)
+Received: by mail-qg0-f51.google.com with SMTP id b35so316264636qge.0
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jan 2016 20:23:56 -0800 (PST)
+In-Reply-To: <s5h1t9mo32n.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The machine uses codec alc255, and the pin configuration value for
-pin 0x14 on this machine is 0x90171130 which is not in the pin quirk
-table yet.
+Yes, that does allow me to use the mixer flags again.  However I notice
+when I connect the device it no longer starts up with the flags in the
+default state I can specify when I connect the card to my mac -- is
+that the resume functionality that's supposed to work?
 
-Cc: stable@vger.kernel.org
-BugLink: https://bugs.launchpad.net/bugs/1533461
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 4 ++++
- 1 file changed, 4 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index f0ed41e..61d8502 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5626,6 +5626,10 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
- 		{0x21, 0x02211040}),
- 	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
- 		{0x12, 0x90a60170},
-+		{0x14, 0x90171130},
-+		{0x21, 0x02211040}),
-+	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
-+		{0x12, 0x90a60170},
- 		{0x14, 0x90170140},
- 		{0x21, 0x02211050}),
- 	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell Inspiron 5548", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
--- 
-1.9.1
+On Tue, 2016-01-12 at 23:17 +0100, Takashi Iwai wrote:
+> On Tue, 12 Jan 2016 22:24:41 +0100,
+> Owen Williams wrote:
+> > 
+> > Finally found the bad commit:
+> > SHA da6d276957ea56b9514aa5c8d885edf22f0b3e65
+> > ALSA: usb-audio: Add resume support for Native Instruments controls
+> 
+> Great, thanks for spotting out!
+> 
+> > I did upgrade my firmware at some point, perhaps the newer firmware
+> > changed how this works.  Happy to test whatever patches against a
+> > newer
+> > kernel (I'm on Wily, so 4.2.0-23).
+> 
+> Could you try the patch below?
+> 
+> 
+> Takashi
+> 
+> ---
+> diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+> index 0ce888dceed0..279025650568 100644
+> --- a/sound/usb/mixer_quirks.c
+> +++ b/sound/usb/mixer_quirks.c
+> @@ -793,7 +793,7 @@ static int
+> snd_nativeinstruments_control_put(struct snd_kcontrol *kcontrol,
+>  		return 0;
+>  
+>  	kcontrol->private_value &= ~(0xff << 24);
+> -	kcontrol->private_value |= newval;
+> +	kcontrol->private_value |= (unsigned int)newval << 24;
+>  	err = snd_ni_update_cur_val(list);
+>  	return err < 0 ? err : 1;
+>  }
+> 
+> 
