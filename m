@@ -1,21 +1,22 @@
 From: Dmitry Vyukov <dvyukov@google.com>
 Subject: Re: sound: use-after-free in snd_timer_interrupt
-Date: Wed, 13 Jan 2016 20:30:01 +0100
-Message-ID: <CACT4Y+bqxg_C7JmnUSRm_9jiZ9R9XqbBV0igDdUW1ZhtqvktJw@mail.gmail.com>
+Date: Wed, 13 Jan 2016 20:41:30 +0100
+Message-ID: <CACT4Y+anWgMKQmNByifCs+-jizRQL9twxvRQzW3XzNJ8+a6fDw@mail.gmail.com>
 References: <CACT4Y+ZrVvE3dgcYHRdHDG0X316VgC-=pr2U-233vVn_QbHZHw@mail.gmail.com>
  <s5hwprdv2sp.wl-tiwai@suse.de>
  <CACT4Y+ZFsNxsVyq_n6kh=HN1dStj_hL=B9eUu4heAHes=ixf3g@mail.gmail.com>
  <s5hio2xmh9z.wl-tiwai@suse.de>
+ <CACT4Y+bqxg_C7JmnUSRm_9jiZ9R9XqbBV0igDdUW1ZhtqvktJw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f42.google.com (mail-wm0-f42.google.com [74.125.82.42])
- by alsa0.perex.cz (Postfix) with ESMTP id A34F1260447
- for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2016 20:30:21 +0100 (CET)
-Received: by mail-wm0-f42.google.com with SMTP id f206so309507430wmf.0
- for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2016 11:30:21 -0800 (PST)
-In-Reply-To: <s5hio2xmh9z.wl-tiwai@suse.de>
+Received: from mail-wm0-f46.google.com (mail-wm0-f46.google.com [74.125.82.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id E1919260447
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2016 20:41:49 +0100 (CET)
+Received: by mail-wm0-f46.google.com with SMTP id f206so308337534wmf.0
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2016 11:41:49 -0800 (PST)
+In-Reply-To: <CACT4Y+bqxg_C7JmnUSRm_9jiZ9R9XqbBV0igDdUW1ZhtqvktJw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,75 +30,158 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, Kostya Serebryany <kcc@google.com>, Eric Dumazet <edumazet@google.com>, Mark Brown <broonie@kernel.org>, Alexander Potapenko <glider@google.com>, syzkaller <syzkaller@googlegroups.com>, Sasha Levin <sasha.levin@oracle.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 13, 2016 at 8:05 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Wed, 13 Jan 2016 19:34:36 +0100,
-> Dmitry Vyukov wrote:
+On Wed, Jan 13, 2016 at 8:30 PM, Dmitry Vyukov <dvyukov@google.com> wrote:
+> On Wed, Jan 13, 2016 at 8:05 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>> On Wed, 13 Jan 2016 19:34:36 +0100,
+>> Dmitry Vyukov wrote:
+>>>
+>>> On Wed, Jan 13, 2016 at 5:53 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>>> > This and your other relevant reports seem pointing the race of timer
+>>> > ioctls.  Although snd_timer_close() itself calls snd_timer_stop(),
+>>> > there is no other protection against the concurrent execution.
+>>> >
+>>> > If my guess is correct, a simplistic fix like below should work.  It
+>>> > basically serializes the timer ioctl by using a new mutex (and
+>>> > replacing the old tread_sem mutex).  They are no longtime blocking
+>>> > calls, so this shouldn't be a big problem.  But certainly there can be
+>>> > a less intrusive way to paper over this if this really matters.
+>>> >
+>>> > In this case for timer.c, I'd leave the final decision rather to
+>>> > Jaroslav.  Jaroslav, what do you think?
+>>>
+>>>
+>>> After applying this patch I still see the following WARNINGS:
+>>>
+>>> ------------[ cut here ]------------
+>>> WARNING: CPU: 2 PID: 30398 at lib/list_debug.c:53 __list_del_entry+0x10b/0x1e0()
+>>> list_del corruption, ffff880032d933b0->next is LIST_POISON1 (dead000000000100)
+>>> Modules linked in:
+>>> CPU: 2 PID: 30398 Comm: syz-executor Not tainted 4.4.0+ #241
+>>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+>>>  00000000ffffffff ffff8800627778d8 ffffffff82926eed ffff880062777948
+>>>  ffff880061c2af80 ffffffff8660b640 ffff880062777918 ffffffff81350c89
+>>>  ffffffff8298e77b ffffed000c4eef25 ffffffff8660b640 0000000000000035
+>>> Call Trace:
+>>>  [<     inline     >] __dump_stack lib/dump_stack.c:15
+>>>  [<ffffffff82926eed>] dump_stack+0x6f/0xa2 lib/dump_stack.c:50
+>>>  [<ffffffff81350c89>] warn_slowpath_common+0xd9/0x140 kernel/panic.c:483
+>>>  [<ffffffff81350d99>] warn_slowpath_fmt+0xa9/0xd0 kernel/panic.c:495
+>>>  [<ffffffff8298e77b>] __list_del_entry+0x10b/0x1e0 lib/list_debug.c:51
+>>>  [<     inline     >] list_del_init include/linux/list.h:145
+>>>  [<ffffffff84ebd199>] _snd_timer_stop+0x119/0x450 sound/core/timer.c:501
 >>
->> On Wed, Jan 13, 2016 at 5:53 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> > This and your other relevant reports seem pointing the race of timer
->> > ioctls.  Although snd_timer_close() itself calls snd_timer_stop(),
->> > there is no other protection against the concurrent execution.
->> >
->> > If my guess is correct, a simplistic fix like below should work.  It
->> > basically serializes the timer ioctl by using a new mutex (and
->> > replacing the old tread_sem mutex).  They are no longtime blocking
->> > calls, so this shouldn't be a big problem.  But certainly there can be
->> > a less intrusive way to paper over this if this really matters.
->> >
->> > In this case for timer.c, I'd leave the final decision rather to
->> > Jaroslav.  Jaroslav, what do you think?
+>> This is
 >>
+>>         list_del_init(&timeri->active_list);
 >>
->> After applying this patch I still see the following WARNINGS:
->>
->> ------------[ cut here ]------------
->> WARNING: CPU: 2 PID: 30398 at lib/list_debug.c:53 __list_del_entry+0x10b/0x1e0()
->> list_del corruption, ffff880032d933b0->next is LIST_POISON1 (dead000000000100)
->> Modules linked in:
->> CPU: 2 PID: 30398 Comm: syz-executor Not tainted 4.4.0+ #241
->> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
->>  00000000ffffffff ffff8800627778d8 ffffffff82926eed ffff880062777948
->>  ffff880061c2af80 ffffffff8660b640 ffff880062777918 ffffffff81350c89
->>  ffffffff8298e77b ffffed000c4eef25 ffffffff8660b640 0000000000000035
->> Call Trace:
->>  [<     inline     >] __dump_stack lib/dump_stack.c:15
->>  [<ffffffff82926eed>] dump_stack+0x6f/0xa2 lib/dump_stack.c:50
->>  [<ffffffff81350c89>] warn_slowpath_common+0xd9/0x140 kernel/panic.c:483
->>  [<ffffffff81350d99>] warn_slowpath_fmt+0xa9/0xd0 kernel/panic.c:495
->>  [<ffffffff8298e77b>] __list_del_entry+0x10b/0x1e0 lib/list_debug.c:51
->>  [<     inline     >] list_del_init include/linux/list.h:145
->>  [<ffffffff84ebd199>] _snd_timer_stop+0x119/0x450 sound/core/timer.c:501
+>> right?  Possibly the following oneliner covers it?
 >
-> This is
+> Yes, that is this line.
+> Yes, these two patches fix use-after-frees and GPFs.
 >
->         list_del_init(&timeri->active_list);
->
-> right?  Possibly the following oneliner covers it?
-
-Yes, that is this line.
-Yes, these two patches fix use-after-frees and GPFs.
-
-Tested-by: Dmitry Vyukov <dvyukov@google.com>
-
-The only one that still happens is "sound: spinlock lockup in
-sound/core/timer.c".
+> Tested-by: Dmitry Vyukov <dvyukov@google.com>
 
 
-> thanks,
->
-> Takashi
->
-> ---
-> diff --git a/sound/core/timer.c b/sound/core/timer.c
-> index b03a9e489286..3810ee8f1205 100644
-> --- a/sound/core/timer.c
-> +++ b/sound/core/timer.c
-> @@ -694,7 +694,7 @@ void snd_timer_interrupt(struct snd_timer * timer, unsigned long ticks_left)
->                 } else {
->                         ti->flags &= ~SNDRV_TIMER_IFLG_RUNNING;
->                         if (--timer->running)
-> -                               list_del(&ti->active_list);
-> +                               list_del_init(&ti->active_list);
->                 }
->                 if ((timer->hw.flags & SNDRV_TIMER_HW_TASKLET) ||
->                     (ti->flags & SNDRV_TIMER_IFLG_FAST))
+I've re-tested the programs that I reported. But when I started the
+fuzzer again I hit a similar use-after-free in snd_timer_interrupt:
+
+BUG: KASAN: use-after-free in snd_timer_interrupt+0xaea/0xc40 at addr
+ffff8800644df960
+Read of size 8 by task kworker/u10:3/561
+=============================================================================
+BUG kmalloc-256 (Not tainted): kasan: bad access detected
+-----------------------------------------------------------------------------
+
+INFO: Allocated in snd_timer_instance_new+0x52/0x3a0 age=13 cpu=2 pid=18656
+[<      none      >] ___slab_alloc+0x486/0x4e0 mm/slub.c:2468
+[<      none      >] __slab_alloc+0x66/0xc0 mm/slub.c:2497
+[<     inline     >] slab_alloc_node mm/slub.c:2560
+[<     inline     >] slab_alloc mm/slub.c:2602
+[<      none      >] kmem_cache_alloc_trace+0x284/0x310 mm/slub.c:2619
+[<     inline     >] kmalloc include/linux/slab.h:458
+[<     inline     >] kzalloc include/linux/slab.h:602
+[<      none      >] snd_timer_instance_new+0x52/0x3a0 sound/core/timer.c:105
+[<      none      >] snd_timer_open+0x522/0xc90 sound/core/timer.c:286
+[<      none      >] snd_seq_timer_open+0x223/0x540
+sound/core/seq/seq_timer.c:279
+[<      none      >] snd_seq_queue_use+0x147/0x230
+sound/core/seq/seq_queue.c:528
+[<      none      >] snd_seq_queue_alloc+0x36a/0x4d0
+sound/core/seq/seq_queue.c:199
+[<      none      >] snd_seq_ioctl_create_queue+0xdb/0x2b0
+sound/core/seq/seq_clientmgr.c:1536
+[<      none      >] snd_seq_do_ioctl+0x19a/0x1c0
+sound/core/seq/seq_clientmgr.c:2209
+[<      none      >] snd_seq_ioctl+0x5d/0x80 sound/core/seq/seq_clientmgr.c:2224
+[<     inline     >] vfs_ioctl fs/ioctl.c:43
+[<      none      >] do_vfs_ioctl+0x18c/0xfa0 fs/ioctl.c:674
+[<     inline     >] SYSC_ioctl fs/ioctl.c:689
+[<      none      >] SyS_ioctl+0x8f/0xc0 fs/ioctl.c:680
+[<      none      >] entry_SYSCALL_64_fastpath+0x16/0x7a
+arch/x86/entry/entry_64.S:185
+
+INFO: Freed in snd_timer_close+0x354/0x5f0 age=13 cpu=3 pid=18658
+[<      none      >] __slab_free+0x1fc/0x320 mm/slub.c:2678
+[<     inline     >] slab_free mm/slub.c:2833
+[<      none      >] kfree+0x2a8/0x2d0 mm/slub.c:3662
+[<      none      >] snd_timer_close+0x354/0x5f0 sound/core/timer.c:364
+[<      none      >] snd_seq_timer_close+0x9e/0x100
+sound/core/seq/seq_timer.c:312
+snd_seq_queue_timer
+[<      none      >] snd_seq_ioctl_set_queue_timer+0x159/0x300
+sound/core/seq/seq_clientmgr.c:1809
+[<      none      >] snd_seq_do_ioctl+0x19a/0x1c0
+sound/core/seq/seq_clientmgr.c:2209
+[<      none      >] snd_seq_ioctl+0x5d/0x80 sound/core/seq/seq_clientmgr.c:2224
+[<     inline     >] vfs_ioctl fs/ioctl.c:43
+[<      none      >] do_vfs_ioctl+0x18c/0xfa0 fs/ioctl.c:674
+[<     inline     >] SYSC_ioctl fs/ioctl.c:689
+[<      none      >] SyS_ioctl+0x8f/0xc0 fs/ioctl.c:680
+[<      none      >] entry_SYSCALL_64_fastpath+0x16/0x7a
+arch/x86/entry/entry_64.S:185
+
+INFO: Slab 0xffffea0001913700 objects=22 used=10 fp=0xffff8800644df8e0
+flags=0x5fffc0000004080
+INFO: Object 0xffff8800644df8e0 @offset=14560 fp=0xffff8800644ddf48
+CPU: 2 PID: 561 Comm: kworker/u10:3 Tainted: G    B           4.4.0+ #243
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+Workqueue: events_unbound call_usermodehelper_exec_work
+ 00000000ffffffff ffff88006d607be0 ffffffff82926eed ffff88003e807000
+ ffff8800644df8e0 ffff8800644dc000 ffff88006d607c10 ffffffff81740ca4
+ ffff88003e807000 ffffea0001913700 ffff8800644df8e0 ffff8800644df960
+
+Call Trace:
+ [<     inline     >] kasan_report mm/kasan/report.c:274
+ [<ffffffff8174a1fe>] __asan_report_load8_noabort+0x3e/0x40
+mm/kasan/report.c:295
+ [<ffffffff84ebe84a>] snd_timer_interrupt+0xaea/0xc40 sound/core/timer.c:680
+ [<ffffffff84ec6c16>] snd_hrtimer_callback+0x166/0x230 sound/core/hrtimer.c:54
+ [<     inline     >] __run_hrtimer kernel/time/hrtimer.c:1229
+ [<ffffffff814c3723>] __hrtimer_run_queues+0x363/0xc10
+kernel/time/hrtimer.c:1293
+ [<ffffffff814c5732>] hrtimer_interrupt+0x182/0x430 kernel/time/hrtimer.c:1327
+ [<ffffffff8124e10f>] local_apic_timer_interrupt+0x6f/0xe0
+arch/x86/kernel/apic/apic.c:907
+ [<ffffffff81251576>] smp_apic_timer_interrupt+0x76/0xa0
+arch/x86/kernel/apic/apic.c:931
+ [<ffffffff86273eec>] apic_timer_interrupt+0x8c/0xa0
+arch/x86/entry/entry_64.S:520
+ <EOI>  [<     inline     >] alloc_task_struct_node kernel/fork.c:142
+ <EOI>  [<     inline     >] dup_task_struct kernel/fork.c:342
+ <EOI>  [<ffffffff8134950e>] copy_process.part.35+0x22e/0x5770
+kernel/fork.c:1304
+ [<     inline     >] slab_alloc_node mm/slub.c:2560
+ [<ffffffff817447f3>] kmem_cache_alloc_node+0x93/0x300 mm/slub.c:2630
+ [<     inline     >] alloc_task_struct_node kernel/fork.c:142
+ [<     inline     >] dup_task_struct kernel/fork.c:342
+ [<ffffffff8134950e>] copy_process.part.35+0x22e/0x5770 kernel/fork.c:1304
+ [<     inline     >] copy_process kernel/fork.c:1275
+ [<ffffffff8134ed7c>] _do_fork+0x1bc/0xcb0 kernel/fork.c:1724
+ [<ffffffff8134f8a4>] kernel_thread+0x34/0x40 kernel/fork.c:1785
+ [<     inline     >] call_usermodehelper_exec_sync kernel/kmod.c:275
+ [<ffffffff81391874>] call_usermodehelper_exec_work+0xf4/0x230 kernel/kmod.c:327
+ [<ffffffff8139e824>] process_one_work+0x794/0x1440 kernel/workqueue.c:2036
+ [<ffffffff8139f5ab>] worker_thread+0xdb/0xfc0 kernel/workqueue.c:2170
+ [<ffffffff813b2cef>] kthread+0x23f/0x2d0 drivers/block/aoe/aoecmd.c:1303
+ [<ffffffff862734af>] ret_from_fork+0x3f/0x70 arch/x86/entry/entry_64.S:468
+==================================================================
