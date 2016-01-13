@@ -1,22 +1,24 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: sound: use-after-free in snd_timer_interrupt
-Date: Wed, 13 Jan 2016 20:41:30 +0100
-Message-ID: <CACT4Y+anWgMKQmNByifCs+-jizRQL9twxvRQzW3XzNJ8+a6fDw@mail.gmail.com>
-References: <CACT4Y+ZrVvE3dgcYHRdHDG0X316VgC-=pr2U-233vVn_QbHZHw@mail.gmail.com>
- <s5hwprdv2sp.wl-tiwai@suse.de>
- <CACT4Y+ZFsNxsVyq_n6kh=HN1dStj_hL=B9eUu4heAHes=ixf3g@mail.gmail.com>
- <s5hio2xmh9z.wl-tiwai@suse.de>
- <CACT4Y+bqxg_C7JmnUSRm_9jiZ9R9XqbBV0igDdUW1ZhtqvktJw@mail.gmail.com>
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: [PATCH 0/5] ASoC: fsl_ssi: Fixing various channel
+ slips and bad samples insertions
+Date: Wed, 13 Jan 2016 12:20:10 -0800
+Message-ID: <CAG5mAdytoCqchFAh2J1t-oXZbwzxVs2U8amP=EfX1AEZSCtfQg@mail.gmail.com>
+References: <1448546842-4584-1-git-send-email-arnaud.mouiche@invoxia.com>
+ <CAG5mAdw_+BiDppzpKF0ZBG1NXreGob6+jZd6SLjS1+zdmEE4ZA@mail.gmail.com>
+ <5690E8CF.8070700@invoxia.com>
+ <CAG5mAdw3HKwyMyX9O2NM=GRDy9nEcOH6FrB1BSYMFhM-kL-BZw@mail.gmail.com>
+ <56966324.8090409@invoxia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f46.google.com (mail-wm0-f46.google.com [74.125.82.46])
- by alsa0.perex.cz (Postfix) with ESMTP id E1919260447
- for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2016 20:41:49 +0100 (CET)
-Received: by mail-wm0-f46.google.com with SMTP id f206so308337534wmf.0
- for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2016 11:41:49 -0800 (PST)
-In-Reply-To: <CACT4Y+bqxg_C7JmnUSRm_9jiZ9R9XqbBV0igDdUW1ZhtqvktJw@mail.gmail.com>
+Received: from mail-io0-f195.google.com (mail-io0-f195.google.com
+ [209.85.223.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id C26B6260447
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2016 21:20:30 +0100 (CET)
+Received: by mail-io0-f195.google.com with SMTP id k127so48211972iok.1
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2016 12:20:30 -0800 (PST)
+In-Reply-To: <56966324.8090409@invoxia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,162 +28,156 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, Kostya Serebryany <kcc@google.com>, Eric Dumazet <edumazet@google.com>, Mark Brown <broonie@kernel.org>, Alexander Potapenko <glider@google.com>, syzkaller <syzkaller@googlegroups.com>, Sasha Levin <sasha.levin@oracle.com>
+To: "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Markus Pargmann <mpa@pengutronix.de>, Mark Brown <broonie@kernel.org>, Roberto Fichera <kernel@tekno-soft.it>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 13, 2016 at 8:30 PM, Dmitry Vyukov <dvyukov@google.com> wrote:
-> On Wed, Jan 13, 2016 at 8:05 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> On Wed, 13 Jan 2016 19:34:36 +0100,
->> Dmitry Vyukov wrote:
->>>
->>> On Wed, Jan 13, 2016 at 5:53 PM, Takashi Iwai <tiwai@suse.de> wrote:
->>> > This and your other relevant reports seem pointing the race of timer
->>> > ioctls.  Although snd_timer_close() itself calls snd_timer_stop(),
->>> > there is no other protection against the concurrent execution.
->>> >
->>> > If my guess is correct, a simplistic fix like below should work.  It
->>> > basically serializes the timer ioctl by using a new mutex (and
->>> > replacing the old tread_sem mutex).  They are no longtime blocking
->>> > calls, so this shouldn't be a big problem.  But certainly there can be
->>> > a less intrusive way to paper over this if this really matters.
->>> >
->>> > In this case for timer.c, I'd leave the final decision rather to
->>> > Jaroslav.  Jaroslav, what do you think?
->>>
->>>
->>> After applying this patch I still see the following WARNINGS:
->>>
->>> ------------[ cut here ]------------
->>> WARNING: CPU: 2 PID: 30398 at lib/list_debug.c:53 __list_del_entry+0x10b/0x1e0()
->>> list_del corruption, ffff880032d933b0->next is LIST_POISON1 (dead000000000100)
->>> Modules linked in:
->>> CPU: 2 PID: 30398 Comm: syz-executor Not tainted 4.4.0+ #241
->>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
->>>  00000000ffffffff ffff8800627778d8 ffffffff82926eed ffff880062777948
->>>  ffff880061c2af80 ffffffff8660b640 ffff880062777918 ffffffff81350c89
->>>  ffffffff8298e77b ffffed000c4eef25 ffffffff8660b640 0000000000000035
->>> Call Trace:
->>>  [<     inline     >] __dump_stack lib/dump_stack.c:15
->>>  [<ffffffff82926eed>] dump_stack+0x6f/0xa2 lib/dump_stack.c:50
->>>  [<ffffffff81350c89>] warn_slowpath_common+0xd9/0x140 kernel/panic.c:483
->>>  [<ffffffff81350d99>] warn_slowpath_fmt+0xa9/0xd0 kernel/panic.c:495
->>>  [<ffffffff8298e77b>] __list_del_entry+0x10b/0x1e0 lib/list_debug.c:51
->>>  [<     inline     >] list_del_init include/linux/list.h:145
->>>  [<ffffffff84ebd199>] _snd_timer_stop+0x119/0x450 sound/core/timer.c:501
->>
->> This is
->>
->>         list_del_init(&timeri->active_list);
->>
->> right?  Possibly the following oneliner covers it?
->
-> Yes, that is this line.
-> Yes, these two patches fix use-after-frees and GPFs.
->
-> Tested-by: Dmitry Vyukov <dvyukov@google.com>
-
-
-I've re-tested the programs that I reported. But when I started the
-fuzzer again I hit a similar use-after-free in snd_timer_interrupt:
-
-BUG: KASAN: use-after-free in snd_timer_interrupt+0xaea/0xc40 at addr
-ffff8800644df960
-Read of size 8 by task kworker/u10:3/561
-=============================================================================
-BUG kmalloc-256 (Not tainted): kasan: bad access detected
------------------------------------------------------------------------------
-
-INFO: Allocated in snd_timer_instance_new+0x52/0x3a0 age=13 cpu=2 pid=18656
-[<      none      >] ___slab_alloc+0x486/0x4e0 mm/slub.c:2468
-[<      none      >] __slab_alloc+0x66/0xc0 mm/slub.c:2497
-[<     inline     >] slab_alloc_node mm/slub.c:2560
-[<     inline     >] slab_alloc mm/slub.c:2602
-[<      none      >] kmem_cache_alloc_trace+0x284/0x310 mm/slub.c:2619
-[<     inline     >] kmalloc include/linux/slab.h:458
-[<     inline     >] kzalloc include/linux/slab.h:602
-[<      none      >] snd_timer_instance_new+0x52/0x3a0 sound/core/timer.c:105
-[<      none      >] snd_timer_open+0x522/0xc90 sound/core/timer.c:286
-[<      none      >] snd_seq_timer_open+0x223/0x540
-sound/core/seq/seq_timer.c:279
-[<      none      >] snd_seq_queue_use+0x147/0x230
-sound/core/seq/seq_queue.c:528
-[<      none      >] snd_seq_queue_alloc+0x36a/0x4d0
-sound/core/seq/seq_queue.c:199
-[<      none      >] snd_seq_ioctl_create_queue+0xdb/0x2b0
-sound/core/seq/seq_clientmgr.c:1536
-[<      none      >] snd_seq_do_ioctl+0x19a/0x1c0
-sound/core/seq/seq_clientmgr.c:2209
-[<      none      >] snd_seq_ioctl+0x5d/0x80 sound/core/seq/seq_clientmgr.c:2224
-[<     inline     >] vfs_ioctl fs/ioctl.c:43
-[<      none      >] do_vfs_ioctl+0x18c/0xfa0 fs/ioctl.c:674
-[<     inline     >] SYSC_ioctl fs/ioctl.c:689
-[<      none      >] SyS_ioctl+0x8f/0xc0 fs/ioctl.c:680
-[<      none      >] entry_SYSCALL_64_fastpath+0x16/0x7a
-arch/x86/entry/entry_64.S:185
-
-INFO: Freed in snd_timer_close+0x354/0x5f0 age=13 cpu=3 pid=18658
-[<      none      >] __slab_free+0x1fc/0x320 mm/slub.c:2678
-[<     inline     >] slab_free mm/slub.c:2833
-[<      none      >] kfree+0x2a8/0x2d0 mm/slub.c:3662
-[<      none      >] snd_timer_close+0x354/0x5f0 sound/core/timer.c:364
-[<      none      >] snd_seq_timer_close+0x9e/0x100
-sound/core/seq/seq_timer.c:312
-snd_seq_queue_timer
-[<      none      >] snd_seq_ioctl_set_queue_timer+0x159/0x300
-sound/core/seq/seq_clientmgr.c:1809
-[<      none      >] snd_seq_do_ioctl+0x19a/0x1c0
-sound/core/seq/seq_clientmgr.c:2209
-[<      none      >] snd_seq_ioctl+0x5d/0x80 sound/core/seq/seq_clientmgr.c:2224
-[<     inline     >] vfs_ioctl fs/ioctl.c:43
-[<      none      >] do_vfs_ioctl+0x18c/0xfa0 fs/ioctl.c:674
-[<     inline     >] SYSC_ioctl fs/ioctl.c:689
-[<      none      >] SyS_ioctl+0x8f/0xc0 fs/ioctl.c:680
-[<      none      >] entry_SYSCALL_64_fastpath+0x16/0x7a
-arch/x86/entry/entry_64.S:185
-
-INFO: Slab 0xffffea0001913700 objects=22 used=10 fp=0xffff8800644df8e0
-flags=0x5fffc0000004080
-INFO: Object 0xffff8800644df8e0 @offset=14560 fp=0xffff8800644ddf48
-CPU: 2 PID: 561 Comm: kworker/u10:3 Tainted: G    B           4.4.0+ #243
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
-Workqueue: events_unbound call_usermodehelper_exec_work
- 00000000ffffffff ffff88006d607be0 ffffffff82926eed ffff88003e807000
- ffff8800644df8e0 ffff8800644dc000 ffff88006d607c10 ffffffff81740ca4
- ffff88003e807000 ffffea0001913700 ffff8800644df8e0 ffff8800644df960
-
-Call Trace:
- [<     inline     >] kasan_report mm/kasan/report.c:274
- [<ffffffff8174a1fe>] __asan_report_load8_noabort+0x3e/0x40
-mm/kasan/report.c:295
- [<ffffffff84ebe84a>] snd_timer_interrupt+0xaea/0xc40 sound/core/timer.c:680
- [<ffffffff84ec6c16>] snd_hrtimer_callback+0x166/0x230 sound/core/hrtimer.c:54
- [<     inline     >] __run_hrtimer kernel/time/hrtimer.c:1229
- [<ffffffff814c3723>] __hrtimer_run_queues+0x363/0xc10
-kernel/time/hrtimer.c:1293
- [<ffffffff814c5732>] hrtimer_interrupt+0x182/0x430 kernel/time/hrtimer.c:1327
- [<ffffffff8124e10f>] local_apic_timer_interrupt+0x6f/0xe0
-arch/x86/kernel/apic/apic.c:907
- [<ffffffff81251576>] smp_apic_timer_interrupt+0x76/0xa0
-arch/x86/kernel/apic/apic.c:931
- [<ffffffff86273eec>] apic_timer_interrupt+0x8c/0xa0
-arch/x86/entry/entry_64.S:520
- <EOI>  [<     inline     >] alloc_task_struct_node kernel/fork.c:142
- <EOI>  [<     inline     >] dup_task_struct kernel/fork.c:342
- <EOI>  [<ffffffff8134950e>] copy_process.part.35+0x22e/0x5770
-kernel/fork.c:1304
- [<     inline     >] slab_alloc_node mm/slub.c:2560
- [<ffffffff817447f3>] kmem_cache_alloc_node+0x93/0x300 mm/slub.c:2630
- [<     inline     >] alloc_task_struct_node kernel/fork.c:142
- [<     inline     >] dup_task_struct kernel/fork.c:342
- [<ffffffff8134950e>] copy_process.part.35+0x22e/0x5770 kernel/fork.c:1304
- [<     inline     >] copy_process kernel/fork.c:1275
- [<ffffffff8134ed7c>] _do_fork+0x1bc/0xcb0 kernel/fork.c:1724
- [<ffffffff8134f8a4>] kernel_thread+0x34/0x40 kernel/fork.c:1785
- [<     inline     >] call_usermodehelper_exec_sync kernel/kmod.c:275
- [<ffffffff81391874>] call_usermodehelper_exec_work+0xf4/0x230 kernel/kmod.c:327
- [<ffffffff8139e824>] process_one_work+0x794/0x1440 kernel/workqueue.c:2036
- [<ffffffff8139f5ab>] worker_thread+0xdb/0xfc0 kernel/workqueue.c:2170
- [<ffffffff813b2cef>] kthread+0x23f/0x2d0 drivers/block/aoe/aoecmd.c:1303
- [<ffffffff862734af>] ret_from_fork+0x3f/0x70 arch/x86/entry/entry_64.S:468
-==================================================================
+T24gV2VkLCBKYW4gMTMsIDIwMTYgYXQgNjo0NSBBTSwgYXJuYXVkLm1vdWljaGVAaW52b3hpYS5j
+b20KPGFybmF1ZC5tb3VpY2hlQGludm94aWEuY29tPiB3cm90ZToKPgo+Cj4gTGUgMTIvMDEvMjAx
+NiAwMDo0NCwgQ2FsZWIgQ3JvbWUgYSDDqWNyaXQgOgo+Pgo+PiBPbiBTYXQsIEphbiA5LCAyMDE2
+IGF0IDM6MDIgQU0sIGFybmF1ZC5tb3VpY2hlQGludm94aWEuY29tCj4+IDxhcm5hdWQubW91aWNo
+ZUBpbnZveGlhLmNvbT4gd3JvdGU6Cj4+Pgo+Pj4gSGVsbG8gQ2FsZWIKPj4+Cj4+PiBMZSAwOS8w
+MS8yMDE2IDAxOjQ3LCBDYWxlYiBDcm9tZSBhIMOpY3JpdCA6Cj4+Pj4KPj4+PiBbLi4uXQo+Pj4+
+Cj4+Pj4gSGVsbG8gQXJuYXVkLAo+Pj4+ICAgICBJIGhhdmUgZmluYWxseSBnb3R0ZW4gdG8gdGVz
+dCB5b3VyIHBhdGNoZXMsIGFuZCBJJ20gc3RpbGwgaGF2aW5nCj4+Pj4gdHJvdWJsZSB3aXRoIGNo
+YW5uZWwgc2xpcHMuCj4+Pj4KPj4+PiBJIGFwcGxpZWQgeW91ciB2MiBwYXRjaCBzZXQsIGFsb25n
+IHdpdGggeW91ciBjaGFuZ2VzIGZvciB1c2luZyBhIGR1bW15Cj4+Pj4gY29kZWMuCj4+Pj4KPj4+
+PiBUaGUgZnVsbCBjaGFuZ2VzIGFyZSBoZXJlOgo+Pj4+IGh0dHBzOi8vZ2l0aHViLmNvbS9jY3Jv
+bWUvbGludXgtY2FsZWItZGV2L3RyZWUvdjQuNC1yYzgtYXJtdjcteDMKPj4+Pgo+Pj4+IFRoaXMg
+aWdub3JlcyBtb3N0IG9mIG15IHByZXZpb3VzIHBhdGNoZXMsIGFuZCB1c2VzIHlvdXIgY29kZSB0
+byBicmluZwo+Pj4+IHVwIHRoZSBTU0kgKHdpdGhvdXQgYSBjb2RlYykgb24gYSB3YW5kYm9hcmQu
+Cj4+Pj4KPj4+PiBJIGFtIHVzaW5nIFNTSTMsIGFuZCBkb2luZyBhIGhhcmR3YXJlIGxvb3BiYWNr
+IGJldHdlZW4gVFggYW5kIFJYLgo+Pj4+Cj4+Pj4gSGVyZSdzIHdoYXQgSSBydW46Cj4+Pj4gLi9h
+dGVzdCAtciAxNjAwMCAtYyA4IC1wIDIwNDggICAtRCBkZWZhdWx0IHBsYXkKPj4+Pgo+Pj4+IHdo
+aWNoIHBsYXlzIGNvbnRpbnVvdXNseS4KPj4+Pgo+Pj4+IGFuZCBpbiBhbm90aGVyIHNoZWxsOgo+
+Pj4+IC4vYXRlc3QgLXIgMTYwMDAgLWMgOCAtcCAyMDQ4ICAtRCBkZWZhdWx0IC1kIDEwIGNhcHR1
+cmUKPj4+Pgo+Pj4+IHdoaWNoIGNhcHR1cmVzIGZvciAxMCBzZWNvbmRzLgo+Pj4+Cj4+Pj4KPj4+
+PiBUaGUgZmlyc3QgdGltZSBJIHJ1biB0aGUgY2FwdHVyZSBjb21tYW5kLCBpdCBzdWNjZWVkcywg
+bm8gcHJvYmxlbS4KPj4+Pj4KPj4+Pj4gZGJnOiBkZXY6ICdkZWZhdWx0Jwo+Pj4+PiBkYmc6IGRl
+ZmF1bHQ6IGNhcHR1cmVfc3RhcnQKPj4+Pj4gZGJnOiBzdGFydCBhIDEwIHNlY29uZHMgZHVyYXRp
+b24gdGltZXIKPj4+Pj4gd2FybjogRmlyc3QgdmFsaWQgZnJhbWUKPj4+Pj4gd2FybjogICAzNDAw
+IDM0MDEgMzQwMiAzNDAzIDM0MDQgMzQwNSAzNDA2IDM0MDcKPj4+Pj4gZGJnOiBlbmQgb2YgdGVz
+dHMKPj4+Pj4gdG90YWwgbnVtYmVyIG9mIHNlcXVlbmNlIGVycm9yczogMAo+Pj4+PiBnbG9iYWwg
+dGVzdHMgZXhpdCBzdGF0dXM6IE9LCj4+Pj4KPj4+PiBCdXQgdGhlIHNlY29uZCBhbmQgYWxsIHN1
+YnNlcXVlbnQgY2FwdHVyZXMsIGl0IGZhaWxzIHdpdGggY2hhbm5lbCBzbGlwczoKPj4+Pgo+Pj4+
+PiBkYmc6IGRldjogJ2RlZmF1bHQnCj4+Pj4+IGRiZzogZGVmYXVsdDogY2FwdHVyZV9zdGFydAo+
+Pj4+PiBkYmc6IHN0YXJ0IGEgMTAgc2Vjb25kcyBkdXJhdGlvbiB0aW1lcgo+Pj4+PiBlcnI6IGlu
+dmFsaWQgZnJhbWUgYWZ0ZXIgMCBudWxsIGZyYW1lcwo+Pj4+PiBlcnI6ICAgZDJhMSBkMmEyIGQy
+YTMgZDJhNCBkMmE1IGQyYTYgZDJhNyBkMmMwCj4+Pj4+IGVycjogICBkMmMxIGQyYzIgZDJjMyBk
+MmM0IGQyYzUgZDJjNiBkMmM3IDc4ZTAKPj4+Pj4gZGJnOiBlbmQgb2YgdGVzdHMKPj4+Pj4gdG90
+YWwgbnVtYmVyIG9mIHNlcXVlbmNlIGVycm9yczogNDMwMDgwCj4+Pj4+IGdsb2JhbCB0ZXN0cyBl
+eGl0IHN0YXR1czogT0sKPj4+Cj4+Pgo+Pj4gQ2FuIHlvdSB1c2UgLUkgb3B0aW9uIHRvIGdldCBh
+IGxpdHRsZSBtb3JlIGxvZyBvZiB0aGUgZXJyb3IKPj4+ICQgLi9hdGVzdCAtciAxNjAwMCAtYyA4
+IC1wIDIwNDggIC1EIGRlZmF1bHQgLWQgMTAgLUkgMTAgY2FwdHVyZQo+Pj4KPj4+IEp1c3QgdG8g
+a25vdyBpZiB0aGUgd3JvbmcgZnJhbWVzIGNvbWVzIGZyb20gdGhlIHByZXZpb3VzIHJlY29yZCBz
+ZXNzaW9uLAo+Pj4gbWVhbmluZyB0aGUgUlggZmlmbyB3YXMgbm90IGNsZWFyZWQgY29ycmVjdGx5
+LAo+Pj4gYXMgaWYgdGhlIENDU1JfU1NJX1NPUl9SWF9DTFIgYml0IGlzIG5vdCB3b3JraW5nIGFz
+IHdlIG1pZ2h0IGV4cGVjdC4KPj4+IChpZS4gZDJhMSAuLiBkMmM3IG1heSBjb21lIGZyb20gdGhl
+IHByZXZpb3VzIHJlY29yZGluZywgYW5kIDc4ZTAgLi4gbWF5Cj4+PiBiZQo+Pj4gdGhlIHN0YXJ0
+IG9mIHRoZSBuZXcgcmVjb3JkaW5nIHNlc3Npb24pCj4+Cj4+IFRoYXQgZG9lcyBhcHBlYXIgdG8g
+YmUgd2hhdCdzIGhhcHBlbmluZy4gIEkgcmVhZCB0aGUgU0ZDU1IgYmVmb3JlIGFuZAo+PiBhZnRl
+ciB5b3UgdXBkYXRlIHRoZSBTT1IgcmVnaXN0ZXIgKFNPUl9SWF9DTFIpLCBhbmQgaW4gYm90aCBj
+YXNlcyB0aGUKPj4gcnggYnVmZmVyIGlzIGZ1bGwgb24gdGhlIHNlY29uZCBlbmFibGVtZW50Lgo+
+Pgo+PiBJIGNhbid0IHNlZW0gdG8gZW1wdHkgdGhhdCBidWZmZXIsIGVpdGhlciBieSB1c2luZyB0
+aGUgU09SX1JYX0NMUiBvcgo+PiBieSByZWFkaW5nIHRoZSBTUlgwIHJlZ2lzdGVyLiBUaGlzIGlz
+IGFub3RoZXIgb25lIG9mIHRob3NlIGNhc2VzIHdoZXJlCj4+IHRoZXJlIHlvdSBjYW5ub3QgbW9k
+aWZ5IHRoZSByZWdpc3RlciAoaS5lLiBmaWZvIG9yIFJYMCkgd2hlbiBSRSBpcwo+PiBkaXNhYmxl
+ZC4KPj4KPj4gU28sIGluc3RlYWQgb2YgY2xlYXJpbmcgb24gZW5hYmxlLCBJJ20gY2xlYXJpbmcg
+b24gc2h1dGRvd24gYW5kIG9uCj4+IGVuYWJsZS4gIEkgYXR0ZW1wdGVkIHVzaW5nIHRoZSBTT1Jf
+UlhfQ0xSLCBidXQgaXQgZG9lc24ndCBzZWVtIHRvIHdvcmsKPj4gb24gdGhlIE1YNi4gIFJhdGhl
+ciwgSSBjbGVhciB0aGUgZmlmbyBieSByZWFkaW5nIGFsbCB0aGUgd29yZHMgaW4gYQo+PiBsb29w
+LCBqdXN0IGJlZm9yZSBSRSBpcyBkaXNhYmxlZC4KPgo+IHNvIHRoZSBpbXg2LnNsIFNTSSBiZWhh
+dmVzIGRpZmZlcmVudGx5IGZyb20gdGhlIGlteDYuc29sbyBTU0kgLi4uIE9yIHNvbWUKPiB0aGlu
+Z3MgaGF2ZSBjaGFuZ2VzIGJldHdlZW4gNC4zIGFuZCA0LjQuCj4KPiBNYXkgYmUgU09SX1JYX0NM
+UiBhbmQvb3IgUlgwIHJlZ2lzdGVycyBjYW4ndCBiZSByZWFkIG9uICdzb2xvJyBiZWNhdXNlIGRl
+Cj4gdGhlIFNSQ1IuUkZFTjAgW29yMV0gYXJlIG5vdCBlbmFibGVkIHlldC4KPgo+IEluIGZhY3Qs
+IGNsZWFyaW5nIHRoZSBmaWZvcyBhdCB0aGUgZW5kIG1heSBzdGlsbCBpbnRyb2R1Y2UgYSByYWNl
+IHNpbmNlIHRoZQo+IFJYIHBhdGggaXMgc3RpbGwgZW5hYmxlZCB3aGVuIHlvdXIgcmVhZCBmcm9t
+IGZpZm8sIGFuZAo+IFNhbXBsZXMgbWF5IHN0aWxsIGJlIHJlY2VpdmVkIGluIHRoZSBtZWFudGlt
+ZS4uLgoKWW91IGFyZSBjb3JyZWN0IGFib3V0IHRoZSByYWNlIGNvbmRpdGlvbi4gIEl0IHNlZW1z
+IGxpa2UgYSBjYXRjaCAyMjoKeW91IGNhbid0IGVtcHR5IHRoZSBmaWZvIGlmIFNDUi5SRSBpcyBk
+aXNhYmxlZCwgYW5kIGlmIHRoZSBTQ1IuUkUgaXMKZW5hYmxlZCwgbmV3IHNhbXBsZXMgbWlnaHQg
+YmUgcmVjZWl2ZWQgYXQgYW55IHRpbWUuICBpbiBmYWN0LCB3aGVuCmRpc2FibGluZyBSRSwgaXQg
+ZG9lcyBrZWVwIHJlY2VpdmluZyB1bnRpbCB0aGUgZW5kIG9mIHRoZSBmcmFtZS4KCj4KPiBBbHNv
+LCBJIHNlZSB0aGF0IHRoZSBDQ1NSX1NTSV9TT1IgcmVnaXN0ZXIgaXMgbm90IGluIHRoZSByZWdt
+YXAKPiBmc2xfc3NpX3ZvbGF0aWxlX3JlZygpIGxpc3QgKGxpbmUgMTQwKS4gTWF5IGJlIHRoZXJl
+IGlzIGFuIGltcGxpY2F0aW9uIG9mCj4gc29tZSBjYWNoaW5nIG1lY2hhbmlzbSA/CgpBaCEgIFll
+cy4gIFdoZW4gSSBhZGQgdGhlIFNPUiB0byB0aGUgdm9sYXRpbGUgbGlzdCwgdGhlbiB3cml0aW5n
+IHRoZQpTT1IgZG9lcyBjbGVhciB0aGUgRklGTy4gIFRoYXQncyBvbmUgZm9yIHRoZSBwYXRjaCBm
+b3Igc3VyZSA6LSkKCk5vdyBhdCBsZWFzdCBSWCBnZXQncyBjbGVhcmVkIG9uIFJYIHN0YXJ0LgoK
+SG93ZXZlciwgbm93IEkndmUgZ290IGFub3RoZXIgaXNzdWU6CgpGWUkgSSdtIHJ1bm5pbmcgYXQg
+MTYgY2hhbm5lbHMvMTYtYml0cy9mcmFtZSwgc28gMjU2IGJpdHMvZnJhbWUsIHdpdGgKdGhlIGNv
+ZGVjIGFzIG1hc3Rlci4gIChjb2RlYyAwIGFueXdheSkuCgpJJ20gcnVubmluZyBhdGVzdCBwbGF5
+IGluIG9uZSBzaGVsbCwgYW5kIGF0ZXN0IGNhcHR1cmUgaW4gYW5vdGhlciBzaGVsbC4KCkF0IGxv
+dyBzYW1wbGUgcmF0ZXMsIGl0IHdvcmtzIHF1aXRlIHJlbGlhYmx5IChhIGZldyBodW5kcmVkIHNp
+bXVsYXRlZAp4cnVucyB3aXRoIG5vIHByb2JsZW0pLCBidXQgVFggc2xpcHMgYXQgaGlnaGVyIHNh
+bXBsZSByYXRlcy4KCkknbSBydW5uaW5nCiAgICBzaGVsbCBhICMgLi9hdGVzdCAtciBTQU1QTEVS
+QVRFIC1jIDE2IC1wIDEwMjQgICAtRCBkZWZhdWx0IHBsYXkKICAgIHNoZWxsIGIgIyAuL2F0ZXN0
+IC1yIFNBTVBMRVJBVEUgLWMgMTYgLXAgMTAyNCAgIC1EIGRlZmF1bHQgLWQgMTAwCmNhcHR1cmUg
+IC14MjAwLDEwMAoKOGtIejogIE5vIHByb2JsZW1zIGFmdGVyIDEwMCBzZWNvbmRzICh+MzAwIGNh
+cHR1cmUgeHJ1bnMpCjE2a0h6OiAgTm8gcHJvYmxlbXMKMzJrSHo6IHR4IHNsaXBzIGFmdGVyIGEg
+ZmV3IFJYIHhydW5zICgxMikgYW5kIG5ldmVyIHJlY292ZXJzLgo0OGtIejogIHR4IHN0YXJ0cyBw
+cm9wZXJseSAodXN1YWxseSksIGJ1dCBzbGlwcyBpbW1lZGlhdGVseSB1cG9uIFJYIHN0YXJ0LgoK
+RllJLCBJJ20gd2F0Y2hpbmcgVFggb24gYSBzY29wZSwgYW5kIGNhbiB2ZXJpZnkgdGhhdCBpdCBp
+cyBpbiBmYWN0IHRoZQpUWCBzbGlwcGluZy4gICBJIGNhdWdodCBpdCBvbmNlLCBhbmQgZm91bmQg
+dGhhdCBpdCB3YXMgYSBkdXBsaWNhdGVkCnNhbXBsZSBpbiB0aGUgVFggc3RyZWFtLCB3aGljaCBz
+ZWVtcyB0byBzYXkgdGhhdCB0aGUgRE1BIGlzIG5vdAprZWVwaW5nIHVwIG1heWJlPyAgUGVyaGFw
+cyB0d2Vha2luZyB3aXRoIHdhdGVybWFya3Mgd2lsbCBoZWxwIHRoYXQsIG9yCnBlcmhhcHMgZHVh
+bC1maWZvIHdpbGwgaGVscC4gIFdpbGwgdHJ5IGEgY291cGxlIHRoaW5ncyBhbmQgZ2V0IGJhY2sg
+dG8KeW91LgoKSW4gdGhlIG1lYW50aW1lLCBhbnkgaWRlYSBob3cgdG8gY2hlY2sgdG8gc2VlIHdo
+YXQgc3BlZWQgdGhlIFNTSQpwZXJpcGhlcmFsIGNsb2NrIGlzIHJ1bm5pbmc/ICBJIGp1c3Qgd2Fu
+dCB0byBtYWtlIHN1cmUgaXQncyBnb2luZyBmYXN0CmVub3VnaC4KCmhlcmUncyBhIGxvZyBvZiB0
+aGUgZmFpbHVyZSBhdCAzMmtIejoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tCjxmaXJzdCB2ZXJpZmllZCBvbiB0aGUgc2NvcGUgdGhhdCBwbGF5IGlz
+IHJ1bm5pbmcgd2l0aG91dCBzbGlwcz4KLi4uIDIwIG9yIDMwIHZhbGlkIHhydW5zLi4uCkFMU0Eg
+bGliIHBjbS5jOjc4NDM6KHNuZF9wY21fcmVjb3Zlcikgb3ZlcnJ1biBvY2N1cnJlZAp3YXJuOiBG
+aXJzdCB2YWxpZCBmcmFtZQp3YXJuOiAgIDQ5YTAgNDlhMSA0OWEyIDQ5YTMgNDlhNCA0OWE1IDQ5
+YTYgNDlhNyA0OWE4IDQ5YTkgNDlhYSA0OWFiCjQ5YWMgNDlhZCA0OWFlIDQ5YWYKd2FybjogZGVm
+YXVsdDogZm9yY2UgY2FwdHVyZSB4cnVuCndhcm46IGRlZmF1bHQ6IENUX1c0X1hSVU5fRU5ECndh
+cm46IGRlZmF1bHQ6IGNhcHR1cmUgcmVhZCBmYWlsZWQ6IEJyb2tlbiBwaXBlCkFMU0EgbGliIHBj
+bS5jOjc4NDM6KHNuZF9wY21fcmVjb3Zlcikgb3ZlcnJ1biBvY2N1cnJlZAp3YXJuOiBGaXJzdCB2
+YWxpZCBmcmFtZQp3YXJuOiAgIDNhNDAgM2E0MSAzYTQyIDNhNDMgM2E0NCAzYTQ1IDNhNDYgM2E0
+NyAzYTQ4IDNhNDkgM2E0YSAzYTRiCjNhNGMgM2E0ZCAzYTRlIDNhNGYKd2FybjogZGVmYXVsdDog
+Zm9yY2UgY2FwdHVyZSB4cnVuCndhcm46IGRlZmF1bHQ6IENUX1c0X1hSVU5fRU5ECndhcm46IGRl
+ZmF1bHQ6IGNhcHR1cmUgcmVhZCBmYWlsZWQ6IEJyb2tlbiBwaXBlCkFMU0EgbGliIHBjbS5jOjc4
+NDM6KHNuZF9wY21fcmVjb3Zlcikgb3ZlcnJ1biBvY2N1cnJlZAp3YXJuOiBGaXJzdCB2YWxpZCBm
+cmFtZQp3YXJuOiAgIDMyNDAgMzI0MSAzMjQyIDMyNDMgMzI0NCAzMjQ1IDMyNDYgMzI0NyAzMjQ4
+IDMyNDkgMzI0YSAzMjRiCjMyNGMgMzI0ZCAzMjRlIDMyNGYKd2FybjogZmlyc3QgaW52YWxpZCBm
+cmFtZSB3aGlsZSBleHBlY3RpbmcgZnJhbWUgMHgwNjE3Cndhcm46ICAgYzJlMCBjMmUxIGMyZTIg
+YzJlMyBjMmU0IGMyZTUgYzJlNiBjMmU2IGMyZTcgYzJlOCBjMmU5IGMyZWEKYzJlYiBjMmVjIGMy
+ZWQgYzJlZQp3YXJuOiAgIGMyZWYgYzMwMCBjMzAxIGMzMDIgYzMwMyBjMzA0IGMzMDUgYzMwNiBj
+MzA3IGMzMDggYzMwOSBjMzBhCmMzMGIgYzMwYyBjMzBkIGMzMGUKd2FybjogICBjMzBmIGMzMjAg
+YzMyMSBjMzIyIGMzMjMgYzMyNCBjMzI1IGMzMjYgYzMyNyBjMzI4IGMzMjkgYzMyYQpjMzJiIGMz
+MmMgYzMyZCBjMzJlCndhcm46ICAgYzMyZiBjMzQwIGMzNDEgYzM0MiBjMzQzIGMzNDQgYzM0NSBj
+MzQ2IGMzNDcgYzM0OCBjMzQ5IGMzNGEKYzM0YiBjMzRjIGMzNGQgYzM0ZQplcnI6ICAgYzM0ZiBj
+MzYwIGMzNjEgYzM2MiBjMzYzIGMzNjQgYzM2NSBjMzY2IGMzNjcgYzM2OCBjMzY5IGMzNmEKYzM2
+YiBjMzZjIGMzNmQgYzM2ZQplcnI6ICAgYzM2ZiBjMzgwIGMzODEgYzM4MiBjMzgzIGMzODQgYzM4
+NSBjMzg2IGMzODcgYzM4OCBjMzg5IGMzOGEKYzM4YiBjMzhjIGMzOGQgYzM4ZQplcnI6ICAgYzM4
+ZiBjM2EwIGMzYTEgYzNhMiBjM2EzIGMzYTQgYzNhNSBjM2E2IGMzYTcgYzNhOCBjM2E5IGMzYWEK
+YzNhYiBjM2FjIGMzYWQgYzNhZQplcnI6ICAgYzNhZiBjM2MwIGMzYzEgYzNjMiBjM2MzIGMzYzQg
+YzNjNSBjM2M2IGMzYzcgYzNjOCBjM2M5IGMzY2EKYzNjYiBjM2NjIGMzY2QgYzNjZQplcnI6ICAg
+YzNjZiBjM2UwIGMzZTEgYzNlMiBjM2UzIGMzZTQgYzNlNSBjM2U2IGMzZTcgYzNlOCBjM2U5IGMz
+ZWEKYzNlYiBjM2VjIGMzZWQgYzNlZQplcnI6ICAgYzNlZiBjNDAwIGM0MDEgYzQwMiBjNDAzIGM0
+MDQgYzQwNSBjNDA2IGM0MDcgYzQwOCBjNDA5IGM0MGEKYzQwYiBjNDBjIGM0MGQgYzQwZQplcnI6
+ICAgYzQwZiBjNDIwIGM0MjEgYzQyMiBjNDIzIGM0MjQgYzQyNSBjNDI2IGM0MjcgYzQyOCBjNDI5
+IGM0MmEKYzQyYiBjNDJjIGM0MmQgYzQyZQp3YXJuOiBkZWZhdWx0OiBmb3JjZSBjYXB0dXJlIHhy
+dW4Kd2FybjogZGVmYXVsdDogQ1RfVzRfWFJVTl9FTkQKCkFzIHlvdSBjYW4gc2VlLCB0aGlzIGlz
+IGNhdXNlZCBieSBkdXBsaWNhdGVkIGMyZTYsIHdoaWNoIEkgZ3Vlc3MgaXMgYQpETUEgdW5kZXJy
+dW4/CgpoZXJlJ3MgYSBsb2cgb2YgdGhlIGZhaWx1cmUgYXQgNDhrSHo6Ci0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo8Zmlyc3QgdmVyaWZpZWQgb24g
+dGhlIHNjb3BlIHRoYXQgcGxheSBpcyBydW5uaW5nIHdpdGhvdXQgc2xpcHM+CmNhbGViQGFybTp+
+L2F0ZXN0JCAuL2F0ZXN0IC1yIDQ4MDAwIC1jIDE2IC1wIDEwMjQgICAtRCBkZWZhdWx0IC1kIDEw
+MApjYXB0dXJlICAteDIwMCwxMDAKZGJnOiBkZXY6ICdkZWZhdWx0JwpkYmc6IGRlZmF1bHQ6IGNh
+cHR1cmVfc3RhcnQKZGJnOiBkZWZhdWx0OiB3aWxsIHNpbXVsYXRlIHhydW4gZXZlcnkgMjAwIG1z
+CmRiZzogc3RhcnQgYSAxMDAgc2Vjb25kcyBkdXJhdGlvbiB0aW1lcgplcnI6IGludmFsaWQgZnJh
+bWUgYWZ0ZXIgMCBudWxsIGZyYW1lcwplcnI6ICAgOWIyZiA5YjQwIDliNDEgOWI0MiA5YjQzIDli
+NDQgOWI0NSA5YjQ2IDliNDcgOWI0OCA5YjQ5IDliNGEKOWI0YiA5YjRjIDliNGQgOWI0ZQplcnI6
+ICAgOWI0ZiA5YjYwIDliNjEgOWI2MiA5YjYzIDliNjQgOWI2NSA5YjY2IDliNjcgOWI2OCA5YjY5
+IDliNmEKOWI2YiA5YjZjIDliNmQgOWI2ZQp3YXJuOiBkZWZhdWx0OiBmb3JjZSBjYXB0dXJlIHhy
+dW4Kd2FybjogZGVmYXVsdDogQ1RfVzRfWFJVTl9FTkQKd2FybjogZGVmYXVsdDogY2FwdHVyZSBy
+ZWFkIGZhaWxlZDogQnJva2VuIHBpcGUKQUxTQSBsaWIgcGNtLmM6Nzg0Mzooc25kX3BjbV9yZWNv
+dmVyKSBvdmVycnVuIG9jY3VycmVkCmVycjogaW52YWxpZCBmcmFtZSBhZnRlciAwIG51bGwgZnJh
+bWVzCgpUaGFua3MsCi1DYWxlYgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
