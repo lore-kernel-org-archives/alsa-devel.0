@@ -1,15 +1,21 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ASoC: AMD: free memory on error
-Date: Wed, 13 Jan 2016 15:20:02 +0300
-Message-ID: <20160113122002.GA19993@mwanda>
+From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
+Subject: Re: [PATCH 2/2] ASoC: fsl: select SND_SOC_FSL_SAI or
+ SND_SOC_FSL_SSI depending on SoC type
+Date: Wed, 13 Jan 2016 13:38:10 +0100
+Message-ID: <20160113133810.167d2dbb@ipc1.ka-ro>
+References: <1452622411-16674-1-git-send-email-LW@KARO-electronics.de>
+ <1452622411-16674-2-git-send-email-LW@KARO-electronics.de>
+ <1452622411-16674-3-git-send-email-LW@KARO-electronics.de>
+ <569545EB.4080307@tabi.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
- by alsa0.perex.cz (Postfix) with ESMTP id E67C0260447
- for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2016 13:20:19 +0100 (CET)
-Content-Disposition: inline
+Received: from mail.karo-electronics.de (mail.karo-electronics.de
+ [81.173.242.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id ED9A9260447
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2016 13:38:27 +0100 (CET)
+In-Reply-To: <569545EB.4080307@tabi.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,24 +25,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Alex Deucher <alexander.deucher@amd.com>, Murali Krishna Vemuri <murali-krishna.vemuri@amd.com>, Guenter Roeck <linux@roeck-us.net>
+To: Timur Tabi <timur@tabi.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-Static checkers complain if we don't free "adata" before returning.
-
-Fixes: 7c31335a03b6 ('ASoC: AMD: add AMD ASoC ACP 2.x DMA driver')
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 3191e0a..d1fb035 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -635,6 +635,7 @@ static int acp_dma_open(struct snd_pcm_substream *substream)
- 					    SNDRV_PCM_HW_PARAM_PERIODS);
- 	if (ret < 0) {
- 		dev_err(prtd->platform->dev, "set integer constraint failed\n");
-+		kfree(adata);
- 		return ret;
- 	}
- 
+SGksCgo+IExvdGhhciBXYcOfbWFubiB3cm90ZToKPiA+IC0Jc2VsZWN0IFNORF9TT0NfRlNMX1NT
+SQo+ID4gKwlzZWxlY3QgU05EX1NPQ19GU0xfU0FJIGlmIFNPQ19JTVg2VUwKPiA+ICsJc2VsZWN0
+IFNORF9TT0NfRlNMX1NTSSBpZiBTT0NfSU1YNlEgfHwgU09DX0lNWDZTTCB8fCBTT0NfSU1YNlNY
+Cj4gCj4gSSBkb24ndCB0aGluayB0aGlzIGlzIGNvbXBhdGlibGUgd2l0aCBhIG11bHRpYXJjaCBr
+ZXJuZWwuCj4KV2h5PyBJZiBtb3JlIHRoYW4gb25lIG9mIHRoZSBJTVg2IFNvQ3MgYXJlIHNlbGVj
+dGVkLCBib3RoIGludGVyZmFjZXMKbWF5IGJlIHNlbGVjdGVkIGF0IHRoZSBzYW1lIHRpbWUgd2l0
+aG91dCBhbnkgaGFybS4KCgpMb3RoYXIgV2HDn21hbm4KX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
