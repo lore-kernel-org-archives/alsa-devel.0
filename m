@@ -1,35 +1,140 @@
-From: Arun Raghavan <arun@accosted.net>
-Subject: Managing Android vs. UCM configuration
-Date: Wed, 13 Jan 2016 10:03:54 +0530
-Message-ID: <CACuU-+iBCa7+JfuudCBG8_JuCxeySb+HVYhymqJ4cp85WhB+pg@mail.gmail.com>
-Reply-To: General PulseAudio Discussion
- <pulseaudio-discuss@lists.freedesktop.org>
+From: Songjun Wu <songjun.wu@atmel.com>
+Subject: [PATCH] ASoC: atmel_ssc_dai: distinguish the different SSC
+Date: Wed, 13 Jan 2016 14:35:10 +0800
+Message-ID: <1452666910-23586-1-git-send-email-songjun.wu@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, A discussion list for Android audio developers <andraudio@music.columbia.edu>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, nicolas.ferre@atmel.com
+Cc: linux-arm-kernel@lists.infradead.org, Songjun Wu <songjun.wu@atmel.com>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgZm9sa3MsCkknZCBzcG9rZW4gYnJpZWZseSBhYm91dCB0aGlzIGF0IHRoZSBBdWRpbyBtaW5p
-LXN1bW1pdCBhdCBEdWJsaW4sIGFuZApwcm9taXNlZCB0byBzZW5kIG91dCBhIGxpbmsuIEkndmUg
-YmVlbiB3b3JraW5nIG9uIGEgdG9vbCB0byBhdXRvbWF0ZQp0cmFuc2xhdGluZyBBbmRyb2lkIG1p
-eGVyX3BhdGhzLnhtbCB0byBVQ00gdGhhdCBQdWxzZUF1ZGlvbiAob3IgQ3JBUwpvciBhbnl0aGlu
-ZyBlbHNlKSBjYW4gY29uc3VtZS4KCkkndmUgbm93IHdyaXR0ZW4gYSBiaXQgYWJvdXQgaXQgYXQ6
-CgogIGh0dHA6Ly9hcnVucmFnaGF2YW4ubmV0LzIwMTYvMDEvYXVkaW8tZGV2aWNlcy1hbmQtY29u
-ZmlndXJhdGlvbi8KClRoZSBjb2RlIGlzIHVwIGF0OgoKICBodHRwczovL2dpdGh1Yi5jb20vZm9y
-ZC1wcmVmZWN0L3htbDJ1Y20KCkknbGwgdHJ5IHRvIHByb3ZpZGUgYSBxdWlja2VyIHdheSB0byB0
-YWtlIHRoaXMgc3R1ZmYgb3V0IGZvciBhIHNwaW4KdGhhbiBidWlsZGluZyBpdCB5b3Vyc2VsZiBz
-b29uLgoKQ2hlZXJzLApBcnVuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCnB1bHNlYXVkaW8tZGlzY3VzcyBtYWlsaW5nIGxpc3QKcHVsc2VhdWRpby1kaXNj
-dXNzQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21h
-aWxtYW4vbGlzdGluZm8vcHVsc2VhdWRpby1kaXNjdXNzCg==
+Cpu_dai id always equals 0, can't distinguish the
+different SSC. Use platform_device id to record
+and distinguish the different SSC.
+
+Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
+---
+
+ drivers/misc/atmel-ssc.c        |    1 +
+ sound/soc/atmel/atmel_ssc_dai.c |   27 ++++++++++++++++++---------
+ 2 files changed, 19 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
+index e11a0bd..0516ecd 100644
+--- a/drivers/misc/atmel-ssc.c
++++ b/drivers/misc/atmel-ssc.c
+@@ -34,6 +34,7 @@ struct ssc_device *ssc_request(unsigned int ssc_num)
+ 		if (ssc->pdev->dev.of_node) {
+ 			if (of_alias_get_id(ssc->pdev->dev.of_node, "ssc")
+ 				== ssc_num) {
++				ssc->pdev->id = ssc_num;
+ 				ssc_valid = 1;
+ 				break;
+ 			}
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index ba8def5..2768970 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -285,7 +285,8 @@ static int atmel_ssc_hw_rule_rate(struct snd_pcm_hw_params *params,
+ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
+ 			     struct snd_soc_dai *dai)
+ {
+-	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
++	struct platform_device *pdev = to_platform_device(dai->dev);
++	struct atmel_ssc_info *ssc_p = &ssc_info[pdev->id];
+ 	struct atmel_pcm_dma_params *dma_params;
+ 	int dir, dir_mask;
+ 	int ret;
+@@ -346,7 +347,8 @@ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
+ static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
+ 			       struct snd_soc_dai *dai)
+ {
+-	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
++	struct platform_device *pdev = to_platform_device(dai->dev);
++	struct atmel_ssc_info *ssc_p = &ssc_info[pdev->id];
+ 	struct atmel_pcm_dma_params *dma_params;
+ 	int dir, dir_mask;
+ 
+@@ -392,7 +394,8 @@ static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
+ static int atmel_ssc_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		unsigned int fmt)
+ {
+-	struct atmel_ssc_info *ssc_p = &ssc_info[cpu_dai->id];
++	struct platform_device *pdev = to_platform_device(cpu_dai->dev);
++	struct atmel_ssc_info *ssc_p = &ssc_info[pdev->id];
+ 
+ 	ssc_p->daifmt = fmt;
+ 	return 0;
+@@ -404,7 +407,8 @@ static int atmel_ssc_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ static int atmel_ssc_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
+ 	int div_id, int div)
+ {
+-	struct atmel_ssc_info *ssc_p = &ssc_info[cpu_dai->id];
++	struct platform_device *pdev = to_platform_device(cpu_dai->dev);
++	struct atmel_ssc_info *ssc_p = &ssc_info[pdev->id];
+ 
+ 	switch (div_id) {
+ 	case ATMEL_SSC_CMR_DIV:
+@@ -445,7 +449,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params,
+ 	struct snd_soc_dai *dai)
+ {
+-	int id = dai->id;
++	struct platform_device *pdev = to_platform_device(dai->dev);
++	int id = pdev->id;
+ 	struct atmel_ssc_info *ssc_p = &ssc_info[id];
+ 	struct ssc_device *ssc = ssc_p->ssc;
+ 	struct atmel_pcm_dma_params *dma_params;
+@@ -772,7 +777,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
+ 			     struct snd_soc_dai *dai)
+ {
+-	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
++	struct platform_device *pdev = to_platform_device(dai->dev);
++	struct atmel_ssc_info *ssc_p = &ssc_info[pdev->id];
+ 	struct atmel_pcm_dma_params *dma_params;
+ 	int dir;
+ 
+@@ -795,7 +801,8 @@ static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
+ static int atmel_ssc_trigger(struct snd_pcm_substream *substream,
+ 			     int cmd, struct snd_soc_dai *dai)
+ {
+-	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
++	struct platform_device *pdev = to_platform_device(dai->dev);
++	struct atmel_ssc_info *ssc_p = &ssc_info[pdev->id];
+ 	struct atmel_pcm_dma_params *dma_params;
+ 	int dir;
+ 
+@@ -824,11 +831,12 @@ static int atmel_ssc_trigger(struct snd_pcm_substream *substream,
+ static int atmel_ssc_suspend(struct snd_soc_dai *cpu_dai)
+ {
+ 	struct atmel_ssc_info *ssc_p;
++	struct platform_device *pdev = to_platform_device(cpu_dai->dev);
+ 
+ 	if (!cpu_dai->active)
+ 		return 0;
+ 
+-	ssc_p = &ssc_info[cpu_dai->id];
++	ssc_p = &ssc_info[pdev->id];
+ 
+ 	/* Save the status register before disabling transmit and receive */
+ 	ssc_p->ssc_state.ssc_sr = ssc_readl(ssc_p->ssc->regs, SR);
+@@ -852,12 +860,13 @@ static int atmel_ssc_suspend(struct snd_soc_dai *cpu_dai)
+ static int atmel_ssc_resume(struct snd_soc_dai *cpu_dai)
+ {
+ 	struct atmel_ssc_info *ssc_p;
++	struct platform_device *pdev = to_platform_device(cpu_dai->dev);
+ 	u32 cr;
+ 
+ 	if (!cpu_dai->active)
+ 		return 0;
+ 
+-	ssc_p = &ssc_info[cpu_dai->id];
++	ssc_p = &ssc_info[pdev->id];
+ 
+ 	/* restore SSC register settings */
+ 	ssc_writel(ssc_p->ssc->regs, TFMR, ssc_p->ssc_state.ssc_tfmr);
+-- 
+1.7.9.5
