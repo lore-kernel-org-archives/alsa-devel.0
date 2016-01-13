@@ -1,163 +1,96 @@
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: Re: [PATCH] ASoC: atmel_ssc_dai: distinguish the different SSC
-Date: Wed, 13 Jan 2016 16:08:02 +0100
-Message-ID: <56966852.8050205@atmel.com>
-References: <1452666910-23586-1-git-send-email-songjun.wu@atmel.com>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Additions to simple-audio-card
+Date: Wed, 13 Jan 2016 16:32:50 +0100
+Message-ID: <alpine.DEB.2.02.1601131608080.4189@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1452666910-23586-1-git-send-email-songjun.wu@atmel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Songjun Wu <songjun.wu@atmel.com>, broonie@kernel.org
-Cc: linux-arm-kernel@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1E945260421
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2016 16:32:53 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by bes.se.axis.com (Postfix) with ESMTP id 939B32E16E
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2016 16:32:52 +0100 (CET)
+Received: from bes.se.axis.com ([IPv6:::ffff:127.0.0.1])
+ by localhost (bes.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id a+BnH+lg3yuB for <alsa-devel@alsa-project.org>;
+ Wed, 13 Jan 2016 16:32:51 +0100 (CET)
+Received: from boulder.se.axis.com (boulder.se.axis.com [10.0.2.104])
+ by bes.se.axis.com (Postfix) with ESMTP id 7372D2E18E
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2016 16:32:51 +0100 (CET)
+Received: from boulder.se.axis.com (localhost [127.0.0.1])
+ by postfix.imss71 (Postfix) with ESMTP id 4879F144F
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2016 16:32:51 +0100 (CET)
+Received: from thoth.se.axis.com (thoth.se.axis.com [10.0.2.173])
+ by boulder.se.axis.com (Postfix) with ESMTP id 3D3AD13C6
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2016 16:32:51 +0100 (CET)
+Received: from xmail2.se.axis.com (xmail2.se.axis.com [10.0.5.74])
+ by thoth.se.axis.com (Postfix) with ESMTP id 3B40834266
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2016 16:32:51 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Le 13/01/2016 07:35, Songjun Wu a =E9crit :
-> Cpu_dai id always equals 0, can't distinguish the
-> different SSC. Use platform_device id to record
-> and distinguish the different SSC.
->=20
-> Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
 
-It seems okay:
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+I'm trying to use simple-audio-card in a system with an ADAU1361, as it =
 
-> ---
->=20
->  drivers/misc/atmel-ssc.c        |    1 +
->  sound/soc/atmel/atmel_ssc_dai.c |   27 ++++++++++++++++++---------
->  2 files changed, 19 insertions(+), 9 deletions(-)
->=20
-> diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
-> index e11a0bd..0516ecd 100644
-> --- a/drivers/misc/atmel-ssc.c
-> +++ b/drivers/misc/atmel-ssc.c
-> @@ -34,6 +34,7 @@ struct ssc_device *ssc_request(unsigned int ssc_num=
-)
->  		if (ssc->pdev->dev.of_node) {
->  			if (of_alias_get_id(ssc->pdev->dev.of_node, "ssc")
->  				=3D=3D ssc_num) {
-> +				ssc->pdev->id =3D ssc_num;
->  				ssc_valid =3D 1;
->  				break;
->  			}
-> diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_=
-ssc_dai.c
-> index ba8def5..2768970 100644
-> --- a/sound/soc/atmel/atmel_ssc_dai.c
-> +++ b/sound/soc/atmel/atmel_ssc_dai.c
-> @@ -285,7 +285,8 @@ static int atmel_ssc_hw_rule_rate(struct snd_pcm_=
-hw_params *params,
->  static int atmel_ssc_startup(struct snd_pcm_substream *substream,
->  			     struct snd_soc_dai *dai)
->  {
-> -	struct atmel_ssc_info *ssc_p =3D &ssc_info[dai->id];
-> +	struct platform_device *pdev =3D to_platform_device(dai->dev);
-> +	struct atmel_ssc_info *ssc_p =3D &ssc_info[pdev->id];
->  	struct atmel_pcm_dma_params *dma_params;
->  	int dir, dir_mask;
->  	int ret;
-> @@ -346,7 +347,8 @@ static int atmel_ssc_startup(struct snd_pcm_subst=
-ream *substream,
->  static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
->  			       struct snd_soc_dai *dai)
->  {
-> -	struct atmel_ssc_info *ssc_p =3D &ssc_info[dai->id];
-> +	struct platform_device *pdev =3D to_platform_device(dai->dev);
-> +	struct atmel_ssc_info *ssc_p =3D &ssc_info[pdev->id];
->  	struct atmel_pcm_dma_params *dma_params;
->  	int dir, dir_mask;
-> =20
-> @@ -392,7 +394,8 @@ static void atmel_ssc_shutdown(struct snd_pcm_sub=
-stream *substream,
->  static int atmel_ssc_set_dai_fmt(struct snd_soc_dai *cpu_dai,
->  		unsigned int fmt)
->  {
-> -	struct atmel_ssc_info *ssc_p =3D &ssc_info[cpu_dai->id];
-> +	struct platform_device *pdev =3D to_platform_device(cpu_dai->dev);
-> +	struct atmel_ssc_info *ssc_p =3D &ssc_info[pdev->id];
-> =20
->  	ssc_p->daifmt =3D fmt;
->  	return 0;
-> @@ -404,7 +407,8 @@ static int atmel_ssc_set_dai_fmt(struct snd_soc_d=
-ai *cpu_dai,
->  static int atmel_ssc_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
->  	int div_id, int div)
->  {
-> -	struct atmel_ssc_info *ssc_p =3D &ssc_info[cpu_dai->id];
-> +	struct platform_device *pdev =3D to_platform_device(cpu_dai->dev);
-> +	struct atmel_ssc_info *ssc_p =3D &ssc_info[pdev->id];
-> =20
->  	switch (div_id) {
->  	case ATMEL_SSC_CMR_DIV:
-> @@ -445,7 +449,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_sub=
-stream *substream,
->  	struct snd_pcm_hw_params *params,
->  	struct snd_soc_dai *dai)
->  {
-> -	int id =3D dai->id;
-> +	struct platform_device *pdev =3D to_platform_device(dai->dev);
-> +	int id =3D pdev->id;
->  	struct atmel_ssc_info *ssc_p =3D &ssc_info[id];
->  	struct ssc_device *ssc =3D ssc_p->ssc;
->  	struct atmel_pcm_dma_params *dma_params;
-> @@ -772,7 +777,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_sub=
-stream *substream,
->  static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
->  			     struct snd_soc_dai *dai)
->  {
-> -	struct atmel_ssc_info *ssc_p =3D &ssc_info[dai->id];
-> +	struct platform_device *pdev =3D to_platform_device(dai->dev);
-> +	struct atmel_ssc_info *ssc_p =3D &ssc_info[pdev->id];
->  	struct atmel_pcm_dma_params *dma_params;
->  	int dir;
-> =20
-> @@ -795,7 +801,8 @@ static int atmel_ssc_prepare(struct snd_pcm_subst=
-ream *substream,
->  static int atmel_ssc_trigger(struct snd_pcm_substream *substream,
->  			     int cmd, struct snd_soc_dai *dai)
->  {
-> -	struct atmel_ssc_info *ssc_p =3D &ssc_info[dai->id];
-> +	struct platform_device *pdev =3D to_platform_device(dai->dev);
-> +	struct atmel_ssc_info *ssc_p =3D &ssc_info[pdev->id];
->  	struct atmel_pcm_dma_params *dma_params;
->  	int dir;
-> =20
-> @@ -824,11 +831,12 @@ static int atmel_ssc_trigger(struct snd_pcm_sub=
-stream *substream,
->  static int atmel_ssc_suspend(struct snd_soc_dai *cpu_dai)
->  {
->  	struct atmel_ssc_info *ssc_p;
-> +	struct platform_device *pdev =3D to_platform_device(cpu_dai->dev);
-> =20
->  	if (!cpu_dai->active)
->  		return 0;
-> =20
-> -	ssc_p =3D &ssc_info[cpu_dai->id];
-> +	ssc_p =3D &ssc_info[pdev->id];
-> =20
->  	/* Save the status register before disabling transmit and receive *=
-/
->  	ssc_p->ssc_state.ssc_sr =3D ssc_readl(ssc_p->ssc->regs, SR);
-> @@ -852,12 +860,13 @@ static int atmel_ssc_suspend(struct snd_soc_dai=
- *cpu_dai)
->  static int atmel_ssc_resume(struct snd_soc_dai *cpu_dai)
->  {
->  	struct atmel_ssc_info *ssc_p;
-> +	struct platform_device *pdev =3D to_platform_device(cpu_dai->dev);
->  	u32 cr;
-> =20
->  	if (!cpu_dai->active)
->  		return 0;
-> =20
-> -	ssc_p =3D &ssc_info[cpu_dai->id];
-> +	ssc_p =3D &ssc_info[pdev->id];
-> =20
->  	/* restore SSC register settings */
->  	ssc_writel(ssc_p->ssc->regs, TFMR, ssc_p->ssc_state.ssc_tfmr);
->=20
+seems that the basic functionality is what I need without resort to =
+
+writing a specialized machine driver, however there are a couple of =
+
+shortcomings related to my particular patch which I want to discuss before =
+
+venturing off on a tangent:
+
+1.
+The ADAU1361 needs its PLL set up using snd_soc_dai_ops.set_pll, however =
+
+simple-audio-card has no support for this. Would it be a good idea to =
+
+augment simple-audio-card with this? After all, it does set_sysclk.
+
+2.
+simple-audio-card unconditionally uses clk_prepare_enable to start the
+CPU DAI and CODEC DAI clocks. In the particular system I have here =
+
+however, the clock hierarchy is not modelled in DT. I would rather make =
+
+these calls conditional on the corresponding clk variable, i.e. if no =
+
+clock has been defined for the DAI in question, no attempt is done to do =
+
+clk_prepare_enable either.
+
+3.
+It would be nice if simple-audio-card could support off-codec widgets, =
+
+e.g. switches that are not built into the codec, via the gpio framework. =
+
+That is, you could set up ALSA controls which control a feature via gpio. =
 
 
---=20
-Nicolas Ferre
+I'm prepared to do the actual work, but it warrants a bit of discussion =
+
+whether or not these things are a good idea to start with. If too much =
+
+features are added to simple-audio-card it might not be so simple any =
+
+more, on the other hand, it would do very nicely as a more and more =
+
+general device tree based machine driver which is simple to use.
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
