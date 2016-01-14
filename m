@@ -1,56 +1,55 @@
-From: Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH RFC 1/1] ASoC: fsl_ssi: Make fifo watermark and maxburst
- settings device tree options
-Date: Thu, 14 Jan 2016 12:18:59 -0800
-Message-ID: <20160114201858.GA17567@Asurada-Nvidia>
-References: <1452788982-11583-1-git-send-email-caleb@crome.org>
+From: Lukas Wunner <lukas@wunner.de>
+Subject: [PATCH v2 0/1] ASoC: Intel: Use acpi_dev_present()
+Date: Thu, 14 Jan 2016 21:57:20 +0100
+Message-ID: <cover.1452787340.git.lukas@wunner.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1452788982-11583-1-git-send-email-caleb-EebDDntmC0DYtjvyW6yDsg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Caleb Crome <caleb-EebDDntmC0DYtjvyW6yDsg@public.gmane.org>
-Cc: Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Xiubo Li <Xiubo.Lee-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout2.hostsharing.net (mailout2.hostsharing.net
+ [83.223.90.233])
+ by alsa0.perex.cz (Postfix) with ESMTP id E40A5260535
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2016 21:57:33 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Vinod Koul <vinod.koul@intel.com>, "Fang, Yang A" <yang.a.fang@intel.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 14, 2016 at 08:29:42AM -0800, Caleb Crome wrote:
-> Tuning the SSI fifo watermark & maxburst settings needs to be
-> optimized differently depending on the demands on the system.  The
-> current default of 2 is too low for high data-rate systems.  This
-> patch maintains exactly the same behavior by default (i.e defaults to
-> 2), but adds device tree options to set maxburst & fifo depth from the
-> device tree.  This is necessary because a setting of 2 simply doesn't
-> work at higher data rates.
+Hi Mark,
 
-> @@ -61,6 +61,16 @@ Optional properties:
->  - fsl,mode:         The operating mode for the AC97 interface only.
->                      "ac97-slave" - AC97 mode, SSI is clock slave
->                      "ac97-master" - AC97 mode, SSI is clock master
-> +- fsl,fifo-watermark: Sets the fifo watermark.  The default is
-> +                    fifo_depth-2 words, meaning 'initiate dma transfer
-> +                    when 2 words are left in the fifo'.  At higher
-> +                    data rates (48kHz, 16-channels for example), this
-> +                    causes silent but deadly DMA xruns and channel
-> +                    slips.  For 15 word FIFOs (like on MX5, MX6) 8 is
-> +                    a good value when running at high data rates
-> +- fsl,dma-maxburst: sets the max number of words to transfer in DMA.
-> +                    This defaults to the same value as
-> +                    fsl,fifo-watermark.
+the acpi_dev_present() API has now landed in Linus' tree.
+Thus, after Linus' tree gets merged back into yours,
+it would be possible to use the API in the ASoC drivers
+as per the following patch.
 
-I think DT maintainers may not give a consent towards these two
-properties as they are not to describe the hardware but to hack
-software configurations. (And it seems you haven't CCed them.)
+I've also pushed it to GitHub in case anyone prefers
+perusing it in a browser:
+https://github.com/l1k/linux/commit/f9011bb760cf5296474191406116e989dd292bf0
 
-I forgot which values you've figured out for these two properties,
-but I think those two values should work for normal cases as well:
-as SSI only has limited FIFO depth, it won't hurt (increasing too
-much latency) even if using a higher watermark configuration imo.
-So it could be a good idea to use optimized settings for all use
-cases and let other users test it.
+v1 of this patch was originally submitted with:
+Message-Id: <b7bd5f48fd254fb743b99d5c3e63f95ea8dfd8a7.1448282995.git.lukas@wunner.de>
+Link: http://mailman.alsa-project.org/pipermail/alsa-devel/2015-November/100922.html
 
-Nicolin
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks,
+
+Lukas
+
+
+Lukas Wunner (1):
+  ASoC: Intel: Use acpi_dev_present()
+
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 17 ++---------------
+ sound/soc/intel/boards/cht_bsw_rt5645.c      | 13 +------------
+ sound/soc/intel/common/sst-match-acpi.c      | 16 +---------------
+ 3 files changed, 4 insertions(+), 42 deletions(-)
+
+-- 
+1.8.5.2 (Apple Git-48)
