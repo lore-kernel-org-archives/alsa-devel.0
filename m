@@ -1,62 +1,162 @@
-From: Koro Chen <koro.chen@mediatek.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: mediatek: add i2c dependency
-Date: Thu, 14 Jan 2016 09:43:15 +0800
-Message-ID: <1452735795.28205.1.camel@mtksdaap41>
-References: <5346380.rqT2CVl4PH@wuerfel>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH] ALSA: hda - add DP mst verb support
+Date: Thu, 14 Jan 2016 06:09:42 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D1904656515@SHSMSX103.ccr.corp.intel.com>
+References: <1452683389-142396-1-git-send-email-libin.yang@linux.intel.com>
+ <s5hio2xwwl4.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <5346380.rqT2CVl4PH@wuerfel>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: broonie@kernel.org, alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6DE252604D8
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2016 07:09:47 +0100 (CET)
+In-Reply-To: <s5hio2xwwl4.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>
+Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2016-01-13 at 23:14 +0100, Arnd Bergmann wrote:
-> The newly added mediatek drivers for mt8173 select codes that depend
-> on I2C, which cuases a build failure if I2C is disabled:
-> 
-> warning: (SND_SOC_ADAU1761_I2C && SND_SOC_ADAU1781_I2C && SND_SOC_ADAU1977_I2C && SND_SOC_RT5677 && EXTCON_MAX14577 && EXTCON_MAX77693 && EXTCON_MAX77843 && BMC150_ACCEL_I2C && BMG160_I2C) selects REGMAP_I2C which has unmet direct dependencies (I2C)
-> codecs/rt5645.c:3854:1: warning: data definition has no type or storage class
-> codecs/rt5645.c:3854:1: error: type defaults to 'int' in declaration of 'module_i2c_driver' [-Werror=implicit-int]
-> codecs/rt5677.c:5270:1: warning: data definition has no type or storage class
-> 77_i2c_driver);
-> 
-> codecs/rt5677.c:5270:1: error: type defaults to 'int' in declaration of 'module_i2c_driver' [-Werror=implicit-int]
-> 
-> This adds an explicit dependency.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> 
-> diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-> index 15c04e2eae34..976967675387 100644
-> --- a/sound/soc/mediatek/Kconfig
-> +++ b/sound/soc/mediatek/Kconfig
-> @@ -9,7 +9,7 @@ config SND_SOC_MEDIATEK
->  
->  config SND_SOC_MT8173_MAX98090
->  	tristate "ASoC Audio driver for MT8173 with MAX98090 codec"
-> -	depends on SND_SOC_MEDIATEK
-> +	depends on SND_SOC_MEDIATEK && I2C
->  	select SND_SOC_MAX98090
->  	help
->  	  This adds ASoC driver for Mediatek MT8173 boards
-> @@ -19,7 +19,7 @@ config SND_SOC_MT8173_MAX98090
->  
->  config SND_SOC_MT8173_RT5650_RT5676
->  	tristate "ASoC Audio driver for MT8173 with RT5650 RT5676 codecs"
-> -	depends on SND_SOC_MEDIATEK
-> +	depends on SND_SOC_MEDIATEK && I2C
->  	select SND_SOC_RT5645
->  	select SND_SOC_RT5677
->  	help
-> 
-Acked-by: Koro Chen <koro.chen@mediatek.com>
 
-Thank you!
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Wednesday, January 13, 2016 7:25 PM
+> To: libin.yang@linux.intel.com
+> Cc: alsa-devel@alsa-project.org; Lin, Mengdong; Yang, Libin
+> Subject: Re: [PATCH] ALSA: hda - add DP mst verb support
+> 
+> On Wed, 13 Jan 2016 12:09:49 +0100,
+> libin.yang@linux.intel.com wrote:
+> >
+> > From: Libin Yang <libin.yang@linux.intel.com>
+> >
+> > Add snd_hda_get_dev_select() and snd_hda_set_dev_select()
+> functions
+> > for DP MST audio support.
+> >
+> > Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+> > ---
+> >  sound/pci/hda/hda_codec.c | 54
+> +++++++++++++++++++++++++++++++++++++++++++++++
+> >  sound/pci/hda/hda_codec.h |  2 ++
+> >  2 files changed, 56 insertions(+)
+> >
+> > diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+> > index 8374188..95baaba 100644
+> > --- a/sound/pci/hda/hda_codec.c
+> > +++ b/sound/pci/hda/hda_codec.c
+> > @@ -368,6 +368,60 @@ int snd_hda_get_devices(struct hda_codec
+> *codec, hda_nid_t nid,
+> >  	return devices;
+> >  }
+> >
+> > +/**
+> > + * snd_hda_get_dev_select - get device entry select on the pin
+> > + * @codec: the HDA codec
+> > + * @nid: NID of the pin to get device entry select
+> > + *
+> > + * Get the devcie entry select on the pin. Return the device entry
+> > + * id selected on the pin. Return 0 means the first device entry
+> > + * is selected or MST is not supported.
+> > + */
+> > +int snd_hda_get_dev_select(struct hda_codec *codec, hda_nid_t nid)
+> > +{
+> > +	/* not support dp_mst will always return 0, using first dev_entry
+> */
+> > +	if (!codec->dp_mst)
+> > +		return 0;
+> > +
+> > +	return snd_hda_codec_read(codec, nid, 0,
+> AC_VERB_GET_DEVICE_SEL, 0);
+> > +}
+> > +EXPORT_SYMBOL_GPL(snd_hda_get_dev_select);
+> > +
+> > +/**
+> > + * snd_hda_set_dev_select - set device entry select on the pin
+> > + * @codec: the HDA codec
+> > + * @nid: NID of the pin to set device entry select
+> > + * @dev_id: device entry id to be set
+> > + *
+> > + * Set the device entry select on the pin nid.
+> 
+> The return code isn't clearly defined.
+> 
+> Other than that, it looks OK.  
 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+What about return dev_id returned from snd_hda_get_dev_select()
+Or return true if it sets dev_id successfully and false for failure. 
+
+> But I prefer merging this rather
+> together with its caller (unless a complex dependency exists).
+
+OK. I will submit the patch later.
+
+Regards,
+Libin
+
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> > + */
+> > +int snd_hda_set_dev_select(struct hda_codec *codec, hda_nid_t nid,
+> int dev_id)
+> > +{
+> > +	int ret, dev;
+> > +	unsigned long timeout;
+> > +
+> > +	/* not support dp_mst will always return 0, using first dev_entry
+> */
+> > +	if (!codec->dp_mst)
+> > +		return 0;
+> > +
+> > +	timeout = jiffies + msecs_to_jiffies(500);
+> > +
+> > +	/* make sure the device entry selection takes effect */
+> > +	do {
+> > +		ret = snd_hda_codec_write(codec, nid, 0,
+> > +			AC_VERB_SET_DEVICE_SEL, dev_id);
+> > +		udelay(20);
+> > +
+> > +		dev = snd_hda_get_dev_select(codec, nid);
+> > +		if (dev == dev_id)
+> > +			break;
+> > +		msleep(20);
+> > +	} while (time_before(jiffies, timeout));
+> > +
+> > +	return ret;
+> > +}
+> > +EXPORT_SYMBOL_GPL(snd_hda_set_dev_select);
+> > +
+> >  /*
+> >   * read widget caps for each widget and store in cache
+> >   */
+> > diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+> > index 373fcad..22bcad6 100644
+> > --- a/sound/pci/hda/hda_codec.h
+> > +++ b/sound/pci/hda/hda_codec.h
+> > @@ -349,6 +349,8 @@ int snd_hda_get_conn_index(struct
+> hda_codec *codec, hda_nid_t mux,
+> >  			   hda_nid_t nid, int recursive);
+> >  int snd_hda_get_devices(struct hda_codec *codec, hda_nid_t nid,
+> >  			u8 *dev_list, int max_devices);
+> > +int snd_hda_get_dev_select(struct hda_codec *codec, hda_nid_t nid);
+> > +int snd_hda_set_dev_select(struct hda_codec *codec, hda_nid_t nid,
+> int dev_id);
+> >
+> >  struct hda_verb {
+> >  	hda_nid_t nid;
+> > --
+> > 1.9.1
+> >
