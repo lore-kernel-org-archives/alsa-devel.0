@@ -1,28 +1,50 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH RFC 1/1] ASoC: fsl_ssi: Make fifo watermark and maxburst
- settings device tree options
-Date: Thu, 14 Jan 2016 18:45:35 -0800
-Message-ID: <20160115024534.GB29132@Asurada-Nvidia>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH RFC 1/1] ASoC: fsl_ssi: Make fifo watermark
+ and maxburst settings device tree options
+Date: Thu, 14 Jan 2016 21:25:39 -0600
+Message-ID: <20160115032539.GA26909@rob-hp-laptop>
 References: <1452788982-11583-1-git-send-email-caleb@crome.org>
- <20160114201858.GA17567@Asurada-Nvidia>
- <CAG5mAdwJ+VznMp5mUVTufa_wW-corc6qXGbqskz8LGqeG5Z1kw@mail.gmail.com>
+ <20160114201858.GA17567@Asurada-Nvidia> <56984BE7.2050303@tabi.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id F1AB626052B
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2016 04:25:44 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <CAG5mAdwJ+VznMp5mUVTufa_wW-corc6qXGbqskz8LGqeG5Z1kw@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Caleb Crome <caleb@crome.org>
-Cc: Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+In-Reply-To: <56984BE7.2050303@tabi.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Timur Tabi <timur@tabi.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Caleb Crome <caleb@crome.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 14, 2016 at 01:26:24PM -0800, Caleb Crome wrote:
+On Thu, Jan 14, 2016 at 07:31:19PM -0600, Timur Tabi wrote:
+> Nicolin Chen wrote:
+> >I think DT maintainers may not give a consent towards these two
+> >properties as they are not to describe the hardware but to hack
+> >software configurations. (And it seems you haven't CCed them.)
+> 
+> I admit it's a grey area, but the hardware doesn't work if you use the wrong
+> value, and it is a fixed value per device.  A p1022ds would use a different
+> value than in in i.MX6, and once you pick a value, it's the same no matter
+> which sample rate, buffer size, etc you choose.
 
-> As for optimal settings, I finally came to a setting of 4 for depth &
-> maxburst, which will result in more DMA requests, but it's the only
-> way that works at 48kHz for me.  The default settings is 13 (15 - 2)
-> for the ones of the 15 item fifo, which is a pretty dramatic
-> difference.  I just don't know if other chips will behave badly in
-> that case.
+We've allowed similar properties for other things like SPI controllers.
 
-What's your final configuration for TFWM0 bits, 4?
+It really depends on the frequency you expect to change it. The more 
+often it changes, the higher up the s/w stack it should be controlled 
+(firmware/DT, kernel, or userspace). A function of the SOC or codec 
+rate, then yes DT is fine. Every user needs to tune it on the same 
+platform, then no, don't put it in DT. My recollection from i.MX is this 
+would be the former case.
+
+Rob
