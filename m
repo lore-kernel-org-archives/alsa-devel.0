@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: AMD: free memory on error" to the asoc
-	tree
-Date: Fri, 15 Jan 2016 18:18:57 +0000
-Message-ID: <E1aK8xd-0005Rv-6x@debutante>
-References: <20160113122002.GA19993@mwanda>
+Subject: Applied "ASoC: rt5659: Staticise rt5659_i2c_shutdown"
+	to the asoc tree
+Date: Fri, 15 Jan 2016 18:18:55 +0000
+Message-ID: <E1aK8xb-0005Qq-Cu@debutante>
+References: <1452585226.5282.0.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 21AFB26051B
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2016 19:19:04 +0100 (CET)
-In-Reply-To: <20160113122002.GA19993@mwanda>
+ by alsa0.perex.cz (Postfix) with ESMTP id D87CE260524
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2016 19:19:05 +0100 (CET)
+In-Reply-To: <1452585226.5282.0.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>, Mark Brown <broonie@kernel.org>
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: AMD: free memory on error
+   ASoC: rt5659: Staticise rt5659_i2c_shutdown
 
 has been applied to the asoc tree at
 
@@ -53,31 +53,29 @@ to this mail.
 Thanks,
 Mark
 
->From cde6bcd584b1b910d6ee8d6eb968ea5d20815444 Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Wed, 13 Jan 2016 15:20:02 +0300
-Subject: [PATCH] ASoC: AMD: free memory on error
+>From c62db3d5abf89ca5502c7fe1f869c2862e48336d Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Tue, 12 Jan 2016 15:53:46 +0800
+Subject: [PATCH] ASoC: rt5659: Staticise rt5659_i2c_shutdown
 
-Static checkers complain if we don't free "adata" before returning.
-
-Fixes: 7c31335a03b6 ('ASoC: AMD: add AMD ASoC ACP 2.x DMA driver')
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-pcm-dma.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/rt5659.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 3191e0a7d273..d1fb035f44db 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -635,6 +635,7 @@ static int acp_dma_open(struct snd_pcm_substream *substream)
- 					    SNDRV_PCM_HW_PARAM_PERIODS);
- 	if (ret < 0) {
- 		dev_err(prtd->platform->dev, "set integer constraint failed\n");
-+		kfree(adata);
- 		return ret;
- 	}
+diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
+index 820d8fa62b5e..47c717f4964a 100644
+--- a/sound/soc/codecs/rt5659.c
++++ b/sound/soc/codecs/rt5659.c
+@@ -4184,7 +4184,7 @@ static int rt5659_i2c_remove(struct i2c_client *i2c)
+ 	return 0;
+ }
+ 
+-void rt5659_i2c_shutdown(struct i2c_client *client)
++static void rt5659_i2c_shutdown(struct i2c_client *client)
+ {
+ 	struct rt5659_priv *rt5659 = i2c_get_clientdata(client);
  
 -- 
 2.7.0.rc3
