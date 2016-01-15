@@ -1,59 +1,93 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: [PATCH RFC 1/1] ASoC: fsl_ssi: Make fifo watermark and maxburst
- settings device tree options
-Date: Fri, 15 Jan 2016 11:10:29 -0800
-Message-ID: <CAG5mAdyUfSuCqA4_342MS2AyshvuyeiYsjQyRqifmqVhn4T2xA@mail.gmail.com>
-References: <1452788982-11583-1-git-send-email-caleb@crome.org>
- <20160114201858.GA17567@Asurada-Nvidia> <56984BE7.2050303@tabi.org>
- <20160115131325.GW6588@sirena.org.uk> <5698F846.5080604@tabi.org>
- <CAG5mAdy553q4Te5755575WaiLxGRp43h=WVH6QzF7idsaCnhbg@mail.gmail.com>
- <20160115183824.GB31703@Asurada-Nvidia> <CAG5mAdyXPtnnZvGcWrhhbv7wuamz_xbRsn76VXdbE1yZRgx_Mg@mail.gmail.com>
- <20160115185736.GC31703@Asurada-Nvidia>
+From: Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: sound: use-after-free in snd_timer_interrupt
+Date: Fri, 15 Jan 2016 20:13:11 +0100
+Message-ID: <CACT4Y+YPVUCTenSZjLfMf08NHJm1u3--Qm6a32oTdCmxUGkC0Q@mail.gmail.com>
+References: <CACT4Y+ZrVvE3dgcYHRdHDG0X316VgC-=pr2U-233vVn_QbHZHw@mail.gmail.com>
+ <s5hwprdv2sp.wl-tiwai@suse.de> <CACT4Y+ZFsNxsVyq_n6kh=HN1dStj_hL=B9eUu4heAHes=ixf3g@mail.gmail.com>
+ <s5hio2xmh9z.wl-tiwai@suse.de> <CACT4Y+bqxg_C7JmnUSRm_9jiZ9R9XqbBV0igDdUW1ZhtqvktJw@mail.gmail.com>
+ <CACT4Y+anWgMKQmNByifCs+-jizRQL9twxvRQzW3XzNJ8+a6fDw@mail.gmail.com>
+ <s5hegdlmdd6.wl-tiwai@suse.de> <CACT4Y+Y62DTncEAb_S6JykY7Ps7SHo2QyCopMObBxJt2fB_NKA@mail.gmail.com>
+ <s5h60yxmc99.wl-tiwai@suse.de> <s5ha8o8uoqb.wl-tiwai@suse.de>
+ <CACT4Y+a-=mrGALS+yf4GwGmJGLWXVJ0mbucPAkZ7WSGFaSR0Kw@mail.gmail.com>
+ <s5hwprbt8ei.wl-tiwai@suse.de> <CACT4Y+ZfAc1JZQHHbA-k_ZVN3vm9djojvmL+e=D8WO2J8FR0=A@mail.gmail.com>
+ <s5hk2nbt0gp.wl-tiwai@suse.de> <CACT4Y+aOEHHEVp1YLLMr2PD_iyESMP64T-EQX18=EfvRtgOLOQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160115185736.GC31703@Asurada-Nvidia>
+In-Reply-To: <CACT4Y+aOEHHEVp1YLLMr2PD_iyESMP64T-EQX18=EfvRtgOLOQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Jie Yang <yang.jie@intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, LKML <linux-kernel@vger.kernel.org>, Eric Dumazet <edumazet@google.com>, Alexander Potapenko <glider@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>, Sasha Levin <sasha.levin@oracle.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 15, 2016 at 10:57 AM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
-> On Fri, Jan 15, 2016 at 10:49:04AM -0800, Caleb Crome wrote:
->
->> > The watermark is merely a threshold to trigger a DMA request. The
->> > only relationship with the burst size is that each burst transfer
->> > should not carry more data than the number of empty slots; FIFO
->> > under/overflow occurs otherwise. So it's just more efficient and
->> > safer to set an identical value to both of them. I don't think
->> > it will cause functional problems to set TFWM to 4 and burst size
->> > to 1 -- It just lets DMA operate in a single data transfer mode.
+On Fri, Jan 15, 2016 at 3:38 PM, Dmitry Vyukov <dvyukov@google.com> wrote:
+> On Fri, Jan 15, 2016 at 2:51 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>> On Fri, 15 Jan 2016 12:03:17 +0100,
+>> Dmitry Vyukov wrote:
+>>>
+>>> On Fri, Jan 15, 2016 at 12:00 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>>> > On Fri, 15 Jan 2016 09:06:10 +0100,
+>>> > Dmitry Vyukov wrote:
+>>> >>
+>>> >> On Thu, Jan 14, 2016 at 5:09 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>>> >> > On Wed, 13 Jan 2016 21:54:10 +0100,
+>>> >> > Takashi Iwai wrote:
+>>> >> >>
+>>> >> >> OK, then this might be a possible race at the current snd_timer_stop()
+>>> >> >> implementation.  There is no sync action there, so the ISR might be
+>>> >> >> still alive after snd_timer_close() call.  Or might be another race.
+>>> >> >> This pattern looks a bit different, as it's involved with hrtimer.
+>>> >> >>
+>>> >> >> I'll take a look at it tomorrow.
+>>> >> >
+>>> >> > I've audited the code today, but the open window doesn't look like
+>>> >> > what I expected.  I found only some possible cases with slave timer
+>>> >> > instances.
+>>> >> >
+>>> >> > In anyway, below is a test fix patch.  Since I couldn't reproduce the
+>>> >> > issue on my local machines, it's hard to say whether this covers the
+>>> >> > holes you fell.  Let's see...
+>>> >>
+>>> >>
+>>> >> Hi Takashi,
+>>> >>
+>>> >> I would be interested to understand why other people can't reproduce
+>>> >> issues that I hit pretty reliably.
+>>> >> I suspect that it can be due to .config. Please try with the following
+>>> >> config values.
+>>> >
+>>> > I guess rather other config, e.g. the kernel debug options.
+>>> > I suppose you enabled KASAN and DEBUG_LIST.  What else?
+>>>
+>>> I've attached my config (you will need to disable CONFIG_KCOV, it is
+>>> not upstreamed).
 >>
->> If there is no penalty for setting maxburst to 1 (or 2 in the case of
->> dual fifo I think), then should we just set both the watermark and
->> maxburst to 1?
+>> Hm, that has lots of other drivers built-in...
 >>
->> I guess the real difference would be when you're in FIQ mode.  In FIQ
->> mode, the penalty of an interrupt per word would be pretty bad, but in
->> DMA mode, if we just set both to 1, we should be fine, right?
+>>> >> I also start qemu with "-soundhw all" arg.
+>>> >
+>>> > OK, so you're testing with VM?  This makes easier to recheck.
+>>>
+>>> Yes, I start qemu as:
+>>>
+>>> qemu-system-x86_64 -hda wheezy.img -net
+>>> user,host=10.0.2.10,hostfwd=tcp::10022-:22 -net nic -nographic -kernel
+>>> arch/x86/boot/bzImage -append "console=ttyS0 root=/dev/sda debug
+>>> earlyprintk=serial slub_debug=UZ" -enable-kvm -m 2G -numa
+>>> node,nodeid=0,cpus=0-1 -numa node,nodeid=1,cpus=2-3 -smp
+>>> sockets=2,cores=2,threads=1 -usb -usbdevice mouse -usbdevice tablet
+>>> -soundhw all
+>>
+>> And which test did trigger use-after-free, even with all previous
+>> patches?
 >
-> There will be much more overhead drawn by frequent DMA transfers.
-> I believe you understand the idea -- less burst size then more DMA
-> request. Each DMA transfer contains a pair of handshaking overhead
-> according to the bus protocol. Apparently the bus will be wasted
-> with lots of handshaking section instead of keep dedicated to data
-> transfer truly. It might work if SSI is the only user of the bus,
-> which we shouldn't assume.
+> I will try to extract a new reproducer now.
 
-Right, I knew there must be a trade off.  So, how about I submit a
-patch with a fixed value of 4 for whichever platforms you think is
-correct.
+Ok, I does not seem to see any crashes except the timer hangs below.
+Let's consider all other bugs as fixed. I will report anything new
+that I see separately.
 
-I see the 4 compatibles are:  fsl,mpc8610-ssi, fsl,imx51-ssi,
-fsl,imx35-ssi, and fsl,imx21-ssi.
 
-Shall I submit a patch that sets the value to 4 for for any/all of the
-above?  Should it be different based on whether fiq is enabled.  Maybe
-set it to 4 for whenever DMA is used, and to 13 whenever FIQ is used?
-
--Caleb
+> Meanwhile, can you try to reproduce this one:
+> https://groups.google.com/forum/#!msg/syzkaller/bbtG9_h1ONU/CPLblMC6FAAJ
+> ? I run the program in a tight parallel loop.
