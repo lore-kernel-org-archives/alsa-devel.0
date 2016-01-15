@@ -1,17 +1,27 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH v2 3/3] ASoC: topology: Add FE DAI links
-	dynamically
-Date: Fri, 15 Jan 2016 16:13:37 +0800
-Message-ID: <ee072a68651c4e97b6dd6f50324e51a139e0d322.1452844210.git.mengdong.lin@linux.intel.com>
-References: <cover.1452844210.git.mengdong.lin@linux.intel.com>
+From: Steven Wawryk <stevenw@acres.com.au>
+Subject: Re: Adding channels on multicodec soundcard
+Date: Fri, 15 Jan 2016 18:59:41 +1030
+Message-ID: <5698ADF5.2090005@acres.com.au>
+References: <5698894D.2030002@acres.com.au> <56989099.3050404@acres.com.au>
+ <CAG5mAdyAkzy+HCOM1J=rJqf5rqTtbEYdAM9FFdCBqwsmgbkAAA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F2EA265DAD
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2016 09:13:31 +0100 (CET)
-In-Reply-To: <cover.1452844210.git.mengdong.lin@linux.intel.com>
+Received: from mail.acres.com.au (mail.acres.com.au [150.101.238.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id CDDE726057A
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2016 09:29:50 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by loki.acres.com.au (Postfix) with ESMTP id 76F0AC2CB3
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2016 18:59:48 +1030 (CST)
+Received: from mail.acres.com.au ([127.0.0.1])
+ by localhost (loki.acres.com.au [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id fFpFLeOldCyV for <alsa-devel@alsa-project.org>;
+ Fri, 15 Jan 2016 18:59:41 +1030 (CST)
+Received: from [192.0.2.164] (krill.acres.com.au [192.0.2.164])
+ by loki.acres.com.au (Postfix) with ESMTP id 59538C0D33
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2016 18:59:41 +1030 (CST)
+In-Reply-To: <CAG5mAdyAkzy+HCOM1J=rJqf5rqTtbEYdAM9FFdCBqwsmgbkAAA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,142 +31,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, vinod.koul@intel.com, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Topology will also create FE DAI links dynamically from the PCM
-objects. These links will be removed when the component is removed
-and its topology info is unloaded.
+Thanks Caleb,
 
-The component driver can implement link_load/unload ops for extra
-intialization (e.g. error check) and destruction.
+Fortunately with 4 different (physical) TDM link pairs I don't have to 
+get the codecs to play together gracefully on a single link. From what 
+you've said it sounds like my first method with 4 snd_soc_dai_link's, 
+representing 4 physical links is probably the better approach.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+So I guess my question boils down to basically the same as yours - how 
+to get multiple devices acting as, and routing through, a single device?
 
-diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
-index ec562d0..d318fe4 100644
---- a/include/sound/soc-topology.h
-+++ b/include/sound/soc-topology.h
-@@ -125,6 +125,12 @@ struct snd_soc_tplg_ops {
- 	int (*dai_unload)(struct snd_soc_component *,
- 		struct snd_soc_dobj *);
- 
-+	/* DAI link - used for any driver specific init */
-+	int (*link_load)(struct snd_soc_component *,
-+		struct snd_soc_dai_link *link);
-+	int (*link_unload)(struct snd_soc_component *,
-+		struct snd_soc_dobj *);
-+
- 	/* callback to handle vendor bespoke data */
- 	int (*vendor_load)(struct snd_soc_component *,
- 		struct snd_soc_tplg_hdr *);
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 446ac9a..0eb01e8 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -340,6 +340,16 @@ static int soc_tplg_dai_load(struct soc_tplg *tplg,
- 	return 0;
- }
- 
-+/* pass link configurations to component driver for extra intialization */
-+static int soc_tplg_dai_link_load(struct soc_tplg *tplg,
-+	struct snd_soc_dai_link *link)
-+{
-+	if (tplg->comp && tplg->ops && tplg->ops->link_load)
-+		return tplg->ops->link_load(tplg->comp, link);
-+
-+	return 0;
-+}
-+
- /* tell the component driver that all firmware has been loaded in this request */
- static void soc_tplg_complete(struct soc_tplg *tplg)
- {
-@@ -512,6 +522,24 @@ static void remove_dai(struct snd_soc_component *comp,
- 	kfree(dai_drv);
- }
- 
-+/* remove link configurations */
-+static void remove_link(struct snd_soc_component *comp,
-+	struct snd_soc_dobj *dobj, int pass)
-+{
-+	struct snd_soc_dai_link *link =
-+		container_of(dobj, struct snd_soc_dai_link, dobj);
-+
-+	if (pass != SOC_TPLG_PASS_PCM_DAI)
-+		return;
-+
-+	if (dobj->ops && dobj->ops->link_unload)
-+		dobj->ops->link_unload(comp, dobj);
-+
-+	list_del(&dobj->list);
-+	snd_soc_remove_dai_link(comp->card, link);
-+	kfree(link);
-+}
-+
- /* bind a kcontrol to it's IO handlers */
- static int soc_tplg_kcontrol_bind_io(struct snd_soc_tplg_ctl_hdr *hdr,
- 	struct snd_kcontrol_new *k,
-@@ -1603,10 +1631,47 @@ static int soc_tplg_dai_create(struct soc_tplg *tplg,
- 	return snd_soc_register_dai(tplg->comp, dai_drv);
- }
- 
-+static int soc_tplg_link_create(struct soc_tplg *tplg,
-+	struct snd_soc_tplg_pcm *pcm)
-+{
-+	struct snd_soc_dai_link *link;
-+	int ret;
-+
-+	link = kzalloc(sizeof(struct snd_soc_dai_link), GFP_KERNEL);
-+	if (link == NULL)
-+		return -ENOMEM;
-+
-+	link->name = pcm->pcm_name;
-+	link->stream_name = pcm->pcm_name;
-+
-+	/* pass control to component driver for optional further init */
-+	ret = soc_tplg_dai_link_load(tplg, link);
-+	if (ret < 0) {
-+		dev_err(tplg->comp->dev, "ASoC: FE link loading failed\n");
-+		kfree(link);
-+		return ret;
-+	}
-+
-+	link->dobj.index = tplg->index;
-+	link->dobj.ops = tplg->ops;
-+	link->dobj.type = SND_SOC_DOBJ_DAI_LINK;
-+	list_add(&link->dobj.list, &tplg->comp->dobj_list);
-+
-+	snd_soc_add_dai_link(tplg->comp->card, link);
-+	return 0;
-+}
-+
-+/* create a FE DAI and DAI link from the PCM object */
- static int soc_tplg_pcm_create(struct soc_tplg *tplg,
- 	struct snd_soc_tplg_pcm *pcm)
- {
--	return soc_tplg_dai_create(tplg, pcm);
-+	int ret;
-+
-+	ret = soc_tplg_dai_create(tplg, pcm);
-+	if (ret < 0)
-+		return ret;
-+
-+	return  soc_tplg_link_create(tplg, pcm);
- }
- 
- static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
-@@ -1890,6 +1955,9 @@ int snd_soc_tplg_component_remove(struct snd_soc_component *comp, u32 index)
- 			case SND_SOC_DOBJ_PCM:
- 				remove_dai(comp, dobj, pass);
- 				break;
-+			case SND_SOC_DOBJ_DAI_LINK:
-+				remove_link(comp, dobj, pass);
-+				break;
- 			default:
- 				dev_err(comp->dev, "ASoC: invalid component type %d for removal\n",
- 					dobj->type);
--- 
-2.5.0
+Steve
+
+
+On 15/01/16 17:44, ccrome wrote:
+> On Thu, Jan 14, 2016 at 10:24 PM, Steven Wawryk <stevenw@acres.com.au> wrote:
+>> I should have added that there is a pair (capture + playback) of serial
+>> "I2S" links (actually TDM) between the Zynq and *each* codec.
+>>
+>>
+>>
+>> On 15/01/16 16:23, Steven Wawryk wrote:
+>>>
+>>> Hi,
+>>>
+>>> I'm trying to write an ALSA soundcard driver module for an embedded
+>>> Zynq-based system with 4 Cirrus CS42448 codecs.  Each codec has 6 analog
+>>> output channels and I'd like the "soundcard" to have 24 channels (6 to each
+>>> codec).  I've been having trouble getting it to do this.  The hw_params for
+>>> the codec, card and "I2S" IP core drivers all get the same parameters,
+>>> including number of channels.
+>>>
+>>> When I define 4 snd_soc_dai_link's, each with 1 codec, then 4 "devices"
+>>> are set up for the card and I can access 6 channels on 1 codec (1 "device")
+>>> at a time.  When I define 1 snd_soc_dai_link with 4 codecs then 1 "device"
+>>> is set up and I can still only access 6 channels, but it appears to use all
+>>> 4 codecs (somehow - I haven't yet worked out the channel allocation).  I
+>>> can't seem to get 24 channels to the card, splitting into 6 channels to each
+>>> of the codecs.
+>>>
+> Heh, I just composed, but didn't send an almost identical question --
+> in my case I want 2 or 3 freescale SSI ports to behave as one device,
+> all in perfect synchrony.  I'd love to hear the answer from somebody
+> that really understands the code better than I.
+>
+> To get multiple codecs on one DAI link gracefully, you need a set of
+> patches, the last of which was roughly "[PATCH] ASoC: dapm: Don't add
+> prefix to widget stream name", See arnaud/nicolin/liam helping me back
+> here: http://mailman.alsa-project.org/pipermail/alsa-devel/2015-September/097564.html.
+> The first time I see this patch is in 4.2.  3.17 might be a challenge.
+>
+> I sure suspect that having multiple cpu-side ports on the link isn't
+> supported.
+> Looking in soc.h
+> (http://lxr.free-electrons.com/source/include/sound/soc.h#L952), I see
+> several places where there are arrays of codecs, but never an array of
+> cpu-side ports inside one device.
+>
+> So, I can share my work on how to get multiple codecs on a single TDM
+> bus, but I'm not sure how to get multiple interfaces to appear as one
+> device.
+>
+> -Caleb
+>
+>
+>>> Can anyone suggest how I should be going about this?
+>>>
+>>> The linux kernel is 3.17 from PetaLinux (Xilinx).
+>>>
+>>> Cheers,
+>>> Steve
+>>>
+>>> _______________________________________________
+>>> Alsa-devel mailing list
+>>> Alsa-devel@alsa-project.org
+>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
