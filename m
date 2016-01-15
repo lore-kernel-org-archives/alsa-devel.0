@@ -1,16 +1,15 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH v2 1/3] ALSA: pcm: Add
-	snd_pcm_rate_range_to_bits()
-Date: Fri, 15 Jan 2016 16:13:10 +0800
-Message-ID: <f34caedda0fb6329d07130203ef24ff6fa8ee47e.1452844210.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH v2 2/3] ASoC: topology: Add FE DAIs dynamically
+Date: Fri, 15 Jan 2016 16:13:28 +0800
+Message-ID: <b7e208201542e5a27d052eb9e9f780056542db03.1452844210.git.mengdong.lin@linux.intel.com>
 References: <cover.1452844210.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id F3F4926058E
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2016 09:13:11 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D088260589
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2016 09:13:15 +0100 (CET)
 In-Reply-To: <cover.1452844210.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,67 +21,277 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, vinod.koul@intel.com, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-This helper function can convert a given sample rate range to
-SNDRV_PCM_RATE_xxx bits.
+Topology will create FE DAIs dynamically from the PCM objects,
+and register them to the component.
+
+A PCM topoplogy object describes a FE DAI and DAI link. Later
+patch will add FE DAI links as well.
+
+Change tplg load ops for DAI:
+- Only process a DAI.
+- Pass the DAI driver pointer to the component driver for
+  extra initialization.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
-Acked-by: Takashi Iwai <tiwai@suse.de>
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index b0be092..af1fb37 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -1093,6 +1093,8 @@ unsigned int snd_pcm_rate_to_rate_bit(unsigned int rate);
- unsigned int snd_pcm_rate_bit_to_rate(unsigned int rate_bit);
- unsigned int snd_pcm_rate_mask_intersect(unsigned int rates_a,
- 					 unsigned int rates_b);
-+unsigned int snd_pcm_rate_range_to_bits(unsigned int rate_min,
-+					unsigned int rate_max);
+diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
+index 73713e6..ec562d0 100644
+--- a/include/sound/soc-topology.h
++++ b/include/sound/soc-topology.h
+@@ -56,12 +56,6 @@ struct snd_soc_dobj_widget {
+ 	unsigned int kcontrol_enum:1;	/* this widget is an enum kcontrol */
+ };
  
- /**
-  * snd_pcm_set_runtime_buffer - Set the PCM runtime buffer
-diff --git a/sound/core/pcm_misc.c b/sound/core/pcm_misc.c
-index ebe8444..53dc373 100644
---- a/sound/core/pcm_misc.c
-+++ b/sound/core/pcm_misc.c
-@@ -565,3 +565,33 @@ unsigned int snd_pcm_rate_mask_intersect(unsigned int rates_a,
- 	return rates_a & rates_b;
+-/* dynamic PCM DAI object */
+-struct snd_soc_dobj_pcm_dai {
+-	struct snd_soc_tplg_pcm_dai *pd;
+-	unsigned int count;
+-};
+-
+ /* generic dynamic object - all dynamic objects belong to this struct */
+ struct snd_soc_dobj {
+ 	enum snd_soc_dobj_type type;
+@@ -71,7 +65,6 @@ struct snd_soc_dobj {
+ 	union {
+ 		struct snd_soc_dobj_control control;
+ 		struct snd_soc_dobj_widget widget;
+-		struct snd_soc_dobj_pcm_dai pcm_dai;
+ 	};
+ 	void *private; /* core does not touch this */
+ };
+@@ -126,10 +119,10 @@ struct snd_soc_tplg_ops {
+ 	int (*widget_unload)(struct snd_soc_component *,
+ 		struct snd_soc_dobj *);
+ 
+-	/* FE - used for any driver specific init */
+-	int (*pcm_dai_load)(struct snd_soc_component *,
+-		struct snd_soc_tplg_pcm_dai *pcm_dai, int num_fe);
+-	int (*pcm_dai_unload)(struct snd_soc_component *,
++	/* FE DAI - used for any driver specific init */
++	int (*dai_load)(struct snd_soc_component *,
++		struct snd_soc_dai_driver *dai_drv);
++	int (*dai_unload)(struct snd_soc_component *,
+ 		struct snd_soc_dobj *);
+ 
+ 	/* callback to handle vendor bespoke data */
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 1811e73..100bb0a 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -27,7 +27,6 @@
+ #include <sound/compress_driver.h>
+ #include <sound/control.h>
+ #include <sound/ac97_codec.h>
+-#include <sound/soc-topology.h>
+ 
+ /*
+  * Convenience kcontrol builders
+@@ -404,6 +403,7 @@ struct snd_soc_jack_zone;
+ struct snd_soc_jack_pin;
+ #include <sound/soc-dapm.h>
+ #include <sound/soc-dpcm.h>
++#include <sound/soc-topology.h>
+ 
+ struct snd_soc_jack_gpio;
+ 
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 6963ba2..446ac9a 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -330,12 +330,12 @@ static int soc_tplg_widget_load(struct soc_tplg *tplg,
+ 	return 0;
  }
- EXPORT_SYMBOL_GPL(snd_pcm_rate_mask_intersect);
+ 
+-/* pass dynamic FEs configurations to component driver */
+-static int soc_tplg_pcm_dai_load(struct soc_tplg *tplg,
+-	struct snd_soc_tplg_pcm_dai *pcm_dai, int num_pcm_dai)
++/* pass DAI configurations to component driver for extra intialization */
++static int soc_tplg_dai_load(struct soc_tplg *tplg,
++	struct snd_soc_dai_driver *dai_drv)
+ {
+-	if (tplg->comp && tplg->ops && tplg->ops->pcm_dai_load)
+-		return tplg->ops->pcm_dai_load(tplg->comp, pcm_dai, num_pcm_dai);
++	if (tplg->comp && tplg->ops && tplg->ops->dai_load)
++		return tplg->ops->dai_load(tplg->comp, dai_drv);
+ 
+ 	return 0;
+ }
+@@ -495,18 +495,21 @@ static void remove_widget(struct snd_soc_component *comp,
+ 	/* widget w is freed by soc-dapm.c */
+ }
+ 
+-/* remove PCM DAI configurations */
+-static void remove_pcm_dai(struct snd_soc_component *comp,
++/* remove DAI configurations */
++static void remove_dai(struct snd_soc_component *comp,
+ 	struct snd_soc_dobj *dobj, int pass)
+ {
++	struct snd_soc_dai_driver *dai_drv =
++		container_of(dobj, struct snd_soc_dai_driver, dobj);
 +
-+/**
-+ * snd_pcm_rate_range_to_bits - converts rate range to SNDRV_PCM_RATE_xxx bit
-+ * @rate_min: the minimum sample rate
-+ * @rate_max: the maximum sample rate
-+ *
-+ * This function has an implicit assumption: the rates in the given range have
-+ * only the pre-defined rates like 44100 or 16000.
-+ *
-+ * Return: The SNDRV_PCM_RATE_xxx flag that corresponds to the given rate range,
-+ * or SNDRV_PCM_RATE_KNOT for an unknown range.
-+ */
-+unsigned int snd_pcm_rate_range_to_bits(unsigned int rate_min,
-+	unsigned int rate_max)
+ 	if (pass != SOC_TPLG_PASS_PCM_DAI)
+ 		return;
+ 
+-	if (dobj->ops && dobj->ops->pcm_dai_unload)
+-		dobj->ops->pcm_dai_unload(comp, dobj);
++	if (dobj->ops && dobj->ops->dai_unload)
++		dobj->ops->dai_unload(comp, dobj);
+ 
+ 	list_del(&dobj->list);
+-	kfree(dobj);
++	kfree(dai_drv);
+ }
+ 
+ /* bind a kcontrol to it's IO handlers */
+@@ -1544,18 +1547,79 @@ static int soc_tplg_dapm_complete(struct soc_tplg *tplg)
+ 	return 0;
+ }
+ 
+-static int soc_tplg_pcm_dai_elems_load(struct soc_tplg *tplg,
++static int soc_tplg_dai_create(struct soc_tplg *tplg,
++	struct snd_soc_tplg_pcm *pcm)
 +{
-+	unsigned int rates = 0;
-+	int i;
++	struct snd_soc_dai_driver *dai_drv;
++	struct snd_soc_pcm_stream *stream;
++	struct snd_soc_tplg_stream_caps *caps;
++	int ret;
 +
-+	for (i = 0; i < snd_pcm_known_rates.count; i++) {
-+		if (snd_pcm_known_rates.list[i] >= rate_min
-+			&& snd_pcm_known_rates.list[i] <= rate_max)
-+			rates |= 1 << i;
++	dai_drv = kzalloc(sizeof(struct snd_soc_dai_driver), GFP_KERNEL);
++	if (dai_drv == NULL)
++		return -ENOMEM;
++
++	dai_drv->name = pcm->dai_name;
++	dai_drv->id = pcm->dai_id;
++
++	if (pcm->playback) {
++		stream = &dai_drv->playback;
++		caps = &pcm->caps[SND_SOC_TPLG_STREAM_PLAYBACK];
++
++		stream->stream_name = kstrdup(caps->name, GFP_KERNEL);
++		stream->channels_min = caps->channels_min;
++		stream->channels_max = caps->channels_max;
++		stream->rates = snd_pcm_rate_range_to_bits(caps->rate_min,
++							caps->rate_max);
++		stream->formats = caps->formats;
 +	}
 +
-+	if (!rates)
-+		rates = SNDRV_PCM_RATE_KNOT;
++	if (pcm->capture) {
++		stream = &dai_drv->capture;
++		caps = &pcm->caps[SND_SOC_TPLG_STREAM_CAPTURE];
 +
-+	return rates;
++		stream->stream_name = kstrdup(caps->name, GFP_KERNEL);
++		stream->channels_min = caps->channels_min;
++		stream->channels_max = caps->channels_max;
++		stream->rates = snd_pcm_rate_range_to_bits(caps->rate_min,
++							caps->rate_max);
++		stream->formats = caps->formats;
++	}
++
++	/* pass control to component driver for optional further init */
++	ret = soc_tplg_dai_load(tplg, dai_drv);
++	if (ret < 0) {
++		dev_err(tplg->comp->dev, "ASoC: DAI loading failed\n");
++		kfree(dai_drv);
++		return ret;
++	}
++
++	dai_drv->dobj.index = tplg->index;
++	dai_drv->dobj.ops = tplg->ops;
++	dai_drv->dobj.type = SND_SOC_DOBJ_PCM;
++	list_add(&dai_drv->dobj.list, &tplg->comp->dobj_list);
++
++	/* register the DAI to the component */
++	return snd_soc_register_dai(tplg->comp, dai_drv);
 +}
-+EXPORT_SYMBOL_GPL(snd_pcm_rate_range_to_bits);
++
++static int soc_tplg_pcm_create(struct soc_tplg *tplg,
++	struct snd_soc_tplg_pcm *pcm)
++{
++	return soc_tplg_dai_create(tplg, pcm);
++}
++
++static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
+ 	struct snd_soc_tplg_hdr *hdr)
+ {
+-	struct snd_soc_tplg_pcm_dai *pcm_dai;
+-	struct snd_soc_dobj *dobj;
++	struct snd_soc_tplg_pcm *pcm;
+ 	int count = hdr->count;
+-	int ret;
++	int i;
+ 
+ 	if (tplg->pass != SOC_TPLG_PASS_PCM_DAI)
+ 		return 0;
+ 
+-	pcm_dai = (struct snd_soc_tplg_pcm_dai *)tplg->pos;
++	pcm = (struct snd_soc_tplg_pcm *)tplg->pos;
+ 
+ 	if (soc_tplg_check_elem_count(tplg,
+ 		sizeof(struct snd_soc_tplg_pcm), count,
+@@ -1565,31 +1629,16 @@ static int soc_tplg_pcm_dai_elems_load(struct soc_tplg *tplg,
+ 		return -EINVAL;
+ 	}
+ 
++	/* create the FE DAIs and DAI links */
++	for (i = 0; i < count; i++) {
++		soc_tplg_pcm_create(tplg, pcm);
++		pcm++;
++	}
++
+ 	dev_dbg(tplg->dev, "ASoC: adding %d PCM DAIs\n", count);
+ 	tplg->pos += sizeof(struct snd_soc_tplg_pcm) * count;
+ 
+-	dobj = kzalloc(sizeof(struct snd_soc_dobj), GFP_KERNEL);
+-	if (dobj == NULL)
+-		return -ENOMEM;
+-
+-	/* Call the platform driver call back to register the dais */
+-	ret = soc_tplg_pcm_dai_load(tplg, pcm_dai, count);
+-	if (ret < 0) {
+-		dev_err(tplg->comp->dev, "ASoC: PCM DAI loading failed\n");
+-		goto err;
+-	}
+-
+-	dobj->type = get_dobj_type(hdr, NULL);
+-	dobj->pcm_dai.count = count;
+-	dobj->pcm_dai.pd = pcm_dai;
+-	dobj->ops = tplg->ops;
+-	dobj->index = tplg->index;
+-	list_add(&dobj->list, &tplg->comp->dobj_list);
+ 	return 0;
+-
+-err:
+-	kfree(dobj);
+-	return ret;
+ }
+ 
+ static int soc_tplg_manifest_load(struct soc_tplg *tplg,
+@@ -1681,9 +1730,7 @@ static int soc_tplg_load_header(struct soc_tplg *tplg,
+ 	case SND_SOC_TPLG_TYPE_DAPM_WIDGET:
+ 		return soc_tplg_dapm_widget_elems_load(tplg, hdr);
+ 	case SND_SOC_TPLG_TYPE_PCM:
+-	case SND_SOC_TPLG_TYPE_DAI_LINK:
+-	case SND_SOC_TPLG_TYPE_CODEC_LINK:
+-		return soc_tplg_pcm_dai_elems_load(tplg, hdr);
++		return soc_tplg_pcm_elems_load(tplg, hdr);
+ 	case SND_SOC_TPLG_TYPE_MANIFEST:
+ 		return soc_tplg_manifest_load(tplg, hdr);
+ 	default:
+@@ -1841,9 +1888,7 @@ int snd_soc_tplg_component_remove(struct snd_soc_component *comp, u32 index)
+ 				remove_widget(comp, dobj, pass);
+ 				break;
+ 			case SND_SOC_DOBJ_PCM:
+-			case SND_SOC_DOBJ_DAI_LINK:
+-			case SND_SOC_DOBJ_CODEC_LINK:
+-				remove_pcm_dai(comp, dobj, pass);
++				remove_dai(comp, dobj, pass);
+ 				break;
+ 			default:
+ 				dev_err(comp->dev, "ASoC: invalid component type %d for removal\n",
 -- 
 2.5.0
