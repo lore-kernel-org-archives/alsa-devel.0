@@ -1,48 +1,204 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH RFC 1/1] ASoC: fsl_ssi: Make fifo watermark and maxburst
- settings device tree options
-Date: Fri, 15 Jan 2016 10:12:49 -0800
-Message-ID: <20160115181248.GA31703@Asurada-Nvidia>
-References: <1452788982-11583-1-git-send-email-caleb@crome.org>
- <20160114201858.GA17567@Asurada-Nvidia>
- <CAG5mAdwJ+VznMp5mUVTufa_wW-corc6qXGbqskz8LGqeG5Z1kw@mail.gmail.com>
- <20160115024534.GB29132@Asurada-Nvidia>
- <CAG5mAdyH1FOYCxYM14fknnRmaSBERMLx_k_D+RCUMiSjWMRvBA@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: mediatek: Enable 33bit memory address
+	to support 4GB DRAM" to the asoc tree
+Date: Fri, 15 Jan 2016 18:18:54 +0000
+Message-ID: <E1aK8xa-0005QM-F5@debutante>
+References: <1452580422-23078-1-git-send-email-pc.liao@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAG5mAdyH1FOYCxYM14fknnRmaSBERMLx_k_D+RCUMiSjWMRvBA@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Caleb Crome <caleb@crome.org>
-Cc: Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8413F260439
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2016 19:19:02 +0100 (CET)
+In-Reply-To: <1452580422-23078-1-git-send-email-pc.liao@mediatek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Hidalgo Huang <hidalgo.huang@mediatek.com>, PC Liao <pc.liao@mediatek.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 14, 2016 at 08:56:31PM -0800, Caleb Crome wrote:
-> On Thu, Jan 14, 2016 at 6:45 PM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
-> > On Thu, Jan 14, 2016 at 01:26:24PM -0800, Caleb Crome wrote:
-> >
-> >> As for optimal settings, I finally came to a setting of 4 for depth &
-> >> maxburst, which will result in more DMA requests, but it's the only
-> >> way that works at 48kHz for me.  The default settings is 13 (15 - 2)
-> >> for the ones of the 15 item fifo, which is a pretty dramatic
-> >> difference.  I just don't know if other chips will behave badly in
-> >> that case.
-> >
-> > What's your final configuration for TFWM0 bits, 4?
-> 
-> Yes, a value of 4 for my use case:  i.MX6 @ 768000 words/second (48khz
-> * 16 channels).
+The patch
 
-4 means there are >= 4 empty slots in the FIFO, so there are no more
-than 11 remaining data. This makes sense.
+   ASoC: mediatek: Enable 33bit memory address to support 4GB DRAM
 
-IIRC, the Freescale official BSP release for i.MX is used to set 6 to
-TFWM0/1 in the old day, not sure about recent ones though. So I think
-setting 4 to TFWM0/1 should work for most of cases. We may also let
-others test it before merging it.
+has been applied to the asoc tree at
 
-Actually a setting of 13 is much more risky in my opinion. It means
-only two empty slots in the FIFO, so it might be easily to get under/
-overflow if a DMA transaction gets delay somehow. The only benefit is
-that DMA requests and interrupt (FIQ) can be reduced.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From fcde5a7eca1a28d3f7158399809cb01f83bd0114 Mon Sep 17 00:00:00 2001
+From: PC Liao <pc.liao@mediatek.com>
+Date: Tue, 12 Jan 2016 14:33:42 +0800
+Subject: [PATCH] ASoC: mediatek: Enable 33bit memory address to support 4GB
+ DRAM
+
+If platform is embedded with memory more than 3GB, the address will
+go out of the scope that 32-bit can handle with. This patch sets the
+dma_mask and MSB properly to describe its address to 33-bit.
+
+Signed-off-by: Hidalgo Huang <hidalgo.huang@mediatek.com>
+Signed-off-by: PC Liao <pc.liao@mediatek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/mediatek/mtk-afe-common.h |  1 +
+ sound/soc/mediatek/mtk-afe-pcm.c    | 22 +++++++++++++++++++++-
+ 2 files changed, 22 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/mediatek/mtk-afe-common.h b/sound/soc/mediatek/mtk-afe-common.h
+index 9b1af1a70874..f341f623e887 100644
+--- a/sound/soc/mediatek/mtk-afe-common.h
++++ b/sound/soc/mediatek/mtk-afe-common.h
+@@ -87,6 +87,7 @@ struct mtk_afe_memif_data {
+ 	int irq_en_shift;
+ 	int irq_fs_shift;
+ 	int irq_clr_shift;
++	int msb_shift;
+ };
+ 
+ struct mtk_afe_memif {
+diff --git a/sound/soc/mediatek/mtk-afe-pcm.c b/sound/soc/mediatek/mtk-afe-pcm.c
+index 08af9f5dc4ab..689c51f23d9f 100644
+--- a/sound/soc/mediatek/mtk-afe-pcm.c
++++ b/sound/soc/mediatek/mtk-afe-pcm.c
+@@ -21,6 +21,7 @@
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/of_address.h>
++#include <linux/dma-mapping.h>
+ #include <linux/pm_runtime.h>
+ #include <sound/soc.h>
+ #include "mtk-afe-common.h"
+@@ -35,6 +36,7 @@
+ #define AFE_I2S_CON1		0x0034
+ #define AFE_I2S_CON2		0x0038
+ #define AFE_CONN_24BIT		0x006c
++#define AFE_MEMIF_MSB		0x00cc
+ 
+ #define AFE_CONN1		0x0024
+ #define AFE_CONN2		0x0028
+@@ -592,6 +594,7 @@ static int mtk_afe_dais_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct mtk_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
+ 	struct mtk_afe_memif *memif = &afe->memif[rtd->cpu_dai->id];
++	int msb_at_bit33 = 0;
+ 	int ret;
+ 
+ 	dev_dbg(afe->dev,
+@@ -603,7 +606,8 @@ static int mtk_afe_dais_hw_params(struct snd_pcm_substream *substream,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	memif->phys_buf_addr = substream->runtime->dma_addr;
++	msb_at_bit33 = upper_32_bits(substream->runtime->dma_addr) ? 1 : 0;
++	memif->phys_buf_addr = lower_32_bits(substream->runtime->dma_addr);
+ 	memif->buffer_size = substream->runtime->dma_bytes;
+ 
+ 	/* start */
+@@ -614,6 +618,11 @@ static int mtk_afe_dais_hw_params(struct snd_pcm_substream *substream,
+ 		     memif->data->reg_ofs_base + AFE_BASE_END_OFFSET,
+ 		     memif->phys_buf_addr + memif->buffer_size - 1);
+ 
++	/* set MSB to 33-bit */
++	regmap_update_bits(afe->regmap, AFE_MEMIF_MSB,
++			   1 << memif->data->msb_shift,
++			   msb_at_bit33 << memif->data->msb_shift);
++
+ 	/* set channel */
+ 	if (memif->data->mono_shift >= 0) {
+ 		unsigned int mono = (params_channels(params) == 1) ? 1 : 0;
+@@ -978,6 +987,7 @@ static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
+ 		.irq_en_shift = 0,
+ 		.irq_fs_shift = 4,
+ 		.irq_clr_shift = 0,
++		.msb_shift = 0,
+ 	}, {
+ 		.name = "DL2",
+ 		.id = MTK_AFE_MEMIF_DL2,
+@@ -991,6 +1001,7 @@ static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
+ 		.irq_en_shift = 2,
+ 		.irq_fs_shift = 16,
+ 		.irq_clr_shift = 2,
++		.msb_shift = 1,
+ 	}, {
+ 		.name = "VUL",
+ 		.id = MTK_AFE_MEMIF_VUL,
+@@ -1004,6 +1015,7 @@ static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
+ 		.irq_en_shift = 1,
+ 		.irq_fs_shift = 8,
+ 		.irq_clr_shift = 1,
++		.msb_shift = 6,
+ 	}, {
+ 		.name = "DAI",
+ 		.id = MTK_AFE_MEMIF_DAI,
+@@ -1017,6 +1029,7 @@ static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
+ 		.irq_en_shift = 3,
+ 		.irq_fs_shift = 20,
+ 		.irq_clr_shift = 3,
++		.msb_shift = 5,
+ 	}, {
+ 		.name = "AWB",
+ 		.id = MTK_AFE_MEMIF_AWB,
+@@ -1030,6 +1043,7 @@ static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
+ 		.irq_en_shift = 14,
+ 		.irq_fs_shift = 24,
+ 		.irq_clr_shift = 6,
++		.msb_shift = 3,
+ 	}, {
+ 		.name = "MOD_DAI",
+ 		.id = MTK_AFE_MEMIF_MOD_DAI,
+@@ -1043,6 +1057,7 @@ static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
+ 		.irq_en_shift = 3,
+ 		.irq_fs_shift = 20,
+ 		.irq_clr_shift = 3,
++		.msb_shift = 4,
+ 	}, {
+ 		.name = "HDMI",
+ 		.id = MTK_AFE_MEMIF_HDMI,
+@@ -1056,6 +1071,7 @@ static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
+ 		.irq_en_shift = 12,
+ 		.irq_fs_shift = -1,
+ 		.irq_clr_shift = 4,
++		.msb_shift = 8,
+ 	},
+ };
+ 
+@@ -1189,6 +1205,10 @@ static int mtk_afe_pcm_dev_probe(struct platform_device *pdev)
+ 	struct mtk_afe *afe;
+ 	struct resource *res;
+ 
++	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(33));
++	if (ret)
++		return ret;
++
+ 	afe = devm_kzalloc(&pdev->dev, sizeof(*afe), GFP_KERNEL);
+ 	if (!afe)
+ 		return -ENOMEM;
+-- 
+2.7.0.rc3
