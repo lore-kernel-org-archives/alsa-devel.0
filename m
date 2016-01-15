@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl: document DT compatible string "fsl,
-	imx-audio-wm8960"" to the asoc tree
-Date: Fri, 15 Jan 2016 18:18:51 +0000
-Message-ID: <E1aK8xX-0005Ov-Nd@debutante>
+Subject: Applied "ASoC: mediatek: add i2c dependency" to the
+	asoc tree
+Date: Fri, 15 Jan 2016 18:18:52 +0000
+Message-ID: <E1aK8xY-0005PQ-Kp@debutante>
+References: <5346380.rqT2CVl4PH@wuerfel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 986F42604EF
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2016 19:19:03 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 055C7260523
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2016 19:19:05 +0100 (CET)
+In-Reply-To: <5346380.rqT2CVl4PH@wuerfel>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Xiubo Li <lixiubo@cmss.chinamobile.com>, Mark Brown <broonie@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>, Koro Chen <koro.chen@mediatek.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl: document DT compatible string "fsl,imx-audio-wm8960"
+   ASoC: mediatek: add i2c dependency
 
 has been applied to the asoc tree at
 
@@ -52,33 +53,52 @@ to this mail.
 Thanks,
 Mark
 
->From 2935bf43ef12a8d68b96776ec11155cfa120cb0d Mon Sep 17 00:00:00 2001
-From: Xiubo Li <lixiubo@cmss.chinamobile.com>
-Date: Fri, 15 Jan 2016 13:33:08 +0800
-Subject: [PATCH] ASoC: fsl: document DT compatible string
- "fsl,imx-audio-wm8960"
+>From ec3995da27e782cc407ce48101c98c19c9ce738d Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Wed, 13 Jan 2016 23:14:54 +0100
+Subject: [PATCH] ASoC: mediatek: add i2c dependency
 
-The devicetree compatible string "fsl,imx-audio-wm8960" for
-fsl-asoc-card is missing.
+The newly added mediatek drivers for mt8173 select codes that depend
+on I2C, which cuases a build failure if I2C is disabled:
 
-Signed-off-by: Xiubo Li <lixiubo@cmss.chinamobile.com>
+warning: (SND_SOC_ADAU1761_I2C && SND_SOC_ADAU1781_I2C && SND_SOC_ADAU1977_I2C && SND_SOC_RT5677 && EXTCON_MAX14577 && EXTCON_MAX77693 && EXTCON_MAX77843 && BMC150_ACCEL_I2C && BMG160_I2C) selects REGMAP_I2C which has unmet direct dependencies (I2C)
+codecs/rt5645.c:3854:1: warning: data definition has no type or storage class
+codecs/rt5645.c:3854:1: error: type defaults to 'int' in declaration of 'module_i2c_driver' [-Werror=implicit-int]
+codecs/rt5677.c:5270:1: warning: data definition has no type or storage class
+77_i2c_driver);
+
+codecs/rt5677.c:5270:1: error: type defaults to 'int' in declaration of 'module_i2c_driver' [-Werror=implicit-int]
+
+This adds an explicit dependency.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Koro Chen <koro.chen@mediatek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/fsl-asoc-card.txt | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/mediatek/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt b/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
-index ce55c0a6f757..4da41bf1888e 100644
---- a/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
-@@ -30,6 +30,8 @@ The compatible list for this generic sound card currently:
-  "fsl,imx-audio-sgtl5000"
-  (compatible with Documentation/devicetree/bindings/sound/imx-audio-sgtl5000.txt)
+diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+index 15c04e2eae34..976967675387 100644
+--- a/sound/soc/mediatek/Kconfig
++++ b/sound/soc/mediatek/Kconfig
+@@ -9,7 +9,7 @@ config SND_SOC_MEDIATEK
  
-+ "fsl,imx-audio-wm8960"
-+
- Required properties:
+ config SND_SOC_MT8173_MAX98090
+ 	tristate "ASoC Audio driver for MT8173 with MAX98090 codec"
+-	depends on SND_SOC_MEDIATEK
++	depends on SND_SOC_MEDIATEK && I2C
+ 	select SND_SOC_MAX98090
+ 	help
+ 	  This adds ASoC driver for Mediatek MT8173 boards
+@@ -19,7 +19,7 @@ config SND_SOC_MT8173_MAX98090
  
-   - compatible		: Contains one of entries in the compatible list.
+ config SND_SOC_MT8173_RT5650_RT5676
+ 	tristate "ASoC Audio driver for MT8173 with RT5650 RT5676 codecs"
+-	depends on SND_SOC_MEDIATEK
++	depends on SND_SOC_MEDIATEK && I2C
+ 	select SND_SOC_RT5645
+ 	select SND_SOC_RT5677
+ 	help
 -- 
 2.7.0.rc3
