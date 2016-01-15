@@ -1,50 +1,41 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH RFC 1/1] ASoC: fsl_ssi: Make fifo watermark
- and maxburst settings device tree options
-Date: Thu, 14 Jan 2016 21:25:39 -0600
-Message-ID: <20160115032539.GA26909@rob-hp-laptop>
+From: Caleb Crome <caleb-EebDDntmC0DYtjvyW6yDsg@public.gmane.org>
+Subject: Re: [PATCH RFC 1/1] ASoC: fsl_ssi: Make fifo watermark and maxburst
+ settings device tree options
+Date: Thu, 14 Jan 2016 20:56:31 -0800
+Message-ID: <CAG5mAdyH1FOYCxYM14fknnRmaSBERMLx_k_D+RCUMiSjWMRvBA@mail.gmail.com>
 References: <1452788982-11583-1-git-send-email-caleb@crome.org>
- <20160114201858.GA17567@Asurada-Nvidia> <56984BE7.2050303@tabi.org>
+ <20160114201858.GA17567@Asurada-Nvidia> <CAG5mAdwJ+VznMp5mUVTufa_wW-corc6qXGbqskz8LGqeG5Z1kw@mail.gmail.com>
+ <20160115024534.GB29132@Asurada-Nvidia>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.136])
- by alsa0.perex.cz (Postfix) with ESMTP id F1AB626052B
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2016 04:25:44 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <56984BE7.2050303@tabi.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Caleb Crome <caleb@crome.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20160115024534.GB29132@Asurada-Nvidia>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Xiubo Li <Xiubo.Lee-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 14, 2016 at 07:31:19PM -0600, Timur Tabi wrote:
-> Nicolin Chen wrote:
-> >I think DT maintainers may not give a consent towards these two
-> >properties as they are not to describe the hardware but to hack
-> >software configurations. (And it seems you haven't CCed them.)
-> 
-> I admit it's a grey area, but the hardware doesn't work if you use the wrong
-> value, and it is a fixed value per device.  A p1022ds would use a different
-> value than in in i.MX6, and once you pick a value, it's the same no matter
-> which sample rate, buffer size, etc you choose.
+On Thu, Jan 14, 2016 at 6:45 PM, Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+> On Thu, Jan 14, 2016 at 01:26:24PM -0800, Caleb Crome wrote:
+>
+>> As for optimal settings, I finally came to a setting of 4 for depth &
+>> maxburst, which will result in more DMA requests, but it's the only
+>> way that works at 48kHz for me.  The default settings is 13 (15 - 2)
+>> for the ones of the 15 item fifo, which is a pretty dramatic
+>> difference.  I just don't know if other chips will behave badly in
+>> that case.
+>
+> What's your final configuration for TFWM0 bits, 4?
 
-We've allowed similar properties for other things like SPI controllers.
+Yes, a value of 4 for my use case:  i.MX6 @ 768000 words/second (48khz
+* 16 channels).
 
-It really depends on the frequency you expect to change it. The more 
-often it changes, the higher up the s/w stack it should be controlled 
-(firmware/DT, kernel, or userspace). A function of the SOC or codec 
-rate, then yes DT is fine. Every user needs to tune it on the same 
-platform, then no, don't put it in DT. My recollection from i.MX is this 
-would be the former case.
+Also, works at 8kHz, 16kHz 32 kHz.
 
-Rob
+A setting of 8 does not work reliably at 48kHz but does work at 8, 16 and 32.
+
+-caleb
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
