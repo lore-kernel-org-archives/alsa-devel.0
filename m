@@ -1,14 +1,22 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH] ASoC: nau8825: reduce stanby power consumption
-Date: Fri, 15 Jan 2016 23:53:13 +0800
-Message-ID: <1452873193-20650-1-git-send-email-KCHSU0@nuvoton.com>
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: [PATCH RFC 1/1] ASoC: fsl_ssi: Make fifo watermark
+ and maxburst settings device tree options
+Date: Fri, 15 Jan 2016 09:03:28 -0800
+Message-ID: <CAG5mAdy553q4Te5755575WaiLxGRp43h=WVH6QzF7idsaCnhbg@mail.gmail.com>
+References: <1452788982-11583-1-git-send-email-caleb@crome.org>
+ <20160114201858.GA17567@Asurada-Nvidia> <56984BE7.2050303@tabi.org>
+ <20160115131325.GW6588@sirena.org.uk> <5698F846.5080604@tabi.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 182BC260439
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2016 16:53:18 +0100 (CET)
+Received: from mail-io0-f196.google.com (mail-io0-f196.google.com
+ [209.85.223.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id CEC46260439
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2016 18:03:48 +0100 (CET)
+Received: by mail-io0-f196.google.com with SMTP id k127so52476047iok.1
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2016 09:03:48 -0800 (PST)
+In-Reply-To: <5698F846.5080604@tabi.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,111 +26,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
+To: Timur Tabi <timur@tabi.org>
+Cc: devicetree@vger.kernel.org, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Fix unnecessary widget power up when standby;
-And decrease internal clock frequency to save power.
+On Fri, Jan 15, 2016 at 5:46 AM, Timur Tabi <timur@tabi.org> wrote:
+> Mark Brown wrote:
+>>>
+>>> >I admit it's a grey area, but the hardware doesn't work if you use the
+>>> > wrong
+>>> >value, and it is a fixed value per device.  A p1022ds would use a
+>>> > different
+>>> >value than in in i.MX6, and once you pick a value, it's the same no
+>>> > matter
+>>> >which sample rate, buffer size, etc you choose.
+>
+>
+>> Caleb's original message suggested this was rate dependant.
+>
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
----
- sound/soc/codecs/nau8825.c | 49 +++++++++++++++++++++++++++++++++-------------
- 1 file changed, 35 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 52882e4..f9752cc 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -262,6 +262,29 @@ static int nau8825_playback_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
-+static int nau8825_dacr_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_ENA_CTRL,
-+			NAU8825_ENABLE_DACR, NAU8825_ENABLE_DACR);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		if (!nau8825->irq)
-+			regmap_update_bits(nau8825->regmap,
-+			NAU8825_REG_ENA_CTRL, NAU8825_ENABLE_DACR, 0);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- 
- static const char * const nau8825_adc_decimation[] = {
- 	"32", "64", "128", "256"
-@@ -337,16 +360,17 @@ static const struct snd_soc_dapm_widget nau8825_dapm_widgets[] = {
- 		0),
- 
- 	/* ADC for button press detection */
--	SND_SOC_DAPM_ADC("SAR", NULL, NAU8825_REG_SAR_CTRL,
--		NAU8825_SAR_ADC_EN_SFT, 0),
-+	SND_SOC_DAPM_SUPPLY("SAR", NAU8825_REG_SAR_CTRL,
-+		NAU8825_SAR_ADC_EN_SFT, 0, NULL, 0),
- 
- 	SND_SOC_DAPM_DAC("ADACL", NULL, NAU8825_REG_RDAC, 12, 0),
- 	SND_SOC_DAPM_DAC("ADACR", NULL, NAU8825_REG_RDAC, 13, 0),
- 	SND_SOC_DAPM_SUPPLY("ADACL Clock", NAU8825_REG_RDAC, 8, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("ADACR Clock", NAU8825_REG_RDAC, 9, 0, NULL, 0),
- 
--	SND_SOC_DAPM_DAC("DDACR", NULL, NAU8825_REG_ENA_CTRL,
--		NAU8825_ENABLE_DACR_SFT, 0),
-+	SND_SOC_DAPM_DAC_E("DDACR", NULL, SND_SOC_NOPM, 0, 0,
-+		nau8825_dacr_event, SND_SOC_DAPM_POST_PMU |
-+		SND_SOC_DAPM_POST_PMD),
- 	SND_SOC_DAPM_DAC("DDACL", NULL, NAU8825_REG_ENA_CTRL,
- 		NAU8825_ENABLE_DACL_SFT, 0),
- 	SND_SOC_DAPM_SUPPLY("DDAC Clock", NAU8825_REG_ENA_CTRL, 6, 0, NULL, 0),
-@@ -878,13 +902,6 @@ static int nau8825_codec_probe(struct snd_soc_codec *codec)
- 
- 	nau8825->dapm = dapm;
- 
--	/* The interrupt clock is gated by x1[10:8],
--	 * one of them needs to be enabled all the time for
--	 * interrupts to happen.
--	 */
--	snd_soc_dapm_force_enable_pin(dapm, "DDACR");
--	snd_soc_dapm_sync(dapm);
--
- 	/* Unmask interruptions. Handler uses dapm object so we can enable
- 	 * interruptions only after dapm is fully initialized.
- 	 */
-@@ -1075,6 +1092,12 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
- 			NAU8825_DCO_EN);
- 		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
- 			NAU8825_CLK_SRC_MASK, NAU8825_CLK_SRC_VCO);
-+		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
-+			NAU8825_CLK_MCLK_SRC_MASK, 0xf);
-+		regmap_update_bits(regmap, NAU8825_REG_FLL1,
-+			NAU8825_FLL_RATIO_MASK, 0x10);
-+		regmap_update_bits(regmap, NAU8825_REG_FLL6,
-+			NAU8825_SDM_EN, NAU8825_SDM_EN);
- 		if (nau8825->mclk_freq) {
- 			clk_disable_unprepare(nau8825->mclk);
- 			nau8825->mclk_freq = 0;
-@@ -1309,9 +1332,7 @@ static int nau8825_setup_irq(struct nau8825 *nau8825)
- 	/* Enable internal VCO needed for interruptions */
- 	nau8825_configure_sysclk(nau8825, NAU8825_CLK_INTERNAL, 0);
- 
--	/* Enable DDACR needed for interrupts
--	 * It is the same as force_enable_pin("DDACR") we do later
--	 */
-+	/* Enable DDACR needed for interrupts */
- 	regmap_update_bits(regmap, NAU8825_REG_ENA_CTRL,
- 		NAU8825_ENABLE_DACR, NAU8825_ENABLE_DACR);
- 
--- 
-2.6.4
+>
+> Yeah, I just noticed that.  In that case, I agree that a device tree
+> property is inappropriate, unless it's an array that contains tuples of
+> sample rates and watermark/maxburst settings.  That would get unwieldy very
+> easily, though.
+
+
+The rate dependance is only a *potential* issue.  I suspect that a
+value of 4 should be functional for all rates and chips.  The only
+trade off is more DMA requests/bursts.
+
+In a typical 15 word fifo, 48kHz, stereo, single fifo DMA system,  the
+old value was 15-2 = 13, which would mean 7385 13-word DMA
+bursts/second.    A new value of 4 would mean 24,000 4-word DMA
+bursts/second.
+
+Is that consequential for anybody?  It's about the same total
+bandwidth on the system, but just broken up into smaller chunks (I
+don't know what the overhead is for a DMA burst)
+
+In a high channel count system (16 channels @ 48kHz), the old value
+doesn't work, and the new value would mean 192,000 4-word DMA
+bursts/second, which works on my MX6.  So given that 192000 works
+fine, I'm not sure that the difference in a typical system would
+matter at all.
+
+If nobody objects, we can just set the value to 4 and be done with it.
+
+Another question:  is the watermark ever going to be different than
+maxburst?  Is there any reason to have them different?
+
+-Caleb
