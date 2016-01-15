@@ -1,104 +1,38 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: add i2c dependency" to the
-	asoc tree
-Date: Fri, 15 Jan 2016 18:18:52 +0000
-Message-ID: <E1aK8xY-0005PQ-Kp@debutante>
-References: <5346380.rqT2CVl4PH@wuerfel>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH RFC 1/1] ASoC: fsl_ssi: Make fifo watermark and maxburst
+ settings device tree options
+Date: Fri, 15 Jan 2016 10:38:24 -0800
+Message-ID: <20160115183824.GB31703@Asurada-Nvidia>
+References: <1452788982-11583-1-git-send-email-caleb@crome.org>
+ <20160114201858.GA17567@Asurada-Nvidia>
+ <56984BE7.2050303@tabi.org>
+ <20160115131325.GW6588@sirena.org.uk>
+ <5698F846.5080604@tabi.org>
+ <CAG5mAdy553q4Te5755575WaiLxGRp43h=WVH6QzF7idsaCnhbg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 055C7260523
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2016 19:19:05 +0100 (CET)
-In-Reply-To: <5346380.rqT2CVl4PH@wuerfel>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>, Koro Chen <koro.chen@mediatek.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAG5mAdy553q4Te5755575WaiLxGRp43h=WVH6QzF7idsaCnhbg@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Caleb Crome <caleb@crome.org>
+Cc: Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Fri, Jan 15, 2016 at 09:03:28AM -0800, Caleb Crome wrote:
 
-   ASoC: mediatek: add i2c dependency
+> If nobody objects, we can just set the value to 4 and be done with it.
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From ec3995da27e782cc407ce48101c98c19c9ce738d Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Wed, 13 Jan 2016 23:14:54 +0100
-Subject: [PATCH] ASoC: mediatek: add i2c dependency
-
-The newly added mediatek drivers for mt8173 select codes that depend
-on I2C, which cuases a build failure if I2C is disabled:
-
-warning: (SND_SOC_ADAU1761_I2C && SND_SOC_ADAU1781_I2C && SND_SOC_ADAU1977_I2C && SND_SOC_RT5677 && EXTCON_MAX14577 && EXTCON_MAX77693 && EXTCON_MAX77843 && BMC150_ACCEL_I2C && BMG160_I2C) selects REGMAP_I2C which has unmet direct dependencies (I2C)
-codecs/rt5645.c:3854:1: warning: data definition has no type or storage class
-codecs/rt5645.c:3854:1: error: type defaults to 'int' in declaration of 'module_i2c_driver' [-Werror=implicit-int]
-codecs/rt5677.c:5270:1: warning: data definition has no type or storage class
-77_i2c_driver);
-
-codecs/rt5677.c:5270:1: error: type defaults to 'int' in declaration of 'module_i2c_driver' [-Werror=implicit-int]
-
-This adds an explicit dependency.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Koro Chen <koro.chen@mediatek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/mediatek/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-index 15c04e2eae34..976967675387 100644
---- a/sound/soc/mediatek/Kconfig
-+++ b/sound/soc/mediatek/Kconfig
-@@ -9,7 +9,7 @@ config SND_SOC_MEDIATEK
+I agree. And we may apply it only to i.MX platforms with DMA if
+other platform owners feel comfortable with the previous settings.
  
- config SND_SOC_MT8173_MAX98090
- 	tristate "ASoC Audio driver for MT8173 with MAX98090 codec"
--	depends on SND_SOC_MEDIATEK
-+	depends on SND_SOC_MEDIATEK && I2C
- 	select SND_SOC_MAX98090
- 	help
- 	  This adds ASoC driver for Mediatek MT8173 boards
-@@ -19,7 +19,7 @@ config SND_SOC_MT8173_MAX98090
- 
- config SND_SOC_MT8173_RT5650_RT5676
- 	tristate "ASoC Audio driver for MT8173 with RT5650 RT5676 codecs"
--	depends on SND_SOC_MEDIATEK
-+	depends on SND_SOC_MEDIATEK && I2C
- 	select SND_SOC_RT5645
- 	select SND_SOC_RT5677
- 	help
--- 
-2.7.0.rc3
+> Another question:  is the watermark ever going to be different than
+> maxburst?  Is there any reason to have them different?
+
+The watermark is merely a threshold to trigger a DMA request. The
+only relationship with the burst size is that each burst transfer
+should not carry more data than the number of empty slots; FIFO
+under/overflow occurs otherwise. So it's just more efficient and
+safer to set an identical value to both of them. I don't think
+it will cause functional problems to set TFWM to 4 and burst size
+to 1 -- It just lets DMA operate in a single data transfer mode.
