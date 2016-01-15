@@ -1,175 +1,86 @@
-From: Valni <ttemplate223@gmail.com>
-Subject: FiiO E10k (Digihub USB Audio), occasional system hang.
-Date: Thu, 14 Jan 2016 21:08:37 +0100
-Message-ID: <56980045.6090003@gmail.com>
+From: Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: sound: use-after-free in snd_timer_interrupt
+Date: Fri, 15 Jan 2016 15:38:58 +0100
+Message-ID: <CACT4Y+aOEHHEVp1YLLMr2PD_iyESMP64T-EQX18=EfvRtgOLOQ@mail.gmail.com>
+References: <CACT4Y+ZrVvE3dgcYHRdHDG0X316VgC-=pr2U-233vVn_QbHZHw@mail.gmail.com>
+ <s5hwprdv2sp.wl-tiwai@suse.de> <CACT4Y+ZFsNxsVyq_n6kh=HN1dStj_hL=B9eUu4heAHes=ixf3g@mail.gmail.com>
+ <s5hio2xmh9z.wl-tiwai@suse.de> <CACT4Y+bqxg_C7JmnUSRm_9jiZ9R9XqbBV0igDdUW1ZhtqvktJw@mail.gmail.com>
+ <CACT4Y+anWgMKQmNByifCs+-jizRQL9twxvRQzW3XzNJ8+a6fDw@mail.gmail.com>
+ <s5hegdlmdd6.wl-tiwai@suse.de> <CACT4Y+Y62DTncEAb_S6JykY7Ps7SHo2QyCopMObBxJt2fB_NKA@mail.gmail.com>
+ <s5h60yxmc99.wl-tiwai@suse.de> <s5ha8o8uoqb.wl-tiwai@suse.de>
+ <CACT4Y+a-=mrGALS+yf4GwGmJGLWXVJ0mbucPAkZ7WSGFaSR0Kw@mail.gmail.com>
+ <s5hwprbt8ei.wl-tiwai@suse.de> <CACT4Y+ZfAc1JZQHHbA-k_ZVN3vm9djojvmL+e=D8WO2J8FR0=A@mail.gmail.com>
+ <s5hk2nbt0gp.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------010103000202080203010008"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f174.google.com (mail-lb0-f174.google.com
- [209.85.217.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 0810626051B
- for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2016 21:08:40 +0100 (CET)
-Received: by mail-lb0-f174.google.com with SMTP id x4so47287297lbm.0
- for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2016 12:08:39 -0800 (PST)
-Received: from ?IPv6:2001:2002:5ae0:1b73:682a:f993:4ddf:e05d?
- ([2001:2002:5ae0:1b73:682a:f993:4ddf:e05d])
- by smtp.gmail.com with ESMTPSA id 34sm972685lfs.25.2016.01.14.12.08.38
- for <alsa-devel@alsa-project.org> (version=TLSv1/SSLv3 cipher=OTHER);
- Thu, 14 Jan 2016 12:08:38 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hk2nbt0gp.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Jie Yang <yang.jie@intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, LKML <linux-kernel@vger.kernel.org>, Eric Dumazet <edumazet@google.com>, Alexander Potapenko <glider@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>, Sasha Levin <sasha.levin@oracle.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------010103000202080203010008
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jan 15, 2016 at 2:51 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Fri, 15 Jan 2016 12:03:17 +0100,
+> Dmitry Vyukov wrote:
+>>
+>> On Fri, Jan 15, 2016 at 12:00 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > On Fri, 15 Jan 2016 09:06:10 +0100,
+>> > Dmitry Vyukov wrote:
+>> >>
+>> >> On Thu, Jan 14, 2016 at 5:09 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>> >> > On Wed, 13 Jan 2016 21:54:10 +0100,
+>> >> > Takashi Iwai wrote:
+>> >> >>
+>> >> >> OK, then this might be a possible race at the current snd_timer_stop()
+>> >> >> implementation.  There is no sync action there, so the ISR might be
+>> >> >> still alive after snd_timer_close() call.  Or might be another race.
+>> >> >> This pattern looks a bit different, as it's involved with hrtimer.
+>> >> >>
+>> >> >> I'll take a look at it tomorrow.
+>> >> >
+>> >> > I've audited the code today, but the open window doesn't look like
+>> >> > what I expected.  I found only some possible cases with slave timer
+>> >> > instances.
+>> >> >
+>> >> > In anyway, below is a test fix patch.  Since I couldn't reproduce the
+>> >> > issue on my local machines, it's hard to say whether this covers the
+>> >> > holes you fell.  Let's see...
+>> >>
+>> >>
+>> >> Hi Takashi,
+>> >>
+>> >> I would be interested to understand why other people can't reproduce
+>> >> issues that I hit pretty reliably.
+>> >> I suspect that it can be due to .config. Please try with the following
+>> >> config values.
+>> >
+>> > I guess rather other config, e.g. the kernel debug options.
+>> > I suppose you enabled KASAN and DEBUG_LIST.  What else?
+>>
+>> I've attached my config (you will need to disable CONFIG_KCOV, it is
+>> not upstreamed).
+>
+> Hm, that has lots of other drivers built-in...
+>
+>> >> I also start qemu with "-soundhw all" arg.
+>> >
+>> > OK, so you're testing with VM?  This makes easier to recheck.
+>>
+>> Yes, I start qemu as:
+>>
+>> qemu-system-x86_64 -hda wheezy.img -net
+>> user,host=10.0.2.10,hostfwd=tcp::10022-:22 -net nic -nographic -kernel
+>> arch/x86/boot/bzImage -append "console=ttyS0 root=/dev/sda debug
+>> earlyprintk=serial slub_debug=UZ" -enable-kvm -m 2G -numa
+>> node,nodeid=0,cpus=0-1 -numa node,nodeid=1,cpus=2-3 -smp
+>> sockets=2,cores=2,threads=1 -usb -usbdevice mouse -usbdevice tablet
+>> -soundhw all
+>
+> And which test did trigger use-after-free, even with all previous
+> patches?
 
-First off, I apologize if I'm reporting this bug to the wrong list or in
-the wrong manner; I have never done this before.
-
-I've got a Skylake system (kernel 4.3.3-2-ARCH) using Pulseaudio and
-ALSA which uses a FiiO E10k Olympus 2 (external DAC/AMP) as  the soundcar=
-d.
-Very seldom the system will fall to it's knees and ultimately hang,
-requiring a hard reboot.
-Checking the system logs gives an error and a dump from alsa-util.c,
-which is attached to this mail.
-
-I'm unsure if there is anymore info that you would need. If more is
-required, please, do ask.
-
---------------010103000202080203010008
-Content-Type: text/plain; charset=UTF-8;
- name="alsa_bug.txt"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="alsa_bug.txt"
-
-SmFuIDE0IDE4OjE3OjEwIGRlbiBwdWxzZWF1ZGlvWzYyOThdOiBFOiBbYWxzYS1zaW5rLVVT
-QiBBdWRpb10gYWxzYS11dGlsLmM6IHNuZF9wY21fYXZhaWwoKSByZXR1cm5lZCBhIHZhbHVl
-IHRoYXQgaXMgZXhjZXB0aW9uYWxseSBsYXJnZTogMTEzMjggYnl0ZXMgKDU5IG1zKS4KSmFu
-IDE0IDE4OjE3OjEwIGRlbiBwdWxzZWF1ZGlvWzYyOThdOiBFOiBbYWxzYS1zaW5rLVVTQiBB
-dWRpb10gYWxzYS11dGlsLmM6IE1vc3QgbGlrZWx5IHRoaXMgaXMgYSBidWcgaW4gdGhlIEFM
-U0EgZHJpdmVyICdzbmRfdXNiX2F1ZGlvJy4gUGxlYXNlIHJlcG9ydCB0aGlzIGlzc3VlIHRv
-IHRoZSBBTFNBIGRldmVsb3BlcnMuCkphbiAxNCAxODoxNzoxMCBkZW4gcHVsc2VhdWRpb1s2
-Mjk4XTogRTogW2Fsc2Etc2luay1VU0IgQXVkaW9dIGFsc2EtdXRpbC5jOiBzbmRfcGNtX2R1
-bXAoKToKSmFuIDE0IDE4OjE3OjEwIGRlbiBwdWxzZWF1ZGlvWzYyOThdOiBFOiBbYWxzYS1z
-aW5rLVVTQiBBdWRpb10gYWxzYS11dGlsLmM6IEhhcmR3YXJlIFBDTSBjYXJkIDAgJ0RpZ2lI
-dWcgVVNCIEF1ZGlvJyBkZXZpY2UgMCBzdWJkZXZpY2UgMApKYW4gMTQgMTg6MTc6MTAgZGVu
-IHB1bHNlYXVkaW9bNjI5OF06IEU6IFthbHNhLXNpbmstVVNCIEF1ZGlvXSBhbHNhLXV0aWwu
-YzogSXRzIHNldHVwIGlzOgpKYW4gMTQgMTg6MTc6MTAgZGVuIHB1bHNlYXVkaW9bNjI5OF06
-IEU6IFthbHNhLXNpbmstVVNCIEF1ZGlvXSBhbHNhLXV0aWwuYzogICBzdHJlYW0gICAgICAg
-OiBQTEFZQkFDSwpKYW4gMTQgMTg6MTc6MTAgZGVuIHB1bHNlYXVkaW9bNjI5OF06IEU6IFth
-bHNhLXNpbmstVVNCIEF1ZGlvXSBhbHNhLXV0aWwuYzogICBhY2Nlc3MgICAgICAgOiBNTUFQ
-X0lOVEVSTEVBVkVECkphbiAxNCAxODoxNzoxMSBkZW4gcHVsc2VhdWRpb1s2Mjk4XTogRTog
-W2Fsc2Etc2luay1VU0IgQXVkaW9dIGFsc2EtdXRpbC5jOiAgIGZvcm1hdCAgICAgICA6IFMx
-Nl9MRQpKYW4gMTQgMTg6MTc6MTEgZGVuIHB1bHNlYXVkaW9bNjI5OF06IEU6IFthbHNhLXNp
-bmstVVNCIEF1ZGlvXSBhbHNhLXV0aWwuYzogICBzdWJmb3JtYXQgICAgOiBTVEQKSmFuIDE0
-IDE4OjE3OjExIGRlbiBwdWxzZWF1ZGlvWzYyOThdOiBFOiBbYWxzYS1zaW5rLVVTQiBBdWRp
-b10gYWxzYS11dGlsLmM6ICAgY2hhbm5lbHMgICAgIDogMgpKYW4gMTQgMTg6MTc6MTEgZGVu
-IHB1bHNlYXVkaW9bNjI5OF06IEU6IFthbHNhLXNpbmstVVNCIEF1ZGlvXSBhbHNhLXV0aWwu
-YzogICByYXRlICAgICAgICAgOiA0ODAwMApKYW4gMTQgMTg6MTc6MTEgZGVuIHB1bHNlYXVk
-aW9bNjI5OF06IEU6IFthbHNhLXNpbmstVVNCIEF1ZGlvXSBhbHNhLXV0aWwuYzogICBleGFj
-dCByYXRlICAgOiA0ODAwMCAoNDgwMDAvMSkKSmFuIDE0IDE4OjE3OjExIGRlbiBwdWxzZWF1
-ZGlvWzYyOThdOiBFOiBbYWxzYS1zaW5rLVVTQiBBdWRpb10gYWxzYS11dGlsLmM6ICAgbXNi
-aXRzICAgICAgIDogMTYKSmFuIDE0IDE4OjE3OjExIGRlbiBwdWxzZWF1ZGlvWzYyOThdOiBF
-OiBbYWxzYS1zaW5rLVVTQiBBdWRpb10gYWxzYS11dGlsLmM6ICAgYnVmZmVyX3NpemUgIDog
-NDQwCkphbiAxNCAxODoxNzoxMiBkZW4gcHVsc2VhdWRpb1s2Mjk4XTogRTogW2Fsc2Etc2lu
-ay1VU0IgQXVkaW9dIGFsc2EtdXRpbC5jOiAgIHBlcmlvZF9zaXplICA6IDg4CkphbiAxNCAx
-ODoxNzoxMiBkZW4gcHVsc2VhdWRpb1s2Mjk4XTogRTogW2Fsc2Etc2luay1VU0IgQXVkaW9d
-IGFsc2EtdXRpbC5jOiAgIHBlcmlvZF90aW1lICA6IDE4MzMKSmFuIDE0IDE4OjE3OjEyIGRl
-biBwdWxzZWF1ZGlvWzYyOThdOiBFOiBbYWxzYS1zaW5rLVVTQiBBdWRpb10gYWxzYS11dGls
-LmM6ICAgdHN0YW1wX21vZGUgIDogRU5BQkxFCkphbiAxNCAxODoxNzoxMiBkZW4gcHVsc2Vh
-dWRpb1s2Mjk4XTogRTogW2Fsc2Etc2luay1VU0IgQXVkaW9dIGFsc2EtdXRpbC5jOiAgIHRz
-dGFtcF90eXBlICA6IE1PTk9UT05JQwpKYW4gMTQgMTg6MTc6MTIgZGVuIHB1bHNlYXVkaW9b
-NjI5OF06IEU6IFthbHNhLXNpbmstVVNCIEF1ZGlvXSBhbHNhLXV0aWwuYzogICBwZXJpb2Rf
-c3RlcCAgOiAxCkphbiAxNCAxODoxNzoxMiBkZW4gcHVsc2VhdWRpb1s2Mjk4XTogRTogW2Fs
-c2Etc2luay1VU0IgQXVkaW9dIGFsc2EtdXRpbC5jOiAgIGF2YWlsX21pbiAgICA6IDg4Ckph
-biAxNCAxODoxNzoxMiBkZW4gcHVsc2VhdWRpb1s2Mjk4XTogRTogW2Fsc2Etc2luay1VU0Ig
-QXVkaW9dIGFsc2EtdXRpbC5jOiAgIHBlcmlvZF9ldmVudCA6IDEKSmFuIDE0IDE4OjE3OjEy
-IGRlbiBwdWxzZWF1ZGlvWzYyOThdOiBFOiBbYWxzYS1zaW5rLVVTQiBBdWRpb10gYWxzYS11
-dGlsLmM6ICAgc3RhcnRfdGhyZXNob2xkICA6IC0xCkphbiAxNCAxODoxNzoxMyBkZW4gcHVs
-c2VhdWRpb1s2Mjk4XTogRTogW2Fsc2Etc2luay1VU0IgQXVkaW9dIGFsc2EtdXRpbC5jOiAg
-IHN0b3BfdGhyZXNob2xkICAgOiA3OTI2MzM1MzQ0MTcyMDcyOTYwCkphbiAxNCAxODoxNzox
-MyBkZW4gcHVsc2VhdWRpb1s2Mjk4XTogRTogW2Fsc2Etc2luay1VU0IgQXVkaW9dIGFsc2Et
-dXRpbC5jOiAgIHNpbGVuY2VfdGhyZXNob2xkOiAwCkphbiAxNCAxODoxNzoxMyBkZW4gcHVs
-c2VhdWRpb1s2Mjk4XTogRTogW2Fsc2Etc2luay1VU0IgQXVkaW9dIGFsc2EtdXRpbC5jOiAg
-IHNpbGVuY2Vfc2l6ZSA6IDAKSmFuIDE0IDE4OjE3OjEzIGRlbiBwdWxzZWF1ZGlvWzYyOThd
-OiBFOiBbYWxzYS1zaW5rLVVTQiBBdWRpb10gYWxzYS11dGlsLmM6ICAgYm91bmRhcnkgICAg
-IDogNzkyNjMzNTM0NDE3MjA3Mjk2MApKYW4gMTQgMTg6MTc6MTMgZGVuIHB1bHNlYXVkaW9b
-NjI5OF06IEU6IFthbHNhLXNpbmstVVNCIEF1ZGlvXSBhbHNhLXV0aWwuYzogICBhcHBsX3B0
-ciAgICAgOiAzMDkxMzE1MjgKSmFuIDE0IDE4OjE3OjEzIGRlbiBwdWxzZWF1ZGlvWzYyOThd
-OiBFOiBbYWxzYS1zaW5rLVVTQiBBdWRpb10gYWxzYS11dGlsLmM6ICAgaHdfcHRyICAgICAg
-IDogMzA5MTM0NDQ4CkphbiAxNCAxODoxNzoxMyBkZW4gcHVsc2VhdWRpb1s2Mjk4XTogRTog
-W2Fsc2Etc2luay1VU0IgQXVkaW9dIGFsc2EtdXRpbC5jOiBzbmRfcGNtX2RlbGF5KCkgcmV0
-dXJuZWQgYSB2YWx1ZSB0aGF0IGlzIGV4Y2VwdGlvbmFsbHkgbGFyZ2U6IC0xNDY1NiBieXRl
-cyAoLTc2IG1zKS4KSmFuIDE0IDE4OjE3OjEzIGRlbiBwdWxzZWF1ZGlvWzYyOThdOiBFOiBb
-YWxzYS1zaW5rLVVTQiBBdWRpb10gYWxzYS11dGlsLmM6IE1vc3QgbGlrZWx5IHRoaXMgaXMg
-YSBidWcgaW4gdGhlIEFMU0EgZHJpdmVyICdzbmRfdXNiX2F1ZGlvJy4gUGxlYXNlIHJlcG9y
-dCB0aGlzIGlzc3VlIHRvIHRoZSBBTFNBIGRldmVsb3BlcnMuCkphbiAxNCAxODoxNzoxMyBk
-ZW4gcHVsc2VhdWRpb1s2Mjk4XTogRTogW2Fsc2Etc2luay1VU0IgQXVkaW9dIGFsc2EtdXRp
-bC5jOiBzbmRfcGNtX2R1bXAoKToKSmFuIDE0IDE4OjE3OjE0IGRlbiBwdWxzZWF1ZGlvWzYy
-OThdOiBFOiBbYWxzYS1zaW5rLVVTQiBBdWRpb10gYWxzYS11dGlsLmM6IEhhcmR3YXJlIFBD
-TSBjYXJkIDAgJ0RpZ2lIdWcgVVNCIEF1ZGlvJyBkZXZpY2UgMCBzdWJkZXZpY2UgMApKYW4g
-MTQgMTg6MTc6MTQgZGVuIHB1bHNlYXVkaW9bNjI5OF06IEU6IFthbHNhLXNpbmstVVNCIEF1
-ZGlvXSBhbHNhLXV0aWwuYzogSXRzIHNldHVwIGlzOgpKYW4gMTQgMTg6MTc6MTQgZGVuIHB1
-bHNlYXVkaW9bNjI5OF06IEU6IFthbHNhLXNpbmstVVNCIEF1ZGlvXSBhbHNhLXV0aWwuYzog
-ICBzdHJlYW0gICAgICAgOiBQTEFZQkFDSwpKYW4gMTQgMTg6MTc6MTQgZGVuIHB1bHNlYXVk
-aW9bNjI5OF06IEU6IFthbHNhLXNpbmstVVNCIEF1ZGlvXSBhbHNhLXV0aWwuYzogICBhY2Nl
-c3MgICAgICAgOiBNTUFQX0lOVEVSTEVBVkVECkphbiAxNCAxODoxNzoxNCBkZW4gcHVsc2Vh
-dWRpb1s2Mjk4XTogRTogW2Fsc2Etc2luay1VU0IgQXVkaW9dIGFsc2EtdXRpbC5jOiAgIGZv
-cm1hdCAgICAgICA6IFMxNl9MRQpKYW4gMTQgMTg6MTc6MTQgZGVuIHB1bHNlYXVkaW9bNjI5
-OF06IEU6IFthbHNhLXNpbmstVVNCIEF1ZGlvXSBhbHNhLXV0aWwuYzogICBzdWJmb3JtYXQg
-ICAgOiBTVEQKSmFuIDE0IDE4OjE3OjE0IGRlbiBwdWxzZWF1ZGlvWzYyOThdOiBFOiBbYWxz
-YS1zaW5rLVVTQiBBdWRpb10gYWxzYS11dGlsLmM6ICAgY2hhbm5lbHMgICAgIDogMgpKYW4g
-MTQgMTg6MTc6MTQgZGVuIHB1bHNlYXVkaW9bNjI5OF06IEU6IFthbHNhLXNpbmstVVNCIEF1
-ZGlvXSBhbHNhLXV0aWwuYzogICByYXRlICAgICAgICAgOiA0ODAwMApKYW4gMTQgMTg6MTc6
-MTUgZGVuIHB1bHNlYXVkaW9bNjI5OF06IEU6IFthbHNhLXNpbmstVVNCIEF1ZGlvXSBhbHNh
-LXV0aWwuYzogICBleGFjdCByYXRlICAgOiA0ODAwMCAoNDgwMDAvMSkKSmFuIDE0IDE4OjE3
-OjE1IGRlbiBwdWxzZWF1ZGlvWzYyOThdOiBFOiBbYWxzYS1zaW5rLVVTQiBBdWRpb10gYWxz
-YS11dGlsLmM6ICAgbXNiaXRzICAgICAgIDogMTYKSmFuIDE0IDE4OjE3OjE1IGRlbiBwdWxz
-ZWF1ZGlvWzYyOThdOiBFOiBbYWxzYS1zaW5rLVVTQiBBdWRpb10gYWxzYS11dGlsLmM6ICAg
-YnVmZmVyX3NpemUgIDogNDQwCkphbiAxNCAxODoxNzoxNSBkZW4gcHVsc2VhdWRpb1s2Mjk4
-XTogRTogW2Fsc2Etc2luay1VU0IgQXVkaW9dIGFsc2EtdXRpbC5jOiAgIHBlcmlvZF9zaXpl
-ICA6IDg4CkphbiAxNCAxODoxNzoxNSBkZW4gcHVsc2VhdWRpb1s2Mjk4XTogRTogW2Fsc2Et
-c2luay1VU0IgQXVkaW9dIGFsc2EtdXRpbC5jOiAgIHBlcmlvZF90aW1lICA6IDE4MzMKSmFu
-IDE0IDE4OjE3OjE1IGRlbiBwdWxzZWF1ZGlvWzYyOThdOiBFOiBbYWxzYS1zaW5rLVVTQiBB
-dWRpb10gYWxzYS11dGlsLmM6ICAgdHN0YW1wX21vZGUgIDogRU5BQkxFCkphbiAxNCAxODox
-NzoxNSBkZW4gcHVsc2VhdWRpb1s2Mjk4XTogRTogW2Fsc2Etc2luay1VU0IgQXVkaW9dIGFs
-c2EtdXRpbC5jOiAgIHRzdGFtcF90eXBlICA6IE1PTk9UT05JQwpKYW4gMTQgMTg6MTc6MTUg
-ZGVuIHB1bHNlYXVkaW9bNjI5OF06IEU6IFthbHNhLXNpbmstVVNCIEF1ZGlvXSBhbHNhLXV0
-aWwuYzogICBwZXJpb2Rfc3RlcCAgOiAxCkphbiAxNCAxODoxNzoxNiBkZW4gcHVsc2VhdWRp
-b1s2Mjk4XTogRTogW2Fsc2Etc2luay1VU0IgQXVkaW9dIGFsc2EtdXRpbC5jOiAgIGF2YWls
-X21pbiAgICA6IDg4CkphbiAxNCAxODoxNzoxNiBkZW4gcHVsc2VhdWRpb1s2Mjk4XTogRTog
-W2Fsc2Etc2luay1VU0IgQXVkaW9dIGFsc2EtdXRpbC5jOiAgIHBlcmlvZF9ldmVudCA6IDEK
-SmFuIDE0IDE4OjE3OjE2IGRlbiBwdWxzZWF1ZGlvWzYyOThdOiBFOiBbYWxzYS1zaW5rLVVT
-QiBBdWRpb10gYWxzYS11dGlsLmM6ICAgc3RhcnRfdGhyZXNob2xkICA6IC0xCkphbiAxNCAx
-ODoxNzoxNiBkZW4gcHVsc2VhdWRpb1s2Mjk4XTogRTogW2Fsc2Etc2luay1VU0IgQXVkaW9d
-IGFsc2EtdXRpbC5jOiAgIHN0b3BfdGhyZXNob2xkICAgOiA3OTI2MzM1MzQ0MTcyMDcyOTYw
-CkphbiAxNCAxODoxNzoxNiBkZW4gcHVsc2VhdWRpb1s2Mjk4XTogRTogW2Fsc2Etc2luay1V
-U0IgQXVkaW9dIGFsc2EtdXRpbC5jOiAgIHNpbGVuY2VfdGhyZXNob2xkOiAwCkphbiAxNCAx
-ODoxNzoxNiBkZW4gcHVsc2VhdWRpb1s2Mjk4XTogRTogW2Fsc2Etc2luay1VU0IgQXVkaW9d
-IGFsc2EtdXRpbC5jOiAgIHNpbGVuY2Vfc2l6ZSA6IDAKSmFuIDE0IDE4OjE3OjE2IGRlbiBw
-dWxzZWF1ZGlvWzYyOThdOiBFOiBbYWxzYS1zaW5rLVVTQiBBdWRpb10gYWxzYS11dGlsLmM6
-ICAgYm91bmRhcnkgICAgIDogNzkyNjMzNTM0NDE3MjA3Mjk2MApKYW4gMTQgMTg6MTc6MTcg
-ZGVuIHB1bHNlYXVkaW9bNjI5OF06IEU6IFthbHNhLXNpbmstVVNCIEF1ZGlvXSBhbHNhLXV0
-aWwuYzogICBhcHBsX3B0ciAgICAgOiAzMDkxODUxMjAKSmFuIDE0IDE4OjE3OjE3IGRlbiBw
-dWxzZWF1ZGlvWzYyOThdOiBFOiBbYWxzYS1zaW5rLVVTQiBBdWRpb10gYWxzYS11dGlsLmM6
-ICAgaHdfcHRyICAgICAgIDogMzA5MTkxNDcyCg==
---------------010103000202080203010008
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------010103000202080203010008--
+I will try to extract a new reproducer now.
+Meanwhile, can you try to reproduce this one:
+https://groups.google.com/forum/#!msg/syzkaller/bbtG9_h1ONU/CPLblMC6FAAJ
+? I run the program in a tight parallel loop.
