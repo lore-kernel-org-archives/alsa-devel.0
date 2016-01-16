@@ -1,38 +1,71 @@
-From: Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>
-Subject: Re: [PATCH RFC 1/1] ASoC: fsl_ssi: Make fifo watermark and maxburst
- settings device tree options
-Date: Sat, 16 Jan 2016 08:15:33 -0600
-Message-ID: <569A5085.10806@tabi.org>
-References: <1452788982-11583-1-git-send-email-caleb@crome.org>
- <20160114201858.GA17567@Asurada-Nvidia> <56984BE7.2050303@tabi.org>
- <20160115131325.GW6588@sirena.org.uk> <5698F846.5080604@tabi.org>
- <CAG5mAdy553q4Te5755575WaiLxGRp43h=WVH6QzF7idsaCnhbg@mail.gmail.com>
- <20160115183824.GB31703@Asurada-Nvidia>
- <CAG5mAdyXPtnnZvGcWrhhbv7wuamz_xbRsn76VXdbE1yZRgx_Mg@mail.gmail.com>
- <20160115185736.GC31703@Asurada-Nvidia>
- <CAG5mAdyUfSuCqA4_342MS2AyshvuyeiYsjQyRqifmqVhn4T2xA@mail.gmail.com>
+From: Tom Yan <tom.ty89@gmail.com>
+Subject: Re: Should we get rid of
+	{surround21/surround41/surround50}.conf from alsa-lib?
+Date: Sat, 16 Jan 2016 22:24:34 +0800
+Message-ID: <CAGnHSE=1aK9T6Ov5Sr-vMwTdy71t-H_NEnbH=cM3EZ=q_ZJv2Q@mail.gmail.com>
+References: <CAGnHSEnQD2Ho76QN2yY4EX8ZMHZ9_ezY_3MgHeKuQFhj16RT_w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <CAG5mAdyUfSuCqA4_342MS2AyshvuyeiYsjQyRqifmqVhn4T2xA-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Caleb Crome <caleb-EebDDntmC0DYtjvyW6yDsg@public.gmane.org>, Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Xiubo Li <Xiubo.Lee-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yk0-f179.google.com (mail-yk0-f179.google.com
+ [209.85.160.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id B1CB2260481
+ for <alsa-devel@alsa-project.org>; Sat, 16 Jan 2016 15:24:35 +0100 (CET)
+Received: by mail-yk0-f179.google.com with SMTP id v14so478673719ykd.3
+ for <alsa-devel@alsa-project.org>; Sat, 16 Jan 2016 06:24:35 -0800 (PST)
+In-Reply-To: <CAGnHSEnQD2Ho76QN2yY4EX8ZMHZ9_ezY_3MgHeKuQFhj16RT_w@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Caleb Crome wrote:
-> I see the 4 compatibles are:  fsl,mpc8610-ssi, fsl,imx51-ssi,
-> fsl,imx35-ssi, and fsl,imx21-ssi.
->
-> Shall I submit a patch that sets the value to 4 for for any/all of the
-> above?  Should it be different based on whether fiq is enabled.  Maybe
-> set it to 4 for whenever DMA is used, and to 13 whenever FIQ is used?
+By the way,
 
-Do NOT change the watermark value for fsl,mpc8610-ssi from whatever it 
-is today.  You would need to retest your code on an mpc8610 and p1022ds, 
-and I don't think you have either of those boards.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+[tom@localhost ~]$ diff <(grep surround41.conf
+/usr/share/alsa/cards/*.conf | cut -d ":" -f 1) <(grep surround50.conf
+/usr/share/alsa/cards/*.conf | cut -d ":" -f 1)
+[tom@localhost ~]$ diff <(grep surround41.conf
+/usr/share/alsa/cards/*.conf | cut -d ":" -f 1) <(grep surround21.conf
+/usr/share/alsa/cards/*.conf | cut -d ":" -f 1)
+12d11
+< /usr/share/alsa/cards/Echo_Echo3G.conf
+[tom@localhost ~]$
+
+On 16 January 2016 at 22:09, Tom Yan <tom.ty89@gmail.com> wrote:
+> What I mean is, should we really by default set up PCMs that provide a
+> SUBSET of POSSIBLE channel configurations that IS BUILT and RELYS ON
+> ttable?
+>
+> [tom@localhost ~]$ grep ttable /usr/share/alsa/pcm/surround*
+> /usr/share/alsa/pcm/surround21.conf:    ttable.0.FL 1
+> /usr/share/alsa/pcm/surround21.conf:    ttable.1.FR 1
+> /usr/share/alsa/pcm/surround21.conf:    ttable.2.LFE 1
+> /usr/share/alsa/pcm/surround41.conf:    ttable.0.FL 1
+> /usr/share/alsa/pcm/surround41.conf:    ttable.1.FR 1
+> /usr/share/alsa/pcm/surround41.conf:    ttable.2.RL 1
+> /usr/share/alsa/pcm/surround41.conf:    ttable.3.RR 1
+> /usr/share/alsa/pcm/surround41.conf:    ttable.4.LFE 1
+> /usr/share/alsa/pcm/surround50.conf:    ttable.0.FL 1
+> /usr/share/alsa/pcm/surround50.conf:    ttable.1.FR 1
+> /usr/share/alsa/pcm/surround50.conf:    ttable.2.RL 1
+> /usr/share/alsa/pcm/surround50.conf:    ttable.3.RR 1
+> /usr/share/alsa/pcm/surround50.conf:    ttable.4.FC 1
+>
+> If we are really gonna provide them, why only these 3? What about:
+> surround30 (surround51 - RL - RR - LFE)
+> surround31 (surround51 - RL - RR)
+> surround60 (surround71 - FC - LFE, corresponds to surround40)
+> surround61 (surround71 - FC, corresponds to surround41)
+> surround70 (surround71 - LFE, corresponds to surround 50)
+>
+> surround30 more or less corresponds to surround50 as well, and
+> surround31 doesn't even have the weirdness of using only either one
+> channel in the C/Sub port like the others.
