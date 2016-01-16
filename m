@@ -1,20 +1,17 @@
-From: Martin Sperl <kernel@martin.sperl.org>
-Subject: Re: [PATCH V2 2/3] ARM: bcm2835: I2S: use new
-	register-range and clock framework
-Date: Sat, 16 Jan 2016 17:47:50 +0100
-Message-ID: <25D01EDB-5DD2-4604-B42E-97BB1D186EBD@martin.sperl.org>
-References: <1452602149-5875-1-git-send-email-kernel@martin.sperl.org>
- <1452602149-5875-3-git-send-email-kernel@martin.sperl.org>
- <569A6134.6070504@lategoodbye.de>
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: wm8741: Fix (and refactor) volume
+ controls
+Date: Sat, 16 Jan 2016 16:49:39 +0000
+Message-ID: <20160116164939.GE6588@sirena.org.uk>
+References: <1452947129-11669-1-git-send-email-ce3a@gmx.de>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============2952924287462805423=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cgate.sperl.org (212-186-180-163.dynamic.surfer.at
- [212.186.180.163])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D98A2604D3
- for <alsa-devel@alsa-project.org>; Sat, 16 Jan 2016 17:47:48 +0100 (CET)
-In-Reply-To: <569A6134.6070504@lategoodbye.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 365E22604D3
+ for <alsa-devel@alsa-project.org>; Sat, 16 Jan 2016 17:52:00 +0100 (CET)
+In-Reply-To: <1452947129-11669-1-git-send-email-ce3a@gmx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,83 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stefan Wahren <info@lategoodbye.de>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, Stephen Warren <swarren@wwwdotorg.org>, Mike Turquette <mturquette@baylibre.com>, Lee Jones <lee@kernel.org>, Takashi Iwai <tiwai@suse.com>, Eric Anholt <eric@anholt.net>, Remi Pommarel <repk@triplefau.lt>, Mark Brown <broonie@kernel.org>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+To: Sergej Sawazki <ce3a@gmx.de>
+Cc: ckeepax@opensource.wolfsonmicro.com, patches@opensource.wolfsonmicro.com, clemens@ladisch.de, lgirdwood@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-> On 16.01.2016, at 16:26, Stefan Wahren <info@lategoodbye.de> wrote:
-> =
+--===============2952924287462805423==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="XZCk0ClCHCY/sYOe"
+Content-Disposition: inline
 
-> Hi Martin,
-> =
 
-> [add Mike and Remi]
-> =
+--XZCk0ClCHCY/sYOe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Am 12.01.2016 um 13:35 schrieb kernel@martin.sperl.org:
->> From: Martin Sperl <kernel@martin.sperl.org>
->> =
+On Sat, Jan 16, 2016 at 01:25:29PM +0100, Sergej Sawazki wrote:
 
->> Since the move to the new clock framework with commit 94cb7f76caa0
->> ("ARM: bcm2835: Switch to using the new clock driver support.")
->> the bcm2835-i2s driver was no longer working.
->> =
+> +static unsigned int _wm8741_volume_get(struct snd_soc_codec *codec,
+> +		struct soc_mixer_control *mc, unsigned int lsb_reg)
 
->> This patch fixes the address ranges:
->> * remove the PCM clock register range that is owned by the clockmanager
->> * fix the length, which did not include the last register of this device
->> =
+All the readback stuff looks entirely generic and should be using
+generic functions.  If they don't exist add them to the core.
 
->> It also adds the required pcm-clock.
->> =
+> +static int wm8741_volume_set(struct snd_kcontrol *kcontrol,
+> +		struct snd_ctl_elem_value *ucontrol)
+> +{
 
->> Signed-off-by: Martin Sperl <kernel@martin.sperl.org>
->> ---
->>  arch/arm/boot/dts/bcm2835.dtsi |    5 ++---
-> =
+Similarly for the set stuff, there's nothing visibly device specific
+here.
 
-> this won't apply, because the file has been renamed to bcm283x.dtsi.
+--XZCk0ClCHCY/sYOe
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Well - this "rename=94 was and still is not merged upstream, so it is an
-unfortunate circumstance as I am going on vacation and can not create a
-new patchset until I return. So please take it as a template
-when applying it.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-> =
+iQEcBAEBCAAGBQJWmnSiAAoJECTWi3JdVIfQL0QH/2pBMeYlCqae+sscgZRJ2eH+
+h/RqjIUlt2Bk6XZUa3kRGQDPjYh+nS8daNBhie4wcRUtZ6iaXqb2579d7gpOvpol
+IeEEvC2OC8opaZAliwvaIMB4aIOwAliO4GHdte5CvzE7bd9VQRx87enLvEwvdmyM
+QxO/Yk+xxYh2miz3SLcN+IEsDpHoERZQSg8setg9ZG+nNS2jBTg4MgZUqQCSViUV
+TVULPCN228IvxG7ULoy4/Wi4wKzA2MU1hTtFwQP0r+N2cjJvEpnQJKHYjSKeKl61
+IBVBErhJscJPGa8F9ahdgya+RuHug3mfF74DYBnI82M+tkblfLEcrmTQc3uWnxo=
+=uvhM
+-----END PGP SIGNATURE-----
 
->>  1 file changed, 2 insertions(+), 3 deletions(-)
->> =
+--XZCk0ClCHCY/sYOe--
 
->> diff --git a/arch/arm/boot/dts/bcm2835.dtsi b/arch/arm/boot/dts/bcm2835.=
-dtsi
->> index aef64de..83d9787 100644
->> --- a/arch/arm/boot/dts/bcm2835.dtsi
->> +++ b/arch/arm/boot/dts/bcm2835.dtsi
->> @@ -120,9 +120,8 @@
->> =
+--===============2952924287462805423==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
->>  		i2s: i2s@7e203000 {
->>  			compatible =3D "brcm,bcm2835-i2s";
->> -			reg =3D <0x7e203000 0x20>,
->> -			      <0x7e101098 0x02>;
->> -
->> +			reg =3D <0x7e203000 0x24>;
->> +			clocks =3D <&clocks BCM2835_CLOCK_PCM>;
-> =
 
-> After applying clk series ([PATCH V4 0/7] clk: bcm2835: add clocks and ad=
-d MASH support) and this series the pcm clock is an orphan.
-> =
-
-> Do we need to add "assigned-clocks" to the i2s node just like for pwm [1]?
-
-In my experience it is not needed for PCM, as the clock is set by the
-bcm2835-i2s driver, so I left it out.
-
-As I do not know how the orphan PWM clock would be used I can not comment
-if this is really needed with PWM or not - it would just set the default
-clock if it got referenced in the DT.
-
-Thanks,
-	Martin
+--===============2952924287462805423==--
