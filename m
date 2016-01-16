@@ -1,71 +1,75 @@
-From: Tom Yan <tom.ty89@gmail.com>
-Subject: Re: Should we get rid of
-	{surround21/surround41/surround50}.conf from alsa-lib?
-Date: Sat, 16 Jan 2016 22:24:34 +0800
-Message-ID: <CAGnHSE=1aK9T6Ov5Sr-vMwTdy71t-H_NEnbH=cM3EZ=q_ZJv2Q@mail.gmail.com>
-References: <CAGnHSEnQD2Ho76QN2yY4EX8ZMHZ9_ezY_3MgHeKuQFhj16RT_w@mail.gmail.com>
+From: Stefan Wahren <info-saaNCTdWVBT7BZbvpMY5sg@public.gmane.org>
+Subject: Re: [PATCH V2 2/3] ARM: bcm2835: I2S: use new register-range and
+ clock framework
+Date: Sat, 16 Jan 2016 16:26:44 +0100
+Message-ID: <569A6134.6070504@lategoodbye.de>
+References: <1452602149-5875-1-git-send-email-kernel@martin.sperl.org>
+ <1452602149-5875-3-git-send-email-kernel@martin.sperl.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yk0-f179.google.com (mail-yk0-f179.google.com
- [209.85.160.179])
- by alsa0.perex.cz (Postfix) with ESMTP id B1CB2260481
- for <alsa-devel@alsa-project.org>; Sat, 16 Jan 2016 15:24:35 +0100 (CET)
-Received: by mail-yk0-f179.google.com with SMTP id v14so478673719ykd.3
- for <alsa-devel@alsa-project.org>; Sat, 16 Jan 2016 06:24:35 -0800 (PST)
-In-Reply-To: <CAGnHSEnQD2Ho76QN2yY4EX8ZMHZ9_ezY_3MgHeKuQFhj16RT_w@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1452602149-5875-3-git-send-email-kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org
+Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Lee Jones <lee-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Eric Anholt <eric-WhKQ6XTQaPysTnJN9+BGXg@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Remi Pommarel <repk-lovNVp52yxIDGOk2Oe9MvA@public.gmane.org>, Mike Turquette <mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-By the way,
+Hi Martin,
 
-[tom@localhost ~]$ diff <(grep surround41.conf
-/usr/share/alsa/cards/*.conf | cut -d ":" -f 1) <(grep surround50.conf
-/usr/share/alsa/cards/*.conf | cut -d ":" -f 1)
-[tom@localhost ~]$ diff <(grep surround41.conf
-/usr/share/alsa/cards/*.conf | cut -d ":" -f 1) <(grep surround21.conf
-/usr/share/alsa/cards/*.conf | cut -d ":" -f 1)
-12d11
-< /usr/share/alsa/cards/Echo_Echo3G.conf
-[tom@localhost ~]$
+[add Mike and Remi]
 
-On 16 January 2016 at 22:09, Tom Yan <tom.ty89@gmail.com> wrote:
-> What I mean is, should we really by default set up PCMs that provide a
-> SUBSET of POSSIBLE channel configurations that IS BUILT and RELYS ON
-> ttable?
+Am 12.01.2016 um 13:35 schrieb kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org:
+> From: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
 >
-> [tom@localhost ~]$ grep ttable /usr/share/alsa/pcm/surround*
-> /usr/share/alsa/pcm/surround21.conf:    ttable.0.FL 1
-> /usr/share/alsa/pcm/surround21.conf:    ttable.1.FR 1
-> /usr/share/alsa/pcm/surround21.conf:    ttable.2.LFE 1
-> /usr/share/alsa/pcm/surround41.conf:    ttable.0.FL 1
-> /usr/share/alsa/pcm/surround41.conf:    ttable.1.FR 1
-> /usr/share/alsa/pcm/surround41.conf:    ttable.2.RL 1
-> /usr/share/alsa/pcm/surround41.conf:    ttable.3.RR 1
-> /usr/share/alsa/pcm/surround41.conf:    ttable.4.LFE 1
-> /usr/share/alsa/pcm/surround50.conf:    ttable.0.FL 1
-> /usr/share/alsa/pcm/surround50.conf:    ttable.1.FR 1
-> /usr/share/alsa/pcm/surround50.conf:    ttable.2.RL 1
-> /usr/share/alsa/pcm/surround50.conf:    ttable.3.RR 1
-> /usr/share/alsa/pcm/surround50.conf:    ttable.4.FC 1
+> Since the move to the new clock framework with commit 94cb7f76caa0
+> ("ARM: bcm2835: Switch to using the new clock driver support.")
+> the bcm2835-i2s driver was no longer working.
 >
-> If we are really gonna provide them, why only these 3? What about:
-> surround30 (surround51 - RL - RR - LFE)
-> surround31 (surround51 - RL - RR)
-> surround60 (surround71 - FC - LFE, corresponds to surround40)
-> surround61 (surround71 - FC, corresponds to surround41)
-> surround70 (surround71 - LFE, corresponds to surround 50)
+> This patch fixes the address ranges:
+> * remove the PCM clock register range that is owned by the clockmanager
+> * fix the length, which did not include the last register of this device
 >
-> surround30 more or less corresponds to surround50 as well, and
-> surround31 doesn't even have the weirdness of using only either one
-> channel in the C/Sub port like the others.
+> It also adds the required pcm-clock.
+>
+> Signed-off-by: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
+> ---
+>   arch/arm/boot/dts/bcm2835.dtsi |    5 ++---
+
+this won't apply, because the file has been renamed to bcm283x.dtsi.
+
+>   1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/arm/boot/dts/bcm2835.dtsi b/arch/arm/boot/dts/bcm2835.dtsi
+> index aef64de..83d9787 100644
+> --- a/arch/arm/boot/dts/bcm2835.dtsi
+> +++ b/arch/arm/boot/dts/bcm2835.dtsi
+> @@ -120,9 +120,8 @@
+>
+>   		i2s: i2s@7e203000 {
+>   			compatible = "brcm,bcm2835-i2s";
+> -			reg = <0x7e203000 0x20>,
+> -			      <0x7e101098 0x02>;
+> -
+> +			reg = <0x7e203000 0x24>;
+> +			clocks = <&clocks BCM2835_CLOCK_PCM>;
+
+After applying clk series ([PATCH V4 0/7] clk: bcm2835: add clocks and 
+add MASH support) and this series the pcm clock is an orphan.
+
+Do we need to add "assigned-clocks" to the i2s node just like for pwm [1]?
+
+Regards
+Stefan
+
+>   			dmas = <&dma 2>,
+>   			       <&dma 3>;
+>   			dma-names = "tx", "rx";
+>
+
+[1] - 
+http://lists.infradead.org/pipermail/linux-rpi-kernel/2015-December/002789.html
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
