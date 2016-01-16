@@ -1,20 +1,21 @@
 From: Tom Yan <tom.ty89@gmail.com>
-Subject: Re: [PATCH - alsa-lib 1/1] add surround21 for Echo3G
-	devices
-Date: Sun, 17 Jan 2016 03:17:30 +0800
-Message-ID: <CAGnHSEk0jCPjhveut_g9=Pja3ZfOV+=qwND-NDCOYyjjkv5_HA@mail.gmail.com>
-References: <569a947e.870d620a.17535.2cf0@mx.google.com>
+Subject: Re: Should we get rid of
+	{surround21/surround41/surround50}.conf from alsa-lib?
+Date: Sun, 17 Jan 2016 07:23:12 +0800
+Message-ID: <CAGnHSEkXvVs_cP6c=_Hzwhnmhh6VTT1xExi2QmxDNmyrFyq0_w@mail.gmail.com>
+References: <CAGnHSEnQD2Ho76QN2yY4EX8ZMHZ9_ezY_3MgHeKuQFhj16RT_w@mail.gmail.com>
+ <CAGnHSE=1aK9T6Ov5Sr-vMwTdy71t-H_NEnbH=cM3EZ=q_ZJv2Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yk0-f177.google.com (mail-yk0-f177.google.com
- [209.85.160.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E99E2604D3
- for <alsa-devel@alsa-project.org>; Sat, 16 Jan 2016 20:17:31 +0100 (CET)
-Received: by mail-yk0-f177.google.com with SMTP id a85so498690516ykb.1
- for <alsa-devel@alsa-project.org>; Sat, 16 Jan 2016 11:17:31 -0800 (PST)
-In-Reply-To: <569a947e.870d620a.17535.2cf0@mx.google.com>
+Received: from mail-yk0-f171.google.com (mail-yk0-f171.google.com
+ [209.85.160.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8631026044E
+ for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2016 00:23:13 +0100 (CET)
+Received: by mail-yk0-f171.google.com with SMTP id a85so501712210ykb.1
+ for <alsa-devel@alsa-project.org>; Sat, 16 Jan 2016 15:23:13 -0800 (PST)
+In-Reply-To: <CAGnHSE=1aK9T6Ov5Sr-vMwTdy71t-H_NEnbH=cM3EZ=q_ZJv2Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,63 +28,51 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-There is actually ONE card conf, AACI.conf, that supports surround51
-but not surround20/surround41/surround50, but I don't feel like
-touching it, coz it's in the ideal state of what I proposed here:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2016-January/103121.html
+I have to admit that the surround60/surround61
+[FL+FR+RL+RR(+LFE)+SL+SR] I mentioned probably never existed. And it
+SEEMS that surround21 is particularly needed by some laptops with LFE
+speaker.
 
-On 17 January 2016 at 03:05,  <tom.ty89@gmail.com> wrote:
-> From: Tom Yan <tom.ty89@gmail.com>
+On 16 January 2016 at 22:24, Tom Yan <tom.ty89@gmail.com> wrote:
+> By the way,
 >
-> It's the only card conf that make use of surround41.conf and surround50.conf but not surround21.conf; Adding it for consistency, since all three of them are derived from surround51.
+> [tom@localhost ~]$ diff <(grep surround41.conf
+> /usr/share/alsa/cards/*.conf | cut -d ":" -f 1) <(grep surround50.conf
+> /usr/share/alsa/cards/*.conf | cut -d ":" -f 1)
+> [tom@localhost ~]$ diff <(grep surround41.conf
+> /usr/share/alsa/cards/*.conf | cut -d ":" -f 1) <(grep surround21.conf
+> /usr/share/alsa/cards/*.conf | cut -d ":" -f 1)
+> 12d11
+> < /usr/share/alsa/cards/Echo_Echo3G.conf
+> [tom@localhost ~]$
 >
-> Signed-off-by: Tom Yan <tom.ty89@gmail.com>
->
-> diff --git a/src/conf/cards/Echo_Echo3G.conf b/src/conf/cards/Echo_Echo3G.conf
-> index 766f13f..93d9ce4 100644
-> --- a/src/conf/cards/Echo_Echo3G.conf
-> +++ b/src/conf/cards/Echo_Echo3G.conf
-> @@ -50,6 +50,40 @@ Echo_Echo3G.pcm.side.0 {
->         subdevice 6
->  }
->
-> +<confdir:pcm/surround21.conf>
-> +Echo_Echo3G.pcm.surround21.0 {
-> +       @args [ CARD ]
-> +       @args.CARD {
-> +               type string
-> +       }
-> +       type multi
-> +       slaves [
-> +               {
-> +                       pcm {
-> +                               @func concat
-> +                               strings [
-> +                                       "cards.Echo_Echo3G.pcm.front.0:CARD=" $CARD
-> +                               ]
-> +                       }
-> +                       channels 2
-> +               }
-> +               {
-> +                       pcm {
-> +                               @func concat
-> +                               strings [
-> +                                       "cards.Echo_Echo3G.pcm.center_lfe.0:CARD=" $CARD
-> +                               ]
-> +                       }
-> +                       channels 2
-> +               }
-> +       ]
-> +       bindings [
-> +               { slave 0 channel 0 }
-> +               { slave 0 channel 1 }
-> +               { slave 1 channel 0 }
-> +       ]
-> +}
-> +
->  <confdir:pcm/surround40.conf>
->  Echo_Echo3G.pcm.surround40.0 {
->         @args [ CARD ]
-> --
-> 2.7.0
->
+> On 16 January 2016 at 22:09, Tom Yan <tom.ty89@gmail.com> wrote:
+>> What I mean is, should we really by default set up PCMs that provide a
+>> SUBSET of POSSIBLE channel configurations that IS BUILT and RELYS ON
+>> ttable?
+>>
+>> [tom@localhost ~]$ grep ttable /usr/share/alsa/pcm/surround*
+>> /usr/share/alsa/pcm/surround21.conf:    ttable.0.FL 1
+>> /usr/share/alsa/pcm/surround21.conf:    ttable.1.FR 1
+>> /usr/share/alsa/pcm/surround21.conf:    ttable.2.LFE 1
+>> /usr/share/alsa/pcm/surround41.conf:    ttable.0.FL 1
+>> /usr/share/alsa/pcm/surround41.conf:    ttable.1.FR 1
+>> /usr/share/alsa/pcm/surround41.conf:    ttable.2.RL 1
+>> /usr/share/alsa/pcm/surround41.conf:    ttable.3.RR 1
+>> /usr/share/alsa/pcm/surround41.conf:    ttable.4.LFE 1
+>> /usr/share/alsa/pcm/surround50.conf:    ttable.0.FL 1
+>> /usr/share/alsa/pcm/surround50.conf:    ttable.1.FR 1
+>> /usr/share/alsa/pcm/surround50.conf:    ttable.2.RL 1
+>> /usr/share/alsa/pcm/surround50.conf:    ttable.3.RR 1
+>> /usr/share/alsa/pcm/surround50.conf:    ttable.4.FC 1
+>>
+>> If we are really gonna provide them, why only these 3? What about:
+>> surround30 (surround51 - RL - RR - LFE)
+>> surround31 (surround51 - RL - RR)
+>> surround60 (surround71 - FC - LFE, corresponds to surround40)
+>> surround61 (surround71 - FC, corresponds to surround41)
+>> surround70 (surround71 - LFE, corresponds to surround 50)
+>>
+>> surround30 more or less corresponds to surround50 as well, and
+>> surround31 doesn't even have the weirdness of using only either one
+>> channel in the C/Sub port like the others.
