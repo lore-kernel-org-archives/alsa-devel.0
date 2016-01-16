@@ -1,17 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm8741: Fix (and refactor) volume
- controls
-Date: Sat, 16 Jan 2016 16:49:39 +0000
-Message-ID: <20160116164939.GE6588@sirena.org.uk>
-References: <1452947129-11669-1-git-send-email-ce3a@gmx.de>
+From: Mans Rullgard <mans@mansr.com>
+Subject: [PATCH] ALSA: at73c213: manage SSC clock
+Date: Sat, 16 Jan 2016 18:35:49 +0000
+Message-ID: <1452969349-9810-1-git-send-email-mans@mansr.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2952924287462805423=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 365E22604D3
- for <alsa-devel@alsa-project.org>; Sat, 16 Jan 2016 17:52:00 +0100 (CET)
-In-Reply-To: <1452947129-11669-1-git-send-email-ce3a@gmx.de>
+Received: from unicorn.mansr.com (unicorn.mansr.com [81.2.72.234])
+ by alsa0.perex.cz (Postfix) with ESMTP id A5BBA2604BE
+ for <alsa-devel@alsa-project.org>; Sat, 16 Jan 2016 19:36:41 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +18,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sergej Sawazki <ce3a@gmx.de>
-Cc: ckeepax@opensource.wolfsonmicro.com, patches@opensource.wolfsonmicro.com, clemens@ladisch.de, lgirdwood@gmail.com, alsa-devel@alsa-project.org
+To: Hans-Christian Egtvedt <egtvedt@samfundet.no>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
+Since commit 49af54ff0fc7 ("misc: atmel-ssc: prepare clock only when
+request") the SSC driver expects clients to manage the SSC clock.
+Update this driver accordingly.
 
---===============2952924287462805423==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="XZCk0ClCHCY/sYOe"
-Content-Disposition: inline
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+---
+ sound/spi/at73c213.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-
---XZCk0ClCHCY/sYOe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Sat, Jan 16, 2016 at 01:25:29PM +0100, Sergej Sawazki wrote:
-
-> +static unsigned int _wm8741_volume_get(struct snd_soc_codec *codec,
-> +		struct soc_mixer_control *mc, unsigned int lsb_reg)
-
-All the readback stuff looks entirely generic and should be using
-generic functions.  If they don't exist add them to the core.
-
-> +static int wm8741_volume_set(struct snd_kcontrol *kcontrol,
-> +		struct snd_ctl_elem_value *ucontrol)
-> +{
-
-Similarly for the set stuff, there's nothing visibly device specific
-here.
-
---XZCk0ClCHCY/sYOe
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWmnSiAAoJECTWi3JdVIfQL0QH/2pBMeYlCqae+sscgZRJ2eH+
-h/RqjIUlt2Bk6XZUa3kRGQDPjYh+nS8daNBhie4wcRUtZ6iaXqb2579d7gpOvpol
-IeEEvC2OC8opaZAliwvaIMB4aIOwAliO4GHdte5CvzE7bd9VQRx87enLvEwvdmyM
-QxO/Yk+xxYh2miz3SLcN+IEsDpHoERZQSg8setg9ZG+nNS2jBTg4MgZUqQCSViUV
-TVULPCN228IvxG7ULoy4/Wi4wKzA2MU1hTtFwQP0r+N2cjJvEpnQJKHYjSKeKl61
-IBVBErhJscJPGa8F9ahdgya+RuHug3mfF74DYBnI82M+tkblfLEcrmTQc3uWnxo=
-=uvhM
------END PGP SIGNATURE-----
-
---XZCk0ClCHCY/sYOe--
-
---===============2952924287462805423==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2952924287462805423==--
+diff --git a/sound/spi/at73c213.c b/sound/spi/at73c213.c
+index 39522367897c..3b2d0b2be421 100644
+--- a/sound/spi/at73c213.c
++++ b/sound/spi/at73c213.c
+@@ -981,6 +981,8 @@ static int snd_at73c213_probe(struct spi_device *spi)
+ 		goto out_card;
+ 	}
+ 
++	clk_enable(chip->ssc->clk);
++
+ 	retval = snd_at73c213_dev_init(card, spi);
+ 	if (retval)
+ 		goto out_ssc;
+@@ -998,6 +1000,7 @@ static int snd_at73c213_probe(struct spi_device *spi)
+ 	goto out;
+ 
+ out_ssc:
++	clk_disable(chip->ssc->clk);
+ 	ssc_free(chip->ssc);
+ out_card:
+ 	snd_card_free(card);
+@@ -1066,6 +1069,9 @@ out:
+ 	/* Stop DAC master clock. */
+ 	clk_disable(chip->board->dac_clk);
+ 
++	/* Stop SSC clock. */
++	clk_disable(chip->ssc->clk);
++
+ 	ssc_free(chip->ssc);
+ 	snd_card_free(card);
+ 
+@@ -1080,6 +1086,7 @@ static int snd_at73c213_suspend(struct device *dev)
+ 	struct snd_at73c213 *chip = card->private_data;
+ 
+ 	ssc_writel(chip->ssc->regs, CR, SSC_BIT(CR_TXDIS));
++	clk_disable(chip->ssc->clk);
+ 	clk_disable(chip->board->dac_clk);
+ 
+ 	return 0;
+@@ -1091,6 +1098,7 @@ static int snd_at73c213_resume(struct device *dev)
+ 	struct snd_at73c213 *chip = card->private_data;
+ 
+ 	clk_enable(chip->board->dac_clk);
++	clk_enable(chip->ssc->clk);
+ 	ssc_writel(chip->ssc->regs, CR, SSC_BIT(CR_TXEN));
+ 
+ 	return 0;
+-- 
+2.7.0
