@@ -1,19 +1,20 @@
-From: =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
-Subject: Re: [PATCH 1/4] ASoC: mxs-saif: fix clock prepare and
-	enable unbalance issue
-Date: Sat, 16 Jan 2016 16:24:35 +0000
-Message-ID: <yw1xpox1truk.fsf@unicorn.mansr.com>
-References: <1342776027-31758-1-git-send-email-b29396@freescale.com>
- <1342776027-31758-2-git-send-email-b29396@freescale.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+From: Martin Sperl <kernel@martin.sperl.org>
+Subject: Re: [PATCH V2 2/3] ARM: bcm2835: I2S: use new
+	register-range and clock framework
+Date: Sat, 16 Jan 2016 17:47:50 +0100
+Message-ID: <25D01EDB-5DD2-4604-B42E-97BB1D186EBD@martin.sperl.org>
+References: <1452602149-5875-1-git-send-email-kernel@martin.sperl.org>
+ <1452602149-5875-3-git-send-email-kernel@martin.sperl.org>
+ <569A6134.6070504@lategoodbye.de>
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from unicorn.mansr.com (unicorn.mansr.com [81.2.72.234])
- by alsa0.perex.cz (Postfix) with ESMTP id 53DE72604D3
- for <alsa-devel@alsa-project.org>; Sat, 16 Jan 2016 17:24:38 +0100 (CET)
-In-Reply-To: <1342776027-31758-2-git-send-email-b29396@freescale.com> (Dong
- Aisheng's message of "Fri, 20 Jul 2012 17:20:24 +0800")
+Received: from cgate.sperl.org (212-186-180-163.dynamic.surfer.at
+ [212.186.180.163])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D98A2604D3
+ for <alsa-devel@alsa-project.org>; Sat, 16 Jan 2016 17:47:48 +0100 (CET)
+In-Reply-To: <569A6134.6070504@lategoodbye.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,71 +24,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng <b29396@freescale.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, w.sang@pengutronix.de, linux-arm-kernel@lists.infradead.org, lrg@ti.com, shawn.guo@freescale.com
+To: Stefan Wahren <info@lategoodbye.de>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, Stephen Warren <swarren@wwwdotorg.org>, Mike Turquette <mturquette@baylibre.com>, Lee Jones <lee@kernel.org>, Takashi Iwai <tiwai@suse.com>, Eric Anholt <eric@anholt.net>, Remi Pommarel <repk@triplefau.lt>, Mark Brown <broonie@kernel.org>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Dong Aisheng <b29396@freescale.com> writes:
 
-> From: Dong Aisheng <dong.aisheng@linaro.org>
->
-> Currently we directly call a clock_enable in trigger function without
-> a clk_prepare as pair first.
-> This will cause system hang immediately when run capture because
-> the clock was not prepared(playback does not hang because the clock was
-> prepared already by get_mclk before), a warning message in clock framework
-> may cause a deadlock to reclaim clock lock (see: pl011_console_write).
->
-> Here we prepare clock first in hw_param, then enable it in trigger
-> function to guarantee the balance.
->
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Cc: Liam Girdwood <lrg@ti.com>
-> Cc: Wolfram Sang <w.sang@pengutronix.de>
-> Cc: Shawn Guo <shawn.guo@linaro.org>
-> Signed-off-by: Dong Aisheng <dong.aisheng@linaro.org>
-> ---
->  sound/soc/mxs/mxs-saif.c |   10 ++++++++++
->  1 files changed, 10 insertions(+), 0 deletions(-)
->
-> diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-> index aba71bf..fdbb36a 100644
-> --- a/sound/soc/mxs/mxs-saif.c
-> +++ b/sound/soc/mxs/mxs-saif.c
-> @@ -394,9 +394,14 @@ static int mxs_saif_hw_params(struct snd_pcm_substre=
-am *substream,
->  			     struct snd_soc_dai *cpu_dai)
->  {
->  	struct mxs_saif *saif =3D snd_soc_dai_get_drvdata(cpu_dai);
-> +	struct mxs_saif *master_saif;
->  	u32 scr, stat;
->  	int ret;
->
-> +	master_saif =3D mxs_saif_get_master(saif);
-> +	if (!master_saif)
-> +		return -EINVAL;
-> +
->  	/* mclk should already be set */
->  	if (!saif->mclk && saif->mclk_in_use) {
->  		dev_err(cpu_dai->dev, "set mclk first\n");
-> @@ -420,6 +425,11 @@ static int mxs_saif_hw_params(struct snd_pcm_substre=
-am *substream,
->  		return ret;
->  	}
->
-> +	/* prepare clk in hw_param, enable in trigger */
-> +	clk_prepare(saif->clk);
-> +	if (saif !=3D master_saif)
-> +		clk_prepare(master_saif->clk);
-> +
->  	scr =3D __raw_readl(saif->base + SAIF_CTRL);
->
->  	scr &=3D ~BM_SAIF_CTRL_WORD_LENGTH;
-> -- =
+> On 16.01.2016, at 16:26, Stefan Wahren <info@lategoodbye.de> wrote:
+> =
 
+> Hi Martin,
+> =
 
-This is missing a matching clk_unprepare() call.
+> [add Mike and Remi]
+> =
 
--- =
+> Am 12.01.2016 um 13:35 schrieb kernel@martin.sperl.org:
+>> From: Martin Sperl <kernel@martin.sperl.org>
+>> =
 
-M=E5ns Rullg=E5rd
+>> Since the move to the new clock framework with commit 94cb7f76caa0
+>> ("ARM: bcm2835: Switch to using the new clock driver support.")
+>> the bcm2835-i2s driver was no longer working.
+>> =
+
+>> This patch fixes the address ranges:
+>> * remove the PCM clock register range that is owned by the clockmanager
+>> * fix the length, which did not include the last register of this device
+>> =
+
+>> It also adds the required pcm-clock.
+>> =
+
+>> Signed-off-by: Martin Sperl <kernel@martin.sperl.org>
+>> ---
+>>  arch/arm/boot/dts/bcm2835.dtsi |    5 ++---
+> =
+
+> this won't apply, because the file has been renamed to bcm283x.dtsi.
+
+Well - this "rename=94 was and still is not merged upstream, so it is an
+unfortunate circumstance as I am going on vacation and can not create a
+new patchset until I return. So please take it as a template
+when applying it.
+
+> =
+
+>>  1 file changed, 2 insertions(+), 3 deletions(-)
+>> =
+
+>> diff --git a/arch/arm/boot/dts/bcm2835.dtsi b/arch/arm/boot/dts/bcm2835.=
+dtsi
+>> index aef64de..83d9787 100644
+>> --- a/arch/arm/boot/dts/bcm2835.dtsi
+>> +++ b/arch/arm/boot/dts/bcm2835.dtsi
+>> @@ -120,9 +120,8 @@
+>> =
+
+>>  		i2s: i2s@7e203000 {
+>>  			compatible =3D "brcm,bcm2835-i2s";
+>> -			reg =3D <0x7e203000 0x20>,
+>> -			      <0x7e101098 0x02>;
+>> -
+>> +			reg =3D <0x7e203000 0x24>;
+>> +			clocks =3D <&clocks BCM2835_CLOCK_PCM>;
+> =
+
+> After applying clk series ([PATCH V4 0/7] clk: bcm2835: add clocks and ad=
+d MASH support) and this series the pcm clock is an orphan.
+> =
+
+> Do we need to add "assigned-clocks" to the i2s node just like for pwm [1]?
+
+In my experience it is not needed for PCM, as the clock is set by the
+bcm2835-i2s driver, so I left it out.
+
+As I do not know how the orphan PWM clock would be used I can not comment
+if this is really needed with PWM or not - it would just set the default
+clock if it got referenced in the DT.
+
+Thanks,
+	Martin
