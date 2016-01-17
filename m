@@ -1,87 +1,97 @@
-From: =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
-Subject: Re: [PATCH] ALSA: at73c213: manage SSC clock
-Date: Sun, 17 Jan 2016 14:43:19 +0000
-Message-ID: <yw1xegdgtgfs.fsf@unicorn.mansr.com>
-References: <1452969349-9810-1-git-send-email-mans@mansr.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH - alsa-lib 1/1] add surround21 for Echo3G
+	devices
+Date: Mon, 18 Jan 2016 00:12:08 +0800
+Message-ID: <CAN8ccibo3rEqvAEEqH6yqHwVAipJAFH576-VF-QpaRv=d8274g@mail.gmail.com>
+References: <569a947e.870d620a.17535.2cf0@mx.google.com>
+ <CAGnHSEk0jCPjhveut_g9=Pja3ZfOV+=qwND-NDCOYyjjkv5_HA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1452969349-9810-1-git-send-email-mans@mansr.com> (Mans
-	Rullgard's message of "Sat, 16 Jan 2016 18:35:49 +0000")
-Sender: linux-kernel-owner@vger.kernel.org
-To: Hans-Christian Egtvedt <egtvedt@samfundet.no>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lb0-f171.google.com (mail-lb0-f171.google.com
+ [209.85.217.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CC852602F1
+ for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2016 17:12:09 +0100 (CET)
+Received: by mail-lb0-f171.google.com with SMTP id bc4so334950956lbc.2
+ for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2016 08:12:09 -0800 (PST)
+In-Reply-To: <CAGnHSEk0jCPjhveut_g9=Pja3ZfOV+=qwND-NDCOYyjjkv5_HA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tom Yan <tom.ty89@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mans Rullgard <mans@mansr.com> writes:
+7>
+> There is actually ONE card conf, AACI.conf, that supports surround51
+> but not surround20/surround41/surround50, but I don't feel like
+> touching it, coz it's in the ideal state of what I proposed here:
+>
+http://mailman.alsa-project.org/pipermail/alsa-devel/2016-January/103121.html
+>
+> On 17 January 2016 at 03:05,  <tom.ty89@gmail.com> wrote:
+> > From: Tom Yan <tom.ty89@gmail.com>
+> >
+> > It's the only card conf that make use of surround41.conf and
+surround50.conf but not surround21.conf; Adding it for consistency, since
+all three of them are derived from surround51.
+> >
+> > Signed-off-by: Tom Yan <tom.ty89@gmail.com>
+> >
+> > diff --git a/src/conf/cards/Echo_Echo3G.conf
+b/src/conf/cards/Echo_Echo3G.conf
+> > index 766f13f..93d9ce4 100644
+> > --- a/src/conf/cards/Echo_Echo3G.conf
+> > +++ b/src/conf/cards/Echo_Echo3G.conf
+> > @@ -50,6 +50,40 @@ Echo_Echo3G.pcm.side.0 {
+> >         subdevice 6
+> >  }
+> >
+> > +<confdir:pcm/surround21.conf>
+> > +Echo_Echo3G.pcm.surround21.0 {
+> > +       @args [ CARD ]
+> > +       @args.CARD {
+> > +               type string
+> > +       }
+> > +       type multi
+> > +       slaves [
+> > +               {
+> > +                       pcm {
+> > +                               @func concat
+> > +                               strings [
+> > +
+ "cards.Echo_Echo3G.pcm.front.0:CARD=" $CARD
+> > +                               ]
+> > +                       }
+> > +                       channels 2
+> > +               }
+> > +               {
+> > +                       pcm {
+> > +                               @func concat
+> > +                               strings [
+> > +
+ "cards.Echo_Echo3G.pcm.center_lfe.0:CARD=" $CARD
+> > +                               ]
+> > +                       }
+> > +                       channels 2
+> > +               }
+> > +       ]
+> > +       bindings [
+> > +               { slave 0 channel 0 }
+> > +               { slave 0 channel 1 }
+> > +               { slave 1 channel 0 }
+> > +       ]
+> > +}
+> > +
 
-> Since commit 49af54ff0fc7 ("misc: atmel-ssc: prepare clock only when
-> request") the SSC driver expects clients to manage the SSC clock.
-> Update this driver accordingly.
->
-> Signed-off-by: Mans Rullgard <mans@mansr.com>
-> ---
->  sound/spi/at73c213.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+Have you tested with real hardware for surround21 since pulseaudio fail
+with multi plugin with error -77  ?
 
-On second thoughts, please disregard this patch.  It's better to enable
-the clock only when it is actually required.
-
-> diff --git a/sound/spi/at73c213.c b/sound/spi/at73c213.c
-> index 39522367897c..3b2d0b2be421 100644
-> --- a/sound/spi/at73c213.c
-> +++ b/sound/spi/at73c213.c
-> @@ -981,6 +981,8 @@ static int snd_at73c213_probe(struct spi_device *=
-spi)
->  		goto out_card;
->  	}
->
-> +	clk_enable(chip->ssc->clk);
-> +
->  	retval =3D snd_at73c213_dev_init(card, spi);
->  	if (retval)
->  		goto out_ssc;
-> @@ -998,6 +1000,7 @@ static int snd_at73c213_probe(struct spi_device =
-*spi)
->  	goto out;
->
->  out_ssc:
-> +	clk_disable(chip->ssc->clk);
->  	ssc_free(chip->ssc);
->  out_card:
->  	snd_card_free(card);
-> @@ -1066,6 +1069,9 @@ out:
->  	/* Stop DAC master clock. */
->  	clk_disable(chip->board->dac_clk);
->
-> +	/* Stop SSC clock. */
-> +	clk_disable(chip->ssc->clk);
-> +
->  	ssc_free(chip->ssc);
->  	snd_card_free(card);
->
-> @@ -1080,6 +1086,7 @@ static int snd_at73c213_suspend(struct device *=
-dev)
->  	struct snd_at73c213 *chip =3D card->private_data;
->
->  	ssc_writel(chip->ssc->regs, CR, SSC_BIT(CR_TXDIS));
-> +	clk_disable(chip->ssc->clk);
->  	clk_disable(chip->board->dac_clk);
->
->  	return 0;
-> @@ -1091,6 +1098,7 @@ static int snd_at73c213_resume(struct device *d=
-ev)
->  	struct snd_at73c213 *chip =3D card->private_data;
->
->  	clk_enable(chip->board->dac_clk);
-> +	clk_enable(chip->ssc->clk);
->  	ssc_writel(chip->ssc->regs, CR, SSC_BIT(CR_TXEN));
->
->  	return 0;
-> --=20
-> 2.7.0
->
-
---=20
-M=E5ns Rullg=E5rd
+http://lists.freedesktop.org/archives/pulseaudio-discuss/2014-November/022670.html
