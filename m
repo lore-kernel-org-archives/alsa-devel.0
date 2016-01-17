@@ -1,21 +1,24 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH - alsa-lib 1/1] add surround21 for Echo3G
-	devices
-Date: Mon, 18 Jan 2016 00:12:08 +0800
-Message-ID: <CAN8ccibo3rEqvAEEqH6yqHwVAipJAFH576-VF-QpaRv=d8274g@mail.gmail.com>
-References: <569a947e.870d620a.17535.2cf0@mx.google.com>
- <CAGnHSEk0jCPjhveut_g9=Pja3ZfOV+=qwND-NDCOYyjjkv5_HA@mail.gmail.com>
+From: Timur Tabi <timur@tabi.org>
+Subject: Re: [PATCH 3/3] ASoC: fsl_ssi: remove register defaults
+Date: Sun, 17 Jan 2016 12:38:43 -0600
+Message-ID: <569BDFB3.1080401@tabi.org>
+References: <5677107C.60904@maciej.szmigiero.name>
+ <CAOMZO5C+32Nn6+Nv9KeVrd_Qeso-wEZZNU45G8h+e6LHdMoQYw@mail.gmail.com>
+ <CAOMZO5BE7=EdmEyMOq5WH=qv_0H3AGcyyDMJFoemLRJ=O5YLNw@mail.gmail.com>
+ <5693B4C1.4060400@maciej.szmigiero.name>
+ <CAOMZO5DVKrnufV_PLD_+7FgA=ePhn1DSpzYDQPy5FZvHyGOJ-g@mail.gmail.com>
+ <569AD8A7.7080803@maciej.szmigiero.name> <569ADC0D.2000807@tabi.org>
+ <569AE7D1.6050607@maciej.szmigiero.name> <569B23A8.3010006@tabi.org>
+ <569BA225.8070509@maciej.szmigiero.name>
+ <569BA786.4020305@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f171.google.com (mail-lb0-f171.google.com
- [209.85.217.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 1CC852602F1
- for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2016 17:12:09 +0100 (CET)
-Received: by mail-lb0-f171.google.com with SMTP id bc4so334950956lbc.2
- for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2016 08:12:09 -0800 (PST)
-In-Reply-To: <CAGnHSEk0jCPjhveut_g9=Pja3ZfOV+=qwND-NDCOYyjjkv5_HA@mail.gmail.com>
+Received: from muin.pair.com (muin.pair.com [209.68.1.55])
+ by alsa0.perex.cz (Postfix) with ESMTP id 15B772602F1
+ for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2016 19:38:24 +0100 (CET)
+In-Reply-To: <569BA786.4020305@maciej.szmigiero.name>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,73 +28,179 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tom Yan <tom.ty89@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, Fabio Estevam <festevam@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-7>
-> There is actually ONE card conf, AACI.conf, that supports surround51
-> but not surround20/surround41/surround50, but I don't feel like
-> touching it, coz it's in the ideal state of what I proposed here:
+Maciej S. Szmigiero wrote:
+> On 17.01.2016 15:16, Maciej S. Szmigiero wrote:
+>> On 17.01.2016 06:16, Timur Tabi wrote:
+>>> Maciej S. Szmigiero wrote:
+>>>> This is because (at least according to the datasheet) imx21-class SSI
+>>>> registers end at CCSR_SSI_SRMSK (no SACC{ST,EN,DIS} regs), so
+>>>> reading them for cache initialization may not be safe.
+>>>>
+>>>> Also, a "MXC 91221 only" comment before these regs in FSL tree
+>>>> (drivers/mxc/ssi/registers.h) seems to confirm that these registers
+>>>> aren't present at least on some SSI (or SoC) models.
+>>>
+>>> Can't we just mark them as precious or something, so that we don't have to have two structures?
+>>
+>> Looks like it can be done with just one static regmap config struct
+>> used then as template - I will post updated patch.
 >
-http://mailman.alsa-project.org/pipermail/alsa-devel/2016-January/103121.html
+> Updated patch:
+> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> index 40dfd8a36484..105de76dd2fc 100644
+> --- a/sound/soc/fsl/fsl_ssi.c
+> +++ b/sound/soc/fsl/fsl_ssi.c
+> @@ -112,20 +112,6 @@ struct fsl_ssi_rxtx_reg_val {
+>   	struct fsl_ssi_reg_val tx;
+>   };
 >
-> On 17 January 2016 at 03:05,  <tom.ty89@gmail.com> wrote:
-> > From: Tom Yan <tom.ty89@gmail.com>
-> >
-> > It's the only card conf that make use of surround41.conf and
-surround50.conf but not surround21.conf; Adding it for consistency, since
-all three of them are derived from surround51.
-> >
-> > Signed-off-by: Tom Yan <tom.ty89@gmail.com>
-> >
-> > diff --git a/src/conf/cards/Echo_Echo3G.conf
-b/src/conf/cards/Echo_Echo3G.conf
-> > index 766f13f..93d9ce4 100644
-> > --- a/src/conf/cards/Echo_Echo3G.conf
-> > +++ b/src/conf/cards/Echo_Echo3G.conf
-> > @@ -50,6 +50,40 @@ Echo_Echo3G.pcm.side.0 {
-> >         subdevice 6
-> >  }
-> >
-> > +<confdir:pcm/surround21.conf>
-> > +Echo_Echo3G.pcm.surround21.0 {
-> > +       @args [ CARD ]
-> > +       @args.CARD {
-> > +               type string
-> > +       }
-> > +       type multi
-> > +       slaves [
-> > +               {
-> > +                       pcm {
-> > +                               @func concat
-> > +                               strings [
-> > +
- "cards.Echo_Echo3G.pcm.front.0:CARD=" $CARD
-> > +                               ]
-> > +                       }
-> > +                       channels 2
-> > +               }
-> > +               {
-> > +                       pcm {
-> > +                               @func concat
-> > +                               strings [
-> > +
- "cards.Echo_Echo3G.pcm.center_lfe.0:CARD=" $CARD
-> > +                               ]
-> > +                       }
-> > +                       channels 2
-> > +               }
-> > +       ]
-> > +       bindings [
-> > +               { slave 0 channel 0 }
-> > +               { slave 0 channel 1 }
-> > +               { slave 1 channel 0 }
-> > +       ]
-> > +}
-> > +
+> -static const struct reg_default fsl_ssi_reg_defaults[] = {
+> -	{CCSR_SSI_SCR,     0x00000000},
+> -	{CCSR_SSI_SIER,    0x00003003},
+> -	{CCSR_SSI_STCR,    0x00000200},
+> -	{CCSR_SSI_SRCR,    0x00000200},
+> -	{CCSR_SSI_STCCR,   0x00040000},
+> -	{CCSR_SSI_SRCCR,   0x00040000},
+> -	{CCSR_SSI_SACNT,   0x00000000},
+> -	{CCSR_SSI_STMSK,   0x00000000},
+> -	{CCSR_SSI_SRMSK,   0x00000000},
+> -	{CCSR_SSI_SACCEN,  0x00000000},
+> -	{CCSR_SSI_SACCDIS, 0x00000000},
+> -};
+> -
+>   static bool fsl_ssi_readable_reg(struct device *dev, unsigned int reg)
+>   {
+>   	switch (reg) {
+> @@ -190,8 +176,7 @@ static const struct regmap_config fsl_ssi_regconfig = {
+>   	.val_bits = 32,
+>   	.reg_stride = 4,
+>   	.val_format_endian = REGMAP_ENDIAN_NATIVE,
+> -	.reg_defaults = fsl_ssi_reg_defaults,
+> -	.num_reg_defaults = ARRAY_SIZE(fsl_ssi_reg_defaults),
+> +	.num_reg_defaults_raw = CCSR_SSI_SACCDIS / 4 + 1,
 
-Have you tested with real hardware for surround21 since pulseaudio fail
-with multi plugin with error -77  ?
+Replace "4" with "sizeof(uint32_t).
 
-http://lists.freedesktop.org/archives/pulseaudio-discuss/2014-November/022670.html
+>   	.readable_reg = fsl_ssi_readable_reg,
+>   	.volatile_reg = fsl_ssi_volatile_reg,
+>   	.precious_reg = fsl_ssi_precious_reg,
+> @@ -201,6 +186,7 @@ static const struct regmap_config fsl_ssi_regconfig = {
+>
+>   struct fsl_ssi_soc_data {
+>   	bool imx;
+> +	bool imx21regs;
+
+Please add a comment explaining why this is needed.
+
+>   	bool offline_config;
+>   	u32 sisr_write_mask;
+>   };
+> @@ -295,6 +281,7 @@ struct fsl_ssi_private {
+>
+>   static struct fsl_ssi_soc_data fsl_ssi_mpc8610 = {
+>   	.imx = false,
+> +	.imx21regs = false,
+
+This is unnecessary.  The default is already 0 (false).
+
+>   	.offline_config = true,
+>   	.sisr_write_mask = CCSR_SSI_SISR_RFRC | CCSR_SSI_SISR_TFRC |
+>   			CCSR_SSI_SISR_ROE0 | CCSR_SSI_SISR_ROE1 |
+> @@ -303,12 +290,14 @@ static struct fsl_ssi_soc_data fsl_ssi_mpc8610 = {
+>
+>   static struct fsl_ssi_soc_data fsl_ssi_imx21 = {
+>   	.imx = true,
+> +	.imx21regs = true,
+>   	.offline_config = true,
+>   	.sisr_write_mask = 0,
+>   };
+>
+>   static struct fsl_ssi_soc_data fsl_ssi_imx35 = {
+>   	.imx = true,
+> +	.imx21regs = false,
+
+Same here.
+
+>   	.offline_config = true,
+>   	.sisr_write_mask = CCSR_SSI_SISR_RFRC | CCSR_SSI_SISR_TFRC |
+>   			CCSR_SSI_SISR_ROE0 | CCSR_SSI_SISR_ROE1 |
+> @@ -317,6 +306,7 @@ static struct fsl_ssi_soc_data fsl_ssi_imx35 = {
+>
+>   static struct fsl_ssi_soc_data fsl_ssi_imx51 = {
+>   	.imx = true,
+> +	.imx21regs = false,
+>   	.offline_config = false,
+>   	.sisr_write_mask = CCSR_SSI_SISR_ROE0 | CCSR_SSI_SISR_ROE1 |
+>   		CCSR_SSI_SISR_TUE0 | CCSR_SSI_SISR_TUE1,
+> @@ -586,8 +576,11 @@ static void fsl_ssi_setup_ac97(struct fsl_ssi_private *ssi_private)
+>   	 */
+>   	regmap_write(regs, CCSR_SSI_SACNT,
+>   			CCSR_SSI_SACNT_AC97EN | CCSR_SSI_SACNT_FV);
+> -	regmap_write(regs, CCSR_SSI_SACCDIS, 0xff);
+> -	regmap_write(regs, CCSR_SSI_SACCEN, 0x300);
+> +
+> +	if (!ssi_private->soc->imx21regs) {
+> +		regmap_write(regs, CCSR_SSI_SACCDIS, 0xff);
+> +		regmap_write(regs, CCSR_SSI_SACCEN, 0x300);
+> +	}
+
+This needs a comment.
+
+>
+>   	/*
+>   	 * Enable SSI, Transmit and Receive. AC97 has to communicate with the
+> @@ -1397,6 +1390,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+>   	struct resource *res;
+>   	void __iomem *iomem;
+>   	char name[64];
+> +	struct regmap_config regconfig = fsl_ssi_regconfig;
+>
+>   	of_id = of_match_device(fsl_ssi_ids, &pdev->dev);
+>   	if (!of_id || !of_id->data)
+> @@ -1444,15 +1438,22 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+>   		return PTR_ERR(iomem);
+>   	ssi_private->ssi_phys = res->start;
+>
+> +	if (ssi_private->soc->imx21regs) {
+> +		/* According to datasheet imx21-class SSI have less regs */
+
+First of all, it would be "fewer regs", but even better would be to say 
+that certain regs don't exist.
+
+However, I wonder if this patch is necessary at all.  If the regs don't 
+exist on an i.MX 21, does it really matter if we write to them?
+
+> +		regconfig.max_register = CCSR_SSI_SRMSK;
+> +		regconfig.num_reg_defaults_raw = CCSR_SSI_SRMSK / 4 + 1;
+> +	}
+> +
+>   	ret = of_property_match_string(np, "clock-names", "ipg");
+>   	if (ret < 0) {
+>   		ssi_private->has_ipg_clk_name = false;
+>   		ssi_private->regs = devm_regmap_init_mmio(&pdev->dev, iomem,
+> -			&fsl_ssi_regconfig);
+> +							  &regconfig);
+>   	} else {
+>   		ssi_private->has_ipg_clk_name = true;
+>   		ssi_private->regs = devm_regmap_init_mmio_clk(&pdev->dev,
+> -			"ipg", iomem, &fsl_ssi_regconfig);
+> +							      "ipg", iomem,
+> +							      &regconfig);
+
+What's wrong with the original indentation?  It looks nicer than what 
+you're doing here.
+
+>   	}
+>   	if (IS_ERR(ssi_private->regs)) {
+>   		dev_err(&pdev->dev, "Failed to init register map\n");
+>
+>
+> Also needs regmap fix from
+> http://www.spinics.net/lists/kernel/msg2161934.html
+>
+> Maciej Szmigiero
+>
