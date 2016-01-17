@@ -1,206 +1,175 @@
-From: Timur Tabi <timur@tabi.org>
-Subject: Re: [PATCH 3/3] ASoC: fsl_ssi: remove register defaults
-Date: Sun, 17 Jan 2016 12:38:43 -0600
-Message-ID: <569BDFB3.1080401@tabi.org>
-References: <5677107C.60904@maciej.szmigiero.name>
- <CAOMZO5C+32Nn6+Nv9KeVrd_Qeso-wEZZNU45G8h+e6LHdMoQYw@mail.gmail.com>
- <CAOMZO5BE7=EdmEyMOq5WH=qv_0H3AGcyyDMJFoemLRJ=O5YLNw@mail.gmail.com>
- <5693B4C1.4060400@maciej.szmigiero.name>
- <CAOMZO5DVKrnufV_PLD_+7FgA=ePhn1DSpzYDQPy5FZvHyGOJ-g@mail.gmail.com>
- <569AD8A7.7080803@maciej.szmigiero.name> <569ADC0D.2000807@tabi.org>
- <569AE7D1.6050607@maciej.szmigiero.name> <569B23A8.3010006@tabi.org>
- <569BA225.8070509@maciej.szmigiero.name>
- <569BA786.4020305@maciej.szmigiero.name>
+From: Shuah Khan <shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
+Subject: Re: [PATCH v2 26/31] sound/usb: Update ALSA driver to use Managed
+ Media Controller API
+Date: Sun, 17 Jan 2016 14:22:28 -0700
+Message-ID: <569C0614.2000004@osg.samsung.com>
+References: <cover.1452800265.git.shuahkh@osg.samsung.com>
+ <fd72f02797d595fc1c53b16fccec4d204430995e.1452800273.git.shuahkh@osg.samsung.com>
+ <s5hmvs7t133.wl-tiwai@suse.de> <56999103.6000005@osg.samsung.com>
+ <s5h1t9huc45.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from muin.pair.com (muin.pair.com [209.68.1.55])
- by alsa0.perex.cz (Postfix) with ESMTP id 15B772602F1
- for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2016 19:38:24 +0100 (CET)
-In-Reply-To: <569BA786.4020305@maciej.szmigiero.name>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, Fabio Estevam <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <s5h1t9huc45.wl-tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: hans.verkuil-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org, laurent.pinchart-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org, clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org, sakari.ailus-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, javier-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org, mchehab-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, arnd-r2nGTMty4D4@public.gmane.org, ricard.wanderlof-VrBV9hrLPhE@public.gmane.org, labbott-rxtnV0ftBwyoClj4AeEUq9i2O/JbrIOy@public.gmane.org, chehabrafael-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, misterpib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, prabhakar.csengg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, ricardo.ribalda-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, ruchandani.tina-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, takamichiho-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, tvboxspy-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, dominic.sacre-Mmb7MZpHnFY@public.gmane.org, crope-X3B1VOXEql0@public.gmane.org, julian-SZMMDGyaqes@public.gmane.org, pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, corbet-T1hC0tSOHrs@public.gmane.org, joe-amhYAVlgbXj10XsdtD+oqA@public.gmane.org, johan-v8HUHnYb0Yo@public.gmane.org, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, pawel-FA/gS7QP4orQT0dZR+AlfA@public.gmane.org, p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, stefanr-MtYdepGKPcBMYopoZt5u/LNAH6kLmebB@public.gmane.org, inki.dae-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, jh1009.sung-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, k.kozlowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, kyungmin.park-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, m.szyprowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, sw0312.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, elfring-Rn4VEauK+AKRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-api-u79uwXL29TbrhsbdSgBK9A@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Maciej S. Szmigiero wrote:
-> On 17.01.2016 15:16, Maciej S. Szmigiero wrote:
->> On 17.01.2016 06:16, Timur Tabi wrote:
->>> Maciej S. Szmigiero wrote:
->>>> This is because (at least according to the datasheet) imx21-class SSI
->>>> registers end at CCSR_SSI_SRMSK (no SACC{ST,EN,DIS} regs), so
->>>> reading them for cache initialization may not be safe.
->>>>
->>>> Also, a "MXC 91221 only" comment before these regs in FSL tree
->>>> (drivers/mxc/ssi/registers.h) seems to confirm that these registers
->>>> aren't present at least on some SSI (or SoC) models.
->>>
->>> Can't we just mark them as precious or something, so that we don't have to have two structures?
+On 01/16/2016 02:06 AM, Takashi Iwai wrote:
+> On Sat, 16 Jan 2016 01:38:27 +0100,
+> Shuah Khan wrote:
 >>
->> Looks like it can be done with just one static regmap config struct
->> used then as template - I will post updated patch.
->
-> Updated patch:
-> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-> index 40dfd8a36484..105de76dd2fc 100644
-> --- a/sound/soc/fsl/fsl_ssi.c
-> +++ b/sound/soc/fsl/fsl_ssi.c
-> @@ -112,20 +112,6 @@ struct fsl_ssi_rxtx_reg_val {
->   	struct fsl_ssi_reg_val tx;
->   };
->
-> -static const struct reg_default fsl_ssi_reg_defaults[] = {
-> -	{CCSR_SSI_SCR,     0x00000000},
-> -	{CCSR_SSI_SIER,    0x00003003},
-> -	{CCSR_SSI_STCR,    0x00000200},
-> -	{CCSR_SSI_SRCR,    0x00000200},
-> -	{CCSR_SSI_STCCR,   0x00040000},
-> -	{CCSR_SSI_SRCCR,   0x00040000},
-> -	{CCSR_SSI_SACNT,   0x00000000},
-> -	{CCSR_SSI_STMSK,   0x00000000},
-> -	{CCSR_SSI_SRMSK,   0x00000000},
-> -	{CCSR_SSI_SACCEN,  0x00000000},
-> -	{CCSR_SSI_SACCDIS, 0x00000000},
-> -};
-> -
->   static bool fsl_ssi_readable_reg(struct device *dev, unsigned int reg)
->   {
->   	switch (reg) {
-> @@ -190,8 +176,7 @@ static const struct regmap_config fsl_ssi_regconfig = {
->   	.val_bits = 32,
->   	.reg_stride = 4,
->   	.val_format_endian = REGMAP_ENDIAN_NATIVE,
-> -	.reg_defaults = fsl_ssi_reg_defaults,
-> -	.num_reg_defaults = ARRAY_SIZE(fsl_ssi_reg_defaults),
-> +	.num_reg_defaults_raw = CCSR_SSI_SACCDIS / 4 + 1,
+>> On 01/15/2016 06:38 AM, Takashi Iwai wrote:
+>>> On Thu, 14 Jan 2016 20:52:28 +0100,
+>>> Shuah Khan wrote:
+>>>>
+>>>> Change ALSA driver to use Managed Media Managed Controller
+>>>> API to share tuner with DVB and V4L2 drivers that control
+>>>> AU0828 media device.  Media device is created based on a
+>>>> newly added field value in the struct snd_usb_audio_quirk.
+>>>> Using this approach, the media controller API usage can be
+>>>> added for a specific device. In this patch, Media Controller
+>>>> API is enabled for AU0828 hw. snd_usb_create_quirk() will
+>>>> check this new field, if set will create a media device using
+>>>> media_device_get_devres() interface.
+>>>>
+>>>> media_device_get_devres() will allocate a new media device
+>>>> devres or return an existing one, if it finds one.
+>>>>
+>>>> During probe, media usb driver could have created the media
+>>>> device devres. It will then initialze (if necessary) and
+>>>> register the media device if it isn't already initialized
+>>>> and registered. Media device unregister is done from
+>>>> usb_audio_disconnect().
+>>>>
+>>>> During probe, media usb driver could have created the
+>>>> media device devres. It will then register the media
+>>>> device if it isn't already registered. Media device
+>>>> unregister is done from usb_audio_disconnect().
+>>>>
+>>>> New structure media_ctl is added to group the new
+>>>> fields to support media entity and links. This new
+>>>> structure is added to struct snd_usb_substream.
+>>>>
+>>>> A new entity_notify hook and a new ALSA capture media
+>>>> entity are registered from snd_usb_pcm_open() after
+>>>> setting up hardware information for the PCM device.
+>>>>
+>>>> When a new entity is registered, Media Controller API
+>>>> interface media_device_register_entity() invokes all
+>>>> registered entity_notify hooks for the media device.
+>>>> ALSA entity_notify hook parses all the entity list to
+>>>> find a link from decoder it ALSA entity. This indicates
+>>>> that the bridge driver created a link from decoder to
+>>>> ALSA capture entity.
+>>>>
+>>>> ALSA will attempt to enable the tuner to link the tuner
+>>>> to the decoder calling enable_source handler if one is
+>>>> provided by the bridge driver prior to starting Media
+>>>> pipeline from snd_usb_hw_params(). If enable_source returns
+>>>> with tuner busy condition, then snd_usb_hw_params() will fail
+>>>> with -EBUSY. Media pipeline is stopped from snd_usb_hw_free().
+>>>>
+>>>> Signed-off-by: Shuah Khan <shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
+>>>> ---
+>>>> Changes since v1: Addressed Takasi Iwai's comments on v1
+>>>> - Move config defines to Kconfig and add logic
+>>>>   to Makefile to conditionally compile media.c
+>>>> - Removed extra includes from media.c
+>>>> - Added snd_usb_autosuspend() in error leg
+>>>> - Removed debug related code that was missed in v1
+>>>>
+>>>>  sound/usb/Kconfig        |   7 ++
+>>>>  sound/usb/Makefile       |   4 +
+>>>>  sound/usb/card.c         |   7 ++
+>>>>  sound/usb/card.h         |   1 +
+>>>>  sound/usb/media.c        | 190 +++++++++++++++++++++++++++++++++++++++++++++++
+>>>>  sound/usb/media.h        |  56 ++++++++++++++
+>>>>  sound/usb/pcm.c          |  28 +++++--
+>>>>  sound/usb/quirks-table.h |   1 +
+>>>>  sound/usb/quirks.c       |   5 ++
+>>>>  sound/usb/stream.c       |   2 +
+>>>>  sound/usb/usbaudio.h     |   1 +
+>>>>  11 files changed, 297 insertions(+), 5 deletions(-)
+>>>>  create mode 100644 sound/usb/media.c
+>>>>  create mode 100644 sound/usb/media.h
+>>>>
+>>>> diff --git a/sound/usb/Kconfig b/sound/usb/Kconfig
+>>>> index a452ad7..8d5cdab 100644
+>>>> --- a/sound/usb/Kconfig
+>>>> +++ b/sound/usb/Kconfig
+>>>> @@ -15,6 +15,7 @@ config SND_USB_AUDIO
+>>>>  	select SND_RAWMIDI
+>>>>  	select SND_PCM
+>>>>  	select BITREVERSE
+>>>> +	select SND_USB_AUDIO_USE_MEDIA_CONTROLLER if MEDIA_CONTROLLER && (MEDIA_SUPPORT || MEDIA_SUPPORT_MODULE)
+>>>
+>>> This looks wrong as a Kconfig syntax.  "... if MEDIA_CONTROLLER"
+>>> should work, I suppose?
+>>
+>> The conditional select syntax is used in several Kconfig
+>> files. You are right about (MEDIA_SUPPORT || MEDIA_SUPPORT_MODULE)
+>> Adding checks for that is unnecessary.
+> 
+> Well, my point was that check should be like:
+>    select SND_USB_AUDIO_XXX if MEDIA_CONTROLLER && MEDIA_SUPPORT
 
-Replace "4" with "sizeof(uint32_t).
+Thank you for your patience in helping me through this.
 
->   	.readable_reg = fsl_ssi_readable_reg,
->   	.volatile_reg = fsl_ssi_volatile_reg,
->   	.precious_reg = fsl_ssi_precious_reg,
-> @@ -201,6 +186,7 @@ static const struct regmap_config fsl_ssi_regconfig = {
->
->   struct fsl_ssi_soc_data {
->   	bool imx;
-> +	bool imx21regs;
+I looked into this more and there is no need to check
+for MEDIA_SUPPORT. MEDIA_CONTROLLER defined in
 
-Please add a comment explaining why this is needed.
+if MEDIA_SUPPORT
+endif # MEDIA_SUPPORT
 
->   	bool offline_config;
->   	u32 sisr_write_mask;
->   };
-> @@ -295,6 +281,7 @@ struct fsl_ssi_private {
->
->   static struct fsl_ssi_soc_data fsl_ssi_mpc8610 = {
->   	.imx = false,
-> +	.imx21regs = false,
+block, checking for MEDIA_SUPPORT is unnecessary.
 
-This is unnecessary.  The default is already 0 (false).
+> 
+> There is a revere-select, so this menu itself doesn't play any role.
+> 
+> If you want this item selectable, drop select from SND_USB_AUDIO but
+> just have proper dependencies for this item:
 
->   	.offline_config = true,
->   	.sisr_write_mask = CCSR_SSI_SISR_RFRC | CCSR_SSI_SISR_TFRC |
->   			CCSR_SSI_SISR_ROE0 | CCSR_SSI_SISR_ROE1 |
-> @@ -303,12 +290,14 @@ static struct fsl_ssi_soc_data fsl_ssi_mpc8610 = {
->
->   static struct fsl_ssi_soc_data fsl_ssi_imx21 = {
->   	.imx = true,
-> +	.imx21regs = true,
->   	.offline_config = true,
->   	.sisr_write_mask = 0,
->   };
->
->   static struct fsl_ssi_soc_data fsl_ssi_imx35 = {
->   	.imx = true,
-> +	.imx21regs = false,
+Yes Agreed.
 
-Same here.
+> 
+> config SND_USB_AUDIO_USE_MEDIA_CONTROLLER
+> 	bool "USB Audio/MIDI driver with Media Controller Support"
+> 	depends on SND_USB_AUDIO
+> 	depends on MEDIA_CONTROLLER
+> 	default y
+> 
+> (Whether default y or not is a remaining question: usually we keep it 
+>  empty (i.e. no), but I put it here since you had it.)
+> 
+> If you want this auto-selected unconditionally, drop the prompt and
+> superfluous dependency (and don't set default y):
 
->   	.offline_config = true,
->   	.sisr_write_mask = CCSR_SSI_SISR_RFRC | CCSR_SSI_SISR_TFRC |
->   			CCSR_SSI_SISR_ROE0 | CCSR_SSI_SISR_ROE1 |
-> @@ -317,6 +306,7 @@ static struct fsl_ssi_soc_data fsl_ssi_imx35 = {
->
->   static struct fsl_ssi_soc_data fsl_ssi_imx51 = {
->   	.imx = true,
-> +	.imx21regs = false,
->   	.offline_config = false,
->   	.sisr_write_mask = CCSR_SSI_SISR_ROE0 | CCSR_SSI_SISR_ROE1 |
->   		CCSR_SSI_SISR_TUE0 | CCSR_SSI_SISR_TUE1,
-> @@ -586,8 +576,11 @@ static void fsl_ssi_setup_ac97(struct fsl_ssi_private *ssi_private)
->   	 */
->   	regmap_write(regs, CCSR_SSI_SACNT,
->   			CCSR_SSI_SACNT_AC97EN | CCSR_SSI_SACNT_FV);
-> -	regmap_write(regs, CCSR_SSI_SACCDIS, 0xff);
-> -	regmap_write(regs, CCSR_SSI_SACCEN, 0x300);
-> +
-> +	if (!ssi_private->soc->imx21regs) {
-> +		regmap_write(regs, CCSR_SSI_SACCDIS, 0xff);
-> +		regmap_write(regs, CCSR_SSI_SACCEN, 0x300);
-> +	}
+Yes I want this auto-selected unconditionally so it won't be
+disabled by mistake which would lead to errors because ALSA
+will be out of sync with DVB and Analog in the way they try
+to get access to media resources.
 
-This needs a comment.
+Yes the below will work.
 
->
->   	/*
->   	 * Enable SSI, Transmit and Receive. AC97 has to communicate with the
-> @@ -1397,6 +1390,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
->   	struct resource *res;
->   	void __iomem *iomem;
->   	char name[64];
-> +	struct regmap_config regconfig = fsl_ssi_regconfig;
->
->   	of_id = of_match_device(fsl_ssi_ids, &pdev->dev);
->   	if (!of_id || !of_id->data)
-> @@ -1444,15 +1438,22 @@ static int fsl_ssi_probe(struct platform_device *pdev)
->   		return PTR_ERR(iomem);
->   	ssi_private->ssi_phys = res->start;
->
-> +	if (ssi_private->soc->imx21regs) {
-> +		/* According to datasheet imx21-class SSI have less regs */
+> 
+> config SND_USB_AUDIO
+> 	....
+> 	select SND_USB_AUDIO_USE_MEDIA_CONTROLLER if MEDIA_CONTROLLER
+> 	....
+> 
+> config SND_USB_AUDIO_USE_MEDIA_CONTROLLER
+> 	bool
+> 
 
-First of all, it would be "fewer regs", but even better would be to say 
-that certain regs don't exist.
+thanks,
+-- Shuah
 
-However, I wonder if this patch is necessary at all.  If the regs don't 
-exist on an i.MX 21, does it really matter if we write to them?
-
-> +		regconfig.max_register = CCSR_SSI_SRMSK;
-> +		regconfig.num_reg_defaults_raw = CCSR_SSI_SRMSK / 4 + 1;
-> +	}
-> +
->   	ret = of_property_match_string(np, "clock-names", "ipg");
->   	if (ret < 0) {
->   		ssi_private->has_ipg_clk_name = false;
->   		ssi_private->regs = devm_regmap_init_mmio(&pdev->dev, iomem,
-> -			&fsl_ssi_regconfig);
-> +							  &regconfig);
->   	} else {
->   		ssi_private->has_ipg_clk_name = true;
->   		ssi_private->regs = devm_regmap_init_mmio_clk(&pdev->dev,
-> -			"ipg", iomem, &fsl_ssi_regconfig);
-> +							      "ipg", iomem,
-> +							      &regconfig);
-
-What's wrong with the original indentation?  It looks nicer than what 
-you're doing here.
-
->   	}
->   	if (IS_ERR(ssi_private->regs)) {
->   		dev_err(&pdev->dev, "Failed to init register map\n");
->
->
-> Also needs regmap fix from
-> http://www.spinics.net/lists/kernel/msg2161934.html
->
-> Maciej Szmigiero
->
+-- 
+Shuah Khan
+Sr. Linux Kernel Developer
+Open Source Innovation Group
+Samsung Research America (Silicon Valley)
+shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org | (970) 217-8978
