@@ -1,24 +1,14 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH 3/3] ASoC: fsl_ssi: remove register defaults
-Date: Sun, 17 Jan 2016 23:02:46 +0100
-Message-ID: <569C0F86.2020509@maciej.szmigiero.name>
-References: <5677107C.60904@maciej.szmigiero.name>
- <CAOMZO5C+32Nn6+Nv9KeVrd_Qeso-wEZZNU45G8h+e6LHdMoQYw@mail.gmail.com>
- <CAOMZO5BE7=EdmEyMOq5WH=qv_0H3AGcyyDMJFoemLRJ=O5YLNw@mail.gmail.com>
- <5693B4C1.4060400@maciej.szmigiero.name>
- <CAOMZO5DVKrnufV_PLD_+7FgA=ePhn1DSpzYDQPy5FZvHyGOJ-g@mail.gmail.com>
- <569AD8A7.7080803@maciej.szmigiero.name> <569ADC0D.2000807@tabi.org>
- <569AE7D1.6050607@maciej.szmigiero.name> <569B23A8.3010006@tabi.org>
- <569BA225.8070509@maciej.szmigiero.name>
- <569BA786.4020305@maciej.szmigiero.name> <569BDFB3.1080401@tabi.org>
+From: Mans Rullgard <mans@mansr.com>
+Subject: [PATCH v2] ALSA: at73c213: manage SSC clock
+Date: Sun, 17 Jan 2016 22:31:02 +0000
+Message-ID: <1453069862-27884-1-git-send-email-mans@mansr.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vps-vb.mhejs.net (vi37-28-154-113.vibiznes.pl [37.28.154.113])
- by alsa0.perex.cz (Postfix) with ESMTP id 22ADF260449
- for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2016 23:03:00 +0100 (CET)
-In-Reply-To: <569BDFB3.1080401@tabi.org>
+Received: from unicorn.mansr.com (unicorn.mansr.com [81.2.72.234])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E54F260449
+ for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2016 23:31:08 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,141 +18,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>, Fabio Estevam <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+To: Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 17.01.2016 19:38, Timur Tabi wrote:
-> Maciej S. Szmigiero wrote:
->> On 17.01.2016 15:16, Maciej S. Szmigiero wrote:
->>> On 17.01.2016 06:16, Timur Tabi wrote:
->>>> Maciej S. Szmigiero wrote:
->>>>> This is because (at least according to the datasheet) imx21-class SSI
->>>>> registers end at CCSR_SSI_SRMSK (no SACC{ST,EN,DIS} regs), so
->>>>> reading them for cache initialization may not be safe.
->>>>>
->>>>> Also, a "MXC 91221 only" comment before these regs in FSL tree
->>>>> (drivers/mxc/ssi/registers.h) seems to confirm that these registers
->>>>> aren't present at least on some SSI (or SoC) models.
->>>>
->>>> Can't we just mark them as precious or something, so that we don't have to have two structures?
->>>
->>> Looks like it can be done with just one static regmap config struct
->>> used then as template - I will post updated patch.
+Since commit 49af54ff0fc7 ("misc: atmel-ssc: prepare clock only when
+request") the SSC driver expects clients to manage the SSC clock.
+This updates the at73c213 driver to enable the SSC clock whenever it is
+needed.
 
-Patch updated according to Timur's suggestions (needs regmap fix):
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 40dfd8a36484..ed8de1035cda 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -112,20 +112,6 @@ struct fsl_ssi_rxtx_reg_val {
- 	struct fsl_ssi_reg_val tx;
- };
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+---
+Changes:
+- enable the ssc clock only when it is required
+---
+ sound/spi/at73c213.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/sound/spi/at73c213.c b/sound/spi/at73c213.c
+index 39522367897c..fac7e6eb9529 100644
+--- a/sound/spi/at73c213.c
++++ b/sound/spi/at73c213.c
+@@ -221,6 +221,8 @@ static int snd_at73c213_pcm_open(struct snd_pcm_substream *substream)
+ 	runtime->hw = snd_at73c213_playback_hw;
+ 	chip->substream = substream;
  
--static const struct reg_default fsl_ssi_reg_defaults[] = {
--	{CCSR_SSI_SCR,     0x00000000},
--	{CCSR_SSI_SIER,    0x00003003},
--	{CCSR_SSI_STCR,    0x00000200},
--	{CCSR_SSI_SRCR,    0x00000200},
--	{CCSR_SSI_STCCR,   0x00040000},
--	{CCSR_SSI_SRCCR,   0x00040000},
--	{CCSR_SSI_SACNT,   0x00000000},
--	{CCSR_SSI_STMSK,   0x00000000},
--	{CCSR_SSI_SRMSK,   0x00000000},
--	{CCSR_SSI_SACCEN,  0x00000000},
--	{CCSR_SSI_SACCDIS, 0x00000000},
--};
--
- static bool fsl_ssi_readable_reg(struct device *dev, unsigned int reg)
++	clk_enable(chip->ssc->clk);
++
+ 	return 0;
+ }
+ 
+@@ -228,6 +230,7 @@ static int snd_at73c213_pcm_close(struct snd_pcm_substream *substream)
  {
- 	switch (reg) {
-@@ -190,8 +176,7 @@ static const struct regmap_config fsl_ssi_regconfig = {
- 	.val_bits = 32,
- 	.reg_stride = 4,
- 	.val_format_endian = REGMAP_ENDIAN_NATIVE,
--	.reg_defaults = fsl_ssi_reg_defaults,
--	.num_reg_defaults = ARRAY_SIZE(fsl_ssi_reg_defaults),
-+	.num_reg_defaults_raw = CCSR_SSI_SACCDIS / sizeof(uint32_t) + 1,
- 	.readable_reg = fsl_ssi_readable_reg,
- 	.volatile_reg = fsl_ssi_volatile_reg,
- 	.precious_reg = fsl_ssi_precious_reg,
-@@ -201,6 +186,7 @@ static const struct regmap_config fsl_ssi_regconfig = {
+ 	struct snd_at73c213 *chip = snd_pcm_substream_chip(substream);
+ 	chip->substream = NULL;
++	clk_disable(chip->ssc->clk);
+ 	return 0;
+ }
  
- struct fsl_ssi_soc_data {
- 	bool imx;
-+	bool imx21regs; /* imx21-class SSI - no SACC{ST,EN,DIS} regs */
- 	bool offline_config;
- 	u32 sisr_write_mask;
- };
-@@ -303,6 +289,7 @@ static struct fsl_ssi_soc_data fsl_ssi_mpc8610 = {
+@@ -897,6 +900,8 @@ static int snd_at73c213_dev_init(struct snd_card *card,
+ 	chip->card = card;
+ 	chip->irq = -1;
  
- static struct fsl_ssi_soc_data fsl_ssi_imx21 = {
- 	.imx = true,
-+	.imx21regs = true,
- 	.offline_config = true,
- 	.sisr_write_mask = 0,
- };
-@@ -586,8 +573,12 @@ static void fsl_ssi_setup_ac97(struct fsl_ssi_private *ssi_private)
- 	 */
- 	regmap_write(regs, CCSR_SSI_SACNT,
- 			CCSR_SSI_SACNT_AC97EN | CCSR_SSI_SACNT_FV);
--	regmap_write(regs, CCSR_SSI_SACCDIS, 0xff);
--	regmap_write(regs, CCSR_SSI_SACCEN, 0x300);
++	clk_enable(chip->ssc->clk);
 +
-+	/* no SACC{ST,EN,DIS} regs on imx21-class SSI */
-+	if (!ssi_private->soc->imx21regs) {
-+		regmap_write(regs, CCSR_SSI_SACCDIS, 0xff);
-+		regmap_write(regs, CCSR_SSI_SACCEN, 0x300);
-+	}
- 
- 	/*
- 	 * Enable SSI, Transmit and Receive. AC97 has to communicate with the
-@@ -1397,6 +1388,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	void __iomem *iomem;
- 	char name[64];
-+	struct regmap_config regconfig = fsl_ssi_regconfig;
- 
- 	of_id = of_match_device(fsl_ssi_ids, &pdev->dev);
- 	if (!of_id || !of_id->data)
-@@ -1444,15 +1436,25 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		return PTR_ERR(iomem);
- 	ssi_private->ssi_phys = res->start;
- 
-+	if (ssi_private->soc->imx21regs) {
-+		/*
-+		 * According to datasheet imx21-class SSI
-+		 * don't have SACC{ST,EN,DIS} regs.
-+		 */
-+		regconfig.max_register = CCSR_SSI_SRMSK;
-+		regconfig.num_reg_defaults_raw =
-+			CCSR_SSI_SRMSK / sizeof(uint32_t) + 1;
-+	}
+ 	retval = request_irq(irq, snd_at73c213_interrupt, 0, "at73c213", chip);
+ 	if (retval) {
+ 		dev_dbg(&chip->spi->dev, "unable to request irq %d\n", irq);
+@@ -935,6 +940,8 @@ out_irq:
+ 	free_irq(chip->irq, chip);
+ 	chip->irq = -1;
+ out:
++	clk_disable(chip->ssc->clk);
 +
- 	ret = of_property_match_string(np, "clock-names", "ipg");
- 	if (ret < 0) {
- 		ssi_private->has_ipg_clk_name = false;
- 		ssi_private->regs = devm_regmap_init_mmio(&pdev->dev, iomem,
--			&fsl_ssi_regconfig);
-+			&regconfig);
- 	} else {
- 		ssi_private->has_ipg_clk_name = true;
- 		ssi_private->regs = devm_regmap_init_mmio_clk(&pdev->dev,
--			"ipg", iomem, &fsl_ssi_regconfig);
-+			"ipg", iomem, &regconfig);
- 	}
- 	if (IS_ERR(ssi_private->regs)) {
- 		dev_err(&pdev->dev, "Failed to init register map\n");
-
-
-> However, I wonder if this patch is necessary at all.
-> If the regs don't exist on an i.MX 21, does it really matter if we write to them?
-
-At least i.MX6 datasheet SSI description has the following information:
-"Transfer bus errors are generated upon response to the following:
-* Write transfer to a read-only register.
-* Read or write access to a register space beyond the last populated register of the SSI
-in its memory map (up until the end of the allocated memory address range of the
-SSI)."
-
-Maciej Szmigiero
+ 	return retval;
+ }
+ 
+@@ -1012,7 +1019,9 @@ static int snd_at73c213_remove(struct spi_device *spi)
+ 	int retval;
+ 
+ 	/* Stop playback. */
++	clk_enable(chip->ssc->clk);
+ 	ssc_writel(chip->ssc->regs, CR, SSC_BIT(CR_TXDIS));
++	clk_disable(chip->ssc->clk);
+ 
+ 	/* Mute sound. */
+ 	retval = snd_at73c213_write_reg(chip, DAC_LMPG, 0x3f);
+@@ -1080,6 +1089,7 @@ static int snd_at73c213_suspend(struct device *dev)
+ 	struct snd_at73c213 *chip = card->private_data;
+ 
+ 	ssc_writel(chip->ssc->regs, CR, SSC_BIT(CR_TXDIS));
++	clk_disable(chip->ssc->clk);
+ 	clk_disable(chip->board->dac_clk);
+ 
+ 	return 0;
+@@ -1091,6 +1101,7 @@ static int snd_at73c213_resume(struct device *dev)
+ 	struct snd_at73c213 *chip = card->private_data;
+ 
+ 	clk_enable(chip->board->dac_clk);
++	clk_enable(chip->ssc->clk);
+ 	ssc_writel(chip->ssc->regs, CR, SSC_BIT(CR_TXEN));
+ 
+ 	return 0;
+-- 
+2.7.0
