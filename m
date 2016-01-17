@@ -1,104 +1,48 @@
-From: Mans Rullgard <mans@mansr.com>
-Subject: [PATCH v2] ALSA: at73c213: manage SSC clock
-Date: Sun, 17 Jan 2016 22:31:02 +0000
-Message-ID: <1453069862-27884-1-git-send-email-mans@mansr.com>
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: [PATCH RFC 1/1] ASoC: fsl_ssi: Make fifo watermark and maxburst
+ settings device tree options
+Date: Sun, 17 Jan 2016 15:34:59 -0800
+Message-ID: <CAG5mAdzN0j0fEsDcZMPUTPQtf9vSyyHYUE4HVisu_MxVBVAxOg@mail.gmail.com>
+References: <1452788982-11583-1-git-send-email-caleb@crome.org>
+ <20160114201858.GA17567@Asurada-Nvidia> <56984BE7.2050303@tabi.org>
+ <20160115131325.GW6588@sirena.org.uk> <5698F846.5080604@tabi.org>
+ <CAG5mAdy553q4Te5755575WaiLxGRp43h=WVH6QzF7idsaCnhbg@mail.gmail.com>
+ <20160115183824.GB31703@Asurada-Nvidia> <CAG5mAdyXPtnnZvGcWrhhbv7wuamz_xbRsn76VXdbE1yZRgx_Mg@mail.gmail.com>
+ <20160115185736.GC31703@Asurada-Nvidia> <CAG5mAdyUfSuCqA4_342MS2AyshvuyeiYsjQyRqifmqVhn4T2xA@mail.gmail.com>
+ <569A5085.10806@tabi.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from unicorn.mansr.com (unicorn.mansr.com [81.2.72.234])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E54F260449
- for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2016 23:31:08 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <569A5085.10806@tabi.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Timur Tabi <timur@tabi.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Since commit 49af54ff0fc7 ("misc: atmel-ssc: prepare clock only when
-request") the SSC driver expects clients to manage the SSC clock.
-This updates the at73c213 driver to enable the SSC clock whenever it is
-needed.
+Okay, I'll submit a patch that does the following:
 
-Signed-off-by: Mans Rullgard <mans@mansr.com>
----
-Changes:
-- enable the ssc clock only when it is required
----
- sound/spi/at73c213.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+fsl,mpc8610:  using DMA=fifo_depth-2 (unchanged from current), using
+FIQ=fifo_depth  (unchanged from current).
 
-diff --git a/sound/spi/at73c213.c b/sound/spi/at73c213.c
-index 39522367897c..fac7e6eb9529 100644
---- a/sound/spi/at73c213.c
-+++ b/sound/spi/at73c213.c
-@@ -221,6 +221,8 @@ static int snd_at73c213_pcm_open(struct snd_pcm_substream *substream)
- 	runtime->hw = snd_at73c213_playback_hw;
- 	chip->substream = substream;
- 
-+	clk_enable(chip->ssc->clk);
-+
- 	return 0;
- }
- 
-@@ -228,6 +230,7 @@ static int snd_at73c213_pcm_close(struct snd_pcm_substream *substream)
- {
- 	struct snd_at73c213 *chip = snd_pcm_substream_chip(substream);
- 	chip->substream = NULL;
-+	clk_disable(chip->ssc->clk);
- 	return 0;
- }
- 
-@@ -897,6 +900,8 @@ static int snd_at73c213_dev_init(struct snd_card *card,
- 	chip->card = card;
- 	chip->irq = -1;
- 
-+	clk_enable(chip->ssc->clk);
-+
- 	retval = request_irq(irq, snd_at73c213_interrupt, 0, "at73c213", chip);
- 	if (retval) {
- 		dev_dbg(&chip->spi->dev, "unable to request irq %d\n", irq);
-@@ -935,6 +940,8 @@ out_irq:
- 	free_irq(chip->irq, chip);
- 	chip->irq = -1;
- out:
-+	clk_disable(chip->ssc->clk);
-+
- 	return retval;
- }
- 
-@@ -1012,7 +1019,9 @@ static int snd_at73c213_remove(struct spi_device *spi)
- 	int retval;
- 
- 	/* Stop playback. */
-+	clk_enable(chip->ssc->clk);
- 	ssc_writel(chip->ssc->regs, CR, SSC_BIT(CR_TXDIS));
-+	clk_disable(chip->ssc->clk);
- 
- 	/* Mute sound. */
- 	retval = snd_at73c213_write_reg(chip, DAC_LMPG, 0x3f);
-@@ -1080,6 +1089,7 @@ static int snd_at73c213_suspend(struct device *dev)
- 	struct snd_at73c213 *chip = card->private_data;
- 
- 	ssc_writel(chip->ssc->regs, CR, SSC_BIT(CR_TXDIS));
-+	clk_disable(chip->ssc->clk);
- 	clk_disable(chip->board->dac_clk);
- 
- 	return 0;
-@@ -1091,6 +1101,7 @@ static int snd_at73c213_resume(struct device *dev)
- 	struct snd_at73c213 *chip = card->private_data;
- 
- 	clk_enable(chip->board->dac_clk);
-+	clk_enable(chip->ssc->clk);
- 	ssc_writel(chip->ssc->regs, CR, SSC_BIT(CR_TXEN));
- 
- 	return 0;
--- 
-2.7.0
+all others that are marked with 'imx':  watermark&maxburst = 4 for DMA
+(new setting).  watermark = fifo_depth for FIQ (unchanged from
+previous).
+
+-Caleb
+
+
+
+On Sat, Jan 16, 2016 at 6:15 AM, Timur Tabi <timur@tabi.org> wrote:
+> Caleb Crome wrote:
+>>
+>> I see the 4 compatibles are:  fsl,mpc8610-ssi, fsl,imx51-ssi,
+>> fsl,imx35-ssi, and fsl,imx21-ssi.
+>>
+>> Shall I submit a patch that sets the value to 4 for for any/all of the
+>> above?  Should it be different based on whether fiq is enabled.  Maybe
+>> set it to 4 for whenever DMA is used, and to 13 whenever FIQ is used?
+>
+>
+> Do NOT change the watermark value for fsl,mpc8610-ssi from whatever it is
+> today.  You would need to retest your code on an mpc8610 and p1022ds, and I
+> don't think you have either of those boards.
