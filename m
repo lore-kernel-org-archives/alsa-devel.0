@@ -1,36 +1,64 @@
-From: Florian Vaussard <florian.vaussard-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH 0/2] ASoC: ads117x: Add device tree support for TI ADS117x
-Date: Mon, 18 Jan 2016 17:04:50 +0100
-Message-ID: <1453133092-29521-1-git-send-email-florian.vaussard@heig-vd.ch>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Timur Tabi <timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Janusz Krzysztofik <jkrzyszt-NCk8gXQAEuFz6jiHbVrK7g@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Florian Vaussard <florian.vaussard-EWQkb/GNqlFyDzI6CaY1VQ@public.gmane.org>
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Subject: Re: [PATCH 0/3] ASoC: pcm179x: Add I2C support, declare support for
+ continuous rates
+Date: Mon, 18 Jan 2016 17:06:25 +0100
+Message-ID: <CAOf5uwnjnGXckA6smscwOwu0EzsXHiVrS_ZvZXQ-cBthC+U_Fw@mail.gmail.com>
+References: <1453132657-18678-1-git-send-email-jacob@teenage.engineering>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1453132657-18678-1-git-send-email-jacob@teenage.engineering>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jacob Siverskog <jacob@teenage.engineering>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Johan Hovold <johan@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi Jacob
 
-This series adds device tree support for the Texas Instruments ADS117x
-ADC chip. The first patch adds the binding documentation, while the second
-patch adds the compatible string into the driver.
+On Mon, Jan 18, 2016 at 4:57 PM, Jacob Siverskog
+<jacob@teenage.engineering> wrote:
+> This series add support for I2C and declares support for continuous
+> sample rates.
+>
+> Please note that this has only been tested using I2C and PCM1791A. I'd
+> be grateful if someone can test it with other devices in the PCM179X
+> family and/or SPI.
+>
 
-Best regards,
+Thank you for this patcheset. I have only one patch that is pending and I don't
+think that you have rebased on the last one that add constraints of the format.
 
-Florian
+Mark, I can even rebase my last patch on top of this patchset and make Jacob
+life more easy
 
-Florian Vaussard (2):
-  dt/bindings: Add bindings documentation for TI ADS117x ADC
-  ASoC: ads117x: Add device tree compatible string
+Michael
 
- Documentation/devicetree/bindings/sound/ti,ads117x.txt | 11 +++++++++++
- sound/soc/codecs/ads117x.c                             | 11 +++++++++++
- 2 files changed, 22 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/ti,ads117x.txt
+> These patches are against linux-next.
+>
+> Jacob Siverskog (3):
+>   ASoC: pcm179x: Split into core and SPI parts
+>   ASoC: pcm179x: Add I2C interface driver
+>   ASoC: pcm179x: Support continuous rates
+>
+>  .../devicetree/bindings/sound/pcm179x.txt          | 11 ++-
+>  sound/soc/codecs/Kconfig                           | 20 +++++-
+>  sound/soc/codecs/Makefile                          |  4 ++
+>  sound/soc/codecs/pcm179x-i2c.c                     | 82 ++++++++++++++++++++++
+>  sound/soc/codecs/pcm179x-spi.c                     | 81 +++++++++++++++++++++
+>  sound/soc/codecs/pcm179x.c                         | 64 +++--------------
+>  sound/soc/codecs/pcm179x.h                         | 14 +++-
+>  7 files changed, 215 insertions(+), 61 deletions(-)
+>  create mode 100644 sound/soc/codecs/pcm179x-i2c.c
+>  create mode 100644 sound/soc/codecs/pcm179x-spi.c
+>
+> --
+> 2.7.0
+>
+
+
 
 -- 
-2.1.0
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+| Michael Nazzareno Trimarchi                     Amarula Solutions BV |
+| COO  -  Founder                                      Cruquiuskade 47 |
+| +31(0)851119172                                 Amsterdam 1018 AM NL |
+|                  [`as] http://www.amarulasolutions.com               |
