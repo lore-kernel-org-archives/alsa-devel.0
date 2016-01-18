@@ -1,19 +1,18 @@
-From: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
-Subject: [PATCH v3 6/6] ASoC: fsl_ssi: Fix channel slipping on
-	capture (or playback) restart in full duplex.
-Date: Mon, 18 Jan 2016 16:26:11 +0100
-Message-ID: <1453130771-24419-7-git-send-email-arnaud.mouiche@invoxia.com>
+From: Timur Tabi <timur@tabi.org>
+Subject: Re: [PATCH v3 1/6] ASoC: fsl_ssi: Real hardware
+ channels max number is 32
+Date: Mon, 18 Jan 2016 09:46:07 -0600
+Message-ID: <569D08BF.7000008@tabi.org>
 References: <1453130771-24419-1-git-send-email-arnaud.mouiche@invoxia.com>
+ <1453130771-24419-2-git-send-email-arnaud.mouiche@invoxia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f47.google.com (mail-wm0-f47.google.com [74.125.82.47])
- by alsa0.perex.cz (Postfix) with ESMTP id F3CDA2651C9
- for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2016 16:26:53 +0100 (CET)
-Received: by mail-wm0-f47.google.com with SMTP id l65so103920510wmf.1
- for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2016 07:26:53 -0800 (PST)
-In-Reply-To: <1453130771-24419-1-git-send-email-arnaud.mouiche@invoxia.com>
+Received: from muin.pair.com (muin.pair.com [209.68.1.55])
+ by alsa0.perex.cz (Postfix) with ESMTP id E3D45260534
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2016 16:46:10 +0100 (CET)
+In-Reply-To: <1453130771-24419-2-git-send-email-arnaud.mouiche@invoxia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,73 +22,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Caleb Crome <caleb@crome.org>
-Cc: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+To: Arnaud Mouiche <arnaud.mouiche@invoxia.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Caleb Crome <caleb@crome.org>
 List-Id: alsa-devel@alsa-project.org
 
-Happened when the Playback (or Capture) is running continuously
-and Capture (or Playback) is restarted (xrun, manual stop/start...)
+Arnaud Mouiche wrote:
+> The max number of slots in TDM mode is 32:
+> - Frame Rate Divider Control is a 5bit value
+> - Time slot mask registers control 32 slots.
+>
+> Signed-off-by: Arnaud Mouiche<arnaud.mouiche@invoxia.com>
+> ---
+>   sound/soc/fsl/fsl_ssi.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> index 40dfd8a..cfc78b8 100644
+> --- a/sound/soc/fsl/fsl_ssi.c
+> +++ b/sound/soc/fsl/fsl_ssi.c
+> @@ -1167,14 +1167,14 @@ static struct snd_soc_dai_driver fsl_ssi_dai_template = {
+>   	.playback = {
+>   		.stream_name = "CPU-Playback",
+>   		.channels_min = 1,
+> -		.channels_max = 2,
+> +		.channels_max = 32,
 
-Since the RX (or TX) FIFO are only reset when the whole SSI is disabled,
-pending samples from previous capture (or playback) session may still
-be present. They must be erased to not introduce channel slipping.
-
-FIFO Clear register fields are documented in IMX51, IMX35 reference manual.
-They are not documented in IMX50 or IMX6 RM, despite they are
-working as expected on IMX6SL and IMX6solo.
-
-Signed-off-by: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
----
- sound/soc/fsl/fsl_ssi.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
-
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 530d592..50218ed 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -146,6 +146,7 @@ static bool fsl_ssi_volatile_reg(struct device *dev, unsigned int reg)
- 	case CCSR_SSI_SRX1:
- 	case CCSR_SSI_SISR:
- 	case CCSR_SSI_SFCSR:
-+	case CCSR_SSI_SOR:
- 	case CCSR_SSI_SACNT:
- 	case CCSR_SSI_SACADD:
- 	case CCSR_SSI_SACDAT:
-@@ -414,6 +415,26 @@ static void fsl_ssi_rxtx_config(struct fsl_ssi_private *ssi_private,
- }
- 
- /*
-+ * Clear RX or TX FIFO to remove samples from the previous
-+ * stream session which may be still present in the FIFO and
-+ * may introduce bad samples and/or channel slipping.
-+ *
-+ * Note: The SOR is not documented in recent IMX datasheet, but
-+ * is described in IMX51 reference manual at section 56.3.3.15.
-+ */
-+static void fsl_ssi_fifo_clear(struct fsl_ssi_private *ssi_private,
-+		bool is_rx)
-+{
-+	if (is_rx) {
-+		regmap_update_bits(ssi_private->regs, CCSR_SSI_SOR,
-+			CCSR_SSI_SOR_RX_CLR, CCSR_SSI_SOR_RX_CLR);
-+	} else {
-+		regmap_update_bits(ssi_private->regs, CCSR_SSI_SOR,
-+			CCSR_SSI_SOR_TX_CLR, CCSR_SSI_SOR_TX_CLR);
-+	}
-+}
-+
-+/*
-  * Calculate the bits that have to be disabled for the current stream that is
-  * getting disabled. This keeps the bits enabled that are necessary for the
-  * second stream to work if 'stream_active' is true.
-@@ -488,6 +509,8 @@ static void fsl_ssi_config(struct fsl_ssi_private *ssi_private, bool enable,
- 	 * (online configuration)
- 	 */
- 	if (enable) {
-+		fsl_ssi_fifo_clear(ssi_private, vals->scr & CCSR_SSI_SCR_RE);
-+
- 		regmap_update_bits(regs, CCSR_SSI_SRCR, vals->srcr, vals->srcr);
- 		regmap_update_bits(regs, CCSR_SSI_STCR, vals->stcr, vals->stcr);
- 		regmap_update_bits(regs, CCSR_SSI_SIER, vals->sier, vals->sier);
--- 
-1.9.1
+TDM mode is not normally used.  What happens if we're not in TDM mode, 
+and the user tries to start a stream with more than 2 channels?
