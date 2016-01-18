@@ -1,16 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 2/3] tinycompress: crec: fix function
-	declaration
-Date: Mon, 18 Jan 2016 22:00:02 +0530
-Message-ID: <1453134603-25356-3-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 3/3] tinycompress: crec: make functions static
+Date: Mon, 18 Jan 2016 22:00:03 +0530
+Message-ID: <1453134603-25356-4-git-send-email-vinod.koul@intel.com>
 References: <1453134603-25356-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 950A82651FE
- for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2016 17:26:30 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id C89C32652C5
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2016 17:26:32 +0100 (CET)
 In-Reply-To: <1453134603-25356-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,28 +24,37 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-finish_record was not following ANSI standard for declaration as warned by
-sparse
+Sparse rightly complains some functions should be static so make them static
 
-crec.c:193:26: warning: non-ANSI function declaration of function 'finish_record'
+crec.c:113:26: warning: symbol 'blank_wave_header' was not declared. Should it be static?
+crec.c:239:6: warning: symbol 'capture_samples' was not declared. Should it be static?
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- src/utils/crec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ src/utils/crec.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/src/utils/crec.c b/src/utils/crec.c
-index e61e620d6490..6e8166d8f77b 100644
+index 6e8166d8f77b..8d5b7b0b2c30 100644
 --- a/src/utils/crec.c
 +++ b/src/utils/crec.c
-@@ -190,7 +190,7 @@ static int print_time(struct compress *compress)
+@@ -110,7 +110,7 @@ struct wave_header {
+ 	} __attribute__((__packed__)) data;
+ } __attribute__((__packed__));
+ 
+-const struct wave_header blank_wave_header = {
++static const struct wave_header blank_wave_header = {
+ 	.riff = {
+ 		.chunk = {
+ 			.desc = "RIFF",
+@@ -236,7 +236,7 @@ static int finish_record(void)
  	return 0;
  }
  
--static int finish_record()
-+static int finish_record(void)
- {
- 	struct wave_header header;
- 	int ret;
+-void capture_samples(char *name, unsigned int card, unsigned int device,
++static void capture_samples(char *name, unsigned int card, unsigned int device,
+ 		     unsigned long buffer_size, unsigned int frag,
+ 		     unsigned int length, unsigned int rate,
+ 		     unsigned int channels, unsigned int format)
 -- 
 1.9.1
