@@ -1,44 +1,54 @@
-From: Florian Vaussard <florian.vaussard-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH 1/2] dt/bindings: Add bindings documentation for TI ADS117x ADC
-Date: Mon, 18 Jan 2016 17:04:51 +0100
-Message-ID: <1453133092-29521-2-git-send-email-florian.vaussard@heig-vd.ch>
+From: Florian Vaussard <florian.vaussard@gmail.com>
+Subject: [PATCH 2/2] ASoC: ads117x: Add device tree compatible string
+Date: Mon, 18 Jan 2016 17:04:52 +0100
+Message-ID: <1453133092-29521-3-git-send-email-florian.vaussard@heig-vd.ch>
 References: <1453133092-29521-1-git-send-email-florian.vaussard@heig-vd.ch>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1453133092-29521-1-git-send-email-florian.vaussard-EWQkb/GNqlFyDzI6CaY1VQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Timur Tabi <timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Janusz Krzysztofik <jkrzyszt-NCk8gXQAEuFz6jiHbVrK7g@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Florian Vaussard <florian.vaussard-EWQkb/GNqlFyDzI6CaY1VQ@public.gmane.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1453133092-29521-1-git-send-email-florian.vaussard@heig-vd.ch>
+Sender: linux-kernel-owner@vger.kernel.org
+To: devicetree@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Timur Tabi <timur@freescale.com>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Florian Vaussard <florian.vaussard@heig-vd.ch>
 List-Id: alsa-devel@alsa-project.org
 
-Currently the binding is only made of the compatible string.
+This patch adds the necessary device tree compatible string to allow
+DT probing.
 
-Signed-off-by: Florian Vaussard <florian.vaussard-EWQkb/GNqlFyDzI6CaY1VQ@public.gmane.org>
+Signed-off-by: Florian Vaussard <florian.vaussard@heig-vd.ch>
 ---
- Documentation/devicetree/bindings/sound/ti,ads117x.txt | 11 +++++++++++
+ sound/soc/codecs/ads117x.c | 11 +++++++++++
  1 file changed, 11 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/ti,ads117x.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/ti,ads117x.txt b/Documentation/devicetree/bindings/sound/ti,ads117x.txt
-new file mode 100644
-index 0000000..c1c2741
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ti,ads117x.txt
-@@ -0,0 +1,11 @@
-+Texas Intstruments ADS117x ADC
+diff --git a/sound/soc/codecs/ads117x.c b/sound/soc/codecs/ads117x.c
+index 1222282..b3f6618 100644
+--- a/sound/soc/codecs/ads117x.c
++++ b/sound/soc/codecs/ads117x.c
+@@ -20,6 +20,8 @@
+ #include <sound/initval.h>
+ #include <sound/soc.h>
+ 
++#include <linux/of.h>
 +
-+Required properties:
-+
-+  - compatible : "ti,ads117x"
-+
-+Example:
-+
-+ads1178 {
-+	compatible = "ti,ads117x";
+ #define ADS117X_RATES (SNDRV_PCM_RATE_8000_48000)
+ #define ADS117X_FORMATS (SNDRV_PCM_FMTBIT_S16_LE)
+ 
+@@ -75,9 +77,18 @@ static int ads117x_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++#if defined(CONFIG_OF)
++static const struct of_device_id ads117x_dt_ids[] = {
++	{ .compatible = "ti,ads117x" },
++	{ },
 +};
++MODULE_DEVICE_TABLE(of, ads117x_dt_ids);
++#endif
++
+ static struct platform_driver ads117x_codec_driver = {
+ 	.driver = {
+ 			.name = "ads117x-codec",
++			.of_match_table = of_match_ptr(ads117x_dt_ids),
+ 	},
+ 
+ 	.probe = ads117x_probe,
 -- 
 2.1.0
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
