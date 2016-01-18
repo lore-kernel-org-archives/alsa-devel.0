@@ -1,48 +1,129 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: [PATCH RFC 1/1] ASoC: fsl_ssi: Make fifo watermark and maxburst
- settings device tree options
-Date: Sun, 17 Jan 2016 15:34:59 -0800
-Message-ID: <CAG5mAdzN0j0fEsDcZMPUTPQtf9vSyyHYUE4HVisu_MxVBVAxOg@mail.gmail.com>
-References: <1452788982-11583-1-git-send-email-caleb@crome.org>
- <20160114201858.GA17567@Asurada-Nvidia> <56984BE7.2050303@tabi.org>
- <20160115131325.GW6588@sirena.org.uk> <5698F846.5080604@tabi.org>
- <CAG5mAdy553q4Te5755575WaiLxGRp43h=WVH6QzF7idsaCnhbg@mail.gmail.com>
- <20160115183824.GB31703@Asurada-Nvidia> <CAG5mAdyXPtnnZvGcWrhhbv7wuamz_xbRsn76VXdbE1yZRgx_Mg@mail.gmail.com>
- <20160115185736.GC31703@Asurada-Nvidia> <CAG5mAdyUfSuCqA4_342MS2AyshvuyeiYsjQyRqifmqVhn4T2xA@mail.gmail.com>
- <569A5085.10806@tabi.org>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH - alsa-lib 1/1] add surround21 for Echo3G
+	devices
+Date: Mon, 18 Jan 2016 09:50:12 +0800
+Message-ID: <CAN8ccibfwq+tuXc6RO2aVJb7qBymtFMGA=bs7Brf8iqnT6G_+g@mail.gmail.com>
+References: <569a947e.870d620a.17535.2cf0@mx.google.com>
+ <CAGnHSEk0jCPjhveut_g9=Pja3ZfOV+=qwND-NDCOYyjjkv5_HA@mail.gmail.com>
+ <CAN8ccibo3rEqvAEEqH6yqHwVAipJAFH576-VF-QpaRv=d8274g@mail.gmail.com>
+ <CAGnHSEmG_9DLW6EQS2229Kq9hDF-u0J01gJXP6ozdr67Zrsb_g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <569A5085.10806@tabi.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Timur Tabi <timur@tabi.org>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lf0-f49.google.com (mail-lf0-f49.google.com
+ [209.85.215.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8390B260459
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2016 02:50:13 +0100 (CET)
+Received: by mail-lf0-f49.google.com with SMTP id 17so108506032lfz.1
+ for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2016 17:50:13 -0800 (PST)
+In-Reply-To: <CAGnHSEmG_9DLW6EQS2229Kq9hDF-u0J01gJXP6ozdr67Zrsb_g@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tom Yan <tom.ty89@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Okay, I'll submit a patch that does the following:
-
-fsl,mpc8610:  using DMA=fifo_depth-2 (unchanged from current), using
-FIQ=fifo_depth  (unchanged from current).
-
-all others that are marked with 'imx':  watermark&maxburst = 4 for DMA
-(new setting).  watermark = fifo_depth for FIQ (unchanged from
-previous).
-
--Caleb
-
-
-
-On Sat, Jan 16, 2016 at 6:15 AM, Timur Tabi <timur@tabi.org> wrote:
-> Caleb Crome wrote:
->>
->> I see the 4 compatibles are:  fsl,mpc8610-ssi, fsl,imx51-ssi,
->> fsl,imx35-ssi, and fsl,imx21-ssi.
->>
->> Shall I submit a patch that sets the value to 4 for for any/all of the
->> above?  Should it be different based on whether fiq is enabled.  Maybe
->> set it to 4 for whenever DMA is used, and to 13 whenever FIQ is used?
 >
+> On 18 January 2016 at 00:12, Raymond Yau <superquad.vortex2@gmail.com>
+wrote:
+> > 7>
+> >
+> >
+> >> There is actually ONE card conf, AACI.conf, that supports surround51
+> >> but not surround20/surround41/surround50, but I don't feel like
+> >> touching it, coz it's in the ideal state of what I proposed here:
+> >>
+> >>
+http://mailman.alsa-project.org/pipermail/alsa-devel/2016-January/103121.html
+> >>
+> >> On 17 January 2016 at 03:05,  <tom.ty89@gmail.com> wrote:
+> >> > From: Tom Yan <tom.ty89@gmail.com>
+> >> >
+> >> > It's the only card conf that make use of surround41.conf and
+> >> > surround50.conf but not surround21.conf; Adding it for consistency,
+since
+> >> > all three of them are derived from surround51.
+> >> >
+> >> > Signed-off-by: Tom Yan <tom.ty89@gmail.com>
+> >> >
+> >> > diff --git a/src/conf/cards/Echo_Echo3G.conf
+> >> > b/src/conf/cards/Echo_Echo3G.conf
+> >> > index 766f13f..93d9ce4 100644
+> >> > --- a/src/conf/cards/Echo_Echo3G.conf
+> >> > +++ b/src/conf/cards/Echo_Echo3G.conf
+> >> > @@ -50,6 +50,40 @@ Echo_Echo3G.pcm.side.0 {
+> >> >         subdevice 6
+> >> >  }
+> >> >
+> >> > +<confdir:pcm/surround21.conf>
+> >> > +Echo_Echo3G.pcm.surround21.0 {
+> >> > +       @args [ CARD ]
+> >> > +       @args.CARD {
+> >> > +               type string
+> >> > +       }
+> >> > +       type multi
+> >> > +       slaves [
+> >> > +               {
+> >> > +                       pcm {
+> >> > +                               @func concat
+> >> > +                               strings [
+> >> > +
+> >> > "cards.Echo_Echo3G.pcm.front.0:CARD=" $CARD
+> >> > +                               ]
+> >> > +                       }
+> >> > +                       channels 2
+> >> > +               }
+> >> > +               {
+> >> > +                       pcm {
+> >> > +                               @func concat
+> >> > +                               strings [
+> >> > +
+> >> > "cards.Echo_Echo3G.pcm.center_lfe.0:CARD=" $CARD
+> >> > +                               ]
+> >> > +                       }
+> >> > +                       channels 2
+> >> > +               }
+> >> > +       ]
+> >> > +       bindings [
+> >> > +               { slave 0 channel 0 }
+> >> > +               { slave 0 channel 1 }
+> >> > +               { slave 1 channel 0 }
+> >> > +       ]
+> >> > +}
+> >> > +
+> >
+> > Have you tested with real hardware for surround21 since pulseaudio fail
+with
+> > multi plugin with error -77  ?
+> >
+> >
+http://lists.freedesktop.org/archives/pulseaudio-discuss/2014-November/022670.html
+
+> Nope, not tested with one that uses a card conf that make use of the
+> multi plugin.
 >
-> Do NOT change the watermark value for fsl,mpc8610-ssi from whatever it is
-> today.  You would need to retest your code on an mpc8610 and p1022ds, and I
-> don't think you have either of those boards.
+> I just happen to have found this particular conf have surround21
+> missing, so I add it back for consistency:
+>
+http://mailman.alsa-project.org/pipermail/alsa-devel/2016-January/103123.html
+>
+> But I do wonder why some card conf needs the multi plugin while others
+> doesn't. I wonder if it had been abused. Feels like it is something
+> that should be implemented in the actual driver code instead.
+
+Those cards allow user to play two audio streams to front and rear
+devices,  they need multi plugin for multi channel playback
+
+http://git.alsa-project.org/?p=alsa-plugins.git;a=commit;h=a0693150dfd428fdd4df474efdc6b5e26a41ba21
+
+It seem that playback of some plugins can be started at first write when
+start threshold is -1
+
+Pulseaudio call snd_pcm_start when pcm state is already running
