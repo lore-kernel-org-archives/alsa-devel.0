@@ -1,70 +1,42 @@
-From: Johan Hovold <johan@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: pcm179x: Add I2C interface driver
-Date: Mon, 18 Jan 2016 17:56:57 +0100
-Message-ID: <20160118165657.GE3169@localhost>
-References: <1453132657-18678-1-git-send-email-jacob@teenage.engineering>
- <1453132657-18678-3-git-send-email-jacob@teenage.engineering>
- <CAOf5uwnEuUPdUn5hdpX2VytDb8qHP8c56ipEM+Qsu7q_zWGbEw@mail.gmail.com>
+From: Ankhit Vivekananda <ankhit.vivekananda@biscotti.com>
+Subject: Discarding the first few frames inside the kernel
+Date: Mon, 18 Jan 2016 12:21:33 -0600
+Message-ID: <CACaQK7CtpKQK_j5q+F6ekK_j+w3SLQ=RQ0yR76+81ETvsg1Qdg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAOf5uwnEuUPdUn5hdpX2VytDb8qHP8c56ipEM+Qsu7q_zWGbEw@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Michael Trimarchi <michael@amarulasolutions.com>
-Cc: Jacob Siverskog <jacob@teenage.engineering>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Johan Hovold <johan@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f44.google.com (mail-wm0-f44.google.com [74.125.82.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id C9B5B261A5A
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2016 19:21:33 +0100 (CET)
+Received: by mail-wm0-f44.google.com with SMTP id n5so76941906wmn.0
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2016 10:21:33 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 18, 2016 at 05:14:42PM +0100, Michael Trimarchi wrote:
-> Hi
-> 
-> On Mon, Jan 18, 2016 at 4:57 PM, Jacob Siverskog
-> <jacob@teenage.engineering> wrote:
-> > The PCM179x family supports both SPI and I2C. This patch adds support
-> > for the I2C interface.
-> >
-> > Reviewed-by: Johan Hovold <johan@kernel.org>
-> > Signed-off-by: Jacob Siverskog <jacob@teenage.engineering>
-> > ---
+Hello All,
 
-> > +const struct of_device_id pcm179x_of_match[] = {
-> > +       { .compatible = "ti,pcm1792a", },
-> > +       { }
-> > +};
-> > +MODULE_DEVICE_TABLE(of, pcm179x_of_match);
-> > +
-> 
-> can match go in the common part?
+I am interfacing the ICS43432 MEMS microphone with McBSP interface. The
+data sheet of the ICS43432 microphone shows that it takes about 4.5ms
+(16kHz sampling rate) for startup. Because of this, I hear a transient
+noise at the beginning of every stream. Is there in any way I can discard
+the frames inside the kernel space itself before reading the samples using
+snd_pcm_readi() call?
 
-For matching purposes it could, but that would prevent the OF-aliases
-from being defined for the driver modules.
+I was able to mute the first few frames after the readi() call, but would
+want to know if I could do it before the readi() call itself inside the
+kernel space.
 
-There are a couple of codec drivers that have taken this route, and it
-works as long as they also define a legacy (e.g. i2c_device_id) table
-that modalias autoloading can fall back to.
-
-But having having the common module carry the OF-aliases does not seem
-like the right thing to do (e.g. as the common module cannot drive
-anything on its own) even if it avoids a copy of the OF id table.
-
-> > +static const struct i2c_device_id pcm179x_i2c_ids[] = {
-> > +       { "pcm179x", 0 },
-> > +       { }
-> > +};
-> > +MODULE_DEVICE_TABLE(i2c, pcm179x_i2c_ids);
-> > +
-> > +static struct i2c_driver pcm179x_i2c_driver = {
-> > +       .driver = {
-> > +               .name   = "pcm179x",
-> > +               .of_match_table = of_match_ptr(pcm179x_of_match),
-> > +       },
-> > +       .id_table       = pcm179x_i2c_ids,
-> > +       .probe          = pcm179x_i2c_probe,
-> > +       .remove         = pcm179x_i2c_remove,
-> > +};
-
-> > +
-> > +module_i2c_driver(pcm179x_i2c_driver);
+Appreciate any help!
 
 Thanks,
-Johan
+Ankhit
