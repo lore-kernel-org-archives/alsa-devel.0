@@ -1,8 +1,8 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [RFC 1/6] video: hdmi: add helper function for N and
-	CTS
-Date: Tue, 19 Jan 2016 14:40:31 +0100
-Message-ID: <1453210836-16218-2-git-send-email-arnaud.pouliquen@st.com>
+Subject: [RFC 2/6] ALSA: pcm: add IEC958 channel status control
+	helper
+Date: Tue, 19 Jan 2016 14:40:32 +0100
+Message-ID: <1453210836-16218-3-git-send-email-arnaud.pouliquen@st.com>
 References: <1453210836-16218-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
  [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id E548D260561
- for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2016 14:41:02 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1971226058F
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2016 14:41:05 +0100 (CET)
 In-Reply-To: <1453210836-16218-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,190 +26,154 @@ To: alsa-devel@alsa-project.org
 Cc: Jean-Francois Moine <moinejf@free.fr>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@linux.ie>, arnaud.pouliquen@st.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Benjamin Gaignard <benjamin.gaignard@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Moise Gergaud <moise.gergaud@st.com>
-
-Add helper function to compute HDMI CTS and N parameters
-Implementation is based on HDMI 1.4b specification.
+Add IEC958 channel status helper that creates control to handle the
+IEC60958 status bits.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- drivers/video/hdmi.c | 146 +++++++++++++++++++++++++++++++++++++++++++++++++++
- include/linux/hdmi.h |  11 ++++
- 2 files changed, 157 insertions(+)
+ include/sound/pcm_iec958.h | 16 +++++++++
+ sound/core/pcm_iec958.c    | 90 ++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 106 insertions(+)
 
-diff --git a/drivers/video/hdmi.c b/drivers/video/hdmi.c
-index 1626892..8af33c1 100644
---- a/drivers/video/hdmi.c
-+++ b/drivers/video/hdmi.c
-@@ -1242,3 +1242,149 @@ int hdmi_infoframe_unpack(union hdmi_infoframe *frame, void *buffer)
- 	return ret;
- }
- EXPORT_SYMBOL(hdmi_infoframe_unpack);
-+
-+/**
-+ * audio clock regeneration (acr) parameters
-+ * N and CTS computation are based on HDMI specification 1.4b
+diff --git a/include/sound/pcm_iec958.h b/include/sound/pcm_iec958.h
+index 36f023a..7453ace 100644
+--- a/include/sound/pcm_iec958.h
++++ b/include/sound/pcm_iec958.h
+@@ -3,9 +3,25 @@
+ 
+ #include <linux/types.h>
+ 
++/*
++ * IEC 60958 controls parameters
++ * Describes channel status and associated callback
 + */
-+enum audio_rate {
-+	HDMI_AUDIO_N_CTS_32KHZ,
-+	HDMI_AUDIO_N_CTS_44_1KHZ,
-+	HDMI_AUDIO_N_CTS_48KHZ,
++struct snd_pcm_iec958_params {
++	/* call when control is updated by user */
++	int (*ctrl_set)(void *pdata, u8 *status, u8 len);
++
++	struct snd_aes_iec958 *iec;
++	void *pdata; /* user private data to retrieve context */
++	struct mutex *mutex; /* use to avoid race condition */
 +};
 +
-+struct hdmi_audio_acr {
-+	unsigned long pixel_clk;
-+	struct hdmi_audio_n_cts n_cts;
-+};
+ int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+ 	size_t len);
+ 
+ int snd_pcm_create_iec958_consumer_hw_params(struct snd_pcm_hw_params *params,
+ 					     u8 *cs, size_t len);
 +
-+static const struct hdmi_audio_acr hdmi_audio_standard_acr[3][12] = {
-+	{ /*32 kHz*/
-+		{  25175, {  4576,  28125 } }, /* 25,20/1.001  MHz */
-+		{  25200, {  4096,  25200 } }, /* 25.20        MHz */
-+		{  27000, {  4096,  27000 } }, /* 27.00        MHz */
-+		{  27027, {  4096,  27027 } }, /* 27.00*1.001  MHz */
-+		{  54000, {  4096,  54000 } }, /* 54.00        MHz */
-+		{  54054, {  4096,  54054 } }, /* 54.00*1.001  MHz */
-+		{  74176, { 11648, 310938 } }, /* 74.25/1.001  MHz */
-+		{  74250, {  4096,  74250 } }, /* 74.25        MHz */
-+		{ 148352, { 11648, 421875 } }, /* 148.50/1.001 MHz */
-+		{ 148500, {  4096, 148500 } }, /* 148.50       MHz */
-+		{ 296703, {  5824, 421875 } }, /* 297/1.001    MHz */
-+		{ 297000, {  3072, 222750 } }, /* 297          MHz */
-+	},
-+	{ /*44.1 kHz, 88.2 kHz  176.4 kHz*/
-+		{  25175, {  7007,  31250 } }, /* 25,20/1.001  MHz */
-+		{  25200, {  6272,  28000 } }, /* 25.20        MHz */
-+		{  27000, {  6272,  30000 } }, /* 27.00        MHz */
-+		{  27027, {  6272,  30030 } }, /* 27.00*1.001  MHz */
-+		{  54000, {  6272,  60000 } }, /* 54.00        MHz */
-+		{  54054, {  6272,  60060 } }, /* 54.00*1.001  MHz */
-+		{  74176, { 17836, 234375 } }, /* 74.25/1.001  MHz */
-+		{  74250, {  6272,  82500 } }, /* 74.25        MHz */
-+		{ 148352, {  8918, 234375 } }, /* 148.50/1.001 MHz */
-+		{ 148500, {  6272, 165000 } }, /* 148.50       MHz */
-+		{ 296703, {  4459, 234375 } }, /* 297/1.001    MHz */
-+		{ 297000, {  4704, 247500 } }, /* 297          MHz */
-+	},
-+	{ /*48 kHz, 96 kHz  192 kHz*/
-+		{  25175, {  6864,  28125 } }, /* 25,20/1.001  MHz */
-+		{  25200, {  6144,  25200 } }, /* 25.20        MHz */
-+		{  27000, {  6144,  27000 } }, /* 27.00        MHz */
-+		{  27027, {  6144,  27027 } }, /* 27.00*1.001  MHz */
-+		{  54000, {  6144,  54000 } }, /* 54.00        MHz */
-+		{  54054, {  6144,  54054 } }, /* 54.00*1.001  MHz */
-+		{  74176, { 11648, 140625 } }, /* 74.25/1.001  MHz */
-+		{  74250, {  6144,  74250 } }, /* 74.25        MHz */
-+		{ 148352, {  5824, 140625 } }, /* 148.50/1.001 MHz */
-+		{ 148500, {  6144, 148500 } }, /* 148.50       MHz */
-+		{ 296703, {  5824, 281250 } }, /* 297/1.001    MHz */
-+		{ 297000, {  5120, 247500 } }, /* 297          MHz */
-+	}
-+};
-+
-+/**
-+ * hdmi_compute_n_cts() - compute N and CTS parameters
-+ * @audio_fs: audio frame clock frequency in kHz
-+ * @pixel_clk: pixel clock frequency in kHz
-+ * @n_cts: N and CTS parameter returned to user
-+ *
-+ * Values computed are based on table described in HDMI specification 1.4b
-+ *
-+ * Returns 0 on success or a negative error code on failure.
-+ */
-+int hdmi_audio_compute_n_cts(unsigned int audio_fs, unsigned long pixel_clk,
-+			     struct hdmi_audio_n_cts *n_cts)
++int snd_pcm_create_iec958_ctl(struct snd_pcm *pcm,
++			      struct snd_pcm_iec958_params *params, int stream);
+ #endif
+diff --git a/sound/core/pcm_iec958.c b/sound/core/pcm_iec958.c
+index c9f8b66..1d426bc 100644
+--- a/sound/core/pcm_iec958.c
++++ b/sound/core/pcm_iec958.c
+@@ -7,11 +7,78 @@
+  */
+ #include <linux/export.h>
+ #include <linux/types.h>
++#include <linux/wait.h>
+ #include <sound/asoundef.h>
++#include <sound/control.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/pcm_iec958.h>
+ 
++int snd_pcm_iec958_info(struct snd_kcontrol *kcontrol,
++			struct snd_ctl_elem_info *uinfo)
 +{
-+	int audio_freq_id, i;
-+	int ratio = 1;
-+	const struct hdmi_audio_acr  *acr_table;
-+	const struct hdmi_audio_n_cts *predef_n_cts = NULL;
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_IEC958;
++	uinfo->count = 1;
++	return 0;
++}
 +
-+	switch (audio_fs) {
-+	case 32000:
-+		audio_freq_id = HDMI_AUDIO_N_CTS_32KHZ;
-+		n_cts->n = 4096;
-+		break;
++static int snd_pcm_iec958_get(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *uctl)
++{
++	struct snd_pcm_iec958_params *params = snd_kcontrol_chip(kcontrol);
 +
-+	case 44100:
-+		audio_freq_id = HDMI_AUDIO_N_CTS_44_1KHZ;
-+		n_cts->n = 6272;
-+		break;
++	if (params->mutex)
++		mutex_unlock(params->mutex);
++	uctl->value.iec958.status[0] = params->iec->status[0];
++	uctl->value.iec958.status[1] = params->iec->status[1];
++	uctl->value.iec958.status[2] = params->iec->status[2];
++	uctl->value.iec958.status[3] = params->iec->status[3];
++	uctl->value.iec958.status[4] = params->iec->status[4];
++	if (params->mutex)
++		mutex_unlock(params->mutex);
++	return 0;
++}
 +
-+	case 48000:
-+		audio_freq_id = HDMI_AUDIO_N_CTS_48KHZ;
-+		n_cts->n = 6144;
-+		break;
++static int snd_pcm_iec958_put(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *uctl)
++{
++	struct snd_pcm_iec958_params *params = snd_kcontrol_chip(kcontrol);
++	int err = 0;
 +
-+	case 88200:
-+		audio_freq_id = HDMI_AUDIO_N_CTS_44_1KHZ;
-+		ratio = 2;
-+		n_cts->n = 6272 * 2;
-+		break;
-+
-+	case 96000:
-+		audio_freq_id = HDMI_AUDIO_N_CTS_48KHZ;
-+		ratio = 2;
-+		n_cts->n = 6144 * 2;
-+		break;
-+
-+	case 176400:
-+		audio_freq_id = HDMI_AUDIO_N_CTS_44_1KHZ;
-+		ratio = 4;
-+		n_cts->n = 6272 * 4;
-+		break;
-+
-+	case 192000:
-+		audio_freq_id = HDMI_AUDIO_N_CTS_48KHZ;
-+		ratio = 4;
-+		n_cts->n = 6144 * 4;
-+		break;
-+
-+	default:
-+		return -EINVAL;
++	if (params->mutex)
++		mutex_lock(params->mutex);
++	if (params->ctrl_set)
++		err = params->ctrl_set(params->pdata,
++				       uctl->value.iec958.status, 5);
++	if (!err) {
++		params->iec->status[0] = uctl->value.iec958.status[0];
++		params->iec->status[1] = uctl->value.iec958.status[1];
++		params->iec->status[2] = uctl->value.iec958.status[2];
++		params->iec->status[3] = uctl->value.iec958.status[3];
++		params->iec->status[4] = uctl->value.iec958.status[4];
 +	}
-+
-+	acr_table = hdmi_audio_standard_acr[audio_freq_id];
-+	for (i = 0; i < ARRAY_SIZE(hdmi_audio_standard_acr[0]); i++) {
-+		if (pixel_clk == acr_table[i].pixel_clk) {
-+			predef_n_cts = &acr_table[i].n_cts;
-+			break;
-+		}
-+	}
-+
-+	if (!predef_n_cts) {
-+		/*
-+		 * predefined frequency not found. Compute CTS using formula:
-+		 * CTS = (Ftdms_clk * N) / (128* audio_fs)
-+		 */
-+		n_cts->cts =  pixel_clk * n_cts->n / (128 * audio_fs);
-+	} else {
-+		n_cts->n = predef_n_cts->n * ratio;
-+		n_cts->cts = predef_n_cts->cts;
-+	}
++	if (params->mutex)
++		mutex_unlock(params->mutex);
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL(hdmi_audio_compute_n_cts);
 +
-diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
-index e974420..6508de8 100644
---- a/include/linux/hdmi.h
-+++ b/include/linux/hdmi.h
-@@ -333,4 +333,15 @@ int hdmi_infoframe_unpack(union hdmi_infoframe *frame, void *buffer);
- void hdmi_infoframe_log(const char *level, struct device *dev,
- 			union hdmi_infoframe *frame);
- 
-+/**
-+ * struct hdmi_audio_n_cts - n and cts parameter for ACR packets
-+ */
-+struct hdmi_audio_n_cts {
-+	unsigned int n;
-+	unsigned int cts;
++static const struct snd_kcontrol_new iec958_ctls[] = {
++	{
++		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
++		.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT),
++		.info = snd_pcm_iec958_info,
++		.get = snd_pcm_iec958_get,
++		.put = snd_pcm_iec958_put,
++	},
++	{
++		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
++		.name = SNDRV_CTL_NAME_IEC958("", CAPTURE, DEFAULT),
++		.info = snd_pcm_iec958_info,
++		.get = snd_pcm_iec958_get,
++	},
 +};
 +
-+int hdmi_audio_compute_n_cts(unsigned int audio_fs, unsigned long pixel_clk,
-+			     struct hdmi_audio_n_cts *n_cts);
+ static int create_iec958_consumer(uint rate, uint sample_width,
+ 				  u8 *cs, size_t len)
+ {
+@@ -111,3 +178,26 @@ int snd_pcm_create_iec958_consumer_hw_params(struct snd_pcm_hw_params *params,
+ 				      cs, len);
+ }
+ EXPORT_SYMBOL(snd_pcm_create_iec958_consumer_hw_params);
 +
- #endif /* _DRM_HDMI_H */
++/**
++ * snd_pcm_create_iec958_ctl - create IEC958 channel status default control
++ * pcm: pcm device to associate to the control.
++ * iec958: snd_pcm_iec958_params structure that cntains callbacks
++ *         and channel status buffer
++ * stream: stream type SNDRV_PCM_STREAM_PLAYBACK or SNDRV_PCM_STREAM_CATURE
++ * Returns:  negative error code if something failed.
++ */
++int snd_pcm_create_iec958_ctl(struct snd_pcm *pcm,
++			      struct snd_pcm_iec958_params *params, int stream)
++{
++	struct snd_kcontrol_new knew;
++
++	if (stream > SNDRV_PCM_STREAM_LAST)
++		return -EINVAL;
++
++	knew = iec958_ctls[stream];
++	knew.device = pcm->device;
++	knew.count = pcm->streams[stream].substream_count;
++	return snd_ctl_add(pcm->card, snd_ctl_new1(&knew, params));
++}
++EXPORT_SYMBOL(snd_pcm_create_iec958_ctl);
 -- 
 1.9.1
