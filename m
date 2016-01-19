@@ -1,17 +1,16 @@
 From: <stuarth@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8960: Fix WM8960_SYSCLK_PLL mode
-Date: Tue, 19 Jan 2016 13:09:09 +0000
-Message-ID: <1453208949-23946-2-git-send-email-stuarth@opensource.wolfsonmicro.com>
-References: <1453208949-23946-1-git-send-email-stuarth@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm8960: Fix input boost mixer left/right
+	naming
+Date: Tue, 19 Jan 2016 13:09:08 +0000
+Message-ID: <1453208949-23946-1-git-send-email-stuarth@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 72CCF260561
+ by alsa0.perex.cz (Postfix) with ESMTP id 717EE260536
  for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2016 14:09:56 +0100 (CET)
-In-Reply-To: <1453208949-23946-1-git-send-email-stuarth@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,65 +26,35 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Stuart Henderson <stuart.henderson@cirrus.com>
 
-With the introduction of WM8960_SYSCLK_AUTO mode, WM8960_SYSCLK_PLL mode was
-made unusable.  Ensure we're not PLL mode before trying to use MCLK.
+INBMIX1 controls LINPUTs and INBMIX2 controls RINPUTs, so fix the naming
+accordingly.
 
-Fixes: 3176bf2d7ccd ("ASoC: wm8960: update pll and clock setting function")
 Signed-off-by: Stuart Henderson <stuart.henderson@cirrus.com>
 ---
- sound/soc/codecs/wm8960.c | 32 +++++++++++++++++---------------
- 1 file changed, 17 insertions(+), 15 deletions(-)
+ sound/soc/codecs/wm8960.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 7f20fb2..d7f444f 100644
+index ff23772..7f20fb2 100644
 --- a/sound/soc/codecs/wm8960.c
 +++ b/sound/soc/codecs/wm8960.c
-@@ -643,29 +643,31 @@ static int wm8960_configure_clocking(struct snd_soc_codec *codec)
- 		return -EINVAL;
- 	}
+@@ -240,13 +240,13 @@ SOC_DOUBLE_R("Capture Volume ZC Switch", WM8960_LINVOL, WM8960_RINVOL,
+ SOC_DOUBLE_R("Capture Switch", WM8960_LINVOL, WM8960_RINVOL,
+ 	7, 1, 1),
  
--	/* check if the sysclk frequency is available. */
--	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
--		if (sysclk_divs[i] == -1)
--			continue;
--		sysclk = freq_out / sysclk_divs[i];
--		for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
--			if (sysclk == dac_divs[j] * lrclk) {
-+	if (wm8960->clk_id != WM8960_SYSCLK_PLL) {
-+		/* check if the sysclk frequency is available. */
-+		for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
-+			if (sysclk_divs[i] == -1)
-+				continue;
-+			sysclk = freq_out / sysclk_divs[i];
-+			for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
-+				if (sysclk != dac_divs[j] * lrclk)
-+					continue;
- 				for (k = 0; k < ARRAY_SIZE(bclk_divs); ++k)
- 					if (sysclk == bclk * bclk_divs[k] / 10)
- 						break;
- 				if (k != ARRAY_SIZE(bclk_divs))
- 					break;
- 			}
-+			if (j != ARRAY_SIZE(dac_divs))
-+				break;
- 		}
--		if (j != ARRAY_SIZE(dac_divs))
--			break;
--	}
- 
--	if (i != ARRAY_SIZE(sysclk_divs)) {
--		goto configure_clock;
--	} else if (wm8960->clk_id != WM8960_SYSCLK_AUTO) {
--		dev_err(codec->dev, "failed to configure clock\n");
--		return -EINVAL;
-+		if (i != ARRAY_SIZE(sysclk_divs)) {
-+			goto configure_clock;
-+		} else if (wm8960->clk_id != WM8960_SYSCLK_AUTO) {
-+			dev_err(codec->dev, "failed to configure clock\n");
-+			return -EINVAL;
-+		}
- 	}
- 	/* get a available pll out frequency and set pll */
- 	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
+-SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT3 Volume",
++SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT3 Volume",
+ 	       WM8960_INBMIX1, 4, 7, 0, lineinboost_tlv),
+-SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT2 Volume",
++SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT2 Volume",
+ 	       WM8960_INBMIX1, 1, 7, 0, lineinboost_tlv),
+-SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT3 Volume",
++SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT3 Volume",
+ 	       WM8960_INBMIX2, 4, 7, 0, lineinboost_tlv),
+-SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT2 Volume",
++SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT2 Volume",
+ 	       WM8960_INBMIX2, 1, 7, 0, lineinboost_tlv),
+ SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT1 Volume",
+ 		WM8960_RINPATH, 4, 3, 0, micboost_tlv),
 -- 
 2.1.4
