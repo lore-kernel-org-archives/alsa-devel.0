@@ -1,19 +1,17 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [RFC 4/6] drm: sti: Add ASoC generic hdmi codec
-	support.
-Date: Tue, 19 Jan 2016 17:06:45 +0000
-Message-ID: <20160119170644.GP19062@n2100.arm.linux.org.uk>
-References: <1453210836-16218-1-git-send-email-arnaud.pouliquen@st.com>
- <1453210836-16218-5-git-send-email-arnaud.pouliquen@st.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: wm8960: Fix WM8960_SYSCLK_PLL mode
+Date: Tue, 19 Jan 2016 17:07:05 +0000
+Message-ID: <20160119170705.GO6588@sirena.org.uk>
+References: <1453208949-23946-1-git-send-email-stuarth@opensource.wolfsonmicro.com>
+ <1453208949-23946-2-git-send-email-stuarth@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7260610622806321502=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pandora.arm.linux.org.uk (pandora.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 988F2260588
- for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2016 18:06:53 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1453210836-16218-5-git-send-email-arnaud.pouliquen@st.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F06F265974
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2016 18:07:15 +0100 (CET)
+In-Reply-To: <1453208949-23946-2-git-send-email-stuarth@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,29 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@linux.ie>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Benjamin Gaignard <benjamin.gaignard@linaro.org>
+To: stuarth@opensource.wolfsonmicro.com
+Cc: Stuart Henderson <stuart.henderson@cirrus.com>, alsa-devel@alsa-project.org, ckeepax@opensource.wolfsonmicro.com, lgirdwood@gmail.com, zidan.wang@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 19, 2016 at 02:40:34PM +0100, Arnaud Pouliquen wrote:
-> +	/* update N parameter */
-> +	ret = hdmi_audio_compute_n_cts(params->sample_rate,
-> +				       hdmi->mode.clock, &n_cts);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	DRM_DEBUG_DRIVER("sample_frequency= %d, pix clock = %d\n",
-> +			 params->sample_rate, hdmi->mode.clock);
-> +	DRM_DEBUG_DRIVER("n= %d, cts = %d\n", n_cts.n, n_cts.cts);
-> +
-> +	hdmi_write(hdmi, n_cts.n, HDMI_AUDN);
 
-This looks like you only make use of the N parameter, which suggests
-that your hardware measures the CTS parameter itself - which means
-you have the non-coherent clock case.  You'll want to refer to the
-HDMI specs and use different N values from the coherent case.
+--===============7260610622806321502==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="xWrScvulqIuecunV"
+Content-Disposition: inline
 
--- 
-RMK's Patch system: http://www.arm.linux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
-according to speedtest.net.
+
+--xWrScvulqIuecunV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jan 19, 2016 at 01:09:09PM +0000, stuarth@opensource.wolfsonmicro.com wrote:
+> From: Stuart Henderson <stuart.henderson@cirrus.com>
+
+I'm moderately sure that "stuarth@opensource.wolfsonmicro.com" is the
+same person but it'd be a lot better if everything joined up.  Please
+also note that if your mail server adds any unfortunate disclaimers or
+anything you probably don't want community e-mails going to there.
+
+--xWrScvulqIuecunV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWnm04AAoJECTWi3JdVIfQ2ZIH/jqGU0fcfyn2e6wtYCOWJytD
+OI4AJspaCJLUNnjowkEozhexM632XfOnHrh3zwMRD2GjFI1L+JVBYVvwBRulIF0/
+oblFPlhoOOUFevQoX7lkYybofCU6JzohcYIeK5GeGVbn+xQQ191FetTjT5/x62ep
+Pmf1hbOkhA63DUv0tSB9DT0sQ+f26spH/vPs0iWA1KQqogzkpW9BJCklrgSvGOnq
+RceKJxguqXmVCfyHlYJDpBsAjhjmXscRHzi1U5pr3W6Bpo2lp+OdhWJDlxtRRcDv
+4ypAu/Tw7Y3QxTG26erPGNECaVSTV5bI1pk2Mp3pP5jUgPpK4ROGbY4mN/2lDgw=
+=eGA8
+-----END PGP SIGNATURE-----
+
+--xWrScvulqIuecunV--
+
+--===============7260610622806321502==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7260610622806321502==--
