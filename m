@@ -1,66 +1,50 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: pcm179x: Add I2C interface driver
-Date: Tue, 19 Jan 2016 12:25:24 +0000
-Message-ID: <20160119122524.GM6588@sirena.org.uk>
-References: <1453132657-18678-1-git-send-email-jacob@teenage.engineering>
- <1453132657-18678-3-git-send-email-jacob@teenage.engineering>
- <CAOf5uwnEuUPdUn5hdpX2VytDb8qHP8c56ipEM+Qsu7q_zWGbEw@mail.gmail.com>
- <20160118165657.GE3169@localhost>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: Question about device recovery when under/over run
+	error case
+Date: Tue, 19 Jan 2016 21:33:41 +0900
+Message-ID: <569E2D25.4070205@sakamocchi.jp>
+References: <87twmbfqio.wl%kuninori.morimoto.gx@renesas.com>
+ <569C7215.2000801@sakamocchi.jp>
+ <87si1vfmv6.wl%kuninori.morimoto.gx@renesas.com>
+ <s5h4mebs33a.wl-tiwai@suse.de>
+ <87vb6q4ev2.wl%kuninori.morimoto.gx@renesas.com>
+ <569D8E35.4010306@sakamocchi.jp>
+ <87si1u46d9.wl%kuninori.morimoto.gx@renesas.com>
+ <569DABD3.4080707@sakamocchi.jp>
+ <87powy4207.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="dUqA8l88BsAA6L8T"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20160118165657.GE3169@localhost>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Johan Hovold <johan@kernel.org>
-Cc: Michael Trimarchi <michael@amarulasolutions.com>, Jacob Siverskog <jacob@teenage.engineering>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id 83F3A260536
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2016 13:33:46 +0100 (CET)
+In-Reply-To: <87powy4207.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, shiiba <naoya.shiiba.nx@renesas.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, komatsu <toshiaki.komatsu.ud@renesas.com>, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Jan 19 2016 13:42, Kuninori Morimoto wrote:
+> I believe snd-soc-rcar is OK at this point,
 
---dUqA8l88BsAA6L8T
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Could I request you to explain about usage of this lock primitive in SoC
+with a few cores (i.e. 2) when dts allows the driver to handle several
+PCM substreams and userspace applications try to use the PCM substreams
+almost the same time?
+http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/sound/soc/sh/rcar/core.c#n501
 
-On Mon, Jan 18, 2016 at 05:56:57PM +0100, Johan Hovold wrote:
-> On Mon, Jan 18, 2016 at 05:14:42PM +0100, Michael Trimarchi wrote:
+It's my concern since I did read your codes.
 
-> > > +       { .compatible = "ti,pcm1792a", },
-> > > +       { }
-> > > +};
-> > > +MODULE_DEVICE_TABLE(of, pcm179x_of_match);
 
-> > can match go in the common part?
+Regards
 
-> For matching purposes it could, but that would prevent the OF-aliases
-> from being defined for the driver modules.
-
-> There are a couple of codec drivers that have taken this route, and it
-> works as long as they also define a legacy (e.g. i2c_device_id) table
-> that modalias autoloading can fall back to.
-
-> But having having the common module carry the OF-aliases does not seem
-> like the right thing to do (e.g. as the common module cannot drive
-> anything on its own) even if it avoids a copy of the OF id table.
-
-This does seem like something that the modules code should be able to
-cope with - we have a reference from the driver struct to the table
-which you'd really expect it to be using.  We already have some issues
-there with userspace not handling multiple modaliases terribly well IIRC.
-
---dUqA8l88BsAA6L8T
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWniszAAoJECTWi3JdVIfQ+XUH/j5xUdnz4DLJ59MUlRDyh200
-Rk3K1ZgDD5n6gl+vIkm9WEpgdaJSN7Fk2VBN/i6KUluLXbGtPDNDsxKecGvi62Vn
-0gBxA8eGUvQ6kn/8ds1MJQ6yRw9790CvHLYySzXK8XwgarQa0wTRPA8MJP1oCegj
-od1aXdnsfKKxHpyjD7UGfREfOfQ5VBB5y1JtRR4cvwTTDkuavcBgZYrmFXxtxaFQ
-5SUZtygvnFejfXBTIHFVJjjL51/ljdfR8y70d3zK+SMj4itX0cq0hjYQr14Z2fSH
-PyJtNv/OYhEBKSTcbmngTeJy/r02JQUzo/ICjOTiZ35Hqf2967RArJeqjTgJDyw=
-=32l2
------END PGP SIGNATURE-----
-
---dUqA8l88BsAA6L8T--
+Takashi Sakamoto
