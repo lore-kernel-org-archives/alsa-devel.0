@@ -1,40 +1,62 @@
 From: Jacob Siverskog <jacob@teenage.engineering>
-Subject: [PATCH v2 0/3] ASoC: pcm179x: Add I2C support, declare support for continuous rates
-Date: Tue, 19 Jan 2016 11:29:45 +0100
-Message-ID: <1453199388-8354-1-git-send-email-jacob@teenage.engineering>
+Subject: [PATCH v2 3/3] ASoC: pcm179x: Support continuous rates
+Date: Tue, 19 Jan 2016 11:29:48 +0100
+Message-ID: <1453199388-8354-4-git-send-email-jacob@teenage.engineering>
+References: <1453199388-8354-1-git-send-email-jacob@teenage.engineering>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1453199388-8354-1-git-send-email-jacob@teenage.engineering>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Michael Trimarchi <michael@amarulasolutions.com>, Johan Hovold <johan@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jacob Siverskog <jacob@teenage.engineering>
 List-Id: alsa-devel@alsa-project.org
 
-This series add support for I2C and declares support for continuous
-sample rates.
+According to the PCM179x data sheets sampling frequencies between 10
+kHz and 200 kHz are supported. Specify support in the driver.
 
-Please note that this has only been tested using I2C and PCM1791A. I'd
-be grateful if someone can test it with other devices in the PCM179X
-family and/or SPI.
+Tested with PCM1791A.
 
-These patches are against linux-next.
+References:
+http://www.ti.com/lit/ds/symlink/pcm1791a.pdf
+http://www.ti.com/lit/ds/symlink/pcm1792a.pdf
+http://www.ti.com/lit/ds/symlink/pcm1795.pdf
+http://www.ti.com/lit/ds/symlink/pcm1796.pdf
 
-[V2]: Fix build issues found by kbuild test robot by adding static
-keyword and proper symbol exports.
+Reviewed-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Jacob Siverskog <jacob@teenage.engineering>
+---
+ sound/soc/codecs/pcm179x.c | 4 +++-
+ sound/soc/codecs/pcm179x.h | 4 ----
+ 2 files changed, 3 insertions(+), 5 deletions(-)
 
-Jacob Siverskog (3):
-  ASoC: pcm179x: Split into core and SPI parts
-  ASoC: pcm179x: Add I2C interface driver
-  ASoC: pcm179x: Support continuous rates
-
- .../devicetree/bindings/sound/pcm179x.txt          | 11 ++-
- sound/soc/codecs/Kconfig                           | 20 +++++-
- sound/soc/codecs/Makefile                          |  4 ++
- sound/soc/codecs/pcm179x-i2c.c                     | 82 ++++++++++++++++++++++
- sound/soc/codecs/pcm179x-spi.c                     | 81 +++++++++++++++++++++
- sound/soc/codecs/pcm179x.c                         | 66 +++--------------
- sound/soc/codecs/pcm179x.h                         | 14 +++-
- 7 files changed, 217 insertions(+), 61 deletions(-)
- create mode 100644 sound/soc/codecs/pcm179x-i2c.c
- create mode 100644 sound/soc/codecs/pcm179x-spi.c
-
+diff --git a/sound/soc/codecs/pcm179x.c b/sound/soc/codecs/pcm179x.c
+index d35d2ae..6e40be2 100644
+--- a/sound/soc/codecs/pcm179x.c
++++ b/sound/soc/codecs/pcm179x.c
+@@ -181,7 +181,9 @@ static struct snd_soc_dai_driver pcm179x_dai = {
+ 		.stream_name = "Playback",
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+-		.rates = PCM1792A_RATES,
++		.rates = SNDRV_PCM_RATE_CONTINUOUS,
++		.rate_min = 10000,
++		.rate_max = 200000,
+ 		.formats = PCM1792A_FORMATS, },
+ 	.ops = &pcm179x_dai_ops,
+ };
+diff --git a/sound/soc/codecs/pcm179x.h b/sound/soc/codecs/pcm179x.h
+index d1536e0..7829157 100644
+--- a/sound/soc/codecs/pcm179x.h
++++ b/sound/soc/codecs/pcm179x.h
+@@ -24,10 +24,6 @@ struct pcm179x_private {
+ 	unsigned int rate;
+ };
+ 
+-#define PCM1792A_RATES (SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_8000_48000 | \
+-			SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 | \
+-			SNDRV_PCM_RATE_192000)
+-
+ #define PCM1792A_FORMATS (SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S24_LE | \
+ 			  SNDRV_PCM_FMTBIT_S16_LE)
+ 
 -- 
 2.7.0
