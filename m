@@ -1,32 +1,42 @@
-From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Subject: Re: [RFC v3 7/7] ASoC: hdmi-codec: Add ELD control
-Date: Tue, 19 Jan 2016 14:47:50 +0100
-Message-ID: <569E3E86.2060500@metafoo.de>
-References: <1452613096-8116-1-git-send-email-p.zabel@pengutronix.de>
- <1452613096-8116-8-git-send-email-p.zabel@pengutronix.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm8960: Fix input boost mixer
+	left/right naming
+Date: Tue, 19 Jan 2016 13:47:49 +0000
+Message-ID: <20160119134749.GI1490@localhost.localdomain>
+References: <1453208949-23946-1-git-send-email-stuarth@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <1452613096-8116-8-git-send-email-p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A18C26058F
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2016 14:48:00 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1453208949-23946-1-git-send-email-stuarth@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: stuarth@opensource.wolfsonmicro.com
+Cc: Stuart Henderson <stuart.henderson@cirrus.com>, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, zidan.wang@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-On 01/12/2016 04:38 PM, Philipp Zabel wrote:
-> Exporting the ELD bytes to userspace allows an application to select
-> an appropriate audio format depending on the current capabilities of
-> the connected HDMI sink device.
+On Tue, Jan 19, 2016 at 01:09:08PM +0000, stuarth@opensource.wolfsonmicro.com wrote:
+> From: Stuart Henderson <stuart.henderson@cirrus.com>
+> 
+> INBMIX1 controls LINPUTs and INBMIX2 controls RINPUTs, so fix the naming
+> accordingly.
+> 
+> Signed-off-by: Stuart Henderson <stuart.henderson@cirrus.com>
+> ---
 
-This needs an explanation why this method, which will require explicit
-support in applications, should be used rather than the standard ALSA
-hardware capabilities reporting.
+Reviewed-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+
+Thanks,
+Charles
