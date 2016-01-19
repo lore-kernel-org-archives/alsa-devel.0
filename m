@@ -1,16 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: DAPM core: update bits in the same i2c operation
-Date: Tue, 19 Jan 2016 00:47:39 +0000
-Message-ID: <20160119004739.GK6588@sirena.org.uk>
-References: <CAES_P+9cv+1YdKB+DwD+nHGLqQVE7iUhh4ZQM_CdWXK=qwLiRQ@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: Question about device recovery when under/over run
+	error case
+Date: Tue, 19 Jan 2016 10:15:33 +0900
+Message-ID: <569D8E35.4010306@sakamocchi.jp>
+References: <87twmbfqio.wl%kuninori.morimoto.gx@renesas.com>
+ <569C7215.2000801@sakamocchi.jp>
+ <87si1vfmv6.wl%kuninori.morimoto.gx@renesas.com>
+ <s5h4mebs33a.wl-tiwai@suse.de>
+ <87vb6q4ev2.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2927831052021088759=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 09CAF2604AA
- for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2016 01:47:51 +0100 (CET)
-In-Reply-To: <CAES_P+9cv+1YdKB+DwD+nHGLqQVE7iUhh4ZQM_CdWXK=qwLiRQ@mail.gmail.com>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 46CBA2604D6
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2016 02:15:38 +0100 (CET)
+In-Reply-To: <87vb6q4ev2.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,64 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: noman pouigt <variksla@gmail.com>
-Cc: liam.r.girdwood@linux.intel.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.de>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, shiiba <naoya.shiiba.nx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, komatsu <toshiaki.komatsu.ud@renesas.com>, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============2927831052021088759==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="eEmDdn31p7UZm7Rj"
-Content-Disposition: inline
+On Jan 19 2016 09:04, Kuninori Morimoto wrote:
+>>>> Userspace can get to know the XRUN state by calling some APIs. Then,
+>>>> it can recover PCM substream by executing SNDRV_PCM_IOCTL_PREPARE
+>>>> ioctl.
+>>>
+>>> I think we can use snd_pcm_stop_xrun() for this purpose.
+>>
+>> Right.  But beware of locking by this function.  Unlike snd_pcm_stop()
+>> this function takes the stream lock by itself.
+>
+> Thanks !
+> I see. I will investigate it.
 
+The 'lock' is what I mentioned in former message to you:
 
---eEmDdn31p7UZm7Rj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Jan 18, 2016 at 03:16:39PM -0800, noman pouigt wrote:
-
-> I have two DAC's: left and right and I have made this two as dapm control=
-s.
-> However left and right dac needs to be enabled in the same I2C write oper=
-ation.
->=20
-> I can easily make a callback and can enable both left and right bits in o=
-ne
-> operation however wondering if ALSA dapm core would have a better way
-> to handle this.
-
-> Where is the relevant code to handle this i.e. merging two dapm widgets
-> writes to the same register in one? I looked through the code and found
->  that every widget gets added in the up and down list which is individual=
-ly
-> powered on/off.
-
-You're looking for dapm_seq_run() which coalesces any writes it can.
-
---eEmDdn31p7UZm7Rj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWnYerAAoJECTWi3JdVIfQutoH/2c9tmtdYz2zg4iZY56/zATn
-aq+JaRr+vVmtnrqvwI2TN0e7M/SELMjT0tYhfq3VLnPXnjcG+YQeBIl+2mH0dhSP
-3JyRyo89n/V5T3AFypv/LZO8g/dexi3r8YQ6oDnWcof63kOEx33me215aSF5U8+Y
-SVTNMdHpM3X7Yt18A+Z5ESmOFK6BfTl4BwAZUZRo4wLH3awaGohwQbOGAxpJDU/J
-yxmfu8eQNyrJGGfkToZaF19rW7AvFhz463c/Z/o10YuvkVMbJHlc96/sBVKVmMVc
-ajvHi7dunJzUNf/Qz+5lgYH2MTMybUuZVGEiXHTUMWNsaph6/tT4fEJgykCP+Tc=
-=f6av
------END PGP SIGNATURE-----
-
---eEmDdn31p7UZm7Rj--
-
---===============2927831052021088759==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+[alsa-devel] Can I stop sound from driver as system error ?
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-December/102010.html
 
 
---===============2927831052021088759==--
+Regards
+
+Takashi Sakamoto
