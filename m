@@ -1,16 +1,16 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [RFC 5/6] ASoc: hdmi-codec: add IEC control.
-Date: Tue, 19 Jan 2016 14:40:35 +0100
-Message-ID: <1453210836-16218-6-git-send-email-arnaud.pouliquen@st.com>
+Subject: [RFC 6/6] ARM: DT: b2120: add audio HDMI dai link in
+	audio card
+Date: Tue, 19 Jan 2016 14:40:36 +0100
+Message-ID: <1453210836-16218-7-git-send-email-arnaud.pouliquen@st.com>
 References: <1453210836-16218-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 9544126058F
- for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2016 14:41:12 +0100 (CET)
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 00ADA265740
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2016 14:41:14 +0100 (CET)
 In-Reply-To: <1453210836-16218-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,130 +25,45 @@ To: alsa-devel@alsa-project.org
 Cc: Jean-Francois Moine <moinejf@free.fr>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@linux.ie>, arnaud.pouliquen@st.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Benjamin Gaignard <benjamin.gaignard@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Create 'IEC958 Playback Default' controls to support IEC61937 formats.
-the use of the alsa control is optional, using 'iec_ctl' flag.
+Add the HDMI dai link to support audio for HDMI output
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- include/sound/hdmi-codec.h    |  1 +
- sound/soc/codecs/hdmi-codec.c | 59 +++++++++++++++++++++++++++++++++----------
- 2 files changed, 46 insertions(+), 14 deletions(-)
+ arch/arm/boot/dts/stihxxx-b2120.dtsi | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
-index ed780b2..58e8eae 100644
---- a/include/sound/hdmi-codec.h
-+++ b/include/sound/hdmi-codec.h
-@@ -96,6 +96,7 @@ struct hdmi_codec_pdata {
- 	const struct hdmi_codec_ops *ops;
- 	uint i2s:1;
- 	uint spdif:1;
-+	uint iec_ctl:1;
- 	int max_i2s_channels;
- };
+diff --git a/arch/arm/boot/dts/stihxxx-b2120.dtsi b/arch/arm/boot/dts/stihxxx-b2120.dtsi
+index 1ec71fe..a773c00 100644
+--- a/arch/arm/boot/dts/stihxxx-b2120.dtsi
++++ b/arch/arm/boot/dts/stihxxx-b2120.dtsi
+@@ -126,6 +126,19 @@
+ 		status = "okay";
  
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 94349b3..1b6cb5a 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -32,6 +32,7 @@ struct hdmi_codec_priv {
- 	struct snd_pcm_substream *current_stream;
- 	struct snd_pcm_hw_constraint_list ratec;
- 	uint8_t eld[MAX_ELD_BYTES];
-+	struct snd_aes_iec958 iec;
- };
- 
- static const struct snd_soc_dapm_widget hdmi_widgets[] = {
-@@ -140,27 +141,30 @@ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai)
- {
- 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
--	struct hdmi_codec_params hp = {
--		.iec = {
--			.status = { 0 },
--			.subcode = { 0 },
--			.pad = 0,
--			.dig_subframe = { 0 },
--		}
--	};
-+	struct hdmi_codec_params hp;
- 	int ret;
- 
- 	dev_dbg(dai->dev, "%s() width %d rate %d channels %d\n", __func__,
- 		params_width(params), params_rate(params),
- 		params_channels(params));
- 
--	ret = snd_pcm_create_iec958_consumer_hw_params(params, hp.iec.status,
--						       sizeof(hp.iec.status));
--	if (ret < 0) {
--		dev_err(dai->dev, "Creating IEC958 channel status failed %d\n",
--			ret);
--		return ret;
-+	mutex_lock(&hcp->current_stream_lock);
-+	hp.iec = hcp->iec;
+ 		simple-audio-card,dai-link@0 {
++			/* HDMI */
++			format = "i2s";
++			mclk-fs = <128>;
++			cpu {
++				sound-dai = <&sti_uni_player0>;
++			};
 +
-+	if (!hcp->hcd.iec_ctl) {
-+		/*
-+		* only PCM format supported
-+		*channel status set according to runtime parameters
-+		*/
-+		ret = snd_pcm_create_iec958_consumer_hw_params(params,
-+					hp.iec.status, sizeof(hp.iec.status));
-+		if (ret < 0) {
-+			dev_err(dai->dev, "Creating IEC958 status failed %d\n",
-+				ret);
-+			return ret;
-+		}
- 	}
-+	mutex_unlock(&hcp->current_stream_lock);
++			codec {
++				sound-dai = <&sti_hdmi>;
++			};
++		};
++
++		simple-audio-card,dai-link@1 {
+ 			/* DAC */
+ 			format = "i2s";
+ 			dai-tdm-slot-width = <32>;
+@@ -139,7 +152,7 @@
+ 			};
+ 		};
  
- 	ret = hdmi_codec_new_stream(substream, dai);
- 	if (ret)
-@@ -266,12 +270,37 @@ static int hdmi_codec_digital_mute(struct snd_soc_dai *dai, int mute)
- 	return 0;
- }
- 
-+static int hdmi_codec_pcm_new(struct snd_soc_pcm_runtime *rtd,
-+			      struct snd_soc_dai *dai)
-+{
-+	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
-+	struct snd_pcm_iec958_params *iec958_params;
-+
-+	dev_dbg(dai->dev, "%s()\n", __func__);
-+
-+	if (!hcp->hcd.iec_ctl)
-+		return 0;
-+
-+	iec958_params = devm_kzalloc(dai->dev, sizeof(*iec958_params),
-+				     GFP_KERNEL);
-+	if (!iec958_params)
-+		return -ENOMEM;
-+
-+	iec958_params->iec = &hcp->iec;
-+	iec958_params->pdata = hcp;
-+	iec958_params->mutex = &hcp->current_stream_lock;
-+
-+	return snd_pcm_create_iec958_ctl(rtd->pcm, iec958_params,
-+					 SNDRV_PCM_STREAM_PLAYBACK);
-+}
-+
- static const struct snd_soc_dai_ops hdmi_dai_ops = {
- 	.startup        = hdmi_codec_startup,
- 	.shutdown       = hdmi_codec_shutdown,
- 	.hw_params      = hdmi_codec_hw_params,
- 	.set_fmt        = hdmi_codec_set_fmt,
- 	.digital_mute   = hdmi_codec_digital_mute,
-+	.pcm_new        = hdmi_codec_pcm_new,
- };
- 
- 
-@@ -352,6 +381,8 @@ static int hdmi_codec_probe(struct platform_device *pdev)
- 	if (!hcp)
- 		return -ENOMEM;
- 
-+	memset(&hcp->iec, 0, sizeof(hcp->iec));
-+
- 	hcp->hcd = *hcd;
- 	mutex_init(&hcp->current_stream_lock);
- 
+-		simple-audio-card,dai-link@1 {
++		simple-audio-card,dai-link@2 {
+ 			/* SPDIF */
+ 			format = "left_j";
+ 			mclk-fs = <128>;
 -- 
 1.9.1
