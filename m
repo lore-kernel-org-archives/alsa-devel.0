@@ -1,18 +1,17 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [RFC v3 7/7] ASoC: hdmi-codec: Add ELD control
-Date: Tue, 19 Jan 2016 14:47:33 +0200
-Message-ID: <569E3065.9060505@ti.com>
-References: <1452613096-8116-1-git-send-email-p.zabel@pengutronix.de>
- <1452613096-8116-8-git-send-email-p.zabel@pengutronix.de>
- <569E2545.9010602@ti.com> <s5h8u3ldbb4.wl-tiwai@suse.de>
+From: <stuarth@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm8960: Fix WM8960_SYSCLK_PLL mode
+Date: Tue, 19 Jan 2016 13:09:09 +0000
+Message-ID: <1453208949-23946-2-git-send-email-stuarth@opensource.wolfsonmicro.com>
+References: <1453208949-23946-1-git-send-email-stuarth@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id E6987260561
- for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2016 13:47:41 +0100 (CET)
-In-Reply-To: <s5h8u3ldbb4.wl-tiwai@suse.de>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72CCF260561
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2016 14:09:56 +0100 (CET)
+In-Reply-To: <1453208949-23946-1-git-send-email-stuarth@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,43 +21,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, kernel@pengutronix.de, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Koro Chen <koro.chen@mediatek.com>, Daniel Kurtz <djkurtz@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, Philipp Zabel <p.zabel@pengutronix.de>, Matthias Brugger <matthias.bgg@gmail.com>, Cawa Cheng <cawa.cheng@mediatek.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Stuart Henderson <stuart.henderson@cirrus.com>, alsa-devel@alsa-project.org, ckeepax@opensource.wolfsonmicro.com, zidan.wang@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-On 01/19/16 14:05, Takashi Iwai wrote:
-> On Tue, 19 Jan 2016 13:00:05 +0100,
-> Jyri Sarha wrote:
->>
->> On 01/12/16 17:38, Philipp Zabel wrote:
->>> Exporting the ELD bytes to userspace allows an application to select
->>> an appropriate audio format depending on the current capabilities of
->>> the connected HDMI sink device.
->>>
->>
->> This looks good, but I was unable to test it. Obviously amixer or
->> alsamixer is unable to show anything about an ELD mixer element,
->
-> You can use amixer cget command to retrieve the information.
->
->> but
->> shouldn't there be something about it shown under /proc/asound/card0/,
->> or am I mistaken.
->
-> It's specific to driver.  HD-audio has one, but it doesn't show the
-> whole ELD but only parsed contents.
->
->
+From: Stuart Henderson <stuart.henderson@cirrus.com>
 
-Thanks,
-I managed the read the ELD bytes with:
+With the introduction of WM8960_SYSCLK_AUTO mode, WM8960_SYSCLK_PLL mode was
+made unusable.  Ensure we're not PLL mode before trying to use MCLK.
 
-amixer -c0 cget iface=PCM,name='ELD',device=0
+Fixes: 3176bf2d7ccd ("ASoC: wm8960: update pll and clock setting function")
+Signed-off-by: Stuart Henderson <stuart.henderson@cirrus.com>
+---
+ sound/soc/codecs/wm8960.c | 32 +++++++++++++++++---------------
+ 1 file changed, 17 insertions(+), 15 deletions(-)
 
-And the numbers change a bit when I connect to a different TV, so:
-
-Reviewed-by: Jyri Sarha <jsarha@ti.com>
-Tested-by: Jyri Sarha <jsarha@ti.com>
-
-Cheers,
-Jyri
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 7f20fb2..d7f444f 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -643,29 +643,31 @@ static int wm8960_configure_clocking(struct snd_soc_codec *codec)
+ 		return -EINVAL;
+ 	}
+ 
+-	/* check if the sysclk frequency is available. */
+-	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
+-		if (sysclk_divs[i] == -1)
+-			continue;
+-		sysclk = freq_out / sysclk_divs[i];
+-		for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
+-			if (sysclk == dac_divs[j] * lrclk) {
++	if (wm8960->clk_id != WM8960_SYSCLK_PLL) {
++		/* check if the sysclk frequency is available. */
++		for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
++			if (sysclk_divs[i] == -1)
++				continue;
++			sysclk = freq_out / sysclk_divs[i];
++			for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
++				if (sysclk != dac_divs[j] * lrclk)
++					continue;
+ 				for (k = 0; k < ARRAY_SIZE(bclk_divs); ++k)
+ 					if (sysclk == bclk * bclk_divs[k] / 10)
+ 						break;
+ 				if (k != ARRAY_SIZE(bclk_divs))
+ 					break;
+ 			}
++			if (j != ARRAY_SIZE(dac_divs))
++				break;
+ 		}
+-		if (j != ARRAY_SIZE(dac_divs))
+-			break;
+-	}
+ 
+-	if (i != ARRAY_SIZE(sysclk_divs)) {
+-		goto configure_clock;
+-	} else if (wm8960->clk_id != WM8960_SYSCLK_AUTO) {
+-		dev_err(codec->dev, "failed to configure clock\n");
+-		return -EINVAL;
++		if (i != ARRAY_SIZE(sysclk_divs)) {
++			goto configure_clock;
++		} else if (wm8960->clk_id != WM8960_SYSCLK_AUTO) {
++			dev_err(codec->dev, "failed to configure clock\n");
++			return -EINVAL;
++		}
+ 	}
+ 	/* get a available pll out frequency and set pll */
+ 	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
+-- 
+2.1.4
