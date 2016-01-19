@@ -1,69 +1,32 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [RFC 6/6] ARM: DT: b2120: add audio HDMI dai link in
-	audio card
-Date: Tue, 19 Jan 2016 14:40:36 +0100
-Message-ID: <1453210836-16218-7-git-send-email-arnaud.pouliquen@st.com>
-References: <1453210836-16218-1-git-send-email-arnaud.pouliquen@st.com>
+From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Subject: Re: [RFC v3 7/7] ASoC: hdmi-codec: Add ELD control
+Date: Tue, 19 Jan 2016 14:47:50 +0100
+Message-ID: <569E3E86.2060500@metafoo.de>
+References: <1452613096-8116-1-git-send-email-p.zabel@pengutronix.de>
+ <1452613096-8116-8-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 00ADA265740
- for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2016 14:41:14 +0100 (CET)
-In-Reply-To: <1453210836-16218-1-git-send-email-arnaud.pouliquen@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Jean-Francois Moine <moinejf@free.fr>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@linux.ie>, arnaud.pouliquen@st.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Benjamin Gaignard <benjamin.gaignard@linaro.org>
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <1452613096-8116-8-git-send-email-p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add the HDMI dai link to support audio for HDMI output
+On 01/12/2016 04:38 PM, Philipp Zabel wrote:
+> Exporting the ELD bytes to userspace allows an application to select
+> an appropriate audio format depending on the current capabilities of
+> the connected HDMI sink device.
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
----
- arch/arm/boot/dts/stihxxx-b2120.dtsi | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm/boot/dts/stihxxx-b2120.dtsi b/arch/arm/boot/dts/stihxxx-b2120.dtsi
-index 1ec71fe..a773c00 100644
---- a/arch/arm/boot/dts/stihxxx-b2120.dtsi
-+++ b/arch/arm/boot/dts/stihxxx-b2120.dtsi
-@@ -126,6 +126,19 @@
- 		status = "okay";
- 
- 		simple-audio-card,dai-link@0 {
-+			/* HDMI */
-+			format = "i2s";
-+			mclk-fs = <128>;
-+			cpu {
-+				sound-dai = <&sti_uni_player0>;
-+			};
-+
-+			codec {
-+				sound-dai = <&sti_hdmi>;
-+			};
-+		};
-+
-+		simple-audio-card,dai-link@1 {
- 			/* DAC */
- 			format = "i2s";
- 			dai-tdm-slot-width = <32>;
-@@ -139,7 +152,7 @@
- 			};
- 		};
- 
--		simple-audio-card,dai-link@1 {
-+		simple-audio-card,dai-link@2 {
- 			/* SPDIF */
- 			format = "left_j";
- 			mclk-fs = <128>;
--- 
-1.9.1
+This needs an explanation why this method, which will require explicit
+support in applications, should be used rather than the standard ALSA
+hardware capabilities reporting.
