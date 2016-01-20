@@ -1,27 +1,23 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Question about device recovery when under/over run
-	error case
-Date: Wed, 20 Jan 2016 12:19:32 +0900
-Message-ID: <569EFCC4.3040407@sakamocchi.jp>
-References: <87twmbfqio.wl%kuninori.morimoto.gx@renesas.com>
- <569C7215.2000801@sakamocchi.jp>
- <87si1vfmv6.wl%kuninori.morimoto.gx@renesas.com>
- <s5h4mebs33a.wl-tiwai@suse.de>
- <87vb6q4ev2.wl%kuninori.morimoto.gx@renesas.com>
- <569D8E35.4010306@sakamocchi.jp>
- <87si1u46d9.wl%kuninori.morimoto.gx@renesas.com>
- <569DABD3.4080707@sakamocchi.jp>
- <87powy4207.wl%kuninori.morimoto.gx@renesas.com>
- <569E2D25.4070205@sakamocchi.jp>
- <87bn8h3ve7.wl%kuninori.morimoto.gx@renesas.com>
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Subject: Re: [PATCH v2 2/3] ASoC: pcm179x: Add I2C interface
+	driver
+Date: Wed, 20 Jan 2016 05:58:26 +0100
+Message-ID: <CAOf5uwkSL91v4Trdp-QgarngHehY=Mj3Ur+Z21V7FEJ-mmqb1g@mail.gmail.com>
+References: <1453199388-8354-1-git-send-email-jacob@teenage.engineering>
+ <1453199388-8354-3-git-send-email-jacob@teenage.engineering>
+ <CAOf5uwnCpJG_L6N9S5J0=QKiU8wxwXnrsKfni35-nr305SSM0g@mail.gmail.com>
+ <20160119135103.GA12069@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B8F3260599
- for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2016 04:19:36 +0100 (CET)
-In-Reply-To: <87bn8h3ve7.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mail-io0-f178.google.com (mail-io0-f178.google.com
+ [209.85.223.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 44246260535
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2016 05:58:28 +0100 (CET)
+Received: by mail-io0-f178.google.com with SMTP id 1so8481556ion.1
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2016 20:58:28 -0800 (PST)
+In-Reply-To: <20160119135103.GA12069@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,68 +27,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, shiiba <naoya.shiiba.nx@renesas.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, komatsu <toshiaki.komatsu.ud@renesas.com>, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+To: Johan Hovold <johan@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jacob Siverskog <jacob@teenage.engineering>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi
 
-On Jan 20 2016 10:17, Kuninori Morimoto wrote:
->> Could I request you to explain about usage of this lock primitive in SoC
->> with a few cores (i.e. 2) when dts allows the driver to handle several
->> PCM substreams and userspace applications try to use the PCM substreams
->> almost the same time?
->> http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/sound/soc/sh/rcar/core.c#n501
+On Tue, Jan 19, 2016 at 2:51 PM, Johan Hovold <johan@kernel.org> wrote:
+> On Tue, Jan 19, 2016 at 11:50:35AM +0100, Michael Trimarchi wrote:
+>> Hi Jacob
+>>
+>> On Tue, Jan 19, 2016 at 11:29 AM, Jacob Siverskog
+>> <jacob@teenage.engineering> wrote:
+>> > The PCM179x family supports both SPI and I2C. This patch adds support
+>> > for the I2C interface.
+>> >
+>> > Reviewed-by: Johan Hovold <johan@kernel.org>
+>> > Signed-off-by: Jacob Siverskog <jacob@teenage.engineering>
+>> > ---
 >
-> Your concern is that my driver is using "trigger", and it will be called
-> from several context.
-> Indeed, one side might be locked if few substreams are used in same time,
-> because it is using shared lock.
+>> > +static int pcm179x_i2c_probe(struct i2c_client *client,
+>> > +                             const struct i2c_device_id *id)
+>> > +{
+>> > +       struct pcm179x_private *pcm179x;
+>> > +       int ret;
+>> > +
+>> > +       pcm179x = devm_kzalloc(&client->dev, sizeof(struct pcm179x_private),
+>> > +                               GFP_KERNEL);
+>> > +       if (!pcm179x)
+>> > +               return -ENOMEM;
+>> > +
+>> > +       i2c_set_clientdata(client, pcm179x);
+>> > +
+>> > +       pcm179x->dev = &client->dev;
+>> > +
+>> > +       pcm179x->regmap = devm_regmap_init_i2c(client, &pcm179x_regmap_config);
+>> > +       if (IS_ERR(pcm179x->regmap)) {
+>> > +               ret = PTR_ERR(pcm179x->regmap);
+>> > +               dev_err(&client->dev, "Failed to register regmap: %d\n", ret);
+>> > +               return ret;
+>> > +       }
+>> > +
+>>
+>> sound/soc/codecs/adau1781-spi.c
+>>
+>> I like more how was done here for private data and codec data. What do
+>> you think?
+>
+> Why do you prefer that?
+>
+> Having a common_exit() to clean up whatever was done in common_init()
+> seems like a better design than open-coding this in both of the i2c and
+> spi drivers (if that's what you were referring to).
+>
 
-Background: current Linux kernel don't execute kernel preemption in 
-interrupt contexts. For further information, please follow to 
-CONFIG_PREEMPT_RT patchset project.
-https://rt.wiki.kernel.org/
+private data can be allocated in common code and you can pass the
+regmap in the common init.
+As I can understand in that way more common code is shared between i2c
+and spi and make much
+more clean and easy. I had a look very quick but I think that this was
+the key point of that example
 
-When using spin_lock_irqsave() in any context, processor core local is 
-under:
-  * kernel preemption disable
-  * software IRQ disable
-  * hardware IRQ disable
+Michael
 
-When the process context is in the critical section of the code, the 
-other process contexts can spin over each core with the state.
-
-In a processor with a few cores, which cores can handle _any_ hardware 
-interrupts? It may be quite a short time in your case but...
-
-Althogh I don't know exactly how your SoC controls hardware interrupts, 
-I'm concern about this situation based on my understanding of typical 
-embedded platform. If I misunderstand anything, please inform it to me 
-to update my knowledgement.
-
-> But, I think I need to use it since it is using shared register.
-> And, I'm confusing that what is the problem in this case ?
-> Do you mean I shoudn't use "trigger" ?
-
-I don't exactly know about for which purpose the SoC is used and what 
-constitution the SoC actually have. Here, I suggest a possible 
-scenarioin of your future:
-
-The snd-rcar-soc gets more 'struct rsnd_mod' to use IPs in the SoC and 
-some operations are executed the .trigger(). The .trigger() takes a bit 
-long. During the time, the local CPU cannot handle any hardware 
-interrupts. In this situation, the other process context enters the 
-critical section by userspace applications. These contexts spin over 
-cores, and all of cores cannot handle hardware interrupts. As a result, 
-no hardware interrupts cannot be handled. This causes a response latency 
-of the system in a certain situation which is hard to be identified.
+>> > +       return pcm179x_common_init(pcm179x);
+>> > +}
+>> > +
+>> > +static int pcm179x_i2c_remove(struct i2c_client *client)
+>> > +{
+>> > +       return pcm179x_common_exit(i2c_get_clientdata(client));
+>> > +}
+>
+> Thanks,
+> Johan
 
 
-Well, I think it better to do it in 'struct snd_pcm_ops.prepare()' 
-callback, because it runs in process contexts and any lock primitives 
-with interrupts-enabled state are available (i.e. mutex). It's better 
-for cheap embedded platforms.
 
-
-Takashi Sakamoto
+-- 
+| Michael Nazzareno Trimarchi                     Amarula Solutions BV |
+| COO  -  Founder                                      Cruquiuskade 47 |
+| +31(0)851119172                                 Amsterdam 1018 AM NL |
+|                  [`as] http://www.amarulasolutions.com               |
