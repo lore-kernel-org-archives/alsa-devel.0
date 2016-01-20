@@ -1,19 +1,16 @@
 From: Stuart Henderson <stuarth@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: wm8960: Fix WM8960_SYSCLK_PLL mode
-Date: Wed, 20 Jan 2016 09:57:27 +0000
-Message-ID: <569F5A07.7050507@opensource.wolfsonmicro.com>
-References: <1453208949-23946-1-git-send-email-stuarth@opensource.wolfsonmicro.com>
- <1453208949-23946-2-git-send-email-stuarth@opensource.wolfsonmicro.com>
- <20160119170705.GO6588@sirena.org.uk>
+Subject: [PATCH v2] ASoC: wm8960: Fix input boost mixer
+	left/right naming
+Date: Wed, 20 Jan 2016 10:12:35 +0000
+Message-ID: <1453284756-30696-1-git-send-email-stuarth@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 0428A260449
- for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2016 10:57:44 +0100 (CET)
-In-Reply-To: <20160119170705.GO6588@sirena.org.uk>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3997B260449
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2016 11:13:01 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,16 +20,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Stuart Henderson <stuart.henderson@cirrus.com>, alsa-devel@alsa-project.org, ckeepax@opensource.wolfsonmicro.com, lgirdwood@gmail.com, zidan.wang@freescale.com
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Stuart Henderson <stuarth@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, ckeepax@opensource.wolfsonmicro.com, zidan.wang@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
+INBMIX1 controls LINPUTs and INBMIX2 controls RINPUTs, so fix the naming
+accordingly.
 
-On 19/01/16 17:07, Mark Brown wrote:
-> I'm moderately sure that "stuarth@opensource.wolfsonmicro.com" is the
-> same person but it'd be a lot better if everything joined up.
+Change-Id: Ie15f97ad7370c4e0d008e1e7b4ecaf9762892e94
+Signed-off-by: Stuart Henderson <stuarth@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8960.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-I'm happy to respin the patches using the o.wm.com email address if that 
-makes things easier.
-
-Stu
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index ff23772..7f20fb2 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -240,13 +240,13 @@ SOC_DOUBLE_R("Capture Volume ZC Switch", WM8960_LINVOL, WM8960_RINVOL,
+ SOC_DOUBLE_R("Capture Switch", WM8960_LINVOL, WM8960_RINVOL,
+ 	7, 1, 1),
+ 
+-SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT3 Volume",
++SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT3 Volume",
+ 	       WM8960_INBMIX1, 4, 7, 0, lineinboost_tlv),
+-SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT2 Volume",
++SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT2 Volume",
+ 	       WM8960_INBMIX1, 1, 7, 0, lineinboost_tlv),
+-SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT3 Volume",
++SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT3 Volume",
+ 	       WM8960_INBMIX2, 4, 7, 0, lineinboost_tlv),
+-SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT2 Volume",
++SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT2 Volume",
+ 	       WM8960_INBMIX2, 1, 7, 0, lineinboost_tlv),
+ SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT1 Volume",
+ 		WM8960_RINPATH, 4, 3, 0, micboost_tlv),
+-- 
+2.1.4
