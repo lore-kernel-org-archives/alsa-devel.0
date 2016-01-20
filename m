@@ -1,38 +1,59 @@
-From: =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-Subject: [PATCH] ASoC: fsl: select SND_SOC_FSL_SAI or SND_SOC_FSL_SSI depending on SoC type
-Date: Wed, 20 Jan 2016 13:30:38 +0100
-Message-ID: <1453293038-16032-1-git-send-email-LW@KARO-electronics.de>
+From: Stuart Henderson <stuarth@opensource.wolfsonmicro.com>
+Subject: [PATCH v3] ASoC: wm8960: Fix input boost mixer
+	left/right naming
+Date: Wed, 20 Jan 2016 12:45:38 +0000
+Message-ID: <1453293939-32220-1-git-send-email-stuarth@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>, Fabio Estevam <fabio.estevam@freescale.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>, Mark Brown <broonie@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 374B1260606
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2016 13:45:59 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Stuart Henderson <stuarth@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, ckeepax@opensource.wolfsonmicro.com, zidan.wang@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-i.MX6UL does not provide an SSI interface like the other i.MX6 SoCs,
-but only an SAI interface.
-Select the appropriate interface(s) depending on the enabled SoC types.
+INBMIX1 controls LINPUTs and INBMIX2 controls RINPUTs, so fix the naming
+accordingly.
 
-Signed-off-by: Lothar Wa=C3=9Fmann <LW@KARO-electronics.de>
+Signed-off-by: Stuart Henderson <stuarth@opensource.wolfsonmicro.com>
+Reviewed-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/fsl/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wm8960.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 14dfdee..c128823 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -258,7 +258,8 @@ config SND_SOC_IMX_SGTL5000
- 	select SND_SOC_SGTL5000
- 	select SND_SOC_IMX_PCM_DMA
- 	select SND_SOC_IMX_AUDMUX
--	select SND_SOC_FSL_SSI
-+	select SND_SOC_FSL_SAI if SOC_IMX6UL
-+	select SND_SOC_FSL_SSI if SOC_IMX6Q || SOC_IMX6SL || SOC_IMX6SX
- 	help
- 	  Say Y if you want to add support for SoC audio on an i.MX board wit=
-h
- 	  a sgtl5000 codec.
---=20
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index ff23772..7f20fb2 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -240,13 +240,13 @@ SOC_DOUBLE_R("Capture Volume ZC Switch", WM8960_LINVOL, WM8960_RINVOL,
+ SOC_DOUBLE_R("Capture Switch", WM8960_LINVOL, WM8960_RINVOL,
+ 	7, 1, 1),
+ 
+-SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT3 Volume",
++SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT3 Volume",
+ 	       WM8960_INBMIX1, 4, 7, 0, lineinboost_tlv),
+-SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT2 Volume",
++SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT2 Volume",
+ 	       WM8960_INBMIX1, 1, 7, 0, lineinboost_tlv),
+-SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT3 Volume",
++SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT3 Volume",
+ 	       WM8960_INBMIX2, 4, 7, 0, lineinboost_tlv),
+-SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT2 Volume",
++SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT2 Volume",
+ 	       WM8960_INBMIX2, 1, 7, 0, lineinboost_tlv),
+ SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT1 Volume",
+ 		WM8960_RINPATH, 4, 3, 0, micboost_tlv),
+-- 
 2.1.4
