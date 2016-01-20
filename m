@@ -1,17 +1,15 @@
-From: Stuart Henderson <stuarth@opensource.wolfsonmicro.com>
-Subject: [PATCH v2] ASoC: wm8960: Fix WM8960_SYSCLK_PLL mode
-Date: Wed, 20 Jan 2016 10:12:36 +0000
-Message-ID: <1453284756-30696-2-git-send-email-stuarth@opensource.wolfsonmicro.com>
-References: <1453284756-30696-1-git-send-email-stuarth@opensource.wolfsonmicro.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: avoid unused variable warning for
+	rt5659_acpi_match
+Date: Wed, 20 Jan 2016 11:43:48 +0100
+Message-ID: <2238845.aZnycJVYKR@wuerfel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id A70D0260532
- for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2016 11:13:02 +0100 (CET)
-In-Reply-To: <1453284756-30696-1-git-send-email-stuarth@opensource.wolfsonmicro.com>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.13])
+ by alsa0.perex.cz (Postfix) with ESMTP id D1A9A260412
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2016 11:44:09 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,70 +19,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Stuart Henderson <stuarth@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, ckeepax@opensource.wolfsonmicro.com, zidan.wang@freescale.com
+To: broonie@kernel.org
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-With the introduction of WM8960_SYSCLK_AUTO mode, WM8960_SYSCLK_PLL mode was
-made unusable.  Ensure we're not PLL mode before trying to use MCLK.
+The newly added rt5659 codec driver unconditionally defines an
+ACPI device match table but then uses ACPI_PTR() to remove the
+only reference to it, so we get a harmless build warning:
 
-Change-Id: Iee623a84fc8bf561bc13865dc92589ecc6998f2a
-Fixes: 3176bf2d7ccd ("ASoC: wm8960: update pll and clock setting function")
-Signed-off-by: Stuart Henderson <stuarth@opensource.wolfsonmicro.com>
+sound/soc/codecs/rt5659.c:4200:30: warning: 'rt5659_acpi_match' defined but not used [-Wunused-variable]
+ static struct acpi_device_id rt5659_acpi_match[] = {
+
+This removes the ACPI_PTR() to avoid the warning.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- sound/soc/codecs/wm8960.c | 32 +++++++++++++++++---------------
- 1 file changed, 17 insertions(+), 15 deletions(-)
+This is a harmless regression against v4.4, found on ARM randconfig builds
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 7f20fb2..d7f444f 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -643,29 +643,31 @@ static int wm8960_configure_clocking(struct snd_soc_codec *codec)
- 		return -EINVAL;
- 	}
- 
--	/* check if the sysclk frequency is available. */
--	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
--		if (sysclk_divs[i] == -1)
--			continue;
--		sysclk = freq_out / sysclk_divs[i];
--		for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
--			if (sysclk == dac_divs[j] * lrclk) {
-+	if (wm8960->clk_id != WM8960_SYSCLK_PLL) {
-+		/* check if the sysclk frequency is available. */
-+		for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
-+			if (sysclk_divs[i] == -1)
-+				continue;
-+			sysclk = freq_out / sysclk_divs[i];
-+			for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
-+				if (sysclk != dac_divs[j] * lrclk)
-+					continue;
- 				for (k = 0; k < ARRAY_SIZE(bclk_divs); ++k)
- 					if (sysclk == bclk * bclk_divs[k] / 10)
- 						break;
- 				if (k != ARRAY_SIZE(bclk_divs))
- 					break;
- 			}
-+			if (j != ARRAY_SIZE(dac_divs))
-+				break;
- 		}
--		if (j != ARRAY_SIZE(dac_divs))
--			break;
--	}
- 
--	if (i != ARRAY_SIZE(sysclk_divs)) {
--		goto configure_clock;
--	} else if (wm8960->clk_id != WM8960_SYSCLK_AUTO) {
--		dev_err(codec->dev, "failed to configure clock\n");
--		return -EINVAL;
-+		if (i != ARRAY_SIZE(sysclk_divs)) {
-+			goto configure_clock;
-+		} else if (wm8960->clk_id != WM8960_SYSCLK_AUTO) {
-+			dev_err(codec->dev, "failed to configure clock\n");
-+			return -EINVAL;
-+		}
- 	}
- 	/* get a available pll out frequency and set pll */
- 	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
--- 
-2.1.4
+diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
+index c166d9394c69..5a1d789ba58d 100644
+--- a/sound/soc/codecs/rt5659.c
++++ b/sound/soc/codecs/rt5659.c
+@@ -4201,7 +4201,7 @@ struct i2c_driver rt5659_i2c_driver = {
+ 		.name = "rt5659",
+ 		.owner = THIS_MODULE,
+ 		.of_match_table = rt5659_of_match,
+-		.acpi_match_table = ACPI_PTR(rt5659_acpi_match),
++		.acpi_match_table = rt5659_acpi_match,
+ 	},
+ 	.probe = rt5659_i2c_probe,
+ 	.remove = rt5659_i2c_remove,
