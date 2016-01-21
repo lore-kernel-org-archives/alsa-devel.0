@@ -1,8 +1,8 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 4/6] ASoC: wm5110: Add support for audio trace
-	firmware
-Date: Thu, 21 Jan 2016 17:53:00 +0000
-Message-ID: <1453398782-32198-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/6] ASoC: wm_adsp: Use more generic naming for
+	regions and caps definitions
+Date: Thu, 21 Jan 2016 17:52:58 +0000
+Message-ID: <1453398782-32198-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1453398782-32198-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 6AA392606BA
- for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2016 18:53:05 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id B5DCB26062B
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2016 18:53:04 +0100 (CET)
 In-Reply-To: <1453398782-32198-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,119 +26,58 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Mainly this adds DAI links for the audio trace, however, it is also
-necessary to update the data IRQ handler to check more cores. We have
-the handler check every core so it should not be necessary to update
-this function if more compressed firmwares are added in the future.
+The region definition will be shared by most firmwares so give this a
+more generic name and whilst we are there improve the naming of the
+voice control capabilities array as well.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/arizona.h |  2 +-
- sound/soc/codecs/wm5110.c  | 43 +++++++++++++++++++++++++++++++++++++++----
- sound/soc/codecs/wm_adsp.c |  1 -
- 3 files changed, 40 insertions(+), 6 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index 8b6adb5..0c64a57 100644
---- a/sound/soc/codecs/arizona.h
-+++ b/sound/soc/codecs/arizona.h
-@@ -57,7 +57,7 @@
- #define ARIZONA_CLK_98MHZ  5
- #define ARIZONA_CLK_147MHZ 6
- 
--#define ARIZONA_MAX_DAI  8
-+#define ARIZONA_MAX_DAI  10
- #define ARIZONA_MAX_ADSP 4
- 
- #define ARIZONA_DVFS_SR1_RQ	0x001
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 83760b7..31e48b6 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -1809,6 +1809,9 @@ static const struct snd_soc_dapm_route wm5110_dapm_routes[] = {
- 	{ "Voice Control DSP", NULL, "DSP3" },
- 	{ "Voice Control DSP", NULL, "SYSCLK" },
- 
-+	{ "Audio Trace DSP", NULL, "DSP1" },
-+	{ "Audio Trace DSP", NULL, "SYSCLK" },
-+
- 	{ "IN1L PGA", NULL, "IN1L" },
- 	{ "IN1R PGA", NULL, "IN1R" },
- 
-@@ -2152,6 +2155,27 @@ static struct snd_soc_dai_driver wm5110_dai[] = {
- 			.formats = WM5110_FORMATS,
- 		},
- 	},
-+	{
-+		.name = "wm5110-cpu-trace",
-+		.capture = {
-+			.stream_name = "Audio Trace CPU",
-+			.channels_min = 1,
-+			.channels_max = 6,
-+			.rates = WM5110_RATES,
-+			.formats = WM5110_FORMATS,
-+		},
-+		.compress_new = snd_soc_new_compress,
-+	},
-+	{
-+		.name = "wm5110-dsp-trace",
-+		.capture = {
-+			.stream_name = "Audio Trace DSP",
-+			.channels_min = 1,
-+			.channels_max = 6,
-+			.rates = WM5110_RATES,
-+			.formats = WM5110_FORMATS,
-+		},
-+	},
- };
- 
- static int wm5110_open(struct snd_compr_stream *stream)
-@@ -2163,6 +2187,8 @@ static int wm5110_open(struct snd_compr_stream *stream)
- 
- 	if (strcmp(rtd->codec_dai->name, "wm5110-dsp-voicectrl") == 0) {
- 		n_adsp = 2;
-+	} else if (strcmp(rtd->codec_dai->name, "wm5110-dsp-trace") == 0) {
-+		n_adsp = 0;
- 	} else {
- 		dev_err(arizona->dev,
- 			"No suitable compressed stream for DAI '%s'\n",
-@@ -2175,12 +2201,21 @@ static int wm5110_open(struct snd_compr_stream *stream)
- 
- static irqreturn_t wm5110_adsp2_irq(int irq, void *data)
- {
--	struct wm5110_priv *florida = data;
--	int ret;
-+	struct wm5110_priv *priv = data;
-+	struct arizona *arizona = priv->core.arizona;
-+	int serviced = 0;
-+	int i, ret;
-+
-+	for (i = 0; i < WM5110_NUM_ADSP; ++i) {
-+		ret = wm_adsp_compr_handle_irq(&priv->core.adsp[i]);
-+		if (ret != -ENODEV)
-+			serviced++;
-+	}
- 
--	ret = wm_adsp_compr_handle_irq(&florida->core.adsp[2]);
--	if (ret == -ENODEV)
-+	if (!serviced) {
-+		dev_err(arizona->dev, "Spurious compressed data IRQ\n");
- 		return IRQ_NONE;
-+	}
- 
- 	return IRQ_HANDLED;
- }
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index a81f568..369e8f5 100644
+index 33806d4..0392c58 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -2833,7 +2833,6 @@ int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
- 	mutex_lock(&dsp->pwr_lock);
+@@ -328,7 +328,7 @@ struct wm_adsp_buffer_region_def {
+ 	unsigned int size_offset;
+ };
  
- 	if (!buf) {
--		adsp_err(dsp, "Spurious buffer IRQ\n");
- 		ret = -ENODEV;
- 		goto out;
- 	}
+-static struct wm_adsp_buffer_region_def ez2control_regions[] = {
++static struct wm_adsp_buffer_region_def default_regions[] = {
+ 	{
+ 		.mem_type = WMFW_ADSP2_XM,
+ 		.base_offset = HOST_BUFFER_FIELD(X_buf_base),
+@@ -353,7 +353,7 @@ struct wm_adsp_fw_caps {
+ 	struct wm_adsp_buffer_region_def *region_defs;
+ };
+ 
+-static const struct wm_adsp_fw_caps ez2control_caps[] = {
++static const struct wm_adsp_fw_caps ctrl_caps[] = {
+ 	{
+ 		.id = SND_AUDIOCODEC_BESPOKE,
+ 		.desc = {
+@@ -362,8 +362,8 @@ static const struct wm_adsp_fw_caps ez2control_caps[] = {
+ 			.num_sample_rates = 1,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 		},
+-		.num_regions = ARRAY_SIZE(ez2control_regions),
+-		.region_defs = ez2control_regions,
++		.num_regions = ARRAY_SIZE(default_regions),
++		.region_defs = default_regions,
+ 	},
+ };
+ 
+@@ -382,8 +382,8 @@ static const struct {
+ 	[WM_ADSP_FW_CTRL] =     {
+ 		.file = "ctrl",
+ 		.compr_direction = SND_COMPRESS_CAPTURE,
+-		.num_caps = ARRAY_SIZE(ez2control_caps),
+-		.caps = ez2control_caps,
++		.num_caps = ARRAY_SIZE(ctrl_caps),
++		.caps = ctrl_caps,
+ 	},
+ 	[WM_ADSP_FW_ASR] =      { .file = "asr" },
+ 	[WM_ADSP_FW_TRACE] =    { .file = "trace" },
 -- 
 2.1.4
