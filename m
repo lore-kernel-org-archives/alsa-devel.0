@@ -1,82 +1,83 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/6] ASoC: wm_adsp: Add debug audio trace
-	firmware
-Date: Thu, 21 Jan 2016 17:52:59 +0000
-Message-ID: <1453398782-32198-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1453398782-32198-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Johan Hovold <johan@kernel.org>
+Subject: Re: [PATCH v3 1/3] ASoC: pcm179x: Split into core and SPI parts
+Date: Thu, 21 Jan 2016 18:56:27 +0100
+Message-ID: <20160121175627.GR31514@localhost>
+References: <1453390018-16854-1-git-send-email-jacob@teenage.engineering>
+ <1453390018-16854-2-git-send-email-jacob@teenage.engineering>
+ <20160121153615.GJ31514@localhost>
+ <CAOf5uwny3Rz6ctUs1wGkcvhPykFENnniC=Jq9jGBfhJG398yug@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id B87502606C1
- for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2016 18:53:10 +0100 (CET)
-In-Reply-To: <1453398782-32198-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAOf5uwny3Rz6ctUs1wGkcvhPykFENnniC=Jq9jGBfhJG398yug@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Michael Trimarchi <michael@amarulasolutions.com>
+Cc: Johan Hovold <johan@kernel.org>, Jacob Siverskog <jacob@teenage.engineering>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The audio trace firmware allows the capture of arbitrary streams of
-audio from the DSP and commonly used for debugging other firmwares. This
-patch adds support for this firwmare into the ADSP driver.
+On Thu, Jan 21, 2016 at 05:27:58PM +0100, Michael Trimarchi wrote:
+> Hi
+> 
+> On Thu, Jan 21, 2016 at 4:36 PM, Johan Hovold <johan@kernel.org> wrote:
+> > On Thu, Jan 21, 2016 at 04:26:56PM +0100, Jacob Siverskog wrote:
+> >> The pcm179x family supports both SPI and I2C for configuration. This
+> >> patch splits the driver into core and SPI parts, in preparation for
+> >> I2C support.
+> >>
+> >> Reviewed-by: Johan Hovold <johan@kernel.org>
+> >> Signed-off-by: Jacob Siverskog <jacob@teenage.engineering>
+> >> ---
+> >
+> >> diff --git a/sound/soc/codecs/pcm179x-spi.c b/sound/soc/codecs/pcm179x-spi.c
+> >> new file mode 100644
+> >> index 0000000..5842add9
+> >> --- /dev/null
+> >> +++ b/sound/soc/codecs/pcm179x-spi.c
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm_adsp.c | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+> >> -static int pcm179x_spi_probe(struct spi_device *spi)
+> >> +int pcm179x_common_init(struct device *dev, struct regmap *regmap)
+> >>  {
+> >>       struct pcm179x_private *pcm179x;
+> >>       int ret;
+> >>
+> >> -     pcm179x = devm_kzalloc(&spi->dev, sizeof(struct pcm179x_private),
+> >> +     if (IS_ERR(regmap)) {
+> >> +             ret = PTR_ERR(regmap);
+> >> +             dev_err(dev, "Failed to register regmap: %d\n", ret);
+> >> +             return ret;
+> >> +     }
+> >
+> > This looks weird. I think you should check for error where you do the
+> > allocation even if this means a four more lines of code in total.
+> >
+> 
+> agree on that
+> 
+> >> +
+> >> +     pcm179x = devm_kzalloc(dev, sizeof(struct pcm179x_private),
+> >>                               GFP_KERNEL);
+> >>       if (!pcm179x)
+> >>               return -ENOMEM;
+> >>
+> >> -     spi_set_drvdata(spi, pcm179x);
+> >> -
+> >> -     pcm179x->regmap = devm_regmap_init_spi(spi, &pcm179x_regmap);
+> >> -     if (IS_ERR(pcm179x->regmap)) {
+> >> -             ret = PTR_ERR(pcm179x->regmap);
+> >> -             dev_err(&spi->dev, "Failed to register regmap: %d\n", ret);
+> >> -             return ret;
+> >> -     }
+> >> +     pcm179x->regmap = regmap;
+> >> +     dev_set_drvdata(dev, pcm179x);
+> >>
+> 
+> snd_soc_codec_set_drvdata
+> 
+> Is this more "codec" like?
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 0392c58..a81f568 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -367,6 +367,24 @@ static const struct wm_adsp_fw_caps ctrl_caps[] = {
- 	},
- };
- 
-+static const struct wm_adsp_fw_caps trace_caps[] = {
-+	{
-+		.id = SND_AUDIOCODEC_BESPOKE,
-+		.desc = {
-+			.max_ch = 8,
-+			.sample_rates = {
-+				4000, 8000, 11025, 12000, 16000, 22050,
-+				24000, 32000, 44100, 48000, 64000, 88200,
-+				96000, 176400, 192000
-+			},
-+			.num_sample_rates = 15,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		},
-+		.num_regions = ARRAY_SIZE(default_regions),
-+		.region_defs = default_regions,
-+	},
-+};
-+
- static const struct {
- 	const char *file;
- 	int compr_direction;
-@@ -386,7 +404,12 @@ static const struct {
- 		.caps = ctrl_caps,
- 	},
- 	[WM_ADSP_FW_ASR] =      { .file = "asr" },
--	[WM_ADSP_FW_TRACE] =    { .file = "trace" },
-+	[WM_ADSP_FW_TRACE] =    {
-+		.file = "trace",
-+		.compr_direction = SND_COMPRESS_CAPTURE,
-+		.num_caps = ARRAY_SIZE(trace_caps),
-+		.caps = trace_caps,
-+	},
- 	[WM_ADSP_FW_SPK_PROT] = { .file = "spk-prot" },
- 	[WM_ADSP_FW_MISC] =     { .file = "misc" },
- };
--- 
-2.1.4
+I'd say, only if you also add a codec probe callback and use it from
+there. The other codec drivers appear to be consistent on that.
+
+Thanks,
+Johan
