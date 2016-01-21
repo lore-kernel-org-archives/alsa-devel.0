@@ -1,21 +1,21 @@
 From: Ankhit Vivekananda <ankhit.vivekananda@biscotti.com>
-Subject: Re: Discarding the first few frames inside the kernel
-Date: Thu, 21 Jan 2016 10:28:56 -0600
-Message-ID: <CACaQK7DO4ecdBXzto+p0pUB=3crKHKw-ceJVrvYWOWYVee2yog@mail.gmail.com>
-References: <CACaQK7CtpKQK_j5q+F6ekK_j+w3SLQ=RQ0yR76+81ETvsg1Qdg@mail.gmail.com>
- <569D9DFE.5000503@sakamocchi.jp>
- <CACaQK7DCUx7=2t-SBZQ6vjU4OJ+Le0YcOK_D-0q4RqFczTO9Zg@mail.gmail.com>
- <56A04004.1020206@sakamocchi.jp>
+Subject: Re: Use of snd_pcm_format_set_silence
+Date: Thu, 21 Jan 2016 10:29:45 -0600
+Message-ID: <CACaQK7A7J1+LdoK4Oa4Dx=wsLUNx7yVz=HiKgkweO9nFRZ7OFA@mail.gmail.com>
+References: <CACaQK7C04jg3nP-7ijntq+ADEdO41+Ab1VpRDS1vwFXWAPPTHg@mail.gmail.com>
+ <56A002A2.5070200@ladisch.de>
+ <CACaQK7ARzW=LJ3Xo5=Qyh42uyR96Pbo_SFGOfCh3j6ZozobjcA@mail.gmail.com>
+ <56A08C0F.8070902@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f48.google.com (mail-wm0-f48.google.com [74.125.82.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 6280C2606FD
- for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2016 17:28:56 +0100 (CET)
-Received: by mail-wm0-f48.google.com with SMTP id l65so227154057wmf.1
- for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2016 08:28:56 -0800 (PST)
-In-Reply-To: <56A04004.1020206@sakamocchi.jp>
+Received: from mail-wm0-f46.google.com (mail-wm0-f46.google.com [74.125.82.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id E06FD26070C
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2016 17:29:45 +0100 (CET)
+Received: by mail-wm0-f46.google.com with SMTP id b14so89704244wmb.1
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2016 08:29:45 -0800 (PST)
+In-Reply-To: <56A08C0F.8070902@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,45 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Takashi,
+Hello Clemens,
 
-Thank you very much for the explanation.
+Thank you very much for the confirmation.
 
 Regards,
 Ankhit
 
-On Wed, Jan 20, 2016 at 8:18 PM, Takashi Sakamoto <o-takashi@sakamocchi.jp>
-wrote:
+On Thu, Jan 21, 2016 at 1:43 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
 
-> Hi,
+> Ankhit Vivekananda wrote:
+> > the snd_pcm_format_set_silence() would simply /replace/ the actual
+> > buffer read from snd_pcm_readi() to zeros(since my application is
+> > using signed 32 bit little endian format).
 >
-> On Jan 21 2016 02:24, Ankhit Vivekananda wrote:
+> Yes.
 >
->> I am not sure as to how the wait for 4.5ms can be applied there?
->>
+> > There would be no delay induced in doing so.
 >
-> I think you asked about the way to achieve the idea.
->
-> Call kernel's process scheduler in the .prepare() implementation of your
-> driver. For example, msleep() in <linux/delay.h> (More geneous logic is
-> preferrable, I think.)
->
-> Don't do this in .trigger() implementation, because this can be called in
-> interrupt context, or between spin_lock_irqsave()/spin_lock_irqstore() in
-> process context.
->
-> Alternatively, does calling snd_pcm_format_set_silence(), be a safe
->> method to silence the first few samples coming out of the buffer?
->>
->
-> I don't know exactly because I have no supplemental information about your
-> driver and hardware design.
+> Yes; this function does not block.
 >
 >
-> Regards
->
-> Takashi Sakamoto
+> Regards,
+> Clemens
 >
