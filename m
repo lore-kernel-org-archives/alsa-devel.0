@@ -1,206 +1,68 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/2] ALSA: timer: Handle disconnection more
-	safely
-Date: Thu, 21 Jan 2016 17:53:02 +0100
-Message-ID: <1453395183-27947-1-git-send-email-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 459C72606A8
- for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2016 17:53:06 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 8D271AD03
- for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2016 16:53:04 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rt5645: fix the shift bit of IN1 boost" to the asoc tree
+Date: Thu, 21 Jan 2016 16:56:06 +0000
+Message-ID: <E1aMIWk-0008FK-Nz@debutante>
+References: <1453353220-16155-1-git-send-email-bardliao@realtek.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1453353220-16155-1-git-send-email-bardliao@realtek.com>
+Sender: stable-owner@vger.kernel.org
+To: Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently ALSA timer device doesn't take the disconnection into
-account very well; it merely unlinks the timer device at disconnection
-callback but does nothing else.  Because of this, when an application
-accessing the timer device is disconnected, it may release the
-resource before actually closed.  In most cases, it results in a
-warning message indicating a leftover timer instance like:
-   ALSA: timer xxxx is busy?
-But basically this is an open race.
+The patch
 
-This patch tries to address it.  The strategy is like other ALSA
-devices: namely,
-- Manage card's refcount at each open/close
-- Wake up the pending tasks at disconnection
-- Check the shutdown flag appropriately at each possible call
+   ASoC: rt5645: fix the shift bit of IN1 boost
 
-Note that this patch has one ugly hack to handle the wakeup of pending
-tasks.  It'd be cleaner to introduce a new disconnect op to
-snd_timer_instance ops.  But since it would lead to internal ABI
-breakage and it eventually increase my own work when backporting to
-stable kernels, I took a different path to implement locally in
-timer.c.  A cleanup patch will follow at next for 4.5 kernel.
+has been applied to the asoc tree at
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=109431
-Cc: <stable@vger.kernel.org> # v3.15+
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From b28785fa9cede0d4f47310ca0dd2a4e1d50478b5 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Thu, 21 Jan 2016 13:13:40 +0800
+Subject: [PATCH] ASoC: rt5645: fix the shift bit of IN1 boost
+
+The shift bit of IN1 boost gain control is 12.
+
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
 ---
- sound/core/timer.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+ sound/soc/codecs/rt5645.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/core/timer.c b/sound/core/timer.c
-index cb25aded5349..681fb051b9eb 100644
---- a/sound/core/timer.c
-+++ b/sound/core/timer.c
-@@ -65,6 +65,7 @@ struct snd_timer_user {
- 	int qtail;
- 	int qused;
- 	int queue_size;
-+	bool disconnected;
- 	struct snd_timer_read *queue;
- 	struct snd_timer_tread *tqueue;
- 	spinlock_t qlock;
-@@ -290,6 +291,9 @@ int snd_timer_open(struct snd_timer_instance **ti,
- 		mutex_unlock(&register_mutex);
- 		return -ENOMEM;
- 	}
-+	/* take a card refcount for safe disconnection */
-+	if (timer->card)
-+		get_device(&timer->card->card_dev);
- 	timeri->slave_class = tid->dev_sclass;
- 	timeri->slave_id = slave_id;
- 	if (list_empty(&timer->open_list_head) && timer->hw.open)
-@@ -359,6 +363,9 @@ int snd_timer_close(struct snd_timer_instance *timeri)
- 		}
- 		spin_unlock(&timer->lock);
- 		spin_unlock_irq(&slave_active_lock);
-+		/* release a card refcount for safe disconnection */
-+		if (timer->card)
-+			put_device(&timer->card->card_dev);
- 		mutex_unlock(&register_mutex);
- 	}
-  out:
-@@ -474,6 +481,8 @@ int snd_timer_start(struct snd_timer_instance *timeri, unsigned int ticks)
- 	timer = timeri->timer;
- 	if (timer == NULL)
- 		return -EINVAL;
-+	if (timer->card && timer->card->shutdown)
-+		return -ENODEV;
- 	spin_lock_irqsave(&timer->lock, flags);
- 	timeri->ticks = timeri->cticks = ticks;
- 	timeri->pticks = 0;
-@@ -505,6 +514,10 @@ static int _snd_timer_stop(struct snd_timer_instance *timeri, int event)
- 	spin_lock_irqsave(&timer->lock, flags);
- 	list_del_init(&timeri->ack_list);
- 	list_del_init(&timeri->active_list);
-+	if (timer->card && timer->card->shutdown) {
-+		spin_unlock_irqrestore(&timer->lock, flags);
-+		return 0;
-+	}
- 	if ((timeri->flags & SNDRV_TIMER_IFLG_RUNNING) &&
- 	    !(--timer->running)) {
- 		timer->hw.stop(timer);
-@@ -565,6 +578,8 @@ int snd_timer_continue(struct snd_timer_instance *timeri)
- 	timer = timeri->timer;
- 	if (! timer)
- 		return -EINVAL;
-+	if (timer->card && timer->card->shutdown)
-+		return -ENODEV;
- 	spin_lock_irqsave(&timer->lock, flags);
- 	if (!timeri->cticks)
- 		timeri->cticks = 1;
-@@ -628,6 +643,9 @@ static void snd_timer_tasklet(unsigned long arg)
- 	unsigned long resolution, ticks;
- 	unsigned long flags;
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 28132375e427..c916c3881259 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -600,7 +600,7 @@ static const struct snd_kcontrol_new rt5645_snd_controls[] = {
  
-+	if (timer->card && timer->card->shutdown)
-+		return;
-+
- 	spin_lock_irqsave(&timer->lock, flags);
- 	/* now process all callbacks */
- 	while (!list_empty(&timer->sack_list_head)) {
-@@ -668,6 +686,9 @@ void snd_timer_interrupt(struct snd_timer * timer, unsigned long ticks_left)
- 	if (timer == NULL)
- 		return;
+ 	/* IN1/IN2 Control */
+ 	SOC_SINGLE_TLV("IN1 Boost", RT5645_IN1_CTRL1,
+-		RT5645_BST_SFT1, 8, 0, bst_tlv),
++		RT5645_BST_SFT1, 12, 0, bst_tlv),
+ 	SOC_SINGLE_TLV("IN2 Boost", RT5645_IN2_CTRL,
+ 		RT5645_BST_SFT2, 8, 0, bst_tlv),
  
-+	if (timer->card && timer->card->shutdown)
-+		return;
-+
- 	spin_lock_irqsave(&timer->lock, flags);
- 
- 	/* remember the current resolution */
-@@ -878,11 +899,28 @@ static int snd_timer_dev_register(struct snd_device *dev)
- 	return 0;
- }
- 
-+/* just for reference in snd_timer_dev_disconnect() below */
-+static void snd_timer_user_ccallback(struct snd_timer_instance *timeri,
-+				     int event, struct timespec *tstamp,
-+				     unsigned long resolution);
-+
- static int snd_timer_dev_disconnect(struct snd_device *device)
- {
- 	struct snd_timer *timer = device->device_data;
-+	struct snd_timer_instance *ti;
-+
- 	mutex_lock(&register_mutex);
- 	list_del_init(&timer->device_list);
-+	/* wake up pending sleepers */
-+	list_for_each_entry(ti, &timer->open_list_head, open_list) {
-+		/* FIXME: better to have a ti.disconnect() op */
-+		if (ti->ccallback == snd_timer_user_ccallback) {
-+			struct snd_timer_user *tu = ti->callback_data;
-+
-+			tu->disconnected = true;
-+			wake_up(&tu->qchange_sleep);
-+		}
-+	}
- 	mutex_unlock(&register_mutex);
- 	return 0;
- }
-@@ -893,6 +931,8 @@ void snd_timer_notify(struct snd_timer *timer, int event, struct timespec *tstam
- 	unsigned long resolution = 0;
- 	struct snd_timer_instance *ti, *ts;
- 
-+	if (timer->card && timer->card->shutdown)
-+		return;
- 	if (! (timer->hw.flags & SNDRV_TIMER_HW_SLAVE))
- 		return;
- 	if (snd_BUG_ON(event < SNDRV_TIMER_EVENT_MSTART ||
-@@ -1051,6 +1091,8 @@ static void snd_timer_proc_read(struct snd_info_entry *entry,
- 
- 	mutex_lock(&register_mutex);
- 	list_for_each_entry(timer, &snd_timer_list, device_list) {
-+		if (timer->card && timer->card->shutdown)
-+			continue;
- 		switch (timer->tmr_class) {
- 		case SNDRV_TIMER_CLASS_GLOBAL:
- 			snd_iprintf(buffer, "G%i: ", timer->tmr_device);
-@@ -1876,6 +1918,10 @@ static ssize_t snd_timer_user_read(struct file *file, char __user *buffer,
- 
- 			remove_wait_queue(&tu->qchange_sleep, &wait);
- 
-+			if (tu->disconnected) {
-+				err = -ENODEV;
-+				break;
-+			}
- 			if (signal_pending(current)) {
- 				err = -ERESTARTSYS;
- 				break;
-@@ -1925,6 +1971,8 @@ static unsigned int snd_timer_user_poll(struct file *file, poll_table * wait)
- 	mask = 0;
- 	if (tu->qused)
- 		mask |= POLLIN | POLLRDNORM;
-+	if (tu->disconnected)
-+		mask |= POLLERR;
- 
- 	return mask;
- }
 -- 
-2.7.0
+2.7.0.rc3
