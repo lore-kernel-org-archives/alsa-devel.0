@@ -1,43 +1,55 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH REBASE 4.5 22/31] media: dvb-core create tuner to demod pad link in disabled state
-Date: Thu, 21 Jan 2016 11:09:49 -0700
-Message-ID: <03996e963902df1a9c488a99e6c477638e2fc182.1453336831.git.shuahkh@osg.samsung.com>
-References: <cover.1453336830.git.shuahkh@osg.samsung.com>
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <cover.1453336830.git.shuahkh@osg.samsung.com>
-In-Reply-To: <cover.1453336830.git.shuahkh@osg.samsung.com>
-References: <cover.1453336830.git.shuahkh@osg.samsung.com>
-Sender: linux-media-owner@vger.kernel.org
-To: mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittgam.net, johan@oljud.se, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, linux-api@vger.kernel.orga
+From: Dan O'Donovan <dan@emutex.com>
+Subject: CherryTrail SST firmware limitations query
+Date: Thu, 21 Jan 2016 23:10:50 +0000
+Message-ID: <56A1657A.5060600@emutex.com>
+References: <56A162A1.1070602@emutex.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bert.emutex.com (bert.emutex.com [91.103.1.109])
+ by alsa0.perex.cz (Postfix) with ESMTP id C7DFA2606BA
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 00:10:51 +0100 (CET)
+In-Reply-To: <56A162A1.1070602@emutex.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Koul, Vinod" <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Create tuner to demod pad link in disabled state to help avoid
-disable step when tuner resource is requested by video or audio.
+(Sorry, re-sending as I wasn't subscribed to the alsa-devel mailing list 
+on my previous attempt)
 
-Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
----
- drivers/media/dvb-core/dvbdev.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hi Vinod
 
-diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
-index 560450a..189f85e 100644
---- a/drivers/media/dvb-core/dvbdev.c
-+++ b/drivers/media/dvb-core/dvbdev.c
-@@ -659,12 +659,12 @@ int dvb_create_media_graph(struct dvb_adapter *adap,
- 	}
- 
- 	if (ntuner && ndemod) {
-+		/* create tuner to demod link deactivated */
- 		ret = media_create_pad_links(mdev,
- 					     MEDIA_ENT_F_TUNER,
- 					     tuner, TUNER_PAD_IF_OUTPUT,
- 					     MEDIA_ENT_F_DTV_DEMOD,
--					     demod, 0, MEDIA_LNK_FL_ENABLED,
--					     false);
-+					     demod, 0, 0, false);
- 		if (ret)
- 			return ret;
- 	}
--- 
-2.5.0
+I am currently attempting to use the SSP0 port on an Intel X5-Z8300 SoC 
+(Cherry Trail) with a new codec.
+
+I have seen that you have committed SST firmware 'fw_sst_22a8.bin' and 
+related SST audio soc drivers in the past, so I hope you don't mind if I 
+ask you some questions about it here.
+
+Primarily, I am wondering if there are any limitations imposed by that 
+firmware binary that I need to be aware of. I haven't been able to find 
+much information about what this firmware does or doesn't support.
+
+For example, existing CHT SST machine drivers suggest that the PCM bit 
+clock is fixed at 19.2MHz.
+Also, I am wondering if all SSP ports on the SoC are supported by that 
+firmware, or if it is limited to just SSP2?
+
+Are there any other limitations that I may need to be aware of in the 
+firmware (or in the SSP back-end driver) when attempting to connect a 
+new codec (TI PCM5122 initially) to SSP0.
+
+Many thanks in advance for any help/advice you can provide.
+
+Best regards,
+-Dan
