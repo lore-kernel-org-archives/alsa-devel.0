@@ -1,8 +1,8 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 6/6] ASoC: wm_adsp: Move setting of DSP speed
-	into CODEC specific code
-Date: Thu, 21 Jan 2016 17:53:02 +0000
-Message-ID: <1453398782-32198-6-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 4/6] ASoC: wm5110: Add support for audio trace
+	firmware
+Date: Thu, 21 Jan 2016 17:53:00 +0000
+Message-ID: <1453398782-32198-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1453398782-32198-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 13A9A26063D
- for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2016 18:53:04 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6AA392606BA
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2016 18:53:05 +0100 (CET)
 In-Reply-To: <1453398782-32198-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,247 +26,119 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The ADSP code should be agnostic of which CODEC it runs upon, currently
-there is only one remaining part of the implementation that doesn't
-follow this. When the DSP is booted on ADSP2 we read
-ARIZONA_SYSTEM_CLOCK_1 and use that to set the initial speed for the DSP
-clock. This patch factors that out into CODEC specific code, leaving the
-ADSP code entirely CODEC agnostic.
+Mainly this adds DAI links for the audio trace, however, it is also
+necessary to update the data IRQ handler to check more cores. We have
+the handler check every core so it should not be necessary to update
+this function if more compressed firmwares are added in the future.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/cs47l24.c | 23 +++++++++++++++++++++--
- sound/soc/codecs/wm5102.c  |  6 +++---
- sound/soc/codecs/wm5110.c  | 27 +++++++++++++++++++++++----
- sound/soc/codecs/wm_adsp.c | 40 +++++++++++++++-------------------------
- sound/soc/codecs/wm_adsp.h |  8 +++-----
- 5 files changed, 65 insertions(+), 39 deletions(-)
+ sound/soc/codecs/arizona.h |  2 +-
+ sound/soc/codecs/wm5110.c  | 43 +++++++++++++++++++++++++++++++++++++++----
+ sound/soc/codecs/wm_adsp.c |  1 -
+ 3 files changed, 40 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
-index dc5ae7f..9dc77a4 100644
---- a/sound/soc/codecs/cs47l24.c
-+++ b/sound/soc/codecs/cs47l24.c
-@@ -57,6 +57,25 @@ static const struct wm_adsp_region *cs47l24_dsp_regions[] = {
- 	cs47l24_dsp3_regions,
- };
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index 8b6adb5..0c64a57 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -57,7 +57,7 @@
+ #define ARIZONA_CLK_98MHZ  5
+ #define ARIZONA_CLK_147MHZ 6
  
-+static int cs47l24_adsp_power_ev(struct snd_soc_dapm_widget *w,
-+				 struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct arizona *arizona = dev_get_drvdata(codec->dev->parent);
-+	unsigned int v;
-+	int ret;
-+
-+	ret = regmap_read(arizona->regmap, ARIZONA_SYSTEM_CLOCK_1, &v);
-+	if (ret != 0) {
-+		dev_err(codec->dev, "Failed to read SYSCLK state: %d\n", ret);
-+		return ret;
-+	}
-+
-+	v = (v & ARIZONA_SYSCLK_FREQ_MASK) >> ARIZONA_SYSCLK_FREQ_SHIFT;
-+
-+	return wm_adsp2_early_event(w, kcontrol, event, v);
-+}
-+
- static DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
- static DECLARE_TLV_DB_SCALE(digital_tlv, -6400, 50, 0);
- static DECLARE_TLV_DB_SCALE(noise_tlv, -13200, 600, 0);
-@@ -405,8 +424,8 @@ SND_SOC_DAPM_PGA("ASRC2L", ARIZONA_ASRC_ENABLE, ARIZONA_ASRC2L_ENA_SHIFT, 0,
- SND_SOC_DAPM_PGA("ASRC2R", ARIZONA_ASRC_ENABLE, ARIZONA_ASRC2R_ENA_SHIFT, 0,
- 		 NULL, 0),
+-#define ARIZONA_MAX_DAI  8
++#define ARIZONA_MAX_DAI  10
+ #define ARIZONA_MAX_ADSP 4
  
--WM_ADSP2("DSP2", 1),
--WM_ADSP2("DSP3", 2),
-+WM_ADSP2("DSP2", 1, cs47l24_adsp_power_ev),
-+WM_ADSP2("DSP3", 2, cs47l24_adsp_power_ev),
- 
- SND_SOC_DAPM_PGA("ISRC1INT1", ARIZONA_ISRC_1_CTRL_3,
- 		 ARIZONA_ISRC1_INT0_ENA_SHIFT, 0, NULL, 0),
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index 4c90526..aa1e96a 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -619,7 +619,7 @@ static int wm5102_adsp_power_ev(struct snd_soc_dapm_widget *w,
- {
- 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct arizona *arizona = dev_get_drvdata(codec->dev->parent);
--	unsigned int v;
-+	unsigned int v = 0;
- 	int ret;
- 
- 	switch (event) {
-@@ -654,7 +654,7 @@ static int wm5102_adsp_power_ev(struct snd_soc_dapm_widget *w,
- 		break;
- 	}
- 
--	return wm_adsp2_early_event(w, kcontrol, event);
-+	return wm_adsp2_early_event(w, kcontrol, event, v);
- }
- 
- static int wm5102_out_comp_coeff_get(struct snd_kcontrol *kcontrol,
-@@ -1408,7 +1408,7 @@ ARIZONA_MUX_WIDGETS(ISRC2DEC2, "ISRC2DEC2"),
- ARIZONA_MUX_WIDGETS(ISRC2INT1, "ISRC2INT1"),
- ARIZONA_MUX_WIDGETS(ISRC2INT2, "ISRC2INT2"),
- 
--WM_ADSP2_E("DSP1", 0, wm5102_adsp_power_ev),
-+WM_ADSP2("DSP1", 0, wm5102_adsp_power_ev),
- 
- SND_SOC_DAPM_OUTPUT("HPOUT1L"),
- SND_SOC_DAPM_OUTPUT("HPOUT1R"),
+ #define ARIZONA_DVFS_SR1_RQ	0x001
 diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 31e48b6..92b6a6a 100644
+index 83760b7..31e48b6 100644
 --- a/sound/soc/codecs/wm5110.c
 +++ b/sound/soc/codecs/wm5110.c
-@@ -191,6 +191,25 @@ static int wm5110_sysclk_ev(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
+@@ -1809,6 +1809,9 @@ static const struct snd_soc_dapm_route wm5110_dapm_routes[] = {
+ 	{ "Voice Control DSP", NULL, "DSP3" },
+ 	{ "Voice Control DSP", NULL, "SYSCLK" },
  
-+static int wm5110_adsp_power_ev(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct arizona *arizona = dev_get_drvdata(codec->dev->parent);
-+	unsigned int v;
-+	int ret;
++	{ "Audio Trace DSP", NULL, "DSP1" },
++	{ "Audio Trace DSP", NULL, "SYSCLK" },
 +
-+	ret = regmap_read(arizona->regmap, ARIZONA_SYSTEM_CLOCK_1, &v);
-+	if (ret != 0) {
-+		dev_err(codec->dev, "Failed to read SYSCLK state: %d\n", ret);
-+		return ret;
+ 	{ "IN1L PGA", NULL, "IN1L" },
+ 	{ "IN1R PGA", NULL, "IN1R" },
+ 
+@@ -2152,6 +2155,27 @@ static struct snd_soc_dai_driver wm5110_dai[] = {
+ 			.formats = WM5110_FORMATS,
+ 		},
+ 	},
++	{
++		.name = "wm5110-cpu-trace",
++		.capture = {
++			.stream_name = "Audio Trace CPU",
++			.channels_min = 1,
++			.channels_max = 6,
++			.rates = WM5110_RATES,
++			.formats = WM5110_FORMATS,
++		},
++		.compress_new = snd_soc_new_compress,
++	},
++	{
++		.name = "wm5110-dsp-trace",
++		.capture = {
++			.stream_name = "Audio Trace DSP",
++			.channels_min = 1,
++			.channels_max = 6,
++			.rates = WM5110_RATES,
++			.formats = WM5110_FORMATS,
++		},
++	},
+ };
+ 
+ static int wm5110_open(struct snd_compr_stream *stream)
+@@ -2163,6 +2187,8 @@ static int wm5110_open(struct snd_compr_stream *stream)
+ 
+ 	if (strcmp(rtd->codec_dai->name, "wm5110-dsp-voicectrl") == 0) {
+ 		n_adsp = 2;
++	} else if (strcmp(rtd->codec_dai->name, "wm5110-dsp-trace") == 0) {
++		n_adsp = 0;
+ 	} else {
+ 		dev_err(arizona->dev,
+ 			"No suitable compressed stream for DAI '%s'\n",
+@@ -2175,12 +2201,21 @@ static int wm5110_open(struct snd_compr_stream *stream)
+ 
+ static irqreturn_t wm5110_adsp2_irq(int irq, void *data)
+ {
+-	struct wm5110_priv *florida = data;
+-	int ret;
++	struct wm5110_priv *priv = data;
++	struct arizona *arizona = priv->core.arizona;
++	int serviced = 0;
++	int i, ret;
++
++	for (i = 0; i < WM5110_NUM_ADSP; ++i) {
++		ret = wm_adsp_compr_handle_irq(&priv->core.adsp[i]);
++		if (ret != -ENODEV)
++			serviced++;
 +	}
-+
-+	v = (v & ARIZONA_SYSCLK_FREQ_MASK) >> ARIZONA_SYSCLK_FREQ_SHIFT;
-+
-+	return wm_adsp2_early_event(w, kcontrol, event, v);
-+}
-+
- static const struct reg_sequence wm5110_no_dre_left_enable[] = {
- 	{ 0x3024, 0xE410 },
- 	{ 0x3025, 0x0056 },
-@@ -1179,10 +1198,10 @@ SND_SOC_DAPM_PGA("ASRC2L", ARIZONA_ASRC_ENABLE, ARIZONA_ASRC2L_ENA_SHIFT, 0,
- SND_SOC_DAPM_PGA("ASRC2R", ARIZONA_ASRC_ENABLE, ARIZONA_ASRC2R_ENA_SHIFT, 0,
- 		 NULL, 0),
  
--WM_ADSP2("DSP1", 0),
--WM_ADSP2("DSP2", 1),
--WM_ADSP2("DSP3", 2),
--WM_ADSP2("DSP4", 3),
-+WM_ADSP2("DSP1", 0, wm5110_adsp_power_ev),
-+WM_ADSP2("DSP2", 1, wm5110_adsp_power_ev),
-+WM_ADSP2("DSP3", 2, wm5110_adsp_power_ev),
-+WM_ADSP2("DSP4", 3, wm5110_adsp_power_ev),
+-	ret = wm_adsp_compr_handle_irq(&florida->core.adsp[2]);
+-	if (ret == -ENODEV)
++	if (!serviced) {
++		dev_err(arizona->dev, "Spurious compressed data IRQ\n");
+ 		return IRQ_NONE;
++	}
  
- SND_SOC_DAPM_PGA("ISRC1INT1", ARIZONA_ISRC_1_CTRL_3,
- 		 ARIZONA_ISRC1_INT0_ENA_SHIFT, 0, NULL, 0),
+ 	return IRQ_HANDLED;
+ }
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 369e8f5..653dbff 100644
+index a81f568..369e8f5 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -32,9 +32,6 @@
- #include <sound/initval.h>
- #include <sound/tlv.h>
- 
--#include <linux/mfd/arizona/registers.h>
--
--#include "arizona.h"
- #include "wm_adsp.h"
- 
- #define adsp_crit(_dsp, fmt, ...) \
-@@ -2146,30 +2143,9 @@ static void wm_adsp2_boot_work(struct work_struct *work)
- 					   struct wm_adsp,
- 					   boot_work);
- 	int ret;
--	unsigned int val;
- 
+@@ -2833,7 +2833,6 @@ int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
  	mutex_lock(&dsp->pwr_lock);
  
--	/*
--	 * For simplicity set the DSP clock rate to be the
--	 * SYSCLK rate rather than making it configurable.
--	 */
--	ret = regmap_read(dsp->regmap, ARIZONA_SYSTEM_CLOCK_1, &val);
--	if (ret != 0) {
--		adsp_err(dsp, "Failed to read SYSCLK state: %d\n", ret);
--		goto err_mutex;
--	}
--	val = (val & ARIZONA_SYSCLK_FREQ_MASK)
--		>> ARIZONA_SYSCLK_FREQ_SHIFT;
--
--	ret = regmap_update_bits_async(dsp->regmap,
--				       dsp->base + ADSP2_CLOCKING,
--				       ADSP2_CLK_SEL_MASK, val);
--	if (ret != 0) {
--		adsp_err(dsp, "Failed to set clock rate: %d\n", ret);
--		goto err_mutex;
--	}
--
- 	ret = wm_adsp2_ena(dsp);
- 	if (ret != 0)
- 		goto err_mutex;
-@@ -2209,8 +2185,21 @@ err_mutex:
- 	mutex_unlock(&dsp->pwr_lock);
- }
- 
-+static void wm_adsp2_set_dspclk(struct wm_adsp *dsp, unsigned int freq)
-+{
-+	int ret;
-+
-+	ret = regmap_update_bits_async(dsp->regmap,
-+				       dsp->base + ADSP2_CLOCKING,
-+				       ADSP2_CLK_SEL_MASK,
-+				       freq << ADSP2_CLK_SEL_SHIFT);
-+	if (ret != 0)
-+		adsp_err(dsp, "Failed to set clock rate: %d\n", ret);
-+}
-+
- int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
--		   struct snd_kcontrol *kcontrol, int event)
-+			 struct snd_kcontrol *kcontrol, int event,
-+			 unsigned int freq)
- {
- 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct wm_adsp *dsps = snd_soc_codec_get_drvdata(codec);
-@@ -2220,6 +2209,7 @@ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
-+		wm_adsp2_set_dspclk(dsp, freq);
- 		queue_work(system_unbound_wq, &dsp->boot_work);
- 		break;
- 	default:
-diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index 1a928ec..b61cb57 100644
---- a/sound/soc/codecs/wm_adsp.h
-+++ b/sound/soc/codecs/wm_adsp.h
-@@ -80,7 +80,7 @@ struct wm_adsp {
- 	SND_SOC_DAPM_PGA_E(wname, SND_SOC_NOPM, num, 0, NULL, 0, \
- 		wm_adsp1_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)
- 
--#define WM_ADSP2_E(wname, num, event_fn) \
-+#define WM_ADSP2(wname, num, event_fn) \
- {	.id = snd_soc_dapm_dai_link, .name = wname " Preloader", \
- 	.reg = SND_SOC_NOPM, .shift = num, .event = event_fn, \
- 	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD }, \
-@@ -88,9 +88,6 @@ struct wm_adsp {
- 	.reg = SND_SOC_NOPM, .shift = num, .event = wm_adsp2_event, \
- 	.event_flags = SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD }
- 
--#define WM_ADSP2(wname, num) \
--	WM_ADSP2_E(wname, num, wm_adsp2_early_event)
--
- extern const struct snd_kcontrol_new wm_adsp_fw_controls[];
- 
- int wm_adsp1_init(struct wm_adsp *dsp);
-@@ -100,7 +97,8 @@ int wm_adsp2_codec_remove(struct wm_adsp *dsp, struct snd_soc_codec *codec);
- int wm_adsp1_event(struct snd_soc_dapm_widget *w,
- 		   struct snd_kcontrol *kcontrol, int event);
- int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
--			 struct snd_kcontrol *kcontrol, int event);
-+			 struct snd_kcontrol *kcontrol, int event,
-+			 unsigned int freq);
- int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 		   struct snd_kcontrol *kcontrol, int event);
- 
+ 	if (!buf) {
+-		adsp_err(dsp, "Spurious buffer IRQ\n");
+ 		ret = -ENODEV;
+ 		goto out;
+ 	}
 -- 
 2.1.4
