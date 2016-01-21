@@ -1,66 +1,50 @@
-From: "Jon Medhurst (Tixy)" <tixy@linaro.org>
-Subject: Problem with commit 924eb47512 ("ASoC: dwc: fix dma stop
- transferring issue")
-Date: Thu, 21 Jan 2016 14:24:07 +0000
-Message-ID: <1453386247.2858.58.camel@linaro.org>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm5110: Unregister compressed platform
+	when driver is removed
+Date: Thu, 21 Jan 2016 14:41:12 +0000
+Message-ID: <1453387272-3674-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Yitian Bu <yitian.bu@tangramtek.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id A821526062B
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2016 15:41:17 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+The driver was not unregistering the compressed platform in
+wm5110_remove(). If the codec is built as a module, this would
+lead to a NULL pointer deref if the module was unloaded and then
+re-probed.
 
-In trying to work out why audio stopped working on ARM's Juno board I
-bisected the problem to $subject commit and reverting this fixed things.
-The symptoms of broken audio was that alsa-utils' speaker-test produced
-very short duration 'churps' rather than the voice sample naming each
-speaker channel. (Additional note, audio on Juno is routed through a
-HDMI transmitter and the patches to support that aren't in the mainline
-kernel tree.)
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm5110.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Now, I don't have any documentation for the Designware I2S device so the
-following is my speculation from looking at the code and guessing what's
-going on...
-
-1. $subject patch makes i2s_start() unmask interrupts for all four
-hardware channels. 
-
-2. i2s_stop masks interrupts for all four channels.
-
-3. dw_i2s_hw_params unmasks interrupts for only the number of hardware
-channels as required for the specified audio stream format.
-
-So, playing stereo sound (one hardware channel) on my Juno board is
-going wrong because i2s_start() now unmasks interrupts for the other 3
-unused hardware channels and these are immediately generating
-interrupts, making the code think the buffer has finished transmission
-(or underflowed, or something like that, remember I'm speculating here).
-
-Now, if audio playback/capture is always achieved by using this sequence
-of calls:
-
-dw_i2s_hw_params
-i2s_start
-i2s_stop
-
-then it seems to me that $subject patch is redundant and should be
-reverted. However, if this is allowed (possibly is, depends on how
-dw_i2s_trigger can be called) ...
-
-dw_i2s_hw_params
-i2s_start
-i2s_stop
-i2s_start
-i2s_stop
-
-then we need to change i2s_start to unmask interrupts for just the
-hardware channels being used. I can have a go at producing a patch for
-that if that's deemed the correct solution. (Looks like we'd need to
-stash the number of used hardware channels in struct dw_i2s_dev).
-
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index 6088d30..97c0f1e 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -2382,6 +2382,7 @@ error:
+ 
+ static int wm5110_remove(struct platform_device *pdev)
+ {
++	snd_soc_unregister_platform(&pdev->dev);
+ 	snd_soc_unregister_codec(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 
 -- 
-Tixy
+1.9.1
