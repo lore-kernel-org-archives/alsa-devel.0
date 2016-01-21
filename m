@@ -1,32 +1,66 @@
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH] ASoC: Intel: Skylake: Fix memory leak
-Date: Thu, 21 Jan 2016 17:27:59 +0530
-Message-ID: <1453377479-8487-1-git-send-email-sudipm.mukherjee@gmail.com>
+From: "Jon Medhurst (Tixy)" <tixy@linaro.org>
+Subject: Problem with commit 924eb47512 ("ASoC: dwc: fix dma stop
+ transferring issue")
+Date: Thu, 21 Jan 2016 14:24:07 +0000
+Message-ID: <1453386247.2858.58.camel@linaro.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To: Mark Brown <broonie@kernel.org>, Yitian Bu <yitian.bu@tangramtek.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-If snd_soc_tplg_component_load() fails we just printed an error message
-and returned the error code but we missed releasing the firmware.
+Hi
 
-Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
----
- sound/soc/intel/skylake/skl-topology.c | 1 +
- 1 file changed, 1 insertion(+)
+In trying to work out why audio stopped working on ARM's Juno board I
+bisected the problem to $subject commit and reverting this fixed things.
+The symptoms of broken audio was that alsa-utils' speaker-test produced
+very short duration 'churps' rather than the voice sample naming each
+speaker channel. (Additional note, audio on Juno is routed through a
+HDMI transmitter and the patches to support that aren't in the mainline
+kernel tree.)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 4624556..e81c020 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -1510,6 +1510,7 @@ int skl_tplg_init(struct snd_soc_platform *platform, struct hdac_ext_bus *ebus)
- 					&skl_tplg_ops, fw, 0);
- 	if (ret < 0) {
- 		dev_err(bus->dev, "tplg component load failed%d\n", ret);
-+		release_firmware(fw);
- 		return -EINVAL;
- 	}
- 
+Now, I don't have any documentation for the Designware I2S device so the
+following is my speculation from looking at the code and guessing what's
+going on...
+
+1. $subject patch makes i2s_start() unmask interrupts for all four
+hardware channels. 
+
+2. i2s_stop masks interrupts for all four channels.
+
+3. dw_i2s_hw_params unmasks interrupts for only the number of hardware
+channels as required for the specified audio stream format.
+
+So, playing stereo sound (one hardware channel) on my Juno board is
+going wrong because i2s_start() now unmasks interrupts for the other 3
+unused hardware channels and these are immediately generating
+interrupts, making the code think the buffer has finished transmission
+(or underflowed, or something like that, remember I'm speculating here).
+
+Now, if audio playback/capture is always achieved by using this sequence
+of calls:
+
+dw_i2s_hw_params
+i2s_start
+i2s_stop
+
+then it seems to me that $subject patch is redundant and should be
+reverted. However, if this is allowed (possibly is, depends on how
+dw_i2s_trigger can be called) ...
+
+dw_i2s_hw_params
+i2s_start
+i2s_stop
+i2s_start
+i2s_stop
+
+then we need to change i2s_start to unmask interrupts for just the
+hardware channels being used. I can have a go at producing a patch for
+that if that's deemed the correct solution. (Looks like we'd need to
+stash the number of used hardware channels in struct dw_i2s_dev).
+
 -- 
-1.9.1
+Tixy
