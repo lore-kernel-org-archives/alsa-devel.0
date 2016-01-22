@@ -1,8 +1,8 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [RFC v2 2/6] ALSA: pcm: add IEC958 channel status
-	control helper
-Date: Fri, 22 Jan 2016 18:48:28 +0100
-Message-ID: <1453484912-24547-3-git-send-email-arnaud.pouliquen@st.com>
+Subject: [RFC v2 4/6] drm: sti: Add ASoC generic hdmi codec
+	support.
+Date: Fri, 22 Jan 2016 18:48:30 +0100
+Message-ID: <1453484912-24547-5-git-send-email-arnaud.pouliquen@st.com>
 References: <1453484912-24547-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
  [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 445E8260541
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 18:48:58 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id D93DE2604AF
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 18:49:00 +0100 (CET)
 In-Reply-To: <1453484912-24547-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,163 +26,408 @@ To: alsa-devel@alsa-project.org
 Cc: Jean-Francois Moine <moinejf@free.fr>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@linux.ie>, arnaud.pouliquen@st.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Benjamin Gaignard <benjamin.gaignard@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add IEC958 channel status helper that creates control to handle the
-IEC60958 status bits.
+Add the interface needed by Jyri's generic hdmi-codec driver [1].
+
+[1] https://patchwork.kernel.org/patch/7215271/ ("ASoC: hdmi-codec: Add
+        hdmi-codec for external HDMI-encoders")
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- include/sound/pcm_iec958.h | 16 ++++++++
- sound/core/pcm_iec958.c    | 99 ++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 115 insertions(+)
+ drivers/gpu/drm/sti/Kconfig    |   1 +
+ drivers/gpu/drm/sti/sti_hdmi.c | 248 ++++++++++++++++++++++++++++++++++++++---
+ drivers/gpu/drm/sti/sti_hdmi.h |  10 ++
+ 3 files changed, 242 insertions(+), 17 deletions(-)
 
-diff --git a/include/sound/pcm_iec958.h b/include/sound/pcm_iec958.h
-index 36f023a..7453ace 100644
---- a/include/sound/pcm_iec958.h
-+++ b/include/sound/pcm_iec958.h
-@@ -3,9 +3,25 @@
+diff --git a/drivers/gpu/drm/sti/Kconfig b/drivers/gpu/drm/sti/Kconfig
+index 10c1b19..d739938 100644
+--- a/drivers/gpu/drm/sti/Kconfig
++++ b/drivers/gpu/drm/sti/Kconfig
+@@ -7,5 +7,6 @@ config DRM_STI
+ 	select DRM_KMS_CMA_HELPER
+ 	select DRM_PANEL
+ 	select FW_LOADER
++	select SND_SOC_HDMI_CODEC if SND_SOC
+ 	help
+ 	  Choose this option to enable DRM on STM stiH41x chipset
+diff --git a/drivers/gpu/drm/sti/sti_hdmi.c b/drivers/gpu/drm/sti/sti_hdmi.c
+index cd50156..9c69f78 100644
+--- a/drivers/gpu/drm/sti/sti_hdmi.c
++++ b/drivers/gpu/drm/sti/sti_hdmi.c
+@@ -17,6 +17,8 @@
+ #include <drm/drm_crtc_helper.h>
+ #include <drm/drm_edid.h>
  
- #include <linux/types.h>
++#include <sound/hdmi-codec.h>
++
+ #include "sti_hdmi.h"
+ #include "sti_hdmi_tx3g4c28phy.h"
+ #include "sti_hdmi_tx3g0c55phy.h"
+@@ -34,6 +36,8 @@
+ #define HDMI_DFLT_CHL0_DAT              0x0110
+ #define HDMI_DFLT_CHL1_DAT              0x0114
+ #define HDMI_DFLT_CHL2_DAT              0x0118
++#define HDMI_AUDIO_CFG                  0x0200
++#define HDMI_SPDIF_FIFO_STATUS          0x0204
+ #define HDMI_SW_DI_1_HEAD_WORD          0x0210
+ #define HDMI_SW_DI_1_PKT_WORD0          0x0214
+ #define HDMI_SW_DI_1_PKT_WORD1          0x0218
+@@ -43,6 +47,9 @@
+ #define HDMI_SW_DI_1_PKT_WORD5          0x0228
+ #define HDMI_SW_DI_1_PKT_WORD6          0x022C
+ #define HDMI_SW_DI_CFG                  0x0230
++#define HDMI_SAMPLE_FLAT_MASK           0x0244
++#define HDMI_AUDN                       0x0400
++#define HDMI_AUD_CTS                    0x0404
+ #define HDMI_SW_DI_2_HEAD_WORD          0x0600
+ #define HDMI_SW_DI_2_PKT_WORD0          0x0604
+ #define HDMI_SW_DI_2_PKT_WORD1          0x0608
+@@ -91,6 +98,7 @@
+ #define HDMI_INT_DLL_LCK                BIT(5)
+ #define HDMI_INT_NEW_FRAME              BIT(6)
+ #define HDMI_INT_GENCTRL_PKT            BIT(7)
++#define HDMI_INT_AUDIO_FIFO_XRUN        BIT(8)
+ #define HDMI_INT_SINK_TERM_PRESENT      BIT(11)
  
-+/*
-+ * IEC 60958 controls parameters
-+ * Describes channel status and associated callback
-+ */
-+struct snd_pcm_iec958_params {
-+	/* call when control is updated by user */
-+	int (*ctrl_set)(void *pdata, u8 *status, u8 len);
-+
-+	struct snd_aes_iec958 *iec;
-+	void *pdata; /* user private data to retrieve context */
-+	struct mutex *mutex; /* use to avoid race condition */
-+};
-+
- int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
- 	size_t len);
+ #define HDMI_DEFAULT_INT (HDMI_INT_SINK_TERM_PRESENT \
+@@ -99,6 +107,7 @@
+ 			| HDMI_INT_GLOBAL)
  
- int snd_pcm_create_iec958_consumer_hw_params(struct snd_pcm_hw_params *params,
- 					     u8 *cs, size_t len);
+ #define HDMI_WORKING_INT (HDMI_INT_SINK_TERM_PRESENT \
++			| HDMI_INT_AUDIO_FIFO_XRUN \
+ 			| HDMI_INT_GENCTRL_PKT \
+ 			| HDMI_INT_NEW_FRAME \
+ 			| HDMI_INT_DLL_LCK \
+@@ -109,6 +118,27 @@
+ 
+ #define HDMI_STA_SW_RST                 BIT(1)
+ 
++#define HDMI_AUD_CFG_8CH		BIT(0)
++#define HDMI_AUD_CFG_SPDIF_DIV_2	BIT(1)
++#define HDMI_AUD_CFG_SPDIF_DIV_3	BIT(2)
++#define HDMI_AUD_CFG_SPDIF_CLK_DIV_4	(BIT(1) | BIT(2))
++#define HDMI_AUD_CFG_CTS_CLK_256FS	BIT(12)
++#define HDMI_AUD_CFG_DTS_INVALID	BIT(16)
++#define HDMI_AUD_CFG_ONE_BIT_INVALID	(BIT(18) | BIT(19) | BIT(20) |  BIT(21))
++#define HDMI_AUD_CFG_CH12_VALID	BIT(28)
++#define HDMI_AUD_CFG_CH34_VALID	BIT(29)
++#define HDMI_AUD_CFG_CH56_VALID	BIT(30)
++#define HDMI_AUD_CFG_CH78_VALID	BIT(31)
 +
-+int snd_pcm_create_iec958_ctl(struct snd_pcm *pcm,
-+			      struct snd_pcm_iec958_params *params, int stream);
- #endif
-diff --git a/sound/core/pcm_iec958.c b/sound/core/pcm_iec958.c
-index c9f8b66..8dd0415 100644
---- a/sound/core/pcm_iec958.c
-+++ b/sound/core/pcm_iec958.c
-@@ -7,11 +7,87 @@
++/* sample flat mask */
++#define HDMI_SAMPLE_FLAT_NO	 0
++#define HDMI_SAMPLE_FLAT_SP0 BIT(0)
++#define HDMI_SAMPLE_FLAT_SP1 BIT(1)
++#define HDMI_SAMPLE_FLAT_SP2 BIT(2)
++#define HDMI_SAMPLE_FLAT_SP3 BIT(3)
++#define HDMI_SAMPLE_FLAT_ALL (HDMI_SAMPLE_FLAT_SP0 | HDMI_SAMPLE_FLAT_SP1  |\
++			      HDMI_SAMPLE_FLAT_SP2 | HDMI_SAMPLE_FLAT_SP3)
++
+ #define HDMI_INFOFRAME_HEADER_TYPE(x)    (((x) & 0xff) <<  0)
+ #define HDMI_INFOFRAME_HEADER_VERSION(x) (((x) & 0xff) <<  8)
+ #define HDMI_INFOFRAME_HEADER_LEN(x)     (((x) & 0x0f) << 16)
+@@ -157,6 +187,10 @@ static irqreturn_t hdmi_irq_thread(int irq, void *arg)
+ 		wake_up_interruptible(&hdmi->wait_event);
+ 	}
+ 
++	/* Audio FIFO underrun IRQ */
++	if (hdmi->irq_status & HDMI_INT_AUDIO_FIFO_XRUN)
++		DRM_ERROR("audio FIFO underrun occurs");
++
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -380,26 +414,29 @@ static int hdmi_avi_infoframe_config(struct sti_hdmi *hdmi)
   */
- #include <linux/export.h>
- #include <linux/types.h>
-+#include <linux/wait.h>
- #include <sound/asoundef.h>
-+#include <sound/control.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/pcm_iec958.h>
+ static int hdmi_audio_infoframe_config(struct sti_hdmi *hdmi)
+ {
+-	struct hdmi_audio_infoframe infofame;
++	struct hdmi_audio_params *audio = &hdmi->audio;
+ 	u8 buffer[HDMI_INFOFRAME_SIZE(AUDIO)];
+-	int ret;
+-
+-	ret = hdmi_audio_infoframe_init(&infofame);
+-	if (ret < 0) {
+-		DRM_ERROR("failed to setup audio infoframe: %d\n", ret);
+-		return ret;
+-	}
+-
+-	infofame.channels = 2;
+-
+-	ret = hdmi_audio_infoframe_pack(&infofame, buffer, sizeof(buffer));
+-	if (ret < 0) {
+-		DRM_ERROR("failed to pack audio infoframe: %d\n", ret);
+-		return ret;
++	int ret, val;
++
++	DRM_DEBUG_DRIVER("enter %s, AIF %s\n", __func__,
++			 audio->enabled ? "enable" : "disable");
++	if (audio->enabled) {
++		/* set audio parameters stored*/
++		ret = hdmi_audio_infoframe_pack(&audio->cea, buffer,
++						sizeof(buffer));
++		if (ret < 0) {
++			DRM_ERROR("failed to pack audio infoframe: %d\n", ret);
++			return ret;
++		}
++		hdmi_infoframe_write_infopack(hdmi, buffer);
++	} else {
++		/*disable audio info frame transmission */
++		val = hdmi_read(hdmi, HDMI_SW_DI_CFG);
++		val &= ~HDMI_IFRAME_CFG_DI_N(HDMI_IFRAME_MASK,
++					     HDMI_IFRAME_SLOT_AUDIO);
++		hdmi_write(hdmi, val, HDMI_SW_DI_CFG);
+ 	}
  
-+int snd_pcm_iec958_info(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_info *uinfo)
+-	hdmi_infoframe_write_infopack(hdmi, buffer);
+-
+ 	return 0;
+ }
+ 
+@@ -583,6 +620,7 @@ static int sti_hdmi_connector_get_modes(struct drm_connector *connector)
+ 
+ 	count = drm_add_edid_modes(connector, edid);
+ 	drm_mode_connector_update_edid_property(connector, edid);
++	drm_edid_to_eld(connector, edid);
+ 
+ 	kfree(edid);
+ 	return count;
+@@ -686,6 +724,167 @@ static struct drm_encoder *sti_hdmi_find_encoder(struct drm_device *dev)
+ 	return NULL;
+ }
+ 
++/**
++ * set audio  info frame
++ *
++ * @hdmi: pointer on the hdmi internal structure
++ *
++ */
++static int hdmi_audio_configure(struct sti_hdmi *hdmi,
++				struct hdmi_audio_params *params)
 +{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_IEC958;
-+	uinfo->count = 1;
-+	return 0;
-+}
++	int audio_cfg, n;
++	struct hdmi_audio_infoframe *info = &params->cea;
 +
-+static int snd_pcm_iec958_get(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *uctl)
-+{
-+	struct snd_pcm_iec958_params *params = snd_kcontrol_chip(kcontrol);
++	DRM_DEBUG_DRIVER("\n");
 +
-+	if (params->mutex)
-+		mutex_unlock(params->mutex);
-+	uctl->value.iec958.status[0] = params->iec->status[0];
-+	uctl->value.iec958.status[1] = params->iec->status[1];
-+	uctl->value.iec958.status[2] = params->iec->status[2];
-+	uctl->value.iec958.status[3] = params->iec->status[3];
-+	uctl->value.iec958.status[4] = params->iec->status[4];
-+	if (params->mutex)
-+		mutex_unlock(params->mutex);
-+	return 0;
-+}
++	if (!hdmi->enabled)
++		return 0;
 +
-+static int snd_pcm_iec958_put(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *uctl)
-+{
-+	struct snd_pcm_iec958_params *params = snd_kcontrol_chip(kcontrol);
-+	int err = 0;
++	/* update N parameter */
++	n = hdmi_audio_get_non_coherent_n(params->sample_rate);
 +
-+	if (params->mutex)
-+		mutex_lock(params->mutex);
-+	if (params->ctrl_set)
-+		err = params->ctrl_set(params->pdata,
-+				       uctl->value.iec958.status, 5);
-+	if (err < 0) {
-+		if (params->mutex)
-+			mutex_unlock(params->mutex);
-+		return err;
++	DRM_DEBUG_DRIVER("audio rate = %d Hz, TMDS clock = %d Hz, n = %d\n",
++			 params->sample_rate, hdmi->mode.clock * 1000, n);
++	hdmi_write(hdmi, n, HDMI_AUDN);
++
++	/* update HDMI registers according to configuration */
++	audio_cfg = HDMI_AUD_CFG_SPDIF_DIV_2 | HDMI_AUD_CFG_DTS_INVALID |
++		    HDMI_AUD_CFG_ONE_BIT_INVALID;
++
++	switch (info->channels) {
++	case 8:
++		audio_cfg |= HDMI_AUD_CFG_CH78_VALID;
++	case 6:
++		audio_cfg |= HDMI_AUD_CFG_CH56_VALID;
++	case 4:
++		audio_cfg |= HDMI_AUD_CFG_CH34_VALID | HDMI_AUD_CFG_8CH;
++	case 2:
++		audio_cfg |= HDMI_AUD_CFG_CH12_VALID;
++		break;
++	default:
++		DRM_ERROR("ERROR: Unsupported number of channels (%d)!\n",
++			  info->channels);
++		return -EINVAL;
 +	}
 +
-+	params->iec->status[0] = uctl->value.iec958.status[0];
-+	params->iec->status[1] = uctl->value.iec958.status[1];
-+	params->iec->status[2] = uctl->value.iec958.status[2];
-+	params->iec->status[3] = uctl->value.iec958.status[3];
-+	params->iec->status[4] = uctl->value.iec958.status[4];
++	hdmi_write(hdmi, audio_cfg, HDMI_AUDIO_CFG);
 +
-+	if (params->mutex)
-+		mutex_unlock(params->mutex);
++	hdmi->audio = *params;
 +
-+	return 1;
++	return hdmi_audio_infoframe_config(hdmi);
 +}
 +
-+static const struct snd_kcontrol_new iec958_ctls[] = {
-+	{
-+		.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE |
-+			   SNDRV_CTL_ELEM_ACCESS_VOLATILE),
-+		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT),
-+		.info = snd_pcm_iec958_info,
-+		.get = snd_pcm_iec958_get,
-+		.put = snd_pcm_iec958_put,
-+	},
-+	{
-+		.access = (SNDRV_CTL_ELEM_ACCESS_READ |
-+			   SNDRV_CTL_ELEM_ACCESS_VOLATILE),
-+		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name = SNDRV_CTL_NAME_IEC958("", CAPTURE, DEFAULT),
-+		.info = snd_pcm_iec958_info,
-+		.get = snd_pcm_iec958_get,
-+	},
++static void hdmi_audio_shutdown(struct device *dev)
++{
++	struct sti_hdmi *hdmi = dev_get_drvdata(dev);
++	int audio_cfg;
++
++	DRM_DEBUG_DRIVER("\n");
++
++	/* disable audio */
++	audio_cfg = HDMI_AUD_CFG_SPDIF_DIV_2 | HDMI_AUD_CFG_DTS_INVALID |
++		    HDMI_AUD_CFG_ONE_BIT_INVALID;
++	hdmi_write(hdmi, audio_cfg, HDMI_AUDIO_CFG);
++
++	hdmi->audio.enabled = 0;
++	hdmi_audio_infoframe_config(hdmi);
++}
++
++static int hdmi_audio_hw_params(struct device *dev,
++				struct hdmi_codec_daifmt *daifmt,
++				struct hdmi_codec_params *params)
++{
++	struct sti_hdmi *hdmi = dev_get_drvdata(dev);
++	int ret;
++	struct hdmi_audio_params audio = {
++		.sample_width = params->sample_width,
++		.sample_rate = params->sample_rate,
++		.cea = params->cea,
++	};
++
++	DRM_DEBUG_DRIVER("\n");
++
++	if (!hdmi->enabled)
++		return 0;
++
++	if ((daifmt->fmt != HDMI_I2S) || daifmt->bit_clk_inv ||
++	    daifmt->frame_clk_inv || daifmt->bit_clk_master ||
++	    daifmt->frame_clk_master) {
++		dev_err(dev, "%s: Bad flags %d %d %d %d\n", __func__,
++			daifmt->bit_clk_inv, daifmt->frame_clk_inv,
++			daifmt->bit_clk_master,
++			daifmt->frame_clk_master);
++		return -EINVAL;
++	}
++
++	audio.enabled = 1;
++
++	ret = hdmi_audio_configure(hdmi, &audio);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
++static int hdmi_audio_digital_mute(struct device *dev, bool enable)
++{
++	struct sti_hdmi *hdmi = dev_get_drvdata(dev);
++
++	DRM_DEBUG_DRIVER("%s\n", enable ? "enable" : "disable");
++
++	if (enable)
++		hdmi_write(hdmi, HDMI_SAMPLE_FLAT_ALL, HDMI_SAMPLE_FLAT_MASK);
++	else
++		hdmi_write(hdmi, HDMI_SAMPLE_FLAT_NO, HDMI_SAMPLE_FLAT_MASK);
++
++	return 0;
++}
++
++static int hdmi_audio_get_eld(struct device *dev, uint8_t *buf, size_t len)
++{
++	struct sti_hdmi *hdmi = dev_get_drvdata(dev);
++	struct drm_connector *connector = hdmi->drm_connector;
++
++	DRM_DEBUG_DRIVER("\n");
++	memcpy(buf, connector->eld, min(sizeof(connector->eld), len));
++
++	return 0;
++}
++
++static const struct hdmi_codec_ops audio_codec_ops = {
++	.hw_params = hdmi_audio_hw_params,
++	.audio_shutdown = hdmi_audio_shutdown,
++	.digital_mute = hdmi_audio_digital_mute,
++	.get_eld = hdmi_audio_get_eld,
 +};
 +
- static int create_iec958_consumer(uint rate, uint sample_width,
- 				  u8 *cs, size_t len)
- {
-@@ -111,3 +187,26 @@ int snd_pcm_create_iec958_consumer_hw_params(struct snd_pcm_hw_params *params,
- 				      cs, len);
- }
- EXPORT_SYMBOL(snd_pcm_create_iec958_consumer_hw_params);
-+
-+/**
-+ * snd_pcm_create_iec958_ctl - create IEC958 channel status default control
-+ * pcm: pcm device to associate to the control.
-+ * iec958: snd_pcm_iec958_params structure that cntains callbacks
-+ *         and channel status buffer
-+ * stream: stream type SNDRV_PCM_STREAM_PLAYBACK or SNDRV_PCM_STREAM_CATURE
-+ * Returns:  negative error code if something failed.
-+ */
-+int snd_pcm_create_iec958_ctl(struct snd_pcm *pcm,
-+			      struct snd_pcm_iec958_params *params, int stream)
++static int sti_hdmi_register_audio_driver(struct device *dev,
++					  struct sti_hdmi *hdmi)
 +{
-+	struct snd_kcontrol_new knew;
++	struct hdmi_codec_pdata codec_data = {
++		.ops = &audio_codec_ops,
++		.max_i2s_channels = 8,
++		.i2s = 1,
++		.iec_ctl = 1
++	};
 +
-+	if (stream > SNDRV_PCM_STREAM_LAST)
-+		return -EINVAL;
++	DRM_DEBUG_DRIVER("\n");
 +
-+	knew = iec958_ctls[stream];
-+	knew.device = pcm->device;
-+	knew.count = pcm->streams[stream].substream_count;
-+	return snd_ctl_add(pcm->card, snd_ctl_new1(&knew, params));
++	hdmi->audio.enabled = 0;
++
++	hdmi->audio_pdev = platform_device_register_data(
++		dev, HDMI_CODEC_DRV_NAME, PLATFORM_DEVID_AUTO,
++		&codec_data, sizeof(codec_data));
++
++	if (IS_ERR(hdmi->audio_pdev))
++		return PTR_ERR(hdmi->audio_pdev);
++
++	DRM_INFO("%s driver bound %s\n", HDMI_CODEC_DRV_NAME, dev_name(dev));
++
++	return 0;
 +}
-+EXPORT_SYMBOL(snd_pcm_create_iec958_ctl);
++
+ static int sti_hdmi_bind(struct device *dev, struct device *master, void *data)
+ {
+ 	struct sti_hdmi *hdmi = dev_get_drvdata(dev);
+@@ -733,12 +932,23 @@ static int sti_hdmi_bind(struct device *dev, struct device *master, void *data)
+ 	if (err)
+ 		goto err_connector;
+ 
++	hdmi->drm_connector = drm_connector;
++
+ 	err = drm_mode_connector_attach_encoder(drm_connector, encoder);
+ 	if (err) {
+ 		DRM_ERROR("Failed to attach a connector to a encoder\n");
+ 		goto err_sysfs;
+ 	}
+ 
++	err = sti_hdmi_register_audio_driver(dev, hdmi);
++	if (err) {
++		DRM_ERROR("Failed to attach an audio codec\n");
++		goto err_sysfs;
++	}
++
++	/* initialise audio infoframe */
++	hdmi_audio_infoframe_init(&hdmi->audio.cea);
++
+ 	/* Enable default interrupts */
+ 	hdmi_write(hdmi, HDMI_DEFAULT_INT, HDMI_INT_EN);
+ 
+@@ -746,6 +956,7 @@ static int sti_hdmi_bind(struct device *dev, struct device *master, void *data)
+ 
+ err_sysfs:
+ 	drm_connector_unregister(drm_connector);
++	hdmi->drm_connector = NULL;
+ err_connector:
+ 	drm_connector_cleanup(drm_connector);
+ 
+@@ -895,6 +1106,9 @@ static int sti_hdmi_remove(struct platform_device *pdev)
+ 	struct sti_hdmi *hdmi = dev_get_drvdata(&pdev->dev);
+ 
+ 	i2c_put_adapter(hdmi->ddc_adapt);
++
++	if (hdmi->audio_pdev)
++		platform_device_unregister(hdmi->audio_pdev);
+ 	component_del(&pdev->dev, &sti_hdmi_ops);
+ 
+ 	return 0;
+diff --git a/drivers/gpu/drm/sti/sti_hdmi.h b/drivers/gpu/drm/sti/sti_hdmi.h
+index 3d22390..afc4927 100644
+--- a/drivers/gpu/drm/sti/sti_hdmi.h
++++ b/drivers/gpu/drm/sti/sti_hdmi.h
+@@ -24,6 +24,13 @@ struct hdmi_phy_ops {
+ 	void (*stop)(struct sti_hdmi *hdmi);
+ };
+ 
++struct hdmi_audio_params {
++	bool enabled;
++	unsigned sample_width;
++	unsigned sample_rate;
++	struct hdmi_audio_infoframe cea;
++};
++
+ /**
+  * STI hdmi structure
+  *
+@@ -64,6 +71,9 @@ struct sti_hdmi {
+ 	bool event_received;
+ 	struct reset_control *reset;
+ 	struct i2c_adapter *ddc_adapt;
++	struct platform_device *audio_pdev;
++	struct hdmi_audio_params audio;
++	struct drm_connector *drm_connector;
+ };
+ 
+ u32 hdmi_read(struct sti_hdmi *hdmi, int offset);
 -- 
 1.9.1
