@@ -1,20 +1,20 @@
 From: Vinod Koul <vinod.koul@intel.com>
 Subject: Re: [PATCH] amixer: add support for TLV byte control
 	read
-Date: Fri, 22 Jan 2016 15:26:48 +0530
-Message-ID: <20160122095648.GD11130@localhost>
+Date: Fri, 22 Jan 2016 15:27:46 +0530
+Message-ID: <20160122095745.GE11130@localhost>
 References: <1453441612-29902-1-git-send-email-vinod.koul@intel.com>
  <s5hoace5e75.wl-tiwai@suse.de> <20160122074623.GC11130@localhost>
- <s5hfuxq593q.wl-tiwai@suse.de>
+ <s5hfuxq593q.wl-tiwai@suse.de> <s5hbn8e58aq.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 869A0260439
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 10:53:02 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id C3AC3260511
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 10:54:00 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <s5hfuxq593q.wl-tiwai@suse.de>
+In-Reply-To: <s5hbn8e58aq.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,78 +28,16 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 22, 2016 at 09:09:13AM +0100, Takashi Iwai wrote:
-> On Fri, 22 Jan 2016 08:46:23 +0100,
-> Vinod Koul wrote:
+On Fri, Jan 22, 2016 at 09:26:37AM +0100, Takashi Iwai wrote:
+> > > so we ensure we give right size buffer here
 > > 
-> > On Fri, Jan 22, 2016 at 07:19:10AM +0100, Takashi Iwai wrote:
-> > > On Fri, 22 Jan 2016 06:46:52 +0100,
-> > > Vinod Koul wrote:
-> > > > 
-> > > > TLV byte control are new type of byte controls added in kernel where
-> > > > controls can have large sizes.
-> > > >
-> > > > For these controls querying with 4096 size fails, so use the queried size to
-> > > > read the control
-> > > > 
-> > > > This fixes the crash with current cget/contents on these type of controls
-> > > 
-> > > Hmm...  Theoretically the TLV size and the element size are
-> > > independent.  So, it's not good to check only the type being
-> > > SND_CTL_ELEM_TYPE_BYTES.  This can be used legally by other cases,
-> > > too.
-> > > 
-> > > Basically it is an abuse in ASoC side to return the size of
-> > > TLV by the element's info.  Usually such value would lead to crash,
-> > > but the unique point of ASoC ext bytes ctl is that it doesn't have RW
-> > > accesses but only TLV_RW accesses.
-> > 
-> > But isn't that already checked? Since we are in the code which will be
-> > executed only for tlv as snd_ctl_elem_info_is_tlv_readable() ensures that.
-> > So this is only for tlv + bytes ...
+> > Actually we should have an API function that returns the size of TLV.
+> > Then amixer can adjust the allocation size.
 > 
-> I meant setting a bogus count value in info would usually lead to a
-> crash.  The point isn't about TLV access.
-> 
-> > > So, instead of only checking the type being BYTES, check the
-> > > accesses.  Only when all these conditions are met, we may take the
-> > > count as TLV (element) size.  (And still we should have the sanity
-> > > check of the value, too.)
-> > > 
-> > > Yet, this isn't a really "fix" for the crash.  Even without the patch
-> > > it shouldn't crash -- it should receive 4096 bytes, and tries to
-> > > decode.  Where did you get the crash exactly?
-> > 
-> > in alsa-lib snd_ctl_hw_elem_tlv() when it tries to do memcpy for tlv read.
-> > But the crash is caused as tlv read is large and we have only 4096 size
-> > buffer,
-> 
-> Hm, it has a check
-> 
-> static int snd_ctl_hw_elem_tlv(snd_ctl_t *handle, int op_flag,
-> 			       unsigned int numid,
-> 			       unsigned int *tlv, unsigned int tlv_size)
-> {
-> 	....
-> 		if (xtlv->tlv[1] + 2 * sizeof(unsigned int) > tlv_size) {
-> 			free(xtlv);
-> 			return -EFAULT;
-> 		}
-> 		memcpy(tlv, xtlv->tlv, xtlv->tlv[1] + 2 * sizeof(unsigned int));
-> 
-> Do you mean somewhere here triggers a crash?
+> .... thinking of this again, it might be easier to fix amixer locally
+> at first.
 
-Yes while it tried to memcpy, in my case 30K sized data to 4K buffer, so I
-allocated right one and got all the data
-
-> 
-> > so we ensure we give right size buffer here
-> 
-> Actually we should have an API function that returns the size of TLV.
-> Then amixer can adjust the allocation size.
-
-Yes we can add tat too. I want to make coontents and cget work okay while I
-add proper TLV support. Maybe we should stop cget on tlv byte type?
+Sure, so what is approach that you would like me to take
 
 -- 
 ~Vinod
