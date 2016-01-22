@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: don't overwrite io on
-	rsnd_cmd_init()" to the asoc tree
-Date: Fri, 22 Jan 2016 18:26:45 +0000
-Message-ID: <E1aMgQ1-00048d-SA@debutante>
-References: <87h9i74s0p.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: don't update status if
+	rsnd_mod_call() doesn't match" to the asoc tree
+Date: Fri, 22 Jan 2016 18:26:48 +0000
+Message-ID: <E1aMgQ4-0004A5-KJ@debutante>
+References: <87lh7j4s2e.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 456A5260701
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 19:26:50 +0100 (CET)
-In-Reply-To: <87h9i74s0p.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A83E526145A
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 19:26:53 +0100 (CET)
+In-Reply-To: <87lh7j4s2e.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: don't overwrite io on rsnd_cmd_init()
+   ASoC: rsnd: don't update status if rsnd_mod_call() doesn't match
 
 has been applied to the asoc tree at
 
@@ -53,48 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From 654a12b86305b1fd78279616f876b8d21d146a5e Mon Sep 17 00:00:00 2001
+>From 6c001f3ab4ce20f01a1b3064b2bd1a9352c5d6b1 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 21 Jan 2016 01:57:17 +0000
-Subject: [PATCH] ASoC: rsnd: don't overwrite io on rsnd_cmd_init()
+Date: Thu, 21 Jan 2016 01:56:18 +0000
+Subject: [PATCH] ASoC: rsnd: don't update status if rsnd_mod_call() doesn't
+ match
 
-Current rsnd_cmd_init() overwrites "io" which will be used end of this
-function. This patch solved this issue.
+If system uses CTU/MUX, and if probe error happened, it will try to
+call rsnd_dai_call(remove, ...). Then, MUX/DVC/SSIU/SSI might be called
+without calling rsnd_dai_call(probe, ...). Then, each mod status might
+be un-matched. It doesn't call un-matched remove function by this patch.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/cmd.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ sound/soc/sh/rcar/core.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/cmd.c b/sound/soc/sh/rcar/cmd.c
-index cd1f064e63c4..e77e4935b4ea 100644
---- a/sound/soc/sh/rcar/cmd.c
-+++ b/sound/soc/sh/rcar/cmd.c
-@@ -38,6 +38,7 @@ static int rsnd_cmd_init(struct rsnd_mod *mod,
- 
- 	if (mix) {
- 		struct rsnd_dai *rdai;
-+		struct rsnd_dai_stream *tio;
- 		int i;
- 		u32 path[] = {
- 			[0] = 0,
-@@ -55,12 +56,12 @@ static int rsnd_cmd_init(struct rsnd_mod *mod,
- 		 */
- 		data = 0;
- 		for_each_rsnd_dai(rdai, priv, i) {
--			io = &rdai->playback;
--			if (mix == rsnd_io_to_mod_mix(io))
-+			tio = &rdai->playback;
-+			if (mix == rsnd_io_to_mod_mix(tio))
- 				data |= path[rsnd_mod_id(src)];
- 
--			io = &rdai->capture;
--			if (mix == rsnd_io_to_mod_mix(io))
-+			tio = &rdai->capture;
-+			if (mix == rsnd_io_to_mod_mix(tio))
- 				data |= path[rsnd_mod_id(src)];
- 		}
- 
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 691e22381280..3eb7e9a7b5dc 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -330,8 +330,11 @@ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
+ 	u8 add  = ((val + __rsnd_mod_add_##func) & 0xF);		\
+ 	int ret = 0;							\
+ 	int call = (val == __rsnd_mod_call_##func) && (mod)->ops->func;	\
+-	*status = (*status & ~mask) +					\
+-		(add << __rsnd_mod_shift_##func);			\
++	if (add == 0xF)							\
++		call = 0;						\
++	else								\
++		*status = (*status & ~mask) +				\
++			(add << __rsnd_mod_shift_##func);		\
+ 	dev_dbg(dev, "%s[%d]\t0x%08x %s\n",				\
+ 		rsnd_mod_name(mod), rsnd_mod_id(mod),			\
+ 		*status, call ? #func : "");				\
 -- 
 2.7.0.rc3
