@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8960: Fix input boost mixer
-	left/right naming" to the asoc tree
-Date: Fri, 22 Jan 2016 18:26:55 +0000
-Message-ID: <E1aMgQB-0004Dt-Tv@debutante>
-References: <1453208949-23946-1-git-send-email-stuarth@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: wm5110: Unregister compressed platform
+	when driver is removed" to the asoc tree
+Date: Fri, 22 Jan 2016 18:26:56 +0000
+Message-ID: <E1aMgQC-0004EP-RR@debutante>
+References: <1453387272-3674-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 74A8E261B01
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 19:27:02 +0100 (CET)
-In-Reply-To: <1453208949-23946-1-git-send-email-stuarth@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 23FFD261B07
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 19:27:03 +0100 (CET)
+In-Reply-To: <1453387272-3674-1-git-send-email-rf@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stuart Henderson <stuart.henderson@cirrus.com>, Mark Brown <broonie@kernel.org>
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8960: Fix input boost mixer left/right naming
+   ASoC: wm5110: Unregister compressed platform when driver is removed
 
 has been applied to the asoc tree at
 
@@ -53,42 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From 95826a37991de87659e21b3649f265a049724aa2 Mon Sep 17 00:00:00 2001
-From: Stuart Henderson <stuart.henderson@cirrus.com>
-Date: Tue, 19 Jan 2016 13:09:08 +0000
-Subject: [PATCH] ASoC: wm8960: Fix input boost mixer left/right naming
+>From f5ede8dcc3ec1fe5344f0d30717931a44e630631 Mon Sep 17 00:00:00 2001
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Date: Thu, 21 Jan 2016 14:41:12 +0000
+Subject: [PATCH] ASoC: wm5110: Unregister compressed platform when driver is
+ removed
 
-INBMIX1 controls LINPUTs and INBMIX2 controls RINPUTs, so fix the naming
-accordingly.
+The driver was not unregistering the compressed platform in
+wm5110_remove(). If the codec is built as a module, this would
+lead to a NULL pointer deref if the module was unloaded and then
+re-probed.
 
-Signed-off-by: Stuart Henderson <stuart.henderson@cirrus.com>
-Reviewed-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8960.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/wm5110.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 5380798883b5..66057f853fae 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -231,13 +231,13 @@ SOC_DOUBLE_R("Capture Volume ZC Switch", WM8960_LINVOL, WM8960_RINVOL,
- SOC_DOUBLE_R("Capture Switch", WM8960_LINVOL, WM8960_RINVOL,
- 	7, 1, 1),
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index c36409601835..cd1b3080a497 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -2358,6 +2358,7 @@ error:
  
--SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT3 Volume",
-+SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT3 Volume",
- 	       WM8960_INBMIX1, 4, 7, 0, lineinboost_tlv),
--SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT2 Volume",
-+SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT2 Volume",
- 	       WM8960_INBMIX1, 1, 7, 0, lineinboost_tlv),
--SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT3 Volume",
-+SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT3 Volume",
- 	       WM8960_INBMIX2, 4, 7, 0, lineinboost_tlv),
--SOC_SINGLE_TLV("Left Input Boost Mixer LINPUT2 Volume",
-+SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT2 Volume",
- 	       WM8960_INBMIX2, 1, 7, 0, lineinboost_tlv),
- SOC_SINGLE_TLV("Right Input Boost Mixer RINPUT1 Volume",
- 		WM8960_RINPATH, 4, 3, 0, micboost_tlv),
+ static int wm5110_remove(struct platform_device *pdev)
+ {
++	snd_soc_unregister_platform(&pdev->dev);
+ 	snd_soc_unregister_codec(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 
 -- 
 2.7.0.rc3
