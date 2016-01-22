@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ab8500: remove the useless 'break'
-	after 'return'" to the asoc tree
-Date: Fri, 22 Jan 2016 18:26:54 +0000
-Message-ID: <E1aMgQA-0004Cw-2h@debutante>
-References: <1453172746-8110-1-git-send-email-lixiubo@cmss.chinamobile.com>
+Subject: Applied "ASoC: fsl_sai: Use usleep_range() instead of
+	msleep()" to the asoc tree
+Date: Fri, 22 Jan 2016 18:26:53 +0000
+Message-ID: <E1aMgQ9-0004CT-5O@debutante>
+References: <1452857725-32414-2-git-send-email-lixiubo@cmss.chinamobile.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 876E9260541
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 19:26:59 +0100 (CET)
-In-Reply-To: <1453172746-8110-1-git-send-email-lixiubo@cmss.chinamobile.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 349C9261583
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 19:26:58 +0100 (CET)
+In-Reply-To: <1452857725-32414-2-git-send-email-lixiubo@cmss.chinamobile.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ab8500: remove the useless 'break' after 'return'
+   ASoC: fsl_sai: Use usleep_range() instead of msleep()
 
 has been applied to the asoc tree at
 
@@ -53,30 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From 22363e758770fa24edcc67ba33326f007bcd66a8 Mon Sep 17 00:00:00 2001
+>From 512feb4e19a262ea0dfd7209506a998897feaadc Mon Sep 17 00:00:00 2001
 From: Xiubo Li <lixiubo@cmss.chinamobile.com>
-Date: Tue, 19 Jan 2016 11:13:12 +0800
-Subject: [PATCH] ASoC: ab8500: remove the useless 'break' after 'return'
+Date: Fri, 15 Jan 2016 19:35:24 +0800
+Subject: [PATCH] ASoC: fsl_sai: Use usleep_range() instead of msleep()
 
-'break' here is not useful after 'return' or 'goto'.
+Since msleep() will sleep longer than intended time for values less
+than 20ms, this patch allows the use of usleep_range for just 1ms.
+usleep_range is a finer precision implementation of msleep and is
+designed to be a drop-in replacement for udelay where a precise
+sleep/busy-wait is unnecessary.
+
+More details see Documentation/timers/timers-howto.txt.
 
 Signed-off-by: Xiubo Li <lixiubo@cmss.chinamobile.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ab8500-codec.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/fsl/fsl_sai.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
-index affb192238a4..b6820a1f16c7 100644
---- a/sound/soc/codecs/ab8500-codec.c
-+++ b/sound/soc/codecs/ab8500-codec.c
-@@ -2134,7 +2134,6 @@ static int ab8500_codec_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 			"%s: ERROR: Unsupporter master mask 0x%x\n",
- 			__func__, fmt & SND_SOC_DAIFMT_MASTER_MASK);
- 		return -EINVAL;
--		break;
- 	}
- 
- 	snd_soc_update_bits(codec, AB8500_DIGIFCONF3, mask, val);
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 43ba5dc26775..4919de9684eb 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -17,6 +17,7 @@
+ #include <linux/of_address.h>
+ #include <linux/regmap.h>
+ #include <linux/slab.h>
++#include <linux/time.h>
+ #include <sound/core.h>
+ #include <sound/dmaengine_pcm.h>
+ #include <sound/pcm_params.h>
+@@ -884,7 +885,7 @@ static int fsl_sai_resume(struct device *dev)
+ 	regcache_cache_only(sai->regmap, false);
+ 	regmap_write(sai->regmap, FSL_SAI_TCSR, FSL_SAI_CSR_SR);
+ 	regmap_write(sai->regmap, FSL_SAI_RCSR, FSL_SAI_CSR_SR);
+-	msleep(1);
++	usleep_range(1000, 2000);
+ 	regmap_write(sai->regmap, FSL_SAI_TCSR, 0);
+ 	regmap_write(sai->regmap, FSL_SAI_RCSR, 0);
+ 	return regcache_sync(sai->regmap);
 -- 
 2.7.0.rc3
