@@ -1,47 +1,69 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: fsl_sai: Use usleep_range() instead of msleep()
-Date: Fri, 22 Jan 2016 16:48:23 +0000
-Message-ID: <20160122164823.GB6588@sirena.org.uk>
-References: <1452857725-32414-1-git-send-email-lixiubo@cmss.chinamobile.com>
- <1452857725-32414-2-git-send-email-lixiubo@cmss.chinamobile.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: [RFC v2 0/6] sti: add audio interface to the hdmi
+	driver
+Date: Fri, 22 Jan 2016 18:48:26 +0100
+Message-ID: <1453484912-24547-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="RlE8T3bLnVJqgX61"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1452857725-32414-2-git-send-email-lixiubo@cmss.chinamobile.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Xiubo Li <lixiubo@cmss.chinamobile.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6CCD02604AF
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 18:48:53 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Jean-Francois Moine <moinejf@free.fr>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@linux.ie>, arnaud.pouliquen@st.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Benjamin Gaignard <benjamin.gaignard@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+V2:
+     - patch: ALSA: pcm: add IEC958 channel status control helper
+          - Return 1 instead of 0 in snd_pcm_iec958_put
+          - Add .access field in control structure
+          - I have kept condition on mutex for flexibility 
+            (but could be cleaned to force user to use a mutex)
+     - patch: video: hdmi: add helper function for N and CTS
+         - Duplicate function to have a separte treatment for coherent and
+           non-coherent clcocks
+         - Add ratio fiel for alternate CTS value
+         - Clock frequency in Hz for TMDS and audio clocks
+         - Add information concerning clocks and CTS calculation. 
 
---RlE8T3bLnVJqgX61
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+V1:
+This RFC is the implementation of audio HDMI on sti platform based on 
+generic hdmi-codec driver:
+	https://patchwork.kernel.org/patch/7215271/ ("ASoC: hdmi-codec: Add hdmi-codec for external HDMI-encoders")
 
-On Fri, Jan 15, 2016 at 07:35:24PM +0800, Xiubo Li wrote:
-> Since msleep() will sleep longer than intended time for values less
-> than 20ms, this patch allows the use of usleep_range for just 1ms.
-> usleep_range is a finer precision implementation of msleep and is
-> designed to be a drop-in replacement for udelay where a precise
-> sleep/busy-wait is unnecessary.
+Arnaud Pouliquen (6):
+  video: hdmi: add helper function for N and CTS
+  ALSA: pcm: add IEC958 channel status control helper
+  ASoC: core: add code to complete dai init after pcm creation
+  drm: sti: Add ASoC generic hdmi codec support.
+  ASoc: hdmi-codec: add IEC control.
+  ARM: DT: b2120: add audio HDMI dai link in audio card
 
-A similar change seems to have already been applied.
 
---RlE8T3bLnVJqgX61
-Content-Type: application/pgp-signature; name="signature.asc"
+ arch/arm/boot/dts/stihxxx-b2120.dtsi |  15 ++-
+ drivers/gpu/drm/sti/Kconfig          |   1 +
+ drivers/gpu/drm/sti/sti_hdmi.c       | 248 ++++++++++++++++++++++++++++++++---
+ drivers/gpu/drm/sti/sti_hdmi.h       |  10 ++
+ drivers/video/hdmi.c                 | 222 +++++++++++++++++++++++++++++++
+ include/linux/hdmi.h                 |  22 ++++
+ include/sound/hdmi-codec.h           |   1 +
+ include/sound/pcm_iec958.h           |  16 +++
+ include/sound/soc-dai.h              |   7 +
+ sound/core/pcm_iec958.c              |  99 ++++++++++++++
+ sound/soc/codecs/hdmi-codec.c        |  59 +++++++--
+ sound/soc/soc-core.c                 |  14 ++
+ 12 files changed, 682 insertions(+), 32 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWol1XAAoJECTWi3JdVIfQR4YH/1/nKA7BG1nrJbdWd169UqaC
-nTvpRPOZ0+ajg07RR+Ytlyc3TDh5Lrc5ljEOhcx0wznyCYOGe1GB5vJPm+CO7VWd
-koBSUSymk4kl7joU0B6DJdtscK8RWh0jJkptyPzvfqGjL4GoGtmph4tvrI34S4nS
-daelHniKtRe5HcuU1DU1V2LxEABqyUjlPGEn3xnYDJUUuoYp4+aNxSEwKf/+VWE1
-qXau8Bmwdm47wc3bQdMiQLhmwz/eDKCBJeLudFfIkX+ge3OJ/sYK48rQRE1bGwHi
-AIB4mDX5yMLfE3f3rd9+os20EntPLotzDpEF6/k7phW55jDy9x+OAJlrMavTNI8=
-=Z+fW
------END PGP SIGNATURE-----
-
---RlE8T3bLnVJqgX61--
+-- 
+1.9.1
