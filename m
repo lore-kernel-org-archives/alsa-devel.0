@@ -1,16 +1,14 @@
-From: Dan O'Donovan <dan@emutex.com>
-Subject: CherryTrail SST firmware limitations query
-Date: Thu, 21 Jan 2016 23:10:50 +0000
-Message-ID: <56A1657A.5060600@emutex.com>
-References: <56A162A1.1070602@emutex.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH] amixer: add support for TLV byte control read
+Date: Fri, 22 Jan 2016 11:16:52 +0530
+Message-ID: <1453441612-29902-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bert.emutex.com (bert.emutex.com [91.103.1.109])
- by alsa0.perex.cz (Postfix) with ESMTP id C7DFA2606BA
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 00:10:51 +0100 (CET)
-In-Reply-To: <56A162A1.1070602@emutex.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id B479A26061E
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 06:43:14 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,36 +18,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-(Sorry, re-sending as I wasn't subscribed to the alsa-devel mailing list 
-on my previous attempt)
+TLV byte control are new type of byte controls added in kernel where
+controls can have large sizes.
 
-Hi Vinod
+For these controls querying with 4096 size fails, so use the queried size to
+read the control
 
-I am currently attempting to use the SSP0 port on an Intel X5-Z8300 SoC 
-(Cherry Trail) with a new codec.
+This fixes the crash with current cget/contents on these type of controls
 
-I have seen that you have committed SST firmware 'fw_sst_22a8.bin' and 
-related SST audio soc drivers in the past, so I hope you don't mind if I 
-ask you some questions about it here.
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ amixer/amixer.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-Primarily, I am wondering if there are any limitations imposed by that 
-firmware binary that I need to be aware of. I haven't been able to find 
-much information about what this firmware does or doesn't support.
-
-For example, existing CHT SST machine drivers suggest that the PCM bit 
-clock is fixed at 19.2MHz.
-Also, I am wondering if all SSP ports on the SoC are supported by that 
-firmware, or if it is limited to just SSP2?
-
-Are there any other limitations that I may need to be aware of in the 
-firmware (or in the SSP back-end driver) when attempting to connect a 
-new codec (TI PCM5122 initially) to SSP0.
-
-Many thanks in advance for any help/advice you can provide.
-
-Best regards,
--Dan
+diff --git a/amixer/amixer.c b/amixer/amixer.c
+index db1849333da3..cfe13592347f 100644
+--- a/amixer/amixer.c
++++ b/amixer/amixer.c
+@@ -588,7 +588,7 @@ static int show_control(const char *space, snd_hctl_elem_t *elem,
+ 			int level)
+ {
+ 	int err;
+-	unsigned int item, idx, count, *tlv;
++	unsigned int item, idx, count, *tlv, tlv_sz;
+ 	snd_ctl_elem_type_t type;
+ 	snd_ctl_elem_id_t *id;
+ 	snd_ctl_elem_info_t *info;
+@@ -682,13 +682,20 @@ static int show_control(const char *space, snd_hctl_elem_t *elem,
+ 	      __skip_read:
+ 		if (!snd_ctl_elem_info_is_tlv_readable(info))
+ 			goto __skip_tlv;
+-		tlv = malloc(4096);
+-		if ((err = snd_hctl_elem_tlv_read(elem, tlv, 4096)) < 0) {
++
++		if (type == SND_CTL_ELEM_TYPE_BYTES)
++			tlv_sz = count + 2 * sizeof(unsigned int);
++		else
++			tlv_sz = 4096;
++
++		tlv = malloc(tlv_sz);
++
++		if ((err = snd_hctl_elem_tlv_read(elem, tlv, tlv_sz)) < 0) {
+ 			error("Control %s element TLV read error: %s\n", card, snd_strerror(err));
+ 			free(tlv);
+ 			return err;
+ 		}
+-		decode_tlv(strlen(space), tlv, 4096);
++		decode_tlv(strlen(space), tlv, tlv_sz);
+ 		free(tlv);
+ 	}
+       __skip_tlv:
+-- 
+1.9.1
