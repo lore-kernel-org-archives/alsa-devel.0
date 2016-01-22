@@ -1,88 +1,45 @@
 From: Jacob Siverskog <jacob@teenage.engineering>
-Subject: Re: [PATCH v3 1/3] ASoC: pcm179x: Split into core and SPI parts
-Date: Fri, 22 Jan 2016 13:17:58 +0100
-Message-ID: <CAEnXRPt=8bZ1VxasNqdzY_vL=kwsxz9n=c_GsACMbMqaSARa5Q@mail.gmail.com>
-References: <1453390018-16854-1-git-send-email-jacob@teenage.engineering>
- <1453390018-16854-2-git-send-email-jacob@teenage.engineering>
- <20160121153615.GJ31514@localhost> <CAOf5uwny3Rz6ctUs1wGkcvhPykFENnniC=Jq9jGBfhJG398yug@mail.gmail.com>
- <20160121175627.GR31514@localhost>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Subject: [PATCH v4 0/3] ASoC: pcm179x: Add I2C support, declare support for continuous rates
+Date: Fri, 22 Jan 2016 13:39:52 +0100
+Message-ID: <1453466395-7352-1-git-send-email-jacob@teenage.engineering>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160121175627.GR31514@localhost>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Johan Hovold <johan@kernel.org>
-Cc: Michael Trimarchi <michael@amarulasolutions.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Michael Trimarchi <michael@amarulasolutions.com>, Johan Hovold <johan@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jacob Siverskog <jacob@teenage.engineering>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 21, 2016 at 6:56 PM, Johan Hovold <johan@kernel.org> wrote:
-> On Thu, Jan 21, 2016 at 05:27:58PM +0100, Michael Trimarchi wrote:
->> Hi
->>
->> On Thu, Jan 21, 2016 at 4:36 PM, Johan Hovold <johan@kernel.org> wrote:
->> > On Thu, Jan 21, 2016 at 04:26:56PM +0100, Jacob Siverskog wrote:
->> >> The pcm179x family supports both SPI and I2C for configuration. This
->> >> patch splits the driver into core and SPI parts, in preparation for
->> >> I2C support.
->> >>
->> >> Reviewed-by: Johan Hovold <johan@kernel.org>
->> >> Signed-off-by: Jacob Siverskog <jacob@teenage.engineering>
->> >> ---
->> >
->> >> diff --git a/sound/soc/codecs/pcm179x-spi.c b/sound/soc/codecs/pcm179x-spi.c
->> >> new file mode 100644
->> >> index 0000000..5842add9
->> >> --- /dev/null
->> >> +++ b/sound/soc/codecs/pcm179x-spi.c
->
->> >> -static int pcm179x_spi_probe(struct spi_device *spi)
->> >> +int pcm179x_common_init(struct device *dev, struct regmap *regmap)
->> >>  {
->> >>       struct pcm179x_private *pcm179x;
->> >>       int ret;
->> >>
->> >> -     pcm179x = devm_kzalloc(&spi->dev, sizeof(struct pcm179x_private),
->> >> +     if (IS_ERR(regmap)) {
->> >> +             ret = PTR_ERR(regmap);
->> >> +             dev_err(dev, "Failed to register regmap: %d\n", ret);
->> >> +             return ret;
->> >> +     }
->> >
->> > This looks weird. I think you should check for error where you do the
->> > allocation even if this means a four more lines of code in total.
->> >
->>
->> agree on that
+This series add support for I2C and declares support for continuous
+sample rates.
 
-Ok.
+Please note that this has only been tested using I2C and PCM1791A. I'd
+be grateful if someone can test it with other devices in the PCM179X
+family and/or SPI.
 
->>
->> >> +
->> >> +     pcm179x = devm_kzalloc(dev, sizeof(struct pcm179x_private),
->> >>                               GFP_KERNEL);
->> >>       if (!pcm179x)
->> >>               return -ENOMEM;
->> >>
->> >> -     spi_set_drvdata(spi, pcm179x);
->> >> -
->> >> -     pcm179x->regmap = devm_regmap_init_spi(spi, &pcm179x_regmap);
->> >> -     if (IS_ERR(pcm179x->regmap)) {
->> >> -             ret = PTR_ERR(pcm179x->regmap);
->> >> -             dev_err(&spi->dev, "Failed to register regmap: %d\n", ret);
->> >> -             return ret;
->> >> -     }
->> >> +     pcm179x->regmap = regmap;
->> >> +     dev_set_drvdata(dev, pcm179x);
->> >>
->>
->> snd_soc_codec_set_drvdata
->>
->> Is this more "codec" like?
->
-> I'd say, only if you also add a codec probe callback and use it from
-> there. The other codec drivers appear to be consistent on that.
+These patches are against linux-next.
 
-I agree. Using snd_soc_codec_set_drvdata would mean larger logical
-changes that I don't really see the purpose of doing. All other codec
-drivers that are separated in a similar fashion as this patch use
-dev_set_drvdata.
+[V4]: Move regmap error check to where the regmaps are
+allocated. Minor cosmetic changes.
+
+[V3]: Allocation of private data moved to common code.
+
+[V2]: Fix build issues found by kbuild test robot by adding static
+keyword and proper symbol exports.
+
+Jacob Siverskog (3):
+  ASoC: pcm179x: Split into core and SPI parts
+  ASoC: pcm179x: Add I2C interface driver
+  ASoC: pcm179x: Support continuous rates
+
+ .../devicetree/bindings/sound/pcm179x.txt          | 11 +++-
+ sound/soc/codecs/Kconfig                           | 20 +++++-
+ sound/soc/codecs/Makefile                          |  4 ++
+ sound/soc/codecs/pcm179x-i2c.c                     | 73 ++++++++++++++++++++++
+ sound/soc/codecs/pcm179x-spi.c                     | 72 +++++++++++++++++++++
+ sound/soc/codecs/pcm179x.c                         | 56 +++++------------
+ sound/soc/codecs/pcm179x.h                         |  9 +--
+ 7 files changed, 196 insertions(+), 49 deletions(-)
+ create mode 100644 sound/soc/codecs/pcm179x-i2c.c
+ create mode 100644 sound/soc/codecs/pcm179x-spi.c
+
+-- 
+2.7.0
