@@ -1,24 +1,20 @@
-From: Steven Wawryk <stevenw@acres.com.au>
-Subject: Hopelessly confused by channel mapping
-Date: Fri, 22 Jan 2016 20:00:20 +1030
-Message-ID: <56A1F6AC.7050400@acres.com.au>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] amixer: add support for TLV byte control
+	read
+Date: Fri, 22 Jan 2016 15:26:48 +0530
+Message-ID: <20160122095648.GD11130@localhost>
+References: <1453441612-29902-1-git-send-email-vinod.koul@intel.com>
+ <s5hoace5e75.wl-tiwai@suse.de> <20160122074623.GC11130@localhost>
+ <s5hfuxq593q.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.acres.com.au (mail.acres.com.au [150.101.238.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 790FC260439
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 10:30:29 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by loki.acres.com.au (Postfix) with ESMTP id 7E74AC3509
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 20:00:26 +1030 (CST)
-Received: from mail.acres.com.au ([127.0.0.1])
- by localhost (loki.acres.com.au [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id DVeMEgg93sJu for <alsa-devel@alsa-project.org>;
- Fri, 22 Jan 2016 20:00:20 +1030 (CST)
-Received: from [192.0.2.164] (krill.acres.com.au [192.0.2.164])
- by loki.acres.com.au (Postfix) with ESMTP id 8DEA9C29FC
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 20:00:20 +1030 (CST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 869A0260439
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 10:53:02 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hfuxq593q.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,58 +24,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Jan 22, 2016 at 09:09:13AM +0100, Takashi Iwai wrote:
+> On Fri, 22 Jan 2016 08:46:23 +0100,
+> Vinod Koul wrote:
+> > 
+> > On Fri, Jan 22, 2016 at 07:19:10AM +0100, Takashi Iwai wrote:
+> > > On Fri, 22 Jan 2016 06:46:52 +0100,
+> > > Vinod Koul wrote:
+> > > > 
+> > > > TLV byte control are new type of byte controls added in kernel where
+> > > > controls can have large sizes.
+> > > >
+> > > > For these controls querying with 4096 size fails, so use the queried size to
+> > > > read the control
+> > > > 
+> > > > This fixes the crash with current cget/contents on these type of controls
+> > > 
+> > > Hmm...  Theoretically the TLV size and the element size are
+> > > independent.  So, it's not good to check only the type being
+> > > SND_CTL_ELEM_TYPE_BYTES.  This can be used legally by other cases,
+> > > too.
+> > > 
+> > > Basically it is an abuse in ASoC side to return the size of
+> > > TLV by the element's info.  Usually such value would lead to crash,
+> > > but the unique point of ASoC ext bytes ctl is that it doesn't have RW
+> > > accesses but only TLV_RW accesses.
+> > 
+> > But isn't that already checked? Since we are in the code which will be
+> > executed only for tlv as snd_ctl_elem_info_is_tlv_readable() ensures that.
+> > So this is only for tlv + bytes ...
+> 
+> I meant setting a bogus count value in info would usually lead to a
+> crash.  The point isn't about TLV access.
+> 
+> > > So, instead of only checking the type being BYTES, check the
+> > > accesses.  Only when all these conditions are met, we may take the
+> > > count as TLV (element) size.  (And still we should have the sanity
+> > > check of the value, too.)
+> > > 
+> > > Yet, this isn't a really "fix" for the crash.  Even without the patch
+> > > it shouldn't crash -- it should receive 4096 bytes, and tries to
+> > > decode.  Where did you get the crash exactly?
+> > 
+> > in alsa-lib snd_ctl_hw_elem_tlv() when it tries to do memcpy for tlv read.
+> > But the crash is caused as tlv read is large and we have only 4096 size
+> > buffer,
+> 
+> Hm, it has a check
+> 
+> static int snd_ctl_hw_elem_tlv(snd_ctl_t *handle, int op_flag,
+> 			       unsigned int numid,
+> 			       unsigned int *tlv, unsigned int tlv_size)
+> {
+> 	....
+> 		if (xtlv->tlv[1] + 2 * sizeof(unsigned int) > tlv_size) {
+> 			free(xtlv);
+> 			return -EFAULT;
+> 		}
+> 		memcpy(tlv, xtlv->tlv, xtlv->tlv[1] + 2 * sizeof(unsigned int));
+> 
+> Do you mean somewhere here triggers a crash?
 
-Hi,
+Yes while it tried to memcpy, in my case 30K sized data to 4K buffer, so I
+allocated right one and got all the data
 
-I've been developing a soundcard driver for an embedded picozed bearing 
-carrier card with 4 Cirrus CS42448 codecs.  Each codec has 6 ADCs and 8 
-DACs, and is used in TDM mode, meaning there are 8 channel time slots on 
-both the input and output serial audio data lines (DAIs).  Wired to 
-connectors (and so accessible to me) are all 6 analog inputs and 1 
-analog output, for each codec.
+> 
+> > so we ensure we give right size buffer here
+> 
+> Actually we should have an API function that returns the size of TLV.
+> Then amixer can adjust the allocation size.
 
-Each codec and its DAI link come up as a separate device.  I used the 
-devices hw:2,n where n is the codec number.  (hw:0 and hw:1 are the 
-dummy and loopback devices)
+Yes we can add tat too. I want to make coontents and cget work okay while I
+add proper TLV support. Maybe we should stop cget on tlv byte type?
 
-For each device/codec/DAI link, everything is as expected when using 
-arecord and aplay when I either pipe the arecord output to aplay, or 
-when arecord writes to WAV file and aplay outputs it.  That is, an 
-analog signal applied to input channel 1 then appears on the output 
-channel (1) for the same codec.
-
-The first weird thing is when I use speaker-test.  If there were only 1 
-device/codec/DAI link I wouldn't notice anything odd.  As expected only 
-1 channel shows a signal because only channel 0 is wired to a 
-connector.  But with 4 codecs, when I output via codec n, the output I 
-see is on the channel that speaker-test thinks is channel n (ie. same 
-number as the codec), not channel 0, which it should be!  Is this a 
-possible channel mapping bug in speaker-test?
-
-The second weird thing is when I apply a signal to 1 channel at a time, 
-producing 24 WAV files output from arecord (4 codecs x 6 channels, but 
-each contains only 8 channels of data - 6 inputs for a given codec and 2 
-dummy channels).  I copied the files to my desktop, played them through 
-vlc (as 7.1 surround) and used the PulseAudio Volume Meter to see which 
-channels have signal on it. Note that these files behaved completely as 
-expected when played through aplay on the embedded system.  The result 
-was that the output channels were all over the place, seemingly random 
-with no apparent pattern.  For some files the signals appeared on more 
-than 1 channel.
-
-It appears that vlc or PulseAudio Volume Meter must do some kind of 
-remapping.  What I don't get is that the WAV files only have 8 channels, 
-from a single codec, and should be independent of which codec the inputs 
-were read from.  So even if the output channels were all over the place 
-(and repeatably all over the place), they should be all over the place 
-in the same way for each codec.  This was not what I got.  Each codec 
-was all over the place in its own unique but repeatable way!!!
-
-So can anyone suggest a way I can visualize which channels have signal 
-in the WAV files, without the bizarre remapping done by vlc or 
-PulseAudio Volume Meter?
-
-Steve
+-- 
+~Vinod
