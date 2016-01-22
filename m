@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl-mpc5200: Use usleep_range() instead
-	of msleep()" to the asoc tree
-Date: Fri, 22 Jan 2016 18:26:52 +0000
-Message-ID: <E1aMgQ8-0004Bz-8c@debutante>
-References: <1452857725-32414-3-git-send-email-lixiubo@cmss.chinamobile.com>
+Subject: Applied "ASoC: ab8500: remove the useless 'break'
+	after 'return'" to the asoc tree
+Date: Fri, 22 Jan 2016 18:26:54 +0000
+Message-ID: <E1aMgQA-0004Cw-2h@debutante>
+References: <1453172746-8110-1-git-send-email-lixiubo@cmss.chinamobile.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B40B0261569
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 19:26:57 +0100 (CET)
-In-Reply-To: <1452857725-32414-3-git-send-email-lixiubo@cmss.chinamobile.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 876E9260541
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 19:26:59 +0100 (CET)
+In-Reply-To: <1453172746-8110-1-git-send-email-lixiubo@cmss.chinamobile.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl-mpc5200: Use usleep_range() instead of msleep()
+   ASoC: ab8500: remove the useless 'break' after 'return'
 
 has been applied to the asoc tree at
 
@@ -53,45 +53,30 @@ to this mail.
 Thanks,
 Mark
 
->From 0d55ad456337487e8cdb72acdd520050e575a0bd Mon Sep 17 00:00:00 2001
+>From 22363e758770fa24edcc67ba33326f007bcd66a8 Mon Sep 17 00:00:00 2001
 From: Xiubo Li <lixiubo@cmss.chinamobile.com>
-Date: Fri, 15 Jan 2016 19:35:25 +0800
-Subject: [PATCH] ASoC: fsl-mpc5200: Use usleep_range() instead of msleep()
+Date: Tue, 19 Jan 2016 11:13:12 +0800
+Subject: [PATCH] ASoC: ab8500: remove the useless 'break' after 'return'
 
-Since msleep() will sleep longer than intended time for values less
-than 20ms, this patch allows the use of usleep_range for just 1ms.
-usleep_range is a finer precision implementation of msleep and is
-designed to be a drop-in replacement for udelay where a precise
-sleep/busy-wait is unnecessary.
-
-More details see Documentation/timers/timers-howto.txt.
+'break' here is not useful after 'return' or 'goto'.
 
 Signed-off-by: Xiubo Li <lixiubo@cmss.chinamobile.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/mpc5200_psc_ac97.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/ab8500-codec.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/fsl/mpc5200_psc_ac97.c b/sound/soc/fsl/mpc5200_psc_ac97.c
-index 0bab76051fd8..243700cc29e6 100644
---- a/sound/soc/fsl/mpc5200_psc_ac97.c
-+++ b/sound/soc/fsl/mpc5200_psc_ac97.c
-@@ -13,6 +13,7 @@
- #include <linux/of_device.h>
- #include <linux/of_platform.h>
- #include <linux/delay.h>
-+#include <linux/time.h>
+diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
+index affb192238a4..b6820a1f16c7 100644
+--- a/sound/soc/codecs/ab8500-codec.c
++++ b/sound/soc/codecs/ab8500-codec.c
+@@ -2134,7 +2134,6 @@ static int ab8500_codec_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 			"%s: ERROR: Unsupporter master mask 0x%x\n",
+ 			__func__, fmt & SND_SOC_DAIFMT_MASTER_MASK);
+ 		return -EINVAL;
+-		break;
+ 	}
  
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -127,7 +128,7 @@ static void psc_ac97_cold_reset(struct snd_ac97 *ac97)
- 
- 	mutex_unlock(&psc_dma->mutex);
- 
--	msleep(1);
-+	usleep_range(1000, 2000);
- 	psc_ac97_warm_reset(ac97);
- }
- 
+ 	snd_soc_update_bits(codec, AB8500_DIGIFCONF3, mask, val);
 -- 
 2.7.0.rc3
