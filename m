@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8960: Fix WM8960_SYSCLK_PLL mode" to
-	the asoc tree
-Date: Fri, 22 Jan 2016 18:26:54 +0000
-Message-ID: <E1aMgQA-0004DP-W6@debutante>
-References: <1453208949-23946-2-git-send-email-stuarth@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix memory leak" to the
+	asoc tree
+Date: Fri, 22 Jan 2016 18:26:57 +0000
+Message-ID: <E1aMgQD-0004Es-J4@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EA12C261B03
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 19:27:02 +0100 (CET)
-In-Reply-To: <1453208949-23946-2-git-send-email-stuarth@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C25D82664FB
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 19:27:11 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stuart Henderson <stuart.henderson@cirrus.com>, Mark Brown <broonie@kernel.org>
+To: Sudip Mukherjee <sudip@vectorindia.org>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8960: Fix WM8960_SYSCLK_PLL mode
+   ASoC: Intel: Skylake: Fix memory leak
 
 has been applied to the asoc tree at
 
@@ -53,72 +52,31 @@ to this mail.
 Thanks,
 Mark
 
->From 6bb7451429084cefcb3a18fff809f7992595d2af Mon Sep 17 00:00:00 2001
-From: Stuart Henderson <stuart.henderson@cirrus.com>
-Date: Tue, 19 Jan 2016 13:09:09 +0000
-Subject: [PATCH] ASoC: wm8960: Fix WM8960_SYSCLK_PLL mode
+>From c14a82c781f8df50c4c5215ab92affdc60d72c01 Mon Sep 17 00:00:00 2001
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date: Thu, 21 Jan 2016 17:27:59 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix memory leak
 
-With the introduction of WM8960_SYSCLK_AUTO mode, WM8960_SYSCLK_PLL mode was
-made unusable.  Ensure we're not PLL mode before trying to use MCLK.
+If snd_soc_tplg_component_load() fails we just printed an error message
+and returned the error code but we missed releasing the firmware.
 
-Fixes: 3176bf2d7ccd ("ASoC: wm8960: update pll and clock setting function")
-Signed-off-by: Stuart Henderson <stuart.henderson@cirrus.com>
-Reviewed-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8960.c | 32 +++++++++++++++++---------------
- 1 file changed, 17 insertions(+), 15 deletions(-)
+ sound/soc/intel/skylake/skl-topology.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 66057f853fae..4b4401329591 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -631,29 +631,31 @@ static int wm8960_configure_clocking(struct snd_soc_codec *codec)
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 5315b7422b98..c7816d52ad08 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -1511,6 +1511,7 @@ int skl_tplg_init(struct snd_soc_platform *platform, struct hdac_ext_bus *ebus)
+ 	release_firmware(fw);
+ 	if (ret < 0) {
+ 		dev_err(bus->dev, "tplg component load failed%d\n", ret);
++		release_firmware(fw);
  		return -EINVAL;
  	}
  
--	/* check if the sysclk frequency is available. */
--	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
--		if (sysclk_divs[i] == -1)
--			continue;
--		sysclk = freq_out / sysclk_divs[i];
--		for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
--			if (sysclk == dac_divs[j] * lrclk) {
-+	if (wm8960->clk_id != WM8960_SYSCLK_PLL) {
-+		/* check if the sysclk frequency is available. */
-+		for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
-+			if (sysclk_divs[i] == -1)
-+				continue;
-+			sysclk = freq_out / sysclk_divs[i];
-+			for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
-+				if (sysclk != dac_divs[j] * lrclk)
-+					continue;
- 				for (k = 0; k < ARRAY_SIZE(bclk_divs); ++k)
- 					if (sysclk == bclk * bclk_divs[k] / 10)
- 						break;
- 				if (k != ARRAY_SIZE(bclk_divs))
- 					break;
- 			}
-+			if (j != ARRAY_SIZE(dac_divs))
-+				break;
- 		}
--		if (j != ARRAY_SIZE(dac_divs))
--			break;
--	}
- 
--	if (i != ARRAY_SIZE(sysclk_divs)) {
--		goto configure_clock;
--	} else if (wm8960->clk_id != WM8960_SYSCLK_AUTO) {
--		dev_err(codec->dev, "failed to configure clock\n");
--		return -EINVAL;
-+		if (i != ARRAY_SIZE(sysclk_divs)) {
-+			goto configure_clock;
-+		} else if (wm8960->clk_id != WM8960_SYSCLK_AUTO) {
-+			dev_err(codec->dev, "failed to configure clock\n");
-+			return -EINVAL;
-+		}
- 	}
- 	/* get a available pll out frequency and set pll */
- 	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
 -- 
 2.7.0.rc3
