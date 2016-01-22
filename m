@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: ctu: settings matches to
-	datasheet" to the asoc tree
-Date: Fri, 22 Jan 2016 18:26:40 +0000
-Message-ID: <E1aMgPw-00045l-AU@debutante>
-References: <878u3j4rwx.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: each mod has status again for
+	CTU/MUX support" to the asoc tree
+Date: Fri, 22 Jan 2016 18:26:44 +0000
+Message-ID: <E1aMgQ0-00047f-0u@debutante>
+References: <87egdb4rzc.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id ACFA3260544
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 19:26:47 +0100 (CET)
-In-Reply-To: <878u3j4rwx.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DF27326065F
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2016 19:26:48 +0100 (CET)
+In-Reply-To: <87egdb4rzc.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: ctu: settings matches to datasheet
+   ASoC: rsnd: each mod has status again for CTU/MUX support
 
 has been applied to the asoc tree at
 
@@ -53,197 +53,301 @@ to this mail.
 Thanks,
 Mark
 
->From dc037afdbc4f285dc2f8107a0b8eaf89892e28ac Mon Sep 17 00:00:00 2001
+>From 5ba17b42e1755c3c5cfe96370cfd47f34d01f62c Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 21 Jan 2016 01:59:33 +0000
-Subject: [PATCH] ASoC: rsnd: ctu: settings matches to datasheet
+Date: Thu, 21 Jan 2016 01:58:07 +0000
+Subject: [PATCH] ASoC: rsnd: each mod has status again for CTU/MUX support
 
-Current CTU settings was rough. This patch makes it match to datasheet.
-But do nothing at this point.
+SSI will be used as normal SSI or as clock parent SSI. Therefor,
+rsnd driver wants to control SSI and parent SSI separately. Otherwise it
+can't use Playback/Capture in the same time.
+And it has been done by c2dc47d5cf("ASoC: rsnd: rsnd_dai_stream has each
+mod's status insted of rsnd_mod") before.
+
+OTOH, rsnd driver doesn't want to control CTU/MUX/DVC/SSIU/SSI in
+separately. Otherwise, these will be re-initialized during playing if
+MUX merges 2 sounds.
+Because of these picky reasons, this patch re-defines status on each mod,
+and add new parent_ssi_status on rsnd_dai_stream.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ctu.c  | 61 ++++++++++++++++++++++++++++++++++++++----------
- sound/soc/sh/rcar/gen.c  | 34 +++++++++++++++++++++++++++
- sound/soc/sh/rcar/rsnd.h | 34 +++++++++++++++++++++++++++
- 3 files changed, 117 insertions(+), 12 deletions(-)
+ sound/soc/sh/rcar/adg.c  |  2 +-
+ sound/soc/sh/rcar/cmd.c  |  3 ++-
+ sound/soc/sh/rcar/core.c | 21 ++++++++++++++++-----
+ sound/soc/sh/rcar/ctu.c  |  2 +-
+ sound/soc/sh/rcar/dma.c  |  2 +-
+ sound/soc/sh/rcar/dvc.c  |  2 +-
+ sound/soc/sh/rcar/mix.c  |  2 +-
+ sound/soc/sh/rcar/rsnd.h | 21 ++++++++++++++++-----
+ sound/soc/sh/rcar/src.c  |  3 ++-
+ sound/soc/sh/rcar/ssi.c  | 37 ++++++++++++++++++++++++++++++++++++-
+ sound/soc/sh/rcar/ssiu.c |  3 ++-
+ 11 files changed, 79 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/ctu.c b/sound/soc/sh/rcar/ctu.c
-index 7b482f36cb63..a10d0f7b73fa 100644
---- a/sound/soc/sh/rcar/ctu.c
-+++ b/sound/soc/sh/rcar/ctu.c
-@@ -37,13 +37,6 @@ static void rsnd_ctu_halt(struct rsnd_mod *mod)
- 	rsnd_mod_write(mod, CTU_SWRSR, 0);
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index 19f5509f908d..d74e1ccc0f8f 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -519,7 +519,7 @@ int rsnd_adg_probe(struct rsnd_priv *priv)
+ 	}
+ 
+ 	rsnd_mod_init(priv, &adg->mod, &adg_ops,
+-		      NULL, 0, 0);
++		      NULL, NULL, 0, 0);
+ 
+ 	rsnd_adg_get_clkin(priv, adg);
+ 	rsnd_adg_get_clkout(priv, adg);
+diff --git a/sound/soc/sh/rcar/cmd.c b/sound/soc/sh/rcar/cmd.c
+index 4b2d50d9a686..abb5eaac854a 100644
+--- a/sound/soc/sh/rcar/cmd.c
++++ b/sound/soc/sh/rcar/cmd.c
+@@ -157,7 +157,8 @@ int rsnd_cmd_probe(struct rsnd_priv *priv)
+ 
+ 	for_each_rsnd_cmd(cmd, priv, i) {
+ 		ret = rsnd_mod_init(priv, rsnd_mod_get(cmd),
+-				    &rsnd_cmd_ops, NULL, RSND_MOD_CMD, i);
++				    &rsnd_cmd_ops, NULL,
++				    rsnd_mod_get_status, RSND_MOD_CMD, i);
+ 		if (ret)
+ 			return ret;
+ 	}
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index ed0918967def..b460d714d088 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -138,12 +138,22 @@ struct dma_chan *rsnd_mod_dma_req(struct rsnd_dai_stream *io,
+ 	return mod->ops->dma_req(io, mod);
  }
  
--#define rsnd_ctu_initialize_lock(mod)	__rsnd_ctu_initialize_lock(mod, 1)
--#define rsnd_ctu_initialize_unlock(mod)	__rsnd_ctu_initialize_lock(mod, 0)
--static void __rsnd_ctu_initialize_lock(struct rsnd_mod *mod, u32 enable)
--{
--	rsnd_mod_write(mod, CTU_CTUIR, enable);
--}
--
- static int rsnd_ctu_probe_(struct rsnd_mod *mod,
- 			   struct rsnd_dai_stream *io,
- 			   struct rsnd_priv *priv)
-@@ -51,6 +44,54 @@ static int rsnd_ctu_probe_(struct rsnd_mod *mod,
- 	return rsnd_cmd_attach(io, rsnd_mod_id(mod) / 4);
- }
- 
-+static void rsnd_ctu_value_init(struct rsnd_dai_stream *io,
-+			       struct rsnd_mod *mod)
++u32 *rsnd_mod_get_status(struct rsnd_dai_stream *io,
++			 struct rsnd_mod *mod,
++			 enum rsnd_mod_type type)
 +{
-+	rsnd_mod_write(mod, CTU_CTUIR, 1);
-+
-+	rsnd_mod_write(mod, CTU_ADINR, rsnd_get_adinr_chan(mod, io));
-+
-+	rsnd_mod_write(mod, CTU_CPMDR, 0);
-+	rsnd_mod_write(mod, CTU_SCMDR, 0);
-+	rsnd_mod_write(mod, CTU_SV00R, 0);
-+	rsnd_mod_write(mod, CTU_SV01R, 0);
-+	rsnd_mod_write(mod, CTU_SV02R, 0);
-+	rsnd_mod_write(mod, CTU_SV03R, 0);
-+	rsnd_mod_write(mod, CTU_SV04R, 0);
-+	rsnd_mod_write(mod, CTU_SV05R, 0);
-+	rsnd_mod_write(mod, CTU_SV06R, 0);
-+	rsnd_mod_write(mod, CTU_SV07R, 0);
-+
-+	rsnd_mod_write(mod, CTU_SV10R, 0);
-+	rsnd_mod_write(mod, CTU_SV11R, 0);
-+	rsnd_mod_write(mod, CTU_SV12R, 0);
-+	rsnd_mod_write(mod, CTU_SV13R, 0);
-+	rsnd_mod_write(mod, CTU_SV14R, 0);
-+	rsnd_mod_write(mod, CTU_SV15R, 0);
-+	rsnd_mod_write(mod, CTU_SV16R, 0);
-+	rsnd_mod_write(mod, CTU_SV17R, 0);
-+
-+	rsnd_mod_write(mod, CTU_SV20R, 0);
-+	rsnd_mod_write(mod, CTU_SV21R, 0);
-+	rsnd_mod_write(mod, CTU_SV22R, 0);
-+	rsnd_mod_write(mod, CTU_SV23R, 0);
-+	rsnd_mod_write(mod, CTU_SV24R, 0);
-+	rsnd_mod_write(mod, CTU_SV25R, 0);
-+	rsnd_mod_write(mod, CTU_SV26R, 0);
-+	rsnd_mod_write(mod, CTU_SV27R, 0);
-+
-+	rsnd_mod_write(mod, CTU_SV30R, 0);
-+	rsnd_mod_write(mod, CTU_SV31R, 0);
-+	rsnd_mod_write(mod, CTU_SV32R, 0);
-+	rsnd_mod_write(mod, CTU_SV33R, 0);
-+	rsnd_mod_write(mod, CTU_SV34R, 0);
-+	rsnd_mod_write(mod, CTU_SV35R, 0);
-+	rsnd_mod_write(mod, CTU_SV36R, 0);
-+	rsnd_mod_write(mod, CTU_SV37R, 0);
-+
-+	rsnd_mod_write(mod, CTU_CTUIR, 0);
++	return &mod->status;
 +}
 +
- static int rsnd_ctu_init(struct rsnd_mod *mod,
- 			 struct rsnd_dai_stream *io,
- 			 struct rsnd_priv *priv)
-@@ -59,11 +100,7 @@ static int rsnd_ctu_init(struct rsnd_mod *mod,
+ int rsnd_mod_init(struct rsnd_priv *priv,
+ 		  struct rsnd_mod *mod,
+-		   struct rsnd_mod_ops *ops,
+-		   struct clk *clk,
+-		   enum rsnd_mod_type type,
+-		   int id)
++		  struct rsnd_mod_ops *ops,
++		  struct clk *clk,
++		  u32* (*get_status)(struct rsnd_dai_stream *io,
++				     struct rsnd_mod *mod,
++				     enum rsnd_mod_type type),
++		  enum rsnd_mod_type type,
++		  int id)
+ {
+ 	int ret = clk_prepare(clk);
  
- 	rsnd_ctu_activation(mod);
+@@ -155,6 +165,7 @@ int rsnd_mod_init(struct rsnd_priv *priv,
+ 	mod->type	= type;
+ 	mod->clk	= clk;
+ 	mod->priv	= priv;
++	mod->get_status	= get_status;
  
--	rsnd_ctu_initialize_lock(mod);
--
--	rsnd_mod_write(mod, CTU_ADINR, rsnd_get_adinr_chan(mod, io));
--
--	rsnd_ctu_initialize_unlock(mod);
-+	rsnd_ctu_value_init(io, mod);
- 
- 	return 0;
+ 	return ret;
  }
-diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
-index 2f01e5eb462c..b6e487e06019 100644
---- a/sound/soc/sh/rcar/gen.c
-+++ b/sound/soc/sh/rcar/gen.c
-@@ -263,6 +263,40 @@ static int rsnd_gen2_probe(struct rsnd_priv *priv)
- 		RSND_GEN_M_REG(CTU_SWRSR,	0x500,	0x100),
- 		RSND_GEN_M_REG(CTU_CTUIR,	0x504,	0x100),
- 		RSND_GEN_M_REG(CTU_ADINR,	0x508,	0x100),
-+		RSND_GEN_M_REG(CTU_CPMDR,	0x510,	0x100),
-+		RSND_GEN_M_REG(CTU_SCMDR,	0x514,	0x100),
-+		RSND_GEN_M_REG(CTU_SV00R,	0x518,	0x100),
-+		RSND_GEN_M_REG(CTU_SV01R,	0x51c,	0x100),
-+		RSND_GEN_M_REG(CTU_SV02R,	0x520,	0x100),
-+		RSND_GEN_M_REG(CTU_SV03R,	0x524,	0x100),
-+		RSND_GEN_M_REG(CTU_SV04R,	0x528,	0x100),
-+		RSND_GEN_M_REG(CTU_SV05R,	0x52c,	0x100),
-+		RSND_GEN_M_REG(CTU_SV06R,	0x530,	0x100),
-+		RSND_GEN_M_REG(CTU_SV07R,	0x534,	0x100),
-+		RSND_GEN_M_REG(CTU_SV10R,	0x538,	0x100),
-+		RSND_GEN_M_REG(CTU_SV11R,	0x53c,	0x100),
-+		RSND_GEN_M_REG(CTU_SV12R,	0x540,	0x100),
-+		RSND_GEN_M_REG(CTU_SV13R,	0x544,	0x100),
-+		RSND_GEN_M_REG(CTU_SV14R,	0x548,	0x100),
-+		RSND_GEN_M_REG(CTU_SV15R,	0x54c,	0x100),
-+		RSND_GEN_M_REG(CTU_SV16R,	0x550,	0x100),
-+		RSND_GEN_M_REG(CTU_SV17R,	0x554,	0x100),
-+		RSND_GEN_M_REG(CTU_SV20R,	0x558,	0x100),
-+		RSND_GEN_M_REG(CTU_SV21R,	0x55c,	0x100),
-+		RSND_GEN_M_REG(CTU_SV22R,	0x560,	0x100),
-+		RSND_GEN_M_REG(CTU_SV23R,	0x564,	0x100),
-+		RSND_GEN_M_REG(CTU_SV24R,	0x568,	0x100),
-+		RSND_GEN_M_REG(CTU_SV25R,	0x56c,	0x100),
-+		RSND_GEN_M_REG(CTU_SV26R,	0x570,	0x100),
-+		RSND_GEN_M_REG(CTU_SV27R,	0x574,	0x100),
-+		RSND_GEN_M_REG(CTU_SV30R,	0x578,	0x100),
-+		RSND_GEN_M_REG(CTU_SV31R,	0x57c,	0x100),
-+		RSND_GEN_M_REG(CTU_SV32R,	0x580,	0x100),
-+		RSND_GEN_M_REG(CTU_SV33R,	0x584,	0x100),
-+		RSND_GEN_M_REG(CTU_SV34R,	0x588,	0x100),
-+		RSND_GEN_M_REG(CTU_SV35R,	0x58c,	0x100),
-+		RSND_GEN_M_REG(CTU_SV36R,	0x590,	0x100),
-+		RSND_GEN_M_REG(CTU_SV37R,	0x594,	0x100),
- 		RSND_GEN_M_REG(MIX_SWRSR,	0xd00,	0x40),
- 		RSND_GEN_M_REG(MIX_MIXIR,	0xd04,	0x40),
- 		RSND_GEN_M_REG(MIX_ADINR,	0xd08,	0x40),
+@@ -325,7 +336,7 @@ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
+ 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);		\
+ 	struct rsnd_mod *mod = (io)->mod[idx];			\
+ 	struct device *dev = rsnd_priv_to_dev(priv);		\
+-	u32 *status = (io)->mod_status + idx;			\
++	u32 *status = mod->get_status(io, mod, idx);			\
+ 	u32 mask = 0xF << __rsnd_mod_shift_##func;			\
+ 	u8 val  = (*status >> __rsnd_mod_shift_##func) & 0xF;		\
+ 	u8 add  = ((val + __rsnd_mod_add_##func) & 0xF);		\
+diff --git a/sound/soc/sh/rcar/ctu.c b/sound/soc/sh/rcar/ctu.c
+index d53a225d19e9..109930a20401 100644
+--- a/sound/soc/sh/rcar/ctu.c
++++ b/sound/soc/sh/rcar/ctu.c
+@@ -129,7 +129,7 @@ int rsnd_ctu_probe(struct rsnd_priv *priv)
+ 		}
+ 
+ 		ret = rsnd_mod_init(priv, rsnd_mod_get(ctu), &rsnd_ctu_ops,
+-				    clk, RSND_MOD_CTU, i);
++				    clk, rsnd_mod_get_status, RSND_MOD_CTU, i);
+ 		if (ret)
+ 			goto rsnd_ctu_probe_done;
+ 
+diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
+index 418e6fdd06a3..d1cb3c177572 100644
+--- a/sound/soc/sh/rcar/dma.c
++++ b/sound/soc/sh/rcar/dma.c
+@@ -681,7 +681,7 @@ struct rsnd_mod *rsnd_dma_attach(struct rsnd_dai_stream *io,
+ 	dma_mod = rsnd_mod_get(dma);
+ 
+ 	ret = rsnd_mod_init(priv, dma_mod,
+-			    ops, NULL, type, dma_id);
++			    ops, NULL, rsnd_mod_get_status, type, dma_id);
+ 	if (ret < 0)
+ 		return ERR_PTR(ret);
+ 
+diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
+index d45ffe496397..302c193f674d 100644
+--- a/sound/soc/sh/rcar/dvc.c
++++ b/sound/soc/sh/rcar/dvc.c
+@@ -373,7 +373,7 @@ int rsnd_dvc_probe(struct rsnd_priv *priv)
+ 		}
+ 
+ 		ret = rsnd_mod_init(priv, rsnd_mod_get(dvc), &rsnd_dvc_ops,
+-			      clk, RSND_MOD_DVC, i);
++				    clk, rsnd_mod_get_status, RSND_MOD_DVC, i);
+ 		if (ret)
+ 			goto rsnd_dvc_probe_done;
+ 
+diff --git a/sound/soc/sh/rcar/mix.c b/sound/soc/sh/rcar/mix.c
+index 65542b6a89e9..e0e337ad4206 100644
+--- a/sound/soc/sh/rcar/mix.c
++++ b/sound/soc/sh/rcar/mix.c
+@@ -172,7 +172,7 @@ int rsnd_mix_probe(struct rsnd_priv *priv)
+ 		}
+ 
+ 		ret = rsnd_mod_init(priv, rsnd_mod_get(mix), &rsnd_mix_ops,
+-				    clk, RSND_MOD_MIX, i);
++				    clk, rsnd_mod_get_status, RSND_MOD_MIX, i);
+ 		if (ret)
+ 			goto rsnd_mix_probe_done;
+ 
 diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 12227f6b6221..4974db6679c3 100644
+index c7b2ba0daf2a..28602607cf5e 100644
 --- a/sound/soc/sh/rcar/rsnd.h
 +++ b/sound/soc/sh/rcar/rsnd.h
-@@ -89,6 +89,40 @@ enum rsnd_reg {
- 	RSND_REG_CTU_SWRSR,
- 	RSND_REG_CTU_CTUIR,
- 	RSND_REG_CTU_ADINR,
-+	RSND_REG_CTU_CPMDR,
-+	RSND_REG_CTU_SCMDR,
-+	RSND_REG_CTU_SV00R,
-+	RSND_REG_CTU_SV01R,
-+	RSND_REG_CTU_SV02R,
-+	RSND_REG_CTU_SV03R,
-+	RSND_REG_CTU_SV04R,
-+	RSND_REG_CTU_SV05R,
-+	RSND_REG_CTU_SV06R,
-+	RSND_REG_CTU_SV07R,
-+	RSND_REG_CTU_SV10R,
-+	RSND_REG_CTU_SV11R,
-+	RSND_REG_CTU_SV12R,
-+	RSND_REG_CTU_SV13R,
-+	RSND_REG_CTU_SV14R,
-+	RSND_REG_CTU_SV15R,
-+	RSND_REG_CTU_SV16R,
-+	RSND_REG_CTU_SV17R,
-+	RSND_REG_CTU_SV20R,
-+	RSND_REG_CTU_SV21R,
-+	RSND_REG_CTU_SV22R,
-+	RSND_REG_CTU_SV23R,
-+	RSND_REG_CTU_SV24R,
-+	RSND_REG_CTU_SV25R,
-+	RSND_REG_CTU_SV26R,
-+	RSND_REG_CTU_SV27R,
-+	RSND_REG_CTU_SV30R,
-+	RSND_REG_CTU_SV31R,
-+	RSND_REG_CTU_SV32R,
-+	RSND_REG_CTU_SV33R,
-+	RSND_REG_CTU_SV34R,
-+	RSND_REG_CTU_SV35R,
-+	RSND_REG_CTU_SV36R,
-+	RSND_REG_CTU_SV37R,
- 	RSND_REG_MIX_SWRSR,
- 	RSND_REG_MIX_MIXIR,
- 	RSND_REG_MIX_ADINR,
+@@ -233,6 +233,10 @@ struct rsnd_mod {
+ 	struct rsnd_mod_ops *ops;
+ 	struct rsnd_priv *priv;
+ 	struct clk *clk;
++	u32 *(*get_status)(struct rsnd_dai_stream *io,
++			   struct rsnd_mod *mod,
++			   enum rsnd_mod_type type);
++	u32 status;
+ };
+ /*
+  * status
+@@ -286,10 +290,13 @@ struct rsnd_mod {
+ 
+ int rsnd_mod_init(struct rsnd_priv *priv,
+ 		  struct rsnd_mod *mod,
+-		   struct rsnd_mod_ops *ops,
+-		   struct clk *clk,
+-		   enum rsnd_mod_type type,
+-		   int id);
++		  struct rsnd_mod_ops *ops,
++		  struct clk *clk,
++		  u32* (*get_status)(struct rsnd_dai_stream *io,
++				     struct rsnd_mod *mod,
++				     enum rsnd_mod_type type),
++		  enum rsnd_mod_type type,
++		  int id);
+ void rsnd_mod_quit(struct rsnd_mod *mod);
+ char *rsnd_mod_name(struct rsnd_mod *mod);
+ struct dma_chan *rsnd_mod_dma_req(struct rsnd_dai_stream *io,
+@@ -297,6 +304,10 @@ struct dma_chan *rsnd_mod_dma_req(struct rsnd_dai_stream *io,
+ void rsnd_mod_interrupt(struct rsnd_mod *mod,
+ 			void (*callback)(struct rsnd_mod *mod,
+ 					 struct rsnd_dai_stream *io));
++u32 *rsnd_mod_get_status(struct rsnd_dai_stream *io,
++			 struct rsnd_mod *mod,
++			 enum rsnd_mod_type type);
++
+ void rsnd_parse_connect_common(struct rsnd_dai *rdai,
+ 		struct rsnd_mod* (*mod_get)(struct rsnd_priv *priv, int id),
+ 		struct device_node *node,
+@@ -319,7 +330,7 @@ struct rsnd_dai_stream {
+ 	struct rsnd_mod *mod[RSND_MOD_MAX];
+ 	struct rsnd_dai_path_info *info; /* rcar_snd.h */
+ 	struct rsnd_dai *rdai;
+-	u32 mod_status[RSND_MOD_MAX];
++	u32 parent_ssi_status;
+ 	int byte_pos;
+ 	int period_pos;
+ 	int byte_per_period;
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index b438538a0a69..516b0c05451c 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -615,7 +615,8 @@ int rsnd_src_probe(struct rsnd_priv *priv)
+ 		}
+ 
+ 		ret = rsnd_mod_init(priv, rsnd_mod_get(src),
+-				    &rsnd_src_ops, clk, RSND_MOD_SRC, i);
++				    &rsnd_src_ops, clk, rsnd_mod_get_status,
++				    RSND_MOD_SRC, i);
+ 		if (ret)
+ 			goto rsnd_src_probe_done;
+ 
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index df3ab74adf3e..e68f3a1c9cb4 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -857,6 +857,41 @@ int __rsnd_ssi_is_pin_sharing(struct rsnd_mod *mod)
+ 	return !!(rsnd_ssi_mode_flags(ssi) & RSND_SSI_CLK_PIN_SHARE);
+ }
+ 
++static u32 *rsnd_ssi_get_status(struct rsnd_dai_stream *io,
++				struct rsnd_mod *mod,
++				enum rsnd_mod_type type)
++{
++	/*
++	 * SSIP (= SSI parent) needs to be special, otherwise,
++	 * 2nd SSI might doesn't start. see also rsnd_mod_call()
++	 *
++	 * We can't include parent SSI status on SSI, because we don't know
++	 * how many SSI requests parent SSI. Thus, it is localed on "io" now.
++	 * ex) trouble case
++	 *	Playback: SSI0
++	 *	Capture : SSI1 (needs SSI0)
++	 *
++	 * 1) start Capture  ->	SSI0/SSI1 are started.
++	 * 2) start Playback ->	SSI0 doesn't work, because it is already
++	 *			marked as "started" on 1)
++	 *
++	 * OTOH, using each mod's status is good for MUX case.
++	 * It doesn't need to start in 2nd start
++	 * ex)
++	 *	IO-0: SRC0 -> CTU1 -+-> MUX -> DVC -> SSIU -> SSI0
++	 *			    |
++	 *	IO-1: SRC1 -> CTU2 -+
++	 *
++	 * 1) start IO-0 ->	start SSI0
++	 * 2) start IO-1 ->	SSI0 doesn't need to start, because it is
++	 *			already started on 1)
++	 */
++	if (type == RSND_MOD_SSIP)
++		return &io->parent_ssi_status;
++
++	return rsnd_mod_get_status(io, mod, type);
++}
++
+ int rsnd_ssi_probe(struct rsnd_priv *priv)
+ {
+ 	struct device_node *node;
+@@ -919,7 +954,7 @@ int rsnd_ssi_probe(struct rsnd_priv *priv)
+ 			ops = &rsnd_ssi_dma_ops;
+ 
+ 		ret = rsnd_mod_init(priv, rsnd_mod_get(ssi), ops, clk,
+-				    RSND_MOD_SSI, i);
++				    rsnd_ssi_get_status, RSND_MOD_SSI, i);
+ 		if (ret)
+ 			goto rsnd_ssi_probe_done;
+ 
+diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
+index 06d72828e5bc..11e55889b401 100644
+--- a/sound/soc/sh/rcar/ssiu.c
++++ b/sound/soc/sh/rcar/ssiu.c
+@@ -206,7 +206,8 @@ int rsnd_ssiu_probe(struct rsnd_priv *priv)
+ 
+ 	for_each_rsnd_ssiu(ssiu, priv, i) {
+ 		ret = rsnd_mod_init(priv, rsnd_mod_get(ssiu),
+-				    ops, NULL, RSND_MOD_SSIU, i);
++				    ops, NULL, rsnd_mod_get_status,
++				    RSND_MOD_SSIU, i);
+ 		if (ret)
+ 			return ret;
+ 	}
 -- 
 2.7.0.rc3
