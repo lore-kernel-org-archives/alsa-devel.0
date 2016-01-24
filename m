@@ -1,60 +1,137 @@
-From: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>
-Subject: Re: [PATCH 2/2] ASoC: simple-card: don't fail if sysclk setting is
- not supported
-Date: Sun, 24 Jan 2016 18:39:12 +0100
-Message-ID: <20160124173912.GV3880@lunn.ch>
-References: <1453588600-14831-1-git-send-email-aaro.koskinen@iki.fi>
- <1453588600-14831-3-git-send-email-aaro.koskinen@iki.fi>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1453588600-14831-3-git-send-email-aaro.koskinen-X3B1VOXEql0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Aaro Koskinen <aaro.koskinen-X3B1VOXEql0@public.gmane.org>
-Cc: Jason Cooper <jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Martin Michlmayr <tbm-R+vWnYXSFMfQT0dZR+AlfA@public.gmane.org>, Rick Thomas <rbthomas-e+AXbWqSrlAAvxtiuMwx3w@public.gmane.org>
+From: Mans Rullgard <mans@mansr.com>
+Subject: [PATCH 10/15] dmaengine: dw: pass platform data via struct dw_dma_chip
+Date: Sun, 24 Jan 2016 19:21:57 +0000
+Message-ID: <1453663322-14474-11-git-send-email-mans@mansr.com>
+References: <1453663322-14474-1-git-send-email-mans@mansr.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1453663322-14474-1-git-send-email-mans@mansr.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Viresh Kumar <vireshk@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Cc: Tejun Heo <tj@kernel.org>, Dan Williams <dan.j.williams@intel.com>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-ide@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jan 24, 2016 at 12:36:40AM +0200, Aaro Koskinen wrote:
-> Commit e22579713ae1 ("ASoC: simple card: set cpu-dai sysclk
-> with mclk-fs") added sysclk / SND_SOC_CLOCK_OUT setting, that makes
-> asoc_simple_card_hw_params fail if the operation is not supported,
-> although the intention clearly was to ignore ENOTSUPP. Fix it.
-> 
-> The patch fixes audio playback on Kirkwood / OpenRD client,
-> where the following errors are seen:
-> 
-> 	asoc-simple-card sound: ASoC: machine hw_params failed: -524
-> 	alsa-lib: /alsa-lib-1.0.28/src/pcm/pcm_hw.c:327:(snd_pcm_hw_hw_params) SNDRV_PCM_IOCTL_HW_PARAMS failed (-524): Unknown error 524
-> 
-> Fixes: e22579713ae1 ("ASoC: simple card: set cpu-dai sysclk with mclk-fs")
-> Signed-off-by: Aaro Koskinen <aaro.koskinen-X3B1VOXEql0@public.gmane.org>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Reviewed-by: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>
+We pass struct dw_dma_chip to the dw_dma_probe() anyway, thus we may use it to
+pass platform data as well.
 
-	     Andrew
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+---
+ drivers/ata/sata_dwc_460ex.c          |  2 +-
+ drivers/dma/dw/core.c                 |  3 ++-
+ drivers/dma/dw/pci.c                  |  3 ++-
+ drivers/dma/dw/platform.c             |  3 ++-
+ include/linux/dma/dw.h                | 14 ++++++++------
+ sound/soc/intel/common/sst-firmware.c |  2 +-
+ 6 files changed, 16 insertions(+), 11 deletions(-)
 
-> ---
->  sound/soc/generic/simple-card.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-> index 54c3320..ff6fcd9 100644
-> --- a/sound/soc/generic/simple-card.c
-> +++ b/sound/soc/generic/simple-card.c
-> @@ -100,7 +100,7 @@ static int asoc_simple_card_hw_params(struct snd_pcm_substream *substream,
->  		if (ret && ret != -ENOTSUPP)
->  			goto err;
->  	}
-> -
-> +	return 0;
->  err:
->  	return ret;
->  }
-> -- 
-> 2.4.0
-> 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/drivers/ata/sata_dwc_460ex.c b/drivers/ata/sata_dwc_460ex.c
+index 80bdcabc293f..2cb6f7e04b5c 100644
+--- a/drivers/ata/sata_dwc_460ex.c
++++ b/drivers/ata/sata_dwc_460ex.c
+@@ -1248,7 +1248,7 @@ static int sata_dwc_probe(struct platform_device *ofdev)
+ 	hsdev->dma->dev = &ofdev->dev;
+ 
+ 	/* Initialize AHB DMAC */
+-	err = dw_dma_probe(hsdev->dma, NULL);
++	err = dw_dma_probe(hsdev->dma);
+ 	if (err)
+ 		goto error_dma_iomap;
+ 
+diff --git a/drivers/dma/dw/core.c b/drivers/dma/dw/core.c
+index 1644d79a071a..91a6d8b304aa 100644
+--- a/drivers/dma/dw/core.c
++++ b/drivers/dma/dw/core.c
+@@ -1468,8 +1468,9 @@ EXPORT_SYMBOL(dw_dma_cyclic_free);
+ 
+ /*----------------------------------------------------------------------*/
+ 
+-int dw_dma_probe(struct dw_dma_chip *chip, struct dw_dma_platform_data *pdata)
++int dw_dma_probe(struct dw_dma_chip *chip)
+ {
++	struct dw_dma_platform_data	*pdata = chip->pdata;
+ 	struct dw_dma		*dw;
+ 	bool			autocfg = false;
+ 	unsigned int		dw_params;
+diff --git a/drivers/dma/dw/pci.c b/drivers/dma/dw/pci.c
+index 4c30fdd092b3..fc3b954b27da 100644
+--- a/drivers/dma/dw/pci.c
++++ b/drivers/dma/dw/pci.c
+@@ -49,8 +49,9 @@ static int dw_pci_probe(struct pci_dev *pdev, const struct pci_device_id *pid)
+ 	chip->dev = &pdev->dev;
+ 	chip->regs = pcim_iomap_table(pdev)[0];
+ 	chip->irq = pdev->irq;
++	chip->pdata = pdata;
+ 
+-	ret = dw_dma_probe(chip, pdata);
++	ret = dw_dma_probe(chip);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/drivers/dma/dw/platform.c b/drivers/dma/dw/platform.c
+index fcbe57006e59..808bafdd7d48 100644
+--- a/drivers/dma/dw/platform.c
++++ b/drivers/dma/dw/platform.c
+@@ -181,6 +181,7 @@ static int dw_probe(struct platform_device *pdev)
+ 		pdata = dw_dma_parse_dt(pdev);
+ 
+ 	chip->dev = dev;
++	chip->pdata = pdata;
+ 
+ 	chip->clk = devm_clk_get(chip->dev, "hclk");
+ 	if (IS_ERR(chip->clk))
+@@ -191,7 +192,7 @@ static int dw_probe(struct platform_device *pdev)
+ 
+ 	pm_runtime_enable(&pdev->dev);
+ 
+-	err = dw_dma_probe(chip, pdata);
++	err = dw_dma_probe(chip);
+ 	if (err)
+ 		goto err_dw_dma_probe;
+ 
+diff --git a/include/linux/dma/dw.h b/include/linux/dma/dw.h
+index 71456442ebe3..c9a3914e8a08 100644
+--- a/include/linux/dma/dw.h
++++ b/include/linux/dma/dw.h
+@@ -27,17 +27,19 @@ struct dw_dma;
+  * @regs:		memory mapped I/O space
+  * @clk:		hclk clock
+  * @dw:			struct dw_dma that is filed by dw_dma_probe()
++ * @pdata:		pointer to platform data
+  */
+ struct dw_dma_chip {
+-	struct device	*dev;
+-	int		irq;
+-	void __iomem	*regs;
+-	struct clk	*clk;
+-	struct dw_dma	*dw;
++	struct device			*dev;
++	int				irq;
++	void __iomem			*regs;
++	struct clk			*clk;
++	struct dw_dma			*dw;
++	struct dw_dma_platform_data	*pdata;
+ };
+ 
+ /* Export to the platform drivers */
+-int dw_dma_probe(struct dw_dma_chip *chip, struct dw_dma_platform_data *pdata);
++int dw_dma_probe(struct dw_dma_chip *chip);
+ int dw_dma_remove(struct dw_dma_chip *chip);
+ 
+ /* DMA API extensions */
+diff --git a/sound/soc/intel/common/sst-firmware.c b/sound/soc/intel/common/sst-firmware.c
+index ef4881e7753a..25993527370b 100644
+--- a/sound/soc/intel/common/sst-firmware.c
++++ b/sound/soc/intel/common/sst-firmware.c
+@@ -203,7 +203,7 @@ static struct dw_dma_chip *dw_probe(struct device *dev, struct resource *mem,
+ 
+ 	chip->dev = dev;
+ 
+-	err = dw_dma_probe(chip, NULL);
++	err = dw_dma_probe(chip);
+ 	if (err)
+ 		return ERR_PTR(err);
+ 
+-- 
+2.7.0
