@@ -1,61 +1,34 @@
-From: Rick Thomas <rbthomas@pobox.com>
+From: Martin Michlmayr <tbm-R+vWnYXSFMfQT0dZR+AlfA@public.gmane.org>
 Subject: Re: [PATCH 1/2] ARM: DTS: kirkwood-openrd-client: fix audio
-Date: Sun, 24 Jan 2016 12:56:09 -0800
-Message-ID: <411C1DFA-3E76-42B0-866C-7C3C0D990039@pobox.com>
+Date: Sun, 24 Jan 2016 13:40:20 -0800
+Message-ID: <20160124214020.GA28667@jirafa.cyrius.com>
 References: <1453588600-14831-1-git-send-email-aaro.koskinen@iki.fi>
  <1453588600-14831-2-git-send-email-aaro.koskinen@iki.fi>
  <20160124173701.GU3880@lunn.ch>
-Mime-Version: 1.0 (Mac OS X Mail 7.3 \(1878.6\))
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20160124173701.GU3880@lunn.ch>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Aaro Koskinen <aaro.koskinen@iki.fi>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Mark Brown <broonie@kernel.org>, Gregory Clement <gregory.clement@free-electrons.com>, Martin Michlmayr <tbm@cyrius.com>, linux-arm-kernel@lists.infradead.org
+ <411C1DFA-3E76-42B0-866C-7C3C0D990039@pobox.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <411C1DFA-3E76-42B0-866C-7C3C0D990039-e+AXbWqSrlAAvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Rick Thomas <rbthomas-e+AXbWqSrlAAvxtiuMwx3w@public.gmane.org>
+Cc: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>, Aaro Koskinen <aaro.koskinen-X3B1VOXEql0@public.gmane.org>, Jason Cooper <jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Gregory Clement <gregory.clement-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+* Rick Thomas <rbthomas-e+AXbWqSrlAAvxtiuMwx3w@public.gmane.org> [2016-01-24 12:56]:
+> > It would be good to have a Tested-by: from Rick.
+> > 
+> If someone will make a .deb I can download, I'll be happy to install
+> it and test it.  Please be explicit in describing what and how you
+> want tested.
 
-On Jan 24, 2016, at 9:37 AM, Andrew Lunn <andrew@lunn.ch> wrote:
+Check your email. :)
 
-> On Sun, Jan 24, 2016 at 12:36:39AM +0200, Aaro Koskinen wrote:
->> Fix audio on kirkwood-openrd-client:
->> 
->> 1) The audio-controller was left disabled.
->> 
->> 2) The probe fails because cs42l51 is missing #sound-dai-cells.
->> 
->> 	/sound/simple-audio-card,codec: could not get #sound-dai-cells for /ocp@f1000000/i2c@11000/cs42l51@4a
->> 	asoc-simple-card sound: parse error -22
->> 	asoc-simple-card: probe of sound failed with error -22
->> 
->> 3) The mapping is incorrect:
->> 
->> 	asoc-simple-card sound: cs42l51-hifi <-> spdif mapping ok
->> 
->>   should be:
->> 
->> 	asoc-simple-card sound: cs42l51-hifi <-> i2s mapping ok
->> 
->> Reported-by: Rick Thomas <rbthomas@pobox.com>
->> Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
-> 
-> It would be good to have a Tested-by: from Rick.
-> 
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> 
-> 	     Andrew
-
-
-If someone will make a .deb I can download, I'll be happy to install it and test it.  Please be explicit in describing what and how you want tested.
-
-
-Rick
+-- 
+Martin Michlmayr
+http://www.cyrius.com/
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
