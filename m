@@ -1,23 +1,16 @@
-From: Tom Yan <tom.ty89@gmail.com>
-Subject: Re: [PATCH - alsactl 1/1] make systemd service start
-	in proper way
-Date: Sun, 24 Jan 2016 20:57:12 +0800
-Message-ID: <CAGnHSE=GBJZucC0X_qLTVMA6ue9782UjjgXfQWFzt1qGu0D-6g@mail.gmail.com>
-References: <56a41b26.5908620a.ff61a.6c10@mx.google.com>
- <s5hbn8bbec1.wl-tiwai@suse.de>
- <CAGnHSE=OP2U7SuDtavXrEsBaQPSLW82e15-2t1sAd_uPRiD2Vg@mail.gmail.com>
- <s5hy4bf9prb.wl-tiwai@suse.de>
+From: Dmitry Vyukov <dvyukov@google.com>
+Subject: sound: WARNING in snd_rawmidi_transmit_ack
+Date: Sun, 24 Jan 2016 17:29:12 +0100
+Message-ID: <CACT4Y+YPq1+cYLkadwjWa5XjzF1_Vki1eHnVn-Lm0hzhSpu5PA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f172.google.com (mail-lb0-f172.google.com
- [209.85.217.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 00A42260537
- for <alsa-devel@alsa-project.org>; Sun, 24 Jan 2016 13:57:12 +0100 (CET)
-Received: by mail-lb0-f172.google.com with SMTP id x4so62225815lbm.0
- for <alsa-devel@alsa-project.org>; Sun, 24 Jan 2016 04:57:13 -0800 (PST)
-In-Reply-To: <s5hy4bf9prb.wl-tiwai@suse.de>
+Received: from mail-wm0-f49.google.com (mail-wm0-f49.google.com [74.125.82.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CCDF260631
+ for <alsa-devel@alsa-project.org>; Sun, 24 Jan 2016 17:29:32 +0100 (CET)
+Received: by mail-wm0-f49.google.com with SMTP id n5so46974383wmn.0
+ for <alsa-devel@alsa-project.org>; Sun, 24 Jan 2016 08:29:32 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,124 +20,118 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
+Cc: Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>, Alexander Potapenko <glider@google.com>, Sasha Levin <sasha.levin@oracle.com>
 List-Id: alsa-devel@alsa-project.org
 
-How do you think the check should be? The symlinks will just be no-op
-if sound.target doesn't exist. I'm not gonna introduce some dirty
-switch to make it fall back to basic.target.wants for systemd<v18.
+Hello,
 
-On 24 January 2016 at 19:32, Takashi Iwai <tiwai@suse.de> wrote:
-> On Sun, 24 Jan 2016 11:48:09 +0100,
-> Tom Yan wrote:
->>
->> Since v18:
->> http://cgit.freedesktop.org/systemd/systemd/commit/?id=88dfa2938af09e511e4911e6984360ded0e2cd8d
->> http://cgit.freedesktop.org/systemd/systemd/tag/?id=v18
->
-> OK, it's old enough, but maybe safer to have some check in configure
-> script?
->
->
-> Takashi
->
->>
->> On 24 January 2016 at 15:56, Takashi Iwai <tiwai@suse.de> wrote:
->> > On Sun, 24 Jan 2016 01:30:23 +0100,
->> > tom.ty89@gmail.com wrote:
->> >>
->> >> From: Tom Yan <tom.ty89@gmail.com>
->> >>
->> >> Use sound.target to trigger the service, which is the proper way
->> >> to start a service related to sound card. This also makes sure that
->> >> the service will only start if a sound card exists in the system.
->> >
->> > Has this target existed in all released versions of systemd?
->> > Just to be sure...
->> >
->> >> basic.target is too early for either of the service:
->> >> 1. alsa-state.service will spam "No soundcards found" on every boot
->> >
->> > Actually this should be seen as a bug of alsactl itself.  In the
->> > daemon mode, it should be allowed to run without the sound card at
->> > start.
->> >
->> >> 2. alsa-restore.service will never start because of
->> >>    "ConditionPathExistsGlob=/dev/snd/control*"
->> >
->> > ... unless reloading or starting the service later.
->> >
->> >> "After=sysinit.target" is removed from alsa-state.service because it
->> >> never made any sense.
->> >>
->> >> "After=alsa-state.service" is removed from alsa-restore.service because
->> >> it is completely unnecessary with the daemon conf switch.
->> >>
->> >> Now either of serivce is enough to manage the state all by itself without
->> >> the udev rules if only ONE sound card exists in the system, while the rules
->> >> are still necessary in system with multiple sound cards.
->> >
->> > ... or with a hotplug device.
->> >
->> >> "StandardOutput=syslog" is also removed from alsa-restore.service because it
->> >> makes little sense (if it has ever switched the behaviour away from default).
->> >
->> > That's superfluous indeed.
->> >
->> >
->> > thanks,
->> >
->> > Takashi
->> >
->> >
->> >> Signed-off-by: Tom Yan <tom.ty89@gmail.com>
->> >>
->> >> diff --git a/alsactl/Makefile.am b/alsactl/Makefile.am
->> >> index cac8094..90fab9d 100644
->> >> --- a/alsactl/Makefile.am
->> >> +++ b/alsactl/Makefile.am
->> >> @@ -29,8 +29,8 @@ systemdsystemunit_DATA = \
->> >>
->> >>  install-data-hook:
->> >>       $(MKDIR_P) -m 0755 \
->> >> -             $(DESTDIR)$(systemdsystemunitdir)/basic.target.wants
->> >> -     ( cd $(DESTDIR)$(systemdsystemunitdir)/basic.target.wants && \
->> >> +             $(DESTDIR)$(systemdsystemunitdir)/sound.target.wants
->> >> +     ( cd $(DESTDIR)$(systemdsystemunitdir)/sound.target.wants && \
->> >>               rm -f alsa-state.service alsa-restore.service && \
->> >>               $(LN_S) ../alsa-state.service alsa-state.service && \
->> >>               $(LN_S) ../alsa-restore.service alsa-restore.service)
->> >> diff --git a/alsactl/alsa-restore.service.in b/alsactl/alsa-restore.service.in
->> >> index 2884098..fbcf983 100644
->> >> --- a/alsactl/alsa-restore.service.in
->> >> +++ b/alsactl/alsa-restore.service.in
->> >> @@ -6,12 +6,9 @@
->> >>  [Unit]
->> >>  Description=Save/Restore Sound Card State
->> >>  ConditionPathExists=!@daemonswitch@
->> >> -ConditionPathExistsGlob=/dev/snd/control*
->> >> -After=alsa-state.service
->> >>
->> >>  [Service]
->> >>  Type=oneshot
->> >>  RemainAfterExit=true
->> >>  ExecStart=-@sbindir@/alsactl restore
->> >>  ExecStop=-@sbindir@/alsactl store
->> >> -StandardOutput=syslog
->> >> diff --git a/alsactl/alsa-state.service.in b/alsactl/alsa-state.service.in
->> >> index f1321d6..5a8fe5e 100644
->> >> --- a/alsactl/alsa-state.service.in
->> >> +++ b/alsactl/alsa-state.service.in
->> >> @@ -6,7 +6,6 @@
->> >>  [Unit]
->> >>  Description=Manage Sound Card State (restore and store)
->> >>  ConditionPathExists=@daemonswitch@
->> >> -After=sysinit.target
->> >>
->> >>  [Service]
->> >>  Type=simple
->> >> --
->> >> 2.7.0
->> >>
->>
+The following program triggers WARNING in snd_rawmidi_transmit_ack:
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 20739 at sound/core/rawmidi.c:1136
+snd_rawmidi_transmit_ack+0x275/0x400()
+Modules linked in:
+CPU: 1 PID: 20739 Comm: syz-executor Tainted: G        W       4.4.0+ #276
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+ 00000000ffffffff ffff8800346af8d8 ffffffff82999e2d 0000000000000000
+ ffff88002fea97c0 ffffffff86d3f920 ffff8800346af918 ffffffff81352089
+ ffffffff84f80bd5 ffffffff86d3f920 0000000000000470 ffff8800600b9b68
+Call Trace:
+ [<     inline     >] __dump_stack lib/dump_stack.c:15
+ [<ffffffff82999e2d>] dump_stack+0x6f/0xa2 lib/dump_stack.c:50
+ [<ffffffff81352089>] warn_slowpath_common+0xd9/0x140 kernel/panic.c:482
+ [<ffffffff813522b9>] warn_slowpath_null+0x29/0x30 kernel/panic.c:515
+ [<ffffffff84f80bd5>] snd_rawmidi_transmit_ack+0x275/0x400
+sound/core/rawmidi.c:1136
+ [<ffffffff84fdb3c1>] snd_virmidi_output_trigger+0x4b1/0x5a0
+sound/core/seq/seq_virmidi.c:163
+ [<     inline     >] snd_rawmidi_output_trigger sound/core/rawmidi.c:150
+ [<ffffffff84f87ed9>] snd_rawmidi_kernel_write1+0x549/0x780
+sound/core/rawmidi.c:1223
+ [<ffffffff84f89fd3>] snd_rawmidi_write+0x543/0xb30 sound/core/rawmidi.c:1273
+ [<ffffffff817b0323>] __vfs_write+0x113/0x480 fs/read_write.c:528
+ [<ffffffff817b1db7>] vfs_write+0x167/0x4a0 fs/read_write.c:577
+ [<     inline     >] SYSC_write fs/read_write.c:624
+ [<ffffffff817b50a1>] SyS_write+0x111/0x220 fs/read_write.c:616
+ [<ffffffff86336c36>] entry_SYSCALL_64_fastpath+0x16/0x7a
+arch/x86/entry/entry_64.S:185
+---[ end trace 93509ba74cc3e259 ]---
+
+
+// autogenerated by syzkaller (http://github.com/google/syzkaller)
+#include <pthread.h>
+#include <stdint.h>
+#include <string.h>
+#include <sys/syscall.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+long r[11];
+
+void* thr(void* arg)
+{
+  switch ((long)arg) {
+  case 0:
+    r[0] = syscall(SYS_mmap, 0x20000000ul, 0x10000ul, 0x3ul, 0x32ul,
+                   0xfffffffffffffffful, 0x0ul);
+    break;
+  case 1:
+    r[1] = syscall(SYS_open, "/dev/dmmidi2", O_RDWR, 0);
+    break;
+  case 2:
+    *(uint32_t*)0x20006fda = (uint32_t)0x28;
+    *(uint32_t*)0x20006fde = (uint32_t)0x7;
+    *(uint64_t*)0x20006fe2 = (uint64_t)0x0;
+    *(uint64_t*)0x20006fea = (uint64_t)0x7;
+    *(uint64_t*)0x20006ff2 = (uint64_t)0x8;
+    *(uint16_t*)0x20006ffa = (uint16_t)0xfffffffffffffff8;
+    r[8] = syscall(SYS_write, r[1], 0x20006fdaul, 0x28ul, 0, 0, 0);
+    break;
+  case 3:
+    memcpy((void*)0x20007000,
+           "\x3c\x3f\xbc\xd7\x07\xee\x01\x21\x84\x26\x11\x6d\xc6\xc3"
+           "\xac\x7f\x14\xa3\x15\xda\xa1\x34\x67\xe9\xb6\xf8\xa8\xdd"
+           "\xb5\xe0\x2a\x64\x6e\x04\x7c\x40\xdb\x64\x4f\x53\x41\x90"
+           "\x02\x3b\x48\xba\xf6\xd7\x32\xe5\x11\x3f\xe5\xc5\xf2\x5f"
+           "\x4e\x6f\x5b\xe9\x0e\x76\x1a\x72\x77\x68\xad\xd3\x1b\x8d"
+           "\x8f\x71\x2f\x40\xde\xf4\xbf\x78\x48\xc2\xc3\xe5\xe9\x11"
+           "\x11\xd2\x9a\x91\x94\x81\x57\x22\xef\x2a\x5b\xe2\x9e\xce"
+           "\x3f\xa6\x07\x54\xd4\xb6\x1f\x30\xfd\x09\x35\x54\xcc\x78"
+           "\x12\x37\x59\xf7\x5c\x51\xd2\x47\xb8\x40\x98\x2b\xb4\x8d"
+           "\xbf\xd5\x34\x26\xcd\xb5\xe4\x98\x2d\x0e\xb1\x71\x0f\x12"
+           "\x06\xb0\x2c\x78\x74\xba\x3d\x32\x9c\x72\x96\x0d\x91\x50"
+           "\x9a\xe3\xbc\x4f\x1e\x26\xb2\xe3\xb2\xa2\x68\x6f\x10\xb5"
+           "\xc1\x7f\xfc\xfd\xf0\xe6\xd9\x0c\xa0\xa7\x54\x2c\x62\x0d"
+           "\xee\x04\x5b\x9d\x73\xf4\xcc\x29\x37\x01\xc2\x35\x8d\x3c"
+           "\x8a\x2f\xe3\xf5\x55\x42\x77\x55\x2d\x49\x6f\x46\xf7\x34"
+           "\xb1\x5f\xe7\x98\x55\xb5\x7c\x4e\xd7\x47\x18\xd1\xf9\xf2"
+           "\xd2\xfe\x47\xff\x22\x04\xa9\x32\xe9\xd6\x28\xda\xe1\x85"
+           "\xcb\xc5\xe6\xc1\xca\x9e\x3f\x1f\x80\xe6",
+           248);
+    r[10] = syscall(SYS_write, r[1], 0x20007000ul, 0xf8ul, 0, 0, 0);
+    break;
+  }
+  return 0;
+}
+
+int main()
+{
+  long i;
+  pthread_t th[4];
+
+  memset(r, -1, sizeof(r));
+  for (i = 0; i < 4; i++) {
+    pthread_create(&th[i], 0, thr, (void*)i);
+    usleep(10000);
+  }
+  for (i = 0; i < 4; i++) {
+    pthread_create(&th[i], 0, thr, (void*)i);
+    if (i % 2 == 0)
+      usleep(10000);
+  }
+  usleep(100000);
+  return 0;
+}
+
+On commit 30f05309bde49295e02e45c7e615f73aa4e0ccc2.
