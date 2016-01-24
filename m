@@ -1,88 +1,94 @@
-From: Aaro Koskinen <aaro.koskinen-X3B1VOXEql0@public.gmane.org>
-Subject: [PATCH 1/2] ARM: DTS: kirkwood-openrd-client: fix audio
-Date: Sun, 24 Jan 2016 00:36:39 +0200
-Message-ID: <1453588600-14831-2-git-send-email-aaro.koskinen@iki.fi>
-References: <1453588600-14831-1-git-send-email-aaro.koskinen@iki.fi>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1453588600-14831-1-git-send-email-aaro.koskinen-X3B1VOXEql0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jason Cooper <jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org>, Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Martin Michlmayr <tbm-R+vWnYXSFMfQT0dZR+AlfA@public.gmane.org>, Rick Thomas <rbthomas-e+AXbWqSrlAAvxtiuMwx3w@public.gmane.org>
-Cc: Aaro Koskinen <aaro.koskinen-X3B1VOXEql0@public.gmane.org>
+From: tom.ty89@gmail.com
+Subject: [PATCH - alsactl 1/1] make systemd service start in
+	proper way
+Date: Sun, 24 Jan 2016 08:30:23 +0800
+Message-ID: <56a41b26.5908620a.ff61a.6c10@mx.google.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Tom Yan <tom.ty89@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fix audio on kirkwood-openrd-client:
+From: Tom Yan <tom.ty89@gmail.com>
 
-1) The audio-controller was left disabled.
+Use sound.target to trigger the service, which is the proper way
+to start a service related to sound card. This also makes sure that
+the service will only start if a sound card exists in the system.
 
-2) The probe fails because cs42l51 is missing #sound-dai-cells.
+basic.target is too early for either of the service:
+1. alsa-state.service will spam "No soundcards found" on every boot
+2. alsa-restore.service will never start because of
+   "ConditionPathExistsGlob=/dev/snd/control*"
 
-	/sound/simple-audio-card,codec: could not get #sound-dai-cells for /ocp@f1000000/i2c@11000/cs42l51@4a
-	asoc-simple-card sound: parse error -22
-	asoc-simple-card: probe of sound failed with error -22
+"After=sysinit.target" is removed from alsa-state.service because it
+never made any sense.
 
-3) The mapping is incorrect:
+"After=alsa-state.service" is removed from alsa-restore.service because
+it is completely unnecessary with the daemon conf switch.
 
-	asoc-simple-card sound: cs42l51-hifi <-> spdif mapping ok
+Now either of serivce is enough to manage the state all by itself without
+the udev rules if only ONE sound card exists in the system, while the rules
+are still necessary in system with multiple sound cards.
 
-   should be:
+"StandardOutput=syslog" is also removed from alsa-restore.service because it
+makes little sense (if it has ever switched the behaviour away from default).
 
-	asoc-simple-card sound: cs42l51-hifi <-> i2s mapping ok
+Signed-off-by: Tom Yan <tom.ty89@gmail.com>
 
-Reported-by: Rick Thomas <rbthomas-e+AXbWqSrlAAvxtiuMwx3w@public.gmane.org>
-Signed-off-by: Aaro Koskinen <aaro.koskinen-X3B1VOXEql0@public.gmane.org>
----
- arch/arm/boot/dts/kirkwood-openrd-client.dts | 6 +++++-
- arch/arm/boot/dts/kirkwood.dtsi              | 2 +-
- 2 files changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm/boot/dts/kirkwood-openrd-client.dts b/arch/arm/boot/dts/kirkwood-openrd-client.dts
-index 887b9c1..96ff59d 100644
---- a/arch/arm/boot/dts/kirkwood-openrd-client.dts
-+++ b/arch/arm/boot/dts/kirkwood-openrd-client.dts
-@@ -20,6 +20,9 @@
- 	compatible = "marvell,openrd-client", "marvell,openrd", "marvell,kirkwood-88f6281", "marvell,kirkwood";
+diff --git a/alsactl/Makefile.am b/alsactl/Makefile.am
+index cac8094..90fab9d 100644
+--- a/alsactl/Makefile.am
++++ b/alsactl/Makefile.am
+@@ -29,8 +29,8 @@ systemdsystemunit_DATA = \
  
- 	ocp@f1000000 {
-+		audio-controller@a0000 {
-+			status = "okay";
-+		};
- 		i2c@11000 {
- 			status = "okay";
- 			clock-frequency = <400000>;
-@@ -27,6 +30,7 @@
- 			cs42l51: cs42l51@4a {
- 				compatible = "cirrus,cs42l51";
- 				reg = <0x4a>;
-+				#sound-dai-cells = <0>;
- 			};
- 		};
- 	};
-@@ -37,7 +41,7 @@
- 		simple-audio-card,mclk-fs = <256>;
+ install-data-hook:
+ 	$(MKDIR_P) -m 0755 \
+-		$(DESTDIR)$(systemdsystemunitdir)/basic.target.wants
+-	( cd $(DESTDIR)$(systemdsystemunitdir)/basic.target.wants && \
++		$(DESTDIR)$(systemdsystemunitdir)/sound.target.wants
++	( cd $(DESTDIR)$(systemdsystemunitdir)/sound.target.wants && \
+ 		rm -f alsa-state.service alsa-restore.service && \
+ 		$(LN_S) ../alsa-state.service alsa-state.service && \
+ 		$(LN_S) ../alsa-restore.service alsa-restore.service)
+diff --git a/alsactl/alsa-restore.service.in b/alsactl/alsa-restore.service.in
+index 2884098..fbcf983 100644
+--- a/alsactl/alsa-restore.service.in
++++ b/alsactl/alsa-restore.service.in
+@@ -6,12 +6,9 @@
+ [Unit]
+ Description=Save/Restore Sound Card State
+ ConditionPathExists=!@daemonswitch@
+-ConditionPathExistsGlob=/dev/snd/control*
+-After=alsa-state.service
  
- 		simple-audio-card,cpu {
--			sound-dai = <&audio0>;
-+			sound-dai = <&audio0 0>;
- 		};
+ [Service]
+ Type=oneshot
+ RemainAfterExit=true
+ ExecStart=-@sbindir@/alsactl restore
+ ExecStop=-@sbindir@/alsactl store
+-StandardOutput=syslog
+diff --git a/alsactl/alsa-state.service.in b/alsactl/alsa-state.service.in
+index f1321d6..5a8fe5e 100644
+--- a/alsactl/alsa-state.service.in
++++ b/alsactl/alsa-state.service.in
+@@ -6,7 +6,6 @@
+ [Unit]
+ Description=Manage Sound Card State (restore and store)
+ ConditionPathExists=@daemonswitch@
+-After=sysinit.target
  
- 		simple-audio-card,codec {
-diff --git a/arch/arm/boot/dts/kirkwood.dtsi b/arch/arm/boot/dts/kirkwood.dtsi
-index 7b5a4a1..7445a15 100644
---- a/arch/arm/boot/dts/kirkwood.dtsi
-+++ b/arch/arm/boot/dts/kirkwood.dtsi
-@@ -381,7 +381,7 @@
- 
- 		audio0: audio-controller@a0000 {
- 			compatible = "marvell,kirkwood-audio";
--			#sound-dai-cells = <0>;
-+			#sound-dai-cells = <1>;
- 			reg = <0xa0000 0x2210>;
- 			interrupts = <24>;
- 			clocks = <&gate_clk 9>;
+ [Service]
+ Type=simple
 -- 
-2.4.0
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+2.7.0
