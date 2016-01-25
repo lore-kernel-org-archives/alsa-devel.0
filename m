@@ -1,178 +1,235 @@
 From: Mans Rullgard <mans@mansr.com>
-Subject: [PATCH] ASoC: wm8974: configure pll and mclk divider
-	automatically
-Date: Mon, 25 Jan 2016 12:36:43 +0000
-Message-ID: <1453725403-6261-1-git-send-email-mans@mansr.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from unicorn.mansr.com (unicorn.mansr.com [81.2.72.234])
- by alsa0.perex.cz (Postfix) with ESMTP id 191A62604D6
- for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2016 13:37:21 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: [PATCH] ASoC: mxs-saif: add mclk enable/disable ops
+Date: Mon, 25 Jan 2016 12:38:46 +0000
+Message-ID: <1453725526-6337-1-git-send-email-mans@mansr.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This adds a set_sysclk() DAI op so the card driver can set the
-input clock frequency.  If this is done, the pll and mclk divider
-are configured to produce the required 256x fs clock when the
-sample rate is set by hw_params().
+This makes normal clk_enable/disable() calls on mxs_saif_mclk work as
+expected, i.e. actually turn the mclk output on or (when safe) off.
+The existing mxs_saif_get/put_mclk() functions are rewritten to use
+common clk operations on mxs_saif_mclk rather than accessing registers
+directly.
 
-These additions make the codec work with the simple-card driver.
-Card drivers calling set_pll() and set_clkdiv() directly are
-unaffected.
+With these changes mxs-saif can be used together with the simple-card
+driver.
 
 Signed-off-by: Mans Rullgard <mans@mansr.com>
 ---
- sound/soc/codecs/wm8974.c | 93 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 93 insertions(+)
+ sound/soc/mxs/mxs-saif.c | 144 +++++++++++++++++++++++++++++++----------------
+ sound/soc/mxs/mxs-saif.h |   2 +
+ 2 files changed, 98 insertions(+), 48 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8974.c b/sound/soc/codecs/wm8974.c
-index c284c7b6db8b..dc8c3b1ebb6f 100644
---- a/sound/soc/codecs/wm8974.c
-+++ b/sound/soc/codecs/wm8974.c
-@@ -28,6 +28,11 @@
+diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+index 13631003cb7c..bc75b37cd21d 100644
+--- a/sound/soc/mxs/mxs-saif.c
++++ b/sound/soc/mxs/mxs-saif.c
+@@ -204,27 +204,15 @@ static int mxs_saif_set_clk(struct mxs_saif *saif,
+  */
+ int mxs_saif_put_mclk(unsigned int saif_id)
+ {
+-	struct mxs_saif *saif = mxs_saif[saif_id];
+-	u32 stat;
++	struct clk *clk;
  
- #include "wm8974.h"
+-	if (!saif)
+-		return -EINVAL;
++	clk = clk_get(NULL, "mxs_saif_mclk");
++	if (IS_ERR(clk))
++		return PTR_ERR(clk);
  
-+struct wm8974_priv {
-+	unsigned int mclk;
-+	unsigned int fs;
-+};
-+
- static const struct reg_default wm8974_reg_defaults[] = {
- 	{  0, 0x0000 }, {  1, 0x0000 }, {  2, 0x0000 }, {  3, 0x0000 },
- 	{  4, 0x0050 }, {  5, 0x0000 }, {  6, 0x0140 }, {  7, 0x0000 },
-@@ -379,6 +384,79 @@ static int wm8974_set_dai_clkdiv(struct snd_soc_dai *codec_dai,
+-	stat = __raw_readl(saif->base + SAIF_STAT);
+-	if (stat & BM_SAIF_STAT_BUSY) {
+-		dev_err(saif->dev, "error: busy\n");
+-		return -EBUSY;
+-	}
++	clk_disable_unprepare(clk);
++	clk_put(clk);
+ 
+-	clk_disable_unprepare(saif->clk);
+-
+-	/* disable MCLK output */
+-	__raw_writel(BM_SAIF_CTRL_CLKGATE,
+-		saif->base + SAIF_CTRL + MXS_SET_ADDR);
+-	__raw_writel(BM_SAIF_CTRL_RUN,
+-		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
+-
+-	saif->mclk_in_use = 0;
  	return 0;
  }
+ EXPORT_SYMBOL_GPL(mxs_saif_put_mclk);
+@@ -239,47 +227,33 @@ int mxs_saif_get_mclk(unsigned int saif_id, unsigned int mclk,
+ 					unsigned int rate)
+ {
+ 	struct mxs_saif *saif = mxs_saif[saif_id];
+-	u32 stat;
+ 	int ret;
+ 	struct mxs_saif *master_saif;
++	struct clk *clk;
  
-+static unsigned int wm8974_get_mclkdiv(unsigned int f_in, unsigned int f_out,
-+				       int *mclkdiv)
+ 	if (!saif)
+ 		return -EINVAL;
+ 
+-	/* Clear Reset */
+-	__raw_writel(BM_SAIF_CTRL_SFTRST,
+-		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
+-
+-	/* FIXME: need clear clk gate for register r/w */
+-	__raw_writel(BM_SAIF_CTRL_CLKGATE,
+-		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
+-
+ 	master_saif = mxs_saif_get_master(saif);
+ 	if (saif != master_saif) {
+ 		dev_err(saif->dev, "can not get mclk from a non-master saif\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	stat = __raw_readl(saif->base + SAIF_STAT);
+-	if (stat & BM_SAIF_STAT_BUSY) {
+-		dev_err(saif->dev, "error: busy\n");
+-		return -EBUSY;
+-	}
++	clk = clk_get(NULL, "mxs_saif_mclk");
++	if (IS_ERR(clk))
++		return PTR_ERR(clk);
++
++	ret = clk_prepare_enable(clk);
++	if (ret)
++		goto out;
+ 
+-	saif->mclk_in_use = 1;
+ 	ret = mxs_saif_set_clk(saif, mclk, rate);
+-	if (ret)
+-		return ret;
+ 
+-	ret = clk_prepare_enable(saif->clk);
+-	if (ret)
+-		return ret;
++out:
++	clk_put(clk);
+ 
+-	/* enable MCLK output */
+-	__raw_writel(BM_SAIF_CTRL_RUN,
+-		saif->base + SAIF_CTRL + MXS_SET_ADDR);
+-
+-	return 0;
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mxs_saif_get_mclk);
+ 
+@@ -687,18 +661,92 @@ static irqreturn_t mxs_saif_irq(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
++#define to_mxs_saif(c) container_of(c, struct mxs_saif, div_clk.hw)
++
++static int mxs_saif_mclk_enable(struct clk_hw *hw)
 +{
-+	unsigned int ratio = 2 * f_in / f_out;
++	struct mxs_saif *saif = to_mxs_saif(hw);
 +
-+	if (ratio <= 2) {
-+		*mclkdiv = WM8974_MCLKDIV_1;
-+		ratio = 2;
-+	} else if (ratio == 3) {
-+		*mclkdiv = WM8974_MCLKDIV_1_5;
-+	} else if (ratio == 4) {
-+		*mclkdiv = WM8974_MCLKDIV_2;
-+	} else if (ratio <= 6) {
-+		*mclkdiv = WM8974_MCLKDIV_3;
-+		ratio = 6;
-+	} else if (ratio <= 8) {
-+		*mclkdiv = WM8974_MCLKDIV_4;
-+		ratio = 8;
-+	} else if (ratio <= 12) {
-+		*mclkdiv = WM8974_MCLKDIV_6;
-+		ratio = 12;
-+	} else if (ratio <= 16) {
-+		*mclkdiv = WM8974_MCLKDIV_8;
-+		ratio = 16;
-+	} else {
-+		*mclkdiv = WM8974_MCLKDIV_12;
-+		ratio = 24;
-+	}
++	/* Clear Reset */
++	__raw_writel(BM_SAIF_CTRL_SFTRST,
++		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
 +
-+	return f_out * ratio / 2;
-+}
++	/* Clear clk gate */
++	__raw_writel(BM_SAIF_CTRL_CLKGATE,
++		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
 +
-+static int wm8974_update_clocks(struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct wm8974_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	unsigned int fs256;
-+	unsigned int fpll = 0;
-+	unsigned int f;
-+	int mclkdiv;
++	/* enable MCLK output */
++	__raw_writel(BM_SAIF_CTRL_RUN,
++		saif->base + SAIF_CTRL + MXS_SET_ADDR);
 +
-+	if (!priv->mclk || !priv->fs)
-+		return 0;
-+
-+	fs256 = 256 * priv->fs;
-+
-+	f = wm8974_get_mclkdiv(priv->mclk, fs256, &mclkdiv);
-+
-+	if (f != priv->mclk) {
-+		/* The PLL performs best around 90MHz */
-+		fpll = wm8974_get_mclkdiv(22500000, fs256, &mclkdiv);
-+	}
-+
-+	wm8974_set_dai_pll(dai, 0, 0, priv->mclk, fpll);
-+	wm8974_set_dai_clkdiv(dai, WM8974_MCLKDIV, mclkdiv);
++	saif->mclk_in_use = 1;
 +
 +	return 0;
 +}
 +
-+static int wm8974_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
-+				 unsigned int freq, int dir)
++static void mxs_saif_mclk_disable(struct clk_hw *hw)
 +{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct wm8974_priv *priv = snd_soc_codec_get_drvdata(codec);
++	struct mxs_saif *saif = to_mxs_saif(hw);
 +
-+	if (dir != SND_SOC_CLOCK_IN)
-+		return -EINVAL;
++	if (!saif->ongoing)
++		__raw_writel(BM_SAIF_CTRL_RUN,
++			     saif->base + SAIF_CTRL + MXS_CLR_ADDR);
 +
-+	priv->mclk = freq;
-+
-+	return wm8974_update_clocks(dai);
++	saif->mclk_in_use = 0;
 +}
 +
- static int wm8974_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		unsigned int fmt)
- {
-@@ -441,8 +519,15 @@ static int wm8974_pcm_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai)
- {
- 	struct snd_soc_codec *codec = dai->codec;
-+	struct wm8974_priv *priv = snd_soc_codec_get_drvdata(codec);
- 	u16 iface = snd_soc_read(codec, WM8974_IFACE) & 0x19f;
- 	u16 adn = snd_soc_read(codec, WM8974_ADD) & 0x1f1;
-+	int err;
++static unsigned long mxs_saif_mclk_recalc_rate(struct clk_hw *hw,
++					       unsigned long parent_rate)
++{
++	return clk_divider_ops.recalc_rate(hw, parent_rate);
++}
 +
-+	priv->fs = params_rate(params);
-+	err = wm8974_update_clocks(dai);
-+	if (err)
-+		return err;
- 
- 	/* bit size */
- 	switch (params_width(params)) {
-@@ -547,6 +632,7 @@ static const struct snd_soc_dai_ops wm8974_ops = {
- 	.set_fmt = wm8974_set_dai_fmt,
- 	.set_clkdiv = wm8974_set_dai_clkdiv,
- 	.set_pll = wm8974_set_dai_pll,
-+	.set_sysclk = wm8974_set_dai_sysclk,
- };
- 
- static struct snd_soc_dai_driver wm8974_dai = {
-@@ -606,9 +692,16 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8974 = {
- static int wm8974_i2c_probe(struct i2c_client *i2c,
- 			    const struct i2c_device_id *id)
++static long mxs_saif_mclk_round_rate(struct clk_hw *hw, unsigned long rate,
++				     unsigned long *parent_rate)
++{
++	return clk_divider_ops.round_rate(hw, rate, parent_rate);
++}
++
++static int mxs_saif_mclk_set_rate(struct clk_hw *hw, unsigned long rate,
++				  unsigned long parent_rate)
++{
++	return clk_divider_ops.set_rate(hw, rate, parent_rate);
++}
++
++static const struct clk_ops mxs_saif_mclk_ops = {
++	.enable		= mxs_saif_mclk_enable,
++	.disable	= mxs_saif_mclk_disable,
++	.recalc_rate	= mxs_saif_mclk_recalc_rate,
++	.round_rate	= mxs_saif_mclk_round_rate,
++	.set_rate	= mxs_saif_mclk_set_rate,
++};
++
+ static int mxs_saif_mclk_init(struct platform_device *pdev)
  {
-+	struct wm8974_priv *priv;
- 	struct regmap *regmap;
+ 	struct mxs_saif *saif = platform_get_drvdata(pdev);
+ 	struct device_node *np = pdev->dev.of_node;
++	struct clk_init_data init;
++	struct clk_divider *div;
+ 	struct clk *clk;
++	const char *parent_name;
  	int ret;
  
-+	priv = devm_kzalloc(&i2c->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
+-	clk = clk_register_divider(&pdev->dev, "mxs_saif_mclk",
+-				   __clk_get_name(saif->clk), 0,
+-				   saif->base + SAIF_CTRL,
+-				   BP_SAIF_CTRL_BITCLK_MULT_RATE, 3,
+-				   0, NULL);
++	parent_name = __clk_get_name(saif->clk);
 +
-+	i2c_set_clientdata(i2c, priv);
++	init.name = "mxs_saif_mclk";
++	init.ops = &mxs_saif_mclk_ops;
++	init.flags = CLK_GET_RATE_NOCACHE | CLK_IS_BASIC;
++	init.parent_names = &parent_name;
++	init.num_parents = 1;
 +
- 	regmap = devm_regmap_init_i2c(i2c, &wm8974_regmap);
- 	if (IS_ERR(regmap))
- 		return PTR_ERR(regmap);
++	div = &saif->div_clk;
++	div->reg = saif->base + SAIF_CTRL;
++	div->shift = BP_SAIF_CTRL_BITCLK_MULT_RATE;
++	div->width = 3;
++	div->flags = CLK_DIVIDER_POWER_OF_TWO;
++	div->hw.init = &init;
++
++	clk = clk_register(&pdev->dev, &div->hw);
+ 	if (IS_ERR(clk)) {
+ 		ret = PTR_ERR(clk);
+ 		if (ret == -EEXIST)
+diff --git a/sound/soc/mxs/mxs-saif.h b/sound/soc/mxs/mxs-saif.h
+index 9a4c0b291b9e..1ad373e293ac 100644
+--- a/sound/soc/mxs/mxs-saif.h
++++ b/sound/soc/mxs/mxs-saif.h
+@@ -128,6 +128,8 @@ struct mxs_saif {
+ 		MXS_SAIF_STATE_STOPPED,
+ 		MXS_SAIF_STATE_RUNNING,
+ 	} state;
++
++	struct clk_divider div_clk;
+ };
+ 
+ extern int mxs_saif_put_mclk(unsigned int saif_id);
 -- 
 2.7.0
