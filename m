@@ -1,76 +1,42 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/1] ASoC: Intel: Use acpi_dev_present()
-Date: Mon, 25 Jan 2016 15:48:46 +0000
-Message-ID: <20160125154846.GV6588@sirena.org.uk>
-References: <cover.1452787340.git.lukas@wunner.de>
- <04b22878b2fa0a00bad68e1570502fe64f94fb25.1452787340.git.lukas@wunner.de>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7240267644842670397=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9BCBF260535
- for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2016 16:48:53 +0100 (CET)
-In-Reply-To: <04b22878b2fa0a00bad68e1570502fe64f94fb25.1452787340.git.lukas@wunner.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lukas Wunner <lukas@wunner.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, "Fang, Yang A" <yang.a.fang@intel.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 1/2] ASoC: cs35l32: avoid uninitialized variable access
+Date: Mon, 25 Jan 2016 18:07:32 +0100
+Message-ID: <1453741678-1988125-1-git-send-email-arnd@arndb.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+gcc warns about the possibilty of accessing a property read from
+devicetree in cs35l32_i2c_probe() when it has not been initialized
+because CONFIG_OF is disabled:
 
---===============7240267644842670397==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="AtbDb7UtNxn9t/R3"
-Content-Disposition: inline
+sound/soc/codecs/cs35l32.c: In function 'cs35l32_i2c_probe':
+sound/soc/codecs/cs35l32.c:278:2: warning: 'val' may be used uninitialized in this function [-Wmaybe-uninitialized]
 
+The code is actually correct because it checks the dev->of_node
+variable first and we know this is NULL here, but by adding a
+check for IS_ENABLED(CONFIG_OF), we can let the compiler know
+as well, and also generate smaller object code.
 
---AtbDb7UtNxn9t/R3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ sound/soc/codecs/cs35l32.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Thu, Jan 14, 2016 at 09:57:20PM +0100, Lukas Wunner wrote:
-> Use shiny new acpi_dev_present() and remove all the boilerplate
-> to search for a particular ACPI device. No functional change.
-> Cf. 2d12b6b381ba ("ACPI / utils: Add acpi_dev_present()").
->=20
-> v2: Rebase on commit 95f098014815 ("ASoC: Intel: Move apci find
->     machine routines").
-
-As covered in SubmittingPatches don't include inter-version changelogs
-in the body of your commit log, put them after the ---.  They are
-meaningless once the change is applied without the rest of the history.=20
-
---AtbDb7UtNxn9t/R3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWpkPdAAoJECTWi3JdVIfQPK0H/jWDlIUVYnu5Wa5sKvFoW/Tl
-nQuGecpCHOsXJ22ZNxaUmV+x3Lzg28koxNvVbsSE3//mDB808SMU+BxIGI79j/tZ
-Wm6r/CNtj6GVjpsZ+6MTe7UuzFGt/OumchWLEDdpZyYO2yIFpN1/+K2wxYsAq3X9
-Td8365wCg9ihf34uOMWz4OclrnFcmO3BKp9teByXlbipIj9wvarJIGjKUpqR8ey1
-pn4S52reI5cgj/PwwGqdN6dEkbcyANYRWsjoLzcJsIZ2OA95hs/t9VZqc7sqkyEG
-qJlzJwVE7Cy1KZwvw85VbM6pniJu8CVZhgY8InbKsQVpto4fbEuZNGUaZxT/0IM=
-=FKW1
------END PGP SIGNATURE-----
-
---AtbDb7UtNxn9t/R3--
-
---===============7240267644842670397==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7240267644842670397==--
+diff --git a/sound/soc/codecs/cs35l32.c b/sound/soc/codecs/cs35l32.c
+index 44c30fe3e315..52ffaa8eb02b 100644
+--- a/sound/soc/codecs/cs35l32.c
++++ b/sound/soc/codecs/cs35l32.c
+@@ -372,7 +372,7 @@ static int cs35l32_i2c_probe(struct i2c_client *i2c_client,
+ 			dev_err(&i2c_client->dev, "could not allocate pdata\n");
+ 			return -ENOMEM;
+ 		}
+-		if (i2c_client->dev.of_node) {
++		if (IS_ENABLED(CONFIG_OF) && i2c_client->dev.of_node) {
+ 			ret = cs35l32_handle_of_data(i2c_client,
+ 						     &cs35l32->pdata);
+ 			if (ret != 0)
+-- 
+2.7.0
