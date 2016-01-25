@@ -1,17 +1,21 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH v2 0/3] ASoC: topology: Add support for FE
- DAI & DAI links
-Date: Mon, 25 Jan 2016 11:37:50 +0000
-Message-ID: <1453721870.2557.28.camel@loki>
-References: <cover.1452844210.git.mengdong.lin@linux.intel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: Locking issue from snd_soc_suspend
+Date: Mon, 25 Jan 2016 13:02:10 +0100
+Message-ID: <56A60EC2.5070507@metafoo.de>
+References: <CAOMZO5B2J+PSuAdTOA8VwuDSOAjcbeA4G5pMWPt3VAeJCpacEA@mail.gmail.com>
+ <CAOMZO5BajMzAp8_M4RjjwZeHs11jdp0SCQQK1ChT9eGwVmgdTQ@mail.gmail.com>
+ <56941196.7000107@metafoo.de> <569412C1.6090308@metafoo.de>
+ <CAOMZO5BDmveYTGi70oLKdKLAYPx__c0mEK3ndf8cQthX2Y6VNg@mail.gmail.com>
+ <CAOMZO5Dvd3WrgxBcMSpu8aogKzsx5TOaSpRyLqjKM0WQdBdyWA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 2CDEA2604D6
- for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2016 12:37:54 +0100 (CET)
-In-Reply-To: <cover.1452844210.git.mengdong.lin@linux.intel.com>
+Received: from smtp-out-013.synserver.de (smtp-out-116.synserver.de
+ [212.40.185.116])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C9E52604D6
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2016 13:08:53 +0100 (CET)
+In-Reply-To: <CAOMZO5Dvd3WrgxBcMSpu8aogKzsx5TOaSpRyLqjKM0WQdBdyWA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,31 +25,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@linux.intel.com
-Cc: alsa-devel@alsa-project.org, Vaibhav Agarwal <vaibhav.agarwal@linaro.org>, Takashi Iwai <tiwai@suse.de>, mengdong.lin@intel.com, vinod.koul@intel.com, Mark Brown <broonie@kernel.org>, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
+To: Fabio Estevam <festevam@gmail.com>, Martin Fuzzey <mfuzzey@parkeon.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Russell King <linux@arm.linux.org.uk>, Sascha Hauer <kernel@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2016-01-15 at 16:11 +0800, mengdong.lin@linux.intel.com wrote:
-> From: Mengdong Lin <mengdong.lin@linux.intel.com>
+On 01/25/2016 01:57 AM, Fabio Estevam wrote:
+> Hi Lars,
 > 
-> This series allows topology to create FE DAI and DAI links from the PCM
-> topology objects defined by the user space.
+> On Mon, Jan 11, 2016 at 7:28 PM, Fabio Estevam <festevam@gmail.com> wrote:
+>> Hi Lars,
+>>
+>> On Mon, Jan 11, 2016 at 6:38 PM, Lars-Peter Clausen <lars@metafoo.de> wrote:
+>>
+>>> Please try the attached patch, I think that should fix it.
+>>
+>> Excellent! This fixes the issue, thanks:
+>>
+>> Tested-by: Fabio Estevam <fabio.estevam@nxp.com>
 > 
-> History:
-> v2: Remove first 2 patches in v1 that were accepted.
->     Add Ack by Takashi to patch 'ALSA: pcm: Add snd_pcm_rate_range_to_bits()'
->     and add his comments on the function's assumption to c file.
-> 
-> Mengdong Lin (3):
->   ALSA: pcm: Add snd_pcm_rate_range_to_bits()
->   ASoC: topology: Add FE DAIs dynamically
->   ASoC: topology: Add FE DAI links dynamically
-> 
+> Do you plan to send this fix as a formal patch?
 
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-
-Mengdong, it might be easier to split this patch into 1/3 and 2,3/3
-since 1/3 will be in Takashi's tree, but then that might not be needed
-it Takashi and Mark agree.
-
-Liam
+Yes, give me a day or two.
