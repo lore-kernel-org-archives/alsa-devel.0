@@ -1,15 +1,19 @@
-From: Antonio Ospite <ao2@ao2.it>
-Subject: [PATCH] ASoC: rk3036: fix missing dependency on
-	REGMAP_MMIO
-Date: Mon, 25 Jan 2016 18:23:30 +0100
-Message-ID: <1453742610-23418-1-git-send-email-ao2@ao2.it>
+From: "Austin, Brian" <Brian.Austin@cirrus.com>
+Subject: Re: [PATCH 1/2] ASoC: cs35l32: avoid uninitialized
+	variable access
+Date: Mon, 25 Jan 2016 17:24:12 +0000
+Message-ID: <8F419EEB-6A57-42ED-8BB2-7559E21BE00C@cirrus.com>
+References: <1453741678-1988125-1-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp206.alice.it (smtp206.alice.it [82.57.200.102])
- by alsa0.perex.cz (Postfix) with ESMTP id 5A822260535
- for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2016 18:23:51 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 592DA260535
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2016 18:25:43 +0100 (CET)
+In-Reply-To: <1453741678-1988125-1-git-send-email-arnd@arndb.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,46 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Antonio Ospite <ao2@ao2.it>, ZhengShunQian <zhengsq@rock-chips.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: "Austin, Brian" <Brian.Austin@cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, "Handrigan,
+ Paul" <Paul.Handrigan@cirrus.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-When SND_SOC_INNO_RK3036 is enabled but REGMAP_MMIO is not, the MODPOST
-step fails with this error:
 
-  ...
-  Kernel: arch/x86/boot/bzImage is ready  (#3)
-    Building modules, stage 2.
-    MODPOST 3203 modules
-  ERROR: "__devm_regmap_init_mmio_clk" [sound/soc/codecs/snd-soc-inno-rk3036.ko] undefined!
+On Jan 25, 2016, at 11:07 AM, Arnd Bergmann <arnd@arndb.de<mailto:arnd@arndb.de>> wrote:
 
-Signed-off-by: Antonio Ospite <ao2@ao2.it>
-Cc: ZhengShunQian <zhengsq@rock-chips.com>
-Cc: Mark Brown <broonie@kernel.org>
+gcc warns about the possibilty of accessing a property read from
+devicetree in cs35l32_i2c_probe() when it has not been initialized
+because CONFIG_OF is disabled:
+
+sound/soc/codecs/cs35l32.c: In function 'cs35l32_i2c_probe':
+sound/soc/codecs/cs35l32.c:278:2: warning: 'val' may be used uninitialized in this function [-Wmaybe-uninitialized]
+
+The code is actually correct because it checks the dev->of_node
+variable first and we know this is NULL here, but by adding a
+check for IS_ENABLED(CONFIG_OF), we can let the compiler know
+as well, and also generate smaller object code.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de<mailto:arnd@arndb.de>>
 ---
+sound/soc/codecs/cs35l32.c | 2 +-
+1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
 
-Hi,
-
-I enabled SND_SOC_INNO_RK3036 by chance in 4.5-rc1 and the build failed.
-The patch below allows the kernel to be configured in a buildable way.
-
-Ciao ciao,
-   Antonio
-
- sound/soc/codecs/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 50693c8..1f7eaa9 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -497,6 +497,7 @@ config SND_SOC_ICS43432
- 
- config SND_SOC_INNO_RK3036
- 	tristate "Inno codec driver for RK3036 SoC"
-+	select REGMAP_MMIO
- 
- config SND_SOC_ISABELLE
-         tristate
--- 
-2.7.0
+Acked-by: Brian Austin <brian.austin@cirrus.com<mailto:brian.austin@cirrus.com>>
