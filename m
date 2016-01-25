@@ -1,17 +1,17 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: bebob: Use a signed return type for
- get_formation_index
-Date: Tue, 26 Jan 2016 08:17:45 +0900
-Message-ID: <56A6AD19.1090800@sakamocchi.jp>
-References: <1453757423-9076-1-git-send-email-tanure@linux.com>
+From: Guillaume Fougnies <guillaume@eulerian.com>
+Subject: Re: [PATCH] teac ud-501/ud-503 usb delay
+Date: Tue, 26 Jan 2016 00:28:27 +0100
+Message-ID: <20160125232827.GA5626@eulerian.com>
+References: <20160124163617.GE4388@eulerian.com> <s5htwm1apre.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D962260575
- for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2016 00:17:49 +0100 (CET)
-In-Reply-To: <1453757423-9076-1-git-send-email-tanure@linux.com>
+Received: from mail.eulerian.com (mail.eulerian.com [109.232.193.6])
+ by alsa0.perex.cz (Postfix) with ESMTP id 012762604D8
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2016 00:28:33 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5htwm1apre.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,66 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lucas Tanure <tanure@linux.com>, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Jan 26 2016 06:30, Lucas Tanure wrote:
-> The return type "unsigned int" was used by the get_formation_index function
-> despite of the aspect that it will eventually return a negative	error code.
-> So, change to signed int and get index by reference in the parameters.
-> 
-> Done with the help of Coccinelle.
-> 
-> Signed-off-by: Lucas Tanure <tanure@linux.com>
-> ---
->  sound/firewire/bebob/bebob_stream.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
-> index 926e5dc..79940e3 100644
-> --- a/sound/firewire/bebob/bebob_stream.c
-> +++ b/sound/firewire/bebob/bebob_stream.c
-> @@ -47,14 +47,15 @@ static const unsigned int bridgeco_freq_table[] = {
->  	[6] = 0x07,
->  };
->  
-> -static unsigned int
-> -get_formation_index(unsigned int rate)
-> +static int
-> +get_formation_index(unsigned int rate, unsigned int *index)
->  {
->  	unsigned int i;
->  
->  	for (i = 0; i < ARRAY_SIZE(snd_bebob_rate_table); i++) {
->  		if (snd_bebob_rate_table[i] == rate)
-> -			return i;
-> +			*index = i;
-> +			return 0;
->  	}
->  	return -EINVAL;
->  }
-> @@ -425,7 +426,9 @@ make_both_connections(struct snd_bebob *bebob, unsigned int rate)
->  		goto end;
->  
->  	/* confirm params for both streams */
-> -	index = get_formation_index(rate);
-> +	err = get_formation_index(rate, &index);
-> +	if (err < 0)
-> +		goto end;
->  	pcm_channels = bebob->tx_stream_formations[index].pcm;
->  	midi_channels = bebob->tx_stream_formations[index].midi;
->  	err = amdtp_am824_set_parameters(&bebob->tx_stream, rate,
+ALSA: usb: Fix TEAC UD-501/UD-503/NT-503 usb delay
 
-Indeed, it's my mistake.
+TEAC UD-501/UD-503/NT-503 fail to switch properly between different rate/format.
+Similar to 'Playback Design', this patch corrects the invalid clock source error
+for TEAC products and avoids complete freeze of the usb interface of 503 series.
 
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Tested-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Guillaume Fougnies <guillaume@eulerian.com>
+---
+ sound/usb/quirks.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-This should go for -stable and 4.5-rc2.
-CC: stable@vger.kernel.org
-
-
-Regards
-
-Takashi Sakamoto
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 23ea6d8..a75d9ce 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1205,8 +1205,12 @@ void snd_usb_set_interface_quirk(struct usb_device *dev)
+ 	 * "Playback Design" products need a 50ms delay after setting the
+ 	 * USB interface.
+ 	 */
+-	if (le16_to_cpu(dev->descriptor.idVendor) == 0x23ba)
++	switch (le16_to_cpu(dev->descriptor.idVendor)) {
++	case 0x23ba: /* Playback Design */
++	case 0x0644: /* TEAC Corp. */
+ 		mdelay(50);
++		break;
++	}
+ }
+ 
+ void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
+@@ -1221,6 +1225,14 @@ void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
+ 	    (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
+ 		mdelay(20);
+ 
++	/*
++	 * "TEAC Corp." products need a 20ms delay after each
++	 * class compliant request
++	 */
++	if ((le16_to_cpu(dev->descriptor.idVendor) == 0x0644) &&
++	    (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
++		mdelay(20);
++
+ 	/* Marantz/Denon devices with USB DAC functionality need a delay
+ 	 * after each class compliant request
+ 	 */
+-- 
+2.7.0.rc3
