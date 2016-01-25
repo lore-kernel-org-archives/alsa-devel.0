@@ -1,42 +1,73 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 1/2] ASoC: cs35l32: avoid uninitialized variable access
-Date: Mon, 25 Jan 2016 18:07:32 +0100
-Message-ID: <1453741678-1988125-1-git-send-email-arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 2/2] ASoC: s3c24xx: use const
+	snd_soc_component_driver pointer
+Date: Mon, 25 Jan 2016 18:07:33 +0100
+Message-ID: <1453741678-1988125-2-git-send-email-arnd@arndb.de>
+References: <1453741678-1988125-1-git-send-email-arnd@arndb.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.13])
+ by alsa0.perex.cz (Postfix) with ESMTP id A29932605B2
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2016 18:08:42 +0100 (CET)
+In-Reply-To: <1453741678-1988125-1-git-send-email-arnd@arndb.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <k.kozlowski@samsung.com>, linux-samsung-soc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Kukjin Kim <kgene@kernel.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-gcc warns about the possibilty of accessing a property read from
-devicetree in cs35l32_i2c_probe() when it has not been initialized
-because CONFIG_OF is disabled:
+An older patch to convert the API in the s3c i2s driver
+ended up passing a const pointer into a function that takes
+a non-const pointer, so we now get a warning:
 
-sound/soc/codecs/cs35l32.c: In function 'cs35l32_i2c_probe':
-sound/soc/codecs/cs35l32.c:278:2: warning: 'val' may be used uninitialized in this function [-Wmaybe-uninitialized]
+sound/soc/samsung/s3c2412-i2s.c: In function 's3c2412_iis_dev_probe':
+sound/soc/samsung/s3c2412-i2s.c:172:9: error: passing argument 3 of 's3c_i2sv2_register_component' discards 'const' qualifier from pointer target type [-Werror=discarded-qualifiers]
 
-The code is actually correct because it checks the dev->of_node
-variable first and we know this is NULL here, but by adding a
-check for IS_ENABLED(CONFIG_OF), we can let the compiler know
-as well, and also generate smaller object code.
+However, the s3c_i2sv2_register_component() function again
+passes the pointer into another function taking a const, so
+we just need to change its prototype.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: eca3b01d0885 ("ASoC: switch over to use snd_soc_register_component() on s3c i2s")
 ---
- sound/soc/codecs/cs35l32.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/samsung/s3c-i2s-v2.c | 2 +-
+ sound/soc/samsung/s3c-i2s-v2.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/cs35l32.c b/sound/soc/codecs/cs35l32.c
-index 44c30fe3e315..52ffaa8eb02b 100644
---- a/sound/soc/codecs/cs35l32.c
-+++ b/sound/soc/codecs/cs35l32.c
-@@ -372,7 +372,7 @@ static int cs35l32_i2c_probe(struct i2c_client *i2c_client,
- 			dev_err(&i2c_client->dev, "could not allocate pdata\n");
- 			return -ENOMEM;
- 		}
--		if (i2c_client->dev.of_node) {
-+		if (IS_ENABLED(CONFIG_OF) && i2c_client->dev.of_node) {
- 			ret = cs35l32_handle_of_data(i2c_client,
- 						     &cs35l32->pdata);
- 			if (ret != 0)
+diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
+index df65c5b494b1..b6ab3fc5789e 100644
+--- a/sound/soc/samsung/s3c-i2s-v2.c
++++ b/sound/soc/samsung/s3c-i2s-v2.c
+@@ -709,7 +709,7 @@ static int s3c2412_i2s_resume(struct snd_soc_dai *dai)
+ #endif
+ 
+ int s3c_i2sv2_register_component(struct device *dev, int id,
+-			   struct snd_soc_component_driver *cmp_drv,
++			   const struct snd_soc_component_driver *cmp_drv,
+ 			   struct snd_soc_dai_driver *dai_drv)
+ {
+ 	struct snd_soc_dai_ops *ops = (struct snd_soc_dai_ops *)dai_drv->ops;
+diff --git a/sound/soc/samsung/s3c-i2s-v2.h b/sound/soc/samsung/s3c-i2s-v2.h
+index 90abab364b49..d0684145ed1f 100644
+--- a/sound/soc/samsung/s3c-i2s-v2.h
++++ b/sound/soc/samsung/s3c-i2s-v2.h
+@@ -101,7 +101,7 @@ extern int s3c_i2sv2_probe(struct snd_soc_dai *dai,
+  * soc core.
+  */
+ extern int s3c_i2sv2_register_component(struct device *dev, int id,
+-					struct snd_soc_component_driver *cmp_drv,
++					const struct snd_soc_component_driver *cmp_drv,
+ 					struct snd_soc_dai_driver *dai_drv);
+ 
+ #endif /* __SND_SOC_S3C24XX_S3C_I2SV2_I2S_H */
 -- 
 2.7.0
