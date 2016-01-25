@@ -1,48 +1,98 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: Locking issue from snd_soc_suspend
-Date: Sun, 24 Jan 2016 22:57:02 -0200
-Message-ID: <CAOMZO5Dvd3WrgxBcMSpu8aogKzsx5TOaSpRyLqjKM0WQdBdyWA@mail.gmail.com>
-References: <CAOMZO5B2J+PSuAdTOA8VwuDSOAjcbeA4G5pMWPt3VAeJCpacEA@mail.gmail.com>
- <CAOMZO5BajMzAp8_M4RjjwZeHs11jdp0SCQQK1ChT9eGwVmgdTQ@mail.gmail.com>
- <56941196.7000107@metafoo.de> <569412C1.6090308@metafoo.de>
- <CAOMZO5BDmveYTGi70oLKdKLAYPx__c0mEK3ndf8cQthX2Y6VNg@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f178.google.com (mail-io0-f178.google.com
- [209.85.223.178])
- by alsa0.perex.cz (Postfix) with ESMTP id B53B8261A5A
- for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2016 01:57:03 +0100 (CET)
-Received: by mail-io0-f178.google.com with SMTP id g73so140102373ioe.3
- for <alsa-devel@alsa-project.org>; Sun, 24 Jan 2016 16:57:03 -0800 (PST)
-In-Reply-To: <CAOMZO5BDmveYTGi70oLKdKLAYPx__c0mEK3ndf8cQthX2Y6VNg@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Martin Fuzzey <mfuzzey@parkeon.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Russell King <linux@arm.linux.org.uk>, Sascha Hauer <kernel@pengutronix.de>
+From: Rick Thomas <rbthomas-e+AXbWqSrlAAvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH 1/2] ARM: DTS: kirkwood-openrd-client: fix audio
+Date: Sun, 24 Jan 2016 19:26:43 -0800
+Message-ID: <8E11A1EE-D73B-462E-A493-39571A17F2C3@pobox.com>
+References: <1453588600-14831-1-git-send-email-aaro.koskinen@iki.fi> <1453588600-14831-2-git-send-email-aaro.koskinen@iki.fi> <20160124173701.GU3880@lunn.ch> <411C1DFA-3E76-42B0-866C-7C3C0D990039@pobox.com> <20160124214020.GA28667@jirafa.cyrius.com>
+Mime-Version: 1.0 (Mac OS X Mail 7.3 \(1878.6\))
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8BIT
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20160124214020.GA28667-IRMp5PtgtdoigzW5ZibpNwC/G2K4zDHf@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Martin Michlmayr <tbm-R+vWnYXSFMfQT0dZR+AlfA@public.gmane.org>
+Cc: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>, Aaro Koskinen <aaro.koskinen-X3B1VOXEql0@public.gmane.org>, Jason Cooper <jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Gregory Clement <gregory.clement-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Lars,
 
-On Mon, Jan 11, 2016 at 7:28 PM, Fabio Estevam <festevam@gmail.com> wrote:
-> Hi Lars,
->
-> On Mon, Jan 11, 2016 at 6:38 PM, Lars-Peter Clausen <lars@metafoo.de> wrote:
->
->> Please try the attached patch, I think that should fix it.
->
-> Excellent! This fixes the issue, thanks:
->
-> Tested-by: Fabio Estevam <fabio.estevam@nxp.com>
+On Jan 24, 2016, at 1:40 PM, Martin Michlmayr <tbm-R+vWnYXSFMfQT0dZR+AlfA@public.gmane.org> wrote:
 
-Do you plan to send this fix as a formal patch?
+> * Rick Thomas <rbthomas-e+AXbWqSrlAAvxtiuMwx3w@public.gmane.org> [2016-01-24 12:56]:
+>>> It would be good to have a Tested-by: from Rick.
+>>> 
+>> If someone will make a .deb I can download, I'll be happy to install
+>> it and test it.  Please be explicit in describing what and how you
+>> want tested.
+> 
+> Check your email. :)
+> 
+> -- 
+> Martin Michlmayr
+> http://www.cyrius.com/
+> 
 
-Thanks
+
+Got it.
+
+Looks like mmc works with that kernel.  I was able to mount /dev/mmcblk0p1 and read files from it.
+
+Sound we have some progress:
+
+> root@base:~# ls -l /dev/snd
+> total 0
+> drwxr-xr-x 2 root root       60 Jan 24 18:23 by-path
+> crw-rw---- 1 root audio 116,  2 Jan 24 18:23 controlC0
+> crw-rw---- 1 root audio 116,  4 Jan 24 18:23 pcmC0D0c
+> crw-rw---- 1 root audio 116,  3 Jan 24 18:23 pcmC0D0p
+> crw-rw---- 1 root audio 116,  1 Jan 24 18:23 seq
+> crw-rw---- 1 root audio 116, 33 Jan 24 18:23 timer
+> root@base:~# cat /proc/asound/devices 
+>   2: [ 0]   : control
+>   3: [ 0- 0]: digital audio playback
+>   4: [ 0- 0]: digital audio capture
+>  33:        : timer
+> root@base:~# cat /proc/asound/cards   
+>  0 [i2scs42l51hifi ]: i2s-cs42l51-hif - i2s-cs42l51-hifi
+>                       i2s-cs42l51-hifi
+
+Full of hope, I did "aptitude install mp321" which went without any visible problems.
+
+Then hooked up a pair of earphones to the "speaker" plug on the Client and ran
+
+> root@base:~# mpg321 -v /tmp/Jersey.mp3 
+> High Performance MPEG 1.0/2.0/2.5 Audio Player for Layer 1, 2, and 3.
+> Version 0.3.2-1 (2012/03/25). Written and copyrights by Joe Drew,
+> now maintained by Nanakos Chrysostomos and others.
+> Uses code from various people. See 'README' for more!
+> THIS SOFTWARE COMES WITH ABSOLUTELY NO WARRANTY! USE AT YOUR OWN RISK!
+> Title	: The Jersey Bounce              Artist : Zazuzaz                       
+> Album	: An Evening with ZaZuZaz        Year	 : 2000
+> Comment : Amazon.com Song ID: 201809221  Genre : Jazz                          
+> 
+> Directory: /tmp
+> Playing MPEG stream from Jersey.mp3 ...
+> MPEG 1.0, Layer: III, Freq: 44100, mode: Joint-Stereo, modext: 0, BPF : 2560
+> Channels: 2, copyright: No, original: Yes, CRC: No, emphasis: 0.
+> Bitrate: 128 Kbits/s, Extension value: 0
+> Audio: 1:1 conversion, rate: 44100, encoding: signed 16 bit, channels: 2
+> ALSA lib pcm.c:2267:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.front
+> ^C                                                                            
+> [0:20] Decoding of Jersey.mp3 finished.
+
+So it seemed to be running OK...  But there was no sound in the earphones.  I also tried adding option "-g 50" to set the gain explicitly.  Still no sound.
+
+Is there a hardware jumper I need to set to activate sound on the OpenRD Client board?
+
+Do I need to install another package? For example, "aptitude search '~i alsa'" gives no output, indicating, I believe, that there are no installed packages with "alsa" in their name.
+
+The message:
+> ALSA lib pcm.c:2267:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.front
+seems suspicious.
+
+Any thoughts?
+Rick
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
