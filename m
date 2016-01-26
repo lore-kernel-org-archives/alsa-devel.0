@@ -1,59 +1,61 @@
-From: Mark Brown <broonie@kernel.org>
+From: Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 Subject: Re: [PATCH] ASoC: fsl: add imx-cs427x machine driver
-Date: Tue, 26 Jan 2016 16:03:33 +0000
-Message-ID: <20160126160333.GD6042@sirena.org.uk>
+Date: Tue, 26 Jan 2016 09:42:35 -0800
+Message-ID: <20160126174234.GA3835@Asurada-Nvidia>
 References: <1453744403-12268-1-git-send-email-eu@felipetonello.com>
  <20160126022948.GA21187@rob-hp-laptop>
  <56A73FDE.2060607@felipetonello.com>
- <CAL_JsqJxQjw5yWmnUAev4e+pa601stcH-W-srbDCeRYOabJrOg@mail.gmail.com>
+ <CAOMZO5BjeDMqNgf-=tE7=pByJi+jJVA=G2bbtp+XJeYbpev6KA@mail.gmail.com>
+ <56A75205.8060000@felipetonello.com>
+ <CAOMZO5CjVxAHOJSywveK7dYvdz8PSMADJd1F7TdO+asEQ89XTg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="KdquIMZPjGJQvRdI"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <CAL_JsqJxQjw5yWmnUAev4e+pa601stcH-W-srbDCeRYOabJrOg@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rob Herring <robh@kernel.org>
-Cc: Felipe Ferreri Tonello <eu@felipetonello.com>, Linux-ALSA <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
+In-Reply-To: <CAOMZO5CjVxAHOJSywveK7dYvdz8PSMADJd1F7TdO+asEQ89XTg-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Felipe Ferreri Tonello <eu-NLnRV5p3vwDxYxTyqlRmvgC/G2K4zDHf@public.gmane.org>
+Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Jan 26, 2016 at 09:05:42AM -0200, Fabio Estevam wrote:
+> On Tue, Jan 26, 2016 at 9:01 AM, Felipe Ferreri Tonello
+> <eu-NLnRV5p3vwDxYxTyqlRmvgC/G2K4zDHf@public.gmane.org> wrote:
+> 
+> > Actually yes, thanks! I didn't know about the existence of fsl-asoc-card.
+> >
+> > I get some errors but I don't think they actually matter:
+> > [   19.734494] fsl-asrc 2034000.asrc: driver registered
+> > [   19.738707] fsl-asoc-card sound: ASoC: CPU DAI (null) not registered
+> > [   19.738717] fsl-asoc-card sound: snd_soc_register_card failed (-517)
+> > [   19.741556] fsl-asoc-card sound: ASoC: CPU DAI (null) not registered
+> > [   19.741564] fsl-asoc-card sound: snd_soc_register_card failed (-517)
 
---KdquIMZPjGJQvRdI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Deferred probes shouldn't be a problem.
 
-On Tue, Jan 26, 2016 at 09:50:46AM -0600, Rob Herring wrote:
-> On Tue, Jan 26, 2016 at 3:43 AM, Felipe Ferreri Tonello
+> > [   19.774591] fsl-asoc-card sound: cs4271-hifi <-> 2028000.ssi mapping ok
 
-> >> This should be an exact list of possible strings and valid combinations.
+Link is mapped.
 
-No, there is no sense in trying to document all possible combinations as
-this would result in so many combinations that it would dominate the
-documentation.  The restrictions should all come from the physical
-limitations of what you can connect and should therefore be sufficiently
-obvious from their definition.
+> > [   19.781507] fsl-asoc-card sound: ASoC: no source widget found for
+> > ASRC-Playback
+> > [   19.790065] fsl-asoc-card sound: ASoC: Failed to add route
+> > ASRC-Playback -> direct -> CPU-Playback
+> > [   19.805349] fsl-asoc-card sound: ASoC: no sink widget found for
+> > ASRC-Capture
+> > [   19.817222] fsl-asoc-card sound: ASoC: Failed to add route
+> > CPU-Capture -> direct -> ASRC-Capture
 
-> > This is the exact list for this version of this driver. At least that is
-> > what I can verify on my hardware (custom build).
+You may ignore these "failures" if you don't have ASRC at all. It's
+optional based on the SoC design or platform requirement. Refer to:
+Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
 
-> What are AINA, AINB, etc. then?
+But I think the log over here could be less confusing. I may try to
+clean it later.
 
-These are CODEC pins and should be documented in the CODEC binding
-rather than repeated for every machine using the CODEC.
-
---KdquIMZPjGJQvRdI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWp5jUAAoJECTWi3JdVIfQAR8IAIKwTPsxO1jmRV85HTUmm7Gy
-AOuvoJKuaLYEF16dMbCptZn654wtbSUEVLPfmlNC3JSQyz3Je5BxZXLPu8q0m/3v
-AWU3LjMN3XB433gXc4/KVNUX+1js2VoeKmBXO+iyJKbiDPG03bzrXb4qQVTGeMM+
-1CPfb/6N4X7KfZ7oR43XAt0NHyDfHClYAtDAg62JclvZPeuiY+vHaFSk4HiEKH5T
-Tj6rYSqOLMVu3KcaAsDY+0Sa0Fj7KQk2OO7OsKVhkuw6JDlAAfMOuD7DXXSKJ8ML
-ICCzuR/8yO3ib/6uc5AyaCBoJhHf7FJpax221ZkRz+WACPYQs+h6mLLX0WEXRFc=
-=Xfwo
------END PGP SIGNATURE-----
-
---KdquIMZPjGJQvRdI--
+Thanks
+Nicolin
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
