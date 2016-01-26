@@ -1,45 +1,92 @@
-From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH v3] ASoC: cs53l30: Add support for Cirrus
- Logic CS53L30
-Date: Tue, 26 Jan 2016 10:14:18 +0800
-Message-ID: <201601261031.Sr0GGepM%fengguang.wu@intel.com>
-References: <1453763683-10009-1-git-send-email-tim.howe@cirrus.com>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] ASoC: fsl: add imx-cs427x machine driver
+Date: Mon, 25 Jan 2016 20:29:48 -0600
+Message-ID: <20160126022948.GA21187@rob-hp-laptop>
+References: <1453744403-12268-1-git-send-email-eu@felipetonello.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E061260575
- for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2016 03:15:28 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1453763683-10009-1-git-send-email-tim.howe@cirrus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, paul.handrigan@cirrus.com, broonie@kernel.org, kbuild-all@01.org, Tim Howe <tim.howe@cirrus.com>
+In-Reply-To: <1453744403-12268-1-git-send-email-eu-NLnRV5p3vwDxYxTyqlRmvgC/G2K4zDHf@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "Felipe F. Tonello" <eu-NLnRV5p3vwDxYxTyqlRmvgC/G2K4zDHf@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Tim,
+On Mon, Jan 25, 2016 at 05:53:23PM +0000, Felipe F. Tonello wrote:
+> This is the initial imx-cs427x device-tree-only machine driver working with
+> fsl_ssi driver. More features can be added on top of it later.
+> 
+> Signed-off-by: Felipe F. Tonello <eu-NLnRV5p3vwDxYxTyqlRmvgC/G2K4zDHf@public.gmane.org>
+> ---
+>  .../devicetree/bindings/sound/imx-audio-cs427x.txt |  47 +++++
+>  sound/soc/fsl/Kconfig                              |  12 ++
+>  sound/soc/fsl/Makefile                             |   2 +
+>  sound/soc/fsl/imx-cs427x.c                         | 218 +++++++++++++++++++++
+>  4 files changed, 279 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-cs427x.txt
+>  create mode 100644 sound/soc/fsl/imx-cs427x.c
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/imx-audio-cs427x.txt b/Documentation/devicetree/bindings/sound/imx-audio-cs427x.txt
+> new file mode 100644
+> index 000000000000..295f60b19418
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/imx-audio-cs427x.txt
+> @@ -0,0 +1,47 @@
+> +Freescale i.MX audio complex with CS4271 or CS4272 codec
 
-[auto build test WARNING on v4.4-rc8]
-[cannot apply to asoc/for-next v4.5-rc1 next-20160125]
-[if your patch is applied to the wrong git tree, please drop us a note to help improving the system]
+Do all the i.MX audio bindings really vary more that the codec? Seems 
+like a lot of duplication.
 
-url:    https://github.com/0day-ci/linux/commits/tim-howe-cirrus-com/ASoC-cs53l30-Add-support-for-Cirrus-Logic-CS53L30/20160126-071847
+> +
+> +Required properties:
+> +
+> +  - compatible		: "fsl,imx-audio-cs427x"
+> +
+> +  - model		: The user-visible name of this sound complex
+> +
+> +  - ssi-controller	: The phandle of the i.MX SSI controller
+> +
+> +  - audio-codec	: The phandle of the CS4271 audio codec
+> +
+> +  - audio-routing	: A list of the connections between audio components.
+> +			  Each entry is a pair of strings, the first being the
+> +			  connection's sink, the second being the connection's
+> +			  source. Valid names could be power supplies, CS427x
+> +			  pins, and the jacks on the board:
+> +
+> +			  Board connectors:
+> +			   * Mic Jack
+> +			   * Headphone Jack
 
+This should be an exact list of possible strings and valid combinations.
 
-coccinelle warnings: (new ones prefixed by >>)
-
->> sound/soc/codecs/cs53l30.c:921:6-11: No need to set .owner here. The core will do it.
-
-Please review and possibly fold the followup patch.
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+> +  - mux-int-port	: The internal port of the i.MX audio muxer (AUDMUX)
+> +
+> +  - mux-ext-port	: The external port of the i.MX audio muxer
+> +
+> +Note: The AUDMUX port numbering should start at 1, which is consistent with
+> +hardware manual.
+> +
+> +Example:
+> +
+> +sound {
+> +	compatible = "fsl,imx6-rex-cs427x",
+> +		"fsl,imx-audio-cs427x";
+> +	model = "audio-cs427x";
+> +	ssi-controller = <&ssi1>;
+> +	audio-codec = <&cs4271>;
+> +	audio-routing =
+> +		"Mic Jack", "AINA",
+> +		"Mic Jack", "AINB",
+> +		"Headphone Jack", "AOUTA+",
+> +		"Headphone Jack", "AOUTA-",
+> +		"Headphone Jack", "AOUTB+",
+> +		"Headphone Jack", "AOUTB-";
+> +	mux-int-port = <1>;
+> +	mux-ext-port = <3>;
+> +};
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
