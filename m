@@ -1,19 +1,15 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [sound:for-next 5/5]
- sound/firewire/bebob/bebob_stream.c:57:3-14: code aligned with following
- code on line 58
-Date: Tue, 26 Jan 2016 21:19:52 +0900
-Message-ID: <56A76468.6000409@sakamocchi.jp>
-References: <201601261604.CeDxAxPv%fengguang.wu@intel.com>
- <alpine.DEB.2.10.1601261134390.2503@hadrien> <s5hvb6g8vyr.wl-tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: imx-spdif: Fix crash on suspend
+Date: Tue, 26 Jan 2016 13:54:15 +0100
+Message-ID: <1453812855-23654-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 0277F260412
- for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2016 13:19:57 +0100 (CET)
-In-Reply-To: <s5hvb6g8vyr.wl-tiwai@suse.de>
+Received: from smtp-out-233.synserver.de (smtp-out-188.synserver.de
+ [212.40.185.188])
+ by alsa0.perex.cz (Postfix) with ESMTP id 19BF1260412
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2016 13:54:38 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,56 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Julia Lawall <julia.lawall@lip6.fr>
-Cc: alsa-devel@alsa-project.org, kbuild-all@01.org, Lucas Tanure <tanure@linux.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Fabio Estevam <festevam@gmail.com>, Zidan Wang <zidan.wang@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Jan 26 2016 19:40, Takashi Iwai wrote:
-> On Tue, 26 Jan 2016 11:35:25 +0100,
-> Julia Lawall wrote:
->>
->> It looks like braces are missing here.
-> 
-> Indeed.  Corrected the patch now.  Thanks!
-> 
-> 
-> Takashi
-> 
->>
->> julia
+When registering a ASoC card the driver data of the parent device is set to
+point to the card. This driver data is used in the
+snd_soc_suspend()/resume() callbacks.
 
-Oh... Thanks for every persons to fix it.
-(and I should have took enough rest...)
+The imx-spdif driver overwrites the driver data with custom data which
+causes snd_soc_suspend() to crash.  Since the custom driver is not used
+anywhere simply deleting the line which sets the custom driver data fixes
+the issue.
 
->> On Tue, 26 Jan 2016, kbuild test robot wrote:
->>
->>> CC: kbuild-all@01.org
->>> CC: alsa-devel@alsa-project.org
->>> TO: Lucas Tanure <tanure@linux.com>
->>> CC: Takashi Iwai <tiwai@suse.de>
->>> CC: Takashi Sakamoto <o-takashi@sakamocchi.jp>
->>>
->>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
->>> head:   a1d35f23965e7c0175ddecb1af0ae287c4e0aa23
->>> commit: a1d35f23965e7c0175ddecb1af0ae287c4e0aa23 [5/5] ALSA: bebob: Use a signed return type for get_formation_index
->>> :::::: branch date: 3 hours ago
->>> :::::: commit date: 3 hours ago
->>>
->>>>> sound/firewire/bebob/bebob_stream.c:57:3-14: code aligned with following code on line 58
->>>
->>> git remote add sound https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
->>> git remote update sound
->>> git checkout a1d35f23965e7c0175ddecb1af0ae287c4e0aa23
->>> vim +57 sound/firewire/bebob/bebob_stream.c
->>>
->>> a1d35f23 Lucas Tanure     2016-01-25  51  get_formation_index(unsigned int rate, unsigned int *index)
->>> eb7b3a05 Takashi Sakamoto 2014-04-25  52  {
->>> eb7b3a05 Takashi Sakamoto 2014-04-25  53  	unsigned int i;
->>> eb7b3a05 Takashi Sakamoto 2014-04-25  54
->>> eb7b3a05 Takashi Sakamoto 2014-04-25  55  	for (i = 0; i < ARRAY_SIZE(snd_bebob_rate_table); i++) {
->>> eb7b3a05 Takashi Sakamoto 2014-04-25  56  		if (snd_bebob_rate_table[i] == rate)
->>> a1d35f23 Lucas Tanure     2016-01-25 @57  			*index = i;
->>> a1d35f23 Lucas Tanure     2016-01-25 @58  			return 0;
->>> eb7b3a05 Takashi Sakamoto 2014-04-25  59  	}
->>> eb7b3a05 Takashi Sakamoto 2014-04-25  60  	return -EINVAL;
->>> eb7b3a05 Takashi Sakamoto 2014-04-25  61  }
+Fixes: 43ac946922b3 ("ASoC: imx-spdif: add snd_soc_pm_ops for spdif machine driver")
+Tested-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/fsl/imx-spdif.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/sound/soc/fsl/imx-spdif.c b/sound/soc/fsl/imx-spdif.c
+index a407e83..fb896b2 100644
+--- a/sound/soc/fsl/imx-spdif.c
++++ b/sound/soc/fsl/imx-spdif.c
+@@ -72,8 +72,6 @@ static int imx_spdif_audio_probe(struct platform_device *pdev)
+ 		goto end;
+ 	}
+ 
+-	platform_set_drvdata(pdev, data);
+-
+ end:
+ 	of_node_put(spdif_np);
+ 
+-- 
+2.1.4
