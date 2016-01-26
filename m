@@ -1,61 +1,78 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] ASoC: fsl: add imx-cs427x machine driver
-Date: Tue, 26 Jan 2016 11:50:28 +0000
-Message-ID: <20160126115028.GE6588@sirena.org.uk>
-References: <1453744403-12268-1-git-send-email-eu@felipetonello.com>
- <20160126022948.GA21187@rob-hp-laptop>
- <56A73FDE.2060607@felipetonello.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [sound:for-next 5/5]
+ sound/firewire/bebob/bebob_stream.c:57:3-14: code aligned with following
+ code on line 58
+Date: Tue, 26 Jan 2016 21:19:52 +0900
+Message-ID: <56A76468.6000409@sakamocchi.jp>
+References: <201601261604.CeDxAxPv%fengguang.wu@intel.com>
+ <alpine.DEB.2.10.1601261134390.2503@hadrien> <s5hvb6g8vyr.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="c5Px8AoJl69cpALM"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <56A73FDE.2060607-NLnRV5p3vwDxYxTyqlRmvgC/G2K4zDHf@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Felipe Ferreri Tonello <eu-NLnRV5p3vwDxYxTyqlRmvgC/G2K4zDHf@public.gmane.org>
-Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0277F260412
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2016 13:19:57 +0100 (CET)
+In-Reply-To: <s5hvb6g8vyr.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Julia Lawall <julia.lawall@lip6.fr>
+Cc: alsa-devel@alsa-project.org, kbuild-all@01.org, Lucas Tanure <tanure@linux.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Jan 26 2016 19:40, Takashi Iwai wrote:
+> On Tue, 26 Jan 2016 11:35:25 +0100,
+> Julia Lawall wrote:
+>>
+>> It looks like braces are missing here.
+> 
+> Indeed.  Corrected the patch now.  Thanks!
+> 
+> 
+> Takashi
+> 
+>>
+>> julia
 
---c5Px8AoJl69cpALM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Oh... Thanks for every persons to fix it.
+(and I should have took enough rest...)
 
-On Tue, Jan 26, 2016 at 09:43:58AM +0000, Felipe Ferreri Tonello wrote:
-> On 26/01/16 02:29, Rob Herring wrote:
-
-> > Do all the i.MX audio bindings really vary more that the codec? Seems=
-=20
-> > like a lot of duplication.
-
-> I agree, but that how it is today. These platform drivers for imx are
-> similar but not identical. Looking at them I would guess that they have
-> 50 to 60% of duplicated code.
-
-> I believe we can add this driver and work on re-using the code on a
-> future series of patches.
-
-We have fsl-asoc-card which is supposed to allow reuse similar to
-simple-card for devices which have an audmux.
-
---c5Px8AoJl69cpALM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWp12EAAoJECTWi3JdVIfQhREH/RYtfjHqRFCyQ73KVM4lywVN
-SjvW8uVkOLQmQI/RS3QT2O8X5V/OCmGecZZtQUjvm2D1ZyZy4ZyLn6IinoUo7oEx
-Ow1HmCtY0ILefvzh0ES2JQjA7XLjw4kUcHIzUVDuELVKKVRVVz1a3ybH8p4wiLuq
-LBYHActaBQVmX7zRKfyxT+B0z0UKpqPHmGTAk6tkYRaPrpTDHb78uJ+O42s4KEKd
-tThHM1QRJm8E3oDZfBvvU6CwP0MjAQCdfUrwUm1Dngtmbd+u3ykZu4IoX7xUVrND
-YL9Oh+WB7tKkNOLmQWVzFrS0mPtg3ETgvQ0J8WdnW0ZWnlUHPuz/LEtaIwAGM3o=
-=DXbu
------END PGP SIGNATURE-----
-
---c5Px8AoJl69cpALM--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>> On Tue, 26 Jan 2016, kbuild test robot wrote:
+>>
+>>> CC: kbuild-all@01.org
+>>> CC: alsa-devel@alsa-project.org
+>>> TO: Lucas Tanure <tanure@linux.com>
+>>> CC: Takashi Iwai <tiwai@suse.de>
+>>> CC: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+>>>
+>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
+>>> head:   a1d35f23965e7c0175ddecb1af0ae287c4e0aa23
+>>> commit: a1d35f23965e7c0175ddecb1af0ae287c4e0aa23 [5/5] ALSA: bebob: Use a signed return type for get_formation_index
+>>> :::::: branch date: 3 hours ago
+>>> :::::: commit date: 3 hours ago
+>>>
+>>>>> sound/firewire/bebob/bebob_stream.c:57:3-14: code aligned with following code on line 58
+>>>
+>>> git remote add sound https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
+>>> git remote update sound
+>>> git checkout a1d35f23965e7c0175ddecb1af0ae287c4e0aa23
+>>> vim +57 sound/firewire/bebob/bebob_stream.c
+>>>
+>>> a1d35f23 Lucas Tanure     2016-01-25  51  get_formation_index(unsigned int rate, unsigned int *index)
+>>> eb7b3a05 Takashi Sakamoto 2014-04-25  52  {
+>>> eb7b3a05 Takashi Sakamoto 2014-04-25  53  	unsigned int i;
+>>> eb7b3a05 Takashi Sakamoto 2014-04-25  54
+>>> eb7b3a05 Takashi Sakamoto 2014-04-25  55  	for (i = 0; i < ARRAY_SIZE(snd_bebob_rate_table); i++) {
+>>> eb7b3a05 Takashi Sakamoto 2014-04-25  56  		if (snd_bebob_rate_table[i] == rate)
+>>> a1d35f23 Lucas Tanure     2016-01-25 @57  			*index = i;
+>>> a1d35f23 Lucas Tanure     2016-01-25 @58  			return 0;
+>>> eb7b3a05 Takashi Sakamoto 2014-04-25  59  	}
+>>> eb7b3a05 Takashi Sakamoto 2014-04-25  60  	return -EINVAL;
+>>> eb7b3a05 Takashi Sakamoto 2014-04-25  61  }
