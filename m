@@ -1,85 +1,59 @@
-From: Rob Herring <robh@kernel.org>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] ASoC: fsl: add imx-cs427x machine driver
-Date: Tue, 26 Jan 2016 09:50:46 -0600
-Message-ID: <CAL_JsqJxQjw5yWmnUAev4e+pa601stcH-W-srbDCeRYOabJrOg@mail.gmail.com>
+Date: Tue, 26 Jan 2016 16:03:33 +0000
+Message-ID: <20160126160333.GD6042@sirena.org.uk>
 References: <1453744403-12268-1-git-send-email-eu@felipetonello.com>
- <20160126022948.GA21187@rob-hp-laptop> <56A73FDE.2060607@felipetonello.com>
+ <20160126022948.GA21187@rob-hp-laptop>
+ <56A73FDE.2060607@felipetonello.com>
+ <CAL_JsqJxQjw5yWmnUAev4e+pa601stcH-W-srbDCeRYOabJrOg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="KdquIMZPjGJQvRdI"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <56A73FDE.2060607@felipetonello.com>
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqJxQjw5yWmnUAev4e+pa601stcH-W-srbDCeRYOabJrOg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Felipe Ferreri Tonello <eu@felipetonello.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Felipe Ferreri Tonello <eu@felipetonello.com>, Linux-ALSA <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 26, 2016 at 3:43 AM, Felipe Ferreri Tonello
-<eu@felipetonello.com> wrote:
-> Hi Rob,
->
-> On 26/01/16 02:29, Rob Herring wrote:
->> On Mon, Jan 25, 2016 at 05:53:23PM +0000, Felipe F. Tonello wrote:
->>> This is the initial imx-cs427x device-tree-only machine driver working with
->>> fsl_ssi driver. More features can be added on top of it later.
->>>
->>> Signed-off-by: Felipe F. Tonello <eu@felipetonello.com>
->>> ---
->>>  .../devicetree/bindings/sound/imx-audio-cs427x.txt |  47 +++++
->>>  sound/soc/fsl/Kconfig                              |  12 ++
->>>  sound/soc/fsl/Makefile                             |   2 +
->>>  sound/soc/fsl/imx-cs427x.c                         | 218 +++++++++++++++++++++
->>>  4 files changed, 279 insertions(+)
->>>  create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-cs427x.txt
->>>  create mode 100644 sound/soc/fsl/imx-cs427x.c
->>>
->>> diff --git a/Documentation/devicetree/bindings/sound/imx-audio-cs427x.txt b/Documentation/devicetree/bindings/sound/imx-audio-cs427x.txt
->>> new file mode 100644
->>> index 000000000000..295f60b19418
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/sound/imx-audio-cs427x.txt
->>> @@ -0,0 +1,47 @@
->>> +Freescale i.MX audio complex with CS4271 or CS4272 codec
->>
->> Do all the i.MX audio bindings really vary more that the codec? Seems
->> like a lot of duplication.
->
-> I agree, but that how it is today. These platform drivers for imx are
-> similar but not identical. Looking at them I would guess that they have
-> 50 to 60% of duplicated code.
->
-> I believe we can add this driver and work on re-using the code on a
-> future series of patches.
->
->>
->>> +
->>> +Required properties:
->>> +
->>> +  - compatible              : "fsl,imx-audio-cs427x"
->>> +
->>> +  - model           : The user-visible name of this sound complex
->>> +
->>> +  - ssi-controller  : The phandle of the i.MX SSI controller
->>> +
->>> +  - audio-codec     : The phandle of the CS4271 audio codec
->>> +
->>> +  - audio-routing   : A list of the connections between audio components.
->>> +                      Each entry is a pair of strings, the first being the
->>> +                      connection's sink, the second being the connection's
->>> +                      source. Valid names could be power supplies, CS427x
->>> +                      pins, and the jacks on the board:
->>> +
->>> +                      Board connectors:
->>> +                       * Mic Jack
->>> +                       * Headphone Jack
->>
->> This should be an exact list of possible strings and valid combinations.
->
-> This is the exact list for this version of this driver. At least that is
-> what I can verify on my hardware (custom build).
 
-What are AINA, AINB, etc. then?
+--KdquIMZPjGJQvRdI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Also, model should have its string documented. I should be able to
-write the example from the documentation.
+On Tue, Jan 26, 2016 at 09:50:46AM -0600, Rob Herring wrote:
+> On Tue, Jan 26, 2016 at 3:43 AM, Felipe Ferreri Tonello
 
-Rob
+> >> This should be an exact list of possible strings and valid combinations.
+
+No, there is no sense in trying to document all possible combinations as
+this would result in so many combinations that it would dominate the
+documentation.  The restrictions should all come from the physical
+limitations of what you can connect and should therefore be sufficiently
+obvious from their definition.
+
+> > This is the exact list for this version of this driver. At least that is
+> > what I can verify on my hardware (custom build).
+
+> What are AINA, AINB, etc. then?
+
+These are CODEC pins and should be documented in the CODEC binding
+rather than repeated for every machine using the CODEC.
+
+--KdquIMZPjGJQvRdI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWp5jUAAoJECTWi3JdVIfQAR8IAIKwTPsxO1jmRV85HTUmm7Gy
+AOuvoJKuaLYEF16dMbCptZn654wtbSUEVLPfmlNC3JSQyz3Je5BxZXLPu8q0m/3v
+AWU3LjMN3XB433gXc4/KVNUX+1js2VoeKmBXO+iyJKbiDPG03bzrXb4qQVTGeMM+
+1CPfb/6N4X7KfZ7oR43XAt0NHyDfHClYAtDAg62JclvZPeuiY+vHaFSk4HiEKH5T
+Tj6rYSqOLMVu3KcaAsDY+0Sa0Fj7KQk2OO7OsKVhkuw6JDlAAfMOuD7DXXSKJ8ML
+ICCzuR/8yO3ib/6uc5AyaCBoJhHf7FJpax221ZkRz+WACPYQs+h6mLLX0WEXRFc=
+=Xfwo
+-----END PGP SIGNATURE-----
+
+--KdquIMZPjGJQvRdI--
