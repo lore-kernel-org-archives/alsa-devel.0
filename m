@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Use acpi_dev_present()" to the
-	asoc tree
-Date: Wed, 27 Jan 2016 18:37:49 +0000
-Message-ID: <E1aOUyT-000893-NC@debutante>
-References: <04b22878b2fa0a00bad68e1570502fe64f94fb25.1452787340.git.lukas@wunner.de>
+Subject: Applied "ASoC: fsl_ssi: remove explicit register
+	defaults" to the asoc tree
+Date: Wed, 27 Jan 2016 18:37:51 +0000
+Message-ID: <E1aOUyV-00089W-5i@debutante>
+References: <569C0F86.2020509@maciej.szmigiero.name>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D6D612654F1
- for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2016 19:37:59 +0100 (CET)
-In-Reply-To: <04b22878b2fa0a00bad68e1570502fe64f94fb25.1452787340.git.lukas@wunner.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F2DA265512
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2016 19:38:02 +0100 (CET)
+In-Reply-To: <569C0F86.2020509@maciej.szmigiero.name>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lukas Wunner <lukas@wunner.de>, Mark Brown <broonie@kernel.org>
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, Fabio Estevam <fabio.estevam@nxp.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Use acpi_dev_present()
+   ASoC: fsl_ssi: remove explicit register defaults
 
 has been applied to the asoc tree at
 
@@ -53,134 +53,137 @@ to this mail.
 Thanks,
 Mark
 
->From 6f08cbdaac5a3050ea1898aef8ce326030fd1117 Mon Sep 17 00:00:00 2001
-From: Lukas Wunner <lukas@wunner.de>
-Date: Thu, 14 Jan 2016 21:57:20 +0100
-Subject: [PATCH] ASoC: Intel: Use acpi_dev_present()
+>From 5c408fee254633a5be69505bc86c6b034f871ab4 Mon Sep 17 00:00:00 2001
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Date: Mon, 18 Jan 2016 20:07:44 +0100
+Subject: [PATCH] ASoC: fsl_ssi: remove explicit register defaults
 
-Use shiny new acpi_dev_present() and remove all the boilerplate
-to search for a particular ACPI device. No functional change.
-Cf. 2d12b6b381ba ("ACPI / utils: Add acpi_dev_present()").
+There is no guarantee that on fsl_ssi module load
+SSI registers will have their power-on-reset values.
 
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
+In fact, if the driver is reloaded the values in
+registers will be whatever they were set to previously.
+
+However, the cache needs to be fully populated at probe
+time to avoid non-atomic allocations during register
+access.
+
+Special case here is imx21-class SSI, since
+according to datasheet it don't have SACC{ST,EN,DIS}
+regs.
+
+This fixes hard lockup on fsl_ssi module reload,
+at least in AC'97 mode.
+
+Fixes: 05cf237972fe ("ASoC: fsl_ssi: Add driver suspend and resume to support MEGA Fast")
+Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+Tested-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_max98090_ti.c | 17 ++---------------
- sound/soc/intel/boards/cht_bsw_rt5645.c      | 13 +------------
- sound/soc/intel/common/sst-match-acpi.c      | 16 +---------------
- 3 files changed, 4 insertions(+), 42 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 42 ++++++++++++++++++++++--------------------
+ 1 file changed, 22 insertions(+), 20 deletions(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-index 90588d6e64fc..e609f089593a 100644
---- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-+++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-@@ -287,33 +287,20 @@ static struct snd_soc_card snd_soc_card_cht = {
- 	.num_controls = ARRAY_SIZE(cht_mc_controls),
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 40dfd8a36484..ed8de1035cda 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -112,20 +112,6 @@ struct fsl_ssi_rxtx_reg_val {
+ 	struct fsl_ssi_reg_val tx;
  };
  
--static acpi_status snd_acpi_codec_match(acpi_handle handle, u32 level,
--						void *context, void **ret)
--{
--	*(bool *)context = true;
--	return AE_OK;
--}
+-static const struct reg_default fsl_ssi_reg_defaults[] = {
+-	{CCSR_SSI_SCR,     0x00000000},
+-	{CCSR_SSI_SIER,    0x00003003},
+-	{CCSR_SSI_STCR,    0x00000200},
+-	{CCSR_SSI_SRCR,    0x00000200},
+-	{CCSR_SSI_STCCR,   0x00040000},
+-	{CCSR_SSI_SRCCR,   0x00040000},
+-	{CCSR_SSI_SACNT,   0x00000000},
+-	{CCSR_SSI_STMSK,   0x00000000},
+-	{CCSR_SSI_SRMSK,   0x00000000},
+-	{CCSR_SSI_SACCEN,  0x00000000},
+-	{CCSR_SSI_SACCDIS, 0x00000000},
+-};
 -
- static int snd_cht_mc_probe(struct platform_device *pdev)
+ static bool fsl_ssi_readable_reg(struct device *dev, unsigned int reg)
  {
- 	int ret_val = 0;
--	bool found = false;
- 	struct cht_mc_private *drv;
+ 	switch (reg) {
+@@ -190,8 +176,7 @@ static const struct regmap_config fsl_ssi_regconfig = {
+ 	.val_bits = 32,
+ 	.reg_stride = 4,
+ 	.val_format_endian = REGMAP_ENDIAN_NATIVE,
+-	.reg_defaults = fsl_ssi_reg_defaults,
+-	.num_reg_defaults = ARRAY_SIZE(fsl_ssi_reg_defaults),
++	.num_reg_defaults_raw = CCSR_SSI_SACCDIS / sizeof(uint32_t) + 1,
+ 	.readable_reg = fsl_ssi_readable_reg,
+ 	.volatile_reg = fsl_ssi_volatile_reg,
+ 	.precious_reg = fsl_ssi_precious_reg,
+@@ -201,6 +186,7 @@ static const struct regmap_config fsl_ssi_regconfig = {
  
- 	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_ATOMIC);
- 	if (!drv)
- 		return -ENOMEM;
+ struct fsl_ssi_soc_data {
+ 	bool imx;
++	bool imx21regs; /* imx21-class SSI - no SACC{ST,EN,DIS} regs */
+ 	bool offline_config;
+ 	u32 sisr_write_mask;
+ };
+@@ -303,6 +289,7 @@ static struct fsl_ssi_soc_data fsl_ssi_mpc8610 = {
  
--	if (ACPI_SUCCESS(acpi_get_devices(
--					"104C227E",
--					snd_acpi_codec_match,
--					&found, NULL)) && found) {
--		drv->ts3a227e_present = true;
--	} else {
-+	drv->ts3a227e_present = acpi_dev_present("104C227E");
-+	if (!drv->ts3a227e_present) {
- 		/* no need probe TI jack detection chip */
- 		snd_soc_card_cht.aux_dev = NULL;
- 		snd_soc_card_cht.num_aux_devs = 0;
--		drv->ts3a227e_present = false;
+ static struct fsl_ssi_soc_data fsl_ssi_imx21 = {
+ 	.imx = true,
++	.imx21regs = true,
+ 	.offline_config = true,
+ 	.sisr_write_mask = 0,
+ };
+@@ -586,8 +573,12 @@ static void fsl_ssi_setup_ac97(struct fsl_ssi_private *ssi_private)
+ 	 */
+ 	regmap_write(regs, CCSR_SSI_SACNT,
+ 			CCSR_SSI_SACNT_AC97EN | CCSR_SSI_SACNT_FV);
+-	regmap_write(regs, CCSR_SSI_SACCDIS, 0xff);
+-	regmap_write(regs, CCSR_SSI_SACCEN, 0x300);
++
++	/* no SACC{ST,EN,DIS} regs on imx21-class SSI */
++	if (!ssi_private->soc->imx21regs) {
++		regmap_write(regs, CCSR_SSI_SACCDIS, 0xff);
++		regmap_write(regs, CCSR_SSI_SACCEN, 0x300);
++	}
+ 
+ 	/*
+ 	 * Enable SSI, Transmit and Receive. AC97 has to communicate with the
+@@ -1397,6 +1388,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	void __iomem *iomem;
+ 	char name[64];
++	struct regmap_config regconfig = fsl_ssi_regconfig;
+ 
+ 	of_id = of_match_device(fsl_ssi_ids, &pdev->dev);
+ 	if (!of_id || !of_id->data)
+@@ -1444,15 +1436,25 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 		return PTR_ERR(iomem);
+ 	ssi_private->ssi_phys = res->start;
+ 
++	if (ssi_private->soc->imx21regs) {
++		/*
++		 * According to datasheet imx21-class SSI
++		 * don't have SACC{ST,EN,DIS} regs.
++		 */
++		regconfig.max_register = CCSR_SSI_SRMSK;
++		regconfig.num_reg_defaults_raw =
++			CCSR_SSI_SRMSK / sizeof(uint32_t) + 1;
++	}
++
+ 	ret = of_property_match_string(np, "clock-names", "ipg");
+ 	if (ret < 0) {
+ 		ssi_private->has_ipg_clk_name = false;
+ 		ssi_private->regs = devm_regmap_init_mmio(&pdev->dev, iomem,
+-			&fsl_ssi_regconfig);
++			&regconfig);
+ 	} else {
+ 		ssi_private->has_ipg_clk_name = true;
+ 		ssi_private->regs = devm_regmap_init_mmio_clk(&pdev->dev,
+-			"ipg", iomem, &fsl_ssi_regconfig);
++			"ipg", iomem, &regconfig);
  	}
- 
- 	/* register the soc card */
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index 2d3afddb0a2e..e6cf800ab231 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -333,20 +333,12 @@ static struct cht_acpi_card snd_soc_cards[] = {
- 	{"10EC5650", CODEC_TYPE_RT5650, &snd_soc_card_chtrt5650},
- };
- 
--static acpi_status snd_acpi_codec_match(acpi_handle handle, u32 level,
--				       void *context, void **ret)
--{
--	*(bool *)context = true;
--	return AE_OK;
--}
--
- static int snd_cht_mc_probe(struct platform_device *pdev)
- {
- 	int ret_val = 0;
- 	int i;
- 	struct cht_mc_private *drv;
- 	struct snd_soc_card *card = snd_soc_cards[0].soc_card;
--	bool found = false;
- 	char codec_name[16];
- 
- 	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_ATOMIC);
-@@ -354,10 +346,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	for (i = 0; i < ARRAY_SIZE(snd_soc_cards); i++) {
--		if (ACPI_SUCCESS(acpi_get_devices(
--						snd_soc_cards[i].codec_id,
--						snd_acpi_codec_match,
--						&found, NULL)) && found) {
-+		if (acpi_dev_present(snd_soc_cards[i].codec_id)) {
- 			dev_dbg(&pdev->dev,
- 				"found codec %s\n", snd_soc_cards[i].codec_id);
- 			card = snd_soc_cards[i].soc_card;
-diff --git a/sound/soc/intel/common/sst-match-acpi.c b/sound/soc/intel/common/sst-match-acpi.c
-index dd077e116d25..c429e2226d40 100644
---- a/sound/soc/intel/common/sst-match-acpi.c
-+++ b/sound/soc/intel/common/sst-match-acpi.c
-@@ -13,29 +13,15 @@
-  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-  * more details.
-  */
--#include <linux/acpi.h>
--#include <linux/device.h>
--#include <linux/module.h>
--#include <linux/platform_device.h>
- 
- #include "sst-acpi.h"
- 
--static acpi_status sst_acpi_mach_match(acpi_handle handle, u32 level,
--				       void *context, void **ret)
--{
--	*(bool *)context = true;
--	return AE_OK;
--}
--
- struct sst_acpi_mach *sst_acpi_find_machine(struct sst_acpi_mach *machines)
- {
- 	struct sst_acpi_mach *mach;
--	bool found = false;
- 
- 	for (mach = machines; mach->id[0]; mach++)
--		if (ACPI_SUCCESS(acpi_get_devices(mach->id,
--						  sst_acpi_mach_match,
--						  &found, NULL)) && found)
-+		if (acpi_dev_present(mach->id))
- 			return mach;
- 
- 	return NULL;
+ 	if (IS_ERR(ssi_private->regs)) {
+ 		dev_err(&pdev->dev, "Failed to init register map\n");
 -- 
 2.7.0.rc3
