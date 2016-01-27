@@ -1,19 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/1] ASoC: Intel: Use acpi_dev_present()
-Date: Wed, 27 Jan 2016 13:32:50 +0000
-Message-ID: <20160127133250.GO6042@sirena.org.uk>
-References: <cover.1452787340.git.lukas@wunner.de>
- <04b22878b2fa0a00bad68e1570502fe64f94fb25.1452787340.git.lukas@wunner.de>
- <20160125154846.GV6588@sirena.org.uk>
- <20160125211358.GA10561@wunner.de>
+Subject: Re: [PATCH v2 0/3] ASoC: topology: Add support for FE
+ DAI & DAI links
+Date: Wed, 27 Jan 2016 13:33:26 +0000
+Message-ID: <20160127133326.GP6042@sirena.org.uk>
+References: <cover.1452844210.git.mengdong.lin@linux.intel.com>
+ <1453721870.2557.28.camel@loki>
+ <20160125153954.GU6588@sirena.org.uk>
+ <s5h7fixacj2.wl-tiwai@suse.de> <56A879DE.60105@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3324372249314089141=="
+Content-Type: multipart/mixed; boundary="===============3241604591521898353=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C350D26044B
- for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2016 14:32:59 +0100 (CET)
-In-Reply-To: <20160125211358.GA10561@wunner.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id DCBAB2604DD
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2016 14:33:31 +0100 (CET)
+In-Reply-To: <56A879DE.60105@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,58 +24,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lukas Wunner <lukas@wunner.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, "Fang, Yang A" <yang.a.fang@intel.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Mengdong Lin <mengdong.lin@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Vaibhav Agarwal <vaibhav.agarwal@linaro.org>, Takashi Iwai <tiwai@suse.de>, mengdong.lin@intel.com, Liam Girdwood <liam.r.girdwood@linux.intel.com>, vinod.koul@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3324372249314089141==
+--===============3241604591521898353==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="PtLnLSExlPr13a2X"
+	protocol="application/pgp-signature"; boundary="tZCmRiovzb4sxAVa"
 Content-Disposition: inline
 
 
---PtLnLSExlPr13a2X
+--tZCmRiovzb4sxAVa
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 25, 2016 at 10:13:58PM +0100, Lukas Wunner wrote:
-> On Mon, Jan 25, 2016 at 03:48:46PM +0000, Mark Brown wrote:
+On Wed, Jan 27, 2016 at 04:03:42PM +0800, Mengdong Lin wrote:
 
-> > As covered in SubmittingPatches don't include inter-version changelogs
-> > in the body of your commit log, put them after the ---.  They are
-> > meaningless once the change is applied without the rest of the history.=
-=20
+> Could you help to review the other 2 patches when convenient?
 
-> I'm used to the drm and drm-intel practice of including the changelog
-> in the commit message, but will remember to move it to the git notes
-> when posting to alsa-devel in the future.
+Please allow some time for review and bear in mind that we only just
+came out of the merge window.
 
-drm is pretty much the only subsystem that does that.
-
---PtLnLSExlPr13a2X
+--tZCmRiovzb4sxAVa
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWqMcBAAoJECTWi3JdVIfQnVMH/RiXCQcKsr2wqrk26QeFK411
-wDKtkWlvGjs7x96ixPOT7zvaED9l4dYNSQkoB/GdEXZCNJtijCIxQB/0UJbVyFLE
-q+G/xuBo4ZkpqTqzvMpu6ibnSQBnnEecfqxrtD+FX4vk4A0LPquZ8AzSGrCvAMja
-5VtUWl0V/EpWSCY9sycaA15nwPTuqHMawF28wI5quyZEgh+mo9tp4e+IxRZQ6HCj
-LAIxVo1cUeivnYkcHqYRt/9PUhlhtfClolveQck6L+2UCT3pYg7AOV5qseTigVw3
-0vtkM3lXc6oyeJQ6mJkNxfQ/nqqPqArB0kwbZZDhCAaVRZhM/+LPJw4yK1rWmyY=
-=nx1o
+iQEcBAEBCAAGBQJWqMclAAoJECTWi3JdVIfQvxoH+gNDNJKnQ6k7jlfUpOJKanOw
+BbvkwSGAFZwSHarsfOf8bQHmrcNPLqhvXEiHOujppx4XUx88L4+33UFmHPm5bIdu
+zv9koMw/DiuV9Ct0A+P9OiJ+WxBrD4og780QAzeYaRdXYYBaXCoj1Sz+OUSq+DmT
+0FwdjHraZkBDsDGSDbSts6TmnbINPM6cJZZslhbpSpT9r27X6Q6rlHZWKTj/VLcI
+bOJYElnooaGQEyJ5ZLvaChGN/OfUXlGlc5Mmj/+IoYKv31E34zpUxo2Br2/uAsDh
+wH8CwwhrZkemuho4hCymkYDRlb81sg/5LOsSHhdmYgThsTR2G/HgXq6Nwwu1yxE=
+=RzvU
 -----END PGP SIGNATURE-----
 
---PtLnLSExlPr13a2X--
+--tZCmRiovzb4sxAVa--
 
---===============3324372249314089141==
+--===============3241604591521898353==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3324372249314089141==--
+--===============3241604591521898353==--
