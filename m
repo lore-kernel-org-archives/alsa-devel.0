@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: add .irq callback" to the asoc
-	tree
-Date: Wed, 27 Jan 2016 18:37:33 +0000
-Message-ID: <E1aOUyD-000876-1t@debutante>
-References: <87powpkklh.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: don't auto-recover when
+	under/over run error" to the asoc tree
+Date: Wed, 27 Jan 2016 18:37:38 +0000
+Message-ID: <E1aOUyI-00087b-7O@debutante>
+References: <87r3h5kkmm.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DBEF7265353
- for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2016 19:37:38 +0100 (CET)
-In-Reply-To: <87powpkklh.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 18E4D265497
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2016 19:37:43 +0100 (CET)
+In-Reply-To: <87r3h5kkmm.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: add .irq callback
+   ASoC: rsnd: don't auto-recover when under/over run error
 
 has been applied to the asoc tree at
 
@@ -53,225 +53,305 @@ to this mail.
 Thanks,
 Mark
 
->From b5b442abd9d5cfe4f04a1e83be9900c87444bd66 Mon Sep 17 00:00:00 2001
+>From 6a25c8da00284f5612b404368bd07b69efd84aa2 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 26 Jan 2016 04:56:57 +0000
-Subject: [PATCH] ASoC: rsnd: add .irq callback
+Date: Tue, 26 Jan 2016 04:56:14 +0000
+Subject: [PATCH] ASoC: rsnd: don't auto-recover when under/over run error
 
-Current rsnd driver has .init/.start/.stop/.quit callbacks,
-and it needs many IPs (SRC/CTU/MUX/DVC/CMD/SSIU/SSI).
-Because of these relationship, it might get unnecessary
-error IRQ when start/stop.
-This patch adds new .irq callback and control IRQ enable/disable
-timing to avoid it.
+Renesas R-Car sound needs recovery (= restart) when under/over run
+error occurred, and current driver tries it on under/over run error
+handler automatically. But this recovery should be handled by userland,
+not kernel. This patch stops XRUN when under/over run error occur, and
+will leave the recovery of HW in userland.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c |  9 ++++++++-
- sound/soc/sh/rcar/rsnd.h |  6 ++++++
- sound/soc/sh/rcar/src.c  | 16 ++++++++--------
- sound/soc/sh/rcar/ssi.c  | 36 +++++++++++++-----------------------
- 4 files changed, 35 insertions(+), 32 deletions(-)
+ sound/soc/sh/rcar/src.c | 39 ++++----------------
+ sound/soc/sh/rcar/ssi.c | 97 +++++++++++--------------------------------------
+ 2 files changed, 29 insertions(+), 107 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 1fcefab03ad6..704ba7ae9eaf 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -568,9 +568,16 @@ static int rsnd_soc_dai_trigger(struct snd_pcm_substream *substream, int cmd,
- 		ret = rsnd_dai_call(start, io, priv);
- 		if (ret < 0)
- 			goto dai_trigger_end;
-+
-+		ret = rsnd_dai_call(irq, io, priv, 1);
-+		if (ret < 0)
-+			goto dai_trigger_end;
-+
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
--		ret = rsnd_dai_call(stop, io, priv);
-+		ret = rsnd_dai_call(irq, io, priv, 0);
-+
-+		ret |= rsnd_dai_call(stop, io, priv);
- 
- 		ret |= rsnd_dai_call(quit, io, priv);
- 
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 4974db6679c3..bbaf89b6de8a 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -249,6 +249,9 @@ struct rsnd_mod_ops {
- 	int (*stop)(struct rsnd_mod *mod,
- 		    struct rsnd_dai_stream *io,
- 		    struct rsnd_priv *priv);
-+	int (*irq)(struct rsnd_mod *mod,
-+		   struct rsnd_dai_stream *io,
-+		   struct rsnd_priv *priv, int enable);
- 	int (*pcm_new)(struct rsnd_mod *mod,
- 		       struct rsnd_dai_stream *io,
- 		       struct snd_soc_pcm_runtime *rtd);
-@@ -293,6 +296,7 @@ struct rsnd_mod {
- #define __rsnd_mod_shift_stop		8
- #define __rsnd_mod_shift_probe		28 /* always called */
- #define __rsnd_mod_shift_remove		28 /* always called */
-+#define __rsnd_mod_shift_irq		28 /* always called */
- #define __rsnd_mod_shift_pcm_new	28 /* always called */
- #define __rsnd_mod_shift_fallback	28 /* always called */
- #define __rsnd_mod_shift_hw_params	28 /* always called */
-@@ -303,6 +307,7 @@ struct rsnd_mod {
- #define __rsnd_mod_add_quit		-1
- #define __rsnd_mod_add_start		 1
- #define __rsnd_mod_add_stop		-1
-+#define __rsnd_mod_add_irq		0
- #define __rsnd_mod_add_pcm_new		0
- #define __rsnd_mod_add_fallback		0
- #define __rsnd_mod_add_hw_params	0
-@@ -313,6 +318,7 @@ struct rsnd_mod {
- #define __rsnd_mod_call_quit		1
- #define __rsnd_mod_call_start		0
- #define __rsnd_mod_call_stop		1
-+#define __rsnd_mod_call_irq		0
- #define __rsnd_mod_call_pcm_new		0
- #define __rsnd_mod_call_fallback	0
- #define __rsnd_mod_call_hw_params	0
 diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index cccca154e4c3..ab5f13155055 100644
+index 7749615bd404..cccca154e4c3 100644
 --- a/sound/soc/sh/rcar/src.c
 +++ b/sound/soc/sh/rcar/src.c
-@@ -271,9 +271,10 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
- 		rsnd_adg_set_convert_timing_gen2(mod, io);
+@@ -25,7 +25,6 @@ struct rsnd_src {
+ 	struct rsnd_kctrl_cfg_s sen;  /* sync convert enable */
+ 	struct rsnd_kctrl_cfg_s sync; /* sync convert */
+ 	u32 convert_rate; /* sampling rate convert */
+-	int err;
+ 	int irq;
+ };
+ 
+@@ -316,7 +315,7 @@ static void rsnd_src_status_clear(struct rsnd_mod *mod)
+ 	rsnd_mod_bset(mod, SCU_SYS_STATUS1, val, val);
  }
  
--#define rsnd_src_irq_enable(mod)  rsnd_src_irq_ctrol(mod, 1)
--#define rsnd_src_irq_disable(mod) rsnd_src_irq_ctrol(mod, 0)
--static void rsnd_src_irq_ctrol(struct rsnd_mod *mod, int enable)
-+static int rsnd_src_irq(struct rsnd_mod *mod,
-+			struct rsnd_dai_stream *io,
-+			struct rsnd_priv *priv,
-+			int enable)
+-static bool rsnd_src_record_error(struct rsnd_mod *mod)
++static bool rsnd_src_error_occurred(struct rsnd_mod *mod)
  {
  	struct rsnd_src *src = rsnd_mod_to_src(mod);
- 	u32 sys_int_val, int_val, sys_int_mask;
-@@ -305,6 +306,8 @@ static void rsnd_src_irq_ctrol(struct rsnd_mod *mod, int enable)
- 	rsnd_mod_write(mod, SRC_INT_ENABLE0, int_val);
- 	rsnd_mod_bset(mod, SCU_SYS_INT_EN0, sys_int_mask, sys_int_val);
- 	rsnd_mod_bset(mod, SCU_SYS_INT_EN1, sys_int_mask, sys_int_val);
-+
-+	return 0;
+ 	u32 val0, val1;
+@@ -333,12 +332,8 @@ static bool rsnd_src_record_error(struct rsnd_mod *mod)
+ 		val0 = val0 & 0xffff;
+ 
+ 	if ((rsnd_mod_read(mod, SCU_SYS_STATUS0) & val0) ||
+-	    (rsnd_mod_read(mod, SCU_SYS_STATUS1) & val1)) {
+-		struct rsnd_src *src = rsnd_mod_to_src(mod);
+-
+-		src->err++;
++	    (rsnd_mod_read(mod, SCU_SYS_STATUS1) & val1))
+ 		ret = true;
+-	}
+ 
+ 	return ret;
  }
+@@ -388,8 +383,6 @@ static int rsnd_src_init(struct rsnd_mod *mod,
  
- static void rsnd_src_status_clear(struct rsnd_mod *mod)
-@@ -381,8 +384,6 @@ static int rsnd_src_init(struct rsnd_mod *mod,
+ 	rsnd_src_irq_enable(mod);
  
- 	rsnd_src_status_clear(mod);
- 
--	rsnd_src_irq_enable(mod);
+-	src->err = 0;
 -
  	/* reset sync convert_rate */
  	src->sync.val = 0;
  
-@@ -395,8 +396,6 @@ static int rsnd_src_quit(struct rsnd_mod *mod,
+@@ -401,7 +394,6 @@ static int rsnd_src_quit(struct rsnd_mod *mod,
+ 			 struct rsnd_priv *priv)
  {
  	struct rsnd_src *src = rsnd_mod_to_src(mod);
+-	struct device *dev = rsnd_priv_to_dev(priv);
  
--	rsnd_src_irq_disable(mod);
--
- 	rsnd_src_halt(mod);
+ 	rsnd_src_irq_disable(mod);
+ 
+@@ -409,10 +401,6 @@ static int rsnd_src_quit(struct rsnd_mod *mod,
  
  	rsnd_mod_power_off(mod);
-@@ -455,7 +454,7 @@ static int rsnd_src_probe_(struct rsnd_mod *mod,
- 		/*
- 		 * IRQ is not supported on non-DT
- 		 * see
--		 *	rsnd_src_irq_enable()
-+		 *	rsnd_src_irq()
- 		 */
- 		ret = devm_request_irq(dev, irq,
- 				       rsnd_src_interrupt,
-@@ -518,6 +517,7 @@ static struct rsnd_mod_ops rsnd_src_ops = {
- 	.quit	= rsnd_src_quit,
- 	.start	= rsnd_src_start,
- 	.stop	= rsnd_src_stop,
-+	.irq	= rsnd_src_irq,
- 	.hw_params = rsnd_src_hw_params,
- 	.pcm_new = rsnd_src_pcm_new,
- };
+ 
+-	if (src->err)
+-		dev_warn(dev, "%s[%d] under/over flow err = %d\n",
+-			 rsnd_mod_name(mod), rsnd_mod_id(mod), src->err);
+-
+ 	src->convert_rate = 0;
+ 
+ 	/* reset sync convert_rate */
+@@ -425,8 +413,7 @@ static void __rsnd_src_interrupt(struct rsnd_mod *mod,
+ 				 struct rsnd_dai_stream *io)
+ {
+ 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
+-	struct rsnd_src *src = rsnd_mod_to_src(mod);
+-	struct device *dev = rsnd_priv_to_dev(priv);
++	bool stop = false;
+ 
+ 	spin_lock(&priv->lock);
+ 
+@@ -434,26 +421,16 @@ static void __rsnd_src_interrupt(struct rsnd_mod *mod,
+ 	if (!rsnd_io_is_working(io))
+ 		goto rsnd_src_interrupt_out;
+ 
+-	if (rsnd_src_record_error(mod)) {
+-
+-		dev_dbg(dev, "%s[%d] restart\n",
+-			rsnd_mod_name(mod), rsnd_mod_id(mod));
+-
+-		rsnd_src_stop(mod, io, priv);
+-		rsnd_src_start(mod, io, priv);
+-	}
+-
+-	if (src->err > 1024) {
+-		rsnd_src_irq_disable(mod);
+-
+-		dev_warn(dev, "no more %s[%d] restart\n",
+-			 rsnd_mod_name(mod), rsnd_mod_id(mod));
+-	}
++	if (rsnd_src_error_occurred(mod))
++		stop = true;
+ 
+ 	rsnd_src_status_clear(mod);
+ rsnd_src_interrupt_out:
+ 
+ 	spin_unlock(&priv->lock);
++
++	if (stop)
++		snd_pcm_stop_xrun(io->substream);
+ }
+ 
+ static irqreturn_t rsnd_src_interrupt(int irq, void *data)
 diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 5870434bbc58..803e9ae65915 100644
+index 90674137aa90..5870434bbc58 100644
 --- a/sound/soc/sh/rcar/ssi.c
 +++ b/sound/soc/sh/rcar/ssi.c
-@@ -142,30 +142,24 @@ static void rsnd_ssi_status_check(struct rsnd_mod *mod,
- 	dev_warn(dev, "status check failed\n");
- }
+@@ -74,7 +74,6 @@ struct rsnd_ssi {
+ 	u32 wsr;
+ 	int chan;
+ 	int rate;
+-	int err;
+ 	int irq;
+ 	unsigned int usrcnt;
+ };
+@@ -385,8 +384,6 @@ static int rsnd_ssi_init(struct rsnd_mod *mod,
+ 	if (ret < 0)
+ 		return ret;
  
--static int rsnd_ssi_irq_enable(struct rsnd_mod *ssi_mod)
-+static int rsnd_ssi_irq(struct rsnd_mod *mod,
-+			struct rsnd_dai_stream *io,
-+			struct rsnd_priv *priv,
-+			int enable)
- {
--	struct rsnd_priv *priv = rsnd_mod_to_priv(ssi_mod);
-+	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
-+	u32 val = 0;
- 
- 	if (rsnd_is_gen1(priv))
- 		return 0;
- 
--	/* enable SSI interrupt if Gen2 */
--	rsnd_mod_write(ssi_mod, SSI_INT_ENABLE,
--		       rsnd_ssi_is_dma_mode(ssi_mod) ?
--		       0x0e000000 : 0x0f000000);
+-	ssi->err	= -1; /* ignore 1st error */
 -
--	return 0;
--}
--
--static int rsnd_ssi_irq_disable(struct rsnd_mod *ssi_mod)
--{
--	struct rsnd_priv *priv = rsnd_mod_to_priv(ssi_mod);
--
--	if (rsnd_is_gen1(priv))
-+	if (ssi->usrcnt != 1)
- 		return 0;
- 
--	/* disable SSI interrupt if Gen2 */
--	rsnd_mod_write(ssi_mod, SSI_INT_ENABLE, 0x00000000);
-+	if (enable)
-+		val = rsnd_ssi_is_dma_mode(mod) ? 0x0e000000 : 0x0f000000;
-+
-+	rsnd_mod_write(mod, SSI_INT_ENABLE, val);
- 
- 	return 0;
- }
-@@ -387,8 +381,6 @@ static int rsnd_ssi_init(struct rsnd_mod *mod,
  	/* clear error status */
  	rsnd_ssi_status_clear(mod);
  
--	rsnd_ssi_irq_enable(mod);
+@@ -409,13 +406,7 @@ static int rsnd_ssi_quit(struct rsnd_mod *mod,
+ 	}
+ 
+ 	if (!rsnd_ssi_is_parent(mod, io)) {
+-		if (ssi->err > 0)
+-			dev_warn(dev, "%s[%d] under/over flow err = %d\n",
+-				 rsnd_mod_name(mod), rsnd_mod_id(mod),
+-				 ssi->err);
 -
+ 		ssi->cr_own	= 0;
+-		ssi->err	= 0;
+ 
+ 		rsnd_ssi_irq_disable(mod);
+ 	}
+@@ -455,21 +446,9 @@ static int rsnd_ssi_hw_params(struct rsnd_mod *mod,
  	return 0;
  }
  
-@@ -405,12 +397,9 @@ static int rsnd_ssi_quit(struct rsnd_mod *mod,
- 		return -EIO;
+-static u32 rsnd_ssi_record_error(struct rsnd_ssi *ssi)
+-{
+-	struct rsnd_mod *mod = rsnd_mod_get(ssi);
+-	u32 status = rsnd_ssi_status_get(mod);
+-
+-	/* under/over flow error */
+-	if (status & (UIRQ | OIRQ))
+-		ssi->err++;
+-
+-	return status;
+-}
+-
+-static int __rsnd_ssi_start(struct rsnd_mod *mod,
+-			    struct rsnd_dai_stream *io,
+-			    struct rsnd_priv *priv)
++static int rsnd_ssi_start(struct rsnd_mod *mod,
++			  struct rsnd_dai_stream *io,
++			  struct rsnd_priv *priv)
+ {
+ 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+ 	u32 cr;
+@@ -491,25 +470,21 @@ static int __rsnd_ssi_start(struct rsnd_mod *mod,
+ 	return 0;
+ }
+ 
+-static int rsnd_ssi_start(struct rsnd_mod *mod,
+-			  struct rsnd_dai_stream *io,
+-			  struct rsnd_priv *priv)
++static int rsnd_ssi_stop(struct rsnd_mod *mod,
++			 struct rsnd_dai_stream *io,
++			 struct rsnd_priv *priv)
+ {
++	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
++	u32 cr;
++
+ 	/*
+-	 * no limit to start
++	 * don't stop if not last user
+ 	 * see also
+-	 *	rsnd_ssi_stop
++	 *	rsnd_ssi_start
+ 	 *	rsnd_ssi_interrupt
+ 	 */
+-	return __rsnd_ssi_start(mod, io, priv);
+-}
+-
+-static int __rsnd_ssi_stop(struct rsnd_mod *mod,
+-			   struct rsnd_dai_stream *io,
+-			   struct rsnd_priv *priv)
+-{
+-	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+-	u32 cr;
++	if (ssi->usrcnt > 1)
++		return 0;
+ 
+ 	/*
+ 	 * disable all IRQ,
+@@ -531,33 +506,14 @@ static int __rsnd_ssi_stop(struct rsnd_mod *mod,
+ 	return 0;
+ }
+ 
+-static int rsnd_ssi_stop(struct rsnd_mod *mod,
+-			 struct rsnd_dai_stream *io,
+-			 struct rsnd_priv *priv)
+-{
+-	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+-
+-	/*
+-	 * don't stop if not last user
+-	 * see also
+-	 *	rsnd_ssi_start
+-	 *	rsnd_ssi_interrupt
+-	 */
+-	if (ssi->usrcnt > 1)
+-		return 0;
+-
+-	return __rsnd_ssi_stop(mod, io, priv);
+-}
+-
+ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
+ 				 struct rsnd_dai_stream *io)
+ {
+-	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+ 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
+-	struct device *dev = rsnd_priv_to_dev(priv);
+ 	int is_dma = rsnd_ssi_is_dma_mode(mod);
+ 	u32 status;
+ 	bool elapsed = false;
++	bool stop = false;
+ 
+ 	spin_lock(&priv->lock);
+ 
+@@ -565,7 +521,7 @@ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
+ 	if (!rsnd_io_is_working(io))
+ 		goto rsnd_ssi_interrupt_out;
+ 
+-	status = rsnd_ssi_record_error(ssi);
++	status = rsnd_ssi_status_get(mod);
+ 
+ 	/* PIO only */
+ 	if (!is_dma && (status & DIRQ)) {
+@@ -587,23 +543,8 @@ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
  	}
  
--	if (!rsnd_ssi_is_parent(mod, io)) {
-+	if (!rsnd_ssi_is_parent(mod, io))
- 		ssi->cr_own	= 0;
- 
--		rsnd_ssi_irq_disable(mod);
+ 	/* DMA only */
+-	if (is_dma && (status & (UIRQ | OIRQ))) {
+-		/*
+-		 * restart SSI
+-		 */
+-		dev_dbg(dev, "%s[%d] restart\n",
+-			rsnd_mod_name(mod), rsnd_mod_id(mod));
+-
+-		__rsnd_ssi_stop(mod, io, priv);
+-		__rsnd_ssi_start(mod, io, priv);
 -	}
 -
- 	rsnd_ssi_master_clk_stop(ssi, io);
+-	if (ssi->err > 1024) {
+-		rsnd_ssi_irq_disable(mod);
+-
+-		dev_warn(dev, "no more %s[%d] restart\n",
+-			 rsnd_mod_name(mod), rsnd_mod_id(mod));
+-	}
++	if (is_dma && (status & (UIRQ | OIRQ)))
++		stop = true;
  
- 	rsnd_mod_power_off(mod);
-@@ -627,6 +616,7 @@ static struct rsnd_mod_ops rsnd_ssi_pio_ops = {
- 	.quit	= rsnd_ssi_quit,
- 	.start	= rsnd_ssi_start,
- 	.stop	= rsnd_ssi_stop,
-+	.irq	= rsnd_ssi_irq,
- 	.hw_params = rsnd_ssi_hw_params,
- };
+ 	rsnd_ssi_status_clear(mod);
+ rsnd_ssi_interrupt_out:
+@@ -611,6 +552,10 @@ rsnd_ssi_interrupt_out:
  
+ 	if (elapsed)
+ 		rsnd_dai_period_elapsed(io);
++
++	if (stop)
++		snd_pcm_stop_xrun(io->substream);
++
+ }
+ 
+ static irqreturn_t rsnd_ssi_interrupt(int irq, void *data)
 -- 
 2.7.0.rc3
