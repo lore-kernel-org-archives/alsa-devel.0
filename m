@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mxs-saif: fix clk_prepare() without
-	matching clk_unprepare()" to the asoc tree
-Date: Wed, 27 Jan 2016 18:37:25 +0000
-Message-ID: <E1aOUy5-000866-HG@debutante>
-References: <1453388156-1901-1-git-send-email-mans@mansr.com>
+Subject: Applied "ASoC: davinci-mcasp: Discourage use of
+	fck_parent for clock reparenting" to the asoc tree
+Date: Wed, 27 Jan 2016 18:37:31 +0000
+Message-ID: <E1aOUyB-00086d-Kk@debutante>
+References: <1453899769-679-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B0D5265290
- for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2016 19:37:33 +0100 (CET)
-In-Reply-To: <1453388156-1901-1-git-send-email-mans@mansr.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 01BF626548F
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2016 19:37:39 +0100 (CET)
+In-Reply-To: <1453899769-679-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mans Rullgard <mans@mansr.com>, Mark Brown <broonie@kernel.org>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mxs-saif: fix clk_prepare() without matching clk_unprepare()
+   ASoC: davinci-mcasp: Discourage use of fck_parent for clock reparenting
 
 has been applied to the asoc tree at
 
@@ -53,66 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From f212c6d8c2b21c1e1d0158d38a7c37f4427f3848 Mon Sep 17 00:00:00 2001
-From: Mans Rullgard <mans@mansr.com>
-Date: Thu, 21 Jan 2016 14:55:56 +0000
-Subject: [PATCH] ASoC: mxs-saif: fix clk_prepare() without matching
- clk_unprepare()
+>From c670254f63fe09681b1c4c82d3d059c6cc04ce09 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Wed, 27 Jan 2016 15:02:49 +0200
+Subject: [PATCH] ASoC: davinci-mcasp: Discourage use of fck_parent for clock
+ reparenting
 
-The clk_prepare() call in hw_params() has no matching clk_unprepare(),
-leaving the clk with an ever-increasing prepare count.  Moreover,
-hw_params() can be called multiple times which would again leave us
-with a runaway prepare count.  Fix this by moving the clk_prepare()
-call to the startup() function and adding a shutdown() function with
-a matching clk_unprepare() as these operations are already correctly
-bracketed by soc-core.
+The in-driver clock reparenting had been added when we did not had other
+means to cleanly set the parent for the fck. Now we can use
+assigned-clocks/assigned-clock-parents in DT binding. Print warning when
+the fck_parent is present for McASP and recommend the switch to the proper
+way to handle the clock selection.
 
-Signed-off-by: Mans Rullgard <mans@mansr.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mxs/mxs-saif.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index c866ade28ad0..a6c7b8d87cd2 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -381,9 +381,19 @@ static int mxs_saif_startup(struct snd_pcm_substream *substream,
- 	__raw_writel(BM_SAIF_CTRL_CLKGATE,
- 		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 2ccb8bccc9d4..3cf46afb353f 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -1517,6 +1517,8 @@ static int mcasp_reparent_fck(struct platform_device *pdev)
+ 	if (!parent_name)
+ 		return 0;
  
-+	clk_prepare(saif->clk);
++	dev_warn(&pdev->dev, "Update the bindings to use assigned-clocks!\n");
 +
- 	return 0;
- }
- 
-+static void mxs_saif_shutdown(struct snd_pcm_substream *substream,
-+			      struct snd_soc_dai *cpu_dai)
-+{
-+	struct mxs_saif *saif = snd_soc_dai_get_drvdata(cpu_dai);
-+
-+	clk_unprepare(saif->clk);
-+}
-+
- /*
-  * Should only be called when port is inactive.
-  * although can be called multiple times by upper layers.
-@@ -424,8 +434,6 @@ static int mxs_saif_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
- 	}
- 
--	/* prepare clk in hw_param, enable in trigger */
--	clk_prepare(saif->clk);
- 	if (saif != master_saif) {
- 		/*
- 		* Set an initial clock rate for the saif internal logic to work
-@@ -611,6 +619,7 @@ static int mxs_saif_trigger(struct snd_pcm_substream *substream, int cmd,
- 
- static const struct snd_soc_dai_ops mxs_saif_dai_ops = {
- 	.startup = mxs_saif_startup,
-+	.shutdown = mxs_saif_shutdown,
- 	.trigger = mxs_saif_trigger,
- 	.prepare = mxs_saif_prepare,
- 	.hw_params = mxs_saif_hw_params,
+ 	gfclk = clk_get(&pdev->dev, "fck");
+ 	if (IS_ERR(gfclk)) {
+ 		dev_err(&pdev->dev, "failed to get fck\n");
 -- 
 2.7.0.rc3
