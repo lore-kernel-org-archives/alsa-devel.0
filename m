@@ -1,70 +1,64 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ALSA: core: Add 384kHz Support
-Date: Wed, 27 Jan 2016 17:55:40 +0100
-Message-ID: <56A8F68C.7040805@metafoo.de>
-References: <1453902825-27002-1-git-send-email-brian.austin@cirrus.com>
- <s5hzivr6s0e.wl-tiwai@suse.de> <alpine.DEB.2.10.1601270809340.3329@heelroid>
- <s5hwpqv6qef.wl-tiwai@suse.de> <alpine.DEB.2.10.1601270859040.3329@heelroid>
- <s5hsi1j6mxe.wl-tiwai@suse.de>
+From: Damien Horsley <Damien.Horsley-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+Subject: Re: [RFC V2 1/2] ASoC: img: Add binding document for Pistachio audio
+ card
+Date: Wed, 27 Jan 2016 17:13:09 +0000
+Message-ID: <56A8FAA5.1000907@imgtec.com>
+References: <1453818867-16322-1-git-send-email-Damien.Horsley@imgtec.com>
+ <1453818867-16322-2-git-send-email-Damien.Horsley@imgtec.com>
+ <20160127145756.GR6042@sirena.org.uk> <56A8DFBC.6070007@imgtec.com>
+ <20160127160057.GA25316@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-233.synserver.de (smtp-out-197.synserver.de
- [212.40.185.197])
- by alsa0.perex.cz (Postfix) with ESMTP id 3ECAF26044B
- for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2016 18:07:06 +0100 (CET)
-In-Reply-To: <s5hsi1j6mxe.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Brian Austin <brian.austin@cirrus.com>
-Cc: alsa-devel@alsa-project.org, charles.keepax@cirrus.com, paul.handrigan@cirrus.com
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20160127160057.GA25316-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, James Hartley <james.hartley-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/27/2016 04:51 PM, Takashi Iwai wrote:
-> On Wed, 27 Jan 2016 16:02:35 +0100,
-> Brian Austin wrote:
->>
->> On Wed, 27 Jan 2016, Takashi Iwai wrote:
->>
->>>> So we stay at SNDRV_PCM_RATE_192000 always for sample rate defines?
->>>> And everything else is just covered with SNDRV_PCM_RATE_KNOT? 
->>>
->>> Depends.  If a new sample rate is (or will be) demanded by many
->>> drivers, it's worth to add it, of course, as it would simplify the
->>> code.
->>>
->>> That's why I mentioned "why" is most important information; you need
->>> to convince others about the necessity of this change, after all.
->>> Then you see that "because I-wanna-it" doesn't sound convincing
->>> enough, right?
->>>
->>>
->>> Takashi
->>>
->> I really, really, really want it :)
->>
->> I understand. Going forward, from our perspective, 384 and 
->> other high sample rates are going to be defaults for devices as the market 
->> is moving that way. I just wanted to make it easier to use those instead 
->> of doing all the contraint coding.
+On 27/01/16 16:00, Mark Brown wrote:
+> On Wed, Jan 27, 2016 at 03:18:20PM +0000, Damien Horsley wrote:
+>> On 27/01/16 14:57, Mark Brown wrote:
+>>> On Tue, Jan 26, 2016 at 02:34:26PM +0000, Damien Horsley wrote:
 > 
-> Yeah that's the reason I could *guess*, but it wasn't mentioned.
+>>>> +  - clock-names : Includes the following entries:
+>>>> +        "audio_pll"  The audio PLL
+>>>> +        "i2s_mclk"   The i2s reference clock
+>>>> +                     Also connected to i2s_out_0_mclk output
+>>>> +        "dac_mclk"   Dac reference clock. Connected to i2s_dac_clk output
 > 
->> Now my understanding on the KNOT define 
->> may be wrong. I can add the other rates to this, but for now just wanted 
->> to add one we use currently.
->>
->> Does that make sense? 
+>>> Why are these (especially the dac_mclk and i2s_mclk) properties of the
+>>> card and not of the drivers for the respective devices?
 > 
-> Just resubmit the patch with mo' better advertisement :)
+>> Due to the shared nature of these clocks. Individual components cannot
+>> be responsible for controlling these as this could break configurations
+>> for other components that are sharing the clocks. Only the card driver
+>> has visibility of all of the components and their requirements.
+> 
+> You're talking about the code that decides what rates to set the clock
+> at, not where the properties are placed in the DT.
+> 
+>> i2s_mclk and dac_mclk can be used by both the i2s in and i2s out paths
+>> on some boards
+> 
+> Multiple devices can reference the same clock.
+> 
 
-For symmetry reasons maybe also include the matching 44.1kHz based rate.
-Unless you think that is not going to be a thing.
+audio_pll is referenced exclusively by the card device
+
+i2s_mclk and dac_mclk can also be referenced by other devices. The i2s
+out controller references i2s_mclk, and codec devices can reference
+i2s_mclk/dac_mclk dependent on their system clock requirements
+
+without a reference to i2s_mclk and dac_mclk in the card driver, it
+would not be possible to control the divisors and gates for these clocks
+in the following cases:
+
+Simplistic codecs that do not have drivers
+
+Codec drivers that do not call clk_set_rate and clk_enable/clk_disable
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
