@@ -1,21 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC V2 1/2] ASoC: img: Add binding document for
- Pistachio audio card
-Date: Wed, 27 Jan 2016 20:14:57 +0000
-Message-ID: <20160127201457.GC25316@sirena.org.uk>
-References: <1453818867-16322-1-git-send-email-Damien.Horsley@imgtec.com>
- <1453818867-16322-2-git-send-email-Damien.Horsley@imgtec.com>
- <20160127145756.GR6042@sirena.org.uk> <56A8DFBC.6070007@imgtec.com>
- <20160127160057.GA25316@sirena.org.uk>
- <56A8FAA5.1000907@imgtec.com>
+Subject: Re: [PATCH] ASoC: Add max98926 codec driver
+Date: Wed, 27 Jan 2016 20:24:15 +0000
+Message-ID: <20160127202415.GD25316@sirena.org.uk>
+References: <1452809013-8825-1-git-send-email-yesanishhere@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7261331998029054288=="
+Content-Type: multipart/mixed; boundary="===============1557045694893255335=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F0FF92604AF
- for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2016 21:15:13 +0100 (CET)
-In-Reply-To: <56A8FAA5.1000907@imgtec.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1DB832604AF
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2016 21:24:22 +0100 (CET)
+In-Reply-To: <1452809013-8825-1-git-send-email-yesanishhere@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,69 +20,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Damien Horsley <Damien.Horsley@imgtec.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, James Hartley <james.hartley@imgtec.com>
+To: anish kumar <yesanishhere@gmail.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7261331998029054288==
+--===============1557045694893255335==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="1ccMZA6j1vT5UqiK"
+	protocol="application/pgp-signature"; boundary="0/kgSOzhNoDC5T3a"
 Content-Disposition: inline
 
 
---1ccMZA6j1vT5UqiK
+--0/kgSOzhNoDC5T3a
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jan 27, 2016 at 05:13:09PM +0000, Damien Horsley wrote:
+On Thu, Jan 14, 2016 at 02:03:33PM -0800, anish kumar wrote:
 
-> audio_pll is referenced exclusively by the card device
+> +static const struct snd_kcontrol_new max98926_dai_controls[] = {
+> +	SOC_DAPM_SINGLE("Left", MAX98926_GAIN,
+> +		MAX98926_DAC_IN_SEL_SHIFT, 0, 0),
+> +	SOC_DAPM_SINGLE("Right", MAX98926_GAIN,
+> +		MAX98926_DAC_IN_SEL_SHIFT, 1, 0),
+> +	SOC_DAPM_SINGLE("LeftRight", MAX98926_GAIN,
+> +		MAX98926_DAC_IN_SEL_SHIFT, 2, 0),
 
-That one *may* be plausible.
+These are on/off switches too and so should end in Switch like all the
+other on/off controls.  Other than this the driver looks good so I've
+applied it, please send a followup patch correcting this.
 
-> i2s_mclk and dac_mclk can also be referenced by other devices. The i2s
-> out controller references i2s_mclk, and codec devices can reference
-> i2s_mclk/dac_mclk dependent on their system clock requirements
+> +	SOC_DAPM_SINGLE("(Left+Right)/2 Switch", MAX98926_GAIN,
+> +		MAX98926_DAC_IN_SEL_SHIFT, 3, 0),
+> +};
 
-The clock API copes perfectly happily with this.
-
-> without a reference to i2s_mclk and dac_mclk in the card driver, it
-> would not be possible to control the divisors and gates for these clocks
-> in the following cases:
-
-> Simplistic codecs that do not have drivers
-
-> Codec drivers that do not call clk_set_rate and clk_enable/clk_disable
-
-Nonsense, if there is no driver or the driver doesn't do what you want
-then fix that.  Don't bodge things at the wrong abstraction layer, that
-just creates problems later on when someone comes along and does things
-properly or tries to use the device tree outside of your particular
-implementation (eg, when working with a differnet OS).
-
---1ccMZA6j1vT5UqiK
+--0/kgSOzhNoDC5T3a
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWqSVBAAoJECTWi3JdVIfQhO4H/i4L7xnQ6tPB/qvLEEWbvDie
-mnPpaktnriIdtQpaiIoWQYmXHg/2zBRsN2Bcu3MFiIndniiyUDgnCqGV5LgKpYPh
-d0mj/evHzqYMQfdXeOuPxCp2M803v8Cu5nv2QaAmiXYJvkgA07uv0J4CNzXuC/T8
-s5q3E+zZ3f7EGO1lxEZWPYuT4PvrqN2synXl3SGzd1ovUfy6pDWatiopc6Ng7N6Z
-1FI6vCfw6FioafGYMQHXyQaVBGG2VyS5p/eECoAWPcciu6rTywQl1GqKlaU80U/v
-Uhwwf8NQya9zlbokxGshjuCBtFLHauctAC2HRIzwAoUUV0EAEVfedxnBQ77J5HM=
-=EGFj
+iQEcBAEBCAAGBQJWqSdvAAoJECTWi3JdVIfQqoAH/0fb+3Z1iMW4uDZgae750oq1
+ADePotRy2lYtK/pqbLOqITDY4RVsW2y2Q5HuV15lgPDZ3MBK2fBJTSWVFXcMRtgR
+zB19DDhl/+Z5BCo3Gueezhnmsg0u0DGhFbkG3uFrCOI+QGJSqDA/g/xshoCN+L1b
+dIynEhU9LSEwyg/t14F9iyi5BslmgVkFfYr0sd2aHpJg9QnLVuTLbOmAUeYf2OP8
+6zaSsGDYLivif5zDDkrMlr3kWV4BrowYeB6x9htJb4FnVien8cl+6WXqQC99qSQG
+R7Rdz4hTRibAdMrQI44I8FZikAAk+1vmlnWVQfKmBa2X2VfviXxPwXOLkL62Tp0=
+=uG2Z
 -----END PGP SIGNATURE-----
 
---1ccMZA6j1vT5UqiK--
+--0/kgSOzhNoDC5T3a--
 
---===============7261331998029054288==
+--===============1557045694893255335==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7261331998029054288==--
+--===============1557045694893255335==--
