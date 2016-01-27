@@ -1,18 +1,20 @@
-From: Tanu Kaskinen <tanuk@iki.fi>
-Subject: [PATCH alsa-plugins] pph: include config.h from
-	rate_speexrate.c
-Date: Wed, 27 Jan 2016 13:45:51 +0200
-Message-ID: <1453895151-15293-1-git-send-email-tanuk@iki.fi>
+From: =?UTF-8?Q?Rapha=C3=ABl_Poggi?= <poggi.raph@gmail.com>
+Subject: Re: [PATCH] sound: codecs: pcm1792x: clean function
+	exit
+Date: Wed, 27 Jan 2016 13:08:04 +0100
+Message-ID: <CACqcpZAmFwK9N9g2d93Zb-zs32+Wzg-6abDybEqWPYKpxHh-Gg@mail.gmail.com>
+References: <1452762028-43931-1-git-send-email-poggi.raph@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
- [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 5A935260439
- for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2016 12:45:59 +0100 (CET)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.nyi.internal (Postfix) with ESMTP id 955392CE9C
- for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2016 06:45:58 -0500 (EST)
+Received: from mail-yk0-f179.google.com (mail-yk0-f179.google.com
+ [209.85.160.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id C5E1C2604DD
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2016 13:08:44 +0100 (CET)
+Received: by mail-yk0-f179.google.com with SMTP id y137so14708922yka.2
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2016 04:08:44 -0800 (PST)
+In-Reply-To: <1452762028-43931-1-git-send-email-poggi.raph@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,34 +24,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, Michael Trimarchi <michael@amarulasolutions.com>, Raphael Poggi <poggi.raph@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fixes compilation against libspeexdsp 1.2rc3.
+ping ?
 
-rate_speexrate.c includes speex_resampler.h, which depends on config.h
-by referencing the HAVE_SPEEX_SPEEXDSP_TYPES_H macro. AFAIK it's not
-a good idea to include config.h from headers (I don't know/remember
-why, though), which is why I include config.h from rate_speexrate.c
-instead of speex_resampler.h.
-
-Signed-off-by: Tanu Kaskinen <tanuk@iki.fi>
----
- pph/rate_speexrate.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/pph/rate_speexrate.c b/pph/rate_speexrate.c
-index 0a1325c..8fc4cef 100644
---- a/pph/rate_speexrate.c
-+++ b/pph/rate_speexrate.c
-@@ -28,6 +28,7 @@
-    POSSIBILITY OF SUCH DAMAGE.
- */
- 
-+#include "config.h"
- #include <stdio.h>
- #include <alsa/asoundlib.h>
- #include <alsa/pcm_rate.h>
--- 
-2.7.0.rc3
+2016-01-14 10:00 GMT+01:00 Raphael Poggi <poggi.raph@gmail.com>:
+> Signed-off-by: Raphael Poggi <poggi.raph@gmail.com>
+> ---
+>  sound/soc/codecs/pcm179x.c | 15 +++------------
+>  1 file changed, 3 insertions(+), 12 deletions(-)
+>
+> diff --git a/sound/soc/codecs/pcm179x.c b/sound/soc/codecs/pcm179x.c
+> index a56c7b7..e04d13c 100644
+> --- a/sound/soc/codecs/pcm179x.c
+> +++ b/sound/soc/codecs/pcm179x.c
+> @@ -91,14 +91,9 @@ static int pcm179x_digital_mute(struct snd_soc_dai *dai, int mute)
+>  {
+>         struct snd_soc_codec *codec = dai->codec;
+>         struct pcm179x_private *priv = snd_soc_codec_get_drvdata(codec);
+> -       int ret;
+>
+> -       ret = regmap_update_bits(priv->regmap, PCM179X_SOFT_MUTE,
+> +       return regmap_update_bits(priv->regmap, PCM179X_SOFT_MUTE,
+>                                  PCM179X_MUTE_MASK, !!mute);
+> -       if (ret < 0)
+> -               return ret;
+> -
+> -       return 0;
+>  }
+>
+>  static int pcm179x_hw_params(struct snd_pcm_substream *substream,
+> @@ -107,7 +102,7 @@ static int pcm179x_hw_params(struct snd_pcm_substream *substream,
+>  {
+>         struct snd_soc_codec *codec = dai->codec;
+>         struct pcm179x_private *priv = snd_soc_codec_get_drvdata(codec);
+> -       int val = 0, ret;
+> +       int val = 0;
+>
+>         priv->rate = params_rate(params);
+>
+> @@ -145,12 +140,8 @@ static int pcm179x_hw_params(struct snd_pcm_substream *substream,
+>
+>         val = val << PCM179X_FMT_SHIFT | PCM179X_ATLD_ENABLE;
+>
+> -       ret = regmap_update_bits(priv->regmap, PCM179X_FMT_CONTROL,
+> +       return regmap_update_bits(priv->regmap, PCM179X_FMT_CONTROL,
+>                                  PCM179X_FMT_MASK | PCM179X_ATLD_ENABLE, val);
+> -       if (ret < 0)
+> -               return ret;
+> -
+> -       return 0;
+>  }
+>
+>  static const struct snd_soc_dai_ops pcm179x_dai_ops = {
+> --
+> 2.1.0
+>
