@@ -1,61 +1,62 @@
-From: Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH] ASoC: fsl: add imx-cs427x machine driver
-Date: Tue, 26 Jan 2016 09:42:35 -0800
-Message-ID: <20160126174234.GA3835@Asurada-Nvidia>
-References: <1453744403-12268-1-git-send-email-eu@felipetonello.com>
- <20160126022948.GA21187@rob-hp-laptop>
- <56A73FDE.2060607@felipetonello.com>
- <CAOMZO5BjeDMqNgf-=tE7=pByJi+jJVA=G2bbtp+XJeYbpev6KA@mail.gmail.com>
- <56A75205.8060000@felipetonello.com>
- <CAOMZO5CjVxAHOJSywveK7dYvdz8PSMADJd1F7TdO+asEQ89XTg@mail.gmail.com>
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Subject: Re: [PATCH v2 0/3] ASoC: topology: Add support for FE
+ DAI & DAI links
+Date: Wed, 27 Jan 2016 16:03:42 +0800
+Message-ID: <56A879DE.60105@linux.intel.com>
+References: <cover.1452844210.git.mengdong.lin@linux.intel.com>
+ <1453721870.2557.28.camel@loki> <20160125153954.GU6588@sirena.org.uk>
+ <s5h7fixacj2.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <CAOMZO5CjVxAHOJSywveK7dYvdz8PSMADJd1F7TdO+asEQ89XTg-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Felipe Ferreri Tonello <eu-NLnRV5p3vwDxYxTyqlRmvgC/G2K4zDHf@public.gmane.org>
-Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id A88922602F1
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2016 09:04:08 +0100 (CET)
+In-Reply-To: <s5h7fixacj2.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Vaibhav Agarwal <vaibhav.agarwal@linaro.org>, vinod.koul@intel.com, mengdong.lin@intel.com, Liam Girdwood <liam.r.girdwood@linux.intel.com>, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 26, 2016 at 09:05:42AM -0200, Fabio Estevam wrote:
-> On Tue, Jan 26, 2016 at 9:01 AM, Felipe Ferreri Tonello
-> <eu-NLnRV5p3vwDxYxTyqlRmvgC/G2K4zDHf@public.gmane.org> wrote:
-> 
-> > Actually yes, thanks! I didn't know about the existence of fsl-asoc-card.
-> >
-> > I get some errors but I don't think they actually matter:
-> > [   19.734494] fsl-asrc 2034000.asrc: driver registered
-> > [   19.738707] fsl-asoc-card sound: ASoC: CPU DAI (null) not registered
-> > [   19.738717] fsl-asoc-card sound: snd_soc_register_card failed (-517)
-> > [   19.741556] fsl-asoc-card sound: ASoC: CPU DAI (null) not registered
-> > [   19.741564] fsl-asoc-card sound: snd_soc_register_card failed (-517)
+Thanks for your comments, Takashi!
 
-Deferred probes shouldn't be a problem.
+Hi Mark,
 
-> > [   19.774591] fsl-asoc-card sound: cs4271-hifi <-> 2028000.ssi mapping ok
-
-Link is mapped.
-
-> > [   19.781507] fsl-asoc-card sound: ASoC: no source widget found for
-> > ASRC-Playback
-> > [   19.790065] fsl-asoc-card sound: ASoC: Failed to add route
-> > ASRC-Playback -> direct -> CPU-Playback
-> > [   19.805349] fsl-asoc-card sound: ASoC: no sink widget found for
-> > ASRC-Capture
-> > [   19.817222] fsl-asoc-card sound: ASoC: Failed to add route
-> > CPU-Capture -> direct -> ASRC-Capture
-
-You may ignore these "failures" if you don't have ASRC at all. It's
-optional based on the SoC design or platform requirement. Refer to:
-Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
-
-But I think the log over here could be less confusing. I may try to
-clean it later.
+Could you help to review the other 2 patches when convenient?
 
 Thanks
-Nicolin
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Mengdong
+
+On 01/25/2016 11:45 PM, Takashi Iwai wrote:
+> On Mon, 25 Jan 2016 16:39:54 +0100,
+> Mark Brown wrote:
+>>
+>> On Mon, Jan 25, 2016 at 11:37:50AM +0000, Liam Girdwood wrote:
+>>
+>>> Mengdong, it might be easier to split this patch into 1/3 and 2,3/3
+>>> since 1/3 will be in Takashi's tree, but then that might not be needed
+>>> it Takashi and Mark agree.
+>>
+>> They'll need to all end up in one tree at some point since at least one
+>> of the ASoC patches depends on the ALSA core patch.  Usually we do this
+>> by having me apply things (IIRC Takashi has already acked the ALSA
+>> patch).
+>
+> Yep, my previous ack is found at msg id <s5hziwccx7f.wl-tiwai@suse.de>
+>
+>
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
