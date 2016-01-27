@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rk3036: fix missing dependency on
-	REGMAP_MMIO" to the asoc tree
-Date: Wed, 27 Jan 2016 18:37:22 +0000
-Message-ID: <E1aOUy2-00085A-1z@debutante>
-References: <1453742610-23418-1-git-send-email-ao2@ao2.it>
+Subject: Applied "ASoC: ssm4567: Reset device before
+	regcache_sync()" to the asoc tree
+Date: Wed, 27 Jan 2016 18:37:24 +0000
+Message-ID: <E1aOUy4-00085d-2b@debutante>
+References: <1453901178-11343-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A481E261A8B
- for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2016 19:37:29 +0100 (CET)
-In-Reply-To: <1453742610-23418-1-git-send-email-ao2@ao2.it>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E800261B20
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2016 19:37:32 +0100 (CET)
+In-Reply-To: <1453901178-11343-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Antonio Ospite <ao2@ao2.it>, Mark Brown <broonie@kernel.org>
+To: Harsha Priya <harshapriya.n@intel.com>, Fang Yang A <yang.a.fang@intel.com>, Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rk3036: fix missing dependency on REGMAP_MMIO
+   ASoC: ssm4567: Reset device before regcache_sync()
 
 has been applied to the asoc tree at
 
@@ -53,37 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From 7315917f7ccdf5eb5758f663a781daa7599d63d7 Mon Sep 17 00:00:00 2001
-From: Antonio Ospite <ao2@ao2.it>
-Date: Mon, 25 Jan 2016 18:23:30 +0100
-Subject: [PATCH] ASoC: rk3036: fix missing dependency on REGMAP_MMIO
+>From 712a8038cc24dba668afe82f0413714ca87184e0 Mon Sep 17 00:00:00 2001
+From: Lars-Peter Clausen <lars@metafoo.de>
+Date: Wed, 27 Jan 2016 14:26:18 +0100
+Subject: [PATCH] ASoC: ssm4567: Reset device before regcache_sync()
 
-When SND_SOC_INNO_RK3036 is enabled but REGMAP_MMIO is not, the MODPOST
-step fails with this error:
+When the ssm4567 is powered up the driver calles regcache_sync() to restore
+the register map content. regcache_sync() assumes that the device is in its
+power-on reset state. Make sure that this is the case by explicitly
+resetting the ssm4567 register map before calling regcache_sync() otherwise
+we might end up with a incorrect register map which leads to undefined
+behaviour.
 
-  ...
-  Kernel: arch/x86/boot/bzImage is ready  (#3)
-    Building modules, stage 2.
-    MODPOST 3203 modules
-  ERROR: "__devm_regmap_init_mmio_clk" [sound/soc/codecs/snd-soc-inno-rk3036.ko] undefined!
+One such undefined behaviour was observed when returning from system
+suspend while a playback stream is active, in that case the ssm4567 was
+kept muted after resume.
 
-Signed-off-by: Antonio Ospite <ao2@ao2.it>
+Fixes: 1ee44ce03011 ("ASoC: ssm4567: Add driver for Analog Devices SSM4567 amplifier")
+Reported-by: Harsha Priya <harshapriya.n@intel.com>
+Tested-by: Fang, Yang A <yang.a.fang@intel.com>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/ssm4567.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 50693c867e71..1f7eaa919088 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -497,6 +497,7 @@ config SND_SOC_ICS43432
+diff --git a/sound/soc/codecs/ssm4567.c b/sound/soc/codecs/ssm4567.c
+index e619d5651b09..080c78e88e10 100644
+--- a/sound/soc/codecs/ssm4567.c
++++ b/sound/soc/codecs/ssm4567.c
+@@ -352,6 +352,11 @@ static int ssm4567_set_power(struct ssm4567 *ssm4567, bool enable)
+ 	regcache_cache_only(ssm4567->regmap, !enable);
  
- config SND_SOC_INNO_RK3036
- 	tristate "Inno codec driver for RK3036 SoC"
-+	select REGMAP_MMIO
- 
- config SND_SOC_ISABELLE
-         tristate
+ 	if (enable) {
++		ret = regmap_write(ssm4567->regmap, SSM4567_REG_SOFT_RESET,
++			0x00);
++		if (ret)
++			return ret;
++
+ 		ret = regmap_update_bits(ssm4567->regmap,
+ 			SSM4567_REG_POWER_CTRL,
+ 			SSM4567_POWER_SPWDN, 0x00);
 -- 
 2.7.0.rc3
