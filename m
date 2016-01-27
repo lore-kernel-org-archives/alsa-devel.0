@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: s3c24xx: use const
-	snd_soc_component_driver pointer" to the asoc tree
-Date: Wed, 27 Jan 2016 18:37:04 +0000
-Message-ID: <E1aOUxk-00084b-TT@debutante>
-References: <1453741678-1988125-2-git-send-email-arnd@arndb.de>
+Subject: Applied "ASoC: rk3036: fix missing dependency on
+	REGMAP_MMIO" to the asoc tree
+Date: Wed, 27 Jan 2016 18:37:22 +0000
+Message-ID: <E1aOUy2-00085A-1z@debutante>
+References: <1453742610-23418-1-git-send-email-ao2@ao2.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E1EC26044B
- for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2016 19:37:17 +0100 (CET)
-In-Reply-To: <1453741678-1988125-2-git-send-email-arnd@arndb.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id A481E261A8B
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2016 19:37:29 +0100 (CET)
+In-Reply-To: <1453742610-23418-1-git-send-email-ao2@ao2.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
+To: Antonio Ospite <ao2@ao2.it>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: s3c24xx: use const snd_soc_component_driver pointer
+   ASoC: rk3036: fix missing dependency on REGMAP_MMIO
 
 has been applied to the asoc tree at
 
@@ -53,56 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From ba4bc32eaa39ba7687f0958ae90eec94da613b46 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 25 Jan 2016 18:07:33 +0100
-Subject: [PATCH] ASoC: s3c24xx: use const snd_soc_component_driver pointer
+>From 7315917f7ccdf5eb5758f663a781daa7599d63d7 Mon Sep 17 00:00:00 2001
+From: Antonio Ospite <ao2@ao2.it>
+Date: Mon, 25 Jan 2016 18:23:30 +0100
+Subject: [PATCH] ASoC: rk3036: fix missing dependency on REGMAP_MMIO
 
-An older patch to convert the API in the s3c i2s driver
-ended up passing a const pointer into a function that takes
-a non-const pointer, so we now get a warning:
+When SND_SOC_INNO_RK3036 is enabled but REGMAP_MMIO is not, the MODPOST
+step fails with this error:
 
-sound/soc/samsung/s3c2412-i2s.c: In function 's3c2412_iis_dev_probe':
-sound/soc/samsung/s3c2412-i2s.c:172:9: error: passing argument 3 of 's3c_i2sv2_register_component' discards 'const' qualifier from pointer target type [-Werror=discarded-qualifiers]
+  ...
+  Kernel: arch/x86/boot/bzImage is ready  (#3)
+    Building modules, stage 2.
+    MODPOST 3203 modules
+  ERROR: "__devm_regmap_init_mmio_clk" [sound/soc/codecs/snd-soc-inno-rk3036.ko] undefined!
 
-However, the s3c_i2sv2_register_component() function again
-passes the pointer into another function taking a const, so
-we just need to change its prototype.
-
-Fixes: eca3b01d0885 ("ASoC: switch over to use snd_soc_register_component() on s3c i2s")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Krzysztof Kozlowski <k.kozlowski@samsung.com>
+Signed-off-by: Antonio Ospite <ao2@ao2.it>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/s3c-i2s-v2.c | 2 +-
- sound/soc/samsung/s3c-i2s-v2.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
-index df65c5b494b1..b6ab3fc5789e 100644
---- a/sound/soc/samsung/s3c-i2s-v2.c
-+++ b/sound/soc/samsung/s3c-i2s-v2.c
-@@ -709,7 +709,7 @@ static int s3c2412_i2s_resume(struct snd_soc_dai *dai)
- #endif
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 50693c867e71..1f7eaa919088 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -497,6 +497,7 @@ config SND_SOC_ICS43432
  
- int s3c_i2sv2_register_component(struct device *dev, int id,
--			   struct snd_soc_component_driver *cmp_drv,
-+			   const struct snd_soc_component_driver *cmp_drv,
- 			   struct snd_soc_dai_driver *dai_drv)
- {
- 	struct snd_soc_dai_ops *ops = (struct snd_soc_dai_ops *)dai_drv->ops;
-diff --git a/sound/soc/samsung/s3c-i2s-v2.h b/sound/soc/samsung/s3c-i2s-v2.h
-index 90abab364b49..d0684145ed1f 100644
---- a/sound/soc/samsung/s3c-i2s-v2.h
-+++ b/sound/soc/samsung/s3c-i2s-v2.h
-@@ -101,7 +101,7 @@ extern int s3c_i2sv2_probe(struct snd_soc_dai *dai,
-  * soc core.
-  */
- extern int s3c_i2sv2_register_component(struct device *dev, int id,
--					struct snd_soc_component_driver *cmp_drv,
-+					const struct snd_soc_component_driver *cmp_drv,
- 					struct snd_soc_dai_driver *dai_drv);
+ config SND_SOC_INNO_RK3036
+ 	tristate "Inno codec driver for RK3036 SoC"
++	select REGMAP_MMIO
  
- #endif /* __SND_SOC_S3C24XX_S3C_I2SV2_I2S_H */
+ config SND_SOC_ISABELLE
+         tristate
 -- 
 2.7.0.rc3
