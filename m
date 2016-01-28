@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5616: add the mclk for the codec
-	driver" to the asoc tree
-Date: Thu, 28 Jan 2016 23:51:57 +0100
-Message-ID: <E1aOvPx-00045M-Cc@finisterre>
-References: <1453970618-4383-9-git-send-email-wxt@rock-chips.com>
+Subject: Applied "ASoC: rt5616: add mclk property for rt5616
+	document" to the asoc tree
+Date: Thu, 28 Jan 2016 23:52:00 +0100
+Message-ID: <E1aOvQ0-00046I-0M@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 50CBA2659A4
- for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2016 23:52:11 +0100 (CET)
-In-Reply-To: <1453970618-4383-9-git-send-email-wxt@rock-chips.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7FA8C2659A7
+ for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2016 23:52:12 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5616: add the mclk for the codec driver
+   ASoC: rt5616: add mclk property for rt5616 document
 
 has been applied to the asoc tree at
 
@@ -53,92 +52,39 @@ to this mail.
 Thanks,
 Mark
 
->From 76d3204eaa9364a662f0fe0f075dfe61e6bd14fe Mon Sep 17 00:00:00 2001
+>From dcaee813a64368e09878d0cee931d14c9603e925 Mon Sep 17 00:00:00 2001
 From: Caesar Wang <wxt@rock-chips.com>
-Date: Thu, 28 Jan 2016 16:43:37 +0800
-Subject: [PATCH] ASoC: rt5616: add the mclk for the codec driver
+Date: Thu, 28 Jan 2016 16:43:35 +0800
+Subject: [PATCH] ASoC: rt5616: add mclk property for rt5616 document
 
-This patch adds the code to enable the clock to the CODEC driver
-if it needs the clock enabled.
+This patch add the mclk property for the CODEC driver,
+since sometime the CODEC driver needs the clock enabled.
 
-In some case, We need to claim the clock which is driving the codec
-so that when we enable clock gating, we continue to clock the codec
-when needed.
-
-if mclk provided, to enable and disable the clock source.
+The system clock of ALC5616 can be selected from MCLK,
+That's also make as the codec master clock provider,
 
 Signed-off-by: Caesar Wang <wxt@rock-chips.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5616.c | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+ Documentation/devicetree/bindings/sound/rt5616.txt | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5616.c b/sound/soc/codecs/rt5616.c
-index d4bdf9f..fdca636 100644
---- a/sound/soc/codecs/rt5616.c
-+++ b/sound/soc/codecs/rt5616.c
-@@ -12,6 +12,7 @@
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/init.h>
-+#include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/pm.h>
- #include <linux/i2c.h>
-@@ -144,6 +145,7 @@ struct rt5616_priv {
- 	struct snd_soc_codec *codec;
- 	struct delayed_work patch_work;
- 	struct regmap *regmap;
-+	struct clk *mclk;
+diff --git a/Documentation/devicetree/bindings/sound/rt5616.txt b/Documentation/devicetree/bindings/sound/rt5616.txt
+index efc48c6..e410858 100644
+--- a/Documentation/devicetree/bindings/sound/rt5616.txt
++++ b/Documentation/devicetree/bindings/sound/rt5616.txt
+@@ -8,6 +8,12 @@ Required properties:
  
- 	int sysclk;
- 	int sysclk_src;
-@@ -1159,7 +1161,34 @@ static int rt5616_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
- static int rt5616_set_bias_level(struct snd_soc_codec *codec,
- 				 enum snd_soc_bias_level level)
- {
-+	struct rt5616_priv *rt5616 = snd_soc_codec_get_drvdata(codec);
-+	int ret;
-+
- 	switch (level) {
-+
-+	case SND_SOC_BIAS_ON:
-+		break;
-+
-+	case SND_SOC_BIAS_PREPARE:
-+		/*
-+		 * SND_SOC_BIAS_PREPARE is called while preparing for a
-+		 * transition to ON or away from ON. If current bias_level
-+		 * is SND_SOC_BIAS_ON, then it is preparing for a transition
-+		 * away from ON. Disable the clock in that case, otherwise
-+		 * enable it.
-+		 */
-+		if (IS_ERR(rt5616->mclk))
-+			break;
-+
-+		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_ON) {
-+			clk_disable_unprepare(rt5616->mclk);
-+		} else {
-+			ret = clk_prepare_enable(rt5616->mclk);
-+			if (ret)
-+				return ret;
-+		}
-+		break;
-+
- 	case SND_SOC_BIAS_STANDBY:
- 		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
- 			snd_soc_update_bits(codec, RT5616_PWR_ANLG1,
-@@ -1198,6 +1227,11 @@ static int rt5616_probe(struct snd_soc_codec *codec)
- {
- 	struct rt5616_priv *rt5616 = snd_soc_codec_get_drvdata(codec);
+ - reg : The I2C address of the device.
  
-+	/* Check if MCLK provided */
-+	rt5616->mclk = devm_clk_get(codec->dev, "mclk");
-+	if (PTR_ERR(rt5616->mclk) == -EPROBE_DEFER)
-+		return -EPROBE_DEFER;
++Optional properties:
 +
- 	rt5616->codec = codec;
++- clocks: The phandle of the master clock to the CODEC.
++
++- clock-names: Should be "mclk".
++
+ Pins on the device (for linking into audio routes) for RT5616:
  
- 	return 0;
+   * IN1P
 -- 
 2.6.4
