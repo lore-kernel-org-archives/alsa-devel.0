@@ -1,92 +1,63 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [PATCH 29/31] media: track media device unregister in progress
-Date: Thu, 28 Jan 2016 13:42:35 -0700
-Message-ID: <56AA7D3B.6090603@osg.samsung.com>
-References: <cover.1452105878.git.shuahkh@osg.samsung.com>
- <151cfbe0e59b3d5396951bdcc29666614575f5bc.1452105878.git.shuahkh@osg.samsung.com>
- <20160128150105.06a9a18d@recife.lan> <56AA4A18.8030303@osg.samsung.com>
- <20160128152843.5ce581fa@recife.lan>
+From: Dan O'Donovan <dan@emutex.com>
+Subject: Re: CherryTrail SST firmware limitations query
+Date: Thu, 28 Jan 2016 21:20:57 +0000
+Message-ID: <56AA8639.3030806@emutex.com>
+References: <56A162A1.1070602@emutex.com> <56A1657A.5060600@emutex.com>
+ <20160128162416.GR11130@localhost> <56AA4EA7.6060801@emutex.com>
+ <56AA5872.3020809@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160128152843.5ce581fa@recife.lan>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Cc: tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittga
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bert.emutex.com (bert.emutex.com [91.103.1.109])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7404726596B
+ for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2016 22:21:01 +0100 (CET)
+In-Reply-To: <56AA5872.3020809@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/28/2016 10:28 AM, Mauro Carvalho Chehab wrote:
-> Em Thu, 28 Jan 2016 10:04:24 -0700
-> Shuah Khan <shuahkh@osg.samsung.com> escreveu:
-> 
->> On 01/28/2016 10:01 AM, Mauro Carvalho Chehab wrote:
->>> Em Wed,  6 Jan 2016 13:27:18 -0700
->>> Shuah Khan <shuahkh@osg.samsung.com> escreveu:
->>>   
->>>> Add support to track media device unregister in progress
->>>> state to prevent more than one driver entering unregister.
->>>> This enables fixing the general protection faults while
->>>> snd-usb-audio was cleaning up media resources for pcm
->>>> streams and mixers. In this patch a new interface is added
->>>> to return the unregister in progress state. Subsequent
->>>> patches to snd-usb-audio and au0828-core use this interface
->>>> to avoid entering unregister and attempting to unregister
->>>> entities and remove devnodes while unregister is in progress.
->>>> Media device unregister removes entities and interface nodes.  
->>>
->>> Hmm... isn't the spinlock enough to serialize it? It seems weird the
->>> need of an extra bool here to warrant that this is really serialized.
->>>   
->>
->> The spinlock and check for media_devnode_is_registered(&mdev->devnode)
->> aren't enough to ensure only one driver enters the unregister. 
->>
->> Please
->> note that the devnode isn't marked unregistered until the end in
->> media_device_unregister().
-> 
-> I guess the call to:
-> 	device_remove_file(&mdev->devnode.dev, &dev_attr_model);
-> 
-> IMO, This should be, instead, at media_devnode_unregister().
-> 
-> Then, we can change the logic at media_devnode_unregister() to:
-> 
-> void media_devnode_unregister(struct media_devnode *mdev)
-> {
-> 	mutex_lock(&media_devnode_lock);
-> 
-> 	/* Check if mdev was ever registered at all */
-> 	if (!media_devnode_is_registered(mdev)) {
-> 		mutex_unlock(&media_devnode_lock);
-> 		return;
-> 	}
-> 
-> 	clear_bit(MEDIA_FLAG_REGISTERED, &mdev->flags);
-> 	mutex_unlock(&media_devnode_lock);
-> 	device_remove_file(&mdev->devnode.dev, &dev_attr_model);
-> 	device_unregister(&mdev->dev);
-> }
-> 
-> This sounds enough to avoid device_unregister() or device_remove_file()
-> to be called twice.
-> 
+On 01/28/2016 06:05 PM, Pierre-Louis Bossart wrote:
+>
+>>>> Are there any other limitations that I may need to be aware of in
+>>>> the firmware (or in the SSP back-end driver) when attempting to
+>>>> connect a new codec (TI PCM5122 initially) to SSP0.
+>>> Bigger pole will be getting the firmware. Usually we support I2S and 
+>>> TDM
+>>> modes
+>> Thanks very much for your reply, Vinod!  That probably explains why I'm
+>> seeing clock signals from SSP0 but no audio data.
+>> Can you tell me who I could contact to request SST firmware for CHT with
+>> SSP0 support?
+>
+> This doesn't make sense to me. To the best of my knowledge the 
+> firmware does support SSP0 but in a limited configuration compared to 
+> SSP0. It should work for regular 48kHz audio in I2S mode but not in 
+> TDM mode. If you see clock signals on SSP0 and no data then it's 
+> probably because the DSP routing controls are incorrect.
+> The best fix would be to use SSP2 really to get all the functionality.
+>
+Hi Pierre-Louis,
 
-I can give it a try. There might other problems that could
-result from media device being a devres in this case. The
-last put_device on the usbdev parent device (media device
-is created as devres for this), all device resources get
-released. That might have to be solved in a different way.
+I've configured SSP0 for 48kHz audio in I2S mode, and I think the 
+routing is correct (but would appreciate confirmation):
 
-For now I will see if your solution works.
+[Stream:'Headset Playback' -> 'media1_in'] -> ['media0_out mix 0' -> 
+'media0_out' -> 'pcm0_in'] -> ['codec_out0 mix 0' -> 'codec_out0'] -> 
+[Stream:'ssp0 Tx']
 
-thanks,
--- Shuah
+To see the clocks on SSP0, I found that I had to replace 'SSP_CODEC' (3) 
+with 0 wherever it was used in sound/soc/intel/atom/sst-atom-controls.c
 
--- 
-Shuah Khan
-Sr. Linux Kernel Developer
-Open Source Innovation Group
-Samsung Research America (Silicon Valley)
-shuahkh@osg.samsung.com | (970) 217-8978
+Unfortunately, our board is about to go into mass production so my 
+chances of getting it changed to SSP2 are very slim.  Do you think it 
+might be possible for us to get SSP0 working for I2S audio?
