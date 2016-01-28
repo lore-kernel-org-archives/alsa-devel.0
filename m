@@ -1,61 +1,48 @@
-From: Eric Anholt <eric-WhKQ6XTQaPysTnJN9+BGXg@public.gmane.org>
-Subject: Re: [PATCH V2 2/3] ARM: bcm2835: I2S: use new register-range and clock framework
-Date: Thu, 28 Jan 2016 14:16:37 -0800
-Message-ID: <87powlfiyi.fsf@eliezer.anholt.net>
-References: <1452602149-5875-1-git-send-email-kernel@martin.sperl.org> <1452602149-5875-3-git-send-email-kernel@martin.sperl.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl: select SND_SOC_FSL_SAI or SND_SOC_FSL_SSI
+ depending on SoC type
+Date: Thu, 28 Jan 2016 23:33:52 +0100
+Message-ID: <20160128223352.GB4130@sirena.org.uk>
+References: <1453293038-16032-1-git-send-email-LW@KARO-electronics.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1452602149-5875-3-git-send-email-kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Lee Jones <lee-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="qcHopEYAB45HaUaB"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1453293038-16032-1-git-send-email-LW@KARO-electronics.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Cc: Arnd Bergmann <arnd@arndb.de>, Fabio Estevam <fabio.estevam@freescale.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
---=-=-=
-Content-Type: text/plain
 
-kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org writes:
+--qcHopEYAB45HaUaB
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> From: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
->
-> Since the move to the new clock framework with commit 94cb7f76caa0
-> ("ARM: bcm2835: Switch to using the new clock driver support.")
-> the bcm2835-i2s driver was no longer working.
->
-> This patch fixes the address ranges:
-> * remove the PCM clock register range that is owned by the clockmanager
-> * fix the length, which did not include the last register of this device
->
-> It also adds the required pcm-clock.
->
-> Signed-off-by: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
+On Wed, Jan 20, 2016 at 01:30:38PM +0100, Lothar Wa=DFmann wrote:
 
-Acked-by: Eric Anholt <eric-WhKQ6XTQaPysTnJN9+BGXg@public.gmane.org>
+> -	select SND_SOC_FSL_SSI
+> +	select SND_SOC_FSL_SAI if SOC_IMX6UL
+> +	select SND_SOC_FSL_SSI if SOC_IMX6Q || SOC_IMX6SL || SOC_IMX6SX
 
---=-=-=
+Does this card not work for older i.MXs (which had the same SSI/AUDMUX
+combination as the majority of the i.MX6 family) as well?
+
+--qcHopEYAB45HaUaB
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+Version: GnuPG v2
 
-iQIcBAEBCgAGBQJWqpNFAAoJELXWKTbR/J7o2TsQAImrCMmUg0HPm4RX3RXvhRfI
-BLNjzdpgVM4ZyXX7HtIvB31KV7OmBtMjga0csjB6ybrIqdeql+IhuoV5tCrr+L8c
-STzCx7f9xlLIV4O2xhF6LKwapugaXLFkMsSYZ821YZakhOMyJj0hI1/aqcNFSowy
-UHkRkJo7cFzsBnrJutQFc3MrBOfjvmncl2CfUZVMlFKvs0x2o4UuOO4XpXcU2Z2t
-gBsfy9BIGLem0/uJV0j2BSE7CFG1UUkHqAt6LuzpcYu2up/BQIy+mGRpEo98OsaB
-kAU4PigDHUAyLT/4EBZ6u1KxtmPCmxP/2XfPUhx+uyOFyxXsAdeF0SQCvg6YZVYv
-UrffYPYBmLq1RfV2oVqE6oE1UAwURs5ix8KDAR+nYqzM9HIVlUcr1lRDfP3Oom95
-mb1GbLQn+ByxXL7r+8OE23GmMEK8rvu2Carxgx8jr6OSRQrzlM4uvd9TQ5OSkmzh
-bF5/keO0MQiPtoRlYK3c1vFgbwkJYRSTD47BOYZrkhjXOb0X9SuOCSV2cNfRUk2W
-trPGfuPdURWeWHeLkzwkZ4sLJuIU167L4yMj+6rCWDwgVBcxALMCGX0OU1bmhd/F
-uId1BUMPdnP5IAUG21VJrfROAdiNTggIFjWASE5rt8ZiEgJ2lwPk9GWPB0RPDbCJ
-br+sP5acS8uzBgGTOTYt
-=PQXw
+iQEcBAEBCAAGBQJWqpdOAAoJECTWi3JdVIfQyjcH/1InIXzjMgK8vQ09mvuSgivS
+lLjPGbIU9hQrVGqgyCfv87dJ9u6upmUKUszCQWND3C3R5DRKjiHOb9HTkRTUbdUD
+AmwSH9hiW2WKYoD60zVupv+Jg3alLgQg0M1Hy6XxbFJ0grmh8q5SRi1Ez1H4ARi0
+GGYez7GZhkrpNXz7Ot0bNFuULpL6z4zVr4ANkpuDgryzkRZALZGiYp8bpSXA5Aiy
+qqX2mz7KMaIiIglPsArljZh8uQGb9Jk5f2d1e/QYywS1WKSEVT3b9QLDJGtx4FXC
+a/3VGd7p51R7EpzDxEe/OX8cF5dRKrKTf5FaN163MLwbA3hxODV4N22bhohRFWM=
+=E860
 -----END PGP SIGNATURE-----
---=-=-=--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+--qcHopEYAB45HaUaB--
