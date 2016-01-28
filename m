@@ -1,101 +1,81 @@
-From: Caesar Wang <wxt@rock-chips.com>
-Subject: [PATCH v4 8/9] ASoC: rt5616: add the mclk for the codec driver
-Date: Thu, 28 Jan 2016 16:43:37 +0800
-Message-ID: <1453970618-4383-9-git-send-email-wxt@rock-chips.com>
-References: <1453970618-4383-1-git-send-email-wxt@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1453970618-4383-1-git-send-email-wxt@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org
-Cc: hl@rock-chips.com, jay.xu@rock-chips.com, jeffy.chen@rock-chips.com, linux-rockchip@lists.infradead.org, keescook@google.com, cf@rock-chips.com, sonnyrao@chromium.org, leozwang@google.com, Caesar Wang <wxt@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] amixer: add support for TLV byte control
+	read
+Date: Thu, 28 Jan 2016 14:56:44 +0530
+Message-ID: <20160128092644.GJ11130@localhost>
+References: <1453441612-29902-1-git-send-email-vinod.koul@intel.com>
+ <s5hoace5e75.wl-tiwai@suse.de> <20160122074623.GC11130@localhost>
+ <s5hfuxq593q.wl-tiwai@suse.de> <20160122095648.GD11130@localhost>
+ <s5hegd9sxb3.wl-tiwai@suse.de> <20160127174749.GB11130@localhost>
+ <s5h7fiuoo2r.wl-tiwai@suse.de> <20160128042509.GC11130@localhost>
+ <s5hzivqmewz.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id E4DEB260544
+ for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2016 10:27:55 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hzivqmewz.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds the code to enable the clock to the CODEC driver
-if it needs the clock enabled.
+On Thu, Jan 28, 2016 at 06:49:48AM +0100, Takashi Iwai wrote:
+> > Yes did, but didn't get a clue. tlv seems to be valid before free and points
+> > to right location and contents
+> 
+> Could you show the backtrace?
 
-In some case, We need to claim the clock which is driving the codec
-so that when we enable clock gating, we continue to clock the codec
-when needed.
+676                     if ((err = snd_hctl_elem_tlv_read(elem, tlv, 4096)) < 0) {
+(gdb) n
+677                             error("Control %s element TLV read error: %s\n", card, snd_strerror(err));
+(gdb) p err
+$1 = -14
 
-if mclk provided, to enable and disable the clock source.
+(gdb) n
+amixer: Control hw:0 element TLV read error: Bad address
 
-Signed-off-by: Caesar Wang <wxt@rock-chips.com>
+678                             free(tlv);
+(gdb) p tlv
+$2 = (unsigned int *) 0x625f10
+(gdb) p tlv[0]
+$3 = 4294967295
+(gdb) p tlv[1]
+$4 = 0
+(gdb) backtrace
+#0  show_control (elem=0x625310, level=level@entry=5, space=0x409b01 "  ")
+at amixer.c:678
+#1  0x00000000004066d9 in cset (argc=argc@entry=1, argv=0x7fffffffe530,
+roflag=roflag@entry=1, keep_handle=keep_handle@entry=0) at amixer.c:1184
+#2  0x0000000000404352 in main (argc=<optimized out>, argv=0x7fffffffe518)
+at amixer.c:1863
+(gdb) c
+Continuing.
 
----
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff749e12f in _int_free (av=0x7ffff77dd760 <main_arena>,
+p=<optimized out>, have_lock=0) at malloc.c:3996
+3996    malloc.c: No such file or directory.
+(gdb) backtrace
+#0  0x00007ffff749e12f in _int_free (av=0x7ffff77dd760 <main_arena>,
+p=<optimized out>, have_lock=0) at malloc.c:3996
+#1  0x00000000004063be in show_control (elem=0x625310, level=level@entry=5,
+space=0x409b01 "  ") at amixer.c:678
+#2  0x00000000004066d9 in cset (argc=argc@entry=1, argv=0x7fffffffe530,
+roflag=roflag@entry=1, keep_handle=keep_handle@entry=0) at amixer.c:1184
+#3  0x0000000000404352 in main (argc=<optimized out>, argv=0x7fffffffe518)
+at amixer.c:1863
 
-Changes in v4:
-- AS the previous discussed by them, add the mclk for codec.
-  (https://patchwork.kernel.org/patch/8041001/)
-
- sound/soc/codecs/rt5616.c | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
-
-diff --git a/sound/soc/codecs/rt5616.c b/sound/soc/codecs/rt5616.c
-index d4bdf9f..fdca636 100644
---- a/sound/soc/codecs/rt5616.c
-+++ b/sound/soc/codecs/rt5616.c
-@@ -12,6 +12,7 @@
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/init.h>
-+#include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/pm.h>
- #include <linux/i2c.h>
-@@ -144,6 +145,7 @@ struct rt5616_priv {
- 	struct snd_soc_codec *codec;
- 	struct delayed_work patch_work;
- 	struct regmap *regmap;
-+	struct clk *mclk;
- 
- 	int sysclk;
- 	int sysclk_src;
-@@ -1159,7 +1161,34 @@ static int rt5616_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
- static int rt5616_set_bias_level(struct snd_soc_codec *codec,
- 				 enum snd_soc_bias_level level)
- {
-+	struct rt5616_priv *rt5616 = snd_soc_codec_get_drvdata(codec);
-+	int ret;
-+
- 	switch (level) {
-+
-+	case SND_SOC_BIAS_ON:
-+		break;
-+
-+	case SND_SOC_BIAS_PREPARE:
-+		/*
-+		 * SND_SOC_BIAS_PREPARE is called while preparing for a
-+		 * transition to ON or away from ON. If current bias_level
-+		 * is SND_SOC_BIAS_ON, then it is preparing for a transition
-+		 * away from ON. Disable the clock in that case, otherwise
-+		 * enable it.
-+		 */
-+		if (IS_ERR(rt5616->mclk))
-+			break;
-+
-+		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_ON) {
-+			clk_disable_unprepare(rt5616->mclk);
-+		} else {
-+			ret = clk_prepare_enable(rt5616->mclk);
-+			if (ret)
-+				return ret;
-+		}
-+		break;
-+
- 	case SND_SOC_BIAS_STANDBY:
- 		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
- 			snd_soc_update_bits(codec, RT5616_PWR_ANLG1,
-@@ -1198,6 +1227,11 @@ static int rt5616_probe(struct snd_soc_codec *codec)
- {
- 	struct rt5616_priv *rt5616 = snd_soc_codec_get_drvdata(codec);
- 
-+	/* Check if MCLK provided */
-+	rt5616->mclk = devm_clk_get(codec->dev, "mclk");
-+	if (PTR_ERR(rt5616->mclk) == -EPROBE_DEFER)
-+		return -EPROBE_DEFER;
-+
- 	rt5616->codec = codec;
- 
- 	return 0;
 -- 
-1.9.1
+~Vinod
