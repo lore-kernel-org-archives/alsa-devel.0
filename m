@@ -1,41 +1,103 @@
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] sound: fix SND_PCM_TIMER Kconfig text
-Date: Wed, 27 Jan 2016 18:04:10 -0800
-Message-ID: <56A9771A.1000508@infradead.org>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] amixer: add support for TLV byte control
+	read
+Date: Thu, 28 Jan 2016 09:55:09 +0530
+Message-ID: <20160128042509.GC11130@localhost>
+References: <1453441612-29902-1-git-send-email-vinod.koul@intel.com>
+ <s5hoace5e75.wl-tiwai@suse.de> <20160122074623.GC11130@localhost>
+ <s5hfuxq593q.wl-tiwai@suse.de> <20160122095648.GD11130@localhost>
+ <s5hegd9sxb3.wl-tiwai@suse.de> <20160127174749.GB11130@localhost>
+ <s5h7fiuoo2r.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: moderated for non-subscribers <alsa-devel@alsa-project.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Jie Yang <yang.jie@intel.com>, Takashi Iwai <tiwai@suse.de>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 28FE6260A59
+ for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2016 05:21:16 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5h7fiuoo2r.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+On Wed, Jan 27, 2016 at 07:49:00PM +0100, Takashi Iwai wrote:
+> On Wed, 27 Jan 2016 18:47:52 +0100,
+> Vinod Koul wrote:
+> > 
+> > On Fri, Jan 22, 2016 at 11:50:08AM +0100, Takashi Iwai wrote:
+> > > On Fri, 22 Jan 2016 10:56:48 +0100,
+> > > Vinod Koul wrote:
+> > > > > Hm, it has a check
+> > > > > 
+> > > > > static int snd_ctl_hw_elem_tlv(snd_ctl_t *handle, int op_flag,
+> > > > > 			       unsigned int numid,
+> > > > > 			       unsigned int *tlv, unsigned int tlv_size)
+> > > > > {
+> > > > > 	....
+> > > > > 		if (xtlv->tlv[1] + 2 * sizeof(unsigned int) > tlv_size) {
+> > > > > 			free(xtlv);
+> > > > > 			return -EFAULT;
+> > > > > 		}
+> > > > > 		memcpy(tlv, xtlv->tlv, xtlv->tlv[1] + 2 * sizeof(unsigned int));
+> > > > > 
+> > > > > Do you mean somewhere here triggers a crash?
+> > > > 
+> > > > Yes while it tried to memcpy, in my case 30K sized data to 4K buffer, so I
+> > > > allocated right one and got all the data
+> > > 
+> > > But it has the size check before memcpy()?
+> > 
+> > Okay I had some issues (yet again) so I rebuilt the ubuntu packages and tools and reran
+> > this.
+> > 
+> > I get:
+> > 
+> > $ amixer -c0 cget numid=16
+> > numid=16,iface=MIXER,name='mdl params'
+> >   ; type=BYTES,access=-----RW-,values=30336
+> > amixer: Control hw:0 element TLV read error: Bad address
+> > 
+> > Segmentation fault (core dumped)
+> > 
+> > And the alsa-lib returns an err and we try to free up tlv on error which
+> > should be fine here but fails
+> > 
+> > Why should free cause a failure here (on 1.0.27)
+> > 
+> > On latest lib from git. I get same failure but in alsa-lib when it tries to
+> > free xtlv on failure of this check
+> > 
+> > if (xtlv->tlv[1] + 2 * sizeof(unsigned int) > tlv_size) {
+> >                    free(xtlv);
+> > 
+> > Why would that happen...? What am I missing :(
+> 
+> No idea.  You should check it via gdb.
 
-Fix spelling and typos for SND_PCM_TIMER.
+Yes did, but didn't get a clue. tlv seems to be valid before free and points
+to right location and contents
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jie Yang <yang.jie@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>
----
- sound/core/Kconfig |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> > Also on second thought, even after working around this by setting right size
+> > so that we don't hit failures (this patch), I get my screen spammed by 30K byes so based
+> > on TLV access and bytes type I am thinking to not read and display on cget.
+> > 
+> > We should add new options for these controls ..
+> 
+> As already mentioned, we may handle differently for ctl elements that
+> have no r/w access.  At easiest, just skip tlv read for such an
+> element.
 
---- lnx-45-rc1.orig/sound/core/Kconfig
-+++ lnx-45-rc1/sound/core/Kconfig
-@@ -97,11 +97,11 @@ config SND_PCM_TIMER
- 	bool "PCM timer interface" if EXPERT
- 	default y
- 	help
--	  If you disable this option, pcm timer will be inavailable, so
--	  those stubs used pcm timer (e.g. dmix, dsnoop & co) may work
-+	  If you disable this option, pcm timer will be unavailable, so
-+	  those stubs that use pcm timer (e.g. dmix, dsnoop & co) may work
- 	  incorrectlly.
- 
--	  For some embedded device, we may disable it to reduce memory
-+	  For some embedded devices, we may disable it to reduce memory
- 	  footprint, about 20KB on x86_64 platform.
- 
- config SND_SEQUENCER_OSS
+Yes will send a patch for this :)
+
+-- 
+~Vinod
