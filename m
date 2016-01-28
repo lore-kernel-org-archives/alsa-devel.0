@@ -1,52 +1,108 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl-asoc-card: add cs4271 and cs4272 support
-Date: Thu, 28 Jan 2016 10:24:08 -0800
-Message-ID: <20160128182407.GA23971@Asurada-Nvidia>
-References: <1453978355-23620-1-git-send-email-eu@felipetonello.com>
+From: Shuah Khan <shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
+Subject: Re: [PATCH 13/31] media: au0828 fix au0828_create_media_graph()
+ entity checks
+Date: Thu, 28 Jan 2016 11:57:11 -0700
+Message-ID: <56AA6487.5040300@osg.samsung.com>
+References: <cover.1452105878.git.shuahkh@osg.samsung.com>
+ <ab77ed92dafb05b262a33fcd827f35ad8be3d619.1452105878.git.shuahkh@osg.samsung.com>
+ <20160128133728.5fa54fa3@recife.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1453978355-23620-1-git-send-email-eu@felipetonello.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Felipe F. Tonello" <eu@felipetonello.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20160128133728.5fa54fa3-+RedX5hVuTR+urZeOPWqwQ@public.gmane.org>
+Sender: linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mauro Carvalho Chehab <mchehab-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
+Cc: tiwai-IBi9RG/b67k@public.gmane.org, clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org, hans.verkuil-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org, laurent.pinchart-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org, sakari.ailus-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, javier-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org, pawel-FA/gS7QP4orQT0dZR+AlfA@public.gmane.org, m.szyprowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, kyungmin.park-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, arnd-r2nGTMty4D4@public.gmane.org, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, tvboxspy-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, crope-X3B1VOXEql0@public.gmane.org, ruchandani.tina-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, corbet-T1hC0tSOHrs@public.gmane.org, chehabrafael-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, k.kozlowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, stefanr-MtYdepGKPcBMYopoZt5u/LNAH6kLmebB@public.gmane.org, inki.dae-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, jh1009.sung-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, elfring-Rn4VEauK+AKRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, prabhakar.csengg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, sw0312.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, ricardo.ribalda-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, labbott-rxtnV0ftBwyoClj4AeEUq9i2O/JbrIOy@public.gmane.org, pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, ricard.wanderlof-VrBV9hrLPhE@public.gmane.org, julian-SZMMDGyaqes@public.gmane.org, takamichiho-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, dominic.sacre-Mmb7MZpHnFY@public.gmane.org, misterpib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org, gtmkramer-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org, normalperson-rMlxZR9MS24@public.gmane.org, joe-amhYAVlgbXj10XsdtD+oqA@public.gmane.org, linuxbugs@vittga
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 28, 2016 at 10:52:35AM +0000, Felipe F. Tonello wrote:
-> add cs4271 and cs42727 support for fsl-asoc-card
+On 01/28/2016 08:37 AM, Mauro Carvalho Chehab wrote:
+> Em Wed,  6 Jan 2016 13:27:02 -0700
+> Shuah Khan <shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org> escreveu:
 > 
-> Signed-off-by: Felipe F. Tonello <eu@felipetonello.com>
-> ---
->  .../devicetree/bindings/sound/imx-audio-cs427x.txt | 47 ++++++++++++++++++++++
->  sound/soc/fsl/Kconfig                              |  4 +-
->  sound/soc/fsl/fsl-asoc-card.c                      |  7 ++++
->  3 files changed, 56 insertions(+), 2 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-cs427x.txt
+>> au0828_create_media_graph() doesn't do any checks to determine,
+>> if vbi_dev, vdev, and input entities have been registered prior
+>> to creating pad links. Checking graph_obj.mdev field works as
+>> the graph_obj.mdev field gets initialized in the entity register
+>> interface. Fix it to check graph_obj.mdev field before creating
+>> pad links.
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/imx-audio-cs427x.txt b/Documentation/devicetree/bindings/sound/imx-audio-cs427x.txt
-> new file mode 100644
-> index 000000000000..295f60b19418
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/imx-audio-cs427x.txt
-> @@ -0,0 +1,47 @@
-> +Freescale i.MX audio complex with CS4271 or CS4272 codec
+>>
+>> Signed-off-by: Shuah Khan <shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
+>> ---
+>>  drivers/media/usb/au0828/au0828-core.c | 27 +++++++++++++++++----------
+>>  1 file changed, 17 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
+>> index f46fb43..8ef7c71 100644
+>> --- a/drivers/media/usb/au0828/au0828-core.c
+>> +++ b/drivers/media/usb/au0828/au0828-core.c
+>> @@ -291,20 +291,27 @@ static int au0828_create_media_graph(struct au0828_dev *dev)
+>>  		if (ret)
+>>  			return ret;
+>>  	}
+>> -	ret = media_create_pad_link(decoder, AU8522_PAD_VID_OUT,
+>> -				    &dev->vdev.entity, 0,
+>> -				    MEDIA_LNK_FL_ENABLED);
+>> -	if (ret)
+>> -		return ret;
+>> -	ret = media_create_pad_link(decoder, AU8522_PAD_VBI_OUT,
+>> -				    &dev->vbi_dev.entity, 0,
+>> -				    MEDIA_LNK_FL_ENABLED);
+>> -	if (ret)
+>> -		return ret;
+>> +	if (dev->vdev.entity.graph_obj.mdev) {
+>> +		ret = media_create_pad_link(decoder, AU8522_PAD_VID_OUT,
+>> +					    &dev->vdev.entity, 0,
+>> +					    MEDIA_LNK_FL_ENABLED);
+>> +		if (ret)
+>> +			return ret;
+>> +	}
+> 
+> Those new if() doesn't look right. We can't continue if the entities
+> weren't registered, as the graph would have troubles. The logic should
+> ensure that the entities will always be created before running 
+> au0828_create_media_graph(). If this is not the case, some async
+> logic is needed to ensure that.
 
-I think it could be better to insert these into the fsl-asoc-card.txt
-without those redundant property descriptions. At least it should be
-added to the compatible list. And you may add a comment in (...) to
-describe that it supports both 4271 and 4272.
+There have been some changes in au0828 media init and
+register sequence in 4.5-rc1. wau0828 does its graph
+creation before it registers media_device.
 
-> +  - mux-int-port	: The internal port of the i.MX audio muxer (AUDMUX)
-> +
-> +  - mux-ext-port	: The external port of the i.MX audio muxer
-> +
-> +Note: The AUDMUX port numbering should start at 1, which is consistent with
-> +hardware manual.
+I needed these checks before this above. It looks
+like I might have simply rebased my patch over
+without taking this change into account. I will
+try without these checks.
 
-These two properties are missing in the fsl-asoc-card binding docs.
-So it could be nice to have them as well. But they should be optional
-unless SSI is selected as a CPU DAI.
+Async method is already in place for snd-usb-audio
+part of the graph. Please see patch 20 in the series.
 
-Thanks
-Nicolin
+thanks,
+-- Shuah
+
+> 
+>> +	if (dev->vbi_dev.entity.graph_obj.mdev) {
+>> +		ret = media_create_pad_link(decoder, AU8522_PAD_VBI_OUT,
+>> +					    &dev->vbi_dev.entity, 0,
+>> +					    MEDIA_LNK_FL_ENABLED);
+>> +		if (ret)
+>> +			return ret;
+>> +	}
+>>  
+>>  	for (i = 0; i < AU0828_MAX_INPUT; i++) {
+>>  		struct media_entity *ent = &dev->input_ent[i];
+>>  
+>> +		if (!ent->graph_obj.mdev)
+>> +			continue;
+>> +
+>>  		if (AUVI_INPUT(i).type == AU0828_VMUX_UNDEFINED)
+>>  			break;
+>>  
+
+
+-- 
+Shuah Khan
+Sr. Linux Kernel Developer
+Open Source Innovation Group
+Samsung Research America (Silicon Valley)
+shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org | (970) 217-8978
