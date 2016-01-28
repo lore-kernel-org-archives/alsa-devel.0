@@ -1,22 +1,14 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] amixer: add support for TLV byte control
-	read
-Date: Thu, 28 Jan 2016 09:55:09 +0530
-Message-ID: <20160128042509.GC11130@localhost>
-References: <1453441612-29902-1-git-send-email-vinod.koul@intel.com>
- <s5hoace5e75.wl-tiwai@suse.de> <20160122074623.GC11130@localhost>
- <s5hfuxq593q.wl-tiwai@suse.de> <20160122095648.GD11130@localhost>
- <s5hegd9sxb3.wl-tiwai@suse.de> <20160127174749.GB11130@localhost>
- <s5h7fiuoo2r.wl-tiwai@suse.de>
+Subject: [PATCH v2] amixer: skip showing asoc tlv byte controls
+Date: Thu, 28 Jan 2016 10:19:42 +0530
+Message-ID: <1453956582-27254-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 28FE6260A59
- for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2016 05:21:16 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5h7fiuoo2r.wl-tiwai@suse.de>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 77FC3260A59
+ for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2016 05:45:53 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,78 +18,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 27, 2016 at 07:49:00PM +0100, Takashi Iwai wrote:
-> On Wed, 27 Jan 2016 18:47:52 +0100,
-> Vinod Koul wrote:
-> > 
-> > On Fri, Jan 22, 2016 at 11:50:08AM +0100, Takashi Iwai wrote:
-> > > On Fri, 22 Jan 2016 10:56:48 +0100,
-> > > Vinod Koul wrote:
-> > > > > Hm, it has a check
-> > > > > 
-> > > > > static int snd_ctl_hw_elem_tlv(snd_ctl_t *handle, int op_flag,
-> > > > > 			       unsigned int numid,
-> > > > > 			       unsigned int *tlv, unsigned int tlv_size)
-> > > > > {
-> > > > > 	....
-> > > > > 		if (xtlv->tlv[1] + 2 * sizeof(unsigned int) > tlv_size) {
-> > > > > 			free(xtlv);
-> > > > > 			return -EFAULT;
-> > > > > 		}
-> > > > > 		memcpy(tlv, xtlv->tlv, xtlv->tlv[1] + 2 * sizeof(unsigned int));
-> > > > > 
-> > > > > Do you mean somewhere here triggers a crash?
-> > > > 
-> > > > Yes while it tried to memcpy, in my case 30K sized data to 4K buffer, so I
-> > > > allocated right one and got all the data
-> > > 
-> > > But it has the size check before memcpy()?
-> > 
-> > Okay I had some issues (yet again) so I rebuilt the ubuntu packages and tools and reran
-> > this.
-> > 
-> > I get:
-> > 
-> > $ amixer -c0 cget numid=16
-> > numid=16,iface=MIXER,name='mdl params'
-> >   ; type=BYTES,access=-----RW-,values=30336
-> > amixer: Control hw:0 element TLV read error: Bad address
-> > 
-> > Segmentation fault (core dumped)
-> > 
-> > And the alsa-lib returns an err and we try to free up tlv on error which
-> > should be fine here but fails
-> > 
-> > Why should free cause a failure here (on 1.0.27)
-> > 
-> > On latest lib from git. I get same failure but in alsa-lib when it tries to
-> > free xtlv on failure of this check
-> > 
-> > if (xtlv->tlv[1] + 2 * sizeof(unsigned int) > tlv_size) {
-> >                    free(xtlv);
-> > 
-> > Why would that happen...? What am I missing :(
-> 
-> No idea.  You should check it via gdb.
+ASoC TLV Byte controls are very large size controls so we should add new
+options for these. So skip dumping contents for these.
 
-Yes did, but didn't get a clue. tlv seems to be valid before free and points
-to right location and contents
+$amixer -c0 cget numid=16
+numid=16,iface=MIXER,name='mdl params'
+  ; type=BYTES,access=-----RW-,values=30336
+  : ASoC TLV Byte control, skipping bytes dump
 
-> > Also on second thought, even after working around this by setting right size
-> > so that we don't hit failures (this patch), I get my screen spammed by 30K byes so based
-> > on TLV access and bytes type I am thinking to not read and display on cget.
-> > 
-> > We should add new options for these controls ..
-> 
-> As already mentioned, we may handle differently for ctl elements that
-> have no r/w access.  At easiest, just skip tlv read for such an
-> element.
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ amixer/amixer.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Yes will send a patch for this :)
-
+diff --git a/amixer/amixer.c b/amixer/amixer.c
+index db1849333da3..9ae75bfa3632 100644
+--- a/amixer/amixer.c
++++ b/amixer/amixer.c
+@@ -682,6 +682,12 @@ static int show_control(const char *space, snd_hctl_elem_t *elem,
+ 	      __skip_read:
+ 		if (!snd_ctl_elem_info_is_tlv_readable(info))
+ 			goto __skip_tlv;
++		/* skip show for ASoC TLV Byte controls */
++		if (type == SND_CTL_ELEM_TYPE_BYTES) {
++			printf("%s: ASoC TLV Byte control, skipping bytes dump\n", space);
++			goto __skip_tlv;
++		}
++
+ 		tlv = malloc(4096);
+ 		if ((err = snd_hctl_elem_tlv_read(elem, tlv, 4096)) < 0) {
+ 			error("Control %s element TLV read error: %s\n", card, snd_strerror(err));
 -- 
-~Vinod
+1.9.1
