@@ -1,45 +1,56 @@
-From: Mauro Carvalho Chehab <mchehab-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
-Subject: Re: [PATCH 25/31] media: au0828 fix to not call
- media_device_unregister_entity_notify()
-Date: Thu, 28 Jan 2016 14:45:46 -0200
-Message-ID: <20160128144546.26eb3c4b@recife.lan>
-References: <cover.1452105878.git.shuahkh@osg.samsung.com>
-	<19782c8250ea1297271506e6558c089d4b25e026.1452105878.git.shuahkh@osg.samsung.com>
+From: Damien Horsley <Damien.Horsley@imgtec.com>
+Subject: [PATCH] ASoC: pcm3168a: Call clk_set_rate in
+	pcm3168a_set_dai_sysclk
+Date: Thu, 28 Jan 2016 16:54:20 +0000
+Message-ID: <1454000060-8407-1-git-send-email-Damien.Horsley@imgtec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <19782c8250ea1297271506e6558c089d4b25e026.1452105878.git.shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
-Sender: linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Shuah Khan <shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
-Cc: tiwai-IBi9RG/b67k@public.gmane.org, clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org, hans.verkuil-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org, laurent.pinchart-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org, sakari.ailus-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, javier-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org, pawel-FA/gS7QP4orQT0dZR+AlfA@public.gmane.org, m.szyprowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, kyungmin.park-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, arnd-r2nGTMty4D4@public.gmane.org, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, tvboxspy-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, crope-X3B1VOXEql0@public.gmane.org, ruchandani.tina-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, corbet-T1hC0tSOHrs@public.gmane.org, chehabrafael-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, k.kozlowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, stefanr-MtYdepGKPcBMYopoZt5u/LNAH6kLmebB@public.gmane.org, inki.dae-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, jh1009.sung-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, elfring-Rn4VEauK+AKRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, prabhakar.csengg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, sw0312.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, ricardo.ribalda-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, labbott-rxtnV0ftBwyoClj4AeEUq9i2O/JbrIOy@public.gmane.org, pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, ricard.wanderlof-VrBV9hrLPhE@public.gmane.org, julian-SZMMDGyaqes@public.gmane.org, takamichiho-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, dominic.sacre-Mmb7MZpHnFY@public.gmane.org, misterpib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org, gtmkramer-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org, normalperson-rMlxZR9MS24@public.gmane.org, joe-amhYAVlgbXj10XsdtD+oqA@public.gmane.org, linuxbugs@vittga
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id D19A126588B
+ for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2016 17:55:05 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, "Damien.Horsley" <Damien.Horsley@imgtec.com>
 List-Id: alsa-devel@alsa-project.org
 
-Em Wed,  6 Jan 2016 14:01:54 -0700
-Shuah Khan <shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org> escreveu:
+From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
 
-> entity_notify handlers are removed from media_device_unregister().
-> There is no need to call media_device_unregister_entity_notify()
-> to do that right before calling media_device_unregister().
+Call clk_set_rate in pcm3168a_set_dai_sysclk
 
-Please merge with the patch that added it.
+Signed-off-by: Damien.Horsley <Damien.Horsley@imgtec.com>
+---
+ sound/soc/codecs/pcm3168a.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-> 
-> Signed-off-by: Shuah Khan <shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
-> ---
->  drivers/media/usb/au0828/au0828-core.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
-> index 9497ad1..722e073 100644
-> --- a/drivers/media/usb/au0828/au0828-core.c
-> +++ b/drivers/media/usb/au0828/au0828-core.c
-> @@ -137,8 +137,6 @@ static void au0828_unregister_media_device(struct au0828_dev *dev)
->  #ifdef CONFIG_MEDIA_CONTROLLER
->  	if (dev->media_dev &&
->  		media_devnode_is_registered(&dev->media_dev->devnode)) {
-> -		media_device_unregister_entity_notify(dev->media_dev,
-> -						      &dev->entity_notify);
->  		media_device_unregister(dev->media_dev);
->  		media_device_cleanup(dev->media_dev);
->  		dev->media_dev = NULL;
+diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
+index 44b268a..0c7248a 100644
+--- a/sound/soc/codecs/pcm3168a.c
++++ b/sound/soc/codecs/pcm3168a.c
+@@ -299,10 +299,15 @@ static int pcm3168a_set_dai_sysclk(struct snd_soc_dai *dai,
+ 				  int clk_id, unsigned int freq, int dir)
+ {
+ 	struct pcm3168a_priv *pcm3168a = snd_soc_codec_get_drvdata(dai->codec);
++	int ret;
+ 
+ 	if (freq > PCM1368A_MAX_SYSCLK)
+ 		return -EINVAL;
+ 
++	ret = clk_set_rate(pcm3168a->scki, freq);
++	if (ret)
++		return ret;
++
+ 	pcm3168a->sysclk = freq;
+ 
+ 	return 0;
+-- 
+2.1.4
