@@ -1,90 +1,36 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5616: add mclk property for rt5616
-	document" to the asoc tree
-Date: Thu, 28 Jan 2016 23:52:00 +0100
-Message-ID: <E1aOvQ0-00046I-0M@finisterre>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl: select SND_SOC_FSL_SAI or SND_SOC_FSL_SSI
+ depending on SoC type
+Date: Thu, 28 Jan 2016 15:08:47 -0800
+Message-ID: <20160128230846.GA32388@Asurada-Nvidia>
+References: <1453293038-16032-1-git-send-email-LW@KARO-electronics.de>
+ <20160128223352.GB4130@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7FA8C2659A7
- for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2016 23:52:12 +0100 (CET)
-In-Reply-To: 
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Caesar Wang <wxt@rock-chips.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20160128223352.GB4130@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>, Mark Brown <broonie@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Fabio Estevam <fabio.estevam@freescale.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Thu, Jan 28, 2016 at 11:33:52PM +0100, Mark Brown wrote:
+> On Wed, Jan 20, 2016 at 01:30:38PM +0100, Lothar Wa=DFmann wrote:
+>=20
+> > -	select SND_SOC_FSL_SSI
+> > +	select SND_SOC_FSL_SAI if SOC_IMX6UL
+> > +	select SND_SOC_FSL_SSI if SOC_IMX6Q || SOC_IMX6SL || SOC_IMX6SX
+>=20
+> Does this card not work for older i.MXs (which had the same SSI/AUDMU=
+X
+> combination as the majority of the i.MX6 family) as well?
 
-   ASoC: rt5616: add mclk property for rt5616 document
+It's widely used in older i.MXs according to their DTS files. So
+it should be safer to just leave SSI over here.
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From dcaee813a64368e09878d0cee931d14c9603e925 Mon Sep 17 00:00:00 2001
-From: Caesar Wang <wxt@rock-chips.com>
-Date: Thu, 28 Jan 2016 16:43:35 +0800
-Subject: [PATCH] ASoC: rt5616: add mclk property for rt5616 document
-
-This patch add the mclk property for the CODEC driver,
-since sometime the CODEC driver needs the clock enabled.
-
-The system clock of ALC5616 can be selected from MCLK,
-That's also make as the codec master clock provider,
-
-Signed-off-by: Caesar Wang <wxt@rock-chips.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- Documentation/devicetree/bindings/sound/rt5616.txt | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/rt5616.txt b/Documentation/devicetree/bindings/sound/rt5616.txt
-index efc48c6..e410858 100644
---- a/Documentation/devicetree/bindings/sound/rt5616.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5616.txt
-@@ -8,6 +8,12 @@ Required properties:
- 
- - reg : The I2C address of the device.
- 
-+Optional properties:
-+
-+- clocks: The phandle of the master clock to the CODEC.
-+
-+- clock-names: Should be "mclk".
-+
- Pins on the device (for linking into audio routes) for RT5616:
- 
-   * IN1P
--- 
-2.6.4
+And I actually doubt the feasibility of running this driver with
+i.MX6UL as there might not be an AUDMUX on i.MX6UL since it does
+not have SSI any more while the driver always touches the address
+space of AUDMUX which may not exist on i.MX6UL.
