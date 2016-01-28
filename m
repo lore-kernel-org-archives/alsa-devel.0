@@ -1,67 +1,158 @@
-From: Dan O'Donovan <dan@emutex.com>
-Subject: Re: CherryTrail SST firmware limitations query
-Date: Thu, 28 Jan 2016 17:23:51 +0000
-Message-ID: <56AA4EA7.6060801@emutex.com>
-References: <56A162A1.1070602@emutex.com> <56A1657A.5060600@emutex.com>
- <20160128162416.GR11130@localhost>
+From: Mauro Carvalho Chehab <mchehab-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
+Subject: Re: [PATCH 29/31] media: track media device unregister in progress
+Date: Thu, 28 Jan 2016 15:28:43 -0200
+Message-ID: <20160128152843.5ce581fa@recife.lan>
+References: <cover.1452105878.git.shuahkh@osg.samsung.com>
+	<151cfbe0e59b3d5396951bdcc29666614575f5bc.1452105878.git.shuahkh@osg.samsung.com>
+	<20160128150105.06a9a18d@recife.lan>
+	<56AA4A18.8030303@osg.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bert.emutex.com (bert.emutex.com [91.103.1.109])
- by alsa0.perex.cz (Postfix) with ESMTP id C7CCC2658CE
- for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2016 18:23:52 +0100 (CET)
-In-Reply-To: <20160128162416.GR11130@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <56AA4A18.8030303-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
+Sender: linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Shuah Khan <shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
+Cc: tiwai-IBi9RG/b67k@public.gmane.org, clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org, hans.verkuil-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org, laurent.pinchart-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org, sakari.ailus-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, javier-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org, pawel-FA/gS7QP4orQT0dZR+AlfA@public.gmane.org, m.szyprowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, kyungmin.park-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, arnd-r2nGTMty4D4@public.gmane.org, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, tvboxspy-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, crope-X3B1VOXEql0@public.gmane.org, ruchandani.tina-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, corbet-T1hC0tSOHrs@public.gmane.org, chehabrafael-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, k.kozlowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, stefanr-MtYdepGKPcBMYopoZt5u/LNAH6kLmebB@public.gmane.org, inki.dae-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, jh1009.sung-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, elfring-Rn4VEauK+AKRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, prabhakar.csengg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, sw0312.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, ricardo.ribalda-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, labbott-rxtnV0ftBwyoClj4AeEUq9i2O/JbrIOy@public.gmane.org, pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, ricard.wanderlof-VrBV9hrLPhE@public.gmane.org, julian-SZMMDGyaqes@public.gmane.org, takamichiho-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, dominic.sacre-Mmb7MZpHnFY@public.gmane.org, misterpib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org, gtmkramer-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org, normalperson-rMlxZR9MS24@public.gmane.org, joe-amhYAVlgbXj10XsdtD+oqA@public.gmane.org, linuxbugs@vittga
 List-Id: alsa-devel@alsa-project.org
 
-On 01/28/2016 04:24 PM, Vinod Koul wrote:
-> On Thu, Jan 21, 2016 at 11:10:50PM +0000, Dan O'Donovan wrote:
->> (Sorry, re-sending as I wasn't subscribed to the alsa-devel mailing
->> list on my previous attempt)
->>
->> Hi Vinod
->>
->> I am currently attempting to use the SSP0 port on an Intel X5-Z8300
->> SoC (Cherry Trail) with a new codec.
->>
->> I have seen that you have committed SST firmware 'fw_sst_22a8.bin'
->> and related SST audio soc drivers in the past, so I hope you don't
->> mind if I ask you some questions about it here.
->>
->> Primarily, I am wondering if there are any limitations imposed by
->> that firmware binary that I need to be aware of. I haven't been able
->> to find much information about what this firmware does or doesn't
->> support.
-> That binary is not for CHT. Each Bin is specfic to a platform. I have
-> the BYT and BSW versions, but not CHT
+Em Thu, 28 Jan 2016 10:04:24 -0700
+Shuah Khan <shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org> escreveu:
+
+> On 01/28/2016 10:01 AM, Mauro Carvalho Chehab wrote:
+> > Em Wed,  6 Jan 2016 13:27:18 -0700
+> > Shuah Khan <shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org> escreveu:
+> >   
+> >> Add support to track media device unregister in progress
+> >> state to prevent more than one driver entering unregister.
+> >> This enables fixing the general protection faults while
+> >> snd-usb-audio was cleaning up media resources for pcm
+> >> streams and mixers. In this patch a new interface is added
+> >> to return the unregister in progress state. Subsequent
+> >> patches to snd-usb-audio and au0828-core use this interface
+> >> to avoid entering unregister and attempting to unregister
+> >> entities and remove devnodes while unregister is in progress.
+> >> Media device unregister removes entities and interface nodes.  
+> > 
+> > Hmm... isn't the spinlock enough to serialize it? It seems weird the
+> > need of an extra bool here to warrant that this is really serialized.
+> >   
+> 
+> The spinlock and check for media_devnode_is_registered(&mdev->devnode)
+> aren't enough to ensure only one driver enters the unregister. 
 >
->> For example, existing CHT SST machine drivers suggest that the PCM
->> bit clock is fixed at 19.2MHz.
-> Yes, the MCLK will be 19.2 here
->
->> Also, I am wondering if all SSP ports on the SoC are supported by
->> that firmware, or if it is limited to just SSP2?
-> SSP2, for SSP0 we need to get a new version
->
->> Are there any other limitations that I may need to be aware of in
->> the firmware (or in the SSP back-end driver) when attempting to
->> connect a new codec (TI PCM5122 initially) to SSP0.
-> Bigger pole will be getting the firmware. Usually we support I2S and TDM
-> modes
-Thanks very much for your reply, Vinod!  That probably explains why I'm 
-seeing clock signals from SSP0 but no audio data.
-Can you tell me who I could contact to request SST firmware for CHT with 
-SSP0 support?
->
-> HTH
+> Please
+> note that the devnode isn't marked unregistered until the end in
+> media_device_unregister().
+
+I guess the call to:
+	device_remove_file(&mdev->devnode.dev, &dev_attr_model);
+
+IMO, This should be, instead, at media_devnode_unregister().
+
+Then, we can change the logic at media_devnode_unregister() to:
+
+void media_devnode_unregister(struct media_devnode *mdev)
+{
+	mutex_lock(&media_devnode_lock);
+
+	/* Check if mdev was ever registered at all */
+	if (!media_devnode_is_registered(mdev)) {
+		mutex_unlock(&media_devnode_lock);
+		return;
+	}
+
+	clear_bit(MEDIA_FLAG_REGISTERED, &mdev->flags);
+	mutex_unlock(&media_devnode_lock);
+	device_remove_file(&mdev->devnode.dev, &dev_attr_model);
+	device_unregister(&mdev->dev);
+}
+
+This sounds enough to avoid device_unregister() or device_remove_file()
+to be called twice.
+
+> 
+> 
+> >>
+> >> Signed-off-by: Shuah Khan <shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
+> >> ---
+> >>  drivers/media/media-device.c |  5 ++++-
+> >>  include/media/media-device.h | 17 +++++++++++++++++
+> >>  2 files changed, 21 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
+> >> index 20c85a9..1bb9a5f 100644
+> >> --- a/drivers/media/media-device.c
+> >> +++ b/drivers/media/media-device.c
+> >> @@ -749,10 +749,13 @@ void media_device_unregister(struct media_device *mdev)
+> >>  	spin_lock(&mdev->lock);
+> >>  
+> >>  	/* Check if mdev was ever registered at all */
+> >> -	if (!media_devnode_is_registered(&mdev->devnode)) {
+> >> +	/* check if unregister is in progress */
+> >> +	if (!media_devnode_is_registered(&mdev->devnode) ||
+> >> +	    mdev->unregister_in_progress) {
+> >>  		spin_unlock(&mdev->lock);
+> >>  		return;
+> >>  	}
+> >> +	mdev->unregister_in_progress = true;
+> >>  
+> >>  	/* Remove all entities from the media device */
+> >>  	list_for_each_entry_safe(entity, next, &mdev->entities, graph_obj.list)
+> >> diff --git a/include/media/media-device.h b/include/media/media-device.h
+> >> index 04b6c2e..0807292 100644
+> >> --- a/include/media/media-device.h
+> >> +++ b/include/media/media-device.h
+> >> @@ -332,6 +332,10 @@ struct media_device {
+> >>  	spinlock_t lock;
+> >>  	/* Serializes graph operations. */
+> >>  	struct mutex graph_mutex;
+> >> +	/* Tracks unregister in progress state to prevent
+> >> +	 * more than one driver entering unregister
+> >> +	*/
+> >> +	bool unregister_in_progress;
+> >>  
+> >>  	/* Handlers to find source entity for the sink entity and
+> >>  	 * check if it is available, and activate the link using
+> >> @@ -365,6 +369,7 @@ struct media_device {
+> >>  /* media_devnode to media_device */
+> >>  #define to_media_device(node) container_of(node, struct media_device, devnode)
+> >>  
+> >> +
+> >>  /**
+> >>   * media_entity_enum_init - Initialise an entity enumeration
+> >>   *
+> >> @@ -553,6 +558,12 @@ struct media_device *media_device_get_devres(struct device *dev);
+> >>   * @dev: pointer to struct &device.
+> >>   */
+> >>  struct media_device *media_device_find_devres(struct device *dev);
+> >> +/* return unregister in progress state */
+> >> +static inline bool media_device_is_unregister_in_progress(
+> >> +					struct media_device *mdev)
+> >> +{
+> >> +	return mdev->unregister_in_progress;
+> >> +}
+> >>  
+> >>  /* Iterate over all entities. */
+> >>  #define media_device_for_each_entity(entity, mdev)			\
+> >> @@ -569,6 +580,7 @@ struct media_device *media_device_find_devres(struct device *dev);
+> >>  /* Iterate over all links. */
+> >>  #define media_device_for_each_link(link, mdev)			\
+> >>  	list_for_each_entry(link, &(mdev)->links, graph_obj.list)
+> >> +
+> >>  #else
+> >>  static inline int media_device_register(struct media_device *mdev)
+> >>  {
+> >> @@ -604,5 +616,10 @@ static inline struct media_device *media_device_find_devres(struct device *dev)
+> >>  {
+> >>  	return NULL;
+> >>  }
+> >> +static inline bool media_device_is_unregister_in_progress(
+> >> +					struct media_device *mdev)
+> >> +{
+> >> +	return false;
+> >> +}
+> >>  #endif /* CONFIG_MEDIA_CONTROLLER */
+> >>  #endif  
+> 
+> 
