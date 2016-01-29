@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5616: Add support sample rate to
-	192KHz" to the asoc tree
-Date: Fri, 29 Jan 2016 12:40:45 +0100
-Message-ID: <E1aP7Px-0006xf-FE@finisterre>
-References: <1454064278-5791-1-git-send-email-zhengxing@rock-chips.com>
+From: libin.yang@linux.intel.com
+Subject: [PATCH] ALSA: hda - disable dynamic clock gating on
+	Broxton before reset
+Date: Fri, 29 Jan 2016 20:39:09 +0800
+Message-ID: <1454071149-15712-1-git-send-email-libin.yang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 68A4D265D7A
- for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2016 12:40:59 +0100 (CET)
-In-Reply-To: <1454064278-5791-1-git-send-email-zhengxing@rock-chips.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id A33F626047B
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2016 13:42:54 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +19,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Xing Zheng <zhengxing@rock-chips.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: libin.yang@intel.com, mengdong.lin@intel.com, Libin Yang <libin.yang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+From: Libin Yang <libin.yang@linux.intel.com>
 
-   ASoC: rt5616: Add support sample rate to 192KHz
+On Broxton, to make sure the reset controller works properly,
+MISCBDCGE bit (bit 6) in CGCTL (0x48) of PCI configuration space
+need be cleared before reset and set back to 1 after reset.
+Otherwise, it may prevent the CORB/RIRB logic from being reset.
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 4e26ad80cbd3a6b0d606201892e81a9a9c6864ce Mon Sep 17 00:00:00 2001
-From: Xing Zheng <zhengxing@rock-chips.com>
-Date: Fri, 29 Jan 2016 01:47:12 +0000
-Subject: [PATCH] ASoC: rt5616: Add support sample rate to 192KHz
-
-Reference the TRM, the ALC5616 support one 24bit/8KHz ~ 192KHz
-I2S/PCM Interface for stereo DAC and stereo ADC.
-
-Signed-off-by: Xing Zheng <zhengxing@rock-chips.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
 ---
- sound/soc/codecs/rt5616.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/hda_intel.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5616.c b/sound/soc/codecs/rt5616.c
-index fdca636..3704d07 100644
---- a/sound/soc/codecs/rt5616.c
-+++ b/sound/soc/codecs/rt5616.c
-@@ -1261,7 +1261,7 @@ static int rt5616_resume(struct snd_soc_codec *codec)
- #define rt5616_resume NULL
- #endif
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index aeaa9a5..12c5442 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -90,6 +90,8 @@ enum {
+ #define NVIDIA_HDA_ENABLE_COHBIT      0x01
  
--#define RT5616_STEREO_RATES SNDRV_PCM_RATE_8000_96000
-+#define RT5616_STEREO_RATES SNDRV_PCM_RATE_8000_192000
- #define RT5616_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
- 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
+ /* Defines for Intel SCH HDA snoop control */
++#define INTEL_HDA_CGCTL	 0x48
++#define INTEL_HDA_CGCTL_MISCBDCGE        (0x1 << 6)
+ #define INTEL_SCH_HDA_DEVC      0x78
+ #define INTEL_SCH_HDA_DEVC_NOSNOOP       (0x1<<11)
+ 
+@@ -536,10 +538,21 @@ static void hda_intel_init_chip(struct azx *chip, bool full_reset)
+ {
+ 	struct hdac_bus *bus = azx_bus(chip);
+ 	struct pci_dev *pci = chip->pci;
++	u32 val;
+ 
+ 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
+ 		snd_hdac_set_codec_wakeup(bus, true);
++	if (IS_BROXTON(pci)) {
++		pci_read_config_dword(pci, INTEL_HDA_CGCTL, &val);
++		val = val & (~(INTEL_HDA_CGCTL_MISCBDCGE));
++		pci_write_config_dword(pci, INTEL_HDA_CGCTL, val);
++	}
+ 	azx_init_chip(chip, full_reset);
++	if (IS_BROXTON(pci)) {
++		pci_read_config_dword(pci, INTEL_HDA_CGCTL, &val);
++		val = val | INTEL_HDA_CGCTL_MISCBDCGE;
++		pci_write_config_dword(pci, INTEL_HDA_CGCTL, val);
++	}
+ 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
+ 		snd_hdac_set_codec_wakeup(bus, false);
  
 -- 
-2.6.4
+1.9.1
