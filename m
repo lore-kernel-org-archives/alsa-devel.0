@@ -1,52 +1,97 @@
-From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
-Subject: Re: [PATCH] ASoC: fsl: select SND_SOC_FSL_SAI or SND_SOC_FSL_SSI
- depending on SoC type
-Date: Fri, 29 Jan 2016 06:51:33 +0100
-Message-ID: <20160129065133.7338cf2c@ipc1.ka-ro>
-References: <1453293038-16032-1-git-send-email-LW@KARO-electronics.de>
-	<20160128223352.GB4130@sirena.org.uk>
-	<20160128230846.GA32388@Asurada-Nvidia>
+From: libin.yang@linux.intel.com
+Subject: [PATCH] ALSA: hda - hdmi create spdif ctl based on pcm
+Date: Fri, 29 Jan 2016 13:53:27 +0800
+Message-ID: <1454046807-138480-1-git-send-email-libin.yang@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160128230846.GA32388@Asurada-Nvidia>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Fabio Estevam <fabio.estevam@freescale.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 10F9226066D
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2016 06:57:24 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: libin.yang@intel.com, mengdong.lin@intel.com, Libin Yang <libin.yang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+From: Libin Yang <libin.yang@linux.intel.com>
 
-On Thu, 28 Jan 2016 15:08:47 -0800 Nicolin Chen wrote:
-> On Thu, Jan 28, 2016 at 11:33:52PM +0100, Mark Brown wrote:
-> > On Wed, Jan 20, 2016 at 01:30:38PM +0100, Lothar Wa=C3=9Fmann wrote=
-:
-> >=20
-> > > -	select SND_SOC_FSL_SSI
-> > > +	select SND_SOC_FSL_SAI if SOC_IMX6UL
-> > > +	select SND_SOC_FSL_SSI if SOC_IMX6Q || SOC_IMX6SL || SOC_IMX6SX
-> >=20
-> > Does this card not work for older i.MXs (which had the same SSI/AUD=
-MUX
-> > combination as the majority of the i.MX6 family) as well?
->=20
-> It's widely used in older i.MXs according to their DTS files. So
-> it should be safer to just leave SSI over here.
->=20
-Nothing prevents you to enable the SSI driver on any i.MX6 module.
-The only change I made is to select the SAI driver instead of the SSI
-driver on i.MX6UL because the i.MX6UL does not have an SSI unit!
+SPDIF ctl should be based on pcm. Each spdif ctl controls
+one pcm state.
 
-> And I actually doubt the feasibility of running this driver with
-> i.MX6UL as there might not be an AUDMUX on i.MX6UL since it does
-> not have SSI any more while the driver always touches the address
-> space of AUDMUX which may not exist on i.MX6UL.
->
-#define this driver
-The FSL_SAI driver does not touch the audmux address space in any way.
-The simple-card audio driver works perfectly well with the FSL_SAI
-driver on i.MX6UL.
+This patch creates spdif based on pcm and no longer
+based on pin.
 
+Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+---
+ sound/pci/hda/patch_hdmi.c | 27 ++++++++++++++++++---------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
 
-Lothar Wa=C3=9Fmann
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index dfb7c26..2f949fb 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2255,6 +2255,7 @@ static int hdmi_pcm_close(struct hda_pcm_stream *hinfo,
+ 		hinfo->nid = 0;
+ 
+ 		mutex_lock(&spec->pcm_lock);
++		snd_hda_spdif_ctls_unassign(codec, pcm_idx);
+ 		clear_bit(pcm_idx, &spec->pcm_in_use);
+ 		pin_idx = hinfo_to_pin_index(codec, hinfo);
+ 		if (spec->dyn_pcm_assign && pin_idx < 0) {
+@@ -2276,8 +2277,6 @@ static int hdmi_pcm_close(struct hda_pcm_stream *hinfo,
+ 					    pinctl & ~PIN_OUT);
+ 		}
+ 
+-		snd_hda_spdif_ctls_unassign(codec, pcm_idx);
+-
+ 		mutex_lock(&per_pin->lock);
+ 		per_pin->chmap_set = false;
+ 		memset(per_pin->chmap, 0, sizeof(per_pin->chmap));
+@@ -2560,19 +2559,29 @@ static int generic_hdmi_build_controls(struct hda_codec *codec)
+ 		err = generic_hdmi_build_jack(codec, pcm_idx);
+ 		if (err < 0)
+ 			return err;
+-	}
+ 
+-	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
+-		struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
+-
+-		err = snd_hda_create_dig_out_ctls(codec,
++		/* create the spdif for each pcm
++		 * pin will be bound when monitor is connected
++		 */
++		if (spec->dyn_pcm_assign)
++			err = snd_hda_create_dig_out_ctls(codec,
++					  0, spec->cvt_nids[0],
++					  HDA_PCM_TYPE_HDMI);
++		else {
++			struct hdmi_spec_per_pin *per_pin =
++				get_pin(spec, pcm_idx);
++			err = snd_hda_create_dig_out_ctls(codec,
+ 						  per_pin->pin_nid,
+ 						  per_pin->mux_nids[0],
+ 						  HDA_PCM_TYPE_HDMI);
++		}
+ 		if (err < 0)
+ 			return err;
+-		/* pin number is the same with pcm number so far */
+-		snd_hda_spdif_ctls_unassign(codec, pin_idx);
++		snd_hda_spdif_ctls_unassign(codec, pcm_idx);
++	}
++
++	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
++		struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
+ 
+ 		/* add control for ELD Bytes */
+ 		err = hdmi_create_eld_ctl(codec, pin_idx,
+-- 
+1.9.1
