@@ -1,62 +1,82 @@
-From: Mark Brown <broonie@kernel.org>
+From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
 Subject: Re: [PATCH] ASoC: fsl: select SND_SOC_FSL_SAI or SND_SOC_FSL_SSI
  depending on SoC type
-Date: Fri, 29 Jan 2016 12:16:24 +0100
-Message-ID: <20160129111624.GO4130@sirena.org.uk>
+Date: Fri, 29 Jan 2016 12:33:41 +0100
+Message-ID: <20160129123341.64699d68@ipc1.ka-ro>
 References: <1453293038-16032-1-git-send-email-LW@KARO-electronics.de>
- <20160128223352.GB4130@sirena.org.uk>
- <20160129065938.6e89fc37@ipc1.ka-ro>
+	<20160128223352.GB4130@sirena.org.uk>
+	<20160128230846.GA32388@Asurada-Nvidia>
+	<20160129065133.7338cf2c@ipc1.ka-ro>
+	<20160129062529.GA3370@Asurada-CZ80>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="l7GkBbkEatsaRqBf"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20160129065938.6e89fc37@ipc1.ka-ro>
+In-Reply-To: <20160129062529.GA3370@Asurada-CZ80>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
-Cc: Arnd Bergmann <arnd@arndb.de>, Fabio Estevam <fabio.estevam@freescale.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Fabio Estevam <fabio.estevam@freescale.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---l7GkBbkEatsaRqBf
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, 28 Jan 2016 22:25:30 -0800 Nicolin Chen wrote:
+> On Fri, Jan 29, 2016 at 06:51:33AM +0100, Lothar Wa=C3=9Fmann wrote:
+> > Hi,
+> >=20
+> > On Thu, 28 Jan 2016 15:08:47 -0800 Nicolin Chen wrote:
+> > > On Thu, Jan 28, 2016 at 11:33:52PM +0100, Mark Brown wrote:
+> > > > On Wed, Jan 20, 2016 at 01:30:38PM +0100, Lothar Wa=C3=9Fmann w=
+rote:
+> > > >=20
+> > > > > -	select SND_SOC_FSL_SSI
+> > > > > +	select SND_SOC_FSL_SAI if SOC_IMX6UL
+> > > > > +	select SND_SOC_FSL_SSI if SOC_IMX6Q || SOC_IMX6SL || SOC_IM=
+X6SX
+> > > >=20
+> > > > Does this card not work for older i.MXs (which had the same SSI=
+/AUDMUX
+> > > > combination as the majority of the i.MX6 family) as well?
+> > >=20
+> > > It's widely used in older i.MXs according to their DTS files. So
+> > > it should be safer to just leave SSI over here.
+> > >=20
+> > Nothing prevents you to enable the SSI driver on any i.MX6 module.
+>=20
+> What about i.MX2, 3 and 5 series? Will they still be able to enable
+> SSI without changing .config file as usual?
+>=20
+> > The only change I made is to select the SAI driver instead of the S=
+SI
+> > driver on i.MX6UL because the i.MX6UL does not have an SSI unit!
+> >=20
+> > > And I actually doubt the feasibility of running this driver with
+> > > i.MX6UL as there might not be an AUDMUX on i.MX6UL since it does
+> > > not have SSI any more while the driver always touches the address
+> > > space of AUDMUX which may not exist on i.MX6UL.
+> > >
+> > #define this driver
+>=20
+> Your change is applied to "SND_SOC_IMX_SGTL5000" whose corresponding
+> driver is the imx-sgtl5000.c file.
+>=20
+> > The FSL_SAI driver does not touch the audmux address space in any w=
+ay.
+>=20
+> This imx-sgtl5000 driver does access AUDMUX registers. And I thought
+> you tried to use this one which made me very confused.
+>=20
+That change is obsolete, because as Mark Brown suggested, the
+simple-card driver works perfectly well.
 
-On Fri, Jan 29, 2016 at 06:59:38AM +0100, Lothar Wa=DFmann wrote:
-> On Thu, 28 Jan 2016 23:33:52 +0100 Mark Brown wrote:
-> > On Wed, Jan 20, 2016 at 01:30:38PM +0100, Lothar Wa=DFmann wrote:
+> > The simple-card audio driver works perfectly well with the FSL_SAI
+> > driver on i.MX6UL.
+>=20
+> It seems like you are using simple-card while letting the other drive=
+r
+> (imx-sgtl5000) select SAI for you. It doesn't sound so right to me.
+>
+That was before I found out that the simple-card driver works.
 
-> > > -	select SND_SOC_FSL_SSI
-> > > +	select SND_SOC_FSL_SAI if SOC_IMX6UL
-> > > +	select SND_SOC_FSL_SSI if SOC_IMX6Q || SOC_IMX6SL || SOC_IMX6SX
 
-> > Does this card not work for older i.MXs (which had the same SSI/AUDMUX
-> > combination as the majority of the i.MX6 family) as well?
-
-> Our baseboard contains an SGTL5000 codec which is working with
-> i.MX25, i.MX27, i.MX5, i.MX6Q, i.MX6DL with the fsl_ssi and imx-sgtl5000
-> + imx-audmux driver, on i.MX28 with the mxs-saif and mxs-sgtl5000 driver
-> and on i.MX6UL with the fsl_sai + simple-card driver.
-
-That's your base board but that doesn't really help other users who may
-be using this driver (and even for your system I'm not clear how
-any configuration without an i.MX6 will enable a CPU DAI driver with
-this change).
-
---l7GkBbkEatsaRqBf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWq0oBAAoJECTWi3JdVIfQpLsH/A3WkErKw2l7yAF15Qihn49r
-9ynzVT7QkCWWruvepUA5eybAy8/SXUYHp9OeT1zu6rghTfjtGLIzXERq17uk/t4W
-NeslZnahKlcRZ2cKeh1+ZwU6YV0WRumkcd8kNSIQdcZJ+PZFBKPutmP7oXC9JWvb
-yJPE59F2abjU4m+6yFvph51P4ZAKS6IJxQtxdxQEH42/VBNZXQ+UdmJ0lQmfO7P2
-Z7nCB8WsWnGLlhAVYtl22N0xoJsJS5MhAfUJ9+BsNW2LJv2PxODyjTkNTHcDxW4H
-Eo9vo6Mr96ExubY4oEecv2sKWiTx0PKw+8laZh2THlsYOjO8m9kiC547JKaXioU=
-=QSN0
------END PGP SIGNATURE-----
-
---l7GkBbkEatsaRqBf--
+Lothar Wa=C3=9Fmann
