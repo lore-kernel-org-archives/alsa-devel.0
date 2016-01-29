@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Use more generic naming for
-	regions and caps definitions" to the asoc tree
-Date: Fri, 29 Jan 2016 01:16:42 +0100
-Message-ID: <E1aOwjy-0005YM-MF@finisterre>
-References: <1453398782-32198-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: pcm3168a: Call clk_set_rate in
+	pcm3168a_set_dai_sysclk" to the asoc tree
+Date: Fri, 29 Jan 2016 01:16:50 +0100
+Message-ID: <E1aOwk6-0005ZI-DA@finisterre>
+References: <1454000060-8407-1-git-send-email-Damien.Horsley@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EC0B126154E
- for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2016 01:16:54 +0100 (CET)
-In-Reply-To: <1453398782-32198-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B92A3265A39
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2016 01:17:02 +0100 (CET)
+In-Reply-To: <1454000060-8407-1-git-send-email-Damien.Horsley@imgtec.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+To: "Damien.Horsley" <Damien.Horsley@imgtec.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Use more generic naming for regions and caps definitions
+   ASoC: pcm3168a: Call clk_set_rate in pcm3168a_set_dai_sysclk
 
 has been applied to the asoc tree at
 
@@ -53,65 +53,38 @@ to this mail.
 Thanks,
 Mark
 
->From e6d00f3403c439b8d1e6f9f09d5ae3048aa726e4 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Thu, 21 Jan 2016 17:52:58 +0000
-Subject: [PATCH] ASoC: wm_adsp: Use more generic naming for regions and caps
- definitions
+>From f1188b898ec5aa2e94da8fb998648a2738f4fb3b Mon Sep 17 00:00:00 2001
+From: "Damien.Horsley" <Damien.Horsley@imgtec.com>
+Date: Thu, 28 Jan 2016 16:54:20 +0000
+Subject: [PATCH] ASoC: pcm3168a: Call clk_set_rate in pcm3168a_set_dai_sysclk
 
-The region definition will be shared by most firmwares so give this a
-more generic name and whilst we are there improve the naming of the
-voice control capabilities array as well.
+Call clk_set_rate in pcm3168a_set_dai_sysclk
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Damien.Horsley <Damien.Horsley@imgtec.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/codecs/pcm3168a.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 33806d4..0392c58 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -328,7 +328,7 @@ struct wm_adsp_buffer_region_def {
- 	unsigned int size_offset;
- };
+diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
+index 44b268a..0c7248a 100644
+--- a/sound/soc/codecs/pcm3168a.c
++++ b/sound/soc/codecs/pcm3168a.c
+@@ -299,10 +299,15 @@ static int pcm3168a_set_dai_sysclk(struct snd_soc_dai *dai,
+ 				  int clk_id, unsigned int freq, int dir)
+ {
+ 	struct pcm3168a_priv *pcm3168a = snd_soc_codec_get_drvdata(dai->codec);
++	int ret;
  
--static struct wm_adsp_buffer_region_def ez2control_regions[] = {
-+static struct wm_adsp_buffer_region_def default_regions[] = {
- 	{
- 		.mem_type = WMFW_ADSP2_XM,
- 		.base_offset = HOST_BUFFER_FIELD(X_buf_base),
-@@ -353,7 +353,7 @@ struct wm_adsp_fw_caps {
- 	struct wm_adsp_buffer_region_def *region_defs;
- };
+ 	if (freq > PCM1368A_MAX_SYSCLK)
+ 		return -EINVAL;
  
--static const struct wm_adsp_fw_caps ez2control_caps[] = {
-+static const struct wm_adsp_fw_caps ctrl_caps[] = {
- 	{
- 		.id = SND_AUDIOCODEC_BESPOKE,
- 		.desc = {
-@@ -362,8 +362,8 @@ static const struct wm_adsp_fw_caps ez2control_caps[] = {
- 			.num_sample_rates = 1,
- 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 		},
--		.num_regions = ARRAY_SIZE(ez2control_regions),
--		.region_defs = ez2control_regions,
-+		.num_regions = ARRAY_SIZE(default_regions),
-+		.region_defs = default_regions,
- 	},
- };
++	ret = clk_set_rate(pcm3168a->scki, freq);
++	if (ret)
++		return ret;
++
+ 	pcm3168a->sysclk = freq;
  
-@@ -382,8 +382,8 @@ static const struct {
- 	[WM_ADSP_FW_CTRL] =     {
- 		.file = "ctrl",
- 		.compr_direction = SND_COMPRESS_CAPTURE,
--		.num_caps = ARRAY_SIZE(ez2control_caps),
--		.caps = ez2control_caps,
-+		.num_caps = ARRAY_SIZE(ctrl_caps),
-+		.caps = ctrl_caps,
- 	},
- 	[WM_ADSP_FW_ASR] =      { .file = "asr" },
- 	[WM_ADSP_FW_TRACE] =    { .file = "trace" },
+ 	return 0;
 -- 
 2.6.4
