@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm5102: Add support for the audio trace
+Subject: Applied "ASoC: wm5110: Add support for audio trace
 	firmware" to the asoc tree
-Date: Fri, 29 Jan 2016 12:40:32 +0100
-Message-ID: <E1aP7Pk-0006we-Ae@finisterre>
-References: <1453398782-32198-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Date: Fri, 29 Jan 2016 12:40:38 +0100
+Message-ID: <E1aP7Pq-0006x9-TS@finisterre>
+References: <1453398782-32198-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 56232260699
- for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2016 12:40:47 +0100 (CET)
-In-Reply-To: <1453398782-32198-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 47C4026047B
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2016 12:40:52 +0100 (CET)
+In-Reply-To: <1453398782-32198-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm5102: Add support for the audio trace firmware
+   ASoC: wm5110: Add support for audio trace firmware
 
 has been applied to the asoc tree at
 
@@ -53,27 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From 69fa80584f69554275ef1257d41b90f4e0d417fc Mon Sep 17 00:00:00 2001
+>From 31889507fd84a6a1c8dce36a214a070cec1fc559 Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Thu, 21 Jan 2016 17:53:01 +0000
-Subject: [PATCH] ASoC: wm5102: Add support for the audio trace firmware
+Date: Thu, 21 Jan 2016 17:53:00 +0000
+Subject: [PATCH] ASoC: wm5110: Add support for audio trace firmware
 
-wm5102 also supports the audio trace firmware, this patch adds support
-for this into the wm5102 driver.
+Mainly this adds DAI links for the audio trace, however, it is also
+necessary to update the data IRQ handler to check more cores. We have
+the handler check every core so it should not be necessary to update
+this function if more compressed firmwares are added in the future.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm5102.c | 85 ++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 84 insertions(+), 1 deletion(-)
+ sound/soc/codecs/arizona.h |  2 +-
+ sound/soc/codecs/wm5110.c  | 43 +++++++++++++++++++++++++++++++++++++++----
+ sound/soc/codecs/wm_adsp.c |  1 -
+ 3 files changed, 40 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index 7c0860d..aa1e96a 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -1599,6 +1599,9 @@ static const struct snd_soc_dapm_route wm5102_dapm_routes[] = {
- 	{ "Slim2 Capture", NULL, "SYSCLK" },
- 	{ "Slim3 Capture", NULL, "SYSCLK" },
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index 8b6adb5..0c64a57 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -57,7 +57,7 @@
+ #define ARIZONA_CLK_98MHZ  5
+ #define ARIZONA_CLK_147MHZ 6
+ 
+-#define ARIZONA_MAX_DAI  8
++#define ARIZONA_MAX_DAI  10
+ #define ARIZONA_MAX_ADSP 4
+ 
+ #define ARIZONA_DVFS_SR1_RQ	0x001
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index b47bc44..92b6a6a 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -1828,6 +1828,9 @@ static const struct snd_soc_dapm_route wm5110_dapm_routes[] = {
+ 	{ "Voice Control DSP", NULL, "DSP3" },
+ 	{ "Voice Control DSP", NULL, "SYSCLK" },
  
 +	{ "Audio Trace DSP", NULL, "DSP1" },
 +	{ "Audio Trace DSP", NULL, "SYSCLK" },
@@ -81,121 +98,80 @@ index 7c0860d..aa1e96a 100644
  	{ "IN1L PGA", NULL, "IN1L" },
  	{ "IN1R PGA", NULL, "IN1R" },
  
-@@ -1864,14 +1867,67 @@ static struct snd_soc_dai_driver wm5102_dai[] = {
- 		 },
- 		.ops = &arizona_simple_dai_ops,
+@@ -2171,6 +2174,27 @@ static struct snd_soc_dai_driver wm5110_dai[] = {
+ 			.formats = WM5110_FORMATS,
+ 		},
  	},
 +	{
-+		.name = "wm5102-cpu-trace",
++		.name = "wm5110-cpu-trace",
 +		.capture = {
 +			.stream_name = "Audio Trace CPU",
 +			.channels_min = 1,
 +			.channels_max = 6,
-+			.rates = WM5102_RATES,
-+			.formats = WM5102_FORMATS,
++			.rates = WM5110_RATES,
++			.formats = WM5110_FORMATS,
 +		},
 +		.compress_new = snd_soc_new_compress,
 +	},
 +	{
-+		.name = "wm5102-dsp-trace",
++		.name = "wm5110-dsp-trace",
 +		.capture = {
 +			.stream_name = "Audio Trace DSP",
 +			.channels_min = 1,
-+			.channels_max = 4,
-+			.rates = WM5102_RATES,
-+			.formats = WM5102_FORMATS,
++			.channels_max = 6,
++			.rates = WM5110_RATES,
++			.formats = WM5110_FORMATS,
 +		},
 +	},
  };
  
-+static int wm5102_open(struct snd_compr_stream *stream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = stream->private_data;
-+	struct wm5102_priv *priv = snd_soc_codec_get_drvdata(rtd->codec);
-+
-+	return wm_adsp_compr_open(&priv->core.adsp[0], stream);
-+}
-+
-+static irqreturn_t wm5102_adsp2_irq(int irq, void *data)
-+{
-+	struct wm5102_priv *priv = data;
+ static int wm5110_open(struct snd_compr_stream *stream)
+@@ -2182,6 +2206,8 @@ static int wm5110_open(struct snd_compr_stream *stream)
+ 
+ 	if (strcmp(rtd->codec_dai->name, "wm5110-dsp-voicectrl") == 0) {
+ 		n_adsp = 2;
++	} else if (strcmp(rtd->codec_dai->name, "wm5110-dsp-trace") == 0) {
++		n_adsp = 0;
+ 	} else {
+ 		dev_err(arizona->dev,
+ 			"No suitable compressed stream for DAI '%s'\n",
+@@ -2194,12 +2220,21 @@ static int wm5110_open(struct snd_compr_stream *stream)
+ 
+ static irqreturn_t wm5110_adsp2_irq(int irq, void *data)
+ {
+-	struct wm5110_priv *florida = data;
+-	int ret;
++	struct wm5110_priv *priv = data;
 +	struct arizona *arizona = priv->core.arizona;
-+	int ret;
++	int serviced = 0;
++	int i, ret;
 +
-+	ret = wm_adsp_compr_handle_irq(&priv->core.adsp[0]);
-+	if (ret == -ENODEV) {
++	for (i = 0; i < WM5110_NUM_ADSP; ++i) {
++		ret = wm_adsp_compr_handle_irq(&priv->core.adsp[i]);
++		if (ret != -ENODEV)
++			serviced++;
++	}
+ 
+-	ret = wm_adsp_compr_handle_irq(&florida->core.adsp[2]);
+-	if (ret == -ENODEV)
++	if (!serviced) {
 +		dev_err(arizona->dev, "Spurious compressed data IRQ\n");
-+		return IRQ_NONE;
+ 		return IRQ_NONE;
 +	}
-+
-+	return IRQ_HANDLED;
-+}
-+
- static int wm5102_codec_probe(struct snd_soc_codec *codec)
- {
- 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
- 	struct wm5102_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct arizona *arizona = priv->core.arizona;
- 	int ret;
  
-+	ret = arizona_request_irq(arizona, ARIZONA_IRQ_DSP_IRQ1,
-+				  "ADSP2 Compressed IRQ", wm5102_adsp2_irq,
-+				  priv);
-+	if (ret != 0) {
-+		dev_err(codec->dev, "Failed to request DSP IRQ: %d\n", ret);
-+		return ret;
-+	}
-+
- 	ret = wm_adsp2_codec_probe(&priv->core.adsp[0], codec);
- 	if (ret)
- 		return ret;
-@@ -1946,6 +2002,20 @@ static struct snd_soc_codec_driver soc_codec_dev_wm5102 = {
- 	.num_dapm_routes = ARRAY_SIZE(wm5102_dapm_routes),
- };
- 
-+static struct snd_compr_ops wm5102_compr_ops = {
-+	.open = wm5102_open,
-+	.free = wm_adsp_compr_free,
-+	.set_params = wm_adsp_compr_set_params,
-+	.get_caps = wm_adsp_compr_get_caps,
-+	.trigger = wm_adsp_compr_trigger,
-+	.pointer = wm_adsp_compr_pointer,
-+	.copy = wm_adsp_compr_copy,
-+};
-+
-+static struct snd_soc_platform_driver wm5102_compr_platform = {
-+	.compr_ops = &wm5102_compr_ops,
-+};
-+
- static int wm5102_probe(struct platform_device *pdev)
- {
- 	struct arizona *arizona = dev_get_drvdata(pdev->dev.parent);
-@@ -2005,12 +2075,25 @@ static int wm5102_probe(struct platform_device *pdev)
- 	pm_runtime_enable(&pdev->dev);
- 	pm_runtime_idle(&pdev->dev);
- 
--	return snd_soc_register_codec(&pdev->dev, &soc_codec_dev_wm5102,
-+	ret = snd_soc_register_platform(&pdev->dev, &wm5102_compr_platform);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "Failed to register platform: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_register_codec(&pdev->dev, &soc_codec_dev_wm5102,
- 				      wm5102_dai, ARRAY_SIZE(wm5102_dai));
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "Failed to register codec: %d\n", ret);
-+		snd_soc_unregister_platform(&pdev->dev);
-+	}
-+
-+	return ret;
+ 	return IRQ_HANDLED;
  }
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 76ab52d..653dbff 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -2823,7 +2823,6 @@ int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
+ 	mutex_lock(&dsp->pwr_lock);
  
- static int wm5102_remove(struct platform_device *pdev)
- {
-+	snd_soc_unregister_platform(&pdev->dev);
- 	snd_soc_unregister_codec(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 
+ 	if (!buf) {
+-		adsp_err(dsp, "Spurious buffer IRQ\n");
+ 		ret = -ENODEV;
+ 		goto out;
+ 	}
 -- 
 2.6.4
