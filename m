@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm5110: Fix up
-	snd_soc_register_platform error path" to the asoc tree
-Date: Fri, 29 Jan 2016 01:16:44 +0100
-Message-ID: <E1aOwk0-0005Yp-16@finisterre>
-References: <1453398782-32198-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: wm_adsp: Use more generic naming for
+	regions and caps definitions" to the asoc tree
+Date: Fri, 29 Jan 2016 01:16:42 +0100
+Message-ID: <E1aOwjy-0005YM-MF@finisterre>
+References: <1453398782-32198-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F3151261560
- for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2016 01:16:55 +0100 (CET)
-In-Reply-To: <1453398782-32198-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id EC0B126154E
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2016 01:16:54 +0100 (CET)
+In-Reply-To: <1453398782-32198-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm5110: Fix up snd_soc_register_platform error path
+   ASoC: wm_adsp: Use more generic naming for regions and caps definitions
 
 has been applied to the asoc tree at
 
@@ -53,40 +53,65 @@ to this mail.
 Thanks,
 Mark
 
->From 0f9aa09d669b29ae536d51631bf035ad44ae0551 Mon Sep 17 00:00:00 2001
+>From e6d00f3403c439b8d1e6f9f09d5ae3048aa726e4 Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Thu, 21 Jan 2016 17:52:57 +0000
-Subject: [PATCH] ASoC: wm5110: Fix up snd_soc_register_platform error path
+Date: Thu, 21 Jan 2016 17:52:58 +0000
+Subject: [PATCH] ASoC: wm_adsp: Use more generic naming for regions and caps
+ definitions
 
-Whilst there is nothing wrong with the error path here it looks a little
-bit odd, this patches makes the code a little more idiomatic.
+The region definition will be shared by most firmwares so give this a
+more generic name and whilst we are there improve the naming of the
+voice control capabilities array as well.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm5110.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 6088d30..83760b7 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -2366,7 +2366,7 @@ static int wm5110_probe(struct platform_device *pdev)
- 	ret = snd_soc_register_platform(&pdev->dev, &wm5110_compr_platform);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "Failed to register platform: %d\n", ret);
--		goto error;
-+		return ret;
- 	}
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 33806d4..0392c58 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -328,7 +328,7 @@ struct wm_adsp_buffer_region_def {
+ 	unsigned int size_offset;
+ };
  
- 	ret = snd_soc_register_codec(&pdev->dev, &soc_codec_dev_wm5110,
-@@ -2376,7 +2376,6 @@ static int wm5110_probe(struct platform_device *pdev)
- 		snd_soc_unregister_platform(&pdev->dev);
- 	}
+-static struct wm_adsp_buffer_region_def ez2control_regions[] = {
++static struct wm_adsp_buffer_region_def default_regions[] = {
+ 	{
+ 		.mem_type = WMFW_ADSP2_XM,
+ 		.base_offset = HOST_BUFFER_FIELD(X_buf_base),
+@@ -353,7 +353,7 @@ struct wm_adsp_fw_caps {
+ 	struct wm_adsp_buffer_region_def *region_defs;
+ };
  
--error:
- 	return ret;
- }
+-static const struct wm_adsp_fw_caps ez2control_caps[] = {
++static const struct wm_adsp_fw_caps ctrl_caps[] = {
+ 	{
+ 		.id = SND_AUDIOCODEC_BESPOKE,
+ 		.desc = {
+@@ -362,8 +362,8 @@ static const struct wm_adsp_fw_caps ez2control_caps[] = {
+ 			.num_sample_rates = 1,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 		},
+-		.num_regions = ARRAY_SIZE(ez2control_regions),
+-		.region_defs = ez2control_regions,
++		.num_regions = ARRAY_SIZE(default_regions),
++		.region_defs = default_regions,
+ 	},
+ };
  
+@@ -382,8 +382,8 @@ static const struct {
+ 	[WM_ADSP_FW_CTRL] =     {
+ 		.file = "ctrl",
+ 		.compr_direction = SND_COMPRESS_CAPTURE,
+-		.num_caps = ARRAY_SIZE(ez2control_caps),
+-		.caps = ez2control_caps,
++		.num_caps = ARRAY_SIZE(ctrl_caps),
++		.caps = ctrl_caps,
+ 	},
+ 	[WM_ADSP_FW_ASR] =      { .file = "asr" },
+ 	[WM_ADSP_FW_TRACE] =    { .file = "trace" },
 -- 
 2.6.4
