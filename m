@@ -1,96 +1,39 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2 2/3] ASoC: sh: fsi: Fix clock inversion
-Date: Fri, 29 Jan 2016 16:52:06 +0100
-Message-ID: <CAMuHMdU0d83hvMhr1KyQfdms636qph4mYZ7Q+v3r7d35FHzw1A@mail.gmail.com>
-References: <1421847492-8857-1-git-send-email-lars@metafoo.de>
-	<1421847492-8857-2-git-send-email-lars@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <1421847492-8857-2-git-send-email-lars@metafoo.de>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, linux-renesas-soc@vger.kernel.org
+From: Insu Yun <wuninsu@gmail.com>
+Subject: [PATCH v2] emu10k1: correctly handling failed thread creation
+Date: Fri, 29 Jan 2016 10:56:11 -0500
+Message-ID: <1454082971-12873-1-git-send-email-wuninsu@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com, michael@gernoth.net, lambert.quentin@gmail.com, pzubaj@marticonet.sk, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: taesoo@gatech.edu, yeongjin.jang@gatech.edu, insu@gatech.edu, changwoo@gatech.edu, Insu Yun <wuninsu@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 21, 2015 at 2:38 PM, Lars-Peter Clausen <lars@metafoo.de> wrote:
-> According to the sh7724 hardware user manual (Rev.2.00 Jan 2013) page 1851
-> to 1856 the FSI bit-clock is inverted to the bit-clock as specified by the
-> I2S standard. This means the bit clock inversion bit should be set for a
-> normal I2S clock and should not be set for an inverted I2S clock.
->
-> Similarly when operating in left-justfied mode both the frame-clock and the
-> bit-clock need to be inverted to be standards compliant.
->
-> This means also that the exta clock inversion setting in the armadillo800eva
-> machine driver for CPU component should now be removed.
->
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> ---
-> I don't have the hardware but I'd like to get rid of the extra
-> SND_SOC_DAIFMT_IB_NF in simple-card platform data, so we can remove the fmt
-> field. Kuninori can you check if this works?
->
-> Changes since v1:
->         * Fix whitespace
-> ---
->  arch/arm/mach-shmobile/board-armadillo800eva.c | 1 -
+Since kthread_create can be failed, it needs to check
+whether error occurred and return error code.
 
-The board files are gone by now.
+Signed-off-by: Insu Yun <wuninsu@gmail.com>
+---
+ sound/pci/emu10k1/emu10k1_main.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
->  sound/soc/sh/fsi.c                             | 7 +++++++
-
-Is this part still applicable?
-
->  2 files changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/arm/mach-shmobile/board-armadillo800eva.c b/arch/arm/mach-shmobile/board-armadillo800eva.c
-> index 75de26c..36aaeb1 100644
-> --- a/arch/arm/mach-shmobile/board-armadillo800eva.c
-> +++ b/arch/arm/mach-shmobile/board-armadillo800eva.c
-> @@ -1015,7 +1015,6 @@ static struct asoc_simple_card_info fsi_wm8978_info = {
->         .platform       = "sh_fsi2",
->         .daifmt         = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM,
->         .cpu_dai = {
-> -               .fmt    = SND_SOC_DAIFMT_IB_NF,
->                 .name   = "fsia-dai",
->         },
->         .codec_dai = {
-> diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
-> index b87b22e..6783d3f 100644
-> --- a/sound/soc/sh/fsi.c
-> +++ b/sound/soc/sh/fsi.c
-> @@ -1594,6 +1594,12 @@ static int fsi_dai_trigger(struct snd_pcm_substream *substream, int cmd,
->
->  static int fsi_set_fmt_dai(struct fsi_priv *fsi, unsigned int fmt)
->  {
-> +       /*
-> +        * FSI bit clock is inverted to the I2S specification, so we invert it
-> +        * when a non-inverted I2S clock was requested and vice versa.
-> +        */
-> +       fsi->bit_clk_inv = !fsi->bit_clk_inv;
-> +
->         switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
->         case SND_SOC_DAIFMT_I2S:
->                 fsi->fmt = CR_I2S;
-> @@ -1602,6 +1608,7 @@ static int fsi_set_fmt_dai(struct fsi_priv *fsi, unsigned int fmt)
->         case SND_SOC_DAIFMT_LEFT_J:
->                 fsi->fmt = CR_PCM;
->                 fsi->chan_num = 2;
-> +               fsi->lr_clk_inv = !fsi->lr_clk_inv;
->                 break;
->         default:
->                 return -EINVAL;
-> --
-> 1.8.0
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
+index 28e2f8b..8914534 100644
+--- a/sound/pci/emu10k1/emu10k1_main.c
++++ b/sound/pci/emu10k1/emu10k1_main.c
+@@ -1141,6 +1141,14 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
+ 		emu->emu1010.firmware_thread =
+ 			kthread_create(emu1010_firmware_thread, emu,
+ 				       "emu1010_firmware");
++		if (IS_ERR(emu->emu1010.firmware_thread)) {
++			err = PTR_ERR(emu->emu1010.firmware_thread);
++			emu->emu1010.firmware_thread = NULL;
++			dev_info(emu->card->dev,
++					"emu1010: Creating thread failed\n");
++			return err;
++		}
++
+ 		wake_up_process(emu->emu1010.firmware_thread);
+ 	}
+ 
+-- 
+1.9.1
