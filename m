@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Add debug audio trace
-	firmware" to the asoc tree
-Date: Fri, 29 Jan 2016 01:16:41 +0100
-Message-ID: <E1aOwjx-0005Xt-2j@finisterre>
-References: <1453398782-32198-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: wm5110: Fix up
+	snd_soc_register_platform error path" to the asoc tree
+Date: Fri, 29 Jan 2016 01:16:44 +0100
+Message-ID: <E1aOwk0-0005Yp-16@finisterre>
+References: <1453398782-32198-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9EAD7261546
- for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2016 01:16:53 +0100 (CET)
-In-Reply-To: <1453398782-32198-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F3151261560
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2016 01:16:55 +0100 (CET)
+In-Reply-To: <1453398782-32198-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Add debug audio trace firmware
+   ASoC: wm5110: Fix up snd_soc_register_platform error path
 
 has been applied to the asoc tree at
 
@@ -53,63 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From 7ce4283ca405d459c186960ed39d41ec0e6fb2bf Mon Sep 17 00:00:00 2001
+>From 0f9aa09d669b29ae536d51631bf035ad44ae0551 Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Thu, 21 Jan 2016 17:52:59 +0000
-Subject: [PATCH] ASoC: wm_adsp: Add debug audio trace firmware
+Date: Thu, 21 Jan 2016 17:52:57 +0000
+Subject: [PATCH] ASoC: wm5110: Fix up snd_soc_register_platform error path
 
-The audio trace firmware allows the capture of arbitrary streams of
-audio from the DSP and commonly used for debugging other firmwares. This
-patch adds support for this firwmare into the ADSP driver.
+Whilst there is nothing wrong with the error path here it looks a little
+bit odd, this patches makes the code a little more idiomatic.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wm5110.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 0392c58..a81f568 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -367,6 +367,24 @@ static const struct wm_adsp_fw_caps ctrl_caps[] = {
- 	},
- };
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index 6088d30..83760b7 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -2366,7 +2366,7 @@ static int wm5110_probe(struct platform_device *pdev)
+ 	ret = snd_soc_register_platform(&pdev->dev, &wm5110_compr_platform);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "Failed to register platform: %d\n", ret);
+-		goto error;
++		return ret;
+ 	}
  
-+static const struct wm_adsp_fw_caps trace_caps[] = {
-+	{
-+		.id = SND_AUDIOCODEC_BESPOKE,
-+		.desc = {
-+			.max_ch = 8,
-+			.sample_rates = {
-+				4000, 8000, 11025, 12000, 16000, 22050,
-+				24000, 32000, 44100, 48000, 64000, 88200,
-+				96000, 176400, 192000
-+			},
-+			.num_sample_rates = 15,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		},
-+		.num_regions = ARRAY_SIZE(default_regions),
-+		.region_defs = default_regions,
-+	},
-+};
-+
- static const struct {
- 	const char *file;
- 	int compr_direction;
-@@ -386,7 +404,12 @@ static const struct {
- 		.caps = ctrl_caps,
- 	},
- 	[WM_ADSP_FW_ASR] =      { .file = "asr" },
--	[WM_ADSP_FW_TRACE] =    { .file = "trace" },
-+	[WM_ADSP_FW_TRACE] =    {
-+		.file = "trace",
-+		.compr_direction = SND_COMPRESS_CAPTURE,
-+		.num_caps = ARRAY_SIZE(trace_caps),
-+		.caps = trace_caps,
-+	},
- 	[WM_ADSP_FW_SPK_PROT] = { .file = "spk-prot" },
- 	[WM_ADSP_FW_MISC] =     { .file = "misc" },
- };
+ 	ret = snd_soc_register_codec(&pdev->dev, &soc_codec_dev_wm5110,
+@@ -2376,7 +2376,6 @@ static int wm5110_probe(struct platform_device *pdev)
+ 		snd_soc_unregister_platform(&pdev->dev);
+ 	}
+ 
+-error:
+ 	return ret;
+ }
+ 
 -- 
 2.6.4
