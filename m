@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5514: add rt5514 codec driver
-Date: Fri, 29 Jan 2016 01:14:45 +0100
-Message-ID: <20160129001445.GL4130@sirena.org.uk>
-References: <1453204948-21945-1-git-send-email-oder_chiou@realtek.com>
+Subject: Applied "ASoC: wm_adsp: Move setting of DSP speed into
+	CODEC specific code" to the asoc tree
+Date: Fri, 29 Jan 2016 01:16:39 +0100
+Message-ID: <E1aOwjv-0005XQ-Ne@finisterre>
+References: <1453398782-32198-6-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7258370908039584926=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3835A2614CB
- for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2016 01:14:58 +0100 (CET)
-In-Reply-To: <1453204948-21945-1-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 206F72614CB
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2016 01:16:53 +0100 (CET)
+In-Reply-To: <1453398782-32198-6-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,125 +22,285 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, john.lin@realtek.com, koro.chen@mediatek.com, bardliao@realtek.com, flove@realtek.com
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7258370908039584926==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="3xQkynibq3FKlJyM"
-Content-Disposition: inline
+   ASoC: wm_adsp: Move setting of DSP speed into CODEC specific code
 
+has been applied to the asoc tree at
 
---3xQkynibq3FKlJyM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Jan 19, 2016 at 08:02:28PM +0800, Oder Chiou wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +	pr_warn("Base clock rate %d is too high\n", rate);
-> +	return -EINVAL;
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-dev_warn()
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> +static int rt5514_adc_power_event(struct snd_soc_dapm_widget *w,
-> +	struct snd_kcontrol *kcontrol, int event)
-> +{
-> +	struct snd_soc_codec *codec =3D snd_soc_dapm_to_codec(w->dapm);
-> +	struct rt5514_priv *rt5514 =3D snd_soc_codec_get_drvdata(codec);
-> +
-> +	switch (event) {
-> +	case SND_SOC_DAPM_PRE_PMU:
-> +		regmap_update_bits(rt5514->regmap, RT5514_PWR_ANA1,
-> +			RT5514_POW_LDO18_IN | RT5514_POW_LDO18_ADC |
-> +			RT5514_POW_LDO21 | RT5514_POW_BG_LDO18_IN |
-> +			RT5514_POW_BG_LDO21,
-> +			RT5514_POW_LDO18_IN | RT5514_POW_LDO18_ADC |
-> +			RT5514_POW_LDO21 | RT5514_POW_BG_LDO18_IN |
-> +			RT5514_POW_BG_LDO21);
-> +		regmap_update_bits(rt5514->regmap, RT5514_PWR_ANA2,
-> +			RT5514_POW_BG_MBIAS | RT5514_POW_MBIAS |
-> +			RT5514_POW_VREF2 | RT5514_POW_VREF1,
-> +			RT5514_POW_BG_MBIAS | RT5514_POW_MBIAS |
-> +			RT5514_POW_VREF2 | RT5514_POW_VREF1);
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-This looks suspicously like there are a lot of supplies here that could
-be handled by supply widgets?
+Thanks,
+Mark
 
-> +	bclk_ms =3D frame_size > 32 ? 1 : 0;
+>From d82d767f0e61da5f1f872d40358904eb316af264 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Thu, 21 Jan 2016 17:53:02 +0000
+Subject: [PATCH] ASoC: wm_adsp: Move setting of DSP speed into CODEC specific
+ code
 
-Please write normal if statements, it makes things easier to read.
+The ADSP code should be agnostic of which CODEC it runs upon, currently
+there is only one remaining part of the implementation that doesn't
+follow this. When the DSP is booted on ADSP2 we read
+ARIZONA_SYSTEM_CLOCK_1 and use that to set the initial speed for the DSP
+clock. This patch factors that out into CODEC specific code, leaving the
+ADSP code entirely CODEC agnostic.
 
-> +static int rt5514_remove(struct snd_soc_codec *codec)
-> +{
-> +	return 0;
-> +}
-> +
-> +#ifdef CONFIG_PM
-> +static int rt5514_suspend(struct snd_soc_codec *codec)
-> +{
-> +	return 0;
-> +}
-> +
-> +static int rt5514_resume(struct snd_soc_codec *codec)
-> +{
-> +	return 0;
-> +}
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/cs47l24.c | 23 +++++++++++++++++++++--
+ sound/soc/codecs/wm5102.c  |  6 +++---
+ sound/soc/codecs/wm5110.c  | 27 +++++++++++++++++++++++----
+ sound/soc/codecs/wm_adsp.c | 40 +++++++++++++++-------------------------
+ sound/soc/codecs/wm_adsp.h |  8 +++-----
+ 5 files changed, 65 insertions(+), 39 deletions(-)
 
-Just remove empty functions.
-
-> +static int rt5514_i2c_read(void *context, unsigned int reg, unsigned int=
- *val)
-> +{
-> +	struct i2c_client *client =3D context;
-> +	struct rt5514_priv *rt5514 =3D i2c_get_clientdata(client);
-> +
-> +	regmap_read(rt5514->regmap_physical, reg | RT5514_DSP_MAPPING, val);
-
-Some comments or something in the changelog explaining what's going on
-with this multi-level register map would be good.  The naming of these
-functions is a bit odd, I'd expect _i2c_ for the physical regmap but
-actually these are for accessing the DSP register map AIUI?
-
-I *think* this is OK but the explanation would help me be sure (and
-hopefully anyone working with the driver in the future).
-
-> +static void rt5514_reset(struct rt5514_priv *rt5514)
-> +{
-> +	regmap_write(rt5514->regmap_physical, 0x1800101c, 0x00000000);
-> +	regmap_write(rt5514->regmap_physical, 0x18001100, 0x0000031f);
-
-This is a fun set of magic numbers!  I'm wondering if it might be better
-as a regmap patch?  Normally patches are corrections to the register
-settings that get applied after something is reset but perhaps this=20
-also applies here (or to some of the sequence)...  It's the fact that
-it's a large set of magic numbers getting written in around reset, it
-looks like some of the purpose is the same.
-
---3xQkynibq3FKlJyM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWqq7zAAoJECTWi3JdVIfQTzIH/jI/2wywjCFOsI1GXItgioOP
-rwTTLpi9fe5//rR+xzqEhMFrHwMZXi48+yw6v7ABH+Gc1671IcMODgxloKqmhetK
-ebteEOWdycq1D0AW7crWW5nj4A2CkGUBWMfe8TDKQjAuG0pM9QWx1fWHt2FdCuL0
-OzlCVMJmO18ytLUwDODseF48BUB7Ktk4PDfgdjOA5QFfHpm9XAdNnQyrAfhTJNwG
-UC9SahDP+yiO8qdxl1Lf1Qzs7dMRAG7lpgflDD40TqNFi/PVZO1eBvcio8h52VNH
-A8972pyQLsZc3WrE5elywF8XIcZRXfQroHCmJCRExSsv4doeLF9FQv9e4dg8P0A=
-=lWLQ
------END PGP SIGNATURE-----
-
---3xQkynibq3FKlJyM--
-
---===============7258370908039584926==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7258370908039584926==--
+diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
+index dc5ae7f..9dc77a4 100644
+--- a/sound/soc/codecs/cs47l24.c
++++ b/sound/soc/codecs/cs47l24.c
+@@ -57,6 +57,25 @@ static const struct wm_adsp_region *cs47l24_dsp_regions[] = {
+ 	cs47l24_dsp3_regions,
+ };
+ 
++static int cs47l24_adsp_power_ev(struct snd_soc_dapm_widget *w,
++				 struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct arizona *arizona = dev_get_drvdata(codec->dev->parent);
++	unsigned int v;
++	int ret;
++
++	ret = regmap_read(arizona->regmap, ARIZONA_SYSTEM_CLOCK_1, &v);
++	if (ret != 0) {
++		dev_err(codec->dev, "Failed to read SYSCLK state: %d\n", ret);
++		return ret;
++	}
++
++	v = (v & ARIZONA_SYSCLK_FREQ_MASK) >> ARIZONA_SYSCLK_FREQ_SHIFT;
++
++	return wm_adsp2_early_event(w, kcontrol, event, v);
++}
++
+ static DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
+ static DECLARE_TLV_DB_SCALE(digital_tlv, -6400, 50, 0);
+ static DECLARE_TLV_DB_SCALE(noise_tlv, -13200, 600, 0);
+@@ -405,8 +424,8 @@ SND_SOC_DAPM_PGA("ASRC2L", ARIZONA_ASRC_ENABLE, ARIZONA_ASRC2L_ENA_SHIFT, 0,
+ SND_SOC_DAPM_PGA("ASRC2R", ARIZONA_ASRC_ENABLE, ARIZONA_ASRC2R_ENA_SHIFT, 0,
+ 		 NULL, 0),
+ 
+-WM_ADSP2("DSP2", 1),
+-WM_ADSP2("DSP3", 2),
++WM_ADSP2("DSP2", 1, cs47l24_adsp_power_ev),
++WM_ADSP2("DSP3", 2, cs47l24_adsp_power_ev),
+ 
+ SND_SOC_DAPM_PGA("ISRC1INT1", ARIZONA_ISRC_1_CTRL_3,
+ 		 ARIZONA_ISRC1_INT0_ENA_SHIFT, 0, NULL, 0),
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index 64637d1..7c0860d 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -619,7 +619,7 @@ static int wm5102_adsp_power_ev(struct snd_soc_dapm_widget *w,
+ {
+ 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct arizona *arizona = dev_get_drvdata(codec->dev->parent);
+-	unsigned int v;
++	unsigned int v = 0;
+ 	int ret;
+ 
+ 	switch (event) {
+@@ -654,7 +654,7 @@ static int wm5102_adsp_power_ev(struct snd_soc_dapm_widget *w,
+ 		break;
+ 	}
+ 
+-	return wm_adsp2_early_event(w, kcontrol, event);
++	return wm_adsp2_early_event(w, kcontrol, event, v);
+ }
+ 
+ static int wm5102_out_comp_coeff_get(struct snd_kcontrol *kcontrol,
+@@ -1408,7 +1408,7 @@ ARIZONA_MUX_WIDGETS(ISRC2DEC2, "ISRC2DEC2"),
+ ARIZONA_MUX_WIDGETS(ISRC2INT1, "ISRC2INT1"),
+ ARIZONA_MUX_WIDGETS(ISRC2INT2, "ISRC2INT2"),
+ 
+-WM_ADSP2_E("DSP1", 0, wm5102_adsp_power_ev),
++WM_ADSP2("DSP1", 0, wm5102_adsp_power_ev),
+ 
+ SND_SOC_DAPM_OUTPUT("HPOUT1L"),
+ SND_SOC_DAPM_OUTPUT("HPOUT1R"),
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index 83760b7..b47bc44 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -191,6 +191,25 @@ static int wm5110_sysclk_ev(struct snd_soc_dapm_widget *w,
+ 	return 0;
+ }
+ 
++static int wm5110_adsp_power_ev(struct snd_soc_dapm_widget *w,
++				struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct arizona *arizona = dev_get_drvdata(codec->dev->parent);
++	unsigned int v;
++	int ret;
++
++	ret = regmap_read(arizona->regmap, ARIZONA_SYSTEM_CLOCK_1, &v);
++	if (ret != 0) {
++		dev_err(codec->dev, "Failed to read SYSCLK state: %d\n", ret);
++		return ret;
++	}
++
++	v = (v & ARIZONA_SYSCLK_FREQ_MASK) >> ARIZONA_SYSCLK_FREQ_SHIFT;
++
++	return wm_adsp2_early_event(w, kcontrol, event, v);
++}
++
+ static const struct reg_sequence wm5110_no_dre_left_enable[] = {
+ 	{ 0x3024, 0xE410 },
+ 	{ 0x3025, 0x0056 },
+@@ -1179,10 +1198,10 @@ SND_SOC_DAPM_PGA("ASRC2L", ARIZONA_ASRC_ENABLE, ARIZONA_ASRC2L_ENA_SHIFT, 0,
+ SND_SOC_DAPM_PGA("ASRC2R", ARIZONA_ASRC_ENABLE, ARIZONA_ASRC2R_ENA_SHIFT, 0,
+ 		 NULL, 0),
+ 
+-WM_ADSP2("DSP1", 0),
+-WM_ADSP2("DSP2", 1),
+-WM_ADSP2("DSP3", 2),
+-WM_ADSP2("DSP4", 3),
++WM_ADSP2("DSP1", 0, wm5110_adsp_power_ev),
++WM_ADSP2("DSP2", 1, wm5110_adsp_power_ev),
++WM_ADSP2("DSP3", 2, wm5110_adsp_power_ev),
++WM_ADSP2("DSP4", 3, wm5110_adsp_power_ev),
+ 
+ SND_SOC_DAPM_PGA("ISRC1INT1", ARIZONA_ISRC_1_CTRL_3,
+ 		 ARIZONA_ISRC1_INT0_ENA_SHIFT, 0, NULL, 0),
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index a81f568..76ab52d 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -32,9 +32,6 @@
+ #include <sound/initval.h>
+ #include <sound/tlv.h>
+ 
+-#include <linux/mfd/arizona/registers.h>
+-
+-#include "arizona.h"
+ #include "wm_adsp.h"
+ 
+ #define adsp_crit(_dsp, fmt, ...) \
+@@ -2146,30 +2143,9 @@ static void wm_adsp2_boot_work(struct work_struct *work)
+ 					   struct wm_adsp,
+ 					   boot_work);
+ 	int ret;
+-	unsigned int val;
+ 
+ 	mutex_lock(&dsp->pwr_lock);
+ 
+-	/*
+-	 * For simplicity set the DSP clock rate to be the
+-	 * SYSCLK rate rather than making it configurable.
+-	 */
+-	ret = regmap_read(dsp->regmap, ARIZONA_SYSTEM_CLOCK_1, &val);
+-	if (ret != 0) {
+-		adsp_err(dsp, "Failed to read SYSCLK state: %d\n", ret);
+-		goto err_mutex;
+-	}
+-	val = (val & ARIZONA_SYSCLK_FREQ_MASK)
+-		>> ARIZONA_SYSCLK_FREQ_SHIFT;
+-
+-	ret = regmap_update_bits_async(dsp->regmap,
+-				       dsp->base + ADSP2_CLOCKING,
+-				       ADSP2_CLK_SEL_MASK, val);
+-	if (ret != 0) {
+-		adsp_err(dsp, "Failed to set clock rate: %d\n", ret);
+-		goto err_mutex;
+-	}
+-
+ 	ret = wm_adsp2_ena(dsp);
+ 	if (ret != 0)
+ 		goto err_mutex;
+@@ -2209,8 +2185,21 @@ err_mutex:
+ 	mutex_unlock(&dsp->pwr_lock);
+ }
+ 
++static void wm_adsp2_set_dspclk(struct wm_adsp *dsp, unsigned int freq)
++{
++	int ret;
++
++	ret = regmap_update_bits_async(dsp->regmap,
++				       dsp->base + ADSP2_CLOCKING,
++				       ADSP2_CLK_SEL_MASK,
++				       freq << ADSP2_CLK_SEL_SHIFT);
++	if (ret != 0)
++		adsp_err(dsp, "Failed to set clock rate: %d\n", ret);
++}
++
+ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
+-		   struct snd_kcontrol *kcontrol, int event)
++			 struct snd_kcontrol *kcontrol, int event,
++			 unsigned int freq)
+ {
+ 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct wm_adsp *dsps = snd_soc_codec_get_drvdata(codec);
+@@ -2220,6 +2209,7 @@ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
++		wm_adsp2_set_dspclk(dsp, freq);
+ 		queue_work(system_unbound_wq, &dsp->boot_work);
+ 		break;
+ 	default:
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index 1a928ec..b61cb57 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -80,7 +80,7 @@ struct wm_adsp {
+ 	SND_SOC_DAPM_PGA_E(wname, SND_SOC_NOPM, num, 0, NULL, 0, \
+ 		wm_adsp1_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)
+ 
+-#define WM_ADSP2_E(wname, num, event_fn) \
++#define WM_ADSP2(wname, num, event_fn) \
+ {	.id = snd_soc_dapm_dai_link, .name = wname " Preloader", \
+ 	.reg = SND_SOC_NOPM, .shift = num, .event = event_fn, \
+ 	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD }, \
+@@ -88,9 +88,6 @@ struct wm_adsp {
+ 	.reg = SND_SOC_NOPM, .shift = num, .event = wm_adsp2_event, \
+ 	.event_flags = SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD }
+ 
+-#define WM_ADSP2(wname, num) \
+-	WM_ADSP2_E(wname, num, wm_adsp2_early_event)
+-
+ extern const struct snd_kcontrol_new wm_adsp_fw_controls[];
+ 
+ int wm_adsp1_init(struct wm_adsp *dsp);
+@@ -100,7 +97,8 @@ int wm_adsp2_codec_remove(struct wm_adsp *dsp, struct snd_soc_codec *codec);
+ int wm_adsp1_event(struct snd_soc_dapm_widget *w,
+ 		   struct snd_kcontrol *kcontrol, int event);
+ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
+-			 struct snd_kcontrol *kcontrol, int event);
++			 struct snd_kcontrol *kcontrol, int event,
++			 unsigned int freq);
+ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 		   struct snd_kcontrol *kcontrol, int event);
+ 
+-- 
+2.6.4
