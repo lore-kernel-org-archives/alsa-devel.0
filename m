@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-pcm: copy dpcm->hw_params and call
-	be_hw_params_fixup every time" to the asoc tree
-Date: Fri, 29 Jan 2016 01:22:27 +0100
-Message-ID: <E1aOwpX-0005mr-S2@finisterre>
-References: <87si1r4shm.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: pcm179x: Support continuous rates" to
+	the asoc tree
+Date: Fri, 29 Jan 2016 01:22:29 +0100
+Message-ID: <E1aOwpZ-0005nK-0s@finisterre>
+References: <1453390018-16854-4-git-send-email-jacob@teenage.engineering>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 765BC2614CB
- for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2016 01:22:38 +0100 (CET)
-In-Reply-To: <87si1r4shm.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id AA597261546
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2016 01:22:42 +0100 (CET)
+In-Reply-To: <1453390018-16854-4-git-send-email-jacob@teenage.engineering>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+To: Jacob Siverskog <jacob@teenage.engineering>, Michael Trimarchi <michael@amarulasolutions.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-pcm: copy dpcm->hw_params and call be_hw_params_fixup every time
+   ASoC: pcm179x: Support continuous rates
 
 has been applied to the asoc tree at
 
@@ -53,63 +53,60 @@ to this mail.
 Thanks,
 Mark
 
->From b0639bd2428d61a13b69d2ff247cfceae90b8366 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 21 Jan 2016 01:47:12 +0000
-Subject: [PATCH] ASoC: soc-pcm: copy dpcm->hw_params and call
- be_hw_params_fixup every time
+>From e0236f541e68aa2187a9a402bf74bec6f007eb84 Mon Sep 17 00:00:00 2001
+From: Jacob Siverskog <jacob@teenage.engineering>
+Date: Fri, 22 Jan 2016 13:39:55 +0100
+Subject: [PATCH] ASoC: pcm179x: Support continuous rates
 
-Current DPCM doesn't copy dpcm->hw_params and doesn't call be_hw_params
-if some FE are connected. But 2nd or later FE might want to know BE hw_params.
-This patch solves this issue.
+According to the PCM179x data sheets sampling frequencies between 10
+kHz and 200 kHz are supported. Specify support in the driver.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Tested with PCM1791A.
+
+References:
+http://www.ti.com/lit/ds/symlink/pcm1791a.pdf
+http://www.ti.com/lit/ds/symlink/pcm1792a.pdf
+http://www.ti.com/lit/ds/symlink/pcm1795.pdf
+http://www.ti.com/lit/ds/symlink/pcm1796.pdf
+
+Signed-off-by: Jacob Siverskog <jacob@teenage.engineering>
+Reviewed-by: Johan Hovold <johan@kernel.org>
+Acked-by: Michael Trimarchi <michael@amarulasolutions.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ sound/soc/codecs/pcm179x.c | 4 +++-
+ sound/soc/codecs/pcm179x.h | 4 ----
+ 2 files changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index e898b42..be2fd5e 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1866,18 +1866,6 @@ int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
- 		if (!snd_soc_dpcm_be_can_update(fe, be, stream))
- 			continue;
+diff --git a/sound/soc/codecs/pcm179x.c b/sound/soc/codecs/pcm179x.c
+index 8f20f70..06a6657 100644
+--- a/sound/soc/codecs/pcm179x.c
++++ b/sound/soc/codecs/pcm179x.c
+@@ -187,7 +187,9 @@ static struct snd_soc_dai_driver pcm179x_dai = {
+ 		.stream_name = "Playback",
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+-		.rates = PCM1792A_RATES,
++		.rates = SNDRV_PCM_RATE_CONTINUOUS,
++		.rate_min = 10000,
++		.rate_max = 200000,
+ 		.formats = PCM1792A_FORMATS, },
+ 	.ops = &pcm179x_dai_ops,
+ };
+diff --git a/sound/soc/codecs/pcm179x.h b/sound/soc/codecs/pcm179x.h
+index c4eea4d..11e3312 100644
+--- a/sound/soc/codecs/pcm179x.h
++++ b/sound/soc/codecs/pcm179x.h
+@@ -17,10 +17,6 @@
+ #ifndef __PCM179X_H__
+ #define __PCM179X_H__
  
--		/* only allow hw_params() if no connected FEs are running */
--		if (!snd_soc_dpcm_can_be_params(fe, be, stream))
--			continue;
+-#define PCM1792A_RATES (SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_8000_48000 | \
+-			SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 | \
+-			SNDRV_PCM_RATE_192000)
 -
--		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_OPEN) &&
--		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_PARAMS) &&
--		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_FREE))
--			continue;
--
--		dev_dbg(be->dev, "ASoC: hw_params BE %s\n",
--			dpcm->fe->dai_link->name);
--
- 		/* copy params for each dpcm */
- 		memcpy(&dpcm->hw_params, &fe->dpcm[stream].hw_params,
- 				sizeof(struct snd_pcm_hw_params));
-@@ -1894,6 +1882,18 @@ int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
- 			}
- 		}
+ #define PCM1792A_FORMATS (SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S24_LE | \
+ 			  SNDRV_PCM_FMTBIT_S16_LE)
  
-+		/* only allow hw_params() if no connected FEs are running */
-+		if (!snd_soc_dpcm_can_be_params(fe, be, stream))
-+			continue;
-+
-+		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_OPEN) &&
-+		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_PARAMS) &&
-+		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_FREE))
-+			continue;
-+
-+		dev_dbg(be->dev, "ASoC: hw_params BE %s\n",
-+			dpcm->fe->dai_link->name);
-+
- 		ret = soc_pcm_hw_params(be_substream, &dpcm->hw_params);
- 		if (ret < 0) {
- 			dev_err(dpcm->be->dev,
 -- 
 2.6.4
