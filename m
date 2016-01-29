@@ -1,82 +1,233 @@
-From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
-Subject: Re: [PATCH] ASoC: fsl: select SND_SOC_FSL_SAI or SND_SOC_FSL_SSI
- depending on SoC type
-Date: Fri, 29 Jan 2016 12:33:41 +0100
-Message-ID: <20160129123341.64699d68@ipc1.ka-ro>
-References: <1453293038-16032-1-git-send-email-LW@KARO-electronics.de>
-	<20160128223352.GB4130@sirena.org.uk>
-	<20160128230846.GA32388@Asurada-Nvidia>
-	<20160129065133.7338cf2c@ipc1.ka-ro>
-	<20160129062529.GA3370@Asurada-CZ80>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: cs47l24: Add voice control compressed
+	stream" to the asoc tree
+Date: Fri, 29 Jan 2016 12:40:25 +0100
+Message-ID: <E1aP7Pd-0006wB-Iz@finisterre>
+References: <1453470599-19916-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160129062529.GA3370@Asurada-CZ80>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Fabio Estevam <fabio.estevam@freescale.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5202B260694
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2016 12:40:42 +0100 (CET)
+In-Reply-To: <1453470599-19916-1-git-send-email-rf@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The patch
 
-On Thu, 28 Jan 2016 22:25:30 -0800 Nicolin Chen wrote:
-> On Fri, Jan 29, 2016 at 06:51:33AM +0100, Lothar Wa=C3=9Fmann wrote:
-> > Hi,
-> >=20
-> > On Thu, 28 Jan 2016 15:08:47 -0800 Nicolin Chen wrote:
-> > > On Thu, Jan 28, 2016 at 11:33:52PM +0100, Mark Brown wrote:
-> > > > On Wed, Jan 20, 2016 at 01:30:38PM +0100, Lothar Wa=C3=9Fmann w=
-rote:
-> > > >=20
-> > > > > -	select SND_SOC_FSL_SSI
-> > > > > +	select SND_SOC_FSL_SAI if SOC_IMX6UL
-> > > > > +	select SND_SOC_FSL_SSI if SOC_IMX6Q || SOC_IMX6SL || SOC_IM=
-X6SX
-> > > >=20
-> > > > Does this card not work for older i.MXs (which had the same SSI=
-/AUDMUX
-> > > > combination as the majority of the i.MX6 family) as well?
-> > >=20
-> > > It's widely used in older i.MXs according to their DTS files. So
-> > > it should be safer to just leave SSI over here.
-> > >=20
-> > Nothing prevents you to enable the SSI driver on any i.MX6 module.
->=20
-> What about i.MX2, 3 and 5 series? Will they still be able to enable
-> SSI without changing .config file as usual?
->=20
-> > The only change I made is to select the SAI driver instead of the S=
-SI
-> > driver on i.MX6UL because the i.MX6UL does not have an SSI unit!
-> >=20
-> > > And I actually doubt the feasibility of running this driver with
-> > > i.MX6UL as there might not be an AUDMUX on i.MX6UL since it does
-> > > not have SSI any more while the driver always touches the address
-> > > space of AUDMUX which may not exist on i.MX6UL.
-> > >
-> > #define this driver
->=20
-> Your change is applied to "SND_SOC_IMX_SGTL5000" whose corresponding
-> driver is the imx-sgtl5000.c file.
->=20
-> > The FSL_SAI driver does not touch the audmux address space in any w=
-ay.
->=20
-> This imx-sgtl5000 driver does access AUDMUX registers. And I thought
-> you tried to use this one which made me very confused.
->=20
-That change is obsolete, because as Mark Brown suggested, the
-simple-card driver works perfectly well.
+   ASoC: cs47l24: Add voice control compressed stream
 
-> > The simple-card audio driver works perfectly well with the FSL_SAI
-> > driver on i.MX6UL.
->=20
-> It seems like you are using simple-card while letting the other drive=
-r
-> (imx-sgtl5000) select SAI for you. It doesn't sound so right to me.
->
-That was before I found out that the simple-card driver works.
+has been applied to the asoc tree at
 
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Lothar Wa=C3=9Fmann
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 7eec55d7a2f2932b3b4a799bc5d0d6718e1ee9e2 Mon Sep 17 00:00:00 2001
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Date: Fri, 22 Jan 2016 13:49:59 +0000
+Subject: [PATCH] ASoC: cs47l24: Add voice control compressed stream
+
+This patch adds firmware compressed stream capture support
+and DAI hookups for voice control firmware (based on the wm5110
+implementation.)
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/cs47l24.c | 98 +++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 96 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
+index 9dc77a4..b8d3cd0 100644
+--- a/sound/soc/codecs/cs47l24.c
++++ b/sound/soc/codecs/cs47l24.c
+@@ -798,6 +798,9 @@ static const struct snd_soc_dapm_route cs47l24_dapm_routes[] = {
+ 	{ "AIF2 Capture", NULL, "SYSCLK" },
+ 	{ "AIF3 Capture", NULL, "SYSCLK" },
+ 
++	{ "Voice Control DSP", NULL, "DSP3" },
++	{ "Voice Control DSP", NULL, "SYSCLK" },
++
+ 	{ "IN1L PGA", NULL, "IN1L" },
+ 	{ "IN1R PGA", NULL, "IN1R" },
+ 
+@@ -992,12 +995,68 @@ static struct snd_soc_dai_driver cs47l24_dai[] = {
+ 		.symmetric_rates = 1,
+ 		.symmetric_samplebits = 1,
+ 	},
++	{
++		.name = "cs47l24-cpu-voicectrl",
++		.capture = {
++			.stream_name = "Voice Control CPU",
++			.channels_min = 1,
++			.channels_max = 1,
++			.rates = CS47L24_RATES,
++			.formats = CS47L24_FORMATS,
++		},
++		.compress_new = snd_soc_new_compress,
++	},
++	{
++		.name = "cs47l24-dsp-voicectrl",
++		.capture = {
++			.stream_name = "Voice Control DSP",
++			.channels_min = 1,
++			.channels_max = 1,
++			.rates = CS47L24_RATES,
++			.formats = CS47L24_FORMATS,
++		},
++	},
+ };
+ 
++static int cs47l24_open(struct snd_compr_stream *stream)
++{
++	struct snd_soc_pcm_runtime *rtd = stream->private_data;
++	struct cs47l24_priv *priv = snd_soc_codec_get_drvdata(rtd->codec);
++	struct arizona *arizona = priv->core.arizona;
++	int n_adsp;
++
++	if (strcmp(rtd->codec_dai->name, "cs47l24-dsp-voicectrl") == 0) {
++		n_adsp = 2;
++	} else {
++		dev_err(arizona->dev,
++			"No suitable compressed stream for DAI '%s'\n",
++			rtd->codec_dai->name);
++		return -EINVAL;
++	}
++
++	return wm_adsp_compr_open(&priv->core.adsp[n_adsp], stream);
++}
++
++static irqreturn_t cs47l24_adsp2_irq(int irq, void *data)
++{
++	struct cs47l24_priv *priv = data;
++	struct arizona *arizona = priv->core.arizona;
++	int ret;
++
++	ret = wm_adsp_compr_handle_irq(&priv->core.adsp[2]);
++	if (ret == -ENODEV) {
++		dev_err(arizona->dev, "Spurious compressed data IRQ\n");
++		return IRQ_NONE;
++	}
++
++	return IRQ_HANDLED;
++}
++
+ static int cs47l24_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+ 	struct cs47l24_priv *priv = snd_soc_codec_get_drvdata(codec);
++	struct arizona *arizona = priv->core.arizona;
+ 	int ret;
+ 
+ 	priv->core.arizona->dapm = dapm;
+@@ -1006,6 +1065,14 @@ static int cs47l24_codec_probe(struct snd_soc_codec *codec)
+ 	arizona_init_gpio(codec);
+ 	arizona_init_mono(codec);
+ 
++	ret = arizona_request_irq(arizona, ARIZONA_IRQ_DSP_IRQ1,
++				  "ADSP2 Compressed IRQ", cs47l24_adsp2_irq,
++				  priv);
++	if (ret != 0) {
++		dev_err(codec->dev, "Failed to request DSP IRQ: %d\n", ret);
++		return ret;
++	}
++
+ 	ret = wm_adsp2_codec_probe(&priv->core.adsp[1], codec);
+ 	if (ret)
+ 		goto err_adsp2_codec_probe;
+@@ -1033,13 +1100,14 @@ err_adsp2_codec_probe:
+ static int cs47l24_codec_remove(struct snd_soc_codec *codec)
+ {
+ 	struct cs47l24_priv *priv = snd_soc_codec_get_drvdata(codec);
+-
++	struct arizona *arizona = priv->core.arizona;
+ 
+ 	wm_adsp2_codec_remove(&priv->core.adsp[1], codec);
+ 	wm_adsp2_codec_remove(&priv->core.adsp[2], codec);
+ 
+ 	priv->core.arizona->dapm = NULL;
+ 
++	arizona_free_irq(arizona, ARIZONA_IRQ_DSP_IRQ1, priv);
+ 	return 0;
+ }
+ 
+@@ -1076,6 +1144,19 @@ static struct snd_soc_codec_driver soc_codec_dev_cs47l24 = {
+ 	.num_dapm_routes = ARRAY_SIZE(cs47l24_dapm_routes),
+ };
+ 
++static struct snd_compr_ops cs47l24_compr_ops = {
++	.open = cs47l24_open,
++	.free = wm_adsp_compr_free,
++	.set_params = wm_adsp_compr_set_params,
++	.get_caps = wm_adsp_compr_get_caps,
++	.trigger = wm_adsp_compr_trigger,
++	.pointer = wm_adsp_compr_pointer,
++	.copy = wm_adsp_compr_copy,
++};
++
++static struct snd_soc_platform_driver cs47l24_compr_platform = {
++	.compr_ops = &cs47l24_compr_ops,
++};
+ static int cs47l24_probe(struct platform_device *pdev)
+ {
+ 	struct arizona *arizona = dev_get_drvdata(pdev->dev.parent);
+@@ -1139,12 +1220,25 @@ static int cs47l24_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(&pdev->dev);
+ 	pm_runtime_idle(&pdev->dev);
+ 
+-	return snd_soc_register_codec(&pdev->dev, &soc_codec_dev_cs47l24,
++	ret = snd_soc_register_platform(&pdev->dev, &cs47l24_compr_platform);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "Failed to register platform: %d\n", ret);
++		return ret;
++	}
++	ret = snd_soc_register_codec(&pdev->dev, &soc_codec_dev_cs47l24,
+ 				      cs47l24_dai, ARRAY_SIZE(cs47l24_dai));
++
++	if (ret < 0) {
++		dev_err(&pdev->dev, "Failed to register codec: %d\n", ret);
++		snd_soc_unregister_platform(&pdev->dev);
++	}
++
++	return ret;
+ }
+ 
+ static int cs47l24_remove(struct platform_device *pdev)
+ {
++	snd_soc_unregister_platform(&pdev->dev);
+ 	snd_soc_unregister_codec(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 
+-- 
+2.6.4
