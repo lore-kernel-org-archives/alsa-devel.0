@@ -1,39 +1,27 @@
-From: Insu Yun <wuninsu@gmail.com>
-Subject: [PATCH v2] emu10k1: correctly handling failed thread creation
-Date: Fri, 29 Jan 2016 10:56:11 -0500
-Message-ID: <1454082971-12873-1-git-send-email-wuninsu@gmail.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl-asoc-card: add cs4271 and cs4272 support
+Date: Fri, 29 Jan 2016 10:10:03 -0600
+Message-ID: <20160129161003.GA1079@rob-hp-laptop>
+References: <1453978355-23620-1-git-send-email-eu@felipetonello.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1453978355-23620-1-git-send-email-eu@felipetonello.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com, michael@gernoth.net, lambert.quentin@gmail.com, pzubaj@marticonet.sk, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: taesoo@gatech.edu, yeongjin.jang@gatech.edu, insu@gatech.edu, changwoo@gatech.edu, Insu Yun <wuninsu@gmail.com>
+To: "Felipe F. Tonello" <eu@felipetonello.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Nicolin Chen <nicoleotsuka@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Since kthread_create can be failed, it needs to check
-whether error occurred and return error code.
+On Thu, Jan 28, 2016 at 10:52:35AM +0000, Felipe F. Tonello wrote:
+> add cs4271 and cs42727 support for fsl-asoc-card
+> 
+> Signed-off-by: Felipe F. Tonello <eu@felipetonello.com>
+> ---
+>  .../devicetree/bindings/sound/imx-audio-cs427x.txt | 47 ++++++++++++++++++++++
+>  sound/soc/fsl/Kconfig                              |  4 +-
+>  sound/soc/fsl/fsl-asoc-card.c                      |  7 ++++
+>  3 files changed, 56 insertions(+), 2 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-cs427x.txt
 
-Signed-off-by: Insu Yun <wuninsu@gmail.com>
----
- sound/pci/emu10k1/emu10k1_main.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
-index 28e2f8b..8914534 100644
---- a/sound/pci/emu10k1/emu10k1_main.c
-+++ b/sound/pci/emu10k1/emu10k1_main.c
-@@ -1141,6 +1141,14 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
- 		emu->emu1010.firmware_thread =
- 			kthread_create(emu1010_firmware_thread, emu,
- 				       "emu1010_firmware");
-+		if (IS_ERR(emu->emu1010.firmware_thread)) {
-+			err = PTR_ERR(emu->emu1010.firmware_thread);
-+			emu->emu1010.firmware_thread = NULL;
-+			dev_info(emu->card->dev,
-+					"emu1010: Creating thread failed\n");
-+			return err;
-+		}
-+
- 		wake_up_process(emu->emu1010.firmware_thread);
- 	}
- 
--- 
-1.9.1
+Acked-by: Rob Herring <robh@kernel.org>
