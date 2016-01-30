@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v5 02/14] ASoC: hdac_hdmi: Apply constraints
-	based on ELD
-Date: Sat, 30 Jan 2016 19:13:36 +0530
-Message-ID: <1454161428-7896-3-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v5 03/14] ASoC: hdac_hdmi: Enable DP1.2 and all
+	converters/pins
+Date: Sat, 30 Jan 2016 19:13:37 +0530
+Message-ID: <1454161428-7896-4-git-send-email-subhransu.s.prusty@intel.com>
 References: <1454161428-7896-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 3BB6F26059B
- for <alsa-devel@alsa-project.org>; Sat, 30 Jan 2016 14:42:20 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id B51A52605A6
+ for <alsa-devel@alsa-project.org>; Sat, 30 Jan 2016 14:42:21 +0100 (CET)
 In-Reply-To: <1454161428-7896-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,120 +25,83 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Uses the drm eld core framework to apply rate and channel
+Skylake supports 3 pin and 3 converter widgets. But by default
+only one converter and pin widget are enabled. In skylake
+platform the DP port is on a different port which is not enabled
+by default. To enable playback on DP port, enable all pin and
+converter widget by sending a vendor VERB for a vendor widget to
+set required bits.
 
-Also compute the format to be set based on ELD.
+As we are enabling the DP support enable the DP1.2 feature as well.
 
-Even though the channel constraint is based on ELD, infoframe
-is set with stereo only. Multichannel support will be added
-later.
+Enabling DP1.2 and all widget changes are copied from patch_hdmi.c.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/codecs/Kconfig     |  1 +
- sound/soc/codecs/hdac_hdmi.c | 51 +++++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 49 insertions(+), 3 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 43 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 50693c8..8c86239c 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -490,6 +490,7 @@ config SND_SOC_GTM601
- config SND_SOC_HDAC_HDMI
- 	tristate
- 	select SND_HDA_EXT_CORE
-+	select SND_PCM_ELD
- 	select HDMI
- 
- config SND_SOC_ICS43432
 diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 59abacd..a5d3da4 100644
+index a5d3da4..3f45a0f 100644
 --- a/sound/soc/codecs/hdac_hdmi.c
 +++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -22,10 +22,12 @@
- #include <linux/module.h>
- #include <linux/pm_runtime.h>
- #include <linux/hdmi.h>
-+#include <drm/drm_edid.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <sound/hdaudio_ext.h>
- #include <sound/hda_i915.h>
-+#include <sound/pcm_drm_eld.h>
- #include "../../hda/local.h"
- 
- #define AMP_OUT_MUTE		0xb080
-@@ -90,6 +92,45 @@ static inline struct hdac_ext_device *to_hda_ext_device(struct device *dev)
- 	return to_ehdac_device(hdac);
+@@ -629,6 +629,46 @@ static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
+ 	return 0;
  }
  
-+static unsigned int sad_format(const u8 *sad)
++#define INTEL_VENDOR_NID 0x08
++#define INTEL_GET_VENDOR_VERB 0xf81
++#define INTEL_SET_VENDOR_VERB 0x781
++#define INTEL_EN_DP12			0x02 /* enable DP 1.2 features */
++#define INTEL_EN_ALL_PIN_CVTS	0x01 /* enable 2nd & 3rd pins and convertors */
++
++static void hdac_hdmi_skl_enable_all_pins(struct hdac_device *hdac)
 +{
-+	return ((sad[0] >> 0x3) & 0x1f);
++	unsigned int vendor_param;
++
++	vendor_param = snd_hdac_codec_read(hdac, INTEL_VENDOR_NID, 0,
++				INTEL_GET_VENDOR_VERB, 0);
++	if (vendor_param == -1 || vendor_param & INTEL_EN_ALL_PIN_CVTS)
++		return;
++
++	vendor_param |= INTEL_EN_ALL_PIN_CVTS;
++	vendor_param = snd_hdac_codec_read(hdac, INTEL_VENDOR_NID, 0,
++				INTEL_SET_VENDOR_VERB, vendor_param);
++	if (vendor_param == -1)
++		return;
 +}
 +
-+static unsigned int sad_sample_bits_lpcm(const u8 *sad)
++static void hdac_hdmi_skl_enable_dp12(struct hdac_device *hdac)
 +{
-+	return (sad[2] & 7);
-+}
++	unsigned int vendor_param;
 +
-+static int hdac_hdmi_eld_limit_formats(struct snd_pcm_runtime *runtime,
-+						void *eld)
-+{
-+	u64 formats = SNDRV_PCM_FMTBIT_S16;
-+	int i;
-+	const u8 *sad, *eld_buf = eld;
++	vendor_param = snd_hdac_codec_read(hdac, INTEL_VENDOR_NID, 0,
++				INTEL_GET_VENDOR_VERB, 0);
++	if (vendor_param == -1 || vendor_param & INTEL_EN_DP12)
++		return;
 +
-+	sad = drm_eld_sad(eld_buf);
-+	if (!sad)
-+		goto format_constraint;
-+
-+	for (i = drm_eld_sad_count(eld_buf); i > 0; i--, sad += 3) {
-+		if (sad_format(sad) == 1) { /* AUDIO_CODING_TYPE_LPCM */
-+
-+			/*
-+			 * the controller support 20 and 24 bits in 32 bit
-+			 * container so we set S32
-+			 */
-+			if (sad_sample_bits_lpcm(sad) & 0x6)
-+				formats |= SNDRV_PCM_FMTBIT_S32;
-+		}
-+	}
-+
-+format_constraint:
-+	return snd_pcm_hw_constraint_mask64(runtime, SNDRV_PCM_HW_PARAM_FORMAT,
-+				formats);
++	/* enable DP1.2 mode */
++	vendor_param |= INTEL_EN_DP12;
++	vendor_param = snd_hdac_codec_read(hdac, INTEL_VENDOR_NID, 0,
++				INTEL_SET_VENDOR_VERB, vendor_param);
++	if (vendor_param == -1)
++		return;
 +
 +}
 +
-  /* HDMI Eld routines */
- static unsigned int hdac_hdmi_get_eld_data(struct hdac_device *codec,
- 				hda_nid_t nid, int byte_index)
-@@ -334,6 +375,7 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- 	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
- 	struct hdac_hdmi_priv *hdmi = hdac->private_data;
- 	struct hdac_hdmi_dai_pin_map *dai_map;
-+	int ret;
+ /*
+  * Parse all nodes and store the cvt/pin nids in array
+  * Add one time initialization for pin and cvt widgets
+@@ -641,6 +681,9 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev)
+ 	struct hdac_hdmi_priv *hdmi = edev->private_data;
+ 	int ret;
  
- 	if (dai->id > 0) {
- 		dev_err(&hdac->hdac.dev, "Only one dai supported as of now\n");
-@@ -357,10 +399,13 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- 	snd_hdac_codec_write(&hdac->hdac, dai_map->pin->nid, 0,
- 			AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
- 
--	snd_pcm_hw_constraint_step(substream->runtime, 0,
--				   SNDRV_PCM_HW_PARAM_CHANNELS, 2);
-+	ret = hdac_hdmi_eld_limit_formats(substream->runtime,
-+				dai_map->pin->eld.eld_buffer);
-+	if (ret < 0)
-+		return ret;
- 
--	return 0;
-+	return snd_pcm_hw_constraint_eld(substream->runtime,
-+				dai_map->pin->eld.eld_buffer);
- }
- 
- static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
++	hdac_hdmi_skl_enable_all_pins(hdac);
++	hdac_hdmi_skl_enable_dp12(hdac);
++
+ 	num_nodes = snd_hdac_get_sub_nodes(hdac, hdac->afg, &nid);
+ 	if (!nid || num_nodes <= 0) {
+ 		dev_warn(&hdac->dev, "HDMI: failed to get afg sub nodes\n");
 -- 
 1.9.1
