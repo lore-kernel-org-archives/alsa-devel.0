@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v5 07/14] ASoC: hdac_hdmi: Enable playback on
-	all enumerated ports
-Date: Sat, 30 Jan 2016 19:13:41 +0530
-Message-ID: <1454161428-7896-8-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v5 09/14] ASoC: hdac_hdmi: Add infoframe
+	support for dp audio
+Date: Sat, 30 Jan 2016 19:13:43 +0530
+Message-ID: <1454161428-7896-10-git-send-email-subhransu.s.prusty@intel.com>
 References: <1454161428-7896-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id A205B2606BB
- for <alsa-devel@alsa-project.org>; Sat, 30 Jan 2016 14:42:31 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 461F426109C
+ for <alsa-devel@alsa-project.org>; Sat, 30 Jan 2016 14:42:37 +0100 (CET)
 In-Reply-To: <1454161428-7896-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,272 +22,123 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Last patch added infrastructure to render over all the ports,
-PCM<->cvt<- pin mapping and user selection of controls. But we
-still have restriction of playback on the default port alone, so
-remove that.
-
-This patch removes the hardcoding of cvt<->pin map from the dai.
-Cvt and pin for a dai are now derived from the already stored pcm
-list of device opened.  We query connection list of a pin from
-codec to validate the cvt<->pin map.
-
-If connection list returns zero, then monitor is not connected so
-fail playback.
+For DP audio support, infoframe needs to be different. Based on
+get_conn_type result we pack either HDMI or DP infoframe.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 175 ++++++++++++++++++++++++++++++++-----------
- 1 file changed, 133 insertions(+), 42 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 74 ++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 64 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index f93aee0..3ad5abe 100644
+index 3ad5abe..9bd559d 100644
 --- a/sound/soc/codecs/hdac_hdmi.c
 +++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -40,6 +40,8 @@
- 
- #define HDA_MAX_CONNECTIONS     32
- 
-+#define HDA_MAX_CVTS		3
-+
- #define ELD_MAX_SIZE    256
- #define ELD_FIXED_BYTES	20
- 
-@@ -91,7 +93,7 @@ struct hdac_hdmi_dai_pin_map {
- };
- 
- struct hdac_hdmi_priv {
--	struct hdac_hdmi_dai_pin_map dai_map[3];
-+	struct hdac_hdmi_dai_pin_map dai_map[HDA_MAX_CVTS];
- 	struct list_head pin_list;
- 	struct list_head cvt_list;
- 	struct list_head pcm_list;
-@@ -384,43 +386,136 @@ static int hdac_hdmi_playback_cleanup(struct snd_pcm_substream *substream,
- 	return 0;
+@@ -253,27 +253,75 @@ hdac_hdmi_set_dip_index(struct hdac_ext_device *hdac, hda_nid_t pin_nid,
+ 				AC_VERB_SET_HDMI_DIP_INDEX, val);
  }
  
-+static int hdac_hdmi_enable_pin(struct hdac_ext_device *hdac,
-+		struct hdac_hdmi_dai_pin_map *dai_map)
-+{
-+	int mux_idx;
-+	struct hdac_hdmi_pin *pin = dai_map->pin;
++struct dp_audio_infoframe {
++	u8 type; /* 0x84 */
++	u8 len;  /* 0x1b */
++	u8 ver;  /* 0x11 << 2 */
 +
-+	for (mux_idx = 0; mux_idx < pin->num_mux_nids; mux_idx++) {
-+		if (pin->mux_nids[mux_idx] == dai_map->cvt->nid) {
-+			snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
-+					AC_VERB_SET_CONNECT_SEL, mux_idx);
-+			break;
-+		}
-+	}
++	u8 CC02_CT47;	/* match with HDMI infoframe from this on */
++	u8 SS01_SF24;
++	u8 CXT04;
++	u8 CA;
++	u8 LFEPBL01_LSV36_DM_INH7;
++};
 +
-+	if (mux_idx == pin->num_mux_nids)
-+		return -EIO;
-+
-+	/* Enable out path for this pin widget */
-+	snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
-+			AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT);
-+
-+	hdac_hdmi_set_power_state(hdac, dai_map, AC_PWRST_D0);
-+
-+	snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
-+			AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
-+
-+	return 0;
-+}
-+
-+static int hdac_hdmi_query_pin_connlist(struct hdac_ext_device *hdac,
-+					struct hdac_hdmi_pin *pin)
-+{
-+	if (!(get_wcaps(&hdac->hdac, pin->nid) & AC_WCAP_CONN_LIST)) {
-+		dev_warn(&hdac->hdac.dev,
-+			"HDMI: pin %d wcaps %#x does not support connection list\n",
-+			pin->nid, get_wcaps(&hdac->hdac, pin->nid));
-+		return -EINVAL;
-+	}
-+
-+	pin->num_mux_nids = snd_hdac_get_connections(&hdac->hdac, pin->nid,
-+			pin->mux_nids, HDA_MAX_CONNECTIONS);
-+	if (pin->num_mux_nids == 0)
-+		dev_warn(&hdac->hdac.dev, "No connections found for pin: %d\n",
-+								pin->nid);
-+
-+	dev_dbg(&hdac->hdac.dev, "num_mux_nids %d for pin: %d\n",
-+			pin->num_mux_nids, pin->nid);
-+
-+	return pin->num_mux_nids;
-+}
-+
-+/*
-+ * Query pcm list and return pin widget to which stream is routed.
-+ *
-+ * Also query connection list of the pin, to validate the cvt to pin map.
-+ *
-+ * Same stream rendering to multiple pins simultaneously can be done
-+ * possibly, but not supported for now in driver. So return the first pin
-+ * connected.
-+ */
-+static struct hdac_hdmi_pin *hdac_hdmi_get_pin_from_cvt(
-+			struct hdac_ext_device *edev,
-+			struct hdac_hdmi_priv *hdmi,
-+			struct hdac_hdmi_cvt *cvt)
-+{
-+	struct hdac_hdmi_pcm *pcm;
-+	struct hdac_hdmi_pin *pin = NULL;
-+	int ret, i;
-+
-+	list_for_each_entry(pcm, &hdmi->pcm_list, head) {
-+		if (pcm->cvt == cvt) {
-+			pin = pcm->pin;
-+			break;
-+		}
-+	}
-+
-+	if (pin) {
-+		ret = hdac_hdmi_query_pin_connlist(edev, pin);
-+		if (ret < 0)
-+			return NULL;
-+
-+		for (i = 0; i < pin->num_mux_nids; i++) {
-+			if (pin->mux_nids[i] == cvt->nid)
-+				return pin;
-+		}
-+	}
-+
-+	return NULL;
-+}
-+
- static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- 			struct snd_soc_dai *dai)
+ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
+ 				hda_nid_t cvt_nid, hda_nid_t pin_nid)
  {
- 	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
- 	struct hdac_hdmi_priv *hdmi = hdac->private_data;
- 	struct hdac_hdmi_dai_pin_map *dai_map;
-+	struct hdac_hdmi_cvt *cvt;
+ 	uint8_t buffer[HDMI_INFOFRAME_HEADER_SIZE + HDMI_AUDIO_INFOFRAME_SIZE];
+ 	struct hdmi_audio_infoframe frame;
+-	u8 *dip = (u8 *)&frame;
++	struct dp_audio_infoframe dp_ai;
++	struct hdac_hdmi_priv *hdmi = hdac->private_data;
 +	struct hdac_hdmi_pin *pin;
++	u8 *dip;
  	int ret;
+ 	int i;
++	const u8 *eld_buf;
++	u8 conn_type;
++	int channels = 2;
  
--	if (dai->id > 0) {
--		dev_err(&hdac->hdac.dev, "Only one dai supported as of now\n");
--		return -ENODEV;
--	}
--
- 	dai_map = &hdmi->dai_map[dai->id];
- 
--	if ((!dai_map->pin->eld.monitor_present) ||
--			(!dai_map->pin->eld.eld_valid)) {
-+	cvt = dai_map->cvt;
-+	pin = hdac_hdmi_get_pin_from_cvt(hdac, hdmi, cvt);
-+	if (!pin)
-+		return -EIO;
-+
-+	if ((!pin->eld.monitor_present) ||
-+			(!pin->eld.eld_valid)) {
- 
--		dev_err(&hdac->hdac.dev, "Failed: montior present? %d eld valid?: %d\n",
--				dai_map->pin->eld.monitor_present,
--				dai_map->pin->eld.eld_valid);
-+		dev_err(&hdac->hdac.dev,
-+			"failed: montior present? %d eld valid?: %d for pin: %d\n",
-+			pin->eld.monitor_present, pin->eld.eld_valid, pin->nid);
- 
- 		return -ENODEV;
- 	}
- 
--	hdac_hdmi_set_power_state(hdac, dai_map, AC_PWRST_D0);
-+	dai_map->pin = pin;
- 
--	snd_hdac_codec_write(&hdac->hdac, dai_map->pin->nid, 0,
--			AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
-+	ret = hdac_hdmi_enable_pin(hdac, dai_map);
-+	if (ret < 0)
-+		return ret;
- 
- 	ret = hdac_hdmi_eld_limit_formats(substream->runtime,
--				dai_map->pin->eld.eld_buffer);
-+				pin->eld.eld_buffer);
- 	if (ret < 0)
- 		return ret;
- 
- 	return snd_pcm_hw_constraint_eld(substream->runtime,
--				dai_map->pin->eld.eld_buffer);
-+				pin->eld.eld_buffer);
- }
- 
- static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
-@@ -436,6 +531,8 @@ static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
- 
- 	snd_hdac_codec_write(&hdac->hdac, dai_map->pin->nid, 0,
- 			AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE);
-+
-+	dai_map->pin = NULL;
- }
- 
- static int
-@@ -758,40 +855,34 @@ static int create_fill_widget_route_map(struct snd_soc_dapm_context *dapm)
- static int hdac_hdmi_init_dai_map(struct hdac_ext_device *edev)
- {
- 	struct hdac_hdmi_priv *hdmi = edev->private_data;
--	struct hdac_hdmi_dai_pin_map *dai_map = &hdmi->dai_map[0];
-+	struct hdac_hdmi_dai_pin_map *dai_map;
- 	struct hdac_hdmi_cvt *cvt;
--	struct hdac_hdmi_pin *pin;
-+	int dai_id = 0;
- 
--	if (list_empty(&hdmi->cvt_list) || list_empty(&hdmi->pin_list))
-+	if (list_empty(&hdmi->cvt_list))
- 		return -EINVAL;
- 
--	/*
--	 * Currently on board only 1 pin and 1 converter is enabled for
--	 * simplification, more will be added eventually
--	 * So using fixed map for dai_id:pin:cvt
--	 */
--	cvt = list_first_entry(&hdmi->cvt_list, struct hdac_hdmi_cvt, head);
--	pin = list_first_entry(&hdmi->pin_list, struct hdac_hdmi_pin, head);
--
--	dai_map->dai_id = 0;
--	dai_map->pin = pin;
-+	list_for_each_entry(cvt, &hdmi->cvt_list, head) {
-+		dai_map = &hdmi->dai_map[dai_id];
-+		dai_map->dai_id = dai_id;
-+		dai_map->cvt = cvt;
- 
--	dai_map->cvt = cvt;
-+		/* Enable transmission */
-+		snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
-+				AC_VERB_SET_DIGI_CONVERT_1, 1);
- 
--	/* Enable out path for this pin widget */
--	snd_hdac_codec_write(&edev->hdac, pin->nid, 0,
--			AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT);
-+		/* Category Code (CC) to zero */
-+		snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
-+				AC_VERB_SET_DIGI_CONVERT_2, 0);
- 
--	/* Enable transmission */
--	snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
--			AC_VERB_SET_DIGI_CONVERT_1, 1);
-+		dai_id++;
- 
--	/* Category Code (CC) to zero */
--	snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
--			AC_VERB_SET_DIGI_CONVERT_2, 0);
--
--	snd_hdac_codec_write(&edev->hdac, pin->nid, 0,
--			AC_VERB_SET_CONNECT_SEL, 0);
-+		if (dai_id == HDA_MAX_CVTS) {
-+			dev_warn(&edev->hdac.dev,
-+				"Max dais supported: %d\n", dai_id);
+-	hdmi_audio_infoframe_init(&frame);
++	list_for_each_entry(pin, &hdmi->pin_list, head) {
++		if (pin->nid == pin_nid)
 +			break;
-+		}
 +	}
  
- 	return 0;
- }
+-	/* Default stereo for now */
+-	frame.channels = 2;
++	eld_buf = pin->eld.eld_buffer;
++	conn_type = drm_eld_get_conn_type(eld_buf);
+ 
+ 	/* setup channel count */
+ 	snd_hdac_codec_write(&hdac->hdac, cvt_nid, 0,
+-			    AC_VERB_SET_CVT_CHAN_COUNT, frame.channels - 1);
++			    AC_VERB_SET_CVT_CHAN_COUNT, channels - 1);
+ 
+-	ret = hdmi_audio_infoframe_pack(&frame, buffer, sizeof(buffer));
+-	if (ret < 0)
+-		return ret;
++	switch (conn_type) {
++	case DRM_ELD_CONN_TYPE_HDMI:
++		hdmi_audio_infoframe_init(&frame);
++
++		/* Default stereo for now */
++		frame.channels = channels;
++
++		ret = hdmi_audio_infoframe_pack(&frame, buffer, sizeof(buffer));
++		if (ret < 0)
++			return ret;
++
++		dip = (u8 *)&frame;
++		break;
++
++	case DRM_ELD_CONN_TYPE_DP:
++		memset(&dp_ai, 0, sizeof(dp_ai));
++		dp_ai.type	= 0x84;
++		dp_ai.len	= 0x1b;
++		dp_ai.ver	= 0x11 << 2;
++		dp_ai.CC02_CT47	= channels - 1;
++		dp_ai.CA	= 0;
++
++		dip = (u8 *)&dp_ai;
++		break;
++
++	default:
++		dev_err(&hdac->hdac.dev, "Invalid connection type: %d\n",
++						conn_type);
++		return -EIO;
++	}
+ 
+ 	/* stop infoframe transmission */
+ 	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
+@@ -283,9 +331,15 @@ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
+ 
+ 	/*  Fill infoframe. Index auto-incremented */
+ 	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
+-	for (i = 0; i < sizeof(frame); i++)
+-		snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
++	if (conn_type == DRM_ELD_CONN_TYPE_HDMI) {
++		for (i = 0; i < sizeof(frame); i++)
++			snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
+ 				AC_VERB_SET_HDMI_DIP_DATA, dip[i]);
++	} else {
++		for (i = 0; i < sizeof(dp_ai); i++)
++			snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
++				AC_VERB_SET_HDMI_DIP_DATA, dip[i]);
++	}
+ 
+ 	/* Start infoframe */
+ 	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
 -- 
 1.9.1
