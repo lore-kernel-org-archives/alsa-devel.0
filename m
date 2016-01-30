@@ -1,15 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v5 12/14] ASoC: hdac_hdmi: Add PM support
-Date: Sat, 30 Jan 2016 19:13:46 +0530
-Message-ID: <1454161428-7896-13-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v5 13/14] ASoC: hdac_hdmi: Fix to keep codec
+	power active during enumeration.
+Date: Sat, 30 Jan 2016 19:13:47 +0530
+Message-ID: <1454161428-7896-14-git-send-email-subhransu.s.prusty@intel.com>
 References: <1454161428-7896-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 728CC261AFF
- for <alsa-devel@alsa-project.org>; Sat, 30 Jan 2016 14:42:45 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id B25C1261A7C
+ for <alsa-devel@alsa-project.org>; Sat, 30 Jan 2016 14:42:47 +0100 (CET)
 In-Reply-To: <1454161428-7896-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,117 +22,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, lgirdwood@gmail.com, Ramesh Babu <ramesh.babu@intel.com>, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+From: Ramesh Babu <ramesh.babu@intel.com>
 
-The codec registers are reset during S3. So need to reconfigure
-all pins and DP1.2 feature again after resume from S3. Also
-reprogram the required registers if the S3 was triggered during
-playback.
+Codec power is turned OFF in the first explicit call to
+pm_runtime_suspend, thus keeping the refcount balanced. For any
+other communication with codec, the power is turned ON/OFF in
+runtime PM handlers.
 
-In suspended state ELD notify callback is not processed, So add
-ELD check for all pins as well.
-
-Also turn the codec power domain oFF which is kept ON during
-controller resequencing and codec reenumeration.
-
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 61 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
+ sound/soc/codecs/hdac_hdmi.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 6c2505c..e1373b9 100644
+index e1373b9..fc45c95 100644
 --- a/sound/soc/codecs/hdac_hdmi.c
 +++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -594,6 +594,26 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- 				pin->eld.eld_buffer);
- }
+@@ -1492,6 +1492,18 @@ static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
+ 	INIT_LIST_HEAD(&hdmi_priv->pcm_list);
+ 	mutex_init(&hdmi_priv->pin_mutex);
  
-+static int hdac_hdmi_trigger(struct snd_pcm_substream *substream, int cmd,
-+		struct snd_soc_dai *dai)
-+{
-+	struct hdac_hdmi_dai_pin_map *dai_map;
-+	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
-+	struct hdac_hdmi_priv *hdmi = hdac->private_data;
-+	int ret;
-+
-+	dai_map = &hdmi->dai_map[dai->id];
-+	if (cmd == SNDRV_PCM_TRIGGER_RESUME) {
-+		ret = hdac_hdmi_enable_pin(hdac, dai_map);
-+		if (ret < 0)
-+			return ret;
-+
-+		return hdac_hdmi_playback_prepare(substream, dai);
-+	}
-+
-+	return 0;
-+}
-+
- static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
-@@ -1159,6 +1179,7 @@ static struct snd_soc_dai_ops hdmi_dai_ops = {
- 	.shutdown = hdac_hdmi_pcm_close,
- 	.hw_params = hdac_hdmi_set_hw_params,
- 	.prepare = hdac_hdmi_playback_prepare,
-+	.trigger = hdac_hdmi_trigger,
- 	.hw_free = hdac_hdmi_playback_cleanup,
- };
- 
-@@ -1404,9 +1425,49 @@ static int hdmi_codec_remove(struct snd_soc_codec *codec)
- 	return 0;
- }
- 
-+#ifdef CONFIG_PM
-+static int hdmi_codec_resume(struct snd_soc_codec *codec)
-+{
-+	struct hdac_ext_device *edev = snd_soc_codec_get_drvdata(codec);
-+	struct hdac_hdmi_priv *hdmi = edev->private_data;
-+	struct hdac_hdmi_pin *pin;
-+	struct hdac_device *hdac = &edev->hdac;
-+	struct hdac_bus *bus = hdac->bus;
-+	int err;
-+
-+	hdac_hdmi_skl_enable_all_pins(&edev->hdac);
-+	hdac_hdmi_skl_enable_dp12(&edev->hdac);
-+
-+	/* Power up afg */
-+	if (!snd_hdac_check_power_state(hdac, hdac->afg, AC_PWRST_D0))
-+		snd_hdac_codec_write(hdac, hdac->afg, 0,
-+			AC_VERB_SET_POWER_STATE, AC_PWRST_D0);
-+
 +	/*
-+	 * As the ELD notify callback request is not entertained while the
-+	 * device is in suspend state. Need to manually check detection of
-+	 * all pins here.
++	 * Turned off in the runtime_suspend during the first explicit
++	 * pm_runtime_suspend call.
 +	 */
-+	list_for_each_entry(pin, &hdmi->pin_list, head)
-+		hdac_hdmi_present_sense(pin, 1);
-+
-+	/* Codec power is turned ON during controller resume */
-+	err = snd_hdac_display_power(bus, false);
-+	if (err < 0) {
-+		dev_err(bus->dev, "Cannot turn on display power on i915\n");
-+		return err;
++	ret = snd_hdac_display_power(edev->hdac.bus, true);
++	if (ret < 0) {
++		dev_err(&edev->hdac.dev,
++			"Cannot turn on display power on i915 err: %d\n",
++			ret);
++		return ret;
 +	}
 +
-+	return 0;
-+}
-+#else
-+#define hdmi_codec_resume NULL
-+#endif
-+
- static struct snd_soc_codec_driver hdmi_hda_codec = {
- 	.probe		= hdmi_codec_probe,
- 	.remove		= hdmi_codec_remove,
-+	.resume		= hdmi_codec_resume,
- 	.idle_bias_off	= true,
- };
- 
+ 	ret = hdac_hdmi_parse_and_map_nid(edev, &hdmi_dais, &num_dais);
+ 	if (ret < 0) {
+ 		dev_err(&codec->dev,
 -- 
 1.9.1
