@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v5 01/14] ASoC: hdac_hdmi: Add hotplug
-	notification and read eld
-Date: Sat, 30 Jan 2016 19:13:35 +0530
-Message-ID: <1454161428-7896-2-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v5 02/14] ASoC: hdac_hdmi: Apply constraints
+	based on ELD
+Date: Sat, 30 Jan 2016 19:13:36 +0530
+Message-ID: <1454161428-7896-3-git-send-email-subhransu.s.prusty@intel.com>
 References: <1454161428-7896-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id B0662260591
- for <alsa-devel@alsa-project.org>; Sat, 30 Jan 2016 14:42:17 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3BB6F26059B
+ for <alsa-devel@alsa-project.org>; Sat, 30 Jan 2016 14:42:20 +0100 (CET)
 In-Reply-To: <1454161428-7896-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,318 +25,120 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch uses i915 component framework to register for hotplug
-notification.
+Uses the drm eld core framework to apply rate and channel
 
-In the hotplug notification, driver reads pin sense and ELD by
-sending PIN_SENSE and ELD verbs over HDA bus. Once it identifies
-valid pin sense and valid eld, store the eld into the
-corresponding pin map buffer.
+Also compute the format to be set based on ELD.
 
-Also read the monitor present sense during resume and ignore the
-ELD notify from graphics during PM as is done in legacy hda,
-commit 8ae743e82f0b ("ALSA: hda - Skip ELD notification during
-system suspend")
+Even though the channel constraint is based on ELD, infoframe
+is set with stereo only. Multichannel support will be added
+later.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 217 +++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 211 insertions(+), 6 deletions(-)
+ sound/soc/codecs/Kconfig     |  1 +
+ sound/soc/codecs/hdac_hdmi.c | 51 +++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 49 insertions(+), 3 deletions(-)
 
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 50693c8..8c86239c 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -490,6 +490,7 @@ config SND_SOC_GTM601
+ config SND_SOC_HDAC_HDMI
+ 	tristate
+ 	select SND_HDA_EXT_CORE
++	select SND_PCM_ELD
+ 	select HDMI
+ 
+ config SND_SOC_ICS43432
 diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 5a1ec0f..59abacd 100644
+index 59abacd..a5d3da4 100644
 --- a/sound/soc/codecs/hdac_hdmi.c
 +++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -34,6 +34,9 @@
+@@ -22,10 +22,12 @@
+ #include <linux/module.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/hdmi.h>
++#include <drm/drm_edid.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ #include <sound/hdaudio_ext.h>
+ #include <sound/hda_i915.h>
++#include <sound/pcm_drm_eld.h>
+ #include "../../hda/local.h"
  
- #define HDA_MAX_CONNECTIONS     32
- 
-+#define ELD_MAX_SIZE    256
-+#define ELD_FIXED_BYTES	20
-+
- struct hdac_hdmi_cvt_params {
- 	unsigned int channels_min;
- 	unsigned int channels_max;
-@@ -48,11 +51,22 @@ struct hdac_hdmi_cvt {
- 	struct hdac_hdmi_cvt_params params;
- };
- 
-+struct hdac_hdmi_eld {
-+	bool	monitor_present;
-+	bool	eld_valid;
-+	int	eld_size;
-+	char    eld_buffer[ELD_MAX_SIZE];
-+};
-+
- struct hdac_hdmi_pin {
- 	struct list_head head;
- 	hda_nid_t nid;
- 	int num_mux_nids;
- 	hda_nid_t mux_nids[HDA_MAX_CONNECTIONS];
-+	struct hdac_hdmi_eld eld;
-+	struct hdac_ext_device *edev;
-+	int repoll_count;
-+	struct delayed_work work;
- };
- 
- struct hdac_hdmi_dai_pin_map {
-@@ -76,6 +90,80 @@ static inline struct hdac_ext_device *to_hda_ext_device(struct device *dev)
+ #define AMP_OUT_MUTE		0xb080
+@@ -90,6 +92,45 @@ static inline struct hdac_ext_device *to_hda_ext_device(struct device *dev)
  	return to_ehdac_device(hdac);
  }
  
-+ /* HDMI Eld routines */
-+static unsigned int hdac_hdmi_get_eld_data(struct hdac_device *codec,
-+				hda_nid_t nid, int byte_index)
++static unsigned int sad_format(const u8 *sad)
 +{
-+	unsigned int val;
-+
-+	val = snd_hdac_codec_read(codec, nid, 0, AC_VERB_GET_HDMI_ELDD,
-+							byte_index);
-+
-+	dev_dbg(&codec->dev, "HDMI: ELD data byte %d: 0x%x\n",
-+					byte_index, val);
-+
-+	return val;
++	return ((sad[0] >> 0x3) & 0x1f);
 +}
 +
-+static int hdac_hdmi_get_eld_size(struct hdac_device *codec, hda_nid_t nid)
++static unsigned int sad_sample_bits_lpcm(const u8 *sad)
 +{
-+	return snd_hdac_codec_read(codec, nid, 0, AC_VERB_GET_HDMI_DIP_SIZE,
-+						 AC_DIPSIZE_ELD_BUF);
++	return (sad[2] & 7);
 +}
 +
-+/*
-+ * This function queries the eld size and eld data and fills in the buffer
-+ * passed by user
-+ */
-+static int hdac_hdmi_get_eld(struct hdac_device *codec, hda_nid_t nid,
-+			     unsigned char *buf, int *eld_size)
++static int hdac_hdmi_eld_limit_formats(struct snd_pcm_runtime *runtime,
++						void *eld)
 +{
-+	int i, size, ret = 0;
++	u64 formats = SNDRV_PCM_FMTBIT_S16;
++	int i;
++	const u8 *sad, *eld_buf = eld;
 +
-+	/*
-+	 * ELD size is initialized to zero in caller function. If no errors and
-+	 * ELD is valid, actual eld_size is assigned.
-+	 */
++	sad = drm_eld_sad(eld_buf);
++	if (!sad)
++		goto format_constraint;
 +
-+	size = hdac_hdmi_get_eld_size(codec, nid);
-+	if (size < ELD_FIXED_BYTES || size > ELD_MAX_SIZE) {
-+		dev_info(&codec->dev, "HDMI: invalid ELD buf size %d\n", size);
-+		return -ERANGE;
++	for (i = drm_eld_sad_count(eld_buf); i > 0; i--, sad += 3) {
++		if (sad_format(sad) == 1) { /* AUDIO_CODING_TYPE_LPCM */
++
++			/*
++			 * the controller support 20 and 24 bits in 32 bit
++			 * container so we set S32
++			 */
++			if (sad_sample_bits_lpcm(sad) & 0x6)
++				formats |= SNDRV_PCM_FMTBIT_S32;
++		}
 +	}
 +
-+	/* set ELD buffer */
-+	for (i = 0; i < size; i++) {
-+		unsigned int val = hdac_hdmi_get_eld_data(codec, nid, i);
-+		/*
-+		 * Graphics driver might be writing to ELD buffer right now.
-+		 * Just abort. The caller will repoll after a while.
-+		 */
-+		if (!(val & AC_ELDD_ELD_VALID)) {
-+			dev_info(&codec->dev,
-+				"HDMI: invalid ELD data byte %d\n", i);
-+			ret = -EINVAL;
-+			goto error;
-+		}
-+		val &= AC_ELDD_ELD_DATA;
-+		/*
-+		 * The first byte cannot be zero. This can happen on some DVI
-+		 * connections. Some Intel chips may also need some 250ms delay
-+		 * to return non-zero ELD data, even when the graphics driver
-+		 * correctly writes ELD content before setting ELD_valid bit.
-+		 */
-+		if (!val && !i) {
-+			dev_dbg(&codec->dev, "HDMI: 0 ELD data\n");
-+			ret = -EINVAL;
-+			goto error;
-+		}
-+		buf[i] = val;
-+	}
++format_constraint:
++	return snd_pcm_hw_constraint_mask64(runtime, SNDRV_PCM_HW_PARAM_FORMAT,
++				formats);
 +
-+	*eld_size = size;
-+error:
-+	return ret;
 +}
 +
- static int hdac_hdmi_setup_stream(struct hdac_ext_device *hdac,
- 				hda_nid_t cvt_nid, hda_nid_t pin_nid,
- 				u32 stream_tag, int format)
-@@ -246,7 +334,6 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
+  /* HDMI Eld routines */
+ static unsigned int hdac_hdmi_get_eld_data(struct hdac_device *codec,
+ 				hda_nid_t nid, int byte_index)
+@@ -334,6 +375,7 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
  	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
  	struct hdac_hdmi_priv *hdmi = hdac->private_data;
  	struct hdac_hdmi_dai_pin_map *dai_map;
--	int val;
++	int ret;
  
  	if (dai->id > 0) {
  		dev_err(&hdac->hdac.dev, "Only one dai supported as of now\n");
-@@ -255,12 +342,13 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
+@@ -357,10 +399,13 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
+ 	snd_hdac_codec_write(&hdac->hdac, dai_map->pin->nid, 0,
+ 			AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
  
- 	dai_map = &hdmi->dai_map[dai->id];
- 
--	val = snd_hdac_codec_read(&hdac->hdac, dai_map->pin->nid, 0,
--					AC_VERB_GET_PIN_SENSE, 0);
--	dev_info(&hdac->hdac.dev, "Val for AC_VERB_GET_PIN_SENSE: %x\n", val);
-+	if ((!dai_map->pin->eld.monitor_present) ||
-+			(!dai_map->pin->eld.eld_valid)) {
-+
-+		dev_err(&hdac->hdac.dev, "Failed: montior present? %d eld valid?: %d\n",
-+				dai_map->pin->eld.monitor_present,
-+				dai_map->pin->eld.eld_valid);
- 
--	if ((!(val & AC_PINSENSE_PRESENCE)) || (!(val & AC_PINSENSE_ELDV))) {
--		dev_err(&hdac->hdac.dev, "Monitor presence invalid with val: %x\n", val);
- 		return -ENODEV;
- 	}
- 
-@@ -410,6 +498,72 @@ static int hdac_hdmi_add_cvt(struct hdac_ext_device *edev, hda_nid_t nid)
- 	return hdac_hdmi_query_cvt_params(&edev->hdac, cvt);
- }
- 
-+static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin, int repoll)
-+{
-+	struct hdac_ext_device *edev = pin->edev;
-+	int val;
-+
-+	if (!edev)
-+		return;
-+
-+	pin->repoll_count = repoll;
-+
-+	pm_runtime_get_sync(&edev->hdac.dev);
-+	val = snd_hdac_codec_read(&edev->hdac, pin->nid, 0,
-+					AC_VERB_GET_PIN_SENSE, 0);
-+
-+	dev_dbg(&edev->hdac.dev, "Pin sense val %x for pin: %d\n",
-+						val, pin->nid);
-+
-+	pin->eld.monitor_present = !!(val & AC_PINSENSE_PRESENCE);
-+	pin->eld.eld_valid = !!(val & AC_PINSENSE_ELDV);
-+
-+	if (!pin->eld.monitor_present || !pin->eld.eld_valid) {
-+
-+		dev_info(&edev->hdac.dev, "%s: disconnect for pin %d\n",
-+						__func__, pin->nid);
-+		goto put_hdac_device;
-+	}
-+
-+	if (pin->eld.monitor_present && pin->eld.eld_valid) {
-+		/* TODO: use i915 component for reading ELD later */
-+		if (hdac_hdmi_get_eld(&edev->hdac, pin->nid,
-+				pin->eld.eld_buffer,
-+				&pin->eld.eld_size) == 0) {
-+
-+			print_hex_dump_bytes("Eld: ", DUMP_PREFIX_OFFSET,
-+					pin->eld.eld_buffer, pin->eld.eld_size);
-+		} else {
-+			dev_err(&edev->hdac.dev, "ELD invalid\n");
-+			pin->eld.monitor_present = false;
-+			pin->eld.eld_valid = false;
-+		}
-+	}
-+
-+	/*
-+	 * Sometimes the pin_sense may present invalid monitor
-+	 * present and eld_valid. If eld data is not valid loop, few
-+	 * more times to get correct pin sense and valid eld.
-+	 */
-+	if ((!pin->eld.monitor_present || !pin->eld.eld_valid) && repoll)
-+		schedule_delayed_work(&pin->work, msecs_to_jiffies(300));
-+
-+put_hdac_device:
-+	pm_runtime_put_sync(&edev->hdac.dev);
-+}
-+
-+static void hdac_hdmi_repoll_eld(struct work_struct *work)
-+{
-+	struct hdac_hdmi_pin *pin =
-+		container_of(to_delayed_work(work), struct hdac_hdmi_pin, work);
-+
-+	/* picked from legacy HDA driver */
-+	if (pin->repoll_count++ > 6)
-+		pin->repoll_count = 0;
-+
-+	hdac_hdmi_present_sense(pin, pin->repoll_count);
-+}
-+
- static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
- {
- 	struct hdac_hdmi_priv *hdmi = edev->private_data;
-@@ -424,6 +578,9 @@ static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
- 	list_add_tail(&pin->head, &hdmi->pin_list);
- 	hdmi->num_pin++;
- 
-+	pin->edev = edev;
-+	INIT_DELAYED_WORK(&pin->work, hdac_hdmi_repoll_eld);
-+
- 	return 0;
- }
- 
-@@ -482,17 +639,65 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev)
- 	return hdac_hdmi_init_dai_map(edev);
- }
- 
-+static void hdac_hdmi_eld_notify_cb(void *aptr, int port)
-+{
-+	struct hdac_ext_device *edev = aptr;
-+	struct hdac_hdmi_priv *hdmi = edev->private_data;
-+	struct hdac_hdmi_pin *pin;
-+	struct snd_soc_codec *codec = edev->scodec;
-+
-+	/* Don't know how this mapping is derived */
-+	hda_nid_t pin_nid = port + 0x04;
-+
-+	dev_dbg(&edev->hdac.dev, "%s: for pin: %d\n", __func__, pin_nid);
-+
-+	/*
-+	 * skip notification during system suspend (but not in runtime PM);
-+	 * the state will be updated at resume. Also since the ELD and
-+	 * connection states are updated in anyway at the end of the resume,
-+	 * we can skip it when received during PM process.
-+	 */
-+	if (snd_power_get_state(codec->component.card->snd_card) !=
-+			SNDRV_CTL_POWER_D0)
-+		return;
-+
-+	if (atomic_read(&edev->hdac.in_pm))
-+		return;
-+
-+	list_for_each_entry(pin, &hdmi->pin_list, head) {
-+		if (pin->nid == pin_nid)
-+			hdac_hdmi_present_sense(pin, 1);
-+	}
-+}
-+
-+static struct i915_audio_component_audio_ops aops = {
-+	.pin_eld_notify	= hdac_hdmi_eld_notify_cb,
-+};
-+
- static int hdmi_codec_probe(struct snd_soc_codec *codec)
- {
- 	struct hdac_ext_device *edev = snd_soc_codec_get_drvdata(codec);
- 	struct hdac_hdmi_priv *hdmi = edev->private_data;
- 	struct snd_soc_dapm_context *dapm =
- 		snd_soc_component_get_dapm(&codec->component);
-+	struct hdac_hdmi_pin *pin;
-+	int ret;
- 
- 	edev->scodec = codec;
- 
- 	create_fill_widget_route_map(dapm, &hdmi->dai_map[0]);
- 
-+	aops.audio_ptr = edev;
-+	ret = snd_hdac_i915_register_notifier(&aops);
-+	if (ret < 0) {
-+		dev_err(&edev->hdac.dev, "notifier register failed: err: %d\n",
-+				ret);
+-	snd_pcm_hw_constraint_step(substream->runtime, 0,
+-				   SNDRV_PCM_HW_PARAM_CHANNELS, 2);
++	ret = hdac_hdmi_eld_limit_formats(substream->runtime,
++				dai_map->pin->eld.eld_buffer);
++	if (ret < 0)
 +		return ret;
-+	}
-+
-+	list_for_each_entry(pin, &hdmi->pin_list, head)
-+		hdac_hdmi_present_sense(pin, 1);
-+
- 	/* Imp: Store the card pointer in hda_codec */
- 	edev->card = dapm->card->snd_card;
  
+-	return 0;
++	return snd_pcm_hw_constraint_eld(substream->runtime,
++				dai_map->pin->eld.eld_buffer);
+ }
+ 
+ static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
 -- 
 1.9.1
