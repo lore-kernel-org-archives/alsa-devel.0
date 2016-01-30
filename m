@@ -1,106 +1,122 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v5 14/14] ASoC: hdac_hdmi: Fix to reconfigure
-	registers in runtime resume
-Date: Sat, 30 Jan 2016 19:13:48 +0530
-Message-ID: <1454161428-7896-15-git-send-email-subhransu.s.prusty@intel.com>
-References: <1454161428-7896-1-git-send-email-subhransu.s.prusty@intel.com>
+From: Dmitry Vyukov <dvyukov@google.com>
+Subject: sound: deadlock between snd_pcm_oss_write/snd_pcm_oss_mmap
+Date: Sat, 30 Jan 2016 21:28:27 +0100
+Message-ID: <CACT4Y+bVrBKDG0G2_AcUgUQa+X91VKTeS4v+wN7BSHwHtqn3kQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id C9705261B32
- for <alsa-devel@alsa-project.org>; Sat, 30 Jan 2016 14:42:49 +0100 (CET)
-In-Reply-To: <1454161428-7896-1-git-send-email-subhransu.s.prusty@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Nicholas Mc Guire <hofrat@osadl.org>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
+Cc: syzkaller <syzkaller@googlegroups.com>, Kostya Serebryany <kcc@google.com>, Alexander Potapenko <glider@google.com>, Sasha Levin <sasha.levin@oracle.com>
 List-Id: alsa-devel@alsa-project.org
 
-The registers seeem to be reset during the D3 to D0 transition. So
-reconfigure them.
+Hello,
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/codecs/hdac_hdmi.c | 29 ++++++++++++++++-------------
- 1 file changed, 16 insertions(+), 13 deletions(-)
+I've got the following deadlock report while running syzkaller fuzzer:
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index fc45c95..1a0f7aa 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -374,11 +374,6 @@ static int hdac_hdmi_playback_prepare(struct snd_pcm_substream *substream,
- 	struct hdac_ext_dma_params *dd;
- 	int ret;
- 
--	if (dai->id > 0) {
--		dev_err(&hdac->hdac.dev, "Only one dai supported as of now\n");
--		return -ENODEV;
--	}
--
- 	dai_map = &hdmi->dai_map[dai->id];
- 
- 	dd = (struct hdac_ext_dma_params *)snd_soc_dai_get_dma_data(dai, substream);
-@@ -452,6 +447,18 @@ static int hdac_hdmi_playback_cleanup(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
-+static void hdac_hdmi_enable_cvt(struct hdac_ext_device *edev,
-+		struct hdac_hdmi_dai_pin_map *dai_map)
-+{
-+	/* Enable transmission */
-+	snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
-+			AC_VERB_SET_DIGI_CONVERT_1, 1);
-+
-+	/* Category Code (CC) to zero */
-+	snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
-+			AC_VERB_SET_DIGI_CONVERT_2, 0);
-+}
-+
- static int hdac_hdmi_enable_pin(struct hdac_ext_device *hdac,
- 		struct hdac_hdmi_dai_pin_map *dai_map)
- {
-@@ -581,6 +588,7 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- 
- 	dai_map->pin = pin;
- 
-+	hdac_hdmi_enable_cvt(hdac, dai_map);
- 	ret = hdac_hdmi_enable_pin(hdac, dai_map);
- 	if (ret < 0)
- 		return ret;
-@@ -970,14 +978,6 @@ static int hdac_hdmi_init_dai_map(struct hdac_ext_device *edev)
- 		dai_map->dai_id = dai_id;
- 		dai_map->cvt = cvt;
- 
--		/* Enable transmission */
--		snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
--				AC_VERB_SET_DIGI_CONVERT_1, 1);
--
--		/* Category Code (CC) to zero */
--		snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
--				AC_VERB_SET_DIGI_CONVERT_2, 0);
--
- 		dai_id++;
- 
- 		if (dai_id == HDA_MAX_CVTS) {
-@@ -1593,6 +1593,9 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
- 		return err;
- 	}
- 
-+	hdac_hdmi_skl_enable_all_pins(&edev->hdac);
-+	hdac_hdmi_skl_enable_dp12(&edev->hdac);
-+
- 	/* Power up afg */
- 	if (!snd_hdac_check_power_state(hdac, hdac->afg, AC_PWRST_D0))
- 		snd_hdac_codec_write(hdac, hdac->afg, 0,
--- 
-1.9.1
+[ INFO: possible circular locking dependency detected ]
+4.5.0-rc1+ #305 Not tainted
+-------------------------------------------------------
+syz-executor/14254 is trying to acquire lock:
+ (&runtime->oss.params_lock){+.+.+.}, at: [<ffffffff8528a504>]
+snd_pcm_oss_change_params+0xd4/0x3540 sound/core/oss/pcm_oss.c:852
+
+but task is already holding lock:
+ (&mm->mmap_sem){++++++}, at: [<ffffffff816b267c>] vm_mmap_pgoff
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&mm->mmap_sem){++++++}:
+       [<ffffffff8145b9dc>] lock_acquire+0x1dc/0x430
+kernel/locking/lockdep.c:3587
+       [<ffffffff816def51>] __might_fault+0x141/0x1d0 mm/memory.c:3802
+       [<     inline     >] copy_from_user ./arch/x86/include/asm/uaccess.h:714
+       [<     inline     >] snd_pcm_oss_write1 sound/core/oss/pcm_oss.c:1376
+       [<ffffffff852940f0>] snd_pcm_oss_write+0x250/0x700
+sound/core/oss/pcm_oss.c:2694
+       [<ffffffff817b90b3>] __vfs_write+0x113/0x480 fs/read_write.c:528
+       [<ffffffff817bab47>] vfs_write+0x167/0x4a0 fs/read_write.c:577
+       [<     inline     >] SYSC_write fs/read_write.c:624
+       [<ffffffff817bde31>] SyS_write+0x111/0x220 fs/read_write.c:616
+       [<ffffffff866531b6>] entry_SYSCALL_64_fastpath+0x16/0x7a
+arch/x86/entry/entry_64.S:185
+
+-> #0 (&runtime->oss.params_lock){+.+.+.}:
+       [<     inline     >] check_prev_add kernel/locking/lockdep.c:1855
+       [<     inline     >] check_prevs_add kernel/locking/lockdep.c:1960
+       [<     inline     >] validate_chain kernel/locking/lockdep.c:2146
+       [<ffffffff8145807b>] __lock_acquire+0x31eb/0x4700
+kernel/locking/lockdep.c:3208
+       [<ffffffff8145b9dc>] lock_acquire+0x1dc/0x430
+kernel/locking/lockdep.c:3587
+       [<     inline     >] __mutex_lock_common kernel/locking/mutex.c:518
+       [<ffffffff8664891c>] mutex_lock_interruptible_nested+0xbc/0xbe0
+kernel/locking/mutex.c:647
+       [<ffffffff8528a504>] snd_pcm_oss_change_params+0xd4/0x3540
+sound/core/oss/pcm_oss.c:852
+       [<ffffffff8528f01d>] snd_pcm_oss_mmap+0x3dd/0x4c0
+sound/core/oss/pcm_oss.c:2807
+       [<ffffffff81705747>] mmap_region+0x897/0x1010 mm/mmap.c:1624
+       [<ffffffff81706614>] do_mmap+0x754/0x990 mm/mmap.c:1403
+       [<     inline     >] do_mmap_pgoff include/linux/mm.h:1982
+       [<ffffffff816b26af>] vm_mmap_pgoff+0x15f/0x1b0 mm/util.c:328
+       [<     inline     >] SYSC_mmap_pgoff mm/mmap.c:1453
+       [<ffffffff816ff85a>] SyS_mmap_pgoff+0x34a/0x580 mm/mmap.c:1411
+       [<     inline     >] SYSC_mmap arch/x86/kernel/sys_x86_64.c:95
+       [<ffffffff811aeeb6>] SyS_mmap+0x16/0x20 arch/x86/kernel/sys_x86_64.c:86
+       [<ffffffff866531b6>] entry_SYSCALL_64_fastpath+0x16/0x7a
+arch/x86/entry/entry_64.S:185
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&mm->mmap_sem);
+                               lock(&runtime->oss.params_lock);
+                               lock(&mm->mmap_sem);
+  lock(&runtime->oss.params_lock);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor/14254:
+ #0:  (&mm->mmap_sem){++++++}, at: [<ffffffff816b267c>]
+vm_mmap_pgoff+0x12c/0x1b0 mm/util.c:327
+
+stack backtrace:
+CPU: 2 PID: 14254 Comm: syz-executor Not tainted 4.5.0-rc1+ #305
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+ 00000000ffffffff ffff88003214f780 ffffffff82be11ad ffffffff8959ac60
+ ffffffff8959ac60 ffffffff89573f60 ffff88003214f7d0 ffffffff814512a8
+ ffff8800333cdf00 ffff8800333ce742 0000000000000000 ffff8800333ce720
+Call Trace:
+ [<     inline     >] __dump_stack lib/dump_stack.c:15
+ [<ffffffff82be11ad>] dump_stack+0x6f/0xa2 lib/dump_stack.c:50
+ [<ffffffff814512a8>] print_circular_bug+0x288/0x340
+kernel/locking/lockdep.c:1228
+ [<     inline     >] check_prev_add kernel/locking/lockdep.c:1855
+ [<     inline     >] check_prevs_add kernel/locking/lockdep.c:1960
+ [<     inline     >] validate_chain kernel/locking/lockdep.c:2146
+ [<ffffffff8145807b>] __lock_acquire+0x31eb/0x4700 kernel/locking/lockdep.c:3208
+ [<ffffffff8145b9dc>] lock_acquire+0x1dc/0x430 kernel/locking/lockdep.c:3587
+ [<     inline     >] __mutex_lock_common kernel/locking/mutex.c:518
+ [<ffffffff8664891c>] mutex_lock_interruptible_nested+0xbc/0xbe0
+kernel/locking/mutex.c:647
+ [<ffffffff8528a504>] snd_pcm_oss_change_params+0xd4/0x3540
+sound/core/oss/pcm_oss.c:852
+ [<ffffffff8528f01d>] snd_pcm_oss_mmap+0x3dd/0x4c0 sound/core/oss/pcm_oss.c:2807
+ [<ffffffff81705747>] mmap_region+0x897/0x1010 mm/mmap.c:1624
+ [<ffffffff81706614>] do_mmap+0x754/0x990 mm/mmap.c:1403
+ [<     inline     >] do_mmap_pgoff include/linux/mm.h:1982
+ [<ffffffff816b26af>] vm_mmap_pgoff+0x15f/0x1b0 mm/util.c:328
+ [<     inline     >] SYSC_mmap_pgoff mm/mmap.c:1453
+ [<ffffffff816ff85a>] SyS_mmap_pgoff+0x34a/0x580 mm/mmap.c:1411
+ [<     inline     >] SYSC_mmap arch/x86/kernel/sys_x86_64.c:95
+ [<ffffffff811aeeb6>] SyS_mmap+0x16/0x20 arch/x86/kernel/sys_x86_64.c:86
+
+
+On commit 26cd83670f2f5a3d5b5514a1f7d96567cdb9558b.
