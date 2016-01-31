@@ -1,60 +1,48 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: About planning of libhinawa ITP to debian project
-Date: Sun, 31 Jan 2016 20:50:21 +0900
-Message-ID: <56ADF4FD.1070703@sakamocchi.jp>
-References: <56ADEF9C.50303@sakamocchi.jp> <56ADF3E8.1050109@sakamocchi.jp>
+From: Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH] ASoC: fsl: add imx-cs427x machine driver
+Date: Sun, 31 Jan 2016 11:28:00 -0200
+Message-ID: <CAOMZO5CipBACeJz6OVpqGOh37n7V+6khV=wExedoCSf1-n4sJA@mail.gmail.com>
+References: <1453744403-12268-1-git-send-email-eu@felipetonello.com>
+	<20160126022948.GA21187@rob-hp-laptop>
+	<56A73FDE.2060607@felipetonello.com>
+	<CAOMZO5BjeDMqNgf-=tE7=pByJi+jJVA=G2bbtp+XJeYbpev6KA@mail.gmail.com>
+	<56A75205.8060000@felipetonello.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 2758D260557
- for <alsa-devel@alsa-project.org>; Sun, 31 Jan 2016 12:50:25 +0100 (CET)
-In-Reply-To: <56ADF3E8.1050109@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <56A75205.8060000-NLnRV5p3vwDxYxTyqlRmvgC/G2K4zDHf@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Felipe Ferreri Tonello <eu-NLnRV5p3vwDxYxTyqlRmvgC/G2K4zDHf@public.gmane.org>
+Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Jan 31 2016 20:45, Takashi Sakamoto wrote:
-> Hi,
-> 
-> In this message, I explain about a plan of libhinawa ITP[0] to debian
-> project. Fortunately, I got a help of a debian package maintainer,
-> Kentaro Hayashi. He maintains groonga package[1] and experienced
-> related works[2].
-> 
-> Currently, we plan to work for it in next month, February 2016. I have
-> no idea about when FTP master acked to our ITP and when the package is
-> released from debian project.
-> 
-> I with the package will be available as early as possible, and this work
-> will be a part of his great work as a debian package maintainer.
-> 
-> FYI,
-> 
-> [0] ITP = Intent To Packaging
-> [1] Debian -- Details of package groonga in sid:
-> https://packages.debian.org/sid/groonga
-> [2] Debian Bug report logs - #732055
-> ITP: groonga -- Fulltext search engine
-> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=732055
+On Tue, Jan 26, 2016 at 9:01 AM, Felipe Ferreri Tonello
+<eu-NLnRV5p3vwDxYxTyqlRmvgC/G2K4zDHf@public.gmane.org> wrote:
 
-Mmm. My first post seems not to be blasted by the mail server of
-alsa-project.org. Please refer to archive of linux1394devel.
+> Actually yes, thanks! I didn't know about the existence of fsl-asoc-card.
+>
+> I get some errors but I don't think they actually matter:
+> [   19.734494] fsl-asrc 2034000.asrc: driver registered
+> [   19.738707] fsl-asoc-card sound: ASoC: CPU DAI (null) not registered
+> [   19.738717] fsl-asoc-card sound: snd_soc_register_card failed (-517)
+> [   19.741556] fsl-asoc-card sound: ASoC: CPU DAI (null) not registered
+> [   19.741564] fsl-asoc-card sound: snd_soc_register_card failed (-517)
+> [   19.774591] fsl-asoc-card sound: cs4271-hifi <-> 2028000.ssi mapping ok
+> [   19.781507] fsl-asoc-card sound: ASoC: no source widget found for
+> ASRC-Playback
+> [   19.790065] fsl-asoc-card sound: ASoC: Failed to add route
+> ASRC-Playback -> direct -> CPU-Playback
+> [   19.805349] fsl-asoc-card sound: ASoC: no sink widget found for
+> ASRC-Capture
+> [   19.817222] fsl-asoc-card sound: ASoC: Failed to add route
+> CPU-Capture -> direct -> ASRC-Capture
+>
+> The codec is producing sound, which is good. Any idea on why these
+> errors are been triggered?
 
-The location of libhinawa and hinawa-utils for FireWire sound devices ?
-http://sourceforge.net/p/linux1394/mailman/message/34809347/
-
-
-Regards
-
-Takashi Sakamoto
+Nicolin's patch should fix these warnings:
+https://lkml.org/lkml/2016/1/31/8
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
