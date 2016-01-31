@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Meaning of the name 'hinawa' and the intension
-Date: Sun, 31 Jan 2016 20:44:17 +0900
-Message-ID: <56ADF391.7090901@sakamocchi.jp>
+Subject: About planning of libhinawa ITP to debian project
+Date: Sun, 31 Jan 2016 20:45:44 +0900
+Message-ID: <56ADF3E8.1050109@sakamocchi.jp>
 References: <56ADEF9C.50303@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,34 +22,27 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-After published libhinwa, I sometimes got a question about the name
-of 'hinawa'. Here, I describe it to the persions who are curious.
+In this message, I explain about a plan of libhinawa ITP[0] to debian
+project. Fortunately, I got a help of a debian package maintainer,
+Kentaro Hayashi. He maintains groonga package[1] and experienced
+related works[2].
 
-At first, I split:
-FireWire = Fire + Wire
+Currently, we plan to work for it in next month, February 2016. I have
+no idea about when FTP master acked to our ITP and when the package is
+released from debian project.
 
-(Japanese/Chinese translation in the meaning)
--> U+706B[0] + U+7E04[1] (in ISO/IEC 10646)
+I with the package will be available as early as possible, and this work
+will be a part of his great work as a debian package maintainer.
 
-(Japanese translation in the pronounciation)
--> Hi + Nawa
+FYI,
 
-Actually, the meaning of 'Nawa' is near rope. In Japanese history, Hinawa
-was used to fire musket guns introduced in Sengoku period, so the musket
-gun is called as Hinawa-ju (Ju means general guns). I think there'is a
-word in European culture corresponding to the hi-nawa, but I don't know it.
+[0] ITP = Intent To Packaging
+[1] Debian -- Details of package groonga in sid:
+https://packages.debian.org/sid/groonga
+[2] Debian Bug report logs - #732055
+ITP: groonga -- Fulltext search engine
+https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=732055
 
-I select this name because in general the name of library (soname) must
-be unique in a system. In my case, I judged it better to pick up words
-from non-European language group.
-
-[0] U+706B
-http://www.unicode.org/cgi-bin/GetUnihanData.pl?codepoint=706b
-[1] U+7E04
-http://www.unicode.org/cgi-bin/GetUnihanData.pl?codepoint=7e04
-
-
-Regards
 
 Takashi Sakamoto
 
