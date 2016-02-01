@@ -1,107 +1,80 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH 2/2] regmap: cache: Fall back to register by register
- read for cache defaults
-Date: Mon, 01 Feb 2016 23:54:43 +0100
-Message-ID: <56AFE233.10701@maciej.szmigiero.name>
-References: <1454362695-10682-1-git-send-email-broonie@kernel.org> <1454362695-10682-2-git-send-email-broonie@kernel.org> <20160201214139.GI4455@sirena.org.uk> <CAOMZO5BSbFo7xMEHY9s5YNitKFq8gJ83W6oDnS8PYBBDu2+ykQ@mail.gmail.com> <20160201221346.GJ4455@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Intel: Atom: fix regression on
+	compress DAI
+Date: Mon, 1 Feb 2016 23:19:07 +0000
+Message-ID: <20160201231907.GL4455@sirena.org.uk>
+References: <1454354716-17313-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160201221346.GJ4455@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Nicolin Chen <nicoleotsuka@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============5496459973643043698=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E92CB2606C1
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 00:19:13 +0100 (CET)
+In-Reply-To: <1454354716-17313-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-On 01.02.2016 23:13, Mark Brown wrote:
-> On Mon, Feb 01, 2016 at 07:58:54PM -0200, Fabio Estevam wrote:
->> On Mon, Feb 1, 2016 at 7:41 PM, Mark Brown <broonie@kernel.org> wrote:
->>> On Mon, Feb 01, 2016 at 09:38:15PM +0000, Mark Brown wrote:
->>>> If we are unable to read the cache defaults for a regmap then fall back
->>>> on attempting to read them word by word. This is going to be painfully
->>>> slow for large regmaps but might be adequate for smaller ones.
-> 
->>> Competely untested, hopefully it helps fix the issues with the SSI.
-> 
->> After applying this series I get:
-> 
-> Please try to fix it yourself, probably needs setting cache_bypass
-> around the manual fill.
 
-Thanks for patches.
+--===============5496459973643043698==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Ah40dssYA/cDqAW1"
+Content-Disposition: inline
 
-I was able to make SSI work again after modifying second patch
-with cache_bypass around read and skipping of unreadable regs:
-diff --git a/drivers/base/regmap/regcache.c b/drivers/base/regmap/regcache.c
-index 5c5090b..4170b7d 100644
---- a/drivers/base/regmap/regcache.c
-+++ b/drivers/base/regmap/regcache.c
-@@ -30,7 +30,7 @@ static int regcache_hw_init(struct regmap *map)
- 	int i, j;
- 	int ret;
- 	int count;
--	unsigned int val;
-+	unsigned int reg, val;
- 	void *tmp_buf;
- 
- 	if (!map->num_reg_defaults_raw)
-@@ -67,27 +67,46 @@ static int regcache_hw_init(struct regmap *map)
- 		ret = regmap_raw_read(map, 0, tmp_buf,
- 				      map->cache_size_raw);
- 		map->cache_bypass = cache_bypass;
--		if (ret < 0)
--			goto err_cache_free;
--
--		map->reg_defaults_raw = tmp_buf;
--		map->cache_free = 1;
-+		if (ret == 0) {
-+			map->reg_defaults_raw = tmp_buf;
-+			map->cache_free = 1;
-+		} else {
-+			kfree(tmp_buf);
-+		}
- 	}
- 
- 	/* fill the reg_defaults */
- 	for (i = 0, j = 0; i < map->num_reg_defaults_raw; i++) {
--		if (regmap_volatile(map, i * map->reg_stride))
-+		reg = i * map->reg_stride;
-+
-+		if (!regmap_readable(map, reg))
- 			continue;
--		val = regcache_get_val(map, map->reg_defaults_raw, i);
--		map->reg_defaults[j].reg = i * map->reg_stride;
-+
-+		if (regmap_volatile(map, reg))
-+			continue;
-+
-+		if (map->reg_defaults_raw) {
-+			val = regcache_get_val(map, map->reg_defaults_raw, i);
-+		} else {
-+			bool cache_bypass = map->cache_bypass;
-+
-+			map->cache_bypass = true;
-+			ret = regmap_read(map, reg, &val);
-+			map->cache_bypass = cache_bypass;
-+			if (ret != 0) {
-+				dev_err(map->dev, "Failed to read %d: %d\n",
-+					reg, ret);
-+				goto err_free;
-+			}
-+		}
-+
-+		map->reg_defaults[j].reg = reg;
- 		map->reg_defaults[j].def = val;
- 		j++;
- 	}
- 
- 	return 0;
- 
--err_cache_free:
--	kfree(tmp_buf);
- err_free:
- 	kfree(map->reg_defaults);
- 
 
- 
+--Ah40dssYA/cDqAW1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Feb 01, 2016 at 01:25:16PM -0600, Pierre-Louis Bossart wrote:
+> Commit a1068045883ed4a18363a4ebad0c3d55e473b716 added a
+> dependency on the compress-cpu-dai channel_min field
+> which was removed earlier by commit
+> 77095796ae9cbaf315f80611edb5aa569796e339 as part of the
+> baytrail cleanups.
+
+Please include human readable descriptions of things like commits and
+issues being discussed in e-mail in your mails, this makes them much
+easier for humans to read especially when they have no internet access
+or slow internet access.  I do frequently catch up on my mail on flights
+or while otherwise travelling so this is even more pressing for me than
+just being about making things a bit easier to read.
+
+Please also use abbreviated commit IDs, the entire SHA1 is a bit long
+and does nothing for legibility.
+
+--Ah40dssYA/cDqAW1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWr+fqAAoJECTWi3JdVIfQIywH/1P7CS6/zNZNY+1qpto9uKza
+iBEm1tv1vor0Qq4ndgebrua8Xg2IWTuMEduxvJvAlmtRuC7leHoAjD4P9zlwIplG
+nWJBbTKhpbv6OpEiD9eYpHMimfaqHKKAMciJLw6k+98D3S/6nsQaJauPDQb6Z5L4
+neu6q+tqMuQPvryZ5MANnVIkwBlhyKyGxRAc65W0tOvbgt7y4Ax0uFu8B0+Np67T
+kqWKnzmyuZ8nYwMFlU2vwiuuARMwjuBkANKkax26yVBh/mM3DE6fnpHZmv8conZi
+6yKCWmU8IzkTfdV9ykwP1g3LE4uMhMQqu1j2H5QyogMYkkWds/eqf9Kv2LyPQHE=
+=L2+o
+-----END PGP SIGNATURE-----
+
+--Ah40dssYA/cDqAW1--
+
+--===============5496459973643043698==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5496459973643043698==--
