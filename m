@@ -1,47 +1,54 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH] ASoC: Intel: Atom: fix regression on compress
-	DAI
-Date: Mon,  1 Feb 2016 13:25:16 -0600
-Message-ID: <1454354716-17313-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl_ssi: remove explicit register defaults
+Date: Mon, 1 Feb 2016 21:10:17 +0000
+Message-ID: <20160201211017.GG4455@sirena.org.uk>
+References: <569D3800.2040801@maciej.szmigiero.name>
+ <CAOMZO5DwQza+jDdkA80v4wkrB56y53tOjkP2-36YNq2WBLodaA@mail.gmail.com>
+ <56AF4A9F.4060401@maciej.szmigiero.name>
+ <CAOMZO5DK86JCs_KivZ5MMFKsiP6aVpopG-zgXPE-+_GWjQNuMw@mail.gmail.com>
+ <56AF4ED0.7030801@maciej.szmigiero.name>
+ <56AF8E9E.5000100@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 4AE2026044B
- for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2016 20:25:23 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: vinod.koul@intel.com, broonie@kernel.org, tiwai@suse.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="JSkcQAAxhB1h8DcT"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <56AF8E9E.5000100@maciej.szmigiero.name>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc: Fabio Estevam <festevam@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Q29tbWl0IGExMDY4MDQ1ODgzZWQ0YTE4MzYzYTRlYmFkMGMzZDU1ZTQ3M2I3MTYgYWRkZWQgYQpk
-ZXBlbmRlbmN5IG9uIHRoZSBjb21wcmVzcy1jcHUtZGFpIGNoYW5uZWxfbWluIGZpZWxkCndoaWNo
-IHdhcyByZW1vdmVkIGVhcmxpZXIgYnkgY29tbWl0Cjc3MDk1Nzk2YWU5Y2JhZjMxNWY4MDYxMWVk
-YjVhYTU2OTc5NmUzMzkgYXMgcGFydCBvZiB0aGUKYmF5dHJhaWwgY2xlYW51cHMuCgpUaGUgbmV0
-IHJlc3VsdCB3YXMgYSByZWdyZXNzaW9uIGF0IHByb2JlIG9uIGFsbCBBdG9tIHBsYXRmb3Jtcwp3
-aXRoIG5vIHNvdW5kIGNhcmQgY3JlYXRlZC4KCkZpeCBieSBhZGRpbmcgZXhwbGljaXQgaW5pdGlh
-bGl6YXRpb24gZm9yIGNoYW5uZWxfbWluIHRvIDEKZm9yIHRoZSBjb21wcmVzcy1jcHUtZGFpLgoK
-UmVwb3J0ZWQtYnk6IFRvYmlhcyBNw6RkZWwgPGFsc2EtZGV2ZWxAdGJzcGFjZS5kZT4KU2lnbmVk
-LW9mZi1ieTogUGllcnJlLUxvdWlzIEJvc3NhcnQgPHBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGxpbnV4
-LmludGVsLmNvbT4KLS0tCiBzb3VuZC9zb2MvaW50ZWwvYXRvbS9zc3QtbWZsZC1wbGF0Zm9ybS1w
-Y20uYyB8IDEgKwogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspCgpkaWZmIC0tZ2l0IGEv
-c291bmQvc29jL2ludGVsL2F0b20vc3N0LW1mbGQtcGxhdGZvcm0tcGNtLmMgYi9zb3VuZC9zb2Mv
-aW50ZWwvYXRvbS9zc3QtbWZsZC1wbGF0Zm9ybS1wY20uYwppbmRleCA1NWMzM2RjLi41MmVkNDM0
-IDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvaW50ZWwvYXRvbS9zc3QtbWZsZC1wbGF0Zm9ybS1wY20u
-YworKysgYi9zb3VuZC9zb2MvaW50ZWwvYXRvbS9zc3QtbWZsZC1wbGF0Zm9ybS1wY20uYwpAQCAt
-NTI4LDYgKzUyOCw3IEBAIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlfZHJpdmVyIHNzdF9wbGF0
-Zm9ybV9kYWlbXSA9IHsKIAkub3BzID0gJnNzdF9jb21wcl9kYWlfb3BzLAogCS5wbGF5YmFjayA9
-IHsKIAkJLnN0cmVhbV9uYW1lID0gIkNvbXByZXNzIFBsYXliYWNrIiwKKwkJLmNoYW5uZWxzX21p
-biA9IDEsCiAJfSwKIH0sCiAvKiBCRSBDUFUgIERhaXMgKi8KLS0gCjEuOS4xCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+--JSkcQAAxhB1h8DcT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Feb 01, 2016 at 05:58:06PM +0100, Maciej S. Szmigiero wrote:
+
+> Looks like a possible solution would be to change
+> regmap_raw_read() to do read using _regmap_read in
+> case the cache is bypassed and there is no ->read
+> callback defined for regmap implementation.
+
+No, that's completely broken.  We can't do a raw read from a regmap that
+doesn't offer raw access and we shouldn't pretend to do so.  If the
+caller is capable of substituting a register by register read the caller
+should take responsibility for that.
+
+--JSkcQAAxhB1h8DcT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWr8m4AAoJECTWi3JdVIfQ7Z4H/Reu/R+eh43RZfjK7y+WNdlV
+IkRkqAp3l86gX/zwpxxzqmWz5fjf8gG0vdENxSXUfAzylLPoLw162KD/+oW9UeD2
+4tJBNzitCISauuAnZmH81llShMCV6qfhgPaZPJmygzHDwaXYGJDS0LZNejUNYK+3
+/sBx+BPbIoPOewBZg1w5Mpu/rxxaiWhFGwOD2ntBUrmCgwpv6SthkV+c2CcdHT7d
+78q8RwAi9lEbetsASwOFGa1J6ZSUKBA8vWHEjsggroboR+Lni6Zvl+Nq3DHnge6w
+ExlQ95cwLh8eZ5lwOcrI7xoZiZrV/IjquyOSl3mddq3gFOoeLMQFuuCoGcG1CY4=
+=8Tfw
+-----END PGP SIGNATURE-----
+
+--JSkcQAAxhB1h8DcT--
