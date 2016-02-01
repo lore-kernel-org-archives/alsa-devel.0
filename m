@@ -1,56 +1,47 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: sound: use-after-free in snd_seq_deliver_single_event
-Date: Mon, 1 Feb 2016 22:43:02 +0900
-Message-ID: <56AF60E6.3050703@sakamocchi.jp>
-References: <CACT4Y+Zd66+w12fNN85-425cVQT=K23kWbhnCEcMB8s3us-Frw@mail.gmail.com>
- <20160201111625.GB4455@sirena.org.uk>
- <CACT4Y+YXXYWUGSZ5y=ZHPJXVAKXeEXLn8vjkpm+xx98yfo4dxw@mail.gmail.com>
- <20160201122018.GC4455@sirena.org.uk>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: [PATCH] topology: fix debug output to print correct
+	"max" value.
+Date: Mon,  1 Feb 2016 14:20:44 +0000
+Message-ID: <1454336444-28584-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-2022-jp
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160201122018.GC4455@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Dmitry Vyukov <dvyukov@google.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, LKML <linux-kernel@vger.kernel.org>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>, Alexander Potapenko <glider@google.com>, Sasha Levin <sasha.levin@oracle.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id C2B16260481
+ for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2016 15:20:57 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Feb 01 2016 21:20, Mark Brown wrote:
-> On Mon, Feb 01, 2016 at 12:22:18PM +0100, Dmitry Vyukov wrote:
->> On Mon, Feb 1, 2016 at 12:16 PM, Mark Brown <broonie@kernel.org> wrote:
-> 
->>> I'm not sure how you're working out who to send these to but all these
->>> reports you've been sending have been for ALSA core which I rarely look
->>> at closely, I mostly look at ASoC.  Might be worth looking into so
->>> people don't start zoning out things that look like misdirected stuff
->>> (I just noticed myself doing that with this).
-> 
->> I am using scripts/get_maintainer.pl -f  the involved files. If it
->> produces wrong results, please update MAINTAINERS.
-> 
-> You should never rely on the output of get_maintainers without review,
-> it's prone to both false positives and false negatives.  Given that
-> Sakamoto-san does not seem to appear in MAINTAINERS at all and you've
-> not managed to find Liam who's a comaintainer for all the ASoC stuff I
-> suspect you're doing this with --git enabled which is especially prone
-> to false positives since it tends to identify people who are just doing
-> global cleanup work and aren't particularly interested in a given file.
-> As far as I can tell this is how I'm getting pulled in too rather than
-> MAINTAINERS.
+Debug log is printing num_regs instead of max in the max section.
 
-Aha. That's the reason I receive these messages. I've wondering why I
-receive them.
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+---
+ src/topology/ctl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Well, I don't mind to receive them because it's a good information for
-me to get current state of ALSA core functionality. If I had some
-spare time, I was also going to fix it. But currently I have little
-time for it due to my development for my minor hardwares...
-
-(Actually, Iwai-san posted patches to fix them at incredibly pace. I
-can't follow his pace, because I'm working for ALSA in my free time.)
-
-
-Regards
-
-Takashi Sakamoto
+diff --git a/src/topology/ctl.c b/src/topology/ctl.c
+index 1c073f7..c250227 100644
+--- a/src/topology/ctl.c
++++ b/src/topology/ctl.c
+@@ -350,7 +350,7 @@ int tplg_parse_control_bytes(snd_tplg_t *tplg,
+ 				return -EINVAL;
+ 
+ 			be->max = atoi(val);
+-			tplg_dbg("\t%s: %d\n", id, be->num_regs);
++			tplg_dbg("\t%s: %d\n", id, be->max);
+ 			continue;
+ 		}
+ 
+-- 
+2.5.0
