@@ -1,16 +1,16 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: bytcr_rt5651 on wintron 7.0
-Date: Mon, 1 Feb 2016 08:59:37 -0600
-Message-ID: <56AF72D9.6090200@linux.intel.com>
-References: <56AE114E.7060108@tbspace.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm_adsp: Add missing const from region
+	definitions
+Date: Mon, 1 Feb 2016 15:22:34 +0000
+Message-ID: <1454340154-16544-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 1427726060C
- for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2016 15:59:40 +0100 (CET)
-In-Reply-To: <56AE114E.7060108@tbspace.de>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id B1495260481
+ for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2016 16:22:38 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +20,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?Tobias_M=c3=a4del?= <alsa-devel@tbspace.de>, alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
- =
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm_adsp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On 01/31/2016 07:51 AM, Tobias M=E4del wrote:
-> Hello,
-> =
-
-> we're currently trying to get the new bytcr_rt5651 driver to run on a
-> TrekStor SurfTab wintron 7.0 (x86 tablet).
-> =
-
-> Unlike the previous driver for the rt5640 chipset, the new bytcr_rt5651
-> driver actually detects the card out-of-the-box.
-
-Good to know.
-
-> =
-
-> This is the dmesg output on the device:
-> bytcr_rt5651: snd-soc-dummy-dai <-> media-cpu-dai mapping ok
-> bytcr_rt5651: snd-soc-dummy-dai <-> deepbuffer-cpu-dai mapping ok
-> bytcr_rt5651: Invalid direction for compress P 0, C 0
-> bytcr_rt5651: ASoC: can't create compress Compress
-> bytcr_rt5651: ASoC: failed to instantiate card -22
-> bytcr_rt5651: devm_snd_soc_register_card failed -22
-> bytcr_rt5651: probe of bytcr_rt5651 failed with error -22
-> =
-
-> So -- apparently it is successfully initializing 2 of the DAIs, but it
-> can't find the Compress-DAI. My first guess would just be to try and
-> disable the Compress DAI in the code just for debugging, but I'm sure
-> that there's a better way.
-> =
-
-> I'm running a bleeding edge kernel build from the main linux git tree,
-> build from yesterday's github.com/torvalds/linux.git repo.
->
-> Does anyone have any ideas on how to get alsa to detect the card properly?
-> =
-
-> Here's the complete dmesg output:
-> https://gist.github.com/Manawyrm/70d90e95e9c578a7fb26
-
-This is weird. I checked the DSDT tables and couldn't see anything blatantl=
-y wrong.
-If there was a problem with the compress DAI it would show on other platfor=
-ms as well.
-It could also be a configuration issue with bad controls, I put my UCM conf=
-iguration on github plbosssart/UCM/, you may want to look into this as well.
--Pierre
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 653dbff..28d3851 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -325,7 +325,7 @@ struct wm_adsp_buffer_region_def {
+ 	unsigned int size_offset;
+ };
+ 
+-static struct wm_adsp_buffer_region_def default_regions[] = {
++static const struct wm_adsp_buffer_region_def default_regions[] = {
+ 	{
+ 		.mem_type = WMFW_ADSP2_XM,
+ 		.base_offset = HOST_BUFFER_FIELD(X_buf_base),
+@@ -347,7 +347,7 @@ struct wm_adsp_fw_caps {
+ 	u32 id;
+ 	struct snd_codec_desc desc;
+ 	int num_regions;
+-	struct wm_adsp_buffer_region_def *region_defs;
++	const struct wm_adsp_buffer_region_def *region_defs;
+ };
+ 
+ static const struct wm_adsp_fw_caps ctrl_caps[] = {
+-- 
+2.1.4
