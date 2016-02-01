@@ -1,59 +1,127 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH] ASoC: fsl_ssi: remove explicit register
-	defaults
-Date: Mon, 01 Feb 2016 17:58:06 +0100
-Message-ID: <56AF8E9E.5000100@maciej.szmigiero.name>
-References: <569D3800.2040801@maciej.szmigiero.name>	<CAOMZO5DwQza+jDdkA80v4wkrB56y53tOjkP2-36YNq2WBLodaA@mail.gmail.com>	<56AF4A9F.4060401@maciej.szmigiero.name>
- <CAOMZO5DK86JCs_KivZ5MMFKsiP6aVpopG-zgXPE-+_GWjQNuMw@mail.gmail.com>
- <56AF4ED0.7030801@maciej.szmigiero.name>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: Re: [PATCH 01/31] uapi/media.h: Declare interface types for ALSA
+Date: Mon, 1 Feb 2016 10:04:38 -0700
+Message-ID: <56AF9026.9080102@osg.samsung.com>
+References: <cover.1452105878.git.shuahkh@osg.samsung.com>
+ <b1d228cdcc9246f7bfe28877e9f6bff174e94993.1452105878.git.shuahkh@osg.samsung.com>
+ <20160128125941.143f67d0@recife.lan> <56AF82D7.1020900@osg.samsung.com>
+ <s5hr3gwl7zz.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vps-vb.mhejs.net (vi37-28-154-113.vibiznes.pl [37.28.154.113])
- by alsa0.perex.cz (Postfix) with ESMTP id 097F42604EF
- for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2016 17:58:17 +0100 (CET)
-In-Reply-To: <56AF4ED0.7030801@maciej.szmigiero.name>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <s5hr3gwl7zz.wl-tiwai@suse.de>
+Sender: linux-media-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, alsa-devel@alsa-project.org, arnd@arndb.de, ricard.wanderlof@axis.com, hans.verkuil@cisco.com, labbott@fedoraproject.org, chehabrafael@gmail.com, misterpib@gmail.com, prabhakar.csengg@gmail.com, ricardo.ribalda@gmail.com, ruchandani.tina@gmail.com, takamichiho@gmail.com, tvboxspy@gmail.com, dominic.sacre@gmx.de, laurent.pinchart@ideasonboard.com, crope@iki.fi, julian@jusst.de, clemens@ladisch.de, pierre-louis.bossart@linux.intel.com, sakari.ailus@linux.intel.com, corbet@lwn.net, joe@oampo.co.uk, johan@oljud.se, dan.carpenter@oracle.com, pawel@osciak.com, javier@osg.samsung.com, p.zabel@pengutronix.de, perex@perex.cz, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, k.kozlowski@samsung.com, kyungmin.park@samsung.com, m.szyprowski@samsung.com, sw0312.kim@samsung.com, elfring@users.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 01.02.2016 13:25, Maciej S. Szmigiero wrote:
-> On 01.02.2016 13:13, Fabio Estevam wrote:
->> Hi Maciej,
+On 02/01/2016 09:18 AM, Takashi Iwai wrote:
+> On Mon, 01 Feb 2016 17:07:51 +0100,
+> Shuah Khan wrote:
 >>
->> On Mon, Feb 1, 2016 at 10:07 AM, Maciej S. Szmigiero
->> <mail@maciej.szmigiero.name> wrote:
->>> Is regmap patch from
->>> http://www.spinics.net/lists/kernel/msg2161934.html
->>> applied to the tested tree?
+>> On 01/28/2016 07:59 AM, Mauro Carvalho Chehab wrote:
+>>> Em Wed,  6 Jan 2016 13:26:50 -0700
+>>> Shuah Khan <shuahkh@osg.samsung.com> escreveu:
+>>>
+>>>> From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+>>>>
+>>>> Declare the interface types to be used on alsa for the new
+>>>> G_TOPOLOGY ioctl.
+>>>>
+>>>> Signed-off-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+>>>> ---
+>>>>  drivers/media/media-entity.c | 12 ++++++++++++
+>>>>  include/uapi/linux/media.h   |  8 ++++++++
+>>>>  2 files changed, 20 insertions(+)
+>>>>
+>>>> diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
+>>>> index eb38bc3..6e02d19 100644
+>>>> --- a/drivers/media/media-entity.c
+>>>> +++ b/drivers/media/media-entity.c
+>>>> @@ -65,6 +65,18 @@ static inline const char *intf_type(struct media_interface *intf)
+>>>>  		return "v4l2-subdev";
+>>>>  	case MEDIA_INTF_T_V4L_SWRADIO:
+>>>>  		return "swradio";
+>>>> +	case MEDIA_INTF_T_ALSA_PCM_CAPTURE:
+>>>> +		return "pcm-capture";
+>>>> +	case MEDIA_INTF_T_ALSA_PCM_PLAYBACK:
+>>>> +		return "pcm-playback";
+>>>> +	case MEDIA_INTF_T_ALSA_CONTROL:
+>>>> +		return "alsa-control";
+>>>> +	case MEDIA_INTF_T_ALSA_COMPRESS:
+>>>> +		return "compress";
+>>>> +	case MEDIA_INTF_T_ALSA_RAWMIDI:
+>>>> +		return "rawmidi";
+>>>> +	case MEDIA_INTF_T_ALSA_HWDEP:
+>>>> +		return "hwdep";
+>>>>  	default:
+>>>>  		return "unknown-intf";
+>>>>  	}
+>>>> diff --git a/include/uapi/linux/media.h b/include/uapi/linux/media.h
+>>>> index cacfceb..75cbe92 100644
+>>>> --- a/include/uapi/linux/media.h
+>>>> +++ b/include/uapi/linux/media.h
+>>>> @@ -252,6 +252,7 @@ struct media_links_enum {
+>>>>  
+>>>>  #define MEDIA_INTF_T_DVB_BASE	0x00000100
+>>>>  #define MEDIA_INTF_T_V4L_BASE	0x00000200
+>>>> +#define MEDIA_INTF_T_ALSA_BASE	0x00000300
+>>>>  
+>>>>  /* Interface types */
+>>>>  
+>>>> @@ -267,6 +268,13 @@ struct media_links_enum {
+>>>>  #define MEDIA_INTF_T_V4L_SUBDEV (MEDIA_INTF_T_V4L_BASE + 3)
+>>>>  #define MEDIA_INTF_T_V4L_SWRADIO (MEDIA_INTF_T_V4L_BASE + 4)
+>>>>  
+>>>> +#define MEDIA_INTF_T_ALSA_PCM_CAPTURE   (MEDIA_INTF_T_ALSA_BASE)
+>>>> +#define MEDIA_INTF_T_ALSA_PCM_PLAYBACK  (MEDIA_INTF_T_ALSA_BASE + 1)
+>>>> +#define MEDIA_INTF_T_ALSA_CONTROL       (MEDIA_INTF_T_ALSA_BASE + 2)
+>>>> +#define MEDIA_INTF_T_ALSA_COMPRESS      (MEDIA_INTF_T_ALSA_BASE + 3)
+>>>> +#define MEDIA_INTF_T_ALSA_RAWMIDI       (MEDIA_INTF_T_ALSA_BASE + 4)
+>>>> +#define MEDIA_INTF_T_ALSA_HWDEP         (MEDIA_INTF_T_ALSA_BASE + 5)
+>>>
+>>> Patch looks ok, but please document the new media interfaces at KernelDoc
+>>> documentation.
+>>>
 >>
->> Yes, linux-next 20160201 contains this patch.
+>> Hi Takashi,
+>>
+>> If you are okay with these changes, could you please
+>> Ack this patch. I am addressing documentation comment
+>> from Mauro.
 > 
-> Hmm, I will try to build this tree on UDOO board
-> today and see what happens.
+> Well, the available ALSA devices are:
+> 
+> CONTROL
+> SEQUENCER
+> TIMER
+> COMPRESS
+> HWDEP
+> RAWMIDI
+> PCM_PLAYBACK
+> PCM_CAPTURE
+> 
+> as found in sound/minors.h.
+> 
+> Any reason not to define for some of them?
 
-Looks like the problem occurs because commit
-922a9f936e40 ("regmap: mmio: Convert to regmap_bus and fix accessor usage")
-has removed ->read callback from MMIO regmap
-implementation but it is used (via regmap_raw_read()) by
-regcache code to initialize cache if reg default values
-weren't provided explicitly.
+Looks like SEQUENCER and TIMER are missing in
+the MC defines. I can see how SEQUENCER could
+be relevant as an MC node, however not sure
+about TIMER use-case. That said, I don't see
+any reason for not including it.
 
-If I revert this commit the SSI probes successfully again.
+I will add Media Interface Types for both
+of these missing ones.
 
-Looks like a possible solution would be to change
-regmap_raw_read() to do read using _regmap_read in
-case the cache is bypassed and there is no ->read
-callback defined for regmap implementation.
+thanks,
+-- Shuah
 
-Maciej
+
+-- 
+Shuah Khan
+Sr. Linux Kernel Developer
+Open Source Innovation Group
+Samsung Research America (Silicon Valley)
+shuahkh@osg.samsung.com | (970) 217-8978
