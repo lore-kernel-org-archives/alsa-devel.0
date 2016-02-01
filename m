@@ -1,87 +1,57 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH RFC 13/15] ASoC: qcom: apq8016: set the correct max register for regmap
-Date: Mon,  1 Feb 2016 17:29:38 +0000
-Message-ID: <1454347778-11002-1-git-send-email-srinivas.kandagatla@linaro.org>
+Subject: [PATCH RFC 14/15] ASoC: qcom: apq8016-sbc: add mic support
+Date: Mon,  1 Feb 2016 17:29:46 +0000
+Message-ID: <1454347786-11044-1-git-send-email-srinivas.kandagatla@linaro.org>
 References: <1454347622-9970-1-git-send-email-srinivas.kandagatla@linaro.org>
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1454347622-9970-1-git-send-email-srinivas.kandagatla@linaro.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Patrick Lai <plai@codeaurora.org>, alsa-devel@alsa-project.org
 Cc: Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Now that we are ready to access wrdma registers, set the max register
-and other regmap related configs to use correct values.
+This patch add mic support on apq8016-sbc board aka db410c. Tested it
+with headset mic.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/lpass-cpu.c | 33 +++++++++++++++++++++++++++++++--
- 1 file changed, 31 insertions(+), 2 deletions(-)
+ sound/soc/qcom/apq8016_sbc.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 97bc202..82c21b2 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -294,6 +294,17 @@ static bool lpass_cpu_regmap_writeable(struct device *dev, unsigned int reg)
- 			return true;
- 	}
+diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
+index 1efdf00..1289543 100644
+--- a/sound/soc/qcom/apq8016_sbc.c
++++ b/sound/soc/qcom/apq8016_sbc.c
+@@ -30,6 +30,7 @@ struct apq8016_sbc_data {
+ 	struct snd_soc_dai_link dai_link[];	/* dynamically allocated */
+ };
  
-+	for (i = 0; i < v->wrdma_channels; ++i) {
-+		if (reg == LPAIF_WRDMACTL_REG(v, i + v->wrdma_channel_start))
-+			return true;
-+		if (reg == LPAIF_WRDMABASE_REG(v, i + v->wrdma_channel_start))
-+			return true;
-+		if (reg == LPAIF_WRDMABUFF_REG(v, i + v->wrdma_channel_start))
-+			return true;
-+		if (reg == LPAIF_WRDMAPER_REG(v, i + v->wrdma_channel_start))
-+			return true;
-+	}
++#define MIC_CTRL_TER_WS_SLAVE_SEL	BIT(21)
+ #define MIC_CTRL_QUA_WS_SLAVE_SEL_10	BIT(17)
+ #define MIC_CTRL_TLMM_SCLK_EN		BIT(1)
+ #define	SPKR_CTL_PRI_WS_SLAVE_SEL_11	(BIT(17) | BIT(16))
+@@ -53,6 +54,12 @@ static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 			MIC_CTRL_TLMM_SCLK_EN,
+ 			pdata->mic_iomux);
+ 		break;
++	case MI2S_TERTIARY:
++		writel(readl(pdata->mic_iomux) | MIC_CTRL_TER_WS_SLAVE_SEL |
++			MIC_CTRL_TLMM_SCLK_EN,
++			pdata->mic_iomux);
 +
- 	return false;
- }
++		break;
  
-@@ -327,6 +338,19 @@ static bool lpass_cpu_regmap_readable(struct device *dev, unsigned int reg)
- 			return true;
- 	}
+ 	default:
+ 		dev_err(card->dev, "unsupported cpu dai configuration\n");
+@@ -126,9 +133,6 @@ static struct apq8016_sbc_data *apq8016_sbc_parse_of(struct snd_soc_card *card)
+ 		}
  
-+	for (i = 0; i < v->wrdma_channels; ++i) {
-+		if (reg == LPAIF_WRDMACTL_REG(v, i + v->wrdma_channel_start))
-+			return true;
-+		if (reg == LPAIF_WRDMABASE_REG(v, i + v->wrdma_channel_start))
-+			return true;
-+		if (reg == LPAIF_WRDMABUFF_REG(v, i + v->wrdma_channel_start))
-+			return true;
-+		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start))
-+			return true;
-+		if (reg == LPAIF_WRDMAPER_REG(v, i + v->wrdma_channel_start))
-+			return true;
-+	}
-+
- 	return false;
- }
- 
-@@ -344,6 +368,10 @@ static bool lpass_cpu_regmap_volatile(struct device *dev, unsigned int reg)
- 		if (reg == LPAIF_RDMACURR_REG(v, i))
- 			return true;
- 
-+	for (i = 0; i < v->wrdma_channels; ++i)
-+		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start))
-+			return true;
-+
- 	return false;
- }
- 
-@@ -398,8 +426,9 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
- 		return PTR_ERR((void const __force *)drvdata->lpaif);
- 	}
- 
--	lpass_cpu_regmap_config.max_register = LPAIF_RDMAPER_REG(variant,
--						variant->rdma_channels);
-+	lpass_cpu_regmap_config.max_register = LPAIF_WRDMAPER_REG(variant,
-+						variant->wrdma_channels +
-+						variant->wrdma_channel_start);
- 
- 	drvdata->lpaif_map = devm_regmap_init_mmio(&pdev->dev, drvdata->lpaif,
- 			&lpass_cpu_regmap_config);
+ 		link->platform_of_node = link->cpu_of_node;
+-		/* For now we only support playback */
+-		link->playback_only = true;
+-
+ 		ret = of_property_read_string(np, "link-name", &link->name);
+ 		if (ret) {
+ 			dev_err(card->dev, "error getting codec dai_link name\n");
 -- 
 1.9.1
