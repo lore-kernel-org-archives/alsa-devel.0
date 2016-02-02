@@ -1,17 +1,18 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH v2] ASoC: nau8825: reduce stanby power
-	consumption
-Date: Tue, 2 Feb 2016 11:18:14 +0800
-Message-ID: <1454383094-6778-1-git-send-email-KCHSU0@nuvoton.com>
-References: <1452873193-20650-1-git-send-email-KCHSU0@nuvoton.com>
+From: Caesar Wang <wxt@rock-chips.com>
+Subject: [PATCH v5 0/8] Add the family patches to support for
+	kylin board
+Date: Tue,  2 Feb 2016 11:33:52 +0800
+Message-ID: <1454384032-6794-1-git-send-email-wxt@rock-chips.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id D13652614D4
- for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 04:18:15 +0100 (CET)
-In-Reply-To: <1452873193-20650-1-git-send-email-KCHSU0@nuvoton.com>
+Received: from mail-pf0-f196.google.com (mail-pf0-f196.google.com
+ [209.85.192.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6913B2614D4
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 04:34:37 +0100 (CET)
+Received: by mail-pf0-f196.google.com with SMTP id 66so7870142pfe.2
+ for <alsa-devel@alsa-project.org>; Mon, 01 Feb 2016 19:34:37 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,121 +22,157 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
+To: heiko@sntech.de, linux-rockchip@lists.infradead.org, keescook@google.com
+Cc: huangtao@rock-chips.com, alsa-devel@alsa-project.org, hl@rock-chips.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, cf@rock-chips.com, cjf@rock-chips.com, zhengsq@rock-chips.com, leozwang@google.com, Caesar Wang <wxt@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-There is side effect at last patch.
-The playback has no sound with MCLK if internal clock frequency decreases.
-Thus, we need to recover frequency setting when MCLK case.
+Hi all,
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+This series patches are based on kernel 4.5-rc1 version, also
+is based on Heiko's branch.
+(kernel/git/mmind/linux-rockchip.git -b for-next & v4.5-clk/fixes)
+
+e.g: boot log..
+Linux version 4.5.0-rc1+ (wxt@ubuntu) ....#60 SMP Thu Jan 28 12:54:50 CST 2016
+
+1) The kylin history series patches:
+
+V0:
+https://lkml.org/lkml/2015/12/22/168
+V1:
+https://lkml.org/lkml/2015/12/17/319
+V2:
+https://lkml.org/lkml/2016/1/7/66
+V3:
+http://www.spinics.net/lists/arm-kernel/msg474796.html
+V4:
+https://lkml.org/lkml/2016/1/28/132
+
+This series patches are verified on the following github:
+https://github.com/Caesar-github/rockchip/tree/kylin/next
+
+This series has 8 patches: (8--->1)
+c455bf5 ARM: dts: rockchip: support the spi for rk3036
+41bbd5d ASoC: rt5616: add the mclk for the codec driver
+6ee2dc0 ASoC: rt5616: trivial: fix the typo
+2775e41 ASoC: rt5616: add mclk property for rt5616 document
+b4ec10b ARM: dts: rockchip: add mclk for rt5616 on kylin board
+8d272a1 ARM: dts: rockchip: add support emac for RK3036
+02e501f clk: rockchip: rk3036: fix and add node id for emac clock
+b948f42 ARM: dts: rockchip: add hdmi/vop device node for rk3036
+....
+
+This series patches can apply into Heiko for-next branch.
+(https://git.kernel.org/cgit/linux/kernel/git/mmind/linux-rockchip.git/log/?h=for-next)
+Also, ths ASoC can apply into Mark branch.
 ---
- sound/soc/codecs/nau8825.c | 51 +++++++++++++++++++++++++++++++++-------------
- 1 file changed, 37 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 2e2e11a..b9bcb10 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -239,6 +239,29 @@ static int nau8825_pump_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
-+static int nau8825_dacr_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_ENA_CTRL,
-+			NAU8825_ENABLE_DACR, NAU8825_ENABLE_DACR);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		if (!nau8825->irq)
-+			regmap_update_bits(nau8825->regmap,
-+				NAU8825_REG_ENA_CTRL, NAU8825_ENABLE_DACR, 0);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static const char * const nau8825_adc_decimation[] = {
- 	"32", "64", "128", "256"
- };
-@@ -313,16 +336,17 @@ static const struct snd_soc_dapm_widget nau8825_dapm_widgets[] = {
- 		0),
- 
- 	/* ADC for button press detection */
--	SND_SOC_DAPM_ADC("SAR", NULL, NAU8825_REG_SAR_CTRL,
--		NAU8825_SAR_ADC_EN_SFT, 0),
-+	SND_SOC_DAPM_SUPPLY("SAR", NAU8825_REG_SAR_CTRL,
-+		NAU8825_SAR_ADC_EN_SFT, 0, NULL, 0),
- 
- 	SND_SOC_DAPM_DAC("ADACL", NULL, NAU8825_REG_RDAC, 12, 0),
- 	SND_SOC_DAPM_DAC("ADACR", NULL, NAU8825_REG_RDAC, 13, 0),
- 	SND_SOC_DAPM_SUPPLY("ADACL Clock", NAU8825_REG_RDAC, 8, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("ADACR Clock", NAU8825_REG_RDAC, 9, 0, NULL, 0),
- 
--	SND_SOC_DAPM_DAC("DDACR", NULL, NAU8825_REG_ENA_CTRL,
--		NAU8825_ENABLE_DACR_SFT, 0),
-+	SND_SOC_DAPM_DAC_E("DDACR", NULL, SND_SOC_NOPM, 0, 0,
-+		nau8825_dacr_event, SND_SOC_DAPM_POST_PMU |
-+		SND_SOC_DAPM_POST_PMD),
- 	SND_SOC_DAPM_DAC("DDACL", NULL, NAU8825_REG_ENA_CTRL,
- 		NAU8825_ENABLE_DACL_SFT, 0),
- 	SND_SOC_DAPM_SUPPLY("DDAC Clock", NAU8825_REG_ENA_CTRL, 6, 0, NULL, 0),
-@@ -845,13 +869,6 @@ static int nau8825_codec_probe(struct snd_soc_codec *codec)
- 
- 	nau8825->dapm = dapm;
- 
--	/* The interrupt clock is gated by x1[10:8],
--	 * one of them needs to be enabled all the time for
--	 * interrupts to happen.
--	 */
--	snd_soc_dapm_force_enable_pin(dapm, "DDACR");
--	snd_soc_dapm_sync(dapm);
+2) This series patches have the following decriptions:
+
+PATCH[1/8]: ====> add hdmi/vop display node for rk3036
+ARM: dts: rockchip: add hdmi/vop device node for rk3036
+
+This Patch is based on Ykk's Inno HDMI V7 patches. That's verified on
+my github.
+
+bd5ed3e ARM: dts: rockchip: add hdmi/vop device node for rk3036
+438e7bd FROMLIST: dt-bindings: add document for Innosilicon HDMI on Rockchip platform
+((am from https://patchwork.kernel.org/patch/8117611/))
+ad0623b FROMLIST: drm/rockchip: hdmi: add Innosilicon HDMI support
+((am https://patchwork.kernel.org/patch/8117571/))
+
+PATCH[2/8-3/8]: Add the emac patch
+
+The emac clock is depend APLL, That shoud be incorrect.
+We should fix it on the DPLL.
+
+df91ab ARM: dts: rockchip: add support emac for RK3036
+d5c2781 clk: rockchip: rk3036: fix and add node id for emac clock
+
+That's verified on kylin board with ubuntu os.
+
+How to test and verify?
+
+You can refer to the following wiki document.
+http://rockchip.wikidot.com/linux-develop-guide
+
+PATCH[4/8-7/8]: Make the codec work on kylin board
+
+41bbd5d ASoC: rt5616: add the mclk for the codec driver
+6ee2dc0 ASoC: rt5616: trivial: fix the typo
+2775e41 ASoC: rt5616: add mclk property for rt5616 document
+b4ec10b ARM: dts: rockchip: add mclk for rt5616 on kylin board
+
+As the previous discussed on https://patchwork.kernel.org/patch/8041001/
+Move the mclk into codec driver to enable and disable.
+
+How to test and verify?
+
+You can refer to the following wiki document.
+http://rockchip.wikidot.com/linux-develop-guide
+
+PATCH[8/8]: Make the codec work on kylin board
+
+Add the spi node for rk3036 dts, that's seem not related to the kylin.
+Maybe the future will support the spi on kylin board or connect the spi devices.
+
+f0fff43 ARM: dts: rockchip: support the spi for rk3036
+---
+
+Thanks your reviewing! :)
+
 -
- 	/* Unmask interruptions. Handler uses dapm object so we can enable
- 	 * interruptions only after dapm is fully initialized.
- 	 */
-@@ -1032,6 +1049,8 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
- 		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
- 			NAU8825_CLK_SRC_MASK, NAU8825_CLK_SRC_MCLK);
- 		regmap_update_bits(regmap, NAU8825_REG_FLL6, NAU8825_DCO_EN, 0);
-+		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
-+			NAU8825_CLK_MCLK_SRC_MASK, 0);
- 		ret = nau8825_mclk_prepare(nau8825, freq);
- 		if (ret)
- 			return ret;
-@@ -1042,6 +1061,12 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
- 			NAU8825_DCO_EN);
- 		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
- 			NAU8825_CLK_SRC_MASK, NAU8825_CLK_SRC_VCO);
-+		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
-+			NAU8825_CLK_MCLK_SRC_MASK, 0xf);
-+		regmap_update_bits(regmap, NAU8825_REG_FLL1,
-+			NAU8825_FLL_RATIO_MASK, 0x10);
-+		regmap_update_bits(regmap, NAU8825_REG_FLL6,
-+			NAU8825_SDM_EN, NAU8825_SDM_EN);
- 		if (nau8825->mclk_freq) {
- 			clk_disable_unprepare(nau8825->mclk);
- 			nau8825->mclk_freq = 0;
-@@ -1276,9 +1301,7 @@ static int nau8825_setup_irq(struct nau8825 *nau8825)
- 	/* Enable internal VCO needed for interruptions */
- 	nau8825_configure_sysclk(nau8825, NAU8825_CLK_INTERNAL, 0);
- 
--	/* Enable DDACR needed for interrupts
--	 * It is the same as force_enable_pin("DDACR") we do later
--	 */
-+	/* Enable DDACR needed for interrupts */
- 	regmap_update_bits(regmap, NAU8825_REG_ENA_CTRL,
- 		NAU8825_ENABLE_DACR, NAU8825_ENABLE_DACR);
- 
+Caesar
+
+
+Changes in v5:
+- remove unused commit content.
+- Fix the wrong word, as the Rob comments on
+  https://patchwork.kernel.org/patch/8147731/.
+- Cc the related alsa experts.
+-Cc releated alsa experts.
+- Cc related alsa experts.
+- Remove the unused, as Heiko comments on https://patchwork.kernel.org/patch/8147761/
+- Modify the commit.
+
+Changes in v4:
+- solve the lastest conflict, picked up from
+  https://patchwork.kernel.org/patch/8040961/.
+- fix the commit, pick up from the
+  https://patchwork.kernel.org/patch/7976631/.
+- The emac parent shouldn't depend on the APLL. instead of DPLL.
+- included in the kylin series patches.
+- This patch picked up from https://patchwork.kernel.org/patch/7924971/
+- Change to solve the conflict based on the Heiko's branch.
+- Make the emac parent as the DPLL.
+- AS the previous discussed by them, add the mclk for codec.
+ (https://patchwork.kernel.org/patch/8041001/)
+- Add this patch included in kylin series patches.
+- Add this patch included in kylin series patches.
+- AS the previous discussed by them, add the mclk for codec.
+  (https://patchwork.kernel.org/patch/8041001/)
+- Add this patch included in kylin series patches.
+
+Caesar Wang (6):
+  ARM: dts: rockchip: add hdmi/vop device node for rk3036
+  ARM: dts: rockchip: add mclk for rt5616 on kylin board
+  ASoC: rt5616: add mclk property for rt5616 document
+  ASoC: rt5616: trivial: fix the typo
+  ASoC: rt5616: add the mclk for the codec driver
+  ARM: dts: rockchip: support the spi for rk3036
+
+zhengxing (2):
+  clk: rockchip: rk3036: fix and add node id for emac clock
+  ARM: dts: rockchip: add support emac for RK3036
+
+ Documentation/devicetree/bindings/sound/rt5616.txt |   6 +
+ arch/arm/boot/dts/rk3036-evb.dts                   |  23 ++
+ arch/arm/boot/dts/rk3036-kylin.dts                 |  35 ++
+ arch/arm/boot/dts/rk3036.dtsi                      | 145 ++++++++
+ drivers/clk/rockchip/clk-rk3036.c                  |   9 +-
+ include/dt-bindings/clock/rk3036-cru.h             |   2 +
+ sound/soc/codecs/rt5616.c                          | 410 +++++++++++----------
+ 7 files changed, 442 insertions(+), 188 deletions(-)
+
 -- 
-2.6.4
+1.9.1
