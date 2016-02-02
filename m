@@ -1,86 +1,67 @@
-From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [PATCH v3 1/2] dt-bindings: add sun4i SPDIF transceiver bindings
-Date: Tue,  2 Feb 2016 15:49:53 +0100
-Message-ID: <1454424594-25208-2-git-send-email-codekipper@gmail.com>
-References: <1454424594-25208-1-git-send-email-codekipper@gmail.com>
-Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: timer: Sync timer deletion at closing
+	the system timer
+Date: Tue,  2 Feb 2016 16:14:22 +0100
+Message-ID: <1454426062-20985-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBFUEYO2QKGQET4XWLNI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-In-Reply-To: <1454424594-25208-1-git-send-email-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
-Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id E16CA265104
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 16:14:23 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 76B6EABE5
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 15:14:23 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+ALSA timer core framework has no sync point at stopping because it's
+called inside the spinlock.  Thus we need a sync point at close for
+avoiding the stray timer task.  This is simply done by implementing
+the close callback just calling del_timer_sync().  (It's harmless to
+call it unconditionally, as the core timer itself cares of the already
+deleted timer instance.)
 
-Add devicetree bindings for the SPDIF transceiver found on
-found on Allwinners A10 and A20 SoCs.
-
-Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- .../devicetree/bindings/sound/sun4i,spdif.txt      | 46 ++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/sun4i,spdif.txt
+ sound/core/timer.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/sun4i,spdif.txt b/Documentation/devicetree/bindings/sound/sun4i,spdif.txt
-new file mode 100644
-index 0000000..55ed2f6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/sun4i,spdif.txt
-@@ -0,0 +1,46 @@
-+Allwinner Sony/Philips Digital Interface Format (S/PDIF) Controller
+diff --git a/sound/core/timer.c b/sound/core/timer.c
+index 12db60dd147b..b419e612f987 100644
+--- a/sound/core/timer.c
++++ b/sound/core/timer.c
+@@ -1058,11 +1058,21 @@ static int snd_timer_s_stop(struct snd_timer * timer)
+ 	return 0;
+ }
+ 
++static int snd_timer_s_close(struct snd_timer *timer)
++{
++	struct snd_timer_system_private *priv;
 +
-+The Allwinner S/PDIF audio block is a transceiver that allows the
-+processor to receive and transmit digital audio via an coaxial cable or
-+a fibre cable.
++	priv = (struct snd_timer_system_private *)timer->private_data;
++	del_timer_sync(&priv->tlist);
++	return 0;
++}
 +
-+Required properties:
-+
-+  - compatible		: should be one of the following:
-+    - "allwinner,sun4i-a10-spdif": for the Allwinner A10 SoC
-+
-+  - reg			: Offset and length of the register set for the device.
-+
-+  - interrupts		: Contains the spdif interrupt.
-+
-+  - dmas		: Generic dma devicetree binding as described in
-+			  Documentation/devicetree/bindings/dma/dma.txt.
-+
-+  - dma-names		: Two dmas have to be defined, "tx" and "rx".
-+
-+  - clocks		: Contains an entry for each entry in clock-names.
-+
-+  - clock-names		: Includes the following entries:
-+	"apb"		  clock for the spdif bus.
-+	"spdif"		  clock for spdif controller.
-+
-+Optional:
-+
-+  - spdif-in		: Enable block for capturing an SPDIF signal.
-+
-+  - spdif-out		: Enable block for transmitting an SPDIF signal.
-+
-+Example:
-+
-+spdif: spdif@01c21000 {
-+	compatible = "allwinner,sun4i-a10-spdif";
-+	reg = <0x01c21000 0x40>;
-+	interrupts = <13>;
-+	clocks = <&apb0_gates 1>, <&spdif_clk>;
-+	clock-names = "apb", "spdif";
-+	dmas = <&dma 0 2>, <&dma 0 2>;
-+	dma-names = "rx", "tx";
-+	spdif-in = "disabled";
-+	spdif-out = "okay";
-+	status = "okay";
-+};
+ static struct snd_timer_hardware snd_timer_system =
+ {
+ 	.flags =	SNDRV_TIMER_HW_FIRST | SNDRV_TIMER_HW_TASKLET,
+ 	.resolution =	1000000000L / HZ,
+ 	.ticks =	10000000L,
++	.close =	snd_timer_s_close,
+ 	.start =	snd_timer_s_start,
+ 	.stop =		snd_timer_s_stop
+ };
 -- 
 2.7.0
