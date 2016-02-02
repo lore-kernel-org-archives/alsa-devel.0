@@ -1,62 +1,89 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: About planning of libhinawa ITP to debian project
-Date: Tue, 2 Feb 2016 23:04:01 +0900
-Message-ID: <56B0B751.9080609@sakamocchi.jp>
-References: <56ADEF9C.50303@sakamocchi.jp> <56ADF3E8.1050109@sakamocchi.jp>
+From: =?UTF-8?q?Andreas=20Irest=C3=A5l?= <andreas.irestal@axis.com>
+Subject: [PATCH 2/4] ASoc: adau17x1: Correct typos in file
+	headers
+Date: Tue,  2 Feb 2016 15:31:48 +0100
+Message-ID: <1454423510-1330-3-git-send-email-andire@axis.com>
+References: <1454423510-1330-1-git-send-email-andire@axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <56ADF3E8.1050109@sakamocchi.jp>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
-List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
-List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: linux1394-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
-Cc: hayashi@clear-code.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux1394-devel@lists.sourceforge.net, "ffado-devel@lists.sf.net" <ffado-devel@lists.sf.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F735265104
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 15:32:28 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by bes.se.axis.com (Postfix) with ESMTP id BB3952E173
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 15:32:27 +0100 (CET)
+Received: from bes.se.axis.com ([IPv6:::ffff:127.0.0.1])
+ by localhost (bes.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id Z4ae81uCEUxu for <alsa-devel@alsa-project.org>;
+ Tue,  2 Feb 2016 15:32:27 +0100 (CET)
+Received: from boulder.se.axis.com (boulder.se.axis.com [10.0.2.104])
+ by bes.se.axis.com (Postfix) with ESMTP id 5293E2E34B
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 15:32:27 +0100 (CET)
+Received: from boulder.se.axis.com (localhost [127.0.0.1])
+ by postfix.imss71 (Postfix) with ESMTP id 27500167D
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 15:32:27 +0100 (CET)
+Received: from seth.se.axis.com (seth.se.axis.com [10.0.2.172])
+ by boulder.se.axis.com (Postfix) with ESMTP id 1C03615E6
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 15:32:27 +0100 (CET)
+In-Reply-To: <1454423510-1330-1-git-send-email-andire@axis.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: =?UTF-8?q?Andreas=20Irest=C3=A5l?= <andire@axis.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-
-On Jan 31 2016 20:45, Takashi Sakamoto wrote:
-> In this message, I explain about a plan of libhinawa ITP[0] to debian
-> project. Fortunately, I got a help of a debian package maintainer,
-> Kentaro Hayashi. He maintains groonga package[1] and experienced
-> related works[2].
-> 
-> Currently, we plan to work for it in next month, February 2016. I have
-> no idea about when FTP master acked to our ITP and when the package is
-> released from debian project.
-
-Today, we register this to Debian Bug report #813474.
-https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=813474
-
-And start RFS (Request For Sponsorship).
-https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=813489
-
-Thanks for Kentaro.
-
-> I with the package will be available as early as possible, and this work
-> will be a part of his great work as a debian package maintainer.
-> 
-> FYI,
-> 
-> [0] ITP = Intent To Packaging
-> [1] Debian -- Details of package groonga in sid:
-> https://packages.debian.org/sid/groonga
-> [2] Debian Bug report logs - #732055
-> ITP: groonga -- Fulltext search engine
-> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=732055
-
-Takashi Sakamoto
-
-------------------------------------------------------------------------------
-Site24x7 APM Insight: Get Deep Visibility into Application Performance
-APM + Mobile APM + RUM: Monitor 3 App instances at just $35/Month
-Monitor end-to-end web transactions and take corrective actions now
-Troubleshoot faster and improve end-user experience. Signup Now!
-http://pubads.g.doubleclick.net/gampad/clk?id=267308311&iu=/4140
+U2lnbmVkLW9mZi1ieTogQW5kcmVhcyBJcmVzdMOlbCA8YW5kaXJlQGF4aXMuY29tPgotLS0KIGlu
+Y2x1ZGUvbGludXgvcGxhdGZvcm1fZGF0YS9hZGF1MTd4MS5oIHwgMiArLQogc291bmQvc29jL2Nv
+ZGVjcy9hZGF1MTc2MS1pMmMuYyAgICAgICAgfCAyICstCiBzb3VuZC9zb2MvY29kZWNzL2FkYXUx
+NzYxLXNwaS5jICAgICAgICB8IDIgKy0KIHNvdW5kL3NvYy9jb2RlY3MvYWRhdTE3NjEuYyAgICAg
+ICAgICAgIHwgMiArLQogc291bmQvc29jL2NvZGVjcy9hZGF1MTc4MS5jICAgICAgICAgICAgfCAy
+ICstCiA1IGZpbGVzIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkKCmRp
+ZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3BsYXRmb3JtX2RhdGEvYWRhdTE3eDEuaCBiL2luY2x1
+ZGUvbGludXgvcGxhdGZvcm1fZGF0YS9hZGF1MTd4MS5oCmluZGV4IGE4MTc2NmMuLjlkYjFiOTAg
+MTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgvcGxhdGZvcm1fZGF0YS9hZGF1MTd4MS5oCisrKyBi
+L2luY2x1ZGUvbGludXgvcGxhdGZvcm1fZGF0YS9hZGF1MTd4MS5oCkBAIC0xLDUgKzEsNSBAQAog
+LyoKLSAqIERyaXZlciBmb3IgQURBVTE3NjEvQURBVTE0NjEvQURBVTE3NjEvQURBVTE5NjEvQURB
+VTE3ODEvQURBVTE3ODEgY29kZWNzCisgKiBEcml2ZXIgZm9yIEFEQVUxMzYxL0FEQVUxNDYxL0FE
+QVUxNzYxL0FEQVUxOTYxL0FEQVUxMzgxL0FEQVUxNzgxIGNvZGVjcwogICoKICAqIENvcHlyaWdo
+dCAyMDExLTIwMTQgQW5hbG9nIERldmljZXMgSW5jLgogICogQXV0aG9yOiBMYXJzLVBldGVyIENs
+YXVzZW4gPGxhcnNAbWV0YWZvby5kZT4KZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvYWRh
+dTE3NjEtaTJjLmMgYi9zb3VuZC9zb2MvY29kZWNzL2FkYXUxNzYxLWkyYy5jCmluZGV4IDM0OGNj
+YjEuLmExYjEyNjcgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9jb2RlY3MvYWRhdTE3NjEtaTJjLmMK
+KysrIGIvc291bmQvc29jL2NvZGVjcy9hZGF1MTc2MS1pMmMuYwpAQCAtMSw1ICsxLDUgQEAKIC8q
+Ci0gKiBEcml2ZXIgZm9yIEFEQVUxNzYxL0FEQVUxNDYxL0FEQVUxNzYxL0FEQVUxOTYxIGNvZGVj
+CisgKiBEcml2ZXIgZm9yIEFEQVUxMzYxL0FEQVUxNDYxL0FEQVUxNzYxL0FEQVUxOTYxIGNvZGVj
+CiAgKgogICogQ29weXJpZ2h0IDIwMTQgQW5hbG9nIERldmljZXMgSW5jLgogICogIEF1dGhvcjog
+TGFycy1QZXRlciBDbGF1c2VuIDxsYXJzQG1ldGFmb28uZGU+CmRpZmYgLS1naXQgYS9zb3VuZC9z
+b2MvY29kZWNzL2FkYXUxNzYxLXNwaS5jIGIvc291bmQvc29jL2NvZGVjcy9hZGF1MTc2MS1zcGku
+YwppbmRleCA4YmMxZmJkLi4xODgzMzQ5IDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvY29kZWNzL2Fk
+YXUxNzYxLXNwaS5jCisrKyBiL3NvdW5kL3NvYy9jb2RlY3MvYWRhdTE3NjEtc3BpLmMKQEAgLTEs
+NSArMSw1IEBACiAvKgotICogRHJpdmVyIGZvciBBREFVMTc2MS9BREFVMTQ2MS9BREFVMTc2MS9B
+REFVMTk2MSBjb2RlYworICogRHJpdmVyIGZvciBBREFVMTM2MS9BREFVMTQ2MS9BREFVMTc2MS9B
+REFVMTk2MSBjb2RlYwogICoKICAqIENvcHlyaWdodCAyMDE0IEFuYWxvZyBEZXZpY2VzIEluYy4K
+ICAqICBBdXRob3I6IExhcnMtUGV0ZXIgQ2xhdXNlbiA8bGFyc0BtZXRhZm9vLmRlPgpkaWZmIC0t
+Z2l0IGEvc291bmQvc29jL2NvZGVjcy9hZGF1MTc2MS5jIGIvc291bmQvc29jL2NvZGVjcy9hZGF1
+MTc2MS5jCmluZGV4IDJmMTI0NzcuLjE2ZmVkMzYgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9jb2Rl
+Y3MvYWRhdTE3NjEuYworKysgYi9zb3VuZC9zb2MvY29kZWNzL2FkYXUxNzYxLmMKQEAgLTEsNSAr
+MSw1IEBACiAvKgotICogRHJpdmVyIGZvciBBREFVMTc2MS9BREFVMTQ2MS9BREFVMTc2MS9BREFV
+MTk2MSBjb2RlYworICogRHJpdmVyIGZvciBBREFVMTM2MS9BREFVMTQ2MS9BREFVMTc2MS9BREFV
+MTk2MSBjb2RlYwogICoKICAqIENvcHlyaWdodCAyMDExLTIwMTMgQW5hbG9nIERldmljZXMgSW5j
+LgogICogQXV0aG9yOiBMYXJzLVBldGVyIENsYXVzZW4gPGxhcnNAbWV0YWZvby5kZT4KZGlmZiAt
+LWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvYWRhdTE3ODEuYyBiL3NvdW5kL3NvYy9jb2RlY3MvYWRh
+dTE3ODEuYwppbmRleCBmZGU5MDY4Li5iYzFiYjU2IDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvY29k
+ZWNzL2FkYXUxNzgxLmMKKysrIGIvc291bmQvc29jL2NvZGVjcy9hZGF1MTc4MS5jCkBAIC0xLDUg
+KzEsNSBAQAogLyoKLSAqIERyaXZlciBmb3IgQURBVTE3ODEvQURBVTE3ODEgY29kZWMKKyAqIERy
+aXZlciBmb3IgQURBVTEzODEvQURBVTE3ODEgY29kZWMKICAqCiAgKiBDb3B5cmlnaHQgMjAxMS0y
+MDEzIEFuYWxvZyBEZXZpY2VzIEluYy4KICAqIEF1dGhvcjogTGFycy1QZXRlciBDbGF1c2VuIDxs
+YXJzQG1ldGFmb28uZGU+Ci0tIAoyLjEuNAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbHNhLWRldmVsCg==
