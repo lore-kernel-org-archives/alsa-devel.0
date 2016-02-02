@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dpcm: fix the BE state on hw_free" to the asoc tree
+Subject: Applied "ASoC: wm_adsp: Return sample rate in
+	wm_adsp_compr_pointer" to the asoc tree
 Date: Tue, 02 Feb 2016 19:41:58 +0000
-Message-ID: <E1aQgpq-0007sX-Vq@debutante>
-References: <1454345800-13261-1-git-send-email-vinod.koul@intel.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1454345800-13261-1-git-send-email-vinod.koul@intel.com>
-Sender: stable-owner@vger.kernel.org
-To: Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Message-ID: <E1aQgpq-0007s3-2p@debutante>
+References: <1454431296-21622-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E934F26523B
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 20:42:05 +0100 (CET)
+In-Reply-To: <1454431296-21622-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dpcm: fix the BE state on hw_free
+   ASoC: wm_adsp: Return sample rate in wm_adsp_compr_pointer
 
 has been applied to the asoc tree at
 
@@ -37,41 +53,49 @@ to this mail.
 Thanks,
 Mark
 
->From 5e82d2be6ee53275c72e964507518d7964c82753 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Mon, 1 Feb 2016 22:26:40 +0530
-Subject: [PATCH] ASoC: dpcm: fix the BE state on hw_free
+>From da2b33589013b4cb3dad163f50fae060896cb8b6 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Tue, 2 Feb 2016 16:41:36 +0000
+Subject: [PATCH] ASoC: wm_adsp: Return sample rate in wm_adsp_compr_pointer
 
-While performing hw_free, DPCM checks the BE state but leaves out
-the suspend state. The suspend state needs to be checked as well,
-as we might be suspended and then usermode closes rather than
-resuming the audio stream.
+We should return a valid sample rate from the pointer callback, this
+patch adds this into the driver.
 
-This was found by a stress testing of system with playback in
-loop and killed after few seconds running in background and second
-script running suspend-resume test in loop
-
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/soc-pcm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wm_adsp.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index e898b427be7e..1af4f23697a7 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1810,7 +1810,8 @@ int dpcm_be_dai_hw_free(struct snd_soc_pcm_runtime *fe, int stream)
- 		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
- 		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_FREE) &&
- 		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED) &&
--		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP))
-+		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
-+		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_SUSPEND))
- 			continue;
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 33806d487b8a..68b85ee67586 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -295,6 +295,8 @@ struct wm_adsp_compr {
  
- 		dev_dbg(be->dev, "ASoC: hw_free BE %s\n",
+ 	u32 *raw_buf;
+ 	unsigned int copied_total;
++
++	unsigned int sample_rate;
+ };
+ 
+ #define WM_ADSP_DATA_WORD_SIZE         3
+@@ -2471,6 +2473,8 @@ int wm_adsp_compr_set_params(struct snd_compr_stream *stream,
+ 	if (!compr->raw_buf)
+ 		return -ENOMEM;
+ 
++	compr->sample_rate = params->codec.sample_rate;
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(wm_adsp_compr_set_params);
+@@ -2911,6 +2915,7 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
+ 
+ 	tstamp->copied_total = compr->copied_total;
+ 	tstamp->copied_total += buf->avail * WM_ADSP_DATA_WORD_SIZE;
++	tstamp->sampling_rate = compr->sample_rate;
+ 
+ out:
+ 	mutex_unlock(&dsp->pwr_lock);
 -- 
 2.7.0.rc3
