@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Atom: fix regression on compress
-	DAI" to the asoc tree
-Date: Tue, 02 Feb 2016 19:41:57 +0000
-Message-ID: <E1aQgpp-0007rY-5u@debutante>
-References: <1454354716-17313-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: wm_adsp: Add missing const from region
+	definitions" to the asoc tree
+Date: Tue, 02 Feb 2016 19:42:00 +0000
+Message-ID: <E1aQgps-0007tT-Qi@debutante>
+References: <1454340154-16544-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0573485945344094271=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B02D126525F
- for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 20:42:06 +0100 (CET)
-In-Reply-To: <1454354716-17313-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 014FC26530D
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 20:42:07 +0100 (CET)
+In-Reply-To: <1454340154-16544-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,16 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============0573485945344094271==
-Content-Type: text/plain
-
 The patch
 
-   ASoC: Intel: Atom: fix regression on compress DAI
+   ASoC: wm_adsp: Add missing const from region definitions
 
 has been applied to the asoc tree at
 
@@ -55,54 +53,38 @@ to this mail.
 Thanks,
 Mark
 
->From 292d4200a90715ac29f3763df27adb38a243868c Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Tue, 2 Feb 2016 12:49:49 -0600
-Subject: [PATCH] ASoC: Intel: Atom: fix regression on compress DAI
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From 3a9686c4ba7eec9201c6e8793705d32f24748771 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Mon, 1 Feb 2016 15:22:34 +0000
+Subject: [PATCH] ASoC: wm_adsp: Add missing const from region definitions
 
-Commit a106804 ("ASoC: compress: Fix compress device direction check")
-added a dependency on the compress-cpu-dai channel_min field
-which was removed earlier by commit 77095796
-("ASoC: Intel: Atom: clean-up compressed DAI definition")
-as part of the baytrail cleanups.
-
-The net result was a regression at probe on all Atom platforms
-with no sound card created.
-
-Fix by adding explicit initialization for channel_min to 1
-for the compress-cpu-dai.
-
-Reported-by: Tobias Mädel <alsa-devel@tbspace.de>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst-mfld-platform-pcm.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/wm_adsp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index 55c33dc76ce4..52ed434cbca6 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -528,6 +528,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
- 	.ops = &sst_compr_dai_ops,
- 	.playback = {
- 		.stream_name = "Compress Playback",
-+		.channels_min = 1,
- 	},
- },
- /* BE CPU  Dais */
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 653dbff81fee..28d3851c5063 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -325,7 +325,7 @@ struct wm_adsp_buffer_region_def {
+ 	unsigned int size_offset;
+ };
+ 
+-static struct wm_adsp_buffer_region_def default_regions[] = {
++static const struct wm_adsp_buffer_region_def default_regions[] = {
+ 	{
+ 		.mem_type = WMFW_ADSP2_XM,
+ 		.base_offset = HOST_BUFFER_FIELD(X_buf_base),
+@@ -347,7 +347,7 @@ struct wm_adsp_fw_caps {
+ 	u32 id;
+ 	struct snd_codec_desc desc;
+ 	int num_regions;
+-	struct wm_adsp_buffer_region_def *region_defs;
++	const struct wm_adsp_buffer_region_def *region_defs;
+ };
+ 
+ static const struct wm_adsp_fw_caps ctrl_caps[] = {
 -- 
 2.7.0.rc3
-
-
---===============0573485945344094271==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0573485945344094271==--
