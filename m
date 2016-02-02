@@ -1,51 +1,77 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v5 5/8] ASoC: rt5616: add mclk property for rt5616
- document
-Date: Tue, 2 Feb 2016 19:36:07 +0000
-Message-ID: <20160202193607.GW4455@sirena.org.uk>
-References: <1454384032-6794-1-git-send-email-wxt@rock-chips.com>
- <1454384680-7197-1-git-send-email-wxt@rock-chips.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="QILrdhYozogw5Vly"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1454384680-7197-1-git-send-email-wxt-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Caesar Wang <wxt-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Cc: bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, oder_chiou-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, keescook-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org, leozwang-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: dpcm: fix the BE state on hw_free" to the asoc tree
+Date: Tue, 02 Feb 2016 19:41:58 +0000
+Message-ID: <E1aQgpq-0007sX-Vq@debutante>
+References: <1454345800-13261-1-git-send-email-vinod.koul@intel.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1454345800-13261-1-git-send-email-vinod.koul@intel.com>
+Sender: stable-owner@vger.kernel.org
+To: Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---QILrdhYozogw5Vly
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: dpcm: fix the BE state on hw_free
 
-On Tue, Feb 02, 2016 at 11:44:38AM +0800, Caesar Wang wrote:
-> This patch adds the mclk property for the CODEC driver,
-> since sometimes the CODEC driver needs the clock enabled.
+has been applied to the asoc tree at
 
-This appears to be a resend of a patch that's already been applied.  If
-any changes are required please send incremental patches against current
-git.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
---QILrdhYozogw5Vly
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEcBAEBCAAGBQJWsQUmAAoJECTWi3JdVIfQ8J4H/2IWfvlAqE68iuc+PBhsuyZ7
-JI/GXQfW1kF+C1XbpCYA02GgNn+BOyAkn61LgyQvJBde8bRNpRvnRhFFCfAQxjXY
-8KIQXm8Ooh/276OggNjHis6caj83SUHJRZvZGYPqAMdVJCz5ul7N4BqwG57CKuYO
-x9e3NcN1TGNiEkqm+lZpuKHqOa4mlw6zEnnYtrcKGLs+JiXFtMdlDHkIt+4hBVZb
-oLdTiLgnHJTIdUlk2jDcDkawIEMoK1gmlqSKdrDlUMhWPsmgNN32TWuEWXJdHxDU
-Qxrk1jw+Xz7xGESxc6DrVAMfHmnj1wUfbYzz/1AWY2amqR/IVetlhBjYU4lggGQ=
-=epdQ
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---QILrdhYozogw5Vly--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 5e82d2be6ee53275c72e964507518d7964c82753 Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Mon, 1 Feb 2016 22:26:40 +0530
+Subject: [PATCH] ASoC: dpcm: fix the BE state on hw_free
+
+While performing hw_free, DPCM checks the BE state but leaves out
+the suspend state. The suspend state needs to be checked as well,
+as we might be suspended and then usermode closes rather than
+resuming the audio stream.
+
+This was found by a stress testing of system with playback in
+loop and killed after few seconds running in background and second
+script running suspend-resume test in loop
+
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/soc-pcm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index e898b427be7e..1af4f23697a7 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1810,7 +1810,8 @@ int dpcm_be_dai_hw_free(struct snd_soc_pcm_runtime *fe, int stream)
+ 		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
+ 		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_FREE) &&
+ 		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED) &&
+-		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP))
++		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
++		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_SUSPEND))
+ 			continue;
+ 
+ 		dev_dbg(be->dev, "ASoC: hw_free BE %s\n",
+-- 
+2.7.0.rc3
