@@ -1,168 +1,62 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH] ALSA: hda - chmap supports dynamic pcm
-	assignment
-Date: Tue, 2 Feb 2016 13:43:23 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D190465D15C@SHSMSX103.ccr.corp.intel.com>
-References: <1454396221-36610-1-git-send-email-libin.yang@linux.intel.com>
- <s5hy4b3ju68.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: About planning of libhinawa ITP to debian project
+Date: Tue, 2 Feb 2016 23:04:01 +0900
+Message-ID: <56B0B751.9080609@sakamocchi.jp>
+References: <56ADEF9C.50303@sakamocchi.jp> <56ADF3E8.1050109@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C74526147E
- for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 14:43:30 +0100 (CET)
-In-Reply-To: <s5hy4b3ju68.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>
-Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <56ADF3E8.1050109@sakamocchi.jp>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
+List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
+List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: linux1394-devel-bounces@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
+Cc: hayashi@clear-code.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux1394-devel@lists.sourceforge.net, "ffado-devel@lists.sf.net" <ffado-devel@lists.sf.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Hi all,
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Tuesday, February 02, 2016 6:14 PM
-> To: libin.yang@linux.intel.com
-> Cc: alsa-devel@alsa-project.org; Lin, Mengdong; Yang, Libin
-> Subject: Re: [PATCH] ALSA: hda - chmap supports dynamic pcm
-> assignment
+On Jan 31 2016 20:45, Takashi Sakamoto wrote:
+> In this message, I explain about a plan of libhinawa ITP[0] to debian
+> project. Fortunately, I got a help of a debian package maintainer,
+> Kentaro Hayashi. He maintains groonga package[1] and experienced
+> related works[2].
 > 
-> On Tue, 02 Feb 2016 07:57:01 +0100,
-> libin.yang@linux.intel.com wrote:
-> >
-> > From: Libin Yang <libin.yang@linux.intel.com>
-> >
-> > Bind chmap to pcm statically. chmap is now mapped to pin dynamically
-> > based on mapping between pcm and pin.
-> 
-> The code changes look OK but the patch description doesn't follow it.
-> Please elaborate / correct the texts a bit more.
+> Currently, we plan to work for it in next month, February 2016. I have
+> no idea about when FTP master acked to our ITP and when the package is
+> released from debian project.
 
-Get it. I will change the description.
+Today, we register this to Debian Bug report #813474.
+https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=813474
 
-Regards,
-Libin
+And start RFS (Request For Sponsorship).
+https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=813489
+
+Thanks for Kentaro.
+
+> I with the package will be available as early as possible, and this work
+> will be a part of his great work as a debian package maintainer.
 > 
+> FYI,
 > 
-> thanks,
-> 
-> Takashi
-> 
-> >
-> > Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
-> > ---
-> >  sound/pci/hda/patch_hdmi.c | 40
-> +++++++++++++++++++++++++++++++++-------
-> >  1 file changed, 33 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/sound/pci/hda/patch_hdmi.c
-> b/sound/pci/hda/patch_hdmi.c
-> > index 275b68a..1a46f45 100644
-> > --- a/sound/pci/hda/patch_hdmi.c
-> > +++ b/sound/pci/hda/patch_hdmi.c
-> > @@ -437,6 +437,20 @@ static int hinfo_to_pin_index(struct
-> hda_codec *codec,
-> >  	return -EINVAL;
-> >  }
-> >
-> > +static struct hdmi_spec_per_pin *pcm_idx_to_pin(struct hdmi_spec
-> *spec,
-> > +						int pcm_idx)
-> > +{
-> > +	int i;
-> > +	struct hdmi_spec_per_pin *per_pin;
-> > +
-> > +	for (i = 0; i < spec->num_pins; i++) {
-> > +		per_pin = get_pin(spec, i);
-> > +		if (per_pin->pcm_idx == pcm_idx)
-> > +			return per_pin;
-> > +	}
-> > +	return NULL;
-> > +}
-> > +
-> >  static int cvt_nid_to_cvt_index(struct hda_codec *codec, hda_nid_t
-> cvt_nid)
-> >  {
-> >  	struct hdmi_spec *spec = codec->spec;
-> > @@ -2398,10 +2412,16 @@ static int hdmi_chmap_ctl_get(struct
-> snd_kcontrol *kcontrol,
-> >  	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
-> >  	struct hda_codec *codec = info->private_data;
-> >  	struct hdmi_spec *spec = codec->spec;
-> > -	int pin_idx = kcontrol->private_value;
-> > -	struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
-> > +	int pcm_idx = kcontrol->private_value;
-> > +	struct hdmi_spec_per_pin *per_pin = pcm_idx_to_pin(spec,
-> pcm_idx);
-> >  	int i;
-> >
-> > +	if (!per_pin) {
-> > +		for (i = 0; i < spec->channels_max; i++)
-> > +			ucontrol->value.integer.value[i] = 0;
-> > +		return 0;
-> > +	}
-> > +
-> >  	for (i = 0; i < ARRAY_SIZE(per_pin->chmap); i++)
-> >  		ucontrol->value.integer.value[i] = per_pin->chmap[i];
-> >  	return 0;
-> > @@ -2413,13 +2433,19 @@ static int hdmi_chmap_ctl_put(struct
-> snd_kcontrol *kcontrol,
-> >  	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
-> >  	struct hda_codec *codec = info->private_data;
-> >  	struct hdmi_spec *spec = codec->spec;
-> > -	int pin_idx = kcontrol->private_value;
-> > -	struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
-> > +	int pcm_idx = kcontrol->private_value;
-> > +	struct hdmi_spec_per_pin *per_pin = pcm_idx_to_pin(spec,
-> pcm_idx);
-> >  	unsigned int ctl_idx;
-> >  	struct snd_pcm_substream *substream;
-> >  	unsigned char chmap[8];
-> >  	int i, err, ca, prepared = 0;
-> >
-> > +	/* No monitor is connected in dyn_pcm_assign.
-> > +	 * It's invalid to setup the chmap
-> > +	 */
-> > +	if (!per_pin)
-> > +		return 0;
-> > +
-> >  	ctl_idx = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
-> >  	substream = snd_pcm_chmap_substream(info, ctl_idx);
-> >  	if (!substream || !substream->runtime)
-> > @@ -2596,18 +2622,18 @@ static int
-> generic_hdmi_build_controls(struct hda_codec *codec)
-> >  	}
-> >
-> >  	/* add channel maps */
-> > -	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
-> > +	for (pcm_idx = 0; pcm_idx < spec->pcm_used; pcm_idx++) {
-> >  		struct hda_pcm *pcm;
-> >  		struct snd_pcm_chmap *chmap;
-> >  		struct snd_kcontrol *kctl;
-> >  		int i;
-> >
-> > -		pcm = get_pcm_rec(spec, pin_idx);
-> > +		pcm = get_pcm_rec(spec, pcm_idx);
-> >  		if (!pcm || !pcm->pcm)
-> >  			break;
-> >  		err = snd_pcm_add_chmap_ctls(pcm->pcm,
-> >
-> SNDRV_PCM_STREAM_PLAYBACK,
-> > -					     NULL, 0, pin_idx, &chmap);
-> > +					     NULL, 0, pcm_idx, &chmap);
-> >  		if (err < 0)
-> >  			return err;
-> >  		/* override handlers */
-> > --
-> > 1.9.1
-> >
+> [0] ITP = Intent To Packaging
+> [1] Debian -- Details of package groonga in sid:
+> https://packages.debian.org/sid/groonga
+> [2] Debian Bug report logs - #732055
+> ITP: groonga -- Fulltext search engine
+> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=732055
+
+Takashi Sakamoto
+
+------------------------------------------------------------------------------
+Site24x7 APM Insight: Get Deep Visibility into Application Performance
+APM + Mobile APM + RUM: Monitor 3 App instances at just $35/Month
+Monitor end-to-end web transactions and take corrective actions now
+Troubleshoot faster and improve end-user experience. Signup Now!
+http://pubads.g.doubleclick.net/gampad/clk?id=267308311&iu=/4140
