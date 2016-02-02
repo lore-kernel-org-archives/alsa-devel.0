@@ -1,18 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: bytcr_rt5651 on wintron 7.0
-Date: Tue, 2 Feb 2016 11:07:08 +0530
-Message-ID: <20160202053707.GF11744@localhost>
-References: <56AE114E.7060108@tbspace.de> <56AF72D9.6090200@linux.intel.com>
- <56AF9621.5090406@linux.intel.com>
+From: libin.yang@linux.intel.com
+Subject: [PATCH] ALSA: hda - chmap supports dynamic pcm
+	assignment
+Date: Tue,  2 Feb 2016 14:57:01 +0800
+Message-ID: <1454396221-36610-1-git-send-email-libin.yang@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id DF86B26147E
- for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 06:33:34 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <56AF9621.5090406@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 694BB26147E
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 08:00:50 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,79 +19,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Tobias =?iso-8859-1?Q?M=E4del?= <alsa-devel@tbspace.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: libin.yang@intel.com, mengdong.lin@intel.com, Libin Yang <libin.yang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 01, 2016 at 11:30:09AM -0600, Pierre-Louis Bossart wrote:
-> On 02/01/2016 08:59 AM, Pierre-Louis Bossart wrote:
-> >  =
+From: Libin Yang <libin.yang@linux.intel.com>
 
-> > On 01/31/2016 07:51 AM, Tobias M=E4del wrote:
-> >> Hello,
-> >>
-> >> we're currently trying to get the new bytcr_rt5651 driver to run on a
-> >> TrekStor SurfTab wintron 7.0 (x86 tablet).
-> >>
-> >> Unlike the previous driver for the rt5640 chipset, the new bytcr_rt5651
-> >> driver actually detects the card out-of-the-box.
-> > =
+Bind chmap to pcm statically. chmap is now mapped to pin dynamically
+based on mapping between pcm and pin.
 
-> > Good to know.
-> > =
+Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+---
+ sound/pci/hda/patch_hdmi.c | 40 +++++++++++++++++++++++++++++++++-------
+ 1 file changed, 33 insertions(+), 7 deletions(-)
 
-> >>
-> >> This is the dmesg output on the device:
-> >> bytcr_rt5651: snd-soc-dummy-dai <-> media-cpu-dai mapping ok
-> >> bytcr_rt5651: snd-soc-dummy-dai <-> deepbuffer-cpu-dai mapping ok
-> >> bytcr_rt5651: Invalid direction for compress P 0, C 0
-> >> bytcr_rt5651: ASoC: can't create compress Compress
-> >> bytcr_rt5651: ASoC: failed to instantiate card -22
-> >> bytcr_rt5651: devm_snd_soc_register_card failed -22
-> >> bytcr_rt5651: probe of bytcr_rt5651 failed with error -22
-> >>
-> >> So -- apparently it is successfully initializing 2 of the DAIs, but it
-> >> can't find the Compress-DAI. My first guess would just be to try and
-> >> disable the Compress DAI in the code just for debugging, but I'm sure
-> >> that there's a better way.
-> >>
-> >> I'm running a bleeding edge kernel build from the main linux git tree,
-> >> build from yesterday's github.com/torvalds/linux.git repo.
-> >>
-> >> Does anyone have any ideas on how to get alsa to detect the card prope=
-rly?
-> >>
-> >> Here's the complete dmesg output:
-> >> https://gist.github.com/Manawyrm/70d90e95e9c578a7fb26
-> > =
-
-> > This is weird. I checked the DSDT tables and couldn't see anything blat=
-antly wrong.
-> > If there was a problem with the compress DAI it would show on other pla=
-tforms as well.
-> > It could also be a configuration issue with bad controls, I put my UCM =
-configuration on github plbosssart/UCM/, you may want to look into this as =
-well.
-> =
-
-> The same issues happens with an Asus t100 with 4.5-rc2, I get the same
-> message of invalid direction so it's not a codec issue but a regression on
-> all Atom platforms.  The code for this direction check was added by commit
-> " ASoC: compress: Fix compress device direction check"
-> a1068045883ed4a18363a4ebad0c3d55e473b716pe by Vinod Koul (cc:ed), somehow
-> the logic must be wrong or missing something.
-
-No the logic is perfectly right. What we are missing is the right DAI
-initialization in the driver.
-
-While debugging recently we found that compress core code was not doing
-proper justice to figure out the direction, so we fixed it up based on PCM
-approach which relies on dai setting channel_min properly. We seem to have
-missed that bit in driver code, so this regression.
-
-I see Pierre has already sent a patch for this, so this should be fixed now
-
-Thanks
--- =
-
-~Vinod
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 275b68a..1a46f45 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -437,6 +437,20 @@ static int hinfo_to_pin_index(struct hda_codec *codec,
+ 	return -EINVAL;
+ }
+ 
++static struct hdmi_spec_per_pin *pcm_idx_to_pin(struct hdmi_spec *spec,
++						int pcm_idx)
++{
++	int i;
++	struct hdmi_spec_per_pin *per_pin;
++
++	for (i = 0; i < spec->num_pins; i++) {
++		per_pin = get_pin(spec, i);
++		if (per_pin->pcm_idx == pcm_idx)
++			return per_pin;
++	}
++	return NULL;
++}
++
+ static int cvt_nid_to_cvt_index(struct hda_codec *codec, hda_nid_t cvt_nid)
+ {
+ 	struct hdmi_spec *spec = codec->spec;
+@@ -2398,10 +2412,16 @@ static int hdmi_chmap_ctl_get(struct snd_kcontrol *kcontrol,
+ 	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
+ 	struct hda_codec *codec = info->private_data;
+ 	struct hdmi_spec *spec = codec->spec;
+-	int pin_idx = kcontrol->private_value;
+-	struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
++	int pcm_idx = kcontrol->private_value;
++	struct hdmi_spec_per_pin *per_pin = pcm_idx_to_pin(spec, pcm_idx);
+ 	int i;
+ 
++	if (!per_pin) {
++		for (i = 0; i < spec->channels_max; i++)
++			ucontrol->value.integer.value[i] = 0;
++		return 0;
++	}
++
+ 	for (i = 0; i < ARRAY_SIZE(per_pin->chmap); i++)
+ 		ucontrol->value.integer.value[i] = per_pin->chmap[i];
+ 	return 0;
+@@ -2413,13 +2433,19 @@ static int hdmi_chmap_ctl_put(struct snd_kcontrol *kcontrol,
+ 	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
+ 	struct hda_codec *codec = info->private_data;
+ 	struct hdmi_spec *spec = codec->spec;
+-	int pin_idx = kcontrol->private_value;
+-	struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
++	int pcm_idx = kcontrol->private_value;
++	struct hdmi_spec_per_pin *per_pin = pcm_idx_to_pin(spec, pcm_idx);
+ 	unsigned int ctl_idx;
+ 	struct snd_pcm_substream *substream;
+ 	unsigned char chmap[8];
+ 	int i, err, ca, prepared = 0;
+ 
++	/* No monitor is connected in dyn_pcm_assign.
++	 * It's invalid to setup the chmap
++	 */
++	if (!per_pin)
++		return 0;
++
+ 	ctl_idx = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
+ 	substream = snd_pcm_chmap_substream(info, ctl_idx);
+ 	if (!substream || !substream->runtime)
+@@ -2596,18 +2622,18 @@ static int generic_hdmi_build_controls(struct hda_codec *codec)
+ 	}
+ 
+ 	/* add channel maps */
+-	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
++	for (pcm_idx = 0; pcm_idx < spec->pcm_used; pcm_idx++) {
+ 		struct hda_pcm *pcm;
+ 		struct snd_pcm_chmap *chmap;
+ 		struct snd_kcontrol *kctl;
+ 		int i;
+ 
+-		pcm = get_pcm_rec(spec, pin_idx);
++		pcm = get_pcm_rec(spec, pcm_idx);
+ 		if (!pcm || !pcm->pcm)
+ 			break;
+ 		err = snd_pcm_add_chmap_ctls(pcm->pcm,
+ 					     SNDRV_PCM_STREAM_PLAYBACK,
+-					     NULL, 0, pin_idx, &chmap);
++					     NULL, 0, pcm_idx, &chmap);
+ 		if (err < 0)
+ 			return err;
+ 		/* override handlers */
+-- 
+1.9.1
