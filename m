@@ -1,16 +1,15 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm_adsp: Return sample rate in
-	wm_adsp_compr_pointer
-Date: Tue, 2 Feb 2016 16:41:36 +0000
-Message-ID: <1454431296-21622-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2] ASoC: Intel: Atom: fix regression on
+	compress DAI
+Date: Tue,  2 Feb 2016 12:49:49 -0600
+Message-ID: <1454438989-15003-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 6EE2F265104
- for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 17:41:35 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 390F5265104
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 19:49:54 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,47 +19,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
+Cc: vinod.koul@intel.com, broonie@kernel.org, tiwai@suse.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-We should return a valid sample rate from the pointer callback, this
-patch adds this into the driver.
-
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm_adsp.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 28d3851..ed90e12 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -292,6 +292,8 @@ struct wm_adsp_compr {
- 
- 	u32 *raw_buf;
- 	unsigned int copied_total;
-+
-+	unsigned int sample_rate;
- };
- 
- #define WM_ADSP_DATA_WORD_SIZE         3
-@@ -2484,6 +2486,8 @@ int wm_adsp_compr_set_params(struct snd_compr_stream *stream,
- 	if (!compr->raw_buf)
- 		return -ENOMEM;
- 
-+	compr->sample_rate = params->codec.sample_rate;
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(wm_adsp_compr_set_params);
-@@ -2923,6 +2927,7 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
- 
- 	tstamp->copied_total = compr->copied_total;
- 	tstamp->copied_total += buf->avail * WM_ADSP_DATA_WORD_SIZE;
-+	tstamp->sampling_rate = compr->sample_rate;
- 
- out:
- 	mutex_unlock(&dsp->pwr_lock);
--- 
-2.1.4
+Q29tbWl0IGExMDY4MDQgKCJBU29DOiBjb21wcmVzczogRml4IGNvbXByZXNzIGRldmljZSBkaXJl
+Y3Rpb24gY2hlY2siKQphZGRlZCBhIGRlcGVuZGVuY3kgb24gdGhlIGNvbXByZXNzLWNwdS1kYWkg
+Y2hhbm5lbF9taW4gZmllbGQKd2hpY2ggd2FzIHJlbW92ZWQgZWFybGllciBieSBjb21taXQgNzcw
+OTU3OTYKKCJBU29DOiBJbnRlbDogQXRvbTogY2xlYW4tdXAgY29tcHJlc3NlZCBEQUkgZGVmaW5p
+dGlvbiIpCmFzIHBhcnQgb2YgdGhlIGJheXRyYWlsIGNsZWFudXBzLgoKVGhlIG5ldCByZXN1bHQg
+d2FzIGEgcmVncmVzc2lvbiBhdCBwcm9iZSBvbiBhbGwgQXRvbSBwbGF0Zm9ybXMKd2l0aCBubyBz
+b3VuZCBjYXJkIGNyZWF0ZWQuCgpGaXggYnkgYWRkaW5nIGV4cGxpY2l0IGluaXRpYWxpemF0aW9u
+IGZvciBjaGFubmVsX21pbiB0byAxCmZvciB0aGUgY29tcHJlc3MtY3B1LWRhaS4KClJlcG9ydGVk
+LWJ5OiBUb2JpYXMgTcOkZGVsIDxhbHNhLWRldmVsQHRic3BhY2UuZGU+ClNpZ25lZC1vZmYtYnk6
+IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IDxwaWVycmUtbG91aXMuYm9zc2FydEBsaW51eC5pbnRlbC5j
+b20+Ci0tLQpUaGlzIHNob3VsZCBiZSBhcHBsaWVkIGJlZm9yZSA0LjUgaXMgcmVsZWFzZWQKCiBz
+b3VuZC9zb2MvaW50ZWwvYXRvbS9zc3QtbWZsZC1wbGF0Zm9ybS1wY20uYyB8IDEgKwogMSBmaWxl
+IGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspCgpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2ludGVsL2F0
+b20vc3N0LW1mbGQtcGxhdGZvcm0tcGNtLmMgYi9zb3VuZC9zb2MvaW50ZWwvYXRvbS9zc3QtbWZs
+ZC1wbGF0Zm9ybS1wY20uYwppbmRleCA1NWMzM2RjLi41MmVkNDM0IDEwMDY0NAotLS0gYS9zb3Vu
+ZC9zb2MvaW50ZWwvYXRvbS9zc3QtbWZsZC1wbGF0Zm9ybS1wY20uYworKysgYi9zb3VuZC9zb2Mv
+aW50ZWwvYXRvbS9zc3QtbWZsZC1wbGF0Zm9ybS1wY20uYwpAQCAtNTI4LDYgKzUyOCw3IEBAIHN0
+YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlfZHJpdmVyIHNzdF9wbGF0Zm9ybV9kYWlbXSA9IHsKIAku
+b3BzID0gJnNzdF9jb21wcl9kYWlfb3BzLAogCS5wbGF5YmFjayA9IHsKIAkJLnN0cmVhbV9uYW1l
+ID0gIkNvbXByZXNzIFBsYXliYWNrIiwKKwkJLmNoYW5uZWxzX21pbiA9IDEsCiAJfSwKIH0sCiAv
+KiBCRSBDUFUgIERhaXMgKi8KLS0gCjEuOS4xCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
+c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwK
