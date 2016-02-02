@@ -1,228 +1,200 @@
-From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH v3 2/2] ASOC: sunxi: Add support for the
- SPDIF block
-Date: Tue, 2 Feb 2016 22:17:43 +0100
-Message-ID: <20160202211743.GD4652@lukather>
-References: <1454424594-25208-1-git-send-email-codekipper@gmail.com>
- <1454424594-25208-3-git-send-email-codekipper@gmail.com>
-Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+From: Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: sound: deadlock between snd_rawmidi_kernel_open/snd_seq_port_connect
+Date: Tue, 2 Feb 2016 22:23:55 +0100
+Message-ID: <CACT4Y+Z0KA9bD5Q6K=+zBuxVbToEVYQng-uXOV+z=0_y9RYyfQ@mail.gmail.com>
+References: <CACT4Y+aKQXV7xkBW9hpQbzaDO7LrUvohxWh-UwMxXjDy-yBD=A@mail.gmail.com>
+ <s5hwpqy9brq.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kF9LAPPYk2MosVMu"
-Return-path: <linux-sunxi+bncBD2ZNBF5VYJRB6FZYS2QKGQEZFVILZA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1454424594-25208-3-git-send-email-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hwpqy9brq.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Jie Yang <yang.jie@intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, LKML <linux-kernel@vger.kernel.org>, Alexander Potapenko <glider@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>, Sasha Levin <sasha.levin@oracle.com>
 List-Id: alsa-devel@alsa-project.org
 
---kF9LAPPYk2MosVMu
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline
+On Mon, Jan 25, 2016 at 11:47 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Sun, 24 Jan 2016 10:44:34 +0100,
+> Dmitry Vyukov wrote:
+>>
+>> Hello,
+>>
+>> While running syzkaller fuzzer I've got the following lockdep report:
+>>
+>> ======================================================
+>> [ INFO: possible circular locking dependency detected ]
+>> 4.4.0+ #276 Not tainted
+>> -------------------------------------------------------
+>> syz-executor/21025 is trying to acquire lock:
+>>  (register_mutex#5){+.+.+.}, at: [<ffffffff84f889cb>]
+>> snd_rawmidi_kernel_open+0x4b/0x260 sound/core/rawmidi.c:341
+>>
+>> but task is already holding lock:
+>>  (&grp->list_mutex/1){+.+...}, at: [<ffffffff84fc4afa>]
+>> snd_seq_port_connect+0x1ba/0x840 sound/core/seq/seq_ports.c:506
+>>
+>> which lock already depends on the new lock.
+>>
+>>
+>> the existing dependency chain (in reverse order) is:
+>>
+>> -> #2 (&grp->list_mutex/1){+.+...}:
+>>        [<ffffffff8145ad8c>] lock_acquire+0x1dc/0x430
+>> kernel/locking/lockdep.c:3585
+>>        [<ffffffff8144851a>] down_write_nested+0x4a/0xa0
+>> kernel/locking/rwsem.c:149
+>>        [<ffffffff84fc4afa>] snd_seq_port_connect+0x1ba/0x840
+>> sound/core/seq/seq_ports.c:506
+>>        [<ffffffff84fb6f54>] snd_seq_ioctl_subscribe_port+0x1c4/0x290
+>> sound/core/seq/seq_clientmgr.c:1464
+>>        [<ffffffff84fb126d>] snd_seq_do_ioctl+0x19d/0x1c0
+>> sound/core/seq/seq_clientmgr.c:2209
+>>        [<ffffffff84fb2c2b>] snd_seq_kernel_client_ctl+0xdb/0x170
+>> sound/core/seq/seq_clientmgr.c:2423
+>>        [<ffffffff88413c20>] snd_seq_oss_create_client+0x253/0x2d5
+>> sound/core/seq/oss/seq_oss_init.c:119
+>>        [<ffffffff8841393e>] alsa_seq_oss_init+0x1af/0x23e
+>> sound/core/seq/oss/seq_oss.c:89
+>>        [<ffffffff81002259>] do_one_initcall+0x159/0x380 init/main.c:794
+>>        [<     inline     >] do_initcall_level init/main.c:859
+>>        [<     inline     >] do_initcalls init/main.c:867
+>>        [<     inline     >] do_basic_setup init/main.c:885
+>>        [<ffffffff88315c1a>] kernel_init_freeable+0x474/0x52d init/main.c:1010
+>>        [<ffffffff86312683>] kernel_init+0x13/0x150 init/main.c:936
+>>        [<ffffffff86336fef>] ret_from_fork+0x3f/0x70
+>> arch/x86/entry/entry_64.S:468
+>>
+>> -> #1 (&grp->list_mutex){++++.+}:
+>>        [<ffffffff8145ad8c>] lock_acquire+0x1dc/0x430
+>> kernel/locking/lockdep.c:3585
+>>        [<ffffffff863323a7>] down_read+0x47/0x60 kernel/locking/rwsem.c:22
+>>        [<     inline     >] deliver_to_subscribers
+>> sound/core/seq/seq_clientmgr.c:679
+>>        [<ffffffff84fb5509>] snd_seq_deliver_event+0x5a9/0x800
+>> sound/core/seq/seq_clientmgr.c:817
+>>        [<ffffffff84fb6466>] snd_seq_kernel_client_dispatch+0x126/0x170
+>> sound/core/seq/seq_clientmgr.c:2401
+>>        [<ffffffff84fc1e62>] snd_seq_system_broadcast+0xb2/0xf0
+>> sound/core/seq/seq_system.c:101
+>>        [<ffffffff84fb248e>] snd_seq_create_kernel_client+0x21e/0x300
+>> sound/core/seq/seq_clientmgr.c:2280
+>>        [<     inline     >] snd_virmidi_dev_attach_seq
+>> sound/core/seq/seq_virmidi.c:372
+>>        [<ffffffff84fdc55f>] snd_virmidi_dev_register+0x29f/0x750
+>> sound/core/seq/seq_virmidi.c:439
+>>        [<ffffffff84f824ec>] snd_rawmidi_dev_register+0x30c/0xd40
+>> sound/core/rawmidi.c:1589
+>>        [<ffffffff84f33583>] __snd_device_register.part.0+0x63/0xc0
+>> sound/core/device.c:164
+>>        [<     inline     >] __snd_device_register sound/core/device.c:162
+>>        [<ffffffff84f341ed>] snd_device_register_all+0xad/0x110
+>> sound/core/device.c:212
+>>        [<ffffffff84f277cf>] snd_card_register+0xef/0x6a0 sound/core/init.c:749
+>>        [<ffffffff84fefc0f>] snd_virmidi_probe+0x3ef/0x590
+>> sound/drivers/virmidi.c:123
+>>        [<ffffffff832feb6c>] platform_drv_probe+0x8c/0x160
+>> drivers/base/platform.c:562
+>>        [<     inline     >] really_probe drivers/base/dd.c:377
+>>        [<ffffffff832f862e>] driver_probe_device+0x37e/0xc90
+>> drivers/base/dd.c:499
+>>        [<ffffffff832f926e>] __device_attach_driver+0x19e/0x250
+>> drivers/base/dd.c:584
+>>        [<ffffffff832f23df>] bus_for_each_drv+0x13f/0x1d0 drivers/base/bus.c:464
+>>        [<ffffffff832f809f>] __device_attach+0x1ef/0x2e0 drivers/base/dd.c:641
+>>        [<ffffffff832f93ba>] device_initial_probe+0x1a/0x20 drivers/base/dd.c:688
+>>        [<ffffffff832f5939>] bus_probe_device+0x1e9/0x290 drivers/base/bus.c:558
+>>        [<ffffffff832ef11b>] device_add+0x84b/0x1490 drivers/base/core.c:1120
+>>        [<ffffffff832fe2c9>] platform_device_add+0x389/0x790
+>> drivers/base/platform.c:403
+>>        [<ffffffff832fff26>] platform_device_register_full+0x396/0x4c0
+>> drivers/base/platform.c:535
+>>        [<     inline     >] platform_device_register_resndata
+>> include/linux/platform_device.h:111
+>>        [<     inline     >] platform_device_register_simple
+>> include/linux/platform_device.h:140
+>>        [<ffffffff884146d1>] alsa_card_virmidi_init+0x104/0x1da
+>> sound/drivers/virmidi.c:172
+>>        [<ffffffff81002259>] do_one_initcall+0x159/0x380 init/main.c:794
+>>        [<     inline     >] do_initcall_level init/main.c:859
+>>        [<     inline     >] do_initcalls init/main.c:867
+>>        [<     inline     >] do_basic_setup init/main.c:885
+>>        [<ffffffff88315c1a>] kernel_init_freeable+0x474/0x52d init/main.c:1010
+>>        [<ffffffff86312683>] kernel_init+0x13/0x150 init/main.c:936
+>>        [<ffffffff86336fef>] ret_from_fork+0x3f/0x70
+>> arch/x86/entry/entry_64.S:468
+>>
+>> -> #0 (register_mutex#5){+.+.+.}:
+>>        [<     inline     >] check_prev_add kernel/locking/lockdep.c:1853
+>>        [<     inline     >] check_prevs_add kernel/locking/lockdep.c:1958
+>>        [<     inline     >] validate_chain kernel/locking/lockdep.c:2144
+>>        [<ffffffff8145742b>] __lock_acquire+0x31eb/0x4700
+>> kernel/locking/lockdep.c:3206
+>>        [<ffffffff8145ad8c>] lock_acquire+0x1dc/0x430
+>> kernel/locking/lockdep.c:3585
+>>        [<     inline     >] __mutex_lock_common kernel/locking/mutex.c:518
+>>        [<ffffffff8632cf61>] mutex_lock_nested+0xb1/0xa50
+>> kernel/locking/mutex.c:618
+>>        [<ffffffff84f889cb>] snd_rawmidi_kernel_open+0x4b/0x260
+>> sound/core/rawmidi.c:341
+>>        [<ffffffff84fdda77>] midisynth_subscribe+0xf7/0x340
+>> sound/core/seq/seq_midi.c:188
+>>        [<ffffffff84fc2a4e>] subscribe_port.isra.2+0x14e/0x2b0
+>> sound/core/seq/seq_ports.c:426
+>>        [<ffffffff84fc4dd0>] snd_seq_port_connect+0x490/0x840
+>> sound/core/seq/seq_ports.c:527
+>>        [<ffffffff84fb6f54>] snd_seq_ioctl_subscribe_port+0x1c4/0x290
+>> sound/core/seq/seq_clientmgr.c:1464
+>>        [<ffffffff84fb126d>] snd_seq_do_ioctl+0x19d/0x1c0
+>> sound/core/seq/seq_clientmgr.c:2209
+>>        [<ffffffff84fb2c2b>] snd_seq_kernel_client_ctl+0xdb/0x170
+>> sound/core/seq/seq_clientmgr.c:2423
+>>        [<ffffffff84fd69e4>] snd_seq_oss_midi_open+0x3b4/0x610
+>> sound/core/seq/oss/seq_oss_midi.c:375
+>>        [<ffffffff84fd6ccb>] snd_seq_oss_midi_open_all+0x8b/0xd0
+>> sound/core/seq/oss/seq_oss_midi.c:306
+>>        [<ffffffff84fca1d5>] snd_seq_oss_open+0x5c5/0x8d0
+>> sound/core/seq/oss/seq_oss_init.c:276
+>>        [<ffffffff84fc903a>] odev_open+0x6a/0x90 sound/core/seq/oss/seq_oss.c:138
+>>        [<ffffffff84f2279f>] soundcore_open+0x30f/0x640 sound/sound_core.c:639
+>>        [<ffffffff817be1fa>] chrdev_open+0x22a/0x4c0 fs/char_dev.c:388
+>>        [<ffffffff817a9c02>] do_dentry_open+0x6a2/0xcb0 fs/open.c:736
+>>        [<ffffffff817ad2db>] vfs_open+0x17b/0x1f0 fs/open.c:853
+>>        [<     inline     >] do_last fs/namei.c:3254
+>>        [<ffffffff817e00d9>] path_openat+0xde9/0x5e30 fs/namei.c:3386
+>>        [<ffffffff817e895e>] do_filp_open+0x18e/0x250 fs/namei.c:3421
+>>        [<ffffffff817ada5c>] do_sys_open+0x1fc/0x420 fs/open.c:1022
+>>        [<     inline     >] SYSC_open fs/open.c:1040
+>>        [<ffffffff817adcad>] SyS_open+0x2d/0x40 fs/open.c:1035
+>>        [<ffffffff86336c36>] entry_SYSCALL_64_fastpath+0x16/0x7a
+>> arch/x86/entry/entry_64.S:185
+>>
+>> other info that might help us debug this:
+>>
+>> Chain exists of:
+>>   register_mutex#5 --> &grp->list_mutex --> &grp->list_mutex/1
+>>
+>>  Possible unsafe locking scenario:
+>>
+>>        CPU0                    CPU1
+>>        ----                    ----
+>>   lock(&grp->list_mutex/1);
+>>                                lock(&grp->list_mutex);
+>>                                lock(&grp->list_mutex/1);
+>>   lock(register_mutex#5);
+>>
+>>  *** DEADLOCK ***
+>>
+>> 3 locks held by syz-executor/21025:
+>>  #0:  (register_mutex#4){+.+.+.}, at: [<ffffffff84fc902f>]
+>> odev_open+0x5f/0x90 sound/core/seq/oss/seq_oss.c:137
+>>  #1:  (&grp->list_mutex){++++.+}, at: [<ffffffff84fc4ae2>]
+>> snd_seq_port_connect+0x1a2/0x840 sound/core/seq/seq_ports.c:505
+>>  #2:  (&grp->list_mutex/1){+.+...}, at: [<ffffffff84fc4afa>]
+>> snd_seq_port_connect+0x1ba/0x840 sound/core/seq/seq_ports.c:506
+>
+> This looks like a false-positive report to me.  Of course, we should
+> annotate the mutex there for nested locks, though.
 
-Hi,
 
-It looks mostly good on my side, a few comments though.
-
-On Tue, Feb 02, 2016 at 03:49:54PM +0100, codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
-> +#ifdef CONFIG_PM
-> +static int sun4i_spdif_runtime_suspend(struct device *dev)
-> +{
-> +	struct sun4i_spdif_dev *host  = dev_get_drvdata(dev);
-> +
-> +	clk_disable_unprepare(host->spdif_clk);
-> +
-> +	return 0;
-> +}
-> +
-> +static int sun4i_spdif_runtime_resume(struct device *dev)
-> +{
-> +	struct sun4i_spdif_dev *host  = dev_get_drvdata(dev);
-> +
-> +	clk_prepare_enable(host->spdif_clk);
-> +
-> +	return 0;
-> +}
-> +#endif /* CONFIG_PM */
-
-You can also shut down the bus clock here. That will reset the device,
-so you'll have to reinit it in your resume, but since you won't be
-suspended while you play something, and that you set up most of your
-controller any way when you start streaming, it shouldn't be a big
-deal.
-
-> +
-> +static int sun4i_spdif_probe(struct platform_device *pdev)
-> +{
-> +	struct device_node *np = pdev->dev.of_node;
-> +	struct sun4i_spdif_dev *host;
-> +	struct resource *res;
-> +	int ret;
-> +	void __iomem *base;
-> +
-> +	dev_dbg(&pdev->dev, "Entered %s\n", __func__);
-> +
-> +	if (!np)
-> +		return -ENODEV;
-
-You won't probe without DT.
-
-> +
-> +	if (!of_match_device(sun4i_spdif_of_match, &pdev->dev)) {
-> +		dev_err(&pdev->dev, "No matched devices found.\n");
-> +		return -EINVAL;
-> +	}
-
-And you won't probe if the compatibles don't match.
-
-> +	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
-> +	if (!host)
-> +		return -ENOMEM;
-> +
-> +	host->pdev = pdev;
-> +
-> +	/* Initialize this copy of the CPU DAI driver structure */
-> +	memcpy(&host->cpu_dai_drv, &sun4i_spdif_dai, sizeof(sun4i_spdif_dai));
-> +	host->cpu_dai_drv.name = dev_name(&pdev->dev);
-> +
-> +	/* Get the addresses */
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	base = devm_ioremap_resource(&pdev->dev, res);
-> +	if (IS_ERR(base))
-> +		return PTR_ERR(base);
-> +
-> +	host->regmap = devm_regmap_init_mmio(&pdev->dev, base,
-> +						&sun4i_spdif_regmap_config);
-> +
-> +	/* Clocks */
-> +	host->apb_clk = devm_clk_get(&pdev->dev, "apb");
-> +	if (IS_ERR(host->apb_clk)) {
-> +		dev_err(&pdev->dev, "failed to get a apb clock.\n");
-> +		return PTR_ERR(host->apb_clk);
-> +	}
-> +
-> +	ret = clk_prepare_enable(host->apb_clk);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "try to enable apb_spdif_clk failed\n");
-> +		return ret;
-> +	}
-> +
-> +	host->spdif_clk = devm_clk_get(&pdev->dev, "spdif");
-> +	if (IS_ERR(host->spdif_clk)) {
-> +		dev_err(&pdev->dev, "failed to get a spdif clock.\n");
-> +		goto exit_clkdisable_apb_clk;
-> +	}
-> +
-> +	host->playback_supported = false;
-> +	host->capture_supported = false;
-> +
-> +	if (of_property_read_bool(np, "spdif-out"))
-> +		host->playback_supported = true;
-> +
-> +	if (!host->playback_supported) {
-> +		dev_err(&pdev->dev, "no enabled S/PDIF DAI link\n");
-> +		goto exit_clkdisable_clk;
-> +	}
-> +
-> +	host->dma_params_tx.addr = res->start + SUN4I_SPDIF_TXFIFO;
-> +	host->dma_params_tx.maxburst = 4;
-> +	host->dma_params_tx.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-> +	host->dma_params_rx.addr = res->start + SUN4I_SPDIF_RXFIFO;
-> +	host->dma_params_rx.maxburst = 4;
-> +	host->dma_params_rx.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-> +
-> +	platform_set_drvdata(pdev, host);
-> +
-> +	ret = devm_snd_soc_register_component(&pdev->dev,
-> +				&sun4i_spdif_component, &sun4i_spdif_dai, 1);
-> +	if (ret)
-> +		goto exit_clkdisable_clk;
-> +
-> +	pm_runtime_enable(&pdev->dev);
-> +
-> +	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
-> +	if (ret)
-> +		goto exit_clkdisable_clk;
-> +	return 0;
-> +
-> +exit_clkdisable_clk:
-> +	clk_disable_unprepare(host->spdif_clk);
-
-You disabled a clock that you didn't enable.
-
-> +exit_clkdisable_apb_clk:
-> +	clk_disable_unprepare(host->apb_clk);
-> +	return ret;
-> +}
-> +
-> +static int sun4i_spdif_remove(struct platform_device *pdev)
-> +{
-> +	struct sun4i_spdif_dev *host = dev_get_drvdata(&pdev->dev);
-> +
-> +	snd_soc_unregister_platform(&pdev->dev);
-> +	snd_soc_unregister_component(&pdev->dev);
-> +
-> +	pm_runtime_disable(&pdev->dev);
-> +
-> +	if (!IS_ERR(host->spdif_clk)) {
-
-Probe will fail on this condition. If probe failed, remove won't be
-called.
-
-> +		clk_disable_unprepare(host->spdif_clk);
-
-And here as well.
-
-> +		clk_disable_unprepare(host->apb_clk);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct dev_pm_ops sun4i_spdif_pm = {
-> +	SET_RUNTIME_PM_OPS(sun4i_spdif_runtime_suspend,
-> +			   sun4i_spdif_runtime_resume, NULL)
-> +};
-> +
-> +static struct platform_driver sun4i_spdif_driver = {
-> +	.driver		= {
-> +		.name	= "sun4i-spdif",
-> +		.owner	= THIS_MODULE,
-
-This is not needed.
-
-> +		.of_match_table = of_match_ptr(sun4i_spdif_of_match),
-> +		.pm	= &sun4i_spdif_pm,
-
-IIRC, the pm field is not defined if PM is not set.
-
-Have you tested your driver without PM?
-
-> +	},
-> +	.probe		= sun4i_spdif_probe,
-> +	.remove		= sun4i_spdif_remove,
-> +};
-> +
-> +module_platform_driver(sun4i_spdif_driver);
-> +
-> +MODULE_AUTHOR("Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>");
-> +MODULE_AUTHOR("Andrea Venturi <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>");
-> +MODULE_DESCRIPTION("Allwinner sun4i SPDIF SoC Interface");
-> +MODULE_LICENSE("GPL");
-> +MODULE_ALIAS("platform:sun4i-spdif");
-
-Thanks!
-Maxime
-
--- 
-Maxime Ripard, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
---kF9LAPPYk2MosVMu--
+Takashi, can you please annotate it for lockdep? I hit it on every run.
+Thanks in advance
