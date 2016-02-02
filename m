@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dwc: Ensure i2s_reg_comp{1,
-	2} is always initialised" to the asoc tree
-Date: Tue, 02 Feb 2016 19:41:59 +0000
-Message-ID: <E1aQgpr-0007t0-Ta@debutante>
-References: <1454342077.16701.4.camel@linaro.org>
+Subject: Applied "ASoC: Intel: Atom: fix regression on compress
+	DAI" to the asoc tree
+Date: Tue, 02 Feb 2016 19:41:57 +0000
+Message-ID: <E1aQgpp-0007rY-5u@debutante>
+References: <1454354716-17313-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0573485945344094271=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4AB29265259
+ by alsa0.perex.cz (Postfix) with ESMTP id B02D126525F
  for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 20:42:06 +0100 (CET)
-In-Reply-To: <1454342077.16701.4.camel@linaro.org>
+In-Reply-To: <1454354716-17313-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jon Medhurst <tixy@linaro.org>, Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+--===============0573485945344094271==
+Content-Type: text/plain
+
 The patch
 
-   ASoC: dwc: Ensure i2s_reg_comp{1,2} is always initialised
+   ASoC: Intel: Atom: fix regression on compress DAI
 
 has been applied to the asoc tree at
 
@@ -53,44 +55,54 @@ to this mail.
 Thanks,
 Mark
 
->From d2f916aaccaf7b3bc27df2fd6cfc00f6cda2f78d Mon Sep 17 00:00:00 2001
-From: "Jon Medhurst (Tixy)" <tixy@linaro.org>
-Date: Mon, 1 Feb 2016 15:54:37 +0000
-Subject: [PATCH] ASoC: dwc: Ensure i2s_reg_comp{1,2} is always initialised
+>From 292d4200a90715ac29f3763df27adb38a243868c Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Tue, 2 Feb 2016 12:49:49 -0600
+Subject: [PATCH] ASoC: Intel: Atom: fix regression on compress DAI
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-In the case that the driver is configured from device-tree
-i2s_reg_comp1 and i2s_reg_comp2 aren't initialised, breaking the driver.
-Fix this by unconditionally setting these values before checking for quirks.
+Commit a106804 ("ASoC: compress: Fix compress device direction check")
+added a dependency on the compress-cpu-dai channel_min field
+which was removed earlier by commit 77095796
+("ASoC: Intel: Atom: clean-up compressed DAI definition")
+as part of the baytrail cleanups.
 
-Fixes: a242cac1d3aa ("ASoC: dwc: add quirk to override COMP_PARAM_1 register")
-Signed-off-by: Jon Medhurst <tixy@linaro.org>
+The net result was a regression at probe on all Atom platforms
+with no sound card created.
+
+Fix by adding explicit initialization for channel_min to 1
+for the compress-cpu-dai.
+
+Reported-by: Tobias Mädel <alsa-devel@tbspace.de>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/dwc/designware_i2s.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
-index ce664c239be3..bff258d7bcea 100644
---- a/sound/soc/dwc/designware_i2s.c
-+++ b/sound/soc/dwc/designware_i2s.c
-@@ -645,6 +645,8 @@ static int dw_i2s_probe(struct platform_device *pdev)
- 
- 	dev->dev = &pdev->dev;
- 
-+	dev->i2s_reg_comp1 = I2S_COMP_PARAM_1;
-+	dev->i2s_reg_comp2 = I2S_COMP_PARAM_2;
- 	if (pdata) {
- 		dev->capability = pdata->cap;
- 		clk_id = NULL;
-@@ -652,9 +654,6 @@ static int dw_i2s_probe(struct platform_device *pdev)
- 		if (dev->quirks & DW_I2S_QUIRK_COMP_REG_OFFSET) {
- 			dev->i2s_reg_comp1 = pdata->i2s_reg_comp1;
- 			dev->i2s_reg_comp2 = pdata->i2s_reg_comp2;
--		} else {
--			dev->i2s_reg_comp1 = I2S_COMP_PARAM_1;
--			dev->i2s_reg_comp2 = I2S_COMP_PARAM_2;
- 		}
- 		ret = dw_configure_dai_by_pd(dev, dw_i2s_dai, res, pdata);
- 	} else {
+diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+index 55c33dc76ce4..52ed434cbca6 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+@@ -528,6 +528,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
+ 	.ops = &sst_compr_dai_ops,
+ 	.playback = {
+ 		.stream_name = "Compress Playback",
++		.channels_min = 1,
+ 	},
+ },
+ /* BE CPU  Dais */
 -- 
 2.7.0.rc3
+
+
+--===============0573485945344094271==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0573485945344094271==--
