@@ -1,53 +1,72 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: sound: use-after-free in snd_seq_deliver_single_event
-Date: Tue, 2 Feb 2016 19:26:03 +0000
-Message-ID: <20160202192603.GU4455@sirena.org.uk>
-References: <CACT4Y+Zd66+w12fNN85-425cVQT=K23kWbhnCEcMB8s3us-Frw@mail.gmail.com>
- <20160201111625.GB4455@sirena.org.uk>
- <CACT4Y+YXXYWUGSZ5y=ZHPJXVAKXeEXLn8vjkpm+xx98yfo4dxw@mail.gmail.com>
- <20160201122018.GC4455@sirena.org.uk>
- <56AF5EDF.9030202@sakamocchi.jp>
+Subject: Re: [PATCH] ASoC: arizona: Add support for
+	SNDRV_PCM_RATE_KNOT
+Date: Tue, 2 Feb 2016 19:30:02 +0000
+Message-ID: <20160202193002.GV4455@sirena.org.uk>
+References: <1454431084-21411-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="0WGqsT62A4RTsSXf"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <56AF5EDF.9030202@sakamocchi.jp>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: Dmitry Vyukov <dvyukov@google.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, LKML <linux-kernel@vger.kernel.org>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>, Alexander Potapenko <glider@google.com>, Sasha Levin <sasha.levin@oracle.com>
+Content-Type: multipart/mixed; boundary="===============2496780726962780167=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A7B2265104
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 20:30:07 +0100 (CET)
+In-Reply-To: <1454431084-21411-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---0WGqsT62A4RTsSXf
+--===============2496780726962780167==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="DFFMAMYvrfM3lt66"
+Content-Disposition: inline
+
+
+--DFFMAMYvrfM3lt66
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Feb 01, 2016 at 10:34:23PM +0900, Takashi Sakamoto wrote:
+On Tue, Feb 02, 2016 at 04:38:04PM +0000, Charles Keepax wrote:
 
-> Well, I don't mind to receive them because it's a good information for
-> me to get current state of ALSA core functionality. If I had some
-> spare time, I was also going to fix it. But currently I have little
-> time for it due to my development for my minor hardwares...
+> +#define ARIZONA_48K_RATES 12000, 24000, 48000, 96000, 192000, 4000, 8000, \
+> +			  16000, 32000
 
-Yeah, my concern is that I'm getting to the point where I mentally tag
-them as irrelevant and delete them unread (the subject lines don't help
-here).  I've had quite a few and none of them have been for code I even
-recall working on.
+This just looks wrong.  It's valid code but with the combination of the
+split line and the list without any sort of parenthesis it sets off
+alarm bells.  Duplicating might not be the worst thing ever...
 
---0WGqsT62A4RTsSXf
+--DFFMAMYvrfM3lt66
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWsQLKAAoJECTWi3JdVIfQ79sH/jtL0WAycs4pjtMvxcwMbwf+
-1edVgvWQg47k8FCE3cnZLUuADIF1W6tBuSJ/X9rP6UqPU3C6HYi3XT6sYVuf1vYN
-ILMYIbTHDiAAJNLeoU/aoHr5vkBkrCc3UmTDxAOZiUSzg+PmffkWU1E/gbfKIkDI
-QYczYOGERjr1pybPIWmRjnqZzRbSuuwgkbPgTYH7uEeypQRp4yz1fEF8WpEDaQQy
-FSCT5zmtt8swrrd3QB+XC33qrws+KQ0rPI1f4+4WWkO6OpPp402ThDIi5ATzFnKL
-CcO3MBQ8Cd6p2tjsFb3yLvE2rLhQrkpHR8usMjnR3342iwRQC45LH+s8kf+qOi0=
-=5PAH
+iQEcBAEBCAAGBQJWsQO5AAoJECTWi3JdVIfQ6D0H/j0jSmqlgQyh9XF+J+SkQgli
+xMzoX0fv6PwfzaI3pbpwYXMsRomcCBmpkgTXCtlH7xgQh+7YfaP0T00hTwflsW9A
+6A0FCORJ9SFYlpj2AYWdstTapqIWJ3IvOMjKbdmvVryv5qdmvOGSunNWbGJ6W1Jx
+0MAmQHazXtLLOGgNIvf8DjtZBzU2EvBGmGcpVYoQMAST5vCxBK5bZMb4X6zw1Yc4
+JlW+21qUnJuQgeg06VsMVTAytR3Nb3837b1WSKs7gFYspGkXcvDXA3PAfm5Uh5Hx
+cm7WePdOqaqrPkfjhlKsFNc6Ai6r2gwozHgJWnpBS+1Jalmt5V2/056bzlAPr+k=
+=ZxuJ
 -----END PGP SIGNATURE-----
 
---0WGqsT62A4RTsSXf--
+--DFFMAMYvrfM3lt66--
+
+--===============2496780726962780167==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2496780726962780167==--
