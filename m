@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Return sample rate in
-	wm_adsp_compr_pointer" to the asoc tree
-Date: Tue, 02 Feb 2016 19:41:58 +0000
-Message-ID: <E1aQgpq-0007s3-2p@debutante>
-References: <1454431296-21622-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: dwc: Ensure i2s_reg_comp{1,
+	2} is always initialised" to the asoc tree
+Date: Tue, 02 Feb 2016 19:41:59 +0000
+Message-ID: <E1aQgpr-0007t0-Ta@debutante>
+References: <1454342077.16701.4.camel@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E934F26523B
- for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 20:42:05 +0100 (CET)
-In-Reply-To: <1454431296-21622-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4AB29265259
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2016 20:42:06 +0100 (CET)
+In-Reply-To: <1454342077.16701.4.camel@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+To: Jon Medhurst <tixy@linaro.org>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Return sample rate in wm_adsp_compr_pointer
+   ASoC: dwc: Ensure i2s_reg_comp{1,2} is always initialised
 
 has been applied to the asoc tree at
 
@@ -53,49 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From da2b33589013b4cb3dad163f50fae060896cb8b6 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Tue, 2 Feb 2016 16:41:36 +0000
-Subject: [PATCH] ASoC: wm_adsp: Return sample rate in wm_adsp_compr_pointer
+>From d2f916aaccaf7b3bc27df2fd6cfc00f6cda2f78d Mon Sep 17 00:00:00 2001
+From: "Jon Medhurst (Tixy)" <tixy@linaro.org>
+Date: Mon, 1 Feb 2016 15:54:37 +0000
+Subject: [PATCH] ASoC: dwc: Ensure i2s_reg_comp{1,2} is always initialised
 
-We should return a valid sample rate from the pointer callback, this
-patch adds this into the driver.
+In the case that the driver is configured from device-tree
+i2s_reg_comp1 and i2s_reg_comp2 aren't initialised, breaking the driver.
+Fix this by unconditionally setting these values before checking for quirks.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Fixes: a242cac1d3aa ("ASoC: dwc: add quirk to override COMP_PARAM_1 register")
+Signed-off-by: Jon Medhurst <tixy@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/dwc/designware_i2s.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 33806d487b8a..68b85ee67586 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -295,6 +295,8 @@ struct wm_adsp_compr {
+diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
+index ce664c239be3..bff258d7bcea 100644
+--- a/sound/soc/dwc/designware_i2s.c
++++ b/sound/soc/dwc/designware_i2s.c
+@@ -645,6 +645,8 @@ static int dw_i2s_probe(struct platform_device *pdev)
  
- 	u32 *raw_buf;
- 	unsigned int copied_total;
-+
-+	unsigned int sample_rate;
- };
+ 	dev->dev = &pdev->dev;
  
- #define WM_ADSP_DATA_WORD_SIZE         3
-@@ -2471,6 +2473,8 @@ int wm_adsp_compr_set_params(struct snd_compr_stream *stream,
- 	if (!compr->raw_buf)
- 		return -ENOMEM;
- 
-+	compr->sample_rate = params->codec.sample_rate;
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(wm_adsp_compr_set_params);
-@@ -2911,6 +2915,7 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
- 
- 	tstamp->copied_total = compr->copied_total;
- 	tstamp->copied_total += buf->avail * WM_ADSP_DATA_WORD_SIZE;
-+	tstamp->sampling_rate = compr->sample_rate;
- 
- out:
- 	mutex_unlock(&dsp->pwr_lock);
++	dev->i2s_reg_comp1 = I2S_COMP_PARAM_1;
++	dev->i2s_reg_comp2 = I2S_COMP_PARAM_2;
+ 	if (pdata) {
+ 		dev->capability = pdata->cap;
+ 		clk_id = NULL;
+@@ -652,9 +654,6 @@ static int dw_i2s_probe(struct platform_device *pdev)
+ 		if (dev->quirks & DW_I2S_QUIRK_COMP_REG_OFFSET) {
+ 			dev->i2s_reg_comp1 = pdata->i2s_reg_comp1;
+ 			dev->i2s_reg_comp2 = pdata->i2s_reg_comp2;
+-		} else {
+-			dev->i2s_reg_comp1 = I2S_COMP_PARAM_1;
+-			dev->i2s_reg_comp2 = I2S_COMP_PARAM_2;
+ 		}
+ 		ret = dw_configure_dai_by_pd(dev, dw_i2s_dai, res, pdata);
+ 	} else {
 -- 
 2.7.0.rc3
