@@ -1,233 +1,33 @@
-From: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v3 2/2] ASOC: sunxi: Add support for the
- SPDIF block
-Date: Wed, 3 Feb 2016 09:41:42 +0100
-Message-ID: <CAEKpxBk3kFM-Qqn50P9VYuOgz5uJ_p__rVLZhQKDmf7GkVkzOg@mail.gmail.com>
-References: <1454424594-25208-1-git-send-email-codekipper@gmail.com>
-	<1454424594-25208-3-git-send-email-codekipper@gmail.com>
-	<20160202211743.GD4652@lukather>
-Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [alsa-devel] [PATCH RFC 00/15] ASoC: qcom: Add capture support.
+Date: Wed, 3 Feb 2016 08:48:21 +0000
+Message-ID: <56B1BED5.2090708@linaro.org>
+References: <1454347622-9970-1-git-send-email-srinivas.kandagatla@linaro.org>
+ <20160203003310.GA14436@kwestfie-linux.qualcomm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBRX2Y22QKGQEPPYE5SY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-In-Reply-To: <20160202211743.GD4652@lukather>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160203003310.GA14436@kwestfie-linux.qualcomm.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Patrick Lai <plai@codeaurora.org>, alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 2 February 2016 at 22:17, Maxime Ripard
-<maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
-> Hi,
->
-> It looks mostly good on my side, a few comments though.
->
-> On Tue, Feb 02, 2016 at 03:49:54PM +0100, codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
->> +#ifdef CONFIG_PM
->> +static int sun4i_spdif_runtime_suspend(struct device *dev)
->> +{
->> +     struct sun4i_spdif_dev *host  = dev_get_drvdata(dev);
->> +
->> +     clk_disable_unprepare(host->spdif_clk);
->> +
->> +     return 0;
->> +}
->> +
->> +static int sun4i_spdif_runtime_resume(struct device *dev)
->> +{
->> +     struct sun4i_spdif_dev *host  = dev_get_drvdata(dev);
->> +
->> +     clk_prepare_enable(host->spdif_clk);
->> +
->> +     return 0;
->> +}
->> +#endif /* CONFIG_PM */
->
-> You can also shut down the bus clock here. That will reset the device,
-> so you'll have to reinit it in your resume, but since you won't be
-> suspended while you play something, and that you set up most of your
-> controller any way when you start streaming, it shouldn't be a big
-> deal.
-ACK
->
->> +
->> +static int sun4i_spdif_probe(struct platform_device *pdev)
->> +{
->> +     struct device_node *np = pdev->dev.of_node;
->> +     struct sun4i_spdif_dev *host;
->> +     struct resource *res;
->> +     int ret;
->> +     void __iomem *base;
->> +
->> +     dev_dbg(&pdev->dev, "Entered %s\n", __func__);
->> +
->> +     if (!np)
->> +             return -ENODEV;
->
-> You won't probe without DT.
-ACK
->
->> +
->> +     if (!of_match_device(sun4i_spdif_of_match, &pdev->dev)) {
->> +             dev_err(&pdev->dev, "No matched devices found.\n");
->> +             return -EINVAL;
->> +     }
->
-> And you won't probe if the compatibles don't match.
-ACK
->
->> +     host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
->> +     if (!host)
->> +             return -ENOMEM;
->> +
->> +     host->pdev = pdev;
->> +
->> +     /* Initialize this copy of the CPU DAI driver structure */
->> +     memcpy(&host->cpu_dai_drv, &sun4i_spdif_dai, sizeof(sun4i_spdif_dai));
->> +     host->cpu_dai_drv.name = dev_name(&pdev->dev);
->> +
->> +     /* Get the addresses */
->> +     res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> +     base = devm_ioremap_resource(&pdev->dev, res);
->> +     if (IS_ERR(base))
->> +             return PTR_ERR(base);
->> +
->> +     host->regmap = devm_regmap_init_mmio(&pdev->dev, base,
->> +                                             &sun4i_spdif_regmap_config);
->> +
->> +     /* Clocks */
->> +     host->apb_clk = devm_clk_get(&pdev->dev, "apb");
->> +     if (IS_ERR(host->apb_clk)) {
->> +             dev_err(&pdev->dev, "failed to get a apb clock.\n");
->> +             return PTR_ERR(host->apb_clk);
->> +     }
->> +
->> +     ret = clk_prepare_enable(host->apb_clk);
->> +     if (ret) {
->> +             dev_err(&pdev->dev, "try to enable apb_spdif_clk failed\n");
->> +             return ret;
->> +     }
->> +
->> +     host->spdif_clk = devm_clk_get(&pdev->dev, "spdif");
->> +     if (IS_ERR(host->spdif_clk)) {
->> +             dev_err(&pdev->dev, "failed to get a spdif clock.\n");
->> +             goto exit_clkdisable_apb_clk;
->> +     }
->> +
->> +     host->playback_supported = false;
->> +     host->capture_supported = false;
->> +
->> +     if (of_property_read_bool(np, "spdif-out"))
->> +             host->playback_supported = true;
->> +
->> +     if (!host->playback_supported) {
->> +             dev_err(&pdev->dev, "no enabled S/PDIF DAI link\n");
->> +             goto exit_clkdisable_clk;
->> +     }
->> +
->> +     host->dma_params_tx.addr = res->start + SUN4I_SPDIF_TXFIFO;
->> +     host->dma_params_tx.maxburst = 4;
->> +     host->dma_params_tx.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
->> +     host->dma_params_rx.addr = res->start + SUN4I_SPDIF_RXFIFO;
->> +     host->dma_params_rx.maxburst = 4;
->> +     host->dma_params_rx.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
->> +
->> +     platform_set_drvdata(pdev, host);
->> +
->> +     ret = devm_snd_soc_register_component(&pdev->dev,
->> +                             &sun4i_spdif_component, &sun4i_spdif_dai, 1);
->> +     if (ret)
->> +             goto exit_clkdisable_clk;
->> +
->> +     pm_runtime_enable(&pdev->dev);
->> +
->> +     ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
->> +     if (ret)
->> +             goto exit_clkdisable_clk;
->> +     return 0;
->> +
->> +exit_clkdisable_clk:
->> +     clk_disable_unprepare(host->spdif_clk);
->
-> You disabled a clock that you didn't enable.
-ACK
->
->> +exit_clkdisable_apb_clk:
->> +     clk_disable_unprepare(host->apb_clk);
->> +     return ret;
->> +}
->> +
->> +static int sun4i_spdif_remove(struct platform_device *pdev)
->> +{
->> +     struct sun4i_spdif_dev *host = dev_get_drvdata(&pdev->dev);
->> +
->> +     snd_soc_unregister_platform(&pdev->dev);
->> +     snd_soc_unregister_component(&pdev->dev);
->> +
->> +     pm_runtime_disable(&pdev->dev);
->> +
->> +     if (!IS_ERR(host->spdif_clk)) {
->
-> Probe will fail on this condition. If probe failed, remove won't be
-> called.
->
->> +             clk_disable_unprepare(host->spdif_clk);
->
-> And here as well.
->
->> +             clk_disable_unprepare(host->apb_clk);
->> +     }
->> +
->> +     return 0;
->> +}
->> +
->> +static const struct dev_pm_ops sun4i_spdif_pm = {
->> +     SET_RUNTIME_PM_OPS(sun4i_spdif_runtime_suspend,
->> +                        sun4i_spdif_runtime_resume, NULL)
->> +};
->> +
->> +static struct platform_driver sun4i_spdif_driver = {
->> +     .driver         = {
->> +             .name   = "sun4i-spdif",
->> +             .owner  = THIS_MODULE,
->
-> This is not needed.
-ACK
->
->> +             .of_match_table = of_match_ptr(sun4i_spdif_of_match),
->> +             .pm     = &sun4i_spdif_pm,
->
-> IIRC, the pm field is not defined if PM is not set.
->
-> Have you tested your driver without PM?
-No but I'll have a go!
+Thanks Kenneth for review comments.
 
+On 03/02/16 00:33, Kenneth Westfield wrote:
+> On Mon, Feb 01, 2016 at 09:27:02AM -0800, Srinivas Kandagatla wrote:
+>> LPASS IP on QCOM SOC supports both Playback and capture
+>> via I2S, but this feature is missing in existing code.
+>> This patchset aims at adding capture support to lpass IP.
+>> First few patches in this series does cleanup the driver
+>> to make easy to add capture support.
+>>
+>> These patches are tested on DB410C with Headset Mic.
 >
->> +     },
->> +     .probe          = sun4i_spdif_probe,
->> +     .remove         = sun4i_spdif_remove,
->> +};
->> +
->> +module_platform_driver(sun4i_spdif_driver);
->> +
->> +MODULE_AUTHOR("Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>");
->> +MODULE_AUTHOR("Andrea Venturi <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>");
->> +MODULE_DESCRIPTION("Allwinner sun4i SPDIF SoC Interface");
->> +MODULE_LICENSE("GPL");
->> +MODULE_ALIAS("platform:sun4i-spdif");
+> Thanks for posting this.  I went through the changes, and it mostly
+> looks good minus some small, easy-to-fix nits.
+I agree with all the comments, and will send a new version with fixes.
+
+--srini
 >
-> Thanks!
-> Maxime
-Thanks,
-CK
->
-> --
-> Maxime Ripard, Free Electrons
-> Embedded Linux, Kernel and Android engineering
-> http://free-electrons.com
