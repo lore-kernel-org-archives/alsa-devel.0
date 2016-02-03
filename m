@@ -1,52 +1,36 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 11/11] ASoC: Intel: Skylake: Remove autosuspend
-	delay
-Date: Wed,  3 Feb 2016 17:59:54 +0530
-Message-ID: <1454502594-21700-12-git-send-email-vinod.koul@intel.com>
-References: <1454502594-21700-1-git-send-email-vinod.koul@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 46DC8265A9E
- for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2016 13:26:51 +0100 (CET)
-In-Reply-To: <1454502594-21700-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Vinod Koul <vinod.koul@intel.com>
+From: Mans Rullgard <mans@mansr.com>
+Subject: [PATCH] ASoC: mxs-saif: check BUSY bit in hw_params() only if not mclk_in_use
+Date: Wed,  3 Feb 2016 13:18:20 +0000
+Message-ID: <1454505500-30384-1-git-send-email-mans@mansr.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The driver used autosuspend delay to delay going to D3. But per
-HW recommendation we should go to D3 soon, so remove the delay
-from driver
+If something else, typically a codec, has enabled mclk, the BUSY
+bit may be set when hw_params() is called without this being an
+error.  This check thus causes intermittent failures to configure
+the sound device when used in such a manner.  Fix this by making
+the test conditional on !saif->mclk_in_use.
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mans Rullgard <mans@mansr.com>
 ---
- sound/soc/intel/skylake/skl.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/mxs/mxs-saif.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 443a15de94b5..092705e73db4 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -614,8 +614,6 @@ static int skl_probe(struct pci_dev *pci,
- 		goto out_unregister;
+diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+index a6c7b8d87cd2..13631003cb7c 100644
+--- a/sound/soc/mxs/mxs-saif.c
++++ b/sound/soc/mxs/mxs-saif.c
+@@ -418,7 +418,7 @@ static int mxs_saif_hw_params(struct snd_pcm_substream *substream,
+ 	}
  
- 	/*configure PM */
--	pm_runtime_set_autosuspend_delay(bus->dev, SKL_SUSPEND_DELAY);
--	pm_runtime_use_autosuspend(bus->dev);
- 	pm_runtime_put_noidle(bus->dev);
- 	pm_runtime_allow(bus->dev);
- 
+ 	stat = __raw_readl(saif->base + SAIF_STAT);
+-	if (stat & BM_SAIF_STAT_BUSY) {
++	if (!saif->mclk_in_use && (stat & BM_SAIF_STAT_BUSY)) {
+ 		dev_err(cpu_dai->dev, "error: busy\n");
+ 		return -EBUSY;
+ 	}
 -- 
-1.9.1
+2.7.0
