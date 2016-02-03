@@ -1,14 +1,18 @@
-From: han.lu@intel.com
-Subject: [PATCH 1/1] alsabat: rename to avoid naming conflict
-Date: Wed,  3 Feb 2016 14:20:33 +0800
-Message-ID: <1454480433-20169-1-git-send-email-han.lu@intel.com>
+From: Julia Lawall <julia.lawall@lip6.fr>
+Subject: Re: [sound:topic/core-fixes 21/21]
+ sound/core/seq/seq_virmidi.c:192:6-12: preceding lock on line 176
+Date: Wed, 3 Feb 2016 07:36:42 +0100 (CET)
+Message-ID: <alpine.DEB.2.02.1602030736030.2067@localhost6.localdomain6>
+References: <201602030826.fJM3cvVl%fengguang.wu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id C5D7426154E
- for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2016 07:20:04 +0100 (CET)
+Received: from mail3-relais-sop.national.inria.fr
+ (mail3-relais-sop.national.inria.fr [192.134.164.104])
+ by alsa0.perex.cz (Postfix) with ESMTP id 089C926154E
+ for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2016 07:36:43 +0100 (CET)
+In-Reply-To: <201602030826.fJM3cvVl%fengguang.wu@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,385 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, liam.r.girdwood@linux.intel.com, bernard.gautier@intel.com, joerg.steffens@bareos.com, clemens@ladisch.de, alsa-devel@alsa-project.org
-Cc: "Lu, Han" <han.lu@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-From: "Lu, Han" <han.lu@intel.com>
+Looks suspicious, please check.
 
-alsa-utils as well as bareos-bat (as well a some Bacula packages)
-all contain a program called /usr/bin/bat, which causes conflicts on
-various distributions ("basic audio tester" vs "bareos administration
-tool"("bacula administration tool")).
-Rename to avoid conflict.
+julia
 
-Signed-off-by: Lu, Han <han.lu@intel.com>
+On Wed, 3 Feb 2016, kbuild test robot wrote:
 
-diff --git a/bat/Makefile.am b/bat/Makefile.am
-index f0dc5ab..8dfafa9 100644
---- a/bat/Makefile.am
-+++ b/bat/Makefile.am
-@@ -1,9 +1,9 @@
--bin_PROGRAMS = bat
--man_MANS = bat.1
-+bin_PROGRAMS = alsabat
-+man_MANS = alsabat.1
- 
--EXTRA_DIST = bat.1
-+EXTRA_DIST = alsabat.1
- 
--bat_SOURCES = \
-+alsabat_SOURCES = \
- 	bat.c \
- 	common.c \
- 	analyze.c \
-@@ -21,4 +21,4 @@ noinst_HEADERS = \
- AM_CPPFLAGS = \
- 	      -Wall -I$(top_srcdir)/include
- 
--bat_LDADD = @FFTW_LIB@
-+alsabat_LDADD = @FFTW_LIB@
-diff --git a/bat/alsabat.1 b/bat/alsabat.1
-new file mode 100644
-index 0000000..8d0b9c0
---- /dev/null
-+++ b/bat/alsabat.1
-@@ -0,0 +1,159 @@
-+.TH ALSABAT 1 "20th October 2015"
-+.SH NAME
-+alsabat \- command\-line sound tester for ALSA sound card driver
-+
-+.SH SYNOPSIS
-+\fBalsabat\fP [\fIflags\fP]
-+
-+.SH DESCRIPTION
-+\fBALSABAT(ALSA Basic Audio Tester)\fP is a simple command\-line utility
-+intended to help automate audio driver and sound server testing with little
-+human interaction. ALSABAT can be used to test audio quality, stress test
-+features and test audio before and after PM state changes.
-+
-+ALSABAT's design is relatively simple. ALSABAT plays an audio stream and
-+captures the same stream in either a digital or analog loop back. It then
-+compares the captured stream using a FFT to the original to determine if
-+the test case passes or fails.
-+
-+ALSABAT can either run wholly on the target machine being tested (standalone
-+mode) or can run as a client/server mode where by alsabat client runs on the
-+target and runs as a server on a separate tester machine. The client/server
-+mode still requires some manual interaction for synchronization, but this
-+is actively being developed for future releases.
-+
-+The hardware testing configuration may require the use of an analog cable
-+connecting target to tester machines or a cable to create an analog
-+loopback if no loopback mode is not available on the sound hardware that
-+is being tested.
-+An analog loopback cable can be used to connect the "line in" to "line out"
-+jacks to create a loopback. If only headphone and mic jacks (or combo jack)
-+are available then the following simple circuit can be used to create an
-+analog loopback :-
-+
-+https://source.android.com/devices/audio/loopback.html
-+
-+.SH OPTIONS
-+.TP
-+\fI\-h, \-\-help\fP
-+Help: show syntax.
-+.TP
-+\fI\-D\fP
-+Select sound card to be tested by name.
-+.TP
-+\fI\-P\fP
-+Select the playback PCM device.
-+.TP
-+\fI\-C\fP
-+Select the capture PCM device.
-+.TP
-+\fI\-f\fP
-+Sample format
-+.br
-+Recognized sample formats are: U8 S16_LE S24_3LE S32_LE
-+.br
-+Some of these may not be available on selected hardware
-+.br
-+The available format shortcuts are:
-+.nf
-+\-f cd (16 bit little endian, 44100, stereo) [\-f S16_LE \-c2 \-r44100]
-+\-f dat (16 bit little endian, 48000, stereo) [\-f S16_LE \-c2 \-r48000]
-+.fi
-+If no format is given S16_LE is used.
-+.TP
-+\fI\-c\fP
-+The number of channels. The default is one channel.
-+Valid values at the moment are 1 or 2.
-+.TP
-+\fI\-r\fP
-+Sampling rate in Hertz. The default rate is 44100 Hertz.
-+Valid values depends on hardware support.
-+.TP
-+\fI\-n\fP
-+Duration of generated signal.
-+The value could be either of the two forms:
-+.br
-+1. Decimal integer, means number of frames;
-+.br
-+2. Floating point with suffix 's', means number of seconds.
-+.br
-+The default is 2 seconds.
-+.TP
-+\fI\-k\fP
-+Sigma k value for analysis.
-+.br
-+The analysis function reads data from WAV file, run FFT against the data
-+to get magnitude of frequency vectors, and then calculates the average
-+value and standard deviation of frequency vectors. After that, we define
-+a threshold:
-+.br
-+threshold = k * standard_deviation + mean_value
-+.br
-+Frequencies with amplitude larger than threshold will be recognized as a
-+peak, and the frequency with largest peak value will be recognized as a
-+detected frequency.
-+.br
-+ALSABAT then compares the detected frequency to target frequency, to
-+decide if the detecting passes or fails.
-+.br
-+The default value is 3.0.
-+.TP
-+\fI\-F\fP
-+Target frequency for signal generation and analysis, in Hertz.
-+The default is 997.0 Hertz.
-+Valid range is (DC_THRESHOLD, 40% * Sampling rate).
-+.TP
-+\fI\-p\fP
-+Total number of periods to play or capture.
-+.TP
-+\fI\-\-log=#\fP
-+Write stderr and stdout output to this log file.
-+.TP
-+\fI\-\-file=#\fP
-+Input WAV file for playback.
-+.TP
-+\fI\-\-saveplay=#\fP
-+Target WAV file to save capture test content.
-+.TP
-+\fI\-\-local\fP
-+Internal loopback mode.
-+Playback, capture and analysis internal to ALSABAT only. This is intended
-+for developers to test new ALSABAT features as no audio is routed outside
-+of ALSABAT.
-+
-+.SH EXAMPLES
-+
-+.TP
-+\fBalsabat \-P plughw:0,0 \-C plughw:0,0 \-c 2 \-f S32_LE \-F 250\fR
-+Generate and play a sine wave of 250 Hertz with 2 channel and S32_LE format,
-+and then capture and analyze.
-+
-+.TP
-+\fBalsabat \-P plughw:0,0 \-C plughw:0,0 \-\-file 500Hz.wav\fR
-+Play the RIFF WAV file "500Hz.wav" which contains 500 Hertz waveform LPCM
-+data, and then capture and analyze.
-+
-+.SH RETURN VALUE
-+.br
-+On success, returns 0.
-+.br
-+If no peak be detected, returns -1001;
-+.br
-+If only DC be detected, returns -1002;
-+.br
-+If peak frequency does not match with the target frequency, returns -1003.
-+
-+.SH SEE ALSO
-+\fB
-+aplay(1)
-+\fP
-+
-+.SH BUGS
-+Currently only support RIFF WAV format with PCM data. Please report any bugs to
-+the alsa-devel mailing list.
-+
-+.SH AUTHOR
-+\fBalsabat\fP is by Liam Girdwood <liam.r.girdwood@linux.intel.com>, Bernard
-+Gautier <bernard.gautier@intel.com> and Han Lu <han.lu@intel.com>.
-+This document is by Liam Girdwood <liam.r.girdwood@linux.intel.com> and Han Lu
-+<han.lu@intel.com>.
-diff --git a/bat/bat.1 b/bat/bat.1
-deleted file mode 100644
-index e00fc27..0000000
---- a/bat/bat.1
-+++ /dev/null
-@@ -1,158 +0,0 @@
--.TH BAT 1 "20th October 2015"
--.SH NAME
--bat \- command\-line sound tester for ALSA sound card driver
--
--.SH SYNOPSIS
--\fBbat\fP [\fIflags\fP]
--
--.SH DESCRIPTION
--\fBBAT(Basic Audio Tester)\fP is a simple command\-line utility intended
--to help automate audio driver and sound server testing with little human
--interaction. BAT can be used to test audio quality, stress test features
--and test audio before and after PM state changes.
--
--BAT's design is relatively simple. BAT plays an audio stream and captures
--the same stream in either a digital or analog loop back. It then compares
--the captured stream using a FFT to the original to determine if the test
--case passes or fails.
--
--BAT can either run wholly on the target machine being tested (standalone
--mode) or can run as a client/server mode where by bat client runs on the
--target and runs as a server on a separate tester machine. The client/server
--mode still requires some manual interaction for synchronization, but this
--is actively being developed for future releases.
--
--The hardware testing configuration may require the use of an analog cable
--connecting target to tester machines or a cable to create an analog
--loopback if no loopback mode is not available on the sound hardware that
--is being tested.
--An analog loopback cable can be used to connect the "line in" to "line out"
--jacks to create a loopback. If only headphone and mic jacks (or combo jack)
--are available then the following simple circuit can be used to create an
--analog loopback :-
--
--https://source.android.com/devices/audio/loopback.html
--
--.SH OPTIONS
--.TP
--\fI\-h, \-\-help\fP
--Help: show syntax.
--.TP
--\fI\-D\fP
--Select sound card to be tested by name.
--.TP
--\fI\-P\fP
--Select the playback PCM device.
--.TP
--\fI\-C\fP
--Select the capture PCM device.
--.TP
--\fI\-f\fP
--Sample format
--.br
--Recognized sample formats are: U8 S16_LE S24_3LE S32_LE
--.br
--Some of these may not be available on selected hardware
--.br
--The available format shortcuts are:
--.nf
--\-f cd (16 bit little endian, 44100, stereo) [\-f S16_LE \-c2 \-r44100]
--\-f dat (16 bit little endian, 48000, stereo) [\-f S16_LE \-c2 \-r48000]
--.fi
--If no format is given S16_LE is used.
--.TP
--\fI\-c\fP
--The number of channels. The default is one channel.
--Valid values at the moment are 1 or 2.
--.TP
--\fI\-r\fP
--Sampling rate in Hertz. The default rate is 44100 Hertz.
--Valid values depends on hardware support.
--.TP
--\fI\-n\fP
--Duration of generated signal.
--The value could be either of the two forms:
--.br
--1. Decimal integer, means number of frames;
--.br
--2. Floating point with suffix 's', means number of seconds.
--.br
--The default is 2 seconds.
--.TP
--\fI\-k\fP
--Sigma k value for analysis.
--.br
--The analysis function reads data from WAV file, run FFT against the data
--to get magnitude of frequency vectors, and then calculates the average
--value and standard deviation of frequency vectors. After that, we define
--a threshold:
--.br
--threshold = k * standard_deviation + mean_value
--.br
--Frequencies with amplitude larger than threshold will be recognized as a
--peak, and the frequency with largest peak value will be recognized as a
--detected frequency.
--.br
--BAT then compares the detected frequency to target frequency, to decide
--if the detecting passes or fails.
--.br
--The default value is 3.0.
--.TP
--\fI\-F\fP
--Target frequency for signal generation and analysis, in Hertz.
--The default is 997.0 Hertz.
--Valid range is (DC_THRESHOLD, 40% * Sampling rate).
--.TP
--\fI\-p\fP
--Total number of periods to play or capture.
--.TP
--\fI\-\-log=#\fP
--Write stderr and stdout output to this log file.
--.TP
--\fI\-\-file=#\fP
--Input WAV file for playback.
--.TP
--\fI\-\-saveplay=#\fP
--Target WAV file to save capture test content.
--.TP
--\fI\-\-local\fP
--Internal loopback mode.
--Playback, capture and analysis internal to BAT only. This is intended for
--developers to test new BAT features as no audio is routed outside of BAT.
--
--.SH EXAMPLES
--
--.TP
--\fBbat \-P plughw:0,0 \-C plughw:0,0 \-c 2 \-f S32_LE \-F 250\fR
--Generate and play a sine wave of 250 Hertz with 2 channel and S32_LE format,
--and then capture and analyze.
--
--.TP
--\fBbat \-P plughw:0,0 \-C plughw:0,0 \-\-file 500Hz.wav\fR
--Play the RIFF WAV file "500Hz.wav" which contains 500 Hertz waveform LPCM
--data, and then capture and analyze.
--
--.SH RETURN VALUE
--.br
--On success, returns 0.
--.br
--If no peak be detected, returns -1001;
--.br
--If only DC be detected, returns -1002;
--.br
--If peak frequency does not match with the target frequency, returns -1003.
--
--.SH SEE ALSO
--\fB
--aplay(1)
--\fP
--
--.SH BUGS
--Currently only support RIFF WAV format with PCM data. Please report any bugs to
--the alsa-devel mailing list.
--
--.SH AUTHOR
--\fBbat\fP is by Liam Girdwood <liam.r.girdwood@linux.intel.com>, Bernard Gautier
--<bernard.gautier@intel.com> and Han Lu <han.lu@intel.com>.
--This document is by Liam Girdwood <liam.r.girdwood@linux.intel.com> and Han Lu
--<han.lu@intel.com>.
-diff --git a/bat/bat.c b/bat/bat.c
-index 086b9fa..ddb60b7 100644
---- a/bat/bat.c
-+++ b/bat/bat.c
-@@ -272,7 +272,7 @@ static void test_capture(struct bat *bat)
- static void usage(struct bat *bat)
- {
- 	fprintf(bat->log,
--_("Usage: bat [-options]...\n"
-+_("Usage: alsabat [-options]...\n"
- "\n"
- "  -h, --help             this help\n"
- "  -D                     pcm device for both playback and capture\n"
--- 
-2.5.0
+> CC: kbuild-all@01.org
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git topic/core-fixes
+> head:   be33492635ee8fc19a185f37293b533069e5cc8f
+> commit: be33492635ee8fc19a185f37293b533069e5cc8f [21/21] ALSA: rawmidi: Make snd_rawmidi_transmit() race-free
+> :::::: branch date: 2 hours ago
+> :::::: commit date: 2 hours ago
+> 
+> >> sound/core/seq/seq_virmidi.c:192:6-12: preceding lock on line 176
+> 
+> git remote add sound https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
+> git remote update sound
+> git checkout be33492635ee8fc19a185f37293b533069e5cc8f
+> vim +192 sound/core/seq/seq_virmidi.c
+> 
+> ^1da177e Linus Torvalds 2005-04-16  170  		if (vmidi->event.type != SNDRV_SEQ_EVENT_NONE) {
+> 62c5549e Takashi Iwai   2006-02-22  171  			if (snd_seq_kernel_client_dispatch(vmidi->client, &vmidi->event, in_atomic(), 0) < 0)
+> ^1da177e Linus Torvalds 2005-04-16  172  				return;
+> ^1da177e Linus Torvalds 2005-04-16  173  			vmidi->event.type = SNDRV_SEQ_EVENT_NONE;
+> ^1da177e Linus Torvalds 2005-04-16  174  		}
+> ^1da177e Linus Torvalds 2005-04-16  175  		while (1) {
+> be334926 Takashi Iwai   2016-01-31 @176  			spin_lock_irqsave(&substream->runtime->lock, flags);
+> be334926 Takashi Iwai   2016-01-31  177  			count = __snd_rawmidi_transmit_peek(substream, buf, sizeof(buf));
+> ^1da177e Linus Torvalds 2005-04-16  178  			if (count <= 0)
+> ^1da177e Linus Torvalds 2005-04-16  179  				break;
+> ^1da177e Linus Torvalds 2005-04-16  180  			pbuf = buf;
+> ^1da177e Linus Torvalds 2005-04-16  181  			while (count > 0) {
+> ^1da177e Linus Torvalds 2005-04-16  182  				res = snd_midi_event_encode(vmidi->parser, pbuf, count, &vmidi->event);
+> ^1da177e Linus Torvalds 2005-04-16  183  				if (res < 0) {
+> ^1da177e Linus Torvalds 2005-04-16  184  					snd_midi_event_reset_encode(vmidi->parser);
+> ^1da177e Linus Torvalds 2005-04-16  185  					continue;
+> ^1da177e Linus Torvalds 2005-04-16  186  				}
+> be334926 Takashi Iwai   2016-01-31  187  				__snd_rawmidi_transmit_ack(substream, res);
+> ^1da177e Linus Torvalds 2005-04-16  188  				pbuf += res;
+> ^1da177e Linus Torvalds 2005-04-16  189  				count -= res;
+> ^1da177e Linus Torvalds 2005-04-16  190  				if (vmidi->event.type != SNDRV_SEQ_EVENT_NONE) {
+> 62c5549e Takashi Iwai   2006-02-22  191  					if (snd_seq_kernel_client_dispatch(vmidi->client, &vmidi->event, in_atomic(), 0) < 0)
+> ^1da177e Linus Torvalds 2005-04-16 @192  						return;
+> ^1da177e Linus Torvalds 2005-04-16  193  					vmidi->event.type = SNDRV_SEQ_EVENT_NONE;
+> ^1da177e Linus Torvalds 2005-04-16  194  				}
+> ^1da177e Linus Torvalds 2005-04-16  195  			}
+> 
+> :::::: The code at line 192 was first introduced by commit
+> :::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
+> 
+> :::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
+> :::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
+> 
+> ---
+> 0-DAY kernel test infrastructure                Open Source Technology Center
+> https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+> 
