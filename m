@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 10/11] ASoC: Intel: Skylake: Fix stereo DMIC
-	record
-Date: Wed,  3 Feb 2016 17:59:53 +0530
-Message-ID: <1454502594-21700-11-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 11/11] ASoC: Intel: Skylake: Remove autosuspend
+	delay
+Date: Wed,  3 Feb 2016 17:59:54 +0530
+Message-ID: <1454502594-21700-12-git-send-email-vinod.koul@intel.com>
 References: <1454502594-21700-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 17370265A98
- for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2016 13:26:48 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 46DC8265A9E
+ for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2016 13:26:51 +0100 (CET)
 In-Reply-To: <1454502594-21700-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,35 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+The driver used autosuspend delay to delay going to D3. But per
+HW recommendation we should go to D3 soon, so remove the delay
+from driver
 
-DMIC BE can have 2 or 4 channels supported. The DMIC fixup needs
-to take this into account.
-
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/boards/skl_rt286.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
-index 7396ddb427d8..2cbcbe412661 100644
---- a/sound/soc/intel/boards/skl_rt286.c
-+++ b/sound/soc/intel/boards/skl_rt286.c
-@@ -212,7 +212,10 @@ static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
- {
- 	struct snd_interval *channels = hw_param_interval(params,
- 						SNDRV_PCM_HW_PARAM_CHANNELS);
--	channels->min = channels->max = 4;
-+	if (params_channels(params) == 2)
-+		channels->min = channels->max = 2;
-+	else
-+		channels->min = channels->max = 4;
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 443a15de94b5..092705e73db4 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -614,8 +614,6 @@ static int skl_probe(struct pci_dev *pci,
+ 		goto out_unregister;
  
- 	return 0;
- }
+ 	/*configure PM */
+-	pm_runtime_set_autosuspend_delay(bus->dev, SKL_SUSPEND_DELAY);
+-	pm_runtime_use_autosuspend(bus->dev);
+ 	pm_runtime_put_noidle(bus->dev);
+ 	pm_runtime_allow(bus->dev);
+ 
 -- 
 1.9.1
