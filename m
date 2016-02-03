@@ -1,33 +1,159 @@
 From: Dmitry Vyukov <dvyukov@google.com>
 Subject: Re: sound: out-of-bounds write in snd_rawmidi_kernel_write1
-Date: Wed, 3 Feb 2016 14:25:23 +0100
-Message-ID: <CACT4Y+Zy8Ky0dBLvPWTCJ=F8H4kvNBXxvYZXB09Hwe8wGmYbkg@mail.gmail.com>
+Date: Wed, 3 Feb 2016 14:37:17 +0100
+Message-ID: <CACT4Y+ZOMXBNYwz=MPGNKrzA29RHeCK495yPMXNP8MTJvOkkZw@mail.gmail.com>
 References: <CACT4Y+b-dCmNf1GpgPKfDO0ih+uZCL2JV4__j-r1kdhPLSgQCQ@mail.gmail.com>
- <s5hpowe2l2l.wl-tiwai@suse.de>
+ <s5hpowe2l2l.wl-tiwai@suse.de> <s5hlh722ksl.wl-tiwai@suse.de>
+ <s5hsi1aggzw.wl-tiwai@suse.de> <s5hlh72gfxg.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hpowe2l2l.wl-tiwai@suse.de>
+In-Reply-To: <s5hlh72gfxg.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, LKML <linux-kernel@vger.kernel.org>, Alexander Potapenko <glider@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>, Sasha Levin <sasha.levin@oracle.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 3, 2016 at 10:35 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Wed, 03 Feb 2016 09:57:50 +0100,
-> Dmitry Vyukov wrote:
+On Wed, Feb 3, 2016 at 1:02 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Wed, 03 Feb 2016 12:39:31 +0100,
+> Takashi Iwai wrote:
 >>
->> Hello,
+>> On Wed, 03 Feb 2016 10:41:14 +0100,
+>> Takashi Iwai wrote:
+>> >
+>> > On Wed, 03 Feb 2016 10:35:14 +0100,
+>> > Takashi Iwai wrote:
+>> > >
+>> > > On Wed, 03 Feb 2016 09:57:50 +0100,
+>> > > Dmitry Vyukov wrote:
+>> > > >
+>> > > > Hello,
+>> > > >
+>> > > > The following program triggers an out-of-bounds write in
+>> > > > snd_rawmidi_kernel_write1 (run in parallel loop). It seems to try to
+>> > > > copy -1 bytes (aka 4GB) from user space into kernel smashing all on
+>> > > > its way.
+>> > >
+>> > > What card is /dev/midi3?  Please check /proc/asound/cards.
+>> > > Is it MTPAV?
+>> >
+>> > In anyway the patch below should paper over it.  But it's still
+>> > strange that it gets a negative value there.  Could you put
+>> >
+>> >    WARN_ON(count1 < 0)
+>> >
+>> > before the newly added check?
+>> >
+>> > I tried it locally with virmidi but it didn't appear, so far.  Maybe
+>> > my setup is too slow and has fewer CPUs than yours.
 >>
->> The following program triggers an out-of-bounds write in
->> snd_rawmidi_kernel_write1 (run in parallel loop). It seems to try to
->> copy -1 bytes (aka 4GB) from user space into kernel smashing all on
->> its way.
+>> Scratch my previous patch, I could reproduce the issue on a faster
+>> machine in my office now :)  Will work on it.
 >
-> What card is /dev/midi3?  Please check /proc/asound/cards.
-> Is it MTPAV?
+> This turned out to be a race in updates of runtime->appl_ptr & co.
+> We do temporary spin unlock and relock while copying the user-space
+> data, and then update these values.  Meanwhile these values are
+> referred as the position to copy, and the concurrent accesses may lead
+> to the negative value.
+>
+> Below is a quick fix for that, just updating these before the
+> temporary unlock.
+>
+> The patch also fixes the read size where it has more race problems...
+>
+> It seems working on my machine.  Let me know if this works for you,
+> too.  Then I'll cook up the official patch.
 
-Yes, it was MTPAV. There is only generic code in the stack traces, so
-I though it may be a generic issue. Though, of course, the driver
-could mess things already.
-I've dropped CONFIG_SND_MTPAV now.
+
+Yes, it fixes the crash for me.  Thanks!
+
+
+> ---
+> diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
+> index 26ca02248885..795437b10082 100644
+> --- a/sound/core/rawmidi.c
+> +++ b/sound/core/rawmidi.c
+> @@ -942,31 +942,36 @@ static long snd_rawmidi_kernel_read1(struct snd_rawmidi_substream *substream,
+>         unsigned long flags;
+>         long result = 0, count1;
+>         struct snd_rawmidi_runtime *runtime = substream->runtime;
+> +       unsigned long appl_ptr;
+>
+> +       spin_lock_irqsave(&runtime->lock, flags);
+>         while (count > 0 && runtime->avail) {
+>                 count1 = runtime->buffer_size - runtime->appl_ptr;
+>                 if (count1 > count)
+>                         count1 = count;
+> -               spin_lock_irqsave(&runtime->lock, flags);
+>                 if (count1 > (int)runtime->avail)
+>                         count1 = runtime->avail;
+> +
+> +               /* update runtime->appl_ptr before unlocking for userbuf */
+> +               appl_ptr = runtime->appl_ptr;
+> +               runtime->appl_ptr += count1;
+> +               runtime->appl_ptr %= runtime->buffer_size;
+> +               runtime->avail -= count1;
+> +
+>                 if (kernelbuf)
+> -                       memcpy(kernelbuf + result, runtime->buffer + runtime->appl_ptr, count1);
+> +                       memcpy(kernelbuf + result, runtime->buffer + appl_ptr, count1);
+>                 if (userbuf) {
+>                         spin_unlock_irqrestore(&runtime->lock, flags);
+>                         if (copy_to_user(userbuf + result,
+> -                                        runtime->buffer + runtime->appl_ptr, count1)) {
+> +                                        runtime->buffer + appl_ptr, count1)) {
+>                                 return result > 0 ? result : -EFAULT;
+>                         }
+>                         spin_lock_irqsave(&runtime->lock, flags);
+>                 }
+> -               runtime->appl_ptr += count1;
+> -               runtime->appl_ptr %= runtime->buffer_size;
+> -               runtime->avail -= count1;
+> -               spin_unlock_irqrestore(&runtime->lock, flags);
+>                 result += count1;
+>                 count -= count1;
+>         }
+> +       spin_unlock_irqrestore(&runtime->lock, flags);
+>         return result;
+>  }
+>
+> @@ -1223,6 +1228,7 @@ static long snd_rawmidi_kernel_write1(struct snd_rawmidi_substream *substream,
+>         unsigned long flags;
+>         long count1, result;
+>         struct snd_rawmidi_runtime *runtime = substream->runtime;
+> +       unsigned long appl_ptr;
+>
+>         if (!kernelbuf && !userbuf)
+>                 return -EINVAL;
+> @@ -1243,12 +1249,19 @@ static long snd_rawmidi_kernel_write1(struct snd_rawmidi_substream *substream,
+>                         count1 = count;
+>                 if (count1 > (long)runtime->avail)
+>                         count1 = runtime->avail;
+> +
+> +               /* update runtime->appl_ptr before unlocking for userbuf */
+> +               appl_ptr = runtime->appl_ptr;
+> +               runtime->appl_ptr += count1;
+> +               runtime->appl_ptr %= runtime->buffer_size;
+> +               runtime->avail -= count1;
+> +
+>                 if (kernelbuf)
+> -                       memcpy(runtime->buffer + runtime->appl_ptr,
+> +                       memcpy(runtime->buffer + appl_ptr,
+>                                kernelbuf + result, count1);
+>                 else if (userbuf) {
+>                         spin_unlock_irqrestore(&runtime->lock, flags);
+> -                       if (copy_from_user(runtime->buffer + runtime->appl_ptr,
+> +                       if (copy_from_user(runtime->buffer + appl_ptr,
+>                                            userbuf + result, count1)) {
+>                                 spin_lock_irqsave(&runtime->lock, flags);
+>                                 result = result > 0 ? result : -EFAULT;
+> @@ -1256,9 +1269,6 @@ static long snd_rawmidi_kernel_write1(struct snd_rawmidi_substream *substream,
+>                         }
+>                         spin_lock_irqsave(&runtime->lock, flags);
+>                 }
+> -               runtime->appl_ptr += count1;
+> -               runtime->appl_ptr %= runtime->buffer_size;
+> -               runtime->avail -= count1;
+>                 result += count1;
+>                 count -= count1;
+>         }
