@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 09/11] ASoC: Intel: Skylake: Add missing
-	PRE/POST_PMU handlers for vmixer
-Date: Wed,  3 Feb 2016 17:59:52 +0530
-Message-ID: <1454502594-21700-10-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 10/11] ASoC: Intel: Skylake: Fix stereo DMIC
+	record
+Date: Wed,  3 Feb 2016 17:59:53 +0530
+Message-ID: <1454502594-21700-11-git-send-email-vinod.koul@intel.com>
 References: <1454502594-21700-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id C90AF2606AB
- for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2016 13:26:46 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 17370265A98
+ for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2016 13:26:48 +0100 (CET)
 In-Reply-To: <1454502594-21700-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,33 +27,30 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-Some modules may be directly connected to a pipeline without a
-mixer module. For these modules, we require PRE_PMU and POST_PMU
-handler which will do bind between the pipelines, so add these
-missing handlers.
+DMIC BE can have 2 or 4 channels supported. The DMIC fixup needs
+to take this into account.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-topology.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/intel/boards/skl_rt286.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 722a05a7f098..50e193e9eb56 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -857,6 +857,12 @@ static int skl_tplg_vmixer_event(struct snd_soc_dapm_widget *w,
- 	case SND_SOC_DAPM_PRE_PMU:
- 		return skl_tplg_mixer_dapm_pre_pmu_event(w, skl);
+diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
+index 7396ddb427d8..2cbcbe412661 100644
+--- a/sound/soc/intel/boards/skl_rt286.c
++++ b/sound/soc/intel/boards/skl_rt286.c
+@@ -212,7 +212,10 @@ static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ {
+ 	struct snd_interval *channels = hw_param_interval(params,
+ 						SNDRV_PCM_HW_PARAM_CHANNELS);
+-	channels->min = channels->max = 4;
++	if (params_channels(params) == 2)
++		channels->min = channels->max = 2;
++	else
++		channels->min = channels->max = 4;
  
-+	case SND_SOC_DAPM_POST_PMU:
-+		return skl_tplg_mixer_dapm_post_pmu_event(w, skl);
-+
-+	case SND_SOC_DAPM_PRE_PMD:
-+		return skl_tplg_mixer_dapm_pre_pmd_event(w, skl);
-+
- 	case SND_SOC_DAPM_POST_PMD:
- 		return skl_tplg_mixer_dapm_post_pmd_event(w, skl);
- 	}
+ 	return 0;
+ }
 -- 
 1.9.1
