@@ -1,17 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: Can't use adau1361 as i2s master due to bad write
-	ordering
-Date: Wed, 3 Feb 2016 17:25:40 +0100
-Message-ID: <56B22A04.1010603@metafoo.de>
-References: <20160203160421.GA21568@lnxandire1.se.axis.com>
+From: Erik Friesen <friesendrywall@gmail.com>
+Subject: SGTL5000
+Date: Wed, 3 Feb 2016 12:06:51 -0500
+Message-ID: <CAEuupiuoR=3MVkP5aS3Jn1GQvUdQ1a9rmT1-2oQSQUdCfZRQ1Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-195.synserver.de (unknown [212.40.180.141])
- by alsa0.perex.cz (Postfix) with ESMTP id 6811E260694
- for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2016 17:30:03 +0100 (CET)
-In-Reply-To: <20160203160421.GA21568@lnxandire1.se.axis.com>
+Received: from mail-io0-f179.google.com (mail-io0-f179.google.com
+ [209.85.223.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7878C2606AB
+ for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2016 18:06:52 +0100 (CET)
+Received: by mail-io0-f179.google.com with SMTP id 9so62759310iom.1
+ for <alsa-devel@alsa-project.org>; Wed, 03 Feb 2016 09:06:52 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,45 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?Andreas_Irest=c3=a5l?= <andreas.irestal@axis.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/03/2016 05:04 PM, Andreas Irest=E5l wrote:
-> I've run into problems using the adau1361 codec (adau1761) as i2s master.
-> =
+I was sort of directed to this list from linux-arm.
 
-> I'm using i2c to set up the codec, and according to the datasheet there
-> is an enable bit, which must be set in order to be able to access any
-> other register than the first two registers.
-> =
+I have been working with an embeddedarm ts4900 and built a baseboard
+that uses the sgtl5000.  I also have worked with the RiotBoard, which
+uses the same chip, both using the i.mx6 arm.  I find that
+occasionally the sgtl5000 is resetting, and there is no way to bring
+it back online.  As near as I can tell, the i2c bus comes back alive,
+for example alsamixer communicates fine, coms happen on the i2c bus
+per scope.  However, its obvious the chip never gets re initialized by
+how it acts.
 
-> This enable bit is set when the codec enters bias level standby,
-> however, before entering this bias level, some other registers are
-> written which will have no effect due to the inner workings of this
-> codec. Oddly enough, it does ack all writes when measuring the i2c bus.
-> =
+I know the thing shouldn't reset, that is the primary problem, but I
+still want some backup method.  Its probably due to ground bounce from
+a non earth grounded setup.  It could be that using the external
+regulator will help, we will see.
 
-> One of these registers is the serial port 0 register, which
-> configures the i2s bus. This results in the situation that the CODEC dai
-> thinks it is running as i2s slave and the CPU dai thinks too as well,
-> and the bus is dead. Since the other register fields does not change
-> with our dai configuration, the register never gets physically updated
-> by an i2c write.
-> =
+Is there a suggestion on a way the sgtl5000.c could be extended to
+support some sort of re initialize routine?
 
-> If I reset/reboot the system, which in our case does not power cycle the
-> codec, the i2s bus is correctly set up and everything works as one would
-> expect.
-> =
-
-> So, either the driver behaves incorrectly relying on bias level being
-> set before any other registers are written, or the underlying subsystem
-> are behaving incorrectly. We're using the simple-card board driver as it
-> is sufficient for our needs.
-
-Hi,
-
-Yes, that sounds like a bug in the driver. We probably need to enable the
-clock in the probe() function before we do any other register writes.
-
-- Lars
+I am using the embeddedarm repo as a base kernel.  sgtl5000.c has been
+updated to include
+ret = sgtl5000_fill_defaults(sgtl5000);
+but the base kernel is 3.10.53.  However, the riotboard runs 4.3 with
+similar results.
