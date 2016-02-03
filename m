@@ -1,15 +1,14 @@
-From: libin.yang@linux.intel.com
-Subject: [PATCH] ALSA: hda - build chmap kctl based on pcm in
-	hdmi audio
-Date: Wed,  3 Feb 2016 10:48:34 +0800
-Message-ID: <1454467714-9424-1-git-send-email-libin.yang@linux.intel.com>
+From: han.lu@intel.com
+Subject: [PATCH 1/1] alsabat: rename to avoid naming conflict
+Date: Wed,  3 Feb 2016 14:20:33 +0800
+Message-ID: <1454480433-20169-1-git-send-email-han.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D8BA2605FF
- for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2016 03:52:34 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id C5D7426154E
+ for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2016 07:20:04 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,110 +18,385 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: libin.yang@intel.com, mengdong.lin@intel.com, Libin Yang <libin.yang@linux.intel.com>
+To: tiwai@suse.de, liam.r.girdwood@linux.intel.com, bernard.gautier@intel.com, joerg.steffens@bareos.com, clemens@ladisch.de, alsa-devel@alsa-project.org
+Cc: "Lu, Han" <han.lu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Libin Yang <libin.yang@linux.intel.com>
+From: "Lu, Han" <han.lu@intel.com>
 
-Build chmap kctl based on pcm. The first chmap kctl will be
-mapped to the first pcm, and so on.
+alsa-utils as well as bareos-bat (as well a some Bacula packages)
+all contain a program called /usr/bin/bat, which causes conflicts on
+various distributions ("basic audio tester" vs "bareos administration
+tool"("bacula administration tool")).
+Rename to avoid conflict.
 
-When a monitor is connected to a pin, the chmap kctl can
-find the pin and the monitor through the pcm index.
+Signed-off-by: Lu, Han <han.lu@intel.com>
 
-Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
----
- sound/pci/hda/patch_hdmi.c | 40 +++++++++++++++++++++++++++++++++-------
- 1 file changed, 33 insertions(+), 7 deletions(-)
-
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 275b68a..1a46f45 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -437,6 +437,20 @@ static int hinfo_to_pin_index(struct hda_codec *codec,
- 	return -EINVAL;
- }
+diff --git a/bat/Makefile.am b/bat/Makefile.am
+index f0dc5ab..8dfafa9 100644
+--- a/bat/Makefile.am
++++ b/bat/Makefile.am
+@@ -1,9 +1,9 @@
+-bin_PROGRAMS = bat
+-man_MANS = bat.1
++bin_PROGRAMS = alsabat
++man_MANS = alsabat.1
  
-+static struct hdmi_spec_per_pin *pcm_idx_to_pin(struct hdmi_spec *spec,
-+						int pcm_idx)
-+{
-+	int i;
-+	struct hdmi_spec_per_pin *per_pin;
+-EXTRA_DIST = bat.1
++EXTRA_DIST = alsabat.1
+ 
+-bat_SOURCES = \
++alsabat_SOURCES = \
+ 	bat.c \
+ 	common.c \
+ 	analyze.c \
+@@ -21,4 +21,4 @@ noinst_HEADERS = \
+ AM_CPPFLAGS = \
+ 	      -Wall -I$(top_srcdir)/include
+ 
+-bat_LDADD = @FFTW_LIB@
++alsabat_LDADD = @FFTW_LIB@
+diff --git a/bat/alsabat.1 b/bat/alsabat.1
+new file mode 100644
+index 0000000..8d0b9c0
+--- /dev/null
++++ b/bat/alsabat.1
+@@ -0,0 +1,159 @@
++.TH ALSABAT 1 "20th October 2015"
++.SH NAME
++alsabat \- command\-line sound tester for ALSA sound card driver
 +
-+	for (i = 0; i < spec->num_pins; i++) {
-+		per_pin = get_pin(spec, i);
-+		if (per_pin->pcm_idx == pcm_idx)
-+			return per_pin;
-+	}
-+	return NULL;
-+}
++.SH SYNOPSIS
++\fBalsabat\fP [\fIflags\fP]
 +
- static int cvt_nid_to_cvt_index(struct hda_codec *codec, hda_nid_t cvt_nid)
++.SH DESCRIPTION
++\fBALSABAT(ALSA Basic Audio Tester)\fP is a simple command\-line utility
++intended to help automate audio driver and sound server testing with little
++human interaction. ALSABAT can be used to test audio quality, stress test
++features and test audio before and after PM state changes.
++
++ALSABAT's design is relatively simple. ALSABAT plays an audio stream and
++captures the same stream in either a digital or analog loop back. It then
++compares the captured stream using a FFT to the original to determine if
++the test case passes or fails.
++
++ALSABAT can either run wholly on the target machine being tested (standalone
++mode) or can run as a client/server mode where by alsabat client runs on the
++target and runs as a server on a separate tester machine. The client/server
++mode still requires some manual interaction for synchronization, but this
++is actively being developed for future releases.
++
++The hardware testing configuration may require the use of an analog cable
++connecting target to tester machines or a cable to create an analog
++loopback if no loopback mode is not available on the sound hardware that
++is being tested.
++An analog loopback cable can be used to connect the "line in" to "line out"
++jacks to create a loopback. If only headphone and mic jacks (or combo jack)
++are available then the following simple circuit can be used to create an
++analog loopback :-
++
++https://source.android.com/devices/audio/loopback.html
++
++.SH OPTIONS
++.TP
++\fI\-h, \-\-help\fP
++Help: show syntax.
++.TP
++\fI\-D\fP
++Select sound card to be tested by name.
++.TP
++\fI\-P\fP
++Select the playback PCM device.
++.TP
++\fI\-C\fP
++Select the capture PCM device.
++.TP
++\fI\-f\fP
++Sample format
++.br
++Recognized sample formats are: U8 S16_LE S24_3LE S32_LE
++.br
++Some of these may not be available on selected hardware
++.br
++The available format shortcuts are:
++.nf
++\-f cd (16 bit little endian, 44100, stereo) [\-f S16_LE \-c2 \-r44100]
++\-f dat (16 bit little endian, 48000, stereo) [\-f S16_LE \-c2 \-r48000]
++.fi
++If no format is given S16_LE is used.
++.TP
++\fI\-c\fP
++The number of channels. The default is one channel.
++Valid values at the moment are 1 or 2.
++.TP
++\fI\-r\fP
++Sampling rate in Hertz. The default rate is 44100 Hertz.
++Valid values depends on hardware support.
++.TP
++\fI\-n\fP
++Duration of generated signal.
++The value could be either of the two forms:
++.br
++1. Decimal integer, means number of frames;
++.br
++2. Floating point with suffix 's', means number of seconds.
++.br
++The default is 2 seconds.
++.TP
++\fI\-k\fP
++Sigma k value for analysis.
++.br
++The analysis function reads data from WAV file, run FFT against the data
++to get magnitude of frequency vectors, and then calculates the average
++value and standard deviation of frequency vectors. After that, we define
++a threshold:
++.br
++threshold = k * standard_deviation + mean_value
++.br
++Frequencies with amplitude larger than threshold will be recognized as a
++peak, and the frequency with largest peak value will be recognized as a
++detected frequency.
++.br
++ALSABAT then compares the detected frequency to target frequency, to
++decide if the detecting passes or fails.
++.br
++The default value is 3.0.
++.TP
++\fI\-F\fP
++Target frequency for signal generation and analysis, in Hertz.
++The default is 997.0 Hertz.
++Valid range is (DC_THRESHOLD, 40% * Sampling rate).
++.TP
++\fI\-p\fP
++Total number of periods to play or capture.
++.TP
++\fI\-\-log=#\fP
++Write stderr and stdout output to this log file.
++.TP
++\fI\-\-file=#\fP
++Input WAV file for playback.
++.TP
++\fI\-\-saveplay=#\fP
++Target WAV file to save capture test content.
++.TP
++\fI\-\-local\fP
++Internal loopback mode.
++Playback, capture and analysis internal to ALSABAT only. This is intended
++for developers to test new ALSABAT features as no audio is routed outside
++of ALSABAT.
++
++.SH EXAMPLES
++
++.TP
++\fBalsabat \-P plughw:0,0 \-C plughw:0,0 \-c 2 \-f S32_LE \-F 250\fR
++Generate and play a sine wave of 250 Hertz with 2 channel and S32_LE format,
++and then capture and analyze.
++
++.TP
++\fBalsabat \-P plughw:0,0 \-C plughw:0,0 \-\-file 500Hz.wav\fR
++Play the RIFF WAV file "500Hz.wav" which contains 500 Hertz waveform LPCM
++data, and then capture and analyze.
++
++.SH RETURN VALUE
++.br
++On success, returns 0.
++.br
++If no peak be detected, returns -1001;
++.br
++If only DC be detected, returns -1002;
++.br
++If peak frequency does not match with the target frequency, returns -1003.
++
++.SH SEE ALSO
++\fB
++aplay(1)
++\fP
++
++.SH BUGS
++Currently only support RIFF WAV format with PCM data. Please report any bugs to
++the alsa-devel mailing list.
++
++.SH AUTHOR
++\fBalsabat\fP is by Liam Girdwood <liam.r.girdwood@linux.intel.com>, Bernard
++Gautier <bernard.gautier@intel.com> and Han Lu <han.lu@intel.com>.
++This document is by Liam Girdwood <liam.r.girdwood@linux.intel.com> and Han Lu
++<han.lu@intel.com>.
+diff --git a/bat/bat.1 b/bat/bat.1
+deleted file mode 100644
+index e00fc27..0000000
+--- a/bat/bat.1
++++ /dev/null
+@@ -1,158 +0,0 @@
+-.TH BAT 1 "20th October 2015"
+-.SH NAME
+-bat \- command\-line sound tester for ALSA sound card driver
+-
+-.SH SYNOPSIS
+-\fBbat\fP [\fIflags\fP]
+-
+-.SH DESCRIPTION
+-\fBBAT(Basic Audio Tester)\fP is a simple command\-line utility intended
+-to help automate audio driver and sound server testing with little human
+-interaction. BAT can be used to test audio quality, stress test features
+-and test audio before and after PM state changes.
+-
+-BAT's design is relatively simple. BAT plays an audio stream and captures
+-the same stream in either a digital or analog loop back. It then compares
+-the captured stream using a FFT to the original to determine if the test
+-case passes or fails.
+-
+-BAT can either run wholly on the target machine being tested (standalone
+-mode) or can run as a client/server mode where by bat client runs on the
+-target and runs as a server on a separate tester machine. The client/server
+-mode still requires some manual interaction for synchronization, but this
+-is actively being developed for future releases.
+-
+-The hardware testing configuration may require the use of an analog cable
+-connecting target to tester machines or a cable to create an analog
+-loopback if no loopback mode is not available on the sound hardware that
+-is being tested.
+-An analog loopback cable can be used to connect the "line in" to "line out"
+-jacks to create a loopback. If only headphone and mic jacks (or combo jack)
+-are available then the following simple circuit can be used to create an
+-analog loopback :-
+-
+-https://source.android.com/devices/audio/loopback.html
+-
+-.SH OPTIONS
+-.TP
+-\fI\-h, \-\-help\fP
+-Help: show syntax.
+-.TP
+-\fI\-D\fP
+-Select sound card to be tested by name.
+-.TP
+-\fI\-P\fP
+-Select the playback PCM device.
+-.TP
+-\fI\-C\fP
+-Select the capture PCM device.
+-.TP
+-\fI\-f\fP
+-Sample format
+-.br
+-Recognized sample formats are: U8 S16_LE S24_3LE S32_LE
+-.br
+-Some of these may not be available on selected hardware
+-.br
+-The available format shortcuts are:
+-.nf
+-\-f cd (16 bit little endian, 44100, stereo) [\-f S16_LE \-c2 \-r44100]
+-\-f dat (16 bit little endian, 48000, stereo) [\-f S16_LE \-c2 \-r48000]
+-.fi
+-If no format is given S16_LE is used.
+-.TP
+-\fI\-c\fP
+-The number of channels. The default is one channel.
+-Valid values at the moment are 1 or 2.
+-.TP
+-\fI\-r\fP
+-Sampling rate in Hertz. The default rate is 44100 Hertz.
+-Valid values depends on hardware support.
+-.TP
+-\fI\-n\fP
+-Duration of generated signal.
+-The value could be either of the two forms:
+-.br
+-1. Decimal integer, means number of frames;
+-.br
+-2. Floating point with suffix 's', means number of seconds.
+-.br
+-The default is 2 seconds.
+-.TP
+-\fI\-k\fP
+-Sigma k value for analysis.
+-.br
+-The analysis function reads data from WAV file, run FFT against the data
+-to get magnitude of frequency vectors, and then calculates the average
+-value and standard deviation of frequency vectors. After that, we define
+-a threshold:
+-.br
+-threshold = k * standard_deviation + mean_value
+-.br
+-Frequencies with amplitude larger than threshold will be recognized as a
+-peak, and the frequency with largest peak value will be recognized as a
+-detected frequency.
+-.br
+-BAT then compares the detected frequency to target frequency, to decide
+-if the detecting passes or fails.
+-.br
+-The default value is 3.0.
+-.TP
+-\fI\-F\fP
+-Target frequency for signal generation and analysis, in Hertz.
+-The default is 997.0 Hertz.
+-Valid range is (DC_THRESHOLD, 40% * Sampling rate).
+-.TP
+-\fI\-p\fP
+-Total number of periods to play or capture.
+-.TP
+-\fI\-\-log=#\fP
+-Write stderr and stdout output to this log file.
+-.TP
+-\fI\-\-file=#\fP
+-Input WAV file for playback.
+-.TP
+-\fI\-\-saveplay=#\fP
+-Target WAV file to save capture test content.
+-.TP
+-\fI\-\-local\fP
+-Internal loopback mode.
+-Playback, capture and analysis internal to BAT only. This is intended for
+-developers to test new BAT features as no audio is routed outside of BAT.
+-
+-.SH EXAMPLES
+-
+-.TP
+-\fBbat \-P plughw:0,0 \-C plughw:0,0 \-c 2 \-f S32_LE \-F 250\fR
+-Generate and play a sine wave of 250 Hertz with 2 channel and S32_LE format,
+-and then capture and analyze.
+-
+-.TP
+-\fBbat \-P plughw:0,0 \-C plughw:0,0 \-\-file 500Hz.wav\fR
+-Play the RIFF WAV file "500Hz.wav" which contains 500 Hertz waveform LPCM
+-data, and then capture and analyze.
+-
+-.SH RETURN VALUE
+-.br
+-On success, returns 0.
+-.br
+-If no peak be detected, returns -1001;
+-.br
+-If only DC be detected, returns -1002;
+-.br
+-If peak frequency does not match with the target frequency, returns -1003.
+-
+-.SH SEE ALSO
+-\fB
+-aplay(1)
+-\fP
+-
+-.SH BUGS
+-Currently only support RIFF WAV format with PCM data. Please report any bugs to
+-the alsa-devel mailing list.
+-
+-.SH AUTHOR
+-\fBbat\fP is by Liam Girdwood <liam.r.girdwood@linux.intel.com>, Bernard Gautier
+-<bernard.gautier@intel.com> and Han Lu <han.lu@intel.com>.
+-This document is by Liam Girdwood <liam.r.girdwood@linux.intel.com> and Han Lu
+-<han.lu@intel.com>.
+diff --git a/bat/bat.c b/bat/bat.c
+index 086b9fa..ddb60b7 100644
+--- a/bat/bat.c
++++ b/bat/bat.c
+@@ -272,7 +272,7 @@ static void test_capture(struct bat *bat)
+ static void usage(struct bat *bat)
  {
- 	struct hdmi_spec *spec = codec->spec;
-@@ -2398,10 +2412,16 @@ static int hdmi_chmap_ctl_get(struct snd_kcontrol *kcontrol,
- 	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
- 	struct hda_codec *codec = info->private_data;
- 	struct hdmi_spec *spec = codec->spec;
--	int pin_idx = kcontrol->private_value;
--	struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
-+	int pcm_idx = kcontrol->private_value;
-+	struct hdmi_spec_per_pin *per_pin = pcm_idx_to_pin(spec, pcm_idx);
- 	int i;
- 
-+	if (!per_pin) {
-+		for (i = 0; i < spec->channels_max; i++)
-+			ucontrol->value.integer.value[i] = 0;
-+		return 0;
-+	}
-+
- 	for (i = 0; i < ARRAY_SIZE(per_pin->chmap); i++)
- 		ucontrol->value.integer.value[i] = per_pin->chmap[i];
- 	return 0;
-@@ -2413,13 +2433,19 @@ static int hdmi_chmap_ctl_put(struct snd_kcontrol *kcontrol,
- 	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
- 	struct hda_codec *codec = info->private_data;
- 	struct hdmi_spec *spec = codec->spec;
--	int pin_idx = kcontrol->private_value;
--	struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
-+	int pcm_idx = kcontrol->private_value;
-+	struct hdmi_spec_per_pin *per_pin = pcm_idx_to_pin(spec, pcm_idx);
- 	unsigned int ctl_idx;
- 	struct snd_pcm_substream *substream;
- 	unsigned char chmap[8];
- 	int i, err, ca, prepared = 0;
- 
-+	/* No monitor is connected in dyn_pcm_assign.
-+	 * It's invalid to setup the chmap
-+	 */
-+	if (!per_pin)
-+		return 0;
-+
- 	ctl_idx = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
- 	substream = snd_pcm_chmap_substream(info, ctl_idx);
- 	if (!substream || !substream->runtime)
-@@ -2596,18 +2622,18 @@ static int generic_hdmi_build_controls(struct hda_codec *codec)
- 	}
- 
- 	/* add channel maps */
--	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
-+	for (pcm_idx = 0; pcm_idx < spec->pcm_used; pcm_idx++) {
- 		struct hda_pcm *pcm;
- 		struct snd_pcm_chmap *chmap;
- 		struct snd_kcontrol *kctl;
- 		int i;
- 
--		pcm = get_pcm_rec(spec, pin_idx);
-+		pcm = get_pcm_rec(spec, pcm_idx);
- 		if (!pcm || !pcm->pcm)
- 			break;
- 		err = snd_pcm_add_chmap_ctls(pcm->pcm,
- 					     SNDRV_PCM_STREAM_PLAYBACK,
--					     NULL, 0, pin_idx, &chmap);
-+					     NULL, 0, pcm_idx, &chmap);
- 		if (err < 0)
- 			return err;
- 		/* override handlers */
+ 	fprintf(bat->log,
+-_("Usage: bat [-options]...\n"
++_("Usage: alsabat [-options]...\n"
+ "\n"
+ "  -h, --help             this help\n"
+ "  -D                     pcm device for both playback and capture\n"
 -- 
-1.9.1
+2.5.0
