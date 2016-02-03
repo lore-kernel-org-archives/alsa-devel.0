@@ -1,20 +1,17 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: arizona: Add support for
- SNDRV_PCM_RATE_KNOT
-Date: Wed, 3 Feb 2016 09:41:13 +0000
-Message-ID: <20160203094113.GT1490@localhost.localdomain>
-References: <1454431084-21411-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20160202193002.GV4455@sirena.org.uk> <56B1B939.5030503@metafoo.de>
+From: Tobias Schramm <tobleminer@gmail.com>
+Subject: Re: bytcr_rt5651 on wintron 7.0
+Date: Wed, 3 Feb 2016 12:17:23 +0100
+Message-ID: <CAM6qAzoQ6YnkgoGoxBgSK_nebaZPx13mkoRVZWJBc8a56Dw5Yw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 206152614CB
- for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2016 10:41:14 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <56B1B939.5030503@metafoo.de>
+Received: from mail-ig0-f177.google.com (mail-ig0-f177.google.com
+ [209.85.213.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id C46F0260701
+ for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2016 12:17:24 +0100 (CET)
+Received: by mail-ig0-f177.google.com with SMTP id 5so33687096igt.0
+ for <alsa-devel@alsa-project.org>; Wed, 03 Feb 2016 03:17:24 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,29 +21,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: pierre-louis.bossart@linux.intel.com
+Cc: alsa-devel@tbspace.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 03, 2016 at 09:24:25AM +0100, Lars-Peter Clausen wrote:
-> On 02/02/2016 08:30 PM, Mark Brown wrote:
-> > On Tue, Feb 02, 2016 at 04:38:04PM +0000, Charles Keepax wrote:
-> > 
-> >> +#define ARIZONA_48K_RATES 12000, 24000, 48000, 96000, 192000, 4000, 8000, \
-> >> +			  16000, 32000
-> > 
-> > This just looks wrong.  It's valid code but with the combination of the
-> > split line and the list without any sort of parenthesis it sets off
-> > alarm bells.  Duplicating might not be the worst thing ever...
-> 
-> For list constraints it is possible to specify a mask for which of the
-> entries in the rates array should be considered. So you could use the same
-> rate array, but use different masks. The adau1977 drive for example does this.
-> 
-> 
-
-Thanks wasn't aware of that I will have a look and respin the
-patch.
-
-Thanks,
-Charles
+SGksCgpJJ20gdGlua2VyaW5nIG9uIHRoZSB3aW50cm9uIDcuMCB0b2dldGhlciB3aXRoIFRvYmlh
+cyBNw6RkZWwgYW5kIGhhdmUKdGVzdGVkIHlvdXIgcGF0Y2ggd2l0aCB5b3VyIFVDTSBjb25maWcg
+b24gTGludXggNC41LjAtcmMyLiBJdCBsb29rcyBsaWtlCndlIGFyZSBnZXR0aW5nIHNvbWV3aGVy
+ZS4gVGhlIHNvdW5kY2FyZCBpcyBub3cgYmVpbmcgcmVjb2duaXplZCBieSBBTFNBLgpCdXQgdGhl
+cmUgYXJlIHN0aWxsIHNvbWUgZXJyb3JzIGluICB0aGF0IHNlZW0gdG8gYmUgcmVsYXRlZCB0byB0
+aGUgYXVkaW8KZHJpdmVyLgpBcyBzb29uIGFzIEkgdHJ5IHRvIG91dHB1dCBhbnkgc291bmQgSSBn
+ZXQgYW4gZXJyb3I6ClsgICA4OC45MDY3MzldIGludGVsX3NzdF9hY3BpIDgwODYwRjI4OjAwOiBm
+dyBkb3dubG9hZCBmYWlsZWQgLTE2ClsgICA4OC45MDkyNjJdIGludGVsX3NzdF9hY3BpIDgwODYw
+RjI4OjAwOiBGVyBkb3dubG9hZCBmYWlsIC0xNgpbICAgODguOTQ4NDM0XSAgQXVkaW8gUG9ydDog
+QVNvQzogbm8gYmFja2VuZCBEQUlzIGVuYWJsZWQgZm9yIEF1ZGlvIFBvcnQKCkRvZXMgYW55Ym9k
+eSBoYXZlIGFuIGlkZWEgd2h5IHRoZSBzb3VuZCBjaGlwIGlzIG5vdCByZXNwb25kaW5nIGFuZCB0
+aGUKZncgZG93bmxvYWQgdGltZW91dHM/CgpJJ3ZlIHVwbG9hZGVkIGRtZXNnLCBsc21vZCBhbmQg
+dHJlZSAvcHJvYy9hc291bmQgb3V0cHV0IGhlcmU6Cmh0dHBzOi8vZ2l0aHViLmNvbS9Ub2JsZU1p
+bmVyL3dpbnRyb243LjAvdHJlZS9tYXN0ZXIvbG9ncy80LjUuMC1yYzItQVJDSC10c3lzLWF1ZGlv
+LWludGVsLWRpcnR5CgpSZWdhcmRzLApUb2JpYXMgTcOkZGVsIGFuZCBUb2JpYXMgU2NocmFtbQpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
+YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
