@@ -1,17 +1,17 @@
-From: Tobias Schramm <tobleminer@gmail.com>
-Subject: Re: bytcr_rt5651 on wintron 7.0
-Date: Wed, 3 Feb 2016 12:17:23 +0100
-Message-ID: <CAM6qAzoQ6YnkgoGoxBgSK_nebaZPx13mkoRVZWJBc8a56Dw5Yw@mail.gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Add fixup for Mac Mini 7,1 model
+Date: Wed,  3 Feb 2016 12:35:53 +0100
+Message-ID: <1454499353-25732-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f177.google.com (mail-ig0-f177.google.com
- [209.85.213.177])
- by alsa0.perex.cz (Postfix) with ESMTP id C46F0260701
- for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2016 12:17:24 +0100 (CET)
-Received: by mail-ig0-f177.google.com with SMTP id 5so33687096igt.0
- for <alsa-devel@alsa-project.org>; Wed, 03 Feb 2016 03:17:24 -0800 (PST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A98B260502
+ for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2016 12:35:55 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 43CB9AC20
+ for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2016 11:35:55 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,25 +21,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: pierre-louis.bossart@linux.intel.com
-Cc: alsa-devel@tbspace.de, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpJJ20gdGlua2VyaW5nIG9uIHRoZSB3aW50cm9uIDcuMCB0b2dldGhlciB3aXRoIFRvYmlh
-cyBNw6RkZWwgYW5kIGhhdmUKdGVzdGVkIHlvdXIgcGF0Y2ggd2l0aCB5b3VyIFVDTSBjb25maWcg
-b24gTGludXggNC41LjAtcmMyLiBJdCBsb29rcyBsaWtlCndlIGFyZSBnZXR0aW5nIHNvbWV3aGVy
-ZS4gVGhlIHNvdW5kY2FyZCBpcyBub3cgYmVpbmcgcmVjb2duaXplZCBieSBBTFNBLgpCdXQgdGhl
-cmUgYXJlIHN0aWxsIHNvbWUgZXJyb3JzIGluICB0aGF0IHNlZW0gdG8gYmUgcmVsYXRlZCB0byB0
-aGUgYXVkaW8KZHJpdmVyLgpBcyBzb29uIGFzIEkgdHJ5IHRvIG91dHB1dCBhbnkgc291bmQgSSBn
-ZXQgYW4gZXJyb3I6ClsgICA4OC45MDY3MzldIGludGVsX3NzdF9hY3BpIDgwODYwRjI4OjAwOiBm
-dyBkb3dubG9hZCBmYWlsZWQgLTE2ClsgICA4OC45MDkyNjJdIGludGVsX3NzdF9hY3BpIDgwODYw
-RjI4OjAwOiBGVyBkb3dubG9hZCBmYWlsIC0xNgpbICAgODguOTQ4NDM0XSAgQXVkaW8gUG9ydDog
-QVNvQzogbm8gYmFja2VuZCBEQUlzIGVuYWJsZWQgZm9yIEF1ZGlvIFBvcnQKCkRvZXMgYW55Ym9k
-eSBoYXZlIGFuIGlkZWEgd2h5IHRoZSBzb3VuZCBjaGlwIGlzIG5vdCByZXNwb25kaW5nIGFuZCB0
-aGUKZncgZG93bmxvYWQgdGltZW91dHM/CgpJJ3ZlIHVwbG9hZGVkIGRtZXNnLCBsc21vZCBhbmQg
-dHJlZSAvcHJvYy9hc291bmQgb3V0cHV0IGhlcmU6Cmh0dHBzOi8vZ2l0aHViLmNvbS9Ub2JsZU1p
-bmVyL3dpbnRyb243LjAvdHJlZS9tYXN0ZXIvbG9ncy80LjUuMC1yYzItQVJDSC10c3lzLWF1ZGlv
-LWludGVsLWRpcnR5CgpSZWdhcmRzLApUb2JpYXMgTcOkZGVsIGFuZCBUb2JpYXMgU2NocmFtbQpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
-YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Mac Mini 7,1 model with CS4208 codec reports the headphone jack
+detection wrongly in an inverted way.  Moreover, the advertised pins
+for the audio input and SPDIF output have actually no jack detection.
+
+This patch addresses these issues.  The inv_jack_detect flag is set
+for fixing the headphone jack detection, and the pin configs for audio
+input and SPDIF output are marked as non-detectable.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=105161
+Report-and-tested-by: moosotc@gmail.com
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_cirrus.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
+index a12ae8ac0914..c1c855a6c0af 100644
+--- a/sound/pci/hda/patch_cirrus.c
++++ b/sound/pci/hda/patch_cirrus.c
+@@ -614,6 +614,7 @@ enum {
+ 	CS4208_MAC_AUTO,
+ 	CS4208_MBA6,
+ 	CS4208_MBP11,
++	CS4208_MACMINI,
+ 	CS4208_GPIO0,
+ };
+ 
+@@ -621,6 +622,7 @@ static const struct hda_model_fixup cs4208_models[] = {
+ 	{ .id = CS4208_GPIO0, .name = "gpio0" },
+ 	{ .id = CS4208_MBA6, .name = "mba6" },
+ 	{ .id = CS4208_MBP11, .name = "mbp11" },
++	{ .id = CS4208_MACMINI, .name = "macmini" },
+ 	{}
+ };
+ 
+@@ -632,6 +634,7 @@ static const struct snd_pci_quirk cs4208_fixup_tbl[] = {
+ /* codec SSID matching */
+ static const struct snd_pci_quirk cs4208_mac_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x106b, 0x5e00, "MacBookPro 11,2", CS4208_MBP11),
++	SND_PCI_QUIRK(0x106b, 0x6c00, "MacMini 7,1", CS4208_MACMINI),
+ 	SND_PCI_QUIRK(0x106b, 0x7100, "MacBookAir 6,1", CS4208_MBA6),
+ 	SND_PCI_QUIRK(0x106b, 0x7200, "MacBookAir 6,2", CS4208_MBA6),
+ 	SND_PCI_QUIRK(0x106b, 0x7b00, "MacBookPro 12,1", CS4208_MBP11),
+@@ -666,6 +669,24 @@ static void cs4208_fixup_mac(struct hda_codec *codec,
+ 	snd_hda_apply_fixup(codec, action);
+ }
+ 
++/* MacMini 7,1 has the inverted jack detection */
++static void cs4208_fixup_macmini(struct hda_codec *codec,
++				 const struct hda_fixup *fix, int action)
++{
++	static const struct hda_pintbl pincfgs[] = {
++		{ 0x18, 0x00ab9150 }, /* mic (audio-in) jack: disable detect */
++		{ 0x21, 0x004be140 }, /* SPDIF: disable detect */
++		{ }
++	};
++
++	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
++		/* HP pin (0x10) has an inverted detection */
++		codec->inv_jack_detect = 1;
++		/* disable the bogus Mic and SPDIF jack detections */
++		snd_hda_apply_pincfgs(codec, pincfgs);
++	}
++}
++
+ static int cs4208_spdif_sw_put(struct snd_kcontrol *kcontrol,
+ 			       struct snd_ctl_elem_value *ucontrol)
+ {
+@@ -709,6 +730,12 @@ static const struct hda_fixup cs4208_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = CS4208_GPIO0,
+ 	},
++	[CS4208_MACMINI] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = cs4208_fixup_macmini,
++		.chained = true,
++		.chain_id = CS4208_GPIO0,
++	},
+ 	[CS4208_GPIO0] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = cs4208_fixup_gpio0,
+-- 
+2.7.0
