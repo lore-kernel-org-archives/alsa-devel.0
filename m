@@ -1,19 +1,15 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: [PATCH] ASoC: rt5645: add "coreboot" to
-	dmi_system_id list
-Date: Wed, 3 Feb 2016 02:37:08 +0000
-Message-ID: <ABFD875FF5FB574BA706497D987D48D70110F96C@RTITMBSV03.realtek.com.tw>
-References: <1454304078-12322-1-git-send-email-bardliao@realtek.com>
- <20160202194936.GB4455@sirena.org.uk>
+From: libin.yang@linux.intel.com
+Subject: [PATCH] ALSA: hda - build chmap kctl based on pcm in
+	hdmi audio
+Date: Wed,  3 Feb 2016 10:48:34 +0800
+Message-ID: <1454467714-9424-1-git-send-email-libin.yang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 290F72605FF
- for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2016 03:37:17 +0100 (CET)
-In-Reply-To: <20160202194936.GB4455@sirena.org.uk>
-Content-Language: zh-TW
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D8BA2605FF
+ for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2016 03:52:34 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,53 +19,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "Koul,
- Vinod (vinod.koul@intel.com)" <vinod.koul@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, "rakesh.a.ughreja@intel.com" <rakesh.a.ughreja@intel.com>, Flove <flove@realtek.com>, "Bossart, Pierre-louis
- (pierre-louis.bossart@intel.com)" <pierre-louis.bossart@intel.com>
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: libin.yang@intel.com, mengdong.lin@intel.com, Libin Yang <libin.yang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add some Intel folks.
+From: Libin Yang <libin.yang@linux.intel.com>
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Wednesday, February 03, 2016 3:50 AM
-> To: Bard Liao
-> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org;
-> lars@metafoo.de; Flove; Oder Chiou; John Lin
-> Subject: Re: [PATCH] ASoC: rt5645: add "coreboot" to dmi_system_id list
-> 
-> On Mon, Feb 01, 2016 at 01:21:18PM +0800, Bard Liao wrote:
-> 
-> > +	{
-> > +		.ident = "Google Chrome",
-> > +		.matches = {
-> > +			DMI_MATCH(DMI_BIOS_VENDOR, "coreboot"),
-> > +		},
-> > +	},
-> 
-> While coreboot is most commonly seen in ChromeOS systems it's not
-> unique to them so this seems likely to generate false positives.  Since
+Build chmap kctl based on pcm. The first chmap kctl will be
+mapped to the first pcm, and so on.
 
-So far, almost all ChromeOS system with rt5650 codec have the same
-properties. We think the settings can be a default setting for rt5650
-codec. That's why we use DMI_MATCH(DMI_SYS_VENDOR, "GOOGLE")
-and place it in the lowest priority currently. Adding "coreboot" is for
-those ChromeOS system other than with DMI_SYS_VENDOR "GOOGLE".
+When a monitor is connected to a pin, the chmap kctl can
+find the pin and the monitor through the pcm index.
 
-> the target for this change is internal-only development hardware it
-> doesn't seem unreasonable to expect people to be able to keep changes
-> like device ID updates internally.  This is one of the many costs of BIOSes
-> that require us to do such DMI hacks, it'd be much better to improve the
-> firmware and the driver so they can specify required properties directly
-> rather than relying on DMI.
+Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+---
+ sound/pci/hda/patch_hdmi.c | 40 +++++++++++++++++++++++++++++++++-------
+ 1 file changed, 33 insertions(+), 7 deletions(-)
 
-Agree. We will find a more reasonable way (maybe ACPI) to specify
-required properties directly. However, I can expect that will take time.
-If you think use "coreboot" is not a good idea, can we match the
-DMI_PRODUCT_NAME field just like before until we finish the
-implementation of specifying required properties directly?
-
-
-> 
-> ------Please consider the environment before printing this e-mail.
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 275b68a..1a46f45 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -437,6 +437,20 @@ static int hinfo_to_pin_index(struct hda_codec *codec,
+ 	return -EINVAL;
+ }
+ 
++static struct hdmi_spec_per_pin *pcm_idx_to_pin(struct hdmi_spec *spec,
++						int pcm_idx)
++{
++	int i;
++	struct hdmi_spec_per_pin *per_pin;
++
++	for (i = 0; i < spec->num_pins; i++) {
++		per_pin = get_pin(spec, i);
++		if (per_pin->pcm_idx == pcm_idx)
++			return per_pin;
++	}
++	return NULL;
++}
++
+ static int cvt_nid_to_cvt_index(struct hda_codec *codec, hda_nid_t cvt_nid)
+ {
+ 	struct hdmi_spec *spec = codec->spec;
+@@ -2398,10 +2412,16 @@ static int hdmi_chmap_ctl_get(struct snd_kcontrol *kcontrol,
+ 	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
+ 	struct hda_codec *codec = info->private_data;
+ 	struct hdmi_spec *spec = codec->spec;
+-	int pin_idx = kcontrol->private_value;
+-	struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
++	int pcm_idx = kcontrol->private_value;
++	struct hdmi_spec_per_pin *per_pin = pcm_idx_to_pin(spec, pcm_idx);
+ 	int i;
+ 
++	if (!per_pin) {
++		for (i = 0; i < spec->channels_max; i++)
++			ucontrol->value.integer.value[i] = 0;
++		return 0;
++	}
++
+ 	for (i = 0; i < ARRAY_SIZE(per_pin->chmap); i++)
+ 		ucontrol->value.integer.value[i] = per_pin->chmap[i];
+ 	return 0;
+@@ -2413,13 +2433,19 @@ static int hdmi_chmap_ctl_put(struct snd_kcontrol *kcontrol,
+ 	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
+ 	struct hda_codec *codec = info->private_data;
+ 	struct hdmi_spec *spec = codec->spec;
+-	int pin_idx = kcontrol->private_value;
+-	struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
++	int pcm_idx = kcontrol->private_value;
++	struct hdmi_spec_per_pin *per_pin = pcm_idx_to_pin(spec, pcm_idx);
+ 	unsigned int ctl_idx;
+ 	struct snd_pcm_substream *substream;
+ 	unsigned char chmap[8];
+ 	int i, err, ca, prepared = 0;
+ 
++	/* No monitor is connected in dyn_pcm_assign.
++	 * It's invalid to setup the chmap
++	 */
++	if (!per_pin)
++		return 0;
++
+ 	ctl_idx = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
+ 	substream = snd_pcm_chmap_substream(info, ctl_idx);
+ 	if (!substream || !substream->runtime)
+@@ -2596,18 +2622,18 @@ static int generic_hdmi_build_controls(struct hda_codec *codec)
+ 	}
+ 
+ 	/* add channel maps */
+-	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
++	for (pcm_idx = 0; pcm_idx < spec->pcm_used; pcm_idx++) {
+ 		struct hda_pcm *pcm;
+ 		struct snd_pcm_chmap *chmap;
+ 		struct snd_kcontrol *kctl;
+ 		int i;
+ 
+-		pcm = get_pcm_rec(spec, pin_idx);
++		pcm = get_pcm_rec(spec, pcm_idx);
+ 		if (!pcm || !pcm->pcm)
+ 			break;
+ 		err = snd_pcm_add_chmap_ctls(pcm->pcm,
+ 					     SNDRV_PCM_STREAM_PLAYBACK,
+-					     NULL, 0, pin_idx, &chmap);
++					     NULL, 0, pcm_idx, &chmap);
+ 		if (err < 0)
+ 			return err;
+ 		/* override handlers */
+-- 
+1.9.1
