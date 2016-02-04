@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix not to stop sink
-	pipe in pga pmd event" to the asoc tree
-Date: Thu, 04 Feb 2016 12:16:12 +0000
-Message-ID: <E1aRIpY-0001Ci-Mc@debutante>
-References: <1454502594-21700-8-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix mcps freeup after
+	module unbind failure" to the asoc tree
+Date: Thu, 04 Feb 2016 12:16:16 +0000
+Message-ID: <E1aRIpc-0001Ed-9X@debutante>
+References: <1454502594-21700-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7306E261A28
- for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 13:16:19 +0100 (CET)
-In-Reply-To: <1454502594-21700-8-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 993BD262607
+ for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 13:16:21 +0100 (CET)
+In-Reply-To: <1454502594-21700-4-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Guneshwor Singh <guneshwor.o.singh@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix not to stop sink pipe in pga pmd event
+   ASoC: Intel: Skylake: Fix mcps freeup after module unbind failure
 
 has been applied to the asoc tree at
 
@@ -53,38 +53,50 @@ to this mail.
 Thanks,
 Mark
 
->From 9946f70906eebf2a305d0b189de52eec8ba39649 Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Wed, 3 Feb 2016 17:59:50 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix not to stop sink pipe in pga pmd
- event
+>From 7ca42f5ac5e0d8011086bcfa00e85aede42f0b78 Mon Sep 17 00:00:00 2001
+From: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Date: Wed, 3 Feb 2016 17:59:46 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix mcps freeup after module unbind
+ failure
 
-We should not stop the sink pipe in it's pmd handler for a mixin
-module as this module may still be connected to other pipes.
+While cleaning resources on module pmd event, we check for return
+of skl_unbind_modules(). On failure this causes leak as all modules
+attached do not have resources freed.
 
-This will be stopped and freed by current implementation on last
-connected pipe unbind.
+So ignore return value of module unbind and continue freeing
+resources. This makes dapm state and resources correct.
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/soc/intel/skylake/skl-topology.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index efe001162204..a356f3b1dd5b 100644
+index c67e3acb8102..86d5323e9184 100644
 --- a/sound/soc/intel/skylake/skl-topology.c
 +++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -827,9 +827,6 @@ static int skl_tplg_pga_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
- 			 * This is a connecter and if path is found that means
- 			 * unbind between source and sink has not happened yet
- 			 */
--			ret = skl_stop_pipe(ctx, sink_mconfig->pipe);
--			if (ret < 0)
--				return ret;
- 			ret = skl_unbind_modules(ctx, src_mconfig,
- 							sink_mconfig);
+@@ -98,7 +98,7 @@ static bool skl_tplg_alloc_pipe_mcps(struct skl *skl,
+ 			"%s: module_id %d instance %d\n", __func__,
+ 			mconfig->id.module_id, mconfig->id.instance_id);
+ 		dev_err(ctx->dev,
+-			"exceeds ppl memory available %d > mem %d\n",
++			"exceeds ppl mcps available %d > mem %d\n",
+ 			skl->resource.max_mcps, skl->resource.mcps);
+ 		return false;
+ 	}
+@@ -773,10 +773,7 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
+ 			continue;
  		}
+ 
+-		ret = skl_unbind_modules(ctx, src_module, dst_module);
+-		if (ret < 0)
+-			return ret;
+-
++		skl_unbind_modules(ctx, src_module, dst_module);
+ 		src_module = dst_module;
+ 	}
+ 
 -- 
 2.7.0.rc3
