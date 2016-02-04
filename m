@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix bind of source with
-	multiple sinks" to the asoc tree
-Date: Thu, 04 Feb 2016 12:16:11 +0000
-Message-ID: <E1aRIpX-0001CB-Ps@debutante>
-References: <1454502594-21700-9-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix not to stop sink
+	pipe in pga pmd event" to the asoc tree
+Date: Thu, 04 Feb 2016 12:16:12 +0000
+Message-ID: <E1aRIpY-0001Ci-Mc@debutante>
+References: <1454502594-21700-8-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E0959261583
- for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 13:16:17 +0100 (CET)
-In-Reply-To: <1454502594-21700-9-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7306E261A28
+ for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 13:16:19 +0100 (CET)
+In-Reply-To: <1454502594-21700-8-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix bind of source with multiple sinks
+   ASoC: Intel: Skylake: Fix not to stop sink pipe in pga pmd event
 
 has been applied to the asoc tree at
 
@@ -53,64 +53,38 @@ to this mail.
 Thanks,
 Mark
 
->From 6bd4cf855698312133b7776c77ee78af865608eb Mon Sep 17 00:00:00 2001
+>From 9946f70906eebf2a305d0b189de52eec8ba39649 Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Wed, 3 Feb 2016 17:59:51 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix bind of source with multiple sinks
+Date: Wed, 3 Feb 2016 17:59:50 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix not to stop sink pipe in pga pmd
+ event
 
-skl_tplg_bind_sinks() takes only the first sink widget. This
-breaks in case we have multiple sinks for a module.
+We should not stop the sink pipe in it's pmd handler for a mixin
+module as this module may still be connected to other pipes.
 
-So pass source widget to skl_tplg_bind_sinks() and bind for all
-sinks by calling this recursively
+This will be stopped and freed by current implementation on last
+connected pipe unbind.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ sound/soc/intel/skylake/skl-topology.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index a356f3b1dd5b..77a688d00fc6 100644
+index efe001162204..a356f3b1dd5b 100644
 --- a/sound/soc/intel/skylake/skl-topology.c
 +++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -547,6 +547,7 @@ static int skl_tplg_mixer_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
- 
- static int skl_tplg_bind_sinks(struct snd_soc_dapm_widget *w,
- 				struct skl *skl,
-+				struct snd_soc_dapm_widget *src_w,
- 				struct skl_module_cfg *src_mconfig)
- {
- 	struct snd_soc_dapm_path *p;
-@@ -563,6 +564,10 @@ static int skl_tplg_bind_sinks(struct snd_soc_dapm_widget *w,
- 		dev_dbg(ctx->dev, "%s: sink widget=%s\n", __func__, p->sink->name);
- 
- 		next_sink = p->sink;
-+
-+		if (!is_skl_dsp_widget_type(p->sink))
-+			return skl_tplg_bind_sinks(p->sink, skl, src_w, src_mconfig);
-+
- 		/*
- 		 * here we will check widgets in sink pipelines, so that
- 		 * can be any widgets type and we are only interested if
-@@ -592,7 +597,7 @@ static int skl_tplg_bind_sinks(struct snd_soc_dapm_widget *w,
- 	}
- 
- 	if (!sink)
--		return skl_tplg_bind_sinks(next_sink, skl, src_mconfig);
-+		return skl_tplg_bind_sinks(next_sink, skl, src_w, src_mconfig);
- 
- 	return 0;
- }
-@@ -621,7 +626,7 @@ static int skl_tplg_pga_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
- 	 * if sink is not started, start sink pipe first, then start
- 	 * this pipe
- 	 */
--	ret = skl_tplg_bind_sinks(w, skl, src_mconfig);
-+	ret = skl_tplg_bind_sinks(w, skl, w, src_mconfig);
- 	if (ret)
- 		return ret;
- 
+@@ -827,9 +827,6 @@ static int skl_tplg_pga_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
+ 			 * This is a connecter and if path is found that means
+ 			 * unbind between source and sink has not happened yet
+ 			 */
+-			ret = skl_stop_pipe(ctx, sink_mconfig->pipe);
+-			if (ret < 0)
+-				return ret;
+ 			ret = skl_unbind_modules(ctx, src_mconfig,
+ 							sink_mconfig);
+ 		}
 -- 
 2.7.0.rc3
