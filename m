@@ -1,20 +1,20 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] ASoC: arizona: Add support for
- SNDRV_PCM_RATE_KNOT
-Date: Thu, 4 Feb 2016 12:45:36 +0000
-Message-ID: <20160204124536.GV1490@localhost.localdomain>
+	SNDRV_PCM_RATE_KNOT
+Date: Thu, 4 Feb 2016 12:46:44 +0000
+Message-ID: <20160204124644.GW1490@localhost.localdomain>
 References: <1454431084-21411-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20160202193002.GV4455@sirena.org.uk> <56B1B939.5030503@metafoo.de>
+ <20160202193002.GV4455@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id C92E32615C0
- for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 13:45:37 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 39DB02619E3
+ for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 13:46:42 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <56B1B939.5030503@metafoo.de>
+In-Reply-To: <20160202193002.GV4455@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,31 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 03, 2016 at 09:24:25AM +0100, Lars-Peter Clausen wrote:
-> On 02/02/2016 08:30 PM, Mark Brown wrote:
-> > On Tue, Feb 02, 2016 at 04:38:04PM +0000, Charles Keepax wrote:
-> > 
-> >> +#define ARIZONA_48K_RATES 12000, 24000, 48000, 96000, 192000, 4000, 8000, \
-> >> +			  16000, 32000
-> > 
-> > This just looks wrong.  It's valid code but with the combination of the
-> > split line and the list without any sort of parenthesis it sets off
-> > alarm bells.  Duplicating might not be the worst thing ever...
+On Tue, Feb 02, 2016 at 07:30:02PM +0000, Mark Brown wrote:
+> On Tue, Feb 02, 2016 at 04:38:04PM +0000, Charles Keepax wrote:
 > 
-> For list constraints it is possible to specify a mask for which of the
-> entries in the rates array should be considered. So you could use the same
-> rate array, but use different masks. The adau1977 drive for example does this.
+> > +#define ARIZONA_48K_RATES 12000, 24000, 48000, 96000, 192000, 4000, 8000, \
+> > +			  16000, 32000
 > 
+> This just looks wrong.  It's valid code but with the combination of the
+> split line and the list without any sort of parenthesis it sets off
+> alarm bells.  Duplicating might not be the worst thing ever...
 
-Ok so looking at this a little more I think you can only apply
-the mask thing to values that are part of the basic defines
-rather than masking off entries in a constraint list. The
-adau1977 is using the mask to limit the supported formats which
-is all done through the defines in that driver.
+I will respin with just duplicating the rates lists, I am happy
+enough with that.
 
 Thanks,
 Charles
