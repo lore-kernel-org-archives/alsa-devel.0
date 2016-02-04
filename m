@@ -1,87 +1,86 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: arizona: Add support for
- SNDRV_PCM_RATE_KNOT
-Date: Thu, 4 Feb 2016 13:55:58 +0100
-Message-ID: <56B34A5E.7060003@metafoo.de>
-References: <1454431084-21411-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20160202193002.GV4455@sirena.org.uk> <56B1B939.5030503@metafoo.de>
- <20160204124536.GV1490@localhost.localdomain>
+From: "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Subject: Re: linux-api scope (Re: [PATCH v2 11/22] media: dvb-frontend invoke
+ enable/disable_source handlers)
+Date: Thu, 4 Feb 2016 15:04:47 +0100
+Message-ID: <CAKgNAkg+cjJS2G5TKvYAYizXWaPewVNtdBQN1x0otbPM7huy5g@mail.gmail.com>
+References: <CALCETrUNxPhcKiT+aswO5rr+ZpPPCkT30+Exd0iWwQnMN921Qg@mail.gmail.com>
+Reply-To: mtk.manpages@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-195.synserver.de (smtp-out-007.synserver.de
- [212.40.185.7]) by alsa0.perex.cz (Postfix) with ESMTP id 95FD62615C0
- for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 13:56:43 +0100 (CET)
-In-Reply-To: <20160204124536.GV1490@localhost.localdomain>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CALCETrUNxPhcKiT+aswO5rr+ZpPPCkT30+Exd0iWwQnMN921Qg@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andy Lutomirski <luto@kernel.org>
+Cc: Shuah Khan <shuahkh@osg.samsung.com>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org, Linux API <linux-api@vger.kernel.org>, ALSA development <alsa-devel@alsa-project.org>, Josh Triplett <josh@joshtriplett.org>, Steven Rostedt <rostedt@goodmis.org>, Andrew Morton <akpm@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/04/2016 01:45 PM, Charles Keepax wrote:
-> On Wed, Feb 03, 2016 at 09:24:25AM +0100, Lars-Peter Clausen wrote:
->> On 02/02/2016 08:30 PM, Mark Brown wrote:
->>> On Tue, Feb 02, 2016 at 04:38:04PM +0000, Charles Keepax wrote:
->>>
->>>> +#define ARIZONA_48K_RATES 12000, 24000, 48000, 96000, 192000, 4000, 8000, \
->>>> +			  16000, 32000
->>>
->>> This just looks wrong.  It's valid code but with the combination of the
->>> split line and the list without any sort of parenthesis it sets off
->>> alarm bells.  Duplicating might not be the worst thing ever...
->>
->> For list constraints it is possible to specify a mask for which of the
->> entries in the rates array should be considered. So you could use the same
->> rate array, but use different masks. The adau1977 drive for example does this.
->>
-> 
-> Ok so looking at this a little more I think you can only apply
-> the mask thing to values that are part of the basic defines
-> rather than masking off entries in a constraint list. The
-> adau1977 is using the mask to limit the supported formats which
-> is all done through the defines in that driver.
+[expanding the CC a little]
 
-The list constraint struct looks like this:
+Hi Andy, (and Shuah)
 
-struct snd_pcm_hw_constraint_list {
-        unsigned int count;
-        const unsigned int *list;
-        unsigned int mask;
-};
+On 4 February 2016 at 05:51, Andy Lutomirski <luto@kernel.org> wrote:
+> [cc list heavily trimmed]
+>
+> On Wed, Feb 3, 2016 at 8:03 PM, Shuah Khan <shuahkh@osg.samsung.com> wrote:
+>> Change dvb frontend to check if tuner is free when
+>> device opened in RW mode. Call to enable_source
+>> handler either returns with an active pipeline to
+>> tuner or error if tuner is busy. Tuner is released
+>> when frontend is released calling the disable_source
+>> handler.
+>
+> As an actual subscriber to linux-api, I prefer for the linux-api list
+> to be lowish-volume and mostly limited to API-related things.  Is this
+> API related?  Do people think that these series should be sent to
+> linux-api?
 
-list is your rates array, count is the size of the rates array and mask
-specifies which of the entries in the rates array are valid.
+I think not, and I'd like to stem the flood of mail to the list.
+There's two things that we could do:
 
-E.g.
+1. Shuah, I know we talked about this in the past, and it made some
+sense to me at the time for kselftest to use linux-api@, but maybe
+it's time to create a dedicated list, and move the traffic there? It'd
+help focus the traffic of linux-api more on its original purpose.
 
-unsigned int rates[] = {
-	44100,
-	48000,
-};
+2. However, I think the bigger cause of the flood is the change made
+to MAINTAINERS by Josh's commit
+ea8f8fc8631d9f890580a94d57a18bfeb827fa2e:
 
-struct snd_pcm_hw_constraint_list constr_44100 {
-	.count = ARRAY_SIZE(rates),
-	.list = rates,
-	.mask = 0x1,
-};
++ABI/API
++L:     linux-api@vger.kernel.org
++F:     Documentation/ABI/
++F:     include/linux/syscalls.h
++F:     include/uapi/
++F:     kernel/sys_ni.c
 
-struct snd_pcm_hw_constraint_list constr_48000 {
-	.count = ARRAY_SIZE(rates),
-	.list = rates,
-	.mask = 0x2,
-};
+The change was well-intentioned (I Acked it), but folk run
+scripts/get-maintainers.pl without thinking too much about its output
+and add all of the resulting lists and CCs to their patch submissions.
+This means we get a lot of useless noise relating to drivers and
+unrelated Documentation changes, and actually miss some of the really
+important changes (e.g., extensions of system calls; and new /proc
+entries tend to get lost in the noise). Furthermore, people doing
+things such as adding new system calls often don't tun
+scripts/get-maintainers.pl it seems. Certainly, I have to often enough
+remind peple to CC linux-api when adding new system calls.
 
-struct snd_pcm_hw_constraint_list constr_all {
-	.count = ARRAY_SIZE(rates),
-	.list = rates,
-	.mask = 0, /* 0 = All */
-};
+I'll craft a patch to trim the MAINTAINERS entry.
+
+Cheers,
+
+Michael
+
+
+
+
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-api" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+
+
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
