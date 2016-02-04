@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Remove autosuspend
-	delay" to the asoc tree
-Date: Thu, 04 Feb 2016 12:16:09 +0000
-Message-ID: <E1aRIpV-0001Al-1B@debutante>
-References: <1454502594-21700-12-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: cs42xx8: fix the noise in the right dac
+	channel with mono playback" to the asoc tree
+Date: Thu, 04 Feb 2016 12:16:07 +0000
+Message-ID: <E1aRIpT-00019o-81@debutante>
+References: <09c04620e3394cb10fe3e170947c6f426d51f8be.1448331450.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 012362617BB
- for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 13:16:17 +0100 (CET)
-In-Reply-To: <1454502594-21700-12-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 525F32619E3
+ for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 13:16:19 +0100 (CET)
+In-Reply-To: <09c04620e3394cb10fe3e170947c6f426d51f8be.1448331450.git.zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Zidan Wang <zidan.wang@freescale.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Remove autosuspend delay
+   ASoC: cs42xx8: fix the noise in the right dac channel with mono playback
 
 has been applied to the asoc tree at
 
@@ -53,34 +53,64 @@ to this mail.
 Thanks,
 Mark
 
->From 38c079e230f25969e7ce3501fa967b003a2abc39 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Wed, 3 Feb 2016 17:59:54 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Remove autosuspend delay
+>From 1f1e60c9cdd573be271130e44a23efed48e0578d Mon Sep 17 00:00:00 2001
+From: Zidan Wang <zidan.wang@freescale.com>
+Date: Tue, 24 Nov 2015 10:18:27 +0800
+Subject: [PATCH] ASoC: cs42xx8: fix the noise in the right dac channel with
+ mono playback
 
-The driver used autosuspend delay to delay going to D3. But per
-HW recommendation we should go to D3 soon, so remove the delay
-from driver
+When playback mono wav with record in background, there will be some
+nosie in the right dac channel. It seems that the ADC data has been
+routed to the dac channel.
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+The cs42888 have 8 dac channels, it's appropriate to mute the unused
+dac channels, and the noise will disappear.
+
+Steps to reproduce this issue:
+arecord -D hw:0,0 -f S16_LE -r 48000 -c 1 a.wav &
+aplay -Dhw:0,0 audio48k16M.wav
+
+Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/codecs/cs42xx8.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index c38bf99ced10..1d36b28d6489 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -558,8 +558,6 @@ static int skl_probe(struct pci_dev *pci,
- 		goto out_unregister;
+diff --git a/sound/soc/codecs/cs42xx8.c b/sound/soc/codecs/cs42xx8.c
+index d562e1b9a5d1..1179101b2b05 100644
+--- a/sound/soc/codecs/cs42xx8.c
++++ b/sound/soc/codecs/cs42xx8.c
+@@ -44,6 +44,7 @@ struct cs42xx8_priv {
  
- 	/*configure PM */
--	pm_runtime_set_autosuspend_delay(bus->dev, SKL_SUSPEND_DELAY);
--	pm_runtime_use_autosuspend(bus->dev);
- 	pm_runtime_put_noidle(bus->dev);
- 	pm_runtime_allow(bus->dev);
+ 	bool slave_mode;
+ 	unsigned long sysclk;
++	u32 tx_channels;
+ };
  
+ /* -127.5dB to 0dB with step of 0.5dB */
+@@ -257,6 +258,9 @@ static int cs42xx8_hw_params(struct snd_pcm_substream *substream,
+ 	u32 ratio = cs42xx8->sysclk / params_rate(params);
+ 	u32 i, fm, val, mask;
+ 
++	if (tx)
++		cs42xx8->tx_channels = params_channels(params);
++
+ 	for (i = 0; i < ARRAY_SIZE(cs42xx8_ratios); i++) {
+ 		if (cs42xx8_ratios[i].ratio == ratio)
+ 			break;
+@@ -283,9 +287,11 @@ static int cs42xx8_digital_mute(struct snd_soc_dai *dai, int mute)
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct cs42xx8_priv *cs42xx8 = snd_soc_codec_get_drvdata(codec);
++	u8 dac_unmute = cs42xx8->tx_channels ?
++		        ~((0x1 << cs42xx8->tx_channels) - 1) : 0;
+ 
+-	regmap_update_bits(cs42xx8->regmap, CS42XX8_DACMUTE,
+-			   CS42XX8_DACMUTE_ALL, mute ? CS42XX8_DACMUTE_ALL : 0);
++	regmap_write(cs42xx8->regmap, CS42XX8_DACMUTE,
++		     mute ? CS42XX8_DACMUTE_ALL : dac_unmute);
+ 
+ 	return 0;
+ }
 -- 
 2.7.0.rc3
