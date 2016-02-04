@@ -1,18 +1,17 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
 Subject: Re: [PATCH] ASoC: adau17x1: Cache writes when core
 	clock is disabled
-Date: Thu, 4 Feb 2016 18:24:08 +0100
-Message-ID: <56B38938.40000@metafoo.de>
+Date: Thu, 4 Feb 2016 18:22:36 +0100
+Message-ID: <56B388DC.40601@metafoo.de>
 References: <1454594719-17270-1-git-send-email-andire@axis.com>
- <56B388DC.40601@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-189.synserver.de (smtp-out-009.synserver.de
- [212.40.185.9]) by alsa0.perex.cz (Postfix) with ESMTP id D9B762619D0
- for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 18:24:10 +0100 (CET)
-In-Reply-To: <56B388DC.40601@metafoo.de>
+Received: from smtp-out-195.synserver.de (unknown [212.40.180.161])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B2A82619D0
+ for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 18:29:59 +0100 (CET)
+In-Reply-To: <1454594719-17270-1-git-send-email-andire@axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,21 +25,54 @@ To: =?UTF-8?Q?Andreas_Irest=c3=a5l?= <andreas.irestal@axis.com>
 Cc: liam.r.girdwood@linux.intel.com, =?UTF-8?Q?Andreas_Irest=c3=a5l?= <andire@axis.com>, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/04/2016 06:22 PM, Lars-Peter Clausen wrote:
-[...]
->> +	/* Enable cache only mode as we could miss writes before bias level
->> +	 * reaches standby and the core clock is enabled */
->> +	regcache_cache_only(regmap, true);
->> +
-> 
-> There are a few register writes before this where the hardware configuration
-> is setup. When I look at my test setup those writes seem to go through, even
-> though they shouldn't according to what you say (and to what is written in
-> the datasheet).
-> 
-> On the other hand I've never seen the issue you are having either and I've
-> tested both master and slave configuration of the device. Maybe something
-> changed in the silicon in newer revisions of the device. Can you take a look
-> whether the hardware configuration is correctly applied for you?
-
-Ah, no, ignore that. Those writes happen later on.
+T24gMDIvMDQvMjAxNiAwMzowNSBQTSwgQW5kcmVhcyBJcmVzdMOlbCB3cm90ZToKPiBJbiBzb21l
+IGNvbmZpZ3VyYXRpb25zLCB0aGUgZGFpIHJlZ2lzdGVycyBnZXQgd3JpdHRlbiBiZWZvcmUgdGhl
+IGJpYXMKPiBsZXZlbCBpcyBjaGFuZ2VkIGluIHRoZSBjb2RlYyBkcml2ZXIuIFRoaXMgbGVhZHMg
+dG8gYSBzaXR1YXRpb24gd2hlcmUKPiBhbiBpbml0aWFsIHdyaXRlIHRvIHRoZSBzZXJpYWwgcG9y
+dCByZWdpc3RlciBnZXRzIGlnbm9yZWQsIGFuZCBmdXR1cmUKPiB3cml0ZXMgbWF5IGFzIHdlbGws
+IHNpbmNlIHJlZ21hcCB0aGlua3MgdGhhdCB0aGUgY29kZWMgYWxyZWFkeSBob2xkcyB0aGUKPiB2
+YWx1ZS4gTW9yZSBzcGVjaWZpY2FsbHksIGNvbmZpZ3VyaW5nIHRoZSBjb2RlYyBhcyBpMnMgbWFz
+dGVyIHdvdWxkIGluCj4gZmFjdCByZXN1bHQgaW4gdGhlIGNvZGVjIHJ1bm5pbmcgYXMgc2xhdmUs
+IGEgc2l0dWF0aW9uIHdoZXJlIG5vIGkycwo+IGNsb2NrcyBhcmUgZ2VuZXJhdGVkIGFuZCBoZW5j
+ZSBubyBkYXRhIGlzIHRyYW5zZmVycmVkLgo+IAo+IFRoaXMgY2hhbmdlIG1ha2VzIHN1cmUgdGhh
+dCByZWdtYXAgb25seSBjYWNoZXMgd3JpdGVzIHdoZW4gdGhlIGNvcmUKPiBjbG9jayBpcyBkaXNh
+YmxlZCwgYW5kIHN5bmNzIHJlZ21hcCB3aGVuZXZlciBlbmFibGluZyB0aGUgY29yZSBjbG9jawo+
+IGFnYWluLgo+IAo+IFNpZ25lZC1vZmYtYnk6IEFuZHJlYXMgSXJlc3TDpWwgPGFuZGlyZUBheGlz
+LmNvbT4KCkxvb2tzIGdvb2QsIHRoYW5rcyBmb3IgdGhlIHBhdGNoLgoKQWNrZWQtYnk6IExhcnMt
+UGV0ZXIgQ2xhdXNlbiA8bGFyc0BtZXRhZm9vLmRlPgoKCj4gLS0tCj4gIHNvdW5kL3NvYy9jb2Rl
+Y3MvYWRhdTE3NjEuYyB8IDggKysrKysrKysKPiAgMSBmaWxlIGNoYW5nZWQsIDggaW5zZXJ0aW9u
+cygrKQo+IAo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL2FkYXUxNzYxLmMgYi9zb3Vu
+ZC9zb2MvY29kZWNzL2FkYXUxNzYxLmMKPiBpbmRleCAyZjEyNDc3Li5lNzEzNmIxIDEwMDY0NAo+
+IC0tLSBhL3NvdW5kL3NvYy9jb2RlY3MvYWRhdTE3NjEuYwo+ICsrKyBiL3NvdW5kL3NvYy9jb2Rl
+Y3MvYWRhdTE3NjEuYwo+IEBAIC00NTYsMTMgKzQ1NiwxNyBAQCBzdGF0aWMgaW50IGFkYXUxNzYx
+X3NldF9iaWFzX2xldmVsKHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYywKPiAgCWNhc2UgU05E
+X1NPQ19CSUFTX1BSRVBBUkU6Cj4gIAkJYnJlYWs7Cj4gIAljYXNlIFNORF9TT0NfQklBU19TVEFO
+REJZOgo+ICsJCXJlZ2NhY2hlX2NhY2hlX29ubHkoYWRhdS0+cmVnbWFwLCBmYWxzZSk7Cj4gIAkJ
+cmVnbWFwX3VwZGF0ZV9iaXRzKGFkYXUtPnJlZ21hcCwgQURBVTE3WDFfQ0xPQ0tfQ09OVFJPTCwK
+PiAgCQkJQURBVTE3WDFfQ0xPQ0tfQ09OVFJPTF9TWVNDTEtfRU4sCj4gIAkJCUFEQVUxN1gxX0NM
+T0NLX0NPTlRST0xfU1lTQ0xLX0VOKTsKPiArCQlpZiAoc25kX3NvY19jb2RlY19nZXRfYmlhc19s
+ZXZlbChjb2RlYykgPT0gU05EX1NPQ19CSUFTX09GRikKPiArCQkJcmVnY2FjaGVfc3luYyhhZGF1
+LT5yZWdtYXApOwo+ICAJCWJyZWFrOwo+ICAJY2FzZSBTTkRfU09DX0JJQVNfT0ZGOgo+ICAJCXJl
+Z21hcF91cGRhdGVfYml0cyhhZGF1LT5yZWdtYXAsIEFEQVUxN1gxX0NMT0NLX0NPTlRST0wsCj4g
+IAkJCUFEQVUxN1gxX0NMT0NLX0NPTlRST0xfU1lTQ0xLX0VOLCAwKTsKPiArCQlyZWdjYWNoZV9j
+YWNoZV9vbmx5KGFkYXUtPnJlZ21hcCwgdHJ1ZSk7Cj4gIAkJYnJlYWs7Cj4gIAo+ICAJfQo+IEBA
+IC03ODMsNiArNzg3LDEwIEBAIGludCBhZGF1MTc2MV9wcm9iZShzdHJ1Y3QgZGV2aWNlICpkZXYs
+IHN0cnVjdCByZWdtYXAgKnJlZ21hcCwKPiAgCWlmIChyZXQpCj4gIAkJcmV0dXJuIHJldDsKPiAg
+Cj4gKwkvKiBFbmFibGUgY2FjaGUgb25seSBtb2RlIGFzIHdlIGNvdWxkIG1pc3Mgd3JpdGVzIGJl
+Zm9yZSBiaWFzIGxldmVsCj4gKwkgKiByZWFjaGVzIHN0YW5kYnkgYW5kIHRoZSBjb3JlIGNsb2Nr
+IGlzIGVuYWJsZWQgKi8KPiArCXJlZ2NhY2hlX2NhY2hlX29ubHkocmVnbWFwLCB0cnVlKTsKPiAr
+CgpUaGVyZSBhcmUgYSBmZXcgcmVnaXN0ZXIgd3JpdGVzIGJlZm9yZSB0aGlzIHdoZXJlIHRoZSBo
+YXJkd2FyZSBjb25maWd1cmF0aW9uCmlzIHNldHVwLiBXaGVuIEkgbG9vayBhdCBteSB0ZXN0IHNl
+dHVwIHRob3NlIHdyaXRlcyBzZWVtIHRvIGdvIHRocm91Z2gsIGV2ZW4KdGhvdWdoIHRoZXkgc2hv
+dWxkbid0IGFjY29yZGluZyB0byB3aGF0IHlvdSBzYXkgKGFuZCB0byB3aGF0IGlzIHdyaXR0ZW4g
+aW4KdGhlIGRhdGFzaGVldCkuCgpPbiB0aGUgb3RoZXIgaGFuZCBJJ3ZlIG5ldmVyIHNlZW4gdGhl
+IGlzc3VlIHlvdSBhcmUgaGF2aW5nIGVpdGhlciBhbmQgSSd2ZQp0ZXN0ZWQgYm90aCBtYXN0ZXIg
+YW5kIHNsYXZlIGNvbmZpZ3VyYXRpb24gb2YgdGhlIGRldmljZS4gTWF5YmUgc29tZXRoaW5nCmNo
+YW5nZWQgaW4gdGhlIHNpbGljb24gaW4gbmV3ZXIgcmV2aXNpb25zIG9mIHRoZSBkZXZpY2UuIENh
+biB5b3UgdGFrZSBhIGxvb2sKd2hldGhlciB0aGUgaGFyZHdhcmUgY29uZmlndXJhdGlvbiBpcyBj
+b3JyZWN0bHkgYXBwbGllZCBmb3IgeW91PwoKCj4gIAlyZXR1cm4gc25kX3NvY19yZWdpc3Rlcl9j
+b2RlYyhkZXYsICZhZGF1MTc2MV9jb2RlY19kcml2ZXIsIGRhaV9kcnYsIDEpOwo+ICB9Cj4gIEVY
+UE9SVF9TWU1CT0xfR1BMKGFkYXUxNzYxX3Byb2JlKTsKPiAKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
