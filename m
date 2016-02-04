@@ -1,263 +1,70 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: sound: spinlock lockup in snd_seq_oss_write
-Date: Thu, 4 Feb 2016 20:37:13 +0100
-Message-ID: <CACT4Y+Y_Bm+7epAb=8Wi=AaWd+DYS7qawX52qxdCfOfY49vozQ@mail.gmail.com>
+From: "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Subject: Re: linux-api scope (Re: [PATCH v2 11/22] media: dvb-frontend invoke
+ enable/disable_source handlers)
+Date: Thu, 4 Feb 2016 20:48:50 +0100
+Message-ID: <CAKgNAkj-veqrgChhTwkOPOXTsA=wytha26aokMixVrZmAxNz6Q@mail.gmail.com>
+References: <CALCETrUNxPhcKiT+aswO5rr+ZpPPCkT30+Exd0iWwQnMN921Qg@mail.gmail.com>
+ <CAKgNAkg+cjJS2G5TKvYAYizXWaPewVNtdBQN1x0otbPM7huy5g@mail.gmail.com> <56B361C5.8000101@osg.samsung.com>
+Reply-To: mtk.manpages@gmail.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <56B361C5.8000101@osg.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
-Cc: syzkaller <syzkaller@googlegroups.com>, Kostya Serebryany <kcc@google.com>, Alexander Potapenko <glider@google.com>, Sasha Levin <sasha.levin@oracle.com>
+To: Shuah Khan <shuahkh@osg.samsung.com>
+Cc: Andy Lutomirski <luto@kernel.org>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org, Linux API <linux-api@vger.kernel.org>, ALSA development <alsa-devel@alsa-project.org>, Josh Triplett <josh@joshtriplett.org>, Steven Rostedt <rostedt@goodmis.org>, Andrew Morton <akpm@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi Shuah,
 
-The following program hangs machine:
-https://gist.githubusercontent.com/dvyukov/1c9eeb67414a9e7c5e52/raw/127b660cd2efbce0e3d8a01862d38a2bc0a16bcb/gistfile1.txt
+On 4 February 2016 at 15:35, Shuah Khan <shuahkh@osg.samsung.com> wrote:
+> On 02/04/2016 07:04 AM, Michael Kerrisk (man-pages) wrote:
+>> [expanding the CC a little]
+>>
+>> Hi Andy, (and Shuah)
+>>
+>> On 4 February 2016 at 05:51, Andy Lutomirski <luto@kernel.org> wrote:
+>>> [cc list heavily trimmed]
+>>>
+>>> On Wed, Feb 3, 2016 at 8:03 PM, Shuah Khan <shuahkh@osg.samsung.com> wrote:
+>>>> Change dvb frontend to check if tuner is free when
+>>>> device opened in RW mode. Call to enable_source
+>>>> handler either returns with an active pipeline to
+>>>> tuner or error if tuner is busy. Tuner is released
+>>>> when frontend is released calling the disable_source
+>>>> handler.
+>>>
+>>> As an actual subscriber to linux-api, I prefer for the linux-api list
+>>> to be lowish-volume and mostly limited to API-related things.  Is this
+>>> API related?  Do people think that these series should be sent to
+>>> linux-api?
+>>
+>> I think not, and I'd like to stem the flood of mail to the list.
+>> There's two things that we could do:
+>
+> I simply followed the getmaintainers generate3d list.
+> A bit surprised to see linux-api, but didn't want to
+> leave it out.
 
+Yep -- you and many others. That's the problem with automated solutions ;-).
 
-BUG: spinlock lockup suspected on CPU#2, a.out/7470
- lock: 0xffff880036a9ef50, .magic: dead4ead, .owner: a.out/7466, .owner_cpu: 3
-CPU: 2 PID: 7470 Comm: a.out Not tainted 4.5.0-rc2+ #319
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
- 00000000ffffffff ffff88005f5ff660 ffffffff82be30ad ffff880036a9ef50
- ffff88005d3d5f00 ffff88005d0b4740 ffff88005f5ff698 ffffffff8146768d
- ffffffff85241dce ffff880000000000 ffff880036a9ef50 ffff880036a9ef60
-Call Trace:
- [<     inline     >] __dump_stack lib/dump_stack.c:15
- [<ffffffff82be30ad>] dump_stack+0x6f/0xa2 lib/dump_stack.c:50
- [<ffffffff8146768d>] spin_dump+0x14d/0x280 kernel/locking/spinlock_debug.c:67
- [<     inline     >] __spin_lock_debug kernel/locking/spinlock_debug.c:117
- [<ffffffff814679ad>] do_raw_spin_lock+0x15d/0x2b0
-kernel/locking/spinlock_debug.c:137
- [<     inline     >] __raw_spin_lock_irqsave
-include/linux/spinlock_api_smp.h:119
- [<ffffffff8665ea57>] _raw_spin_lock_irqsave+0xa7/0xd0
-kernel/locking/spinlock.c:159
- [<ffffffff85241dce>] snd_timer_start+0x10e/0x2b0 sound/core/timer.c:491
- [<     inline     >] seq_timer_start sound/core/seq/seq_timer.c:393
- [<ffffffff852bf860>] snd_seq_timer_start+0x1a0/0x2b0
-sound/core/seq/seq_timer.c:405
- [<     inline     >] snd_seq_queue_process_event sound/core/seq/seq_queue.c:687
- [<ffffffff852ba514>] snd_seq_control_queue+0x304/0x8b0
-sound/core/seq/seq_queue.c:748
- [<ffffffff852c01b5>] event_input_timer+0x25/0x30
-sound/core/seq/seq_system.c:118
- [<ffffffff852b2de4>]
-snd_seq_deliver_single_event.constprop.11+0x3f4/0x740
-sound/core/seq/seq_clientmgr.c:634
- [<ffffffff852b3248>] snd_seq_deliver_event+0x118/0x800
-sound/core/seq/seq_clientmgr.c:831
- [<ffffffff852b4636>] snd_seq_kernel_client_dispatch+0x126/0x170
-sound/core/seq/seq_clientmgr.c:2404
- [<ffffffff852c92eb>] send_timer_event.isra.0+0x10b/0x150
-sound/core/seq/oss/seq_oss_timer.c:153
- [<ffffffff852c981a>] snd_seq_oss_timer_start+0x1ca/0x310
-sound/core/seq/oss/seq_oss_timer.c:174
- [<ffffffff852c9c04>] snd_seq_oss_process_timer_event+0x2a4/0x340
-sound/core/seq/oss/seq_oss_timer.c:106
- [<     inline     >] insert_queue sound/core/seq/oss/seq_oss_rw.c:170
- [<ffffffff852cf7ab>] snd_seq_oss_write+0x20b/0x810
-sound/core/seq/oss/seq_oss_rw.c:148
- [<ffffffff852c74f9>] odev_write+0x59/0xa0 sound/core/seq/oss/seq_oss.c:179
- [<ffffffff817bacd3>] __vfs_write+0x113/0x4b0 fs/read_write.c:528
- [<ffffffff817bc797>] vfs_write+0x167/0x4a0 fs/read_write.c:577
- [<     inline     >] SYSC_write fs/read_write.c:624
- [<ffffffff817bfa81>] SyS_write+0x111/0x220 fs/read_write.c:616
- [<ffffffff8665f0b6>] entry_SYSCALL_64_fastpath+0x16/0x7a
-arch/x86/entry/entry_64.S:185
-Sending NMI to all CPUs:
-NMI backtrace for cpu 0
-CPU: 0 PID: 7473 Comm: a.out Not tainted 4.5.0-rc2+ #319
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
-task: ffff88003376df00 ti: ffff880032440000 task.ti: ffff880032440000
-RIP: 0010:[<ffffffff82c103a7>]  [<ffffffff82c103a7>] delay_tsc+0x27/0x70
-RSP: 0018:ffff8800324479f8  EFLAGS: 00000006
-RAX: 00000000a0066ab3 RBX: ffff880036a9ef50 RCX: 000000000000001e
-RDX: 0000000000000100 RSI: 00000100a0066a95 RDI: 0000000000000001
-RBP: ffff8800324479f8 R08: 0000000000000000 R09: 0000000000000001
-R10: ffff88003376df00 R11: ffff880036a9ef68 R12: ffff880036a9ef60
-R13: 000000009a9d2d40 R14: ffff880036a9ef58 R15: 0000000099db9d6d
-FS:  00007f94a370e700(0000) GS:ffff88003ec00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
-CR2: 000000c82010e120 CR3: 000000003334f000 CR4: 00000000000006f0
-Stack:
- ffff880032447a08 ffffffff82c102ea ffff880032447a40 ffffffff81467999
- ffff880036a9ef50 ffff880036a9ee20 0000000000000282 ffff880035d8ab70
- 0000000000000000 ffff880032447a60 ffffffff8665dfbb ffffffff8523dd64
-Call Trace:
- [<ffffffff82c102ea>] __delay+0xa/0x10 arch/x86/lib/delay.c:153
- [<     inline     >] __spin_lock_debug kernel/locking/spinlock_debug.c:114
- [<ffffffff81467999>] do_raw_spin_lock+0x149/0x2b0
-kernel/locking/spinlock_debug.c:137
- [<     inline     >] __raw_spin_lock include/linux/spinlock_api_smp.h:145
- [<ffffffff8665dfbb>] _raw_spin_lock+0x3b/0x50 kernel/locking/spinlock.c:151
- [<     inline     >] spin_lock include/linux/spinlock.h:302
- [<ffffffff8523dd64>] snd_timer_start_slave+0xd4/0x200 sound/core/timer.c:460
- [<ffffffff85241880>] snd_timer_continue+0x200/0x290 sound/core/timer.c:598
- [<     inline     >] snd_timer_user_continue sound/core/timer.c:1822
- [<     inline     >] __snd_timer_user_ioctl sound/core/timer.c:1889
- [<ffffffff85246a9d>] snd_timer_user_ioctl+0xe1d/0x25f0 sound/core/timer.c:1904
- [<     inline     >] vfs_ioctl fs/ioctl.c:43
- [<ffffffff817faf7c>] do_vfs_ioctl+0x18c/0xfb0 fs/ioctl.c:674
- [<     inline     >] SYSC_ioctl fs/ioctl.c:689
- [<ffffffff817fbe2f>] SyS_ioctl+0x8f/0xc0 fs/ioctl.c:680
- [<ffffffff8665f0b6>] entry_SYSCALL_64_fastpath+0x16/0x7a
-arch/x86/entry/entry_64.S:185
-Code: 00 00 00 00 55 65 ff 05 c8 4a 40 7d 48 89 e5 65 44 8b 05 8d 2d
-40 7d 0f ae e8 0f 31 48 c1 e2 20 48 89 d6 48 09 c6 0f ae e8 0f 31 <48>
-c1 e2 20 48 09 d0 48 89 c1 48 29 f1 48 39 f9 73 27 65 ff 0d
-NMI backtrace for cpu 1
-CPU: 1 PID: 7421 Comm: stress Not tainted 4.5.0-rc2+ #319
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
-task: ffff88003330df00 ti: ffff880032230000 task.ti: ffff880032230000
-RIP: 0010:[<ffffffff82c103a7>]  [<ffffffff82c103a7>] delay_tsc+0x27/0x70
-RSP: 0018:ffff88003ed07c80  EFLAGS: 00000006
-RAX: 00000000a0066d38 RBX: ffff880036a9ef50 RCX: 000000000000001e
-RDX: 0000000000000100 RSI: 00000100a0066d0f RDI: 0000000000000001
-RBP: ffff88003ed07c80 R08: 0000000000000001 R09: 0000000000000001
-R10: ffff88003330df00 R11: ffff880036a9ef68 R12: ffff880036a9ef60
-R13: 000000009a9d2d40 R14: ffff880036a9ef58 R15: 000000009a82fe90
-FS:  000000c820127700(0000) GS:ffff88003ed00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000c8201004e0 CR3: 0000000032076000 CR4: 00000000000006e0
-Stack:
- ffff88003ed07c90 ffffffff82c102ea ffff88003ed07cc8 ffffffff81467999
- ffff880036a9ef50 0000000000000082 ffff880036a9ee20 00000000000f4240
- ffff880032795068 ffff88003ed07cf0 ffffffff8665ea57 ffffffff85242019
-Call Trace:
-d [<ffffffff82c102ea>] __delay+0xa/0x10 arch/x86/lib/delay.c:153
- [<     inline     >] __spin_lock_debug kernel/locking/spinlock_debug.c:114
- [<ffffffff81467999>] do_raw_spin_lock+0x149/0x2b0
-kernel/locking/spinlock_debug.c:137
- [<     inline     >] __raw_spin_lock_irqsave
-include/linux/spinlock_api_smp.h:119
- [<ffffffff8665ea57>] _raw_spin_lock_irqsave+0xa7/0xd0
-kernel/locking/spinlock.c:159
- [<ffffffff85242019>] snd_timer_interrupt+0xa9/0xc80 sound/core/timer.c:718
- [<ffffffff85248cb9>] snd_hrtimer_callback+0x169/0x230 sound/core/hrtimer.c:54
- [<     inline     >] __run_hrtimer kernel/time/hrtimer.c:1248
- [<ffffffff814b7dc3>] __hrtimer_run_queues+0x363/0xc20
-kernel/time/hrtimer.c:1312
- [<ffffffff814b9de2>] hrtimer_interrupt+0x182/0x430 kernel/time/hrtimer.c:1346
- [<ffffffff8124e1d2>] local_apic_timer_interrupt+0x72/0xe0
-arch/x86/kernel/apic/apic.c:907
- [<ffffffff812516f9>] smp_apic_timer_interrupt+0x79/0xa0
-arch/x86/kernel/apic/apic.c:931
- [<ffffffff8665feac>] apic_timer_interrupt+0x8c/0xa0
-arch/x86/entry/entry_64.S:520
- [<ffffffff817ab804>] create_object+0x34/0x2d0 mm/kmemleak.c:546
- [<ffffffff86641fb3>] kmemleak_alloc+0x63/0xa0 mm/kmemleak.c:916
- [<     inline     >] kmemleak_alloc_recursive include/linux/kmemleak.h:47
- [<     inline     >] slab_post_alloc_hook mm/slub.c:1337
- [<     inline     >] slab_alloc_node mm/slub.c:2596
- [<     inline     >] slab_alloc mm/slub.c:2604
- [<ffffffff81760843>] kmem_cache_alloc+0x153/0x2e0 mm/slub.c:2609
- [<ffffffff8181b1b5>] dup_fd+0x85/0xa90 fs/file.c:298
- [<     inline     >] copy_files kernel/fork.c:1033
- [<ffffffff8134efed>] copy_process.part.35+0x188d/0x57a0 kernel/fork.c:1436
- [<     inline     >] copy_process kernel/fork.c:1274
- [<ffffffff8135322c>] _do_fork+0x1bc/0xcb0 kernel/fork.c:1723
- [<     inline     >] SYSC_clone kernel/fork.c:1832
- [<ffffffff81353df7>] SyS_clone+0x37/0x50 kernel/fork.c:1826
- [<ffffffff8665f0b6>] entry_SYSCALL_64_fastpath+0x16/0x7a
-arch/x86/entry/entry_64.S:185
-Code: 00 00 00 00 55 65 ff 05 c8 4a 40 7d 48 89 e5 65 44 8b 05 8d 2d
-40 7d 0f ae e8 0f 31 48 c1 e2 20 48 89 d6 48 09 c6 0f ae e8 0f 31 <48>
-c1 e2 20 48 09 d0 48 89 c1 48 29 f1 48 39 f9 73 27 65 ff 0d
-NMI backtrace for cpu 2
-CPU: 2 PID: 7470 Comm: a.out Not tainted 4.5.0-rc2+ #319
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
-task: ffff88005d0b4740 ti: ffff88005f5f8000 task.ti: ffff88005f5f8000
-RIP: 0010:[<ffffffff81262066>]  [<ffffffff81262066>]
-flat_send_IPI_mask+0x156/0x290
-RSP: 0018:ffff88005f5ff5d0  EFLAGS: 00000046
-RAX: 0000000000000000 RBX: 0000000000000c00 RCX: 0000000000000000
-RDX: 0000000000000c00 RSI: 0000000000000002 RDI: ffffffffff5fc300
-RBP: ffff88005f5ff5f8 R08: 0000000000000001 R09: 0000000000000000
-R10: fffffbfff11c14aa R11: 1ffffffff13552ed R12: 0000000000000082
-BUG: spinlock lockup suspected on CPU#1, stress/7421
- lock: 0xffff880036a9ef50, .magic: dead4ead, .owner: a.out/7466, .owner_cpu: 3
-CPU: 1 PID: 7421 Comm: stress Not tainted 4.5.0-rc2+ #319
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
- 00000000ffffffff ffff88003ed07c58 ffffffff82be30ad ffff880036a9ef50
- ffff88005d3d5f00 ffff88003330df00 ffff88003ed07c90 ffffffff8146768d
- ffffffff85242019 0000000000000000 ffff880036a9ef50 ffff880036a9ef60
-Call Trace:
- <IRQ>  [<     inline     >] __dump_stack lib/dump_stack.c:15
- <IRQ>  [<ffffffff82be30ad>] dump_stack+0x6f/0xa2 lib/dump_stack.c:50
- [<ffffffff8146768d>] spin_dump+0x14d/0x280 kernel/locking/spinlock_debug.c:67
- [<     inline     >] __spin_lock_debug kernel/locking/spinlock_debug.c:117
- [<ffffffff814679ad>] do_raw_spin_lock+0x15d/0x2b0
-kernel/locking/spinlock_debug.c:137
- [<     inline     >] __raw_spin_lock_irqsave
-include/linux/spinlock_api_smp.h:119
- [<ffffffff8665ea57>] _raw_spin_lock_irqsave+0xa7/0xd0
-kernel/locking/spinlock.c:159
- [<ffffffff85242019>] snd_timer_interrupt+0xa9/0xc80 sound/core/timer.c:718
- [<ffffffff85248cb9>] snd_hrtimer_callback+0x169/0x230 sound/core/hrtimer.c:54
- [<     inline     >] __run_hrtimer kernel/time/hrtimer.c:1248
- [<ffffffff814b7dc3>] __hrtimer_run_queues+0x363/0xc20
-kernel/time/hrtimer.c:1312
- [<ffffffff814b9de2>] hrtimer_interrupt+0x182/0x430 kernel/time/hrtimer.c:1346
- [<ffffffff8124e1d2>] local_apic_timer_interrupt+0x72/0xe0
-arch/x86/kernel/apic/apic.c:907
- [<ffffffff812516f9>] smp_apic_timer_interrupt+0x79/0xa0
-arch/x86/kernel/apic/apic.c:931
- [<ffffffff8665feac>] apic_timer_interrupt+0x8c/0xa0
-arch/x86/entry/entry_64.S:520
- [<ffffffff817ab804>] create_object+0x34/0x2d0 mm/kmemleak.c:546
- [<ffffffff86641fb3>] kmemleak_alloc+0x63/0xa0 mm/kmemleak.c:916
- [<     inline     >] kmemleak_alloc_recursive include/linux/kmemleak.h:47
- [<     inline     >] slab_post_alloc_hook mm/slub.c:1337
- [<     inline     >] slab_alloc_node mm/slub.c:2596
- [<     inline     >] slab_alloc mm/slub.c:2604
- [<ffffffff81760843>] kmem_cache_alloc+0x153/0x2e0 mm/slub.c:2609
- [<ffffffff8181b1b5>] dup_fd+0x85/0xa90 fs/file.c:298
- [<     inline     >] copy_files kernel/fork.c:1033
- [<ffffffff8134efed>] copy_process.part.35+0x188d/0x57a0 kernel/fork.c:1436
- [<     inline     >] copy_process kernel/fork.c:1274
- [<ffffffff8135322c>] _do_fork+0x1bc/0xcb0 kernel/fork.c:1723
- [<     inline     >] SYSC_clone kernel/fork.c:1832
- [<ffffffff81353df7>] SyS_clone+0x37/0x50 kernel/fork.c:1826
- [<ffffffff8665f0b6>] entry_SYSCALL_64_fastpath+0x16/0x7a
-arch/x86/entry/entry_64.S:185
-R13: 000000000f000000 R14: ffffffff87b00c80 R15: 0000000000000002
-FS:  00007fcabc427700(0000) GS:ffff88006d600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
-CR2: 0000000020028073 CR3: 000000005c829000 CR4: 00000000000006e0
-Stack:
- ffffffff87b00c80 ffffffff888be0a0 0000000000000007 fffffbfff111761c
- ffff88006d71a540 ffff88005f5ff618 ffffffff81257bfe ffffffff86ac7020
- dffffc0000000000 ffff88005f5ff688 ffffffff82bee6ac ffffffff811aa610
-Call Trace:
- [<ffffffff81257bfe>] nmi_raise_cpu_backtrace+0x5e/0x80
-arch/x86/kernel/apic/hw_nmi.c:33
- [<ffffffff82bee6ac>] nmi_trigger_all_cpu_backtrace+0x54c/0x5f0
-lib/nmi_backtrace.c:85
- [<ffffffff81257c54>] arch_trigger_all_cpu_backtrace+0x14/0x20
-arch/x86/kernel/apic/hw_nmi.c:38
- [<     inline     >] trigger_all_cpu_backtrace include/linux/nmi.h:41
- [<     inline     >] __spin_lock_debug kernel/locking/spinlock_debug.c:119
- [<ffffffff814679b7>] do_raw_spin_lock+0x167/0x2b0
-kernel/locking/spinlock_debug.c:137
- [<     inline     >] __raw_spin_lock_irqsave
-include/linux/spinlock_api_smp.h:119
- [<ffffffff8665ea57>] _raw_spin_lock_irqsave+0xa7/0xd0
-kernel/locking/spinlock.c:159
- [<ffffffff85241dce>] snd_timer_start+0x10e/0x2b0 sound/core/timer.c:491
- [<     inline     >] seq_timer_start sound/core/seq/seq_timer.c:393
- [<ffffffff852bf860>] snd_seq_timer_start+0x1a0/0x2b0
-sound/core/seq/seq_timer.c:405
- [<     inline     >] snd_seq_queue_process_event sound/core/seq/seq_queue.c:687
- [<ffffffff852ba514>] snd_seq_control_queue+0x304/0x8b0
-sound/core/seq/seq_queue.c:748
- [<ffffffff852c01b5>] event_input_timer+0x25/0x30
-sound/core/seq/seq_system.c:118
- [<ffffffff852b2de4>]
-snd_seq_deliver_single_event.constprop.11+0x3f4/0x740
-sound/core/seq/seq_clientmgr.c:634
- [<ffffffff852b3248>] snd_seq_deliver_event+0x118/0x800
-sound/core/seq/seq_clientmgr.c:831
+>> 1. Shuah, I know we talked about this in the past, and it made some
+>> sense to me at the time for kselftest to use linux-api@, but maybe
+>> it's time to create a dedicated list, and move the traffic there? It'd
+>> help focus the traffic of linux-api more on its original purpose.
+>
+> Yes that is a good plan - I will request a new mailing list and
+> send in a patch to Kselftest MAINTIANER's entry.
 
-On commit b37a05c083c85c2657dca9bbe1f5d79dccf756d5 + latest Takashi fixes.
+Thanks, and sorry for the inconvenience. I guess a prominent mail onto
+linux-api@ advertising the new list, once it has been created, would
+not go amiss.
+
+Cheers,
+
+Michael
+
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
