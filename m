@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix stereo DMIC record"
-	to the asoc tree
+Subject: Applied "ASoC: Intel: Skylake: Remove autosuspend
+	delay" to the asoc tree
 Date: Thu, 04 Feb 2016 12:16:09 +0000
-Message-ID: <E1aRIpV-0001BE-V7@debutante>
-References: <1454502594-21700-11-git-send-email-vinod.koul@intel.com>
+Message-ID: <E1aRIpV-0001Al-1B@debutante>
+References: <1454502594-21700-12-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EDFE82617B5
+ by alsa0.perex.cz (Postfix) with ESMTP id 012362617BB
  for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 13:16:17 +0100 (CET)
-In-Reply-To: <1454502594-21700-11-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <1454502594-21700-12-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix stereo DMIC record
+   ASoC: Intel: Skylake: Remove autosuspend delay
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From 6e3ffa00424e198d2f0c628e7575c5adefeda3d7 Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Wed, 3 Feb 2016 17:59:53 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix stereo DMIC record
+>From 38c079e230f25969e7ce3501fa967b003a2abc39 Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Wed, 3 Feb 2016 17:59:54 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Remove autosuspend delay
 
-DMIC BE can have 2 or 4 channels supported. The DMIC fixup needs
-to take this into account.
+The driver used autosuspend delay to delay going to D3. But per
+HW recommendation we should go to D3 soon, so remove the delay
+from driver
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/skl_rt286.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
-index 7396ddb427d8..2cbcbe412661 100644
---- a/sound/soc/intel/boards/skl_rt286.c
-+++ b/sound/soc/intel/boards/skl_rt286.c
-@@ -212,7 +212,10 @@ static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
- {
- 	struct snd_interval *channels = hw_param_interval(params,
- 						SNDRV_PCM_HW_PARAM_CHANNELS);
--	channels->min = channels->max = 4;
-+	if (params_channels(params) == 2)
-+		channels->min = channels->max = 2;
-+	else
-+		channels->min = channels->max = 4;
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index c38bf99ced10..1d36b28d6489 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -558,8 +558,6 @@ static int skl_probe(struct pci_dev *pci,
+ 		goto out_unregister;
  
- 	return 0;
- }
+ 	/*configure PM */
+-	pm_runtime_set_autosuspend_delay(bus->dev, SKL_SUSPEND_DELAY);
+-	pm_runtime_use_autosuspend(bus->dev);
+ 	pm_runtime_put_noidle(bus->dev);
+ 	pm_runtime_allow(bus->dev);
+ 
 -- 
 2.7.0.rc3
