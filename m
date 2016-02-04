@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Don't prefix autodisable widgets
-	twice" to the asoc tree
-Date: Thu, 04 Feb 2016 12:16:19 +0000
-Message-ID: <E1aRIpf-0001Iv-0U@debutante>
-References: <1454533190-29630-1-git-send-email-lars@metafoo.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: arizona: Add support for
+ SNDRV_PCM_RATE_KNOT
+Date: Thu, 4 Feb 2016 12:45:36 +0000
+Message-ID: <20160204124536.GV1490@localhost.localdomain>
+References: <1454431084-21411-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20160202193002.GV4455@sirena.org.uk> <56B1B939.5030503@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A4DA1265D93
- for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 13:16:27 +0100 (CET)
-In-Reply-To: <1454533190-29630-1-git-send-email-lars@metafoo.de>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id C92E32615C0
+ for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 13:45:37 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <56B1B939.5030503@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,93 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Wed, Feb 03, 2016 at 09:24:25AM +0100, Lars-Peter Clausen wrote:
+> On 02/02/2016 08:30 PM, Mark Brown wrote:
+> > On Tue, Feb 02, 2016 at 04:38:04PM +0000, Charles Keepax wrote:
+> > 
+> >> +#define ARIZONA_48K_RATES 12000, 24000, 48000, 96000, 192000, 4000, 8000, \
+> >> +			  16000, 32000
+> > 
+> > This just looks wrong.  It's valid code but with the combination of the
+> > split line and the list without any sort of parenthesis it sets off
+> > alarm bells.  Duplicating might not be the worst thing ever...
+> 
+> For list constraints it is possible to specify a mask for which of the
+> entries in the rates array should be considered. So you could use the same
+> rate array, but use different masks. The adau1977 drive for example does this.
+> 
 
-   ASoC: dapm: Don't prefix autodisable widgets twice
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Ok so looking at this a little more I think you can only apply
+the mask thing to values that are part of the basic defines
+rather than masking off entries in a constraint list. The
+adau1977 is using the mask to limit the supported formats which
+is all done through the defines in that driver.
 
 Thanks,
-Mark
-
->From 41d80025a83b9c7a94f97ef25c4cd3345bdc3c5e Mon Sep 17 00:00:00 2001
-From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Wed, 3 Feb 2016 21:59:50 +0100
-Subject: [PATCH] ASoC: dapm: Don't prefix autodisable widgets twice
-
-When a DAPM context has a prefix the autodisable widgets get prefixed
-twice, once for the control and once for the widget. To avoid this use
-the un-prefixed control name to construct the autodisable widget name.
-
-This change is purely cosmetic.
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-dapm.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 5a2812fa8946..0d3707987900 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -310,7 +310,7 @@ struct dapm_kcontrol_data {
- };
- 
- static int dapm_kcontrol_data_alloc(struct snd_soc_dapm_widget *widget,
--	struct snd_kcontrol *kcontrol)
-+	struct snd_kcontrol *kcontrol, const char *ctrl_name)
- {
- 	struct dapm_kcontrol_data *data;
- 	struct soc_mixer_control *mc;
-@@ -333,7 +333,7 @@ static int dapm_kcontrol_data_alloc(struct snd_soc_dapm_widget *widget,
- 		if (mc->autodisable) {
- 			struct snd_soc_dapm_widget template;
- 
--			name = kasprintf(GFP_KERNEL, "%s %s", kcontrol->id.name,
-+			name = kasprintf(GFP_KERNEL, "%s %s", ctrl_name,
- 					 "Autodisable");
- 			if (!name) {
- 				ret = -ENOMEM;
-@@ -371,7 +371,7 @@ static int dapm_kcontrol_data_alloc(struct snd_soc_dapm_widget *widget,
- 		if (e->autodisable) {
- 			struct snd_soc_dapm_widget template;
- 
--			name = kasprintf(GFP_KERNEL, "%s %s", kcontrol->id.name,
-+			name = kasprintf(GFP_KERNEL, "%s %s", ctrl_name,
- 					 "Autodisable");
- 			if (!name) {
- 				ret = -ENOMEM;
-@@ -871,7 +871,7 @@ static int dapm_create_or_share_kcontrol(struct snd_soc_dapm_widget *w,
- 
- 		kcontrol->private_free = dapm_kcontrol_free;
- 
--		ret = dapm_kcontrol_data_alloc(w, kcontrol);
-+		ret = dapm_kcontrol_data_alloc(w, kcontrol, name);
- 		if (ret) {
- 			snd_ctl_free_one(kcontrol);
- 			goto exit_free;
--- 
-2.7.0.rc3
+Charles
