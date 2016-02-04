@@ -1,86 +1,63 @@
-From: "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Subject: Re: linux-api scope (Re: [PATCH v2 11/22] media: dvb-frontend invoke
- enable/disable_source handlers)
-Date: Thu, 4 Feb 2016 15:04:47 +0100
-Message-ID: <CAKgNAkg+cjJS2G5TKvYAYizXWaPewVNtdBQN1x0otbPM7huy5g@mail.gmail.com>
-References: <CALCETrUNxPhcKiT+aswO5rr+ZpPPCkT30+Exd0iWwQnMN921Qg@mail.gmail.com>
-Reply-To: mtk.manpages@gmail.com
+From: =?UTF-8?q?Andreas=20Irest=C3=A5l?= <andreas.irestal@axis.com>
+Subject: [PATCH] ASoC: adau17x1: Cache writes when core clock
+	is disabled
+Date: Thu,  4 Feb 2016 15:05:19 +0100
+Message-ID: <1454594719-17270-1-git-send-email-andire@axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CALCETrUNxPhcKiT+aswO5rr+ZpPPCkT30+Exd0iWwQnMN921Qg@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andy Lutomirski <luto@kernel.org>
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org, Linux API <linux-api@vger.kernel.org>, ALSA development <alsa-devel@alsa-project.org>, Josh Triplett <josh@joshtriplett.org>, Steven Rostedt <rostedt@goodmis.org>, Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id C0857260609
+ for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 15:05:42 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: lars@metafoo.de
+Cc: liam.r.girdwood@linux.intel.com, =?UTF-8?q?Andreas=20Irest=C3=A5l?= <andire@axis.com>, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-[expanding the CC a little]
-
-Hi Andy, (and Shuah)
-
-On 4 February 2016 at 05:51, Andy Lutomirski <luto@kernel.org> wrote:
-> [cc list heavily trimmed]
->
-> On Wed, Feb 3, 2016 at 8:03 PM, Shuah Khan <shuahkh@osg.samsung.com> wrote:
->> Change dvb frontend to check if tuner is free when
->> device opened in RW mode. Call to enable_source
->> handler either returns with an active pipeline to
->> tuner or error if tuner is busy. Tuner is released
->> when frontend is released calling the disable_source
->> handler.
->
-> As an actual subscriber to linux-api, I prefer for the linux-api list
-> to be lowish-volume and mostly limited to API-related things.  Is this
-> API related?  Do people think that these series should be sent to
-> linux-api?
-
-I think not, and I'd like to stem the flood of mail to the list.
-There's two things that we could do:
-
-1. Shuah, I know we talked about this in the past, and it made some
-sense to me at the time for kselftest to use linux-api@, but maybe
-it's time to create a dedicated list, and move the traffic there? It'd
-help focus the traffic of linux-api more on its original purpose.
-
-2. However, I think the bigger cause of the flood is the change made
-to MAINTAINERS by Josh's commit
-ea8f8fc8631d9f890580a94d57a18bfeb827fa2e:
-
-+ABI/API
-+L:     linux-api@vger.kernel.org
-+F:     Documentation/ABI/
-+F:     include/linux/syscalls.h
-+F:     include/uapi/
-+F:     kernel/sys_ni.c
-
-The change was well-intentioned (I Acked it), but folk run
-scripts/get-maintainers.pl without thinking too much about its output
-and add all of the resulting lists and CCs to their patch submissions.
-This means we get a lot of useless noise relating to drivers and
-unrelated Documentation changes, and actually miss some of the really
-important changes (e.g., extensions of system calls; and new /proc
-entries tend to get lost in the noise). Furthermore, people doing
-things such as adding new system calls often don't tun
-scripts/get-maintainers.pl it seems. Certainly, I have to often enough
-remind peple to CC linux-api when adding new system calls.
-
-I'll craft a patch to trim the MAINTAINERS entry.
-
-Cheers,
-
-Michael
-
-
-
-
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-api" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-
-
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+SW4gc29tZSBjb25maWd1cmF0aW9ucywgdGhlIGRhaSByZWdpc3RlcnMgZ2V0IHdyaXR0ZW4gYmVm
+b3JlIHRoZSBiaWFzCmxldmVsIGlzIGNoYW5nZWQgaW4gdGhlIGNvZGVjIGRyaXZlci4gVGhpcyBs
+ZWFkcyB0byBhIHNpdHVhdGlvbiB3aGVyZQphbiBpbml0aWFsIHdyaXRlIHRvIHRoZSBzZXJpYWwg
+cG9ydCByZWdpc3RlciBnZXRzIGlnbm9yZWQsIGFuZCBmdXR1cmUKd3JpdGVzIG1heSBhcyB3ZWxs
+LCBzaW5jZSByZWdtYXAgdGhpbmtzIHRoYXQgdGhlIGNvZGVjIGFscmVhZHkgaG9sZHMgdGhlCnZh
+bHVlLiBNb3JlIHNwZWNpZmljYWxseSwgY29uZmlndXJpbmcgdGhlIGNvZGVjIGFzIGkycyBtYXN0
+ZXIgd291bGQgaW4KZmFjdCByZXN1bHQgaW4gdGhlIGNvZGVjIHJ1bm5pbmcgYXMgc2xhdmUsIGEg
+c2l0dWF0aW9uIHdoZXJlIG5vIGkycwpjbG9ja3MgYXJlIGdlbmVyYXRlZCBhbmQgaGVuY2Ugbm8g
+ZGF0YSBpcyB0cmFuc2ZlcnJlZC4KClRoaXMgY2hhbmdlIG1ha2VzIHN1cmUgdGhhdCByZWdtYXAg
+b25seSBjYWNoZXMgd3JpdGVzIHdoZW4gdGhlIGNvcmUKY2xvY2sgaXMgZGlzYWJsZWQsIGFuZCBz
+eW5jcyByZWdtYXAgd2hlbmV2ZXIgZW5hYmxpbmcgdGhlIGNvcmUgY2xvY2sKYWdhaW4uCgpTaWdu
+ZWQtb2ZmLWJ5OiBBbmRyZWFzIElyZXN0w6VsIDxhbmRpcmVAYXhpcy5jb20+Ci0tLQogc291bmQv
+c29jL2NvZGVjcy9hZGF1MTc2MS5jIHwgOCArKysrKysrKwogMSBmaWxlIGNoYW5nZWQsIDggaW5z
+ZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvYWRhdTE3NjEuYyBiL3Nv
+dW5kL3NvYy9jb2RlY3MvYWRhdTE3NjEuYwppbmRleCAyZjEyNDc3Li5lNzEzNmIxIDEwMDY0NAot
+LS0gYS9zb3VuZC9zb2MvY29kZWNzL2FkYXUxNzYxLmMKKysrIGIvc291bmQvc29jL2NvZGVjcy9h
+ZGF1MTc2MS5jCkBAIC00NTYsMTMgKzQ1NiwxNyBAQCBzdGF0aWMgaW50IGFkYXUxNzYxX3NldF9i
+aWFzX2xldmVsKHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYywKIAljYXNlIFNORF9TT0NfQklB
+U19QUkVQQVJFOgogCQlicmVhazsKIAljYXNlIFNORF9TT0NfQklBU19TVEFOREJZOgorCQlyZWdj
+YWNoZV9jYWNoZV9vbmx5KGFkYXUtPnJlZ21hcCwgZmFsc2UpOwogCQlyZWdtYXBfdXBkYXRlX2Jp
+dHMoYWRhdS0+cmVnbWFwLCBBREFVMTdYMV9DTE9DS19DT05UUk9MLAogCQkJQURBVTE3WDFfQ0xP
+Q0tfQ09OVFJPTF9TWVNDTEtfRU4sCiAJCQlBREFVMTdYMV9DTE9DS19DT05UUk9MX1NZU0NMS19F
+Tik7CisJCWlmIChzbmRfc29jX2NvZGVjX2dldF9iaWFzX2xldmVsKGNvZGVjKSA9PSBTTkRfU09D
+X0JJQVNfT0ZGKQorCQkJcmVnY2FjaGVfc3luYyhhZGF1LT5yZWdtYXApOwogCQlicmVhazsKIAlj
+YXNlIFNORF9TT0NfQklBU19PRkY6CiAJCXJlZ21hcF91cGRhdGVfYml0cyhhZGF1LT5yZWdtYXAs
+IEFEQVUxN1gxX0NMT0NLX0NPTlRST0wsCiAJCQlBREFVMTdYMV9DTE9DS19DT05UUk9MX1NZU0NM
+S19FTiwgMCk7CisJCXJlZ2NhY2hlX2NhY2hlX29ubHkoYWRhdS0+cmVnbWFwLCB0cnVlKTsKIAkJ
+YnJlYWs7CiAKIAl9CkBAIC03ODMsNiArNzg3LDEwIEBAIGludCBhZGF1MTc2MV9wcm9iZShzdHJ1
+Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCByZWdtYXAgKnJlZ21hcCwKIAlpZiAocmV0KQogCQlyZXR1
+cm4gcmV0OwogCisJLyogRW5hYmxlIGNhY2hlIG9ubHkgbW9kZSBhcyB3ZSBjb3VsZCBtaXNzIHdy
+aXRlcyBiZWZvcmUgYmlhcyBsZXZlbAorCSAqIHJlYWNoZXMgc3RhbmRieSBhbmQgdGhlIGNvcmUg
+Y2xvY2sgaXMgZW5hYmxlZCAqLworCXJlZ2NhY2hlX2NhY2hlX29ubHkocmVnbWFwLCB0cnVlKTsK
+KwogCXJldHVybiBzbmRfc29jX3JlZ2lzdGVyX2NvZGVjKGRldiwgJmFkYXUxNzYxX2NvZGVjX2Ry
+aXZlciwgZGFpX2RydiwgMSk7CiB9CiBFWFBPUlRfU1lNQk9MX0dQTChhZGF1MTc2MV9wcm9iZSk7
+Ci0tIAoyLjEuNAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cg==
