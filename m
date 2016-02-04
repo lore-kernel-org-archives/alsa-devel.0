@@ -1,33 +1,76 @@
-From: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Subject: Re: [PATCH 3/4] sound/soc: tegra_max98090: document headphone jack rename
-Date: Thu, 4 Feb 2016 11:22:52 -0800
-Message-ID: <CAEUnVG6DhFNcg64wKwbusxL=O_LBybv3wzFCjX+6vzLNFzuEDw@mail.gmail.com>
-References: <1454563862-1971-1-git-send-email-sctincman@gmail.com>
- <1454563862-1971-4-git-send-email-sctincman@gmail.com> <56B37EAC.5010101@wwwdotorg.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: adau17x1: Cache writes when core
+	clock is disabled
+Date: Thu, 4 Feb 2016 19:34:17 +0000
+Message-ID: <20160204193417.GR4455@sirena.org.uk>
+References: <1454594719-17270-1-git-send-email-andire@axis.com>
+ <56B388DC.40601@metafoo.de> <56B38938.40000@metafoo.de>
+ <20160204190129.GA32441@lnxandire1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <56B37EAC.5010101-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Jonathan Tinkham <sctincman-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============6713973336027070492=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 28E4E2619D0
+ for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 20:34:30 +0100 (CET)
+In-Reply-To: <20160204190129.GA32441@lnxandire1.se.axis.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Andreas =?iso-8859-1?Q?Irest=E5l?= <andreas.irestal@axis.com>
+Cc: Andreas =?iso-8859-1?Q?Irest=E5l?= <andire@axis.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 4, 2016 at 8:39 AM, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org> wrote:
-> On 02/03/2016 10:31 PM, Jonathan Tinkham wrote:
->>
->> Update device-tree bindings to reflect the rename of the board's
->> headphone jack.
->
->
-> This looks like an incompatible change to the DT. While you've fixed the DT,
-> which will fix new installations, old DTs now won't work. This breaks DT
-> ABI. Any DT change needs to be backwards compatible, i.e. the old name
-> should still work and be documented as a legacy value.
->
 
-These values are also present in the UCM config for the boards present
-in alsa-lib/conf/ucm/GoogleNyan
+--===============6713973336027070492==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="d5xRKMqY7hkGAt+u"
+Content-Disposition: inline
 
-It's better not to rely on drivers using a "standard" name, better to
-let the UCM file abstract it away.
+
+--d5xRKMqY7hkGAt+u
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Feb 04, 2016 at 08:01:30PM +0100, Andreas Irest=E5l wrote:
+
+> I posted a set of patches a few days ago which added DT support and
+> fixed minor things in adau17x1, but I realized I was clumsy just sending
+> it to the alsa-devel list and not including DT maintainers or any
+> maintainers at all. Would you have a look at it, or do you want me to
+> resubmit the patches with the correct recipents?
+
+I'm not likely to look at things that don't get sent to me.
+
+--d5xRKMqY7hkGAt+u
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWs6e4AAoJECTWi3JdVIfQwAoH/0Tqx5mY2dmXDtLpeWvURGqq
+zMzCO+qJkan92l1Sx8XEmTXZ6X25z38BLBrpOxkPUaJj8SN03WwUoj/hrLO6ak5W
+375GF922H0sDQUMaWa/graEfdizhVEXHleccmgJZ5LHwz2Ki/92zWz33vXXRzvgJ
++Q3pKNzrwLbVlXHwnPrdoLeoQmKUBJHUa20lyXi3Kyqt8HHhgP5kh9KUtC0FEPUz
+bqpDV4mFUF9lo52z2YDTZBDmJAPbDO6E0BRMek/dFqXAGQyu8YPfitjnZwjEfegU
+Tx72zzaWOp84qpNy9TZLrX/Hfmf0QELB9SuJk3cgKqVnaoCMxdSxDZfHUjqqs7c=
+=PiSc
+-----END PGP SIGNATURE-----
+
+--d5xRKMqY7hkGAt+u--
+
+--===============6713973336027070492==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6713973336027070492==--
