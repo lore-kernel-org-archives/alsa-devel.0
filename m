@@ -1,70 +1,86 @@
-From: "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Subject: Re: linux-api scope (Re: [PATCH v2 11/22] media: dvb-frontend invoke
- enable/disable_source handlers)
-Date: Thu, 4 Feb 2016 20:48:50 +0100
-Message-ID: <CAKgNAkj-veqrgChhTwkOPOXTsA=wytha26aokMixVrZmAxNz6Q@mail.gmail.com>
-References: <CALCETrUNxPhcKiT+aswO5rr+ZpPPCkT30+Exd0iWwQnMN921Qg@mail.gmail.com>
- <CAKgNAkg+cjJS2G5TKvYAYizXWaPewVNtdBQN1x0otbPM7huy5g@mail.gmail.com> <56B361C5.8000101@osg.samsung.com>
-Reply-To: mtk.manpages@gmail.com
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 4/4] ASoC: adau17x1: Add option to provide
+ platform data via DT
+Date: Thu, 4 Feb 2016 22:01:16 +0100
+Message-ID: <56B3BC1C.8010907@metafoo.de>
+References: <1454423510-1330-1-git-send-email-andire@axis.com>
+ <1454423510-1330-5-git-send-email-andire@axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <56B361C5.8000101@osg.samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Shuah Khan <shuahkh@osg.samsung.com>
-Cc: Andy Lutomirski <luto@kernel.org>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org, Linux API <linux-api@vger.kernel.org>, ALSA development <alsa-devel@alsa-project.org>, Josh Triplett <josh@joshtriplett.org>, Steven Rostedt <rostedt@goodmis.org>, Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-189.synserver.de (smtp-out-012.synserver.de
+ [212.40.185.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id A6D01260577
+ for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 22:01:19 +0100 (CET)
+In-Reply-To: <1454423510-1330-5-git-send-email-andire@axis.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: =?UTF-8?Q?Andreas_Irest=c3=a5l?= <andreas.irestal@axis.com>, alsa-devel@alsa-project.org
+Cc: =?UTF-8?Q?Andreas_Irest=c3=a5l?= <andire@axis.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Shuah,
-
-On 4 February 2016 at 15:35, Shuah Khan <shuahkh@osg.samsung.com> wrote:
-> On 02/04/2016 07:04 AM, Michael Kerrisk (man-pages) wrote:
->> [expanding the CC a little]
->>
->> Hi Andy, (and Shuah)
->>
->> On 4 February 2016 at 05:51, Andy Lutomirski <luto@kernel.org> wrote:
->>> [cc list heavily trimmed]
->>>
->>> On Wed, Feb 3, 2016 at 8:03 PM, Shuah Khan <shuahkh@osg.samsung.com> wrote:
->>>> Change dvb frontend to check if tuner is free when
->>>> device opened in RW mode. Call to enable_source
->>>> handler either returns with an active pipeline to
->>>> tuner or error if tuner is busy. Tuner is released
->>>> when frontend is released calling the disable_source
->>>> handler.
->>>
->>> As an actual subscriber to linux-api, I prefer for the linux-api list
->>> to be lowish-volume and mostly limited to API-related things.  Is this
->>> API related?  Do people think that these series should be sent to
->>> linux-api?
->>
->> I think not, and I'd like to stem the flood of mail to the list.
->> There's two things that we could do:
->
-> I simply followed the getmaintainers generate3d list.
-> A bit surprised to see linux-api, but didn't want to
-> leave it out.
-
-Yep -- you and many others. That's the problem with automated solutions ;-).
-
->> 1. Shuah, I know we talked about this in the past, and it made some
->> sense to me at the time for kselftest to use linux-api@, but maybe
->> it's time to create a dedicated list, and move the traffic there? It'd
->> help focus the traffic of linux-api more on its original purpose.
->
-> Yes that is a good plan - I will request a new mailing list and
-> send in a patch to Kselftest MAINTIANER's entry.
-
-Thanks, and sorry for the inconvenience. I guess a prominent mail onto
-linux-api@ advertising the new list, once it has been created, would
-not go amiss.
-
-Cheers,
-
-Michael
-
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+QXQgbGVhc3QgYSBiaXQgb2YgY29tbWl0IG1lc3NhZ2Ugd291bGQgYmUgbmljZS4KCk9uIDAyLzAy
+LzIwMTYgMDM6MzEgUE0sIEFuZHJlYXMgSXJlc3TDpWwgd3JvdGU6Cj4gU2lnbmVkLW9mZi1ieTog
+QW5kcmVhcyBJcmVzdMOlbCA8YW5kaXJlQGF4aXMuY29tPgo+IC0tLQo+ICAuLi4vZGV2aWNldHJl
+ZS9iaW5kaW5ncy9zb3VuZC9hZGksYWRhdTE3eDEudHh0ICAgICB8ICAzMyArKysrKysKPiAgaW5j
+bHVkZS9kdC1iaW5kaW5ncy9zb3VuZC9hZGF1MTd4MS5oICAgICAgICAgICAgICAgfCAgMTQgKysr
+Cj4gIHNvdW5kL3NvYy9jb2RlY3MvYWRhdTE3NjEuYyAgICAgICAgICAgICAgICAgICAgICAgIHwg
+MTMxICsrKysrKysrKysrKysrKysrKysrKwo+ICBzb3VuZC9zb2MvY29kZWNzL2FkYXUxNzgxLmMg
+ICAgICAgICAgICAgICAgICAgICAgICB8ICA1NyArKysrKysrKysKPiAgNCBmaWxlcyBjaGFuZ2Vk
+LCAyMzUgaW5zZXJ0aW9ucygrKQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9kdC1iaW5k
+aW5ncy9zb3VuZC9hZGF1MTd4MS5oCj4gCj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2
+aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9hZGksYWRhdTE3eDEudHh0IGIvRG9jdW1lbnRhdGlvbi9k
+ZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2FkaSxhZGF1MTd4MS50eHQKPiBpbmRleCA5MGYzYWMz
+Li4yOTZiNDE3IDEwMDY0NAo+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
+cy9zb3VuZC9hZGksYWRhdTE3eDEudHh0Cj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
+L2JpbmRpbmdzL3NvdW5kL2FkaSxhZGF1MTd4MS50eHQKPiBAQCAtMTIsMTAgKzEyLDQzIEBAIFJl
+cXVpcmVkIHByb3BlcnRpZXM6Cj4gICAtIHJlZzoJCQlUaGUgaTJjIGFkZHJlc3MuIFZhbHVlIGRl
+cGVuZHMgb24gdGhlIHN0YXRlIG9mIEFERFIwCj4gIAkJCWFuZCBBRERSMSwgYXMgd2lyZWQgaW4g
+aGFyZHdhcmUuCj4gIAo+ICtPcHRpb25hbCBwcm9wZXJ0aWVzOgo+ICsKPiArIC0gaW5wdXQtZGlm
+ZmVyZW50aWFsCWJvb2wgdG8gc2V0IGlmIHRoZSBpbnB1dCBpcyBkaWZmZXJlbnRpYWwKPiArIC0g
+ZGlnaXRhbC1taWNyb3Bob25lCWJvb2wgdG8gc2V0IGlmIHRoZXJlIGlzIGEgZGlnaXRhbCBtaWNy
+b3Bob25lIGNvbm5lY3RlZAo+ICsJCQl0byB0aGUgZGlnbWljL2phY2tkZXQgcGluLgo+ICsgLSBt
+aWNiaWFzLXZnCQlNaWNyb3Bob25lIGJpYXMgdm9sdGFnZQo+ICsJTUlDQklBU18wXzkwX0FWREQg
+LSAwLjkgKiBBVkRECj4gKwlNSUNCSUFTXzBfNjVfQVZERCAtIDAuNjUgKiBBVkRECj4gKwo+ICtP
+cHRpb25hbCBwcm9wZXJ0aWVzIChBREFVMTM2MS9BREFVMTQ2MS9BREFVMTc2MS9BREFVMTk2MSBv
+bmx5KQo+ICsKPiArIC0gamFjay1kZXRlY3Rpb24JSWYgcHJlc2VudCwgY29uZmlndXJlcyBjb2Rl
+YyB0byB1c2UgdGhlIGRpZ21pYy9qYWNrZGV0Cj4gKwkJCXBpbiBmb3IgamFjayBkZXRlY3Rpb24u
+IG11c3QgcHJvdmlkZSBvbmUgb2YKPiArCQkJSkFDS0RFVEVDVF9BQ1RJVkVfTE8gb3IgSkFDS0RF
+VEVDVF9BQ1RJVkVfSEkgZm9sbG93ZWQKPiArCQkJYnkgZGVib3VuY2UgdGltZSBpbiBtcywgd2hp
+Y2ggbXVzdCBiZSA1LCAxMCwgMjAsIG9yIDQwLgo+ICsKPiArIC0gbGluZW91dC1tb2RlCQlTZXQg
+b3V0cHV0IG1vZGUgb2YgdGhlIGxpbmVvdXQgcGlucy4KPiArIC0gaGVhZHBob25lLW1vZGUJU2V0
+IG91dHB1dCBtb2RlIG9mIHRoZSBoZWFkcGhvbmUgcGlucy4KClRoZXNlIHByb3BlcnRpZXMgYWxs
+IG5lZWQgYSB2ZW5kb3IgcHJlZml4ICgiYWRpLCIpLgoKWy4uLl0KPiArCj4gK3N0YXRpYyB2b2lk
+IGFkYXUxNzYxX3BkYXRhX2Zyb21fb2Yoc3RydWN0IHNuZF9zb2NfY29kZWMgKmNvZGVjLAo+ICsJ
+CQkJICAgc3RydWN0IGFkYXUxNzYxX3BsYXRmb3JtX2RhdGEgKnBkYXRhKQo+ICt7Cj4gKwlzdHJ1
+Y3QgZGV2aWNlX25vZGUgKm5wID0gY29kZWMtPmRldi0+b2Zfbm9kZTsKPiArCXVpbnQzMl90IHZh
+bDsKPiArCXVpbnQzMl90IGRlYm91bmNlX3BhcnNbMl07Cj4gKwo+ICsJaWYgKG9mX2dldF9wcm9w
+ZXJ0eShucCwgImlucHV0LWRpZmZlcmVudGlhbCIsIE5VTEwpKQoKVGhlcmUgaXMgYSBoZWxwZXIg
+ZnVuY3Rpb24gZm9yIHRoaXMgb2ZfcHJvcGVydHlfcmVhZF9ib29sKCkuCgo+ICsJCXBkYXRhLT5p
+bnB1dF9kaWZmZXJlbnRpYWwgPSAxOwo+ICsJZWxzZQo+ICsJCXBkYXRhLT5pbnB1dF9kaWZmZXJl
+bnRpYWwgPSAwOwo+ICsKWy4uLl0KPiArCj4gIHN0YXRpYyBpbnQgYWRhdTE3NjFfY29kZWNfcHJv
+YmUoc3RydWN0IHNuZF9zb2NfY29kZWMgKmNvZGVjKQo+ICB7Cj4gIAlzdHJ1Y3Qgc25kX3NvY19k
+YXBtX2NvbnRleHQgKmRhcG0gPSBzbmRfc29jX2NvZGVjX2dldF9kYXBtKGNvZGVjKTsKPiAgCXN0
+cnVjdCBhZGF1MTc2MV9wbGF0Zm9ybV9kYXRhICpwZGF0YSA9IGNvZGVjLT5kZXYtPnBsYXRmb3Jt
+X2RhdGE7Cj4gIAlzdHJ1Y3QgYWRhdSAqYWRhdSA9IHNuZF9zb2NfY29kZWNfZ2V0X2RydmRhdGEo
+Y29kZWMpOwo+ICsJc3RydWN0IGRldmljZV9ub2RlICpucCA9IGNvZGVjLT5kZXYtPm9mX25vZGU7
+Cj4gKwlzdHJ1Y3QgYWRhdTE3NjFfcGxhdGZvcm1fZGF0YSAqb2ZfcGRhdGE7Cj4gIAlpbnQgcmV0
+Owo+ICAKPiArCWlmICghcGRhdGEgJiYgbnAgJiYgb2ZfZGV2aWNlX2lzX2F2YWlsYWJsZShucCkp
+IHsKPiArCQlvZl9wZGF0YSA9IGRldm1fa3phbGxvYyhjb2RlYy0+ZGV2LCBzaXplb2YoKm9mX3Bk
+YXRhKSwgCj4gKwkJCUdGUF9LRVJORUwpOwo+ICsJCWlmICghb2ZfcGRhdGEpCj4gKwkJCXJldHVy
+biAtRU5PTUVNOwo+ICsJCWFkYXUxNzYxX3BkYXRhX2Zyb21fb2YoY29kZWMsIG9mX3BkYXRhKTsK
+PiArCQlwZGF0YSA9IG9mX3BkYXRhOwo+ICsJCWNvZGVjLT5kZXYtPnBsYXRmb3JtX2RhdGEgPSBw
+ZGF0YTsKClRoZSBwYXJzaW5nIHNob3VsZCBiZSBkb25lIGluIHRoZSBtYWluIHByb2JlIGZ1bmN0
+aW9uLiBUaGlzIHdpbGwgbWFrZSBzdXJlCnRoYXQgd2UgcHJvcGFnYXRlIGVycm9ycyB1cCB0aGUg
+c3RhY2sgdGhlIHJpZ2h0IHdheS4KCj4gKwl9CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
