@@ -1,53 +1,64 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 0/4] Fix headphone detection on Acer Chromebook 13
-Date: Thu, 4 Feb 2016 18:03:26 +0000
-Message-ID: <20160204180326.GP4455@sirena.org.uk>
-References: <1454563862-1971-1-git-send-email-sctincman@gmail.com>
+From: Andreas =?iso-8859-1?Q?Irest=E5l?= <andreas.irestal@axis.com>
+Subject: Re: [PATCH] ASoC: adau17x1: Cache writes when core
+	clock is disabled
+Date: Thu, 4 Feb 2016 20:01:30 +0100
+Message-ID: <20160204190129.GA32441@lnxandire1.se.axis.com>
+References: <1454594719-17270-1-git-send-email-andire@axis.com>
+ <56B388DC.40601@metafoo.de> <56B38938.40000@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="gIhrS3Q23Nl70UJ5"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E4272619D0
+ for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 20:01:34 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1454563862-1971-1-git-send-email-sctincman-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jonathan Tinkham <sctincman-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+In-Reply-To: <56B38938.40000@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Andreas =?iso-8859-1?Q?Irest=E5l?= <andire@axis.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Feb 04, 2016 at 06:24:08PM +0100, Lars-Peter Clausen wrote:
+> On 02/04/2016 06:22 PM, Lars-Peter Clausen wrote:
+> [...]
+> >> +	/* Enable cache only mode as we could miss writes before bias level
+> >> +	 * reaches standby and the core clock is enabled */
+> >> +	regcache_cache_only(regmap, true);
+> >> +
+> > 
+> > There are a few register writes before this where the hardware configuration
+> > is setup. When I look at my test setup those writes seem to go through, even
+> > though they shouldn't according to what you say (and to what is written in
+> > the datasheet).
+> > 
+> > On the other hand I've never seen the issue you are having either and I've
+> > tested both master and slave configuration of the device. Maybe something
+> > changed in the silicon in newer revisions of the device. Can you take a look
+> > whether the hardware configuration is correctly applied for you?
+> 
+> Ah, no, ignore that. Those writes happen later on.
+> 
 
---gIhrS3Q23Nl70UJ5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The whole thing depends on what driver you are using. We had our own
+board drivers before moving to DT, where we would call set_dai_fmt in
+hw_params, so the register would get written again before we wanted to
+do something useful anyway. The simple-card driver only set the dai format
+at probing time and never again, so that's why we started to notice this
+issue.
 
-On Wed, Feb 03, 2016 at 10:30:58PM -0700, Jonathan Tinkham wrote:
+I posted a set of patches a few days ago which added DT support and
+fixed minor things in adau17x1, but I realized I was clumsy just sending
+it to the alsa-devel list and not including DT maintainers or any
+maintainers at all. Would you have a look at it, or do you want me to
+resubmit the patches with the correct recipents?
 
-> Jonathan Tinkham (4):
->   soc/sound: tegra_max98090: do not invert headphone jack
->   sound/soc: tegra_max98090: rename headphone jack DAPM
->   sound/soc: tegra_max98090: document headphone jack rename
->   soc/sound: tegra_max98090: update dts affected by rename
-
-Please try to use subject lines reflecting the style for the subsystem -
-this makes it easier for people to spot relevant content.  The above
-isn't even internally consistent :(
-
---gIhrS3Q23Nl70UJ5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWs5JuAAoJECTWi3JdVIfQDVcH/2bISj8BZpcEaTMwXuyWrfQ8
-DybA+ST6T6VI9ceLQrnDul2Q/4zuxEkW22uRKCtaNrvMIH4XdU8QDiRzcjLuTrCE
-ZvWPmvrch6rHIchcfM7sklnmn8XPL6w5LRF3EmZ0Fy+Zoyrs1Pr1WfIQK4mI2fRK
-GSkME8UNEqwYyVHp6jn+mgjIVibM6HdmxG4h7BpHLziZBZkS4vagdCN9l2u4xQ/y
-DI9jvVJP4fZf2NF2K+sp2YviFoq7p2tZiGkvK+q3AWiQaBcPk0eBKkxFWML0R+HB
-meZBf/kjZRQUaAfEJMqbW3ySp8RKS0JYPOML4hWZukQXN6+QaSfF2dqVyrBqmUA=
-=1li2
------END PGP SIGNATURE-----
-
---gIhrS3Q23Nl70UJ5--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+/Andreas
