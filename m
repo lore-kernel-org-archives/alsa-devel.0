@@ -1,25 +1,88 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: Re: [PATCH 3/4] sound/soc: tegra_max98090: document headphone jack
- rename
-Date: Thu, 4 Feb 2016 09:39:08 -0700
-Message-ID: <56B37EAC.5010101@wwwdotorg.org>
-References: <1454563862-1971-1-git-send-email-sctincman@gmail.com>
- <1454563862-1971-4-git-send-email-sctincman@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1454563862-1971-4-git-send-email-sctincman-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jonathan Tinkham <sctincman-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH v3 2/3] ALSA: mts64: assignment in if
+Date: Thu,  4 Feb 2016 22:16:33 +0530
+Message-ID: <1454604394-16055-2-git-send-email-sudipm.mukherjee@gmail.com>
+References: <1454604394-16055-1-git-send-email-sudipm.mukherjee@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1454604394-16055-1-git-send-email-sudipm.mukherjee@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/03/2016 10:31 PM, Jonathan Tinkham wrote:
-> Update device-tree bindings to reflect the rename of the board's
-> headphone jack.
+It is not general practice to assign some values inside if statement.
 
-This looks like an incompatible change to the DT. While you've fixed the 
-DT, which will fix new installations, old DTs now won't work. This 
-breaks DT ABI. Any DT change needs to be backwards compatible, i.e. the 
-old name should still work and be documented as a legacy value.
+Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+---
+
+v3: no change
+v2: no change
+
+ sound/drivers/mts64.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
+
+diff --git a/sound/drivers/mts64.c b/sound/drivers/mts64.c
+index f7d938d..ee6a87f 100644
+--- a/sound/drivers/mts64.c
++++ b/sound/drivers/mts64.c
+@@ -943,7 +943,9 @@ static int snd_mts64_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	if (!enable[dev])
+ 		return -ENOENT;
+-	if ((err = snd_mts64_probe_port(p)) < 0)
++
++	err = snd_mts64_probe_port(p);
++	if (err < 0)
+ 		return err;
+ 
+ 	err = snd_card_new(&pdev->dev, index[dev], id[dev], THIS_MODULE,
+@@ -970,7 +972,8 @@ static int snd_mts64_probe(struct platform_device *pdev)
+ 		goto __err;
+ 	}
+ 
+-	if ((err = snd_mts64_create(card, pardev, &mts)) < 0) {
++	err = snd_mts64_create(card, pardev, &mts);
++	if (err < 0) {
+ 		snd_printd("Cannot create main component\n");
+ 		parport_unregister_device(pardev);
+ 		goto __err;
+@@ -978,7 +981,8 @@ static int snd_mts64_probe(struct platform_device *pdev)
+ 	card->private_data = mts;
+ 	card->private_free = snd_mts64_card_private_free;
+ 
+-	if ((err = snd_mts64_rawmidi_create(card)) < 0) {
++	err = snd_mts64_rawmidi_create(card);
++	if (err < 0) {
+ 		snd_printd("Creating Rawmidi component failed\n");
+ 		goto __err;
+ 	}
+@@ -992,13 +996,15 @@ static int snd_mts64_probe(struct platform_device *pdev)
+ 	mts->pardev_claimed = 1;
+ 
+ 	/* init device */
+-	if ((err = mts64_device_init(p)) < 0)
++	err = mts64_device_init(p);
++	if (err < 0)
+ 		goto __err;
+ 
+ 	platform_set_drvdata(pdev, card);
+ 
+ 	/* At this point card will be usable */
+-	if ((err = snd_card_register(card)) < 0) {
++	err = snd_card_register(card);
++	if (err < 0) {
+ 		snd_printd("Cannot register card\n");
+ 		goto __err;
+ 	}
+@@ -1050,7 +1056,8 @@ static int __init snd_mts64_module_init(void)
+ {
+ 	int err;
+ 
+-	if ((err = platform_driver_register(&snd_mts64_driver)) < 0)
++	err = platform_driver_register(&snd_mts64_driver);
++	if (err < 0)
+ 		return err;
+ 
+ 	if (parport_register_driver(&mts64_parport_driver) != 0) {
+-- 
+1.9.1
