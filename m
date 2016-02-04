@@ -1,143 +1,79 @@
-From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Subject: Re: [PATCH v2 00/22] Sharing media resources across ALSA and au0828
- drivers
-Date: Thu, 4 Feb 2016 08:54:19 -0200
-Message-ID: <20160204085419.426d1aab@recife.lan>
-References: <cover.1454557589.git.shuahkh@osg.samsung.com>
+From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Subject: [PATCH v4 1/2] dt-bindings: sunxi :add sun4i SPDIF transceiver
+Date: Thu,  4 Feb 2016 12:09:21 +0100
+Message-ID: <1454584162-32449-2-git-send-email-codekipper@gmail.com>
+References: <1454584162-32449-1-git-send-email-codekipper@gmail.com>
+Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1454557589.git.shuahkh@osg.samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Shuah Khan <shuahkh@osg.samsung.com>
-Cc: tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittga
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBZ7CZS2QKGQEPLA7L5Q-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+In-Reply-To: <1454584162-32449-1-git-send-email-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Em Wed, 03 Feb 2016 21:03:32 -0700
-Shuah Khan <shuahkh@osg.samsung.com> escreveu:
+From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-> This patch series updates ALSA driver, and au0828 core
-> driver to use Managed Media controller API and Media
-> Controller API to share media resource (tuner).
+Add devicetree bindings for the SPDIF transceiver found on
+found on Allwinners A10 and A20 SoCs.
 
-Please see my comments to patch 20. I guess this series break support
-for the digital-only boards below (where .has_analog is not set):
+Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+---
+ .../bindings/sound/sunxi,sun4i-spdif.txt           | 39 ++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
 
-	[AU0828_BOARD_HAUPPAUGE_HVR950Q_MXL] = {
-		.name	= "Hauppauge HVR950Q rev xxF8",
-		.tuner_type = TUNER_XC5000,
-		.tuner_addr = 0x61,
-		.i2c_clk_divider = AU0828_I2C_CLK_250KHZ,
-	},
-	[AU0828_BOARD_DVICO_FUSIONHDTV7] = {
-		.name	= "DViCO FusionHDTV USB",
-		.tuner_type = TUNER_XC5000,
-		.tuner_addr = 0x61,
-		.i2c_clk_divider = AU0828_I2C_CLK_250KHZ,
-	},
-	[AU0828_BOARD_HAUPPAUGE_WOODBURY] = {
-		.name = "Hauppauge Woodbury",
-		.tuner_type = TUNER_NXP_TDA18271,
-		.tuner_addr = 0x60,
-		.i2c_clk_divider = AU0828_I2C_CLK_250KHZ,
-	},
-
-None of this boards have V4L2. So, only the DVB part of the driver
-should be enabled. Well, the DVB core won't be creating a tuner
-subdev. So, calling au0828_enable_source() (and disable source) would
-return -ENODEV, causing the driver to fail.
-
-> 
-> This Patch v2 series is based on linux_media master.
-> This work addresses Mauro and Takashi's comments.
-
-It is in a way better shape, but there are still several things I
-noticed :)
-
-Please see my per-patch review.
-
-> 
-> Composite or S-Video connector is the input case
-> is still under discussion and isn't addressed in
-> this series.
-
-You need at least address pure DVB boards at patch 20 and
-add there a FIXME for the composite/svideo connector pending 
-issue.
-
-> 
-> Patches 3 and 4 need documentation updates and will
-> be sent later this week.
-
-Please send documentation at the same series. Nobody wants to see the
-documentation warnings when checking at the main media development
-branch or at -next. Also, it helps to better understand the changes.
-
-Regards,
-Mauro
-
-> 
-> Shuah Khan (22):
->   uapi/media.h: Declare interface types for ALSA
->   media: Add ALSA Media Controller function entities
->   media: Media Controller register/unregister entity_notify API
->   media: Media Controller enable/disable source handler API
->   media: Media Controller export non locking __media_entity_setup_link()
->   media: Media Controller non-locking
->     __media_entity_pipeline_start/stop()
->   media: v4l-core add enable/disable source common interfaces
->   media: Move au8522_media_pads enum to au8522.h from au8522_priv.h
->   media: au8522 change to create MC pad for ALSA Audio Out
->   media: Change v4l-core to check if source is free
->   media: dvb-frontend invoke enable/disable_source handlers
->   media: au0828 video remove au0828_enable_analog_tuner()
->   media: au0828 video change to use v4l_enable_media_source()
->   media: au0828 change to use Managed Media Controller API
->   media: au0828 handle media_init and media_register window
->   media: au0828 create tuner to decoder link in disabled state
->   media: au0828 disable tuner to demod link
->   media: au0828 Use au8522_media_pads enum for pad defines
->   media: au0828-core register entity_notify hook
->   media: au0828 add enable, disable source handlers
->   sound/usb: Use Media Controller API to share media resources
->   media: Ensure media device unregister is done only once
-> 
->  drivers/media/dvb-core/dvb_frontend.c        | 139 ++----------
->  drivers/media/dvb-core/dvb_frontend.h        |   3 +
->  drivers/media/dvb-frontends/au8522.h         |   8 +
->  drivers/media/dvb-frontends/au8522_decoder.c |   1 +
->  drivers/media/dvb-frontends/au8522_priv.h    |   8 -
->  drivers/media/media-device.c                 |  73 +++++-
->  drivers/media/media-devnode.c                |  15 +-
->  drivers/media/media-entity.c                 |  51 ++++-
->  drivers/media/usb/au0828/au0828-core.c       | 272 +++++++++++++++++++++--
->  drivers/media/usb/au0828/au0828-video.c      |  75 +------
->  drivers/media/usb/au0828/au0828.h            |   4 +
->  drivers/media/v4l2-core/Makefile             |   2 +-
->  drivers/media/v4l2-core/v4l2-fh.c            |   2 +
->  drivers/media/v4l2-core/v4l2-ioctl.c         |  30 +++
->  drivers/media/v4l2-core/v4l2-mc.c            |  60 +++++
->  drivers/media/v4l2-core/videobuf2-core.c     |   4 +
->  include/media/media-device.h                 |  44 ++++
->  include/media/media-devnode.h                |  17 ++
->  include/media/media-entity.h                 |  12 +
->  include/media/v4l2-dev.h                     |   1 +
->  include/media/v4l2-mc.h                      |  52 +++++
->  include/uapi/linux/media.h                   |  33 +++
->  sound/usb/Kconfig                            |   4 +
->  sound/usb/Makefile                           |   2 +
->  sound/usb/card.c                             |  14 ++
->  sound/usb/card.h                             |   1 +
->  sound/usb/media.c                            | 319 +++++++++++++++++++++++++++
->  sound/usb/media.h                            |  72 ++++++
->  sound/usb/mixer.h                            |   1 +
->  sound/usb/pcm.c                              |  28 ++-
->  sound/usb/quirks-table.h                     |   1 +
->  sound/usb/stream.c                           |   2 +
->  sound/usb/usbaudio.h                         |   3 +
->  33 files changed, 1117 insertions(+), 236 deletions(-)
->  create mode 100644 drivers/media/v4l2-core/v4l2-mc.c
->  create mode 100644 sound/usb/media.c
->  create mode 100644 sound/usb/media.h
-> 
+diff --git a/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt b/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
+new file mode 100644
+index 0000000..13503aa
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
+@@ -0,0 +1,39 @@
++Allwinner Sony/Philips Digital Interface Format (S/PDIF) Controller
++
++The Allwinner S/PDIF audio block is a transceiver that allows the
++processor to receive and transmit digital audio via an coaxial cable or
++a fibre cable.
++For now only playback is supported.
++
++Required properties:
++
++  - compatible		: should be one of the following:
++    - "allwinner,sun4i-a10-spdif": for the Allwinner A10 SoC
++
++  - reg			: Offset and length of the register set for the device.
++
++  - interrupts		: Contains the spdif interrupt.
++
++  - dmas		: Generic dma devicetree binding as described in
++			  Documentation/devicetree/bindings/dma/dma.txt.
++
++  - dma-names		: Two dmas have to be defined, "tx" and "rx".
++
++  - clocks		: Contains an entry for each entry in clock-names.
++
++  - clock-names		: Includes the following entries:
++	"apb"		  clock for the spdif bus.
++	"spdif"		  clock for spdif controller.
++
++Example:
++
++spdif: spdif@01c21000 {
++	compatible = "allwinner,sun4i-a10-spdif";
++	reg = <0x01c21000 0x40>;
++	interrupts = <13>;
++	clocks = <&apb0_gates 1>, <&spdif_clk>;
++	clock-names = "apb", "spdif";
++	dmas = <&dma 0 2>, <&dma 0 2>;
++	dma-names = "rx", "tx";
++	status = "okay";
++};
+-- 
+2.7.0
