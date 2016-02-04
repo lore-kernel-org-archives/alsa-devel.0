@@ -1,134 +1,271 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [PATCH v2 12/22] media: au0828 video remove
- au0828_enable_analog_tuner()
-Date: Thu, 4 Feb 2016 07:49:37 -0700
-Message-ID: <56B36501.1090803@osg.samsung.com>
+Subject: Re: [PATCH v2 11/22] media: dvb-frontend invoke enable/disable_source
+ handlers
+Date: Thu, 4 Feb 2016 07:58:35 -0700
+Message-ID: <56B3671B.4000706@osg.samsung.com>
 References: <cover.1454557589.git.shuahkh@osg.samsung.com>
- <8d43a2cfe4dcdf843d2e587e35a4bd4681eebe36.1454557589.git.shuahkh@osg.samsung.com>
- <20160204073712.25d96fcd@recife.lan>
+ <a404ddaef8fbfbc291d5afa013888fbc239cde8e.1454557589.git.shuahkh@osg.samsung.com>
+ <20160204073546.6150cd81@recife.lan>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160204073712.25d96fcd@recife.lan>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <20160204073546.6150cd81@recife.lan>
+Sender: linux-media-owner@vger.kernel.org
 To: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
 Cc: tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittga
 List-Id: alsa-devel@alsa-project.org
 
-On 02/04/2016 02:37 AM, Mauro Carvalho Chehab wrote:
-> Em Wed, 03 Feb 2016 21:03:44 -0700
+On 02/04/2016 02:35 AM, Mauro Carvalho Chehab wrote:
+> Em Wed, 03 Feb 2016 21:03:43 -0700
 > Shuah Khan <shuahkh@osg.samsung.com> escreveu:
 > 
->> Remove au0828_enable_analog_tuner() as it is
->> no longer needed because v4l2-core implements
->> common interfaces to check for media source
->> availability.
+>> Change dvb frontend to check if tuner is free when
+>> device opened in RW mode. Call to enable_source
+>> handler either returns with an active pipeline to
+>> tuner or error if tuner is busy. Tuner is released
+>> when frontend is released calling the disable_source
+>> handler.
 > 
-> I didn't see such code at v4l2-core yet. Missing patch?
+> This patch seems too early in the series, as I'm not seeing any patch
+> providing a replacement for the removed code yet.
 
 Removed linux-api from cc:
 
-Please see Patch 10/22 for v4l2-core changes.
-[PATCH v2 10/22] media: Change v4l-core to check if source is free
-
-thanks,
--- Shuah
+Yes you are right - I will move this after au0828 patch
+that adds the handler.
 
 > 
 >>
->> In addition, queue_setup() no longer needs the
->> tuner availability check since v4l2-core does it.
->>
 >> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 >> ---
->>  drivers/media/usb/au0828/au0828-video.c | 61 ---------------------------------
->>  1 file changed, 61 deletions(-)
+>>  drivers/media/dvb-core/dvb_frontend.c | 139 +++++-----------------------------
+>>  drivers/media/dvb-core/dvb_frontend.h |   3 +
+>>  2 files changed, 24 insertions(+), 118 deletions(-)
 >>
->> diff --git a/drivers/media/usb/au0828/au0828-video.c b/drivers/media/usb/au0828/au0828-video.c
->> index 8c54fd2..81952c8 100644
->> --- a/drivers/media/usb/au0828/au0828-video.c
->> +++ b/drivers/media/usb/au0828/au0828-video.c
->> @@ -638,64 +638,6 @@ static inline int au0828_isoc_copy(struct au0828_dev *dev, struct urb *urb)
->>  	return rc;
+>> diff --git a/drivers/media/dvb-core/dvb_frontend.c b/drivers/media/dvb-core/dvb_frontend.c
+>> index 03cc508..2b17e8b 100644
+>> --- a/drivers/media/dvb-core/dvb_frontend.c
+>> +++ b/drivers/media/dvb-core/dvb_frontend.c
+>> @@ -131,11 +131,6 @@ struct dvb_frontend_private {
+>>  	int quality;
+>>  	unsigned int check_wrapped;
+>>  	enum dvbfe_search algo_status;
+>> -
+>> -#if defined(CONFIG_MEDIA_CONTROLLER_DVB)
+>> -	struct media_pipeline pipe;
+>> -	struct media_entity *pipe_start_entity;
+>> -#endif
+>>  };
+>>  
+>>  static void dvb_frontend_wakeup(struct dvb_frontend *fe);
+>> @@ -596,104 +591,12 @@ static void dvb_frontend_wakeup(struct dvb_frontend *fe)
+>>  	wake_up_interruptible(&fepriv->wait_queue);
 >>  }
 >>  
->> -static int au0828_enable_analog_tuner(struct au0828_dev *dev)
+>> -/**
+>> - * dvb_enable_media_tuner() - tries to enable the DVB tuner
+>> - *
+>> - * @fe:		struct dvb_frontend pointer
+>> - *
+>> - * This function ensures that just one media tuner is enabled for a given
+>> - * frontend. It has two different behaviors:
+>> - * - For trivial devices with just one tuner:
+>> - *   it just enables the existing tuner->fe link
+>> - * - For devices with more than one tuner:
+>> - *   It is up to the driver to implement the logic that will enable one tuner
+>> - *   and disable the other ones. However, if more than one tuner is enabled for
+>> - *   the same frontend, it will print an error message and return -EINVAL.
+>> - *
+>> - * At return, it will return the error code returned by media_entity_setup_link,
+>> - * or 0 if everything is OK, if no tuner is linked to the frontend or if the
+>> - * mdev is NULL.
+>> - */
+>> -#ifdef CONFIG_MEDIA_CONTROLLER_DVB
+>> -static int dvb_enable_media_tuner(struct dvb_frontend *fe)
 >> -{
->> -#ifdef CONFIG_MEDIA_CONTROLLER
->> -	struct media_device *mdev = dev->media_dev;
->> -	struct media_entity *source;
+>> -	struct dvb_frontend_private *fepriv = fe->frontend_priv;
+>> -	struct dvb_adapter *adapter = fe->dvb;
+>> -	struct media_device *mdev = adapter->mdev;
+>> -	struct media_entity  *entity, *source;
 >> -	struct media_link *link, *found_link = NULL;
->> -	int ret, active_links = 0;
+>> -	int ret, n_links = 0, active_links = 0;
 >> -
->> -	if (!mdev || !dev->decoder)
+>> -	fepriv->pipe_start_entity = NULL;
+>> -
+>> -	if (!mdev)
 >> -		return 0;
 >> -
->> -	/*
->> -	 * This will find the tuner that is connected into the decoder.
->> -	 * Technically, this is not 100% correct, as the device may be
->> -	 * using an analog input instead of the tuner. However, as we can't
->> -	 * do DVB streaming while the DMA engine is being used for V4L2,
->> -	 * this should be enough for the actual needs.
->> -	 */
->> -	list_for_each_entry(link, &dev->decoder->links, list) {
->> -		if (link->sink->entity == dev->decoder) {
+>> -	entity = fepriv->dvbdev->entity;
+>> -	fepriv->pipe_start_entity = entity;
+>> -
+>> -	list_for_each_entry(link, &entity->links, list) {
+>> -		if (link->sink->entity == entity) {
 >> -			found_link = link;
+>> -			n_links++;
 >> -			if (link->flags & MEDIA_LNK_FL_ENABLED)
 >> -				active_links++;
->> -			break;
 >> -		}
 >> -	}
 >> -
->> -	if (active_links == 1 || !found_link)
+>> -	if (!n_links || active_links == 1 || !found_link)
 >> -		return 0;
 >> -
+>> -	/*
+>> -	 * If a frontend has more than one tuner linked, it is up to the driver
+>> -	 * to select with one will be the active one, as the frontend core can't
+>> -	 * guess. If the driver doesn't do that, it is a bug.
+>> -	 */
+>> -	if (n_links > 1 && active_links != 1) {
+>> -		dev_err(fe->dvb->device,
+>> -			"WARNING: there are %d active links among %d tuners. This is a driver's bug!\n",
+>> -			active_links, n_links);
+>> -		return -EINVAL;
+>> -	}
+>> -
 >> -	source = found_link->source->entity;
+>> -	fepriv->pipe_start_entity = source;
 >> -	list_for_each_entry(link, &source->links, list) {
 >> -		struct media_entity *sink;
 >> -		int flags = 0;
 >> -
 >> -		sink = link->sink->entity;
->> -
->> -		if (sink == dev->decoder)
+>> -		if (sink == entity)
 >> -			flags = MEDIA_LNK_FL_ENABLED;
 >> -
 >> -		ret = media_entity_setup_link(link, flags);
 >> -		if (ret) {
->> -			pr_err(
+>> -			dev_err(fe->dvb->device,
 >> -				"Couldn't change link %s->%s to %s. Error %d\n",
 >> -				source->name, sink->name,
 >> -				flags ? "enabled" : "disabled",
 >> -				ret);
 >> -			return ret;
 >> -		} else
->> -			au0828_isocdbg(
+>> -			dev_dbg(fe->dvb->device,
 >> -				"link %s->%s was %s\n",
 >> -				source->name, sink->name,
 >> -				flags ? "ENABLED" : "disabled");
 >> -	}
->> -#endif
 >> -	return 0;
 >> -}
+>> -#endif
 >> -
->>  static int queue_setup(struct vb2_queue *vq,
->>  		       unsigned int *nbuffers, unsigned int *nplanes,
->>  		       unsigned int sizes[], void *alloc_ctxs[])
->> @@ -707,9 +649,6 @@ static int queue_setup(struct vb2_queue *vq,
->>  		return sizes[0] < size ? -EINVAL : 0;
->>  	*nplanes = 1;
->>  	sizes[0] = size;
+>>  static int dvb_frontend_thread(void *data)
+>>  {
+>>  	struct dvb_frontend *fe = data;
+>>  	struct dvb_frontend_private *fepriv = fe->frontend_priv;
+>>  	enum fe_status s;
+>>  	enum dvbfe_algo algo;
+>> -#ifdef CONFIG_MEDIA_CONTROLLER_DVB
+>> -	int ret;
+>> -#endif
 >> -
->> -	au0828_enable_analog_tuner(dev);
->> -
->>  	return 0;
->>  }
+>>  	bool re_tune = false;
+>>  	bool semheld = false;
 >>  
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-media" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>> @@ -706,20 +609,6 @@ static int dvb_frontend_thread(void *data)
+>>  	fepriv->wakeup = 0;
+>>  	fepriv->reinitialise = 0;
+>>  
+>> -#ifdef CONFIG_MEDIA_CONTROLLER_DVB
+>> -	ret = dvb_enable_media_tuner(fe);
+>> -	if (ret) {
+>> -		/* FIXME: return an error if it fails */
+>> -		dev_info(fe->dvb->device,
+>> -			"proceeding with FE task\n");
+>> -	} else if (fepriv->pipe_start_entity) {
+>> -		ret = media_entity_pipeline_start(fepriv->pipe_start_entity,
+>> -						  &fepriv->pipe);
+>> -		if (ret)
+>> -			return ret;
+>> -	}
+>> -#endif
+>> -
+>>  	dvb_frontend_init(fe);
+>>  
+>>  	set_freezable();
+>> @@ -829,12 +718,6 @@ restart:
+>>  		}
+>>  	}
+>>  
+>> -#ifdef CONFIG_MEDIA_CONTROLLER_DVB
+>> -	if (fepriv->pipe_start_entity)
+>> -		media_entity_pipeline_stop(fepriv->pipe_start_entity);
+>> -	fepriv->pipe_start_entity = NULL;
+>> -#endif
+>> -
+>>  	if (dvb_powerdown_on_sleep) {
+>>  		if (fe->ops.set_voltage)
+>>  			fe->ops.set_voltage(fe, SEC_VOLTAGE_OFF);
+>> @@ -2612,9 +2495,20 @@ static int dvb_frontend_open(struct inode *inode, struct file *file)
+>>  		fepriv->tone = -1;
+>>  		fepriv->voltage = -1;
+>>  
+>> +#ifdef CONFIG_MEDIA_CONTROLLER_DVB
+>> +		if (fe->dvb->mdev && fe->dvb->mdev->enable_source) {
+>> +			ret = fe->dvb->mdev->enable_source(dvbdev->entity,
+>> +							   &fe->pipe);
+>> +			if (ret) {
+>> +				dev_err(fe->dvb->device,
+>> +					"Tuner is busy. Error %d\n", ret);
+>> +				goto err2;
+>> +			}
+>> +		}
+>> +#endif
+>>  		ret = dvb_frontend_start (fe);
+>>  		if (ret)
+>> -			goto err2;
+>> +			goto err3;
+>>  
+>>  		/*  empty event queue */
+>>  		fepriv->events.eventr = fepriv->events.eventw = 0;
+>> @@ -2624,7 +2518,12 @@ static int dvb_frontend_open(struct inode *inode, struct file *file)
+>>  		mutex_unlock (&adapter->mfe_lock);
+>>  	return ret;
+>>  
+>> +err3:
+>> +#ifdef CONFIG_MEDIA_CONTROLLER_DVB
+>> +	if (fe->dvb->mdev && fe->dvb->mdev->disable_source)
+>> +		fe->dvb->mdev->disable_source(dvbdev->entity);
+>>  err2:
+>> +#endif
+>>  	dvb_generic_release(inode, file);
+>>  err1:
+>>  	if (dvbdev->users == -1 && fe->ops.ts_bus_ctrl)
+>> @@ -2653,6 +2552,10 @@ static int dvb_frontend_release(struct inode *inode, struct file *file)
+>>  
+>>  	if (dvbdev->users == -1) {
+>>  		wake_up(&fepriv->wait_queue);
+>> +#ifdef CONFIG_MEDIA_CONTROLLER_DVB
+>> +		if (fe->dvb->mdev && fe->dvb->mdev->disable_source)
+>> +			fe->dvb->mdev->disable_source(dvbdev->entity);
+>> +#endif
+>>  		if (fe->exit != DVB_FE_NO_EXIT)
+>>  			wake_up(&dvbdev->wait_queue);
+>>  		if (fe->ops.ts_bus_ctrl)
+>> diff --git a/drivers/media/dvb-core/dvb_frontend.h b/drivers/media/dvb-core/dvb_frontend.h
+>> index 458bcce..9466906 100644
+>> --- a/drivers/media/dvb-core/dvb_frontend.h
+>> +++ b/drivers/media/dvb-core/dvb_frontend.h
+>> @@ -686,6 +686,9 @@ struct dvb_frontend {
+>>  	int (*callback)(void *adapter_priv, int component, int cmd, int arg);
+>>  	int id;
+>>  	unsigned int exit;
+>> +#if defined(CONFIG_MEDIA_CONTROLLER_DVB)
+>> +	struct media_pipeline pipe;
+>> +#endif
 > 
+> Why moving this to the non-private part of the data?
+> 
+
+There was a reason for this move and I don't recall
+at the moment. It has been several months since I
+had to rework. I will make sure this change is
+necessary and include it in the changelog.
+
+thanks,
+-- Shuah
 
 
 -- 
