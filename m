@@ -1,78 +1,53 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: adau17x1: Cache writes when core
-	clock is disabled
-Date: Thu, 4 Feb 2016 18:22:36 +0100
-Message-ID: <56B388DC.40601@metafoo.de>
-References: <1454594719-17270-1-git-send-email-andire@axis.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 0/4] Fix headphone detection on Acer Chromebook 13
+Date: Thu, 4 Feb 2016 18:03:26 +0000
+Message-ID: <20160204180326.GP4455@sirena.org.uk>
+References: <1454563862-1971-1-git-send-email-sctincman@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-195.synserver.de (unknown [212.40.180.161])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B2A82619D0
- for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 18:29:59 +0100 (CET)
-In-Reply-To: <1454594719-17270-1-git-send-email-andire@axis.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?Andreas_Irest=c3=a5l?= <andreas.irestal@axis.com>
-Cc: liam.r.girdwood@linux.intel.com, =?UTF-8?Q?Andreas_Irest=c3=a5l?= <andire@axis.com>, alsa-devel@alsa-project.org, broonie@kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="gIhrS3Q23Nl70UJ5"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1454563862-1971-1-git-send-email-sctincman-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jonathan Tinkham <sctincman-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDIvMDQvMjAxNiAwMzowNSBQTSwgQW5kcmVhcyBJcmVzdMOlbCB3cm90ZToKPiBJbiBzb21l
-IGNvbmZpZ3VyYXRpb25zLCB0aGUgZGFpIHJlZ2lzdGVycyBnZXQgd3JpdHRlbiBiZWZvcmUgdGhl
-IGJpYXMKPiBsZXZlbCBpcyBjaGFuZ2VkIGluIHRoZSBjb2RlYyBkcml2ZXIuIFRoaXMgbGVhZHMg
-dG8gYSBzaXR1YXRpb24gd2hlcmUKPiBhbiBpbml0aWFsIHdyaXRlIHRvIHRoZSBzZXJpYWwgcG9y
-dCByZWdpc3RlciBnZXRzIGlnbm9yZWQsIGFuZCBmdXR1cmUKPiB3cml0ZXMgbWF5IGFzIHdlbGws
-IHNpbmNlIHJlZ21hcCB0aGlua3MgdGhhdCB0aGUgY29kZWMgYWxyZWFkeSBob2xkcyB0aGUKPiB2
-YWx1ZS4gTW9yZSBzcGVjaWZpY2FsbHksIGNvbmZpZ3VyaW5nIHRoZSBjb2RlYyBhcyBpMnMgbWFz
-dGVyIHdvdWxkIGluCj4gZmFjdCByZXN1bHQgaW4gdGhlIGNvZGVjIHJ1bm5pbmcgYXMgc2xhdmUs
-IGEgc2l0dWF0aW9uIHdoZXJlIG5vIGkycwo+IGNsb2NrcyBhcmUgZ2VuZXJhdGVkIGFuZCBoZW5j
-ZSBubyBkYXRhIGlzIHRyYW5zZmVycmVkLgo+IAo+IFRoaXMgY2hhbmdlIG1ha2VzIHN1cmUgdGhh
-dCByZWdtYXAgb25seSBjYWNoZXMgd3JpdGVzIHdoZW4gdGhlIGNvcmUKPiBjbG9jayBpcyBkaXNh
-YmxlZCwgYW5kIHN5bmNzIHJlZ21hcCB3aGVuZXZlciBlbmFibGluZyB0aGUgY29yZSBjbG9jawo+
-IGFnYWluLgo+IAo+IFNpZ25lZC1vZmYtYnk6IEFuZHJlYXMgSXJlc3TDpWwgPGFuZGlyZUBheGlz
-LmNvbT4KCkxvb2tzIGdvb2QsIHRoYW5rcyBmb3IgdGhlIHBhdGNoLgoKQWNrZWQtYnk6IExhcnMt
-UGV0ZXIgQ2xhdXNlbiA8bGFyc0BtZXRhZm9vLmRlPgoKCj4gLS0tCj4gIHNvdW5kL3NvYy9jb2Rl
-Y3MvYWRhdTE3NjEuYyB8IDggKysrKysrKysKPiAgMSBmaWxlIGNoYW5nZWQsIDggaW5zZXJ0aW9u
-cygrKQo+IAo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL2FkYXUxNzYxLmMgYi9zb3Vu
-ZC9zb2MvY29kZWNzL2FkYXUxNzYxLmMKPiBpbmRleCAyZjEyNDc3Li5lNzEzNmIxIDEwMDY0NAo+
-IC0tLSBhL3NvdW5kL3NvYy9jb2RlY3MvYWRhdTE3NjEuYwo+ICsrKyBiL3NvdW5kL3NvYy9jb2Rl
-Y3MvYWRhdTE3NjEuYwo+IEBAIC00NTYsMTMgKzQ1NiwxNyBAQCBzdGF0aWMgaW50IGFkYXUxNzYx
-X3NldF9iaWFzX2xldmVsKHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYywKPiAgCWNhc2UgU05E
-X1NPQ19CSUFTX1BSRVBBUkU6Cj4gIAkJYnJlYWs7Cj4gIAljYXNlIFNORF9TT0NfQklBU19TVEFO
-REJZOgo+ICsJCXJlZ2NhY2hlX2NhY2hlX29ubHkoYWRhdS0+cmVnbWFwLCBmYWxzZSk7Cj4gIAkJ
-cmVnbWFwX3VwZGF0ZV9iaXRzKGFkYXUtPnJlZ21hcCwgQURBVTE3WDFfQ0xPQ0tfQ09OVFJPTCwK
-PiAgCQkJQURBVTE3WDFfQ0xPQ0tfQ09OVFJPTF9TWVNDTEtfRU4sCj4gIAkJCUFEQVUxN1gxX0NM
-T0NLX0NPTlRST0xfU1lTQ0xLX0VOKTsKPiArCQlpZiAoc25kX3NvY19jb2RlY19nZXRfYmlhc19s
-ZXZlbChjb2RlYykgPT0gU05EX1NPQ19CSUFTX09GRikKPiArCQkJcmVnY2FjaGVfc3luYyhhZGF1
-LT5yZWdtYXApOwo+ICAJCWJyZWFrOwo+ICAJY2FzZSBTTkRfU09DX0JJQVNfT0ZGOgo+ICAJCXJl
-Z21hcF91cGRhdGVfYml0cyhhZGF1LT5yZWdtYXAsIEFEQVUxN1gxX0NMT0NLX0NPTlRST0wsCj4g
-IAkJCUFEQVUxN1gxX0NMT0NLX0NPTlRST0xfU1lTQ0xLX0VOLCAwKTsKPiArCQlyZWdjYWNoZV9j
-YWNoZV9vbmx5KGFkYXUtPnJlZ21hcCwgdHJ1ZSk7Cj4gIAkJYnJlYWs7Cj4gIAo+ICAJfQo+IEBA
-IC03ODMsNiArNzg3LDEwIEBAIGludCBhZGF1MTc2MV9wcm9iZShzdHJ1Y3QgZGV2aWNlICpkZXYs
-IHN0cnVjdCByZWdtYXAgKnJlZ21hcCwKPiAgCWlmIChyZXQpCj4gIAkJcmV0dXJuIHJldDsKPiAg
-Cj4gKwkvKiBFbmFibGUgY2FjaGUgb25seSBtb2RlIGFzIHdlIGNvdWxkIG1pc3Mgd3JpdGVzIGJl
-Zm9yZSBiaWFzIGxldmVsCj4gKwkgKiByZWFjaGVzIHN0YW5kYnkgYW5kIHRoZSBjb3JlIGNsb2Nr
-IGlzIGVuYWJsZWQgKi8KPiArCXJlZ2NhY2hlX2NhY2hlX29ubHkocmVnbWFwLCB0cnVlKTsKPiAr
-CgpUaGVyZSBhcmUgYSBmZXcgcmVnaXN0ZXIgd3JpdGVzIGJlZm9yZSB0aGlzIHdoZXJlIHRoZSBo
-YXJkd2FyZSBjb25maWd1cmF0aW9uCmlzIHNldHVwLiBXaGVuIEkgbG9vayBhdCBteSB0ZXN0IHNl
-dHVwIHRob3NlIHdyaXRlcyBzZWVtIHRvIGdvIHRocm91Z2gsIGV2ZW4KdGhvdWdoIHRoZXkgc2hv
-dWxkbid0IGFjY29yZGluZyB0byB3aGF0IHlvdSBzYXkgKGFuZCB0byB3aGF0IGlzIHdyaXR0ZW4g
-aW4KdGhlIGRhdGFzaGVldCkuCgpPbiB0aGUgb3RoZXIgaGFuZCBJJ3ZlIG5ldmVyIHNlZW4gdGhl
-IGlzc3VlIHlvdSBhcmUgaGF2aW5nIGVpdGhlciBhbmQgSSd2ZQp0ZXN0ZWQgYm90aCBtYXN0ZXIg
-YW5kIHNsYXZlIGNvbmZpZ3VyYXRpb24gb2YgdGhlIGRldmljZS4gTWF5YmUgc29tZXRoaW5nCmNo
-YW5nZWQgaW4gdGhlIHNpbGljb24gaW4gbmV3ZXIgcmV2aXNpb25zIG9mIHRoZSBkZXZpY2UuIENh
-biB5b3UgdGFrZSBhIGxvb2sKd2hldGhlciB0aGUgaGFyZHdhcmUgY29uZmlndXJhdGlvbiBpcyBj
-b3JyZWN0bHkgYXBwbGllZCBmb3IgeW91PwoKCj4gIAlyZXR1cm4gc25kX3NvY19yZWdpc3Rlcl9j
-b2RlYyhkZXYsICZhZGF1MTc2MV9jb2RlY19kcml2ZXIsIGRhaV9kcnYsIDEpOwo+ICB9Cj4gIEVY
-UE9SVF9TWU1CT0xfR1BMKGFkYXUxNzYxX3Byb2JlKTsKPiAKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+--gIhrS3Q23Nl70UJ5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Feb 03, 2016 at 10:30:58PM -0700, Jonathan Tinkham wrote:
+
+> Jonathan Tinkham (4):
+>   soc/sound: tegra_max98090: do not invert headphone jack
+>   sound/soc: tegra_max98090: rename headphone jack DAPM
+>   sound/soc: tegra_max98090: document headphone jack rename
+>   soc/sound: tegra_max98090: update dts affected by rename
+
+Please try to use subject lines reflecting the style for the subsystem -
+this makes it easier for people to spot relevant content.  The above
+isn't even internally consistent :(
+
+--gIhrS3Q23Nl70UJ5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWs5JuAAoJECTWi3JdVIfQDVcH/2bISj8BZpcEaTMwXuyWrfQ8
+DybA+ST6T6VI9ceLQrnDul2Q/4zuxEkW22uRKCtaNrvMIH4XdU8QDiRzcjLuTrCE
+ZvWPmvrch6rHIchcfM7sklnmn8XPL6w5LRF3EmZ0Fy+Zoyrs1Pr1WfIQK4mI2fRK
+GSkME8UNEqwYyVHp6jn+mgjIVibM6HdmxG4h7BpHLziZBZkS4vagdCN9l2u4xQ/y
+DI9jvVJP4fZf2NF2K+sp2YviFoq7p2tZiGkvK+q3AWiQaBcPk0eBKkxFWML0R+HB
+meZBf/kjZRQUaAfEJMqbW3ySp8RKS0JYPOML4hWZukQXN6+QaSfF2dqVyrBqmUA=
+=1li2
+-----END PGP SIGNATURE-----
+
+--gIhrS3Q23Nl70UJ5--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
