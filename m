@@ -1,86 +1,134 @@
-From: Shuah Khan <shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
-Subject: Re: linux-api scope (Re: [PATCH v2 11/22] media: dvb-frontend invoke
- enable/disable_source handlers)
-Date: Thu, 4 Feb 2016 07:35:49 -0700
-Message-ID: <56B361C5.8000101@osg.samsung.com>
-References: <CALCETrUNxPhcKiT+aswO5rr+ZpPPCkT30+Exd0iWwQnMN921Qg@mail.gmail.com>
- <CAKgNAkg+cjJS2G5TKvYAYizXWaPewVNtdBQN1x0otbPM7huy5g@mail.gmail.com>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: Re: [PATCH v2 12/22] media: au0828 video remove
+ au0828_enable_analog_tuner()
+Date: Thu, 4 Feb 2016 07:49:37 -0700
+Message-ID: <56B36501.1090803@osg.samsung.com>
+References: <cover.1454557589.git.shuahkh@osg.samsung.com>
+ <8d43a2cfe4dcdf843d2e587e35a4bd4681eebe36.1454557589.git.shuahkh@osg.samsung.com>
+ <20160204073712.25d96fcd@recife.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <CAKgNAkg+cjJS2G5TKvYAYizXWaPewVNtdBQN1x0otbPM7huy5g-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: mtk.manpages-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Andy Lutomirski <luto-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Mauro Carvalho Chehab <mchehab-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Linux API <linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, ALSA development <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Josh Triplett <josh-iaAMLnmF4UmaiuxdJuQwMA@public.gmane.org>, Steven Rostedt <rostedt-nx8X9YLhiw1AfugRpC6u6w@public.gmane.org>, Andrew Morton <akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>, Shuah Khan <shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160204073712.25d96fcd@recife.lan>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+Cc: tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittga
 List-Id: alsa-devel@alsa-project.org
 
-On 02/04/2016 07:04 AM, Michael Kerrisk (man-pages) wrote:
-> [expanding the CC a little]
+On 02/04/2016 02:37 AM, Mauro Carvalho Chehab wrote:
+> Em Wed, 03 Feb 2016 21:03:44 -0700
+> Shuah Khan <shuahkh@osg.samsung.com> escreveu:
 > 
-> Hi Andy, (and Shuah)
+>> Remove au0828_enable_analog_tuner() as it is
+>> no longer needed because v4l2-core implements
+>> common interfaces to check for media source
+>> availability.
 > 
-> On 4 February 2016 at 05:51, Andy Lutomirski <luto-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
->> [cc list heavily trimmed]
->>
->> On Wed, Feb 3, 2016 at 8:03 PM, Shuah Khan <shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org> wrote:
->>> Change dvb frontend to check if tuner is free when
->>> device opened in RW mode. Call to enable_source
->>> handler either returns with an active pipeline to
->>> tuner or error if tuner is busy. Tuner is released
->>> when frontend is released calling the disable_source
->>> handler.
->>
->> As an actual subscriber to linux-api, I prefer for the linux-api list
->> to be lowish-volume and mostly limited to API-related things.  Is this
->> API related?  Do people think that these series should be sent to
->> linux-api?
-> 
-> I think not, and I'd like to stem the flood of mail to the list.
-> There's two things that we could do:
+> I didn't see such code at v4l2-core yet. Missing patch?
 
-I simply followed the getmaintainers generate3d list.
-A bit surprised to see linux-api, but didn't want to
-leave it out.
+Removed linux-api from cc:
 
-> 
-> 1. Shuah, I know we talked about this in the past, and it made some
-> sense to me at the time for kselftest to use linux-api@, but maybe
-> it's time to create a dedicated list, and move the traffic there? It'd
-> help focus the traffic of linux-api more on its original purpose.
+Please see Patch 10/22 for v4l2-core changes.
+[PATCH v2 10/22] media: Change v4l-core to check if source is free
 
-Yes that is a good plan - I will request a new mailing list and
-send in a patch to Kselftest MAINTIANER's entry.
-
-> 
-> 2. However, I think the bigger cause of the flood is the change made
-> to MAINTAINERS by Josh's commit
-> ea8f8fc8631d9f890580a94d57a18bfeb827fa2e:
-> 
-> +ABI/API
-> +L:     linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> +F:     Documentation/ABI/
-> +F:     include/linux/syscalls.h
-> +F:     include/uapi/
-> +F:     kernel/sys_ni.c
-> 
-> The change was well-intentioned (I Acked it), but folk run
-> scripts/get-maintainers.pl without thinking too much about its output
-> and add all of the resulting lists and CCs to their patch submissions.
-> This means we get a lot of useless noise relating to drivers and
-> unrelated Documentation changes, and actually miss some of the really
-> important changes (e.g., extensions of system calls; and new /proc
-> entries tend to get lost in the noise). Furthermore, people doing
-> things such as adding new system calls often don't tun
-> scripts/get-maintainers.pl it seems. Certainly, I have to often enough
-> remind peple to CC linux-api when adding new system calls.
-> 
-> I'll craft a patch to trim the MAINTAINERS entry.
-> 
-
-Thanks for doing this,
+thanks,
 -- Shuah
 
+> 
+>>
+>> In addition, queue_setup() no longer needs the
+>> tuner availability check since v4l2-core does it.
+>>
+>> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+>> ---
+>>  drivers/media/usb/au0828/au0828-video.c | 61 ---------------------------------
+>>  1 file changed, 61 deletions(-)
+>>
+>> diff --git a/drivers/media/usb/au0828/au0828-video.c b/drivers/media/usb/au0828/au0828-video.c
+>> index 8c54fd2..81952c8 100644
+>> --- a/drivers/media/usb/au0828/au0828-video.c
+>> +++ b/drivers/media/usb/au0828/au0828-video.c
+>> @@ -638,64 +638,6 @@ static inline int au0828_isoc_copy(struct au0828_dev *dev, struct urb *urb)
+>>  	return rc;
+>>  }
+>>  
+>> -static int au0828_enable_analog_tuner(struct au0828_dev *dev)
+>> -{
+>> -#ifdef CONFIG_MEDIA_CONTROLLER
+>> -	struct media_device *mdev = dev->media_dev;
+>> -	struct media_entity *source;
+>> -	struct media_link *link, *found_link = NULL;
+>> -	int ret, active_links = 0;
+>> -
+>> -	if (!mdev || !dev->decoder)
+>> -		return 0;
+>> -
+>> -	/*
+>> -	 * This will find the tuner that is connected into the decoder.
+>> -	 * Technically, this is not 100% correct, as the device may be
+>> -	 * using an analog input instead of the tuner. However, as we can't
+>> -	 * do DVB streaming while the DMA engine is being used for V4L2,
+>> -	 * this should be enough for the actual needs.
+>> -	 */
+>> -	list_for_each_entry(link, &dev->decoder->links, list) {
+>> -		if (link->sink->entity == dev->decoder) {
+>> -			found_link = link;
+>> -			if (link->flags & MEDIA_LNK_FL_ENABLED)
+>> -				active_links++;
+>> -			break;
+>> -		}
+>> -	}
+>> -
+>> -	if (active_links == 1 || !found_link)
+>> -		return 0;
+>> -
+>> -	source = found_link->source->entity;
+>> -	list_for_each_entry(link, &source->links, list) {
+>> -		struct media_entity *sink;
+>> -		int flags = 0;
+>> -
+>> -		sink = link->sink->entity;
+>> -
+>> -		if (sink == dev->decoder)
+>> -			flags = MEDIA_LNK_FL_ENABLED;
+>> -
+>> -		ret = media_entity_setup_link(link, flags);
+>> -		if (ret) {
+>> -			pr_err(
+>> -				"Couldn't change link %s->%s to %s. Error %d\n",
+>> -				source->name, sink->name,
+>> -				flags ? "enabled" : "disabled",
+>> -				ret);
+>> -			return ret;
+>> -		} else
+>> -			au0828_isocdbg(
+>> -				"link %s->%s was %s\n",
+>> -				source->name, sink->name,
+>> -				flags ? "ENABLED" : "disabled");
+>> -	}
+>> -#endif
+>> -	return 0;
+>> -}
+>> -
+>>  static int queue_setup(struct vb2_queue *vq,
+>>  		       unsigned int *nbuffers, unsigned int *nplanes,
+>>  		       unsigned int sizes[], void *alloc_ctxs[])
+>> @@ -707,9 +649,6 @@ static int queue_setup(struct vb2_queue *vq,
+>>  		return sizes[0] < size ? -EINVAL : 0;
+>>  	*nplanes = 1;
+>>  	sizes[0] = size;
+>> -
+>> -	au0828_enable_analog_tuner(dev);
+>> -
+>>  	return 0;
+>>  }
+>>  
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-media" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
 
 
 -- 
@@ -88,4 +136,4 @@ Shuah Khan
 Sr. Linux Kernel Developer
 Open Source Innovation Group
 Samsung Research America (Silicon Valley)
-shuahkh-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org | (970) 217-8978
+shuahkh@osg.samsung.com | (970) 217-8978
