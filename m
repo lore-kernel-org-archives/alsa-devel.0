@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix the module state
-	check condition" to the asoc tree
-Date: Thu, 04 Feb 2016 12:16:13 +0000
-Message-ID: <E1aRIpZ-0001DD-Iv@debutante>
-References: <1454502594-21700-7-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix return of
+	skl_get_queue_index" to the asoc tree
+Date: Thu, 04 Feb 2016 12:16:14 +0000
+Message-ID: <E1aRIpa-0001Dh-Fp@debutante>
+References: <1454502594-21700-6-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AD70B261B03
+ by alsa0.perex.cz (Postfix) with ESMTP id C5B1D261B23
  for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 13:16:19 +0100 (CET)
-In-Reply-To: <1454502594-21700-7-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <1454502594-21700-6-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix the module state check condition
+   ASoC: Intel: Skylake: Fix return of skl_get_queue_index
 
 has been applied to the asoc tree at
 
@@ -53,37 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From 0c684c48257bc6033bdd3b942babef22d0a1852a Mon Sep 17 00:00:00 2001
+>From 9cf3049e21e4e6873aae45df19c11f7243e2f03f Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Wed, 3 Feb 2016 17:59:49 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix the module state check condition
+Date: Wed, 3 Feb 2016 17:59:48 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix return of skl_get_queue_index
 
-For binding modules we should check if source or destination
-module is in UNINT state. We canot bind even if one of them is
-in this state.
+In unbind modules, the skl_get_queue_index() can return error
+if the pin is dynamic and module is not bound yet. So instead
+of returning error this check should return success as modules
+is not yet bound. This will let the module be bound when connected
+pipes are enabled and will bind this as well.
 
-So update the check from logical AND to logical OR and do not
-bind modules for this case
+So change the return value to 0
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-messages.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-messages.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index bb5f1d7d0cad..4629372d7c8e 100644
+index de6dac496a0d..bb5f1d7d0cad 100644
 --- a/sound/soc/intel/skylake/skl-messages.c
 +++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -747,7 +747,7 @@ int skl_bind_modules(struct skl_sst *ctx,
+@@ -688,14 +688,14 @@ int skl_unbind_modules(struct skl_sst *ctx,
+ 	/* get src queue index */
+ 	src_index = skl_get_queue_index(src_mcfg->m_out_pin, dst_id, out_max);
+ 	if (src_index < 0)
+-		return -EINVAL;
++		return 0;
  
- 	skl_dump_bind_info(ctx, src_mcfg, dst_mcfg);
+ 	msg.src_queue = src_index;
  
--	if (src_mcfg->m_state < SKL_MODULE_INIT_DONE &&
-+	if (src_mcfg->m_state < SKL_MODULE_INIT_DONE ||
- 		dst_mcfg->m_state < SKL_MODULE_INIT_DONE)
- 		return 0;
+ 	/* get dst queue index */
+ 	dst_index  = skl_get_queue_index(dst_mcfg->m_in_pin, src_id, in_max);
+ 	if (dst_index < 0)
+-		return -EINVAL;
++		return 0;
+ 
+ 	msg.dst_queue = dst_index;
  
 -- 
 2.7.0.rc3
