@@ -1,15 +1,22 @@
-From: =?UTF-8?q?Andreas=20Irest=C3=A5l?= <andreas.irestal@axis.com>
-Subject: [PATCH] ASoC: adau17x1: Cache writes when core clock
-	is disabled
-Date: Thu,  4 Feb 2016 15:05:19 +0100
-Message-ID: <1454594719-17270-1-git-send-email-andire@axis.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: arizona: Add support for
+ SNDRV_PCM_RATE_KNOT
+Date: Thu, 4 Feb 2016 14:34:56 +0000
+Message-ID: <20160204143456.GX1490@localhost.localdomain>
+References: <1454431084-21411-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20160202193002.GV4455@sirena.org.uk> <56B1B939.5030503@metafoo.de>
+ <20160204124536.GV1490@localhost.localdomain>
+ <56B34A5E.7060003@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id C0857260609
- for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 15:05:42 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 20C05260609
+ for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2016 15:34:56 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <56B34A5E.7060003@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,45 +26,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lars@metafoo.de
-Cc: liam.r.girdwood@linux.intel.com, =?UTF-8?q?Andreas=20Irest=C3=A5l?= <andire@axis.com>, alsa-devel@alsa-project.org, broonie@kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-SW4gc29tZSBjb25maWd1cmF0aW9ucywgdGhlIGRhaSByZWdpc3RlcnMgZ2V0IHdyaXR0ZW4gYmVm
-b3JlIHRoZSBiaWFzCmxldmVsIGlzIGNoYW5nZWQgaW4gdGhlIGNvZGVjIGRyaXZlci4gVGhpcyBs
-ZWFkcyB0byBhIHNpdHVhdGlvbiB3aGVyZQphbiBpbml0aWFsIHdyaXRlIHRvIHRoZSBzZXJpYWwg
-cG9ydCByZWdpc3RlciBnZXRzIGlnbm9yZWQsIGFuZCBmdXR1cmUKd3JpdGVzIG1heSBhcyB3ZWxs
-LCBzaW5jZSByZWdtYXAgdGhpbmtzIHRoYXQgdGhlIGNvZGVjIGFscmVhZHkgaG9sZHMgdGhlCnZh
-bHVlLiBNb3JlIHNwZWNpZmljYWxseSwgY29uZmlndXJpbmcgdGhlIGNvZGVjIGFzIGkycyBtYXN0
-ZXIgd291bGQgaW4KZmFjdCByZXN1bHQgaW4gdGhlIGNvZGVjIHJ1bm5pbmcgYXMgc2xhdmUsIGEg
-c2l0dWF0aW9uIHdoZXJlIG5vIGkycwpjbG9ja3MgYXJlIGdlbmVyYXRlZCBhbmQgaGVuY2Ugbm8g
-ZGF0YSBpcyB0cmFuc2ZlcnJlZC4KClRoaXMgY2hhbmdlIG1ha2VzIHN1cmUgdGhhdCByZWdtYXAg
-b25seSBjYWNoZXMgd3JpdGVzIHdoZW4gdGhlIGNvcmUKY2xvY2sgaXMgZGlzYWJsZWQsIGFuZCBz
-eW5jcyByZWdtYXAgd2hlbmV2ZXIgZW5hYmxpbmcgdGhlIGNvcmUgY2xvY2sKYWdhaW4uCgpTaWdu
-ZWQtb2ZmLWJ5OiBBbmRyZWFzIElyZXN0w6VsIDxhbmRpcmVAYXhpcy5jb20+Ci0tLQogc291bmQv
-c29jL2NvZGVjcy9hZGF1MTc2MS5jIHwgOCArKysrKysrKwogMSBmaWxlIGNoYW5nZWQsIDggaW5z
-ZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvYWRhdTE3NjEuYyBiL3Nv
-dW5kL3NvYy9jb2RlY3MvYWRhdTE3NjEuYwppbmRleCAyZjEyNDc3Li5lNzEzNmIxIDEwMDY0NAot
-LS0gYS9zb3VuZC9zb2MvY29kZWNzL2FkYXUxNzYxLmMKKysrIGIvc291bmQvc29jL2NvZGVjcy9h
-ZGF1MTc2MS5jCkBAIC00NTYsMTMgKzQ1NiwxNyBAQCBzdGF0aWMgaW50IGFkYXUxNzYxX3NldF9i
-aWFzX2xldmVsKHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYywKIAljYXNlIFNORF9TT0NfQklB
-U19QUkVQQVJFOgogCQlicmVhazsKIAljYXNlIFNORF9TT0NfQklBU19TVEFOREJZOgorCQlyZWdj
-YWNoZV9jYWNoZV9vbmx5KGFkYXUtPnJlZ21hcCwgZmFsc2UpOwogCQlyZWdtYXBfdXBkYXRlX2Jp
-dHMoYWRhdS0+cmVnbWFwLCBBREFVMTdYMV9DTE9DS19DT05UUk9MLAogCQkJQURBVTE3WDFfQ0xP
-Q0tfQ09OVFJPTF9TWVNDTEtfRU4sCiAJCQlBREFVMTdYMV9DTE9DS19DT05UUk9MX1NZU0NMS19F
-Tik7CisJCWlmIChzbmRfc29jX2NvZGVjX2dldF9iaWFzX2xldmVsKGNvZGVjKSA9PSBTTkRfU09D
-X0JJQVNfT0ZGKQorCQkJcmVnY2FjaGVfc3luYyhhZGF1LT5yZWdtYXApOwogCQlicmVhazsKIAlj
-YXNlIFNORF9TT0NfQklBU19PRkY6CiAJCXJlZ21hcF91cGRhdGVfYml0cyhhZGF1LT5yZWdtYXAs
-IEFEQVUxN1gxX0NMT0NLX0NPTlRST0wsCiAJCQlBREFVMTdYMV9DTE9DS19DT05UUk9MX1NZU0NM
-S19FTiwgMCk7CisJCXJlZ2NhY2hlX2NhY2hlX29ubHkoYWRhdS0+cmVnbWFwLCB0cnVlKTsKIAkJ
-YnJlYWs7CiAKIAl9CkBAIC03ODMsNiArNzg3LDEwIEBAIGludCBhZGF1MTc2MV9wcm9iZShzdHJ1
-Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCByZWdtYXAgKnJlZ21hcCwKIAlpZiAocmV0KQogCQlyZXR1
-cm4gcmV0OwogCisJLyogRW5hYmxlIGNhY2hlIG9ubHkgbW9kZSBhcyB3ZSBjb3VsZCBtaXNzIHdy
-aXRlcyBiZWZvcmUgYmlhcyBsZXZlbAorCSAqIHJlYWNoZXMgc3RhbmRieSBhbmQgdGhlIGNvcmUg
-Y2xvY2sgaXMgZW5hYmxlZCAqLworCXJlZ2NhY2hlX2NhY2hlX29ubHkocmVnbWFwLCB0cnVlKTsK
-KwogCXJldHVybiBzbmRfc29jX3JlZ2lzdGVyX2NvZGVjKGRldiwgJmFkYXUxNzYxX2NvZGVjX2Ry
-aXZlciwgZGFpX2RydiwgMSk7CiB9CiBFWFBPUlRfU1lNQk9MX0dQTChhZGF1MTc2MV9wcm9iZSk7
-Ci0tIAoyLjEuNAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+On Thu, Feb 04, 2016 at 01:55:58PM +0100, Lars-Peter Clausen wrote:
+> On 02/04/2016 01:45 PM, Charles Keepax wrote:
+> > On Wed, Feb 03, 2016 at 09:24:25AM +0100, Lars-Peter Clausen wrote:
+> >> On 02/02/2016 08:30 PM, Mark Brown wrote:
+> >>> On Tue, Feb 02, 2016 at 04:38:04PM +0000, Charles Keepax wrote:
+> >>>
+> >>>> +#define ARIZONA_48K_RATES 12000, 24000, 48000, 96000, 192000, 4000, 8000, \
+> >>>> +			  16000, 32000
+> >>>
+> >>> This just looks wrong.  It's valid code but with the combination of the
+> >>> split line and the list without any sort of parenthesis it sets off
+> >>> alarm bells.  Duplicating might not be the worst thing ever...
+> >>
+> >> For list constraints it is possible to specify a mask for which of the
+> >> entries in the rates array should be considered. So you could use the same
+> >> rate array, but use different masks. The adau1977 drive for example does this.
+> >>
+> > 
+> > Ok so looking at this a little more I think you can only apply
+> > the mask thing to values that are part of the basic defines
+> > rather than masking off entries in a constraint list. The
+> > adau1977 is using the mask to limit the supported formats which
+> > is all done through the defines in that driver.
+> 
+> The list constraint struct looks like this:
+> 
+> struct snd_pcm_hw_constraint_list {
+>         unsigned int count;
+>         const unsigned int *list;
+>         unsigned int mask;
+> };
+> 
+> list is your rates array, count is the size of the rates array and mask
+> specifies which of the entries in the rates array are valid.
+> 
+> E.g.
+> 
+> unsigned int rates[] = {
+> 	44100,
+> 	48000,
+> };
+> 
+> struct snd_pcm_hw_constraint_list constr_44100 {
+> 	.count = ARRAY_SIZE(rates),
+> 	.list = rates,
+> 	.mask = 0x1,
+> };
+> 
+> struct snd_pcm_hw_constraint_list constr_48000 {
+> 	.count = ARRAY_SIZE(rates),
+> 	.list = rates,
+> 	.mask = 0x2,
+> };
+> 
+> struct snd_pcm_hw_constraint_list constr_all {
+> 	.count = ARRAY_SIZE(rates),
+> 	.list = rates,
+> 	.mask = 0, /* 0 = All */
+> };
+> 
+
+Ah my bad I was looking at entirely the wrong mask.
+
+Thanks,
+Charles
