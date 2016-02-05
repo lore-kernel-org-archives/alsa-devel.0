@@ -1,391 +1,664 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH v3] ASoC: nau8825: fix issue that pop noise
-	when start playback
-Date: Fri, 5 Feb 2016 16:32:45 +0800
-Message-ID: <1454661165-15275-1-git-send-email-KCHSU0@nuvoton.com>
-References: <1454383094-6778-1-git-send-email-KCHSU0@nuvoton.com>
+From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH v4 2/2] ASoC: sunxi: Add support for the
+ SPDIF block
+Date: Fri, 5 Feb 2016 10:27:39 +0100
+Message-ID: <20160205092739.GE1139@lukather>
+References: <1454584162-32449-1-git-send-email-codekipper@gmail.com>
+ <1454584162-32449-3-git-send-email-codekipper@gmail.com>
+Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id CAAF92605D2
- for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2016 09:32:32 +0100 (CET)
-In-Reply-To: <1454383094-6778-1-git-send-email-KCHSU0@nuvoton.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="gDGSpKKIBgtShtf+"
+Return-path: <linux-sunxi+bncBD2ZNBF5VYJRBDGW2G2QKGQEIKMG77Q-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1454584162-32449-3-git-send-email-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Reduce pop noise in power up and down sequence when playback.
+--gDGSpKKIBgtShtf+
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
----
- sound/soc/codecs/nau8825.c | 200 +++++++++++++++++++++++++++++++++++++--------
- sound/soc/codecs/nau8825.h |  14 ++++
- 2 files changed, 180 insertions(+), 34 deletions(-)
+Hi,
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index b9bcb10..d270f63 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -84,6 +84,7 @@ static const struct nau8825_fll_attr fll_pre_scalar[] = {
- 
- static const struct reg_default nau8825_reg_defaults[] = {
- 	{ NAU8825_REG_ENA_CTRL, 0x00ff },
-+	{ NAU8825_REG_IIC_ADDR_SET, 0x0 },
- 	{ NAU8825_REG_CLK_DIVIDER, 0x0050 },
- 	{ NAU8825_REG_FLL1, 0x0 },
- 	{ NAU8825_REG_FLL2, 0x3126 },
-@@ -158,8 +159,7 @@ static const struct reg_default nau8825_reg_defaults[] = {
- static bool nau8825_readable_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
--	case NAU8825_REG_ENA_CTRL:
--	case NAU8825_REG_CLK_DIVIDER ... NAU8825_REG_FLL_VCO_RSV:
-+	case NAU8825_REG_ENA_CTRL ... NAU8825_REG_FLL_VCO_RSV:
- 	case NAU8825_REG_HSD_CTRL ... NAU8825_REG_JACK_DET_CTRL:
- 	case NAU8825_REG_INTERRUPT_MASK ... NAU8825_REG_KEYDET_CTRL:
- 	case NAU8825_REG_VDET_THRESHOLD_1 ... NAU8825_REG_DACR_CTRL:
-@@ -184,8 +184,7 @@ static bool nau8825_readable_reg(struct device *dev, unsigned int reg)
- static bool nau8825_writeable_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
--	case NAU8825_REG_RESET ... NAU8825_REG_ENA_CTRL:
--	case NAU8825_REG_CLK_DIVIDER ... NAU8825_REG_FLL_VCO_RSV:
-+	case NAU8825_REG_RESET ... NAU8825_REG_FLL_VCO_RSV:
- 	case NAU8825_REG_HSD_CTRL ... NAU8825_REG_JACK_DET_CTRL:
- 	case NAU8825_REG_INTERRUPT_MASK:
- 	case NAU8825_REG_INT_CLR_KEY_STATUS ... NAU8825_REG_KEYDET_CTRL:
-@@ -227,10 +226,23 @@ static bool nau8825_volatile_reg(struct device *dev, unsigned int reg)
- static int nau8825_pump_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
-+
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
- 		/* Prevent startup click by letting charge pump to ramp up */
- 		msleep(10);
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_CHARGE_PUMP,
-+			NAU8825_JAMNODCLOW, NAU8825_JAMNODCLOW);
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_CLASSG_CTRL,
-+			NAU8825_CLASSG_EN, 0);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_BOOST,
-+			NAU8825_HP_BOOST_DIS, 0);
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -239,6 +251,47 @@ static int nau8825_pump_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
-+static int nau8825_playback_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_HSD_CTRL,
-+			NAU8825_SPKR_DWN1R | NAU8825_SPKR_DWN1L,
-+			NAU8825_SPKR_DWN1R | NAU8825_SPKR_DWN1L);
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_BIAS_ADJ,
-+			NAU8825_BIAS_TESTDAC_EN, NAU8825_BIAS_TESTDAC_EN);
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_BOOST,
-+			NAU8825_HP_BOOST_DIS, NAU8825_HP_BOOST_DIS);
-+		break;
-+	case SND_SOC_DAPM_POST_PMU:
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_HSD_CTRL,
-+			NAU8825_SPKR_DWN1R | NAU8825_SPKR_DWN1L, 0);
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_BIAS_ADJ,
-+			NAU8825_BIAS_TESTDAC_EN, 0);
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_BOOST,
-+			NAU8825_HP_BOOST_DIS, 0);
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_BOOST,
-+			NAU8825_HP_BOOST_DIS, NAU8825_HP_BOOST_DIS);
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_HSD_CTRL,
-+			NAU8825_SPKR_DWN1R | NAU8825_SPKR_DWN1L,
-+			NAU8825_SPKR_DWN1R | NAU8825_SPKR_DWN1L);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_BOOST,
-+			NAU8825_HP_BOOST_DIS, 0);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+
- static int nau8825_dacr_event(struct snd_soc_dapm_widget *w,
- 		struct snd_kcontrol *kcontrol, int event)
- {
-@@ -262,6 +315,54 @@ static int nau8825_dacr_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
-+static int nau8825_output_dac_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_BIAS_ADJ,
-+			NAU8825_BIAS_TESTDAC_EN, 0);
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_BOOST,
-+			NAU8825_HP_BOOST_DIS, NAU8825_HP_BOOST_DIS);
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_CHARGE_PUMP,
-+			NAU8825_JAMNODCLOW, 0);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int nau8825_hp_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_HSD_CTRL,
-+			NAU8825_SPKR_DWN1R | NAU8825_SPKR_DWN1L, 0);
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_BOOST,
-+			NAU8825_HP_BOOST_DIS, 0);
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_CLASSG_CTRL,
-+			NAU8825_CLASSG_EN, NAU8825_CLASSG_EN);
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static const char * const nau8825_adc_decimation[] = {
- 	"32", "64", "128", "256"
- };
-@@ -339,10 +440,10 @@ static const struct snd_soc_dapm_widget nau8825_dapm_widgets[] = {
- 	SND_SOC_DAPM_SUPPLY("SAR", NAU8825_REG_SAR_CTRL,
- 		NAU8825_SAR_ADC_EN_SFT, 0, NULL, 0),
- 
--	SND_SOC_DAPM_DAC("ADACL", NULL, NAU8825_REG_RDAC, 12, 0),
--	SND_SOC_DAPM_DAC("ADACR", NULL, NAU8825_REG_RDAC, 13, 0),
--	SND_SOC_DAPM_SUPPLY("ADACL Clock", NAU8825_REG_RDAC, 8, 0, NULL, 0),
--	SND_SOC_DAPM_SUPPLY("ADACR Clock", NAU8825_REG_RDAC, 9, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA_S("ADACL", 2, NAU8825_REG_RDAC, 12, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA_S("ADACR", 2, NAU8825_REG_RDAC, 13, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA_S("ADACL Clock", 3, NAU8825_REG_RDAC, 8, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA_S("ADACR Clock", 3, NAU8825_REG_RDAC, 9, 0, NULL, 0),
- 
- 	SND_SOC_DAPM_DAC_E("DDACR", NULL, SND_SOC_NOPM, 0, 0,
- 		nau8825_dacr_event, SND_SOC_DAPM_POST_PMU |
-@@ -354,32 +455,40 @@ static const struct snd_soc_dapm_widget nau8825_dapm_widgets[] = {
- 	SND_SOC_DAPM_MUX("DACL Mux", SND_SOC_NOPM, 0, 0, &nau8825_dacl_mux),
- 	SND_SOC_DAPM_MUX("DACR Mux", SND_SOC_NOPM, 0, 0, &nau8825_dacr_mux),
- 
--	SND_SOC_DAPM_PGA("HP amp L", NAU8825_REG_CLASSG_CTRL, 1, 0, NULL, 0),
--	SND_SOC_DAPM_PGA("HP amp R", NAU8825_REG_CLASSG_CTRL, 2, 0, NULL, 0),
--	SND_SOC_DAPM_SUPPLY("HP amp power", NAU8825_REG_CLASSG_CTRL, 0, 0, NULL,
--		0),
-+	SND_SOC_DAPM_PGA_S("HP amp L", 0,
-+		NAU8825_REG_CLASSG_CTRL, 1, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA_S("HP amp R", 0,
-+		NAU8825_REG_CLASSG_CTRL, 2, 0, NULL, 0),
- 
--	SND_SOC_DAPM_SUPPLY("Charge Pump", NAU8825_REG_CHARGE_PUMP, 5, 0,
--		nau8825_pump_event, SND_SOC_DAPM_POST_PMU),
-+	SND_SOC_DAPM_PGA_S("Charge Pump", 1, NAU8825_REG_CHARGE_PUMP, 5, 0,
-+		nau8825_pump_event, SND_SOC_DAPM_POST_PMU |
-+		SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
- 
--	SND_SOC_DAPM_PGA("Output Driver R Stage 1",
-+	SND_SOC_DAPM_PGA_S("Output Driver R Stage 1", 4,
- 		NAU8825_REG_POWER_UP_CONTROL, 5, 0, NULL, 0),
--	SND_SOC_DAPM_PGA("Output Driver L Stage 1",
-+	SND_SOC_DAPM_PGA_S("Output Driver L Stage 1", 4,
- 		NAU8825_REG_POWER_UP_CONTROL, 4, 0, NULL, 0),
--	SND_SOC_DAPM_PGA("Output Driver R Stage 2",
-+	SND_SOC_DAPM_PGA_S("Output Driver R Stage 2", 5,
- 		NAU8825_REG_POWER_UP_CONTROL, 3, 0, NULL, 0),
--	SND_SOC_DAPM_PGA("Output Driver L Stage 2",
-+	SND_SOC_DAPM_PGA_S("Output Driver L Stage 2", 5,
- 		NAU8825_REG_POWER_UP_CONTROL, 2, 0, NULL, 0),
--	SND_SOC_DAPM_PGA_S("Output Driver R Stage 3", 1,
-+	SND_SOC_DAPM_PGA_S("Output Driver R Stage 3", 6,
- 		NAU8825_REG_POWER_UP_CONTROL, 1, 0, NULL, 0),
--	SND_SOC_DAPM_PGA_S("Output Driver L Stage 3", 1,
-+	SND_SOC_DAPM_PGA_S("Output Driver L Stage 3", 6,
- 		NAU8825_REG_POWER_UP_CONTROL, 0, 0, NULL, 0),
- 
--	SND_SOC_DAPM_PGA_S("Output DACL", 2, NAU8825_REG_CHARGE_PUMP, 8, 1, NULL, 0),
--	SND_SOC_DAPM_PGA_S("Output DACR", 2, NAU8825_REG_CHARGE_PUMP, 9, 1, NULL, 0),
-+	SND_SOC_DAPM_PGA_S("Output DACL", 7,
-+		NAU8825_REG_CHARGE_PUMP, 8, 1, nau8825_output_dac_event,
-+		SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD),
-+	SND_SOC_DAPM_PGA_S("Output DACR", 7,
-+		NAU8825_REG_CHARGE_PUMP, 9, 1, nau8825_output_dac_event,
-+		SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD),
-+
-+	SND_SOC_DAPM_HP("HPOL", nau8825_hp_event),
-+	SND_SOC_DAPM_HP("HPOR", nau8825_hp_event),
- 
--	SND_SOC_DAPM_OUTPUT("HPOL"),
--	SND_SOC_DAPM_OUTPUT("HPOR"),
-+	SND_SOC_DAPM_PRE("Pre Playback", nau8825_playback_event),
-+	SND_SOC_DAPM_POST("Post Playback", nau8825_playback_event),
- };
- 
- static const struct snd_soc_dapm_route nau8825_dapm_routes[] = {
-@@ -399,14 +508,14 @@ static const struct snd_soc_dapm_route nau8825_dapm_routes[] = {
- 	{"DACR Mux", "DACR", "DDACR"},
- 	{"HP amp L", NULL, "DACL Mux"},
- 	{"HP amp R", NULL, "DACR Mux"},
--	{"HP amp L", NULL, "HP amp power"},
--	{"HP amp R", NULL, "HP amp power"},
--	{"ADACL", NULL, "HP amp L"},
--	{"ADACR", NULL, "HP amp R"},
--	{"ADACL", NULL, "ADACL Clock"},
--	{"ADACR", NULL, "ADACR Clock"},
--	{"Output Driver L Stage 1", NULL, "ADACL"},
--	{"Output Driver R Stage 1", NULL, "ADACR"},
-+	{"Charge Pump", NULL, "HP amp L"},
-+	{"Charge Pump", NULL, "HP amp R"},
-+	{"ADACL", NULL, "Charge Pump"},
-+	{"ADACR", NULL, "Charge Pump"},
-+	{"ADACL Clock", NULL, "ADACL"},
-+	{"ADACR Clock", NULL, "ADACR"},
-+	{"Output Driver L Stage 1", NULL, "ADACL Clock"},
-+	{"Output Driver R Stage 1", NULL, "ADACR Clock"},
- 	{"Output Driver L Stage 2", NULL, "Output Driver L Stage 1"},
- 	{"Output Driver R Stage 2", NULL, "Output Driver R Stage 1"},
- 	{"Output Driver L Stage 3", NULL, "Output Driver L Stage 2"},
-@@ -415,8 +524,6 @@ static const struct snd_soc_dapm_route nau8825_dapm_routes[] = {
- 	{"Output DACR", NULL, "Output Driver R Stage 3"},
- 	{"HPOL", NULL, "Output DACL"},
- 	{"HPOR", NULL, "Output DACR"},
--	{"HPOL", NULL, "Charge Pump"},
--	{"HPOR", NULL, "Charge Pump"},
- };
- 
- static int nau8825_hw_params(struct snd_pcm_substream *substream,
-@@ -792,6 +899,8 @@ static void nau8825_init_regs(struct nau8825 *nau8825)
- {
- 	struct regmap *regmap = nau8825->regmap;
- 
-+	/* Latch IIC LSB value */
-+	regmap_write(regmap, NAU8825_REG_IIC_ADDR_SET, 0x0001);
- 	/* Enable Bias/Vmid */
- 	regmap_update_bits(nau8825->regmap, NAU8825_REG_BIAS_ADJ,
- 		NAU8825_BIAS_VMID, NAU8825_BIAS_VMID);
-@@ -846,6 +955,29 @@ static void nau8825_init_regs(struct nau8825 *nau8825)
- 		NAU8825_ADC_SYNC_DOWN_MASK, NAU8825_ADC_SYNC_DOWN_128);
- 	regmap_update_bits(regmap, NAU8825_REG_DAC_CTRL1,
- 		NAU8825_DAC_OVERSAMPLE_MASK, NAU8825_DAC_OVERSAMPLE_128);
-+	/* Disable DACR/L power */
-+	regmap_update_bits(regmap, NAU8825_REG_CHARGE_PUMP,
-+		NAU8825_POWER_DOWN_DACR | NAU8825_POWER_DOWN_DACL,
-+		NAU8825_POWER_DOWN_DACR | NAU8825_POWER_DOWN_DACL);
-+	/* CICCLP off */
-+	regmap_update_bits(regmap, NAU8825_REG_DAC_CTRL1,
-+		NAU8825_DAC_CLIP_OFF, NAU8825_DAC_CLIP_OFF);
-+
-+	/* Class AB bias current to 2x, DAC Capacitor enable MSB/LSB */
-+	regmap_update_bits(regmap, NAU8825_REG_ANALOG_CONTROL_2,
-+		NAU8825_HP_NON_CLASSG_CURRENT_2xADJ |
-+		NAU8825_DAC_CAPACITOR_MSB | NAU8825_DAC_CAPACITOR_LSB,
-+		NAU8825_HP_NON_CLASSG_CURRENT_2xADJ |
-+		NAU8825_DAC_CAPACITOR_MSB | NAU8825_DAC_CAPACITOR_LSB);
-+	/* Class G timer 64ms */
-+	regmap_update_bits(regmap, NAU8825_REG_CLASSG_CTRL,
-+		NAU8825_CLASSG_TIMER_MASK,
-+		0x20 << NAU8825_CLASSG_TIMER_SFT);
-+	/* DAC clock delay 2ns, VREF */
-+	regmap_update_bits(regmap, NAU8825_REG_RDAC,
-+		NAU8825_RDAC_CLK_DELAY_MASK | NAU8825_RDAC_VREF_MASK,
-+		(0x2 << NAU8825_RDAC_CLK_DELAY_SFT) |
-+		(0x3 << NAU8825_RDAC_VREF_SFT));
- }
- 
- static const struct regmap_config nau8825_regmap_config = {
-diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
-index 8237693..029134a 100644
---- a/sound/soc/codecs/nau8825.h
-+++ b/sound/soc/codecs/nau8825.h
-@@ -14,6 +14,7 @@
- 
- #define NAU8825_REG_RESET		0x00
- #define NAU8825_REG_ENA_CTRL		0x01
-+#define NAU8825_REG_IIC_ADDR_SET		0x02
- #define NAU8825_REG_CLK_DIVIDER		0x03
- #define NAU8825_REG_FLL1		0x04
- #define NAU8825_REG_FLL2		0x05
-@@ -259,12 +260,18 @@
- /* DACR_CTRL (0x34) */
- #define NAU8825_DACR_CH_SEL_SFT	9
- 
-+/* CLASSG_CTRL (0x50) */
-+#define NAU8825_CLASSG_TIMER_SFT	8
-+#define NAU8825_CLASSG_TIMER_MASK	(0x3f << NAU8825_CLASSG_TIMER_SFT)
-+#define NAU8825_CLASSG_EN		(1 << 0)
-+
- /* I2C_DEVICE_ID (0x58) */
- #define NAU8825_GPIO2JD1	(1 << 7)
- #define NAU8825_SOFTWARE_ID_MASK	0x3
- #define NAU8825_SOFTWARE_ID_NAU8825	0x0
- 
- /* BIAS_ADJ (0x66) */
-+#define NAU8825_BIAS_TESTDAC_EN	(0x3 << 8)
- #define NAU8825_BIAS_VMID	(1 << 6)
- #define NAU8825_BIAS_VMID_SEL_SFT	4
- #define NAU8825_BIAS_VMID_SEL_MASK	(3 << NAU8825_BIAS_VMID_SEL_SFT)
-@@ -282,6 +289,12 @@
- #define NAU8825_ADC_VREFSEL_VMID_PLUS_1DB	(3 << 8)
- #define NAU8825_POWERUP_ADCL	(1 << 6)
- 
-+/* RDAC (0x73) */
-+#define NAU8825_RDAC_CLK_DELAY_SFT	4
-+#define NAU8825_RDAC_CLK_DELAY_MASK	(0x7 << NAU8825_RDAC_CLK_DELAY_SFT)
-+#define NAU8825_RDAC_VREF_SFT	2
-+#define NAU8825_RDAC_VREF_MASK	(0x3 << NAU8825_RDAC_VREF_SFT)
-+
- /* MIC_BIAS (0x74) */
- #define NAU8825_MICBIAS_JKSLV	(1 << 14)
- #define NAU8825_MICBIAS_JKR2	(1 << 12)
-@@ -292,6 +305,7 @@
- /* BOOST (0x76) */
- #define NAU8825_PRECHARGE_DIS	(1 << 13)
- #define NAU8825_GLOBAL_BIAS_EN	(1 << 12)
-+#define NAU8825_HP_BOOST_DIS		(1 << 9)
- #define NAU8825_HP_BOOST_G_DIS	(1 << 8)
- #define NAU8825_SHORT_SHUTDOWN_EN	(1 << 6)
- 
+On Thu, Feb 04, 2016 at 12:09:22PM +0100, codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
+> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> 
+> The sun4i, sun5i and sun7i SoC families have an SPDIF
+> block which is capable of playback and capture.
+> 
+> This patch enables the playback of this block for
+> the sun4i families.
+> 
+> Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> ---
+>  sound/soc/sunxi/Kconfig       |   8 +
+>  sound/soc/sunxi/Makefile      |   1 +
+>  sound/soc/sunxi/sun4i-spdif.c | 561 ++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 570 insertions(+)
+>  create mode 100644 sound/soc/sunxi/sun4i-spdif.c
+> 
+> diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
+> index 84c72ec..6af7224 100644
+> --- a/sound/soc/sunxi/Kconfig
+> +++ b/sound/soc/sunxi/Kconfig
+> @@ -8,4 +8,12 @@ config SND_SUN4I_CODEC
+>  	  Select Y or M to add support for the Codec embedded in the Allwinner
+>  	  A10 and affiliated SoCs.
+>  
+> +config SND_SUN4I_SPDIF
+> +        tristate "Allwinner A10 SPDIF Support"
+> +	depends on OF
+
+The indentation looks off.
+
+> +        select SND_SOC_GENERIC_DMAENGINE_PCM
+> +        select REGMAP_MMIO
+> +        help
+> +          Say Y or M to add support for the S/PDIF audio block in the Allwinner
+> +	  A10 and affiliated SoCs.
+
+Here as well.
+
+>  endmenu
+> diff --git a/sound/soc/sunxi/Makefile b/sound/soc/sunxi/Makefile
+> index ea8a08c..8f5e889 100644
+> --- a/sound/soc/sunxi/Makefile
+> +++ b/sound/soc/sunxi/Makefile
+> @@ -1,2 +1,3 @@
+>  obj-$(CONFIG_SND_SUN4I_CODEC) += sun4i-codec.o
+>  
+> +obj-$(CONFIG_SND_SUN4I_SPDIF) += sun4i-spdif.o
+> diff --git a/sound/soc/sunxi/sun4i-spdif.c b/sound/soc/sunxi/sun4i-spdif.c
+> new file mode 100644
+> index 0000000..bb32344
+> --- /dev/null
+> +++ b/sound/soc/sunxi/sun4i-spdif.c
+> @@ -0,0 +1,561 @@
+> +/*
+> + * ALSA SoC SPDIF Audio Layer
+> + *
+> + * Copyright 2015 Andrea Venturi <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
+> + * Copyright 2015 Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> + *
+> + * Based on the Allwinner SDK driver, released under the GPL.
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + */
+> +
+> +#include <linux/clk.h>
+> +#include <linux/delay.h>
+> +#include <linux/device.h>
+> +#include <linux/kernel.h>
+> +#include <linux/init.h>
+> +#include <linux/regmap.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_device.h>
+> +#include <linux/ioport.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pm_runtime.h>
+> +#include <sound/dmaengine_pcm.h>
+> +#include <sound/pcm_params.h>
+> +#include <sound/soc.h>
+> +
+> +#define	SUN4I_SPDIF_CTL		(0x00)
+> +	#define SUN4I_SPDIF_CTL_MCLKDIV(v)		((v) << 4) /* v even */
+> +	#define SUN4I_SPDIF_CTL_MCLKOUTEN		BIT(2)
+> +	#define SUN4I_SPDIF_CTL_GEN			BIT(1)
+> +	#define SUN4I_SPDIF_CTL_RESET			BIT(0)
+> +
+> +#define SUN4I_SPDIF_TXCFG	(0x04)
+> +	#define SUN4I_SPDIF_TXCFG_SINGLEMOD		BIT(31)
+> +	#define SUN4I_SPDIF_TXCFG_ASS			BIT(17)
+> +	#define SUN4I_SPDIF_TXCFG_NONAUDIO		BIT(16)
+> +	#define SUN4I_SPDIF_TXCFG_TXRATIO(v)		((v) << 4)
+> +	#define SUN4I_SPDIF_TXCFG_TXRATIO_MASK		GENMASK(8, 4)
+> +	#define SUN4I_SPDIF_TXCFG_FMTRVD		GENMASK(3, 2)
+> +	#define SUN4I_SPDIF_TXCFG_FMT16BIT		(0 << 2)
+> +	#define SUN4I_SPDIF_TXCFG_FMT20BIT		(1 << 2)
+> +	#define SUN4I_SPDIF_TXCFG_FMT24BIT		(2 << 2)
+> +	#define SUN4I_SPDIF_TXCFG_CHSTMODE		BIT(1)
+> +	#define SUN4I_SPDIF_TXCFG_TXEN			BIT(0)
+> +
+> +#define SUN4I_SPDIF_RXCFG	(0x08)
+> +	#define SUN4I_SPDIF_RXCFG_LOCKFLAG		BIT(4)
+> +	#define SUN4I_SPDIF_RXCFG_CHSTSRC		BIT(3)
+> +	#define SUN4I_SPDIF_RXCFG_CHSTCP		BIT(1)
+> +	#define SUN4I_SPDIF_RXCFG_RXEN			BIT(0)
+> +
+> +#define SUN4I_SPDIF_TXFIFO	(0x0C)
+> +
+> +#define SUN4I_SPDIF_RXFIFO	(0x10)
+> +
+> +#define SUN4I_SPDIF_FCTL	(0x14)
+> +	#define SUN4I_SPDIF_FCTL_FIFOSRC		BIT(31)
+> +	#define SUN4I_SPDIF_FCTL_FTX			BIT(17)
+> +	#define SUN4I_SPDIF_FCTL_FRX			BIT(16)
+> +	#define SUN4I_SPDIF_FCTL_TXTL(v)		((v) << 8)
+> +	#define SUN4I_SPDIF_FCTL_TXTL_MASK		GENMASK(12, 8)
+> +	#define SUN4I_SPDIF_FCTL_RXTL(v)		((v) << 3)
+> +	#define SUN4I_SPDIF_FCTL_RXTL_MASK		GENMASK(7, 3)
+> +	#define SUN4I_SPDIF_FCTL_TXIM			BIT(2)
+> +	#define SUN4I_SPDIF_FCTL_RXOM(v)		((v) << 0)
+> +	#define SUN4I_SPDIF_FCTL_RXOM_MASK		GENMASK(1, 0)
+> +
+> +#define SUN4I_SPDIF_FSTA	(0x18)
+> +	#define SUN4I_SPDIF_FSTA_TXE			BIT(14)
+> +	#define SUN4I_SPDIF_FSTA_TXECNTSHT		(8)
+> +	#define SUN4I_SPDIF_FSTA_RXA			BIT(6)
+> +	#define SUN4I_SPDIF_FSTA_RXACNTSHT		(0)
+> +
+> +#define SUN4I_SPDIF_INT		(0x1C)
+> +	#define SUN4I_SPDIF_INT_RXLOCKEN		BIT(18)
+> +	#define SUN4I_SPDIF_INT_RXUNLOCKEN		BIT(17)
+> +	#define SUN4I_SPDIF_INT_RXPARERREN		BIT(16)
+> +	#define SUN4I_SPDIF_INT_TXDRQEN			BIT(7)
+> +	#define SUN4I_SPDIF_INT_TXUIEN			BIT(6)
+> +	#define SUN4I_SPDIF_INT_TXOIEN			BIT(5)
+> +	#define SUN4I_SPDIF_INT_TXEIEN			BIT(4)
+> +	#define SUN4I_SPDIF_INT_RXDRQEN			BIT(2)
+> +	#define SUN4I_SPDIF_INT_RXOIEN			BIT(1)
+> +	#define SUN4I_SPDIF_INT_RXAIEN			BIT(0)
+> +
+> +#define SUN4I_SPDIF_ISTA	(0x20)
+> +	#define SUN4I_SPDIF_ISTA_RXLOCKSTA		BIT(18)
+> +	#define SUN4I_SPDIF_ISTA_RXUNLOCKSTA		BIT(17)
+> +	#define SUN4I_SPDIF_ISTA_RXPARERRSTA		BIT(16)
+> +	#define SUN4I_SPDIF_ISTA_TXUSTA			BIT(6)
+> +	#define SUN4I_SPDIF_ISTA_TXOSTA			BIT(5)
+> +	#define SUN4I_SPDIF_ISTA_TXESTA			BIT(4)
+> +	#define SUN4I_SPDIF_ISTA_RXOSTA			BIT(1)
+> +	#define SUN4I_SPDIF_ISTA_RXASTA			BIT(0)
+> +
+> +#define SUN4I_SPDIF_TXCNT	(0x24)
+> +
+> +#define SUN4I_SPDIF_RXCNT	(0x28)
+> +
+> +#define SUN4I_SPDIF_TXCHSTA0	(0x2C)
+> +	#define SUN4I_SPDIF_TXCHSTA0_CLK(v)		((v) << 28)
+> +	#define SUN4I_SPDIF_TXCHSTA0_SAMFREQ(v)		((v) << 24)
+> +	#define SUN4I_SPDIF_TXCHSTA0_SAMFREQ_MASK	GENMASK(27, 24)
+> +	#define SUN4I_SPDIF_TXCHSTA0_CHNUM(v)		((v) << 20)
+> +	#define SUN4I_SPDIF_TXCHSTA0_CHNUM_MASK		GENMASK(23, 20)
+> +	#define SUN4I_SPDIF_TXCHSTA0_SRCNUM(v)		((v) << 16)
+> +	#define SUN4I_SPDIF_TXCHSTA0_CATACOD(v)		((v) << 8)
+> +	#define SUN4I_SPDIF_TXCHSTA0_MODE(v)		((v) << 6)
+> +	#define SUN4I_SPDIF_TXCHSTA0_EMPHASIS(v)	((v) << 3)
+> +	#define SUN4I_SPDIF_TXCHSTA0_CP			BIT(2)
+> +	#define SUN4I_SPDIF_TXCHSTA0_AUDIO		BIT(1)
+> +	#define SUN4I_SPDIF_TXCHSTA0_PRO		BIT(0)
+> +
+> +#define SUN4I_SPDIF_TXCHSTA1	(0x30)
+> +	#define SUN4I_SPDIF_TXCHSTA1_CGMSA(v)		((v) << 8)
+> +	#define SUN4I_SPDIF_TXCHSTA1_ORISAMFREQ(v)	((v) << 4)
+> +	#define SUN4I_SPDIF_TXCHSTA1_ORISAMFREQ_MASK	GENMASK(7, 4)
+> +	#define SUN4I_SPDIF_TXCHSTA1_SAMWORDLEN(v)	((v) << 1)
+> +	#define SUN4I_SPDIF_TXCHSTA1_MAXWORDLEN		BIT(0)
+> +
+> +#define SUN4I_SPDIF_RXCHSTA0	(0x34)
+> +	#define SUN4I_SPDIF_RXCHSTA0_CLK(v)		((v) << 28)
+> +	#define SUN4I_SPDIF_RXCHSTA0_SAMFREQ(v)		((v) << 24)
+> +	#define SUN4I_SPDIF_RXCHSTA0_CHNUM(v)		((v) << 20)
+> +	#define SUN4I_SPDIF_RXCHSTA0_SRCNUM(v)		((v) << 16)
+> +	#define SUN4I_SPDIF_RXCHSTA0_CATACOD(v)		((v) << 8)
+> +	#define SUN4I_SPDIF_RXCHSTA0_MODE(v)		((v) << 6)
+> +	#define SUN4I_SPDIF_RXCHSTA0_EMPHASIS(v)	((v) << 3)
+> +	#define SUN4I_SPDIF_RXCHSTA0_CP			BIT(2)
+> +	#define SUN4I_SPDIF_RXCHSTA0_AUDIO		BIT(1)
+> +	#define SUN4I_SPDIF_RXCHSTA0_PRO		BIT(0)
+> +
+> +#define SUN4I_SPDIF_RXCHSTA1	(0x38)
+> +	#define SUN4I_SPDIF_RXCHSTA1_CGMSA(v)		((v) << 8)
+> +	#define SUN4I_SPDIF_RXCHSTA1_ORISAMFREQ(v)	((v) << 4)
+> +	#define SUN4I_SPDIF_RXCHSTA1_SAMWORDLEN(v)	((v) << 1)
+> +	#define SUN4I_SPDIF_RXCHSTA1_MAXWORDLEN		BIT(0)
+> +
+> +/* Defines for Sampling Frequency */
+> +#define SUN4I_SPDIF_SAMFREQ_44_1KHZ		0x0
+> +#define SUN4I_SPDIF_SAMFREQ_NOT_INDICATED	0x1
+> +#define SUN4I_SPDIF_SAMFREQ_48KHZ		0x2
+> +#define SUN4I_SPDIF_SAMFREQ_32KHZ		0x3
+> +#define SUN4I_SPDIF_SAMFREQ_22_05KHZ		0x4
+> +#define SUN4I_SPDIF_SAMFREQ_24KHZ		0x6
+> +#define SUN4I_SPDIF_SAMFREQ_88_2KHZ		0x8
+> +#define SUN4I_SPDIF_SAMFREQ_76_8KHZ		0x9
+> +#define SUN4I_SPDIF_SAMFREQ_96KHZ		0xa
+> +#define SUN4I_SPDIF_SAMFREQ_176_4KHZ		0xc
+> +#define SUN4I_SPDIF_SAMFREQ_192KHZ		0xe
+> +
+> +/*
+> + * Original sampling frequency can be represented by inverting the value of the
+> + * sampling frequency.
+> + */
+> +#define ORIGINAL(v) ((~v) & 0xf)
+
+You're not using that macro anywhere.
+
+> +
+> +struct sun4i_spdif_dev {
+> +	struct platform_device *pdev;
+> +	struct clk *spdif_clk;
+> +	struct clk *apb_clk;
+> +	struct snd_soc_dai_driver cpu_dai_drv;
+> +	struct regmap *regmap;
+> +	struct snd_dmaengine_dai_dma_data dma_params_tx;
+> +};
+> +
+> +static void sun4i_spdif_configure(struct sun4i_spdif_dev *host)
+> +{
+> +	/* soft reset SPDIF */
+> +	regmap_write(host->regmap, SUN4I_SPDIF_CTL, SUN4I_SPDIF_CTL_RESET);
+> +
+> +	/* flush TX FIFO */
+> +	regmap_update_bits(host->regmap, SUN4I_SPDIF_FCTL,
+> +			   SUN4I_SPDIF_FCTL_FTX, SUN4I_SPDIF_FCTL_FTX);
+> +
+> +	/* clear TX counter */
+> +	regmap_write(host->regmap, SUN4I_SPDIF_TXCNT, 0);
+> +}
+> +
+> +static void sun4i_snd_txctrl_on(struct snd_pcm_substream *substream,
+> +				struct sun4i_spdif_dev *host)
+> +{
+> +	if (substream->runtime->channels == 1)
+> +		regmap_update_bits(host->regmap, SUN4I_SPDIF_TXCFG,
+> +				   SUN4I_SPDIF_TXCFG_SINGLEMOD,
+> +				   SUN4I_SPDIF_TXCFG_SINGLEMOD);
+> +
+> +	/* SPDIF TX ENABLE */
+> +	regmap_update_bits(host->regmap, SUN4I_SPDIF_TXCFG,
+> +			   SUN4I_SPDIF_TXCFG_TXEN, SUN4I_SPDIF_TXCFG_TXEN);
+> +
+> +	/* DRQ ENABLE */
+> +	regmap_update_bits(host->regmap, SUN4I_SPDIF_INT,
+> +			   SUN4I_SPDIF_INT_TXDRQEN, SUN4I_SPDIF_INT_TXDRQEN);
+> +
+> +	/* Global enable */
+> +	regmap_update_bits(host->regmap, SUN4I_SPDIF_CTL,
+> +			   SUN4I_SPDIF_CTL_GEN, SUN4I_SPDIF_CTL_GEN);
+> +}
+> +
+> +static void sun4i_snd_txctrl_off(struct snd_pcm_substream *substream,
+> +				 struct sun4i_spdif_dev *host)
+> +{
+> +	/* SPDIF TX DISABLE */
+> +	regmap_update_bits(host->regmap, SUN4I_SPDIF_TXCFG,
+> +			   SUN4I_SPDIF_TXCFG_TXEN, 0);
+> +
+> +	/* DRQ DISABLE */
+> +	regmap_update_bits(host->regmap, SUN4I_SPDIF_INT,
+> +			   SUN4I_SPDIF_INT_TXDRQEN, 0);
+> +
+> +	/* Global disable */
+> +	regmap_update_bits(host->regmap, SUN4I_SPDIF_CTL,
+> +			   SUN4I_SPDIF_CTL_GEN, 0);
+> +}
+> +
+> +static int sun4i_spdif_startup(struct snd_pcm_substream *substream,
+> +			       struct snd_soc_dai *cpu_dai)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct sun4i_spdif_dev *host = snd_soc_dai_get_drvdata(rtd->cpu_dai);
+> +
+> +	if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
+> +		return -EINVAL;
+> +
+> +	sun4i_spdif_configure(host);
+> +
+> +	return 0;
+> +}
+> +
+> +static int sun4i_spdif_hw_params(struct snd_pcm_substream *substream,
+> +				 struct snd_pcm_hw_params *params,
+> +				 struct snd_soc_dai *cpu_dai)
+> +{
+> +	int ret = 0;
+> +	int fmt;
+> +	unsigned long rate = params_rate(params);
+> +	u32 mclk_div = 0;
+> +	unsigned int mclk = 0;
+> +	u32 reg_val;
+> +	struct sun4i_spdif_dev *host = snd_soc_dai_get_drvdata(cpu_dai);
+> +	struct platform_device *pdev = host->pdev;
+> +
+> +	/* Add the PCM and raw data select interface */
+> +	switch (params_channels(params)) {
+> +	case 1: /* PCM mode */
+> +	case 2:
+> +		fmt = 0;
+> +		break;
+> +	case 4: /* raw data mode */
+> +		fmt = SUN4I_SPDIF_TXCFG_NONAUDIO;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	switch (params_format(params)) {
+> +	case SNDRV_PCM_FORMAT_S16_LE:
+> +		fmt |= SUN4I_SPDIF_TXCFG_FMT16BIT;
+> +		break;
+> +	case SNDRV_PCM_FORMAT_S20_3LE:
+> +		fmt |= SUN4I_SPDIF_TXCFG_FMT20BIT;
+> +		break;
+> +	case SNDRV_PCM_FORMAT_S24_LE:
+> +		fmt |= SUN4I_SPDIF_TXCFG_FMT24BIT;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	switch (rate) {
+> +	case 22050:
+> +	case 44100:
+> +	case 88200:
+> +	case 176400:
+> +		mclk = 22579200;
+> +		break;
+> +	case 24000:
+> +	case 32000:
+> +	case 48000:
+> +	case 96000:
+> +	case 192000:
+> +		mclk = 24576000;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	ret = clk_set_rate(host->spdif_clk, mclk);
+> +	if (ret < 0) {
+> +		dev_err(&pdev->dev,
+> +			"Setting SPDIF clock rate for %d Hz failed!\n", mclk);
+> +		return ret;
+> +	}
+> +
+> +	regmap_update_bits(host->regmap, SUN4I_SPDIF_FCTL,
+> +			   SUN4I_SPDIF_FCTL_TXIM, SUN4I_SPDIF_FCTL_TXIM);
+> +
+> +	switch (rate) {
+> +	case 22050:
+> +	case 24000:
+> +		mclk_div = 8;
+> +		break;
+> +	case 32000:
+> +		mclk_div = 6;
+> +		break;
+> +	case 44100:
+> +	case 48000:
+> +		mclk_div = 4;
+> +		break;
+> +	case 88200:
+> +	case 96000:
+> +		mclk_div = 2;
+> +		break;
+> +	case 176400:
+> +	case 192000:
+> +		mclk_div = 1;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	reg_val = 0;
+> +	reg_val |= SUN4I_SPDIF_TXCFG_ASS;
+> +	reg_val |= fmt; /* set non audio and bit depth */
+> +	reg_val |= SUN4I_SPDIF_TXCFG_CHSTMODE;
+> +	reg_val |= SUN4I_SPDIF_TXCFG_TXRATIO(mclk_div - 1);
+> +	regmap_write(host->regmap, SUN4I_SPDIF_TXCFG, reg_val);
+> +
+> +	return 0;
+> +}
+> +
+> +static int sun4i_spdif_trigger(struct snd_pcm_substream *substream, int cmd,
+> +			       struct snd_soc_dai *dai)
+> +{
+> +	int ret = 0;
+> +	struct sun4i_spdif_dev *host = snd_soc_dai_get_drvdata(dai);
+> +
+> +	if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
+> +		return -EINVAL;
+> +
+> +	switch (cmd) {
+> +	case SNDRV_PCM_TRIGGER_START:
+> +	case SNDRV_PCM_TRIGGER_RESUME:
+> +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+> +		sun4i_snd_txctrl_on(substream, host);
+> +		break;
+> +
+> +	case SNDRV_PCM_TRIGGER_STOP:
+> +	case SNDRV_PCM_TRIGGER_SUSPEND:
+> +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> +		sun4i_snd_txctrl_off(substream, host);
+> +		break;
+> +
+> +	default:
+> +		ret = -EINVAL;
+> +		break;
+> +	}
+> +	return ret;
+> +}
+> +
+> +static int sun4i_spdif_soc_dai_probe(struct snd_soc_dai *dai)
+> +{
+> +	struct sun4i_spdif_dev *host = snd_soc_dai_get_drvdata(dai);
+> +
+> +	snd_soc_dai_init_dma_data(dai, &host->dma_params_tx, NULL);
+> +	return 0;
+> +}
+> +
+> +static const struct snd_soc_dai_ops sun4i_spdif_dai_ops = {
+> +	.startup	= sun4i_spdif_startup,
+> +	.trigger	= sun4i_spdif_trigger,
+> +	.hw_params	= sun4i_spdif_hw_params,
+> +};
+> +
+> +static const struct regmap_config sun4i_spdif_regmap_config = {
+> +	.reg_bits = 32,
+> +	.reg_stride = 4,
+> +	.val_bits = 32,
+> +	.max_register = SUN4I_SPDIF_RXCHSTA1,
+> +};
+> +
+> +#define SUN4I_RATES	SNDRV_PCM_RATE_8000_192000
+> +
+> +#define SUN4I_FORMATS	(SNDRV_PCM_FORMAT_S16_LE | \
+> +				SNDRV_PCM_FORMAT_S20_3LE | \
+> +				SNDRV_PCM_FORMAT_S24_LE)
+> +
+> +static struct snd_soc_dai_driver sun4i_spdif_dai = {
+> +	.playback = {
+> +		.channels_min = 1,
+> +		.channels_max = 2,
+> +		.rates = SUN4I_RATES,
+> +		.formats = SUN4I_FORMATS,
+> +	},
+> +	.probe = sun4i_spdif_soc_dai_probe,
+> +	.ops = &sun4i_spdif_dai_ops,
+> +	.name = "spdif",
+> +};
+> +
+> +static const struct snd_soc_dapm_widget dit_widgets[] = {
+> +	SND_SOC_DAPM_OUTPUT("spdif-out"),
+> +};
+> +
+> +static const struct snd_soc_dapm_route dit_routes[] = {
+> +	{ "spdif-out", NULL, "Playback" },
+> +};
+> +
+> +static const struct of_device_id sun4i_spdif_of_match[] = {
+> +	{ .compatible = "allwinner,sun4i-a10-spdif", },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, sun4i_spdif_of_match);
+> +
+> +static const struct snd_soc_component_driver sun4i_spdif_component = {
+> +	.name		= "sun4i-spdif",
+> +};
+> +
+> +static int sun4i_spdif_runtime_suspend(struct device *dev)
+> +{
+> +	struct sun4i_spdif_dev *host  = dev_get_drvdata(dev);
+> +
+> +	clk_disable_unprepare(host->spdif_clk);
+> +	clk_disable_unprepare(host->apb_clk);
+> +
+> +	return 0;
+> +}
+> +
+> +static int sun4i_spdif_runtime_resume(struct device *dev)
+> +{
+> +	struct sun4i_spdif_dev *host  = dev_get_drvdata(dev);
+> +
+> +	clk_prepare_enable(host->spdif_clk);
+> +	clk_prepare_enable(host->apb_clk);
+> +
+> +	return 0;
+> +}
+> +
+> +static int sun4i_spdif_probe(struct platform_device *pdev)
+> +{
+> +	struct sun4i_spdif_dev *host;
+> +	struct resource *res;
+> +	int ret;
+> +	void __iomem *base;
+> +
+> +	dev_dbg(&pdev->dev, "Entered %s\n", __func__);
+> +
+> +	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
+> +	if (!host)
+> +		return -ENOMEM;
+> +
+> +	host->pdev = pdev;
+> +
+> +	/* Initialize this copy of the CPU DAI driver structure */
+> +	memcpy(&host->cpu_dai_drv, &sun4i_spdif_dai, sizeof(sun4i_spdif_dai));
+> +	host->cpu_dai_drv.name = dev_name(&pdev->dev);
+> +
+> +	/* Get the addresses */
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	base = devm_ioremap_resource(&pdev->dev, res);
+> +	if (IS_ERR(base))
+> +		return PTR_ERR(base);
+> +
+> +	host->regmap = devm_regmap_init_mmio(&pdev->dev, base,
+> +						&sun4i_spdif_regmap_config);
+> +
+> +	/* Clocks */
+> +	host->apb_clk = devm_clk_get(&pdev->dev, "apb");
+> +	if (IS_ERR(host->apb_clk)) {
+> +		dev_err(&pdev->dev, "failed to get a apb clock.\n");
+> +		return PTR_ERR(host->apb_clk);
+> +	}
+> +
+> +	ret = clk_prepare_enable(host->apb_clk);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "try to enable apb_spdif_clk failed\n");
+> +		return ret;
+> +	}
+
+You don't need to enable it anymore.
+
+> +
+> +	host->spdif_clk = devm_clk_get(&pdev->dev, "spdif");
+> +	if (IS_ERR(host->spdif_clk)) {
+> +		dev_err(&pdev->dev, "failed to get a spdif clock.\n");
+> +		goto err_disable_apb_clk;
+> +	}
+> +
+> +	host->dma_params_tx.addr = res->start + SUN4I_SPDIF_TXFIFO;
+> +	host->dma_params_tx.maxburst = 4;
+> +	host->dma_params_tx.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
+> +
+> +	platform_set_drvdata(pdev, host);
+> +
+> +	ret = devm_snd_soc_register_component(&pdev->dev,
+> +				&sun4i_spdif_component, &sun4i_spdif_dai, 1);
+> +	if (ret)
+> +		goto err_disable_apb_clk;
+> +
+> +	pm_runtime_enable(&pdev->dev);
+> +	if (!pm_runtime_enabled(&pdev->dev)) {
+> +		ret = sun4i_spdif_runtime_resume(&pdev->dev);
+> +		if (ret)
+> +			goto err_unregister;
+> +	}
+> +
+> +	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+> +	if (ret)
+> +		goto err_suspend;
+> +	return 0;
+> +err_suspend:
+> +	if (!pm_runtime_status_suspended(&pdev->dev))
+> +		sun4i_spdif_runtime_suspend(&pdev->dev);
+> +err_unregister:
+> +	pm_runtime_disable(&pdev->dev);
+> +	snd_soc_unregister_component(&pdev->dev);
+> +err_disable_apb_clk:
+> +	clk_disable_unprepare(host->apb_clk);
+> +	return ret;
+> +}
+> +
+> +static int sun4i_spdif_remove(struct platform_device *pdev)
+> +{
+> +	pm_runtime_disable(&pdev->dev);
+> +	if (!pm_runtime_status_suspended(&pdev->dev))
+> +		sun4i_spdif_runtime_suspend(&pdev->dev);
+> +
+> +	snd_soc_unregister_platform(&pdev->dev);
+> +	snd_soc_unregister_component(&pdev->dev);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct dev_pm_ops sun4i_spdif_pm = {
+> +	SET_RUNTIME_PM_OPS(sun4i_spdif_runtime_suspend,
+> +			   sun4i_spdif_runtime_resume, NULL)
+> +};
+> +
+> +static struct platform_driver sun4i_spdif_driver = {
+> +	.driver		= {
+> +		.name	= "sun4i-spdif",
+> +		.of_match_table = of_match_ptr(sun4i_spdif_of_match),
+> +		.pm	= &sun4i_spdif_pm,
+> +	},
+> +	.probe		= sun4i_spdif_probe,
+> +	.remove		= sun4i_spdif_remove,
+> +};
+> +
+> +module_platform_driver(sun4i_spdif_driver);
+> +
+> +MODULE_AUTHOR("Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>");
+> +MODULE_AUTHOR("Andrea Venturi <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>");
+> +MODULE_DESCRIPTION("Allwinner sun4i SPDIF SoC Interface");
+> +MODULE_LICENSE("GPL");
+> +MODULE_ALIAS("platform:sun4i-spdif");
+> -- 
+> 2.7.0
+> 
+
+Thanks!
+Maxime
+
 -- 
-2.6.4
+Maxime Ripard, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
+--gDGSpKKIBgtShtf+--
