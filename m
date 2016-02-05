@@ -1,66 +1,110 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: mxs-saif: check BUSY bit in hw_params() only if
- not mclk_in_use
-Date: Fri, 5 Feb 2016 16:00:22 +0000
-Message-ID: <20160205160022.GX4455@sirena.org.uk>
-References: <1454505500-30384-1-git-send-email-mans@mansr.com>
- <20160205131944.GB12311@sirena.org.uk>
- <yw1x60y3i94n.fsf@unicorn.mansr.com>
- <20160205133712.GC12311@sirena.org.uk>
- <yw1xwpqjgtmt.fsf@unicorn.mansr.com>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: Re: [PATCH v3 3/3] portman2x4 - use new parport device model
+Date: Fri, 05 Feb 2016 22:20:51 +0530
+Message-ID: <56B4D2EB.4060006@gmail.com>
+References: <1454603903-15967-1-git-send-email-sudipm.mukherjee@gmail.com>	<1454603903-15967-3-git-send-email-sudipm.mukherjee@gmail.com>	<s5hr3gse7wk.wl-tiwai@suse.de>	<20160205061706.GA6374@sudip-pc> <s5hbn7ve5i6.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="JQJYpj0es6mGpGbU"
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <yw1xwpqjgtmt.fsf@unicorn.mansr.com>
+In-Reply-To: <s5hbn7ve5i6.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Friday 05 February 2016 05:25 PM, Takashi Iwai wrote:
+> On Fri, 05 Feb 2016 07:17:06 +0100,
+> Sudip Mukherjee wrote:
+>>
+>> On Thu, Feb 04, 2016 at 05:51:07PM +0100, Takashi Iwai wrote:
+>>> On Thu, 04 Feb 2016 17:38:23 +0100,
+>>> Sudip Mukherjee wrote:
+>>>>
+>>>> Modify portman driver to use the new parallel port device model.
+>>>> The advantage of using the device model is that the device gets binded
+>>>> to the hardware, we get the feature of hotplug, we can bind/unbind
+>>>> the driver at runtime.
+>>>> The only change is in the way the driver gets registered with the
+>>>> parallel port subsystem and so as a result there is no user visible
+>>>> change or any chance of regression.
+>>>>
+>>>> Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+>>>> ---
+>>>>
+>>>> v3: changed commit message
+>>>> v2:
+>>>>   1. pardev_cb is initialized while declaring, thus removing the use of
+>>>> memset.
+>>>>   2. used pdev->id.
+>>>>   3. v1 did not have the parport probe callback, but
+>>>> we will need the probe callback for binding as the name of the driver
+>>>> and the name of the device is different.
+>>>>   4. in v1 I missed modifying snd_portman_probe_port().
+>>>>
+>>>>   sound/drivers/portman2x4.c | 53 ++++++++++++++++++++++++++++++++++------------
+>>>>   1 file changed, 39 insertions(+), 14 deletions(-)
+>>>>
+>>>> diff --git a/sound/drivers/portman2x4.c b/sound/drivers/portman2x4.c
+>>>> index 172685d..a22f56c 100644
+>>>> --- a/sound/drivers/portman2x4.c
+>>>> +++ b/sound/drivers/portman2x4.c
+>>>> @@ -650,10 +650,21 @@ static int snd_portman_probe_port(struct parport *p)
+>>>>   {
+>>>>   	struct pardevice *pardev;
+>>>>   	int res;
+>>>> -
+>>>> -	pardev = parport_register_device(p, DRIVER_NAME,
+>>>> -					 NULL, NULL, NULL,
+>>>> -					 0, NULL);
+>>>> +	struct pardev_cb pdev_cb = {
+>>>> +		.preempt = NULL,
+>>>> +		.wakeup = NULL,
+>>>> +		.private = NULL,
+>>>> +		.irq_func = NULL,
+>>>> +		.flags = 0,
+>>>> +	};
+>>>> +
+>>>> +	/*
+>>>> +	 * Specify the device number as SNDRV_CARDS + 1 so that the
+>>>> +	 * device id alloted to this temporary device will never clash
+>>>> +	 * with an actual device already registered.
+>>>> +	 */
+>>>> +	pardev = parport_register_dev_model(p, DRIVER_NAME, &pdev_cb,
+>>>> +					    SNDRV_CARDS + 1);
+>>>
+>>> Hmm, doesn't this result in a device name like "xxx.33" ?
+>>
+>> yes, it will. But this is a temoporary device just to check if the
+>> sound card is connected to that particular parallel port or not. After
+>> checking this device is immediately unregistered. My idea here was to
+>> have a device number which will never clash with another device number.
+>> And we can never have a device like "xxx.33", so no conflict. :)
+>
+> Ah, this is the temporary one.  If so, does it make sense to convert
+> this to dev_model one?  This means that the device will be notified to
+> udev even though this is a temporary one to be removed immediately.
 
---JQJYpj0es6mGpGbU
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+But since we are registering a device it should ideally follow the 
+dev_model.
 
-On Fri, Feb 05, 2016 at 01:43:22PM +0000, M=E5ns Rullg=E5rd wrote:
-> Mark Brown <broonie@kernel.org> writes:
+> It's what we'd want to avoid.  The function serves just as probing the
+> availability of the given port, not really registering anything
+> there.
 
-> > By looking at people working on the driver in git and the authors listed
-> > in the driver (get_maintainer --git will do most of this for you, though
-> > you do have to think about false positives).  As previously advised this
-> > is not something that can be fully automated, you need to think about
-> > who you are sending things to and why.
+To my understanding, it is probing for the availability of the port and 
+it is also calling portman_probe() which is initializing hardware 
+handshake lines to midi box and checking if the portman card is 
+connected to that parallel port or not.
 
-> Most files have been touched by many people.  I thought the entire point
-> of the MAINTAINERS file was to remove the guesswork from choosing where
-> to send patches.  Apparently sound/ has rules of its own.
+>
+> That is, we need to change the registration flow itself if we really
+> want to move dev_model for the whole.
 
-No, this is true in general for the kernel - I'm just repeating
-SubmittingPatches to you here.  Most individual drivers don't have a
-specific entry in MAINTAINERS and it's probably not worth the bother
-trying to get it completely 100% accurate.  MAINTAINERS is there to be
-helpful and to have things like lists and git hanging off it but it's
-not the be all and end all of everything, it still generates false
-positives (consider how many ASoC patches Jaroslav has reviewed for
-example) and false negatives.  No automated system is going to be
-perfect, at some point you're going to need to think.
+Any hint, how to register then?
+Without probing (reading and writing to that port) I can not know if 
+that port is having the card and to use the port I need to register a 
+device with that port.
 
---JQJYpj0es6mGpGbU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWtMcVAAoJECTWi3JdVIfQH+YH/iop/WMb9HzEfVpJoimhn2pR
-XwdpZfyBdPB0bIUuXy1F6XhRRktIF7ULxIFr5WAUOMOOZcG797N9LnXQeTF6zMSh
-cz4c4nbT2XLL/ePvhAkt/cG8SbE3gHh7QGLi2jWbt19DdIAuHep7IOO1DqztZjgu
-gYYGkl3XNKhRaNwHGlMZMTjqnDeFlLDGiXIIBNO710BvPRq3zMEYALlnIGw1kHP1
-SNlCWRxa6KWWeHUmB7Doa3Nubm9LERSAIzGnDJgi9u+pa7UpXr72dVmWAW1j3lir
-pqW5L5ww6SuwNZWh3jQ/Ny/tSv3QRQUlyXb7ogVNpzJsrcmVCYVN/pfCmZcXP0M=
-=+aFU
------END PGP SIGNATURE-----
-
---JQJYpj0es6mGpGbU--
+Regards
+Sudip
