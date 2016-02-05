@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 4/7] ASoC: Intel: Skylake: Add MCLK
-	configuration
-Date: Fri,  5 Feb 2016 12:19:07 +0530
-Message-ID: <1454654950-23091-5-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 5/7] ASoC: Intel: Skylake: Allow module
+	parameter set after bind
+Date: Fri,  5 Feb 2016 12:19:08 +0530
+Message-ID: <1454654950-23091-6-git-send-email-vinod.koul@intel.com>
 References: <1454654950-23091-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id D9AF22665FC
- for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2016 07:46:14 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D977266609
+ for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2016 07:46:16 +0100 (CET)
 In-Reply-To: <1454654950-23091-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,157 +22,140 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: "Dharageswari.R" <dharageswari.r@intel.com>, tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org
+Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Dharageswari.R" <dharageswari.r@intel.com>
+From: Jeeja KP <jeeja.kp@intel.com>
 
-The SoC has MCLK output which is typically required by codecs.
-The MCLK is controlled by DSP FW, so driver can configure that by
-sending DMA_CONTROL IPC. The configuration for MCLK is present
-in the endpoint blob.
+Some modules require params to be set after the module is bound
+to all the pins connected.
 
-So if block has this configuration, send IPC to DSP for MCLK
-configuration. This is done by new function skl_dsp_set_dma_control()
-which is invoked by BE prepare.
+The module provider initializes set_param flag for such modules
+and we send params after binding. This is done by the function
+skl_tplg_set_module_bind_params()
 
-Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-messages.c | 40 ++++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-pcm.c      | 18 +++++++++++++++
- sound/soc/intel/skylake/skl-topology.h | 25 +++++++++++++++++++++
- 3 files changed, 83 insertions(+)
+ sound/soc/intel/skylake/skl-topology.c       | 72 ++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-tplg-interface.h |  3 +-
+ 2 files changed, 74 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 60f9fe389887..737934cc620d 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -317,6 +317,46 @@ static void skl_setup_cpr_gateway_cfg(struct skl_sst *ctx,
- 	skl_copy_copier_caps(mconfig, cpr_mconfig);
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 696a8becb803..7803a6f3c014 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -545,6 +545,66 @@ static int skl_tplg_mixer_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
+ 	return 0;
  }
  
-+#define DMA_CONTROL_ID 5
-+
-+int skl_dsp_set_dma_control(struct skl_sst *ctx, struct skl_module_cfg *mconfig)
++/*
++ * Some modules require params to be set after the module is bound to
++ * all pins connected.
++ *
++ * The module provider initializes set_param flag for such modules and we
++ * send params after binding
++ */
++static int skl_tplg_set_module_bind_params(struct snd_soc_dapm_widget *w,
++			struct skl_module_cfg *mcfg, struct skl_sst *ctx)
 +{
-+	struct skl_dma_control *dma_ctrl;
-+	struct skl_i2s_config_blob config_blob;
-+	struct skl_ipc_large_config_msg msg = {0};
-+	int err = 0;
-+
++	int i, ret;
++	struct skl_module_cfg *mconfig = w->priv;
++	const struct snd_kcontrol_new *k;
++	struct soc_bytes_ext *sb;
++	struct skl_algo_data *bc;
++	struct skl_specific_cfg *sp_cfg;
 +
 +	/*
-+	 * if blob size is same as capablity size, then no dma control
-+	 * present so return
++	 * check all out/in pins are in bind state.
++	 * if so set the module param
 +	 */
-+	if (mconfig->formats_config.caps_size == sizeof(config_blob))
-+		return 0;
++	for (i = 0; i < mcfg->max_out_queue; i++) {
++		if (mcfg->m_out_pin[i].pin_state != SKL_PIN_BIND_DONE)
++			return 0;
++	}
 +
-+	msg.large_param_id = DMA_CONTROL_ID;
-+	msg.param_data_size = sizeof(struct skl_dma_control) +
-+				mconfig->formats_config.caps_size;
++	for (i = 0; i < mcfg->max_in_queue; i++) {
++		if (mcfg->m_in_pin[i].pin_state != SKL_PIN_BIND_DONE)
++			return 0;
++	}
 +
-+	dma_ctrl = kzalloc(msg.param_data_size, GFP_KERNEL);
-+	if (dma_ctrl == NULL)
-+		return -ENOMEM;
++	if (mconfig->formats_config.caps_size > 0 &&
++		mconfig->formats_config.set_params == SKL_PARAM_BIND) {
++		sp_cfg = &mconfig->formats_config;
++		ret = skl_set_module_params(ctx, sp_cfg->caps,
++					sp_cfg->caps_size,
++					sp_cfg->param_id, mconfig);
++		if (ret < 0)
++			return ret;
++	}
 +
-+	dma_ctrl->node_id = skl_get_node_id(ctx, mconfig);
++	for (i = 0; i < w->num_kcontrols; i++) {
++		k = &w->kcontrol_news[i];
++		if (k->access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK) {
++			sb = (void *) k->private_value;
++			bc = (struct skl_algo_data *)sb->dobj.private;
 +
-+	/* size in dwords */
-+	dma_ctrl->config_length = sizeof(config_blob) / 4;
++			if (bc->set_params == SKL_PARAM_BIND) {
++				ret = skl_set_module_params(ctx,
++						(u32 *)bc->params, bc->max,
++						bc->param_id, mconfig);
++				if (ret < 0)
++					return ret;
++			}
++		}
++	}
 +
-+	memcpy(dma_ctrl->config_data, mconfig->formats_config.caps,
-+				mconfig->formats_config.caps_size);
-+
-+	err = skl_ipc_set_large_config(&ctx->ipc, &msg, (u32 *)dma_ctrl);
-+
-+	kfree(dma_ctrl);
-+
-+	return err;
++	return 0;
 +}
 +
- static void skl_setup_out_format(struct skl_sst *ctx,
- 			struct skl_module_cfg *mconfig,
- 			struct skl_audio_data_format *out_fmt)
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index cc9a5599ab9d..092450ac1c78 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -206,6 +206,23 @@ static int skl_get_format(struct snd_pcm_substream *substream,
- 	return format_val;
- }
+ static int skl_tplg_bind_sinks(struct snd_soc_dapm_widget *w,
+ 				struct skl *skl,
+ 				struct snd_soc_dapm_widget *src_w,
+@@ -579,11 +639,19 @@ static int skl_tplg_bind_sinks(struct snd_soc_dapm_widget *w,
+ 			sink = p->sink;
+ 			sink_mconfig = sink->priv;
  
-+static int skl_be_prepare(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *dai)
-+{
-+	struct skl *skl = get_skl_ctx(dai->dev);
-+	struct skl_sst *ctx = skl->skl_sst;
-+	struct skl_module_cfg *mconfig;
++			if (src_mconfig->m_state == SKL_MODULE_UNINIT ||
++				sink_mconfig->m_state == SKL_MODULE_UNINIT)
++				continue;
 +
-+	if ((dai->playback_active > 1) || (dai->capture_active > 1))
-+		return 0;
-+
-+	mconfig = skl_tplg_be_get_cpr_module(dai, substream->stream);
-+	if (mconfig == NULL)
-+		return -EINVAL;
-+
-+	return skl_dsp_set_dma_control(ctx, mconfig);
-+}
-+
- static int skl_pcm_prepare(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
-@@ -588,6 +605,7 @@ static struct snd_soc_dai_ops skl_dmic_dai_ops = {
+ 			/* Bind source to sink, mixin is always source */
+ 			ret = skl_bind_modules(ctx, src_mconfig, sink_mconfig);
+ 			if (ret)
+ 				return ret;
  
- static struct snd_soc_dai_ops skl_be_ssp_dai_ops = {
- 	.hw_params = skl_be_hw_params,
-+	.prepare = skl_be_prepare,
++			/* set module params after bind */
++			skl_tplg_set_module_bind_params(src_w, src_mconfig, ctx);
++			skl_tplg_set_module_bind_params(sink, sink_mconfig, ctx);
++
+ 			/* Start sinks pipe first */
+ 			if (sink_mconfig->pipe->state != SKL_PIPE_STARTED) {
+ 				if (sink_mconfig->pipe->conn_type !=
+@@ -714,6 +782,10 @@ static int skl_tplg_mixer_dapm_post_pmu_event(struct snd_soc_dapm_widget *w,
+ 		if (ret)
+ 			return ret;
+ 
++		/* set module params after bind */
++		skl_tplg_set_module_bind_params(source, src_mconfig, ctx);
++		skl_tplg_set_module_bind_params(sink, sink_mconfig, ctx);
++
+ 		if (sink_mconfig->pipe->conn_type != SKL_PIPE_CONN_TYPE_FE)
+ 			ret = skl_run_pipe(ctx, sink_mconfig->pipe);
+ 	}
+diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
+index c9ae010b3cc8..1db88a63ac17 100644
+--- a/sound/soc/intel/skylake/skl-tplg-interface.h
++++ b/sound/soc/intel/skylake/skl-tplg-interface.h
+@@ -144,7 +144,8 @@ enum module_pin_type {
+ enum skl_module_param_type {
+ 	SKL_PARAM_DEFAULT = 0,
+ 	SKL_PARAM_INIT,
+-	SKL_PARAM_SET
++	SKL_PARAM_SET,
++	SKL_PARAM_BIND
  };
  
- static struct snd_soc_dai_ops skl_link_dai_ops = {
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index 5f0707cf1f54..de3c401284d9 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -113,6 +113,29 @@ struct skl_cpr_gtw_cfg {
- 	u32 config_data[1];
- } __packed;
- 
-+struct skl_i2s_config_blob {
-+	u32 gateway_attrib;
-+	u32 tdm_ts_group[8];
-+	u32 ssc0;
-+	u32 ssc1;
-+	u32 sscto;
-+	u32 sspsp;
-+	u32 sstsa;
-+	u32 ssrsa;
-+	u32 ssc2;
-+	u32 sspsp2;
-+	u32 ssc3;
-+	u32 ssioc;
-+	u32 mdivc;
-+	u32 mdivr;
-+} __packed;
-+
-+struct skl_dma_control {
-+	u32 node_id;
-+	u32 config_length;
-+	u32 config_data[1];
-+} __packed;
-+
- struct skl_cpr_cfg {
- 	struct skl_base_cfg base_cfg;
- 	struct skl_audio_data_format out_fmt;
-@@ -313,6 +336,8 @@ static inline struct skl *get_skl_ctx(struct device *dev)
- 
- int skl_tplg_be_update_params(struct snd_soc_dai *dai,
- 	struct skl_pipe_params *params);
-+int skl_dsp_set_dma_control(struct skl_sst *ctx,
-+		struct skl_module_cfg *mconfig);
- void skl_tplg_set_be_dmic_config(struct snd_soc_dai *dai,
- 	struct skl_pipe_params *params, int stream);
- int skl_tplg_init(struct snd_soc_platform *platform,
+ struct skl_dfw_module_pin {
 -- 
 1.9.1
