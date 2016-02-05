@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mxs-saif: check BUSY bit in hw_params()
-	only if not mclk_in_use" to the asoc tree
-Date: Fri, 05 Feb 2016 13:35:16 +0000
-Message-ID: <E1aRgXc-00012t-UW@finisterre>
-References: <1454505500-30384-1-git-send-email-mans@mansr.com>
+Subject: Applied "ASoC: adau17x1: Cache writes when core clock
+	is disabled" to the asoc tree
+Date: Fri, 05 Feb 2016 13:35:19 +0000
+Message-ID: <E1aRgXf-00013N-OH@finisterre>
+References: <1454594719-17270-1-git-send-email-andire@axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0686259588232831498=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 23246260601
- for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2016 14:35:34 +0100 (CET)
-In-Reply-To: <1454505500-30384-1-git-send-email-mans@mansr.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 70AFC260644
+ for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2016 14:35:42 +0100 (CET)
+In-Reply-To: <1454594719-17270-1-git-send-email-andire@axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mans Rullgard <mans@mansr.com>, Mark Brown <broonie@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+--===============0686259588232831498==
+Content-Type: text/plain
+
 The patch
 
-   ASoC: mxs-saif: check BUSY bit in hw_params() only if not mclk_in_use
+   ASoC: adau17x1: Cache writes when core clock is disabled
 
 has been applied to the asoc tree at
 
@@ -53,36 +55,75 @@ to this mail.
 Thanks,
 Mark
 
->From 436e056c4ba368f13a5709a5a4a7f26fc238a5a6 Mon Sep 17 00:00:00 2001
-From: Mans Rullgard <mans@mansr.com>
-Date: Wed, 3 Feb 2016 13:18:20 +0000
-Subject: [PATCH] ASoC: mxs-saif: check BUSY bit in hw_params() only if not
- mclk_in_use
+>From 27d6e7d1c96c9f51379e0feb972fec26029098bc Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Andreas=20Irest=C3=A5l?= <andreas.irestal@axis.com>
+Date: Thu, 4 Feb 2016 15:05:19 +0100
+Subject: [PATCH] ASoC: adau17x1: Cache writes when core clock is disabled
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-If something else, typically a codec, has enabled mclk, the BUSY
-bit may be set when hw_params() is called without this being an
-error.  This check thus causes intermittent failures to configure
-the sound device when used in such a manner.  Fix this by making
-the test conditional on !saif->mclk_in_use.
+In some configurations, the dai registers get written before the bias
+level is changed in the codec driver. This leads to a situation where
+an initial write to the serial port register gets ignored, and future
+writes may as well, since regmap thinks that the codec already holds the
+value. More specifically, configuring the codec as i2s master would in
+fact result in the codec running as slave, a situation where no i2s
+clocks are generated and hence no data is transferred.
 
-Signed-off-by: Mans Rullgard <mans@mansr.com>
+This change makes sure that regmap only caches writes when the core
+clock is disabled, and syncs regmap whenever enabling the core clock
+again.
+
+Signed-off-by: Andreas Irestål <andire@axis.com>
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mxs/mxs-saif.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/adau1761.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index c866ade..cd04eb7e 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -408,7 +408,7 @@ static int mxs_saif_hw_params(struct snd_pcm_substream *substream,
- 	}
+diff --git a/sound/soc/codecs/adau1761.c b/sound/soc/codecs/adau1761.c
+index 2f12477..e7136b1 100644
+--- a/sound/soc/codecs/adau1761.c
++++ b/sound/soc/codecs/adau1761.c
+@@ -456,13 +456,17 @@ static int adau1761_set_bias_level(struct snd_soc_codec *codec,
+ 	case SND_SOC_BIAS_PREPARE:
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
++		regcache_cache_only(adau->regmap, false);
+ 		regmap_update_bits(adau->regmap, ADAU17X1_CLOCK_CONTROL,
+ 			ADAU17X1_CLOCK_CONTROL_SYSCLK_EN,
+ 			ADAU17X1_CLOCK_CONTROL_SYSCLK_EN);
++		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF)
++			regcache_sync(adau->regmap);
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+ 		regmap_update_bits(adau->regmap, ADAU17X1_CLOCK_CONTROL,
+ 			ADAU17X1_CLOCK_CONTROL_SYSCLK_EN, 0);
++		regcache_cache_only(adau->regmap, true);
+ 		break;
  
- 	stat = __raw_readl(saif->base + SAIF_STAT);
--	if (stat & BM_SAIF_STAT_BUSY) {
-+	if (!saif->mclk_in_use && (stat & BM_SAIF_STAT_BUSY)) {
- 		dev_err(cpu_dai->dev, "error: busy\n");
- 		return -EBUSY;
  	}
+@@ -783,6 +787,10 @@ int adau1761_probe(struct device *dev, struct regmap *regmap,
+ 	if (ret)
+ 		return ret;
+ 
++	/* Enable cache only mode as we could miss writes before bias level
++	 * reaches standby and the core clock is enabled */
++	regcache_cache_only(regmap, true);
++
+ 	return snd_soc_register_codec(dev, &adau1761_codec_driver, dai_drv, 1);
+ }
+ EXPORT_SYMBOL_GPL(adau1761_probe);
 -- 
 2.6.4
+
+
+--===============0686259588232831498==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0686259588232831498==--
