@@ -1,16 +1,14 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 6/7] ASoC: Intel: Skylake: Add shutdown callback
-Date: Fri,  5 Feb 2016 12:19:09 +0530
-Message-ID: <1454654950-23091-7-git-send-email-vinod.koul@intel.com>
-References: <1454654950-23091-1-git-send-email-vinod.koul@intel.com>
+Subject: Resend [GIT PULL]: Update sst audio firmware for
+	Skylake
+Date: Fri, 5 Feb 2016 13:08:20 +0530
+Message-ID: <20160205073820.GD2531@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4749600633892648529=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id C3281266618
- for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2016 07:46:19 +0100 (CET)
-In-Reply-To: <1454654950-23091-1-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E7E502605D2
+ for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2016 08:34:44 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,66 +18,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
+To: linux-firmware@kernel.org
+Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
 
-While going to shutdown, we need to bring HW to clean state. This
-is done by cleaning up stream descriptor registers. This cleanup
-is already done by decoupling of stream and stopping the chip, so
-invoke these from shutdown handler.
+--===============4749600633892648529==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ftEhullJWpWg/VHq"
+Content-Disposition: inline
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/skylake/skl.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 092705e73db4..06f4b2c13423 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -634,6 +634,31 @@ out_free:
- 	return err;
- }
- 
-+static void skl_shutdown(struct pci_dev *pci)
-+{
-+	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
-+	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+	struct hdac_stream *s;
-+	struct hdac_ext_stream *stream;
-+	struct skl *skl;
-+
-+	if (ebus == NULL)
-+		return;
-+
-+	skl = ebus_to_skl(ebus);
-+
-+	if (skl->init_failed)
-+		return;
-+
-+	snd_hdac_ext_stop_streams(ebus);
-+	list_for_each_entry(s, &bus->stream_list, list) {
-+		stream = stream_to_hdac_ext_stream(s);
-+		snd_hdac_ext_stream_decouple(ebus, stream, false);
-+	}
-+
-+	snd_hdac_bus_stop_chip(bus);
-+}
-+
- static void skl_remove(struct pci_dev *pci)
- {
- 	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
-@@ -677,6 +702,7 @@ static struct pci_driver skl_driver = {
- 	.id_table = skl_ids,
- 	.probe = skl_probe,
- 	.remove = skl_remove,
-+	.shutdown = skl_shutdown,
- 	.driver = {
- 		.pm = &skl_pm,
- 	},
--- 
-1.9.1
+--ftEhullJWpWg/VHq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Resending again as previous email bounced for linux-firmware@kernel.org...
+
+Hello Linux firmware maintainers,
+
+Please PULL to receive the updated version of Skylake audio firmware.
+
+This PULL request has two patches, first one creates a sym link for binary
+name which helps us to keep different versions of firmware in git
+
+Second one updates to latest FW v869
+
+The following changes since commit 52442afee9907bc32a058f22bb3295d040677c26:
+
+  brcm: add firmware for bcm4366 device (2016-01-25 15:15:34 -0800)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git skl
+
+for you to fetch changes up to f7996657e8f25386541593242cb8e906d9808ec7:
+
+  linux-firmware: intel: Update Skylake audio firmware (2016-02-04 10:36:52=
+ +0530)
+
+----------------------------------------------------------------
+Vinod Koul (2):
+      linux-firmware: intel: add symbolic link and file versions
+      linux-firmware: intel: Update Skylake audio firmware
+
+ WHENCE                        |   4 ++--
+ intel/dsp_fw_release.bin      | Bin 233472 -> 23 bytes
+ intel/dsp_fw_release_v827.bin | Bin 0 -> 233472 bytes
+ intel/dsp_fw_release_v869.bin | Bin 0 -> 233472 bytes
+ 4 files changed, 2 insertions(+), 2 deletions(-)
+ mode change 100644 =3D> 120000 intel/dsp_fw_release.bin
+ create mode 100644 intel/dsp_fw_release_v827.bin
+ create mode 100644 intel/dsp_fw_release_v869.bin
+
+Thanks
+--=20
+~Vinod
+
+--ftEhullJWpWg/VHq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJWtFFsAAoJEHwUBw8lI4NHGsMQAJAHbHKX6SU6jneTGjcx6JuA
+zlbkpPF1kfa6gKJDViqZb5T4vNA7Ko6rn1t2EGL8coSdayFU4ROBIR59/DmKCh8W
+5vLJGvASAwopMQIjAzMdaPDVJ2WhspGhzJHtr5CwmiFT+J0oi5aOIRT7sBvb5aYb
+yFIcydBbwx9ho+xM4TrCsOQKAr/6VekHtWZ2BKLnKHPYFHB2DljTnFYbAnovc4+e
+5Mxs9QXz3mWox+pDJsFEqBdt40y48Wmg4GngkACFHTH5j2OhlWWxvGf0FV5u+ENV
+aU6hvmWoMv0jCpABY4Vz65vl49y0e0hNfGSyfWVxTYa6r9dWe6TrLvLCkACf+wPu
+usICXnVxGd475SRbotgEhyA8bkhrNqgoF/xMVhaVKrWECF4MptI9MkoUM3AUvNA2
+ODfGchSKNl5LonM1scX4VlD3tuMd/vR/DKcPuZl6XNXa33CKhMYLyS8DK8QjKK6Y
+Cs3amqMeEpFp3vUDG6PxMbMdCkrhcWd1NOvAuGCxoSewZD9yYdRAe2Whls/mTKGq
+PWaHWZS2HtNSdd5KH0P3fosdyhVGGjEzl3KyQaVs1pdGHF5mUr9J4355ny+b4knc
+y2k6o74qXj3gg2qSyuhQozGsYHSiglnf891AocrhnNNp/1ar1qwKv3Uw57d5LrYe
+XYZPV8pQN5e91fUV8cc9
+=nwVb
+-----END PGP SIGNATURE-----
+
+--ftEhullJWpWg/VHq--
+
+--===============4749600633892648529==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4749600633892648529==--
