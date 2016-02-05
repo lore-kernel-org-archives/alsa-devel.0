@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl-asoc-card: add cs4271 and cs4272
-	support" to the asoc tree
-Date: Fri, 05 Feb 2016 13:35:13 +0000
-Message-ID: <E1aRgXZ-00012P-Uv@finisterre>
-References: <1454065261-9522-1-git-send-email-eu@felipetonello.com>
+Subject: Applied "ASoC: mxs-saif: check BUSY bit in hw_params()
+	only if not mclk_in_use" to the asoc tree
+Date: Fri, 05 Feb 2016 13:35:16 +0000
+Message-ID: <E1aRgXc-00012t-UW@finisterre>
+References: <1454505500-30384-1-git-send-email-mans@mansr.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 434F32605F2
- for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2016 14:35:32 +0100 (CET)
-In-Reply-To: <1454065261-9522-1-git-send-email-eu@felipetonello.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 23246260601
+ for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2016 14:35:34 +0100 (CET)
+In-Reply-To: <1454505500-30384-1-git-send-email-mans@mansr.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Felipe F. Tonello" <eu@felipetonello.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Mans Rullgard <mans@mansr.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl-asoc-card: add cs4271 and cs4272 support
+   ASoC: mxs-saif: check BUSY bit in hw_params() only if not mclk_in_use
 
 has been applied to the asoc tree at
 
@@ -53,95 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From 57e756d30268a0373cce97165bd57331554f4bfd Mon Sep 17 00:00:00 2001
-From: "Felipe F. Tonello" <eu@felipetonello.com>
-Date: Fri, 29 Jan 2016 11:01:00 +0000
-Subject: [PATCH] ASoC: fsl-asoc-card: add cs4271 and cs4272 support
+>From 436e056c4ba368f13a5709a5a4a7f26fc238a5a6 Mon Sep 17 00:00:00 2001
+From: Mans Rullgard <mans@mansr.com>
+Date: Wed, 3 Feb 2016 13:18:20 +0000
+Subject: [PATCH] ASoC: mxs-saif: check BUSY bit in hw_params() only if not
+ mclk_in_use
 
-add cs4271 and cs42727 support for fsl-asoc-card
+If something else, typically a codec, has enabled mclk, the BUSY
+bit may be set when hw_params() is called without this being an
+error.  This check thus causes intermittent failures to configure
+the sound device when used in such a manner.  Fix this by making
+the test conditional on !saif->mclk_in_use.
 
-Signed-off-by: Felipe F. Tonello <eu@felipetonello.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Mans Rullgard <mans@mansr.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/fsl-asoc-card.txt | 9 +++++++++
- sound/soc/fsl/Kconfig                                     | 4 ++--
- sound/soc/fsl/fsl-asoc-card.c                             | 7 +++++++
- 3 files changed, 18 insertions(+), 2 deletions(-)
+ sound/soc/mxs/mxs-saif.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt b/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
-index ce55c0a..943b36d 100644
---- a/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
-@@ -24,6 +24,9 @@ The compatible list for this generic sound card currently:
+diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+index c866ade..cd04eb7e 100644
+--- a/sound/soc/mxs/mxs-saif.c
++++ b/sound/soc/mxs/mxs-saif.c
+@@ -408,7 +408,7 @@ static int mxs_saif_hw_params(struct snd_pcm_substream *substream,
+ 	}
  
-  "fsl,imx-audio-cs42888"
- 
-+ "fsl,imx-audio-cs427x"
-+ (compatible with CS4271 and CS4272)
-+
-  "fsl,imx-audio-wm8962"
-  (compatible with Documentation/devicetree/bindings/sound/imx-audio-wm8962.txt)
- 
-@@ -61,6 +64,12 @@ Optional properties:
-   - audio-asrc		: The phandle of ASRC. It can be absent if there's no
- 			  need to add ASRC support via DPCM.
- 
-+Optional unless SSI is selected as a CPU DAI:
-+
-+  - mux-int-port	: The internal port of the i.MX audio muxer (AUDMUX)
-+
-+  - mux-ext-port	: The external port of the i.MX audio muxer
-+
- Example:
- sound-cs42888 {
- 	compatible = "fsl,imx-audio-cs42888";
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 14dfdee..35aabf9 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -292,8 +292,8 @@ config SND_SOC_FSL_ASOC_CARD
- 	select SND_SOC_FSL_SSI
- 	help
- 	 ALSA SoC Audio support with ASRC feature for Freescale SoCs that have
--	 ESAI/SAI/SSI and connect with external CODECs such as WM8962, CS42888
--	 and SGTL5000.
-+	 ESAI/SAI/SSI and connect with external CODECs such as WM8962, CS42888,
-+	 CS4271, CS4272 and SGTL5000.
- 	 Say Y if you want to add support for Freescale Generic ASoC Sound Card.
- 
- endif # SND_IMX_SOC
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 3d40797..dffd549 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -28,6 +28,8 @@
- #include "../codecs/wm8962.h"
- #include "../codecs/wm8960.h"
- 
-+#define CS427x_SYSCLK_MCLK 0
-+
- #define RX 0
- #define TX 1
- 
-@@ -535,6 +537,10 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 		priv->cpu_priv.sysclk_dir[RX] = SND_SOC_CLOCK_OUT;
- 		priv->cpu_priv.slot_width = 32;
- 		priv->dai_fmt |= SND_SOC_DAIFMT_CBS_CFS;
-+	} else if (of_device_is_compatible(np, "fsl,imx-audio-cs427x")) {
-+		codec_dai_name = "cs4271-hifi";
-+		priv->codec_priv.mclk_id = CS427x_SYSCLK_MCLK;
-+		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
- 	} else if (of_device_is_compatible(np, "fsl,imx-audio-sgtl5000")) {
- 		codec_dai_name = "sgtl5000";
- 		priv->codec_priv.mclk_id = SGTL5000_SYSCLK;
-@@ -692,6 +698,7 @@ fail:
- static const struct of_device_id fsl_asoc_card_dt_ids[] = {
- 	{ .compatible = "fsl,imx-audio-ac97", },
- 	{ .compatible = "fsl,imx-audio-cs42888", },
-+	{ .compatible = "fsl,imx-audio-cs427x", },
- 	{ .compatible = "fsl,imx-audio-sgtl5000", },
- 	{ .compatible = "fsl,imx-audio-wm8962", },
- 	{ .compatible = "fsl,imx-audio-wm8960", },
+ 	stat = __raw_readl(saif->base + SAIF_STAT);
+-	if (stat & BM_SAIF_STAT_BUSY) {
++	if (!saif->mclk_in_use && (stat & BM_SAIF_STAT_BUSY)) {
+ 		dev_err(cpu_dai->dev, "error: busy\n");
+ 		return -EBUSY;
+ 	}
 -- 
 2.6.4
