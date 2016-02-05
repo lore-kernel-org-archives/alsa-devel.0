@@ -1,20 +1,14 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [PATCH v5 11/14] ASoC: hdac_hdmi: Don't fail in
- dai startup to make userland happy
-Date: Fri, 5 Feb 2016 09:22:57 +0530
-Message-ID: <20160205035251.GA25409@subhransu-desktop>
-References: <1454161428-7896-1-git-send-email-subhransu.s.prusty@intel.com>
- <1454161428-7896-12-git-send-email-subhransu.s.prusty@intel.com>
- <448EE3572333F34FA53FF0820C7D130380E341@ORSMSX115.amr.corp.intel.com>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH] ASoC: rt5514: add rt5514 SPI driver
+Date: Fri, 5 Feb 2016 12:42:13 +0800
+Message-ID: <1454647333-10696-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 95839260577
- for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2016 04:51:36 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <448EE3572333F34FA53FF0820C7D130380E341@ORSMSX115.amr.corp.intel.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F4032605C6
+ for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2016 05:42:27 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,138 +18,904 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Patel, Vedang" <vedang.patel@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Patches Audio <patches.audio@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Koul,
- Vinod" <vinod.koul@intel.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, koro.chen@mediatek.com, john.lin@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 05, 2016 at 07:57:17AM +0530, Patel, Vedang wrote:
-> > 
-> > -	if (dai->id > 0) {
-> > -		dev_err(&hdac->hdac.dev, "Only one dai supported as of
-> > now\n");
-> > +	dai_map = &hdmi->dai_map[dai->id];
-> > +	pin = dai_map->pin;
-> > +
-> > +	if (!pin)
-> > +		return -ENODEV;
-> > +
-> > +	if ((!pin->eld.monitor_present) || (!pin->eld.eld_valid)) {
-> > +		dev_err(&hdac->hdac.dev, "device is not configured for this
-> > PIN: %d\n",
-> 
-> Don't you need the following fix anymore?
-> 
->     ASoC: hdac_hdmi: Read pin sense detect during playback open
-> 
->     If the monitor_present and eld_valid flags are not set due to some
->     controller error during notify_cb, try reading once more during
->     playback open.
->    Link: https://chromium-review.googlesource.com/320943
+The patch adds the rt5514 SPI driver for loading the firmware of DSP and
+retrieving the voice data after the system is waked up by voice.
 
-With fix in patch "ASoC: Intel: Skylake: Remove autosuspend delay", the
-controller resume and codec power ON are synchronized. The jack detection
-happens successfully with few retries in notify callback. So this check is
-not required anymore.
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/Kconfig      |   6 +
+ sound/soc/codecs/Makefile     |   2 +
+ sound/soc/codecs/rt5514-spi.c | 494 ++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/rt5514-spi.h |  36 +++
+ sound/soc/codecs/rt5514.c     | 243 +++++++++++++++++++++
+ sound/soc/codecs/rt5514.h     |   1 +
+ 6 files changed, 782 insertions(+)
+ create mode 100644 sound/soc/codecs/rt5514-spi.c
+ create mode 100644 sound/soc/codecs/rt5514-spi.h
 
-~Subhransu
-
-> 
-> -Vedang
-> > +								pin->nid);
-> >  		return -ENODEV;
-> >  	}
-> > 
-> > @@ -432,11 +442,6 @@ static int hdac_hdmi_playback_cleanup(struct
-> > snd_pcm_substream *substream,
-> > 
-> >  	dai_map = &hdmi->dai_map[dai->id];
-> > 
-> > -	snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
-> > -				AC_VERB_SET_CHANNEL_STREAMID, 0);
-> > -	snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
-> > -				AC_VERB_SET_STREAM_FORMAT, 0);
-> > -
-> >  	dd = (struct hdac_ext_dma_params
-> > *)snd_soc_dai_get_dma_data(dai, substream);
-> > 
-> >  	if (dd) {
-> > @@ -537,6 +542,11 @@ static struct hdac_hdmi_pin
-> > *hdac_hdmi_get_pin_from_cvt(
-> >  	return NULL;
-> >  }
-> > 
-> > +/*
-> > + * This tries to get a valid PIN and set the HW constraints based on
-> > +the
-> > + * ELD. Even if a valid PIN is not found return success so that device
-> > +open
-> > + * doesn't fail.
-> > + */
-> >  static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
-> >  			struct snd_soc_dai *dai)
-> >  {
-> > @@ -551,17 +561,22 @@ static int hdac_hdmi_pcm_open(struct
-> > snd_pcm_substream *substream,
-> > 
-> >  	cvt = dai_map->cvt;
-> >  	pin = hdac_hdmi_get_pin_from_cvt(hdac, hdmi, cvt);
-> > +
-> > +	/*
-> > +	 * To make PA and other userland happy.
-> > +	 * userland scans devices so returning error does not help.
-> > +	 */
-> >  	if (!pin)
-> > -		return -EIO;
-> > +		return 0;
-> > 
-> >  	if ((!pin->eld.monitor_present) ||
-> >  			(!pin->eld.eld_valid)) {
-> > 
-> > -		dev_err(&hdac->hdac.dev,
-> > +		dev_warn(&hdac->hdac.dev,
-> >  			"failed: montior present? %d eld valid?: %d for pin:
-> > %d\n",
-> >  			pin->eld.monitor_present, pin->eld.eld_valid, pin-
-> > >nid);
-> > 
-> > -		return -ENODEV;
-> > +		return 0;
-> >  	}
-> > 
-> >  	dai_map->pin = pin;
-> > @@ -588,12 +603,19 @@ static void hdac_hdmi_pcm_close(struct
-> > snd_pcm_substream *substream,
-> > 
-> >  	dai_map = &hdmi->dai_map[dai->id];
-> > 
-> > -	hdac_hdmi_set_power_state(hdac, dai_map, AC_PWRST_D3);
-> > +	if (dai_map->pin && dai_map->pin->eld.monitor_present) {
-> > +		snd_hdac_codec_write(&hdac->hdac, dai_map->cvt->nid, 0,
-> > +				AC_VERB_SET_CHANNEL_STREAMID, 0);
-> > +		snd_hdac_codec_write(&hdac->hdac, dai_map->cvt->nid, 0,
-> > +				AC_VERB_SET_STREAM_FORMAT, 0);
-> > +
-> > +		hdac_hdmi_set_power_state(hdac, dai_map,
-> > AC_PWRST_D3);
-> > 
-> > -	snd_hdac_codec_write(&hdac->hdac, dai_map->pin->nid, 0,
-> > +		snd_hdac_codec_write(&hdac->hdac, dai_map->pin->nid, 0,
-> >  			AC_VERB_SET_AMP_GAIN_MUTE,
-> > AMP_OUT_MUTE);
-> > 
-> > -	dai_map->pin = NULL;
-> > +		dai_map->pin = NULL;
-> > +	}
-> >  }
-> > 
-> >  static int
-> > --
-> > 1.9.1
-> > 
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 4383966..6a36c3a 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -621,6 +621,12 @@ config SND_SOC_RT298
+ 
+ config SND_SOC_RT5514
+ 	tristate
++	default y if SND_SOC_RT5514_SPI=y
++	default m if SND_SOC_RT5514_SPI=m
++
++config SND_SOC_RT5514_SPI
++	tristate
++	depends on SPI_MASTER
+ 
+ config SND_SOC_RT5616
+ 	tristate
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index cd05e70..c04d5b6 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -96,6 +96,7 @@ snd-soc-rl6347a-objs := rl6347a.o
+ snd-soc-rt286-objs := rt286.o
+ snd-soc-rt298-objs := rt298.o
+ snd-soc-rt5514-objs := rt5514.o
++snd-soc-rt5514-spi-objs := rt5514-spi.o
+ snd-soc-rt5616-objs := rt5616.o
+ snd-soc-rt5631-objs := rt5631.o
+ snd-soc-rt5640-objs := rt5640.o
+@@ -304,6 +305,7 @@ obj-$(CONFIG_SND_SOC_RL6347A)	+= snd-soc-rl6347a.o
+ obj-$(CONFIG_SND_SOC_RT286)	+= snd-soc-rt286.o
+ obj-$(CONFIG_SND_SOC_RT298)	+= snd-soc-rt298.o
+ obj-$(CONFIG_SND_SOC_RT5514)	+= snd-soc-rt5514.o
++obj-$(CONFIG_SND_SOC_RT5514_SPI)	+= snd-soc-rt5514-spi.o
+ obj-$(CONFIG_SND_SOC_RT5616)	+= snd-soc-rt5616.o
+ obj-$(CONFIG_SND_SOC_RT5631)	+= snd-soc-rt5631.o
+ obj-$(CONFIG_SND_SOC_RT5640)	+= snd-soc-rt5640.o
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+new file mode 100644
+index 0000000..5889533
+--- /dev/null
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -0,0 +1,494 @@
++/*
++ * rt5514-spi.c  --  RT5514 SPI driver
++ *
++ * Copyright 2015 Realtek Semiconductor Corp.
++ * Author: Oder Chiou <oder_chiou@realtek.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/input.h>
++#include <linux/spi/spi.h>
++#include <linux/device.h>
++#include <linux/init.h>
++#include <linux/delay.h>
++#include <linux/interrupt.h>
++#include <linux/irq.h>
++#include <linux/slab.h>
++#include <linux/gpio.h>
++#include <linux/sched.h>
++#include <linux/kthread.h>
++#include <linux/uaccess.h>
++#include <linux/miscdevice.h>
++#include <linux/regulator/consumer.h>
++#include <linux/pm_qos.h>
++#include <linux/sysfs.h>
++#include <linux/clk.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/initval.h>
++#include <sound/tlv.h>
++
++#include "rt5514-spi.h"
++
++static struct spi_device *rt5514_spi;
++
++struct rt5514_dsp {
++	struct device *dev;
++	struct delayed_work copy_work;
++	struct mutex dma_lock;
++	struct snd_pcm_substream *substream;
++	unsigned int buf_base, buf_limit, buf_rp;
++	size_t buf_size;
++	size_t dma_offset;
++	size_t dsp_offset;
++};
++
++static const struct snd_pcm_hardware rt5514_spi_pcm_hardware = {
++	.info			= SNDRV_PCM_INFO_MMAP |
++				  SNDRV_PCM_INFO_MMAP_VALID |
++				  SNDRV_PCM_INFO_INTERLEAVED,
++	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
++	.period_bytes_min	= PAGE_SIZE,
++	.period_bytes_max	= 0x20000 / 8,
++	.periods_min		= 8,
++	.periods_max		= 8,
++	.channels_min		= 1,
++	.channels_max		= 1,
++	.buffer_bytes_max	= 0x20000,
++};
++
++static struct snd_soc_dai_driver rt5514_spi_dai = {
++	.name = "rt5514-dsp-cpu-dai",
++	.id = 0,
++	.capture = {
++		.stream_name = "DSP Capture",
++		.channels_min = 1,
++		.channels_max = 1,
++		.rates = SNDRV_PCM_RATE_16000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++};
++
++static void rt5514_spi_copy_work(struct work_struct *work)
++{
++	struct rt5514_dsp *rt5514_dsp =
++		container_of(work, struct rt5514_dsp, copy_work.work);
++	struct snd_pcm_runtime *runtime = rt5514_dsp->substream->runtime;
++	size_t period_bytes, truncated_bytes = 0;
++
++	mutex_lock(&rt5514_dsp->dma_lock);
++	if (!rt5514_dsp->substream) {
++		dev_err(rt5514_dsp->dev, "No pcm substream\n");
++		goto done;
++	}
++
++	period_bytes = snd_pcm_lib_period_bytes(rt5514_dsp->substream);
++
++	if (rt5514_dsp->buf_size - rt5514_dsp->dsp_offset <  period_bytes)
++		period_bytes = rt5514_dsp->buf_size - rt5514_dsp->dsp_offset;
++
++	if (rt5514_dsp->buf_rp + period_bytes <= rt5514_dsp->buf_limit) {
++		rt5514_spi_burst_read(rt5514_dsp->buf_rp,
++			runtime->dma_area + rt5514_dsp->dma_offset,
++			period_bytes);
++
++		if (rt5514_dsp->buf_rp + period_bytes == rt5514_dsp->buf_limit)
++			rt5514_dsp->buf_rp = rt5514_dsp->buf_base;
++		else
++			rt5514_dsp->buf_rp += period_bytes;
++	} else {
++		truncated_bytes = rt5514_dsp->buf_limit - rt5514_dsp->buf_rp;
++		rt5514_spi_burst_read(rt5514_dsp->buf_rp,
++			runtime->dma_area + rt5514_dsp->dma_offset,
++			truncated_bytes);
++
++		rt5514_spi_burst_read(rt5514_dsp->buf_base,
++			runtime->dma_area + rt5514_dsp->dma_offset +
++			truncated_bytes, period_bytes - truncated_bytes);
++
++			rt5514_dsp->buf_rp = rt5514_dsp->buf_base +
++				period_bytes - truncated_bytes;
++	}
++
++	rt5514_dsp->dma_offset += period_bytes;
++	if (rt5514_dsp->dma_offset >= runtime->dma_bytes)
++		rt5514_dsp->dma_offset = 0;
++
++	rt5514_dsp->dsp_offset += period_bytes;
++
++	snd_pcm_period_elapsed(rt5514_dsp->substream);
++
++	if (rt5514_dsp->dsp_offset < rt5514_dsp->buf_size)
++		schedule_delayed_work(&rt5514_dsp->copy_work, 5);
++done:
++	mutex_unlock(&rt5514_dsp->dma_lock);
++}
++
++/* PCM for streaming audio from the DSP buffer */
++static int rt5514_spi_pcm_open(struct snd_pcm_substream *substream)
++{
++	snd_soc_set_runtime_hwparams(substream, &rt5514_spi_pcm_hardware);
++
++	return 0;
++}
++
++static int rt5514_spi_hw_params(struct snd_pcm_substream *substream,
++			       struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct rt5514_dsp *rt5514_dsp =
++			snd_soc_platform_get_drvdata(rtd->platform);
++	int ret;
++
++	mutex_lock(&rt5514_dsp->dma_lock);
++	ret = snd_pcm_lib_alloc_vmalloc_buffer(substream,
++			params_buffer_bytes(hw_params));
++	rt5514_dsp->substream = substream;
++	mutex_unlock(&rt5514_dsp->dma_lock);
++
++	return ret;
++}
++
++static int rt5514_spi_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct rt5514_dsp *rt5514_dsp =
++			snd_soc_platform_get_drvdata(rtd->platform);
++
++	mutex_lock(&rt5514_dsp->dma_lock);
++	cancel_delayed_work_sync(&rt5514_dsp->copy_work);
++	rt5514_dsp->substream = NULL;
++	mutex_unlock(&rt5514_dsp->dma_lock);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++
++static int rt5514_spi_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct rt5514_dsp *rt5514_dsp =
++			snd_soc_platform_get_drvdata(rtd->platform);
++
++	rt5514_dsp->dma_offset = 0;
++	rt5514_dsp->dsp_offset = 0;
++	rt5514_spi_read_addr(RT5514_BUFFER_VOICE_BASE, &rt5514_dsp->buf_base);
++	rt5514_spi_read_addr(RT5514_BUFFER_VOICE_LIMIT, &rt5514_dsp->buf_limit);
++	rt5514_spi_read_addr(RT5514_BUFFER_VOICE_RP, &rt5514_dsp->buf_rp);
++	rt5514_spi_read_addr(RT5514_BUFFER_VOICE_SIZE, &rt5514_dsp->buf_size);
++
++	if (rt5514_dsp->buf_base && rt5514_dsp->buf_limit &&
++		rt5514_dsp->buf_rp && rt5514_dsp->buf_size)
++		schedule_delayed_work(&rt5514_dsp->copy_work, 0);
++
++	return 0;
++}
++
++static snd_pcm_uframes_t rt5514_spi_pcm_pointer(
++		struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct rt5514_dsp *rt5514_dsp =
++		snd_soc_platform_get_drvdata(rtd->platform);
++
++	return bytes_to_frames(runtime, rt5514_dsp->dma_offset);
++}
++
++static struct snd_pcm_ops rt5514_spi_pcm_ops = {
++	.open		= rt5514_spi_pcm_open,
++	.hw_params	= rt5514_spi_hw_params,
++	.hw_free	= rt5514_spi_hw_free,
++	.prepare	= rt5514_spi_prepare,
++	.pointer	= rt5514_spi_pcm_pointer,
++	.mmap		= snd_pcm_lib_mmap_vmalloc,
++	.page		= snd_pcm_lib_get_vmalloc_page,
++};
++
++static int rt5514_spi_pcm_probe(struct snd_soc_platform *platform)
++{
++	struct rt5514_dsp *rt5514_dsp;
++
++	rt5514_dsp = devm_kzalloc(platform->dev, sizeof(*rt5514_dsp),
++			GFP_KERNEL);
++
++	rt5514_dsp->dev = &rt5514_spi->dev;
++	mutex_init(&rt5514_dsp->dma_lock);
++	INIT_DELAYED_WORK(&rt5514_dsp->copy_work, rt5514_spi_copy_work);
++	snd_soc_platform_set_drvdata(platform, rt5514_dsp);
++
++	return 0;
++}
++
++static struct snd_soc_platform_driver rt5514_spi_platform = {
++	.probe = rt5514_spi_pcm_probe,
++	.ops = &rt5514_spi_pcm_ops,
++};
++
++static const struct snd_soc_component_driver rt5514_spi_dai_component = {
++	.name		= "rt5514-spi-dai",
++};
++
++int rt5514_spi_read_addr(unsigned int addr, unsigned int *val)
++{
++	struct spi_device *spi = rt5514_spi;
++	struct spi_message message;
++	struct spi_transfer x[3];
++	u8 spi_cmd = RT5514_SPI_CMD_32_READ;
++	int status;
++	u8 write_buf[5];
++	u8 read_buf[4];
++
++	write_buf[0] = spi_cmd;
++	write_buf[1] = (addr & 0xff000000) >> 24;
++	write_buf[2] = (addr & 0x00ff0000) >> 16;
++	write_buf[3] = (addr & 0x0000ff00) >> 8;
++	write_buf[4] = (addr & 0x000000ff) >> 0;
++
++	spi_message_init(&message);
++	memset(x, 0, sizeof(x));
++
++	x[0].len = 5;
++	x[0].tx_buf = write_buf;
++	spi_message_add_tail(&x[0], &message);
++
++	x[1].len = 4;
++	x[1].tx_buf = write_buf;
++	spi_message_add_tail(&x[1], &message);
++
++	x[2].len = 4;
++	x[2].rx_buf = read_buf;
++	spi_message_add_tail(&x[2], &message);
++
++	status = spi_sync(spi, &message);
++
++	*val = read_buf[3] | read_buf[2] << 8 | read_buf[1] << 16 |
++		read_buf[0] << 24;
++
++	return status;
++}
++EXPORT_SYMBOL_GPL(rt5514_spi_read_addr);
++
++int rt5514_spi_write_addr(unsigned int addr, unsigned int val)
++{
++	struct spi_device *spi = rt5514_spi;
++	u8 spi_cmd = RT5514_SPI_CMD_32_WRITE;
++	int status;
++	u8 write_buf[10];
++
++	write_buf[0] = spi_cmd;
++	write_buf[1] = (addr & 0xff000000) >> 24;
++	write_buf[2] = (addr & 0x00ff0000) >> 16;
++	write_buf[3] = (addr & 0x0000ff00) >> 8;
++	write_buf[4] = (addr & 0x000000ff) >> 0;
++	write_buf[5] = (val & 0xff000000) >> 24;
++	write_buf[6] = (val & 0x00ff0000) >> 16;
++	write_buf[7] = (val & 0x0000ff00) >> 8;
++	write_buf[8] = (val & 0x000000ff) >> 0;
++	write_buf[9] = spi_cmd;
++
++	status = spi_write(spi, write_buf, sizeof(write_buf));
++
++	if (status)
++		dev_err(&spi->dev, "%s error %d\n", __func__, status);
++
++	return status;
++}
++EXPORT_SYMBOL_GPL(rt5514_spi_write_addr);
++
++/**
++ * rt5514_spi_burst_read - Read data from SPI by rt5514 address.
++ * @addr: Start address.
++ * @rxbuf: Data Buffer for reading.
++ * @len: Data length, it must be a multiple of 8.
++ *
++ *
++ * Returns true for success.
++ */
++int rt5514_spi_burst_read(unsigned int addr, u8 *rxbuf, size_t len)
++{
++	u8 spi_cmd = RT5514_SPI_CMD_BURST_READ;
++	int status;
++	u8 write_buf[8];
++	unsigned int i, end, offset = 0;
++
++	struct spi_message message;
++	struct spi_transfer x[3];
++
++	while (offset < len) {
++		if (offset + RT5514_SPI_BUF_LEN <= len)
++			end = RT5514_SPI_BUF_LEN;
++		else
++			end = len % RT5514_SPI_BUF_LEN;
++
++		write_buf[0] = spi_cmd;
++		write_buf[1] = ((addr + offset) & 0xff000000) >> 24;
++		write_buf[2] = ((addr + offset) & 0x00ff0000) >> 16;
++		write_buf[3] = ((addr + offset) & 0x0000ff00) >> 8;
++		write_buf[4] = ((addr + offset) & 0x000000ff) >> 0;
++
++		spi_message_init(&message);
++		memset(x, 0, sizeof(x));
++
++		x[0].len = 5;
++		x[0].tx_buf = write_buf;
++		spi_message_add_tail(&x[0], &message);
++
++		x[1].len = 4;
++		x[1].tx_buf = write_buf;
++		spi_message_add_tail(&x[1], &message);
++
++		x[2].len = end;
++		x[2].rx_buf = rxbuf + offset;
++		spi_message_add_tail(&x[2], &message);
++
++		status = spi_sync(rt5514_spi, &message);
++
++		if (status)
++			return false;
++
++		offset += RT5514_SPI_BUF_LEN;
++	}
++
++	for (i = 0; i < len; i += 8) {
++		write_buf[0] = rxbuf[i + 0];
++		write_buf[1] = rxbuf[i + 1];
++		write_buf[2] = rxbuf[i + 2];
++		write_buf[3] = rxbuf[i + 3];
++		write_buf[4] = rxbuf[i + 4];
++		write_buf[5] = rxbuf[i + 5];
++		write_buf[6] = rxbuf[i + 6];
++		write_buf[7] = rxbuf[i + 7];
++
++		rxbuf[i + 0] = write_buf[7];
++		rxbuf[i + 1] = write_buf[6];
++		rxbuf[i + 2] = write_buf[5];
++		rxbuf[i + 3] = write_buf[4];
++		rxbuf[i + 4] = write_buf[3];
++		rxbuf[i + 5] = write_buf[2];
++		rxbuf[i + 6] = write_buf[1];
++		rxbuf[i + 7] = write_buf[0];
++	}
++
++	return true;
++}
++EXPORT_SYMBOL_GPL(rt5514_spi_burst_read);
++
++/**
++ * rt5514_spi_burst_write - Write data to SPI by rt5514 address.
++ * @addr: Start address.
++ * @txbuf: Data Buffer for writng.
++ * @len: Data length, it must be a multiple of 8.
++ *
++ *
++ * Returns true for success.
++ */
++int rt5514_spi_burst_write(u32 addr, const u8 *txbuf, size_t len)
++{
++	u8 spi_cmd = RT5514_SPI_CMD_BURST_WRITE;
++	u8 *write_buf;
++	unsigned int i, end, offset = 0;
++
++	write_buf = kmalloc(RT5514_SPI_BUF_LEN + 6, GFP_KERNEL);
++
++	if (write_buf == NULL)
++		return -ENOMEM;
++
++	while (offset < len) {
++		if (offset + RT5514_SPI_BUF_LEN <= len)
++			end = RT5514_SPI_BUF_LEN;
++		else
++			end = len % RT5514_SPI_BUF_LEN;
++
++		write_buf[0] = spi_cmd;
++		write_buf[1] = ((addr + offset) & 0xff000000) >> 24;
++		write_buf[2] = ((addr + offset) & 0x00ff0000) >> 16;
++		write_buf[3] = ((addr + offset) & 0x0000ff00) >> 8;
++		write_buf[4] = ((addr + offset) & 0x000000ff) >> 0;
++
++		for (i = 0; i < end; i += 8) {
++			write_buf[i + 12] = txbuf[offset + i + 0];
++			write_buf[i + 11] = txbuf[offset + i + 1];
++			write_buf[i + 10] = txbuf[offset + i + 2];
++			write_buf[i +  9] = txbuf[offset + i + 3];
++			write_buf[i +  8] = txbuf[offset + i + 4];
++			write_buf[i +  7] = txbuf[offset + i + 5];
++			write_buf[i +  6] = txbuf[offset + i + 6];
++			write_buf[i +  5] = txbuf[offset + i + 7];
++		}
++
++		write_buf[end + 5] = spi_cmd;
++
++		spi_write(rt5514_spi, write_buf, end + 6);
++
++		offset += RT5514_SPI_BUF_LEN;
++	}
++
++	kfree(write_buf);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(rt5514_spi_burst_write);
++
++static int rt5514_spi_probe(struct spi_device *spi)
++{
++	int ret;
++
++	rt5514_spi = spi;
++
++	ret = snd_soc_register_platform(&spi->dev, &rt5514_spi_platform);
++	if (ret < 0) {
++		dev_err(&spi->dev, "Failed to register platform.\n");
++		goto err_plat;
++	}
++
++	ret = snd_soc_register_component(&spi->dev, &rt5514_spi_dai_component,
++					 &rt5514_spi_dai, 1);
++	if (ret < 0) {
++		dev_err(&spi->dev, "Failed to register component.\n");
++		goto err_comp;
++	}
++
++	return 0;
++err_comp:
++	snd_soc_unregister_platform(&spi->dev);
++err_plat:
++
++	return 0;
++}
++
++static int rt5514_spi_remove(struct spi_device *spi)
++{
++	snd_soc_unregister_component(&spi->dev);
++	snd_soc_unregister_platform(&spi->dev);
++
++	return 0;
++}
++
++#if defined(CONFIG_OF)
++static const struct of_device_id rt5514_of_match[] = {
++	{ .compatible = "realtek,rt5514", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, rt5514_of_match);
++#endif
++
++static struct spi_driver rt5514_spi_driver = {
++	.driver = {
++			.name = "rt5514",
++			.of_match_table = of_match_ptr(rt5514_of_match),
++	},
++	.probe = rt5514_spi_probe,
++	.remove = rt5514_spi_remove,
++};
++module_spi_driver(rt5514_spi_driver);
++
++MODULE_DESCRIPTION("RT5514 SPI driver");
++MODULE_AUTHOR("Oder Chiou <oder_chiou@realtek.com>");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/codecs/rt5514-spi.h b/sound/soc/codecs/rt5514-spi.h
+new file mode 100644
+index 0000000..68b73f4
+--- /dev/null
++++ b/sound/soc/codecs/rt5514-spi.h
+@@ -0,0 +1,36 @@
++/*
++ * rt5514-spi.h  --  RT5514 driver
++ *
++ * Copyright 2015 Realtek Semiconductor Corp.
++ * Author: Oder Chiou <oder_chiou@realtek.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef __RT5514_SPI_H__
++#define __RT5514_SPI_H__
++
++#define RT5514_SPI_BUF_LEN		240
++#define RT5514_BUFFER_VOICE_BASE	0x18001034
++#define RT5514_BUFFER_VOICE_LIMIT	0x18001038
++#define RT5514_BUFFER_VOICE_RP		0x1800103c
++#define RT5514_BUFFER_VOICE_SIZE	0x18001040
++
++/* SPI Command */
++enum {
++	RT5514_SPI_CMD_16_READ = 0,
++	RT5514_SPI_CMD_16_WRITE,
++	RT5514_SPI_CMD_32_READ,
++	RT5514_SPI_CMD_32_WRITE,
++	RT5514_SPI_CMD_BURST_READ,
++	RT5514_SPI_CMD_BURST_WRITE,
++};
++
++int rt5514_spi_read_addr(unsigned int addr, unsigned int *val);
++int rt5514_spi_write_addr(unsigned int addr, unsigned int val);
++int rt5514_spi_burst_read(unsigned int addr, u8 *rxbuf, size_t len);
++int rt5514_spi_burst_write(u32 addr, const u8 *txbuf, size_t len);
++
++#endif /* __RT5514_SPI_H__ */
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index 879bf60..a3838c0 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -30,6 +30,9 @@
+ 
+ #include "rl6231.h"
+ #include "rt5514.h"
++#if defined(CONFIG_SND_SOC_RT5514_SPI)
++#include "rt5514-spi.h"
++#endif
+ 
+ static const struct reg_sequence rt5514_i2c_patch[] = {
+ 	{0x1800101c, 0x00000000},
+@@ -110,6 +113,159 @@ static const struct reg_default rt5514_reg[] = {
+ 	{RT5514_VENDOR_ID2,		0x10ec5514},
+ };
+ 
++static void rt5514_enable_dsp_clock(struct rt5514_priv *rt5514)
++{
++	/* Reset */
++	regmap_write(rt5514->i2c_regmap, 0x18002000, 0x000010ec);
++	/* LDO_I_limit */
++	regmap_write(rt5514->i2c_regmap, 0x18002200, 0x00028604);
++	/* (for reset DSP) mini-core reset */
++	regmap_write(rt5514->i2c_regmap, 0x18002f00, 0x0005514b);
++	/* (for reset DSP) mini-core reset */
++	regmap_write(rt5514->i2c_regmap, 0x18002f00, 0x00055149);
++	/* DMIC_OUT1/2=HiZ */
++	regmap_write(rt5514->i2c_regmap, 0x180020a0, 0x00000000);
++	/* PIN config */
++	regmap_write(rt5514->i2c_regmap, 0x18002070, 0x00000040);
++	/* pll3(QN)=RCOSC*(10+2) */
++	regmap_write(rt5514->i2c_regmap, 0x18002240, 0x0000000a);
++	/* pll3 source=RCOSC, fsi=rt_clk */
++	regmap_write(rt5514->i2c_regmap, 0x18002100, 0x0000000b);
++	/* PU RCOSC, pll3 */
++	regmap_write(rt5514->i2c_regmap, 0x18002004, 0x00808b81);
++	/* PD ADC1/2 */
++	regmap_write(rt5514->i2c_regmap, 0x18002008, 0x00220000);
++	/* DSP clk source=pll3, ENABLE DSP clk */
++	regmap_write(rt5514->i2c_regmap, 0x18002f08, 0x00000005);
++	/* 256fs=/4,DMIC_CLK_OUT=/16(disable ad2) */
++	regmap_write(rt5514->i2c_regmap, 0x18002104, 0x10023541);
++	/* clk_sys source=mux_out */
++	regmap_write(rt5514->i2c_regmap, 0x18002108, 0x00000000);
++	/* DSP clk= 15M*(20+1)/32 =10M */
++	regmap_write(rt5514->i2c_regmap, 0x18001100, 0x00000214);
++	/* DB, pointer */
++	regmap_write(rt5514->i2c_regmap, 0x18002148, 0x80000000);
++	/* DB, pop=4x */
++	regmap_write(rt5514->i2c_regmap, 0x18002140, 0x3fff00fa);
++	/* DB, pointer */
++	regmap_write(rt5514->i2c_regmap, 0x18002148, 0x00000000);
++	/* DFLL reset */
++	regmap_write(rt5514->i2c_regmap, 0x18002124, 0x00220012);
++	/* DFLL, set m/n */
++	regmap_write(rt5514->i2c_regmap, 0x18002110, 0x000101f4);
++	/* DFLL,reset DFLL */
++	regmap_write(rt5514->i2c_regmap, 0x18002124, 0x80220012);
++	/* DFLL */
++	regmap_write(rt5514->i2c_regmap, 0x18002124, 0xc0220012);
++	/* (I2S) i2s format, TDM 4ch */
++	regmap_write(rt5514->i2c_regmap, 0x18002010, 0x10000772);
++	/* (I2S) source sel; tdm_0=ad0, tdm_1=ad1 */
++	regmap_write(rt5514->i2c_regmap, 0x180020ac, 0x44000eee);
++	/* (ad0) source of DMIC */
++	regmap_write(rt5514->i2c_regmap, 0x18002190, 0x0002042f);
++	/* (ad0) source of DMIC */
++	regmap_write(rt5514->i2c_regmap, 0x18002194, 0x0002042f);
++	/* (ad0) DMIC-IN1 L/R select */
++	regmap_write(rt5514->i2c_regmap, 0x18002198, 0x10000362);
++	/* (ad1) source of DMIC */
++	regmap_write(rt5514->i2c_regmap, 0x180021a0, 0x0002042f);
++	/* (ad1) source of DMIC */
++	regmap_write(rt5514->i2c_regmap, 0x180021a4, 0x0002042f);
++	/* (ad1) DMIC-IN2 L/R select */
++	regmap_write(rt5514->i2c_regmap, 0x180021a8, 0x10000362);
++	/* (ad2) gain=24dB for WOV */
++	regmap_write(rt5514->i2c_regmap, 0x180020d0, 0x00008a2f);
++	/* dsp clk auto switch */
++	regmap_write(rt5514->i2c_regmap, 0x18001114, 0x00000001);
++	/* reduce DSP power */
++	regmap_write(rt5514->i2c_regmap, 0x18001118, 0x00000001);
++	/* UART clk=off */
++	regmap_write(rt5514->i2c_regmap, 0x18001104, 0x00000003);
++	/* (pitch VAD)fix1 */
++	regmap_write(rt5514->i2c_regmap, 0x1800201c, 0x69f32067);
++	/* (pitch VAD)fix2 */
++	regmap_write(rt5514->i2c_regmap, 0x18002020, 0x50d500a5);
++	/* (pitch VAD)fix3 */
++	regmap_write(rt5514->i2c_regmap, 0x18002024, 0x000a0206);
++	/* (pitch VAD)fix4 */
++	regmap_write(rt5514->i2c_regmap, 0x18002028, 0x01800114);
++	/* (hello VAD)fix1 */
++	regmap_write(rt5514->i2c_regmap, 0x18002038, 0x00100010);
++	/* (ok VAD)fix1 */
++	regmap_write(rt5514->i2c_regmap, 0x1800204c, 0x000503c8);
++	/* (ok VAD)fix2 */
++	regmap_write(rt5514->i2c_regmap, 0x18002050, 0x001a0308);
++	/* (ok VAD)fix3 */
++	regmap_write(rt5514->i2c_regmap, 0x18002054, 0x50020502);
++	/* (ok VAD)fix4 */
++	regmap_write(rt5514->i2c_regmap, 0x18002058, 0x50000d18);
++	/* (ok VAD)fix5 */
++	regmap_write(rt5514->i2c_regmap, 0x1800205c, 0x640c0b14);
++	/* (ok VAD)fix6 */
++	regmap_write(rt5514->i2c_regmap, 0x18002060, 0x00100001);
++	/* (FW) SENSORY_SVSCORE(for UDT+SID) */
++	regmap_write(rt5514->i2c_regmap, 0x18002fa4, 0x00000000);
++	/* (FW) SENSORY_THRS(for UDT+SID) */
++	regmap_write(rt5514->i2c_regmap, 0x18002fa8, 0x00000000);
++	/* (FW) DLY_BUF_LTC_OFFSET (for ok/hello VAD) */
++	regmap_write(rt5514->i2c_regmap, 0x18002fbc, 0x00000000);
++}
++
++static void rt5514_enable_dsp(struct rt5514_priv *rt5514)
++{
++	/* (FW) DRIVER_CTRL0:	(1)VAD timeout[7:0]: unit = 0.1s
++	*			(2)buffer mode[15:14]:
++	*				0 = key phrase+voice command
++	*				1 = voice command
++	*				2 = key phrase
++	*/
++	regmap_write(rt5514->i2c_regmap, 0x18001028, 0x0000000a);
++	/* PU RCOSC, pll3 */
++	regmap_write(rt5514->i2c_regmap, 0x18002004, 0x00808b81);
++	/* PD ADC1/2 */
++	regmap_write(rt5514->i2c_regmap, 0x18002008, 0x00220000);
++	/* dsp stop */
++	regmap_write(rt5514->i2c_regmap, 0x18002f00, 0x00055149);
++	/* CLK, 256fs=/4,DMIC_CLK_OUT=/16(enable ad2) */
++	regmap_write(rt5514->i2c_regmap, 0x18002104, 0x14023541);
++	/* CLK, clk_sys=mux_out/1 */
++	regmap_write(rt5514->i2c_regmap, 0x18002108, 0x00000000);
++	/* (PATH) DMIC_IN1(ri)->ad2, ad2(db_PCM)->IB2 */
++	regmap_write(rt5514->i2c_regmap, 0x180020a4, 0x00808002);
++	/* DSP clk source=pll3, ENABLE DSP clk */
++	regmap_write(rt5514->i2c_regmap, 0x18002f08, 0x00000005);
++	/* (opt)VAD, clr and enable pitch/hello VAD
++	*  (0x800007d2 for ok VAD, 0x800007d3 for pitch/hello VAD)
++	*/
++	regmap_write(rt5514->i2c_regmap, 0x18002030, 0x800007d3);
++	/* (opt)VAD, clr and enable ok VAD
++	*  (0x80000003 for ok VAD, 0x80000002 for pitch/hello VAD)
++	*/
++	regmap_write(rt5514->i2c_regmap, 0x18002064, 0x80000002);
++	/* (opt)VAD type sel(..90h:hello, ..80h:pitch, ..A0h:ok) */
++	regmap_write(rt5514->i2c_regmap, 0x1800206c, 0x80000080);
++	/* dsp run */
++	regmap_write(rt5514->i2c_regmap, 0x18002f00, 0x00055148);
++	/* clear IRQ */
++	regmap_write(rt5514->i2c_regmap, 0x18002e04, 0x00000000);
++	/* (opt)VAD, release and enable pitch/hello VAD
++	*  (0x7d2 for ok VAD, 0x7d3 for pitch/hello VAD)
++	*/
++	regmap_write(rt5514->i2c_regmap, 0x18002030, 0x000007d3);
++	/* (opt)VAD, release and enable ok VAD
++	*  (0x3 for ok VAD, 0x2 for pitch/hello VAD)
++	*/
++	regmap_write(rt5514->i2c_regmap, 0x18002064, 0x00000002);
++	/* (opt)VAD, release and enable pitch/hello VAD
++	*  (0x7d2 for ok VAD, 0x7d3 for pitch/hello VAD)
++	*/
++	regmap_write(rt5514->i2c_regmap, 0x18002030, 0x000007d3);
++	/* (opt)VAD, release and enable ok VAD
++	*  (0x3 for ok VAD, 0x2 for pitch/hello VAD)
++	*/
++	regmap_write(rt5514->i2c_regmap, 0x18002064, 0x00000002);
++}
++
+ static bool rt5514_volatile_register(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+@@ -248,6 +404,64 @@ static const DECLARE_TLV_DB_RANGE(bst_tlv,
+ 
+ static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
+ 
++static int rt5514_dsp_mode_get(struct snd_kcontrol *kcontrol,
++		struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
++	struct rt5514_priv *rt5514 = snd_soc_component_get_drvdata(component);
++
++	ucontrol->value.integer.value[0] = rt5514->dsp_mode;
++
++	return 0;
++}
++
++static int rt5514_dsp_mode_put(struct snd_kcontrol *kcontrol,
++		struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
++	struct rt5514_priv *rt5514 = snd_soc_component_get_drvdata(component);
++	struct snd_soc_codec *codec = rt5514->codec;
++	const struct firmware *fw = NULL;
++
++	if (ucontrol->value.integer.value[0] == rt5514->dsp_mode)
++		return 0;
++
++	rt5514->dsp_mode = ucontrol->value.integer.value[0];
++
++	if (rt5514->dsp_mode) {
++		rt5514_enable_dsp_clock(rt5514);
++
++		request_firmware(&fw, "0x4ff60000.dat", codec->dev);
++		if (fw) {
++#if defined(CONFIG_SND_SOC_RT5514_SPI)
++			rt5514_spi_burst_write(0x4ff60000, fw->data,
++				((fw->size/8)+1)*8);
++#endif
++			release_firmware(fw);
++			fw = NULL;
++		}
++
++		request_firmware(&fw, "0x4ffc0000.dat", codec->dev);
++		if (fw) {
++#if defined(CONFIG_SND_SOC_RT5514_SPI)
++			rt5514_spi_burst_write(0x4ffc0000, fw->data,
++				((fw->size/8)+1)*8);
++#endif
++			release_firmware(fw);
++			fw = NULL;
++		}
++
++		rt5514_enable_dsp(rt5514);
++	} else {
++		regcache_mark_dirty(rt5514->i2c_regmap);
++		regcache_mark_dirty(rt5514->regmap);
++		regcache_sync(rt5514->i2c_regmap);
++		regcache_sync(rt5514->regmap);
++	}
++
++	return 0;
++}
++
+ static const struct snd_kcontrol_new rt5514_snd_controls[] = {
+ 	SOC_DOUBLE_TLV("MIC Boost Volume", RT5514_ANA_CTRL_MICBST,
+ 		RT5514_SEL_BSTL_SFT, RT5514_SEL_BSTR_SFT, 8, 0, bst_tlv),
+@@ -257,6 +471,8 @@ static const struct snd_kcontrol_new rt5514_snd_controls[] = {
+ 	SOC_DOUBLE_R_TLV("ADC2 Capture Volume", RT5514_DOWNFILTER1_CTRL1,
+ 		RT5514_DOWNFILTER1_CTRL2, RT5514_AD_GAIN_SFT, 127, 0,
+ 		adc_vol_tlv),
++	SOC_SINGLE_EXT("DSP Control", SND_SOC_NOPM, 0, 1, 0,
++		rt5514_dsp_mode_get, rt5514_dsp_mode_put),
+ };
+ 
+ /* ADC Mixer*/
+@@ -799,6 +1015,32 @@ static int rt5514_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+ 	return 0;
+ }
+ 
++static int rt5514_set_bias_level(struct snd_soc_codec *codec,
++			enum snd_soc_bias_level level)
++{
++	struct rt5514_priv *rt5514 = snd_soc_codec_get_drvdata(codec);
++
++	switch (level) {
++	case SND_SOC_BIAS_PREPARE:
++		if (snd_soc_codec_get_bias_level(codec) ==
++			SND_SOC_BIAS_STANDBY) {
++			if (rt5514->dsp_mode) {
++				rt5514->dsp_mode = 0;
++				regcache_mark_dirty(rt5514->i2c_regmap);
++				regcache_mark_dirty(rt5514->regmap);
++				regcache_sync(rt5514->i2c_regmap);
++				regcache_sync(rt5514->regmap);
++			}
++		}
++		break;
++
++	default:
++		break;
++	}
++
++	return 0;
++}
++
+ static int rt5514_probe(struct snd_soc_codec *codec)
+ {
+ 	struct rt5514_priv *rt5514 = snd_soc_codec_get_drvdata(codec);
+@@ -857,6 +1099,7 @@ struct snd_soc_dai_driver rt5514_dai[] = {
+ 
+ static struct snd_soc_codec_driver soc_codec_dev_rt5514 = {
+ 	.probe = rt5514_probe,
++	.set_bias_level = rt5514_set_bias_level,
+ 	.idle_bias_off = true,
+ 	.controls = rt5514_snd_controls,
+ 	.num_controls = ARRAY_SIZE(rt5514_snd_controls),
+diff --git a/sound/soc/codecs/rt5514.h b/sound/soc/codecs/rt5514.h
+index 6ad8a61..80a5492 100644
+--- a/sound/soc/codecs/rt5514.h
++++ b/sound/soc/codecs/rt5514.h
+@@ -247,6 +247,7 @@ struct rt5514_priv {
+ 	int pll_src;
+ 	int pll_in;
+ 	int pll_out;
++	int dsp_mode;
+ };
+ 
+ #endif /* __RT5514_H__ */
 -- 
+1.8.1.1.439.g50a6b54
