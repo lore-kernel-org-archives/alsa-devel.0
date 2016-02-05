@@ -1,48 +1,60 @@
-From: =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
-Subject: Re: [PATCH] ASoC: mxs-saif: check BUSY bit in hw_params() only if not mclk_in_use
-Date: Fri, 05 Feb 2016 13:43:22 +0000
-Message-ID: <yw1xwpqjgtmt.fsf@unicorn.mansr.com>
-References: <1454505500-30384-1-git-send-email-mans@mansr.com>
-	<20160205131944.GB12311@sirena.org.uk>
-	<yw1x60y3i94n.fsf@unicorn.mansr.com>
-	<20160205133712.GC12311@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160205133712.GC12311@sirena.org.uk> (Mark Brown's message of
-	"Fri, 5 Feb 2016 13:37:12 +0000")
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Florian Vaussard <florian.vaussard-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH v2 2/2] ASoC: ads117x: Add device tree compatible string
+Date: Fri,  5 Feb 2016 16:32:14 +0100
+Message-ID: <1454686334-9668-3-git-send-email-florian.vaussard@heig-vd.ch>
+References: <1454686334-9668-1-git-send-email-florian.vaussard@heig-vd.ch>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1454686334-9668-1-git-send-email-florian.vaussard-EWQkb/GNqlFyDzI6CaY1VQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
+Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Florian Vaussard <florian.vaussard-EWQkb/GNqlFyDzI6CaY1VQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown <broonie@kernel.org> writes:
+This patch adds the necessary device tree compatible string to allow DT
+probing.
 
-> On Fri, Feb 05, 2016 at 01:23:20PM +0000, M=E5ns Rullg=E5rd wrote:
->> Mark Brown <broonie@kernel.org> writes:
->
->> > Please remember to CC the maintainers for the driver when sending
->> > patches. =20
->
->> I CCd everybody scripts/get_maintainers.pl suggested.  How am I supp=
-osed
->> to know who the maintainers are if they're not listed in MAINTAINERS=
-?
->
-> By looking at people working on the driver in git and the authors lis=
-ted
-> in the driver (get_maintainer --git will do most of this for you, tho=
-ugh
-> you do have to think about false positives).  As previously advised t=
-his
-> is not something that can be fully automated, you need to think about
-> who you are sending things to and why.
+Signed-off-by: Florian Vaussard <florian.vaussard-EWQkb/GNqlFyDzI6CaY1VQ@public.gmane.org>
+---
+ sound/soc/codecs/ads117x.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-Most files have been touched by many people.  I thought the entire poin=
-t
-of the MAINTAINERS file was to remove the guesswork from choosing where
-to send patches.  Apparently sound/ has rules of its own.
+diff --git a/sound/soc/codecs/ads117x.c b/sound/soc/codecs/ads117x.c
+index 1222282..c5be1bd 100644
+--- a/sound/soc/codecs/ads117x.c
++++ b/sound/soc/codecs/ads117x.c
+@@ -20,6 +20,8 @@
+ #include <sound/initval.h>
+ #include <sound/soc.h>
+ 
++#include <linux/of.h>
++
+ #define ADS117X_RATES (SNDRV_PCM_RATE_8000_48000)
+ #define ADS117X_FORMATS (SNDRV_PCM_FMTBIT_S16_LE)
+ 
+@@ -75,9 +77,19 @@ static int ads117x_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++#if defined(CONFIG_OF)
++static const struct of_device_id ads117x_dt_ids[] = {
++	{ .compatible = "ti,ads1174" },
++	{ .compatible = "ti,ads1178" },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, ads117x_dt_ids);
++#endif
++
+ static struct platform_driver ads117x_codec_driver = {
+ 	.driver = {
+ 			.name = "ads117x-codec",
++			.of_match_table = of_match_ptr(ads117x_dt_ids),
+ 	},
+ 
+ 	.probe = ads117x_probe,
+-- 
+2.1.0
 
---=20
-M=E5ns Rullg=E5rd
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
