@@ -1,142 +1,232 @@
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: Re: [PATCH v3 3/3] portman2x4 - use new parport device model
-Date: Fri, 05 Feb 2016 22:51:46 +0530
-Message-ID: <56B4DA2A.3050805@gmail.com>
-References: <1454603903-15967-1-git-send-email-sudipm.mukherjee@gmail.com>	<1454603903-15967-3-git-send-email-sudipm.mukherjee@gmail.com>	<s5hr3gse7wk.wl-tiwai@suse.de>	<20160205061706.GA6374@sudip-pc>	<s5hbn7ve5i6.wl-tiwai@suse.de>	<56B4D2EB.4060006@gmail.com>	<s5hwpqjccrn.wl-tiwai@suse.de> <s5htwlnccii.wl-tiwai@suse.de>
+From: Michael Trimarchi <michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>
+Subject: [PATCH V3] ASoC: pcm179x: Add support for pcm1795 and pcm1796
+Date: Fri, 5 Feb 2016 18:24:57 +0100
+Message-ID: <20160205172451.GA30542@panicking>
+References: <1452382685-18009-1-git-send-email-michael@amarulasolutions.com>
+ <1452382685-18009-4-git-send-email-michael@amarulasolutions.com>
+ <20160110120045.GW6588@sirena.org.uk>
+ <20160110173812.GA16304@panicking>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5htwlnccii.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20160110173812.GA16304@panicking>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jacob Siverskog <jacob-EZCvousvhKUZux3j3Bed6dkegs52MxvZ@public.gmane.org>, Johan Hovold <johan-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 05 February 2016 10:36 PM, Takashi Iwai wrote:
-> On Fri, 05 Feb 2016 18:01:16 +0100,
-> Takashi Iwai wrote:
->>
->> On Fri, 05 Feb 2016 17:50:51 +0100,
->> Sudip Mukherjee wrote:
->>>
->>> On Friday 05 February 2016 05:25 PM, Takashi Iwai wrote:
->>>> On Fri, 05 Feb 2016 07:17:06 +0100,
->>>> Sudip Mukherjee wrote:
->>>>>
->>>>> On Thu, Feb 04, 2016 at 05:51:07PM +0100, Takashi Iwai wrote:
->>>>>> On Thu, 04 Feb 2016 17:38:23 +0100,
->>>>>> Sudip Mukherjee wrote:
->>>>>>>
->>>>>>> Modify portman driver to use the new parallel port device model.
->>>>>>> The advantage of using the device model is that the device gets binded
->>>>>>> to the hardware, we get the feature of hotplug, we can bind/unbind
->>>>>>> the driver at runtime.
->>>>>>> The only change is in the way the driver gets registered with the
->>>>>>> parallel port subsystem and so as a result there is no user visible
->>>>>>> change or any chance of regression.
->>>>>>>
->>>>>>> Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
->>>>>>> ---
->>>>>>>
->>>>>>> v3: changed commit message
->>>>>>> v2:
->>>>>>>    1. pardev_cb is initialized while declaring, thus removing the use of
->>>>>>> memset.
->>>>>>>    2. used pdev->id.
->>>>>>>    3. v1 did not have the parport probe callback, but
->>>>>>> we will need the probe callback for binding as the name of the driver
->>>>>>> and the name of the device is different.
->>>>>>>    4. in v1 I missed modifying snd_portman_probe_port().
->>>>>>>
->>>>>>>    sound/drivers/portman2x4.c | 53 ++++++++++++++++++++++++++++++++++------------
->>>>>>>    1 file changed, 39 insertions(+), 14 deletions(-)
->>>>>>>
->>>>>>> diff --git a/sound/drivers/portman2x4.c b/sound/drivers/portman2x4.c
->>>>>>> index 172685d..a22f56c 100644
->>>>>>> --- a/sound/drivers/portman2x4.c
->>>>>>> +++ b/sound/drivers/portman2x4.c
->>>>>>> @@ -650,10 +650,21 @@ static int snd_portman_probe_port(struct parport *p)
->>>>>>>    {
->>>>>>>    	struct pardevice *pardev;
->>>>>>>    	int res;
->>>>>>> -
->>>>>>> -	pardev = parport_register_device(p, DRIVER_NAME,
->>>>>>> -					 NULL, NULL, NULL,
->>>>>>> -					 0, NULL);
->>>>>>> +	struct pardev_cb pdev_cb = {
->>>>>>> +		.preempt = NULL,
->>>>>>> +		.wakeup = NULL,
->>>>>>> +		.private = NULL,
->>>>>>> +		.irq_func = NULL,
->>>>>>> +		.flags = 0,
->>>>>>> +	};
->>>>>>> +
->>>>>>> +	/*
->>>>>>> +	 * Specify the device number as SNDRV_CARDS + 1 so that the
->>>>>>> +	 * device id alloted to this temporary device will never clash
->>>>>>> +	 * with an actual device already registered.
->>>>>>> +	 */
->>>>>>> +	pardev = parport_register_dev_model(p, DRIVER_NAME, &pdev_cb,
->>>>>>> +					    SNDRV_CARDS + 1);
->>>>>>
->>>>>> Hmm, doesn't this result in a device name like "xxx.33" ?
->>>>>
->>>>> yes, it will. But this is a temoporary device just to check if the
->>>>> sound card is connected to that particular parallel port or not. After
->>>>> checking this device is immediately unregistered. My idea here was to
->>>>> have a device number which will never clash with another device number.
->>>>> And we can never have a device like "xxx.33", so no conflict. :)
->>>>
->>>> Ah, this is the temporary one.  If so, does it make sense to convert
->>>> this to dev_model one?  This means that the device will be notified to
->>>> udev even though this is a temporary one to be removed immediately.
->>>
->>> But since we are registering a device it should ideally follow the
->>> dev_model.
->>
->> We shouldn't advertise the device that shouldn't be handled by the
->> user-space.  The device you're trying to register there is the one
->> that lives only shortly just for probing the address.
->>
->>
->>>> It's what we'd want to avoid.  The function serves just as probing the
->>>> availability of the given port, not really registering anything
->>>> there.
->>>
->>> To my understanding, it is probing for the availability of the port and
->>> it is also calling portman_probe() which is initializing hardware
->>> handshake lines to midi box and checking if the portman card is
->>> connected to that parallel port or not.
->>>
->>>>
->>>> That is, we need to change the registration flow itself if we really
->>>> want to move dev_model for the whole.
->>>
->>> Any hint, how to register then?
->>> Without probing (reading and writing to that port) I can not know if
->>> that port is having the card and to use the port I need to register a
->>> device with that port.
->>
->> Just returning the error at probe of the parport device itself instead
->> of doing the probe twice?  The current way is racy in anyway.
->
-> ... and the problem with that is, there is no way to check whether
-> your upcoming change works correctly without the hardware.  It would
-> be no longer a "cleanup", and it's risky to do that blindly.
 
-Yes. That is why I try to change the driver with the minimum possible 
-change.
+Signed-off-by: Michael Trimarchi <michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>
+---
+Not get time to retest
 
->
-> I appreciate your work, but it doesn't look worthy enough.  If we're
-> trying to eliminate the all old-style parport code from the kernel
-> code, OK, it's an ambitious project and we may consider taking a risk
-> of breakage.  Is that the case?
+Changes v3 -> v2:
+	- rebase after i2c support
 
-Yes, the old api is supposed to be removed and we should only have the 
-device model api. I was expecting to remove the old API by 4.7.
-Is there any way to get the hardware?
+Changes v1 -> v2:
+	- Use switch for support new variants
+	- sort the compatible list
 
-Regards
-Sudip
+ sound/soc/codecs/pcm179x-i2c.c |  6 ----
+ sound/soc/codecs/pcm179x-spi.c |  6 ----
+ sound/soc/codecs/pcm179x.c     | 62 ++++++++++++++++++++++++++++++++++++++++--
+ sound/soc/codecs/pcm179x.h     |  9 ++++--
+ 4 files changed, 66 insertions(+), 17 deletions(-)
+
+diff --git a/sound/soc/codecs/pcm179x-i2c.c b/sound/soc/codecs/pcm179x-i2c.c
+index 4118106..609f07f 100644
+--- a/sound/soc/codecs/pcm179x-i2c.c
++++ b/sound/soc/codecs/pcm179x-i2c.c
+@@ -44,12 +44,6 @@ static int pcm179x_i2c_remove(struct i2c_client *client)
+ 	return pcm179x_common_exit(&client->dev);
+ }
+ 
+-static const struct of_device_id pcm179x_of_match[] = {
+-	{ .compatible = "ti,pcm1792a", },
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(of, pcm179x_of_match);
+-
+ static const struct i2c_device_id pcm179x_i2c_ids[] = {
+ 	{ "pcm179x", 0 },
+ 	{ }
+diff --git a/sound/soc/codecs/pcm179x-spi.c b/sound/soc/codecs/pcm179x-spi.c
+index da924d4..6ae0e4d 100644
+--- a/sound/soc/codecs/pcm179x-spi.c
++++ b/sound/soc/codecs/pcm179x-spi.c
+@@ -43,12 +43,6 @@ static int pcm179x_spi_remove(struct spi_device *spi)
+ 	return pcm179x_common_exit(&spi->dev);
+ }
+ 
+-static const struct of_device_id pcm179x_of_match[] = {
+-	{ .compatible = "ti,pcm1792a", },
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(of, pcm179x_of_match);
+-
+ static const struct spi_device_id pcm179x_spi_ids[] = {
+ 	{ "pcm179x", 0 },
+ 	{ },
+diff --git a/sound/soc/codecs/pcm179x.c b/sound/soc/codecs/pcm179x.c
+index 06a6657..73c80d3 100644
+--- a/sound/soc/codecs/pcm179x.c
++++ b/sound/soc/codecs/pcm179x.c
+@@ -20,6 +20,8 @@
+ #include <linux/slab.h>
+ #include <linux/kernel.h>
+ #include <linux/device.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
+ 
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -72,8 +74,31 @@ struct pcm179x_private {
+ 	struct regmap *regmap;
+ 	unsigned int format;
+ 	unsigned int rate;
++#define PCM1795	1
++	unsigned int codec_model;
+ };
+ 
++static int pcm179x_startup(struct snd_pcm_substream *substream,
++			    struct snd_soc_dai *dai)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct pcm179x_private *priv = snd_soc_codec_get_drvdata(codec);
++	u64 formats = PCM1792A_FORMATS;
++
++	switch (priv->codec_model) {
++	case PCM1795:
++		formats = PCM1795_FORMATS;
++		break;
++	default:
++		break;
++	}
++
++	snd_pcm_hw_constraint_mask64(substream->runtime,
++				     SNDRV_PCM_HW_PARAM_FORMAT, formats);
++
++	return 0;
++}
++
+ static int pcm179x_set_dai_fmt(struct snd_soc_dai *codec_dai,
+                              unsigned int format)
+ {
+@@ -112,8 +137,10 @@ static int pcm179x_hw_params(struct snd_pcm_substream *substream,
+ 	switch (priv->format & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_RIGHT_J:
+ 		switch (params_width(params)) {
+-		case 24:
+ 		case 32:
++			val = 1;
++			break;
++		case 24:
+ 			val = 2;
+ 			break;
+ 		case 16:
+@@ -125,8 +152,10 @@ static int pcm179x_hw_params(struct snd_pcm_substream *substream,
+ 		break;
+ 	case SND_SOC_DAIFMT_I2S:
+ 		switch (params_width(params)) {
+-		case 24:
+ 		case 32:
++			val = 4;
++			break;
++		case 24:
+ 			val = 5;
+ 			break;
+ 		case 16:
+@@ -152,6 +181,7 @@ static int pcm179x_hw_params(struct snd_pcm_substream *substream,
+ }
+ 
+ static const struct snd_soc_dai_ops pcm179x_dai_ops = {
++	.startup	= pcm179x_startup,
+ 	.set_fmt	= pcm179x_set_dai_fmt,
+ 	.hw_params	= pcm179x_hw_params,
+ 	.digital_mute	= pcm179x_digital_mute,
+@@ -190,7 +220,7 @@ static struct snd_soc_dai_driver pcm179x_dai = {
+ 		.rates = SNDRV_PCM_RATE_CONTINUOUS,
+ 		.rate_min = 10000,
+ 		.rate_max = 200000,
+-		.formats = PCM1792A_FORMATS, },
++		.formats = PCM179X_FORMATS, },
+ 	.ops = &pcm179x_dai_ops,
+ };
+ 
+@@ -214,15 +244,41 @@ static struct snd_soc_codec_driver soc_codec_dev_pcm179x = {
+ 	.num_dapm_routes	= ARRAY_SIZE(pcm179x_dapm_routes),
+ };
+ 
++static const unsigned int codec_model = PCM1795;
++
++const struct of_device_id pcm179x_of_match[] = {
++	{ .compatible = "ti,pcm1792a", },
++	{ .compatible = "ti,pcm1795",
++	  .data = &codec_model,
++	},
++	{ .compatible = "ti,pcm1796", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, pcm179x_of_match);
++EXPORT_SYMBOL_GPL(pcm179x_of_match);
++
+ int pcm179x_common_init(struct device *dev, struct regmap *regmap)
+ {
+ 	struct pcm179x_private *pcm179x;
++	struct device_node *np = dev->of_node;
++	const unsigned int *codec_model = NULL;
+ 
+ 	pcm179x = devm_kzalloc(dev, sizeof(struct pcm179x_private),
+ 				GFP_KERNEL);
+ 	if (!pcm179x)
+ 		return -ENOMEM;
+ 
++	if (np) {
++		const struct of_device_id *of_id;
++
++		of_id = of_match_device(pcm179x_of_match, dev);
++		if (of_id)
++			codec_model = of_id->data;
++	}
++
++	if (codec_model)
++		pcm179x->codec_model =  *codec_model;
++
+ 	pcm179x->regmap = regmap;
+ 	dev_set_drvdata(dev, pcm179x);
+ 
+diff --git a/sound/soc/codecs/pcm179x.h b/sound/soc/codecs/pcm179x.h
+index 11e3312..4c00047 100644
+--- a/sound/soc/codecs/pcm179x.h
++++ b/sound/soc/codecs/pcm179x.h
+@@ -17,10 +17,15 @@
+ #ifndef __PCM179X_H__
+ #define __PCM179X_H__
+ 
+-#define PCM1792A_FORMATS (SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S24_LE | \
+-			  SNDRV_PCM_FMTBIT_S16_LE)
++#define PCM179X_FORMATS (SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S24_LE | \
++			 SNDRV_PCM_FMTBIT_S16_LE)
++
++#define PCM1792A_FORMATS (SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S16_LE)
++
++#define PCM1795_FORMATS (SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S24_LE)
+ 
+ extern const struct regmap_config pcm179x_regmap_config;
++extern const struct of_device_id pcm179x_of_match[];
+ 
+ int pcm179x_common_init(struct device *dev, struct regmap *regmap);
+ int pcm179x_common_exit(struct device *dev);
+-- 
+2.7.0
+
+-- 
+| Michael Nazzareno Trimarchi                     Amarula Solutions BV |
+| COO  -  Founder                                      Cruquiuskade 47 |
+| +31(0)851119172                                 Amsterdam 1018 AM NL |
+|                  [`as] http://www.amarulasolutions.com               |
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
