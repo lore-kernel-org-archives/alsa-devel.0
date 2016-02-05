@@ -1,16 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 7/7] ASoC: Intel: Skylake: Fill BE blob with
-	default params
-Date: Fri,  5 Feb 2016 12:19:10 +0530
-Message-ID: <1454654950-23091-8-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 6/7] ASoC: Intel: Skylake: Add shutdown callback
+Date: Fri,  5 Feb 2016 12:19:09 +0530
+Message-ID: <1454654950-23091-7-git-send-email-vinod.koul@intel.com>
 References: <1454654950-23091-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 71E1C26661E
- for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2016 07:46:20 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id C3281266618
+ for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2016 07:46:19 +0100 (CET)
 In-Reply-To: <1454654950-23091-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,94 +26,60 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-When we have a path that connects to DSP sink and source, we
-need to query the blob using the default params. So add a
-function to query the params for such path
+While going to shutdown, we need to bring HW to clean state. This
+is done by cleaning up stream descriptor registers. This cleanup
+is already done by decoupling of stream and stopping the chip, so
+invoke these from shutdown handler.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-topology.c | 61 ++++++++++++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
+ sound/soc/intel/skylake/skl.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 7803a6f3c014..03a8762d1e3e 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -260,6 +260,64 @@ static void skl_tplg_update_buffer_size(struct skl_sst *ctx,
- 				multiplier;
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 092705e73db4..06f4b2c13423 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -634,6 +634,31 @@ out_free:
+ 	return err;
  }
  
-+static int skl_tplg_update_be_blob(struct snd_soc_dapm_widget *w,
-+						struct skl_sst *ctx)
++static void skl_shutdown(struct pci_dev *pci)
 +{
-+	struct skl_module_cfg *m_cfg = w->priv;
-+	int link_type, dir;
-+	u32 ch, s_freq, s_fmt;
-+	struct nhlt_specific_cfg *cfg;
-+	struct skl *skl = get_skl_ctx(ctx->dev);
++	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
++	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_stream *s;
++	struct hdac_ext_stream *stream;
++	struct skl *skl;
 +
-+	/* check if we already have blob */
-+	if (m_cfg->formats_config.caps_size > 0)
-+		return 0;
++	if (ebus == NULL)
++		return;
 +
-+	switch (m_cfg->dev_type) {
-+	case SKL_DEVICE_DMIC:
-+		link_type = NHLT_LINK_DMIC;
-+		dir = 1;
-+		s_freq = m_cfg->in_fmt[0].s_freq;
-+		s_fmt = m_cfg->in_fmt[0].bit_depth;
-+		ch = m_cfg->in_fmt[0].channels;
-+		break;
++	skl = ebus_to_skl(ebus);
 +
-+	case SKL_DEVICE_I2S:
-+		link_type = NHLT_LINK_SSP;
-+		if (m_cfg->hw_conn_type == SKL_CONN_SOURCE) {
-+			dir = 1;
-+			s_freq = m_cfg->in_fmt[0].s_freq;
-+			s_fmt = m_cfg->in_fmt[0].bit_depth;
-+			ch = m_cfg->in_fmt[0].channels;
-+		} else {
-+			dir = 0;
-+			s_freq = m_cfg->out_fmt[0].s_freq;
-+			s_fmt = m_cfg->out_fmt[0].bit_depth;
-+			ch = m_cfg->out_fmt[0].channels;
-+		}
-+		break;
++	if (skl->init_failed)
++		return;
 +
-+	default:
-+		return -EINVAL;
++	snd_hdac_ext_stop_streams(ebus);
++	list_for_each_entry(s, &bus->stream_list, list) {
++		stream = stream_to_hdac_ext_stream(s);
++		snd_hdac_ext_stream_decouple(ebus, stream, false);
 +	}
 +
-+	/* update the blob based on virtual bus_id and default params */
-+	cfg = skl_get_ep_blob(skl, m_cfg->vbus_id, link_type,
-+					s_fmt, ch, s_freq, dir);
-+	if (cfg) {
-+		m_cfg->formats_config.caps_size = cfg->size;
-+		m_cfg->formats_config.caps = (u32 *) &cfg->caps;
-+	} else {
-+		dev_err(ctx->dev, "Blob NULL for id %x type %d dirn %d\n",
-+					m_cfg->vbus_id, link_type, dir);
-+		dev_err(ctx->dev, "PCM: ch %d, freq %d, fmt %d\n",
-+					ch, s_freq, s_fmt);
-+		return -EIO;
-+	}
-+
-+	return 0;
++	snd_hdac_bus_stop_chip(bus);
 +}
 +
- static void skl_tplg_update_module_params(struct snd_soc_dapm_widget *w,
- 							struct skl_sst *ctx)
+ static void skl_remove(struct pci_dev *pci)
  {
-@@ -433,6 +491,9 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
- 				return ret;
- 		}
- 
-+		/* update blob if blob is null for be with default value */
-+		skl_tplg_update_be_blob(w, ctx);
-+
- 		/*
- 		 * apply fix/conversion to module params based on
- 		 * FE/BE params
+ 	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
+@@ -677,6 +702,7 @@ static struct pci_driver skl_driver = {
+ 	.id_table = skl_ids,
+ 	.probe = skl_probe,
+ 	.remove = skl_remove,
++	.shutdown = skl_shutdown,
+ 	.driver = {
+ 		.pm = &skl_pm,
+ 	},
 -- 
 1.9.1
