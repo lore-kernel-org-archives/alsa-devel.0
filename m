@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 3/4] ALSA: firewire-tascam: remove a flag for
-	controller
-Date: Fri,  5 Feb 2016 09:56:07 +0900
-Message-ID: <1454633768-17729-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/4] ALSA: firewire-tascam: remove needless
+	member for control and status message
+Date: Fri,  5 Feb 2016 09:56:08 +0900
+Message-ID: <1454633768-17729-5-git-send-email-o-takashi@sakamocchi.jp>
 References: <1454633768-17729-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 5CBE02605C1
+ by alsa0.perex.cz (Postfix) with ESMTP id 5BA372605B8
  for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2016 01:56:13 +0100 (CET)
 In-Reply-To: <1454633768-17729-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,61 +25,30 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Currently, 'struct snd_tscm_spec' has a member named as 'is_controller' to
-identify MIDI controller. This member was originally added to skip
-parse control and status messages in isochronous packets for non-controller
-model.
-
-As long as I investigate, FW-1804 (non-controller) also transfers the
-control and status message, thus it becomes meaningless.
+Commit 3beab0f844fa added a member for control and status message, while
+it's planned and not implemented yet.
 
 This commit removes it.
 
+Fixes: 3beab0f844fa('ALSA: firewire-tascam: add support for outgoing MIDI messages by asynchronous transaction')
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/tascam/tascam.c | 3 ---
- sound/firewire/tascam/tascam.h | 1 -
- 2 files changed, 4 deletions(-)
+ sound/firewire/tascam/tascam.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
-index dcb11c2..e281c33 100644
---- a/sound/firewire/tascam/tascam.c
-+++ b/sound/firewire/tascam/tascam.c
-@@ -21,7 +21,6 @@ static struct snd_tscm_spec model_specs[] = {
- 		.pcm_playback_analog_channels = 8,
- 		.midi_capture_ports = 4,
- 		.midi_playback_ports = 4,
--		.is_controller = true,
- 	},
- 	{
- 		.name = "FW-1082",
-@@ -31,7 +30,6 @@ static struct snd_tscm_spec model_specs[] = {
- 		.pcm_playback_analog_channels = 2,
- 		.midi_capture_ports = 2,
- 		.midi_playback_ports = 2,
--		.is_controller = true,
- 	},
- 	{
- 		.name = "FW-1804",
-@@ -41,7 +39,6 @@ static struct snd_tscm_spec model_specs[] = {
- 		.pcm_playback_analog_channels = 2,
- 		.midi_capture_ports = 2,
- 		.midi_playback_ports = 4,
--		.is_controller = false,
- 	},
- };
- 
 diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
-index 2d028d2..6626860 100644
+index 6626860..30ab77e 100644
 --- a/sound/firewire/tascam/tascam.h
 +++ b/sound/firewire/tascam/tascam.h
-@@ -39,7 +39,6 @@ struct snd_tscm_spec {
- 	unsigned int pcm_playback_analog_channels;
- 	unsigned int midi_capture_ports;
- 	unsigned int midi_playback_ports;
--	bool is_controller;
+@@ -71,9 +71,6 @@ struct snd_tscm {
+ 	struct snd_fw_async_midi_port out_ports[TSCM_MIDI_OUT_PORT_MAX];
+ 	u8 running_status[TSCM_MIDI_OUT_PORT_MAX];
+ 	bool on_sysex[TSCM_MIDI_OUT_PORT_MAX];
+-
+-	/* For control messages. */
+-	struct snd_firewire_tascam_status *status;
  };
  
- #define TSCM_MIDI_IN_PORT_MAX	4
+ #define TSCM_ADDR_BASE			0xffff00000000ull
 -- 
 2.5.0
