@@ -1,44 +1,66 @@
-From: Florian Vaussard <florian.vaussard-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH v2 1/2] ASoC: ads117x: Add bindings documentation for TI ADS117x ADC
-Date: Fri,  5 Feb 2016 16:32:13 +0100
-Message-ID: <1454686334-9668-2-git-send-email-florian.vaussard@heig-vd.ch>
-References: <1454686334-9668-1-git-send-email-florian.vaussard@heig-vd.ch>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1454686334-9668-1-git-send-email-florian.vaussard-EWQkb/GNqlFyDzI6CaY1VQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Florian Vaussard <florian.vaussard-EWQkb/GNqlFyDzI6CaY1VQ@public.gmane.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: mxs-saif: check BUSY bit in hw_params() only if
+ not mclk_in_use
+Date: Fri, 5 Feb 2016 16:00:22 +0000
+Message-ID: <20160205160022.GX4455@sirena.org.uk>
+References: <1454505500-30384-1-git-send-email-mans@mansr.com>
+ <20160205131944.GB12311@sirena.org.uk>
+ <yw1x60y3i94n.fsf@unicorn.mansr.com>
+ <20160205133712.GC12311@sirena.org.uk>
+ <yw1xwpqjgtmt.fsf@unicorn.mansr.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="JQJYpj0es6mGpGbU"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <yw1xwpqjgtmt.fsf@unicorn.mansr.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently the binding is only made of the compatible string.
 
-Signed-off-by: Florian Vaussard <florian.vaussard-EWQkb/GNqlFyDzI6CaY1VQ@public.gmane.org>
----
- Documentation/devicetree/bindings/sound/ti,ads117x.txt | 11 +++++++++++
- 1 file changed, 11 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/ti,ads117x.txt
+--JQJYpj0es6mGpGbU
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/devicetree/bindings/sound/ti,ads117x.txt b/Documentation/devicetree/bindings/sound/ti,ads117x.txt
-new file mode 100644
-index 0000000..7db19b5
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ti,ads117x.txt
-@@ -0,0 +1,11 @@
-+Texas Intstruments ADS117x ADC
-+
-+Required properties:
-+
-+  - compatible : "ti,ads1174" or "ti,ads1178"
-+
-+Example:
-+
-+ads1178 {
-+	compatible = "ti,ads1178";
-+};
--- 
-2.1.0
+On Fri, Feb 05, 2016 at 01:43:22PM +0000, M=E5ns Rullg=E5rd wrote:
+> Mark Brown <broonie@kernel.org> writes:
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> > By looking at people working on the driver in git and the authors listed
+> > in the driver (get_maintainer --git will do most of this for you, though
+> > you do have to think about false positives).  As previously advised this
+> > is not something that can be fully automated, you need to think about
+> > who you are sending things to and why.
+
+> Most files have been touched by many people.  I thought the entire point
+> of the MAINTAINERS file was to remove the guesswork from choosing where
+> to send patches.  Apparently sound/ has rules of its own.
+
+No, this is true in general for the kernel - I'm just repeating
+SubmittingPatches to you here.  Most individual drivers don't have a
+specific entry in MAINTAINERS and it's probably not worth the bother
+trying to get it completely 100% accurate.  MAINTAINERS is there to be
+helpful and to have things like lists and git hanging off it but it's
+not the be all and end all of everything, it still generates false
+positives (consider how many ASoC patches Jaroslav has reviewed for
+example) and false negatives.  No automated system is going to be
+perfect, at some point you're going to need to think.
+
+--JQJYpj0es6mGpGbU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWtMcVAAoJECTWi3JdVIfQH+YH/iop/WMb9HzEfVpJoimhn2pR
+XwdpZfyBdPB0bIUuXy1F6XhRRktIF7ULxIFr5WAUOMOOZcG797N9LnXQeTF6zMSh
+cz4c4nbT2XLL/ePvhAkt/cG8SbE3gHh7QGLi2jWbt19DdIAuHep7IOO1DqztZjgu
+gYYGkl3XNKhRaNwHGlMZMTjqnDeFlLDGiXIIBNO710BvPRq3zMEYALlnIGw1kHP1
+SNlCWRxa6KWWeHUmB7Doa3Nubm9LERSAIzGnDJgi9u+pa7UpXr72dVmWAW1j3lir
+pqW5L5ww6SuwNZWh3jQ/Ny/tSv3QRQUlyXb7ogVNpzJsrcmVCYVN/pfCmZcXP0M=
+=+aFU
+-----END PGP SIGNATURE-----
+
+--JQJYpj0es6mGpGbU--
