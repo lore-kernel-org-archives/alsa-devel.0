@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 5/7] ASoC: Intel: Skylake: Allow module
-	parameter set after bind
-Date: Fri,  5 Feb 2016 12:19:08 +0530
-Message-ID: <1454654950-23091-6-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 7/7] ASoC: Intel: Skylake: Fill BE blob with
+	default params
+Date: Fri,  5 Feb 2016 12:19:10 +0530
+Message-ID: <1454654950-23091-8-git-send-email-vinod.koul@intel.com>
 References: <1454654950-23091-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D977266609
- for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2016 07:46:16 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 71E1C26661E
+ for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2016 07:46:20 +0100 (CET)
 In-Reply-To: <1454654950-23091-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,135 +27,94 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-Some modules require params to be set after the module is bound
-to all the pins connected.
-
-The module provider initializes set_param flag for such modules
-and we send params after binding. This is done by the function
-skl_tplg_set_module_bind_params()
+When we have a path that connects to DSP sink and source, we
+need to query the blob using the default params. So add a
+function to query the params for such path
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-topology.c       | 72 ++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-tplg-interface.h |  3 +-
- 2 files changed, 74 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-topology.c | 61 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 61 insertions(+)
 
 diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 696a8becb803..7803a6f3c014 100644
+index 7803a6f3c014..03a8762d1e3e 100644
 --- a/sound/soc/intel/skylake/skl-topology.c
 +++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -545,6 +545,66 @@ static int skl_tplg_mixer_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
- 	return 0;
+@@ -260,6 +260,64 @@ static void skl_tplg_update_buffer_size(struct skl_sst *ctx,
+ 				multiplier;
  }
  
-+/*
-+ * Some modules require params to be set after the module is bound to
-+ * all pins connected.
-+ *
-+ * The module provider initializes set_param flag for such modules and we
-+ * send params after binding
-+ */
-+static int skl_tplg_set_module_bind_params(struct snd_soc_dapm_widget *w,
-+			struct skl_module_cfg *mcfg, struct skl_sst *ctx)
++static int skl_tplg_update_be_blob(struct snd_soc_dapm_widget *w,
++						struct skl_sst *ctx)
 +{
-+	int i, ret;
-+	struct skl_module_cfg *mconfig = w->priv;
-+	const struct snd_kcontrol_new *k;
-+	struct soc_bytes_ext *sb;
-+	struct skl_algo_data *bc;
-+	struct skl_specific_cfg *sp_cfg;
++	struct skl_module_cfg *m_cfg = w->priv;
++	int link_type, dir;
++	u32 ch, s_freq, s_fmt;
++	struct nhlt_specific_cfg *cfg;
++	struct skl *skl = get_skl_ctx(ctx->dev);
 +
-+	/*
-+	 * check all out/in pins are in bind state.
-+	 * if so set the module param
-+	 */
-+	for (i = 0; i < mcfg->max_out_queue; i++) {
-+		if (mcfg->m_out_pin[i].pin_state != SKL_PIN_BIND_DONE)
-+			return 0;
-+	}
++	/* check if we already have blob */
++	if (m_cfg->formats_config.caps_size > 0)
++		return 0;
 +
-+	for (i = 0; i < mcfg->max_in_queue; i++) {
-+		if (mcfg->m_in_pin[i].pin_state != SKL_PIN_BIND_DONE)
-+			return 0;
-+	}
++	switch (m_cfg->dev_type) {
++	case SKL_DEVICE_DMIC:
++		link_type = NHLT_LINK_DMIC;
++		dir = 1;
++		s_freq = m_cfg->in_fmt[0].s_freq;
++		s_fmt = m_cfg->in_fmt[0].bit_depth;
++		ch = m_cfg->in_fmt[0].channels;
++		break;
 +
-+	if (mconfig->formats_config.caps_size > 0 &&
-+		mconfig->formats_config.set_params == SKL_PARAM_BIND) {
-+		sp_cfg = &mconfig->formats_config;
-+		ret = skl_set_module_params(ctx, sp_cfg->caps,
-+					sp_cfg->caps_size,
-+					sp_cfg->param_id, mconfig);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	for (i = 0; i < w->num_kcontrols; i++) {
-+		k = &w->kcontrol_news[i];
-+		if (k->access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK) {
-+			sb = (void *) k->private_value;
-+			bc = (struct skl_algo_data *)sb->dobj.private;
-+
-+			if (bc->set_params == SKL_PARAM_BIND) {
-+				ret = skl_set_module_params(ctx,
-+						(u32 *)bc->params, bc->max,
-+						bc->param_id, mconfig);
-+				if (ret < 0)
-+					return ret;
-+			}
++	case SKL_DEVICE_I2S:
++		link_type = NHLT_LINK_SSP;
++		if (m_cfg->hw_conn_type == SKL_CONN_SOURCE) {
++			dir = 1;
++			s_freq = m_cfg->in_fmt[0].s_freq;
++			s_fmt = m_cfg->in_fmt[0].bit_depth;
++			ch = m_cfg->in_fmt[0].channels;
++		} else {
++			dir = 0;
++			s_freq = m_cfg->out_fmt[0].s_freq;
++			s_fmt = m_cfg->out_fmt[0].bit_depth;
++			ch = m_cfg->out_fmt[0].channels;
 +		}
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	/* update the blob based on virtual bus_id and default params */
++	cfg = skl_get_ep_blob(skl, m_cfg->vbus_id, link_type,
++					s_fmt, ch, s_freq, dir);
++	if (cfg) {
++		m_cfg->formats_config.caps_size = cfg->size;
++		m_cfg->formats_config.caps = (u32 *) &cfg->caps;
++	} else {
++		dev_err(ctx->dev, "Blob NULL for id %x type %d dirn %d\n",
++					m_cfg->vbus_id, link_type, dir);
++		dev_err(ctx->dev, "PCM: ch %d, freq %d, fmt %d\n",
++					ch, s_freq, s_fmt);
++		return -EIO;
 +	}
 +
 +	return 0;
 +}
 +
- static int skl_tplg_bind_sinks(struct snd_soc_dapm_widget *w,
- 				struct skl *skl,
- 				struct snd_soc_dapm_widget *src_w,
-@@ -579,11 +639,19 @@ static int skl_tplg_bind_sinks(struct snd_soc_dapm_widget *w,
- 			sink = p->sink;
- 			sink_mconfig = sink->priv;
- 
-+			if (src_mconfig->m_state == SKL_MODULE_UNINIT ||
-+				sink_mconfig->m_state == SKL_MODULE_UNINIT)
-+				continue;
-+
- 			/* Bind source to sink, mixin is always source */
- 			ret = skl_bind_modules(ctx, src_mconfig, sink_mconfig);
- 			if (ret)
+ static void skl_tplg_update_module_params(struct snd_soc_dapm_widget *w,
+ 							struct skl_sst *ctx)
+ {
+@@ -433,6 +491,9 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
  				return ret;
+ 		}
  
-+			/* set module params after bind */
-+			skl_tplg_set_module_bind_params(src_w, src_mconfig, ctx);
-+			skl_tplg_set_module_bind_params(sink, sink_mconfig, ctx);
++		/* update blob if blob is null for be with default value */
++		skl_tplg_update_be_blob(w, ctx);
 +
- 			/* Start sinks pipe first */
- 			if (sink_mconfig->pipe->state != SKL_PIPE_STARTED) {
- 				if (sink_mconfig->pipe->conn_type !=
-@@ -714,6 +782,10 @@ static int skl_tplg_mixer_dapm_post_pmu_event(struct snd_soc_dapm_widget *w,
- 		if (ret)
- 			return ret;
- 
-+		/* set module params after bind */
-+		skl_tplg_set_module_bind_params(source, src_mconfig, ctx);
-+		skl_tplg_set_module_bind_params(sink, sink_mconfig, ctx);
-+
- 		if (sink_mconfig->pipe->conn_type != SKL_PIPE_CONN_TYPE_FE)
- 			ret = skl_run_pipe(ctx, sink_mconfig->pipe);
- 	}
-diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
-index c9ae010b3cc8..1db88a63ac17 100644
---- a/sound/soc/intel/skylake/skl-tplg-interface.h
-+++ b/sound/soc/intel/skylake/skl-tplg-interface.h
-@@ -144,7 +144,8 @@ enum module_pin_type {
- enum skl_module_param_type {
- 	SKL_PARAM_DEFAULT = 0,
- 	SKL_PARAM_INIT,
--	SKL_PARAM_SET
-+	SKL_PARAM_SET,
-+	SKL_PARAM_BIND
- };
- 
- struct skl_dfw_module_pin {
+ 		/*
+ 		 * apply fix/conversion to module params based on
+ 		 * FE/BE params
 -- 
 1.9.1
