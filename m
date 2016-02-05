@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/4] ALSA: firewire-tascam: fix NULL pointer
-	dereference when model identification fails
-Date: Fri,  5 Feb 2016 09:56:05 +0900
-Message-ID: <1454633768-17729-2-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 3/4] ALSA: firewire-tascam: remove a flag for
+	controller
+Date: Fri,  5 Feb 2016 09:56:07 +0900
+Message-ID: <1454633768-17729-4-git-send-email-o-takashi@sakamocchi.jp>
 References: <1454633768-17729-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 5EDAA2605D2
+ by alsa0.perex.cz (Postfix) with ESMTP id 5CBE02605C1
  for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2016 01:56:13 +0100 (CET)
 In-Reply-To: <1454633768-17729-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,47 +25,61 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-When unsupported models are connected, snd-firewire-tascam module causes
-NULL pointer dereference in fw_core_remove_address_handler() (due to
-list_del_rcu()).
+Currently, 'struct snd_tscm_spec' has a member named as 'is_controller' to
+identify MIDI controller. This member was originally added to skip
+parse control and status messages in isochronous packets for non-controller
+model.
 
-This commit prevents this bug.
+As long as I investigate, FW-1804 (non-controller) also transfers the
+control and status message, thus it becomes meaningless.
+
+This commit removes it.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/tascam/tascam-transaction.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/firewire/tascam/tascam.c | 3 ---
+ sound/firewire/tascam/tascam.h | 1 -
+ 2 files changed, 4 deletions(-)
 
-diff --git a/sound/firewire/tascam/tascam-transaction.c b/sound/firewire/tascam/tascam-transaction.c
-index 904ce03..040a96d 100644
---- a/sound/firewire/tascam/tascam-transaction.c
-+++ b/sound/firewire/tascam/tascam-transaction.c
-@@ -230,6 +230,7 @@ int snd_tscm_transaction_register(struct snd_tscm *tscm)
- 	return err;
- error:
- 	fw_core_remove_address_handler(&tscm->async_handler);
-+	tscm->async_handler.callback_data = NULL;
- 	return err;
- }
+diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
+index dcb11c2..e281c33 100644
+--- a/sound/firewire/tascam/tascam.c
++++ b/sound/firewire/tascam/tascam.c
+@@ -21,7 +21,6 @@ static struct snd_tscm_spec model_specs[] = {
+ 		.pcm_playback_analog_channels = 8,
+ 		.midi_capture_ports = 4,
+ 		.midi_playback_ports = 4,
+-		.is_controller = true,
+ 	},
+ 	{
+ 		.name = "FW-1082",
+@@ -31,7 +30,6 @@ static struct snd_tscm_spec model_specs[] = {
+ 		.pcm_playback_analog_channels = 2,
+ 		.midi_capture_ports = 2,
+ 		.midi_playback_ports = 2,
+-		.is_controller = true,
+ 	},
+ 	{
+ 		.name = "FW-1804",
+@@ -41,7 +39,6 @@ static struct snd_tscm_spec model_specs[] = {
+ 		.pcm_playback_analog_channels = 2,
+ 		.midi_capture_ports = 2,
+ 		.midi_playback_ports = 4,
+-		.is_controller = false,
+ 	},
+ };
  
-@@ -276,6 +277,9 @@ void snd_tscm_transaction_unregister(struct snd_tscm *tscm)
- 	__be32 reg;
- 	unsigned int i;
+diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
+index 2d028d2..6626860 100644
+--- a/sound/firewire/tascam/tascam.h
++++ b/sound/firewire/tascam/tascam.h
+@@ -39,7 +39,6 @@ struct snd_tscm_spec {
+ 	unsigned int pcm_playback_analog_channels;
+ 	unsigned int midi_capture_ports;
+ 	unsigned int midi_playback_ports;
+-	bool is_controller;
+ };
  
-+	if (tscm->async_handler.callback_data == NULL)
-+		return;
-+
- 	/* Turn off FireWire LED. */
- 	reg = cpu_to_be32(0x0000008e);
- 	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-@@ -297,6 +301,8 @@ void snd_tscm_transaction_unregister(struct snd_tscm *tscm)
- 			   &reg, sizeof(reg), 0);
- 
- 	fw_core_remove_address_handler(&tscm->async_handler);
-+	tscm->async_handler.callback_data = NULL;
-+
- 	for (i = 0; i < TSCM_MIDI_OUT_PORT_MAX; i++)
- 		snd_fw_async_midi_port_destroy(&tscm->out_ports[i]);
- }
+ #define TSCM_MIDI_IN_PORT_MAX	4
 -- 
 2.5.0
