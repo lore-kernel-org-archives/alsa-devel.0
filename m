@@ -1,87 +1,92 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: nau8825: fix issue that pop noise
- when start playback
-Date: Mon, 8 Feb 2016 16:52:58 +0000
-Message-ID: <20160208165258.GI7265@sirena.org.uk>
-References: <1454383094-6778-1-git-send-email-KCHSU0@nuvoton.com>
- <1454661165-15275-1-git-send-email-KCHSU0@nuvoton.com>
+From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Subject: [PATCH v6 0/2] ASoC: Add SPDIF support for Allwinner SoCs
+Date: Mon,  8 Feb 2016 18:09:19 +0100
+Message-ID: <1454951361-10625-1-git-send-email-codekipper@gmail.com>
+Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6015998549944967808=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 485B62605C1
- for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2016 17:53:08 +0100 (CET)
-In-Reply-To: <1454661165-15275-1-git-send-email-KCHSU0@nuvoton.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBREX4O2QKGQEPTOL2TA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
---===============6015998549944967808==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="fckbADODYWZD5TdN"
-Content-Disposition: inline
+This patch set adds support for the Allwinner SPDIF transceiver.
+
+For now just the SPDIF transmitter has been tested on a Mele A2000(A10)
+and a Itead Ibox(A20).
+
+In order for this patch set to be functional we require an audio clock patch
+which will be delivered separately. For those that are interested I've pushed
+the patches here with all the required changes to get SPDIF audio out of the
+device.
+
+https://github.com/codekipper/linux-sunxi/commits/spdif_delivery
+
+Thanks in advance,
+CK
+
+---
+Changes since v5:
+- fixed warning that had sneaked in.'
+
+Changes since v4:
+- corrected indentation issues
+- removed old macros
+- removed unnecessary enabling of apb clock
+
+Changes since v3:
+- removed code required for spdif capture
+- added disable/enable of apb clk to suspend/resume.
+- removed unnecessary dt checks in probe
+- fixed error conditions in probe/resume
+- modified pm_runtime functionality and confirmed that driver worked when PM was disabled.
+- removed .owner from platform driver
+- renamed bindings file
+
+Changes since v2:
+- removed sunxi-machine-spdif and replaced with simple audio card
+- removed untested compatibilities from device tree documentation
+- added pm_runtime and remove shutdown
+- removed pll2 as it's the parent of the spdif clock
+- rename clk to spdif_clk
+- removed enabling of mclk output
+- removed interrupts status being cleared as it's not being used
+- use default fifo settings for now
+- fixed alignments for wrapped lines
+
+Changes since v1:
+- Moved sunxi-machine-spdif.c to separate patch
+- replaced sunxi in naming scheme with sun4i in the sun4i-spdif driver.
+- split tx controller into separate enable/disable functions
+- moved setclk and setfmt functionality into hw params
+- added support for mono signals.
+- cleaned up probe clock set up.
+- removed all writes to transmit status registers.
+- removed of_id
+- removed power management code.
+- Added support for more rates.
 
 
---fckbADODYWZD5TdN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Marcus Cooper (2):
+  dt-bindings: sunxi :add sun4i SPDIF transceiver
+  ASoC: sunxi: Add support for the SPDIF block
 
-On Fri, Feb 05, 2016 at 04:32:45PM +0800, John Hsu wrote:
+ .../bindings/sound/sunxi,sun4i-spdif.txt           |  39 ++
+ sound/soc/sunxi/Kconfig                            |   8 +
+ sound/soc/sunxi/Makefile                           |   1 +
+ sound/soc/sunxi/sun4i-spdif.c                      | 550 +++++++++++++++++++++
+ 4 files changed, 598 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
+ create mode 100644 sound/soc/sunxi/sun4i-spdif.c
 
->  	switch (event) {
->  	case SND_SOC_DAPM_POST_PMU:
->  		/* Prevent startup click by letting charge pump to ramp up */
->  		msleep(10);
-> +		regmap_update_bits(nau8825->regmap, NAU8825_REG_CHARGE_PUMP,
-> +			NAU8825_JAMNODCLOW, NAU8825_JAMNODCLOW);
-> +		break;
-> +	case SND_SOC_DAPM_PRE_PMD:
-> +		regmap_update_bits(nau8825->regmap, NAU8825_REG_CLASSG_CTRL,
-> +			NAU8825_CLASSG_EN, 0);
-> +		break;
-> +	case SND_SOC_DAPM_POST_PMD:
-> +		regmap_update_bits(nau8825->regmap, NAU8825_REG_BOOST,
-> +			NAU8825_HP_BOOST_DIS, 0);
->  		break;
-
-This is really hard to follow, the enables and disables here don't match
-up (I see that at least some of these are handled by other widgets on
-the other path).  I at least need some words explaining what the
-intended effect of the change is.
-
---fckbADODYWZD5TdN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWuMfpAAoJECTWi3JdVIfQ1goH/3+tzeq9qfyOAy7k24f9A1xx
-liJ+371x0uhrnEMx/o9RLvE3NR91ERJBiQvtwsLMGVHak+4kYtXOhiKhGj7rM+8m
-fRIlQuFFqHkKh9VWBoM1CjKAMW5P5TWhzpb9pJyIBWJQ10gz3W8Wm/pxQy+HXT07
-dVZXF3cnJRo9QlKpEYOrGIXocUaJZJm1wC9p5GqLgs/qBQj1J/bRu85EajL31CME
-C9zoWHGZezfVJKzn2ElcM6poHVetsbFXcG5EM69Ass/nglXnntJ563BAInwtZPjc
-WqMa1JhZGIrFg5CpHMDsRe/45JtRrWHagjvQxEBmfpn7xuOKpR3yJEHZMEkm6O4=
-=Qlaj
------END PGP SIGNATURE-----
-
---fckbADODYWZD5TdN--
-
---===============6015998549944967808==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6015998549944967808==--
+-- 
+2.7.1
