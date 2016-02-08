@@ -1,37 +1,79 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: Re: [PATCH] ASoC: rt5514: Fix up calculation for
-	bclk_ms
-Date: Mon, 08 Feb 2016 23:15:31 +0800
-Message-ID: <1454944531.5682.0.camel@ingics.com>
-References: <1454940293.6265.1.camel@ingics.com>
+From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Subject: [PATCH v5 1/2] dt-bindings: sunxi :add sun4i SPDIF transceiver
+Date: Mon,  8 Feb 2016 16:26:06 +0100
+Message-ID: <1454945167-29324-2-git-send-email-codekipper@gmail.com>
+References: <1454945167-29324-1-git-send-email-codekipper@gmail.com>
+Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f42.google.com (mail-pa0-f42.google.com
- [209.85.220.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C9F02605C1
- for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2016 16:15:40 +0100 (CET)
-Received: by mail-pa0-f42.google.com with SMTP id ho8so74991446pac.2
- for <alsa-devel@alsa-project.org>; Mon, 08 Feb 2016 07:15:40 -0800 (PST)
-In-Reply-To: <1454940293.6265.1.camel@ingics.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBFHH4K2QKGQEJEU6GBA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+In-Reply-To: <1454945167-29324-1-git-send-email-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-5pa8IOS4gO+8jDIwMTYtMDItMDgg5pa8IDIyOjA0ICswODAw77yMQXhlbCBMaW4g5o+Q5Yiw77ya
-Cj4gVGhlIGVxdWF0aW9uIHRvIGNhbGN1bGF0ZSBiY2xrX21zIGlzIHdyb25nLCBmaXggaXQuCgpP
-b3BzLCBJIG1pcy11bmRlcnN0YW5kIHRoZSBjb2RlLgpQbGVhc2UgaWdub3JlIHRoaXMgcGF0Y2gs
-IHNvcnJ5LgoKQXhlbAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+
+Add devicetree bindings for the SPDIF transceiver found on
+found on Allwinners A10 and A20 SoCs.
+
+Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+---
+ .../bindings/sound/sunxi,sun4i-spdif.txt           | 39 ++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
+
+diff --git a/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt b/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
+new file mode 100644
+index 0000000..13503aa
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
+@@ -0,0 +1,39 @@
++Allwinner Sony/Philips Digital Interface Format (S/PDIF) Controller
++
++The Allwinner S/PDIF audio block is a transceiver that allows the
++processor to receive and transmit digital audio via an coaxial cable or
++a fibre cable.
++For now only playback is supported.
++
++Required properties:
++
++  - compatible		: should be one of the following:
++    - "allwinner,sun4i-a10-spdif": for the Allwinner A10 SoC
++
++  - reg			: Offset and length of the register set for the device.
++
++  - interrupts		: Contains the spdif interrupt.
++
++  - dmas		: Generic dma devicetree binding as described in
++			  Documentation/devicetree/bindings/dma/dma.txt.
++
++  - dma-names		: Two dmas have to be defined, "tx" and "rx".
++
++  - clocks		: Contains an entry for each entry in clock-names.
++
++  - clock-names		: Includes the following entries:
++	"apb"		  clock for the spdif bus.
++	"spdif"		  clock for spdif controller.
++
++Example:
++
++spdif: spdif@01c21000 {
++	compatible = "allwinner,sun4i-a10-spdif";
++	reg = <0x01c21000 0x40>;
++	interrupts = <13>;
++	clocks = <&apb0_gates 1>, <&spdif_clk>;
++	clock-names = "apb", "spdif";
++	dmas = <&dma 0 2>, <&dma 0 2>;
++	dma-names = "rx", "tx";
++	status = "okay";
++};
+-- 
+2.7.1
