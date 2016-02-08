@@ -1,17 +1,20 @@
 From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: rt5514: Fix up calculation for bclk_ms
-Date: Mon, 08 Feb 2016 22:04:53 +0800
-Message-ID: <1454940293.6265.1.camel@ingics.com>
+Subject: Re: [PATCH] ASoC: rt5514: Fix up calculation for
+	bclk_ms
+Date: Mon, 08 Feb 2016 23:15:31 +0800
+Message-ID: <1454944531.5682.0.camel@ingics.com>
+References: <1454940293.6265.1.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f53.google.com (mail-pa0-f53.google.com
- [209.85.220.53])
- by alsa0.perex.cz (Postfix) with ESMTP id BB16E260515
- for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2016 15:04:59 +0100 (CET)
-Received: by mail-pa0-f53.google.com with SMTP id yy13so74131020pab.3
- for <alsa-devel@alsa-project.org>; Mon, 08 Feb 2016 06:04:59 -0800 (PST)
+Received: from mail-pa0-f42.google.com (mail-pa0-f42.google.com
+ [209.85.220.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C9F02605C1
+ for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2016 16:15:40 +0100 (CET)
+Received: by mail-pa0-f42.google.com with SMTP id ho8so74991446pac.2
+ for <alsa-devel@alsa-project.org>; Mon, 08 Feb 2016 07:15:40 -0800 (PST)
+In-Reply-To: <1454940293.6265.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,25 +28,10 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The equation to calculate bclk_ms is wrong, fix it.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/rt5514.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index 879bf60..5bfe720 100644
---- a/sound/soc/codecs/rt5514.c
-+++ b/sound/soc/codecs/rt5514.c
-@@ -574,7 +574,7 @@ static int rt5514_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
--	bclk_ms = frame_size > 32;
-+	bclk_ms = frame_size >> 32;
- 	rt5514->bclk = rt5514->lrck * (32 << bclk_ms);
- 
- 	dev_dbg(dai->dev, "bclk is %dHz and lrck is %dHz\n",
--- 
-2.1.4
+5pa8IOS4gO+8jDIwMTYtMDItMDgg5pa8IDIyOjA0ICswODAw77yMQXhlbCBMaW4g5o+Q5Yiw77ya
+Cj4gVGhlIGVxdWF0aW9uIHRvIGNhbGN1bGF0ZSBiY2xrX21zIGlzIHdyb25nLCBmaXggaXQuCgpP
+b3BzLCBJIG1pcy11bmRlcnN0YW5kIHRoZSBjb2RlLgpQbGVhc2UgaWdub3JlIHRoaXMgcGF0Y2gs
+IHNvcnJ5LgoKQXhlbAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
