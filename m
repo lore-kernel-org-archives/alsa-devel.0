@@ -1,15 +1,17 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 0/4] ASoC: Intel: Really fix the BYT/HSW
-	regressions
-Date: Mon,  8 Feb 2016 10:45:35 +0530
-Message-ID: <1454908539-14137-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 1/4] ASoC: Intel: Revert "ASoC: Intel: fix ACPI
+	probe regression with Atom DPCM driver"
+Date: Mon,  8 Feb 2016 10:45:36 +0530
+Message-ID: <1454908539-14137-2-git-send-email-vinod.koul@intel.com>
+References: <1454908539-14137-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 7C6C3260474
- for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2016 06:12:08 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 782EA2604A1
+ for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2016 06:12:09 +0100 (CET)
+In-Reply-To: <1454908539-14137-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,31 +25,31 @@ To: alsa-devel@alsa-project.org
 Cc: patches.audio@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-So we had some issues due to common acpi matching code which caused
-regression on BYT first and fixes on that caused regression on HSW.
+This reverts commit dc901a354171 ("ASoC: Intel: fix ACPI probe
+regression with Atom DPCM driver") as the fix prevented the probe
+on HSW/BDW if Atom-DPCM was selected
 
-So this series revert the old fix and properly fixes by making matching
-module as a separate ones and then adding BYT PCI ids conditionally.
+Acked-by: Jie Yang <yang.jie@intel.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/common/Makefile | 5 -----
+ 1 file changed, 5 deletions(-)
 
-This was tested on BYT/CHT platforms, HSW/BDW and SKL so test coverge
-should ensure that this is really fixed this time.
-
-Thanks to Jie Yang and Pierre for testing and suggesting fixes
-
-Pierre-Louis Bossart (1):
-  ASoC: Intel: Load the atom DPCM driver only
-
-Vinod Koul (3):
-  ASoC: Intel: Revert "ASoC: Intel: fix ACPI probe regression with Atom
-    DPCM driver"
-  ASoC: Intel: Create independent acpi match module
-  ASoC: Intel: Add module tags for common match module
-
- sound/soc/intel/Kconfig                 | 13 +++++++++++--
- sound/soc/intel/common/Makefile         |  9 +++------
- sound/soc/intel/common/sst-acpi.c       |  4 ++++
- sound/soc/intel/common/sst-match-acpi.c |  3 +++
- 4 files changed, 21 insertions(+), 8 deletions(-)
-
+diff --git a/sound/soc/intel/common/Makefile b/sound/soc/intel/common/Makefile
+index 668fdeee195e..3b9332e7a094 100644
+--- a/sound/soc/intel/common/Makefile
++++ b/sound/soc/intel/common/Makefile
+@@ -1,10 +1,5 @@
+ snd-soc-sst-dsp-objs := sst-dsp.o
+-ifneq ($(CONFIG_SND_SST_IPC_ACPI),)
+-snd-soc-sst-acpi-objs := sst-match-acpi.o
+-else
+ snd-soc-sst-acpi-objs := sst-acpi.o sst-match-acpi.o
+-endif
+-
+ snd-soc-sst-ipc-objs := sst-ipc.o
+ 
+ snd-soc-sst-dsp-$(CONFIG_DW_DMAC_CORE) += sst-firmware.o
 -- 
 1.9.1
