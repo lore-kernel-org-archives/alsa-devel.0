@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 4/6] ALSA: dice: get the number of MBLA data
-	channel at opening PCM substream
-Date: Mon,  8 Feb 2016 22:54:18 +0900
-Message-ID: <1454939660-21133-5-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/6] ALSA: dice: limit to current sampling
+	transfer frequency
+Date: Mon,  8 Feb 2016 22:54:15 +0900
+Message-ID: <1454939660-21133-2-git-send-email-o-takashi@sakamocchi.jp>
 References: <1454939660-21133-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id CFF932605C1
+ by alsa0.perex.cz (Postfix) with ESMTP id D3B072607F7
  for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2016 14:54:26 +0100 (CET)
 In-Reply-To: <1454939660-21133-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,59 +25,247 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit is a preparation to remove members related to channel cache
-for the number of channels for multi bit linear audio data and MIDI
-ports. This commit changes the way to get the number of multi bit linear
-audio data channel. It's directly retrieved by asynchronous transactions
-to some registers.
+ALSA PCM core has a functionality for rule of PCM substream parameters.
+Typically, when userspace opens PCM character devices, each driver adds
+its own rules to PCM substream according to design of hardware. When the
+userspace executes hw_params ioctl with favorite parameters, the actual
+parameters are calculated according to the rules and the given parameters.
+Then, the result is returned to userspace.
+
+Currently, ALSA Dice driver has the rule between channels and rates, while
+Dice interface design doesn't allow drivers to retrieve all of the
+combinations. Dice drivers are just allowed to get current sampling
+transfer frequency and the number of multi bit linear audio data channels
+in an data block of an AMDTP packet.
+
+This commit purges the rule, and limit PCM substreams to current sampling
+transfer frequency, following to the interface design.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/dice/dice-pcm.c | 29 +++++++++++++++++++++--------
- 1 file changed, 21 insertions(+), 8 deletions(-)
+ sound/firewire/dice/dice-pcm.c | 170 ++++++++---------------------------------
+ 1 file changed, 31 insertions(+), 139 deletions(-)
 
 diff --git a/sound/firewire/dice/dice-pcm.c b/sound/firewire/dice/dice-pcm.c
-index 0b6e6bb..a5c9b58 100644
+index 9b34319..0b6e6bb 100644
 --- a/sound/firewire/dice/dice-pcm.c
 +++ b/sound/firewire/dice/dice-pcm.c
-@@ -294,17 +294,30 @@ int snd_dice_create_pcm(struct snd_dice *dice)
- 		.page      = snd_pcm_lib_get_vmalloc_page,
- 		.mmap      = snd_pcm_lib_mmap_vmalloc,
- 	};
-+	__be32 reg;
- 	struct snd_pcm *pcm;
--	unsigned int i, capture, playback;
-+	unsigned int capture, playback;
+@@ -9,99 +9,40 @@
+ 
+ #include "dice.h"
+ 
+-static int dice_rate_constraint(struct snd_pcm_hw_params *params,
+-				struct snd_pcm_hw_rule *rule)
+-{
+-	struct snd_pcm_substream *substream = rule->private;
+-	struct snd_dice *dice = substream->private_data;
+-
+-	const struct snd_interval *c =
+-		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
+-	struct snd_interval *r =
+-		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
+-	struct snd_interval rates = {
+-		.min = UINT_MAX, .max = 0, .integer = 1
+-	};
+-	unsigned int i, rate, mode, *pcm_channels;
+-
+-	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
+-		pcm_channels = dice->tx_channels;
+-	else
+-		pcm_channels = dice->rx_channels;
+-
+-	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); ++i) {
+-		rate = snd_dice_rates[i];
+-		if (snd_dice_stream_get_rate_mode(dice, rate, &mode) < 0)
+-			continue;
+-
+-		if (!snd_interval_test(c, pcm_channels[mode]))
+-			continue;
+-
+-		rates.min = min(rates.min, rate);
+-		rates.max = max(rates.max, rate);
+-	}
+-
+-	return snd_interval_refine(r, &rates);
+-}
+-
+-static int dice_channels_constraint(struct snd_pcm_hw_params *params,
+-				    struct snd_pcm_hw_rule *rule)
+-{
+-	struct snd_pcm_substream *substream = rule->private;
+-	struct snd_dice *dice = substream->private_data;
+-
+-	const struct snd_interval *r =
+-		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
+-	struct snd_interval *c =
+-		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
+-	struct snd_interval channels = {
+-		.min = UINT_MAX, .max = 0, .integer = 1
+-	};
+-	unsigned int i, rate, mode, *pcm_channels;
+-
+-	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
+-		pcm_channels = dice->tx_channels;
+-	else
+-		pcm_channels = dice->rx_channels;
+-
+-	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); ++i) {
+-		rate = snd_dice_rates[i];
+-		if (snd_dice_stream_get_rate_mode(dice, rate, &mode) < 0)
+-			continue;
+-
+-		if (!snd_interval_test(r, rate))
+-			continue;
+-
+-		channels.min = min(channels.min, pcm_channels[mode]);
+-		channels.max = max(channels.max, pcm_channels[mode]);
+-	}
+-
+-	return snd_interval_refine(c, &channels);
+-}
+-
+-static void limit_channels_and_rates(struct snd_dice *dice,
+-				     struct snd_pcm_runtime *runtime,
+-				     unsigned int *pcm_channels)
++static int limit_channels_and_rates(struct snd_dice *dice,
++				    struct snd_pcm_runtime *runtime,
++				    struct amdtp_stream *stream)
+ {
+ 	struct snd_pcm_hardware *hw = &runtime->hw;
+-	unsigned int i, rate, mode;
++	unsigned int rate;
++	__be32 reg[2];
++	int err;
+ 
+-	hw->channels_min = UINT_MAX;
+-	hw->channels_max = 0;
++	/*
++	 * Retrieve current Multi Bit Linear Audio data channel and limit to
++	 * it.
++	 */
++	if (stream == &dice->tx_stream) {
++		err = snd_dice_transaction_read_tx(dice, TX_NUMBER_AUDIO,
++						   reg, sizeof(reg));
++	} else {
++		err = snd_dice_transaction_read_rx(dice, RX_NUMBER_AUDIO,
++						   reg, sizeof(reg));
++	}
++	if (err < 0)
++		return err;
+ 
+-	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); ++i) {
+-		rate = snd_dice_rates[i];
+-		if (snd_dice_stream_get_rate_mode(dice, rate, &mode) < 0)
+-			continue;
+-		hw->rates |= snd_pcm_rate_to_rate_bit(rate);
++	hw->channels_min = hw->channels_max = be32_to_cpu(reg[0]);
+ 
+-		if (pcm_channels[mode] == 0)
+-			continue;
+-		hw->channels_min = min(hw->channels_min, pcm_channels[mode]);
+-		hw->channels_max = max(hw->channels_max, pcm_channels[mode]);
+-	}
++	/* Retrieve current sampling transfer frequency and limit to it. */
++	err = snd_dice_transaction_get_rate(dice, &rate);
++	if (err < 0)
++		return err;
+ 
++	hw->rates = snd_pcm_rate_to_rate_bit(rate);
+ 	snd_pcm_limit_hw_rates(runtime);
++
++	return 0;
+ }
+ 
+ static void limit_period_and_buffer(struct snd_pcm_hardware *hw)
+@@ -122,7 +63,6 @@ static int init_hw_info(struct snd_dice *dice,
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_pcm_hardware *hw = &runtime->hw;
+ 	struct amdtp_stream *stream;
+-	unsigned int *pcm_channels;
  	int err;
  
--	capture = playback = 0;
--	for (i = 0; i < 3; i++) {
--		if (dice->tx_channels[i] > 0)
--			capture = 1;
--		if (dice->rx_channels[i] > 0)
--			playback = 1;
--	}
-+	/*
-+	 * Check whether PCM substreams are required.
-+	 *
-+	 * TODO: in the case that any PCM substreams are not avail at a certain
-+	 * sampling transfer frequency?
-+	 */
-+	err = snd_dice_transaction_read_tx(dice, TX_NUMBER_AUDIO,
-+					   &reg, sizeof(reg));
-+	if (err < 0)
-+		return err;
-+	if (be32_to_cpu(reg) > 0)
-+		capture = 1;
-+
-+	err = snd_dice_transaction_read_rx(dice, RX_NUMBER_AUDIO,
-+					   &reg, sizeof(reg));
-+	if (err < 0)
-+		return err;
-+	if (be32_to_cpu(reg) > 0)
-+		playback = 1;
+ 	hw->info = SNDRV_PCM_INFO_MMAP |
+@@ -135,37 +75,22 @@ static int init_hw_info(struct snd_dice *dice,
+ 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
+ 		hw->formats = AM824_IN_PCM_FORMAT_BITS;
+ 		stream = &dice->tx_stream;
+-		pcm_channels = dice->tx_channels;
+ 	} else {
+ 		hw->formats = AM824_OUT_PCM_FORMAT_BITS;
+ 		stream = &dice->rx_stream;
+-		pcm_channels = dice->rx_channels;
+ 	}
  
- 	err = snd_pcm_new(dice->card, "DICE", 0, playback, capture, &pcm);
+-	limit_channels_and_rates(dice, runtime, pcm_channels);
+-	limit_period_and_buffer(hw);
+-
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
+-				  dice_rate_constraint, substream,
+-				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++	err = limit_channels_and_rates(dice, runtime, stream);
  	if (err < 0)
+-		goto end;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+-				  dice_channels_constraint, substream,
+-				  SNDRV_PCM_HW_PARAM_RATE, -1);
+-	if (err < 0)
+-		goto end;
++		return err;
++	limit_period_and_buffer(hw);
+ 
+-	err = amdtp_am824_add_pcm_hw_constraints(stream, runtime);
+-end:
+-	return err;
++	return amdtp_am824_add_pcm_hw_constraints(stream, runtime);
+ }
+ 
+ static int pcm_open(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_dice *dice = substream->private_data;
+-	unsigned int source, rate;
+-	bool internal;
+ 	int err;
+ 
+ 	err = snd_dice_stream_lock_try(dice);
+@@ -176,39 +101,6 @@ static int pcm_open(struct snd_pcm_substream *substream)
+ 	if (err < 0)
+ 		goto err_locked;
+ 
+-	err = snd_dice_transaction_get_clock_source(dice, &source);
+-	if (err < 0)
+-		goto err_locked;
+-	switch (source) {
+-	case CLOCK_SOURCE_AES1:
+-	case CLOCK_SOURCE_AES2:
+-	case CLOCK_SOURCE_AES3:
+-	case CLOCK_SOURCE_AES4:
+-	case CLOCK_SOURCE_AES_ANY:
+-	case CLOCK_SOURCE_ADAT:
+-	case CLOCK_SOURCE_TDIF:
+-	case CLOCK_SOURCE_WC:
+-		internal = false;
+-		break;
+-	default:
+-		internal = true;
+-		break;
+-	}
+-
+-	/*
+-	 * When source of clock is not internal or any PCM streams are running,
+-	 * available sampling rate is limited at current sampling rate.
+-	 */
+-	if (!internal ||
+-	    amdtp_stream_pcm_running(&dice->tx_stream) ||
+-	    amdtp_stream_pcm_running(&dice->rx_stream)) {
+-		err = snd_dice_transaction_get_rate(dice, &rate);
+-		if (err < 0)
+-			goto err_locked;
+-		substream->runtime->hw.rate_min = rate;
+-		substream->runtime->hw.rate_max = rate;
+-	}
+-
+ 	snd_pcm_set_sync(substream);
+ end:
+ 	return err;
 -- 
 2.5.0
