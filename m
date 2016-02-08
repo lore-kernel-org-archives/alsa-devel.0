@@ -1,97 +1,76 @@
-From: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v5 0/2] ASoC: Add SPDIF support for
- Allwinner SoCs
-Date: Mon, 8 Feb 2016 17:40:34 +0100
-Message-ID: <CAEKpxBkyinCeZ_d-AYkiFoxaa48J3nTwTRtKCtC=xXBeBJhZcA@mail.gmail.com>
-References: <1454945167-29324-1-git-send-email-codekipper@gmail.com>
-Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 4/7] ASoC: Intel: Skylake: Add MCLK
+	configuration
+Date: Mon, 8 Feb 2016 16:43:04 +0000
+Message-ID: <20160208164304.GH7265@sirena.org.uk>
+References: <1454654950-23091-1-git-send-email-vinod.koul@intel.com>
+ <1454654950-23091-5-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBAUK4O2QKGQEBJCY4WA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-In-Reply-To: <1454945167-29324-1-git-send-email-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============7750300211551856461=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4573C2605C1
+ for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2016 17:43:13 +0100 (CET)
+In-Reply-To: <1454654950-23091-5-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, "Dharageswari.R" <dharageswari.r@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-NAK...last bunch of changes introduced a warning which slipped
-through, I'll fix that and send a new patch series.
-CK
 
-On 8 February 2016 at 16:26,  <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
-> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
->
-> This patch set adds support for the Allwinner SPDIF transceiver.
->
-> For now just the SPDIF transmitter has been tested on a Mele A2000(A10)
-> and a Itead Ibox(A20).
->
-> In order for this patch set to be functional we require an audio clock patch
-> which will be delivered separately. For those that are interested I've pushed
-> the patches here with all the required changes to get SPDIF audio out of the
-> device.
->
-> https://github.com/codekipper/linux-sunxi/commits/spdif_delivery
->
-> Thanks in advance,
-> CK
->
-> ---
-> Changes since v4:
-> - corrected indentation issues
-> - removed old macros
-> - removed unnecessary enabling of apb clock
->
-> Changes since v3:
-> - removed code required for spdif capture
-> - added disable/enable of apb clk to suspend/resume.
-> - removed unnecessary dt checks in probe
-> - fixed error conditions in probe/resume
-> - modified pm_runtime functionality and confirmed that driver worked when PM was disabled.
-> - removed .owner from platform driver
-> - renamed bindings file
->
-> Changes since v2:
-> - removed sunxi-machine-spdif and replaced with simple audio card
-> - removed untested compatibilities from device tree documentation
-> - added pm_runtime and remove shutdown
-> - removed pll2 as it's the parent of the spdif clock
-> - rename clk to spdif_clk
-> - removed enabling of mclk output
-> - removed interrupts status being cleared as it's not being used
-> - use default fifo settings for now
-> - fixed alignments for wrapped lines
->
-> Changes since v1:
-> - Moved sunxi-machine-spdif.c to separate patch
-> - replaced sunxi in naming scheme with sun4i in the sun4i-spdif driver.
-> - split tx controller into separate enable/disable functions
-> - moved setclk and setfmt functionality into hw params
-> - added support for mono signals.
-> - cleaned up probe clock set up.
-> - removed all writes to transmit status registers.
-> - removed of_id
-> - removed power management code.
-> - Added support for more rates.
->
-> Marcus Cooper (2):
->   dt-bindings: sunxi :add sun4i SPDIF transceiver
->   ASoC: sunxi: Add support for the SPDIF block
->
->  .../bindings/sound/sunxi,sun4i-spdif.txt           |  39 ++
->  sound/soc/sunxi/Kconfig                            |   8 +
->  sound/soc/sunxi/Makefile                           |   1 +
->  sound/soc/sunxi/sun4i-spdif.c                      | 549 +++++++++++++++++++++
->  4 files changed, 597 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
->  create mode 100644 sound/soc/sunxi/sun4i-spdif.c
->
-> --
-> 2.7.1
->
+--===============7750300211551856461==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="VkqCAaSJIySsbD6j"
+Content-Disposition: inline
+
+
+--VkqCAaSJIySsbD6j
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Feb 05, 2016 at 12:19:07PM +0530, Vinod Koul wrote:
+> From: "Dharageswari.R" <dharageswari.r@intel.com>
+>=20
+> The SoC has MCLK output which is typically required by codecs.
+> The MCLK is controlled by DSP FW, so driver can configure that by
+> sending DMA_CONTROL IPC. The configuration for MCLK is present
+> in the endpoint blob.
+
+For integration with CODEC drivers this clock should really be exposed
+via the clock API too.
+
+--VkqCAaSJIySsbD6j
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWuMWXAAoJECTWi3JdVIfQYd4H/0dRs0Sa1K7OvS/Iob8IcoBn
+b3/Lp9NiEUY4rYpNE2h8ZkV00cGQwUpsK/Ra4PHAqbR2AhOauGAosrz1AjeDOFgf
+O8fqaArejsJh+F3NzSXukE7VfAc7CqSpahqE0BIrpi4LhfgdgXkgpPpyXFe3VeKe
+O7Nph70L2goTeqZgNft0qY5rryGJyV77G8Tpc6yh8povcLIpPMajLC8WPtZC9n70
+XT3FTdkhfUU6XmqZ5p3l9NaupqLDHMkGKR5VAEhWZp+79SQoMvmhXaeM82xw+kiW
+rShF51u3n9iZIF9EEtJ8Doa+6amztx1pfew75ZjIU2vqWfctAjdkJ5z8EUslNQA=
+=kCsP
+-----END PGP SIGNATURE-----
+
+--VkqCAaSJIySsbD6j--
+
+--===============7750300211551856461==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7750300211551856461==--
