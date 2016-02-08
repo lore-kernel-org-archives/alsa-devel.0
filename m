@@ -1,90 +1,83 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Revert "ASoC: Intel: fix ACPI
-	probe regression with Atom DPCM driver"" to the asoc tree
-Date: Mon, 08 Feb 2016 18:01:40 +0000
-Message-ID: <E1aSq84-0002oL-Es@debutante>
-References: <1454908539-14137-2-git-send-email-vinod.koul@intel.com>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: Re: [PATCH 1/4] soc/sound: tegra_max98090: do not invert headphone
+ jack
+Date: Mon, 8 Feb 2016 11:56:24 -0700
+Message-ID: <56B8E4D8.8070604@wwwdotorg.org>
+References: <1454563862-1971-1-git-send-email-sctincman@gmail.com>
+ <1454563862-1971-2-git-send-email-sctincman@gmail.com>
+ <56B37E19.6010002@wwwdotorg.org> <56B3A10E.4010508@gmail.com>
+ <CAEUnVG7bCgzC-f_Anaw6qayGsXi=_NrWZGRy7SSALkLVLPZnUQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E88AD261531
- for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2016 19:01:45 +0100 (CET)
-In-Reply-To: <1454908539-14137-2-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <CAEUnVG7bCgzC-f_Anaw6qayGsXi=_NrWZGRy7SSALkLVLPZnUQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Jonathan Tinkham <sctincman-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 02/04/2016 12:17 PM, Dylan Reid wrote:
+> On Thu, Feb 4, 2016 at 11:05 AM, Jonathan Tinkham <sctincman-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+>> On 02/04/2016 09:36 AM, Stephen Warren wrote:
+>>>
+>>> On 02/03/2016 10:30 PM, Jonathan Tinkham wrote:
+>>>>
+>>>> The headphone jack should not be inverted
+>>>
+>>>
+>>> Have you tested this on Venice2 as well as Nyan? I'm pretty sure Venice2
+>>> was tested when this driver was written, and whoever added Nyan support to
+>>> the kernel simply assumed it would work. As such, my suspicion is that this
+>>> series will break Venice2 even as it fixes Nyan.
+>>
+>>
+>> I have not tested this on Venice2, only on Nyan. That seems like a plausible
+>> cause and reasonable suspicion.
+>>
+>>> Why doesn't user-space expect what the kernel actually implements? The
+>>> kernel should be defining the control naming.
+>>>
+>>> Which user-space are you using specifically, and which part of it expects
+>>> particular naming?
+>>>
+>>> Perhaps this series needs to be parametrized based on a flag in DT, rather
+>>> than switching the hard-coded values, so that only Venice2 can be affected?
+>>
+>>
+>> Specifically pulse-audio and alsa under Arch Linux.
+>>
+>> I was referencing 'Documentation/sound/alsa/soc/dapm.txt' with regards to
+>> control names. While it is possible to add another entry into the user-space
+>> configuration, I took this documentation as a definition of kernel control
+>> naming schemes, and thought the driver had used a non-standard naming scheme
+>> (or at least, not a consistent one).
+>>
+>>> On 02/03/2016 10:31 PM, Jonathan Tinkham wrote:
+>>>>
+>>>> Update device-tree bindings to reflect the rename of the board's
+>>>> headphone jack.
+>>>
+>>>
+>>> This looks like an incompatible change to the DT. While you've fixed the
+>>> DT, which will fix new installations, old DTs now won't work. This breaks DT
+>>> ABI. Any DT change needs to be backwards compatible, i.e. the old name
+>>> should still work and be documented as a legacy value.
+>>
+>>
+>> I see that now. If the inversion behavior differs between venice2 and nyan,
+>> then another compatible string would need to be added anyways, correct? As
+>> you mentioned above, this might need to be done anyways for the rename.
+>
+> Venice2 and both nyan platforms do have different polarity of HP detect.
+>
+> For some boards we have an hd-invert property in DT.
+>
+> Would setting hp-det-gpio to active low in the pinmux achieve the same thing?
 
-   ASoC: Intel: Revert "ASoC: Intel: fix ACPI probe regression with Atom DPCM driver"
+I don't believe we have a pinmux setting for this.
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 902c136fe4f72dfc2a616ad755c72f1ee407f79a Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Mon, 8 Feb 2016 10:45:36 +0530
-Subject: [PATCH] ASoC: Intel: Revert "ASoC: Intel: fix ACPI probe regression
- with Atom DPCM driver"
-
-This reverts commit dc901a354171 ("ASoC: Intel: fix ACPI probe
-regression with Atom DPCM driver") as the fix prevented the probe
-on HSW/BDW if Atom-DPCM was selected
-
-Acked-by: Jie Yang <yang.jie@intel.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/common/Makefile | 5 -----
- 1 file changed, 5 deletions(-)
-
-diff --git a/sound/soc/intel/common/Makefile b/sound/soc/intel/common/Makefile
-index 668fdeee195e..3b9332e7a094 100644
---- a/sound/soc/intel/common/Makefile
-+++ b/sound/soc/intel/common/Makefile
-@@ -1,10 +1,5 @@
- snd-soc-sst-dsp-objs := sst-dsp.o
--ifneq ($(CONFIG_SND_SST_IPC_ACPI),)
--snd-soc-sst-acpi-objs := sst-match-acpi.o
--else
- snd-soc-sst-acpi-objs := sst-acpi.o sst-match-acpi.o
--endif
--
- snd-soc-sst-ipc-objs := sst-ipc.o
- 
- snd-soc-sst-dsp-$(CONFIG_DW_DMAC_CORE) += sst-firmware.o
--- 
-2.7.0.rc3
+However, there's a GPIO_ACTIVE_HIGH/LOW flag that could be used in DT 
+property nvidia,hp-det-gpios's flags field to indicate the polarity. 
+That should work, but indeed you could use a separate hp-dt-invert 
+property if not.
