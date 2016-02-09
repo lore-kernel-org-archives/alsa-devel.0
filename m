@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5645: add "coreboot" to
-	dmi_system_id list
-Date: Tue, 9 Feb 2016 18:41:31 +0000
-Message-ID: <20160209184131.GM13270@sirena.org.uk>
-References: <1454304078-12322-1-git-send-email-bardliao@realtek.com>
- <20160202194936.GB4455@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D70110F96C@RTITMBSV03.realtek.com.tw>
+Subject: Re: [PATCH v5 01/14] ASoC: hdac_hdmi: Add hotplug
+ notification and read eld
+Date: Tue, 9 Feb 2016 19:42:06 +0000
+Message-ID: <20160209194206.GO13270@sirena.org.uk>
+References: <1454161428-7896-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1454161428-7896-2-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1138133338270032150=="
+Content-Type: multipart/mixed; boundary="===============4410941529464525924=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A98762614C5
- for <alsa-devel@alsa-project.org>; Tue,  9 Feb 2016 19:41:37 +0100 (CET)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D70110F96C@RTITMBSV03.realtek.com.tw>
+ by alsa0.perex.cz (Postfix) with ESMTP id AE205261531
+ for <alsa-devel@alsa-project.org>; Tue,  9 Feb 2016 20:42:13 +0100 (CET)
+In-Reply-To: <1454161428-7896-2-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,64 +22,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "Koul,
- Vinod (vinod.koul@intel.com)" <vinod.koul@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, "rakesh.a.ughreja@intel.com" <rakesh.a.ughreja@intel.com>, Flove <flove@realtek.com>, "Bossart,
- Pierre-louis (pierre-louis.bossart@intel.com)" <pierre-louis.bossart@intel.com>
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1138133338270032150==
+--===============4410941529464525924==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="wAI/bQb0EMvlZCHl"
+	protocol="application/pgp-signature"; boundary="QRo3kt64Wi40AlcO"
 Content-Disposition: inline
 
 
---wAI/bQb0EMvlZCHl
+--QRo3kt64Wi40AlcO
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Feb 03, 2016 at 02:37:08AM +0000, Bard Liao wrote:
-> Add some Intel folks.
+On Sat, Jan 30, 2016 at 07:13:35PM +0530, Subhransu S. Prusty wrote:
 
-> > the target for this change is internal-only development hardware it
-> > doesn't seem unreasonable to expect people to be able to keep changes
-> > like device ID updates internally.  This is one of the many costs of BIOSes
-> > that require us to do such DMI hacks, it'd be much better to improve the
-> > firmware and the driver so they can specify required properties directly
-> > rather than relying on DMI.
+> +	if (!pin->eld.monitor_present || !pin->eld.eld_valid) {
+> +
+> +		dev_info(&edev->hdac.dev, "%s: disconnect for pin %d\n",
+> +						__func__, pin->nid);
+> +		goto put_hdac_device;
 
-> Agree. We will find a more reasonable way (maybe ACPI) to specify
-> required properties directly. However, I can expect that will take time.
-> If you think use "coreboot" is not a good idea, can we match the
-> DMI_PRODUCT_NAME field just like before until we finish the
-> implementation of specifying required properties directly?
+Will this get noisy?
 
-Sure, new matches for specific products are fine - it's just that this
-is too big a wildcard.
+> +		/* TODO: use i915 component for reading ELD later */
+> +		if (hdac_hdmi_get_eld(&edev->hdac, pin->nid,
+> +				pin->eld.eld_buffer,
+> +				&pin->eld.eld_size) == 0) {
+> +
+> +			print_hex_dump_bytes("Eld: ", DUMP_PREFIX_OFFSET,
+> +					pin->eld.eld_buffer, pin->eld.eld_size);
 
---wAI/bQb0EMvlZCHl
+ELD is an acronym, please write it properly (there's some other examples
+in the patch).
+
+> +		} else {
+> +			dev_err(&edev->hdac.dev, "ELD invalid\n");
+> +			pin->eld.monitor_present = false;
+> +			pin->eld.eld_valid = false;
+> +		}
+
+Is it really invalid or did we fail to read it?  There's a difference as
+far as debugging is concerned (one means there's an I/O problem, the
+other means that the display is reporting nonsense).  Perhaps this
+should be silent and let the read function be more specific?
+
+--QRo3kt64Wi40AlcO
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWujLaAAoJECTWi3JdVIfQjlkH/iY1BR3SW9tubbP4kqbpfd+x
-Esumco40cifK6FSEUVfhY8u70k7eW8uR86MKCiFbXcCykzAvkK8IGx0BFSLL+OTa
-oVl4oodlXaOFO8usbIi8YMkGAXuoD2mjtpsMZ9r9Ehz1S9CJxF3KiP/20pHzdEzw
-MhnXI1ebst6Y28LZbY+G2Wv8cbfFfYVuqcniiBZ1tuxl6xN6ZWI3jgxYPvuJWM9D
-FRPFkQcRvkagXGa0Qurwrr97V4K166IXBZDfrGdvo1RljthChAfY47Ogj1ZCE/Ty
-FuBsg/JuQZp49LrAH7pHAUVBDPx4lh/DUry6N/C0gzZBSjCIm34eXf247FYp5Wc=
-=EfR9
+iQEcBAEBCAAGBQJWukENAAoJECTWi3JdVIfQDbMH/3SE8kEtDZOzrD45IaMM7lJQ
+mceo/7i0UEsV8tyVwaGnkgz7l1iy0JXbz4lD2Nd573AqJXqY3tCw54Brkyq98Jri
+WjrrnWmWDR6VvgfhmM2oKx7MCHKnT3giTSkpXJE6iBAJgRcUwY5TELMGvFqlCHRz
+KdCtir0O+bBAtw3QXx7SyMbZiyiZFeRXW9qdWZGgygvbWMt+pWz9nHMx4MscHY0L
+CFUlTESBnlH4iB/NtyExaTeGQI+OCJ9VirY4OADBDLCq5B2roBRxxEuxc1f/lLwj
+mlWtLcWkPrf/wri/kQl7/u8Qv20IPCy6RtRA9C7hv1CWOGSCCZcTmUMK1E/DL6I=
+=7TAa
 -----END PGP SIGNATURE-----
 
---wAI/bQb0EMvlZCHl--
+--QRo3kt64Wi40AlcO--
 
---===============1138133338270032150==
+--===============4410941529464525924==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1138133338270032150==--
+--===============4410941529464525924==--
