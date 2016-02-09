@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: rsnd_ssi_is_multi_slave() macro
-	uses rsnd_ssi_multi_slaves()" to the asoc tree
-Date: Tue, 09 Feb 2016 18:20:07 +0000
-Message-ID: <E1aTCtT-0001RX-8J@debutante>
-References: <87io1ynzbc.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: nau8825: add crosstalk suppression
+	feature
+Date: Tue, 9 Feb 2016 18:39:44 +0000
+Message-ID: <20160209183944.GL13270@sirena.org.uk>
+References: <1454651566-28451-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6087991745577930987=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F7CD2612BD
- for <alsa-devel@alsa-project.org>; Tue,  9 Feb 2016 19:20:19 +0100 (CET)
-In-Reply-To: <87io1ynzbc.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0ABA9261292
+ for <alsa-devel@alsa-project.org>; Tue,  9 Feb 2016 19:39:52 +0100 (CET)
+In-Reply-To: <1454651566-28451-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,97 +21,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nguyen Viet Dung <nv-dung@jinso.co.jp>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: rsnd: rsnd_ssi_is_multi_slave() macro uses rsnd_ssi_multi_slaves()
+--===============6087991745577930987==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="hTKW8p8tUZ/8vLMe"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--hTKW8p8tUZ/8vLMe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Fri, Feb 05, 2016 at 01:52:46PM +0800, John Hsu wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> +/**
+> + * computes log10 of a value; the result is round off to 3 decimal.
+> + * this function takes reference to dvb-math.
+> + *
+> + * @return log10(value) * 1000
+> + */
+> +static u32 nau8825_intlog10_dec3(u32 value)
+> +{
+> +	u32 msb, logentry, significand, interpolation, log10val;
+> +	u64 log2val;
+> +
+> +	msb = fls(value) - 1;
+> +	significand = value << (31 - msb);
+> +	logentry = (significand >> 23) & 0xff;
+> +	interpolation = ((significand & 0x7fffff) *
+> +		((logtable[(logentry + 1) & 0xff] -
+> +		logtable[logentry]) & 0xffff)) >> 15;
+> +
+> +	log2val = ((msb << 24) + (logtable[logentry] << 8) + interpolation);
+> +	log10val = (log2val * LOG10_MAGIC) >> 31;
+> +	return log10val / ((1 << 24) / 1000);
+> +}
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+This doesn't look driver specific, it should go somewhere generic
+(though I can't immediately see any relevant place for it...).
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> +	/* Config headphone volume */
+> +	regmap_update_bits(nau8825->regmap, NAU8825_REG_HSVOL_CTRL,
+> +		NAU8825_HPL_VOL_MASK | NAU8825_HPR_VOL_MASK, 0x0492);
 
-Thanks,
-Mark
+These are some very large register write sequences and there seems to be
+a bunch of stuff in them like the above which looks a lot like it's
+configuring things that we'd normally allow users to configure for their
+use case.  This at least needs a lot more documentation about what this
+is doing any why, and it's not clear to me that the code is safe with
+respect to what happens if an application decides to do something at the
+same time as the callibration is running.
 
->From c308abe45e2a7bc58e22d9b6d04dccf76a1b2012 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 9 Feb 2016 07:04:09 +0000
-Subject: [PATCH] ASoC: rsnd: rsnd_ssi_is_multi_slave() macro uses
- rsnd_ssi_multi_slaves()
+> @@ -211,6 +585,7 @@ static bool nau8825_volatile_reg(struct device *dev, unsigned int reg)
+>  	case NAU8825_REG_RESET:
+>  	case NAU8825_REG_IRQ_STATUS:
+>  	case NAU8825_REG_INT_CLR_KEY_STATUS:
+> +	case NAU8825_REG_BIQ_CTRL ... NAU8825_REG_BIQ_COF10:
+>  	case NAU8825_REG_IMM_RMS_L:
+>  	case NAU8825_REG_IMM_RMS_R:
+>  	case NAU8825_REG_I2C_DEVICE_ID:
 
-b4c83b171 ("ASoC: rsnd: add Multi channel support") added
-Multi channel support, and current rsnd_ssi_is_multi_slave()'s check
-method is !SSI equals SSIM1/2/3. But, SSI parent also hit to this macro.
-Because of this reason, some stream which needs SSI parent clock
-can't work correctly. This patch uses rsnd_ssi_multi_slaves() to
-solve this issue. This issue was reported by Dung.
+It also looks like this could be split up a bit, things like this that
+are just adding new registers could be separate.  The actual
+callibration is tricky but there's a bunch of other changes to support
+that.
 
-Reported-by: Nguyen Viet Dung <nv-dung@jinso.co.jp>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sh/rcar/ssi.c | 16 ++--------------
- 1 file changed, 2 insertions(+), 14 deletions(-)
+--hTKW8p8tUZ/8vLMe
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 803e9ae65915..592505a4bc13 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -94,7 +94,8 @@ struct rsnd_ssi {
- #define rsnd_mod_to_ssi(_mod) container_of((_mod), struct rsnd_ssi, mod)
- #define rsnd_ssi_mode_flags(p) ((p)->flags)
- #define rsnd_ssi_is_parent(ssi, io) ((ssi) == rsnd_io_to_mod_ssip(io))
--#define rsnd_ssi_is_multi_slave(ssi, io) ((mod) != rsnd_io_to_mod_ssi(io))
-+#define rsnd_ssi_is_multi_slave(mod, io) \
-+	(rsnd_ssi_multi_slaves(io) & (1 << rsnd_mod_id(mod)))
- 
- int rsnd_ssi_use_busif(struct rsnd_dai_stream *io)
- {
-@@ -167,9 +168,6 @@ static int rsnd_ssi_irq(struct rsnd_mod *mod,
- u32 rsnd_ssi_multi_slaves(struct rsnd_dai_stream *io)
- {
- 	struct rsnd_mod *mod;
--	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
--	struct rsnd_priv *priv = rsnd_io_to_priv(io);
--	struct device *dev = rsnd_priv_to_dev(priv);
- 	enum rsnd_mod_type types[] = {
- 		RSND_MOD_SSIM1,
- 		RSND_MOD_SSIM2,
-@@ -177,16 +175,6 @@ u32 rsnd_ssi_multi_slaves(struct rsnd_dai_stream *io)
- 	};
- 	int i, mask;
- 
--	switch (runtime->channels) {
--	case 2: /* Multi channel is not needed for Stereo */
--		return 0;
--	case 6:
--		break;
--	default:
--		dev_err(dev, "unsupported channel\n");
--		return 0;
--	}
--
- 	mask = 0;
- 	for (i = 0; i < ARRAY_SIZE(types); i++) {
- 		mod = rsnd_io_to_mod(io, types[i]);
--- 
-2.7.0.rc3
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWujJvAAoJECTWi3JdVIfQiJUH/2qoz5P9Q1SBLAKcsJz4jC9y
+QI1R1lPT2sLv1dGmT/OLtkHwWCVuroLbTYpGAILyi9ZcAAjcp8vejfNHI59O0FFi
+fA92L9QAWZBwAQQ3Zc9oLM8yD0gFC0SZtK1Xv6bjOXWEqqRvNEz3mhVqG7SHF43O
++2abs/hG0vB6bDxVYvGe5swYd73UQwPy83rWsxFiwMhMeldgSrDtJT8QCFWOkq4r
+J93pX8IXb+oi2aFMrZsfRRnH+GbjJp6On2m8EE9ofrsum/reXQsk3QbsQUVPELfn
+UkmzizMXyRiXS2vpG87WW/c+sHQ3lxPwVV1fpxRIgE29nr7I68soDCK1hFkFTQY=
+=cn80
+-----END PGP SIGNATURE-----
+
+--hTKW8p8tUZ/8vLMe--
+
+--===============6087991745577930987==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6087991745577930987==--
