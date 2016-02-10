@@ -1,64 +1,50 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v1 08/14] ASoC: qcom: apq8016: add wrdma support
-Date: Wed, 10 Feb 2016 10:19:17 +0000
-Message-ID: <1455099557-665-1-git-send-email-srinivas.kandagatla@linaro.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v1 00/14] ASoC: qcom: Add capture support.
+Date: Wed, 10 Feb 2016 10:22:50 +0000
+Message-ID: <20160210102250.GV13270@sirena.org.uk>
 References: <1455099418-311-1-git-send-email-srinivas.kandagatla@linaro.org>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="l5oECiFRo5dp+2y7"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
 In-Reply-To: <1455099418-311-1-git-send-email-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Patrick Lai <plai@codeaurora.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Cc: Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, kwestfie@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Patrick Lai <plai@codeaurora.org>, alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, kwestfie@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds wrdma support in lpass-apq8016 by providing the register
-offsets and adding support in dma channel allocation callback.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/lpass-apq8016.c | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
+--l5oECiFRo5dp+2y7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
-index ca3bbd5..3eef0c3 100644
---- a/sound/soc/qcom/lpass-apq8016.c
-+++ b/sound/soc/qcom/lpass-apq8016.c
-@@ -137,11 +137,23 @@ static int apq8016_lpass_alloc_dma_channel(struct lpass_data *drvdata,
- 					   int direction)
- {
- 	struct lpass_variant *v = drvdata->variant;
--	int chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
-+	int chan = 0;
-+
-+	if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+		chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
- 					v->rdma_channels);
- 
--	if (chan >= v->rdma_channels)
--		return -EBUSY;
-+		if (chan >= v->rdma_channels)
-+			return -EBUSY;
-+	} else {
-+		chan = find_next_zero_bit(&drvdata->dma_ch_bit_map,
-+					v->wrdma_channel_start +
-+					v->wrdma_channels,
-+					v->wrdma_channel_start);
-+
-+		if (chan >=  v->wrdma_channel_start + v->wrdma_channels)
-+			return -EBUSY;
-+	}
- 
- 	set_bit(chan, &drvdata->dma_ch_bit_map);
- 
-@@ -214,6 +226,10 @@ static struct lpass_variant apq8016_data = {
- 	.rdma_reg_stride	= 0x1000,
- 	.rdma_channels		= 2,
- 	.dmactl_audif_start	= 1,
-+	.wrdma_reg_base		= 0xB000,
-+	.wrdma_reg_stride	= 0x1000,
-+	.wrdma_channel_start	= 5,
-+	.wrdma_channels		= 2,
- 	.dai_driver		= apq8016_lpass_cpu_dai_driver,
- 	.num_dai		= ARRAY_SIZE(apq8016_lpass_cpu_dai_driver),
- 	.init			= apq8016_lpass_init,
--- 
-1.9.1
+On Wed, Feb 10, 2016 at 10:16:58AM +0000, Srinivas Kandagatla wrote:
+
+> LPASS IP on QCOM SOC supports both Playback and capture
+> via I2S, but this feature is missing in existing code.=20
+> This patchset aims at adding capture support to lpass IP.
+> First few patches in this series does cleanup the driver
+> to make easy to add capture support.
+
+> Most of these patches are acked by Kenneth.
+
+=2E..when previously posted so this isn't version 1 of the series.  :/
+
+--l5oECiFRo5dp+2y7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWuw95AAoJECTWi3JdVIfQam4H/3GXj29u3amI8UuHDoCs+uvV
+PSWsTMIJhVgqvjnFrqrgszWjQSVlV5qjSL6pSZ4hssbIPfaQos/UdJvvA0e7tGEP
+YDgN+VahDiE/5jcHIcx0WJpXzCd8RwZbYQswzsLFP8I+tn5UcVbcSPEogpo63Bg2
+2CeKN8EskCCDB9J7HZ8kIURewdiiiGLHDJHq6KX9HNj91VVA2g9xTl0m8PtVL8bD
+yJy8WQCjVmNeneeX4illgErqbxV8K/+dj0NNA3HLcsrzA2RIMlbcn2+YobAgXNz0
+KtH6FEYpF/OJEoTNDOz16uIRPOVaxTqrtdnKGV33rwooP4F5f3j/0m2Y8UmCdms=
+=sRMY
+-----END PGP SIGNATURE-----
+
+--l5oECiFRo5dp+2y7--
