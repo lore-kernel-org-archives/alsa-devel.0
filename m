@@ -1,72 +1,112 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v1 00/14] ASoC: qcom: Add capture support.
-Date: Wed, 10 Feb 2016 11:51:26 +0000
-Message-ID: <20160210115126.GW13270@sirena.org.uk>
-References: <1455099418-311-1-git-send-email-srinivas.kandagatla@linaro.org>
- <20160210102250.GV13270@sirena.org.uk>
- <56BB136D.2010705@linaro.org>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: arizona: fref must be limited in pseudo-fractional mode
+Date: Wed, 10 Feb 2016 11:56:13 +0000
+Message-ID: <1455105373-8606-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2960391492245102039=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 83FE926524F
- for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2016 12:51:38 +0100 (CET)
-In-Reply-To: <56BB136D.2010705@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org, kwestfie@codeaurora.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+When the FLL is in pseudo-fractional mode there is an additional
+limit on fref based on the fratio, to prevent aliasing around the
+Nyquist frequency. If fref exceeds this limit the refclk divider
+must be increased and the calculation tried again until a suitable
+combination of fref and fratio is found or we have to fall back to
+integer mode.
 
---===============2960391492245102039==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="V2AZ19bMCakBLong"
-Content-Disposition: inline
+This patch also adds some debug log prints around this code.
 
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c | 43 ++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 42 insertions(+), 1 deletion(-)
 
---V2AZ19bMCakBLong
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Feb 10, 2016 at 10:39:41AM +0000, Srinivas Kandagatla wrote:
-
-> I can repost the series with change to version if that's Ok with you.
-
-No!  That's completely pointless.  But if you're going to include
-versions please pay attention to them, people putting in obviously wrong
-ones is usually a sign that there's a problem.
-
---V2AZ19bMCakBLong
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWuyQ7AAoJECTWi3JdVIfQg1sH/jzWc9uCq0V0eLFIdW/Qsr2d
-kyH8PXnrjkVxbW99XrCX9m9hbwxhmy6qeoyGoOIp2z27eonI9mFeQriymGbhJI+m
-bzG7YgTNs6sAb4ys6/LQN1lSOiaUHmu4OgDCsTjSAO9B2N7W8LbBRWnNTn42UBN1
-5e/4o4zfZ57rOh2P5MwRpPB+yijweCM2vXafz7qicUaXMLjPQ9SB1XIbhYlgH+6b
-67W7E3fKKXhwAgWYM1A5635ktLPg9X9TJ5yeTC1s83UPjLVfwLiQQVI7lq0sm9cx
-dpoQA6h9b0AZMH0/KAQ/RWa+CELTFqcCcxjmCra6WH3WGnbgZBWAXQpves7mnNM=
-=DjpA
------END PGP SIGNATURE-----
-
---V2AZ19bMCakBLong--
-
---===============2960391492245102039==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2960391492245102039==--
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index a32cfb8..913cfa8 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -1899,6 +1899,25 @@ static struct {
+ 	{ 1000000, 13500000, 0,  1 },
+ };
+ 
++static const unsigned int pseudo_fref_max[ARIZONA_FLL_MAX_FRATIO] = {
++	13500000,
++	 6144000,
++	 6144000,
++	 3072000,
++	 3072000,
++	 2822400,
++	 2822400,
++	 1536000,
++	 1536000,
++	 1536000,
++	 1536000,
++	 1536000,
++	 1536000,
++	 1536000,
++	 1536000,
++	  768000,
++};
++
+ static struct {
+ 	unsigned int min;
+ 	unsigned int max;
+@@ -2012,16 +2031,32 @@ static int arizona_calc_fratio(struct arizona_fll *fll,
+ 	/* Adjust FRATIO/refdiv to avoid integer mode if possible */
+ 	refdiv = cfg->refdiv;
+ 
++	arizona_fll_dbg(fll, "pseudo: initial ratio=%u fref=%u refdiv=%u\n",
++			init_ratio, Fref, refdiv);
++
+ 	while (div <= ARIZONA_FLL_MAX_REFDIV) {
+ 		for (ratio = init_ratio; ratio <= ARIZONA_FLL_MAX_FRATIO;
+ 		     ratio++) {
+ 			if ((ARIZONA_FLL_VCO_CORNER / 2) /
+-			    (fll->vco_mult * ratio) < Fref)
++			    (fll->vco_mult * ratio) < Fref) {
++				arizona_fll_dbg(fll, "pseudo: hit VCO corner\n");
+ 				break;
++			}
++
++			if (Fref > pseudo_fref_max[ratio - 1]) {
++				arizona_fll_dbg(fll,
++					"pseudo: exceeded max fref(%u) for ratio=%u\n",
++					pseudo_fref_max[ratio - 1],
++					ratio);
++				break;
++			}
+ 
+ 			if (target % (ratio * Fref)) {
+ 				cfg->refdiv = refdiv;
+ 				cfg->fratio = ratio - 1;
++				arizona_fll_dbg(fll,
++					"pseudo: found fref=%u refdiv=%d(%d) ratio=%d\n",
++					Fref, refdiv, div, ratio);
+ 				return ratio;
+ 			}
+ 		}
+@@ -2030,6 +2065,9 @@ static int arizona_calc_fratio(struct arizona_fll *fll,
+ 			if (target % (ratio * Fref)) {
+ 				cfg->refdiv = refdiv;
+ 				cfg->fratio = ratio - 1;
++				arizona_fll_dbg(fll,
++					"pseudo: found fref=%u refdiv=%d(%d) ratio=%d\n",
++					Fref, refdiv, div, ratio);
+ 				return ratio;
+ 			}
+ 		}
+@@ -2038,6 +2076,9 @@ static int arizona_calc_fratio(struct arizona_fll *fll,
+ 		Fref /= 2;
+ 		refdiv++;
+ 		init_ratio = arizona_find_fratio(Fref, NULL);
++		arizona_fll_dbg(fll,
++				"pseudo: change fref=%u refdiv=%d(%d) ratio=%u\n",
++				Fref, refdiv, div, init_ratio);
+ 	}
+ 
+ 	arizona_fll_warn(fll, "Falling back to integer mode operation\n");
+-- 
+1.9.1
