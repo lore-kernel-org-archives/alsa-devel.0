@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v1 06/14] ASoC: qcom: rename rdma_ch_bit_map to dma_ch_bit_map
-Date: Wed, 10 Feb 2016 10:19:02 +0000
-Message-ID: <1455099542-577-1-git-send-email-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v1 07/14] ASoC: qcom: ipq806x: add wrdma related register offsets
+Date: Wed, 10 Feb 2016 10:19:09 +0000
+Message-ID: <1455099549-619-1-git-send-email-srinivas.kandagatla@linaro.org>
 References: <1455099418-311-1-git-send-email-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1455099418-311-1-git-send-email-srinivas.kandagatla@linaro.org>
@@ -10,57 +10,29 @@ To: Patrick Lai <plai@codeaurora.org>, alsa-devel@alsa-project.org, Mark Brown <
 Cc: Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, kwestfie@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-rdma_ch_bit_map can be reused for wrdma channel allocations as wrdma
-channel numbering start after rdma channel numbers.
-With capture support referring rdma_ch_bit_map for wrdma channel allocation
-is confusing, so renaming rdma_ch_bit_map to dma_ch_bit_map makes sense.
+This patch adds wrdma related register offsets to the lpass variant data
+of ipq806x.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Acked-by: Kenneth Westfield <kwestfie@codeaurora.org>
 ---
- sound/soc/qcom/lpass-apq8016.c | 6 +++---
- sound/soc/qcom/lpass.h         | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/qcom/lpass-ipq806x.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
-index 99061f4..ca3bbd5 100644
---- a/sound/soc/qcom/lpass-apq8016.c
-+++ b/sound/soc/qcom/lpass-apq8016.c
-@@ -137,20 +137,20 @@ static int apq8016_lpass_alloc_dma_channel(struct lpass_data *drvdata,
- 					   int direction)
- {
- 	struct lpass_variant *v = drvdata->variant;
--	int chan = find_first_zero_bit(&drvdata->rdma_ch_bit_map,
-+	int chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
- 					v->rdma_channels);
- 
- 	if (chan >= v->rdma_channels)
- 		return -EBUSY;
- 
--	set_bit(chan, &drvdata->rdma_ch_bit_map);
-+	set_bit(chan, &drvdata->dma_ch_bit_map);
- 
- 	return chan;
- }
- 
- static int apq8016_lpass_free_dma_channel(struct lpass_data *drvdata, int chan)
- {
--	clear_bit(chan, &drvdata->rdma_ch_bit_map);
-+	clear_bit(chan, &drvdata->dma_ch_bit_map);
- 
- 	return 0;
- }
-diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index 8475b60..30714ad 100644
---- a/sound/soc/qcom/lpass.h
-+++ b/sound/soc/qcom/lpass.h
-@@ -50,7 +50,7 @@ struct lpass_data {
- 	struct lpass_variant *variant;
- 
- 	/* bit map to keep track of static channel allocations */
--	unsigned long rdma_ch_bit_map;
-+	unsigned long dma_ch_bit_map;
- 
- 	/* used it for handling interrupt per dma channel */
- 	struct snd_pcm_substream *substream[LPASS_MAX_DMA_CHANNELS];
+diff --git a/sound/soc/qcom/lpass-ipq806x.c b/sound/soc/qcom/lpass-ipq806x.c
+index 29a3529..608c1a9 100644
+--- a/sound/soc/qcom/lpass-ipq806x.c
++++ b/sound/soc/qcom/lpass-ipq806x.c
+@@ -86,6 +86,10 @@ static struct lpass_variant ipq806x_data = {
+ 	.rdma_reg_base		= 0x6000,
+ 	.rdma_reg_stride	= 0x1000,
+ 	.rdma_channels		= 4,
++	.wrdma_reg_base		= 0xB000,
++	.wrdma_reg_stride	= 0x1000,
++	.wrdma_channel_start	= 5,
++	.wrdma_channels		= 4,
+ 	.dai_driver		= &ipq806x_lpass_cpu_dai_driver,
+ 	.num_dai		= 1,
+ 	.alloc_dma_channel	= ipq806x_lpass_alloc_dma_channel,
 -- 
 1.9.1
