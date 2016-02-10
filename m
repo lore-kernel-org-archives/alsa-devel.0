@@ -1,111 +1,60 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/7][RFC] regmap: add
- regmap_raw_update_bits() and merge all regmap_update_bits_xxx()
-Date: Wed, 10 Feb 2016 09:38:17 +0000
-Message-ID: <20160210093817.GR13270@sirena.org.uk>
-References: <871t8lthka.wl%kuninori.morimoto.gx@renesas.com>
- <87ziv9s2yf.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6370707711984262143=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B97D2606CB
- for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2016 10:38:30 +0100 (CET)
-In-Reply-To: <87ziv9s2yf.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Greg KH <gregkh@linuxfoundation.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Linux-Kernel <linux-kernel@vger.kernel.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v1 00/14] ASoC: qcom: Add capture support.
+Date: Wed, 10 Feb 2016 10:16:58 +0000
+Message-ID: <1455099418-311-1-git-send-email-srinivas.kandagatla@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Patrick Lai <plai@codeaurora.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, kwestfie@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+LPASS IP on QCOM SOC supports both Playback and capture
+via I2S, but this feature is missing in existing code. 
+This patchset aims at adding capture support to lpass IP.
+First few patches in this series does cleanup the driver
+to make easy to add capture support.
 
---===============6370707711984262143==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="o0y1lerN6xYE2ROn"
-Content-Disposition: inline
+Most of these patches are acked by Kenneth.
 
+These patches are tested on DB410C with Headset Mic, secondary mic.
 
---o0y1lerN6xYE2ROn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks,
+srini
 
-On Wed, Feb 10, 2016 at 02:44:11AM +0000, Kuninori Morimoto wrote:
-
-> Current regmap has many similar update functions, but the difference is
-> very few. This patch adds new regmap_raw_update_bits() and merge all
-> update functions into it by macro.
-
-This is a bit hard to review due to the way the diff comes out, it's not
-entirely clear what the code comes out looking like and I'm a bit
-nervous about what the gains might be since macro conversions often
-obscure things (this is making the macros undocumented for example).
-Creating the new function and then using it in a separate patch would be
-better.
-
-> +int regmap_raw_update_bits(struct regmap *map, unsigned int reg,
-> +			   unsigned int mask, unsigned int val,
-> +			   bool *change, bool async, bool force)
-
-_raw specifically means something that works with the direct physical
-data format within regmap, a different name would be better.
-
-> -	map->async = true;
-> +	map->async = async ? true : false;
-
-This is abuse of the ternery operator where a normal if statement would
-do, and it's also rewriting a bool into a bool so a simple assignment is
-enough.
-
->  /**
-> - * regmap_update_bits_check_async: Perform a read/modify/write cycle on the
-> - *                                 register map asynchronously and report if
-> - *                                 updated
-> + * regmap_write_bits: Perform a read/modify/write cycle on the register map
-
-This looks like it renames update_bits() to write_bits()...
-
-> +#define regmap_update_bits(map, reg, mask, val) \
-> +	regmap_raw_update_bits(map, reg, mask, val, NULL, false, false)
-> +#define regmap_update_bits_async(map, reg, mask, val)\
-> +	regmap_raw_update_bits(map, reg, mask, val, NULL, true, false)
-> +#define regmap_update_bits_check(map, reg, mask, val, change)\
-> +	regmap_raw_update_bits(map, reg, mask, val, change, false, false)
-> +#define regmap_update_bits_check_async(map, reg, mask, val, change)\
-> +	regmap_raw_update_bits(map, reg, mask, val, change, true, false)
-> +
-
-...but we don't seem to use it?  The new name is also a bit confusing.
-
---o0y1lerN6xYE2ROn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWuwUHAAoJECTWi3JdVIfQ++wH/1arwLzpTr5uWrq9f+ODiFPE
-26AonIdOxD+gwFv5ibVVb2z5manZc677qk9bMomAx/5O0xm8uUZXdW3GPFL9XY7h
-wRVnU6OsEQA+ZrwGU9vMrbq8OlXnAQbCSD8vR0z8i8qrju9N39PQYooIVjB2ThV3
-rO+9BficQZ3IXB8Vkk0N0TM59RSZ2+WWzphK2jvWOqwlqnlW0aZsEC4sH4gvI2VY
-5vx8aCdSJwC07khy8G4423uiwoZqbaZ+Yj0YaZtx16hsDqbysZPaAofuclubGaFK
-DPWoTgOd8iLIZ21gWwgW0oToKDTuUYdXmxUS5N16ppeWTO5mh34ByXYjG1lDXSE=
-=K08y
------END PGP SIGNATURE-----
-
---o0y1lerN6xYE2ROn--
-
---===============6370707711984262143==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Changes since RFC:
+ - made patches bisectable, reported by 0day testing
+ - merged two patches as suggested by Kenneth
+ - used corect device for snd_dma alloc/free apis,
+ spotted by Kenneth
+ - renamed LPAIF_I2SCTL_MICMODE_QUAD02 to
+ LPAIF_I2SCTL_MICMODE_QUAD23, spotted by Kenneth.
+ - Fixed minor issues suggested by Kenneth.
 
 
---===============6370707711984262143==--
+Srinivas Kandagatla (14):
+  ASoC: qcom: use snd_dma_alloc/free* apis
+  ASoC: qcom: add wrdma register details to lpass_variant
+  ASoC: qcom: rename rdmactl_audif_start to dmactrl_audif_start
+  ASoC: qcom: pass direction to dma allocation
+  ASoC: qcom: ipq806x: add error in dma allocation.
+  ASoC: qcom: rename rdma_ch_bit_map to dma_ch_bit_map
+  ASoC: qcom: ipq806x: add wrdma related register offsets
+  ASoC: qcom: apq8016: add wrdma support
+  ASoC: qcom: add mic related i2s control register defines
+  ASoC: qcom: add wrdma register definitions
+  ASoC: qcom: add generic bit masks for RDMA and WRDMA
+  ASoC: qcom: apq8016: set the correct max register for regmap
+  ASoC: qcom: add mic support
+  ASoC: qcom: apq8016-sbc: add mic support
+
+ sound/soc/qcom/apq8016_sbc.c     |  10 +-
+ sound/soc/qcom/lpass-apq8016.c   |  31 +++--
+ sound/soc/qcom/lpass-cpu.c       | 146 +++++++++++++++++------
+ sound/soc/qcom/lpass-ipq806x.c   |  11 +-
+ sound/soc/qcom/lpass-lpaif-reg.h | 116 +++++++++++++------
+ sound/soc/qcom/lpass-platform.c  | 243 +++++++++++++++++++++++----------------
+ sound/soc/qcom/lpass.h           |  10 +-
+ 7 files changed, 390 insertions(+), 177 deletions(-)
+
+-- 
+1.9.1
