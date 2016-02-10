@@ -1,112 +1,213 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: arizona: fref must be limited in pseudo-fractional mode
-Date: Wed, 10 Feb 2016 11:56:13 +0000
-Message-ID: <1455105373-8606-1-git-send-email-rf@opensource.wolfsonmicro.com>
+From: pascal.huerst@gmail.com
+Subject: [PATCH] ASoC: cs4271: add regulator consumer support
+Date: Wed, 10 Feb 2016 14:56:21 +0100
+Message-ID: <1455112581-1858-1-git-send-email-pascal.huerst@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f51.google.com (mail-wm0-f51.google.com [74.125.82.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id C386A260664
+ for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2016 14:57:02 +0100 (CET)
+Received: by mail-wm0-f51.google.com with SMTP id 128so27841812wmz.1
+ for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2016 05:57:02 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: brian.austin@cirrus.com
+Cc: alsa-devel@alsa-project.org, Pascal Huerst <pascal.huerst@gmail.com>, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
-When the FLL is in pseudo-fractional mode there is an additional
-limit on fref based on the fratio, to prevent aliasing around the
-Nyquist frequency. If fref exceeds this limit the refclk divider
-must be increased and the calculation tried again until a suitable
-combination of fref and fratio is found or we have to fall back to
-integer mode.
+From: Pascal Huerst <pascal.huerst@gmail.com>
 
-This patch also adds some debug log prints around this code.
+The cs4271 has three power domains: vd, vl and va.
+Enable them all, as long as the codec is in use.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+While at it, factored out the reset code into its own function.
+
+Signed-off-by: Pascal Huerst <pascal.huerst@gmail.com>
 ---
- sound/soc/codecs/arizona.c | 43 ++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 42 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/cs4271.txt |  7 +++
+ sound/soc/codecs/cs4271.c                          | 69 +++++++++++++++++++---
+ 2 files changed, 68 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index a32cfb8..913cfa8 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -1899,6 +1899,25 @@ static struct {
- 	{ 1000000, 13500000, 0,  1 },
- };
+diff --git a/Documentation/devicetree/bindings/sound/cs4271.txt b/Documentation/devicetree/bindings/sound/cs4271.txt
+index e2cd1d7..6e699ce 100644
+--- a/Documentation/devicetree/bindings/sound/cs4271.txt
++++ b/Documentation/devicetree/bindings/sound/cs4271.txt
+@@ -33,12 +33,19 @@ Optional properties:
+ 	Note that this is not needed in case the clocks are stable
+ 	throughout the entire runtime of the codec.
  
-+static const unsigned int pseudo_fref_max[ARIZONA_FLL_MAX_FRATIO] = {
-+	13500000,
-+	 6144000,
-+	 6144000,
-+	 3072000,
-+	 3072000,
-+	 2822400,
-+	 2822400,
-+	 1536000,
-+	 1536000,
-+	 1536000,
-+	 1536000,
-+	 1536000,
-+	 1536000,
-+	 1536000,
-+	 1536000,
-+	  768000,
++ - vd-supply:	Digital power
++ - vl-supply:	Logic power
++ - va-supply:	Analog Power
++
+ Examples:
+ 
+ 	codec_i2c: cs4271@10 {
+ 		compatible = "cirrus,cs4271";
+ 		reg = <0x10>;
+ 		reset-gpio = <&gpio 23 0>;
++		vd-supply = <&vdd_3v3_reg>;
++		vl-supply = <&vdd_3v3_reg>;
++		va-supply = <&vdd_3v3_reg>;
+ 	};
+ 
+ 	codec_spi: cs4271@0 {
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index e770ee6..0c0010b 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -26,6 +26,7 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/of_gpio.h>
++#include <linux/regulator/consumer.h>
+ #include <sound/pcm.h>
+ #include <sound/soc.h>
+ #include <sound/tlv.h>
+@@ -157,6 +158,10 @@ static bool cs4271_volatile_reg(struct device *dev, unsigned int reg)
+ 	return reg == CS4271_CHIPID;
+ }
+ 
++static const char * const supply_names[] = {
++	"vd", "vl", "va"
 +};
 +
- static struct {
- 	unsigned int min;
- 	unsigned int max;
-@@ -2012,16 +2031,32 @@ static int arizona_calc_fratio(struct arizona_fll *fll,
- 	/* Adjust FRATIO/refdiv to avoid integer mode if possible */
- 	refdiv = cfg->refdiv;
+ struct cs4271_private {
+ 	unsigned int			mclk;
+ 	bool				master;
+@@ -170,6 +175,7 @@ struct cs4271_private {
+ 	int				gpio_disable;
+ 	/* enable soft reset workaround */
+ 	bool				enable_soft_reset;
++	struct regulator_bulk_data      supplies[ARRAY_SIZE(supply_names)];
+ };
  
-+	arizona_fll_dbg(fll, "pseudo: initial ratio=%u fref=%u refdiv=%u\n",
-+			init_ratio, Fref, refdiv);
-+
- 	while (div <= ARIZONA_FLL_MAX_REFDIV) {
- 		for (ratio = init_ratio; ratio <= ARIZONA_FLL_MAX_FRATIO;
- 		     ratio++) {
- 			if ((ARIZONA_FLL_VCO_CORNER / 2) /
--			    (fll->vco_mult * ratio) < Fref)
-+			    (fll->vco_mult * ratio) < Fref) {
-+				arizona_fll_dbg(fll, "pseudo: hit VCO corner\n");
- 				break;
-+			}
-+
-+			if (Fref > pseudo_fref_max[ratio - 1]) {
-+				arizona_fll_dbg(fll,
-+					"pseudo: exceeded max fref(%u) for ratio=%u\n",
-+					pseudo_fref_max[ratio - 1],
-+					ratio);
-+				break;
-+			}
+ static const struct snd_soc_dapm_widget cs4271_dapm_widgets[] = {
+@@ -487,6 +493,20 @@ static struct snd_soc_dai_driver cs4271_dai = {
+ 	.symmetric_rates = 1,
+ };
  
- 			if (target % (ratio * Fref)) {
- 				cfg->refdiv = refdiv;
- 				cfg->fratio = ratio - 1;
-+				arizona_fll_dbg(fll,
-+					"pseudo: found fref=%u refdiv=%d(%d) ratio=%d\n",
-+					Fref, refdiv, div, ratio);
- 				return ratio;
- 			}
- 		}
-@@ -2030,6 +2065,9 @@ static int arizona_calc_fratio(struct arizona_fll *fll,
- 			if (target % (ratio * Fref)) {
- 				cfg->refdiv = refdiv;
- 				cfg->fratio = ratio - 1;
-+				arizona_fll_dbg(fll,
-+					"pseudo: found fref=%u refdiv=%d(%d) ratio=%d\n",
-+					Fref, refdiv, div, ratio);
- 				return ratio;
- 			}
- 		}
-@@ -2038,6 +2076,9 @@ static int arizona_calc_fratio(struct arizona_fll *fll,
- 		Fref /= 2;
- 		refdiv++;
- 		init_ratio = arizona_find_fratio(Fref, NULL);
-+		arizona_fll_dbg(fll,
-+				"pseudo: change fref=%u refdiv=%d(%d) ratio=%u\n",
-+				Fref, refdiv, div, init_ratio);
++static int cs4271_reset(struct snd_soc_codec *codec)
++{
++	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
++
++	if (gpio_is_valid(cs4271->gpio_nreset)) {
++		gpio_set_value(cs4271->gpio_nreset, 0);
++		mdelay(1);
++		gpio_set_value(cs4271->gpio_nreset, 1);
++		mdelay(1);
++	}
++
++	return 0;
++}
++
+ #ifdef CONFIG_PM
+ static int cs4271_soc_suspend(struct snd_soc_codec *codec)
+ {
+@@ -499,6 +519,9 @@ static int cs4271_soc_suspend(struct snd_soc_codec *codec)
+ 	if (ret < 0)
+ 		return ret;
+ 
++	regcache_mark_dirty(cs4271->regmap);
++	regulator_bulk_disable(ARRAY_SIZE(cs4271->supplies), cs4271->supplies);
++
+ 	return 0;
+ }
+ 
+@@ -507,6 +530,16 @@ static int cs4271_soc_resume(struct snd_soc_codec *codec)
+ 	int ret;
+ 	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
+ 
++	ret = regulator_bulk_enable(ARRAY_SIZE(cs4271->supplies),
++				    cs4271->supplies);
++	if (ret < 0) {
++		dev_err(codec->dev, "Failed to enable regulators: %d\n", ret);
++		return ret;
++	}
++
++	/* Do a proper reset after power up */
++	cs4271_reset(codec);
++
+ 	/* Restore codec state */
+ 	ret = regcache_sync(cs4271->regmap);
+ 	if (ret < 0)
+@@ -553,19 +586,24 @@ static int cs4271_codec_probe(struct snd_soc_codec *codec)
+ 	}
+ #endif
+ 
++	ret = regulator_bulk_enable(ARRAY_SIZE(cs4271->supplies),
++				    cs4271->supplies);
++	if (ret < 0) {
++		dev_err(codec->dev, "Failed to enable regulators: %d\n", ret);
++		return ret;
++	}
++
+ 	if (cs4271plat) {
+ 		amutec_eq_bmutec = cs4271plat->amutec_eq_bmutec;
+ 		cs4271->enable_soft_reset = cs4271plat->enable_soft_reset;
  	}
  
- 	arizona_fll_warn(fll, "Falling back to integer mode operation\n");
+-	if (gpio_is_valid(cs4271->gpio_nreset)) {
+-		/* Reset codec */
+-		gpio_direction_output(cs4271->gpio_nreset, 0);
+-		mdelay(1);
+-		gpio_set_value(cs4271->gpio_nreset, 1);
+-		/* Give the codec time to wake up */
+-		mdelay(1);
+-	}
++	/* Reset codec */
++	cs4271_reset(codec);
++
++	ret = regcache_sync(cs4271->regmap);
++	if (ret < 0)
++		return ret;
+ 
+ 	ret = regmap_update_bits(cs4271->regmap, CS4271_MODE2,
+ 				 CS4271_MODE2_PDN | CS4271_MODE2_CPEN,
+@@ -595,6 +633,9 @@ static int cs4271_codec_remove(struct snd_soc_codec *codec)
+ 		/* Set codec to the reset state */
+ 		gpio_set_value(cs4271->gpio_nreset, 0);
+ 
++	regcache_mark_dirty(cs4271->regmap);
++	regulator_bulk_disable(ARRAY_SIZE(cs4271->supplies), cs4271->supplies);
++
+ 	return 0;
+ };
+ 
+@@ -617,6 +658,7 @@ static int cs4271_common_probe(struct device *dev,
+ {
+ 	struct cs4271_platform_data *cs4271plat = dev->platform_data;
+ 	struct cs4271_private *cs4271;
++	int i, ret;
+ 
+ 	cs4271 = devm_kzalloc(dev, sizeof(*cs4271), GFP_KERNEL);
+ 	if (!cs4271)
+@@ -638,6 +680,17 @@ static int cs4271_common_probe(struct device *dev,
+ 			return ret;
+ 	}
+ 
++	for (i = 0; i < ARRAY_SIZE(supply_names); i++)
++		cs4271->supplies[i].supply = supply_names[i];
++
++	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(cs4271->supplies),
++					cs4271->supplies);
++
++	if (ret < 0) {
++		dev_err(dev, "Failed to get regulators: %d\n", ret);
++		return ret;
++	}
++
+ 	*c = cs4271;
+ 	return 0;
+ }
 -- 
-1.9.1
+2.4.3
