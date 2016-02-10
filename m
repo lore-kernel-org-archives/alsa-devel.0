@@ -1,213 +1,78 @@
-From: pascal.huerst@gmail.com
-Subject: [PATCH] ASoC: cs4271: add regulator consumer support
-Date: Wed, 10 Feb 2016 14:56:21 +0100
-Message-ID: <1455112581-1858-1-git-send-email-pascal.huerst@gmail.com>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: RE: [BUG] [REGRESSION] [BISECTED] -rc1 breaks audio over HDMI for
+ i915
+Date: Wed, 10 Feb 2016 14:47:10 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D190465F0C0@SHSMSX103.ccr.corp.intel.com>
+References: <56B98888.5000702@posteo.de> <s5h4mdixg4n.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f51.google.com (mail-wm0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id C386A260664
- for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2016 14:57:02 +0100 (CET)
-Received: by mail-wm0-f51.google.com with SMTP id 128so27841812wmz.1
- for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2016 05:57:02 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: brian.austin@cirrus.com
-Cc: alsa-devel@alsa-project.org, Pascal Huerst <pascal.huerst@gmail.com>, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5h4mdixg4n.wl-tiwai@suse.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, Martin Kepplinger <martink@posteo.de>
+Cc: "david.henningsson@canonical.com" <david.henningsson@canonical.com>, "Lu, Han" <han.lu@intel.com>, "treding@nvidia.com" <treding@nvidia.com>, "perex@perex.cz" <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Pascal Huerst <pascal.huerst@gmail.com>
+It may be the audio component binding error? I met the audio component binding error in our internal kernel before. It is because the audio component name are duplicating with another i915 component and so match() function doesn't work well. But I'm not sure the ALSA kernel have the same issue. I will check it after my holiday.
 
-The cs4271 has three power domains: vd, vl and va.
-Enable them all, as long as the codec is in use.
+Regards,
+Libin
 
-While at it, factored out the reset code into its own function.
-
-Signed-off-by: Pascal Huerst <pascal.huerst@gmail.com>
----
- Documentation/devicetree/bindings/sound/cs4271.txt |  7 +++
- sound/soc/codecs/cs4271.c                          | 69 +++++++++++++++++++---
- 2 files changed, 68 insertions(+), 8 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/cs4271.txt b/Documentation/devicetree/bindings/sound/cs4271.txt
-index e2cd1d7..6e699ce 100644
---- a/Documentation/devicetree/bindings/sound/cs4271.txt
-+++ b/Documentation/devicetree/bindings/sound/cs4271.txt
-@@ -33,12 +33,19 @@ Optional properties:
- 	Note that this is not needed in case the clocks are stable
- 	throughout the entire runtime of the codec.
- 
-+ - vd-supply:	Digital power
-+ - vl-supply:	Logic power
-+ - va-supply:	Analog Power
-+
- Examples:
- 
- 	codec_i2c: cs4271@10 {
- 		compatible = "cirrus,cs4271";
- 		reg = <0x10>;
- 		reset-gpio = <&gpio 23 0>;
-+		vd-supply = <&vdd_3v3_reg>;
-+		vl-supply = <&vdd_3v3_reg>;
-+		va-supply = <&vdd_3v3_reg>;
- 	};
- 
- 	codec_spi: cs4271@0 {
-diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
-index e770ee6..0c0010b 100644
---- a/sound/soc/codecs/cs4271.c
-+++ b/sound/soc/codecs/cs4271.c
-@@ -26,6 +26,7 @@
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/of_gpio.h>
-+#include <linux/regulator/consumer.h>
- #include <sound/pcm.h>
- #include <sound/soc.h>
- #include <sound/tlv.h>
-@@ -157,6 +158,10 @@ static bool cs4271_volatile_reg(struct device *dev, unsigned int reg)
- 	return reg == CS4271_CHIPID;
- }
- 
-+static const char * const supply_names[] = {
-+	"vd", "vl", "va"
-+};
-+
- struct cs4271_private {
- 	unsigned int			mclk;
- 	bool				master;
-@@ -170,6 +175,7 @@ struct cs4271_private {
- 	int				gpio_disable;
- 	/* enable soft reset workaround */
- 	bool				enable_soft_reset;
-+	struct regulator_bulk_data      supplies[ARRAY_SIZE(supply_names)];
- };
- 
- static const struct snd_soc_dapm_widget cs4271_dapm_widgets[] = {
-@@ -487,6 +493,20 @@ static struct snd_soc_dai_driver cs4271_dai = {
- 	.symmetric_rates = 1,
- };
- 
-+static int cs4271_reset(struct snd_soc_codec *codec)
-+{
-+	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
-+
-+	if (gpio_is_valid(cs4271->gpio_nreset)) {
-+		gpio_set_value(cs4271->gpio_nreset, 0);
-+		mdelay(1);
-+		gpio_set_value(cs4271->gpio_nreset, 1);
-+		mdelay(1);
-+	}
-+
-+	return 0;
-+}
-+
- #ifdef CONFIG_PM
- static int cs4271_soc_suspend(struct snd_soc_codec *codec)
- {
-@@ -499,6 +519,9 @@ static int cs4271_soc_suspend(struct snd_soc_codec *codec)
- 	if (ret < 0)
- 		return ret;
- 
-+	regcache_mark_dirty(cs4271->regmap);
-+	regulator_bulk_disable(ARRAY_SIZE(cs4271->supplies), cs4271->supplies);
-+
- 	return 0;
- }
- 
-@@ -507,6 +530,16 @@ static int cs4271_soc_resume(struct snd_soc_codec *codec)
- 	int ret;
- 	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
- 
-+	ret = regulator_bulk_enable(ARRAY_SIZE(cs4271->supplies),
-+				    cs4271->supplies);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to enable regulators: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Do a proper reset after power up */
-+	cs4271_reset(codec);
-+
- 	/* Restore codec state */
- 	ret = regcache_sync(cs4271->regmap);
- 	if (ret < 0)
-@@ -553,19 +586,24 @@ static int cs4271_codec_probe(struct snd_soc_codec *codec)
- 	}
- #endif
- 
-+	ret = regulator_bulk_enable(ARRAY_SIZE(cs4271->supplies),
-+				    cs4271->supplies);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to enable regulators: %d\n", ret);
-+		return ret;
-+	}
-+
- 	if (cs4271plat) {
- 		amutec_eq_bmutec = cs4271plat->amutec_eq_bmutec;
- 		cs4271->enable_soft_reset = cs4271plat->enable_soft_reset;
- 	}
- 
--	if (gpio_is_valid(cs4271->gpio_nreset)) {
--		/* Reset codec */
--		gpio_direction_output(cs4271->gpio_nreset, 0);
--		mdelay(1);
--		gpio_set_value(cs4271->gpio_nreset, 1);
--		/* Give the codec time to wake up */
--		mdelay(1);
--	}
-+	/* Reset codec */
-+	cs4271_reset(codec);
-+
-+	ret = regcache_sync(cs4271->regmap);
-+	if (ret < 0)
-+		return ret;
- 
- 	ret = regmap_update_bits(cs4271->regmap, CS4271_MODE2,
- 				 CS4271_MODE2_PDN | CS4271_MODE2_CPEN,
-@@ -595,6 +633,9 @@ static int cs4271_codec_remove(struct snd_soc_codec *codec)
- 		/* Set codec to the reset state */
- 		gpio_set_value(cs4271->gpio_nreset, 0);
- 
-+	regcache_mark_dirty(cs4271->regmap);
-+	regulator_bulk_disable(ARRAY_SIZE(cs4271->supplies), cs4271->supplies);
-+
- 	return 0;
- };
- 
-@@ -617,6 +658,7 @@ static int cs4271_common_probe(struct device *dev,
- {
- 	struct cs4271_platform_data *cs4271plat = dev->platform_data;
- 	struct cs4271_private *cs4271;
-+	int i, ret;
- 
- 	cs4271 = devm_kzalloc(dev, sizeof(*cs4271), GFP_KERNEL);
- 	if (!cs4271)
-@@ -638,6 +680,17 @@ static int cs4271_common_probe(struct device *dev,
- 			return ret;
- 	}
- 
-+	for (i = 0; i < ARRAY_SIZE(supply_names); i++)
-+		cs4271->supplies[i].supply = supply_names[i];
-+
-+	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(cs4271->supplies),
-+					cs4271->supplies);
-+
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to get regulators: %d\n", ret);
-+		return ret;
-+	}
-+
- 	*c = cs4271;
- 	return 0;
- }
--- 
-2.4.3
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Tuesday, February 09, 2016 7:44 PM
+> To: Martin Kepplinger
+> Cc: david.henningsson@canonical.com; Lu, Han; Yang, Libin;
+> treding@nvidia.com; perex@perex.cz; alsa-devel@alsa-project.org; linux-
+> kernel@vger.kernel.org
+> Subject: Re: [BUG] [REGRESSION] [BISECTED] -rc1 breaks audio over
+> HDMI for i915
+> 
+> On Tue, 09 Feb 2016 07:34:48 +0100,
+> Martin Kepplinger wrote:
+> >
+> > The following change:
+> >
+> > 788d441 ALSA: hda - Use component ops for i915 HDMI/DP audio jack
+> handling
+> >
+> > breaks audio over HDMI on my snd_hda_intel laptop. It is the first bad
+> > commit.
+> >
+> > This was merged for -rc1 and isn't fixed until now, so I got nervous.
+> > There are
+> > no errors in the log that stand out. I'm no sound or alsa developer, and
+> > just reverting it isn't easy since there is stuff depending on this.
+> >
+> > I'm happy to test possible fixes and hope v4.5 not to ship with such a big
+> > regression ;)
+> 
+> Could you give a bit more detail about your hardware?  At best, give
+> alsa-info.sh output (run with --no-upload option).  Also, give the
+> output of dmesg, too.
+> 
+> In addition, what shows /proc/asound/card*/eld#*.* files?  Does any of
+> it show the proper connection state and ELD?
+> 
+> A simple revert of the commit is a patch like below.  Does it make the
+> HDMI audio working again?
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> ---
+> --- a/sound/pci/hda/patch_hdmi.c
+> +++ b/sound/pci/hda/patch_hdmi.c
+> @@ -156,7 +156,7 @@ struct hdmi_spec {
+>  	bool i915_bound; /* was i915 bound in this driver? */
+>  };
+> 
+> -#ifdef CONFIG_SND_HDA_I915
+> +#if 0
+>  #define codec_has_acomp(codec) \
+>  	((codec)->bus->core.audio_component != NULL)
+>  #else
