@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v3 10/22] media: Move au8522_media_pads enum to au8522.h from au8522_priv.h
-Date: Thu, 11 Feb 2016 16:41:26 -0700
-Message-ID: <f96bc76341fb03345022e04f3f75b1cf3cfb6f8a.1455233154.git.shuahkh@osg.samsung.com>
+Subject: [PATCH v3 16/22] media: au0828 create tuner to decoder link in disabled state
+Date: Thu, 11 Feb 2016 16:41:32 -0700
+Message-ID: <4b08f5a814bb63bb8e7bcf0b4a386d0c936f3388.1455233155.git.shuahkh@osg.samsung.com>
 References: <cover.1455233150.git.shuahkh@osg.samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1455233150.git.shuahkh@osg.samsung.com>
@@ -12,51 +12,30 @@ To: mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@ci
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittgam.net, johan@oljud.se, klock.android@gmail.com, nenggun.kim@samsung.com, j.anaszewski@samsung.com, geliangtang
 List-Id: alsa-devel@alsa-project.org
 
-Move the au8522_media_pads enum to au8522.h
-from au8522_priv.h to export them. This will
-allow au0828-core to use these defines instead
-of hard-coding them them.
+Create tuner to demod pad link in disabled state to
+avoid disable step when tuner resource is requested
+by dvb.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/dvb-frontends/au8522.h      | 7 +++++++
- drivers/media/dvb-frontends/au8522_priv.h | 8 --------
- 2 files changed, 7 insertions(+), 8 deletions(-)
+ drivers/media/usb/au0828/au0828-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/dvb-frontends/au8522.h b/drivers/media/dvb-frontends/au8522.h
-index dde6158..3c72f40 100644
---- a/drivers/media/dvb-frontends/au8522.h
-+++ b/drivers/media/dvb-frontends/au8522.h
-@@ -90,4 +90,11 @@ enum au8522_audio_input {
- 	AU8522_AUDIO_SIF,
- };
+diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
+index 99f8022..66b44c9 100644
+--- a/drivers/media/usb/au0828/au0828-core.c
++++ b/drivers/media/usb/au0828/au0828-core.c
+@@ -279,9 +279,9 @@ static int au0828_create_media_graph(struct au0828_dev *dev)
+ 		return -EINVAL;
  
-+enum au8522_media_pads {
-+	AU8522_PAD_INPUT,
-+	AU8522_PAD_VID_OUT,
-+	AU8522_PAD_VBI_OUT,
-+
-+	AU8522_NUM_PADS
-+};
- #endif /* __AU8522_H__ */
-diff --git a/drivers/media/dvb-frontends/au8522_priv.h b/drivers/media/dvb-frontends/au8522_priv.h
-index 404a0cb..505215a 100644
---- a/drivers/media/dvb-frontends/au8522_priv.h
-+++ b/drivers/media/dvb-frontends/au8522_priv.h
-@@ -39,14 +39,6 @@
- #define AU8522_DIGITAL_MODE 1
- #define AU8522_SUSPEND_MODE 2
- 
--enum au8522_media_pads {
--	AU8522_PAD_INPUT,
--	AU8522_PAD_VID_OUT,
--	AU8522_PAD_VBI_OUT,
--
--	AU8522_NUM_PADS
--};
--
- struct au8522_state {
- 	struct i2c_client *c;
- 	struct i2c_adapter *i2c;
+ 	if (tuner) {
++		/* create tuner to decoder link in deactivated state */
+ 		ret = media_create_pad_link(tuner, TUNER_PAD_OUTPUT,
+-					    decoder, 0,
+-					    MEDIA_LNK_FL_ENABLED);
++					    decoder, 0, 0);
+ 		if (ret)
+ 			return ret;
+ 	}
 -- 
 2.5.0
