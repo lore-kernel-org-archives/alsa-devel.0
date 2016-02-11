@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v3 14/14] ASoC: qcom: apq8016-sbc: add mic support
-Date: Thu, 11 Feb 2016 12:18:45 +0000
-Message-ID: <1455193125-2066-1-git-send-email-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 08/14] ASoC: qcom: apq8016: add wrdma support
+Date: Thu, 11 Feb 2016 12:19:30 +0000
+Message-ID: <1455193170-2169-1-git-send-email-srinivas.kandagatla@linaro.org>
 References: <1455193007-1481-1-git-send-email-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1455193007-1481-1-git-send-email-srinivas.kandagatla@linaro.org>
@@ -10,49 +10,56 @@ To: Patrick Lai <plai@codeaurora.org>, alsa-devel@alsa-project.org, Mark Brown <
 Cc: Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, kwestfie@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch add mic support on apq8016-sbc board aka db410c. Tested it
-with headset mic.
+This patch adds wrdma support in lpass-apq8016 by providing the register
+offsets and adding support in dma channel allocation callback.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Acked-by: Kenneth Westfield <kwestfie@codeaurora.org>
 ---
- sound/soc/qcom/apq8016_sbc.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ sound/soc/qcom/lpass-apq8016.c | 22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
-index 1efdf00..1289543 100644
---- a/sound/soc/qcom/apq8016_sbc.c
-+++ b/sound/soc/qcom/apq8016_sbc.c
-@@ -30,6 +30,7 @@ struct apq8016_sbc_data {
- 	struct snd_soc_dai_link dai_link[];	/* dynamically allocated */
- };
- 
-+#define MIC_CTRL_TER_WS_SLAVE_SEL	BIT(21)
- #define MIC_CTRL_QUA_WS_SLAVE_SEL_10	BIT(17)
- #define MIC_CTRL_TLMM_SCLK_EN		BIT(1)
- #define	SPKR_CTL_PRI_WS_SLAVE_SEL_11	(BIT(17) | BIT(16))
-@@ -53,6 +54,12 @@ static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
- 			MIC_CTRL_TLMM_SCLK_EN,
- 			pdata->mic_iomux);
- 		break;
-+	case MI2S_TERTIARY:
-+		writel(readl(pdata->mic_iomux) | MIC_CTRL_TER_WS_SLAVE_SEL |
-+			MIC_CTRL_TLMM_SCLK_EN,
-+			pdata->mic_iomux);
+diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
+index ca3bbd5..3eef0c3 100644
+--- a/sound/soc/qcom/lpass-apq8016.c
++++ b/sound/soc/qcom/lpass-apq8016.c
+@@ -137,11 +137,23 @@ static int apq8016_lpass_alloc_dma_channel(struct lpass_data *drvdata,
+ 					   int direction)
+ {
+ 	struct lpass_variant *v = drvdata->variant;
+-	int chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
++	int chan = 0;
 +
-+		break;
++	if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
++		chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
+ 					v->rdma_channels);
  
- 	default:
- 		dev_err(card->dev, "unsupported cpu dai configuration\n");
-@@ -126,9 +133,6 @@ static struct apq8016_sbc_data *apq8016_sbc_parse_of(struct snd_soc_card *card)
- 		}
+-	if (chan >= v->rdma_channels)
+-		return -EBUSY;
++		if (chan >= v->rdma_channels)
++			return -EBUSY;
++	} else {
++		chan = find_next_zero_bit(&drvdata->dma_ch_bit_map,
++					v->wrdma_channel_start +
++					v->wrdma_channels,
++					v->wrdma_channel_start);
++
++		if (chan >=  v->wrdma_channel_start + v->wrdma_channels)
++			return -EBUSY;
++	}
  
- 		link->platform_of_node = link->cpu_of_node;
--		/* For now we only support playback */
--		link->playback_only = true;
--
- 		ret = of_property_read_string(np, "link-name", &link->name);
- 		if (ret) {
- 			dev_err(card->dev, "error getting codec dai_link name\n");
+ 	set_bit(chan, &drvdata->dma_ch_bit_map);
+ 
+@@ -214,6 +226,10 @@ static struct lpass_variant apq8016_data = {
+ 	.rdma_reg_stride	= 0x1000,
+ 	.rdma_channels		= 2,
+ 	.dmactl_audif_start	= 1,
++	.wrdma_reg_base		= 0xB000,
++	.wrdma_reg_stride	= 0x1000,
++	.wrdma_channel_start	= 5,
++	.wrdma_channels		= 2,
+ 	.dai_driver		= apq8016_lpass_cpu_dai_driver,
+ 	.num_dai		= ARRAY_SIZE(apq8016_lpass_cpu_dai_driver),
+ 	.init			= apq8016_lpass_init,
 -- 
 1.9.1
