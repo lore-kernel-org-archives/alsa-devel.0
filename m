@@ -1,67 +1,56 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v3 06/14] ASoC: qcom: rename rdma_ch_bit_map to dma_ch_bit_map
-Date: Thu, 11 Feb 2016 12:17:51 +0000
-Message-ID: <1455193071-1746-1-git-send-email-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 09/14] ASoC: qcom: add mic related i2s control register defines
+Date: Thu, 11 Feb 2016 12:18:06 +0000
+Message-ID: <1455193086-1845-1-git-send-email-srinivas.kandagatla@linaro.org>
 References: <1455193007-1481-1-git-send-email-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
 In-Reply-To: <1455193007-1481-1-git-send-email-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: linux-arm-msm-owner@vger.kernel.org
 To: Patrick Lai <plai@codeaurora.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 Cc: Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, kwestfie@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-rdma_ch_bit_map can be reused for wrdma channel allocations as wrdma
-channel numbering start after rdma channel numbers.
-With capture support referring rdma_ch_bit_map for wrdma channel allocation
-is confusing, so renaming rdma_ch_bit_map to dma_ch_bit_map makes sense.
+This patch adds mic related bitmasks and offsets in the i2c control
+register.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Acked-by: Kenneth Westfield <kwestfie@codeaurora.org>
 ---
- sound/soc/qcom/lpass-apq8016.c | 6 +++---
- sound/soc/qcom/lpass.h         | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/qcom/lpass-lpaif-reg.h | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
-index 99061f4..ca3bbd5 100644
---- a/sound/soc/qcom/lpass-apq8016.c
-+++ b/sound/soc/qcom/lpass-apq8016.c
-@@ -137,20 +137,20 @@ static int apq8016_lpass_alloc_dma_channel(struct lpass_data *drvdata,
- 					   int direction)
- {
- 	struct lpass_variant *v = drvdata->variant;
--	int chan = find_first_zero_bit(&drvdata->rdma_ch_bit_map,
-+	int chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
- 					v->rdma_channels);
+diff --git a/sound/soc/qcom/lpass-lpaif-reg.h b/sound/soc/qcom/lpass-lpaif-reg.h
+index 95e22f1..6599794 100644
+--- a/sound/soc/qcom/lpass-lpaif-reg.h
++++ b/sound/soc/qcom/lpass-lpaif-reg.h
+@@ -47,6 +47,28 @@
+ #define LPAIF_I2SCTL_SPKMONO_STEREO	(0 << LPAIF_I2SCTL_SPKMONO_SHIFT)
+ #define LPAIF_I2SCTL_SPKMONO_MONO	(1 << LPAIF_I2SCTL_SPKMONO_SHIFT)
  
- 	if (chan >= v->rdma_channels)
- 		return -EBUSY;
- 
--	set_bit(chan, &drvdata->rdma_ch_bit_map);
-+	set_bit(chan, &drvdata->dma_ch_bit_map);
- 
- 	return chan;
- }
- 
- static int apq8016_lpass_free_dma_channel(struct lpass_data *drvdata, int chan)
- {
--	clear_bit(chan, &drvdata->rdma_ch_bit_map);
-+	clear_bit(chan, &drvdata->dma_ch_bit_map);
- 
- 	return 0;
- }
-diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index 8475b60..30714ad 100644
---- a/sound/soc/qcom/lpass.h
-+++ b/sound/soc/qcom/lpass.h
-@@ -50,7 +50,7 @@ struct lpass_data {
- 	struct lpass_variant *variant;
- 
- 	/* bit map to keep track of static channel allocations */
--	unsigned long rdma_ch_bit_map;
-+	unsigned long dma_ch_bit_map;
- 
- 	/* used it for handling interrupt per dma channel */
- 	struct snd_pcm_substream *substream[LPASS_MAX_DMA_CHANNELS];
++#define LPAIF_I2SCTL_MICEN_MASK		GENMASK(8, 8)
++#define LPAIF_I2SCTL_MICEN_SHIFT	8
++#define LPAIF_I2SCTL_MICEN_DISABLE	(0 << LPAIF_I2SCTL_MICEN_SHIFT)
++#define LPAIF_I2SCTL_MICEN_ENABLE	(1 << LPAIF_I2SCTL_MICEN_SHIFT)
++
++#define LPAIF_I2SCTL_MICMODE_MASK	GENMASK(7, 4)
++#define LPAIF_I2SCTL_MICMODE_SHIFT	4
++#define LPAIF_I2SCTL_MICMODE_NONE	(0 << LPAIF_I2SCTL_MICMODE_SHIFT)
++#define LPAIF_I2SCTL_MICMODE_SD0	(1 << LPAIF_I2SCTL_MICMODE_SHIFT)
++#define LPAIF_I2SCTL_MICMODE_SD1	(2 << LPAIF_I2SCTL_MICMODE_SHIFT)
++#define LPAIF_I2SCTL_MICMODE_SD2	(3 << LPAIF_I2SCTL_MICMODE_SHIFT)
++#define LPAIF_I2SCTL_MICMODE_SD3	(4 << LPAIF_I2SCTL_MICMODE_SHIFT)
++#define LPAIF_I2SCTL_MICMODE_QUAD01	(5 << LPAIF_I2SCTL_MICMODE_SHIFT)
++#define LPAIF_I2SCTL_MICMODE_QUAD23	(6 << LPAIF_I2SCTL_MICMODE_SHIFT)
++#define LPAIF_I2SCTL_MICMODE_6CH	(7 << LPAIF_I2SCTL_MICMODE_SHIFT)
++#define LPAIF_I2SCTL_MICMODE_8CH	(8 << LPAIF_I2SCTL_MICMODE_SHIFT)
++
++#define LPAIF_I2SCTL_MIMONO_MASK	GENMASK(3, 3)
++#define LPAIF_I2SCTL_MICMONO_SHIFT	3
++#define LPAIF_I2SCTL_MICMONO_STEREO	(0 << LPAIF_I2SCTL_MICMONO_SHIFT)
++#define LPAIF_I2SCTL_MICMONO_MONO	(1 << LPAIF_I2SCTL_MICMONO_SHIFT)
++
+ #define LPAIF_I2SCTL_WSSRC_MASK		0x0004
+ #define LPAIF_I2SCTL_WSSRC_SHIFT	2
+ #define LPAIF_I2SCTL_WSSRC_INTERNAL	(0 << LPAIF_I2SCTL_WSSRC_SHIFT)
 -- 
 1.9.1
