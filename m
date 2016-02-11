@@ -1,73 +1,107 @@
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: Resend [GIT PULL]: Update sst audio firmware for
-	Skylake
-Date: Thu, 11 Feb 2016 13:57:47 -0500
-Message-ID: <20160211185747.GA25336@merlin.infradead.org>
-References: <20160205073820.GD2531@localhost>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F010260502
- for <alsa-devel@alsa-project.org>; Thu, 11 Feb 2016 19:57:50 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20160205073820.GD2531@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org, linux-firmware@kernel.org
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: [PATCH v3 18/22] media: au0828-core register entity_notify hook
+Date: Thu, 11 Feb 2016 16:41:34 -0700
+Message-ID: <8f8e50e0310ece0990038b87d794c4bb378d3acd.1455233155.git.shuahkh@osg.samsung.com>
+References: <cover.1455233150.git.shuahkh@osg.samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1455233150.git.shuahkh@osg.samsung.com>
+In-Reply-To: <cover.1455233150.git.shuahkh@osg.samsung.com>
+References: <cover.1455233150.git.shuahkh@osg.samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com
+Cc: Shuah Khan <shuahkh@osg.samsung.com>, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittgam.net, johan@oljud.se, klock.android@gmail.com, nenggun.kim@samsung.com, j.anaszewski@samsung.com, geliangtang
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 05, 2016 at 01:08:20PM +0530, Vinod Koul wrote:
-> Resending again as previous email bounced for linux-firmware@kernel.org...
-> 
-> Hello Linux firmware maintainers,
-> 
-> Please PULL to receive the updated version of Skylake audio firmware.
-> 
-> This PULL request has two patches, first one creates a sym link for binary
-> name which helps us to keep different versions of firmware in git
-> 
+Register entity_notify async hook to create links
+between existing bridge driver entities and a newly
+added non-bridge driver entities. For example, this
+handler creates link between V4L decoder entity and
+ALSA mixer entity.
 
-pulled. Thanks.
---Kyle
+Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+---
+ drivers/media/usb/au0828/au0828-core.c | 43 ++++++++++++++++++++++++++++++++--
+ drivers/media/usb/au0828/au0828.h      |  1 +
+ 2 files changed, 42 insertions(+), 2 deletions(-)
 
-> Second one updates to latest FW v869
-> 
-> The following changes since commit 52442afee9907bc32a058f22bb3295d040677c26:
-> 
->   brcm: add firmware for bcm4366 device (2016-01-25 15:15:34 -0800)
-> 
-> are available in the git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git skl
-> 
-> for you to fetch changes up to f7996657e8f25386541593242cb8e906d9808ec7:
-> 
->   linux-firmware: intel: Update Skylake audio firmware (2016-02-04 10:36:52 +0530)
-> 
-> ----------------------------------------------------------------
-> Vinod Koul (2):
->       linux-firmware: intel: add symbolic link and file versions
->       linux-firmware: intel: Update Skylake audio firmware
-> 
->  WHENCE                        |   4 ++--
->  intel/dsp_fw_release.bin      | Bin 233472 -> 23 bytes
->  intel/dsp_fw_release_v827.bin | Bin 0 -> 233472 bytes
->  intel/dsp_fw_release_v869.bin | Bin 0 -> 233472 bytes
->  4 files changed, 2 insertions(+), 2 deletions(-)
->  mode change 100644 => 120000 intel/dsp_fw_release.bin
->  create mode 100644 intel/dsp_fw_release_v827.bin
->  create mode 100644 intel/dsp_fw_release_v869.bin
-> 
-> Thanks
-> -- 
-> ~Vinod
+diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
+index 92d22ed..4c90f28 100644
+--- a/drivers/media/usb/au0828/au0828-core.c
++++ b/drivers/media/usb/au0828/au0828-core.c
+@@ -347,14 +347,42 @@ static int au0828_create_media_graph(struct au0828_dev *dev)
+ 	return 0;
+ }
+ 
++void au0828_media_graph_notify(struct media_entity *new, void *notify_data)
++{
++#ifdef CONFIG_MEDIA_CONTROLLER
++	struct au0828_dev *dev = (struct au0828_dev *) notify_data;
++	int ret;
++
++	if (!dev->decoder)
++		return;
++
++	switch (new->function) {
++	case MEDIA_ENT_F_AUDIO_MIXER:
++		ret = media_create_pad_link(dev->decoder,
++					    AU8522_PAD_AUDIO_OUT,
++					    new, 0,
++					    MEDIA_LNK_FL_ENABLED);
++		if (ret)
++			dev_err(&dev->usbdev->dev,
++				"Mixer Pad Link Create Error: %d\n",
++				ret);
++		break;
++	default:
++		break;
++	}
++#endif
++}
++
+ static int au0828_media_device_register(struct au0828_dev *dev,
+ 					struct usb_device *udev)
+ {
+ #ifdef CONFIG_MEDIA_CONTROLLER
+ 	int ret;
+ 
+-	if (dev->media_dev &&
+-		!media_devnode_is_registered(&dev->media_dev->devnode)) {
++	if (!dev->media_dev)
++		return 0;
++
++	if (!media_devnode_is_registered(&dev->media_dev->devnode)) {
+ 
+ 		/* register media device */
+ 		ret = media_device_register(dev->media_dev);
+@@ -364,6 +392,17 @@ static int au0828_media_device_register(struct au0828_dev *dev,
+ 			return ret;
+ 		}
+ 	}
++	/* register entity_notify callback */
++	dev->entity_notify.notify_data = (void *) dev;
++	dev->entity_notify.notify = (void *) au0828_media_graph_notify;
++	ret = media_device_register_entity_notify(dev->media_dev,
++						  &dev->entity_notify);
++	if (ret) {
++		dev_err(&udev->dev,
++			"Media Device register entity_notify Error: %d\n",
++			ret);
++		return ret;
++	}
+ #endif
+ 	return 0;
+ }
+diff --git a/drivers/media/usb/au0828/au0828.h b/drivers/media/usb/au0828/au0828.h
+index 8276072..54379ec 100644
+--- a/drivers/media/usb/au0828/au0828.h
++++ b/drivers/media/usb/au0828/au0828.h
+@@ -283,6 +283,7 @@ struct au0828_dev {
+ 	struct media_entity *decoder;
+ 	struct media_entity input_ent[AU0828_MAX_INPUT];
+ 	struct media_pad input_pad[AU0828_MAX_INPUT];
++	struct media_entity_notify entity_notify;
+ #endif
+ };
+ 
+-- 
+2.5.0
