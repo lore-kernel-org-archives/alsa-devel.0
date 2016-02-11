@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v3 01/22] [media] Docbook: media-types.xml: Add ALSA Media Controller Intf types
-Date: Thu, 11 Feb 2016 16:41:17 -0700
-Message-ID: <363a459c08a1fcaf04052d7f2af05f1dd43de58e.1455233152.git.shuahkh@osg.samsung.com>
+Subject: [PATCH v3 15/22] media: au0828 handle media_init and media_register window
+Date: Thu, 11 Feb 2016 16:41:31 -0700
+Message-ID: <31acd1abfe83e778ad6e9baa5494ca48a167d95a.1455233155.git.shuahkh@osg.samsung.com>
 References: <cover.1455233150.git.shuahkh@osg.samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1455233150.git.shuahkh@osg.samsung.com>
@@ -12,63 +12,77 @@ To: mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@ci
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittgam.net, johan@oljud.se, klock.android@gmail.com, nenggun.kim@samsung.com, j.anaszewski@samsung.com, geliangtang
 List-Id: alsa-devel@alsa-project.org
 
-Add ALSA Media Controller Intf types
+Media device initialization and registration
+steps are split. There is a window between
+media device init and media device register
+during usb probe.
+
+au0828 bridge driver and snd-usb-audio could
+try to initialize the media device, if they
+simply checked, whether the device has been
+registered. They also need to check whether
+the device has been initialized.
+
+Change the au0828-core to check if media device
+is already initialized during initialization step
+and check if media device is already registered
+during the registration step.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- Documentation/DocBook/media/v4l/media-types.xml | 40 +++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+ drivers/media/usb/au0828/au0828-core.c | 26 ++++++++++++++++++++++++--
+ 1 file changed, 24 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/DocBook/media/v4l/media-types.xml b/Documentation/DocBook/media/v4l/media-types.xml
-index 751c3d0..3730967 100644
---- a/Documentation/DocBook/media/v4l/media-types.xml
-+++ b/Documentation/DocBook/media/v4l/media-types.xml
-@@ -193,6 +193,46 @@
- 	    <entry>Device node interface for Software Defined Radio (V4L)</entry>
- 	    <entry>typically, /dev/swradio?</entry>
- 	  </row>
-+	  <row>
-+	    <entry><constant>MEDIA_INTF_T_ALSA_PCM_CAPTURE</constant></entry>
-+	    <entry>Device node interface for ASLA PCM Capture</entry>
-+	    <entry>typically, /dev/snd/pcmC?D?c</entry>
-+	  </row>
-+	  <row>
-+	    <entry><constant>MEDIA_INTF_T_ALSA_PCM_PLAYBACK</constant></entry>
-+	    <entry>Device node interface for ASLA PCM Playback</entry>
-+	    <entry>typically, /dev/snd/pcmC?D?p</entry>
-+	  </row>
-+	  <row>
-+	    <entry><constant>MEDIA_INTF_T_ALSA_CONTROL</constant></entry>
-+	    <entry>Device node interface for ASLA Control</entry>
-+	    <entry>typically, /dev/snd/controlC?</entry>
-+	  </row>
-+	  <row>
-+	    <entry><constant>MEDIA_INTF_T_ALSA_COMPRESS</constant></entry>
-+	    <entry>Device node interface for ASLA Compress</entry>
-+	    <entry>typically, /dev/snd/compr?</entry>
-+	  </row>
-+	  <row>
-+	    <entry><constant>MEDIA_INTF_T_ALSA_RAWMIDI</constant></entry>
-+	    <entry>Device node interface for ASLA Raw MIDI</entry>
-+	    <entry>typically, /dev/snd/midi?</entry>
-+	  </row>
-+	  <row>
-+	    <entry><constant>MEDIA_INTF_T_ALSA_HWDEP</constant></entry>
-+	    <entry>Device node interface for ASLA Hardware Dependent</entry>
-+	    <entry>typically, /dev/snd/hwC?D?</entry>
-+	  </row>
-+	  <row>
-+	    <entry><constant>MEDIA_INTF_T_ALSA_SEQUENCER</constant></entry>
-+	    <entry>Device node interface for ASLA Sequencer</entry>
-+	    <entry>typically, /dev/snd/seq</entry>
-+	  </row>
-+	  <row>
-+	    <entry><constant>MEDIA_INTF_T_ALSA_TIMER</constant></entry>
-+	    <entry>Device node interface for ASLA Timer</entry>
-+	    <entry>typically, /dev/snd/timer</entry>
-+	  </row>
- 	</tbody>
-       </tgroup>
-     </table>
+diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
+index a740bea..99f8022 100644
+--- a/drivers/media/usb/au0828/au0828-core.c
++++ b/drivers/media/usb/au0828/au0828-core.c
+@@ -228,7 +228,8 @@ static int au0828_media_device_init(struct au0828_dev *dev,
+ 	if (!mdev)
+ 		return -ENOMEM;
+ 
+-	if (!media_devnode_is_registered(&mdev->devnode)) {
++	/* check if media device is already initialized */
++	if (!mdev->dev) {
+ 		mdev->dev = &udev->dev;
+ 
+ 		if (udev->product)
+@@ -328,6 +329,27 @@ static int au0828_create_media_graph(struct au0828_dev *dev)
+ 	return 0;
+ }
+ 
++static int au0828_media_device_register(struct au0828_dev *dev,
++					struct usb_device *udev)
++{
++#ifdef CONFIG_MEDIA_CONTROLLER
++	int ret;
++
++	if (dev->media_dev &&
++		!media_devnode_is_registered(&dev->media_dev->devnode)) {
++
++		/* register media device */
++		ret = media_device_register(dev->media_dev);
++		if (ret) {
++			dev_err(&udev->dev,
++				"Media Device Register Error: %d\n", ret);
++			return ret;
++		}
++	}
++#endif
++	return 0;
++}
++
+ static int au0828_usb_probe(struct usb_interface *interface,
+ 	const struct usb_device_id *id)
+ {
+@@ -455,7 +477,7 @@ static int au0828_usb_probe(struct usb_interface *interface,
+ 	}
+ 
+ #ifdef CONFIG_MEDIA_CONTROLLER
+-	retval = media_device_register(dev->media_dev);
++	retval = au0828_media_device_register(dev, usbdev);
+ #endif
+ 
+ done:
 -- 
 2.5.0
