@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v3 02/22] uapi/media.h: Declare interface types for ALSA
-Date: Thu, 11 Feb 2016 16:41:18 -0700
-Message-ID: <a1b468c2933dc2b4f2b6cc6d1ac30baee2a89f77.1455233152.git.shuahkh@osg.samsung.com>
+Subject: [PATCH v3 14/22] media: au0828 change to use Managed Media Controller API
+Date: Thu, 11 Feb 2016 16:41:30 -0700
+Message-ID: <ab2adf4f88fa6cf372fa5b7c85017a765591be1f.1455233154.git.shuahkh@osg.samsung.com>
 References: <cover.1455233150.git.shuahkh@osg.samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1455233150.git.shuahkh@osg.samsung.com>
@@ -12,69 +12,76 @@ To: mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@ci
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittgam.net, johan@oljud.se, klock.android@gmail.com, nenggun.kim@samsung.com, j.anaszewski@samsung.com, geliangtang
 List-Id: alsa-devel@alsa-project.org
 
-Declare the interface types to be used on alsa for
-the new G_TOPOLOGY ioctl.
+Change au0828 to use Managed Media Controller API to
+share media device and coordinate creating/deleting
+the shared media device with the snd-usb-audio driver.
+The shared media device is created as device resource
+of the parent usb device of the two drivers.
+
+Populate media device model with USB Device product
+name instead of au0828 device board name. This change
+is necessary because, if the media device is registered
+by the snd-usb-audio driver first, and it doesn't know
+the au0828 board name.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/media-entity.c | 16 ++++++++++++++++
- include/uapi/linux/media.h   | 10 ++++++++++
- 2 files changed, 26 insertions(+)
+ drivers/media/usb/au0828/au0828-core.c | 29 +++++++++++++++--------------
+ 1 file changed, 15 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
-index f2e4360..6179543 100644
---- a/drivers/media/media-entity.c
-+++ b/drivers/media/media-entity.c
-@@ -65,6 +65,22 @@ static inline const char *intf_type(struct media_interface *intf)
- 		return "v4l2-subdev";
- 	case MEDIA_INTF_T_V4L_SWRADIO:
- 		return "swradio";
-+	case MEDIA_INTF_T_ALSA_PCM_CAPTURE:
-+		return "pcm-capture";
-+	case MEDIA_INTF_T_ALSA_PCM_PLAYBACK:
-+		return "pcm-playback";
-+	case MEDIA_INTF_T_ALSA_CONTROL:
-+		return "alsa-control";
-+	case MEDIA_INTF_T_ALSA_COMPRESS:
-+		return "compress";
-+	case MEDIA_INTF_T_ALSA_RAWMIDI:
-+		return "rawmidi";
-+	case MEDIA_INTF_T_ALSA_HWDEP:
-+		return "hwdep";
-+	case MEDIA_INTF_T_ALSA_SEQUENCER:
-+		return "sequencer";
-+	case MEDIA_INTF_T_ALSA_TIMER:
-+		return "timer";
- 	default:
- 		return "unknown-intf";
+diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
+index ce5afea..a740bea 100644
+--- a/drivers/media/usb/au0828/au0828-core.c
++++ b/drivers/media/usb/au0828/au0828-core.c
+@@ -135,10 +135,10 @@ static void au0828_unregister_media_device(struct au0828_dev *dev)
+ {
+ 
+ #ifdef CONFIG_MEDIA_CONTROLLER
+-	if (dev->media_dev) {
++	if (dev->media_dev &&
++		media_devnode_is_registered(&dev->media_dev->devnode)) {
+ 		media_device_unregister(dev->media_dev);
+ 		media_device_cleanup(dev->media_dev);
+-		kfree(dev->media_dev);
+ 		dev->media_dev = NULL;
  	}
-diff --git a/include/uapi/linux/media.h b/include/uapi/linux/media.h
-index c9eb42a..3cc0366 100644
---- a/include/uapi/linux/media.h
-+++ b/include/uapi/linux/media.h
-@@ -265,6 +265,7 @@ struct media_links_enum {
+ #endif
+@@ -224,23 +224,24 @@ static int au0828_media_device_init(struct au0828_dev *dev,
+ #ifdef CONFIG_MEDIA_CONTROLLER
+ 	struct media_device *mdev;
  
- #define MEDIA_INTF_T_DVB_BASE	0x00000100
- #define MEDIA_INTF_T_V4L_BASE	0x00000200
-+#define MEDIA_INTF_T_ALSA_BASE	0x00000300
+-	mdev = kzalloc(sizeof(*mdev), GFP_KERNEL);
++	mdev = media_device_get_devres(&udev->dev);
+ 	if (!mdev)
+ 		return -ENOMEM;
  
- /* Interface types */
+-	mdev->dev = &udev->dev;
++	if (!media_devnode_is_registered(&mdev->devnode)) {
++		mdev->dev = &udev->dev;
  
-@@ -280,6 +281,15 @@ struct media_links_enum {
- #define MEDIA_INTF_T_V4L_SUBDEV (MEDIA_INTF_T_V4L_BASE + 3)
- #define MEDIA_INTF_T_V4L_SWRADIO (MEDIA_INTF_T_V4L_BASE + 4)
+-	if (!dev->board.name)
+-		strlcpy(mdev->model, "unknown au0828", sizeof(mdev->model));
+-	else
+-		strlcpy(mdev->model, dev->board.name, sizeof(mdev->model));
+-	if (udev->serial)
+-		strlcpy(mdev->serial, udev->serial, sizeof(mdev->serial));
+-	strcpy(mdev->bus_info, udev->devpath);
+-	mdev->hw_revision = le16_to_cpu(udev->descriptor.bcdDevice);
+-	mdev->driver_version = LINUX_VERSION_CODE;
++		if (udev->product)
++			strlcpy(mdev->model, udev->product,
++				sizeof(mdev->model));
++		if (udev->serial)
++			strlcpy(mdev->serial, udev->serial,
++				sizeof(mdev->serial));
++		strcpy(mdev->bus_info, udev->devpath);
++		mdev->hw_revision = le16_to_cpu(udev->descriptor.bcdDevice);
  
-+#define MEDIA_INTF_T_ALSA_PCM_CAPTURE   (MEDIA_INTF_T_ALSA_BASE)
-+#define MEDIA_INTF_T_ALSA_PCM_PLAYBACK  (MEDIA_INTF_T_ALSA_BASE + 1)
-+#define MEDIA_INTF_T_ALSA_CONTROL       (MEDIA_INTF_T_ALSA_BASE + 2)
-+#define MEDIA_INTF_T_ALSA_COMPRESS      (MEDIA_INTF_T_ALSA_BASE + 3)
-+#define MEDIA_INTF_T_ALSA_RAWMIDI       (MEDIA_INTF_T_ALSA_BASE + 4)
-+#define MEDIA_INTF_T_ALSA_HWDEP         (MEDIA_INTF_T_ALSA_BASE + 5)
-+#define MEDIA_INTF_T_ALSA_SEQUENCER     (MEDIA_INTF_T_ALSA_BASE + 6)
-+#define MEDIA_INTF_T_ALSA_TIMER         (MEDIA_INTF_T_ALSA_BASE + 7)
-+
- /*
-  * MC next gen API definitions
-  *
+-	media_device_init(mdev);
++		media_device_init(mdev);
++	}
+ 
+ 	dev->media_dev = mdev;
+ #endif
 -- 
 2.5.0
