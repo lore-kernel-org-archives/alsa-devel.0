@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v3 12/22] media: au0828 Use au8522_media_pads enum for pad defines
-Date: Thu, 11 Feb 2016 16:41:28 -0700
-Message-ID: <eafcfa67fc8a8bc3a21329d3a2c717cb37a0345c.1455233154.git.shuahkh@osg.samsung.com>
+Subject: [PATCH v3 07/22] media: Media Controller export non locking __media_entity_setup_link()
+Date: Thu, 11 Feb 2016 16:41:23 -0700
+Message-ID: <07bb3165b50ea9607b6dbf682a0557d37438b4bf.1455233153.git.shuahkh@osg.samsung.com>
 References: <cover.1455233150.git.shuahkh@osg.samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1455233150.git.shuahkh@osg.samsung.com>
@@ -12,41 +12,25 @@ To: mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@ci
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittgam.net, johan@oljud.se, klock.android@gmail.com, nenggun.kim@samsung.com, j.anaszewski@samsung.com, geliangtang
 List-Id: alsa-devel@alsa-project.org
 
-Change au0828-core to use au8522_media_pads enum defines
-instead of hard-coding the pad values.
+Export __media_entity_setup_link() to be used from code paths
+that hold the graph_mutex.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/usb/au0828/au0828-core.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/media/media-entity.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
-index df2bc3f..ce5afea 100644
---- a/drivers/media/usb/au0828/au0828-core.c
-+++ b/drivers/media/usb/au0828/au0828-core.c
-@@ -20,6 +20,7 @@
-  */
+diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
+index 6179543..9b4d712 100644
+--- a/drivers/media/media-entity.c
++++ b/drivers/media/media-entity.c
+@@ -805,6 +805,7 @@ int __media_entity_setup_link(struct media_link *link, u32 flags)
  
- #include "au0828.h"
-+#include "au8522.h"
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(__media_entity_setup_link);
  
- #include <linux/module.h>
- #include <linux/slab.h>
-@@ -282,11 +283,13 @@ static int au0828_create_media_graph(struct au0828_dev *dev)
- 		if (ret)
- 			return ret;
- 	}
--	ret = media_create_pad_link(decoder, 1, &dev->vdev.entity, 0,
-+	ret = media_create_pad_link(decoder, AU8522_PAD_VID_OUT,
-+				    &dev->vdev.entity, 0,
- 				    MEDIA_LNK_FL_ENABLED);
- 	if (ret)
- 		return ret;
--	ret = media_create_pad_link(decoder, 2, &dev->vbi_dev.entity, 0,
-+	ret = media_create_pad_link(decoder, AU8522_PAD_VBI_OUT,
-+				    &dev->vbi_dev.entity, 0,
- 				    MEDIA_LNK_FL_ENABLED);
- 	if (ret)
- 		return ret;
+ int media_entity_setup_link(struct media_link *link, u32 flags)
+ {
 -- 
 2.5.0
