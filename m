@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v3 14/22] media: au0828 change to use Managed Media Controller API
-Date: Thu, 11 Feb 2016 16:41:30 -0700
-Message-ID: <ab2adf4f88fa6cf372fa5b7c85017a765591be1f.1455233154.git.shuahkh@osg.samsung.com>
+Subject: [PATCH v3 03/22] [media] Docbook: media-types.xml: Add Audio Function Entities
+Date: Thu, 11 Feb 2016 16:41:19 -0700
+Message-ID: <f591af59b7b1c77b5a17603a1a677a32b8e19132.1455233153.git.shuahkh@osg.samsung.com>
 References: <cover.1455233150.git.shuahkh@osg.samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1455233150.git.shuahkh@osg.samsung.com>
@@ -12,76 +12,35 @@ To: mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@ci
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittgam.net, johan@oljud.se, klock.android@gmail.com, nenggun.kim@samsung.com, j.anaszewski@samsung.com, geliangtang
 List-Id: alsa-devel@alsa-project.org
 
-Change au0828 to use Managed Media Controller API to
-share media device and coordinate creating/deleting
-the shared media device with the snd-usb-audio driver.
-The shared media device is created as device resource
-of the parent usb device of the two drivers.
-
-Populate media device model with USB Device product
-name instead of au0828 device board name. This change
-is necessary because, if the media device is registered
-by the snd-usb-audio driver first, and it doesn't know
-the au0828 board name.
+Add Audio Function Entities
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/usb/au0828/au0828-core.c | 29 +++++++++++++++--------------
- 1 file changed, 15 insertions(+), 14 deletions(-)
+ Documentation/DocBook/media/v4l/media-types.xml | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
-index ce5afea..a740bea 100644
---- a/drivers/media/usb/au0828/au0828-core.c
-+++ b/drivers/media/usb/au0828/au0828-core.c
-@@ -135,10 +135,10 @@ static void au0828_unregister_media_device(struct au0828_dev *dev)
- {
- 
- #ifdef CONFIG_MEDIA_CONTROLLER
--	if (dev->media_dev) {
-+	if (dev->media_dev &&
-+		media_devnode_is_registered(&dev->media_dev->devnode)) {
- 		media_device_unregister(dev->media_dev);
- 		media_device_cleanup(dev->media_dev);
--		kfree(dev->media_dev);
- 		dev->media_dev = NULL;
- 	}
- #endif
-@@ -224,23 +224,24 @@ static int au0828_media_device_init(struct au0828_dev *dev,
- #ifdef CONFIG_MEDIA_CONTROLLER
- 	struct media_device *mdev;
- 
--	mdev = kzalloc(sizeof(*mdev), GFP_KERNEL);
-+	mdev = media_device_get_devres(&udev->dev);
- 	if (!mdev)
- 		return -ENOMEM;
- 
--	mdev->dev = &udev->dev;
-+	if (!media_devnode_is_registered(&mdev->devnode)) {
-+		mdev->dev = &udev->dev;
- 
--	if (!dev->board.name)
--		strlcpy(mdev->model, "unknown au0828", sizeof(mdev->model));
--	else
--		strlcpy(mdev->model, dev->board.name, sizeof(mdev->model));
--	if (udev->serial)
--		strlcpy(mdev->serial, udev->serial, sizeof(mdev->serial));
--	strcpy(mdev->bus_info, udev->devpath);
--	mdev->hw_revision = le16_to_cpu(udev->descriptor.bcdDevice);
--	mdev->driver_version = LINUX_VERSION_CODE;
-+		if (udev->product)
-+			strlcpy(mdev->model, udev->product,
-+				sizeof(mdev->model));
-+		if (udev->serial)
-+			strlcpy(mdev->serial, udev->serial,
-+				sizeof(mdev->serial));
-+		strcpy(mdev->bus_info, udev->devpath);
-+		mdev->hw_revision = le16_to_cpu(udev->descriptor.bcdDevice);
- 
--	media_device_init(mdev);
-+		media_device_init(mdev);
-+	}
- 
- 	dev->media_dev = mdev;
- #endif
+diff --git a/Documentation/DocBook/media/v4l/media-types.xml b/Documentation/DocBook/media/v4l/media-types.xml
+index 3730967..924a604 100644
+--- a/Documentation/DocBook/media/v4l/media-types.xml
++++ b/Documentation/DocBook/media/v4l/media-types.xml
+@@ -113,6 +113,18 @@
+ 		   decoder.
+ 	    </entry>
+ 	  </row>
++	  <row>
++	    <entry><constant>MEDIA_ENT_F_AUDIO_CAPTURE</constant></entry>
++	    <entry>Audio Capture Function Entity.</entry>
++	  </row>
++	  <row>
++	    <entry><constant>MEDIA_ENT_F_AUDIO_PLAYBACK</constant></entry>
++	    <entry>Audio Playback Function Entity.</entry>
++	  </row>
++	  <row>
++	    <entry><constant>MEDIA_ENT_F_AUDIO_MIXER</constant></entry>
++	    <entry>Audio Mixer Function Entity.</entry>
++	  </row>
+ 	</tbody>
+       </tgroup>
+     </table>
 -- 
 2.5.0
