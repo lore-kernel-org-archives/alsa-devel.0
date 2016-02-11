@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v3 06/22] media: Media Controller enable/disable source handler API
-Date: Thu, 11 Feb 2016 16:41:22 -0700
-Message-ID: <2d8b035ec723346dfeed5db859aba67738e049cc.1455233153.git.shuahkh@osg.samsung.com>
+Subject: [PATCH v3 12/22] media: au0828 Use au8522_media_pads enum for pad defines
+Date: Thu, 11 Feb 2016 16:41:28 -0700
+Message-ID: <eafcfa67fc8a8bc3a21329d3a2c717cb37a0345c.1455233154.git.shuahkh@osg.samsung.com>
 References: <cover.1455233150.git.shuahkh@osg.samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1455233150.git.shuahkh@osg.samsung.com>
@@ -12,74 +12,41 @@ To: mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@ci
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittgam.net, johan@oljud.se, klock.android@gmail.com, nenggun.kim@samsung.com, j.anaszewski@samsung.com, geliangtang
 List-Id: alsa-devel@alsa-project.org
 
-Add new fields to struct media_device to add enable_source, and
-disable_source handlers, and source_priv to stash driver private
-data that is used to run these handlers. The enable_source handler
-finds source entity for the passed in entity and checks if it is
-available. When link is found, it activates it. Disable source
-handler deactivates the link.
-
-Bridge driver is expected to implement and set these handlers.
+Change au0828-core to use au8522_media_pads enum defines
+instead of hard-coding the pad values.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- include/media/media-device.h | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ drivers/media/usb/au0828/au0828-core.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/include/media/media-device.h b/include/media/media-device.h
-index 075a482..1a04644 100644
---- a/include/media/media-device.h
-+++ b/include/media/media-device.h
-@@ -302,6 +302,11 @@ struct media_entity_notify {
-  * @entity_notify: List of registered entity_notify callbacks
-  * @lock:	Entities list lock
-  * @graph_mutex: Entities graph operation lock
-+ *
-+ * @source_priv: Driver Private data for enable/disable source handlers
-+ * @enable_source: Enable Source Handler function pointer
-+ * @disable_source: Disable Source Handler function pointer
-+ *
-  * @link_notify: Link state change notification callback
-  *
-  * This structure represents an abstract high-level media device. It allows easy
-@@ -313,6 +318,26 @@ struct media_entity_notify {
-  *
-  * @model is a descriptive model name exported through sysfs. It doesn't have to
-  * be unique.
-+ *
-+ * @enable_source is a handler to find source entity for the
-+ * sink entity  and activate the link between them if source
-+ * entity is free. Drivers should call this handler before
-+ * accessing the source.
-+ *
-+ * @disable_source is a handler to find source entity for the
-+ * sink entity  and deactivate the link between them. Drivers
-+ * should call this handler to release the source.
-+ *
-+ * Note: Bridge driver is expected to implement and set the
-+ * handler when media_device is registered or when
-+ * bridge driver finds the media_device during probe.
-+ * Bridge driver sets source_priv with information
-+ * necessary to run enable/disable source handlers.
-+ *
-+ * Use-case: find tuner entity connected to the decoder
-+ * entity and check if it is available, and activate the
-+ * the link between them from enable_source and deactivate
-+ * from disable_source.
+diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
+index df2bc3f..ce5afea 100644
+--- a/drivers/media/usb/au0828/au0828-core.c
++++ b/drivers/media/usb/au0828/au0828-core.c
+@@ -20,6 +20,7 @@
   */
- struct media_device {
- 	/* dev->driver_data points to this struct. */
-@@ -344,6 +369,11 @@ struct media_device {
- 	/* Serializes graph operations. */
- 	struct mutex graph_mutex;
  
-+	void *source_priv;
-+	int (*enable_source)(struct media_entity *entity,
-+			     struct media_pipeline *pipe);
-+	void (*disable_source)(struct media_entity *entity);
-+
- 	int (*link_notify)(struct media_link *link, u32 flags,
- 			   unsigned int notification);
- };
+ #include "au0828.h"
++#include "au8522.h"
+ 
+ #include <linux/module.h>
+ #include <linux/slab.h>
+@@ -282,11 +283,13 @@ static int au0828_create_media_graph(struct au0828_dev *dev)
+ 		if (ret)
+ 			return ret;
+ 	}
+-	ret = media_create_pad_link(decoder, 1, &dev->vdev.entity, 0,
++	ret = media_create_pad_link(decoder, AU8522_PAD_VID_OUT,
++				    &dev->vdev.entity, 0,
+ 				    MEDIA_LNK_FL_ENABLED);
+ 	if (ret)
+ 		return ret;
+-	ret = media_create_pad_link(decoder, 2, &dev->vbi_dev.entity, 0,
++	ret = media_create_pad_link(decoder, AU8522_PAD_VBI_OUT,
++				    &dev->vbi_dev.entity, 0,
+ 				    MEDIA_LNK_FL_ENABLED);
+ 	if (ret)
+ 		return ret;
 -- 
 2.5.0
