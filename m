@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v3 13/22] media: Change v4l-core to check if source is free
-Date: Thu, 11 Feb 2016 16:41:29 -0700
-Message-ID: <d9c55486ee5daff0caf19c1eab8ca8856d79ff5d.1455233154.git.shuahkh@osg.samsung.com>
+Subject: [PATCH v3 05/22] media: Media Controller register/unregister entity_notify API
+Date: Thu, 11 Feb 2016 16:41:21 -0700
+Message-ID: <5045cdb7ec9cec401509dcf714bf1065d8b765dc.1455233153.git.shuahkh@osg.samsung.com>
 References: <cover.1455233150.git.shuahkh@osg.samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1455233150.git.shuahkh@osg.samsung.com>
@@ -12,157 +12,206 @@ To: mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@ci
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittgam.net, johan@oljud.se, klock.android@gmail.com, nenggun.kim@samsung.com, j.anaszewski@samsung.com, geliangtang
 List-Id: alsa-devel@alsa-project.org
 
-Change s_input, s_fmt, s_tuner, s_frequency, querystd,
-s_hw_freq_seek, and vb2_core_streamon interfaces that
-alter the tuner configuration to check if it is free,
-by calling v4l_enable_media_source(). If source isn't
-free, return -EBUSY. v4l_disable_media_source() is
-called from v4l2_fh_exit() to release tuner (source).
-vb2_core_streamon() uses v4l_vb2q_enable_media_source().
+Add new interfaces to register and unregister entity_notify
+hook to media device. These interfaces allow drivers to add
+hooks to take appropriate actions when new entities get added
+to a shared media device. For example, au0828 bridge driver
+registers an entity_notify hook to create links as needed
+between media graph nodes.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/v4l2-core/v4l2-fh.c        |  2 ++
- drivers/media/v4l2-core/v4l2-ioctl.c     | 30 ++++++++++++++++++++++++++++++
- drivers/media/v4l2-core/videobuf2-core.c |  4 ++++
- 3 files changed, 36 insertions(+)
+ drivers/media/media-device.c | 42 +++++++++++++++++++++++++++++++++
+ include/media/media-device.h | 56 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 98 insertions(+)
 
-diff --git a/drivers/media/v4l2-core/v4l2-fh.c b/drivers/media/v4l2-core/v4l2-fh.c
-index c97067a..c183f09 100644
---- a/drivers/media/v4l2-core/v4l2-fh.c
-+++ b/drivers/media/v4l2-core/v4l2-fh.c
-@@ -29,6 +29,7 @@
- #include <media/v4l2-fh.h>
- #include <media/v4l2-event.h>
- #include <media/v4l2-ioctl.h>
-+#include <media/v4l2-mc.h>
- 
- void v4l2_fh_init(struct v4l2_fh *fh, struct video_device *vdev)
+diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
+index 4d1c13d..9c1cf70 100644
+--- a/drivers/media/media-device.c
++++ b/drivers/media/media-device.c
+@@ -536,6 +536,7 @@ static void media_device_release(struct media_devnode *mdev)
+ int __must_check media_device_register_entity(struct media_device *mdev,
+ 					      struct media_entity *entity)
  {
-@@ -92,6 +93,7 @@ void v4l2_fh_exit(struct v4l2_fh *fh)
- {
- 	if (fh->vdev == NULL)
- 		return;
-+	v4l_disable_media_source(fh->vdev);
- 	v4l2_event_unsubscribe_all(fh);
- 	fh->vdev = NULL;
- }
-diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 8a018c6..ceaa44a 100644
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -27,6 +27,7 @@
- #include <media/v4l2-event.h>
- #include <media/v4l2-device.h>
- #include <media/videobuf2-v4l2.h>
-+#include <media/v4l2-mc.h>
- 
- #include <trace/events/v4l2.h>
- 
-@@ -1041,6 +1042,12 @@ static int v4l_querycap(const struct v4l2_ioctl_ops *ops,
- static int v4l_s_input(const struct v4l2_ioctl_ops *ops,
- 				struct file *file, void *fh, void *arg)
- {
-+	struct video_device *vfd = video_devdata(file);
-+	int ret;
-+
-+	ret = v4l_enable_media_source(vfd);
-+	if (ret)
-+		return ret;
- 	return ops->vidioc_s_input(file, fh, *(unsigned int *)arg);
- }
- 
-@@ -1448,6 +1455,9 @@ static int v4l_s_fmt(const struct v4l2_ioctl_ops *ops,
- 	bool is_tx = vfd->vfl_dir != VFL_DIR_RX;
++	struct media_entity_notify *notify, *next;
+ 	unsigned int i;
  	int ret;
  
-+	ret = v4l_enable_media_source(vfd);
-+	if (ret)
-+		return ret;
- 	v4l_sanitize_format(p);
+@@ -575,6 +576,11 @@ int __must_check media_device_register_entity(struct media_device *mdev,
+ 		media_gobj_create(mdev, MEDIA_GRAPH_PAD,
+ 			       &entity->pads[i].graph_obj);
  
- 	switch (p->type) {
-@@ -1637,7 +1647,11 @@ static int v4l_s_tuner(const struct v4l2_ioctl_ops *ops,
++	/* invoke entity_notify callbacks */
++	list_for_each_entry_safe(notify, next, &mdev->entity_notify, list) {
++		(notify)->notify(entity, notify->notify_data);
++	}
++
+ 	spin_unlock(&mdev->lock);
+ 
+ 	return 0;
+@@ -608,6 +614,8 @@ static void __media_device_unregister_entity(struct media_entity *entity)
+ 	/* Remove the entity */
+ 	media_gobj_destroy(&entity->graph_obj);
+ 
++	/* invoke entity_notify callbacks to handle entity removal?? */
++
+ 	entity->graph_obj.mdev = NULL;
+ }
+ 
+@@ -640,6 +648,7 @@ void media_device_init(struct media_device *mdev)
+ 	INIT_LIST_HEAD(&mdev->interfaces);
+ 	INIT_LIST_HEAD(&mdev->pads);
+ 	INIT_LIST_HEAD(&mdev->links);
++	INIT_LIST_HEAD(&mdev->entity_notify);
+ 	spin_lock_init(&mdev->lock);
+ 	mutex_init(&mdev->graph_mutex);
+ 	ida_init(&mdev->entity_internal_idx);
+@@ -685,11 +694,40 @@ int __must_check __media_device_register(struct media_device *mdev,
+ }
+ EXPORT_SYMBOL_GPL(__media_device_register);
+ 
++int __must_check media_device_register_entity_notify(struct media_device *mdev,
++					struct media_entity_notify *nptr)
++{
++	spin_lock(&mdev->lock);
++	list_add_tail(&nptr->list, &mdev->entity_notify);
++	spin_unlock(&mdev->lock);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(media_device_register_entity_notify);
++
++/**
++ * Note: Should be called with mdev->lock held.
++ */
++static void __media_device_unregister_entity_notify(struct media_device *mdev,
++					struct media_entity_notify *nptr)
++{
++	list_del(&nptr->list);
++}
++
++void media_device_unregister_entity_notify(struct media_device *mdev,
++					struct media_entity_notify *nptr)
++{
++	spin_lock(&mdev->lock);
++	__media_device_unregister_entity_notify(mdev, nptr);
++	spin_unlock(&mdev->lock);
++}
++EXPORT_SYMBOL_GPL(media_device_unregister_entity_notify);
++
+ void media_device_unregister(struct media_device *mdev)
  {
- 	struct video_device *vfd = video_devdata(file);
- 	struct v4l2_tuner *p = arg;
-+	int ret;
+ 	struct media_entity *entity;
+ 	struct media_entity *next;
+ 	struct media_interface *intf, *tmp_intf;
++	struct media_entity_notify *notify, *nextp;
  
-+	ret = v4l_enable_media_source(vfd);
-+	if (ret)
-+		return ret;
- 	p->type = (vfd->vfl_type == VFL_TYPE_RADIO) ?
- 			V4L2_TUNER_RADIO : V4L2_TUNER_ANALOG_TV;
- 	return ops->vidioc_s_tuner(file, fh, p);
-@@ -1691,7 +1705,11 @@ static int v4l_s_frequency(const struct v4l2_ioctl_ops *ops,
- 	struct video_device *vfd = video_devdata(file);
- 	const struct v4l2_frequency *p = arg;
- 	enum v4l2_tuner_type type;
-+	int ret;
+ 	if (mdev == NULL)
+ 		return;
+@@ -706,6 +744,10 @@ void media_device_unregister(struct media_device *mdev)
+ 	list_for_each_entry_safe(entity, next, &mdev->entities, graph_obj.list)
+ 		__media_device_unregister_entity(entity);
  
-+	ret = v4l_enable_media_source(vfd);
-+	if (ret)
-+		return ret;
- 	if (vfd->vfl_type == VFL_TYPE_SDR) {
- 		if (p->type != V4L2_TUNER_SDR && p->type != V4L2_TUNER_RF)
- 			return -EINVAL;
-@@ -1746,7 +1764,11 @@ static int v4l_s_std(const struct v4l2_ioctl_ops *ops,
++	/* Remove all entity_notify callbacks from the media device */
++	list_for_each_entry_safe(notify, nextp, &mdev->entity_notify, list)
++		__media_device_unregister_entity_notify(mdev, notify);
++
+ 	/* Remove all interfaces from the media device */
+ 	list_for_each_entry_safe(intf, tmp_intf, &mdev->interfaces,
+ 				 graph_obj.list) {
+diff --git a/include/media/media-device.h b/include/media/media-device.h
+index d385589..075a482 100644
+--- a/include/media/media-device.h
++++ b/include/media/media-device.h
+@@ -265,6 +265,22 @@ struct ida;
+ struct device;
+ 
+ /**
++ * struct media_entity_notify - Media Entity Notify
++ *
++ * @list: List head
++ * @notify_data: Input data to invoke the callback
++ * @notify: Callback function pointer
++ *
++ * Drivers may register a callback to take action when
++ * new entities get registered with the media device.
++ */
++struct media_entity_notify {
++	struct list_head list;
++	void *notify_data;
++	void (*notify)(struct media_entity *entity, void *notify_data);
++};
++
++/**
+  * struct media_device - Media device
+  * @dev:	Parent device
+  * @devnode:	Media device node
+@@ -283,6 +299,7 @@ struct device;
+  * @interfaces:	List of registered interfaces
+  * @pads:	List of registered pads
+  * @links:	List of registered links
++ * @entity_notify: List of registered entity_notify callbacks
+  * @lock:	Entities list lock
+  * @graph_mutex: Entities graph operation lock
+  * @link_notify: Link state change notification callback
+@@ -319,6 +336,9 @@ struct media_device {
+ 	struct list_head pads;
+ 	struct list_head links;
+ 
++	/* notify callback list invoked when a new entity is registered */
++	struct list_head entity_notify;
++
+ 	/* Protects the graph objects creation/removal */
+ 	spinlock_t lock;
+ 	/* Serializes graph operations. */
+@@ -498,6 +518,31 @@ int __must_check media_device_register_entity(struct media_device *mdev,
+ void media_device_unregister_entity(struct media_entity *entity);
+ 
+ /**
++ * media_device_register_entity_notify() - Registers a media entity_notify
++ *					   callback
++ *
++ * @mdev:      The media device
++ * @nptr:      The media_entity_notify
++ *
++ * Note: When a new entity is registered, all the registered
++ * media_entity_notify callbacks are invoked.
++ */
++
++int __must_check media_device_register_entity_notify(struct media_device *mdev,
++					struct media_entity_notify *nptr);
++
++/**
++ * media_device_unregister_entity_notify() - Unregister a media entity notify
++ *					     callback
++ *
++ * @mdev:      The media device
++ * @nptr:      The media_entity_notify
++ *
++ */
++void media_device_unregister_entity_notify(struct media_device *mdev,
++					struct media_entity_notify *nptr);
++
++/**
+  * media_device_get_devres() -	get media device as device resource
+  *				creates if one doesn't exist
+  *
+@@ -552,6 +597,17 @@ static inline int media_device_register_entity(struct media_device *mdev,
+ static inline void media_device_unregister_entity(struct media_entity *entity)
  {
- 	struct video_device *vfd = video_devdata(file);
- 	v4l2_std_id id = *(v4l2_std_id *)arg, norm;
-+	int ret;
- 
-+	ret = v4l_enable_media_source(vfd);
-+	if (ret)
-+		return ret;
- 	norm = id & vfd->tvnorms;
- 	if (vfd->tvnorms && !norm)	/* Check if std is supported */
- 		return -EINVAL;
-@@ -1760,7 +1782,11 @@ static int v4l_querystd(const struct v4l2_ioctl_ops *ops,
+ }
++static inline int media_device_register_entity_notify(
++					struct media_device *mdev,
++					struct media_entity_notify *nptr)
++{
++	return 0;
++}
++static inline void media_device_unregister_entity_notify(
++					struct media_device *mdev,
++					struct media_entity_notify *nptr)
++{
++}
+ static inline struct media_device *media_device_get_devres(struct device *dev)
  {
- 	struct video_device *vfd = video_devdata(file);
- 	v4l2_std_id *p = arg;
-+	int ret;
- 
-+	ret = v4l_enable_media_source(vfd);
-+	if (ret)
-+		return ret;
- 	/*
- 	 * If no signal is detected, then the driver should return
- 	 * V4L2_STD_UNKNOWN. Otherwise it should return tvnorms with
-@@ -1779,7 +1805,11 @@ static int v4l_s_hw_freq_seek(const struct v4l2_ioctl_ops *ops,
- 	struct video_device *vfd = video_devdata(file);
- 	struct v4l2_hw_freq_seek *p = arg;
- 	enum v4l2_tuner_type type;
-+	int ret;
- 
-+	ret = v4l_enable_media_source(vfd);
-+	if (ret)
-+		return ret;
- 	/* s_hw_freq_seek is not supported for SDR for now */
- 	if (vfd->vfl_type == VFL_TYPE_SDR)
- 		return -EINVAL;
-diff --git a/drivers/media/v4l2-core/videobuf2-core.c b/drivers/media/v4l2-core/videobuf2-core.c
-index ec5b78e..d381478 100644
---- a/drivers/media/v4l2-core/videobuf2-core.c
-+++ b/drivers/media/v4l2-core/videobuf2-core.c
-@@ -25,6 +25,7 @@
- #include <linux/kthread.h>
- 
- #include <media/videobuf2-core.h>
-+#include <media/v4l2-mc.h>
- 
- #include <trace/events/vb2.h>
- 
-@@ -1873,6 +1874,9 @@ int vb2_core_streamon(struct vb2_queue *q, unsigned int type)
- 	 * are available.
- 	 */
- 	if (q->queued_count >= q->min_buffers_needed) {
-+		ret = v4l_vb2q_enable_media_source(q);
-+		if (ret)
-+			return ret;
- 		ret = vb2_start_streaming(q);
- 		if (ret) {
- 			__vb2_queue_cancel(q);
+ 	return NULL;
 -- 
 2.5.0
