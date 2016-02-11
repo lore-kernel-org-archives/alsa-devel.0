@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v3 15/22] media: au0828 handle media_init and media_register window
-Date: Thu, 11 Feb 2016 16:41:31 -0700
-Message-ID: <31acd1abfe83e778ad6e9baa5494ca48a167d95a.1455233155.git.shuahkh@osg.samsung.com>
+Subject: [PATCH v3 02/22] uapi/media.h: Declare interface types for ALSA
+Date: Thu, 11 Feb 2016 16:41:18 -0700
+Message-ID: <a1b468c2933dc2b4f2b6cc6d1ac30baee2a89f77.1455233152.git.shuahkh@osg.samsung.com>
 References: <cover.1455233150.git.shuahkh@osg.samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1455233150.git.shuahkh@osg.samsung.com>
@@ -12,77 +12,69 @@ To: mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@ci
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittgam.net, johan@oljud.se, klock.android@gmail.com, nenggun.kim@samsung.com, j.anaszewski@samsung.com, geliangtang
 List-Id: alsa-devel@alsa-project.org
 
-Media device initialization and registration
-steps are split. There is a window between
-media device init and media device register
-during usb probe.
-
-au0828 bridge driver and snd-usb-audio could
-try to initialize the media device, if they
-simply checked, whether the device has been
-registered. They also need to check whether
-the device has been initialized.
-
-Change the au0828-core to check if media device
-is already initialized during initialization step
-and check if media device is already registered
-during the registration step.
+Declare the interface types to be used on alsa for
+the new G_TOPOLOGY ioctl.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/usb/au0828/au0828-core.c | 26 ++++++++++++++++++++++++--
- 1 file changed, 24 insertions(+), 2 deletions(-)
+ drivers/media/media-entity.c | 16 ++++++++++++++++
+ include/uapi/linux/media.h   | 10 ++++++++++
+ 2 files changed, 26 insertions(+)
 
-diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
-index a740bea..99f8022 100644
---- a/drivers/media/usb/au0828/au0828-core.c
-+++ b/drivers/media/usb/au0828/au0828-core.c
-@@ -228,7 +228,8 @@ static int au0828_media_device_init(struct au0828_dev *dev,
- 	if (!mdev)
- 		return -ENOMEM;
- 
--	if (!media_devnode_is_registered(&mdev->devnode)) {
-+	/* check if media device is already initialized */
-+	if (!mdev->dev) {
- 		mdev->dev = &udev->dev;
- 
- 		if (udev->product)
-@@ -328,6 +329,27 @@ static int au0828_create_media_graph(struct au0828_dev *dev)
- 	return 0;
- }
- 
-+static int au0828_media_device_register(struct au0828_dev *dev,
-+					struct usb_device *udev)
-+{
-+#ifdef CONFIG_MEDIA_CONTROLLER
-+	int ret;
-+
-+	if (dev->media_dev &&
-+		!media_devnode_is_registered(&dev->media_dev->devnode)) {
-+
-+		/* register media device */
-+		ret = media_device_register(dev->media_dev);
-+		if (ret) {
-+			dev_err(&udev->dev,
-+				"Media Device Register Error: %d\n", ret);
-+			return ret;
-+		}
-+	}
-+#endif
-+	return 0;
-+}
-+
- static int au0828_usb_probe(struct usb_interface *interface,
- 	const struct usb_device_id *id)
- {
-@@ -455,7 +477,7 @@ static int au0828_usb_probe(struct usb_interface *interface,
+diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
+index f2e4360..6179543 100644
+--- a/drivers/media/media-entity.c
++++ b/drivers/media/media-entity.c
+@@ -65,6 +65,22 @@ static inline const char *intf_type(struct media_interface *intf)
+ 		return "v4l2-subdev";
+ 	case MEDIA_INTF_T_V4L_SWRADIO:
+ 		return "swradio";
++	case MEDIA_INTF_T_ALSA_PCM_CAPTURE:
++		return "pcm-capture";
++	case MEDIA_INTF_T_ALSA_PCM_PLAYBACK:
++		return "pcm-playback";
++	case MEDIA_INTF_T_ALSA_CONTROL:
++		return "alsa-control";
++	case MEDIA_INTF_T_ALSA_COMPRESS:
++		return "compress";
++	case MEDIA_INTF_T_ALSA_RAWMIDI:
++		return "rawmidi";
++	case MEDIA_INTF_T_ALSA_HWDEP:
++		return "hwdep";
++	case MEDIA_INTF_T_ALSA_SEQUENCER:
++		return "sequencer";
++	case MEDIA_INTF_T_ALSA_TIMER:
++		return "timer";
+ 	default:
+ 		return "unknown-intf";
  	}
+diff --git a/include/uapi/linux/media.h b/include/uapi/linux/media.h
+index c9eb42a..3cc0366 100644
+--- a/include/uapi/linux/media.h
++++ b/include/uapi/linux/media.h
+@@ -265,6 +265,7 @@ struct media_links_enum {
  
- #ifdef CONFIG_MEDIA_CONTROLLER
--	retval = media_device_register(dev->media_dev);
-+	retval = au0828_media_device_register(dev, usbdev);
- #endif
+ #define MEDIA_INTF_T_DVB_BASE	0x00000100
+ #define MEDIA_INTF_T_V4L_BASE	0x00000200
++#define MEDIA_INTF_T_ALSA_BASE	0x00000300
  
- done:
+ /* Interface types */
+ 
+@@ -280,6 +281,15 @@ struct media_links_enum {
+ #define MEDIA_INTF_T_V4L_SUBDEV (MEDIA_INTF_T_V4L_BASE + 3)
+ #define MEDIA_INTF_T_V4L_SWRADIO (MEDIA_INTF_T_V4L_BASE + 4)
+ 
++#define MEDIA_INTF_T_ALSA_PCM_CAPTURE   (MEDIA_INTF_T_ALSA_BASE)
++#define MEDIA_INTF_T_ALSA_PCM_PLAYBACK  (MEDIA_INTF_T_ALSA_BASE + 1)
++#define MEDIA_INTF_T_ALSA_CONTROL       (MEDIA_INTF_T_ALSA_BASE + 2)
++#define MEDIA_INTF_T_ALSA_COMPRESS      (MEDIA_INTF_T_ALSA_BASE + 3)
++#define MEDIA_INTF_T_ALSA_RAWMIDI       (MEDIA_INTF_T_ALSA_BASE + 4)
++#define MEDIA_INTF_T_ALSA_HWDEP         (MEDIA_INTF_T_ALSA_BASE + 5)
++#define MEDIA_INTF_T_ALSA_SEQUENCER     (MEDIA_INTF_T_ALSA_BASE + 6)
++#define MEDIA_INTF_T_ALSA_TIMER         (MEDIA_INTF_T_ALSA_BASE + 7)
++
+ /*
+  * MC next gen API definitions
+  *
 -- 
 2.5.0
