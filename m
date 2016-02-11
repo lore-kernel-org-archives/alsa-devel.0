@@ -1,79 +1,117 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/2] ALSA: dice: old firmware optimization for
-	Dice notification
-Date: Thu, 11 Feb 2016 20:18:38 +0900
-Message-ID: <1455189518-29261-3-git-send-email-o-takashi@sakamocchi.jp>
-References: <1455189518-29261-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v1 13/14] ASoC: qcom: add mic support
+Date: Thu, 11 Feb 2016 11:34:35 +0000
+Message-ID: <56BC71CB.7040308@linaro.org>
+References: <1455099418-311-1-git-send-email-srinivas.kandagatla@linaro.org>
+ <1455099603-906-1-git-send-email-srinivas.kandagatla@linaro.org>
+ <20160210201021.GB29575@kwestfie-linux.qualcomm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 0CEE226063A
- for <alsa-devel@alsa-project.org>; Thu, 11 Feb 2016 12:18:44 +0100 (CET)
-In-Reply-To: <1455189518-29261-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-Reply-To: <20160210201021.GB29575@kwestfie-linux.qualcomm.com>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Patrick Lai <plai@codeaurora.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-As long as I tested, Dice-based models produced by TC Electronic with
-factory-configured settings transfer no notification within
-ensure_phase_lock(). On the other hand, with upgraded firmwares, it
-starts to transfer the notification. This seems to be a quirk of earlier
-firmwares.
 
-This commit ensures phase lock by reading a register after waiting for
-the notification. Even if it's timed-out, ensure_phase_lock() return
-success as long as the register has expected clock status.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/dice/dice-stream.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+On 10/02/16 20:10, Kenneth Westfield wrote:
+> On Wed, Feb 10, 2016 at 02:20:03AM -0800, Srinivas Kandagatla wrote:
+>> diff --git a/sound/soc/qcom/lpass-platform.c
+>> b/sound/soc/qcom/lpass-platform.c
+>> index 26a046a..574aa33 100644
+>> --- a/sound/soc/qcom/lpass-platform.c
+>> +++ b/sound/soc/qcom/lpass-platform.c
+>
+> ...
+>
+>> @@ -92,7 +93,13 @@ static int lpass_platform_pcmops_hw_params(struct
+>> snd_pcm_substream *substream,
+>>   	unsigned int regval;
+>>   	int dir = substream->stream;
+>>   	int bitwidth;
+>> -	int ret, rdma_port = pcm_data->i2s_port + v->dmactl_audif_start;
+>> +	int ch, ret, dma_port = pcm_data->i2s_port +
+>> v->dmactl_audif_start;
+>
+> IMO, changing rdma_port to dma_port should be in patch 3 (ASoC: qcom:
+> rename rdmactl_audif_start to dmactrl_audif_start).  However, as I
+> stated in my comments to your RFC submission, this is a nit.
+>
+Am ok to change it.
+But, Its just a local variable whose sense only changes once we get the 
+mic support in.
 
-diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
-index e4938b0..a64b3cc 100644
---- a/sound/firewire/dice/dice-stream.c
-+++ b/sound/firewire/dice/dice-stream.c
-@@ -31,7 +31,7 @@ const unsigned int snd_dice_rates[SND_DICE_RATES_COUNT] = {
-  */
- static int ensure_phase_lock(struct snd_dice *dice)
- {
--	__be32 reg;
-+	__be32 reg, nominal;
- 	int err;
- 
- 	err = snd_dice_transaction_read_global(dice, GLOBAL_CLOCK_SELECT,
-@@ -48,8 +48,19 @@ static int ensure_phase_lock(struct snd_dice *dice)
- 		return err;
- 
- 	if (wait_for_completion_timeout(&dice->clock_accepted,
--			msecs_to_jiffies(NOTIFICATION_TIMEOUT_MS)) == 0)
--		return -ETIMEDOUT;
-+			msecs_to_jiffies(NOTIFICATION_TIMEOUT_MS)) == 0) {
-+		/*
-+		 * Old versions of Dice firmware transfer no notification when
-+		 * the same clock status as current one is set. In this case,
-+		 * just check current clock status.
-+		 */
-+		err = snd_dice_transaction_read_global(dice, GLOBAL_STATUS,
-+						&nominal, sizeof(nominal));
-+		if (err < 0)
-+			return err;
-+		if (!(be32_to_cpu(nominal) & STATUS_SOURCE_LOCKED))
-+			return -ETIMEDOUT;
-+	}
- 
- 	return 0;
- }
--- 
-2.5.0
+> ...
+>
+>> @@ -460,55 +483,106 @@ static int lpass_platform_pcm_new(struct
+>> snd_soc_pcm_runtime *soc_runtime)
+>>   	if (!data)
+>>   		return -ENOMEM;
+>>
+>> -	if (v->alloc_dma_channel)
+>> -		data->rdma_ch = v->alloc_dma_channel(drvdata,
+>> -
+>> SNDRV_PCM_STREAM_PLAYBACK);
+>> +	data->i2s_port = cpu_dai->driver->id;
+>> +	snd_soc_pcm_set_drvdata(soc_runtime, data);
+>>
+>> -	if (IS_ERR_VALUE(data->rdma_ch))
+>> -		return data->rdma_ch;
+>> +	psubstream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
+>> +	if (psubstream) {
+>> +		if (v->alloc_dma_channel)
+>> +			data->rdma_ch = v->alloc_dma_channel(drvdata,
+>> +
+>> SNDRV_PCM_STREAM_PLAYBACK);
+>>
+>> -	drvdata->substream[data->rdma_ch] = substream;
+>> -	data->i2s_port = cpu_dai->driver->id;
+>> +		if (IS_ERR_VALUE(data->rdma_ch))
+>> +			return data->rdma_ch;
+>>
+>> -	snd_soc_pcm_set_drvdata(soc_runtime, data);
+>> +		drvdata->substream[data->rdma_ch] = psubstream;
+>>
+>> -	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV,
+>> -				soc_runtime->platform->dev,
+>> -				size, &substream->dma_buffer);
+>> -	if (ret)
+>> -		return ret;
+>> +		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV,
+>> pcm->card->dev,
+>> +					size, &psubstream->dma_buffer);
+>
+> In patch 1 of this series (ASoC: qcom: use snd_dma_alloc/free* apis), you
+> correctly used the platform device for memory allocation.  However, that is
+> then replaced by the soundcard device here ...
+>
+Oops, I should have been careful.
+Will fix it and send v2.
+
+
+
+>> +	csubstream = pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream;
+>> +	if (csubstream) {
+>> +		if (v->alloc_dma_channel)
+>> +			data->wrdma_ch = v->alloc_dma_channel(drvdata,
+>> +						SNDRV_PCM_STREAM_CAPTURE);
+>> +
+>> +		if (IS_ERR_VALUE(data->wrdma_ch))
+>> +			goto capture_alloc_err;
+>> +
+>> +		drvdata->substream[data->wrdma_ch] = csubstream;
+>> +
+>> +		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV,
+>> pcm->card->dev,
+>> +					size, &csubstream->dma_buffer);
+>> +		if (ret)
+>> +			goto capture_alloc_err;
+>
+> ... and here as well.
+same.
+
+Thanks,
+srini
+>
