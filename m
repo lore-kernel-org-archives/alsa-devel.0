@@ -1,117 +1,65 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v1 13/14] ASoC: qcom: add mic support
-Date: Thu, 11 Feb 2016 11:34:35 +0000
-Message-ID: <56BC71CB.7040308@linaro.org>
-References: <1455099418-311-1-git-send-email-srinivas.kandagatla@linaro.org>
- <1455099603-906-1-git-send-email-srinivas.kandagatla@linaro.org>
- <20160210201021.GB29575@kwestfie-linux.qualcomm.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH v3 00/14] ASoC: qcom: Add capture support.
+Date: Thu, 11 Feb 2016 12:16:47 +0000
+Message-ID: <1455193007-1481-1-git-send-email-srinivas.kandagatla@linaro.org>
 Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <20160210201021.GB29575@kwestfie-linux.qualcomm.com>
 Sender: linux-arm-msm-owner@vger.kernel.org
-To: Patrick Lai <plai@codeaurora.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+To: Patrick Lai <plai@codeaurora.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, kwestfie@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+LPASS IP on QCOM SOC supports both Playback and capture
+via I2S, but this feature is missing in existing code. 
+This patchset aims at adding capture support to lpass IP.
+First few patches in this series does cleanup the driver
+to make easy to add capture support.
 
+All these patches are acked by Kenneth.
 
-On 10/02/16 20:10, Kenneth Westfield wrote:
-> On Wed, Feb 10, 2016 at 02:20:03AM -0800, Srinivas Kandagatla wrote:
->> diff --git a/sound/soc/qcom/lpass-platform.c
->> b/sound/soc/qcom/lpass-platform.c
->> index 26a046a..574aa33 100644
->> --- a/sound/soc/qcom/lpass-platform.c
->> +++ b/sound/soc/qcom/lpass-platform.c
->
-> ...
->
->> @@ -92,7 +93,13 @@ static int lpass_platform_pcmops_hw_params(struct
->> snd_pcm_substream *substream,
->>   	unsigned int regval;
->>   	int dir = substream->stream;
->>   	int bitwidth;
->> -	int ret, rdma_port = pcm_data->i2s_port + v->dmactl_audif_start;
->> +	int ch, ret, dma_port = pcm_data->i2s_port +
->> v->dmactl_audif_start;
->
-> IMO, changing rdma_port to dma_port should be in patch 3 (ASoC: qcom:
-> rename rdmactl_audif_start to dmactrl_audif_start).  However, as I
-> stated in my comments to your RFC submission, this is a nit.
->
-Am ok to change it.
-But, Its just a local variable whose sense only changes once we get the 
-mic support in.
-
-> ...
->
->> @@ -460,55 +483,106 @@ static int lpass_platform_pcm_new(struct
->> snd_soc_pcm_runtime *soc_runtime)
->>   	if (!data)
->>   		return -ENOMEM;
->>
->> -	if (v->alloc_dma_channel)
->> -		data->rdma_ch = v->alloc_dma_channel(drvdata,
->> -
->> SNDRV_PCM_STREAM_PLAYBACK);
->> +	data->i2s_port = cpu_dai->driver->id;
->> +	snd_soc_pcm_set_drvdata(soc_runtime, data);
->>
->> -	if (IS_ERR_VALUE(data->rdma_ch))
->> -		return data->rdma_ch;
->> +	psubstream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
->> +	if (psubstream) {
->> +		if (v->alloc_dma_channel)
->> +			data->rdma_ch = v->alloc_dma_channel(drvdata,
->> +
->> SNDRV_PCM_STREAM_PLAYBACK);
->>
->> -	drvdata->substream[data->rdma_ch] = substream;
->> -	data->i2s_port = cpu_dai->driver->id;
->> +		if (IS_ERR_VALUE(data->rdma_ch))
->> +			return data->rdma_ch;
->>
->> -	snd_soc_pcm_set_drvdata(soc_runtime, data);
->> +		drvdata->substream[data->rdma_ch] = psubstream;
->>
->> -	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV,
->> -				soc_runtime->platform->dev,
->> -				size, &substream->dma_buffer);
->> -	if (ret)
->> -		return ret;
->> +		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV,
->> pcm->card->dev,
->> +					size, &psubstream->dma_buffer);
->
-> In patch 1 of this series (ASoC: qcom: use snd_dma_alloc/free* apis), you
-> correctly used the platform device for memory allocation.  However, that is
-> then replaced by the soundcard device here ...
->
-Oops, I should have been careful.
-Will fix it and send v2.
-
-
-
->> +	csubstream = pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream;
->> +	if (csubstream) {
->> +		if (v->alloc_dma_channel)
->> +			data->wrdma_ch = v->alloc_dma_channel(drvdata,
->> +						SNDRV_PCM_STREAM_CAPTURE);
->> +
->> +		if (IS_ERR_VALUE(data->wrdma_ch))
->> +			goto capture_alloc_err;
->> +
->> +		drvdata->substream[data->wrdma_ch] = csubstream;
->> +
->> +		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV,
->> pcm->card->dev,
->> +					size, &csubstream->dma_buffer);
->> +		if (ret)
->> +			goto capture_alloc_err;
->
-> ... and here as well.
-same.
+These patches are tested on DB410C with Headset Mic, secondary mic.
 
 Thanks,
 srini
->
+
+Changes since v1/v2:
+ - Fixed patch version number.
+ - renamed rdma_port to dma_port in patch 3, as suggested by Kenneth.
+ - fixed correct device for snd_dma_alloc/free
+as suggested by Kenneth in patch 13.
+
+Changes since RFC:
+ - made patches bisectable, reported by 0day testing
+ - merged two patches as suggested by Kenneth
+ - used corect device for snd_dma alloc/free apis,
+ spotted by Kenneth
+ - renamed LPAIF_I2SCTL_MICMODE_QUAD02 to
+ LPAIF_I2SCTL_MICMODE_QUAD23, spotted by Kenneth.
+ - Fixed minor issues suggested by Kenneth.
+
+Srinivas Kandagatla (14):
+  ASoC: qcom: use snd_dma_alloc/free* apis
+  ASoC: qcom: add wrdma register details to lpass_variant
+  ASoC: qcom: rename rdmactl_audif_start to dmactrl_audif_start
+  ASoC: qcom: pass direction to dma allocation
+  ASoC: qcom: ipq806x: add error in dma allocation.
+  ASoC: qcom: rename rdma_ch_bit_map to dma_ch_bit_map
+  ASoC: qcom: ipq806x: add wrdma related register offsets
+  ASoC: qcom: apq8016: add wrdma support
+  ASoC: qcom: add mic related i2s control register defines
+  ASoC: qcom: add wrdma register definitions
+  ASoC: qcom: add generic bit masks for RDMA and WRDMA
+  ASoC: qcom: apq8016: set the correct max register for regmap
+  ASoC: qcom: add mic support
+  ASoC: qcom: apq8016-sbc: add mic support
+
+ sound/soc/qcom/apq8016_sbc.c     |  10 +-
+ sound/soc/qcom/lpass-apq8016.c   |  31 +++--
+ sound/soc/qcom/lpass-cpu.c       | 146 ++++++++++++++++++-----
+ sound/soc/qcom/lpass-ipq806x.c   |  11 +-
+ sound/soc/qcom/lpass-lpaif-reg.h | 116 +++++++++++++------
+ sound/soc/qcom/lpass-platform.c  | 244 +++++++++++++++++++++++----------------
+ sound/soc/qcom/lpass.h           |  10 +-
+ 7 files changed, 391 insertions(+), 177 deletions(-)
+
+-- 
+1.9.1
