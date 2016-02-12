@@ -1,29 +1,18 @@
-From: Jacobson <a_jacobson_1991@hotmail.com>
-Subject: Re: Usb audio - unsuported sampling rates
-Date: Fri, 12 Feb 2016 13:59:15 +0000 (UTC)
-Message-ID: <loom.20160212T144852-896@post.gmane.org>
-References: <CADPOxSii6AGmyBmEYkBSs24Zd7fwasutf=HxTrB0xNqo4vuhXg@mail.gmail.com>
- <4FFBD182.9040503@gmail.com>
- <CADPOxSis1apDxiFn6A6g-Rdi22sOgeMqCe+vOsDXy3odvjALAg@mail.gmail.com>
- <4FFC9F8E.6090004@gmail.com> <4FFE8062.5040101@gmail.com>
- <CADPOxSi7ijOCobfyRVoTBPenY-gJBnPivaJF1pY8jnrgVgmxsg@mail.gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 1/2] ALSA: timer: Protect the whole
+	snd_timer_close() with open race
+Date: Fri, 12 Feb 2016 15:10:25 +0100
+Message-ID: <1455286226-351-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 24B0A2604A3
- for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2016 15:05:11 +0100 (CET)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1aUELK-00074U-9c
- for alsa-devel@alsa-project.org; Fri, 12 Feb 2016 15:05:07 +0100
-Received: from CPE-123-211-93-31.lnse4.cha.bigpond.net.au ([123.211.93.31])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2016 15:05:06 +0100
-Received: from a_jacobson_1991 by CPE-123-211-93-31.lnse4.cha.bigpond.net.au
- with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2016 15:05:06 +0100
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1701A2604A3
+ for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2016 15:10:30 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id B6A6BAB5D
+ for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2016 14:10:29 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -36,36 +25,100 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+In order to make the open/close more robust, widen the register_mutex
+protection over the whole snd_timer_close() function.  Also, the close
+procedure is slightly shuffled to be in the safer order, as well as a
+few code refactoring.
 
-Gordon Dilan <gordon.dilan <at> gmail.com> writes:
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
 
-> 
-> Hello Daniel,
-> 
-> Thank you very much for your help and sorry for the late answer. I was
-> without internet access for the last few days.
-> 
-> I have tried the patch that you sent me(with a minor modification:
-> fp->rate_max(instead of min) = 48000; ).
-> If I try to record using 48kHz and then playback, it will playback in 
-"fast
-> speed", voices being recorded as "chipmunks".
-> Only at 16000Hz it records at "normal speed".
-> 
+This is no urgent fix, so queued for 4.6.
 
+ sound/core/timer.c | 48 +++++++++++++++++++++---------------------------
+ 1 file changed, 21 insertions(+), 27 deletions(-)
 
-Hi Daniel and Gordon, 
-
-Sorry for posting on such an old thread. I have recently started using the 
-PlayStation Eye for audio processing and I have run into the same issue of 
-ALSA only allowing the device to capture at 16khz sampling rate when it 
-should be capable of 48khz. Your last post indicates that even with a 
-patch, the device only sampled at 16khz and just played the samples faster. 
-I am just wondering if either of you came up with a solution to this 
-problem? Was it ever possible to record at a 48khz?
-
-Any help or information would be greatly appreciated. 
-
-Thanks,
-
-Jacobson. 
+diff --git a/sound/core/timer.c b/sound/core/timer.c
+index dca817fc7894..b572a9bc31ad 100644
+--- a/sound/core/timer.c
++++ b/sound/core/timer.c
+@@ -318,25 +318,14 @@ int snd_timer_close(struct snd_timer_instance *timeri)
+ 	if (snd_BUG_ON(!timeri))
+ 		return -ENXIO;
+ 
++	mutex_lock(&register_mutex);
++	list_del(&timeri->open_list);
++
+ 	/* force to stop the timer */
+ 	snd_timer_stop(timeri);
+ 
+-	if (timeri->flags & SNDRV_TIMER_IFLG_SLAVE) {
+-		/* wait, until the active callback is finished */
+-		spin_lock_irq(&slave_active_lock);
+-		while (timeri->flags & SNDRV_TIMER_IFLG_CALLBACK) {
+-			spin_unlock_irq(&slave_active_lock);
+-			udelay(10);
+-			spin_lock_irq(&slave_active_lock);
+-		}
+-		spin_unlock_irq(&slave_active_lock);
+-		mutex_lock(&register_mutex);
+-		list_del(&timeri->open_list);
+-		mutex_unlock(&register_mutex);
+-	} else {
+-		timer = timeri->timer;
+-		if (snd_BUG_ON(!timer))
+-			goto out;
++	timer = timeri->timer;
++	if (timer) {
+ 		/* wait, until the active callback is finished */
+ 		spin_lock_irq(&timer->lock);
+ 		while (timeri->flags & SNDRV_TIMER_IFLG_CALLBACK) {
+@@ -345,11 +334,7 @@ int snd_timer_close(struct snd_timer_instance *timeri)
+ 			spin_lock_irq(&timer->lock);
+ 		}
+ 		spin_unlock_irq(&timer->lock);
+-		mutex_lock(&register_mutex);
+-		list_del(&timeri->open_list);
+-		if (list_empty(&timer->open_list_head) &&
+-		    timer->hw.close)
+-			timer->hw.close(timer);
++
+ 		/* remove slave links */
+ 		spin_lock_irq(&slave_active_lock);
+ 		spin_lock(&timer->lock);
+@@ -363,18 +348,27 @@ int snd_timer_close(struct snd_timer_instance *timeri)
+ 		}
+ 		spin_unlock(&timer->lock);
+ 		spin_unlock_irq(&slave_active_lock);
+-		/* release a card refcount for safe disconnection */
+-		if (timer->card)
+-			put_device(&timer->card->card_dev);
+-		mutex_unlock(&register_mutex);
++
++		/* slave doesn't need to release timer resources below */
++		if (timeri->flags & SNDRV_TIMER_IFLG_SLAVE)
++			timer = NULL;
+ 	}
+- out:
++
+ 	if (timeri->private_free)
+ 		timeri->private_free(timeri);
+ 	kfree(timeri->owner);
+ 	kfree(timeri);
+-	if (timer)
++
++	if (timer) {
++		if (list_empty(&timer->open_list_head) && timer->hw.close)
++			timer->hw.close(timer);
++		/* release a card refcount for safe disconnection */
++		if (timer->card)
++			put_device(&timer->card->card_dev);
+ 		module_put(timer->module);
++	}
++
++	mutex_unlock(&register_mutex);
+ 	return 0;
+ }
+ 
+-- 
+2.7.1
