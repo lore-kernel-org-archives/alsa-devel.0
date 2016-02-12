@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v6 09/15] ASoC: hdac_hdmi: Add infoframe
-	support for dp audio
-Date: Fri, 12 Feb 2016 07:46:09 +0530
-Message-ID: <1455243375-16067-10-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v6 10/15] ASoC: hdac_hdmi: Fix possible memory
+	leak in hw_params
+Date: Fri, 12 Feb 2016 07:46:10 +0530
+Message-ID: <1455243375-16067-11-git-send-email-subhransu.s.prusty@intel.com>
 References: <1455243375-16067-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C9AB265A66
- for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2016 03:15:32 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 12A3D265A82
+ for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2016 03:15:34 +0100 (CET)
 In-Reply-To: <1455243375-16067-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,120 +25,50 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-For DP audio support, infoframe needs to be different. Based on
-get_conn_type result we pack either HDMI or DP infoframe.
+It's possible for hw_params to be called two times. So add NULL
+check to prevent memory leak.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 74 ++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 64 insertions(+), 10 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index dcd1cb6..36f1200 100644
+index 36f1200..40db292 100644
 --- a/sound/soc/codecs/hdac_hdmi.c
 +++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -253,27 +253,75 @@ hdac_hdmi_set_dip_index(struct hdac_ext_device *hdac, hda_nid_t pin_nid,
- 				AC_VERB_SET_HDMI_DIP_INDEX, val);
+@@ -405,9 +405,14 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
+ 		return -ENODEV;
+ 	}
+ 
+-	dd = kzalloc(sizeof(*dd), GFP_KERNEL);
+-	if (!dd)
+-		return -ENOMEM;
++	dd = (struct hdac_ext_dma_params *)
++		snd_soc_dai_get_dma_data(dai, substream);
++	if (!dd) {
++		dd = kzalloc(sizeof(*dd), GFP_KERNEL);
++		if (!dd)
++			return -ENOMEM;
++	}
++
+ 	dd->format = snd_hdac_calc_stream_format(params_rate(hparams),
+ 			params_channels(hparams), params_format(hparams),
+ 			24, 0);
+@@ -433,9 +438,11 @@ static int hdac_hdmi_playback_cleanup(struct snd_pcm_substream *substream,
+ 				AC_VERB_SET_STREAM_FORMAT, 0);
+ 
+ 	dd = (struct hdac_ext_dma_params *)snd_soc_dai_get_dma_data(dai, substream);
+-	snd_soc_dai_set_dma_data(dai, substream, NULL);
+ 
+-	kfree(dd);
++	if (dd) {
++		snd_soc_dai_set_dma_data(dai, substream, NULL);
++		kfree(dd);
++	}
+ 
+ 	return 0;
  }
- 
-+struct dp_audio_infoframe {
-+	u8 type; /* 0x84 */
-+	u8 len;  /* 0x1b */
-+	u8 ver;  /* 0x11 << 2 */
-+
-+	u8 CC02_CT47;	/* match with HDMI infoframe from this on */
-+	u8 SS01_SF24;
-+	u8 CXT04;
-+	u8 CA;
-+	u8 LFEPBL01_LSV36_DM_INH7;
-+};
-+
- static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
- 				hda_nid_t cvt_nid, hda_nid_t pin_nid)
- {
- 	uint8_t buffer[HDMI_INFOFRAME_HEADER_SIZE + HDMI_AUDIO_INFOFRAME_SIZE];
- 	struct hdmi_audio_infoframe frame;
--	u8 *dip = (u8 *)&frame;
-+	struct dp_audio_infoframe dp_ai;
-+	struct hdac_hdmi_priv *hdmi = hdac->private_data;
-+	struct hdac_hdmi_pin *pin;
-+	u8 *dip;
- 	int ret;
- 	int i;
-+	const u8 *eld_buf;
-+	u8 conn_type;
-+	int channels = 2;
- 
--	hdmi_audio_infoframe_init(&frame);
-+	list_for_each_entry(pin, &hdmi->pin_list, head) {
-+		if (pin->nid == pin_nid)
-+			break;
-+	}
- 
--	/* Default stereo for now */
--	frame.channels = 2;
-+	eld_buf = pin->eld.eld_buffer;
-+	conn_type = drm_eld_get_conn_type(eld_buf);
- 
- 	/* setup channel count */
- 	snd_hdac_codec_write(&hdac->hdac, cvt_nid, 0,
--			    AC_VERB_SET_CVT_CHAN_COUNT, frame.channels - 1);
-+			    AC_VERB_SET_CVT_CHAN_COUNT, channels - 1);
- 
--	ret = hdmi_audio_infoframe_pack(&frame, buffer, sizeof(buffer));
--	if (ret < 0)
--		return ret;
-+	switch (conn_type) {
-+	case DRM_ELD_CONN_TYPE_HDMI:
-+		hdmi_audio_infoframe_init(&frame);
-+
-+		/* Default stereo for now */
-+		frame.channels = channels;
-+
-+		ret = hdmi_audio_infoframe_pack(&frame, buffer, sizeof(buffer));
-+		if (ret < 0)
-+			return ret;
-+
-+		dip = (u8 *)&frame;
-+		break;
-+
-+	case DRM_ELD_CONN_TYPE_DP:
-+		memset(&dp_ai, 0, sizeof(dp_ai));
-+		dp_ai.type	= 0x84;
-+		dp_ai.len	= 0x1b;
-+		dp_ai.ver	= 0x11 << 2;
-+		dp_ai.CC02_CT47	= channels - 1;
-+		dp_ai.CA	= 0;
-+
-+		dip = (u8 *)&dp_ai;
-+		break;
-+
-+	default:
-+		dev_err(&hdac->hdac.dev, "Invalid connection type: %d\n",
-+						conn_type);
-+		return -EIO;
-+	}
- 
- 	/* stop infoframe transmission */
- 	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
-@@ -283,9 +331,15 @@ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
- 
- 	/*  Fill infoframe. Index auto-incremented */
- 	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
--	for (i = 0; i < sizeof(frame); i++)
--		snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
-+	if (conn_type == DRM_ELD_CONN_TYPE_HDMI) {
-+		for (i = 0; i < sizeof(frame); i++)
-+			snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
- 				AC_VERB_SET_HDMI_DIP_DATA, dip[i]);
-+	} else {
-+		for (i = 0; i < sizeof(dp_ai); i++)
-+			snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
-+				AC_VERB_SET_HDMI_DIP_DATA, dip[i]);
-+	}
- 
- 	/* Start infoframe */
- 	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
 -- 
 1.9.1
