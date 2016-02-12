@@ -1,17 +1,23 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v6 15/15] ASoC: hdac_hdmi: Fix to wait for D3
-	before powering off codec
-Date: Fri, 12 Feb 2016 07:46:15 +0530
-Message-ID: <1455243375-16067-16-git-send-email-subhransu.s.prusty@intel.com>
-References: <1455243375-16067-1-git-send-email-subhransu.s.prusty@intel.com>
+From: Martin Koegler <martin.koegler@chello.at>
+Subject: Re: Linking ALSA sequencer kernel clients to their
+ device
+Date: Fri, 12 Feb 2016 09:07:33 +0100
+Message-ID: <20160212080733.GA5219@mail.zuhause>
+References: <20160211075035.GA23857@mail.zuhause> <56BC518F.7060902@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D875265B5B
- for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2016 03:15:49 +0100 (CET)
-In-Reply-To: <1455243375-16067-1-git-send-email-subhransu.s.prusty@intel.com>
+Received: from vie01a-dmta-pe04-1.mx.upcmail.net
+ (vie01a-dmta-pe04-1.mx.upcmail.net [62.179.121.163])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA88E260496
+ for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2016 09:07:35 +0100 (CET)
+Received: from [172.31.216.43] (helo=vie01a-pemc-psmtp-pe01)
+ by vie01a-dmta-pe04.mx.upcmail.net with esmtp (Exim 4.72)
+ (envelope-from <martin.koegler@chello.at>) id 1aU8lL-0003Ji-5z
+ for alsa-devel@alsa-project.org; Fri, 12 Feb 2016 09:07:35 +0100
+Content-Disposition: inline
+In-Reply-To: <56BC518F.7060902@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,52 +27,146 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, Martin Koegler <martin.koegler@chello.at>
 List-Id: alsa-devel@alsa-project.org
 
-Powering off codec immediately after sending D3 verb may not set
-the node to D3 state. So wait for a confirmation response before
-shutting down codec.
+On Thu, Feb 11, 2016 at 10:17:03AM +0100, Clemens Ladisch wrote:
+> Martin Koegler wrote:
+> > The sequencer provides no identifing data. Chromium works around this
+> > issue by scanning rawmidi as well as sequencer devices and matching
+> > them by using assumtions, how the kernel register sequencer devices.
+> 
+> This information wouldn't be wrong in the commit message.
+> 
+> > So I thought about exposing the missing information via sysfs:
+> 
+> The ioctl API (and the library API on top of it) already exists.  Why
+> do you want to introduce another kind of API that cannot be used for
+> virtual devices?
+> 
+> Just add the card number to snd_seq_client_info.  (For kernel drivers;
+> user clients might have the PID here while we're at it.)
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+You mean something like that:
+
+>From d2245ccf22318cc47f8dd104dee670b03b24f018 Mon Sep 17 00:00:00 2001
+From: Martin Koegler <martin.koegler@chello.at>
+Date: Thu, 11 Feb 2016 20:07:20 +0100
+Subject: [PATCH] Provide card number / PID via sequencer client info
+
+rawmidi devices expose the card number via IOCTLs, which allows to
+find the corresponding device in sysfs.
+
+The sequencer provides no identifing data. Chromium works around this
+issue by scanning rawmidi as well as sequencer devices and matching
+them by using assumtions, how the kernel register sequencer devices.
+
+This changes adds support for exposing the card number for kernel clients
+as well as the PID for user client.
+
+The minor of the API version is changed to distinguish between the zero
+initialised reserved field and card number 0.
+
+Signed-off-by: Martin Koegler <martin.koegler@chello.at>
 ---
- sound/soc/codecs/hdac_hdmi.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ include/uapi/sound/asequencer.h |  5 +++--
+ sound/core/seq/seq_clientmgr.c  | 18 ++++++++++++++++++
+ sound/core/seq/seq_clientmgr.h  |  2 ++
+ 3 files changed, 23 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 0baf504..a4cf0b9 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -1551,6 +1551,7 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
- 	struct hdac_ext_device *edev = to_hda_ext_device(dev);
- 	struct hdac_device *hdac = &edev->hdac;
- 	struct hdac_bus *bus = hdac->bus;
-+	unsigned long timeout;
- 	int err;
+diff --git a/include/uapi/sound/asequencer.h b/include/uapi/sound/asequencer.h
+index 5a5fa49..4726579 100644
+--- a/include/uapi/sound/asequencer.h
++++ b/include/uapi/sound/asequencer.h
+@@ -25,7 +25,7 @@
+ #include <sound/asound.h>
  
- 	dev_dbg(dev, "Enter: %s\n", __func__);
-@@ -1560,10 +1561,19 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
- 		return 0;
+ /** version of the sequencer */
+-#define SNDRV_SEQ_VERSION SNDRV_PROTOCOL_VERSION (1, 0, 1)
++#define SNDRV_SEQ_VERSION SNDRV_PROTOCOL_VERSION (1, 0, 2)
  
- 	/* Power down afg */
--	if (!snd_hdac_check_power_state(hdac, hdac->afg, AC_PWRST_D3))
-+	if (!snd_hdac_check_power_state(hdac, hdac->afg, AC_PWRST_D3)) {
- 		snd_hdac_codec_write(hdac, hdac->afg, 0,
- 			AC_VERB_SET_POWER_STATE, AC_PWRST_D3);
+ /**
+  * definition of sequencer event types
+@@ -357,7 +357,8 @@ struct snd_seq_client_info {
+ 	unsigned char event_filter[32];	/* event filter bitmap */
+ 	int num_ports;			/* RO: number of ports */
+ 	int event_lost;			/* number of lost events */
+-	char reserved[64];		/* for future use */
++	int owner;			/* RO: card number[kernel] / PID[user] */
++	char reserved[64 - sizeof(int)]; /* for future use */
+ };
  
-+		/* Wait till power state is set to D3 */
-+		timeout = jiffies + msecs_to_jiffies(1000);
-+		while(!snd_hdac_check_power_state(hdac, hdac->afg, AC_PWRST_D3)
-+				&& time_before(jiffies, timeout)) {
+ 
+diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
+index 58e79e0..ac07ab7 100644
+--- a/sound/core/seq/seq_clientmgr.c
++++ b/sound/core/seq/seq_clientmgr.c
+@@ -364,6 +364,7 @@ static int snd_seq_open(struct inode *inode, struct file *file)
+ 	/* fill client data */
+ 	user->file = file;
+ 	sprintf(client->name, "Client-%d", c);
++	client->data.user.owner = get_pid(task_pid(current));
+ 
+ 	/* make others aware this new client */
+ 	snd_seq_system_client_ev_client_start(c);
+@@ -380,6 +381,7 @@ static int snd_seq_release(struct inode *inode, struct file *file)
+ 		seq_free_client(client);
+ 		if (client->data.user.fifo)
+ 			snd_seq_fifo_delete(&client->data.user.fifo);
++		put_pid(client->data.user.owner);
+ 		kfree(client);
+ 	}
+ 
+@@ -1197,6 +1199,21 @@ static void get_client_info(struct snd_seq_client *cptr,
+ 	info->event_lost = cptr->event_lost;
+ 	memcpy(info->event_filter, cptr->event_filter, 32);
+ 	info->num_ports = cptr->num_ports;
 +
-+			msleep(50);
-+		}
++	switch (cptr->type) {
++	case USER_CLIENT:
++		info->owner = pid_vnr(cptr->data.user.owner);
++		break;
++
++	case KERNEL_CLIENT:
++		info->owner = cptr->data.kernel.card ? cptr->data.kernel.card->number : -1;
++		break;
++
++	default:
++		info->owner = -1;
++		break;
 +	}
 +
- 	err = snd_hdac_display_power(bus, false);
- 	if (err < 0) {
- 		dev_err(bus->dev, "Cannot turn on display power on i915\n");
+ 	memset(info->reserved, 0, sizeof(info->reserved));
+ }
+ 
+@@ -2271,6 +2288,7 @@ int snd_seq_create_kernel_client(struct snd_card *card, int client_index,
+ 
+ 	client->accept_input = 1;
+ 	client->accept_output = 1;
++	client->data.kernel.card = card;
+ 		
+ 	va_start(args, name_fmt);
+ 	vsnprintf(client->name, sizeof(client->name), name_fmt, args);
+diff --git a/sound/core/seq/seq_clientmgr.h b/sound/core/seq/seq_clientmgr.h
+index 20f0a72..031462e 100644
+--- a/sound/core/seq/seq_clientmgr.h
++++ b/sound/core/seq/seq_clientmgr.h
+@@ -33,6 +33,7 @@
+ struct snd_seq_user_client {
+ 	struct file *file;	/* file struct of client */
+ 	/* ... */
++	struct pid* owner;
+ 	
+ 	/* fifo */
+ 	struct snd_seq_fifo *fifo;	/* queue for incoming events */
+@@ -41,6 +42,7 @@ struct snd_seq_user_client {
+ 
+ struct snd_seq_kernel_client {
+ 	/* ... */
++	struct snd_card* card;
+ };
+ 
+ 
 -- 
-1.9.1
+2.1.4
