@@ -1,90 +1,81 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: Don't specify LE device
-	endianness" to the asoc tree
-Date: Fri, 12 Feb 2016 20:11:53 +0000
-Message-ID: <E1aUK4H-0003nd-3M@debutante>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A957E2605FF
- for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2016 21:12:04 +0100 (CET)
-In-Reply-To: 
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Boyd <sboyd@codeaurora.org>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+From: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Subject: [PATCH] ALSA: at73c213: add error handling of clk_enable()
+Date: Sat, 13 Feb 2016 00:58:34 +0300
+Message-ID: <1455314314-8634-1-git-send-email-khoroshilov@ispras.ru>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.com>, Mans Rullgard <mans@mansr.com>
+Cc: Alexey Khoroshilov <khoroshilov@ispras.ru>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Recent addition of SSC clock management does not check
+if clk_enable() succeed.
+The patch adds such checks where it is appropriate.
 
-   ASoC: qcom: Don't specify LE device endianness
+Found by Linux Driver Verification project (linuxtesting.org).
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 8faa268ab780a7379cfe54b882c6f6e0083233f2 Mon Sep 17 00:00:00 2001
-From: Stephen Boyd <sboyd@codeaurora.org>
-Date: Fri, 12 Feb 2016 09:30:17 -0800
-Subject: [PATCH] ASoC: qcom: Don't specify LE device endianness
-
-This reverts commit 18560a4e3 (ASoC: qcom: Specify LE device
-endianness).
-
-The commit that caused us to specify LE device endianness here,
-29bb45f25ff3 (regmap-mmio: Use native endianness for read/write,
-2015-10-29), has been reverted in mainline so now when we specify
-LE it actively breaks big endian kernels because the byte
-swapping in regmap-mmio is incorrect. Let's revert this change
-because it will 1) fix the big endian kernels and 2) be redundant
-to specify LE because that will become the default soon.
-
-Signed-off-by: Stephen Boyd <sboyd@codeaurora.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
 ---
- sound/soc/qcom/lpass-cpu.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/spi/at73c213.c | 25 ++++++++++++++++++++-----
+ 1 file changed, 20 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 00b6c9d039cf..e5101e0d2d37 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -355,7 +355,6 @@ static struct regmap_config lpass_cpu_regmap_config = {
- 	.readable_reg = lpass_cpu_regmap_readable,
- 	.volatile_reg = lpass_cpu_regmap_volatile,
- 	.cache_type = REGCACHE_FLAT,
--	.val_format_endian = REGMAP_ENDIAN_LITTLE,
- };
+diff --git a/sound/spi/at73c213.c b/sound/spi/at73c213.c
+index fac7e6eb9529..36cfaa316eab 100644
+--- a/sound/spi/at73c213.c
++++ b/sound/spi/at73c213.c
+@@ -221,7 +221,11 @@ static int snd_at73c213_pcm_open(struct snd_pcm_substream *substream)
+ 	runtime->hw = snd_at73c213_playback_hw;
+ 	chip->substream = substream;
  
- int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+-	clk_enable(chip->ssc->clk);
++	err = clk_enable(chip->ssc->clk);
++	if (err < 0) {
++		chip->substream = NULL;
++		return err;
++	}
+ 
+ 	return 0;
+ }
+@@ -787,7 +791,9 @@ static int snd_at73c213_chip_init(struct snd_at73c213 *chip)
+ 		goto out;
+ 
+ 	/* Enable DAC master clock. */
+-	clk_enable(chip->board->dac_clk);
++	retval = clk_enable(chip->board->dac_clk);
++	if (retval)
++		goto out;
+ 
+ 	/* Initialize at73c213 on SPI bus. */
+ 	retval = snd_at73c213_write_reg(chip, DAC_RST, 0x04);
+@@ -900,7 +906,9 @@ static int snd_at73c213_dev_init(struct snd_card *card,
+ 	chip->card = card;
+ 	chip->irq = -1;
+ 
+-	clk_enable(chip->ssc->clk);
++	retval = clk_enable(chip->ssc->clk);
++	if (retval)
++		return retval;
+ 
+ 	retval = request_irq(irq, snd_at73c213_interrupt, 0, "at73c213", chip);
+ 	if (retval) {
+@@ -1099,9 +1107,16 @@ static int snd_at73c213_resume(struct device *dev)
+ {
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct snd_at73c213 *chip = card->private_data;
++	int retval;
+ 
+-	clk_enable(chip->board->dac_clk);
+-	clk_enable(chip->ssc->clk);
++	retval = clk_enable(chip->board->dac_clk);
++	if (retval)
++		return retval;
++	retval = clk_enable(chip->ssc->clk);
++	if (retval) {
++		clk_disable(chip->board->dac_clk);
++		return retval;
++	}
+ 	ssc_writel(chip->ssc->regs, CR, SSC_BIT(CR_TXEN));
+ 
+ 	return 0;
 -- 
-2.7.0
+1.9.1
