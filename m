@@ -1,20 +1,20 @@
 From: Martin Koegler <martin.koegler@chello.at>
-Subject: [PATCH] Show sequencer sound card numer/PID via
-	aconnect
-Date: Fri, 12 Feb 2016 19:56:36 +0100
-Message-ID: <1455303396-13915-1-git-send-email-martin@mail.zuhause>
+Subject: [PATCH] Provide sequencer sound card number / PID via
+	alsa-lib
+Date: Fri, 12 Feb 2016 19:57:21 +0100
+Message-ID: <1455303441-13962-1-git-send-email-martin@mail.zuhause>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vie01a-dmta-pe02-1.mx.upcmail.net
- (vie01a-dmta-pe02-1.mx.upcmail.net [62.179.121.157])
- by alsa0.perex.cz (Postfix) with ESMTP id 9EBDC2605FF
- for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2016 19:56:52 +0100 (CET)
+Received: from vie01a-dmta-pe03-2.mx.upcmail.net
+ (vie01a-dmta-pe03-2.mx.upcmail.net [62.179.121.161])
+ by alsa0.perex.cz (Postfix) with ESMTP id 978D72606A0
+ for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2016 19:57:24 +0100 (CET)
 Received: from [172.31.216.43] (helo=vie01a-pemc-psmtp-pe01)
- by vie01a-dmta-pe02.mx.upcmail.net with esmtp (Exim 4.72)
- (envelope-from <martin.koegler@chello.at>) id 1aUItg-0000SJ-8D
- for alsa-devel@alsa-project.org; Fri, 12 Feb 2016 19:56:52 +0100
+ by vie01a-dmta-pe03.mx.upcmail.net with esmtp (Exim 4.72)
+ (envelope-from <martin.koegler@chello.at>) id 1aUIuC-00058m-Ed
+ for alsa-devel@alsa-project.org; Fri, 12 Feb 2016 19:57:24 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,33 +32,111 @@ From: Martin Koegler <martin.koegler@chello.at>
 
 Signed-off-by: Martin Koegler <martin.koegler@chello.at>
 ---
- seq/aconnect/aconnect.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ include/seq.h              |  1 +
+ include/sound/asequencer.h |  5 +++--
+ src/seq/seq.c              | 11 +++++++++++
+ src/seq/seq_hw.c           |  8 +++++++-
+ 4 files changed, 22 insertions(+), 3 deletions(-)
 
-diff --git a/seq/aconnect/aconnect.c b/seq/aconnect/aconnect.c
-index 8d6cebb..3508e1b 100644
---- a/seq/aconnect/aconnect.c
-+++ b/seq/aconnect/aconnect.c
-@@ -166,11 +166,19 @@ static void print_port(snd_seq_t *seq, snd_seq_client_info_t *cinfo,
- 		       snd_seq_port_info_t *pinfo, int count)
- {
- 	if (! count) {
--		printf(_("client %d: '%s' [type=%s]\n"),
-+		printf(_("client %d: '%s' [type=%s"),
- 		       snd_seq_client_info_get_client(cinfo),
- 		       snd_seq_client_info_get_name(cinfo),
- 		       (snd_seq_client_info_get_type(cinfo) == SND_SEQ_USER_CLIENT ?
- 			_("user") : _("kernel")));
-+		int owner = snd_seq_client_info_get_owner(cinfo);
-+		if (owner != -1) {
-+			if (snd_seq_client_info_get_type(cinfo) == SND_SEQ_USER_CLIENT)
-+				printf(",pid=%d", owner);
-+			else
-+				printf(",card=%d", owner);
-+		}
-+		printf("]\n");
+diff --git a/include/seq.h b/include/seq.h
+index 9576822..77996e5 100644
+--- a/include/seq.h
++++ b/include/seq.h
+@@ -143,6 +143,7 @@ snd_seq_client_type_t snd_seq_client_info_get_type(const snd_seq_client_info_t *
+ const char *snd_seq_client_info_get_name(snd_seq_client_info_t *info);
+ int snd_seq_client_info_get_broadcast_filter(const snd_seq_client_info_t *info);
+ int snd_seq_client_info_get_error_bounce(const snd_seq_client_info_t *info);
++int snd_seq_client_info_get_owner(const snd_seq_client_info_t *info);
+ const unsigned char *snd_seq_client_info_get_event_filter(const snd_seq_client_info_t *info);
+ int snd_seq_client_info_get_num_ports(const snd_seq_client_info_t *info);
+ int snd_seq_client_info_get_event_lost(const snd_seq_client_info_t *info);
+diff --git a/include/sound/asequencer.h b/include/sound/asequencer.h
+index 09c8a00..7ebf7fd 100644
+--- a/include/sound/asequencer.h
++++ b/include/sound/asequencer.h
+@@ -24,7 +24,7 @@
+ 
+ 
+ /** version of the sequencer */
+-#define SNDRV_SEQ_VERSION SNDRV_PROTOCOL_VERSION (1, 0, 1)
++#define SNDRV_SEQ_VERSION SNDRV_PROTOCOL_VERSION (1, 0, 2)
+ 
+ /**
+  * definition of sequencer event types
+@@ -356,7 +356,8 @@ struct snd_seq_client_info {
+ 	unsigned char event_filter[32];	/* event filter bitmap */
+ 	int num_ports;			/* RO: number of ports */
+ 	int event_lost;			/* number of lost events */
+-	char reserved[64];		/* for future use */
++	int owner;			/* RO: card number[kernel] / PID[user] */
++	char reserved[64 - sizeof(int)]; /* for future use */
+ };
+ 
+ 
+diff --git a/src/seq/seq.c b/src/seq/seq.c
+index 620ca3f..2505293 100644
+--- a/src/seq/seq.c
++++ b/src/seq/seq.c
+@@ -1522,6 +1522,17 @@ int snd_seq_client_info_get_error_bounce(const snd_seq_client_info_t *info)
+ }
+ 
+ /**
++ * \brief Get the sound card number (kernel) or owning PID
++ * \param info client_info container
++ * \return card number/PID/-1 if value is not available.
++ */
++int snd_seq_client_info_get_owner(const snd_seq_client_info_t *info)
++{
++	assert(info);
++	return info->owner;
++}
++
++/**
+  * \brief (DEPRECATED) Get the event filter bitmap of a client_info container
+  * \param info client_info container
+  * \return NULL if no event filter, or pointer to event filter bitmap
+diff --git a/src/seq/seq_hw.c b/src/seq/seq_hw.c
+index d033367..a4c083a 100644
+--- a/src/seq/seq_hw.c
++++ b/src/seq/seq_hw.c
+@@ -32,10 +32,11 @@ const char *_snd_module_seq_hw = "";
+ #ifndef DOC_HIDDEN
+ #define SNDRV_FILE_SEQ		ALSA_DEVICE_DIRECTORY "seq"
+ #define SNDRV_FILE_ALOADSEQ	ALOAD_DEVICE_DIRECTORY "aloadSEQ"
+-#define SNDRV_SEQ_VERSION_MAX	SNDRV_PROTOCOL_VERSION(1, 0, 1)
++#define SNDRV_SEQ_VERSION_MAX	SNDRV_PROTOCOL_VERSION(1, 0, 2)
+ 
+ typedef struct {
+ 	int fd;
++	int micro_version;
+ } snd_seq_hw_t;
+ #endif /* DOC_HIDDEN */
+ 
+@@ -100,6 +101,8 @@ static int snd_seq_hw_get_client_info(snd_seq_t *seq, snd_seq_client_info_t * in
+ 		/*SYSERR("SNDRV_SEQ_IOCTL_GET_CLIENT_INFO failed");*/
+ 		return -errno;
  	}
- 	printf("  %3d '%-16s'\n",
- 	       snd_seq_port_info_get_port(pinfo),
++	if (hw->micro_version < SNDRV_PROTOCOL_MICRO(SNDRV_SEQ_VERSION_MAX))
++		info->owner = -1;
+ 	return 0;
+ }
+ 
+@@ -368,6 +371,8 @@ static int snd_seq_hw_query_next_client(snd_seq_t *seq, snd_seq_client_info_t *i
+ 		/*SYSERR("SNDRV_SEQ_IOCTL_QUERY_NEXT_CLIENT failed");*/
+ 		return -errno;
+ 	}
++	if (hw->micro_version < SNDRV_PROTOCOL_MICRO(SNDRV_SEQ_VERSION_MAX))
++		info->owner = -1;
+ 	return 0;
+ }
+ 
+@@ -480,6 +485,7 @@ int snd_seq_hw_open(snd_seq_t **handle, const char *name, int streams, int mode)
+ 		return -ENOMEM;
+ 	}
+ 	hw->fd = fd;
++	hw->micro_version = SNDRV_PROTOCOL_MICRO(ver);
+ 	if (streams & SND_SEQ_OPEN_OUTPUT) {
+ 		seq->obuf = (char *) malloc(seq->obufsize = SND_SEQ_OBUF_SIZE);
+ 		if (!seq->obuf) {
 -- 
 2.1.4
