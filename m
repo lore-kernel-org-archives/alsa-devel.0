@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v6 10/15] ASoC: hdac_hdmi: Fix possible memory
-	leak in hw_params
-Date: Fri, 12 Feb 2016 07:46:10 +0530
-Message-ID: <1455243375-16067-11-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v6 11/15] ASoC: hdac_hdmi: Don't fail in dai
+	startup to make userland happy
+Date: Fri, 12 Feb 2016 07:46:11 +0530
+Message-ID: <1455243375-16067-12-git-send-email-subhransu.s.prusty@intel.com>
 References: <1455243375-16067-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 12A3D265A82
- for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2016 03:15:34 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1424D265ACA
+ for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2016 03:15:36 +0100 (CET)
 In-Reply-To: <1455243375-16067-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,50 +25,118 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-It's possible for hw_params to be called two times. So add NULL
-check to prevent memory leak.
+In dai startup, driver was checking for ELD and would fail if no
+monitor is connected. This causes userland like PA, CRAS to be
+unhappy as they scan the device list at bootup.
+
+So move the ELD check to hw_params and fail, if valid ELD is not
+found.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 48 ++++++++++++++++++++++++++++++++------------
+ 1 file changed, 35 insertions(+), 13 deletions(-)
 
 diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 36f1200..40db292 100644
+index 40db292..b030d3e 100644
 --- a/sound/soc/codecs/hdac_hdmi.c
 +++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -405,9 +405,14 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
+@@ -398,10 +398,20 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *hparams, struct snd_soc_dai *dai)
+ {
+ 	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
++	struct hdac_hdmi_priv *hdmi = hdac->private_data;
++	struct hdac_hdmi_dai_pin_map *dai_map;
++	struct hdac_hdmi_pin *pin;
+ 	struct hdac_ext_dma_params *dd;
+ 
+-	if (dai->id > 0) {
+-		dev_err(&hdac->hdac.dev, "Only one dai supported as of now\n");
++	dai_map = &hdmi->dai_map[dai->id];
++	pin = dai_map->pin;
++
++	if (!pin)
++		return -ENODEV;
++
++	if ((!pin->eld.monitor_present) || (!pin->eld.eld_valid)) {
++		dev_err(&hdac->hdac.dev, "device is not configured for this pin: %d\n",
++								pin->nid);
  		return -ENODEV;
  	}
  
--	dd = kzalloc(sizeof(*dd), GFP_KERNEL);
--	if (!dd)
--		return -ENOMEM;
-+	dd = (struct hdac_ext_dma_params *)
-+		snd_soc_dai_get_dma_data(dai, substream);
-+	if (!dd) {
-+		dd = kzalloc(sizeof(*dd), GFP_KERNEL);
-+		if (!dd)
-+			return -ENOMEM;
-+	}
-+
- 	dd->format = snd_hdac_calc_stream_format(params_rate(hparams),
- 			params_channels(hparams), params_format(hparams),
- 			24, 0);
-@@ -433,9 +438,11 @@ static int hdac_hdmi_playback_cleanup(struct snd_pcm_substream *substream,
- 				AC_VERB_SET_STREAM_FORMAT, 0);
+@@ -432,11 +442,6 @@ static int hdac_hdmi_playback_cleanup(struct snd_pcm_substream *substream,
  
+ 	dai_map = &hdmi->dai_map[dai->id];
+ 
+-	snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
+-				AC_VERB_SET_CHANNEL_STREAMID, 0);
+-	snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
+-				AC_VERB_SET_STREAM_FORMAT, 0);
+-
  	dd = (struct hdac_ext_dma_params *)snd_soc_dai_get_dma_data(dai, substream);
--	snd_soc_dai_set_dma_data(dai, substream, NULL);
  
--	kfree(dd);
-+	if (dd) {
-+		snd_soc_dai_set_dma_data(dai, substream, NULL);
-+		kfree(dd);
-+	}
- 
- 	return 0;
+ 	if (dd) {
+@@ -537,6 +542,11 @@ static struct hdac_hdmi_pin *hdac_hdmi_get_pin_from_cvt(
+ 	return NULL;
  }
+ 
++/*
++ * This tries to get a valid pin and set the HW constraints based on the
++ * ELD. Even if a valid pin is not found return success so that device open
++ * doesn't fail.
++ */
+ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
+ 			struct snd_soc_dai *dai)
+ {
+@@ -551,17 +561,22 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
+ 
+ 	cvt = dai_map->cvt;
+ 	pin = hdac_hdmi_get_pin_from_cvt(hdac, hdmi, cvt);
++
++	/*
++	 * To make PA and other userland happy.
++	 * userland scans devices so returning error does not help.
++	 */
+ 	if (!pin)
+-		return -EIO;
++		return 0;
+ 
+ 	if ((!pin->eld.monitor_present) ||
+ 			(!pin->eld.eld_valid)) {
+ 
+-		dev_err(&hdac->hdac.dev,
++		dev_warn(&hdac->hdac.dev,
+ 			"Failed: montior present? %d ELD valid?: %d for pin: %d\n",
+ 			pin->eld.monitor_present, pin->eld.eld_valid, pin->nid);
+ 
+-		return -ENODEV;
++		return 0;
+ 	}
+ 
+ 	dai_map->pin = pin;
+@@ -588,12 +603,19 @@ static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
+ 
+ 	dai_map = &hdmi->dai_map[dai->id];
+ 
+-	hdac_hdmi_set_power_state(hdac, dai_map, AC_PWRST_D3);
++	if (dai_map->pin && dai_map->pin->eld.monitor_present) {
++		snd_hdac_codec_write(&hdac->hdac, dai_map->cvt->nid, 0,
++				AC_VERB_SET_CHANNEL_STREAMID, 0);
++		snd_hdac_codec_write(&hdac->hdac, dai_map->cvt->nid, 0,
++				AC_VERB_SET_STREAM_FORMAT, 0);
++
++		hdac_hdmi_set_power_state(hdac, dai_map, AC_PWRST_D3);
+ 
+-	snd_hdac_codec_write(&hdac->hdac, dai_map->pin->nid, 0,
++		snd_hdac_codec_write(&hdac->hdac, dai_map->pin->nid, 0,
+ 			AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE);
+ 
+-	dai_map->pin = NULL;
++		dai_map->pin = NULL;
++	}
+ }
+ 
+ static int
 -- 
 1.9.1
