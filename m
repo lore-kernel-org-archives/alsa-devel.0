@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v6 02/15] ASoC: hdac_hdmi: Apply constraints
-	based on ELD
-Date: Fri, 12 Feb 2016 07:46:02 +0530
-Message-ID: <1455243375-16067-3-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v6 04/15] ASoC: hdac_hdmi: create dais based on
+	number of cvts
+Date: Fri, 12 Feb 2016 07:46:04 +0530
+Message-ID: <1455243375-16067-5-git-send-email-subhransu.s.prusty@intel.com>
 References: <1455243375-16067-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 98F6F2659D3
- for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2016 03:15:17 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id E62812659EA
+ for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2016 03:15:19 +0100 (CET)
 In-Reply-To: <1455243375-16067-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,120 +25,190 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Uses the drm ELD core framework to apply rate and channel
-
-Also compute the format to be set based on ELD.
-
-Even though the channel constraint is based on ELD, infoframe
-is set with stereo only. Multichannel support will be added
-later.
+After enabling all pins/cvts, Skylake HDMI codec enumerates 3
+converters.  Three independent streams can be supported with 3
+cvts. This patch removes the static dai creation and creates dais
+based on the number of cvts queried.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/codecs/Kconfig     |  1 +
- sound/soc/codecs/hdac_hdmi.c | 51 +++++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 49 insertions(+), 3 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 123 ++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 91 insertions(+), 32 deletions(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 4383966..a817830 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -493,6 +493,7 @@ config SND_SOC_GTM601
- config SND_SOC_HDAC_HDMI
- 	tristate
- 	select SND_HDA_EXT_CORE
-+	select SND_PCM_ELD
- 	select HDMI
- 
- config SND_SOC_ICS43432
 diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index fff225d..d22fa6b 100644
+index b2e5e54..c85deae 100644
 --- a/sound/soc/codecs/hdac_hdmi.c
 +++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -22,10 +22,12 @@
- #include <linux/module.h>
- #include <linux/pm_runtime.h>
- #include <linux/hdmi.h>
-+#include <drm/drm_edid.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <sound/hdaudio_ext.h>
- #include <sound/hda_i915.h>
-+#include <sound/pcm_drm_eld.h>
+@@ -30,6 +30,8 @@
+ #include <sound/pcm_drm_eld.h>
  #include "../../hda/local.h"
  
++#define NAME_SIZE	32
++
  #define AMP_OUT_MUTE		0xb080
-@@ -90,6 +92,45 @@ static inline struct hdac_ext_device *to_hda_ext_device(struct device *dev)
- 	return to_ehdac_device(hdac);
+ #define AMP_OUT_UNMUTE		0xb000
+ #define PIN_OUT			(AC_PINCTL_OUT_EN)
+@@ -669,11 +671,82 @@ static void hdac_hdmi_skl_enable_dp12(struct hdac_device *hdac)
+ 
  }
  
-+static unsigned int sad_format(const u8 *sad)
++static struct snd_soc_dai_ops hdmi_dai_ops = {
++	.startup = hdac_hdmi_pcm_open,
++	.shutdown = hdac_hdmi_pcm_close,
++	.hw_params = hdac_hdmi_set_hw_params,
++	.prepare = hdac_hdmi_playback_prepare,
++	.hw_free = hdac_hdmi_playback_cleanup,
++};
++
++/*
++ * Each converter can support a stream independently. So a dai is created
++ * based on the number of converter queried.
++ */
++static int hdac_hdmi_create_dais(struct hdac_device *hdac,
++		struct snd_soc_dai_driver **dais,
++		struct hdac_hdmi_priv *hdmi, int num_dais)
 +{
-+	return ((sad[0] >> 0x3) & 0x1f);
-+}
++	struct snd_soc_dai_driver *hdmi_dais;
++	struct hdac_hdmi_cvt *cvt;
++	char name[NAME_SIZE], dai_name[NAME_SIZE];
++	int i = 0;
++	u32 rates, bps;
++	unsigned int rate_max = 384000, rate_min = 8000;
++	u64 formats;
++	int ret;
 +
-+static unsigned int sad_sample_bits_lpcm(const u8 *sad)
-+{
-+	return (sad[2] & 7);
-+}
++	hdmi_dais = devm_kzalloc(&hdac->dev,
++			(sizeof(*hdmi_dais) * num_dais),
++			GFP_KERNEL);
++	if (!hdmi_dais)
++		return -ENOMEM;
 +
-+static int hdac_hdmi_eld_limit_formats(struct snd_pcm_runtime *runtime,
-+						void *eld)
-+{
-+	u64 formats = SNDRV_PCM_FMTBIT_S16;
-+	int i;
-+	const u8 *sad, *eld_buf = eld;
++	list_for_each_entry(cvt, &hdmi->cvt_list, head) {
++		ret = snd_hdac_query_supported_pcm(hdac, cvt->nid,
++					&rates,	&formats, &bps);
++		if (ret)
++			return ret;
 +
-+	sad = drm_eld_sad(eld_buf);
-+	if (!sad)
-+		goto format_constraint;
++		sprintf(dai_name, "intel-hdmi-hifi%d", i+1);
++		hdmi_dais[i].name = devm_kstrdup(&hdac->dev,
++					dai_name, GFP_KERNEL);
 +
-+	for (i = drm_eld_sad_count(eld_buf); i > 0; i--, sad += 3) {
-+		if (sad_format(sad) == 1) { /* AUDIO_CODING_TYPE_LPCM */
++		if (!hdmi_dais[i].name)
++			return -ENOMEM;
 +
-+			/*
-+			 * the controller support 20 and 24 bits in 32 bit
-+			 * container so we set S32
-+			 */
-+			if (sad_sample_bits_lpcm(sad) & 0x6)
-+				formats |= SNDRV_PCM_FMTBIT_S32;
-+		}
++		snprintf(name, sizeof(name), "hifi%d", i+1);
++		hdmi_dais[i].playback.stream_name =
++				devm_kstrdup(&hdac->dev, name, GFP_KERNEL);
++		if (!hdmi_dais[i].playback.stream_name)
++			return -ENOMEM;
++
++		/*
++		 * Set caps based on capability queried from the converter.
++		 * It will be constrained runtime based on ELD queried.
++		 */
++		hdmi_dais[i].playback.formats = formats;
++		hdmi_dais[i].playback.rates = rates;
++		hdmi_dais[i].playback.rate_max = rate_max;
++		hdmi_dais[i].playback.rate_min = rate_min;
++		hdmi_dais[i].playback.channels_min = 2;
++		hdmi_dais[i].playback.channels_max = 2;
++		hdmi_dais[i].ops = &hdmi_dai_ops;
++
++		i++;
 +	}
 +
-+format_constraint:
-+	return snd_pcm_hw_constraint_mask64(runtime, SNDRV_PCM_HW_PARAM_FORMAT,
-+				formats);
++	*dais = hdmi_dais;
 +
++	return 0;
 +}
 +
-  /* HDMI ELD routines */
- static unsigned int hdac_hdmi_get_eld_data(struct hdac_device *codec,
- 				hda_nid_t nid, int byte_index)
-@@ -334,6 +375,7 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- 	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
- 	struct hdac_hdmi_priv *hdmi = hdac->private_data;
- 	struct hdac_hdmi_dai_pin_map *dai_map;
-+	int ret;
+ /*
+  * Parse all nodes and store the cvt/pin nids in array
+  * Add one time initialization for pin and cvt widgets
+  */
+-static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev)
++static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev,
++		struct snd_soc_dai_driver **dais, int *num_dais)
+ {
+ 	hda_nid_t nid;
+ 	int i, num_nodes;
+@@ -724,6 +797,15 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev)
+ 	if (!hdmi->num_pin || !hdmi->num_cvt)
+ 		return -EIO;
  
- 	if (dai->id > 0) {
- 		dev_err(&hdac->hdac.dev, "Only one dai supported as of now\n");
-@@ -358,10 +400,13 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- 	snd_hdac_codec_write(&hdac->hdac, dai_map->pin->nid, 0,
- 			AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
- 
--	snd_pcm_hw_constraint_step(substream->runtime, 0,
--				   SNDRV_PCM_HW_PARAM_CHANNELS, 2);
-+	ret = hdac_hdmi_eld_limit_formats(substream->runtime,
-+				dai_map->pin->eld.eld_buffer);
-+	if (ret < 0)
++	ret = hdac_hdmi_create_dais(hdac, dais, hdmi, hdmi->num_cvt);
++	if (ret) {
++		dev_err(&hdac->dev, "Failed to create dais with err: %d\n",
++							ret);
 +		return ret;
- 
--	return 0;
-+	return snd_pcm_hw_constraint_eld(substream->runtime,
-+				dai_map->pin->eld.eld_buffer);
++	}
++
++	*num_dais = hdmi->num_cvt;
++
+ 	return hdac_hdmi_init_dai_map(edev);
  }
  
- static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
+@@ -814,38 +896,12 @@ static struct snd_soc_codec_driver hdmi_hda_codec = {
+ 	.idle_bias_off	= true,
+ };
+ 
+-static struct snd_soc_dai_ops hdmi_dai_ops = {
+-	.startup = hdac_hdmi_pcm_open,
+-	.shutdown = hdac_hdmi_pcm_close,
+-	.hw_params = hdac_hdmi_set_hw_params,
+-	.prepare = hdac_hdmi_playback_prepare,
+-	.hw_free = hdac_hdmi_playback_cleanup,
+-};
+-
+-static struct snd_soc_dai_driver hdmi_dais[] = {
+-	{	.name = "intel-hdmi-hif1",
+-		.playback = {
+-			.stream_name = "hif1",
+-			.channels_min = 2,
+-			.channels_max = 2,
+-			.rates = SNDRV_PCM_RATE_32000 |
+-				SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
+-				SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
+-				SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000,
+-			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+-				SNDRV_PCM_FMTBIT_S20_3LE |
+-				SNDRV_PCM_FMTBIT_S24_LE |
+-				SNDRV_PCM_FMTBIT_S32_LE,
+-
+-		},
+-		.ops = &hdmi_dai_ops,
+-	},
+-};
+-
+ static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
+ {
+ 	struct hdac_device *codec = &edev->hdac;
+ 	struct hdac_hdmi_priv *hdmi_priv;
++	struct snd_soc_dai_driver *hdmi_dais = NULL;
++	int num_dais = 0;
+ 	int ret = 0;
+ 
+ 	hdmi_priv = devm_kzalloc(&codec->dev, sizeof(*hdmi_priv), GFP_KERNEL);
+@@ -859,13 +915,16 @@ static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
+ 	INIT_LIST_HEAD(&hdmi_priv->pin_list);
+ 	INIT_LIST_HEAD(&hdmi_priv->cvt_list);
+ 
+-	ret = hdac_hdmi_parse_and_map_nid(edev);
+-	if (ret < 0)
++	ret = hdac_hdmi_parse_and_map_nid(edev, &hdmi_dais, &num_dais);
++	if (ret < 0) {
++		dev_err(&codec->dev,
++			"Failed in parse and map nid with err: %d\n", ret);
+ 		return ret;
++	}
+ 
+ 	/* ASoC specific initialization */
+ 	return snd_soc_register_codec(&codec->dev, &hdmi_hda_codec,
+-			hdmi_dais, ARRAY_SIZE(hdmi_dais));
++			hdmi_dais, num_dais);
+ }
+ 
+ static int hdac_hdmi_dev_remove(struct hdac_ext_device *edev)
 -- 
 1.9.1
