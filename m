@@ -1,20 +1,17 @@
-From: Martin Koegler <martin.koegler@chello.at>
-Subject: [PATCH] Provide sequencer sound card number / PID via
-	alsa-lib
-Date: Fri, 12 Feb 2016 19:57:21 +0100
-Message-ID: <1455303441-13962-1-git-send-email-martin@mail.zuhause>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: qcom: Don't specify LE device
+	endianness" to the asoc tree
+Date: Fri, 12 Feb 2016 20:11:53 +0000
+Message-ID: <E1aUK4H-0003nd-3M@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vie01a-dmta-pe03-2.mx.upcmail.net
- (vie01a-dmta-pe03-2.mx.upcmail.net [62.179.121.161])
- by alsa0.perex.cz (Postfix) with ESMTP id 978D72606A0
- for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2016 19:57:24 +0100 (CET)
-Received: from [172.31.216.43] (helo=vie01a-pemc-psmtp-pe01)
- by vie01a-dmta-pe03.mx.upcmail.net with esmtp (Exim 4.72)
- (envelope-from <martin.koegler@chello.at>) id 1aUIuC-00058m-Ed
- for alsa-devel@alsa-project.org; Fri, 12 Feb 2016 19:57:24 +0100
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id A957E2605FF
+ for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2016 21:12:04 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,119 +21,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Martin Koegler <martin.koegler@chello.at>
+To: Stephen Boyd <sboyd@codeaurora.org>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Martin Koegler <martin.koegler@chello.at>
+The patch
 
-Signed-off-by: Martin Koegler <martin.koegler@chello.at>
+   ASoC: qcom: Don't specify LE device endianness
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 8faa268ab780a7379cfe54b882c6f6e0083233f2 Mon Sep 17 00:00:00 2001
+From: Stephen Boyd <sboyd@codeaurora.org>
+Date: Fri, 12 Feb 2016 09:30:17 -0800
+Subject: [PATCH] ASoC: qcom: Don't specify LE device endianness
+
+This reverts commit 18560a4e3 (ASoC: qcom: Specify LE device
+endianness).
+
+The commit that caused us to specify LE device endianness here,
+29bb45f25ff3 (regmap-mmio: Use native endianness for read/write,
+2015-10-29), has been reverted in mainline so now when we specify
+LE it actively breaks big endian kernels because the byte
+swapping in regmap-mmio is incorrect. Let's revert this change
+because it will 1) fix the big endian kernels and 2) be redundant
+to specify LE because that will become the default soon.
+
+Signed-off-by: Stephen Boyd <sboyd@codeaurora.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/seq.h              |  1 +
- include/sound/asequencer.h |  5 +++--
- src/seq/seq.c              | 11 +++++++++++
- src/seq/seq_hw.c           |  8 +++++++-
- 4 files changed, 22 insertions(+), 3 deletions(-)
+ sound/soc/qcom/lpass-cpu.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/include/seq.h b/include/seq.h
-index 9576822..77996e5 100644
---- a/include/seq.h
-+++ b/include/seq.h
-@@ -143,6 +143,7 @@ snd_seq_client_type_t snd_seq_client_info_get_type(const snd_seq_client_info_t *
- const char *snd_seq_client_info_get_name(snd_seq_client_info_t *info);
- int snd_seq_client_info_get_broadcast_filter(const snd_seq_client_info_t *info);
- int snd_seq_client_info_get_error_bounce(const snd_seq_client_info_t *info);
-+int snd_seq_client_info_get_owner(const snd_seq_client_info_t *info);
- const unsigned char *snd_seq_client_info_get_event_filter(const snd_seq_client_info_t *info);
- int snd_seq_client_info_get_num_ports(const snd_seq_client_info_t *info);
- int snd_seq_client_info_get_event_lost(const snd_seq_client_info_t *info);
-diff --git a/include/sound/asequencer.h b/include/sound/asequencer.h
-index 09c8a00..7ebf7fd 100644
---- a/include/sound/asequencer.h
-+++ b/include/sound/asequencer.h
-@@ -24,7 +24,7 @@
- 
- 
- /** version of the sequencer */
--#define SNDRV_SEQ_VERSION SNDRV_PROTOCOL_VERSION (1, 0, 1)
-+#define SNDRV_SEQ_VERSION SNDRV_PROTOCOL_VERSION (1, 0, 2)
- 
- /**
-  * definition of sequencer event types
-@@ -356,7 +356,8 @@ struct snd_seq_client_info {
- 	unsigned char event_filter[32];	/* event filter bitmap */
- 	int num_ports;			/* RO: number of ports */
- 	int event_lost;			/* number of lost events */
--	char reserved[64];		/* for future use */
-+	int owner;			/* RO: card number[kernel] / PID[user] */
-+	char reserved[64 - sizeof(int)]; /* for future use */
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index 00b6c9d039cf..e5101e0d2d37 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -355,7 +355,6 @@ static struct regmap_config lpass_cpu_regmap_config = {
+ 	.readable_reg = lpass_cpu_regmap_readable,
+ 	.volatile_reg = lpass_cpu_regmap_volatile,
+ 	.cache_type = REGCACHE_FLAT,
+-	.val_format_endian = REGMAP_ENDIAN_LITTLE,
  };
  
- 
-diff --git a/src/seq/seq.c b/src/seq/seq.c
-index 620ca3f..2505293 100644
---- a/src/seq/seq.c
-+++ b/src/seq/seq.c
-@@ -1522,6 +1522,17 @@ int snd_seq_client_info_get_error_bounce(const snd_seq_client_info_t *info)
- }
- 
- /**
-+ * \brief Get the sound card number (kernel) or owning PID
-+ * \param info client_info container
-+ * \return card number/PID/-1 if value is not available.
-+ */
-+int snd_seq_client_info_get_owner(const snd_seq_client_info_t *info)
-+{
-+	assert(info);
-+	return info->owner;
-+}
-+
-+/**
-  * \brief (DEPRECATED) Get the event filter bitmap of a client_info container
-  * \param info client_info container
-  * \return NULL if no event filter, or pointer to event filter bitmap
-diff --git a/src/seq/seq_hw.c b/src/seq/seq_hw.c
-index d033367..a4c083a 100644
---- a/src/seq/seq_hw.c
-+++ b/src/seq/seq_hw.c
-@@ -32,10 +32,11 @@ const char *_snd_module_seq_hw = "";
- #ifndef DOC_HIDDEN
- #define SNDRV_FILE_SEQ		ALSA_DEVICE_DIRECTORY "seq"
- #define SNDRV_FILE_ALOADSEQ	ALOAD_DEVICE_DIRECTORY "aloadSEQ"
--#define SNDRV_SEQ_VERSION_MAX	SNDRV_PROTOCOL_VERSION(1, 0, 1)
-+#define SNDRV_SEQ_VERSION_MAX	SNDRV_PROTOCOL_VERSION(1, 0, 2)
- 
- typedef struct {
- 	int fd;
-+	int micro_version;
- } snd_seq_hw_t;
- #endif /* DOC_HIDDEN */
- 
-@@ -100,6 +101,8 @@ static int snd_seq_hw_get_client_info(snd_seq_t *seq, snd_seq_client_info_t * in
- 		/*SYSERR("SNDRV_SEQ_IOCTL_GET_CLIENT_INFO failed");*/
- 		return -errno;
- 	}
-+	if (hw->micro_version < SNDRV_PROTOCOL_MICRO(SNDRV_SEQ_VERSION_MAX))
-+		info->owner = -1;
- 	return 0;
- }
- 
-@@ -368,6 +371,8 @@ static int snd_seq_hw_query_next_client(snd_seq_t *seq, snd_seq_client_info_t *i
- 		/*SYSERR("SNDRV_SEQ_IOCTL_QUERY_NEXT_CLIENT failed");*/
- 		return -errno;
- 	}
-+	if (hw->micro_version < SNDRV_PROTOCOL_MICRO(SNDRV_SEQ_VERSION_MAX))
-+		info->owner = -1;
- 	return 0;
- }
- 
-@@ -480,6 +485,7 @@ int snd_seq_hw_open(snd_seq_t **handle, const char *name, int streams, int mode)
- 		return -ENOMEM;
- 	}
- 	hw->fd = fd;
-+	hw->micro_version = SNDRV_PROTOCOL_MICRO(ver);
- 	if (streams & SND_SEQ_OPEN_OUTPUT) {
- 		seq->obuf = (char *) malloc(seq->obufsize = SND_SEQ_OBUF_SIZE);
- 		if (!seq->obuf) {
+ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
 -- 
-2.1.4
+2.7.0
