@@ -1,196 +1,199 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v3 09/22] media: v4l-core add enable/disable source common interfaces
-Date: Thu, 11 Feb 2016 16:41:25 -0700
-Message-ID: <15c1e7d9c310bad0b5fb0be8558a67fd59085673.1455233154.git.shuahkh@osg.samsung.com>
-References: <cover.1455233150.git.shuahkh@osg.samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1455233150.git.shuahkh@osg.samsung.com>
-In-Reply-To: <cover.1455233150.git.shuahkh@osg.samsung.com>
-References: <cover.1455233150.git.shuahkh@osg.samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittgam.net, johan@oljud.se, klock.android@gmail.com, nenggun.kim@samsung.com, j.anaszewski@samsung.com, geliangtang
+From: Mark Brown <broonie@kernel.org>
+Subject: ASoC fixes for v4.5
+Date: Fri, 12 Feb 2016 00:39:04 +0000
+Message-ID: <20160212003904.GE1953@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============5273570397144004856=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC527265919
+ for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2016 01:39:10 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add a new interfaces to be used by v4l-core to invoke enable
-source and disable_source handlers in the media_device. The
-enable_source helper function invokes the enable_source handler
-to find media source entity connected to the entity and check
-is it is available or busy. If source is available, link is
-activated and pipeline is started. The disable_source helper
-function invokes the disable_source handler to deactivate and
-stop the pipeline.
 
-Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
----
- drivers/media/v4l2-core/Makefile  |  1 +
- drivers/media/v4l2-core/v4l2-mc.c | 52 +++++++++++++++++++++++++++++++
- include/media/v4l2-dev.h          |  1 +
- include/media/v4l2-mc.h           | 65 +++++++++++++++++++++++++++++++++++++++
- 4 files changed, 119 insertions(+)
- create mode 100644 drivers/media/v4l2-core/v4l2-mc.c
+--===============5273570397144004856==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="x4pBfXISqBoDm8sr"
+Content-Disposition: inline
 
-diff --git a/drivers/media/v4l2-core/Makefile b/drivers/media/v4l2-core/Makefile
-index 1dc8bba..795a535 100644
---- a/drivers/media/v4l2-core/Makefile
-+++ b/drivers/media/v4l2-core/Makefile
-@@ -16,6 +16,7 @@ endif
- ifeq ($(CONFIG_TRACEPOINTS),y)
-   videodev-objs += vb2-trace.o v4l2-trace.o
- endif
-+videodev-$(CONFIG_MEDIA_CONTROLLER) += v4l2-mc.o
- 
- obj-$(CONFIG_VIDEO_V4L2) += videodev.o
- obj-$(CONFIG_VIDEO_V4L2) += v4l2-common.o
-diff --git a/drivers/media/v4l2-core/v4l2-mc.c b/drivers/media/v4l2-core/v4l2-mc.c
-new file mode 100644
-index 0000000..3a8addf
---- /dev/null
-+++ b/drivers/media/v4l2-core/v4l2-mc.c
-@@ -0,0 +1,52 @@
-+/*
-+ * v4l2-mc.c - Media Controller V4L2 Common Interfaces
-+ *
-+ * Copyright (C) 2016 Shuah Khan <shuahkh@osg.samsung.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ */
-+
-+#include <media/v4l2-mc.h>
-+#include <media/media-device.h>
-+#include <media/videobuf2-core.h>
-+#include <media/v4l2-fh.h>
-+
-+int v4l_enable_media_source(struct video_device *vdev)
-+{
-+	struct media_device *mdev = vdev->entity.graph_obj.mdev;
-+	int ret;
-+
-+	if (!mdev || !mdev->enable_source)
-+		return 0;
-+	ret = mdev->enable_source(&vdev->entity, &vdev->pipe);
-+	if (ret)
-+		return -EBUSY;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(v4l_enable_media_source);
-+
-+void v4l_disable_media_source(struct video_device *vdev)
-+{
-+	struct media_device *mdev = vdev->entity.graph_obj.mdev;
-+
-+	if (mdev && mdev->disable_source)
-+		mdev->disable_source(&vdev->entity);
-+}
-+EXPORT_SYMBOL_GPL(v4l_disable_media_source);
-+
-+int v4l_vb2q_enable_media_source(struct vb2_queue *q)
-+{
-+	struct v4l2_fh *fh = q->owner;
-+
-+	return v4l_enable_media_source(fh->vdev);
-+}
-+EXPORT_SYMBOL_GPL(v4l_vb2q_enable_media_source);
-+
-diff --git a/include/media/v4l2-dev.h b/include/media/v4l2-dev.h
-index eeabf20..76056ab 100644
---- a/include/media/v4l2-dev.h
-+++ b/include/media/v4l2-dev.h
-@@ -87,6 +87,7 @@ struct video_device
- #if defined(CONFIG_MEDIA_CONTROLLER)
- 	struct media_entity entity;
- 	struct media_intf_devnode *intf_devnode;
-+	struct media_pipeline pipe;
- #endif
- 	/* device ops */
- 	const struct v4l2_file_operations *fops;
-diff --git a/include/media/v4l2-mc.h b/include/media/v4l2-mc.h
-index df11519..c31b537 100644
---- a/include/media/v4l2-mc.h
-+++ b/include/media/v4l2-mc.h
-@@ -14,6 +14,11 @@
-  * GNU General Public License for more details.
-  */
- 
-+#ifndef _V4L2_MC_H
-+#define _V4L2_MC_H
-+
-+#include <media/v4l2-dev.h>
-+
- /**
-  * enum tuner_pad_index - tuner pad index for MEDIA_ENT_F_TUNER
-  *
-@@ -89,3 +94,63 @@ enum demod_pad_index {
- 	DEMOD_PAD_VBI_OUT,
- 	DEMOD_NUM_PADS
- };
-+
-+/**
-+ * v4l_enable_media_source() -	Hold media source for exclusive use
-+ *				if free
-+ *
-+ * @vdev - poniter to struct video_device
-+ *
-+ * This interface calls enable_source handler to determine if
-+ * media source is free for use. The enable_source handler is
-+ * responsible for checking is the media source is free and
-+ * start a pipeline between the media source and the media
-+ * entity associated with the video device. This interface
-+ * should be called from v4l2-core and dvb-core interfaces
-+ * that change the source configuration.
-+ *
-+ * Return: returns zero on success or a negative error code.
-+ */
-+#ifdef CONFIG_MEDIA_CONTROLLER
-+int v4l_enable_media_source(struct video_device *vdev);
-+#else
-+static int v4l_enable_media_source(struct video_device *vdev) { return 0; }
-+#endif
-+
-+/**
-+ * v4l_disable_media_source() -	Release media source
-+ *
-+ * @vdev - poniter to struct video_device
-+ *
-+ * This interface calls disable_source handler to release
-+ * the media source. The disable_source handler stops the
-+ * active media pipeline between the media source and the
-+ * media entity associated with the video device.
-+ *
-+ * Return: returns zero on success or a negative error code.
-+ */
-+#ifdef CONFIG_MEDIA_CONTROLLER
-+void v4l_disable_media_source(struct video_device *vdev);
-+#else
-+static void v4l_disable_media_source(struct video_device *vdev) { return; }
-+#endif
-+
-+/*
-+ * v4l_vb2q_enable_media_tuner -  Hold media source for exclusive use
-+ *				  if free.
-+ * @q - pointer to struct vb2_queue
-+ *
-+ * Wrapper for v4l_enable_media_source(). This function should
-+ * be called from v4l2-core to enable the media source with
-+ * pointer to struct vb2_queue as the input argument. Some
-+ * v4l2-core interfaces don't have access to video device and
-+ * this interface finds the struct video_device for the q and
-+ * calls v4l_enable_media_source().
-+ */
-+#ifdef CONFIG_MEDIA_CONTROLLER
-+int v4l_vb2q_enable_media_source(struct vb2_queue *q);
-+#else
-+static int v4l_vb2q_enable_media_source(struct vb2_queue *q) { return 0; }
-+#endif
-+
-+#endif /* _V4L2_MC_H */
--- 
-2.5.0
+
+--x4pBfXISqBoDm8sr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+The following changes since commit 388f7b1d6e8ca06762e2454d28d6c3c55ad0fe95:
+
+  Linux 4.5-rc3 (2016-02-07 15:38:30 -0800)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v4.5-rc4
+
+for you to fetch changes up to f11aec0d7c835c3b83e74e3fd60d2e48a850c857:
+
+  Merge remote-tracking branches 'asoc/fix/rt5659', 'asoc/fix/sigmadsp', 'asoc/fix/simple', 'asoc/fix/wm5110' and 'asoc/fix/wm8960' into asoc-linus (2016-02-10 19:23:09 +0000)
+
+----------------------------------------------------------------
+ASoC: Fixes for v4.5
+
+A rather large batch of fixes here, almost all in the Intel driver.
+The changes that got merged in this merge window for Skylake were rather
+large and as well as issues that you'd expect in a large block of new
+code there were some problems created for older processors which needed
+fixing up.  Things are largely settling down now hopefully.
+
+----------------------------------------------------------------
+Aaro Koskinen (1):
+      ASoC: simple-card: don't fail if sysclk setting is not supported
+
+Arnd Bergmann (2):
+      ASoC: mediatek: add i2c dependency
+      ASoC: rt5659: avoid unused variable warning for rt5659_acpi_match
+
+Axel Lin (1):
+      ASoC: rt5659: Fix irq leak
+
+Bard Liao (2):
+      ASoC: rt286: fix capture doesn't work at some cases
+      ASoC: rt5645: fix the shift bit of IN1 boost
+
+Dan Carpenter (1):
+      ASoC: AMD: free memory on error
+
+Dharageswari.R (1):
+      ASoC: Intel: Skylake: Fix pipe memory allocation leak
+
+Guneshwor Singh (2):
+      ASoC: Intel: Skylake: Fix delay wrap condition
+      ASoC: Intel: Skylake: Fix mcps freeup after module unbind failure
+
+Jeeja KP (6):
+      ASoC: Intel: Skylake: Fix return of skl_get_queue_index
+      ASoC: Intel: Skylake: Fix the module state check condition
+      ASoC: Intel: Skylake: Fix not to stop sink pipe in pga pmd event
+      ASoC: Intel: Skylake: Fix bind of source with multiple sinks
+      ASoC: Intel: Skylake: Add missing PRE/POST_PMU handlers for vmixer
+      ASoC: Intel: Skylake: Fix stereo DMIC record
+
+Jon Medhurst (Tixy) (1):
+      ASoC: dwc: Ensure i2s_reg_comp{1,2} is always initialised
+
+Lars-Peter Clausen (2):
+      ASoC: imx-spdif: Fix crash on suspend
+      ASoC: dapm: Don't prefix autodisable widgets twice
+
+Maciej S. Szmigiero (1):
+      ASoC: fsl_ssi: remove explicit register defaults
+
+Mans Rullgard (1):
+      ASoC: mxs-saif: fix clk_prepare() without matching clk_unprepare()
+
+Mark Brown (7):
+      Merge remote-tracking branch 'asoc/fix/dapm' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/intel' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/intel-kconfig' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/rt5645' into asoc-linus
+      Merge remote-tracking branches 'asoc/fix/amd', 'asoc/fix/arizona', 'asoc/fix/dpcm', 'asoc/fix/dwc', 'asoc/fix/fsl' and 'asoc/fix/fsl-ssi' into asoc-linus
+      Merge remote-tracking branches 'asoc/fix/imx-spdif', 'asoc/fix/mtk', 'asoc/fix/mxs-saif', 'asoc/fix/qcom' and 'asoc/fix/rt286' into asoc-linus
+      Merge remote-tracking branches 'asoc/fix/rt5659', 'asoc/fix/sigmadsp', 'asoc/fix/simple', 'asoc/fix/wm5110' and 'asoc/fix/wm8960' into asoc-linus
+
+Pascal Huerst (1):
+      ASoC: sigmadsp: Fix missleading return value
+
+Pierre-Louis Bossart (2):
+      ASoC: Intel: Atom: fix regression on compress DAI
+      ASoC: Intel: Load the atom DPCM driver only
+
+Richard Fitzgerald (2):
+      ASoC: wm5110: Unregister compressed platform when driver is removed
+      ASoC: arizona: fref must be limited in pseudo-fractional mode
+
+Srinivas Kandagatla (1):
+      ASoC: qcom: use correct device pointer in dma allocation
+
+Stuart Henderson (2):
+      ASoC: wm8960: Fix input boost mixer left/right naming
+      ASoC: wm8960: Fix WM8960_SYSCLK_PLL mode
+
+Sudip Mukherjee (1):
+      ASoC: Intel: Skylake: Fix memory leak
+
+Vinod Koul (6):
+      ASoC: dpcm: fix the BE state on hw_free
+      ASoC: Intel: Skylake: Fix the memory overwrite of tlv buffer
+      ASoC: Intel: Skylake: Remove autosuspend delay
+      ASoC: Intel: Revert "ASoC: Intel: fix ACPI probe regression with Atom DPCM driver"
+      ASoC: Intel: Create independent acpi match module
+      ASoC: Intel: Add module tags for common match module
+
+Xiubo Li (1):
+      ASoC: fsl: document DT compatible string "fsl,imx-audio-wm8960"
+
+ .../devicetree/bindings/sound/fsl-asoc-card.txt    |  2 +
+ sound/soc/amd/acp-pcm-dma.c                        |  1 +
+ sound/soc/codecs/arizona.c                         | 43 ++++++++++++-
+ sound/soc/codecs/rt286.c                           | 26 +-------
+ sound/soc/codecs/rt5645.c                          |  2 +-
+ sound/soc/codecs/rt5659.c                          | 31 ++++-----
+ sound/soc/codecs/rt5659.h                          |  1 -
+ sound/soc/codecs/sigmadsp-i2c.c                    |  5 +-
+ sound/soc/codecs/wm5110.c                          |  1 +
+ sound/soc/codecs/wm8960.c                          | 40 ++++++------
+ sound/soc/dwc/designware_i2s.c                     |  5 +-
+ sound/soc/fsl/fsl_ssi.c                            | 42 ++++++------
+ sound/soc/fsl/imx-spdif.c                          |  2 -
+ sound/soc/generic/simple-card.c                    |  2 +-
+ sound/soc/intel/Kconfig                            | 13 +++-
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c       |  1 +
+ sound/soc/intel/boards/skl_rt286.c                 |  5 +-
+ sound/soc/intel/common/Makefile                    |  9 +--
+ sound/soc/intel/common/sst-acpi.c                  |  4 ++
+ sound/soc/intel/common/sst-match-acpi.c            |  3 +
+ sound/soc/intel/skylake/skl-messages.c             |  6 +-
+ sound/soc/intel/skylake/skl-pcm.c                  |  1 +
+ sound/soc/intel/skylake/skl-topology.c             | 75 +++++++++++++++-------
+ sound/soc/intel/skylake/skl.c                      |  2 -
+ sound/soc/mediatek/Kconfig                         |  4 +-
+ sound/soc/mxs/mxs-saif.c                           | 13 +++-
+ sound/soc/qcom/lpass-platform.c                    | 15 ++---
+ sound/soc/soc-dapm.c                               |  8 +--
+ sound/soc/soc-pcm.c                                |  3 +-
+ 29 files changed, 221 insertions(+), 144 deletions(-)
+
+--x4pBfXISqBoDm8sr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWvSmmAAoJECTWi3JdVIfQ9u0H/jGRLBeIEp9jNhbfkPZNhzwZ
+LHE/S5V127ClRAPnIUX2v7x9/HABKyiZ67qWfbiWm9kEPpQijfOnP9W1DF1FYVcv
+/4ihDIONHJ1V5dQgG6tet6iwEZb7RMRjK5JbzcKlOie/pZ7zcnghRwR5+h29orlc
+PxwdzX+z1mvozxVcd2LhqW860xLaRenlwrw49npOTtE99cvyaHe+7j6piE1J6lIS
+gQwRI2jIYZToWctqc/9029Oe/TkJGK3j3DhP2+7AEbz+x3dhASq1w0YUEygNWO99
+09VZpXSgYkQ2CEF7VqJeovjKKEy1ZG5Rbkd9GWfNh1oVNdmQwfoj8nBYMCaL32k=
+=WIoh
+-----END PGP SIGNATURE-----
+
+--x4pBfXISqBoDm8sr--
+
+--===============5273570397144004856==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5273570397144004856==--
