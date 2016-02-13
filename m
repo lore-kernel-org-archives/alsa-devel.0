@@ -1,52 +1,72 @@
-From: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
-Subject: Re: [PATCH V2 1/3] ASoC: bcm2835: move to use the clock framework
-Date: Sat, 13 Feb 2016 09:51:21 +0100
-Message-ID: <A3C029B5-816E-4EC3-823D-6755ECD4773B@martin.sperl.org>
-References: <1452602149-5875-1-git-send-email-kernel@martin.sperl.org> <1452602149-5875-2-git-send-email-kernel@martin.sperl.org> <87vb6dfjbu.fsf@eliezer.anholt.net> <56B88520.5060606@martin.sperl.org> <87bn7l3085.fsf@eliezer.anholt.net>
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8BIT
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <87bn7l3085.fsf-omZaPlIz5HhaEpDpdNBo/KxOck334EZe@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Eric Anholt <eric-WhKQ6XTQaPysTnJN9+BGXg@public.gmane.org>
-Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Lee Jones <lee-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] Show sequencer sound card numer/PID via
+	aconnect
+Date: Sat, 13 Feb 2016 21:30:13 +0900
+Message-ID: <56BF21D5.1040200@sakamocchi.jp>
+References: <1455303396-13915-1-git-send-email-martin@mail.zuhause>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id E883F260536
+ for <alsa-devel@alsa-project.org>; Sat, 13 Feb 2016 13:30:17 +0100 (CET)
+In-Reply-To: <1455303396-13915-1-git-send-email-martin@mail.zuhause>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Martin Koegler <martin.koegler@chello.at>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-> On 13.02.2016, at 01:47, Eric Anholt <eric-WhKQ6XTQaPysTnJN9+BGXg@public.gmane.org> wrote:
+On Feb 13 2016 03:56, Martin Koegler wrote:
+> From: Martin Koegler <martin.koegler@chello.at>
 > 
-> Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org> writes:
->> 
->> Problem is that we need the VC4 bus-address (0x7e203000),
->> which is the actual <reg> value from the device tree without any
->> mapping.
->> 
->> Not the ARM MMU visible address mappings that mem->start provides
->> (typically 0x20203000 or 0x3f203000 for bcm2836)
->> 
->> Nor the mapped address (base) available in the kernel (typically
->> 0xdc......).
+> Signed-off-by: Martin Koegler <martin.koegler@chello.at>
+
+The idea to print owner PID or card number is itself better to me, while
+I think you should add some comments to describe your intension about
+this patch, at least, for the other developers or users. Would you
+please re-post this patch with your comments again?
+
+
+Regards
+
+Takashi Sakamoto
+
+> ---
+>  seq/aconnect/aconnect.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
 > 
-> Now that I've noticed the BCM2835_VCMMU_SHIFT removal, this makes sense,
-> but when you put unrelated changes like this together you end up slowing
-> down the review process on your patches.  Please separate it out into a
-> separate commit.
-
-OK - I agree: I really should have separated those, but as the
-driver was broken for both reasons and the MMU_SHIFT was the earliest
-fix I forgot about it when I got the final version for submission.
-
-Anyway: Mark has already applied this patch on January 15th into for-next:
-https://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/commit/sound/soc/bcm/bcm2835-i2s.c?h=for-next&id=517e7a1537ae4663268be5d0c0ec62c563b9fc99
-so it should go into the next release...
-
-So unless Mark wants to revert it and have two separate patches
-instead, I guess we need to leave it like it is.
-
-Martin
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> diff --git a/seq/aconnect/aconnect.c b/seq/aconnect/aconnect.c
+> index 8d6cebb..3508e1b 100644
+> --- a/seq/aconnect/aconnect.c
+> +++ b/seq/aconnect/aconnect.c
+> @@ -166,11 +166,19 @@ static void print_port(snd_seq_t *seq, snd_seq_client_info_t *cinfo,
+>  		       snd_seq_port_info_t *pinfo, int count)
+>  {
+>  	if (! count) {
+> -		printf(_("client %d: '%s' [type=%s]\n"),
+> +		printf(_("client %d: '%s' [type=%s"),
+>  		       snd_seq_client_info_get_client(cinfo),
+>  		       snd_seq_client_info_get_name(cinfo),
+>  		       (snd_seq_client_info_get_type(cinfo) == SND_SEQ_USER_CLIENT ?
+>  			_("user") : _("kernel")));
+> +		int owner = snd_seq_client_info_get_owner(cinfo);
+> +		if (owner != -1) {
+> +			if (snd_seq_client_info_get_type(cinfo) == SND_SEQ_USER_CLIENT)
+> +				printf(",pid=%d", owner);
+> +			else
+> +				printf(",card=%d", owner);
+> +		}
+> +		printf("]\n");
+>  	}
+>  	printf("  %3d '%-16s'\n",
+>  	       snd_seq_port_info_get_port(pinfo),
