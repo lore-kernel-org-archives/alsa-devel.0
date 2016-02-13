@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: Don't specify LE device
-	endianness" to the asoc tree
-Date: Fri, 12 Feb 2016 22:26:01 +0000
-Message-ID: <E1aUMA5-0005uD-Fg@debutante>
-References: <E1aUK4H-0003nd-3M@debutante>
+From: Eric Anholt <eric@anholt.net>
+Subject: Re: [PATCH V2 1/3] ASoC: bcm2835: move to use the
+	clock framework
+Date: Fri, 12 Feb 2016 16:47:22 -0800
+Message-ID: <87bn7l3085.fsf@eliezer.anholt.net>
+References: <1452602149-5875-1-git-send-email-kernel@martin.sperl.org>
+ <1452602149-5875-2-git-send-email-kernel@martin.sperl.org>
+ <87vb6dfjbu.fsf@eliezer.anholt.net> <56B88520.5060606@martin.sperl.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0865771187211991045=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 442682605FF
- for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2016 23:26:12 +0100 (CET)
-In-Reply-To: <E1aUK4H-0003nd-3M@debutante>
+Received: from gabe.freedesktop.org (gabe.freedesktop.org [131.252.210.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D3C42605FF
+ for <alsa-devel@alsa-project.org>; Sat, 13 Feb 2016 01:47:29 +0100 (CET)
+In-Reply-To: <56B88520.5060606@martin.sperl.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,70 +22,126 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Boyd <sboyd@codeaurora.org>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Martin Sperl <kernel@martin.sperl.org>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Russell King <linux@arm.linux.org.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+--===============0865771187211991045==
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha512; protocol="application/pgp-signature"
 
-   ASoC: qcom: Don't specify LE device endianness
+--=-=-=
+Content-Type: text/plain
 
-has been applied to the asoc tree at
+Martin Sperl <kernel@martin.sperl.org> writes:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> On 28.01.2016 23:08, Eric Anholt wrote:
+>> kernel@martin.sperl.org writes:
+>>
+>>> From: Martin Sperl <kernel@martin.sperl.org>
+>>>
+>>> Since the move to the new clock framework with commit 94cb7f76caa0
+>>> ("ARM: bcm2835: Switch to using the new clock driver support.")
+>>> this driver was no longer functional as it was manipulating the
+>>> clock registers locally without going true the framework.
+>>>
+>>> This patch moves to use the new clock framework and also
+>>> moves away from the hardcoded address offsets for DMA getting
+>>> the dma-address directly from the device tree.
+>>>
+>>> Note that the optimal bclk_ratio selection to avoid jitter
+>>> due to the use of fractional dividers, which is in the
+>>> current version has been removed, because not all devices
+>>> support these non power of 2 sized transfers, which resulted
+>>> in lots of (downstream) modules that use:
+>>>    snd_soc_dai_set_bclk_ratio(cpu_dai, sample_bits * 2);
+>>>
+>>> Signed-off-by: Martin Sperl <kernel@martin.sperl.org>
+>>> ---
+>>>   sound/soc/bcm/bcm2835-i2s.c |  284 ++++++++++---------------------------------
+>>>   1 file changed, 64 insertions(+), 220 deletions(-)
+>>>
+>>> diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+>>> index 3303d5f..1c1f221 100644
+>>> --- a/sound/soc/bcm/bcm2835-i2s.c
+>>> +++ b/sound/soc/bcm/bcm2835-i2s.c
+>>
+>>> -	dev->i2s_regmap = regmap[0];
+>>> -	dev->clk_regmap = regmap[1];
+>>> +	/* get the clock */
+>>> +	dev->clk_prepared = false;
+>>> +	dev->clk = devm_clk_get(&pdev->dev, NULL);
+>>> +	if (IS_ERR(dev->clk)) {
+>>> +		dev_err(&pdev->dev, "could not get clk: %ld\n",
+>>> +			PTR_ERR(dev->clk));
+>>> +		return PTR_ERR(dev->clk);
+>>> +	}
+>>> +
+>>> +	/* Request ioarea */
+>>> +	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>>> +	base = devm_ioremap_resource(&pdev->dev, mem);
+>>> +	if (IS_ERR(base))
+>>> +		return PTR_ERR(base);
+>>> +
+>>> +	dev->i2s_regmap = devm_regmap_init_mmio(&pdev->dev, base,
+>>> +				&bcm2835_regmap_config);
+>>> +	if (IS_ERR(dev->i2s_regmap))
+>>> +		return PTR_ERR(dev->i2s_regmap);
+>>> +
+>>> +	/* Set the DMA address - we have to parse DT ourselves */
+>>> +	addr = of_get_address(pdev->dev.of_node, 0, NULL, NULL);
+>>> +	if (!addr) {
+>>> +		dev_err(&pdev->dev, "could not get DMA-register address\n");
+>>> +		return -EINVAL;
+>>> +	}
+>>> +	dma_base = be32_to_cpup(addr);
+>>
+>> Why aren't we just using mem->start like before?  That seems like an
+>> independent change that should be justified on its own.  I'd be ready to
+>> ack the patch if that change is removed.
+>>
+>
+> Problem is that we need the VC4 bus-address (0x7e203000),
+> which is the actual <reg> value from the device tree without any
+> mapping.
+>
+> Not the ARM MMU visible address mappings that mem->start provides
+> (typically 0x20203000 or 0x3f203000 for bcm2836)
+>
+> Nor the mapped address (base) available in the kernel (typically
+> 0xdc......).
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Now that I've noticed the BCM2835_VCMMU_SHIFT removal, this makes sense,
+but when you put unrelated changes like this together you end up slowing
+down the review process on your patches.  Please separate it out into a
+separate commit.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+iQIcBAEBCgAGBQJWvn0bAAoJELXWKTbR/J7ooLQP/ihVXu/99vLG16wdEHWQOQ5l
+mjcVnD1MVl2gRFKoS4qoLSCLcU5YByYeW5icS2WaWDRv8x+ImJQvaJAmCYNQ4Ysr
+qLQ+L+2Cd73uoWPQPog5nNOdnthc8XRrZwWF4txKwpmKcVDAxfZmQ4aMuIruqfCo
+lc7QDHvzhN0Bf4ViX0L+3eraZndrpDNRO5GnMQFhEOaknaesL2tfElFgXVg1pzHe
+1FJ5Nwum2s4iGv7Lgu0u5pTqbdsasNUZ8BwOS57hXW/w6Lv1yJPHSPbLqs9JtEQF
+pKGxiVdvM4YbdlCqnm0AEf556/SrX3/zOUU6jmjVMNC+uQO5bsjN71E+mas2E2t6
+Y2b/4qHIbtJhrtzVVxp1xar8lJWk6j/XFVBJg7zbEv+1HH2N3YcgHHQiuSwzHD2z
+V1GkwYdI6yCApD30xZDqkUL9b6g7Mr77ncmd8u+WIX/CqPiDCcLnJiduZ1+U6iI4
++3cZ3ugaL/akjK0py5lhB5xGcwfLWo3nNKgr71aXJH0Xf0t1dRcK9wGbsb0i3uC5
+duMDOlawY1H5hek5sA7VCebMJtkCAS9bpGWe4Qy4pb2u5dAh2tklvsk0FOn6eAQ9
+GUeNM2ML4bG+y01EUgPWSGfafTcFO35XTYdGbZKYyErgV/soULt/+Al8ak4N4XpZ
+SI/eEeVEidcVesDAZ/Ei
+=wJgW
+-----END PGP SIGNATURE-----
+--=-=-=--
 
-Thanks,
-Mark
+--===============0865771187211991045==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
->From a947b724069a25eae86d8dfed905374d04c3f93c Mon Sep 17 00:00:00 2001
-From: Stephen Boyd <sboyd@codeaurora.org>
-Date: Fri, 12 Feb 2016 09:30:17 -0800
-Subject: [PATCH] ASoC: qcom: Don't specify LE device endianness
 
-This reverts commit 18560a4e3 (ASoC: qcom: Specify LE device
-endianness).
-
-The commit that caused us to specify LE device endianness here,
-29bb45f25ff3 (regmap-mmio: Use native endianness for read/write,
-2015-10-29), has been reverted in mainline so now when we specify
-LE it actively breaks big endian kernels because the byte
-swapping in regmap-mmio is incorrect. Let's revert this change
-because it will 1) fix the big endian kernels and 2) be redundant
-to specify LE because that will become the default soon.
-
-Signed-off-by: Stephen Boyd <sboyd@codeaurora.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/qcom/lpass-cpu.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 00b6c9d039cf..e5101e0d2d37 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -355,7 +355,6 @@ static struct regmap_config lpass_cpu_regmap_config = {
- 	.readable_reg = lpass_cpu_regmap_readable,
- 	.volatile_reg = lpass_cpu_regmap_volatile,
- 	.cache_type = REGCACHE_FLAT,
--	.val_format_endian = REGMAP_ENDIAN_LITTLE,
- };
- 
- int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
--- 
-2.7.0
+--===============0865771187211991045==--
