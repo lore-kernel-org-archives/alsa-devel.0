@@ -1,19 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/3] ASoC: topology: Add FE DAIs
- dynamically
-Date: Mon, 15 Feb 2016 19:35:42 +0000
-Message-ID: <20160215193542.GA18327@sirena.org.uk>
-References: <cover.1452844210.git.mengdong.lin@linux.intel.com>
- <b7e208201542e5a27d052eb9e9f780056542db03.1452844210.git.mengdong.lin@linux.intel.com>
- <56A89457.4040307@metafoo.de>
+Subject: Re: [PATCH] ASoC: Add max9867 codec driver
+Date: Mon, 15 Feb 2016 19:47:18 +0000
+Message-ID: <20160215194718.GB18327@sirena.org.uk>
+References: <1455215539-3594-1-git-send-email-yesanishhere@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5039269261407528907=="
+Content-Type: multipart/mixed; boundary="===============7772186782868461652=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E5BE26070E
- for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 21:54:15 +0100 (CET)
-In-Reply-To: <56A89457.4040307@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id CB1C026085B
+ for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 21:54:23 +0100 (CET)
+In-Reply-To: <1455215539-3594-1-git-send-email-yesanishhere@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,53 +20,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, mengdong.lin@linux.intel.com, vinod.koul@intel.com, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
+To: anish kumar <yesanishhere@gmail.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5039269261407528907==
+--===============7772186782868461652==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="h31gzZEtNLTqOjlF"
+	protocol="application/pgp-signature"; boundary="24zk1gE8NUlDmwG9"
 Content-Disposition: inline
 
 
---h31gzZEtNLTqOjlF
+--24zk1gE8NUlDmwG9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jan 27, 2016 at 10:56:39AM +0100, Lars-Peter Clausen wrote:
-> On 01/15/2016 09:13 AM, mengdong.lin@linux.intel.com wrote:
-> [...]
-> > +		stream->rates = snd_pcm_rate_range_to_bits(caps->rate_min,
-> > +							caps->rate_max);
+On Thu, Feb 11, 2016 at 10:32:19AM -0800, anish kumar wrote:
 
-> How about just setting stream->rate_min and stream->rate_max?
+A few small issues but otherwise this looks good:
 
-I'll apply this but please send a followup patch fixing this.
+> +	SOC_SINGLE("DAC Attenuation", MAX9867_DACLEVEL, 0, 15, 1),
+> +	SOC_DOUBLE("ADC Left Gain", MAX9867_ADCLEVEL, 4, 0, 15, 1),
+> +	SOC_DOUBLE("ADC Right Gain", MAX9867_ADCLEVEL, 0, 0, 15, 1),
 
---h31gzZEtNLTqOjlF
+All volume controls should be called "... Volume" regardless of physical
+implementation as per ControlNames.txt in order to help userspace figure
+out how to handle them.  Please also try to provide a mapping to dB via
+TLV.
+
+> +	SOC_SINGLE("Volume Smoothing", MAX9867_MODECONFIG, 6, 1, 0),
+
+On/off switches should have names ending "...Switch" again for similar
+reasons to the ones behind Volume.
+
+> +static int max9867_resume(struct device *dev)
+> +{
+> +	struct max9867_priv *max9867 = dev_get_drvdata(dev);
+> +
+> +	msleep(20);
+> +	regmap_update_bits(max9867->regmap, MAX9867_PWRMAN,
+> +		MAX9867_SHTDOWN_MASK, MAX9867_SHTDOWN_MASK);
+> +	return 0;
+
+This is very strange - we have a sleep before we ever interact with the
+device.  A sleep in a register write sequence would make sense but this
+doesn't seem like it should.
+
+> +static int max9867_probe(struct snd_soc_codec *codec)
+> +{
+> +	struct max9867_priv *max9867 = snd_soc_codec_get_drvdata(codec);
+> +
+> +	max9867->codec = codec;
+> +	codec->control_data = max9867->regmap;
+> +	return 0;
+> +}
+
+The core will figure this out, you don't need to explicitly do it.
+
+--24zk1gE8NUlDmwG9
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWwiiHAAoJECTWi3JdVIfQXC4H/0WuAypU5G43xqMnsE+9zCFA
-1LioBAe/ZIvUSA+4X76km1LWo2ybgCm/DEp9DieXjqFETqA9KQ8GPw6a31aSrafw
-La3/Devij8tMG5LLXjNXYZ7IcIiwIolEAuLf4/BxnwuFFy5mmmeCFGIDKQCYpq9/
-CTA1h5AXt38LfoLxoYoTtTkTTdn8kf8uj5CE3zyCxc7elplNhaoVBMskJlLKkV0L
-CJ30596hzuhJqTVRLP4fYqEvqxPSUU/dZjVMFALvqt83PxjmJNXxkymZ8NWCm2Q9
-+mmXat5Yeb8rQhBTXakJqxApgJIaA/w8CRxnmxPUzQWPw+dX9k0C1lGJza0k3JU=
-=CLz3
+iQEcBAEBCAAGBQJWwitFAAoJECTWi3JdVIfQhigH/2iM/Ak4AqVQJjAcVHrzIHL6
+d+KCB9Hkc2+zLtEQwzX/3Bm5ehHdcejgrlhBdAwVo+6SCJ523QOR/A2j5sqIqB7f
+fIYKjIC1nxdFln/J9u+IM2+H1dA3sMpffcVKqs4iwuxC/kSwTXzVh1Ov9JPyrVfg
+i7bk75IAi8LhCt6phszLWr+nLfm3JUa2sq8Gua6JsXjtMi3s0RDYa2Ob+rLGQ58I
+pKNIK9xLfq3/xfa1CiFLOhQynHcyWbBRTh+qZKb/hJhSmklkRCbK/09pCt4MU5qb
+Qz4oUbYOwHpX8JoqnI8woBsv0Z0VEKqYE9PKfLCePIGjgVtbI9Q2+GOlLsuekaY=
+=JZlS
 -----END PGP SIGNATURE-----
 
---h31gzZEtNLTqOjlF--
+--24zk1gE8NUlDmwG9--
 
---===============5039269261407528907==
+--===============7772186782868461652==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5039269261407528907==--
+--===============7772186782868461652==--
