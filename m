@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 11/15] ASoC: hdac_hdmi: Don't fail in
- dai startup to make userland happy
-Date: Mon, 15 Feb 2016 20:55:21 +0000
-Message-ID: <20160215205521.GE18327@sirena.org.uk>
+Subject: Re: [PATCH v6 10/15] ASoC: hdac_hdmi: Fix possible
+ memory leak in hw_params
+Date: Mon, 15 Feb 2016 20:57:26 +0000
+Message-ID: <20160215205726.GF18327@sirena.org.uk>
 References: <1455243375-16067-1-git-send-email-subhransu.s.prusty@intel.com>
- <1455243375-16067-12-git-send-email-subhransu.s.prusty@intel.com>
+ <1455243375-16067-11-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3546907972867028794=="
+Content-Type: multipart/mixed; boundary="===============4166869362651515599=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B5D65265062
- for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 21:55:59 +0100 (CET)
-In-Reply-To: <1455243375-16067-12-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8937C265593
+ for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 21:57:35 +0100 (CET)
+In-Reply-To: <1455243375-16067-11-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,49 +27,53 @@ Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, Vinod K
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3546907972867028794==
+--===============4166869362651515599==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="9l24NVCWtSuIVIod"
+	protocol="application/pgp-signature"; boundary="A9z/3b/E4MkkD+7G"
 Content-Disposition: inline
 
 
---9l24NVCWtSuIVIod
+--A9z/3b/E4MkkD+7G
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 12, 2016 at 07:46:11AM +0530, Subhransu S. Prusty wrote:
-> In dai startup, driver was checking for ELD and would fail if no
-> monitor is connected. This causes userland like PA, CRAS to be
-> unhappy as they scan the device list at bootup.
->=20
-> So move the ELD check to hw_params and fail, if valid ELD is not
-> found.
+On Fri, Feb 12, 2016 at 07:46:10AM +0530, Subhransu S. Prusty wrote:
+> It's possible for hw_params to be called two times. So add NULL
+> check to prevent memory leak.
 
-Should this not be sent as a fix?
+Another fix?
 
---9l24NVCWtSuIVIod
+> -	dd = kzalloc(sizeof(*dd), GFP_KERNEL);
+> -	if (!dd)
+> -		return -ENOMEM;
+> +	dd = (struct hdac_ext_dma_params *)
+> +		snd_soc_dai_get_dma_data(dai, substream);
+
+If you need to cast away from void * that suggests a problem and it'd
+look a lot neater too.
+
+--A9z/3b/E4MkkD+7G
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWwjs4AAoJECTWi3JdVIfQ32UH/iArBFofsI/LnW7goi01PXqt
-eHQd0I7eBbIvey6ALkuYrqPv37ENmGCp2GQUHC8Ul7uO1L2c6gWIVt24ENQCgwAn
-VhPFLq/zhwqoKd655wUaYvUydt+blZ6JgJyTG0pZXtLoD53Y+LcLFIA/KBlK+HnH
-Jy178bunI5B7vdHGMHfiQrg2S5X3MK9KuMPfBxV4opjazCxFvavvI9z59UXi4Opq
-pGGoYA/iQqe53yzElWnP/XtRh3nILx7TgJCGJrg6ZQMlY92ImwoYaHhTj+otBwo5
-Qa99ScO2VAR0RVR7bYkP9v3rmdBhof3cjHSMu6QMwBMTSMLrBYa3BlvGOuz8/HM=
-=7PXQ
+iQEcBAEBCAAGBQJWwju1AAoJECTWi3JdVIfQhMgH/R1osux12uQUAqyeXWyT3wM3
+KLv5DsY07kOv+ZvslbRxY6NZCzgKDN3AiMIuxw3KRB5GYnRWvnoYuZWjwEX0WKWg
+O6k0TmcUFdAfAu6A4XFOTwG/KuOY2ALRC4c+7fygBckpWL0alJ+UxCbnD8wWccsN
+Mz0oXw0QbHKNljax8dAzqyjD3lCvwFLAHLtMkGzI2M5xaVeOnIgsLHRrLEjtDUi2
+1b01+iafbwzOLdMXx6lXNFeYUQhLYhcHAPVTAVL97CmAhOQIvoIG8ItTOio80OfW
+cyCGepvrVJGDnwO7R8Mhglj5uDo41kzlue1DiN7TcpMs5aLN5DfQQBlD+noSBas=
+=wA2d
 -----END PGP SIGNATURE-----
 
---9l24NVCWtSuIVIod--
+--A9z/3b/E4MkkD+7G--
 
---===============3546907972867028794==
+--===============4166869362651515599==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3546907972867028794==--
+--===============4166869362651515599==--
