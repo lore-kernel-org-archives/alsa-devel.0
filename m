@@ -1,19 +1,18 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [RFC v2 3/6] ASoC: core: add code to complete dai
- init after pcm creation
-Date: Mon, 15 Feb 2016 11:39:13 +0100
-Message-ID: <56C1AAD1.1040609@st.com>
+Subject: Re: [RFC v2 5/6] ASoc: hdmi-codec: add IEC control.
+Date: Mon, 15 Feb 2016 11:51:49 +0100
+Message-ID: <56C1ADC5.4090207@st.com>
 References: <1453484912-24547-1-git-send-email-arnaud.pouliquen@st.com>
- <1453484912-24547-4-git-send-email-arnaud.pouliquen@st.com>
- <56B4723B.4000505@ti.com>
+ <1453484912-24547-6-git-send-email-arnaud.pouliquen@st.com>
+ <56B649B0.3080200@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 6F98A261480
- for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 11:39:20 +0100 (CET)
-In-Reply-To: <56B4723B.4000505@ti.com>
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 5C04E2612DF
+ for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 11:51:53 +0100 (CET)
+In-Reply-To: <56B649B0.3080200@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,93 +28,177 @@ List-Id: alsa-devel@alsa-project.org
 
 
 
-On 02/05/2016 10:58 AM, Jyri Sarha wrote:
+On 02/06/2016 08:29 PM, Jyri Sarha wrote:
 > On 01/22/16 19:48, Arnaud Pouliquen wrote:
->> Some Controls defined in DAI need to be associated to PCM device (e.g. IEC60958).
->>
->> This allows to perform post initialization in DAI after PCM device creation.
+>> Create 'IEC958 Playback Default' controls to support IEC61937 formats.
+>> the use of the alsa control is optional, using 'iec_ctl' flag.
 >>
 > 
-> Sorry for my late reaction to this series (I was on vacation)...
-Same issue for me last week ;-)
+> I applied the patches "ALSA: pcm: add IEC958 channel status control 
+> helper", "ASoC: core: add code to complete dai init after pcm creation", 
+> and "ASoc: hdmi-codec: add IEC control" to my BBB HDMI audio branch. I 
+> needed to do some trivial conflict solving, but after that everything 
+> compiled fine. However, when I tried to read the iec mixer with:
+> 
+> # amixer -c0 cget name='IEC958 Playback Default',device=0
+> amixer: Cannot find the given element from control hw:0
+> 
+> The same command worked just fine on my intel based laptop:
+> # amixer -c0 cget iface=MIXER,name='IEC958 Playback Default',device=0
+> numid=31,iface=MIXER,name='IEC958 Playback Default'
+>    ; type=IEC958,access=rw------,values=1
+>    : values=[AES0=0x04 AES1=0x00 AES2=0x00 AES3=0x00]
+Do you enable "iec_ctl" field in hdmi_codec_pdata structure?
+i add this field because control can be declared and used by CPU DAI or
+codec, depending on hardware.
 
 > 
-> I do not follow why you need this? The rest of the codecs create their 
-> mixer elements in static struct snd_soc_codec_driver's probe-callback. I 
-> can not see why it could not be used with hdmi-codec (then again I have 
-> not tried it).
-Some controls like 'IEC958 Playback Default' can need to be indexed on
-the PCM device. As example on my board i have a SPDIF and a HDMI out.
-Both handle IEC60958. Today, there is not way (or as said, i miss
-something) to get PCM device information at DAI level to be able to
-index on PCM device.
-Aim of this patch is to allow to perform post DAI initialization on PCM
-device creation, with PCM runtime information.
+> How did you test the mixer yourself?
+To test on my platform i hacked my code because control is handled by
+CPU_DAI...
+But just by disabling control creation in CPU DAI for HDMI and set
+"iec_ctl" filed to 1, i can see and use the control.
 
-> 
-> I'll try to test the patches that affects my Beaglebone-black hdmia 
-> audio series anyway, I just need to rebase my branch in order to apply 
-> this patch. For some reason "ASoc: hdmi-codec: add IEC control." did not 
-> apply out of the box either...
+**** List of PLAYBACK Hardware Devices ****
+card 0: Default [sti audio card], device 0: Uni Player #0
+(HDMI)-i2s-hifi i2s-hifi-0 []
+card 0: Default [sti audio card], device 1: Uni Player #1
+(DAC)-sas-dai-dac sas-dai-dac-1 []
+card 0: Default [sti audio card], device 2: Uni Player #1
+(PIO)-sas-dai-spdif-out sas-dai-spdif-out-2 []
+
+# amixer -c0 controls | grep IEC958
+numid=5,iface=PCM,name='IEC958 Playback Default'
+numid=3,iface=PCM,name='IEC958 Playback Default',device=3
+
+
+BR,
+Arnaud
 > 
 > Best regards,
 > Jyri
 > 
 >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 >> ---
->>   include/sound/soc-dai.h |  7 +++++++
->>   sound/soc/soc-core.c    | 14 ++++++++++++++
->>   2 files changed, 21 insertions(+)
+>>   include/sound/hdmi-codec.h    |  1 +
+>>   sound/soc/codecs/hdmi-codec.c | 59 +++++++++++++++++++++++++++++++++----------
+>>   2 files changed, 46 insertions(+), 14 deletions(-)
 >>
->> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
->> index 964b7de..6969c83 100644
->> --- a/include/sound/soc-dai.h
->> +++ b/include/sound/soc-dai.h
->> @@ -205,6 +205,13 @@ struct snd_soc_dai_ops {
->>   	 */
->>   	snd_pcm_sframes_t (*delay)(struct snd_pcm_substream *,
->>   		struct snd_soc_dai *);
->> +
->> +	/*
->> +	 * function called by soc_probe_link_dais to post initialize DAI
->> +	 * after pcm device creation.
->> +	 * As example, can be used to link a controls to the pcm device
->> +	 */
->> +	int (*pcm_new)(struct snd_soc_pcm_runtime *, struct snd_soc_dai *);
+>> diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
+>> index ed780b2..58e8eae 100644
+>> --- a/include/sound/hdmi-codec.h
+>> +++ b/include/sound/hdmi-codec.h
+>> @@ -96,6 +96,7 @@ struct hdmi_codec_pdata {
+>>   	const struct hdmi_codec_ops *ops;
+>>   	uint i2s:1;
+>>   	uint spdif:1;
+>> +	uint iec_ctl:1;
+>>   	int max_i2s_channels;
 >>   };
 >>
->>   /*
->> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
->> index 790ee2b..cf1d312 100644
->> --- a/sound/soc/soc-core.c
->> +++ b/sound/soc/soc-core.c
->> @@ -1587,6 +1587,7 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
+>> diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+>> index 94349b3..1b6cb5a 100644
+>> --- a/sound/soc/codecs/hdmi-codec.c
+>> +++ b/sound/soc/codecs/hdmi-codec.c
+>> @@ -32,6 +32,7 @@ struct hdmi_codec_priv {
+>>   	struct snd_pcm_substream *current_stream;
+>>   	struct snd_pcm_hw_constraint_list ratec;
+>>   	uint8_t eld[MAX_ELD_BYTES];
+>> +	struct snd_aes_iec958 iec;
+>>   };
+>>
+>>   static const struct snd_soc_dapm_widget hdmi_widgets[] = {
+>> @@ -140,27 +141,30 @@ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
+>>   				struct snd_soc_dai *dai)
 >>   {
->>   	struct snd_soc_dai_link *dai_link = rtd->dai_link;
->>   	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
->> +	const struct snd_soc_dai_ops *ops;
->>   	int i, ret;
+>>   	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+>> -	struct hdmi_codec_params hp = {
+>> -		.iec = {
+>> -			.status = { 0 },
+>> -			.subcode = { 0 },
+>> -			.pad = 0,
+>> -			.dig_subframe = { 0 },
+>> -		}
+>> -	};
+>> +	struct hdmi_codec_params hp;
+>>   	int ret;
 >>
->>   	dev_dbg(card->dev, "ASoC: probe %s dai link %d late %d\n",
->> @@ -1662,6 +1663,19 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
->>   		}
->>   	}
+>>   	dev_dbg(dai->dev, "%s() width %d rate %d channels %d\n", __func__,
+>>   		params_width(params), params_rate(params),
+>>   		params_channels(params));
 >>
->> +	for (i = 0; i < rtd->num_codecs; i++) {
->> +		ops = rtd->codec_dais[i]->driver->ops;
->> +		if (ops->pcm_new)
->> +			ret = ops->pcm_new(rtd, rtd->codec_dais[i]);
->> +		if (ret)
->> +			return ret;
->> +	}
->> +	ops = cpu_dai->driver->ops;
->> +	if (ops->pcm_new)
->> +		ret = ops->pcm_new(rtd, rtd->codec_dais[i]);
->> +	if (ret)
->> +		return ret;
+>> -	ret = snd_pcm_create_iec958_consumer_hw_params(params, hp.iec.status,
+>> -						       sizeof(hp.iec.status));
+>> -	if (ret < 0) {
+>> -		dev_err(dai->dev, "Creating IEC958 channel status failed %d\n",
+>> -			ret);
+>> -		return ret;
+>> +	mutex_lock(&hcp->current_stream_lock);
+>> +	hp.iec = hcp->iec;
 >> +
+>> +	if (!hcp->hcd.iec_ctl) {
+>> +		/*
+>> +		* only PCM format supported
+>> +		*channel status set according to runtime parameters
+>> +		*/
+>> +		ret = snd_pcm_create_iec958_consumer_hw_params(params,
+>> +					hp.iec.status, sizeof(hp.iec.status));
+>> +		if (ret < 0) {
+>> +			dev_err(dai->dev, "Creating IEC958 status failed %d\n",
+>> +				ret);
+>> +			return ret;
+>> +		}
+>>   	}
+>> +	mutex_unlock(&hcp->current_stream_lock);
+>>
+>>   	ret = hdmi_codec_new_stream(substream, dai);
+>>   	if (ret)
+>> @@ -266,12 +270,37 @@ static int hdmi_codec_digital_mute(struct snd_soc_dai *dai, int mute)
 >>   	return 0;
 >>   }
+>>
+>> +static int hdmi_codec_pcm_new(struct snd_soc_pcm_runtime *rtd,
+>> +			      struct snd_soc_dai *dai)
+>> +{
+>> +	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+>> +	struct snd_pcm_iec958_params *iec958_params;
+>> +
+>> +	dev_dbg(dai->dev, "%s()\n", __func__);
+>> +
+>> +	if (!hcp->hcd.iec_ctl)
+>> +		return 0;
+>> +
+>> +	iec958_params = devm_kzalloc(dai->dev, sizeof(*iec958_params),
+>> +				     GFP_KERNEL);
+>> +	if (!iec958_params)
+>> +		return -ENOMEM;
+>> +
+>> +	iec958_params->iec = &hcp->iec;
+>> +	iec958_params->pdata = hcp;
+>> +	iec958_params->mutex = &hcp->current_stream_lock;
+>> +
+>> +	return snd_pcm_create_iec958_ctl(rtd->pcm, iec958_params,
+>> +					 SNDRV_PCM_STREAM_PLAYBACK);
+>> +}
+>> +
+>>   static const struct snd_soc_dai_ops hdmi_dai_ops = {
+>>   	.startup        = hdmi_codec_startup,
+>>   	.shutdown       = hdmi_codec_shutdown,
+>>   	.hw_params      = hdmi_codec_hw_params,
+>>   	.set_fmt        = hdmi_codec_set_fmt,
+>>   	.digital_mute   = hdmi_codec_digital_mute,
+>> +	.pcm_new        = hdmi_codec_pcm_new,
+>>   };
+>>
+>>
+>> @@ -352,6 +381,8 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+>>   	if (!hcp)
+>>   		return -ENOMEM;
+>>
+>> +	memset(&hcp->iec, 0, sizeof(hcp->iec));
+>> +
+>>   	hcp->hcd = *hcd;
+>>   	mutex_init(&hcp->current_stream_lock);
 >>
 >>
 > 
