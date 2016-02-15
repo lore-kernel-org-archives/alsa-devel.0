@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 1/4] ASoc: Use ref_count for soc DAI &
-	component
-Date: Mon, 15 Feb 2016 13:59:41 +0000
-Message-ID: <20160215135941.GJ18988@sirena.org.uk>
+Subject: Re: [RFC 2/4] alsa: add locked variant for
+	snd_ctl_remove_id
+Date: Mon, 15 Feb 2016 14:02:24 +0000
+Message-ID: <20160215140224.GK18988@sirena.org.uk>
 References: <1455538772-24926-1-git-send-email-vaibhav.agarwal@linaro.org>
- <1455538772-24926-2-git-send-email-vaibhav.agarwal@linaro.org>
+ <1455538772-24926-3-git-send-email-vaibhav.agarwal@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8702130883084761203=="
+Content-Type: multipart/mixed; boundary="===============3455149297246045684=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F2EE2612DF
- for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 14:59:51 +0100 (CET)
-In-Reply-To: <1455538772-24926-2-git-send-email-vaibhav.agarwal@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 271452612DF
+ for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 15:02:29 +0100 (CET)
+In-Reply-To: <1455538772-24926-3-git-send-email-vaibhav.agarwal@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,89 +27,46 @@ Cc: peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-proj
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8702130883084761203==
+--===============3455149297246045684==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="mFHiwr52TKrxpkjc"
+	protocol="application/pgp-signature"; boundary="W/+CTqSGWdiRg+8j"
 Content-Disposition: inline
 
 
---mFHiwr52TKrxpkjc
+--W/+CTqSGWdiRg+8j
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 15, 2016 at 05:49:29PM +0530, Vaibhav Agarwal wrote:
-> This is preperation to allow dynamic DAI link insertion &
-> removal.
+On Mon, Feb 15, 2016 at 05:49:30PM +0530, Vaibhav Agarwal wrote:
+> While removing kcontrols due to dynamic dai_link/codec removal,
+> mutex/semaphore for soc-card/sound card is already acquired.
+> Thus, added lock already acquired variant for ctl_remove_id.
 
-Which there is no proposed user of here...
+Please use subject lines matching the style for the subsystem and
+remember to CC maintainers on patch submission.
 
-> Currently, DAI links are added/removed once during soc-card
-> instatiate & removal. Thus, irrespective of usage count by multiple
-> DAI links, DAIs and components are probed or removed only once
-> while maintaining 'probed' flag.
-> However, in case of dynamic DAI link insertion/removal we need to
-> ensure DAI/components are not unnecessarily probed multiple & not
-> removed mistakenly while in use by any other existing DAI link.
-> Thus, ref_count is used to maintain their usage count.
-
-Please use normal changelog formatting - either consistent line lengths
-or blank lines between paragraphs depending on what you're trying to
-accomplish here.
-
-> -	if (!dai->probed && dai->driver->probe_order =3D=3D order) {
-> -		if (dai->driver->probe) {
-> -			ret =3D dai->driver->probe(dai);
-> -			if (ret < 0) {
-> -				dev_err(dai->dev,
-> -					"ASoC: failed to probe DAI %s: %d\n",
-> -					dai->name, ret);
-> -				return ret;
-> +	if (dai->driver->probe_order =3D=3D order) {
-> +		if (!dai->probed) {
-> +			if (dai->driver->probe) {
-> +				ret =3D dai->driver->probe(dai);
-> +				if (ret < 0) {
-> +					dev_err(dai->dev,
-> +						"ASoC: failed to probe DAI %s: %d\n",
-> +						dai->name, ret);
-> +					return ret;
-> +				}
->  			}
-> -		}
-> =20
-> -		dai->probed =3D 1;
-> +			dai->probed =3D 1;
-> +		}
-> +		dai->ref_count++;
->  	}
-
-I don't understand this at all - why the complete reindent and change of
-condition, don't we just increase the refcount when we flag as probed
-(and why do we still have the probed flag after this)?
-
---mFHiwr52TKrxpkjc
+--W/+CTqSGWdiRg+8j
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWwdnLAAoJECTWi3JdVIfQHl4H/15fK2YRoFsT9aPK/RC1uhOm
-auxhygRjyqeXOVHPrv9F4HhCRuysqmWS1SwUwNtZwgHwg/2xTir4uRcWsM9hzuDK
-90rono8HbS49wQCGBFupfeD+qef/JaCfUet+8U3zOv2URZy/c0BkSjVCbuf3GnOZ
-Il9kyZVZNYIVVq0KbhTGIpZ2QouM269xMkuhKc7CgUvFZEiY8uJniqGWEzG2LDXb
-vBf5hAynZ7q3Hdr327bKtu8KJtUrlYlimonrhztZyYCp37lrjlAFyzuScVL9ycp2
-uauRuKG38+SsUNLSXLN5W6kR/AZBfVmhU4SjNfRHeJS+Az/HTaPy4fuBTkc6cP4=
-=y/Ta
+iQEcBAEBCAAGBQJWwdpvAAoJECTWi3JdVIfQioYH/irzor3MJ86GXAe0QXmr2fKn
+OWPRuIeV/j+jQjimyHixv+oXJKZQpkWiIor4bRCGwbzbjtIqHdSql82kwRlqAGyY
+kJnpzM9QPf1Tlpvo+zg176R+VRRm2fp2LGENqSlEAnDK3sqriDZP7zIn32PK8qkz
+8oC0pnSFPr+selpy0z3mj6sL6727NE3xLFniDEbobm1pT54M8xpv4Z3zO1oy+OOX
+Pzjyxg3OXqLvVXhhlqFKyoERjBVDcTXS8lpT6E17d7TkmnlKyoI+rsVBD6WzS9y+
+LEDjJLL4WwMxB52Iv7lOPFKYt4Uyqi9m401IFoPFydr4XjlM/6RFAixKuPCMO+I=
+=PeOc
 -----END PGP SIGNATURE-----
 
---mFHiwr52TKrxpkjc--
+--W/+CTqSGWdiRg+8j--
 
---===============8702130883084761203==
+--===============3455149297246045684==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8702130883084761203==--
+--===============3455149297246045684==--
