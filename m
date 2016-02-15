@@ -1,15 +1,17 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 0/4] ASoC: simple-card/davinci-mcasp: System
-	clock configuration support
-Date: Mon, 15 Feb 2016 16:11:31 +0200
-Message-ID: <1455545495-20292-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 1/4] ASoC: davinci-mcasp: Use defines for
+	clkdiv IDs via DT binding header
+Date: Mon, 15 Feb 2016 16:11:32 +0200
+Message-ID: <1455545495-20292-2-git-send-email-peter.ujfalusi@ti.com>
+References: <1455545495-20292-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 636C5261692
- for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 15:11:42 +0100 (CET)
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id EAF87261721
+ for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 15:11:45 +0100 (CET)
+In-Reply-To: <1455545495-20292-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,50 +25,70 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Instead of hardwired IDs add defines to select which divider to configure.
+The defines are placed in the dt binding header so legacy and DT files can
+both use them.
 
-Currently davinci-mcasp is hardwired for two configuration regarding to reference
-clock:
-McASP is master: AHCLKX is selected as source of the reference clock used to
-		 generate the FS and BCLK
-McASP is slave: AHCLKX is selected as output and the default AUXCLK is routed
-		there.
-
-This works in most of the boards, but not all configuration can be supported
-with this limitation.
-McASP uses it's internal AUXCLK as a reference clock. AUXCLK can be sourced from
-the external AHCLKX pin or from internal functional clock. If the board uses
-McASP as master and AHCLKX is not receiving clock, we need to be able to select
-the internal clock source to be able to generate the FS and BCLK.
-
-Since we try to move all of our boards to simple-card instead of the davinci-evm
-custom machine driver, I have included Jyri's two patch to add the needed support
-for it to be able to select clocks and directions.
-
-I remember the discussion regarding to clock IDs, and to try to move to common
-clock framework. I have taken a look at that path and I'm not convinced that by
-trying to add ASoC level common clock handling will simplify or makes things
-cleaner/simpler.
-
-Regards,
-Peter
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
-Jyri Sarha (2):
-  ASoC: simple-card: Add system-clock-direction DT parameter to dai
-    nodes
-  ASoC: simple-card: Support for selecting system clocks by ID
-
-Peter Ujfalusi (2):
-  ASoC: davinci-mcasp: Use defines for clkdiv IDs via DT binding header
-  ASoC: davinci-mcasp: Improve the sysclk selection
-
- .../devicetree/bindings/sound/simple-card.txt      |  3 ++
- include/dt-bindings/sound/ti-mcasp.h               | 13 +++++++
- include/sound/simple_card.h                        |  2 ++
- sound/soc/davinci/davinci-mcasp.c                  | 42 ++++++++++++++++------
- sound/soc/generic/simple-card.c                    | 17 ++++++++-
- 5 files changed, 66 insertions(+), 11 deletions(-)
+ include/dt-bindings/sound/ti-mcasp.h | 9 +++++++++
+ sound/soc/davinci/davinci-mcasp.c    | 8 +++++---
+ 2 files changed, 14 insertions(+), 3 deletions(-)
  create mode 100644 include/dt-bindings/sound/ti-mcasp.h
 
+diff --git a/include/dt-bindings/sound/ti-mcasp.h b/include/dt-bindings/sound/ti-mcasp.h
+new file mode 100644
+index 000000000000..03519ab67b44
+--- /dev/null
++++ b/include/dt-bindings/sound/ti-mcasp.h
+@@ -0,0 +1,9 @@
++#ifndef _DT_BINDINGS_TI_MCASP_H
++#define _DT_BINDINGS_TI_MCASP_H
++
++/* clock divider IDs */
++#define MCASP_CLKDIV_AUXCLK		0 /* HCLK divider from AUXCLK */
++#define MCASP_CLKDIV_BCLK		1 /* BCLK divider from HCLK */
++#define MCASP_CLKDIV_BCLK_FS_RATIO	2 /* to set BCLK FS ration */
++
++#endif /* _DT_BINDINGS_TI_MCASP_H */
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 3cf46afb353f..a4e40606742a 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -37,6 +37,7 @@
+ #include <sound/soc.h>
+ #include <sound/dmaengine_pcm.h>
+ #include <sound/omap-pcm.h>
++#include <dt-bindings/sound/ti-mcasp.h>
+ 
+ #include "edma-pcm.h"
+ #include "davinci-mcasp.h"
+@@ -541,14 +542,14 @@ static int __davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
+ 
+ 	pm_runtime_get_sync(mcasp->dev);
+ 	switch (div_id) {
+-	case 0:		/* MCLK divider */
++	case MCASP_CLKDIV_AUXCLK:			/* MCLK divider */
+ 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG,
+ 			       AHCLKXDIV(div - 1), AHCLKXDIV_MASK);
+ 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_AHCLKRCTL_REG,
+ 			       AHCLKRDIV(div - 1), AHCLKRDIV_MASK);
+ 		break;
+ 
+-	case 1:		/* BCLK divider */
++	case MCASP_CLKDIV_BCLK:			/* BCLK divider */
+ 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_ACLKXCTL_REG,
+ 			       ACLKXDIV(div - 1), ACLKXDIV_MASK);
+ 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_ACLKRCTL_REG,
+@@ -557,7 +558,8 @@ static int __davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
+ 			mcasp->bclk_div = div;
+ 		break;
+ 
+-	case 2:	/*
++	case MCASP_CLKDIV_BCLK_FS_RATIO:
++		/*
+ 		 * BCLK/LRCLK ratio descries how many bit-clock cycles
+ 		 * fit into one frame. The clock ratio is given for a
+ 		 * full period of data (for I2S format both left and
 -- 
 2.7.1
