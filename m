@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 1/4] ASoC: davinci-mcasp: Use defines for
-	clkdiv IDs via DT binding header
-Date: Mon, 15 Feb 2016 16:11:32 +0200
-Message-ID: <1455545495-20292-2-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 2/4] ASoC: davinci-mcasp: Improve the sysclk
+	selection
+Date: Mon, 15 Feb 2016 16:11:33 +0200
+Message-ID: <1455545495-20292-3-git-send-email-peter.ujfalusi@ti.com>
 References: <1455545495-20292-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id EAF87261721
- for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 15:11:45 +0100 (CET)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id E8316261ADB
+ for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 15:11:46 +0100 (CET)
 In-Reply-To: <1455545495-20292-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,70 +25,88 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Instead of hardwired IDs add defines to select which divider to configure.
-The defines are placed in the dt binding header so legacy and DT files can
-both use them.
+When McASP is master the bclk can be generated from two main source:
+AUXCLK: functional clock for McASP or
+AHCLK: from external source or internal mux in dra7x family
+
+With this patch it is possible to select between the two source. The patch
+is not breaking existing machine drivers since historically the clk_id was
+ignored and left as 0 in all cases.
+
+When output clock is configured - which can be only the AHCLK, we select
+the AUXCLK as source for the internal HCLK. In this case the HCLK rate is
+the same as the output clock.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- include/dt-bindings/sound/ti-mcasp.h | 9 +++++++++
- sound/soc/davinci/davinci-mcasp.c    | 8 +++++---
- 2 files changed, 14 insertions(+), 3 deletions(-)
- create mode 100644 include/dt-bindings/sound/ti-mcasp.h
+ include/dt-bindings/sound/ti-mcasp.h |  4 ++++
+ sound/soc/davinci/davinci-mcasp.c    | 34 +++++++++++++++++++++++++++-------
+ 2 files changed, 31 insertions(+), 7 deletions(-)
 
 diff --git a/include/dt-bindings/sound/ti-mcasp.h b/include/dt-bindings/sound/ti-mcasp.h
-new file mode 100644
-index 000000000000..03519ab67b44
---- /dev/null
+index 03519ab67b44..86ee4d0d79b5 100644
+--- a/include/dt-bindings/sound/ti-mcasp.h
 +++ b/include/dt-bindings/sound/ti-mcasp.h
-@@ -0,0 +1,9 @@
-+#ifndef _DT_BINDINGS_TI_MCASP_H
-+#define _DT_BINDINGS_TI_MCASP_H
+@@ -1,6 +1,10 @@
+ #ifndef _DT_BINDINGS_TI_MCASP_H
+ #define _DT_BINDINGS_TI_MCASP_H
+ 
++/* Source of High-frequency transmit/receive clock */
++#define MCASP_CLK_HCLK_AHCLK		0 /* AHCLKX/R */
++#define MCASP_CLK_HCLK_AUXCLK		1 /* Internal functional clock */
 +
-+/* clock divider IDs */
-+#define MCASP_CLKDIV_AUXCLK		0 /* HCLK divider from AUXCLK */
-+#define MCASP_CLKDIV_BCLK		1 /* BCLK divider from HCLK */
-+#define MCASP_CLKDIV_BCLK_FS_RATIO	2 /* to set BCLK FS ration */
-+
-+#endif /* _DT_BINDINGS_TI_MCASP_H */
+ /* clock divider IDs */
+ #define MCASP_CLKDIV_AUXCLK		0 /* HCLK divider from AUXCLK */
+ #define MCASP_CLKDIV_BCLK		1 /* BCLK divider from HCLK */
 diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 3cf46afb353f..a4e40606742a 100644
+index a4e40606742a..1bd86c8e7bc8 100644
 --- a/sound/soc/davinci/davinci-mcasp.c
 +++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -37,6 +37,7 @@
- #include <sound/soc.h>
- #include <sound/dmaengine_pcm.h>
- #include <sound/omap-pcm.h>
-+#include <dt-bindings/sound/ti-mcasp.h>
- 
- #include "edma-pcm.h"
- #include "davinci-mcasp.h"
-@@ -541,14 +542,14 @@ static int __davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
+@@ -596,18 +596,38 @@ static int davinci_mcasp_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 	struct davinci_mcasp *mcasp = snd_soc_dai_get_drvdata(dai);
  
  	pm_runtime_get_sync(mcasp->dev);
- 	switch (div_id) {
--	case 0:		/* MCLK divider */
-+	case MCASP_CLKDIV_AUXCLK:			/* MCLK divider */
- 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG,
- 			       AHCLKXDIV(div - 1), AHCLKXDIV_MASK);
- 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_AHCLKRCTL_REG,
- 			       AHCLKRDIV(div - 1), AHCLKRDIV_MASK);
- 		break;
- 
--	case 1:		/* BCLK divider */
-+	case MCASP_CLKDIV_BCLK:			/* BCLK divider */
- 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_ACLKXCTL_REG,
- 			       ACLKXDIV(div - 1), ACLKXDIV_MASK);
- 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_ACLKRCTL_REG,
-@@ -557,7 +558,8 @@ static int __davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
- 			mcasp->bclk_div = div;
- 		break;
- 
--	case 2:	/*
-+	case MCASP_CLKDIV_BCLK_FS_RATIO:
-+		/*
- 		 * BCLK/LRCLK ratio descries how many bit-clock cycles
- 		 * fit into one frame. The clock ratio is given for a
- 		 * full period of data (for I2S format both left and
+-	if (dir == SND_SOC_CLOCK_OUT) {
++
++	if (dir == SND_SOC_CLOCK_IN) {
++		switch (clk_id) {
++		case MCASP_CLK_HCLK_AHCLK:
++			mcasp_clr_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG,
++				       AHCLKXE);
++			mcasp_clr_bits(mcasp, DAVINCI_MCASP_AHCLKRCTL_REG,
++				       AHCLKRE);
++			mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDIR_REG, AHCLKX);
++			break;
++		case MCASP_CLK_HCLK_AUXCLK:
++			mcasp_set_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG,
++				       AHCLKXE);
++			mcasp_set_bits(mcasp, DAVINCI_MCASP_AHCLKRCTL_REG,
++				       AHCLKRE);
++			break;
++		default:
++			dev_err(mcasp->dev, "Invalid clk id: %d\n", clk_id);
++			goto out;
++		}
++	} else {
++		/* Select AUXCLK as HCLK */
+ 		mcasp_set_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG, AHCLKXE);
+ 		mcasp_set_bits(mcasp, DAVINCI_MCASP_AHCLKRCTL_REG, AHCLKRE);
+ 		mcasp_set_bits(mcasp, DAVINCI_MCASP_PDIR_REG, AHCLKX);
+-	} else {
+-		mcasp_clr_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG, AHCLKXE);
+-		mcasp_clr_bits(mcasp, DAVINCI_MCASP_AHCLKRCTL_REG, AHCLKRE);
+-		mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDIR_REG, AHCLKX);
+ 	}
+-
++	/*
++	 * When AHCLK X/R is selected to be output it means that the HCLK is
++	 * the same clock - coming via AUXCLK.
++	 */
+ 	mcasp->sysclk_freq = freq;
+-
++out:
+ 	pm_runtime_put(mcasp->dev);
+ 	return 0;
+ }
 -- 
 2.7.1
