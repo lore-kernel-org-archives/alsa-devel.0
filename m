@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdac_hdmi: create dais based on number
-	of cvts" to the asoc tree
-Date: Mon, 15 Feb 2016 20:58:51 +0000
-Message-ID: <E1aVQEN-0007up-WC@finisterre>
-References: <1454161428-7896-5-git-send-email-subhransu.s.prusty@intel.com>
+Subject: Applied "ASoC: hdac_hdmi: Enable DP1.2 and all
+	converters/pins" to the asoc tree
+Date: Mon, 15 Feb 2016 20:58:54 +0000
+Message-ID: <E1aVQEQ-0007vI-I0@finisterre>
+References: <1449176942-3441-7-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0CBE62654FB
- for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 21:59:00 +0100 (CET)
-In-Reply-To: <1454161428-7896-5-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C7610265522
+ for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 21:59:01 +0100 (CET)
+In-Reply-To: <1449176942-3441-7-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hdac_hdmi: create dais based on number of cvts
+   ASoC: hdac_hdmi: Enable DP1.2 and all converters/pins
 
 has been applied to the asoc tree at
 
@@ -53,196 +53,89 @@ to this mail.
 Thanks,
 Mark
 
->From 17a42c4500b05a6af4c32eb8e9cfc44bab945d1f Mon Sep 17 00:00:00 2001
+>From 211caab73b20dcc91ac103db0f68fe2388120d59 Mon Sep 17 00:00:00 2001
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Date: Fri, 12 Feb 2016 07:46:04 +0530
-Subject: [PATCH] ASoC: hdac_hdmi: create dais based on number of cvts
+Date: Fri, 12 Feb 2016 07:46:03 +0530
+Subject: [PATCH] ASoC: hdac_hdmi: Enable DP1.2 and all converters/pins
 
-After enabling all pins/cvts, Skylake HDMI codec enumerates 3
-converters.  Three independent streams can be supported with 3
-cvts. This patch removes the static dai creation and creates dais
-based on the number of cvts queried.
+Skylake supports 3 pin and 3 converter widgets. But by default
+only one converter and pin widget are enabled. In skylake
+platform the DP port is on a different port which is not enabled
+by default. To enable playback on DP port, enable all pin and
+converter widget by sending a vendor VERB for a vendor widget to
+set required bits.
+
+As we are enabling the DP support enable the DP1.2 feature as well.
+
+Enabling DP1.2 and all widget changes are copied from patch_hdmi.c.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/hdac_hdmi.c | 123 ++++++++++++++++++++++++++++++++-----------
- 1 file changed, 91 insertions(+), 32 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 43 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
 
 diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index b2e5e54..c85deae 100644
+index d22fa6b..b2e5e54 100644
 --- a/sound/soc/codecs/hdac_hdmi.c
 +++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -30,6 +30,8 @@
- #include <sound/pcm_drm_eld.h>
- #include "../../hda/local.h"
- 
-+#define NAME_SIZE	32
-+
- #define AMP_OUT_MUTE		0xb080
- #define AMP_OUT_UNMUTE		0xb000
- #define PIN_OUT			(AC_PINCTL_OUT_EN)
-@@ -669,11 +671,82 @@ static void hdac_hdmi_skl_enable_dp12(struct hdac_device *hdac)
- 
+@@ -629,6 +629,46 @@ static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
+ 	return 0;
  }
  
-+static struct snd_soc_dai_ops hdmi_dai_ops = {
-+	.startup = hdac_hdmi_pcm_open,
-+	.shutdown = hdac_hdmi_pcm_close,
-+	.hw_params = hdac_hdmi_set_hw_params,
-+	.prepare = hdac_hdmi_playback_prepare,
-+	.hw_free = hdac_hdmi_playback_cleanup,
-+};
++#define INTEL_VENDOR_NID 0x08
++#define INTEL_GET_VENDOR_VERB 0xf81
++#define INTEL_SET_VENDOR_VERB 0x781
++#define INTEL_EN_DP12			0x02 /* enable DP 1.2 features */
++#define INTEL_EN_ALL_PIN_CVTS	0x01 /* enable 2nd & 3rd pins and convertors */
 +
-+/*
-+ * Each converter can support a stream independently. So a dai is created
-+ * based on the number of converter queried.
-+ */
-+static int hdac_hdmi_create_dais(struct hdac_device *hdac,
-+		struct snd_soc_dai_driver **dais,
-+		struct hdac_hdmi_priv *hdmi, int num_dais)
++static void hdac_hdmi_skl_enable_all_pins(struct hdac_device *hdac)
 +{
-+	struct snd_soc_dai_driver *hdmi_dais;
-+	struct hdac_hdmi_cvt *cvt;
-+	char name[NAME_SIZE], dai_name[NAME_SIZE];
-+	int i = 0;
-+	u32 rates, bps;
-+	unsigned int rate_max = 384000, rate_min = 8000;
-+	u64 formats;
-+	int ret;
++	unsigned int vendor_param;
 +
-+	hdmi_dais = devm_kzalloc(&hdac->dev,
-+			(sizeof(*hdmi_dais) * num_dais),
-+			GFP_KERNEL);
-+	if (!hdmi_dais)
-+		return -ENOMEM;
++	vendor_param = snd_hdac_codec_read(hdac, INTEL_VENDOR_NID, 0,
++				INTEL_GET_VENDOR_VERB, 0);
++	if (vendor_param == -1 || vendor_param & INTEL_EN_ALL_PIN_CVTS)
++		return;
 +
-+	list_for_each_entry(cvt, &hdmi->cvt_list, head) {
-+		ret = snd_hdac_query_supported_pcm(hdac, cvt->nid,
-+					&rates,	&formats, &bps);
-+		if (ret)
-+			return ret;
++	vendor_param |= INTEL_EN_ALL_PIN_CVTS;
++	vendor_param = snd_hdac_codec_read(hdac, INTEL_VENDOR_NID, 0,
++				INTEL_SET_VENDOR_VERB, vendor_param);
++	if (vendor_param == -1)
++		return;
++}
 +
-+		sprintf(dai_name, "intel-hdmi-hifi%d", i+1);
-+		hdmi_dais[i].name = devm_kstrdup(&hdac->dev,
-+					dai_name, GFP_KERNEL);
++static void hdac_hdmi_skl_enable_dp12(struct hdac_device *hdac)
++{
++	unsigned int vendor_param;
 +
-+		if (!hdmi_dais[i].name)
-+			return -ENOMEM;
++	vendor_param = snd_hdac_codec_read(hdac, INTEL_VENDOR_NID, 0,
++				INTEL_GET_VENDOR_VERB, 0);
++	if (vendor_param == -1 || vendor_param & INTEL_EN_DP12)
++		return;
 +
-+		snprintf(name, sizeof(name), "hifi%d", i+1);
-+		hdmi_dais[i].playback.stream_name =
-+				devm_kstrdup(&hdac->dev, name, GFP_KERNEL);
-+		if (!hdmi_dais[i].playback.stream_name)
-+			return -ENOMEM;
++	/* enable DP1.2 mode */
++	vendor_param |= INTEL_EN_DP12;
++	vendor_param = snd_hdac_codec_read(hdac, INTEL_VENDOR_NID, 0,
++				INTEL_SET_VENDOR_VERB, vendor_param);
++	if (vendor_param == -1)
++		return;
 +
-+		/*
-+		 * Set caps based on capability queried from the converter.
-+		 * It will be constrained runtime based on ELD queried.
-+		 */
-+		hdmi_dais[i].playback.formats = formats;
-+		hdmi_dais[i].playback.rates = rates;
-+		hdmi_dais[i].playback.rate_max = rate_max;
-+		hdmi_dais[i].playback.rate_min = rate_min;
-+		hdmi_dais[i].playback.channels_min = 2;
-+		hdmi_dais[i].playback.channels_max = 2;
-+		hdmi_dais[i].ops = &hdmi_dai_ops;
-+
-+		i++;
-+	}
-+
-+	*dais = hdmi_dais;
-+
-+	return 0;
 +}
 +
  /*
   * Parse all nodes and store the cvt/pin nids in array
   * Add one time initialization for pin and cvt widgets
-  */
--static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev)
-+static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev,
-+		struct snd_soc_dai_driver **dais, int *num_dais)
- {
- 	hda_nid_t nid;
- 	int i, num_nodes;
-@@ -724,6 +797,15 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev)
- 	if (!hdmi->num_pin || !hdmi->num_cvt)
- 		return -EIO;
+@@ -641,6 +681,9 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev)
+ 	struct hdac_hdmi_priv *hdmi = edev->private_data;
+ 	int ret;
  
-+	ret = hdac_hdmi_create_dais(hdac, dais, hdmi, hdmi->num_cvt);
-+	if (ret) {
-+		dev_err(&hdac->dev, "Failed to create dais with err: %d\n",
-+							ret);
-+		return ret;
-+	}
++	hdac_hdmi_skl_enable_all_pins(hdac);
++	hdac_hdmi_skl_enable_dp12(hdac);
 +
-+	*num_dais = hdmi->num_cvt;
-+
- 	return hdac_hdmi_init_dai_map(edev);
- }
- 
-@@ -814,38 +896,12 @@ static struct snd_soc_codec_driver hdmi_hda_codec = {
- 	.idle_bias_off	= true,
- };
- 
--static struct snd_soc_dai_ops hdmi_dai_ops = {
--	.startup = hdac_hdmi_pcm_open,
--	.shutdown = hdac_hdmi_pcm_close,
--	.hw_params = hdac_hdmi_set_hw_params,
--	.prepare = hdac_hdmi_playback_prepare,
--	.hw_free = hdac_hdmi_playback_cleanup,
--};
--
--static struct snd_soc_dai_driver hdmi_dais[] = {
--	{	.name = "intel-hdmi-hif1",
--		.playback = {
--			.stream_name = "hif1",
--			.channels_min = 2,
--			.channels_max = 2,
--			.rates = SNDRV_PCM_RATE_32000 |
--				SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
--				SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
--				SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000,
--			.formats = SNDRV_PCM_FMTBIT_S16_LE |
--				SNDRV_PCM_FMTBIT_S20_3LE |
--				SNDRV_PCM_FMTBIT_S24_LE |
--				SNDRV_PCM_FMTBIT_S32_LE,
--
--		},
--		.ops = &hdmi_dai_ops,
--	},
--};
--
- static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
- {
- 	struct hdac_device *codec = &edev->hdac;
- 	struct hdac_hdmi_priv *hdmi_priv;
-+	struct snd_soc_dai_driver *hdmi_dais = NULL;
-+	int num_dais = 0;
- 	int ret = 0;
- 
- 	hdmi_priv = devm_kzalloc(&codec->dev, sizeof(*hdmi_priv), GFP_KERNEL);
-@@ -859,13 +915,16 @@ static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
- 	INIT_LIST_HEAD(&hdmi_priv->pin_list);
- 	INIT_LIST_HEAD(&hdmi_priv->cvt_list);
- 
--	ret = hdac_hdmi_parse_and_map_nid(edev);
--	if (ret < 0)
-+	ret = hdac_hdmi_parse_and_map_nid(edev, &hdmi_dais, &num_dais);
-+	if (ret < 0) {
-+		dev_err(&codec->dev,
-+			"Failed in parse and map nid with err: %d\n", ret);
- 		return ret;
-+	}
- 
- 	/* ASoC specific initialization */
- 	return snd_soc_register_codec(&codec->dev, &hdmi_hda_codec,
--			hdmi_dais, ARRAY_SIZE(hdmi_dais));
-+			hdmi_dais, num_dais);
- }
- 
- static int hdac_hdmi_dev_remove(struct hdac_ext_device *edev)
+ 	num_nodes = snd_hdac_get_sub_nodes(hdac, hdac->afg, &nid);
+ 	if (!nid || num_nodes <= 0) {
+ 		dev_warn(&hdac->dev, "HDMI: failed to get afg sub nodes\n");
 -- 
 2.7.0
