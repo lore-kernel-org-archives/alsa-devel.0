@@ -1,18 +1,26 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdac_hdmi: Add hotplug notification and
-	read ELD" to the asoc tree
-Date: Mon, 15 Feb 2016 20:58:59 +0000
-Message-ID: <E1aVQEV-0007wE-51@finisterre>
-References: <1455243375-16067-2-git-send-email-subhransu.s.prusty@intel.com>
+From: Martin Koegler <martin.koegler@chello.at>
+Subject: Re: [PATCH] Provide card number / PID via sequencer
+ client	info
+Date: Mon, 15 Feb 2016 22:44:54 +0100
+Message-ID: <20160215214454.GA11052@mail.zuhause>
+References: <1455370937-501-1-git-send-email-martin@mail.zuhause>
+ <1455370937-501-3-git-send-email-martin@mail.zuhause>
+ <s5htwlab70o.wl-tiwai@suse.de>
+ <20160215183243.GA26482@mail.zuhause>
+ <s5hziv194gz.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="nFreZHaLTZJo0R7j"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B65B265062
- for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 21:59:06 +0100 (CET)
-In-Reply-To: <1455243375-16067-2-git-send-email-subhransu.s.prusty@intel.com>
+Received: from vie01a-dmta-pe03-1.mx.upcmail.net
+ (vie01a-dmta-pe03-1.mx.upcmail.net [62.179.121.160])
+ by alsa0.perex.cz (Postfix) with ESMTP id 61E07260695
+ for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 22:44:56 +0100 (CET)
+Received: from [172.31.216.43] (helo=vie01a-pemc-psmtp-pe01)
+ by vie01a-dmta-pe03.mx.upcmail.net with esmtp (Exim 4.72)
+ (envelope-from <martin.koegler@chello.at>) id 1aVQwy-0002iZ-1d
+ for alsa-devel@alsa-project.org; Mon, 15 Feb 2016 22:44:56 +0100
+Content-Disposition: inline
+In-Reply-To: <s5hziv194gz.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,355 +30,372 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Martin Koegler <martin.koegler@chello.at>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: hdac_hdmi: Add hotplug notification and read ELD
+--nFreZHaLTZJo0R7j
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+On Mon, Feb 15, 2016 at 08:08:12PM +0100, Takashi Iwai wrote:
+> On Mon, 15 Feb 2016 19:32:43 +0100,
+> Martin Koegler wrote:
+> > 
+> > On Mon, Feb 15, 2016 at 11:30:15AM +0100, Takashi Iwai wrote:
+> > > The idea looks good.  One remaining question is whether only providing
+> > > the card number or pid is sufficient for all cases.
+> > 
+> > I only care about the kernel client. 
+> 
+> Well, the question is whether only card number is enough.  What if
+> cards provide multiple rawmidi devices?
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Aren't they currently ports?
+seq_midi.c creates just one sequencer device per card number.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Regards,
+Martin
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+--nFreZHaLTZJo0R7j
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="0001-Show-sequencer-sound-card-numer-PID-via-aconnect.patch"
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+>From 797b71aeb533d1111b8aada6b7e0ad8e2b133325 Mon Sep 17 00:00:00 2001
+From: Martin Koegler <martin.koegler@chello.at>
+Date: Fri, 12 Feb 2016 19:53:32 +0100
+Subject: [PATCH] Show sequencer sound card numer/PID via aconnect
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+rawmidi devices expose the card number via IOCTLs, which allows to
+find the corresponding device in sysfs.
 
-Thanks,
-Mark
+The sequencer provides no identifing data. Chromium works around this
+issue by scanning rawmidi as well as sequencer devices and matching
+them by using assumtions, how the kernel register sequencer devices.
 
->From b8a54545b00cbf2aff743578c5c69aafdcde1d64 Mon Sep 17 00:00:00 2001
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Date: Fri, 12 Feb 2016 07:46:01 +0530
-Subject: [PATCH] ASoC: hdac_hdmi: Add hotplug notification and read ELD
+This patch adds support for displaying the sound card number/PID to
+aconnect.
 
-This patch uses i915 component framework to register for hotplug
-notification.
-
-In the hotplug notification, driver reads pin sense and ELD by
-sending PIN_SENSE and ELD verbs over HDA bus. Once it identifies
-valid pin sense and valid ELD, store the ELD into the
-corresponding pin map buffer.
-
-Also read the monitor present sense during resume and ignore the
-ELD notify from graphics during PM as is done in legacy hda,
-commit 8ae743e82f0b ("ALSA: hda - Skip ELD notification during
-system suspend")
-
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Martin Koegler <martin.koegler@chello.at>
 ---
- sound/soc/codecs/hdac_hdmi.c | 217 +++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 211 insertions(+), 6 deletions(-)
+ seq/aconnect/aconnect.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 5a1ec0f..fff225d 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -34,6 +34,9 @@
- 
- #define HDA_MAX_CONNECTIONS     32
- 
-+#define ELD_MAX_SIZE    256
-+#define ELD_FIXED_BYTES	20
-+
- struct hdac_hdmi_cvt_params {
- 	unsigned int channels_min;
- 	unsigned int channels_max;
-@@ -48,11 +51,22 @@ struct hdac_hdmi_cvt {
- 	struct hdac_hdmi_cvt_params params;
- };
- 
-+struct hdac_hdmi_eld {
-+	bool	monitor_present;
-+	bool	eld_valid;
-+	int	eld_size;
-+	char    eld_buffer[ELD_MAX_SIZE];
-+};
-+
- struct hdac_hdmi_pin {
- 	struct list_head head;
- 	hda_nid_t nid;
- 	int num_mux_nids;
- 	hda_nid_t mux_nids[HDA_MAX_CONNECTIONS];
-+	struct hdac_hdmi_eld eld;
-+	struct hdac_ext_device *edev;
-+	int repoll_count;
-+	struct delayed_work work;
- };
- 
- struct hdac_hdmi_dai_pin_map {
-@@ -76,6 +90,80 @@ static inline struct hdac_ext_device *to_hda_ext_device(struct device *dev)
- 	return to_ehdac_device(hdac);
- }
- 
-+ /* HDMI ELD routines */
-+static unsigned int hdac_hdmi_get_eld_data(struct hdac_device *codec,
-+				hda_nid_t nid, int byte_index)
-+{
-+	unsigned int val;
-+
-+	val = snd_hdac_codec_read(codec, nid, 0, AC_VERB_GET_HDMI_ELDD,
-+							byte_index);
-+
-+	dev_dbg(&codec->dev, "HDMI: ELD data byte %d: 0x%x\n",
-+					byte_index, val);
-+
-+	return val;
-+}
-+
-+static int hdac_hdmi_get_eld_size(struct hdac_device *codec, hda_nid_t nid)
-+{
-+	return snd_hdac_codec_read(codec, nid, 0, AC_VERB_GET_HDMI_DIP_SIZE,
-+						 AC_DIPSIZE_ELD_BUF);
-+}
-+
-+/*
-+ * This function queries the ELD size and ELD data and fills in the buffer
-+ * passed by user
-+ */
-+static int hdac_hdmi_get_eld(struct hdac_device *codec, hda_nid_t nid,
-+			     unsigned char *buf, int *eld_size)
-+{
-+	int i, size, ret = 0;
-+
-+	/*
-+	 * ELD size is initialized to zero in caller function. If no errors and
-+	 * ELD is valid, actual eld_size is assigned.
-+	 */
-+
-+	size = hdac_hdmi_get_eld_size(codec, nid);
-+	if (size < ELD_FIXED_BYTES || size > ELD_MAX_SIZE) {
-+		dev_err(&codec->dev, "HDMI: invalid ELD buf size %d\n", size);
-+		return -ERANGE;
-+	}
-+
-+	/* set ELD buffer */
-+	for (i = 0; i < size; i++) {
-+		unsigned int val = hdac_hdmi_get_eld_data(codec, nid, i);
-+		/*
-+		 * Graphics driver might be writing to ELD buffer right now.
-+		 * Just abort. The caller will repoll after a while.
-+		 */
-+		if (!(val & AC_ELDD_ELD_VALID)) {
-+			dev_err(&codec->dev,
-+				"HDMI: invalid ELD data byte %d\n", i);
-+			ret = -EINVAL;
-+			goto error;
-+		}
-+		val &= AC_ELDD_ELD_DATA;
-+		/*
-+		 * The first byte cannot be zero. This can happen on some DVI
-+		 * connections. Some Intel chips may also need some 250ms delay
-+		 * to return non-zero ELD data, even when the graphics driver
-+		 * correctly writes ELD content before setting ELD_valid bit.
-+		 */
-+		if (!val && !i) {
-+			dev_err(&codec->dev, "HDMI: 0 ELD data\n");
-+			ret = -EINVAL;
-+			goto error;
-+		}
-+		buf[i] = val;
-+	}
-+
-+	*eld_size = size;
-+error:
-+	return ret;
-+}
-+
- static int hdac_hdmi_setup_stream(struct hdac_ext_device *hdac,
- 				hda_nid_t cvt_nid, hda_nid_t pin_nid,
- 				u32 stream_tag, int format)
-@@ -246,7 +334,6 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- 	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
- 	struct hdac_hdmi_priv *hdmi = hdac->private_data;
- 	struct hdac_hdmi_dai_pin_map *dai_map;
--	int val;
- 
- 	if (dai->id > 0) {
- 		dev_err(&hdac->hdac.dev, "Only one dai supported as of now\n");
-@@ -255,12 +342,14 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- 
- 	dai_map = &hdmi->dai_map[dai->id];
- 
--	val = snd_hdac_codec_read(&hdac->hdac, dai_map->pin->nid, 0,
--					AC_VERB_GET_PIN_SENSE, 0);
--	dev_info(&hdac->hdac.dev, "Val for AC_VERB_GET_PIN_SENSE: %x\n", val);
-+	if ((!dai_map->pin->eld.monitor_present) ||
-+			(!dai_map->pin->eld.eld_valid)) {
-+
-+		dev_err(&hdac->hdac.dev,
-+				"Failed: montior present? %d ELD valid?: %d\n",
-+				dai_map->pin->eld.monitor_present,
-+				dai_map->pin->eld.eld_valid);
- 
--	if ((!(val & AC_PINSENSE_PRESENCE)) || (!(val & AC_PINSENSE_ELDV))) {
--		dev_err(&hdac->hdac.dev, "Monitor presence invalid with val: %x\n", val);
- 		return -ENODEV;
- 	}
- 
-@@ -410,6 +499,71 @@ static int hdac_hdmi_add_cvt(struct hdac_ext_device *edev, hda_nid_t nid)
- 	return hdac_hdmi_query_cvt_params(&edev->hdac, cvt);
- }
- 
-+static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin, int repoll)
-+{
-+	struct hdac_ext_device *edev = pin->edev;
-+	int val;
-+
-+	if (!edev)
-+		return;
-+
-+	pin->repoll_count = repoll;
-+
-+	pm_runtime_get_sync(&edev->hdac.dev);
-+	val = snd_hdac_codec_read(&edev->hdac, pin->nid, 0,
-+					AC_VERB_GET_PIN_SENSE, 0);
-+
-+	dev_dbg(&edev->hdac.dev, "Pin sense val %x for pin: %d\n",
-+						val, pin->nid);
-+
-+	pin->eld.monitor_present = !!(val & AC_PINSENSE_PRESENCE);
-+	pin->eld.eld_valid = !!(val & AC_PINSENSE_ELDV);
-+
-+	if (!pin->eld.monitor_present || !pin->eld.eld_valid) {
-+
-+		dev_dbg(&edev->hdac.dev, "%s: disconnect for pin %d\n",
-+						__func__, pin->nid);
-+		goto put_hdac_device;
-+	}
-+
-+	if (pin->eld.monitor_present && pin->eld.eld_valid) {
-+		/* TODO: use i915 component for reading ELD later */
-+		if (hdac_hdmi_get_eld(&edev->hdac, pin->nid,
-+				pin->eld.eld_buffer,
-+				&pin->eld.eld_size) == 0) {
-+
-+			print_hex_dump_bytes("ELD: ", DUMP_PREFIX_OFFSET,
-+					pin->eld.eld_buffer, pin->eld.eld_size);
-+		} else {
-+			pin->eld.monitor_present = false;
-+			pin->eld.eld_valid = false;
-+		}
-+	}
-+
-+	/*
-+	 * Sometimes the pin_sense may present invalid monitor
-+	 * present and eld_valid. If ELD data is not valid, loop few
-+	 * more times to get correct pin sense and valid ELD.
-+	 */
-+	if ((!pin->eld.monitor_present || !pin->eld.eld_valid) && repoll)
-+		schedule_delayed_work(&pin->work, msecs_to_jiffies(300));
-+
-+put_hdac_device:
-+	pm_runtime_put_sync(&edev->hdac.dev);
-+}
-+
-+static void hdac_hdmi_repoll_eld(struct work_struct *work)
-+{
-+	struct hdac_hdmi_pin *pin =
-+		container_of(to_delayed_work(work), struct hdac_hdmi_pin, work);
-+
-+	/* picked from legacy HDA driver */
-+	if (pin->repoll_count++ > 6)
-+		pin->repoll_count = 0;
-+
-+	hdac_hdmi_present_sense(pin, pin->repoll_count);
-+}
-+
- static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
+diff --git a/seq/aconnect/aconnect.c b/seq/aconnect/aconnect.c
+index 8d6cebb..d299f5c 100644
+--- a/seq/aconnect/aconnect.c
++++ b/seq/aconnect/aconnect.c
+@@ -166,11 +166,22 @@ static void print_port(snd_seq_t *seq, snd_seq_client_info_t *cinfo,
+ 		       snd_seq_port_info_t *pinfo, int count)
  {
- 	struct hdac_hdmi_priv *hdmi = edev->private_data;
-@@ -424,6 +578,9 @@ static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
- 	list_add_tail(&pin->head, &hdmi->pin_list);
- 	hdmi->num_pin++;
- 
-+	pin->edev = edev;
-+	INIT_DELAYED_WORK(&pin->work, hdac_hdmi_repoll_eld);
+ 	if (! count) {
+-		printf(_("client %d: '%s' [type=%s]\n"),
++		int card, pid;
 +
++		printf(_("client %d: '%s' [type=%s"),
+ 		       snd_seq_client_info_get_client(cinfo),
+ 		       snd_seq_client_info_get_name(cinfo),
+ 		       (snd_seq_client_info_get_type(cinfo) == SND_SEQ_USER_CLIENT ?
+ 			_("user") : _("kernel")));
++
++		card = snd_seq_client_info_get_card(cinfo);
++		if (card != -1)
++			printf(",card=%d", card);
++
++		pid = snd_seq_client_info_get_pid(cinfo);
++		if (pid != -1)
++			printf(",pid=%d", pid);
++		printf("]\n");
+ 	}
+ 	printf("  %3d '%-16s'\n",
+ 	       snd_seq_port_info_get_port(pinfo),
+-- 
+2.1.4
+
+
+--nFreZHaLTZJo0R7j
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="0001-Provide-sequencer-sound-card-number-PID-via-alsa-lib.patch"
+
+>From aabf924538588a65cbbdb2d702712338279fd9c1 Mon Sep 17 00:00:00 2001
+From: Martin Koegler <martin.koegler@chello.at>
+Date: Fri, 12 Feb 2016 19:54:15 +0100
+Subject: [PATCH] Provide sequencer sound card number / PID via alsa-lib
+
+rawmidi devices expose the card number via IOCTLs, which allows to
+find the corresponding device in sysfs.
+
+The sequencer provides no identifing data. Chromium works around this
+issue by scanning rawmidi as well as sequencer devices and matching
+them by using assumtions, how the kernel register sequencer devices.
+
+This changes adds support for exposing the card number for kernel clients
+as well as the PID for user client.
+
+It supports kernels with and without the required support.
+
+Signed-off-by: Martin Koegler <martin.koegler@chello.at>
+---
+ include/seq.h              |  2 ++
+ include/sound/asequencer.h |  6 ++++--
+ src/seq/seq.c              | 26 ++++++++++++++++++++++++++
+ src/seq/seq_hw.c           | 12 +++++++++++-
+ 4 files changed, 43 insertions(+), 3 deletions(-)
+
+diff --git a/include/seq.h b/include/seq.h
+index 9576822..d05940e 100644
+--- a/include/seq.h
++++ b/include/seq.h
+@@ -143,6 +143,8 @@ snd_seq_client_type_t snd_seq_client_info_get_type(const snd_seq_client_info_t *
+ const char *snd_seq_client_info_get_name(snd_seq_client_info_t *info);
+ int snd_seq_client_info_get_broadcast_filter(const snd_seq_client_info_t *info);
+ int snd_seq_client_info_get_error_bounce(const snd_seq_client_info_t *info);
++int snd_seq_client_info_get_card(const snd_seq_client_info_t *info);
++int snd_seq_client_info_get_pid(const snd_seq_client_info_t *info);
+ const unsigned char *snd_seq_client_info_get_event_filter(const snd_seq_client_info_t *info);
+ int snd_seq_client_info_get_num_ports(const snd_seq_client_info_t *info);
+ int snd_seq_client_info_get_event_lost(const snd_seq_client_info_t *info);
+diff --git a/include/sound/asequencer.h b/include/sound/asequencer.h
+index 09c8a00..3ac70fd 100644
+--- a/include/sound/asequencer.h
++++ b/include/sound/asequencer.h
+@@ -24,7 +24,7 @@
+ 
+ 
+ /** version of the sequencer */
+-#define SNDRV_SEQ_VERSION SNDRV_PROTOCOL_VERSION (1, 0, 1)
++#define SNDRV_SEQ_VERSION SNDRV_PROTOCOL_VERSION (1, 0, 2)
+ 
+ /**
+  * definition of sequencer event types
+@@ -356,7 +356,9 @@ struct snd_seq_client_info {
+ 	unsigned char event_filter[32];	/* event filter bitmap */
+ 	int num_ports;			/* RO: number of ports */
+ 	int event_lost;			/* number of lost events */
+-	char reserved[64];		/* for future use */
++	int card;			/* RO: card number[kernel] */
++	int pid;			/* RO: pid[user] */
++	char reserved[56];		/* for future use */
+ };
+ 
+ 
+diff --git a/src/seq/seq.c b/src/seq/seq.c
+index 620ca3f..4405e68 100644
+--- a/src/seq/seq.c
++++ b/src/seq/seq.c
+@@ -1522,6 +1522,32 @@ int snd_seq_client_info_get_error_bounce(const snd_seq_client_info_t *info)
+ }
+ 
+ /**
++ * \brief Get the sound card number.
++ * \param info client_info container
++ * \return card number or -1 if value is not available.
++ *
++ * Only available for SND_SEQ_KERNEL_CLIENT clients.
++ */
++int snd_seq_client_info_get_card(const snd_seq_client_info_t *info)
++{
++	assert(info);
++	return info->card;
++}
++
++/**
++ * \brief Get the owning PID.
++ * \param info client_info container
++ * \return pid or -1 if value is not available.
++ *
++ * Only available for SND_SEQ_USER_CLIENT clients.
++ */
++int snd_seq_client_info_get_pid(const snd_seq_client_info_t *info)
++{
++	assert(info);
++	return info->pid;
++}
++
++/**
+  * \brief (DEPRECATED) Get the event filter bitmap of a client_info container
+  * \param info client_info container
+  * \return NULL if no event filter, or pointer to event filter bitmap
+diff --git a/src/seq/seq_hw.c b/src/seq/seq_hw.c
+index d033367..24350b6 100644
+--- a/src/seq/seq_hw.c
++++ b/src/seq/seq_hw.c
+@@ -32,10 +32,11 @@ const char *_snd_module_seq_hw = "";
+ #ifndef DOC_HIDDEN
+ #define SNDRV_FILE_SEQ		ALSA_DEVICE_DIRECTORY "seq"
+ #define SNDRV_FILE_ALOADSEQ	ALOAD_DEVICE_DIRECTORY "aloadSEQ"
+-#define SNDRV_SEQ_VERSION_MAX	SNDRV_PROTOCOL_VERSION(1, 0, 1)
++#define SNDRV_SEQ_VERSION_MAX	SNDRV_PROTOCOL_VERSION(1, 0, 2)
+ 
+ typedef struct {
+ 	int fd;
++	int micro_version;
+ } snd_seq_hw_t;
+ #endif /* DOC_HIDDEN */
+ 
+@@ -100,6 +101,10 @@ static int snd_seq_hw_get_client_info(snd_seq_t *seq, snd_seq_client_info_t * in
+ 		/*SYSERR("SNDRV_SEQ_IOCTL_GET_CLIENT_INFO failed");*/
+ 		return -errno;
+ 	}
++	if (hw->micro_version < SNDRV_PROTOCOL_MICRO(SNDRV_SEQ_VERSION_MAX)) {
++		info->card = -1;
++		info->pid = -1;
++	}
  	return 0;
  }
  
-@@ -482,17 +639,65 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev)
- 	return hdac_hdmi_init_dai_map(edev);
+@@ -368,6 +373,10 @@ static int snd_seq_hw_query_next_client(snd_seq_t *seq, snd_seq_client_info_t *i
+ 		/*SYSERR("SNDRV_SEQ_IOCTL_QUERY_NEXT_CLIENT failed");*/
+ 		return -errno;
+ 	}
++	if (hw->micro_version < SNDRV_PROTOCOL_MICRO(SNDRV_SEQ_VERSION_MAX)) {
++		info->card = -1;
++		info->pid = -1;
++	}
+ 	return 0;
  }
  
-+static void hdac_hdmi_eld_notify_cb(void *aptr, int port)
-+{
-+	struct hdac_ext_device *edev = aptr;
-+	struct hdac_hdmi_priv *hdmi = edev->private_data;
-+	struct hdac_hdmi_pin *pin;
-+	struct snd_soc_codec *codec = edev->scodec;
-+
-+	/* Don't know how this mapping is derived */
-+	hda_nid_t pin_nid = port + 0x04;
-+
-+	dev_dbg(&edev->hdac.dev, "%s: for pin: %d\n", __func__, pin_nid);
-+
-+	/*
-+	 * skip notification during system suspend (but not in runtime PM);
-+	 * the state will be updated at resume. Also since the ELD and
-+	 * connection states are updated in anyway at the end of the resume,
-+	 * we can skip it when received during PM process.
-+	 */
-+	if (snd_power_get_state(codec->component.card->snd_card) !=
-+			SNDRV_CTL_POWER_D0)
-+		return;
-+
-+	if (atomic_read(&edev->hdac.in_pm))
-+		return;
-+
-+	list_for_each_entry(pin, &hdmi->pin_list, head) {
-+		if (pin->nid == pin_nid)
-+			hdac_hdmi_present_sense(pin, 1);
-+	}
-+}
-+
-+static struct i915_audio_component_audio_ops aops = {
-+	.pin_eld_notify	= hdac_hdmi_eld_notify_cb,
-+};
-+
- static int hdmi_codec_probe(struct snd_soc_codec *codec)
- {
- 	struct hdac_ext_device *edev = snd_soc_codec_get_drvdata(codec);
- 	struct hdac_hdmi_priv *hdmi = edev->private_data;
- 	struct snd_soc_dapm_context *dapm =
- 		snd_soc_component_get_dapm(&codec->component);
-+	struct hdac_hdmi_pin *pin;
-+	int ret;
+@@ -480,6 +489,7 @@ int snd_seq_hw_open(snd_seq_t **handle, const char *name, int streams, int mode)
+ 		return -ENOMEM;
+ 	}
+ 	hw->fd = fd;
++	hw->micro_version = SNDRV_PROTOCOL_MICRO(ver);
+ 	if (streams & SND_SEQ_OPEN_OUTPUT) {
+ 		seq->obuf = (char *) malloc(seq->obufsize = SND_SEQ_OBUF_SIZE);
+ 		if (!seq->obuf) {
+-- 
+2.1.4
+
+
+--nFreZHaLTZJo0R7j
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="0001-Provide-card-number-PID-via-sequencer-client-info.patch"
+
+>From 133a8b3e059a09bf50ce62ae9960472dc09e71d2 Mon Sep 17 00:00:00 2001
+From: Martin Koegler <martin.koegler@chello.at>
+Date: Thu, 11 Feb 2016 20:07:20 +0100
+Subject: [PATCH] Provide card number / PID via sequencer client info
+
+rawmidi devices expose the card number via IOCTLs, which allows to
+find the corresponding device in sysfs.
+
+The sequencer provides no identifing data. Chromium works around this
+issue by scanning rawmidi as well as sequencer devices and matching
+them by using assumtions, how the kernel register sequencer devices.
+
+This changes adds support for exposing the card number for kernel clients
+as well as the PID for user client.
+
+The minor of the API version is changed to distinguish between the zero
+initialised reserved field and card number 0.
+
+Signed-off-by: Martin Koegler <martin.koegler@chello.at>
+---
+ include/uapi/sound/asequencer.h |  6 ++++--
+ sound/core/seq/seq_clientmgr.c  | 14 ++++++++++++++
+ sound/core/seq/seq_clientmgr.h  |  2 ++
+ 3 files changed, 20 insertions(+), 2 deletions(-)
+
+diff --git a/include/uapi/sound/asequencer.h b/include/uapi/sound/asequencer.h
+index 5a5fa49..8c7da5a 100644
+--- a/include/uapi/sound/asequencer.h
++++ b/include/uapi/sound/asequencer.h
+@@ -25,7 +25,7 @@
+ #include <sound/asound.h>
  
- 	edev->scodec = codec;
+ /** version of the sequencer */
+-#define SNDRV_SEQ_VERSION SNDRV_PROTOCOL_VERSION (1, 0, 1)
++#define SNDRV_SEQ_VERSION SNDRV_PROTOCOL_VERSION (1, 0, 2)
  
- 	create_fill_widget_route_map(dapm, &hdmi->dai_map[0]);
+ /**
+  * definition of sequencer event types
+@@ -357,7 +357,9 @@ struct snd_seq_client_info {
+ 	unsigned char event_filter[32];	/* event filter bitmap */
+ 	int num_ports;			/* RO: number of ports */
+ 	int event_lost;			/* number of lost events */
+-	char reserved[64];		/* for future use */
++	int card;			/* RO: card number[kernel] */
++	int pid;			/* RO: pid[user] */
++	char reserved[56];		/* for future use */
+ };
  
-+	aops.audio_ptr = edev;
-+	ret = snd_hdac_i915_register_notifier(&aops);
-+	if (ret < 0) {
-+		dev_err(&edev->hdac.dev, "notifier register failed: err: %d\n",
-+				ret);
-+		return ret;
-+	}
+ 
+diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
+index 58e79e0..d6d9419 100644
+--- a/sound/core/seq/seq_clientmgr.c
++++ b/sound/core/seq/seq_clientmgr.c
+@@ -364,6 +364,7 @@ static int snd_seq_open(struct inode *inode, struct file *file)
+ 	/* fill client data */
+ 	user->file = file;
+ 	sprintf(client->name, "Client-%d", c);
++	client->data.user.owner = get_pid(task_pid(current));
+ 
+ 	/* make others aware this new client */
+ 	snd_seq_system_client_ev_client_start(c);
+@@ -380,6 +381,7 @@ static int snd_seq_release(struct inode *inode, struct file *file)
+ 		seq_free_client(client);
+ 		if (client->data.user.fifo)
+ 			snd_seq_fifo_delete(&client->data.user.fifo);
++		put_pid(client->data.user.owner);
+ 		kfree(client);
+ 	}
+ 
+@@ -1197,6 +1199,17 @@ static void get_client_info(struct snd_seq_client *cptr,
+ 	info->event_lost = cptr->event_lost;
+ 	memcpy(info->event_filter, cptr->event_filter, 32);
+ 	info->num_ports = cptr->num_ports;
 +
-+	list_for_each_entry(pin, &hdmi->pin_list, head)
-+		hdac_hdmi_present_sense(pin, 1);
++	if (cptr->type == USER_CLIENT)
++		info->pid = pid_vnr(cptr->data.user.owner);
++	else
++		info->pid = -1;
 +
- 	/* Imp: Store the card pointer in hda_codec */
- 	edev->card = dapm->card->snd_card;
++	if (cptr->type == KERNEL_CLIENT)
++		info->card = cptr->data.kernel.card ? cptr->data.kernel.card->number : -1;
++	else
++		info->card = -1;
++
+ 	memset(info->reserved, 0, sizeof(info->reserved));
+ }
+ 
+@@ -2271,6 +2284,7 @@ int snd_seq_create_kernel_client(struct snd_card *card, int client_index,
+ 
+ 	client->accept_input = 1;
+ 	client->accept_output = 1;
++	client->data.kernel.card = card;
+ 		
+ 	va_start(args, name_fmt);
+ 	vsnprintf(client->name, sizeof(client->name), name_fmt, args);
+diff --git a/sound/core/seq/seq_clientmgr.h b/sound/core/seq/seq_clientmgr.h
+index 20f0a72..031462e 100644
+--- a/sound/core/seq/seq_clientmgr.h
++++ b/sound/core/seq/seq_clientmgr.h
+@@ -33,6 +33,7 @@
+ struct snd_seq_user_client {
+ 	struct file *file;	/* file struct of client */
+ 	/* ... */
++	struct pid* owner;
+ 	
+ 	/* fifo */
+ 	struct snd_seq_fifo *fifo;	/* queue for incoming events */
+@@ -41,6 +42,7 @@ struct snd_seq_user_client {
+ 
+ struct snd_seq_kernel_client {
+ 	/* ... */
++	struct snd_card* card;
+ };
+ 
  
 -- 
-2.7.0
+2.1.4
+
+
+--nFreZHaLTZJo0R7j
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--nFreZHaLTZJo0R7j--
