@@ -1,18 +1,19 @@
 From: Vaibhav Agarwal <vaibhav.agarwal@linaro.org>
-Subject: [RFC 1/4] ASoc: Use ref_count for soc DAI & component
-Date: Mon, 15 Feb 2016 17:49:29 +0530
-Message-ID: <1455538772-24926-2-git-send-email-vaibhav.agarwal@linaro.org>
+Subject: [RFC 2/4] alsa: add locked variant for
+	snd_ctl_remove_id
+Date: Mon, 15 Feb 2016 17:49:30 +0530
+Message-ID: <1455538772-24926-3-git-send-email-vaibhav.agarwal@linaro.org>
 References: <1455538772-24926-1-git-send-email-vaibhav.agarwal@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f51.google.com (mail-pa0-f51.google.com
- [209.85.220.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 117022612DF
- for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 13:19:45 +0100 (CET)
-Received: by mail-pa0-f51.google.com with SMTP id yy13so85274428pab.3
- for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 04:19:44 -0800 (PST)
+Received: from mail-pf0-f175.google.com (mail-pf0-f175.google.com
+ [209.85.192.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id B878326063A
+ for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 13:19:48 +0100 (CET)
+Received: by mail-pf0-f175.google.com with SMTP id e127so86964051pfe.3
+ for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 04:19:48 -0800 (PST)
 In-Reply-To: <1455538772-24926-1-git-send-email-vaibhav.agarwal@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,138 +28,61 @@ To: alsa-devel@alsa-project.org
 Cc: liam.r.girdwood@linux.intel.com, mengdong.lin@linux.intel.com, vinod.koul@intel.com, Vaibhav Agarwal <vaibhav.agarwal@linaro.org>, peter.ujfalusi@ti.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This is preperation to allow dynamic DAI link insertion &
-removal.
-
-Currently, DAI links are added/removed once during soc-card
-instatiate & removal. Thus, irrespective of usage count by multiple
-DAI links, DAIs and components are probed or removed only once
-while maintaining 'probed' flag.
-However, in case of dynamic DAI link insertion/removal we need to
-ensure DAI/components are not unnecessarily probed multiple & not
-removed mistakenly while in use by any other existing DAI link.
-Thus, ref_count is used to maintain their usage count.
+While removing kcontrols due to dynamic dai_link/codec removal,
+mutex/semaphore for soc-card/sound card is already acquired.
+Thus, added lock already acquired variant for ctl_remove_id.
 
 Signed-off-by: Vaibhav Agarwal <vaibhav.agarwal@linaro.org>
 ---
- include/sound/soc-dai.h |  1 +
- include/sound/soc.h     |  2 ++
- sound/soc/soc-core.c    | 47 ++++++++++++++++++++++++++++++-----------------
- 3 files changed, 33 insertions(+), 17 deletions(-)
+ include/sound/control.h |  1 +
+ sound/core/control.c    | 23 +++++++++++++++++++++++
+ 2 files changed, 24 insertions(+)
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 964b7de..03c2c7a 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -270,6 +270,7 @@ struct snd_soc_dai {
- 	unsigned int symmetric_samplebits:1;
- 	unsigned int active;
- 	unsigned char probed:1;
-+	int ref_count;
+diff --git a/include/sound/control.h b/include/sound/control.h
+index 21d047f..8faea10 100644
+--- a/include/sound/control.h
++++ b/include/sound/control.h
+@@ -125,6 +125,7 @@ int snd_ctl_add(struct snd_card * card, struct snd_kcontrol * kcontrol);
+ int snd_ctl_remove(struct snd_card * card, struct snd_kcontrol * kcontrol);
+ int snd_ctl_replace(struct snd_card *card, struct snd_kcontrol *kcontrol, bool add_on_replace);
+ int snd_ctl_remove_id(struct snd_card * card, struct snd_ctl_elem_id *id);
++int snd_ctl_remove_id_locked(struct snd_card *card, struct snd_ctl_elem_id *id);
+ int snd_ctl_rename_id(struct snd_card * card, struct snd_ctl_elem_id *src_id, struct snd_ctl_elem_id *dst_id);
+ int snd_ctl_activate_id(struct snd_card *card, struct snd_ctl_elem_id *id,
+ 			int active);
+diff --git a/sound/core/control.c b/sound/core/control.c
+index a85d455..dca1998 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -530,6 +530,29 @@ int snd_ctl_remove_id(struct snd_card *card, struct snd_ctl_elem_id *id)
+ EXPORT_SYMBOL(snd_ctl_remove_id);
  
- 	struct snd_soc_dapm_widget *playback_widget;
- 	struct snd_soc_dapm_widget *capture_widget;
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 7afb72c..3dda0c4 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -822,6 +822,8 @@ struct snd_soc_component {
- 	struct dentry *debugfs_root;
- #endif
- 
-+	int ref_count;
+ /**
++ * snd_ctl_remove_id_locked - remove the control of the given id and release it
++ * @card: the card instance
++ * @id: the control id to remove
++ *
++ * Finds the control instance with the given id, removes it from the
++ * card list and releases it.
++ *
++ * Return: 0 if successful, or a negative error code on failure.
++ */
++int snd_ctl_remove_id_locked(struct snd_card *card, struct snd_ctl_elem_id *id)
++{
++	struct snd_kcontrol *kctl;
++	int ret;
 +
- 	/*
- 	* DO NOT use any of the fields below in drivers, they are temporary and
- 	* are going to be removed again soon. If you use them in driver code the
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 790ee2b..2b83814 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1060,6 +1060,11 @@ static void soc_remove_component(struct snd_soc_component *component)
- 	if (!component->card)
- 		return;
- 
-+	component->ref_count--;
++	kctl = snd_ctl_find_id(card, id);
++	if (kctl == NULL)
++		return -ENOENT;
++	ret = snd_ctl_remove(card, kctl);
++	return ret;
++}
++EXPORT_SYMBOL(snd_ctl_remove_id_locked);
 +
-+	if (component->ref_count)
-+		return;
-+
- 	/* This is a HACK and will be removed soon */
- 	if (component->codec)
- 		list_del(&component->codec->card_list);
-@@ -1080,14 +1085,17 @@ static void soc_remove_dai(struct snd_soc_dai *dai, int order)
- 
- 	if (dai && dai->probed &&
- 			dai->driver->remove_order == order) {
--		if (dai->driver->remove) {
--			err = dai->driver->remove(dai);
--			if (err < 0)
--				dev_err(dai->dev,
--					"ASoC: failed to remove %s: %d\n",
--					dai->name, err);
-+		dai->ref_count--;
-+		if (!dai->ref_count) {
-+			if (dai->driver->remove) {
-+				err = dai->driver->remove(dai);
-+				if (err < 0)
-+					dev_err(dai->dev,
-+						"ASoC: failed to remove %s: %d\n",
-+						dai->name, err);
-+			}
-+			dai->probed = 0;
- 		}
--		dai->probed = 0;
- 	}
- }
- 
-@@ -1367,6 +1375,7 @@ static int soc_probe_component(struct snd_soc_card *card,
- 				card->name, component->card->name);
- 			return -ENODEV;
- 		}
-+		component->ref_count++;
- 		return 0;
- 	}
- 
-@@ -1436,6 +1445,7 @@ static int soc_probe_component(struct snd_soc_card *card,
- 	if (component->codec)
- 		list_add(&component->codec->card_list, &card->codec_dev_list);
- 
-+	component->ref_count++;
- 	return 0;
- 
- err_probe:
-@@ -1523,18 +1533,21 @@ static int soc_probe_dai(struct snd_soc_dai *dai, int order)
- {
- 	int ret;
- 
--	if (!dai->probed && dai->driver->probe_order == order) {
--		if (dai->driver->probe) {
--			ret = dai->driver->probe(dai);
--			if (ret < 0) {
--				dev_err(dai->dev,
--					"ASoC: failed to probe DAI %s: %d\n",
--					dai->name, ret);
--				return ret;
-+	if (dai->driver->probe_order == order) {
-+		if (!dai->probed) {
-+			if (dai->driver->probe) {
-+				ret = dai->driver->probe(dai);
-+				if (ret < 0) {
-+					dev_err(dai->dev,
-+						"ASoC: failed to probe DAI %s: %d\n",
-+						dai->name, ret);
-+					return ret;
-+				}
- 			}
--		}
- 
--		dai->probed = 1;
-+			dai->probed = 1;
-+		}
-+		dai->ref_count++;
- 	}
- 
- 	return 0;
++/**
+  * snd_ctl_remove_user_ctl - remove and release the unlocked user control
+  * @file: active control handle
+  * @id: the control id to remove
 -- 
 2.1.4
