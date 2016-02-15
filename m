@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/5] control: initialize element channel values
-	according to identification number
-Date: Mon, 15 Feb 2016 22:33:09 +0900
-Message-ID: <1455543193-28109-2-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/5] control: add a function to add an element
+	of bytes type
+Date: Mon, 15 Feb 2016 22:33:12 +0900
+Message-ID: <1455543193-28109-5-git-send-email-o-takashi@sakamocchi.jp>
 References: <1455543193-28109-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id A5A5A261560
- for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 14:33:18 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 35DF52619F5
+ for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2016 14:33:19 +0100 (CET)
 In-Reply-To: <1455543193-28109-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,43 +25,71 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In ALSA Ctl core, there're two ways to identify elements. One is by numid.
-Another is by name/index. The former way is lighter than the latter way.
+ALSA Ctl core allows userspace applications to add elements of bytes type,
+while there's no APIs for this purpose in alsa-lib.
 
-In control API, after adding elements by snd_ctl_elem_add_integer() and
-snd_ctl_elem_add_integer64(), these functions manage to initialize value
-of each channel. When executing this operation, used ID information is
-still given by applications. Although, in this time, the element can be
-identified according to numid.
-
-This commit uses the numid instead of name/index pair.
+This commit adds the missing function.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/control/control.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ src/control/control.c | 45 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
 diff --git a/src/control/control.c b/src/control/control.c
-index 328920d..691b69c 100644
+index 3533ffe..38d66e8 100644
 --- a/src/control/control.c
 +++ b/src/control/control.c
-@@ -292,7 +292,7 @@ int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- 	if (err < 0)
- 		return err;
- 	snd_ctl_elem_value_alloca(&val);
--	val->id = *id;
-+	val->id = info->id;
- 	for (i = 0; i < count; i++)
- 		val->value.integer.value[i] = min;
- 	err = ctl->ops->element_write(ctl, val);
-@@ -330,7 +330,7 @@ int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- 	if (err < 0)
- 		return err;
- 	snd_ctl_elem_value_alloca(&val);
--	val->id = *id;
-+	val->id = info->id;
- 	for (i = 0; i < count; i++)
- 		val->value.integer64.value[i] = min;
- 	err = ctl->ops->element_write(ctl, val);
+@@ -488,6 +488,51 @@ int snd_ctl_elem_add_enumerated(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+ }
+ 
+ /**
++ * \brief Create and add a user-defined control element of bytes type.
++ * \param[in] ctl Control device handle.
++ * \param[in/out] id ID of the new control element.
++ * \param[in] channels The number of channels which one control element includes
++ * \return Zero on success, otherwise a negative error code.
++ *
++ * This function creates a user control element, This control element is not
++ * controlled by device drivers in kernel but that is handled by the same way as
++ * the control elements added by the device drivers.
++ *
++ * The fields of \a id, except numid, must be set with unique values to identify
++ * the new element. After returning, all fields of \a id are filled.
++ *
++ * All of channels in the new element are locked; these values are initialized
++ * with the minimum value.
++ *
++ * \par Errors:
++ * <dl>
++ * <dt>-EBUSY<dd>A control element with ID \a id already exists.
++ * <dt>-EINVAL<dd>\a channels is not between 1 to 511.
++ * <dt>-ENOMEM<dd>Out of memory, or there are too many user control elements.
++ * <dt>-ENXIO<dd>This driver does not support (bytes) user controls.
++ * <dt>-ENODEV<dd>Device unplugged.
++ * </dl>
++ *
++ * \par Compatibility:
++ * This function is added in ALSA 1.1.1.
++ */
++int snd_ctl_elem_add_bytes(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
++			   unsigned int channels)
++{
++	snd_ctl_elem_info_t *info;
++
++	assert(ctl && id && id->name[0]);
++
++	snd_ctl_elem_info_alloca(&info);
++	info->id = *id;
++	info->type = SND_CTL_ELEM_TYPE_BYTES;
++	info->owner = 1;
++	info->count = channels;
++
++	return ctl->ops->element_add(ctl, info);
++}
++
++/**
+  * \brief Create and add a user-defined control element of IEC958 type.
+  * \param[in] ctl CTL handle
+  * \param[in/out] id ID of the new control element.
 -- 
 2.5.0
