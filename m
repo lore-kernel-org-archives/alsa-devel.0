@@ -1,15 +1,17 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH] ASoC: topology: Fix setting of stream rates,
-	rate_min and rate_max
-Date: Tue, 16 Feb 2016 14:12:26 +0800
-Message-ID: <1455603146-6138-1-git-send-email-mengdong.lin@linux.intel.com>
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Subject: Re: [PATCH v3 0/2] ASoC: topology: Add support for FE
+ DAI & DAI links
+Date: Tue, 16 Feb 2016 14:17:20 +0800
+Message-ID: <56C2BEF0.4090106@linux.intel.com>
+References: <cover.1455599774.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 34D5A2655DB
- for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2016 07:11:25 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id EFE382607E9
+ for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2016 07:16:15 +0100 (CET)
+In-Reply-To: <cover.1455599774.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,66 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: lars@metafoo.de, vinod.koul@intel.com, hardik.t.shah@intel.com, liam.r.girdwood@linux.intel.com, Mengdong Lin <mengdong.lin@linux.intel.com>, mengdong.lin@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
+Cc: vinod.koul@intel.com, hardik.t.shah@intel.com, liam.r.girdwood@linux.intel.com, mengdong.lin@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Please overlook this v3 series, since the v2 were just applied.
 
-Directly set a stream's rates, rate_min and rate_max from the topology
-info. Also define set_stream_info to wrap setting of the stream info.
+I've sent out a separate patch to fix setting of a stream's rates:
+[PATCH] ASoC: topology: Fix setting of stream rates, rate_min and rate_max
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
-
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 0eb01e8..2f7da32 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1575,6 +1575,18 @@ static int soc_tplg_dapm_complete(struct soc_tplg *tplg)
- 	return 0;
- }
- 
-+static int set_stream_info(struct snd_soc_pcm_stream *stream,
-+	struct snd_soc_tplg_stream_caps *caps)
-+{
-+	stream->stream_name = kstrdup(caps->name, GFP_KERNEL);
-+	stream->channels_min = caps->channels_min;
-+	stream->channels_max = caps->channels_max;
-+	stream->rates = caps->rates;
-+	stream->rate_min = caps->rate_min;
-+	stream->rate_max = caps->rate_max;
-+	stream->formats = caps->formats;
-+}
-+
- static int soc_tplg_dai_create(struct soc_tplg *tplg,
- 	struct snd_soc_tplg_pcm *pcm)
- {
-@@ -1593,25 +1605,13 @@ static int soc_tplg_dai_create(struct soc_tplg *tplg,
- 	if (pcm->playback) {
- 		stream = &dai_drv->playback;
- 		caps = &pcm->caps[SND_SOC_TPLG_STREAM_PLAYBACK];
--
--		stream->stream_name = kstrdup(caps->name, GFP_KERNEL);
--		stream->channels_min = caps->channels_min;
--		stream->channels_max = caps->channels_max;
--		stream->rates = snd_pcm_rate_range_to_bits(caps->rate_min,
--							caps->rate_max);
--		stream->formats = caps->formats;
-+		set_stream_info(stream, caps);
- 	}
- 
- 	if (pcm->capture) {
- 		stream = &dai_drv->capture;
- 		caps = &pcm->caps[SND_SOC_TPLG_STREAM_CAPTURE];
--
--		stream->stream_name = kstrdup(caps->name, GFP_KERNEL);
--		stream->channels_min = caps->channels_min;
--		stream->channels_max = caps->channels_max;
--		stream->rates = snd_pcm_rate_range_to_bits(caps->rate_min,
--							caps->rate_max);
--		stream->formats = caps->formats;
-+		set_stream_info(stream, caps);
- 	}
- 
- 	/* pass control to component driver for optional further init */
--- 
-2.5.0
+On 02/16/2016 01:39 PM, mengdong.lin@linux.intel.com wrote:
+> From: Mengdong Lin <mengdong.lin@linux.intel.com>
+>
+> This series allows topology to create FE DAI and DAI links from the PCM
+> topology objects defined by the user space.
+>
+> History:
+> v2: Remove first 2 patches in v1 that were accepted.
+>      Add Ack by Takashi to patch 'ALSA: pcm: Add snd_pcm_rate_range_to_bits()'
+>      and add his comments on the function's assumption to c file.
+>
+>
+> v3: remove 1st patch in v2 that was accepted.
+>      Revise setting of a stream's rates/rate_min/rate_max as Lars suggested.
+>
+> Mengdong Lin (2):
+>    ASoC: topology: Add FE DAIs dynamically
+>    ASoC: topology: Add FE DAI links dynamically
+>
+>   include/sound/soc-topology.h |  21 +++--
+>   include/sound/soc.h          |   2 +-
+>   sound/soc/soc-topology.c     | 195 ++++++++++++++++++++++++++++++++++---------
+>   3 files changed, 165 insertions(+), 53 deletions(-)
+>
