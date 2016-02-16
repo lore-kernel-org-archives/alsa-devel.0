@@ -1,103 +1,85 @@
-From: Martin Koegler <martin.koegler@chello.at>
-Subject: Re: [PATCH] Provide card number / PID via
-	sequencer	client info
-Date: Tue, 16 Feb 2016 19:21:37 +0100
-Message-ID: <20160216182137.GA21791@mail.zuhause>
-References: <1455370937-501-3-git-send-email-martin@mail.zuhause>
- <s5htwlab70o.wl-tiwai@suse.de>
- <20160215183243.GA26482@mail.zuhause>
- <s5hziv194gz.wl-tiwai@suse.de>
- <20160215214454.GA11052@mail.zuhause>
- <s5hsi0t8uxq.wl-tiwai@suse.de>
- <20160216080334.GA15116@mail.zuhause>
- <s5hio1p82t6.wl-tiwai@suse.de> <56C2E4F9.6030204@ladisch.de>
- <s5hegcd80p3.wl-tiwai@suse.de>
+From: Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [RFC v1 1/9] ASoC: msm8x176: Add Device Tree bindings.
+Date: Tue, 16 Feb 2016 18:58:11 +0000
+Message-ID: <20160216185811.GD8022@leverpostej>
+References: <1455643880-1611-1-git-send-email-srinivas.kandagatla@linaro.org>
+ <1455643950-1657-1-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vie01a-dmta-pe02-2.mx.upcmail.net
- (vie01a-dmta-pe02-2.mx.upcmail.net [62.179.121.158])
- by alsa0.perex.cz (Postfix) with ESMTP id 1259A260563
- for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2016 19:21:40 +0100 (CET)
-Received: from [172.31.216.43] (helo=vie01a-pemc-psmtp-pe01)
- by vie01a-dmta-pe02.mx.upcmail.net with esmtp (Exim 4.72)
- (envelope-from <martin.koegler@chello.at>) id 1aVkFn-0002hE-Ju
- for alsa-devel@alsa-project.org; Tue, 16 Feb 2016 19:21:39 +0100
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <s5hegcd80p3.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Martin Koegler <martin.koegler@chello.at>
+In-Reply-To: <1455643950-1657-1-git-send-email-srinivas.kandagatla@linaro.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Patrick Lai <plai@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, kwestfie@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 16, 2016 at 10:27:20AM +0100, Takashi Iwai wrote:
-> On Tue, 16 Feb 2016 09:59:37 +0100,
-> > >>>> Aren't they currently ports?
-> > >>>> seq_midi.c creates just one sequencer device per card number.
-> > >>>
-> > >>> Look at cards with synth support, e.g. emu10k1 or OPL3/OPL4.
-> > 
-> > Or snd-virmidi.
-> > 
-> > >> Should I export the client_index parameter of snd_seq_create_kernel_client too?
-> > >
-> > > Well, I'd rather ask what are the requirements -- in wide ranges.
-> > 
-> > The original requirement was just the ability to get the card name.
+On Tue, Feb 16, 2016 at 05:32:30PM +0000, Srinivas Kandagatla wrote:
+> This patch adds DT bindings required for msm8x16 codec which is
+> integrated in msm8916 and apq8016 SOCs.
 > 
-> Yep.  And it's the assumption of only rawmidi, I suppose.  How would
-> it differentiate from synth?
-
-My users are using a few identical USB MIDI keyboards [or USB MIDI interfaces] and
-I need to recognize the devices even after reboot. 
-
-=> I want a stable, unique (composite) device ID for kernel sequencer clients+ports.
-
-My current ID is: client name, sysfs-path and port number.
-
-The sound card number allows to find the device in sysfs and determine the used USB port as stable identifier.
-I hope, that the registration order for the ports of one USB MIDI device [or sound card] will always be the same.
-
-see my prototype: https://build.opensuse.org/package/view_file/home:e9925248:branches:openSUSE:Leap:42.1:Update/grandorgue/0001-Add-support-for-unique-device-IDs.patch?expand=1
-
-OPL3/4 + emuXXX synth register with a different name, so they should be distinct. 
-
-> > > And, as mentioned, some cards provide indeed multiple clients.  How do
-> > > you identify which client is for what?  So far, it's identified only
-> > > from the name string and the type bits of each port.  Isn't it enough?
-> > > If not, what have to be provided?
-> > 
-> > This patch is about the card.  If we really need a method to identify
-> > the device, we can still add it later -- this patch does not obstruct
-> > such an extension.
+> Codec IP is divided into two parts, first analog which is integrated
+> in pmic pm8916 and secondly digital part which is integrated into
+> application processor. Codec register controls are also split across
+> pmic an lpass. Analog part is controlled via spmi bus to pmic, registers
+> on the Application processor are memory mapped.
 > 
-> Sure, it won't conflict.  But, the question is (back to square)
-> whether it's enough.
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  .../devicetree/bindings/sound/qcom,msm8x16-wcd.txt | 91 ++++++++++++++++++++++
+>  1 file changed, 91 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/qcom,msm8x16-wcd.txt
 > 
-> If we know that we shall change the API again, it's better to consider
-> the design well from the beginning.  A short-living API version bump
-> is the thing we should avoid as much as possible.  It's nothing but a
-> needless stress for maintainers :)
-> 
-> That said, I'm not particularly against the currently proposed change.
-> My only concern is whether we need any further change in (near)
-> future.
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,msm8x16-wcd.txt b/Documentation/devicetree/bindings/sound/qcom,msm8x16-wcd.txt
+> new file mode 100644
+> index 0000000..42d3f66
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/qcom,msm8x16-wcd.txt
+> @@ -0,0 +1,91 @@
+> +msm8x16 audio CODEC aka Tombak audio CODEC
+> +
+> +Codec IP is divided into two parts, first analog which is integrated in pmic pm8916
+> +and secondly digital part which is integrated into application processor. Codec register
+> +controls are also split across pmic an lpass. Analog part is controlled via spmi bus to pmic.
+> +
+> +## Bindings for codec core on pmic:
+> +
+> +Required properties
+> + - compatible = "qcom,msm8x16-wcd-codec";
 
-+1
+Wildcard bindings are frowned upon generally.
 
-I just ask myself, if the device index would provide any useful information.
+Have separate comaptible strings, perhaps with one as a fallback for the
+other.
 
-I don't know, how to map it to a anything below the soundcard in sysfs. 
-Is the device ID dymanic? [= Are they depending, if I first load the rawmidi module and then the synth module or the other way around].
+> + - reg: represents the slave base address provided to the peripheral.
+> + - interrupt-parent : The parent interrupt controller.
+> + - interrupts: List of interrupts in given SPMI peripheral.
+> + - interrupt-names: Names specified to above list of interrupts in same
+> +		    order
 
-Regards,
-Martin
+You must explicitly describe the set of interrupt-names for the binding.
+
+> + - vddio-supply: phandle to VDD_CDC_IO regulator device tree node.
+> + - vdd-tx-rx-supply: phandle to VDD_CDC_TX/RX/CX regulator device tree node.
+> + - vdda-cp-supply: phandle of VDD_CP charge pump supply's regulator device tree node.
+> + - vdda-hph-supply: phandle of VDD_HPH supply's regulator device tree node.
+> + - vdd-micbias-supply: phandle of VDD_MICBIAS supply's regulator device tree
+> +			    node.
+> +- qcom,lpass-codec-core: phandle to syscon node of lpass code core.
+> +
+> +Optional Properties:
+> +- qcom,micbias1-ext-cap: present if micbias1 has external capacitor connected.
+> +- qcom,micbias2-ext-cap: present if micbias2 has external capacitor connected.
+> +
+> +## Bindings codec core on lpass:
+> +
+> +Required properties
+> + - compatible: should be "syscon" follwed by "qcom,msm8x16-lpass-codec"
+
+This should be the other way around. "syscon" should be the fallback as
+it is the least specific. Likewise for the example.
+
+Again, wildcard bindings are generally frowned upon.
+
+Mark.
