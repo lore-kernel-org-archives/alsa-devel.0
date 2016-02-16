@@ -1,7 +1,7 @@
 From: =?UTF-8?q?Andreas=20Irest=C3=A5l?= <andreas.irestal@axis.com>
-Subject: [PATCH v2 1/5] ASoC: adau17x1: Fix incorrect BCLK ratio definitions
-Date: Tue, 16 Feb 2016 13:56:41 +0100
-Message-ID: <1455627405-18155-2-git-send-email-andire@axis.com>
+Subject: [PATCH v2 2/5] ASoC: adau17x1: Correct typos in file headers
+Date: Tue, 16 Feb 2016 13:56:42 +0100
+Message-ID: <1455627405-18155-3-git-send-email-andire@axis.com>
 References: <1455627405-18155-1-git-send-email-andire@axis.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -15,25 +15,72 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Andreas Irest=C3=A5l <andire@axis.com>
 ---
- sound/soc/codecs/adau17x1.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/linux/platform_data/adau17x1.h | 2 +-
+ sound/soc/codecs/adau1761-i2c.c        | 2 +-
+ sound/soc/codecs/adau1761-spi.c        | 2 +-
+ sound/soc/codecs/adau1761.c            | 2 +-
+ sound/soc/codecs/adau1781.c            | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/adau17x1.h b/sound/soc/codecs/adau17x1.h
-index e13583e..5ae87a0 100644
---- a/sound/soc/codecs/adau17x1.h
-+++ b/sound/soc/codecs/adau17x1.h
-@@ -103,9 +103,9 @@ bool adau17x1_has_dsp(struct adau *adau);
- #define ADAU17X1_CLOCK_CONTROL_CORECLK_SRC_PLL	BIT(3)
- #define ADAU17X1_CLOCK_CONTROL_SYSCLK_EN	BIT(0)
-=20
--#define ADAU17X1_SERIAL_PORT1_BCLK32		(0x0 << 5)
--#define ADAU17X1_SERIAL_PORT1_BCLK48		(0x1 << 5)
--#define ADAU17X1_SERIAL_PORT1_BCLK64		(0x2 << 5)
-+#define ADAU17X1_SERIAL_PORT1_BCLK64		(0x0 << 5)
-+#define ADAU17X1_SERIAL_PORT1_BCLK32		(0x1 << 5)
-+#define ADAU17X1_SERIAL_PORT1_BCLK48		(0x2 << 5)
- #define ADAU17X1_SERIAL_PORT1_BCLK128		(0x3 << 5)
- #define ADAU17X1_SERIAL_PORT1_BCLK256		(0x4 << 5)
- #define ADAU17X1_SERIAL_PORT1_BCLK_MASK		(0x7 << 5)
+diff --git a/include/linux/platform_data/adau17x1.h b/include/linux/pla=
+tform_data/adau17x1.h
+index a81766c..9db1b90 100644
+--- a/include/linux/platform_data/adau17x1.h
++++ b/include/linux/platform_data/adau17x1.h
+@@ -1,5 +1,5 @@
+ /*
+- * Driver for ADAU1761/ADAU1461/ADAU1761/ADAU1961/ADAU1781/ADAU1781 co=
+decs
++ * Driver for ADAU1361/ADAU1461/ADAU1761/ADAU1961/ADAU1381/ADAU1781 co=
+decs
+  *
+  * Copyright 2011-2014 Analog Devices Inc.
+  * Author: Lars-Peter Clausen <lars@metafoo.de>
+diff --git a/sound/soc/codecs/adau1761-i2c.c b/sound/soc/codecs/adau176=
+1-i2c.c
+index 348ccb1..a1b1267 100644
+--- a/sound/soc/codecs/adau1761-i2c.c
++++ b/sound/soc/codecs/adau1761-i2c.c
+@@ -1,5 +1,5 @@
+ /*
+- * Driver for ADAU1761/ADAU1461/ADAU1761/ADAU1961 codec
++ * Driver for ADAU1361/ADAU1461/ADAU1761/ADAU1961 codec
+  *
+  * Copyright 2014 Analog Devices Inc.
+  *  Author: Lars-Peter Clausen <lars@metafoo.de>
+diff --git a/sound/soc/codecs/adau1761-spi.c b/sound/soc/codecs/adau176=
+1-spi.c
+index 8bc1fbd..1883349 100644
+--- a/sound/soc/codecs/adau1761-spi.c
++++ b/sound/soc/codecs/adau1761-spi.c
+@@ -1,5 +1,5 @@
+ /*
+- * Driver for ADAU1761/ADAU1461/ADAU1761/ADAU1961 codec
++ * Driver for ADAU1361/ADAU1461/ADAU1761/ADAU1961 codec
+  *
+  * Copyright 2014 Analog Devices Inc.
+  *  Author: Lars-Peter Clausen <lars@metafoo.de>
+diff --git a/sound/soc/codecs/adau1761.c b/sound/soc/codecs/adau1761.c
+index 2f12477..16fed36 100644
+--- a/sound/soc/codecs/adau1761.c
++++ b/sound/soc/codecs/adau1761.c
+@@ -1,5 +1,5 @@
+ /*
+- * Driver for ADAU1761/ADAU1461/ADAU1761/ADAU1961 codec
++ * Driver for ADAU1361/ADAU1461/ADAU1761/ADAU1961 codec
+  *
+  * Copyright 2011-2013 Analog Devices Inc.
+  * Author: Lars-Peter Clausen <lars@metafoo.de>
+diff --git a/sound/soc/codecs/adau1781.c b/sound/soc/codecs/adau1781.c
+index fde9068..bc1bb56 100644
+--- a/sound/soc/codecs/adau1781.c
++++ b/sound/soc/codecs/adau1781.c
+@@ -1,5 +1,5 @@
+ /*
+- * Driver for ADAU1781/ADAU1781 codec
++ * Driver for ADAU1381/ADAU1781 codec
+  *
+  * Copyright 2011-2013 Analog Devices Inc.
+  * Author: Lars-Peter Clausen <lars@metafoo.de>
 --=20
 2.1.4
