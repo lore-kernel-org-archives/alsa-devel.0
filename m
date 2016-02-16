@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [RFC v1 5/9] ASoC: msm8x16: add codec intialization setup
-Date: Tue, 16 Feb 2016 17:33:03 +0000
-Message-ID: <1455643983-1827-1-git-send-email-srinivas.kandagatla@linaro.org>
+Subject: [RFC v1 6/9] ASoC: msm8x16: add codec dais
+Date: Tue, 16 Feb 2016 17:33:10 +0000
+Message-ID: <1455643990-1870-1-git-send-email-srinivas.kandagatla@linaro.org>
 References: <1455643880-1611-1-git-send-email-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1455643880-1611-1-git-send-email-srinivas.kandagatla@linaro.org>
@@ -10,258 +10,237 @@ To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>, Patrick Lai <plai@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, kwestfie@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds codec hardware intialization code.
+This patch adds two codec DAI's one Playback and other capture on the
+i2s bus.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/msm8x16-wcd.c | 180 +++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/msm8x16-wcd.h |  11 +++
- 2 files changed, 191 insertions(+)
+ include/dt-bindings/sound/msm8x16-wcd.h |   7 ++
+ sound/soc/codecs/msm8x16-wcd.c          | 180 ++++++++++++++++++++++++++++++++
+ 2 files changed, 187 insertions(+)
+ create mode 100644 include/dt-bindings/sound/msm8x16-wcd.h
 
+diff --git a/include/dt-bindings/sound/msm8x16-wcd.h b/include/dt-bindings/sound/msm8x16-wcd.h
+new file mode 100644
+index 0000000..f3257ab
+--- /dev/null
++++ b/include/dt-bindings/sound/msm8x16-wcd.h
+@@ -0,0 +1,7 @@
++#ifndef __DT_MSM8x16_WCD_H
++#define __DT_MSM8x16_WCD_H
++
++#define MSM8x16_WCD_PLAYBACK_DAI	0
++#define MSM8x16_WCD_CAPTURE_DAI		1
++
++#endif /* __DT_MSM8x16_WCD_H */
 diff --git a/sound/soc/codecs/msm8x16-wcd.c b/sound/soc/codecs/msm8x16-wcd.c
-index 3598e48..bc8b38a 100644
+index bc8b38a..4bc8274 100644
 --- a/sound/soc/codecs/msm8x16-wcd.c
 +++ b/sound/soc/codecs/msm8x16-wcd.c
-@@ -2,6 +2,7 @@
- #include <linux/module.h>
- #include <linux/err.h>
- #include <linux/kernel.h>
-+#include <linux/delay.h>
- #include <linux/regulator/consumer.h>
- #include <linux/types.h>
- #include <linux/clk.h>
-@@ -14,6 +15,10 @@
+@@ -11,9 +11,17 @@
+ #include <linux/regmap.h>
+ #include <linux/mfd/syscon.h>
+ #include <sound/soc.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
+ 
  #include "msm8x16-wcd-registers.h"
  #include "msm8x16-wcd.h"
- 
-+/* Cap mode for micbias */
-+#define MICBIAS_EXT_BYP_CAP 0x00
-+#define MICBIAS_NO_EXT_BYP_CAP 0x01
++#include "dt-bindings/sound/msm8x16-wcd.h"
 +
- struct msm8x16_wcd_chip {
- 	struct regmap	*analog_map;
- 	struct regmap	*digital_map;
-@@ -124,6 +129,33 @@ static unsigned int msm8x16_wcd_read(struct snd_soc_codec *codec,
- 	return val;
- }
++#define MSM8X16_WCD_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
++			SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_48000)
++#define MSM8X16_WCD_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
++		SNDRV_PCM_FMTBIT_S24_LE)
  
-+static void msm8x16_wcd_configure_cap(struct snd_soc_codec *codec,
-+		bool micbias1, bool micbias2)
+ /* Cap mode for micbias */
+ #define MICBIAS_EXT_BYP_CAP 0x00
+@@ -282,6 +290,19 @@ static const struct msm8x16_wcd_reg_mask_val
+ 	{MSM8X16_WCD_A_ANALOG_RX_COM_OCP_COUNT, 0xFF, 0xFF},
+ };
+ 
++static int msm8x16_wcd_set_interpolator_rate(struct snd_soc_dai *dai,
++	u8 rx_fs_rate_reg_val, u32 sample_rate)
 +{
-+	struct msm8x16_wcd_chip *wcd = snd_soc_codec_get_drvdata(codec);
-+
-+	if (micbias1 && micbias2) {
-+		if ((wcd->micbias1_cap_mode == MICBIAS_EXT_BYP_CAP) ||
-+		    (wcd->micbias2_cap_mode == MICBIAS_EXT_BYP_CAP))
-+			snd_soc_update_bits(codec,
-+				MSM8X16_WCD_A_ANALOG_MICB_1_EN,
-+				0x40, (MICBIAS_EXT_BYP_CAP << 6));
-+		else
-+			snd_soc_update_bits(codec,
-+				MSM8X16_WCD_A_ANALOG_MICB_1_EN,
-+				0x40, (MICBIAS_NO_EXT_BYP_CAP << 6));
-+	} else if (micbias2) {
-+		snd_soc_update_bits(codec, MSM8X16_WCD_A_ANALOG_MICB_1_EN,
-+				0x40, (wcd->micbias2_cap_mode << 6));
-+	} else if (micbias1) {
-+		snd_soc_update_bits(codec, MSM8X16_WCD_A_ANALOG_MICB_1_EN,
-+				0x40, (wcd->micbias1_cap_mode << 6));
-+	} else {
-+		snd_soc_update_bits(codec, MSM8X16_WCD_A_ANALOG_MICB_1_EN,
-+				0x40, 0x00);
-+	}
++	return 0;
 +}
 +
- static int msm8x16_wcd_codec_parse_dt(struct platform_device *pdev,
- 				      struct msm8x16_wcd_chip *chip)
++static int msm8x16_wcd_set_decimator_rate(struct snd_soc_dai *dai,
++	u8 tx_fs_rate_reg_val, u32 sample_rate)
++{
++
++	return 0;
++}
++
+ static int msm8x16_wcd_device_up(struct snd_soc_codec *codec)
  {
-@@ -181,11 +213,159 @@ static int msm8x16_wcd_codec_parse_dt(struct platform_device *pdev,
- 
+ 	struct msm8x16_wcd_chip *msm8x16_wcd = snd_soc_codec_get_drvdata(codec);
+@@ -360,7 +381,166 @@ static int msm8x16_wcd_codec_remove(struct snd_soc_codec *codec)
  	return 0;
- }
-+#define VDDIO_VOL_MIN	1800000 /* uV */
-+#define VDDIO_VOL_MAX	1800000 /* uV */
-+
-+static int msm8x16_wcd_codec_enable_clock_block(struct snd_soc_codec *codec,
-+						int enable)
-+{
-+	struct msm8x16_wcd_chip *msm8x16_wcd = snd_soc_codec_get_drvdata(codec);
-+	unsigned long mclk_rate;
-+
-+	if (enable) {
-+		snd_soc_update_bits(codec,
-+			MSM8X16_WCD_A_CDC_CLK_MCLK_CTL, 0x01, 0x01);
-+		snd_soc_update_bits(codec,
-+			MSM8X16_WCD_A_CDC_CLK_PDM_CTL, 0x03, 0x03);
-+		snd_soc_update_bits(codec,
-+			MSM8X16_WCD_A_ANALOG_MASTER_BIAS_CTL, 0x30, 0x30);
-+		snd_soc_update_bits(codec,
-+			MSM8X16_WCD_A_DIGITAL_CDC_RST_CTL, 0x80, 0x80);
-+		snd_soc_update_bits(codec,
-+			MSM8X16_WCD_A_DIGITAL_CDC_TOP_CLK_CTL, 0x0C, 0x0C);
-+
-+		mclk_rate = clk_get_rate(msm8x16_wcd->mclk);
-+
-+		if (mclk_rate == 12288000)
-+			snd_soc_update_bits(codec,
-+				MSM8X16_WCD_A_CDC_TOP_CTL, 0x01, 0x00);
-+		else if (mclk_rate == 9600000)
-+			snd_soc_update_bits(codec,
-+				MSM8X16_WCD_A_CDC_TOP_CTL, 0x01, 0x01);
-+	} else {
-+		snd_soc_update_bits(codec,
-+			MSM8X16_WCD_A_DIGITAL_CDC_TOP_CLK_CTL, 0x0C, 0x00);
-+		snd_soc_update_bits(codec,
-+				MSM8X16_WCD_A_CDC_CLK_PDM_CTL, 0x03, 0x00);
-+
-+	}
-+	return 0;
-+}
-+
-+static const struct msm8x16_wcd_reg_mask_val wcd_reg_defaults[] = {
-+	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_SPKR_DAC_CTL, 0x03),
-+	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_CURRENT_LIMIT, 0x82),
-+	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_SPKR_OCP_CTL, 0xE1),
-+};
-+
-+static const struct msm8x16_wcd_reg_mask_val wcd_reg_defaults_2_0[] = {
-+	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_DIGITAL_PERPH_RESET_CTL3, 0x0F),
-+	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_TX_1_2_OPAMP_BIAS, 0x4B),
-+	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_NCP_FBCTRL, 0x28),
-+	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_SPKR_DRV_CTL, 0x69),
-+	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_SPKR_DRV_DBG, 0x01),
-+	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_BOOST_EN_CTL, 0x5F),
-+	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_SLOPE_COMP_IP_ZERO, 0x88),
-+	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_PERPH_RESET_CTL3, 0x0F),
-+	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_CURRENT_LIMIT, 0x82),
-+	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_SPKR_DAC_CTL, 0x03),
-+	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_SPKR_OCP_CTL, 0xE1),
-+};
-+
-+static const struct msm8x16_wcd_reg_mask_val
-+	msm8x16_wcd_codec_reg_init_val[] = {
-+
-+	/* Initialize current threshold to 350MA
-+	 * number of wait and run cycles to 4096
-+	 */
-+	{MSM8X16_WCD_A_ANALOG_RX_COM_OCP_CTL, 0xFF, 0xD1},
-+	{MSM8X16_WCD_A_ANALOG_RX_COM_OCP_COUNT, 0xFF, 0xFF},
-+};
-+
-+static int msm8x16_wcd_device_up(struct snd_soc_codec *codec)
-+{
-+	struct msm8x16_wcd_chip *msm8x16_wcd = snd_soc_codec_get_drvdata(codec);
-+	u32 reg;
-+
-+	snd_soc_write(codec, MSM8X16_WCD_A_DIGITAL_PERPH_RESET_CTL4, 0x01);
-+	snd_soc_write(codec, MSM8X16_WCD_A_ANALOG_PERPH_RESET_CTL4, 0x01);
-+
-+	for (reg = 0; reg < ARRAY_SIZE(msm8x16_wcd_reset_reg_defaults); reg++)
-+		if (msm8x16_wcd_reg_readable[reg])
-+			msm8x16_wcd_write(codec,
-+				reg, msm8x16_wcd_reset_reg_defaults[reg]);
-+
-+	/* delay is required to make sure sound card state updated */
-+	usleep_range(5000, 5100);
-+
-+	for (reg = 0; reg < ARRAY_SIZE(msm8x16_wcd_codec_reg_init_val); reg++)
-+		snd_soc_update_bits(codec,
-+				    msm8x16_wcd_codec_reg_init_val[reg].reg,
-+				    msm8x16_wcd_codec_reg_init_val[reg].mask,
-+				    msm8x16_wcd_codec_reg_init_val[reg].val);
-+
-+	if (TOMBAK_IS_1_0(msm8x16_wcd->pmic_rev)) {
-+		for (reg = 0; reg < ARRAY_SIZE(wcd_reg_defaults); reg++)
-+			snd_soc_write(codec, wcd_reg_defaults[reg].reg,
-+					wcd_reg_defaults[reg].val);
-+	} else {
-+		for (reg = 0; reg < ARRAY_SIZE(wcd_reg_defaults_2_0); reg++)
-+			snd_soc_write(codec, wcd_reg_defaults_2_0[reg].reg,
-+				wcd_reg_defaults_2_0[reg].val);
-+	}
-+
-+	msm8x16_wcd_codec_enable_clock_block(codec, 1);
-+
-+	return 0;
-+}
-+
-+static int msm8x16_wcd_codec_probe(struct snd_soc_codec *codec)
-+{
-+	struct msm8x16_wcd_chip *chip = dev_get_drvdata(codec->dev);
-+	int err;
-+
-+	regulator_set_voltage(chip->vddio, VDDIO_VOL_MIN, VDDIO_VOL_MAX);
-+	err = regulator_enable(chip->vddio);
-+	if (err < 0) {
-+		dev_err(codec->dev, "failed to enable VDDIO regulator\n");
-+		return err;
-+	}
-+
-+	err = regulator_enable(chip->vdd_tx_rx);
-+	if (err < 0) {
-+		dev_err(codec->dev, "failed to enable VDD_TX_RX regulator\n");
-+		return err;
-+	}
-+
-+	snd_soc_codec_set_drvdata(codec, chip);
-+
-+	chip->pmic_rev = snd_soc_read(codec, MSM8X16_WCD_A_DIGITAL_REVISION1);
-+	dev_info(codec->dev, "%s :PMIC REV: %d", __func__, chip->pmic_rev);
-+
-+	chip->codec_version = snd_soc_read(codec,
-+				MSM8X16_WCD_A_DIGITAL_PERPH_SUBTYPE);
-+	dev_info(codec->dev, "%s :CODEC Version: %d", __func__,
-+				chip->codec_version);
-+
-+	msm8x16_wcd_device_up(codec);
-+
-+	/* Set initial cap mode */
-+	msm8x16_wcd_configure_cap(codec, false, false);
-+
-+	return 0;
-+}
-+
-+static int msm8x16_wcd_codec_remove(struct snd_soc_codec *codec)
-+{
-+	return 0;
-+};
+ };
  
++static int msm8x16_wcd_startup(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
++	return 0;
++}
++
++static void msm8x16_wcd_shutdown(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
++}
++
++static int msm8x16_wcd_hw_params(struct snd_pcm_substream *substream,
++			    struct snd_pcm_hw_params *params,
++			    struct snd_soc_dai *dai)
++{
++	u8 tx_fs_rate, rx_fs_rate;
++	int ret;
++
++	switch (params_rate(params)) {
++	case 8000:
++		tx_fs_rate = 0x00;
++		rx_fs_rate = 0x00;
++		break;
++	case 16000:
++		tx_fs_rate = 0x01;
++		rx_fs_rate = 0x20;
++		break;
++	case 32000:
++		tx_fs_rate = 0x02;
++		rx_fs_rate = 0x40;
++		break;
++	case 48000:
++		tx_fs_rate = 0x03;
++		rx_fs_rate = 0x60;
++		break;
++	case 96000:
++		tx_fs_rate = 0x04;
++		rx_fs_rate = 0x80;
++		break;
++	case 192000:
++		tx_fs_rate = 0x05;
++		rx_fs_rate = 0xA0;
++		break;
++	default:
++		dev_err(dai->codec->dev,
++			"%s: Invalid sampling rate %d\n", __func__,
++			params_rate(params));
++		return -EINVAL;
++	}
++
++	switch (substream->stream) {
++	case SNDRV_PCM_STREAM_CAPTURE:
++		snd_soc_update_bits(dai->codec,
++					MSM8X16_WCD_A_CDC_CLK_TX_I2S_CTL,
++					0x07, tx_fs_rate);
++		ret = msm8x16_wcd_set_decimator_rate(dai, tx_fs_rate,
++					       params_rate(params));
++		if (ret < 0) {
++			dev_err(dai->codec->dev,
++				"%s: set decimator rate failed %d\n", __func__,
++				ret);
++			return ret;
++		}
++		break;
++	case SNDRV_PCM_STREAM_PLAYBACK:
++		ret = msm8x16_wcd_set_interpolator_rate(dai, rx_fs_rate,
++						  params_rate(params));
++		if (ret < 0) {
++			dev_err(dai->codec->dev,
++				"%s: set decimator rate failed %d\n", __func__,
++				ret);
++			return ret;
++		}
++		break;
++	default:
++		dev_err(dai->codec->dev,
++			"%s: Invalid stream type %d\n", __func__,
++			substream->stream);
++		return -EINVAL;
++	}
++
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		snd_soc_update_bits(dai->codec,
++				MSM8X16_WCD_A_CDC_CLK_TX_I2S_CTL, 0x20, 0x20);
++		snd_soc_update_bits(dai->codec,
++				MSM8X16_WCD_A_CDC_CLK_RX_I2S_CTL, 0x20, 0x20);
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		snd_soc_update_bits(dai->codec,
++				MSM8X16_WCD_A_CDC_CLK_TX_I2S_CTL, 0x20, 0x00);
++		snd_soc_update_bits(dai->codec,
++				MSM8X16_WCD_A_CDC_CLK_RX_I2S_CTL, 0x20, 0x00);
++		break;
++	default:
++		dev_err(dai->dev, "%s: wrong format selected\n",
++				__func__);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int msm8x16_wcd_set_dai_sysclk(struct snd_soc_dai *dai,
++		int clk_id, unsigned int freq, int dir)
++{
++	return 0;
++}
++
++static int msm8x16_wcd_set_channel_map(struct snd_soc_dai *dai,
++				unsigned int tx_num, unsigned int *tx_slot,
++				unsigned int rx_num, unsigned int *rx_slot)
++
++{
++	return 0;
++}
++
++static int msm8x16_wcd_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++{
++	return 0;
++}
++
++static struct snd_soc_dai_ops msm8x16_wcd_dai_ops = {
++	.startup = msm8x16_wcd_startup,
++	.shutdown = msm8x16_wcd_shutdown,
++	.hw_params = msm8x16_wcd_hw_params,
++	.set_sysclk = msm8x16_wcd_set_dai_sysclk,
++	.set_fmt = msm8x16_wcd_set_dai_fmt,
++	.set_channel_map = msm8x16_wcd_set_channel_map,
++};
++
  static struct snd_soc_dai_driver msm8x16_wcd_codec_dai[] = {
++	[0] = {
++		.name = "msm8x16_wcd_i2s_rx1",
++		.id = MSM8x16_WCD_PLAYBACK_DAI,
++		.playback = {
++			.stream_name = "AIF1 Playback",
++			.rates = MSM8X16_WCD_RATES,
++			.formats = MSM8X16_WCD_FORMATS,
++			.rate_max = 192000,
++			.rate_min = 8000,
++			.channels_min = 1,
++			.channels_max = 3,
++		},
++		.ops = &msm8x16_wcd_dai_ops,
++	},
++	[1] = {
++		.name = "msm8x16_wcd_i2s_tx1",
++		.id = MSM8x16_WCD_CAPTURE_DAI,
++		.capture = {
++			.stream_name = "AIF1 Capture",
++			.rates = MSM8X16_WCD_RATES,
++			.formats = MSM8X16_WCD_FORMATS,
++			.rate_max = 192000,
++			.rate_min = 8000,
++			.channels_min = 1,
++			.channels_max = 4,
++		},
++		.ops = &msm8x16_wcd_dai_ops,
++	},
  };
  
  static struct snd_soc_codec_driver msm8x16_wcd_codec = {
-+	.probe	= msm8x16_wcd_codec_probe,
-+	.remove	= msm8x16_wcd_codec_remove,
- 	.read = msm8x16_wcd_read,
- 	.write = msm8x16_wcd_write,
- 	.reg_cache_size = MSM8X16_WCD_NUM_REGISTERS,
-diff --git a/sound/soc/codecs/msm8x16-wcd.h b/sound/soc/codecs/msm8x16-wcd.h
-index db82f58..bfb6c88 100644
---- a/sound/soc/codecs/msm8x16-wcd.h
-+++ b/sound/soc/codecs/msm8x16-wcd.h
-@@ -16,12 +16,23 @@
- 
- #define MSM8X16_WCD_NUM_REGISTERS	0x6FF
- #define MSM8X16_WCD_MAX_REGISTER	(MSM8X16_WCD_NUM_REGISTERS-1)
-+#define MSM8X16_WCD_REG_VAL(reg, val)		{reg, 0, val}
- 
- #define MSM8X16_WCD_IS_DIGITAL_REG(reg) \
- 	(((reg >= 0x200) && (reg <= 0x4FF)) ? 1 : 0)
- #define MSM8X16_WCD_IS_TOMBAK_REG(reg) \
- 	(((reg >= 0x000) && (reg <= 0x1FF)) ? 1 : 0)
- 
-+#define TOMBAK_VERSION_1_0	0
-+#define TOMBAK_IS_1_0(ver) \
-+	((ver == TOMBAK_VERSION_1_0) ? 1 : 0)
-+
-+struct msm8x16_wcd_reg_mask_val {
-+	u16	reg;
-+	u8	mask;
-+	u8	val;
-+};
-+
- const u8 msm8x16_wcd_reg_readable[MSM8X16_WCD_NUM_REGISTERS] = {
- 		[MSM8X16_WCD_A_DIGITAL_REVISION1] = 1,
- 		[MSM8X16_WCD_A_DIGITAL_REVISION2] = 1,
 -- 
 1.9.1
