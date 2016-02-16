@@ -1,18 +1,18 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v6 10/15] ASoC: hdac_hdmi: Fix possible
- memory leak in hw_params
-Date: Tue, 16 Feb 2016 08:28:31 +0530
-Message-ID: <20160216025831.GP19598@localhost>
+Subject: Re: [PATCH v6 11/15] ASoC: hdac_hdmi: Don't fail in
+ dai startup to make userland happy
+Date: Tue, 16 Feb 2016 09:06:13 +0530
+Message-ID: <20160216033613.GQ19598@localhost>
 References: <1455243375-16067-1-git-send-email-subhransu.s.prusty@intel.com>
- <1455243375-16067-11-git-send-email-subhransu.s.prusty@intel.com>
- <20160215205726.GF18327@sirena.org.uk>
+ <1455243375-16067-12-git-send-email-subhransu.s.prusty@intel.com>
+ <20160215205521.GE18327@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5823606365162133198=="
+Content-Type: multipart/mixed; boundary="===============2593412057928753530=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id E2279261501
- for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2016 03:54:44 +0100 (CET)
-In-Reply-To: <20160215205726.GF18327@sirena.org.uk>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 04B07265593
+ for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2016 04:32:26 +0100 (CET)
+In-Reply-To: <20160215205521.GE18327@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,72 +27,67 @@ Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, "Subhra
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5823606365162133198==
+--===============2593412057928753530==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="O98KdSgI27dgYlM5"
+	protocol="application/pgp-signature"; boundary="ulDeV4rPMk/y39in"
 Content-Disposition: inline
 
 
---O98KdSgI27dgYlM5
+--ulDeV4rPMk/y39in
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 15, 2016 at 08:57:26PM +0000, Mark Brown wrote:
-> On Fri, Feb 12, 2016 at 07:46:10AM +0530, Subhransu S. Prusty wrote:
-> > It's possible for hw_params to be called two times. So add NULL
-> > check to prevent memory leak.
+On Mon, Feb 15, 2016 at 08:55:21PM +0000, Mark Brown wrote:
+> On Fri, Feb 12, 2016 at 07:46:11AM +0530, Subhransu S. Prusty wrote:
+> > In dai startup, driver was checking for ELD and would fail if no
+> > monitor is connected. This causes userland like PA, CRAS to be
+> > unhappy as they scan the device list at bootup.
+> >=20
+> > So move the ELD check to hw_params and fail, if valid ELD is not
+> > found.
 >=20
-> Another fix?
+> Should this not be sent as a fix?
 
-Yes but can go in 4.6 as HDMI codec does not get created in 4.5 code. That
-is why I didn't send this one in last fixes series
+Same reason here as well. In 4.5 since this series is missing we do not
+enumerate the codecs and machine does not have these dailinks.
 
->=20
-> > -	dd =3D kzalloc(sizeof(*dd), GFP_KERNEL);
-> > -	if (!dd)
-> > -		return -ENOMEM;
-> > +	dd =3D (struct hdac_ext_dma_params *)
-> > +		snd_soc_dai_get_dma_data(dai, substream);
->=20
-> If you need to cast away from void * that suggests a problem and it'd
-> look a lot neater too.
+Btw SKL driver does the enumeration on HDA links and creates codecs, that
+patch along with machine will be last one after this series.
 
-I suspect there is no need for cast, we seem to ahve a habit for that, let
-us check that
-
+Thanks
 --=20
 ~Vinod
 
---O98KdSgI27dgYlM5
+--ulDeV4rPMk/y39in
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJWwpBXAAoJEHwUBw8lI4NHVAoP/1e43CKihII9Z+7crxutK1tx
-xFK7AK9QDdUnQGId3t4sF/FuzjTxVWsjQ3k7BVlOV2RxBEgXsmr9a6N+Nx3D//DQ
-V1WeEzEZzHk+NnDc8hWjAwEgdhvjFUNtSvnayx5MNNxBcnqchAE0oHktMw9CUVjw
-O8wVd+ojL6FksZegP7kRhkmnqp17OWrh10oIKeb86bhaA8LIltYvGQOgnRIW9oNx
-ynIuT6vTKOBocya4g4VcJOTvh4QZIVm+HBzZzMH3fiFpeQjslyQLo0aBojkhNvRg
-ffHHqFqKB4CM8U7qh4PUFne/OxnTQZrr39UPnq9PUtVPwqIROkG4npw2wHxn6spq
-XDlF/jt1DdyK1uEZuGLM9Zq983WQ3NkTc0qdQODE233tK4tVXdGnI/3+eQr/rjjB
-ybZNFPRyR3iR+cPK2U1L4MyXxJ88uO4gCSQVkyNPOBdPcnX72TXkHWN4CCfay/82
-F/la69XEpIA+eX15gt3iUbHbdUaKJm/aMTfCJTfHkq0ls8InZR4sPVg0tRqjRg0/
-HrjD1pvmsCyt7YdSuXQQocVCEKVLYIm5NXbxyLEA1mAgvGJC1nNwbvB4u4Rk6s4z
-iqikyMs/O8RmG2o21C+/eRue0blyvjP3asYUgIN6HpfKynVXsQFCUtZQR7/yKKVG
-XagwSjJ6fWrfBUx1zAHH
-=Kjgv
+iQIcBAEBAgAGBQJWwpktAAoJEHwUBw8lI4NH0oUQALJ12P+PCLNIvpg1AQ0Puvyy
+DqnqaiFCQJJnPUVWgx199XxTietYMhuW5kgnfU9Yv1DZBaV9J/32nszJYd/GJ6nd
+wJdi9C0OneYubuU+NTKSG32TMixaG8b6Tq84GT0aSmDetfRwHo1tOC2FYY7CU7nO
+e3z+qZ7oVENYKPc4t/p77apNSe9kBnvgUsEQN0YB5j33oY8G3Mp39ZM46O5khczs
+IKk3GkQ9lT1covkMAbNbjFOH7CErsubAgwXoxvEWuqKB9tum1crG7Z8LbDqGN+2n
+ARzF5w0+BLvAQe1BZPhshF9/SyruF7TlctK4BpO6vptTyWYdzd0ITX2OAiI45HYi
+bHisTcngmNSN7r8MGqzPYRoX2oT4Y19rfGw29o2PvZmJf5FBWpY2bI8vSuvb6UfA
+oT7T5WgF45a1I/LJwwbm/84VDmu6p7pBngheSIC0s1WyaF6fracOzo7qTiL8pgI0
+PTVps+Rs5q2cGxumAQp+8l/o7JJ7unewrH985T8l/rq73zA+QDTplmH2vVGJyeZP
+C/KwYjsNSADb0+jhyqYyVfS7GYTSYxLezU+oH64VkHKGwmhhYYElLIB+s8IuCW4t
+mjDMB7IMWQaiLDHmozd9v9BeDbP02Zpee1P51VYbysihQp9CnyCU93N1tlJFirjU
+AVUVTTHJPefPRmvWSlX4
+=HeRQ
 -----END PGP SIGNATURE-----
 
---O98KdSgI27dgYlM5--
+--ulDeV4rPMk/y39in--
 
---===============5823606365162133198==
+--===============2593412057928753530==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5823606365162133198==--
+--===============2593412057928753530==--
