@@ -1,85 +1,126 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [RFC v1 0/9] ASoC: Add support to Qualcomm msm8x16-wcd
-	codec
-Date: Tue, 16 Feb 2016 17:31:20 +0000
-Message-ID: <1455643880-1611-1-git-send-email-srinivas.kandagatla@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f43.google.com (mail-wm0-f43.google.com [74.125.82.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 43B4B26057F
- for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2016 18:32:12 +0100 (CET)
-Received: by mail-wm0-f43.google.com with SMTP id a4so111072504wme.1
- for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2016 09:32:12 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: [RFC v1 1/9] ASoC: msm8x176: Add Device Tree bindings.
+Date: Tue, 16 Feb 2016 17:32:30 +0000
+Message-ID: <1455643950-1657-1-git-send-email-srinivas.kandagatla@linaro.org>
+References: <1455643880-1611-1-git-send-email-srinivas.kandagatla@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1455643880-1611-1-git-send-email-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, kwestfie@codeaurora.org, Pawel Moll <pawel.moll@arm.com>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-arm-msm@vger.kernel.org
+Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>, Patrick Lai <plai@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, kwestfie@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patchset aims at adding msm8x16-wcd codec support.
-msm8x16-wcd codec is found in Qualcomm msm8916 and apq8016 processors.
-This codec IP is split in to two parts(Digital & Analog), Analog part
-is integrated in to PMIC PM8916 and the digital part is integrated into
-Application processor. Register access to the analog part is done via
-SPMI interface to PMIC, and registers on the Application processor are
-memory mapped. Data transfer between Analog and Digital Die is done via
-a internal bus called PDM.
+This patch adds DT bindings required for msm8x16 codec which is
+integrated in msm8916 and apq8016 SOCs.
 
-I did split the driver into sensible patches to easy the review process.
-Most of this driver is ported from downstream Andriod v3.10 kernel.
-Jack support and Headset button detection code is not added in to this series.
+Codec IP is divided into two parts, first analog which is integrated
+in pmic pm8916 and secondly digital part which is integrated into
+application processor. Codec register controls are also split across
+pmic an lpass. Analog part is controlled via spmi bus to pmic, registers
+on the Application processor are memory mapped.
 
-This codec support:
- -  3 Microphones: Primary Mic(Handset mic), Headset Mic and Secondary Mic.
- - 2 Digital Microphones.
- - 2 Mic Bias Circuits.
- - Earpiece
- - Headset
- - Loud Speaker.
- - Jack Detect.
- - Headset Button detection circuit.
-
-Tested this code on v4.5-rc4 with lpass driver capture support patches for
-Headset (Mic and speakers), Secondary Mic and Loudspeaker on DB410C.
-DMIC should work too.
-
-Thanks,
-srini
-
-
-Srinivas Kandagatla (9):
-  ASoC: msm8x176: Add Device Tree bindings.
-  ASoC: msm8x16: add driver structure
-  ASoC: msm8x16: add codec registers definitions
-  ASoC: msm8x16: add ranges for default, readonly
-  ASoC: msm8x16: add codec intialization setup
-  ASoC: msm8x16: add codec dais
-  ASoC: msm8x16: Add sound mixer controls.
-  ASoC: msm8x16: add dapm widgets
-  ASoC: msm8x16: add dapm routes
-
- .../devicetree/bindings/sound/qcom,msm8x16-wcd.txt |   91 +
- include/dt-bindings/sound/msm8x16-wcd.h            |    7 +
- sound/soc/codecs/Kconfig                           |    4 +
- sound/soc/codecs/Makefile                          |    3 +-
- sound/soc/codecs/msm8x16-wcd-registers.h           |  518 +++++
- sound/soc/codecs/msm8x16-wcd.c                     | 2132 ++++++++++++++++++++
- sound/soc/codecs/msm8x16-wcd.h                     |  764 +++++++
- 7 files changed, 3518 insertions(+), 1 deletion(-)
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ .../devicetree/bindings/sound/qcom,msm8x16-wcd.txt | 91 ++++++++++++++++++++++
+ 1 file changed, 91 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/qcom,msm8x16-wcd.txt
- create mode 100644 include/dt-bindings/sound/msm8x16-wcd.h
- create mode 100644 sound/soc/codecs/msm8x16-wcd-registers.h
- create mode 100644 sound/soc/codecs/msm8x16-wcd.c
- create mode 100644 sound/soc/codecs/msm8x16-wcd.h
 
+diff --git a/Documentation/devicetree/bindings/sound/qcom,msm8x16-wcd.txt b/Documentation/devicetree/bindings/sound/qcom,msm8x16-wcd.txt
+new file mode 100644
+index 0000000..42d3f66
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/qcom,msm8x16-wcd.txt
+@@ -0,0 +1,91 @@
++msm8x16 audio CODEC aka Tombak audio CODEC
++
++Codec IP is divided into two parts, first analog which is integrated in pmic pm8916
++and secondly digital part which is integrated into application processor. Codec register
++controls are also split across pmic an lpass. Analog part is controlled via spmi bus to pmic.
++
++## Bindings for codec core on pmic:
++
++Required properties
++ - compatible = "qcom,msm8x16-wcd-codec";
++ - reg: represents the slave base address provided to the peripheral.
++ - interrupt-parent : The parent interrupt controller.
++ - interrupts: List of interrupts in given SPMI peripheral.
++ - interrupt-names: Names specified to above list of interrupts in same
++		    order
++ - vddio-supply: phandle to VDD_CDC_IO regulator device tree node.
++ - vdd-tx-rx-supply: phandle to VDD_CDC_TX/RX/CX regulator device tree node.
++ - vdda-cp-supply: phandle of VDD_CP charge pump supply's regulator device tree node.
++ - vdda-hph-supply: phandle of VDD_HPH supply's regulator device tree node.
++ - vdd-micbias-supply: phandle of VDD_MICBIAS supply's regulator device tree
++			    node.
++- qcom,lpass-codec-core: phandle to syscon node of lpass code core.
++
++Optional Properties:
++- qcom,micbias1-ext-cap: present if micbias1 has external capacitor connected.
++- qcom,micbias2-ext-cap: present if micbias2 has external capacitor connected.
++
++## Bindings codec core on lpass:
++
++Required properties
++ - compatible: should be "syscon" follwed by "qcom,msm8x16-lpass-codec"
++ - reg: represents the lpass codec core register map.
++
++Example:
++
++spmi_bus {
++	...
++	msm8x16_wcd_codec@f000{
++		compatible = "qcom,msm8x16-wcd-codec";
++		reg = <0xf000 0x200>;
++		reg-names = "pmic-codec-core";
++		clocks = <&gcc GCC_CODEC_DIGCODEC_CLK>;
++		clock-names = "mclk";
++		interrupt-parent = <&spmi_bus>;
++		interrupts = <0x1 0xf0 0x0 IRQ_TYPE_NONE>,
++			     <0x1 0xf0 0x1 IRQ_TYPE_NONE>,
++			     <0x1 0xf0 0x2 IRQ_TYPE_NONE>,
++			     <0x1 0xf0 0x3 IRQ_TYPE_NONE>,
++			     <0x1 0xf0 0x4 IRQ_TYPE_NONE>,
++			     <0x1 0xf0 0x5 IRQ_TYPE_NONE>,
++			     <0x1 0xf0 0x6 IRQ_TYPE_NONE>,
++			     <0x1 0xf0 0x7 IRQ_TYPE_NONE>,
++			     <0x1 0xf1 0x0 IRQ_TYPE_NONE>,
++			     <0x1 0xf1 0x1 IRQ_TYPE_NONE>,
++			     <0x1 0xf1 0x2 IRQ_TYPE_NONE>,
++			     <0x1 0xf1 0x3 IRQ_TYPE_NONE>,
++			     <0x1 0xf1 0x4 IRQ_TYPE_NONE>,
++			     <0x1 0xf1 0x5 IRQ_TYPE_NONE>;
++		interrupt-names = "spk_cnp_int",
++				  "spk_clip_int",
++				  "spk_ocp_int",
++				  "ins_rem_det1",
++				  "but_rel_det",
++				  "but_press_det",
++				  "ins_rem_det",
++				  "mbhc_int",
++				  "ear_ocp_int",
++				  "hphr_ocp_int",
++				  "hphl_ocp_det",
++				  "ear_cnp_int",
++				  "hphr_cnp_int",
++				  "hphl_cnp_int";
++
++		vddio-supply = <&pm8916_l5>;
++		vdd-cp-supply = <&pm8916_s4>;
++		vdd-hph-supply = <&pm8916_s4>;
++		vdd-tx-rx-supply = <&pm8916_l5>
++		vdd-micbias-supply = <&pm8916_l13>;
++		qcom,lpass-codec-core = <&lpass_codec>;
++		#sound-dai-cells = <1>;
++	};
++};
++
++soc {
++	...
++	lpass_codec_core: lpass-codec{
++		compatible = "syscon", "qcom,msm8x16-lpass-codec";
++		reg = <0x0771c000 0x400>;
++	};
++
++};
 -- 
 1.9.1
