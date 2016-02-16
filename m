@@ -1,254 +1,129 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: sound: list corruption in delete_and_unsubscribe_port
-Date: Tue, 16 Feb 2016 10:41:54 +0100
-Message-ID: <CACT4Y+bay9qsrz6dQu31EcGaH9XwfW7o3oBzSQUG9fMszoh=Sg@mail.gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 4/4] ASoC: simple-card: Support for selecting system
+ clocks by ID
+Date: Tue, 16 Feb 2016 11:46:52 +0200
+Message-ID: <56C2F00C.8080809@ti.com>
+References: <1455545495-20292-1-git-send-email-peter.ujfalusi@ti.com>
+ <1455545495-20292-5-git-send-email-peter.ujfalusi@ti.com>
+ <20160215152635.GN18988@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
-Cc: Alexander Potapenko <glider@google.com>, Kostya Serebryany <kcc@google.com>, Sasha Levin <sasha.levin@oracle.com>, syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-clk-owner@vger.kernel.org>
+In-Reply-To: <20160215152635.GN18988@sirena.org.uk>
+Sender: linux-clk-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Jyri Sarha <jsarha@ti.com>, linux-clk@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Kristo, Tero" <t-kristo@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On 02/15/2016 05:26 PM, Mark Brown wrote:
+> On Mon, Feb 15, 2016 at 04:11:35PM +0200, Peter Ujfalusi wrote:
+>=20
+>> Most CPU and codec drivers can select their system clock from differ=
+ent
+>> sources. They rely on snd_soc_dai_set_sysclk(x, sysclk_id, x, x) to =
+do so.
+>> Add support for selecting which clock need to be selected along with=
+ the
+>> rate.
+>=20
+> Rather than adding new bindings for the ASoC specific clocking APIs i=
+t
+> seems better to use the standard clock API bindings and transition
+> drivers to use that.  In the past the clock API didn't have DT bindin=
+gs
+> so wehad to do our own thing but I think now that's no longer the cas=
+e?
 
-Here is a new one on 18558cae0272f8fd9647e69d3fec1565a7949865
-(4.5-rc4). But need to note that sound become much more stable, I've
-seen only 2 of these over night.
+McASP is relatively simple regarding to clocking and it is only problem=
+atic in
+case when it is master. When it is slave it is going to use the BCLK an=
+d FS
+coming from outside for clocking the data.
 
-The following program causes list corruption:
+The driver currently only supports symmetric clocking, meaning we only =
+use the
+TX clock path (RX is using the TX clocks).
+To generate the bit clock we have something like this:
 
-------------[ cut here ]------------
-WARNING: CPU: 2 PID: 12546 at lib/list_debug.c:62 __list_del_entry+0x10b/0x1e0()
-list_del corruption, ffff880063512388->next is LIST_POISON1 (dead000000000100)
-Modules linked in:
-CPU: 2 PID: 12546 Comm: a.out Not tainted 4.5.0-rc4+ #328
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
- ffffffff87b05080 ffff8800608b7a48 ffffffff82be46cf ffffffff81477fb8
- fffffbfff0f60a10 ffff8800608b7ab8 ffff8800637d97c0 ffffffff86ad3780
- 0000000000000009 000000000000003e ffff8800608b7a88 ffffffff81355139
-Call Trace:
- [<ffffffff81355249>] warn_slowpath_fmt+0xa9/0xd0 kernel/panic.c:494
- [<ffffffff82c4c36b>] __list_del_entry+0x10b/0x1e0 lib/list_debug.c:60
- [<ffffffff82c4c44d>] list_del+0xd/0x70 lib/list_debug.c:86
- [<ffffffff852c38e3>] delete_and_unsubscribe_port+0x1e3/0x2f0
-sound/core/seq/seq_ports.c:545
- [<ffffffff852c43fa>] clear_subscriber_list+0x15a/0x260
-sound/core/seq/seq_ports.c:250
- [<ffffffff852c456a>] port_delete+0x6a/0x1c0 sound/core/seq/seq_ports.c:266
- [<ffffffff852c5242>] snd_seq_delete_all_ports+0x242/0x350
-sound/core/seq/seq_ports.c:330
- [<ffffffff852ae1cf>] seq_free_client1+0x2f/0x290
-sound/core/seq/seq_clientmgr.c:272
- [<ffffffff852ae495>] seq_free_client+0x65/0x160
-sound/core/seq/seq_clientmgr.c:299
- [<ffffffff852b118d>] snd_seq_release+0x4d/0xb0
-sound/core/seq/seq_clientmgr.c:380
- [<ffffffff817c3256>] __fput+0x236/0x780 fs/file_table.c:208
- [<ffffffff817c3825>] ____fput+0x15/0x20 fs/file_table.c:244
- [<ffffffff813b3100>] task_work_run+0x170/0x210 kernel/task_work.c:115
- [<     inline     >] tracehook_notify_resume include/linux/tracehook.h:191
- [<ffffffff810066b1>] exit_to_usermode_loop+0x1d1/0x210
-arch/x86/entry/common.c:251
- [<     inline     >] prepare_exit_to_usermode arch/x86/entry/common.c:282
- [<ffffffff810084ea>] syscall_return_slowpath+0x2ba/0x340
-arch/x86/entry/common.c:344
- [<ffffffff866626e2>] int_ret_from_sys_call+0x25/0x9f
-arch/x86/entry/entry_64.S:281
----[ end trace 4cad985f706f8ace ]---
-------------[ cut here ]------------
+[mcaspA_auxclkx_div]->
+		    [mcaspA_hclkx_mux] -> [mcaspA_hclkx_div] -> [mcaspA_bclkx]
+[mcaspA_ahclkx_in]  ->
 
+If [mcaspA_auxclkx_div] is selected in [mcaspA_hclkx_mux], then:
+[mcaspA_hclkx_mux] -> [mcaspA_ahclkx_out]
+the HCLKX clock can be sent to mcaspA_ahclkx_out, as output from the So=
+C.
 
-// autogenerated by syzkaller (http://github.com/google/syzkaller)
-#include <pthread.h>
-#include <stdint.h>
-#include <string.h>
-#include <sys/syscall.h>
-#include <unistd.h>
+mcaspA is mcasp0...number of MCASP in the SoC.
 
-long r[143];
+We would need three (or two if we decide to not represent the mcaspA_bc=
+lkx)
+simple clock node, two dividers and one mux.
 
-void* thr(void* arg)
-{
-  switch ((long)arg) {
-  case 0:
-    syscall(SYS_mmap, 0x20000000ul, 0x40000ul, 0x3ul, 0x32ul,
-                   0xfffffffffffffffful, 0x0ul);
-    break;
-  case 1:
-    r[2] = syscall(SYS_open, "/dev/snd/seq", 0x400ul, 0, 0, 0);
-    break;
-  case 2:
-    *(uint8_t*)0x2000df50 = (uint8_t)0xffffffffffffff80;
-    *(uint8_t*)0x2000df51 = (uint8_t)0x1;
-    *(uint8_t*)0x2000df52 = (uint8_t)0xfff;
-    *(uint8_t*)0x2000df53 = (uint8_t)0xb0;
-    *(uint8_t*)0x2000df54 = (uint8_t)0x401;
-    *(uint8_t*)0x2000df55 = (uint8_t)0x7;
-    *(uint8_t*)0x2000df56 = (uint8_t)0x7;
-    *(uint8_t*)0x2000df57 = (uint8_t)0x0;
-    *(uint8_t*)0x2000df58 = (uint8_t)0x1;
-    *(uint8_t*)0x2000df59 = (uint8_t)0x401;
-    *(uint8_t*)0x2000df5a = (uint8_t)0xffffffffffff0001;
-    *(uint8_t*)0x2000df5b = (uint8_t)0x5;
-    *(uint8_t*)0x2000df5c = (uint8_t)0x6;
-    *(uint8_t*)0x2000df5d = (uint8_t)0x0;
-    *(uint8_t*)0x2000df5e = (uint8_t)0xffff;
-    *(uint8_t*)0x2000df5f = (uint8_t)0x3;
-    *(uint8_t*)0x2000df60 = (uint8_t)0x0;
-    *(uint8_t*)0x2000df61 = (uint8_t)0xffffffffffffffc0;
-    *(uint8_t*)0x2000df62 = (uint8_t)0x6;
-    *(uint8_t*)0x2000df63 = (uint8_t)0xfff;
-    *(uint8_t*)0x2000df64 = (uint8_t)0x624c;
-    *(uint8_t*)0x2000df65 = (uint8_t)0x53;
-    *(uint8_t*)0x2000df66 = (uint8_t)0x0;
-    *(uint8_t*)0x2000df67 = (uint8_t)0xfffffffffffffffc;
-    *(uint8_t*)0x2000df68 = (uint8_t)0x3f;
-    *(uint8_t*)0x2000df69 = (uint8_t)0x2;
-    *(uint8_t*)0x2000df6a = (uint8_t)0x4;
-    *(uint8_t*)0x2000df6b = (uint8_t)0x401;
-    *(uint8_t*)0x2000df6c = (uint8_t)0x100000000;
-    *(uint8_t*)0x2000df6d = (uint8_t)0x5;
-    *(uint8_t*)0x2000df6e = (uint8_t)0x1;
-    *(uint8_t*)0x2000df6f = (uint8_t)0x9;
-    *(uint8_t*)0x2000df70 = (uint8_t)0x40;
-    *(uint8_t*)0x2000df71 = (uint8_t)0xfff;
-    *(uint8_t*)0x2000df72 = (uint8_t)0x6;
-    *(uint8_t*)0x2000df73 = (uint8_t)0xffffffffffffff2b;
-    *(uint8_t*)0x2000df74 = (uint8_t)0x1f;
-    *(uint8_t*)0x2000df75 = (uint8_t)0x2;
-    *(uint8_t*)0x2000df76 = (uint8_t)0x4;
-    *(uint8_t*)0x2000df77 = (uint8_t)0x68;
-    *(uint8_t*)0x2000df78 = (uint8_t)0x9c33;
-    *(uint8_t*)0x2000df79 = (uint8_t)0x80;
-    *(uint8_t*)0x2000df7a = (uint8_t)0x3;
-    *(uint8_t*)0x2000df7b = (uint8_t)0x100;
-    *(uint8_t*)0x2000df7c = (uint8_t)0xc1b1;
-    *(uint8_t*)0x2000df7d = (uint8_t)0x3;
-    *(uint8_t*)0x2000df7e = (uint8_t)0x0;
-    *(uint8_t*)0x2000df7f = (uint8_t)0x8;
-    *(uint8_t*)0x2000df80 = (uint8_t)0x3;
-    *(uint8_t*)0x2000df81 = (uint8_t)0x8;
-    *(uint8_t*)0x2000df82 = (uint8_t)0x8;
-    *(uint8_t*)0x2000df83 = (uint8_t)0x5d;
-    *(uint8_t*)0x2000df84 = (uint8_t)0x1;
-    *(uint8_t*)0x2000df85 = (uint8_t)0x9;
-    *(uint8_t*)0x2000df86 = (uint8_t)0x1;
-    *(uint8_t*)0x2000df87 = (uint8_t)0x41;
-    *(uint8_t*)0x2000df88 = (uint8_t)0x3;
-    *(uint8_t*)0x2000df89 = (uint8_t)0x6;
-    *(uint8_t*)0x2000df8a = (uint8_t)0x3f;
-    *(uint8_t*)0x2000df8b = (uint8_t)0x3;
-    *(uint8_t*)0x2000df8c = (uint8_t)0x9;
-    *(uint8_t*)0x2000df8d = (uint8_t)0xffffffffffffff01;
-    *(uint8_t*)0x2000df8e = (uint8_t)0x0;
-    *(uint8_t*)0x2000df8f = (uint8_t)0x6;
-    *(uint8_t*)0x2000df90 = (uint8_t)0xe9c;
-    *(uint8_t*)0x2000df91 = (uint8_t)0x0;
-    *(uint32_t*)0x2000df94 = (uint32_t)0x7b;
-    *(uint32_t*)0x2000df98 = (uint32_t)0x1002;
-    *(uint32_t*)0x2000df9c = (uint32_t)0x9;
-    *(uint32_t*)0x2000dfa0 = (uint32_t)0x1000;
-    *(uint32_t*)0x2000dfa4 = (uint32_t)0x80;
-    *(uint32_t*)0x2000dfa8 = (uint32_t)0x10000;
-    *(uint32_t*)0x2000dfac = (uint32_t)0x8;
-    *(uint64_t*)0x2000dfb0 = (uint64_t)0x0;
-    *(uint32_t*)0x2000dfb8 = (uint32_t)0x3;
-    *(uint32_t*)0x2000dfbc = (uint32_t)0x39;
-    *(uint8_t*)0x2000dfc0 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfc1 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfc2 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfc3 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfc4 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfc5 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfc6 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfc7 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfc8 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfc9 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfca = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfcb = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfcc = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfcd = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfce = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfcf = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfd0 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfd1 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfd2 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfd3 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfd4 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfd5 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfd6 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfd7 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfd8 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfd9 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfda = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfdb = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfdc = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfdd = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfde = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfdf = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfe0 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfe1 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfe2 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfe3 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfe4 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfe5 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfe6 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfe7 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfe8 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfe9 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfea = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfeb = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfec = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfed = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfee = (uint8_t)0x0;
-    *(uint8_t*)0x2000dfef = (uint8_t)0x0;
-    *(uint8_t*)0x2000dff0 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dff1 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dff2 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dff3 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dff4 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dff5 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dff6 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dff7 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dff8 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dff9 = (uint8_t)0x0;
-    *(uint8_t*)0x2000dffa = (uint8_t)0x0;
-    r[138] =
-        syscall(SYS_ioctl, r[2], 0xc0a85320ul, 0x2000df50ul, 0, 0, 0);
-    break;
-  case 3:
-    r[139] = syscall(SYS_read, r[2], 0x20025000ul, 0x75ul, 0, 0, 0);
-    break;
-  case 4:
-    r[140] = syscall(SYS_close, r[2], 0, 0, 0, 0, 0);
-    break;
-  case 5:
-    memcpy((void*)0x20022000,
-           "\x2f\x64\x65\x76\x2f\x73\x65\x71\x75\x65\x6e\x63\x65\x72",
-           14);
-    syscall(SYS_open, "/dev/sequencer", 0x4000ul, 0, 0, 0);
-    break;
-  }
-  return 0;
-}
+We could have binding for this regarding to clocks:
 
-int main()
-{
-  long i;
-  pthread_t th[6];
+/* McASP clk IDs */
+#define MCASP_AUXCLKX_DIV	0
+#define MCASP_AHCLKX_IN		1
+#define MCASP_HCLKX_MUX		2
+#define MCASP_HCLKX_DIV		3
+#define MCASP_AHCLKX_OUT	4
+#define MCASP_BCLK		5
 
-  srand(getpid());
-  memset(r, -1, sizeof(r));
-  for (i = 0; i < 6; i++) {
-    pthread_create(&th[i], 0, thr, (void*)i);
-    usleep(10000);
-  }
-  for (i = 0; i < 6; i++) {
-    pthread_create(&th[i], 0, thr, (void*)i);
-    if (rand() % 2 == 0)
-      usleep(rand() % 10000);
-  }
-  usleep(100000);
-  return 0;
-}
+/* dtsi file */
+mcasp3: mcasp@48468000 {
+	compatible =3D "ti,dra7-mcasp-audio";
+	#clock-cells =3D <1>;
+	clocks =3D <&mcasp3_aux_gfclk_mux>, <&mcasp3_ahclkx_mux>;
+	clock-names =3D "fck", "ahclkx";
+	assigned-clocks =3D <&mcasp3 MCASP_AHCLKX_IN>,
+			  <&mcasp3 MCASP_AUXCLKX_DIV>;
+	assigned-clock-parents =3D <&mcasp3_ahclkx_mux>,
+				 <&mcasp3_aux_gfclk_mux>;
+};
+
+/* board dts */
+&mcasp3 {
+	assigned-clocks =3D <&mcasp3 MCASP_AHCLKX_IN>,
+			  <&mcasp3 MCASP_AUXCLKX_DIV>,
+			  <&mcasp3_ahclkx_mux>,
+			  <&mcasp3 MCASP_HCLKX_MUX>;
+	assigned-clock-parents =3D <&mcasp3_ahclkx_mux>,
+				 <&mcasp3_aux_gfclk_mux>,
+				 <&atl_clkin2_ck>,
+				 <&mcasp3 MCASP_AHCLKX_IN>;
+};
+
+With this one we can set up the clock tree via clk bindings. Not sure h=
+ow this
+will work if audio including McASP is built as module?
+
+There are couple of important questions regarding to this: if the
+MCASP_HCLKX_DIV is not explicitly set the McASP driver will configure i=
+t based
+on the need for the starting stream (rate, bits, etc), but in some case=
+ we
+need to have different calculation since we want to have more bclk then=
+ it is
+needed for the audio data (bclk-fck ratio).
+
+The clock tree within the McASP need to be built up inside of the code,=
+ can
+not be done via DT.
+
+As for codecs, tlv320aic3106 is also pretty simple device from the outs=
+ide, it
+can receive it's reference clock via:
+MCLK pin, GPIO2 pin or it can use the BCLK from the bus. Based on the i=
+ncoming
+frequency it can use it directly or it needs to use the internal PLL to
+generate the cocks.
+It can output generated clock via GPIO1
+
+I don't think it will bring any clarity or features we miss right now i=
+f we
+try to move CPU and codec drivers to clk API. IMHO.
+
+--=20
+P=E9ter
