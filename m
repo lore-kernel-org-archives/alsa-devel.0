@@ -1,20 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 3/4] ASoC: Enable dynamic DAIlink insertion &
-	removal
-Date: Tue, 16 Feb 2016 19:03:16 +0000
-Message-ID: <20160216190316.GC7544@sirena.org.uk>
-References: <1455538772-24926-1-git-send-email-vaibhav.agarwal@linaro.org>
- <1455538772-24926-4-git-send-email-vaibhav.agarwal@linaro.org>
- <20160215170219.GO18988@sirena.org.uk>
- <CANQOkFEK3eF7omO_9m04Y9RhgmwDtO+MVReMSbcc66Hhq0r1ig@mail.gmail.com>
+Subject: Re: [RFC v1 2/9] ASoC: msm8x16: add driver structure
+Date: Tue, 16 Feb 2016 19:09:58 +0000
+Message-ID: <20160216190958.GD7544@sirena.org.uk>
+References: <1455643880-1611-1-git-send-email-srinivas.kandagatla@linaro.org>
+ <1455643961-1700-1-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0374864808933961850=="
+Content-Type: multipart/mixed; boundary="===============0675957566537288843=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D348260563
- for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2016 20:03:25 +0100 (CET)
-In-Reply-To: <CANQOkFEK3eF7omO_9m04Y9RhgmwDtO+MVReMSbcc66Hhq0r1ig@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1E618260563
+ for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2016 20:10:07 +0100 (CET)
+In-Reply-To: <1455643961-1700-1-git-send-email-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,68 +21,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vaibhav Agarwal <vaibhav.agarwal@linaro.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, vinod.koul@intel.com, mengdong.lin@linux.intel.com
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org, kwestfie@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0374864808933961850==
+--===============0675957566537288843==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="OBd5C1Lgu00Gd/Tn"
+	protocol="application/pgp-signature"; boundary="NklN7DEeGtkPCoo3"
 Content-Disposition: inline
 
 
---OBd5C1Lgu00Gd/Tn
+--NklN7DEeGtkPCoo3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 16, 2016 at 08:04:23PM +0530, Vaibhav Agarwal wrote:
+On Tue, Feb 16, 2016 at 05:32:41PM +0000, Srinivas Kandagatla wrote:
 
-As I said with regard to your changlogs please leave blank lines between
-paragraphs, it makes things much easier to read.
+> @@ -195,7 +196,6 @@ snd-soc-wm9705-objs := wm9705.o
+>  snd-soc-wm9712-objs := wm9712.o
+>  snd-soc-wm9713-objs := wm9713.o
+>  snd-soc-wm-hubs-objs := wm_hubs.o
+> -
+>  # Amp
+>  snd-soc-max9877-objs := max9877.o
+>  snd-soc-tpa6130a2-objs := tpa6130a2.o
 
-> On 15 February 2016 at 22:32, Mark Brown <broonie@kernel.org> wrote:
-> > On Mon, Feb 15, 2016 at 05:49:31PM +0530, Vaibhav Agarwal wrote:
+Random whitespace change here.
 
-> >> +int snd_soc_add_dailink(struct snd_soc_card *card,
-> >> +                     struct snd_soc_dai_link *dai_link);
-> >> +void snd_soc_remove_dailink(struct snd_soc_card *card, const char *link_name);
+> +	chip->micbias1_cap_mode =
+> +		(of_property_read_bool(pdev->dev.of_node, ext1_cap) ?
+> +		MICBIAS_EXT_BYP_CAP : MICBIAS_NO_EXT_BYP_CAP);
 
-> > Everywhere else we write dai_link.
+Please don't abuse the ternery operator, write code as though people
+were going to read it.
 
-> Another API snd_soc_add_dai_link() already exists (added by Mengdong).
-> How about renaming it to snd_soc_create_dai_link() ?
+> +	regs[0].supply = "vddio";
+> +	regs[1].supply = "vdd-cp";
+> +	regs[2].supply = "vdd-hph";
+> +	regs[3].supply = "vdd-tx-rx";
+> +	regs[4].supply = "vdd-micbias";
+> +
+> +	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(regs), regs);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to get regulator supplies %d\n", ret);
+> +		return ret;
+> +	}
+> +	chip->vddio		= regs[0].consumer;
+> +	chip->vdd_cp		= regs[1].consumer;
+> +	chip->vdd_hph		= regs[2].consumer;
+> +	chip->vdd_tx_rx		= regs[3].consumer;
+> +	chip->vdd_micbias	= regs[4].consumer;
 
-No.  Think about what you are saying here.  You're having problems
-because you're trying to create a new function where the obvious names
-collide with existing functions.  This suggests that hacking around with
-the naming isn't going to lead to a clear interface or implementation,
-users will be confused about what to do and we will most likely have
-code duplication in the implementation.  Instead this should be
-addressed through looking at the structure of the code.
+Are you *sure* you should be using regulator_bulk_get() here if you
+never use the regulators en masse again?
 
---OBd5C1Lgu00Gd/Tn
+> +static struct snd_soc_dai_driver msm8x16_wcd_codec_dai[] = {
+> +};
+> +
+> +static struct snd_soc_codec_driver msm8x16_wcd_codec = {
+> +};
+
+Both empty?  It seems this CODEC does nothing so may as well not have a
+driver...
+
+> +	clk_prepare_enable(chip->mclk);
+
+Error checking.
+
+--NklN7DEeGtkPCoo3
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWw3JzAAoJECTWi3JdVIfQsmYH+wRZE1PVti938WX8NRTIKpOZ
-2C665VSo+cmLN2Vsxwf+hIvCXjMvGX2r9JizC5P9k4K5Ea/ohWAlv+k634bKr3pd
-AblwAJIXKCtLftxz4ytraa4AZOwTLxtfnQcgYvow6YwPnddRPwxiTBQJn2tM1qWl
-HbMdNb1jEpn+aaVBx/BVPLO5Hriiaw7npiWhGQ+UeRVIeNjfOLkBdMRqs+Wy7kIw
-TuWjV4JpvME31PByFH+PLxIPdu0jnlESD+Pibgp1BGduIGVW7TO5tjZK67573Bpx
-UKhYP6HzJril/m7tgxcRM3R7KZMnXmhhjZdoZmeIII79TRxGaGnrsPekPXlrLtE=
-=7f2Z
+iQEcBAEBCAAGBQJWw3QEAAoJECTWi3JdVIfQCogH/j7JKaop/lFNqx26EQnT06Wh
+R8mKjg9JX6jCPhOqeZMLc5kj3lmAWPzIKfM9bksF1u0VUkc6WG693GK1k7LyHVsr
+YSSU/2OfSo8VDKeIPC1RfYBIR1QcZWxwiIZ9jibXcWi4pzJSwSyugCISx9Nb+2KL
+z7aVGRNnjCDmYVKYo3nw5flVzM6lmWDjGE8VoY3Ld6HlknPfbinqimOVmAm1A1DL
+TBRMEl8146qCIlV0n3HO5FRB67+QgA3jQ5VScyojOxgCPPmf68+4HurcPOXqdrxF
+HjY87UNloefFct60WP7MJ/kVsAfQzA5AS6pe3E3cb08ESeEPjjW8aMxZI608myo=
+=u8nf
 -----END PGP SIGNATURE-----
 
---OBd5C1Lgu00Gd/Tn--
+--NklN7DEeGtkPCoo3--
 
---===============0374864808933961850==
+--===============0675957566537288843==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0374864808933961850==--
+--===============0675957566537288843==--
