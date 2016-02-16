@@ -1,64 +1,43 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/4] ASoC: simple-card: Support for selecting system
- clocks by ID
-Date: Tue, 16 Feb 2016 13:42:33 +0000
-Message-ID: <20160216134233.GN18327@sirena.org.uk>
-References: <1455545495-20292-1-git-send-email-peter.ujfalusi@ti.com>
- <1455545495-20292-5-git-send-email-peter.ujfalusi@ti.com>
- <20160215152635.GN18988@sirena.org.uk>
- <56C2F00C.8080809@ti.com>
+From: Vaibhav Agarwal <vaibhav.agarwal@linaro.org>
+Subject: Re: [RFC 2/4] alsa: add locked variant for
+	snd_ctl_remove_id
+Date: Tue, 16 Feb 2016 19:24:57 +0530
+Message-ID: <CANQOkFHojJsE66HZExYTJgq7VTqx_yLWdkAQBHA4bJYz2ycM+g@mail.gmail.com>
+References: <1455538772-24926-1-git-send-email-vaibhav.agarwal@linaro.org>
+ <1455538772-24926-3-git-send-email-vaibhav.agarwal@linaro.org>
+ <20160215140224.GK18988@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="qYrsQHciA3Wqs7Iv"
-Return-path: <linux-clk-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <56C2F00C.8080809@ti.com>
-Sender: linux-clk-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Jyri Sarha <jsarha@ti.com>, linux-clk@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Kristo, Tero" <t-kristo@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ob0-f171.google.com (mail-ob0-f171.google.com
+ [209.85.214.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 88D652606EB
+ for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2016 14:55:00 +0100 (CET)
+Received: by mail-ob0-f171.google.com with SMTP id wb13so259595928obb.1
+ for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2016 05:55:00 -0800 (PST)
+In-Reply-To: <20160215140224.GK18988@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, mengdong.lin@linux.intel.com, vinod.koul@intel.com, Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
++Takashi
 
---qYrsQHciA3Wqs7Iv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Feb 16, 2016 at 11:46:52AM +0200, Peter Ujfalusi wrote:
-
-> As for codecs, tlv320aic3106 is also pretty simple device from the outside, it
-> can receive it's reference clock via:
-> MCLK pin, GPIO2 pin or it can use the BCLK from the bus. Based on the incoming
-> frequency it can use it directly or it needs to use the internal PLL to
-> generate the cocks.
-> It can output generated clock via GPIO1
-
-That already sounds like there is room for configuration and hooking
-into a wider clock tree - we've got three different source options and
-an output plus a PLL that can presumably take in non-audio rates.
-
-> I don't think it will bring any clarity or features we miss right now if we
-> try to move CPU and codec drivers to clk API. IMHO.
-
-You happen to be looking at a particularly simple system but things do
-scale up and there's not a clear cutoff point which would allow us to
-make a clear distinction between things that might get used in a simple
-system and things that might need something more complex.  This seems
-particularly important when we're adding things to simple-card, we want
-it to be usable with as many different devices as possible.
-
---qYrsQHciA3Wqs7Iv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWwydIAAoJECTWi3JdVIfQXAIIAIPmQaUWJVAUbw82rp0vXDYk
-/S7WYLF1u9HhJSbwozaC9y8wsBF2k1Xhgepr+aUjEi9eY2A/8s27BSQidnfE2PxM
-HDUEWO/wfJHBNqGfYh4+3IWzQ3RZsuxDzDhPRQ+cxhkPWtwv3qxOH2IE8uT3BVcB
-MCmzDX/VYmh/W8iXZ/il4dSFlH1PTdm+ihSr9QJR1bTF7Fseg6EzUWjCn13StYnk
-zszqF3k7LwXIwrpylS0BkxoMQUDZf9w2Ny8gJ6wkXK4TUq9TECi+6Xgfv+rXD/y6
-sZ71fLero+zEvDY3XEtUNimSGH9zP5u2F1asBmJLxm5lWpuIREn+Cl4HZT7m3Bs=
-=clV+
------END PGP SIGNATURE-----
-
---qYrsQHciA3Wqs7Iv--
+On 15 February 2016 at 19:32, Mark Brown <broonie@kernel.org> wrote:
+> On Mon, Feb 15, 2016 at 05:49:30PM +0530, Vaibhav Agarwal wrote:
+>> While removing kcontrols due to dynamic dai_link/codec removal,
+>> mutex/semaphore for soc-card/sound card is already acquired.
+>> Thus, added lock already acquired variant for ctl_remove_id.
+>
+> Please use subject lines matching the style for the subsystem and
+> remember to CC maintainers on patch submission.
+ Sure, will follow the convention for subject lines as well.
