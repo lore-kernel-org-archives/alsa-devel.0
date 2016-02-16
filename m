@@ -1,152 +1,171 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [RFC v1 7/9] ASoC: msm8x16: Add sound mixer controls.
-Date: Tue, 16 Feb 2016 17:33:28 +0000
-Message-ID: <1455644008-1917-1-git-send-email-srinivas.kandagatla@linaro.org>
-References: <1455643880-1611-1-git-send-email-srinivas.kandagatla@linaro.org>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH v4] portman2x4 - use new parport device model
+Date: Tue, 16 Feb 2016 23:03:31 +0530
+Message-ID: <1455644011-1148-1-git-send-email-sudipm.mukherjee@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1455643880-1611-1-git-send-email-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>, Patrick Lai <plai@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, kwestfie@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds basic mixer controls found in the codec.
+Modify portman driver to use the new parallel port device model.
+The advantage of using the device model is that the device gets binded
+to the hardware, we get the feature of hotplug, we can bind/unbind
+the driver at runtime.
+The changes are in the way the driver gets registered with the
+parallel port subsystem and the temporary device to probe portman card
+is removed and portman_probe() is used in the probe callback.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
 ---
- sound/soc/codecs/msm8x16-wcd.c | 99 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 99 insertions(+)
 
-diff --git a/sound/soc/codecs/msm8x16-wcd.c b/sound/soc/codecs/msm8x16-wcd.c
-index 4bc8274..4bf3b81 100644
---- a/sound/soc/codecs/msm8x16-wcd.c
-+++ b/sound/soc/codecs/msm8x16-wcd.c
-@@ -13,6 +13,7 @@
- #include <sound/soc.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-+#include <sound/tlv.h>
- 
- #include "msm8x16-wcd-registers.h"
- #include "msm8x16-wcd.h"
-@@ -49,6 +50,29 @@ struct msm8x16_wcd_chip {
- 	bool micbias2_cap_mode;
- };
- 
-+static const char * const msm8x16_wcd_spk_boost_ctrl_text[] = {
-+		"DISABLE", "ENABLE"};
-+
-+/*cut of frequency for high pass filter*/
-+static const char * const cf_text[] = {
-+	"MIN_3DB_4Hz", "MIN_3DB_75Hz", "MIN_3DB_150Hz"
-+};
-+
-+static const struct soc_enum msm8x16_wcd_spk_boost_ctl_enum[] = {
-+		SOC_ENUM_SINGLE_EXT(2, msm8x16_wcd_spk_boost_ctrl_text),
-+};
-+static const struct soc_enum cf_rxmix1_enum =
-+	SOC_ENUM_SINGLE(MSM8X16_WCD_A_CDC_RX1_B4_CTL, 0, 3, cf_text);
-+
-+static const struct soc_enum cf_rxmix2_enum =
-+	SOC_ENUM_SINGLE(MSM8X16_WCD_A_CDC_RX2_B4_CTL, 0, 3, cf_text);
-+
-+static const struct soc_enum cf_rxmix3_enum =
-+	SOC_ENUM_SINGLE(MSM8X16_WCD_A_CDC_RX3_B4_CTL, 0, 3, cf_text);
-+
-+static const DECLARE_TLV_DB_SCALE(digital_gain, 0, 1, 0);
-+static const DECLARE_TLV_DB_SCALE(analog_gain, 0, 25, 1);
-+
- static int msm8x16_wcd_volatile(struct snd_soc_codec *codec, unsigned int reg)
- {
- 	return msm8x16_wcd_reg_readonly[reg];
-@@ -164,6 +188,79 @@ static void msm8x16_wcd_configure_cap(struct snd_soc_codec *codec,
- 	}
+v4: temporary device to probe is removed.
+v3: changed commit message
+v2:
+ 1. pardev_cb is initialized while declaring, thus removing the use of
+memset.
+ 2. used pdev->id.
+ 3. v1 did not have the parport probe callback, but
+we will need the probe callback for binding as the name of the driver
+and the name of the device is different.
+ 4. in v1 I missed modifying snd_portman_probe_port().
+
+ sound/drivers/portman2x4.c | 79 +++++++++++++++++++++++-----------------------
+ 1 file changed, 40 insertions(+), 39 deletions(-)
+
+diff --git a/sound/drivers/portman2x4.c b/sound/drivers/portman2x4.c
+index 464385a..0741a3b 100644
+--- a/sound/drivers/portman2x4.c
++++ b/sound/drivers/portman2x4.c
+@@ -648,30 +648,6 @@ static void snd_portman_interrupt(void *userdata)
+ 	spin_unlock(&pm->reg_lock);
  }
  
-+static int msm8x16_wcd_spk_boost_get(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct msm8x16_wcd_chip *msm8x16_wcd = dev_get_drvdata(codec->dev);
-+
-+	if (msm8x16_wcd->spk_boost_set == false) {
-+		ucontrol->value.integer.value[0] = 0;
-+	} else if (msm8x16_wcd->spk_boost_set == true) {
-+		ucontrol->value.integer.value[0] = 1;
-+	} else  {
-+		dev_err(codec->dev, "%s: ERROR: Unsupported Speaker Boost = %d\n",
-+			__func__, msm8x16_wcd->spk_boost_set);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int msm8x16_wcd_spk_boost_set(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct msm8x16_wcd_chip *msm8x16_wcd = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (ucontrol->value.integer.value[0]) {
-+	case 0:
-+		msm8x16_wcd->spk_boost_set = false;
-+		break;
-+	case 1:
-+		msm8x16_wcd->spk_boost_set = true;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+
-+static const struct snd_kcontrol_new msm8x16_wcd_snd_controls[] = {
-+
-+	SOC_ENUM_EXT("Speaker Boost", msm8x16_wcd_spk_boost_ctl_enum[0],
-+		msm8x16_wcd_spk_boost_get, msm8x16_wcd_spk_boost_set),
-+
-+	SOC_SINGLE_TLV("ADC1 Volume", MSM8X16_WCD_A_ANALOG_TX_1_EN, 3,
-+					8, 0, analog_gain),
-+	SOC_SINGLE_TLV("ADC2 Volume", MSM8X16_WCD_A_ANALOG_TX_2_EN, 3,
-+					8, 0, analog_gain),
-+	SOC_SINGLE_TLV("ADC3 Volume", MSM8X16_WCD_A_ANALOG_TX_3_EN, 3,
-+					8, 0, analog_gain),
-+
-+	SOC_SINGLE_SX_TLV("RX1 Digital Volume",
-+			  MSM8X16_WCD_A_CDC_RX1_VOL_CTL_B2_CTL,
-+			0,  -84, 40, digital_gain),
-+	SOC_SINGLE_SX_TLV("RX2 Digital Volume",
-+			  MSM8X16_WCD_A_CDC_RX2_VOL_CTL_B2_CTL,
-+			0,  -84, 40, digital_gain),
-+	SOC_SINGLE_SX_TLV("RX3 Digital Volume",
-+			  MSM8X16_WCD_A_CDC_RX3_VOL_CTL_B2_CTL,
-+			0,  -84, 40, digital_gain),
-+
-+	SOC_SINGLE("RX1 HPF Switch",
-+		MSM8X16_WCD_A_CDC_RX1_B5_CTL, 2, 1, 0),
-+	SOC_SINGLE("RX2 HPF Switch",
-+		MSM8X16_WCD_A_CDC_RX2_B5_CTL, 2, 1, 0),
-+	SOC_SINGLE("RX3 HPF Switch",
-+		MSM8X16_WCD_A_CDC_RX3_B5_CTL, 2, 1, 0),
-+
-+	SOC_ENUM("RX1 HPF cut off", cf_rxmix1_enum),
-+	SOC_ENUM("RX2 HPF cut off", cf_rxmix2_enum),
-+	SOC_ENUM("RX3 HPF cut off", cf_rxmix3_enum),
-+};
-+
-+
- static int msm8x16_wcd_codec_parse_dt(struct platform_device *pdev,
- 				      struct msm8x16_wcd_chip *chip)
+-static int snd_portman_probe_port(struct parport *p)
+-{
+-	struct pardevice *pardev;
+-	int res;
+-
+-	pardev = parport_register_device(p, DRIVER_NAME,
+-					 NULL, NULL, NULL,
+-					 0, NULL);
+-	if (!pardev)
+-		return -EIO;
+-	
+-	if (parport_claim(pardev)) {
+-		parport_unregister_device(pardev);
+-		return -EIO;
+-	}
+-
+-	res = portman_probe(p);
+-
+-	parport_release(pardev);
+-	parport_unregister_device(pardev);
+-
+-	return res ? -EIO : 0;
+-}
+-
+ static void snd_portman_attach(struct parport *p)
  {
-@@ -551,6 +648,8 @@ static struct snd_soc_codec_driver msm8x16_wcd_codec = {
- 	.reg_cache_size = MSM8X16_WCD_NUM_REGISTERS,
- 	.reg_cache_default = msm8x16_wcd_reset_reg_defaults,
- 	.reg_word_size = 1,
-+	.controls = msm8x16_wcd_snd_controls,
-+	.num_controls = ARRAY_SIZE(msm8x16_wcd_snd_controls),
+ 	struct platform_device *device;
+@@ -705,10 +681,20 @@ static void snd_portman_detach(struct parport *p)
+ 	/* nothing to do here */
+ }
+ 
++static int snd_portman_dev_probe(struct pardevice *pardev)
++{
++	if (strcmp(pardev->name, DRIVER_NAME))
++		return -ENODEV;
++
++	return 0;
++}
++
+ static struct parport_driver portman_parport_driver = {
+-	.name   = "portman2x4",
+-	.attach = snd_portman_attach,
+-	.detach = snd_portman_detach
++	.name		= "portman2x4",
++	.probe		= snd_portman_dev_probe,
++	.match_port	= snd_portman_attach,
++	.detach		= snd_portman_detach,
++	.devmodel	= true,
  };
  
- static int msm8x16_wcd_probe(struct platform_device *pdev)
+ /*********************************************************************
+@@ -736,6 +722,12 @@ static int snd_portman_probe(struct platform_device *pdev)
+ 	struct snd_card *card = NULL;
+ 	struct portman *pm = NULL;
+ 	int err;
++	struct pardev_cb portman_cb = {
++		.preempt = NULL,
++		.wakeup = NULL,
++		.irq_func = snd_portman_interrupt,	/* ISR */
++		.flags = PARPORT_DEV_EXCL,		/* flags */
++	};
+ 
+ 	p = platform_get_drvdata(pdev);
+ 	platform_set_drvdata(pdev, NULL);
+@@ -745,9 +737,6 @@ static int snd_portman_probe(struct platform_device *pdev)
+ 	if (!enable[dev]) 
+ 		return -ENOENT;
+ 
+-	if ((err = snd_portman_probe_port(p)) < 0)
+-		return err;
+-
+ 	err = snd_card_new(&pdev->dev, index[dev], id[dev], THIS_MODULE,
+ 			   0, &card);
+ 	if (err < 0) {
+@@ -759,23 +748,33 @@ static int snd_portman_probe(struct platform_device *pdev)
+ 	sprintf(card->longname,  "%s at 0x%lx, irq %i", 
+ 		card->shortname, p->base, p->irq);
+ 
+-	pardev = parport_register_device(p,                     /* port */
+-					 DRIVER_NAME,           /* name */
+-					 NULL,                  /* preempt */
+-					 NULL,                  /* wakeup */
+-					 snd_portman_interrupt, /* ISR */
+-					 PARPORT_DEV_EXCL,      /* flags */
+-					 (void *)card);         /* private */
++	portman_cb.private = card;			   /* private */
++	pardev = parport_register_dev_model(p,		   /* port */
++					    DRIVER_NAME,   /* name */
++					    &portman_cb,   /* callbacks */
++					    pdev->id);	   /* device number */
+ 	if (pardev == NULL) {
+ 		snd_printd("Cannot register pardevice\n");
+ 		err = -EIO;
+ 		goto __err;
+ 	}
+ 
++	if (parport_claim(pardev)) {
++		err = -EIO;
++		goto free_pardev;
++	}
++
++	err = portman_probe(p);
++	parport_release(pardev);
++
++	if (err) {
++		err = -EIO;
++		goto free_pardev;
++	}
++
+ 	if ((err = portman_create(card, pardev, &pm)) < 0) {
+ 		snd_printd("Cannot create main component\n");
+-		parport_unregister_device(pardev);
+-		goto __err;
++		goto free_pardev;
+ 	}
+ 	card->private_data = pm;
+ 	card->private_free = snd_portman_card_private_free;
+@@ -808,6 +807,8 @@ static int snd_portman_probe(struct platform_device *pdev)
+ 	snd_printk(KERN_INFO "Portman 2x4 on 0x%lx\n", p->base);
+ 	return 0;
+ 
++free_pardev:
++	parport_unregister_device(pardev);
+ __err:
+ 	snd_card_free(card);
+ 	return err;
 -- 
 1.9.1
