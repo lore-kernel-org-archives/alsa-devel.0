@@ -1,106 +1,64 @@
-From: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>
-Subject: Re: [PATCH v2 5/5] ASoC: adau17x1: Support platform data via DT
-Date: Tue, 16 Feb 2016 14:42:02 +0100
-Message-ID: <4053162.T8NAULHXMt@wuerfel>
-References: <1455627405-18155-1-git-send-email-andire@axis.com> <1455627405-18155-6-git-send-email-andire@axis.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 4/4] ASoC: simple-card: Support for selecting system
+ clocks by ID
+Date: Tue, 16 Feb 2016 13:42:33 +0000
+Message-ID: <20160216134233.GN18327@sirena.org.uk>
+References: <1455545495-20292-1-git-send-email-peter.ujfalusi@ti.com>
+ <1455545495-20292-5-git-send-email-peter.ujfalusi@ti.com>
+ <20160215152635.GN18988@sirena.org.uk>
+ <56C2F00C.8080809@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1455627405-18155-6-git-send-email-andire-VrBV9hrLPhE@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Andreas =?ISO-8859-1?Q?Irest=E5l?= <andreas.irestal-VrBV9hrLPhE@public.gmane.org>
-Cc: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Andreas =?ISO-8859-1?Q?Irest=E5l?= <andire-VrBV9hrLPhE@public.gmane.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="qYrsQHciA3Wqs7Iv"
+Return-path: <linux-clk-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <56C2F00C.8080809@ti.com>
+Sender: linux-clk-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Jyri Sarha <jsarha@ti.com>, linux-clk@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Kristo, Tero" <t-kristo@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 16 February 2016 13:56:45 Andreas Irest=E5l wrote:
-> Currently, it is only possible to configure HW-specific options to th=
-e
-> adau17x1 codecs by providing a platform data struct. With this patch,
-> it is possible to provide the same data via DT instead.
->=20
-> Signed-off-by: Andreas Irest=E5l <andire-VrBV9hrLPhE@public.gmane.org>
-> ---
->  .../devicetree/bindings/sound/adi,adau17x1.txt     |  31 +++++
->  include/dt-bindings/sound/adau17x1.h               |  14 +++
->  sound/soc/codecs/adau1761.c                        | 127 +++++++++++=
-++++++++++
->  sound/soc/codecs/adau1781.c                        |  48 ++++++++
->  4 files changed, 220 insertions(+)
->  create mode 100644 include/dt-bindings/sound/adau17x1.h
 
-It would be nicer to avoid the need for the extra header file, those
-tend to cause more problems than they solve.
-=20
-> diff --git a/Documentation/devicetree/bindings/sound/adi,adau17x1.txt=
- b/Documentation/devicetree/bindings/sound/adi,adau17x1.txt
-> index 8dbce0e..6050602 100644
-> --- a/Documentation/devicetree/bindings/sound/adi,adau17x1.txt
-> +++ b/Documentation/devicetree/bindings/sound/adi,adau17x1.txt
-> @@ -13,6 +13,32 @@ Required properties:
->   - reg:			The i2c address. Value depends on the state of ADDR0
->  			and ADDR1, as wired in hardware.
-> =20
-> +Optional properties:
-> +
-> + - adi,input-differential	bool to set if the input is differential
-> + - adi,digital-microphone	bool to set if there is a digital micropho=
-ne
-> +				connected to digmic/jackdet pin.
-> + - adi,micbias-vg		Microphone bias voltage
-> +	MICBIAS_0_90_AVDD - 0.9 * AVDD
-> +	MICBIAS_0_65_AVDD - 0.65 * AVDD
+--qYrsQHciA3Wqs7Iv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This could be an integer property, or possibly two (mutually exclusive)
-boolean properties.
+On Tue, Feb 16, 2016 at 11:46:52AM +0200, Peter Ujfalusi wrote:
 
-> +Optional properties (ADAU1361/ADAU1461/ADAU1761/ADAU1961 only)
-> +
-> + - adi,jack-detection	If present, configures codec to use the digmic=
-/jackdet
-> +			pin for jack detection. must provide one of
-> +			JACKDETECT_ACTIVE_LO or JACKDETECT_ACTIVE_HI followed
-> +			by debounce time in ms, which must be 5, 10, 20, or 40.
+> As for codecs, tlv320aic3106 is also pretty simple device from the outside, it
+> can receive it's reference clock via:
+> MCLK pin, GPIO2 pin or it can use the BCLK from the bus. Based on the incoming
+> frequency it can use it directly or it needs to use the internal PLL to
+> generate the cocks.
+> It can output generated clock via GPIO1
 
-I would use one integer property for debounce and one bool property for
-polarity.
+That already sounds like there is room for configuration and hooking
+into a wider clock tree - we've got three different source options and
+an output plus a PLL that can presumably take in non-audio rates.
 
-> +The output mode must be one of:
-> +	OUTPUT_MODE_HEADPHONE           - Headphone output
-> +	OUTPUT_MODE_HEADPHONE_CAPLESS   - Capless headphone output
-> +	OUTPUT_MODE_LINE                - Line output
+> I don't think it will bring any clarity or features we miss right now if we
+> try to move CPU and codec drivers to clk API. IMHO.
 
-And something along the same lines here. Or just document the three mod=
-es
-as numbers in the binding file.
+You happen to be looking at a particularly simple system but things do
+scale up and there's not a clear cutoff point which would allow us to
+make a clear distinction between things that might get used in a simple
+system and things that might need something more complex.  This seems
+particularly important when we're adding things to simple-card, we want
+it to be usable with as many different devices as possible.
 
-> +#ifdef CONFIG_OF
-> +static void adau1781_pdata_from_of(struct device *dev,
-> +				   struct adau1781_platform_data *pdata)
+--qYrsQHciA3Wqs7Iv
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You can remove the #ifdef here...
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-> +	if (!dev->platform_data && np) {
+iQEcBAEBCAAGBQJWwydIAAoJECTWi3JdVIfQXAIIAIPmQaUWJVAUbw82rp0vXDYk
+/S7WYLF1u9HhJSbwozaC9y8wsBF2k1Xhgepr+aUjEi9eY2A/8s27BSQidnfE2PxM
+HDUEWO/wfJHBNqGfYh4+3IWzQ3RZsuxDzDhPRQ+cxhkPWtwv3qxOH2IE8uT3BVcB
+MCmzDX/VYmh/W8iXZ/il4dSFlH1PTdm+ihSr9QJR1bTF7Fseg6EzUWjCn13StYnk
+zszqF3k7LwXIwrpylS0BkxoMQUDZf9w2Ny8gJ6wkXK4TUq9TECi+6Xgfv+rXD/y6
+sZ71fLero+zEvDY3XEtUNimSGH9zP5u2F1asBmJLxm5lWpuIREn+Cl4HZT7m3Bs=
+=clV+
+-----END PGP SIGNATURE-----
 
-if you change this to=20
-
-	if (IS_ENABLED(CONFIG_OF) && np) {
-
-> +		of_pdata =3D devm_kzalloc(dev, sizeof(*of_pdata), GFP_KERNEL);
-> +		if (!of_pdata)
-> +			return -ENOMEM;
-> +		adau1781_pdata_from_of(dev, of_pdata);
-> +		dev->platform_data =3D of_pdata;
-
-and here I'd try to avoid the dynamic allocation and just add the field=
-s to the
-driver private structure. You can copy the information from the platfor=
-m
-data in the 'else' path.
-
-	Arnd
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--qYrsQHciA3Wqs7Iv--
