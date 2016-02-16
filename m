@@ -1,22 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] Provide card number / PID via
-	sequencer	client info
-Date: Tue, 16 Feb 2016 09:59:37 +0100
-Message-ID: <56C2E4F9.6030204@ladisch.de>
-References: <1455370937-501-1-git-send-email-martin@mail.zuhause>
- <1455370937-501-3-git-send-email-martin@mail.zuhause>
- <s5htwlab70o.wl-tiwai@suse.de> <20160215183243.GA26482@mail.zuhause>
- <s5hziv194gz.wl-tiwai@suse.de> <20160215214454.GA11052@mail.zuhause>
- <s5hsi0t8uxq.wl-tiwai@suse.de> <20160216080334.GA15116@mail.zuhause>
- <s5hio1p82t6.wl-tiwai@suse.de>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH 2/3] ASoC: rt298: clear IRQ at the beginning of
+	rt298_irq
+Date: Tue, 16 Feb 2016 17:12:35 +0800
+Message-ID: <1455613956-14287-2-git-send-email-bardliao@realtek.com>
+References: <1455613956-14287-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 637E5260686
- for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2016 09:59:40 +0100 (CET)
-In-Reply-To: <s5hio1p82t6.wl-tiwai@suse.de>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A867265715
+ for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2016 10:12:52 +0100 (CET)
+In-Reply-To: <1455613956-14287-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,44 +21,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Martin Koegler <martin.koegler@chello.at>
-Cc: alsa-devel@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, john.lin@realtek.com, ramesh.babu@intel.com, Bard Liao <bardliao@realtek.com>, senthilnathanx.veppur@intel.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Martin Koegler wrote:
->> On Mon, Feb 15, 2016 at 11:34:09PM +0100, Takashi Iwai wrote:
->>>> On Mon, Feb 15, 2016 at 08:08:12PM +0100, Takashi Iwai wrote:
->>>>> Well, the question is whether only card number is enough.  What if
->>>>> cards provide multiple rawmidi devices?
->>>>
->>>> Aren't they currently ports?
->>>> seq_midi.c creates just one sequencer device per card number.
->>>
->>> Look at cards with synth support, e.g. emu10k1 or OPL3/OPL4.
+The IRQ pin will go from high to low when the irq bit is clear.
+To let the IRQ pin go low as early as possible, move the clear
+irq bit function to the beginning of irq handler.
 
-Or snd-virmidi.
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt298.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
->> Should I export the client_index parameter of snd_seq_create_kernel_client too?
->
-> Well, I'd rather ask what are the requirements -- in wide ranges.
-
-The original requirement was just the ability to get the card name.
-
-> As you already noticed, multiple rawmidi devices and rawmidi
-> subdevices are mapped into a single client with various ports.
-
-Actually, multiple devices get multiple clients.
-
-> And, as mentioned, some cards provide indeed multiple clients.  How do
-> you identify which client is for what?  So far, it's identified only
-> from the name string and the type bits of each port.  Isn't it enough?
-> If not, what have to be provided?
-
-This patch is about the card.  If we really need a method to identify
-the device, we can still add it later -- this patch does not obstruct
-such an extension.
-
-
-Regards,
-Clemens
+diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
+index e67ef5f..58bc134 100644
+--- a/sound/soc/codecs/rt298.c
++++ b/sound/soc/codecs/rt298.c
+@@ -961,11 +961,11 @@ static irqreturn_t rt298_irq(int irq, void *data)
+ 	bool mic = false;
+ 	int ret, status = 0;
+ 
+-	ret = rt298_jack_detect(rt298, &hp, &mic);
+-
+ 	/* Clear IRQ */
+ 	regmap_update_bits(rt298->regmap, RT298_IRQ_CTRL, 0x1, 0x1);
+ 
++	ret = rt298_jack_detect(rt298, &hp, &mic);
++
+ 	if (ret == 0) {
+ 		if (hp == true)
+ 			status |= SND_JACK_HEADPHONE;
+-- 
+1.8.1.1.439.g50a6b54
