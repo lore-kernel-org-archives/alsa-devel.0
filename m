@@ -1,194 +1,52 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [RFC v2 2/6] ALSA: pcm: add IEC958 channel status
-	control helper
-Date: Tue, 16 Feb 2016 22:17:20 +0200
-Message-ID: <56C383D0.4040201@ti.com>
-References: <1453484912-24547-1-git-send-email-arnaud.pouliquen@st.com>
- <1453484912-24547-3-git-send-email-arnaud.pouliquen@st.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC v1 7/9] ASoC: msm8x16: Add sound mixer controls.
+Date: Tue, 16 Feb 2016 20:21:13 +0000
+Message-ID: <20160216202113.GH7544@sirena.org.uk>
+References: <1455643880-1611-1-git-send-email-srinivas.kandagatla@linaro.org>
+ <1455644008-1917-1-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 02BE326583F
- for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2016 21:17:24 +0100 (CET)
-In-Reply-To: <1453484912-24547-3-git-send-email-arnaud.pouliquen@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>, alsa-devel@alsa-project.org
-Cc: Jean-Francois Moine <moinejf@free.fr>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@linux.ie>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Benjamin Gaignard <benjamin.gaignard@linaro.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="CNfT9TXqV7nd4cfk"
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1455644008-1917-1-git-send-email-srinivas.kandagatla@linaro.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>, Patrick Lai <plai@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, kwestfie@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/22/16 19:48, Arnaud Pouliquen wrote:
-> Add IEC958 channel status helper that creates control to handle the
-> IEC60958 status bits.
->
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-> ---
->   include/sound/pcm_iec958.h | 16 ++++++++
->   sound/core/pcm_iec958.c    | 99 ++++++++++++++++++++++++++++++++++++++++++++++
->   2 files changed, 115 insertions(+)
->
-> diff --git a/include/sound/pcm_iec958.h b/include/sound/pcm_iec958.h
-> index 36f023a..7453ace 100644
-> --- a/include/sound/pcm_iec958.h
-> +++ b/include/sound/pcm_iec958.h
-> @@ -3,9 +3,25 @@
->
->   #include <linux/types.h>
->
-> +/*
-> + * IEC 60958 controls parameters
-> + * Describes channel status and associated callback
-> + */
-> +struct snd_pcm_iec958_params {
-> +	/* call when control is updated by user */
-> +	int (*ctrl_set)(void *pdata, u8 *status, u8 len);
-> +
-> +	struct snd_aes_iec958 *iec;
-> +	void *pdata; /* user private data to retrieve context */
-> +	struct mutex *mutex; /* use to avoid race condition */
-> +};
-> +
->   int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
->   	size_t len);
->
->   int snd_pcm_create_iec958_consumer_hw_params(struct snd_pcm_hw_params *params,
->   					     u8 *cs, size_t len);
-> +
-> +int snd_pcm_create_iec958_ctl(struct snd_pcm *pcm,
-> +			      struct snd_pcm_iec958_params *params, int stream);
->   #endif
-> diff --git a/sound/core/pcm_iec958.c b/sound/core/pcm_iec958.c
-> index c9f8b66..8dd0415 100644
-> --- a/sound/core/pcm_iec958.c
-> +++ b/sound/core/pcm_iec958.c
-> @@ -7,11 +7,87 @@
->    */
->   #include <linux/export.h>
->   #include <linux/types.h>
-> +#include <linux/wait.h>
->   #include <sound/asoundef.h>
-> +#include <sound/control.h>
->   #include <sound/pcm.h>
->   #include <sound/pcm_params.h>
->   #include <sound/pcm_iec958.h>
->
-> +int snd_pcm_iec958_info(struct snd_kcontrol *kcontrol,
-> +			struct snd_ctl_elem_info *uinfo)
-> +{
-> +	uinfo->type = SNDRV_CTL_ELEM_TYPE_IEC958;
-> +	uinfo->count = 1;
-> +	return 0;
-> +}
-> +
-> +static int snd_pcm_iec958_get(struct snd_kcontrol *kcontrol,
-> +			      struct snd_ctl_elem_value *uctl)
-> +{
-> +	struct snd_pcm_iec958_params *params = snd_kcontrol_chip(kcontrol);
-> +
-> +	if (params->mutex)
-> +		mutex_unlock(params->mutex);
 
-This here should be mutex_lock().
+--CNfT9TXqV7nd4cfk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Cheers,
-Jyri
+On Tue, Feb 16, 2016 at 05:33:28PM +0000, Srinivas Kandagatla wrote:
 
-> +	uctl->value.iec958.status[0] = params->iec->status[0];
-> +	uctl->value.iec958.status[1] = params->iec->status[1];
-> +	uctl->value.iec958.status[2] = params->iec->status[2];
-> +	uctl->value.iec958.status[3] = params->iec->status[3];
-> +	uctl->value.iec958.status[4] = params->iec->status[4];
-> +	if (params->mutex)
-> +		mutex_unlock(params->mutex);
-> +	return 0;
-> +}
-> +
-> +static int snd_pcm_iec958_put(struct snd_kcontrol *kcontrol,
-> +			      struct snd_ctl_elem_value *uctl)
-> +{
-> +	struct snd_pcm_iec958_params *params = snd_kcontrol_chip(kcontrol);
-> +	int err = 0;
-> +
-> +	if (params->mutex)
-> +		mutex_lock(params->mutex);
-> +	if (params->ctrl_set)
-> +		err = params->ctrl_set(params->pdata,
-> +				       uctl->value.iec958.status, 5);
-> +	if (err < 0) {
-> +		if (params->mutex)
-> +			mutex_unlock(params->mutex);
-> +		return err;
-> +	}
-> +
-> +	params->iec->status[0] = uctl->value.iec958.status[0];
-> +	params->iec->status[1] = uctl->value.iec958.status[1];
-> +	params->iec->status[2] = uctl->value.iec958.status[2];
-> +	params->iec->status[3] = uctl->value.iec958.status[3];
-> +	params->iec->status[4] = uctl->value.iec958.status[4];
-> +
-> +	if (params->mutex)
-> +		mutex_unlock(params->mutex);
-> +
-> +	return 1;
-> +}
-> +
-> +static const struct snd_kcontrol_new iec958_ctls[] = {
-> +	{
-> +		.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE |
-> +			   SNDRV_CTL_ELEM_ACCESS_VOLATILE),
-> +		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-> +		.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT),
-> +		.info = snd_pcm_iec958_info,
-> +		.get = snd_pcm_iec958_get,
-> +		.put = snd_pcm_iec958_put,
-> +	},
-> +	{
-> +		.access = (SNDRV_CTL_ELEM_ACCESS_READ |
-> +			   SNDRV_CTL_ELEM_ACCESS_VOLATILE),
-> +		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-> +		.name = SNDRV_CTL_NAME_IEC958("", CAPTURE, DEFAULT),
-> +		.info = snd_pcm_iec958_info,
-> +		.get = snd_pcm_iec958_get,
-> +	},
-> +};
-> +
->   static int create_iec958_consumer(uint rate, uint sample_width,
->   				  u8 *cs, size_t len)
->   {
-> @@ -111,3 +187,26 @@ int snd_pcm_create_iec958_consumer_hw_params(struct snd_pcm_hw_params *params,
->   				      cs, len);
->   }
->   EXPORT_SYMBOL(snd_pcm_create_iec958_consumer_hw_params);
-> +
-> +/**
-> + * snd_pcm_create_iec958_ctl - create IEC958 channel status default control
-> + * pcm: pcm device to associate to the control.
-> + * iec958: snd_pcm_iec958_params structure that cntains callbacks
-> + *         and channel status buffer
-> + * stream: stream type SNDRV_PCM_STREAM_PLAYBACK or SNDRV_PCM_STREAM_CATURE
-> + * Returns:  negative error code if something failed.
-> + */
-> +int snd_pcm_create_iec958_ctl(struct snd_pcm *pcm,
-> +			      struct snd_pcm_iec958_params *params, int stream)
-> +{
-> +	struct snd_kcontrol_new knew;
-> +
-> +	if (stream > SNDRV_PCM_STREAM_LAST)
-> +		return -EINVAL;
-> +
-> +	knew = iec958_ctls[stream];
-> +	knew.device = pcm->device;
-> +	knew.count = pcm->streams[stream].substream_count;
-> +	return snd_ctl_add(pcm->card, snd_ctl_new1(&knew, params));
-> +}
-> +EXPORT_SYMBOL(snd_pcm_create_iec958_ctl);
->
+> +static const char * const msm8x16_wcd_spk_boost_ctrl_text[] = {
+> +		"DISABLE", "ENABLE"};
+
+On/off switches should be presented to usersrpace as on/off switches
+with "Switch" at the end of their name not as SHOUTING enums.  The
+indentation and brace placement are also weird here.
+
+I'm going to stop reviewing at this point.  It really feels like this
+code could benefit from taking a look at some modern CODEC drivers and
+following the ways they do things, there appear to be a lot of these
+issues throughout the series.
+
+--CNfT9TXqV7nd4cfk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWw4S4AAoJECTWi3JdVIfQWZ4H/Aqy37+IMcoBtNVkdUowWb0i
+MPV/hiQUC47QAEaSE71Tjvlf8U7UAb5UwJhNQRK4gMpUo8tn07b1Vfii1K0lzUvL
+CWDdAM0ZJsKJ3InPpZ224BeuQiLNvDFFt9v2LxTIXPYrs516n+RJHClKZrQK//mB
+wHk3msNzhxV2ya7Y8zheEQSKkNmTbJx0ioKjSmwwZtH+sA7KKw/qW4+/puH+IeoF
+Lr0qdXxvz9kCVt6aET05FYZMbfyrax3M0fCHe4au21fU60Kv0UPkYXDGuPfWsDFZ
+/518+Il64Q4hdWAd65m+5ymA1jckA5hy5zE6tG6WZP7OmFmQ4SZbO6VXAzds04U=
+=M6ex
+-----END PGP SIGNATURE-----
+
+--CNfT9TXqV7nd4cfk--
