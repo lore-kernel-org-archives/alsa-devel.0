@@ -1,56 +1,85 @@
-From: =?UTF-8?q?Andreas=20Irest=C3=A5l?= <andreas.irestal@axis.com>
-Subject: [PATCH v2 3/5] ASoC: adau17x1: Add adau17x1 bindings document
-Date: Tue, 16 Feb 2016 13:56:43 +0100
-Message-ID: <1455627405-18155-4-git-send-email-andire@axis.com>
-References: <1455627405-18155-1-git-send-email-andire@axis.com>
+From: Vaibhav Agarwal <vaibhav.agarwal@linaro.org>
+Subject: Re: [RFC 1/4] ASoc: Use ref_count for soc DAI &
+	component
+Date: Tue, 16 Feb 2016 18:57:37 +0530
+Message-ID: <CANQOkFG3T1pPYV9hpWaYo8mLhb6caeeE6TRzv5+86ZabAXLMcQ@mail.gmail.com>
+References: <1455538772-24926-1-git-send-email-vaibhav.agarwal@linaro.org>
+ <1455538772-24926-2-git-send-email-vaibhav.agarwal@linaro.org>
+ <20160215135941.GJ18988@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1455627405-18155-1-git-send-email-andire@axis.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, =?UTF-8?q?Andreas=20Irest=C3=A5l?= <andire@axis.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ob0-f175.google.com (mail-ob0-f175.google.com
+ [209.85.214.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0889C2608F0
+ for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2016 14:27:41 +0100 (CET)
+Received: by mail-ob0-f175.google.com with SMTP id gc3so156706980obb.3
+ for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2016 05:27:40 -0800 (PST)
+In-Reply-To: <20160215135941.GJ18988@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, vinod.koul@intel.com, mengdong.lin@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Andreas Irest=C3=A5l <andire@axis.com>
----
- .../devicetree/bindings/sound/adi,adau17x1.txt     | 24 ++++++++++++++=
-++++++++
- 1 file changed, 24 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/adi,adau17x=
-1.txt
-
-diff --git a/Documentation/devicetree/bindings/sound/adi,adau17x1.txt b=
-/Documentation/devicetree/bindings/sound/adi,adau17x1.txt
-new file mode 100644
-index 0000000..8dbce0e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/adi,adau17x1.txt
-@@ -0,0 +1,24 @@
-+Analog Devices ADAU1361/ADAU1461/ADAU1761/ADAU1961/ADAU1381/ADAU1781
-+
-+Required properties:
-+
-+ - compatible:		Should contain one of the following:
-+			"adi,adau1361"
-+			"adi,adau1461"
-+			"adi,adau1761"
-+			"adi,adau1961"
-+			"adi,adau1381"
-+			"adi,adau1781"
-+
-+ - reg:			The i2c address. Value depends on the state of ADDR0
-+			and ADDR1, as wired in hardware.
-+
-+Examples:
-+#include <dt-bindings/sound/adau17x1.h>
-+
-+	i2c_bus {
-+		adau1361@38 {
-+			compatible =3D "adi,adau1761";
-+			reg =3D <0x38>;
-+		};
-+	};
---=20
-2.1.4
+On 15 February 2016 at 19:29, Mark Brown <broonie@kernel.org> wrote:
+> On Mon, Feb 15, 2016 at 05:49:29PM +0530, Vaibhav Agarwal wrote:
+>> This is preperation to allow dynamic DAI link insertion &
+>> removal.
+>
+> Which there is no proposed user of here...
+>
+>> Currently, DAI links are added/removed once during soc-card
+>> instatiate & removal. Thus, irrespective of usage count by multiple
+>> DAI links, DAIs and components are probed or removed only once
+>> while maintaining 'probed' flag.
+>> However, in case of dynamic DAI link insertion/removal we need to
+>> ensure DAI/components are not unnecessarily probed multiple & not
+>> removed mistakenly while in use by any other existing DAI link.
+>> Thus, ref_count is used to maintain their usage count.
+>
+> Please use normal changelog formatting - either consistent line lengths
+> or blank lines between paragraphs depending on what you're trying to
+> accomplish here.
+Sure, I'll take care while submitting future patches.
+>
+>> -     if (!dai->probed && dai->driver->probe_order == order) {
+>> -             if (dai->driver->probe) {
+>> -                     ret = dai->driver->probe(dai);
+>> -                     if (ret < 0) {
+>> -                             dev_err(dai->dev,
+>> -                                     "ASoC: failed to probe DAI %s: %d\n",
+>> -                                     dai->name, ret);
+>> -                             return ret;
+>> +     if (dai->driver->probe_order == order) {
+>> +             if (!dai->probed) {
+>> +                     if (dai->driver->probe) {
+>> +                             ret = dai->driver->probe(dai);
+>> +                             if (ret < 0) {
+>> +                                     dev_err(dai->dev,
+>> +                                             "ASoC: failed to probe DAI %s: %d\n",
+>> +                                             dai->name, ret);
+>> +                                     return ret;
+>> +                             }
+>>                       }
+>> -             }
+>>
+>> -             dai->probed = 1;
+>> +                     dai->probed = 1;
+>> +             }
+>> +             dai->ref_count++;
+>>       }
+>
+> I don't understand this at all - why the complete reindent and change of
+> condition, don't we just increase the refcount when we flag as probed
+> (and why do we still have the probed flag after this)?
+yes, non-zero check would also solve the purpose of probed flag.
+will make this change in next patchset.
