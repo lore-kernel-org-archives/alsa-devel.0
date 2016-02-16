@@ -1,52 +1,56 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC v1 7/9] ASoC: msm8x16: Add sound mixer controls.
-Date: Tue, 16 Feb 2016 20:21:13 +0000
-Message-ID: <20160216202113.GH7544@sirena.org.uk>
-References: <1455643880-1611-1-git-send-email-srinivas.kandagatla@linaro.org>
- <1455644008-1917-1-git-send-email-srinivas.kandagatla@linaro.org>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="CNfT9TXqV7nd4cfk"
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1455644008-1917-1-git-send-email-srinivas.kandagatla@linaro.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>, Patrick Lai <plai@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, kwestfie@codeaurora.org
+From: Carlo Caione <carlo@caione.org>
+Subject: [PATCH] ASoC: cht_bsw_rt5645: Enable jack detection
+Date: Tue, 16 Feb 2016 22:27:19 +0100
+Message-ID: <1455658039-4783-1-git-send-email-carlo@caione.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, yang.a.fang@intel.com, vinod.koul@intel.com, alsa-devel@alsa-project.org, linux@endlessm.com, linux-kernel@vger.kernel.org
+Cc: Carlo Caione <carlo@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Carlo Caione <carlo@endlessm.com>
 
---CNfT9TXqV7nd4cfk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Add missing DAPM pins and enable jack detection on those pins for
+Cherrytrail and Braswell.
 
-On Tue, Feb 16, 2016 at 05:33:28PM +0000, Srinivas Kandagatla wrote:
+Signed-off-by: Carlo Caione <carlo@endlessm.com>
+---
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-> +static const char * const msm8x16_wcd_spk_boost_ctrl_text[] = {
-> +		"DISABLE", "ENABLE"};
-
-On/off switches should be presented to usersrpace as on/off switches
-with "Switch" at the end of their name not as SHOUTING enums.  The
-indentation and brace placement are also weird here.
-
-I'm going to stop reviewing at this point.  It really feels like this
-code could benefit from taking a look at some modern CODEC drivers and
-following the ways they do things, there appear to be a lot of these
-issues throughout the series.
-
---CNfT9TXqV7nd4cfk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWw4S4AAoJECTWi3JdVIfQWZ4H/Aqy37+IMcoBtNVkdUowWb0i
-MPV/hiQUC47QAEaSE71Tjvlf8U7UAb5UwJhNQRK4gMpUo8tn07b1Vfii1K0lzUvL
-CWDdAM0ZJsKJ3InPpZ224BeuQiLNvDFFt9v2LxTIXPYrs516n+RJHClKZrQK//mB
-wHk3msNzhxV2ya7Y8zheEQSKkNmTbJx0ioKjSmwwZtH+sA7KKw/qW4+/puH+IeoF
-Lr0qdXxvz9kCVt6aET05FYZMbfyrax3M0fCHe4au21fU60Kv0UPkYXDGuPfWsDFZ
-/518+Il64Q4hdWAd65m+5ymA1jckA5hy5zE6tG6WZP7OmFmQ4SZbO6VXAzds04U=
-=M6ex
------END PGP SIGNATURE-----
-
---CNfT9TXqV7nd4cfk--
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index e6cf800..c7af271 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -147,6 +147,17 @@ static const struct snd_kcontrol_new cht_mc_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Ext Spk"),
+ };
+ 
++static struct snd_soc_jack_pin cht_bsw_jack_pins[] = {
++	{
++		.pin	= "Headphone",
++		.mask	= SND_JACK_HEADPHONE,
++	},
++	{
++		.pin	= "Headset Mic",
++		.mask	= SND_JACK_MICROPHONE,
++	},
++};
++
+ static int cht_aif1_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params)
+ {
+@@ -202,9 +213,9 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 	else
+ 		jack_type = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE;
+ 
+-	ret = snd_soc_card_jack_new(runtime->card, "Headset Jack",
++	ret = snd_soc_card_jack_new(runtime->card, "Headset",
+ 				    jack_type, &ctx->jack,
+-				    NULL, 0);
++				    cht_bsw_jack_pins, ARRAY_SIZE(cht_bsw_jack_pins));
+ 	if (ret) {
+ 		dev_err(runtime->dev, "Headset jack creation failed %d\n", ret);
+ 		return ret;
+-- 
+1.9.1
