@@ -1,120 +1,55 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: Re: [PATCH 1/4] soc/sound: tegra_max98090: do not invert headphone
- jack
-Date: Tue, 16 Feb 2016 14:43:32 -0700
-Message-ID: <56C39804.7040706@wwwdotorg.org>
-References: <1454563862-1971-1-git-send-email-sctincman@gmail.com>
- <1454563862-1971-2-git-send-email-sctincman@gmail.com>
- <56B37E19.6010002@wwwdotorg.org> <56B3A10E.4010508@gmail.com>
- <CAEUnVG7bCgzC-f_Anaw6qayGsXi=_NrWZGRy7SSALkLVLPZnUQ@mail.gmail.com>
- <56B8E4D8.8070604@wwwdotorg.org> <56BE9125.3060104@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] sound: hdmi: avoid dereferencing
+	uninitialized 'jack' pointer
+Date: Tue, 16 Feb 2016 23:08:13 +0100
+Message-ID: <3395859.dhsfOsmVIe@wuerfel>
+References: <1455634059-1896914-1-git-send-email-arnd@arndb.de>
+ <s5hr3gc60ph.wl-tiwai@suse.de> <2706488.VpKveMVPGI@wuerfel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <56BE9125.3060104-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jonathan Tinkham <sctincman-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Cc: "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 816532657B8
+ for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2016 23:08:32 +0100 (CET)
+In-Reply-To: <2706488.VpKveMVPGI@wuerfel>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Han Lu <han.lu@intel.com>, Libin Yang <libin.yang@linux.intel.com>, Thierry Reding <treding@nvidia.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/12/2016 07:12 PM, Jonathan Tinkham wrote:
-> On 02/08/2016 11:56 AM, Stephen Warren wrote:
->> On 02/04/2016 12:17 PM, Dylan Reid wrote:
->>> On Thu, Feb 4, 2016 at 11:05 AM, Jonathan Tinkham
->>> <sctincman-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
->>>> On 02/04/2016 09:36 AM, Stephen Warren wrote:
->>>>>
->>>>> On 02/03/2016 10:30 PM, Jonathan Tinkham wrote:
->>>>>>
->>>>>> The headphone jack should not be inverted
->>>>>
->>>>>
->>>>> Have you tested this on Venice2 as well as Nyan? I'm pretty sure
->>>>> Venice2
->>>>> was tested when this driver was written, and whoever added Nyan
->>>>> support to
->>>>> the kernel simply assumed it would work. As such, my suspicion is
->>>>> that this
->>>>> series will break Venice2 even as it fixes Nyan.
->>>>
->>>>
->>>> I have not tested this on Venice2, only on Nyan. That seems like a
->>>> plausible
->>>> cause and reasonable suspicion.
->>>>
->>>>> Why doesn't user-space expect what the kernel actually implements? The
->>>>> kernel should be defining the control naming.
->>>>>
->>>>> Which user-space are you using specifically, and which part of it
->>>>> expects
->>>>> particular naming?
->>>>>
->>>>> Perhaps this series needs to be parametrized based on a flag in DT,
->>>>> rather
->>>>> than switching the hard-coded values, so that only Venice2 can be
->>>>> affected?
->>>>
->>>>
->>>> Specifically pulse-audio and alsa under Arch Linux.
->>>>
->>>> I was referencing 'Documentation/sound/alsa/soc/dapm.txt' with
->>>> regards to
->>>> control names. While it is possible to add another entry into the
->>>> user-space
->>>> configuration, I took this documentation as a definition of kernel
->>>> control
->>>> naming schemes, and thought the driver had used a non-standard
->>>> naming scheme
->>>> (or at least, not a consistent one).
->>>>
->>>>> On 02/03/2016 10:31 PM, Jonathan Tinkham wrote:
->>>>>>
->>>>>> Update device-tree bindings to reflect the rename of the board's
->>>>>> headphone jack.
->>>>>
->>>>>
->>>>> This looks like an incompatible change to the DT. While you've
->>>>> fixed the
->>>>> DT, which will fix new installations, old DTs now won't work. This
->>>>> breaks DT
->>>>> ABI. Any DT change needs to be backwards compatible, i.e. the old name
->>>>> should still work and be documented as a legacy value.
->>>>
->>>>
->>>> I see that now. If the inversion behavior differs between venice2
->>>> and nyan,
->>>> then another compatible string would need to be added anyways,
->>>> correct? As
->>>> you mentioned above, this might need to be done anyways for the rename.
->>>
->>> Venice2 and both nyan platforms do have different polarity of HP detect.
->>>
->>> For some boards we have an hd-invert property in DT.
->>>
->>> Would setting hp-det-gpio to active low in the pinmux achieve the
->>> same thing?
->>
->> I don't believe we have a pinmux setting for this.
->>
->> However, there's a GPIO_ACTIVE_HIGH/LOW flag that could be used in DT
->> property nvidia,hp-det-gpios's flags field to indicate the polarity.
->> That should work, but indeed you could use a separate hp-dt-invert
->> property if not.
->
-> Yeah, I could find other things that have an "invert" property, but none
-> for headphone/mic detect pins.
->
-> I'm not sure setting the GPIO_ACTIVE_HIGH/LOW flag would work. Doesn't
-> it depend on how the pin is physically wired?
+On Tuesday 16 February 2016 18:26:09 Arnd Bergmann wrote:
+> >                 return err;
+> >         per_pin->acomp_jack = jack;
+> > -       jack->private_data = per_pin;
+> > -       jack->private_free = free_acomp_jack_priv;
+> > +       if (jack) {
+> > +               jack->private_data = per_pin;
+> > +               jack->private_free = free_acomp_jack_priv;
+> > +       }
+> >         return 0;
+> >  }
+> > 
+> Looks good to me.
+> 
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
+> 
 
-The flag value used has to match the circuit design, yes. However, I 
-don't think there's any requirement that the circuit work any particular 
-way for the software to rely on using such a flag.
+Actually, on second thought, there is one notable downside
+of this approach: 'jack' is guaranteed to be NULL here, so gcc
+won't produce a warning if another driver makes the same mistake:
 
-Logically, there's a "headphone present" signal, and SW needs to 
-determine the value of that signal. The "present" value could be 
-represented by either a low or a high state in the circuit, depending on 
-how the circuit is implemented. The ACTIVE_HIGH/LOW flag simply 
-indicates which voltage level is associated with the semantic meaning on 
-"headphone present".
+By default, we only get a warning for uses of uninitialized
+variables, but not those that are known to be NULL. I think
+some compiler warnings are able to warn about that too, but I
+forgot the details.
+
+	Arnd
