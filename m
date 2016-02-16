@@ -1,87 +1,168 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 03/15] ASoC: hdac_hdmi: Enable DP1.2 and
- all converters/pins
-Date: Tue, 16 Feb 2016 02:00:26 +0000
-Message-ID: <20160216020026.GI18327@sirena.org.uk>
-References: <1455243375-16067-1-git-send-email-subhransu.s.prusty@intel.com>
- <1455243375-16067-4-git-send-email-subhransu.s.prusty@intel.com>
- <20160215201049.GD18327@sirena.org.uk>
- <s5htwl98v1n.wl-tiwai@suse.de>
+From: "Wu, Songjun" <songjun.wu@atmel.com>
+Subject: Re: [PATCH] ASoC: atmel_ssc_dai: distinguish the different SSC
+Date: Tue, 16 Feb 2016 10:54:21 +0800
+Message-ID: <56C28F5D.5010000@atmel.com>
+References: <1452666910-23586-1-git-send-email-songjun.wu@atmel.com>
+ <56966852.8050205@atmel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8567911476569036835=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C9CDD261501
- for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2016 03:00:44 +0100 (CET)
-In-Reply-To: <s5htwl98v1n.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: patches.audio@intel.com, Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+Content-Type: text/plain; charset=windows-1252;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <56966852.8050205@atmel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolas Ferre <nicolas.ferre@atmel.com>, broonie@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8567911476569036835==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="tctmm6wHVGT/P6vA"
-Content-Disposition: inline
+Any comments on this patch?
 
-
---tctmm6wHVGT/P6vA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Feb 15, 2016 at 11:31:48PM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
-> > On Fri, Feb 12, 2016 at 07:46:03AM +0530, Subhransu S. Prusty wrote:
-
-> > > +	vendor_param |= INTEL_EN_ALL_PIN_CVTS;
-> > > +	vendor_param = snd_hdac_codec_read(hdac, INTEL_VENDOR_NID, 0,
-> > > +				INTEL_SET_VENDOR_VERB, vendor_param);
-> > > +	if (vendor_param == -1)
-> > > +		return;
-> > > +}
-
-> > So to enable the pins we do a read?  That seems...  innovative.  :/
-
-> It's a weird nature of HD-audio verb handling.  While *_write() just
-> sends the verb asynchronously, *_read() sends the verb, does sync and
-> read-back the return value.  But both read and write may handle the
-> same verb.
-
-The above one seems especially odd, we do the read and then essentially
-ignore the value (the difference in handling is nonexistant).
-
---tctmm6wHVGT/P6vA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWwoK3AAoJECTWi3JdVIfQ5lIH/Aqugv2MfOJ0bYD4zbx5wFhD
-oNK2XXx/9xVYbAYdkfluNSVRqB6KKix+uEtAEH5xeG6s94IOu5miI7dr0HSP1SP1
-ZW28lT3HgCczhsYQPiltYQIPzxHUyOZ8hHhk6I02cMMgnFdA8LZ3HhdL1d8Izvqi
-mhocG7QO48eGq7whSGqfJo5NAzkP0EPiUclDBNzLCqqntrJbED/RqCYGvV+dsWYb
-GfhmbVxqh+IFawnAwcd0fCtupxWoCc6Fif0Allvi307AvbFjNEEO7zz36KBlVDF2
-FB8JYdKEl3SYXdk5alKZTbqdfioZsHkDWOn6GdJ/4aB23jgSUuokxq5VY4kXeVQ=
-=6Kzu
------END PGP SIGNATURE-----
-
---tctmm6wHVGT/P6vA--
-
---===============8567911476569036835==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8567911476569036835==--
+On 1/13/2016 23:08, Nicolas Ferre wrote:
+> Le 13/01/2016 07:35, Songjun Wu a =E9crit :
+>> Cpu_dai id always equals 0, can't distinguish the
+>> different SSC. Use platform_device id to record
+>> and distinguish the different SSC.
+>>
+>> Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
+>
+> It seems okay:
+> Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+>
+>> ---
+>>
+>>   drivers/misc/atmel-ssc.c        |    1 +
+>>   sound/soc/atmel/atmel_ssc_dai.c |   27 ++++++++++++++++++---------
+>>   2 files changed, 19 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
+>> index e11a0bd..0516ecd 100644
+>> --- a/drivers/misc/atmel-ssc.c
+>> +++ b/drivers/misc/atmel-ssc.c
+>> @@ -34,6 +34,7 @@ struct ssc_device *ssc_request(unsigned int ssc_nu=
+m)
+>>   		if (ssc->pdev->dev.of_node) {
+>>   			if (of_alias_get_id(ssc->pdev->dev.of_node, "ssc")
+>>   				=3D=3D ssc_num) {
+>> +				ssc->pdev->id =3D ssc_num;
+>>   				ssc_valid =3D 1;
+>>   				break;
+>>   			}
+>> diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel=
+_ssc_dai.c
+>> index ba8def5..2768970 100644
+>> --- a/sound/soc/atmel/atmel_ssc_dai.c
+>> +++ b/sound/soc/atmel/atmel_ssc_dai.c
+>> @@ -285,7 +285,8 @@ static int atmel_ssc_hw_rule_rate(struct snd_pcm=
+_hw_params *params,
+>>   static int atmel_ssc_startup(struct snd_pcm_substream *substream,
+>>   			     struct snd_soc_dai *dai)
+>>   {
+>> -	struct atmel_ssc_info *ssc_p =3D &ssc_info[dai->id];
+>> +	struct platform_device *pdev =3D to_platform_device(dai->dev);
+>> +	struct atmel_ssc_info *ssc_p =3D &ssc_info[pdev->id];
+>>   	struct atmel_pcm_dma_params *dma_params;
+>>   	int dir, dir_mask;
+>>   	int ret;
+>> @@ -346,7 +347,8 @@ static int atmel_ssc_startup(struct snd_pcm_subs=
+tream *substream,
+>>   static void atmel_ssc_shutdown(struct snd_pcm_substream *substream=
+,
+>>   			       struct snd_soc_dai *dai)
+>>   {
+>> -	struct atmel_ssc_info *ssc_p =3D &ssc_info[dai->id];
+>> +	struct platform_device *pdev =3D to_platform_device(dai->dev);
+>> +	struct atmel_ssc_info *ssc_p =3D &ssc_info[pdev->id];
+>>   	struct atmel_pcm_dma_params *dma_params;
+>>   	int dir, dir_mask;
+>>
+>> @@ -392,7 +394,8 @@ static void atmel_ssc_shutdown(struct snd_pcm_su=
+bstream *substream,
+>>   static int atmel_ssc_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+>>   		unsigned int fmt)
+>>   {
+>> -	struct atmel_ssc_info *ssc_p =3D &ssc_info[cpu_dai->id];
+>> +	struct platform_device *pdev =3D to_platform_device(cpu_dai->dev);
+>> +	struct atmel_ssc_info *ssc_p =3D &ssc_info[pdev->id];
+>>
+>>   	ssc_p->daifmt =3D fmt;
+>>   	return 0;
+>> @@ -404,7 +407,8 @@ static int atmel_ssc_set_dai_fmt(struct snd_soc_=
+dai *cpu_dai,
+>>   static int atmel_ssc_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
+>>   	int div_id, int div)
+>>   {
+>> -	struct atmel_ssc_info *ssc_p =3D &ssc_info[cpu_dai->id];
+>> +	struct platform_device *pdev =3D to_platform_device(cpu_dai->dev);
+>> +	struct atmel_ssc_info *ssc_p =3D &ssc_info[pdev->id];
+>>
+>>   	switch (div_id) {
+>>   	case ATMEL_SSC_CMR_DIV:
+>> @@ -445,7 +449,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_su=
+bstream *substream,
+>>   	struct snd_pcm_hw_params *params,
+>>   	struct snd_soc_dai *dai)
+>>   {
+>> -	int id =3D dai->id;
+>> +	struct platform_device *pdev =3D to_platform_device(dai->dev);
+>> +	int id =3D pdev->id;
+>>   	struct atmel_ssc_info *ssc_p =3D &ssc_info[id];
+>>   	struct ssc_device *ssc =3D ssc_p->ssc;
+>>   	struct atmel_pcm_dma_params *dma_params;
+>> @@ -772,7 +777,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_su=
+bstream *substream,
+>>   static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
+>>   			     struct snd_soc_dai *dai)
+>>   {
+>> -	struct atmel_ssc_info *ssc_p =3D &ssc_info[dai->id];
+>> +	struct platform_device *pdev =3D to_platform_device(dai->dev);
+>> +	struct atmel_ssc_info *ssc_p =3D &ssc_info[pdev->id];
+>>   	struct atmel_pcm_dma_params *dma_params;
+>>   	int dir;
+>>
+>> @@ -795,7 +801,8 @@ static int atmel_ssc_prepare(struct snd_pcm_subs=
+tream *substream,
+>>   static int atmel_ssc_trigger(struct snd_pcm_substream *substream,
+>>   			     int cmd, struct snd_soc_dai *dai)
+>>   {
+>> -	struct atmel_ssc_info *ssc_p =3D &ssc_info[dai->id];
+>> +	struct platform_device *pdev =3D to_platform_device(dai->dev);
+>> +	struct atmel_ssc_info *ssc_p =3D &ssc_info[pdev->id];
+>>   	struct atmel_pcm_dma_params *dma_params;
+>>   	int dir;
+>>
+>> @@ -824,11 +831,12 @@ static int atmel_ssc_trigger(struct snd_pcm_su=
+bstream *substream,
+>>   static int atmel_ssc_suspend(struct snd_soc_dai *cpu_dai)
+>>   {
+>>   	struct atmel_ssc_info *ssc_p;
+>> +	struct platform_device *pdev =3D to_platform_device(cpu_dai->dev);
+>>
+>>   	if (!cpu_dai->active)
+>>   		return 0;
+>>
+>> -	ssc_p =3D &ssc_info[cpu_dai->id];
+>> +	ssc_p =3D &ssc_info[pdev->id];
+>>
+>>   	/* Save the status register before disabling transmit and receive=
+ */
+>>   	ssc_p->ssc_state.ssc_sr =3D ssc_readl(ssc_p->ssc->regs, SR);
+>> @@ -852,12 +860,13 @@ static int atmel_ssc_suspend(struct snd_soc_da=
+i *cpu_dai)
+>>   static int atmel_ssc_resume(struct snd_soc_dai *cpu_dai)
+>>   {
+>>   	struct atmel_ssc_info *ssc_p;
+>> +	struct platform_device *pdev =3D to_platform_device(cpu_dai->dev);
+>>   	u32 cr;
+>>
+>>   	if (!cpu_dai->active)
+>>   		return 0;
+>>
+>> -	ssc_p =3D &ssc_info[cpu_dai->id];
+>> +	ssc_p =3D &ssc_info[pdev->id];
+>>
+>>   	/* restore SSC register settings */
+>>   	ssc_writel(ssc_p->ssc->regs, TFMR, ssc_p->ssc_state.ssc_tfmr);
+>>
+>
+>
