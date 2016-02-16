@@ -1,133 +1,56 @@
 From: =?UTF-8?q?Andreas=20Irest=C3=A5l?= <andreas.irestal@axis.com>
-Subject: [PATCH v2 4/5] ASoC: adau17x1: Add basic DT support for adau17x1
-Date: Tue, 16 Feb 2016 13:56:44 +0100
-Message-ID: <1455627405-18155-5-git-send-email-andire@axis.com>
-References: <1455627405-18155-1-git-send-email-andire@axis.com>
+Subject: [PATCH v2 0/5]  Minor fixes and DT support
+Date: Tue, 16 Feb 2016 13:56:40 +0100
+Message-ID: <1455627405-18155-1-git-send-email-andire@axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1455627405-18155-1-git-send-email-andire@axis.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4CEA2260824
+ for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2016 13:57:14 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, =?UTF-8?q?Andreas=20Irest=C3=A5l?= <andire@axis.com>
+Cc: =?UTF-8?q?Andreas=20Irest=C3=A5l?= <andire@axis.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Andreas Irest=C3=A5l <andire@axis.com>
----
- sound/soc/codecs/adau1761-i2c.c | 12 ++++++++++++
- sound/soc/codecs/adau1761-spi.c | 12 ++++++++++++
- sound/soc/codecs/adau1781-i2c.c | 10 ++++++++++
- sound/soc/codecs/adau1781-spi.c | 10 ++++++++++
- 4 files changed, 44 insertions(+)
-
-diff --git a/sound/soc/codecs/adau1761-i2c.c b/sound/soc/codecs/adau176=
-1-i2c.c
-index a1b1267..8de010f 100644
---- a/sound/soc/codecs/adau1761-i2c.c
-+++ b/sound/soc/codecs/adau1761-i2c.c
-@@ -44,9 +44,21 @@ static const struct i2c_device_id adau1761_i2c_ids[]=
- =3D {
- };
- MODULE_DEVICE_TABLE(i2c, adau1761_i2c_ids);
-=20
-+#if defined(CONFIG_OF)
-+static const struct of_device_id adau1761_i2c_dt_ids[] =3D {
-+	{ .compatible =3D "adi,adau1361", },
-+	{ .compatible =3D "adi,adau1461", },
-+	{ .compatible =3D "adi,adau1761", },
-+	{ .compatible =3D "adi,adau1961", },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, adau1761_i2c_dt_ids);
-+#endif
-+
- static struct i2c_driver adau1761_i2c_driver =3D {
- 	.driver =3D {
- 		.name =3D "adau1761",
-+		.of_match_table =3D of_match_ptr(adau1761_i2c_dt_ids),
- 	},
- 	.probe =3D adau1761_i2c_probe,
- 	.remove =3D adau1761_i2c_remove,
-diff --git a/sound/soc/codecs/adau1761-spi.c b/sound/soc/codecs/adau176=
-1-spi.c
-index 1883349..d917124 100644
---- a/sound/soc/codecs/adau1761-spi.c
-+++ b/sound/soc/codecs/adau1761-spi.c
-@@ -61,9 +61,21 @@ static const struct spi_device_id adau1761_spi_id[] =
-=3D {
- };
- MODULE_DEVICE_TABLE(spi, adau1761_spi_id);
-=20
-+#if defined(CONFIG_OF)
-+static const struct of_device_id adau1761_spi_dt_ids[] =3D {
-+	{ .compatible =3D "adi,adau1361", },
-+	{ .compatible =3D "adi,adau1461", },
-+	{ .compatible =3D "adi,adau1761", },
-+	{ .compatible =3D "adi,adau1961", },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, adau1761_spi_dt_ids);
-+#endif
-+
- static struct spi_driver adau1761_spi_driver =3D {
- 	.driver =3D {
- 		.name =3D "adau1761",
-+		.of_match_table =3D of_match_ptr(adau1761_spi_dt_ids),
- 	},
- 	.probe =3D adau1761_spi_probe,
- 	.remove =3D adau1761_spi_remove,
-diff --git a/sound/soc/codecs/adau1781-i2c.c b/sound/soc/codecs/adau178=
-1-i2c.c
-index 0e32bba..06cbca8 100644
---- a/sound/soc/codecs/adau1781-i2c.c
-+++ b/sound/soc/codecs/adau1781-i2c.c
-@@ -42,9 +42,19 @@ static const struct i2c_device_id adau1781_i2c_ids[]=
- =3D {
- };
- MODULE_DEVICE_TABLE(i2c, adau1781_i2c_ids);
-=20
-+#if defined(CONFIG_OF)
-+static const struct of_device_id adau1781_i2c_dt_ids[] =3D {
-+	{ .compatible =3D "adi,adau1381", },
-+	{ .compatible =3D "adi,adau1781", },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, adau1781_i2c_dt_ids);
-+#endif
-+
- static struct i2c_driver adau1781_i2c_driver =3D {
- 	.driver =3D {
- 		.name =3D "adau1781",
-+		.of_match_table =3D of_match_ptr(adau1781_i2c_dt_ids),
- 	},
- 	.probe =3D adau1781_i2c_probe,
- 	.remove =3D adau1781_i2c_remove,
-diff --git a/sound/soc/codecs/adau1781-spi.c b/sound/soc/codecs/adau178=
-1-spi.c
-index 33a73ff..3d965a0 100644
---- a/sound/soc/codecs/adau1781-spi.c
-+++ b/sound/soc/codecs/adau1781-spi.c
-@@ -59,9 +59,19 @@ static const struct spi_device_id adau1781_spi_id[] =
-=3D {
- };
- MODULE_DEVICE_TABLE(spi, adau1781_spi_id);
-=20
-+#if defined(CONFIG_OF)
-+static const struct of_device_id adau1781_spi_dt_ids[] =3D {
-+	{ .compatible =3D "adi,adau1381", },
-+	{ .compatible =3D "adi,adau1781", },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, adau1781_spi_dt_ids);
-+#endif
-+
- static struct spi_driver adau1781_spi_driver =3D {
- 	.driver =3D {
- 		.name =3D "adau1781",
-+		.of_match_table =3D of_match_ptr(adau1781_spi_dt_ids),
- 	},
- 	.probe =3D adau1781_spi_probe,
- 	.remove =3D adau1781_spi_remove,
---=20
-2.1.4
+VGhpcyBzZXQgb2YgcGF0Y2hlcyBmaXhlcyBzb21lIG1pbm9yIHR5cG9zIGFuZCBhZGRzIERUIHN1
+cHBvcnQgZm9yIHRoZQphZGF1MTd4MSBjb2RlYyBkcml2ZXJzLiBJJ3ZlIG9ubHkgYmVlbiBhYmxl
+IHRvIHRlc3QgdGhlIDE3NjEgcGFydCBvbgpyZWFsIGhhcmR3YXJlIHNpbmNlIEkgZG9uJ3QgaGF2
+ZSBhbnkgYWRhdTE3ODEgaGFyZHdhcmUgYXQgdGhlIG1vbWVudC4KCkN1cnJlbnRseSwgcXVpdGUg
+YSBsb3Qgb2Ygb3B0aW9ucyBhcmUgcHJvdmlkZWQgdGhyb3VnaCB0aGUgcGxhdGZvcm1fZGF0YQpz
+dHJ1Y3QsIHNvIGl0IG1hZGUgc2Vuc2UgcGFyc2luZyB0aGUgRFQgYW5kIGNyZWF0ZSBhIHBsYXRm
+b3JtX2RhdGEgc3RydWN0CmZyb20gdGhlc2UgcGFyYW1ldGVycyBub3QgdG8gYnJlYWsgYW55dGhp
+bmcuCgpDaGFuZ2VzIHNpbmNlIHYxOgogLSBBZGRlZCB2ZW5kb3IgcHJlZml4ICJhZGksIiB0byBE
+VCBwcm9wZXJ0aWVzCiAtIERUIHBhcnNpbmcgbW92ZWQgdG8gbWFpbiBwcm9iZSBmdW5jdGlvbgoK
+QW5kcmVhcyBJcmVzdMOlbCAoNSk6CiAgQVNvQzogYWRhdTE3eDE6IEZpeCBpbmNvcnJlY3QgQkNM
+SyByYXRpbyBkZWZpbml0aW9ucwogIEFTb0M6IGFkYXUxN3gxOiBDb3JyZWN0IHR5cG9zIGluIGZp
+bGUgaGVhZGVycwogIEFTb0M6IGFkYXUxN3gxOiBBZGQgYWRhdTE3eDEgYmluZGluZ3MgZG9jdW1l
+bnQKICBBU29DOiBhZGF1MTd4MTogQWRkIGJhc2ljIERUIHN1cHBvcnQgZm9yIGFkYXUxN3gxCiAg
+QVNvQzogYWRhdTE3eDE6IFN1cHBvcnQgcGxhdGZvcm0gZGF0YSB2aWEgRFQKCiAuLi4vZGV2aWNl
+dHJlZS9iaW5kaW5ncy9zb3VuZC9hZGksYWRhdTE3eDEudHh0ICAgICB8ICA1NSArKysrKysrKysK
+IGluY2x1ZGUvZHQtYmluZGluZ3Mvc291bmQvYWRhdTE3eDEuaCAgICAgICAgICAgICAgIHwgIDE0
+ICsrKwogaW5jbHVkZS9saW51eC9wbGF0Zm9ybV9kYXRhL2FkYXUxN3gxLmggICAgICAgICAgICAg
+fCAgIDIgKy0KIHNvdW5kL3NvYy9jb2RlY3MvYWRhdTE3NjEtaTJjLmMgICAgICAgICAgICAgICAg
+ICAgIHwgIDE0ICsrLQogc291bmQvc29jL2NvZGVjcy9hZGF1MTc2MS1zcGkuYyAgICAgICAgICAg
+ICAgICAgICAgfCAgMTQgKystCiBzb3VuZC9zb2MvY29kZWNzL2FkYXUxNzYxLmMgICAgICAgICAg
+ICAgICAgICAgICAgICB8IDEyOSArKysrKysrKysrKysrKysrKysrKy0KIHNvdW5kL3NvYy9jb2Rl
+Y3MvYWRhdTE3ODEtaTJjLmMgICAgICAgICAgICAgICAgICAgIHwgIDEwICsrCiBzb3VuZC9zb2Mv
+Y29kZWNzL2FkYXUxNzgxLXNwaS5jICAgICAgICAgICAgICAgICAgICB8ICAxMCArKwogc291bmQv
+c29jL2NvZGVjcy9hZGF1MTc4MS5jICAgICAgICAgICAgICAgICAgICAgICAgfCAgNTAgKysrKysr
+Ky0KIHNvdW5kL3NvYy9jb2RlY3MvYWRhdTE3eDEuaCAgICAgICAgICAgICAgICAgICAgICAgIHwg
+ICA2ICstCiAxMCBmaWxlcyBjaGFuZ2VkLCAyOTYgaW5zZXJ0aW9ucygrKSwgOCBkZWxldGlvbnMo
+LSkKIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+c291bmQvYWRpLGFkYXUxN3gxLnR4dAogY3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvZHQtYmlu
+ZGluZ3Mvc291bmQvYWRhdTE3eDEuaAoKLS0gCjIuMS40CgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
