@@ -1,112 +1,62 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: sound: list corruption in delete_and_unsubscribe_port
-Date: Tue, 16 Feb 2016 12:19:31 +0100
-Message-ID: <CACT4Y+bofhqzgJNUneZDRc48rjDTN_ZiQAKMhPRj_7rXhkwm=g@mail.gmail.com>
-References: <CACT4Y+bay9qsrz6dQu31EcGaH9XwfW7o3oBzSQUG9fMszoh=Sg@mail.gmail.com>
- <s5hbn7h7z5o.wl-tiwai@suse.de>
+From: Andreas =?iso-8859-1?Q?Irest=E5l?= <andreas.irestal@axis.com>
+Subject: Re: [PATCH 4/4] ASoC: simple-card: Support for
+ selecting system clocks by ID
+Date: Tue, 16 Feb 2016 13:46:16 +0100
+Message-ID: <20160216124616.GB2137@lnxandire1.se.axis.com>
+References: <1455545495-20292-1-git-send-email-peter.ujfalusi@ti.com>
+ <1455545495-20292-5-git-send-email-peter.ujfalusi@ti.com>
+ <20160215152635.GN18988@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hbn7h7z5o.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, LKML <linux-kernel@vger.kernel.org>, Alexander Potapenko <glider@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>, Sasha Levin <sasha.levin@oracle.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B5692606FF
+ for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2016 13:46:20 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20160215152635.GN18988@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 16, 2016 at 11:00 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Tue, 16 Feb 2016 10:41:54 +0100,
-> Dmitry Vyukov wrote:
->>
->> Hello,
->>
->> Here is a new one on 18558cae0272f8fd9647e69d3fec1565a7949865
->> (4.5-rc4). But need to note that sound become much more stable, I've
->> seen only 2 of these over night.
->>
->> The following program causes list corruption:
->>
->> ------------[ cut here ]------------
->> WARNING: CPU: 2 PID: 12546 at lib/list_debug.c:62 __list_del_entry+0x10b/0x1e0()
->> list_del corruption, ffff880063512388->next is LIST_POISON1 (dead000000000100)
->> Modules linked in:
->> CPU: 2 PID: 12546 Comm: a.out Not tainted 4.5.0-rc4+ #328
->> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
->>  ffffffff87b05080 ffff8800608b7a48 ffffffff82be46cf ffffffff81477fb8
->>  fffffbfff0f60a10 ffff8800608b7ab8 ffff8800637d97c0 ffffffff86ad3780
->>  0000000000000009 000000000000003e ffff8800608b7a88 ffffffff81355139
->> Call Trace:
->>  [<ffffffff81355249>] warn_slowpath_fmt+0xa9/0xd0 kernel/panic.c:494
->>  [<ffffffff82c4c36b>] __list_del_entry+0x10b/0x1e0 lib/list_debug.c:60
->>  [<ffffffff82c4c44d>] list_del+0xd/0x70 lib/list_debug.c:86
->>  [<ffffffff852c38e3>] delete_and_unsubscribe_port+0x1e3/0x2f0
->> sound/core/seq/seq_ports.c:545
->>  [<ffffffff852c43fa>] clear_subscriber_list+0x15a/0x260
->> sound/core/seq/seq_ports.c:250
->>  [<ffffffff852c456a>] port_delete+0x6a/0x1c0 sound/core/seq/seq_ports.c:266
->>  [<ffffffff852c5242>] snd_seq_delete_all_ports+0x242/0x350
->> sound/core/seq/seq_ports.c:330
->>  [<ffffffff852ae1cf>] seq_free_client1+0x2f/0x290
->> sound/core/seq/seq_clientmgr.c:272
->>  [<ffffffff852ae495>] seq_free_client+0x65/0x160
->> sound/core/seq/seq_clientmgr.c:299
->>  [<ffffffff852b118d>] snd_seq_release+0x4d/0xb0
->> sound/core/seq/seq_clientmgr.c:380
->>  [<ffffffff817c3256>] __fput+0x236/0x780 fs/file_table.c:208
->>  [<ffffffff817c3825>] ____fput+0x15/0x20 fs/file_table.c:244
->>  [<ffffffff813b3100>] task_work_run+0x170/0x210 kernel/task_work.c:115
->>  [<     inline     >] tracehook_notify_resume include/linux/tracehook.h:191
->>  [<ffffffff810066b1>] exit_to_usermode_loop+0x1d1/0x210
->> arch/x86/entry/common.c:251
->>  [<     inline     >] prepare_exit_to_usermode arch/x86/entry/common.c:282
->>  [<ffffffff810084ea>] syscall_return_slowpath+0x2ba/0x340
->> arch/x86/entry/common.c:344
->>  [<ffffffff866626e2>] int_ret_from_sys_call+0x25/0x9f
->> arch/x86/entry/entry_64.S:281
->> ---[ end trace 4cad985f706f8ace ]---
->
-> Hm, this might be the remaining open race at deleting ports.
-> Please try the patch below.
+On Mon, Feb 15, 2016 at 03:26:35PM +0000, Mark Brown wrote:
+> On Mon, Feb 15, 2016 at 04:11:35PM +0200, Peter Ujfalusi wrote:
+> 
+> > Most CPU and codec drivers can select their system clock from different
+> > sources. They rely on snd_soc_dai_set_sysclk(x, sysclk_id, x, x) to do so.
+> > Add support for selecting which clock need to be selected along with the
+> > rate.
+> 
+> Rather than adding new bindings for the ASoC specific clocking APIs it
+> seems better to use the standard clock API bindings and transition
+> drivers to use that.  In the past the clock API didn't have DT bindings
+> so wehad to do our own thing but I think now that's no longer the case?
 
-Yes, it fixes the crash for me.
+I'm interested in this as well since I'm working on a set of similair 
+patches implementing clocking and PLL related issues in the simple-card
+driver. 
 
-Tested-by: Dmitry Vyukov <dvyukov@google.com>
+There would be some problems as the typical use-cases involving
+setting a codecs clocks / PLLs to a multiple of the sample rate, data
+width, etc. The clocking API should support this as well if that's the
+way forward. However, since many of the clock settings are related to
+codec internals, the gain from moving codec PLLs, clocks, etc to the
+standard clock API would be rather limited. There is already support for
+getting sysclk from this API, which makes sense. Shouldn't clock id be
+seen more as a pin selection from the dai's point of view? 
 
-Thanks!
+I really like the idea of the simple-card driver. It seems most board
+drivers really doesn't do much except setting up some clocks, which
+should be done in DT anyway, given there are enough available bindings
+to do so...
 
-> thanks,
->
-> Takashi
->
-> ---
-> diff --git a/sound/core/seq/seq_ports.c b/sound/core/seq/seq_ports.c
-> index 921fb2bd8fad..fe686ee41c6d 100644
-> --- a/sound/core/seq/seq_ports.c
-> +++ b/sound/core/seq/seq_ports.c
-> @@ -535,19 +535,22 @@ static void delete_and_unsubscribe_port(struct snd_seq_client *client,
->                                         bool is_src, bool ack)
->  {
->         struct snd_seq_port_subs_info *grp;
-> +       struct list_head *list;
-> +       bool empty;
->
->         grp = is_src ? &port->c_src : &port->c_dest;
-> +       list = is_src ? &subs->src_list : &subs->dest_list;
->         down_write(&grp->list_mutex);
->         write_lock_irq(&grp->list_lock);
-> -       if (is_src)
-> -               list_del(&subs->src_list);
-> -       else
-> -               list_del(&subs->dest_list);
-> +       empty = list_empty(list);
-> +       if (!empty)
-> +               list_del_init(list);
->         grp->exclusive = 0;
->         write_unlock_irq(&grp->list_lock);
->         up_write(&grp->list_mutex);
->
-> -       unsubscribe_port(client, port, grp, &subs->info, ack);
-> +       if (!empty)
-> +               unsubscribe_port(client, port, grp, &subs->info, ack);
->  }
->
->  /* connect two ports */
+/Andreas
