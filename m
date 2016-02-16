@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [RFC v1 4/9] ASoC: msm8x16: add ranges for default, readonly
-Date: Tue, 16 Feb 2016 17:32:56 +0000
-Message-ID: <1455643976-1784-1-git-send-email-srinivas.kandagatla@linaro.org>
+Subject: [RFC v1 5/9] ASoC: msm8x16: add codec intialization setup
+Date: Tue, 16 Feb 2016 17:33:03 +0000
+Message-ID: <1455643983-1827-1-git-send-email-srinivas.kandagatla@linaro.org>
 References: <1455643880-1611-1-git-send-email-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1455643880-1611-1-git-send-email-srinivas.kandagatla@linaro.org>
@@ -10,894 +10,258 @@ To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>, Patrick Lai <plai@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, kwestfie@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch add register ranges for readonly, default and reset register
-values.
+This patch adds codec hardware intialization code.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/msm8x16-wcd.c |  95 ++++++
- sound/soc/codecs/msm8x16-wcd.h | 753 +++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 848 insertions(+)
- create mode 100644 sound/soc/codecs/msm8x16-wcd.h
+ sound/soc/codecs/msm8x16-wcd.c | 180 +++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/msm8x16-wcd.h |  11 +++
+ 2 files changed, 191 insertions(+)
 
 diff --git a/sound/soc/codecs/msm8x16-wcd.c b/sound/soc/codecs/msm8x16-wcd.c
-index 99217ab..3598e48 100644
+index 3598e48..bc8b38a 100644
 --- a/sound/soc/codecs/msm8x16-wcd.c
 +++ b/sound/soc/codecs/msm8x16-wcd.c
-@@ -11,6 +11,9 @@
- #include <linux/mfd/syscon.h>
- #include <sound/soc.h>
+@@ -2,6 +2,7 @@
+ #include <linux/module.h>
+ #include <linux/err.h>
+ #include <linux/kernel.h>
++#include <linux/delay.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/types.h>
+ #include <linux/clk.h>
+@@ -14,6 +15,10 @@
+ #include "msm8x16-wcd-registers.h"
+ #include "msm8x16-wcd.h"
  
-+#include "msm8x16-wcd-registers.h"
-+#include "msm8x16-wcd.h"
++/* Cap mode for micbias */
++#define MICBIAS_EXT_BYP_CAP 0x00
++#define MICBIAS_NO_EXT_BYP_CAP 0x01
 +
  struct msm8x16_wcd_chip {
  	struct regmap	*analog_map;
  	struct regmap	*digital_map;
-@@ -33,6 +36,93 @@ struct msm8x16_wcd_chip {
- 	bool micbias2_cap_mode;
- };
+@@ -124,6 +129,33 @@ static unsigned int msm8x16_wcd_read(struct snd_soc_codec *codec,
+ 	return val;
+ }
  
-+static int msm8x16_wcd_volatile(struct snd_soc_codec *codec, unsigned int reg)
++static void msm8x16_wcd_configure_cap(struct snd_soc_codec *codec,
++		bool micbias1, bool micbias2)
 +{
-+	return msm8x16_wcd_reg_readonly[reg];
-+}
++	struct msm8x16_wcd_chip *wcd = snd_soc_codec_get_drvdata(codec);
 +
-+static int msm8x16_wcd_readable(struct snd_soc_codec *ssc, unsigned int reg)
-+{
-+	return msm8x16_wcd_reg_readable[reg];
-+}
-+
-+static int __msm8x16_wcd_reg_write(struct snd_soc_codec *codec,
-+			unsigned short reg, u8 val)
-+{
-+	int ret = -EINVAL;
-+	struct msm8x16_wcd_chip *chip = dev_get_drvdata(codec->dev);
-+
-+	if (MSM8X16_WCD_IS_TOMBAK_REG(reg)) {
-+		ret = regmap_write(chip->analog_map,
-+				   chip->analog_base + reg, val);
-+	} else if (MSM8X16_WCD_IS_DIGITAL_REG(reg)) {
-+		u32 temp = val & 0x000000FF;
-+		u16 offset = (reg ^ 0x0200) & 0x0FFF;
-+
-+		ret = regmap_write(chip->digital_map, offset, temp);
++	if (micbias1 && micbias2) {
++		if ((wcd->micbias1_cap_mode == MICBIAS_EXT_BYP_CAP) ||
++		    (wcd->micbias2_cap_mode == MICBIAS_EXT_BYP_CAP))
++			snd_soc_update_bits(codec,
++				MSM8X16_WCD_A_ANALOG_MICB_1_EN,
++				0x40, (MICBIAS_EXT_BYP_CAP << 6));
++		else
++			snd_soc_update_bits(codec,
++				MSM8X16_WCD_A_ANALOG_MICB_1_EN,
++				0x40, (MICBIAS_NO_EXT_BYP_CAP << 6));
++	} else if (micbias2) {
++		snd_soc_update_bits(codec, MSM8X16_WCD_A_ANALOG_MICB_1_EN,
++				0x40, (wcd->micbias2_cap_mode << 6));
++	} else if (micbias1) {
++		snd_soc_update_bits(codec, MSM8X16_WCD_A_ANALOG_MICB_1_EN,
++				0x40, (wcd->micbias1_cap_mode << 6));
++	} else {
++		snd_soc_update_bits(codec, MSM8X16_WCD_A_ANALOG_MICB_1_EN,
++				0x40, 0x00);
 +	}
-+
-+	return ret;
 +}
 +
-+static int msm8x16_wcd_write(struct snd_soc_codec *codec, unsigned int reg,
-+			     unsigned int value)
-+{
-+	if (reg == SND_SOC_NOPM)
-+		return 0;
-+
-+	WARN_ON(reg > MSM8X16_WCD_MAX_REGISTER);
-+	if (!msm8x16_wcd_volatile(codec, reg))
-+		msm8x16_wcd_reset_reg_defaults[reg] = value;
-+
-+	return __msm8x16_wcd_reg_write(codec, reg, (u8)value);
-+}
-+
-+static int __msm8x16_wcd_reg_read(struct snd_soc_codec *codec,
-+				unsigned short reg)
-+{
-+	int ret = -EINVAL;
-+	u32 temp = 0;
-+	struct msm8x16_wcd_chip *chip = dev_get_drvdata(codec->dev);
-+
-+	if (MSM8X16_WCD_IS_TOMBAK_REG(reg)) {
-+		ret = regmap_read(chip->analog_map,
-+				  chip->analog_base + reg, &temp);
-+	} else if (MSM8X16_WCD_IS_DIGITAL_REG(reg)) {
-+		u32 val;
-+		u16 offset = (reg ^ 0x0200) & 0x0FFF;
-+
-+		ret = regmap_read(chip->digital_map, offset, &val);
-+		temp = (u8)val;
-+	}
-+
-+	if (ret < 0) {
-+		dev_err(codec->dev,
-+				"%s: codec read failed for reg 0x%x\n",
-+				__func__, reg);
-+		return ret;
-+	}
-+
-+	return temp;
-+}
-+
-+static unsigned int msm8x16_wcd_read(struct snd_soc_codec *codec,
-+				unsigned int reg)
-+{
-+	unsigned int val;
-+
-+	WARN_ON(reg > MSM8X16_WCD_MAX_REGISTER);
-+
-+	if (!msm8x16_wcd_volatile(codec, reg) &&
-+	    msm8x16_wcd_readable(codec, reg) &&
-+		reg < codec->driver->reg_cache_size) {
-+		return msm8x16_wcd_reset_reg_defaults[reg];
-+	}
-+
-+	val = __msm8x16_wcd_reg_read(codec, reg);
-+
-+	return val;
-+}
- 
  static int msm8x16_wcd_codec_parse_dt(struct platform_device *pdev,
  				      struct msm8x16_wcd_chip *chip)
-@@ -96,6 +186,11 @@ static struct snd_soc_dai_driver msm8x16_wcd_codec_dai[] = {
+ {
+@@ -181,11 +213,159 @@ static int msm8x16_wcd_codec_parse_dt(struct platform_device *pdev,
+ 
+ 	return 0;
+ }
++#define VDDIO_VOL_MIN	1800000 /* uV */
++#define VDDIO_VOL_MAX	1800000 /* uV */
++
++static int msm8x16_wcd_codec_enable_clock_block(struct snd_soc_codec *codec,
++						int enable)
++{
++	struct msm8x16_wcd_chip *msm8x16_wcd = snd_soc_codec_get_drvdata(codec);
++	unsigned long mclk_rate;
++
++	if (enable) {
++		snd_soc_update_bits(codec,
++			MSM8X16_WCD_A_CDC_CLK_MCLK_CTL, 0x01, 0x01);
++		snd_soc_update_bits(codec,
++			MSM8X16_WCD_A_CDC_CLK_PDM_CTL, 0x03, 0x03);
++		snd_soc_update_bits(codec,
++			MSM8X16_WCD_A_ANALOG_MASTER_BIAS_CTL, 0x30, 0x30);
++		snd_soc_update_bits(codec,
++			MSM8X16_WCD_A_DIGITAL_CDC_RST_CTL, 0x80, 0x80);
++		snd_soc_update_bits(codec,
++			MSM8X16_WCD_A_DIGITAL_CDC_TOP_CLK_CTL, 0x0C, 0x0C);
++
++		mclk_rate = clk_get_rate(msm8x16_wcd->mclk);
++
++		if (mclk_rate == 12288000)
++			snd_soc_update_bits(codec,
++				MSM8X16_WCD_A_CDC_TOP_CTL, 0x01, 0x00);
++		else if (mclk_rate == 9600000)
++			snd_soc_update_bits(codec,
++				MSM8X16_WCD_A_CDC_TOP_CTL, 0x01, 0x01);
++	} else {
++		snd_soc_update_bits(codec,
++			MSM8X16_WCD_A_DIGITAL_CDC_TOP_CLK_CTL, 0x0C, 0x00);
++		snd_soc_update_bits(codec,
++				MSM8X16_WCD_A_CDC_CLK_PDM_CTL, 0x03, 0x00);
++
++	}
++	return 0;
++}
++
++static const struct msm8x16_wcd_reg_mask_val wcd_reg_defaults[] = {
++	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_SPKR_DAC_CTL, 0x03),
++	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_CURRENT_LIMIT, 0x82),
++	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_SPKR_OCP_CTL, 0xE1),
++};
++
++static const struct msm8x16_wcd_reg_mask_val wcd_reg_defaults_2_0[] = {
++	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_DIGITAL_PERPH_RESET_CTL3, 0x0F),
++	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_TX_1_2_OPAMP_BIAS, 0x4B),
++	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_NCP_FBCTRL, 0x28),
++	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_SPKR_DRV_CTL, 0x69),
++	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_SPKR_DRV_DBG, 0x01),
++	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_BOOST_EN_CTL, 0x5F),
++	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_SLOPE_COMP_IP_ZERO, 0x88),
++	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_PERPH_RESET_CTL3, 0x0F),
++	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_CURRENT_LIMIT, 0x82),
++	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_SPKR_DAC_CTL, 0x03),
++	MSM8X16_WCD_REG_VAL(MSM8X16_WCD_A_ANALOG_SPKR_OCP_CTL, 0xE1),
++};
++
++static const struct msm8x16_wcd_reg_mask_val
++	msm8x16_wcd_codec_reg_init_val[] = {
++
++	/* Initialize current threshold to 350MA
++	 * number of wait and run cycles to 4096
++	 */
++	{MSM8X16_WCD_A_ANALOG_RX_COM_OCP_CTL, 0xFF, 0xD1},
++	{MSM8X16_WCD_A_ANALOG_RX_COM_OCP_COUNT, 0xFF, 0xFF},
++};
++
++static int msm8x16_wcd_device_up(struct snd_soc_codec *codec)
++{
++	struct msm8x16_wcd_chip *msm8x16_wcd = snd_soc_codec_get_drvdata(codec);
++	u32 reg;
++
++	snd_soc_write(codec, MSM8X16_WCD_A_DIGITAL_PERPH_RESET_CTL4, 0x01);
++	snd_soc_write(codec, MSM8X16_WCD_A_ANALOG_PERPH_RESET_CTL4, 0x01);
++
++	for (reg = 0; reg < ARRAY_SIZE(msm8x16_wcd_reset_reg_defaults); reg++)
++		if (msm8x16_wcd_reg_readable[reg])
++			msm8x16_wcd_write(codec,
++				reg, msm8x16_wcd_reset_reg_defaults[reg]);
++
++	/* delay is required to make sure sound card state updated */
++	usleep_range(5000, 5100);
++
++	for (reg = 0; reg < ARRAY_SIZE(msm8x16_wcd_codec_reg_init_val); reg++)
++		snd_soc_update_bits(codec,
++				    msm8x16_wcd_codec_reg_init_val[reg].reg,
++				    msm8x16_wcd_codec_reg_init_val[reg].mask,
++				    msm8x16_wcd_codec_reg_init_val[reg].val);
++
++	if (TOMBAK_IS_1_0(msm8x16_wcd->pmic_rev)) {
++		for (reg = 0; reg < ARRAY_SIZE(wcd_reg_defaults); reg++)
++			snd_soc_write(codec, wcd_reg_defaults[reg].reg,
++					wcd_reg_defaults[reg].val);
++	} else {
++		for (reg = 0; reg < ARRAY_SIZE(wcd_reg_defaults_2_0); reg++)
++			snd_soc_write(codec, wcd_reg_defaults_2_0[reg].reg,
++				wcd_reg_defaults_2_0[reg].val);
++	}
++
++	msm8x16_wcd_codec_enable_clock_block(codec, 1);
++
++	return 0;
++}
++
++static int msm8x16_wcd_codec_probe(struct snd_soc_codec *codec)
++{
++	struct msm8x16_wcd_chip *chip = dev_get_drvdata(codec->dev);
++	int err;
++
++	regulator_set_voltage(chip->vddio, VDDIO_VOL_MIN, VDDIO_VOL_MAX);
++	err = regulator_enable(chip->vddio);
++	if (err < 0) {
++		dev_err(codec->dev, "failed to enable VDDIO regulator\n");
++		return err;
++	}
++
++	err = regulator_enable(chip->vdd_tx_rx);
++	if (err < 0) {
++		dev_err(codec->dev, "failed to enable VDD_TX_RX regulator\n");
++		return err;
++	}
++
++	snd_soc_codec_set_drvdata(codec, chip);
++
++	chip->pmic_rev = snd_soc_read(codec, MSM8X16_WCD_A_DIGITAL_REVISION1);
++	dev_info(codec->dev, "%s :PMIC REV: %d", __func__, chip->pmic_rev);
++
++	chip->codec_version = snd_soc_read(codec,
++				MSM8X16_WCD_A_DIGITAL_PERPH_SUBTYPE);
++	dev_info(codec->dev, "%s :CODEC Version: %d", __func__,
++				chip->codec_version);
++
++	msm8x16_wcd_device_up(codec);
++
++	/* Set initial cap mode */
++	msm8x16_wcd_configure_cap(codec, false, false);
++
++	return 0;
++}
++
++static int msm8x16_wcd_codec_remove(struct snd_soc_codec *codec)
++{
++	return 0;
++};
+ 
+ static struct snd_soc_dai_driver msm8x16_wcd_codec_dai[] = {
  };
  
  static struct snd_soc_codec_driver msm8x16_wcd_codec = {
-+	.read = msm8x16_wcd_read,
-+	.write = msm8x16_wcd_write,
-+	.reg_cache_size = MSM8X16_WCD_NUM_REGISTERS,
-+	.reg_cache_default = msm8x16_wcd_reset_reg_defaults,
-+	.reg_word_size = 1,
- };
- 
- static int msm8x16_wcd_probe(struct platform_device *pdev)
++	.probe	= msm8x16_wcd_codec_probe,
++	.remove	= msm8x16_wcd_codec_remove,
+ 	.read = msm8x16_wcd_read,
+ 	.write = msm8x16_wcd_write,
+ 	.reg_cache_size = MSM8X16_WCD_NUM_REGISTERS,
 diff --git a/sound/soc/codecs/msm8x16-wcd.h b/sound/soc/codecs/msm8x16-wcd.h
-new file mode 100644
-index 0000000..db82f58
---- /dev/null
+index db82f58..bfb6c88 100644
+--- a/sound/soc/codecs/msm8x16-wcd.h
 +++ b/sound/soc/codecs/msm8x16-wcd.h
-@@ -0,0 +1,753 @@
-+/* Copyright (c) 2016, The Linux Foundation. All rights reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 and
-+ * only version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ */
-+#ifndef MSM8X16_WCD_H
-+#define MSM8X16_WCD_H
+@@ -16,12 +16,23 @@
+ 
+ #define MSM8X16_WCD_NUM_REGISTERS	0x6FF
+ #define MSM8X16_WCD_MAX_REGISTER	(MSM8X16_WCD_NUM_REGISTERS-1)
++#define MSM8X16_WCD_REG_VAL(reg, val)		{reg, 0, val}
+ 
+ #define MSM8X16_WCD_IS_DIGITAL_REG(reg) \
+ 	(((reg >= 0x200) && (reg <= 0x4FF)) ? 1 : 0)
+ #define MSM8X16_WCD_IS_TOMBAK_REG(reg) \
+ 	(((reg >= 0x000) && (reg <= 0x1FF)) ? 1 : 0)
+ 
++#define TOMBAK_VERSION_1_0	0
++#define TOMBAK_IS_1_0(ver) \
++	((ver == TOMBAK_VERSION_1_0) ? 1 : 0)
 +
-+#include "msm8x16-wcd.h"
-+
-+#define MSM8X16_WCD_NUM_REGISTERS	0x6FF
-+#define MSM8X16_WCD_MAX_REGISTER	(MSM8X16_WCD_NUM_REGISTERS-1)
-+
-+#define MSM8X16_WCD_IS_DIGITAL_REG(reg) \
-+	(((reg >= 0x200) && (reg <= 0x4FF)) ? 1 : 0)
-+#define MSM8X16_WCD_IS_TOMBAK_REG(reg) \
-+	(((reg >= 0x000) && (reg <= 0x1FF)) ? 1 : 0)
-+
-+const u8 msm8x16_wcd_reg_readable[MSM8X16_WCD_NUM_REGISTERS] = {
-+		[MSM8X16_WCD_A_DIGITAL_REVISION1] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_REVISION2] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_PERPH_TYPE] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_PERPH_SUBTYPE] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_INT_RT_STS] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_INT_SET_TYPE] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_INT_POLARITY_HIGH] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_INT_POLARITY_LOW] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_INT_EN_SET] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_INT_EN_CLR] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_INT_LATCHED_STS] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_INT_PENDING_STS] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_INT_MID_SEL] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_INT_PRIORITY] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_GPIO_MODE] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_PIN_CTL_OE] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_PIN_CTL_DATA] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_PIN_STATUS] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_HDRIVE_CTL] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_RST_CTL] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_TOP_CLK_CTL] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_ANA_CLK_CTL] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_DIG_CLK_CTL] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_CONN_TX1_CTL] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_CONN_TX2_CTL] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_CONN_HPHR_DAC_CTL] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_CONN_RX1_CTL] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_CONN_RX2_CTL] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_CONN_RX3_CTL] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_CONN_RX_LB_CTL] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_RX_CTL1] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_RX_CTL2] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_RX_CTL3] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_DEM_BYPASS_DATA0] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_DEM_BYPASS_DATA1] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_DEM_BYPASS_DATA2] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_DEM_BYPASS_DATA3] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_DIG_DEBUG_CTL] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_SPARE_0] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_SPARE_1] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_SPARE_2] = 1,
-+		[MSM8X16_WCD_A_ANALOG_REVISION1] = 1,
-+		[MSM8X16_WCD_A_ANALOG_REVISION2] = 1,
-+		[MSM8X16_WCD_A_ANALOG_REVISION3] = 1,
-+		[MSM8X16_WCD_A_ANALOG_REVISION4] = 1,
-+		[MSM8X16_WCD_A_ANALOG_PERPH_TYPE] = 1,
-+		[MSM8X16_WCD_A_ANALOG_PERPH_SUBTYPE] = 1,
-+		[MSM8X16_WCD_A_ANALOG_INT_RT_STS] = 1,
-+		[MSM8X16_WCD_A_ANALOG_INT_SET_TYPE] = 1,
-+		[MSM8X16_WCD_A_ANALOG_INT_POLARITY_HIGH] = 1,
-+		[MSM8X16_WCD_A_ANALOG_INT_POLARITY_LOW] = 1,
-+		[MSM8X16_WCD_A_ANALOG_INT_EN_SET] = 1,
-+		[MSM8X16_WCD_A_ANALOG_INT_EN_CLR] = 1,
-+		[MSM8X16_WCD_A_ANALOG_INT_LATCHED_STS] = 1,
-+		[MSM8X16_WCD_A_ANALOG_INT_PENDING_STS] = 1,
-+		[MSM8X16_WCD_A_ANALOG_INT_MID_SEL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_INT_PRIORITY] = 1,
-+		[MSM8X16_WCD_A_ANALOG_MICB_1_EN] = 1,
-+		[MSM8X16_WCD_A_ANALOG_MICB_1_VAL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_MICB_1_CTL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_MICB_1_INT_RBIAS] = 1,
-+		[MSM8X16_WCD_A_ANALOG_MICB_2_EN] = 1,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_DET_CTL_1] = 1,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_DET_CTL_2] = 1,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_FSM_CTL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_DBNC_TIMER] = 1,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_BTN0_ZDETL_CTL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_BTN1_ZDETM_CTL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_BTN2_ZDETH_CTL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_BTN3_CTL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_BTN4_CTL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_BTN_RESULT] = 1,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_ZDET_ELECT_RESULT] = 1,
-+		[MSM8X16_WCD_A_ANALOG_TX_1_EN] = 1,
-+		[MSM8X16_WCD_A_ANALOG_TX_2_EN] = 1,
-+		[MSM8X16_WCD_A_ANALOG_TX_1_2_TEST_CTL_1] = 1,
-+		[MSM8X16_WCD_A_ANALOG_TX_1_2_TEST_CTL_2] = 1,
-+		[MSM8X16_WCD_A_ANALOG_TX_1_2_ATEST_CTL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_TX_1_2_OPAMP_BIAS] = 1,
-+		[MSM8X16_WCD_A_ANALOG_TX_1_2_TXFE_CLKDIV] = 1,
-+		[MSM8X16_WCD_A_ANALOG_TX_3_EN] = 1,
-+		[MSM8X16_WCD_A_ANALOG_NCP_EN] = 1,
-+		[MSM8X16_WCD_A_ANALOG_NCP_CLK] = 1,
-+		[MSM8X16_WCD_A_ANALOG_NCP_DEGLITCH] = 1,
-+		[MSM8X16_WCD_A_ANALOG_NCP_FBCTRL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_NCP_BIAS] = 1,
-+		[MSM8X16_WCD_A_ANALOG_NCP_VCTRL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_NCP_TEST] = 1,
-+		[MSM8X16_WCD_A_ANALOG_RX_CLOCK_DIVIDER] = 1,
-+		[MSM8X16_WCD_A_ANALOG_RX_COM_OCP_CTL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_RX_COM_OCP_COUNT] = 1,
-+		[MSM8X16_WCD_A_ANALOG_RX_COM_BIAS_DAC] = 1,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_BIAS_PA] = 1,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_BIAS_LDO_OCP] = 1,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_BIAS_CNP] = 1,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_CNP_EN] = 1,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_CNP_WG_CTL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_CNP_WG_TIME] = 1,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_L_TEST] = 1,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_L_PA_DAC_CTL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_R_TEST] = 1,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_R_PA_DAC_CTL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_RX_EAR_CTL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_RX_ATEST] = 1,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_STATUS] = 1,
-+		[MSM8X16_WCD_A_ANALOG_RX_EAR_STATUS] = 1,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_DAC_CTL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_DRV_CLIP_DET] = 1,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_DRV_CTL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_ANA_BIAS_SET] = 1,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_OCP_CTL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_PWRSTG_CTL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_DRV_MISC] = 1,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_DRV_DBG] = 1,
-+		[MSM8X16_WCD_A_ANALOG_CURRENT_LIMIT] = 1,
-+		[MSM8X16_WCD_A_ANALOG_OUTPUT_VOLTAGE] = 1,
-+		[MSM8X16_WCD_A_ANALOG_BYPASS_MODE] = 1,
-+		[MSM8X16_WCD_A_ANALOG_BOOST_EN_CTL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_SLOPE_COMP_IP_ZERO] = 1,
-+		[MSM8X16_WCD_A_ANALOG_RDSON_MAX_DUTY_CYCLE] = 1,
-+		[MSM8X16_WCD_A_ANALOG_BOOST_TEST1_1] = 1,
-+		[MSM8X16_WCD_A_ANALOG_BOOST_TEST_2] = 1,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_SAR_STATUS] = 1,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_DRV_STATUS] = 1,
-+		[MSM8X16_WCD_A_ANALOG_PBUS_ADD_CSR] = 1,
-+		[MSM8X16_WCD_A_ANALOG_PBUS_ADD_SEL] = 1,
-+		[MSM8X16_WCD_A_CDC_CLK_RX_RESET_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CLK_TX_RESET_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CLK_DMIC_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CLK_RX_I2S_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CLK_TX_I2S_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CLK_OTHR_RESET_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CLK_TX_CLK_EN_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CLK_OTHR_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CLK_RX_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CLK_MCLK_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CLK_PDM_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CLK_SD_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX1_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX2_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX3_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX1_B2_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX2_B2_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX3_B2_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX1_B3_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX2_B3_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX3_B3_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX1_B4_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX2_B4_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX3_B4_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX1_B5_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX2_B5_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX3_B5_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX1_B6_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX2_B6_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX3_B6_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX1_VOL_CTL_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX2_VOL_CTL_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX3_VOL_CTL_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX1_VOL_CTL_B2_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX2_VOL_CTL_B2_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX3_VOL_CTL_B2_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_TOP_GAIN_UPDATE] = 1,
-+		[MSM8X16_WCD_A_CDC_TOP_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_DEBUG_DESER1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_DEBUG_DESER2_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_DEBUG_B1_CTL_CFG] = 1,
-+		[MSM8X16_WCD_A_CDC_DEBUG_B2_CTL_CFG] = 1,
-+		[MSM8X16_WCD_A_CDC_DEBUG_B3_CTL_CFG] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR1_GAIN_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR2_GAIN_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR1_GAIN_B2_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR2_GAIN_B2_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR1_GAIN_B3_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR2_GAIN_B3_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR1_GAIN_B4_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR2_GAIN_B4_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR1_GAIN_B5_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR2_GAIN_B5_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR1_GAIN_B6_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR2_GAIN_B6_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR1_GAIN_B7_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR2_GAIN_B7_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR1_GAIN_B8_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR2_GAIN_B8_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR2_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR1_GAIN_TIMER_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR2_GAIN_TIMER_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR1_COEF_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR2_COEF_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR1_COEF_B2_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR2_COEF_B2_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CONN_RX1_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CONN_RX1_B2_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CONN_RX1_B3_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CONN_RX2_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CONN_RX2_B2_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CONN_RX2_B3_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CONN_RX3_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CONN_RX3_B2_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CONN_TX_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CONN_EQ1_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CONN_EQ1_B2_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CONN_EQ1_B3_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CONN_EQ1_B4_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CONN_EQ2_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CONN_EQ2_B2_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CONN_EQ2_B3_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CONN_EQ2_B4_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CONN_TX_I2S_SD1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_TX1_VOL_CTL_TIMER] = 1,
-+		[MSM8X16_WCD_A_CDC_TX2_VOL_CTL_TIMER] = 1,
-+		[MSM8X16_WCD_A_CDC_TX1_VOL_CTL_GAIN] = 1,
-+		[MSM8X16_WCD_A_CDC_TX2_VOL_CTL_GAIN] = 1,
-+		[MSM8X16_WCD_A_CDC_TX1_VOL_CTL_CFG] = 1,
-+		[MSM8X16_WCD_A_CDC_TX2_VOL_CTL_CFG] = 1,
-+		[MSM8X16_WCD_A_CDC_TX1_MUX_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_TX2_MUX_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_TX1_CLK_FS_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_TX2_CLK_FS_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_TX1_DMIC_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_TX2_DMIC_CTL] = 1,
-+		[MSM8X16_WCD_A_ANALOG_MASTER_BIAS_CTL] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_INT_LATCHED_CLR] = 1,
-+		[MSM8X16_WCD_A_ANALOG_INT_LATCHED_CLR] = 1,
-+		[MSM8X16_WCD_A_ANALOG_NCP_CLIM_ADDR] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_SEC_ACCESS] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_PERPH_RESET_CTL3] = 1,
-+		[MSM8X16_WCD_A_ANALOG_SEC_ACCESS] = 1,
++struct msm8x16_wcd_reg_mask_val {
++	u16	reg;
++	u8	mask;
++	u8	val;
 +};
 +
-+const u8 msm8x16_wcd_reg_readonly[MSM8X16_WCD_NUM_REGISTERS] = {
-+		[MSM8X16_WCD_A_DIGITAL_REVISION1] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_REVISION2] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_PERPH_TYPE] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_PERPH_SUBTYPE] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_INT_RT_STS] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_INT_SET_TYPE] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_INT_POLARITY_HIGH] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_INT_POLARITY_LOW] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_INT_LATCHED_STS] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_INT_PENDING_STS] = 1,
-+		[MSM8X16_WCD_A_DIGITAL_PIN_STATUS] = 1,
-+		[MSM8X16_WCD_A_ANALOG_REVISION1] = 1,
-+		[MSM8X16_WCD_A_ANALOG_REVISION2] = 1,
-+		[MSM8X16_WCD_A_ANALOG_REVISION3] = 1,
-+		[MSM8X16_WCD_A_ANALOG_REVISION4] = 1,
-+		[MSM8X16_WCD_A_ANALOG_PERPH_TYPE] = 1,
-+		[MSM8X16_WCD_A_ANALOG_PERPH_SUBTYPE] = 1,
-+		[MSM8X16_WCD_A_ANALOG_INT_RT_STS] = 1,
-+		[MSM8X16_WCD_A_ANALOG_INT_SET_TYPE] = 1,
-+		[MSM8X16_WCD_A_ANALOG_INT_POLARITY_HIGH] = 1,
-+		[MSM8X16_WCD_A_ANALOG_INT_POLARITY_LOW] = 1,
-+		[MSM8X16_WCD_A_ANALOG_INT_LATCHED_STS] = 1,
-+		[MSM8X16_WCD_A_ANALOG_INT_PENDING_STS] = 1,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_BTN_RESULT] = 1,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_ZDET_ELECT_RESULT] = 1,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_STATUS] = 1,
-+		[MSM8X16_WCD_A_ANALOG_RX_EAR_STATUS] = 1,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_SAR_STATUS] = 1,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_DRV_STATUS] = 1,
-+		[MSM8X16_WCD_A_CDC_RX1_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX2_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX3_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX1_B6_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX2_B6_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_RX3_B6_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_TX1_VOL_CTL_CFG] = 1,
-+		[MSM8X16_WCD_A_CDC_TX2_VOL_CTL_CFG] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR1_COEF_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_IIR2_COEF_B1_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CLK_MCLK_CTL] = 1,
-+		[MSM8X16_WCD_A_CDC_CLK_PDM_CTL] = 1,
-+};
-+
-+u8 msm8x16_wcd_reset_reg_defaults[MSM8X16_WCD_NUM_REGISTERS] = {
-+		[MSM8X16_WCD_A_DIGITAL_REVISION1] =
-+			MSM8X16_WCD_A_DIGITAL_REVISION1__POR,
-+		[MSM8X16_WCD_A_DIGITAL_REVISION2] =
-+			MSM8X16_WCD_A_DIGITAL_REVISION2__POR,
-+		[MSM8X16_WCD_A_DIGITAL_PERPH_TYPE] =
-+			MSM8X16_WCD_A_DIGITAL_PERPH_TYPE__POR,
-+		[MSM8X16_WCD_A_DIGITAL_PERPH_SUBTYPE] =
-+			MSM8X16_WCD_A_DIGITAL_PERPH_SUBTYPE__POR,
-+		[MSM8X16_WCD_A_DIGITAL_INT_RT_STS] =
-+			MSM8X16_WCD_A_DIGITAL_INT_RT_STS__POR,
-+		[MSM8X16_WCD_A_DIGITAL_INT_SET_TYPE] =
-+			MSM8X16_WCD_A_DIGITAL_INT_SET_TYPE__POR,
-+		[MSM8X16_WCD_A_DIGITAL_INT_POLARITY_HIGH] =
-+			MSM8X16_WCD_A_DIGITAL_INT_POLARITY_HIGH__POR,
-+		[MSM8X16_WCD_A_DIGITAL_INT_POLARITY_LOW] =
-+			MSM8X16_WCD_A_DIGITAL_INT_POLARITY_LOW__POR,
-+		[MSM8X16_WCD_A_DIGITAL_INT_LATCHED_CLR] =
-+			MSM8X16_WCD_A_DIGITAL_INT_LATCHED_CLR__POR,
-+		[MSM8X16_WCD_A_DIGITAL_INT_EN_SET] =
-+			MSM8X16_WCD_A_DIGITAL_INT_EN_SET__POR,
-+		[MSM8X16_WCD_A_DIGITAL_INT_EN_CLR] =
-+			MSM8X16_WCD_A_DIGITAL_INT_EN_CLR__POR,
-+		[MSM8X16_WCD_A_DIGITAL_INT_LATCHED_STS] =
-+			MSM8X16_WCD_A_DIGITAL_INT_LATCHED_STS__POR,
-+		[MSM8X16_WCD_A_DIGITAL_INT_PENDING_STS] =
-+			MSM8X16_WCD_A_DIGITAL_INT_PENDING_STS__POR,
-+		[MSM8X16_WCD_A_DIGITAL_INT_MID_SEL] =
-+			MSM8X16_WCD_A_DIGITAL_INT_MID_SEL__POR,
-+		[MSM8X16_WCD_A_DIGITAL_INT_PRIORITY] =
-+			MSM8X16_WCD_A_DIGITAL_INT_PRIORITY__POR,
-+		[MSM8X16_WCD_A_DIGITAL_GPIO_MODE] =
-+			MSM8X16_WCD_A_DIGITAL_GPIO_MODE__POR,
-+		[MSM8X16_WCD_A_DIGITAL_PIN_CTL_OE] =
-+			MSM8X16_WCD_A_DIGITAL_PIN_CTL_OE__POR,
-+		[MSM8X16_WCD_A_DIGITAL_PIN_CTL_DATA] =
-+			MSM8X16_WCD_A_DIGITAL_PIN_CTL_DATA__POR,
-+		[MSM8X16_WCD_A_DIGITAL_PIN_STATUS] =
-+			MSM8X16_WCD_A_DIGITAL_PIN_STATUS__POR,
-+		[MSM8X16_WCD_A_DIGITAL_HDRIVE_CTL] =
-+			MSM8X16_WCD_A_DIGITAL_HDRIVE_CTL__POR,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_RST_CTL] =
-+			MSM8X16_WCD_A_DIGITAL_CDC_RST_CTL__POR,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_TOP_CLK_CTL] =
-+			MSM8X16_WCD_A_DIGITAL_CDC_TOP_CLK_CTL__POR,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_ANA_CLK_CTL] =
-+			MSM8X16_WCD_A_DIGITAL_CDC_ANA_CLK_CTL__POR,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_DIG_CLK_CTL] =
-+			MSM8X16_WCD_A_DIGITAL_CDC_DIG_CLK_CTL__POR,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_CONN_TX1_CTL] =
-+			MSM8X16_WCD_A_DIGITAL_CDC_CONN_TX1_CTL__POR,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_CONN_TX2_CTL] =
-+			MSM8X16_WCD_A_DIGITAL_CDC_CONN_TX2_CTL__POR,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_CONN_HPHR_DAC_CTL] =
-+			MSM8X16_WCD_A_DIGITAL_CDC_CONN_HPHR_DAC_CTL__POR,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_CONN_RX1_CTL] =
-+			MSM8X16_WCD_A_DIGITAL_CDC_CONN_RX1_CTL__POR,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_CONN_RX2_CTL] =
-+			MSM8X16_WCD_A_DIGITAL_CDC_CONN_RX2_CTL__POR,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_CONN_RX3_CTL] =
-+			MSM8X16_WCD_A_DIGITAL_CDC_CONN_RX3_CTL__POR,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_CONN_RX_LB_CTL] =
-+			MSM8X16_WCD_A_DIGITAL_CDC_CONN_RX_LB_CTL__POR,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_RX_CTL1] =
-+			MSM8X16_WCD_A_DIGITAL_CDC_RX_CTL1__POR,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_RX_CTL2] =
-+			MSM8X16_WCD_A_DIGITAL_CDC_RX_CTL2__POR,
-+		[MSM8X16_WCD_A_DIGITAL_CDC_RX_CTL3] =
-+			MSM8X16_WCD_A_DIGITAL_CDC_RX_CTL3__POR,
-+		[MSM8X16_WCD_A_DIGITAL_DEM_BYPASS_DATA0] =
-+			MSM8X16_WCD_A_DIGITAL_DEM_BYPASS_DATA0__POR,
-+		[MSM8X16_WCD_A_DIGITAL_DEM_BYPASS_DATA1] =
-+			MSM8X16_WCD_A_DIGITAL_DEM_BYPASS_DATA1__POR,
-+		[MSM8X16_WCD_A_DIGITAL_DEM_BYPASS_DATA2] =
-+			MSM8X16_WCD_A_DIGITAL_DEM_BYPASS_DATA2__POR,
-+		[MSM8X16_WCD_A_DIGITAL_DEM_BYPASS_DATA3] =
-+			MSM8X16_WCD_A_DIGITAL_DEM_BYPASS_DATA3__POR,
-+		[MSM8X16_WCD_A_DIGITAL_SPARE_0] =
-+			MSM8X16_WCD_A_DIGITAL_SPARE_0__POR,
-+		[MSM8X16_WCD_A_DIGITAL_SPARE_1] =
-+			MSM8X16_WCD_A_DIGITAL_SPARE_1__POR,
-+		[MSM8X16_WCD_A_DIGITAL_SPARE_2] =
-+			MSM8X16_WCD_A_DIGITAL_SPARE_2__POR,
-+		[MSM8X16_WCD_A_ANALOG_REVISION1] =
-+			MSM8X16_WCD_A_ANALOG_REVISION1__POR,
-+		[MSM8X16_WCD_A_ANALOG_REVISION2] =
-+			MSM8X16_WCD_A_ANALOG_REVISION2__POR,
-+		[MSM8X16_WCD_A_ANALOG_REVISION3] =
-+			MSM8X16_WCD_A_ANALOG_REVISION3__POR,
-+		[MSM8X16_WCD_A_ANALOG_REVISION4] =
-+			MSM8X16_WCD_A_ANALOG_REVISION4__POR,
-+		[MSM8X16_WCD_A_ANALOG_PERPH_TYPE] =
-+			MSM8X16_WCD_A_ANALOG_PERPH_TYPE__POR,
-+		[MSM8X16_WCD_A_ANALOG_PERPH_SUBTYPE] =
-+			MSM8X16_WCD_A_ANALOG_PERPH_SUBTYPE__POR,
-+		[MSM8X16_WCD_A_ANALOG_INT_RT_STS] =
-+			MSM8X16_WCD_A_ANALOG_INT_RT_STS__POR,
-+		[MSM8X16_WCD_A_ANALOG_INT_SET_TYPE] =
-+			MSM8X16_WCD_A_ANALOG_INT_SET_TYPE__POR,
-+		[MSM8X16_WCD_A_ANALOG_INT_POLARITY_HIGH] =
-+			MSM8X16_WCD_A_ANALOG_INT_POLARITY_HIGH__POR,
-+		[MSM8X16_WCD_A_ANALOG_INT_POLARITY_LOW] =
-+			MSM8X16_WCD_A_ANALOG_INT_POLARITY_LOW__POR,
-+		[MSM8X16_WCD_A_ANALOG_INT_LATCHED_CLR] =
-+			MSM8X16_WCD_A_ANALOG_INT_LATCHED_CLR__POR,
-+		[MSM8X16_WCD_A_ANALOG_INT_EN_SET] =
-+			MSM8X16_WCD_A_ANALOG_INT_EN_SET__POR,
-+		[MSM8X16_WCD_A_ANALOG_INT_EN_CLR] =
-+			MSM8X16_WCD_A_ANALOG_INT_EN_CLR__POR,
-+		[MSM8X16_WCD_A_ANALOG_INT_LATCHED_STS] =
-+			MSM8X16_WCD_A_ANALOG_INT_LATCHED_STS__POR,
-+		[MSM8X16_WCD_A_ANALOG_INT_PENDING_STS] =
-+			MSM8X16_WCD_A_ANALOG_INT_PENDING_STS__POR,
-+		[MSM8X16_WCD_A_ANALOG_INT_MID_SEL] =
-+			MSM8X16_WCD_A_ANALOG_INT_MID_SEL__POR,
-+		[MSM8X16_WCD_A_ANALOG_INT_PRIORITY] =
-+			MSM8X16_WCD_A_ANALOG_INT_PRIORITY__POR,
-+		[MSM8X16_WCD_A_ANALOG_MICB_1_EN] =
-+			MSM8X16_WCD_A_ANALOG_MICB_1_EN__POR,
-+		[MSM8X16_WCD_A_ANALOG_MICB_1_VAL] =
-+			MSM8X16_WCD_A_ANALOG_MICB_1_VAL__POR,
-+		[MSM8X16_WCD_A_ANALOG_MICB_1_CTL] =
-+			MSM8X16_WCD_A_ANALOG_MICB_1_CTL__POR,
-+		[MSM8X16_WCD_A_ANALOG_MICB_1_INT_RBIAS] =
-+			MSM8X16_WCD_A_ANALOG_MICB_1_INT_RBIAS__POR,
-+		[MSM8X16_WCD_A_ANALOG_MICB_2_EN] =
-+			MSM8X16_WCD_A_ANALOG_MICB_2_EN__POR,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_DET_CTL_1] =
-+			MSM8X16_WCD_A_ANALOG_MBHC_DET_CTL_1__POR,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_DET_CTL_2] =
-+			MSM8X16_WCD_A_ANALOG_MBHC_DET_CTL_2__POR,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_FSM_CTL] =
-+			MSM8X16_WCD_A_ANALOG_MBHC_FSM_CTL__POR,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_DBNC_TIMER] =
-+			MSM8X16_WCD_A_ANALOG_MBHC_DBNC_TIMER__POR,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_BTN0_ZDETL_CTL] =
-+			MSM8X16_WCD_A_ANALOG_MBHC_BTN0_ZDETL_CTL__POR,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_BTN1_ZDETM_CTL] =
-+			MSM8X16_WCD_A_ANALOG_MBHC_BTN1_ZDETM_CTL__POR,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_BTN2_ZDETH_CTL] =
-+			MSM8X16_WCD_A_ANALOG_MBHC_BTN2_ZDETH_CTL__POR,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_BTN3_CTL] =
-+			MSM8X16_WCD_A_ANALOG_MBHC_BTN3_CTL__POR,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_BTN4_CTL] =
-+			MSM8X16_WCD_A_ANALOG_MBHC_BTN4_CTL__POR,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_BTN_RESULT] =
-+			MSM8X16_WCD_A_ANALOG_MBHC_BTN_RESULT__POR,
-+		[MSM8X16_WCD_A_ANALOG_MBHC_ZDET_ELECT_RESULT] =
-+			MSM8X16_WCD_A_ANALOG_MBHC_ZDET_ELECT_RESULT__POR,
-+		[MSM8X16_WCD_A_ANALOG_TX_1_EN] =
-+			MSM8X16_WCD_A_ANALOG_TX_1_EN__POR,
-+		[MSM8X16_WCD_A_ANALOG_TX_2_EN] =
-+			MSM8X16_WCD_A_ANALOG_TX_2_EN__POR,
-+		[MSM8X16_WCD_A_ANALOG_TX_1_2_TEST_CTL_1] =
-+			MSM8X16_WCD_A_ANALOG_TX_1_2_TEST_CTL_1__POR,
-+		[MSM8X16_WCD_A_ANALOG_TX_1_2_TEST_CTL_2] =
-+			MSM8X16_WCD_A_ANALOG_TX_1_2_TEST_CTL_2__POR,
-+		[MSM8X16_WCD_A_ANALOG_TX_1_2_ATEST_CTL] =
-+			MSM8X16_WCD_A_ANALOG_TX_1_2_ATEST_CTL__POR,
-+		[MSM8X16_WCD_A_ANALOG_TX_1_2_OPAMP_BIAS] =
-+			MSM8X16_WCD_A_ANALOG_TX_1_2_OPAMP_BIAS__POR,
-+		[MSM8X16_WCD_A_ANALOG_TX_1_2_TXFE_CLKDIV] =
-+			MSM8X16_WCD_A_ANALOG_TX_1_2_TXFE_CLKDIV__POR,
-+		[MSM8X16_WCD_A_ANALOG_TX_3_EN] =
-+			MSM8X16_WCD_A_ANALOG_TX_3_EN__POR,
-+		[MSM8X16_WCD_A_ANALOG_NCP_EN] =
-+			MSM8X16_WCD_A_ANALOG_NCP_EN__POR,
-+		[MSM8X16_WCD_A_ANALOG_NCP_CLK] =
-+			MSM8X16_WCD_A_ANALOG_NCP_CLK__POR,
-+		[MSM8X16_WCD_A_ANALOG_NCP_DEGLITCH] =
-+			MSM8X16_WCD_A_ANALOG_NCP_DEGLITCH__POR,
-+		[MSM8X16_WCD_A_ANALOG_NCP_FBCTRL] =
-+			MSM8X16_WCD_A_ANALOG_NCP_FBCTRL__POR,
-+		[MSM8X16_WCD_A_ANALOG_NCP_BIAS] =
-+			MSM8X16_WCD_A_ANALOG_NCP_BIAS__POR,
-+		[MSM8X16_WCD_A_ANALOG_NCP_VCTRL] =
-+			MSM8X16_WCD_A_ANALOG_NCP_VCTRL__POR,
-+		[MSM8X16_WCD_A_ANALOG_NCP_TEST] =
-+			MSM8X16_WCD_A_ANALOG_NCP_TEST__POR,
-+		[MSM8X16_WCD_A_ANALOG_RX_CLOCK_DIVIDER] =
-+			MSM8X16_WCD_A_ANALOG_RX_CLOCK_DIVIDER__POR,
-+		[MSM8X16_WCD_A_ANALOG_RX_COM_OCP_CTL] =
-+			MSM8X16_WCD_A_ANALOG_RX_COM_OCP_CTL__POR,
-+		[MSM8X16_WCD_A_ANALOG_RX_COM_OCP_COUNT] =
-+			MSM8X16_WCD_A_ANALOG_RX_COM_OCP_COUNT__POR,
-+		[MSM8X16_WCD_A_ANALOG_RX_COM_BIAS_DAC] =
-+			MSM8X16_WCD_A_ANALOG_RX_COM_BIAS_DAC__POR,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_BIAS_PA] =
-+			MSM8X16_WCD_A_ANALOG_RX_HPH_BIAS_PA__POR,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_BIAS_LDO_OCP] =
-+			MSM8X16_WCD_A_ANALOG_RX_HPH_BIAS_LDO_OCP__POR,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_BIAS_CNP] =
-+			MSM8X16_WCD_A_ANALOG_RX_HPH_BIAS_CNP__POR,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_CNP_EN] =
-+			MSM8X16_WCD_A_ANALOG_RX_HPH_CNP_EN__POR,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_CNP_WG_CTL] =
-+			MSM8X16_WCD_A_ANALOG_RX_HPH_CNP_WG_CTL__POR,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_CNP_WG_TIME] =
-+			MSM8X16_WCD_A_ANALOG_RX_HPH_CNP_WG_TIME__POR,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_L_TEST] =
-+			MSM8X16_WCD_A_ANALOG_RX_HPH_L_TEST__POR,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_L_PA_DAC_CTL] =
-+			MSM8X16_WCD_A_ANALOG_RX_HPH_L_PA_DAC_CTL__POR,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_R_TEST] =
-+			MSM8X16_WCD_A_ANALOG_RX_HPH_R_TEST__POR,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_R_PA_DAC_CTL] =
-+			MSM8X16_WCD_A_ANALOG_RX_HPH_R_PA_DAC_CTL__POR,
-+		[MSM8X16_WCD_A_ANALOG_RX_EAR_CTL] =
-+			MSM8X16_WCD_A_ANALOG_RX_EAR_CTL___POR,
-+		[MSM8X16_WCD_A_ANALOG_RX_ATEST] =
-+			MSM8X16_WCD_A_ANALOG_RX_ATEST__POR,
-+		[MSM8X16_WCD_A_ANALOG_RX_HPH_STATUS] =
-+			MSM8X16_WCD_A_ANALOG_RX_HPH_STATUS__POR,
-+		[MSM8X16_WCD_A_ANALOG_RX_EAR_STATUS] =
-+			MSM8X16_WCD_A_ANALOG_RX_EAR_STATUS__POR,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_DAC_CTL] =
-+			MSM8X16_WCD_A_ANALOG_SPKR_DAC_CTL__POR,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_DRV_CLIP_DET] =
-+			MSM8X16_WCD_A_ANALOG_SPKR_DRV_CLIP_DET__POR,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_DRV_CTL] =
-+			MSM8X16_WCD_A_ANALOG_SPKR_DRV_CTL__POR,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_ANA_BIAS_SET] =
-+			MSM8X16_WCD_A_ANALOG_SPKR_ANA_BIAS_SET__POR,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_OCP_CTL] =
-+			MSM8X16_WCD_A_ANALOG_SPKR_OCP_CTL__POR,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_PWRSTG_CTL] =
-+			MSM8X16_WCD_A_ANALOG_SPKR_PWRSTG_CTL__POR,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_DRV_MISC] =
-+			MSM8X16_WCD_A_ANALOG_SPKR_DRV_MISC__POR,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_DRV_DBG] =
-+			MSM8X16_WCD_A_ANALOG_SPKR_DRV_DBG__POR,
-+		[MSM8X16_WCD_A_ANALOG_CURRENT_LIMIT] =
-+			MSM8X16_WCD_A_ANALOG_CURRENT_LIMIT__POR,
-+		[MSM8X16_WCD_A_ANALOG_OUTPUT_VOLTAGE] =
-+			MSM8X16_WCD_A_ANALOG_OUTPUT_VOLTAGE__POR,
-+		[MSM8X16_WCD_A_ANALOG_BYPASS_MODE] =
-+			MSM8X16_WCD_A_ANALOG_BYPASS_MODE__POR,
-+		[MSM8X16_WCD_A_ANALOG_BOOST_EN_CTL] =
-+			MSM8X16_WCD_A_ANALOG_BOOST_EN_CTL__POR,
-+		[MSM8X16_WCD_A_ANALOG_SLOPE_COMP_IP_ZERO] =
-+			MSM8X16_WCD_A_ANALOG_SLOPE_COMP_IP_ZERO__POR,
-+		[MSM8X16_WCD_A_ANALOG_RDSON_MAX_DUTY_CYCLE] =
-+			MSM8X16_WCD_A_ANALOG_RDSON_MAX_DUTY_CYCLE__POR,
-+		[MSM8X16_WCD_A_ANALOG_BOOST_TEST1_1] =
-+			MSM8X16_WCD_A_ANALOG_BOOST_TEST1_1__POR,
-+		[MSM8X16_WCD_A_ANALOG_BOOST_TEST_2] =
-+			MSM8X16_WCD_A_ANALOG_BOOST_TEST_2__POR,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_SAR_STATUS] =
-+			MSM8X16_WCD_A_ANALOG_SPKR_SAR_STATUS__POR,
-+		[MSM8X16_WCD_A_ANALOG_SPKR_DRV_STATUS] =
-+			MSM8X16_WCD_A_ANALOG_SPKR_DRV_STATUS__POR,
-+		[MSM8X16_WCD_A_ANALOG_PBUS_ADD_CSR] =
-+			MSM8X16_WCD_A_ANALOG_PBUS_ADD_CSR__POR,
-+		[MSM8X16_WCD_A_ANALOG_PBUS_ADD_SEL] =
-+			MSM8X16_WCD_A_ANALOG_PBUS_ADD_SEL__POR,
-+		[MSM8X16_WCD_A_CDC_CLK_RX_RESET_CTL] =
-+			MSM8X16_WCD_A_CDC_CLK_RX_RESET_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CLK_TX_RESET_B1_CTL] =
-+			MSM8X16_WCD_A_CDC_CLK_TX_RESET_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CLK_DMIC_B1_CTL] =
-+			MSM8X16_WCD_A_CDC_CLK_DMIC_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CLK_RX_I2S_CTL] =
-+			MSM8X16_WCD_A_CDC_CLK_RX_I2S_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CLK_TX_I2S_CTL] =
-+			MSM8X16_WCD_A_CDC_CLK_TX_I2S_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CLK_OTHR_RESET_B1_CTL] =
-+			MSM8X16_WCD_A_CDC_CLK_OTHR_RESET_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CLK_TX_CLK_EN_B1_CTL] =
-+			MSM8X16_WCD_A_CDC_CLK_TX_CLK_EN_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CLK_OTHR_CTL] =
-+			MSM8X16_WCD_A_CDC_CLK_OTHR_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CLK_RX_B1_CTL] =
-+			MSM8X16_WCD_A_CDC_CLK_RX_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CLK_MCLK_CTL] =
-+			MSM8X16_WCD_A_CDC_CLK_MCLK_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CLK_PDM_CTL] =
-+			MSM8X16_WCD_A_CDC_CLK_PDM_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CLK_SD_CTL] =
-+			MSM8X16_WCD_A_CDC_CLK_SD_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX1_B1_CTL] =
-+			MSM8X16_WCD_A_CDC_RX1_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX2_B1_CTL] =
-+			MSM8X16_WCD_A_CDC_RX2_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX3_B1_CTL] =
-+			MSM8X16_WCD_A_CDC_RX3_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX1_B2_CTL] =
-+			MSM8X16_WCD_A_CDC_RX1_B2_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX2_B2_CTL] =
-+			MSM8X16_WCD_A_CDC_RX2_B2_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX3_B2_CTL] =
-+			MSM8X16_WCD_A_CDC_RX3_B2_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX1_B3_CTL] =
-+			MSM8X16_WCD_A_CDC_RX1_B3_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX2_B3_CTL] =
-+			MSM8X16_WCD_A_CDC_RX2_B3_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX3_B3_CTL] =
-+			MSM8X16_WCD_A_CDC_RX3_B3_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX1_B4_CTL] =
-+			MSM8X16_WCD_A_CDC_RX1_B4_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX2_B4_CTL] =
-+			MSM8X16_WCD_A_CDC_RX2_B4_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX3_B4_CTL] =
-+			MSM8X16_WCD_A_CDC_RX3_B4_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX1_B5_CTL] =
-+			MSM8X16_WCD_A_CDC_RX1_B5_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX2_B5_CTL] =
-+			MSM8X16_WCD_A_CDC_RX2_B5_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX3_B5_CTL] =
-+			MSM8X16_WCD_A_CDC_RX3_B5_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX1_B6_CTL] =
-+			MSM8X16_WCD_A_CDC_RX1_B6_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX2_B6_CTL] =
-+			MSM8X16_WCD_A_CDC_RX2_B6_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX3_B6_CTL] =
-+			MSM8X16_WCD_A_CDC_RX3_B6_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX1_VOL_CTL_B1_CTL] =
-+			MSM8X16_WCD_A_CDC_RX1_VOL_CTL_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX2_VOL_CTL_B1_CTL] =
-+			MSM8X16_WCD_A_CDC_RX2_VOL_CTL_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX3_VOL_CTL_B1_CTL] =
-+			MSM8X16_WCD_A_CDC_RX3_VOL_CTL_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX1_VOL_CTL_B2_CTL] =
-+			MSM8X16_WCD_A_CDC_RX1_VOL_CTL_B2_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX2_VOL_CTL_B2_CTL] =
-+			MSM8X16_WCD_A_CDC_RX2_VOL_CTL_B2_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_RX3_VOL_CTL_B2_CTL] =
-+			MSM8X16_WCD_A_CDC_RX3_VOL_CTL_B2_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_TOP_GAIN_UPDATE] =
-+			MSM8X16_WCD_A_CDC_TOP_GAIN_UPDATE__POR,
-+		[MSM8X16_WCD_A_CDC_TOP_CTL] =
-+			MSM8X16_WCD_A_CDC_TOP_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_DEBUG_DESER1_CTL] =
-+			MSM8X16_WCD_A_CDC_DEBUG_DESER1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_DEBUG_DESER2_CTL] =
-+			MSM8X16_WCD_A_CDC_DEBUG_DESER2_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_DEBUG_B1_CTL_CFG] =
-+			MSM8X16_WCD_A_CDC_DEBUG_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_DEBUG_B2_CTL_CFG] =
-+			MSM8X16_WCD_A_CDC_DEBUG_B2_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_DEBUG_B3_CTL_CFG] =
-+			MSM8X16_WCD_A_CDC_DEBUG_B3_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR1_GAIN_B1_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR1_GAIN_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR2_GAIN_B1_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR2_GAIN_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR1_GAIN_B2_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR1_GAIN_B2_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR2_GAIN_B2_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR2_GAIN_B2_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR1_GAIN_B3_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR1_GAIN_B3_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR2_GAIN_B3_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR2_GAIN_B3_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR1_GAIN_B4_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR1_GAIN_B4_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR2_GAIN_B4_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR2_GAIN_B4_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR1_GAIN_B5_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR1_GAIN_B5_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR2_GAIN_B5_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR2_GAIN_B5_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR1_GAIN_B6_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR1_GAIN_B6_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR2_GAIN_B6_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR2_GAIN_B6_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR1_GAIN_B7_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR1_GAIN_B7_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR2_GAIN_B7_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR2_GAIN_B7_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR1_GAIN_B8_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR1_GAIN_B8_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR2_GAIN_B8_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR2_GAIN_B8_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR1_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR2_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR2_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR1_GAIN_TIMER_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR1_GAIN_TIMER_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR2_GAIN_TIMER_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR2_GAIN_TIMER_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR1_COEF_B1_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR1_COEF_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR2_COEF_B1_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR2_COEF_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR1_COEF_B2_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR1_COEF_B2_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_IIR2_COEF_B2_CTL] =
-+			MSM8X16_WCD_A_CDC_IIR2_COEF_B2_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CONN_RX1_B1_CTL] =
-+			MSM8X16_WCD_A_CDC_CONN_RX1_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CONN_RX1_B2_CTL] =
-+			MSM8X16_WCD_A_CDC_CONN_RX1_B2_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CONN_RX1_B3_CTL] =
-+			MSM8X16_WCD_A_CDC_CONN_RX1_B3_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CONN_RX2_B1_CTL] =
-+			MSM8X16_WCD_A_CDC_CONN_RX2_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CONN_RX2_B2_CTL] =
-+			MSM8X16_WCD_A_CDC_CONN_RX2_B2_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CONN_RX2_B3_CTL] =
-+			MSM8X16_WCD_A_CDC_CONN_RX2_B3_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CONN_RX3_B1_CTL] =
-+			MSM8X16_WCD_A_CDC_CONN_RX3_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CONN_RX3_B2_CTL] =
-+			MSM8X16_WCD_A_CDC_CONN_RX3_B2_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CONN_TX_B1_CTL] =
-+			MSM8X16_WCD_A_CDC_CONN_TX_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CONN_EQ1_B1_CTL] =
-+			MSM8X16_WCD_A_CDC_CONN_EQ1_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CONN_EQ1_B2_CTL] =
-+			MSM8X16_WCD_A_CDC_CONN_EQ1_B2_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CONN_EQ1_B3_CTL] =
-+			MSM8X16_WCD_A_CDC_CONN_EQ1_B3_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CONN_EQ1_B4_CTL] =
-+			MSM8X16_WCD_A_CDC_CONN_EQ1_B4_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CONN_EQ2_B1_CTL] =
-+			MSM8X16_WCD_A_CDC_CONN_EQ2_B1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CONN_EQ2_B2_CTL] =
-+			MSM8X16_WCD_A_CDC_CONN_EQ2_B2_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CONN_EQ2_B3_CTL] =
-+			MSM8X16_WCD_A_CDC_CONN_EQ2_B3_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CONN_EQ2_B4_CTL] =
-+			MSM8X16_WCD_A_CDC_CONN_EQ2_B4_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_CONN_TX_I2S_SD1_CTL] =
-+			MSM8X16_WCD_A_CDC_CONN_TX_I2S_SD1_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_TX1_VOL_CTL_TIMER] =
-+			MSM8X16_WCD_A_CDC_TX1_VOL_CTL_TIMER__POR,
-+		[MSM8X16_WCD_A_CDC_TX2_VOL_CTL_TIMER] =
-+			MSM8X16_WCD_A_CDC_TX2_VOL_CTL_TIMER__POR,
-+		[MSM8X16_WCD_A_CDC_TX1_VOL_CTL_GAIN] =
-+			MSM8X16_WCD_A_CDC_TX1_VOL_CTL_GAIN__POR,
-+		[MSM8X16_WCD_A_CDC_TX2_VOL_CTL_GAIN] =
-+			MSM8X16_WCD_A_CDC_TX2_VOL_CTL_GAIN__POR,
-+		[MSM8X16_WCD_A_CDC_TX1_VOL_CTL_CFG] =
-+			MSM8X16_WCD_A_CDC_TX1_VOL_CTL_CFG__POR,
-+		[MSM8X16_WCD_A_CDC_TX2_VOL_CTL_CFG] =
-+			MSM8X16_WCD_A_CDC_TX2_VOL_CTL_CFG__POR,
-+		[MSM8X16_WCD_A_CDC_TX1_MUX_CTL] =
-+			MSM8X16_WCD_A_CDC_TX1_MUX_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_TX2_MUX_CTL] =
-+			MSM8X16_WCD_A_CDC_TX2_MUX_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_TX1_CLK_FS_CTL] =
-+			MSM8X16_WCD_A_CDC_TX1_CLK_FS_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_TX2_CLK_FS_CTL] =
-+			MSM8X16_WCD_A_CDC_TX2_CLK_FS_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_TX1_DMIC_CTL] =
-+			MSM8X16_WCD_A_CDC_TX1_DMIC_CTL__POR,
-+		[MSM8X16_WCD_A_CDC_TX2_DMIC_CTL] =
-+			MSM8X16_WCD_A_CDC_TX2_DMIC_CTL__POR,
-+};
-+
-+#endif /* MSM8X16_WCD_H */
+ const u8 msm8x16_wcd_reg_readable[MSM8X16_WCD_NUM_REGISTERS] = {
+ 		[MSM8X16_WCD_A_DIGITAL_REVISION1] = 1,
+ 		[MSM8X16_WCD_A_DIGITAL_REVISION2] = 1,
 -- 
 1.9.1
