@@ -1,56 +1,76 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/4] ASoC: simple-card: Support for selecting system
- clocks by ID
-Date: Wed, 17 Feb 2016 11:31:36 +0000
-Message-ID: <20160217113136.GN7544@sirena.org.uk>
-References: <1455545495-20292-1-git-send-email-peter.ujfalusi@ti.com>
- <1455545495-20292-5-git-send-email-peter.ujfalusi@ti.com>
- <20160215152635.GN18988@sirena.org.uk>
- <56C2F00C.8080809@ti.com>
- <20160216134233.GN18327@sirena.org.uk>
- <20160216191346.2278.725@quark.deferred.io>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: Re: [PATCH v2] ASoC: hdac_hdmi: Remove 'edev' NULL
+	check
+Date: Wed, 17 Feb 2016 17:38:18 +0530
+Message-ID: <20160217120813.GA5008@subhransu-desktop>
+References: <1455709333-19807-1-git-send-email-fabio.estevam@nxp.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="yklP1rR72f9kjNtc"
-Return-path: <linux-clk-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 39EEF2606B8
+ for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 13:07:20 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20160216191346.2278.725@quark.deferred.io>
-Sender: linux-clk-owner@vger.kernel.org
-To: Michael Turquette <mturquette@baylibre.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Stephen Boyd <sboyd@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Jyri Sarha <jsarha@ti.com>, linux-clk@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Kristo, Tero" <t-kristo@ti.com>
+In-Reply-To: <1455709333-19807-1-git-send-email-fabio.estevam@nxp.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: jeeja.kp@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, dan.carpenter@oracle.com
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Feb 17, 2016 at 09:42:13AM -0200, Fabio Estevam wrote:
+> Commit 4a3478debf36 ("ASoC: hdac_hdmi: Add jack reporting") 
+> leads to the following Smatch complaint:
+> 
+> sound/soc/codecs/hdac_hdmi.c:971 hdac_hdmi_present_sense()
+>          warn: variable dereferenced before check 'edev' (see line 967)
+> 
+> As explained by Subhransu S. Prusty:
+> 
+> "This NULL check is not required, can be removed.
+> 
+> edev object is expected to be present when the present_sense is 
+> called. This is called from places where this edev object is 
+> already available."
+> 
+> So remove the evdev NULL check.
+> 
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 
---yklP1rR72f9kjNtc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Acked-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 
-On Tue, Feb 16, 2016 at 11:13:46AM -0800, Michael Turquette wrote:
-> Quoting Mark Brown (2016-02-16 05:42:33)
-> > On Tue, Feb 16, 2016 at 11:46:52AM +0200, Peter Ujfalusi wrote:
+> ---
+> Changes since v1:
+> - Remove NULL check (Subhransu)
+> 
+>  sound/soc/codecs/hdac_hdmi.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+> index 36f1200..2884dbf 100644
+> --- a/sound/soc/codecs/hdac_hdmi.c
+> +++ b/sound/soc/codecs/hdac_hdmi.c
+> @@ -968,9 +968,6 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin, int repoll)
+>  	struct hdac_hdmi_pcm *pcm;
+>  	int val;
+>  
+> -	if (!edev)
+> -		return;
+> -
+>  	pin->repoll_count = repoll;
+>  
+>  	pm_runtime_get_sync(&edev->hdac.dev);
+> -- 
+> 1.9.1
+> 
 
-> > > I don't think it will bring any clarity or features we miss right now if we
-> > > try to move CPU and codec drivers to clk API. IMHO.
-
-> CPU drivers? Peter, you wrote the CCF clock provider driver for DRA7
-> ATL, so I'm not sure what you mean here.
-
-In this case he's referring to the drivers for the audio IP blocks
-inside the SoC.
-
---yklP1rR72f9kjNtc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWxFoXAAoJECTWi3JdVIfQxqwH/jFoYdJg840EahFqi9mA6pYg
-j2v8N1/s1qQc5nld1dNLTtt9NG2kEB/rNCLO3Id56D0ofZ52rc07lD/Wl9T7E5z9
-ozzwHo+64omR53Z8nNGOFQrsqraeBPPIiwaHM2bZoquL1VZ2l5+6NADPXIQrVjfV
-q3jKyrTjI3vohsdVVVfZndx90T2noiYYZrZJPbq3wQVz80dAzYDUrNa6/48Bbut+
-2KgSxUHyQz/q6YLnatI0e/Zw/XehjOzbvcoCadwV0pNkEJgXRp6/fngpQnnRDqPy
-gIKJB4ev3i8K+1teVXKJ3pYtjashT3yOz3d+jt4DeUDU6dVqx+IX2Uj/Es32gkc=
-=33Yi
------END PGP SIGNATURE-----
-
---yklP1rR72f9kjNtc--
+-- 
