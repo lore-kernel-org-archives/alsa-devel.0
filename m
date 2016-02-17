@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v7 8/9] ASoC: Intel: Skylake: Add i915 enabling
-	in skl probe
-Date: Wed, 17 Feb 2016 21:34:06 +0530
-Message-ID: <1455725047-7303-9-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v7 9/9] ASoC: Intel: Skylake: Add HDMI FE and
+	BE cpu dais
+Date: Wed, 17 Feb 2016 21:34:07 +0530
+Message-ID: <1455725047-7303-10-git-send-email-subhransu.s.prusty@intel.com>
 References: <1455725047-7303-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id AC634265D2B
- for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 17:03:54 +0100 (CET)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id B56AF2654BA
+ for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 17:04:21 +0100 (CET)
 In-Reply-To: <1455725047-7303-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,134 +22,122 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Vinod Koul <vinod.koul@intel.com>
+This patch enables HDMI support in passthrough mode in skylake.
+Skylake supports 3 pin widgets in HDMI codec, so add 3 FE and 3
+BE dais
 
-The SKL also supports HDMI output so in probe we need to enable
-the HDMI using common i915 APIs to ensure it gets probed on the
-bus
+Add required hw info, formats, rates to support HDMI.
 
-After S3 during the controller resequencing the codec domain need
-to be kept ON for successful reconfiguration of Codec. Once
-configured it will be turned OFF in codec driver.
-
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/Kconfig       |  1 +
- sound/soc/intel/skylake/skl.c | 51 +++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 52 insertions(+)
+ sound/soc/intel/skylake/skl-pcm.c | 78 +++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 75 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 7d7c872..008baa5 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -163,6 +163,7 @@ config SND_SOC_INTEL_SKYLAKE
- 	tristate
- 	select SND_HDA_EXT_CORE
- 	select SND_SOC_TOPOLOGY
-+	select SND_HDA_I915
- 	select SND_SOC_INTEL_SST
- 
- config SND_SOC_INTEL_SKL_RT286_MACH
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 06f4b2c..7f4909b 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -28,6 +28,9 @@
- #include <linux/firmware.h>
- #include <sound/pcm.h>
- #include "../common/sst-acpi.h"
-+#include <sound/hda_register.h>
-+#include <sound/hdaudio.h>
-+#include <sound/hda_i915.h>
- #include "skl.h"
- #include "skl-sst-dsp.h"
- #include "skl-sst-ipc.h"
-@@ -243,6 +246,16 @@ static int skl_resume(struct device *dev)
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
- 	int ret;
- 
-+	/* Turned OFF in HDMI codec driver after codec reconfiguration */
-+	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
-+		ret = snd_hdac_display_power(bus, true);
-+		if (ret < 0) {
-+			dev_err(bus->dev,
-+				"Cannot turn on display power on i915\n");
-+			return ret;
-+		}
-+	}
-+
- 	/*
- 	 * resume only when we are not in suspend active, otherwise need to
- 	 * restore the device
-@@ -481,6 +494,27 @@ static int skl_create(struct pci_dev *pci,
- 	return 0;
- }
- 
-+static int skl_i915_init(struct hdac_bus *bus)
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index bbb6c28..dab0900 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -676,6 +676,51 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
+ 	},
+ },
 +{
-+	int err;
-+
-+	/*
-+	 * The HDMI codec is in GPU so we need to ensure that it is powered
-+	 * up and ready for probe
-+	 */
-+	err = snd_hdac_i915_init(bus);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_hdac_display_power(bus, true);
-+	if (err < 0) {
-+		dev_err(bus->dev, "Cannot turn on display power on i915\n");
-+		return err;
-+	}
-+
-+	return err;
-+}
-+
- static int skl_first_init(struct hdac_ext_bus *ebus)
++	.name = "HDMI1 Pin",
++	.ops = &skl_pcm_dai_ops,
++	.playback = {
++		.stream_name = "HDMI1 Playback",
++		.channels_min = HDA_STEREO,
++		.channels_max = HDA_STEREO,
++		.rates = SNDRV_PCM_RATE_32000 |	SNDRV_PCM_RATE_44100 |
++			SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |
++			SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 |
++			SNDRV_PCM_RATE_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_S32_LE,
++	},
++},
++{
++	.name = "HDMI2 Pin",
++	.ops = &skl_pcm_dai_ops,
++	.playback = {
++		.stream_name = "HDMI2 Playback",
++		.channels_min = HDA_STEREO,
++		.channels_max = HDA_STEREO,
++		.rates = SNDRV_PCM_RATE_32000 |	SNDRV_PCM_RATE_44100 |
++			SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |
++			SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 |
++			SNDRV_PCM_RATE_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_S32_LE,
++	},
++},
++{
++	.name = "HDMI3 Pin",
++	.ops = &skl_pcm_dai_ops,
++	.playback = {
++		.stream_name = "HDMI3 Playback",
++		.channels_min = HDA_STEREO,
++		.channels_max = HDA_STEREO,
++		.rates = SNDRV_PCM_RATE_32000 |	SNDRV_PCM_RATE_44100 |
++			SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |
++			SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 |
++			SNDRV_PCM_RATE_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_S32_LE,
++	},
++},
+ 
+ /* BE CPU  Dais */
  {
- 	struct skl *skl = ebus_to_skl(ebus);
-@@ -543,6 +577,12 @@ static int skl_first_init(struct hdac_ext_bus *ebus)
- 	/* initialize chip */
- 	skl_init_pci(skl);
- 
-+	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
-+		err = skl_i915_init(bus);
-+		if (err < 0)
-+			return err;
-+	}
-+
- 	skl_init_chip(bus, true);
- 
- 	/* codec detection */
-@@ -613,6 +653,14 @@ static int skl_probe(struct pci_dev *pci,
- 	if (err < 0)
- 		goto out_unregister;
- 
-+	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
-+		err = snd_hdac_display_power(bus, false);
-+		if (err < 0) {
-+			dev_err(bus->dev, "Cannot turn off display power on i915\n");
-+			return err;
-+		}
-+	}
-+
- 	/*configure PM */
- 	pm_runtime_put_noidle(bus->dev);
- 	pm_runtime_allow(bus->dev);
-@@ -667,6 +715,9 @@ static void skl_remove(struct pci_dev *pci)
- 	if (skl->tplg)
- 		release_firmware(skl->tplg);
- 
-+	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
-+		snd_hdac_i915_exit(&ebus->bus);
-+
- 	if (pci_dev_run_wake(pci))
- 		pm_runtime_get_noresume(&pci->dev);
- 	pci_dev_put(pci);
+@@ -715,14 +760,41 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
+ 	},
+ },
+ {
+-	.name = "iDisp Pin",
++	.name = "iDisp1 Pin",
+ 	.ops = &skl_link_dai_ops,
+ 	.playback = {
+-		.stream_name = "iDisp Tx",
++		.stream_name = "iDisp1 Tx",
+ 		.channels_min = HDA_STEREO,
+ 		.channels_max = HDA_STEREO,
+ 		.rates = SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_16000|SNDRV_PCM_RATE_48000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE |
++			SNDRV_PCM_FMTBIT_S24_LE,
++	},
++},
++{
++	.name = "iDisp2 Pin",
++	.ops = &skl_link_dai_ops,
++	.playback = {
++		.stream_name = "iDisp2 Tx",
++		.channels_min = HDA_STEREO,
++		.channels_max = HDA_STEREO,
++		.rates = SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_16000|
++			SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE |
++			SNDRV_PCM_FMTBIT_S24_LE,
++	},
++},
++{
++	.name = "iDisp3 Pin",
++	.ops = &skl_link_dai_ops,
++	.playback = {
++		.stream_name = "iDisp3 Tx",
++		.channels_min = HDA_STEREO,
++		.channels_max = HDA_STEREO,
++		.rates = SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_16000|
++			SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE |
++			SNDRV_PCM_FMTBIT_S24_LE,
+ 	},
+ },
+ {
 -- 
 1.9.1
