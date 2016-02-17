@@ -1,18 +1,15 @@
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Subject: Re: [RFC 0/4] Add support for DAI link addition
- dynamically
-Date: Wed, 17 Feb 2016 16:25:21 +0800
-Message-ID: <56C42E71.8030805@linux.intel.com>
-References: <1455538772-24926-1-git-send-email-vaibhav.agarwal@linaro.org>
- <56C1DF0F.4080503@metafoo.de> <56C40AA9.4050008@linux.intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: ASoC: hdac_hdmi: Add jack reporting
+Date: Wed, 17 Feb 2016 11:32:23 +0300
+Message-ID: <20160217083223.GA31585@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 184D22659BC
- for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 09:24:31 +0100 (CET)
-In-Reply-To: <56C40AA9.4050008@linux.intel.com>
+Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
+ by alsa0.perex.cz (Postfix) with ESMTP id 003FA2659F0
+ for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 09:32:31 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,70 +19,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Vaibhav Agarwal <vaibhav.agarwal@linaro.org>, alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, peter.ujfalusi@ti.com
+To: jeeja.kp@intel.com
+Cc: alsa-devel@alsa-project.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/17/2016 01:52 PM, Mengdong Lin wrote:
->
->
-> On 02/15/2016 10:22 PM, Lars-Peter Clausen wrote:
->> On 02/15/2016 01:19 PM, Vaibhav Agarwal wrote:
->>> Following patches are based on for-next branch from broonie tree.
->>> First 2 patches include changes in existing soc, core framework
->>> to prepare for adding support for dynamic DAI link addition/
->>> removal
->>>
->>> Patch 3 & 4 contains actual changes to enable dynamic DAI link
->>> support
->>>
->>> NOTE:
->>> Currently, the code is tested on Pandaboad ES revB3 for playback
->>> usecase.
->>
->> Can you outline how exactly that would work?
->>
->> Thanks,
->> - Lars
->>
->>
->
-> In Agarwal's use case, it seems a removable codec driver can be
-> registered after the sound card is registered. And the Pandaboard
-> machine driver need to add new BE links brought by the new codec
-> component, which will further trigger probing of the codec components.
->
-> How can the machine driver know a new codec component is registered
-> automatically?
->
-> Can we add a notification ops like "new_component" to a soc card?
-> A machine driver can implement this ops.  So when a new component is
-> registered to the ASoC core, all instantiated soc cards can get notified
-> and the machine driver can check if the new component brings some new
-> links to the soc card in this ops. e.g. the Pandaboard machine driver
-> can add new BE links for the new codec.
->
-> Thanks
-> Mengdong
->
+Hello Jeeja KP,
 
-Sorry, I missed the case that the codec component can be still be 
-registered before the machine driver register the card. In this 
-situation, the machine driver cannot get the notification.
+This is a semi-automatic email about new static checker warnings.
 
-I wonder if the machine driver can still predefine these links but flag 
-them as "dynamically_registered". For such links, asoc core will not 
-abort instantiating the card, i.e. the sound card will be created even 
-if these links are not bound because lack of some DAIs (e.g. the DAIs of 
-the codec component not registered yet).
+The patch 4a3478debf36: "ASoC: hdac_hdmi: Add jack reporting" from 
+Feb 12, 2016, leads to the following Smatch complaint:
 
-Then when the missing component is added, the ASOC core will 
-automatically check these the unbound links and bind them. When the 
-component is unregistered, ASoC will try to remove the affected links 
-and then remove the components.
+sound/soc/codecs/hdac_hdmi.c:971 hdac_hdmi_present_sense()
+	 warn: variable dereferenced before check 'edev' (see line 967)
 
-Thus we may not need add new APIs or let the machine driver monitor when 
-the codec component is registered.
+sound/soc/codecs/hdac_hdmi.c
+   966		struct hdac_ext_device *edev = pin->edev;
+   967		struct hdac_hdmi_priv *hdmi = edev->private_data;
+                                              ^^^^^^^^^^^^^^^^^^
+Patch introduces a new dereference.
 
-Thanks
-Mengdong
+   968		struct hdac_hdmi_pcm *pcm;
+   969		int val;
+   970	
+   971		if (!edev)
+                    ^^^^^
+Existing code assumed that edev could be NULL.
+
+   972			return;
+   973	
+
+regards,
+dan carpenter
