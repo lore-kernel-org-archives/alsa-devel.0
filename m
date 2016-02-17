@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdac_hdmi: Remove 'edev' NULL check" to
-	the asoc tree
-Date: Wed, 17 Feb 2016 19:13:31 +0000
-Message-ID: <E1aW7XX-0001iK-UG@debutante>
-References: <1455709333-19807-1-git-send-email-fabio.estevam@nxp.com>
+Subject: Re: [PATCH] ASoC: hdac_hdmi: Dereference 'edev' after
+ checking for NULL
+Date: Wed, 17 Feb 2016 19:20:54 +0000
+Message-ID: <20160217192054.GZ7544@sirena.org.uk>
+References: <1455700199-18691-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3933950996693275788=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 566C4260686
- for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 20:13:50 +0100 (CET)
-In-Reply-To: <1455709333-19807-1-git-send-email-fabio.estevam@nxp.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C51DB26067A
+ for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 20:21:00 +0100 (CET)
+In-Reply-To: <1455700199-18691-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,79 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>, Fabio Estevam <fabio.estevam@nxp.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, jeeja.kp@intel.com, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, dan.carpenter@oracle.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: hdac_hdmi: Remove 'edev' NULL check
+--===============3933950996693275788==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="dwN3S3mscniL3FCL"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--dwN3S3mscniL3FCL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Wed, Feb 17, 2016 at 07:09:59AM -0200, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@nxp.com>
+>=20
+> Commit 4a3478debf36 ("ASoC: hdac_hdmi: Add jack reporting")=20
+> leads to the following Smatch complaint:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+This doesn't apply against current code, please check and resend.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--dwN3S3mscniL3FCL
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Thanks,
-Mark
+iQEcBAEBCAAGBQJWxMf/AAoJECTWi3JdVIfQyTgH/icm0oPPIyppG34r32CpCTTF
+gWCxU/PzXUw3S/uftxzEDHAcMhWAJ2XbtOV9I6RRa7wqnHqMQ/er4ttOhiRupVfZ
+8bOhg8fhbYFgFPZJu0+6kbbJZE+QPabAJTl6EQbGiSdxZ+wTYu0fcBcrRC03twWT
+p/MU0Cyp5cAZiC5apq99KSOAcqT27Xt/O4Uo9LLN3Z6UYDreuXJC/vp9GlNpF870
+9y4G1CcuVGi45+eY/u6h3v2faTrc9KzZYIZNDToffV1A5OTq+1rApC/e48rgsY3Y
+WFAjQLZSNdFHRwERoGSLv6IMPAVNCIrIO4+KGodmbp6fuOWiToghqunfQA4XAI8=
+=1T17
+-----END PGP SIGNATURE-----
 
->From cd890ade492784ae06dadd20e688ba1760d3c801 Mon Sep 17 00:00:00 2001
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Wed, 17 Feb 2016 09:42:13 -0200
-Subject: [PATCH] ASoC: hdac_hdmi: Remove 'edev' NULL check
+--dwN3S3mscniL3FCL--
 
-Commit 4a3478debf36 ("ASoC: hdac_hdmi: Add jack reporting")
-leads to the following Smatch complaint:
+--===============3933950996693275788==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-sound/soc/codecs/hdac_hdmi.c:971 hdac_hdmi_present_sense()
-         warn: variable dereferenced before check 'edev' (see line 967)
 
-As explained by Subhransu S. Prusty:
-
-"This NULL check is not required, can be removed.
-
-edev object is expected to be present when the present_sense is
-called. This is called from places where this edev object is
-already available."
-
-So remove the evdev NULL check.
-
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
-Acked-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/hdac_hdmi.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 36f12004ae9c..2884dbf0bc07 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -968,9 +968,6 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin, int repoll)
- 	struct hdac_hdmi_pcm *pcm;
- 	int val;
- 
--	if (!edev)
--		return;
--
- 	pin->repoll_count = repoll;
- 
- 	pm_runtime_get_sync(&edev->hdac.dev);
--- 
-2.7.0
+--===============3933950996693275788==--
