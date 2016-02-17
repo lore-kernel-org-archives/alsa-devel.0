@@ -1,15 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: oxfw: use workqueue instead of tasklet
-	for scs1x
-Date: Thu, 18 Feb 2016 01:24:36 +0900
-Message-ID: <1455726276-31966-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: max98926: Fix blr_clk_ratio
+	calculation" to the asoc tree
+Date: Wed, 17 Feb 2016 19:13:30 +0000
+Message-ID: <E1aW7XW-0001hr-Vq@debutante>
+References: <1455669967.6195.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 4700B26067A
- for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 17:24:41 +0100 (CET)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E0C7026067A
+ for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 20:13:47 +0100 (CET)
+In-Reply-To: <1455669967.6195.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,79 +22,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: Axel Lin <axel.lin@ingics.com>, anish kumar <yesanishhere@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit replaces tasklet with workqueue for scs1x functionality of
-ALSA oxfw driver.
+The patch
 
-This driver transfers MIDI message specific for SCS.1m and SCS.1d. This
-task is currently done in software IRQ context of tasklet. In a view of
-system, this context is limited resources and some important drivers (at
-least, more important than ALSA oxfw driver) use the context as its
-bottom-harf.
+   ASoC: max98926: Fix blr_clk_ratio calculation
 
-If the work to transfer MIDI messages is done within a time, it's better
-to use the other context for the work. Actually, with recent CPUs, the
-work will be scheduled within a time. This is a reason of this commit.
+has been applied to the asoc tree at
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From cffee535f0b09ab0801cbec01a8ae81595aa99bc Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Wed, 17 Feb 2016 08:46:07 +0800
+Subject: [PATCH] ASoC: max98926: Fix blr_clk_ratio calculation
+
+Current code calculates blr_clk_ratio before setting max98926->ch_size, fix
+it.
+
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Acked-by: anish kumar <yesanishhere@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/firewire/oxfw/oxfw-scs1x.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/codecs/max98926.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/firewire/oxfw/oxfw-scs1x.c b/sound/firewire/oxfw/oxfw-scs1x.c
-index bb53eb3..f7ac124 100644
---- a/sound/firewire/oxfw/oxfw-scs1x.c
-+++ b/sound/firewire/oxfw/oxfw-scs1x.c
-@@ -26,7 +26,7 @@ struct fw_scs1x {
- 	u8 output_bytes;
- 	bool output_escaped;
- 	bool output_escape_high_nibble;
--	struct tasklet_struct tasklet;
-+	struct work_struct work;
- 	wait_queue_head_t idle_wait;
- 	u8 buffer[HSS1394_MAX_PACKET_SIZE];
- 	bool transaction_running;
-@@ -129,7 +129,7 @@ static void scs_write_callback(struct fw_card *card, int rcode,
- 		;	/* TODO: retry this packet */
+diff --git a/sound/soc/codecs/max98926.c b/sound/soc/codecs/max98926.c
+index 66884ebdf2bb..5245e107de30 100644
+--- a/sound/soc/codecs/max98926.c
++++ b/sound/soc/codecs/max98926.c
+@@ -383,8 +383,7 @@ static int max98926_dai_hw_params(struct snd_pcm_substream *substream,
+ 	int rate = params_rate(params), i;
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct max98926_priv *max98926 = snd_soc_codec_get_drvdata(codec);
+-	/* BCLK/LRCLK ratio calculation */
+-	int blr_clk_ratio = params_channels(params) * max98926->ch_size;
++	int blr_clk_ratio;
  
- 	scs->transaction_running = false;
--	tasklet_schedule(&scs->tasklet);
-+	schedule_work(&scs->work);
- }
- 
- static bool is_valid_running_status(u8 status)
-@@ -165,9 +165,9 @@ static bool is_invalid_cmd(u8 status)
- 	       status == 0xfd;
- }
- 
--static void scs_output_tasklet(unsigned long data)
-+static void scs_output_work(struct work_struct *work)
- {
--	struct fw_scs1x *scs = (struct fw_scs1x *)data;
-+	struct fw_scs1x *scs = container_of(work, struct fw_scs1x, work);
- 	struct snd_rawmidi_substream *stream;
- 	unsigned int i;
- 	u8 byte;
-@@ -311,7 +311,7 @@ static void midi_playback_trigger(struct snd_rawmidi_substream *stream, int up)
- 		scs->output_idle = false;
- 
- 		ACCESS_ONCE(scs->output) = stream;
--		tasklet_schedule(&scs->tasklet);
-+		schedule_work(&scs->work);
- 	} else {
- 		ACCESS_ONCE(scs->output) = NULL;
+ 	switch (params_format(params)) {
+ 	case SNDRV_PCM_FORMAT_S16_LE:
+@@ -414,6 +413,9 @@ static int max98926_dai_hw_params(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
  	}
-@@ -395,7 +395,7 @@ int snd_oxfw_scs1x_add(struct snd_oxfw *oxfw)
- 	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
- 			    &midi_playback_ops);
  
--	tasklet_init(&scs->tasklet, scs_output_tasklet, (unsigned long)scs);
-+	INIT_WORK(&scs->work, scs_output_work);
- 	init_waitqueue_head(&scs->idle_wait);
- 	scs->output_idle = true;
- 
++	/* BCLK/LRCLK ratio calculation */
++	blr_clk_ratio = params_channels(params) * max98926->ch_size;
++
+ 	switch (blr_clk_ratio) {
+ 	case 32:
+ 		regmap_update_bits(max98926->regmap,
 -- 
-2.5.0
+2.7.0
