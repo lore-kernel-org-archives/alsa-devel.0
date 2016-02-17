@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v7 1/9] ASoC: hdac_hdmi: Fix possible memory
-	leak in hw_params
-Date: Wed, 17 Feb 2016 21:33:59 +0530
-Message-ID: <1455725047-7303-2-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v7 5/9] ASoC: hdac_hdmi: Fix to wait for D3
+	before powering off codec
+Date: Wed, 17 Feb 2016 21:34:03 +0530
+Message-ID: <1455725047-7303-6-git-send-email-subhransu.s.prusty@intel.com>
 References: <1455725047-7303-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 1FC3B2606CD
- for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 17:03:38 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D365265A39
+ for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 17:03:46 +0100 (CET)
 In-Reply-To: <1455725047-7303-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,49 +25,48 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-It's possible for hw_params to be called two times. So add NULL
-check to prevent memory leak.
+Powering off codec immediately after sending D3 verb may not set
+the node to D3 state. So wait for a confirmation response before
+shutting down codec.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 2884dbf..d2a2e18 100644
+index 2445b43..46fef8e 100644
 --- a/sound/soc/codecs/hdac_hdmi.c
 +++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -405,9 +405,13 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
- 		return -ENODEV;
- 	}
+@@ -1486,6 +1486,7 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
+ 	struct hdac_ext_device *edev = to_hda_ext_device(dev);
+ 	struct hdac_device *hdac = &edev->hdac;
+ 	struct hdac_bus *bus = hdac->bus;
++	unsigned long timeout;
+ 	int err;
  
--	dd = kzalloc(sizeof(*dd), GFP_KERNEL);
--	if (!dd)
--		return -ENOMEM;
-+	dd = snd_soc_dai_get_dma_data(dai, substream);
-+	if (!dd) {
-+		dd = kzalloc(sizeof(*dd), GFP_KERNEL);
-+		if (!dd)
-+			return -ENOMEM;
+ 	dev_dbg(dev, "Enter: %s\n", __func__);
+@@ -1495,10 +1496,19 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
+ 		return 0;
+ 
+ 	/* Power down afg */
+-	if (!snd_hdac_check_power_state(hdac, hdac->afg, AC_PWRST_D3))
++	if (!snd_hdac_check_power_state(hdac, hdac->afg, AC_PWRST_D3)) {
+ 		snd_hdac_codec_write(hdac, hdac->afg, 0,
+ 			AC_VERB_SET_POWER_STATE, AC_PWRST_D3);
+ 
++		/* Wait till power state is set to D3 */
++		timeout = jiffies + msecs_to_jiffies(1000);
++		while(!snd_hdac_check_power_state(hdac, hdac->afg, AC_PWRST_D3)
++				&& time_before(jiffies, timeout)) {
++
++			msleep(50);
++		}
 +	}
 +
- 	dd->format = snd_hdac_calc_stream_format(params_rate(hparams),
- 			params_channels(hparams), params_format(hparams),
- 			24, 0);
-@@ -433,9 +437,11 @@ static int hdac_hdmi_playback_cleanup(struct snd_pcm_substream *substream,
- 				AC_VERB_SET_STREAM_FORMAT, 0);
- 
- 	dd = (struct hdac_ext_dma_params *)snd_soc_dai_get_dma_data(dai, substream);
--	snd_soc_dai_set_dma_data(dai, substream, NULL);
- 
--	kfree(dd);
-+	if (dd) {
-+		snd_soc_dai_set_dma_data(dai, substream, NULL);
-+		kfree(dd);
-+	}
- 
- 	return 0;
- }
+ 	err = snd_hdac_display_power(bus, false);
+ 	if (err < 0) {
+ 		dev_err(bus->dev, "Cannot turn on display power on i915\n");
 -- 
 1.9.1
