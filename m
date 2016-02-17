@@ -1,18 +1,18 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH RFT] ASoC: max98926: Fix blr_clk_ratio
-	calculation
-Date: Wed, 17 Feb 2016 08:46:07 +0800
-Message-ID: <1455669967.6195.1.camel@ingics.com>
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Subject: Re: [RFC 0/4] Add support for DAI link addition
+ dynamically
+Date: Wed, 17 Feb 2016 13:52:41 +0800
+Message-ID: <56C40AA9.4050008@linux.intel.com>
+References: <1455538772-24926-1-git-send-email-vaibhav.agarwal@linaro.org>
+ <56C1DF0F.4080503@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f46.google.com (mail-pa0-f46.google.com
- [209.85.220.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 8ECB9265794
- for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 01:46:12 +0100 (CET)
-Received: by mail-pa0-f46.google.com with SMTP id fy10so876138pac.1
- for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2016 16:46:12 -0800 (PST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FE7A265794
+ for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 06:51:34 +0100 (CET)
+In-Reply-To: <56C1DF0F.4080503@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,47 +22,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, anish kumar <yesanishhere@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>, Vaibhav Agarwal <vaibhav.agarwal@linaro.org>, alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, peter.ujfalusi@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Current code calculates blr_clk_ratio before setting max98926->ch_size, fix
-it.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
-Hi Anish,
-I don't have this h/w, please review and test this patch.
 
-thanks,
-Axel
+On 02/15/2016 10:22 PM, Lars-Peter Clausen wrote:
+> On 02/15/2016 01:19 PM, Vaibhav Agarwal wrote:
+>> Following patches are based on for-next branch from broonie tree.
+>> First 2 patches include changes in existing soc, core framework
+>> to prepare for adding support for dynamic DAI link addition/
+>> removal
+>>
+>> Patch 3 & 4 contains actual changes to enable dynamic DAI link
+>> support
+>>
+>> NOTE:
+>> Currently, the code is tested on Pandaboad ES revB3 for playback
+>> usecase.
+>
+> Can you outline how exactly that would work?
+>
+> Thanks,
+> - Lars
+>
+>
 
- sound/soc/codecs/max98926.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+In Agarwal's use case, it seems a removable codec driver can be 
+registered after the sound card is registered. And the Pandaboard 
+machine driver need to add new BE links brought by the new codec 
+component, which will further trigger probing of the codec components.
 
-diff --git a/sound/soc/codecs/max98926.c b/sound/soc/codecs/max98926.c
-index 66884ebd..5245e10 100644
---- a/sound/soc/codecs/max98926.c
-+++ b/sound/soc/codecs/max98926.c
-@@ -383,8 +383,7 @@ static int max98926_dai_hw_params(struct snd_pcm_substream *substream,
- 	int rate = params_rate(params), i;
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct max98926_priv *max98926 = snd_soc_codec_get_drvdata(codec);
--	/* BCLK/LRCLK ratio calculation */
--	int blr_clk_ratio = params_channels(params) * max98926->ch_size;
-+	int blr_clk_ratio;
- 
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S16_LE:
-@@ -414,6 +413,9 @@ static int max98926_dai_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
-+	/* BCLK/LRCLK ratio calculation */
-+	blr_clk_ratio = params_channels(params) * max98926->ch_size;
-+
- 	switch (blr_clk_ratio) {
- 	case 32:
- 		regmap_update_bits(max98926->regmap,
--- 
-2.1.4
+How can the machine driver know a new codec component is registered 
+automatically?
+
+Can we add a notification ops like "new_component" to a soc card?
+A machine driver can implement this ops.  So when a new component is 
+registered to the ASoC core, all instantiated soc cards can get notified 
+and the machine driver can check if the new component brings some new 
+links to the soc card in this ops. e.g. the Pandaboard machine driver 
+can add new BE links for the new codec.
+
+Thanks
+Mengdong
