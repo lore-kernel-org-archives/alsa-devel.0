@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98926: Fix blr_clk_ratio
-	calculation" to the asoc tree
-Date: Wed, 17 Feb 2016 19:13:30 +0000
-Message-ID: <E1aW7XW-0001hr-Vq@debutante>
-References: <1455669967.6195.1.camel@ingics.com>
+Subject: Applied "ASoC: hdac_hdmi: Remove 'edev' NULL check" to
+	the asoc tree
+Date: Wed, 17 Feb 2016 19:13:31 +0000
+Message-ID: <E1aW7XX-0001iK-UG@debutante>
+References: <1455709333-19807-1-git-send-email-fabio.estevam@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E0C7026067A
- for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 20:13:47 +0100 (CET)
-In-Reply-To: <1455669967.6195.1.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 566C4260686
+ for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 20:13:50 +0100 (CET)
+In-Reply-To: <1455709333-19807-1-git-send-email-fabio.estevam@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, anish kumar <yesanishhere@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>, Fabio Estevam <fabio.estevam@nxp.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98926: Fix blr_clk_ratio calculation
+   ASoC: hdac_hdmi: Remove 'edev' NULL check
 
 has been applied to the asoc tree at
 
@@ -53,44 +53,48 @@ to this mail.
 Thanks,
 Mark
 
->From cffee535f0b09ab0801cbec01a8ae81595aa99bc Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Wed, 17 Feb 2016 08:46:07 +0800
-Subject: [PATCH] ASoC: max98926: Fix blr_clk_ratio calculation
+>From cd890ade492784ae06dadd20e688ba1760d3c801 Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Date: Wed, 17 Feb 2016 09:42:13 -0200
+Subject: [PATCH] ASoC: hdac_hdmi: Remove 'edev' NULL check
 
-Current code calculates blr_clk_ratio before setting max98926->ch_size, fix
-it.
+Commit 4a3478debf36 ("ASoC: hdac_hdmi: Add jack reporting")
+leads to the following Smatch complaint:
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Acked-by: anish kumar <yesanishhere@gmail.com>
+sound/soc/codecs/hdac_hdmi.c:971 hdac_hdmi_present_sense()
+         warn: variable dereferenced before check 'edev' (see line 967)
+
+As explained by Subhransu S. Prusty:
+
+"This NULL check is not required, can be removed.
+
+edev object is expected to be present when the present_sense is
+called. This is called from places where this edev object is
+already available."
+
+So remove the evdev NULL check.
+
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Acked-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98926.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/sound/soc/codecs/max98926.c b/sound/soc/codecs/max98926.c
-index 66884ebdf2bb..5245e107de30 100644
---- a/sound/soc/codecs/max98926.c
-+++ b/sound/soc/codecs/max98926.c
-@@ -383,8 +383,7 @@ static int max98926_dai_hw_params(struct snd_pcm_substream *substream,
- 	int rate = params_rate(params), i;
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct max98926_priv *max98926 = snd_soc_codec_get_drvdata(codec);
--	/* BCLK/LRCLK ratio calculation */
--	int blr_clk_ratio = params_channels(params) * max98926->ch_size;
-+	int blr_clk_ratio;
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 36f12004ae9c..2884dbf0bc07 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -968,9 +968,6 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin, int repoll)
+ 	struct hdac_hdmi_pcm *pcm;
+ 	int val;
  
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S16_LE:
-@@ -414,6 +413,9 @@ static int max98926_dai_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
+-	if (!edev)
+-		return;
+-
+ 	pin->repoll_count = repoll;
  
-+	/* BCLK/LRCLK ratio calculation */
-+	blr_clk_ratio = params_channels(params) * max98926->ch_size;
-+
- 	switch (blr_clk_ratio) {
- 	case 32:
- 		regmap_update_bits(max98926->regmap,
+ 	pm_runtime_get_sync(&edev->hdac.dev);
 -- 
 2.7.0
