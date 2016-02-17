@@ -1,209 +1,207 @@
-From: "Babu, Ramesh" <ramesh.babu@intel.com>
-Subject: Re: another locking issue with nonatomic ops?
-Date: Wed, 17 Feb 2016 12:41:10 +0000
-Message-ID: <32F4D3A311A1404B92CF923AFF38C3C52E433D9F@BGSMSX104.gar.corp.intel.com>
-References: <20160216153711.GW19598@localhost>
- <s5h8u2k7ifz.wl-tiwai@suse.de> <20160216161043.GX19598@localhost>
- <s5h37ss7h8f.wl-tiwai@suse.de> <20160216164008.GY19598@localhost>
- <32F4D3A311A1404B92CF923AFF38C3C52E4330EA@BGSMSX104.gar.corp.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 8CAD1265ACA
- for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 13:41:16 +0100 (CET)
-In-Reply-To: <32F4D3A311A1404B92CF923AFF38C3C52E4330EA@BGSMSX104.gar.corp.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>, 'Takashi Iwai' <tiwai@suse.de>
-Cc: Patches Audio <patches.audio@intel.com>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH v5] portman2x4 - use new parport device model
+Date: Wed, 17 Feb 2016 18:26:27 +0530
+Message-ID: <1455713787-13382-1-git-send-email-sudipm.mukherjee@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Modify portman driver to use the new parallel port device model.
+The advantage of using the device model is that the device gets binded
+to the hardware, we get the feature of hotplug, we can bind/unbind
+the driver at runtime.
+The changes are in the way the driver gets registered with the
+parallel port subsystem and the temporary device to probe portman card
+is removed and portman_probe() is used in the probe callback.
 
-> > On Tue, Feb 16, 2016 at 05:27:44PM +0100, Takashi Iwai wrote:
-> > > On Tue, 16 Feb 2016 17:10:43 +0100,
-> > > Vinod Koul wrote:
-> > > >
-> > > > On Tue, Feb 16, 2016 at 05:01:36PM +0100, Takashi Iwai wrote:
-> > > > > On Tue, 16 Feb 2016 16:37:11 +0100,
-> > > > > Vinod Koul wrote:
-> > > > > >
-> > > > > >
-> > > > > > Hi Takashi,
-> > > > > >
-> > > > > > We found another issue with non atomic ops.
-> > > > > >
-> > > > > > This occurs when we have snd_pcm_do_prepare being invoked
-> > which acquires
-> > > > > > the lock snd_pcm_link_rwsem twice, first in
-> > snd_pcm_common_ioctl1, and then again in
-> > > > > > dpcm_dapm_stream_event. Normally this is fine, but if we have
-> > another stream
-> > > > > > get closed in between two read accesses we get stuck.
-> > > > > >
-> > > > > > First thread:
-> > > > > >
-> > > > > > [  419.657259] AudioOut_2      D ffff8800704a3a60     0  3691      1
-> > 	0x20020004
-> > > > > > [  419.665946]  ffff8800704a3a60 00000000704a3a60
-> ffff88006d1fddd0
-> > ffffffff8252ffd8
-> > > > > > [  419.674678]  ffff8800704a4000 ffffffff8252ffc0 ffffffffffffffff
-> > ffffffff8252ffd8
-> > > > > > [  419.683513]  0000000000000000 ffff8800704a3a80 ffffffff81ca2987
-> > ffffffffffffffff
-> > > > > > [  419.683574] Call Trace:
-> > > > > > [  419.692290]  [<ffffffff81ca2987>] schedule+0x37/0x90
-> > > > > > [  419.692306]  [<ffffffff81ca6f6d>]
-> > rwsem_down_read_failed+0xdd/0x130
-> > > > > > [  419.701050]  [<ffffffff814df454>]
-> > call_rwsem_down_read_failed+0x14/0x30
-> > > > > > [  419.709758]  [<ffffffff810e793b>] ?
-> down_read_nested+0x5b/0x70
-> > > > > > [  419.709805]  [<ffffffff81adfda9>] ?
-> > snd_pcm_stream_lock+0xa9/0x120
-> > > > > > [  419.723012]  [<ffffffff81adfda9>]
-> > snd_pcm_stream_lock+0xa9/0x120
-> > > > > >
-> > > > > > < ============     2nd Read lock is acquired here, without
-> releasing
-> > previous one.
-> > > > > >
-> > > > > > [  419.723026]  [<ffffffff81adfe4c>]
-> > snd_pcm_stream_lock_irq+0x2c/0x30
-> > > > > > [  419.731801]  [<ffffffff81b01f5e>] ?
-> > dpcm_dapm_stream_event+0xbe/0xd0
-> > > > > > [  419.740565]  [<ffffffff81b0079c>]
-> > dpcm_set_fe_update_state+0x3c/0xb0
-> > > > > > [  419.749252]  [<ffffffff81b04514>]
-> > dpcm_fe_dai_prepare+0xc4/0x150
-> > > > > > [  419.749301]  [<ffffffff81adf7eb>]
-> snd_pcm_do_prepare+0x1b/0x30
-> > > > > > [  419.758083]  [<ffffffff81adf3bf>]
-> snd_pcm_action_single+0x2f/0x70
-> > > > > > [  419.766897]  [<ffffffff81ca6827>] ? down_read+0x47/0x60
-> > > > > > [  419.766962]  [<ffffffff81adf577>] ?
-> > snd_pcm_action_nonatomic+0x27/0x80
-> > > > > > [  419.775565]  [<ffffffff81adf5c6>]
-> > snd_pcm_action_nonatomic+0x76/0x80
-> > > > > >
-> > > > > > < ============     1st Read lock is acquired here
-> > > > > >
-> > > > > > [  419.784419]  [<ffffffff81ae2c62>]
-> > snd_pcm_common_ioctl1+0x802/0xd30
-> > > > > > [  419.784495]  [<ffffffff81ae332b>]
-> > snd_pcm_playback_ioctl1+0x19b/0x280
-> > > > > > [  419.793106]  [<ffffffff81230915>] ? __fget+0x5/0x210
-> > > > > > [  419.801943]  [<ffffffff81ae3dca>]
-> > snd_pcm_ioctl_compat+0x41a/0x770
-> > > > > > [  419.801959]  [<ffffffff81230915>] ? __fget+0x5/0x210
-> > > > > > [  419.810793]  [<ffffffff8126d670>] compat_SyS_ioctl+0xd0/0x13b0
-> > > > > > [  419.819491]  [<ffffffff81ca7bc4>] ? do_nanosleep+0x94/0x190
-> > > > > > [  419.819535]  [<ffffffff810eb696>] ?
-> > trace_hardirqs_on_caller+0x16/0x210
-> > > > > > [  419.828306]  [<ffffffff814df4f8>] ?
-> > trace_hardirqs_on_thunk+0x17/0x19
-> > > > > > [  419.837104]  [<ffffffff81cabf0e>] sysenter_dispatch+0x7/0x1f
-> > > > > >
-> > > > > >
-> > > > > > Second thread:
-> > > > > > [  419.543062] mediaserver     D ffff880170957cd8     0  3690      1
-> > 	0x20020004
-> > > > > > [  419.543191]  ffff880170957cd8 0000000070957cd8
-> ffff88006de49ad0
-> > ffffffff8252ffd8
-> > > > > > [  419.551920]  ffff880170958000 ffff88006de49ad0 ffffffff8252ffc0
-> > ffffffff00000001
-> > > > > > [  419.560555]  ffffffff8252ffd8 ffff880170957cf8 ffffffff81ca2987
-> > ffffffff8252ffc0
-> > > > > > [  419.569368] Call Trace:
-> > > > > > [  419.569392]  [<ffffffff81ca2987>] schedule+0x37/0x90
-> > > > > > [  419.578026]  [<ffffffff81ca71f5>]
-> > rwsem_down_write_failed+0x235/0x450
-> > > > > > [  419.586884]  [<ffffffff81ca7005>] ?
-> > rwsem_down_write_failed+0x45/0x450
-> > > > > > [  419.586941]  [<ffffffff814df483>]
-> > call_rwsem_down_write_failed+0x13/0x20
-> > > > > > [  419.595620]  [<ffffffff81ca689f>] ? down_write+0x5f/0x80
-> > > > > >
-> > > > > > < ============     Write lock acquired here. If this occurs between
-> > two read
-> > > > > > lock's then it's hangs
-> > > > >
-> > > > > So what's wrong?  The two read locks are still running, and
-> > > > > snd_pcm_release() waits until these two read locks are freed.
-> > > > > The read double-locks are fine, and it's intended behavior.
-> > > >
-> > > > Yes that is true
-> > > >
-> > > > > The problem is apparently not there, but somewhere else.
-> > > > > Any other thread or call involved?
-> > > >
-> > > > The second backtrace above is the 2nd thread which does down_write.
-> > That
-> > > > gets hung as 1st read lock is acquired. Since write gets higer priorty, 2nd
-> > > > read is also stuck and we are in deadlock.
-> > > >
-> > > > down_read (1st acquired)
-> > > > 					down_write (waiting due to
-> > down_read)
-> > > > down_read( 2nd,,, stuck)
-> > >
-> > > Hmm, so down_read() takes care of the pending down_write()?
-> > > Then it's a problem.  Maybe the limitation of the current rwsem
-> > > implementation.
-> >
-> > Yes that is how things seem right now.
-> > >
-> > > Does the patch below work?  It's suboptimal, just a proof of concept.
-> >
-> > Okay will try first thing tomorrow and let you know.
-> >
-> I tried the below changes and it seem to be fixing the issue.
-> I will do more stress testing tomorrow and let you know.
-> Thanks :)
->
-I verified the fix and I confirm that it resolved the race 
-condition issue.
-> > > ---
-> > > diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-> > > index fadd3eb8e8bb..8b45edd218a4 100644
-> > > --- a/sound/core/pcm_native.c
-> > > +++ b/sound/core/pcm_native.c
-> > > @@ -1813,7 +1813,8 @@ static int snd_pcm_link(struct
-> > snd_pcm_substream *substream, int fd)
-> > >  		res = -ENOMEM;
-> > >  		goto _nolock;
-> > >  	}
-> > > -	down_write(&snd_pcm_link_rwsem);
-> > > +	while (!down_write_trylock(&snd_pcm_link_rwsem))
-> > > +		cpu_relax();
-> > >  	write_lock_irq(&snd_pcm_link_rwlock);
-> > >  	if (substream->runtime->status->state ==
-> > SNDRV_PCM_STATE_OPEN ||
-> > >  	    substream->runtime->status->state != substream1->runtime-
-> > >status->state ||
-> > > @@ -1860,7 +1861,8 @@ static int snd_pcm_unlink(struct
-> > snd_pcm_substream *substream)
-> > >  	struct snd_pcm_substream *s;
-> > >  	int res = 0;
-> > >
-> > > -	down_write(&snd_pcm_link_rwsem);
-> > > +	while (!down_write_trylock(&snd_pcm_link_rwsem))
-> > > +		cpu_relax();
-> > >  	write_lock_irq(&snd_pcm_link_rwlock);
-> > >  	if (!snd_pcm_stream_linked(substream)) {
-> > >  		res = -EALREADY;
-> >
-> > --
-> > ~Vinod
+Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+---
+
+v5: claimed flag and one call to parport_claim() removed.
+v4: temporary device to probe is removed.
+v3: changed commit message
+v2:
+ 1. pardev_cb is initialized while declaring, thus removing the use of
+ memset.
+ 2. used pdev->id.
+ 3. v1 did not have the parport probe callback, but we will need the
+ probe callback for binding as the name of the driver and the name of
+ the device is different.
+ 4. in v1 I missed modifying snd_portman_probe_port().
+
+ sound/drivers/portman2x4.c | 93 +++++++++++++++++++++-------------------------
+ 1 file changed, 42 insertions(+), 51 deletions(-)
+
+diff --git a/sound/drivers/portman2x4.c b/sound/drivers/portman2x4.c
+index 464385a..362533f 100644
+--- a/sound/drivers/portman2x4.c
++++ b/sound/drivers/portman2x4.c
+@@ -83,8 +83,6 @@ struct portman {
+ 	struct snd_card *card;
+ 	struct snd_rawmidi *rmidi;
+ 	struct pardevice *pardev;
+-	int pardev_claimed;
+-
+ 	int open_count;
+ 	int mode[PORTMAN_NUM_INPUT_PORTS];
+ 	struct snd_rawmidi_substream *midi_input[PORTMAN_NUM_INPUT_PORTS];
+@@ -648,30 +646,6 @@ static void snd_portman_interrupt(void *userdata)
+ 	spin_unlock(&pm->reg_lock);
+ }
+ 
+-static int snd_portman_probe_port(struct parport *p)
+-{
+-	struct pardevice *pardev;
+-	int res;
+-
+-	pardev = parport_register_device(p, DRIVER_NAME,
+-					 NULL, NULL, NULL,
+-					 0, NULL);
+-	if (!pardev)
+-		return -EIO;
+-	
+-	if (parport_claim(pardev)) {
+-		parport_unregister_device(pardev);
+-		return -EIO;
+-	}
+-
+-	res = portman_probe(p);
+-
+-	parport_release(pardev);
+-	parport_unregister_device(pardev);
+-
+-	return res ? -EIO : 0;
+-}
+-
+ static void snd_portman_attach(struct parport *p)
+ {
+ 	struct platform_device *device;
+@@ -705,10 +679,20 @@ static void snd_portman_detach(struct parport *p)
+ 	/* nothing to do here */
+ }
+ 
++static int snd_portman_dev_probe(struct pardevice *pardev)
++{
++	if (strcmp(pardev->name, DRIVER_NAME))
++		return -ENODEV;
++
++	return 0;
++}
++
+ static struct parport_driver portman_parport_driver = {
+-	.name   = "portman2x4",
+-	.attach = snd_portman_attach,
+-	.detach = snd_portman_detach
++	.name		= "portman2x4",
++	.probe		= snd_portman_dev_probe,
++	.match_port	= snd_portman_attach,
++	.detach		= snd_portman_detach,
++	.devmodel	= true,
+ };
+ 
+ /*********************************************************************
+@@ -720,8 +704,7 @@ static void snd_portman_card_private_free(struct snd_card *card)
+ 	struct pardevice *pardev = pm->pardev;
+ 
+ 	if (pardev) {
+-		if (pm->pardev_claimed)
+-			parport_release(pardev);
++		parport_release(pardev);
+ 		parport_unregister_device(pardev);
+ 	}
+ 
+@@ -736,6 +719,12 @@ static int snd_portman_probe(struct platform_device *pdev)
+ 	struct snd_card *card = NULL;
+ 	struct portman *pm = NULL;
+ 	int err;
++	struct pardev_cb portman_cb = {
++		.preempt = NULL,
++		.wakeup = NULL,
++		.irq_func = snd_portman_interrupt,	/* ISR */
++		.flags = PARPORT_DEV_EXCL,		/* flags */
++	};
+ 
+ 	p = platform_get_drvdata(pdev);
+ 	platform_set_drvdata(pdev, NULL);
+@@ -745,9 +734,6 @@ static int snd_portman_probe(struct platform_device *pdev)
+ 	if (!enable[dev]) 
+ 		return -ENOENT;
+ 
+-	if ((err = snd_portman_probe_port(p)) < 0)
+-		return err;
+-
+ 	err = snd_card_new(&pdev->dev, index[dev], id[dev], THIS_MODULE,
+ 			   0, &card);
+ 	if (err < 0) {
+@@ -759,23 +745,32 @@ static int snd_portman_probe(struct platform_device *pdev)
+ 	sprintf(card->longname,  "%s at 0x%lx, irq %i", 
+ 		card->shortname, p->base, p->irq);
+ 
+-	pardev = parport_register_device(p,                     /* port */
+-					 DRIVER_NAME,           /* name */
+-					 NULL,                  /* preempt */
+-					 NULL,                  /* wakeup */
+-					 snd_portman_interrupt, /* ISR */
+-					 PARPORT_DEV_EXCL,      /* flags */
+-					 (void *)card);         /* private */
++	portman_cb.private = card;			   /* private */
++	pardev = parport_register_dev_model(p,		   /* port */
++					    DRIVER_NAME,   /* name */
++					    &portman_cb,   /* callbacks */
++					    pdev->id);	   /* device number */
+ 	if (pardev == NULL) {
+ 		snd_printd("Cannot register pardevice\n");
+ 		err = -EIO;
+ 		goto __err;
+ 	}
+ 
++	/* claim parport */
++	if (parport_claim(pardev)) {
++		snd_printd("Cannot claim parport 0x%lx\n", pardev->port->base);
++		err = -EIO;
++		goto free_pardev;
++	}
++	err = portman_probe(p);
++	if (err) {
++		err = -EIO;
++		goto release_pardev;
++	}
++
+ 	if ((err = portman_create(card, pardev, &pm)) < 0) {
+ 		snd_printd("Cannot create main component\n");
+-		parport_unregister_device(pardev);
+-		goto __err;
++		goto release_pardev;
+ 	}
+ 	card->private_data = pm;
+ 	card->private_free = snd_portman_card_private_free;
+@@ -785,14 +780,6 @@ static int snd_portman_probe(struct platform_device *pdev)
+ 		goto __err;
+ 	}
+ 
+-	/* claim parport */
+-	if (parport_claim(pardev)) {
+-		snd_printd("Cannot claim parport 0x%lx\n", pardev->port->base);
+-		err = -EIO;
+-		goto __err;
+-	}
+-	pm->pardev_claimed = 1;
+-
+ 	/* init device */
+ 	if ((err = portman_device_init(pm)) < 0)
+ 		goto __err;
+@@ -808,6 +795,10 @@ static int snd_portman_probe(struct platform_device *pdev)
+ 	snd_printk(KERN_INFO "Portman 2x4 on 0x%lx\n", p->base);
+ 	return 0;
+ 
++release_pardev:
++	parport_release(pardev);
++free_pardev:
++	parport_unregister_device(pardev);
+ __err:
+ 	snd_card_free(card);
+ 	return err;
+-- 
+1.9.1
