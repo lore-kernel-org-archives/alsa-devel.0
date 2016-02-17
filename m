@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v7 7/9] ASoC: Intel: Skylake: Fix possible
-	memory corruption in codec dai dma params
-Date: Wed, 17 Feb 2016 21:34:05 +0530
-Message-ID: <1455725047-7303-8-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v7 8/9] ASoC: Intel: Skylake: Add i915 enabling
+	in skl probe
+Date: Wed, 17 Feb 2016 21:34:06 +0530
+Message-ID: <1455725047-7303-9-git-send-email-subhransu.s.prusty@intel.com>
 References: <1455725047-7303-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E22226067A
- for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 17:03:50 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id AC634265D2B
+ for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 17:03:54 +0100 (CET)
 In-Reply-To: <1455725047-7303-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,40 +25,131 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Set required parameters for hdac_ext_dma_params object instead of
-skl_dma_params.
+From: Vinod Koul <vinod.koul@intel.com>
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+The SKL also supports HDMI output so in probe we need to enable
+the HDMI using common i915 APIs to ensure it gets probed on the
+bus
+
+After S3 during the controller resequencing the codec domain need
+to be kept ON for successful reconfiguration of Codec. Once
+configured it will be turned OFF in codec driver.
+
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/intel/Kconfig       |  1 +
+ sound/soc/intel/skylake/skl.c | 51 +++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 52 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 092450a..bbb6c28 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -475,7 +475,7 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
- 	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
- 	struct hdac_ext_stream *link_dev;
- 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
--	struct skl_dma_params *dma_params;
-+	struct hdac_ext_dma_params *dma_params;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct skl_pipe_params p_params = {0};
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index 7d7c872..008baa5 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -163,6 +163,7 @@ config SND_SOC_INTEL_SKYLAKE
+ 	tristate
+ 	select SND_HDA_EXT_CORE
+ 	select SND_SOC_TOPOLOGY
++	select SND_HDA_I915
+ 	select SND_SOC_INTEL_SST
  
-@@ -487,11 +487,9 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
- 	snd_soc_dai_set_dma_data(dai, substream, (void *)link_dev);
+ config SND_SOC_INTEL_SKL_RT286_MACH
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 06f4b2c..7f4909b 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -28,6 +28,9 @@
+ #include <linux/firmware.h>
+ #include <sound/pcm.h>
+ #include "../common/sst-acpi.h"
++#include <sound/hda_register.h>
++#include <sound/hdaudio.h>
++#include <sound/hda_i915.h>
+ #include "skl.h"
+ #include "skl-sst-dsp.h"
+ #include "skl-sst-ipc.h"
+@@ -243,6 +246,16 @@ static int skl_resume(struct device *dev)
+ 	struct hdac_bus *bus = ebus_to_hbus(ebus);
+ 	int ret;
  
- 	/* set the stream tag in the codec dai dma params  */
--	dma_params = (struct skl_dma_params *)
--			snd_soc_dai_get_dma_data(codec_dai, substream);
-+	dma_params = snd_soc_dai_get_dma_data(codec_dai, substream);
- 	if (dma_params)
- 		dma_params->stream_tag =  hdac_stream(link_dev)->stream_tag;
--	snd_soc_dai_set_dma_data(codec_dai, substream, (void *)dma_params);
++	/* Turned OFF in HDMI codec driver after codec reconfiguration */
++	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
++		ret = snd_hdac_display_power(bus, true);
++		if (ret < 0) {
++			dev_err(bus->dev,
++				"Cannot turn on display power on i915\n");
++			return ret;
++		}
++	}
++
+ 	/*
+ 	 * resume only when we are not in suspend active, otherwise need to
+ 	 * restore the device
+@@ -481,6 +494,27 @@ static int skl_create(struct pci_dev *pci,
+ 	return 0;
+ }
  
- 	p_params.s_fmt = snd_pcm_format_width(params_format(params));
- 	p_params.ch = params_channels(params);
++static int skl_i915_init(struct hdac_bus *bus)
++{
++	int err;
++
++	/*
++	 * The HDMI codec is in GPU so we need to ensure that it is powered
++	 * up and ready for probe
++	 */
++	err = snd_hdac_i915_init(bus);
++	if (err < 0)
++		return err;
++
++	err = snd_hdac_display_power(bus, true);
++	if (err < 0) {
++		dev_err(bus->dev, "Cannot turn on display power on i915\n");
++		return err;
++	}
++
++	return err;
++}
++
+ static int skl_first_init(struct hdac_ext_bus *ebus)
+ {
+ 	struct skl *skl = ebus_to_skl(ebus);
+@@ -543,6 +577,12 @@ static int skl_first_init(struct hdac_ext_bus *ebus)
+ 	/* initialize chip */
+ 	skl_init_pci(skl);
+ 
++	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
++		err = skl_i915_init(bus);
++		if (err < 0)
++			return err;
++	}
++
+ 	skl_init_chip(bus, true);
+ 
+ 	/* codec detection */
+@@ -613,6 +653,14 @@ static int skl_probe(struct pci_dev *pci,
+ 	if (err < 0)
+ 		goto out_unregister;
+ 
++	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
++		err = snd_hdac_display_power(bus, false);
++		if (err < 0) {
++			dev_err(bus->dev, "Cannot turn off display power on i915\n");
++			return err;
++		}
++	}
++
+ 	/*configure PM */
+ 	pm_runtime_put_noidle(bus->dev);
+ 	pm_runtime_allow(bus->dev);
+@@ -667,6 +715,9 @@ static void skl_remove(struct pci_dev *pci)
+ 	if (skl->tplg)
+ 		release_firmware(skl->tplg);
+ 
++	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
++		snd_hdac_i915_exit(&ebus->bus);
++
+ 	if (pci_dev_run_wake(pci))
+ 		pm_runtime_get_noresume(&pci->dev);
+ 	pci_dev_put(pci);
 -- 
 1.9.1
