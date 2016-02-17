@@ -1,50 +1,89 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: [alsa-devel] [PATCH 4/4] ASoC: simple-card: Support for	selecting
- system clocks by ID
-Date: Wed, 17 Feb 2016 15:18:57 +0100
-Message-ID: <alpine.DEB.2.02.1602171516260.10339@lnxricardw1.se.axis.com>
-References: <1455545495-20292-1-git-send-email-peter.ujfalusi@ti.com> <1455545495-20292-5-git-send-email-peter.ujfalusi@ti.com> <20160215152635.GN18988@sirena.org.uk> <56C2F00C.8080809@ti.com> <20160216134233.GN18327@sirena.org.uk>
- <20160216191346.2278.725@quark.deferred.io>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH RFC v5 1/8] ALSA: pcm: add IEC958 channel status helper for
+ hw_params
+Date: Wed, 17 Feb 2016 16:49:02 +0200
+Message-ID: <84d5d88d7399892cfaf9ef3c3c150087eb4edf68.1455720381.git.jsarha@ti.com>
+References: <cover.1455720381.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-clk-owner@vger.kernel.org>
-In-Reply-To: <20160216191346.2278.725@quark.deferred.io>
-Sender: linux-clk-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel <alsa-devel@alsa-project.org>, Stephen Boyd <sboyd@codeaurora.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, "Kristo, Tero" <t-kristo@ti.com>, linux-clk@vger.kernel.org, Michael Turquette <mturquette@baylibre.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <cover.1455720381.git.jsarha@ti.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: dri-devel@lists.freedesktop.org, airlied@linux.ie, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, bcousson@baylibre.com, alsa-devel@alsa-project.org
+Cc: peter.ujfalusi@ti.com, tony@atomide.com, broonie@kernel.org, arnaud.pouliquen@st.com, Jyri Sarha <jsarha@ti.com>, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, rmk+kernel@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-
-Quoting Mark Brown (2016-02-16 05:42:33)
-> On Tue, Feb 16, 2016 at 11:46:52AM +0200, Peter Ujfalusi wrote:
->=20
-> > As for codecs, tlv320aic3106 is also pretty simple device from the =
-outside, it
-> > can receive it's reference clock via:
-> > MCLK pin, GPIO2 pin or it can use the BCLK from the bus. Based on t=
-he incoming
-> > frequency it can use it directly or it needs to use the internal PL=
-L to
-> > generate the cocks.
-> > It can output generated clock via GPIO1
->=20
-> That already sounds like there is room for configuration and hooking
-> into a wider clock tree - we've got three different source options an=
-d
-> an output plus a PLL that can presumably take in non-audio rates.
-
-It makes sense to use an already existing clock framework, but I'm=20
-wondering, how do we model the clock select function? Using a clock mux=
-?=20
-Somewhere, somehow, something needs to look at the setup and decide whi=
-ch=20
-pin on the codec should be the clock source (e.g. MCLK, GPIO2, or BCLK =
-in=20
-the case of the tlv320aic3106).
-
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+QWRkIElFQzk1OCBjaGFubmVsIHN0YXR1cyBoZWxwZXIgdGhhdCBnZXRzIHRoZSBhdWRpbyBwcm9w
+ZXJ0aWVzIGZyb20Kc25kX3BjbV9od19wYXJhbXMgaW5zdGVhZCBvZiBzbmRfcGNtX3J1bnRpbWUu
+IFRoaXMgaXMgbmVlZGVkIHRvCnByb2R1Y2UgdGhlIGNoYW5uZWwgc3RhdHVzIGJpdHMgYWxyZWFk
+eSBpbiBhdWRpbyBzdHJlYW0gY29uZmlndXJhdGlvbgpwaGFzZS4KClNpZ25lZC1vZmYtYnk6IEp5
+cmkgU2FyaGEgPGpzYXJoYUB0aS5jb20+Ci0tLQogaW5jbHVkZS9zb3VuZC9wY21faWVjOTU4Lmgg
+fCAgMiArKwogc291bmQvY29yZS9wY21faWVjOTU4LmMgICAgfCA1MiArKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tCiAyIGZpbGVzIGNoYW5nZWQsIDM3IGluc2Vy
+dGlvbnMoKyksIDE3IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2luY2x1ZGUvc291bmQvcGNt
+X2llYzk1OC5oIGIvaW5jbHVkZS9zb3VuZC9wY21faWVjOTU4LmgKaW5kZXggMGVlZDM5Ny4uMzZm
+MDIzYSAxMDA2NDQKLS0tIGEvaW5jbHVkZS9zb3VuZC9wY21faWVjOTU4LmgKKysrIGIvaW5jbHVk
+ZS9zb3VuZC9wY21faWVjOTU4LmgKQEAgLTYsNCArNiw2IEBACiBpbnQgc25kX3BjbV9jcmVhdGVf
+aWVjOTU4X2NvbnN1bWVyKHN0cnVjdCBzbmRfcGNtX3J1bnRpbWUgKnJ1bnRpbWUsIHU4ICpjcywK
+IAlzaXplX3QgbGVuKTsKIAoraW50IHNuZF9wY21fY3JlYXRlX2llYzk1OF9jb25zdW1lcl9od19w
+YXJhbXMoc3RydWN0IHNuZF9wY21faHdfcGFyYW1zICpwYXJhbXMsCisJCQkJCSAgICAgdTggKmNz
+LCBzaXplX3QgbGVuKTsKICNlbmRpZgpkaWZmIC0tZ2l0IGEvc291bmQvY29yZS9wY21faWVjOTU4
+LmMgYi9zb3VuZC9jb3JlL3BjbV9pZWM5NTguYwppbmRleCAzNmIyZDdhLi5jOWY4YjY2IDEwMDY0
+NAotLS0gYS9zb3VuZC9jb3JlL3BjbV9pZWM5NTguYworKysgYi9zb3VuZC9jb3JlL3BjbV9pZWM5
+NTguYwpAQCAtOSwzMCArOSwxOCBAQAogI2luY2x1ZGUgPGxpbnV4L3R5cGVzLmg+CiAjaW5jbHVk
+ZSA8c291bmQvYXNvdW5kZWYuaD4KICNpbmNsdWRlIDxzb3VuZC9wY20uaD4KKyNpbmNsdWRlIDxz
+b3VuZC9wY21fcGFyYW1zLmg+CiAjaW5jbHVkZSA8c291bmQvcGNtX2llYzk1OC5oPgogCi0vKioK
+LSAqIHNuZF9wY21fY3JlYXRlX2llYzk1OF9jb25zdW1lciAtIGNyZWF0ZSBjb25zdW1lciBmb3Jt
+YXQgSUVDOTU4IGNoYW5uZWwgc3RhdHVzCi0gKiBAcnVudGltZTogcGNtIHJ1bnRpbWUgc3RydWN0
+dXJlIHdpdGggLT5yYXRlIGZpbGxlZCBpbgotICogQGNzOiBjaGFubmVsIHN0YXR1cyBidWZmZXIs
+IGF0IGxlYXN0IGZvdXIgYnl0ZXMKLSAqIEBsZW46IGxlbmd0aCBvZiBjaGFubmVsIHN0YXR1cyBi
+dWZmZXIKLSAqCi0gKiBDcmVhdGUgdGhlIGNvbnN1bWVyIGZvcm1hdCBjaGFubmVsIHN0YXR1cyBk
+YXRhIGluIEBjcyBvZiBtYXhpbXVtIHNpemUKLSAqIEBsZW4gY29ycmVzcG9uZGluZyB0byB0aGUg
+cGFyYW1ldGVycyBvZiB0aGUgUENNIHJ1bnRpbWUgQHJ1bnRpbWUuCi0gKgotICogRHJpdmVycyBt
+YXkgd2lzaCB0byB0d2VhayB0aGUgY29udGVudHMgb2YgdGhlIGJ1ZmZlciBhZnRlciBjcmVhdGlv
+bi4KLSAqCi0gKiBSZXR1cm5zOiBsZW5ndGggb2YgYnVmZmVyLCBvciBuZWdhdGl2ZSBlcnJvciBj
+b2RlIGlmIHNvbWV0aGluZyBmYWlsZWQuCi0gKi8KLWludCBzbmRfcGNtX2NyZWF0ZV9pZWM5NThf
+Y29uc3VtZXIoc3RydWN0IHNuZF9wY21fcnVudGltZSAqcnVudGltZSwgdTggKmNzLAotCXNpemVf
+dCBsZW4pCitzdGF0aWMgaW50IGNyZWF0ZV9pZWM5NThfY29uc3VtZXIodWludCByYXRlLCB1aW50
+IHNhbXBsZV93aWR0aCwKKwkJCQkgIHU4ICpjcywgc2l6ZV90IGxlbikKIHsKIAl1bnNpZ25lZCBp
+bnQgZnMsIHdzOwogCiAJaWYgKGxlbiA8IDQpCiAJCXJldHVybiAtRUlOVkFMOwogCi0Jc3dpdGNo
+IChydW50aW1lLT5yYXRlKSB7CisJc3dpdGNoIChyYXRlKSB7CiAJY2FzZSAzMjAwMDoKIAkJZnMg
+PSBJRUM5NThfQUVTM19DT05fRlNfMzIwMDA7CiAJCWJyZWFrOwpAQCAtNTksNyArNDcsNyBAQCBp
+bnQgc25kX3BjbV9jcmVhdGVfaWVjOTU4X2NvbnN1bWVyKHN0cnVjdCBzbmRfcGNtX3J1bnRpbWUg
+KnJ1bnRpbWUsIHU4ICpjcywKIAl9CiAKIAlpZiAobGVuID4gNCkgewotCQlzd2l0Y2ggKHNuZF9w
+Y21fZm9ybWF0X3dpZHRoKHJ1bnRpbWUtPmZvcm1hdCkpIHsKKwkJc3dpdGNoIChzYW1wbGVfd2lk
+dGgpIHsKIAkJY2FzZSAxNjoKIAkJCXdzID0gSUVDOTU4X0FFUzRfQ09OX1dPUkRMRU5fMjBfMTY7
+CiAJCQlicmVhazsKQEAgLTkyLDQgKzgwLDM0IEBAIGludCBzbmRfcGNtX2NyZWF0ZV9pZWM5NThf
+Y29uc3VtZXIoc3RydWN0IHNuZF9wY21fcnVudGltZSAqcnVudGltZSwgdTggKmNzLAogCiAJcmV0
+dXJuIGxlbjsKIH0KKworLyoqCisgKiBzbmRfcGNtX2NyZWF0ZV9pZWM5NThfY29uc3VtZXIgLSBj
+cmVhdGUgY29uc3VtZXIgZm9ybWF0IElFQzk1OCBjaGFubmVsIHN0YXR1cworICogQHJ1bnRpbWU6
+IHBjbSBydW50aW1lIHN0cnVjdHVyZSB3aXRoIC0+cmF0ZSBmaWxsZWQgaW4KKyAqIEBjczogY2hh
+bm5lbCBzdGF0dXMgYnVmZmVyLCBhdCBsZWFzdCBmb3VyIGJ5dGVzCisgKiBAbGVuOiBsZW5ndGgg
+b2YgY2hhbm5lbCBzdGF0dXMgYnVmZmVyCisgKgorICogQ3JlYXRlIHRoZSBjb25zdW1lciBmb3Jt
+YXQgY2hhbm5lbCBzdGF0dXMgZGF0YSBpbiBAY3Mgb2YgbWF4aW11bSBzaXplCisgKiBAbGVuIGNv
+cnJlc3BvbmRpbmcgdG8gdGhlIHBhcmFtZXRlcnMgb2YgdGhlIFBDTSBydW50aW1lIEBydW50aW1l
+LgorICoKKyAqIERyaXZlcnMgbWF5IHdpc2ggdG8gdHdlYWsgdGhlIGNvbnRlbnRzIG9mIHRoZSBi
+dWZmZXIgYWZ0ZXIgY3JlYXRpb24uCisgKgorICogUmV0dXJuczogbGVuZ3RoIG9mIGJ1ZmZlciwg
+b3IgbmVnYXRpdmUgZXJyb3IgY29kZSBpZiBzb21ldGhpbmcgZmFpbGVkLgorICovCitpbnQgc25k
+X3BjbV9jcmVhdGVfaWVjOTU4X2NvbnN1bWVyKHN0cnVjdCBzbmRfcGNtX3J1bnRpbWUgKnJ1bnRp
+bWUsIHU4ICpjcywKKwlzaXplX3QgbGVuKQoreworCXJldHVybiBjcmVhdGVfaWVjOTU4X2NvbnN1
+bWVyKHJ1bnRpbWUtPnJhdGUsCisJCQkJICAgICAgc25kX3BjbV9mb3JtYXRfd2lkdGgocnVudGlt
+ZS0+Zm9ybWF0KSwKKwkJCQkgICAgICBjcywgbGVuKTsKK30KIEVYUE9SVF9TWU1CT0woc25kX3Bj
+bV9jcmVhdGVfaWVjOTU4X2NvbnN1bWVyKTsKKworCitpbnQgc25kX3BjbV9jcmVhdGVfaWVjOTU4
+X2NvbnN1bWVyX2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9od19wYXJhbXMgKnBhcmFtcywKKwkJ
+CQkJICAgICB1OCAqY3MsIHNpemVfdCBsZW4pCit7CisJcmV0dXJuIGNyZWF0ZV9pZWM5NThfY29u
+c3VtZXIocGFyYW1zX3JhdGUocGFyYW1zKSwgcGFyYW1zX3dpZHRoKHBhcmFtcyksCisJCQkJICAg
+ICAgY3MsIGxlbik7Cit9CitFWFBPUlRfU1lNQk9MKHNuZF9wY21fY3JlYXRlX2llYzk1OF9jb25z
+dW1lcl9od19wYXJhbXMpOwotLSAKMS45LjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3Rz
+LmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2RyaS1kZXZlbAo=
