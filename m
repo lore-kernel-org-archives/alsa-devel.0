@@ -1,101 +1,47 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [PATCH v3 01/22] [media] Docbook: media-types.xml: Add ALSA Media
- Controller Intf types
-Date: Wed, 17 Feb 2016 07:59:19 -0700
-Message-ID: <56C48AC7.4060305@osg.samsung.com>
-References: <cover.1455233150.git.shuahkh@osg.samsung.com>
- <363a459c08a1fcaf04052d7f2af05f1dd43de58e.1455233152.git.shuahkh@osg.samsung.com>
- <20160217101941.0b37ca98@recife.lan>
+From: Petr Kulhavy <petr@barix.com>
+Subject: Codec "virtual multiplexer" representation
+Date: Wed, 17 Feb 2016 17:02:47 +0100
+Message-ID: <56C499A7.2040202@barix.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160217101941.0b37ca98@recife.lan>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, tiwai@suse.com
-Cc: clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittgam.net, johan@ol
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f52.google.com (mail-wm0-f52.google.com [74.125.82.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D9B926067A
+ for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 17:02:49 +0100 (CET)
+Received: by mail-wm0-f52.google.com with SMTP id g62so167770938wme.1
+ for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 08:02:49 -0800 (PST)
+Received: from [192.168.11.22] (77-57-117-158.dclient.hispeed.ch.
+ [77.57.117.158])
+ by smtp.gmail.com with ESMTPSA id di1sm2190526wjc.3.2016.02.17.08.02.48
+ for <alsa-devel@alsa-project.org> (version=TLSv1/SSLv3 cipher=OTHER);
+ Wed, 17 Feb 2016 08:02:48 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/17/2016 05:19 AM, Mauro Carvalho Chehab wrote:
-> Em Thu, 11 Feb 2016 16:41:17 -0700
-> Shuah Khan <shuahkh@osg.samsung.com> escreveu:
-> 
->> Add ALSA Media Controller Intf types
->>
->> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
->> ---
->>  Documentation/DocBook/media/v4l/media-types.xml | 40 +++++++++++++++++++++++++
->>  1 file changed, 40 insertions(+)
->>
->> diff --git a/Documentation/DocBook/media/v4l/media-types.xml b/Documentation/DocBook/media/v4l/media-types.xml
->> index 751c3d0..3730967 100644
->> --- a/Documentation/DocBook/media/v4l/media-types.xml
->> +++ b/Documentation/DocBook/media/v4l/media-types.xml
->> @@ -193,6 +193,46 @@
->>  	    <entry>Device node interface for Software Defined Radio (V4L)</entry>
->>  	    <entry>typically, /dev/swradio?</entry>
->>  	  </row>
->> +	  <row>
->> +	    <entry><constant>MEDIA_INTF_T_ALSA_PCM_CAPTURE</constant></entry>
->> +	    <entry>Device node interface for ASLA PCM Capture</entry>
->> +	    <entry>typically, /dev/snd/pcmC?D?c</entry>
->> +	  </row>
->> +	  <row>
->> +	    <entry><constant>MEDIA_INTF_T_ALSA_PCM_PLAYBACK</constant></entry>
->> +	    <entry>Device node interface for ASLA PCM Playback</entry>
->> +	    <entry>typically, /dev/snd/pcmC?D?p</entry>
->> +	  </row>
->> +	  <row>
->> +	    <entry><constant>MEDIA_INTF_T_ALSA_CONTROL</constant></entry>
->> +	    <entry>Device node interface for ASLA Control</entry>
->> +	    <entry>typically, /dev/snd/controlC?</entry>
->> +	  </row>
->> +	  <row>
->> +	    <entry><constant>MEDIA_INTF_T_ALSA_COMPRESS</constant></entry>
->> +	    <entry>Device node interface for ASLA Compress</entry>
->> +	    <entry>typically, /dev/snd/compr?</entry>
->> +	  </row>
->> +	  <row>
->> +	    <entry><constant>MEDIA_INTF_T_ALSA_RAWMIDI</constant></entry>
->> +	    <entry>Device node interface for ASLA Raw MIDI</entry>
->> +	    <entry>typically, /dev/snd/midi?</entry>
->> +	  </row>
->> +	  <row>
->> +	    <entry><constant>MEDIA_INTF_T_ALSA_HWDEP</constant></entry>
->> +	    <entry>Device node interface for ASLA Hardware Dependent</entry>
->> +	    <entry>typically, /dev/snd/hwC?D?</entry>
->> +	  </row>
->> +	  <row>
->> +	    <entry><constant>MEDIA_INTF_T_ALSA_SEQUENCER</constant></entry>
->> +	    <entry>Device node interface for ASLA Sequencer</entry>
->> +	    <entry>typically, /dev/snd/seq</entry>
->> +	  </row>
->> +	  <row>
->> +	    <entry><constant>MEDIA_INTF_T_ALSA_TIMER</constant></entry>
->> +	    <entry>Device node interface for ASLA Timer</entry>
->> +	    <entry>typically, /dev/snd/timer</entry>
-> 
-> On all the above:
-> 	s,ASLA,ALSA,
+Hi,
 
-Sorry for the typo. Sent v4 with the fix.
+I'm writing an ASoC driver for the  TAS5721 amplifier.
+This 2.1 amplifier provides a complex configuration of the audio 
+channels (3), PWMs(4) and output(4) mappings.
+However only few (about 6) configurations really make sense.
 
-> 
-> Except for that, patch looks OK for me.
-> 
-> Takashi,
-> 
-> If this is OK for you too, could you please ack?
-> 
-> Thanks,
-> Mauro
-> 
+I'm trying to model the output configurations in ALSA. In order to avoid 
+a complicated set of switches and multiplexers I would like
+to add just one multiplexer like control which selects one of these 6 
+output configurations and a callback function which sets the proper
+registers accordingly (there are 5 affected registers).
 
--- Shuah
+Is there a way to create such a "virtual multiplexer" in ALSA?
 
--- 
-Shuah Khan
-Sr. Linux Kernel Developer
-Open Source Innovation Group
-Samsung Research America (Silicon Valley)
-shuahkh@osg.samsung.com | (970) 217-8978
+Thanks
+Petr
