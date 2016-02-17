@@ -1,79 +1,101 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH RFC v5 8/8] ARM: dts: am335x-boneblack: Add HDMI audio support
-Date: Wed, 17 Feb 2016 16:49:09 +0200
-Message-ID: <f7d580388c35a161b086b22fc513a39851fa997b.1455720381.git.jsarha@ti.com>
-References: <cover.1455720381.git.jsarha@ti.com>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: Re: [PATCH v3 01/22] [media] Docbook: media-types.xml: Add ALSA Media
+ Controller Intf types
+Date: Wed, 17 Feb 2016 07:59:19 -0700
+Message-ID: <56C48AC7.4060305@osg.samsung.com>
+References: <cover.1455233150.git.shuahkh@osg.samsung.com>
+ <363a459c08a1fcaf04052d7f2af05f1dd43de58e.1455233152.git.shuahkh@osg.samsung.com>
+ <20160217101941.0b37ca98@recife.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <cover.1455720381.git.jsarha@ti.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: dri-devel@lists.freedesktop.org, airlied@linux.ie, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, bcousson@baylibre.com, alsa-devel@alsa-project.org
-Cc: peter.ujfalusi@ti.com, tony@atomide.com, broonie@kernel.org, arnaud.pouliquen@st.com, Jyri Sarha <jsarha@ti.com>, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, rmk+kernel@arm.linux.org.uk
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160217101941.0b37ca98@recife.lan>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, tiwai@suse.com
+Cc: clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittgam.net, johan@ol
 List-Id: alsa-devel@alsa-project.org
 
-QWRkIEhETUkgYXVkaW8gc3VwcG9ydC4gQWRkcyBtY2FzcDBfcGlucywgY2xrX21jYXNwMF9maXhl
-ZCwKY2xrX21jYXNwMCwgbWNhc3AwLCBzb3VuZCBub2RlLCBhbmQgdXBkYXRlcyB0aGUgdGRhMTk5
-ODggbm9kZSB0bwpmb2xsb3cgdGhlIG5ldyBiaW5kaW5nLgoKU2lnbmVkLW9mZi1ieTogSnlyaSBT
-YXJoYSA8anNhcmhhQHRpLmNvbT4KLS0tCiBhcmNoL2FybS9ib290L2R0cy9hbTMzNXgtYm9uZWJs
-YWNrLmR0cyB8IDkwICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0KIDEgZmlsZSBj
-aGFuZ2VkLCA4NiBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2Fy
-Y2gvYXJtL2Jvb3QvZHRzL2FtMzM1eC1ib25lYmxhY2suZHRzIGIvYXJjaC9hcm0vYm9vdC9kdHMv
-YW0zMzV4LWJvbmVibGFjay5kdHMKaW5kZXggZWFkYmJhMy4uMDUzNDdkYyAxMDA2NDQKLS0tIGEv
-YXJjaC9hcm0vYm9vdC9kdHMvYW0zMzV4LWJvbmVibGFjay5kdHMKKysrIGIvYXJjaC9hcm0vYm9v
-dC9kdHMvYW0zMzV4LWJvbmVibGFjay5kdHMKQEAgLTY0LDYgKzY0LDE2IEBACiAJCQkweDFiMCAw
-eDAzICAgICAgLyogeGRtYV9ldmVudF9pbnRyMCwgT01BUF9NVVhfTU9ERTMgfCBBTTMzWFhfUElO
-X09VVFBVVCAqLwogCQk+OwogCX07CisKKwltY2FzcDBfcGluczogbWNhc3AwX3BpbnMgeworCQlw
-aW5jdHJsLXNpbmdsZSxwaW5zID0gPAorCQkJMHgxYWMgKFBJTl9JTlBVVF9QVUxMVVAgfCBNVVhf
-TU9ERTApCS8qIG1jYXNwMF9haGNsa3gubWNhc3AwX2FoY2xreCAqLworCQkJMHgxOWMgKFBJTl9P
-VVRQVVRfUFVMTERPV04gfCBNVVhfTU9ERTIpIC8qIG1jYXNwMF9haGNsa3IubWNhc3AwX2F4cjIg
-Ki8KKwkJCTB4MTk0IChQSU5fT1VUUFVUX1BVTExVUCB8IE1VWF9NT0RFMCkJLyogbWNhc3AwX2Zz
-eC5tY2FzcDBfZnN4ICovCisJCQkweDE5MCAoUElOX09VVFBVVF9QVUxMRE9XTiB8IE1VWF9NT0RF
-MCkJLyogbWNhc3AwX2FjbGt4Lm1jYXNwMF9hY2xreCAqLworCQkJMHgwNmMgKFBJTl9PVVRQVVRf
-UFVMTERPV04gfCBNVVhfTU9ERTcpCS8qIGdwbWNfYTExLkdQSU8xXzI3ICovCisJCT47CisJfTsK
-IH07CiAKICZsY2RjIHsKQEAgLTc2LDE3ICs4Niw4OSBAQAogfTsKIAogJmkyYzAgewotCXRkYTE5
-OTg4IHsKKwl0ZGExOTk4ODogdGRhMTk5ODggewogCQljb21wYXRpYmxlID0gIm54cCx0ZGE5OTh4
-IjsKIAkJcmVnID0gPDB4NzA+OworCisJCSNzb3VuZC1kYWktY2VsbHMgPSA8MD47CisKIAkJcGlu
-Y3RybC1uYW1lcyA9ICJkZWZhdWx0IiwgIm9mZiI7CiAJCXBpbmN0cmwtMCA9IDwmbnhwX2hkbWlf
-Ym9uZWx0X3BpbnM+OwogCQlwaW5jdHJsLTEgPSA8Jm54cF9oZG1pX2JvbmVsdF9vZmZfcGlucz47
-CiAKLQkJcG9ydCB7Ci0JCQloZG1pXzA6IGVuZHBvaW50QDAgewotCQkJCXJlbW90ZS1lbmRwb2lu
-dCA9IDwmbGNkY18wPjsKKwkJcG9ydHMgeworCQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47CisJCQkj
-c2l6ZS1jZWxscyA9IDwwPjsKKwkJCXBvcnRAMCB7CisJCQkJcG9ydC10eXBlID0gInJnYiI7CisJ
-CQkJcmVnID0gPDB4MjMwMTQ1PjsKKwkJCQloZG1pXzA6IGVuZHBvaW50QDAgeworCQkJCQlyZW1v
-dGUtZW5kcG9pbnQgPSA8JmxjZGNfMD47CisJCQkJfTsKIAkJCX07CisJCQlwb3J0QDEgeworCQkJ
-CXBvcnQtdHlwZSA9ICJpMnMiOworCQkJCXJlZyA9IDwweDAzPjsKKwkJCQl0ZGExOTk4OF9pMnM6
-IGVuZHBvaW50IHsKKwkJCQkJcmVtb3RlLWVuZHBvaW50ID0gPCZtY2FzcDBfaTJzPjsKKwkJCQl9
-OworCQkJfTsKKwkJfTsKKwl9OworfTsKKworJnJ0YyB7CisJc3lzdGVtLXBvd2VyLWNvbnRyb2xs
-ZXI7Cit9OworCismbWNhc3AwCXsKKwkjc291bmQtZGFpLWNlbGxzID0gPDA+OworCXBpbmN0cmwt
-bmFtZXMgPSAiZGVmYXVsdCI7CisJcGluY3RybC0wID0gPCZtY2FzcDBfcGlucz47CisJc3RhdHVz
-ID0gIm9rYXkiOworCW9wLW1vZGUgPSA8MD47CS8qIE1DQVNQX0lJU19NT0RFICovCisJdGRtLXNs
-b3RzID0gPDI+OworCXNlcmlhbC1kaXIgPSA8CS8qIDA6IElOQUNUSVZFLCAxOiBUWCwgMjogUlgg
-Ki8KKwkJCTAgMCAxIDAKKwkJPjsKKwl0eC1udW0tZXZ0ID0gPDMyPjsKKwlyeC1udW0tZXZ0ID0g
-PDMyPjsKKworCXBvcnQgeworCQltY2FzcDBfaTJzOiBlbmRwb2ludCB7CisJCQlyZW1vdGUtZW5k
-cG9pbnQgPSA8JnRkYTE5OTg4X2kycz47CisJCX07CisJfTsKK307CisKKy8geworCWNsa19tY2Fz
-cDBfZml4ZWQ6IGNsa19tY2FzcDBfZml4ZWQgeworCQkjY2xvY2stY2VsbHMgPSA8MD47CisJCWNv
-bXBhdGlibGUgPSAiZml4ZWQtY2xvY2siOworCQljbG9jay1mcmVxdWVuY3kgPSA8MjQ1NzYwMDA+
-OworCX07CisKKwljbGtfbWNhc3AwOiBjbGtfbWNhc3AwIHsKKwkJI2Nsb2NrLWNlbGxzID0gPDA+
-OworCQljb21wYXRpYmxlID0gImdwaW8tZ2F0ZS1jbG9jayI7CisJCWNsb2NrcyA9IDwmY2xrX21j
-YXNwMF9maXhlZD47CisJCWVuYWJsZS1ncGlvcyA9IDwmZ3BpbzEgMjcgMD47IC8qIEJlYWdsZUJv
-bmUgQmxhY2sgQ2xrIGVuYWJsZSBvbiBHUElPMV8yNyAqLworCX07CisKKwlzb3VuZCB7CisJCWNv
-bXBhdGlibGUgPSAic2ltcGxlLWF1ZGlvLWNhcmQiOworCQlzaW1wbGUtYXVkaW8tY2FyZCxuYW1l
-ID0gIlRJIEJlYWdsZUJvbmUgQmxhY2siOworCQlzaW1wbGUtYXVkaW8tY2FyZCxmb3JtYXQgPSAi
-aTJzIjsKKwkJc2ltcGxlLWF1ZGlvLWNhcmQsYml0Y2xvY2stbWFzdGVyID0gPCZkYWlsaW5rMF9t
-YXN0ZXI+OworCQlzaW1wbGUtYXVkaW8tY2FyZCxmcmFtZS1tYXN0ZXIgPSA8JmRhaWxpbmswX21h
-c3Rlcj47CisKKwkJZGFpbGluazBfbWFzdGVyOiBzaW1wbGUtYXVkaW8tY2FyZCxjcHUgeworCQkJ
-c291bmQtZGFpID0gPCZtY2FzcDA+OworCQkJY2xvY2tzID0gPCZjbGtfbWNhc3AwPjsKKwkJfTsK
-KworCQlzaW1wbGUtYXVkaW8tY2FyZCxjb2RlYyB7CisJCQlzb3VuZC1kYWkgPSA8JnRkYTE5OTg4
-PjsKIAkJfTsKIAl9OwogfTsKLS0gCjEuOS4xCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0
-cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9kcmktZGV2ZWwK
+On 02/17/2016 05:19 AM, Mauro Carvalho Chehab wrote:
+> Em Thu, 11 Feb 2016 16:41:17 -0700
+> Shuah Khan <shuahkh@osg.samsung.com> escreveu:
+> 
+>> Add ALSA Media Controller Intf types
+>>
+>> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+>> ---
+>>  Documentation/DocBook/media/v4l/media-types.xml | 40 +++++++++++++++++++++++++
+>>  1 file changed, 40 insertions(+)
+>>
+>> diff --git a/Documentation/DocBook/media/v4l/media-types.xml b/Documentation/DocBook/media/v4l/media-types.xml
+>> index 751c3d0..3730967 100644
+>> --- a/Documentation/DocBook/media/v4l/media-types.xml
+>> +++ b/Documentation/DocBook/media/v4l/media-types.xml
+>> @@ -193,6 +193,46 @@
+>>  	    <entry>Device node interface for Software Defined Radio (V4L)</entry>
+>>  	    <entry>typically, /dev/swradio?</entry>
+>>  	  </row>
+>> +	  <row>
+>> +	    <entry><constant>MEDIA_INTF_T_ALSA_PCM_CAPTURE</constant></entry>
+>> +	    <entry>Device node interface for ASLA PCM Capture</entry>
+>> +	    <entry>typically, /dev/snd/pcmC?D?c</entry>
+>> +	  </row>
+>> +	  <row>
+>> +	    <entry><constant>MEDIA_INTF_T_ALSA_PCM_PLAYBACK</constant></entry>
+>> +	    <entry>Device node interface for ASLA PCM Playback</entry>
+>> +	    <entry>typically, /dev/snd/pcmC?D?p</entry>
+>> +	  </row>
+>> +	  <row>
+>> +	    <entry><constant>MEDIA_INTF_T_ALSA_CONTROL</constant></entry>
+>> +	    <entry>Device node interface for ASLA Control</entry>
+>> +	    <entry>typically, /dev/snd/controlC?</entry>
+>> +	  </row>
+>> +	  <row>
+>> +	    <entry><constant>MEDIA_INTF_T_ALSA_COMPRESS</constant></entry>
+>> +	    <entry>Device node interface for ASLA Compress</entry>
+>> +	    <entry>typically, /dev/snd/compr?</entry>
+>> +	  </row>
+>> +	  <row>
+>> +	    <entry><constant>MEDIA_INTF_T_ALSA_RAWMIDI</constant></entry>
+>> +	    <entry>Device node interface for ASLA Raw MIDI</entry>
+>> +	    <entry>typically, /dev/snd/midi?</entry>
+>> +	  </row>
+>> +	  <row>
+>> +	    <entry><constant>MEDIA_INTF_T_ALSA_HWDEP</constant></entry>
+>> +	    <entry>Device node interface for ASLA Hardware Dependent</entry>
+>> +	    <entry>typically, /dev/snd/hwC?D?</entry>
+>> +	  </row>
+>> +	  <row>
+>> +	    <entry><constant>MEDIA_INTF_T_ALSA_SEQUENCER</constant></entry>
+>> +	    <entry>Device node interface for ASLA Sequencer</entry>
+>> +	    <entry>typically, /dev/snd/seq</entry>
+>> +	  </row>
+>> +	  <row>
+>> +	    <entry><constant>MEDIA_INTF_T_ALSA_TIMER</constant></entry>
+>> +	    <entry>Device node interface for ASLA Timer</entry>
+>> +	    <entry>typically, /dev/snd/timer</entry>
+> 
+> On all the above:
+> 	s,ASLA,ALSA,
+
+Sorry for the typo. Sent v4 with the fix.
+
+> 
+> Except for that, patch looks OK for me.
+> 
+> Takashi,
+> 
+> If this is OK for you too, could you please ack?
+> 
+> Thanks,
+> Mauro
+> 
+
+-- Shuah
+
+-- 
+Shuah Khan
+Sr. Linux Kernel Developer
+Open Source Innovation Group
+Samsung Research America (Silicon Valley)
+shuahkh@osg.samsung.com | (970) 217-8978
