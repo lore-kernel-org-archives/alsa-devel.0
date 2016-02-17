@@ -1,44 +1,57 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] ASoC: hdac_hdmi: Dereference 'edev' after
-	checking for NULL
-Date: Wed, 17 Feb 2016 17:52:04 -0200
-Message-ID: <CAOMZO5AOTSiPQPa8U6kPhPch91QV7RT5nXJrcELmtkv=n5+h8w@mail.gmail.com>
-References: <1455700199-18691-1-git-send-email-festevam@gmail.com>
- <20160217192054.GZ7544@sirena.org.uk>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 4/4] ASoC: simple-card: Support for selecting system
+ clocks by ID
+Date: Wed, 17 Feb 2016 21:52:43 +0200
+Message-ID: <56C4CF8B.5010005@ti.com>
+References: <1455545495-20292-1-git-send-email-peter.ujfalusi@ti.com>
+ <1455545495-20292-5-git-send-email-peter.ujfalusi@ti.com>
+ <20160215152635.GN18988@sirena.org.uk> <56C2F00C.8080809@ti.com>
+ <20160216134233.GN18327@sirena.org.uk>
+ <20160216191346.2278.725@quark.deferred.io> <56C42BAF.3050900@ti.com>
+ <20160217120759.GO7544@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f170.google.com (mail-ig0-f170.google.com
- [209.85.213.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DC2026067A
- for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 20:52:06 +0100 (CET)
-Received: by mail-ig0-f170.google.com with SMTP id y8so22936479igp.1
- for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2016 11:52:05 -0800 (PST)
-In-Reply-To: <20160217192054.GZ7544@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-clk-owner@vger.kernel.org>
+In-Reply-To: <20160217120759.GO7544@sirena.org.uk>
+Sender: linux-clk-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, jeeja.kp@intel.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, subhransu.s.prusty@intel.com, Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Jyri Sarha <jsarha@ti.com>, linux-clk@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Kristo, Tero" <t-kristo@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+On 02/17/2016 02:07 PM, Mark Brown wrote:
+> On Wed, Feb 17, 2016 at 10:13:35AM +0200, Peter Ujfalusi wrote:
+>=20
+>> With this change we don't need to write custom machine drivers for s=
+etup not
+>> using sysclk_id =3D=3D 0.
+>> I do think this is reasonable change by itself.
+>=20
+>> However I do think that the current simple-card is flawed regarding =
+to clock
+>> selection and the change Jyri and me are proposing is reasonable.
+>=20
+> But you define a new ABI to specify it in the process, I'd rather fix
+> the flaws by using the common clock ABI than extend any device stuff.
+> If it didn't define a new ABI I'd probably not worry about it but one=
+ of
+> the issues we have with DT is that we do end up making ABIs every tim=
+e
+> we put something in DT.
 
-On Wed, Feb 17, 2016 at 5:20 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Wed, Feb 17, 2016 at 07:09:59AM -0200, Fabio Estevam wrote:
->> From: Fabio Estevam <fabio.estevam@nxp.com>
->>
->> Commit 4a3478debf36 ("ASoC: hdac_hdmi: Add jack reporting")
->> leads to the following Smatch complaint:
->
-> This doesn't apply against current code, please check and resend.
+I understand. This should have been supported by simple-card since the
+beginning. When we tried to move all boards to use simple-card, we hit =
+the
+wall by not being able to select and configure other sysclk_id than 0.
+I don't want to create yet another simple card which handles only syscl=
+k_id 1 ;)
+On the other hand this ABI is backwards compatible since if it is missi=
+ng it
+will default to the configuration we right now have regarding to sysclk=
+_dir
+and sysclk_id.
 
-It seems you have already applied it;
-https://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/commit/?h=for-next&id=cd890ade492784ae06dadd20e688ba1760d3c801
+I will look at the CCF implementation for McASP first then for aic3x.
+
+--=20
+P=E9ter
