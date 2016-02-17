@@ -1,59 +1,58 @@
 From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Subject: Re: [PATCH v3 03/22] [media] Docbook: media-types.xml: Add Audio
- Function Entities
-Date: Wed, 17 Feb 2016 10:23:09 -0200
-Message-ID: <20160217102309.13350b79@recife.lan>
+Subject: Re: [PATCH v3 04/22] media: Add ALSA Media Controller function
+ entities
+Date: Wed, 17 Feb 2016 10:25:05 -0200
+Message-ID: <20160217102505.200675ac@recife.lan>
 References: <cover.1455233150.git.shuahkh@osg.samsung.com>
-	<f591af59b7b1c77b5a17603a1a677a32b8e19132.1455233153.git.shuahkh@osg.samsung.com>
+	<423baaaf7ae51eb9098b7d0adc5ad668a590449e.1455233153.git.shuahkh@osg.samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <f591af59b7b1c77b5a17603a1a677a32b8e19132.1455233153.git.shuahkh@osg.samsung.com>
+In-Reply-To: <423baaaf7ae51eb9098b7d0adc5ad668a590449e.1455233153.git.shuahkh@osg.samsung.com>
 Sender: linux-media-owner@vger.kernel.org
 To: Shuah Khan <shuahkh@osg.samsung.com>, tiwai@suse.com
 Cc: clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittgam.net, johan@ol
 List-Id: alsa-devel@alsa-project.org
 
-Em Thu, 11 Feb 2016 16:41:19 -0700
+Em Thu, 11 Feb 2016 16:41:20 -0700
 Shuah Khan <shuahkh@osg.samsung.com> escreveu:
 
-> Add Audio Function Entities
+> Add ALSA Media Controller capture, playback, and mixer
+> function entity defines.
 > 
 > Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 > ---
->  Documentation/DocBook/media/v4l/media-types.xml | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+>  include/uapi/linux/media.h | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> diff --git a/Documentation/DocBook/media/v4l/media-types.xml b/Documentation/DocBook/media/v4l/media-types.xml
-> index 3730967..924a604 100644
-> --- a/Documentation/DocBook/media/v4l/media-types.xml
-> +++ b/Documentation/DocBook/media/v4l/media-types.xml
-> @@ -113,6 +113,18 @@
->  		   decoder.
->  	    </entry>
->  	  </row>
-> +	  <row>
-> +	    <entry><constant>MEDIA_ENT_F_AUDIO_CAPTURE</constant></entry>
-> +	    <entry>Audio Capture Function Entity.</entry>
-> +	  </row>
-> +	  <row>
-> +	    <entry><constant>MEDIA_ENT_F_AUDIO_PLAYBACK</constant></entry>
-> +	    <entry>Audio Playback Function Entity.</entry>
-> +	  </row>
-> +	  <row>
-> +	    <entry><constant>MEDIA_ENT_F_AUDIO_MIXER</constant></entry>
-> +	    <entry>Audio Mixer Function Entity.</entry>
-> +	  </row>
->  	</tbody>
->        </tgroup>
->      </table>
+> diff --git a/include/uapi/linux/media.h b/include/uapi/linux/media.h
+> index 3cc0366..449462e 100644
+> --- a/include/uapi/linux/media.h
+> +++ b/include/uapi/linux/media.h
+> @@ -98,6 +98,13 @@ struct media_device_info {
+>  #define MEDIA_ENT_F_IF_AUD_DECODER	(MEDIA_ENT_F_BASE + 42)
+>  
+>  /*
+> + * Audio Entity Functions
+> + */
+> +#define MEDIA_ENT_F_AUDIO_CAPTURE	(MEDIA_ENT_F_BASE + 200)
+> +#define MEDIA_ENT_F_AUDIO_PLAYBACK	(MEDIA_ENT_F_BASE + 201)
+> +#define MEDIA_ENT_F_AUDIO_MIXER		(MEDIA_ENT_F_BASE + 202)
+> +
+> +/*
+>   * Don't touch on those. The ranges MEDIA_ENT_F_OLD_BASE and
+>   * MEDIA_ENT_F_OLD_SUBDEV_BASE are kept to keep backward compatibility
+>   * with the legacy v1 API.The number range is out of range by purpose:
 
-Looks OK to me.
+Looks OK to me. 
+
+This won't apply anymore on master, because we changed the numberspace, 
+but it is a trivial conflict. No need to rebase.
 
 Takashi,
 
-Could you ack if ok for you?
+If OK for you, please ack.
 
 
 -- 
