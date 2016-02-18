@@ -1,87 +1,88 @@
 From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH RFC v5 4/8] drm/i2c: tda998x: Add support of a DT graph
- of ports
-Date: Thu, 18 Feb 2016 08:35:30 -0600
-Message-ID: <20160218143530.GB9654@rob-hp-laptop>
-References: <cover.1455720381.git.jsarha@ti.com>
- <842e221030a0b14bc862790eb2f5bc97bb29c012.1455720381.git.jsarha@ti.com>
+Subject: Re: [PATCH v2 5/5] ASoC: adau17x1: Support platform data via DT
+Date: Thu, 18 Feb 2016 08:37:35 -0600
+Message-ID: <20160218143735.GS9654@rob-hp-laptop>
+References: <1455627405-18155-1-git-send-email-andire@axis.com>
+ <1455627405-18155-6-git-send-email-andire@axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <842e221030a0b14bc862790eb2f5bc97bb29c012.1455720381.git.jsarha-l0cyMroinI0@public.gmane.org>
+In-Reply-To: <1455627405-18155-6-git-send-email-andire-VrBV9hrLPhE@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Cc: dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, airlied-cv59FeDIM0c@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, tomi.valkeinen-l0cyMroinI0@public.gmane.org, moinejf-GANU6spQydw@public.gmane.org, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org, rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org
+To: Andreas =?iso-8859-1?Q?Irest=E5l?= <andreas.irestal-VrBV9hrLPhE@public.gmane.org>
+Cc: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Andreas =?iso-8859-1?Q?Irest=E5l?= <andire-VrBV9hrLPhE@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 17, 2016 at 04:49:05PM +0200, Jyri Sarha wrote:
-> From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-> 
-> Two kinds of ports may be declared in a DT graph of ports: video and audio.
-> This patch accepts the port value from a video port as an alternative
-> to the video-ports property.
-> It also accepts audio ports in the case the transmitter is not used as
-> a slave encoder.
-> The new file include/sound/tda998x.h prepares to the definition of
-> a tda998x CODEC.
-> 
-> Signed-off-by: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-> Signed-off-by: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+On Tue, Feb 16, 2016 at 01:56:45PM +0100, Andreas Irest=E5l wrote:
+> Currently, it is only possible to configure HW-specific options to th=
+e
+> adau17x1 codecs by providing a platform data struct. With this patch,
+> it is possible to provide the same data via DT instead.
+
+The subject is a red flag. Platform data and DT properties are not=20
+necessarily equivalent.
+
+This should be part of the previous patch.
+
+>=20
+> Signed-off-by: Andreas Irest=E5l <andire-VrBV9hrLPhE@public.gmane.org>
 > ---
->  .../devicetree/bindings/display/bridge/tda998x.txt | 51 ++++++++++++
->  drivers/gpu/drm/i2c/tda998x_drv.c                  | 90 +++++++++++++++++++---
->  include/sound/tda998x.h                            |  8 ++
->  3 files changed, 140 insertions(+), 9 deletions(-)
->  create mode 100644 include/sound/tda998x.h
-> 
-> diff --git a/Documentation/devicetree/bindings/display/bridge/tda998x.txt b/Documentation/devicetree/bindings/display/bridge/tda998x.txt
-> index e9e4bce..35f6a80 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/tda998x.txt
-> +++ b/Documentation/devicetree/bindings/display/bridge/tda998x.txt
-> @@ -16,6 +16,35 @@ Optional properties:
->  
->    - video-ports: 24 bits value which defines how the video controller
->  	output is wired to the TDA998x input - default: <0x230145>
-> +	This property is not used when ports are defined.
+>  .../devicetree/bindings/sound/adi,adau17x1.txt     |  31 +++++
+>  include/dt-bindings/sound/adau17x1.h               |  14 +++
+>  sound/soc/codecs/adau1761.c                        | 127 +++++++++++=
+++++++++++
+>  sound/soc/codecs/adau1781.c                        |  48 ++++++++
+>  4 files changed, 220 insertions(+)
+>  create mode 100644 include/dt-bindings/sound/adau17x1.h
+>=20
+> diff --git a/Documentation/devicetree/bindings/sound/adi,adau17x1.txt=
+ b/Documentation/devicetree/bindings/sound/adi,adau17x1.txt
+> index 8dbce0e..6050602 100644
+> --- a/Documentation/devicetree/bindings/sound/adi,adau17x1.txt
+> +++ b/Documentation/devicetree/bindings/sound/adi,adau17x1.txt
+> @@ -13,6 +13,32 @@ Required properties:
+>   - reg:			The i2c address. Value depends on the state of ADDR0
+>  			and ADDR1, as wired in hardware.
+> =20
+> +Optional properties:
 > +
-> +Optional nodes:
-> +
-> +  - port: up to three ports.
-> +	The ports are defined according to [1].
-> +
-> +    Video port.
-> +	There may be only one video port.
-> +	This one must contain the following property:
-> +
-> +	- port-type: must be "rgb"
+> + - adi,input-differential	bool to set if the input is differential
+> + - adi,digital-microphone	bool to set if there is a digital micropho=
+ne
+> +				connected to digmic/jackdet pin.
+> + - adi,micbias-vg		Microphone bias voltage
 
-This should be implied from the port unit address. In other words, 
-port@0 is defined to be the rgb port. Now, if this is one of several 
-modes for the video port, then that is a different story.
+In what units? Add units suffix. Also, this seems like something that=20
+should be common.
 
-> +	and may contain the optional property:
+> +	MICBIAS_0_90_AVDD - 0.9 * AVDD
+> +	MICBIAS_0_65_AVDD - 0.65 * AVDD
+
+What does this mean?
+
 > +
-> +	- reg: 24 bits value which defines how the video controller
-> +		output is wired to the TDA998x input (video pins)
-> +		When absent, the default value is <0x230145>.
-
-This is not really how reg is intended to be used. Can you explain how 
-this value is determined?
-
-> +    Audio ports.
-> +	There may be one or two audio ports.
-> +	These ones must contain the following properties:
+> +Optional properties (ADAU1361/ADAU1461/ADAU1761/ADAU1961 only)
 > +
-> +	- port-type: must be "i2s" or "spdif"
+> + - adi,jack-detection	If present, configures codec to use the digmic=
+/jackdet
+> +			pin for jack detection. must provide one of
+> +			JACKDETECT_ACTIVE_LO or JACKDETECT_ACTIVE_HI followed
+> +			by debounce time in ms, which must be 5, 10, 20, or 40.
+
+Seems like this could be common. No existing examples to copy?
+
 > +
-> +	- reg: 8 bits value which defines how the audio controller
-> +		output is wired to the TDA998x input (audio pins)
-
-Same here.
-
-Rob
+> + - adi,lineout-mode	Set output mode of the lineout pins.
+> + - adi,headphone-mode	Set output mode of the headphone pins.
+> +
+> +The output mode must be one of:
+> +	OUTPUT_MODE_HEADPHONE           - Headphone output
+> +	OUTPUT_MODE_HEADPHONE_CAPLESS   - Capless headphone output
+> +	OUTPUT_MODE_LINE                - Line output
 --
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 More majordomo info at  http://vger.kernel.org/majordomo-info.html
