@@ -1,99 +1,129 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH RFC v5 4/8] drm/i2c: tda998x: Add support of a DT graph
- of ports
-Date: Thu, 18 Feb 2016 15:32:03 +0000
-Message-ID: <20160218153203.GL5783@n2100.arm.linux.org.uk>
-References: <cover.1455720381.git.jsarha@ti.com>
- <842e221030a0b14bc862790eb2f5bc97bb29c012.1455720381.git.jsarha@ti.com>
- <20160218143530.GB9654@rob-hp-laptop>
- <20160218161823.fc54c61bd0c5cee75ab59578@free.fr>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: samsung: Use IRQ safe spin lock calls
+Date: Thu, 18 Feb 2016 15:47:13 +0000
+Message-ID: <1455810433-10305-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <20160218161823.fc54c61bd0c5cee75ab59578@free.fr>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, devicetree@vger.kernel.org, tomi.valkeinen@ti.com, arnaud.pouliquen@st.com, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, broonie@kernel.org, bcousson@baylibre.com, linux-omap@vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: lgirdwood@gmail.com, s.nawrocki@samsung.com, sbkim73@samsung.com, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBGZWIgMTgsIDIwMTYgYXQgMDQ6MTg6MjNQTSArMDEwMCwgSmVhbi1GcmFuY29pcyBN
-b2luZSB3cm90ZToKPiBPbiBUaHUsIDE4IEZlYiAyMDE2IDA4OjM1OjMwIC0wNjAwCj4gUm9iIEhl
-cnJpbmcgPHJvYmhAa2VybmVsLm9yZz4gd3JvdGU6Cj4gCj4gPiBPbiBXZWQsIEZlYiAxNywgMjAx
-NiBhdCAwNDo0OTowNVBNICswMjAwLCBKeXJpIFNhcmhhIHdyb3RlOgo+ID4gPiBGcm9tOiBKZWFu
-LUZyYW5jb2lzIE1vaW5lIDxtb2luZWpmQGZyZWUuZnI+Cj4gPiA+IAo+ID4gPiBUd28ga2luZHMg
-b2YgcG9ydHMgbWF5IGJlIGRlY2xhcmVkIGluIGEgRFQgZ3JhcGggb2YgcG9ydHM6IHZpZGVvIGFu
-ZCBhdWRpby4KPiA+ID4gVGhpcyBwYXRjaCBhY2NlcHRzIHRoZSBwb3J0IHZhbHVlIGZyb20gYSB2
-aWRlbyBwb3J0IGFzIGFuIGFsdGVybmF0aXZlCj4gPiA+IHRvIHRoZSB2aWRlby1wb3J0cyBwcm9w
-ZXJ0eS4KPiA+ID4gSXQgYWxzbyBhY2NlcHRzIGF1ZGlvIHBvcnRzIGluIHRoZSBjYXNlIHRoZSB0
-cmFuc21pdHRlciBpcyBub3QgdXNlZCBhcwo+ID4gPiBhIHNsYXZlIGVuY29kZXIuCj4gPiA+IFRo
-ZSBuZXcgZmlsZSBpbmNsdWRlL3NvdW5kL3RkYTk5OHguaCBwcmVwYXJlcyB0byB0aGUgZGVmaW5p
-dGlvbiBvZgo+ID4gPiBhIHRkYTk5OHggQ09ERUMuCj4gPiA+IAo+ID4gPiBTaWduZWQtb2ZmLWJ5
-OiBKZWFuLUZyYW5jb2lzIE1vaW5lIDxtb2luZWpmQGZyZWUuZnI+Cj4gPiA+IFNpZ25lZC1vZmYt
-Ynk6IEp5cmkgU2FyaGEgPGpzYXJoYUB0aS5jb20+Cj4gPiA+IC0tLQo+ID4gPiAgLi4uL2Rldmlj
-ZXRyZWUvYmluZGluZ3MvZGlzcGxheS9icmlkZ2UvdGRhOTk4eC50eHQgfCA1MSArKysrKysrKysr
-KysKPiA+ID4gIGRyaXZlcnMvZ3B1L2RybS9pMmMvdGRhOTk4eF9kcnYuYyAgICAgICAgICAgICAg
-ICAgIHwgOTAgKysrKysrKysrKysrKysrKysrKy0tLQo+ID4gPiAgaW5jbHVkZS9zb3VuZC90ZGE5
-OTh4LmggICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgOCArKwo+ID4gPiAgMyBmaWxlcyBj
-aGFuZ2VkLCAxNDAgaW5zZXJ0aW9ucygrKSwgOSBkZWxldGlvbnMoLSkKPiA+ID4gIGNyZWF0ZSBt
-b2RlIDEwMDY0NCBpbmNsdWRlL3NvdW5kL3RkYTk5OHguaAo+ID4gPiAKPiA+ID4gZGlmZiAtLWdp
-dCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L2JyaWRnZS90ZGE5
-OTh4LnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L2JyaWRn
-ZS90ZGE5OTh4LnR4dAo+ID4gPiBpbmRleCBlOWU0YmNlLi4zNWY2YTgwIDEwMDY0NAo+ID4gPiAt
-LS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9icmlkZ2UvdGRh
-OTk4eC50eHQKPiA+ID4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rp
-c3BsYXkvYnJpZGdlL3RkYTk5OHgudHh0Cj4gPiA+IEBAIC0xNiw2ICsxNiwzNSBAQCBPcHRpb25h
-bCBwcm9wZXJ0aWVzOgo+ID4gPiAgCj4gPiA+ICAgIC0gdmlkZW8tcG9ydHM6IDI0IGJpdHMgdmFs
-dWUgd2hpY2ggZGVmaW5lcyBob3cgdGhlIHZpZGVvIGNvbnRyb2xsZXIKPiA+ID4gIAlvdXRwdXQg
-aXMgd2lyZWQgdG8gdGhlIFREQTk5OHggaW5wdXQgLSBkZWZhdWx0OiA8MHgyMzAxNDU+Cj4gPiA+
-ICsJVGhpcyBwcm9wZXJ0eSBpcyBub3QgdXNlZCB3aGVuIHBvcnRzIGFyZSBkZWZpbmVkLgo+ID4g
-PiArCj4gPiA+ICtPcHRpb25hbCBub2RlczoKPiA+ID4gKwo+ID4gPiArICAtIHBvcnQ6IHVwIHRv
-IHRocmVlIHBvcnRzLgo+ID4gPiArCVRoZSBwb3J0cyBhcmUgZGVmaW5lZCBhY2NvcmRpbmcgdG8g
-WzFdLgo+ID4gPiArCj4gPiA+ICsgICAgVmlkZW8gcG9ydC4KPiA+ID4gKwlUaGVyZSBtYXkgYmUg
-b25seSBvbmUgdmlkZW8gcG9ydC4KPiA+ID4gKwlUaGlzIG9uZSBtdXN0IGNvbnRhaW4gdGhlIGZv
-bGxvd2luZyBwcm9wZXJ0eToKPiA+ID4gKwo+ID4gPiArCS0gcG9ydC10eXBlOiBtdXN0IGJlICJy
-Z2IiCj4gPiAKPiA+IFRoaXMgc2hvdWxkIGJlIGltcGxpZWQgZnJvbSB0aGUgcG9ydCB1bml0IGFk
-ZHJlc3MuIEluIG90aGVyIHdvcmRzLCAKPiA+IHBvcnRAMCBpcyBkZWZpbmVkIHRvIGJlIHRoZSBy
-Z2IgcG9ydC4gTm93LCBpZiB0aGlzIGlzIG9uZSBvZiBzZXZlcmFsIAo+ID4gbW9kZXMgZm9yIHRo
-ZSB2aWRlbyBwb3J0LCB0aGVuIHRoYXQgaXMgYSBkaWZmZXJlbnQgc3RvcnkuCj4gPiAKPiA+ID4g
-KwlhbmQgbWF5IGNvbnRhaW4gdGhlIG9wdGlvbmFsIHByb3BlcnR5Ogo+ID4gPiArCj4gPiA+ICsJ
-LSByZWc6IDI0IGJpdHMgdmFsdWUgd2hpY2ggZGVmaW5lcyBob3cgdGhlIHZpZGVvIGNvbnRyb2xs
-ZXIKPiA+ID4gKwkJb3V0cHV0IGlzIHdpcmVkIHRvIHRoZSBUREE5OTh4IGlucHV0ICh2aWRlbyBw
-aW5zKQo+ID4gPiArCQlXaGVuIGFic2VudCwgdGhlIGRlZmF1bHQgdmFsdWUgaXMgPDB4MjMwMTQ1
-Pi4KPiA+IAo+ID4gVGhpcyBpcyBub3QgcmVhbGx5IGhvdyByZWcgaXMgaW50ZW5kZWQgdG8gYmUg
-dXNlZC4gQ2FuIHlvdSBleHBsYWluIGhvdyAKPiA+IHRoaXMgdmFsdWUgaXMgZGV0ZXJtaW5lZD8K
-PiA+IAo+ID4gPiArICAgIEF1ZGlvIHBvcnRzLgo+ID4gPiArCVRoZXJlIG1heSBiZSBvbmUgb3Ig
-dHdvIGF1ZGlvIHBvcnRzLgo+ID4gPiArCVRoZXNlIG9uZXMgbXVzdCBjb250YWluIHRoZSBmb2xs
-b3dpbmcgcHJvcGVydGllczoKPiA+ID4gKwo+ID4gPiArCS0gcG9ydC10eXBlOiBtdXN0IGJlICJp
-MnMiIG9yICJzcGRpZiIKPiA+ID4gKwo+ID4gPiArCS0gcmVnOiA4IGJpdHMgdmFsdWUgd2hpY2gg
-ZGVmaW5lcyBob3cgdGhlIGF1ZGlvIGNvbnRyb2xsZXIKPiA+ID4gKwkJb3V0cHV0IGlzIHdpcmVk
-IHRvIHRoZSBUREE5OTh4IGlucHV0IChhdWRpbyBwaW5zKQo+ID4gCj4gPiBTYW1lIGhlcmUuCj4g
-Cj4gSGkgUm9iLAo+IAo+IFRoZXNlIGF1ZGlvL3ZpZGVvIHBvcnQgZGVmaW5pdGlvbnMgd2VyZSBk
-aXNjdXNzZWQgaW4gdGhlIHRocmVhZAo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
-cGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxNS1BdWd1c3QvMDk1ODM2Lmh0bWwKPiBidXQsIHlvdSBh
-cmUgcmlnaHQsIGFuZCBhcyB5b3UgYWxyZWFkeSBzYWlkIGluIHRoZSB0aHJlYWQgCj4gaHR0cHM6
-Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvYXJjaGl2ZXMvZHJpLWRldmVsLzIwMTUtU2VwdGVtYmVy
-LzA5MDU0NC5odG1sCj4gJ3JlZycgc2hvdWxkIG5vdCBiZSB1c2VkIGhlcmUuCgpIb3dldmVyLCBl
-UEFQUiByZXF1aXJlcyB0aGF0IGEgbm9kZSBuYW1lIHdpdGggQG4gYWxzbyBoYXZlIGEgcmVnIHBy
-b3BlcnR5CndpdGggdGhlIHNhbWUgbiB2YWx1ZS4gIFNlZSBlUEFQUiAyLjIuMS4xLiAgVGhpcyBz
-dGF0ZW1lbnQgaW4gaXQgc2VlbXMKdG8gYmUgcGFydGljdWxhcmx5IGNsZWFyIG9uIHRoaXMgc3Vi
-amVjdDoKCiJUaGUgdW5pdC1hZGRyZXNzIG11c3QgbWF0Y2ggdGhlIGZpcnN0IGFkZHJlc3Mgc3Bl
-Y2lmaWVkIGluIHRoZSByZWcKcHJvcGVydHkgb2YgdGhlIG5vZGUuIElmIHRoZSBub2RlIGhhcyBu
-byByZWcgcHJvcGVydHksIHRoZSBAIGFuZAp1bml0LWFkZHJlc3MgbXVzdCBiZSBvbWl0dGVkIGFu
-ZCB0aGUgbm9kZS1uYW1lIGFsb25lIGRpZmZlcmVudGlhdGVzCnRoZSBub2RlIGZyb20gb3RoZXIg
-bm9kZXMgYXQgdGhlIHNhbWUgbGV2ZWwgaW4gdGhlIHRyZWUuIgoKLS0gClJNSydzIFBhdGNoIHN5
-c3RlbTogaHR0cDovL3d3dy5hcm0ubGludXgub3JnLnVrL2RldmVsb3Blci9wYXRjaGVzLwpGVFRD
-IGJyb2FkYmFuZCBmb3IgMC44bWlsZSBsaW5lOiBjdXJyZW50bHkgYXQgOS42TWJwcyBkb3duIDQw
-MGticHMgdXAKYWNjb3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQuCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRl
-dmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
+Lockdep warns of a potential lock inversion, i2s->lock is held numerous
+times whilst we are under the substream lock (snd_pcm_stream_lock). If
+we use the IRQ unsafe spin lock calls, you can also end up locking
+snd_pcm_stream_lock whilst under i2s->lock (if an IRQ happens whilst we
+are holding i2s->lock). This could result in deadlock.
+
+[   18.147001]        CPU0                    CPU1
+[   18.151509]        ----                    ----
+[   18.156022]   lock(&(&pri_dai->spinlock)->rlock);
+[   18.160701]                                local_irq_disable();
+[   18.166622]                                lock(&(&substream->self_group.lock)->rlock);
+[   18.174595]                                lock(&(&pri_dai->spinlock)->rlock);
+[   18.181806]   <Interrupt>
+[   18.184408]     lock(&(&substream->self_group.lock)->rlock);
+[   18.190045]
+[   18.190045]  *** DEADLOCK ***
+
+This patch changes to using the irq safe spinlock calls, to avoid this
+issue.
+
+Fixes: ce8bcdbb61d9 ("ASoC: samsung: i2s: Protect more registers with a spinlock")
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/samsung/i2s.c | 21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
+
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 84d9e77..70a2559 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -481,10 +481,11 @@ static int i2s_set_sysclk(struct snd_soc_dai *dai,
+ 	unsigned int cdcon_mask = 1 << i2s_regs->cdclkcon_off;
+ 	unsigned int rsrc_mask = 1 << i2s_regs->rclksrc_off;
+ 	u32 mod, mask, val = 0;
++	unsigned long flags;
+ 
+-	spin_lock(i2s->lock);
++	spin_lock_irqsave(i2s->lock, flags);
+ 	mod = readl(i2s->addr + I2SMOD);
+-	spin_unlock(i2s->lock);
++	spin_unlock_irqrestore(i2s->lock, flags);
+ 
+ 	switch (clk_id) {
+ 	case SAMSUNG_I2S_OPCLK:
+@@ -575,11 +576,11 @@ static int i2s_set_sysclk(struct snd_soc_dai *dai,
+ 		return -EINVAL;
+ 	}
+ 
+-	spin_lock(i2s->lock);
++	spin_lock_irqsave(i2s->lock, flags);
+ 	mod = readl(i2s->addr + I2SMOD);
+ 	mod = (mod & ~mask) | val;
+ 	writel(mod, i2s->addr + I2SMOD);
+-	spin_unlock(i2s->lock);
++	spin_unlock_irqrestore(i2s->lock, flags);
+ 
+ 	return 0;
+ }
+@@ -590,6 +591,7 @@ static int i2s_set_fmt(struct snd_soc_dai *dai,
+ 	struct i2s_dai *i2s = to_info(dai);
+ 	int lrp_shift, sdf_shift, sdf_mask, lrp_rlow, mod_slave;
+ 	u32 mod, tmp = 0;
++	unsigned long flags;
+ 
+ 	lrp_shift = i2s->variant_regs->lrp_off;
+ 	sdf_shift = i2s->variant_regs->sdf_off;
+@@ -649,7 +651,7 @@ static int i2s_set_fmt(struct snd_soc_dai *dai,
+ 		return -EINVAL;
+ 	}
+ 
+-	spin_lock(i2s->lock);
++	spin_lock_irqsave(i2s->lock, flags);
+ 	mod = readl(i2s->addr + I2SMOD);
+ 	/*
+ 	 * Don't change the I2S mode if any controller is active on this
+@@ -657,7 +659,7 @@ static int i2s_set_fmt(struct snd_soc_dai *dai,
+ 	 */
+ 	if (any_active(i2s) &&
+ 		((mod & (sdf_mask | lrp_rlow | mod_slave)) != tmp)) {
+-		spin_unlock(i2s->lock);
++		spin_unlock_irqrestore(i2s->lock, flags);
+ 		dev_err(&i2s->pdev->dev,
+ 				"%s:%d Other DAI busy\n", __func__, __LINE__);
+ 		return -EAGAIN;
+@@ -666,7 +668,7 @@ static int i2s_set_fmt(struct snd_soc_dai *dai,
+ 	mod &= ~(sdf_mask | lrp_rlow | mod_slave);
+ 	mod |= tmp;
+ 	writel(mod, i2s->addr + I2SMOD);
+-	spin_unlock(i2s->lock);
++	spin_unlock_irqrestore(i2s->lock, flags);
+ 
+ 	return 0;
+ }
+@@ -676,6 +678,7 @@ static int i2s_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct i2s_dai *i2s = to_info(dai);
+ 	u32 mod, mask = 0, val = 0;
++	unsigned long flags;
+ 
+ 	if (!is_secondary(i2s))
+ 		mask |= (MOD_DC2_EN | MOD_DC1_EN);
+@@ -744,11 +747,11 @@ static int i2s_hw_params(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
+ 	}
+ 
+-	spin_lock(i2s->lock);
++	spin_lock_irqsave(i2s->lock, flags);
+ 	mod = readl(i2s->addr + I2SMOD);
+ 	mod = (mod & ~mask) | val;
+ 	writel(mod, i2s->addr + I2SMOD);
+-	spin_unlock(i2s->lock);
++	spin_unlock_irqrestore(i2s->lock, flags);
+ 
+ 	samsung_asoc_init_dma_data(dai, &i2s->dma_playback, &i2s->dma_capture);
+ 
+-- 
+2.1.4
