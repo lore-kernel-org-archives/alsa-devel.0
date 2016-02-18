@@ -1,7 +1,7 @@
 From: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [RFC v4 3/8] ASoC: mediatek: Add HDMI dai-links in the machine driver
-Date: Thu, 18 Feb 2016 16:02:16 +0100
-Message-ID: <1455807741-19122-1-git-send-email-p.zabel@pengutronix.de>
+Subject: [RFC v4 7/8] ASoC: hdmi-codec: Add ELD control
+Date: Thu, 18 Feb 2016 16:02:20 +0100
+Message-ID: <1455807741-19122-5-git-send-email-p.zabel@pengutronix.de>
 References: <1455807526-16918-1-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,130 +21,81 @@ To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+ALSA doesn't know about all the different compressed audio formats,
+so there is no interface to let userspace enumerate the formats that
+are supported by the connected sink. Exporting the raw ELD bytes to
+userspace allows an application to select the appropriate audio format
+depending on the current capabilities of the connected HDMI sink device.
+Usually userspace then just pretends to ALSA that the data is in one of
+the raw 16-bit PCM audio formats and relies on the IEC controls to tell
+the sink how to interpret the data.
 
-This creates pcmC0D2p for the HDMI playback in the same card.
-
-Signed-off-by: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 Signed-off-by: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Reviewed-by: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+Tested-by: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
 ---
- .../bindings/sound/mt8173-rt5650-rt5676.txt        |  5 ++-
- sound/soc/mediatek/mt8173-rt5650-rt5676.c          | 48 ++++++++++++++++++++++
- 2 files changed, 51 insertions(+), 2 deletions(-)
+Changes since v3:
+ - Expanded commit message
+ - Add mutex to lock hcp->eld
+---
+ sound/soc/codecs/hdmi-codec.c | 38 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt b/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt
-index f205ce9..ac28cdb 100644
---- a/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt
-+++ b/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt
-@@ -1,15 +1,16 @@
--MT8173 with RT5650 RT5676 CODECS
-+MT8173 with RT5650 RT5676 CODECS and HDMI via I2S
- 
- Required properties:
- - compatible : "mediatek,mt8173-rt5650-rt5676"
- - mediatek,audio-codec: the phandles of rt5650 and rt5676 codecs
-+			and of the hdmi encoder node
- - mediatek,platform: the phandle of MT8173 ASoC platform
- 
- Example:
- 
- 	sound {
- 		compatible = "mediatek,mt8173-rt5650-rt5676";
--		mediatek,audio-codec = <&rt5650 &rt5676>;
-+		mediatek,audio-codec = <&rt5650 &rt5676 &hdmi0>;
- 		mediatek,platform = <&afe>;
- 	};
- 
-diff --git a/sound/soc/mediatek/mt8173-rt5650-rt5676.c b/sound/soc/mediatek/mt8173-rt5650-rt5676.c
-index 5c4c58c..def9d95 100644
---- a/sound/soc/mediatek/mt8173-rt5650-rt5676.c
-+++ b/sound/soc/mediatek/mt8173-rt5650-rt5676.c
-@@ -18,6 +18,7 @@
- #include <linux/gpio.h>
- #include <linux/of_gpio.h>
- #include <sound/soc.h>
-+#include <sound/hdmi-codec.h>
- #include <sound/jack.h>
- #include "../codecs/rt5645.h"
- #include "../codecs/rt5677.h"
-@@ -131,10 +132,31 @@ static struct snd_soc_dai_link_component mt8173_rt5650_rt5676_codecs[] = {
- 	},
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 7d5db11..9c4e65c 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -55,6 +55,42 @@ enum {
+ 	DAI_ID_SPDIF,
  };
  
-+static struct snd_soc_jack mt8173_hdmi_card_jack;
-+
-+static int mt8173_hdmi_init(struct snd_soc_pcm_runtime *runtime)
++static int hdmi_eld_ctl_info(struct snd_kcontrol *kcontrol,
++			     struct snd_ctl_elem_info *uinfo)
 +{
-+	struct snd_soc_card *card = runtime->card;
-+	struct snd_soc_codec *codec = runtime->codec;
-+	int ret;
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
++	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
 +
-+	/* enable jack detection */
-+	ret = snd_soc_card_jack_new(card, "HDMI Jack", SND_JACK_LINEOUT,
-+				    &mt8173_hdmi_card_jack, NULL, 0);
-+	if (ret) {
-+		dev_err(card->dev, "Can't new HDMI Jack %d\n", ret);
-+		return ret;
-+	}
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
++	uinfo->count = sizeof(hcp->eld);
 +
-+	return hdmi_codec_set_jack_detect(codec, &mt8173_hdmi_card_jack);
++	return 0;
 +}
 +
- enum {
- 	DAI_LINK_PLAYBACK,
- 	DAI_LINK_CAPTURE,
-+	DAI_LINK_HDMI,
- 	DAI_LINK_CODEC_I2S,
-+	DAI_LINK_HDMI_I2S,
- 	DAI_LINK_INTERCODEC
++static int hdmi_eld_ctl_get(struct snd_kcontrol *kcontrol,
++			    struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
++	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
++
++	mutex_lock(&hcp->eld_lock);
++	memcpy(ucontrol->value.bytes.data, hcp->eld, sizeof(hcp->eld));
++	mutex_unlock(&hcp->eld_lock);
++
++	return 0;
++}
++
++static const struct snd_kcontrol_new hdmi_controls[] = {
++	{
++		.access = SNDRV_CTL_ELEM_ACCESS_READ |
++			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
++		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
++		.name = "ELD",
++		.info = hdmi_eld_ctl_info,
++		.get = hdmi_eld_ctl_get,
++	},
++};
++
+ static void hdmi_codec_abort(struct device *dev)
+ {
+ 	struct hdmi_codec_priv *hcp = dev_get_drvdata(dev);
+@@ -326,6 +362,8 @@ static const struct snd_soc_dai_driver hdmi_spdif_dai = {
  };
  
-@@ -161,6 +183,16 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
- 		.dynamic = 1,
- 		.dpcm_capture = 1,
- 	},
-+	[DAI_LINK_HDMI] = {
-+		.name = "HDMI",
-+		.stream_name = "HDMI PCM",
-+		.cpu_dai_name = "HDMI",
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-+		.dynamic = 1,
-+		.dpcm_playback = 1,
-+	},
- 
- 	/* Back End DAI links */
- 	[DAI_LINK_CODEC_I2S] = {
-@@ -177,6 +209,14 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
- 	},
-+	[DAI_LINK_HDMI_I2S] = {
-+		.name = "HDMI BE",
-+		.cpu_dai_name = "HDMIO",
-+		.no_pcm = 1,
-+		.codec_dai_name = "i2s-hifi",
-+		.dpcm_playback = 1,
-+		.init = mt8173_hdmi_init,
-+	},
- 	/* rt5676 <-> rt5650 intercodec link: Sets rt5676 I2S2 as master */
- 	[DAI_LINK_INTERCODEC] = {
- 		.name = "rt5650_rt5676 intercodec",
-@@ -251,6 +291,14 @@ static int mt8173_rt5650_rt5676_dev_probe(struct platform_device *pdev)
- 	mt8173_rt5650_rt5676_dais[DAI_LINK_INTERCODEC].codec_of_node =
- 		mt8173_rt5650_rt5676_codecs[1].of_node;
- 
-+	mt8173_rt5650_rt5676_dais[DAI_LINK_HDMI_I2S].codec_of_node =
-+		of_parse_phandle(pdev->dev.of_node, "mediatek,audio-codec", 2);
-+	if (!mt8173_rt5650_rt5676_dais[DAI_LINK_HDMI_I2S].codec_of_node) {
-+		dev_err(&pdev->dev,
-+			"Property 'audio-codec' missing or invalid\n");
-+		return -EINVAL;
-+	}
-+
- 	card->dev = &pdev->dev;
- 	platform_set_drvdata(pdev, card);
- 
+ static struct snd_soc_codec_driver hdmi_codec = {
++	.controls = hdmi_controls,
++	.num_controls = ARRAY_SIZE(hdmi_controls),
+ 	.dapm_widgets = hdmi_widgets,
+ 	.num_dapm_widgets = ARRAY_SIZE(hdmi_widgets),
+ 	.dapm_routes = hdmi_routes,
 -- 
 2.7.0
