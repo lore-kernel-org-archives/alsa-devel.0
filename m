@@ -1,17 +1,20 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] SoC: cht_bsw_rt5645: Fix writing to string
- literal
-Date: Thu, 18 Feb 2016 00:02:23 -0800
-Message-ID: <56C57A8F.9030306@linux.intel.com>
-References: <1455572189-11724-1-git-send-email-carlo@caione.org>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH] ALSA: hda - hdmi get jack from
+ hda_jack_tbl when not dyn_pcm_assign
+Date: Thu, 18 Feb 2016 08:06:47 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D1904667B71@shsmsx102.ccr.corp.intel.com>
+References: <1455773102-135817-1-git-send-email-libin.yang@linux.intel.com>
+ <96A12704CE18D347B625EE2D4A099D1904667A3F@shsmsx102.ccr.corp.intel.com>
+ <s5hk2m2313b.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id EFDC62607E8
- for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2016 09:02:32 +0100 (CET)
-In-Reply-To: <1455572189-11724-1-git-send-email-carlo@caione.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 668DA2606BA
+ for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2016 09:06:57 +0100 (CET)
+In-Reply-To: <s5hk2m2313b.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +24,126 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Carlo Caione <carlo@caione.org>, lgirdwood@gmail.com, broonie@kernel.org, vinod.koul@intel.com, yang.a.fang@intel.com, linux@endlessm.com, alsa-devel@alsa-project.org
-Cc: Carlo Caione <carlo@endlessm.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 2/15/16 1:36 PM, Carlo Caione wrote:
-> From: Carlo Caione <carlo@endlessm.com>
->
-> We cannot use strcpy() to write to a const char * location. This is
-> causing a 'BUG: unable to handle kernel paging request' error at boot
-> when using the cht-bsw-rt5645 driver.
->
-> With this patch we also fix a wrong indexing in the driver where the
-> codec_name of the wrong dai_link is being overwritten.
->
-> Signed-off-by: Carlo Caione <carlo@endlessm.com>
-> ---
->   sound/soc/intel/atom/sst-atom-controls.h | 1 +
->   sound/soc/intel/boards/cht_bsw_rt5645.c  | 4 ++--
->   2 files changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/sound/soc/intel/atom/sst-atom-controls.h b/sound/soc/intel/atom/sst-atom-controls.h
-> index e011311..6f88d1c 100644
-> --- a/sound/soc/intel/atom/sst-atom-controls.h
-> +++ b/sound/soc/intel/atom/sst-atom-controls.h
-> @@ -30,6 +30,7 @@ enum {
->   	MERR_DPCM_AUDIO = 0,
->   	MERR_DPCM_DEEP_BUFFER,
->   	MERR_DPCM_COMPR,
-> +	MERR_DPCM_BE,
->   };
->
->   /* define a bit for each mixer input */
-> diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-> index e6cf800..89b4c032 100644
-> --- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-> +++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-> @@ -282,7 +282,7 @@ static struct snd_soc_dai_link cht_dailink[] = {
->   	},
->   	/* CODEC<->CODEC link */
->   	/* back ends */
-> -	{
-> +	[MERR_DPCM_BE] = {
->   		.name = "SSP2-Codec",
->   		.be_id = 1,
->   		.cpu_dai_name = "ssp2-port",
-> @@ -357,7 +357,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
->   	card->dev = &pdev->dev;
->   	sprintf(codec_name, "i2c-%s:00", drv->acpi_card->codec_id);
->   	/* set correct codec name */
-> -	strcpy((char *)card->dai_link[2].codec_name, codec_name);
-> +	card->dai_link[MERR_DPCM_BE].codec_name = kstrdup(codec_name, GFP_KERNEL);
+Hi Takashi,
 
-It's probably less problematic to find the index in a different way. 
-Adding a new definition in the platform driver doesn't seem quite right.
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Thursday, February 18, 2016 3:55 PM
+> To: Yang, Libin
+> Cc: libin.yang@linux.intel.com; alsa-devel@alsa-project.org; Lin,
+> Mengdong
+> Subject: Re: [PATCH] ALSA: hda - hdmi get jack from hda_jack_tbl when
+> not dyn_pcm_assign
+> 
+> On Thu, 18 Feb 2016 07:16:29 +0100,
+> Yang, Libin wrote:
+> >
+> > Hi Takashi,
+> >
+> > I submitted the patch which can fix a regression involved from my
+> > jack patch:
+> > commit 25e4abb33df3aafa7d1efba8f82f9178268efab1
+> > Author: Libin Yang <libin.yang@linux.intel.com>
+> > Date:   Tue Jan 12 11:13:27 2016 +0800
+> >
+> >     ALSA: hda - hdmi jack created based on pcm
+> >
+> > I'm sorry for the inconvenience.
+> >
+> > As the dyn pcm patches are merged into the for-next branch, I'm asking
+> > our QA to do the full test on it. They said they can start the stress test
+> > from next week.
+> 
+> One concern is the report from CI test about the crash at unloading
+> the module.  I couldn't reproduce it locally.  Could you take a look?
+
+There is the same oops when unloading snd modules on my side
+(it happens occasionally).
+With the patch, the oops is fixed. But I didn't meet the crash. 
+The system is still alive.
+
+I'm asking for their test case. As soon as I get the test case, I will
+do the test.
+
+Regards,
+Libin
+> 
+> 
+> Takashi
+> 
+> >
+> > Regards,
+> > Libin
+> >
+> >
+> > > -----Original Message-----
+> > > From: libin.yang@linux.intel.com [mailto:libin.yang@linux.intel.com]
+> > > Sent: Thursday, February 18, 2016 1:25 PM
+> > > To: alsa-devel@alsa-project.org; tiwai@suse.de
+> > > Cc: Lin, Mengdong; Yang, Libin; Libin Yang
+> > > Subject: [PATCH] ALSA: hda - hdmi get jack from hda_jack_tbl when
+> not
+> > > dyn_pcm_assign
+> > >
+> > > From: Libin Yang <libin.yang@linux.intel.com>
+> > >
+> > > On Intel platform, if !dyn_pcm_assign, spec->pcm_rec[].jack is not
+> > > NULL even after snd_hda_jack_tbl_clear() is called to free snd_jack.
+> > > This may cause access invalid memory when calling snd_jack_report.
+> > >
+> > > Please see more detail from:
+> > > https://bugs.freedesktop.org/show_bug.cgi?id=94079
+> > >
+> > > Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+> > > ---
+> > >  sound/pci/hda/patch_hdmi.c | 16 ++++++++++++++--
+> > >  1 file changed, 14 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/sound/pci/hda/patch_hdmi.c
+> b/sound/pci/hda/patch_hdmi.c
+> > > index f4443b5..3b47101 100644
+> > > --- a/sound/pci/hda/patch_hdmi.c
+> > > +++ b/sound/pci/hda/patch_hdmi.c
+> > > @@ -1962,6 +1962,7 @@ static void sync_eld_via_acomp(struct
+> > > hda_codec *codec,
+> > >  {
+> > >  	struct hdmi_spec *spec = codec->spec;
+> > >  	struct hdmi_eld *eld = &spec->temp_eld;
+> > > +	struct hda_jack_tbl *jack_tbl;
+> > >  	struct snd_jack *jack = NULL;
+> > >  	int size;
+> > >
+> > > @@ -1989,10 +1990,21 @@ static void sync_eld_via_acomp(struct
+> > > hda_codec *codec,
+> > >  	/* pcm_idx >=0 before update_eld() means it is in monitor
+> > >  	 * disconnected event. Jack must be fetched before update_eld()
+> > >  	 */
+> > > -	if (per_pin->pcm_idx >= 0)
+> > > +	/* if !dyn_pcm_assign, get jack from hda_jack_tbl
+> > > +	 * in !dyn_pcm_assign case, spec->pcm_rec[].jack is not
+> > > +	 * NULL even after snd_hda_jack_tbl_clear() is called to
+> > > +	 * free snd_jack. This may cause access invalid memory
+> > > +	 * when calling snd_jack_report
+> > > +	 */
+> > > +	if (per_pin->pcm_idx >= 0 && spec->dyn_pcm_assign)
+> > >  		jack = spec->pcm_rec[per_pin->pcm_idx].jack;
+> > > +	else {
+> > > +		jack_tbl = snd_hda_jack_tbl_get(codec, per_pin-
+> > > >pin_nid);
+> > > +		if (jack_tbl)
+> > > +			jack = jack_tbl->jack;
+> > > +	}
+> > >  	update_eld(codec, per_pin, eld);
+> > > -	if (jack == NULL && per_pin->pcm_idx >= 0)
+> > > +	if (jack == NULL && per_pin->pcm_idx >= 0 && spec-
+> > > >dyn_pcm_assign)
+> > >  		jack = spec->pcm_rec[per_pin->pcm_idx].jack;
+> > >  	if (jack == NULL)
+> > >  		goto unlock;
+> > > --
+> > > 1.9.1
+> >
