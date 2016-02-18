@@ -1,13 +1,15 @@
-From: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [RFC v4 5/8] drm/mediatek: hdmi: issue notifications
-Date: Thu, 18 Feb 2016 16:02:18 +0100
-Message-ID: <1455807741-19122-3-git-send-email-p.zabel@pengutronix.de>
+From: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
+Subject: Re: [RFC v4 4/8] video: rmk's HDMI notification prototype
+Date: Thu, 18 Feb 2016 15:06:50 +0000
+Message-ID: <20160218150650.GR19428@n2100.arm.linux.org.uk>
 References: <1455807526-16918-1-git-send-email-p.zabel@pengutronix.de>
+ <1455807741-19122-2-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <1455807526-16918-1-git-send-email-p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1455807741-19122-2-git-send-email-p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
  <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
@@ -17,78 +19,170 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
  <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
 Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+To: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Issue hot-plug detection, EDID update, and ELD update notifications
-from the CEC and HDMI drivers.
+On Thu, Feb 18, 2016 at 04:02:17PM +0100, Philipp Zabel wrote:
+> This is extracted from Russell's food for thought HDMI notification
+> prototype [1]. I've put it into drivers/video for the time being because
+> my kernels don't have drivers/cec yet.
 
-Signed-off-by: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
----
- drivers/gpu/drm/mediatek/mtk_cec.c          | 11 +++++++++++
- drivers/gpu/drm/mediatek/mtk_drm_hdmi_drv.c |  3 +++
- 2 files changed, 14 insertions(+)
+I see it's also the old version still - this is my latest version, only
+subtly different in terms of the file naming and Kconfig option name.
+Functionally the same.
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_cec.c b/drivers/gpu/drm/mediatek/mtk_cec.c
-index cba3647..c309920 100644
---- a/drivers/gpu/drm/mediatek/mtk_cec.c
-+++ b/drivers/gpu/drm/mediatek/mtk_cec.c
-@@ -13,6 +13,7 @@
-  */
- #include <linux/clk.h>
- #include <linux/delay.h>
-+#include <linux/hdmi-not.h>
- #include <linux/io.h>
- #include <linux/interrupt.h>
- #include <linux/platform_device.h>
-@@ -79,6 +80,12 @@ void mtk_cec_set_hpd_event(struct device *dev,
+ drivers/video/Kconfig         |  3 +++
+ drivers/video/Makefile        |  1 +
+ drivers/video/hdmi-notifier.c | 61 +++++++++++++++++++++++++++++++++++++++++++
+ include/linux/hdmi-notifier.h | 44 +++++++++++++++++++++++++++++++
+ 4 files changed, 109 insertions(+)
+
+diff --git a/drivers/video/Kconfig b/drivers/video/Kconfig
+index e0606c01e8ac..193649c8a951 100644
+--- a/drivers/video/Kconfig
++++ b/drivers/video/Kconfig
+@@ -40,6 +40,9 @@ config VIDEOMODE_HELPERS
+ config HDMI
+ 	bool
  
- 	cec->hdmi_dev = hdmi_dev;
- 	cec->hpd_event = hpd_event;
++config HDMI_NOTIFIERS
++	bool
 +
-+	/* Initial notification event to set jack state */
-+	if (mtk_cec_hpd_high(dev))
-+		hdmi_event_connect(hdmi_dev);
-+	else
-+		hdmi_event_disconnect(hdmi_dev);
- }
+ if VT
+ 	source "drivers/video/console/Kconfig"
+ endif
+diff --git a/drivers/video/Makefile b/drivers/video/Makefile
+index 9ad3c17d6456..65f564906fb4 100644
+--- a/drivers/video/Makefile
++++ b/drivers/video/Makefile
+@@ -1,5 +1,6 @@
+ obj-$(CONFIG_VGASTATE)            += vgastate.o
+ obj-$(CONFIG_HDMI)                += hdmi.o
++obj-$(CONFIG_HDMI_NOTIFIERS)      += hdmi-notifier.o
  
- bool mtk_cec_hpd_high(struct device *dev)
-@@ -160,6 +167,10 @@ static irqreturn_t mtk_cec_htplg_isr_thread(int irq, void *arg)
- 	if (cec->hpd != hpd) {
- 		dev_info(dev, "hotplug event!,cur hpd = %d, hpd = %d\n",
- 			 cec->hpd, hpd);
-+		if (hpd)
-+			hdmi_event_connect(cec->hdmi_dev);
-+		else
-+			hdmi_event_disconnect(cec->hdmi_dev);
- 		cec->hpd = hpd;
- 		if (cec->hpd_event)
- 			cec->hpd_event(hpd, cec->hdmi_dev);
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_hdmi_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_hdmi_drv.c
-index 96ad53a..e7562fb 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_hdmi_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_hdmi_drv.c
-@@ -17,6 +17,7 @@
- #include <drm/drm_crtc_helper.h>
- #include <drm/drm_edid.h>
- #include <linux/clk.h>
-+#include <linux/hdmi-not.h>
- #include <linux/i2c.h>
- #include <linux/kernel.h>
- #include <linux/mfd/syscon.h>
-@@ -122,9 +123,11 @@ static int mtk_hdmi_conn_get_modes(struct drm_connector *conn)
- 	hdmi->dvi_mode = !drm_detect_monitor_audio(edid);
- 
- 	drm_mode_connector_update_edid_property(conn, edid);
-+	hdmi_event_new_edid(hdmi->dev, edid, sizeof(*edid));
- 
- 	ret = drm_add_edid_modes(conn, edid);
- 	drm_edid_to_eld(conn, edid);
-+	hdmi_event_new_eld(hdmi->dev, conn->eld);
- 	kfree(edid);
- 	return ret;
- }
+ obj-$(CONFIG_VT)		  += console/
+ obj-$(CONFIG_LOGO)		  += logo/
+diff --git a/drivers/video/hdmi-notifier.c b/drivers/video/hdmi-notifier.c
+new file mode 100644
+index 000000000000..a233359cacfa
+--- /dev/null
++++ b/drivers/video/hdmi-notifier.c
+@@ -0,0 +1,61 @@
++#include <linux/export.h>
++#include <linux/hdmi-notifier.h>
++#include <linux/notifier.h>
++#include <linux/string.h>
++
++static BLOCKING_NOTIFIER_HEAD(hdmi_notifier);
++
++int hdmi_register_notifier(struct notifier_block *nb)
++{
++	return blocking_notifier_chain_register(&hdmi_notifier, nb);
++}
++EXPORT_SYMBOL_GPL(hdmi_register_notifier);
++
++int hdmi_unregister_notifier(struct notifier_block *nb)
++{
++	return blocking_notifier_chain_unregister(&hdmi_notifier, nb);
++}
++EXPORT_SYMBOL_GPL(hdmi_unregister_notifier);
++
++void hdmi_event_connect(struct device *dev)
++{
++	struct hdmi_event_base base;
++
++	base.source = dev;
++
++	blocking_notifier_call_chain(&hdmi_notifier, HDMI_CONNECTED, &base);
++}
++EXPORT_SYMBOL_GPL(hdmi_event_connect);
++
++void hdmi_event_disconnect(struct device *dev)
++{
++	struct hdmi_event_base base;
++
++	base.source = dev;
++
++	blocking_notifier_call_chain(&hdmi_notifier, HDMI_DISCONNECTED, &base);
++}
++EXPORT_SYMBOL_GPL(hdmi_event_disconnect);
++
++void hdmi_event_new_edid(struct device *dev, const void *edid, size_t size)
++{
++	struct hdmi_event_new_edid new_edid;
++
++	new_edid.base.source = dev;
++	new_edid.edid = edid;
++	new_edid.size = size;
++
++	blocking_notifier_call_chain(&hdmi_notifier, HDMI_NEW_EDID, &new_edid);
++}
++EXPORT_SYMBOL_GPL(hdmi_event_new_edid);
++
++void hdmi_event_new_eld(struct device *dev, const void *eld)
++{
++	struct hdmi_event_new_eld new_eld;
++
++	new_eld.base.source = dev;
++	memcpy(new_eld.eld, eld, sizeof(new_eld.eld));
++
++	blocking_notifier_call_chain(&hdmi_notifier, HDMI_NEW_ELD, &new_eld);
++}
++EXPORT_SYMBOL_GPL(hdmi_event_new_eld);
+diff --git a/include/linux/hdmi-notifier.h b/include/linux/hdmi-notifier.h
+new file mode 100644
+index 000000000000..9c5ad498f610
+--- /dev/null
++++ b/include/linux/hdmi-notifier.h
+@@ -0,0 +1,44 @@
++#ifndef LINUX_HDMI_NOTIFIER_H
++#define LINUX_HDMI_NOTIFIER_H
++
++#include <linux/types.h>
++
++enum {
++	HDMI_CONNECTED,
++	HDMI_DISCONNECTED,
++	HDMI_NEW_EDID,
++	HDMI_NEW_ELD,
++};
++
++struct hdmi_event_base {
++	struct device *source;
++};
++
++struct hdmi_event_new_edid {
++	struct hdmi_event_base base;
++	const void *edid;
++	size_t size;
++};
++
++struct hdmi_event_new_eld {
++	struct hdmi_event_base base;
++	unsigned char eld[128];
++};
++
++union hdmi_event {
++	struct hdmi_event_base base;
++	struct hdmi_event_new_edid edid;
++	struct hdmi_event_new_eld eld;
++};
++
++struct notifier_block;
++
++int hdmi_register_notifier(struct notifier_block *nb);
++int hdmi_unregister_notifier(struct notifier_block *nb);
++
++void hdmi_event_connect(struct device *dev);
++void hdmi_event_disconnect(struct device *dev);
++void hdmi_event_new_edid(struct device *dev, const void *edid, size_t size);
++void hdmi_event_new_eld(struct device *dev, const void *eld);
++
++#endif
+
+
 -- 
-2.7.0
+RMK's Patch system: http://www.arm.linux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
+according to speedtest.net.
