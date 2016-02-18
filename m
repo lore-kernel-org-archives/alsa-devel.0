@@ -1,88 +1,99 @@
 From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [RFC v4 4/8] video: rmk's HDMI notification
-	prototype
-Date: Thu, 18 Feb 2016 15:24:06 +0000
-Message-ID: <20160218152406.GS19428@n2100.arm.linux.org.uk>
-References: <1455807526-16918-1-git-send-email-p.zabel@pengutronix.de>
- <1455807741-19122-2-git-send-email-p.zabel@pengutronix.de>
- <20160218150650.GR19428@n2100.arm.linux.org.uk>
- <1455808710.3937.25.camel@pengutronix.de>
+Subject: Re: [PATCH RFC v5 4/8] drm/i2c: tda998x: Add support of a DT graph
+ of ports
+Date: Thu, 18 Feb 2016 15:32:03 +0000
+Message-ID: <20160218153203.GL5783@n2100.arm.linux.org.uk>
+References: <cover.1455720381.git.jsarha@ti.com>
+ <842e221030a0b14bc862790eb2f5bc97bb29c012.1455720381.git.jsarha@ti.com>
+ <20160218143530.GB9654@rob-hp-laptop>
+ <20160218161823.fc54c61bd0c5cee75ab59578@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pandora.arm.linux.org.uk (pandora.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 64766260676
- for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2016 16:24:23 +0100 (CET)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
 Content-Disposition: inline
-In-Reply-To: <1455808710.3937.25.camel@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Koro Chen <koro.chen@mediatek.com>, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, Daniel Kurtz <djkurtz@chromium.org>, kernel@pengutronix.de, Matthias Brugger <matthias.bgg@gmail.com>, Cawa Cheng <cawa.cheng@mediatek.com>
+In-Reply-To: <20160218161823.fc54c61bd0c5cee75ab59578@free.fr>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, devicetree@vger.kernel.org, tomi.valkeinen@ti.com, arnaud.pouliquen@st.com, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, broonie@kernel.org, bcousson@baylibre.com, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 18, 2016 at 04:18:30PM +0100, Philipp Zabel wrote:
-> Hi Russell,
-> 
-> Am Donnerstag, den 18.02.2016, 15:06 +0000 schrieb Russell King - ARM
-> Linux:
-> > On Thu, Feb 18, 2016 at 04:02:17PM +0100, Philipp Zabel wrote:
-> > > This is extracted from Russell's food for thought HDMI notification
-> > > prototype [1]. I've put it into drivers/video for the time being because
-> > > my kernels don't have drivers/cec yet.
-> > 
-> > I see it's also the old version still - this is my latest version, only
-> > subtly different in terms of the file naming and Kconfig option name.
-> > Functionally the same.
-> 
-> Thank you for the update. Have you sent (or do you intend to send) this
-> separately somewhere? I could then reference it and drop the patch from
-> this series.
-> Or I could add your signoff and keep the new patch as part of this
-> series, if you'd prefer.
-
-I haven't yet: it's part of two branches in my tree at the moment, one
-with Hans Verkil's CEC work in plus TDA998x and dw-hdmi support for
-that, and also my imx-drm branch which contains a reworked version of
-FSL's CEC code:
-
-imx-drm:
-drm: bridge/dw_hdmi: place PHY into low power mode when disabled
-drm: bridge/dw_hdmi: start of support for pixel doubled modes
-drm: bridge/dw_hdmi: remove CEC engine register definitions
-drm: bridge/dw_hdmi-cec: add Designware HDMI CEC driver
-cec: add HDMI CEC input driver
-cec: add HDMI CEC core driver
-drm: bridge/dw_hdmi: add HDMI notifier support
-video: add HDMI state notifier support
-
-cec:
-cec: add tda9950 driver using Hans Verkil's CEC code
-drm: i2c/tda998x: add CEC support
-cec: add dw-hdmi cec driver using Hans Verkil's CEC code
-DocBook/media: add CEC documentation
-cec.txt: add CEC framework documentation
-cec: add compat32 ioctl support
-cec: add HDMI CEC framework
-rc: Add HDMI CEC protocol handling
-HID: add HDMI CEC specific keycodes
-input.h: add BUS_CEC type
-drm: bridge/dw_hdmi: add HDMI notifier support
-video: add HDMI state notifier support
-
-I haven't put any thought into how to get anything from these merged yet,
-I was rather hoping that Hans was going to push his own CEC work to be
-merged, and then I'd think about those logistics.
-
--- 
-RMK's Patch system: http://www.arm.linux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
-according to speedtest.net.
+T24gVGh1LCBGZWIgMTgsIDIwMTYgYXQgMDQ6MTg6MjNQTSArMDEwMCwgSmVhbi1GcmFuY29pcyBN
+b2luZSB3cm90ZToKPiBPbiBUaHUsIDE4IEZlYiAyMDE2IDA4OjM1OjMwIC0wNjAwCj4gUm9iIEhl
+cnJpbmcgPHJvYmhAa2VybmVsLm9yZz4gd3JvdGU6Cj4gCj4gPiBPbiBXZWQsIEZlYiAxNywgMjAx
+NiBhdCAwNDo0OTowNVBNICswMjAwLCBKeXJpIFNhcmhhIHdyb3RlOgo+ID4gPiBGcm9tOiBKZWFu
+LUZyYW5jb2lzIE1vaW5lIDxtb2luZWpmQGZyZWUuZnI+Cj4gPiA+IAo+ID4gPiBUd28ga2luZHMg
+b2YgcG9ydHMgbWF5IGJlIGRlY2xhcmVkIGluIGEgRFQgZ3JhcGggb2YgcG9ydHM6IHZpZGVvIGFu
+ZCBhdWRpby4KPiA+ID4gVGhpcyBwYXRjaCBhY2NlcHRzIHRoZSBwb3J0IHZhbHVlIGZyb20gYSB2
+aWRlbyBwb3J0IGFzIGFuIGFsdGVybmF0aXZlCj4gPiA+IHRvIHRoZSB2aWRlby1wb3J0cyBwcm9w
+ZXJ0eS4KPiA+ID4gSXQgYWxzbyBhY2NlcHRzIGF1ZGlvIHBvcnRzIGluIHRoZSBjYXNlIHRoZSB0
+cmFuc21pdHRlciBpcyBub3QgdXNlZCBhcwo+ID4gPiBhIHNsYXZlIGVuY29kZXIuCj4gPiA+IFRo
+ZSBuZXcgZmlsZSBpbmNsdWRlL3NvdW5kL3RkYTk5OHguaCBwcmVwYXJlcyB0byB0aGUgZGVmaW5p
+dGlvbiBvZgo+ID4gPiBhIHRkYTk5OHggQ09ERUMuCj4gPiA+IAo+ID4gPiBTaWduZWQtb2ZmLWJ5
+OiBKZWFuLUZyYW5jb2lzIE1vaW5lIDxtb2luZWpmQGZyZWUuZnI+Cj4gPiA+IFNpZ25lZC1vZmYt
+Ynk6IEp5cmkgU2FyaGEgPGpzYXJoYUB0aS5jb20+Cj4gPiA+IC0tLQo+ID4gPiAgLi4uL2Rldmlj
+ZXRyZWUvYmluZGluZ3MvZGlzcGxheS9icmlkZ2UvdGRhOTk4eC50eHQgfCA1MSArKysrKysrKysr
+KysKPiA+ID4gIGRyaXZlcnMvZ3B1L2RybS9pMmMvdGRhOTk4eF9kcnYuYyAgICAgICAgICAgICAg
+ICAgIHwgOTAgKysrKysrKysrKysrKysrKysrKy0tLQo+ID4gPiAgaW5jbHVkZS9zb3VuZC90ZGE5
+OTh4LmggICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgOCArKwo+ID4gPiAgMyBmaWxlcyBj
+aGFuZ2VkLCAxNDAgaW5zZXJ0aW9ucygrKSwgOSBkZWxldGlvbnMoLSkKPiA+ID4gIGNyZWF0ZSBt
+b2RlIDEwMDY0NCBpbmNsdWRlL3NvdW5kL3RkYTk5OHguaAo+ID4gPiAKPiA+ID4gZGlmZiAtLWdp
+dCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L2JyaWRnZS90ZGE5
+OTh4LnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L2JyaWRn
+ZS90ZGE5OTh4LnR4dAo+ID4gPiBpbmRleCBlOWU0YmNlLi4zNWY2YTgwIDEwMDY0NAo+ID4gPiAt
+LS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9icmlkZ2UvdGRh
+OTk4eC50eHQKPiA+ID4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rp
+c3BsYXkvYnJpZGdlL3RkYTk5OHgudHh0Cj4gPiA+IEBAIC0xNiw2ICsxNiwzNSBAQCBPcHRpb25h
+bCBwcm9wZXJ0aWVzOgo+ID4gPiAgCj4gPiA+ICAgIC0gdmlkZW8tcG9ydHM6IDI0IGJpdHMgdmFs
+dWUgd2hpY2ggZGVmaW5lcyBob3cgdGhlIHZpZGVvIGNvbnRyb2xsZXIKPiA+ID4gIAlvdXRwdXQg
+aXMgd2lyZWQgdG8gdGhlIFREQTk5OHggaW5wdXQgLSBkZWZhdWx0OiA8MHgyMzAxNDU+Cj4gPiA+
+ICsJVGhpcyBwcm9wZXJ0eSBpcyBub3QgdXNlZCB3aGVuIHBvcnRzIGFyZSBkZWZpbmVkLgo+ID4g
+PiArCj4gPiA+ICtPcHRpb25hbCBub2RlczoKPiA+ID4gKwo+ID4gPiArICAtIHBvcnQ6IHVwIHRv
+IHRocmVlIHBvcnRzLgo+ID4gPiArCVRoZSBwb3J0cyBhcmUgZGVmaW5lZCBhY2NvcmRpbmcgdG8g
+WzFdLgo+ID4gPiArCj4gPiA+ICsgICAgVmlkZW8gcG9ydC4KPiA+ID4gKwlUaGVyZSBtYXkgYmUg
+b25seSBvbmUgdmlkZW8gcG9ydC4KPiA+ID4gKwlUaGlzIG9uZSBtdXN0IGNvbnRhaW4gdGhlIGZv
+bGxvd2luZyBwcm9wZXJ0eToKPiA+ID4gKwo+ID4gPiArCS0gcG9ydC10eXBlOiBtdXN0IGJlICJy
+Z2IiCj4gPiAKPiA+IFRoaXMgc2hvdWxkIGJlIGltcGxpZWQgZnJvbSB0aGUgcG9ydCB1bml0IGFk
+ZHJlc3MuIEluIG90aGVyIHdvcmRzLCAKPiA+IHBvcnRAMCBpcyBkZWZpbmVkIHRvIGJlIHRoZSBy
+Z2IgcG9ydC4gTm93LCBpZiB0aGlzIGlzIG9uZSBvZiBzZXZlcmFsIAo+ID4gbW9kZXMgZm9yIHRo
+ZSB2aWRlbyBwb3J0LCB0aGVuIHRoYXQgaXMgYSBkaWZmZXJlbnQgc3RvcnkuCj4gPiAKPiA+ID4g
+KwlhbmQgbWF5IGNvbnRhaW4gdGhlIG9wdGlvbmFsIHByb3BlcnR5Ogo+ID4gPiArCj4gPiA+ICsJ
+LSByZWc6IDI0IGJpdHMgdmFsdWUgd2hpY2ggZGVmaW5lcyBob3cgdGhlIHZpZGVvIGNvbnRyb2xs
+ZXIKPiA+ID4gKwkJb3V0cHV0IGlzIHdpcmVkIHRvIHRoZSBUREE5OTh4IGlucHV0ICh2aWRlbyBw
+aW5zKQo+ID4gPiArCQlXaGVuIGFic2VudCwgdGhlIGRlZmF1bHQgdmFsdWUgaXMgPDB4MjMwMTQ1
+Pi4KPiA+IAo+ID4gVGhpcyBpcyBub3QgcmVhbGx5IGhvdyByZWcgaXMgaW50ZW5kZWQgdG8gYmUg
+dXNlZC4gQ2FuIHlvdSBleHBsYWluIGhvdyAKPiA+IHRoaXMgdmFsdWUgaXMgZGV0ZXJtaW5lZD8K
+PiA+IAo+ID4gPiArICAgIEF1ZGlvIHBvcnRzLgo+ID4gPiArCVRoZXJlIG1heSBiZSBvbmUgb3Ig
+dHdvIGF1ZGlvIHBvcnRzLgo+ID4gPiArCVRoZXNlIG9uZXMgbXVzdCBjb250YWluIHRoZSBmb2xs
+b3dpbmcgcHJvcGVydGllczoKPiA+ID4gKwo+ID4gPiArCS0gcG9ydC10eXBlOiBtdXN0IGJlICJp
+MnMiIG9yICJzcGRpZiIKPiA+ID4gKwo+ID4gPiArCS0gcmVnOiA4IGJpdHMgdmFsdWUgd2hpY2gg
+ZGVmaW5lcyBob3cgdGhlIGF1ZGlvIGNvbnRyb2xsZXIKPiA+ID4gKwkJb3V0cHV0IGlzIHdpcmVk
+IHRvIHRoZSBUREE5OTh4IGlucHV0IChhdWRpbyBwaW5zKQo+ID4gCj4gPiBTYW1lIGhlcmUuCj4g
+Cj4gSGkgUm9iLAo+IAo+IFRoZXNlIGF1ZGlvL3ZpZGVvIHBvcnQgZGVmaW5pdGlvbnMgd2VyZSBk
+aXNjdXNzZWQgaW4gdGhlIHRocmVhZAo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+cGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxNS1BdWd1c3QvMDk1ODM2Lmh0bWwKPiBidXQsIHlvdSBh
+cmUgcmlnaHQsIGFuZCBhcyB5b3UgYWxyZWFkeSBzYWlkIGluIHRoZSB0aHJlYWQgCj4gaHR0cHM6
+Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvYXJjaGl2ZXMvZHJpLWRldmVsLzIwMTUtU2VwdGVtYmVy
+LzA5MDU0NC5odG1sCj4gJ3JlZycgc2hvdWxkIG5vdCBiZSB1c2VkIGhlcmUuCgpIb3dldmVyLCBl
+UEFQUiByZXF1aXJlcyB0aGF0IGEgbm9kZSBuYW1lIHdpdGggQG4gYWxzbyBoYXZlIGEgcmVnIHBy
+b3BlcnR5CndpdGggdGhlIHNhbWUgbiB2YWx1ZS4gIFNlZSBlUEFQUiAyLjIuMS4xLiAgVGhpcyBz
+dGF0ZW1lbnQgaW4gaXQgc2VlbXMKdG8gYmUgcGFydGljdWxhcmx5IGNsZWFyIG9uIHRoaXMgc3Vi
+amVjdDoKCiJUaGUgdW5pdC1hZGRyZXNzIG11c3QgbWF0Y2ggdGhlIGZpcnN0IGFkZHJlc3Mgc3Bl
+Y2lmaWVkIGluIHRoZSByZWcKcHJvcGVydHkgb2YgdGhlIG5vZGUuIElmIHRoZSBub2RlIGhhcyBu
+byByZWcgcHJvcGVydHksIHRoZSBAIGFuZAp1bml0LWFkZHJlc3MgbXVzdCBiZSBvbWl0dGVkIGFu
+ZCB0aGUgbm9kZS1uYW1lIGFsb25lIGRpZmZlcmVudGlhdGVzCnRoZSBub2RlIGZyb20gb3RoZXIg
+bm9kZXMgYXQgdGhlIHNhbWUgbGV2ZWwgaW4gdGhlIHRyZWUuIgoKLS0gClJNSydzIFBhdGNoIHN5
+c3RlbTogaHR0cDovL3d3dy5hcm0ubGludXgub3JnLnVrL2RldmVsb3Blci9wYXRjaGVzLwpGVFRD
+IGJyb2FkYmFuZCBmb3IgMC44bWlsZSBsaW5lOiBjdXJyZW50bHkgYXQgOS42TWJwcyBkb3duIDQw
+MGticHMgdXAKYWNjb3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQuCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRl
+dmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
