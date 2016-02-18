@@ -1,73 +1,75 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v2 3/5] ASoC: adau17x1: Add adau17x1 bindings document
-Date: Thu, 18 Feb 2016 08:37:31 -0600
-Message-ID: <20160218143731.GR9654@rob-hp-laptop>
-References: <1455627405-18155-1-git-send-email-andire@axis.com>
- <1455627405-18155-4-git-send-email-andire@axis.com>
+From: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: [RFC v4 0/8] ASoC: Add mediatek HDMI codec support
+Date: Thu, 18 Feb 2016 15:58:38 +0100
+Message-ID: <1455807526-16918-1-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1455627405-18155-4-git-send-email-andire@axis.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andreas =?iso-8859-1?Q?Irest=E5l?= <andreas.irestal@axis.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Andreas =?iso-8859-1?Q?Irest=E5l?= <andire@axis.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 16, 2016 at 01:56:43PM +0100, Andreas Irest=E5l wrote:
-> Signed-off-by: Andreas Irest=E5l <andire@axis.com>
-> ---
->  .../devicetree/bindings/sound/adi,adau17x1.txt     | 24 ++++++++++++=
-++++++++++
->  1 file changed, 24 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/adi,adau1=
-7x1.txt
->=20
-> diff --git a/Documentation/devicetree/bindings/sound/adi,adau17x1.txt=
- b/Documentation/devicetree/bindings/sound/adi,adau17x1.txt
-> new file mode 100644
-> index 0000000..8dbce0e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/adi,adau17x1.txt
-> @@ -0,0 +1,24 @@
-> +Analog Devices ADAU1361/ADAU1461/ADAU1761/ADAU1961/ADAU1381/ADAU1781
-> +
-> +Required properties:
-> +
-> + - compatible:		Should contain one of the following:
-> +			"adi,adau1361"
-> +			"adi,adau1461"
-> +			"adi,adau1761"
-> +			"adi,adau1961"
-> +			"adi,adau1381"
-> +			"adi,adau1781"
-> +
-> + - reg:			The i2c address. Value depends on the state of ADDR0
-> +			and ADDR1, as wired in hardware.
-> +
-> +Examples:
-> +#include <dt-bindings/sound/adau17x1.h>
-> +
-> +	i2c_bus {
-> +		adau1361@38 {
+Hi,
 
-codec@38
+these patches add an interface for Jyri's generic hdmi-codec driver [1] to
+the mediatek hdmi bridge driver. The accesses to the hcp->eld field are
+now locked by a mutex, and I have added a patch to use the hdmi helper
+function [2] for N/CTS calculation.
 
-Otherwise:
+Changes since v3:
+ - Add mutex to lock hcp->eld
+ - Use helper function for N and CTS calculation
 
-Acked-by: Rob Herring <robh@kernel.org>
+The mediatek drm patches apply on top of
+https://patchwork.kernel.org/patch/8337071/ ("drm/mediatek: Add HDMI support"),
+and need this patch:
+[2] https://patchwork.kernel.org/patch/8091531/ ("video: hdmi: add helper function for N and CTS")
+The asoc patches depend on these two patches:
+https://patchwork.kernel.org/patch/7215121/ ("ALSA: pcm: add IEC958 channel status helper for hw_params")
+[1] https://patchwork.kernel.org/patch/7215271/ ("ASoC: hdmi-codec: Add hdmi-codec for external HDMI-encoders")
 
+regards
+Philipp
 
-> +			compatible =3D "adi,adau1761";
-> +			reg =3D <0x38>;
-> +		};
-> +	};
-> --=20
-> 2.1.4
->=20
-> --
-> To unsubscribe from this list: send the line "unsubscribe devicetree"=
- in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Koro Chen (1):
+  ASoC: mediatek: Add HDMI dai-links in the machine driver
+
+Philipp Zabel (7):
+  drm/mediatek: hdmi: Add audio interface to the hdmi-codec driver
+  ASoC: mediatek: address dai link array entries by enum
+  video: rmk's HDMI notification prototype
+  drm/mediatek: hdmi: issue notifications
+  ASoC: hdmi-codec: Use HDMI notifications to add jack support
+  ASoC: hdmi-codec: Add ELD control
+  drm/mediatek: hdmi: use helper function for N and CTS calculation
+
+ .../bindings/sound/mt8173-rt5650-rt5676.txt        |   5 +-
+ drivers/gpu/drm/mediatek/Kconfig                   |   1 +
+ drivers/gpu/drm/mediatek/mtk_cec.c                 |  11 ++
+ drivers/gpu/drm/mediatek/mtk_drm_hdmi_drv.c        | 148 +++++++++++++++++
+ drivers/gpu/drm/mediatek/mtk_hdmi.c                |  89 +++++-----
+ drivers/gpu/drm/mediatek/mtk_hdmi.h                |  10 +-
+ drivers/gpu/drm/mediatek/mtk_hdmi_hw.c             | 179 ++++-----------------
+ drivers/gpu/drm/mediatek/mtk_hdmi_hw.h             |   4 +-
+ drivers/video/Makefile                             |   2 +-
+ drivers/video/hdmi-not.c                           |  61 +++++++
+ include/linux/hdmi-not.h                           |  39 +++++
+ include/sound/hdmi-codec.h                         |   6 +
+ sound/soc/codecs/hdmi-codec.c                      | 123 +++++++++++++-
+ sound/soc/mediatek/mt8173-rt5650-rt5676.c          |  66 +++++++-
+ 14 files changed, 528 insertions(+), 216 deletions(-)
+ create mode 100644 drivers/video/hdmi-not.c
+ create mode 100644 include/linux/hdmi-not.h
+
+-- 
+2.7.0
