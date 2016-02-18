@@ -1,52 +1,90 @@
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: Re: [PATCH v5] portman2x4 - use new parport device model
-Date: Thu, 18 Feb 2016 16:07:59 +0530
-Message-ID: <20160218103747.GA12223@sudip-pc>
-References: <1455713787-13382-1-git-send-email-sudipm.mukherjee@gmail.com>
- <s5hvb5muxoz.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC 0/4] Add support for DAI link addition
+ dynamically
+Date: Thu, 18 Feb 2016 13:39:10 +0000
+Message-ID: <20160218133910.GC7129@sirena.org.uk>
+References: <1455538772-24926-1-git-send-email-vaibhav.agarwal@linaro.org>
+ <56C1DF0F.4080503@metafoo.de> <56C40AA9.4050008@linux.intel.com>
+ <56C42E71.8030805@linux.intel.com>
+ <CANQOkFEnNn8JVeFfgFzBd+-SdFB6jF4fbNHo64ArmDcXypJNAg@mail.gmail.com>
+ <56C5554F.6060800@linux.intel.com>
+ <CANQOkFHMEeSQY1hVBrQX_YFTf48pD3yBsecG79C1qT1=5=2PMA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5hvb5muxoz.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============3599858370797234280=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6BA3F26062B
+ for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2016 14:39:22 +0100 (CET)
+In-Reply-To: <CANQOkFHMEeSQY1hVBrQX_YFTf48pD3yBsecG79C1qT1=5=2PMA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vaibhav Agarwal <vaibhav.agarwal@linaro.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@linux.intel.com>, vinod.koul@intel.com, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 18, 2016 at 11:20:28AM +0100, Takashi Iwai wrote:
-> On Wed, 17 Feb 2016 13:56:27 +0100,
-> Sudip Mukherjee wrote:
-> > 
-> > Modify portman driver to use the new parallel port device model.
-> > The advantage of using the device model is that the device gets binded
-> > to the hardware, we get the feature of hotplug, we can bind/unbind
-> > the driver at runtime.
-> > The changes are in the way the driver gets registered with the
-> > parallel port subsystem and the temporary device to probe portman card
-> > is removed and portman_probe() is used in the probe callback.
-> > 
-> > Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
-> > ---
-> > 
-> > v5: claimed flag and one call to parport_claim() removed.
-> > v4: temporary device to probe is removed.
-> > v3: changed commit message
-> > v2:
-> >  1. pardev_cb is initialized while declaring, thus removing the use of
-> >  memset.
-> >  2. used pdev->id.
-> >  3. v1 did not have the parport probe callback, but we will need the
-> >  probe callback for binding as the name of the driver and the name of
-> >  the device is different.
-> >  4. in v1 I missed modifying snd_portman_probe_port().
-> 
-> OK, I merged this one to for-next branch now.  Let's cross fingers :)
 
-Thanks.
-Its simple change, nothing should happen.
-I will send you the other one in few days time if 0day does not report
-anything on this patch.
+--===============3599858370797234280==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ghzN8eJ9Qlbqn3iT"
+Content-Disposition: inline
 
-regards
-sudip
+
+--ghzN8eJ9Qlbqn3iT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Feb 18, 2016 at 01:27:26PM +0530, Vaibhav Agarwal wrote:
+
+> Yes, I agree machine driver is the real owner of soc card & should
+> decide/choose on possible capabilities of codec. Also, codec may wish
+> to choose from different soc cards registered based on the
+> functionality supported. Say, performance mode using I2S interface,
+> otherwise feature mode (supporting multichannel, etc.) using PCM
+> interface or may be via USB interface.
+
+No, the driver should offer whatever the hardware is capable of doing
+and let userspace make any policy decisions.
+
+> In case we are using generic codec driver (existing in
+> sound/soc/codecs), it would need a helper driver to glue it to soc
+> card dynamically. Otherwise, for a specific platform, we can have a
+> wrapper codec driver that can fetch capabilities of removable codec
+> (may be via binary data) and expose them to already known soc cards
+> for that device.
+
+It sounds like there might be some review concerns with some of this
+stuff...
+
+--ghzN8eJ9Qlbqn3iT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWxcl9AAoJECTWi3JdVIfQ5j8H/2irQuHM8omhorD3Rt8bp3JG
+WhSSDskO1fzrREX9NwOxW9zD8DBIK5hfyQ4LKwFDByJF5s+OBN05/cut3J7zyZin
+7fY+WoAMttMtXwxXc1e4GFitzIXTeuO2+nMoIjDiKWFt9WXG/jYr+MxOjzPlBWkQ
+R2mrqJxBsZcFhlaCZChspT5PWAd2J0lgKTbxsODAJhTBM5B4kznullPsky7KbkEr
+j1n/UAzxpHICBe6wkFlo6EO/1Q+jURUruPosCtNIHI/bL5XMr/8cz/eFdIRJt6cl
+v8dB7NCW+cHEi7IXWXvr6DHeOQkE07xECaNDyjEgbA44GBL80Hdtm7ynv+cqeyk=
+=CHkC
+-----END PGP SIGNATURE-----
+
+--ghzN8eJ9Qlbqn3iT--
+
+--===============3599858370797234280==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3599858370797234280==--
