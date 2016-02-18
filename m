@@ -1,7 +1,8 @@
 From: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [RFC v4 7/8] ASoC: hdmi-codec: Add ELD control
-Date: Thu, 18 Feb 2016 16:02:20 +0100
-Message-ID: <1455807741-19122-5-git-send-email-p.zabel@pengutronix.de>
+Subject: [RFC v4 8/8] drm/mediatek: hdmi: use helper function for N and CTS
+ calculation
+Date: Thu, 18 Feb 2016 16:02:21 +0100
+Message-ID: <1455807741-19122-6-git-send-email-p.zabel@pengutronix.de>
 References: <1455807526-16918-1-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,81 +22,125 @@ To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-ALSA doesn't know about all the different compressed audio formats,
-so there is no interface to let userspace enumerate the formats that
-are supported by the connected sink. Exporting the raw ELD bytes to
-userspace allows an application to select the appropriate audio format
-depending on the current capabilities of the connected HDMI sink device.
-Usually userspace then just pretends to ALSA that the data is in one of
-the raw 16-bit PCM audio formats and relies on the IEC controls to tell
-the sink how to interpret the data.
+Use the hdmi helper function [1] to calculate N and CTS.
+
+[1] https://patchwork.kernel.org/patch/8091531/ ("video: hdmi: add helper
+    function for N and CTS")
 
 Signed-off-by: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Reviewed-by: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Tested-by: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
 ---
-Changes since v3:
- - Expanded commit message
- - Add mutex to lock hcp->eld
----
- sound/soc/codecs/hdmi-codec.c | 38 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ drivers/gpu/drm/mediatek/mtk_hdmi_hw.c | 85 +++++++++-------------------------
+ 1 file changed, 21 insertions(+), 64 deletions(-)
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 7d5db11..9c4e65c 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -55,6 +55,42 @@ enum {
- 	DAI_ID_SPDIF,
+diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi_hw.c b/drivers/gpu/drm/mediatek/mtk_hdmi_hw.c
+index 6acbe77..9be50f5 100644
+--- a/drivers/gpu/drm/mediatek/mtk_hdmi_hw.c
++++ b/drivers/gpu/drm/mediatek/mtk_hdmi_hw.c
+@@ -492,65 +492,6 @@ static const struct hdmi_acr_n hdmi_rec_n_table[] = {
+ 	{      0, {  4096,  6272,  6144 } }, /* all other TMDS clocks */
  };
  
-+static int hdmi_eld_ctl_info(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_info *uinfo)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
-+
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
-+	uinfo->count = sizeof(hcp->eld);
-+
-+	return 0;
-+}
-+
-+static int hdmi_eld_ctl_get(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
-+
-+	mutex_lock(&hcp->eld_lock);
-+	memcpy(ucontrol->value.bytes.data, hcp->eld, sizeof(hcp->eld));
-+	mutex_unlock(&hcp->eld_lock);
-+
-+	return 0;
-+}
-+
-+static const struct snd_kcontrol_new hdmi_controls[] = {
-+	{
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ |
-+			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name = "ELD",
-+		.info = hdmi_eld_ctl_info,
-+		.get = hdmi_eld_ctl_get,
-+	},
-+};
-+
- static void hdmi_codec_abort(struct device *dev)
+-/**
+- * hdmi_recommended_n() - Return N value recommended by HDMI specification
+- * @freq: audio sample rate in Hz
+- * @clock: rounded TMDS clock in kHz
+- */
+-static unsigned int hdmi_recommended_n(unsigned int freq, unsigned int clock)
+-{
+-	const struct hdmi_acr_n *recommended;
+-	unsigned int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(hdmi_rec_n_table) - 1; i++) {
+-		if (clock == hdmi_rec_n_table[i].clock)
+-			break;
+-	}
+-	recommended = hdmi_rec_n_table + i;
+-
+-	switch (freq) {
+-	case 32000:
+-		return recommended->n[0];
+-	case 44100:
+-		return recommended->n[1];
+-	case 48000:
+-		return recommended->n[2];
+-	case 88200:
+-		return recommended->n[1] * 2;
+-	case 96000:
+-		return recommended->n[2] * 2;
+-	case 176400:
+-		return recommended->n[1] * 4;
+-	case 192000:
+-		return recommended->n[2] * 4;
+-	default:
+-		return (128 * freq) / 1000;
+-	}
+-}
+-
+-static unsigned int hdmi_mode_clock_to_hz(unsigned int clock)
+-{
+-	switch (clock) {
+-	case 25175:
+-		return 25174825;	/* 25.2/1.001 MHz */
+-	case 74176:
+-		return 74175824;	/* 74.25/1.001 MHz */
+-	case 148352:
+-		return 148351648;	/* 148.5/1.001 MHz */
+-	case 296703:
+-		return 296703297;	/* 297/1.001 MHz */
+-	default:
+-		return clock * 1000;
+-	}
+-}
+-
+-static unsigned int hdmi_expected_cts(unsigned int audio_sample_rate,
+-				      unsigned int tmds_clock, unsigned int n)
+-{
+-	return DIV_ROUND_CLOSEST_ULL((u64)hdmi_mode_clock_to_hz(tmds_clock) * n,
+-				     128 * audio_sample_rate);
+-}
+-
+ static void do_hdmi_hw_aud_set_ncts(struct mtk_hdmi *hdmi, unsigned int n,
+ 				    unsigned int cts)
  {
- 	struct hdmi_codec_priv *hcp = dev_get_drvdata(dev);
-@@ -326,6 +362,8 @@ static const struct snd_soc_dai_driver hdmi_spdif_dai = {
- };
+@@ -575,18 +516,34 @@ static void do_hdmi_hw_aud_set_ncts(struct mtk_hdmi *hdmi, unsigned int n,
+ 		mtk_hdmi_write(hdmi, GRL_NCTS, val[i]);
+ }
  
- static struct snd_soc_codec_driver hdmi_codec = {
-+	.controls = hdmi_controls,
-+	.num_controls = ARRAY_SIZE(hdmi_controls),
- 	.dapm_widgets = hdmi_widgets,
- 	.num_dapm_widgets = ARRAY_SIZE(hdmi_widgets),
- 	.dapm_routes = hdmi_routes,
++static unsigned int hdmi_mode_clock_to_hz(unsigned int clock)
++{
++	switch (clock) {
++	case 25175:
++		return 25174825;	/* 25.2/1.001 MHz */
++	case 74176:
++		return 74175824;	/* 74.25/1.001 MHz */
++	case 148352:
++		return 148351648;	/* 148.5/1.001 MHz */
++	case 296703:
++		return 296703296;	/* 297/1.001 MHz */
++	default:
++		return clock * 1000;
++	}
++}
++
+ void mtk_hdmi_hw_aud_set_ncts(struct mtk_hdmi *hdmi, unsigned int sample_rate,
+ 			      unsigned int clock)
+ {
+-	unsigned int n, cts;
++	struct hdmi_audio_n_cts n_cts;
+ 
+-	n = hdmi_recommended_n(sample_rate, clock);
+-	cts = hdmi_expected_cts(sample_rate, clock, n);
++	hdmi_audio_get_coherent_n_cts(sample_rate, hdmi_mode_clock_to_hz(clock),
++				      &n_cts);
+ 
+ 	dev_dbg(hdmi->dev, "%s: sample_rate=%u, clock=%d, cts=%u, n=%u\n",
+-		__func__, sample_rate, clock, n, cts);
++		__func__, sample_rate, clock, n_cts.cts, n_cts.n);
+ 
+ 	mtk_hdmi_mask(hdmi, DUMMY_304, AUDIO_I2S_NCTS_SEL_64,
+ 		      AUDIO_I2S_NCTS_SEL);
+-	do_hdmi_hw_aud_set_ncts(hdmi, n, cts);
++	do_hdmi_hw_aud_set_ncts(hdmi, n_cts.n, n_cts.cts);
+ }
 -- 
 2.7.0
