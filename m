@@ -1,87 +1,197 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH RFC v5 4/8] drm/i2c: tda998x: Add support of a DT graph
- of ports
-Date: Thu, 18 Feb 2016 16:18:23 +0100
-Message-ID: <20160218161823.fc54c61bd0c5cee75ab59578@free.fr>
-References: <cover.1455720381.git.jsarha@ti.com>
- <842e221030a0b14bc862790eb2f5bc97bb29c012.1455720381.git.jsarha@ti.com>
- <20160218143530.GB9654@rob-hp-laptop>
+From: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [RFC v4 4/8] video: rmk's HDMI notification prototype
+Date: Thu, 18 Feb 2016 16:18:30 +0100
+Message-ID: <1455808710.3937.25.camel@pengutronix.de>
+References: <1455807526-16918-1-git-send-email-p.zabel@pengutronix.de>
+ <1455807741-19122-2-git-send-email-p.zabel@pengutronix.de>
+ <20160218150650.GR19428@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20160218143530.GB9654@rob-hp-laptop>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Rob Herring <robh@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, arnaud.pouliquen@st.com, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, broonie@kernel.org, bcousson@baylibre.com, rmk+kernel@arm.linux.org.uk, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <20160218150650.GR19428-l+eeeJia6m9vn6HldHNs0ANdhmdF6hFW@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
+Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCAxOCBGZWIgMjAxNiAwODozNTozMCAtMDYwMApSb2IgSGVycmluZyA8cm9iaEBrZXJu
-ZWwub3JnPiB3cm90ZToKCj4gT24gV2VkLCBGZWIgMTcsIDIwMTYgYXQgMDQ6NDk6MDVQTSArMDIw
-MCwgSnlyaSBTYXJoYSB3cm90ZToKPiA+IEZyb206IEplYW4tRnJhbmNvaXMgTW9pbmUgPG1vaW5l
-amZAZnJlZS5mcj4KPiA+IAo+ID4gVHdvIGtpbmRzIG9mIHBvcnRzIG1heSBiZSBkZWNsYXJlZCBp
-biBhIERUIGdyYXBoIG9mIHBvcnRzOiB2aWRlbyBhbmQgYXVkaW8uCj4gPiBUaGlzIHBhdGNoIGFj
-Y2VwdHMgdGhlIHBvcnQgdmFsdWUgZnJvbSBhIHZpZGVvIHBvcnQgYXMgYW4gYWx0ZXJuYXRpdmUK
-PiA+IHRvIHRoZSB2aWRlby1wb3J0cyBwcm9wZXJ0eS4KPiA+IEl0IGFsc28gYWNjZXB0cyBhdWRp
-byBwb3J0cyBpbiB0aGUgY2FzZSB0aGUgdHJhbnNtaXR0ZXIgaXMgbm90IHVzZWQgYXMKPiA+IGEg
-c2xhdmUgZW5jb2Rlci4KPiA+IFRoZSBuZXcgZmlsZSBpbmNsdWRlL3NvdW5kL3RkYTk5OHguaCBw
-cmVwYXJlcyB0byB0aGUgZGVmaW5pdGlvbiBvZgo+ID4gYSB0ZGE5OTh4IENPREVDLgo+ID4gCj4g
-PiBTaWduZWQtb2ZmLWJ5OiBKZWFuLUZyYW5jb2lzIE1vaW5lIDxtb2luZWpmQGZyZWUuZnI+Cj4g
-PiBTaWduZWQtb2ZmLWJ5OiBKeXJpIFNhcmhhIDxqc2FyaGFAdGkuY29tPgo+ID4gLS0tCj4gPiAg
-Li4uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9icmlkZ2UvdGRhOTk4eC50eHQgfCA1MSAr
-KysrKysrKysrKysKPiA+ICBkcml2ZXJzL2dwdS9kcm0vaTJjL3RkYTk5OHhfZHJ2LmMgICAgICAg
-ICAgICAgICAgICB8IDkwICsrKysrKysrKysrKysrKysrKystLS0KPiA+ICBpbmNsdWRlL3NvdW5k
-L3RkYTk5OHguaCAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICA4ICsrCj4gPiAgMyBmaWxl
-cyBjaGFuZ2VkLCAxNDAgaW5zZXJ0aW9ucygrKSwgOSBkZWxldGlvbnMoLSkKPiA+ICBjcmVhdGUg
-bW9kZSAxMDA2NDQgaW5jbHVkZS9zb3VuZC90ZGE5OTh4LmgKPiA+IAo+ID4gZGlmZiAtLWdpdCBh
-L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L2JyaWRnZS90ZGE5OTh4
-LnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L2JyaWRnZS90
-ZGE5OTh4LnR4dAo+ID4gaW5kZXggZTllNGJjZS4uMzVmNmE4MCAxMDA2NDQKPiA+IC0tLSBhL0Rv
-Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L2JyaWRnZS90ZGE5OTh4LnR4
-dAo+ID4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvYnJp
-ZGdlL3RkYTk5OHgudHh0Cj4gPiBAQCAtMTYsNiArMTYsMzUgQEAgT3B0aW9uYWwgcHJvcGVydGll
-czoKPiA+ICAKPiA+ICAgIC0gdmlkZW8tcG9ydHM6IDI0IGJpdHMgdmFsdWUgd2hpY2ggZGVmaW5l
-cyBob3cgdGhlIHZpZGVvIGNvbnRyb2xsZXIKPiA+ICAJb3V0cHV0IGlzIHdpcmVkIHRvIHRoZSBU
-REE5OTh4IGlucHV0IC0gZGVmYXVsdDogPDB4MjMwMTQ1Pgo+ID4gKwlUaGlzIHByb3BlcnR5IGlz
-IG5vdCB1c2VkIHdoZW4gcG9ydHMgYXJlIGRlZmluZWQuCj4gPiArCj4gPiArT3B0aW9uYWwgbm9k
-ZXM6Cj4gPiArCj4gPiArICAtIHBvcnQ6IHVwIHRvIHRocmVlIHBvcnRzLgo+ID4gKwlUaGUgcG9y
-dHMgYXJlIGRlZmluZWQgYWNjb3JkaW5nIHRvIFsxXS4KPiA+ICsKPiA+ICsgICAgVmlkZW8gcG9y
-dC4KPiA+ICsJVGhlcmUgbWF5IGJlIG9ubHkgb25lIHZpZGVvIHBvcnQuCj4gPiArCVRoaXMgb25l
-IG11c3QgY29udGFpbiB0aGUgZm9sbG93aW5nIHByb3BlcnR5Ogo+ID4gKwo+ID4gKwktIHBvcnQt
-dHlwZTogbXVzdCBiZSAicmdiIgo+IAo+IFRoaXMgc2hvdWxkIGJlIGltcGxpZWQgZnJvbSB0aGUg
-cG9ydCB1bml0IGFkZHJlc3MuIEluIG90aGVyIHdvcmRzLCAKPiBwb3J0QDAgaXMgZGVmaW5lZCB0
-byBiZSB0aGUgcmdiIHBvcnQuIE5vdywgaWYgdGhpcyBpcyBvbmUgb2Ygc2V2ZXJhbCAKPiBtb2Rl
-cyBmb3IgdGhlIHZpZGVvIHBvcnQsIHRoZW4gdGhhdCBpcyBhIGRpZmZlcmVudCBzdG9yeS4KPiAK
-PiA+ICsJYW5kIG1heSBjb250YWluIHRoZSBvcHRpb25hbCBwcm9wZXJ0eToKPiA+ICsKPiA+ICsJ
-LSByZWc6IDI0IGJpdHMgdmFsdWUgd2hpY2ggZGVmaW5lcyBob3cgdGhlIHZpZGVvIGNvbnRyb2xs
-ZXIKPiA+ICsJCW91dHB1dCBpcyB3aXJlZCB0byB0aGUgVERBOTk4eCBpbnB1dCAodmlkZW8gcGlu
-cykKPiA+ICsJCVdoZW4gYWJzZW50LCB0aGUgZGVmYXVsdCB2YWx1ZSBpcyA8MHgyMzAxNDU+Lgo+
-IAo+IFRoaXMgaXMgbm90IHJlYWxseSBob3cgcmVnIGlzIGludGVuZGVkIHRvIGJlIHVzZWQuIENh
-biB5b3UgZXhwbGFpbiBob3cgCj4gdGhpcyB2YWx1ZSBpcyBkZXRlcm1pbmVkPwo+IAo+ID4gKyAg
-ICBBdWRpbyBwb3J0cy4KPiA+ICsJVGhlcmUgbWF5IGJlIG9uZSBvciB0d28gYXVkaW8gcG9ydHMu
-Cj4gPiArCVRoZXNlIG9uZXMgbXVzdCBjb250YWluIHRoZSBmb2xsb3dpbmcgcHJvcGVydGllczoK
-PiA+ICsKPiA+ICsJLSBwb3J0LXR5cGU6IG11c3QgYmUgImkycyIgb3IgInNwZGlmIgo+ID4gKwo+
-ID4gKwktIHJlZzogOCBiaXRzIHZhbHVlIHdoaWNoIGRlZmluZXMgaG93IHRoZSBhdWRpbyBjb250
-cm9sbGVyCj4gPiArCQlvdXRwdXQgaXMgd2lyZWQgdG8gdGhlIFREQTk5OHggaW5wdXQgKGF1ZGlv
-IHBpbnMpCj4gCj4gU2FtZSBoZXJlLgoKSGkgUm9iLAoKVGhlc2UgYXVkaW8vdmlkZW8gcG9ydCBk
-ZWZpbml0aW9ucyB3ZXJlIGRpc2N1c3NlZCBpbiB0aGUgdGhyZWFkCmh0dHA6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxNS1BdWd1c3QvMDk1ODM2Lmh0
-bWwKYnV0LCB5b3UgYXJlIHJpZ2h0LCBhbmQgYXMgeW91IGFscmVhZHkgc2FpZCBpbiB0aGUgdGhy
-ZWFkIApodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9hcmNoaXZlcy9kcmktZGV2ZWwvMjAx
-NS1TZXB0ZW1iZXIvMDkwNTQ0Lmh0bWwKJ3JlZycgc2hvdWxkIG5vdCBiZSB1c2VkIGhlcmUuCgpJ
-IHdvdWxkIGhhdmUgY2hhbmdlZCB0byAncG9ydC12YWx1ZScsIGJ1dCBhcyBJIHdpbGwgbm90IHVw
-ZGF0ZSB0aGUKa2VybmVsIG9mIG15IERvdmUgQ3Vib3ggYW55bW9yZSwgSSB3aWxsIG5vdCBwcm9w
-b3NlIGEgbmV3IHZlcnNpb24gb2YKdGhpcyBwYXRjaCAoYW5kLCBzb3JyeSBKeXJpLCBJIHdpbGwg
-bm90IHRlc3QgeW91ciBwYXRjaCBzZXJpZXMpLgoKLS0gCktlbiBhciBjJ2hlbnRhw7EJfAkgICAg
-ICAqKiBCcmVpemggaGEgTGludXggYXRhdiEgKioKSmVmCQl8CQlodHRwOi8vbW9pbmVqZi5mcmVl
-LmZyLwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJp
-LWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBz
-Oi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+Hi Russell,
+
+Am Donnerstag, den 18.02.2016, 15:06 +0000 schrieb Russell King - ARM
+Linux:
+> On Thu, Feb 18, 2016 at 04:02:17PM +0100, Philipp Zabel wrote:
+> > This is extracted from Russell's food for thought HDMI notification
+> > prototype [1]. I've put it into drivers/video for the time being because
+> > my kernels don't have drivers/cec yet.
+> 
+> I see it's also the old version still - this is my latest version, only
+> subtly different in terms of the file naming and Kconfig option name.
+> Functionally the same.
+
+Thank you for the update. Have you sent (or do you intend to send) this
+separately somewhere? I could then reference it and drop the patch from
+this series.
+Or I could add your signoff and keep the new patch as part of this
+series, if you'd prefer.
+
+best regards
+Philipp
+
+>  drivers/video/Kconfig         |  3 +++
+>  drivers/video/Makefile        |  1 +
+>  drivers/video/hdmi-notifier.c | 61 +++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/hdmi-notifier.h | 44 +++++++++++++++++++++++++++++++
+>  4 files changed, 109 insertions(+)
+> 
+> diff --git a/drivers/video/Kconfig b/drivers/video/Kconfig
+> index e0606c01e8ac..193649c8a951 100644
+> --- a/drivers/video/Kconfig
+> +++ b/drivers/video/Kconfig
+> @@ -40,6 +40,9 @@ config VIDEOMODE_HELPERS
+>  config HDMI
+>  	bool
+>  
+> +config HDMI_NOTIFIERS
+> +	bool
+> +
+>  if VT
+>  	source "drivers/video/console/Kconfig"
+>  endif
+> diff --git a/drivers/video/Makefile b/drivers/video/Makefile
+> index 9ad3c17d6456..65f564906fb4 100644
+> --- a/drivers/video/Makefile
+> +++ b/drivers/video/Makefile
+> @@ -1,5 +1,6 @@
+>  obj-$(CONFIG_VGASTATE)            += vgastate.o
+>  obj-$(CONFIG_HDMI)                += hdmi.o
+> +obj-$(CONFIG_HDMI_NOTIFIERS)      += hdmi-notifier.o
+>  
+>  obj-$(CONFIG_VT)		  += console/
+>  obj-$(CONFIG_LOGO)		  += logo/
+> diff --git a/drivers/video/hdmi-notifier.c b/drivers/video/hdmi-notifier.c
+> new file mode 100644
+> index 000000000000..a233359cacfa
+> --- /dev/null
+> +++ b/drivers/video/hdmi-notifier.c
+> @@ -0,0 +1,61 @@
+> +#include <linux/export.h>
+> +#include <linux/hdmi-notifier.h>
+> +#include <linux/notifier.h>
+> +#include <linux/string.h>
+> +
+> +static BLOCKING_NOTIFIER_HEAD(hdmi_notifier);
+> +
+> +int hdmi_register_notifier(struct notifier_block *nb)
+> +{
+> +	return blocking_notifier_chain_register(&hdmi_notifier, nb);
+> +}
+> +EXPORT_SYMBOL_GPL(hdmi_register_notifier);
+> +
+> +int hdmi_unregister_notifier(struct notifier_block *nb)
+> +{
+> +	return blocking_notifier_chain_unregister(&hdmi_notifier, nb);
+> +}
+> +EXPORT_SYMBOL_GPL(hdmi_unregister_notifier);
+> +
+> +void hdmi_event_connect(struct device *dev)
+> +{
+> +	struct hdmi_event_base base;
+> +
+> +	base.source = dev;
+> +
+> +	blocking_notifier_call_chain(&hdmi_notifier, HDMI_CONNECTED, &base);
+> +}
+> +EXPORT_SYMBOL_GPL(hdmi_event_connect);
+> +
+> +void hdmi_event_disconnect(struct device *dev)
+> +{
+> +	struct hdmi_event_base base;
+> +
+> +	base.source = dev;
+> +
+> +	blocking_notifier_call_chain(&hdmi_notifier, HDMI_DISCONNECTED, &base);
+> +}
+> +EXPORT_SYMBOL_GPL(hdmi_event_disconnect);
+> +
+> +void hdmi_event_new_edid(struct device *dev, const void *edid, size_t size)
+> +{
+> +	struct hdmi_event_new_edid new_edid;
+> +
+> +	new_edid.base.source = dev;
+> +	new_edid.edid = edid;
+> +	new_edid.size = size;
+> +
+> +	blocking_notifier_call_chain(&hdmi_notifier, HDMI_NEW_EDID, &new_edid);
+> +}
+> +EXPORT_SYMBOL_GPL(hdmi_event_new_edid);
+> +
+> +void hdmi_event_new_eld(struct device *dev, const void *eld)
+> +{
+> +	struct hdmi_event_new_eld new_eld;
+> +
+> +	new_eld.base.source = dev;
+> +	memcpy(new_eld.eld, eld, sizeof(new_eld.eld));
+> +
+> +	blocking_notifier_call_chain(&hdmi_notifier, HDMI_NEW_ELD, &new_eld);
+> +}
+> +EXPORT_SYMBOL_GPL(hdmi_event_new_eld);
+> diff --git a/include/linux/hdmi-notifier.h b/include/linux/hdmi-notifier.h
+> new file mode 100644
+> index 000000000000..9c5ad498f610
+> --- /dev/null
+> +++ b/include/linux/hdmi-notifier.h
+> @@ -0,0 +1,44 @@
+> +#ifndef LINUX_HDMI_NOTIFIER_H
+> +#define LINUX_HDMI_NOTIFIER_H
+> +
+> +#include <linux/types.h>
+> +
+> +enum {
+> +	HDMI_CONNECTED,
+> +	HDMI_DISCONNECTED,
+> +	HDMI_NEW_EDID,
+> +	HDMI_NEW_ELD,
+> +};
+> +
+> +struct hdmi_event_base {
+> +	struct device *source;
+> +};
+> +
+> +struct hdmi_event_new_edid {
+> +	struct hdmi_event_base base;
+> +	const void *edid;
+> +	size_t size;
+> +};
+> +
+> +struct hdmi_event_new_eld {
+> +	struct hdmi_event_base base;
+> +	unsigned char eld[128];
+> +};
+> +
+> +union hdmi_event {
+> +	struct hdmi_event_base base;
+> +	struct hdmi_event_new_edid edid;
+> +	struct hdmi_event_new_eld eld;
+> +};
+> +
+> +struct notifier_block;
+> +
+> +int hdmi_register_notifier(struct notifier_block *nb);
+> +int hdmi_unregister_notifier(struct notifier_block *nb);
+> +
+> +void hdmi_event_connect(struct device *dev);
+> +void hdmi_event_disconnect(struct device *dev);
+> +void hdmi_event_new_edid(struct device *dev, const void *edid, size_t size);
+> +void hdmi_event_new_eld(struct device *dev, const void *eld);
+> +
+> +#endif
+> 
+> 
