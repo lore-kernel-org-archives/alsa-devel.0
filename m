@@ -1,14 +1,17 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 1/3] ASoC: Intel: Skylake: fix pointer scaling
-Date: Fri, 19 Feb 2016 11:42:32 +0530
-Message-ID: <1455862354-6455-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 2/3] ASoC: Intel: Skylake: remove bogus
+	comparison of an array with NULL
+Date: Fri, 19 Feb 2016 11:42:33 +0530
+Message-ID: <1455862354-6455-2-git-send-email-vinod.koul@intel.com>
+References: <1455862354-6455-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C9D9261521
+ by alsa0.perex.cz (Postfix) with ESMTP id 2BDD1261ADA
  for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2016 07:08:53 +0100 (CET)
+In-Reply-To: <1455862354-6455-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,27 +27,28 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Alan <gnomes@lxorguk.ukuu.org.uk>
 
-skl_tplg_tlv_control_set does pointer maths on data but forgets that data
-is not uint8_t so the maths is already scaled in the pointer type.
+dfw_ac->params is an array not a pointer. It will never be NULL. The check
+on ac->max appears sufficient.
 
 Signed-off-by: Alan Cox <alan@linux.intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-topology.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-topology.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index ba0d02d1613e..22a9e6fe1c05 100644
+index 22a9e6fe1c05..99f50a034e1d 100644
 --- a/sound/soc/intel/skylake/skl-topology.c
 +++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -1111,7 +1111,7 @@ static int skl_tplg_tlv_control_set(struct snd_kcontrol *kcontrol,
- 				return -EFAULT;
- 		} else {
- 			if (copy_from_user(ac->params,
--					   data + 2 * sizeof(u32), size))
-+					   data + 2, size))
- 				return -EFAULT;
- 		}
+@@ -1657,8 +1657,7 @@ static int skl_init_algo_data(struct device *dev, struct soc_bytes_ext *be,
+ 		if (!ac->params)
+ 			return -ENOMEM;
  
+-		if (dfw_ac->params)
+-			memcpy(ac->params, dfw_ac->params, ac->max);
++		memcpy(ac->params, dfw_ac->params, ac->max);
+ 	}
+ 
+ 	be->dobj.private  = ac;
 -- 
 1.9.1
