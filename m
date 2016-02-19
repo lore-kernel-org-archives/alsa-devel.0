@@ -1,48 +1,146 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: Closing the pcm streams
-Date: Fri, 19 Feb 2016 09:58:09 +0530
-Message-ID: <20160219042809.GL19598@localhost>
-References: <CAAVaN8wroWe7xQCAnSsx_G0ruuRLiDivL2oXuFZ7U9YGGTsRow@mail.gmail.com>
+From: Anand Moon <linux.amoon@gmail.com>
+Subject: Re: [PATCH] ASoC: samsung: Use IRQ safe spin lock calls
+Date: Fri, 19 Feb 2016 10:19:59 +0530
+Message-ID: <CANAwSgR1b6jL6RP4SyFGS8o8geaFu29bMZntXLCLj8-H7gzidw@mail.gmail.com>
+References: <1455810433-10305-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 955762614AC
- for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2016 05:24:18 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <CAAVaN8wroWe7xQCAnSsx_G0ruuRLiDivL2oXuFZ7U9YGGTsRow@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Ng <andreas2025@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1455810433-10305-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Kim Sangbeom <sbkim73@samsung.com>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 18, 2016 at 06:46:04PM +0000, Andy Ng wrote:
-> Hello,
-> 
-> I am working on a system that a DSP provides the audio algorithms and
-> in case where the DSP crashes, I would like to shutdown nicely any
-> opened PCM streams.
-> The DSP has an RPC protocol to the external world. I use a small
-> watchdog on ARM to monitor the "health" of the DSP. When the DSP goes
-> down, I reset it. However, I would like to close down smoothly the PCM
-> streams and inform the user that there was an error while playing.  Is
-> there any way to inform the ALSA kernel framework in the kernel that a
-> specific PCM stream gone bad? Where is the best point to reset ALSA
-> kernel framework?
+hi Charles,
 
-In your driver...
+On 18 February 2016 at 21:17, Charles Keepax
+<ckeepax@opensource.wolfsonmicro.com> wrote:
+> Lockdep warns of a potential lock inversion, i2s->lock is held numerous
+> times whilst we are under the substream lock (snd_pcm_stream_lock). If
+> we use the IRQ unsafe spin lock calls, you can also end up locking
+> snd_pcm_stream_lock whilst under i2s->lock (if an IRQ happens whilst we
+> are holding i2s->lock). This could result in deadlock.
+>
+> [   18.147001]        CPU0                    CPU1
+> [   18.151509]        ----                    ----
+> [   18.156022]   lock(&(&pri_dai->spinlock)->rlock);
+> [   18.160701]                                local_irq_disable();
+> [   18.166622]                                lock(&(&substream->self_group.lock)->rlock);
+> [   18.174595]                                lock(&(&pri_dai->spinlock)->rlock);
+> [   18.181806]   <Interrupt>
+> [   18.184408]     lock(&(&substream->self_group.lock)->rlock);
+> [   18.190045]
+> [   18.190045]  *** DEADLOCK ***
+>
+> This patch changes to using the irq safe spinlock calls, to avoid this
+> issue.
+>
+> Fixes: ce8bcdbb61d9 ("ASoC: samsung: i2s: Protect more registers with a spinlock")
+> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/samsung/i2s.c | 21 ++++++++++++---------
+>  1 file changed, 12 insertions(+), 9 deletions(-)
+>
+> diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+> index 84d9e77..70a2559 100644
+> --- a/sound/soc/samsung/i2s.c
+> +++ b/sound/soc/samsung/i2s.c
+> @@ -481,10 +481,11 @@ static int i2s_set_sysclk(struct snd_soc_dai *dai,
+>         unsigned int cdcon_mask = 1 << i2s_regs->cdclkcon_off;
+>         unsigned int rsrc_mask = 1 << i2s_regs->rclksrc_off;
+>         u32 mod, mask, val = 0;
+> +       unsigned long flags;
+>
+> -       spin_lock(i2s->lock);
+> +       spin_lock_irqsave(i2s->lock, flags);
+>         mod = readl(i2s->addr + I2SMOD);
+> -       spin_unlock(i2s->lock);
+> +       spin_unlock_irqrestore(i2s->lock, flags);
+>
+>         switch (clk_id) {
+>         case SAMSUNG_I2S_OPCLK:
+> @@ -575,11 +576,11 @@ static int i2s_set_sysclk(struct snd_soc_dai *dai,
+>                 return -EINVAL;
+>         }
+>
+> -       spin_lock(i2s->lock);
+> +       spin_lock_irqsave(i2s->lock, flags);
+>         mod = readl(i2s->addr + I2SMOD);
+>         mod = (mod & ~mask) | val;
+>         writel(mod, i2s->addr + I2SMOD);
+> -       spin_unlock(i2s->lock);
+> +       spin_unlock_irqrestore(i2s->lock, flags);
+>
+>         return 0;
+>  }
+> @@ -590,6 +591,7 @@ static int i2s_set_fmt(struct snd_soc_dai *dai,
+>         struct i2s_dai *i2s = to_info(dai);
+>         int lrp_shift, sdf_shift, sdf_mask, lrp_rlow, mod_slave;
+>         u32 mod, tmp = 0;
+> +       unsigned long flags;
+>
+>         lrp_shift = i2s->variant_regs->lrp_off;
+>         sdf_shift = i2s->variant_regs->sdf_off;
+> @@ -649,7 +651,7 @@ static int i2s_set_fmt(struct snd_soc_dai *dai,
+>                 return -EINVAL;
+>         }
+>
+> -       spin_lock(i2s->lock);
+> +       spin_lock_irqsave(i2s->lock, flags);
+>         mod = readl(i2s->addr + I2SMOD);
+>         /*
+>          * Don't change the I2S mode if any controller is active on this
+> @@ -657,7 +659,7 @@ static int i2s_set_fmt(struct snd_soc_dai *dai,
+>          */
+>         if (any_active(i2s) &&
+>                 ((mod & (sdf_mask | lrp_rlow | mod_slave)) != tmp)) {
+> -               spin_unlock(i2s->lock);
+> +               spin_unlock_irqrestore(i2s->lock, flags);
+>                 dev_err(&i2s->pdev->dev,
+>                                 "%s:%d Other DAI busy\n", __func__, __LINE__);
+>                 return -EAGAIN;
+> @@ -666,7 +668,7 @@ static int i2s_set_fmt(struct snd_soc_dai *dai,
+>         mod &= ~(sdf_mask | lrp_rlow | mod_slave);
+>         mod |= tmp;
+>         writel(mod, i2s->addr + I2SMOD);
+> -       spin_unlock(i2s->lock);
+> +       spin_unlock_irqrestore(i2s->lock, flags);
+>
+>         return 0;
+>  }
+> @@ -676,6 +678,7 @@ static int i2s_hw_params(struct snd_pcm_substream *substream,
+>  {
+>         struct i2s_dai *i2s = to_info(dai);
+>         u32 mod, mask = 0, val = 0;
+> +       unsigned long flags;
+>
+>         if (!is_secondary(i2s))
+>                 mask |= (MOD_DC2_EN | MOD_DC1_EN);
+> @@ -744,11 +747,11 @@ static int i2s_hw_params(struct snd_pcm_substream *substream,
+>                 return -EINVAL;
+>         }
+>
+> -       spin_lock(i2s->lock);
+> +       spin_lock_irqsave(i2s->lock, flags);
+>         mod = readl(i2s->addr + I2SMOD);
+>         mod = (mod & ~mask) | val;
+>         writel(mod, i2s->addr + I2SMOD);
+> -       spin_unlock(i2s->lock);
+> +       spin_unlock_irqrestore(i2s->lock, flags);
+>
+>         samsung_asoc_init_dma_data(dai, &i2s->dma_playback, &i2s->dma_capture);
+>
+> --
+> 2.1.4
+>
 
-You can call snd_pcm_stop() on all the streams and then return an error on
-commands, usermode may close and restart again
+Thanks for fixing this bug.
+Tested on Odroid U3.
+Tested-by: Anand Moon <linux.amoon@gmail.com>
 
--- 
-~Vinod
+-Anand Moon
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-samsung-soc" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
