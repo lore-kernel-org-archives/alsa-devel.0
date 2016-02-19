@@ -1,18 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 0/2] ALSA: oxfw: implement retries for
- scs1x at transaction failure
-Date: Fri, 19 Feb 2016 17:51:17 +0900
-Message-ID: <56C6D785.3030602@sakamocchi.jp>
+Subject: Re: [PATCH 2/2] ALSA: oxfw: discontinue MIDI substream
+ for scs1x at transaction failure
+Date: Fri, 19 Feb 2016 18:23:36 +0900
+Message-ID: <56C6DF18.3080708@sakamocchi.jp>
 References: <1455843350-10156-1-git-send-email-o-takashi@sakamocchi.jp>
- <s5hr3g915cn.wl-tiwai@suse.de>
+ <1455843350-10156-3-git-send-email-o-takashi@sakamocchi.jp>
+ <s5hpovt1599.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id DE5C3261521
- for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2016 09:51:20 +0100 (CET)
-In-Reply-To: <s5hr3g915cn.wl-tiwai@suse.de>
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 64DB2261521
+ for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2016 10:23:40 +0100 (CET)
+In-Reply-To: <s5hpovt1599.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,29 +27,52 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On Feb 19 2016 17:17, Takashi Iwai wrote:
-> On Fri, 19 Feb 2016 01:55:48 +0100,
+Hi,
+
+On Feb 19 2016 17:19, Takashi Iwai wrote:
+> On Fri, 19 Feb 2016 01:55:50 +0100,
 > Takashi Sakamoto wrote:
 >>
->> Hi,
+>> With a previous commit, ALSA oxfw driver retries transferring MIDI
+>> messages at transaction failure for scs1x. On the other hand, there're
+>> fatal transaction error. Then, MIDI messages never reach to the unit
+>> anymore. In this case, MIDI substream should be discontinued.
 >>
->> Current ALSA oxfw driver has a TODO to retry IEEE 1394 asynchronous
->> transactions when transaction failure occurs. This patchset is for it.
->> Additionally, this patchset classifies reason of the failure and stop
->> the retries to prevent from endless loop of scheduling work.
->>
->> Regards
->>
->> Takashi Sakamoto (2):
->>    ALSA: oxfw: retry MIDI transferring for scs1x at transaction failure
->>    ALSA: oxfw: discontinue MIDI substream for scs1x at transaction
->>      failure
+>> This commit stops MIDI transferring after the fatal error occurs.
+>> Unfortunately, unlike ALSA PCM functionality, ALSA rawmidi core has no
+>> feature to discontinue MIDI substream in kernel side, thus this commit
+>> just stops MIDI transferring without notifying it to userspace.
 >
-> Your sign-off is missing in both patches.  Please give it explicitly.
+> It's fine to take this, and I would take it as is for now.
 
-Oops. I had the oversight. I usually execute checkpatch.pl before 
-posting, but I might have forgot even it in this morning, sorry...
+OK.
 
+> But we can extend the rawmidi somehow to deal with such an error, too.
+> Maybe just having "error" flag in the rawmidi runtime and adding a
+> helper function to set the error and stop the stream should work
+> easily.
+
+You forgot ALSA sequencer.
+
+
+I had considered about it when working for snd-firewire-digi00x (Mar 
+2015), and realised that it may take much time. At least, we work for:
+  - ALSA rawmidi core
+  - ALSA rawmidi interface for userspace
+
+Additionally, users mostly use rawmidi devices via ALSA sequencer:
+  - ALSA sequencer core
+  - ALSA sequencer interface for userspace
+
+Furthermore, regression test is required for:
+  - ALSA drivers with MIDI functionality
+  - ALSA rawmidi/sequencer applications in userspace
+
+It's not 2000s. I guess that little developers are attracted for this 
+work. In my option, the work is really cost-expensive than actual merit. 
+So currently I'm negative for the idea.
+
+
+Regards
 
 Takashi Sakamoto
-o-takashi@sakamocchi.jp
