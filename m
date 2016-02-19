@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v7 5/9] ASoC: hdac_hdmi: Fix to wait for D3
- before powering off codec
-Date: Sat, 20 Feb 2016 00:56:40 +0900
-Message-ID: <20160219155640.GU18327@sirena.org.uk>
-References: <1455725047-7303-1-git-send-email-subhransu.s.prusty@intel.com>
- <1455725047-7303-6-git-send-email-subhransu.s.prusty@intel.com>
+Subject: Re: [PATCH 1/3] ASoC: Intel: Skylake: fix pointer
+	scaling
+Date: Sat, 20 Feb 2016 00:33:45 +0900
+Message-ID: <20160219153345.GO18327@sirena.org.uk>
+References: <1455862354-6455-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2257481000485801442=="
+Content-Type: multipart/mixed; boundary="===============4935066859761904342=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B68D3266DD5
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:30:06 +0100 (CET)
-In-Reply-To: <1455725047-7303-6-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D95A2651B8
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:30:27 +0100 (CET)
+In-Reply-To: <1455862354-6455-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,51 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, lgirdwood@gmail.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Alan Cox <alan@linux.intel.com>, Alan <gnomes@lxorguk.ukuu.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2257481000485801442==
+--===============4935066859761904342==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6wUvnnXCCq76soZt"
+	protocol="application/pgp-signature"; boundary="yLaBmHMi4cq+C/u4"
 Content-Disposition: inline
 
 
---6wUvnnXCCq76soZt
+--yLaBmHMi4cq+C/u4
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 17, 2016 at 09:34:03PM +0530, Subhransu S. Prusty wrote:
+On Fri, Feb 19, 2016 at 11:42:32AM +0530, Vinod Koul wrote:
+> From: Alan <gnomes@lxorguk.ukuu.org.uk>
+>=20
+> skl_tplg_tlv_control_set does pointer maths on data but forgets that data
+> is not uint8_t so the maths is already scaled in the pointer type.
+>=20
+> Signed-off-by: Alan Cox <alan@linux.intel.com>
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 
-> +		/* Wait till power state is set to D3 */
-> +		timeout = jiffies + msecs_to_jiffies(1000);
-> +		while(!snd_hdac_check_power_state(hdac, hdac->afg, AC_PWRST_D3)
+Please ensure that the name and signoff match up.  I'm fairly sure that
+both are for the same person here but it's not something I should have
+to think about and it is important to ensure that we have signoffs for
+everything.
 
-Please follow the kernel coding style - space after the while.
-
---6wUvnnXCCq76soZt
+--yLaBmHMi4cq+C/u4
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWxzs3AAoJECTWi3JdVIfQalwH/AgxXdHcQa7Abx/URpZOnHjr
-o1qlTdnL7bHRQ0YGdSfQG89YG5664l2p7jFIoOvZ1xlLqPOPAmAJnuGNNpWdrRTv
-clwrZPjxU9C6IdUhS97YjKP4MGxQ2zGGoYLrp1TTpIX9nnDljt7XvrLhIiCScecp
-sTcZjO6zMP4338wtFXS5IaB2Nk6DygNkntu4p0lpdDSKEpuxT0dVO2ogVoHFiuwV
-fcGbi4WtihWIzkUkAIYQX8yJz0SSPTedvmI9LoHua5a8LSomFzhqNwBGldiBgSk9
-KGMki7ITiAyibEt9HKvNndoo9pyKuApR6Na81Ac72OnPYtF54ZnY+1XKIJ9vZBo=
-=2w4A
+iQEcBAEBCAAGBQJWxzXTAAoJECTWi3JdVIfQag0H/0g3gnpH231ySyHimDJGrvuy
+VG3D1PUSDEU8VGgf/wh+cRvtdNPeBhofPqkMFtNJPXAgwOrUksLvO4zF8V0gCTLl
+924W5mh7cDi55exjItvnIbmORdZiPZCLsMTQ/SEJimE4Hy6DSwAwRF8TZtJWlI4E
+QmdwcVMnc+z3NC3cUXU1FOnmxegL23BH0fNWYLOuF1hJUYif4Q8Qm+bk1ncX4Twx
+oxJ3lmI3pBsmMlNCdWBhdsRCSsjHblVxt6m46/m/C75YAxV0LSMKXubttYA0aM0i
+qwAdf1dank5V/sDwR1Tfpz1JL9T2FS5EG6ige0WN2m43WF9jqI2iyNZbnpRa8Ig=
+=o2Z4
 -----END PGP SIGNATURE-----
 
---6wUvnnXCCq76soZt--
+--yLaBmHMi4cq+C/u4--
 
---===============2257481000485801442==
+--===============4935066859761904342==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2257481000485801442==--
+--===============4935066859761904342==--
