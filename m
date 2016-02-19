@@ -1,7 +1,7 @@
 From: Carlos Palminha <CARLOS.PALMINHA-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
-Subject: [PATCH 2/4] ARC: axs10x: Update defconfigs so that audio is enabled
-Date: Fri, 19 Feb 2016 09:39:57 +0000
-Message-ID: <478afb116422fcd40ab5817daf053680bd32d24e.1455872448.git.palminha@synopsys.com>
+Subject: [PATCH 4/4] ARC: axs10x: Update defconfigs so that I2S is enabled
+Date: Fri, 19 Feb 2016 09:40:18 +0000
+Message-ID: <cf8d0dab3658c2f7641a69809ba409f93ce43f9c.1455872448.git.palminha@synopsys.com>
 References: <cover.1455872448.git.palminha@synopsys.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -14,80 +14,43 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jose Abreu <joabreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
 
-The defconfigs for the AXS boards were updated so that
-ALSA SoC is enabled and also the audio for the ADV7511
-HDMI transmitter.
+The defconfigs for the AXS boards were updated to
+enable Designware I2S driver.
 
 Signed-off-by: Jose Abreu <joabreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
 ---
- arch/arc/configs/axs101_defconfig     | 3 +++
- arch/arc/configs/axs103_defconfig     | 5 +++++
- arch/arc/configs/axs103_smp_defconfig | 5 +++++
- 3 files changed, 13 insertions(+)
+ arch/arc/configs/axs101_defconfig     | 1 +
+ arch/arc/configs/axs103_defconfig     | 1 +
+ arch/arc/configs/axs103_smp_defconfig | 1 +
+ 3 files changed, 3 insertions(+)
 
 diff --git a/arch/arc/configs/axs101_defconfig b/arch/arc/configs/axs101_defconfig
-index e359099..7c22163 100644
+index 7c22163..dd38d03 100644
 --- a/arch/arc/configs/axs101_defconfig
 +++ b/arch/arc/configs/axs101_defconfig
-@@ -113,3 +113,6 @@ CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=10
- # CONFIG_SCHED_DEBUG is not set
- # CONFIG_DEBUG_PREEMPT is not set
- # CONFIG_FTRACE is not set
-+CONFIG_SOUND=y
-+CONFIG_SND=y
-+CONFIG_SND_SOC=y
+@@ -116,3 +116,4 @@ CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=10
+ CONFIG_SOUND=y
+ CONFIG_SND=y
+ CONFIG_SND_SOC=y
++CONFIG_SND_DESIGNWARE_I2S=y
 diff --git a/arch/arc/configs/axs103_defconfig b/arch/arc/configs/axs103_defconfig
-index 323486d..d63aef0 100644
+index d63aef0..ff7162e 100644
 --- a/arch/arc/configs/axs103_defconfig
 +++ b/arch/arc/configs/axs103_defconfig
-@@ -76,12 +76,14 @@ CONFIG_SERIAL_OF_PLATFORM=y
- CONFIG_I2C=y
- CONFIG_I2C_CHARDEV=y
- CONFIG_I2C_DESIGNWARE_PLATFORM=y
-+CONFIG_DRM=y
- # CONFIG_HWMON is not set
- CONFIG_FB=y
- # CONFIG_VGA_CONSOLE is not set
- CONFIG_FRAMEBUFFER_CONSOLE=y
- CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY=y
- CONFIG_LOGO=y
-+CONFIG_DRM_I2C_ADV7511=y
- # CONFIG_LOGO_LINUX_MONO is not set
- # CONFIG_LOGO_LINUX_VGA16 is not set
- # CONFIG_LOGO_LINUX_CLUT224 is not set
-@@ -114,3 +116,6 @@ CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=10
- # CONFIG_SCHED_DEBUG is not set
- # CONFIG_DEBUG_PREEMPT is not set
- # CONFIG_FTRACE is not set
-+CONFIG_SOUND=y
-+CONFIG_SND=y
-+CONFIG_SND_SOC=y
+@@ -119,3 +119,4 @@ CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=10
+ CONFIG_SOUND=y
+ CONFIG_SND=y
+ CONFIG_SND_SOC=y
++CONFIG_SND_DESIGNWARE_I2S=y
 diff --git a/arch/arc/configs/axs103_smp_defconfig b/arch/arc/configs/axs103_smp_defconfig
-index 66191cd..f4b51ce 100644
+index f4b51ce..b9f4671 100644
 --- a/arch/arc/configs/axs103_smp_defconfig
 +++ b/arch/arc/configs/axs103_smp_defconfig
-@@ -77,12 +77,14 @@ CONFIG_SERIAL_OF_PLATFORM=y
- CONFIG_I2C=y
- CONFIG_I2C_CHARDEV=y
- CONFIG_I2C_DESIGNWARE_PLATFORM=y
-+CONFIG_DRM=y
- # CONFIG_HWMON is not set
- CONFIG_FB=y
- # CONFIG_VGA_CONSOLE is not set
- CONFIG_FRAMEBUFFER_CONSOLE=y
- CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY=y
- CONFIG_LOGO=y
-+CONFIG_DRM_I2C_ADV7511=y
- # CONFIG_LOGO_LINUX_MONO is not set
- # CONFIG_LOGO_LINUX_VGA16 is not set
- # CONFIG_LOGO_LINUX_CLUT224 is not set
-@@ -115,3 +117,6 @@ CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=10
- # CONFIG_SCHED_DEBUG is not set
- # CONFIG_DEBUG_PREEMPT is not set
- # CONFIG_FTRACE is not set
-+CONFIG_SOUND=y
-+CONFIG_SND=y
-+CONFIG_SND_SOC=y
+@@ -120,3 +120,4 @@ CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=10
+ CONFIG_SOUND=y
+ CONFIG_SND=y
+ CONFIG_SND_SOC=y
++CONFIG_SND_DESIGNWARE_I2S=y
 -- 
 2.5.0
 
