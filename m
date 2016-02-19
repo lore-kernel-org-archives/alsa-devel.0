@@ -1,130 +1,74 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: move rsnd_ssi_irq() position" to
-	the asoc tree
-Date: Sun, 21 Feb 2016 02:15:59 +0900
-Message-ID: <E1aXB8R-0008P1-RJ@finisterre>
-References: <87fuwqtoz8.wl%kuninori.morimoto.gx@renesas.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] ASoC: mediatek: Add machine driver for ALC5650 codec
+Date: Sat, 20 Feb 2016 00:37:44 +0900
+Message-ID: <20160219153744.GP18327@sirena.org.uk>
+References: <1455849359-14581-1-git-send-email-pc.liao@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 60D632651BE
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:16:05 +0100 (CET)
-In-Reply-To: <87fuwqtoz8.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============8396865635730190716=="
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <1455849359-14581-1-git-send-email-pc.liao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: PC Liao <pc.liao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Nicolas Boichat <drinkcat-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: rsnd: move rsnd_ssi_irq() position
+--===============8396865635730190716==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="xXygN3QAmJYWdGtb"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--xXygN3QAmJYWdGtb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Fri, Feb 19, 2016 at 10:35:59AM +0800, PC Liao wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> @@ -3,3 +3,4 @@ obj-$(CONFIG_SND_SOC_MEDIATEK) += mtk-afe-pcm.o
+>  # Machine support
+>  obj-$(CONFIG_SND_SOC_MT8173_MAX98090) += mt8173-max98090.o
+>  obj-$(CONFIG_SND_SOC_MT8173_RT5650_RT5676) += mt8173-rt5650-rt5676.o
+> +obj-$(CONFIG_SND_SOC_MT8173_RT5650) += mt8173-rt5650.o
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Why is this not covered by (or coverable by) the existinng RT5650-RT5657
+driver?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--xXygN3QAmJYWdGtb
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
->From 615fb6c7b13b7f142f5f8e23e5f8593dd1e7b319 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 18 Feb 2016 08:18:16 +0000
-Subject: [PATCH] ASoC: rsnd: move rsnd_ssi_irq() position
+iQEcBAEBCAAGBQJWxzbHAAoJECTWi3JdVIfQER4H/2BAfeA7Y/91xa5W+OTkuWEl
+HPvKvy7P2AyJcsNBkX1Dsa9ZEfYsh0283J8bN4XhfNNVHAoFvErXPPrVr0Zg9DFB
+EC9oBo+ZnTjR4EyWeqdvtT09aSHgXUzwf3ftL2L5W1dVZE8SmEXllGhwN6jXcRzh
+6fGJhHd+RCCaH6vULqCScA07z2yPODKk18qjqgqEN28OwtUfwT/gUPEJ/YZ9RG1N
+atla4P3KGUNBqiliFdCSmb78LhP7g7a2j4JPrLVyKHX7itt3c46uQAp9ecJNsocT
++s9vBypU5LLmrzGOVZq5MpxMxA1l2w3TAVak+Wm0A2jXdwAe7ZsACVo19wZ9p00=
+=2Sux
+-----END PGP SIGNATURE-----
 
-prepare for runtime judging for SSI work
+--xXygN3QAmJYWdGtb--
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sh/rcar/ssi.c | 42 +++++++++++++++++++++---------------------
- 1 file changed, 21 insertions(+), 21 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index b5c6f0c..d46bc08 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -144,27 +144,6 @@ static void rsnd_ssi_status_check(struct rsnd_mod *mod,
- 		 rsnd_mod_name(mod), rsnd_mod_id(mod));
- }
- 
--static int rsnd_ssi_irq(struct rsnd_mod *mod,
--			struct rsnd_dai_stream *io,
--			struct rsnd_priv *priv,
--			int enable)
--{
--	u32 val = 0;
--
--	if (rsnd_is_gen1(priv))
--		return 0;
--
--	if (rsnd_ssi_is_parent(mod, io))
--		return 0;
--
--	if (enable)
--		val = rsnd_ssi_is_dma_mode(mod) ? 0x0e000000 : 0x0f000000;
--
--	rsnd_mod_write(mod, SSI_INT_ENABLE, val);
--
--	return 0;
--}
--
- u32 rsnd_ssi_multi_slaves(struct rsnd_dai_stream *io)
- {
- 	struct rsnd_mod *mod;
-@@ -480,6 +459,27 @@ static int rsnd_ssi_stop(struct rsnd_mod *mod,
- 	return 0;
- }
- 
-+static int rsnd_ssi_irq(struct rsnd_mod *mod,
-+			struct rsnd_dai_stream *io,
-+			struct rsnd_priv *priv,
-+			int enable)
-+{
-+	u32 val = 0;
-+
-+	if (rsnd_is_gen1(priv))
-+		return 0;
-+
-+	if (rsnd_ssi_is_parent(mod, io))
-+		return 0;
-+
-+	if (enable)
-+		val = rsnd_ssi_is_dma_mode(mod) ? 0x0e000000 : 0x0f000000;
-+
-+	rsnd_mod_write(mod, SSI_INT_ENABLE, val);
-+
-+	return 0;
-+}
-+
- static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
- 				 struct rsnd_dai_stream *io)
- {
--- 
-2.7.0
+--===============8396865635730190716==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Linux-mediatek mailing list
+Linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+http://lists.infradead.org/mailman/listinfo/linux-mediatek
+
+--===============8396865635730190716==--
