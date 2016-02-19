@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max9867: Changed the if-else case to
-	switch case" to the asoc tree
-Date: Thu, 18 Feb 2016 20:19:54 +0000
-Message-ID: <E1aWV3K-0004Lq-DB@debutante>
-References: <1455820580-26501-1-git-send-email-yesanishhere@gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/2] ALSA: oxfw: discontinue MIDI substream for
+	scs1x at transaction failure
+Date: Fri, 19 Feb 2016 09:55:50 +0900
+Message-ID: <1455843350-10156-3-git-send-email-o-takashi@sakamocchi.jp>
+References: <1455843350-10156-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A0B752606A9
- for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2016 21:20:00 +0100 (CET)
-In-Reply-To: <1455820580-26501-1-git-send-email-yesanishhere@gmail.com>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5EE472606A9
+ for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2016 01:55:56 +0100 (CET)
+In-Reply-To: <1455843350-10156-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,80 +21,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: anish kumar <yesanishhere@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+With a previous commit, ALSA oxfw driver retries transferring MIDI
+messages at transaction failure for scs1x. On the other hand, there're
+fatal transaction error. Then, MIDI messages never reach to the unit
+anymore. In this case, MIDI substream should be discontinued.
 
-   ASoC: max9867: Changed the if-else case to switch case
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From b14614502908beb5d898a665b40cfa91ad237f93 Mon Sep 17 00:00:00 2001
-From: anish kumar <yesanishhere@gmail.com>
-Date: Thu, 18 Feb 2016 10:36:20 -0800
-Subject: [PATCH] ASoC: max9867: Changed the if-else case to switch case
-
-Signed-off-by: anish kumar <yesanishhere@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+This commit stops MIDI transferring after the fatal error occurs.
+Unfortunately, unlike ALSA PCM functionality, ALSA rawmidi core has no
+feature to discontinue MIDI substream in kernel side, thus this commit
+just stops MIDI transferring without notifying it to userspace.
 ---
- sound/soc/codecs/max9867.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ sound/firewire/oxfw/oxfw-scs1x.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-index b9d989f25515..5a8481bf20c2 100755
---- a/sound/soc/codecs/max9867.c
-+++ b/sound/soc/codecs/max9867.c
-@@ -212,16 +212,22 @@ static int max9867_dai_hw_params(struct snd_pcm_substream *substream,
- 		switch (snd_pcm_format_width(params_format(params))) {
- 		case 8:
- 		case 16:
--			if (pclk_bclk_ratio == 2)
-+			switch (pclk_bclk_ratio) {
-+			case 2:
- 				bclk_value = MAX9867_IFC1B_PCLK_2;
--			else if (pclk_bclk_ratio == 4)
-+				break;
-+			case 4:
- 				bclk_value = MAX9867_IFC1B_PCLK_4;
--			else if (pclk_bclk_ratio == 8)
-+				break;
-+			case 8:
- 				bclk_value = MAX9867_IFC1B_PCLK_8;
--			else if (pclk_bclk_ratio == 16)
-+				break;
-+			case 16:
- 				bclk_value = MAX9867_IFC1B_PCLK_16;
--			else {
--				dev_err(codec->dev, "unsupported sampling rate\n");
-+				break;
-+			default:
-+				dev_err(codec->dev,
-+					"unsupported sampling rate\n");
- 				return -EINVAL;
- 			}
- 			break;
+diff --git a/sound/firewire/oxfw/oxfw-scs1x.c b/sound/firewire/oxfw/oxfw-scs1x.c
+index 72446ac..f897c98 100644
+--- a/sound/firewire/oxfw/oxfw-scs1x.c
++++ b/sound/firewire/oxfw/oxfw-scs1x.c
+@@ -32,6 +32,7 @@ struct fw_scs1x {
+ 	bool transaction_running;
+ 	struct fw_transaction transaction;
+ 	unsigned int transaction_bytes;
++	bool error;
+ 	struct fw_device *fw_dev;
+ };
+ 
+@@ -126,8 +127,13 @@ static void scs_write_callback(struct fw_card *card, int rcode,
+ {
+ 	struct fw_scs1x *scs = callback_data;
+ 
+-	if (rcode != RCODE_GENERATION)
+-		scs->transaction_bytes = 0;
++	if (!rcode_is_permanent_error(rcode)) {
++		/* Don't retry for this data. */
++		if (rcode == RCODE_COMPLETE)
++			scs->transaction_bytes = 0;
++	} else {
++		scs->error = true;
++	}
+ 
+ 	scs->transaction_running = false;
+ 	schedule_work(&scs->work);
+@@ -178,7 +184,7 @@ static void scs_output_work(struct work_struct *work)
+ 		return;
+ 
+ 	stream = ACCESS_ONCE(scs->output);
+-	if (!stream) {
++	if (!stream || scs->error) {
+ 		scs->output_idle = true;
+ 		wake_up(&scs->idle_wait);
+ 		return;
+@@ -317,6 +323,7 @@ static void midi_playback_trigger(struct snd_rawmidi_substream *stream, int up)
+ 		scs->output_escaped = false;
+ 		scs->output_idle = false;
+ 		scs->transaction_bytes = 0;
++		scs->error = false;
+ 
+ 		ACCESS_ONCE(scs->output) = stream;
+ 		schedule_work(&scs->work);
 -- 
-2.7.0
+2.5.0
