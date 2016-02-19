@@ -1,78 +1,97 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 2/2] ALSA: oxfw: discontinue MIDI substream
- for scs1x at transaction failure
-Date: Fri, 19 Feb 2016 18:23:36 +0900
-Message-ID: <56C6DF18.3080708@sakamocchi.jp>
-References: <1455843350-10156-1-git-send-email-o-takashi@sakamocchi.jp>
- <1455843350-10156-3-git-send-email-o-takashi@sakamocchi.jp>
- <s5hpovt1599.wl-tiwai@suse.de>
+From: Carlos Palminha <CARLOS.PALMINHA-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Subject: [PATCH 2/4] ARC: axs10x: Update defconfigs so that audio is enabled
+Date: Fri, 19 Feb 2016 09:39:57 +0000
+Message-ID: <478afb116422fcd40ab5817daf053680bd32d24e.1455872448.git.palminha@synopsys.com>
+References: <cover.1455872448.git.palminha@synopsys.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 64DB2261521
- for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2016 10:23:40 +0100 (CET)
-In-Reply-To: <s5hpovt1599.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <cover.1455872448.git.palminha-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: airlied-cv59FeDIM0c@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, CARLOS.PALMINHA-HKixBCOQz3hWk0Htik3J/w@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Vineet.Gupta1-HKixBCOQz3hWk0Htik3J/w@public.gmane.org, Alexey.Brodkin-HKixBCOQz3hWk0Htik3J/w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+From: Jose Abreu <joabreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
 
-On Feb 19 2016 17:19, Takashi Iwai wrote:
-> On Fri, 19 Feb 2016 01:55:50 +0100,
-> Takashi Sakamoto wrote:
->>
->> With a previous commit, ALSA oxfw driver retries transferring MIDI
->> messages at transaction failure for scs1x. On the other hand, there're
->> fatal transaction error. Then, MIDI messages never reach to the unit
->> anymore. In this case, MIDI substream should be discontinued.
->>
->> This commit stops MIDI transferring after the fatal error occurs.
->> Unfortunately, unlike ALSA PCM functionality, ALSA rawmidi core has no
->> feature to discontinue MIDI substream in kernel side, thus this commit
->> just stops MIDI transferring without notifying it to userspace.
->
-> It's fine to take this, and I would take it as is for now.
+The defconfigs for the AXS boards were updated so that
+ALSA SoC is enabled and also the audio for the ADV7511
+HDMI transmitter.
 
-OK.
+Signed-off-by: Jose Abreu <joabreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+---
+ arch/arc/configs/axs101_defconfig     | 3 +++
+ arch/arc/configs/axs103_defconfig     | 5 +++++
+ arch/arc/configs/axs103_smp_defconfig | 5 +++++
+ 3 files changed, 13 insertions(+)
 
-> But we can extend the rawmidi somehow to deal with such an error, too.
-> Maybe just having "error" flag in the rawmidi runtime and adding a
-> helper function to set the error and stop the stream should work
-> easily.
+diff --git a/arch/arc/configs/axs101_defconfig b/arch/arc/configs/axs101_defconfig
+index e359099..7c22163 100644
+--- a/arch/arc/configs/axs101_defconfig
++++ b/arch/arc/configs/axs101_defconfig
+@@ -113,3 +113,6 @@ CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=10
+ # CONFIG_SCHED_DEBUG is not set
+ # CONFIG_DEBUG_PREEMPT is not set
+ # CONFIG_FTRACE is not set
++CONFIG_SOUND=y
++CONFIG_SND=y
++CONFIG_SND_SOC=y
+diff --git a/arch/arc/configs/axs103_defconfig b/arch/arc/configs/axs103_defconfig
+index 323486d..d63aef0 100644
+--- a/arch/arc/configs/axs103_defconfig
++++ b/arch/arc/configs/axs103_defconfig
+@@ -76,12 +76,14 @@ CONFIG_SERIAL_OF_PLATFORM=y
+ CONFIG_I2C=y
+ CONFIG_I2C_CHARDEV=y
+ CONFIG_I2C_DESIGNWARE_PLATFORM=y
++CONFIG_DRM=y
+ # CONFIG_HWMON is not set
+ CONFIG_FB=y
+ # CONFIG_VGA_CONSOLE is not set
+ CONFIG_FRAMEBUFFER_CONSOLE=y
+ CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY=y
+ CONFIG_LOGO=y
++CONFIG_DRM_I2C_ADV7511=y
+ # CONFIG_LOGO_LINUX_MONO is not set
+ # CONFIG_LOGO_LINUX_VGA16 is not set
+ # CONFIG_LOGO_LINUX_CLUT224 is not set
+@@ -114,3 +116,6 @@ CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=10
+ # CONFIG_SCHED_DEBUG is not set
+ # CONFIG_DEBUG_PREEMPT is not set
+ # CONFIG_FTRACE is not set
++CONFIG_SOUND=y
++CONFIG_SND=y
++CONFIG_SND_SOC=y
+diff --git a/arch/arc/configs/axs103_smp_defconfig b/arch/arc/configs/axs103_smp_defconfig
+index 66191cd..f4b51ce 100644
+--- a/arch/arc/configs/axs103_smp_defconfig
++++ b/arch/arc/configs/axs103_smp_defconfig
+@@ -77,12 +77,14 @@ CONFIG_SERIAL_OF_PLATFORM=y
+ CONFIG_I2C=y
+ CONFIG_I2C_CHARDEV=y
+ CONFIG_I2C_DESIGNWARE_PLATFORM=y
++CONFIG_DRM=y
+ # CONFIG_HWMON is not set
+ CONFIG_FB=y
+ # CONFIG_VGA_CONSOLE is not set
+ CONFIG_FRAMEBUFFER_CONSOLE=y
+ CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY=y
+ CONFIG_LOGO=y
++CONFIG_DRM_I2C_ADV7511=y
+ # CONFIG_LOGO_LINUX_MONO is not set
+ # CONFIG_LOGO_LINUX_VGA16 is not set
+ # CONFIG_LOGO_LINUX_CLUT224 is not set
+@@ -115,3 +117,6 @@ CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=10
+ # CONFIG_SCHED_DEBUG is not set
+ # CONFIG_DEBUG_PREEMPT is not set
+ # CONFIG_FTRACE is not set
++CONFIG_SOUND=y
++CONFIG_SND=y
++CONFIG_SND_SOC=y
+-- 
+2.5.0
 
-You forgot ALSA sequencer.
-
-
-I had considered about it when working for snd-firewire-digi00x (Mar 
-2015), and realised that it may take much time. At least, we work for:
-  - ALSA rawmidi core
-  - ALSA rawmidi interface for userspace
-
-Additionally, users mostly use rawmidi devices via ALSA sequencer:
-  - ALSA sequencer core
-  - ALSA sequencer interface for userspace
-
-Furthermore, regression test is required for:
-  - ALSA drivers with MIDI functionality
-  - ALSA rawmidi/sequencer applications in userspace
-
-It's not 2000s. I guess that little developers are attracted for this 
-work. In my option, the work is really cost-expensive than actual merit. 
-So currently I'm negative for the idea.
-
-
-Regards
-
-Takashi Sakamoto
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
