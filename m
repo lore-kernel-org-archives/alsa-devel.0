@@ -1,146 +1,116 @@
-From: Anand Moon <linux.amoon@gmail.com>
-Subject: Re: [PATCH] ASoC: samsung: Use IRQ safe spin lock calls
-Date: Fri, 19 Feb 2016 10:19:59 +0530
-Message-ID: <CANAwSgR1b6jL6RP4SyFGS8o8geaFu29bMZntXLCLj8-H7gzidw@mail.gmail.com>
-References: <1455810433-10305-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH 0/1] alsa: Make profiles'
+ availability dynamic
+Date: Fri, 19 Feb 2016 13:32:04 +0800
+Message-ID: <CAN8ccibqKC5FmOkOHjieHGvLymbw6HeCOeK44j3MLexWuy+yPw@mail.gmail.com>
+References: <cover.1455720208.git.bob.ham@collabora.com>
+Reply-To: General PulseAudio Discussion
+ <pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1455810433-10305-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Kim Sangbeom <sbkim73@samsung.com>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Content-Type: multipart/mixed; boundary="===============1562355497=="
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
+In-Reply-To: <cover.1455720208.git.bob.ham@collabora.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
+To: General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-hi Charles,
+--===============1562355497==
+Content-Type: multipart/alternative; boundary=001a114020289f298f052c18cd7c
 
-On 18 February 2016 at 21:17, Charles Keepax
-<ckeepax@opensource.wolfsonmicro.com> wrote:
-> Lockdep warns of a potential lock inversion, i2s->lock is held numerous
-> times whilst we are under the substream lock (snd_pcm_stream_lock). If
-> we use the IRQ unsafe spin lock calls, you can also end up locking
-> snd_pcm_stream_lock whilst under i2s->lock (if an IRQ happens whilst we
-> are holding i2s->lock). This could result in deadlock.
+--001a114020289f298f052c18cd7c
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+2016-2-18 =E4=B8=8B=E5=8D=885:38=E6=96=BC "Bob Ham" <bob.ham@collabora.com>=
+=E5=AF=AB=E9=81=93=EF=BC=9A
 >
-> [   18.147001]        CPU0                    CPU1
-> [   18.151509]        ----                    ----
-> [   18.156022]   lock(&(&pri_dai->spinlock)->rlock);
-> [   18.160701]                                local_irq_disable();
-> [   18.166622]                                lock(&(&substream->self_group.lock)->rlock);
-> [   18.174595]                                lock(&(&pri_dai->spinlock)->rlock);
-> [   18.181806]   <Interrupt>
-> [   18.184408]     lock(&(&substream->self_group.lock)->rlock);
-> [   18.190045]
-> [   18.190045]  *** DEADLOCK ***
+> Make ALSA profiles stick around and update their availability if the
+> HDMI ELD changes.  This alters the presence of card profiles quite
+> dramatically.  Specifically, the existing autogeneration of profiles
+> generates a large set of input/output mapping combinations and all of
+> these combinations are reported by the API, marked as unavailable. To
+> give an idea of the consequences, here is what pavucontrol looks like
+> with this patch:
 >
-> This patch changes to using the irq safe spinlock calls, to avoid this
-> issue.
+>   https://people.collabora.com/~rah/pavucontrol-unavailable-profiles.png
 >
-> Fixes: ce8bcdbb61d9 ("ASoC: samsung: i2s: Protect more registers with a spinlock")
-> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/samsung/i2s.c | 21 ++++++++++++---------
->  1 file changed, 12 insertions(+), 9 deletions(-)
+> Similarly, here is the output of "pactl list cards":
 >
-> diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-> index 84d9e77..70a2559 100644
-> --- a/sound/soc/samsung/i2s.c
-> +++ b/sound/soc/samsung/i2s.c
-> @@ -481,10 +481,11 @@ static int i2s_set_sysclk(struct snd_soc_dai *dai,
->         unsigned int cdcon_mask = 1 << i2s_regs->cdclkcon_off;
->         unsigned int rsrc_mask = 1 << i2s_regs->rclksrc_off;
->         u32 mod, mask, val = 0;
-> +       unsigned long flags;
->
-> -       spin_lock(i2s->lock);
-> +       spin_lock_irqsave(i2s->lock, flags);
->         mod = readl(i2s->addr + I2SMOD);
-> -       spin_unlock(i2s->lock);
-> +       spin_unlock_irqrestore(i2s->lock, flags);
->
->         switch (clk_id) {
->         case SAMSUNG_I2S_OPCLK:
-> @@ -575,11 +576,11 @@ static int i2s_set_sysclk(struct snd_soc_dai *dai,
->                 return -EINVAL;
->         }
->
-> -       spin_lock(i2s->lock);
-> +       spin_lock_irqsave(i2s->lock, flags);
->         mod = readl(i2s->addr + I2SMOD);
->         mod = (mod & ~mask) | val;
->         writel(mod, i2s->addr + I2SMOD);
-> -       spin_unlock(i2s->lock);
-> +       spin_unlock_irqrestore(i2s->lock, flags);
->
->         return 0;
->  }
-> @@ -590,6 +591,7 @@ static int i2s_set_fmt(struct snd_soc_dai *dai,
->         struct i2s_dai *i2s = to_info(dai);
->         int lrp_shift, sdf_shift, sdf_mask, lrp_rlow, mod_slave;
->         u32 mod, tmp = 0;
-> +       unsigned long flags;
->
->         lrp_shift = i2s->variant_regs->lrp_off;
->         sdf_shift = i2s->variant_regs->sdf_off;
-> @@ -649,7 +651,7 @@ static int i2s_set_fmt(struct snd_soc_dai *dai,
->                 return -EINVAL;
->         }
->
-> -       spin_lock(i2s->lock);
-> +       spin_lock_irqsave(i2s->lock, flags);
->         mod = readl(i2s->addr + I2SMOD);
->         /*
->          * Don't change the I2S mode if any controller is active on this
-> @@ -657,7 +659,7 @@ static int i2s_set_fmt(struct snd_soc_dai *dai,
->          */
->         if (any_active(i2s) &&
->                 ((mod & (sdf_mask | lrp_rlow | mod_slave)) != tmp)) {
-> -               spin_unlock(i2s->lock);
-> +               spin_unlock_irqrestore(i2s->lock, flags);
->                 dev_err(&i2s->pdev->dev,
->                                 "%s:%d Other DAI busy\n", __func__, __LINE__);
->                 return -EAGAIN;
-> @@ -666,7 +668,7 @@ static int i2s_set_fmt(struct snd_soc_dai *dai,
->         mod &= ~(sdf_mask | lrp_rlow | mod_slave);
->         mod |= tmp;
->         writel(mod, i2s->addr + I2SMOD);
-> -       spin_unlock(i2s->lock);
-> +       spin_unlock_irqrestore(i2s->lock, flags);
->
->         return 0;
->  }
-> @@ -676,6 +678,7 @@ static int i2s_hw_params(struct snd_pcm_substream *substream,
->  {
->         struct i2s_dai *i2s = to_info(dai);
->         u32 mod, mask = 0, val = 0;
-> +       unsigned long flags;
->
->         if (!is_secondary(i2s))
->                 mask |= (MOD_DC2_EN | MOD_DC1_EN);
-> @@ -744,11 +747,11 @@ static int i2s_hw_params(struct snd_pcm_substream *substream,
->                 return -EINVAL;
->         }
->
-> -       spin_lock(i2s->lock);
-> +       spin_lock_irqsave(i2s->lock, flags);
->         mod = readl(i2s->addr + I2SMOD);
->         mod = (mod & ~mask) | val;
->         writel(mod, i2s->addr + I2SMOD);
-> -       spin_unlock(i2s->lock);
-> +       spin_unlock_irqrestore(i2s->lock, flags);
->
->         samsung_asoc_init_dma_data(dai, &i2s->dma_playback, &i2s->dma_capture);
->
-> --
-> 2.1.4
+>   https://people.collabora.com/~rah/pactl-list-cards-output.txt
 >
 
-Thanks for fixing this bug.
-Tested on Odroid U3.
-Tested-by: Anand Moon <linux.amoon@gmail.com>
+AFAIK,
 
--Anand Moon
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-samsung-soc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+1) mono is not supported by hda-intel
+2) those desktop with three jacks at rear panel need retasking input jacks
+to output jacks by changing control channel mode from 2ch to 6ch, you may
+need to add hook for alsa devices to change the channel mode in alsa
+HDA-Intel.conf
+3) even HDMI codec support 8 channels, it still require your hdmi monitor
+support multi channels
+
+--001a114020289f298f052c18cd7c
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<p><br>
+2016-2-18 =E4=B8=8B=E5=8D=885:38=E6=96=BC &quot;Bob Ham&quot; &lt;<a href=
+=3D"mailto:bob.ham@collabora.com">bob.ham@collabora.com</a>&gt;=E5=AF=AB=E9=
+=81=93=EF=BC=9A<br>
+&gt;<br>
+&gt; Make ALSA profiles stick around and update their availability if the<b=
+r>
+&gt; HDMI ELD changes.=C2=A0 This alters the presence of card profiles quit=
+e<br>
+&gt; dramatically.=C2=A0 Specifically, the existing autogeneration of profi=
+les<br>
+&gt; generates a large set of input/output mapping combinations and all of<=
+br>
+&gt; these combinations are reported by the API, marked as unavailable. To<=
+br>
+&gt; give an idea of the consequences, here is what pavucontrol looks like<=
+br>
+&gt; with this patch:<br>
+&gt;<br>
+&gt; =C2=A0 <a href=3D"https://people.collabora.com/~rah/pavucontrol-unavai=
+lable-profiles.png">https://people.collabora.com/~rah/pavucontrol-unavailab=
+le-profiles.png</a><br>
+&gt;<br>
+&gt; Similarly, here is the output of &quot;pactl list cards&quot;:<br>
+&gt;<br>
+&gt; =C2=A0 <a href=3D"https://people.collabora.com/~rah/pactl-list-cards-o=
+utput.txt">https://people.collabora.com/~rah/pactl-list-cards-output.txt</a=
+><br>
+&gt;</p>
+<p>AFAIK,</p>
+<p>1) mono is not supported by hda-intel<br>
+2) those desktop with three jacks at rear panel need retasking input jacks =
+to output jacks by changing control channel mode from 2ch to 6ch, you may n=
+eed to add hook for alsa devices to change the channel mode in alsa HDA-Int=
+el.conf<br>
+3) even HDMI codec support 8 channels, it still require your hdmi monitor s=
+upport multi channels<br>
+</p>
+
+--001a114020289f298f052c18cd7c--
+
+--===============1562355497==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KcHVsc2VhdWRp
+by1kaXNjdXNzIG1haWxpbmcgbGlzdApwdWxzZWF1ZGlvLWRpc2N1c3NAbGlzdHMuZnJlZWRlc2t0
+b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vcHVs
+c2VhdWRpby1kaXNjdXNzCg==
+
+--===============1562355497==--
