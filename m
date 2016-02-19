@@ -1,16 +1,18 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/4] ASoC: wm_adsp: Avoid narrow race condition
-	on compr pointer
-Date: Fri, 19 Feb 2016 14:44:41 +0000
-Message-ID: <1455893084-4556-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/4] ASoC: wm_adsp: Explicitly set the control
+	access flags in all cases
+Date: Fri, 19 Feb 2016 14:44:42 +0000
+Message-ID: <1455893084-4556-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1455893084-4556-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 604DE266A93
- for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2016 15:44:51 +0100 (CET)
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5CFBC266A9B
+ for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2016 15:44:55 +0100 (CET)
+In-Reply-To: <1455893084-4556-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,29 +26,30 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-There is a very small window between then wm_adsp_compr_free gets call
-and when the DSP is actually powered down. If we get an IRQ from the DSP
-in this window then the wm_adsp_compr pointer will be NULL. This patch
-adds a check for this into the IRQ handler to avoid any issues when this
-happens.
+In the case where the firmware does not tell us the access flags for the
+control, we let ALSA select a default (READWRITE). But really we should
+be applying the volatile flag in this case, as we will read the control
+from the DSP if it is on in this case. This patch explicitly sets the
+access flags in all cases.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm_adsp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wm_adsp.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index ed90e12..00a7d68 100644
+index 00a7d68..c97b3a1 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -2857,7 +2857,7 @@ int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
- 		goto out;
+@@ -877,6 +877,9 @@ static int wmfw_add_ctl(struct wm_adsp *dsp, struct wm_coeff_ctl *ctl)
+ 			kcontrol->access |= SNDRV_CTL_ELEM_ACCESS_READ;
+ 		if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
+ 			kcontrol->access |= SNDRV_CTL_ELEM_ACCESS_VOLATILE;
++	} else {
++		kcontrol->access = SNDRV_CTL_ELEM_ACCESS_READWRITE;
++		kcontrol->access |= SNDRV_CTL_ELEM_ACCESS_VOLATILE;
  	}
  
--	if (compr->stream)
-+	if (compr && compr->stream)
- 		snd_compr_fragment_elapsed(compr->stream);
- 
- out:
+ 	ret = snd_soc_add_card_controls(dsp->card,
 -- 
 2.1.4
