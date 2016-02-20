@@ -1,68 +1,65 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [PATCH v2] ASoC: wm9713: fix regmap free path
-Date: Sat, 20 Feb 2016 20:44:30 +0100
-Message-ID: <1455997470-12307-1-git-send-email-robert.jarzmik@free.fr>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 1/4] ASoC: wm9713: add binding for WM9713 codec
+Date: Sun, 21 Feb 2016 04:59:25 +0900
+Message-ID: <20160220195925.GF18327@sirena.org.uk>
+References: <1455979079-9030-1-git-send-email-robert.jarzmik@free.fr>
+ <20160220171459.GA18327@sirena.org.uk>
+ <871t87z1gz.fsf@belgarion.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp01.smtpout.orange.fr
- [80.12.242.123])
- by alsa0.perex.cz (Postfix) with ESMTP id AB56726073D
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 20:44:38 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Robert Jarzmik <robert.jarzmik@free.fr>, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="l+RjsdkfuJDA0G6K"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <871t87z1gz.fsf-4ty26DBLk+jEm7gnYqmdkQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>
+Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-In the conversion to regmap, I assumed that the 2 following functions
-was working symetrically:
- - snd_soc_codec_init_regmap()
- - snd_soc_codec_exit_regmap(codec)
 
-As a mater of fact with the current code the regmap is freed twice
-because of the devm_() call:
-(mutex_lock) from (debugfs_remove_recursive+0x50/0x1d0)
-(debugfs_remove_recursive) from (regmap_debugfs_exit+0x1c/0xd4)
-(regmap_debugfs_exit) from (regmap_exit+0x28/0xc8)
-(regmap_exit) from (release_nodes+0x18c/0x204)
-(release_nodes) from (device_release+0x18/0x90)
-(device_release) from (kobject_release+0x90/0x1bc)
-(kobject_release) from (wm9713_soc_remove+0x1c/0x24)
-(wm9713_soc_remove) from (soc_remove_component+0x50/0x7c)
-(soc_remove_component) from (soc_remove_dai_links+0x118/0x228)
-(soc_remove_dai_links) from (snd_soc_register_card+0x4e4/0xdd4)
-(snd_soc_register_card) from (devm_snd_soc_register_card+0x34/0x70)
+--l+RjsdkfuJDA0G6K
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fix this by removing the doubled regmap free.
+On Sat, Feb 20, 2016 at 07:22:04PM +0100, Robert Jarzmik wrote:
+> Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> writes:
 
-Fixes: 700dadfefc3d ASoC: wm9713: convert to regmap
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
----
-Since v1: fix the diff second hunk, god knows where it came from.
----
- sound/soc/codecs/wm9713.c | 1 -
- 1 file changed, 1 deletion(-)
+> > Instead we should be probing at runtime (as the non-ASoC AC'97 code does) or
+> > something similar.
 
-diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
-index 79e143625ac3..dd31a5207527 100644
---- a/sound/soc/codecs/wm9713.c
-+++ b/sound/soc/codecs/wm9713.c
-@@ -1230,7 +1230,6 @@ static int wm9713_soc_remove(struct snd_soc_codec *codec)
- {
- 	struct wm9713_priv *wm9713 = snd_soc_codec_get_drvdata(codec);
- 
--	snd_soc_codec_exit_regmap(codec);
- 	snd_soc_free_ac97_codec(wm9713->ac97);
- 	return 0;
- }
--- 
-2.1.4
+> When you say "non-ASoC AC'97 code", which file are you referring to ? Is it
+> sound/pci/ac97/ac97_codec.c ?
+
+Yes.
+
+> If so is there already a table of tuples (AC97_VENDOR_ID1, AC97_VENDOR_ID2) ->
+> (platform device, platform device data) and a matching mechanism already
+> available to the ASoC drivers ?
+
+ASoC doesn't really support the enumeration very well, you can use
+ac97.c as the CODEC but that's about it.  There is a generic AC'97 PXA
+driver in sound/arm, if your system can use that that'd be a better
+route to DT integration for it I think.  Did you try that, if there are
+problems with that perhaps we can improve that driver, it should  be
+simpler.
+
+--l+RjsdkfuJDA0G6K
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWyMWcAAoJECTWi3JdVIfQcpIH/1ulDFzu55nMKtVxAPHEWgG1
+Yr2g0trmnh/LckYj2pkvyh9xTMgRs3JFfoYjP5sqlpajii0JDHQJZFVwJgCALYT5
+eRK27JKj3wf5RVQqg2Xk1JBRmd1NKgzZAfTyzkm4QhmMrZIrB4m53MVE82m37Rff
+trsSQKTGaP8AO7BcTpW/I9uVzyRx7RQ17f0kLTagBtid1e8LkoQ7LDavbA2Jx7P+
+s/jb6ZSt0Y+JUDHYz7yEtMMo7PJp2vhfa6dRwtepEujGFfhKwWvIYcyRR4r2BTK6
+0EYDHe2ewKOnu5O8u5sEOQXH4/iV8ITzciYGGew4xry8S8Y5Uy2laq8ppmMLPPI=
+=qITc
+-----END PGP SIGNATURE-----
+
+--l+RjsdkfuJDA0G6K--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
