@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: rename rdmactl_audif_start to
-	dmactrl_audif_start" to the asoc tree
-Date: Sun, 21 Feb 2016 02:15:22 +0900
-Message-ID: <E1aXB7q-0008JE-KU@finisterre>
-References: <1455193050-1620-1-git-send-email-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: Intel: Skylake: Add HDMI FE and BE cpu
+	dais" to the asoc tree
+Date: Sun, 21 Feb 2016 02:15:28 +0900
+Message-ID: <E1aXB7w-0008Ke-Tp@finisterre>
+References: <1455725047-7303-10-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 046D826517C
+ by alsa0.perex.cz (Postfix) with ESMTP id E0973265182
  for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:15:38 +0100 (CET)
-In-Reply-To: <1455193050-1620-1-git-send-email-srinivas.kandagatla@linaro.org>
+In-Reply-To: <1455725047-7303-10-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Mark Brown <broonie@kernel.org>
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: rename rdmactl_audif_start to dmactrl_audif_start
+   ASoC: Intel: Skylake: Add HDMI FE and BE cpu dais
 
 has been applied to the asoc tree at
 
@@ -53,71 +53,125 @@ to this mail.
 Thanks,
 Mark
 
->From ec5b82878c36f8c7c6d0d85eacd5185633e6c91b Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Thu, 11 Feb 2016 12:17:30 +0000
-Subject: [PATCH] ASoC: qcom: rename rdmactl_audif_start to dmactrl_audif_start
+>From 8cca87c073ac38c7866fb86205fc9ff312a3a575 Mon Sep 17 00:00:00 2001
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Date: Wed, 17 Feb 2016 21:34:07 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add HDMI FE and BE cpu dais
 
-This patch renames rdmactl_audif_start to dmactrl_audif_start as this
-is common for both rdma and wrdma. Without this patch the name would be
-bit misleading to the readers.
+This patch enables HDMI support in passthrough mode in skylake.
+Skylake supports 3 pin widgets in HDMI codec, so add 3 FE and 3
+BE dais
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Acked-by: Kenneth Westfield <kwestfie@codeaurora.org>
+Add required hw info, formats, rates to support HDMI.
+
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/lpass-apq8016.c  | 2 +-
- sound/soc/qcom/lpass-platform.c | 4 ++--
- sound/soc/qcom/lpass.h          | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c | 78 +++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 75 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
-index 94efc01..6cc7e72 100644
---- a/sound/soc/qcom/lpass-apq8016.c
-+++ b/sound/soc/qcom/lpass-apq8016.c
-@@ -212,7 +212,7 @@ static struct lpass_variant apq8016_data = {
- 	.rdma_reg_base		= 0x8400,
- 	.rdma_reg_stride	= 0x1000,
- 	.rdma_channels		= 2,
--	.rdmactl_audif_start	= 1,
-+	.dmactl_audif_start	= 1,
- 	.dai_driver		= apq8016_lpass_cpu_dai_driver,
- 	.num_dai		= ARRAY_SIZE(apq8016_lpass_cpu_dai_driver),
- 	.init			= apq8016_lpass_init,
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index ec2414d..7245c2e 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -91,7 +91,7 @@ static int lpass_platform_pcmops_hw_params(struct snd_pcm_substream *substream,
- 	unsigned int channels = params_channels(params);
- 	unsigned int regval;
- 	int bitwidth;
--	int ret, rdma_port = pcm_data->i2s_port + v->rdmactl_audif_start;
-+	int ret, dma_port = pcm_data->i2s_port + v->dmactl_audif_start;
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index bbb6c28..dab0900 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -676,6 +676,51 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
+ 	},
+ },
++{
++	.name = "HDMI1 Pin",
++	.ops = &skl_pcm_dai_ops,
++	.playback = {
++		.stream_name = "HDMI1 Playback",
++		.channels_min = HDA_STEREO,
++		.channels_max = HDA_STEREO,
++		.rates = SNDRV_PCM_RATE_32000 |	SNDRV_PCM_RATE_44100 |
++			SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |
++			SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 |
++			SNDRV_PCM_RATE_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_S32_LE,
++	},
++},
++{
++	.name = "HDMI2 Pin",
++	.ops = &skl_pcm_dai_ops,
++	.playback = {
++		.stream_name = "HDMI2 Playback",
++		.channels_min = HDA_STEREO,
++		.channels_max = HDA_STEREO,
++		.rates = SNDRV_PCM_RATE_32000 |	SNDRV_PCM_RATE_44100 |
++			SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |
++			SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 |
++			SNDRV_PCM_RATE_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_S32_LE,
++	},
++},
++{
++	.name = "HDMI3 Pin",
++	.ops = &skl_pcm_dai_ops,
++	.playback = {
++		.stream_name = "HDMI3 Playback",
++		.channels_min = HDA_STEREO,
++		.channels_max = HDA_STEREO,
++		.rates = SNDRV_PCM_RATE_32000 |	SNDRV_PCM_RATE_44100 |
++			SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |
++			SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 |
++			SNDRV_PCM_RATE_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_S32_LE,
++	},
++},
  
- 	bitwidth = snd_pcm_format_width(format);
- 	if (bitwidth < 0) {
-@@ -101,7 +101,7 @@ static int lpass_platform_pcmops_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- 	regval = LPAIF_RDMACTL_BURSTEN_INCR4 |
--			LPAIF_RDMACTL_AUDINTF(rdma_port) |
-+			LPAIF_RDMACTL_AUDINTF(dma_port) |
- 			LPAIF_RDMACTL_FIFOWM_8;
- 
- 	switch (bitwidth) {
-diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index 024a771..412399a 100644
---- a/sound/soc/qcom/lpass.h
-+++ b/sound/soc/qcom/lpass.h
-@@ -79,7 +79,7 @@ struct lpass_variant {
- 	 * on SOCs like APQ8016 the channel control bits start
- 	 * at different offset to ipq806x
- 	 **/
--	u32	rdmactl_audif_start;
-+	u32	dmactl_audif_start;
- 	u32	wrdma_channel_start;
- 	/* SOC specific intialization like clocks */
- 	int (*init)(struct platform_device *pdev);
+ /* BE CPU  Dais */
+ {
+@@ -715,14 +760,41 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
+ 	},
+ },
+ {
+-	.name = "iDisp Pin",
++	.name = "iDisp1 Pin",
+ 	.ops = &skl_link_dai_ops,
+ 	.playback = {
+-		.stream_name = "iDisp Tx",
++		.stream_name = "iDisp1 Tx",
+ 		.channels_min = HDA_STEREO,
+ 		.channels_max = HDA_STEREO,
+ 		.rates = SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_16000|SNDRV_PCM_RATE_48000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE |
++			SNDRV_PCM_FMTBIT_S24_LE,
++	},
++},
++{
++	.name = "iDisp2 Pin",
++	.ops = &skl_link_dai_ops,
++	.playback = {
++		.stream_name = "iDisp2 Tx",
++		.channels_min = HDA_STEREO,
++		.channels_max = HDA_STEREO,
++		.rates = SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_16000|
++			SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE |
++			SNDRV_PCM_FMTBIT_S24_LE,
++	},
++},
++{
++	.name = "iDisp3 Pin",
++	.ops = &skl_link_dai_ops,
++	.playback = {
++		.stream_name = "iDisp3 Tx",
++		.channels_min = HDA_STEREO,
++		.channels_max = HDA_STEREO,
++		.rates = SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_16000|
++			SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE |
++			SNDRV_PCM_FMTBIT_S24_LE,
+ 	},
+ },
+ {
 -- 
 2.7.0
