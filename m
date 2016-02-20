@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: fix pointer scaling" to
-	the asoc tree
-Date: Sun, 21 Feb 2016 02:16:25 +0900
-Message-ID: <E1aXB8r-0008Tl-Dm@finisterre>
-References: <1455862354-6455-1-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: rsnd: rename RSND_DVC_CHANNELS to
+	RSND_MAX_CHANNELS" to the asoc tree
+Date: Sun, 21 Feb 2016 02:16:20 +0900
+Message-ID: <E1aXB8m-0008Sq-SY@finisterre>
+References: <87r3gatp7n.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D6962651FD
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:16:30 +0100 (CET)
-In-Reply-To: <1455862354-6455-1-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5007126520A
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:16:34 +0100 (CET)
+In-Reply-To: <87r3gatp7n.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alan Cox <alan@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: fix pointer scaling
+   ASoC: rsnd: rename RSND_DVC_CHANNELS to RSND_MAX_CHANNELS
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,73 @@ to this mail.
 Thanks,
 Mark
 
->From 65b4bcb82967fd5a60694c3477e58a04a9170aea Mon Sep 17 00:00:00 2001
-From: Alan <gnomes@lxorguk.ukuu.org.uk>
-Date: Fri, 19 Feb 2016 11:42:32 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: fix pointer scaling
+>From d2240f0dad488c66e14c45762bd23999901f57a1 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 18 Feb 2016 08:13:13 +0000
+Subject: [PATCH] ASoC: rsnd: rename RSND_DVC_CHANNELS to RSND_MAX_CHANNELS
 
-skl_tplg_tlv_control_set does pointer maths on data but forgets that data
-is not uint8_t so the maths is already scaled in the pointer type.
+The channels number is not only for DVC. Let's rename it.
 
-Signed-off-by: Alan Cox <alan@linux.intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sh/rcar/core.c | 2 +-
+ sound/soc/sh/rcar/dvc.c  | 6 +++---
+ sound/soc/sh/rcar/rsnd.h | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 4624556..b77c253 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -950,7 +950,7 @@ static int skl_tplg_tlv_control_set(struct snd_kcontrol *kcontrol,
- 				return -EFAULT;
- 		} else {
- 			if (copy_from_user(ac->params,
--					   data + 2 * sizeof(u32), size))
-+					   data + 2, size))
- 				return -EFAULT;
- 		}
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 704ba7a..f86d627 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -988,7 +988,7 @@ int rsnd_kctrl_new_m(struct rsnd_mod *mod,
+ 		     int ch_size,
+ 		     u32 max)
+ {
+-	if (ch_size > RSND_DVC_CHANNELS)
++	if (ch_size > RSND_MAX_CHANNELS)
+ 		return -EINVAL;
  
+ 	_cfg->cfg.max	= max;
+diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
+index 302c193..d757f13 100644
+--- a/sound/soc/sh/rcar/dvc.c
++++ b/sound/soc/sh/rcar/dvc.c
+@@ -83,15 +83,15 @@ static void rsnd_dvc_volume_parameter(struct rsnd_dai_stream *io,
+ 					      struct rsnd_mod *mod)
+ {
+ 	struct rsnd_dvc *dvc = rsnd_mod_to_dvc(mod);
+-	u32 val[RSND_DVC_CHANNELS];
++	u32 val[RSND_MAX_CHANNELS];
+ 	int i;
+ 
+ 	/* Enable Ramp */
+ 	if (dvc->ren.val)
+-		for (i = 0; i < RSND_DVC_CHANNELS; i++)
++		for (i = 0; i < RSND_MAX_CHANNELS; i++)
+ 			val[i] = dvc->volume.cfg.max;
+ 	else
+-		for (i = 0; i < RSND_DVC_CHANNELS; i++)
++		for (i = 0; i < RSND_MAX_CHANNELS; i++)
+ 			val[i] = dvc->volume.val[i];
+ 
+ 	/* Enable Digital Volume */
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index bbaf89b..61cb4ae 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -550,10 +550,10 @@ struct rsnd_kctrl_cfg {
+ 	struct snd_kcontrol *kctrl;
+ };
+ 
+-#define RSND_DVC_CHANNELS	8
++#define RSND_MAX_CHANNELS	8
+ struct rsnd_kctrl_cfg_m {
+ 	struct rsnd_kctrl_cfg cfg;
+-	u32 val[RSND_DVC_CHANNELS];
++	u32 val[RSND_MAX_CHANNELS];
+ };
+ 
+ struct rsnd_kctrl_cfg_s {
 -- 
 2.7.0
