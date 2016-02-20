@@ -1,15 +1,18 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [PATCH] ASoC: wm9713: fix regmap free path
-Date: Fri, 19 Feb 2016 23:08:42 +0100
-Message-ID: <1455919722-8299-1-git-send-email-robert.jarzmik@free.fr>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH 1/3] ASoC: max9867: Add CONFIG_SND_SOC_MAX9867
+	to build
+Date: Sat, 20 Feb 2016 10:52:32 +0800
+Message-ID: <1455936752.19371.0.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp06.smtpout.orange.fr
- [80.12.242.128])
- by alsa0.perex.cz (Postfix) with ESMTP id CA1A12606BA
- for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2016 23:08:51 +0100 (CET)
+Received: from mail-pf0-f179.google.com (mail-pf0-f179.google.com
+ [209.85.192.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 401F026695F
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 03:52:39 +0100 (CET)
+Received: by mail-pf0-f179.google.com with SMTP id x65so60900657pfb.1
+ for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2016 18:52:39 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,51 +22,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Robert Jarzmik <robert.jarzmik@free.fr>, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, anish kumar <yesanishhere@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-In the conversion to regmap, I assumed that the 2 following functions
-was working symetrically:
- - snd_soc_codec_init_regmap()
- - snd_soc_codec_exit_regmap(codec)
-
-As a mater of fact with the current code the regmap is freed twice
-because of the devm_() call:
-(mutex_lock) from (debugfs_remove_recursive+0x50/0x1d0)
-(debugfs_remove_recursive) from (regmap_debugfs_exit+0x1c/0xd4)
-(regmap_debugfs_exit) from (regmap_exit+0x28/0xc8)
-(regmap_exit) from (release_nodes+0x18c/0x204)
-(release_nodes) from (device_release+0x18/0x90)
-(device_release) from (kobject_release+0x90/0x1bc)
-(kobject_release) from (wm9713_soc_remove+0x1c/0x24)
-(wm9713_soc_remove) from (soc_remove_component+0x50/0x7c)
-(soc_remove_component) from (soc_remove_dai_links+0x118/0x228)
-(soc_remove_dai_links) from (snd_soc_register_card+0x4e4/0xdd4)
-(snd_soc_register_card) from (devm_snd_soc_register_card+0x34/0x70)
-
-Fix this by removing the doubled regmap free.
-
-Fixes: 700dadfefc3d ASoC: wm9713: convert to regmap
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 ---
- sound/soc/codecs/wm9713.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ sound/soc/codecs/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
-index 79e143625ac3..0242b7dcc1bb 100644
---- a/sound/soc/codecs/wm9713.c
-+++ b/sound/soc/codecs/wm9713.c
-@@ -1230,7 +1230,6 @@ static int wm9713_soc_remove(struct snd_soc_codec *codec)
- {
- 	struct wm9713_priv *wm9713 = snd_soc_codec_get_drvdata(codec);
- 
--	snd_soc_codec_exit_regmap(codec);
- 	snd_soc_free_ac97_codec(wm9713->ac97);
- 	return 0;
- }
-@@ -1272,3 +1271,2 @@ static int wm9713_remove(struct platform_device *pdev)
- 	return 0;
- }
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 621c0a3..185a712 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -283,6 +283,7 @@ obj-$(CONFIG_SND_SOC_MAX98088)	+= snd-soc-max98088.o
+ obj-$(CONFIG_SND_SOC_MAX98090)	+= snd-soc-max98090.o
+ obj-$(CONFIG_SND_SOC_MAX98095)	+= snd-soc-max98095.o
+ obj-$(CONFIG_SND_SOC_MAX98357A)	+= snd-soc-max98357a.o
++obj-$(CONFIG_SND_SOC_MAX9867)	+= snd-soc-max9867.o
+ obj-$(CONFIG_SND_SOC_MAX98925)	+= snd-soc-max98925.o
+ obj-$(CONFIG_SND_SOC_MAX98926)	+= snd-soc-max98926.o
+ obj-$(CONFIG_SND_SOC_MAX9850)	+= snd-soc-max9850.o
 -- 
 2.1.4
