@@ -1,88 +1,249 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] fireworks: serialize transactions to
- update connections at bus reset
-Date: Sat, 20 Feb 2016 16:48:29 +0900
-Message-ID: <56C81A4D.6080405@sakamocchi.jp>
-References: <1455954061-18816-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Michael Trimarchi <michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>
+Subject: Re: [PATCH V3] ASoC: pcm179x: Add support for pcm1795 and pcm1796
+Date: Sat, 20 Feb 2016 10:27:03 +0100
+Message-ID: <CAOf5uwnpY8J=NC82rtZ_q50mWmHqEf2gteJxZe+cXVs_3FNmrw@mail.gmail.com>
+References: <1452382685-18009-1-git-send-email-michael@amarulasolutions.com>
+	<1452382685-18009-4-git-send-email-michael@amarulasolutions.com>
+	<20160110120045.GW6588@sirena.org.uk>
+	<20160110173812.GA16304@panicking>
+	<20160205172451.GA30542@panicking>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F61D26145A
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 08:48:34 +0100 (CET)
-In-Reply-To: <1455954061-18816-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+Content-Type: text/plain; charset=UTF-8
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20160205172451.GA30542@panicking>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Jacob Siverskog <jacob-EZCvousvhKUZux3j3Bed6dkegs52MxvZ@public.gmane.org>, Johan Hovold <johan-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Feb 20 2016 16:41, Takashi Sakamoto wrote:
-> In IEC 61883-1, at bus-reset, applications can continue isochronous
-> streaming by updating connections. In ALSA fireworks driver, the
-> operation is executed in 'update' handler for bus driver.
-> 
-> The connection resources are also changed in process contexts of PCM/MIDI
-> applications. Therefore, bus-reset handling has race condition
-> against connection. Current ALSA fireworks driver has a bug for the
-> condition.
-> 
-> This commit fixes the bug, by expand critical section with mutex. As a
-> result, connection updating operation in bus-reset handler and connection
-> changing operation in process context are serialized.
+Hi Jacob
 
-Oops. I forgot to add 'ALSA:' prefix to the commit title. I'm sorry but
-would you please add it when merging to for-next branch?
-
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+On Fri, Feb 5, 2016 at 6:24 PM, Michael Trimarchi
+<michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org> wrote:
+>
+> Signed-off-by: Michael Trimarchi <michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>
 > ---
->  sound/firewire/fireworks/fireworks.c        | 3 +++
->  sound/firewire/fireworks/fireworks_stream.c | 6 ++----
->  2 files changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
-> index d5b19bc..8f27b67 100644
-> --- a/sound/firewire/fireworks/fireworks.c
-> +++ b/sound/firewire/fireworks/fireworks.c
-> @@ -301,7 +301,10 @@ static void efw_update(struct fw_unit *unit)
->  	struct snd_efw *efw = dev_get_drvdata(&unit->device);
->  
->  	snd_efw_transaction_bus_reset(efw->unit);
-> +
-> +	mutex_lock(&efw->mutex);
->  	snd_efw_stream_update_duplex(efw);
-> +	mutex_unlock(&efw->mutex);
+> Not get time to retest
+>
+
+Can you confirm that it works for you?
+
+Michael
+
+> Changes v3 -> v2:
+>         - rebase after i2c support
+>
+> Changes v1 -> v2:
+>         - Use switch for support new variants
+>         - sort the compatible list
+>
+>  sound/soc/codecs/pcm179x-i2c.c |  6 ----
+>  sound/soc/codecs/pcm179x-spi.c |  6 ----
+>  sound/soc/codecs/pcm179x.c     | 62 ++++++++++++++++++++++++++++++++++++++++--
+>  sound/soc/codecs/pcm179x.h     |  9 ++++--
+>  4 files changed, 66 insertions(+), 17 deletions(-)
+>
+> diff --git a/sound/soc/codecs/pcm179x-i2c.c b/sound/soc/codecs/pcm179x-i2c.c
+> index 4118106..609f07f 100644
+> --- a/sound/soc/codecs/pcm179x-i2c.c
+> +++ b/sound/soc/codecs/pcm179x-i2c.c
+> @@ -44,12 +44,6 @@ static int pcm179x_i2c_remove(struct i2c_client *client)
+>         return pcm179x_common_exit(&client->dev);
 >  }
->  
->  static void efw_remove(struct fw_unit *unit)
-> diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
-> index 968a40a..425db8d 100644
-> --- a/sound/firewire/fireworks/fireworks_stream.c
-> +++ b/sound/firewire/fireworks/fireworks_stream.c
-> @@ -313,12 +313,10 @@ void snd_efw_stream_stop_duplex(struct snd_efw *efw)
->  
->  void snd_efw_stream_update_duplex(struct snd_efw *efw)
+>
+> -static const struct of_device_id pcm179x_of_match[] = {
+> -       { .compatible = "ti,pcm1792a", },
+> -       { }
+> -};
+> -MODULE_DEVICE_TABLE(of, pcm179x_of_match);
+> -
+>  static const struct i2c_device_id pcm179x_i2c_ids[] = {
+>         { "pcm179x", 0 },
+>         { }
+> diff --git a/sound/soc/codecs/pcm179x-spi.c b/sound/soc/codecs/pcm179x-spi.c
+> index da924d4..6ae0e4d 100644
+> --- a/sound/soc/codecs/pcm179x-spi.c
+> +++ b/sound/soc/codecs/pcm179x-spi.c
+> @@ -43,12 +43,6 @@ static int pcm179x_spi_remove(struct spi_device *spi)
+>         return pcm179x_common_exit(&spi->dev);
+>  }
+>
+> -static const struct of_device_id pcm179x_of_match[] = {
+> -       { .compatible = "ti,pcm1792a", },
+> -       { }
+> -};
+> -MODULE_DEVICE_TABLE(of, pcm179x_of_match);
+> -
+>  static const struct spi_device_id pcm179x_spi_ids[] = {
+>         { "pcm179x", 0 },
+>         { },
+> diff --git a/sound/soc/codecs/pcm179x.c b/sound/soc/codecs/pcm179x.c
+> index 06a6657..73c80d3 100644
+> --- a/sound/soc/codecs/pcm179x.c
+> +++ b/sound/soc/codecs/pcm179x.c
+> @@ -20,6 +20,8 @@
+>  #include <linux/slab.h>
+>  #include <linux/kernel.h>
+>  #include <linux/device.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+>
+>  #include <sound/core.h>
+>  #include <sound/pcm.h>
+> @@ -72,8 +74,31 @@ struct pcm179x_private {
+>         struct regmap *regmap;
+>         unsigned int format;
+>         unsigned int rate;
+> +#define PCM1795        1
+> +       unsigned int codec_model;
+>  };
+>
+> +static int pcm179x_startup(struct snd_pcm_substream *substream,
+> +                           struct snd_soc_dai *dai)
+> +{
+> +       struct snd_soc_codec *codec = dai->codec;
+> +       struct pcm179x_private *priv = snd_soc_codec_get_drvdata(codec);
+> +       u64 formats = PCM1792A_FORMATS;
+> +
+> +       switch (priv->codec_model) {
+> +       case PCM1795:
+> +               formats = PCM1795_FORMATS;
+> +               break;
+> +       default:
+> +               break;
+> +       }
+> +
+> +       snd_pcm_hw_constraint_mask64(substream->runtime,
+> +                                    SNDRV_PCM_HW_PARAM_FORMAT, formats);
+> +
+> +       return 0;
+> +}
+> +
+>  static int pcm179x_set_dai_fmt(struct snd_soc_dai *codec_dai,
+>                               unsigned int format)
 >  {
-> -	if ((cmp_connection_update(&efw->out_conn) < 0) ||
-> -	    (cmp_connection_update(&efw->in_conn) < 0)) {
-> -		mutex_lock(&efw->mutex);
-> +	if (cmp_connection_update(&efw->out_conn) < 0 ||
-> +	    cmp_connection_update(&efw->in_conn) < 0) {
->  		stop_stream(efw, &efw->rx_stream);
->  		stop_stream(efw, &efw->tx_stream);
-> -		mutex_unlock(&efw->mutex);
->  	} else {
->  		amdtp_stream_update(&efw->rx_stream);
->  		amdtp_stream_update(&efw->tx_stream);
+> @@ -112,8 +137,10 @@ static int pcm179x_hw_params(struct snd_pcm_substream *substream,
+>         switch (priv->format & SND_SOC_DAIFMT_FORMAT_MASK) {
+>         case SND_SOC_DAIFMT_RIGHT_J:
+>                 switch (params_width(params)) {
+> -               case 24:
+>                 case 32:
+> +                       val = 1;
+> +                       break;
+> +               case 24:
+>                         val = 2;
+>                         break;
+>                 case 16:
+> @@ -125,8 +152,10 @@ static int pcm179x_hw_params(struct snd_pcm_substream *substream,
+>                 break;
+>         case SND_SOC_DAIFMT_I2S:
+>                 switch (params_width(params)) {
+> -               case 24:
+>                 case 32:
+> +                       val = 4;
+> +                       break;
+> +               case 24:
+>                         val = 5;
+>                         break;
+>                 case 16:
+> @@ -152,6 +181,7 @@ static int pcm179x_hw_params(struct snd_pcm_substream *substream,
+>  }
+>
+>  static const struct snd_soc_dai_ops pcm179x_dai_ops = {
+> +       .startup        = pcm179x_startup,
+>         .set_fmt        = pcm179x_set_dai_fmt,
+>         .hw_params      = pcm179x_hw_params,
+>         .digital_mute   = pcm179x_digital_mute,
+> @@ -190,7 +220,7 @@ static struct snd_soc_dai_driver pcm179x_dai = {
+>                 .rates = SNDRV_PCM_RATE_CONTINUOUS,
+>                 .rate_min = 10000,
+>                 .rate_max = 200000,
+> -               .formats = PCM1792A_FORMATS, },
+> +               .formats = PCM179X_FORMATS, },
+>         .ops = &pcm179x_dai_ops,
+>  };
+>
+> @@ -214,15 +244,41 @@ static struct snd_soc_codec_driver soc_codec_dev_pcm179x = {
+>         .num_dapm_routes        = ARRAY_SIZE(pcm179x_dapm_routes),
+>  };
+>
+> +static const unsigned int codec_model = PCM1795;
+> +
+> +const struct of_device_id pcm179x_of_match[] = {
+> +       { .compatible = "ti,pcm1792a", },
+> +       { .compatible = "ti,pcm1795",
+> +         .data = &codec_model,
+> +       },
+> +       { .compatible = "ti,pcm1796", },
+> +       { }
+> +};
+> +MODULE_DEVICE_TABLE(of, pcm179x_of_match);
+> +EXPORT_SYMBOL_GPL(pcm179x_of_match);
+> +
+>  int pcm179x_common_init(struct device *dev, struct regmap *regmap)
+>  {
+>         struct pcm179x_private *pcm179x;
+> +       struct device_node *np = dev->of_node;
+> +       const unsigned int *codec_model = NULL;
+>
+>         pcm179x = devm_kzalloc(dev, sizeof(struct pcm179x_private),
+>                                 GFP_KERNEL);
+>         if (!pcm179x)
+>                 return -ENOMEM;
+>
+> +       if (np) {
+> +               const struct of_device_id *of_id;
+> +
+> +               of_id = of_match_device(pcm179x_of_match, dev);
+> +               if (of_id)
+> +                       codec_model = of_id->data;
+> +       }
+> +
+> +       if (codec_model)
+> +               pcm179x->codec_model =  *codec_model;
+> +
+>         pcm179x->regmap = regmap;
+>         dev_set_drvdata(dev, pcm179x);
+>
+> diff --git a/sound/soc/codecs/pcm179x.h b/sound/soc/codecs/pcm179x.h
+> index 11e3312..4c00047 100644
+> --- a/sound/soc/codecs/pcm179x.h
+> +++ b/sound/soc/codecs/pcm179x.h
+> @@ -17,10 +17,15 @@
+>  #ifndef __PCM179X_H__
+>  #define __PCM179X_H__
+>
+> -#define PCM1792A_FORMATS (SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S24_LE | \
+> -                         SNDRV_PCM_FMTBIT_S16_LE)
+> +#define PCM179X_FORMATS (SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S24_LE | \
+> +                        SNDRV_PCM_FMTBIT_S16_LE)
+> +
+> +#define PCM1792A_FORMATS (SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S16_LE)
+> +
+> +#define PCM1795_FORMATS (SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S24_LE)
+>
+>  extern const struct regmap_config pcm179x_regmap_config;
+> +extern const struct of_device_id pcm179x_of_match[];
+>
+>  int pcm179x_common_init(struct device *dev, struct regmap *regmap);
+>  int pcm179x_common_exit(struct device *dev);
+> --
+> 2.7.0
+>
+> --
+> | Michael Nazzareno Trimarchi                     Amarula Solutions BV |
+> | COO  -  Founder                                      Cruquiuskade 47 |
+> | +31(0)851119172                                 Amsterdam 1018 AM NL |
+> |                  [`as] http://www.amarulasolutions.com               |
 
-Regards
 
-Takashi Sakamoto
+
+-- 
+| Michael Nazzareno Trimarchi                     Amarula Solutions BV |
+| COO  -  Founder                                      Cruquiuskade 47 |
+| +31(0)851119172                                 Amsterdam 1018 AM NL |
+|                  [`as] http://www.amarulasolutions.com               |
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
