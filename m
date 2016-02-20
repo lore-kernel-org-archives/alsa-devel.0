@@ -1,18 +1,20 @@
 From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH 1/3] ASoC: max9867: Add CONFIG_SND_SOC_MAX9867
-	to build
-Date: Sat, 20 Feb 2016 10:52:32 +0800
-Message-ID: <1455936752.19371.0.camel@ingics.com>
+Subject: [PATCH 2/3] ASoC: max9867: Make max9867_i2c_id NULL
+	terminated
+Date: Sat, 20 Feb 2016 10:53:15 +0800
+Message-ID: <1455936795.19371.1.camel@ingics.com>
+References: <1455936752.19371.0.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f179.google.com (mail-pf0-f179.google.com
- [209.85.192.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 401F026695F
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 03:52:39 +0100 (CET)
-Received: by mail-pf0-f179.google.com with SMTP id x65so60900657pfb.1
- for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2016 18:52:39 -0800 (PST)
+Received: from mail-pf0-f171.google.com (mail-pf0-f171.google.com
+ [209.85.192.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id B1C33266AFE
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 03:53:20 +0100 (CET)
+Received: by mail-pf0-f171.google.com with SMTP id x65so60907586pfb.1
+ for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2016 18:53:20 -0800 (PST)
+In-Reply-To: <1455936752.19371.0.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,20 +30,20 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 ---
- sound/soc/codecs/Makefile | 1 +
+ sound/soc/codecs/max9867.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 621c0a3..185a712 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -283,6 +283,7 @@ obj-$(CONFIG_SND_SOC_MAX98088)	+= snd-soc-max98088.o
- obj-$(CONFIG_SND_SOC_MAX98090)	+= snd-soc-max98090.o
- obj-$(CONFIG_SND_SOC_MAX98095)	+= snd-soc-max98095.o
- obj-$(CONFIG_SND_SOC_MAX98357A)	+= snd-soc-max98357a.o
-+obj-$(CONFIG_SND_SOC_MAX9867)	+= snd-soc-max9867.o
- obj-$(CONFIG_SND_SOC_MAX98925)	+= snd-soc-max98925.o
- obj-$(CONFIG_SND_SOC_MAX98926)	+= snd-soc-max98926.o
- obj-$(CONFIG_SND_SOC_MAX9850)	+= snd-soc-max9850.o
+diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+index 5a8481b..70b5406 100755
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -512,6 +512,7 @@ static int max9867_i2c_remove(struct i2c_client *client)
+ 
+ static const struct i2c_device_id max9867_i2c_id[] = {
+ 	{ "max9867", 0 },
++	{ }
+ };
+ 
+ static const struct of_device_id max9867_of_match[] = {
 -- 
 2.1.4
