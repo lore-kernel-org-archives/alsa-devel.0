@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: add wrdma register definitions"
-	to the asoc tree
-Date: Sun, 21 Feb 2016 02:14:36 +0900
-Message-ID: <E1aXB76-0008Fz-EJ@finisterre>
-References: <1454347766-10918-1-git-send-email-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: qcom: ipq806x: add wrdma related
+	register offsets" to the asoc tree
+Date: Sun, 21 Feb 2016 02:14:45 +0900
+Message-ID: <E1aXB7F-0008Gx-7z@finisterre>
+References: <1454347729-10592-1-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 271C3264F19
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:14:43 +0100 (CET)
-In-Reply-To: <1454347766-10918-1-git-send-email-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id C095E2606F5
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:14:55 +0100 (CET)
+In-Reply-To: <1454347729-10592-1-git-send-email-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: add wrdma register definitions
+   ASoC: qcom: ipq806x: add wrdma related register offsets
 
 has been applied to the asoc tree at
 
@@ -53,39 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From 71aaa600787faffd72a9b674c9e5c9ded7cd9a82 Mon Sep 17 00:00:00 2001
+>From 0a14a1bf2e81a75c5b814a3904f971fb5a53c068 Mon Sep 17 00:00:00 2001
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Thu, 11 Feb 2016 12:18:14 +0000
-Subject: [PATCH] ASoC: qcom: add wrdma register definitions
+Date: Thu, 11 Feb 2016 12:17:57 +0000
+Subject: [PATCH] ASoC: qcom: ipq806x: add wrdma related register offsets
 
-This patch adds wrdma registers into the lpaif-reg.h.
+This patch adds wrdma related register offsets to the lpass variant data
+of ipq806x.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Acked-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/lpass-lpaif-reg.h | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/qcom/lpass-ipq806x.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/qcom/lpass-lpaif-reg.h b/sound/soc/qcom/lpass-lpaif-reg.h
-index 6599794..760d219 100644
---- a/sound/soc/qcom/lpass-lpaif-reg.h
-+++ b/sound/soc/qcom/lpass-lpaif-reg.h
-@@ -145,4 +145,15 @@
- #define LPAIF_RDMACTL_ENABLE_OFF	(0 << LPAIF_RDMACTL_ENABLE_SHIFT)
- #define LPAIF_RDMACTL_ENABLE_ON		(1 << LPAIF_RDMACTL_ENABLE_SHIFT)
- 
-+#define LPAIF_WRDMA_REG_ADDR(v, addr, chan) \
-+	(v->wrdma_reg_base + (addr) + \
-+	 v->wrdma_reg_stride * (chan - v->wrdma_channel_start))
-+
-+#define LPAIF_WRDMACTL_REG(v, chan)	LPAIF_WRDMA_REG_ADDR(v, 0x00, (chan))
-+#define LPAIF_WRDMABASE_REG(v, chan)	LPAIF_WRDMA_REG_ADDR(v, 0x04, (chan))
-+#define	LPAIF_WRDMABUFF_REG(v, chan)	LPAIF_WRDMA_REG_ADDR(v, 0x08, (chan))
-+#define LPAIF_WRDMACURR_REG(v, chan)	LPAIF_WRDMA_REG_ADDR(v, 0x0C, (chan))
-+#define	LPAIF_WRDMAPER_REG(v, chan)	LPAIF_WRDMA_REG_ADDR(v, 0x10, (chan))
-+#define	LPAIF_WRDMAPERCNT_REG(v, chan)	LPAIF_WRDMA_REG_ADDR(v, 0x14, (chan))
-+
- #endif /* __LPASS_LPAIF_REG_H__ */
+diff --git a/sound/soc/qcom/lpass-ipq806x.c b/sound/soc/qcom/lpass-ipq806x.c
+index 29a3529..608c1a9 100644
+--- a/sound/soc/qcom/lpass-ipq806x.c
++++ b/sound/soc/qcom/lpass-ipq806x.c
+@@ -86,6 +86,10 @@ static struct lpass_variant ipq806x_data = {
+ 	.rdma_reg_base		= 0x6000,
+ 	.rdma_reg_stride	= 0x1000,
+ 	.rdma_channels		= 4,
++	.wrdma_reg_base		= 0xB000,
++	.wrdma_reg_stride	= 0x1000,
++	.wrdma_channel_start	= 5,
++	.wrdma_channels		= 4,
+ 	.dai_driver		= &ipq806x_lpass_cpu_dai_driver,
+ 	.num_dai		= 1,
+ 	.alloc_dma_channel	= ipq806x_lpass_alloc_dma_channel,
 -- 
 2.7.0
