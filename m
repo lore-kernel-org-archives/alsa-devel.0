@@ -1,48 +1,68 @@
-From: Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>
-Subject: Re: [PATCH 1/4] ASoC: wm9713: add binding for WM9713 codec
-Date: Sat, 20 Feb 2016 19:22:04 +0100
-Message-ID: <871t87z1gz.fsf@belgarion.home>
-References: <1455979079-9030-1-git-send-email-robert.jarzmik@free.fr>
-	<20160220171459.GA18327@sirena.org.uk>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: [PATCH v2] ASoC: wm9713: fix regmap free path
+Date: Sat, 20 Feb 2016 20:44:30 +0100
+Message-ID: <1455997470-12307-1-git-send-email-robert.jarzmik@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20160220171459.GA18327-GFdadSzt00ze9xe1eoZjHA@public.gmane.org> (Mark Brown's message of
-	"Sun, 21 Feb 2016 02:14:59 +0900")
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.smtpout.orange.fr (smtp01.smtpout.orange.fr
+ [80.12.242.123])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB56726073D
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 20:44:38 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Robert Jarzmik <robert.jarzmik@free.fr>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> writes:
+In the conversion to regmap, I assumed that the 2 following functions
+was working symetrically:
+ - snd_soc_codec_init_regmap()
+ - snd_soc_codec_exit_regmap(codec)
 
-> On Sat, Feb 20, 2016 at 03:37:56PM +0100, Robert Jarzmik wrote:
->
->> +WM9713 audio CODEC
->> +
->> +This devices supports I2C.
->
-> No, it clearly doesn't...
-Right, it supports AC97.
+As a mater of fact with the current code the regmap is freed twice
+because of the devm_() call:
+(mutex_lock) from (debugfs_remove_recursive+0x50/0x1d0)
+(debugfs_remove_recursive) from (regmap_debugfs_exit+0x1c/0xd4)
+(regmap_debugfs_exit) from (regmap_exit+0x28/0xc8)
+(regmap_exit) from (release_nodes+0x18c/0x204)
+(release_nodes) from (device_release+0x18/0x90)
+(device_release) from (kobject_release+0x90/0x1bc)
+(kobject_release) from (wm9713_soc_remove+0x1c/0x24)
+(wm9713_soc_remove) from (soc_remove_component+0x50/0x7c)
+(soc_remove_component) from (soc_remove_dai_links+0x118/0x228)
+(soc_remove_dai_links) from (snd_soc_register_card+0x4e4/0xdd4)
+(snd_soc_register_card) from (devm_snd_soc_register_card+0x34/0x70)
 
-> The problem with doing this is that since AC'97 is an enumerable bus we really
-> shouldn't need to list AC'97 CODECs in the device tree.
-Ok, I understand that.
+Fix this by removing the doubled regmap free.
 
-> Instead we should be probing at runtime (as the non-ASoC AC'97 code does) or
-> something similar.
-When you say "non-ASoC AC'97 code", which file are you referring to ? Is it
-sound/pci/ac97/ac97_codec.c ?
+Fixes: 700dadfefc3d ASoC: wm9713: convert to regmap
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+---
+Since v1: fix the diff second hunk, god knows where it came from.
+---
+ sound/soc/codecs/wm9713.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-If so is there already a table of tuples (AC97_VENDOR_ID1, AC97_VENDOR_ID2) ->
-(platform device, platform device data) and a matching mechanism already
-available to the ASoC drivers ?
-
-Cheers.
-
+diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
+index 79e143625ac3..dd31a5207527 100644
+--- a/sound/soc/codecs/wm9713.c
++++ b/sound/soc/codecs/wm9713.c
+@@ -1230,7 +1230,6 @@ static int wm9713_soc_remove(struct snd_soc_codec *codec)
+ {
+ 	struct wm9713_priv *wm9713 = snd_soc_codec_get_drvdata(codec);
+ 
+-	snd_soc_codec_exit_regmap(codec);
+ 	snd_soc_free_ac97_codec(wm9713->ac97);
+ 	return 0;
+ }
 -- 
-Robert
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+2.1.4
