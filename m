@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm9713: fix regmap free path
-Date: Sun, 21 Feb 2016 03:07:41 +0900
-Message-ID: <20160220180741.GD18327@sirena.org.uk>
-References: <1455919722-8299-1-git-send-email-robert.jarzmik@free.fr>
+Subject: Applied "ASoC: max9867: Make max9867_i2c_id NULL
+	terminated" to the asoc tree
+Date: Sun, 21 Feb 2016 03:10:25 +0900
+Message-ID: <E1aXBz7-0001jv-6b@finisterre>
+References: <1455936795.19371.1.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6464050234034500311=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C1D0B2606D3
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 19:07:57 +0100 (CET)
-In-Reply-To: <1455919722-8299-1-git-send-email-robert.jarzmik@free.fr>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2BDD62606D3
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 19:10:34 +0100 (CET)
+In-Reply-To: <1455936795.19371.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,49 +22,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Axel Lin <axel.lin@ingics.com>, anish kumar <yesanishhere@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============6464050234034500311==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="WP/lS5xSWAOC+/uo"
-Content-Disposition: inline
+   ASoC: max9867: Make max9867_i2c_id NULL terminated
 
+has been applied to the asoc tree at
 
---WP/lS5xSWAOC+/uo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Fri, Feb 19, 2016 at 11:08:42PM +0100, Robert Jarzmik wrote:
-> In the conversion to regmap, I assumed that the 2 following functions
-> was working symetrically:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-This doesn't apply against current code, please check and resend.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---WP/lS5xSWAOC+/uo
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEcBAEBCAAGBQJWyKtsAAoJECTWi3JdVIfQnvEH/0hWG+l5LKYKzNHNOKztsXfT
-lU1sfTDMVun+8adR7GGvM6Qx2NuqHbcpj3PYMngknOTSMElva8OW7agLFR1LxCFy
-gSGBWCaANOBrwLc70TWuOh5JvJcEG4EAb9tf4s4GphWCOoxICrvbIx7nubmNDtgy
-G60+WjT4PS3SniFteIJsRKCeQb18AER1XwdSC0kBhkMaMJYqly4oBdm0jq5/4Y9B
-p2/ozChQRM6d/iuY0ngblqB2Yw1s4DFHg+MwzRmaCFy6UMQn4kS997/GWEfu5evX
-UUnnb8KGr3D+WoHOX1g3HIt5V0mLwz+TFg4aC1I0giOsoJMLi1d18vrOBgUjSDE=
-=lJcM
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---WP/lS5xSWAOC+/uo--
+>From 1b36e4a2ab0cfcc322153337d2615bc6fa922567 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Sat, 20 Feb 2016 10:53:15 +0800
+Subject: [PATCH] ASoC: max9867: Make max9867_i2c_id NULL terminated
 
---===============6464050234034500311==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Acked-by: anish kumar <yesanishhere@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/max9867.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-
---===============6464050234034500311==--
+diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+index 5a8481b..70b5406 100755
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -512,6 +512,7 @@ static int max9867_i2c_remove(struct i2c_client *client)
+ 
+ static const struct i2c_device_id max9867_i2c_id[] = {
+ 	{ "max9867", 0 },
++	{ }
+ };
+ 
+ static const struct of_device_id max9867_of_match[] = {
+-- 
+2.7.0
