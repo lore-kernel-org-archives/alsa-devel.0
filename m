@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98926: Constify max98926_reg and
-	max98926_regmap" to the asoc tree
-Date: Sun, 21 Feb 2016 03:10:35 +0900
-Message-ID: <E1aXBzH-0001kq-2l@finisterre>
-References: <1455937018.19371.3.camel@ingics.com>
+Subject: Applied "ASoC: max9867: Add CONFIG_SND_SOC_MAX9867 to
+	build" to the asoc tree
+Date: Sun, 21 Feb 2016 03:10:31 +0900
+Message-ID: <E1aXBzD-0001kO-Oz@finisterre>
+References: <1455936752.19371.0.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 782422606D3
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 19:10:45 +0100 (CET)
-In-Reply-To: <1455937018.19371.3.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1861A261B0A
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 19:10:49 +0100 (CET)
+In-Reply-To: <1455936752.19371.0.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98926: Constify max98926_reg and max98926_regmap
+   ASoC: max9867: Add CONFIG_SND_SOC_MAX9867 to build
 
 has been applied to the asoc tree at
 
@@ -53,39 +53,29 @@ to this mail.
 Thanks,
 Mark
 
->From e354d86e551656668e879c833de9890b5053cc88 Mon Sep 17 00:00:00 2001
+>From ee06b6f0675907191656b11a8405a03c6d599ea9 Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Sat, 20 Feb 2016 10:56:58 +0800
-Subject: [PATCH] ASoC: max98926: Constify max98926_reg and max98926_regmap
+Date: Sat, 20 Feb 2016 10:52:32 +0800
+Subject: [PATCH] ASoC: max9867: Add CONFIG_SND_SOC_MAX9867 to build
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Acked-by: anish kumar <yesanishhere@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98926.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/max98926.c b/sound/soc/codecs/max98926.c
-index 5245e10..8d14ada 100644
---- a/sound/soc/codecs/max98926.c
-+++ b/sound/soc/codecs/max98926.c
-@@ -40,7 +40,7 @@ static const char *const max98926_hpf_cutoff_txt[] = {
- 	"200Hz", "400Hz", "800Hz",
- };
- 
--static struct reg_default max98926_reg[] = {
-+static const struct reg_default max98926_reg[] = {
- 	{ 0x0B, 0x00 }, /* IRQ Enable0 */
- 	{ 0x0C, 0x00 }, /* IRQ Enable1 */
- 	{ 0x0D, 0x00 }, /* IRQ Enable2 */
-@@ -506,7 +506,7 @@ static struct snd_soc_codec_driver soc_codec_dev_max98926 = {
- 	.num_dapm_widgets = ARRAY_SIZE(max98926_dapm_widgets),
- };
- 
--static struct regmap_config max98926_regmap = {
-+static const struct regmap_config max98926_regmap = {
- 	.reg_bits	= 8,
- 	.val_bits	= 8,
- 	.max_register	= MAX98926_VERSION,
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index b84fe9d..f35237d 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -280,6 +280,7 @@ obj-$(CONFIG_SND_SOC_MAX98088)	+= snd-soc-max98088.o
+ obj-$(CONFIG_SND_SOC_MAX98090)	+= snd-soc-max98090.o
+ obj-$(CONFIG_SND_SOC_MAX98095)	+= snd-soc-max98095.o
+ obj-$(CONFIG_SND_SOC_MAX98357A)	+= snd-soc-max98357a.o
++obj-$(CONFIG_SND_SOC_MAX9867)	+= snd-soc-max9867.o
+ obj-$(CONFIG_SND_SOC_MAX98925)	+= snd-soc-max98925.o
+ obj-$(CONFIG_SND_SOC_MAX98926)	+= snd-soc-max98926.o
+ obj-$(CONFIG_SND_SOC_MAX9850)	+= snd-soc-max9850.o
 -- 
 2.7.0
