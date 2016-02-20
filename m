@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Avoid narrow race condition on
-	compr pointer" to the asoc tree
-Date: Sun, 21 Feb 2016 03:10:50 +0900
-Message-ID: <E1aXBzW-0001mi-RB@finisterre>
-References: <1455893084-4556-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: wm_adsp: Explicitly set the control
+	access flags in all cases" to the asoc tree
+Date: Sun, 21 Feb 2016 03:10:49 +0900
+Message-ID: <E1aXBzV-0001mG-Fs@finisterre>
+References: <1455893084-4556-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1FFF8264F0A
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 19:10:56 +0100 (CET)
-In-Reply-To: <1455893084-4556-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D143F2650BC
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 19:11:05 +0100 (CET)
+In-Reply-To: <1455893084-4556-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Avoid narrow race condition on compr pointer
+   ASoC: wm_adsp: Explicitly set the control access flags in all cases
 
 has been applied to the asoc tree at
 
@@ -53,35 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From c7dae7c4c60693286298e300b3d140c8cff46daa Mon Sep 17 00:00:00 2001
+>From cc815c4b86d14630a7d4ca4f4c7d2c2acb88cb52 Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Fri, 19 Feb 2016 14:44:41 +0000
-Subject: [PATCH] ASoC: wm_adsp: Avoid narrow race condition on compr pointer
+Date: Fri, 19 Feb 2016 14:44:42 +0000
+Subject: [PATCH] ASoC: wm_adsp: Explicitly set the control access flags in all
+ cases
 
-There is a very small window between then wm_adsp_compr_free gets call
-and when the DSP is actually powered down. If we get an IRQ from the DSP
-in this window then the wm_adsp_compr pointer will be NULL. This patch
-adds a check for this into the IRQ handler to avoid any issues when this
-happens.
+In the case where the firmware does not tell us the access flags for the
+control, we let ALSA select a default (READWRITE). But really we should
+be applying the volatile flag in this case, as we will read the control
+from the DSP if it is on in this case. This patch explicitly sets the
+access flags in all cases.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wm_adsp.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 68b85ee..cb49a63 100644
+index cb49a63..ff0ce6ba 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -2845,7 +2845,7 @@ int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
- 		goto out;
+@@ -857,6 +857,9 @@ static int wmfw_add_ctl(struct wm_adsp *dsp, struct wm_coeff_ctl *ctl)
+ 			kcontrol->access |= SNDRV_CTL_ELEM_ACCESS_READ;
+ 		if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
+ 			kcontrol->access |= SNDRV_CTL_ELEM_ACCESS_VOLATILE;
++	} else {
++		kcontrol->access = SNDRV_CTL_ELEM_ACCESS_READWRITE;
++		kcontrol->access |= SNDRV_CTL_ELEM_ACCESS_VOLATILE;
  	}
  
--	if (compr->stream)
-+	if (compr && compr->stream)
- 		snd_compr_fragment_elapsed(compr->stream);
- 
- out:
+ 	ret = snd_soc_add_card_controls(dsp->card,
 -- 
 2.7.0
