@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: fixup forever loop bug on SSI" to
-	the asoc tree
-Date: Sun, 21 Feb 2016 02:16:04 +0900
-Message-ID: <E1aXB8W-0008Qs-Sx@finisterre>
-References: <87lh6itp2w.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: setup SRC_ROUTE_MODE0 before
+	SRC_SRCIR" to the asoc tree
+Date: Sun, 21 Feb 2016 02:16:19 +0900
+Message-ID: <E1aXB8l-0008SM-A4@finisterre>
+References: <87povutp6u.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7C5412651C8
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:16:23 +0100 (CET)
-In-Reply-To: <87lh6itp2w.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 49E2E265162
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:16:25 +0100 (CET)
+In-Reply-To: <87povutp6u.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: fixup forever loop bug on SSI
+   ASoC: rsnd: setup SRC_ROUTE_MODE0 before SRC_SRCIR
 
 has been applied to the asoc tree at
 
@@ -53,42 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From 5bf5d8fc7f5a8a1e75413939e4bdb00ebc2d5610 Mon Sep 17 00:00:00 2001
+>From 0fbab951db17085fbb521b3a50550990b763bdf4 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 18 Feb 2016 08:16:04 +0000
-Subject: [PATCH] ASoC: rsnd: fixup forever loop bug on SSI
+Date: Thu, 18 Feb 2016 08:13:45 +0000
+Subject: [PATCH] ASoC: rsnd: setup SRC_ROUTE_MODE0 before SRC_SRCIR
 
-commit b5b442abd9 ("ASoC: rsnd: add .irq callback")
-added .irq support, and it cares both parent SSI and normal SSI.
-But it should care only normal SSI. Otherwise SSI might be
-forever loop if SSI is used as both parent SSI and normal SSI
-(= 2 users), and if under/over run error happen. Because irq disable
-do nothing in such case. This patch solve this issue.
+SRC_ROUTE_MODE0 determines whether to use SRC.
+Thus, it should be setup before SRC_SRCIR.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/sh/rcar/src.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index c5c4510..90c3f58 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -149,13 +149,12 @@ static int rsnd_ssi_irq(struct rsnd_mod *mod,
- 			struct rsnd_priv *priv,
- 			int enable)
- {
--	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
- 	u32 val = 0;
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index ab5f131..dab0954 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -249,6 +249,8 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
+ 		break;
+ 	}
  
- 	if (rsnd_is_gen1(priv))
- 		return 0;
++	rsnd_mod_write(mod, SRC_ROUTE_MODE0, route);
++
+ 	rsnd_mod_write(mod, SRC_SRCIR, 1);	/* initialize */
+ 	rsnd_mod_write(mod, SRC_ADINR, adinr);
+ 	rsnd_mod_write(mod, SRC_IFSCR, ifscr);
+@@ -258,7 +260,6 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
+ 	rsnd_mod_write(mod, SRC_BSISR, bsisr);
+ 	rsnd_mod_write(mod, SRC_SRCIR, 0);	/* cancel initialize */
  
--	if (ssi->usrcnt != 1)
-+	if (rsnd_ssi_is_parent(mod, io))
- 		return 0;
- 
- 	if (enable)
+-	rsnd_mod_write(mod, SRC_ROUTE_MODE0, route);
+ 	rsnd_mod_write(mod, SRC_I_BUSIF_MODE, 1);
+ 	rsnd_mod_write(mod, SRC_O_BUSIF_MODE, 1);
+ 	rsnd_mod_write(mod, SRC_BUSIF_DALIGN, rsnd_get_dalign(mod, io));
 -- 
 2.7.0
