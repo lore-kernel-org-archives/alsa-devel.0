@@ -1,65 +1,102 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/4] ASoC: wm9713: add binding for WM9713 codec
-Date: Sun, 21 Feb 2016 04:59:25 +0900
-Message-ID: <20160220195925.GF18327@sirena.org.uk>
-References: <1455979079-9030-1-git-send-email-robert.jarzmik@free.fr>
- <20160220171459.GA18327@sirena.org.uk>
- <871t87z1gz.fsf@belgarion.home>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: wm9713: fix regmap free path" to the
+	asoc tree
+Date: Sun, 21 Feb 2016 05:01:48 +0900
+Message-ID: <E1aXDiu-0002kf-F5@finisterre>
+References: <1455997470-12307-1-git-send-email-robert.jarzmik@free.fr>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="l+RjsdkfuJDA0G6K"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <871t87z1gz.fsf-4ty26DBLk+jEm7gnYqmdkQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id EFFC62606E8
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 21:02:06 +0100 (CET)
+In-Reply-To: <1455997470-12307-1-git-send-email-robert.jarzmik@free.fr>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---l+RjsdkfuJDA0G6K
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: wm9713: fix regmap free path
 
-On Sat, Feb 20, 2016 at 07:22:04PM +0100, Robert Jarzmik wrote:
-> Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> writes:
+has been applied to the asoc tree at
 
-> > Instead we should be probing at runtime (as the non-ASoC AC'97 code does) or
-> > something similar.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> When you say "non-ASoC AC'97 code", which file are you referring to ? Is it
-> sound/pci/ac97/ac97_codec.c ?
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Yes.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> If so is there already a table of tuples (AC97_VENDOR_ID1, AC97_VENDOR_ID2) ->
-> (platform device, platform device data) and a matching mechanism already
-> available to the ASoC drivers ?
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-ASoC doesn't really support the enumeration very well, you can use
-ac97.c as the CODEC but that's about it.  There is a generic AC'97 PXA
-driver in sound/arm, if your system can use that that'd be a better
-route to DT integration for it I think.  Did you try that, if there are
-problems with that perhaps we can improve that driver, it should  be
-simpler.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---l+RjsdkfuJDA0G6K
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+>From 63ab440b81368a3f524391cb545087ae7e8b378c Mon Sep 17 00:00:00 2001
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Date: Sat, 20 Feb 2016 20:44:30 +0100
+Subject: [PATCH] ASoC: wm9713: fix regmap free path
 
-iQEcBAEBCAAGBQJWyMWcAAoJECTWi3JdVIfQcpIH/1ulDFzu55nMKtVxAPHEWgG1
-Yr2g0trmnh/LckYj2pkvyh9xTMgRs3JFfoYjP5sqlpajii0JDHQJZFVwJgCALYT5
-eRK27JKj3wf5RVQqg2Xk1JBRmd1NKgzZAfTyzkm4QhmMrZIrB4m53MVE82m37Rff
-trsSQKTGaP8AO7BcTpW/I9uVzyRx7RQ17f0kLTagBtid1e8LkoQ7LDavbA2Jx7P+
-s/jb6ZSt0Y+JUDHYz7yEtMMo7PJp2vhfa6dRwtepEujGFfhKwWvIYcyRR4r2BTK6
-0EYDHe2ewKOnu5O8u5sEOQXH4/iV8ITzciYGGew4xry8S8Y5Uy2laq8ppmMLPPI=
-=qITc
------END PGP SIGNATURE-----
+In the conversion to regmap, I assumed that the 2 following functions
+was working symetrically:
+ - snd_soc_codec_init_regmap()
+ - snd_soc_codec_exit_regmap(codec)
 
---l+RjsdkfuJDA0G6K--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+As a mater of fact with the current code the regmap is freed twice
+because of the devm_() call:
+(mutex_lock) from (debugfs_remove_recursive+0x50/0x1d0)
+(debugfs_remove_recursive) from (regmap_debugfs_exit+0x1c/0xd4)
+(regmap_debugfs_exit) from (regmap_exit+0x28/0xc8)
+(regmap_exit) from (release_nodes+0x18c/0x204)
+(release_nodes) from (device_release+0x18/0x90)
+(device_release) from (kobject_release+0x90/0x1bc)
+(kobject_release) from (wm9713_soc_remove+0x1c/0x24)
+(wm9713_soc_remove) from (soc_remove_component+0x50/0x7c)
+(soc_remove_component) from (soc_remove_dai_links+0x118/0x228)
+(soc_remove_dai_links) from (snd_soc_register_card+0x4e4/0xdd4)
+(snd_soc_register_card) from (devm_snd_soc_register_card+0x34/0x70)
+
+Fix this by removing the doubled regmap free.
+
+Fixes: 700dadfefc3d ASoC: wm9713: convert to regmap
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/wm9713.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
+index 79e1436..dd31a52 100644
+--- a/sound/soc/codecs/wm9713.c
++++ b/sound/soc/codecs/wm9713.c
+@@ -1230,7 +1230,6 @@ static int wm9713_soc_remove(struct snd_soc_codec *codec)
+ {
+ 	struct wm9713_priv *wm9713 = snd_soc_codec_get_drvdata(codec);
+ 
+-	snd_soc_codec_exit_regmap(codec);
+ 	snd_soc_free_ac97_codec(wm9713->ac97);
+ 	return 0;
+ }
+-- 
+2.7.0
