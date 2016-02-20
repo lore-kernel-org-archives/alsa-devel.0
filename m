@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: setup SRC_ROUTE_MODE0 before
-	SRC_SRCIR" to the asoc tree
-Date: Sun, 21 Feb 2016 02:16:19 +0900
-Message-ID: <E1aXB8l-0008SM-A4@finisterre>
-References: <87povutp6u.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: Intel: Skylake: Generate topology name
+	for NHLT table header" to the asoc tree
+Date: Sun, 21 Feb 2016 02:16:22 +0900
+Message-ID: <E1aXB8o-0008TI-WD@finisterre>
+References: <1455862354-6455-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 49E2E265162
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:16:25 +0100 (CET)
-In-Reply-To: <87povutp6u.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 66E5F2651EF
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:16:29 +0100 (CET)
+In-Reply-To: <1455862354-6455-3-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+To: Yang A Fang <yang.a.fang@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: setup SRC_ROUTE_MODE0 before SRC_SRCIR
+   ASoC: Intel: Skylake: Generate topology name for NHLT table header
 
 has been applied to the asoc tree at
 
@@ -53,40 +53,135 @@ to this mail.
 Thanks,
 Mark
 
->From 0fbab951db17085fbb521b3a50550990b763bdf4 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 18 Feb 2016 08:13:45 +0000
-Subject: [PATCH] ASoC: rsnd: setup SRC_ROUTE_MODE0 before SRC_SRCIR
+>From 4b235c43deb8283802281a299cb730001a6ad1da Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Fri, 19 Feb 2016 11:42:34 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Generate topology name for NHLT table
+ header
 
-SRC_ROUTE_MODE0 determines whether to use SRC.
-Thus, it should be setup before SRC_SRCIR.
+NHLT table [1] header has fields like oem_id, oem_table_id and
+oem_revision. Use that to load a unique topology binary specific
+to that platform
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+NHLT Table is documented at:
+[1]: https://01.org/blogs/2016/intel-smart-sound-technology-audio-dsp
+
+Signed-off-by: Yang A Fang <yang.a.fang@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/src.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-nhlt.c     | 34 ++++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-topology.c | 11 ++++++++---
+ sound/soc/intel/skylake/skl.c          |  4 ++++
+ sound/soc/intel/skylake/skl.h          |  3 +++
+ 4 files changed, 49 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index ab5f131..dab0954 100644
---- a/sound/soc/sh/rcar/src.c
-+++ b/sound/soc/sh/rcar/src.c
-@@ -249,6 +249,8 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
- 		break;
+diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
+index 6e4b21c..14d1916e 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.c
++++ b/sound/soc/intel/skylake/skl-nhlt.c
+@@ -145,3 +145,37 @@ struct nhlt_specific_cfg
+ 
+ 	return NULL;
+ }
++
++static void skl_nhlt_trim_space(struct skl *skl)
++{
++	char *s = skl->tplg_name;
++	int cnt;
++	int i;
++
++	cnt = 0;
++	for (i = 0; s[i]; i++) {
++		if (!isspace(s[i]))
++			s[cnt++] = s[i];
++	}
++
++	s[cnt] = '\0';
++}
++
++int skl_nhlt_update_topology_bin(struct skl *skl)
++{
++	struct nhlt_acpi_table *nhlt = (struct nhlt_acpi_table *)skl->nhlt;
++	struct hdac_bus *bus = ebus_to_hbus(&skl->ebus);
++	struct device *dev = bus->dev;
++
++	dev_dbg(dev, "oem_id %.6s, oem_table_id %8s oem_revision %d\n",
++		nhlt->header.oem_id, nhlt->header.oem_table_id,
++		nhlt->header.oem_revision);
++
++	snprintf(skl->tplg_name, sizeof(skl->tplg_name), "%x-%.6s-%.8s-%d%s",
++		skl->pci_id, nhlt->header.oem_id, nhlt->header.oem_table_id,
++		nhlt->header.oem_revision, "-tplg.bin");
++
++	skl_nhlt_trim_space(skl);
++
++	return 0;
++}
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 216d7a8..ba0d02d 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -1716,11 +1716,16 @@ int skl_tplg_init(struct snd_soc_platform *platform, struct hdac_ext_bus *ebus)
+ 	struct hdac_bus *bus = ebus_to_hbus(ebus);
+ 	struct skl *skl = ebus_to_skl(ebus);
+ 
+-	ret = request_firmware(&fw, "dfw_sst.bin", bus->dev);
++	ret = request_firmware(&fw, skl->tplg_name, bus->dev);
+ 	if (ret < 0) {
+ 		dev_err(bus->dev, "tplg fw %s load failed with %d\n",
+-				"dfw_sst.bin", ret);
+-		return ret;
++				skl->tplg_name, ret);
++		ret = request_firmware(&fw, "dfw_sst.bin", bus->dev);
++		if (ret < 0) {
++			dev_err(bus->dev, "Fallback tplg fw %s load failed with %d\n",
++					"dfw_sst.bin", ret);
++			return ret;
++		}
  	}
  
-+	rsnd_mod_write(mod, SRC_ROUTE_MODE0, route);
-+
- 	rsnd_mod_write(mod, SRC_SRCIR, 1);	/* initialize */
- 	rsnd_mod_write(mod, SRC_ADINR, adinr);
- 	rsnd_mod_write(mod, SRC_IFSCR, ifscr);
-@@ -258,7 +260,6 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
- 	rsnd_mod_write(mod, SRC_BSISR, bsisr);
- 	rsnd_mod_write(mod, SRC_SRCIR, 0);	/* cancel initialize */
+ 	/*
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 06f4b2c..f89abb1 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -573,11 +573,15 @@ static int skl_probe(struct pci_dev *pci,
+ 	if (err < 0)
+ 		goto out_free;
  
--	rsnd_mod_write(mod, SRC_ROUTE_MODE0, route);
- 	rsnd_mod_write(mod, SRC_I_BUSIF_MODE, 1);
- 	rsnd_mod_write(mod, SRC_O_BUSIF_MODE, 1);
- 	rsnd_mod_write(mod, SRC_BUSIF_DALIGN, rsnd_get_dalign(mod, io));
++	skl->pci_id = pci->device;
++
+ 	skl->nhlt = skl_nhlt_init(bus->dev);
+ 
+ 	if (skl->nhlt == NULL)
+ 		goto out_free;
+ 
++	skl_nhlt_update_topology_bin(skl);
++
+ 	pci_set_drvdata(skl->pci, ebus);
+ 
+ 	/* check if dsp is there */
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index 4d18293..1ca1911 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -73,6 +73,8 @@ struct skl {
+ 	struct list_head ppl_list;
+ 
+ 	const char *fw_name;
++	char tplg_name[64];
++	unsigned short pci_id;
+ 	const struct firmware *tplg;
+ 
+ 	int supend_active;
+@@ -96,6 +98,7 @@ void skl_nhlt_free(void *addr);
+ struct nhlt_specific_cfg *skl_get_ep_blob(struct skl *skl, u32 instance,
+ 			u8 link_type, u8 s_fmt, u8 no_ch, u32 s_rate, u8 dirn);
+ 
++int skl_nhlt_update_topology_bin(struct skl *skl);
+ int skl_init_dsp(struct skl *skl);
+ void skl_free_dsp(struct skl *skl);
+ int skl_suspend_dsp(struct skl *skl);
 -- 
 2.7.0
