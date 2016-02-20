@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 3/4] ALSA: bebob: change type of substream
-	counter from atomic_t to unsigned int
-Date: Sat, 20 Feb 2016 16:18:58 +0900
-Message-ID: <1455952739-17044-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/4] ALSA: bebob: move mutex from function
+	callee to callers
+Date: Sat, 20 Feb 2016 16:18:57 +0900
+Message-ID: <1455952739-17044-3-git-send-email-o-takashi@sakamocchi.jp>
 References: <1455952739-17044-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id C5121261298
+ by alsa0.perex.cz (Postfix) with ESMTP id C90AE26145B
  for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 08:19:04 +0100 (CET)
 In-Reply-To: <1455952739-17044-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,133 +25,163 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-The counter is incremented/decremented in critical section protected with
-mutex. Therefore, no need to use atomic_t.
+Currently, critical section is protected by mutex in functions of
+fireworks_stream.c. Callers increments/decrements substreams counter
+before calling the functions. Moving mutex to the callers code allows
+to change type of the substream counter from atomic_t to unsigned int.
 
-This commit changes the type to unsigned int.
+This commit is a preparation for obsoleting usage of atomic_t for
+substream counter.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/bebob/bebob.h        | 2 +-
- sound/firewire/bebob/bebob_midi.c   | 8 ++++----
- sound/firewire/bebob/bebob_pcm.c    | 8 ++++----
- sound/firewire/bebob/bebob_stream.c | 4 ++--
- 4 files changed, 11 insertions(+), 11 deletions(-)
+ sound/firewire/bebob/bebob_midi.c   |  8 ++++++++
+ sound/firewire/bebob/bebob_pcm.c    | 20 ++++++++++++++++----
+ sound/firewire/bebob/bebob_stream.c |  7 -------
+ 3 files changed, 24 insertions(+), 11 deletions(-)
 
-diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index c2e885c..4fe58e4 100644
---- a/sound/firewire/bebob/bebob.h
-+++ b/sound/firewire/bebob/bebob.h
-@@ -95,7 +95,7 @@ struct snd_bebob {
- 	struct amdtp_stream rx_stream;
- 	struct cmp_connection out_conn;
- 	struct cmp_connection in_conn;
--	atomic_t substreams_counter;
-+	unsigned int substreams_counter;
- 
- 	struct snd_bebob_stream_formation
- 		tx_stream_formations[SND_BEBOB_STRM_FMT_ENTRIES];
 diff --git a/sound/firewire/bebob/bebob_midi.c b/sound/firewire/bebob/bebob_midi.c
-index cb1b385..868eb0d 100644
+index 90d95be..cb1b385 100644
 --- a/sound/firewire/bebob/bebob_midi.c
 +++ b/sound/firewire/bebob/bebob_midi.c
-@@ -18,7 +18,7 @@ static int midi_capture_open(struct snd_rawmidi_substream *substream)
+@@ -17,8 +17,10 @@ static int midi_capture_open(struct snd_rawmidi_substream *substream)
+ 	if (err < 0)
  		goto end;
  
- 	mutex_lock(&bebob->mutex);
--	atomic_inc(&bebob->substreams_counter);
-+	bebob->substreams_counter++;
++	mutex_lock(&bebob->mutex);
+ 	atomic_inc(&bebob->substreams_counter);
  	err = snd_bebob_stream_start_duplex(bebob, 0);
- 	mutex_unlock(&bebob->mutex);
++	mutex_unlock(&bebob->mutex);
  	if (err < 0)
-@@ -37,7 +37,7 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
+ 		snd_bebob_stream_lock_release(bebob);
+ end:
+@@ -34,8 +36,10 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
+ 	if (err < 0)
  		goto end;
  
- 	mutex_lock(&bebob->mutex);
--	atomic_inc(&bebob->substreams_counter);
-+	bebob->substreams_counter++;
++	mutex_lock(&bebob->mutex);
+ 	atomic_inc(&bebob->substreams_counter);
  	err = snd_bebob_stream_start_duplex(bebob, 0);
- 	mutex_unlock(&bebob->mutex);
++	mutex_unlock(&bebob->mutex);
  	if (err < 0)
-@@ -51,7 +51,7 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
+ 		snd_bebob_stream_lock_release(bebob);
+ end:
+@@ -46,8 +50,10 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
+ {
  	struct snd_bebob *bebob = substream->rmidi->private_data;
  
- 	mutex_lock(&bebob->mutex);
--	atomic_dec(&bebob->substreams_counter);
-+	bebob->substreams_counter--;
++	mutex_lock(&bebob->mutex);
+ 	atomic_dec(&bebob->substreams_counter);
  	snd_bebob_stream_stop_duplex(bebob);
- 	mutex_unlock(&bebob->mutex);
++	mutex_unlock(&bebob->mutex);
  
-@@ -64,7 +64,7 @@ static int midi_playback_close(struct snd_rawmidi_substream *substream)
+ 	snd_bebob_stream_lock_release(bebob);
+ 	return 0;
+@@ -57,8 +63,10 @@ static int midi_playback_close(struct snd_rawmidi_substream *substream)
+ {
  	struct snd_bebob *bebob = substream->rmidi->private_data;
  
- 	mutex_lock(&bebob->mutex);
--	atomic_dec(&bebob->substreams_counter);
-+	bebob->substreams_counter--;
++	mutex_lock(&bebob->mutex);
+ 	atomic_dec(&bebob->substreams_counter);
  	snd_bebob_stream_stop_duplex(bebob);
- 	mutex_unlock(&bebob->mutex);
++	mutex_unlock(&bebob->mutex);
  
+ 	snd_bebob_stream_lock_release(bebob);
+ 	return 0;
 diff --git a/sound/firewire/bebob/bebob_pcm.c b/sound/firewire/bebob/bebob_pcm.c
-index 2053d31..5d7b934 100644
+index ef224d6..2053d31 100644
 --- a/sound/firewire/bebob/bebob_pcm.c
 +++ b/sound/firewire/bebob/bebob_pcm.c
-@@ -220,7 +220,7 @@ pcm_capture_hw_params(struct snd_pcm_substream *substream,
+@@ -218,8 +218,11 @@ pcm_capture_hw_params(struct snd_pcm_substream *substream,
+ 	if (err < 0)
+ 		return err;
  
- 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
- 		mutex_lock(&bebob->mutex);
--		atomic_inc(&bebob->substreams_counter);
-+		bebob->substreams_counter++;
- 		mutex_unlock(&bebob->mutex);
- 	}
+-	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN)
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&bebob->mutex);
+ 		atomic_inc(&bebob->substreams_counter);
++		mutex_unlock(&bebob->mutex);
++	}
  
-@@ -242,7 +242,7 @@ pcm_playback_hw_params(struct snd_pcm_substream *substream,
+ 	amdtp_am824_set_pcm_format(&bebob->tx_stream, params_format(hw_params));
  
- 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
- 		mutex_lock(&bebob->mutex);
--		atomic_inc(&bebob->substreams_counter);
-+		bebob->substreams_counter++;
- 		mutex_unlock(&bebob->mutex);
- 	}
+@@ -237,8 +240,11 @@ pcm_playback_hw_params(struct snd_pcm_substream *substream,
+ 	if (err < 0)
+ 		return err;
  
-@@ -258,7 +258,7 @@ pcm_capture_hw_free(struct snd_pcm_substream *substream)
+-	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN)
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&bebob->mutex);
+ 		atomic_inc(&bebob->substreams_counter);
++		mutex_unlock(&bebob->mutex);
++	}
  
- 	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN) {
- 		mutex_lock(&bebob->mutex);
--		atomic_dec(&bebob->substreams_counter);
-+		bebob->substreams_counter--;
- 		mutex_unlock(&bebob->mutex);
- 	}
+ 	amdtp_am824_set_pcm_format(&bebob->rx_stream, params_format(hw_params));
  
-@@ -273,7 +273,7 @@ pcm_playback_hw_free(struct snd_pcm_substream *substream)
+@@ -250,8 +256,11 @@ pcm_capture_hw_free(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_bebob *bebob = substream->private_data;
  
- 	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN) {
- 		mutex_lock(&bebob->mutex);
--		atomic_dec(&bebob->substreams_counter);
-+		bebob->substreams_counter--;
- 		mutex_unlock(&bebob->mutex);
- 	}
+-	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&bebob->mutex);
+ 		atomic_dec(&bebob->substreams_counter);
++		mutex_unlock(&bebob->mutex);
++	}
+ 
+ 	snd_bebob_stream_stop_duplex(bebob);
+ 
+@@ -262,8 +271,11 @@ pcm_playback_hw_free(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_bebob *bebob = substream->private_data;
+ 
+-	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&bebob->mutex);
+ 		atomic_dec(&bebob->substreams_counter);
++		mutex_unlock(&bebob->mutex);
++	}
+ 
+ 	snd_bebob_stream_stop_duplex(bebob);
  
 diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
-index 6809913..8c68745 100644
+index 073ad6d..6809913 100644
 --- a/sound/firewire/bebob/bebob_stream.c
 +++ b/sound/firewire/bebob/bebob_stream.c
-@@ -590,7 +590,7 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob, unsigned int rate)
+@@ -589,8 +589,6 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob, unsigned int rate)
+ 	unsigned int curr_rate;
  	int err = 0;
  
+-	mutex_lock(&bebob->mutex);
+-
  	/* Need no substreams */
--	if (atomic_read(&bebob->substreams_counter) == 0)
-+	if (bebob->substreams_counter == 0)
+ 	if (atomic_read(&bebob->substreams_counter) == 0)
  		goto end;
+@@ -722,7 +720,6 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob, unsigned int rate)
+ 		}
+ 	}
+ end:
+-	mutex_unlock(&bebob->mutex);
+ 	return err;
+ }
  
- 	err = get_sync_mode(bebob, &sync_mode);
-@@ -735,7 +735,7 @@ void snd_bebob_stream_stop_duplex(struct snd_bebob *bebob)
+@@ -738,8 +735,6 @@ void snd_bebob_stream_stop_duplex(struct snd_bebob *bebob)
  		master = &bebob->tx_stream;
  	}
  
--	if (atomic_read(&bebob->substreams_counter) == 0) {
-+	if (bebob->substreams_counter == 0) {
+-	mutex_lock(&bebob->mutex);
+-
+ 	if (atomic_read(&bebob->substreams_counter) == 0) {
  		amdtp_stream_pcm_abort(master);
  		amdtp_stream_stop(master);
+@@ -749,8 +744,6 @@ void snd_bebob_stream_stop_duplex(struct snd_bebob *bebob)
  
+ 		break_both_connections(bebob);
+ 	}
+-
+-	mutex_unlock(&bebob->mutex);
+ }
+ 
+ void snd_bebob_stream_update_duplex(struct snd_bebob *bebob)
 -- 
 2.5.0
