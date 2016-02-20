@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: judge multi SSI in runtime" to
+Subject: Applied "ASoC: rsnd: fixup forever loop bug on SSI" to
 	the asoc tree
-Date: Sun, 21 Feb 2016 02:15:58 +0900
-Message-ID: <E1aXB8Q-0008OZ-GH@finisterre>
-References: <87egcatoy7.wl%kuninori.morimoto.gx@renesas.com>
+Date: Sun, 21 Feb 2016 02:16:04 +0900
+Message-ID: <E1aXB8W-0008Qs-Sx@finisterre>
+References: <87lh6itp2w.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 03821264F39
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:16:16 +0100 (CET)
-In-Reply-To: <87egcatoy7.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7C5412651C8
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:16:23 +0100 (CET)
+In-Reply-To: <87lh6itp2w.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: judge multi SSI in runtime
+   ASoC: rsnd: fixup forever loop bug on SSI
 
 has been applied to the asoc tree at
 
@@ -53,123 +53,42 @@ to this mail.
 Thanks,
 Mark
 
->From 4f5c634d58e71963d3c34a0a4af9ec71785f094f Mon Sep 17 00:00:00 2001
+>From 5bf5d8fc7f5a8a1e75413939e4bdb00ebc2d5610 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 18 Feb 2016 08:18:54 +0000
-Subject: [PATCH] ASoC: rsnd: judge multi SSI in runtime
+Date: Thu, 18 Feb 2016 08:16:04 +0000
+Subject: [PATCH] ASoC: rsnd: fixup forever loop bug on SSI
 
-Current rsnd supports multi SSI (maximum 4 SSI for 8ch),
-and, it should determine whether using each SSI or not in runtime.
-Current judgement is vague, and had broken by
-c308abe45e2("ASoC: rsnd: rsnd_ssi_is_multi_slave() macro uses
-rsnd_ssi_multi_slaves()")
-This patch makes clean it, and solve this issue.
+commit b5b442abd9 ("ASoC: rsnd: add .irq callback")
+added .irq support, and it cares both parent SSI and normal SSI.
+But it should care only normal SSI. Otherwise SSI might be
+forever loop if SSI is used as both parent SSI and normal SSI
+(= 2 users), and if under/over run error happen. Because irq disable
+do nothing in such case. This patch solve this issue.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c |  2 +-
- sound/soc/sh/rcar/rsnd.h |  2 +-
- sound/soc/sh/rcar/ssi.c  | 15 +++++++++++++--
- sound/soc/sh/rcar/ssiu.c |  6 +++---
- 4 files changed, 18 insertions(+), 7 deletions(-)
+ sound/soc/sh/rcar/ssi.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index f86d627..7bc5b72 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -230,7 +230,7 @@ int rsnd_get_slot_width(struct rsnd_dai_stream *io)
- 	int chan = runtime->channels;
- 
- 	/* Multi channel Mode */
--	if (rsnd_ssi_multi_slaves(io))
-+	if (rsnd_ssi_multi_slaves_runtime(io))
- 		chan /= rsnd_get_slot_num(io);
- 
- 	/* TDM Extend Mode needs 8ch */
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 61cb4ae..5f613eb 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -599,7 +599,7 @@ void rsnd_ssi_remove(struct rsnd_priv *priv);
- struct rsnd_mod *rsnd_ssi_mod_get(struct rsnd_priv *priv, int id);
- int rsnd_ssi_is_dma_mode(struct rsnd_mod *mod);
- int rsnd_ssi_use_busif(struct rsnd_dai_stream *io);
--u32 rsnd_ssi_multi_slaves(struct rsnd_dai_stream *io);
-+u32 rsnd_ssi_multi_slaves_runtime(struct rsnd_dai_stream *io);
- 
- #define rsnd_ssi_is_pin_sharing(io)	\
- 	__rsnd_ssi_is_pin_sharing(rsnd_io_to_mod_ssi(io))
 diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index d46bc08..32f1f5f 100644
+index c5c4510..90c3f58 100644
 --- a/sound/soc/sh/rcar/ssi.c
 +++ b/sound/soc/sh/rcar/ssi.c
-@@ -144,7 +144,7 @@ static void rsnd_ssi_status_check(struct rsnd_mod *mod,
- 		 rsnd_mod_name(mod), rsnd_mod_id(mod));
- }
- 
--u32 rsnd_ssi_multi_slaves(struct rsnd_dai_stream *io)
-+static u32 rsnd_ssi_multi_slaves(struct rsnd_dai_stream *io)
+@@ -149,13 +149,12 @@ static int rsnd_ssi_irq(struct rsnd_mod *mod,
+ 			struct rsnd_priv *priv,
+ 			int enable)
  {
- 	struct rsnd_mod *mod;
- 	enum rsnd_mod_type types[] = {
-@@ -166,6 +166,17 @@ u32 rsnd_ssi_multi_slaves(struct rsnd_dai_stream *io)
- 	return mask;
- }
+-	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+ 	u32 val = 0;
  
-+u32 rsnd_ssi_multi_slaves_runtime(struct rsnd_dai_stream *io)
-+{
-+	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
-+	u32 mask = rsnd_ssi_multi_slaves(io);
-+
-+	if (mask && (runtime->channels >= 6))
-+		return mask;
-+
-+	return 0;
-+}
-+
- static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
- 				     struct rsnd_dai_stream *io)
- {
-@@ -415,7 +426,7 @@ static int rsnd_ssi_start(struct rsnd_mod *mod,
- 	 * EN will be set via SSIU :: SSI_CONTROL
- 	 * if Multi channel mode
- 	 */
--	if (rsnd_ssi_multi_slaves(io))
-+	if (rsnd_ssi_multi_slaves_runtime(io))
+ 	if (rsnd_is_gen1(priv))
  		return 0;
  
- 	rsnd_mod_bset(mod, SSICR, EN, EN);
-diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
-index 11e5588..1b8ea0e 100644
---- a/sound/soc/sh/rcar/ssiu.c
-+++ b/sound/soc/sh/rcar/ssiu.c
-@@ -27,7 +27,7 @@ static int rsnd_ssiu_init(struct rsnd_mod *mod,
- 			  struct rsnd_priv *priv)
- {
- 	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
--	u32 multi_ssi_slaves = rsnd_ssi_multi_slaves(io);
-+	u32 multi_ssi_slaves = rsnd_ssi_multi_slaves_runtime(io);
- 	int use_busif = rsnd_ssi_use_busif(io);
- 	int id = rsnd_mod_id(mod);
- 	u32 mask1, val1;
-@@ -136,7 +136,7 @@ static int rsnd_ssiu_start_gen2(struct rsnd_mod *mod,
+-	if (ssi->usrcnt != 1)
++	if (rsnd_ssi_is_parent(mod, io))
+ 		return 0;
  
- 	rsnd_mod_write(mod, SSI_CTRL, 0x1);
- 
--	if (rsnd_ssi_multi_slaves(io))
-+	if (rsnd_ssi_multi_slaves_runtime(io))
- 		rsnd_mod_write(mod, SSI_CONTROL, 0x1);
- 
- 	return 0;
-@@ -151,7 +151,7 @@ static int rsnd_ssiu_stop_gen2(struct rsnd_mod *mod,
- 
- 	rsnd_mod_write(mod, SSI_CTRL, 0);
- 
--	if (rsnd_ssi_multi_slaves(io))
-+	if (rsnd_ssi_multi_slaves_runtime(io))
- 		rsnd_mod_write(mod, SSI_CONTROL, 0);
- 
- 	return 0;
+ 	if (enable)
 -- 
 2.7.0
