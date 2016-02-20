@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: wm_coeff_{read|write}_control
-	should use passed length" to the asoc tree
-Date: Sun, 21 Feb 2016 03:10:41 +0900
-Message-ID: <E1aXBzN-0001lJ-DN@finisterre>
-References: <1455893084-4556-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: wm_adsp: Fixup some odd line wrapping"
+	to the asoc tree
+Date: Sun, 21 Feb 2016 03:10:42 +0900
+Message-ID: <E1aXBzO-0001lm-MD@finisterre>
+References: <1455893084-4556-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F04D7261687
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 19:10:47 +0100 (CET)
-In-Reply-To: <1455893084-4556-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 829EF261B03
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 19:10:48 +0100 (CET)
+In-Reply-To: <1455893084-4556-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: wm_coeff_{read|write}_control should use passed length
+   ASoC: wm_adsp: Fixup some odd line wrapping
 
 has been applied to the asoc tree at
 
@@ -53,75 +53,90 @@ to this mail.
 Thanks,
 Mark
 
->From 4f8ea6d759f6ed5d448472143cef7681e319c958 Mon Sep 17 00:00:00 2001
+>From 7d00cd975a52e637da19548c1cc7d87a0a32b49c Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Fri, 19 Feb 2016 14:44:44 +0000
-Subject: [PATCH] ASoC: wm_adsp: wm_coeff_{read|write}_control should use
- passed length
-
-wm_coeff_{read|write}_control were using the control length rather than
-the length parameter passed to them. This is not causing any issues as
-the two values are currently always the same, but this needs fixed to
-allow future improvements.
+Date: Fri, 19 Feb 2016 14:44:43 +0000
+Subject: [PATCH] ASoC: wm_adsp: Fixup some odd line wrapping
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 23 +++++++----------------
+ 1 file changed, 7 insertions(+), 16 deletions(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 0f6eeb1..36687db 100644
+index ff0ce6ba..0f6eeb1 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -721,19 +721,19 @@ static int wm_coeff_write_control(struct wm_coeff_ctl *ctl,
- 	reg = ctl->alg_region.base + ctl->offset;
- 	reg = wm_adsp_region_to_reg(mem, reg);
- 
--	scratch = kmemdup(buf, ctl->len, GFP_KERNEL | GFP_DMA);
-+	scratch = kmemdup(buf, len, GFP_KERNEL | GFP_DMA);
- 	if (!scratch)
- 		return -ENOMEM;
- 
- 	ret = regmap_raw_write(dsp->regmap, reg, scratch,
--			       ctl->len);
-+			       len);
- 	if (ret) {
- 		adsp_err(dsp, "Failed to write %zu bytes to %x: %d\n",
--			 ctl->len, reg, ret);
-+			 len, reg, ret);
- 		kfree(scratch);
- 		return ret;
+@@ -862,15 +862,13 @@ static int wmfw_add_ctl(struct wm_adsp *dsp, struct wm_coeff_ctl *ctl)
+ 		kcontrol->access |= SNDRV_CTL_ELEM_ACCESS_VOLATILE;
  	}
--	adsp_dbg(dsp, "Wrote %zu bytes to %x\n", ctl->len, reg);
-+	adsp_dbg(dsp, "Wrote %zu bytes to %x\n", len, reg);
  
- 	kfree(scratch);
+-	ret = snd_soc_add_card_controls(dsp->card,
+-					kcontrol, 1);
++	ret = snd_soc_add_card_controls(dsp->card, kcontrol, 1);
+ 	if (ret < 0)
+ 		goto err_kcontrol;
  
-@@ -780,20 +780,20 @@ static int wm_coeff_read_control(struct wm_coeff_ctl *ctl,
- 	reg = ctl->alg_region.base + ctl->offset;
- 	reg = wm_adsp_region_to_reg(mem, reg);
+ 	kfree(kcontrol);
  
--	scratch = kmalloc(ctl->len, GFP_KERNEL | GFP_DMA);
-+	scratch = kmalloc(len, GFP_KERNEL | GFP_DMA);
- 	if (!scratch)
- 		return -ENOMEM;
- 
--	ret = regmap_raw_read(dsp->regmap, reg, scratch, ctl->len);
-+	ret = regmap_raw_read(dsp->regmap, reg, scratch, len);
- 	if (ret) {
- 		adsp_err(dsp, "Failed to read %zu bytes from %x: %d\n",
- 			 ctl->len, reg, ret);
- 		kfree(scratch);
- 		return ret;
- 	}
--	adsp_dbg(dsp, "Read %zu bytes from %x\n", ctl->len, reg);
-+	adsp_dbg(dsp, "Read %zu bytes from %x\n", len, reg);
- 
--	memcpy(buf, scratch, ctl->len);
-+	memcpy(buf, scratch, len);
- 	kfree(scratch);
+-	ctl->kcontrol = snd_soc_card_get_kcontrol(dsp->card,
+-						  ctl->name);
++	ctl->kcontrol = snd_soc_card_get_kcontrol(dsp->card, ctl->name);
  
  	return 0;
+ 
+@@ -890,9 +888,7 @@ static int wm_coeff_init_control_caches(struct wm_adsp *dsp)
+ 		if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
+ 			continue;
+ 
+-		ret = wm_coeff_read_control(ctl,
+-					    ctl->cache,
+-					    ctl->len);
++		ret = wm_coeff_read_control(ctl, ctl->cache, ctl->len);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+@@ -909,9 +905,7 @@ static int wm_coeff_sync_controls(struct wm_adsp *dsp)
+ 		if (!ctl->enabled)
+ 			continue;
+ 		if (ctl->set && !(ctl->flags & WMFW_CTL_FLAG_VOLATILE)) {
+-			ret = wm_coeff_write_control(ctl,
+-						     ctl->cache,
+-						     ctl->len);
++			ret = wm_coeff_write_control(ctl, ctl->cache, ctl->len);
+ 			if (ret < 0)
+ 				return ret;
+ 		}
+@@ -1507,8 +1501,7 @@ static void *wm_adsp_read_algs(struct wm_adsp *dsp, size_t n_algs,
+ 
+ 	ret = regmap_raw_read(dsp->regmap, pos, alg, len * 2);
+ 	if (ret != 0) {
+-		adsp_err(dsp, "Failed to read algorithm list: %d\n",
+-			ret);
++		adsp_err(dsp, "Failed to read algorithm list: %d\n", ret);
+ 		kfree(alg);
+ 		return ERR_PTR(ret);
+ 	}
+@@ -2007,8 +2000,7 @@ int wm_adsp1_event(struct snd_soc_dapm_widget *w,
+ 				goto err_mutex;
+ 			}
+ 
+-			val = (val & dsp->sysclk_mask)
+-				>> dsp->sysclk_shift;
++			val = (val & dsp->sysclk_mask) >> dsp->sysclk_shift;
+ 
+ 			ret = regmap_update_bits(dsp->regmap,
+ 						 dsp->base + ADSP1_CONTROL_31,
+@@ -2101,8 +2093,7 @@ static int wm_adsp2_ena(struct wm_adsp *dsp)
+ 
+ 	/* Wait for the RAM to start, should be near instantaneous */
+ 	for (count = 0; count < 10; ++count) {
+-		ret = regmap_read(dsp->regmap, dsp->base + ADSP2_STATUS1,
+-				  &val);
++		ret = regmap_read(dsp->regmap, dsp->base + ADSP2_STATUS1, &val);
+ 		if (ret != 0)
+ 			return ret;
+ 
 -- 
 2.7.0
