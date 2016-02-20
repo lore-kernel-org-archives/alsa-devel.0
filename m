@@ -1,102 +1,170 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm9713: fix regmap free path" to the
-	asoc tree
-Date: Sun, 21 Feb 2016 05:01:48 +0900
-Message-ID: <E1aXDiu-0002kf-F5@finisterre>
-References: <1455997470-12307-1-git-send-email-robert.jarzmik@free.fr>
+From: Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>
+Subject: Re: [PATCH 1/4] ASoC: wm9713: add binding for WM9713 codec
+Date: Sat, 20 Feb 2016 21:32:58 +0100
+Message-ID: <87twl3xgud.fsf@belgarion.home>
+References: <1455979079-9030-1-git-send-email-robert.jarzmik@free.fr>
+	<20160220171459.GA18327@sirena.org.uk> <871t87z1gz.fsf@belgarion.home>
+	<20160220195925.GF18327@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EFFC62606E8
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 21:02:06 +0100 (CET)
-In-Reply-To: <1455997470-12307-1-git-send-email-robert.jarzmik@free.fr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20160220195925.GF18327-GFdadSzt00ze9xe1eoZjHA@public.gmane.org> (Mark Brown's message of
+	"Sun, 21 Feb 2016 04:59:25 +0900")
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> writes:
 
-   ASoC: wm9713: fix regmap free path
+> On Sat, Feb 20, 2016 at 07:22:04PM +0100, Robert Jarzmik wrote:
+>> Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> writes:
+Removed DT people from this conversation.
 
-has been applied to the asoc tree at
+>> > Instead we should be probing at runtime (as the non-ASoC AC'97 code does) or
+>> > something similar.
+>
+>> When you say "non-ASoC AC'97 code", which file are you referring to ? Is it
+>> sound/pci/ac97/ac97_codec.c ?
+>
+> Yes.
+>
+>> If so is there already a table of tuples (AC97_VENDOR_ID1, AC97_VENDOR_ID2) ->
+>> (platform device, platform device data) and a matching mechanism already
+>> available to the ASoC drivers ?
+>
+> ASoC doesn't really support the enumeration very well, you can use
+> ac97.c as the CODEC but that's about it.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> There is a generic AC'97 PXA driver in sound/arm, if your system can use that
+> that'd be a better route to DT integration for it I think.
+I'm open on the topic.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Historically, I use sound/soc/pxa/pxa2xx-ac97.c since 2008. I know it works, but
+if you think I should examine sound/arm/pxa2xx-ac97.c, let's do that.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> Did you try that, if there are problems with that perhaps we can improve that
+> driver, it should be simpler.
+I will. By now I fail to see how this will help in the wm9713 probing and
+detection ...
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Until I make the try, here is what I have as a device-tree extract in [1], which
+is my candidate for sound/soc/pxa/zylonite.c replacement.. If we conclude that
+wm9713 shouldn't be in device-tree, then I'm curious how the DAI bindings
+(simple-audio-card,dai-link*) should be handled.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Cheers.
 
-Thanks,
-Mark
-
->From 63ab440b81368a3f524391cb545087ae7e8b378c Mon Sep 17 00:00:00 2001
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Sat, 20 Feb 2016 20:44:30 +0100
-Subject: [PATCH] ASoC: wm9713: fix regmap free path
-
-In the conversion to regmap, I assumed that the 2 following functions
-was working symetrically:
- - snd_soc_codec_init_regmap()
- - snd_soc_codec_exit_regmap(codec)
-
-As a mater of fact with the current code the regmap is freed twice
-because of the devm_() call:
-(mutex_lock) from (debugfs_remove_recursive+0x50/0x1d0)
-(debugfs_remove_recursive) from (regmap_debugfs_exit+0x1c/0xd4)
-(regmap_debugfs_exit) from (regmap_exit+0x28/0xc8)
-(regmap_exit) from (release_nodes+0x18c/0x204)
-(release_nodes) from (device_release+0x18/0x90)
-(device_release) from (kobject_release+0x90/0x1bc)
-(kobject_release) from (wm9713_soc_remove+0x1c/0x24)
-(wm9713_soc_remove) from (soc_remove_component+0x50/0x7c)
-(soc_remove_component) from (soc_remove_dai_links+0x118/0x228)
-(soc_remove_dai_links) from (snd_soc_register_card+0x4e4/0xdd4)
-(snd_soc_register_card) from (devm_snd_soc_register_card+0x34/0x70)
-
-Fix this by removing the doubled regmap free.
-
-Fixes: 700dadfefc3d ASoC: wm9713: convert to regmap
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/wm9713.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
-index 79e1436..dd31a52 100644
---- a/sound/soc/codecs/wm9713.c
-+++ b/sound/soc/codecs/wm9713.c
-@@ -1230,7 +1230,6 @@ static int wm9713_soc_remove(struct snd_soc_codec *codec)
- {
- 	struct wm9713_priv *wm9713 = snd_soc_codec_get_drvdata(codec);
- 
--	snd_soc_codec_exit_regmap(codec);
- 	snd_soc_free_ac97_codec(wm9713->ac97);
- 	return 0;
- }
 -- 
-2.7.0
+Robert
+
+[1] Zylonite DT extract
+	ssp3: ssp@41900000 {
+		compatible = "mrvl,pxa3xx-ssp";
+		reg = <0x41900000 0x40>;
+		interrupts = <0>;
+		clocks = < &clks CLK_SSP3 >;
+		dmas = <&pdma 66 3
+			&pdma 67 3>;
+		dma-names = "rx", "tx";
+		pinctrl-names = "default";
+		pinctrl-0 = < &pmux_ssp3_low_default
+			      &pmux_ssp3_float_default >;
+		status = "okay";
+	};
+
+	ssp_dai0: ssp_dai@0 {
+		compatible = "mrvl,pxa-ssp-dai";
+		port = <&ssp3>;
+		#sound-dai-cells = <0>;
+	};
+	ac97: sound@40500000 {
+	      	compatible = "marvell,pxa2xx-ac97";
+		reg = < 0x40500000 0x1000 >;
+		interrupts = <14>;
+		reset-gpio = <&gpio 113 GPIO_ACTIVE_HIGH>;
+		#sound-dai-cells = <1>;
+		pinctrl-names = "default";
+		pinctrl-0 = < &pmux_ac97_default >;
+		status = "okay";
+	};
+
+	pxa_pcm_audio: snd_soc_pxa_audio {
+		compatible = "mrvl,pxa-pcm-audio";
+		#sound-dai-cells = <1>;
+	};
+	pxa_ssp_dai: snd_soc_pxa_audio {
+		compatible = "mrvl,pxa-pcm-audio";
+		#sound-dai-cells = <1>;
+	};
+
+	wm9713: wm9713@0 {
+		compatible = "wlf,wm9713";
+		#sound-dai-cells = <1>;
+		pinctrl-names = "default";
+		pinctrl-0 = < &pmux_wm9713_default >;
+		status = "okay";
+	};
+
+	sound {
+		compatible = "simple-audio-card";
+		simple-audio-card,name = "Zylonite-Sound-Card";
+		simple-audio-card,format = "ac97";
+		simple-audio-card,widgets =
+			"Headphone", "Headphone",
+			"Microphone", "Headset Microphone",
+			"Microphone", "Handset Microphone",
+			"Speaker", "Multiactor",
+			"Speaker", "Headset Earpiece";
+		simple-audio-card,routing =
+			"Headphone", "HPL",		/* Headphone output */
+			"Headphone", "HPR",		/* connected to HPL/HPR */
+			"Headset Earpiece", "OUT3",	/* On-board earpiece */
+			"MIC2A", "Mic Bias",			/* Headphone mic */
+			"Mic Bias", "Headset Microphone",	/* Headphone mic */
+			"MIC1", "Mic Bias",			/* On-board mic */
+			"Mic Bias", "Handset Microphone",	/* On-board mic */
+			"Multiactor", "SPKL",		/* Multiactor differentially */
+			"Multiactor", "SPKR";		/* connected over SPKL/SPKR */
+	
+		simple-audio-card,dai-link@0 {		/* AC97 */
+			format = "ac97";
+			cpu {
+				sound-dai = <&ac97 0>;
+			};
+			codec {
+				sound-dai = <&wm9713 0>;
+			};
+			plat {
+				sound-dai = <&pxa_pcm_audio 0>;
+			};
+		};
+		simple-audio-card,dai-link@1 {		/* AC97 Aux */
+			format = "ac97";
+			cpu {
+				sound-dai = <&ac97 1>;
+			};
+			codec {
+				sound-dai = <&wm9713 1>;
+			};
+			plat {
+				sound-dai = <&pxa_pcm_audio 0>;
+			};
+		};
+		simple-audio-card,dai-link@2 {		/* AC97 Voice */
+			format = "i2s";
+			cpu {
+				sound-dai = <&ssp_dai0>;
+			};
+			codec {
+				sound-dai = <&wm9713 2>;
+			};
+			plat {
+				sound-dai = <&pxa_pcm_audio 0>;
+			};
+		};
+	};
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
