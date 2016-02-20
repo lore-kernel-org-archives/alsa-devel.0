@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cht_bsw_rt5645: Enable jack detection"
-	to the asoc tree
-Date: Sun, 21 Feb 2016 02:13:55 +0900
-Message-ID: <E1aXB6R-0008D0-E4@finisterre>
-References: <1455658039-4783-1-git-send-email-carlo@caione.org>
+Subject: Applied "ASoC: sunxi: add sun4i SPDIF transceiver" to
+	the asoc tree
+Date: Sun, 21 Feb 2016 02:13:52 +0900
+Message-ID: <E1aXB6O-0008CV-PX@finisterre>
+References: <1454584162-32449-2-git-send-email-codekipper@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F85A2606D3
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:14:05 +0100 (CET)
-In-Reply-To: <1455658039-4783-1-git-send-email-carlo@caione.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0AFF72606E8
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:14:06 +0100 (CET)
+In-Reply-To: <1454584162-32449-2-git-send-email-codekipper@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Carlo Caione <carlo@endlessm.com>, Mark Brown <broonie@kernel.org>
+To: Marcus Cooper <codekipper@gmail.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cht_bsw_rt5645: Enable jack detection
+   ASoC: sunxi: add sun4i SPDIF transceiver
 
 has been applied to the asoc tree at
 
@@ -53,53 +53,66 @@ to this mail.
 Thanks,
 Mark
 
->From 2303b32f54289267adb75437cdeba50be92221f5 Mon Sep 17 00:00:00 2001
-From: Carlo Caione <carlo@endlessm.com>
-Date: Tue, 16 Feb 2016 22:27:19 +0100
-Subject: [PATCH] ASoC: cht_bsw_rt5645: Enable jack detection
+>From 8020e1bbaa5e8d8340ab78c71a69ccdd362ab203 Mon Sep 17 00:00:00 2001
+From: Marcus Cooper <codekipper@gmail.com>
+Date: Mon, 8 Feb 2016 18:09:20 +0100
+Subject: [PATCH] ASoC: sunxi: add sun4i SPDIF transceiver
 
-Add missing DAPM pins and enable jack detection on those pins for
-Cherrytrail and Braswell.
+Add devicetree bindings for the SPDIF transceiver found on
+found on Allwinners A10 and A20 SoCs.
 
-Signed-off-by: Carlo Caione <carlo@endlessm.com>
+Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_rt5645.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ .../bindings/sound/sunxi,sun4i-spdif.txt           | 39 ++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index e6cf800..c7af271 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -147,6 +147,17 @@ static const struct snd_kcontrol_new cht_mc_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Ext Spk"),
- };
- 
-+static struct snd_soc_jack_pin cht_bsw_jack_pins[] = {
-+	{
-+		.pin	= "Headphone",
-+		.mask	= SND_JACK_HEADPHONE,
-+	},
-+	{
-+		.pin	= "Headset Mic",
-+		.mask	= SND_JACK_MICROPHONE,
-+	},
-+};
+diff --git a/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt b/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
+new file mode 100644
+index 0000000..13503aa
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
+@@ -0,0 +1,39 @@
++Allwinner Sony/Philips Digital Interface Format (S/PDIF) Controller
 +
- static int cht_aif1_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params)
- {
-@@ -202,9 +213,9 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- 	else
- 		jack_type = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE;
- 
--	ret = snd_soc_card_jack_new(runtime->card, "Headset Jack",
-+	ret = snd_soc_card_jack_new(runtime->card, "Headset",
- 				    jack_type, &ctx->jack,
--				    NULL, 0);
-+				    cht_bsw_jack_pins, ARRAY_SIZE(cht_bsw_jack_pins));
- 	if (ret) {
- 		dev_err(runtime->dev, "Headset jack creation failed %d\n", ret);
- 		return ret;
++The Allwinner S/PDIF audio block is a transceiver that allows the
++processor to receive and transmit digital audio via an coaxial cable or
++a fibre cable.
++For now only playback is supported.
++
++Required properties:
++
++  - compatible		: should be one of the following:
++    - "allwinner,sun4i-a10-spdif": for the Allwinner A10 SoC
++
++  - reg			: Offset and length of the register set for the device.
++
++  - interrupts		: Contains the spdif interrupt.
++
++  - dmas		: Generic dma devicetree binding as described in
++			  Documentation/devicetree/bindings/dma/dma.txt.
++
++  - dma-names		: Two dmas have to be defined, "tx" and "rx".
++
++  - clocks		: Contains an entry for each entry in clock-names.
++
++  - clock-names		: Includes the following entries:
++	"apb"		  clock for the spdif bus.
++	"spdif"		  clock for spdif controller.
++
++Example:
++
++spdif: spdif@01c21000 {
++	compatible = "allwinner,sun4i-a10-spdif";
++	reg = <0x01c21000 0x40>;
++	interrupts = <13>;
++	clocks = <&apb0_gates 1>, <&spdif_clk>;
++	clock-names = "apb", "spdif";
++	dmas = <&dma 0 2>, <&dma 0 2>;
++	dma-names = "rx", "tx";
++	status = "okay";
++};
 -- 
 2.7.0
