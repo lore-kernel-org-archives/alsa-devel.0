@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sunxi: add sun4i SPDIF transceiver" to
+Subject: Applied "ASoC: qcom: apq8016: add wrdma support" to
 	the asoc tree
-Date: Sun, 21 Feb 2016 02:13:52 +0900
-Message-ID: <E1aXB6O-0008CV-PX@finisterre>
-References: <1454584162-32449-2-git-send-email-codekipper@gmail.com>
+Date: Sun, 21 Feb 2016 02:13:57 +0900
+Message-ID: <E1aXB6T-0008DU-J4@finisterre>
+References: <1455099557-665-1-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0AFF72606E8
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:14:06 +0100 (CET)
-In-Reply-To: <1454584162-32449-2-git-send-email-codekipper@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E66FF2612DF
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:14:10 +0100 (CET)
+In-Reply-To: <1455099557-665-1-git-send-email-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Marcus Cooper <codekipper@gmail.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sunxi: add sun4i SPDIF transceiver
+   ASoC: qcom: apq8016: add wrdma support
 
 has been applied to the asoc tree at
 
@@ -53,66 +53,62 @@ to this mail.
 Thanks,
 Mark
 
->From 8020e1bbaa5e8d8340ab78c71a69ccdd362ab203 Mon Sep 17 00:00:00 2001
-From: Marcus Cooper <codekipper@gmail.com>
-Date: Mon, 8 Feb 2016 18:09:20 +0100
-Subject: [PATCH] ASoC: sunxi: add sun4i SPDIF transceiver
+>From 6a9364ca6fa07ec215b0ba7c49d110b8236985d4 Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Thu, 11 Feb 2016 12:19:30 +0000
+Subject: [PATCH] ASoC: qcom: apq8016: add wrdma support
 
-Add devicetree bindings for the SPDIF transceiver found on
-found on Allwinners A10 and A20 SoCs.
+This patch adds wrdma support in lpass-apq8016 by providing the register
+offsets and adding support in dma channel allocation callback.
 
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Acked-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../bindings/sound/sunxi,sun4i-spdif.txt           | 39 ++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
+ sound/soc/qcom/lpass-apq8016.c | 22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt b/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
-new file mode 100644
-index 0000000..13503aa
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
-@@ -0,0 +1,39 @@
-+Allwinner Sony/Philips Digital Interface Format (S/PDIF) Controller
+diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
+index ca3bbd5..3eef0c3 100644
+--- a/sound/soc/qcom/lpass-apq8016.c
++++ b/sound/soc/qcom/lpass-apq8016.c
+@@ -137,11 +137,23 @@ static int apq8016_lpass_alloc_dma_channel(struct lpass_data *drvdata,
+ 					   int direction)
+ {
+ 	struct lpass_variant *v = drvdata->variant;
+-	int chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
++	int chan = 0;
 +
-+The Allwinner S/PDIF audio block is a transceiver that allows the
-+processor to receive and transmit digital audio via an coaxial cable or
-+a fibre cable.
-+For now only playback is supported.
++	if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
++		chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
+ 					v->rdma_channels);
+ 
+-	if (chan >= v->rdma_channels)
+-		return -EBUSY;
++		if (chan >= v->rdma_channels)
++			return -EBUSY;
++	} else {
++		chan = find_next_zero_bit(&drvdata->dma_ch_bit_map,
++					v->wrdma_channel_start +
++					v->wrdma_channels,
++					v->wrdma_channel_start);
 +
-+Required properties:
-+
-+  - compatible		: should be one of the following:
-+    - "allwinner,sun4i-a10-spdif": for the Allwinner A10 SoC
-+
-+  - reg			: Offset and length of the register set for the device.
-+
-+  - interrupts		: Contains the spdif interrupt.
-+
-+  - dmas		: Generic dma devicetree binding as described in
-+			  Documentation/devicetree/bindings/dma/dma.txt.
-+
-+  - dma-names		: Two dmas have to be defined, "tx" and "rx".
-+
-+  - clocks		: Contains an entry for each entry in clock-names.
-+
-+  - clock-names		: Includes the following entries:
-+	"apb"		  clock for the spdif bus.
-+	"spdif"		  clock for spdif controller.
-+
-+Example:
-+
-+spdif: spdif@01c21000 {
-+	compatible = "allwinner,sun4i-a10-spdif";
-+	reg = <0x01c21000 0x40>;
-+	interrupts = <13>;
-+	clocks = <&apb0_gates 1>, <&spdif_clk>;
-+	clock-names = "apb", "spdif";
-+	dmas = <&dma 0 2>, <&dma 0 2>;
-+	dma-names = "rx", "tx";
-+	status = "okay";
-+};
++		if (chan >=  v->wrdma_channel_start + v->wrdma_channels)
++			return -EBUSY;
++	}
+ 
+ 	set_bit(chan, &drvdata->dma_ch_bit_map);
+ 
+@@ -214,6 +226,10 @@ static struct lpass_variant apq8016_data = {
+ 	.rdma_reg_stride	= 0x1000,
+ 	.rdma_channels		= 2,
+ 	.dmactl_audif_start	= 1,
++	.wrdma_reg_base		= 0xB000,
++	.wrdma_reg_stride	= 0x1000,
++	.wrdma_channel_start	= 5,
++	.wrdma_channels		= 2,
+ 	.dai_driver		= apq8016_lpass_cpu_dai_driver,
+ 	.num_dai		= ARRAY_SIZE(apq8016_lpass_cpu_dai_driver),
+ 	.init			= apq8016_lpass_init,
 -- 
 2.7.0
