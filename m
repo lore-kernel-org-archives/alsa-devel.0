@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: ipq806x: add error in dma
-	allocation." to the asoc tree
-Date: Sun, 21 Feb 2016 02:14:59 +0900
-Message-ID: <E1aXB7T-0008I6-6P@finisterre>
-References: <1455099533-532-1-git-send-email-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: qcom: pass direction to dma allocation"
+	to the asoc tree
+Date: Sun, 21 Feb 2016 02:15:01 +0900
+Message-ID: <E1aXB7V-0008Ib-Eb@finisterre>
+References: <1455099519-490-1-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 015DB265068
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:15:05 +0100 (CET)
-In-Reply-To: <1455099533-532-1-git-send-email-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id D2BCE26151C
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:15:14 +0100 (CET)
+In-Reply-To: <1455099519-490-1-git-send-email-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: ipq806x: add error in dma allocation.
+   ASoC: qcom: pass direction to dma allocation
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,78 @@ to this mail.
 Thanks,
 Mark
 
->From 0a536400ad2ea72c80e6257fa71aa78d17bd43e3 Mon Sep 17 00:00:00 2001
+>From 73c847b6d3670e4521cd3f603102332614d0b640 Mon Sep 17 00:00:00 2001
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Thu, 11 Feb 2016 12:17:45 +0000
-Subject: [PATCH] ASoC: qcom: ipq806x: add error in dma allocation.
+Date: Thu, 11 Feb 2016 12:17:37 +0000
+Subject: [PATCH] ASoC: qcom: pass direction to dma allocation
 
-ipq806x is only ever tested for playback so return error in dma allocation
-if the stream direction is capture.
+This patch updates the internal dma allocation callbacks to take the
+stream direction so that it can allocate channels suitable for that
+stream direction. Before the capture support this was not necessary.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Acked-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/lpass-ipq806x.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/qcom/lpass-apq8016.c  | 3 ++-
+ sound/soc/qcom/lpass-ipq806x.c  | 2 +-
+ sound/soc/qcom/lpass-platform.c | 3 ++-
+ sound/soc/qcom/lpass.h          | 2 +-
+ 4 files changed, 6 insertions(+), 4 deletions(-)
 
+diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
+index 6cc7e72..99061f4 100644
+--- a/sound/soc/qcom/lpass-apq8016.c
++++ b/sound/soc/qcom/lpass-apq8016.c
+@@ -133,7 +133,8 @@ static struct snd_soc_dai_driver apq8016_lpass_cpu_dai_driver[] = {
+ 	},
+ };
+ 
+-static int apq8016_lpass_alloc_dma_channel(struct lpass_data *drvdata)
++static int apq8016_lpass_alloc_dma_channel(struct lpass_data *drvdata,
++					   int direction)
+ {
+ 	struct lpass_variant *v = drvdata->variant;
+ 	int chan = find_first_zero_bit(&drvdata->rdma_ch_bit_map,
 diff --git a/sound/soc/qcom/lpass-ipq806x.c b/sound/soc/qcom/lpass-ipq806x.c
-index 119048c..29a3529 100644
+index 7a41679..119048c 100644
 --- a/sound/soc/qcom/lpass-ipq806x.c
 +++ b/sound/soc/qcom/lpass-ipq806x.c
-@@ -65,7 +65,10 @@ static struct snd_soc_dai_driver ipq806x_lpass_cpu_dai_driver = {
+@@ -63,7 +63,7 @@ static struct snd_soc_dai_driver ipq806x_lpass_cpu_dai_driver = {
+ 	.ops    = &asoc_qcom_lpass_cpu_dai_ops,
+ };
  
- static int ipq806x_lpass_alloc_dma_channel(struct lpass_data *drvdata, int dir)
+-static int ipq806x_lpass_alloc_dma_channel(struct lpass_data *drvdata)
++static int ipq806x_lpass_alloc_dma_channel(struct lpass_data *drvdata, int dir)
  {
--	return IPQ806X_LPAIF_RDMA_CHAN_MI2S;
-+	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
-+		return IPQ806X_LPAIF_RDMA_CHAN_MI2S;
-+	else	/* Capture currently not implemented */
-+		return -EINVAL;
+ 	return IPQ806X_LPAIF_RDMA_CHAN_MI2S;
  }
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index 7245c2e..69c5ad8 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -457,7 +457,8 @@ static int lpass_platform_pcm_new(struct snd_soc_pcm_runtime *soc_runtime)
+ 		return -ENOMEM;
  
- static int ipq806x_lpass_free_dma_channel(struct lpass_data *drvdata, int chan)
+ 	if (v->alloc_dma_channel)
+-		data->rdma_ch = v->alloc_dma_channel(drvdata);
++		data->rdma_ch = v->alloc_dma_channel(drvdata,
++						SNDRV_PCM_STREAM_PLAYBACK);
+ 
+ 	if (IS_ERR_VALUE(data->rdma_ch))
+ 		return data->rdma_ch;
+diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
+index 412399a..8475b60 100644
+--- a/sound/soc/qcom/lpass.h
++++ b/sound/soc/qcom/lpass.h
+@@ -84,7 +84,7 @@ struct lpass_variant {
+ 	/* SOC specific intialization like clocks */
+ 	int (*init)(struct platform_device *pdev);
+ 	int (*exit)(struct platform_device *pdev);
+-	int (*alloc_dma_channel)(struct lpass_data *data);
++	int (*alloc_dma_channel)(struct lpass_data *data, int direction);
+ 	int (*free_dma_channel)(struct lpass_data *data, int ch);
+ 
+ 	/* SOC specific dais */
 -- 
 2.7.0
