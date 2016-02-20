@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max9867: Constify max9867_reg and
-	max9867_regmap" to the asoc tree
-Date: Sun, 21 Feb 2016 03:10:23 +0900
-Message-ID: <E1aXBz5-0001jS-UL@finisterre>
-References: <1455936851.19371.2.camel@ingics.com>
+Subject: Applied "ASoC: wm_adsp: wm_coeff_{read|write}_control
+	should use passed length" to the asoc tree
+Date: Sun, 21 Feb 2016 03:10:41 +0900
+Message-ID: <E1aXBzN-0001lJ-DN@finisterre>
+References: <1455893084-4556-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 38ED62606E8
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 19:10:34 +0100 (CET)
-In-Reply-To: <1455936851.19371.2.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F04D7261687
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 19:10:47 +0100 (CET)
+In-Reply-To: <1455893084-4556-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, anish kumar <yesanishhere@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max9867: Constify max9867_reg and max9867_regmap
+   ASoC: wm_adsp: wm_coeff_{read|write}_control should use passed length
 
 has been applied to the asoc tree at
 
@@ -53,39 +53,75 @@ to this mail.
 Thanks,
 Mark
 
->From 250a99e70bf8628397901e10ad99a281dfc489d5 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Sat, 20 Feb 2016 10:54:11 +0800
-Subject: [PATCH] ASoC: max9867: Constify max9867_reg and max9867_regmap
+>From 4f8ea6d759f6ed5d448472143cef7681e319c958 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Fri, 19 Feb 2016 14:44:44 +0000
+Subject: [PATCH] ASoC: wm_adsp: wm_coeff_{read|write}_control should use
+ passed length
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Acked-by: anish kumar <yesanishhere@gmail.com>
+wm_coeff_{read|write}_control were using the control length rather than
+the length parameter passed to them. This is not causing any issues as
+the two values are currently always the same, but this needs fixed to
+allow future improvements.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max9867.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-index 70b5406..ab7a94d 100755
---- a/sound/soc/codecs/max9867.c
-+++ b/sound/soc/codecs/max9867.c
-@@ -436,7 +436,7 @@ static bool max9867_volatile_register(struct device *dev, unsigned int reg)
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 0f6eeb1..36687db 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -721,19 +721,19 @@ static int wm_coeff_write_control(struct wm_coeff_ctl *ctl,
+ 	reg = ctl->alg_region.base + ctl->offset;
+ 	reg = wm_adsp_region_to_reg(mem, reg);
+ 
+-	scratch = kmemdup(buf, ctl->len, GFP_KERNEL | GFP_DMA);
++	scratch = kmemdup(buf, len, GFP_KERNEL | GFP_DMA);
+ 	if (!scratch)
+ 		return -ENOMEM;
+ 
+ 	ret = regmap_raw_write(dsp->regmap, reg, scratch,
+-			       ctl->len);
++			       len);
+ 	if (ret) {
+ 		adsp_err(dsp, "Failed to write %zu bytes to %x: %d\n",
+-			 ctl->len, reg, ret);
++			 len, reg, ret);
+ 		kfree(scratch);
+ 		return ret;
  	}
- }
+-	adsp_dbg(dsp, "Wrote %zu bytes to %x\n", ctl->len, reg);
++	adsp_dbg(dsp, "Wrote %zu bytes to %x\n", len, reg);
  
--static struct reg_default max9867_reg[] = {
-+static const struct reg_default max9867_reg[] = {
- 	{ 0x04, 0x00 },
- 	{ 0x05, 0x00 },
- 	{ 0x06, 0x00 },
-@@ -459,7 +459,7 @@ static struct reg_default max9867_reg[] = {
- 	{ 0x17, 0x00 },
- };
+ 	kfree(scratch);
  
--static struct regmap_config max9867_regmap = {
-+static const struct regmap_config max9867_regmap = {
- 	.reg_bits	= 8,
- 	.val_bits	= 8,
- 	.max_register	= MAX9867_REVISION,
+@@ -780,20 +780,20 @@ static int wm_coeff_read_control(struct wm_coeff_ctl *ctl,
+ 	reg = ctl->alg_region.base + ctl->offset;
+ 	reg = wm_adsp_region_to_reg(mem, reg);
+ 
+-	scratch = kmalloc(ctl->len, GFP_KERNEL | GFP_DMA);
++	scratch = kmalloc(len, GFP_KERNEL | GFP_DMA);
+ 	if (!scratch)
+ 		return -ENOMEM;
+ 
+-	ret = regmap_raw_read(dsp->regmap, reg, scratch, ctl->len);
++	ret = regmap_raw_read(dsp->regmap, reg, scratch, len);
+ 	if (ret) {
+ 		adsp_err(dsp, "Failed to read %zu bytes from %x: %d\n",
+ 			 ctl->len, reg, ret);
+ 		kfree(scratch);
+ 		return ret;
+ 	}
+-	adsp_dbg(dsp, "Read %zu bytes from %x\n", ctl->len, reg);
++	adsp_dbg(dsp, "Read %zu bytes from %x\n", len, reg);
+ 
+-	memcpy(buf, scratch, ctl->len);
++	memcpy(buf, scratch, len);
+ 	kfree(scratch);
+ 
+ 	return 0;
 -- 
 2.7.0
