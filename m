@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: add wrdma register details to
-	lpass_variant" to the asoc tree
-Date: Sun, 21 Feb 2016 02:15:25 +0900
-Message-ID: <E1aXB7t-0008Jg-KU@finisterre>
-References: <1455099504-403-1-git-send-email-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: Intel: Skylake: Add i915 enabling in
+	skl probe" to the asoc tree
+Date: Sun, 21 Feb 2016 02:15:31 +0900
+Message-ID: <E1aXB7z-0008L7-VW@finisterre>
+References: <1455725047-7303-9-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C7EB26518B
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:15:40 +0100 (CET)
-In-Reply-To: <1455099504-403-1-git-send-email-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 193F32650DA
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:15:43 +0100 (CET)
+In-Reply-To: <1455725047-7303-9-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Mark Brown <broonie@kernel.org>
+To: Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: add wrdma register details to lpass_variant
+   ASoC: Intel: Skylake: Add i915 enabling in skl probe
 
 has been applied to the asoc tree at
 
@@ -53,41 +53,135 @@ to this mail.
 Thanks,
 Mark
 
->From ffc1325e1d3bb809dbd8c0b7f9682a22e51a69c3 Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Thu, 11 Feb 2016 12:17:23 +0000
-Subject: [PATCH] ASoC: qcom: add wrdma register details to lpass_variant
+>From 6980c057ea1bca145e8fef39ddf541254f7c8747 Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Wed, 17 Feb 2016 21:34:06 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add i915 enabling in skl probe
 
-This patch adds wrdma related register offsets, wrdma channel start
-and shifts into lpass variant structure.
+The SKL also supports HDMI output so in probe we need to enable
+the HDMI using common i915 APIs to ensure it gets probed on the
+bus
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Acked-by: Kenneth Westfield <kwestfie@codeaurora.org>
+After S3 during the controller resequencing the codec domain need
+to be kept ON for successful reconfiguration of Codec. Once
+configured it will be turned OFF in codec driver.
+
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/lpass.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/intel/Kconfig       |  1 +
+ sound/soc/intel/skylake/skl.c | 51 +++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 52 insertions(+)
 
-diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index 0b63e2e..024a771 100644
---- a/sound/soc/qcom/lpass.h
-+++ b/sound/soc/qcom/lpass.h
-@@ -71,12 +71,16 @@ struct lpass_variant {
- 	u32	rdma_reg_base;
- 	u32	rdma_reg_stride;
- 	u32	rdma_channels;
-+	u32	wrdma_reg_base;
-+	u32	wrdma_reg_stride;
-+	u32	wrdma_channels;
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index 803f95e..6e65085 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -154,6 +154,7 @@ config SND_SOC_INTEL_SKYLAKE
+ 	tristate
+ 	select SND_HDA_EXT_CORE
+ 	select SND_SOC_TOPOLOGY
++	select SND_HDA_I915
+ 	select SND_SOC_INTEL_SST
  
- 	/**
- 	 * on SOCs like APQ8016 the channel control bits start
- 	 * at different offset to ipq806x
- 	 **/
- 	u32	rdmactl_audif_start;
-+	u32	wrdma_channel_start;
- 	/* SOC specific intialization like clocks */
- 	int (*init)(struct platform_device *pdev);
- 	int (*exit)(struct platform_device *pdev);
+ config SND_SOC_INTEL_SKL_RT286_MACH
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index f89abb1..0d38bdb 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -28,6 +28,9 @@
+ #include <linux/firmware.h>
+ #include <sound/pcm.h>
+ #include "../common/sst-acpi.h"
++#include <sound/hda_register.h>
++#include <sound/hdaudio.h>
++#include <sound/hda_i915.h>
+ #include "skl.h"
+ #include "skl-sst-dsp.h"
+ #include "skl-sst-ipc.h"
+@@ -243,6 +246,16 @@ static int skl_resume(struct device *dev)
+ 	struct hdac_bus *bus = ebus_to_hbus(ebus);
+ 	int ret;
+ 
++	/* Turned OFF in HDMI codec driver after codec reconfiguration */
++	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
++		ret = snd_hdac_display_power(bus, true);
++		if (ret < 0) {
++			dev_err(bus->dev,
++				"Cannot turn on display power on i915\n");
++			return ret;
++		}
++	}
++
+ 	/*
+ 	 * resume only when we are not in suspend active, otherwise need to
+ 	 * restore the device
+@@ -481,6 +494,27 @@ static int skl_create(struct pci_dev *pci,
+ 	return 0;
+ }
+ 
++static int skl_i915_init(struct hdac_bus *bus)
++{
++	int err;
++
++	/*
++	 * The HDMI codec is in GPU so we need to ensure that it is powered
++	 * up and ready for probe
++	 */
++	err = snd_hdac_i915_init(bus);
++	if (err < 0)
++		return err;
++
++	err = snd_hdac_display_power(bus, true);
++	if (err < 0) {
++		dev_err(bus->dev, "Cannot turn on display power on i915\n");
++		return err;
++	}
++
++	return err;
++}
++
+ static int skl_first_init(struct hdac_ext_bus *ebus)
+ {
+ 	struct skl *skl = ebus_to_skl(ebus);
+@@ -543,6 +577,12 @@ static int skl_first_init(struct hdac_ext_bus *ebus)
+ 	/* initialize chip */
+ 	skl_init_pci(skl);
+ 
++	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
++		err = skl_i915_init(bus);
++		if (err < 0)
++			return err;
++	}
++
+ 	skl_init_chip(bus, true);
+ 
+ 	/* codec detection */
+@@ -617,6 +657,14 @@ static int skl_probe(struct pci_dev *pci,
+ 	if (err < 0)
+ 		goto out_unregister;
+ 
++	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
++		err = snd_hdac_display_power(bus, false);
++		if (err < 0) {
++			dev_err(bus->dev, "Cannot turn off display power on i915\n");
++			return err;
++		}
++	}
++
+ 	/*configure PM */
+ 	pm_runtime_put_noidle(bus->dev);
+ 	pm_runtime_allow(bus->dev);
+@@ -671,6 +719,9 @@ static void skl_remove(struct pci_dev *pci)
+ 	if (skl->tplg)
+ 		release_firmware(skl->tplg);
+ 
++	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
++		snd_hdac_i915_exit(&ebus->bus);
++
+ 	if (pci_dev_run_wake(pci))
+ 		pm_runtime_get_noresume(&pci->dev);
+ 	pci_dev_put(pci);
 -- 
 2.7.0
