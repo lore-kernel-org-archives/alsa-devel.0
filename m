@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: add missing .irq callback for
-	DMA" to the asoc tree
-Date: Sun, 21 Feb 2016 02:16:03 +0900
-Message-ID: <E1aXB8V-0008QP-K1@finisterre>
-References: <87k2m2tp1v.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: SSI function parameter uses "mod"
+	instead of "ssi"" to the asoc tree
+Date: Sun, 21 Feb 2016 02:16:10 +0900
+Message-ID: <E1aXB8c-0008RQ-VW@finisterre>
+References: <87mvqytp5d.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 575B626514A
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:16:18 +0100 (CET)
-In-Reply-To: <87k2m2tp1v.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D3B7826513A
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:16:14 +0100 (CET)
+In-Reply-To: <87mvqytp5d.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: add missing .irq callback for DMA
+   ASoC: rsnd: SSI function parameter uses "mod" instead of "ssi"
 
 has been applied to the asoc tree at
 
@@ -53,31 +53,104 @@ to this mail.
 Thanks,
 Mark
 
->From c8e969a85ecb982dccf2ba13ba9aff9f1a68eab2 Mon Sep 17 00:00:00 2001
+>From 26d34b11af6a344da6191beca2e2883f65d2597a Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 18 Feb 2016 08:16:43 +0000
-Subject: [PATCH] ASoC: rsnd: add missing .irq callback for DMA
+Date: Thu, 18 Feb 2016 08:14:37 +0000
+Subject: [PATCH] ASoC: rsnd: SSI function parameter uses "mod" instead of
+ "ssi"
 
-commit b5b442abd9d5 ("ASoC: rsnd: add .irq callback") added .irq callback
-but SSI DMA is missing it. This patch adds it.
+To reduce confusion, SSI uses "mod" instead of "ssi"
+as function parameter
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/sh/rcar/ssi.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
 diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 90c3f58..b1a29e2 100644
+index a72ce28..c5c4510 100644
 --- a/sound/soc/sh/rcar/ssi.c
 +++ b/sound/soc/sh/rcar/ssi.c
-@@ -694,6 +694,7 @@ static struct rsnd_mod_ops rsnd_ssi_dma_ops = {
- 	.quit	= rsnd_ssi_quit,
- 	.start	= rsnd_ssi_start,
- 	.stop	= rsnd_ssi_stop,
-+	.irq	= rsnd_ssi_irq,
- 	.fallback = rsnd_ssi_fallback,
- 	.hw_params = rsnd_ssi_hw_params,
- };
+@@ -188,14 +188,14 @@ u32 rsnd_ssi_multi_slaves(struct rsnd_dai_stream *io)
+ 	return mask;
+ }
+ 
+-static int rsnd_ssi_master_clk_start(struct rsnd_ssi *ssi,
++static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
+ 				     struct rsnd_dai_stream *io)
+ {
+ 	struct rsnd_priv *priv = rsnd_io_to_priv(io);
+ 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
+-	struct rsnd_mod *mod = rsnd_mod_get(ssi);
++	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+ 	struct rsnd_mod *ssi_parent_mod = rsnd_io_to_mod_ssip(io);
+ 	int slots = rsnd_get_slot_width(io);
+ 	int j, ret;
+@@ -255,11 +255,11 @@ static int rsnd_ssi_master_clk_start(struct rsnd_ssi *ssi,
+ 	return -EIO;
+ }
+ 
+-static void rsnd_ssi_master_clk_stop(struct rsnd_ssi *ssi,
++static void rsnd_ssi_master_clk_stop(struct rsnd_mod *mod,
+ 				     struct rsnd_dai_stream *io)
+ {
+ 	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
+-	struct rsnd_mod *mod = rsnd_mod_get(ssi);
++	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+ 	struct rsnd_mod *ssi_parent_mod = rsnd_io_to_mod_ssip(io);
+ 
+ 	if (!rsnd_rdai_is_clk_master(rdai))
+@@ -277,11 +277,12 @@ static void rsnd_ssi_master_clk_stop(struct rsnd_ssi *ssi,
+ 	rsnd_adg_ssi_clk_stop(mod);
+ }
+ 
+-static int rsnd_ssi_config_init(struct rsnd_ssi *ssi,
++static int rsnd_ssi_config_init(struct rsnd_mod *mod,
+ 				struct rsnd_dai_stream *io)
+ {
+ 	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
+ 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
++	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+ 	u32 cr_own;
+ 	u32 cr_mode;
+ 	u32 wsr;
+@@ -317,7 +318,7 @@ static int rsnd_ssi_config_init(struct rsnd_ssi *ssi,
+ 		return -EINVAL;
+ 	}
+ 
+-	if (rsnd_ssi_is_dma_mode(rsnd_mod_get(ssi))) {
++	if (rsnd_ssi_is_dma_mode(mod)) {
+ 		cr_mode = UIEN | OIEN |	/* over/under run */
+ 			  DMEN;		/* DMA : enable DMA */
+ 	} else {
+@@ -356,14 +357,14 @@ static int rsnd_ssi_init(struct rsnd_mod *mod,
+ 
+ 	rsnd_mod_power_on(mod);
+ 
+-	ret = rsnd_ssi_master_clk_start(ssi, io);
++	ret = rsnd_ssi_master_clk_start(mod, io);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	if (rsnd_ssi_is_parent(mod, io))
+ 		return 0;
+ 
+-	ret = rsnd_ssi_config_init(ssi, io);
++	ret = rsnd_ssi_config_init(mod, io);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -389,7 +390,7 @@ static int rsnd_ssi_quit(struct rsnd_mod *mod,
+ 	if (!rsnd_ssi_is_parent(mod, io))
+ 		ssi->cr_own	= 0;
+ 
+-	rsnd_ssi_master_clk_stop(ssi, io);
++	rsnd_ssi_master_clk_stop(mod, io);
+ 
+ 	rsnd_mod_power_off(mod);
+ 
 -- 
 2.7.0
