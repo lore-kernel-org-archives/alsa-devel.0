@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: ipq806x: add wrdma related
-	register offsets" to the asoc tree
-Date: Sun, 21 Feb 2016 02:14:45 +0900
-Message-ID: <E1aXB7F-0008Gx-7z@finisterre>
-References: <1454347729-10592-1-git-send-email-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: qcom: add mic related i2s control
+	register defines" to the asoc tree
+Date: Sun, 21 Feb 2016 02:14:44 +0900
+Message-ID: <E1aXB7E-0008GW-57@finisterre>
+References: <1455099566-710-1-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C095E2606F5
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:14:55 +0100 (CET)
-In-Reply-To: <1454347729-10592-1-git-send-email-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7FCD5265011
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:15:00 +0100 (CET)
+In-Reply-To: <1455099566-710-1-git-send-email-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: ipq806x: add wrdma related register offsets
+   ASoC: qcom: add mic related i2s control register defines
 
 has been applied to the asoc tree at
 
@@ -53,35 +53,53 @@ to this mail.
 Thanks,
 Mark
 
->From 0a14a1bf2e81a75c5b814a3904f971fb5a53c068 Mon Sep 17 00:00:00 2001
+>From 39ad0ecd1e26a4138bf299b98265fceab60553a6 Mon Sep 17 00:00:00 2001
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Thu, 11 Feb 2016 12:17:57 +0000
-Subject: [PATCH] ASoC: qcom: ipq806x: add wrdma related register offsets
+Date: Thu, 11 Feb 2016 12:18:06 +0000
+Subject: [PATCH] ASoC: qcom: add mic related i2s control register defines
 
-This patch adds wrdma related register offsets to the lpass variant data
-of ipq806x.
+This patch adds mic related bitmasks and offsets in the i2c control
+register.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Acked-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/lpass-ipq806x.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/qcom/lpass-lpaif-reg.h | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/sound/soc/qcom/lpass-ipq806x.c b/sound/soc/qcom/lpass-ipq806x.c
-index 29a3529..608c1a9 100644
---- a/sound/soc/qcom/lpass-ipq806x.c
-+++ b/sound/soc/qcom/lpass-ipq806x.c
-@@ -86,6 +86,10 @@ static struct lpass_variant ipq806x_data = {
- 	.rdma_reg_base		= 0x6000,
- 	.rdma_reg_stride	= 0x1000,
- 	.rdma_channels		= 4,
-+	.wrdma_reg_base		= 0xB000,
-+	.wrdma_reg_stride	= 0x1000,
-+	.wrdma_channel_start	= 5,
-+	.wrdma_channels		= 4,
- 	.dai_driver		= &ipq806x_lpass_cpu_dai_driver,
- 	.num_dai		= 1,
- 	.alloc_dma_channel	= ipq806x_lpass_alloc_dma_channel,
+diff --git a/sound/soc/qcom/lpass-lpaif-reg.h b/sound/soc/qcom/lpass-lpaif-reg.h
+index 95e22f1..6599794 100644
+--- a/sound/soc/qcom/lpass-lpaif-reg.h
++++ b/sound/soc/qcom/lpass-lpaif-reg.h
+@@ -47,6 +47,28 @@
+ #define LPAIF_I2SCTL_SPKMONO_STEREO	(0 << LPAIF_I2SCTL_SPKMONO_SHIFT)
+ #define LPAIF_I2SCTL_SPKMONO_MONO	(1 << LPAIF_I2SCTL_SPKMONO_SHIFT)
+ 
++#define LPAIF_I2SCTL_MICEN_MASK		GENMASK(8, 8)
++#define LPAIF_I2SCTL_MICEN_SHIFT	8
++#define LPAIF_I2SCTL_MICEN_DISABLE	(0 << LPAIF_I2SCTL_MICEN_SHIFT)
++#define LPAIF_I2SCTL_MICEN_ENABLE	(1 << LPAIF_I2SCTL_MICEN_SHIFT)
++
++#define LPAIF_I2SCTL_MICMODE_MASK	GENMASK(7, 4)
++#define LPAIF_I2SCTL_MICMODE_SHIFT	4
++#define LPAIF_I2SCTL_MICMODE_NONE	(0 << LPAIF_I2SCTL_MICMODE_SHIFT)
++#define LPAIF_I2SCTL_MICMODE_SD0	(1 << LPAIF_I2SCTL_MICMODE_SHIFT)
++#define LPAIF_I2SCTL_MICMODE_SD1	(2 << LPAIF_I2SCTL_MICMODE_SHIFT)
++#define LPAIF_I2SCTL_MICMODE_SD2	(3 << LPAIF_I2SCTL_MICMODE_SHIFT)
++#define LPAIF_I2SCTL_MICMODE_SD3	(4 << LPAIF_I2SCTL_MICMODE_SHIFT)
++#define LPAIF_I2SCTL_MICMODE_QUAD01	(5 << LPAIF_I2SCTL_MICMODE_SHIFT)
++#define LPAIF_I2SCTL_MICMODE_QUAD23	(6 << LPAIF_I2SCTL_MICMODE_SHIFT)
++#define LPAIF_I2SCTL_MICMODE_6CH	(7 << LPAIF_I2SCTL_MICMODE_SHIFT)
++#define LPAIF_I2SCTL_MICMODE_8CH	(8 << LPAIF_I2SCTL_MICMODE_SHIFT)
++
++#define LPAIF_I2SCTL_MIMONO_MASK	GENMASK(3, 3)
++#define LPAIF_I2SCTL_MICMONO_SHIFT	3
++#define LPAIF_I2SCTL_MICMONO_STEREO	(0 << LPAIF_I2SCTL_MICMONO_SHIFT)
++#define LPAIF_I2SCTL_MICMONO_MONO	(1 << LPAIF_I2SCTL_MICMONO_SHIFT)
++
+ #define LPAIF_I2SCTL_WSSRC_MASK		0x0004
+ #define LPAIF_I2SCTL_WSSRC_SHIFT	2
+ #define LPAIF_I2SCTL_WSSRC_INTERNAL	(0 << LPAIF_I2SCTL_WSSRC_SHIFT)
 -- 
 2.7.0
