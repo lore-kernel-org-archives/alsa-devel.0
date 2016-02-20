@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix possible memory
-	corruption in codec dai dma params" to the asoc tree
-Date: Sun, 21 Feb 2016 02:15:38 +0900
-Message-ID: <E1aXB86-0008Ld-7K@finisterre>
-References: <1455725047-7303-8-git-send-email-subhransu.s.prusty@intel.com>
+Subject: Applied "ASoC: hdac_hdmi: Fix to reconfigure registers
+	in runtime resume" to the asoc tree
+Date: Sun, 21 Feb 2016 02:15:44 +0900
+Message-ID: <E1aXB8C-0008M6-G2@finisterre>
+References: <1454161428-7896-15-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B396C2651A9
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:15:43 +0100 (CET)
-In-Reply-To: <1455725047-7303-8-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 38EA62650BD
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:15:50 +0100 (CET)
+In-Reply-To: <1454161428-7896-15-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix possible memory corruption in codec dai dma params
+   ASoC: hdac_hdmi: Fix to reconfigure registers in runtime resume
 
 has been applied to the asoc tree at
 
@@ -53,47 +53,91 @@ to this mail.
 Thanks,
 Mark
 
->From aceb5d20d725fdc9c9d42522944baed3370b472c Mon Sep 17 00:00:00 2001
+>From ab85f5b36ea3474622303a36293e63cf78f4a797 Mon Sep 17 00:00:00 2001
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Date: Wed, 17 Feb 2016 21:34:05 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix possible memory corruption in codec
- dai dma params
+Date: Wed, 17 Feb 2016 21:34:02 +0530
+Subject: [PATCH] ASoC: hdac_hdmi: Fix to reconfigure registers in runtime
+ resume
 
-Set required parameters for hdac_ext_dma_params object instead of
-skl_dma_params.
+The register are reset during the D3 to D0 transition. So
+reconfigure them.
+
+Also as all DAIs are now supported, remove the dai id check in prepare.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 29 ++++++++++++++++-------------
+ 1 file changed, 16 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 092450a..bbb6c28 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -475,7 +475,7 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
- 	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
- 	struct hdac_ext_stream *link_dev;
- 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
--	struct skl_dma_params *dma_params;
-+	struct hdac_ext_dma_params *dma_params;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct skl_pipe_params p_params = {0};
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 57ab212..2445b43 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -374,11 +374,6 @@ static int hdac_hdmi_playback_prepare(struct snd_pcm_substream *substream,
+ 	struct hdac_ext_dma_params *dd;
+ 	int ret;
  
-@@ -487,11 +487,9 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
- 	snd_soc_dai_set_dma_data(dai, substream, (void *)link_dev);
+-	if (dai->id > 0) {
+-		dev_err(&hdac->hdac.dev, "Only one dai supported as of now\n");
+-		return -ENODEV;
+-	}
+-
+ 	dai_map = &hdmi->dai_map[dai->id];
  
- 	/* set the stream tag in the codec dai dma params  */
--	dma_params = (struct skl_dma_params *)
--			snd_soc_dai_get_dma_data(codec_dai, substream);
-+	dma_params = snd_soc_dai_get_dma_data(codec_dai, substream);
- 	if (dma_params)
- 		dma_params->stream_tag =  hdac_stream(link_dev)->stream_tag;
--	snd_soc_dai_set_dma_data(codec_dai, substream, (void *)dma_params);
+ 	dd = (struct hdac_ext_dma_params *)snd_soc_dai_get_dma_data(dai, substream);
+@@ -451,6 +446,18 @@ static int hdac_hdmi_playback_cleanup(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
  
- 	p_params.s_fmt = snd_pcm_format_width(params_format(params));
- 	p_params.ch = params_channels(params);
++static void hdac_hdmi_enable_cvt(struct hdac_ext_device *edev,
++		struct hdac_hdmi_dai_pin_map *dai_map)
++{
++	/* Enable transmission */
++	snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
++			AC_VERB_SET_DIGI_CONVERT_1, 1);
++
++	/* Category Code (CC) to zero */
++	snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
++			AC_VERB_SET_DIGI_CONVERT_2, 0);
++}
++
+ static int hdac_hdmi_enable_pin(struct hdac_ext_device *hdac,
+ 		struct hdac_hdmi_dai_pin_map *dai_map)
+ {
+@@ -580,6 +587,7 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
+ 
+ 	dai_map->pin = pin;
+ 
++	hdac_hdmi_enable_cvt(hdac, dai_map);
+ 	ret = hdac_hdmi_enable_pin(hdac, dai_map);
+ 	if (ret < 0)
+ 		return ret;
+@@ -949,14 +957,6 @@ static int hdac_hdmi_init_dai_map(struct hdac_ext_device *edev)
+ 		dai_map->dai_id = dai_id;
+ 		dai_map->cvt = cvt;
+ 
+-		/* Enable transmission */
+-		snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
+-				AC_VERB_SET_DIGI_CONVERT_1, 1);
+-
+-		/* Category Code (CC) to zero */
+-		snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
+-				AC_VERB_SET_DIGI_CONVERT_2, 0);
+-
+ 		dai_id++;
+ 
+ 		if (dai_id == HDA_MAX_CVTS) {
+@@ -1527,6 +1527,9 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
+ 		return err;
+ 	}
+ 
++	hdac_hdmi_skl_enable_all_pins(&edev->hdac);
++	hdac_hdmi_skl_enable_dp12(&edev->hdac);
++
+ 	/* Power up afg */
+ 	if (!snd_hdac_check_power_state(hdac, hdac->afg, AC_PWRST_D0))
+ 		snd_hdac_codec_write(hdac, hdac->afg, 0,
 -- 
 2.7.0
