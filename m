@@ -1,80 +1,59 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [PATCH 4/4] ASoC: pxa: add pxa2xx-ac97 devicetree support
-Date: Sat, 20 Feb 2016 15:37:59 +0100
-Message-ID: <1455979079-9030-4-git-send-email-robert.jarzmik@free.fr>
+From: Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>
+Subject: [PATCH 3/4] ASoC: pxa: add binding for pxa2xx-ac97 audio complex
+Date: Sat, 20 Feb 2016 15:37:58 +0100
+Message-ID: <1455979079-9030-3-git-send-email-robert.jarzmik@free.fr>
 References: <1455979079-9030-1-git-send-email-robert.jarzmik@free.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1455979079-9030-1-git-send-email-robert.jarzmik@free.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1455979079-9030-1-git-send-email-robert.jarzmik-GANU6spQydw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Add the devicetree support, so that the driver can be used in a
-devicetree platform.
+This adds a binding for the Marvell PXA audio complex, available in
+pxa2xx and pxa3xx variants.
 
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Signed-off-by: Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>
 ---
- sound/arm/pxa2xx-ac97-lib.c | 11 +++++++++++
- sound/soc/pxa/pxa2xx-ac97.c | 10 ++++++++++
- 2 files changed, 21 insertions(+)
+ .../bindings/sound/marvell,pxa2xx-ac97.txt         | 25 ++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/marvell,pxa2xx-ac97.txt
 
-diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
-index 39c3969ac1c7..37fe7e0cbcf1 100644
---- a/sound/arm/pxa2xx-ac97-lib.c
-+++ b/sound/arm/pxa2xx-ac97-lib.c
-@@ -19,6 +19,7 @@
- #include <linux/module.h>
- #include <linux/io.h>
- #include <linux/gpio.h>
-+#include <linux/of_gpio.h>
- 
- #include <sound/ac97_codec.h>
- #include <sound/pxa2xx-lib.h>
-@@ -332,6 +333,16 @@ int pxa2xx_ac97_hw_probe(struct platform_device *dev)
- 			dev_err(&dev->dev, "Invalid reset GPIO %d\n",
- 				pdata->reset_gpio);
- 		}
-+	} else if (!pdata && dev->dev.of_node) {
-+		pdata = devm_kzalloc(&dev->dev, sizeof(*pdata), GFP_KERNEL);
-+		if (!pdata)
-+			return -ENOMEM;
-+		pdata->reset_gpio = of_get_named_gpio(dev->dev.of_node,
-+						      "reset-gpio", 0);
-+		if (pdata->reset_gpio == -ENOENT)
-+			pdata->reset_gpio = -1;
-+		else if (pdata->reset_gpio < 0)
-+			return pdata->reset_gpio;
- 	} else {
- 		if (cpu_is_pxa27x())
- 			reset_gpio = 113;
-diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
-index f3de615aacd7..13e3ab9224b9 100644
---- a/sound/soc/pxa/pxa2xx-ac97.c
-+++ b/sound/soc/pxa/pxa2xx-ac97.c
-@@ -221,6 +221,15 @@ static const struct snd_soc_component_driver pxa_ac97_component = {
- 	.name		= "pxa-ac97",
- };
- 
-+#ifdef CONFIG_OF
-+static const struct of_device_id pxa2xx_ac97_dt_ids[] = {
-+	{ .compatible = "marvell,pxa2xx-ac97", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, pxa2xx_ac97_dt_ids);
+diff --git a/Documentation/devicetree/bindings/sound/marvell,pxa2xx-ac97.txt b/Documentation/devicetree/bindings/sound/marvell,pxa2xx-ac97.txt
+new file mode 100644
+index 000000000000..b3f2882d9c7d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/marvell,pxa2xx-ac97.txt
+@@ -0,0 +1,25 @@
++Marvell PXA2xx audio complex
 +
-+#endif
++This descriptions matches the AC97 controller found in pxa2xx and pxa3xx series.
 +
- static int pxa2xx_ac97_dev_probe(struct platform_device *pdev)
- {
- 	int ret;
-@@ -279,6 +288,7 @@ static struct platform_driver pxa2xx_ac97_driver = {
- #ifdef CONFIG_PM_SLEEP
- 		.pm	= &pxa2xx_ac97_pm_ops,
- #endif
-+		.of_match_table = of_match_ptr(pxa2xx_ac97_dt_ids),
- 	},
- };
- 
++Required properties:
++  - compatible: "marvell,pxa2xx-ac97"
++  - reg: device MMIO address space
++  - interrupts: single interrupt generated by AC97 IP
++  - clocks: input clock of the AC97 IP, refer to clock-bindings.txt
++
++Optional properties:
++  - pinctrl-names, pinctrl-0: refer to pinctrl-bindings.txt
++  - reset-gpio: gpio used for AC97 reset, refer to gpio.txt
++
++Example:
++	ac97: sound@40500000 {
++	      	compatible = "marvell,pxa2xx-ac97";
++		reg = < 0x40500000 0x1000 >;
++		interrupts = <14>;
++		reset-gpio = <&gpio 113 GPIO_ACTIVE_HIGH>;
++		#sound-dai-cells = <1>;
++		pinctrl-names = "default";
++		pinctrl-0 = < &pmux_ac97_default >;
++		status = "okay";
++	};
 -- 
 2.1.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
