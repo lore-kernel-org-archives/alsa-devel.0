@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max9867: Add CONFIG_SND_SOC_MAX9867 to
-	build" to the asoc tree
-Date: Sun, 21 Feb 2016 03:10:31 +0900
-Message-ID: <E1aXBzD-0001kO-Oz@finisterre>
-References: <1455936752.19371.0.camel@ingics.com>
+Subject: Applied "ASoC: wm_adsp: Avoid narrow race condition on
+	compr pointer" to the asoc tree
+Date: Sun, 21 Feb 2016 03:10:50 +0900
+Message-ID: <E1aXBzW-0001mi-RB@finisterre>
+References: <1455893084-4556-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1861A261B0A
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 19:10:49 +0100 (CET)
-In-Reply-To: <1455936752.19371.0.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FFF8264F0A
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 19:10:56 +0100 (CET)
+In-Reply-To: <1455893084-4556-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, anish kumar <yesanishhere@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max9867: Add CONFIG_SND_SOC_MAX9867 to build
+   ASoC: wm_adsp: Avoid narrow race condition on compr pointer
 
 has been applied to the asoc tree at
 
@@ -53,29 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From ee06b6f0675907191656b11a8405a03c6d599ea9 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Sat, 20 Feb 2016 10:52:32 +0800
-Subject: [PATCH] ASoC: max9867: Add CONFIG_SND_SOC_MAX9867 to build
+>From c7dae7c4c60693286298e300b3d140c8cff46daa Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Fri, 19 Feb 2016 14:44:41 +0000
+Subject: [PATCH] ASoC: wm_adsp: Avoid narrow race condition on compr pointer
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Acked-by: anish kumar <yesanishhere@gmail.com>
+There is a very small window between then wm_adsp_compr_free gets call
+and when the DSP is actually powered down. If we get an IRQ from the DSP
+in this window then the wm_adsp_compr pointer will be NULL. This patch
+adds a check for this into the IRQ handler to avoid any issues when this
+happens.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/wm_adsp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index b84fe9d..f35237d 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -280,6 +280,7 @@ obj-$(CONFIG_SND_SOC_MAX98088)	+= snd-soc-max98088.o
- obj-$(CONFIG_SND_SOC_MAX98090)	+= snd-soc-max98090.o
- obj-$(CONFIG_SND_SOC_MAX98095)	+= snd-soc-max98095.o
- obj-$(CONFIG_SND_SOC_MAX98357A)	+= snd-soc-max98357a.o
-+obj-$(CONFIG_SND_SOC_MAX9867)	+= snd-soc-max9867.o
- obj-$(CONFIG_SND_SOC_MAX98925)	+= snd-soc-max98925.o
- obj-$(CONFIG_SND_SOC_MAX98926)	+= snd-soc-max98926.o
- obj-$(CONFIG_SND_SOC_MAX9850)	+= snd-soc-max9850.o
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 68b85ee..cb49a63 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -2845,7 +2845,7 @@ int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
+ 		goto out;
+ 	}
+ 
+-	if (compr->stream)
++	if (compr && compr->stream)
+ 		snd_compr_fragment_elapsed(compr->stream);
+ 
+ out:
 -- 
 2.7.0
