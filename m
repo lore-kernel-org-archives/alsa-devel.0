@@ -1,18 +1,15 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: max98926: Constify max98926_reg and
-	max98926_regmap
-Date: Sat, 20 Feb 2016 10:56:58 +0800
-Message-ID: <1455937018.19371.3.camel@ingics.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/4] ALSA: bebob: give up updating streams at
+	bus reset
+Date: Sat, 20 Feb 2016 16:18:55 +0900
+Message-ID: <1455952739-17044-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f179.google.com (mail-pf0-f179.google.com
- [209.85.192.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D6CA26695F
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 03:57:02 +0100 (CET)
-Received: by mail-pf0-f179.google.com with SMTP id q63so60893384pfb.0
- for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2016 18:57:02 -0800 (PST)
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id CA4B22614A1
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 08:19:04 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,36 +19,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, anish kumar <yesanishhere@gmail.com>
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/max98926.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hi,
 
-diff --git a/sound/soc/codecs/max98926.c b/sound/soc/codecs/max98926.c
-index 5245e10..8d14ada 100644
---- a/sound/soc/codecs/max98926.c
-+++ b/sound/soc/codecs/max98926.c
-@@ -40,7 +40,7 @@ static const char *const max98926_hpf_cutoff_txt[] = {
- 	"200Hz", "400Hz", "800Hz",
- };
- 
--static struct reg_default max98926_reg[] = {
-+static const struct reg_default max98926_reg[] = {
- 	{ 0x0B, 0x00 }, /* IRQ Enable0 */
- 	{ 0x0C, 0x00 }, /* IRQ Enable1 */
- 	{ 0x0D, 0x00 }, /* IRQ Enable2 */
-@@ -506,7 +506,7 @@ static struct snd_soc_codec_driver soc_codec_dev_max98926 = {
- 	.num_dapm_widgets = ARRAY_SIZE(max98926_dapm_widgets),
- };
- 
--static struct regmap_config max98926_regmap = {
-+static const struct regmap_config max98926_regmap = {
- 	.reg_bits	= 8,
- 	.val_bits	= 8,
- 	.max_register	= MAX98926_VERSION,
+This patchset is to simplify codes of ALSA bebob driver by giving up
+updating streams at bus reset. 
+
+DM1000/DM1100/DM1500 chipsets have a quirk to transfer packets with
+discontinuous value in 'dbc' field of CIP header. This is against packet
+streaming protocol (IEC 61883-1/6).
+
+In the specification, units should continue packet streaming during 1 seconds
+after bus reset. During this period, connections are updated. Else, the
+streaming stops.
+
+The discontinuity causes firewire-lib module (packet streaming layer) to stop
+streaming immediately. This is done far earlier than executing bus-reset
+handler. Therefore, updating streams at the bus-reset handler has no meaning.
+
+This patchset will have little impacts for userspace applications because
+most users won't update IEEE 1394 bus when playbacking/recording. And PCM
+substream recovery is still available.
+
+Regards
+
+
+Takashi Sakamoto (4):
+  ALSA: bebob: simplify bus-reset handling
+  ALSA: bebob: move mutex from function callee to callers
+  ALSA: bebob: change type of substream counter from atomic_t to
+    unsigned int
+  ALSA: bebob: give up updating streams at bus reset handler
+
+ sound/firewire/bebob/bebob.c        | 21 ++++++++++----
+ sound/firewire/bebob/bebob.h        |  5 +---
+ sound/firewire/bebob/bebob_midi.c   | 16 +++++++---
+ sound/firewire/bebob/bebob_pcm.c    | 28 +++++++++++++-----
+ sound/firewire/bebob/bebob_stream.c | 58 +++----------------------------------
+ 5 files changed, 53 insertions(+), 75 deletions(-)
+
 -- 
-2.1.4
+2.5.0
