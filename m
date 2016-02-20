@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: use snd_dma_alloc/free* apis" to
-	the asoc tree
-Date: Sun, 21 Feb 2016 02:15:27 +0900
-Message-ID: <E1aXB7v-0008KB-Qc@finisterre>
-References: <1455099493-359-1-git-send-email-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: qcom: rename rdmactl_audif_start to
+	dmactrl_audif_start" to the asoc tree
+Date: Sun, 21 Feb 2016 02:15:22 +0900
+Message-ID: <E1aXB7q-0008JE-KU@finisterre>
+References: <1455193050-1620-1-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 821E726513B
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:15:35 +0100 (CET)
-In-Reply-To: <1455099493-359-1-git-send-email-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 046D826517C
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:15:38 +0100 (CET)
+In-Reply-To: <1455193050-1620-1-git-send-email-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: use snd_dma_alloc/free* apis
+   ASoC: qcom: rename rdmactl_audif_start to dmactrl_audif_start
 
 has been applied to the asoc tree at
 
@@ -53,102 +53,71 @@ to this mail.
 Thanks,
 Mark
 
->From 144a98835d2b4fc8a732628eaa5c98c573d58baf Mon Sep 17 00:00:00 2001
+>From ec5b82878c36f8c7c6d0d85eacd5185633e6c91b Mon Sep 17 00:00:00 2001
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Thu, 11 Feb 2016 12:17:17 +0000
-Subject: [PATCH] ASoC: qcom: use snd_dma_alloc/free* apis
+Date: Thu, 11 Feb 2016 12:17:30 +0000
+Subject: [PATCH] ASoC: qcom: rename rdmactl_audif_start to dmactrl_audif_start
 
-There is no point in having local allocation functions when the driver
-can use snd_dma_alloc/free() apis. This patch replaces the local versions
-of the dma allocation apis with the snd_dma_alloc/free() apis.
+This patch renames rdmactl_audif_start to dmactrl_audif_start as this
+is common for both rdma and wrdma. Without this patch the name would be
+bit misleading to the readers.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Acked-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/lpass-platform.c | 42 ++++++-----------------------------------
- 1 file changed, 6 insertions(+), 36 deletions(-)
+ sound/soc/qcom/lpass-apq8016.c  | 2 +-
+ sound/soc/qcom/lpass-platform.c | 4 ++--
+ sound/soc/qcom/lpass.h          | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
+index 94efc01..6cc7e72 100644
+--- a/sound/soc/qcom/lpass-apq8016.c
++++ b/sound/soc/qcom/lpass-apq8016.c
+@@ -212,7 +212,7 @@ static struct lpass_variant apq8016_data = {
+ 	.rdma_reg_base		= 0x8400,
+ 	.rdma_reg_stride	= 0x1000,
+ 	.rdma_channels		= 2,
+-	.rdmactl_audif_start	= 1,
++	.dmactl_audif_start	= 1,
+ 	.dai_driver		= apq8016_lpass_cpu_dai_driver,
+ 	.num_dai		= ARRAY_SIZE(apq8016_lpass_cpu_dai_driver),
+ 	.init			= apq8016_lpass_init,
 diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index 4aeb8e1..ec2414d 100644
+index ec2414d..7245c2e 100644
 --- a/sound/soc/qcom/lpass-platform.c
 +++ b/sound/soc/qcom/lpass-platform.c
-@@ -439,39 +439,6 @@ static irqreturn_t lpass_platform_lpaif_irq(int irq, void *data)
- 	return IRQ_HANDLED;
- }
+@@ -91,7 +91,7 @@ static int lpass_platform_pcmops_hw_params(struct snd_pcm_substream *substream,
+ 	unsigned int channels = params_channels(params);
+ 	unsigned int regval;
+ 	int bitwidth;
+-	int ret, rdma_port = pcm_data->i2s_port + v->rdmactl_audif_start;
++	int ret, dma_port = pcm_data->i2s_port + v->dmactl_audif_start;
  
--static int lpass_platform_alloc_buffer(struct snd_pcm_substream *substream,
--		struct snd_soc_pcm_runtime *rt)
--{
--	struct snd_dma_buffer *buf = &substream->dma_buffer;
--	size_t size = lpass_platform_pcm_hardware.buffer_bytes_max;
--
--	buf->dev.type = SNDRV_DMA_TYPE_DEV;
--	buf->dev.dev = rt->platform->dev;
--	buf->private_data = NULL;
--	buf->area = dma_alloc_coherent(rt->platform->dev, size, &buf->addr,
--			GFP_KERNEL);
--	if (!buf->area) {
--		dev_err(rt->platform->dev, "%s: Could not allocate DMA buffer\n",
--				__func__);
--		return -ENOMEM;
--	}
--	buf->bytes = size;
--
--	return 0;
--}
--
--static void lpass_platform_free_buffer(struct snd_pcm_substream *substream,
--		struct snd_soc_pcm_runtime *rt)
--{
--	struct snd_dma_buffer *buf = &substream->dma_buffer;
--
--	if (buf->area) {
--		dma_free_coherent(rt->dev, buf->bytes, buf->area,
--				buf->addr);
--	}
--	buf->area = NULL;
--}
--
- static int lpass_platform_pcm_new(struct snd_soc_pcm_runtime *soc_runtime)
- {
- 	struct snd_pcm *pcm = soc_runtime->pcm;
-@@ -483,6 +450,7 @@ static int lpass_platform_pcm_new(struct snd_soc_pcm_runtime *soc_runtime)
- 	struct lpass_variant *v = drvdata->variant;
- 	int ret;
- 	struct lpass_pcm_data *data;
-+	size_t size = lpass_platform_pcm_hardware.buffer_bytes_max;
+ 	bitwidth = snd_pcm_format_width(format);
+ 	if (bitwidth < 0) {
+@@ -101,7 +101,7 @@ static int lpass_platform_pcmops_hw_params(struct snd_pcm_substream *substream,
+ 	}
  
- 	data = devm_kzalloc(soc_runtime->dev, sizeof(*data), GFP_KERNEL);
- 	if (!data)
-@@ -499,7 +467,9 @@ static int lpass_platform_pcm_new(struct snd_soc_pcm_runtime *soc_runtime)
+ 	regval = LPAIF_RDMACTL_BURSTEN_INCR4 |
+-			LPAIF_RDMACTL_AUDINTF(rdma_port) |
++			LPAIF_RDMACTL_AUDINTF(dma_port) |
+ 			LPAIF_RDMACTL_FIFOWM_8;
  
- 	snd_soc_pcm_set_drvdata(soc_runtime, data);
- 
--	ret = lpass_platform_alloc_buffer(substream, soc_runtime);
-+	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV,
-+				soc_runtime->platform->dev,
-+				size, &substream->dma_buffer);
- 	if (ret)
- 		return ret;
- 
-@@ -514,7 +484,7 @@ static int lpass_platform_pcm_new(struct snd_soc_pcm_runtime *soc_runtime)
- 	return 0;
- 
- err_buf:
--	lpass_platform_free_buffer(substream, soc_runtime);
-+	snd_dma_free_pages(&substream->dma_buffer);
- 	return ret;
- }
- 
-@@ -533,7 +503,7 @@ static void lpass_platform_pcm_free(struct snd_pcm *pcm)
- 	if (v->free_dma_channel)
- 		v->free_dma_channel(drvdata, data->rdma_ch);
- 
--	lpass_platform_free_buffer(substream, soc_runtime);
-+	snd_dma_free_pages(&substream->dma_buffer);
- }
- 
- static struct snd_soc_platform_driver lpass_platform_driver = {
+ 	switch (bitwidth) {
+diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
+index 024a771..412399a 100644
+--- a/sound/soc/qcom/lpass.h
++++ b/sound/soc/qcom/lpass.h
+@@ -79,7 +79,7 @@ struct lpass_variant {
+ 	 * on SOCs like APQ8016 the channel control bits start
+ 	 * at different offset to ipq806x
+ 	 **/
+-	u32	rdmactl_audif_start;
++	u32	dmactl_audif_start;
+ 	u32	wrdma_channel_start;
+ 	/* SOC specific intialization like clocks */
+ 	int (*init)(struct platform_device *pdev);
 -- 
 2.7.0
