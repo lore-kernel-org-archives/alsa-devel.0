@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: add mic related i2s control
-	register defines" to the asoc tree
-Date: Sun, 21 Feb 2016 02:14:44 +0900
-Message-ID: <E1aXB7E-0008GW-57@finisterre>
-References: <1455099566-710-1-git-send-email-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: qcom: rename rdma_ch_bit_map to
+	dma_ch_bit_map" to the asoc tree
+Date: Sun, 21 Feb 2016 02:14:56 +0900
+Message-ID: <E1aXB7Q-0008HW-Nk@finisterre>
+References: <1454347747-10758-1-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7FCD5265011
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:15:00 +0100 (CET)
-In-Reply-To: <1455099566-710-1-git-send-email-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 57F60265051
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2016 18:15:03 +0100 (CET)
+In-Reply-To: <1454347747-10758-1-git-send-email-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: add mic related i2s control register defines
+   ASoC: qcom: rename rdma_ch_bit_map to dma_ch_bit_map
 
 has been applied to the asoc tree at
 
@@ -53,53 +53,64 @@ to this mail.
 Thanks,
 Mark
 
->From 39ad0ecd1e26a4138bf299b98265fceab60553a6 Mon Sep 17 00:00:00 2001
+>From 4d809fb12189aef9419f7337bb1767de85699003 Mon Sep 17 00:00:00 2001
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Thu, 11 Feb 2016 12:18:06 +0000
-Subject: [PATCH] ASoC: qcom: add mic related i2s control register defines
+Date: Thu, 11 Feb 2016 12:17:51 +0000
+Subject: [PATCH] ASoC: qcom: rename rdma_ch_bit_map to dma_ch_bit_map
 
-This patch adds mic related bitmasks and offsets in the i2c control
-register.
+rdma_ch_bit_map can be reused for wrdma channel allocations as wrdma
+channel numbering start after rdma channel numbers.
+With capture support referring rdma_ch_bit_map for wrdma channel allocation
+is confusing, so renaming rdma_ch_bit_map to dma_ch_bit_map makes sense.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Acked-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/lpass-lpaif-reg.h | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ sound/soc/qcom/lpass-apq8016.c | 6 +++---
+ sound/soc/qcom/lpass.h         | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/qcom/lpass-lpaif-reg.h b/sound/soc/qcom/lpass-lpaif-reg.h
-index 95e22f1..6599794 100644
---- a/sound/soc/qcom/lpass-lpaif-reg.h
-+++ b/sound/soc/qcom/lpass-lpaif-reg.h
-@@ -47,6 +47,28 @@
- #define LPAIF_I2SCTL_SPKMONO_STEREO	(0 << LPAIF_I2SCTL_SPKMONO_SHIFT)
- #define LPAIF_I2SCTL_SPKMONO_MONO	(1 << LPAIF_I2SCTL_SPKMONO_SHIFT)
+diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
+index 99061f4..ca3bbd5 100644
+--- a/sound/soc/qcom/lpass-apq8016.c
++++ b/sound/soc/qcom/lpass-apq8016.c
+@@ -137,20 +137,20 @@ static int apq8016_lpass_alloc_dma_channel(struct lpass_data *drvdata,
+ 					   int direction)
+ {
+ 	struct lpass_variant *v = drvdata->variant;
+-	int chan = find_first_zero_bit(&drvdata->rdma_ch_bit_map,
++	int chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
+ 					v->rdma_channels);
  
-+#define LPAIF_I2SCTL_MICEN_MASK		GENMASK(8, 8)
-+#define LPAIF_I2SCTL_MICEN_SHIFT	8
-+#define LPAIF_I2SCTL_MICEN_DISABLE	(0 << LPAIF_I2SCTL_MICEN_SHIFT)
-+#define LPAIF_I2SCTL_MICEN_ENABLE	(1 << LPAIF_I2SCTL_MICEN_SHIFT)
-+
-+#define LPAIF_I2SCTL_MICMODE_MASK	GENMASK(7, 4)
-+#define LPAIF_I2SCTL_MICMODE_SHIFT	4
-+#define LPAIF_I2SCTL_MICMODE_NONE	(0 << LPAIF_I2SCTL_MICMODE_SHIFT)
-+#define LPAIF_I2SCTL_MICMODE_SD0	(1 << LPAIF_I2SCTL_MICMODE_SHIFT)
-+#define LPAIF_I2SCTL_MICMODE_SD1	(2 << LPAIF_I2SCTL_MICMODE_SHIFT)
-+#define LPAIF_I2SCTL_MICMODE_SD2	(3 << LPAIF_I2SCTL_MICMODE_SHIFT)
-+#define LPAIF_I2SCTL_MICMODE_SD3	(4 << LPAIF_I2SCTL_MICMODE_SHIFT)
-+#define LPAIF_I2SCTL_MICMODE_QUAD01	(5 << LPAIF_I2SCTL_MICMODE_SHIFT)
-+#define LPAIF_I2SCTL_MICMODE_QUAD23	(6 << LPAIF_I2SCTL_MICMODE_SHIFT)
-+#define LPAIF_I2SCTL_MICMODE_6CH	(7 << LPAIF_I2SCTL_MICMODE_SHIFT)
-+#define LPAIF_I2SCTL_MICMODE_8CH	(8 << LPAIF_I2SCTL_MICMODE_SHIFT)
-+
-+#define LPAIF_I2SCTL_MIMONO_MASK	GENMASK(3, 3)
-+#define LPAIF_I2SCTL_MICMONO_SHIFT	3
-+#define LPAIF_I2SCTL_MICMONO_STEREO	(0 << LPAIF_I2SCTL_MICMONO_SHIFT)
-+#define LPAIF_I2SCTL_MICMONO_MONO	(1 << LPAIF_I2SCTL_MICMONO_SHIFT)
-+
- #define LPAIF_I2SCTL_WSSRC_MASK		0x0004
- #define LPAIF_I2SCTL_WSSRC_SHIFT	2
- #define LPAIF_I2SCTL_WSSRC_INTERNAL	(0 << LPAIF_I2SCTL_WSSRC_SHIFT)
+ 	if (chan >= v->rdma_channels)
+ 		return -EBUSY;
+ 
+-	set_bit(chan, &drvdata->rdma_ch_bit_map);
++	set_bit(chan, &drvdata->dma_ch_bit_map);
+ 
+ 	return chan;
+ }
+ 
+ static int apq8016_lpass_free_dma_channel(struct lpass_data *drvdata, int chan)
+ {
+-	clear_bit(chan, &drvdata->rdma_ch_bit_map);
++	clear_bit(chan, &drvdata->dma_ch_bit_map);
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
+index 8475b60..30714ad 100644
+--- a/sound/soc/qcom/lpass.h
++++ b/sound/soc/qcom/lpass.h
+@@ -50,7 +50,7 @@ struct lpass_data {
+ 	struct lpass_variant *variant;
+ 
+ 	/* bit map to keep track of static channel allocations */
+-	unsigned long rdma_ch_bit_map;
++	unsigned long dma_ch_bit_map;
+ 
+ 	/* used it for handling interrupt per dma channel */
+ 	struct snd_pcm_substream *substream[LPASS_MAX_DMA_CHANNELS];
 -- 
 2.7.0
