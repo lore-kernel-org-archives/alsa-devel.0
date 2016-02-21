@@ -1,23 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/4] ASoC: wm9713: add binding for WM9713
-	codec
-Date: Sun, 21 Feb 2016 10:49:20 +0900
-Message-ID: <20160221014920.GK18327@sirena.org.uk>
-References: <1455979079-9030-1-git-send-email-robert.jarzmik@free.fr>
- <20160220171459.GA18327@sirena.org.uk>
- <871t87z1gz.fsf@belgarion.home>
- <20160220195925.GF18327@sirena.org.uk>
- <87twl3xgud.fsf@belgarion.home>
- <20160220211659.GG18327@sirena.org.uk>
- <878u2fxbp9.fsf@belgarion.home>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 1/3] ASoC: Intel: Skylake: fix pointer
+	scaling
+Date: Sun, 21 Feb 2016 08:34:57 +0530
+Message-ID: <20160221030456.GO19598@localhost>
+References: <1455862354-6455-1-git-send-email-vinod.koul@intel.com>
+ <20160219153345.GO18327@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1007473726150181594=="
+Content-Type: multipart/mixed; boundary="===============2209849420181528575=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 88C81265134
- for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2016 02:49:54 +0100 (CET)
-In-Reply-To: <878u2fxbp9.fsf@belgarion.home>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4B8D26054D
+ for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2016 04:01:05 +0100 (CET)
+In-Reply-To: <20160219153345.GO18327@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,78 +21,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, Daniel Mack <daniel@zonque.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Alan Cox <alan@linux.intel.com>, Alan <gnomes@lxorguk.ukuu.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1007473726150181594==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="C8M3rclghDj+srEw"
+--===============2209849420181528575==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="VSaCG/zfRnOiPJtU"
 Content-Disposition: inline
 
 
---C8M3rclghDj+srEw
+--VSaCG/zfRnOiPJtU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Feb 20, 2016 at 11:24:02PM +0100, Robert Jarzmik wrote:
+On Sat, Feb 20, 2016 at 12:33:45AM +0900, Mark Brown wrote:
+> On Fri, Feb 19, 2016 at 11:42:32AM +0530, Vinod Koul wrote:
+> > From: Alan <gnomes@lxorguk.ukuu.org.uk>
+> >=20
+> > skl_tplg_tlv_control_set does pointer maths on data but forgets that da=
+ta
+> > is not uint8_t so the maths is already scaled in the pointer type.
+> >=20
+> > Signed-off-by: Alan Cox <alan@linux.intel.com>
+> > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+>=20
+> Please ensure that the name and signoff match up.  I'm fairly sure that
+> both are for the same person here but it's not something I should have
+> to think about and it is important to ensure that we have signoffs for
+> everything.
 
-Please fix your mail client to word wrap within paragraphs at something
-substantially less than 80 columns.  Doing this makes your messages much
-easier to read and reply to.
+Ah, sure will do. I think Alan wanted the SOB from his empyer ID. Alan how
+do you want me to fix this :) I will send this
 
-> Mark Brown <broonie@kernel.org> writes:
-> > On Sat, Feb 20, 2016 at 09:32:58PM +0100, Robert Jarzmik wrote:
+--=20
+~Vinod
 
-> > It will eumerate the AC'97 bus by itself and does not need the CODEC to
-> > be described.
-
-> I think I still don't get it.
-
-> So let's rephrase it another way : how will the function wm9713_probe() be
-> called, ie. what is the possible function backtrace leading to that call ?
-
-It will not be called, the generic AC'97 code will be used.
-
-> > They should be created as a function of enumerating the CODEC.  If you
-> > use the genric AC'97 stuff it doesn't use ASoC at all and this happens
-> > as a side effect.
-
-> I don't get that either. For me sound/soc/pci/ac97/ac97_codec.c is PCI specific,
-> not generic, so what is "generic AC'97 stuff" ? I will never be able to use it
-> as on my platforms CONFIG_PCI=n.
-
-That is the generic code, there is no PCI dependency.
-
-> Do you have a devicetree example somewhere, with (ac97 host, audio codec) pair I
-> can have a look at to understand ?
-
-Some Atmel boards do this IIRC, as does the AACI driver (via AMBA but
-same effect).
-
---C8M3rclghDj+srEw
+--VSaCG/zfRnOiPJtU
 Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Version: GnuPG v1
 
-iQEcBAEBCAAGBQJWyRefAAoJECTWi3JdVIfQItoH/20quO5ommbkLrV0bB2Wor1w
-/Fiaob4R3usLxkfuVCC4QTMfsufXW2kTSvVbRdEUMMuDXORyDuax/tyPK0iXTcpM
-Uyb++lhukLTwZ6JHJRKUkNwhJVZrDeG0mOhHfwFnMRHICHO5o95B5+szAG4Whust
-Hkw37exXkFxsaymvEcxG1ArZnFSQ9uRd23bz0k1vqivTudikTzmE0MzalPH8GJNw
-qu51BF3Do+w4V3qybiJf9GCe5t6/mi++R9a+y1ddOCROGAw6MhCstSOtBGBpTtda
-fACfvHknd4BG+M8Dvvwfy3ANk5VA0CxMyqgzK3KNqwQDt8VRAiNMhgDRQmldFmg=
-=pC3E
+iQIcBAEBAgAGBQJWySlYAAoJEHwUBw8lI4NHj+AP/A3n5NIx1aEAVqfHD8ZscAng
+cIM9FVoEEk3kA5rbfceQ1FVrrOQUhiRjmzqN5jsoqMQBcrfXhO30G9D8dtOWvpT1
+Kb2612GakWaegM7k3bR4zrNvC6PNPlGpuigmM/RsHRcLRLL1+VWxz07z2yx1+xdo
+miC9REkX8NXjJ8f4QfUllp2uB8bS5Pfgpn+85PrQdSJOgTQc7NHO5wnCzNT9/JOW
+u9GAJkPRnE30c4TPeyTuqCrX66qZFnG4tTTNX1KdHXWrV9xCT/gkKgQhpr96tANv
+bkPM372nDp9GUx7Jy0M6VrI3W/S626drKFRdoiK9rqxr7LExJBMWRBuFHMO5uVb1
+jhalqijPTl+dSQZY016zSmKVNilJDxNv+qUPrvv1AVZ0y4QeaR+vKdOyIqSO3wfP
+LTxYXA2DDmc2Gm6iJ+lv3P1Wg+TD3YZokeqx0PJ3WjsAdkLWxGb33s66MpX3CUZq
+EMTHEBJ2tAW09pJa/A9VwBcC8IWH5sAI8ly0RfuLO427ml4bUzUnAvi2SahiBuR9
+0eRFzC2YCr0dJPmGMp/Swr+ZSIUaBCu494IniX0xA+F/mg1idjn7Mj/us4feSUDe
+5vqN9EbxLcT+cIIFDr0uoYK9sXEfYULOiZJFnvXoUBAqAXyQY4fJZ3vH75LdK3ll
+SvzB+ayO6suKPA4TocXx
+=FNlS
 -----END PGP SIGNATURE-----
 
---C8M3rclghDj+srEw--
+--VSaCG/zfRnOiPJtU--
 
---===============1007473726150181594==
+--===============2209849420181528575==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1007473726150181594==--
+--===============2209849420181528575==--
