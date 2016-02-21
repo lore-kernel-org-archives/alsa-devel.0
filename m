@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [alsa-lib][PATCH] control: correct assertion in
-	snd_ctl_elem_set_bytes()
-Date: Mon, 22 Feb 2016 01:54:09 +0900
-Message-ID: <1456073649-15885-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [alsa-lib][PATCH] control: initialize element channel
+	values according to identification number at adding a new element
+Date: Mon, 22 Feb 2016 01:54:28 +0900
+Message-ID: <1456073668-15989-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 1CD1A260647
- for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2016 17:54:13 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 092E22606BF
+ for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2016 17:54:31 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,33 +23,44 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The assert(3) aborts running process when expression arguments is
-false (zero). Although, the snd_ctl_elem_set_bytes() has return
-statement after assert(3). It has meaningless.
+In ALSA control core, there're two ways to identify elements. One is by
+numid. Another is by name/index. The former way is lighter than the latter
+way.
 
-This commit corrects the statements.
+In control API, after adding elements by snd_ctl_elem_add_integer() and
+snd_ctl_elem_add_integer64(), these functions initialize value of each
+channel. When executing this operation, used ID information is still given
+by applications. Although, in this time, the element can be identified
+according to numid.
 
-Fixes: 7893ea238d5a('Added mode argument to open functions where it was missing. First part of CTL documentation')
+This commit uses the numid instead of name/index pair.
+
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/control/control.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ src/control/control.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/src/control/control.c b/src/control/control.c
-index 328920d..70d168d 100644
+index a44ae96..8a5d530 100644
 --- a/src/control/control.c
 +++ b/src/control/control.c
-@@ -2627,10 +2627,7 @@ void snd_ctl_elem_value_set_byte(snd_ctl_elem_value_t *obj, unsigned int idx, un
- void snd_ctl_elem_set_bytes(snd_ctl_elem_value_t *obj, void *data, size_t size)
- {
- 	assert(obj);
--	if (size >= ARRAY_SIZE(obj->value.bytes.data)) {
--		assert(0);
--		return;
--	}
-+	assert(size < ARRAY_SIZE(obj->value.bytes.data));
- 	memcpy(obj->value.bytes.data, data, size);
- }
- 
+@@ -292,7 +292,7 @@ int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+ 	if (err < 0)
+ 		return err;
+ 	snd_ctl_elem_value_alloca(&val);
+-	val->id = *id;
++	val->id = info->id;
+ 	for (i = 0; i < count; i++)
+ 		val->value.integer.value[i] = min;
+ 	err = ctl->ops->element_write(ctl, val);
+@@ -330,7 +330,7 @@ int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+ 	if (err < 0)
+ 		return err;
+ 	snd_ctl_elem_value_alloca(&val);
+-	val->id = *id;
++	val->id = info->id;
+ 	for (i = 0; i < count; i++)
+ 		val->value.integer64.value[i] = min;
+ 	err = ctl->ops->element_write(ctl, val);
 -- 
 2.5.0
