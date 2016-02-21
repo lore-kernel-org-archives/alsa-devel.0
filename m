@@ -1,18 +1,17 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] Revert "ASoC: fsl_ssi: remove explicit
-	register defaults"
-Date: Sun, 21 Feb 2016 11:35:00 -0300
-Message-ID: <1456065300-23752-1-git-send-email-festevam@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2] ASoC: wm9713: fix regmap free path
+Date: Sun, 21 Feb 2016 11:12:51 +0100
+Message-ID: <56C98DA3.4000701@metafoo.de>
+References: <1455997470-12307-1-git-send-email-robert.jarzmik@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f41.google.com (mail-qg0-f41.google.com
- [209.85.192.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B8A526054D
- for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2016 15:35:25 +0100 (CET)
-Received: by mail-qg0-f41.google.com with SMTP id b67so95163891qgb.1
- for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2016 06:35:25 -0800 (PST)
+Received: from smtp-out-033.synserver.de (smtp-out-176.synserver.de
+ [212.40.185.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id CC4C4260647
+ for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2016 17:02:32 +0100 (CET)
+In-Reply-To: <1455997470-12307-1-git-send-email-robert.jarzmik@free.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,87 +21,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@nxp.com>, mail@maciej.szmigiero.name, mika.penttila@nextfour.com, alsa-devel@alsa-project.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogRmFiaW8gRXN0ZXZhbSA8ZmFiaW8uZXN0ZXZhbUBueHAuY29tPgoKQ29tbWl0IDVjNDA4
-ZmVlMjU0NiAoIkFTb0M6IGZzbF9zc2k6IHJlbW92ZSBleHBsaWNpdCByZWdpc3RlciBkZWZhdWx0
-cyIpCmNhdXNlcyB0aGUgZHJpdmVyIHRvIGZhaWwgdG8gcHJvYmU6Cgpmc2wtc3NpLWRhaSAyMDI4
-MDAwLnNzaTogTm8gY2FjaGUgZGVmYXVsdHMsIHJlYWRpbmcgYmFjayBmcm9tIEhXCmZzbC1zc2kt
-ZGFpIDIwMjgwMDAuc3NpOiBGYWlsZWQgdG8gaW5pdCByZWdpc3RlciBtYXAKZnNsLXNzaS1kYWk6
-IHByb2JlIG9mIDIwMjgwMDAuc3NpIGZhaWxlZCB3aXRoIGVycm9yIC0yMgoKLCBzbyByZXZlcnQg
-dGhpcyBjb21taXQuCgpDYzogTWFjaWVqIFMuIFN6bWlnaWVybyA8bWFpbEBtYWNpZWouc3ptaWdp
-ZXJvLm5hbWU+ClJlcG9ydGVkLWJ5OiBNaWthIFBlbnR0aWzDpCA8bWlrYS5wZW50dGlsYUBuZXh0
-Zm91ci5jb20+IApTaWduZWQtb2ZmLWJ5OiBGYWJpbyBFc3RldmFtIDxmYWJpby5lc3RldmFtQG54
-cC5jb20+Ci0tLQpNYWNpZWosCgpBcyB0aGlzIGN1cnJlbnRseSBicmVha3MgU1NJIG9uIDQuNS1y
-YyB3ZSBzaG91bGQgYmV0dGVyIHJldmVydCBpdCBmb3IKdGhpcyBjeWNsZS4KCldlIGNhbiB0aGVu
-IGFkZCBpdCBiYWNrIHRvIDQuNyB3aGVuIE1hcmsncyBwYXRjaCAzMjQ1ZDQ2MGExZWI1NSAKKCJy
-ZWdtYXA6IGNhY2hlOiBGYWxsIGJhY2sgdG8gcmVnaXN0ZXIgYnkgcmVnaXN0ZXIgcmVhZCBmb3Ig
-Y2FjaGUgZGVmYXVsdHMiKQp3aWxsIGJlIGF2YWlsYWJsZSBhbmQgdGhlbiB0aGUgZHJpdmVyIHdp
-bGwgd29yayBmaW5lIHdpdGggeW91ciBwYXRjaC4KCiBzb3VuZC9zb2MvZnNsL2ZzbF9zc2kuYyB8
-IDQyICsrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogMSBmaWxlIGNo
-YW5nZWQsIDIwIGluc2VydGlvbnMoKyksIDIyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Nv
-dW5kL3NvYy9mc2wvZnNsX3NzaS5jIGIvc291bmQvc29jL2ZzbC9mc2xfc3NpLmMKaW5kZXggZWQ4
-ZGUxMC4uNDBkZmQ4YSAxMDA2NDQKLS0tIGEvc291bmQvc29jL2ZzbC9mc2xfc3NpLmMKKysrIGIv
-c291bmQvc29jL2ZzbC9mc2xfc3NpLmMKQEAgLTExMiw2ICsxMTIsMjAgQEAgc3RydWN0IGZzbF9z
-c2lfcnh0eF9yZWdfdmFsIHsKIAlzdHJ1Y3QgZnNsX3NzaV9yZWdfdmFsIHR4OwogfTsKIAorc3Rh
-dGljIGNvbnN0IHN0cnVjdCByZWdfZGVmYXVsdCBmc2xfc3NpX3JlZ19kZWZhdWx0c1tdID0gewor
-CXtDQ1NSX1NTSV9TQ1IsICAgICAweDAwMDAwMDAwfSwKKwl7Q0NTUl9TU0lfU0lFUiwgICAgMHgw
-MDAwMzAwM30sCisJe0NDU1JfU1NJX1NUQ1IsICAgIDB4MDAwMDAyMDB9LAorCXtDQ1NSX1NTSV9T
-UkNSLCAgICAweDAwMDAwMjAwfSwKKwl7Q0NTUl9TU0lfU1RDQ1IsICAgMHgwMDA0MDAwMH0sCisJ
-e0NDU1JfU1NJX1NSQ0NSLCAgIDB4MDAwNDAwMDB9LAorCXtDQ1NSX1NTSV9TQUNOVCwgICAweDAw
-MDAwMDAwfSwKKwl7Q0NTUl9TU0lfU1RNU0ssICAgMHgwMDAwMDAwMH0sCisJe0NDU1JfU1NJX1NS
-TVNLLCAgIDB4MDAwMDAwMDB9LAorCXtDQ1NSX1NTSV9TQUNDRU4sICAweDAwMDAwMDAwfSwKKwl7
-Q0NTUl9TU0lfU0FDQ0RJUywgMHgwMDAwMDAwMH0sCit9OworCiBzdGF0aWMgYm9vbCBmc2xfc3Np
-X3JlYWRhYmxlX3JlZyhzdHJ1Y3QgZGV2aWNlICpkZXYsIHVuc2lnbmVkIGludCByZWcpCiB7CiAJ
-c3dpdGNoIChyZWcpIHsKQEAgLTE3Niw3ICsxOTAsOCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHJl
-Z21hcF9jb25maWcgZnNsX3NzaV9yZWdjb25maWcgPSB7CiAJLnZhbF9iaXRzID0gMzIsCiAJLnJl
-Z19zdHJpZGUgPSA0LAogCS52YWxfZm9ybWF0X2VuZGlhbiA9IFJFR01BUF9FTkRJQU5fTkFUSVZF
-LAotCS5udW1fcmVnX2RlZmF1bHRzX3JhdyA9IENDU1JfU1NJX1NBQ0NESVMgLyBzaXplb2YodWlu
-dDMyX3QpICsgMSwKKwkucmVnX2RlZmF1bHRzID0gZnNsX3NzaV9yZWdfZGVmYXVsdHMsCisJLm51
-bV9yZWdfZGVmYXVsdHMgPSBBUlJBWV9TSVpFKGZzbF9zc2lfcmVnX2RlZmF1bHRzKSwKIAkucmVh
-ZGFibGVfcmVnID0gZnNsX3NzaV9yZWFkYWJsZV9yZWcsCiAJLnZvbGF0aWxlX3JlZyA9IGZzbF9z
-c2lfdm9sYXRpbGVfcmVnLAogCS5wcmVjaW91c19yZWcgPSBmc2xfc3NpX3ByZWNpb3VzX3JlZywK
-QEAgLTE4Niw3ICsyMDEsNiBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHJlZ21hcF9jb25maWcgZnNs
-X3NzaV9yZWdjb25maWcgPSB7CiAKIHN0cnVjdCBmc2xfc3NpX3NvY19kYXRhIHsKIAlib29sIGlt
-eDsKLQlib29sIGlteDIxcmVnczsgLyogaW14MjEtY2xhc3MgU1NJIC0gbm8gU0FDQ3tTVCxFTixE
-SVN9IHJlZ3MgKi8KIAlib29sIG9mZmxpbmVfY29uZmlnOwogCXUzMiBzaXNyX3dyaXRlX21hc2s7
-CiB9OwpAQCAtMjg5LDcgKzMwMyw2IEBAIHN0YXRpYyBzdHJ1Y3QgZnNsX3NzaV9zb2NfZGF0YSBm
-c2xfc3NpX21wYzg2MTAgPSB7CiAKIHN0YXRpYyBzdHJ1Y3QgZnNsX3NzaV9zb2NfZGF0YSBmc2xf
-c3NpX2lteDIxID0gewogCS5pbXggPSB0cnVlLAotCS5pbXgyMXJlZ3MgPSB0cnVlLAogCS5vZmZs
-aW5lX2NvbmZpZyA9IHRydWUsCiAJLnNpc3Jfd3JpdGVfbWFzayA9IDAsCiB9OwpAQCAtNTczLDEy
-ICs1ODYsOCBAQCBzdGF0aWMgdm9pZCBmc2xfc3NpX3NldHVwX2FjOTcoc3RydWN0IGZzbF9zc2lf
-cHJpdmF0ZSAqc3NpX3ByaXZhdGUpCiAJICovCiAJcmVnbWFwX3dyaXRlKHJlZ3MsIENDU1JfU1NJ
-X1NBQ05ULAogCQkJQ0NTUl9TU0lfU0FDTlRfQUM5N0VOIHwgQ0NTUl9TU0lfU0FDTlRfRlYpOwot
-Ci0JLyogbm8gU0FDQ3tTVCxFTixESVN9IHJlZ3Mgb24gaW14MjEtY2xhc3MgU1NJICovCi0JaWYg
-KCFzc2lfcHJpdmF0ZS0+c29jLT5pbXgyMXJlZ3MpIHsKLQkJcmVnbWFwX3dyaXRlKHJlZ3MsIEND
-U1JfU1NJX1NBQ0NESVMsIDB4ZmYpOwotCQlyZWdtYXBfd3JpdGUocmVncywgQ0NTUl9TU0lfU0FD
-Q0VOLCAweDMwMCk7Ci0JfQorCXJlZ21hcF93cml0ZShyZWdzLCBDQ1NSX1NTSV9TQUNDRElTLCAw
-eGZmKTsKKwlyZWdtYXBfd3JpdGUocmVncywgQ0NTUl9TU0lfU0FDQ0VOLCAweDMwMCk7CiAKIAkv
-KgogCSAqIEVuYWJsZSBTU0ksIFRyYW5zbWl0IGFuZCBSZWNlaXZlLiBBQzk3IGhhcyB0byBjb21t
-dW5pY2F0ZSB3aXRoIHRoZQpAQCAtMTM4OCw3ICsxMzk3LDYgQEAgc3RhdGljIGludCBmc2xfc3Np
-X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCiAJc3RydWN0IHJlc291cmNlICpy
-ZXM7CiAJdm9pZCBfX2lvbWVtICppb21lbTsKIAljaGFyIG5hbWVbNjRdOwotCXN0cnVjdCByZWdt
-YXBfY29uZmlnIHJlZ2NvbmZpZyA9IGZzbF9zc2lfcmVnY29uZmlnOwogCiAJb2ZfaWQgPSBvZl9t
-YXRjaF9kZXZpY2UoZnNsX3NzaV9pZHMsICZwZGV2LT5kZXYpOwogCWlmICghb2ZfaWQgfHwgIW9m
-X2lkLT5kYXRhKQpAQCAtMTQzNiwyNSArMTQ0NCwxNSBAQCBzdGF0aWMgaW50IGZzbF9zc2lfcHJv
-YmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKIAkJcmV0dXJuIFBUUl9FUlIoaW9tZW0p
-OwogCXNzaV9wcml2YXRlLT5zc2lfcGh5cyA9IHJlcy0+c3RhcnQ7CiAKLQlpZiAoc3NpX3ByaXZh
-dGUtPnNvYy0+aW14MjFyZWdzKSB7Ci0JCS8qCi0JCSAqIEFjY29yZGluZyB0byBkYXRhc2hlZXQg
-aW14MjEtY2xhc3MgU1NJCi0JCSAqIGRvbid0IGhhdmUgU0FDQ3tTVCxFTixESVN9IHJlZ3MuCi0J
-CSAqLwotCQlyZWdjb25maWcubWF4X3JlZ2lzdGVyID0gQ0NTUl9TU0lfU1JNU0s7Ci0JCXJlZ2Nv
-bmZpZy5udW1fcmVnX2RlZmF1bHRzX3JhdyA9Ci0JCQlDQ1NSX1NTSV9TUk1TSyAvIHNpemVvZih1
-aW50MzJfdCkgKyAxOwotCX0KLQogCXJldCA9IG9mX3Byb3BlcnR5X21hdGNoX3N0cmluZyhucCwg
-ImNsb2NrLW5hbWVzIiwgImlwZyIpOwogCWlmIChyZXQgPCAwKSB7CiAJCXNzaV9wcml2YXRlLT5o
-YXNfaXBnX2Nsa19uYW1lID0gZmFsc2U7CiAJCXNzaV9wcml2YXRlLT5yZWdzID0gZGV2bV9yZWdt
-YXBfaW5pdF9tbWlvKCZwZGV2LT5kZXYsIGlvbWVtLAotCQkJJnJlZ2NvbmZpZyk7CisJCQkmZnNs
-X3NzaV9yZWdjb25maWcpOwogCX0gZWxzZSB7CiAJCXNzaV9wcml2YXRlLT5oYXNfaXBnX2Nsa19u
-YW1lID0gdHJ1ZTsKIAkJc3NpX3ByaXZhdGUtPnJlZ3MgPSBkZXZtX3JlZ21hcF9pbml0X21taW9f
-Y2xrKCZwZGV2LT5kZXYsCi0JCQkiaXBnIiwgaW9tZW0sICZyZWdjb25maWcpOworCQkJImlwZyIs
-IGlvbWVtLCAmZnNsX3NzaV9yZWdjb25maWcpOwogCX0KIAlpZiAoSVNfRVJSKHNzaV9wcml2YXRl
-LT5yZWdzKSkgewogCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJGYWlsZWQgdG8gaW5pdCByZWdpc3Rl
-ciBtYXBcbiIpOwotLSAKMS45LjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+On 02/20/2016 08:44 PM, Robert Jarzmik wrote:
+> In the conversion to regmap, I assumed that the 2 following functions
+> was working symetrically:
+>  - snd_soc_codec_init_regmap()
+>  - snd_soc_codec_exit_regmap(codec)
+> 
+> As a mater of fact with the current code the regmap is freed twice
+> because of the devm_() call:
+> (mutex_lock) from (debugfs_remove_recursive+0x50/0x1d0)
+> (debugfs_remove_recursive) from (regmap_debugfs_exit+0x1c/0xd4)
+> (regmap_debugfs_exit) from (regmap_exit+0x28/0xc8)
+> (regmap_exit) from (release_nodes+0x18c/0x204)
+> (release_nodes) from (device_release+0x18/0x90)
+> (device_release) from (kobject_release+0x90/0x1bc)
+> (kobject_release) from (wm9713_soc_remove+0x1c/0x24)
+> (wm9713_soc_remove) from (soc_remove_component+0x50/0x7c)
+> (soc_remove_component) from (soc_remove_dai_links+0x118/0x228)
+> (soc_remove_dai_links) from (snd_soc_register_card+0x4e4/0xdd4)
+> (snd_soc_register_card) from (devm_snd_soc_register_card+0x34/0x70)
+> 
+> Fix this by removing the doubled regmap free.
+
+The correct fix is to use the non devm variant of regmap_init_ac97() in this
+case. Device managed functions should only be used from inside a struct
+device probe function.
+
+- Lars
