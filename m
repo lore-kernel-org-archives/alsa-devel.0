@@ -1,52 +1,105 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v1 0/2] patches to add support for rockchip rt5640 card
-Date: Mon, 22 Feb 2016 20:04:16 +0900
-Message-ID: <20160222110416.GC18327@sirena.org.uk>
-References: <1456127815-68575-1-git-send-email-sugar.zhang@rock-chips.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [alsa-lib][PATCH] control: correct assertion in
+ snd_ctl_elem_set_bytes()
+Date: Mon, 22 Feb 2016 20:07:54 +0900
+Message-ID: <56CAEC0A.5060705@sakamocchi.jp>
+References: <1456073649-15885-1-git-send-email-o-takashi@sakamocchi.jp>
+ <s5hfuwmvtv5.wl-tiwai@suse.de> <56CA5796.5010108@sakamocchi.jp>
+ <s5hvb5h2huy.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="DLy7ErigvZFpjC4N"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1456127815-68575-1-git-send-email-sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sugar Zhang <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Cc: heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Oder Chiou <oder_chiou-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Bard Liao <bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id D33BD2659CE
+ for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 12:07:59 +0100 (CET)
+In-Reply-To: <s5hvb5h2huy.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Feb 22 2016 18:51, Takashi Iwai wrote:
+> On Mon, 22 Feb 2016 01:34:30 +0100,
+> Takashi Sakamoto wrote:
+>>
+>> Hi,
+>>
+>> On Feb 22 2016 02:46, Takashi Iwai wrote:
+>>> On Sun, 21 Feb 2016 17:54:09 +0100,
+>>> Takashi Sakamoto wrote:
+>>>>
+>>>> The assert(3) aborts running process when expression arguments is
+>>>> false (zero). Although, the snd_ctl_elem_set_bytes() has return
+>>>> statement after assert(3). It has meaningless.
+>>>
+>>> Admittedly this isn't an optimal code, but it has its purpose.
+>>> The intention of the original code was to perform the check always but
+>>> triggers the assert signal unless NDEBUG is set (remember that
+>>> assert() is nop when NDEBUG is defined).
+>>
+>> Although I realized the effect of NDEBUG for calls of asset(3), I didn't
+>> realize the intension to the code, because the other parts of
+>> 'src/control/control.c' are written without such intention. We can see
+>> many assert(3)s are just used without conditional statements.
+>>
+>> Hm. I think it better to keep consistency of whole codes rather than
+>> such partial intensions. On the other hand, this patch changes library
+>> behaviour. It's not generally allowed, but here, I think it better
+>> because of the consistency and the actual effect.
+> 
+> Yeah, that's mostly OK to make it a simple assert.
+> 
+> Or, if I may judge only from my taste, even removing the assert would
+> be nicer.  Triggering assert() is one of the worst behavior as a base
+> system library.
 
---DLy7ErigvZFpjC4N
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I completely agree with the idea ;)
 
-On Mon, Feb 22, 2016 at 03:56:53PM +0800, Sugar Zhang wrote:
+Although, it's out of my plan in this developing cycle. In this time, I
+hope just to apply this patch and go to my next work for control element
+set APIs. I should post revised version?
 
-> Sugar Zhang (2):
->   ASoC: rockchip: i2s: add default values for registers
->   ASoC: rt5640: add master clock handling for rt5640
 
-These appear to be commpletly unrelated patches so should each be sent
-individually rather than as a series - that way there is no confusion
-about them possibly depending on each other and they are easier to
-review and apply.
+Regards
 
---DLy7ErigvZFpjC4N
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWyusvAAoJECTWi3JdVIfQZhkH/jNZD0jV7sEbj+S5zX225hTs
-fnDTx29It6Yyw87P+vtDI+kM/MU8lMbxXJRV85sF+O/atiGwc0yrdKmLekkyRhrI
-eEsJQbq11J1nN31aYHMcOeC9oHx1pDSedTkT3z4oJDE0WPADaiPmLlaGJR/u0+Oh
-rA94BGqPQ/spz9FZY5rxb2M3lF+VD9eT8gWTES2v8T+k0VYjXvdSyJwbJPG7/SSe
-NU3ZIwk3e/AoqjlPWt/ZzbUKnK2C7CHzs5x2FLLsv3iwTrEussk8x6oGXoKoOw65
-8PBk/6bbXbhFfdwP9ZKxohbplfVubXZL5ho0G9PK4icp8s3Y7WZRliPUTZCwfG4=
-=+0Fx
------END PGP SIGNATURE-----
-
---DLy7ErigvZFpjC4N--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>>>> This commit corrects the statements.
+>>>>
+>>>> Fixes: 7893ea238d5a('Added mode argument to open functions where it was missing. First part of CTL documentation')
+>>>> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+>>>> ---
+>>>>  src/control/control.c | 5 +----
+>>>>  1 file changed, 1 insertion(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/src/control/control.c b/src/control/control.c
+>>>> index 328920d..70d168d 100644
+>>>> --- a/src/control/control.c
+>>>> +++ b/src/control/control.c
+>>>> @@ -2627,10 +2627,7 @@ void snd_ctl_elem_value_set_byte(snd_ctl_elem_value_t *obj, unsigned int idx, un
+>>>>  void snd_ctl_elem_set_bytes(snd_ctl_elem_value_t *obj, void *data, size_t size)
+>>>>  {
+>>>>  	assert(obj);
+>>>> -	if (size >= ARRAY_SIZE(obj->value.bytes.data)) {
+>>>> -		assert(0);
+>>>> -		return;
+>>>> -	}
+>>>> +	assert(size < ARRAY_SIZE(obj->value.bytes.data));
+>>>>  	memcpy(obj->value.bytes.data, data, size);
+>>>>  }
+>>>>  
+>>>> -- 
+>>>> 2.5.0
+>>>>
+>>> _______________________________________________
+>>> Alsa-devel mailing list
+>>> Alsa-devel@alsa-project.org
+>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>>
