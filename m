@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "regmap: mmio: Convert to regmap_bus and fix
-	accessor usage" to the asoc tree
-Date: Mon, 22 Feb 2016 12:15:03 +0900
-Message-ID: <E1aXgxj-0005ui-UE@finisterre>
+Subject: Applied "MIPS: dt: Explicitly specify native endian
+	behaviour for syscon" to the asoc tree
+Date: Mon, 22 Feb 2016 12:15:19 +0900
+Message-ID: <E1aXgxz-0005vE-WB@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C69E4265862
- for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 04:15:11 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 320B0265958
+ for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 04:15:43 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Johannes Berg <johannes@sipsolutions.net>Johannes Berg <johannes@sipsolutions.net>, Mark Brown <broonie@kernel.org>
+To: Johannes Berg <johannes@sipsolutions.net>, Mark Brown <broonie@kernel.org>, Ralf Baechle <ralf@linux-mips.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   regmap: mmio: Convert to regmap_bus and fix accessor usage
+   MIPS: dt: Explicitly specify native endian behaviour for syscon
 
 has been applied to the asoc tree at
 
@@ -52,390 +52,172 @@ to this mail.
 Thanks,
 Mark
 
->From 922a9f936e40001f9b921379aab90047d5990923 Mon Sep 17 00:00:00 2001
+>From 25d6463e48ea41149c88dc40648a888699e77158 Mon Sep 17 00:00:00 2001
 From: Mark Brown <broonie@kernel.org>
-Date: Wed, 27 Jan 2016 04:50:07 +0000
-Subject: [PATCH] regmap: mmio: Convert to regmap_bus and fix accessor usage
+Date: Tue, 26 Jan 2016 18:08:06 +0000
+Subject: [PATCH] MIPS: dt: Explicitly specify native endian behaviour for
+ syscon
 
-Currently regmap-mmio uses the __raw accessors to read and write from
-memory.  This is not safe as these interact poorly with spinlocks and
-are not guaranteed to generate emulated instructions on at least ARM
-where regmap is commonly used.  The APIs that are provided all provide
-some byte swapping so this is difficult to do with the current
-regmap-mmio implementation which attempts to use the regmap core byte
-swapping.
+On many MIPS systems the endianness of IP blocks is kept the same as
+that of the CPU by the hardware.  This includes the system controllers
+on these systems which are controlled via syscon which uses the regmap
+API which used readl() and writel() to interact with the hardware,
+meaning that all writes are converted to little endian when writing to
+the hardware.  This caused a bad interaction with the regmap core in big
+endian mode since it was not aware of the byte swapping and so ended up
+performing little endian writes.
 
-We can fix this by modernising the MMIO implementation to use
-reg_read() and reg_write() operations which were added after the API was
-implemented and pass simple unsigned integers through to the bus, making
-use of the formatting provided by the I/O accessors using a similar
-pattern to that used by the core.  This will be less efficient for block
-I/O operations since we now enable and disable any required clocks per
-register but it is not clear that any users of regmap-mmio actually use
-block I/O and there is room to optimise later.
+Unfortunately when this issue was noticed it was addressed by updating
+the DT for the affected devices to specify them as little endian.  This
+happened to work since it resulted in two endianness swaps which
+cancelled each other out and gave little endian behaviour but meant that
+the DT was clearly not accurately describing the hardware.
 
-This removes support for big endian I/O on 64 bit registers since no I/O
-accessors are provided, no current users were found and support can be
-added easily once they are available.
-
-In addition make the default endianness little endian.  This was the
-behaviour prior to 29bb45f25ff305 (regmap-mmio: Use native endianness
-for read/write) and is the behaviour desired by most existing users, the
-users have been audited and those that need native endianness converted
-to request it explicitly.  Previously native was documented as the
-default but due to the byte swapping in the accessors this was not
-correctly implemented.
+The intention of commit 29bb45f25ff305 (regmap-mmio: Use native
+endianness for read/write) was to fix this by making regmap default to
+native endianness but this breaks most other MMIO users where the
+hardware has a fixed endianness and the implementation uses the __raw
+accessors which are not intended to be used outside of architecture
+code.  Instead use the newly added native-endian DT property to say
+exactly what we want for these systems.
 
 Fixes: 29bb45f25ff305 (regmap-mmio: Use native endianness for read/write)
 Reported-by: Johannes Berg <johannes@sipsolutions.net>
-Tested-by: Johannes Berg <johannes@sipsolutions.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
+Acked-by: Ralf Baechle <ralf@linux-mips.org>
 ---
- drivers/base/regmap/regmap-mmio.c | 259 ++++++++++++++++++++------------------
- 1 file changed, 139 insertions(+), 120 deletions(-)
+ arch/mips/boot/dts/brcm/bcm6328.dtsi | 1 +
+ arch/mips/boot/dts/brcm/bcm6368.dtsi | 2 +-
+ arch/mips/boot/dts/brcm/bcm7125.dtsi | 1 +
+ arch/mips/boot/dts/brcm/bcm7346.dtsi | 1 +
+ arch/mips/boot/dts/brcm/bcm7358.dtsi | 1 +
+ arch/mips/boot/dts/brcm/bcm7360.dtsi | 1 +
+ arch/mips/boot/dts/brcm/bcm7362.dtsi | 1 +
+ arch/mips/boot/dts/brcm/bcm7420.dtsi | 1 +
+ arch/mips/boot/dts/brcm/bcm7425.dtsi | 1 +
+ arch/mips/boot/dts/brcm/bcm7435.dtsi | 1 +
+ 10 files changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/base/regmap/regmap-mmio.c b/drivers/base/regmap/regmap-mmio.c
-index 8812bfb..7526906 100644
---- a/drivers/base/regmap/regmap-mmio.c
-+++ b/drivers/base/regmap/regmap-mmio.c
-@@ -25,26 +25,14 @@
+diff --git a/arch/mips/boot/dts/brcm/bcm6328.dtsi b/arch/mips/boot/dts/brcm/bcm6328.dtsi
+index 459b9b2..9d19236 100644
+--- a/arch/mips/boot/dts/brcm/bcm6328.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm6328.dtsi
+@@ -74,6 +74,7 @@
+ 		timer: timer@10000040 {
+ 			compatible = "syscon";
+ 			reg = <0x10000040 0x2c>;
++			native-endian;
+ 		};
  
- struct regmap_mmio_context {
- 	void __iomem *regs;
--	unsigned reg_bytes;
- 	unsigned val_bytes;
--	unsigned pad_bytes;
- 	struct clk *clk;
--};
+ 		reboot {
+diff --git a/arch/mips/boot/dts/brcm/bcm6368.dtsi b/arch/mips/boot/dts/brcm/bcm6368.dtsi
+index 9c8d3fe2..1f6b9b5 100644
+--- a/arch/mips/boot/dts/brcm/bcm6368.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm6368.dtsi
+@@ -54,7 +54,7 @@
+ 		periph_cntl: syscon@10000000 {
+ 			compatible = "syscon";
+ 			reg = <0x10000000 0x14>;
+-			little-endian;
++			native-endian;
+ 		};
  
--static inline void regmap_mmio_regsize_check(size_t reg_size)
--{
--	switch (reg_size) {
--	case 1:
--	case 2:
--	case 4:
--#ifdef CONFIG_64BIT
--	case 8:
--#endif
--		break;
--	default:
--		BUG();
--	}
--}
-+	void (*reg_write)(struct regmap_mmio_context *ctx,
-+			  unsigned int reg, unsigned int val);
-+	unsigned int (*reg_read)(struct regmap_mmio_context *ctx,
-+			         unsigned int reg);
-+};
+ 		reboot: syscon-reboot@10000008 {
+diff --git a/arch/mips/boot/dts/brcm/bcm7125.dtsi b/arch/mips/boot/dts/brcm/bcm7125.dtsi
+index 4fc7ece..3ae1605 100644
+--- a/arch/mips/boot/dts/brcm/bcm7125.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm7125.dtsi
+@@ -98,6 +98,7 @@
+ 		sun_top_ctrl: syscon@404000 {
+ 			compatible = "brcm,bcm7125-sun-top-ctrl", "syscon";
+ 			reg = <0x404000 0x60c>;
++			native-endian;
+ 		};
  
- static int regmap_mmio_regbits_check(size_t reg_bits)
- {
-@@ -88,72 +76,62 @@ static int regmap_mmio_get_min_stride(size_t val_bits)
- 	return min_stride;
- }
+ 		reboot {
+diff --git a/arch/mips/boot/dts/brcm/bcm7346.dtsi b/arch/mips/boot/dts/brcm/bcm7346.dtsi
+index a3039bb..be79919 100644
+--- a/arch/mips/boot/dts/brcm/bcm7346.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm7346.dtsi
+@@ -118,6 +118,7 @@
+ 		sun_top_ctrl: syscon@404000 {
+ 			compatible = "brcm,bcm7346-sun-top-ctrl", "syscon";
+ 			reg = <0x404000 0x51c>;
++			native-endian;
+ 		};
  
--static inline void regmap_mmio_count_check(size_t count, u32 offset)
-+static void regmap_mmio_write8(struct regmap_mmio_context *ctx,
-+				unsigned int reg,
-+				unsigned int val)
-+{
-+	writeb(val, ctx->regs + reg);
-+}
-+
-+static void regmap_mmio_write16le(struct regmap_mmio_context *ctx,
-+				  unsigned int reg,
-+				  unsigned int val)
- {
--	BUG_ON(count <= offset);
-+	writew(val, ctx->regs + reg);
- }
+ 		reboot {
+diff --git a/arch/mips/boot/dts/brcm/bcm7358.dtsi b/arch/mips/boot/dts/brcm/bcm7358.dtsi
+index 4274ff4..060805b 100644
+--- a/arch/mips/boot/dts/brcm/bcm7358.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm7358.dtsi
+@@ -112,6 +112,7 @@
+ 		sun_top_ctrl: syscon@404000 {
+ 			compatible = "brcm,bcm7358-sun-top-ctrl", "syscon";
+ 			reg = <0x404000 0x51c>;
++			native-endian;
+ 		};
  
--static inline unsigned int
--regmap_mmio_get_offset(const void *reg, size_t reg_size)
-+static void regmap_mmio_write16be(struct regmap_mmio_context *ctx,
-+				  unsigned int reg,
-+				  unsigned int val)
- {
--	switch (reg_size) {
--	case 1:
--		return *(u8 *)reg;
--	case 2:
--		return *(u16 *)reg;
--	case 4:
--		return *(u32 *)reg;
-+	iowrite16be(val, ctx->regs + reg);
-+}
-+
-+static void regmap_mmio_write32le(struct regmap_mmio_context *ctx,
-+				  unsigned int reg,
-+				  unsigned int val)
-+{
-+	writel(val, ctx->regs + reg);
-+}
-+
-+static void regmap_mmio_write32be(struct regmap_mmio_context *ctx,
-+				  unsigned int reg,
-+				  unsigned int val)
-+{
-+	iowrite32be(val, ctx->regs + reg);
-+}
-+
- #ifdef CONFIG_64BIT
--	case 8:
--		return *(u64 *)reg;
--#endif
--	default:
--		BUG();
--	}
-+static void regmap_mmio_write64le(struct regmap_mmio_context *ctx,
-+				  unsigned int reg,
-+				  unsigned int val)
-+{
-+	writeq(val, ctx->regs + reg);
- }
-+#endif
+ 		reboot {
+diff --git a/arch/mips/boot/dts/brcm/bcm7360.dtsi b/arch/mips/boot/dts/brcm/bcm7360.dtsi
+index 0dcc9163..bcdb09b 100644
+--- a/arch/mips/boot/dts/brcm/bcm7360.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm7360.dtsi
+@@ -112,6 +112,7 @@
+ 		sun_top_ctrl: syscon@404000 {
+ 			compatible = "brcm,bcm7360-sun-top-ctrl", "syscon";
+ 			reg = <0x404000 0x51c>;
++			native-endian;
+ 		};
  
--static int regmap_mmio_gather_write(void *context,
--				    const void *reg, size_t reg_size,
--				    const void *val, size_t val_size)
-+static int regmap_mmio_write(void *context, unsigned int reg, unsigned int val)
- {
- 	struct regmap_mmio_context *ctx = context;
--	unsigned int offset;
- 	int ret;
+ 		reboot {
+diff --git a/arch/mips/boot/dts/brcm/bcm7362.dtsi b/arch/mips/boot/dts/brcm/bcm7362.dtsi
+index 2f3f9fc..d3b1b76 100644
+--- a/arch/mips/boot/dts/brcm/bcm7362.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm7362.dtsi
+@@ -118,6 +118,7 @@
+ 		sun_top_ctrl: syscon@404000 {
+ 			compatible = "brcm,bcm7362-sun-top-ctrl", "syscon";
+ 			reg = <0x404000 0x51c>;
++			native-endian;
+ 		};
  
--	regmap_mmio_regsize_check(reg_size);
--
- 	if (!IS_ERR(ctx->clk)) {
- 		ret = clk_enable(ctx->clk);
- 		if (ret < 0)
- 			return ret;
- 	}
+ 		reboot {
+diff --git a/arch/mips/boot/dts/brcm/bcm7420.dtsi b/arch/mips/boot/dts/brcm/bcm7420.dtsi
+index bee221b..3302a1b 100644
+--- a/arch/mips/boot/dts/brcm/bcm7420.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm7420.dtsi
+@@ -99,6 +99,7 @@
+ 		sun_top_ctrl: syscon@404000 {
+ 			compatible = "brcm,bcm7420-sun-top-ctrl", "syscon";
+ 			reg = <0x404000 0x60c>;
++			native-endian;
+ 		};
  
--	offset = regmap_mmio_get_offset(reg, reg_size);
--
--	while (val_size) {
--		switch (ctx->val_bytes) {
--		case 1:
--			__raw_writeb(*(u8 *)val, ctx->regs + offset);
--			break;
--		case 2:
--			__raw_writew(*(u16 *)val, ctx->regs + offset);
--			break;
--		case 4:
--			__raw_writel(*(u32 *)val, ctx->regs + offset);
--			break;
--#ifdef CONFIG_64BIT
--		case 8:
--			__raw_writeq(*(u64 *)val, ctx->regs + offset);
--			break;
--#endif
--		default:
--			/* Should be caught by regmap_mmio_check_config */
--			BUG();
--		}
--		val_size -= ctx->val_bytes;
--		val += ctx->val_bytes;
--		offset += ctx->val_bytes;
--	}
-+	ctx->reg_write(ctx, reg, val);
+ 		reboot {
+diff --git a/arch/mips/boot/dts/brcm/bcm7425.dtsi b/arch/mips/boot/dts/brcm/bcm7425.dtsi
+index 571f30f..15b27aa 100644
+--- a/arch/mips/boot/dts/brcm/bcm7425.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm7425.dtsi
+@@ -100,6 +100,7 @@
+ 		sun_top_ctrl: syscon@404000 {
+ 			compatible = "brcm,bcm7425-sun-top-ctrl", "syscon";
+ 			reg = <0x404000 0x51c>;
++			native-endian;
+ 		};
  
- 	if (!IS_ERR(ctx->clk))
- 		clk_disable(ctx->clk);
-@@ -161,59 +139,56 @@ static int regmap_mmio_gather_write(void *context,
- 	return 0;
- }
+ 		reboot {
+diff --git a/arch/mips/boot/dts/brcm/bcm7435.dtsi b/arch/mips/boot/dts/brcm/bcm7435.dtsi
+index 614ee21..adb33e3 100644
+--- a/arch/mips/boot/dts/brcm/bcm7435.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm7435.dtsi
+@@ -114,6 +114,7 @@
+ 		sun_top_ctrl: syscon@404000 {
+ 			compatible = "brcm,bcm7425-sun-top-ctrl", "syscon";
+ 			reg = <0x404000 0x51c>;
++			native-endian;
+ 		};
  
--static int regmap_mmio_write(void *context, const void *data, size_t count)
-+static unsigned int regmap_mmio_read8(struct regmap_mmio_context *ctx,
-+				      unsigned int reg)
- {
--	struct regmap_mmio_context *ctx = context;
--	unsigned int offset = ctx->reg_bytes + ctx->pad_bytes;
-+	return readb(ctx->regs + reg);
-+}
-+
-+static unsigned int regmap_mmio_read16le(struct regmap_mmio_context *ctx,
-+				         unsigned int reg)
-+{
-+	return readw(ctx->regs + reg);
-+}
-+
-+static unsigned int regmap_mmio_read16be(struct regmap_mmio_context *ctx,
-+				         unsigned int reg)
-+{
-+	return ioread16be(ctx->regs + reg);
-+}
-+
-+static unsigned int regmap_mmio_read32le(struct regmap_mmio_context *ctx,
-+				         unsigned int reg)
-+{
-+	return readl(ctx->regs + reg);
-+}
- 
--	regmap_mmio_count_check(count, offset);
-+static unsigned int regmap_mmio_read32be(struct regmap_mmio_context *ctx,
-+				         unsigned int reg)
-+{
-+	return ioread32be(ctx->regs + reg);
-+}
- 
--	return regmap_mmio_gather_write(context, data, ctx->reg_bytes,
--					data + offset, count - offset);
-+#ifdef CONFIG_64BIT
-+static unsigned int regmap_mmio_read64le(struct regmap_mmio_context *ctx,
-+				         unsigned int reg)
-+{
-+	return readq(ctx->regs + reg);
- }
-+#endif
- 
--static int regmap_mmio_read(void *context,
--			    const void *reg, size_t reg_size,
--			    void *val, size_t val_size)
-+static int regmap_mmio_read(void *context, unsigned int reg, unsigned int *val)
- {
- 	struct regmap_mmio_context *ctx = context;
--	unsigned int offset;
- 	int ret;
- 
--	regmap_mmio_regsize_check(reg_size);
--
- 	if (!IS_ERR(ctx->clk)) {
- 		ret = clk_enable(ctx->clk);
- 		if (ret < 0)
- 			return ret;
- 	}
- 
--	offset = regmap_mmio_get_offset(reg, reg_size);
--
--	while (val_size) {
--		switch (ctx->val_bytes) {
--		case 1:
--			*(u8 *)val = __raw_readb(ctx->regs + offset);
--			break;
--		case 2:
--			*(u16 *)val = __raw_readw(ctx->regs + offset);
--			break;
--		case 4:
--			*(u32 *)val = __raw_readl(ctx->regs + offset);
--			break;
--#ifdef CONFIG_64BIT
--		case 8:
--			*(u64 *)val = __raw_readq(ctx->regs + offset);
--			break;
--#endif
--		default:
--			/* Should be caught by regmap_mmio_check_config */
--			BUG();
--		}
--		val_size -= ctx->val_bytes;
--		val += ctx->val_bytes;
--		offset += ctx->val_bytes;
--	}
-+	*val = ctx->reg_read(ctx, reg);
- 
- 	if (!IS_ERR(ctx->clk))
- 		clk_disable(ctx->clk);
-@@ -232,14 +207,11 @@ static void regmap_mmio_free_context(void *context)
- 	kfree(context);
- }
- 
--static struct regmap_bus regmap_mmio = {
-+static const struct regmap_bus regmap_mmio = {
- 	.fast_io = true,
--	.write = regmap_mmio_write,
--	.gather_write = regmap_mmio_gather_write,
--	.read = regmap_mmio_read,
-+	.reg_write = regmap_mmio_write,
-+	.reg_read = regmap_mmio_read,
- 	.free_context = regmap_mmio_free_context,
--	.reg_format_endian_default = REGMAP_ENDIAN_NATIVE,
--	.val_format_endian_default = REGMAP_ENDIAN_NATIVE,
- };
- 
- static struct regmap_mmio_context *regmap_mmio_gen_context(struct device *dev,
-@@ -265,24 +237,71 @@ static struct regmap_mmio_context *regmap_mmio_gen_context(struct device *dev,
- 	if (config->reg_stride < min_stride)
- 		return ERR_PTR(-EINVAL);
- 
--	switch (config->reg_format_endian) {
--	case REGMAP_ENDIAN_DEFAULT:
--	case REGMAP_ENDIAN_NATIVE:
--		break;
--	default:
--		return ERR_PTR(-EINVAL);
--	}
--
- 	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
- 	if (!ctx)
- 		return ERR_PTR(-ENOMEM);
- 
- 	ctx->regs = regs;
- 	ctx->val_bytes = config->val_bits / 8;
--	ctx->reg_bytes = config->reg_bits / 8;
--	ctx->pad_bytes = config->pad_bits / 8;
- 	ctx->clk = ERR_PTR(-ENODEV);
- 
-+	switch (config->reg_format_endian) {
-+	case REGMAP_ENDIAN_DEFAULT:
-+	case REGMAP_ENDIAN_LITTLE:
-+#ifdef __LITTLE_ENDIAN
-+	case REGMAP_ENDIAN_NATIVE:
-+#endif
-+		switch (config->val_bits) {
-+		case 8:
-+			ctx->reg_read = regmap_mmio_read8;
-+			ctx->reg_write = regmap_mmio_write8;
-+			break;
-+		case 16:
-+			ctx->reg_read = regmap_mmio_read16le;
-+			ctx->reg_write = regmap_mmio_write16le;
-+			break;
-+		case 32:
-+			ctx->reg_read = regmap_mmio_read32le;
-+			ctx->reg_write = regmap_mmio_write32le;
-+			break;
-+#ifdef CONFIG_64BIT
-+		case 64:
-+			ctx->reg_read = regmap_mmio_read64le;
-+			ctx->reg_write = regmap_mmio_write64le;
-+			break;
-+#endif
-+		default:
-+			ret = -EINVAL;
-+			goto err_free;
-+		}
-+		break;
-+	case REGMAP_ENDIAN_BIG:
-+#ifdef __BIG_ENDIAN
-+	case REGMAP_ENDIAN_NATIVE:
-+#endif
-+		switch (config->val_bits) {
-+		case 8:
-+			ctx->reg_read = regmap_mmio_read8;
-+			ctx->reg_write = regmap_mmio_write8;
-+			break;
-+		case 16:
-+			ctx->reg_read = regmap_mmio_read16be;
-+			ctx->reg_write = regmap_mmio_write16be;
-+			break;
-+		case 32:
-+			ctx->reg_read = regmap_mmio_read32be;
-+			ctx->reg_write = regmap_mmio_write32be;
-+			break;
-+		default:
-+			ret = -EINVAL;
-+			goto err_free;
-+		}
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		goto err_free;
-+	}
-+
- 	if (clk_id == NULL)
- 		return ctx;
- 
+ 		reboot {
 -- 
 2.7.0
