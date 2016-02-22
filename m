@@ -1,18 +1,17 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: max9867: Use params_width instead of
-	open-coded
-Date: Tue, 23 Feb 2016 14:53:13 +0800
-Message-ID: <1456210393.15964.0.camel@ingics.com>
+From: Jonah Petri <jpetri@izotope.com>
+Subject: ASoC: simultaneous start of input/output channels
+Date: Mon, 22 Feb 2016 11:10:29 -0500
+Message-ID: <CAJOrw7wFQzb-1RCyOUvvWqH8s57roA48M3Po3OFN-j1ro32BuQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f180.google.com (mail-pf0-f180.google.com
- [209.85.192.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E3512605B4
- for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2016 07:53:18 +0100 (CET)
-Received: by mail-pf0-f180.google.com with SMTP id q63so106944426pfb.0
- for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 22:53:18 -0800 (PST)
+Received: from mail-lf0-f48.google.com (mail-lf0-f48.google.com
+ [209.85.215.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id B3CBC26063A
+ for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 17:10:30 +0100 (CET)
+Received: by mail-lf0-f48.google.com with SMTP id l143so96979525lfe.2
+ for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 08:10:30 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,31 +21,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, anish kumar <yesanishhere@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/max9867.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Hello!
 
-diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-index ab7a94d..e3ee391 100755
---- a/sound/soc/codecs/max9867.c
-+++ b/sound/soc/codecs/max9867.c
-@@ -206,10 +206,9 @@ static int max9867_dai_hw_params(struct snd_pcm_substream *substream,
- 		unsigned long int bclk_rate, pclk_bclk_ratio;
- 		int bclk_value;
- 
--		bclk_rate = params_rate(params) * 2 *
--			snd_pcm_format_width(params_format(params));
-+		bclk_rate = params_rate(params) * 2 * params_width(params);
- 		pclk_bclk_ratio = max9867->pclk/bclk_rate;
--		switch (snd_pcm_format_width(params_format(params))) {
-+		switch (params_width(params)) {
- 		case 8:
- 		case 16:
- 			switch (pclk_bclk_ratio) {
--- 
-2.1.4
+Our application is very low-latency full duplex audio on a Freescale SoC.
+ALSA is configured with 2 64-frame buffers, with DSP happening on a
+realtime user thread.
+
+With small buffer sizes, we're obviously very tight on timing, and I've run
+into an issue which seems architectural in nature, and seemingly is worthy
+of consulting the list.
+
+What we're seeing is a large temporal latency between the DMA completion
+IRQ for the audio input DMA and audio output DMA. This delay is on the
+order of 200 microseconds, but also somewhat variable (ok, "large" is
+relative here, but it matters to us!).  In the ideal case, these two
+interrupts would be perfectly aligned in time, allowing us to run DSP for
+the full buffer's duration.  However, since the interrupts are offset by
+about 20% of a buffer, we effectively lose that time for our DSP.  And,
+since the timing is variable, and we're in a realtime application, this
+produces scared engineers.
+
+Working backwards from the hardware drivers, I see that snd_soc_dai_ops's
+trigger callback is used to start and stop the DMA.  The fundamental
+"start" action comes down to a single register write which can easily start
+both input and output streams in the same write.  However, it seems that
+the snd_soc_dai_ops does not provide for simultaneous start of both input
+and output streams.  Tracing back through the kernel interface and into
+user space, it seems that starting both the input and output streams
+necessitates two separate calls from userspace, which could explain the
+delay, and some of the variability in timing.
+
+My question is:
+* Did I miss some API or technique which could allow simultaneous start of
+full duplex streams?
+* If not, I would certainly appreciate advice on where we could fit this
+into the existing architecture!  We would be glad to do the kernel work to
+make this change, as this capability seems generally useful!
+
+Thanks much for any help,
+
+Jonah
