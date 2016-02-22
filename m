@@ -1,59 +1,208 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] control: keep consistent usage of assertion
-Date: Mon, 22 Feb 2016 22:13:31 +0900
-Message-ID: <1456146811-5596-1-git-send-email-o-takashi@sakamocchi.jp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 190D62606B8
- for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 14:13:34 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH] ALSA: mts64: use new parport device model
+Date: Mon, 22 Feb 2016 18:52:08 +0530
+Message-ID: <1456147328-16083-1-git-send-email-sudipm.mukherjee@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-In most codes for control APIs, assertions are used to check given
-arguments from applications. If the arguments are not expected, the
-application is forced to abort. When NDEBUG is defined in the beginning
-of the codes, no checks are performed.
+Modify mts64 driver to use the new parallel port device model.
+The advantage of using the device model is that the driver gets binded
+to the hardware, we get the feature of hotplug, we can bind/unbind the
+driver at runtime.
+The changes are in the way the driver gets registered with the parallel
+port subsystem and the temporary device to probe mts64 card is removed
+and mts64_probe() is used in the probe callback.
 
-Although, in snd_ctl_elem_set_bytes(), assertion is used with condition
-statement. There's an intention to check the arguments regardless of
-NDEBUG. However, this is not the same fashion in the codes.
-
-This commit applies the same fashion to the function, to keep consistent
-usage of assertion.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 ---
- src/control/control.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/src/control/control.c b/src/control/control.c
-index 328920d..70d168d 100644
---- a/src/control/control.c
-+++ b/src/control/control.c
-@@ -2627,10 +2627,7 @@ void snd_ctl_elem_value_set_byte(snd_ctl_elem_value_t *obj, unsigned int idx, un
- void snd_ctl_elem_set_bytes(snd_ctl_elem_value_t *obj, void *data, size_t size)
- {
- 	assert(obj);
--	if (size >= ARRAY_SIZE(obj->value.bytes.data)) {
--		assert(0);
--		return;
--	}
-+	assert(size < ARRAY_SIZE(obj->value.bytes.data));
- 	memcpy(obj->value.bytes.data, data, size);
+exactly same changes as done in portman2x4.
+
+BTW, there is one portman2x4 available on ebay. I was bidding for it but
+someone is more desperate than I am and outbidding me everytime :(
+
+ sound/drivers/mts64.c | 95 +++++++++++++++++++++++----------------------------
+ 1 file changed, 43 insertions(+), 52 deletions(-)
+
+diff --git a/sound/drivers/mts64.c b/sound/drivers/mts64.c
+index 2a008a9..c76bd87 100644
+--- a/sound/drivers/mts64.c
++++ b/sound/drivers/mts64.c
+@@ -65,8 +65,6 @@ struct mts64 {
+ 	struct snd_card *card;
+ 	struct snd_rawmidi *rmidi;
+ 	struct pardevice *pardev;
+-	int pardev_claimed;
+-
+ 	int open_count;
+ 	int current_midi_output_port;
+ 	int current_midi_input_port;
+@@ -850,30 +848,6 @@ __out:
+ 	spin_unlock(&mts->lock);
  }
  
+-static int snd_mts64_probe_port(struct parport *p)
+-{
+-	struct pardevice *pardev;
+-	int res;
+-
+-	pardev = parport_register_device(p, DRIVER_NAME,
+-					 NULL, NULL, NULL,
+-					 0, NULL);
+-	if (!pardev)
+-		return -EIO;
+-	
+-	if (parport_claim(pardev)) {
+-		parport_unregister_device(pardev);
+-		return -EIO;
+-	}
+-
+-	res = mts64_probe(p);
+-
+-	parport_release(pardev);
+-	parport_unregister_device(pardev);
+-
+-	return res;
+-}
+-
+ static void snd_mts64_attach(struct parport *p)
+ {
+ 	struct platform_device *device;
+@@ -907,10 +881,20 @@ static void snd_mts64_detach(struct parport *p)
+ 	/* nothing to do here */
+ }
+ 
++static int snd_mts64_dev_probe(struct pardevice *pardev)
++{
++	if (strcmp(pardev->name, DRIVER_NAME))
++		return -ENODEV;
++
++	return 0;
++}
++
+ static struct parport_driver mts64_parport_driver = {
+-	.name   = "mts64",
+-	.attach = snd_mts64_attach,
+-	.detach = snd_mts64_detach
++	.name		= "mts64",
++	.probe		= snd_mts64_dev_probe,
++	.match_port	= snd_mts64_attach,
++	.detach		= snd_mts64_detach,
++	.devmodel	= true,
+ };
+ 
+ /*********************************************************************
+@@ -922,8 +906,7 @@ static void snd_mts64_card_private_free(struct snd_card *card)
+ 	struct pardevice *pardev = mts->pardev;
+ 
+ 	if (pardev) {
+-		if (mts->pardev_claimed)
+-			parport_release(pardev);
++		parport_release(pardev);
+ 		parport_unregister_device(pardev);
+ 	}
+ 
+@@ -938,6 +921,12 @@ static int snd_mts64_probe(struct platform_device *pdev)
+ 	struct snd_card *card = NULL;
+ 	struct mts64 *mts = NULL;
+ 	int err;
++	struct pardev_cb mts64_cb = {
++		.preempt = NULL,
++		.wakeup = NULL,
++		.irq_func = snd_mts64_interrupt,	/* ISR */
++		.flags = PARPORT_DEV_EXCL,		/* flags */
++	};
+ 
+ 	p = platform_get_drvdata(pdev);
+ 	platform_set_drvdata(pdev, NULL);
+@@ -946,8 +935,6 @@ static int snd_mts64_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	if (!enable[dev]) 
+ 		return -ENOENT;
+-	if ((err = snd_mts64_probe_port(p)) < 0)
+-		return err;
+ 
+ 	err = snd_card_new(&pdev->dev, index[dev], id[dev], THIS_MODULE,
+ 			   0, &card);
+@@ -960,23 +947,32 @@ static int snd_mts64_probe(struct platform_device *pdev)
+ 	sprintf(card->longname,  "%s at 0x%lx, irq %i", 
+ 		card->shortname, p->base, p->irq);
+ 
+-	pardev = parport_register_device(p,                   /* port */
+-					 DRIVER_NAME,         /* name */
+-					 NULL,                /* preempt */
+-					 NULL,                /* wakeup */
+-					 snd_mts64_interrupt, /* ISR */
+-					 PARPORT_DEV_EXCL,    /* flags */
+-					 (void *)card);       /* private */
+-	if (pardev == NULL) {
++	mts64_cb.private = card;			 /* private */
++	pardev = parport_register_dev_model(p,		 /* port */
++					    DRIVER_NAME, /* name */
++					    &mts64_cb,	 /* callbacks */
++					    pdev->id);	 /* device number */
++	if (!pardev) {
+ 		snd_printd("Cannot register pardevice\n");
+ 		err = -EIO;
+ 		goto __err;
+ 	}
+ 
++	/* claim parport */
++	if (parport_claim(pardev)) {
++		snd_printd("Cannot claim parport 0x%lx\n", pardev->port->base);
++		err = -EIO;
++		goto free_pardev;
++	}
++	err = mts64_probe(p);
++	if (err) {
++		err = -EIO;
++		goto release_pardev;
++	}
++
+ 	if ((err = snd_mts64_create(card, pardev, &mts)) < 0) {
+ 		snd_printd("Cannot create main component\n");
+-		parport_unregister_device(pardev);
+-		goto __err;
++		goto release_pardev;
+ 	}
+ 	card->private_data = mts;
+ 	card->private_free = snd_mts64_card_private_free;
+@@ -986,14 +982,6 @@ static int snd_mts64_probe(struct platform_device *pdev)
+ 		goto __err;
+ 	}
+ 
+-	/* claim parport */
+-	if (parport_claim(pardev)) {
+-		snd_printd("Cannot claim parport 0x%lx\n", pardev->port->base);
+-		err = -EIO;
+-		goto __err;
+-	}
+-	mts->pardev_claimed = 1;
+-
+ 	/* init device */
+ 	if ((err = mts64_device_init(p)) < 0)
+ 		goto __err;
+@@ -1009,6 +997,10 @@ static int snd_mts64_probe(struct platform_device *pdev)
+ 	snd_printk(KERN_INFO "ESI Miditerminal 4140 on 0x%lx\n", p->base);
+ 	return 0;
+ 
++release_pardev:
++	parport_release(pardev);
++free_pardev:
++	parport_unregister_device(pardev);
+ __err:
+ 	snd_card_free(card);
+ 	return err;
+@@ -1024,7 +1016,6 @@ static int snd_mts64_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-
+ static struct platform_driver snd_mts64_driver = {
+ 	.probe  = snd_mts64_probe,
+ 	.remove = snd_mts64_remove,
 -- 
-2.5.0
+1.9.1
