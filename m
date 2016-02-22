@@ -1,49 +1,38 @@
-From: PC Liao <pc.liao@mediatek.com>
-Subject: Re: [PATCH] ASoC: mediatek: Add machine driver for ALC5650 codec
-Date: Mon, 22 Feb 2016 11:05:50 +0800
-Message-ID: <1456110350.7576.12.camel@mtksdaap41>
-References: <1455849359-14581-1-git-send-email-pc.liao@mediatek.com>
-	 <20160219153744.GP18327@sirena.org.uk>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v7 0/2] ASoC: Add SPDIF support for
+ Allwinner SoCs
+Date: Mon, 22 Feb 2016 12:12:46 +0900
+Message-ID: <20160222031246.GQ18327@sirena.org.uk>
+References: <1456053218-16325-1-git-send-email-codekipper@gmail.com>
+Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160219153744.GP18327@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, srv_heupstream <srv_heupstream@mediatek.com>, "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Koro Chen =?UTF-8?Q?=28=E9=99=B3=E6=80=9D=E7=BF=B0=29?= <koro.chen@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="UkA0xnprSsTJHodh"
+Return-path: <linux-sunxi+bncBDQ2L75W5QGBBQPZVG3AKGQEE733HQA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1456053218-16325-1-git-send-email-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Cc: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+--UkA0xnprSsTJHodh
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
 
-On Fri, 2016-02-19 at 23:37 +0800, Mark Brown wrote:
-> On Fri, Feb 19, 2016 at 10:35:59AM +0800, PC Liao wrote:
+On Sun, Feb 21, 2016 at 12:13:36PM +0100, codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
+> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 > 
-> > @@ -3,3 +3,4 @@ obj-$(CONFIG_SND_SOC_MEDIATEK) += mtk-afe-pcm.o
-> >  # Machine support
-> >  obj-$(CONFIG_SND_SOC_MT8173_MAX98090) += mt8173-max98090.o
-> >  obj-$(CONFIG_SND_SOC_MT8173_RT5650_RT5676) += mt8173-rt5650-rt5676.o
-> > +obj-$(CONFIG_SND_SOC_MT8173_RT5650) += mt8173-rt5650.o
-> 
-> Why is this not covered by (or coverable by) the existinng RT5650-RT5657
-> driver?
+> For now just the SPDIF transmitter has been tested on a Mele A2000(A10)
+> and a Itead Ibox(A20).
 
-Thanks for your review.
-
-Because they are different boards and have some differences like HW
-configuration and mixer control, we want to separate machine driver
-clearly.
-
-Otherwise, I think I will upload this change to new version for more
-clearly.
-diff --git a/sound/soc/mediatek/Makefile b/sound/soc/mediatek/Makefile
-index bcdcb06..dcb1440 100644
---- a/sound/soc/mediatek/Makefile
-+++ b/sound/soc/mediatek/Makefile
-@@ -2,5 +2,5 @@
- obj-$(CONFIG_SND_SOC_MEDIATEK) += mtk-afe-pcm.o
- # Machine support
- obj-$(CONFIG_SND_SOC_MT8173_MAX98090) += mt8173-max98090.o
--obj-$(CONFIG_SND_SOC_MT8173_RT5650_RT5676) += mt8173-rt5650-rt5676.o
- obj-$(CONFIG_SND_SOC_MT8173_RT5650) += mt8173-rt5650.o
-+obj-$(CONFIG_SND_SOC_MT8173_RT5650_RT5676) += mt8173-rt5650-rt5676.o
+This was already applied.  If any updates are required or you are
+submitting further changes they should be sent as incremental updates
+against current git, existing patches will not be replaced.
+--UkA0xnprSsTJHodh--
