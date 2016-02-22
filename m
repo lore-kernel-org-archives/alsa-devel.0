@@ -1,26 +1,48 @@
 From: Sugar Zhang <sugar.zhang@rock-chips.com>
-Subject: [PATCH v1 0/2] patches to add support for rockchip rt5640 card
-Date: Mon, 22 Feb 2016 15:56:53 +0800
-Message-ID: <1456127815-68575-1-git-send-email-sugar.zhang@rock-chips.com>
+Subject: [PATCH v1 1/2] ASoC: rockchip: i2s: add default values for registers
+Date: Mon, 22 Feb 2016 15:56:54 +0800
+Message-ID: <1456127815-68575-2-git-send-email-sugar.zhang@rock-chips.com>
+References: <1456127815-68575-1-git-send-email-sugar.zhang@rock-chips.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1456127815-68575-1-git-send-email-sugar.zhang@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org, heiko@sntech.de
-Cc: Sugar Zhang <sugar.zhang@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-rockchip@lists.infradead.org, Oder Chiou <oder_chiou@realtek.com>, linux-kernel@vger.kernel.org, Kumar Gala <galak@codeaurora.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Pawel Moll <pawel.moll@arm.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Bard Liao <bardliao@realtek.com>, linux-arm-kernel@lists.infradead.org
+Cc: Sugar Zhang <sugar.zhang@rock-chips.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-add default values for i2s registers from TRM.
-rt5640: add master clock handing.
+this patch add default values for registers according description from TRM.
 
+Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+---
 
-Sugar Zhang (2):
-  ASoC: rockchip: i2s: add default values for registers
-  ASoC: rt5640: add master clock handling for rt5640
+ sound/soc/rockchip/rockchip_i2s.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
- Documentation/devicetree/bindings/sound/rt5640.txt |  3 +++
- sound/soc/codecs/rt5640.c                          | 31 ++++++++++++++++++++++
- sound/soc/codecs/rt5640.h                          |  2 ++
- sound/soc/rockchip/rockchip_i2s.c                  | 10 +++++++
- 4 files changed, 46 insertions(+)
-
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 6561c4c..a0b0942 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -440,11 +440,21 @@ static bool rockchip_i2s_precious_reg(struct device *dev, unsigned int reg)
+ 	}
+ }
+ 
++static const struct reg_default rockchip_i2s_reg_defaults[] = {
++	{0x00, 0x0000000f},
++	{0x04, 0x0000000f},
++	{0x08, 0x00071f1f},
++	{0x10, 0x001f0000},
++	{0x14, 0x01f00000},
++};
++
+ static const struct regmap_config rockchip_i2s_regmap_config = {
+ 	.reg_bits = 32,
+ 	.reg_stride = 4,
+ 	.val_bits = 32,
+ 	.max_register = I2S_RXDR,
++	.reg_defaults = rockchip_i2s_reg_defaults,
++	.num_reg_defaults = ARRAY_SIZE(rockchip_i2s_reg_defaults),
+ 	.writeable_reg = rockchip_i2s_wr_reg,
+ 	.readable_reg = rockchip_i2s_rd_reg,
+ 	.volatile_reg = rockchip_i2s_volatile_reg,
 -- 
 1.9.1
