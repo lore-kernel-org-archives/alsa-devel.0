@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: i2s: add default values for
-	registers" to the asoc tree
-Date: Mon, 22 Feb 2016 20:13:05 +0900
-Message-ID: <E1aXoQL-0006Ow-Ob@finisterre>
-References: <1456127815-68575-2-git-send-email-sugar.zhang@rock-chips.com>
+Subject: Applied "ASoC: mediatek: Add machine driver for
+	ALC5650 codec" to the asoc tree
+Date: Mon, 22 Feb 2016 20:13:02 +0900
+Message-ID: <E1aXoQI-0006Ny-5B@finisterre>
+References: <1455849359-14581-1-git-send-email-pc.liao@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9923B2659D3
- for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 12:13:13 +0100 (CET)
-In-Reply-To: <1456127815-68575-2-git-send-email-sugar.zhang@rock-chips.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 999E0265A0C
+ for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 12:13:14 +0100 (CET)
+In-Reply-To: <1455849359-14581-1-git-send-email-pc.liao@mediatek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sugar Zhang <sugar.zhang@rock-chips.com>, Mark Brown <broonie@kernel.org>
+To: Nicolas Boichat <drinkcat@chromium.org>, Koro Chen <koro.chen@mediatek.com>, PC Liao <pc.liao@mediatek.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: i2s: add default values for registers
+   ASoC: mediatek: Add machine driver for ALC5650 codec
 
 has been applied to the asoc tree at
 
@@ -53,44 +53,318 @@ to this mail.
 Thanks,
 Mark
 
->From ea2e5b96bd6e835052981b777253def60cfd905f Mon Sep 17 00:00:00 2001
-From: Sugar Zhang <sugar.zhang@rock-chips.com>
-Date: Mon, 22 Feb 2016 15:56:54 +0800
-Subject: [PATCH] ASoC: rockchip: i2s: add default values for registers
+>From 0f83f9296d5c91d08cf46cf1ba8a17fb870dedf0 Mon Sep 17 00:00:00 2001
+From: Koro Chen <koro.chen@mediatek.com>
+Date: Fri, 19 Feb 2016 10:35:59 +0800
+Subject: [PATCH] ASoC: mediatek: Add machine driver for ALC5650 codec
 
-this patch add default values for registers according description from TRM.
+This is the DPCM based machine driver with rt5650
 
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+Signed-off-by: Koro Chen <koro.chen@mediatek.com>
+Signed-off-by: PC Liao <pc.liao@mediatek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_i2s.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ .../devicetree/bindings/sound/mt8173-rt5650.txt    |  15 ++
+ sound/soc/mediatek/Kconfig                         |  10 +
+ sound/soc/mediatek/Makefile                        |   1 +
+ sound/soc/mediatek/mt8173-rt5650.c                 | 236 +++++++++++++++++++++
+ 4 files changed, 262 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
+ create mode 100644 sound/soc/mediatek/mt8173-rt5650.c
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 531a6d201d2e..2f8e20416bd3 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -440,11 +440,21 @@ static bool rockchip_i2s_precious_reg(struct device *dev, unsigned int reg)
- 	}
- }
+diff --git a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
+new file mode 100644
+index 000000000000..fe5a5ef1714d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
+@@ -0,0 +1,15 @@
++MT8173 with RT5650 CODECS
++
++Required properties:
++- compatible : "mediatek,mt8173-rt5650"
++- mediatek,audio-codec: the phandles of rt5650 codecs
++- mediatek,platform: the phandle of MT8173 ASoC platform
++
++Example:
++
++	sound {
++		compatible = "mediatek,mt8173-rt5650";
++		mediatek,audio-codec = <&rt5650>;
++		mediatek,platform = <&afe>;
++	};
++
+diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+index 976967675387..6c8808798c6b 100644
+--- a/sound/soc/mediatek/Kconfig
++++ b/sound/soc/mediatek/Kconfig
+@@ -17,6 +17,16 @@ config SND_SOC_MT8173_MAX98090
+ 	  Select Y if you have such device.
+ 	  If unsure select "N".
  
-+static const struct reg_default rockchip_i2s_reg_defaults[] = {
-+	{0x00, 0x0000000f},
-+	{0x04, 0x0000000f},
-+	{0x08, 0x00071f1f},
-+	{0x10, 0x001f0000},
-+	{0x14, 0x01f00000},
++config SND_SOC_MT8173_RT5650
++        tristate "ASoC Audio driver for MT8173 with RT5650 codec"
++        depends on SND_SOC_MEDIATEK && I2C
++        select SND_SOC_RT5645
++        help
++          This adds ASoC driver for Mediatek MT8173 boards
++          with the RT5650 audio codec.
++          Select Y if you have such device.
++          If unsure select "N".
++
+ config SND_SOC_MT8173_RT5650_RT5676
+ 	tristate "ASoC Audio driver for MT8173 with RT5650 RT5676 codecs"
+ 	depends on SND_SOC_MEDIATEK && I2C
+diff --git a/sound/soc/mediatek/Makefile b/sound/soc/mediatek/Makefile
+index 75effbec438d..bcdcb062e73a 100644
+--- a/sound/soc/mediatek/Makefile
++++ b/sound/soc/mediatek/Makefile
+@@ -3,3 +3,4 @@ obj-$(CONFIG_SND_SOC_MEDIATEK) += mtk-afe-pcm.o
+ # Machine support
+ obj-$(CONFIG_SND_SOC_MT8173_MAX98090) += mt8173-max98090.o
+ obj-$(CONFIG_SND_SOC_MT8173_RT5650_RT5676) += mt8173-rt5650-rt5676.o
++obj-$(CONFIG_SND_SOC_MT8173_RT5650) += mt8173-rt5650.o
+diff --git a/sound/soc/mediatek/mt8173-rt5650.c b/sound/soc/mediatek/mt8173-rt5650.c
+new file mode 100644
+index 000000000000..bb09bb1b7f1c
+--- /dev/null
++++ b/sound/soc/mediatek/mt8173-rt5650.c
+@@ -0,0 +1,236 @@
++/*
++ * mt8173-rt5650.c  --  MT8173 machine driver with RT5650 codecs
++ *
++ * Copyright (c) 2016 MediaTek Inc.
++ * Author: Koro Chen <koro.chen@mediatek.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 and
++ * only version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#include <linux/module.h>
++#include <linux/gpio.h>
++#include <linux/of_gpio.h>
++#include <sound/soc.h>
++#include <sound/jack.h>
++#include "../codecs/rt5645.h"
++
++#define MCLK_FOR_CODECS		12288000
++
++static const struct snd_soc_dapm_widget mt8173_rt5650_widgets[] = {
++	SND_SOC_DAPM_SPK("Speaker", NULL),
++	SND_SOC_DAPM_MIC("Int Mic", NULL),
++	SND_SOC_DAPM_HP("Headphone", NULL),
++	SND_SOC_DAPM_MIC("Headset Mic", NULL),
 +};
 +
- static const struct regmap_config rockchip_i2s_regmap_config = {
- 	.reg_bits = 32,
- 	.reg_stride = 4,
- 	.val_bits = 32,
- 	.max_register = I2S_RXDR,
-+	.reg_defaults = rockchip_i2s_reg_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(rockchip_i2s_reg_defaults),
- 	.writeable_reg = rockchip_i2s_wr_reg,
- 	.readable_reg = rockchip_i2s_rd_reg,
- 	.volatile_reg = rockchip_i2s_volatile_reg,
++static const struct snd_soc_dapm_route mt8173_rt5650_routes[] = {
++	{"Speaker", NULL, "SPOL"},
++	{"Speaker", NULL, "SPOR"},
++	{"DMIC L1", NULL, "Int Mic"},
++	{"DMIC R1", NULL, "Int Mic"},
++	{"Headphone", NULL, "HPOL"},
++	{"Headphone", NULL, "HPOR"},
++	{"Headset Mic", NULL, "micbias1"},
++	{"Headset Mic", NULL, "micbias2"},
++	{"IN1P", NULL, "Headset Mic"},
++	{"IN1N", NULL, "Headset Mic"},
++};
++
++static const struct snd_kcontrol_new mt8173_rt5650_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Speaker"),
++	SOC_DAPM_PIN_SWITCH("Int Mic"),
++	SOC_DAPM_PIN_SWITCH("Headphone"),
++	SOC_DAPM_PIN_SWITCH("Headset Mic"),
++};
++
++static int mt8173_rt5650_hw_params(struct snd_pcm_substream *substream,
++				   struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	int i, ret;
++
++	for (i = 0; i < rtd->num_codecs; i++) {
++		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
++
++		/* pll from mclk 12.288M */
++		ret = snd_soc_dai_set_pll(codec_dai, 0, 0, MCLK_FOR_CODECS,
++					  params_rate(params) * 512);
++		if (ret)
++			return ret;
++
++		/* sysclk from pll */
++		ret = snd_soc_dai_set_sysclk(codec_dai, 1,
++					     params_rate(params) * 512,
++					     SND_SOC_CLOCK_IN);
++		if (ret)
++			return ret;
++	}
++	return 0;
++}
++
++static struct snd_soc_ops mt8173_rt5650_ops = {
++	.hw_params = mt8173_rt5650_hw_params,
++};
++
++static struct snd_soc_jack mt8173_rt5650_jack;
++
++static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
++{
++	struct snd_soc_card *card = runtime->card;
++	struct snd_soc_codec *codec = runtime->codec_dais[0]->codec;
++	int ret;
++
++	rt5645_sel_asrc_clk_src(codec,
++				RT5645_DA_STEREO_FILTER |
++				RT5645_AD_STEREO_FILTER,
++				RT5645_CLK_SEL_I2S1_ASRC);
++	/* enable jack detection */
++	ret = snd_soc_card_jack_new(card, "Headset Jack",
++				    SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
++				    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++				    SND_JACK_BTN_2 | SND_JACK_BTN_3,
++				    &mt8173_rt5650_jack, NULL, 0);
++	if (ret) {
++		dev_err(card->dev, "Can't new Headset Jack %d\n", ret);
++		return ret;
++	}
++
++	return rt5645_set_jack_detect(codec,
++				      &mt8173_rt5650_jack,
++				      &mt8173_rt5650_jack,
++				      &mt8173_rt5650_jack);
++}
++
++static struct snd_soc_dai_link_component mt8173_rt5650_codecs[] = {
++	{
++		.dai_name = "rt5645-aif1",
++	},
++};
++
++enum {
++	DAI_LINK_PLAYBACK,
++	DAI_LINK_CAPTURE,
++	DAI_LINK_CODEC_I2S,
++};
++
++/* Digital audio interface glue - connects codec <---> CPU */
++static struct snd_soc_dai_link mt8173_rt5650_dais[] = {
++	/* Front End DAI links */
++	[DAI_LINK_PLAYBACK] = {
++		.name = "rt5650 Playback",
++		.stream_name = "rt5650 Playback",
++		.cpu_dai_name = "DL1",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.dynamic = 1,
++		.dpcm_playback = 1,
++	},
++	[DAI_LINK_CAPTURE] = {
++		.name = "rt5650 Capture",
++		.stream_name = "rt5650 Capture",
++		.cpu_dai_name = "VUL",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.dynamic = 1,
++		.dpcm_capture = 1,
++	},
++	/* Back End DAI links */
++	[DAI_LINK_CODEC_I2S] = {
++		.name = "Codec",
++		.cpu_dai_name = "I2S",
++		.no_pcm = 1,
++		.codecs = mt8173_rt5650_codecs,
++		.num_codecs = 1,
++		.init = mt8173_rt5650_init,
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++			   SND_SOC_DAIFMT_CBS_CFS,
++		.ops = &mt8173_rt5650_ops,
++		.ignore_pmdown_time = 1,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++	},
++};
++
++static struct snd_soc_card mt8173_rt5650_card = {
++	.name = "mtk-rt5650",
++	.owner = THIS_MODULE,
++	.dai_link = mt8173_rt5650_dais,
++	.num_links = ARRAY_SIZE(mt8173_rt5650_dais),
++	.controls = mt8173_rt5650_controls,
++	.num_controls = ARRAY_SIZE(mt8173_rt5650_controls),
++	.dapm_widgets = mt8173_rt5650_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(mt8173_rt5650_widgets),
++	.dapm_routes = mt8173_rt5650_routes,
++	.num_dapm_routes = ARRAY_SIZE(mt8173_rt5650_routes),
++};
++
++static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = &mt8173_rt5650_card;
++	struct device_node *platform_node;
++	int i, ret;
++
++	platform_node = of_parse_phandle(pdev->dev.of_node,
++					 "mediatek,platform", 0);
++	if (!platform_node) {
++		dev_err(&pdev->dev, "Property 'platform' missing or invalid\n");
++		return -EINVAL;
++	}
++
++	for (i = 0; i < card->num_links; i++) {
++		if (mt8173_rt5650_dais[i].platform_name)
++			continue;
++		mt8173_rt5650_dais[i].platform_of_node = platform_node;
++	}
++
++	mt8173_rt5650_codecs[0].of_node =
++		of_parse_phandle(pdev->dev.of_node, "mediatek,audio-codec", 0);
++	if (!mt8173_rt5650_codecs[0].of_node) {
++		dev_err(&pdev->dev,
++			"Property 'audio-codec' missing or invalid\n");
++		return -EINVAL;
++	}
++	card->dev = &pdev->dev;
++	platform_set_drvdata(pdev, card);
++
++	ret = devm_snd_soc_register_card(&pdev->dev, card);
++	if (ret)
++		dev_err(&pdev->dev, "%s snd_soc_register_card fail %d\n",
++			__func__, ret);
++	return ret;
++}
++
++static const struct of_device_id mt8173_rt5650_dt_match[] = {
++	{ .compatible = "mediatek,mt8173-rt5650", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, mt8173_rt5650_dt_match);
++
++static struct platform_driver mt8173_rt5650_driver = {
++	.driver = {
++		   .name = "mtk-rt5650",
++		   .of_match_table = mt8173_rt5650_dt_match,
++#ifdef CONFIG_PM
++		   .pm = &snd_soc_pm_ops,
++#endif
++	},
++	.probe = mt8173_rt5650_dev_probe,
++};
++
++module_platform_driver(mt8173_rt5650_driver);
++
++/* Module information */
++MODULE_DESCRIPTION("MT8173 RT5650 SoC machine driver");
++MODULE_AUTHOR("Koro Chen <koro.chen@mediatek.com>");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:mtk-rt5650");
++
 -- 
 2.7.0
