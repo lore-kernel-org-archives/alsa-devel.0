@@ -1,17 +1,15 @@
-From: Jonah Petri <jpetri@izotope.com>
-Subject: ASoC: simultaneous start of input/output channels
-Date: Mon, 22 Feb 2016 11:10:29 -0500
-Message-ID: <CAJOrw7wFQzb-1RCyOUvvWqH8s57roA48M3Po3OFN-j1ro32BuQ@mail.gmail.com>
+From: Tim Sheridan <tim.sheridan@imgtec.com>
+Subject: [PATCH] ALSA: compress: Add DSP private metadata
+	interface
+Date: Mon, 22 Feb 2016 17:54:31 +0000
+Message-ID: <1456163671-40987-1-git-send-email-tim.sheridan@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f48.google.com (mail-lf0-f48.google.com
- [209.85.215.48])
- by alsa0.perex.cz (Postfix) with ESMTP id B3CBC26063A
- for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 17:10:30 +0100 (CET)
-Received: by mail-lf0-f48.google.com with SMTP id l143so96979525lfe.2
- for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 08:10:30 -0800 (PST)
+Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id E95BF260673
+ for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 18:54:38 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,45 +20,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: pierre-louis.bossart@linux.intel.com, Tim Sheridan <tim.sheridan@imgtec.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
+Provides an area to communicate with a DSP to implement support for
+weird and wonderful features of DSP hardware that aren't supported in
+the compress offload API.
 
-Our application is very low-latency full duplex audio on a Freescale SoC.
-ALSA is configured with 2 64-frame buffers, with DSP happening on a
-realtime user thread.
+Signed-off-by: Tim Sheridan <tim.sheridan@imgtec.com>
+---
+ include/uapi/sound/compress_offload.h |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
 
-With small buffer sizes, we're obviously very tight on timing, and I've run
-into an issue which seems architectural in nature, and seemingly is worthy
-of consulting the list.
-
-What we're seeing is a large temporal latency between the DMA completion
-IRQ for the audio input DMA and audio output DMA. This delay is on the
-order of 200 microseconds, but also somewhat variable (ok, "large" is
-relative here, but it matters to us!).  In the ideal case, these two
-interrupts would be perfectly aligned in time, allowing us to run DSP for
-the full buffer's duration.  However, since the interrupts are offset by
-about 20% of a buffer, we effectively lose that time for our DSP.  And,
-since the timing is variable, and we're in a realtime application, this
-produces scared engineers.
-
-Working backwards from the hardware drivers, I see that snd_soc_dai_ops's
-trigger callback is used to start and stop the DMA.  The fundamental
-"start" action comes down to a single register write which can easily start
-both input and output streams in the same write.  However, it seems that
-the snd_soc_dai_ops does not provide for simultaneous start of both input
-and output streams.  Tracing back through the kernel interface and into
-user space, it seems that starting both the input and output streams
-necessitates two separate calls from userspace, which could explain the
-delay, and some of the variability in timing.
-
-My question is:
-* Did I miss some API or technique which could allow simultaneous start of
-full duplex streams?
-* If not, I would certainly appreciate advice on where we could fit this
-into the existing architecture!  We would be glad to do the kernel work to
-make this change, as this capability seems generally useful!
-
-Thanks much for any help,
-
-Jonah
+diff --git a/include/uapi/sound/compress_offload.h b/include/uapi/sound/compress_offload.h
+index e00d8cb..65ac445 100644
+--- a/include/uapi/sound/compress_offload.h
++++ b/include/uapi/sound/compress_offload.h
+@@ -30,7 +30,7 @@
+ #include <sound/compress_params.h>
+ 
+ 
+-#define SNDRV_COMPRESS_VERSION SNDRV_PROTOCOL_VERSION(0, 1, 2)
++#define SNDRV_COMPRESS_VERSION SNDRV_PROTOCOL_VERSION(0, 1, 3)
+ /**
+  * struct snd_compressed_buffer - compressed buffer
+  * @fragment_size: size of buffer fragment in bytes
+@@ -150,6 +150,8 @@ struct snd_compr_metadata {
+  * SNDRV_COMPRESS_SET_PARAMS: Set codec and stream parameters
+  * Note: only codec params can be changed runtime and stream params cant be
+  * SNDRV_COMPRESS_GET_PARAMS: Query codec params
++ * SNDRV_COMPRESS_SET_DSP_PRIV: Set private DSP metadata
++ * SNDRV_COMPRESS_GET_DSP_PRIV: Get private DSP metadata
+  * SNDRV_COMPRESS_TSTAMP: get the current timestamp value
+  * SNDRV_COMPRESS_AVAIL: get the current buffer avail value.
+  * This also queries the tstamp properties
+@@ -171,6 +173,8 @@ struct snd_compr_metadata {
+ 						 struct snd_compr_metadata)
+ #define SNDRV_COMPRESS_GET_METADATA	_IOWR('C', 0x15,\
+ 						 struct snd_compr_metadata)
++#define SNDRV_COMPRESS_SET_DSP_PRIV	_IOW('C', 0x16, struct snd_compr_metadata)
++#define SNDRV_COMPRESS_GET_DSP_PRIV	_IOWR('C', 0x17, struct snd_compr_metadata)
+ #define SNDRV_COMPRESS_TSTAMP		_IOR('C', 0x20, struct snd_compr_tstamp)
+ #define SNDRV_COMPRESS_AVAIL		_IOR('C', 0x21, struct snd_compr_avail)
+ #define SNDRV_COMPRESS_PAUSE		_IO('C', 0x30)
+-- 
+1.7.1
