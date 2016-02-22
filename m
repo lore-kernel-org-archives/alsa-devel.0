@@ -1,18 +1,18 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [PATCH RFC v5 2/8] ASoC: hdmi-codec: Add
- hdmi-codec for external HDMI-encoders
-Date: Mon, 22 Feb 2016 15:22:36 +0100
-Message-ID: <56CB19AC.5040702@st.com>
-References: <cover.1455720381.git.jsarha@ti.com>
- <f89a49faa3f475600dd2129a7db9c8c6a55851c9.1455720381.git.jsarha@ti.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Apply clock gate workaround to
+	Skylake, too
+Date: Mon, 22 Feb 2016 17:15:43 +0100
+Message-ID: <1456157743-21247-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 81BCC260673
- for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 15:22:47 +0100 (CET)
-In-Reply-To: <f89a49faa3f475600dd2129a7db9c8c6a55851c9.1455720381.git.jsarha@ti.com>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id C32C4260673
+ for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 17:15:45 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 2522CAB9B
+ for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 16:15:45 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,587 +22,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "airlied@linux.ie" <airlied@linux.ie>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "bcousson@baylibre.com" <bcousson@baylibre.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, "moinejf@free.fr" <moinejf@free.fr>, "tony@atomide.com" <tony@atomide.com>, "broonie@kernel.org" <broonie@kernel.org>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "tomi.valkeinen@ti.com" <tomi.valkeinen@ti.com>, "rmk+kernel@arm.linux.org.uk" <rmk+kernel@arm.linux.org.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Jyri,
+Some Skylake machines show the codec probe errors in certain
+situations, e.g. HP Z240 desktop fails to probe the onboard Realtek
+codec at reloading the snd-hda-intel module like:
+  snd_hda_intel 0000:00:1f.3: spurious response 0x200:0x2, last cmd=0x000000
+  snd_hda_intel 0000:00:1f.3: azx_get_response timeout, switching to polling mode: lastcmd=0x000f0000
+  snd_hda_intel 0000:00:1f.3: No response from codec, disabling MSI: last cmd=0x000f0000
+  snd_hda_intel 0000:00:1f.3: Codec #0 probe error; disabling it...
+  hdaudio hdaudioC0D2: no AFG or MFG node found
+  snd_hda_intel 0000:00:1f.3: no codecs initialized
 
-Integrated and tested on sti platform with success.
+Also, HP G470 G3 suffers from the similar problem, as reported in
+bugzilla below.  On this machine, the codec probe error appears even
+at a fresh boot.
 
-I will re-submit patch-set associated to sti platform, when (if) patches
-accepted.
+As Libin suggested, the same workaround used for Broxton in the commit
+[6639484ddaf6: ALSA: hda - disable dynamic clock gating on Broxton
+ before reset] can be applied for Skylake in order to fix this problem.
+The Intel HW team also confirmed that this is needed for SKL.
 
-Regards
-Arnaud
+This patch makes the workaround applied to both SKL and BXT
+platforms.  The referred macros are moved and one superfluous macro
+(IS_BROXTON()) is another one (IS_BXT()) as well.
 
-On 02/17/2016 03:49 PM, Jyri Sarha wrote:
-> The hdmi-codec is a platform device driver to be registered from
-> drivers of external HDMI encoders with I2S and/or spdif interface. The
-> driver in turn registers an ASoC codec for the HDMI encoder's audio
-> functionality.
-> 
-> The structures and definitions in the API header are mostly redundant
-> copies of similar structures in ASoC headers. This is on purpose to
-> avoid direct dependencies to ASoC structures in video side driver.
-> 
-> Signed-off-by: Jyri Sarha <jsarha@ti.com>
-> ---
->  include/sound/hdmi-codec.h    | 100 +++++++++++
->  sound/soc/codecs/Kconfig      |   6 +
->  sound/soc/codecs/Makefile     |   2 +
->  sound/soc/codecs/hdmi-codec.c | 393 ++++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 501 insertions(+)
->  create mode 100644 include/sound/hdmi-codec.h
->  create mode 100644 sound/soc/codecs/hdmi-codec.c
-> 
-> diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
-> new file mode 100644
-> index 0000000..fc3a481
-> --- /dev/null
-> +++ b/include/sound/hdmi-codec.h
-> @@ -0,0 +1,100 @@
-> +/*
-> + * hdmi-codec.h - HDMI Codec driver API
-> + *
-> + * Copyright (C) 2014 Texas Instruments Incorporated - http://www.ti.com
-> + *
-> + * Author: Jyri Sarha <jsarha@ti.com>
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License
-> + * version 2 as published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it will be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-> + * General Public License for more details.
-> + */
-> +
-> +#ifndef __HDMI_CODEC_H__
-> +#define __HDMI_CODEC_H__
-> +
-> +#include <linux/hdmi.h>
-> +#include <drm/drm_edid.h>
-> +#include <sound/asoundef.h>
-> +#include <uapi/sound/asound.h>
-> +
-> +/*
-> + * Protocol between ASoC cpu-dai and HDMI-encoder
-> + */
-> +struct hdmi_codec_daifmt {
-> +	enum {
-> +		HDMI_I2S,
-> +		HDMI_RIGHT_J,
-> +		HDMI_LEFT_J,
-> +		HDMI_DSP_A,
-> +		HDMI_DSP_B,
-> +		HDMI_AC97,
-> +		HDMI_SPDIF,
-> +	} fmt;
-> +	int bit_clk_inv:1;
-> +	int frame_clk_inv:1;
-> +	int bit_clk_master:1;
-> +	int frame_clk_master:1;
-> +};
-> +
-> +/*
-> + * HDMI audio parameters
-> + */
-> +struct hdmi_codec_params {
-> +	struct hdmi_audio_infoframe cea;
-> +	struct snd_aes_iec958 iec;
-> +	int sample_rate;
-> +	int sample_width;
-> +	int channels;
-> +};
-> +
-> +struct hdmi_codec_ops {
-> +	/*
-> +	 * Called when ASoC starts an audio stream setup.
-> +	 * Optional
-> +	 */
-> +	int (*audio_startup)(struct device *dev);
-> +
-> +	/*
-> +	 * Configures HDMI-encoder for audio stream.
-> +	 * Mandatory
-> +	 */
-> +	int (*hw_params)(struct device *dev,
-> +			 struct hdmi_codec_daifmt *fmt,
-> +			 struct hdmi_codec_params *hparms);
-> +
-> +	/*
-> +	 * Shuts down the audio stream.
-> +	 * Mandatory
-> +	 */
-> +	void (*audio_shutdown)(struct device *dev);
-> +
-> +	/*
-> +	 * Mute/unmute HDMI audio stream.
-> +	 * Optional
-> +	 */
-> +	int (*digital_mute)(struct device *dev, bool enable);
-> +
-> +	/*
-> +	 * Provides EDID-Like-Data from connected HDMI device.
-> +	 * Optional
-> +	 */
-> +	int (*get_eld)(struct device *dev, uint8_t *buf, size_t len);
-> +};
-> +
-> +/* HDMI codec initalization data */
-> +struct hdmi_codec_pdata {
-> +	const struct hdmi_codec_ops *ops;
-> +	uint i2s:1;
-> +	uint spdif:1;
-> +	int max_i2s_channels;
-> +};
-> +
-> +#define HDMI_CODEC_DRV_NAME "hdmi-audio-codec"
-> +
-> +#endif /* __HDMI_CODEC_H__ */
-> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-> index cfdafc4..4d5915e 100644
-> --- a/sound/soc/codecs/Kconfig
-> +++ b/sound/soc/codecs/Kconfig
-> @@ -82,6 +82,7 @@ config SND_SOC_ALL_CODECS
->  	select SND_SOC_MC13783 if MFD_MC13XXX
->  	select SND_SOC_ML26124 if I2C
->  	select SND_SOC_NAU8825 if I2C
-> +	select SND_SOC_HDMI_CODEC
->  	select SND_SOC_PCM1681 if I2C
->  	select SND_SOC_PCM1792A if SPI_MASTER
->  	select SND_SOC_PCM3008
-> @@ -454,6 +455,11 @@ config SND_SOC_BT_SCO
->  config SND_SOC_DMIC
->  	tristate
->  
-> +config SND_SOC_HDMI_CODEC
-> +       tristate
-> +       select SND_PCM_ELD
-> +       select SND_PCM_IEC958
-> +
->  config SND_SOC_ES8328
->  	tristate "Everest Semi ES8328 CODEC"
->  
-> diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-> index f632fc4..49c1824 100644
-> --- a/sound/soc/codecs/Makefile
-> +++ b/sound/soc/codecs/Makefile
-> @@ -75,6 +75,7 @@ snd-soc-max9850-objs := max9850.o
->  snd-soc-mc13783-objs := mc13783.o
->  snd-soc-ml26124-objs := ml26124.o
->  snd-soc-nau8825-objs := nau8825.o
-> +snd-soc-hdmi-codec-objs := hdmi-codec.o
->  snd-soc-pcm1681-objs := pcm1681.o
->  snd-soc-pcm1792a-codec-objs := pcm1792a.o
->  snd-soc-pcm3008-objs := pcm3008.o
-> @@ -270,6 +271,7 @@ obj-$(CONFIG_SND_SOC_MAX9850)	+= snd-soc-max9850.o
->  obj-$(CONFIG_SND_SOC_MC13783)	+= snd-soc-mc13783.o
->  obj-$(CONFIG_SND_SOC_ML26124)	+= snd-soc-ml26124.o
->  obj-$(CONFIG_SND_SOC_NAU8825)   += snd-soc-nau8825.o
-> +obj-$(CONFIG_SND_SOC_HDMI_CODEC)	+= snd-soc-hdmi-codec.o
->  obj-$(CONFIG_SND_SOC_PCM1681)	+= snd-soc-pcm1681.o
->  obj-$(CONFIG_SND_SOC_PCM1792A)	+= snd-soc-pcm1792a-codec.o
->  obj-$(CONFIG_SND_SOC_PCM3008)	+= snd-soc-pcm3008.o
-> diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-> new file mode 100644
-> index 0000000..bc47b9a
-> --- /dev/null
-> +++ b/sound/soc/codecs/hdmi-codec.c
-> @@ -0,0 +1,393 @@
-> +/*
-> + * ALSA SoC codec for HDMI encoder drivers
-> + * Copyright (C) 2015 Texas Instruments Incorporated - http://www.ti.com/
-> + * Author: Jyri Sarha <jsarha@ti.com>
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License
-> + * version 2 as published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it will be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
-> + * General Public License for more details.
-> + */
-> +#include <linux/module.h>
-> +#include <linux/string.h>
-> +#include <sound/core.h>
-> +#include <sound/pcm.h>
-> +#include <sound/pcm_params.h>
-> +#include <sound/soc.h>
-> +#include <sound/pcm_drm_eld.h>
-> +#include <sound/hdmi-codec.h>
-> +#include <sound/pcm_iec958.h>
-> +
-> +#include <drm/drm_crtc.h> /* This is only to get MAX_ELD_BYTES */
-> +
-> +struct hdmi_codec_priv {
-> +	struct hdmi_codec_pdata hcd;
-> +	struct snd_soc_dai_driver *daidrv;
-> +	struct hdmi_codec_daifmt daifmt[2];
-> +	struct mutex current_stream_lock;
-> +	struct snd_pcm_substream *current_stream;
-> +	struct snd_pcm_hw_constraint_list ratec;
-> +	uint8_t eld[MAX_ELD_BYTES];
-> +};
-> +
-> +static const struct snd_soc_dapm_widget hdmi_widgets[] = {
-> +	SND_SOC_DAPM_OUTPUT("TX"),
-> +};
-> +
-> +static const struct snd_soc_dapm_route hdmi_routes[] = {
-> +	{ "TX", NULL, "Playback" },
-> +};
-> +
-> +enum {
-> +	DAI_ID_I2S = 0,
-> +	DAI_ID_SPDIF,
-> +};
-> +
-> +static int hdmi_codec_new_stream(struct snd_pcm_substream *substream,
-> +				 struct snd_soc_dai *dai)
-> +{
-> +	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
-> +	int ret = 0;
-> +
-> +	mutex_lock(&hcp->current_stream_lock);
-> +	if (!hcp->current_stream) {
-> +		hcp->current_stream = substream;
-> +	} else if (hcp->current_stream != substream) {
-> +		dev_err(dai->dev, "Only one simultaneous stream supported!\n");
-> +		ret = -EINVAL;
-> +	}
-> +	mutex_unlock(&hcp->current_stream_lock);
-> +
-> +	return ret;
-> +}
-> +
-> +static int hdmi_codec_startup(struct snd_pcm_substream *substream,
-> +			      struct snd_soc_dai *dai)
-> +{
-> +	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
-> +	int ret = 0;
-> +
-> +	dev_dbg(dai->dev, "%s()\n", __func__);
-> +
-> +	ret = hdmi_codec_new_stream(substream, dai);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (hcp->hcd.ops->audio_startup) {
-> +		ret = hcp->hcd.ops->audio_startup(dai->dev->parent);
-> +		if (ret) {
-> +			mutex_lock(&hcp->current_stream_lock);
-> +			hcp->current_stream = NULL;
-> +			mutex_unlock(&hcp->current_stream_lock);
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	if (hcp->hcd.ops->get_eld) {
-> +		ret = hcp->hcd.ops->get_eld(dai->dev->parent, hcp->eld,
-> +					    sizeof(hcp->eld));
-> +
-> +		if (!ret) {
-> +			ret = snd_pcm_hw_constraint_eld(substream->runtime,
-> +							hcp->eld);
-> +			if (ret)
-> +				return ret;
-> +		}
-> +	}
-> +	return 0;
-> +}
-> +
-> +static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
-> +				struct snd_soc_dai *dai)
-> +{
-> +	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
-> +
-> +	dev_dbg(dai->dev, "%s()\n", __func__);
-> +
-> +	WARN_ON(hcp->current_stream != substream);
-> +
-> +	hcp->hcd.ops->audio_shutdown(dai->dev->parent);
-> +
-> +	mutex_lock(&hcp->current_stream_lock);
-> +	hcp->current_stream = NULL;
-> +	mutex_unlock(&hcp->current_stream_lock);
-> +}
-> +
-> +static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
-> +				struct snd_pcm_hw_params *params,
-> +				struct snd_soc_dai *dai)
-> +{
-> +	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
-> +	struct hdmi_codec_params hp = {
-> +		.iec = {
-> +			.status = { 0 },
-> +			.subcode = { 0 },
-> +			.pad = 0,
-> +			.dig_subframe = { 0 },
-> +		}
-> +	};
-> +	int ret;
-> +
-> +	dev_dbg(dai->dev, "%s() width %d rate %d channels %d\n", __func__,
-> +		params_width(params), params_rate(params),
-> +		params_channels(params));
-> +
-> +	ret = snd_pcm_create_iec958_consumer_hw_params(params, hp.iec.status,
-> +						       sizeof(hp.iec.status));
-> +	if (ret < 0) {
-> +		dev_err(dai->dev, "Creating IEC958 channel status failed %d\n",
-> +			ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = hdmi_codec_new_stream(substream, dai);
-> +	if (ret)
-> +		return ret;
-> +
-> +	hdmi_audio_infoframe_init(&hp.cea);
-> +	hp.cea.channels = params_channels(params);
-> +	hp.cea.coding_type = HDMI_AUDIO_CODING_TYPE_STREAM;
-> +	hp.cea.sample_size = HDMI_AUDIO_SAMPLE_SIZE_STREAM;
-> +	hp.cea.sample_frequency = HDMI_AUDIO_SAMPLE_FREQUENCY_STREAM;
-> +
-> +	hp.sample_width = params_width(params);
-> +	hp.sample_rate = params_rate(params);
-> +	hp.channels = params_channels(params);
-> +
-> +	return hcp->hcd.ops->hw_params(dai->dev->parent, &hcp->daifmt[dai->id],
-> +				       &hp);
-> +}
-> +
-> +static int hdmi_codec_set_fmt(struct snd_soc_dai *dai,
-> +			      unsigned int fmt)
-> +{
-> +	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
-> +	struct hdmi_codec_daifmt cf = { 0 };
-> +	int ret = 0;
-> +
-> +	dev_dbg(dai->dev, "%s()\n", __func__);
-> +
-> +	if (dai->id == DAI_ID_SPDIF) {
-> +		cf.fmt = HDMI_SPDIF;
-> +	} else {
-> +		switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-> +		case SND_SOC_DAIFMT_CBM_CFM:
-> +			cf.bit_clk_master = 1;
-> +			cf.frame_clk_master = 1;
-> +			break;
-> +		case SND_SOC_DAIFMT_CBS_CFM:
-> +			cf.frame_clk_master = 1;
-> +			break;
-> +		case SND_SOC_DAIFMT_CBM_CFS:
-> +			cf.bit_clk_master = 1;
-> +			break;
-> +		case SND_SOC_DAIFMT_CBS_CFS:
-> +			break;
-> +		default:
-> +			return -EINVAL;
-> +		}
-> +
-> +		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-> +		case SND_SOC_DAIFMT_NB_NF:
-> +			break;
-> +		case SND_SOC_DAIFMT_NB_IF:
-> +			cf.frame_clk_inv = 1;
-> +			break;
-> +		case SND_SOC_DAIFMT_IB_NF:
-> +			cf.bit_clk_inv = 1;
-> +			break;
-> +		case SND_SOC_DAIFMT_IB_IF:
-> +			cf.frame_clk_inv = 1;
-> +			cf.bit_clk_inv = 1;
-> +			break;
-> +		}
-> +
-> +		switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-> +		case SND_SOC_DAIFMT_I2S:
-> +			cf.fmt = HDMI_I2S;
-> +			break;
-> +		case SND_SOC_DAIFMT_DSP_A:
-> +			cf.fmt = HDMI_DSP_A;
-> +			break;
-> +		case SND_SOC_DAIFMT_DSP_B:
-> +			cf.fmt = HDMI_DSP_B;
-> +			break;
-> +		case SND_SOC_DAIFMT_RIGHT_J:
-> +			cf.fmt = HDMI_RIGHT_J;
-> +			break;
-> +		case SND_SOC_DAIFMT_LEFT_J:
-> +			cf.fmt = HDMI_LEFT_J;
-> +			break;
-> +		case SND_SOC_DAIFMT_AC97:
-> +			cf.fmt = HDMI_AC97;
-> +			break;
-> +		default:
-> +			dev_err(dai->dev, "Invalid DAI interface format\n");
-> +			return -EINVAL;
-> +		}
-> +	}
-> +
-> +	hcp->daifmt[dai->id] = cf;
-> +
-> +	return ret;
-> +}
-> +
-> +static int hdmi_codec_digital_mute(struct snd_soc_dai *dai, int mute)
-> +{
-> +	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
-> +
-> +	dev_dbg(dai->dev, "%s()\n", __func__);
-> +
-> +	if (hcp->hcd.ops->digital_mute)
-> +		return hcp->hcd.ops->digital_mute(dai->dev->parent, mute);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct snd_soc_dai_ops hdmi_dai_ops = {
-> +	.startup	= hdmi_codec_startup,
-> +	.shutdown	= hdmi_codec_shutdown,
-> +	.hw_params	= hdmi_codec_hw_params,
-> +	.set_fmt	= hdmi_codec_set_fmt,
-> +	.digital_mute	= hdmi_codec_digital_mute,
-> +};
-> +
-> +
-> +#define HDMI_RATES	(SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
-> +			 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |\
-> +			 SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 |\
-> +			 SNDRV_PCM_RATE_192000)
-> +
-> +#define SPDIF_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE |\
-> +			 SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S20_3BE |\
-> +			 SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S24_3BE |\
-> +			 SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S24_BE)
-> +
-> +/*
-> + * This list is only for formats allowed on the I2S bus. So there is
-> + * some formats listed that are not supported by HDMI interface. For
-> + * instance allowing the 32-bit formats enables 24-precision with CPU
-> + * DAIs that do not support 24-bit formats. If the extra formats cause
-> + * problems, we should add the video side driver an option to disable
-> + * them.
-> + */
-> +#define I2S_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE |\
-> +			 SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S20_3BE |\
-> +			 SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S24_3BE |\
-> +			 SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S24_BE |\
-> +			 SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S32_BE)
-> +
-> +static struct snd_soc_dai_driver hdmi_i2s_dai = {
-> +	.name = "i2s-hifi",
-> +	.id = DAI_ID_I2S,
-> +	.playback = {
-> +		.stream_name = "Playback",
-> +		.channels_min = 2,
-> +		.channels_max = 8,
-> +		.rates = HDMI_RATES,
-> +		.formats = I2S_FORMATS,
-> +		.sig_bits = 24,
-> +	},
-> +	.ops = &hdmi_dai_ops,
-> +};
-> +
-> +static const struct snd_soc_dai_driver hdmi_spdif_dai = {
-> +	.name = "spdif-hifi",
-> +	.id = DAI_ID_SPDIF,
-> +	.playback = {
-> +		.stream_name = "Playback",
-> +		.channels_min = 2,
-> +		.channels_max = 2,
-> +		.rates = HDMI_RATES,
-> +		.formats = SPDIF_FORMATS,
-> +	},
-> +	.ops = &hdmi_dai_ops,
-> +};
-> +
-> +static struct snd_soc_codec_driver hdmi_codec = {
-> +	.dapm_widgets = hdmi_widgets,
-> +	.num_dapm_widgets = ARRAY_SIZE(hdmi_widgets),
-> +	.dapm_routes = hdmi_routes,
-> +	.num_dapm_routes = ARRAY_SIZE(hdmi_routes),
-> +};
-> +
-> +static int hdmi_codec_probe(struct platform_device *pdev)
-> +{
-> +	struct hdmi_codec_pdata *hcd = pdev->dev.platform_data;
-> +	struct device *dev = &pdev->dev;
-> +	struct hdmi_codec_priv *hcp;
-> +	int dai_count, i = 0;
-> +	int ret;
-> +
-> +	dev_dbg(dev, "%s()\n", __func__);
-> +
-> +	if (!hcd) {
-> +		dev_err(dev, "%s: No plalform data\n", __func__);
-> +		return -EINVAL;
-> +	}
-> +
-> +	dai_count = hcd->i2s + hcd->spdif;
-> +	if (dai_count < 1 || !hcd->ops || !hcd->ops->hw_params ||
-> +	    !hcd->ops->audio_shutdown) {
-> +		dev_err(dev, "%s: Invalid parameters\n", __func__);
-> +		return -EINVAL;
-> +	}
-> +
-> +	hcp = devm_kzalloc(dev, sizeof(*hcp), GFP_KERNEL);
-> +	if (!hcp)
-> +		return -ENOMEM;
-> +
-> +	hcp->hcd = *hcd;
-> +	mutex_init(&hcp->current_stream_lock);
-> +
-> +	hcp->daidrv = devm_kzalloc(dev, dai_count * sizeof(*hcp->daidrv),
-> +				   GFP_KERNEL);
-> +	if (!hcp->daidrv)
-> +		return -ENOMEM;
-> +
-> +	if (hcd->i2s) {
-> +		hcp->daidrv[i] = hdmi_i2s_dai;
-> +		hcp->daidrv[i].playback.channels_max =
-> +			hcd->max_i2s_channels;
-> +		i++;
-> +	}
-> +
-> +	if (hcd->spdif)
-> +		hcp->daidrv[i] = hdmi_spdif_dai;
-> +
-> +	ret = snd_soc_register_codec(dev, &hdmi_codec, hcp->daidrv,
-> +				     dai_count);
-> +	if (ret) {
-> +		dev_err(dev, "%s: snd_soc_register_codec() failed (%d)\n",
-> +			__func__, ret);
-> +		return ret;
-> +	}
-> +
-> +	dev_set_drvdata(dev, hcp);
-> +	return 0;
-> +}
-> +
-> +static int hdmi_codec_remove(struct platform_device *pdev)
-> +{
-> +	snd_soc_unregister_codec(&pdev->dev);
-> +	return 0;
-> +}
-> +
-> +static struct platform_driver hdmi_codec_driver = {
-> +	.driver = {
-> +		.name = HDMI_CODEC_DRV_NAME,
-> +	},
-> +	.probe = hdmi_codec_probe,
-> +	.remove = hdmi_codec_remove,
-> +};
-> +
-> +module_platform_driver(hdmi_codec_driver);
-> +
-> +MODULE_AUTHOR("Jyri Sarha <jsarha@ti.com>");
-> +MODULE_DESCRIPTION("HDMI Audio Codec Driver");
-> +MODULE_LICENSE("GPL");
-> +MODULE_ALIAS("platform:" HDMI_CODEC_DRV_NAME);
-> 
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=112731
+Suggested-by: Libin Yang <libin.yang@linux.intel.com>
+Cc: <stable@vger.kernel.org> # v4.4+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_intel.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index ce6b97f31390..e5240cb3749f 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -363,7 +363,10 @@ enum {
+ 					((pci)->device == 0x0d0c) || \
+ 					((pci)->device == 0x160c))
+ 
+-#define IS_BROXTON(pci)	((pci)->device == 0x5a98)
++#define IS_SKL(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0xa170)
++#define IS_SKL_LP(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x9d70)
++#define IS_BXT(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x5a98)
++#define IS_SKL_PLUS(pci) (IS_SKL(pci) || IS_SKL_LP(pci) || IS_BXT(pci))
+ 
+ static char *driver_short_names[] = {
+ 	[AZX_DRIVER_ICH] = "HDA Intel",
+@@ -540,13 +543,13 @@ static void hda_intel_init_chip(struct azx *chip, bool full_reset)
+ 
+ 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
+ 		snd_hdac_set_codec_wakeup(bus, true);
+-	if (IS_BROXTON(pci)) {
++	if (IS_SKL_PLUS(pci)) {
+ 		pci_read_config_dword(pci, INTEL_HDA_CGCTL, &val);
+ 		val = val & ~INTEL_HDA_CGCTL_MISCBDCGE;
+ 		pci_write_config_dword(pci, INTEL_HDA_CGCTL, val);
+ 	}
+ 	azx_init_chip(chip, full_reset);
+-	if (IS_BROXTON(pci)) {
++	if (IS_SKL_PLUS(pci)) {
+ 		pci_read_config_dword(pci, INTEL_HDA_CGCTL, &val);
+ 		val = val | INTEL_HDA_CGCTL_MISCBDCGE;
+ 		pci_write_config_dword(pci, INTEL_HDA_CGCTL, val);
+@@ -555,7 +558,7 @@ static void hda_intel_init_chip(struct azx *chip, bool full_reset)
+ 		snd_hdac_set_codec_wakeup(bus, false);
+ 
+ 	/* reduce dma latency to avoid noise */
+-	if (IS_BROXTON(pci))
++	if (IS_BXT(pci))
+ 		bxt_reduce_dma_latency(chip);
+ }
+ 
+@@ -977,11 +980,6 @@ static int azx_resume(struct device *dev)
+ /* put codec down to D3 at hibernation for Intel SKL+;
+  * otherwise BIOS may still access the codec and screw up the driver
+  */
+-#define IS_SKL(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0xa170)
+-#define IS_SKL_LP(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x9d70)
+-#define IS_BXT(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x5a98)
+-#define IS_SKL_PLUS(pci) (IS_SKL(pci) || IS_SKL_LP(pci) || IS_BXT(pci))
+-
+ static int azx_freeze_noirq(struct device *dev)
+ {
+ 	struct pci_dev *pci = to_pci_dev(dev);
+-- 
+2.7.1
