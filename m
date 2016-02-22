@@ -1,88 +1,54 @@
-From: Martin Kepplinger <martink@posteo.de>
-Subject: Re: [BUG] [REGRESSION] [BISECTED] -rc1 breaks audio over HDMI for
- i915
-Date: Mon, 22 Feb 2016 22:37:28 +0100
-Message-ID: <56CB7F98.20807@posteo.de>
-References: <56B98888.5000702@posteo.de> <s5h4mdixg4n.wl-tiwai@suse.de>
- <56BB7187.1020108@posteo.de> <s5hegcjipk4.wl-tiwai@suse.de>
- <56BDD990.1070900@posteo.de> <s5hegcif37m.wl-tiwai@suse.de>
- <56BE0044.9080500@posteo.de> <s5h37sxgazv.wl-tiwai@suse.de>
- <56CAE1C5.4070107@posteo.de> <s5hr3g52fud.wl-tiwai@suse.de>
- <56CB1510.4010503@posteo.de> <s5hd1ro3kbf.wl-tiwai@suse.de>
- <56CB5A4A.90906@posteo.de> <s5hpovov9wy.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: [PATCH v2] ASoC: wm9713: fix regmap free path
+Date: Mon, 22 Feb 2016 23:35:44 +0100
+Message-ID: <1456180544-29108-1-git-send-email-robert.jarzmik@free.fr>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hpovov9wy.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: david.henningsson@canonical.com, han.lu@intel.com, libin.yang@intel.com, treding@nvidia.com, perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Robert Jarzmik <robert.jarzmik@free.fr>, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Am 2016-02-22 um 20:10 schrieb Takashi Iwai:
-> On Mon, 22 Feb 2016 19:58:18 +0100,
-> Martin Kepplinger wrote:
->>
->> Am 2016-02-22 um 15:12 schrieb Takashi Iwai:
->>> On Mon, 22 Feb 2016 15:02:56 +0100,
->>> Martin Kepplinger wrote:
->>>>> And how about my questions in the previous mail?  Does
->>>>> i915_audio_component_get_eld() is called and returns 0?
->>>>> And is monitor_present set true or false?
->>>>
->>>> i915_audio_component_get_eld() returns 0 and monitor_present is 0.
->>>>>
->>>>> If i915_audio_component_get_eld() is called but returns zero, track
->>>>> the code flow there.  It means either intel_encoder is NULL or
->>>>> intel_dig_port->audio_connector is NULL.
->>>>
->>>> intel_dig_port->audio_connector is NULL!
->>>>
->>>> (when called during boot and during HDMI plugin)
->>>
->>> Interesting.  The relevant code flow should be like:
->>>
->>>   intel_audio_codec_enable()
->>>   -> acomp->audio_ops->pin_eld_notify()
->>>     -> intel_pin_eld_notify()
->>>       -> check_presence_and_report()
->>>         -> hdmi_present_sense()
->>> 	  -> sync_eld_via_acomp()
->>> 	    -> snd_hdac_acomp_get_eld()
->>> 	      -> i915_audio_component_get_eld()
->>>
->>> So, at first, check whether intel_dig_port in both
->>> intel_audio_codec_enable() and i915_audio_component_get_eld() points
->>> to the same object address.  The audio_connector must be set in
->>> intel_audio_codec_enable(), thus basically it must be non-NULL at
->>> i915_audio_component_get_eld(), too.
->>>
->>
->> intel_dig_port is *not* the same object in these 2 places. During
->> plugin, see:
->>
->> [  146.934091] in intel_audio_codec_enable: intel_dig_port is
->> ffff8800a1f54000
->> [  146.934121] in i915_audio_component_get_eld: intel_dig_port is
->> ffff880244f7d000
->>
->> sorry for the slow responses. I'll try to go back that direction unless
->> again someone comes up with other suggestions.
-> 
-> Thanks, this makes sense.  It implies that the digital port mapping is
-> somehow wrong.  There are three places setting dig_port_map[], one in
-> intel_ddi_init(), one in intel_dp_init() and another in
-> intel_hdmi_init().  Try to check which function creates which object
-> assigned to which port number, together with drm.debug=0x0e debug
-> messages.
-> 
-without using drm.debug=0x0e, but by printing the kmalloc'ed objects in
-those 3 functions with ports, I found:
+In the conversion to regmap, I assumed that the devm_() variant could be
+used in the soc probe function.
 
-2 of them are running, only during boot:
+As a mater of fact with the current code the regmap is freed twice
+because of the devm_() call:
+(mutex_lock) from [<c01f6624>] (debugfs_remove_recursive+0x50/0x1d0)
+(debugfs_remove_recursive) from [<c02bf800>] (regmap_debugfs_exit+0x1c/0xd4)
+(regmap_debugfs_exit) from [<c02ba1f8>] (regmap_exit+0x28/0xc8)
+(regmap_exit) from [<c02aa258>] (release_nodes+0x18c/0x204)
+(release_nodes) from [<c02a278c>] (device_release+0x18/0x90)
+(device_release) from [<c0239030>] (kobject_release+0x90/0x1bc)
+(kobject_release) from [<c0395c94>] (wm9713_soc_remove+0x1c/0x24)
+(wm9713_soc_remove) from [<c0384884>] (soc_remove_component+0x50/0x7c)
+(soc_remove_component) from [<c0386c28>] (soc_remove_dai_links+0x118/0x228)
+(soc_remove_dai_links) from [<c038721c>] (snd_soc_register_card+0x4e4/0xdd4)
+(snd_soc_register_card) from [<c0393c54>] (devm_snd_soc_register_card+0x34/0x70)
 
-[    2.322865] intel_hdmi_init: intel_dig_port is ffff880242564000  port 1
-[    2.322999] intel_dp_init: intel_dig_port is ffff880242f30000  port 1
+Fix this by replacing the devm_regmap initialization code with the non
+devm_() variant.
 
-is is correct for them to have both port 1? Any more ideas?
+Fixes: 700dadfefc3d ASoC: wm9713: convert to regmap
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+---
+Since v1: changed the fix into removing the devm_() variant
+---
+ sound/soc/codecs/wm9713.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
+index 4e522302bb8a..edd270f6d8e5 100644
+--- a/sound/soc/codecs/wm9713.c
++++ b/sound/soc/codecs/wm9713.c
+@@ -1212,7 +1212,7 @@ static int wm9713_soc_probe(struct snd_soc_codec *codec)
+ 	if (IS_ERR(wm9713->ac97))
+ 		return PTR_ERR(wm9713->ac97);
+ 
+-	regmap = devm_regmap_init_ac97(wm9713->ac97, &wm9713_regmap_config);
++	regmap = regmap_init_ac97(wm9713->ac97, &wm9713_regmap_config);
+ 	if (IS_ERR(regmap)) {
+ 		snd_soc_free_ac97_codec(wm9713->ac97);
+ 		return PTR_ERR(regmap);
+-- 
+2.1.4
