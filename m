@@ -1,38 +1,189 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v7 0/2] ASoC: Add SPDIF support for
- Allwinner SoCs
-Date: Mon, 22 Feb 2016 12:12:46 +0900
-Message-ID: <20160222031246.GQ18327@sirena.org.uk>
-References: <1456053218-16325-1-git-send-email-codekipper@gmail.com>
-Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: fsl_ssi: remove explicit register
+	defaults" to the asoc tree
+Date: Mon, 22 Feb 2016 12:14:42 +0900
+Message-ID: <E1aXgxO-0005sm-Jc@finisterre>
+References: <569C0F86.2020509@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="UkA0xnprSsTJHodh"
-Return-path: <linux-sunxi+bncBDQ2L75W5QGBBQPZVG3AKGQEE733HQA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1456053218-16325-1-git-send-email-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Cc: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 358D326057F
+ for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 04:14:57 +0100 (CET)
+In-Reply-To: <569C0F86.2020509@maciej.szmigiero.name>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, Fabio Estevam <fabio.estevam@nxp.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---UkA0xnprSsTJHodh
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline
+The patch
 
-On Sun, Feb 21, 2016 at 12:13:36PM +0100, codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
-> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> 
-> For now just the SPDIF transmitter has been tested on a Mele A2000(A10)
-> and a Itead Ibox(A20).
+   ASoC: fsl_ssi: remove explicit register defaults
 
-This was already applied.  If any updates are required or you are
-submitting further changes they should be sent as incremental updates
-against current git, existing patches will not be replaced.
---UkA0xnprSsTJHodh--
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 6139b1b184d5f6257f692dc814dbcd47e4cf90f1 Mon Sep 17 00:00:00 2001
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Date: Mon, 18 Jan 2016 20:07:44 +0100
+Subject: [PATCH] ASoC: fsl_ssi: remove explicit register defaults
+
+There is no guarantee that on fsl_ssi module load
+SSI registers will have their power-on-reset values.
+
+In fact, if the driver is reloaded the values in
+registers will be whatever they were set to previously.
+
+However, the cache needs to be fully populated at probe
+time to avoid non-atomic allocations during register
+access.
+
+Special case here is imx21-class SSI, since
+according to datasheet it don't have SACC{ST,EN,DIS}
+regs.
+
+This fixes hard lockup on fsl_ssi module reload,
+at least in AC'97 mode.
+
+Fixes: 05cf237972fe ("ASoC: fsl_ssi: Add driver suspend and resume to support MEGA Fast")
+Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+Tested-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/fsl/fsl_ssi.c | 42 ++++++++++++++++++++++--------------------
+ 1 file changed, 22 insertions(+), 20 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 40dfd8a..ed8de10 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -112,20 +112,6 @@ struct fsl_ssi_rxtx_reg_val {
+ 	struct fsl_ssi_reg_val tx;
+ };
+ 
+-static const struct reg_default fsl_ssi_reg_defaults[] = {
+-	{CCSR_SSI_SCR,     0x00000000},
+-	{CCSR_SSI_SIER,    0x00003003},
+-	{CCSR_SSI_STCR,    0x00000200},
+-	{CCSR_SSI_SRCR,    0x00000200},
+-	{CCSR_SSI_STCCR,   0x00040000},
+-	{CCSR_SSI_SRCCR,   0x00040000},
+-	{CCSR_SSI_SACNT,   0x00000000},
+-	{CCSR_SSI_STMSK,   0x00000000},
+-	{CCSR_SSI_SRMSK,   0x00000000},
+-	{CCSR_SSI_SACCEN,  0x00000000},
+-	{CCSR_SSI_SACCDIS, 0x00000000},
+-};
+-
+ static bool fsl_ssi_readable_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+@@ -190,8 +176,7 @@ static const struct regmap_config fsl_ssi_regconfig = {
+ 	.val_bits = 32,
+ 	.reg_stride = 4,
+ 	.val_format_endian = REGMAP_ENDIAN_NATIVE,
+-	.reg_defaults = fsl_ssi_reg_defaults,
+-	.num_reg_defaults = ARRAY_SIZE(fsl_ssi_reg_defaults),
++	.num_reg_defaults_raw = CCSR_SSI_SACCDIS / sizeof(uint32_t) + 1,
+ 	.readable_reg = fsl_ssi_readable_reg,
+ 	.volatile_reg = fsl_ssi_volatile_reg,
+ 	.precious_reg = fsl_ssi_precious_reg,
+@@ -201,6 +186,7 @@ static const struct regmap_config fsl_ssi_regconfig = {
+ 
+ struct fsl_ssi_soc_data {
+ 	bool imx;
++	bool imx21regs; /* imx21-class SSI - no SACC{ST,EN,DIS} regs */
+ 	bool offline_config;
+ 	u32 sisr_write_mask;
+ };
+@@ -303,6 +289,7 @@ static struct fsl_ssi_soc_data fsl_ssi_mpc8610 = {
+ 
+ static struct fsl_ssi_soc_data fsl_ssi_imx21 = {
+ 	.imx = true,
++	.imx21regs = true,
+ 	.offline_config = true,
+ 	.sisr_write_mask = 0,
+ };
+@@ -586,8 +573,12 @@ static void fsl_ssi_setup_ac97(struct fsl_ssi_private *ssi_private)
+ 	 */
+ 	regmap_write(regs, CCSR_SSI_SACNT,
+ 			CCSR_SSI_SACNT_AC97EN | CCSR_SSI_SACNT_FV);
+-	regmap_write(regs, CCSR_SSI_SACCDIS, 0xff);
+-	regmap_write(regs, CCSR_SSI_SACCEN, 0x300);
++
++	/* no SACC{ST,EN,DIS} regs on imx21-class SSI */
++	if (!ssi_private->soc->imx21regs) {
++		regmap_write(regs, CCSR_SSI_SACCDIS, 0xff);
++		regmap_write(regs, CCSR_SSI_SACCEN, 0x300);
++	}
+ 
+ 	/*
+ 	 * Enable SSI, Transmit and Receive. AC97 has to communicate with the
+@@ -1397,6 +1388,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	void __iomem *iomem;
+ 	char name[64];
++	struct regmap_config regconfig = fsl_ssi_regconfig;
+ 
+ 	of_id = of_match_device(fsl_ssi_ids, &pdev->dev);
+ 	if (!of_id || !of_id->data)
+@@ -1444,15 +1436,25 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 		return PTR_ERR(iomem);
+ 	ssi_private->ssi_phys = res->start;
+ 
++	if (ssi_private->soc->imx21regs) {
++		/*
++		 * According to datasheet imx21-class SSI
++		 * don't have SACC{ST,EN,DIS} regs.
++		 */
++		regconfig.max_register = CCSR_SSI_SRMSK;
++		regconfig.num_reg_defaults_raw =
++			CCSR_SSI_SRMSK / sizeof(uint32_t) + 1;
++	}
++
+ 	ret = of_property_match_string(np, "clock-names", "ipg");
+ 	if (ret < 0) {
+ 		ssi_private->has_ipg_clk_name = false;
+ 		ssi_private->regs = devm_regmap_init_mmio(&pdev->dev, iomem,
+-			&fsl_ssi_regconfig);
++			&regconfig);
+ 	} else {
+ 		ssi_private->has_ipg_clk_name = true;
+ 		ssi_private->regs = devm_regmap_init_mmio_clk(&pdev->dev,
+-			"ipg", iomem, &fsl_ssi_regconfig);
++			"ipg", iomem, &regconfig);
+ 	}
+ 	if (IS_ERR(ssi_private->regs)) {
+ 		dev_err(&pdev->dev, "Failed to init register map\n");
+-- 
+2.7.0
