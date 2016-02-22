@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "regmap: Return an error if a caller attempts
-	to do an unsupported raw read" to the asoc tree
-Date: Mon, 22 Feb 2016 12:15:01 +0900
-Message-ID: <E1aXgxh-0005uE-5Z@finisterre>
-References: <1454362695-10682-1-git-send-email-broonie@kernel.org>
+Subject: Applied "regmap: cache: Fall back to register by
+	register read for cache defaults" to the asoc tree
+Date: Mon, 22 Feb 2016 12:14:59 +0900
+Message-ID: <E1aXgxf-0005tk-PM@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B551926057F
- for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 04:15:04 +0100 (CET)
-In-Reply-To: <1454362695-10682-1-git-send-email-broonie@kernel.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 72EED2606FF
+ for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 04:15:09 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
+To: Mark Brown <broonie@kernel.org>, "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, Fabio Estevam <fabio.estevam@nxp.com>Fabio Estevam <fabio.estevam@nxp.com>Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   regmap: Return an error if a caller attempts to do an unsupported raw read
+   regmap: cache: Fall back to register by register read for cache defaults
 
 has been applied to the asoc tree at
 
@@ -53,33 +52,95 @@ to this mail.
 Thanks,
 Mark
 
->From bb2bb45d1be28987e6cb50f50e4819795537ab83 Mon Sep 17 00:00:00 2001
+>From 3245d460a1eb55b5c3ca31dde7b5c5ac71546edf Mon Sep 17 00:00:00 2001
 From: Mark Brown <broonie@kernel.org>
-Date: Mon, 1 Feb 2016 21:09:14 +0000
-Subject: [PATCH] regmap: Return an error if a caller attempts to do an
- unsupported raw read
+Date: Tue, 2 Feb 2016 10:16:51 -0200
+Subject: [PATCH] regmap: cache: Fall back to register by register read for
+ cache defaults
 
-regmaps without raw I/O access can't implement raw I/O operations,
-return an error if someone tries to do that rather than crashing.
+If we are unable to read the cache defaults for a regmap then fall back
+on attempting to read them word by word. This is going to be painfully
+slow for large regmaps but might be adequate for smaller ones.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
+[maciej: Use cache_bypass around read and skipping of unreadable regs]
+Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Tested-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/base/regmap/regmap.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/base/regmap/regcache.c | 41 ++++++++++++++++++++++++++++++-----------
+ 1 file changed, 30 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index 3432634..e2f6880 100644
---- a/drivers/base/regmap/regmap.c
-+++ b/drivers/base/regmap/regmap.c
-@@ -2255,6 +2255,9 @@ static int _regmap_raw_read(struct regmap *map, unsigned int reg, void *val,
+diff --git a/drivers/base/regmap/regcache.c b/drivers/base/regmap/regcache.c
+index 348be3a..cccceb5 100644
+--- a/drivers/base/regmap/regcache.c
++++ b/drivers/base/regmap/regcache.c
+@@ -30,7 +30,7 @@ static int regcache_hw_init(struct regmap *map)
+ 	int i, j;
+ 	int ret;
+ 	int count;
+-	unsigned int val;
++	unsigned int reg, val;
+ 	void *tmp_buf;
  
- 	WARN_ON(!map->bus);
+ 	if (!map->num_reg_defaults_raw)
+@@ -67,27 +67,46 @@ static int regcache_hw_init(struct regmap *map)
+ 		ret = regmap_raw_read(map, 0, tmp_buf,
+ 				      map->num_reg_defaults_raw);
+ 		map->cache_bypass = cache_bypass;
+-		if (ret < 0)
+-			goto err_cache_free;
+-
+-		map->reg_defaults_raw = tmp_buf;
+-		map->cache_free = 1;
++		if (ret == 0) {
++			map->reg_defaults_raw = tmp_buf;
++			map->cache_free = 1;
++		} else {
++			kfree(tmp_buf);
++		}
+ 	}
  
-+	if (!map->bus || !map->bus->read)
-+		return -EINVAL;
+ 	/* fill the reg_defaults */
+ 	for (i = 0, j = 0; i < map->num_reg_defaults_raw; i++) {
+-		if (regmap_volatile(map, i * map->reg_stride))
++		reg = i * map->reg_stride;
 +
- 	range = _regmap_range_lookup(map, reg);
- 	if (range) {
- 		ret = _regmap_select_page(map, &reg, range,
++		if (!regmap_readable(map, reg))
+ 			continue;
+-		val = regcache_get_val(map, map->reg_defaults_raw, i);
+-		map->reg_defaults[j].reg = i * map->reg_stride;
++
++		if (regmap_volatile(map, reg))
++			continue;
++
++		if (map->reg_defaults_raw) {
++			val = regcache_get_val(map, map->reg_defaults_raw, i);
++		} else {
++			bool cache_bypass = map->cache_bypass;
++
++			map->cache_bypass = true;
++			ret = regmap_read(map, reg, &val);
++			map->cache_bypass = cache_bypass;
++			if (ret != 0) {
++				dev_err(map->dev, "Failed to read %d: %d\n",
++					reg, ret);
++				goto err_free;
++			}
++		}
++
++		map->reg_defaults[j].reg = reg;
+ 		map->reg_defaults[j].def = val;
+ 		j++;
+ 	}
+ 
+ 	return 0;
+ 
+-err_cache_free:
+-	kfree(tmp_buf);
+ err_free:
+ 	kfree(map->reg_defaults);
+ 
 -- 
 2.7.0
