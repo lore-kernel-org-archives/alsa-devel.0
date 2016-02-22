@@ -1,18 +1,20 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Apply clock gate workaround to
-	Skylake, too
-Date: Mon, 22 Feb 2016 17:15:43 +0100
-Message-ID: <1456157743-21247-1-git-send-email-tiwai@suse.de>
+From: Tim Sheridan <tghs@tghs.net>
+Subject: Re: Compress offload: DSP buffer timestamp passing
+Date: Mon, 22 Feb 2016 16:55:28 +0000
+Message-ID: <CAELVyQcb1VYQY6V_t0VE+rPkydXFfnTd1AOUvNaet3qsvs5B5w@mail.gmail.com>
+References: <CAELVyQdcVoTV7iGxA=jJGQToobpePB-Fk-scvUbOFBf36X2B+Q@mail.gmail.com>
+ <56B37086.30603@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C32C4260673
- for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 17:15:45 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 2522CAB9B
- for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 16:15:45 +0000 (UTC)
+Received: from mail-lf0-f41.google.com (mail-lf0-f41.google.com
+ [209.85.215.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8AA2B260673
+ for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 17:55:29 +0100 (CET)
+Received: by mail-lf0-f41.google.com with SMTP id l143so97932329lfe.2
+ for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 08:55:29 -0800 (PST)
+In-Reply-To: <56B37086.30603@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,92 +24,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Some Skylake machines show the codec probe errors in certain
-situations, e.g. HP Z240 desktop fails to probe the onboard Realtek
-codec at reloading the snd-hda-intel module like:
-  snd_hda_intel 0000:00:1f.3: spurious response 0x200:0x2, last cmd=0x000000
-  snd_hda_intel 0000:00:1f.3: azx_get_response timeout, switching to polling mode: lastcmd=0x000f0000
-  snd_hda_intel 0000:00:1f.3: No response from codec, disabling MSI: last cmd=0x000f0000
-  snd_hda_intel 0000:00:1f.3: Codec #0 probe error; disabling it...
-  hdaudio hdaudioC0D2: no AFG or MFG node found
-  snd_hda_intel 0000:00:1f.3: no codecs initialized
+Hi Pierre-Louis,
 
-Also, HP G470 G3 suffers from the similar problem, as reported in
-bugzilla below.  On this machine, the codec probe error appears even
-at a fresh boot.
+Thanks for your thoughts. I think that your suggestion for using a
+pseudo transport stream is the most appropriate one for timestamping
+the buffers of stream.
 
-As Libin suggested, the same workaround used for Broxton in the commit
-[6639484ddaf6: ALSA: hda - disable dynamic clock gating on Broxton
- before reset] can be applied for Skylake in order to fix this problem.
-The Intel HW team also confirmed that this is needed for SKL.
+I've been thinking more about this, and for AXD specifically, we can
+do synchronization without the need to pass timestamps for each buffer
+in the stream. Instead we can pass a synchronization reference
+timestamp (corresponding to the start of the stream) as metadata
+(representing the start time of the stream). How appropriate would be
+the addition of a DSP private metadata area (accessible over ioctl,
+like the generic get/set metadata API)? This would be sufficient to
+support AXD's support for scheduled playback. It would also be useful
+for supporting other DSP features that aren't currently/too device
+specific to be supported in the generic compress offload API.
 
-This patch makes the workaround applied to both SKL and BXT
-platforms.  The referred macros are moved and one superfluous macro
-(IS_BROXTON()) is another one (IS_BXT()) as well.
+Patches for this proposal to follow.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=112731
-Suggested-by: Libin Yang <libin.yang@linux.intel.com>
-Cc: <stable@vger.kernel.org> # v4.4+
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_intel.c | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
+Cheers,
+Tim
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index ce6b97f31390..e5240cb3749f 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -363,7 +363,10 @@ enum {
- 					((pci)->device == 0x0d0c) || \
- 					((pci)->device == 0x160c))
- 
--#define IS_BROXTON(pci)	((pci)->device == 0x5a98)
-+#define IS_SKL(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0xa170)
-+#define IS_SKL_LP(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x9d70)
-+#define IS_BXT(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x5a98)
-+#define IS_SKL_PLUS(pci) (IS_SKL(pci) || IS_SKL_LP(pci) || IS_BXT(pci))
- 
- static char *driver_short_names[] = {
- 	[AZX_DRIVER_ICH] = "HDA Intel",
-@@ -540,13 +543,13 @@ static void hda_intel_init_chip(struct azx *chip, bool full_reset)
- 
- 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
- 		snd_hdac_set_codec_wakeup(bus, true);
--	if (IS_BROXTON(pci)) {
-+	if (IS_SKL_PLUS(pci)) {
- 		pci_read_config_dword(pci, INTEL_HDA_CGCTL, &val);
- 		val = val & ~INTEL_HDA_CGCTL_MISCBDCGE;
- 		pci_write_config_dword(pci, INTEL_HDA_CGCTL, val);
- 	}
- 	azx_init_chip(chip, full_reset);
--	if (IS_BROXTON(pci)) {
-+	if (IS_SKL_PLUS(pci)) {
- 		pci_read_config_dword(pci, INTEL_HDA_CGCTL, &val);
- 		val = val | INTEL_HDA_CGCTL_MISCBDCGE;
- 		pci_write_config_dword(pci, INTEL_HDA_CGCTL, val);
-@@ -555,7 +558,7 @@ static void hda_intel_init_chip(struct azx *chip, bool full_reset)
- 		snd_hdac_set_codec_wakeup(bus, false);
- 
- 	/* reduce dma latency to avoid noise */
--	if (IS_BROXTON(pci))
-+	if (IS_BXT(pci))
- 		bxt_reduce_dma_latency(chip);
- }
- 
-@@ -977,11 +980,6 @@ static int azx_resume(struct device *dev)
- /* put codec down to D3 at hibernation for Intel SKL+;
-  * otherwise BIOS may still access the codec and screw up the driver
-  */
--#define IS_SKL(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0xa170)
--#define IS_SKL_LP(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x9d70)
--#define IS_BXT(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x5a98)
--#define IS_SKL_PLUS(pci) (IS_SKL(pci) || IS_SKL_LP(pci) || IS_BXT(pci))
--
- static int azx_freeze_noirq(struct device *dev)
- {
- 	struct pci_dev *pci = to_pci_dev(dev);
--- 
-2.7.1
+On 4 February 2016 at 15:38, Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+> On 2/3/16 5:49 AM, Tim Sheridan wrote:
+>>
+>> Hi,
+>>
+>> I've been working on the Imagination Technologies AXD (audio DSP)
+>> compress offload driver. One of the features of the DSP is scheduled
+>> playback of audio using timestamps (that are obtained by an
+>> application from userspace). A current problem with the compress
+>> offload API is that there's no "blessed" way to get these timestamps
+>> from tinycompress through to our compress offload driver.
+>>
+>> Currently, I've added a SNDRV_COMPRESS_ENCODER_PTS value to the
+>> sndrv_compress_encoder enum, and exposed this with an API in
+>> tinycompress, handling this in my driver to pass it to the DSP. Does
+>> this sound like a reasonable approach to go about adding compress
+>> offload API support for this? Or is there some other part of the ALSA
+>> API which would be more appropriate to use instead of this?
+>
+>
+> Not a simple problem I am afraid.
+> When we added support for compressed data the focus was really elementary
+> streams transferred over DMA - essentially the same model as for PCM which
+> doesn't support timestamps either. If you have an application which deals
+> with discontinuous buffers associated with timestamps then the model is
+> broken.
+>
+> The only solution I can think of is to create a pseudo transport stream with
+> a headset containing the timestamp and the audio data inserted between
+> headers. I believe this is what you are suggesting?
+>
+> Alternatively we could add an API that would match a decoded sample with a
+> timestamp but it's not clear how you would synchronize timestamp information
+> with the data stream (or rather there could be race conditions leading to
+> the timestamps being provided to the hardware too late).
