@@ -1,64 +1,53 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH V3] ASoC: pcm179x: Add support for pcm1795 and pcm1796
-Date: Mon, 22 Feb 2016 12:19:44 +0900
-Message-ID: <20160222031944.GT18327@sirena.org.uk>
-References: <1452382685-18009-1-git-send-email-michael@amarulasolutions.com>
- <1452382685-18009-4-git-send-email-michael@amarulasolutions.com>
- <20160110120045.GW6588@sirena.org.uk>
- <20160110173812.GA16304@panicking>
- <20160205172451.GA30542@panicking>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH 4/4] ASoC: simple-card: Support for
+ selecting system clocks by ID
+Date: Mon, 22 Feb 2016 12:21:08 +0900
+Message-ID: <20160222032108.GU18327@sirena.org.uk>
+References: <1455545495-20292-1-git-send-email-peter.ujfalusi@ti.com>
+ <1455545495-20292-5-git-send-email-peter.ujfalusi@ti.com>
+ <20160215152635.GN18988@sirena.org.uk>
+ <56C2F00C.8080809@ti.com>
+ <20160216134233.GN18327@sirena.org.uk>
+ <20160216191346.2278.725@quark.deferred.io>
+ <alpine.DEB.2.02.1602171516260.10339@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="LJuv+M/03Kgs6kNS"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="0kAGJ5Hb5f/LtdyK"
+Return-path: <linux-clk-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20160205172451.GA30542@panicking>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Michael Trimarchi <michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>
-Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jacob Siverskog <jacob-EZCvousvhKUZux3j3Bed6dkegs52MxvZ@public.gmane.org>, Johan Hovold <johan-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+In-Reply-To: <alpine.DEB.2.02.1602171516260.10339@lnxricardw1.se.axis.com>
+Sender: linux-clk-owner@vger.kernel.org
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel <alsa-devel@alsa-project.org>, Stephen Boyd <sboyd@codeaurora.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, "Kristo, Tero" <t-kristo@ti.com>, linux-clk@vger.kernel.org, Michael Turquette <mturquette@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---LJuv+M/03Kgs6kNS
+--0kAGJ5Hb5f/LtdyK
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 05, 2016 at 06:24:57PM +0100, Michael Trimarchi wrote:
+On Wed, Feb 17, 2016 at 03:18:57PM +0100, Ricard Wanderlof wrote:
 
-> +#define PCM1795	1
-> +	unsigned int codec_model;
+> It makes sense to use an already existing clock framework, but I'm=20
+> wondering, how do we model the clock select function? Using a clock mux?=
+=20
 
-It looks like you're trying to define an enum here.
+Yes, that looks like a mux to me.
 
-> +static const unsigned int codec_model = PCM1795;
-
-That's a weird name to use here.  Call it pcm1795 or something, though
-normally we just cast the integer to and from a pointer.
-
-> +	{ .compatible = "ti,pcm1795",
-> +	  .data = &codec_model,
-> +	},
-
-This is strange indentation, just keep it on one line and it's easier to
-follow.
-
---LJuv+M/03Kgs6kNS
+--0kAGJ5Hb5f/LtdyK
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWyn5PAAoJECTWi3JdVIfQQqoH/j+slj+kg4UIkopgg2mdG74j
-o2xQXOI/SPJgRRYknSlqfwhzb5UzSEwb8oHMFvthmcotjVkupTwEhzEg2gl+wHp9
-2zLit0hNSjzwAhAz8JkzQZK2I0eZKbj+jCamVZH0nRldsvHMgP71dHc4TpFbXRX2
-aHthUCXw0MusP6MvUFDp9ApJM685Wof7jscH2zKQVONZ2E3sNJGZotjcw6DZqWS8
-1pt0tJEzWOLAxWsHMTEQ9q/eT1ULm7sSAtK1m/NM+pMUzVHasefyGfhzvLkqXXDC
-Se52A+8HwwAk+m1Qf/1SQUq80OWSGwCY1+3oT872XRvlWdDP+3oPeQyKINwwQ5Q=
-=OdqR
+iQEcBAEBCAAGBQJWyn6iAAoJECTWi3JdVIfQx7EH/3J5PT27YZ3ntIIDi2PrKBhf
+RKAlzOzL1SU6i6QH4mr2rJ5zcYEDcRYOr6Q1gQi1CKbwKrq41XjP2YwCjvbN9odh
+ZL71+kinLVk96YRQyJDnFePo79Qe/MczX3Tb+CRpm1dUhA8kGNk9inc6Kj8szvKR
+W1eMhlLLP1ipaWlFTGVATqD/bs+1Y1Sn3agdevleKFRek1RwWvNmfyd7xNZx84sC
+QLWP5mOiXFLQkHMyWkKKFpT9LdKB1tjKfitfrbbTTzZmkSWfTvD2bXBJKYYM0kQe
+f3qSIjJmDFAIEm3X5AJYq04kU3kPYnMSUQWCyndS39GpP6JhiJ2TIZeRBnmUYEc=
+=vppu
 -----END PGP SIGNATURE-----
 
---LJuv+M/03Kgs6kNS--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--0kAGJ5Hb5f/LtdyK--
