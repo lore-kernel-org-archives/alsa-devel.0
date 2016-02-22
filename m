@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: fix build warning" to the
-	asoc tree
-Date: Mon, 22 Feb 2016 19:51:32 +0900
-Message-ID: <E1aXo5U-0005g4-Um@finisterre>
-References: <1456132033-15326-1-git-send-email-sudipm.mukherjee@gmail.com>
+Subject: Applied "ASoC: rockchip: add bindings for rk3399 i2s"
+	to the asoc tree
+Date: Mon, 22 Feb 2016 19:51:34 +0900
+Message-ID: <E1aXo5X-0005gY-02@finisterre>
+References: <1456129925-24569-1-git-send-email-jay.xu@rock-chips.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F74E2659CE
+ by alsa0.perex.cz (Postfix) with ESMTP id 99A412659D3
  for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 11:51:44 +0100 (CET)
-In-Reply-To: <1456132033-15326-1-git-send-email-sudipm.mukherjee@gmail.com>
+In-Reply-To: <1456129925-24569-1-git-send-email-jay.xu@rock-chips.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>, Mark Brown <broonie@kernel.org>
+To: Rob Herring <robh@kernel.org>, Jianqun Xu <jay.xu@rock-chips.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: fix build warning
+   ASoC: rockchip: add bindings for rk3399 i2s
 
 has been applied to the asoc tree at
 
@@ -53,82 +53,50 @@ to this mail.
 Thanks,
 Mark
 
->From 3375cbe420a8987b30daf3c021bea6fb0b0fe344 Mon Sep 17 00:00:00 2001
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date: Mon, 22 Feb 2016 14:37:13 +0530
-Subject: [PATCH] ASoC: topology: fix build warning
+>From 255edcdfab3d1a45b78d1dacd845d6da5fc64b03 Mon Sep 17 00:00:00 2001
+From: Jianqun Xu <jay.xu@rock-chips.com>
+Date: Mon, 22 Feb 2016 16:32:05 +0800
+Subject: [PATCH] ASoC: rockchip: add bindings for rk3399 i2s
 
-We are getting build warning about:
-sound/soc/soc-topology.c:249:31: warning: 'get_dobj_type' defined but
-not used
+Add devicetree bindings for i2s controller found on rk3399
+processors from rockchip.
 
-commit 64527e8a3529 has removed the only caller of get_dobj_type() but
-missed to remove the function which is now unused. And after removing
-get_dobj_type() we do not have any use of get_dobj_mixer_type().
+It's helpful to add full set of compatible strings for serials
+of Rockchip SoCs (rk3066, rk3188, rk3288, rk3399).
 
-Fixes: 64527e8a3529 ("ASoC: topology: Add FE DAIs dynamically")
-CC: Mengdong Lin <mengdong.lin@linux.intel.com>
-Signed-off-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-topology.c | 45 ---------------------------------------------
- 1 file changed, 45 deletions(-)
+ Documentation/devicetree/bindings/sound/rockchip-i2s.txt | 1 +
+ sound/soc/rockchip/rockchip_i2s.c                        | 3 +++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 0eb01e8155f1..07f61a67aef6 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -223,51 +223,6 @@ static int get_widget_id(int tplg_type)
- 	return -EINVAL;
- }
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+index b7f3a9325ebd..6e86d8aa29b4 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+@@ -9,6 +9,7 @@ Required properties:
+    - "rockchip,rk3066-i2s": for rk3066
+    - "rockchip,rk3188-i2s", "rockchip,rk3066-i2s": for rk3188
+    - "rockchip,rk3288-i2s", "rockchip,rk3066-i2s": for rk3288
++   - "rockchip,rk3399-i2s", "rockchip,rk3066-i2s": for rk3399
+ - reg: physical base address of the controller and length of memory mapped
+   region.
+ - interrupts: should contain the I2S interrupt.
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 6561c4cc2edd..531a6d201d2e 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -575,6 +575,9 @@ static int rockchip_i2s_remove(struct platform_device *pdev)
  
--static enum snd_soc_dobj_type get_dobj_mixer_type(
--	struct snd_soc_tplg_ctl_hdr *control_hdr)
--{
--	if (control_hdr == NULL)
--		return SND_SOC_DOBJ_NONE;
--
--	switch (control_hdr->ops.info) {
--	case SND_SOC_TPLG_CTL_VOLSW:
--	case SND_SOC_TPLG_CTL_VOLSW_SX:
--	case SND_SOC_TPLG_CTL_VOLSW_XR_SX:
--	case SND_SOC_TPLG_CTL_RANGE:
--	case SND_SOC_TPLG_CTL_STROBE:
--		return SND_SOC_DOBJ_MIXER;
--	case SND_SOC_TPLG_CTL_ENUM:
--	case SND_SOC_TPLG_CTL_ENUM_VALUE:
--		return SND_SOC_DOBJ_ENUM;
--	case SND_SOC_TPLG_CTL_BYTES:
--		return SND_SOC_DOBJ_BYTES;
--	default:
--		return SND_SOC_DOBJ_NONE;
--	}
--}
--
--static enum snd_soc_dobj_type get_dobj_type(struct snd_soc_tplg_hdr *hdr,
--	struct snd_soc_tplg_ctl_hdr *control_hdr)
--{
--	switch (hdr->type) {
--	case SND_SOC_TPLG_TYPE_MIXER:
--		return get_dobj_mixer_type(control_hdr);
--	case SND_SOC_TPLG_TYPE_DAPM_GRAPH:
--	case SND_SOC_TPLG_TYPE_MANIFEST:
--		return SND_SOC_DOBJ_NONE;
--	case SND_SOC_TPLG_TYPE_DAPM_WIDGET:
--		return SND_SOC_DOBJ_WIDGET;
--	case SND_SOC_TPLG_TYPE_DAI_LINK:
--		return SND_SOC_DOBJ_DAI_LINK;
--	case SND_SOC_TPLG_TYPE_PCM:
--		return SND_SOC_DOBJ_PCM;
--	case SND_SOC_TPLG_TYPE_CODEC_LINK:
--		return SND_SOC_DOBJ_CODEC_LINK;
--	default:
--		return SND_SOC_DOBJ_NONE;
--	}
--}
--
- static inline void soc_bind_err(struct soc_tplg *tplg,
- 	struct snd_soc_tplg_ctl_hdr *hdr, int index)
- {
+ static const struct of_device_id rockchip_i2s_match[] = {
+ 	{ .compatible = "rockchip,rk3066-i2s", },
++	{ .compatible = "rockchip,rk3188-i2s", },
++	{ .compatible = "rockchip,rk3288-i2s", },
++	{ .compatible = "rockchip,rk3399-i2s", },
+ 	{},
+ };
+ 
 -- 
 2.7.0
