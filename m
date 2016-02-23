@@ -1,74 +1,46 @@
-From: PC Liao <pc.liao@mediatek.com>
-Subject: [PATCH] ASoC: mediatek: remove soft reset and add second I2S clock
-Date: Tue, 23 Feb 2016 16:20:24 +0800
-Message-ID: <1456215624-40383-1-git-send-email-pc.liao@mediatek.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 5/6] control: add a function to add
+	an	element of bytes type
+Date: Tue, 23 Feb 2016 09:31:42 +0100
+Message-ID: <56CC18EE.1070800@ladisch.de>
+References: <1456188510-7189-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1456188510-7189-6-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, tiwai@suse.de
-Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, koro.chen@mediatek.com, PC Liao <pc.liao@mediatek.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 910A3260535
+ for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2016 09:33:40 +0100 (CET)
+In-Reply-To: <1456188510-7189-6-git-send-email-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-To improve I2S flow, this patch removes soft reset and adds second
-I2S clock to use.
+Takashi Sakamoto wrote:
+> ALSA Ctl core allows userspace applications to add elements of bytes type,
+> while there's no APIs for this purpose in alsa-lib.
+>
+> This commit adds the missing function.
 
-Signed-off-by: PC Liao <pc.liao@mediatek.com>
----
- sound/soc/mediatek/mtk-afe-pcm.c |   14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+>  /**
+> + * \brief Create and add an user-defined control element of bytes type.
+> + * \param[in] ctl CTL handle.
+> + * \param[in,out] id ID of the new control element.
+> + * \param[in] channels The number of channels which a control element includes.
 
-diff --git a/sound/soc/mediatek/mtk-afe-pcm.c b/sound/soc/mediatek/mtk-afe-pcm.c
-index 689c51f..3456bfa 100644
---- a/sound/soc/mediatek/mtk-afe-pcm.c
-+++ b/sound/soc/mediatek/mtk-afe-pcm.c
-@@ -283,20 +283,13 @@ static void mtk_afe_set_i2s_enable(struct mtk_afe *afe, bool enable)
- 
- 	regmap_read(afe->regmap, AFE_I2S_CON2, &val);
- 	if (!!(val & AFE_I2S_CON2_EN) == enable)
--		return; /* must skip soft reset */
--
--	/* I2S soft reset begin */
--	regmap_update_bits(afe->regmap, AUDIO_TOP_CON1, 0x4, 0x4);
-+		return;
- 
- 	/* input */
- 	regmap_update_bits(afe->regmap, AFE_I2S_CON2, 0x1, enable);
- 
- 	/* output */
- 	regmap_update_bits(afe->regmap, AFE_I2S_CON1, 0x1, enable);
--
--	/* I2S soft reset end */
--	udelay(1);
--	regmap_update_bits(afe->regmap, AUDIO_TOP_CON1, 0x4, 0);
- }
- 
- static int mtk_afe_dais_enable_clks(struct mtk_afe *afe,
-@@ -365,6 +358,7 @@ static int mtk_afe_i2s_startup(struct snd_pcm_substream *substream,
- 		return 0;
- 
- 	mtk_afe_dais_enable_clks(afe, afe->clocks[MTK_CLK_I2S1_M], NULL);
-+	mtk_afe_dais_enable_clks(afe, afe->clocks[MTK_CLK_I2S2_M], NULL);
- 	regmap_update_bits(afe->regmap, AUDIO_TOP_CON0,
- 			   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M, 0);
- 	return 0;
-@@ -384,6 +378,7 @@ static void mtk_afe_i2s_shutdown(struct snd_pcm_substream *substream,
- 			   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M,
- 			   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M);
- 	mtk_afe_dais_disable_clks(afe, afe->clocks[MTK_CLK_I2S1_M], NULL);
-+	mtk_afe_dais_disable_clks(afe, afe->clocks[MTK_CLK_I2S2_M], NULL);
- }
- 
- static int mtk_afe_i2s_prepare(struct snd_pcm_substream *substream,
-@@ -397,6 +392,9 @@ static int mtk_afe_i2s_prepare(struct snd_pcm_substream *substream,
- 	mtk_afe_dais_set_clks(afe,
- 			      afe->clocks[MTK_CLK_I2S1_M], runtime->rate * 256,
- 			      NULL, 0);
-+	mtk_afe_dais_set_clks(afe,
-+			      afe->clocks[MTK_CLK_I2S2_M], runtime->rate * 256,
-+			      NULL, 0);
- 	/* config I2S */
- 	ret = mtk_afe_set_i2s(afe, substream->runtime->rate);
- 	if (ret)
--- 
-1.7.9.5
+For this control type, "count" might be a better name.
+Or at least say in the description that this is the number of bytes.
+
+
+Regards,
+Clemens
