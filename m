@@ -1,15 +1,17 @@
-From: libin.yang@linux.intel.com
-Subject: [RFC PATCH] ALSA: hda - hdmi eld control created based
-	on pcm
-Date: Tue, 23 Feb 2016 16:33:37 +0800
-Message-ID: <1456216417-51140-1-git-send-email-libin.yang@linux.intel.com>
+From: Carlo Caione <carlo@caione.org>
+Subject: [PATCH v2] ASoC: cht_bsw_rt5645: Fix writing to string
+	literal
+Date: Tue, 23 Feb 2016 09:50:20 +0100
+Message-ID: <1456217420-9327-1-git-send-email-carlo@caione.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D8FC260535
- for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2016 09:37:50 +0100 (CET)
+Received: from mail-wm0-f45.google.com (mail-wm0-f45.google.com [74.125.82.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3698F2605B4
+ for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2016 09:50:28 +0100 (CET)
+Received: by mail-wm0-f45.google.com with SMTP id a4so198309702wme.1
+ for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2016 00:50:28 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,198 +21,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: libin.yang@intel.com, mengdong.lin@intel.com, Libin Yang <libin.yang@linux.intel.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, vinod.koul@intel.com, yang.a.fang@intel.com, linux@endlessm.com, alsa-devel@alsa-project.org
+Cc: Carlo Caione <carlo@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Libin Yang <libin.yang@linux.intel.com>
+From: Carlo Caione <carlo@endlessm.com>
 
-eld control is created based on pcm now.
-When monitor is connected, eld control will be bound to
-pin automatically.
+We cannot use strcpy() to write to a const char * location. This is
+causing a 'BUG: unable to handle kernel paging request' error at boot
+when using the cht-bsw-rt5645 driver.
 
-Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+With this patch we also fix a wrong indexing in the driver where the
+codec_name of the wrong dai_link is being overwritten.
+
+Signed-off-by: Carlo Caione <carlo@endlessm.com>
 ---
- sound/pci/hda/patch_hdmi.c | 74 ++++++++++++++++++++++++++++++----------------
- 1 file changed, 48 insertions(+), 26 deletions(-)
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 541986f..d77509a 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -86,7 +86,6 @@ struct hdmi_spec_per_pin {
- 	struct hdmi_eld sink_eld;
- 	struct mutex lock;
- 	struct delayed_work work;
--	struct snd_kcontrol *eld_ctl;
- 	struct hdmi_pcm *pcm; /* pointer to spec->pcm_rec[n] dynamically*/
- 	int pcm_idx; /* which pcm is attached. -1 means no pcm is attached */
- 	int repoll_count;
-@@ -136,6 +135,7 @@ struct hdmi_ops {
- struct hdmi_pcm {
- 	struct hda_pcm *pcm;
- 	struct snd_jack *jack;
-+	struct snd_kcontrol *eld_ctl;
- };
- 
- struct hdmi_spec {
-@@ -471,17 +471,22 @@ static int hdmi_eld_ctl_info(struct snd_kcontrol *kcontrol,
- 	struct hdmi_spec *spec = codec->spec;
- 	struct hdmi_spec_per_pin *per_pin;
- 	struct hdmi_eld *eld;
--	int pin_idx;
-+	int pcm_idx;
- 
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
- 
--	pin_idx = kcontrol->private_value;
--	per_pin = get_pin(spec, pin_idx);
-+	pcm_idx = kcontrol->private_value;
-+	mutex_lock(&spec->pcm_lock);
-+	per_pin = pcm_idx_to_pin(spec, pcm_idx);
-+	if (!per_pin) {
-+		/* no pin is bound to the pcm */
-+		uinfo->count = 0;
-+		mutex_unlock(&spec->pcm_lock);
-+		return 0;
-+	}
- 	eld = &per_pin->sink_eld;
--
--	mutex_lock(&per_pin->lock);
- 	uinfo->count = eld->eld_valid ? eld->eld_size : 0;
--	mutex_unlock(&per_pin->lock);
-+	mutex_unlock(&spec->pcm_lock);
- 
- 	return 0;
- }
-@@ -493,16 +498,23 @@ static int hdmi_eld_ctl_get(struct snd_kcontrol *kcontrol,
- 	struct hdmi_spec *spec = codec->spec;
- 	struct hdmi_spec_per_pin *per_pin;
- 	struct hdmi_eld *eld;
--	int pin_idx;
-+	int pcm_idx;
- 
--	pin_idx = kcontrol->private_value;
--	per_pin = get_pin(spec, pin_idx);
-+	pcm_idx = kcontrol->private_value;
-+	mutex_lock(&spec->pcm_lock);
-+	per_pin = pcm_idx_to_pin(spec, pcm_idx);
-+	if (!per_pin) {
-+		/* no pin is bound to the pcm */
-+		memset(ucontrol->value.bytes.data, 0,
-+	       ARRAY_SIZE(ucontrol->value.bytes.data));
-+		mutex_unlock(&spec->pcm_lock);
-+		return 0;
-+	}
- 	eld = &per_pin->sink_eld;
- 
--	mutex_lock(&per_pin->lock);
- 	if (eld->eld_size > ARRAY_SIZE(ucontrol->value.bytes.data) ||
- 	    eld->eld_size > ELD_MAX_SIZE) {
--		mutex_unlock(&per_pin->lock);
-+		mutex_unlock(&spec->pcm_lock);
- 		snd_BUG();
- 		return -EINVAL;
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index 2d3afdd..a7b96a9 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -367,8 +367,12 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
  	}
-@@ -512,7 +524,7 @@ static int hdmi_eld_ctl_get(struct snd_kcontrol *kcontrol,
- 	if (eld->eld_valid)
- 		memcpy(ucontrol->value.bytes.data, eld->eld_buffer,
- 		       eld->eld_size);
--	mutex_unlock(&per_pin->lock);
-+	mutex_unlock(&spec->pcm_lock);
- 
- 	return 0;
- }
-@@ -525,7 +537,7 @@ static struct snd_kcontrol_new eld_bytes_ctl = {
- 	.get = hdmi_eld_ctl_get,
- };
- 
--static int hdmi_create_eld_ctl(struct hda_codec *codec, int pin_idx,
-+static int hdmi_create_eld_ctl(struct hda_codec *codec, int pcm_idx,
- 			int device)
- {
- 	struct snd_kcontrol *kctl;
-@@ -535,14 +547,17 @@ static int hdmi_create_eld_ctl(struct hda_codec *codec, int pin_idx,
- 	kctl = snd_ctl_new1(&eld_bytes_ctl, codec);
- 	if (!kctl)
- 		return -ENOMEM;
--	kctl->private_value = pin_idx;
-+	kctl->private_value = pcm_idx;
- 	kctl->id.device = device;
- 
--	err = snd_hda_ctl_add(codec, get_pin(spec, pin_idx)->pin_nid, kctl);
-+	/* no pin nid is associated with the kctl now
-+	 * tbd: associate pin nid to eld ctl later
-+	 */
-+	err = snd_hda_ctl_add(codec, 0, kctl);
- 	if (err < 0)
- 		return err;
- 
--	get_pin(spec, pin_idx)->eld_ctl = kctl;
-+	get_hdmi_pcm(spec, pcm_idx)->eld_ctl = kctl;
- 	return 0;
- }
- 
-@@ -1841,7 +1856,10 @@ static void update_eld(struct hda_codec *codec,
- 	struct hdmi_spec *spec = codec->spec;
- 	bool old_eld_valid = pin_eld->eld_valid;
- 	bool eld_changed;
-+	int pcm_idx = -1;
- 
-+	/* for monitor disconnection, save pcm_idx firstly */
-+	pcm_idx = per_pin->pcm_idx;
- 	if (spec->dyn_pcm_assign) {
- 		if (eld->eld_valid) {
- 			hdmi_attach_hda_pcm(spec, per_pin);
-@@ -1851,6 +1869,11 @@ static void update_eld(struct hda_codec *codec,
- 			hdmi_detach_hda_pcm(spec, per_pin);
- 		}
- 	}
-+	/* if pcm_idx == -1, it means this is in monitor connection event
-+	 * we can get the correct pcm_idx now.
-+	 */
-+	if (pcm_idx == -1)
-+		pcm_idx = per_pin->pcm_idx;
- 
- 	if (eld->eld_valid)
- 		snd_hdmi_show_eld(codec, &eld->info);
-@@ -1884,11 +1907,11 @@ static void update_eld(struct hda_codec *codec,
- 		hdmi_setup_audio_infoframe(codec, per_pin, per_pin->non_pcm);
- 	}
- 
--	if (eld_changed)
-+	if (eld_changed && pcm_idx >= 0)
- 		snd_ctl_notify(codec->card,
- 			       SNDRV_CTL_EVENT_MASK_VALUE |
- 			       SNDRV_CTL_EVENT_MASK_INFO,
--			       &per_pin->eld_ctl->id);
-+			       &get_hdmi_pcm(spec, pcm_idx)->eld_ctl->id);
- }
- 
- /* update ELD and jack state via HD-audio verbs */
-@@ -2629,17 +2652,16 @@ static int generic_hdmi_build_controls(struct hda_codec *codec)
- 		if (err < 0)
- 			return err;
- 		snd_hda_spdif_ctls_unassign(codec, pcm_idx);
--	}
--
--	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
--		struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
- 
- 		/* add control for ELD Bytes */
--		err = hdmi_create_eld_ctl(codec, pin_idx,
--				get_pcm_rec(spec, pin_idx)->device);
--
-+		err = hdmi_create_eld_ctl(codec, pcm_idx,
-+					get_pcm_rec(spec, pcm_idx)->device);
- 		if (err < 0)
- 			return err;
-+	}
+ 	card->dev = &pdev->dev;
+ 	sprintf(codec_name, "i2c-%s:00", drv->acpi_card->codec_id);
 +
-+	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
-+		struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
- 
- 		hdmi_present_sense(per_pin, 0);
- 	}
+ 	/* set correct codec name */
+-	strcpy((char *)card->dai_link[2].codec_name, codec_name);
++	for (i = 0; i < ARRAY_SIZE(cht_dailink); i++)
++		if (!strcmp(card->dai_link[i].codec_name, "i2c-10EC5645:00"))
++			card->dai_link[i].codec_name = kstrdup(codec_name, GFP_KERNEL);
++
+ 	snd_soc_card_set_drvdata(card, drv);
+ 	ret_val = devm_snd_soc_register_card(&pdev->dev, card);
+ 	if (ret_val) {
 -- 
-1.9.1
+2.5.0
