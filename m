@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 3/6] control: improve API documentation for
-	functions to set/get channel values for an element
-Date: Tue, 23 Feb 2016 09:48:27 +0900
-Message-ID: <1456188510-7189-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/6] control: rename variables so that it
+	represents the number of channels which an element has
+Date: Tue, 23 Feb 2016 09:48:25 +0900
+Message-ID: <1456188510-7189-2-git-send-email-o-takashi@sakamocchi.jp>
 References: <1456188510-7189-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 5FA3F260563
+ by alsa0.perex.cz (Postfix) with ESMTP id 60AA32605B4
  for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2016 01:48:35 +0100 (CET)
 In-Reply-To: <1456188510-7189-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,233 +25,160 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Current API documentation about functions to set/get element value
-includes unfriendry texts for userspace developers. This commit improves
-them.
+An element has some channels which can be changed in a single operation
+from userspace. In control API, variables to represents the number of
+channels is described as 'count'. On the other hand, in ALSA control core,
+the number of elements in an element set is also described as 'count'.
+They're a bit confusing.
+
+This commit renames 'count' with 'channels'. The 'count' is reserved for
+future commit to describe the number of elements in an element set.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/control/control.c | 117 +++++++++++++++++++++++++++-----------------------
- 1 file changed, 64 insertions(+), 53 deletions(-)
+ src/control/control.c | 38 ++++++++++++++++++++------------------
+ 1 file changed, 20 insertions(+), 18 deletions(-)
 
 diff --git a/src/control/control.c b/src/control/control.c
-index fe9e557..3ce14c2 100644
+index 8a5d530..e02727a 100644
 --- a/src/control/control.c
 +++ b/src/control/control.c
-@@ -2563,10 +2563,11 @@ void snd_ctl_elem_value_set_index(snd_ctl_elem_value_t *obj, unsigned int val)
- }
- 
- /**
-- * \brief Get value for an entry of a #SND_CTL_ELEM_TYPE_BOOLEAN CTL element id/value 
-- * \param obj CTL element id/value
-- * \param idx Entry index
-- * \return value for the entry
-+ * \brief Get value from given data for a specified channel as an element of
-+ * boolean type.
-+ * \param[in] obj Data of an element.
-+ * \param[in] idx index of channel in the control element
-+ * \return Value for the channel.
-  */ 
- int snd_ctl_elem_value_get_boolean(const snd_ctl_elem_value_t *obj, unsigned int idx)
- {
-@@ -2576,10 +2577,11 @@ int snd_ctl_elem_value_get_boolean(const snd_ctl_elem_value_t *obj, unsigned int
- }
- 
- /**
-- * \brief Get value for an entry of a #SND_CTL_ELEM_TYPE_INTEGER CTL element id/value 
-- * \param obj CTL element id/value
-- * \param idx Entry index
-- * \return value for the entry
-+ * \brief Get value from given data for a specified channel as an element of
-+ * integer type.
-+ * \param[in] obj Data of an element.
-+ * \param[in] idx index of channel in the control element
-+ * \return Value for the channel.
-  */ 
- long snd_ctl_elem_value_get_integer(const snd_ctl_elem_value_t *obj, unsigned int idx)
- {
-@@ -2589,10 +2591,11 @@ long snd_ctl_elem_value_get_integer(const snd_ctl_elem_value_t *obj, unsigned in
- }
- 
- /**
-- * \brief Get value for an entry of a #SND_CTL_ELEM_TYPE_INTEGER64 CTL element id/value 
-- * \param obj CTL element id/value
-- * \param idx Entry index
-- * \return value for the entry
-+ * \brief Get value from given data for a specified channel as an element of
-+ * integer64 type.
-+ * \param[in] obj Data of an element.
-+ * \param[in] idx index of channel in the control element
-+ * \return Value for the channel.
-  */ 
- long long snd_ctl_elem_value_get_integer64(const snd_ctl_elem_value_t *obj, unsigned int idx)
- {
-@@ -2602,10 +2605,11 @@ long long snd_ctl_elem_value_get_integer64(const snd_ctl_elem_value_t *obj, unsi
- }
- 
- /**
-- * \brief Get value for an entry of a #SND_CTL_ELEM_TYPE_ENUMERATED CTL element id/value 
-- * \param obj CTL element id/value
-- * \param idx Entry index
-- * \return value for the entry
-+ * \brief Get value from given data for a specified channel as an element of
-+ * enumerated type.
-+ * \param[in] obj Data of an element.
-+ * \param[in] idx index of channel in the control element
-+ * \return Value for the channel. This is an index of name set in the element.
-  */ 
- unsigned int snd_ctl_elem_value_get_enumerated(const snd_ctl_elem_value_t *obj, unsigned int idx)
- {
-@@ -2615,10 +2619,11 @@ unsigned int snd_ctl_elem_value_get_enumerated(const snd_ctl_elem_value_t *obj,
- }
- 
- /**
-- * \brief Get value for an entry of a #SND_CTL_ELEM_TYPE_BYTES CTL element id/value 
-- * \param obj CTL element id/value
-- * \param idx Entry index
-- * \return value for the entry
-+ * \brief Get value from given data for a specified channel as an element of
-+ * bytes type.
-+ * \param[in] obj Data of an element.
-+ * \param[in] idx index of channel in the control element
-+ * \return Value for the channel.
-  */ 
- unsigned char snd_ctl_elem_value_get_byte(const snd_ctl_elem_value_t *obj, unsigned int idx)
- {
-@@ -2628,10 +2633,11 @@ unsigned char snd_ctl_elem_value_get_byte(const snd_ctl_elem_value_t *obj, unsig
- }
- 
- /**
-- * \brief Set value for an entry of a #SND_CTL_ELEM_TYPE_BOOLEAN CTL element id/value 
-- * \param obj CTL element id/value
-- * \param idx Entry index
-- * \param val value for the entry
-+ * \brief Set value to given data for a specified channel as an element of
-+ * boolean type.
-+ * \param[in] obj Data of an element.
-+ * \param[in] idx index of channel in the control element
-+ * \param[in] val Value for the channel.
-  */ 
- void snd_ctl_elem_value_set_boolean(snd_ctl_elem_value_t *obj, unsigned int idx, long val)
- {
-@@ -2641,10 +2647,11 @@ void snd_ctl_elem_value_set_boolean(snd_ctl_elem_value_t *obj, unsigned int idx,
- }
- 
- /**
-- * \brief Set value for an entry of a #SND_CTL_ELEM_TYPE_INTEGER CTL element id/value 
-- * \param obj CTL element id/value
-- * \param idx Entry index
-- * \param val value for the entry
-+ * \brief Set value to given data for a specified channel as an element of
-+ * integer type.
-+ * \param[in] obj Data of an element.
-+ * \param[in] idx index of channel in the control element
-+ * \param[in] val Value for the channel.
-  */ 
- void snd_ctl_elem_value_set_integer(snd_ctl_elem_value_t *obj, unsigned int idx, long val)
- {
-@@ -2654,10 +2661,11 @@ void snd_ctl_elem_value_set_integer(snd_ctl_elem_value_t *obj, unsigned int idx,
- }
- 
- /**
-- * \brief Set value for an entry of a #SND_CTL_ELEM_TYPE_INTEGER64 CTL element id/value 
-- * \param obj CTL element id/value
-- * \param idx Entry index
-- * \param val value for the entry
-+ * \brief Set value to given data for a specified channel as an element of
-+ * integer64 type.
-+ * \param[in] obj Data of an element.
-+ * \param[in] idx index of channel in the control element
-+ * \param[in] val Value for the channel.
-  */ 
- void snd_ctl_elem_value_set_integer64(snd_ctl_elem_value_t *obj, unsigned int idx, long long val)
- {
-@@ -2667,10 +2675,12 @@ void snd_ctl_elem_value_set_integer64(snd_ctl_elem_value_t *obj, unsigned int id
- }
- 
- /**
-- * \brief Set value for an entry of a #SND_CTL_ELEM_TYPE_ENUMERATED CTL element id/value 
-- * \param obj CTL element id/value
-- * \param idx Entry index
-- * \param val value for the entry
-+ * \brief Set value to given data for a specified channel as an element of
-+ * enumerated type.
-+ * \param[in] obj Data of an element.
-+ * \param[in] idx index of channel in the control element
-+ * \param[in] val Value for the channel. This is an index of name set in the
-+ * element.
-  */ 
- void snd_ctl_elem_value_set_enumerated(snd_ctl_elem_value_t *obj, unsigned int idx, unsigned int val)
- {
-@@ -2680,10 +2690,11 @@ void snd_ctl_elem_value_set_enumerated(snd_ctl_elem_value_t *obj, unsigned int i
- }
- 
- /**
-- * \brief Set value for an entry of a #SND_CTL_ELEM_TYPE_BYTES CTL element id/value 
-- * \param obj CTL element id/value
-- * \param idx Entry index
-- * \param val value for the entry
-+ * \brief Set value to given data for a specified channel as an element of
-+ * bytes type.
-+ * \param[in] obj Data of the element.
-+ * \param[in] idx index of channel in the control element
-+ * \param[in] val Value for the channel.
-  */ 
- void snd_ctl_elem_value_set_byte(snd_ctl_elem_value_t *obj, unsigned int idx, unsigned char val)
- {
-@@ -2693,10 +2704,10 @@ void snd_ctl_elem_value_set_byte(snd_ctl_elem_value_t *obj, unsigned int idx, un
- }
- 
- /**
-- * \brief Set CTL element #SND_CTL_ELEM_TYPE_BYTES value
-- * \param obj CTL handle
-- * \param data Bytes value
-- * \param size Size in bytes
-+ * \brief Set values to given data as an element of bytes type.
-+ * \param[in] obj Data of the element.
-+ * \param[in] data Pointer to memory block for values.
-+ * \param[in] size The number of bytes included in the memory block.
+@@ -264,14 +264,15 @@ int snd_ctl_elem_info(snd_ctl_t *ctl, snd_ctl_elem_info_t *info)
+  * \brief Create and add an user INTEGER CTL element
+  * \param ctl CTL handle
+  * \param id CTL element id to add
+- * \param count number of elements
++ * \param channels number of elements
+  * \param min minimum value
+  * \param max maximum value
+  * \param step value step
+  * \return 0 on success otherwise a negative error code
   */
- void snd_ctl_elem_set_bytes(snd_ctl_elem_value_t *obj, void *data, size_t size)
+ int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+-			     unsigned int count, long min, long max, long step)
++			     unsigned int channels, long min, long max,
++			     long step)
  {
-@@ -2706,9 +2717,9 @@ void snd_ctl_elem_set_bytes(snd_ctl_elem_value_t *obj, void *data, size_t size)
- }
+ 	snd_ctl_elem_info_t *info;
+ 	snd_ctl_elem_value_t *val;
+@@ -284,7 +285,7 @@ int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+ 	info->type = SND_CTL_ELEM_TYPE_INTEGER;
+ 	info->access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
+ 		SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE;
+-	info->count = count;
++	info->count = channels;
+ 	info->value.integer.min = min;
+ 	info->value.integer.max = max;
+ 	info->value.integer.step = step;
+@@ -293,7 +294,7 @@ int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+ 		return err;
+ 	snd_ctl_elem_value_alloca(&val);
+ 	val->id = info->id;
+-	for (i = 0; i < count; i++)
++	for (i = 0; i < channels; i++)
+ 		val->value.integer.value[i] = min;
+ 	err = ctl->ops->element_write(ctl, val);
+ 	return err;
+@@ -303,15 +304,15 @@ int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+  * \brief Create and add an user INTEGER64 CTL element
+  * \param ctl CTL handle
+  * \param id CTL element id to add
+- * \param count number of elements
++ * \param channels number of elements
+  * \param min minimum value
+  * \param max maximum value
+  * \param step value step
+  * \return 0 on success otherwise a negative error code
+  */
+ int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+-			       unsigned int count, long long min, long long max,
+-			       long long step)
++			       unsigned int channels, long long min,
++			       long long max, long long step)
+ {
+ 	snd_ctl_elem_info_t *info;
+ 	snd_ctl_elem_value_t *val;
+@@ -322,7 +323,7 @@ int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+ 	snd_ctl_elem_info_alloca(&info);
+ 	info->id = *id;
+ 	info->type = SND_CTL_ELEM_TYPE_INTEGER64;
+-	info->count = count;
++	info->count = channels;
+ 	info->value.integer64.min = min;
+ 	info->value.integer64.max = max;
+ 	info->value.integer64.step = step;
+@@ -331,7 +332,7 @@ int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+ 		return err;
+ 	snd_ctl_elem_value_alloca(&val);
+ 	val->id = info->id;
+-	for (i = 0; i < count; i++)
++	for (i = 0; i < channels; i++)
+ 		val->value.integer64.value[i] = min;
+ 	err = ctl->ops->element_write(ctl, val);
+ 	return err;
+@@ -341,11 +342,11 @@ int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+  * \brief Create and add an user BOOLEAN CTL element
+  * \param ctl CTL handle
+  * \param id CTL element id to add
+- * \param count number of elements
++ * \param channels number of elements
+  * \return 0 on success otherwise a negative error code
+  */
+ int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+-			     unsigned int count)
++			     unsigned int channels)
+ {
+ 	snd_ctl_elem_info_t *info;
  
- /**
-- * \brief Get value for a #SND_CTL_ELEM_TYPE_BYTES CTL element id/value 
-- * \param obj CTL element id/value
-- * \return Pointer to CTL element value
-+ * \brief Get memory block from given data as an element of bytes type.
-+ * \param[in] obj Data of an element.
-+ * \return Pointer to a memory block for values.
-  */ 
- const void * snd_ctl_elem_value_get_bytes(const snd_ctl_elem_value_t *obj)
+@@ -353,7 +354,7 @@ int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+ 	snd_ctl_elem_info_alloca(&info);
+ 	info->id = *id;
+ 	info->type = SND_CTL_ELEM_TYPE_BOOLEAN;
+-	info->count = count;
++	info->count = channels;
+ 	info->value.integer.min = 0;
+ 	info->value.integer.max = 1;
+ 	return ctl->ops->element_add(ctl, info);
+@@ -363,7 +364,7 @@ int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+  * \brief Create and add a user-defined control element of type enumerated.
+  * \param[in] ctl Control device handle.
+  * \param[in] id ID of the new control element.
+- * \param[in] count Number of element values.
++ * \param[in] channels Number of element values.
+  * \param[in] items Range of possible values (0 ... \a items - 1).
+  * \param[in] names An array containing \a items strings.
+  * \return Zero on success, otherwise a negative error code.
+@@ -380,9 +381,10 @@ int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+  * \par Errors:
+  * <dl>
+  * <dt>-EBUSY<dd>A control element with ID \a id already exists.
+- * <dt>-EINVAL<dd>\a count is not at least one or greater than 128, or \a items
+- * 	is not at least one, or a string in \a names is empty or longer than 63
+- * 	bytes, or the strings in \a names require more than 64 KB storage.
++ * <dt>-EINVAL<dd>\a channels is not at least one or greater than 128, or \a
++ *	items is not at least one, or a string in \a names is empty or longer
++ *	than 63 bytes, or the strings in \a names require more than 64 KB
++ *	storage.
+  * <dt>-ENOMEM<dd>Out of memory, or there are too many user control elements.
+  * <dt>-ENXIO<dd>This driver does not support (enumerated) user controls.
+  * <dt>-ENODEV<dd>Device unplugged.
+@@ -392,7 +394,7 @@ int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+  * snd_ctl_elem_add_enumerated() was introduced in ALSA 1.0.25.
+  */
+ int snd_ctl_elem_add_enumerated(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+-				unsigned int count, unsigned int items,
++				unsigned int channels, unsigned int items,
+ 				const char *const names[])
  {
-@@ -2717,9 +2728,9 @@ const void * snd_ctl_elem_value_get_bytes(const snd_ctl_elem_value_t *obj)
- }
+ 	snd_ctl_elem_info_t *info;
+@@ -405,7 +407,7 @@ int snd_ctl_elem_add_enumerated(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+ 	snd_ctl_elem_info_alloca(&info);
+ 	info->id = *id;
+ 	info->type = SND_CTL_ELEM_TYPE_ENUMERATED;
+-	info->count = count;
++	info->count = channels;
+ 	info->value.enumerated.items = items;
  
- /**
-- * \brief Get value for a #SND_CTL_ELEM_TYPE_IEC958 CTL element id/value 
-- * \param obj CTL element id/value
-- * \param ptr Pointer to returned CTL element value
-+ * Get value from given data to given pointer as an element of IEC958 type.
-+ * \param[in] obj Data of an element.
-+ * \param[out] ptr Pointer to an IEC958 data.
-  */ 
- void snd_ctl_elem_value_get_iec958(const snd_ctl_elem_value_t *obj, snd_aes_iec958_t *ptr)
- {
-@@ -2728,9 +2739,9 @@ void snd_ctl_elem_value_get_iec958(const snd_ctl_elem_value_t *obj, snd_aes_iec9
- }
- 
- /**
-- * \brief Set value for a #SND_CTL_ELEM_TYPE_IEC958 CTL element id/value 
-- * \param obj CTL element id/value
-- * \param ptr Pointer to CTL element value
-+ * Set value from given pointer to given data as an element of IEC958 type.
-+ * \param obj Data of an element.
-+ * \param ptr Pointer to an IEC958 data.
-  */ 
- void snd_ctl_elem_value_set_iec958(snd_ctl_elem_value_t *obj, const snd_aes_iec958_t *ptr)
- {
+ 	bytes = 0;
 -- 
 2.5.0
