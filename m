@@ -1,17 +1,19 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: ASoC: simultaneous start of input/output channels
-Date: Tue, 23 Feb 2016 11:42:09 +0100
-Message-ID: <56CC3781.6010607@metafoo.de>
-References: <CAJOrw7wFQzb-1RCyOUvvWqH8s57roA48M3Po3OFN-j1ro32BuQ@mail.gmail.com>
+From: Tim Sheridan <Tim.Sheridan@imgtec.com>
+Subject: Re: [PATCH] ALSA: compress: Add DSP private metadata
+ interface
+Date: Tue, 23 Feb 2016 12:47:26 +0000
+Message-ID: <98E3058E5505294895CA69F176CAD6626A6D8BE1@LEMAIL01.le.imgtec.org>
+References: <1456163671-40987-1-git-send-email-tim.sheridan@imgtec.com>
+ <s5h8u2b22op.wl-tiwai@suse.de> <20160223094223.GK17690@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-244.synserver.de (smtp-out-245.synserver.de
- [212.40.185.245])
- by alsa0.perex.cz (Postfix) with ESMTP id C7811260476
- for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2016 13:19:28 +0100 (CET)
-In-Reply-To: <CAJOrw7wFQzb-1RCyOUvvWqH8s57roA48M3Po3OFN-j1ro32BuQ@mail.gmail.com>
+Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B6D8260535
+ for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2016 13:47:29 +0100 (CET)
+In-Reply-To: <20160223094223.GK17690@localhost>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jonah Petri <jpetri@izotope.com>, alsa-devel@alsa-project.org
+To: 'Vinod Koul' <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.de>
+Cc: Neil Jones <neil.jones@imgtec.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/22/2016 05:10 PM, Jonah Petri wrote:
-> Hello!
-> 
-> Our application is very low-latency full duplex audio on a Freescale SoC.
-> ALSA is configured with 2 64-frame buffers, with DSP happening on a
-> realtime user thread.
-> 
-> With small buffer sizes, we're obviously very tight on timing, and I've run
-> into an issue which seems architectural in nature, and seemingly is worthy
-> of consulting the list.
-> 
-> What we're seeing is a large temporal latency between the DMA completion
-> IRQ for the audio input DMA and audio output DMA. This delay is on the
-> order of 200 microseconds, but also somewhat variable (ok, "large" is
-> relative here, but it matters to us!).  In the ideal case, these two
-> interrupts would be perfectly aligned in time, allowing us to run DSP for
-> the full buffer's duration.  However, since the interrupts are offset by
-> about 20% of a buffer, we effectively lose that time for our DSP.  And,
-> since the timing is variable, and we're in a realtime application, this
-> produces scared engineers.
-> 
-> Working backwards from the hardware drivers, I see that snd_soc_dai_ops's
-> trigger callback is used to start and stop the DMA.  The fundamental
-> "start" action comes down to a single register write which can easily start
-> both input and output streams in the same write.  However, it seems that
-> the snd_soc_dai_ops does not provide for simultaneous start of both input
-> and output streams.  Tracing back through the kernel interface and into
-> user space, it seems that starting both the input and output streams
-> necessitates two separate calls from userspace, which could explain the
-> delay, and some of the variability in timing.
-> 
-> My question is:
-> * Did I miss some API or technique which could allow simultaneous start of
-> full duplex streams?
+Hi Takashi/Vinod,
 
-Have a look at snd_pcm_link()
-(http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html#gac6c33091b049985baa6466e8fe93917e).
-This links two PCM devices together to that operations like start/stop are
-done at the same time. Although this is just a soft-link, which means you
-send one IOCTL and the ALSA core will forward that to both trigger functions.
+> > Don't you have the code actually implement this ioctl?
+> > Or, is there anything I miss?
 
-> * If not, I would certainly appreciate advice on where we could fit this
-> into the existing architecture!  We would be glad to do the kernel work to
-> make this change, as this capability seems generally useful!
+Yup, not implementing it anywhere in the kernel tree. Just submitting the patch for the API to support implementing it in the out-of-tree IMG AXD driver. Apologies if I'm breaking some kind of rule here requiring an in-tree usage of a new API feature -- it might be better to submit this as part of a revised AXD patch series which implements this ioctl.
 
-If you can actually link them in hardware and launch both streams with the
-same register write you might need to adopt the internal link architecture
-to support this.
+> And compress API was never intended for that :)
+> 
+> Can you tell me the awesome features you would like to support using this
+> API and I would try to provide you a standard alsa way to do that...
+> 
+> The intention of compress API is to provide a streaming interface for data
+> transfer and nothing more. To implement DSP features and control them,
+> you need to look at alsa control interface
 
-- Lars
+AXD's got various features which require mode setting (e.g. for selecting between multi-device synchronization mechanisms that it supports). This would need an enum control, but I guess that this could be fudged with mutually exclusive switch controls for each of the enum values. AXD's also got numeric configuration parameters which it needs to be able to receive (e.g. parameters for stream synchronization heuristics, audio filter coefficients, etc.). Maybe a volume control with a domain wide enough could be used for this kind of configuration parameter. It's rather horrible, but might be fine for while the AXD driver is out of tree and there aren't more appropriate ALSA control types (e.g. enum and non-volume integer). :-/
+
+> Btw there was another person from imgtec who had similar request last year,
+> never heard back from him after he was supposed to fix stuff in his driver
+> and come back
+
+Yeah, Qais left IMG before being able to finish up his fixes for the AXD driver (I think the last patch series was sent in August 2015). I've only got a limited amount of time for working on AXD, but if I get the time/orders from above me in IMG, a revised patch series could appear again. :-)
+
+Many thanks,
+Tim
