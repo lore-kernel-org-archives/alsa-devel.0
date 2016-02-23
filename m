@@ -1,97 +1,24 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Subject: Re: [BUG] [REGRESSION] [BISECTED] -rc1 breaks audio
- over HDMI for i915
-Date: Tue, 23 Feb 2016 19:14:47 +0200
-Message-ID: <20160223171447.GL23290@intel.com>
-References: <56BE0044.9080500@posteo.de> <s5h37sxgazv.wl-tiwai@suse.de>
- <56CAE1C5.4070107@posteo.de> <s5hr3g52fud.wl-tiwai@suse.de>
- <56CB1510.4010503@posteo.de> <s5hd1ro3kbf.wl-tiwai@suse.de>
- <56CB5A4A.90906@posteo.de> <s5hpovov9wy.wl-tiwai@suse.de>
- <56CB7F98.20807@posteo.de> <s5hio1ffjp7.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <s5hio1ffjp7.wl-tiwai@suse.de>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org, perex@perex.cz, Martin Kepplinger <martink@posteo.de>, han.lu@intel.com, treding@nvidia.com, david.henningsson@canonical.com
+From: Jonathan Tinkham <sctincman-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH] sound/soc/tegra: tegra_max98090: fix hp detect on Chromebook 13
+Date: Tue, 23 Feb 2016 10:19:44 -0700
+Message-ID: <1456247985-5563-1-git-send-email-sctincman@gmail.com>
+References: <56CB6624.6030600@wwwdotorg.org>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <56CB6624.6030600-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Jonathan Tinkham <sctincman-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBGZWIgMjMsIDIwMTYgYXQgMDU6NTc6NDBQTSArMDEwMCwgVGFrYXNoaSBJd2FpIHdy
-b3RlOgo+IE9uIE1vbiwgMjIgRmViIDIwMTYgMjI6Mzc6MjggKzAxMDAsCj4gTWFydGluIEtlcHBs
-aW5nZXIgd3JvdGU6Cj4gPiAKPiA+IEFtIDIwMTYtMDItMjIgdW0gMjA6MTAgc2NocmllYiBUYWth
-c2hpIEl3YWk6Cj4gPiA+IE9uIE1vbiwgMjIgRmViIDIwMTYgMTk6NTg6MTggKzAxMDAsCj4gPiA+
-IE1hcnRpbiBLZXBwbGluZ2VyIHdyb3RlOgo+ID4gPj4KPiA+ID4+IEFtIDIwMTYtMDItMjIgdW0g
-MTU6MTIgc2NocmllYiBUYWthc2hpIEl3YWk6Cj4gPiA+Pj4gT24gTW9uLCAyMiBGZWIgMjAxNiAx
-NTowMjo1NiArMDEwMCwKPiA+ID4+PiBNYXJ0aW4gS2VwcGxpbmdlciB3cm90ZToKPiA+ID4+Pj4+
-IEFuZCBob3cgYWJvdXQgbXkgcXVlc3Rpb25zIGluIHRoZSBwcmV2aW91cyBtYWlsPyAgRG9lcwo+
-ID4gPj4+Pj4gaTkxNV9hdWRpb19jb21wb25lbnRfZ2V0X2VsZCgpIGlzIGNhbGxlZCBhbmQgcmV0
-dXJucyAwPwo+ID4gPj4+Pj4gQW5kIGlzIG1vbml0b3JfcHJlc2VudCBzZXQgdHJ1ZSBvciBmYWxz
-ZT8KPiA+ID4+Pj4KPiA+ID4+Pj4gaTkxNV9hdWRpb19jb21wb25lbnRfZ2V0X2VsZCgpIHJldHVy
-bnMgMCBhbmQgbW9uaXRvcl9wcmVzZW50IGlzIDAuCj4gPiA+Pj4+Pgo+ID4gPj4+Pj4gSWYgaTkx
-NV9hdWRpb19jb21wb25lbnRfZ2V0X2VsZCgpIGlzIGNhbGxlZCBidXQgcmV0dXJucyB6ZXJvLCB0
-cmFjawo+ID4gPj4+Pj4gdGhlIGNvZGUgZmxvdyB0aGVyZS4gIEl0IG1lYW5zIGVpdGhlciBpbnRl
-bF9lbmNvZGVyIGlzIE5VTEwgb3IKPiA+ID4+Pj4+IGludGVsX2RpZ19wb3J0LT5hdWRpb19jb25u
-ZWN0b3IgaXMgTlVMTC4KPiA+ID4+Pj4KPiA+ID4+Pj4gaW50ZWxfZGlnX3BvcnQtPmF1ZGlvX2Nv
-bm5lY3RvciBpcyBOVUxMIQo+ID4gPj4+Pgo+ID4gPj4+PiAod2hlbiBjYWxsZWQgZHVyaW5nIGJv
-b3QgYW5kIGR1cmluZyBIRE1JIHBsdWdpbikKPiA+ID4+Pgo+ID4gPj4+IEludGVyZXN0aW5nLiAg
-VGhlIHJlbGV2YW50IGNvZGUgZmxvdyBzaG91bGQgYmUgbGlrZToKPiA+ID4+Pgo+ID4gPj4+ICAg
-aW50ZWxfYXVkaW9fY29kZWNfZW5hYmxlKCkKPiA+ID4+PiAgIC0+IGFjb21wLT5hdWRpb19vcHMt
-PnBpbl9lbGRfbm90aWZ5KCkKPiA+ID4+PiAgICAgLT4gaW50ZWxfcGluX2VsZF9ub3RpZnkoKQo+
-ID4gPj4+ICAgICAgIC0+IGNoZWNrX3ByZXNlbmNlX2FuZF9yZXBvcnQoKQo+ID4gPj4+ICAgICAg
-ICAgLT4gaGRtaV9wcmVzZW50X3NlbnNlKCkKPiA+ID4+PiAJICAtPiBzeW5jX2VsZF92aWFfYWNv
-bXAoKQo+ID4gPj4+IAkgICAgLT4gc25kX2hkYWNfYWNvbXBfZ2V0X2VsZCgpCj4gPiA+Pj4gCSAg
-ICAgIC0+IGk5MTVfYXVkaW9fY29tcG9uZW50X2dldF9lbGQoKQo+ID4gPj4+Cj4gPiA+Pj4gU28s
-IGF0IGZpcnN0LCBjaGVjayB3aGV0aGVyIGludGVsX2RpZ19wb3J0IGluIGJvdGgKPiA+ID4+PiBp
-bnRlbF9hdWRpb19jb2RlY19lbmFibGUoKSBhbmQgaTkxNV9hdWRpb19jb21wb25lbnRfZ2V0X2Vs
-ZCgpIHBvaW50cwo+ID4gPj4+IHRvIHRoZSBzYW1lIG9iamVjdCBhZGRyZXNzLiAgVGhlIGF1ZGlv
-X2Nvbm5lY3RvciBtdXN0IGJlIHNldCBpbgo+ID4gPj4+IGludGVsX2F1ZGlvX2NvZGVjX2VuYWJs
-ZSgpLCB0aHVzIGJhc2ljYWxseSBpdCBtdXN0IGJlIG5vbi1OVUxMIGF0Cj4gPiA+Pj4gaTkxNV9h
-dWRpb19jb21wb25lbnRfZ2V0X2VsZCgpLCB0b28uCj4gPiA+Pj4KPiA+ID4+Cj4gPiA+PiBpbnRl
-bF9kaWdfcG9ydCBpcyAqbm90KiB0aGUgc2FtZSBvYmplY3QgaW4gdGhlc2UgMiBwbGFjZXMuIER1
-cmluZwo+ID4gPj4gcGx1Z2luLCBzZWU6Cj4gPiA+Pgo+ID4gPj4gWyAgMTQ2LjkzNDA5MV0gaW4g
-aW50ZWxfYXVkaW9fY29kZWNfZW5hYmxlOiBpbnRlbF9kaWdfcG9ydCBpcwo+ID4gPj4gZmZmZjg4
-MDBhMWY1NDAwMAo+ID4gPj4gWyAgMTQ2LjkzNDEyMV0gaW4gaTkxNV9hdWRpb19jb21wb25lbnRf
-Z2V0X2VsZDogaW50ZWxfZGlnX3BvcnQgaXMKPiA+ID4+IGZmZmY4ODAyNDRmN2QwMDAKPiA+ID4+
-Cj4gPiA+PiBzb3JyeSBmb3IgdGhlIHNsb3cgcmVzcG9uc2VzLiBJJ2xsIHRyeSB0byBnbyBiYWNr
-IHRoYXQgZGlyZWN0aW9uIHVubGVzcwo+ID4gPj4gYWdhaW4gc29tZW9uZSBjb21lcyB1cCB3aXRo
-IG90aGVyIHN1Z2dlc3Rpb25zLgo+ID4gPiAKPiA+ID4gVGhhbmtzLCB0aGlzIG1ha2VzIHNlbnNl
-LiAgSXQgaW1wbGllcyB0aGF0IHRoZSBkaWdpdGFsIHBvcnQgbWFwcGluZyBpcwo+ID4gPiBzb21l
-aG93IHdyb25nLiAgVGhlcmUgYXJlIHRocmVlIHBsYWNlcyBzZXR0aW5nIGRpZ19wb3J0X21hcFtd
-LCBvbmUgaW4KPiA+ID4gaW50ZWxfZGRpX2luaXQoKSwgb25lIGluIGludGVsX2RwX2luaXQoKSBh
-bmQgYW5vdGhlciBpbgo+ID4gPiBpbnRlbF9oZG1pX2luaXQoKS4gIFRyeSB0byBjaGVjayB3aGlj
-aCBmdW5jdGlvbiBjcmVhdGVzIHdoaWNoIG9iamVjdAo+ID4gPiBhc3NpZ25lZCB0byB3aGljaCBw
-b3J0IG51bWJlciwgdG9nZXRoZXIgd2l0aCBkcm0uZGVidWc9MHgwZSBkZWJ1Zwo+ID4gPiBtZXNz
-YWdlcy4KPiA+ID4gCj4gPiB3aXRob3V0IHVzaW5nIGRybS5kZWJ1Zz0weDBlLCBidXQgYnkgcHJp
-bnRpbmcgdGhlIGttYWxsb2MnZWQgb2JqZWN0cyBpbgo+ID4gdGhvc2UgMyBmdW5jdGlvbnMgd2l0
-aCBwb3J0cywgSSBmb3VuZDoKPiA+IAo+ID4gMiBvZiB0aGVtIGFyZSBydW5uaW5nLCBvbmx5IGR1
-cmluZyBib290Ogo+ID4gCj4gPiBbICAgIDIuMzIyODY1XSBpbnRlbF9oZG1pX2luaXQ6IGludGVs
-X2RpZ19wb3J0IGlzIGZmZmY4ODAyNDI1NjQwMDAgIHBvcnQgMQo+ID4gWyAgICAyLjMyMjk5OV0g
-aW50ZWxfZHBfaW5pdDogaW50ZWxfZGlnX3BvcnQgaXMgZmZmZjg4MDI0MmYzMDAwMCAgcG9ydCAx
-Cj4gPiAKPiA+IGlzIGlzIGNvcnJlY3QgZm9yIHRoZW0gdG8gaGF2ZSBib3RoIHBvcnQgMT8gQW55
-IG1vcmUgaWRlYXM/Cj4gCj4gQWRkaW5nIGludGVsLWdmeCBNTCB0byBDYy4KPiAKPiBNYXJ0aW4s
-IGlzIHRoZSBtYWNoaW5lIFNhbmR5QnJpZGdlIG9yIEl2eUJyaWRnZT8KPiAKPiBJbiBhbnl3YXkg
-aXQncyBQQ0hfU1BMSVQgYW5kIHRoZXJlIGNhbiBjYWxsIGJvdGggaW50ZWxfaGRtaV9pbml0KCkg
-YW5kIAo+IGludGVsX2RwX2luaXQoKSBmb3IgdGhlIHNhbWUgcG9ydCBhbHRob3VnaCBib3RoIGZ1
-bmN0aW9ucyBtYXAKPiBpbnRlbF9kaWdfcG9ydFtdLiAgVGhlIGFzc3VtcHRpb24gb2YgaW50ZWxf
-ZGlnX3BvcnRbXSByZXZlcnNlIG1hcHBpbmcKPiBpcyB0aGF0IHRoZXJlIGlzIG9ubHkgYSBzaW5n
-bGUgaW50ZWxfZGlnX3BvcnQgYXNzaWduZWQgdG8gYSBwb3J0LCBidXQKPiB0aGlzIGRvZXNuJ3Qg
-bG9vayBjb3JyZWN0Li4uCgpPbiBwcmUtSFNXIHRoZXJlIGNhbiBpbmRlZWQgYmUgdHdvIGVuY29k
-ZXJzIGZvciB0aGUgc2FtZSBwb3J0LgpBbmQgSSdtIHBsYW5uaW5nIHRvIGNoYW5nZSBIU1crIHRv
-IGZvbGxvdyB0aGF0IG1vZGVsIGFzIHdlbGwsCmJ1dCBJJ3ZlIGJlZW4gYnVzeSB3aXRoIG90aGVy
-IHN0dWZmIHRvIGZpbmlzaCBvZmYgdGhhdCB3b3JrIFsxXQoKWzFdIGh0dHBzOi8vbGlzdHMuZnJl
-ZWRlc2t0b3Aub3JnL2FyY2hpdmVzL2ludGVsLWdmeC8yMDE1LURlY2VtYmVyLzA4MjM4NC5odG1s
-CgotLSAKVmlsbGUgU3lyasOkbMOkCkludGVsIE9UQwpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBs
-aXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9pbnRlbC1nZngK
+It appears the driver ignores the GPIO flag for the headphone detect pin. By
+using this, in a manner similar to tegra_rt5640, the invert flag can be set
+appropriately without changing the DTs.
+
+Jonathan Tinkham (1):
+  sound/soc/tegra: tegra_max98090: Invert headphone by GPIO flag
+
+ sound/soc/tegra/tegra_max98090.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+-- 
+2.7.1
