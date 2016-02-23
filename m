@@ -1,114 +1,97 @@
-From: Martin Kepplinger <martink@posteo.de>
-Subject: Re: [BUG] [REGRESSION] [BISECTED] -rc1 breaks audio over HDMI for
- i915
-Date: Tue, 23 Feb 2016 18:09:43 +0100
-Message-ID: <56CC9257.2050704@posteo.de>
-References: <56B98888.5000702@posteo.de> <s5h4mdixg4n.wl-tiwai@suse.de>
- <56BB7187.1020108@posteo.de> <s5hegcjipk4.wl-tiwai@suse.de>
- <56BDD990.1070900@posteo.de> <s5hegcif37m.wl-tiwai@suse.de>
- <56BE0044.9080500@posteo.de> <s5h37sxgazv.wl-tiwai@suse.de>
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Subject: Re: [BUG] [REGRESSION] [BISECTED] -rc1 breaks audio
+ over HDMI for i915
+Date: Tue, 23 Feb 2016 19:14:47 +0200
+Message-ID: <20160223171447.GL23290@intel.com>
+References: <56BE0044.9080500@posteo.de> <s5h37sxgazv.wl-tiwai@suse.de>
  <56CAE1C5.4070107@posteo.de> <s5hr3g52fud.wl-tiwai@suse.de>
  <56CB1510.4010503@posteo.de> <s5hd1ro3kbf.wl-tiwai@suse.de>
  <56CB5A4A.90906@posteo.de> <s5hpovov9wy.wl-tiwai@suse.de>
  <56CB7F98.20807@posteo.de> <s5hio1ffjp7.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
 In-Reply-To: <s5hio1ffjp7.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: intel-gfx@lists.freedesktop.org, david.henningsson@canonical.com, han.lu@intel.com, libin.yang@intel.com, treding@nvidia.com, perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org, perex@perex.cz, Martin Kepplinger <martink@posteo.de>, han.lu@intel.com, treding@nvidia.com, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-Am 2016-02-23 um 17:57 schrieb Takashi Iwai:
-> On Mon, 22 Feb 2016 22:37:28 +0100,
-> Martin Kepplinger wrote:
->>
->> Am 2016-02-22 um 20:10 schrieb Takashi Iwai:
->>> On Mon, 22 Feb 2016 19:58:18 +0100,
->>> Martin Kepplinger wrote:
->>>>
->>>> Am 2016-02-22 um 15:12 schrieb Takashi Iwai:
->>>>> On Mon, 22 Feb 2016 15:02:56 +0100,
->>>>> Martin Kepplinger wrote:
->>>>>>> And how about my questions in the previous mail?  Does
->>>>>>> i915_audio_component_get_eld() is called and returns 0?
->>>>>>> And is monitor_present set true or false?
->>>>>>
->>>>>> i915_audio_component_get_eld() returns 0 and monitor_present is 0.
->>>>>>>
->>>>>>> If i915_audio_component_get_eld() is called but returns zero, track
->>>>>>> the code flow there.  It means either intel_encoder is NULL or
->>>>>>> intel_dig_port->audio_connector is NULL.
->>>>>>
->>>>>> intel_dig_port->audio_connector is NULL!
->>>>>>
->>>>>> (when called during boot and during HDMI plugin)
->>>>>
->>>>> Interesting.  The relevant code flow should be like:
->>>>>
->>>>>   intel_audio_codec_enable()
->>>>>   -> acomp->audio_ops->pin_eld_notify()
->>>>>     -> intel_pin_eld_notify()
->>>>>       -> check_presence_and_report()
->>>>>         -> hdmi_present_sense()
->>>>> 	  -> sync_eld_via_acomp()
->>>>> 	    -> snd_hdac_acomp_get_eld()
->>>>> 	      -> i915_audio_component_get_eld()
->>>>>
->>>>> So, at first, check whether intel_dig_port in both
->>>>> intel_audio_codec_enable() and i915_audio_component_get_eld() points
->>>>> to the same object address.  The audio_connector must be set in
->>>>> intel_audio_codec_enable(), thus basically it must be non-NULL at
->>>>> i915_audio_component_get_eld(), too.
->>>>>
->>>>
->>>> intel_dig_port is *not* the same object in these 2 places. During
->>>> plugin, see:
->>>>
->>>> [  146.934091] in intel_audio_codec_enable: intel_dig_port is
->>>> ffff8800a1f54000
->>>> [  146.934121] in i915_audio_component_get_eld: intel_dig_port is
->>>> ffff880244f7d000
->>>>
->>>> sorry for the slow responses. I'll try to go back that direction unless
->>>> again someone comes up with other suggestions.
->>>
->>> Thanks, this makes sense.  It implies that the digital port mapping is
->>> somehow wrong.  There are three places setting dig_port_map[], one in
->>> intel_ddi_init(), one in intel_dp_init() and another in
->>> intel_hdmi_init().  Try to check which function creates which object
->>> assigned to which port number, together with drm.debug=0x0e debug
->>> messages.
->>>
->> without using drm.debug=0x0e, but by printing the kmalloc'ed objects in
->> those 3 functions with ports, I found:
->>
->> 2 of them are running, only during boot:
->>
->> [    2.322865] intel_hdmi_init: intel_dig_port is ffff880242564000  port 1
->> [    2.322999] intel_dp_init: intel_dig_port is ffff880242f30000  port 1
->>
->> is is correct for them to have both port 1? Any more ideas?
-> 
-> Adding intel-gfx ML to Cc.
-
-yes thanks, maybe people there have noticed this too. I can't be the
-only one.
-
-> 
-> Martin, is the machine SandyBridge or IvyBridge?
-
-SandyBridge.
-
-> 
-> In anyway it's PCH_SPLIT and there can call both intel_hdmi_init() and 
-> intel_dp_init() for the same port although both functions map
-> intel_dig_port[].  The assumption of intel_dig_port[] reverse mapping
-> is that there is only a single intel_dig_port assigned to a port, but
-> this doesn't look correct...
-> 
-> 
-> Takashi
-> 
+T24gVHVlLCBGZWIgMjMsIDIwMTYgYXQgMDU6NTc6NDBQTSArMDEwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgo+IE9uIE1vbiwgMjIgRmViIDIwMTYgMjI6Mzc6MjggKzAxMDAsCj4gTWFydGluIEtlcHBs
+aW5nZXIgd3JvdGU6Cj4gPiAKPiA+IEFtIDIwMTYtMDItMjIgdW0gMjA6MTAgc2NocmllYiBUYWth
+c2hpIEl3YWk6Cj4gPiA+IE9uIE1vbiwgMjIgRmViIDIwMTYgMTk6NTg6MTggKzAxMDAsCj4gPiA+
+IE1hcnRpbiBLZXBwbGluZ2VyIHdyb3RlOgo+ID4gPj4KPiA+ID4+IEFtIDIwMTYtMDItMjIgdW0g
+MTU6MTIgc2NocmllYiBUYWthc2hpIEl3YWk6Cj4gPiA+Pj4gT24gTW9uLCAyMiBGZWIgMjAxNiAx
+NTowMjo1NiArMDEwMCwKPiA+ID4+PiBNYXJ0aW4gS2VwcGxpbmdlciB3cm90ZToKPiA+ID4+Pj4+
+IEFuZCBob3cgYWJvdXQgbXkgcXVlc3Rpb25zIGluIHRoZSBwcmV2aW91cyBtYWlsPyAgRG9lcwo+
+ID4gPj4+Pj4gaTkxNV9hdWRpb19jb21wb25lbnRfZ2V0X2VsZCgpIGlzIGNhbGxlZCBhbmQgcmV0
+dXJucyAwPwo+ID4gPj4+Pj4gQW5kIGlzIG1vbml0b3JfcHJlc2VudCBzZXQgdHJ1ZSBvciBmYWxz
+ZT8KPiA+ID4+Pj4KPiA+ID4+Pj4gaTkxNV9hdWRpb19jb21wb25lbnRfZ2V0X2VsZCgpIHJldHVy
+bnMgMCBhbmQgbW9uaXRvcl9wcmVzZW50IGlzIDAuCj4gPiA+Pj4+Pgo+ID4gPj4+Pj4gSWYgaTkx
+NV9hdWRpb19jb21wb25lbnRfZ2V0X2VsZCgpIGlzIGNhbGxlZCBidXQgcmV0dXJucyB6ZXJvLCB0
+cmFjawo+ID4gPj4+Pj4gdGhlIGNvZGUgZmxvdyB0aGVyZS4gIEl0IG1lYW5zIGVpdGhlciBpbnRl
+bF9lbmNvZGVyIGlzIE5VTEwgb3IKPiA+ID4+Pj4+IGludGVsX2RpZ19wb3J0LT5hdWRpb19jb25u
+ZWN0b3IgaXMgTlVMTC4KPiA+ID4+Pj4KPiA+ID4+Pj4gaW50ZWxfZGlnX3BvcnQtPmF1ZGlvX2Nv
+bm5lY3RvciBpcyBOVUxMIQo+ID4gPj4+Pgo+ID4gPj4+PiAod2hlbiBjYWxsZWQgZHVyaW5nIGJv
+b3QgYW5kIGR1cmluZyBIRE1JIHBsdWdpbikKPiA+ID4+Pgo+ID4gPj4+IEludGVyZXN0aW5nLiAg
+VGhlIHJlbGV2YW50IGNvZGUgZmxvdyBzaG91bGQgYmUgbGlrZToKPiA+ID4+Pgo+ID4gPj4+ICAg
+aW50ZWxfYXVkaW9fY29kZWNfZW5hYmxlKCkKPiA+ID4+PiAgIC0+IGFjb21wLT5hdWRpb19vcHMt
+PnBpbl9lbGRfbm90aWZ5KCkKPiA+ID4+PiAgICAgLT4gaW50ZWxfcGluX2VsZF9ub3RpZnkoKQo+
+ID4gPj4+ICAgICAgIC0+IGNoZWNrX3ByZXNlbmNlX2FuZF9yZXBvcnQoKQo+ID4gPj4+ICAgICAg
+ICAgLT4gaGRtaV9wcmVzZW50X3NlbnNlKCkKPiA+ID4+PiAJICAtPiBzeW5jX2VsZF92aWFfYWNv
+bXAoKQo+ID4gPj4+IAkgICAgLT4gc25kX2hkYWNfYWNvbXBfZ2V0X2VsZCgpCj4gPiA+Pj4gCSAg
+ICAgIC0+IGk5MTVfYXVkaW9fY29tcG9uZW50X2dldF9lbGQoKQo+ID4gPj4+Cj4gPiA+Pj4gU28s
+IGF0IGZpcnN0LCBjaGVjayB3aGV0aGVyIGludGVsX2RpZ19wb3J0IGluIGJvdGgKPiA+ID4+PiBp
+bnRlbF9hdWRpb19jb2RlY19lbmFibGUoKSBhbmQgaTkxNV9hdWRpb19jb21wb25lbnRfZ2V0X2Vs
+ZCgpIHBvaW50cwo+ID4gPj4+IHRvIHRoZSBzYW1lIG9iamVjdCBhZGRyZXNzLiAgVGhlIGF1ZGlv
+X2Nvbm5lY3RvciBtdXN0IGJlIHNldCBpbgo+ID4gPj4+IGludGVsX2F1ZGlvX2NvZGVjX2VuYWJs
+ZSgpLCB0aHVzIGJhc2ljYWxseSBpdCBtdXN0IGJlIG5vbi1OVUxMIGF0Cj4gPiA+Pj4gaTkxNV9h
+dWRpb19jb21wb25lbnRfZ2V0X2VsZCgpLCB0b28uCj4gPiA+Pj4KPiA+ID4+Cj4gPiA+PiBpbnRl
+bF9kaWdfcG9ydCBpcyAqbm90KiB0aGUgc2FtZSBvYmplY3QgaW4gdGhlc2UgMiBwbGFjZXMuIER1
+cmluZwo+ID4gPj4gcGx1Z2luLCBzZWU6Cj4gPiA+Pgo+ID4gPj4gWyAgMTQ2LjkzNDA5MV0gaW4g
+aW50ZWxfYXVkaW9fY29kZWNfZW5hYmxlOiBpbnRlbF9kaWdfcG9ydCBpcwo+ID4gPj4gZmZmZjg4
+MDBhMWY1NDAwMAo+ID4gPj4gWyAgMTQ2LjkzNDEyMV0gaW4gaTkxNV9hdWRpb19jb21wb25lbnRf
+Z2V0X2VsZDogaW50ZWxfZGlnX3BvcnQgaXMKPiA+ID4+IGZmZmY4ODAyNDRmN2QwMDAKPiA+ID4+
+Cj4gPiA+PiBzb3JyeSBmb3IgdGhlIHNsb3cgcmVzcG9uc2VzLiBJJ2xsIHRyeSB0byBnbyBiYWNr
+IHRoYXQgZGlyZWN0aW9uIHVubGVzcwo+ID4gPj4gYWdhaW4gc29tZW9uZSBjb21lcyB1cCB3aXRo
+IG90aGVyIHN1Z2dlc3Rpb25zLgo+ID4gPiAKPiA+ID4gVGhhbmtzLCB0aGlzIG1ha2VzIHNlbnNl
+LiAgSXQgaW1wbGllcyB0aGF0IHRoZSBkaWdpdGFsIHBvcnQgbWFwcGluZyBpcwo+ID4gPiBzb21l
+aG93IHdyb25nLiAgVGhlcmUgYXJlIHRocmVlIHBsYWNlcyBzZXR0aW5nIGRpZ19wb3J0X21hcFtd
+LCBvbmUgaW4KPiA+ID4gaW50ZWxfZGRpX2luaXQoKSwgb25lIGluIGludGVsX2RwX2luaXQoKSBh
+bmQgYW5vdGhlciBpbgo+ID4gPiBpbnRlbF9oZG1pX2luaXQoKS4gIFRyeSB0byBjaGVjayB3aGlj
+aCBmdW5jdGlvbiBjcmVhdGVzIHdoaWNoIG9iamVjdAo+ID4gPiBhc3NpZ25lZCB0byB3aGljaCBw
+b3J0IG51bWJlciwgdG9nZXRoZXIgd2l0aCBkcm0uZGVidWc9MHgwZSBkZWJ1Zwo+ID4gPiBtZXNz
+YWdlcy4KPiA+ID4gCj4gPiB3aXRob3V0IHVzaW5nIGRybS5kZWJ1Zz0weDBlLCBidXQgYnkgcHJp
+bnRpbmcgdGhlIGttYWxsb2MnZWQgb2JqZWN0cyBpbgo+ID4gdGhvc2UgMyBmdW5jdGlvbnMgd2l0
+aCBwb3J0cywgSSBmb3VuZDoKPiA+IAo+ID4gMiBvZiB0aGVtIGFyZSBydW5uaW5nLCBvbmx5IGR1
+cmluZyBib290Ogo+ID4gCj4gPiBbICAgIDIuMzIyODY1XSBpbnRlbF9oZG1pX2luaXQ6IGludGVs
+X2RpZ19wb3J0IGlzIGZmZmY4ODAyNDI1NjQwMDAgIHBvcnQgMQo+ID4gWyAgICAyLjMyMjk5OV0g
+aW50ZWxfZHBfaW5pdDogaW50ZWxfZGlnX3BvcnQgaXMgZmZmZjg4MDI0MmYzMDAwMCAgcG9ydCAx
+Cj4gPiAKPiA+IGlzIGlzIGNvcnJlY3QgZm9yIHRoZW0gdG8gaGF2ZSBib3RoIHBvcnQgMT8gQW55
+IG1vcmUgaWRlYXM/Cj4gCj4gQWRkaW5nIGludGVsLWdmeCBNTCB0byBDYy4KPiAKPiBNYXJ0aW4s
+IGlzIHRoZSBtYWNoaW5lIFNhbmR5QnJpZGdlIG9yIEl2eUJyaWRnZT8KPiAKPiBJbiBhbnl3YXkg
+aXQncyBQQ0hfU1BMSVQgYW5kIHRoZXJlIGNhbiBjYWxsIGJvdGggaW50ZWxfaGRtaV9pbml0KCkg
+YW5kIAo+IGludGVsX2RwX2luaXQoKSBmb3IgdGhlIHNhbWUgcG9ydCBhbHRob3VnaCBib3RoIGZ1
+bmN0aW9ucyBtYXAKPiBpbnRlbF9kaWdfcG9ydFtdLiAgVGhlIGFzc3VtcHRpb24gb2YgaW50ZWxf
+ZGlnX3BvcnRbXSByZXZlcnNlIG1hcHBpbmcKPiBpcyB0aGF0IHRoZXJlIGlzIG9ubHkgYSBzaW5n
+bGUgaW50ZWxfZGlnX3BvcnQgYXNzaWduZWQgdG8gYSBwb3J0LCBidXQKPiB0aGlzIGRvZXNuJ3Qg
+bG9vayBjb3JyZWN0Li4uCgpPbiBwcmUtSFNXIHRoZXJlIGNhbiBpbmRlZWQgYmUgdHdvIGVuY29k
+ZXJzIGZvciB0aGUgc2FtZSBwb3J0LgpBbmQgSSdtIHBsYW5uaW5nIHRvIGNoYW5nZSBIU1crIHRv
+IGZvbGxvdyB0aGF0IG1vZGVsIGFzIHdlbGwsCmJ1dCBJJ3ZlIGJlZW4gYnVzeSB3aXRoIG90aGVy
+IHN0dWZmIHRvIGZpbmlzaCBvZmYgdGhhdCB3b3JrIFsxXQoKWzFdIGh0dHBzOi8vbGlzdHMuZnJl
+ZWRlc2t0b3Aub3JnL2FyY2hpdmVzL2ludGVsLWdmeC8yMDE1LURlY2VtYmVyLzA4MjM4NC5odG1s
+CgotLSAKVmlsbGUgU3lyasOkbMOkCkludGVsIE9UQwpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBs
+aXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9pbnRlbC1nZngK
