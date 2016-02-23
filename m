@@ -1,55 +1,53 @@
-From: Tim Sheridan <Tim.Sheridan@imgtec.com>
-Subject: Re: [PATCH] ALSA: compress: Add DSP private metadata
- interface
-Date: Tue, 23 Feb 2016 12:47:26 +0000
-Message-ID: <98E3058E5505294895CA69F176CAD6626A6D8BE1@LEMAIL01.le.imgtec.org>
-References: <1456163671-40987-1-git-send-email-tim.sheridan@imgtec.com>
- <s5h8u2b22op.wl-tiwai@suse.de> <20160223094223.GK17690@localhost>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B6D8260535
- for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2016 13:47:29 +0100 (CET)
-In-Reply-To: <20160223094223.GK17690@localhost>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: 'Vinod Koul' <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.de>
-Cc: Neil Jones <neil.jones@imgtec.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>
+From: Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Subject: [PATCH 0/4 RESEND] Add I2S/ADV7511 audio support for ARC AXS10x boards
+Date: Tue, 23 Feb 2016 13:51:10 +0000
+Message-ID: <cover.1456234503.git.joabreu@synopsys.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: airlied-cv59FeDIM0c@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, CARLOS.PALMINHA-HKixBCOQz3hWk0Htik3J/w@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Vineet.Gupta1-HKixBCOQz3hWk0Htik3J/w@public.gmane.org, Alexey.Brodkin-HKixBCOQz3hWk0Htik3J/w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi/Vinod,
+ARC AXS10x platforms consist of a mainboard with several peripherals.
+One of those peripherals is an HDMI output port controlled by ADV7511 transmitter.
 
-> > Don't you have the code actually implement this ioctl?
-> > Or, is there anything I miss?
+This patch set adds audio for the ADV7511 transmitter and I2S audio for the
+AXS10x platform.
 
-Yup, not implementing it anywhere in the kernel tree. Just submitting the patch for the API to support implementing it in the out-of-tree IMG AXD driver. Apologies if I'm breaking some kind of rule here requiring an in-tree usage of a new API feature -- it might be better to submit this as part of a revised AXD patch series which implements this ioctl.
+Jose Abreu (4):
+  [adv7511] Add audio support
+  [adv7511] Update defconfigs so that audio is enabled
+  [dwc] Add I2S HDMI audio support using custom platform driver
+  [dwc] Update defconfigs so that I2S is enabled
 
-> And compress API was never intended for that :)
-> 
-> Can you tell me the awesome features you would like to support using this
-> API and I would try to provide you a standard alsa way to do that...
-> 
-> The intention of compress API is to provide a streaming interface for data
-> transfer and nothing more. To implement DSP features and control them,
-> you need to look at alsa control interface
+ arch/arc/boot/dts/axs10x_mb.dtsi      |   20 +-
+ arch/arc/configs/axs101_defconfig     |    4 +
+ arch/arc/configs/axs103_defconfig     |    6 +
+ arch/arc/configs/axs103_smp_defconfig |    6 +
+ drivers/gpu/drm/i2c/Kconfig           |    8 +
+ drivers/gpu/drm/i2c/Makefile          |    2 +
+ drivers/gpu/drm/i2c/adv7511.c         | 1024 ---------------------------------
+ drivers/gpu/drm/i2c/adv7511.h         |   41 ++
+ drivers/gpu/drm/i2c/adv7511_audio.c   |  310 ++++++++++
+ drivers/gpu/drm/i2c/adv7511_core.c    | 1005 ++++++++++++++++++++++++++++++++
+ include/sound/soc-dai.h               |    1 +
+ sound/soc/dwc/Kconfig                 |    1 +
+ sound/soc/dwc/Makefile                |    4 +-
+ sound/soc/dwc/designware_i2s.c        |  139 ++++-
+ sound/soc/dwc/designware_pcm.c        |  264 +++++++++
+ sound/soc/dwc/designware_pcm.h        |   21 +
+ 16 files changed, 1813 insertions(+), 1043 deletions(-)
+ delete mode 100644 drivers/gpu/drm/i2c/adv7511.c
+ create mode 100644 drivers/gpu/drm/i2c/adv7511_audio.c
+ create mode 100644 drivers/gpu/drm/i2c/adv7511_core.c
+ create mode 100644 sound/soc/dwc/designware_pcm.c
+ create mode 100644 sound/soc/dwc/designware_pcm.h
 
-AXD's got various features which require mode setting (e.g. for selecting between multi-device synchronization mechanisms that it supports). This would need an enum control, but I guess that this could be fudged with mutually exclusive switch controls for each of the enum values. AXD's also got numeric configuration parameters which it needs to be able to receive (e.g. parameters for stream synchronization heuristics, audio filter coefficients, etc.). Maybe a volume control with a domain wide enough could be used for this kind of configuration parameter. It's rather horrible, but might be fine for while the AXD driver is out of tree and there aren't more appropriate ALSA control types (e.g. enum and non-volume integer). :-/
+-- 
+1.9.1
 
-> Btw there was another person from imgtec who had similar request last year,
-> never heard back from him after he was supposed to fix stuff in his driver
-> and come back
 
-Yeah, Qais left IMG before being able to finish up his fixes for the AXD driver (I think the last patch series was sent in August 2015). I've only got a limited amount of time for working on AXD, but if I get the time/orders from above me in IMG, a revised patch series could appear again. :-)
-
-Many thanks,
-Tim
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
