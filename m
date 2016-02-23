@@ -1,17 +1,18 @@
-From: Carlo Caione <carlo@caione.org>
-Subject: [PATCH v2] ASoC: cht_bsw_rt5645: Fix writing to string
-	literal
-Date: Tue, 23 Feb 2016 09:50:20 +0100
-Message-ID: <1456217420-9327-1-git-send-email-carlo@caione.org>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 1/6] control: rename variables so that it
+ represents the number of channels which an element has
+Date: Tue, 23 Feb 2016 17:52:21 +0900
+Message-ID: <56CC1DC5.4080103@sakamocchi.jp>
+References: <1456188510-7189-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1456188510-7189-2-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f45.google.com (mail-wm0-f45.google.com [74.125.82.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 3698F2605B4
- for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2016 09:50:28 +0100 (CET)
-Received: by mail-wm0-f45.google.com with SMTP id a4so198309702wme.1
- for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2016 00:50:28 -0800 (PST)
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5CE11260535
+ for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2016 09:52:24 +0100 (CET)
+In-Reply-To: <1456188510-7189-2-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,41 +22,181 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, vinod.koul@intel.com, yang.a.fang@intel.com, linux@endlessm.com, alsa-devel@alsa-project.org
-Cc: Carlo Caione <carlo@endlessm.com>
+To: tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Carlo Caione <carlo@endlessm.com>
+On Feb 23 2016 09:48, Takashi Sakamoto wrote:
+> An element has some channels which can be changed in a single operation
+> from userspace. In control API, variables to represents the number of
+> channels is described as 'count'. On the other hand, in ALSA control core,
+> the number of elements in an element set is also described as 'count'.
+> They're a bit confusing.
+>
+> This commit renames 'count' with 'channels'. The 'count' is reserved for
+> future commit to describe the number of elements in an element set.
+>
+> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> ---
+>   src/control/control.c | 38 ++++++++++++++++++++------------------
+>   1 file changed, 20 insertions(+), 18 deletions(-)
+>
+> diff --git a/src/control/control.c b/src/control/control.c
+> index 8a5d530..e02727a 100644
+> --- a/src/control/control.c
+> +++ b/src/control/control.c
+> @@ -264,14 +264,15 @@ int snd_ctl_elem_info(snd_ctl_t *ctl, snd_ctl_elem_info_t *info)
+>    * \brief Create and add an user INTEGER CTL element
+>    * \param ctl CTL handle
+>    * \param id CTL element id to add
+> - * \param count number of elements
+> + * \param channels number of elements
 
-We cannot use strcpy() to write to a const char * location. This is
-causing a 'BUG: unable to handle kernel paging request' error at boot
-when using the cht-bsw-rt5645 driver.
+Oops. This is incomplete because in my intension the description of this 
+argument represents the number of 'channels', not 'elements'.
 
-With this patch we also fix a wrong indexing in the driver where the
-codec_name of the wrong dai_link is being overwritten.
+>    * \param min minimum value
+>    * \param max maximum value
+>    * \param step value step
+>    * \return 0 on success otherwise a negative error code
+>    */
+>   int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+> -			     unsigned int count, long min, long max, long step)
+> +			     unsigned int channels, long min, long max,
+> +			     long step)
+>   {
+>   	snd_ctl_elem_info_t *info;
+>   	snd_ctl_elem_value_t *val;
+> @@ -284,7 +285,7 @@ int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+>   	info->type = SND_CTL_ELEM_TYPE_INTEGER;
+>   	info->access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
+>   		SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE;
+> -	info->count = count;
+> +	info->count = channels;
+>   	info->value.integer.min = min;
+>   	info->value.integer.max = max;
+>   	info->value.integer.step = step;
+> @@ -293,7 +294,7 @@ int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+>   		return err;
+>   	snd_ctl_elem_value_alloca(&val);
+>   	val->id = info->id;
+> -	for (i = 0; i < count; i++)
+> +	for (i = 0; i < channels; i++)
+>   		val->value.integer.value[i] = min;
+>   	err = ctl->ops->element_write(ctl, val);
+>   	return err;
+> @@ -303,15 +304,15 @@ int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+>    * \brief Create and add an user INTEGER64 CTL element
+>    * \param ctl CTL handle
+>    * \param id CTL element id to add
+> - * \param count number of elements
+> + * \param channels number of elements
 
-Signed-off-by: Carlo Caione <carlo@endlessm.com>
----
- sound/soc/intel/boards/cht_bsw_rt5645.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Ditto.
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index 2d3afdd..a7b96a9 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -367,8 +367,12 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	}
- 	card->dev = &pdev->dev;
- 	sprintf(codec_name, "i2c-%s:00", drv->acpi_card->codec_id);
-+
- 	/* set correct codec name */
--	strcpy((char *)card->dai_link[2].codec_name, codec_name);
-+	for (i = 0; i < ARRAY_SIZE(cht_dailink); i++)
-+		if (!strcmp(card->dai_link[i].codec_name, "i2c-10EC5645:00"))
-+			card->dai_link[i].codec_name = kstrdup(codec_name, GFP_KERNEL);
-+
- 	snd_soc_card_set_drvdata(card, drv);
- 	ret_val = devm_snd_soc_register_card(&pdev->dev, card);
- 	if (ret_val) {
--- 
-2.5.0
+>    * \param min minimum value
+>    * \param max maximum value
+>    * \param step value step
+>    * \return 0 on success otherwise a negative error code
+>    */
+>   int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+> -			       unsigned int count, long long min, long long max,
+> -			       long long step)
+> +			       unsigned int channels, long long min,
+> +			       long long max, long long step)
+>   {
+>   	snd_ctl_elem_info_t *info;
+>   	snd_ctl_elem_value_t *val;
+> @@ -322,7 +323,7 @@ int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+>   	snd_ctl_elem_info_alloca(&info);
+>   	info->id = *id;
+>   	info->type = SND_CTL_ELEM_TYPE_INTEGER64;
+> -	info->count = count;
+> +	info->count = channels;
+>   	info->value.integer64.min = min;
+>   	info->value.integer64.max = max;
+>   	info->value.integer64.step = step;
+> @@ -331,7 +332,7 @@ int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+>   		return err;
+>   	snd_ctl_elem_value_alloca(&val);
+>   	val->id = info->id;
+> -	for (i = 0; i < count; i++)
+> +	for (i = 0; i < channels; i++)
+>   		val->value.integer64.value[i] = min;
+>   	err = ctl->ops->element_write(ctl, val);
+>   	return err;
+> @@ -341,11 +342,11 @@ int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+>    * \brief Create and add an user BOOLEAN CTL element
+>    * \param ctl CTL handle
+>    * \param id CTL element id to add
+> - * \param count number of elements
+> + * \param channels number of elements
+
+Ditto.
+
+>    * \return 0 on success otherwise a negative error code
+>    */
+>   int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+> -			     unsigned int count)
+> +			     unsigned int channels)
+>   {
+>   	snd_ctl_elem_info_t *info;
+>
+> @@ -353,7 +354,7 @@ int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+>   	snd_ctl_elem_info_alloca(&info);
+>   	info->id = *id;
+>   	info->type = SND_CTL_ELEM_TYPE_BOOLEAN;
+> -	info->count = count;
+> +	info->count = channels;
+>   	info->value.integer.min = 0;
+>   	info->value.integer.max = 1;
+>   	return ctl->ops->element_add(ctl, info);
+> @@ -363,7 +364,7 @@ int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+>    * \brief Create and add a user-defined control element of type enumerated.
+>    * \param[in] ctl Control device handle.
+>    * \param[in] id ID of the new control element.
+> - * \param[in] count Number of element values.
+> + * \param[in] channels Number of element values.
+
+Ditto.
+
+>    * \param[in] items Range of possible values (0 ... \a items - 1).
+>    * \param[in] names An array containing \a items strings.
+>    * \return Zero on success, otherwise a negative error code.
+> @@ -380,9 +381,10 @@ int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+>    * \par Errors:
+>    * <dl>
+>    * <dt>-EBUSY<dd>A control element with ID \a id already exists.
+> - * <dt>-EINVAL<dd>\a count is not at least one or greater than 128, or \a items
+> - * 	is not at least one, or a string in \a names is empty or longer than 63
+> - * 	bytes, or the strings in \a names require more than 64 KB storage.
+> + * <dt>-EINVAL<dd>\a channels is not at least one or greater than 128, or \a
+> + *	items is not at least one, or a string in \a names is empty or longer
+> + *	than 63 bytes, or the strings in \a names require more than 64 KB
+> + *	storage.
+>    * <dt>-ENOMEM<dd>Out of memory, or there are too many user control elements.
+>    * <dt>-ENXIO<dd>This driver does not support (enumerated) user controls.
+>    * <dt>-ENODEV<dd>Device unplugged.
+> @@ -392,7 +394,7 @@ int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+>    * snd_ctl_elem_add_enumerated() was introduced in ALSA 1.0.25.
+>    */
+>   int snd_ctl_elem_add_enumerated(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+> -				unsigned int count, unsigned int items,
+> +				unsigned int channels, unsigned int items,
+>   				const char *const names[])
+>   {
+>   	snd_ctl_elem_info_t *info;
+> @@ -405,7 +407,7 @@ int snd_ctl_elem_add_enumerated(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+>   	snd_ctl_elem_info_alloca(&info);
+>   	info->id = *id;
+>   	info->type = SND_CTL_ELEM_TYPE_ENUMERATED;
+> -	info->count = count;
+> +	info->count = channels;
+>   	info->value.enumerated.items = items;
+>
+>   	bytes = 0;
+
+
+Regards
+
+Takashi Sakamoto
