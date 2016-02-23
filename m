@@ -1,20 +1,16 @@
-From: Thomas Klausner <tk@giga.or.at>
-Subject: portability patch: EBADF [was Re: feeding back pkgsrc
- changs]
-Date: Tue, 23 Feb 2016 15:09:06 +0100
-Message-ID: <20160223140906.GP19194@danbala.tuwien.ac.at>
-References: <20160218154744.GA7454@danbala.tuwien.ac.at>
- <sfid-H20160218-165155-+056.13-1@spamfilter.osbf.lua>
- <s5hy4ait3t8.wl-tiwai@suse.de>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: arizona: Make logging of FLL
+	calculations clearer
+Date: Tue, 23 Feb 2016 14:16:32 +0000
+Message-ID: <1456236992-32028-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="+KJYzRxRHjYqLGl5"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from danbala.ifoer.tuwien.ac.at (danbala.ifoer.tuwien.ac.at
- [128.130.168.64])
- by alsa0.perex.cz (Postfix) with ESMTP id 30D0F260535
- for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2016 15:09:08 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hy4ait3t8.wl-tiwai@suse.de>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E715260535
+ for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2016 15:16:39 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,273 +20,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+The debug logging of FLL calculations was confusing. Values were
+printed in hex without indicating this by a leading 0x, and
+despite these normally being required in decimal. Also where the
+register value isn't the actual value (it s a power-of-two or
+0 means 1, 1 means 2, ...)  it was unclear whether the actual or
+register value was shown.
 
---+KJYzRxRHjYqLGl5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This patch changes the log print so that all mathematical values
+are shown in decimal, all register values are shown in hex with a
+0x prefix, and where the register value isn't the actual integer
+value the decimal integer value is shown in () after the hex
+register value.
 
-Hi Takashi!
-
-Thanks for the answer.
-
-On Thu, Feb 18, 2016 at 04:51:15PM +0100, Takashi Iwai wrote:
-> On Thu, 18 Feb 2016 16:47:44 +0100,
-> Thomas Klausner wrote:
-> > I've just updated the pkgsrc packages for alsa-lib, alsa-utils and
-> > alsa-plugins to 1.1.0 and noticed that there are quite a number of
-> > local patches we have. I'd like to get them integrated.
-> > 
-> > When I visited the alsa-projects web page, I noticed that the link to
-> > the bug tracker is dead.
-> > 
-> > What is the recommended method to provide the patches?
-> 
-> Just submit your patches to alsa-devel ML.  That's the best way to
-> review and get merged.
-
-I'll start with a straightforward one. Some operating systems don't
-provide an errno 'EBADFD'; let's use EBADF there instead.
-
-This patch adds the define in all files that need it, but if you
-prefer to add it to a central place instead, please suggest one.
-
-Thanks,
- Thomas
-
---+KJYzRxRHjYqLGl5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="0001-Define-EBADFD-in-terms-of-EBADF-if-it-doesn-t-exist.patch"
-
->From e72e16bcb9bd2ddff2624fdb57a96fad6b3cf5bb Mon Sep 17 00:00:00 2001
-From: Thomas Klausner <wiz@NetBSD.org>
-Date: Tue, 23 Feb 2016 15:05:47 +0100
-Subject: [PATCH] Define EBADFD in terms of EBADF if it doesn't exist.
-
-For portability on FreeBSD, NetBSD and probably others.
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 ---
- aserver/aserver.c         | 4 ++++
- src/control/control_shm.c | 4 ++++
- src/pcm/pcm.c             | 4 ++++
- src/pcm/pcm_dmix.c        | 4 ++++
- src/pcm/pcm_dshare.c      | 4 ++++
- src/pcm/pcm_dsnoop.c      | 4 ++++
- src/pcm/pcm_hw.c          | 4 ++++
- src/pcm/pcm_ioplug.c      | 4 ++++
- src/pcm/pcm_null.c        | 4 ++++
- src/pcm/pcm_rate.c        | 4 ++++
- src/pcm/pcm_share.c       | 4 ++++
- src/pcm/pcm_shm.c         | 4 ++++
- src/pcm/pcm_simple.c      | 4 ++++
- 13 files changed, 52 insertions(+)
+ sound/soc/codecs/arizona.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/aserver/aserver.c b/aserver/aserver.c
-index ac20706..88995cf 100644
---- a/aserver/aserver.c
-+++ b/aserver/aserver.c
-@@ -35,6 +35,10 @@
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 913cfa8..92d22a0 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -2149,11 +2149,12 @@ static int arizona_calc_fll(struct arizona_fll *fll,
+ 		return -EINVAL;
+ 	}
  
- #include "aserver.h"
+-	arizona_fll_dbg(fll, "N=%x THETA=%x LAMBDA=%x\n",
++	arizona_fll_dbg(fll, "N=%d THETA=%d LAMBDA=%d\n",
+ 			cfg->n, cfg->theta, cfg->lambda);
+-	arizona_fll_dbg(fll, "FRATIO=%x(%d) OUTDIV=%x REFCLK_DIV=%x\n",
+-			cfg->fratio, cfg->fratio, cfg->outdiv, cfg->refdiv);
+-	arizona_fll_dbg(fll, "GAIN=%d\n", cfg->gain);
++	arizona_fll_dbg(fll, "FRATIO=0x%x(%d) OUTDIV=%d REFCLK_DIV=0x%x(%d)\n",
++			cfg->fratio, ratio, cfg->outdiv,
++			cfg->refdiv, 1 << cfg->refdiv);
++	arizona_fll_dbg(fll, "GAIN=0x%x(%d)\n", cfg->gain, 1 << cfg->gain);
  
-+#ifndef EBADFD
-+#define EBADFD EBADF
-+#endif
-+
- char *command;
+ 	return 0;
  
- #if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 95)
-diff --git a/src/control/control_shm.c b/src/control/control_shm.c
-index bd07d4a..618ef39 100644
---- a/src/control/control_shm.c
-+++ b/src/control/control_shm.c
-@@ -35,6 +35,10 @@
- #include <netdb.h>
- #include "aserver.h"
- 
-+#ifndef EBADFD
-+#define EBADFD EBADF
-+#endif
-+
- #ifndef PIC
- /* entry for static linking */
- const char *_snd_module_control_shm = "";
-diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index 203e7a5..6d40171 100644
---- a/src/pcm/pcm.c
-+++ b/src/pcm/pcm.c
-@@ -639,6 +639,10 @@ playback devices.
- #include <limits.h>
- #include "pcm_local.h"
- 
-+#ifndef EBADFD
-+#define EBADFD EBADF
-+#endif
-+
- /**
-  * \brief get identifier of PCM handle
-  * \param pcm PCM handle
-diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
-index b26a5c7..ba65cad 100644
---- a/src/pcm/pcm_dmix.c
-+++ b/src/pcm/pcm_dmix.c
-@@ -45,6 +45,10 @@
- #include <sys/mman.h>
- #include "pcm_direct.h"
- 
-+#ifndef EBADFD
-+#define EBADFD EBADF
-+#endif
-+
- #ifndef PIC
- /* entry for static linking */
- const char *_snd_module_pcm_dmix = "";
-diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
-index 58e47bb..2556a30 100644
---- a/src/pcm/pcm_dshare.c
-+++ b/src/pcm/pcm_dshare.c
-@@ -45,6 +45,10 @@
- #include <sys/mman.h>
- #include "pcm_direct.h"
- 
-+#ifndef EBADFD
-+#define EBADFD EBADF
-+#endif
-+
- #ifndef PIC
- /* entry for static linking */
- const char *_snd_module_pcm_dshare = "";
-diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
-index 576c35b..26b6f5c 100644
---- a/src/pcm/pcm_dsnoop.c
-+++ b/src/pcm/pcm_dsnoop.c
-@@ -45,6 +45,10 @@
- #include <sys/mman.h>
- #include "pcm_direct.h"
- 
-+#ifndef EBADFD
-+#define EBADFD EBADF
-+#endif
-+
- #ifndef PIC
- /* entry for static linking */
- const char *_snd_module_pcm_dsnoop = "";
-diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
-index 4f4b84b..de9f9d5 100644
---- a/src/pcm/pcm_hw.c
-+++ b/src/pcm/pcm_hw.c
-@@ -40,6 +40,10 @@
- #include "../control/control_local.h"
- #include "../timer/timer_local.h"
- 
-+#ifndef EBADFD
-+#define EBADFD EBADF
-+#endif
-+
- //#define DEBUG_RW		/* use to debug readi/writei/readn/writen */
- //#define DEBUG_MMAP		/* debug mmap_commit */
- 
-diff --git a/src/pcm/pcm_ioplug.c b/src/pcm/pcm_ioplug.c
-index 43550c0..bed1c97 100644
---- a/src/pcm/pcm_ioplug.c
-+++ b/src/pcm/pcm_ioplug.c
-@@ -31,6 +31,10 @@
- #include "pcm_ext_parm.h"
- #include "pcm_generic.h"
- 
-+#ifndef EBADFD
-+#define EBADFD EBADF
-+#endif
-+
- #ifndef PIC
- /* entry for static linking */
- const char *_snd_module_pcm_ioplug = "";
-diff --git a/src/pcm/pcm_null.c b/src/pcm/pcm_null.c
-index 5e63caa..9fe3c82 100644
---- a/src/pcm/pcm_null.c
-+++ b/src/pcm/pcm_null.c
-@@ -31,6 +31,10 @@
- #include "pcm_local.h"
- #include "pcm_plugin.h"
- 
-+#ifndef EBADFD
-+#define EBADFD EBADF
-+#endif
-+
- #ifndef PIC
- /* entry for static linking */
- const char *_snd_module_pcm_null = "";
-diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
-index c76db25..c08a2e8 100644
---- a/src/pcm/pcm_rate.c
-+++ b/src/pcm/pcm_rate.c
-@@ -36,6 +36,10 @@
- 
- #include "plugin_ops.h"
- 
-+#ifndef EBADFD
-+#define EBADFD EBADF
-+#endif
-+
- #if 0
- #define DEBUG_REFINE
- #endif
-diff --git a/src/pcm/pcm_share.c b/src/pcm/pcm_share.c
-index 5d8aaf2..9fe8dc1 100644
---- a/src/pcm/pcm_share.c
-+++ b/src/pcm/pcm_share.c
-@@ -38,6 +38,10 @@
- #include <pthread.h>
- #include "pcm_local.h"
- 
-+#ifndef EBADFD
-+#define EBADFD EBADF
-+#endif
-+
- #ifndef PIC
- /* entry for static linking */
- const char *_snd_module_pcm_share = "";
-diff --git a/src/pcm/pcm_shm.c b/src/pcm/pcm_shm.c
-index a815ac6..242b26e 100644
---- a/src/pcm/pcm_shm.c
-+++ b/src/pcm/pcm_shm.c
-@@ -45,6 +45,10 @@
- #include <netdb.h>
- #include "aserver.h"
- 
-+#ifndef EBADFD
-+#define EBADFD EBADF
-+#endif
-+
- #ifndef PIC
- /* entry for static linking */
- const char *_snd_module_pcm_shm = "";
-diff --git a/src/pcm/pcm_simple.c b/src/pcm/pcm_simple.c
-index ce11083..99ba1c3 100644
---- a/src/pcm/pcm_simple.c
-+++ b/src/pcm/pcm_simple.c
-@@ -25,6 +25,10 @@
- 
- #include "pcm_local.h"
- 
-+#ifndef EBADFD
-+#define EBADFD EBADF
-+#endif
-+
- static int set_buffer_time(snd_spcm_latency_t latency,
- 			   unsigned int *buffer_time)
- {
 -- 
-2.7.1
-
-
---+KJYzRxRHjYqLGl5
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---+KJYzRxRHjYqLGl5--
+1.9.1
