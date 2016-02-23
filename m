@@ -1,21 +1,18 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [RFC: PATCH] ALSA: hda - clear IRQ statu twice
-	on	some Intel platforms
-Date: Tue, 23 Feb 2016 14:27:50 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D1904679BC8@SHSMSX103.ccr.corp.intel.com>
-References: <1456126790-13480-1-git-send-email-libin.yang@linux.intel.com>
- <s5h60xhw2wp.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D1904670652@SHSMSX103.ccr.corp.intel.com>
- <s5ha8mr22tv.wl-tiwai@suse.de>
+From: Giacomo Comes <comes@naic.edu>
+Subject: Re: Compute Stick baytrail audio problem
+Date: Tue, 23 Feb 2016 10:34:43 -0400
+Message-ID: <20160223143443.GA22458@monopoli.naic.edu>
+References: <20160219203900.GA5202@monopoli.naic.edu>
+ <56C8826A.3030303@linux.intel.com> <56CBCB86.8040601@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D64E260535
- for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2016 15:27:54 +0100 (CET)
-In-Reply-To: <s5ha8mr22tv.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mailserver.naic.edu (mailserver.naic.edu [192.65.176.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5CB23260535
+ for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2016 15:34:45 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <56CBCB86.8040601@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,231 +22,150 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Toyo Abe <toyo.abe@gmail.com>
+Cc: Giacomo Comes <comes@naic.edu>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-
-> bounces@alsa-project.org] On Behalf Of Takashi Iwai
-> Sent: Tuesday, February 23, 2016 5:28 PM
-> To: Yang, Libin
-> Cc: Lin, Mengdong; libin.yang@linux.intel.com; alsa-devel@alsa-
-> project.org
-> Subject: Re: [alsa-devel] [RFC: PATCH] ALSA: hda - clear IRQ statu twice on
-> some Intel platforms
+On Tue, Feb 23, 2016 at 12:32:23PM +0900, Toyo Abe wrote:
 > 
-> On Tue, 23 Feb 2016 09:57:13 +0100,
-> Yang, Libin wrote:
-> >
-> > Hi Takashi,
-> >
-> > I'm testing your patch in stress level. So far, it seems to works smoothly.
-> >
-> > Which patch do you like? And your patch seems to impact on all the
-> platforms?
+> Hi,
 > 
-> One potential problem in your patch is that the later triggered event
-> shall be ignored by the post-irq ack.
+> I'd struggled a similar underrun problem on my baytrail device. The dmesg showed
+> the following warnings.
+> 
+> [15356.757938] had: Driver detected 2 missed buffer done interrupt(s)!!!!
+> [15356.761594] had: Driver detected 1 missed buffer done interrupt(s)!!!!
+> [15356.774775] had: Unable to clear UNDERRUN bits
+> [15356.791312] had: Driver detected 1 missed buffer done interrupt(s)!!!!
+> [15356.808148] had: Unable to clear UNDERRUN bits
+> [15356.824692] had: Driver detected 2 missed buffer done interrupt(s)!!!!
+> 
+> After some investigation, I found some problems on the driver and fixed a few of
+> them. I pushed the fix to my github. I hope it might help you.
+>   https://raw.githubusercontent.com/toyoabe/baytrailaudio/fix-underrun/hdmi_audio_20150319.patch
+> 
+> Best Regards,
+> -toyo
 
-Yes. So it seems your patch is better.
+Hi,
+that was it!. I added your changes and now the audio works. I'm happy. 
+I got finally every subsystem of the Compute Stick working.
+I have a minor question tought. Alsamixer says:
+  This sound device does not have any controls.
+Is there a way to change the volume without enabling pulseaudio?
+
+Just for documentation, here is the small change that Toyo did to make the 
+underrun disappear:
+
+diff -Nraub a/drivers/gpu/drm/i915/i915_irq.c b/drivers/gpu/drm/i915/i915_irq.c
+--- a/drivers/gpu/drm/i915/i915_irq.c	2016-02-23 08:03:42.406016576 -0400
++++ b/drivers/gpu/drm/i915/i915_irq.c	2016-02-23 08:03:58.714016576 -0400
+@@ -2717,11 +2717,14 @@
+ 	int pipe = 1;
+ 
+ 	spin_lock_irqsave(&dev_priv->irq_lock, irqflags);
++	i915_enable_lpe_pipestat(dev_priv, pipe);
++
+ 	imr = I915_READ(VLV_IMR);
+ 	/* Audio is on Stream A */
+ 	imr &= ~I915_LPE_PIPE_A_INTERRUPT;
+ 	I915_WRITE(VLV_IMR, imr);
+-	i915_enable_lpe_pipestat(dev_priv, pipe);
++	I915_WRITE(VLV_IER, ~imr);
++	POSTING_READ(VLV_IER);
+ 	spin_unlock_irqrestore(&dev_priv->irq_lock, irqflags);
+ 
+ 	return 0;
+@@ -2769,7 +2772,10 @@
+ 	spin_lock_irqsave(&dev_priv->irq_lock, irqflags);
+ 	imr = I915_READ(VLV_IMR);
+ 	imr |= I915_LPE_PIPE_A_INTERRUPT;
++	I915_WRITE(VLV_IER, ~imr);
+ 	I915_WRITE(VLV_IMR, imr);
++	POSTING_READ(VLV_IMR);
++
+ 	i915_disable_lpe_pipestat(dev_priv, pipe);
+ 	spin_unlock_irqrestore(&dev_priv->irq_lock, irqflags);
+ 
+diff -Nraub a/sound/hdmi_audio/intel_mid_hdmi_audio.c b/sound/hdmi_audio/intel_mid_hdmi_audio.c
+--- a/sound/hdmi_audio/intel_mid_hdmi_audio.c	2016-02-23 08:03:42.414016576 -0400
++++ b/sound/hdmi_audio/intel_mid_hdmi_audio.c	2016-02-23 08:03:58.722016576 -0400
+@@ -1128,7 +1128,6 @@
+ 		pr_debug("HDMI status =0x%x\n", hdmi_status);
+ 		if (hdmi_status & AUD_CONFIG_MASK_UNDERRUN) {
+ 			i++;
+-			hdmi_status &= ~AUD_CONFIG_MASK_UNDERRUN;
+ 			had_write_register(AUD_HDMI_STATUS_v2, hdmi_status);
+ 		} else
+ 			break;
+
+Thanks again.
+Giacomo
 
 > 
-> OTOH, my patch would impact to all platforms, yes.  However, in
-> theory, all platforms may have this issue, so it's anyway good in one
-> side.  In another flip, of course, it might introduce some regression.
-> 
-> We can limit this loop check only for some known platforms, or we let
-> it tested more :)
-> 
-> I'm going to cook the patch a bit more and give you for testing.
-
-I'd like to test your updated patch.
-
-Regards,
-Libin
-
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> >
-> > Regards,
-> > Libin
-> >
-> > > -----Original Message-----
-> > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > Sent: Monday, February 22, 2016 4:44 PM
-> > > To: libin.yang@linux.intel.com
-> > > Cc: alsa-devel@alsa-project.org; Lin, Mengdong; Yang, Libin
-> > > Subject: Re: [alsa-devel] [RFC: PATCH] ALSA: hda - clear IRQ statu
-> twice on
-> > > some Intel platforms
-> > >
-> > > On Mon, 22 Feb 2016 08:39:50 +0100,
-> > > libin.yang@linux.intel.com wrote:
-> > > >
-> > > > From: Libin Yang <libin.yang@linux.intel.com>
-> > > >
-> > > > On some Intel platforms, we found the interrupt issue in
-> > > > the below scenario:
-> > > > 1. driver is in irq handler
-> > > > 2. there is another interrupt from HW after interrupt status
-> > > >    is cleared and before exiting from interrupt handler
-> > > > 3. exit from the current irq handling
-> > > >
-> > > > After exiting the irq handler, it should raise another
-> > > > interrupt for driver to handle the new interrupt. But actually,
-> > > > it failed to raise the interrupt and driver will never have
-> > > > chance to clear the interrupt status.
-> > > >
-> > > > The patch clears the interrupt status again just before exiting
-> > > > for interrupt handler. This can reduce the contest dramatically.
-> > > >
-> > > > Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
-> > >
-> > > An alternative way is to loop while the status bit is reenabled.  An
-> > > untested patch is below.  Not sure which is better yet.  Just an idea.
-> > >
-> > >
-> > > Takashi
-> > >
-> > > ---
-> > > diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-> > > index e2b712c90d3f..b74d9c8dceff 100644
-> > > --- a/include/sound/hdaudio.h
-> > > +++ b/include/sound/hdaudio.h
-> > > @@ -343,7 +343,7 @@ void snd_hdac_bus_enter_link_reset(struct
-> > > hdac_bus *bus);
-> > >  void snd_hdac_bus_exit_link_reset(struct hdac_bus *bus);
-> > >
-> > >  void snd_hdac_bus_update_rirb(struct hdac_bus *bus);
-> > > -void snd_hdac_bus_handle_stream_irq(struct hdac_bus *bus,
-> unsigned
-> > > int status,
-> > > +bool snd_hdac_bus_handle_stream_irq(struct hdac_bus *bus,
-> unsigned
-> > > int status,
-> > >  				    void (*ack)(struct hdac_bus *,
-> > >  						struct hdac_stream *));
-> > >
-> > > diff --git a/sound/hda/hdac_controller.c
-> b/sound/hda/hdac_controller.c
-> > > index b5a17cb510a0..448cd8c990f0 100644
-> > > --- a/sound/hda/hdac_controller.c
-> > > +++ b/sound/hda/hdac_controller.c
-> > > @@ -427,17 +427,19 @@
-> > > EXPORT_SYMBOL_GPL(snd_hdac_bus_stop_chip);
-> > >   * @status: INTSTS register value
-> > >   * @ask: callback to be called for woken streams
-> > >   */
-> > > -void snd_hdac_bus_handle_stream_irq(struct hdac_bus *bus,
-> unsigned
-> > > int status,
-> > > +bool snd_hdac_bus_handle_stream_irq(struct hdac_bus *bus,
-> unsigned
-> > > int status,
-> > >  				    void (*ack)(struct hdac_bus *,
-> > >  						struct hdac_stream *))
-> > >  {
-> > >  	struct hdac_stream *azx_dev;
-> > >  	u8 sd_status;
-> > > +	bool handled = false;
-> > >
-> > >  	list_for_each_entry(azx_dev, &bus->stream_list, list) {
-> > >  		if (status & azx_dev->sd_int_sta_mask) {
-> > >  			sd_status = snd_hdac_stream_readb(azx_dev,
-> > > SD_STS);
-> > >  			snd_hdac_stream_writeb(azx_dev, SD_STS,
-> > > SD_INT_MASK);
-> > > +			handled = true;
-> > >  			if (!azx_dev->substream || !azx_dev->running
-> > > ||
-> > >  			    !(sd_status & SD_INT_COMPLETE))
-> > >  				continue;
-> > > @@ -445,6 +447,7 @@ void
-> snd_hdac_bus_handle_stream_irq(struct
-> > > hdac_bus *bus, unsigned int status,
-> > >  				ack(bus, azx_dev);
-> > >  		}
-> > >  	}
-> > > +	return handled;
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(snd_hdac_bus_handle_stream_irq);
-> > >
-> > > diff --git a/sound/pci/hda/hda_controller.c
-> > > b/sound/pci/hda/hda_controller.c
-> > > index 37cf9cee9835..a4226026b1dc 100644
-> > > --- a/sound/pci/hda/hda_controller.c
-> > > +++ b/sound/pci/hda/hda_controller.c
-> > > @@ -930,6 +930,7 @@ irqreturn_t azx_interrupt(int irq, void
-> *dev_id)
-> > >  	struct azx *chip = dev_id;
-> > >  	struct hdac_bus *bus = azx_bus(chip);
-> > >  	u32 status;
-> > > +	bool handled = false;
-> > >
-> > >  #ifdef CONFIG_PM
-> > >  	if (azx_has_pm_runtime(chip))
-> > > @@ -944,28 +945,35 @@ irqreturn_t azx_interrupt(int irq, void
-> *dev_id)
-> > >  		return IRQ_NONE;
-> > >  	}
-> > >
-> > > -	status = azx_readl(chip, INTSTS);
-> > > -	if (status == 0 || status == 0xffffffff) {
-> > > -		spin_unlock(&bus->reg_lock);
-> > > -		return IRQ_NONE;
-> > > -	}
-> > > +	for (;;) {
-> > > +		bool active;
-> > >
-> > > -	snd_hdac_bus_handle_stream_irq(bus, status, stream_update);
-> > > +		status = azx_readl(chip, INTSTS);
-> > > +		if (status == 0 || status == 0xffffffff)
-> > > +			break;
-> > >
-> > > -	/* clear rirb int */
-> > > -	status = azx_readb(chip, RIRBSTS);
-> > > -	if (status & RIRB_INT_MASK) {
-> > > -		if (status & RIRB_INT_RESPONSE) {
-> > > -			if (chip->driver_caps &
-> > > AZX_DCAPS_CTX_WORKAROUND)
-> > > -				udelay(80);
-> > > -			snd_hdac_bus_update_rirb(bus);
-> > > +		active = snd_hdac_bus_handle_stream_irq(bus, status,
-> > > stream_update);
-> > > +
-> > > +		/* clear rirb int */
-> > > +		status = azx_readb(chip, RIRBSTS);
-> > > +		if (status & RIRB_INT_MASK) {
-> > > +			active = true;
-> > > +			if (status & RIRB_INT_RESPONSE) {
-> > > +				if (chip->driver_caps &
-> > > AZX_DCAPS_CTX_WORKAROUND)
-> > > +					udelay(80);
-> > > +				snd_hdac_bus_update_rirb(bus);
-> > > +			}
-> > > +			azx_writeb(chip, RIRBSTS, RIRB_INT_MASK);
-> > >  		}
-> > > -		azx_writeb(chip, RIRBSTS, RIRB_INT_MASK);
-> > > +
-> > > +		if (!active)
-> > > +			break;
-> > > +		handled = true;
-> > >  	}
-> > >
-> > >  	spin_unlock(&bus->reg_lock);
-> > >
-> > > -	return IRQ_HANDLED;
-> > > +	return IRQ_RETVAL(handled);
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(azx_interrupt);
-> > >
-> >
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> Pierre-Louis Bossart wrote:
+> > On 02/19/2016 02:39 PM, Giacomo Comes wrote:
+> >> Hi,
+> >> I have recently bought a Intel Compute Stick and I am having trouble with=
+> >   the audio.
+> >> Intel provides a custom Ubuntu release that support audio, but I want to =
+> > run the
+> >> linux distribution of my choice on it (openSUSE 13.2 for the moment).
+> >>
+> >> In order to have HDMI audio support it is necessary to compile a kernel w=
+> > ith this patch
+> >> (https://raw.githubusercontent.com/01org/baytrailaudio/master/hdmi_audio_=
+> > 20150319.patch)
+> >> provided by Intel for kernel 3.16.7 (https://01.org/ubuntu-hdmi)
+> >>
+> >> I compiled the openSUSE kernel using the default openSUSE .config plus th=
+> > e following:
+> >> CONFIG_SUPPORT_HDMI=3Dy
+> >> CONFIG_SND_SOC=3Dm
+> >> CONFIG_SND_SOC_INTEL_SST=3Dm
+> >> CONFIG_SND_SOC_INTEL_BYT_RT5640_MACH=3Dm
+> >>
+> >> I booted the new kernel and aplay -l gives this output:
+> >> **** List of PLAYBACK Hardware Devices ****
+> >> card 0: IntelHDMI [IntelHDMI], device 0: IntelHDMI [IntelHDMI]
+> >>    Subdevices: 0/1
+> >>    Subdevice #0: subdevice #0
+> >>
+> >> but when I run:
+> >>    aplay /usr/share/sounds/alsa/test.wav
+> >> the audio plays for .2 seconds and then nothing more.
+> >> Sometime it will play later a little bit more and stop again.
+> >> At some point these messages appears:
+> >> underrun!!! (at least 29325.946 ms long)
+> >> underrun!!! (at least 1535.889 ms long)
+> >> underrun!!! (at least 3196.213 ms long)
+> >>
+> >>
+> >> I have looked around on google for a hint on how to fix this issue but I =
+> > found nothing.
+> >> Any idea where to look for a solution?
+> >>
+> >> Attached there are the dmesg and lsmod output for ubuntu
+> >> with the working audio and openSUSE 13.2 plus patch
+> >> without the working audio.
+> >> I can provide any other information you need.
+> > 
+> > There are enough messages that make me believe something is very wrong
+> > from the start
+> > 
+> > 19.664486] had: ******** HAD DRIVER loading.. Ver: 0.01.003
+> > [   19.664549] hdmi_audio_probe dma_mask: 0
+> > [   19.664937] card->dev is NULL!!!!! Should not be this case
+> > [   19.668176] [drm] mid_hdmi_audio_register: Scheduling HDMI audio work qu=
+> > eue
+> > [   19.670745] [drm:i915_had_wq] *ERROR* Checking for HDMI connection at bo=
+> > ot
+> > 
+> > Some of us at Intel are trying to clean this up but it'll take time.
+> > 
+> > 
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > 
