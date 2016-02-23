@@ -1,53 +1,296 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2] ASoC: wm9713: fix regmap free path
-Date: Tue, 23 Feb 2016 15:04:01 +0100
-Message-ID: <56CC66D1.7010702@metafoo.de>
-References: <1456180544-29108-1-git-send-email-robert.jarzmik@free.fr>
- <20160223140002.GE1490@localhost.localdomain>
+From: Thomas Klausner <tk@giga.or.at>
+Subject: portability patch: EBADF [was Re: feeding back pkgsrc
+ changs]
+Date: Tue, 23 Feb 2016 15:09:06 +0100
+Message-ID: <20160223140906.GP19194@danbala.tuwien.ac.at>
+References: <20160218154744.GA7454@danbala.tuwien.ac.at>
+ <sfid-H20160218-165155-+056.13-1@spamfilter.osbf.lua>
+ <s5hy4ait3t8.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160223140002.GE1490@localhost.localdomain>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="+KJYzRxRHjYqLGl5"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from danbala.ifoer.tuwien.ac.at (danbala.ifoer.tuwien.ac.at
+ [128.130.168.64])
+ by alsa0.perex.cz (Postfix) with ESMTP id 30D0F260535
+ for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2016 15:09:08 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hy4ait3t8.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/23/2016 03:00 PM, Charles Keepax wrote:
-> On Mon, Feb 22, 2016 at 11:35:44PM +0100, Robert Jarzmik wrote:
->> In the conversion to regmap, I assumed that the devm_() variant could be
->> used in the soc probe function.
->>
->> As a mater of fact with the current code the regmap is freed twice
->> because of the devm_() call:
->> (mutex_lock) from [<c01f6624>] (debugfs_remove_recursive+0x50/0x1d0)
->> (debugfs_remove_recursive) from [<c02bf800>] (regmap_debugfs_exit+0x1c/0xd4)
->> (regmap_debugfs_exit) from [<c02ba1f8>] (regmap_exit+0x28/0xc8)
->> (regmap_exit) from [<c02aa258>] (release_nodes+0x18c/0x204)
->> (release_nodes) from [<c02a278c>] (device_release+0x18/0x90)
->> (device_release) from [<c0239030>] (kobject_release+0x90/0x1bc)
->> (kobject_release) from [<c0395c94>] (wm9713_soc_remove+0x1c/0x24)
->> (wm9713_soc_remove) from [<c0384884>] (soc_remove_component+0x50/0x7c)
->> (soc_remove_component) from [<c0386c28>] (soc_remove_dai_links+0x118/0x228)
->> (soc_remove_dai_links) from [<c038721c>] (snd_soc_register_card+0x4e4/0xdd4)
->> (snd_soc_register_card) from [<c0393c54>] (devm_snd_soc_register_card+0x34/0x70)
->>
->> Fix this by replacing the devm_regmap initialization code with the non
->> devm_() variant.
->>
->> Fixes: 700dadfefc3d ASoC: wm9713: convert to regmap
->> Cc: Lars-Peter Clausen <lars@metafoo.de>
->> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
->> ---
-> 
-> Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-> 
-> I am totally happy for this patch to be merged but would it not
-> be prefferable to do the regmap init in the device probe and
-> still use the devm_ call?  Doing the regmap setup in the ASoC
-> probe is a little unusual and I don't really see any reason why
-> it is necessary here. Unless I am missing something?
 
-It's AC97... there is just no proper device model integration for AC97 at
-the moment.
+--+KJYzRxRHjYqLGl5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi Takashi!
+
+Thanks for the answer.
+
+On Thu, Feb 18, 2016 at 04:51:15PM +0100, Takashi Iwai wrote:
+> On Thu, 18 Feb 2016 16:47:44 +0100,
+> Thomas Klausner wrote:
+> > I've just updated the pkgsrc packages for alsa-lib, alsa-utils and
+> > alsa-plugins to 1.1.0 and noticed that there are quite a number of
+> > local patches we have. I'd like to get them integrated.
+> > 
+> > When I visited the alsa-projects web page, I noticed that the link to
+> > the bug tracker is dead.
+> > 
+> > What is the recommended method to provide the patches?
+> 
+> Just submit your patches to alsa-devel ML.  That's the best way to
+> review and get merged.
+
+I'll start with a straightforward one. Some operating systems don't
+provide an errno 'EBADFD'; let's use EBADF there instead.
+
+This patch adds the define in all files that need it, but if you
+prefer to add it to a central place instead, please suggest one.
+
+Thanks,
+ Thomas
+
+--+KJYzRxRHjYqLGl5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="0001-Define-EBADFD-in-terms-of-EBADF-if-it-doesn-t-exist.patch"
+
+>From e72e16bcb9bd2ddff2624fdb57a96fad6b3cf5bb Mon Sep 17 00:00:00 2001
+From: Thomas Klausner <wiz@NetBSD.org>
+Date: Tue, 23 Feb 2016 15:05:47 +0100
+Subject: [PATCH] Define EBADFD in terms of EBADF if it doesn't exist.
+
+For portability on FreeBSD, NetBSD and probably others.
+---
+ aserver/aserver.c         | 4 ++++
+ src/control/control_shm.c | 4 ++++
+ src/pcm/pcm.c             | 4 ++++
+ src/pcm/pcm_dmix.c        | 4 ++++
+ src/pcm/pcm_dshare.c      | 4 ++++
+ src/pcm/pcm_dsnoop.c      | 4 ++++
+ src/pcm/pcm_hw.c          | 4 ++++
+ src/pcm/pcm_ioplug.c      | 4 ++++
+ src/pcm/pcm_null.c        | 4 ++++
+ src/pcm/pcm_rate.c        | 4 ++++
+ src/pcm/pcm_share.c       | 4 ++++
+ src/pcm/pcm_shm.c         | 4 ++++
+ src/pcm/pcm_simple.c      | 4 ++++
+ 13 files changed, 52 insertions(+)
+
+diff --git a/aserver/aserver.c b/aserver/aserver.c
+index ac20706..88995cf 100644
+--- a/aserver/aserver.c
++++ b/aserver/aserver.c
+@@ -35,6 +35,10 @@
+ 
+ #include "aserver.h"
+ 
++#ifndef EBADFD
++#define EBADFD EBADF
++#endif
++
+ char *command;
+ 
+ #if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 95)
+diff --git a/src/control/control_shm.c b/src/control/control_shm.c
+index bd07d4a..618ef39 100644
+--- a/src/control/control_shm.c
++++ b/src/control/control_shm.c
+@@ -35,6 +35,10 @@
+ #include <netdb.h>
+ #include "aserver.h"
+ 
++#ifndef EBADFD
++#define EBADFD EBADF
++#endif
++
+ #ifndef PIC
+ /* entry for static linking */
+ const char *_snd_module_control_shm = "";
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index 203e7a5..6d40171 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -639,6 +639,10 @@ playback devices.
+ #include <limits.h>
+ #include "pcm_local.h"
+ 
++#ifndef EBADFD
++#define EBADFD EBADF
++#endif
++
+ /**
+  * \brief get identifier of PCM handle
+  * \param pcm PCM handle
+diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
+index b26a5c7..ba65cad 100644
+--- a/src/pcm/pcm_dmix.c
++++ b/src/pcm/pcm_dmix.c
+@@ -45,6 +45,10 @@
+ #include <sys/mman.h>
+ #include "pcm_direct.h"
+ 
++#ifndef EBADFD
++#define EBADFD EBADF
++#endif
++
+ #ifndef PIC
+ /* entry for static linking */
+ const char *_snd_module_pcm_dmix = "";
+diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
+index 58e47bb..2556a30 100644
+--- a/src/pcm/pcm_dshare.c
++++ b/src/pcm/pcm_dshare.c
+@@ -45,6 +45,10 @@
+ #include <sys/mman.h>
+ #include "pcm_direct.h"
+ 
++#ifndef EBADFD
++#define EBADFD EBADF
++#endif
++
+ #ifndef PIC
+ /* entry for static linking */
+ const char *_snd_module_pcm_dshare = "";
+diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
+index 576c35b..26b6f5c 100644
+--- a/src/pcm/pcm_dsnoop.c
++++ b/src/pcm/pcm_dsnoop.c
+@@ -45,6 +45,10 @@
+ #include <sys/mman.h>
+ #include "pcm_direct.h"
+ 
++#ifndef EBADFD
++#define EBADFD EBADF
++#endif
++
+ #ifndef PIC
+ /* entry for static linking */
+ const char *_snd_module_pcm_dsnoop = "";
+diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
+index 4f4b84b..de9f9d5 100644
+--- a/src/pcm/pcm_hw.c
++++ b/src/pcm/pcm_hw.c
+@@ -40,6 +40,10 @@
+ #include "../control/control_local.h"
+ #include "../timer/timer_local.h"
+ 
++#ifndef EBADFD
++#define EBADFD EBADF
++#endif
++
+ //#define DEBUG_RW		/* use to debug readi/writei/readn/writen */
+ //#define DEBUG_MMAP		/* debug mmap_commit */
+ 
+diff --git a/src/pcm/pcm_ioplug.c b/src/pcm/pcm_ioplug.c
+index 43550c0..bed1c97 100644
+--- a/src/pcm/pcm_ioplug.c
++++ b/src/pcm/pcm_ioplug.c
+@@ -31,6 +31,10 @@
+ #include "pcm_ext_parm.h"
+ #include "pcm_generic.h"
+ 
++#ifndef EBADFD
++#define EBADFD EBADF
++#endif
++
+ #ifndef PIC
+ /* entry for static linking */
+ const char *_snd_module_pcm_ioplug = "";
+diff --git a/src/pcm/pcm_null.c b/src/pcm/pcm_null.c
+index 5e63caa..9fe3c82 100644
+--- a/src/pcm/pcm_null.c
++++ b/src/pcm/pcm_null.c
+@@ -31,6 +31,10 @@
+ #include "pcm_local.h"
+ #include "pcm_plugin.h"
+ 
++#ifndef EBADFD
++#define EBADFD EBADF
++#endif
++
+ #ifndef PIC
+ /* entry for static linking */
+ const char *_snd_module_pcm_null = "";
+diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
+index c76db25..c08a2e8 100644
+--- a/src/pcm/pcm_rate.c
++++ b/src/pcm/pcm_rate.c
+@@ -36,6 +36,10 @@
+ 
+ #include "plugin_ops.h"
+ 
++#ifndef EBADFD
++#define EBADFD EBADF
++#endif
++
+ #if 0
+ #define DEBUG_REFINE
+ #endif
+diff --git a/src/pcm/pcm_share.c b/src/pcm/pcm_share.c
+index 5d8aaf2..9fe8dc1 100644
+--- a/src/pcm/pcm_share.c
++++ b/src/pcm/pcm_share.c
+@@ -38,6 +38,10 @@
+ #include <pthread.h>
+ #include "pcm_local.h"
+ 
++#ifndef EBADFD
++#define EBADFD EBADF
++#endif
++
+ #ifndef PIC
+ /* entry for static linking */
+ const char *_snd_module_pcm_share = "";
+diff --git a/src/pcm/pcm_shm.c b/src/pcm/pcm_shm.c
+index a815ac6..242b26e 100644
+--- a/src/pcm/pcm_shm.c
++++ b/src/pcm/pcm_shm.c
+@@ -45,6 +45,10 @@
+ #include <netdb.h>
+ #include "aserver.h"
+ 
++#ifndef EBADFD
++#define EBADFD EBADF
++#endif
++
+ #ifndef PIC
+ /* entry for static linking */
+ const char *_snd_module_pcm_shm = "";
+diff --git a/src/pcm/pcm_simple.c b/src/pcm/pcm_simple.c
+index ce11083..99ba1c3 100644
+--- a/src/pcm/pcm_simple.c
++++ b/src/pcm/pcm_simple.c
+@@ -25,6 +25,10 @@
+ 
+ #include "pcm_local.h"
+ 
++#ifndef EBADFD
++#define EBADFD EBADF
++#endif
++
+ static int set_buffer_time(snd_spcm_latency_t latency,
+ 			   unsigned int *buffer_time)
+ {
+-- 
+2.7.1
+
+
+--+KJYzRxRHjYqLGl5
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--+KJYzRxRHjYqLGl5--
