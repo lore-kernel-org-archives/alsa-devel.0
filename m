@@ -1,16 +1,19 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: arizona: Make logging of FLL
-	calculations clearer
-Date: Tue, 23 Feb 2016 14:16:32 +0000
-Message-ID: <1456236992-32028-1-git-send-email-rf@opensource.wolfsonmicro.com>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [RFC PATCH] ALSA: hda - hdmi eld control created
+ based on pcm
+Date: Tue, 23 Feb 2016 14:25:44 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D1904678B8B@SHSMSX103.ccr.corp.intel.com>
+References: <1456216417-51140-1-git-send-email-libin.yang@linux.intel.com>
+ <s5hoab7zfxp.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E715260535
- for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2016 15:16:39 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8883A260535
+ for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2016 15:25:55 +0100 (CET)
+In-Reply-To: <s5hoab7zfxp.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,48 +23,249 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>
+Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The debug logging of FLL calculations was confusing. Values were
-printed in hex without indicating this by a leading 0x, and
-despite these normally being required in decimal. Also where the
-register value isn't the actual value (it s a power-of-two or
-0 means 1, 1 means 2, ...)  it was unclear whether the actual or
-register value was shown.
+Hi Takashi,
 
-This patch changes the log print so that all mathematical values
-are shown in decimal, all register values are shown in hex with a
-0x prefix, and where the register value isn't the actual integer
-value the decimal integer value is shown in () after the hex
-register value.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/arizona.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Tuesday, February 23, 2016 9:59 PM
+> To: libin.yang@linux.intel.com
+> Cc: alsa-devel@alsa-project.org; Lin, Mengdong; Yang, Libin
+> Subject: Re: [alsa-devel] [RFC PATCH] ALSA: hda - hdmi eld control
+> created based on pcm
+> 
+> On Tue, 23 Feb 2016 09:33:37 +0100,
+> libin.yang@linux.intel.com wrote:
+> >
+> > From: Libin Yang <libin.yang@linux.intel.com>
+> >
+> > eld control is created based on pcm now.
+> > When monitor is connected, eld control will be bound to
+> > pin automatically.
+> >
+> > Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+> 
+> Looks good to me -- as long as you tested :)
+> Let me know if you'd like to merge it as is.
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 913cfa8..92d22a0 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -2149,11 +2149,12 @@ static int arizona_calc_fll(struct arizona_fll *fll,
- 		return -EINVAL;
- 	}
- 
--	arizona_fll_dbg(fll, "N=%x THETA=%x LAMBDA=%x\n",
-+	arizona_fll_dbg(fll, "N=%d THETA=%d LAMBDA=%d\n",
- 			cfg->n, cfg->theta, cfg->lambda);
--	arizona_fll_dbg(fll, "FRATIO=%x(%d) OUTDIV=%x REFCLK_DIV=%x\n",
--			cfg->fratio, cfg->fratio, cfg->outdiv, cfg->refdiv);
--	arizona_fll_dbg(fll, "GAIN=%d\n", cfg->gain);
-+	arizona_fll_dbg(fll, "FRATIO=0x%x(%d) OUTDIV=%d REFCLK_DIV=0x%x(%d)\n",
-+			cfg->fratio, ratio, cfg->outdiv,
-+			cfg->refdiv, 1 << cfg->refdiv);
-+	arizona_fll_dbg(fll, "GAIN=0x%x(%d)\n", cfg->gain, 1 << cfg->gain);
- 
- 	return 0;
- 
--- 
-1.9.1
+The patch is tested with my basic test case.
+It's great if the patch can be merged :)
+
+Regards,
+Libin
+
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> 
+> > ---
+> >  sound/pci/hda/patch_hdmi.c | 74
+> ++++++++++++++++++++++++++++++----------------
+> >  1 file changed, 48 insertions(+), 26 deletions(-)
+> >
+> > diff --git a/sound/pci/hda/patch_hdmi.c
+> b/sound/pci/hda/patch_hdmi.c
+> > index 541986f..d77509a 100644
+> > --- a/sound/pci/hda/patch_hdmi.c
+> > +++ b/sound/pci/hda/patch_hdmi.c
+> > @@ -86,7 +86,6 @@ struct hdmi_spec_per_pin {
+> >  	struct hdmi_eld sink_eld;
+> >  	struct mutex lock;
+> >  	struct delayed_work work;
+> > -	struct snd_kcontrol *eld_ctl;
+> >  	struct hdmi_pcm *pcm; /* pointer to spec->pcm_rec[n]
+> dynamically*/
+> >  	int pcm_idx; /* which pcm is attached. -1 means no pcm is
+> attached */
+> >  	int repoll_count;
+> > @@ -136,6 +135,7 @@ struct hdmi_ops {
+> >  struct hdmi_pcm {
+> >  	struct hda_pcm *pcm;
+> >  	struct snd_jack *jack;
+> > +	struct snd_kcontrol *eld_ctl;
+> >  };
+> >
+> >  struct hdmi_spec {
+> > @@ -471,17 +471,22 @@ static int hdmi_eld_ctl_info(struct
+> snd_kcontrol *kcontrol,
+> >  	struct hdmi_spec *spec = codec->spec;
+> >  	struct hdmi_spec_per_pin *per_pin;
+> >  	struct hdmi_eld *eld;
+> > -	int pin_idx;
+> > +	int pcm_idx;
+> >
+> >  	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
+> >
+> > -	pin_idx = kcontrol->private_value;
+> > -	per_pin = get_pin(spec, pin_idx);
+> > +	pcm_idx = kcontrol->private_value;
+> > +	mutex_lock(&spec->pcm_lock);
+> > +	per_pin = pcm_idx_to_pin(spec, pcm_idx);
+> > +	if (!per_pin) {
+> > +		/* no pin is bound to the pcm */
+> > +		uinfo->count = 0;
+> > +		mutex_unlock(&spec->pcm_lock);
+> > +		return 0;
+> > +	}
+> >  	eld = &per_pin->sink_eld;
+> > -
+> > -	mutex_lock(&per_pin->lock);
+> >  	uinfo->count = eld->eld_valid ? eld->eld_size : 0;
+> > -	mutex_unlock(&per_pin->lock);
+> > +	mutex_unlock(&spec->pcm_lock);
+> >
+> >  	return 0;
+> >  }
+> > @@ -493,16 +498,23 @@ static int hdmi_eld_ctl_get(struct
+> snd_kcontrol *kcontrol,
+> >  	struct hdmi_spec *spec = codec->spec;
+> >  	struct hdmi_spec_per_pin *per_pin;
+> >  	struct hdmi_eld *eld;
+> > -	int pin_idx;
+> > +	int pcm_idx;
+> >
+> > -	pin_idx = kcontrol->private_value;
+> > -	per_pin = get_pin(spec, pin_idx);
+> > +	pcm_idx = kcontrol->private_value;
+> > +	mutex_lock(&spec->pcm_lock);
+> > +	per_pin = pcm_idx_to_pin(spec, pcm_idx);
+> > +	if (!per_pin) {
+> > +		/* no pin is bound to the pcm */
+> > +		memset(ucontrol->value.bytes.data, 0,
+> > +	       ARRAY_SIZE(ucontrol->value.bytes.data));
+> > +		mutex_unlock(&spec->pcm_lock);
+> > +		return 0;
+> > +	}
+> >  	eld = &per_pin->sink_eld;
+> >
+> > -	mutex_lock(&per_pin->lock);
+> >  	if (eld->eld_size > ARRAY_SIZE(ucontrol->value.bytes.data) ||
+> >  	    eld->eld_size > ELD_MAX_SIZE) {
+> > -		mutex_unlock(&per_pin->lock);
+> > +		mutex_unlock(&spec->pcm_lock);
+> >  		snd_BUG();
+> >  		return -EINVAL;
+> >  	}
+> > @@ -512,7 +524,7 @@ static int hdmi_eld_ctl_get(struct snd_kcontrol
+> *kcontrol,
+> >  	if (eld->eld_valid)
+> >  		memcpy(ucontrol->value.bytes.data, eld->eld_buffer,
+> >  		       eld->eld_size);
+> > -	mutex_unlock(&per_pin->lock);
+> > +	mutex_unlock(&spec->pcm_lock);
+> >
+> >  	return 0;
+> >  }
+> > @@ -525,7 +537,7 @@ static struct snd_kcontrol_new eld_bytes_ctl =
+> {
+> >  	.get = hdmi_eld_ctl_get,
+> >  };
+> >
+> > -static int hdmi_create_eld_ctl(struct hda_codec *codec, int pin_idx,
+> > +static int hdmi_create_eld_ctl(struct hda_codec *codec, int pcm_idx,
+> >  			int device)
+> >  {
+> >  	struct snd_kcontrol *kctl;
+> > @@ -535,14 +547,17 @@ static int hdmi_create_eld_ctl(struct
+> hda_codec *codec, int pin_idx,
+> >  	kctl = snd_ctl_new1(&eld_bytes_ctl, codec);
+> >  	if (!kctl)
+> >  		return -ENOMEM;
+> > -	kctl->private_value = pin_idx;
+> > +	kctl->private_value = pcm_idx;
+> >  	kctl->id.device = device;
+> >
+> > -	err = snd_hda_ctl_add(codec, get_pin(spec, pin_idx)->pin_nid,
+> kctl);
+> > +	/* no pin nid is associated with the kctl now
+> > +	 * tbd: associate pin nid to eld ctl later
+> > +	 */
+> > +	err = snd_hda_ctl_add(codec, 0, kctl);
+> >  	if (err < 0)
+> >  		return err;
+> >
+> > -	get_pin(spec, pin_idx)->eld_ctl = kctl;
+> > +	get_hdmi_pcm(spec, pcm_idx)->eld_ctl = kctl;
+> >  	return 0;
+> >  }
+> >
+> > @@ -1841,7 +1856,10 @@ static void update_eld(struct hda_codec
+> *codec,
+> >  	struct hdmi_spec *spec = codec->spec;
+> >  	bool old_eld_valid = pin_eld->eld_valid;
+> >  	bool eld_changed;
+> > +	int pcm_idx = -1;
+> >
+> > +	/* for monitor disconnection, save pcm_idx firstly */
+> > +	pcm_idx = per_pin->pcm_idx;
+> >  	if (spec->dyn_pcm_assign) {
+> >  		if (eld->eld_valid) {
+> >  			hdmi_attach_hda_pcm(spec, per_pin);
+> > @@ -1851,6 +1869,11 @@ static void update_eld(struct hda_codec
+> *codec,
+> >  			hdmi_detach_hda_pcm(spec, per_pin);
+> >  		}
+> >  	}
+> > +	/* if pcm_idx == -1, it means this is in monitor connection event
+> > +	 * we can get the correct pcm_idx now.
+> > +	 */
+> > +	if (pcm_idx == -1)
+> > +		pcm_idx = per_pin->pcm_idx;
+> >
+> >  	if (eld->eld_valid)
+> >  		snd_hdmi_show_eld(codec, &eld->info);
+> > @@ -1884,11 +1907,11 @@ static void update_eld(struct hda_codec
+> *codec,
+> >  		hdmi_setup_audio_infoframe(codec, per_pin, per_pin-
+> >non_pcm);
+> >  	}
+> >
+> > -	if (eld_changed)
+> > +	if (eld_changed && pcm_idx >= 0)
+> >  		snd_ctl_notify(codec->card,
+> >  			       SNDRV_CTL_EVENT_MASK_VALUE |
+> >  			       SNDRV_CTL_EVENT_MASK_INFO,
+> > -			       &per_pin->eld_ctl->id);
+> > +			       &get_hdmi_pcm(spec, pcm_idx)->eld_ctl-
+> >id);
+> >  }
+> >
+> >  /* update ELD and jack state via HD-audio verbs */
+> > @@ -2629,17 +2652,16 @@ static int
+> generic_hdmi_build_controls(struct hda_codec *codec)
+> >  		if (err < 0)
+> >  			return err;
+> >  		snd_hda_spdif_ctls_unassign(codec, pcm_idx);
+> > -	}
+> > -
+> > -	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
+> > -		struct hdmi_spec_per_pin *per_pin = get_pin(spec,
+> pin_idx);
+> >
+> >  		/* add control for ELD Bytes */
+> > -		err = hdmi_create_eld_ctl(codec, pin_idx,
+> > -				get_pcm_rec(spec, pin_idx)->device);
+> > -
+> > +		err = hdmi_create_eld_ctl(codec, pcm_idx,
+> > +					get_pcm_rec(spec, pcm_idx)-
+> >device);
+> >  		if (err < 0)
+> >  			return err;
+> > +	}
+> > +
+> > +	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
+> > +		struct hdmi_spec_per_pin *per_pin = get_pin(spec,
+> pin_idx);
+> >
+> >  		hdmi_present_sense(per_pin, 0);
+> >  	}
+> > --
+> > 1.9.1
+> >
