@@ -1,67 +1,74 @@
-From: Tim Sheridan <tim.sheridan@imgtec.com>
-Subject: [PATCH] ALSA: compress: Add DSP private metadata
-	interface
-Date: Mon, 22 Feb 2016 17:54:31 +0000
-Message-ID: <1456163671-40987-1-git-send-email-tim.sheridan@imgtec.com>
+From: PC Liao <pc.liao@mediatek.com>
+Subject: [PATCH] ASoC: mediatek: remove soft reset and add second I2S clock
+Date: Tue, 23 Feb 2016 16:20:24 +0800
+Message-ID: <1456215624-40383-1-git-send-email-pc.liao@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
- by alsa0.perex.cz (Postfix) with ESMTP id E95BF260673
- for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 18:54:38 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: pierre-louis.bossart@linux.intel.com, Tim Sheridan <tim.sheridan@imgtec.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, tiwai@suse.de
+Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, koro.chen@mediatek.com, PC Liao <pc.liao@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Provides an area to communicate with a DSP to implement support for
-weird and wonderful features of DSP hardware that aren't supported in
-the compress offload API.
+To improve I2S flow, this patch removes soft reset and adds second
+I2S clock to use.
 
-Signed-off-by: Tim Sheridan <tim.sheridan@imgtec.com>
+Signed-off-by: PC Liao <pc.liao@mediatek.com>
 ---
- include/uapi/sound/compress_offload.h |    6 +++++-
- 1 files changed, 5 insertions(+), 1 deletions(-)
+ sound/soc/mediatek/mtk-afe-pcm.c |   14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/include/uapi/sound/compress_offload.h b/include/uapi/sound/compress_offload.h
-index e00d8cb..65ac445 100644
---- a/include/uapi/sound/compress_offload.h
-+++ b/include/uapi/sound/compress_offload.h
-@@ -30,7 +30,7 @@
- #include <sound/compress_params.h>
+diff --git a/sound/soc/mediatek/mtk-afe-pcm.c b/sound/soc/mediatek/mtk-afe-pcm.c
+index 689c51f..3456bfa 100644
+--- a/sound/soc/mediatek/mtk-afe-pcm.c
++++ b/sound/soc/mediatek/mtk-afe-pcm.c
+@@ -283,20 +283,13 @@ static void mtk_afe_set_i2s_enable(struct mtk_afe *afe, bool enable)
  
+ 	regmap_read(afe->regmap, AFE_I2S_CON2, &val);
+ 	if (!!(val & AFE_I2S_CON2_EN) == enable)
+-		return; /* must skip soft reset */
+-
+-	/* I2S soft reset begin */
+-	regmap_update_bits(afe->regmap, AUDIO_TOP_CON1, 0x4, 0x4);
++		return;
  
--#define SNDRV_COMPRESS_VERSION SNDRV_PROTOCOL_VERSION(0, 1, 2)
-+#define SNDRV_COMPRESS_VERSION SNDRV_PROTOCOL_VERSION(0, 1, 3)
- /**
-  * struct snd_compressed_buffer - compressed buffer
-  * @fragment_size: size of buffer fragment in bytes
-@@ -150,6 +150,8 @@ struct snd_compr_metadata {
-  * SNDRV_COMPRESS_SET_PARAMS: Set codec and stream parameters
-  * Note: only codec params can be changed runtime and stream params cant be
-  * SNDRV_COMPRESS_GET_PARAMS: Query codec params
-+ * SNDRV_COMPRESS_SET_DSP_PRIV: Set private DSP metadata
-+ * SNDRV_COMPRESS_GET_DSP_PRIV: Get private DSP metadata
-  * SNDRV_COMPRESS_TSTAMP: get the current timestamp value
-  * SNDRV_COMPRESS_AVAIL: get the current buffer avail value.
-  * This also queries the tstamp properties
-@@ -171,6 +173,8 @@ struct snd_compr_metadata {
- 						 struct snd_compr_metadata)
- #define SNDRV_COMPRESS_GET_METADATA	_IOWR('C', 0x15,\
- 						 struct snd_compr_metadata)
-+#define SNDRV_COMPRESS_SET_DSP_PRIV	_IOW('C', 0x16, struct snd_compr_metadata)
-+#define SNDRV_COMPRESS_GET_DSP_PRIV	_IOWR('C', 0x17, struct snd_compr_metadata)
- #define SNDRV_COMPRESS_TSTAMP		_IOR('C', 0x20, struct snd_compr_tstamp)
- #define SNDRV_COMPRESS_AVAIL		_IOR('C', 0x21, struct snd_compr_avail)
- #define SNDRV_COMPRESS_PAUSE		_IO('C', 0x30)
+ 	/* input */
+ 	regmap_update_bits(afe->regmap, AFE_I2S_CON2, 0x1, enable);
+ 
+ 	/* output */
+ 	regmap_update_bits(afe->regmap, AFE_I2S_CON1, 0x1, enable);
+-
+-	/* I2S soft reset end */
+-	udelay(1);
+-	regmap_update_bits(afe->regmap, AUDIO_TOP_CON1, 0x4, 0);
+ }
+ 
+ static int mtk_afe_dais_enable_clks(struct mtk_afe *afe,
+@@ -365,6 +358,7 @@ static int mtk_afe_i2s_startup(struct snd_pcm_substream *substream,
+ 		return 0;
+ 
+ 	mtk_afe_dais_enable_clks(afe, afe->clocks[MTK_CLK_I2S1_M], NULL);
++	mtk_afe_dais_enable_clks(afe, afe->clocks[MTK_CLK_I2S2_M], NULL);
+ 	regmap_update_bits(afe->regmap, AUDIO_TOP_CON0,
+ 			   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M, 0);
+ 	return 0;
+@@ -384,6 +378,7 @@ static void mtk_afe_i2s_shutdown(struct snd_pcm_substream *substream,
+ 			   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M,
+ 			   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M);
+ 	mtk_afe_dais_disable_clks(afe, afe->clocks[MTK_CLK_I2S1_M], NULL);
++	mtk_afe_dais_disable_clks(afe, afe->clocks[MTK_CLK_I2S2_M], NULL);
+ }
+ 
+ static int mtk_afe_i2s_prepare(struct snd_pcm_substream *substream,
+@@ -397,6 +392,9 @@ static int mtk_afe_i2s_prepare(struct snd_pcm_substream *substream,
+ 	mtk_afe_dais_set_clks(afe,
+ 			      afe->clocks[MTK_CLK_I2S1_M], runtime->rate * 256,
+ 			      NULL, 0);
++	mtk_afe_dais_set_clks(afe,
++			      afe->clocks[MTK_CLK_I2S2_M], runtime->rate * 256,
++			      NULL, 0);
+ 	/* config I2S */
+ 	ret = mtk_afe_set_i2s(afe, substream->runtime->rate);
+ 	if (ret)
 -- 
-1.7.1
+1.7.9.5
