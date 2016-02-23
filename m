@@ -1,18 +1,52 @@
 From: Axel Lin <axel.lin@ingics.com>
-Subject: Re: [PATCH 2/2] ASoC: max9867: fix type of variable containing error codes
-Date: Tue, 23 Feb 2016 14:50:42 +0800
-Message-ID: <CAFRkauCyU5MBS8gVRo1we+VEDzKrZZnCbCV4XWAdDYFq3OFKhA@mail.gmail.com>
-References: <1456209914-13375-1-git-send-email-a.hajda@samsung.com>
+Subject: [PATCH] ASoC: max9867: Use params_width instead of
+	open-coded
+Date: Tue, 23 Feb 2016 14:53:13 +0800
+Message-ID: <1456210393.15964.0.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1456209914-13375-1-git-send-email-a.hajda@samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andrzej Hajda <a.hajda@samsung.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>, anish kumar <yesanishhere@gmail.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pf0-f180.google.com (mail-pf0-f180.google.com
+ [209.85.192.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E3512605B4
+ for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2016 07:53:18 +0100 (CET)
+Received: by mail-pf0-f180.google.com with SMTP id q63so106944426pfb.0
+ for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2016 22:53:18 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, anish kumar <yesanishhere@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-2016-02-23 14:45 GMT+08:00 Andrzej Hajda <a.hajda@samsung.com>:
-> value variable can contain error values and is compared with zero.
-> Its type must be signed.
-Reviewed-by: Axel Lin <axel.lin@ingics.com>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ sound/soc/codecs/max9867.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+index ab7a94d..e3ee391 100755
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -206,10 +206,9 @@ static int max9867_dai_hw_params(struct snd_pcm_substream *substream,
+ 		unsigned long int bclk_rate, pclk_bclk_ratio;
+ 		int bclk_value;
+ 
+-		bclk_rate = params_rate(params) * 2 *
+-			snd_pcm_format_width(params_format(params));
++		bclk_rate = params_rate(params) * 2 * params_width(params);
+ 		pclk_bclk_ratio = max9867->pclk/bclk_rate;
+-		switch (snd_pcm_format_width(params_format(params))) {
++		switch (params_width(params)) {
+ 		case 8:
+ 		case 16:
+ 			switch (pclk_bclk_ratio) {
+-- 
+2.1.4
