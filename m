@@ -1,116 +1,70 @@
-From: Martin Kepplinger <martink@posteo.de>
-Subject: Re: [BUG] [REGRESSION] [BISECTED] -rc1 breaks audio
- over HDMI for i915
-Date: Tue, 23 Feb 2016 20:09:02 +0100
-Message-ID: <56CCAE4E.3090009@posteo.de>
-References: <56BE0044.9080500@posteo.de> <s5h37sxgazv.wl-tiwai@suse.de>
- <56CAE1C5.4070107@posteo.de> <s5hr3g52fud.wl-tiwai@suse.de>
- <56CB1510.4010503@posteo.de> <s5hd1ro3kbf.wl-tiwai@suse.de>
- <56CB5A4A.90906@posteo.de> <s5hpovov9wy.wl-tiwai@suse.de>
- <56CB7F98.20807@posteo.de> <s5hio1ffjp7.wl-tiwai@suse.de>
- <20160223171447.GL23290@intel.com>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 3/4] ASoC: pxa: add binding for pxa2xx-ac97 audio complex
+Date: Tue, 23 Feb 2016 13:19:34 -0600
+Message-ID: <20160223191934.GA29262@rob-hp-laptop>
+References: <1455979079-9030-1-git-send-email-robert.jarzmik@free.fr>
+ <1455979079-9030-3-git-send-email-robert.jarzmik@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20160223171447.GL23290@intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org, perex@perex.cz, han.lu@intel.com, treding@nvidia.com, david.henningsson@canonical.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1455979079-9030-3-git-send-email-robert.jarzmik-GANU6spQydw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>
+Cc: Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-QW0gMjAxNi0wMi0yMyB1bSAxODoxNCBzY2hyaWViIFZpbGxlIFN5cmrDpGzDpDoKPiBPbiBUdWUs
-IEZlYiAyMywgMjAxNiBhdCAwNTo1Nzo0MFBNICswMTAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+
-IE9uIE1vbiwgMjIgRmViIDIwMTYgMjI6Mzc6MjggKzAxMDAsCj4+IE1hcnRpbiBLZXBwbGluZ2Vy
-IHdyb3RlOgo+Pj4KPj4+IEFtIDIwMTYtMDItMjIgdW0gMjA6MTAgc2NocmllYiBUYWthc2hpIEl3
-YWk6Cj4+Pj4gT24gTW9uLCAyMiBGZWIgMjAxNiAxOTo1ODoxOCArMDEwMCwKPj4+PiBNYXJ0aW4g
-S2VwcGxpbmdlciB3cm90ZToKPj4+Pj4KPj4+Pj4gQW0gMjAxNi0wMi0yMiB1bSAxNToxMiBzY2hy
-aWViIFRha2FzaGkgSXdhaToKPj4+Pj4+IE9uIE1vbiwgMjIgRmViIDIwMTYgMTU6MDI6NTYgKzAx
-MDAsCj4+Pj4+PiBNYXJ0aW4gS2VwcGxpbmdlciB3cm90ZToKPj4+Pj4+Pj4gQW5kIGhvdyBhYm91
-dCBteSBxdWVzdGlvbnMgaW4gdGhlIHByZXZpb3VzIG1haWw/ICBEb2VzCj4+Pj4+Pj4+IGk5MTVf
-YXVkaW9fY29tcG9uZW50X2dldF9lbGQoKSBpcyBjYWxsZWQgYW5kIHJldHVybnMgMD8KPj4+Pj4+
-Pj4gQW5kIGlzIG1vbml0b3JfcHJlc2VudCBzZXQgdHJ1ZSBvciBmYWxzZT8KPj4+Pj4+Pgo+Pj4+
-Pj4+IGk5MTVfYXVkaW9fY29tcG9uZW50X2dldF9lbGQoKSByZXR1cm5zIDAgYW5kIG1vbml0b3Jf
-cHJlc2VudCBpcyAwLgo+Pj4+Pj4+Pgo+Pj4+Pj4+PiBJZiBpOTE1X2F1ZGlvX2NvbXBvbmVudF9n
-ZXRfZWxkKCkgaXMgY2FsbGVkIGJ1dCByZXR1cm5zIHplcm8sIHRyYWNrCj4+Pj4+Pj4+IHRoZSBj
-b2RlIGZsb3cgdGhlcmUuICBJdCBtZWFucyBlaXRoZXIgaW50ZWxfZW5jb2RlciBpcyBOVUxMIG9y
-Cj4+Pj4+Pj4+IGludGVsX2RpZ19wb3J0LT5hdWRpb19jb25uZWN0b3IgaXMgTlVMTC4KPj4+Pj4+
-Pgo+Pj4+Pj4+IGludGVsX2RpZ19wb3J0LT5hdWRpb19jb25uZWN0b3IgaXMgTlVMTCEKPj4+Pj4+
-Pgo+Pj4+Pj4+ICh3aGVuIGNhbGxlZCBkdXJpbmcgYm9vdCBhbmQgZHVyaW5nIEhETUkgcGx1Z2lu
-KQo+Pj4+Pj4KPj4+Pj4+IEludGVyZXN0aW5nLiAgVGhlIHJlbGV2YW50IGNvZGUgZmxvdyBzaG91
-bGQgYmUgbGlrZToKPj4+Pj4+Cj4+Pj4+PiAgIGludGVsX2F1ZGlvX2NvZGVjX2VuYWJsZSgpCj4+
-Pj4+PiAgIC0+IGFjb21wLT5hdWRpb19vcHMtPnBpbl9lbGRfbm90aWZ5KCkKPj4+Pj4+ICAgICAt
-PiBpbnRlbF9waW5fZWxkX25vdGlmeSgpCj4+Pj4+PiAgICAgICAtPiBjaGVja19wcmVzZW5jZV9h
-bmRfcmVwb3J0KCkKPj4+Pj4+ICAgICAgICAgLT4gaGRtaV9wcmVzZW50X3NlbnNlKCkKPj4+Pj4+
-IAkgIC0+IHN5bmNfZWxkX3ZpYV9hY29tcCgpCj4+Pj4+PiAJICAgIC0+IHNuZF9oZGFjX2Fjb21w
-X2dldF9lbGQoKQo+Pj4+Pj4gCSAgICAgIC0+IGk5MTVfYXVkaW9fY29tcG9uZW50X2dldF9lbGQo
-KQo+Pj4+Pj4KPj4+Pj4+IFNvLCBhdCBmaXJzdCwgY2hlY2sgd2hldGhlciBpbnRlbF9kaWdfcG9y
-dCBpbiBib3RoCj4+Pj4+PiBpbnRlbF9hdWRpb19jb2RlY19lbmFibGUoKSBhbmQgaTkxNV9hdWRp
-b19jb21wb25lbnRfZ2V0X2VsZCgpIHBvaW50cwo+Pj4+Pj4gdG8gdGhlIHNhbWUgb2JqZWN0IGFk
-ZHJlc3MuICBUaGUgYXVkaW9fY29ubmVjdG9yIG11c3QgYmUgc2V0IGluCj4+Pj4+PiBpbnRlbF9h
-dWRpb19jb2RlY19lbmFibGUoKSwgdGh1cyBiYXNpY2FsbHkgaXQgbXVzdCBiZSBub24tTlVMTCBh
-dAo+Pj4+Pj4gaTkxNV9hdWRpb19jb21wb25lbnRfZ2V0X2VsZCgpLCB0b28uCj4+Pj4+Pgo+Pj4+
-Pgo+Pj4+PiBpbnRlbF9kaWdfcG9ydCBpcyAqbm90KiB0aGUgc2FtZSBvYmplY3QgaW4gdGhlc2Ug
-MiBwbGFjZXMuIER1cmluZwo+Pj4+PiBwbHVnaW4sIHNlZToKPj4+Pj4KPj4+Pj4gWyAgMTQ2Ljkz
-NDA5MV0gaW4gaW50ZWxfYXVkaW9fY29kZWNfZW5hYmxlOiBpbnRlbF9kaWdfcG9ydCBpcwo+Pj4+
-PiBmZmZmODgwMGExZjU0MDAwCj4+Pj4+IFsgIDE0Ni45MzQxMjFdIGluIGk5MTVfYXVkaW9fY29t
-cG9uZW50X2dldF9lbGQ6IGludGVsX2RpZ19wb3J0IGlzCj4+Pj4+IGZmZmY4ODAyNDRmN2QwMDAK
-Pj4+Pj4KPj4+Pj4gc29ycnkgZm9yIHRoZSBzbG93IHJlc3BvbnNlcy4gSSdsbCB0cnkgdG8gZ28g
-YmFjayB0aGF0IGRpcmVjdGlvbiB1bmxlc3MKPj4+Pj4gYWdhaW4gc29tZW9uZSBjb21lcyB1cCB3
-aXRoIG90aGVyIHN1Z2dlc3Rpb25zLgo+Pj4+Cj4+Pj4gVGhhbmtzLCB0aGlzIG1ha2VzIHNlbnNl
-LiAgSXQgaW1wbGllcyB0aGF0IHRoZSBkaWdpdGFsIHBvcnQgbWFwcGluZyBpcwo+Pj4+IHNvbWVo
-b3cgd3JvbmcuICBUaGVyZSBhcmUgdGhyZWUgcGxhY2VzIHNldHRpbmcgZGlnX3BvcnRfbWFwW10s
-IG9uZSBpbgo+Pj4+IGludGVsX2RkaV9pbml0KCksIG9uZSBpbiBpbnRlbF9kcF9pbml0KCkgYW5k
-IGFub3RoZXIgaW4KPj4+PiBpbnRlbF9oZG1pX2luaXQoKS4gIFRyeSB0byBjaGVjayB3aGljaCBm
-dW5jdGlvbiBjcmVhdGVzIHdoaWNoIG9iamVjdAo+Pj4+IGFzc2lnbmVkIHRvIHdoaWNoIHBvcnQg
-bnVtYmVyLCB0b2dldGhlciB3aXRoIGRybS5kZWJ1Zz0weDBlIGRlYnVnCj4+Pj4gbWVzc2FnZXMu
-Cj4+Pj4KPj4+IHdpdGhvdXQgdXNpbmcgZHJtLmRlYnVnPTB4MGUsIGJ1dCBieSBwcmludGluZyB0
-aGUga21hbGxvYydlZCBvYmplY3RzIGluCj4+PiB0aG9zZSAzIGZ1bmN0aW9ucyB3aXRoIHBvcnRz
-LCBJIGZvdW5kOgo+Pj4KPj4+IDIgb2YgdGhlbSBhcmUgcnVubmluZywgb25seSBkdXJpbmcgYm9v
-dDoKPj4+Cj4+PiBbICAgIDIuMzIyODY1XSBpbnRlbF9oZG1pX2luaXQ6IGludGVsX2RpZ19wb3J0
-IGlzIGZmZmY4ODAyNDI1NjQwMDAgIHBvcnQgMQo+Pj4gWyAgICAyLjMyMjk5OV0gaW50ZWxfZHBf
-aW5pdDogaW50ZWxfZGlnX3BvcnQgaXMgZmZmZjg4MDI0MmYzMDAwMCAgcG9ydCAxCj4+Pgo+Pj4g
-aXMgaXMgY29ycmVjdCBmb3IgdGhlbSB0byBoYXZlIGJvdGggcG9ydCAxPyBBbnkgbW9yZSBpZGVh
-cz8KPj4KPj4gQWRkaW5nIGludGVsLWdmeCBNTCB0byBDYy4KPj4KPj4gTWFydGluLCBpcyB0aGUg
-bWFjaGluZSBTYW5keUJyaWRnZSBvciBJdnlCcmlkZ2U/Cj4+Cj4+IEluIGFueXdheSBpdCdzIFBD
-SF9TUExJVCBhbmQgdGhlcmUgY2FuIGNhbGwgYm90aCBpbnRlbF9oZG1pX2luaXQoKSBhbmQgCj4+
-IGludGVsX2RwX2luaXQoKSBmb3IgdGhlIHNhbWUgcG9ydCBhbHRob3VnaCBib3RoIGZ1bmN0aW9u
-cyBtYXAKPj4gaW50ZWxfZGlnX3BvcnRbXS4gIFRoZSBhc3N1bXB0aW9uIG9mIGludGVsX2RpZ19w
-b3J0W10gcmV2ZXJzZSBtYXBwaW5nCj4+IGlzIHRoYXQgdGhlcmUgaXMgb25seSBhIHNpbmdsZSBp
-bnRlbF9kaWdfcG9ydCBhc3NpZ25lZCB0byBhIHBvcnQsIGJ1dAo+PiB0aGlzIGRvZXNuJ3QgbG9v
-ayBjb3JyZWN0Li4uCj4gCj4gT24gcHJlLUhTVyB0aGVyZSBjYW4gaW5kZWVkIGJlIHR3byBlbmNv
-ZGVycyBmb3IgdGhlIHNhbWUgcG9ydC4KPiBBbmQgSSdtIHBsYW5uaW5nIHRvIGNoYW5nZSBIU1cr
-IHRvIGZvbGxvdyB0aGF0IG1vZGVsIGFzIHdlbGwsCj4gYnV0IEkndmUgYmVlbiBidXN5IHdpdGgg
-b3RoZXIgc3R1ZmYgdG8gZmluaXNoIG9mZiB0aGF0IHdvcmsgWzFdCj4gCj4gWzFdIGh0dHBzOi8v
-bGlzdHMuZnJlZWRlc2t0b3Aub3JnL2FyY2hpdmVzL2ludGVsLWdmeC8yMDE1LURlY2VtYmVyLzA4
-MjM4NC5odG1sCj4gCgpTbyB5b3VyIHdvcmsgd291bGRuJ3QgZml4IGhkbWktYXVkaW8gcHJlLUhT
-VyBoZXJlPwoKCkFueXdheXMsIGEgcXVpY2sgZml4IHdvdWxkIGJlIGdvb2QsIGFuZCBpZiBub3Qg
-dGhhdCwgcmVtZW1iZXIgbWFya2luZwpmdXR1cmUgY2hhbmdlcyB0aGF0IGZpeCB0aGlzLCBmb3Ig
-c3RhYmxlLgoKV2hhdCBpbXBsaWNhdGlvbnMgd291bGQgc29tZXRoaW5nIGxpa2UgdGhlIGZvbGxv
-d2luZywgdGhhdCBUYWthc2hpCnN1Z2dlc3RlZCwgaGF2ZSBvbiBvdGhlciBzeXN0ZW1zPwoKY29t
-bWl0IDdiMjA5ODNjMDI5MjhjNTUzNzdiM2NmYTkyNzI1N2ExNzg5NmVjZWUKQXV0aG9yOiBNYXJ0
-aW4gS2VwcGxpbmdlciA8bWFydGlua0Bwb3N0ZW8uZGU+CkRhdGU6ICAgVHVlIEZlYiAyMyAxODoy
-OTowNSAyMDE2ICswMTAwCgogICAgc291bmQ6IHBjaTogaGRhOiBzZXQgY29kZWNfaGFzX2Fjb21w
-IHRvIGZhbHNlIGR1ZSB0byBwZW5kaW5nIHJlZ3Jlc3Npb24KCiAgICB2NC41IGFuZCBpdCdzIHNp
-Z25pZmljYW50IGludGVsIGhkYSBjaGFuZ2VzIGJyZWFrIGF1ZGlvIG92ZXIgSERNSQogICAgZm9y
-IHNvbWUgY2FzZXMuIFRoaXMgaXMgYSB0ZW1wb3Jhcnkgd29ya2Fyb3VuZCB0byBiZSByZXZlcnRl
-ZCBpbgogICAgdGhlIGZ1dHVyZS4KCiAgICBTaWduZWQtb2ZmLWJ5OiBNYXJ0aW4gS2VwcGxpbmdl
-ciA8bWFydGlua0Bwb3N0ZW8uZGU+CgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9o
-ZG1pLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYwppbmRleCA4ZWU3OGRiLi42ZDZmMTA0
-IDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYworKysgYi9zb3VuZC9wY2kv
-aGRhL3BhdGNoX2hkbWkuYwpAQCAtMTU2LDcgKzE1Niw3IEBAIHN0cnVjdCBoZG1pX3NwZWMgewog
-ICAgICAgIGJvb2wgaTkxNV9ib3VuZDsgLyogd2FzIGk5MTUgYm91bmQgaW4gdGhpcyBkcml2ZXI/
-ICovCiB9OwoKLSNpZmRlZiBDT05GSUdfU05EX0hEQV9JOTE1CisjaWYgMAogI2RlZmluZSBjb2Rl
-Y19oYXNfYWNvbXAoY29kZWMpIFwKICAgICAgICAoKGNvZGVjKS0+YnVzLT5jb3JlLmF1ZGlvX2Nv
-bXBvbmVudCAhPSBOVUxMKQogI2Vsc2UKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZy
-ZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2ludGVsLWdmeAo=
+On Sat, Feb 20, 2016 at 03:37:58PM +0100, Robert Jarzmik wrote:
+> This adds a binding for the Marvell PXA audio complex, available in
+> pxa2xx and pxa3xx variants.
+> 
+> Signed-off-by: Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>
+> ---
+>  .../bindings/sound/marvell,pxa2xx-ac97.txt         | 25 ++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/marvell,pxa2xx-ac97.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/marvell,pxa2xx-ac97.txt b/Documentation/devicetree/bindings/sound/marvell,pxa2xx-ac97.txt
+> new file mode 100644
+> index 000000000000..b3f2882d9c7d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/marvell,pxa2xx-ac97.txt
+> @@ -0,0 +1,25 @@
+> +Marvell PXA2xx audio complex
+> +
+> +This descriptions matches the AC97 controller found in pxa2xx and pxa3xx series.
+> +
+> +Required properties:
+> +  - compatible: "marvell,pxa2xx-ac97"
+> +  - reg: device MMIO address space
+> +  - interrupts: single interrupt generated by AC97 IP
+> +  - clocks: input clock of the AC97 IP, refer to clock-bindings.txt
+> +
+> +Optional properties:
+> +  - pinctrl-names, pinctrl-0: refer to pinctrl-bindings.txt
+> +  - reset-gpio: gpio used for AC97 reset, refer to gpio.txt
+
+reset-gpios
+
+> +
+> +Example:
+> +	ac97: sound@40500000 {
+> +	      	compatible = "marvell,pxa2xx-ac97";
+> +		reg = < 0x40500000 0x1000 >;
+> +		interrupts = <14>;
+> +		reset-gpio = <&gpio 113 GPIO_ACTIVE_HIGH>;
+> +		#sound-dai-cells = <1>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = < &pmux_ac97_default >;
+> +		status = "okay";
+
+No clocks prop, yet required.
+
+> +	};
+> -- 
+> 2.1.4
+> 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
