@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: Intel: boards: Remove WoV sink in
-	nau88125_ssm4567 machine" to the asoc tree
-Date: Wed, 24 Feb 2016 17:42:27 +0900
-Message-ID: <E1aYV1f-0002u0-Ts@finisterre>
-References: <1456293464-19646-7-git-send-email-vinod.koul@intel.com>
+	skl_rt286" to the asoc tree
+Date: Wed, 24 Feb 2016 17:42:29 +0900
+Message-ID: <E1aYV1h-0002uT-MJ@finisterre>
+References: <1456293464-19646-6-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C7904260710
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 09:42:39 +0100 (CET)
-In-Reply-To: <1456293464-19646-7-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 83D9E26078A
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 09:42:40 +0100 (CET)
+In-Reply-To: <1456293464-19646-6-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: boards: Remove WoV sink in nau88125_ssm4567 machine
+   ASoC: Intel: boards: Remove WoV sink in skl_rt286
 
 has been applied to the asoc tree at
 
@@ -53,11 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 98ee1745c81e9cf9553dd311524f9610331e784f Mon Sep 17 00:00:00 2001
+>From aac5cc88b107c316fdd2846fdac777726b9f725d Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Wed, 24 Feb 2016 11:27:43 +0530
-Subject: [PATCH] ASoC: Intel: boards: Remove WoV sink in nau88125_ssm4567
- machine
+Date: Wed, 24 Feb 2016 11:27:42 +0530
+Subject: [PATCH] ASoC: Intel: boards: Remove WoV sink in skl_rt286
 
 WoV module needs to be triggered with PCM open, so remove this as
 DAPM Sink and will be connected to FE
@@ -66,37 +65,37 @@ Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 4 ----
+ sound/soc/intel/boards/skl_rt286.c | 4 ----
  1 file changed, 4 deletions(-)
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index 68caf24f9fbd..a75c09343f84 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -103,7 +103,6 @@ static const struct snd_soc_dapm_widget skylake_widgets[] = {
- 	SND_SOC_DAPM_SPK("Left Speaker", NULL),
- 	SND_SOC_DAPM_SPK("Right Speaker", NULL),
+diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
+index 00b84c1ff07f..2016397a8e75 100644
+--- a/sound/soc/intel/boards/skl_rt286.c
++++ b/sound/soc/intel/boards/skl_rt286.c
+@@ -64,7 +64,6 @@ static const struct snd_soc_dapm_widget skylake_widgets[] = {
+ 	SND_SOC_DAPM_MIC("Mic Jack", NULL),
+ 	SND_SOC_DAPM_MIC("DMIC2", NULL),
  	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
 -	SND_SOC_DAPM_SINK("WoV Sink"),
- 	SND_SOC_DAPM_SPK("DP", NULL),
- 	SND_SOC_DAPM_SPK("HDMI", NULL),
- 	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
-@@ -124,8 +123,6 @@ static const struct snd_soc_dapm_route skylake_map[] = {
- 	{"MIC", NULL, "Headset Mic"},
+ 	SND_SOC_DAPM_SPK("HDMI1", NULL),
+ 	SND_SOC_DAPM_SPK("HDMI2", NULL),
+ 	SND_SOC_DAPM_SPK("HDMI3", NULL),
+@@ -85,8 +84,6 @@ static const struct snd_soc_dapm_route skylake_rt286_map[] = {
+ 	{"DMIC1 Pin", NULL, "DMIC2"},
  	{"DMic", NULL, "SoC DMIC"},
  
 -	{"WoV Sink", NULL, "hwd_in sink"},
 -
- 	{"HDMI", NULL, "hif5 Output"},
- 	{"DP", NULL, "hif6 Output"},
- 	/* CODEC BE connections */
-@@ -225,7 +222,6 @@ static int skylake_nau8825_codec_init(struct snd_soc_pcm_runtime *rtd)
- 	nau8825_enable_jack_detect(codec, &skylake_headset);
+ 	{"HDMI1", NULL, "hif5 Output"},
+ 	{"HDMI2", NULL, "hif6 Output"},
+ 	{"HDMI3", NULL, "hif7 Output"},
+@@ -139,7 +136,6 @@ static int skylake_rt286_codec_init(struct snd_soc_pcm_runtime *rtd)
+ 	rt286_mic_detect(codec, &skylake_headset);
  
  	snd_soc_dapm_ignore_suspend(&rtd->card->dapm, "SoC DMIC");
 -	snd_soc_dapm_ignore_suspend(&rtd->card->dapm, "WoV Sink");
  
- 	return ret;
+ 	return 0;
  }
 -- 
 2.7.0
