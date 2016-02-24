@@ -1,58 +1,114 @@
-From: Toyo Abe <toyo.abe@gmail.com>
-Subject: Re: Compute Stick baytrail audio problem
-Date: Wed, 24 Feb 2016 18:48:21 +0900
-Message-ID: <CAGfNR+OK6VSG4=VzLbz9_chpg2B1iiDjrUyNnfC1d3BWo5Bbjg@mail.gmail.com>
-References: <20160219203900.GA5202@monopoli.naic.edu>
- <56C8826A.3030303@linux.intel.com> <56CBCB86.8040601@gmail.com>
- <20160223143443.GA22458@monopoli.naic.edu>
+From: Martin Kepplinger <martink@posteo.de>
+Subject: Re: [Intel-gfx] [BUG] [REGRESSION] [BISECTED] -rc1 breaks audio over
+ HDMI for i915
+Date: Wed, 24 Feb 2016 13:18:43 +0100
+Message-ID: <56CD9FA3.1090604@posteo.de>
+References: <56BE0044.9080500@posteo.de> <s5h37sxgazv.wl-tiwai@suse.de>
+ <56CAE1C5.4070107@posteo.de> <s5hr3g52fud.wl-tiwai@suse.de>
+ <56CB1510.4010503@posteo.de> <s5hd1ro3kbf.wl-tiwai@suse.de>
+ <56CB5A4A.90906@posteo.de> <s5hpovov9wy.wl-tiwai@suse.de>
+ <56CB7F98.20807@posteo.de> <s5hio1ffjp7.wl-tiwai@suse.de>
+ <20160223171447.GL23290@intel.com> <56CCAE4E.3090009@posteo.de>
+ <s5hk2lu1r7f.wl-tiwai@suse.de> <s5hd1rmfp3t.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f176.google.com (mail-io0-f176.google.com
- [209.85.223.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D3CE265467
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 10:48:22 +0100 (CET)
-Received: by mail-io0-f176.google.com with SMTP id 9so28617489iom.1
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 01:48:22 -0800 (PST)
-In-Reply-To: <20160223143443.GA22458@monopoli.naic.edu>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Giacomo Comes <comes@naic.edu>
-Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hd1rmfp3t.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz, han.lu@intel.com, treding@nvidia.com, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-MjAxNi0wMi0yMyAyMzozNCBHTVQrMDk6MDAgR2lhY29tbyBDb21lcyA8Y29tZXNAbmFpYy5lZHU+
-Ogo+IE9uIFR1ZSwgRmViIDIzLCAyMDE2IGF0IDEyOjMyOjIzUE0gKzA5MDAsIFRveW8gQWJlIHdy
-b3RlOgo+Pgo+PiBIaSwKPj4KPj4gSSdkIHN0cnVnZ2xlZCBhIHNpbWlsYXIgdW5kZXJydW4gcHJv
-YmxlbSBvbiBteSBiYXl0cmFpbCBkZXZpY2UuIFRoZSBkbWVzZyBzaG93ZWQKPj4gdGhlIGZvbGxv
-d2luZyB3YXJuaW5ncy4KPj4KPj4gWzE1MzU2Ljc1NzkzOF0gaGFkOiBEcml2ZXIgZGV0ZWN0ZWQg
-MiBtaXNzZWQgYnVmZmVyIGRvbmUgaW50ZXJydXB0KHMpISEhIQo+PiBbMTUzNTYuNzYxNTk0XSBo
-YWQ6IERyaXZlciBkZXRlY3RlZCAxIG1pc3NlZCBidWZmZXIgZG9uZSBpbnRlcnJ1cHQocykhISEh
-Cj4+IFsxNTM1Ni43NzQ3NzVdIGhhZDogVW5hYmxlIHRvIGNsZWFyIFVOREVSUlVOIGJpdHMKPj4g
-WzE1MzU2Ljc5MTMxMl0gaGFkOiBEcml2ZXIgZGV0ZWN0ZWQgMSBtaXNzZWQgYnVmZmVyIGRvbmUg
-aW50ZXJydXB0KHMpISEhIQo+PiBbMTUzNTYuODA4MTQ4XSBoYWQ6IFVuYWJsZSB0byBjbGVhciBV
-TkRFUlJVTiBiaXRzCj4+IFsxNTM1Ni44MjQ2OTJdIGhhZDogRHJpdmVyIGRldGVjdGVkIDIgbWlz
-c2VkIGJ1ZmZlciBkb25lIGludGVycnVwdChzKSEhISEKPj4KPj4gQWZ0ZXIgc29tZSBpbnZlc3Rp
-Z2F0aW9uLCBJIGZvdW5kIHNvbWUgcHJvYmxlbXMgb24gdGhlIGRyaXZlciBhbmQgZml4ZWQgYSBm
-ZXcgb2YKPj4gdGhlbS4gSSBwdXNoZWQgdGhlIGZpeCB0byBteSBnaXRodWIuIEkgaG9wZSBpdCBt
-aWdodCBoZWxwIHlvdS4KPj4gICBodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vdG95
-b2FiZS9iYXl0cmFpbGF1ZGlvL2ZpeC11bmRlcnJ1bi9oZG1pX2F1ZGlvXzIwMTUwMzE5LnBhdGNo
-Cj4+Cj4+IEJlc3QgUmVnYXJkcywKPj4gLXRveW8KPgo+IEhpLAo+IHRoYXQgd2FzIGl0IS4gSSBh
-ZGRlZCB5b3VyIGNoYW5nZXMgYW5kIG5vdyB0aGUgYXVkaW8gd29ya3MuIEknbSBoYXBweS4KPiBJ
-IGdvdCBmaW5hbGx5IGV2ZXJ5IHN1YnN5c3RlbSBvZiB0aGUgQ29tcHV0ZSBTdGljayB3b3JraW5n
-LgoKQ29uZ3JhdHVsYXRpb25zLgoKPiBJIGhhdmUgYSBtaW5vciBxdWVzdGlvbiB0b3VnaHQuIEFs
-c2FtaXhlciBzYXlzOgo+ICAgVGhpcyBzb3VuZCBkZXZpY2UgZG9lcyBub3QgaGF2ZSBhbnkgY29u
-dHJvbHMuCj4gSXMgdGhlcmUgYSB3YXkgdG8gY2hhbmdlIHRoZSB2b2x1bWUgd2l0aG91dCBlbmFi
-bGluZyBwdWxzZWF1ZGlvPwo+CgpZb3UgY291bGQgdXNlIHNvZnR2b2wgZm9yIHRoYXQgcHVycG9z
-ZS4K44CAaHR0cDovL2Fsc2Eub3BlbnNyYy5vcmcvU29mdHZvbAoKUmVnYXJkcywKLXRveW8KX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Am 2016-02-24 um 10:13 schrieb Takashi Iwai:
+> On Wed, 24 Feb 2016 08:51:32 +0100,
+> Takashi Iwai wrote:
+>>
+>> Since dig_port_map[] is used only for the audio callback, we can
+>> assign it dynamically just before the callbacks.
+>>
+>> Could you try the patch below?  (It's totally untested.)
+
+now it's tested :) this works! Also sounds like a reasonable fix for
+now, doesn't it?
+
+thanks
+                       martin
+
+ps. sorry I couldn't send to intel-gfx@lists.freedesktop.org it rejected
+my mail.
+
+> 
+> The one below might be safer, it's setting in the mutex lock.
+> Please give this a try instead.
+> 
+> 
+> Takashi
+> 
+> ---
+> diff --git a/drivers/gpu/drm/i915/intel_audio.c b/drivers/gpu/drm/i915/intel_audio.c
+> index 31f6d212fb1b..30f921421b0c 100644
+> --- a/drivers/gpu/drm/i915/intel_audio.c
+> +++ b/drivers/gpu/drm/i915/intel_audio.c
+> @@ -527,6 +527,8 @@ void intel_audio_codec_enable(struct intel_encoder *intel_encoder)
+>  
+>  	mutex_lock(&dev_priv->av_mutex);
+>  	intel_dig_port->audio_connector = connector;
+> +	/* referred in audio callbacks */
+> +	dev_priv->dig_port_map[port] = intel_encoder;
+>  	mutex_unlock(&dev_priv->av_mutex);
+>  
+>  	if (acomp && acomp->audio_ops && acomp->audio_ops->pin_eld_notify)
+> @@ -554,6 +556,7 @@ void intel_audio_codec_disable(struct intel_encoder *intel_encoder)
+>  
+>  	mutex_lock(&dev_priv->av_mutex);
+>  	intel_dig_port->audio_connector = NULL;
+> +	dev_priv->dig_port_map[port] = NULL;
+>  	mutex_unlock(&dev_priv->av_mutex);
+>  
+>  	if (acomp && acomp->audio_ops && acomp->audio_ops->pin_eld_notify)
+> diff --git a/drivers/gpu/drm/i915/intel_ddi.c b/drivers/gpu/drm/i915/intel_ddi.c
+> index e6408e5583d7..63ba42aa2985 100644
+> --- a/drivers/gpu/drm/i915/intel_ddi.c
+> +++ b/drivers/gpu/drm/i915/intel_ddi.c
+> @@ -3311,7 +3311,6 @@ void intel_ddi_init(struct drm_device *dev, enum port port)
+>  	intel_encoder->get_config = intel_ddi_get_config;
+>  
+>  	intel_dig_port->port = port;
+> -	dev_priv->dig_port_map[port] = intel_encoder;
+>  	intel_dig_port->saved_port_bits = I915_READ(DDI_BUF_CTL(port)) &
+>  					  (DDI_BUF_PORT_REVERSAL |
+>  					   DDI_A_4_LANES);
+> diff --git a/drivers/gpu/drm/i915/intel_dp.c b/drivers/gpu/drm/i915/intel_dp.c
+> index 796e3d313cb9..ac6a37cbd323 100644
+> --- a/drivers/gpu/drm/i915/intel_dp.c
+> +++ b/drivers/gpu/drm/i915/intel_dp.c
+> @@ -6035,7 +6035,6 @@ intel_dp_init(struct drm_device *dev,
+>  	}
+>  
+>  	intel_dig_port->port = port;
+> -	dev_priv->dig_port_map[port] = intel_encoder;
+>  	intel_dig_port->dp.output_reg = output_reg;
+>  
+>  	intel_encoder->type = INTEL_OUTPUT_DISPLAYPORT;
+> diff --git a/drivers/gpu/drm/i915/intel_hdmi.c b/drivers/gpu/drm/i915/intel_hdmi.c
+> index 4a77639a489d..23ee48dc765f 100644
+> --- a/drivers/gpu/drm/i915/intel_hdmi.c
+> +++ b/drivers/gpu/drm/i915/intel_hdmi.c
+> @@ -2146,7 +2146,6 @@ void intel_hdmi_init_connector(struct intel_digital_port *intel_dig_port,
+>  void intel_hdmi_init(struct drm_device *dev,
+>  		     i915_reg_t hdmi_reg, enum port port)
+>  {
+> -	struct drm_i915_private *dev_priv = dev->dev_private;
+>  	struct intel_digital_port *intel_dig_port;
+>  	struct intel_encoder *intel_encoder;
+>  	struct intel_connector *intel_connector;
+> @@ -2215,7 +2214,6 @@ void intel_hdmi_init(struct drm_device *dev,
+>  		intel_encoder->cloneable |= 1 << INTEL_OUTPUT_HDMI;
+>  
+>  	intel_dig_port->port = port;
+> -	dev_priv->dig_port_map[port] = intel_encoder;
+>  	intel_dig_port->hdmi.hdmi_reg = hdmi_reg;
+>  	intel_dig_port->dp.output_reg = INVALID_MMIO_REG;
+>  
+> 
