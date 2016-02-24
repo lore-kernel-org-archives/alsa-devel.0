@@ -1,15 +1,15 @@
 From: kbuild test robot <fengguang.wu@intel.com>
-Subject: [asoc:topic/intel 17/22]
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c:29:36: fatal error:
+Subject: [asoc:topic/intel 18/22]
+ sound/soc/intel/boards/skl_nau88l25_max98357a.c:25:36: fatal error:
  ../../codecs/hdac_hdmi.h: No such file or directory
-Date: Wed, 24 Feb 2016 17:42:25 +0800
-Message-ID: <201602241724.5LQBiSXW%fengguang.wu@intel.com>
+Date: Wed, 24 Feb 2016 17:52:16 +0800
+Message-ID: <201602241714.DTcRe6UU%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="k1lZvvs/B4yU6o8G"
+Content-Type: multipart/mixed; boundary="2oS5YaxWCcQjTEyO"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id CCC042607F7
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 10:44:29 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 225B226149E
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 10:53:31 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -20,52 +20,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
+To: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Cc: "Fang, Yang A" <yang.a.fang@intel.com>, Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
 
---k1lZvvs/B4yU6o8G
+--2oS5YaxWCcQjTEyO
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/intel
 head:   8be3838af0e992846d4725fae152b818560c1068
-commit: bc5f6ac9a66f90f8e16e568ebd463cbe44f46b81 [17/22] ASoC: Intel: boards: Enable HDMI and DP on nau88l2 machine
+commit: 0ab338ff33762d50e5005d8d28b30b25f23aa934 [18/22] ASoC: Intel: boards: Enable HDMI and DP on SKL nau88l25_max98357 machine
 config: i386-allmodconfig (attached as .config)
 reproduce:
-        git checkout bc5f6ac9a66f90f8e16e568ebd463cbe44f46b81
+        git checkout 0ab338ff33762d50e5005d8d28b30b25f23aa934
         # save the attached .config to linux build tree
         make ARCH=i386 
 
 All errors (new ones prefixed by >>):
 
->> sound/soc/intel/boards/skl_nau88l25_ssm4567.c:29:36: fatal error: ../../codecs/hdac_hdmi.h: No such file or directory
+>> sound/soc/intel/boards/skl_nau88l25_max98357a.c:25:36: fatal error: ../../codecs/hdac_hdmi.h: No such file or directory
    compilation terminated.
 
-vim +29 sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+vim +25 sound/soc/intel/boards/skl_nau88l25_max98357a.c
 
-    23	#include <sound/core.h>
-    24	#include <sound/pcm.h>
-    25	#include <sound/soc.h>
-    26	#include <sound/jack.h>
-    27	#include <sound/pcm_params.h>
-    28	#include "../../codecs/nau8825.h"
-  > 29	#include "../../codecs/hdac_hdmi.h"
-    30	
-    31	#define SKL_NUVOTON_CODEC_DAI	"nau8825-hifi"
-    32	#define SKL_SSM_CODEC_DAI	"ssm4567-hifi"
+    19	#include <sound/core.h>
+    20	#include <sound/jack.h>
+    21	#include <sound/pcm.h>
+    22	#include <sound/pcm_params.h>
+    23	#include <sound/soc.h>
+    24	#include "../../codecs/nau8825.h"
+  > 25	#include "../../codecs/hdac_hdmi.h"
+    26	
+    27	#define SKL_NUVOTON_CODEC_DAI	"nau8825-hifi"
+    28	#define SKL_MAXIM_CODEC_DAI "HiFi"
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---k1lZvvs/B4yU6o8G
+--2oS5YaxWCcQjTEyO
 Content-Type: application/octet-stream
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICIx6zVYAAy5jb25maWcAjDzLcty2svt8xZRzF+csHOttpW5pgQHBGWRIggbA0UgbliKN
+H4sICMd8zVYAAy5jb25maWcAjDzLcty2svt8xZRzF+csHOttpW5pgQHBGWRIggbA0UgbliKN
 Y9WRJV9Jzkn+/nYDfDRAUE4WkdndAPHodzfn559+XrDvr09fb17vb28eHv5e/LF/3D/fvO7v
 Fp/vH/b/u8jUolJ2ITJpfwHi4v7x+18f7o/PzxYnv5z+cvD++fZwsdk/P+4fFvzp8fP9H99h
 9P3T408/AzVXVS5X7dnJUtrF/cvi8el18bJ//amD787P2uOji7/J8/ggK2N1w61UVZsJrjKh
@@ -1056,11 +1056,11 @@ NCFEmeNEvYJDwFa44oeeqITSKxqP+9JdZPIqor8YsVDmNBLIKMJHD0GcKykGj4A6OzNZdb0X
 rcB2ELhAV8TPFplOP04DxB2rCJ18uCFLEPr6sVh6EDw4kDMJCt00JYNDkK5++cFkdhDUpGRK
 pdHF4cfhoQcvDj4WZP1r4GpPzq5c4xhoYFiKrGSGB6im/eB79f/9WMfz/EYDAA==
 
---k1lZvvs/B4yU6o8G
+--2oS5YaxWCcQjTEyO
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---k1lZvvs/B4yU6o8G--
+--2oS5YaxWCcQjTEyO--
