@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: arizona: Make logging of FLL
-	calculations clearer" to the asoc tree
-Date: Wed, 24 Feb 2016 13:15:25 +0900
-Message-ID: <E1aYQrF-0000rF-Jl@finisterre>
-References: <1456236992-32028-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: max9867: Use params_width instead of
+	open-coded" to the asoc tree
+Date: Wed, 24 Feb 2016 13:15:36 +0900
+Message-ID: <E1aYQrQ-0000rn-Vl@finisterre>
+References: <1456210393.15964.0.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B70AB266738
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 05:15:31 +0100 (CET)
-In-Reply-To: <1456236992-32028-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 853FC2665DE
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 05:15:43 +0100 (CET)
+In-Reply-To: <1456210393.15964.0.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+To: Axel Lin <axel.lin@ingics.com>, anish kumar <yesanishhere@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: arizona: Make logging of FLL calculations clearer
+   ASoC: max9867: Use params_width instead of open-coded
 
 has been applied to the asoc tree at
 
@@ -53,50 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From 2595b7fe1aa3a1dfc47e549b39f7c35c5ce8a56d Mon Sep 17 00:00:00 2001
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Date: Tue, 23 Feb 2016 14:16:32 +0000
-Subject: [PATCH] ASoC: arizona: Make logging of FLL calculations clearer
+>From 9dcc72efae313472d1d719e91b23e2bea3513789 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Tue, 23 Feb 2016 14:53:13 +0800
+Subject: [PATCH] ASoC: max9867: Use params_width instead of open-coded
 
-The debug logging of FLL calculations was confusing. Values were
-printed in hex without indicating this by a leading 0x, and
-despite these normally being required in decimal. Also where the
-register value isn't the actual value (it s a power-of-two or
-0 means 1, 1 means 2, ...)  it was unclear whether the actual or
-register value was shown.
-
-This patch changes the log print so that all mathematical values
-are shown in decimal, all register values are shown in hex with a
-0x prefix, and where the register value isn't the actual integer
-value the decimal integer value is shown in () after the hex
-register value.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Acked-by: anish kumar <yesanishhere@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/arizona.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ sound/soc/codecs/max9867.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index a32cfb85f1ca..dd926f4da409 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -2108,11 +2108,12 @@ static int arizona_calc_fll(struct arizona_fll *fll,
- 		return -EINVAL;
- 	}
+diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+index 4fb6fc7188c7..f371a52fe29d 100755
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -207,10 +207,9 @@ static int max9867_dai_hw_params(struct snd_pcm_substream *substream,
+ 		unsigned long int bclk_rate, pclk_bclk_ratio;
+ 		int bclk_value;
  
--	arizona_fll_dbg(fll, "N=%x THETA=%x LAMBDA=%x\n",
-+	arizona_fll_dbg(fll, "N=%d THETA=%d LAMBDA=%d\n",
- 			cfg->n, cfg->theta, cfg->lambda);
--	arizona_fll_dbg(fll, "FRATIO=%x(%d) OUTDIV=%x REFCLK_DIV=%x\n",
--			cfg->fratio, cfg->fratio, cfg->outdiv, cfg->refdiv);
--	arizona_fll_dbg(fll, "GAIN=%d\n", cfg->gain);
-+	arizona_fll_dbg(fll, "FRATIO=0x%x(%d) OUTDIV=%d REFCLK_DIV=0x%x(%d)\n",
-+			cfg->fratio, ratio, cfg->outdiv,
-+			cfg->refdiv, 1 << cfg->refdiv);
-+	arizona_fll_dbg(fll, "GAIN=0x%x(%d)\n", cfg->gain, 1 << cfg->gain);
- 
- 	return 0;
- 
+-		bclk_rate = params_rate(params) * 2 *
+-			snd_pcm_format_width(params_format(params));
++		bclk_rate = params_rate(params) * 2 * params_width(params);
+ 		pclk_bclk_ratio = max9867->pclk/bclk_rate;
+-		switch (snd_pcm_format_width(params_format(params))) {
++		switch (params_width(params)) {
+ 		case 8:
+ 		case 16:
+ 			switch (pclk_bclk_ratio) {
 -- 
 2.7.0
