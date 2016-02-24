@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: adau17x1: Correct typos in file
-	headers" to the asoc tree
-Date: Wed, 24 Feb 2016 13:15:18 +0900
-Message-ID: <E1aYQr8-0000qG-4l@finisterre>
-References: <1454423510-1330-3-git-send-email-andire@axis.com>
+Subject: Applied "ASoC: arizona: Make logging of FLL
+	calculations clearer" to the asoc tree
+Date: Wed, 24 Feb 2016 13:15:25 +0900
+Message-ID: <E1aYQrF-0000rF-Jl@finisterre>
+References: <1456236992-32028-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1027793497512750398=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A7BE265E04
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 05:15:28 +0100 (CET)
-In-Reply-To: <1454423510-1330-3-git-send-email-andire@axis.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B70AB266738
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 05:15:31 +0100 (CET)
+In-Reply-To: <1456236992-32028-1-git-send-email-rf@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,16 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============1027793497512750398==
-Content-Type: text/plain
-
 The patch
 
-   ASoC: adau17x1: Correct typos in file headers
+   ASoC: arizona: Make logging of FLL calculations clearer
 
 has been applied to the asoc tree at
 
@@ -55,88 +53,50 @@ to this mail.
 Thanks,
 Mark
 
->From d6dde63e90cf0d34ae61e885a5eb254c59eb3358 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Andreas=20Irest=C3=A5l?= <andreas.irestal@axis.com>
-Date: Tue, 16 Feb 2016 13:56:42 +0100
-Subject: [PATCH] ASoC: adau17x1: Correct typos in file headers
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From 2595b7fe1aa3a1dfc47e549b39f7c35c5ce8a56d Mon Sep 17 00:00:00 2001
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Date: Tue, 23 Feb 2016 14:16:32 +0000
+Subject: [PATCH] ASoC: arizona: Make logging of FLL calculations clearer
 
-Signed-off-by: Andreas Irestål <andire@axis.com>
+The debug logging of FLL calculations was confusing. Values were
+printed in hex without indicating this by a leading 0x, and
+despite these normally being required in decimal. Also where the
+register value isn't the actual value (it s a power-of-two or
+0 means 1, 1 means 2, ...)  it was unclear whether the actual or
+register value was shown.
+
+This patch changes the log print so that all mathematical values
+are shown in decimal, all register values are shown in hex with a
+0x prefix, and where the register value isn't the actual integer
+value the decimal integer value is shown in () after the hex
+register value.
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/linux/platform_data/adau17x1.h | 2 +-
- sound/soc/codecs/adau1761-i2c.c        | 2 +-
- sound/soc/codecs/adau1761-spi.c        | 2 +-
- sound/soc/codecs/adau1761.c            | 2 +-
- sound/soc/codecs/adau1781.c            | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/codecs/arizona.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/platform_data/adau17x1.h b/include/linux/platform_data/adau17x1.h
-index a81766cae230..9db1b905df24 100644
---- a/include/linux/platform_data/adau17x1.h
-+++ b/include/linux/platform_data/adau17x1.h
-@@ -1,5 +1,5 @@
- /*
-- * Driver for ADAU1761/ADAU1461/ADAU1761/ADAU1961/ADAU1781/ADAU1781 codecs
-+ * Driver for ADAU1361/ADAU1461/ADAU1761/ADAU1961/ADAU1381/ADAU1781 codecs
-  *
-  * Copyright 2011-2014 Analog Devices Inc.
-  * Author: Lars-Peter Clausen <lars@metafoo.de>
-diff --git a/sound/soc/codecs/adau1761-i2c.c b/sound/soc/codecs/adau1761-i2c.c
-index 348ccb17d3cc..a1b12671c307 100644
---- a/sound/soc/codecs/adau1761-i2c.c
-+++ b/sound/soc/codecs/adau1761-i2c.c
-@@ -1,5 +1,5 @@
- /*
-- * Driver for ADAU1761/ADAU1461/ADAU1761/ADAU1961 codec
-+ * Driver for ADAU1361/ADAU1461/ADAU1761/ADAU1961 codec
-  *
-  * Copyright 2014 Analog Devices Inc.
-  *  Author: Lars-Peter Clausen <lars@metafoo.de>
-diff --git a/sound/soc/codecs/adau1761-spi.c b/sound/soc/codecs/adau1761-spi.c
-index 8bc1fbd25fcc..188334928c23 100644
---- a/sound/soc/codecs/adau1761-spi.c
-+++ b/sound/soc/codecs/adau1761-spi.c
-@@ -1,5 +1,5 @@
- /*
-- * Driver for ADAU1761/ADAU1461/ADAU1761/ADAU1961 codec
-+ * Driver for ADAU1361/ADAU1461/ADAU1761/ADAU1961 codec
-  *
-  * Copyright 2014 Analog Devices Inc.
-  *  Author: Lars-Peter Clausen <lars@metafoo.de>
-diff --git a/sound/soc/codecs/adau1761.c b/sound/soc/codecs/adau1761.c
-index e7136b1956a3..b95d29dbd13d 100644
---- a/sound/soc/codecs/adau1761.c
-+++ b/sound/soc/codecs/adau1761.c
-@@ -1,5 +1,5 @@
- /*
-- * Driver for ADAU1761/ADAU1461/ADAU1761/ADAU1961 codec
-+ * Driver for ADAU1361/ADAU1461/ADAU1761/ADAU1961 codec
-  *
-  * Copyright 2011-2013 Analog Devices Inc.
-  * Author: Lars-Peter Clausen <lars@metafoo.de>
-diff --git a/sound/soc/codecs/adau1781.c b/sound/soc/codecs/adau1781.c
-index fde9068550a6..bc1bb56dae63 100644
---- a/sound/soc/codecs/adau1781.c
-+++ b/sound/soc/codecs/adau1781.c
-@@ -1,5 +1,5 @@
- /*
-- * Driver for ADAU1781/ADAU1781 codec
-+ * Driver for ADAU1381/ADAU1781 codec
-  *
-  * Copyright 2011-2013 Analog Devices Inc.
-  * Author: Lars-Peter Clausen <lars@metafoo.de>
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index a32cfb85f1ca..dd926f4da409 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -2108,11 +2108,12 @@ static int arizona_calc_fll(struct arizona_fll *fll,
+ 		return -EINVAL;
+ 	}
+ 
+-	arizona_fll_dbg(fll, "N=%x THETA=%x LAMBDA=%x\n",
++	arizona_fll_dbg(fll, "N=%d THETA=%d LAMBDA=%d\n",
+ 			cfg->n, cfg->theta, cfg->lambda);
+-	arizona_fll_dbg(fll, "FRATIO=%x(%d) OUTDIV=%x REFCLK_DIV=%x\n",
+-			cfg->fratio, cfg->fratio, cfg->outdiv, cfg->refdiv);
+-	arizona_fll_dbg(fll, "GAIN=%d\n", cfg->gain);
++	arizona_fll_dbg(fll, "FRATIO=0x%x(%d) OUTDIV=%d REFCLK_DIV=0x%x(%d)\n",
++			cfg->fratio, ratio, cfg->outdiv,
++			cfg->refdiv, 1 << cfg->refdiv);
++	arizona_fll_dbg(fll, "GAIN=0x%x(%d)\n", cfg->gain, 1 << cfg->gain);
+ 
+ 	return 0;
+ 
 -- 
 2.7.0
-
-
---===============1027793497512750398==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1027793497512750398==--
