@@ -1,47 +1,78 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] ASoC: rt5640: add master clock handling for rt5640
-Date: Wed, 24 Feb 2016 12:37:50 +0900
-Message-ID: <20160224033750.GN18327@sirena.org.uk>
-References: <1456190782-18865-1-git-send-email-sugar.zhang@rock-chips.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/3] ASoC: rt298: clear IRQ at the
+	beginning of rt298_irq
+Date: Wed, 24 Feb 2016 12:42:34 +0900
+Message-ID: <20160224034234.GO18327@sirena.org.uk>
+References: <1455613956-14287-1-git-send-email-bardliao@realtek.com>
+ <1455613956-14287-2-git-send-email-bardliao@realtek.com>
+ <20160217132011.GQ7544@sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D701119238@RTITMBSV03.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="CbS85NFTG8TaslL2"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1456190782-18865-1-git-send-email-sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sugar Zhang <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Cc: heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Bard Liao <bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, Oder Chiou <oder_chiou-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============0211266150600572264=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3DB2A26145E
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 04:42:41 +0100 (CET)
+In-Reply-To: <ABFD875FF5FB574BA706497D987D48D701119238@RTITMBSV03.realtek.com.tw>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "ramesh.babu@intel.com" <ramesh.babu@intel.com>, John Lin <john.lin@realtek.com>, "senthilnathanx.veppur@intel.com" <senthilnathanx.veppur@intel.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---CbS85NFTG8TaslL2
+--===============0211266150600572264==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="8MWQa5Xlpje7WrDu"
+Content-Disposition: inline
+
+
+--8MWQa5Xlpje7WrDu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 23, 2016 at 09:26:22AM +0800, Sugar Zhang wrote:
-> enable/disable master clock when codec is active or not.
+On Wed, Feb 24, 2016 at 02:59:23AM +0000, Bard Liao wrote:
 
-This patch has already been applied, please send incremental patches if
-any changes are required.
+> > Why is this a benefit?  We're going to mask the interrupt as long as the
+> > interrupt handler is running anyway.
 
---CbS85NFTG8TaslL2
+> Thanks for your reminding. There is actually no benefit on the patch.
+> Can you ignore this patch and apply other two patches?
+> Or I should send the patches again?
+
+I don't seem to have this series any more, please resend anything that
+wasn't applied.
+
+--8MWQa5Xlpje7WrDu
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWzSWOAAoJECTWi3JdVIfQ1tIH/1oUfOcJaGkwlNprnmeQsPfb
-8dJX5S1twsczb/cYkrILppolVvymvRDf9tx1Kra64g53lr025ifUWjdEp6MZR+WH
-P+7o83PIxXbWlD/C1VhDV4PvhQtukfOxYuze1XXYG57xufenh12hK0TkUF87X3lm
-NwADiGbSS9S/78lDOIf/14N3n61Ko69DelHwrW5/1vkWoZvP8zrB6RJJNcVtaiAc
-DOVCK+k110Lyr+bYKoG3RCxhIMg64Iu5ffRQJQtwfD0vZk6im+kMBUUwKCFrgBb0
-VeSiadzLVngyip3u/RcaytRe74eE6HbcjIOFRuBAiuTQFHmWA7RdsDNmWMkPIRA=
-=vD85
+iQEcBAEBCAAGBQJWzSapAAoJECTWi3JdVIfQ+bwH/AiurakPFBEpZthw4M4tfTb6
+4D5VBT1V1Wb/2xVGjWBLzahiYe2cmbDBZ2Tldc9ZVtqHnOgDXSx/2QdzaVMOUzmx
+qWBVu0YNo8P9livZ/B3KsQO1DtRTA6Pl14JT4ERu+k3t1kaYnjIsXP6031CugHaN
+iLceD1FLsHYfybcYkqycTNUdReBPqnTfY2Q8GShgFkmpvRIh21pTmgdQTI3d573H
+QmgY6/hnB4GscUZkIHaTOCnmsQQEntSV5cCRaSHGDfgZoJmBo1dmX4aufFJZaKlb
+aR2gGPPScXqiHTxl6hKl/ULEIlSBqlEnmRbmzPukmmrYk845wXBMt/C8270FJC8=
+=ZDhi
 -----END PGP SIGNATURE-----
 
---CbS85NFTG8TaslL2--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--8MWQa5Xlpje7WrDu--
+
+--===============0211266150600572264==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0211266150600572264==--
