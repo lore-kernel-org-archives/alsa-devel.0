@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm9713: fix regmap free path" to the
-	asoc tree
-Date: Wed, 24 Feb 2016 12:53:35 +0900
-Message-ID: <E1aYQW7-0008IW-2x@finisterre>
-References: <1456180544-29108-1-git-send-email-robert.jarzmik@free.fr>
+Subject: Applied "ASoC: hdac_hdmi: Fix to wait for D3 before
+	powering off codec" to the asoc tree
+Date: Wed, 24 Feb 2016 12:53:39 +0900
+Message-ID: <E1aYQWB-0008JY-T8@finisterre>
+References: <1456034444-10606-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E3A826145E
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 04:53:42 +0100 (CET)
-In-Reply-To: <1456180544-29108-1-git-send-email-robert.jarzmik@free.fr>
+ by alsa0.perex.cz (Postfix) with ESMTP id 44911265D9F
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 04:53:49 +0100 (CET)
+In-Reply-To: <1456034444-10606-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm9713: fix regmap free path
+   ASoC: hdac_hdmi: Fix to wait for D3 before powering off codec
 
 has been applied to the asoc tree at
 
@@ -53,51 +53,54 @@ to this mail.
 Thanks,
 Mark
 
->From da9b9303ed8d1673a89a4bdd85464e33614775e3 Mon Sep 17 00:00:00 2001
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Mon, 22 Feb 2016 23:35:44 +0100
-Subject: [PATCH] ASoC: wm9713: fix regmap free path
+>From 7ed49700c4d6959dbfdf174023a57fc15a97c9ab Mon Sep 17 00:00:00 2001
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Date: Mon, 22 Feb 2016 07:50:32 +0530
+Subject: [PATCH] ASoC: hdac_hdmi: Fix to wait for D3 before powering off codec
 
-In the conversion to regmap, I assumed that the devm_() variant could be
-used in the soc probe function.
+Powering off codec immediately after sending D3 verb may not set
+the node to D3 state. So wait for a confirmation response before
+shutting down codec.
 
-As a mater of fact with the current code the regmap is freed twice
-because of the devm_() call:
-(mutex_lock) from [<c01f6624>] (debugfs_remove_recursive+0x50/0x1d0)
-(debugfs_remove_recursive) from [<c02bf800>] (regmap_debugfs_exit+0x1c/0xd4)
-(regmap_debugfs_exit) from [<c02ba1f8>] (regmap_exit+0x28/0xc8)
-(regmap_exit) from [<c02aa258>] (release_nodes+0x18c/0x204)
-(release_nodes) from [<c02a278c>] (device_release+0x18/0x90)
-(device_release) from [<c0239030>] (kobject_release+0x90/0x1bc)
-(kobject_release) from [<c0395c94>] (wm9713_soc_remove+0x1c/0x24)
-(wm9713_soc_remove) from [<c0384884>] (soc_remove_component+0x50/0x7c)
-(soc_remove_component) from [<c0386c28>] (soc_remove_dai_links+0x118/0x228)
-(soc_remove_dai_links) from [<c038721c>] (snd_soc_register_card+0x4e4/0xdd4)
-(snd_soc_register_card) from [<c0393c54>] (devm_snd_soc_register_card+0x34/0x70)
-
-Fix this by replacing the devm_regmap initialization code with the non
-devm_() variant.
-
-Fixes: 700dadfefc3d ASoC: wm9713: convert to regmap
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm9713.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/hdac_hdmi.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
-index 79e143625ac3..9849643ef809 100644
---- a/sound/soc/codecs/wm9713.c
-+++ b/sound/soc/codecs/wm9713.c
-@@ -1212,7 +1212,7 @@ static int wm9713_soc_probe(struct snd_soc_codec *codec)
- 	if (IS_ERR(wm9713->ac97))
- 		return PTR_ERR(wm9713->ac97);
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 2445b4351efb..aa953a5b57d4 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -1486,6 +1486,7 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
+ 	struct hdac_ext_device *edev = to_hda_ext_device(dev);
+ 	struct hdac_device *hdac = &edev->hdac;
+ 	struct hdac_bus *bus = hdac->bus;
++	unsigned long timeout;
+ 	int err;
  
--	regmap = devm_regmap_init_ac97(wm9713->ac97, &wm9713_regmap_config);
-+	regmap = regmap_init_ac97(wm9713->ac97, &wm9713_regmap_config);
- 	if (IS_ERR(regmap)) {
- 		snd_soc_free_ac97_codec(wm9713->ac97);
- 		return PTR_ERR(regmap);
+ 	dev_dbg(dev, "Enter: %s\n", __func__);
+@@ -1495,10 +1496,19 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
+ 		return 0;
+ 
+ 	/* Power down afg */
+-	if (!snd_hdac_check_power_state(hdac, hdac->afg, AC_PWRST_D3))
++	if (!snd_hdac_check_power_state(hdac, hdac->afg, AC_PWRST_D3)) {
+ 		snd_hdac_codec_write(hdac, hdac->afg, 0,
+ 			AC_VERB_SET_POWER_STATE, AC_PWRST_D3);
+ 
++		/* Wait till power state is set to D3 */
++		timeout = jiffies + msecs_to_jiffies(1000);
++		while (!snd_hdac_check_power_state(hdac, hdac->afg, AC_PWRST_D3)
++				&& time_before(jiffies, timeout)) {
++
++			msleep(50);
++		}
++	}
++
+ 	err = snd_hdac_display_power(bus, false);
+ 	if (err < 0) {
+ 		dev_err(bus->dev, "Cannot turn on display power on i915\n");
 -- 
 2.7.0
