@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: Intel: boards: Enable HDMI and DP on
-	SKL nau88l25_max98357 machine" to the asoc tree
-Date: Wed, 24 Feb 2016 17:42:36 +0900
-Message-ID: <E1aYV1o-0002vX-Lh@finisterre>
-References: <1456293464-19646-4-git-send-email-vinod.koul@intel.com>
+	nau88l2 machine" to the asoc tree
+Date: Wed, 24 Feb 2016 17:42:38 +0900
+Message-ID: <E1aYV1q-0002w8-QJ@finisterre>
+References: <1456293464-19646-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 34CF126145E
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 09:42:47 +0100 (CET)
-In-Reply-To: <1456293464-19646-4-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A8DE2667D3
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 09:42:49 +0100 (CET)
+In-Reply-To: <1456293464-19646-3-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Fang Yang A <yang.a.fang@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: boards: Enable HDMI and DP on SKL nau88l25_max98357 machine
+   ASoC: Intel: boards: Enable HDMI and DP on nau88l2 machine
 
 has been applied to the asoc tree at
 
@@ -53,49 +53,47 @@ to this mail.
 Thanks,
 Mark
 
->From 0ab338ff33762d50e5005d8d28b30b25f23aa934 Mon Sep 17 00:00:00 2001
-From: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
-Date: Wed, 24 Feb 2016 11:27:40 +0530
-Subject: [PATCH] ASoC: Intel: boards: Enable HDMI and DP on SKL
- nau88l25_max98357 machine
+>From bc5f6ac9a66f90f8e16e568ebd463cbe44f46b81 Mon Sep 17 00:00:00 2001
+From: Jeeja KP <jeeja.kp@intel.com>
+Date: Wed, 24 Feb 2016 11:27:39 +0530
+Subject: [PATCH] ASoC: Intel: boards: Enable HDMI and DP on nau88l2 machine
 
 This patch adds 2 HDMI FE and BE dai links and also
 initializes the jack for each device.
 
-Signed-off-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
-Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/Kconfig                         |   1 +
- sound/soc/intel/boards/skl_nau88l25_max98357a.c | 119 +++++++++++++++++++++---
- 2 files changed, 106 insertions(+), 14 deletions(-)
+ sound/soc/intel/Kconfig                       |   1 +
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 120 +++++++++++++++++++++++---
+ 2 files changed, 107 insertions(+), 14 deletions(-)
 
 diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index e29a7c5295a5..cb968da5a308 100644
+index 9574b483f249..e29a7c5295a5 100644
 --- a/sound/soc/intel/Kconfig
 +++ b/sound/soc/intel/Kconfig
-@@ -194,6 +194,7 @@ config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
+@@ -179,6 +179,7 @@ config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
  	select SND_SOC_NAU8825
- 	select SND_SOC_MAX98357A
+ 	select SND_SOC_SSM4567
  	select SND_SOC_DMIC
 +	select SND_SOC_HDAC_HDMI
  	help
  	  This adds support for ASoC Onboard Codec I2S machine driver. This will
- 	  create an alsa sound card for NAU88L25 + MAX98357A.
-diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-index ab7da9c304b2..33bf5286c948 100644
---- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-@@ -22,6 +22,7 @@
+ 	  create an alsa sound card for NAU88L25 + SSM4567.
+diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+index c071812f31e5..ccc3d4a4f4b6 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
++++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+@@ -26,6 +26,7 @@
+ #include <sound/jack.h>
  #include <sound/pcm_params.h>
- #include <sound/soc.h>
  #include "../../codecs/nau8825.h"
 +#include "../../codecs/hdac_hdmi.h"
  
  #define SKL_NUVOTON_CODEC_DAI	"nau8825-hifi"
- #define SKL_MAXIM_CODEC_DAI "HiFi"
-@@ -29,6 +30,16 @@
+ #define SKL_SSM_CODEC_DAI	"ssm4567-hifi"
+@@ -33,6 +34,16 @@
  static struct snd_soc_jack skylake_headset;
  static struct snd_soc_card skylake_audio_card;
  
@@ -112,7 +110,7 @@ index ab7da9c304b2..33bf5286c948 100644
  static inline struct snd_soc_dai *skl_get_codec_dai(struct snd_soc_card *card)
  {
  	struct snd_soc_pcm_runtime *rtd;
-@@ -124,8 +135,14 @@ static const struct snd_soc_dapm_route skylake_map[] = {
+@@ -131,8 +142,14 @@ static const struct snd_soc_dapm_route skylake_map[] = {
  	/* DMIC */
  	{ "dmic01_hifi", NULL, "DMIC01 Rx" },
  	{ "DMIC01 Rx", NULL, "DMIC AIF" },
@@ -129,7 +127,7 @@ index ab7da9c304b2..33bf5286c948 100644
  	{ "Headphone Jack", NULL, "Platform Clock" },
  	{ "Headset Mic", NULL, "Platform Clock" },
  };
-@@ -176,6 +193,27 @@ static int skylake_nau8825_codec_init(struct snd_soc_pcm_runtime *rtd)
+@@ -202,6 +219,28 @@ static int skylake_nau8825_codec_init(struct snd_soc_pcm_runtime *rtd)
  	return ret;
  }
  
@@ -147,6 +145,7 @@ index ab7da9c304b2..33bf5286c948 100644
 +	return hdac_hdmi_jack_init(dai, SKL_DPCM_AUDIO_HDMI2_PB);
 +}
 +
++
 +static int skylake_hdmi3_init(struct snd_soc_pcm_runtime *rtd)
 +{
 +	struct snd_soc_dai *dai = rtd->codec_dai;
@@ -157,7 +156,7 @@ index ab7da9c304b2..33bf5286c948 100644
  static int skylake_nau8825_fe_init(struct snd_soc_pcm_runtime *rtd)
  {
  	struct snd_soc_dapm_context *dapm;
-@@ -318,7 +356,7 @@ static struct snd_soc_ops skylaye_refcap_ops = {
+@@ -362,7 +401,7 @@ static struct snd_soc_ops skylaye_refcap_ops = {
  /* skylake digital audio interface glue - connects codec <--> CPU */
  static struct snd_soc_dai_link skylake_dais[] = {
  	/* Front End DAI links */
@@ -166,7 +165,7 @@ index ab7da9c304b2..33bf5286c948 100644
  		.name = "Skl Audio Port",
  		.stream_name = "Audio",
  		.cpu_dai_name = "System Pin",
-@@ -333,7 +371,7 @@ static struct snd_soc_dai_link skylake_dais[] = {
+@@ -377,7 +416,7 @@ static struct snd_soc_dai_link skylake_dais[] = {
  		.dpcm_playback = 1,
  		.ops = &skylake_nau8825_fe_ops,
  	},
@@ -175,7 +174,7 @@ index ab7da9c304b2..33bf5286c948 100644
  		.name = "Skl Audio Capture Port",
  		.stream_name = "Audio Record",
  		.cpu_dai_name = "System Pin",
-@@ -347,7 +385,7 @@ static struct snd_soc_dai_link skylake_dais[] = {
+@@ -391,7 +430,7 @@ static struct snd_soc_dai_link skylake_dais[] = {
  		.dpcm_capture = 1,
  		.ops = &skylake_nau8825_fe_ops,
  	},
@@ -184,7 +183,7 @@ index ab7da9c304b2..33bf5286c948 100644
  		.name = "Skl Audio Reference cap",
  		.stream_name = "Wake on Voice",
  		.cpu_dai_name = "Reference Pin",
-@@ -361,7 +399,7 @@ static struct snd_soc_dai_link skylake_dais[] = {
+@@ -405,7 +444,7 @@ static struct snd_soc_dai_link skylake_dais[] = {
  		.dynamic = 1,
  		.ops = &skylaye_refcap_ops,
  	},
@@ -193,7 +192,7 @@ index ab7da9c304b2..33bf5286c948 100644
  		.name = "Skl Audio DMIC cap",
  		.stream_name = "dmiccap",
  		.cpu_dai_name = "DMIC Pin",
-@@ -374,15 +412,45 @@ static struct snd_soc_dai_link skylake_dais[] = {
+@@ -418,15 +457,45 @@ static struct snd_soc_dai_link skylake_dais[] = {
  		.dynamic = 1,
  		.ops = &skylake_dmic_ops,
  	},
@@ -205,11 +204,11 @@ index ab7da9c304b2..33bf5286c948 100644
 +		.name = "Skl HDMI Port1",
 +		.stream_name = "Hdmi1",
 +		.cpu_dai_name = "HDMI1 Pin",
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.platform_name = "0000:00:1f.3",
-+		.dpcm_playback = 1,
-+		.init = NULL,
+ 		.codec_name = "snd-soc-dummy",
+ 		.codec_dai_name = "snd-soc-dummy-dai",
+ 		.platform_name = "0000:00:1f.3",
+ 		.dpcm_playback = 1,
+ 		.init = NULL,
 +		.trigger = {
 +			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
 +		.nonatomic = 1,
@@ -219,11 +218,11 @@ index ab7da9c304b2..33bf5286c948 100644
 +		.name = "Skl HDMI Port2",
 +		.stream_name = "Hdmi2",
 +		.cpu_dai_name = "HDMI2 Pin",
- 		.codec_name = "snd-soc-dummy",
- 		.codec_dai_name = "snd-soc-dummy-dai",
- 		.platform_name = "0000:00:1f.3",
- 		.dpcm_playback = 1,
- 		.init = NULL,
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "0000:00:1f.3",
++		.dpcm_playback = 1,
++		.init = NULL,
 +		.trigger = {
 +			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
 +		.nonatomic = 1,
@@ -243,7 +242,7 @@ index ab7da9c304b2..33bf5286c948 100644
  		.nonatomic = 1,
  		.dynamic = 1,
  	},
-@@ -407,7 +475,7 @@ static struct snd_soc_dai_link skylake_dais[] = {
+@@ -452,7 +521,7 @@ static struct snd_soc_dai_link skylake_dais[] = {
  	{
  		/* SSP1 - Codec */
  		.name = "SSP1-Codec",
@@ -252,7 +251,7 @@ index ab7da9c304b2..33bf5286c948 100644
  		.cpu_dai_name = "SSP1 Pin",
  		.platform_name = "0000:00:1f.3",
  		.no_pcm = 1,
-@@ -424,7 +492,7 @@ static struct snd_soc_dai_link skylake_dais[] = {
+@@ -469,7 +538,7 @@ static struct snd_soc_dai_link skylake_dais[] = {
  	},
  	{
  		.name = "dmic01",
@@ -261,7 +260,7 @@ index ab7da9c304b2..33bf5286c948 100644
  		.cpu_dai_name = "DMIC01 Pin",
  		.codec_name = "dmic-codec",
  		.codec_dai_name = "dmic-hifi",
-@@ -435,13 +503,36 @@ static struct snd_soc_dai_link skylake_dais[] = {
+@@ -480,13 +549,36 @@ static struct snd_soc_dai_link skylake_dais[] = {
  		.no_pcm = 1,
  	},
  	{
