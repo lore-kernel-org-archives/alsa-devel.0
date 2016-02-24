@@ -1,22 +1,20 @@
-From: Thomas Klausner <tk@giga.or.at>
-Subject: Re: portability patch: EBADF [was Re: feeding back
- pkgsrc changs]
-Date: Wed, 24 Feb 2016 14:16:55 +0100
-Message-ID: <20160224131655.GA22682@danbala.tuwien.ac.at>
-References: <20160218154744.GA7454@danbala.tuwien.ac.at>
- <s5hy4ait3t8.wl-tiwai@suse.de>
- <20160223140906.GP19194@danbala.tuwien.ac.at>
- <sfid-H20160223-165403-+070.72-1@spamfilter.osbf.lua>
- <s5h4mczzals.wl-tiwai@suse.de>
+From: Jonah Petri <jpetri@izotope.com>
+Subject: Re: ASoC: simultaneous start of input/output channels
+Date: Wed, 24 Feb 2016 09:11:52 -0500
+Message-ID: <CAJOrw7wikL0fnX4sZTGvbM2PmJVKaWTbcC7cSd8iOzfQaRgM9w@mail.gmail.com>
+References: <CAJOrw7wFQzb-1RCyOUvvWqH8s57roA48M3Po3OFN-j1ro32BuQ@mail.gmail.com>
+ <56CC3781.6010607@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="zYM0uCDKw75PZbzx"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from danbala.ifoer.tuwien.ac.at (danbala.ifoer.tuwien.ac.at
- [128.130.168.64])
- by alsa0.perex.cz (Postfix) with ESMTP id 80B582607F7
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 14:16:59 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5h4mczzals.wl-tiwai@suse.de>
+Received: from mail-lf0-f42.google.com (mail-lf0-f42.google.com
+ [209.85.215.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id A8E8026084B
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 15:11:53 +0100 (CET)
+Received: by mail-lf0-f42.google.com with SMTP id l143so12554055lfe.2
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 06:11:53 -0800 (PST)
+In-Reply-To: <56CC3781.6010607@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,85 +24,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Lars-Peter Clausen <lars@metafoo.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello Lars,
 
---zYM0uCDKw75PZbzx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks!  This is exactly the type of API I had overlooked.  Using
+snd_pcm_link() gets the DMA timing pretty close, though not perfect.  It
+might be good enough.
 
-On Tue, Feb 23, 2016 at 04:53:51PM +0100, Takashi Iwai wrote:
-> On Tue, 23 Feb 2016 15:09:06 +0100,
-> Thomas Klausner wrote:
-> > Thanks for the answer.
-> > 
-> > On Thu, Feb 18, 2016 at 04:51:15PM +0100, Takashi Iwai wrote:
-> > > On Thu, 18 Feb 2016 16:47:44 +0100,
-> > > Thomas Klausner wrote:
-> > > > I've just updated the pkgsrc packages for alsa-lib, alsa-utils and
-> > > > alsa-plugins to 1.1.0 and noticed that there are quite a number of
-> > > > local patches we have. I'd like to get them integrated.
-> > > > 
-> > > > When I visited the alsa-projects web page, I noticed that the link to
-> > > > the bug tracker is dead.
-> > > > 
-> > > > What is the recommended method to provide the patches?
-> > > 
-> > > Just submit your patches to alsa-devel ML.  That's the best way to
-> > > review and get merged.
-> > 
-> > I'll start with a straightforward one. Some operating systems don't
-> > provide an errno 'EBADFD'; let's use EBADF there instead.
-> > 
-> > This patch adds the define in all files that need it, but if you
-> > prefer to add it to a central place instead, please suggest one.
-> 
-> How about put this in include/local.h instead?  Then we need to put it
-> only in one place, as this is supposed to be included by all codes.
+If I need further synchronization, I'll take a look at the link
+architecture to see what I can use there.
 
-Sounds good and works. New patch attached.
- Thomas
+Many thanks again,
+Jonah
 
---zYM0uCDKw75PZbzx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="0001-Define-EBADFD-in-terms-of-EBADF-if-it-doesn-t-exist.patch"
+On Tue, Feb 23, 2016 at 5:42 AM, Lars-Peter Clausen <lars@metafoo.de> wrote:
 
->From ac054d580a774344adf2dcf198b50100a3f2967d Mon Sep 17 00:00:00 2001
-From: Thomas Klausner <wiz@NetBSD.org>
-Date: Wed, 24 Feb 2016 14:15:10 +0100
-Subject: [PATCH] Define EBADFD in terms of EBADF if it doesn't exist.
-
-For portability on FreeBSD, NetBSD and probably others.
----
- include/local.h | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/include/local.h b/include/local.h
-index b429f5d..28ed106 100644
---- a/include/local.h
-+++ b/include/local.h
-@@ -53,6 +53,10 @@
- #include <linux/types.h>
- #include <linux/ioctl.h>
- 
-+#ifndef EBADFD
-+#define EBADFD EBADF
-+#endif
-+
- #ifdef SUPPORT_RESMGR
- #include <resmgr.h>
- #endif
--- 
-2.7.1
-
-
---zYM0uCDKw75PZbzx
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---zYM0uCDKw75PZbzx--
+> On 02/22/2016 05:10 PM, Jonah Petri wrote:
+> > Hello!
+> >
+> > Our application is very low-latency full duplex audio on a Freescale SoC.
+> > ALSA is configured with 2 64-frame buffers, with DSP happening on a
+> > realtime user thread.
+> >
+> > With small buffer sizes, we're obviously very tight on timing, and I've
+> run
+> > into an issue which seems architectural in nature, and seemingly is
+> worthy
+> > of consulting the list.
+> >
+> > What we're seeing is a large temporal latency between the DMA completion
+> > IRQ for the audio input DMA and audio output DMA. This delay is on the
+> > order of 200 microseconds, but also somewhat variable (ok, "large" is
+> > relative here, but it matters to us!).  In the ideal case, these two
+> > interrupts would be perfectly aligned in time, allowing us to run DSP for
+> > the full buffer's duration.  However, since the interrupts are offset by
+> > about 20% of a buffer, we effectively lose that time for our DSP.  And,
+> > since the timing is variable, and we're in a realtime application, this
+> > produces scared engineers.
+> >
+> > Working backwards from the hardware drivers, I see that snd_soc_dai_ops's
+> > trigger callback is used to start and stop the DMA.  The fundamental
+> > "start" action comes down to a single register write which can easily
+> start
+> > both input and output streams in the same write.  However, it seems that
+> > the snd_soc_dai_ops does not provide for simultaneous start of both input
+> > and output streams.  Tracing back through the kernel interface and into
+> > user space, it seems that starting both the input and output streams
+> > necessitates two separate calls from userspace, which could explain the
+> > delay, and some of the variability in timing.
+> >
+> > My question is:
+> > * Did I miss some API or technique which could allow simultaneous start
+> of
+> > full duplex streams?
+>
+> Have a look at snd_pcm_link()
+> (
+> http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html#gac6c33091b049985baa6466e8fe93917e
+> ).
+> This links two PCM devices together to that operations like start/stop are
+> done at the same time. Although this is just a soft-link, which means you
+> send one IOCTL and the ALSA core will forward that to both trigger
+> functions.
+>
+> > * If not, I would certainly appreciate advice on where we could fit this
+> > into the existing architecture!  We would be glad to do the kernel work
+> to
+> > make this change, as this capability seems generally useful!
+>
+> If you can actually link them in hardware and launch both streams with the
+> same register write you might need to adopt the internal link architecture
+> to support this.
+>
+> - Lars
+>
+>
