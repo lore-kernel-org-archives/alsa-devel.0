@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: adau17x1: Add adau17x1 bindings
-	document" to the asoc tree
-Date: Wed, 24 Feb 2016 13:15:16 +0900
-Message-ID: <E1aYQr6-0000pm-PS@finisterre>
-References: <1455627405-18155-4-git-send-email-andire@axis.com>
+Subject: Applied "ASoC: adau17x1: Add basic DT support for
+	adau17x1" to the asoc tree
+Date: Wed, 24 Feb 2016 13:15:10 +0900
+Message-ID: <E1aYQr0-0000pH-IM@finisterre>
+References: <1455627405-18155-5-git-send-email-andire@axis.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0985681749670519149=="
+Content-Type: multipart/mixed; boundary="===============4565261083402804787=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 60A6826145E
+ by alsa0.perex.cz (Postfix) with ESMTP id 7695E261484
  for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 05:15:22 +0100 (CET)
-In-Reply-To: <1455627405-18155-4-git-send-email-andire@axis.com>
+In-Reply-To: <1455627405-18155-5-git-send-email-andire@axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,12 +25,12 @@ To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============0985681749670519149==
+--===============4565261083402804787==
 Content-Type: text/plain
 
 The patch
 
-   ASoC: adau17x1: Add adau17x1 bindings document
+   ASoC: adau17x1: Add basic DT support for adau17x1
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From ef329457237d885baf3408a56db9a02df97cde87 Mon Sep 17 00:00:00 2001
+>From aaf0f3aeeb6f9e5e874fccc8a0e56b00fea537c3 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Andreas=20Irest=C3=A5l?= <andreas.irestal@axis.com>
-Date: Tue, 16 Feb 2016 13:56:43 +0100
-Subject: [PATCH] ASoC: adau17x1: Add adau17x1 bindings document
+Date: Tue, 16 Feb 2016 13:56:44 +0100
+Subject: [PATCH] ASoC: adau17x1: Add basic DT support for adau17x1
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -66,49 +66,121 @@ Content-Transfer-Encoding: 8bit
 Signed-off-by: Andreas Irestål <andire@axis.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/adi,adau17x1.txt     | 24 ++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/adi,adau17x1.txt
+ sound/soc/codecs/adau1761-i2c.c | 12 ++++++++++++
+ sound/soc/codecs/adau1761-spi.c | 12 ++++++++++++
+ sound/soc/codecs/adau1781-i2c.c | 10 ++++++++++
+ sound/soc/codecs/adau1781-spi.c | 10 ++++++++++
+ 4 files changed, 44 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/adi,adau17x1.txt b/Documentation/devicetree/bindings/sound/adi,adau17x1.txt
-new file mode 100644
-index 000000000000..8dbce0e18dda
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/adi,adau17x1.txt
-@@ -0,0 +1,24 @@
-+Analog Devices ADAU1361/ADAU1461/ADAU1761/ADAU1961/ADAU1381/ADAU1781
+diff --git a/sound/soc/codecs/adau1761-i2c.c b/sound/soc/codecs/adau1761-i2c.c
+index a1b12671c307..8de010f758cd 100644
+--- a/sound/soc/codecs/adau1761-i2c.c
++++ b/sound/soc/codecs/adau1761-i2c.c
+@@ -44,9 +44,21 @@ static const struct i2c_device_id adau1761_i2c_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, adau1761_i2c_ids);
+ 
++#if defined(CONFIG_OF)
++static const struct of_device_id adau1761_i2c_dt_ids[] = {
++	{ .compatible = "adi,adau1361", },
++	{ .compatible = "adi,adau1461", },
++	{ .compatible = "adi,adau1761", },
++	{ .compatible = "adi,adau1961", },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, adau1761_i2c_dt_ids);
++#endif
 +
-+Required properties:
+ static struct i2c_driver adau1761_i2c_driver = {
+ 	.driver = {
+ 		.name = "adau1761",
++		.of_match_table = of_match_ptr(adau1761_i2c_dt_ids),
+ 	},
+ 	.probe = adau1761_i2c_probe,
+ 	.remove = adau1761_i2c_remove,
+diff --git a/sound/soc/codecs/adau1761-spi.c b/sound/soc/codecs/adau1761-spi.c
+index 188334928c23..d9171245bd9f 100644
+--- a/sound/soc/codecs/adau1761-spi.c
++++ b/sound/soc/codecs/adau1761-spi.c
+@@ -61,9 +61,21 @@ static const struct spi_device_id adau1761_spi_id[] = {
+ };
+ MODULE_DEVICE_TABLE(spi, adau1761_spi_id);
+ 
++#if defined(CONFIG_OF)
++static const struct of_device_id adau1761_spi_dt_ids[] = {
++	{ .compatible = "adi,adau1361", },
++	{ .compatible = "adi,adau1461", },
++	{ .compatible = "adi,adau1761", },
++	{ .compatible = "adi,adau1961", },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, adau1761_spi_dt_ids);
++#endif
 +
-+ - compatible:		Should contain one of the following:
-+			"adi,adau1361"
-+			"adi,adau1461"
-+			"adi,adau1761"
-+			"adi,adau1961"
-+			"adi,adau1381"
-+			"adi,adau1781"
+ static struct spi_driver adau1761_spi_driver = {
+ 	.driver = {
+ 		.name = "adau1761",
++		.of_match_table = of_match_ptr(adau1761_spi_dt_ids),
+ 	},
+ 	.probe = adau1761_spi_probe,
+ 	.remove = adau1761_spi_remove,
+diff --git a/sound/soc/codecs/adau1781-i2c.c b/sound/soc/codecs/adau1781-i2c.c
+index 0e32bba92339..06cbca84cf02 100644
+--- a/sound/soc/codecs/adau1781-i2c.c
++++ b/sound/soc/codecs/adau1781-i2c.c
+@@ -42,9 +42,19 @@ static const struct i2c_device_id adau1781_i2c_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, adau1781_i2c_ids);
+ 
++#if defined(CONFIG_OF)
++static const struct of_device_id adau1781_i2c_dt_ids[] = {
++	{ .compatible = "adi,adau1381", },
++	{ .compatible = "adi,adau1781", },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, adau1781_i2c_dt_ids);
++#endif
 +
-+ - reg:			The i2c address. Value depends on the state of ADDR0
-+			and ADDR1, as wired in hardware.
+ static struct i2c_driver adau1781_i2c_driver = {
+ 	.driver = {
+ 		.name = "adau1781",
++		.of_match_table = of_match_ptr(adau1781_i2c_dt_ids),
+ 	},
+ 	.probe = adau1781_i2c_probe,
+ 	.remove = adau1781_i2c_remove,
+diff --git a/sound/soc/codecs/adau1781-spi.c b/sound/soc/codecs/adau1781-spi.c
+index 33a73ff78de4..3d965a01b99c 100644
+--- a/sound/soc/codecs/adau1781-spi.c
++++ b/sound/soc/codecs/adau1781-spi.c
+@@ -59,9 +59,19 @@ static const struct spi_device_id adau1781_spi_id[] = {
+ };
+ MODULE_DEVICE_TABLE(spi, adau1781_spi_id);
+ 
++#if defined(CONFIG_OF)
++static const struct of_device_id adau1781_spi_dt_ids[] = {
++	{ .compatible = "adi,adau1381", },
++	{ .compatible = "adi,adau1781", },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, adau1781_spi_dt_ids);
++#endif
 +
-+Examples:
-+#include <dt-bindings/sound/adau17x1.h>
-+
-+	i2c_bus {
-+		adau1361@38 {
-+			compatible = "adi,adau1761";
-+			reg = <0x38>;
-+		};
-+	};
+ static struct spi_driver adau1781_spi_driver = {
+ 	.driver = {
+ 		.name = "adau1781",
++		.of_match_table = of_match_ptr(adau1781_spi_dt_ids),
+ 	},
+ 	.probe = adau1781_spi_probe,
+ 	.remove = adau1781_spi_remove,
 -- 
 2.7.0
 
 
---===============0985681749670519149==
+--===============4565261083402804787==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0985681749670519149==--
+--===============4565261083402804787==--
