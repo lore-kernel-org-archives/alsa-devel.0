@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: adau17x1: Fix incorrect BCLK ratio
-	definitions" to the asoc tree
-Date: Wed, 24 Feb 2016 13:15:19 +0900
-Message-ID: <E1aYQr9-0000qk-Hs@finisterre>
-References: <1454423510-1330-2-git-send-email-andire@axis.com>
+Subject: Applied "ASoC: adau17x1: Correct typos in file
+	headers" to the asoc tree
+Date: Wed, 24 Feb 2016 13:15:18 +0900
+Message-ID: <E1aYQr8-0000qG-4l@finisterre>
+References: <1454423510-1330-3-git-send-email-andire@axis.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3515316037955130156=="
+Content-Type: multipart/mixed; boundary="===============1027793497512750398=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7625E265D9F
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 05:15:24 +0100 (CET)
-In-Reply-To: <1454423510-1330-2-git-send-email-andire@axis.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A7BE265E04
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 05:15:28 +0100 (CET)
+In-Reply-To: <1454423510-1330-3-git-send-email-andire@axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,12 +25,12 @@ To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============3515316037955130156==
+--===============1027793497512750398==
 Content-Type: text/plain
 
 The patch
 
-   ASoC: adau17x1: Fix incorrect BCLK ratio definitions
+   ASoC: adau17x1: Correct typos in file headers
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 7c139db2e579669c3313f92d2dd2256b255fcc07 Mon Sep 17 00:00:00 2001
+>From d6dde63e90cf0d34ae61e885a5eb254c59eb3358 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Andreas=20Irest=C3=A5l?= <andreas.irestal@axis.com>
-Date: Tue, 16 Feb 2016 13:56:41 +0100
-Subject: [PATCH] ASoC: adau17x1: Fix incorrect BCLK ratio definitions
+Date: Tue, 16 Feb 2016 13:56:42 +0100
+Subject: [PATCH] ASoC: adau17x1: Correct typos in file headers
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -66,35 +66,77 @@ Content-Transfer-Encoding: 8bit
 Signed-off-by: Andreas Irestål <andire@axis.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/adau17x1.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/linux/platform_data/adau17x1.h | 2 +-
+ sound/soc/codecs/adau1761-i2c.c        | 2 +-
+ sound/soc/codecs/adau1761-spi.c        | 2 +-
+ sound/soc/codecs/adau1761.c            | 2 +-
+ sound/soc/codecs/adau1781.c            | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/adau17x1.h b/sound/soc/codecs/adau17x1.h
-index e13583e6ff56..5ae87a084d97 100644
---- a/sound/soc/codecs/adau17x1.h
-+++ b/sound/soc/codecs/adau17x1.h
-@@ -103,9 +103,9 @@ bool adau17x1_has_dsp(struct adau *adau);
- #define ADAU17X1_CLOCK_CONTROL_CORECLK_SRC_PLL	BIT(3)
- #define ADAU17X1_CLOCK_CONTROL_SYSCLK_EN	BIT(0)
- 
--#define ADAU17X1_SERIAL_PORT1_BCLK32		(0x0 << 5)
--#define ADAU17X1_SERIAL_PORT1_BCLK48		(0x1 << 5)
--#define ADAU17X1_SERIAL_PORT1_BCLK64		(0x2 << 5)
-+#define ADAU17X1_SERIAL_PORT1_BCLK64		(0x0 << 5)
-+#define ADAU17X1_SERIAL_PORT1_BCLK32		(0x1 << 5)
-+#define ADAU17X1_SERIAL_PORT1_BCLK48		(0x2 << 5)
- #define ADAU17X1_SERIAL_PORT1_BCLK128		(0x3 << 5)
- #define ADAU17X1_SERIAL_PORT1_BCLK256		(0x4 << 5)
- #define ADAU17X1_SERIAL_PORT1_BCLK_MASK		(0x7 << 5)
+diff --git a/include/linux/platform_data/adau17x1.h b/include/linux/platform_data/adau17x1.h
+index a81766cae230..9db1b905df24 100644
+--- a/include/linux/platform_data/adau17x1.h
++++ b/include/linux/platform_data/adau17x1.h
+@@ -1,5 +1,5 @@
+ /*
+- * Driver for ADAU1761/ADAU1461/ADAU1761/ADAU1961/ADAU1781/ADAU1781 codecs
++ * Driver for ADAU1361/ADAU1461/ADAU1761/ADAU1961/ADAU1381/ADAU1781 codecs
+  *
+  * Copyright 2011-2014 Analog Devices Inc.
+  * Author: Lars-Peter Clausen <lars@metafoo.de>
+diff --git a/sound/soc/codecs/adau1761-i2c.c b/sound/soc/codecs/adau1761-i2c.c
+index 348ccb17d3cc..a1b12671c307 100644
+--- a/sound/soc/codecs/adau1761-i2c.c
++++ b/sound/soc/codecs/adau1761-i2c.c
+@@ -1,5 +1,5 @@
+ /*
+- * Driver for ADAU1761/ADAU1461/ADAU1761/ADAU1961 codec
++ * Driver for ADAU1361/ADAU1461/ADAU1761/ADAU1961 codec
+  *
+  * Copyright 2014 Analog Devices Inc.
+  *  Author: Lars-Peter Clausen <lars@metafoo.de>
+diff --git a/sound/soc/codecs/adau1761-spi.c b/sound/soc/codecs/adau1761-spi.c
+index 8bc1fbd25fcc..188334928c23 100644
+--- a/sound/soc/codecs/adau1761-spi.c
++++ b/sound/soc/codecs/adau1761-spi.c
+@@ -1,5 +1,5 @@
+ /*
+- * Driver for ADAU1761/ADAU1461/ADAU1761/ADAU1961 codec
++ * Driver for ADAU1361/ADAU1461/ADAU1761/ADAU1961 codec
+  *
+  * Copyright 2014 Analog Devices Inc.
+  *  Author: Lars-Peter Clausen <lars@metafoo.de>
+diff --git a/sound/soc/codecs/adau1761.c b/sound/soc/codecs/adau1761.c
+index e7136b1956a3..b95d29dbd13d 100644
+--- a/sound/soc/codecs/adau1761.c
++++ b/sound/soc/codecs/adau1761.c
+@@ -1,5 +1,5 @@
+ /*
+- * Driver for ADAU1761/ADAU1461/ADAU1761/ADAU1961 codec
++ * Driver for ADAU1361/ADAU1461/ADAU1761/ADAU1961 codec
+  *
+  * Copyright 2011-2013 Analog Devices Inc.
+  * Author: Lars-Peter Clausen <lars@metafoo.de>
+diff --git a/sound/soc/codecs/adau1781.c b/sound/soc/codecs/adau1781.c
+index fde9068550a6..bc1bb56dae63 100644
+--- a/sound/soc/codecs/adau1781.c
++++ b/sound/soc/codecs/adau1781.c
+@@ -1,5 +1,5 @@
+ /*
+- * Driver for ADAU1781/ADAU1781 codec
++ * Driver for ADAU1381/ADAU1781 codec
+  *
+  * Copyright 2011-2013 Analog Devices Inc.
+  * Author: Lars-Peter Clausen <lars@metafoo.de>
 -- 
 2.7.0
 
 
---===============3515316037955130156==
+--===============1027793497512750398==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3515316037955130156==--
+--===============1027793497512750398==--
