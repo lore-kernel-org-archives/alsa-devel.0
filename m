@@ -1,52 +1,85 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] sound/soc/tegra: tegra_max98090: fix hp detect on
- Chromebook 13
-Date: Wed, 24 Feb 2016 12:25:52 +0900
-Message-ID: <20160224032552.GJ18327@sirena.org.uk>
-References: <56CB6624.6030600@wwwdotorg.org>
- <1456247985-5563-1-git-send-email-sctincman@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt5640: add master clock handling
+ for rt5640
+Date: Wed, 24 Feb 2016 12:32:59 +0900
+Message-ID: <20160224033259.GL18327@sirena.org.uk>
+References: <1456190782-18865-1-git-send-email-sugar.zhang@rock-chips.com>
+ <56CC719C.1090901@linux.intel.com> <2199435.lA9iTvxnKV@phil>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="KE2MUCIIiXMogsnv"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1456247985-5563-1-git-send-email-sctincman-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jonathan Tinkham <sctincman-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============5994723335747866069=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 81D082606A9
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 04:33:24 +0100 (CET)
+In-Reply-To: <2199435.lA9iTvxnKV@phil>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Heiko Stuebner <heiko@sntech.de>
+Cc: Mark Rutland <mark.rutland@arm.com>, Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, linux-kernel@vger.kernel.org, Sugar Zhang <sugar.zhang@rock-chips.com>, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---KE2MUCIIiXMogsnv
-Content-Type: text/plain; charset=us-ascii
+--===============5994723335747866069==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="sUeeoP6xcRoKhsB+"
 Content-Disposition: inline
 
-On Tue, Feb 23, 2016 at 10:19:44AM -0700, Jonathan Tinkham wrote:
 
-> Jonathan Tinkham (1):
->   sound/soc/tegra: tegra_max98090: Invert headphone by GPIO flag
+--sUeeoP6xcRoKhsB+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I have *repeatedly* reminded you to use subject lines reflecting the
-style for the subsystem and you continue to ignore me.  Please don't
-ignore review comments, people are generally making them for a reason
-and are likely to have the same concerns if issues remain unaddressed.
-Having to repeat the same comments can get repetitive and make people
-question the value of time spent reviewing.  If you disagree with the
-concerns so that the reviewer can understand your decisions.
+On Wed, Feb 24, 2016 at 12:08:31AM +0100, Heiko Stuebner wrote:
+> Am Dienstag, 23. Februar 2016, 08:50:04 schrieb Pierre-Louis Bossart:
 
---KE2MUCIIiXMogsnv
+> > This patch assumes that the information on mclk comes from DeviceTree.
+> > The mclk may also be enabled/disabled in the machine driver with an
+> > explicit transition to use an internal clock when the codec is not used.
+> > I hope this patch doesn't preclude such usages or there will be a
+> > conflict with the patches we are about to upstream for Baytrail/cht
+> > devices.
+
+> As you can see, the clock property itself is optional and the clk_get bel=
+ow=20
+> acts accordingly of also continuing if the clock is not present.
+> So it won't affect any users doing it otherwise.
+
+That said we really do need x86 to transition to use the clock API in
+order to integrate with external devices, where the machine driver does
+manage clocks we want that to move to being done using the clock API
+rather than custom APIs.
+
+--sUeeoP6xcRoKhsB+
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWzSK/AAoJECTWi3JdVIfQ3MQH/isaO3NuP85twRRnceZJSZT8
-/xmDsR2e/UjX0CnJwhHZvY9yQYybV0ng6fQhzJkHwlQ71IRYL5ITu7XPA4tFj6gk
-I55tZi0HTab1MVICm5zs6/VNQvLXNsOe4RtVSJcEJU0bO84J7g9GDx2LW9o59Hhm
-dg0SGJWKdOxeRV2jc2Yy/6wVyipbFs1cm/aLTCLSiYoRmawW9HGId092ygaQhGkD
-CvqGSEekOdAAEeu2dxDxVPB0Jqnxf8RFims4Eo8VeMxOLCuqLBdYVFKhSdJOz2bn
-i4JWyRcOo6YgAxDPnjPfsrb4J9g9QbeOGREYFEY5E++9m1syaL6Fhe4M/XsELG0=
-=S1Rf
+iQEcBAEBCAAGBQJWzSRrAAoJECTWi3JdVIfQbv8H/3oqQbWebeAQzP6byQrUktJ+
+c4ET+PMv/zGNQB56z59nPVoCq8f3f2pNwpjVZisyfx9b5X3nS0pAGklD0bMoVQ6w
+zioasc1imvrIhsOpgdUGN7pITmvrXDVpCClofdYLV2XPHL9Oyile9fVvGLESI7hm
+KT8b5AtgiatEO/QuzyE/rHCHfs+VW/gPiurV0rMviQSi8vaUm/iA9DDqI2CsXHZG
+WbWymCyLEdbm9ms4+3J+5aoHK3/nbKCcowF/JvCTKOz4uuzeJfJKQX7k5lq0CrRL
+zy6lzI62g9/BEYVz6P6U0VrPIIP+/YQH1jCK5zmYOpJdhpexJ6NkGCoEsgjUsEo=
+=SGcL
 -----END PGP SIGNATURE-----
 
---KE2MUCIIiXMogsnv--
+--sUeeoP6xcRoKhsB+--
+
+--===============5994723335747866069==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5994723335747866069==--
