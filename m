@@ -1,55 +1,52 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: [PATCH 2/3] ASoC: rt298: clear IRQ at the
-	beginning of rt298_irq
-Date: Wed, 24 Feb 2016 02:59:23 +0000
-Message-ID: <ABFD875FF5FB574BA706497D987D48D701119238@RTITMBSV03.realtek.com.tw>
-References: <1455613956-14287-1-git-send-email-bardliao@realtek.com>
- <1455613956-14287-2-git-send-email-bardliao@realtek.com>
- <20160217132011.GQ7544@sirena.org.uk>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] sound/soc/tegra: tegra_max98090: fix hp detect on
+ Chromebook 13
+Date: Wed, 24 Feb 2016 12:25:52 +0900
+Message-ID: <20160224032552.GJ18327@sirena.org.uk>
+References: <56CB6624.6030600@wwwdotorg.org>
+ <1456247985-5563-1-git-send-email-sctincman@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 51FB82606A9
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 03:59:31 +0100 (CET)
-In-Reply-To: <20160217132011.GQ7544@sirena.org.uk>
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "ramesh.babu@intel.com" <ramesh.babu@intel.com>, John Lin <john.lin@realtek.com>, "senthilnathanx.veppur@intel.com" <senthilnathanx.veppur@intel.com>, Flove <flove@realtek.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="KE2MUCIIiXMogsnv"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1456247985-5563-1-git-send-email-sctincman-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jonathan Tinkham <sctincman-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Wednesday, February 17, 2016 9:20 PM
-> To: Bard Liao
-> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org;
-> lars@metafoo.de; Flove; Oder Chiou; John Lin; ramesh.babu@intel.com;
-> senthilnathanx.veppur@intel.com
-> Subject: Re: [PATCH 2/3] ASoC: rt298: clear IRQ at the beginning of
-> rt298_irq
-> 
-> On Tue, Feb 16, 2016 at 05:12:35PM +0800, Bard Liao wrote:
-> 
-> > The IRQ pin will go from high to low when the irq bit is clear.
-> > To let the IRQ pin go low as early as possible, move the clear irq bit
-> > function to the beginning of irq handler.
-> 
-> Why is this a benefit?  We're going to mask the interrupt as long as the
-> interrupt handler is running anyway.
 
-Thanks for your reminding. There is actually no benefit on the patch.
-Can you ignore this patch and apply other two patches?
-Or I should send the patches again?
+--KE2MUCIIiXMogsnv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> 
-> ------Please consider the environment before printing this e-mail.
+On Tue, Feb 23, 2016 at 10:19:44AM -0700, Jonathan Tinkham wrote:
+
+> Jonathan Tinkham (1):
+>   sound/soc/tegra: tegra_max98090: Invert headphone by GPIO flag
+
+I have *repeatedly* reminded you to use subject lines reflecting the
+style for the subsystem and you continue to ignore me.  Please don't
+ignore review comments, people are generally making them for a reason
+and are likely to have the same concerns if issues remain unaddressed.
+Having to repeat the same comments can get repetitive and make people
+question the value of time spent reviewing.  If you disagree with the
+concerns so that the reviewer can understand your decisions.
+
+--KE2MUCIIiXMogsnv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWzSK/AAoJECTWi3JdVIfQ3MQH/isaO3NuP85twRRnceZJSZT8
+/xmDsR2e/UjX0CnJwhHZvY9yQYybV0ng6fQhzJkHwlQ71IRYL5ITu7XPA4tFj6gk
+I55tZi0HTab1MVICm5zs6/VNQvLXNsOe4RtVSJcEJU0bO84J7g9GDx2LW9o59Hhm
+dg0SGJWKdOxeRV2jc2Yy/6wVyipbFs1cm/aLTCLSiYoRmawW9HGId092ygaQhGkD
+CvqGSEekOdAAEeu2dxDxVPB0Jqnxf8RFims4Eo8VeMxOLCuqLBdYVFKhSdJOz2bn
+i4JWyRcOo6YgAxDPnjPfsrb4J9g9QbeOGREYFEY5E++9m1syaL6Fhe4M/XsELG0=
+=S1Rf
+-----END PGP SIGNATURE-----
+
+--KE2MUCIIiXMogsnv--
