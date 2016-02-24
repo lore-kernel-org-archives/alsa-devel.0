@@ -1,104 +1,60 @@
-From: Jonah Petri <jpetri@izotope.com>
-Subject: Re: ASoC: simultaneous start of input/output channels
-Date: Wed, 24 Feb 2016 09:11:52 -0500
-Message-ID: <CAJOrw7wikL0fnX4sZTGvbM2PmJVKaWTbcC7cSd8iOzfQaRgM9w@mail.gmail.com>
-References: <CAJOrw7wFQzb-1RCyOUvvWqH8s57roA48M3Po3OFN-j1ro32BuQ@mail.gmail.com>
- <56CC3781.6010607@metafoo.de>
+From: Alexey Brodkin <Alexey.Brodkin-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Subject: Re: [PATCH 2/4 RESEND] ARC: axs10x: Update defconfigs so that audio
+ is enabled
+Date: Wed, 24 Feb 2016 14:12:00 +0000
+Message-ID: <1456323120.3392.31.camel@synopsys.com>
+References: <cover.1456234503.git.joabreu@synopsys.com>
+	 <174bd675951f46071d0db8ea1f67abb083053332.1456234503.git.joabreu@synopsys.com>
+	 <C2D7FE5348E1B147BCA15975FBA23075F4E8BD53@us01wembx1.internal.synopsys.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f42.google.com (mail-lf0-f42.google.com
- [209.85.215.42])
- by alsa0.perex.cz (Postfix) with ESMTP id A8E8026084B
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 15:11:53 +0100 (CET)
-Received: by mail-lf0-f42.google.com with SMTP id l143so12554055lfe.2
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 06:11:53 -0800 (PST)
-In-Reply-To: <56CC3781.6010607@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-7"
+Content-Transfer-Encoding: 8BIT
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <C2D7FE5348E1B147BCA15975FBA23075F4E8BD53-cALIpNOex2c3t6iM5Z/N3fufCSb+aD3WLzEdoUbNIic@public.gmane.org>
+Content-Language: en-US
+Content-ID: <18363468EE3BC94E9F05F105EB9E577D-z7JfP6tgrtVBCHUSTMH8dZqQE7yCjDx5@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Vineet Gupta <Vineet.Gupta1-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Cc: "pawel.moll-5wv7dgnIgG8@public.gmane.org" <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Carlos Palminha <CARLOS.PALMINHA-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, "linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Lars,
+Hi Vineet,
 
-Thanks!  This is exactly the type of API I had overlooked.  Using
-snd_pcm_link() gets the DMA timing pretty close, though not perfect.  It
-might be good enough.
+On Wed, 2016-02-24 at 04:36 +-0000, Vineet Gupta wrote:
++AD4- On Tuesday 23 February 2016 07:22 PM, Jose Abreu wrote:
++AD4- +AD4- The defconfigs for the AXS boards were updated so that
++AD4- +AD4- ALSA SoC is enabled and also the audio for the ADV7511
++AD4- +AD4- HDMI transmitter.
++AD4- +AD4- 
++AD4- +AD4- Signed-off-by: Jose Abreu +ADw-joabreu+AEA-synopsys.com+AD4-
++AD4- +AD4- ---
++AD4- +AD4- +AKA-arch/arc/configs/axs101+AF8-defconfig+AKAAoACgAKAAoAB8- 3 +-+-+-
++AD4- +AD4- +AKA-arch/arc/configs/axs103+AF8-defconfig+AKAAoACgAKAAoAB8- 5 +-+-+-+-+-
++AD4- +AD4- +AKA-arch/arc/configs/axs103+AF8-smp+AF8-defconfig +AHw- 5 +-+-+-+-+-
++AD4- 
++AD4- +AEA-Alexey, has this been tested on AXS103. Do we have the right PLL / clocks to get
++AD4- the audio rates - given the lower master clk.
 
-If I need further synchronization, I'll take a look at the link
-architecture to see what I can use there.
+I think I tried first version of these patches on axs103 as well.
+But may assume Jose have no access to axs103 and so this particular
+implementation may lack tests on axs103 platform. Still this is easy to
+fix - I'll try it myself now.
 
-Many thanks again,
-Jonah
++AD4- Further per out off-list discussion - let us have a seperate config for ARC HS SDP
++AD4- which supports the shipping single hardware configuration and add these fancy
++AD4- things there as well as bumping the clk rate to 100 MHz . Current axs103+ACo- configs
++AD4- are more of developer configs and I don't want to bloat their code with things we
++AD4- don't build / download 10 times a day +ACE-
 
-On Tue, Feb 23, 2016 at 5:42 AM, Lars-Peter Clausen <lars@metafoo.de> wrote:
+Agree but first we need to introduce those additional configs.
+Let me draft those.
 
-> On 02/22/2016 05:10 PM, Jonah Petri wrote:
-> > Hello!
-> >
-> > Our application is very low-latency full duplex audio on a Freescale SoC.
-> > ALSA is configured with 2 64-frame buffers, with DSP happening on a
-> > realtime user thread.
-> >
-> > With small buffer sizes, we're obviously very tight on timing, and I've
-> run
-> > into an issue which seems architectural in nature, and seemingly is
-> worthy
-> > of consulting the list.
-> >
-> > What we're seeing is a large temporal latency between the DMA completion
-> > IRQ for the audio input DMA and audio output DMA. This delay is on the
-> > order of 200 microseconds, but also somewhat variable (ok, "large" is
-> > relative here, but it matters to us!).  In the ideal case, these two
-> > interrupts would be perfectly aligned in time, allowing us to run DSP for
-> > the full buffer's duration.  However, since the interrupts are offset by
-> > about 20% of a buffer, we effectively lose that time for our DSP.  And,
-> > since the timing is variable, and we're in a realtime application, this
-> > produces scared engineers.
-> >
-> > Working backwards from the hardware drivers, I see that snd_soc_dai_ops's
-> > trigger callback is used to start and stop the DMA.  The fundamental
-> > "start" action comes down to a single register write which can easily
-> start
-> > both input and output streams in the same write.  However, it seems that
-> > the snd_soc_dai_ops does not provide for simultaneous start of both input
-> > and output streams.  Tracing back through the kernel interface and into
-> > user space, it seems that starting both the input and output streams
-> > necessitates two separate calls from userspace, which could explain the
-> > delay, and some of the variability in timing.
-> >
-> > My question is:
-> > * Did I miss some API or technique which could allow simultaneous start
-> of
-> > full duplex streams?
->
-> Have a look at snd_pcm_link()
-> (
-> http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html#gac6c33091b049985baa6466e8fe93917e
-> ).
-> This links two PCM devices together to that operations like start/stop are
-> done at the same time. Although this is just a soft-link, which means you
-> send one IOCTL and the ALSA core will forward that to both trigger
-> functions.
->
-> > * If not, I would certainly appreciate advice on where we could fit this
-> > into the existing architecture!  We would be glad to do the kernel work
-> to
-> > make this change, as this capability seems generally useful!
->
-> If you can actually link them in hardware and launch both streams with the
-> same register write you might need to adopt the internal link architecture
-> to support this.
->
-> - Lars
->
->
+In the meantime it would be helpful if you take a look at existing axs10x+AF8-defconfigs
+and check which option you do want to keep and what are those extra once that should
+go to new configs with all bells and whistles.
+
+
+-Alexey--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
