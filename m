@@ -1,72 +1,66 @@
-From: Jonathan Tinkham <sctincman-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH] sound/soc/tegra: tegra_max98090: Invert headphone by GPIO
- flag
-Date: Wed, 24 Feb 2016 09:51:38 -0700
-Message-ID: <56CDDF9A.3020709@gmail.com>
-References: <56CB6624.6030600@wwwdotorg.org>
- <1456247985-5563-1-git-send-email-sctincman@gmail.com>
- <1456247985-5563-2-git-send-email-sctincman@gmail.com>
- <56CC9860.2060003@wwwdotorg.org> <56CDDD82.7040402@gmail.com>
- <56CDDE35.1010408@wwwdotorg.org>
+From: Petr Kulhavy <petr@barix.com>
+Subject: Re: Codec "virtual multiplexer" representation
+Date: Wed, 24 Feb 2016 17:57:30 +0100
+Message-ID: <56CDE0FA.8000905@barix.com>
+References: <56C499A7.2040202@barix.com>
+ <20160218053021.GE6263@borg.dal.design.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <56CDDE35.1010408-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f52.google.com (mail-wm0-f52.google.com [74.125.82.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0FB5A26153C
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 17:57:32 +0100 (CET)
+Received: by mail-wm0-f52.google.com with SMTP id b205so42701936wmb.1
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 08:57:32 -0800 (PST)
+In-Reply-To: <20160218053021.GE6263@borg.dal.design.ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Andreas Dannenberg <dannenberg@ti.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-
-On 02/24/2016 09:45 AM, Stephen Warren wrote:
-> On 02/24/2016 09:42 AM, Jonathan Tinkham wrote:
->> On 02/23/2016 10:35 AM, Stephen Warren wrote:
->>> On 02/23/2016 10:19 AM, Jonathan Tinkham wrote:
->>>
->>> > Subject: sound/soc/tegra: tegra_max98090: Invert headphone by GPIO
->>> > flag
->>>
->>> Mark has mentioned quite a few times that this patch subject is
->>> incorrect. ASoC patch subjects should start with "ASoC: ". You can see
->>> this by running:
->>>
->>> git log -- sound/soc/tegra/
->>>
->>> I'd suggest the following:
->>>
->>> AsoC: tegra_max98090: honor headphone detect GPIO polarity
->>>
->> My apologies, I finally grok what he was saying. Thank you.
->>>> Set the invert property for the headphone jack depending on the GPIO
->>>> flag in the
->>>> device-tree. This is similar to what is done for tegra_rt5640.
->>>>
->>>
->>>> diff --git a/sound/soc/tegra/tegra_max98090.c
->>>> b/sound/soc/tegra/tegra_max98090.c
->>>
->>>> @@ -155,6 +156,7 @@ static int tegra_max98090_asoc_init(struct
->>>> snd_soc_pcm_runtime *rtd)
->>>> ARRAY_SIZE(tegra_max98090_hp_jack_pins));
->>>>
->>>>           tegra_max98090_hp_jack_gpio.gpio = machine->gpio_hp_det;
->>>> +        tegra_max98090_hp_jack_gpio.invert =
->>>> (machine->gpio_hp_det_flags & OF_GPIO_ACTIVE_LOW);
->>>
->>> Did you run checkpatch? It should complain about > 80 columns, and I
->>> suspect about the unnecessary brackets around that expression. In
->>> fact, checkpatch indicates quite a few other warnings and errors.
->>>
->>> The logic in this patch looks OK. Do the relevant DT files all have
->>> the correct GPIO flags already? That'd be nice!
->>
->> The only board is the venice2, which doesn't have a 'nvidia,hp-det-gpio'
->> entry at all (how did this even work before?)
+On 18.02.2016 06:30, Andreas Dannenberg wrote:
 >
-> I mean: Is ACTIVE_LOW/ACTIVE_HIGH flag in the existing 
-> nvidia,hp-det-gpios already correctly set?
+> Petr,
+> on a related note, I'm currently working on a combined driver (85%
+> complete) for TAS5720/TAS5722 which are nice but relatively simple
+> Class-D mono amplifiers. Despite almost having the same P/N there is
+> little to no similarity with TAS5721 (which gives a another example why
+> one should be careful with wildcard 'x' in driver names) so there is no
+> case for a combined driver here but let's make sure we align our
+> namespace to avoid collision:
+>
+> tas5720.[c|h] - Driver for TAS5720/TAS5722 (WIP by Andreas)
+> tas5721.[c|h] - Driver for TAS5721 (WIP by Petr)
+>
+> Regards,
+>
+> --
+> Andreas Dannenberg
+> Texas Instruments Inc
+>
+Hi Andreas,
 
-Yes. I also have cleaned up the warnings/errors from checkpatch, and can 
-resubmit if acceptable.
+thanks for letting me know! In the meantime I have found there is a 
+driver for TAS5711, TAS5717 and TAS5719.
+The TAS5721 is very similar to the 5711, so I will just update that 
+driver rather than creating a new one.
+
+One question came to my mind, which you can perhaps help me to answer as 
+you are more familiar with these amplifiers:
+what is the usual representation of a 2.1 system in controls? I'm 
+wondering that the TAS5711 has just master volume and a double slider 
+for Ch1/Ch2, but there is no Ch3 control.
+Surely that is needed as well, isn't it?
+
+Regards
+Petr
