@@ -1,68 +1,70 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 7/7] ASoC: Intel: boards: Remove WoV sink in
-	nau88125_max98357a machine
-Date: Wed, 24 Feb 2016 11:27:44 +0530
-Message-ID: <1456293464-19646-8-git-send-email-vinod.koul@intel.com>
-References: <1456293464-19646-1-git-send-email-vinod.koul@intel.com>
+From: Florian Vaussard <florian.vaussard-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH v2 2/2] ASoC: ads117x: Add device tree compatible string
+Date: Wed, 24 Feb 2016 08:36:37 +0100
+Message-ID: <56CD5D85.8070501@gmail.com>
+References: <1454686334-9668-1-git-send-email-florian.vaussard@heig-vd.ch>
+ <1454686334-9668-3-git-send-email-florian.vaussard@heig-vd.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 7899626674A
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 06:54:10 +0100 (CET)
-In-Reply-To: <1456293464-19646-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1454686334-9668-3-git-send-email-florian.vaussard-EWQkb/GNqlFyDzI6CaY1VQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Florian Vaussard <florian.vaussard-EWQkb/GNqlFyDzI6CaY1VQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+Hello Mark,
 
-WoV module needs to be triggered with PCM open, so remove this as
-DAPM Sink and will be connected to FE
+On 02/05/2016 04:32 PM, Florian Vaussard wrote:
+> This patch adds the necessary device tree compatible string to allow DT
+> probing.
+> 
+> Signed-off-by: Florian Vaussard <florian.vaussard-EWQkb/GNqlFyDzI6CaY1VQ@public.gmane.org>
+> ---
+>  sound/soc/codecs/ads117x.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/sound/soc/codecs/ads117x.c b/sound/soc/codecs/ads117x.c
+> index 1222282..c5be1bd 100644
+> --- a/sound/soc/codecs/ads117x.c
+> +++ b/sound/soc/codecs/ads117x.c
+> @@ -20,6 +20,8 @@
+>  #include <sound/initval.h>
+>  #include <sound/soc.h>
+>  
+> +#include <linux/of.h>
+> +
+>  #define ADS117X_RATES (SNDRV_PCM_RATE_8000_48000)
+>  #define ADS117X_FORMATS (SNDRV_PCM_FMTBIT_S16_LE)
+>  
+> @@ -75,9 +77,19 @@ static int ads117x_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> +#if defined(CONFIG_OF)
+> +static const struct of_device_id ads117x_dt_ids[] = {
+> +	{ .compatible = "ti,ads1174" },
+> +	{ .compatible = "ti,ads1178" },
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(of, ads117x_dt_ids);
+> +#endif
+> +
+>  static struct platform_driver ads117x_codec_driver = {
+>  	.driver = {
+>  			.name = "ads117x-codec",
+> +			.of_match_table = of_match_ptr(ads117x_dt_ids),
+>  	},
+>  
+>  	.probe = ads117x_probe,
+> 
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/boards/skl_nau88l25_max98357a.c | 3 ---
- 1 file changed, 3 deletions(-)
+Do you have any more comments on this patch?
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-index 33bf5286c948..72176b79a18d 100644
---- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-@@ -98,7 +98,6 @@ static const struct snd_soc_dapm_widget skylake_widgets[] = {
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
- 	SND_SOC_DAPM_SPK("Spk", NULL),
- 	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
--	SND_SOC_DAPM_SINK("WoV Sink"),
- 	SND_SOC_DAPM_SPK("DP", NULL),
- 	SND_SOC_DAPM_SPK("HDMI", NULL),
- 	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
-@@ -118,7 +117,6 @@ static const struct snd_soc_dapm_route skylake_map[] = {
- 	{ "MIC", NULL, "Headset Mic" },
- 	{ "DMic", NULL, "SoC DMIC" },
- 
--	{"WoV Sink", NULL, "hwd_in sink"},
- 	{"HDMI", NULL, "hif5 Output"},
- 	{"DP", NULL, "hif6 Output"},
- 
-@@ -188,7 +186,6 @@ static int skylake_nau8825_codec_init(struct snd_soc_pcm_runtime *rtd)
- 	nau8825_enable_jack_detect(codec, &skylake_headset);
- 
- 	snd_soc_dapm_ignore_suspend(&rtd->card->dapm, "SoC DMIC");
--	snd_soc_dapm_ignore_suspend(&rtd->card->dapm, "WoV Sink");
- 
- 	return ret;
- }
--- 
-1.9.1
+Best regards,
+Florian
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
