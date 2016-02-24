@@ -1,89 +1,106 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max9867: fix type of variable
-	containing error codes" to the asoc tree
-Date: Wed, 24 Feb 2016 13:15:38 +0900
-Message-ID: <E1aYQrS-0000sc-3J@finisterre>
-References: <1456209914-13375-1-git-send-email-a.hajda@samsung.com>
+From: Vineet Gupta <Vineet.Gupta1-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Subject: Re: [PATCH 2/4 RESEND] ARC: axs10x: Update defconfigs so that audio
+ is enabled
+Date: Wed, 24 Feb 2016 04:36:31 +0000
+Message-ID: <C2D7FE5348E1B147BCA15975FBA23075F4E8BD53@us01wembx1.internal.synopsys.com>
+References: <cover.1456234503.git.joabreu@synopsys.com>
+ <174bd675951f46071d0db8ea1f67abb083053332.1456234503.git.joabreu@synopsys.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 02C972667F8
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 05:15:50 +0100 (CET)
-In-Reply-To: <1456209914-13375-1-git-send-email-a.hajda@samsung.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Andrzej Hajda <a.hajda@samsung.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8BIT
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Language: en-US
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, "dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Alexey Brodkin <Alexey.Brodkin-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Cc: "airlied-cv59FeDIM0c@public.gmane.org" <airlied-cv59FeDIM0c@public.gmane.org>, "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, "tiwai-IBi9RG/b67k@public.gmane.org" <tiwai-IBi9RG/b67k@public.gmane.org>, Carlos Palminha <CARLOS.PALMINHA-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "pawel.moll-5wv7dgnIgG8@public.gmane.org" <pawel.moll-5wv7dgnIgG8@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Tuesday 23 February 2016 07:22 PM, Jose Abreu wrote:
+> The defconfigs for the AXS boards were updated so that
+> ALSA SoC is enabled and also the audio for the ADV7511
+> HDMI transmitter.
+>
+> Signed-off-by: Jose Abreu <joabreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+> ---
+>  arch/arc/configs/axs101_defconfig     | 3 +++
+>  arch/arc/configs/axs103_defconfig     | 5 +++++
+>  arch/arc/configs/axs103_smp_defconfig | 5 +++++
 
-   ASoC: max9867: fix type of variable containing error codes
+@Alexey, has this been tested on AXS103. Do we have the right PLL / clocks to get
+the audio rates - given the lower master clk.
+Further per out off-list discussion - let us have a seperate config for ARC HS SDP
+which supports the shipping single hardware configuration and add these fancy
+things there as well as bumping the clk rate to 100 MHz . Current axs103* configs
+are more of developer configs and I don't want to bloat their code with things we
+don't build / download 10 times a day !
 
-has been applied to the asoc tree at
+>  3 files changed, 13 insertions(+)
+>
+> diff --git a/arch/arc/configs/axs101_defconfig b/arch/arc/configs/axs101_defconfig
+> index e359099..7c22163 100644
+> --- a/arch/arc/configs/axs101_defconfig
+> +++ b/arch/arc/configs/axs101_defconfig
+> @@ -113,3 +113,6 @@ CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=10
+>  # CONFIG_SCHED_DEBUG is not set
+>  # CONFIG_DEBUG_PREEMPT is not set
+>  # CONFIG_FTRACE is not set
+> +CONFIG_SOUND=y
+> +CONFIG_SND=y
+> +CONFIG_SND_SOC=y
+> diff --git a/arch/arc/configs/axs103_defconfig b/arch/arc/configs/axs103_defconfig
+> index 323486d..d63aef0 100644
+> --- a/arch/arc/configs/axs103_defconfig
+> +++ b/arch/arc/configs/axs103_defconfig
+> @@ -76,12 +76,14 @@ CONFIG_SERIAL_OF_PLATFORM=y
+>  CONFIG_I2C=y
+>  CONFIG_I2C_CHARDEV=y
+>  CONFIG_I2C_DESIGNWARE_PLATFORM=y
+> +CONFIG_DRM=y
+>  # CONFIG_HWMON is not set
+>  CONFIG_FB=y
+>  # CONFIG_VGA_CONSOLE is not set
+>  CONFIG_FRAMEBUFFER_CONSOLE=y
+>  CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY=y
+>  CONFIG_LOGO=y
+> +CONFIG_DRM_I2C_ADV7511=y
+>  # CONFIG_LOGO_LINUX_MONO is not set
+>  # CONFIG_LOGO_LINUX_VGA16 is not set
+>  # CONFIG_LOGO_LINUX_CLUT224 is not set
+> @@ -114,3 +116,6 @@ CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=10
+>  # CONFIG_SCHED_DEBUG is not set
+>  # CONFIG_DEBUG_PREEMPT is not set
+>  # CONFIG_FTRACE is not set
+> +CONFIG_SOUND=y
+> +CONFIG_SND=y
+> +CONFIG_SND_SOC=y
+> diff --git a/arch/arc/configs/axs103_smp_defconfig b/arch/arc/configs/axs103_smp_defconfig
+> index 66191cd..f4b51ce 100644
+> --- a/arch/arc/configs/axs103_smp_defconfig
+> +++ b/arch/arc/configs/axs103_smp_defconfig
+> @@ -77,12 +77,14 @@ CONFIG_SERIAL_OF_PLATFORM=y
+>  CONFIG_I2C=y
+>  CONFIG_I2C_CHARDEV=y
+>  CONFIG_I2C_DESIGNWARE_PLATFORM=y
+> +CONFIG_DRM=y
+>  # CONFIG_HWMON is not set
+>  CONFIG_FB=y
+>  # CONFIG_VGA_CONSOLE is not set
+>  CONFIG_FRAMEBUFFER_CONSOLE=y
+>  CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY=y
+>  CONFIG_LOGO=y
+> +CONFIG_DRM_I2C_ADV7511=y
+>  # CONFIG_LOGO_LINUX_MONO is not set
+>  # CONFIG_LOGO_LINUX_VGA16 is not set
+>  # CONFIG_LOGO_LINUX_CLUT224 is not set
+> @@ -115,3 +117,6 @@ CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=10
+>  # CONFIG_SCHED_DEBUG is not set
+>  # CONFIG_DEBUG_PREEMPT is not set
+>  # CONFIG_FTRACE is not set
+> +CONFIG_SOUND=y
+> +CONFIG_SND=y
+> +CONFIG_SND_SOC=y
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 127a9cbb5860a7cf15f4d4703ab0454e4603e8ac Mon Sep 17 00:00:00 2001
-From: Andrzej Hajda <a.hajda@samsung.com>
-Date: Tue, 23 Feb 2016 07:45:14 +0100
-Subject: [PATCH] ASoC: max9867: fix type of variable containing error codes
-
-value variable can contain error values and is compared with zero.
-Its type must be signed.
-
-The problem has been detected using coccinelle script
-scripts/coccinelle/tests/unsigned_lesser_than_zero.cocci
-
-Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
-Reviewed-by: Axel Lin <axel.lin@ingics.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/max9867.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-index ab7a94db8db7..4fb6fc7188c7 100755
---- a/sound/soc/codecs/max9867.c
-+++ b/sound/soc/codecs/max9867.c
-@@ -180,7 +180,8 @@ static int max9867_dai_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct max9867_priv *max9867 = snd_soc_codec_get_drvdata(codec);
--	unsigned int ni_h, ni_l, value;
-+	unsigned int ni_h, ni_l;
-+	int value;
- 
- 	value = get_ni_value(max9867->sysclk, params_rate(params));
- 	if (value < 0)
--- 
-2.7.0
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
