@@ -1,15 +1,15 @@
 From: kbuild test robot <fengguang.wu@intel.com>
-Subject: [asoc:topic/intel 16/22]
- sound/soc/intel/boards/skl_rt286.c:29:36: fatal error:
+Subject: [asoc:topic/intel 17/22]
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c:29:36: fatal error:
  ../../codecs/hdac_hdmi.h: No such file or directory
-Date: Wed, 24 Feb 2016 17:32:56 +0800
-Message-ID: <201602241754.oX4cPbIT%fengguang.wu@intel.com>
+Date: Wed, 24 Feb 2016 17:42:25 +0800
+Message-ID: <201602241724.5LQBiSXW%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="CE+1k2dSO48ffgeK"
+Content-Type: multipart/mixed; boundary="k1lZvvs/B4yU6o8G"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 7521426067A
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 10:34:41 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id CCC042607F7
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 10:44:29 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,51 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Jeeja KP <jeeja.kp@intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, kbuild-all@01.org
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
 
---CE+1k2dSO48ffgeK
+--k1lZvvs/B4yU6o8G
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/intel
 head:   8be3838af0e992846d4725fae152b818560c1068
-commit: 23905cd1ca48cbc852a670a3dbbfc5e7d694580f [16/22] ASoC: Intel: boards: Enable HDMI and DP on skl_rt286 machine
+commit: bc5f6ac9a66f90f8e16e568ebd463cbe44f46b81 [17/22] ASoC: Intel: boards: Enable HDMI and DP on nau88l2 machine
 config: i386-allmodconfig (attached as .config)
 reproduce:
-        git checkout 23905cd1ca48cbc852a670a3dbbfc5e7d694580f
+        git checkout bc5f6ac9a66f90f8e16e568ebd463cbe44f46b81
         # save the attached .config to linux build tree
         make ARCH=i386 
 
 All errors (new ones prefixed by >>):
 
->> sound/soc/intel/boards/skl_rt286.c:29:36: fatal error: ../../codecs/hdac_hdmi.h: No such file or directory
+>> sound/soc/intel/boards/skl_nau88l25_ssm4567.c:29:36: fatal error: ../../codecs/hdac_hdmi.h: No such file or directory
    compilation terminated.
 
-vim +29 sound/soc/intel/boards/skl_rt286.c
+vim +29 sound/soc/intel/boards/skl_nau88l25_ssm4567.c
 
     23	#include <sound/core.h>
     24	#include <sound/pcm.h>
     25	#include <sound/soc.h>
     26	#include <sound/jack.h>
     27	#include <sound/pcm_params.h>
-    28	#include "../../codecs/rt286.h"
+    28	#include "../../codecs/nau8825.h"
   > 29	#include "../../codecs/hdac_hdmi.h"
     30	
-    31	static struct snd_soc_jack skylake_headset;
-    32	
+    31	#define SKL_NUVOTON_CODEC_DAI	"nau8825-hifi"
+    32	#define SKL_SSM_CODEC_DAI	"ssm4567-hifi"
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---CE+1k2dSO48ffgeK
+--k1lZvvs/B4yU6o8G
 Content-Type: application/octet-stream
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICDx4zVYAAy5jb25maWcAjDzLcty2svt8xZRzF+csHOttpW5pgQHBGWRIggbA0UgbliKN
+H4sICIx6zVYAAy5jb25maWcAjDzLcty2svt8xZRzF+csHOttpW5pgQHBGWRIggbA0UgbliKN
 Y9WRJV9Jzkn+/nYDfDRAUE4WkdndAPHodzfn559+XrDvr09fb17vb28eHv5e/LF/3D/fvO7v
 Fp/vH/b/u8jUolJ2ITJpfwHi4v7x+18f7o/PzxYnv5z+cvD++fZwsdk/P+4fFvzp8fP9H99h
 9P3T408/AzVXVS5X7dnJUtrF/cvi8el18bJ//amD787P2uOji7/J8/ggK2N1w61UVZsJrjKh
@@ -1056,11 +1056,11 @@ NCFEmeNEvYJDwFa44oeeqITSKxqP+9JdZPIqor8YsVDmNBLIKMJHD0GcKykGj4A6OzNZdb0X
 rcB2ELhAV8TPFplOP04DxB2rCJ18uCFLEPr6sVh6EDw4kDMJCt00JYNDkK5++cFkdhDUpGRK
 pdHF4cfhoQcvDj4WZP1r4GpPzq5c4xhoYFiKrGSGB6im/eB79f/9WMfz/EYDAA==
 
---CE+1k2dSO48ffgeK
+--k1lZvvs/B4yU6o8G
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---CE+1k2dSO48ffgeK--
+--k1lZvvs/B4yU6o8G--
