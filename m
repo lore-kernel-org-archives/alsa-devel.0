@@ -1,55 +1,92 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: rt5640: add master clock handling for
- rt5640
-Date: Wed, 24 Feb 2016 10:10:05 -0600
-Message-ID: <56CDD5DD.6040006@linux.intel.com>
-References: <1456190782-18865-1-git-send-email-sugar.zhang@rock-chips.com>
- <56CC719C.1090901@linux.intel.com> <2199435.lA9iTvxnKV@phil>
- <20160224033259.GL18327@sirena.org.uk>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] sound: hdmi: avoid dereferencing
+	uninitialized 'jack' pointer
+Date: Wed, 24 Feb 2016 17:18:58 +0100
+Message-ID: <3238725.1iS2dg6EkI@wuerfel>
+References: <1455634059-1896914-1-git-send-email-arnd@arndb.de>
+ <s5h8u2j6749.wl-tiwai@suse.de> <s5h1t8b65n7.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20160224033259.GL18327-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
-Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Oder Chiou <oder_chiou-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Sugar Zhang <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Bard Liao <bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.75])
+ by alsa0.perex.cz (Postfix) with ESMTP id C43162606F6
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2016 17:19:19 +0100 (CET)
+In-Reply-To: <s5h1t8b65n7.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Han Lu <han.lu@intel.com>, Libin Yang <libin.yang@linux.intel.com>, Thierry Reding <treding@nvidia.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2/23/16 9:32 PM, Mark Brown wrote:
-> On Wed, Feb 24, 2016 at 12:08:31AM +0100, Heiko Stuebner wrote:
->> Am Dienstag, 23. Februar 2016, 08:50:04 schrieb Pierre-Louis
->> Bossart:
->
->>> This patch assumes that the information on mclk comes from
->>> DeviceTree. The mclk may also be enabled/disabled in the machine
->>> driver with an explicit transition to use an internal clock when
->>> the codec is not used. I hope this patch doesn't preclude such
->>> usages or there will be a conflict with the patches we are about
->>> to upstream for Baytrail/cht devices.
->
->> As you can see, the clock property itself is optional and the
->> clk_get below acts accordingly of also continuing if the clock is
->> not present. So it won't affect any users doing it otherwise.
->
-> That said we really do need x86 to transition to use the clock API
-> in order to integrate with external devices, where the machine driver
-> does manage clocks we want that to move to being done using the clock
-> API rather than custom APIs.
+On Wednesday 17 February 2016 10:35:40 Takashi Iwai wrote:
+> On Wed, 17 Feb 2016 10:03:50 +0100,
+> +	const char *id;
+> +#ifdef CONFIG_SND_JACK_INPUT_DEV
+> +	struct input_dev *input_dev;
+>  	int registered;
+>  	int type;
+> -	const char *id;
+>  	char name[100];
+>  	unsigned int key[6];   /* Keep in sync with definitions above */
+> +#endif /* CONFIG_SND_JACK_INPUT_DEV */
+>  	void *private_data;
+>  	void (*private_free)(struct snd_jack *);
+>  };
 
-For Baytrail audio we have a single platform clock that can be turned
-on/off and set to 19.2 MHz or 25 MHz. No other controls are available,
-no multipliers or complicated dependencies on other clocks, parents or 
-children and no other users for this clock but the audio subsystem.
-I looked at the clock framework and couldn't figure out how it would 
-simply map the hardware so for now the use of the MCLK is only enabled 
-with an on/off or set-rate(19.2|25) custom API. I am not an expert here 
-so if this clock framework becomes a requirement to upstream code I 
-would appreciate any pointers to do the right thing. I really couldn't 
-find a simple example with 'Put your code here' comments to use this 
-framework.
+I got a build error from this today, as the trace event tries to print
+the jack "name" field. I've managed to get it to build again by printing
+the "id" field in place of the "name". The name is normally assigned
+from id in snd_jack_dev_register using
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+        snprintf(jack->name, sizeof(jack->name), "%s %s",
+                 card->shortname, jack->id);
+
+but that code is not called here at all. My patch will slightly
+alter the output as a consequence, but I don't know if this change
+is critical or not.
+
+	Arnd
+
+diff --git a/include/trace/events/asoc.h b/include/trace/events/asoc.h
+index 317a1ed2f4ac..9130dd5a184a 100644
+--- a/include/trace/events/asoc.h
++++ b/include/trace/events/asoc.h
+@@ -231,13 +231,13 @@ TRACE_EVENT(snd_soc_jack_report,
+ 	TP_ARGS(jack, mask, val),
+ 
+ 	TP_STRUCT__entry(
+-		__string(	name,		jack->jack->name	)
++		__string(	name,		jack->jack->id		)
+ 		__field(	int,		mask			)
+ 		__field(	int,		val			)
+ 	),
+ 
+ 	TP_fast_assign(
+-		__assign_str(name, jack->jack->name);
++		__assign_str(name, jack->jack->id);
+ 		__entry->mask = mask;
+ 		__entry->val = val;
+ 	),
+@@ -253,12 +253,12 @@ TRACE_EVENT(snd_soc_jack_notify,
+ 	TP_ARGS(jack, val),
+ 
+ 	TP_STRUCT__entry(
+-		__string(	name,		jack->jack->name	)
++		__string(	name,		jack->jack->id		)
+ 		__field(	int,		val			)
+ 	),
+ 
+ 	TP_fast_assign(
+-		__assign_str(name, jack->jack->name);
++		__assign_str(name, jack->jack->id);
+ 		__entry->val = val;
+ 	),
+ 
