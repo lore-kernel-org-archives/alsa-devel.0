@@ -1,106 +1,34 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Fixup speaker pass-through control
-	for nid 0x14 on ALC225
-Date: Thu, 25 Feb 2016 09:13:21 +0100
-Message-ID: <1456388001-2640-1-git-send-email-david.henningsson@canonical.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: Re: [patch 1/2] ASoC: max9867: signedness bug in max9867_dai_hw_params()
+Date: Thu, 25 Feb 2016 16:17:53 +0800
+Message-ID: <CAFRkauCNUFVCm589530DDmOJ8qPx53w8_bPSctG_S+PvNggTOA@mail.gmail.com>
+References: <20160225074810.GB7333@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id AB8DB261507
- for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2016 09:13:25 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: 1549660@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <20160225074810.GB7333@mwanda>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, anish kumar <yesanishhere@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On one of the machines we enable, we found that the actual speaker volume
-did not always correspond to the volume set in alsamixer. This patch
-fixes that problem.
+2016-02-25 15:48 GMT+08:00 Dan Carpenter <dan.carpenter@oracle.com>:
+> "value" needs to be signed for the error handling to work.
+>
+> Fixes: 805d132dcbbd ('ASoC: Add max9867 codec driver')
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+>
+> diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+> index ab7a94d..4fb6fc7 100755
+> --- a/sound/soc/codecs/max9867.c
+> +++ b/sound/soc/codecs/max9867.c
+> @@ -180,7 +180,8 @@ static int max9867_dai_hw_params(struct snd_pcm_substream *substream,
+>  {
+>         struct snd_soc_codec *codec = dai->codec;
+>         struct max9867_priv *max9867 = snd_soc_codec_get_drvdata(codec);
+> -       unsigned int ni_h, ni_l, value;
+> +       unsigned int ni_h, ni_l;
+> +       int value;
 
-This patch was orginally written by Kailang @ Realtek, I've rebased it
-to fit sound git master.
-
-BugLink: https://bugs.launchpad.net/bugs/1549660
-Co-Authored-By: Kailang <kailang@realtek.com>
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index efd4980..ab353b0 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3801,6 +3801,10 @@ static void alc_headset_mode_mic_in(struct hda_codec *codec, hda_nid_t hp_pin,
- 
- static void alc_headset_mode_default(struct hda_codec *codec)
- {
-+	static struct coef_fw coef0225[] = {
-+		UPDATE_COEF(0x45, 0x3f<<10, 0x34<<10),
-+		{}
-+	};
- 	static struct coef_fw coef0255[] = {
- 		WRITE_COEF(0x45, 0xc089),
- 		WRITE_COEF(0x45, 0xc489),
-@@ -3842,6 +3846,9 @@ static void alc_headset_mode_default(struct hda_codec *codec)
- 	};
- 
- 	switch (codec->core.vendor_id) {
-+	case 0x10ec0225:
-+		alc_process_coef_fw(codec, coef0225);
-+		break;
- 	case 0x10ec0255:
- 	case 0x10ec0256:
- 		alc_process_coef_fw(codec, coef0255);
-@@ -4749,6 +4756,7 @@ enum {
- 	ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE,
- 	ALC293_FIXUP_LENOVO_SPK_NOISE,
- 	ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY,
-+	ALC225_FIXUP_DELL1_MIC_NO_PRESENCE,
- };
- 
- static const struct hda_fixup alc269_fixups[] = {
-@@ -5368,6 +5376,17 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc233_fixup_lenovo_line2_mic_hotkey,
- 	},
-+	[ALC225_FIXUP_DELL1_MIC_NO_PRESENCE] = {
-+		.type = HDA_FIXUP_VERBS,
-+		.v.verbs = (const struct hda_verb[]) {
-+			/* Disable pass-through path for FRONT 14h */
-+			{ 0x20, AC_VERB_SET_COEF_INDEX, 0x36 },
-+			{ 0x20, AC_VERB_SET_PROC_COEF, 0x57d7 },
-+			{}
-+		},
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_DELL1_MIC_NO_PRESENCE
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -5638,10 +5657,10 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
- 	{0x21, 0x03211020}
- 
- static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
--	SND_HDA_PIN_QUIRK(0x10ec0225, 0x1028, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE,
-+	SND_HDA_PIN_QUIRK(0x10ec0225, 0x1028, "Dell", ALC225_FIXUP_DELL1_MIC_NO_PRESENCE,
- 		ALC225_STANDARD_PINS,
- 		{0x14, 0x901701a0}),
--	SND_HDA_PIN_QUIRK(0x10ec0225, 0x1028, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE,
-+	SND_HDA_PIN_QUIRK(0x10ec0225, 0x1028, "Dell", ALC225_FIXUP_DELL1_MIC_NO_PRESENCE,
- 		ALC225_STANDARD_PINS,
- 		{0x14, 0x901701b0}),
- 	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL2_MIC_NO_PRESENCE,
--- 
-1.9.1
+Already fixed by
+http://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/commit/?h=topic/max9867&id=127a9cbb5860a7cf15f4d4703ab0454e4603e8ac
