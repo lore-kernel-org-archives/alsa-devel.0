@@ -1,54 +1,28 @@
-From: Thomas Klausner <tk@giga.or.at>
-Subject: portability: types
-Date: Fri, 26 Feb 2016 00:31:24 +0100
-Message-ID: <20160225233124.GA13672@danbala.tuwien.ac.at>
-References: <20160218154744.GA7454@danbala.tuwien.ac.at>
- <s5hy4ait3t8.wl-tiwai@suse.de>
- <20160223140906.GP19194@danbala.tuwien.ac.at>
- <s5h4mczzals.wl-tiwai@suse.de>
- <20160224131655.GA22682@danbala.tuwien.ac.at>
- <sfid-H20160224-163730-+070.31-1@spamfilter.osbf.lua>
- <s5h8u2adssb.wl-tiwai@suse.de>
+From: Stephen Boyd <sboyd@codeaurora.org>
+Subject: Re: [PATCH 0/2] clk: imx6: add kpp clock for i.MX6UL
+Date: Thu, 25 Feb 2016 15:56:55 -0800
+Message-ID: <20160225235655.GN28849@codeaurora.org>
+References: <1452619759-14474-1-git-send-email-LW@KARO-electronics.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from danbala.ifoer.tuwien.ac.at (danbala.ifoer.tuwien.ac.at
- [128.130.168.64])
- by alsa0.perex.cz (Postfix) with ESMTP id 990F026145A
- for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 00:31:26 +0100 (CET)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-clk-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <s5h8u2adssb.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <1452619759-14474-1-git-send-email-LW@KARO-electronics.de>
+Sender: linux-clk-owner@vger.kernel.org
+To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>, Shawn Guo <shawnguo@kernel.org>
+Cc: Anson Huang <b20788@freescale.com>, Arnd Bergmann <arnd@arndb.de>, Bai Ping <b51503@freescale.com>, Fabio Estevam <fabio.estevam@freescale.com>, Frank Li <Frank.Li@freescale.com>, Fugang Duan <B38611@freescale.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Jaroslav Kysela <perex@perex.cz>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Michael Turquette <mturquette@baylibre.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Pawel Moll <pawel.moll@arm.com>, Rob Herring <robh+dt@kernel.org>, Russell King <linux@arm.linux.org.uk>, Sascha Hauer <kernel@pengutronix.de>, Takashi Iwai <tiwai@suse.com>, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.o
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 24, 2016 at 04:36:36PM +0100, Takashi Iwai wrote:
-> Applied now.  Thanks.
+On 01/12, Lothar Wa=DFmann wrote:
+> This patchset adds the clock which is necessary to operate the KPP
+> unit on i.MX6UL.
+> The first patch removes bogus whitespace before TABs in indentation.
+> The second patch adds the clock definition.
+>=20
 
-Thank you.
+Both look fine. Shawn?
 
-The next big issue is that multiple places include Linux specific
-header files, easily recognizable by the path linux/*.h.
-
-I think these are used to define unusual types like __u32, __u64,
-__kernel_off_t, __kernel_pid_t. There are also a number of cases of
-u_xxx_t (which don't exist on Solaris) vs. the uxxx_t defined in C99.
-
-Many of these types have POSIX equivalents, like uint32_t, uint64_t,
-off_t, pid_t.
-
-Would it be better to switch to those, or should we define compat
-#typedefs or #defines in local.h?
-
-Cheers,
- Thomas
+--=20
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
