@@ -1,56 +1,58 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Subject: Re: snd-hda-intel runtime PM fail after module reload
-Date: Thu, 25 Feb 2016 23:57:34 +0200
-Message-ID: <20160225215734.GO15993@intel.com>
-References: <20160225191908.GN15993@intel.com> <s5hwppsy1o4.wl-tiwai@suse.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH RESEND] ASoC: pxa: remove unused variable
+Date: Thu, 25 Feb 2016 23:02:04 +0100
+Message-ID: <1456437736-732609-1-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <s5hwppsy1o4.wl-tiwai@suse.de>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.13])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8FA7A2606F5
+ for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2016 23:02:29 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-arm-kernel@lists.infradead.org, Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBGZWIgMjUsIDIwMTYgYXQgMDk6Mjg6NTlQTSArMDEwMCwgVGFrYXNoaSBJd2FpIHdy
-b3RlOgo+IE9uIFRodSwgMjUgRmViIDIwMTYgMjA6MTk6MDggKzAxMDAsCj4gVmlsbGUgU3lyasOk
-bMOkIHdyb3RlOgo+ID4gCj4gPiBIaSwKPiA+IAo+ID4gTXkgaW52ZXN0aWdhdGlvbiBpbnRvIHNv
-bWUgc3BvcmFkaWMgaTkxNSBydW50aW1lIFBNIGZhaWx1cmVzIHNlZW0gdG8KPiA+IHBvaW50IHRo
-ZSBmaW5nZXIgYXQgc25kLWhkYS1pbnRlbC4KPiA+IAo+ID4gSSBqdXN0IHRyaWVkIHRvIHBsYXkg
-YXJvdW5kIHVubG9kaW5nIGFuZCByZWxvYWRpbmcgc25kLWhkYS1pbnRlbCBhbmQKPiA+IHNvbWV0
-aW1lcyBJIGdldCBzbmQtaGRhLWludGVsIGxvYWRlZCB3aXRoIHJ1bnRpbWUgUE0gc3VwcG9zZWRs
-eSBlbmFibGVkLAo+ID4gYnV0IGFjdHVhbGx5IHRoZSBkZXZpY2Ugd29uJ3QgcnVudGltZSBzdXNw
-ZW5kLiBBdCB3aGljaCBwb2ludCBmcm9iYmluZwo+ID4gd2l0aCBwb3dlci9jb250cm9sIGlzIGVu
-b3VnaCB0byBraWNrIGl0IGJhY2sgaW50byBzdWJtaXNzaW9uLgo+IAo+IFdoaWNoIHBsYXRmb3Jt
-IGFyZSB5b3UgdGVzdGluZz8gIElmIGl0J3MgU0tMLCBCU1cgb3IgbGF0ZXIsIG11bHRpcGxlCj4g
-Y29kZWNzIGFyZSBvbiBhIHNpbmdsZSBIRC1hdWRpbyBidXMuICBJbiBnZW5lcmFsLCB5b3UgaGF2
-ZSB0byBhZGp1c3QKPiB0aGUgcnVudGltZSBQTSBvZiBhbGwgdGhlc2UgY29kZWNzIGluIGFkZGl0
-aW9uIHRvIHRoZSBydW50aW1lIFBNIG9mCj4gdGhlIGNvbnRyb2xsZXIuICBTb21lIG9mIHRoZW0g
-YXJlIGltbWVkaWF0ZWx5IHJ1bnRpbWUgUE0gZW5hYmxlZCBidXQKPiBzb21lIG9mIHRoZW0gYXJl
-bid0LCBsZWZ0IHRoZSBkZWZhdWx0IGFzIGlzLgoKVGhpcyB3YXMgb24gYSBIU1cuCgpJIGFsc28g
-aGF2ZSBDT05GSUdfU05EX0hEQV9QT1dFUl9TQVZFX0RFRkFVTFQ9MSB3aGljaCBJIHByZXN1bWUg
-c2hvdWxkCmVuYWJsZSBjb2RlYyBwb3dlciBzYXZpbmcgYnkgZGVhZmF1bHQ/Cgo+IEl0IG1pZ2h0
-IGJlIHRoYXQgeW91ciBkZXNrdG9wIGVudmlyb25tZW50IGFkanVzdHMgdGhlIHJ1bnRpbWUgUE0g
-b2YKPiBIRC1hdWRpbyBzdHVmZiwgb2Z0ZW4gZGVwZW5kaW5nIG9uIHRoZSBwb3dlciBzdGF0ZS4g
-IEJ1dCB3aGVuIHlvdQo+IHJlbG9hZCwgdGhpcyBhZGp1c3RtZW50IGlzIGFsc28gbG9zdCwgc28g
-eW91J2QgaGF2ZSB0byBhZGp1c3QKPiBtYW51YWxseS4KClRoZXJlJ3Mgbm8gZGVza3RvcCBlbnZp
-cm9ubWVudC4gV2VsbCwgdW5sZXNzIHlvdSBjb3VudCBzeXN0ZW1kIGFzIHN1Y2guCkFzIHlvdSBj
-YW4gc2VlIGZyb20gdGhlIGxvZyBJIGluY2x1ZGVkIGF0IGxlYXN0IHRoZSBwY2kgZGV2aWNlIHBv
-d2VyL2NvbnRyb2wKZmlsZSBzdGF5ZWQgYXQgJ2F1dG8nIHRoZSB3aG9sZSB0aW1lIHVudGlsIEkg
-ZmxpcHBlZCBpdCB0byAnb24nIGFuZCB0aGVuCmJhY2sgdG8gJ2F1dG8nIHRvIGZpeCB0aGUgcHJv
-YmxlbS4KCkFsc28gdGhlIHByb2JsZW0gZGlkbid0IGhhcHBlbiBvbiBldmVyeSByZWxvYWQgQUZB
-SUNTLCBzbyB0aGVyZSdzCnNvbWV0aGluZyByYXRoZXIgbm9uLWRldGVybWluaXN0aWMgaGFwcGVu
-aW5nLgoKLS0gClZpbGxlIFN5cmrDpGzDpApJbnRlbCBPVEMKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1n
-ZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21h
-aWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+As pointed out by Zhangfei Gao, the sspa_div variable in
+brownstone_wm8994_hw_params() is completely unused, so as a cleanup
+following a prior patch, this removes both the variable and the division.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+Submitted originally on Nov 23 2015, this apparently got lost,
+resending it now.
+
+ sound/soc/pxa/brownstone.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/sound/soc/pxa/brownstone.c b/sound/soc/pxa/brownstone.c
+index 416ea646c3b1..ec522e94b0e2 100644
+--- a/sound/soc/pxa/brownstone.c
++++ b/sound/soc/pxa/brownstone.c
+@@ -52,7 +52,6 @@ static int brownstone_wm8994_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	int freq_out, sspa_mclk, sysclk;
+-	int sspa_div;
+ 
+ 	if (params_rate(params) > 11025) {
+ 		freq_out  = params_rate(params) * 512;
+@@ -63,7 +62,6 @@ static int brownstone_wm8994_hw_params(struct snd_pcm_substream *substream,
+ 		sysclk    = params_rate(params) * 512;
+ 		sspa_mclk = params_rate(params) * 64;
+ 	}
+-	sspa_div = freq_out / sspa_mclk;
+ 
+ 	snd_soc_dai_set_sysclk(cpu_dai, MMP_SSPA_CLK_AUDIO, freq_out, 0);
+ 	snd_soc_dai_set_pll(cpu_dai, MMP_SYSCLK, 0, freq_out, sysclk);
+-- 
+2.7.0
