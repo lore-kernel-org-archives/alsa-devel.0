@@ -1,65 +1,32 @@
-From: Kai-Heng Feng <kaihengfeng@gmail.com>
-Subject: [PATCH] ALSA: hda - Fixing background noise on Dell Inspiron 3162
-Date: Thu, 25 Feb 2016 15:19:38 +0800
-Message-ID: <1456384778-23181-1-git-send-email-kai.heng.feng@canonical.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch 1/2] ASoC: max9867: signedness bug in max9867_dai_hw_params()
+Date: Thu, 25 Feb 2016 10:48:10 +0300
+Message-ID: <20160225074810.GB7333@mwanda>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, anish kumar <yesanishhere@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Axel Lin <axel.lin@ingics.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-After login to the desktop on Dell Inspiron 3162,
-there's a very loud background noise comes from the builtin speaker.
-The noise does not go away even if the speaker is muted.
+"value" needs to be signed for the error handling to work.
 
-The noise disappears after using the aamix fixup.
+Fixes: 805d132dcbbd ('ASoC: Add max9867 codec driver')
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Codec: Realtek ALC3234
-Address: 0
-AFG Function Id: 0x1 (unsol 1)
-    Vendor Id: 0x10ec0255
-    Subsystem Id: 0x10280725
-    Revision Id: 0x100002
-    No Modem Function Group found
-
-BugLink: http://bugs.launchpad.net/bugs/1549620
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index efd4980..72fa58d 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4749,6 +4749,7 @@ enum {
- 	ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE,
- 	ALC293_FIXUP_LENOVO_SPK_NOISE,
- 	ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY,
-+	ALC255_FIXUP_DELL_SPK_NOISE,
- };
+diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+index ab7a94d..4fb6fc7 100755
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -180,7 +180,8 @@ static int max9867_dai_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct max9867_priv *max9867 = snd_soc_codec_get_drvdata(codec);
+-	unsigned int ni_h, ni_l, value;
++	unsigned int ni_h, ni_l;
++	int value;
  
- static const struct hda_fixup alc269_fixups[] = {
-@@ -5368,6 +5369,12 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc233_fixup_lenovo_line2_mic_hotkey,
- 	},
-+	[ALC255_FIXUP_DELL_SPK_NOISE] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_disable_aamix,
-+		.chained = true,
-+		.chain_id = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -5410,6 +5417,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x06df, "Dell", ALC293_FIXUP_DISABLE_AAMIX_MULTIJACK),
- 	SND_PCI_QUIRK(0x1028, 0x06e0, "Dell", ALC293_FIXUP_DISABLE_AAMIX_MULTIJACK),
- 	SND_PCI_QUIRK(0x1028, 0x0704, "Dell XPS 13", ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE),
-+	SND_PCI_QUIRK(0x1028, 0x0725, "Dell Inspiron 3162", ALC255_FIXUP_DELL_SPK_NOISE),
- 	SND_PCI_QUIRK(0x1028, 0x164a, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x164b, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
--- 
-2.5.0
+ 	value = get_ni_value(max9867->sysclk, params_rate(params));
+ 	if (value < 0)
