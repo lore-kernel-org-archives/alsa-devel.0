@@ -1,57 +1,79 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: arizona: Make logging of FLL calculations clearer
-Date: Thu, 25 Feb 2016 10:53:47 +0900
-Message-ID: <20160225015347.GV18327@sirena.org.uk>
-References: <1456236992-32028-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <20160224040832.GQ18327@sirena.org.uk>
- <56CDEAD4.1050405@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Extend FLL function
+Date: Thu, 25 Feb 2016 10:55:19 +0900
+Message-ID: <20160225015519.GW18327@sirena.org.uk>
+References: <1451548510-4989-1-git-send-email-KCHSU0@nuvoton.com>
+ <CAOMFOmX_fu94AYJpP5x4=r9GXb5CztxhMNNv7rHENO8fWbgjeg@mail.gmail.com>
+ <56CE33D4.10009@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="qTa+0zXUvx+FOrJg"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <56CDEAD4.1050405@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============2698607633854615880=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 66716265E2F
+ for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2016 02:55:29 +0100 (CET)
+In-Reply-To: <56CE33D4.10009@nuvoton.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Anatol Pomozov <anatol.pomozov@gmail.com>, Ben Zhang <benzh@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com, Yong Zhi <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---qTa+0zXUvx+FOrJg
+--===============2698607633854615880==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="m6jz55HWgj2hUaU9"
+Content-Disposition: inline
+
+
+--m6jz55HWgj2hUaU9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Feb 24, 2016 at 05:39:32PM +0000, Richard Fitzgerald wrote:
-> On 24/02/16 04:08, Mark Brown wrote:
+On Thu, Feb 25, 2016 at 06:51:00AM +0800, John Hsu wrote:
+> Hi Mark,
+> Could you help to review and merge this patch?
+> Some patches later about nau8825 driver will patch base on it. Thank you
+> very much.
 
-> >I think that stuff was originally based on the way the datasheets quote
-> >things:
+Please don't top post, reply in line with needed context.  This allows
+readers to readily follow the flow of conversation and understand what
+you are talking about and also helps ensure that everything in the
+discussion is being addressed.
 
-> >>-	arizona_fll_dbg(fll, "FRATIO=%x(%d) OUTDIV=%x REFCLK_DIV=%x\n",
-> >the hex(decimal) but there is certainly very familiar from some of
-> >those.
+I don't have whatever this patch is (I suspect the fact that there were
+concerns raised meant I expected a new version).  Please do try to use
+subject lines reflecting the style to the subsystem.
 
-> Indeed, and it was fine on the first codec. Now we've got various revisions
-> of the FLL with some fields having different meanings, human error started
-> to creep into interpreting the debug.
-
-I'm not saying it's a bad idea to change it, just pointing out where
-it's likely to have come from (and the fact that the way the datasheets
-were writing this was always a bit weird).
-
---qTa+0zXUvx+FOrJg
+--m6jz55HWgj2hUaU9
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWzl6qAAoJECTWi3JdVIfQ85QH/AlrBT7qqTh5okIT28J/QLbV
-4DSLGefYwCvO2SipFHWgcK2/x5TNnP70HXYPu1nW0CeYCte5S85ypFwi4Zdx8WIY
-Zaa6hbo5ARFML/7kL8EAHlUwkGbLUbmJTOPgH3FGLxYvCcKlIOFBvn8SnQdZiYIh
-hnIbxxNdA19ivPJng7jeSVRVoiVJgPArxKC0x0m4/P8mGr4idP7jU5tAxd0ZQ+xP
-lt54IUeUmvLjD27ovoJttOkyPH8MMnubtSFiLQz9LxWPoQVyZ0rJnurOQZtO9tJS
-wTqhdgeWEgsZ/fovn+iBRQ49DwiCXlkSmjSL2zegmpAdryP4OJoKyAZ8phTtqpo=
-=lh5q
+iQEcBAEBCAAGBQJWzl8GAAoJECTWi3JdVIfQV7UH/3jmQetSrjAjoZqBFqA/2oa8
+71Vy/0bheOUsEzyTEH5Lx3Co1RsYo3zHTHqZJ03Jfy7kDvg0OWNDtMTMG8BhHAvn
+pCdUiNNOGuIRt/TtSQ7cjU1Qt8FZ8ZnhSgijp5LJyvvQfbWWjWEHYvsZv9CfCOOa
+ZesbQ0Fdh4kymqklBKfyQrmeZ5bZcvve7fCLJzTPSFbkAF8IESf/E0e2Ko73Zfxt
+PXa0ilnBNwetfW17spPADHmulq5Pu4mGv9/cyUWhzLHkur150tnWbSSq2gTQBkGh
+XHgsoWD6DVYfjDa9lJidNaK9sEROZSYJ92tWbcbUOal6S9J3ajgKE8lggVNUC+c=
+=Pr3T
 -----END PGP SIGNATURE-----
 
---qTa+0zXUvx+FOrJg--
+--m6jz55HWgj2hUaU9--
+
+--===============2698607633854615880==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2698607633854615880==--
