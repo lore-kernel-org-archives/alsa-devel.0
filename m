@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "regmap: merge regmap_field_write() into
-	macro" to the asoc tree
-Date: Fri, 26 Feb 2016 12:17:36 +0900
-Message-ID: <E1aZ8uO-0008C6-Fh@finisterre>
-References: <8737suim7w.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "regmap: add regmap_fields_update_bits_base()"
+	to the asoc tree
+Date: Fri, 26 Feb 2016 12:17:31 +0900
+Message-ID: <E1aZ8uJ-0008B7-Cl@finisterre>
+References: <87ziv2h7me.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 48C6E2651AC
- for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 04:17:38 +0100 (CET)
-In-Reply-To: <8737suim7w.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id EB75D265182
+ for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 04:17:32 +0100 (CET)
+In-Reply-To: <87ziv2h7me.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   regmap: merge regmap_field_write() into macro
+   regmap: add regmap_fields_update_bits_base()
 
 has been applied to the asoc tree at
 
@@ -53,69 +53,94 @@ to this mail.
 Thanks,
 Mark
 
->From 3674124b35894631f8f4d33ab041e713078bfd4b Mon Sep 17 00:00:00 2001
+>From e126edec184ea3049cc1f8b652c6eeb06aa65fda Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 15 Feb 2016 05:24:15 +0000
-Subject: [PATCH] regmap: merge regmap_field_write() into macro
+Date: Mon, 15 Feb 2016 05:24:51 +0000
+Subject: [PATCH] regmap: add regmap_fields_update_bits_base()
 
-This patch merges regmap_field_write() into macro
-by using regmap_field_update_bits_base().
+This patch adds new regmap_fields_update_bits_base() which is using
+regmap_update_bits_base().
+Current regmap_fields_xxx() can be merged into it by macro.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/base/regmap/regmap.c | 16 ----------------
- include/linux/regmap.h       |  4 +++-
- 2 files changed, 3 insertions(+), 17 deletions(-)
+ drivers/base/regmap/regmap.c | 32 ++++++++++++++++++++++++++++++++
+ include/linux/regmap.h       | 12 ++++++++++++
+ 2 files changed, 44 insertions(+)
 
 diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index e534105f47f6..228dce237658 100644
+index 606c9b53526b..0c7773fadd48 100644
 --- a/drivers/base/regmap/regmap.c
 +++ b/drivers/base/regmap/regmap.c
-@@ -1717,22 +1717,6 @@ int regmap_field_update_bits_base(struct regmap_field *field,
+@@ -1717,6 +1717,38 @@ int regmap_field_update_bits_base(struct regmap_field *field,
  EXPORT_SYMBOL_GPL(regmap_field_update_bits_base);
  
  /**
-- * regmap_field_write(): Write a value to a single register field
-- *
-- * @field: Register field to write to
-- * @val: Value to be written
-- *
-- * A value of zero will be returned on success, a negative errno will
-- * be returned in error cases.
-- */
--int regmap_field_write(struct regmap_field *field, unsigned int val)
--{
--	return regmap_update_bits(field->regmap, field->reg,
--				field->mask, val << field->shift);
--}
--EXPORT_SYMBOL_GPL(regmap_field_write);
--
--/**
-  * regmap_field_update_bits():	Perform a read/modify/write cycle
-  *                              on the register field
++ * regmap_fields_update_bits_base():
++ *	Perform a read/modify/write cycle on the register field
++ *	with change, async, force option
++ *
++ * @field: Register field to write to
++ * @id: port ID
++ * @mask: Bitmask to change
++ * @val: Value to be written
++ * @change: Boolean indicating if a write was done
++ * @async: Boolean indicating asynchronously
++ * @force: Boolean indicating use force update
++ *
++ * A value of zero will be returned on success, a negative errno will
++ * be returned in error cases.
++ */
++int regmap_fields_update_bits_base(struct regmap_field *field,  unsigned int id,
++				   unsigned int mask, unsigned int val,
++				   bool *change, bool async, bool force)
++{
++	if (id >= field->id_size)
++		return -EINVAL;
++
++	mask = (mask << field->shift) & field->mask;
++
++	return regmap_update_bits_base(field->regmap,
++				       field->reg + (field->id_offset * id),
++				       mask, val << field->shift,
++				       change, async, force);
++}
++EXPORT_SYMBOL_GPL(regmap_fields_update_bits_base);
++
++/**
+  * regmap_fields_write(): Write a value to a single register field with port ID
   *
+  * @field: Register field to write to
 diff --git a/include/linux/regmap.h b/include/linux/regmap.h
-index 23bf7657e485..13e9ebdea1c7 100644
+index e525beeaa2c6..2735a3df7eab 100644
 --- a/include/linux/regmap.h
 +++ b/include/linux/regmap.h
-@@ -74,6 +74,9 @@ struct reg_sequence {
- #define	regmap_update_bits_check_async(map, reg, mask, val, change)\
- 	regmap_update_bits_base(map, reg, mask, val, change, true, false)
+@@ -788,6 +788,9 @@ int regmap_fields_read(struct regmap_field *field, unsigned int id,
+ 		       unsigned int *val);
+ int regmap_fields_update_bits(struct regmap_field *field,  unsigned int id,
+ 			      unsigned int mask, unsigned int val);
++int regmap_fields_update_bits_base(struct regmap_field *field,  unsigned int id,
++				   unsigned int mask, unsigned int val,
++				   bool *change, bool async, bool force);
  
-+#define	regmap_field_write(field, val) \
-+	regmap_field_update_bits_base(field, ~0, val, NULL, false, false)
+ /**
+  * Description of an IRQ for the generic regmap irq_chip.
+@@ -966,6 +969,15 @@ static inline int regmap_field_update_bits_base(struct regmap_field *field,
+ 	return -EINVAL;
+ }
+ 
++static inline int regmap_fields_update_bits_base(struct regmap_field *field,
++				   unsigned int id,
++				   unsigned int mask, unsigned int val,
++				   bool *change, bool async, bool force)
++{
++	WARN_ONCE(1, "regmap API is disabled");
++	return -EINVAL;
++}
 +
- #ifdef CONFIG_REGMAP
- 
- enum regmap_endian {
-@@ -772,7 +775,6 @@ struct regmap_field *devm_regmap_field_alloc(struct device *dev,
- void devm_regmap_field_free(struct device *dev,	struct regmap_field *field);
- 
- int regmap_field_read(struct regmap_field *field, unsigned int *val);
--int regmap_field_write(struct regmap_field *field, unsigned int val);
- int regmap_field_update_bits_base(struct regmap_field *field,
- 				  unsigned int mask, unsigned int val,
- 				  bool *change, bool async, bool force);
+ static inline int regmap_get_val_bytes(struct regmap *map)
+ {
+ 	WARN_ONCE(1, "regmap API is disabled");
 -- 
 2.7.0
