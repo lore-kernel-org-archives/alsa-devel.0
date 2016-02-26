@@ -1,102 +1,103 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [PATCH v3 01/22] [media] Docbook: media-types.xml: Add ALSA Media
- Controller Intf types
-Date: Fri, 26 Feb 2016 12:28:56 -0700
-Message-ID: <56D0A778.5060302@osg.samsung.com>
+Subject: Re: [PATCH v3 02/22] uapi/media.h: Declare interface types for ALSA
+Date: Fri, 26 Feb 2016 12:30:03 -0700
+Message-ID: <56D0A7BB.2010109@osg.samsung.com>
 References: <cover.1455233150.git.shuahkh@osg.samsung.com>
- <363a459c08a1fcaf04052d7f2af05f1dd43de58e.1455233152.git.shuahkh@osg.samsung.com>
- <20160217101941.0b37ca98@recife.lan>
+ <a1b468c2933dc2b4f2b6cc6d1ac30baee2a89f77.1455233152.git.shuahkh@osg.samsung.com>
+ <20160217102103.1ae1d1fd@recife.lan>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160217101941.0b37ca98@recife.lan>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <20160217102103.1ae1d1fd@recife.lan>
+Sender: linux-media-owner@vger.kernel.org
 To: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, tiwai@suse.com
 Cc: clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittgam.net, johan@ol
 List-Id: alsa-devel@alsa-project.org
 
-On 02/17/2016 05:19 AM, Mauro Carvalho Chehab wrote:
-> Em Thu, 11 Feb 2016 16:41:17 -0700
+On 02/17/2016 05:21 AM, Mauro Carvalho Chehab wrote:
+> Em Thu, 11 Feb 2016 16:41:18 -0700
 > Shuah Khan <shuahkh@osg.samsung.com> escreveu:
 > 
->> Add ALSA Media Controller Intf types
+>> Declare the interface types to be used on alsa for
+>> the new G_TOPOLOGY ioctl.
 >>
 >> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 >> ---
->>  Documentation/DocBook/media/v4l/media-types.xml | 40 +++++++++++++++++++++++++
->>  1 file changed, 40 insertions(+)
+>>  drivers/media/media-entity.c | 16 ++++++++++++++++
+>>  include/uapi/linux/media.h   | 10 ++++++++++
+>>  2 files changed, 26 insertions(+)
 >>
->> diff --git a/Documentation/DocBook/media/v4l/media-types.xml b/Documentation/DocBook/media/v4l/media-types.xml
->> index 751c3d0..3730967 100644
->> --- a/Documentation/DocBook/media/v4l/media-types.xml
->> +++ b/Documentation/DocBook/media/v4l/media-types.xml
->> @@ -193,6 +193,46 @@
->>  	    <entry>Device node interface for Software Defined Radio (V4L)</entry>
->>  	    <entry>typically, /dev/swradio?</entry>
->>  	  </row>
->> +	  <row>
->> +	    <entry><constant>MEDIA_INTF_T_ALSA_PCM_CAPTURE</constant></entry>
->> +	    <entry>Device node interface for ASLA PCM Capture</entry>
->> +	    <entry>typically, /dev/snd/pcmC?D?c</entry>
->> +	  </row>
->> +	  <row>
->> +	    <entry><constant>MEDIA_INTF_T_ALSA_PCM_PLAYBACK</constant></entry>
->> +	    <entry>Device node interface for ASLA PCM Playback</entry>
->> +	    <entry>typically, /dev/snd/pcmC?D?p</entry>
->> +	  </row>
->> +	  <row>
->> +	    <entry><constant>MEDIA_INTF_T_ALSA_CONTROL</constant></entry>
->> +	    <entry>Device node interface for ASLA Control</entry>
->> +	    <entry>typically, /dev/snd/controlC?</entry>
->> +	  </row>
->> +	  <row>
->> +	    <entry><constant>MEDIA_INTF_T_ALSA_COMPRESS</constant></entry>
->> +	    <entry>Device node interface for ASLA Compress</entry>
->> +	    <entry>typically, /dev/snd/compr?</entry>
->> +	  </row>
->> +	  <row>
->> +	    <entry><constant>MEDIA_INTF_T_ALSA_RAWMIDI</constant></entry>
->> +	    <entry>Device node interface for ASLA Raw MIDI</entry>
->> +	    <entry>typically, /dev/snd/midi?</entry>
->> +	  </row>
->> +	  <row>
->> +	    <entry><constant>MEDIA_INTF_T_ALSA_HWDEP</constant></entry>
->> +	    <entry>Device node interface for ASLA Hardware Dependent</entry>
->> +	    <entry>typically, /dev/snd/hwC?D?</entry>
->> +	  </row>
->> +	  <row>
->> +	    <entry><constant>MEDIA_INTF_T_ALSA_SEQUENCER</constant></entry>
->> +	    <entry>Device node interface for ASLA Sequencer</entry>
->> +	    <entry>typically, /dev/snd/seq</entry>
->> +	  </row>
->> +	  <row>
->> +	    <entry><constant>MEDIA_INTF_T_ALSA_TIMER</constant></entry>
->> +	    <entry>Device node interface for ASLA Timer</entry>
->> +	    <entry>typically, /dev/snd/timer</entry>
+>> diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
+>> index f2e4360..6179543 100644
+>> --- a/drivers/media/media-entity.c
+>> +++ b/drivers/media/media-entity.c
+>> @@ -65,6 +65,22 @@ static inline const char *intf_type(struct media_interface *intf)
+>>  		return "v4l2-subdev";
+>>  	case MEDIA_INTF_T_V4L_SWRADIO:
+>>  		return "swradio";
+>> +	case MEDIA_INTF_T_ALSA_PCM_CAPTURE:
+>> +		return "pcm-capture";
+>> +	case MEDIA_INTF_T_ALSA_PCM_PLAYBACK:
+>> +		return "pcm-playback";
+>> +	case MEDIA_INTF_T_ALSA_CONTROL:
+>> +		return "alsa-control";
+>> +	case MEDIA_INTF_T_ALSA_COMPRESS:
+>> +		return "compress";
+>> +	case MEDIA_INTF_T_ALSA_RAWMIDI:
+>> +		return "rawmidi";
+>> +	case MEDIA_INTF_T_ALSA_HWDEP:
+>> +		return "hwdep";
+>> +	case MEDIA_INTF_T_ALSA_SEQUENCER:
+>> +		return "sequencer";
+>> +	case MEDIA_INTF_T_ALSA_TIMER:
+>> +		return "timer";
+>>  	default:
+>>  		return "unknown-intf";
+>>  	}
+>> diff --git a/include/uapi/linux/media.h b/include/uapi/linux/media.h
+>> index c9eb42a..3cc0366 100644
+>> --- a/include/uapi/linux/media.h
+>> +++ b/include/uapi/linux/media.h
+>> @@ -265,6 +265,7 @@ struct media_links_enum {
+>>  
+>>  #define MEDIA_INTF_T_DVB_BASE	0x00000100
+>>  #define MEDIA_INTF_T_V4L_BASE	0x00000200
+>> +#define MEDIA_INTF_T_ALSA_BASE	0x00000300
+>>  
+>>  /* Interface types */
+>>  
+>> @@ -280,6 +281,15 @@ struct media_links_enum {
+>>  #define MEDIA_INTF_T_V4L_SUBDEV (MEDIA_INTF_T_V4L_BASE + 3)
+>>  #define MEDIA_INTF_T_V4L_SWRADIO (MEDIA_INTF_T_V4L_BASE + 4)
+>>  
+>> +#define MEDIA_INTF_T_ALSA_PCM_CAPTURE   (MEDIA_INTF_T_ALSA_BASE)
+>> +#define MEDIA_INTF_T_ALSA_PCM_PLAYBACK  (MEDIA_INTF_T_ALSA_BASE + 1)
+>> +#define MEDIA_INTF_T_ALSA_CONTROL       (MEDIA_INTF_T_ALSA_BASE + 2)
+>> +#define MEDIA_INTF_T_ALSA_COMPRESS      (MEDIA_INTF_T_ALSA_BASE + 3)
+>> +#define MEDIA_INTF_T_ALSA_RAWMIDI       (MEDIA_INTF_T_ALSA_BASE + 4)
+>> +#define MEDIA_INTF_T_ALSA_HWDEP         (MEDIA_INTF_T_ALSA_BASE + 5)
+>> +#define MEDIA_INTF_T_ALSA_SEQUENCER     (MEDIA_INTF_T_ALSA_BASE + 6)
+>> +#define MEDIA_INTF_T_ALSA_TIMER         (MEDIA_INTF_T_ALSA_BASE + 7)
+>> +
+>>  /*
+>>   * MC next gen API definitions
+>>   *
 > 
-> On all the above:
-> 	s,ASLA,ALSA,
-> 
-> Except for that, patch looks OK for me.
+> Looks OK to me.
 > 
 > Takashi,
 > 
-> If this is OK for you too, could you please ack?
+> If this is OK for you too, would you mind acking it?
 > 
 
-Hi Takashi/Mauro,
+Hi Takashi,
 
-I send Patch v4 for just this patch to fix the above.
-
-Takashi,
-
-Could you please Ack if you are okay with this.
+Are you okay with this patch? Could you please
+Ack it.
 
 thanks,
 -- Shuah
-
-
 
 
 -- 
