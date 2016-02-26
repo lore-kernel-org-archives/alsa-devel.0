@@ -1,19 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Extend FLL function
-Date: Fri, 26 Feb 2016 10:34:03 +0900
-Message-ID: <20160226013403.GB18327@sirena.org.uk>
-References: <1451548510-4989-1-git-send-email-KCHSU0@nuvoton.com>
- <CAOMFOmX_fu94AYJpP5x4=r9GXb5CztxhMNNv7rHENO8fWbgjeg@mail.gmail.com>
- <56CE33D4.10009@nuvoton.com> <20160225015519.GW18327@sirena.org.uk>
- <56CF3B1B.4010705@nuvoton.com>
+Subject: Re: [PATCH v2] ASoC: cht_bsw_rt5645: Fix writing to
+	string literal
+Date: Fri, 26 Feb 2016 11:12:10 +0900
+Message-ID: <20160226021210.GE18327@sirena.org.uk>
+References: <1456217420-9327-1-git-send-email-carlo@caione.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4783807634723818544=="
+Content-Type: multipart/mixed; boundary="===============6242911084322375752=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E09C32606F5
- for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 02:34:09 +0100 (CET)
-In-Reply-To: <56CF3B1B.4010705@nuvoton.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C1392606F5
+ for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 03:12:24 +0100 (CET)
+In-Reply-To: <1456217420-9327-1-git-send-email-carlo@caione.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,63 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Anatol Pomozov <anatol.pomozov@gmail.com>, Ben Zhang <benzh@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com, Yong Zhi <yong.zhi@intel.com>
+To: Carlo Caione <carlo@caione.org>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, lgirdwood@gmail.com, yang.a.fang@intel.com, Carlo Caione <carlo@endlessm.com>, linux@endlessm.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4783807634723818544==
+--===============6242911084322375752==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="eFOTTzqbhq9fBDfj"
+	protocol="application/pgp-signature"; boundary="9ZrfUtnV9bgsmoNR"
 Content-Disposition: inline
 
 
---eFOTTzqbhq9fBDfj
+--9ZrfUtnV9bgsmoNR
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 26, 2016 at 01:34:19AM +0800, John Hsu wrote:
-> On 2/25/2016 9:55 AM, Mark Brown wrote:
+On Tue, Feb 23, 2016 at 09:50:20AM +0100, Carlo Caione wrote:
+> From: Carlo Caione <carlo@endlessm.com>
+>=20
+> We cannot use strcpy() to write to a const char * location. This is
+> causing a 'BUG: unable to handle kernel paging request' error at boot
+> when using the cht-bsw-rt5645 driver.
+>=20
+> With this patch we also fix a wrong indexing in the driver where the
+> codec_name of the wrong dai_link is being overwritten.
 
-> >I don't have whatever this patch is (I suspect the fact that there were
-> >concerns raised meant I expected a new version).  Please do try to use
-> >subject lines reflecting the style to the subsystem.
+So how was the original code tested then...?
 
-> Do you mean I need to resubmit this patch and in-reply-to Message-ID of this
-> mail?
-
-Yes, you need to resubmit the patch.  No, you do not need to do it in
-reply to this e-mail.
-
-> I don't really catch the meaning of "use subject lines reflecting the style
-> to the subsystem".
-> Could you tell me more detail about it? Thank you very much.
-
-If you look at all the other driver commits you'll see that their
-subject lines start "ASoC: driver: " .
-
---eFOTTzqbhq9fBDfj
+--9ZrfUtnV9bgsmoNR
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWz6uKAAoJECTWi3JdVIfQOhkH/RWIju71CnClhpZhwSgChxbY
-8dqZ5ONv6t8Nu5d/x+a2bEzZ5BzG1QvEo0QicwB2BjshoZtJy9rF0IErvdhBo5wl
-lg8XuH5lEHEifCaXXTIUP9fzyYP4VIbiFbSTlcSGXt7iZZwA/NuV9DgcjJyPCz5b
-AbWxmHJOzav4HKGF9Wt87KSHgw4UfClxfBtBrJ2v47N0lAh50mNWmkETDUE7qTiB
-s9Cj1q8DXKg/5kYdNz0H117qmnInpyjJDZo7yH8DvU8WHHHACj8ofPjpYBN6tPV5
-5SoQUrXR5MPiLs7cuF/Q0U04yBHjpg/c+ik0tPcRxv9b+NjH5Ia7BtFnTNfBkxs=
-=Svv3
+iQEcBAEBCAAGBQJWz7R2AAoJECTWi3JdVIfQgC4H/1xornAhfr+HlkRfkwBb8FSh
+YjZbOwhm5XCu/y4XKjffw239qJCqtaLfq8wGgsoJp5cghbdoHVxXPjbItrOafBUb
+v8hRzjZ1AcxGL938XxFSAJMi2wKARnTVc6gtR1o9sqfD6KZcKvxVxQQf3JtV3sxD
+YQMuH/UHAGeXHi2QrjWW7ou7PndUbSJTsMxW7WW9GZxdBptQbOufBozDmvSGDnmO
+GBT7uHCmTJbEDksSDGJG5ythJTZt1XHwpJHftzbL61fW7yEadCvA07OqRY9uk6TU
+T1NXCfkrx5uvIhM7HJULz8MjEZtNscgsqbZGj7NbpOa+dkuw86uV8ZDVoUfy3YI=
+=FweA
 -----END PGP SIGNATURE-----
 
---eFOTTzqbhq9fBDfj--
+--9ZrfUtnV9bgsmoNR--
 
---===============4783807634723818544==
+--===============6242911084322375752==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4783807634723818544==--
+--===============6242911084322375752==--
