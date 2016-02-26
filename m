@@ -1,60 +1,74 @@
 From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 2/2] ASoC: ads117x: Add device tree compatible string
-Date: Fri, 26 Feb 2016 11:14:06 +0900
-Message-ID: <20160226021406.GG18327@sirena.org.uk>
-References: <1454686334-9668-1-git-send-email-florian.vaussard@heig-vd.ch>
- <1454686334-9668-3-git-send-email-florian.vaussard@heig-vd.ch>
- <56CD5D85.8070501@gmail.com>
+Subject: Re: [PATCH 1/4] ASoC: wm9713: add binding for WM9713 codec
+Date: Fri, 26 Feb 2016 11:30:21 +0900
+Message-ID: <20160226023021.GH18327@sirena.org.uk>
+References: <1455979079-9030-1-git-send-email-robert.jarzmik@free.fr>
+ <20160220171459.GA18327@sirena.org.uk>
+ <871t87z1gz.fsf@belgarion.home>
+ <20160220195925.GF18327@sirena.org.uk>
+ <87twl3xgud.fsf@belgarion.home>
+ <20160220211659.GG18327@sirena.org.uk>
+ <878u2fxbp9.fsf@belgarion.home>
+ <20160221014920.GK18327@sirena.org.uk>
+ <87povkuuf6.fsf@belgarion.home>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="DtJW00gg9Uj+27As"
+	protocol="application/pgp-signature"; boundary="VtO80Grm6b12p/hj"
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <56CD5D85.8070501-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+In-Reply-To: <87povkuuf6.fsf-4ty26DBLk+jEm7gnYqmdkQ@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Florian Vaussard <florian.vaussard-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Florian Vaussard <florian.vaussard-EWQkb/GNqlFyDzI6CaY1VQ@public.gmane.org>
+To: Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>
+Cc: Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---DtJW00gg9Uj+27As
+--VtO80Grm6b12p/hj
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 24, 2016 at 08:36:37AM +0100, Florian Vaussard wrote:
-> >  			.name =3D "ads117x-codec",
-> > +			.of_match_table =3D of_match_ptr(ads117x_dt_ids),
-> >  	},
-> > =20
-> >  	.probe =3D ads117x_probe,
-> >=20
+On Fri, Feb 26, 2016 at 02:33:49AM +0100, Robert Jarzmik wrote:
+> Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> writes:
 
-> Do you have any more comments on this patch?
+> > It will not be called, the generic AC'97 code will be used.
 
-Please don't send content free pings and please allow a reasonable time
-for review.  People get busy, go on holiday, attend conferences and so=20
-on so unless there is some reason for urgency (like critical bug fixes)
-please allow at least a couple of weeks for review.  Sending content
-free pings just adds to the mail volume (if they are seen at all) and if=20
-something has gone wrong you'll have to resend the patches anyway.
+> Ok, if it's not called no code in sound/soc/codecs/wm9713.c will be used, right
+> ?
+> In that case wm9713_set_dai_clkdiv() will never be used, nor will the
+> wm9713_audio_map or wm9713_dapm_widgets be created, which will break all
+> userspace programs relying on these mixers and DAPM routes.
 
---DtJW00gg9Uj+27As
+> Or am I missing something ?
+
+No, you're not missing anything - that'll be what happens.  If you need
+to preserve the userspace ABI on your board you'd need a much bigger
+(but very welcome) refactoring of the AC'97 code to be less hacky and
+use the device model more directly, or at least define a generic AC'97
+binding somehow.  All the AC'97 support has never really been properly
+moved over to the device model and unfortunately nobody's yet cared
+about it for device tree except in the simple cases supported by the
+generic AC'97 code.  I appreciate that this isn't very helpful, it's
+an unfortunate consequence of DT as an ABI.
+
+We probably want to end up with something like what the Intel folks have
+been doing recently for HDA to get that working within ASoC.
+
+--VtO80Grm6b12p/hj
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWz7TsAAoJECTWi3JdVIfQMVoH/3vuy5GhyhACQ2doDvIvANI2
-VZyoEJH1ctqOpQgqWcYA7IZ/pHohAE4szCJ5UVfaanMoKRIQEThFs3Tw2/wpwTSb
-Jax++y0o6Ocp4ZydV4StGnSV410E6kk4oYsnk/dCJDeykizf4+4WlBkAqIXtik4+
-zS/c4+qTc10d4Hgy+P++5rO+3jT76sbEUrzbGQBQYyjc3Tmxk22cZQaRSR7H7S0e
-v7NgNELCl+2l0/7iW3rkCTyLrFYSaj7tZsTD4K0wLko66cbUTFNaImauymNks+Tm
-+/tnUrbs/DBeTOiUFvWW5jqRpogb50cWQ3ULRAa4zJhI5QR8mH0nqJazITA3sZw=
-=nV9P
+iQEcBAEBCAAGBQJWz7i8AAoJECTWi3JdVIfQaKwH/2m0pvEOAFpEjx5yvY52W+n3
+1xYPCTbV6Xpn+d3MH8K3CODOczpnFSSX4IyCjkenU3K9JCOL+dCCbeskcOUGyEgA
+WLhDRp9j3TivCHf8YC6YlcARp8ntLBBzZxOvf64QdOrZ+GZ0dGd8dUOlEHaFnN85
+X2Kn0DuT9i1X2l1BNrn4bTBbcBvAe8w5B+Be5YdEqcrcnomJiyuqTMpzkatBnJ/5
++x9ONK1px1GoxHvMK9/UMcYMs/QgQ1Rpvnvup2Gc1Cerf3OHLqK31JRC0pimIXZi
+Wb80ujyZXnw0zVngkjze2A4Ut2tpfKp0P6/xpaxduWcrf+CQdT9Kdqn5UwpsagQ=
+=7r+0
 -----END PGP SIGNATURE-----
 
---DtJW00gg9Uj+27As--
+--VtO80Grm6b12p/hj--
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
