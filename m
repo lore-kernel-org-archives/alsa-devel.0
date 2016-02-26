@@ -1,23 +1,19 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH 1/4] ASoC: wm9713: add binding for WM9713
-	codec
-Date: Fri, 26 Feb 2016 02:33:49 +0100
-Message-ID: <87povkuuf6.fsf@belgarion.home>
-References: <1455979079-9030-1-git-send-email-robert.jarzmik@free.fr>
- <20160220171459.GA18327@sirena.org.uk> <871t87z1gz.fsf@belgarion.home>
- <20160220195925.GF18327@sirena.org.uk> <87twl3xgud.fsf@belgarion.home>
- <20160220211659.GG18327@sirena.org.uk> <878u2fxbp9.fsf@belgarion.home>
- <20160221014920.GK18327@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Extend FLL function
+Date: Fri, 26 Feb 2016 10:34:03 +0900
+Message-ID: <20160226013403.GB18327@sirena.org.uk>
+References: <1451548510-4989-1-git-send-email-KCHSU0@nuvoton.com>
+ <CAOMFOmX_fu94AYJpP5x4=r9GXb5CztxhMNNv7rHENO8fWbgjeg@mail.gmail.com>
+ <56CE33D4.10009@nuvoton.com> <20160225015519.GW18327@sirena.org.uk>
+ <56CF3B1B.4010705@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4783807634723818544=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp04.smtpout.orange.fr
- [80.12.242.126])
- by alsa0.perex.cz (Postfix) with ESMTP id 016AB2606F5
- for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 02:33:53 +0100 (CET)
-In-Reply-To: <20160221014920.GK18327@sirena.org.uk> (Mark Brown's message of
- "Sun, 21 Feb 2016 10:49:20 +0900")
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E09C32606F5
+ for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 02:34:09 +0100 (CET)
+In-Reply-To: <56CF3B1B.4010705@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,46 +23,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, Daniel Mack <daniel@zonque.org>
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Anatol Pomozov <anatol.pomozov@gmail.com>, Ben Zhang <benzh@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com, Yong Zhi <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown <broonie@kernel.org> writes:
 
->> > It will eumerate the AC'97 bus by itself and does not need the CODEC to
->> > be described.
->
->> I think I still don't get it.
->
->> So let's rephrase it another way : how will the function wm9713_probe() be
->> called, ie. what is the possible function backtrace leading to that call ?
->
-> It will not be called, the generic AC'97 code will be used.
+--===============4783807634723818544==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="eFOTTzqbhq9fBDfj"
+Content-Disposition: inline
 
-Ok, if it's not called no code in sound/soc/codecs/wm9713.c will be used, right
-?
-In that case wm9713_set_dai_clkdiv() will never be used, nor will the
-wm9713_audio_map or wm9713_dapm_widgets be created, which will break all
-userspace programs relying on these mixers and DAPM routes.
 
-Or am I missing something ?
+--eFOTTzqbhq9fBDfj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->> Do you have a devicetree example somewhere, with (ac97 host, audio codec) pair I
->> can have a look at to understand ?
->
-> Some Atmel boards do this IIRC, as does the AACI driver (via AMBA but
-> same effect).
-I suppose you mean sound/arm/aaci.c, which is more a platform_data like driver
-(if I understood the integrator code correctly).
+On Fri, Feb 26, 2016 at 01:34:19AM +0800, John Hsu wrote:
+> On 2/25/2016 9:55 AM, Mark Brown wrote:
 
-I suppose we can achieve comparable result with sound/arm/pxa2xx-ac97.c, but as
-to know if the functionality will be comparable to sound/soc/pxa/pxa2xx-ac97.c,
-it's hard to say. If I count the DMA requestors, I see 5 in the sound/soc
-version, and 2 in sound/arm.
+> >I don't have whatever this patch is (I suspect the fact that there were
+> >concerns raised meant I expected a new version).  Please do try to use
+> >subject lines reflecting the style to the subsystem.
 
-That makes me believe the sound/arm version is inferior.
+> Do you mean I need to resubmit this patch and in-reply-to Message-ID of this
+> mail?
 
-Cheers.
+Yes, you need to resubmit the patch.  No, you do not need to do it in
+reply to this e-mail.
 
--- 
-Robert
+> I don't really catch the meaning of "use subject lines reflecting the style
+> to the subsystem".
+> Could you tell me more detail about it? Thank you very much.
+
+If you look at all the other driver commits you'll see that their
+subject lines start "ASoC: driver: " .
+
+--eFOTTzqbhq9fBDfj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWz6uKAAoJECTWi3JdVIfQOhkH/RWIju71CnClhpZhwSgChxbY
+8dqZ5ONv6t8Nu5d/x+a2bEzZ5BzG1QvEo0QicwB2BjshoZtJy9rF0IErvdhBo5wl
+lg8XuH5lEHEifCaXXTIUP9fzyYP4VIbiFbSTlcSGXt7iZZwA/NuV9DgcjJyPCz5b
+AbWxmHJOzav4HKGF9Wt87KSHgw4UfClxfBtBrJ2v47N0lAh50mNWmkETDUE7qTiB
+s9Cj1q8DXKg/5kYdNz0H117qmnInpyjJDZo7yH8DvU8WHHHACj8ofPjpYBN6tPV5
+5SoQUrXR5MPiLs7cuF/Q0U04yBHjpg/c+ik0tPcRxv9b+NjH5Ia7BtFnTNfBkxs=
+=Svv3
+-----END PGP SIGNATURE-----
+
+--eFOTTzqbhq9fBDfj--
+
+--===============4783807634723818544==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4783807634723818544==--
