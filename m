@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RESEND PATCH] ASoC: cs4271: add regulator
-	consumer support
-Date: Fri, 26 Feb 2016 11:46:05 +0900
-Message-ID: <20160226024605.GJ18327@sirena.org.uk>
-References: <1455635946-16267-1-git-send-email-pascal.huerst@gmail.com>
+Subject: Applied "ASoC: pxa: remove unused variable" to the
+	asoc tree
+Date: Fri, 26 Feb 2016 11:46:57 +0900
+Message-ID: <E1aZ8Qj-0006Jl-Au@finisterre>
+References: <4678926.Vc1QsAaFQ0@wuerfel>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4464801359780382054=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C79AF2614D0
- for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 03:46:12 +0100 (CET)
-In-Reply-To: <1455635946-16267-1-git-send-email-pascal.huerst@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 762C926523B
+ for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 03:47:01 +0100 (CET)
+In-Reply-To: <4678926.Vc1QsAaFQ0@wuerfel>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,49 +22,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: pascal.huerst@gmail.com
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com
+To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============4464801359780382054==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="3uZa4G/ShncPgKeZ"
-Content-Disposition: inline
+   ASoC: pxa: remove unused variable
 
+has been applied to the asoc tree at
 
---3uZa4G/ShncPgKeZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Feb 16, 2016 at 04:19:06PM +0100, pascal.huerst@gmail.com wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> While at it, factored out the reset code into its own function.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Please split separate changes into separate patches.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---3uZa4G/ShncPgKeZ
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Thanks,
+Mark
 
-iQEcBAEBCAAGBQJWz7xoAAoJECTWi3JdVIfQizYH/1iCFR9hzsAA0Gun8gMwb4Q6
-1ar5VbD5DOtXU7PilOAmAeDa0CzCWbDSJLGVKUKH6VPFsUZa9+2vAFy33OioLptf
-dChC2esyeXaKPwpjGIPAkxmTUM40y3hoq4Zn63Up02HjoMzkHgxMb0/9yLTxEpR4
-/EITU3s45g5aSE5kCWyLbw2QEUpxLlZI66ZiWtfLJhmQ0PaIj5bdtC26r5CGaHTp
-cx1ntKyrWNhoFoY/x0Z00PbO597V/llF1a4KcQeKWtFFfFN952OMwAz7A0yrDIhF
-a/+Q8UrSFZwcuJR90c4wMZ0/WkID2VSiXuF0vXihLHgbWA2bmraJZ8oA+/uSra8=
-=/Vz7
------END PGP SIGNATURE-----
+>From aa3e838869d494c437c693b54d12fe02b96a0aa1 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Thu, 25 Feb 2016 23:02:04 +0100
+Subject: [PATCH] ASoC: pxa: remove unused variable
 
---3uZa4G/ShncPgKeZ--
+As pointed out by Zhangfei Gao, the sspa_div variable in
+brownstone_wm8994_hw_params() is completely unused, so as a cleanup
+following a prior patch, this removes both the variable and the division.
 
---===============4464801359780382054==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/pxa/brownstone.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-
---===============4464801359780382054==--
+diff --git a/sound/soc/pxa/brownstone.c b/sound/soc/pxa/brownstone.c
+index 416ea646c3b1..ec522e94b0e2 100644
+--- a/sound/soc/pxa/brownstone.c
++++ b/sound/soc/pxa/brownstone.c
+@@ -52,7 +52,6 @@ static int brownstone_wm8994_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	int freq_out, sspa_mclk, sysclk;
+-	int sspa_div;
+ 
+ 	if (params_rate(params) > 11025) {
+ 		freq_out  = params_rate(params) * 512;
+@@ -63,7 +62,6 @@ static int brownstone_wm8994_hw_params(struct snd_pcm_substream *substream,
+ 		sysclk    = params_rate(params) * 512;
+ 		sspa_mclk = params_rate(params) * 64;
+ 	}
+-	sspa_div = freq_out / sspa_mclk;
+ 
+ 	snd_soc_dai_set_sysclk(cpu_dai, MMP_SSPA_CLK_AUDIO, freq_out, 0);
+ 	snd_soc_dai_set_pll(cpu_dai, MMP_SYSCLK, 0, freq_out, sysclk);
+-- 
+2.7.0
