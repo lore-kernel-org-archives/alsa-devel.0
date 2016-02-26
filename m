@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: extend delay time for headphone
-	pop noise" to the asoc tree
-Date: Fri, 26 Feb 2016 11:46:57 +0900
-Message-ID: <E1aZ8Qj-0006KF-VF@finisterre>
-References: <1456377507-13120-2-git-send-email-john.lin@realtek.com>
+Subject: Applied "ASoC: trace: fix printing jack name" to the
+	asoc tree
+Date: Fri, 26 Feb 2016 11:46:59 +0900
+Message-ID: <E1aZ8Ql-0006LD-Bk@finisterre>
+References: <3238725.1iS2dg6EkI@wuerfel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BABAE265255
- for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 03:47:01 +0100 (CET)
-In-Reply-To: <1456377507-13120-2-git-send-email-john.lin@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E7F38265274
+ for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 03:47:02 +0100 (CET)
+In-Reply-To: <3238725.1iS2dg6EkI@wuerfel>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Lin <john.lin@realtek.com>, Mark Brown <broonie@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: extend delay time for headphone pop noise
+   ASoC: trace: fix printing jack name
 
 has been applied to the asoc tree at
 
@@ -53,32 +53,69 @@ to this mail.
 Thanks,
 Mark
 
->From 3524be4b21ef911ff37f7d401b743cfb4e30cf98 Mon Sep 17 00:00:00 2001
-From: John Lin <john.lin@realtek.com>
-Date: Thu, 25 Feb 2016 13:18:27 +0800
-Subject: [PATCH] ASoC: rt5645: extend delay time for headphone pop noise
+>From f4833a519aec793cf8349bf479589d37473ef6a7 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Wed, 24 Feb 2016 17:38:14 +0100
+Subject: [PATCH] ASoC: trace: fix printing jack name
 
-Headphone needs enough delay time before unmuting for avoiding pop sound.
-We extend the delay time to make sure headphone doesn't pop.
+After a change to the snd_jack structure, the 'name' member
+is no longer available in all configurations, which results in a
+build failure in the tracing code:
 
-Signed-off-by: John Lin <john.lin@realtek.com>
+include/trace/events/asoc.h: In function 'trace_event_raw_event_snd_soc_jack_report':
+include/trace/events/asoc.h:240:32: error: 'struct snd_jack' has no member named 'name'
+
+The name field is normally initialized from the card shortname and
+the jack "id" field:
+
+        snprintf(jack->name, sizeof(jack->name), "%s %s",
+                 card->shortname, jack->id);
+
+This changes the tracing output to just contain the 'id' by
+itself, which slightly changes the output format but avoids the
+link error and is hopefully still enough to see what is going on.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: fe0d128c57bf ("ALSA: jack: Allow building the jack layer without input device")
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/trace/events/asoc.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index c3dc371a7ef3..df9fee7f1b42 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -1674,7 +1674,7 @@ static void hp_amp_power(struct snd_soc_codec *codec, int on)
- 				regmap_write(rt5645->regmap, RT5645_PR_BASE +
- 					RT5645_MAMP_INT_REG2, 0xfc00);
- 				snd_soc_write(codec, RT5645_DEPOP_M2, 0x1140);
--				msleep(70);
-+				msleep(90);
- 				rt5645->hp_on = true;
- 			} else {
- 				/* depop parameters */
+diff --git a/include/trace/events/asoc.h b/include/trace/events/asoc.h
+index 317a1ed2f4ac..9130dd5a184a 100644
+--- a/include/trace/events/asoc.h
++++ b/include/trace/events/asoc.h
+@@ -231,13 +231,13 @@ TRACE_EVENT(snd_soc_jack_report,
+ 	TP_ARGS(jack, mask, val),
+ 
+ 	TP_STRUCT__entry(
+-		__string(	name,		jack->jack->name	)
++		__string(	name,		jack->jack->id		)
+ 		__field(	int,		mask			)
+ 		__field(	int,		val			)
+ 	),
+ 
+ 	TP_fast_assign(
+-		__assign_str(name, jack->jack->name);
++		__assign_str(name, jack->jack->id);
+ 		__entry->mask = mask;
+ 		__entry->val = val;
+ 	),
+@@ -253,12 +253,12 @@ TRACE_EVENT(snd_soc_jack_notify,
+ 	TP_ARGS(jack, val),
+ 
+ 	TP_STRUCT__entry(
+-		__string(	name,		jack->jack->name	)
++		__string(	name,		jack->jack->id		)
+ 		__field(	int,		val			)
+ 	),
+ 
+ 	TP_fast_assign(
+-		__assign_str(name, jack->jack->name);
++		__assign_str(name, jack->jack->id);
+ 		__entry->val = val;
+ 	),
+ 
 -- 
 2.7.0
