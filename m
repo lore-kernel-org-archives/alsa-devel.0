@@ -1,233 +1,81 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH v2] ASoC: imx-wm8958: add imx-wm8958
- machine driver
-Date: Fri, 26 Feb 2016 12:52:09 -0800
-Message-ID: <20160226205208.GA25515@Asurada-Nvidia>
-References: <6f90780124a7f5bf31452623fdf04225873fc711.1456457898.git.zidan.wang@freescale.com>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH 1/4] ASoC: wm9713: add binding for WM9713 codec
+Date: Fri, 26 Feb 2016 22:04:15 +0100
+Message-ID: <87k2lruqsw.fsf@belgarion.home>
+References: <1455979079-9030-1-git-send-email-robert.jarzmik@free.fr>
+	<20160220171459.GA18327@sirena.org.uk> <871t87z1gz.fsf@belgarion.home>
+	<20160220195925.GF18327@sirena.org.uk> <87twl3xgud.fsf@belgarion.home>
+	<20160220211659.GG18327@sirena.org.uk> <878u2fxbp9.fsf@belgarion.home>
+	<20160221014920.GK18327@sirena.org.uk> <87povkuuf6.fsf@belgarion.home>
+	<20160226023021.GH18327@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f53.google.com (mail-pa0-f53.google.com
- [209.85.220.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 67CAD261298
- for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 21:52:05 +0100 (CET)
-Received: by mail-pa0-f53.google.com with SMTP id yy13so56511771pab.3
- for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 12:52:05 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <6f90780124a7f5bf31452623fdf04225873fc711.1456457898.git.zidan.wang@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Xiubo.Lee@gmail.com
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160226023021.GH18327@sirena.org.uk> (Mark Brown's message of
+	"Fri, 26 Feb 2016 11:30:21 +0900")
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 26, 2016 at 11:42:42AM +0800, Zidan Wang wrote:
-> This is the initial imx-wm8958 device-tree-only machine driver working
-> with fsl_sai driver. This sound card has three dai link, HIFI, VOICE
-> and BT dai. HIFI dai link will support codec master and slave mode.
-> VOICE an BT dai link have dummy cpu dai, and just support codec
-> master mode.
+Mark Brown <broonie@kernel.org> writes:
 
-Why VOICE and BT are using dummy cpu dai? Where can I find the
-schematics for wm8958 from NXP website?
+> On Fri, Feb 26, 2016 at 02:33:49AM +0100, Robert Jarzmik wrote:
+>> Mark Brown <broonie@kernel.org> writes:
+>
+>> > It will not be called, the generic AC'97 code will be used.
+>
+>> Ok, if it's not called no code in sound/soc/codecs/wm9713.c will be used, right
+>> ?
+>> In that case wm9713_set_dai_clkdiv() will never be used, nor will the
+>> wm9713_audio_map or wm9713_dapm_widgets be created, which will break all
+>> userspace programs relying on these mixers and DAPM routes.
+>
+>> Or am I missing something ?
+>
+> No, you're not missing anything - that'll be what happens.  If you need
+> to preserve the userspace ABI on your board you'd need a much bigger
+> (but very welcome) refactoring of the AC'97 code to be less hacky and
+> use the device model more directly, or at least define a generic AC'97
+> binding somehow.  All the AC'97 support has never really been properly
+> moved over to the device model and unfortunately nobody's yet cared
+> about it for device tree except in the simple cases supported by the
+> generic AC'97 code.  I appreciate that this isn't very helpful, it's
+> an unfortunate consequence of DT as an ABI.
+>
+> We probably want to end up with something like what the Intel folks have
+> been doing recently for HDA to get that working within ASoC.
 
-> diff --git a/Documentation/devicetree/bindings/sound/imx-audio-wm8958.txt
-> +Example:
-> +
-> +sound {
-> +		compatible = "fsl,imx6ul-evk-wm8958",
-> +			   "fsl,imx-audio-wm8958";
-> +		model = "wm8960-audio";
+Ok, let me think about it and propose something, an approach.
 
-8960?
+I must admit I like the structure I saw in drivers/amba/bus.c, ie. to have
+something like :
+ - a bus driver core (sound/ac97/bus.c ?)
+   Split between this and sound/pci/ac97_codec.c I don't know yet.
+   => an instance of this bus will be instanciated from each snd_ac97_bus() call
+      just as now
+   => bus_register(&ac97_bustype)
+   => ac97_bus_probe/remove(), match/uevent/dev_attrs
+   => ac97_driver_register(struct ac97_driver *drv)
 
-> diff --git a/arch/arm/configs/imx_v6_v7_defconfig
-> +config SND_SOC_IMX_WM8958
-> +	tristate "SoC Audio support for i.MX boards with wm8958"
-> +	depends on OF && I2C
-> +	select MFD_WM8994
-> +	select SND_SOC_WM8994
-> +	select SND_SOC_IMX_PCM_DMA
-> +	select SND_SOC_FSL_SAI
-> +	select SND_SOC_FSL_UTILS
-> +	select SND_KCTL_JACK
+ - a ac97 driver structure (struct ac97_driver) with :
+   => u32 vendor_id (vendor_id = lambda(vendor_id1, vendor_id2))
+   => u32 vendor_id_mask (mask of bits to match)
+   ...
 
-The driver doesn't seem to use kcontrol....
+ - each ac97 controller will call snd_ac97_bus().
+   In my case, that's sound/arm/pxa2xx-ac97.c or sound/soc/pxa2xx-ac97.c,
+   whatever.
 
-> +static u32 imx_wm8958_rates[] = { 8000, 16000, 32000, 48000 };
-> +
-> +static struct snd_pcm_hw_constraint_list imx_wm8958_rate_constraints = {
-> +	.count = ARRAY_SIZE(imx_wm8958_rates),
-> +	.list = imx_wm8958_rates,
-> +};
+ - each ac97 codec will subscribe to the bus
+   ac97_driver_register(struct ac97_driver *drv, u32 vendor_id, u32 vendor_mask)
+   For example wm9713.c will call :
+     ac97_driver_register(drv, AC97_VENDOR(0x...., 0x....), 0xffffffff);
 
-Where are these rate constraints coming from?
+Well, if I'm totally mistaken, tell me. If not it will take me a bit of time to
+write is down properly in a Documentation/ file.
 
-> +static int imx_wm8958_hw_params(struct snd_pcm_substream *substream,
-> +				struct snd_pcm_hw_params *params)
-> +{
-> +	if (data->mclk_freq[id])
-> +		mclk_id = WM8994_FLL_SRC_MCLK(id);
-> +	else if (id == HIFI_DAI)
-> +		mclk_id = WM8994_FLL_SRC_MCLK2;
-> +	else
-> +		mclk_id = WM8994_FLL_SRC_MCLK1;
+Cheers.
 
-I can barely follow the MCLK assigning logic here...
-
-Is it trying to use the alternative MCLK if the corresponding one
-is unavailable? (Since id could be only 0 or 1). And what if both
-are unavailable?
-
-> +	if (id == HIFI_DAI) {
-> +		/*
-> +		 * Set GPIO1 pin function to reserve, so that DAC1 and ADC1
-> +		 * using shared LRCLK from DACLRCK1.
-> +		 */
-> +		snd_soc_update_bits(codec, WM8994_GPIO_1, 0x1f, 0x2);
-
-I don't see any reverse operation against this GPIO configuration here.
-So is it really an operation that has to be done every hw_params()?
-
-> +	} else if (id == VOICE_DAI) {
-> +		/*
-> +		 * Set GPIO6 pin function to reserve, so that DAC2 and ADC2
-> +		 * using shared LRCLK from DACLRCK2.
-> +		 */
-> +		snd_soc_update_bits(codec, WM8994_GPIO_6, 0x1f, 0x2);
-
-Same here.
-
-> +static int imx_wm8958_set_bias_level(struct snd_soc_card *card,
-> +				struct snd_soc_dapm_context *dapm,
-> +				enum snd_soc_bias_level level)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd;
-> +	struct snd_soc_dai *codec_dai;
-> +	struct imx_wm8958_data *data = snd_soc_card_get_drvdata(card);
-> +	int ret, i;
-> +
-> +	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
-> +	codec_dai = rtd->codec_dai;
-> +
-> +	if (dapm->dev != codec_dai->dev)
-> +		return 0;
-> +
-> +	switch (level) {
-> +	case SND_SOC_BIAS_STANDBY:
-> +		if (card->dapm.bias_level == SND_SOC_BIAS_OFF) {
-
-Using
-		if (card->dapm.bias_level != SND_SOC_BIAS_OFF)
-			break;
-
-may save one \t for each line below.
-
-> +			/* need to enable mclk to write/read wm8958 register */
-> +			for (i = 0; i < WM8958_MCLK_MAX; i++) {
-> +				if (!IS_ERR(data->mclk[i])) {
-> +					ret = clk_prepare_enable(data->mclk[i]);
-> +					if (ret)
-> +						dev_warn(card->dev,
-> +							 "Failed to enable MCLK%d: %d\n",
-> +							 i + 1, ret);
-> +				}
-> +			}
-> +		}
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int imx_wm8958_set_bias_level_post(struct snd_soc_card *card,
-> +				     struct snd_soc_dapm_context *dapm,
-> +				     enum snd_soc_bias_level level)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd;
-> +	struct snd_soc_dai *codec_dai;
-> +	struct imx_wm8958_data *data = snd_soc_card_get_drvdata(card);
-> +	int i;
-> +
-> +	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
-> +	codec_dai = rtd->codec_dai;
-> +
-> +	if (dapm->dev != codec_dai->dev)
-> +		return 0;
-> +
-> +	switch (level) {
-> +	case SND_SOC_BIAS_OFF:
-> +		if (card->dapm.bias_level == SND_SOC_BIAS_STANDBY)
-> +			for (i = 0; i < WM8958_MCLK_MAX; i++) {
-> +				if (!IS_ERR(data->mclk[i]))
-> +					clk_disable_unprepare(data->mclk[i]);
-
-The set_bias() funcs are merely en/disabling mclk. Would be possible to
-do it in the codec driver?
-
-> +static struct snd_soc_dai_link imx_wm8958_dai_link[] = {
-> +	[HIFI_DAI] =	{
-> +			.name = "HiFi",
-> +			.stream_name = "HiFi",
-> +			.codec_name = "wm8994-codec",
-> +			.codec_dai_name = "wm8994-aif1",
-> +			.ops = &imx_hifi_ops,
-> +			.dai_fmt = SND_SOC_DAIFMT_I2S |
-> +				   SND_SOC_DAIFMT_NB_NF,
-> +	},
-> +	[VOICE_DAI] =   {
-> +			.name = "Voice",
-> +			.stream_name = "Voice",
-> +			.cpu_dai_name = "snd-soc-dummy-dai",
-> +			.codec_name = "wm8994-codec",
-> +			.codec_dai_name = "wm8994-aif2",
-> +			.platform_name = "snd-soc-dummy",
-> +			.ignore_pmdown_time = 1,
-> +			.ops = &imx_voice_ops,
-> +			.dai_fmt = SND_SOC_DAIFMT_I2S |
-> +				   SND_SOC_DAIFMT_NB_NF |
-> +				   SND_SOC_DAIFMT_CBM_CFM,
-> +	},
-> +	[BT_DAI] =	{
-> +			.name = "Bluetooth",
-> +			.stream_name = "Bluetooth",
-> +			.cpu_dai_name = "snd-soc-dummy-dai",
-> +			.codec_name = "wm8994-codec",
-> +			.codec_dai_name = "wm8994-aif3",
-> +			.platform_name = "snd-soc-dummy",
-> +			.ignore_pmdown_time = 1,
-> +	},
-
-A little curious...how is the BT gonna work for you?
-
-> +};
-> +
-> +static int imx_wm8958_probe(struct platform_device *pdev)
-> +{
-> +	for (i = 0; i < WM8958_MCLK_MAX; i++) {
-> +		sprintf(tmp, "mclk%d", i + 1);
-> +		data->mclk[i] = devm_clk_get(&codec_dev->dev, tmp);
-> +		if (IS_ERR(data->mclk[i])) {
-> +			ret = PTR_ERR(data->mclk[i]);
-> +			dev_err(&pdev->dev, "failed to get mclk%d clock: %d\n",
-> +				i + 1, ret);
-
-What's the point to have ret = PTR_ERR without doing any error out?
-
-> +		} else {
-> +			data->mclk_freq[i] = clk_get_rate(data->mclk[i]);
-> +		}
-> +	}
-
-Thanks
-Nicolin
+-- 
+Robert
