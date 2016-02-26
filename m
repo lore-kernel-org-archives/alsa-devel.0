@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: trace: fix printing jack name" to the
-	asoc tree
-Date: Fri, 26 Feb 2016 11:46:59 +0900
-Message-ID: <E1aZ8Ql-0006LD-Bk@finisterre>
-References: <3238725.1iS2dg6EkI@wuerfel>
+Subject: Applied "ASoC: rt5645: improve headphone pop when
+	system resumes from S3" to the asoc tree
+Date: Fri, 26 Feb 2016 11:46:58 +0900
+Message-ID: <E1aZ8Qk-0006Kj-Kc@finisterre>
+References: <1456377507-13120-1-git-send-email-john.lin@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E7F38265274
+ by alsa0.perex.cz (Postfix) with ESMTP id 113B3265268
  for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 03:47:02 +0100 (CET)
-In-Reply-To: <3238725.1iS2dg6EkI@wuerfel>
+In-Reply-To: <1456377507-13120-1-git-send-email-john.lin@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
+To: John Lin <john.lin@realtek.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: trace: fix printing jack name
+   ASoC: rt5645: improve headphone pop when system resumes from S3
 
 has been applied to the asoc tree at
 
@@ -53,69 +53,48 @@ to this mail.
 Thanks,
 Mark
 
->From f4833a519aec793cf8349bf479589d37473ef6a7 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Wed, 24 Feb 2016 17:38:14 +0100
-Subject: [PATCH] ASoC: trace: fix printing jack name
+>From 0150e8c053e585dbd3f8141fbb942015532527ca Mon Sep 17 00:00:00 2001
+From: John Lin <john.lin@realtek.com>
+Date: Thu, 25 Feb 2016 13:18:26 +0800
+Subject: [PATCH] ASoC: rt5645: improve headphone pop when system resumes from
+ S3
 
-After a change to the snd_jack structure, the 'name' member
-is no longer available in all configurations, which results in a
-build failure in the tracing code:
+When playing audio through headphone, headphone makes pop noise if system
+resumes from S3 to S0. We modify the sequence of writing register for
+avoiding pop sound.
 
-include/trace/events/asoc.h: In function 'trace_event_raw_event_snd_soc_jack_report':
-include/trace/events/asoc.h:240:32: error: 'struct snd_jack' has no member named 'name'
-
-The name field is normally initialized from the card shortname and
-the jack "id" field:
-
-        snprintf(jack->name, sizeof(jack->name), "%s %s",
-                 card->shortname, jack->id);
-
-This changes the tracing output to just contain the 'id' by
-itself, which slightly changes the output format but avoids the
-link error and is hopefully still enough to see what is going on.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Fixes: fe0d128c57bf ("ALSA: jack: Allow building the jack layer without input device")
+Signed-off-by: John Lin <john.lin@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/trace/events/asoc.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/rt5645.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/include/trace/events/asoc.h b/include/trace/events/asoc.h
-index 317a1ed2f4ac..9130dd5a184a 100644
---- a/include/trace/events/asoc.h
-+++ b/include/trace/events/asoc.h
-@@ -231,13 +231,13 @@ TRACE_EVENT(snd_soc_jack_report,
- 	TP_ARGS(jack, mask, val),
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index c61d38b585fb..c3dc371a7ef3 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3029,13 +3029,18 @@ static int rt5645_set_bias_level(struct snd_soc_codec *codec,
+ 			RT5645_PWR_BG | RT5645_PWR_VREF2,
+ 			RT5645_PWR_VREF1 | RT5645_PWR_MB |
+ 			RT5645_PWR_BG | RT5645_PWR_VREF2);
++		mdelay(10);
+ 		snd_soc_update_bits(codec, RT5645_PWR_ANLG1,
+ 			RT5645_PWR_FV1 | RT5645_PWR_FV2,
+ 			RT5645_PWR_FV1 | RT5645_PWR_FV2);
+-		if (rt5645->en_button_func &&
+-			snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF)
+-			queue_delayed_work(system_power_efficient_wq,
+-				&rt5645->jack_detect_work, msecs_to_jiffies(0));
++		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
++			snd_soc_write(codec, RT5645_DEPOP_M2, 0x1140);
++			msleep(40);
++			if (rt5645->en_button_func)
++				queue_delayed_work(system_power_efficient_wq,
++					&rt5645->jack_detect_work,
++					msecs_to_jiffies(0));
++		}
+ 		break;
  
- 	TP_STRUCT__entry(
--		__string(	name,		jack->jack->name	)
-+		__string(	name,		jack->jack->id		)
- 		__field(	int,		mask			)
- 		__field(	int,		val			)
- 	),
- 
- 	TP_fast_assign(
--		__assign_str(name, jack->jack->name);
-+		__assign_str(name, jack->jack->id);
- 		__entry->mask = mask;
- 		__entry->val = val;
- 	),
-@@ -253,12 +253,12 @@ TRACE_EVENT(snd_soc_jack_notify,
- 	TP_ARGS(jack, val),
- 
- 	TP_STRUCT__entry(
--		__string(	name,		jack->jack->name	)
-+		__string(	name,		jack->jack->id		)
- 		__field(	int,		val			)
- 	),
- 
- 	TP_fast_assign(
--		__assign_str(name, jack->jack->name);
-+		__assign_str(name, jack->jack->id);
- 		__entry->val = val;
- 	),
- 
+ 	case SND_SOC_BIAS_OFF:
 -- 
 2.7.0
