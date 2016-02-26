@@ -1,23 +1,19 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [RFC: PATCH] ALSA: hda - clear IRQ statu twice
-	on	some Intel platforms
-Date: Fri, 26 Feb 2016 05:22:34 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D190467D055@SHSMSX103.ccr.corp.intel.com>
-References: <1456126790-13480-1-git-send-email-libin.yang@linux.intel.com>
- <s5h60xhw2wp.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D1904670652@SHSMSX103.ccr.corp.intel.com>
- <s5ha8mr22tv.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D1904679BC8@SHSMSX103.ccr.corp.intel.com>
- <s5hegc3zcwu.wl-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [RFD] Add hw_params support for hostless stream BE
+	DAIs
+Date: Fri, 26 Feb 2016 12:17:31 +0530
+Message-ID: <20160226064725.GS17690@localhost>
+References: <20160216161747.GA18103@jeeja.kp@intel.com>
+ <1456224674.6424.22.camel@loki>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D242260589
- for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 06:22:41 +0100 (CET)
-In-Reply-To: <s5hegc3zcwu.wl-tiwai@suse.de>
-Content-Language: en-US
+ by alsa0.perex.cz (Postfix) with ESMTP id 28E4C2651B8
+ for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 07:43:34 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1456224674.6424.22.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,238 +23,418 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Peter Ujfalusi <peter.ujfalusi@ti.com>, patches.audio@intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, "Guiriec,
+ Sebastien" <sebastien.guiriec@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+On Tue, Feb 23, 2016 at 10:51:14AM +0000, Liam Girdwood wrote:
+> On Tue, 2016-02-16 at 21:47 +0530, Jeeja KP wrote:
+> > We have no mechanism to configure hw_params for DAIs which are hostless.
+> > Like a loop or DAIs connected to internal sinks/sources.
+> > 
+> 
+> Fwiw, a few years back Peter, Sebastien and I were considering a similar
+> mechanism for the ABE on OMAP4. We never got around to implementing or
+> upstreaming though....
 
-Our QA has tested your patch. It works and the basic test cases passed.
+Okay great then :-)
 
-Regards,
-Libin
+> 
+> One comment below.
+> 
+> > Problem Statement:
+> > 	During a BE-BE loop of  DSP or a SRC->SINK path, we cannot program
+> > 	hw_params. There are no hw_params from user as these are hostless.
+> > 	This scenario can happens in below 2 cases:
+> > 	
+> > Case 1: BE-BE loop aka hostless stream through SoC DSP
+> > 	Hostless stream can be defined by BE to BE connection and in this case
+> > 	the path is enabled or disabled by the state of the DAPM graph. This
+> > 	usually means there is a mixer control that can be used to connect or
+> > 	disconnect the path between both DAIs.
+> > Example:
+> > 			|--------------/----------------|
+> > 			|				|
+> > 			|				|
+> > 		      codec out			    modem_in
+> > 			|				|
+> > 			|				|
+> > 		     ssp0_TX			    ssp1_RX
+> > 			|				|
+> > 			|				|
+> > 		  AIFI_Playback			dummy_capture
+> > 			
+> > 	In the above case (SSP0,codec playback,SSp1 dai needs to be configured 
+> > 	and turned on with  the selected hw_params). 
+> > 
+> > Case 2: SoC Internal Sink or Source
+> > Example:
+> >             		WOV SINK (DAPM Sink)
+> > 				|
+> > 				|
+> > 				|                 
+> > 			     Switch
+> > 				|
+> > 				|
+> > 				w1
+> > 				|
+> > 			dmic rx (BE dai widget)
+> > 				|
+> > 			Capture(codec dai widget)
+> > 				|
+> > 			    DMIC AIF
+> > 				|
+> > 			      DMic
+> > 				|
+> > 		Soc DMic (MIC Widget) (SRC)
+> > 
+> > 	In the above case BE (dmic RX) dai hw_params needs to applied.
+> > 	
+> > Approach:
+> > 	1. Allow params to be defined for other BE dai link also. this
+> > 	currently applicable only for codec_codec link.
+> > 
+> > 	2. when params is defined for BE dai link, create params kcontrols
+> > 	and associate it with the dai widgets. this will allow params to be
+> > 	selected via Kcontrol for each dai defined in the dai link.
+> > 
+> 
+> The only problem we have with using a kcontrol to define params is that
+> we already have an existing kernel ioctl and public C API to define
+> SW/HW params. This would add another mechanism, unless each new kcontrol
+> allows modification of a single param ?
 
+Today c-c links specify this the PCM parameters thru these controls so we
+took the same approach.
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Tuesday, February 23, 2016 11:04 PM
-> To: Yang, Libin
-> Cc: Lin, Mengdong; libin.yang@linux.intel.com; alsa-devel@alsa-
-> project.org
-> Subject: Re: [alsa-devel] [RFC: PATCH] ALSA: hda - clear IRQ statu twice on
-> some Intel platforms
+If we decide that we should have more granular control we can update this
+part :)
+
+Moreover in driver we do sepcify constraints on the user for selecting PCM
+params. This is our way of specifying constrained values to users :D
+
+-- 
+~Vinod
+
+> > 	3. Before powering on the dai widget and if the dai is not powered
+> > 	with the stream event, then dai_ops(hw_params) for the dai widget will
+> > 	be called.This will apply the selected hw_params.
+> > 
+> > 	4. with the above, fix_up can be removed and can use .params to 
+> > 	select the parameter.
+> > 
+> > Core Changes:
+> > 	1. params definition needs to changed, currently this is defined to used
+> > 	only for codec codec link. define new flag to identifying codec 
+> > 	codec link.
+> > 
+> > 	2. if params is defined for any BE dai link, then create kcontrol for
+> > 	each dai defined in the dai_link and associated the kcontrol to dai 
+> > 	widget.
+> > 
+> > 	3. In the powering sequence check if the dai widget and if the event is
+> > 	not a stream event, SND_SOC_DAPM_STREAM_NOP , then call dai ops with 
+> > 	the selected params. This will apply the hw_params for dai.
+> > 
+> > 1. params definition:
+> > 		- Add new flag in struct snd_soc_dai_link.
+> > 		- Based on this flag create, the codec codec link instead of
+> > 		  params
+> > struct snd_soc_dai_link {
+> >         const struct snd_soc_pcm_stream *params;
+> >         unsigned int num_params;
+> > 
+> > +       /* flag to create codec codec based on the flag*/
+> > +       unsigned int codec_link:1;
+> > +
+> >         unsigned int dai_fmt;           /* format to set on init */
+> > 
+> >         enum snd_soc_dpcm_trigger trigger[2]; /* trigger type for DPCM */
+> > 
+> > 	- creation of dai link based on the codec_link flag
+> > static int soc_probe_link_dais(struct snd_soc_card *card,
+> > int num, int order)
+> >                 }
+> >         } else {
+> > 
+> > -               if (!dai_link->params) {
+> > +               if (!dai_link->codec_link) {
+> >                         /* create the pcm */
+> >                         ret = soc_new_pcm(rtd, num);
+> >                         if (ret < 0) {
+> > 						
+> > 2. when params is defined for BE dai link, create params kcontrols and
+> > associate it with the dai widgets. this will allow params to be selected
+> > via Kcontrol for each dai defined in the dai link.
+> > a. Move the param control creation from snd_soc_dapm_new_pcm and add new
+> > API to created kcontrols with the params.
+> > +snd_soc_dapm_create_param_control(struct snd_soc_card *card,
+> > +					const struct snd_soc_pcm_stream *params,
+> > +					unsigned int num_params)
+> > {
+> > 	/* create kcontrol based on the params */
+> > }
+> > 
+> > - modify the snd_soc_dapm_new_pcm to create the param control
+> > int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+> > 			 const struct snd_soc_pcm_stream *params,
+> > 			 unsigned int num_params,
+> > 			 struct snd_soc_dapm_widget *source,
+> > 			 struct snd_soc_dapm_widget *sink)
+> > {
+> > 
+> > 	template.kcontrol_news = snd_soc_dapm_create_param_control(card,
+> > 							params, num_params);
+> >  	if (!template.kcontrol_news) {
+> >  		dev_err(card->dev, "ASoC: Failed to create control for %s widget\n",
+> >  			link_name);
+> >  		ret = -ENOMEM;
+> > -		goto outfree_private_value;
+> > +		goto outfree_link_name;
+> >  	}
+> >  
+> > 
+> > b. add new API snd_soc_dapm_new_dai_params() to create kcontrol for dai and associated it to dai.
+> > +int snd_soc_dapm_new_dai_params(struct snd_soc_card *card,
+> > +			 const struct snd_soc_pcm_stream *params,
+> > +			 unsigned int num_params,
+> > +			 struct snd_soc_dapm_widget *dai_w)
+> > +{
+> > +	struct snd_kcontrol_new *kcontrol_news;
+> > +
+> > +	kcontrol_news = snd_soc_dapm_create_param_control(card, params,
+> > +								num_params);
+> > +	if (!kcontrol_news) {
+> > +		dev_err(card->dev, "ASoC: Failed to create control for %s widget\n",
+> > +			dai_w->name);
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	dai_w->num_kcontrols = 1;
+> > +	dai_w->kcontrol_news = kcontrol_news;
+> > +
+> > +	dai_w->params = params;
+> > +	dai_w->num_params = num_params;
+> > +
+> > +	return 0;
+> > +
+> > +}
+> > +
+> > +++ b/include/sound/soc-dapm.h
+> > +int snd_soc_dapm_new_dai_params(struct snd_soc_card *card,
+> > +			 const struct snd_soc_pcm_stream *params,
+> > +			 unsigned int num_params,
+> > +			 struct snd_soc_dapm_widget *dai_w);
+> > 
+> > 
+> > c. if the be dai link has .params defined, call new API snd_soc_dapm_new_dai_params
+> > 
+> > +static int soc_link_be_params_widget(struct snd_soc_card *card,
+> > +				struct snd_soc_dai *dai,
+> > +				const struct snd_soc_pcm_stream *params,
+> > +				unsigned int num_params)
+> > +{
+> > +	int ret;
+> > +	struct snd_soc_dapm_widget *w;
+> > +   
+> > +   if (!strcmp(dai->name, "snd-soc-dummy"))
+> > +		return 0;
+> > +		
+> > +	if (dai->playback_widget) {
+> > +		w = dai->playback_widget;
+> > +		ret = snd_soc_dapm_new_dai_params(card, params,
+> > +								num_params, w);
+> > +
+> > +		if (ret != 0) {
+> > +			dev_err(card->dev,
+> > +					"ASoC: Can't create params widget=%s %d\n",
+> > +					w->name, ret);
+> > +			return ret;
+> > +		}
+> > +	}
+> > +
+> > +	if (dai->capture_widget) {
+> > +		w = dai->capture_widget;
+> > +		ret = snd_soc_dapm_new_dai_params(card, params,
+> > +								num_params, w);
+> > +
+> > +		if (ret != 0) {
+> > +			dev_err(card->dev,
+> > +				"ASoC: Can't create params widget=%s %d\n",
+> > +				w->name, ret);
+> > +			return ret;
+> > +		}
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int soc_link_be_params_dai_widgets(struct snd_soc_card *card,
+> > +				struct snd_soc_dai_link *dai_link,
+> > +				struct snd_soc_pcm_runtime *rtd)
+> > +{
+> > +	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+> > +	int ret, i;
+> > +
+> > +	for (i = 0; i < rtd->num_codecs; i++) {
+> > +		struct snd_soc_dai *codec = rtd->codec_dais[i];
+> > +
+> > +		ret = soc_link_be_params_widget(card, codec,
+> > +							dai_link->params,
+> > +							dai_link->num_params);
+> > +
+> > +		if (!ret)
+> > +			return ret;
+> > +	}
+> > +
+> > +	return soc_link_be_params_widget(card, cpu_dai, dai_link->params,
+> > +						dai_link->num_params);
+> > +}
+> > +
+> > 
+> > @@ -1651,6 +1714,13 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
+> >  				       dai_link->stream_name, ret);
+> >  				return ret;
+> >  			}
+> > +			if (dai_link->params && dai_link->no_pcm) {
+> > +				/* create dai link controls */
+> > +				ret = soc_link_be_params_dai_widgets(card,
+> > +								dai_link, rtd);
+> > +				if (ret)
+> > +					return ret;
+> > +			}
+> >  		} else {
+> >  			INIT_DELAYED_WORK(&rtd->delayed_work,
+> >  						codec2codec_close_delayed_work);
+> > 
+> > 
+> > 3. Applying the hw_params for dai widget
+> > 
+> > --- a/sound/soc/soc-dapm.c
+> > +++ b/sound/soc/soc-dapm.c
+> > @@ -1398,9 +1398,64 @@ static void dapm_seq_check_event(struct snd_soc_card *
+> > card,
+> >  	}
+> >  }
+> >  
+> > +static int snd_soc_dai_params(struct snd_soc_dapm_widget *w, int event)
+> > +{
+> > +	struct snd_soc_dai *dai;
+> > +	const struct snd_soc_pcm_stream *config = w->params + w->params_select;
+> > +	struct snd_pcm_substream substream;
+> > +	struct snd_pcm_hw_params *params = NULL;
+> > +	u64 fmt;
+> > +	int ret = 0;
+> > +
+> > +	if (WARN_ON(!config))
+> > +		return -EINVAL;
+> > +
+> > +	dai = w->priv;
+> > +
+> > +	if (config->formats) {
+> > +		fmt = ffs(config->formats) - 1;
+> > +	} else {
+> > +		dev_warn(w->dapm->dev, "ASoC: Invalid format %llx specified\n",
+> > +			 config->formats);
+> > +		fmt = 0;
+> > +	}
+> > +
+> > +	/* Currently very limited parameter selection */
+> > +	params = kzalloc(sizeof(*params), GFP_KERNEL);
+> > +	if (!params) {
+> > +		ret = -ENOMEM;
+> > +		goto out;
+> > +	}
+> > +	snd_mask_set(hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT), fmt);
+> > +
+> > +	hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE)->min =
+> > +		config->rate_min;
+> > +	hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE)->max =
+> > +		config->rate_max;
+> > +
+> > +	hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS)->min
+> > +		= config->channels_min;
+> > +	hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS)->max
+> > +		= config->channels_max;
+> > +
+> > +	memset(&substream, 0, sizeof(substream));
+> > +	if (w->id == snd_soc_dapm_dai_in)
+> > +		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
+> > +	else
+> > +		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
+> > +
+> > +	ret = soc_dai_hw_params(&substream, params, dai);
+> > +	if (ret < 0)
+> > +		goto out;
+> > +out:
+> > +	kfree(params);
+> > +	return ret;
+> > +}
+> > +
+> >  /* Apply the coalesced changes from a DAPM sequence */
+> >  static void dapm_seq_run_coalesced(struct snd_soc_card *card,
+> > -				   struct list_head *pending)
+> > +				   struct list_head *pending,
+> > +				   int event)
+> >  {
+> >  	struct snd_soc_dapm_context *dapm;
+> >  	struct snd_soc_dapm_widget *w;
+> > @@ -1413,6 +1468,14 @@ static void dapm_seq_run_coalesced(struct snd_soc_card *card,
+> >  	dapm = w->dapm;
+> >  
+> >  	list_for_each_entry(w, pending, power_list) {
+> > +		if ((event == SND_SOC_DAPM_STREAM_NOP) &&
+> > +			((w->id == snd_soc_dapm_dai_out) ||
+> > +			(w->id == snd_soc_dapm_dai_in))) {
+> > +			snd_soc_dai_params(w, SND_SOC_DAPM_PRE_PMU);
+> > +		}
+> > +	}
+> > +
+> > +	list_for_each_entry(w, pending, power_list) {
+> >  		WARN_ON(reg != w->reg || dapm != w->dapm);
+> >  		w->power = w->new_power;
+> >  
+> > @@ -1447,6 +1510,13 @@ static void dapm_seq_run_coalesced(struct snd_soc_card *card,
+> >  		dapm_seq_check_event(card, w, SND_SOC_DAPM_POST_PMU);
+> >  		dapm_seq_check_event(card, w, SND_SOC_DAPM_POST_PMD);
+> >  	}
+> > +	list_for_each_entry(w, pending, power_list) {
+> > +		if ((event == SND_SOC_DAPM_STREAM_NOP) &&
+> > +			((w->id == snd_soc_dapm_dai_out) ||
+> > +			(w->id == snd_soc_dapm_dai_in))) {
+> > +			snd_soc_dai_params(w, SND_SOC_DAPM_POST_PMD);
+> > +		}
+> > +	}
+> >  }
+> >  
+> >  /* Apply a DAPM power sequence.
+> > @@ -1482,7 +1552,7 @@ static void dapm_seq_run(struct snd_soc_card *card,
+> >  		if (sort[w->id] != cur_sort || w->reg != cur_reg ||
+> >  		    w->dapm != cur_dapm || w->subseq != cur_subseq) {
+> >  			if (!list_empty(&pending))
+> > -				dapm_seq_run_coalesced(card, &pending);
+> > +				dapm_seq_run_coalesced(card, &pending, event);
+> >  
+> >  			if (cur_dapm && cur_dapm->seq_notifier) {
+> >  				for (i = 0; i < ARRAY_SIZE(dapm_up_seq); i++)
+> > @@ -1545,7 +1615,7 @@ static void dapm_seq_run(struct snd_soc_card *card,
+> >  	}
+> >  
+> >  	if (!list_empty(&pending))
+> > -		dapm_seq_run_coalesced(card, &pending);
+> > +		dapm_seq_run_coalesced(card, &pending, event);
+> >  
+> >  	if (cur_dapm && cur_dapm->seq_notifier) {
+> >  		for (i = 0; i < ARRAY_SIZE(dapm_up_seq); i++)
+> > -- 
+> > 1.7.9.5
+> > 
+> > Comments welcome, based on discussion we will send patches.
+> > 
+> > --Jeeja
 > 
-> On Tue, 23 Feb 2016 15:27:50 +0100,
-> Yang, Libin wrote:
-> >
-> > > -----Original Message-----
-> > > From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-
-> > > bounces@alsa-project.org] On Behalf Of Takashi Iwai
-> > > Sent: Tuesday, February 23, 2016 5:28 PM
-> > > To: Yang, Libin
-> > > Cc: Lin, Mengdong; libin.yang@linux.intel.com; alsa-devel@alsa-
-> > > project.org
-> > > Subject: Re: [alsa-devel] [RFC: PATCH] ALSA: hda - clear IRQ statu
-> twice on
-> > > some Intel platforms
-> > >
-> > > On Tue, 23 Feb 2016 09:57:13 +0100,
-> > > Yang, Libin wrote:
-> > > >
-> > > > Hi Takashi,
-> > > >
-> > > > I'm testing your patch in stress level. So far, it seems to works
-> smoothly.
-> > > >
-> > > > Which patch do you like? And your patch seems to impact on all the
-> > > platforms?
-> > >
-> > > One potential problem in your patch is that the later triggered event
-> > > shall be ignored by the post-irq ack.
-> >
-> > Yes. So it seems your patch is better.
-> >
-> > >
-> > > OTOH, my patch would impact to all platforms, yes.  However, in
-> > > theory, all platforms may have this issue, so it's anyway good in one
-> > > side.  In another flip, of course, it might introduce some regression.
-> > >
-> > > We can limit this loop check only for some known platforms, or we let
-> > > it tested more :)
-> > >
-> > > I'm going to cook the patch a bit more and give you for testing.
-> >
-> > I'd like to test your updated patch.
 > 
-> OK, below is the revised patch.  Let me know if this works.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> -- 8< --
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: hda - Loop interrupt handling until really cleared
-> 
-> Currently the interrupt handler of HD-audio driver assumes that no irq
-> update is needed while processing the irq.  But in reality, it has
-> been confirmed that the HW irq is issued even during the irq
-> handling.  Since we clear the irq status at the beginning, process the
-> interrupt, then exits from the handler, the lately issued interrupt is
-> left untouched without being properly processed.
-> 
-> This patch changes the interrupt handler code to loop over the
-> check-and-process.  The handler tries repeatedly as long as the IRQ
-> status are turned on, and either stream or CORB/RIRB is handled.
-> 
-> For checking the stream handling, snd_hdac_bus_handle_stream_irq()
-> returns a value indicating the stream indices bits.  Other than that,
-> the change is only in the irq handler itself.
-> 
-> Reported-by: Libin Yang <libin.yang@linux.intel.com>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  include/sound/hdaudio.h        |  2 +-
->  sound/hda/hdac_controller.c    |  7 ++++++-
->  sound/pci/hda/hda_controller.c | 47 +++++++++++++++++++++++-------
-> ------------
->  3 files changed, 33 insertions(+), 23 deletions(-)
-> 
-> diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-> index e2b712c90d3f..c21c38ce7450 100644
-> --- a/include/sound/hdaudio.h
-> +++ b/include/sound/hdaudio.h
-> @@ -343,7 +343,7 @@ void snd_hdac_bus_enter_link_reset(struct
-> hdac_bus *bus);
->  void snd_hdac_bus_exit_link_reset(struct hdac_bus *bus);
-> 
->  void snd_hdac_bus_update_rirb(struct hdac_bus *bus);
-> -void snd_hdac_bus_handle_stream_irq(struct hdac_bus *bus, unsigned
-> int status,
-> +int snd_hdac_bus_handle_stream_irq(struct hdac_bus *bus, unsigned
-> int status,
->  				    void (*ack)(struct hdac_bus *,
->  						struct hdac_stream *));
-> 
-> diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
-> index b5a17cb510a0..8c486235c905 100644
-> --- a/sound/hda/hdac_controller.c
-> +++ b/sound/hda/hdac_controller.c
-> @@ -426,18 +426,22 @@
-> EXPORT_SYMBOL_GPL(snd_hdac_bus_stop_chip);
->   * @bus: HD-audio core bus
->   * @status: INTSTS register value
->   * @ask: callback to be called for woken streams
-> + *
-> + * Returns the bits of handled streams, or zero if no stream is handled.
->   */
-> -void snd_hdac_bus_handle_stream_irq(struct hdac_bus *bus, unsigned
-> int status,
-> +int snd_hdac_bus_handle_stream_irq(struct hdac_bus *bus, unsigned
-> int status,
->  				    void (*ack)(struct hdac_bus *,
->  						struct hdac_stream *))
->  {
->  	struct hdac_stream *azx_dev;
->  	u8 sd_status;
-> +	int handled = 0;
-> 
->  	list_for_each_entry(azx_dev, &bus->stream_list, list) {
->  		if (status & azx_dev->sd_int_sta_mask) {
->  			sd_status = snd_hdac_stream_readb(azx_dev,
-> SD_STS);
->  			snd_hdac_stream_writeb(azx_dev, SD_STS,
-> SD_INT_MASK);
-> +			handled |= 1 << azx_dev->index;
->  			if (!azx_dev->substream || !azx_dev->running
-> ||
->  			    !(sd_status & SD_INT_COMPLETE))
->  				continue;
-> @@ -445,6 +449,7 @@ void snd_hdac_bus_handle_stream_irq(struct
-> hdac_bus *bus, unsigned int status,
->  				ack(bus, azx_dev);
->  		}
->  	}
-> +	return handled;
->  }
->  EXPORT_SYMBOL_GPL(snd_hdac_bus_handle_stream_irq);
-> 
-> diff --git a/sound/pci/hda/hda_controller.c
-> b/sound/pci/hda/hda_controller.c
-> index 37cf9cee9835..27de8015717d 100644
-> --- a/sound/pci/hda/hda_controller.c
-> +++ b/sound/pci/hda/hda_controller.c
-> @@ -930,6 +930,8 @@ irqreturn_t azx_interrupt(int irq, void *dev_id)
->  	struct azx *chip = dev_id;
->  	struct hdac_bus *bus = azx_bus(chip);
->  	u32 status;
-> +	bool active, handled = false;
-> +	int repeat = 0; /* count for avoiding endless loop */
-> 
->  #ifdef CONFIG_PM
->  	if (azx_has_pm_runtime(chip))
-> @@ -939,33 +941,36 @@ irqreturn_t azx_interrupt(int irq, void *dev_id)
-> 
->  	spin_lock(&bus->reg_lock);
-> 
-> -	if (chip->disabled) {
-> -		spin_unlock(&bus->reg_lock);
-> -		return IRQ_NONE;
-> -	}
-> -
-> -	status = azx_readl(chip, INTSTS);
-> -	if (status == 0 || status == 0xffffffff) {
-> -		spin_unlock(&bus->reg_lock);
-> -		return IRQ_NONE;
-> -	}
-> +	if (chip->disabled)
-> +		goto unlock;
-> 
-> -	snd_hdac_bus_handle_stream_irq(bus, status, stream_update);
-> +	do {
-> +		status = azx_readl(chip, INTSTS);
-> +		if (status == 0 || status == 0xffffffff)
-> +			break;
-> 
-> -	/* clear rirb int */
-> -	status = azx_readb(chip, RIRBSTS);
-> -	if (status & RIRB_INT_MASK) {
-> -		if (status & RIRB_INT_RESPONSE) {
-> -			if (chip->driver_caps &
-> AZX_DCAPS_CTX_WORKAROUND)
-> -				udelay(80);
-> -			snd_hdac_bus_update_rirb(bus);
-> +		handled = true;
-> +		active = false;
-> +		if (snd_hdac_bus_handle_stream_irq(bus, status,
-> stream_update))
-> +			active = true;
-> +
-> +		/* clear rirb int */
-> +		status = azx_readb(chip, RIRBSTS);
-> +		if (status & RIRB_INT_MASK) {
-> +			active = true;
-> +			if (status & RIRB_INT_RESPONSE) {
-> +				if (chip->driver_caps &
-> AZX_DCAPS_CTX_WORKAROUND)
-> +					udelay(80);
-> +				snd_hdac_bus_update_rirb(bus);
-> +			}
-> +			azx_writeb(chip, RIRBSTS, RIRB_INT_MASK);
->  		}
-> -		azx_writeb(chip, RIRBSTS, RIRB_INT_MASK);
-> -	}
-> +	} while (active && ++repeat < 10);
-> 
-> + unlock:
->  	spin_unlock(&bus->reg_lock);
-> 
-> -	return IRQ_HANDLED;
-> +	return IRQ_RETVAL(handled);
->  }
->  EXPORT_SYMBOL_GPL(azx_interrupt);
-> 
-> --
-> 2.7.1
+
+-- 
+~Vinod
