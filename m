@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cht_bsw_rt5645: Fix writing to string
-	literal" to the asoc tree
-Date: Fri, 26 Feb 2016 11:46:55 +0900
-Message-ID: <E1aZ8Qh-0006In-UL@finisterre>
-References: <1456217420-9327-1-git-send-email-carlo@caione.org>
+Subject: Applied "ASoC: mediatek: remove soft reset and add
+	second I2S clock" to the asoc tree
+Date: Fri, 26 Feb 2016 11:46:56 +0900
+Message-ID: <E1aZ8Qi-0006JH-KD@finisterre>
+References: <1456215624-40383-1-git-send-email-pc.liao@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B2A126524C
+ by alsa0.perex.cz (Postfix) with ESMTP id CE957265262
  for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 03:47:01 +0100 (CET)
-In-Reply-To: <1456217420-9327-1-git-send-email-carlo@caione.org>
+In-Reply-To: <1456215624-40383-1-git-send-email-pc.liao@mediatek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Carlo Caione <carlo@endlessm.com>, Mark Brown <broonie@kernel.org>
+To: PC Liao <pc.liao@mediatek.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cht_bsw_rt5645: Fix writing to string literal
+   ASoC: mediatek: remove soft reset and add second I2S clock
 
 has been applied to the asoc tree at
 
@@ -53,41 +53,71 @@ to this mail.
 Thanks,
 Mark
 
->From c8560b7c917f8738f5d80dd516930edc1d05e4e4 Mon Sep 17 00:00:00 2001
-From: Carlo Caione <carlo@endlessm.com>
-Date: Tue, 23 Feb 2016 09:50:20 +0100
-Subject: [PATCH] ASoC: cht_bsw_rt5645: Fix writing to string literal
+>From 4d7cb66c8f9db37ffa2a72cc9b9233ae82e94d7e Mon Sep 17 00:00:00 2001
+From: PC Liao <pc.liao@mediatek.com>
+Date: Tue, 23 Feb 2016 16:20:24 +0800
+Subject: [PATCH] ASoC: mediatek: remove soft reset and add second I2S clock
 
-We cannot use strcpy() to write to a const char * location. This is
-causing a 'BUG: unable to handle kernel paging request' error at boot
-when using the cht-bsw-rt5645 driver.
+To improve I2S flow, this patch removes soft reset and adds second
+I2S clock to use.
 
-With this patch we also fix a wrong indexing in the driver where the
-codec_name of the wrong dai_link is being overwritten.
-
-Signed-off-by: Carlo Caione <carlo@endlessm.com>
+Signed-off-by: PC Liao <pc.liao@mediatek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_rt5645.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/mediatek/mtk-afe-pcm.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index 2d3afddb0a2e..a7b96a9a4e0e 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -367,8 +367,12 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	}
- 	card->dev = &pdev->dev;
- 	sprintf(codec_name, "i2c-%s:00", drv->acpi_card->codec_id);
-+
- 	/* set correct codec name */
--	strcpy((char *)card->dai_link[2].codec_name, codec_name);
-+	for (i = 0; i < ARRAY_SIZE(cht_dailink); i++)
-+		if (!strcmp(card->dai_link[i].codec_name, "i2c-10EC5645:00"))
-+			card->dai_link[i].codec_name = kstrdup(codec_name, GFP_KERNEL);
-+
- 	snd_soc_card_set_drvdata(card, drv);
- 	ret_val = devm_snd_soc_register_card(&pdev->dev, card);
- 	if (ret_val) {
+diff --git a/sound/soc/mediatek/mtk-afe-pcm.c b/sound/soc/mediatek/mtk-afe-pcm.c
+index 689c51f23d9f..3456bfab4617 100644
+--- a/sound/soc/mediatek/mtk-afe-pcm.c
++++ b/sound/soc/mediatek/mtk-afe-pcm.c
+@@ -283,20 +283,13 @@ static void mtk_afe_set_i2s_enable(struct mtk_afe *afe, bool enable)
+ 
+ 	regmap_read(afe->regmap, AFE_I2S_CON2, &val);
+ 	if (!!(val & AFE_I2S_CON2_EN) == enable)
+-		return; /* must skip soft reset */
+-
+-	/* I2S soft reset begin */
+-	regmap_update_bits(afe->regmap, AUDIO_TOP_CON1, 0x4, 0x4);
++		return;
+ 
+ 	/* input */
+ 	regmap_update_bits(afe->regmap, AFE_I2S_CON2, 0x1, enable);
+ 
+ 	/* output */
+ 	regmap_update_bits(afe->regmap, AFE_I2S_CON1, 0x1, enable);
+-
+-	/* I2S soft reset end */
+-	udelay(1);
+-	regmap_update_bits(afe->regmap, AUDIO_TOP_CON1, 0x4, 0);
+ }
+ 
+ static int mtk_afe_dais_enable_clks(struct mtk_afe *afe,
+@@ -365,6 +358,7 @@ static int mtk_afe_i2s_startup(struct snd_pcm_substream *substream,
+ 		return 0;
+ 
+ 	mtk_afe_dais_enable_clks(afe, afe->clocks[MTK_CLK_I2S1_M], NULL);
++	mtk_afe_dais_enable_clks(afe, afe->clocks[MTK_CLK_I2S2_M], NULL);
+ 	regmap_update_bits(afe->regmap, AUDIO_TOP_CON0,
+ 			   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M, 0);
+ 	return 0;
+@@ -384,6 +378,7 @@ static void mtk_afe_i2s_shutdown(struct snd_pcm_substream *substream,
+ 			   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M,
+ 			   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M);
+ 	mtk_afe_dais_disable_clks(afe, afe->clocks[MTK_CLK_I2S1_M], NULL);
++	mtk_afe_dais_disable_clks(afe, afe->clocks[MTK_CLK_I2S2_M], NULL);
+ }
+ 
+ static int mtk_afe_i2s_prepare(struct snd_pcm_substream *substream,
+@@ -397,6 +392,9 @@ static int mtk_afe_i2s_prepare(struct snd_pcm_substream *substream,
+ 	mtk_afe_dais_set_clks(afe,
+ 			      afe->clocks[MTK_CLK_I2S1_M], runtime->rate * 256,
+ 			      NULL, 0);
++	mtk_afe_dais_set_clks(afe,
++			      afe->clocks[MTK_CLK_I2S2_M], runtime->rate * 256,
++			      NULL, 0);
+ 	/* config I2S */
+ 	ret = mtk_afe_set_i2s(afe, substream->runtime->rate);
+ 	if (ret)
 -- 
 2.7.0
