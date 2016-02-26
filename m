@@ -1,64 +1,68 @@
-From: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
-Subject: Re: [PATCH RFC v5 4/8] drm/i2c: tda998x: Add support of a DT graph
- of ports
-Date: Fri, 26 Feb 2016 00:43:11 +0000
-Message-ID: <20160226004311.GM5783@n2100.arm.linux.org.uk>
-References: <cover.1455720381.git.jsarha@ti.com>
- <842e221030a0b14bc862790eb2f5bc97bb29c012.1455720381.git.jsarha@ti.com>
- <20160218143530.GB9654@rob-hp-laptop>
- <56CF04DA.8080905@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: rt5640: add master clock handling for
+ rt5640
+Date: Fri, 26 Feb 2016 10:08:18 +0900
+Message-ID: <20160226010818.GZ18327@sirena.org.uk>
+References: <1456190782-18865-1-git-send-email-sugar.zhang@rock-chips.com>
+ <56CC719C.1090901@linux.intel.com>
+ <2199435.lA9iTvxnKV@phil>
+ <20160224033259.GL18327@sirena.org.uk>
+ <56CDD5DD.6040006@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Z0AzVEOeKznHFuth"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <56CF04DA.8080905-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, airlied-cv59FeDIM0c@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, tomi.valkeinen-l0cyMroinI0@public.gmane.org, moinejf-GANU6spQydw@public.gmane.org, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org
+In-Reply-To: <56CDD5DD.6040006@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Heiko Stuebner <heiko@sntech.de>, Mark Rutland <mark.rutland@arm.com>, Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Sugar Zhang <sugar.zhang@rock-chips.com>, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 25, 2016 at 03:42:50PM +0200, Jyri Sarha wrote:
-> On 02/18/16 16:35, Rob Herring wrote:
-> >This should be implied from the port unit address. In other words,
-> >port@0 is defined to be the rgb port. Now, if this is one of several
-> >modes for the video port, then that is a different story.
-> >
-> 
-> Do you suggest that also the audio i2s and s/p-dif port-types should be
-> coded in the port unit addresses? Something like: port@0 is always rgb,
-> port@1 is i2s, and port@2 is spdif?
 
-For the audio inputs, the port address corresponds to the input pin.
-TDA998x devices can have multiple streams routed to the pins, and can
-select between them.
+--Z0AzVEOeKznHFuth
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-For example, there may be four I2S data pins and one I2S clock pin.
-When using stereo, you can select which of the four I2S data pins
-carries the audio data.
+On Wed, Feb 24, 2016 at 10:10:05AM -0600, Pierre-Louis Bossart wrote:
+> On 2/23/16 9:32 PM, Mark Brown wrote:
 
-When using SPDIF, there may be two SPDIF inputs, and you can select
-which SPDIF input is used.
+> >That said we really do need x86 to transition to use the clock API
+> >in order to integrate with external devices, where the machine driver
+> >does manage clocks we want that to move to being done using the clock
+> >API rather than custom APIs.
 
-So, "reg" may not be an address in terms of a CPU visible address, but
-it's an address as far as selecting the appropriate input - and it
-fits in with the requirements of ePAPR, which are that if you have
-a unit-address (which is required to distinguish different port nodes)
-then you must have a matching "reg" property.
+> For Baytrail audio we have a single platform clock that can be turned
+> on/off and set to 19.2 MHz or 25 MHz. No other controls are available,
+> no multipliers or complicated dependencies on other clocks, parents or
+> children and no other users for this clock but the audio subsystem.
+> I looked at the clock framework and couldn't figure out how it would simply
+> map the hardware so for now the use of the MCLK is only enabled with an
+> on/off or set-rate(19.2|25) custom API. I am not an expert here so if this
+> clock framework becomes a requirement to upstream code I would appreciate
+> any pointers to do the right thing. I really couldn't find a simple example
+> with 'Put your code here' comments to use this framework.
 
-I don't particularly like the video node using the RGB routing register
-value either for the reg property, but I've kept quiet because I have
-nothing to offer there: again, this comes down to ePAPR requirements
-and the need to specify multiple "port { }" nodes.  You can't have two
-"port { }" nodes without using a unit-address, and we'd need to chose
-a unit-address for it which doesn't conflict with the audio ports...
-so there's a kind of logic to using the RGB routing value, which will
-never conflict.
+There's a lot of helpers like -fixed, -gate and so on - this sounds like
+you could probably use those helpers (there should be lots of examples
+in the kernel) or just implement a simple provider (see clk-provider.h)
+depending on how the control is mapped in.  If it's that simple just
+open coding a provider ought to do the job.  Then set up the client
+linkage with clkdev in some way that makes sense for your platform.
 
--- 
-RMK's Patch system: http://www.arm.linux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
-according to speedtest.net.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--Z0AzVEOeKznHFuth
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWz6V8AAoJECTWi3JdVIfQ/zEH/1Kn3buUQMI86SzflJYeJtTx
+KhmHdL+h1hOulR8RfrAjRyjdNZyGGEGm8ZAWbQTaApSZWjCtdwJh8dDm+/n2F3Xj
++cEi+ho8gSa4HklV+dRUGj5q1oMG2cjEQeaPcA59OF0iZH7c5CbPm9lKSR+15NOR
+4tEvLK8HundYyGtBu+hmXnSNY1MaFnGNMvpZGwWoBXzH3h9/uTu+3Ae44NdAogT/
+0AdLxt+lGmpAaylf1+WpCPT6+RW+5n7wjmT0rjhVpUkYLuweWka5scVUeKB5Etos
+SAjbgC3OoCAEJyR591NjhCN/oV+GGWgFHE2WKauE+Sh9msYx0dd2dlzrsV2lYE0=
+=5Xry
+-----END PGP SIGNATURE-----
+
+--Z0AzVEOeKznHFuth--
