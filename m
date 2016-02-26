@@ -1,20 +1,19 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: rt5640: add master clock handling
- for rt5640
-Date: Fri, 26 Feb 2016 09:43:15 -0600
-Message-ID: <56D07293.902@linux.intel.com>
-References: <1456190782-18865-1-git-send-email-sugar.zhang@rock-chips.com>
- <56CC719C.1090901@linux.intel.com> <2199435.lA9iTvxnKV@phil>
- <20160224033259.GL18327@sirena.org.uk> <56CDD5DD.6040006@linux.intel.com>
- <20160226010818.GZ18327@sirena.org.uk>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: Re: [PATCH] ASoC: Extend FLL function
+Date: Sat, 27 Feb 2016 00:16:59 +0800
+Message-ID: <56D07A7B.7000104@nuvoton.com>
+References: <1451548510-4989-1-git-send-email-KCHSU0@nuvoton.com>
+ <CAOMFOmX_fu94AYJpP5x4=r9GXb5CztxhMNNv7rHENO8fWbgjeg@mail.gmail.com>
+ <56CE33D4.10009@nuvoton.com> <20160225015519.GW18327@sirena.org.uk>
+ <56CF3B1B.4010705@nuvoton.com> <20160226013403.GB18327@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id F176D2605BD
- for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 16:43:17 +0100 (CET)
-In-Reply-To: <20160226010818.GZ18327@sirena.org.uk>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 460BE2605BD
+ for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 17:17:10 +0100 (CET)
+In-Reply-To: <20160226013403.GB18327@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,41 +24,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Sugar Zhang <sugar.zhang@rock-chips.com>, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Bard Liao <bardliao@realtek.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Anatol Pomozov <anatol.pomozov@gmail.com>, Ben Zhang <benzh@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com, Yong Zhi <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2/25/16 7:08 PM, Mark Brown wrote:
-> On Wed, Feb 24, 2016 at 10:10:05AM -0600, Pierre-Louis Bossart wrote:
->> On 2/23/16 9:32 PM, Mark Brown wrote:
->
->>> That said we really do need x86 to transition to use the clock API
->>> in order to integrate with external devices, where the machine driver
->>> does manage clocks we want that to move to being done using the clock
->>> API rather than custom APIs.
->
->> For Baytrail audio we have a single platform clock that can be turned
->> on/off and set to 19.2 MHz or 25 MHz. No other controls are available,
->> no multipliers or complicated dependencies on other clocks, parents or
->> children and no other users for this clock but the audio subsystem.
->> I looked at the clock framework and couldn't figure out how it would simply
->> map the hardware so for now the use of the MCLK is only enabled with an
->> on/off or set-rate(19.2|25) custom API. I am not an expert here so if this
->> clock framework becomes a requirement to upstream code I would appreciate
->> any pointers to do the right thing. I really couldn't find a simple example
->> with 'Put your code here' comments to use this framework.
->
-> There's a lot of helpers like -fixed, -gate and so on - this sounds like
-> you could probably use those helpers (there should be lots of examples
-> in the kernel) or just implement a simple provider (see clk-provider.h)
-> depending on how the control is mapped in.  If it's that simple just
-> open coding a provider ought to do the job.  Then set up the client
-> linkage with clkdev in some way that makes sense for your platform.
+Hi
 
-Yes there are documentation and helpers I looked into, but to the best 
-of my limited knowledge not for the gate + dual-rate case. Then you jump 
-to complicated configurations combining multiple base clocks that don't 
-really make sense here. After one frustrating day of trying to wrap 100 
-lines of code into the clock framework I gave up and kept the simple 
-custom driver. There is a single client for this clock so I don't quite 
-see the benefits/ROI of mapping a simple piece of hardware with a 
-complex model.
+On 2/26/2016 9:34 AM, Mark Brown wrote:
+> On Fri, Feb 26, 2016 at 01:34:19AM +0800, John Hsu wrote:
+>   
+>> On 2/25/2016 9:55 AM, Mark Brown wrote:
+>>     
+>
+>   
+>>> I don't have whatever this patch is (I suspect the fact that there were
+>>> concerns raised meant I expected a new version).  Please do try to use
+>>> subject lines reflecting the style to the subsystem.
+>>>       
+>
+>   
+>> Do you mean I need to resubmit this patch and in-reply-to Message-ID of this
+>> mail?
+>>     
+>
+> Yes, you need to resubmit the patch.  No, you do not need to do it in
+> reply to this e-mail.
+>
+>   
+I'll submit it again with proper subject.
+>> I don't really catch the meaning of "use subject lines reflecting the style
+>> to the subsystem".
+>> Could you tell me more detail about it? Thank you very much.
+>>     
+>
+> If you look at all the other driver commits you'll see that their
+> subject lines start "ASoC: driver: " .
+>   
+
+Yes, I get it. I forgot to do that. Thanks for your remind.
