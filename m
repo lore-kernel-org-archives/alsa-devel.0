@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "regmap: add regmap_field_force_xxx() macros"
+Subject: Applied "regmap: add regmap_fields_force_xxx() macros"
 	to the asoc tree
-Date: Fri, 26 Feb 2016 12:17:29 +0900
-Message-ID: <E1aZ8uH-00089f-3Z@finisterre>
-References: <87vb5qh7ko.wl%kuninori.morimoto.gx@renesas.com>
+Date: Fri, 26 Feb 2016 12:17:28 +0900
+Message-ID: <E1aZ8uG-000899-Db@finisterre>
+References: <87twlah7k3.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B1BE2265148
+ by alsa0.perex.cz (Postfix) with ESMTP id 0CEED264EFA
  for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 04:17:30 +0100 (CET)
-In-Reply-To: <87vb5qh7ko.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87twlah7k3.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   regmap: add regmap_field_force_xxx() macros
+   regmap: add regmap_fields_force_xxx() macros
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,66 @@ to this mail.
 Thanks,
 Mark
 
->From 489061bba6c655a2f98d39be17df118c0fd09d57 Mon Sep 17 00:00:00 2001
+>From e6ef243fa4660f3206137bd5f3e69b13a9b7c28a Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 15 Feb 2016 05:25:54 +0000
-Subject: [PATCH] regmap: add regmap_field_force_xxx() macros
+Date: Mon, 15 Feb 2016 05:26:14 +0000
+Subject: [PATCH] regmap: add regmap_fields_force_xxx() macros
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/linux/regmap.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/base/regmap/regmap.c | 12 ------------
+ include/linux/regmap.h       |  6 ++++--
+ 2 files changed, 4 insertions(+), 14 deletions(-)
 
+diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
+index 79d7f51019d7..c7d4a636778d 100644
+--- a/drivers/base/regmap/regmap.c
++++ b/drivers/base/regmap/regmap.c
+@@ -1748,18 +1748,6 @@ int regmap_fields_update_bits_base(struct regmap_field *field,  unsigned int id,
+ }
+ EXPORT_SYMBOL_GPL(regmap_fields_update_bits_base);
+ 
+-int regmap_fields_force_write(struct regmap_field *field, unsigned int id,
+-			unsigned int val)
+-{
+-	if (id >= field->id_size)
+-		return -EINVAL;
+-
+-	return regmap_write_bits(field->regmap,
+-				  field->reg + (field->id_offset * id),
+-				  field->mask, val << field->shift);
+-}
+-EXPORT_SYMBOL_GPL(regmap_fields_force_write);
+-
+ /*
+  * regmap_bulk_write(): Write multiple registers to the device
+  *
 diff --git a/include/linux/regmap.h b/include/linux/regmap.h
-index 7d3d498fd3e8..d36ea89adc50 100644
+index d36ea89adc50..e0960b3ff290 100644
 --- a/include/linux/regmap.h
 +++ b/include/linux/regmap.h
-@@ -76,8 +76,12 @@ struct reg_sequence {
- 
- #define	regmap_field_write(field, val) \
- 	regmap_field_update_bits_base(field, ~0, val, NULL, false, false)
-+#define	regmap_field_force_write(field, val) \
-+	regmap_field_update_bits_base(field, ~0, val, NULL, false, true)
- #define	regmap_field_update_bits(field, mask, val)\
- 	regmap_field_update_bits_base(field, mask, val, NULL, false, false)
-+#define	regmap_field_force_update_bits(field, mask, val) \
-+	regmap_field_update_bits_base(field, mask, val, NULL, false, true)
+@@ -85,8 +85,12 @@ struct reg_sequence {
  
  #define	regmap_fields_write(field, id, val) \
  	regmap_fields_update_bits_base(field, id, ~0, val, NULL, false, false)
++#define	regmap_fields_force_write(field, id, val) \
++	regmap_fields_update_bits_base(field, id, ~0, val, NULL, false, true)
+ #define	regmap_fields_update_bits(field, id, mask, val)\
+ 	regmap_fields_update_bits_base(field, id, mask, val, NULL, false, false)
++#define	regmap_fields_force_update_bits(field, id, mask, val) \
++	regmap_fields_update_bits_base(field, id, mask, val, NULL, false, true)
+ 
+ #ifdef CONFIG_REGMAP
+ 
+@@ -789,8 +793,6 @@ int regmap_field_read(struct regmap_field *field, unsigned int *val);
+ int regmap_field_update_bits_base(struct regmap_field *field,
+ 				  unsigned int mask, unsigned int val,
+ 				  bool *change, bool async, bool force);
+-int regmap_fields_force_write(struct regmap_field *field, unsigned int id,
+-			unsigned int val);
+ int regmap_fields_read(struct regmap_field *field, unsigned int id,
+ 		       unsigned int *val);
+ int regmap_fields_update_bits_base(struct regmap_field *field,  unsigned int id,
 -- 
 2.7.0
