@@ -1,17 +1,20 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH RESEND] ASoC: pxa: remove unused variable
-Date: Fri, 26 Feb 2016 14:46:20 +0100
-Message-ID: <2759692.ZNT2pvbZBk@wuerfel>
-References: <1456437736-732609-1-git-send-email-arnd@arndb.de>
- <20160226011827.GA18327@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: rt5640: add master clock handling
+ for rt5640
+Date: Fri, 26 Feb 2016 09:43:15 -0600
+Message-ID: <56D07293.902@linux.intel.com>
+References: <1456190782-18865-1-git-send-email-sugar.zhang@rock-chips.com>
+ <56CC719C.1090901@linux.intel.com> <2199435.lA9iTvxnKV@phil>
+ <20160224033259.GL18327@sirena.org.uk> <56CDD5DD.6040006@linux.intel.com>
+ <20160226010818.GZ18327@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.13])
- by alsa0.perex.cz (Postfix) with ESMTP id 760642606C7
- for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 14:46:31 +0100 (CET)
-In-Reply-To: <20160226011827.GA18327@sirena.org.uk>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id F176D2605BD
+ for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 16:43:17 +0100 (CET)
+In-Reply-To: <20160226010818.GZ18327@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,33 +24,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Sugar Zhang <sugar.zhang@rock-chips.com>, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 26 February 2016 10:18:27 Mark Brown wrote:
-> On Thu, Feb 25, 2016 at 11:02:04PM +0100, Arnd Bergmann wrote:
-> 
-> > Submitted originally on Nov 23 2015, this apparently got lost,
-> > resending it now.
-> 
-> You didn't really submit it, you pasted it into the middle of a reply to
-> a message on an existing thread for a patch that was already applied:
-> 
-> https://lkml.org/lkml/2015/11/23/88
-> 
-> That's not really submitting a patch as far as I'm concerned, something
-> that won't just apply with git am without special faffing isn't helping
-> and things in the middle of threads aren't good either (it gets
-> difficult to follow and there's every chance they'll never even get seen
-> if they're buried in the middle of a reply where you don't expect to see
-> a patch).
+On 2/25/16 7:08 PM, Mark Brown wrote:
+> On Wed, Feb 24, 2016 at 10:10:05AM -0600, Pierre-Louis Bossart wrote:
+>> On 2/23/16 9:32 PM, Mark Brown wrote:
+>
+>>> That said we really do need x86 to transition to use the clock API
+>>> in order to integrate with external devices, where the machine driver
+>>> does manage clocks we want that to move to being done using the clock
+>>> API rather than custom APIs.
+>
+>> For Baytrail audio we have a single platform clock that can be turned
+>> on/off and set to 19.2 MHz or 25 MHz. No other controls are available,
+>> no multipliers or complicated dependencies on other clocks, parents or
+>> children and no other users for this clock but the audio subsystem.
+>> I looked at the clock framework and couldn't figure out how it would simply
+>> map the hardware so for now the use of the MCLK is only enabled with an
+>> on/off or set-rate(19.2|25) custom API. I am not an expert here so if this
+>> clock framework becomes a requirement to upstream code I would appreciate
+>> any pointers to do the right thing. I really couldn't find a simple example
+>> with 'Put your code here' comments to use this framework.
+>
+> There's a lot of helpers like -fixed, -gate and so on - this sounds like
+> you could probably use those helpers (there should be lots of examples
+> in the kernel) or just implement a simple provider (see clk-provider.h)
+> depending on how the control is mapped in.  If it's that simple just
+> open coding a provider ought to do the job.  Then set up the client
+> linkage with clkdev in some way that makes sense for your platform.
 
-I see your point about the patch being in the middle of the thread.
-
-Regarding the 'git am' compatibility, I thought I'd done it right,
-but see now that I used incorrect scissors, apparently 'git mailinfo'
-expects at least six '-' characters as the separator, while I used
-just three.
-
-	Arnd
+Yes there are documentation and helpers I looked into, but to the best 
+of my limited knowledge not for the gate + dual-rate case. Then you jump 
+to complicated configurations combining multiple base clocks that don't 
+really make sense here. After one frustrating day of trying to wrap 100 
+lines of code into the clock framework I gave up and kept the simple 
+custom driver. There is a single client for this clock so I don't quite 
+see the benefits/ROI of mapping a simple piece of hardware with a 
+complex model.
