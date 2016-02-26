@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: remove unused variable" to the
-	asoc tree
-Date: Fri, 26 Feb 2016 11:46:57 +0900
-Message-ID: <E1aZ8Qj-0006Jl-Au@finisterre>
-References: <4678926.Vc1QsAaFQ0@wuerfel>
+Subject: Applied "ASoC: cht_bsw_rt5645: Fix writing to string
+	literal" to the asoc tree
+Date: Fri, 26 Feb 2016 11:46:55 +0900
+Message-ID: <E1aZ8Qh-0006In-UL@finisterre>
+References: <1456217420-9327-1-git-send-email-carlo@caione.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 762C926523B
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B2A126524C
  for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 03:47:01 +0100 (CET)
-In-Reply-To: <4678926.Vc1QsAaFQ0@wuerfel>
+In-Reply-To: <1456217420-9327-1-git-send-email-carlo@caione.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
+To: Carlo Caione <carlo@endlessm.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: remove unused variable
+   ASoC: cht_bsw_rt5645: Fix writing to string literal
 
 has been applied to the asoc tree at
 
@@ -53,40 +53,41 @@ to this mail.
 Thanks,
 Mark
 
->From aa3e838869d494c437c693b54d12fe02b96a0aa1 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 25 Feb 2016 23:02:04 +0100
-Subject: [PATCH] ASoC: pxa: remove unused variable
+>From c8560b7c917f8738f5d80dd516930edc1d05e4e4 Mon Sep 17 00:00:00 2001
+From: Carlo Caione <carlo@endlessm.com>
+Date: Tue, 23 Feb 2016 09:50:20 +0100
+Subject: [PATCH] ASoC: cht_bsw_rt5645: Fix writing to string literal
 
-As pointed out by Zhangfei Gao, the sspa_div variable in
-brownstone_wm8994_hw_params() is completely unused, so as a cleanup
-following a prior patch, this removes both the variable and the division.
+We cannot use strcpy() to write to a const char * location. This is
+causing a 'BUG: unable to handle kernel paging request' error at boot
+when using the cht-bsw-rt5645 driver.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+With this patch we also fix a wrong indexing in the driver where the
+codec_name of the wrong dai_link is being overwritten.
+
+Signed-off-by: Carlo Caione <carlo@endlessm.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/brownstone.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/pxa/brownstone.c b/sound/soc/pxa/brownstone.c
-index 416ea646c3b1..ec522e94b0e2 100644
---- a/sound/soc/pxa/brownstone.c
-+++ b/sound/soc/pxa/brownstone.c
-@@ -52,7 +52,6 @@ static int brownstone_wm8994_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int freq_out, sspa_mclk, sysclk;
--	int sspa_div;
- 
- 	if (params_rate(params) > 11025) {
- 		freq_out  = params_rate(params) * 512;
-@@ -63,7 +62,6 @@ static int brownstone_wm8994_hw_params(struct snd_pcm_substream *substream,
- 		sysclk    = params_rate(params) * 512;
- 		sspa_mclk = params_rate(params) * 64;
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index 2d3afddb0a2e..a7b96a9a4e0e 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -367,8 +367,12 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
  	}
--	sspa_div = freq_out / sspa_mclk;
- 
- 	snd_soc_dai_set_sysclk(cpu_dai, MMP_SSPA_CLK_AUDIO, freq_out, 0);
- 	snd_soc_dai_set_pll(cpu_dai, MMP_SYSCLK, 0, freq_out, sysclk);
+ 	card->dev = &pdev->dev;
+ 	sprintf(codec_name, "i2c-%s:00", drv->acpi_card->codec_id);
++
+ 	/* set correct codec name */
+-	strcpy((char *)card->dai_link[2].codec_name, codec_name);
++	for (i = 0; i < ARRAY_SIZE(cht_dailink); i++)
++		if (!strcmp(card->dai_link[i].codec_name, "i2c-10EC5645:00"))
++			card->dai_link[i].codec_name = kstrdup(codec_name, GFP_KERNEL);
++
+ 	snd_soc_card_set_drvdata(card, drv);
+ 	ret_val = devm_snd_soc_register_card(&pdev->dev, card);
+ 	if (ret_val) {
 -- 
 2.7.0
