@@ -1,101 +1,53 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH RFC v5 4/8] drm/i2c: tda998x: Add support of a DT graph
- of ports
-Date: Fri, 26 Feb 2016 11:21:59 +0000
-Message-ID: <20160226112159.GO5783@n2100.arm.linux.org.uk>
-References: <cover.1455720381.git.jsarha@ti.com>
- <842e221030a0b14bc862790eb2f5bc97bb29c012.1455720381.git.jsarha@ti.com>
- <20160218143530.GB9654@rob-hp-laptop> <56CF04DA.8080905@ti.com>
- <20160226004311.GM5783@n2100.arm.linux.org.uk>
- <56D02594.4020407@ti.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH RESEND] ASoC: pxa: remove unused variable
+Date: Fri, 26 Feb 2016 14:46:20 +0100
+Message-ID: <2759692.ZNT2pvbZBk@wuerfel>
+References: <1456437736-732609-1-git-send-email-arnd@arndb.de>
+ <20160226011827.GA18327@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <56D02594.4020407@ti.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, devicetree@vger.kernel.org, tomi.valkeinen@ti.com, arnaud.pouliquen@st.com, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, broonie@kernel.org, bcousson@baylibre.com, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.13])
+ by alsa0.perex.cz (Postfix) with ESMTP id 760642606C7
+ for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 14:46:31 +0100 (CET)
+In-Reply-To: <20160226011827.GA18327@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBGZWIgMjYsIDIwMTYgYXQgMTI6MTQ6NDRQTSArMDIwMCwgSnlyaSBTYXJoYSB3cm90
-ZToKPiBPbiAwMi8yNi8xNiAwMjo0MywgUnVzc2VsbCBLaW5nIC0gQVJNIExpbnV4IHdyb3RlOgo+
-ID5PbiBUaHUsIEZlYiAyNSwgMjAxNiBhdCAwMzo0Mjo1MFBNICswMjAwLCBKeXJpIFNhcmhhIHdy
-b3RlOgo+ID4+T24gMDIvMTgvMTYgMTY6MzUsIFJvYiBIZXJyaW5nIHdyb3RlOgo+ID4+PlRoaXMg
-c2hvdWxkIGJlIGltcGxpZWQgZnJvbSB0aGUgcG9ydCB1bml0IGFkZHJlc3MuIEluIG90aGVyIHdv
-cmRzLAo+ID4+PnBvcnRAMCBpcyBkZWZpbmVkIHRvIGJlIHRoZSByZ2IgcG9ydC4gTm93LCBpZiB0
-aGlzIGlzIG9uZSBvZiBzZXZlcmFsCj4gPj4+bW9kZXMgZm9yIHRoZSB2aWRlbyBwb3J0LCB0aGVu
-IHRoYXQgaXMgYSBkaWZmZXJlbnQgc3RvcnkuCj4gPj4+Cj4gPj4KPiA+PkRvIHlvdSBzdWdnZXN0
-IHRoYXQgYWxzbyB0aGUgYXVkaW8gaTJzIGFuZCBzL3AtZGlmIHBvcnQtdHlwZXMgc2hvdWxkIGJl
-Cj4gPj5jb2RlZCBpbiB0aGUgcG9ydCB1bml0IGFkZHJlc3Nlcz8gU29tZXRoaW5nIGxpa2U6IHBv
-cnRAMCBpcyBhbHdheXMgcmdiLAo+ID4+cG9ydEAxIGlzIGkycywgYW5kIHBvcnRAMiBpcyBzcGRp
-Zj8KPiA+Cj4gPkZvciB0aGUgYXVkaW8gaW5wdXRzLCB0aGUgcG9ydCBhZGRyZXNzIGNvcnJlc3Bv
-bmRzIHRvIHRoZSBpbnB1dCBwaW4uCj4gPlREQTk5OHggZGV2aWNlcyBjYW4gaGF2ZSBtdWx0aXBs
-ZSBzdHJlYW1zIHJvdXRlZCB0byB0aGUgcGlucywgYW5kIGNhbgo+ID5zZWxlY3QgYmV0d2VlbiB0
-aGVtLgo+ID4KPiA+Rm9yIGV4YW1wbGUsIHRoZXJlIG1heSBiZSBmb3VyIEkyUyBkYXRhIHBpbnMg
-YW5kIG9uZSBJMlMgY2xvY2sgcGluLgo+ID5XaGVuIHVzaW5nIHN0ZXJlbywgeW91IGNhbiBzZWxl
-Y3Qgd2hpY2ggb2YgdGhlIGZvdXIgSTJTIGRhdGEgcGlucwo+ID5jYXJyaWVzIHRoZSBhdWRpbyBk
-YXRhLgo+ID4KPiAKPiBTdXJlLCBidXQgSSBkbyBub3QgdGhpbmsgdGhhdCB3b3VsZCBiZSB0aGUg
-dXN1YWwgc2V0dXAuIFRoZSBvbmx5ICJub3JtYWwiCj4gc2l0dWF0aW9uIEkgY2FuIHRoaW5rIGZv
-ciBoYXZpbmcgYSBuZWVkIHRvIGhhdmUgdHdvIGFsdGVybmF0aXZlIGF1ZGlvIHNldHVwcwo+IHdv
-dWxkIG9uZSBmb3IgaTJzIGFuZCBhbm90aGVyIGZvciBzL3AtZGlmLiBCdXQgdGhlbiBhZ2FpbiBp
-dCBpcyBwb3NzaWJsZSB0bwo+IGNvbWUgdXAgd2l0aCBhIGRlc2lnbiB3aXRoIG11bHRpcGxlIGFs
-dGVybmF0aXZlIGF1ZGlvIHdpcmluZ3MgYW5kIGl0Cj4gcmVsYXRpdmVseSBzaW1wbGUgaGFuZGxl
-IHRoYXQgaW4gRFQgYmluZGluZywgc28gd2h5IG5vdC4KClRoZXJlJ3MgYW5vdGhlciByZWFzb246
-IGlmIHlvdSB3YW50IHRvIHN1cHBvcnQgOCBjaGFubmVsIGF1ZGlvIHVzaW5nIEkyUwpyYXRoZXIg
-dGhhbiBTUERJRiwgdGhlbiB5b3UgbmVlZCB0byB1c2UgZm91ciBJMlMgZGF0YSBpbnB1dHMuICBF
-YWNoIEkyUwpkYXRhIGlucHV0IGNhbiBzdXBwb3J0IG9ubHkgdHdvIGNoYW5uZWxzLgoKPiA+V2hl
-biB1c2luZyBTUERJRiwgdGhlcmUgbWF5IGJlIHR3byBTUERJRiBpbnB1dHMsIGFuZCB5b3UgY2Fu
-IHNlbGVjdAo+ID53aGljaCBTUERJRiBpbnB1dCBpcyB1c2VkLgo+ID4KPiA+U28sICJyZWciIG1h
-eSBub3QgYmUgYW4gYWRkcmVzcyBpbiB0ZXJtcyBvZiBhIENQVSB2aXNpYmxlIGFkZHJlc3MsIGJ1
-dAo+ID5pdCdzIGFuIGFkZHJlc3MgYXMgZmFyIGFzIHNlbGVjdGluZyB0aGUgYXBwcm9wcmlhdGUg
-aW5wdXQgLSBhbmQgaXQKPiA+Zml0cyBpbiB3aXRoIHRoZSByZXF1aXJlbWVudHMgb2YgZVBBUFIs
-IHdoaWNoIGFyZSB0aGF0IGlmIHlvdSBoYXZlCj4gPmEgdW5pdC1hZGRyZXNzICh3aGljaCBpcyBy
-ZXF1aXJlZCB0byBkaXN0aW5ndWlzaCBkaWZmZXJlbnQgcG9ydCBub2RlcykKPiA+dGhlbiB5b3Ug
-bXVzdCBoYXZlIGEgbWF0Y2hpbmcgInJlZyIgcHJvcGVydHkuCj4gCj4gU3RpbGwgSSBkbyBub3Qg
-c2VlIHdoeSBpdCBpcyBkZXNpcmFibGUgdG8gcmV1c2UgcmVnIHByb3BlcnR5LCB3aGVuIHdlIGNh
-bgo+IGludHJvZHVjZSBuZXcgcHJvcGVydHkgZm9yIGRlc2NyaWJpbmcgdGhlIGF1ZGlvIHdpcmlu
-Zy4KCkRpZmZlcmVudCBwZW9wbGUgaGF2ZSBkaWZmZXJlbnQgb3BpbmlvbnMuICBZb3VyIG9waW5p
-b24gaXMganVzdCBhbm90aGVyCmV4YW1wbGUgb2Ygc29tZW9uZSBob2xkaW5nIGEgZGlmZmVyZW50
-IHZpZXcuCgpZb3UgX2hhdmVfIHRvIGhhdmUgYSB1bml0IGFkZHJlc3MsIGFuZCB0aGVyZWZvcmUg
-eW91IF9oYXZlXyB0byBoYXZlIGEKcmVnIHByb3BlcnR5LiAgSWYgeW91IHdhbnQgdG8gdXNlIHNv
-bWUgb3RoZXIgcHJvcGVydHkgdG8gZGVzY3JpYmUgdGhlCmF1ZGlvIGlucHV0IHBpbiwgdGhlbiB5
-b3Ugd2lsbCBuZWVkIHRvIG1ha2UgdXAgYSB0b3RhbGx5IGZpY3RpY2lvdXMKdW5pdC1hZGRyZXNz
-IGFuZCByZWcgcHJvcGVydHkgZm9yIGVhY2ggYXVkaW8gaW5wdXQgcGluLgoKVGhhdCdzIGFkZGlu
-ZyBjb21wbGV4aXR5LCBhcmd1YWJseSB1bm5lY2Vzc2FyeSBjb21wbGV4aXR5LCBhbmQgbWFraW5n
-CnRoZSBiaW5kaW5nIHVubmVjZXNzYXJpbHkgbW9yZSBjb21wbGV4IGZvciBubyBnb29kIHJlYXNv
-bi4KCj4gPkkgZG9uJ3QgcGFydGljdWxhcmx5IGxpa2UgdGhlIHZpZGVvIG5vZGUgdXNpbmcgdGhl
-IFJHQiByb3V0aW5nIHJlZ2lzdGVyCj4gPnZhbHVlIGVpdGhlciBmb3IgdGhlIHJlZyBwcm9wZXJ0
-eSwgYnV0IEkndmUga2VwdCBxdWlldCBiZWNhdXNlIEkgaGF2ZQo+ID5ub3RoaW5nIHRvIG9mZmVy
-IHRoZXJlOiBhZ2FpbiwgdGhpcyBjb21lcyBkb3duIHRvIGVQQVBSIHJlcXVpcmVtZW50cwo+ID5h
-bmQgdGhlIG5lZWQgdG8gc3BlY2lmeSBtdWx0aXBsZSAicG9ydCB7IH0iIG5vZGVzLiAgWW91IGNh
-bid0IGhhdmUgdHdvCj4gPiJwb3J0IHsgfSIgbm9kZXMgd2l0aG91dCB1c2luZyBhIHVuaXQtYWRk
-cmVzcywgYW5kIHdlJ2QgbmVlZCB0byBjaG9zZQo+ID5hIHVuaXQtYWRkcmVzcyBmb3IgaXQgd2hp
-Y2ggZG9lc24ndCBjb25mbGljdCB3aXRoIHRoZSBhdWRpbyBwb3J0cy4uLgo+ID5zbyB0aGVyZSdz
-IGEga2luZCBvZiBsb2dpYyB0byB1c2luZyB0aGUgUkdCIHJvdXRpbmcgdmFsdWUsIHdoaWNoIHdp
-bGwKPiA+bmV2ZXIgY29uZmxpY3QuCj4gPgo+IAo+IElmIHdlIGFmdGVyIGFsbCBkZWNpZGUgdG8g
-Z28gd2l0aCB1c2luZyByZWcgcHJvcGVydHkgZm9yIGF1ZGlvIHdpcmluZyAoYW5kCj4gZXNzZW50
-aWFsbHkgd3JpdGluZyB0aGUgdmFsdWUgZGlyZWN0bHkgdG8gQVBfRU5BIHJlZ2lzdGVyKSwgdGhl
-biB3ZSBjb3VsZAo+IGFsc28gYWdyZWUgdGhhdCB2aWRlbyBwb3J0J3MgdW5pdCBhZGRyZXNzIGlz
-IGFsd2F5cyAwIGFzIGl0IGNvcnJlc3BvbmRzIHRvCj4gYXVkaW8gZGlzYWJsZWQgaW4gQVBfRU5B
-IHJlZ2lzdGVyIGFuZCB3b3VsZCBub3QgY29sbGlkZSB3aXRoIGFueSBhdWRpbwo+ICJhZGRyZXNz
-Ii4gVGhlbiB3ZSBjb3VsZCBrZWVwIHRoZSBvbGQgdmlkZW8tcG9ydHMgcHJvcGVydHkgdG8gY29u
-ZmlndXJlIHRoZQo+IHZpZGVvIHdpcmluZy4gSG93IGRvZXMgdGhpcyBzb3VuZD8KClN1Yi1zdGFu
-ZGFyZCA6KQoKVGhpcyBoYXMgYWN0dWFsbHkgYmVlbiBkaXNjdXNzZWQgYmVmb3JlLiAgU2VlIHRo
-ZSB0aHJlYWQ6CgoiW1BBVENIIHY5IDEvNF0gZHJtL2kyYzogdGRhOTk4eDogQWRkIERUIHN1cHBv
-cnQgZm9yIGF1ZGlvIgoKZnJvbSBKYW51YXJ5IDIwMTUuCgotLSAKUk1LJ3MgUGF0Y2ggc3lzdGVt
-OiBodHRwOi8vd3d3LmFybS5saW51eC5vcmcudWsvZGV2ZWxvcGVyL3BhdGNoZXMvCkZUVEMgYnJv
-YWRiYW5kIGZvciAwLjhtaWxlIGxpbmU6IGN1cnJlbnRseSBhdCA5LjZNYnBzIGRvd24gNDAwa2Jw
-cyB1cAphY2NvcmRpbmcgdG8gc3BlZWR0ZXN0Lm5ldC4KX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxA
-bGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxt
-YW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+On Friday 26 February 2016 10:18:27 Mark Brown wrote:
+> On Thu, Feb 25, 2016 at 11:02:04PM +0100, Arnd Bergmann wrote:
+> 
+> > Submitted originally on Nov 23 2015, this apparently got lost,
+> > resending it now.
+> 
+> You didn't really submit it, you pasted it into the middle of a reply to
+> a message on an existing thread for a patch that was already applied:
+> 
+> https://lkml.org/lkml/2015/11/23/88
+> 
+> That's not really submitting a patch as far as I'm concerned, something
+> that won't just apply with git am without special faffing isn't helping
+> and things in the middle of threads aren't good either (it gets
+> difficult to follow and there's every chance they'll never even get seen
+> if they're buried in the middle of a reply where you don't expect to see
+> a patch).
+
+I see your point about the patch being in the middle of the thread.
+
+Regarding the 'git am' compatibility, I thought I'd done it right,
+but see now that I used incorrect scissors, apparently 'git mailinfo'
+expects at least six '-' characters as the separator, while I used
+just three.
+
+	Arnd
