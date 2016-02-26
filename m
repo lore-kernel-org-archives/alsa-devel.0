@@ -1,195 +1,45 @@
-From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Subject: Re: [PATCH v3 22/22] sound/usb: Use Media Controller API to share
- media resources
-Date: Sat, 27 Feb 2016 09:41:13 -0300
-Message-ID: <20160227094113.5ae5e728@recife.lan>
-References: <cover.1455233150.git.shuahkh@osg.samsung.com>
-	<0822f80e0acc5119e6f6deccf002ccadeb3b145b.1455233156.git.shuahkh@osg.samsung.com>
-	<s5hpovjjlg4.wl-tiwai@suse.de>
-	<56D0B0CB.8060709@osg.samsung.com>
-	<s5hio1bjiws.wl-tiwai@suse.de>
-	<56D1102B.8060501@osg.samsung.com>
-	<s5hegbyk30q.wl-tiwai@suse.de>
+From: Brian Jones <g0ukb@ivarc.org.uk>
+Subject: USB Sound card with unsafe characters
+Date: Fri, 26 Feb 2016 08:43:17 +0000
+Message-ID: <CADKQKXb4mhVOwAZx8nkXLW2Z6vCALGw2t-S89=J0cKj_ww_Zrg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hegbyk30q.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, clemens@ladisch.de, sakari.ailus@linux.intel.com, javier@osg.samsung.com, geliangtang@163.com, alsa-devel@alsa-project.org, arnd@arndb.de, ricard.wanderlof@axis.com, labbott@fedoraproject.org, chehabrafael@gmail.com, klock.android@gmail.com, misterpib@gmail.com, prabhakar.csengg@gmail.com, ricardo.ribalda@gmail.com, ruchandani.tina@gmail.com, takamichiho@gmail.com, tvboxspy@gmail.com, dominic.sacre@gmx.de, albert@huitsing.nl, crope@iki.fi, julian@jusst.de, pierre-louis.bossart@linux.intel.com, corbet@lwn.net, joe@oampo.co.uk, johan@oljud.se, dan.carpenter@oracle.com, pawel@osciak.com, p.zabel@pengutronix.de, perex@perex.cz, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, j.anaszewski@samsung.com, jh1009.sung@samsung.com, k.kozlowski@samsung.com, kyungmin.park@samsung.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f52.google.com (mail-wm0-f52.google.com [74.125.82.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 918FA2610A7
+ for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 09:43:17 +0100 (CET)
+Received: by mail-wm0-f52.google.com with SMTP id a4so60309823wme.1
+ for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2016 00:43:17 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Em Sat, 27 Feb 2016 08:48:05 +0100
-Takashi Iwai <tiwai@suse.de> escreveu:
+I have been trying to work on a fix for Bug 1498129 -
+https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1498129  on
+Ubuntu
 
-> On Sat, 27 Feb 2016 03:55:39 +0100,
-> Shuah Khan wrote:
-> > 
-> > On 02/26/2016 01:50 PM, Takashi Iwai wrote:  
-> > > On Fri, 26 Feb 2016 21:08:43 +0100,
-> > > Shuah Khan wrote:  
-> > >>
-> > >> On 02/26/2016 12:55 PM, Takashi Iwai wrote:  
-> > >>> On Fri, 12 Feb 2016 00:41:38 +0100,
-> > >>> Shuah Khan wrote:  
-> > >>>>
-> > >>>> Change ALSA driver to use Media Controller API to
-> > >>>> share media resources with DVB and V4L2 drivers
-> > >>>> on a AU0828 media device. Media Controller specific
-> > >>>> initialization is done after sound card is registered.
-> > >>>> ALSA creates Media interface and entity function graph
-> > >>>> nodes for Control, Mixer, PCM Playback, and PCM Capture
-> > >>>> devices.
-> > >>>>
-> > >>>> snd_usb_hw_params() will call Media Controller enable
-> > >>>> source handler interface to request the media resource.
-> > >>>> If resource request is granted, it will release it from
-> > >>>> snd_usb_hw_free(). If resource is busy, -EBUSY is returned.
-> > >>>>
-> > >>>> Media specific cleanup is done in usb_audio_disconnect().
-> > >>>>
-> > >>>> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
-> > >>>> ---
-> > >>>>  sound/usb/Kconfig        |   4 +
-> > >>>>  sound/usb/Makefile       |   2 +
-> > >>>>  sound/usb/card.c         |  14 +++
-> > >>>>  sound/usb/card.h         |   3 +
-> > >>>>  sound/usb/media.c        | 318 +++++++++++++++++++++++++++++++++++++++++++++++
-> > >>>>  sound/usb/media.h        |  72 +++++++++++
-> > >>>>  sound/usb/mixer.h        |   3 +
-> > >>>>  sound/usb/pcm.c          |  28 ++++-
-> > >>>>  sound/usb/quirks-table.h |   1 +
-> > >>>>  sound/usb/stream.c       |   2 +
-> > >>>>  sound/usb/usbaudio.h     |   6 +
-> > >>>>  11 files changed, 448 insertions(+), 5 deletions(-)
-> > >>>>  create mode 100644 sound/usb/media.c
-> > >>>>  create mode 100644 sound/usb/media.h
-> > >>>>
-> > >>>> diff --git a/sound/usb/Kconfig b/sound/usb/Kconfig
-> > >>>> index a452ad7..ba117f5 100644
-> > >>>> --- a/sound/usb/Kconfig
-> > >>>> +++ b/sound/usb/Kconfig
-> > >>>> @@ -15,6 +15,7 @@ config SND_USB_AUDIO
-> > >>>>  	select SND_RAWMIDI
-> > >>>>  	select SND_PCM
-> > >>>>  	select BITREVERSE
-> > >>>> +	select SND_USB_AUDIO_USE_MEDIA_CONTROLLER if MEDIA_CONTROLLER && MEDIA_SUPPORT  
-> > >>>
-> > >>> Looking at the media Kconfig again, this would be broken if
-> > >>> MEDIA_SUPPORT=m and SND_USB_AUDIO=y.  The ugly workaround is something
-> > >>> like:
-> > >>> 	select SND_USB_AUDIO_USE_MEDIA_CONTROLLER \
-> > >>> 		if MEDIA_CONTROLLER && (MEDIA_SUPPORT=y || MEDIA_SUPPORT=SND)  
-> > >>
-> > >> My current config is MEDIA_SUPPORT=m and SND_USB_AUDIO=y
-> > >> It is working and I didn't see any issues so far.  
-> > > 
-> > > Hmm, how does it be?  In drivers/media/Makefile:
-> > > 
-> > > ifeq ($(CONFIG_MEDIA_CONTROLLER),y)
-> > >   obj-$(CONFIG_MEDIA_SUPPORT) += media.o
-> > > endif
-> > > 
-> > > So it's a module.  Meanwhile you have reference from usb-audio driver
-> > > that is built-in kernel.  How is the symbol resolved?  
-> > 
-> > Sorry my mistake. I misspoke. My config had:
-> > CONFIG_MEDIA_SUPPORT=m
-> > CONFIG_MEDIA_CONTROLLER=y
-> > CONFIG_SND_USB_AUDIO=m
-> > 
-> > The following doesn't work as you pointed out.
-> > 
-> > CONFIG_MEDIA_SUPPORT=m
-> > CONFIG_MEDIA_CONTROLLER=y
-> > CONFIG_SND_USB_AUDIO=y
-> > 
-> > okay here is what will work for all of the possible
-> > combinations of CONFIG_MEDIA_SUPPORT and CONFIG_SND_USB_AUDIO
-> > 
-> > select SND_USB_AUDIO_USE_MEDIA_CONTROLLER \
-> >        if MEDIA_CONTROLLER && ((MEDIA_SUPPORT=y) || (MEDIA_SUPPORT=m && SND_USB_AUDIO=m))
-> > 
-> > The above will cover the cases when
-> > 
-> > 1. CONFIG_MEDIA_SUPPORT and CONFIG_SND_USB_AUDIO are
-> >    both modules
-> >    CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER is selected
-> > 
-> > 2. CONFIG_MEDIA_SUPPORT=y and CONFIG_SND_USB_AUDIO=m
-> >    CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER is selected
-> > 
-> > 3. CONFIG_MEDIA_SUPPORT=y and CONFIG_SND_USB_AUDIO=y
-> >    CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER is selected
-> > 
-> > 4. CONFIG_MEDIA_SUPPORT=m and CONFIG_SND_USB_AUDIO=y
-> >    This is when we don't want
-> >    CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER selected
-> > 
-> > I verified all of the above combinations to make sure
-> > the logic works.
-> > 
-> > If you think of a better way to do this please let me
-> > know. I will go ahead and send patch v4 with the above
-> > change and you can decide if that is acceptable.  
-> 
-> I'm not 100% sure whether CONFIG_SND_USB_AUDIO=m can be put there as
-> conditional inside CONFIG_SND_USB_AUDIO definition.  Maybe a safer
-> form would be like:
-> 
-> config SND_USB_AUDIO_USE_MEDIA_CONTROLLER
-> 	bool
-> 	default y
-> 	depends on SND_USB_AUDIO
-> 	depends on MEDIA_CONTROLLER
-> 	depends on (MEDIA_SUPPORT=y || MEDIA_SUPPORT=SND_USB_AUDIO)
-> 
-> and drop select from SND_USB_AUDIO.
-> 
-> 
-> > >>> Other than that, it looks more or less OK to me.
-> > >>> The way how media_stream_init() gets called is a bit worrisome, but it
-> > >>> should work practically.  Another concern is about the disconnection.
-> > >>> Can all function calls in media_device_delete() be safe even if it's
-> > >>> called while the application still opens the MC device?  
-> > >>
-> > >> Right. I have been looking into device removal path when
-> > >> ioctls are active and I can resolve any issues that might
-> > >> surface while an audio app is active when device is removed.  
-> > > 
-> > > So, it's 100% safe to call all these media_*() functions while the
-> > > device is being accessed before closing?
-> > >   
-> > 
-> > There is a known problem with device removal when
-> > media device file is open and ioctl is in progress.
-> > This isn't specific to this patch series, a general
-> > problem that is related to media device removal in
-> > general.
-> > 
-> > I am working on a fix for this problem. As you said,
-> > earlier, I can work on fixing issues after the merge.  
-> 
-> OK, understood.
-> 
-> 
-> Takashi
+My USB soundcard is an Asus Xonar U7 Echelon Edition
+<https://www.asus.com/Sound-Cards/Xonar_U7_Echelon_Edition/> which
+identifies itself to alsa as "Xonar U7 Echelon Ed." The card is supported
+by alsa and works well in analog mode but I cannot get digital output via
+alsa or pulseaudio.
 
+It has iec958 as device 1 rather than device 0 and I can access digital
+output by referring to directly to hw:x,1 but cannot access digital output
+via alsa.
 
-As there are still some issues here, I decided to apply all but
-this one, in order to avoid having compilation issues with random
-configs.
+The fix I believe is to add "Xonar U7 Echelon Ed." 1 to the
+USB-Audio.pcm.iec958_device section of USB-Audio.conf. This does not work.
+As I suspected, and now have confirmed by Raymond on the bug report, this
+is because the alsa name for this card contains the period character '.'
 
-Shuah,
-
-As there were several conflicts when I applied the initial 21 patches
-from this series, please apply this one on the top of the latest
-tree. 
-
-As this patch touches only at sound, it is independent, so
-you won't need to rebase it. However, I might have solved some
-conflicts badly, a final test wouldn't hurt ;)
-
-Regards,
-Mauro
+Is there a workaround for this or do I need to await an alsa code change?
