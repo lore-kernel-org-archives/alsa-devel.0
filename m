@@ -1,69 +1,161 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/4] ASoC: wm9713: add binding for WM9713 codec
-Date: Sat, 27 Feb 2016 11:03:06 +0900
-Message-ID: <20160227020306.GW18327@sirena.org.uk>
-References: <20160220171459.GA18327@sirena.org.uk>
- <871t87z1gz.fsf@belgarion.home>
- <20160220195925.GF18327@sirena.org.uk>
- <87twl3xgud.fsf@belgarion.home>
- <20160220211659.GG18327@sirena.org.uk>
- <878u2fxbp9.fsf@belgarion.home>
- <20160221014920.GK18327@sirena.org.uk>
- <87povkuuf6.fsf@belgarion.home>
- <20160226023021.GH18327@sirena.org.uk>
- <87k2lruqsw.fsf@belgarion.home>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: Re: [PATCH v3 22/22] sound/usb: Use Media Controller API to share
+ media resources
+Date: Fri, 26 Feb 2016 19:55:39 -0700
+Message-ID: <56D1102B.8060501@osg.samsung.com>
+References: <cover.1455233150.git.shuahkh@osg.samsung.com>
+ <0822f80e0acc5119e6f6deccf002ccadeb3b145b.1455233156.git.shuahkh@osg.samsung.com>
+ <s5hpovjjlg4.wl-tiwai@suse.de> <56D0B0CB.8060709@osg.samsung.com>
+ <s5hio1bjiws.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="SdHVWq6Dvt91fbjv"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <87k2lruqsw.fsf-4ty26DBLk+jEm7gnYqmdkQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>
-Cc: Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <s5hio1bjiws.wl-tiwai@suse.de>
+Sender: linux-media-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, clemens@ladisch.de, sakari.ailus@linux.intel.com, javier@osg.samsung.com, mchehab@osg.samsung.com, geliangtang@163.com, alsa-devel@alsa-project.org, arnd@arndb.de, ricard.wanderlof@axis.com, labbott@fedoraproject.org, chehabrafael@gmail.com, klock.android@gmail.com, misterpib@gmail.com, prabhakar.csengg@gmail.com, ricardo.ribalda@gmail.com, ruchandani.tina@gmail.com, takamichiho@gmail.com, tvboxspy@gmail.com, dominic.sacre@gmx.de, albert@huitsing.nl, crope@iki.fi, julian@jusst.de, pierre-louis.bossart@linux.intel.com, corbet@lwn.net, joe@oampo.co.uk, johan@oljud.se, dan.carpenter@oracle.com, pawel@osciak.com, p.zabel@pengutronix.de, perex@perex.cz, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, j.anaszewski@samsung.com, jh1009.sung@samsung.com, k.kozlowski@samsung.com, kyungmin.park@samsung.com, m.szyprowski
 List-Id: alsa-devel@alsa-project.org
 
+On 02/26/2016 01:50 PM, Takashi Iwai wrote:
+> On Fri, 26 Feb 2016 21:08:43 +0100,
+> Shuah Khan wrote:
+>>
+>> On 02/26/2016 12:55 PM, Takashi Iwai wrote:
+>>> On Fri, 12 Feb 2016 00:41:38 +0100,
+>>> Shuah Khan wrote:
+>>>>
+>>>> Change ALSA driver to use Media Controller API to
+>>>> share media resources with DVB and V4L2 drivers
+>>>> on a AU0828 media device. Media Controller specific
+>>>> initialization is done after sound card is registered.
+>>>> ALSA creates Media interface and entity function graph
+>>>> nodes for Control, Mixer, PCM Playback, and PCM Capture
+>>>> devices.
+>>>>
+>>>> snd_usb_hw_params() will call Media Controller enable
+>>>> source handler interface to request the media resource.
+>>>> If resource request is granted, it will release it from
+>>>> snd_usb_hw_free(). If resource is busy, -EBUSY is returned.
+>>>>
+>>>> Media specific cleanup is done in usb_audio_disconnect().
+>>>>
+>>>> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+>>>> ---
+>>>>  sound/usb/Kconfig        |   4 +
+>>>>  sound/usb/Makefile       |   2 +
+>>>>  sound/usb/card.c         |  14 +++
+>>>>  sound/usb/card.h         |   3 +
+>>>>  sound/usb/media.c        | 318 +++++++++++++++++++++++++++++++++++++++++++++++
+>>>>  sound/usb/media.h        |  72 +++++++++++
+>>>>  sound/usb/mixer.h        |   3 +
+>>>>  sound/usb/pcm.c          |  28 ++++-
+>>>>  sound/usb/quirks-table.h |   1 +
+>>>>  sound/usb/stream.c       |   2 +
+>>>>  sound/usb/usbaudio.h     |   6 +
+>>>>  11 files changed, 448 insertions(+), 5 deletions(-)
+>>>>  create mode 100644 sound/usb/media.c
+>>>>  create mode 100644 sound/usb/media.h
+>>>>
+>>>> diff --git a/sound/usb/Kconfig b/sound/usb/Kconfig
+>>>> index a452ad7..ba117f5 100644
+>>>> --- a/sound/usb/Kconfig
+>>>> +++ b/sound/usb/Kconfig
+>>>> @@ -15,6 +15,7 @@ config SND_USB_AUDIO
+>>>>  	select SND_RAWMIDI
+>>>>  	select SND_PCM
+>>>>  	select BITREVERSE
+>>>> +	select SND_USB_AUDIO_USE_MEDIA_CONTROLLER if MEDIA_CONTROLLER && MEDIA_SUPPORT
+>>>
+>>> Looking at the media Kconfig again, this would be broken if
+>>> MEDIA_SUPPORT=m and SND_USB_AUDIO=y.  The ugly workaround is something
+>>> like:
+>>> 	select SND_USB_AUDIO_USE_MEDIA_CONTROLLER \
+>>> 		if MEDIA_CONTROLLER && (MEDIA_SUPPORT=y || MEDIA_SUPPORT=SND)
+>>
+>> My current config is MEDIA_SUPPORT=m and SND_USB_AUDIO=y
+>> It is working and I didn't see any issues so far.
+> 
+> Hmm, how does it be?  In drivers/media/Makefile:
+> 
+> ifeq ($(CONFIG_MEDIA_CONTROLLER),y)
+>   obj-$(CONFIG_MEDIA_SUPPORT) += media.o
+> endif
+> 
+> So it's a module.  Meanwhile you have reference from usb-audio driver
+> that is built-in kernel.  How is the symbol resolved?
 
---SdHVWq6Dvt91fbjv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Sorry my mistake. I misspoke. My config had:
+CONFIG_MEDIA_SUPPORT=m
+CONFIG_MEDIA_CONTROLLER=y
+CONFIG_SND_USB_AUDIO=m
 
-On Fri, Feb 26, 2016 at 10:04:15PM +0100, Robert Jarzmik wrote:
+The following doesn't work as you pointed out.
 
-> Ok, let me think about it and propose something, an approach.
+CONFIG_MEDIA_SUPPORT=m
+CONFIG_MEDIA_CONTROLLER=y
+CONFIG_SND_USB_AUDIO=y
 
-> I must admit I like the structure I saw in drivers/amba/bus.c, ie. to have
-> something like :
+okay here is what will work for all of the possible
+combinations of CONFIG_MEDIA_SUPPORT and CONFIG_SND_USB_AUDIO
 
-...
+select SND_USB_AUDIO_USE_MEDIA_CONTROLLER \
+       if MEDIA_CONTROLLER && ((MEDIA_SUPPORT=y) || (MEDIA_SUPPORT=m && SND_USB_AUDIO=m))
 
-> Well, if I'm totally mistaken, tell me. If not it will take me a bit of time to
-> write is down properly in a Documentation/ file.
+The above will cover the cases when
 
-That seems pretty reasonable at first pass I think, the main issue is
-just managing the transition safely for all the users.  There's a lot of
-fragility in the AC'97 hardware and software so people have been very
-reluctant to touch it.  Equally I think a lot of the more problematic
-users probably aren't in use any more so you can probably get away with
-more now than would have been the case in the past.
+1. CONFIG_MEDIA_SUPPORT and CONFIG_SND_USB_AUDIO are
+   both modules
+   CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER is selected
 
---SdHVWq6Dvt91fbjv
-Content-Type: application/pgp-signature; name="signature.asc"
+2. CONFIG_MEDIA_SUPPORT=y and CONFIG_SND_USB_AUDIO=m
+   CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER is selected
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+3. CONFIG_MEDIA_SUPPORT=y and CONFIG_SND_USB_AUDIO=y
+   CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER is selected
 
-iQEcBAEBCAAGBQJW0QPYAAoJECTWi3JdVIfQNA4IAINyiCyLuywhBWk5v4RjLVQK
-SzZwMwC76EWjlKG1aJCZSAgAek4hon2oHCEXR1kkvmZ12o8H2TFk0FBEPGjevp8h
-hXBrvGr0isDfVVncnSDBl6nnzjwTfjSIY/XcfDHSbREkVzJd4uDJ9BqbacTUnr6t
-8eqlXWt9A4G8eNrs6/zHS4QakbMhmhTH4ez+LhRw7RCqsHe6WH5yQKNcAmqOHoCE
-sAg0zqEwovGTcZuwDrtEPAKCFLO6LzC1B5eRYsTdAmIFSjhkZuOcV2+86NWwUgqF
-jJaP1kBDQkzpkBQDLUH5Yp4PRTranKsNq8hrkw3b7BfD5qVLal6UcQUyCK1LU5k=
-=rSHE
------END PGP SIGNATURE-----
+4. CONFIG_MEDIA_SUPPORT=m and CONFIG_SND_USB_AUDIO=y
+   This is when we don't want
+   CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER selected
 
---SdHVWq6Dvt91fbjv--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I verified all of the above combinations to make sure
+the logic works.
+
+If you think of a better way to do this please let me
+know. I will go ahead and send patch v4 with the above
+change and you can decide if that is acceptable.
+
+>>>
+>>> Other than that, it looks more or less OK to me.
+>>> The way how media_stream_init() gets called is a bit worrisome, but it
+>>> should work practically.  Another concern is about the disconnection.
+>>> Can all function calls in media_device_delete() be safe even if it's
+>>> called while the application still opens the MC device?
+>>
+>> Right. I have been looking into device removal path when
+>> ioctls are active and I can resolve any issues that might
+>> surface while an audio app is active when device is removed.
+> 
+> So, it's 100% safe to call all these media_*() functions while the
+> device is being accessed before closing?
+> 
+
+There is a known problem with device removal when
+media device file is open and ioctl is in progress.
+This isn't specific to this patch series, a general
+problem that is related to media device removal in
+general.
+
+I am working on a fix for this problem. As you said,
+earlier, I can work on fixing issues after the merge.
+
+thanks,
+-- Shuah
+
+
+-- 
+Shuah Khan
+Sr. Linux Kernel Developer
+Open Source Innovation Group
+Samsung Research America (Silicon Valley)
+shuahkh@osg.samsung.com | (970) 217-8978
