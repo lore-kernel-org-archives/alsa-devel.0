@@ -1,40 +1,59 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH 3/4] ASoC: pxa: add binding for pxa2xx-ac97 audio complex
-Date: Fri, 26 Feb 2016 23:37:23 +0100
-Message-ID: <87wpprt7x8.fsf@belgarion.home>
-References: <1455979079-9030-1-git-send-email-robert.jarzmik@free.fr>
-	<1455979079-9030-3-git-send-email-robert.jarzmik@free.fr>
-	<20160223191934.GA29262@rob-hp-laptop>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: rt5640: add master clock handling for
+ rt5640
+Date: Sat, 27 Feb 2016 10:51:43 +0900
+Message-ID: <20160227015143.GV18327@sirena.org.uk>
+References: <1456190782-18865-1-git-send-email-sugar.zhang@rock-chips.com>
+ <56CC719C.1090901@linux.intel.com>
+ <2199435.lA9iTvxnKV@phil>
+ <20160224033259.GL18327@sirena.org.uk>
+ <56CDD5DD.6040006@linux.intel.com>
+ <20160226010818.GZ18327@sirena.org.uk>
+ <56D07293.902@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="fyFqtIrDrUc8SGBF"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160223191934.GA29262@rob-hp-laptop> (Rob Herring's message of
-	"Tue, 23 Feb 2016 13:19:34 -0600")
+Content-Disposition: inline
+In-Reply-To: <56D07293.902@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Rob Herring <robh@kernel.org>
-Cc: Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Sugar Zhang <sugar.zhang@rock-chips.com>, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Rob Herring <robh@kernel.org> writes:
 
->> +Example:
->> +	ac97: sound@40500000 {
->> +	      	compatible = "marvell,pxa2xx-ac97";
->> +		reg = < 0x40500000 0x1000 >;
->> +		interrupts = <14>;
->> +		reset-gpio = <&gpio 113 GPIO_ACTIVE_HIGH>;
->> +		#sound-dai-cells = <1>;
->> +		pinctrl-names = "default";
->> +		pinctrl-0 = < &pmux_ac97_default >;
->> +		status = "okay";
->
-> No clocks prop, yet required.
-Ah yeah, that's a good catch, thanks.
+--fyFqtIrDrUc8SGBF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I'll resubmit once my discussion with Mark on ac97 will be finished, which might
-takes monthes given all I have to do lately.
+On Fri, Feb 26, 2016 at 09:43:15AM -0600, Pierre-Louis Bossart wrote:
 
-Cheers.
+> Yes there are documentation and helpers I looked into, but to the best of my
+> limited knowledge not for the gate + dual-rate case. Then you jump to
+> complicated configurations combining multiple base clocks that don't really
+> make sense here. After one frustrating day of trying to wrap 100 lines of
+> code into the clock framework I gave up and kept the simple custom driver.
+> There is a single client for this clock so I don't quite see the
+> benefits/ROI of mapping a simple piece of hardware with a complex model.
 
--- 
-Robert
+If the helpers aren't fitting your needs then surely just writing a
+simple driver with set rate and enable callbacks isn't going to be too
+hard?  The wm831x driver was pretty trivial to write and seems to be on
+a similar order of complexity to this.
+
+--fyFqtIrDrUc8SGBF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJW0QEsAAoJECTWi3JdVIfQRQUH+wWufcVgRXjkOgaFnVY07VAC
+Cy1icjgUb+Soj9uNg8ndpozN80mkqnPAsbH5IjjEU4gVu5kxyG0wwd9ei3NjP/YE
+GsoFtEITrZc04Rg3GSJzpMCtV4v4unEt5KCyb6kH0Qoxlk+OamyUWNYnguyTv0fT
+x6VjRZydGSE8blzY8BjODnqpC78254Yad8aPLJiw2CvafTU5tzvhDNxYS0TPdijX
+X8wm68UG/q7QjI/uhR5UYH7O2PZyp2cY/RPt2A7ZPzy///1vSo5JRfj3JP/rHFSw
+LXSevfaUAbne5PFXJ+v3t8WokmNTNf4+DfUkoSnPGUEO+8aqMQFjbrIpVKBVt6s=
+=HNHK
+-----END PGP SIGNATURE-----
+
+--fyFqtIrDrUc8SGBF--
