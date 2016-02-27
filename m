@@ -1,148 +1,195 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: dice: drop duplex streams
-	synchronization to transfer own time stamps
-Date: Sat, 27 Feb 2016 21:01:21 +0900
-Message-ID: <1456574481-4573-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+Subject: Re: [PATCH v3 22/22] sound/usb: Use Media Controller API to share
+ media resources
+Date: Sat, 27 Feb 2016 09:41:13 -0300
+Message-ID: <20160227094113.5ae5e728@recife.lan>
+References: <cover.1455233150.git.shuahkh@osg.samsung.com>
+	<0822f80e0acc5119e6f6deccf002ccadeb3b145b.1455233156.git.shuahkh@osg.samsung.com>
+	<s5hpovjjlg4.wl-tiwai@suse.de>
+	<56D0B0CB.8060709@osg.samsung.com>
+	<s5hio1bjiws.wl-tiwai@suse.de>
+	<56D1102B.8060501@osg.samsung.com>
+	<s5hegbyk30q.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 715D92608F0
- for <alsa-devel@alsa-project.org>; Sat, 27 Feb 2016 13:01:27 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hegbyk30q.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Shuah Khan <shuahkh@osg.samsung.com>, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, clemens@ladisch.de, sakari.ailus@linux.intel.com, javier@osg.samsung.com, geliangtang@163.com, alsa-devel@alsa-project.org, arnd@arndb.de, ricard.wanderlof@axis.com, labbott@fedoraproject.org, chehabrafael@gmail.com, klock.android@gmail.com, misterpib@gmail.com, prabhakar.csengg@gmail.com, ricardo.ribalda@gmail.com, ruchandani.tina@gmail.com, takamichiho@gmail.com, tvboxspy@gmail.com, dominic.sacre@gmx.de, albert@huitsing.nl, crope@iki.fi, julian@jusst.de, pierre-louis.bossart@linux.intel.com, corbet@lwn.net, joe@oampo.co.uk, johan@oljud.se, dan.carpenter@oracle.com, pawel@osciak.com, p.zabel@pengutronix.de, perex@perex.cz, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, j.anaszewski@samsung.com, jh1009.sung@samsung.com, k.kozlowski@samsung.com, kyungmin.park@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-This commit drops implementation of duplex streams synchronization
-from ALSA dice driver, due to a reason of hardware design. This patch
-allows dice-based units to generate sounds correctly when isochronous
-packet streaming starts at first time.
+Em Sat, 27 Feb 2016 08:48:05 +0100
+Takashi Iwai <tiwai@suse.de> escreveu:
 
-In IEC 61883-6:2005, CIP packetization layer for AM824 data format
-utilizes the value of SYT field in CIP header of received packet for
-a reference to phase lock loop. Figure 3 in clause 4.3 describes it.
-The value is an offset from cycle_time field of every cycle start packet
-from cycle master on IEEE 1394 bus. The time calculated with these two
-fields is called as 'presentation timestamp' which represents the time
-to play data included in the packet.
+> On Sat, 27 Feb 2016 03:55:39 +0100,
+> Shuah Khan wrote:
+> > 
+> > On 02/26/2016 01:50 PM, Takashi Iwai wrote:  
+> > > On Fri, 26 Feb 2016 21:08:43 +0100,
+> > > Shuah Khan wrote:  
+> > >>
+> > >> On 02/26/2016 12:55 PM, Takashi Iwai wrote:  
+> > >>> On Fri, 12 Feb 2016 00:41:38 +0100,
+> > >>> Shuah Khan wrote:  
+> > >>>>
+> > >>>> Change ALSA driver to use Media Controller API to
+> > >>>> share media resources with DVB and V4L2 drivers
+> > >>>> on a AU0828 media device. Media Controller specific
+> > >>>> initialization is done after sound card is registered.
+> > >>>> ALSA creates Media interface and entity function graph
+> > >>>> nodes for Control, Mixer, PCM Playback, and PCM Capture
+> > >>>> devices.
+> > >>>>
+> > >>>> snd_usb_hw_params() will call Media Controller enable
+> > >>>> source handler interface to request the media resource.
+> > >>>> If resource request is granted, it will release it from
+> > >>>> snd_usb_hw_free(). If resource is busy, -EBUSY is returned.
+> > >>>>
+> > >>>> Media specific cleanup is done in usb_audio_disconnect().
+> > >>>>
+> > >>>> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+> > >>>> ---
+> > >>>>  sound/usb/Kconfig        |   4 +
+> > >>>>  sound/usb/Makefile       |   2 +
+> > >>>>  sound/usb/card.c         |  14 +++
+> > >>>>  sound/usb/card.h         |   3 +
+> > >>>>  sound/usb/media.c        | 318 +++++++++++++++++++++++++++++++++++++++++++++++
+> > >>>>  sound/usb/media.h        |  72 +++++++++++
+> > >>>>  sound/usb/mixer.h        |   3 +
+> > >>>>  sound/usb/pcm.c          |  28 ++++-
+> > >>>>  sound/usb/quirks-table.h |   1 +
+> > >>>>  sound/usb/stream.c       |   2 +
+> > >>>>  sound/usb/usbaudio.h     |   6 +
+> > >>>>  11 files changed, 448 insertions(+), 5 deletions(-)
+> > >>>>  create mode 100644 sound/usb/media.c
+> > >>>>  create mode 100644 sound/usb/media.h
+> > >>>>
+> > >>>> diff --git a/sound/usb/Kconfig b/sound/usb/Kconfig
+> > >>>> index a452ad7..ba117f5 100644
+> > >>>> --- a/sound/usb/Kconfig
+> > >>>> +++ b/sound/usb/Kconfig
+> > >>>> @@ -15,6 +15,7 @@ config SND_USB_AUDIO
+> > >>>>  	select SND_RAWMIDI
+> > >>>>  	select SND_PCM
+> > >>>>  	select BITREVERSE
+> > >>>> +	select SND_USB_AUDIO_USE_MEDIA_CONTROLLER if MEDIA_CONTROLLER && MEDIA_SUPPORT  
+> > >>>
+> > >>> Looking at the media Kconfig again, this would be broken if
+> > >>> MEDIA_SUPPORT=m and SND_USB_AUDIO=y.  The ugly workaround is something
+> > >>> like:
+> > >>> 	select SND_USB_AUDIO_USE_MEDIA_CONTROLLER \
+> > >>> 		if MEDIA_CONTROLLER && (MEDIA_SUPPORT=y || MEDIA_SUPPORT=SND)  
+> > >>
+> > >> My current config is MEDIA_SUPPORT=m and SND_USB_AUDIO=y
+> > >> It is working and I didn't see any issues so far.  
+> > > 
+> > > Hmm, how does it be?  In drivers/media/Makefile:
+> > > 
+> > > ifeq ($(CONFIG_MEDIA_CONTROLLER),y)
+> > >   obj-$(CONFIG_MEDIA_SUPPORT) += media.o
+> > > endif
+> > > 
+> > > So it's a module.  Meanwhile you have reference from usb-audio driver
+> > > that is built-in kernel.  How is the symbol resolved?  
+> > 
+> > Sorry my mistake. I misspoke. My config had:
+> > CONFIG_MEDIA_SUPPORT=m
+> > CONFIG_MEDIA_CONTROLLER=y
+> > CONFIG_SND_USB_AUDIO=m
+> > 
+> > The following doesn't work as you pointed out.
+> > 
+> > CONFIG_MEDIA_SUPPORT=m
+> > CONFIG_MEDIA_CONTROLLER=y
+> > CONFIG_SND_USB_AUDIO=y
+> > 
+> > okay here is what will work for all of the possible
+> > combinations of CONFIG_MEDIA_SUPPORT and CONFIG_SND_USB_AUDIO
+> > 
+> > select SND_USB_AUDIO_USE_MEDIA_CONTROLLER \
+> >        if MEDIA_CONTROLLER && ((MEDIA_SUPPORT=y) || (MEDIA_SUPPORT=m && SND_USB_AUDIO=m))
+> > 
+> > The above will cover the cases when
+> > 
+> > 1. CONFIG_MEDIA_SUPPORT and CONFIG_SND_USB_AUDIO are
+> >    both modules
+> >    CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER is selected
+> > 
+> > 2. CONFIG_MEDIA_SUPPORT=y and CONFIG_SND_USB_AUDIO=m
+> >    CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER is selected
+> > 
+> > 3. CONFIG_MEDIA_SUPPORT=y and CONFIG_SND_USB_AUDIO=y
+> >    CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER is selected
+> > 
+> > 4. CONFIG_MEDIA_SUPPORT=m and CONFIG_SND_USB_AUDIO=y
+> >    This is when we don't want
+> >    CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER selected
+> > 
+> > I verified all of the above combinations to make sure
+> > the logic works.
+> > 
+> > If you think of a better way to do this please let me
+> > know. I will go ahead and send patch v4 with the above
+> > change and you can decide if that is acceptable.  
+> 
+> I'm not 100% sure whether CONFIG_SND_USB_AUDIO=m can be put there as
+> conditional inside CONFIG_SND_USB_AUDIO definition.  Maybe a safer
+> form would be like:
+> 
+> config SND_USB_AUDIO_USE_MEDIA_CONTROLLER
+> 	bool
+> 	default y
+> 	depends on SND_USB_AUDIO
+> 	depends on MEDIA_CONTROLLER
+> 	depends on (MEDIA_SUPPORT=y || MEDIA_SUPPORT=SND_USB_AUDIO)
+> 
+> and drop select from SND_USB_AUDIO.
+> 
+> 
+> > >>> Other than that, it looks more or less OK to me.
+> > >>> The way how media_stream_init() gets called is a bit worrisome, but it
+> > >>> should work practically.  Another concern is about the disconnection.
+> > >>> Can all function calls in media_device_delete() be safe even if it's
+> > >>> called while the application still opens the MC device?  
+> > >>
+> > >> Right. I have been looking into device removal path when
+> > >> ioctls are active and I can resolve any issues that might
+> > >> surface while an audio app is active when device is removed.  
+> > > 
+> > > So, it's 100% safe to call all these media_*() functions while the
+> > > device is being accessed before closing?
+> > >   
+> > 
+> > There is a known problem with device removal when
+> > media device file is open and ioctl is in progress.
+> > This isn't specific to this patch series, a general
+> > problem that is related to media device removal in
+> > general.
+> > 
+> > I am working on a fix for this problem. As you said,
+> > earlier, I can work on fixing issues after the merge.  
+> 
+> OK, understood.
+> 
+> 
+> Takashi
 
-Although, this idea includes some problems due to accuracy of timekeep in
-cycle master, accuracy of transmission of cycle start packet on the bus
-with the other units, accuracy of sampling clock in data transmitter side
-and accuracy of replay in data receiver side. In most case, these
-accuracies somewhat worse because there's no such ideal hardwares in this
-world.
 
-For the issues, ASICs for Dice include Jitter Elimination Technologies
-(JET) PLL. The PLL can handle several sources of clock and compensate it
-with high-precision internal clock source. The sequence of value in syt
-field of received AMDTP packets is one of the sources, therefore
-transmitters on IEEE 1394 bus should transfer it.
+As there are still some issues here, I decided to apply all but
+this one, in order to avoid having compilation issues with random
+configs.
 
-On the other hand, current ALSA dice driver is programmed with a mode of
-duplex streams with synchronization. In this mode, the driver outputs
-packets after some incoming packets are handled, to re-use the value of
-SYT field in incoming packets to the value for outgoing packets. This mode
-is enabled when source signal of sampling clock is set to internal, and
-this is a major use case. Thus, in most cases, the unit receives no packets
-during a short time after packet streaming starts.
+Shuah,
 
-As long as I experienced, this causes the units to generate no sounds at
-first time to receive packets. This issue occurs only with Dice II. I guess
-this is due to a quirk of the PLL. In short, the PLL cannot generate firm
-signals to ADCs/DACs or the other ICs when no packets are received in the
-beginning of packet streaming. While, on second time or later, the unit
-generates sound correctly. I guess that starting packet streaming at first
-time sets the PLL correctly.
+As there were several conflicts when I applied the initial 21 patches
+from this series, please apply this one on the top of the latest
+tree. 
 
-Well, still based on my hypothesis and no way to prove it, this commit
-drops duplex streams synchronization from this driver. At least, the PLL
-requires the sequence of value in SYT field of received AMDTP packets as
-one of source of clock signals with internal clock source.
+As this patch touches only at sound, it is independent, so
+you won't need to rebase it. However, I might have solved some
+conflicts badly, a final test wouldn't hurt ;)
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/dice/dice-stream.c | 42 ++-------------------------------------
- 1 file changed, 2 insertions(+), 40 deletions(-)
-
-diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
-index a64b3cc..df035b1 100644
---- a/sound/firewire/dice/dice-stream.c
-+++ b/sound/firewire/dice/dice-stream.c
-@@ -191,53 +191,17 @@ end:
- 	return err;
- }
- 
--static int get_sync_mode(struct snd_dice *dice, enum cip_flags *sync_mode)
--{
--	u32 source;
--	int err;
--
--	err = snd_dice_transaction_get_clock_source(dice, &source);
--	if (err < 0)
--		goto end;
--
--	switch (source) {
--	/* So-called 'SYT Match' modes, sync_to_syt value of packets received */
--	case CLOCK_SOURCE_ARX4:	/* in 4th stream */
--	case CLOCK_SOURCE_ARX3:	/* in 3rd stream */
--	case CLOCK_SOURCE_ARX2:	/* in 2nd stream */
--		err = -ENOSYS;
--		break;
--	case CLOCK_SOURCE_ARX1:	/* in 1st stream, which this driver uses */
--		*sync_mode = 0;
--		break;
--	default:
--		*sync_mode = CIP_SYNC_TO_DEVICE;
--		break;
--	}
--end:
--	return err;
--}
--
- int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
- {
- 	struct amdtp_stream *master, *slave;
- 	unsigned int curr_rate;
--	enum cip_flags sync_mode;
- 	int err = 0;
- 
- 	if (dice->substreams_counter == 0)
- 		goto end;
- 
--	err = get_sync_mode(dice, &sync_mode);
--	if (err < 0)
--		goto end;
--	if (sync_mode == CIP_SYNC_TO_DEVICE) {
--		master = &dice->tx_stream;
--		slave  = &dice->rx_stream;
--	} else {
--		master = &dice->rx_stream;
--		slave  = &dice->tx_stream;
--	}
-+	master = &dice->rx_stream;
-+	slave  = &dice->tx_stream;
- 
- 	/* Some packet queueing errors. */
- 	if (amdtp_streaming_error(master) || amdtp_streaming_error(slave))
-@@ -261,8 +225,6 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
- 		stop_stream(dice, slave);
- 		snd_dice_transaction_clear_enable(dice);
- 
--		amdtp_stream_set_sync(sync_mode, master, slave);
--
- 		err = ensure_phase_lock(dice);
- 		if (err < 0) {
- 			dev_err(&dice->unit->device,
--- 
-2.5.0
+Regards,
+Mauro
