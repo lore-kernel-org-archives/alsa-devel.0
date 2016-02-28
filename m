@@ -1,15 +1,17 @@
 From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH] ASoC: nau8825: fix interrupt fails and
-	unstable after resume
-Date: Mon, 29 Feb 2016 03:01:45 +0800
-Message-ID: <1456686105-6885-1-git-send-email-KCHSU0@nuvoton.com>
+Subject: [PATCH v2] ASoC: nau8825: reduce stanby power
+	consumption
+Date: Mon, 29 Feb 2016 03:47:07 +0800
+Message-ID: <1456688827-7337-1-git-send-email-KCHSU0@nuvoton.com>
+References: <1456686105-6885-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from server-codec (unknown [202.39.226.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 016FF260524
- for <alsa-devel@alsa-project.org>; Sun, 28 Feb 2016 20:03:20 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 77A5E260535
+ for <alsa-devel@alsa-project.org>; Sun, 28 Feb 2016 20:48:53 +0100 (CET)
+In-Reply-To: <1456686105-6885-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,93 +25,117 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch is to fix interrupt fails when resume back.
-In solution, we add IRQ re-initiation,
-and reconstruct suspend and resume with set_bias_level function.
+There is side effect at last patch.
+The playback has no sound with MCLK if internal clock frequency decreases.
+Thus, we need to recover frequency setting when MCLK case.
 
 Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 ---
- sound/soc/codecs/nau8825.c | 42 ++++++++++++++++++++++++++++++++++++------
- 1 file changed, 36 insertions(+), 6 deletions(-)
+ sound/soc/codecs/nau8825.c | 51 +++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 37 insertions(+), 14 deletions(-)
 
 diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 504c969..2e2e11a 100644
+index 2e2e11a..b9bcb10 100644
 --- a/sound/soc/codecs/nau8825.c
 +++ b/sound/soc/codecs/nau8825.c
-@@ -1092,6 +1092,36 @@ static int nau8825_set_sysclk(struct snd_soc_codec *codec, int clk_id,
- 	return nau8825_configure_sysclk(nau8825, clk_id, freq);
+@@ -239,6 +239,29 @@ static int nau8825_pump_event(struct snd_soc_dapm_widget *w,
+ 	return 0;
  }
  
-+static int nau8825_resume_setup(struct nau8825 *nau8825)
++static int nau8825_dacr_event(struct snd_soc_dapm_widget *w,
++		struct snd_kcontrol *kcontrol, int event)
 +{
-+	struct regmap *regmap = nau8825->regmap;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
 +
-+	/* IRQ Output Enable */
-+	regmap_update_bits(regmap, NAU8825_REG_INTERRUPT_MASK,
-+		NAU8825_IRQ_OUTPUT_EN, NAU8825_IRQ_OUTPUT_EN);
-+
-+	/* Enable internal VCO needed for interruptions */
-+	nau8825_configure_sysclk(nau8825, NAU8825_CLK_INTERNAL, 0);
-+
-+	/* Enable DDACR needed for interrupts */
-+	regmap_update_bits(regmap, NAU8825_REG_ENA_CTRL,
-+		NAU8825_ENABLE_DACR, NAU8825_ENABLE_DACR);
-+
-+	/* Chip needs one FSCLK cycle in order to generate interrupts,
-+	 * as we cannot guarantee one will be provided by the system. Turning
-+	 * master mode on then off enables us to generate that FSCLK cycle
-+	 * with a minimum of contention on the clock bus.
-+	 */
-+	regmap_update_bits(regmap, NAU8825_REG_I2S_PCM_CTRL2,
-+		NAU8825_I2S_MS_MASK, NAU8825_I2S_MS_MASTER);
-+	regmap_update_bits(regmap, NAU8825_REG_I2S_PCM_CTRL2,
-+		NAU8825_I2S_MS_MASK, NAU8825_I2S_MS_SLAVE);
-+
-+	nau8825_restart_jack_detection(regmap);
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		regmap_update_bits(nau8825->regmap, NAU8825_REG_ENA_CTRL,
++			NAU8825_ENABLE_DACR, NAU8825_ENABLE_DACR);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		if (!nau8825->irq)
++			regmap_update_bits(nau8825->regmap,
++				NAU8825_REG_ENA_CTRL, NAU8825_ENABLE_DACR, 0);
++		break;
++	default:
++		return -EINVAL;
++	}
 +
 +	return 0;
 +}
 +
- static int nau8825_set_bias_level(struct snd_soc_codec *codec,
- 				   enum snd_soc_bias_level level)
- {
-@@ -1121,6 +1151,8 @@ static int nau8825_set_bias_level(struct snd_soc_codec *codec,
- 					"Failed to sync cache: %d\n", ret);
- 				return ret;
- 			}
-+			if (nau8825->irq)
-+				nau8825_resume_setup(nau8825);
- 		}
+ static const char * const nau8825_adc_decimation[] = {
+ 	"32", "64", "128", "256"
+ };
+@@ -313,16 +336,17 @@ static const struct snd_soc_dapm_widget nau8825_dapm_widgets[] = {
+ 		0),
  
- 		break;
-@@ -1330,24 +1362,22 @@ static int nau8825_i2c_remove(struct i2c_client *client)
- #ifdef CONFIG_PM_SLEEP
- static int nau8825_suspend(struct device *dev)
- {
--	struct i2c_client *client = to_i2c_client(dev);
- 	struct nau8825 *nau8825 = dev_get_drvdata(dev);
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(nau8825->dapm);
+ 	/* ADC for button press detection */
+-	SND_SOC_DAPM_ADC("SAR", NULL, NAU8825_REG_SAR_CTRL,
+-		NAU8825_SAR_ADC_EN_SFT, 0),
++	SND_SOC_DAPM_SUPPLY("SAR", NAU8825_REG_SAR_CTRL,
++		NAU8825_SAR_ADC_EN_SFT, 0, NULL, 0),
  
--	disable_irq(client->irq);
-+	disable_irq(nau8825->irq);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_OFF);
- 	regcache_cache_only(nau8825->regmap, true);
--	regcache_mark_dirty(nau8825->regmap);
+ 	SND_SOC_DAPM_DAC("ADACL", NULL, NAU8825_REG_RDAC, 12, 0),
+ 	SND_SOC_DAPM_DAC("ADACR", NULL, NAU8825_REG_RDAC, 13, 0),
+ 	SND_SOC_DAPM_SUPPLY("ADACL Clock", NAU8825_REG_RDAC, 8, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("ADACR Clock", NAU8825_REG_RDAC, 9, 0, NULL, 0),
  
- 	return 0;
- }
+-	SND_SOC_DAPM_DAC("DDACR", NULL, NAU8825_REG_ENA_CTRL,
+-		NAU8825_ENABLE_DACR_SFT, 0),
++	SND_SOC_DAPM_DAC_E("DDACR", NULL, SND_SOC_NOPM, 0, 0,
++		nau8825_dacr_event, SND_SOC_DAPM_POST_PMU |
++		SND_SOC_DAPM_POST_PMD),
+ 	SND_SOC_DAPM_DAC("DDACL", NULL, NAU8825_REG_ENA_CTRL,
+ 		NAU8825_ENABLE_DACL_SFT, 0),
+ 	SND_SOC_DAPM_SUPPLY("DDAC Clock", NAU8825_REG_ENA_CTRL, 6, 0, NULL, 0),
+@@ -845,13 +869,6 @@ static int nau8825_codec_probe(struct snd_soc_codec *codec)
  
- static int nau8825_resume(struct device *dev)
- {
--	struct i2c_client *client = to_i2c_client(dev);
- 	struct nau8825 *nau8825 = dev_get_drvdata(dev);
+ 	nau8825->dapm = dapm;
  
- 	regcache_cache_only(nau8825->regmap, false);
--	regcache_sync(nau8825->regmap);
--	enable_irq(client->irq);
-+	enable_irq(nau8825->irq);
+-	/* The interrupt clock is gated by x1[10:8],
+-	 * one of them needs to be enabled all the time for
+-	 * interrupts to happen.
+-	 */
+-	snd_soc_dapm_force_enable_pin(dapm, "DDACR");
+-	snd_soc_dapm_sync(dapm);
+-
+ 	/* Unmask interruptions. Handler uses dapm object so we can enable
+ 	 * interruptions only after dapm is fully initialized.
+ 	 */
+@@ -1032,6 +1049,8 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
+ 		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
+ 			NAU8825_CLK_SRC_MASK, NAU8825_CLK_SRC_MCLK);
+ 		regmap_update_bits(regmap, NAU8825_REG_FLL6, NAU8825_DCO_EN, 0);
++		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
++			NAU8825_CLK_MCLK_SRC_MASK, 0);
+ 		ret = nau8825_mclk_prepare(nau8825, freq);
+ 		if (ret)
+ 			return ret;
+@@ -1042,6 +1061,12 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
+ 			NAU8825_DCO_EN);
+ 		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
+ 			NAU8825_CLK_SRC_MASK, NAU8825_CLK_SRC_VCO);
++		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
++			NAU8825_CLK_MCLK_SRC_MASK, 0xf);
++		regmap_update_bits(regmap, NAU8825_REG_FLL1,
++			NAU8825_FLL_RATIO_MASK, 0x10);
++		regmap_update_bits(regmap, NAU8825_REG_FLL6,
++			NAU8825_SDM_EN, NAU8825_SDM_EN);
+ 		if (nau8825->mclk_freq) {
+ 			clk_disable_unprepare(nau8825->mclk);
+ 			nau8825->mclk_freq = 0;
+@@ -1276,9 +1301,7 @@ static int nau8825_setup_irq(struct nau8825 *nau8825)
+ 	/* Enable internal VCO needed for interruptions */
+ 	nau8825_configure_sysclk(nau8825, NAU8825_CLK_INTERNAL, 0);
  
- 	return 0;
- }
+-	/* Enable DDACR needed for interrupts
+-	 * It is the same as force_enable_pin("DDACR") we do later
+-	 */
++	/* Enable DDACR needed for interrupts */
+ 	regmap_update_bits(regmap, NAU8825_REG_ENA_CTRL,
+ 		NAU8825_ENABLE_DACR, NAU8825_ENABLE_DACR);
+ 
 -- 
 2.6.4
