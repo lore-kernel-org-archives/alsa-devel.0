@@ -1,14 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2 4/6] ALSA: rawmidi: Fix ioctls X32 ABI
-Date: Mon, 29 Feb 2016 17:16:43 +0100
-Message-ID: <1456762605-2451-5-git-send-email-tiwai@suse.de>
+Subject: [PATCH v2 1/6] ALSA: ctl: Fix ioctls for X32 ABI
+Date: Mon, 29 Feb 2016 17:16:40 +0100
+Message-ID: <1456762605-2451-2-git-send-email-tiwai@suse.de>
 References: <1456762605-2451-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 657C92607F7
+ by alsa0.perex.cz (Postfix) with ESMTP id 9FDAD261ABB
  for <alsa-devel@alsa-project.org>; Mon, 29 Feb 2016 17:16:50 +0100 (CET)
 In-Reply-To: <1456762605-2451-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,92 +24,222 @@ To: alsa-devel@alsa-project.org
 Cc: Steven Newbury <steve@snewbury.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Like the previous fixes for ctl and PCM, we need a fix for
-incompatible X32 ABI regarding the rawmidi: namely, struct
-snd_rawmidi_status has the timespec, and the size and the alignment on
-X32 differ from IA32.
+The X32 ABI takes the same alignment like x86-64, and this may result
+in the incompatible struct size from ia32.  Unfortunately, we hit this
+in some control ABI: struct snd_ctl_elem_value differs between them
+due to the position of 64bit variable array.  This ends up with the
+unknown ioctl (ENOTTY) error.
 
-This patch fixes the incompatible ioctl for X32.
+The fix is to add the compat entries for the new aligned struct.
 
+Reported-and-tested-by: Steven Newbury <steve@snewbury.org.uk>
 Cc: <stable@vger.kernel.org> # v3.4+
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/rawmidi_compat.c | 53 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 53 insertions(+)
+ sound/core/control_compat.c | 90 +++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 74 insertions(+), 16 deletions(-)
 
-diff --git a/sound/core/rawmidi_compat.c b/sound/core/rawmidi_compat.c
-index 836d1c9fc2cc..f69764d7cdd7 100644
---- a/sound/core/rawmidi_compat.c
-+++ b/sound/core/rawmidi_compat.c
-@@ -93,9 +93,58 @@ static int snd_rawmidi_ioctl_status_compat(struct snd_rawmidi_file *rfile,
+diff --git a/sound/core/control_compat.c b/sound/core/control_compat.c
+index b9c0910fb8c4..0608f216f359 100644
+--- a/sound/core/control_compat.c
++++ b/sound/core/control_compat.c
+@@ -170,6 +170,19 @@ struct snd_ctl_elem_value32 {
+         unsigned char reserved[128];
+ };
+ 
++#ifdef CONFIG_X86_X32
++/* x32 has a different alignment for 64bit values from ia32 */
++struct snd_ctl_elem_value_x32 {
++	struct snd_ctl_elem_id id;
++	unsigned int indirect;	/* bit-field causes misalignment */
++	union {
++		s32 integer[128];
++		unsigned char data[512];
++		s64 integer64[64];
++	} value;
++	unsigned char reserved[128];
++};
++#endif /* CONFIG_X86_X32 */
+ 
+ /* get the value type and count of the control */
+ static int get_ctl_type(struct snd_card *card, struct snd_ctl_elem_id *id,
+@@ -219,9 +232,11 @@ static int get_elem_size(int type, int count)
+ 
+ static int copy_ctl_value_from_user(struct snd_card *card,
+ 				    struct snd_ctl_elem_value *data,
+-				    struct snd_ctl_elem_value32 __user *data32,
++				    void __user *userdata,
++				    void __user *valuep,
+ 				    int *typep, int *countp)
+ {
++	struct snd_ctl_elem_value32 __user *data32 = userdata;
+ 	int i, type, size;
+ 	int uninitialized_var(count);
+ 	unsigned int indirect;
+@@ -239,8 +254,9 @@ static int copy_ctl_value_from_user(struct snd_card *card,
+ 	if (type == SNDRV_CTL_ELEM_TYPE_BOOLEAN ||
+ 	    type == SNDRV_CTL_ELEM_TYPE_INTEGER) {
+ 		for (i = 0; i < count; i++) {
++			s32 __user *intp = valuep;
+ 			int val;
+-			if (get_user(val, &data32->value.integer[i]))
++			if (get_user(val, &intp[i]))
+ 				return -EFAULT;
+ 			data->value.integer.value[i] = val;
+ 		}
+@@ -250,8 +266,7 @@ static int copy_ctl_value_from_user(struct snd_card *card,
+ 			dev_err(card->dev, "snd_ioctl32_ctl_elem_value: unknown type %d\n", type);
+ 			return -EINVAL;
+ 		}
+-		if (copy_from_user(data->value.bytes.data,
+-				   data32->value.data, size))
++		if (copy_from_user(data->value.bytes.data, valuep, size))
+ 			return -EFAULT;
+ 	}
+ 
+@@ -261,7 +276,8 @@ static int copy_ctl_value_from_user(struct snd_card *card,
+ }
+ 
+ /* restore the value to 32bit */
+-static int copy_ctl_value_to_user(struct snd_ctl_elem_value32 __user *data32,
++static int copy_ctl_value_to_user(void __user *userdata,
++				  void __user *valuep,
+ 				  struct snd_ctl_elem_value *data,
+ 				  int type, int count)
+ {
+@@ -270,22 +286,22 @@ static int copy_ctl_value_to_user(struct snd_ctl_elem_value32 __user *data32,
+ 	if (type == SNDRV_CTL_ELEM_TYPE_BOOLEAN ||
+ 	    type == SNDRV_CTL_ELEM_TYPE_INTEGER) {
+ 		for (i = 0; i < count; i++) {
++			s32 __user *intp = valuep;
+ 			int val;
+ 			val = data->value.integer.value[i];
+-			if (put_user(val, &data32->value.integer[i]))
++			if (put_user(val, &intp[i]))
+ 				return -EFAULT;
+ 		}
+ 	} else {
+ 		size = get_elem_size(type, count);
+-		if (copy_to_user(data32->value.data,
+-				 data->value.bytes.data, size))
++		if (copy_to_user(valuep, data->value.bytes.data, size))
+ 			return -EFAULT;
+ 	}
  	return 0;
  }
  
-+#ifdef CONFIG_X86_X32
-+/* X32 ABI has 64bit timespec and 64bit alignment */
-+struct snd_rawmidi_status_x32 {
-+	s32 stream;
-+	u32 rsvd; /* alignment */
-+	struct timespec tstamp;
-+	u32 avail;
-+	u32 xruns;
-+	unsigned char reserved[16];
-+} __attribute__((packed));
-+
-+#define put_timespec(src, dst) copy_to_user(dst, src, sizeof(*dst))
-+
-+static int snd_rawmidi_ioctl_status_x32(struct snd_rawmidi_file *rfile,
-+					struct snd_rawmidi_status_x32 __user *src)
-+{
-+	int err;
-+	struct snd_rawmidi_status status;
-+
-+	if (rfile->output == NULL)
-+		return -EINVAL;
-+	if (get_user(status.stream, &src->stream))
-+		return -EFAULT;
-+
-+	switch (status.stream) {
-+	case SNDRV_RAWMIDI_STREAM_OUTPUT:
-+		err = snd_rawmidi_output_status(rfile->output, &status);
-+		break;
-+	case SNDRV_RAWMIDI_STREAM_INPUT:
-+		err = snd_rawmidi_input_status(rfile->input, &status);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
+-static int snd_ctl_elem_read_user_compat(struct snd_card *card, 
+-					 struct snd_ctl_elem_value32 __user *data32)
++static int ctl_elem_read_user(struct snd_card *card,
++			      void __user *userdata, void __user *valuep)
+ {
+ 	struct snd_ctl_elem_value *data;
+ 	int err, type, count;
+@@ -294,7 +310,9 @@ static int snd_ctl_elem_read_user_compat(struct snd_card *card,
+ 	if (data == NULL)
+ 		return -ENOMEM;
+ 
+-	if ((err = copy_ctl_value_from_user(card, data, data32, &type, &count)) < 0)
++	err = copy_ctl_value_from_user(card, data, userdata, valuep,
++				       &type, &count);
 +	if (err < 0)
-+		return err;
+ 		goto error;
+ 
+ 	snd_power_lock(card);
+@@ -303,14 +321,15 @@ static int snd_ctl_elem_read_user_compat(struct snd_card *card,
+ 		err = snd_ctl_elem_read(card, data);
+ 	snd_power_unlock(card);
+ 	if (err >= 0)
+-		err = copy_ctl_value_to_user(data32, data, type, count);
++		err = copy_ctl_value_to_user(userdata, valuep, data,
++					     type, count);
+  error:
+ 	kfree(data);
+ 	return err;
+ }
+ 
+-static int snd_ctl_elem_write_user_compat(struct snd_ctl_file *file,
+-					  struct snd_ctl_elem_value32 __user *data32)
++static int ctl_elem_write_user(struct snd_ctl_file *file,
++			       void __user *userdata, void __user *valuep)
+ {
+ 	struct snd_ctl_elem_value *data;
+ 	struct snd_card *card = file->card;
+@@ -320,7 +339,9 @@ static int snd_ctl_elem_write_user_compat(struct snd_ctl_file *file,
+ 	if (data == NULL)
+ 		return -ENOMEM;
+ 
+-	if ((err = copy_ctl_value_from_user(card, data, data32, &type, &count)) < 0)
++	err = copy_ctl_value_from_user(card, data, userdata, valuep,
++				       &type, &count);
++	if (err < 0)
+ 		goto error;
+ 
+ 	snd_power_lock(card);
+@@ -329,12 +350,39 @@ static int snd_ctl_elem_write_user_compat(struct snd_ctl_file *file,
+ 		err = snd_ctl_elem_write(card, file, data);
+ 	snd_power_unlock(card);
+ 	if (err >= 0)
+-		err = copy_ctl_value_to_user(data32, data, type, count);
++		err = copy_ctl_value_to_user(userdata, valuep, data,
++					     type, count);
+  error:
+ 	kfree(data);
+ 	return err;
+ }
+ 
++static int snd_ctl_elem_read_user_compat(struct snd_card *card,
++					 struct snd_ctl_elem_value32 __user *data32)
++{
++	return ctl_elem_read_user(card, data32, &data32->value);
++}
 +
-+	if (put_timespec(&status.tstamp, &src->tstamp) ||
-+	    put_user(status.avail, &src->avail) ||
-+	    put_user(status.xruns, &src->xruns))
-+		return -EFAULT;
++static int snd_ctl_elem_write_user_compat(struct snd_ctl_file *file,
++					  struct snd_ctl_elem_value32 __user *data32)
++{
++	return ctl_elem_write_user(file, data32, &data32->value);
++}
 +
-+	return 0;
++#ifdef CONFIG_X86_X32
++static int snd_ctl_elem_read_user_x32(struct snd_card *card,
++				      struct snd_ctl_elem_value_x32 __user *data32)
++{
++	return ctl_elem_read_user(card, data32, &data32->value);
++}
++
++static int snd_ctl_elem_write_user_x32(struct snd_ctl_file *file,
++				       struct snd_ctl_elem_value_x32 __user *data32)
++{
++	return ctl_elem_write_user(file, data32, &data32->value);
 +}
 +#endif /* CONFIG_X86_X32 */
 +
- enum {
- 	SNDRV_RAWMIDI_IOCTL_PARAMS32 = _IOWR('W', 0x10, struct snd_rawmidi_params32),
- 	SNDRV_RAWMIDI_IOCTL_STATUS32 = _IOWR('W', 0x20, struct snd_rawmidi_status32),
+ /* add or replace a user control */
+ static int snd_ctl_elem_add_compat(struct snd_ctl_file *file,
+ 				   struct snd_ctl_elem_info32 __user *data32,
+@@ -393,6 +441,10 @@ enum {
+ 	SNDRV_CTL_IOCTL_ELEM_WRITE32 = _IOWR('U', 0x13, struct snd_ctl_elem_value32),
+ 	SNDRV_CTL_IOCTL_ELEM_ADD32 = _IOWR('U', 0x17, struct snd_ctl_elem_info32),
+ 	SNDRV_CTL_IOCTL_ELEM_REPLACE32 = _IOWR('U', 0x18, struct snd_ctl_elem_info32),
 +#ifdef CONFIG_X86_X32
-+	SNDRV_RAWMIDI_IOCTL_STATUS_X32 = _IOWR('W', 0x20, struct snd_rawmidi_status_x32),
++	SNDRV_CTL_IOCTL_ELEM_READ_X32 = _IOWR('U', 0x12, struct snd_ctl_elem_value_x32),
++	SNDRV_CTL_IOCTL_ELEM_WRITE_X32 = _IOWR('U', 0x13, struct snd_ctl_elem_value_x32),
 +#endif /* CONFIG_X86_X32 */
  };
  
- static long snd_rawmidi_ioctl_compat(struct file *file, unsigned int cmd, unsigned long arg)
-@@ -114,6 +163,10 @@ static long snd_rawmidi_ioctl_compat(struct file *file, unsigned int cmd, unsign
- 		return snd_rawmidi_ioctl_params_compat(rfile, argp);
- 	case SNDRV_RAWMIDI_IOCTL_STATUS32:
- 		return snd_rawmidi_ioctl_status_compat(rfile, argp);
+ static inline long snd_ctl_ioctl_compat(struct file *file, unsigned int cmd, unsigned long arg)
+@@ -431,6 +483,12 @@ static inline long snd_ctl_ioctl_compat(struct file *file, unsigned int cmd, uns
+ 		return snd_ctl_elem_add_compat(ctl, argp, 0);
+ 	case SNDRV_CTL_IOCTL_ELEM_REPLACE32:
+ 		return snd_ctl_elem_add_compat(ctl, argp, 1);
 +#ifdef CONFIG_X86_X32
-+	case SNDRV_RAWMIDI_IOCTL_STATUS_X32:
-+		return snd_rawmidi_ioctl_status_x32(rfile, argp);
++	case SNDRV_CTL_IOCTL_ELEM_READ_X32:
++		return snd_ctl_elem_read_user_x32(ctl->card, argp);
++	case SNDRV_CTL_IOCTL_ELEM_WRITE_X32:
++		return snd_ctl_elem_write_user_x32(ctl, argp);
 +#endif /* CONFIG_X86_X32 */
  	}
- 	return -ENOIOCTLCMD;
- }
+ 
+ 	down_read(&snd_ioctl_rwsem);
 -- 
 2.7.2
