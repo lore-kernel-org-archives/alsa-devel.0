@@ -1,16 +1,17 @@
-From: Steven Newbury <steve@snewbury.org.uk>
-Subject: Re: [PATCH v2 0/6] ALSA core X32 ABI fixes
-Date: Mon, 29 Feb 2016 16:45:44 +0000
-Message-ID: <1456764344.3408.1.camel@snewbury.org.uk>
-References: <1456762605-2451-1-git-send-email-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4/9] ASoC: wm8983: Fix enum ctl accesses in a
+	wrong type
+Date: Mon, 29 Feb 2016 18:01:13 +0100
+Message-ID: <1456765278-5435-5-git-send-email-tiwai@suse.de>
+References: <1456765278-5435-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6965985422531235907=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from know-smtprelay-omc-10.server.virginmedia.net
- (know-smtprelay-omc-10.server.virginmedia.net [80.0.253.74])
- by alsa0.perex.cz (Postfix) with ESMTP id 6EFFA260535
- for <alsa-devel@alsa-project.org>; Mon, 29 Feb 2016 17:45:49 +0100 (CET)
-In-Reply-To: <1456762605-2451-1-git-send-email-tiwai@suse.de>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id D014926172B
+ for <alsa-devel@alsa-project.org>; Mon, 29 Feb 2016 18:01:27 +0100 (CET)
+In-Reply-To: <1456765278-5435-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,72 +21,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+"Equalizer Function" ctl in wm8983 codec driver is enum, while the
+current driver accesses wrongly via value.integer.value[].  They have
+to be via value.enumerated.item[] instead.
 
---===============6965985422531235907==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
-	boundary="=-fQdRB3faNyCFK+yohcES"
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/soc/codecs/wm8983.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-
---=-fQdRB3faNyCFK+yohcES
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, 2016-02-29 at 17:16 +0100, Takashi Iwai wrote:
-> Hi,
->=20
-> this is the revised patchset for fixing the incompatible ioctls in
-> ALSA core with X32 ABI.=C2=A0=C2=A0Too bad that we have to deal in this w=
-ay,
-> but
-> it's life...
->=20
-These have been successfully tested by GreatEmerald on #gentoo
-(freenode). =C2=A0I haven't had the chance yet.
-
->=20
-> Takashi
->=20
-> =3D=3D=3D
->=20
-> Takashi Iwai (6):
-> =C2=A0 ALSA: ctl: Fix ioctls for X32 ABI
-> =C2=A0 ALSA: pcm: Fix ioctls for X32 ABI
-> =C2=A0 ALSA: rawmidi: Use comapt_put_timespec()
-> =C2=A0 ALSA: rawmidi: Fix ioctls X32 ABI
-> =C2=A0 ALSA: timer: Fix broken compat timer user status ioctl
-> =C2=A0 ALSA: timer: Fix ioctls for X32 ABI
->=20
-> =C2=A0sound/core/control_compat.c |=C2=A0=C2=A090 ++++++++++++++++++----
-> =C2=A0sound/core/pcm_compat.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0| 177
-> +++++++++++++++++++++++++++++++++++++++++++-
-> =C2=A0sound/core/rawmidi_compat.c |=C2=A0=C2=A056 +++++++++++++-
-> =C2=A0sound/core/timer_compat.c=C2=A0=C2=A0=C2=A0|=C2=A0=C2=A018 ++++-
-> =C2=A04 files changed, 320 insertions(+), 21 deletions(-)
->=20
---=-fQdRB3faNyCFK+yohcES
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iEUEABECAAYFAlbUdbkACgkQGcb56gMuC60zJACdFcBF/LC706kpjLXsh7H/Ndt8
-bkYAmKw/OXJA589s2NYXPqo3Z/Iew+I=
-=ScQb
------END PGP SIGNATURE-----
-
---=-fQdRB3faNyCFK+yohcES--
-
-
---===============6965985422531235907==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6965985422531235907==--
+diff --git a/sound/soc/codecs/wm8983.c b/sound/soc/codecs/wm8983.c
+index 7350ff654bbf..0c002a5712cb 100644
+--- a/sound/soc/codecs/wm8983.c
++++ b/sound/soc/codecs/wm8983.c
+@@ -497,9 +497,9 @@ static int eqmode_get(struct snd_kcontrol *kcontrol,
+ 
+ 	reg = snd_soc_read(codec, WM8983_EQ1_LOW_SHELF);
+ 	if (reg & WM8983_EQ3DMODE)
+-		ucontrol->value.integer.value[0] = 1;
++		ucontrol->value.enumerated.item[0] = 1;
+ 	else
+-		ucontrol->value.integer.value[0] = 0;
++		ucontrol->value.enumerated.item[0] = 0;
+ 
+ 	return 0;
+ }
+@@ -511,18 +511,18 @@ static int eqmode_put(struct snd_kcontrol *kcontrol,
+ 	unsigned int regpwr2, regpwr3;
+ 	unsigned int reg_eq;
+ 
+-	if (ucontrol->value.integer.value[0] != 0
+-	    && ucontrol->value.integer.value[0] != 1)
++	if (ucontrol->value.enumerated.item[0] != 0
++	    && ucontrol->value.enumerated.item[0] != 1)
+ 		return -EINVAL;
+ 
+ 	reg_eq = snd_soc_read(codec, WM8983_EQ1_LOW_SHELF);
+ 	switch ((reg_eq & WM8983_EQ3DMODE) >> WM8983_EQ3DMODE_SHIFT) {
+ 	case 0:
+-		if (!ucontrol->value.integer.value[0])
++		if (!ucontrol->value.enumerated.item[0])
+ 			return 0;
+ 		break;
+ 	case 1:
+-		if (ucontrol->value.integer.value[0])
++		if (ucontrol->value.enumerated.item[0])
+ 			return 0;
+ 		break;
+ 	}
+@@ -537,7 +537,7 @@ static int eqmode_put(struct snd_kcontrol *kcontrol,
+ 	/* set the desired eqmode */
+ 	snd_soc_update_bits(codec, WM8983_EQ1_LOW_SHELF,
+ 			    WM8983_EQ3DMODE_MASK,
+-			    ucontrol->value.integer.value[0]
++			    ucontrol->value.enumerated.item[0]
+ 			    << WM8983_EQ3DMODE_SHIFT);
+ 	/* restore DAC/ADC configuration */
+ 	snd_soc_write(codec, WM8983_POWER_MANAGEMENT_2, regpwr2);
+-- 
+2.7.2
