@@ -1,16 +1,30 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ERROR: USB Sound card with unsafe characters
-Date: Mon, 29 Feb 2016 10:42:14 +0100
-Message-ID: <56D41276.9080506@ladisch.de>
-References: <CADKQKXYmcT8eOf9wH=Do_0RTk1RGBwMwTY0hvyNoXxVEwptWRg@mail.gmail.com>
+From: Jeroen Kransen <jeroen@kransen.nl>
+Subject: Re: Trouble about Roland UA-55 and snd-usb-audio module
+Date: Mon, 29 Feb 2016 10:07:27 +0000 (UTC)
+Message-ID: <loom.20160229T110434-826@post.gmane.org>
+References: <50A349A5.6010403@firebuntu.com> <50A34C36.7080506@ladisch.de>
+ <50A56FE6.3050009@firebuntu.com> <loom.20130109T124035-460@post.gmane.org>
+ <50FC3009.9070401@ladisch.de> <loom.20130125T202229-943@post.gmane.org>
+ <loom.20130128T221942-836@post.gmane.org> <5106F107.90704@ladisch.de>
+ <loom.20130131T042847-100@post.gmane.org> <51140FFD.3060907@ladisch.de>
+ <5114F5D6.4070404@ladisch.de> <BLU0-SMTP3373EB4C32D8FE75E0B686A7F90@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 72406260515
- for <alsa-devel@alsa-project.org>; Mon, 29 Feb 2016 10:42:15 +0100 (CET)
-In-Reply-To: <CADKQKXYmcT8eOf9wH=Do_0RTk1RGBwMwTY0hvyNoXxVEwptWRg@mail.gmail.com>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 65CE52605B4
+ for <alsa-devel@alsa-project.org>; Mon, 29 Feb 2016 11:10:07 +0100 (CET)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1aaKmB-0004Pq-Ss
+ for alsa-devel@alsa-project.org; Mon, 29 Feb 2016 11:10:04 +0100
+Received: from 213.236.64.61 ([213.236.64.61])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Mon, 29 Feb 2016 11:10:03 +0100
+Received: from jeroen by 213.236.64.61 with local (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Mon, 29 Feb 2016 11:10:03 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,66 +34,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Brian Jones <g0ukb@ivarc.org.uk>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Brian Jones wrote:
-> I don't know how to get this bug to the developers
+Hello, what is the status of the support for the UA-55? I get the impression 
+from this discussion that by now it should be in de linux kernel. However, on 
+this list, it is still noted as unsupported:
 
-Just send it to the alsa-devel list.  Once.
+http://wiki.linuxaudio.org/wiki/hardware_support#roland_-_quad-capture_ua-
+55_usb-2
 
-> My USB soundcard is an Asus Xonar U7 Echelon Edition
-> <https://www.asus.com/Sound-Cards/Xonar_U7_Echelon_Edition/> which
-> identifies itself to alsa as "Xonar U7 Echelon Ed." The card is supported
-> by alsa and works well in analog mode but I cannot get digital output via
-> alsa.
->
-> Attempts to change the iec958 device in USB-Audio.conf fail because of the
-> period char and apparently my level of OS (Mint 17.3 based on Ubuntu 14.04,
-> kernel 3.19.0-32) does not have alsa supporting USB vendorid:productid
-> naming
+I am planning to buy one, so I would love to know if it works on Linux.
 
-The vendor:product naming is used only for device that do not have a name.
-The newer version of alsa-lib would replace unsafe characters (like '.')
-with an underscore.
-
-
-Try changing /usr/share/alsa/cards/USB-Audio.conf.  Dont add an entry to
-the USB-Audio.pcm.iec958_device list near the top, but go to the bottom,
-to the USB-Audio.pcm.iec958.0 definition, and change this:
-
-USB-Audio.pcm.iec958.0 {
-	@args [ CARD AES0 AES1 AES2 AES3 ]
-	@args.CARD { type string }
-	@args.AES0 { type integer }
-	@args.AES1 { type integer }
-	@args.AES2 { type integer }
-	@args.AES3 { type integer }
-	@func refer
-	name {
-		...(lots of stuff)...
-	}
-	default {
-		...(lots of stuff)...
-	}
-}
-
-to this:
-
-USB-Audio.pcm.iec958.0 {
-	@args [ CARD AES0 AES1 AES2 AES3 ]
-	@args.CARD { type string }
-	@args.AES0 { type integer }
-	@args.AES1 { type integer }
-	@args.AES2 { type integer }
-	@args.AES3 { type integer }
-	type hw                         # no @func
-	card $CARD
-	device 1
-}
-
-(This will break S/PDIF on all other USB devices, but who cares ...)
-
-
-Regards,
-Clemens
+Jeroen
