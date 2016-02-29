@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4/5] ASoC: tlv320dac33: Fix enum ctl accesses
-	in a wrong type
-Date: Mon, 29 Feb 2016 18:08:03 +0100
-Message-ID: <1456765684-5717-5-git-send-email-tiwai@suse.de>
-References: <1456765684-5717-1-git-send-email-tiwai@suse.de>
+Subject: [PATCH] ALSA: seq: Remove unimplemented ioctls
+Date: Mon, 29 Feb 2016 18:12:26 +0100
+Message-ID: <1456765946-6124-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A345265483
- for <alsa-devel@alsa-project.org>; Mon, 29 Feb 2016 18:08:06 +0100 (CET)
-In-Reply-To: <1456765684-5717-1-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 528AF2606D2
+ for <alsa-devel@alsa-project.org>; Mon, 29 Feb 2016 18:12:28 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 6E0F2ADC6
+ for <alsa-devel@alsa-project.org>; Mon, 29 Feb 2016 17:12:27 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,51 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-"FIFO Mode" ctl in tlv320dac33 codec driver is enum, while the current
-driver accesses wrongly via value.integer.value[].  They have to be
-via value.enumerated.item[] instead.
+SNDRV_SEQ_IOCTL_{GET|SET}_QUEUE_OWNER and *_{GET|SET}_QUEUE_SYNC
+ioctls have been never implemented.  Get rid of the definitions from
+uapi header file.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/tlv320dac33.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ include/uapi/sound/asequencer.h | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
-index 781398fb2841..f7a6ce7e5fb1 100644
---- a/sound/soc/codecs/tlv320dac33.c
-+++ b/sound/soc/codecs/tlv320dac33.c
-@@ -446,7 +446,7 @@ static int dac33_get_fifo_mode(struct snd_kcontrol *kcontrol,
- 	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
- 	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
- 
--	ucontrol->value.integer.value[0] = dac33->fifo_mode;
-+	ucontrol->value.enumerated.item[0] = dac33->fifo_mode;
- 
- 	return 0;
- }
-@@ -458,17 +458,16 @@ static int dac33_set_fifo_mode(struct snd_kcontrol *kcontrol,
- 	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
- 	int ret = 0;
- 
--	if (dac33->fifo_mode == ucontrol->value.integer.value[0])
-+	if (dac33->fifo_mode == ucontrol->value.enumerated.item[0])
- 		return 0;
- 	/* Do not allow changes while stream is running*/
- 	if (snd_soc_codec_is_active(codec))
- 		return -EPERM;
- 
--	if (ucontrol->value.integer.value[0] < 0 ||
--	    ucontrol->value.integer.value[0] >= DAC33_FIFO_LAST_MODE)
-+	if (ucontrol->value.enumerated.item[0] >= DAC33_FIFO_LAST_MODE)
- 		ret = -EINVAL;
- 	else
--		dac33->fifo_mode = ucontrol->value.integer.value[0];
-+		dac33->fifo_mode = ucontrol->value.enumerated.item[0];
- 
- 	return ret;
- }
+diff --git a/include/uapi/sound/asequencer.h b/include/uapi/sound/asequencer.h
+index 5a5fa4956ebd..af96f2044f91 100644
+--- a/include/uapi/sound/asequencer.h
++++ b/include/uapi/sound/asequencer.h
+@@ -594,14 +594,8 @@ struct snd_seq_query_subs {
+ #define SNDRV_SEQ_IOCTL_GET_QUEUE_STATUS _IOWR('S', 0x40, struct snd_seq_queue_status)
+ #define SNDRV_SEQ_IOCTL_GET_QUEUE_TEMPO	_IOWR('S', 0x41, struct snd_seq_queue_tempo)
+ #define SNDRV_SEQ_IOCTL_SET_QUEUE_TEMPO	_IOW ('S', 0x42, struct snd_seq_queue_tempo)
+-#define SNDRV_SEQ_IOCTL_GET_QUEUE_OWNER	_IOWR('S', 0x43, struct snd_seq_queue_owner)
+-#define SNDRV_SEQ_IOCTL_SET_QUEUE_OWNER	_IOW ('S', 0x44, struct snd_seq_queue_owner)
+ #define SNDRV_SEQ_IOCTL_GET_QUEUE_TIMER	_IOWR('S', 0x45, struct snd_seq_queue_timer)
+ #define SNDRV_SEQ_IOCTL_SET_QUEUE_TIMER	_IOW ('S', 0x46, struct snd_seq_queue_timer)
+-/* XXX
+-#define SNDRV_SEQ_IOCTL_GET_QUEUE_SYNC	_IOWR('S', 0x53, struct snd_seq_queue_sync)
+-#define SNDRV_SEQ_IOCTL_SET_QUEUE_SYNC	_IOW ('S', 0x54, struct snd_seq_queue_sync)
+-*/
+ #define SNDRV_SEQ_IOCTL_GET_QUEUE_CLIENT	_IOWR('S', 0x49, struct snd_seq_queue_client)
+ #define SNDRV_SEQ_IOCTL_SET_QUEUE_CLIENT	_IOW ('S', 0x4a, struct snd_seq_queue_client)
+ #define SNDRV_SEQ_IOCTL_GET_CLIENT_POOL	_IOWR('S', 0x4b, struct snd_seq_client_pool)
 -- 
 2.7.2
