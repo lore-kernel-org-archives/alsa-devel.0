@@ -1,48 +1,50 @@
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: Re: [PATCH] ASoC: intel: remove unused variable
-Date: Tue, 1 Mar 2016 11:19:27 +0530
-Message-ID: <20160301054858.GA3814@sudip-pc>
-References: <1456766626-20807-1-git-send-email-sudipm.mukherjee@gmail.com>
- <20160301025912.GF18327@sirena.org.uk>
+From: libin.yang@linux.intel.com
+Subject: [PATCH] ALSA: hda - hdmi_find_pcm_slot return value
+	bug fix
+Date: Tue,  1 Mar 2016 15:18:26 +0800
+Message-ID: <1456816706-21009-1-git-send-email-libin.yang@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20160301025912.GF18327@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A123261501
+ for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2016 08:22:50 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: libin.yang@intel.com, mengdong.lin@intel.com, Libin Yang <libin.yang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 01, 2016 at 11:59:12AM +0900, Mark Brown wrote:
-> On Mon, Feb 29, 2016 at 10:53:46PM +0530, Sudip Mukherjee wrote:
-> > The variable cmd_id is only assigned some value and is never used.
-> > 
-> > Signed-off-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-> 
-> Your signoff doesn't correspond to your e-mail address.  While I'm
-> fairly sure that you are in fact the same person so it's OK this time
-> please try to ensure that they match up so that it's clear that the
-> signoffs are all in order.
+From: Libin Yang <libin.yang@linux.intel.com>
 
-But it has been like this way since I started contributing.
-git log --author=sudip will show you.
+hdmi_find_pcm_slot return -EBUSY when not no pcm slot found,
+not -ENODEV. So the caller should compare with -EBUSY.
 
-From: address was always sudipm.mukherjee@gmail.com
-but Signed-off-by: was sudip@vectorindia.org and now
-Signed-off-by: has changed to sudip.mukherjee@codethink.co.uk
-and you already have many such patches from me. (well, with my
-vectorindia.org email)
+Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+---
+ sound/pci/hda/patch_hdmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Can i not keep using my gmail as my From: ?
-The advantage of using gmail as my From: is that the discussion and all
-threads related to my patches will be in the same place even if my work
-email is changed.
-
-And AFAIK, the From: name and the Signed-off-by: name should match else
-the tools used by Greg and others to generate the stats will break.
-
-Please reconsider and let me use my gmail in my From:
-
-regards
-sudip
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index d77509a..aa2d6a2 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1758,7 +1758,7 @@ static void hdmi_attach_hda_pcm(struct hdmi_spec *spec,
+ 	if (per_pin->pcm)
+ 		return;
+ 	idx = hdmi_find_pcm_slot(spec, per_pin);
+-	if (idx == -ENODEV)
++	if (idx == -EBUSY)
+ 		return;
+ 	per_pin->pcm_idx = idx;
+ 	per_pin->pcm = get_hdmi_pcm(spec, idx);
+-- 
+1.9.1
