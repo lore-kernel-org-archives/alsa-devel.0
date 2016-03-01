@@ -1,18 +1,23 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v3 3/4] ASoC: sti: use iec channel status
-	control helper
-Date: Tue, 1 Mar 2016 09:19:16 +0100
-Message-ID: <1456820357-2545-4-git-send-email-arnaud.pouliquen@st.com>
-References: <1456820357-2545-1-git-send-email-arnaud.pouliquen@st.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH v2] ASoC: imx-wm8958: add imx-wm8958
+ machine driver
+Date: Tue, 1 Mar 2016 01:06:16 -0800
+Message-ID: <20160301090615.GA4738@Asurada-CZ80>
+References: <6f90780124a7f5bf31452623fdf04225873fc711.1456457898.git.zidan.wang@freescale.com>
+ <20160226205208.GA25515@Asurada-Nvidia>
+ <AM3PR04MB1412F6FB7E5107BBA3AB9B559ABB0@AM3PR04MB1412.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id C2DDE265191
- for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2016 09:19:37 +0100 (CET)
-In-Reply-To: <1456820357-2545-1-git-send-email-arnaud.pouliquen@st.com>
+Received: from mail-pf0-f194.google.com (mail-pf0-f194.google.com
+ [209.85.192.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id E06F2261504
+ for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2016 10:06:23 +0100 (CET)
+Received: by mail-pf0-f194.google.com with SMTP id w128so10523359pfb.2
+ for <alsa-devel@alsa-project.org>; Tue, 01 Mar 2016 01:06:23 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <AM3PR04MB1412F6FB7E5107BBA3AB9B559ABB0@AM3PR04MB1412.eurprd04.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,179 +27,124 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Jean-Francois Moine <moinejf@free.fr>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, David Airlie <airlied@linux.ie>, arnaud.pouliquen@st.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Moise Gergaud <moise.gergaud@st.com>
+To: Zidan Wang <zidan.wang@nxp.com>, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Xiubo.Lee@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Use helper function instead of internal function for iec control
+It looks like you replied me off the maillist. So I just add
+the maillist and related TO/CCs back.
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
----
- sound/soc/sti/Kconfig           |  1 +
- sound/soc/sti/uniperif_player.c | 79 ++++++++++++++++-------------------------
- 2 files changed, 32 insertions(+), 48 deletions(-)
+On Tue, Mar 01, 2016 at 05:43:22AM +0000, Zidan Wang wrote:
+> On Fri, Feb 26, 2016 at 11:42:42AM +0800, Zidan Wang wrote:
+> > This is the initial imx-wm8958 device-tree-only machine driver working 
+> > with fsl_sai driver. This sound card has three dai link, HIFI, VOICE 
+> > and BT dai. HIFI dai link will support codec master and slave mode.
+> > VOICE an BT dai link have dummy cpu dai, and just support codec master 
+> > mode.
+> 
+> Why VOICE and BT are using dummy cpu dai? Where can I find the schematics
+> for wm8958 from NXP website?
+> [Wang Zidan-B50113] I have attached the schematics for wm8958. In our
+> release, we can't support VOICE and BT, and just using AIF1. But in
+> order to upstream, I add the voice and bt dai.
 
-diff --git a/sound/soc/sti/Kconfig b/sound/soc/sti/Kconfig
-index 64a6900..8e616a4 100644
---- a/sound/soc/sti/Kconfig
-+++ b/sound/soc/sti/Kconfig
-@@ -6,6 +6,7 @@ menuconfig SND_SOC_STI
- 	depends on SND_SOC
- 	depends on ARCH_STI || COMPILE_TEST
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
-+	select SND_PCM_IEC958
- 	help
- 		Say Y if you want to enable ASoC-support for
- 		any of the STI platforms (e.g. STIH416).
-diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-index 7aca6b9..8b8697b 100644
---- a/sound/soc/sti/uniperif_player.c
-+++ b/sound/soc/sti/uniperif_player.c
-@@ -12,6 +12,7 @@
- 
- #include <sound/asoundef.h>
- #include <sound/soc.h>
-+#include <sound/pcm_iec958.h>
- 
- #include "uniperif.h"
- 
-@@ -250,7 +251,6 @@ static void uni_player_set_channel_status(struct uniperif *player,
- 	 * sampling frequency. If no sample rate is already specified, then
- 	 * set one.
- 	 */
--	mutex_lock(&player->ctrl_lock);
- 	if (runtime) {
- 		switch (runtime->rate) {
- 		case 22050:
-@@ -327,7 +327,6 @@ static void uni_player_set_channel_status(struct uniperif *player,
- 		player->stream_settings.iec958.status[3 + (n * 4)] << 24;
- 		SET_UNIPERIF_CHANNEL_STA_REGN(player, n, status);
- 	}
--	mutex_unlock(&player->ctrl_lock);
- 
- 	/* Update the channel status */
- 	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
-@@ -390,7 +389,9 @@ static int uni_player_prepare_iec958(struct uniperif *player,
- 	SET_UNIPERIF_CTRL_ZERO_STUFF_HW(player);
- 
- 	/* Update the channel status */
-+	mutex_lock(&player->ctrl_lock);
- 	uni_player_set_channel_status(player, runtime);
-+	mutex_unlock(&player->ctrl_lock);
- 
- 	/* Clear the user validity user bits */
- 	SET_UNIPERIF_USER_VALIDITY_VALIDITY_LR(player, 0);
-@@ -541,60 +542,18 @@ static int uni_player_prepare_pcm(struct uniperif *player,
- /*
-  * ALSA uniperipheral iec958 controls
-  */
--static int  uni_player_ctl_iec958_info(struct snd_kcontrol *kcontrol,
--				       struct snd_ctl_elem_info *uinfo)
--{
--	uinfo->type = SNDRV_CTL_ELEM_TYPE_IEC958;
--	uinfo->count = 1;
--
--	return 0;
--}
- 
--static int uni_player_ctl_iec958_get(struct snd_kcontrol *kcontrol,
--				     struct snd_ctl_elem_value *ucontrol)
-+static int uni_player_ctl_iec958_set(void *pdata, u8 *status)
- {
--	struct snd_soc_dai *dai = snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_dai *dai = pdata;
- 	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
- 	struct uniperif *player = priv->dai_data.uni;
--	struct snd_aes_iec958 *iec958 = &player->stream_settings.iec958;
--
--	mutex_lock(&player->ctrl_lock);
--	ucontrol->value.iec958.status[0] = iec958->status[0];
--	ucontrol->value.iec958.status[1] = iec958->status[1];
--	ucontrol->value.iec958.status[2] = iec958->status[2];
--	ucontrol->value.iec958.status[3] = iec958->status[3];
--	mutex_unlock(&player->ctrl_lock);
--	return 0;
--}
--
--static int uni_player_ctl_iec958_put(struct snd_kcontrol *kcontrol,
--				     struct snd_ctl_elem_value *ucontrol)
--{
--	struct snd_soc_dai *dai = snd_kcontrol_chip(kcontrol);
--	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
--	struct uniperif *player = priv->dai_data.uni;
--	struct snd_aes_iec958 *iec958 =  &player->stream_settings.iec958;
--
--	mutex_lock(&player->ctrl_lock);
--	iec958->status[0] = ucontrol->value.iec958.status[0];
--	iec958->status[1] = ucontrol->value.iec958.status[1];
--	iec958->status[2] = ucontrol->value.iec958.status[2];
--	iec958->status[3] = ucontrol->value.iec958.status[3];
--	mutex_unlock(&player->ctrl_lock);
- 
- 	uni_player_set_channel_status(player, NULL);
- 
- 	return 0;
- }
- 
--static struct snd_kcontrol_new uni_player_iec958_ctl = {
--	.iface = SNDRV_CTL_ELEM_IFACE_PCM,
--	.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT),
--	.info = uni_player_ctl_iec958_info,
--	.get = uni_player_ctl_iec958_get,
--	.put = uni_player_ctl_iec958_put,
--};
--
- /*
-  * uniperif rate adjustement control
-  */
-@@ -659,7 +618,6 @@ static struct snd_kcontrol_new *snd_sti_pcm_ctl[] = {
- };
- 
- static struct snd_kcontrol_new *snd_sti_iec_ctl[] = {
--	&uni_player_iec958_ctl,
- 	&uni_player_clk_adj_ctl,
- };
- 
-@@ -1030,6 +988,30 @@ static int uni_player_parse_dt(struct platform_device *pdev,
- 	return 0;
- }
- 
-+static int uni_player_pcm_new(struct snd_soc_pcm_runtime *rtd,
-+			      struct snd_soc_dai *dai)
-+{
-+	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
-+	struct uniperif *player = priv->dai_data.uni;
-+	struct snd_pcm_iec958_params *params;
-+
-+	if (!UNIPERIF_PLAYER_TYPE_IS_IEC958(player))
-+		return 0;
-+
-+	params = devm_kzalloc(dai->dev, sizeof(*params), GFP_KERNEL);
-+	if (!params)
-+		return -ENOMEM;
-+
-+	params->iec = &player->stream_settings.iec958;
-+	params->pdata = player;
-+	params->mutex = &player->ctrl_lock;
-+	params->pdata = dai;
-+	params->ctrl_set = uni_player_ctl_iec958_set;
-+
-+	return snd_pcm_create_iec958_ctl(rtd->pcm, params,
-+					 SNDRV_PCM_STREAM_PLAYBACK);
-+}
-+
- static const struct snd_soc_dai_ops uni_player_dai_ops = {
- 		.startup = uni_player_startup,
- 		.shutdown = uni_player_shutdown,
-@@ -1037,7 +1019,8 @@ static const struct snd_soc_dai_ops uni_player_dai_ops = {
- 		.trigger = uni_player_trigger,
- 		.hw_params = sti_uniperiph_dai_hw_params,
- 		.set_fmt = sti_uniperiph_dai_set_fmt,
--		.set_sysclk = uni_player_set_sysclk
-+		.set_sysclk = uni_player_set_sysclk,
-+		.pcm_new = uni_player_pcm_new,
- };
- 
- int uni_player_init(struct platform_device *pdev,
--- 
-1.9.1
+The way to support the other two AIFs are not very graceful -- looks
+like you will have to hard code the CPU DAIs in the driver.
+
+I personally suggest you to use fsl-asoc-card. Since the Codec IC
+provides three DAIs. And in the schematics, you do have three DAI
+links. It sounds plausible to me that we might treat these three
+DAI links as three different cards. Then use different compatible
+names: "imx-audio-wm8958-aif1" and so on. And each one can also
+has ASRC back-end support.
+
+If you really have big trouble to integrate it into fsl-asoc-card
+(not 100% sure if the 3 cards methodology is totally feasible),  I
+will be okay with a dedicated driver for wm8958. But you will need
+to refine the DT binding to support three CPU DAIs in my opinion.
+
+> > +static u32 imx_wm8958_rates[] = { 8000, 16000, 32000, 48000 };
+> > +
+> > +static struct snd_pcm_hw_constraint_list imx_wm8958_rate_constraints = {
+> > +	.count = ARRAY_SIZE(imx_wm8958_rates),
+> > +	.list = imx_wm8958_rates,
+> > +};
+> 
+> Where are these rate constraints coming from?
+> [Wang Zidan-B50113] these rates are restricted by the SAI MCLK.
+
+If the SAI MCLK runs at a different rate, it would be invalid.
+So there should be at least two constraints depending on the
+MCLK rate.
+
+And I think it might be better to have this in the SAI driver
+as a refinement since the current driver only errors out for
+those unsupported rates.
+
+> > +	if (id == HIFI_DAI) {
+> > +		/*
+> > +		 * Set GPIO1 pin function to reserve, so that DAC1 and ADC1
+> > +		 * using shared LRCLK from DACLRCK1.
+> > +		 */
+> > +		snd_soc_update_bits(codec, WM8994_GPIO_1, 0x1f, 0x2);
+> 
+> I don't see any reverse operation against this GPIO configuration here.
+> So is it really an operation that has to be done every hw_params()?
+> 
+> > +	} else if (id == VOICE_DAI) {
+> > +		/*
+> > +		 * Set GPIO6 pin function to reserve, so that DAC2 and ADC2
+> > +		 * using shared LRCLK from DACLRCK2.
+> > +		 */
+> > +		snd_soc_update_bits(codec, WM8994_GPIO_6, 0x1f, 0x2);
+> 
+> Same here.
+
+Actually I just took a look at the DT binding doc of WM8994.
+It supports GPIO configurations in the codec DT nodes. So
+you may not need to do these over here at all.
+
+> > +static int imx_wm8958_set_bias_level_post(struct snd_soc_card *card,
+> > +				     struct snd_soc_dapm_context *dapm,
+> > +				     enum snd_soc_bias_level level) {
+> > +	switch (level) {
+> > +	case SND_SOC_BIAS_OFF:
+> > +		if (card->dapm.bias_level == SND_SOC_BIAS_STANDBY)
+> > +			for (i = 0; i < WM8958_MCLK_MAX; i++) {
+> > +				if (!IS_ERR(data->mclk[i]))
+> > +					clk_disable_unprepare(data->mclk[i]);
+> 
+> The set_bias() funcs are merely en/disabling mclk.
+> Would be possible to do it in the codec driver?
+> [Wang Zidan-B50113] It can be moved to codec driver,
+> but the wm8994 driver can support wm8958 wm8994 wm1811 codec,
+> it's hard for me to do like that, and I also can't test them.
+
+Sending a patch to the maillist is a way to let people be aware
+of the change and then test it. The driver maintainer will review
+it and give you feedback. If it really causes compatible issues,
+you can then limit the code for wm8958 only.
+
+> > +static struct snd_soc_dai_link imx_wm8958_dai_link[] = {
+> > +	[BT_DAI] =	{
+> > +			.name = "Bluetooth",
+> > +			.stream_name = "Bluetooth",
+> > +			.cpu_dai_name = "snd-soc-dummy-dai",
+> > +			.codec_name = "wm8994-codec",
+> > +			.codec_dai_name = "wm8994-aif3",
+> > +			.platform_name = "snd-soc-dummy",
+> > +			.ignore_pmdown_time = 1,
+> > +	},
+> 
+> A little curious...how is the BT gonna work for you?
+> [Wang Zidan-B50113] I have not test the BT dai. The BT is directly
+> connect to AIF3, when AIF3 receive date from BT, it will route the
+> date to AIF1 or AIF2. And the date from AIF1 and AIF2 can also route
+> to AIF3 to BT. So we just need to set the amixer setting to open the
+> audio route.
+
+Sounds interesting. So the Codec totally becomes a router. If
+this design can not be supported by using three cards via the
+fsl-asoc-card, you may continue this driver as I can see the
+situation here. But I encourage you to try that first so as to
+avoid duplicated code/driver.
