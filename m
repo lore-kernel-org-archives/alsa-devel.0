@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Fix ctl value accesses in a wrong type" to the asoc tree
-Date: Tue, 01 Mar 2016 12:25:17 +0900
-Message-ID: <E1aaaw1-0008C2-17@finisterre>
-References: <1456762848-2837-1-git-send-email-tiwai@suse.de>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1456762848-2837-1-git-send-email-tiwai@suse.de>
-Sender: stable-owner@vger.kernel.org
-To: stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: wm8904: Fix enum ctl accesses in a
+	wrong type" to the asoc tree
+Date: Tue, 01 Mar 2016 12:21:46 +0900
+Message-ID: <E1aaasc-000835-Mj@finisterre>
+References: <1456765278-5435-3-git-send-email-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C461A261483
+ for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2016 04:22:55 +0100 (CET)
+In-Reply-To: <1456765278-5435-3-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: Fix ctl value accesses in a wrong type
+   ASoC: wm8904: Fix enum ctl accesses in a wrong type
 
 has been applied to the asoc tree at
 
@@ -37,53 +53,42 @@ to this mail.
 Thanks,
 Mark
 
->From 741338f99f16dc24d2d01ac777b0798ae9d10a90 Mon Sep 17 00:00:00 2001
+>From c41a024c4e770fff999f4164cc4d1696e5f17437 Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Mon, 29 Feb 2016 17:20:48 +0100
-Subject: [PATCH] ASoC: dapm: Fix ctl value accesses in a wrong type
+Date: Mon, 29 Feb 2016 18:01:11 +0100
+Subject: [PATCH] ASoC: wm8904: Fix enum ctl accesses in a wrong type
 
-snd_soc_dapm_dai_link_get() and _put() access the associated ctl
-values as value.integer.value[].  However, this is an enum ctl, and it
-has to be accessed via value.enumerated.item[].  The former is long
-while the latter is unsigned int, so they don't align.
+"DRC Mode" and "EQ Mode" ctls in wm8904 codec driver are enum, while
+the current driver accesses wrongly via value.integer.value[].  They
+have to be via value.enumerated.item[] instead.
 
-Fixes: c66150824b8a ('ASoC: dapm: add code to configure dai link parameters')
-Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/wm8904.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 5a2812fa8946..335c7de2b046 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3573,7 +3573,7 @@ static int snd_soc_dapm_dai_link_get(struct snd_kcontrol *kcontrol,
- {
- 	struct snd_soc_dapm_widget *w = snd_kcontrol_chip(kcontrol);
+diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+index 8172e499e6ed..edd7a7709194 100644
+--- a/sound/soc/codecs/wm8904.c
++++ b/sound/soc/codecs/wm8904.c
+@@ -396,7 +396,7 @@ static int wm8904_put_drc_enum(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+ 	struct wm8904_priv *wm8904 = snd_soc_codec_get_drvdata(codec);
+ 	struct wm8904_pdata *pdata = wm8904->pdata;
+-	int value = ucontrol->value.integer.value[0];
++	int value = ucontrol->value.enumerated.item[0];
  
--	ucontrol->value.integer.value[0] = w->params_select;
-+	ucontrol->value.enumerated.item[0] = w->params_select;
- 
- 	return 0;
- }
-@@ -3587,13 +3587,13 @@ static int snd_soc_dapm_dai_link_put(struct snd_kcontrol *kcontrol,
- 	if (w->power)
- 		return -EBUSY;
- 
--	if (ucontrol->value.integer.value[0] == w->params_select)
-+	if (ucontrol->value.enumerated.item[0] == w->params_select)
- 		return 0;
- 
--	if (ucontrol->value.integer.value[0] >= w->num_params)
-+	if (ucontrol->value.enumerated.item[0] >= w->num_params)
+ 	if (value >= pdata->num_drc_cfgs)
  		return -EINVAL;
+@@ -467,7 +467,7 @@ static int wm8904_put_retune_mobile_enum(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+ 	struct wm8904_priv *wm8904 = snd_soc_codec_get_drvdata(codec);
+ 	struct wm8904_pdata *pdata = wm8904->pdata;
+-	int value = ucontrol->value.integer.value[0];
++	int value = ucontrol->value.enumerated.item[0];
  
--	w->params_select = ucontrol->value.integer.value[0];
-+	w->params_select = ucontrol->value.enumerated.item[0];
- 
- 	return 0;
- }
+ 	if (value >= pdata->num_retune_mobile_cfgs)
+ 		return -EINVAL;
 -- 
 2.7.0
