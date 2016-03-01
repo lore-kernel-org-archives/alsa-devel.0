@@ -1,18 +1,31 @@
 From: Dennis Kadioglu <denk@post.com>
-Subject: Re: [PATCH] Add a quirk for Plantronics DA45
-Date: Tue, 1 Mar 2016 14:23:23 +0100 (CET)
-Message-ID: <214463164.27997794.1456838603272.JavaMail.zimbra@dkadioglu.de>
-References: <1839309538.65739518.1455886862918.JavaMail.zimbra@dkadioglu.de>
- <167779231.27633197.1456827588155.JavaMail.zimbra@dkadioglu.de>
- <s5h8u22wl7s.wl-tiwai@suse.de> <56D582FF.5070606@canonical.com>
+Subject: [PATCH] Add a quirk for Plantronics DA45
+Date: Tue, 1 Mar 2016 14:23:29 +0100 (CET)
+Message-ID: <327228764.27997811.1456838609096.JavaMail.zimbra@dkadioglu.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from skylla.efm.de (skylla.efm.de [195.190.148.248])
- by alsa0.perex.cz (Postfix) with ESMTP id D33F32614C2
- for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2016 14:23:23 +0100 (CET)
-In-Reply-To: <56D582FF.5070606@canonical.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C2C0626600E
+ for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2016 14:23:29 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by skylla.efm.de (Postfix) with ESMTP id A99067618F0
+ for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2016 14:23:29 +0100 (CET)
+Received: from skylla.efm.de ([127.0.0.1])
+ by localhost (skylla.efm.de [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id BAcyRl_BzELV for <alsa-devel@alsa-project.org>;
+ Tue,  1 Mar 2016 14:23:29 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by skylla.efm.de (Postfix) with ESMTP id 8DA1576200A
+ for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2016 14:23:29 +0100 (CET)
+Received: from skylla.efm.de ([127.0.0.1])
+ by localhost (skylla.efm.de [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id UPEmY_cSyMIP for <alsa-devel@alsa-project.org>;
+ Tue,  1 Mar 2016 14:23:29 +0100 (CET)
+Received: from skylla.efm.de (skylla.efm.de [195.190.148.248])
+ by skylla.efm.de (Postfix) with ESMTP id 79D8F7618F0
+ for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2016 14:23:29 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +35,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T0ssIHRoYW5rcyBmb3IgdGhlIGNsYXJpZmljYXRpb24gYW5kIHNvcnJ5IGZvciB0aGUgbWlzdGFr
-ZS4KSSB3aWxsIHNlbmQgaXQgYWdhaW4gaW5jbHVkaW5nIHRoZSBtZW50aW9uZWQgZml4ZXMuCgot
-LS0tLSBVcnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tClZvbjogIkRhdmlkIEhlbm5pbmdzc29uIiA8
-ZGF2aWQuaGVubmluZ3Nzb25AY2Fub25pY2FsLmNvbT4KQW46ICJUYWthc2hpIEl3YWkiIDx0aXdh
-aUBzdXNlLmRlPiwgImRlbmsiIDxkZW5rQHBvc3QuY29tPgpDQzogYWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnCkdlc2VuZGV0OiBEaWVuc3RhZywgMS4gTcOkcnogMjAxNiAxMjo1NDozOQpCZXRy
-ZWZmOiBSZTogW2Fsc2EtZGV2ZWxdIFtQQVRDSF0gQWRkIGEgcXVpcmsgZm9yIFBsYW50cm9uaWNz
-IERBNDUKCkFjdHVhbGx5LCB0aGVyZSBpcyBhIFNpZ25lZC1vZmYtYnkgbGluZSwgYnV0IGl0J3Mg
-YXQgdGhlIHdyb25nIHBsYWNlLiAKQWxzbyB0aGUgQXV0aG9yL0Zyb20gbGluZSBzaG91bGQgc3Rh
-dGUgeW91ciBmdWxsIG5hbWUuCgpEZW5rLCBwbGVhc2Ugc2VlIGJlbG93OgoKT24gMjAxNi0wMy0w
-MSAxMToyMywgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9uIFR1ZSwgMDEgTWFyIDIwMTYgMTE6MTk6
-NDggKzAxMDAsCj4gZGVuayB3cm90ZToKPj4KPj4gQXMgSSd2ZSBnb3Qgbm8gcmVzcG9uc2UgYnkg
-bm93LCBJIHdvdWxkIGxpa2UgdG8gcG9saXRlbHkgYXNrLCBpZiB0aGUgcGF0Y2ggY2FuIGJlIGFj
-Y2VwdGVkIG5vdywgYWZ0ZXIgdGhlIHJlcXVlc3RlZCBtb2RpZmljYXRpb25zPwo+Cj4gSSB0aG91
-Z2h0IEkgcmVwbGllZCB5b3UsIHN1Z2dlc3RpbmcgdG8gZ2l2ZSBhIHByb3BlciBzaWduLW9mZiBs
-aW5lLgo+IFdpdGhvdXQgeW91ciBvd24gc2lnbi1vZmYsIHdlIGNhbid0IG1lcmdlIGFueSBwYXRj
-aCBmcm9tIHlvdS4KPiBTZWUgRG9jdW1lbnRhdGlvbi9TdWJtaXR0aW5nUGF0Y2hlcyBmb3IgZGV0
-YWlscy4KPgo+IFNvLCBwbGVhc2UgcmVzdWJtaXQgd2l0aCBpdC4KPgo+Cj4gdGhhbmtzLAo+Cj4g
-VGFrYXNoaQo+Cj4KPj4KPj4gVGhhbmsgeW91IHZlcnkgbXVjaCBhbmQgYmVzdAo+PiBkZW5rCj4+
-Cj4+IC0tLS0tIFVyc3Byw7xuZ2xpY2hlIE1haWwgLS0tLS0KPj4gVm9uOiAiZGVuayIgPGRlbmtA
-cG9zdC5jb20+Cj4+IEFuOiBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPj4gR2VzZW5kZXQ6
-IEZyZWl0YWcsIDE5LiBGZWJydWFyIDIwMTYgMTQ6MDE6MDIKPj4gQmV0cmVmZjogW1BBVENIXSBB
-ZGQgYSBxdWlyayBmb3IgUGxhbnRyb25pY3MgREE0NQo+Pgo+PiBQbGFudHJvbmljcyBEQTQ1IGRv
-ZXMgbm90IHN1cHBvcnQgcmVhZGluZyB0aGUgc2FtcGxlIHJhdGUgd2hpY2ggbGVhZHMgdG8gbWFu
-eSBsaW5lcyBvZiAiY2Fubm90IGdldCBmcmVxIGF0IGVwIDB4NCIgYW5kICJjYW5ub3QgZ2V0IGZy
-ZXEgYXQgZXAgMHg4NCIuIFRoaXMgcGF0Y2ggYWRkcyB0aGUgVVNCIElEIG9mIHRoZSBEQTQ1IHRv
-IHF1aXJrcy5jIGFuZCBhdm9pZHMgdGhvc2UgZXJyb3IgbWVzc2FnZXMuCgpIZXJlIGlzIHdoZXJl
-IHNpZ24tb2ZmLWxpbmUgc2hvdWxkIGJlOiBhZnRlciB0aGUgY29tbWl0IG1lc3NhZ2UgYnV0IApi
-ZWZvcmUgdGhlICAiLS0tIiBsaW5lLgoKPj4KPj4gLS0tCj4+ICAgc291bmQvdXNiL3F1aXJrcy5j
-IHwgMSArCj4+ICAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspCj4+Cj4+IGRpZmYgLS1n
-aXQgYS9zb3VuZC91c2IvcXVpcmtzLmMgYi9zb3VuZC91c2IvcXVpcmtzLmMKPj4gaW5kZXggMjU4
-NWMxNy4uNWIwMzI5NiAxMDA2NDQKPj4gLS0tIGEvc291bmQvdXNiL3F1aXJrcy5jCj4+ICsrKyBi
-L3NvdW5kL3VzYi9xdWlya3MuYwo+PiBAQCAtMTEyMyw2ICsxMTIzLDcgQEAgYm9vbCBzbmRfdXNi
-X2dldF9zYW1wbGVfcmF0ZV9xdWlyayhzdHJ1Y3Qgc25kX3VzYl9hdWRpbyAqY2hpcCkKPj4gICAg
-ICAgICAgY2FzZSBVU0JfSUQoMHgwNDVFLCAweDA3NkYpOiAvKiBNUyBMaWZlY2FtIEhELTYwMDAg
-Ki8KPj4gICAgICAgICAgY2FzZSBVU0JfSUQoMHgwNDVFLCAweDA3NzIpOiAvKiBNUyBMaWZlY2Ft
-IFN0dWRpbyAqLwo+PiAgICAgICAgICBjYXNlIFVTQl9JRCgweDA0NUUsIDB4MDc3OSk6IC8qIE1T
-IExpZmVjYW0gSEQtMzAwMCAqLwo+PiArICAgICAgIGNhc2UgVVNCX0lEKDB4MDQ3RiwgMHhBQTA1
-KTogLyogUGxhbnRyb25pY3MgREE0NSAqLwo+PiAgICAgICAgICBjYXNlIFVTQl9JRCgweDA0RDgs
-IDB4RkVFQSk6IC8qIEJlbmNobWFyayBEQUMxIFByZSAqLwo+PiAgICAgICAgICBjYXNlIFVTQl9J
-RCgweDA3NEQsIDB4MzU1Myk6IC8qIE91dGxhdyBSUjIxNTAgKE1pY3JvbmFzIFVBQzM1NTNCKSAq
-Lwo+PiAgICAgICAgICBjYXNlIFVTQl9JRCgweDIxQjQsIDB4MDA4MSk6IC8qIEF1ZGlvUXVlc3Qg
-RHJhZ29uRmx5ICovCj4+IC0tLQo+PiBTaWduZWQtb2ZmLWJ5OiBEZW5uaXMgS2FkaW9nbHUgPGRl
-bmtAcG9zdC5jb20+CgpBbmQgaGVyZSB3aGVyZSBpdCBhY3R1YWxseSBpczsgZG93biBoZXJlIGl0
-IHdvbid0IGJlIHBpY2tlZCB1cCBjb3JyZWN0bHkuCgo+PiBfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwo+PiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+PiBB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPiBfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPgoKLS0gCkRhdmlkIEhlbm5pbmdzc29uLCBD
-YW5vbmljYWwgTHRkLgpodHRwczovL2xhdW5jaHBhZC5uZXQvfmRpd2ljCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Plantronics DA45 does not support reading the sample rate which leads to many lines of "cannot get freq at ep 0x4" and "cannot get freq at ep 0x84". This patch adds the USB ID of the DA45 to quirks.c and avoids those error messages.
+
+
+Signed-off-by: Dennis Kadioglu <denk@post.com>
+---
+ sound/usb/quirks.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 2585c17..5b03296 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1123,6 +1123,7 @@ bool snd_usb_get_sample_rate_quirk(struct snd_usb_audio *chip)
+        case USB_ID(0x045E, 0x076F): /* MS Lifecam HD-6000 */
+        case USB_ID(0x045E, 0x0772): /* MS Lifecam Studio */
+        case USB_ID(0x045E, 0x0779): /* MS Lifecam HD-3000 */
++       case USB_ID(0x047F, 0xAA05): /* Plantronics DA45 */
+        case USB_ID(0x04D8, 0xFEEA): /* Benchmark DAC1 Pre */
+        case USB_ID(0x074D, 0x3553): /* Outlaw RR2150 (Micronas UAC3553B) */
+        case USB_ID(0x21B4, 0x0081): /* AudioQuest DragonFly */
+---
