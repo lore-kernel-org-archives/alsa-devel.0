@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Fix enum ctl accesses in a wrong type" to the asoc tree
-Date: Tue, 01 Mar 2016 12:19:44 +0900
-Message-ID: <E1aaaqe-0007yv-7J@finisterre>
-References: <1456765278-5435-10-git-send-email-tiwai@suse.de>
+Subject: Applied "ASoC: wm8994: Fix enum ctl accesses in a wrong type" to the asoc tree
+Date: Tue, 01 Mar 2016 12:19:58 +0900
+Message-ID: <E1aaaqs-00080d-Or@finisterre>
+References: <1456765278-5435-7-git-send-email-tiwai@suse.de>
 Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1456765278-5435-10-git-send-email-tiwai@suse.de>
+In-Reply-To: <1456765278-5435-7-git-send-email-tiwai@suse.de>
 Sender: stable-owner@vger.kernel.org
 To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
 Cc: alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Fix enum ctl accesses in a wrong type
+   ASoC: wm8994: Fix enum ctl accesses in a wrong type
 
 has been applied to the asoc tree at
 
@@ -37,57 +37,44 @@ to this mail.
 Thanks,
 Mark
 
->From 15c665700bf6f4543f003ac0fbb1e9ec692e93f2 Mon Sep 17 00:00:00 2001
+>From 8019c0b37cd5a87107808300a496388b777225bf Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Mon, 29 Feb 2016 18:01:18 +0100
-Subject: [PATCH] ASoC: wm_adsp: Fix enum ctl accesses in a wrong type
+Date: Mon, 29 Feb 2016 18:01:15 +0100
+Subject: [PATCH] ASoC: wm8994: Fix enum ctl accesses in a wrong type
 
-The firmware ctls like "DSP1 Firmware" in wm_adsp codec driver are
-enum, while the current driver accesses wrongly via
-value.integer.value[].  They have to be via value.enumerated.item[]
-instead.
+The DRC Mode like "AIF1DRC1 Mode" and EQ Mode like "AIF1.1 EQ Mode" in
+wm8994 codec driver are enum ctls, while the current driver accesses
+wrongly via value.integer.value[].  They have to be via
+value.enumerated.item[] instead.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Cc: stable@vger.kernel.org
 ---
- sound/soc/codecs/wm_adsp.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/wm8994.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 33806d487b8a..b9195b9c2b05 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -586,7 +586,7 @@ static int wm_adsp_fw_get(struct snd_kcontrol *kcontrol,
- 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
- 	struct wm_adsp *dsp = snd_soc_codec_get_drvdata(codec);
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 2ccbb322df77..a18aecb49935 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -362,7 +362,7 @@ static int wm8994_put_drc_enum(struct snd_kcontrol *kcontrol,
+ 	struct wm8994 *control = wm8994->wm8994;
+ 	struct wm8994_pdata *pdata = &control->pdata;
+ 	int drc = wm8994_get_drc(kcontrol->id.name);
+-	int value = ucontrol->value.integer.value[0];
++	int value = ucontrol->value.enumerated.item[0];
  
--	ucontrol->value.integer.value[0] = dsp[e->shift_l].fw;
-+	ucontrol->value.enumerated.item[0] = dsp[e->shift_l].fw;
+ 	if (drc < 0)
+ 		return drc;
+@@ -469,7 +469,7 @@ static int wm8994_put_retune_mobile_enum(struct snd_kcontrol *kcontrol,
+ 	struct wm8994 *control = wm8994->wm8994;
+ 	struct wm8994_pdata *pdata = &control->pdata;
+ 	int block = wm8994_get_retune_mobile_block(kcontrol->id.name);
+-	int value = ucontrol->value.integer.value[0];
++	int value = ucontrol->value.enumerated.item[0];
  
- 	return 0;
- }
-@@ -599,10 +599,10 @@ static int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
- 	struct wm_adsp *dsp = snd_soc_codec_get_drvdata(codec);
- 	int ret = 0;
- 
--	if (ucontrol->value.integer.value[0] == dsp[e->shift_l].fw)
-+	if (ucontrol->value.enumerated.item[0] == dsp[e->shift_l].fw)
- 		return 0;
- 
--	if (ucontrol->value.integer.value[0] >= WM_ADSP_NUM_FW)
-+	if (ucontrol->value.enumerated.item[0] >= WM_ADSP_NUM_FW)
- 		return -EINVAL;
- 
- 	mutex_lock(&dsp[e->shift_l].pwr_lock);
-@@ -610,7 +610,7 @@ static int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
- 	if (dsp[e->shift_l].running || dsp[e->shift_l].compr)
- 		ret = -EBUSY;
- 	else
--		dsp[e->shift_l].fw = ucontrol->value.integer.value[0];
-+		dsp[e->shift_l].fw = ucontrol->value.enumerated.item[0];
- 
- 	mutex_unlock(&dsp[e->shift_l].pwr_lock);
- 
+ 	if (block < 0)
+ 		return block;
 -- 
 2.7.0
