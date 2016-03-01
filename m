@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ab8500: Fix enum ctl accesses in a
+Subject: Applied "ASoC: omap: n810: Fix enum ctl accesses in a
 	wrong type" to the asoc tree
-Date: Tue, 01 Mar 2016 12:23:25 +0900
-Message-ID: <E1aaauD-00086E-Uf@finisterre>
-References: <1456765684-5717-2-git-send-email-tiwai@suse.de>
+Date: Tue, 01 Mar 2016 12:24:08 +0900
+Message-ID: <E1aaauu-00088o-5G@finisterre>
+References: <1456763182-2986-2-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E9E7265B6D
- for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2016 04:24:19 +0100 (CET)
-In-Reply-To: <1456765684-5717-2-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2AA4F265B93
+ for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2016 04:24:30 +0100 (CET)
+In-Reply-To: <1456763182-2986-2-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ab8500: Fix enum ctl accesses in a wrong type
+   ASoC: omap: n810: Fix enum ctl accesses in a wrong type
 
 has been applied to the asoc tree at
 
@@ -53,61 +53,92 @@ to this mail.
 Thanks,
 Mark
 
->From 4b606316129571c46381430852c149855ac50477 Mon Sep 17 00:00:00 2001
+>From dd90533cd6bbfe075a72ab789b6e9d6f280ba476 Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Mon, 29 Feb 2016 18:08:00 +0100
-Subject: [PATCH] ASoC: ab8500: Fix enum ctl accesses in a wrong type
+Date: Mon, 29 Feb 2016 17:26:21 +0100
+Subject: [PATCH] ASoC: omap: n810: Fix enum ctl accesses in a wrong type
 
-"Sidetone Status" and "ANC Status" ctls in ab8500 codec driver are
-enum, while the current driver accesses wrongly via
+"Jack Function", "Speaker Function" and "Input Select" ctls in n810
+driver are enum, while the current driver accesses wrongly via
 value.integer.value[].  They have to be via value.enumerated.item[]
 instead.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ab8500-codec.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/omap/n810.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
-index affb192238a4..faae6936bae4 100644
---- a/sound/soc/codecs/ab8500-codec.c
-+++ b/sound/soc/codecs/ab8500-codec.c
-@@ -1130,7 +1130,7 @@ static int sid_status_control_get(struct snd_kcontrol *kcontrol,
- 	struct ab8500_codec_drvdata *drvdata = dev_get_drvdata(codec->dev);
- 
- 	mutex_lock(&drvdata->ctrl_lock);
--	ucontrol->value.integer.value[0] = drvdata->sid_status;
-+	ucontrol->value.enumerated.item[0] = drvdata->sid_status;
- 	mutex_unlock(&drvdata->ctrl_lock);
- 
- 	return 0;
-@@ -1147,7 +1147,7 @@ static int sid_status_control_put(struct snd_kcontrol *kcontrol,
- 
- 	dev_dbg(codec->dev, "%s: Enter\n", __func__);
- 
--	if (ucontrol->value.integer.value[0] != SID_APPLY_FIR) {
-+	if (ucontrol->value.enumerated.item[0] != SID_APPLY_FIR) {
- 		dev_err(codec->dev,
- 			"%s: ERROR: This control supports '%s' only!\n",
- 			__func__, enum_sid_state[SID_APPLY_FIR]);
-@@ -1199,7 +1199,7 @@ static int anc_status_control_get(struct snd_kcontrol *kcontrol,
- 	struct ab8500_codec_drvdata *drvdata = dev_get_drvdata(codec->dev);
- 
- 	mutex_lock(&drvdata->ctrl_lock);
--	ucontrol->value.integer.value[0] = drvdata->anc_status;
-+	ucontrol->value.enumerated.item[0] = drvdata->anc_status;
- 	mutex_unlock(&drvdata->ctrl_lock);
+diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
+index 190f868e78b2..fdecb7043174 100644
+--- a/sound/soc/omap/n810.c
++++ b/sound/soc/omap/n810.c
+@@ -133,7 +133,7 @@ static struct snd_soc_ops n810_ops = {
+ static int n810_get_spk(struct snd_kcontrol *kcontrol,
+ 			struct snd_ctl_elem_value *ucontrol)
+ {
+-	ucontrol->value.integer.value[0] = n810_spk_func;
++	ucontrol->value.enumerated.item[0] = n810_spk_func;
  
  	return 0;
-@@ -1220,7 +1220,7 @@ static int anc_status_control_put(struct snd_kcontrol *kcontrol,
+ }
+@@ -143,10 +143,10 @@ static int n810_set_spk(struct snd_kcontrol *kcontrol,
+ {
+ 	struct snd_soc_card *card =  snd_kcontrol_chip(kcontrol);
  
- 	mutex_lock(&drvdata->ctrl_lock);
+-	if (n810_spk_func == ucontrol->value.integer.value[0])
++	if (n810_spk_func == ucontrol->value.enumerated.item[0])
+ 		return 0;
  
--	req = ucontrol->value.integer.value[0];
-+	req = ucontrol->value.enumerated.item[0];
- 	if (req >= ARRAY_SIZE(enum_anc_state)) {
- 		status = -EINVAL;
- 		goto cleanup;
+-	n810_spk_func = ucontrol->value.integer.value[0];
++	n810_spk_func = ucontrol->value.enumerated.item[0];
+ 	n810_ext_control(&card->dapm);
+ 
+ 	return 1;
+@@ -155,7 +155,7 @@ static int n810_set_spk(struct snd_kcontrol *kcontrol,
+ static int n810_get_jack(struct snd_kcontrol *kcontrol,
+ 			 struct snd_ctl_elem_value *ucontrol)
+ {
+-	ucontrol->value.integer.value[0] = n810_jack_func;
++	ucontrol->value.enumerated.item[0] = n810_jack_func;
+ 
+ 	return 0;
+ }
+@@ -165,10 +165,10 @@ static int n810_set_jack(struct snd_kcontrol *kcontrol,
+ {
+ 	struct snd_soc_card *card =  snd_kcontrol_chip(kcontrol);
+ 
+-	if (n810_jack_func == ucontrol->value.integer.value[0])
++	if (n810_jack_func == ucontrol->value.enumerated.item[0])
+ 		return 0;
+ 
+-	n810_jack_func = ucontrol->value.integer.value[0];
++	n810_jack_func = ucontrol->value.enumerated.item[0];
+ 	n810_ext_control(&card->dapm);
+ 
+ 	return 1;
+@@ -177,7 +177,7 @@ static int n810_set_jack(struct snd_kcontrol *kcontrol,
+ static int n810_get_input(struct snd_kcontrol *kcontrol,
+ 			  struct snd_ctl_elem_value *ucontrol)
+ {
+-	ucontrol->value.integer.value[0] = n810_dmic_func;
++	ucontrol->value.enumerated.item[0] = n810_dmic_func;
+ 
+ 	return 0;
+ }
+@@ -187,10 +187,10 @@ static int n810_set_input(struct snd_kcontrol *kcontrol,
+ {
+ 	struct snd_soc_card *card =  snd_kcontrol_chip(kcontrol);
+ 
+-	if (n810_dmic_func == ucontrol->value.integer.value[0])
++	if (n810_dmic_func == ucontrol->value.enumerated.item[0])
+ 		return 0;
+ 
+-	n810_dmic_func = ucontrol->value.integer.value[0];
++	n810_dmic_func = ucontrol->value.enumerated.item[0];
+ 	n810_ext_control(&card->dapm);
+ 
+ 	return 1;
 -- 
 2.7.0
