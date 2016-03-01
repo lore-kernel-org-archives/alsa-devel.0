@@ -1,62 +1,48 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 2/3] ASoC: Intel: Skylake: Add IVI feedback
-	path in nau88125_ssm4567 machine
-Date: Tue,  1 Mar 2016 07:59:11 +0530
-Message-ID: <1456799352-22653-3-git-send-email-vinod.koul@intel.com>
-References: <1456799352-22653-1-git-send-email-vinod.koul@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: intel: remove unused variable
+Date: Tue, 1 Mar 2016 11:59:12 +0900
+Message-ID: <20160301025912.GF18327@sirena.org.uk>
+References: <1456766626-20807-1-git-send-email-sudipm.mukherjee@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id A269426148F
- for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2016 03:26:50 +0100 (CET)
-In-Reply-To: <1456799352-22653-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="4c/Uu97pY2GfVDT2"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1456766626-20807-1-git-send-email-sudipm.mukherjee@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
 
-We can enable the IVI feedback path by connecting Left/Right
-speaker sensors (codec) to  ssp0 Rx (soc-dsp). This way aDSP gets
-feedback data from codec to DSP algorithms
+--4c/Uu97pY2GfVDT2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 3 +++
- 1 file changed, 3 insertions(+)
+On Mon, Feb 29, 2016 at 10:53:46PM +0530, Sudip Mukherjee wrote:
+> The variable cmd_id is only assigned some value and is never used.
+>=20
+> Signed-off-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index a75c09343f84..f6a672c55be9 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -132,6 +132,8 @@ static const struct snd_soc_dapm_route skylake_map[] = {
- 
- 	/* IV feedback path */
- 	{ "codec0_lp_in", NULL, "ssp0 Rx"},
-+	{ "ssp0 Rx", NULL, "Left Capture Sense" },
-+	{ "ssp0 Rx", NULL, "Right Capture Sense" },
- 
- 	{ "Playback", NULL, "ssp1 Tx"},
- 	{ "ssp1 Tx", NULL, "codec1_out"},
-@@ -534,6 +536,7 @@ static struct snd_soc_dai_link skylake_dais[] = {
- 		.ignore_pmdown_time = 1,
- 		.be_hw_params_fixup = skylake_ssp_fixup,
- 		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
- 	},
- 	{
- 		/* SSP1 - Codec */
--- 
-1.9.1
+Your signoff doesn't correspond to your e-mail address.  While I'm
+fairly sure that you are in fact the same person so it's OK this time
+please try to ensure that they match up so that it's clear that the
+signoffs are all in order.
+
+--4c/Uu97pY2GfVDT2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJW1QV/AAoJECTWi3JdVIfQ+ZMH/RtIIi0QRokxJxF16cZNoKyw
+sf2wUTOVqq1ZEB3c8Y+MjLpiJ0BHrKmG3SsIajAPHrenEaWCQVJUQsMJWtoIs5n1
+f715RxVNpziZp8CUdpAY0v17Ti7FdLvADyDr/8/CDdG7+IBv7R65+pDy2FhyXft6
+LXCztdQbJWJOhfjlLfRspGvz8yfDGPFoKB+rC19eVaATkE33WCgIo190901ZkPsr
+oufHKQoUAc637S+lLZShHa0o+NWnFwSedSf0FDu+67Pk1XrLxb8tuVj3Incu1NDp
+OWXxVSLifIjujbPhfG5wq8JwmLpfGVHG9v04Ypajr6cbZ17nLiC24udnrDguZa8=
+=aiyA
+-----END PGP SIGNATURE-----
+
+--4c/Uu97pY2GfVDT2--
