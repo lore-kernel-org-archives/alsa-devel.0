@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320dac33: Fix enum ctl accesses in a
+Subject: Applied "ASoC: max98095: Fix enum ctl accesses in a
 	wrong type" to the asoc tree
-Date: Tue, 01 Mar 2016 12:22:58 +0900
-Message-ID: <E1aaatm-00084b-AI@finisterre>
-References: <1456765684-5717-5-git-send-email-tiwai@suse.de>
+Date: Tue, 01 Mar 2016 12:23:19 +0900
+Message-ID: <E1aaau7-00085G-N8@finisterre>
+References: <1456765684-5717-4-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 98B4E265B83
- for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2016 04:23:16 +0100 (CET)
-In-Reply-To: <1456765684-5717-5-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 15710265DA7
+ for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2016 04:23:31 +0100 (CET)
+In-Reply-To: <1456765684-5717-4-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320dac33: Fix enum ctl accesses in a wrong type
+   ASoC: max98095: Fix enum ctl accesses in a wrong type
 
 has been applied to the asoc tree at
 
@@ -53,54 +53,43 @@ to this mail.
 Thanks,
 Mark
 
->From 8733f99c23726532918034f4ae599d9e6d27bd1e Mon Sep 17 00:00:00 2001
+>From 58c0213872816bf24d14364989c82dc4acd58103 Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Mon, 29 Feb 2016 18:08:03 +0100
-Subject: [PATCH] ASoC: tlv320dac33: Fix enum ctl accesses in a wrong type
+Date: Mon, 29 Feb 2016 18:08:02 +0100
+Subject: [PATCH] ASoC: max98095: Fix enum ctl accesses in a wrong type
 
-"FIFO Mode" ctl in tlv320dac33 codec driver is enum, while the current
-driver accesses wrongly via value.integer.value[].  They have to be
-via value.enumerated.item[] instead.
+"Biquad1 Mode" and "Biquad2 Mode" ctls in max98095 codec driver are
+enum, while the current driver accesses wrongly via
+value.integer.value[].  They have to be via value.enumerated.item[]
+instead.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320dac33.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ sound/soc/codecs/max98095.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
-index 781398fb2841..f7a6ce7e5fb1 100644
---- a/sound/soc/codecs/tlv320dac33.c
-+++ b/sound/soc/codecs/tlv320dac33.c
-@@ -446,7 +446,7 @@ static int dac33_get_fifo_mode(struct snd_kcontrol *kcontrol,
- 	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
- 	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
- 
--	ucontrol->value.integer.value[0] = dac33->fifo_mode;
-+	ucontrol->value.enumerated.item[0] = dac33->fifo_mode;
- 
- 	return 0;
- }
-@@ -458,17 +458,16 @@ static int dac33_set_fifo_mode(struct snd_kcontrol *kcontrol,
- 	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
- 	int ret = 0;
- 
--	if (dac33->fifo_mode == ucontrol->value.integer.value[0])
-+	if (dac33->fifo_mode == ucontrol->value.enumerated.item[0])
- 		return 0;
- 	/* Do not allow changes while stream is running*/
- 	if (snd_soc_codec_is_active(codec))
- 		return -EPERM;
- 
--	if (ucontrol->value.integer.value[0] < 0 ||
--	    ucontrol->value.integer.value[0] >= DAC33_FIFO_LAST_MODE)
-+	if (ucontrol->value.enumerated.item[0] >= DAC33_FIFO_LAST_MODE)
- 		ret = -EINVAL;
- 	else
--		dac33->fifo_mode = ucontrol->value.integer.value[0];
-+		dac33->fifo_mode = ucontrol->value.enumerated.item[0];
- 
- 	return ret;
- }
+diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
+index 1fedac50355e..3577003f39cf 100644
+--- a/sound/soc/codecs/max98095.c
++++ b/sound/soc/codecs/max98095.c
+@@ -1499,7 +1499,7 @@ static int max98095_put_eq_enum(struct snd_kcontrol *kcontrol,
+ 	struct max98095_pdata *pdata = max98095->pdata;
+ 	int channel = max98095_get_eq_channel(kcontrol->id.name);
+ 	struct max98095_cdata *cdata;
+-	unsigned int sel = ucontrol->value.integer.value[0];
++	unsigned int sel = ucontrol->value.enumerated.item[0];
+ 	struct max98095_eq_cfg *coef_set;
+ 	int fs, best, best_val, i;
+ 	int regmask, regsave;
+@@ -1653,7 +1653,7 @@ static int max98095_put_bq_enum(struct snd_kcontrol *kcontrol,
+ 	struct max98095_pdata *pdata = max98095->pdata;
+ 	int channel = max98095_get_bq_channel(codec, kcontrol->id.name);
+ 	struct max98095_cdata *cdata;
+-	unsigned int sel = ucontrol->value.integer.value[0];
++	unsigned int sel = ucontrol->value.enumerated.item[0];
+ 	struct max98095_biquad_cfg *coef_set;
+ 	int fs, best, best_val, i;
+ 	int regmask, regsave;
 -- 
 2.7.0
