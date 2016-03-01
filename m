@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98088: Fix enum ctl accesses in a
+Subject: Applied "ASoC: da732x: Fix enum ctl accesses in a
 	wrong type" to the asoc tree
-Date: Tue, 01 Mar 2016 12:23:22 +0900
-Message-ID: <E1aaauA-00085k-Uq@finisterre>
-References: <1456765684-5717-3-git-send-email-tiwai@suse.de>
+Date: Tue, 01 Mar 2016 12:23:28 +0900
+Message-ID: <E1aaauG-00086h-GZ@finisterre>
+References: <1456765482-5599-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 673C3265363
- for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2016 04:23:34 +0100 (CET)
-In-Reply-To: <1456765684-5717-3-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A2E6265703
+ for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2016 04:23:48 +0100 (CET)
+In-Reply-To: <1456765482-5599-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98088: Fix enum ctl accesses in a wrong type
+   ASoC: da732x: Fix enum ctl accesses in a wrong type
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,50 @@ to this mail.
 Thanks,
 Mark
 
->From 9af39044753d7280fa795528598636fe9c58a54e Mon Sep 17 00:00:00 2001
+>From fe9aba13108ee8e15ae59009a26db02460dbb04f Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Mon, 29 Feb 2016 18:08:01 +0100
-Subject: [PATCH] ASoC: max98088: Fix enum ctl accesses in a wrong type
+Date: Mon, 29 Feb 2016 18:04:42 +0100
+Subject: [PATCH] ASoC: da732x: Fix enum ctl accesses in a wrong type
 
-"EQ1 Mode" and "EQ2 Mode" ctls in max98088 codec driver are enum,
+"DAC1 High Pass Filter Mode" & co in da732x codec driver are enum,
 while the current driver accesses wrongly via value.integer.value[].
 They have to be via value.enumerated.item[] instead.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98088.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/da732x.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
-index 20dcc496d39c..fc22804cabc5 100644
---- a/sound/soc/codecs/max98088.c
-+++ b/sound/soc/codecs/max98088.c
-@@ -1496,7 +1496,7 @@ static int max98088_put_eq_enum(struct snd_kcontrol *kcontrol,
-        struct max98088_pdata *pdata = max98088->pdata;
-        int channel = max98088_get_channel(codec, kcontrol->id.name);
-        struct max98088_cdata *cdata;
--       int sel = ucontrol->value.integer.value[0];
-+	int sel = ucontrol->value.enumerated.item[0];
+diff --git a/sound/soc/codecs/da732x.c b/sound/soc/codecs/da732x.c
+index 1d5a89c5164b..461506a4ca6a 100644
+--- a/sound/soc/codecs/da732x.c
++++ b/sound/soc/codecs/da732x.c
+@@ -334,7 +334,7 @@ static int da732x_hpf_set(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+ 	struct soc_enum *enum_ctrl = (struct soc_enum *)kcontrol->private_value;
+ 	unsigned int reg = enum_ctrl->reg;
+-	unsigned int sel = ucontrol->value.integer.value[0];
++	unsigned int sel = ucontrol->value.enumerated.item[0];
+ 	unsigned int bits;
  
-        if (channel < 0)
- 	       return channel;
+ 	switch (sel) {
+@@ -368,13 +368,13 @@ static int da732x_hpf_get(struct snd_kcontrol *kcontrol,
+ 
+ 	switch (val) {
+ 	case DA732X_HPF_VOICE_EN:
+-		ucontrol->value.integer.value[0] = DA732X_HPF_VOICE;
++		ucontrol->value.enumerated.item[0] = DA732X_HPF_VOICE;
+ 		break;
+ 	case DA732X_HPF_MUSIC_EN:
+-		ucontrol->value.integer.value[0] = DA732X_HPF_MUSIC;
++		ucontrol->value.enumerated.item[0] = DA732X_HPF_MUSIC;
+ 		break;
+ 	default:
+-		ucontrol->value.integer.value[0] = DA732X_HPF_DISABLED;
++		ucontrol->value.enumerated.item[0] = DA732X_HPF_DISABLED;
+ 		break;
+ 	}
+ 
 -- 
 2.7.0
