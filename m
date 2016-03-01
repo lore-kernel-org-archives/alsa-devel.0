@@ -1,48 +1,93 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: intel: remove unused variable
-Date: Tue, 1 Mar 2016 11:59:12 +0900
-Message-ID: <20160301025912.GF18327@sirena.org.uk>
-References: <1456766626-20807-1-git-send-email-sudipm.mukherjee@gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="4c/Uu97pY2GfVDT2"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1456766626-20807-1-git-send-email-sudipm.mukherjee@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Applied "ASoC: wm_adsp: Fix enum ctl accesses in a wrong type" to the asoc tree
+Date: Tue, 01 Mar 2016 12:19:44 +0900
+Message-ID: <E1aaaqe-0007yv-7J@finisterre>
+References: <1456765278-5435-10-git-send-email-tiwai@suse.de>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1456765278-5435-10-git-send-email-tiwai@suse.de>
+Sender: stable-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---4c/Uu97pY2GfVDT2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   ASoC: wm_adsp: Fix enum ctl accesses in a wrong type
 
-On Mon, Feb 29, 2016 at 10:53:46PM +0530, Sudip Mukherjee wrote:
-> The variable cmd_id is only assigned some value and is never used.
->=20
-> Signed-off-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+has been applied to the asoc tree at
 
-Your signoff doesn't correspond to your e-mail address.  While I'm
-fairly sure that you are in fact the same person so it's OK this time
-please try to ensure that they match up so that it's clear that the
-signoffs are all in order.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
---4c/Uu97pY2GfVDT2
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEcBAEBCAAGBQJW1QV/AAoJECTWi3JdVIfQ+ZMH/RtIIi0QRokxJxF16cZNoKyw
-sf2wUTOVqq1ZEB3c8Y+MjLpiJ0BHrKmG3SsIajAPHrenEaWCQVJUQsMJWtoIs5n1
-f715RxVNpziZp8CUdpAY0v17Ti7FdLvADyDr/8/CDdG7+IBv7R65+pDy2FhyXft6
-LXCztdQbJWJOhfjlLfRspGvz8yfDGPFoKB+rC19eVaATkE33WCgIo190901ZkPsr
-oufHKQoUAc637S+lLZShHa0o+NWnFwSedSf0FDu+67Pk1XrLxb8tuVj3Incu1NDp
-OWXxVSLifIjujbPhfG5wq8JwmLpfGVHG9v04Ypajr6cbZ17nLiC24udnrDguZa8=
-=aiyA
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---4c/Uu97pY2GfVDT2--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 15c665700bf6f4543f003ac0fbb1e9ec692e93f2 Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Mon, 29 Feb 2016 18:01:18 +0100
+Subject: [PATCH] ASoC: wm_adsp: Fix enum ctl accesses in a wrong type
+
+The firmware ctls like "DSP1 Firmware" in wm_adsp codec driver are
+enum, while the current driver accesses wrongly via
+value.integer.value[].  They have to be via value.enumerated.item[]
+instead.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/codecs/wm_adsp.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 33806d487b8a..b9195b9c2b05 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -586,7 +586,7 @@ static int wm_adsp_fw_get(struct snd_kcontrol *kcontrol,
+ 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+ 	struct wm_adsp *dsp = snd_soc_codec_get_drvdata(codec);
+ 
+-	ucontrol->value.integer.value[0] = dsp[e->shift_l].fw;
++	ucontrol->value.enumerated.item[0] = dsp[e->shift_l].fw;
+ 
+ 	return 0;
+ }
+@@ -599,10 +599,10 @@ static int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
+ 	struct wm_adsp *dsp = snd_soc_codec_get_drvdata(codec);
+ 	int ret = 0;
+ 
+-	if (ucontrol->value.integer.value[0] == dsp[e->shift_l].fw)
++	if (ucontrol->value.enumerated.item[0] == dsp[e->shift_l].fw)
+ 		return 0;
+ 
+-	if (ucontrol->value.integer.value[0] >= WM_ADSP_NUM_FW)
++	if (ucontrol->value.enumerated.item[0] >= WM_ADSP_NUM_FW)
+ 		return -EINVAL;
+ 
+ 	mutex_lock(&dsp[e->shift_l].pwr_lock);
+@@ -610,7 +610,7 @@ static int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
+ 	if (dsp[e->shift_l].running || dsp[e->shift_l].compr)
+ 		ret = -EBUSY;
+ 	else
+-		dsp[e->shift_l].fw = ucontrol->value.integer.value[0];
++		dsp[e->shift_l].fw = ucontrol->value.enumerated.item[0];
+ 
+ 	mutex_unlock(&dsp[e->shift_l].pwr_lock);
+ 
+-- 
+2.7.0
