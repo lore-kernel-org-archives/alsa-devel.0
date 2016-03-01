@@ -1,8 +1,7 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v3 1/4] ALSA: pcm: add IEC958 channel status
-	control helper
-Date: Tue, 1 Mar 2016 09:19:14 +0100
-Message-ID: <1456820357-2545-2-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH v3 4/4] ASoC: hdmi-codec: add IEC control.
+Date: Tue, 1 Mar 2016 09:19:17 +0100
+Message-ID: <1456820357-2545-5-git-send-email-arnaud.pouliquen@st.com>
 References: <1456820357-2545-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +9,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
  [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id B07C8265142
- for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2016 09:19:36 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 09D5D26526E
+ for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2016 09:19:39 +0100 (CET)
 In-Reply-To: <1456820357-2545-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,167 +25,120 @@ To: alsa-devel@alsa-project.org
 Cc: Jean-Francois Moine <moinejf@free.fr>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, David Airlie <airlied@linux.ie>, arnaud.pouliquen@st.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Moise Gergaud <moise.gergaud@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add IEC958 channel status helper that creates control to handle the
-IEC60958 status bits.
+Create 'IEC958 Playback Default' controls to support IEC61937 formats.
+the use of the alsa control is optional, using 'iec_ctl' flag.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- include/sound/pcm_iec958.h |  15 +++++++
- sound/core/pcm_iec958.c    | 107 +++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 122 insertions(+)
+ include/sound/hdmi-codec.h    |  1 +
+ sound/soc/codecs/hdmi-codec.c | 57 ++++++++++++++++++++++++++++++++-----------
+ 2 files changed, 44 insertions(+), 14 deletions(-)
 
-diff --git a/include/sound/pcm_iec958.h b/include/sound/pcm_iec958.h
-index 0eed397..08e4bab 100644
---- a/include/sound/pcm_iec958.h
-+++ b/include/sound/pcm_iec958.h
-@@ -3,7 +3,22 @@
+diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
+index fc3a481..4366d9f 100644
+--- a/include/sound/hdmi-codec.h
++++ b/include/sound/hdmi-codec.h
+@@ -92,6 +92,7 @@ struct hdmi_codec_pdata {
+ 	const struct hdmi_codec_ops *ops;
+ 	uint i2s:1;
+ 	uint spdif:1;
++	uint iec_ctl:1;
+ 	int max_i2s_channels;
+ };
  
- #include <linux/types.h>
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index bc47b9a..29d30e5 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -32,6 +32,7 @@ struct hdmi_codec_priv {
+ 	struct snd_pcm_substream *current_stream;
+ 	struct snd_pcm_hw_constraint_list ratec;
+ 	uint8_t eld[MAX_ELD_BYTES];
++	struct snd_aes_iec958 iec;
+ };
  
-+/*
-+ * IEC 60958 controls parameters
-+ * Describes channel status and associated callback
-+ */
-+struct snd_pcm_iec958_params {
-+	/* call under mutex protection, when control is updated by user */
-+	int (*ctrl_set)(void *pdata, u8 *status);
-+
-+	struct snd_aes_iec958 *iec;
-+	void *pdata; /* user private data to retrieve context */
-+	struct mutex *mutex; /* use to avoid race condition */
-+};
-+
- int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
- 	size_t len);
+ static const struct snd_soc_dapm_widget hdmi_widgets[] = {
+@@ -122,26 +123,29 @@ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_soc_dai *dai)
+ {
+ 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+-	struct hdmi_codec_params hp = {
+-		.iec = {
+-			.status = { 0 },
+-			.subcode = { 0 },
+-			.pad = 0,
+-			.dig_subframe = { 0 },
+-		}
+-	};
++	struct hdmi_codec_params hp;
+ 	int ret;
  
-+int snd_pcm_create_iec958_ctl(struct snd_pcm *pcm,
-+			      struct snd_pcm_iec958_params *params, int stream);
- #endif
-diff --git a/sound/core/pcm_iec958.c b/sound/core/pcm_iec958.c
-index 36b2d7a..80e7e47 100644
---- a/sound/core/pcm_iec958.c
-+++ b/sound/core/pcm_iec958.c
-@@ -7,10 +7,93 @@
-  */
- #include <linux/export.h>
- #include <linux/types.h>
-+#include <linux/wait.h>
- #include <sound/asoundef.h>
-+#include <sound/control.h>
- #include <sound/pcm.h>
- #include <sound/pcm_iec958.h>
+ 	dev_dbg(dai->dev, "%s() width %d rate %d channels %d\n", __func__,
+ 		params_width(params), params_rate(params),
+ 		params_channels(params));
  
-+int snd_pcm_iec958_info(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_IEC958;
-+	uinfo->count = 1;
-+	return 0;
-+}
+-	ret = snd_pcm_create_iec958_consumer_hw_params(params, hp.iec.status,
+-						       sizeof(hp.iec.status));
+-	if (ret < 0) {
+-		dev_err(dai->dev, "Creating IEC958 channel status failed %d\n",
+-			ret);
+-		return ret;
++	mutex_lock(&hcp->current_stream_lock);
++	hp.iec = hcp->iec;
++	mutex_unlock(&hcp->current_stream_lock);
 +
-+/**
-+ * IEC958 channel status default controls callbacks
-+ *
-+ * Callbacks are protected by a mutex provided by user.
-+ */
-+static int snd_pcm_iec958_get(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *uctl)
-+{
-+	struct snd_pcm_iec958_params *params = snd_kcontrol_chip(kcontrol);
-+
-+	if (!params->mutex)
-+		return -EINVAL;
-+
-+	mutex_lock(params->mutex);
-+	uctl->value.iec958.status[0] = params->iec->status[0];
-+	uctl->value.iec958.status[1] = params->iec->status[1];
-+	uctl->value.iec958.status[2] = params->iec->status[2];
-+	uctl->value.iec958.status[3] = params->iec->status[3];
-+	uctl->value.iec958.status[4] = params->iec->status[4];
-+	mutex_unlock(params->mutex);
-+
-+	return 0;
-+}
-+
-+static int snd_pcm_iec958_put(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *uctl)
-+{
-+	struct snd_pcm_iec958_params *params = snd_kcontrol_chip(kcontrol);
-+	int err = 0;
-+
-+	if (!params->mutex)
-+		return -EINVAL;
-+
-+	mutex_lock(params->mutex);
-+	if (params->ctrl_set)
-+		err = params->ctrl_set(params->pdata,
-+				       uctl->value.iec958.status);
-+	if (err < 0) {
-+		mutex_unlock(params->mutex);
-+		return err;
-+	}
-+
-+	params->iec->status[0] = uctl->value.iec958.status[0];
-+	params->iec->status[1] = uctl->value.iec958.status[1];
-+	params->iec->status[2] = uctl->value.iec958.status[2];
-+	params->iec->status[3] = uctl->value.iec958.status[3];
-+	params->iec->status[4] = uctl->value.iec958.status[4];
-+
-+	mutex_unlock(params->mutex);
-+
-+	return 1;
-+}
-+
-+static const struct snd_kcontrol_new iec958_ctls[] = {
-+	{
-+		.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE |
-+			   SNDRV_CTL_ELEM_ACCESS_VOLATILE),
-+		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT),
-+		.info = snd_pcm_iec958_info,
-+		.get = snd_pcm_iec958_get,
-+		.put = snd_pcm_iec958_put,
-+	},
-+	{
-+		.access = (SNDRV_CTL_ELEM_ACCESS_READ |
-+			   SNDRV_CTL_ELEM_ACCESS_VOLATILE),
-+		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name = SNDRV_CTL_NAME_IEC958("", CAPTURE, DEFAULT),
-+		.info = snd_pcm_iec958_info,
-+		.get = snd_pcm_iec958_get,
-+	},
-+};
-+
- /**
-  * snd_pcm_create_iec958_consumer - create consumer format IEC958 channel status
-  * @runtime: pcm runtime structure with ->rate filled in
-@@ -93,3 +176,27 @@ int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
- 	return len;
++	if (!hcp->hcd.iec_ctl) {
++		/*
++		* only PCM format supported
++		*channel status set according to runtime parameters
++		*/
++		ret = snd_pcm_create_iec958_consumer_hw_params(params,
++					hp.iec.status, sizeof(hp.iec.status));
++		if (ret < 0) {
++			dev_err(dai->dev, "Creating IEC958 status failed %d\n",
++				ret);
++			return ret;
++		}
+ 	}
+ 
+ 	ret = hdmi_codec_new_stream(substream, dai);
+@@ -248,12 +252,37 @@ static int hdmi_codec_digital_mute(struct snd_soc_dai *dai, int mute)
+ 	return 0;
  }
- EXPORT_SYMBOL(snd_pcm_create_iec958_consumer);
-+
-+/**
-+ * snd_pcm_create_iec958_ctl - create IEC958 channel status default control
-+ * pcm: pcm device to associate to the control.
-+ * iec958: snd_pcm_iec958_params structure that contains callbacks
-+ *         and channel status buffer
-+ * stream: stream type SNDRV_PCM_STREAM_PLAYBACK or SNDRV_PCM_STREAM_CATURE
-+ * Returns:  negative error code if something failed.
-+ */
-+int snd_pcm_create_iec958_ctl(struct snd_pcm *pcm,
-+			      struct snd_pcm_iec958_params *params, int stream)
+ 
++static int hdmi_codec_pcm_new(struct snd_soc_pcm_runtime *rtd,
++			      struct snd_soc_dai *dai)
 +{
-+	struct snd_kcontrol_new knew;
++	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
++	struct snd_pcm_iec958_params *iec958_params;
 +
-+	if (stream > SNDRV_PCM_STREAM_LAST)
-+		return -EINVAL;
++	dev_dbg(dai->dev, "%s()\n", __func__);
 +
-+	knew = iec958_ctls[stream];
-+	knew.device = pcm->device;
-+	knew.index = pcm->device;
-+	knew.count = pcm->streams[stream].substream_count;
-+	return snd_ctl_add(pcm->card, snd_ctl_new1(&knew, params));
++	if (!hcp->hcd.iec_ctl)
++		return 0;
++
++	iec958_params = devm_kzalloc(dai->dev, sizeof(*iec958_params),
++				     GFP_KERNEL);
++	if (!iec958_params)
++		return -ENOMEM;
++
++	iec958_params->iec = &hcp->iec;
++	iec958_params->pdata = hcp;
++	iec958_params->mutex = &hcp->current_stream_lock;
++
++	return snd_pcm_create_iec958_ctl(rtd->pcm, iec958_params,
++					 SNDRV_PCM_STREAM_PLAYBACK);
 +}
-+EXPORT_SYMBOL(snd_pcm_create_iec958_ctl);
++
+ static const struct snd_soc_dai_ops hdmi_dai_ops = {
+ 	.startup	= hdmi_codec_startup,
+ 	.shutdown	= hdmi_codec_shutdown,
+ 	.hw_params	= hdmi_codec_hw_params,
+ 	.set_fmt	= hdmi_codec_set_fmt,
+ 	.digital_mute	= hdmi_codec_digital_mute,
++	.pcm_new        = hdmi_codec_pcm_new,
+ };
+ 
+ 
 -- 
 1.9.1
