@@ -1,77 +1,153 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] Add a quirk for Plantronics DA45
-Date: Tue, 1 Mar 2016 12:54:39 +0100
-Message-ID: <56D582FF.5070606@canonical.com>
-References: <1839309538.65739518.1455886862918.JavaMail.zimbra@dkadioglu.de>
- <167779231.27633197.1456827588155.JavaMail.zimbra@dkadioglu.de>
- <s5h8u22wl7s.wl-tiwai@suse.de>
+From: Dmitry Vyukov <dvyukov@google.com>
+Subject: sound: uninterruptible hang in snd_seq_oss_writeq_sync
+Date: Tue, 1 Mar 2016 13:33:27 +0100
+Message-ID: <CACT4Y+Y4kD-aBGj37rf-xBw9bH3GMU6P+MYg4W1e-s-paVD2pg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id D0D81261546
- for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2016 12:54:39 +0100 (CET)
-In-Reply-To: <s5h8u22wl7s.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, denk <denk@post.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
+Cc: Alexander Potapenko <glider@google.com>, Kostya Serebryany <kcc@google.com>, Sasha Levin <sasha.levin@oracle.com>, syzkaller <syzkaller@googlegroups.com>
 List-Id: alsa-devel@alsa-project.org
 
-QWN0dWFsbHksIHRoZXJlIGlzIGEgU2lnbmVkLW9mZi1ieSBsaW5lLCBidXQgaXQncyBhdCB0aGUg
-d3JvbmcgcGxhY2UuIApBbHNvIHRoZSBBdXRob3IvRnJvbSBsaW5lIHNob3VsZCBzdGF0ZSB5b3Vy
-IGZ1bGwgbmFtZS4KCkRlbmssIHBsZWFzZSBzZWUgYmVsb3c6CgpPbiAyMDE2LTAzLTAxIDExOjIz
-LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gVHVlLCAwMSBNYXIgMjAxNiAxMToxOTo0OCArMDEw
-MCwKPiBkZW5rIHdyb3RlOgo+Pgo+PiBBcyBJJ3ZlIGdvdCBubyByZXNwb25zZSBieSBub3csIEkg
-d291bGQgbGlrZSB0byBwb2xpdGVseSBhc2ssIGlmIHRoZSBwYXRjaCBjYW4gYmUgYWNjZXB0ZWQg
-bm93LCBhZnRlciB0aGUgcmVxdWVzdGVkIG1vZGlmaWNhdGlvbnM/Cj4KPiBJIHRob3VnaHQgSSBy
-ZXBsaWVkIHlvdSwgc3VnZ2VzdGluZyB0byBnaXZlIGEgcHJvcGVyIHNpZ24tb2ZmIGxpbmUuCj4g
-V2l0aG91dCB5b3VyIG93biBzaWduLW9mZiwgd2UgY2FuJ3QgbWVyZ2UgYW55IHBhdGNoIGZyb20g
-eW91Lgo+IFNlZSBEb2N1bWVudGF0aW9uL1N1Ym1pdHRpbmdQYXRjaGVzIGZvciBkZXRhaWxzLgo+
-Cj4gU28sIHBsZWFzZSByZXN1Ym1pdCB3aXRoIGl0Lgo+Cj4KPiB0aGFua3MsCj4KPiBUYWthc2hp
-Cj4KPgo+Pgo+PiBUaGFuayB5b3UgdmVyeSBtdWNoIGFuZCBiZXN0Cj4+IGRlbmsKPj4KPj4gLS0t
-LS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+PiBWb246ICJkZW5rIiA8ZGVua0Bwb3N0LmNv
-bT4KPj4gQW46IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+PiBHZXNlbmRldDogRnJlaXRh
-ZywgMTkuIEZlYnJ1YXIgMjAxNiAxNDowMTowMgo+PiBCZXRyZWZmOiBbUEFUQ0hdIEFkZCBhIHF1
-aXJrIGZvciBQbGFudHJvbmljcyBEQTQ1Cj4+Cj4+IFBsYW50cm9uaWNzIERBNDUgZG9lcyBub3Qg
-c3VwcG9ydCByZWFkaW5nIHRoZSBzYW1wbGUgcmF0ZSB3aGljaCBsZWFkcyB0byBtYW55IGxpbmVz
-IG9mICJjYW5ub3QgZ2V0IGZyZXEgYXQgZXAgMHg0IiBhbmQgImNhbm5vdCBnZXQgZnJlcSBhdCBl
-cCAweDg0Ii4gVGhpcyBwYXRjaCBhZGRzIHRoZSBVU0IgSUQgb2YgdGhlIERBNDUgdG8gcXVpcmtz
-LmMgYW5kIGF2b2lkcyB0aG9zZSBlcnJvciBtZXNzYWdlcy4KCkhlcmUgaXMgd2hlcmUgc2lnbi1v
-ZmYtbGluZSBzaG91bGQgYmU6IGFmdGVyIHRoZSBjb21taXQgbWVzc2FnZSBidXQgCmJlZm9yZSB0
-aGUgICItLS0iIGxpbmUuCgo+Pgo+PiAtLS0KPj4gICBzb3VuZC91c2IvcXVpcmtzLmMgfCAxICsK
-Pj4gICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykKPj4KPj4gZGlmZiAtLWdpdCBhL3Nv
-dW5kL3VzYi9xdWlya3MuYyBiL3NvdW5kL3VzYi9xdWlya3MuYwo+PiBpbmRleCAyNTg1YzE3Li41
-YjAzMjk2IDEwMDY0NAo+PiAtLS0gYS9zb3VuZC91c2IvcXVpcmtzLmMKPj4gKysrIGIvc291bmQv
-dXNiL3F1aXJrcy5jCj4+IEBAIC0xMTIzLDYgKzExMjMsNyBAQCBib29sIHNuZF91c2JfZ2V0X3Nh
-bXBsZV9yYXRlX3F1aXJrKHN0cnVjdCBzbmRfdXNiX2F1ZGlvICpjaGlwKQo+PiAgICAgICAgICBj
-YXNlIFVTQl9JRCgweDA0NUUsIDB4MDc2Rik6IC8qIE1TIExpZmVjYW0gSEQtNjAwMCAqLwo+PiAg
-ICAgICAgICBjYXNlIFVTQl9JRCgweDA0NUUsIDB4MDc3Mik6IC8qIE1TIExpZmVjYW0gU3R1ZGlv
-ICovCj4+ICAgICAgICAgIGNhc2UgVVNCX0lEKDB4MDQ1RSwgMHgwNzc5KTogLyogTVMgTGlmZWNh
-bSBIRC0zMDAwICovCj4+ICsgICAgICAgY2FzZSBVU0JfSUQoMHgwNDdGLCAweEFBMDUpOiAvKiBQ
-bGFudHJvbmljcyBEQTQ1ICovCj4+ICAgICAgICAgIGNhc2UgVVNCX0lEKDB4MDREOCwgMHhGRUVB
-KTogLyogQmVuY2htYXJrIERBQzEgUHJlICovCj4+ICAgICAgICAgIGNhc2UgVVNCX0lEKDB4MDc0
-RCwgMHgzNTUzKTogLyogT3V0bGF3IFJSMjE1MCAoTWljcm9uYXMgVUFDMzU1M0IpICovCj4+ICAg
-ICAgICAgIGNhc2UgVVNCX0lEKDB4MjFCNCwgMHgwMDgxKTogLyogQXVkaW9RdWVzdCBEcmFnb25G
-bHkgKi8KPj4gLS0tCj4+IFNpZ25lZC1vZmYtYnk6IERlbm5pcyBLYWRpb2dsdSA8ZGVua0Bwb3N0
-LmNvbT4KCkFuZCBoZXJlIHdoZXJlIGl0IGFjdHVhbGx5IGlzOyBkb3duIGhlcmUgaXQgd29uJ3Qg
-YmUgcGlja2VkIHVwIGNvcnJlY3RseS4KCj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCj4+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4+IEFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+PiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
-YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+CgotLSAKRGF2aWQgSGVubmluZ3Nzb24sIENhbm9uaWNh
-bCBMdGQuCmh0dHBzOi8vbGF1bmNocGFkLm5ldC9+ZGl3aWMKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hello,
+
+The following program creates an unkillable process:
+
+// autogenerated by syzkaller (http://github.com/google/syzkaller)
+#include <pthread.h>
+#include <stdint.h>
+#include <string.h>
+#include <sys/syscall.h>
+#include <unistd.h>
+
+#ifndef SYS_mmap
+#define SYS_mmap 9
+#endif
+#ifndef SYS_syz_open_dev
+#define SYS_syz_open_dev 1000001
+#endif
+#ifndef SYS_write
+#define SYS_write 1
+#endif
+#ifndef SYS_read
+#define SYS_read 0
+#endif
+#ifndef SYS_sync_file_range
+#define SYS_sync_file_range 277
+#endif
+
+long r[61];
+
+int main()
+{
+  memset(r, -1, sizeof(r));
+  r[0] = syscall(SYS_mmap, 0x20000000ul, 0x5e000ul, 0x3ul, 0x32ul,
+                 0xfffffffffffffffful, 0x0ul);
+  r[2] = syscall(SYS_open, "/dev/sequencer", 0x202ul, 0, 0, 0);
+  *(uint8_t*)0x20057000 = (uint8_t)0x7;
+  *(uint8_t*)0x20057001 = (uint8_t)0x6;
+  *(uint8_t*)0x20057002 = (uint8_t)0x3;
+  *(uint8_t*)0x20057003 = (uint8_t)0x99be;
+  *(uint32_t*)0x2005700c = (uint32_t)0x4;
+  *(uint8_t*)0x20057010 = (uint8_t)0x5;
+  *(uint8_t*)0x20057011 = (uint8_t)0xffffffffffffffff;
+  *(uint8_t*)0x20057012 = (uint8_t)0x100;
+  *(uint8_t*)0x20057013 = (uint8_t)0x1;
+  *(uint8_t*)0x20057024 = (uint8_t)0x8;
+  *(uint8_t*)0x20057025 = (uint8_t)0xabe4;
+  *(uint16_t*)0x20057026 = (uint16_t)0x3;
+  *(uint64_t*)0x20057028 = (uint64_t)0x2005055c;
+  *(uint8_t*)0x20057030 = (uint8_t)0xffffffffffffffe0;
+  *(uint8_t*)0x20057031 = (uint8_t)0xffffffffffffffb8;
+  *(uint8_t*)0x20057032 = (uint8_t)0x8;
+  *(uint8_t*)0x20057033 = (uint8_t)0x7;
+  *(uint32_t*)0x2005703c = (uint32_t)0x5;
+  *(uint8_t*)0x20057040 = (uint8_t)0x5;
+  *(uint8_t*)0x20057041 = (uint8_t)0x401;
+  *(uint8_t*)0x20057042 = (uint8_t)0x8;
+  *(uint8_t*)0x20057043 = (uint8_t)0x4;
+  *(uint8_t*)0x2005704c = (uint8_t)0x0;
+  *(uint8_t*)0x2005704d = (uint8_t)0x3;
+  *(uint8_t*)0x2005704e = (uint8_t)0x200;
+  *(uint8_t*)0x2005704f = (uint8_t)0xee;
+  *(uint8_t*)0x20057050 = (uint8_t)0x2;
+  *(uint8_t*)0x20057051 = (uint8_t)0x8;
+  *(uint8_t*)0x20057052 = (uint8_t)0x800;
+  *(uint8_t*)0x20057053 = (uint8_t)0xfffffffffffff000;
+  *(uint64_t*)0x20057068 = (uint64_t)0x77359400;
+  *(uint64_t*)0x20057070 = (uint64_t)0x0;
+  *(uint8_t*)0x20057078 = (uint8_t)0x10000;
+  *(uint8_t*)0x20057079 = (uint8_t)0x946;
+  *(uint8_t*)0x2005707a = (uint8_t)0x1;
+  *(uint8_t*)0x2005707b = (uint8_t)0x1ff;
+  *(uint8_t*)0x2005708c = (uint8_t)0x3;
+  *(uint32_t*)0x20057090 = (uint32_t)0x7;
+  *(uint32_t*)0x20057094 = (uint32_t)0x1;
+  *(uint8_t*)0x20057098 = (uint8_t)0x2;
+  *(uint8_t*)0x20057099 = (uint8_t)0x7ff;
+  *(uint8_t*)0x2005709a = (uint8_t)0x8;
+  *(uint8_t*)0x2005709b = (uint8_t)0xdd8;
+  *(uint64_t*)0x200570b0 = (uint64_t)0x1;
+  *(uint64_t*)0x200570b8 = (uint64_t)0x0;
+  *(uint8_t*)0x200570c0 = (uint8_t)0x9;
+  *(uint8_t*)0x200570c1 = (uint8_t)0x3;
+  *(uint8_t*)0x200570c2 = (uint8_t)0x7ff;
+  *(uint8_t*)0x200570c3 = (uint8_t)0x8;
+  *(uint32_t*)0x200570d4 = (uint32_t)0xec;
+  *(uint64_t*)0x200570d8 = (uint64_t)0x20053f14;
+  memcpy((void*)0x2005055c,
+         "\xa4\x62\xd2\xb0\x88\xe0\x2b\xbd\xea\xa1\xa5\xf7\x7b\x89\xca"
+         "\xb0\x43\xca\x19\x6d\x70\xb6\xa6\xcd\x30\xaa\x98\x07\xb3\xf3"
+         "\xea\xf8\x44\x19\xc8\x83\xbc\xb7\x33\xd1\xd0\x5e\x8f\x34\x12"
+         "\x82\xb4\xf8\xbd\x02\x63\x0b\xe7\x45\x23\x40\xa4\x51\x40\x23"
+         "\x01\xcc\x57\x89\x40\x9c\xc1\x29\x36\xe2\xc0\x70\xe5\xda\xc9"
+         "\x1f\x40\x25\xe0\x74\x98\x07\x75\xe9\x5a\xfc\x0e\x10\x3f\xd9"
+         "\x4b\xc3\xc2\x48\xfa\x18\xb8\xda\x49\x3e\xeb\x69\x2c\x4b\xd2"
+         "\xb7\xac\xc6\x5a\x1c\xfd",
+         111);
+  memcpy((void*)0x20053f14,
+         "\x1b\x4b\xa5\x94\xeb\xe1\xd9\x4b\x57\xf2\xeb\xab\xdd\xe5\xba"
+         "\x24\xf2\xc8\x36\x90\x88\x21\x2c\xec\x8e\x5a\x0d\x24\x0f\x48"
+         "\xcc\x0d\x3c\xab\x21\x8e\xfa\x8f\x0d\xcd\x8d\x14\x99\xc3\x64"
+         "\xea\x7f\xf3\x88\xe9\xf7\x4f\x4c\x12\xe9\x0e\x23\xad\x73\x7d"
+         "\xa3\x4c\x45\x3f\xb3\x48\xb7\x44\x89\x41\x20\x7b\x2c\xbd\xf2"
+         "\x89\x16\x1f\xbd\x80\x24\x72\xa1\x8d\x4b\x13\x74\xb2\xf4\xdf"
+         "\x49\xe0\x6c\x40\x0d\xf2\x7c\x8a\xbf\xf2\xb1\x62\xe0\x7e\x51"
+         "\x9a\xd4\x60\x64\x49\x96\x4b\x83\x91\xe5\x51\x50\x94\x3c\x41"
+         "\xf6\xd1\xef\x1f\x90\x5a\x48\xa5\xe2\xf8\xe3\xd9\xf9\x82\x5e"
+         "\xa1\x5c\x85\x1c\xbe\x47\xa2\x29\xb7\x5a\xf4\x14\x24\x92\x11"
+         "\x4b\x6b\x54\x95\x5e\x9f\x1b\xda\x02\xa3\x84\xb3\x2b\x07\x13"
+         "\x18\x6b\x31\xb4\xc1\x04\x30\x5f\xa0\xa2\xe9\xe6\x50\x6f\xed"
+         "\x15\x10\xf5\xda\xa1\xe5\x06\xaf\x28\xe0\x53\xea\x88\x49\xf8"
+         "\x97\x52\x4b\xe8\xa2\xce\x9f\xc7\x47\x4f\xd6\xc0\xe2\xb7\xc1"
+         "\x7f\xa9\x54\x3d\x11\xe4\x99\x28\x65\x39\xb1\xf3\xec\x48\x43"
+         "\x58\x19\x12\xf6\x38\x5b\xee\xca\x33\x8e\x4d",
+         236);
+  r[56] = syscall(SYS_write, r[2], 0x20057000ul, 0x9cul, 0, 0, 0);
+  memcpy((void*)0x2005bfa7, "\x2f\x64\x65\x76\x2f\x76\x68\x63\x69\x00",
+         10);
+  return 0;
+}
+
+
+The hang stack is:
+
+[<ffffffff85309f77>] snd_seq_oss_writeq_sync+0x327/0x790
+sound/core/seq/oss/seq_oss_writeq.c:121
+[<ffffffff852fa353>] snd_seq_oss_drain_write+0x113/0x160
+sound/core/seq/oss/seq_oss_init.c:448
+[<ffffffff852f8d04>] odev_release+0x44/0x80 sound/core/seq/oss/seq_oss.c:152
+[<ffffffff817ccdc6>] __fput+0x236/0x780 fs/file_table.c:208
+[<ffffffff817cd395>] ____fput+0x15/0x20 fs/file_table.c:244
+[<ffffffff813b8db0>] task_work_run+0x170/0x210 kernel/task_work.c:115
+[<     inline     >] exit_task_work include/linux/task_work.h:21
+[<ffffffff81363ca0>] do_exit+0xaf0/0x2d20 kernel/exit.c:748
+[<ffffffff81366048>] do_group_exit+0x108/0x330 kernel/exit.c:878
+[<     inline     >] SYSC_exit_group kernel/exit.c:889
+[<ffffffff8136628d>] SyS_exit_group+0x1d/0x20 kernel/exit.c:887
+[<ffffffff866a3236>] entry_SYSCALL_64_fastpath+0x16/0x7a
+arch/x86/entry/entry_64.S:185
+
+
+On commit fc77dbd34c5c99bce46d40a2491937c3bcbd10af (4.5-rc6).
