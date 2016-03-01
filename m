@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: magician: Fix enum ctl accesses in
-	a wrong type" to the asoc tree
-Date: Tue, 01 Mar 2016 12:24:45 +0900
-Message-ID: <E1aaavV-0008Av-4J@finisterre>
-References: <1456763033-2900-3-git-send-email-tiwai@suse.de>
+Subject: Applied "ASoC: pxa: poodle: Fix enum ctl accesses in a
+	wrong type" to the asoc tree
+Date: Tue, 01 Mar 2016 12:24:34 +0900
+Message-ID: <E1aaavK-0008AR-Gb@finisterre>
+References: <1456763033-2900-4-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9EB2026148F
- for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2016 04:25:05 +0100 (CET)
-In-Reply-To: <1456763033-2900-3-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id B3C99261501
+ for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2016 04:24:58 +0100 (CET)
+In-Reply-To: <1456763033-2900-4-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: magician: Fix enum ctl accesses in a wrong type
+   ASoC: pxa: poodle: Fix enum ctl accesses in a wrong type
 
 has been applied to the asoc tree at
 
@@ -53,48 +53,68 @@ to this mail.
 Thanks,
 Mark
 
->From 127ee199d5d232f29ad64bace3b441127fce6cd3 Mon Sep 17 00:00:00 2001
+>From 7a3f4b488ce366de6ab2cf19d95353da9814bdd9 Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Mon, 29 Feb 2016 17:23:50 +0100
-Subject: [PATCH] ASoC: pxa: magician: Fix enum ctl accesses in a wrong type
+Date: Mon, 29 Feb 2016 17:23:51 +0100
+Subject: [PATCH] ASoC: pxa: poodle: Fix enum ctl accesses in a wrong type
 
-"Input Select" ctl in magician driver is an enum, while the current
-driver accesses wrongly via value.integer.value[].  They have to be
-via value.enumerated.item[] instead.
-
-(Meanwhile "Headphone Switch" and "Speaker Switch" are boolean, so
- they should stay to access via value.integer.value[] as is.)
+"Jack Function" and "Speaker Function" ctls in poodle are enum, while
+the current driver accesses wrongly via value.integer.value[].  They
+have to be via value.enumerated.item[] instead.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/magician.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/pxa/poodle.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/pxa/magician.c b/sound/soc/pxa/magician.c
-index 241d0be42d7a..62b8377a9d2b 100644
---- a/sound/soc/pxa/magician.c
-+++ b/sound/soc/pxa/magician.c
-@@ -308,17 +308,17 @@ static int magician_set_spk(struct snd_kcontrol *kcontrol,
- static int magician_get_input(struct snd_kcontrol *kcontrol,
- 			      struct snd_ctl_elem_value *ucontrol)
+diff --git a/sound/soc/pxa/poodle.c b/sound/soc/pxa/poodle.c
+index 84d0e2e50808..4b3b714f5ee7 100644
+--- a/sound/soc/pxa/poodle.c
++++ b/sound/soc/pxa/poodle.c
+@@ -138,7 +138,7 @@ static struct snd_soc_ops poodle_ops = {
+ static int poodle_get_jack(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
  {
--	ucontrol->value.integer.value[0] = magician_in_sel;
-+	ucontrol->value.enumerated.item[0] = magician_in_sel;
+-	ucontrol->value.integer.value[0] = poodle_jack_func;
++	ucontrol->value.enumerated.item[0] = poodle_jack_func;
  	return 0;
  }
  
- static int magician_set_input(struct snd_kcontrol *kcontrol,
- 			      struct snd_ctl_elem_value *ucontrol)
+@@ -147,10 +147,10 @@ static int poodle_set_jack(struct snd_kcontrol *kcontrol,
  {
--	if (magician_in_sel == ucontrol->value.integer.value[0])
-+	if (magician_in_sel == ucontrol->value.enumerated.item[0])
+ 	struct snd_soc_card *card =  snd_kcontrol_chip(kcontrol);
+ 
+-	if (poodle_jack_func == ucontrol->value.integer.value[0])
++	if (poodle_jack_func == ucontrol->value.enumerated.item[0])
  		return 0;
  
--	magician_in_sel = ucontrol->value.integer.value[0];
-+	magician_in_sel = ucontrol->value.enumerated.item[0];
+-	poodle_jack_func = ucontrol->value.integer.value[0];
++	poodle_jack_func = ucontrol->value.enumerated.item[0];
+ 	poodle_ext_control(&card->dapm);
+ 	return 1;
+ }
+@@ -158,7 +158,7 @@ static int poodle_set_jack(struct snd_kcontrol *kcontrol,
+ static int poodle_get_spk(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
+-	ucontrol->value.integer.value[0] = poodle_spk_func;
++	ucontrol->value.enumerated.item[0] = poodle_spk_func;
+ 	return 0;
+ }
  
- 	switch (magician_in_sel) {
- 	case MAGICIAN_MIC:
+@@ -167,10 +167,10 @@ static int poodle_set_spk(struct snd_kcontrol *kcontrol,
+ {
+ 	struct snd_soc_card *card =  snd_kcontrol_chip(kcontrol);
+ 
+-	if (poodle_spk_func == ucontrol->value.integer.value[0])
++	if (poodle_spk_func == ucontrol->value.enumerated.item[0])
+ 		return 0;
+ 
+-	poodle_spk_func = ucontrol->value.integer.value[0];
++	poodle_spk_func = ucontrol->value.enumerated.item[0];
+ 	poodle_ext_control(&card->dapm);
+ 	return 1;
+ }
 -- 
 2.7.0
