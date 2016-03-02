@@ -1,49 +1,85 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH 0/5] ASoC: pxa: Fix enum ctl accesses
-Date: Wed, 02 Mar 2016 20:06:02 +0100
-Message-ID: <8760x4r97p.fsf@belgarion.home>
-References: <1456763033-2900-1-git-send-email-tiwai@suse.de>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v5 22/22] sound/usb: Use Media Controller API to share
+ media resources
+Date: Wed, 2 Mar 2016 23:41:31 +0300
+Message-ID: <20160302204131.GV5273@mwanda>
+References: <1456937431-3794-1-git-send-email-shuahkh@osg.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp04.smtpout.orange.fr
- [80.12.242.126])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F5932614BB
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 20:06:07 +0100 (CET)
-In-Reply-To: <1456763033-2900-1-git-send-email-tiwai@suse.de> (Takashi Iwai's
- message of "Mon, 29 Feb 2016 17:23:48 +0100")
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Daniel Mack <daniel@zonque.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-media-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1456937431-3794-1-git-send-email-shuahkh@osg.samsung.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Shuah Khan <shuahkh@osg.samsung.com>
+Cc: mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittga
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai@suse.de> writes:
+On Wed, Mar 02, 2016 at 09:50:31AM -0700, Shuah Khan wrote:
+> +	mctl = kzalloc(sizeof(*mctl), GFP_KERNEL);
+> +	if (!mctl)
+> +		return -ENOMEM;
+> +
+> +	mctl->media_dev = mdev;
+> +	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> +		intf_type = MEDIA_INTF_T_ALSA_PCM_PLAYBACK;
+> +		mctl->media_entity.function = MEDIA_ENT_F_AUDIO_PLAYBACK;
+> +		mctl->media_pad.flags = MEDIA_PAD_FL_SOURCE;
+> +		mixer_pad = 1;
+> +	} else {
+> +		intf_type = MEDIA_INTF_T_ALSA_PCM_CAPTURE;
+> +		mctl->media_entity.function = MEDIA_ENT_F_AUDIO_CAPTURE;
+> +		mctl->media_pad.flags = MEDIA_PAD_FL_SINK;
+> +		mixer_pad = 2;
+> +	}
+> +	mctl->media_entity.name = pcm->name;
+> +	media_entity_pads_init(&mctl->media_entity, 1, &mctl->media_pad);
+> +	ret =  media_device_register_entity(mctl->media_dev,
+> +					    &mctl->media_entity);
+> +	if (ret)
+> +		goto err1;
 
-> Hi,
->
-> here is a patchset to correct the wrong type accesses in pxa drivers
-> for enum ctls.  I didn't put Cc to stable for them, supposing these
-> are only for 32bit systems.  If not, feel free to put Cc to stable. 
->
->
-> thanks,
->
-> Takashi
-For the whole serie:
-Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Could we give this label a meaningful name instead of a number?
+goto free_mctl;
 
-And yes, these are only 32 bits systems :)
+> +
+> +	mctl->intf_devnode = media_devnode_create(mdev, intf_type, 0,
+> +						  MAJOR(pcm_dev->devt),
+> +						  MINOR(pcm_dev->devt));
+> +	if (!mctl->intf_devnode) {
+> +		ret = -ENOMEM;
+> +		goto err2;
 
-Cheers.
+goto unregister_device;
 
---
-Robert
+> +	}
+> +	mctl->intf_link = media_create_intf_link(&mctl->media_entity,
+> +						 &mctl->intf_devnode->intf,
+> +						 MEDIA_LNK_FL_ENABLED);
+> +	if (!mctl->intf_link) {
+> +		ret = -ENOMEM;
+> +		goto err3;
+
+goto delete_devnode;
+
+> +	}
+> +
+> +	/* create link between mixer and audio */
+> +	media_device_for_each_entity(entity, mdev) {
+> +		switch (entity->function) {
+> +		case MEDIA_ENT_F_AUDIO_MIXER:
+> +			ret = media_create_pad_link(entity, mixer_pad,
+> +						    &mctl->media_entity, 0,
+> +						    MEDIA_LNK_FL_ENABLED);
+> +			if (ret)
+> +				goto err4;
+
+This is a bit weird because we're inside a loop.  Shouldn't we call
+media_entity_remove_links() or something if this is the second time
+through the loop?
+
+I don't understand this.  The kernel has the media_entity_cleanup() stub
+function which is supposed to do this but it hasn't been implemented
+yet?
+
+regards,
+dan carpenter
