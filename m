@@ -1,57 +1,47 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: intel: remove unused variable
-Date: Wed, 2 Mar 2016 19:56:11 +0900
-Message-ID: <20160302105611.GL18327@sirena.org.uk>
-References: <1456766626-20807-1-git-send-email-sudipm.mukherjee@gmail.com>
- <20160301025912.GF18327@sirena.org.uk>
- <20160301054858.GA3814@sudip-pc>
- <20160302010223.GI18327@sirena.org.uk>
- <20160302062628.GA4020@sudip-pc>
+Subject: Re: [PATCH 2/2] ASoC: sh: rcar: rsrc-card: don't open code
+ of_device_get_match_data()
+Date: Wed, 2 Mar 2016 20:01:20 +0900
+Message-ID: <20160302110120.GM18327@sirena.org.uk>
+References: <1456850381-8621-1-git-send-email-wsa@the-dreams.de>
+ <1456850381-8621-2-git-send-email-wsa@the-dreams.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ANn8u+P9OAM+OhhT"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="dLlo2NaaNzuiURNs"
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20160302062628.GA4020@sudip-pc>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <1456850381-8621-2-git-send-email-wsa@the-dreams.de>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Wolfram Sang <wsa@the-dreams.de>
+Cc: linux-renesas-soc@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---ANn8u+P9OAM+OhhT
+--dLlo2NaaNzuiURNs
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Mar 02, 2016 at 11:56:28AM +0530, Sudip Mukherjee wrote:
+On Tue, Mar 01, 2016 at 05:39:20PM +0100, Wolfram Sang wrote:
 
-> > > And AFAIK, the From: name and the Signed-off-by: name should match else
-> > > the tools used by Greg and others to generate the stats will break.
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-> > I don't understand - what I'm pointing out here is that they do not
-> > match?
+Please ensure that your signoffs match the domain you're sending from,
+at least the domain part - I'm fairly sure you're the same person but
+it's not something I should need to think about.
 
-> Now I am confused. :(
-> My From: is Sudip Mukherjee <sudipm.mukherjee@gmaill.com>
-> and my Signed-off-by: is Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
-> My From name and Signed-off name matches. But my emails donot match.
-
-The e-mail address is part of your signoff like the name.
-
---ANn8u+P9OAM+OhhT
+--dLlo2NaaNzuiURNs
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJW1sbKAAoJECTWi3JdVIfQ7YwH/iNb+OrfpyZwev7kb7hL9MOl
-PFFkpA3kL5kCzXg8nXYNSRXAG9yrCxjxjES0Vn0qK79uwvozaFUITSgpx1XWs3B5
-Pj+ZFUACGx8uk1Qm+O1HoaCGykd3aGVcd2paCWcPFEv2mfhwXlVlcnTglfhpGa2f
-f/kuvYsN3UQTUJfORrNmfQSYl2iIE/6GOy5cgxlCOI0y303qGju0CgrESFSRqCu1
-PpyQ2oZmzT3iWFeq6Nq2i0N8rMO50CxsfISW2yvJubX9jVVWNnW+s+8lNzhR9toq
-mFFDz+D+9t1unM8auIT1CGkuiP5TMhQXt98e5JTR3HA+2Rn4WzgqFqNI2v4Qc1A=
-=0hGR
+iQEcBAEBCAAGBQJW1sf/AAoJECTWi3JdVIfQ+XQH/jvzEVm+sD/FTgN26f8DzVfA
+K0Gbl+gIxJ/d83kzhm/XN3aT9Sih05zIhzyRQiaHHI6/8Ps9oEjA0gcuasgB3hiH
+8WQqRL1Dr4UzrYOozpz4L/+8OUKIZSt5xKFzuXdHkgzslzeeUc+dR2N66+goX1Ty
+QP1o9GRFK7LJQ4kHr6FzgV9U9+W7fkGziqiz8BtqMjfQNcW1lVyYboKUTX7d8rZA
+PPwEief3KBpY8D9FvodXMDuG8HVf9GwitkrJ/jAoGyrz9MoWP2RoTv4jx8jhN71E
+ZRt6cf4p2ZWr/z97+tLr+gkrvTCdKKQpzdnWRiY1oxBkV4dbZT9qNzcaJdVNcGE=
+=x51l
 -----END PGP SIGNATURE-----
 
---ANn8u+P9OAM+OhhT--
+--dLlo2NaaNzuiURNs--
