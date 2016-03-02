@@ -1,36 +1,47 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 2/2] ASoC: sh: rcar: rsrc-card: don't open code of_device_get_match_data()
-Date: Wed, 2 Mar 2016 10:10:26 +0100
-Message-ID: <CAMuHMdUHaCQxcr7qKoqm3hZ_4OeOqc5v-F+cXRdh7cvFRRPBFQ@mail.gmail.com>
-References: <1456850381-8621-1-git-send-email-wsa@the-dreams.de>
-	<1456850381-8621-2-git-send-email-wsa@the-dreams.de>
+From: John Lin <john.lin@realtek.com>
+Subject: [PATCH] ASoC: rt5616: add kcontrol for headphone
+	channel switch
+Date: Wed, 2 Mar 2016 17:18:40 +0800
+Message-ID: <1456910320-6979-1-git-send-email-john.lin@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <1456850381-8621-2-git-send-email-wsa@the-dreams.de>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Wolfram Sang <wsa@the-dreams.de>
-Cc: linux-renesas-soc@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A7A12614D3
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 10:18:59 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, John Lin <john.lin@realtek.com>, bardliao@realtek.com, zhengsq@rock-chips.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 1, 2016 at 5:39 PM, Wolfram Sang <wsa@the-dreams.de> wrote:
-> From: Wolfram Sang <wsa+renesas@sang-engineering.com>
->
-> This change will also make Coverity happy by avoiding a theoretical NULL
-> pointer dereference; yet another reason is to use the above helper function
-> to tighten the code and make it more readable.
->
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Add kcontrol for headphone channel switch.
 
-Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: John Lin <john.lin@realtek.com>
+---
+ sound/soc/codecs/rt5616.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/sound/soc/codecs/rt5616.c b/sound/soc/codecs/rt5616.c
+index 3704d07..b370993 100644
+--- a/sound/soc/codecs/rt5616.c
++++ b/sound/soc/codecs/rt5616.c
+@@ -309,6 +309,8 @@ static const struct snd_kcontrol_new rt5616_snd_controls[] = {
+ 	/* Headphone Output Volume */
+ 	SOC_DOUBLE("HP Playback Switch", RT5616_HP_VOL,
+ 		   RT5616_L_MUTE_SFT, RT5616_R_MUTE_SFT, 1, 1),
++	SOC_DOUBLE("HP Channel Switch", RT5616_HP_VOL,
++		   RT5616_VOL_L_SFT, RT5616_VOL_R_SFT, 1, 1),
+ 	SOC_DOUBLE_TLV("HP Playback Volume", RT5616_HP_VOL,
+ 		       RT5616_L_VOL_SFT, RT5616_R_VOL_SFT, 39, 1, out_vol_tlv),
+ 	/* OUTPUT Control */
+-- 
+1.8.1.1.439.g50a6b54
