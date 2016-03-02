@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel_ssc_dai: distinguish the
-	different SSC" to the asoc tree
-Date: Wed, 02 Mar 2016 23:44:09 +0900
-Message-ID: <E1ab80X-0008On-PZ@finisterre>
-References: <1452666910-23586-1-git-send-email-songjun.wu@atmel.com>
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Subject: [PATCH v5 2/9] ASoC: mediatek: address dai link array
+	entries by enum
+Date: Wed,  2 Mar 2016 15:49:06 +0100
+Message-ID: <1456930153-11853-3-git-send-email-p.zabel@pengutronix.de>
+References: <1456930153-11853-1-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F09B2614A4
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 15:44:19 +0100 (CET)
-In-Reply-To: <1452666910-23586-1-git-send-email-songjun.wu@atmel.com>
+Received: from metis.ext.4.pengutronix.de (metis.ext.4.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 9F5DA265055
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 15:49:23 +0100 (CET)
+In-Reply-To: <1456930153-11853-1-git-send-email-p.zabel@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,168 +21,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Songjun Wu <songjun.wu@atmel.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Jean-Francois Moine <moinejf@free.fr>, Koro Chen <koro.chen@mediatek.com>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Philipp Zabel <p.zabel@pengutronix.de>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Cawa Cheng <cawa.cheng@mediatek.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, Daniel Kurtz <djkurtz@chromium.org>, kernel@pengutronix.de, Matthias Brugger <matthias.bgg@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+This should be more robust to future changes than adressing
+array entries by index number.
 
-   ASoC: atmel_ssc_dai: distinguish the different SSC
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From c706f2e55f04d25d212e34186521a38e8a6e459e Mon Sep 17 00:00:00 2001
-From: Songjun Wu <songjun.wu@atmel.com>
-Date: Wed, 2 Mar 2016 12:15:25 +0100
-Subject: [PATCH] ASoC: atmel_ssc_dai: distinguish the different SSC
-
-Cpu_dai id always equals 0, can't distinguish the
-different SSC. Use platform_device id to record
-and distinguish the different SSC.
-
-Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
-Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 ---
- drivers/misc/atmel-ssc.c        |  1 +
- sound/soc/atmel/atmel_ssc_dai.c | 27 ++++++++++++++++++---------
- 2 files changed, 19 insertions(+), 9 deletions(-)
+ sound/soc/mediatek/mt8173-rt5650-rt5676.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
-index e11a0bd6c66e..0516ecda54d3 100644
---- a/drivers/misc/atmel-ssc.c
-+++ b/drivers/misc/atmel-ssc.c
-@@ -34,6 +34,7 @@ struct ssc_device *ssc_request(unsigned int ssc_num)
- 		if (ssc->pdev->dev.of_node) {
- 			if (of_alias_get_id(ssc->pdev->dev.of_node, "ssc")
- 				== ssc_num) {
-+				ssc->pdev->id = ssc_num;
- 				ssc_valid = 1;
- 				break;
- 			}
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index ba8def5665c4..276897033639 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -285,7 +285,8 @@ static int atmel_ssc_hw_rule_rate(struct snd_pcm_hw_params *params,
- static int atmel_ssc_startup(struct snd_pcm_substream *substream,
- 			     struct snd_soc_dai *dai)
- {
--	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
-+	struct platform_device *pdev = to_platform_device(dai->dev);
-+	struct atmel_ssc_info *ssc_p = &ssc_info[pdev->id];
- 	struct atmel_pcm_dma_params *dma_params;
- 	int dir, dir_mask;
- 	int ret;
-@@ -346,7 +347,8 @@ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
- static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
- 			       struct snd_soc_dai *dai)
- {
--	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
-+	struct platform_device *pdev = to_platform_device(dai->dev);
-+	struct atmel_ssc_info *ssc_p = &ssc_info[pdev->id];
- 	struct atmel_pcm_dma_params *dma_params;
- 	int dir, dir_mask;
+diff --git a/sound/soc/mediatek/mt8173-rt5650-rt5676.c b/sound/soc/mediatek/mt8173-rt5650-rt5676.c
+index 50ba538..5c4c58c 100644
+--- a/sound/soc/mediatek/mt8173-rt5650-rt5676.c
++++ b/sound/soc/mediatek/mt8173-rt5650-rt5676.c
+@@ -131,10 +131,17 @@ static struct snd_soc_dai_link_component mt8173_rt5650_rt5676_codecs[] = {
+ 	},
+ };
  
-@@ -392,7 +394,8 @@ static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
- static int atmel_ssc_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		unsigned int fmt)
- {
--	struct atmel_ssc_info *ssc_p = &ssc_info[cpu_dai->id];
-+	struct platform_device *pdev = to_platform_device(cpu_dai->dev);
-+	struct atmel_ssc_info *ssc_p = &ssc_info[pdev->id];
++enum {
++	DAI_LINK_PLAYBACK,
++	DAI_LINK_CAPTURE,
++	DAI_LINK_CODEC_I2S,
++	DAI_LINK_INTERCODEC
++};
++
+ /* Digital audio interface glue - connects codec <---> CPU */
+ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
+ 	/* Front End DAI links */
+-	{
++	[DAI_LINK_PLAYBACK] = {
+ 		.name = "rt5650_rt5676 Playback",
+ 		.stream_name = "rt5650_rt5676 Playback",
+ 		.cpu_dai_name = "DL1",
+@@ -144,7 +151,7 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
+ 		.dynamic = 1,
+ 		.dpcm_playback = 1,
+ 	},
+-	{
++	[DAI_LINK_CAPTURE] = {
+ 		.name = "rt5650_rt5676 Capture",
+ 		.stream_name = "rt5650_rt5676 Capture",
+ 		.cpu_dai_name = "VUL",
+@@ -156,7 +163,7 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
+ 	},
  
- 	ssc_p->daifmt = fmt;
- 	return 0;
-@@ -404,7 +407,8 @@ static int atmel_ssc_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- static int atmel_ssc_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
- 	int div_id, int div)
- {
--	struct atmel_ssc_info *ssc_p = &ssc_info[cpu_dai->id];
-+	struct platform_device *pdev = to_platform_device(cpu_dai->dev);
-+	struct atmel_ssc_info *ssc_p = &ssc_info[pdev->id];
+ 	/* Back End DAI links */
+-	{
++	[DAI_LINK_CODEC_I2S] = {
+ 		.name = "Codec",
+ 		.cpu_dai_name = "I2S",
+ 		.no_pcm = 1,
+@@ -170,7 +177,8 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
+ 		.dpcm_playback = 1,
+ 		.dpcm_capture = 1,
+ 	},
+-	{ /* rt5676 <-> rt5650 intercodec link: Sets rt5676 I2S2 as master */
++	/* rt5676 <-> rt5650 intercodec link: Sets rt5676 I2S2 as master */
++	[DAI_LINK_INTERCODEC] = {
+ 		.name = "rt5650_rt5676 intercodec",
+ 		.stream_name = "rt5650_rt5676 intercodec",
+ 		.cpu_dai_name = "snd-soc-dummy-dai",
+@@ -240,7 +248,7 @@ static int mt8173_rt5650_rt5676_dev_probe(struct platform_device *pdev)
+ 	mt8173_rt5650_rt5676_codec_conf[0].of_node =
+ 		mt8173_rt5650_rt5676_codecs[1].of_node;
  
- 	switch (div_id) {
- 	case ATMEL_SSC_CMR_DIV:
-@@ -445,7 +449,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params,
- 	struct snd_soc_dai *dai)
- {
--	int id = dai->id;
-+	struct platform_device *pdev = to_platform_device(dai->dev);
-+	int id = pdev->id;
- 	struct atmel_ssc_info *ssc_p = &ssc_info[id];
- 	struct ssc_device *ssc = ssc_p->ssc;
- 	struct atmel_pcm_dma_params *dma_params;
-@@ -772,7 +777,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
- 			     struct snd_soc_dai *dai)
- {
--	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
-+	struct platform_device *pdev = to_platform_device(dai->dev);
-+	struct atmel_ssc_info *ssc_p = &ssc_info[pdev->id];
- 	struct atmel_pcm_dma_params *dma_params;
- 	int dir;
+-	mt8173_rt5650_rt5676_dais[3].codec_of_node =
++	mt8173_rt5650_rt5676_dais[DAI_LINK_INTERCODEC].codec_of_node =
+ 		mt8173_rt5650_rt5676_codecs[1].of_node;
  
-@@ -795,7 +801,8 @@ static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
- static int atmel_ssc_trigger(struct snd_pcm_substream *substream,
- 			     int cmd, struct snd_soc_dai *dai)
- {
--	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
-+	struct platform_device *pdev = to_platform_device(dai->dev);
-+	struct atmel_ssc_info *ssc_p = &ssc_info[pdev->id];
- 	struct atmel_pcm_dma_params *dma_params;
- 	int dir;
- 
-@@ -824,11 +831,12 @@ static int atmel_ssc_trigger(struct snd_pcm_substream *substream,
- static int atmel_ssc_suspend(struct snd_soc_dai *cpu_dai)
- {
- 	struct atmel_ssc_info *ssc_p;
-+	struct platform_device *pdev = to_platform_device(cpu_dai->dev);
- 
- 	if (!cpu_dai->active)
- 		return 0;
- 
--	ssc_p = &ssc_info[cpu_dai->id];
-+	ssc_p = &ssc_info[pdev->id];
- 
- 	/* Save the status register before disabling transmit and receive */
- 	ssc_p->ssc_state.ssc_sr = ssc_readl(ssc_p->ssc->regs, SR);
-@@ -852,12 +860,13 @@ static int atmel_ssc_suspend(struct snd_soc_dai *cpu_dai)
- static int atmel_ssc_resume(struct snd_soc_dai *cpu_dai)
- {
- 	struct atmel_ssc_info *ssc_p;
-+	struct platform_device *pdev = to_platform_device(cpu_dai->dev);
- 	u32 cr;
- 
- 	if (!cpu_dai->active)
- 		return 0;
- 
--	ssc_p = &ssc_info[cpu_dai->id];
-+	ssc_p = &ssc_info[pdev->id];
- 
- 	/* restore SSC register settings */
- 	ssc_writel(ssc_p->ssc->regs, TFMR, ssc_p->ssc_state.ssc_tfmr);
+ 	card->dev = &pdev->dev;
 -- 
 2.7.0
