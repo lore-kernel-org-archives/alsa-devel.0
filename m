@@ -1,55 +1,81 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: intel: remove unused variable
-Date: Wed, 2 Mar 2016 10:02:23 +0900
-Message-ID: <20160302010223.GI18327@sirena.org.uk>
-References: <1456766626-20807-1-git-send-email-sudipm.mukherjee@gmail.com>
- <20160301025912.GF18327@sirena.org.uk>
- <20160301054858.GA3814@sudip-pc>
+Subject: Re: [PATCH v2] ASoC: imx-wm8958: add imx-wm8958
+ machine driver
+Date: Wed, 2 Mar 2016 10:34:39 +0900
+Message-ID: <20160302013439.GL18327@sirena.org.uk>
+References: <6f90780124a7f5bf31452623fdf04225873fc711.1456457898.git.zidan.wang@freescale.com>
+ <20160226205208.GA25515@Asurada-Nvidia>
+ <AM3PR04MB1412F6FB7E5107BBA3AB9B559ABB0@AM3PR04MB1412.eurprd04.prod.outlook.com>
+ <20160301090615.GA4738@Asurada-CZ80>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Cj1+9ZukrrhheEgj"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20160301054858.GA3814@sudip-pc>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============4792338509910071112=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id F3586261536
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 02:34:53 +0100 (CET)
+In-Reply-To: <20160301090615.GA4738@Asurada-CZ80>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Zidan Wang <zidan.wang@nxp.com>, alsa-devel@alsa-project.org, Xiubo.Lee@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---Cj1+9ZukrrhheEgj
+--===============4792338509910071112==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="/IjyWiMc6vC4PmW7"
+Content-Disposition: inline
+
+
+--/IjyWiMc6vC4PmW7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Mar 01, 2016 at 11:19:27AM +0530, Sudip Mukherjee wrote:
+On Tue, Mar 01, 2016 at 01:06:16AM -0800, Nicolin Chen wrote:
 
-> Can i not keep using my gmail as my From: ?
-> The advantage of using gmail as my From: is that the discussion and all
-> threads related to my patches will be in the same place even if my work
-> email is changed.
+> I personally suggest you to use fsl-asoc-card. Since the Codec IC
+> provides three DAIs. And in the schematics, you do have three DAI
+> links. It sounds plausible to me that we might treat these three
+> DAI links as three different cards. Then use different compatible
+> names: "imx-audio-wm8958-aif1" and so on. And each one can also
+> has ASRC back-end support.
 
-That's fine (I'm doing something similar), just use that as your signoff
-address then.
+No, that's really not going to work very well - having the same CODEC
+with very tightly coupled clocking connected into three cards is just
+going to be a mess, especially for the WM8958 where AIF3 is mostly just
+a pinmux to the other two DAIs rather than something that could ever be
+fully independent.
 
-> And AFAIK, the From: name and the Signed-off-by: name should match else
-> the tools used by Greg and others to generate the stats will break.
-
-I don't understand - what I'm pointing out here is that they do not
-match?
-
---Cj1+9ZukrrhheEgj
+--/IjyWiMc6vC4PmW7
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJW1juaAAoJECTWi3JdVIfQtYIH/Av6lJ74vJ15kQGkBFysORl7
-KyKIUmEW41j6lKQOXIyJhTnF67rnUsaJWgf5hNvs5Pem42oApcKgoXKGqcrk3bHP
-JhgmxizE305qH21V3lSfDi6Au+m7FItLl5B/AmFNfodnObdCFvyU/8YQ/eYXmWYU
-63LVqXSRtrf+fl3JosHSDDM8VWoYO14cwz85JlMQkmcJQEIonm9Lx3Y7FyENT7Ce
-YpPVjw2BximmiCOgc79PxJWv1b2u4+yfSYRQ6FFk2foApilKx2Qu9ORZzXN7expL
-ruop8UYUnayDBa+Fvt9g/Nn8tBZAuby/A8l7B59tYQix184h9PULu/v77aXgAuI=
-=WSMC
+iQEcBAEBCAAGBQJW1kMuAAoJECTWi3JdVIfQL5EH/R6PdruV8icgZkHUYFwrJJrG
+7hbKeUhUlczgaFvHn2xtdOL9ifkrQ/TxYySdQ/aHNLQl1HRT32O9qAywwTPO1fAS
+UV+hAp/XHl48LGyH9k7mvVrYi9iguqteFLMJY8mz1aTmy6Mvg5OgyxKXdn0Ps94t
+EFQ9+pR/D74UVY4XYK3S/dgo/85HtMW4aNqwHYQLgiTZdFwCQQn6WzMnEWzKm1wK
+P9LIBNyyDRil8pV3QefAPYeWMv/5lFQLytFWLimphSIxeRmjVcVkQA5bvJdPUhdm
+M7p8Yz/8U/2VuGW5UO2sKNTHdUo3bgdbXRDh1QbbUIg/2KaDn4aPG/U7F4CbvzE=
+=Qpb5
 -----END PGP SIGNATURE-----
 
---Cj1+9ZukrrhheEgj--
+--/IjyWiMc6vC4PmW7--
+
+--===============4792338509910071112==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4792338509910071112==--
