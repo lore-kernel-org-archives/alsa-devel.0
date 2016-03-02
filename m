@@ -1,22 +1,15 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH v2] ASoC: imx-wm8958: add imx-wm8958
- machine driver
-Date: Tue, 1 Mar 2016 20:38:22 -0800
-Message-ID: <20160302043821.GA3361@Asurada-CZ80>
-References: <6f90780124a7f5bf31452623fdf04225873fc711.1456457898.git.zidan.wang@freescale.com>
- <20160302041101.GZ18327@sirena.org.uk>
+From: libin.yang@linux.intel.com
+Subject: [PATCH] ALSA: hda - hdmi defer to register acomp eld
+	notifier
+Date: Wed,  2 Mar 2016 13:19:43 +0800
+Message-ID: <1456895983-46529-1-git-send-email-libin.yang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f182.google.com (mail-pf0-f182.google.com
- [209.85.192.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 07E992606F5
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 05:38:28 +0100 (CET)
-Received: by mail-pf0-f182.google.com with SMTP id 4so47794888pfd.1
- for <alsa-devel@alsa-project.org>; Tue, 01 Mar 2016 20:38:27 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <20160302041101.GZ18327@sirena.org.uk>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id ABAE92606F5
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 06:24:08 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,35 +19,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Zidan Wang <zidan.wang@freescale.com>, Xiubo.Lee@gmail.com
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: libin.yang@intel.com, mengdong.lin@intel.com, Libin Yang <libin.yang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 02, 2016 at 01:11:01PM +0900, Mark Brown wrote:
+From: Libin Yang <libin.yang@linux.intel.com>
 
-> > +	[VOICE_DAI] =   {
-> > +			.name = "Voice",
-> > +			.stream_name = "Voice",
-> > +			.cpu_dai_name = "snd-soc-dummy-dai",
-> > +			.codec_name = "wm8994-codec",
-> > +			.codec_dai_name = "wm8994-aif2",
-> > +			.platform_name = "snd-soc-dummy",
-> 
-> Why are you mapping in dummy DAIs?  If these devices aren't connected
-> then they're not connected and you shouldn't represent them.  If they
-> are connected to something then describe those connections, possibly in
-> followup patches if you have other devices you need to support upstream
-> first.
+Defer to register acomp eld notifier until hdmi audio driver
+is fully ready.
 
->From his previous reply to me (he forgot to use reply-all), he
-told me that he only tested the aif1 path in the release while
-leaving aif2 and aif3 for future use.
+Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+---
+ sound/pci/hda/patch_hdmi.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-In his schematics of the reference board, I found all three aifs
-are "connected" but AIF2 and AIF3 are optional through jumpers.
-So I think it might be better for him to make the driver flexible
-by including all three aifs while creating dai-links depending on
-the presence of corresponding cpu-dais.
-
-Thanks
-Nicolin
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index aa2d6a2..a3de50b 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2936,13 +2936,6 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 			is_broxton(codec))
+ 		codec->core.link_power_control = 1;
+ 
+-	if (codec_has_acomp(codec)) {
+-		codec->depop_delay = 0;
+-		spec->i915_audio_ops.audio_ptr = codec;
+-		spec->i915_audio_ops.pin_eld_notify = intel_pin_eld_notify;
+-		snd_hdac_i915_register_notifier(&spec->i915_audio_ops);
+-	}
+-
+ 	if (hdmi_parse_codec(codec) < 0) {
+ 		if (spec->i915_bound)
+ 			snd_hdac_i915_exit(&codec->bus->core);
+@@ -2964,6 +2957,13 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 
+ 	init_channel_allocations();
+ 
++	if (codec_has_acomp(codec)) {
++		codec->depop_delay = 0;
++		spec->i915_audio_ops.audio_ptr = codec;
++		spec->i915_audio_ops.pin_eld_notify = intel_pin_eld_notify;
++		snd_hdac_i915_register_notifier(&spec->i915_audio_ops);
++	}
++
+ 	WARN_ON(spec->dyn_pcm_assign && !codec_has_acomp(codec));
+ 	return 0;
+ }
+-- 
+1.9.1
