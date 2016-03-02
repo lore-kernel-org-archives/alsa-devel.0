@@ -1,21 +1,21 @@
 From: Martin Koegler <martin.koegler@chello.at>
-Subject: [PATCH v2 3/3] Show sequencer sound card numer/PID via
-	aconnect
-Date: Wed,  2 Mar 2016 19:26:27 +0100
-Message-ID: <1456943188-29600-2-git-send-email-martin@mail.zuhause>
+Subject: [PATCH v2 1/3] ALSA: seq: Provide card number / PID
+	via sequencer client info
+Date: Wed,  2 Mar 2016 19:26:28 +0100
+Message-ID: <1456943188-29600-3-git-send-email-martin@mail.zuhause>
 References: <1456943188-29600-1-git-send-email-martin@mail.zuhause>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vie01a-dmta-pe04-3.mx.upcmail.net
- (vie01a-dmta-pe04-3.mx.upcmail.net [62.179.121.165])
- by alsa0.perex.cz (Postfix) with ESMTP id 4BEA0265463
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 19:27:44 +0100 (CET)
+Received: from vie01a-dmta-pe02-2.mx.upcmail.net
+ (vie01a-dmta-pe02-2.mx.upcmail.net [62.179.121.158])
+ by alsa0.perex.cz (Postfix) with ESMTP id DD76D265499
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 19:27:45 +0100 (CET)
 Received: from [172.31.216.43] (helo=vie01a-pemc-psmtp-pe01)
- by vie01a-dmta-pe04.mx.upcmail.net with esmtp (Exim 4.72)
- (envelope-from <martin.koegler@chello.at>) id 1abBUu-0005A2-7N
- for alsa-devel@alsa-project.org; Wed, 02 Mar 2016 19:27:44 +0100
+ by vie01a-dmta-pe02.mx.upcmail.net with esmtp (Exim 4.72)
+ (envelope-from <martin.koegler@chello.at>) id 1abBUv-0003zj-Nx
+ for alsa-devel@alsa-project.org; Wed, 02 Mar 2016 19:27:45 +0100
 In-Reply-To: <1456943188-29600-1-git-send-email-martin@mail.zuhause>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -39,41 +39,108 @@ The sequencer provides no identifing data. Chromium works around this
 issue by scanning rawmidi as well as sequencer devices and matching
 them by using assumtions, how the kernel register sequencer devices.
 
-This patch adds support for displaying the sound card number/PID to
-aconnect.
+This changes adds support for exposing the card number for kernel clients
+as well as the PID for user client.
+
+The minor of the API version is changed to distinguish between the zero
+initialised reserved field and card number 0.
 
 Signed-off-by: Martin Koegler <martin.koegler@chello.at>
 ---
- seq/aconnect/aconnect.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ include/uapi/sound/asequencer.h |  6 ++++--
+ sound/core/seq/seq_clientmgr.c  | 14 ++++++++++++++
+ sound/core/seq/seq_clientmgr.h  |  2 ++
+ 3 files changed, 20 insertions(+), 2 deletions(-)
 
-diff --git a/seq/aconnect/aconnect.c b/seq/aconnect/aconnect.c
-index 8d6cebb..d299f5c 100644
---- a/seq/aconnect/aconnect.c
-+++ b/seq/aconnect/aconnect.c
-@@ -166,11 +166,22 @@ static void print_port(snd_seq_t *seq, snd_seq_client_info_t *cinfo,
- 		       snd_seq_port_info_t *pinfo, int count)
- {
- 	if (! count) {
--		printf(_("client %d: '%s' [type=%s]\n"),
-+		int card, pid;
-+
-+		printf(_("client %d: '%s' [type=%s"),
- 		       snd_seq_client_info_get_client(cinfo),
- 		       snd_seq_client_info_get_name(cinfo),
- 		       (snd_seq_client_info_get_type(cinfo) == SND_SEQ_USER_CLIENT ?
- 			_("user") : _("kernel")));
-+
-+		card = snd_seq_client_info_get_card(cinfo);
-+		if (card != -1)
-+			printf(",card=%d", card);
-+
-+		pid = snd_seq_client_info_get_pid(cinfo);
-+		if (pid != -1)
-+			printf(",pid=%d", pid);
-+		printf("]\n");
+diff --git a/include/uapi/sound/asequencer.h b/include/uapi/sound/asequencer.h
+index 5a5fa49..8c7da5a 100644
+--- a/include/uapi/sound/asequencer.h
++++ b/include/uapi/sound/asequencer.h
+@@ -25,7 +25,7 @@
+ #include <sound/asound.h>
+ 
+ /** version of the sequencer */
+-#define SNDRV_SEQ_VERSION SNDRV_PROTOCOL_VERSION (1, 0, 1)
++#define SNDRV_SEQ_VERSION SNDRV_PROTOCOL_VERSION (1, 0, 2)
+ 
+ /**
+  * definition of sequencer event types
+@@ -357,7 +357,9 @@ struct snd_seq_client_info {
+ 	unsigned char event_filter[32];	/* event filter bitmap */
+ 	int num_ports;			/* RO: number of ports */
+ 	int event_lost;			/* number of lost events */
+-	char reserved[64];		/* for future use */
++	int card;			/* RO: card number[kernel] */
++	int pid;			/* RO: pid[user] */
++	char reserved[56];		/* for future use */
+ };
+ 
+ 
+diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
+index 58e79e0..d6d9419 100644
+--- a/sound/core/seq/seq_clientmgr.c
++++ b/sound/core/seq/seq_clientmgr.c
+@@ -364,6 +364,7 @@ static int snd_seq_open(struct inode *inode, struct file *file)
+ 	/* fill client data */
+ 	user->file = file;
+ 	sprintf(client->name, "Client-%d", c);
++	client->data.user.owner = get_pid(task_pid(current));
+ 
+ 	/* make others aware this new client */
+ 	snd_seq_system_client_ev_client_start(c);
+@@ -380,6 +381,7 @@ static int snd_seq_release(struct inode *inode, struct file *file)
+ 		seq_free_client(client);
+ 		if (client->data.user.fifo)
+ 			snd_seq_fifo_delete(&client->data.user.fifo);
++		put_pid(client->data.user.owner);
+ 		kfree(client);
  	}
- 	printf("  %3d '%-16s'\n",
- 	       snd_seq_port_info_get_port(pinfo),
+ 
+@@ -1197,6 +1199,17 @@ static void get_client_info(struct snd_seq_client *cptr,
+ 	info->event_lost = cptr->event_lost;
+ 	memcpy(info->event_filter, cptr->event_filter, 32);
+ 	info->num_ports = cptr->num_ports;
++
++	if (cptr->type == USER_CLIENT)
++		info->pid = pid_vnr(cptr->data.user.owner);
++	else
++		info->pid = -1;
++
++	if (cptr->type == KERNEL_CLIENT)
++		info->card = cptr->data.kernel.card ? cptr->data.kernel.card->number : -1;
++	else
++		info->card = -1;
++
+ 	memset(info->reserved, 0, sizeof(info->reserved));
+ }
+ 
+@@ -2271,6 +2284,7 @@ int snd_seq_create_kernel_client(struct snd_card *card, int client_index,
+ 
+ 	client->accept_input = 1;
+ 	client->accept_output = 1;
++	client->data.kernel.card = card;
+ 		
+ 	va_start(args, name_fmt);
+ 	vsnprintf(client->name, sizeof(client->name), name_fmt, args);
+diff --git a/sound/core/seq/seq_clientmgr.h b/sound/core/seq/seq_clientmgr.h
+index 20f0a72..031462e 100644
+--- a/sound/core/seq/seq_clientmgr.h
++++ b/sound/core/seq/seq_clientmgr.h
+@@ -33,6 +33,7 @@
+ struct snd_seq_user_client {
+ 	struct file *file;	/* file struct of client */
+ 	/* ... */
++	struct pid* owner;
+ 	
+ 	/* fifo */
+ 	struct snd_seq_fifo *fifo;	/* queue for incoming events */
+@@ -41,6 +42,7 @@ struct snd_seq_user_client {
+ 
+ struct snd_seq_kernel_client {
+ 	/* ... */
++	struct snd_card* card;
+ };
+ 
+ 
 -- 
 2.1.4
