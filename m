@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: correct direction in
-	blob query" to the asoc tree
-Date: Wed, 02 Mar 2016 13:00:43 +0900
-Message-ID: <E1aaxxr-0003bz-QI@finisterre>
-References: <1456799352-22653-2-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: remove IVI codec loop
+	in skl_nau88l25_ssm4567 machine" to the asoc tree
+Date: Wed, 02 Mar 2016 13:00:42 +0900
+Message-ID: <E1aaxxq-0003b1-Bj@finisterre>
+References: <1456799352-22653-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D514261515
+ by alsa0.perex.cz (Postfix) with ESMTP id 9EDFB26152C
  for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 05:00:47 +0100 (CET)
-In-Reply-To: <1456799352-22653-2-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <1456799352-22653-4-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: correct direction in blob query
+   ASoC: Intel: Skylake: remove IVI codec loop in skl_nau88l25_ssm4567 machine
 
 has been applied to the asoc tree at
 
@@ -53,59 +53,58 @@ to this mail.
 Thanks,
 Mark
 
->From c7c6c73604ed4018cf7c22575d336a448ef8ccf5 Mon Sep 17 00:00:00 2001
+>From fdd69c57370dbd9f81072b14aaeb90d80ab0b2f9 Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Tue, 1 Mar 2016 07:59:10 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: correct direction in blob query
+Date: Tue, 1 Mar 2016 07:59:12 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: remove IVI codec loop in
+ skl_nau88l25_ssm4567 machine
 
-The blob query for BE skl_tplg_update_be_blob() was not using
-right values for direction for blob query, so fix that.
+The IVI loop is removed in skl_nau88l25_ssm4567 machine as we
+enable this path thru DAPM graph using the PCM device and not
+thru loop
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 18 ------------------
+ 1 file changed, 18 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index c95bbce8ad5d..af7722ab7207 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -273,10 +273,11 @@ static int skl_tplg_update_be_blob(struct snd_soc_dapm_widget *w,
- 	if (m_cfg->formats_config.caps_size > 0)
- 		return 0;
+diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+index f6a672c55be9..5f1ca99ae9b0 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
++++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+@@ -156,14 +156,6 @@ static const struct snd_soc_dapm_route skylake_map[] = {
+ 	{ "Headset Mic", NULL, "Platform Clock" },
+ };
  
-+	dev_dbg(ctx->dev, "Applying default cfg blob\n");
- 	switch (m_cfg->dev_type) {
- 	case SKL_DEVICE_DMIC:
- 		link_type = NHLT_LINK_DMIC;
--		dir = 1;
-+		dir = SNDRV_PCM_STREAM_CAPTURE;
- 		s_freq = m_cfg->in_fmt[0].s_freq;
- 		s_fmt = m_cfg->in_fmt[0].bit_depth;
- 		ch = m_cfg->in_fmt[0].channels;
-@@ -285,15 +286,15 @@ static int skl_tplg_update_be_blob(struct snd_soc_dapm_widget *w,
- 	case SKL_DEVICE_I2S:
- 		link_type = NHLT_LINK_SSP;
- 		if (m_cfg->hw_conn_type == SKL_CONN_SOURCE) {
--			dir = 1;
--			s_freq = m_cfg->in_fmt[0].s_freq;
--			s_fmt = m_cfg->in_fmt[0].bit_depth;
--			ch = m_cfg->in_fmt[0].channels;
--		} else {
--			dir = 0;
-+			dir = SNDRV_PCM_STREAM_PLAYBACK;
- 			s_freq = m_cfg->out_fmt[0].s_freq;
- 			s_fmt = m_cfg->out_fmt[0].bit_depth;
- 			ch = m_cfg->out_fmt[0].channels;
-+		} else {
-+			dir = SNDRV_PCM_STREAM_CAPTURE;
-+			s_freq = m_cfg->in_fmt[0].s_freq;
-+			s_fmt = m_cfg->in_fmt[0].bit_depth;
-+			ch = m_cfg->in_fmt[0].channels;
- 		}
- 		break;
+-static const struct snd_soc_pcm_stream skl_ssm4567_loop_params = {
+-	.formats = SNDRV_PCM_FMTBIT_S24_LE,
+-	.rate_min = 48000,
+-	.rate_max = 48000,
+-	.channels_min = 4,
+-	.channels_max = 4,
+-};
+-
+ static struct snd_soc_codec_conf ssm4567_codec_conf[] = {
+ 	{
+ 		.dev_name = "i2c-INT343B:00",
+@@ -508,16 +500,6 @@ static struct snd_soc_dai_link skylake_dais[] = {
+ 		.nonatomic = 1,
+ 		.dynamic = 1,
+ 	},
+-	/* Codec-codec link */
+-	{
+-		.name = "Skylake IV loop",
+-		.stream_name = "SKL IV Loop",
+-		.cpu_dai_name = "SSP0 Pin",
+-		.platform_name = "0000:00:1f.3",
+-		.codecs = ssm4567_codec_components,
+-		.num_codecs = ARRAY_SIZE(ssm4567_codec_components),
+-		.params = &skl_ssm4567_loop_params,
+-	},
  
+ 	/* Back End DAI links */
+ 	{
 -- 
 2.7.0
