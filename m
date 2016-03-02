@@ -1,15 +1,16 @@
 From: han.lu@intel.com
-Subject: [PATCH 08/10] alsabat: fix an incorrect print
-Date: Wed,  2 Mar 2016 16:53:18 +0800
-Message-ID: <88b74bc19aeae8e09854a0f84ffea820e638ee51.1456907242.git.han.lu@intel.com>
+Subject: [PATCH 09/10] alsabat: use variable for thread return
+	value
+Date: Wed,  2 Mar 2016 16:53:19 +0800
+Message-ID: <3788d26a68d34132a918b0eb19f7f0a7eb552641.1456907242.git.han.lu@intel.com>
 References: <cover.1456907242.git.han.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id BAB5626517F
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 09:51:17 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 89EDC265232
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 09:51:18 +0100 (CET)
 In-Reply-To: <cover.1456907242.git.han.lu@intel.com>
 In-Reply-To: <cover.1456907242.git.han.lu@intel.com>
 References: <cover.1456907242.git.han.lu@intel.com>
@@ -28,20 +29,70 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Lu, Han" <han.lu@intel.com>
 
+Replace fixed "1" to variable for thread return value.
+
 Signed-off-by: Lu, Han <han.lu@intel.com>
 
 diff --git a/bat/alsa.c b/bat/alsa.c
-index 443ede8..0a5f899 100644
+index 0a5f899..189b0e9 100644
 --- a/bat/alsa.c
 +++ b/bat/alsa.c
-@@ -329,7 +329,7 @@ void *playback_alsa(struct bat *bat)
- 				bat->playback.file);
- 		bat->fp = fopen(bat->playback.file, "rb");
- 		if (bat->fp == NULL) {
--			fprintf(bat->err, _("Cannot open file for capture: "));
-+			fprintf(bat->err, _("Cannot open file for playback: "));
+@@ -309,13 +309,13 @@ void *playback_alsa(struct bat *bat)
+ 	if (err != 0) {
+ 		fprintf(bat->err, _("Cannot open PCM playback device: "));
+ 		fprintf(bat->err, _("%s(%d)\n"), snd_strerror(err), err);
+-		retval_play = 1;
++		retval_play = err;
+ 		goto exit1;
+ 	}
+ 
+ 	err = set_snd_pcm_params(bat, &sndpcm);
+ 	if (err != 0) {
+-		retval_play = 1;
++		retval_play = err;
+ 		goto exit2;
+ 	}
+ 
+@@ -332,13 +332,13 @@ void *playback_alsa(struct bat *bat)
+ 			fprintf(bat->err, _("Cannot open file for playback: "));
  			fprintf(bat->err, _("%s %d\n"),
  					bat->playback.file, -errno);
- 			retval_play = 1;
+-			retval_play = 1;
++			retval_play = -errno;
+ 			goto exit3;
+ 		}
+ 		/* Skip header */
+ 		err = read_wav_header(bat, bat->playback.file, bat->fp, true);
+ 		if (err != 0) {
+-			retval_play = 1;
++			retval_play = err;
+ 			goto exit4;
+ 		}
+ 	}
+@@ -348,7 +348,7 @@ void *playback_alsa(struct bat *bat)
+ 
+ 	err = write_to_pcm_loop(&sndpcm, bat);
+ 	if (err < 0) {
+-		retval_play = 1;
++		retval_play = err;
+ 		goto exit4;
+ 	}
+ 
+@@ -471,13 +471,13 @@ void *record_alsa(struct bat *bat)
+ 	if (err != 0) {
+ 		fprintf(bat->err, _("Cannot open PCM capture device: "));
+ 		fprintf(bat->err, _("%s(%d)\n"), snd_strerror(err), err);
+-		retval_record = 1;
++		retval_record = err;
+ 		goto exit1;
+ 	}
+ 
+ 	err = set_snd_pcm_params(bat, &sndpcm);
+ 	if (err != 0) {
+-		retval_record = 1;
++		retval_record = err;
+ 		goto exit2;
+ 	}
+ 
 -- 
 2.5.0
