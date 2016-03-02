@@ -1,102 +1,83 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: imx-wm8958: add imx-wm8958
- machine driver
-Date: Wed, 2 Mar 2016 13:11:01 +0900
-Message-ID: <20160302041101.GZ18327@sirena.org.uk>
-References: <6f90780124a7f5bf31452623fdf04225873fc711.1456457898.git.zidan.wang@freescale.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: Alternative binding proposal for tda998x audio (Was: Re: [PATCH
+ RFC v5 4/8] drm/i2c: tda998x: Add support of a DT graph of ports)
+Date: Wed, 2 Mar 2016 13:29:24 +0900
+Message-ID: <20160302042924.GA18327@sirena.org.uk>
+References: <20160218143530.GB9654@rob-hp-laptop>
+ <56CF04DA.8080905@ti.com>
+ <20160226004311.GM5783@n2100.arm.linux.org.uk>
+ <56D02594.4020407@ti.com>
+ <20160226112159.GO5783@n2100.arm.linux.org.uk>
+ <56D41F1A.2030100@ti.com>
+ <56D5A6AA.2030907@ti.com>
+ <20160301163553.3ef298fb2c0bb25ef662a41d@free.fr>
+ <56D5BA6D.8090904@ti.com>
+ <20160301171630.630a47dc00060645f89bb8ab@free.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1198946061654036929=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 32F5E2606F5
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 05:11:08 +0100 (CET)
-In-Reply-To: <6f90780124a7f5bf31452623fdf04225873fc711.1456457898.git.zidan.wang@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, Xiubo.Lee@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="tfR0eanJeEhQS6vO"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20160301171630.630a47dc00060645f89bb8ab-GANU6spQydw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Cc: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, airlied-cv59FeDIM0c@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, tomi.valkeinen-l0cyMroinI0@public.gmane.org, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1198946061654036929==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="S+GnIiKg56iOFcRc"
-Content-Disposition: inline
-
-
---S+GnIiKg56iOFcRc
+--tfR0eanJeEhQS6vO
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 26, 2016 at 11:42:42AM +0800, Zidan Wang wrote:
+On Tue, Mar 01, 2016 at 05:16:30PM +0100, Jean-Francois Moine wrote:
 
-> +	if (id == HIFI_DAI) {
-> +		/*
-> +		 * Set GPIO1 pin function to reserve, so that DAC1 and ADC1
-> +		 * using shared LRCLK from DACLRCK1.
-> +		 */
-> +		snd_soc_update_bits(codec, WM8994_GPIO_1, 0x1f, 0x2);
+> As told many times, the simple card is a pure Linux specific entity.
+> It does not describe any hardware. It should not appear in a DT, or,
 
-No, this is broken - if you're writing directly into the register map of
-a device without the driver that's just asking for breakage.
+The physical integration of audio systems is meaningful hardware that
+physically exists and matters to software.  I am completely fed up of=20
+having to go through this, I'm fairly sure I've been through it with you
+before.
 
-> +	} else if (id == VOICE_DAI) {
-> +		/*
+> if it does, its compatible should be "linux, simple-audio-card".
 
-This looks like you're writing a switch statement...
+Documentation/SubmittingPatches.
 
-> +		if (card->dapm.bias_level == SND_SOC_BIAS_OFF) {
-> +			/* need to enable mclk to write/read wm8958 register */
-> +			for (i = 0; i < WM8958_MCLK_MAX; i++) {
-> +				if (!IS_ERR(data->mclk[i])) {
-> +					ret = clk_prepare_enable(data->mclk[i]);
+> Then, how can the other OSs know the links between the audio
+> devices and the audio encoders/connectors?
 
-The CODEC needs to look after its own clocks.
+Documentation/devicetree/bindings/sound/simple-card.txt
 
-> +	[VOICE_DAI] =   {
-> +			.name = "Voice",
-> +			.stream_name = "Voice",
-> +			.cpu_dai_name = "snd-soc-dummy-dai",
-> +			.codec_name = "wm8994-codec",
-> +			.codec_dai_name = "wm8994-aif2",
-> +			.platform_name = "snd-soc-dummy",
+> On the other way, the audio graph does not impose any particular
+> software design. It just describes the links between the different
+> hardware components and each OS is free to implement its own layout.
 
-Why are you mapping in dummy DAIs?  If these devices aren't connected
-then they're not connected and you shouldn't represent them.  If they
-are connected to something then describe those connections, possibly in
-followup patches if you have other devices you need to support upstream
-first.
+So long as there is no effort on actually upstreaming a graph based card
+that shows realistic signs of getting merged in a useful form it doesn't
+meaningfully exist.  Right now nobody is even trying to do that.
 
---S+GnIiKg56iOFcRc
+If you are concerned about simple-card being too Linux specific then by
+all means add board specific bindings, preferably ones that can just be
+added to simple-card as a compatible string.
+
+--tfR0eanJeEhQS6vO
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJW1mfUAAoJECTWi3JdVIfQCQAH/1i7DsF/ibRK3S/uPpWZtZhl
-Oz3Ob43qxB2naiGGNRqmysCs0BmJbFf1zt+Ml8Micbhg9ZaDR12toR/0O54KJQJD
-uxNnVFKY67nxQNpXx6eJtxZ9c3cHMvmjIY+nfDCjzYxqrA5/27imwD+HAeNg7H/Z
-2NQQe5zwi4xkPA2ebS6OhvXBPaeeYOHgd0Q1fqHQtfkfM3QogXN2zqDjZuoPECQw
-UB2CELUIy4NhV1SUXZOMKO2sLCwbHCHaW/dxS3oeku1wUoFk0T41y3ziTMFhW2ua
-OdE3YlsWRKGksLy0MdEFO2IlgRjLlSJSr/VlagofC1F9nQRUWtOnzlYhPkoYo3E=
-=UAaR
+iQEcBAEBCAAGBQJW1mwjAAoJECTWi3JdVIfQuE8H/RtAMzyTBBRjSOlqX5+4sq1l
+FXbddNGOrgfJ0HOpic1ojljWjPngsQCn2dxtWf+VJ3AuS28zJ49M9jeoVVpXK5Ge
+mNWUYOFG3KzsmD1QcQz3f5jNx/fPF/lzUaYt9fHRspcMHSXW5xSAguPfQsWbBlIp
+5cNNajYNh5uGWr9pgr9NUCwx/UUvPs23F4N3tCtTC/5OOxzj7pUmKa+zxh09fplk
+KbxdEOZKIkCcK6LZ0R4mWCp90KA9mLVDxNXZlyPbuqUFdW9dzXXM3g1GzrdZbohi
+zCuYStKs6Nl0Y++0vcv+OIS8OnLn5AOe7aOsz0/217KgenwMXsClXLDTSwBimEc=
+=zzXY
 -----END PGP SIGNATURE-----
 
---S+GnIiKg56iOFcRc--
-
---===============1198946061654036929==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1198946061654036929==--
+--tfR0eanJeEhQS6vO--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
