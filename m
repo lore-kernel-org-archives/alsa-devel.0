@@ -1,23 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: intel: remove unused variable
-Date: Wed, 2 Mar 2016 23:04:10 +0900
-Message-ID: <20160302140410.GQ18327@sirena.org.uk>
-References: <1456766626-20807-1-git-send-email-sudipm.mukherjee@gmail.com>
- <20160301025912.GF18327@sirena.org.uk>
- <20160301054858.GA3814@sudip-pc>
- <20160302010223.GI18327@sirena.org.uk>
- <20160302062628.GA4020@sudip-pc>
- <20160302122709.0620419f@lxorguk.ukuu.org.uk>
- <20160302132024.GO18327@sirena.org.uk>
- <20160302135323.1213f578@lxorguk.ukuu.org.uk>
+Subject: Applied "ASoC: atmel_ssc_dai: distinguish the
+	different SSC" to the asoc tree
+Date: Wed, 02 Mar 2016 23:44:09 +0900
+Message-ID: <E1ab80X-0008On-PZ@finisterre>
+References: <1452666910-23586-1-git-send-email-songjun.wu@atmel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5213599183766633993=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 025F42608EA
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 15:04:26 +0100 (CET)
-In-Reply-To: <20160302135323.1213f578@lxorguk.ukuu.org.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F09B2614A4
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 15:44:19 +0100 (CET)
+In-Reply-To: <1452666910-23586-1-git-send-email-songjun.wu@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,57 +22,168 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To: Songjun Wu <songjun.wu@atmel.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============5213599183766633993==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="RlRfhCwT9rWq1FZx"
-Content-Disposition: inline
+   ASoC: atmel_ssc_dai: distinguish the different SSC
 
+has been applied to the asoc tree at
 
---RlRfhCwT9rWq1FZx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Mar 02, 2016 at 01:53:23PM +0000, One Thousand Gnomes wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > The other option is to just not use the work address if you don't want
-> > to use it (that's what I do).
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> That assumes your work email system can handle kernel traffic and doesn't
-> inflict things like Microsoft Outlook or mash up the content or add bogus
-> footers.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> There are plenty of people who really don't want to be using their work
-> email for the kernel 8)
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-I think you read the exact opposite of what I wrote there!
+Thanks,
+Mark
 
---RlRfhCwT9rWq1FZx
-Content-Type: application/pgp-signature; name="signature.asc"
+>From c706f2e55f04d25d212e34186521a38e8a6e459e Mon Sep 17 00:00:00 2001
+From: Songjun Wu <songjun.wu@atmel.com>
+Date: Wed, 2 Mar 2016 12:15:25 +0100
+Subject: [PATCH] ASoC: atmel_ssc_dai: distinguish the different SSC
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Cpu_dai id always equals 0, can't distinguish the
+different SSC. Use platform_device id to record
+and distinguish the different SSC.
 
-iQEcBAEBCAAGBQJW1vLZAAoJECTWi3JdVIfQT/QH/3WAAiviFz0aN9IQesmsKON3
-oWSZTPbkVmsGL5/xii+NJ2g6aKZUD+daLsWgCGNG6TLw6hMjWAW46hJhgOhx2pYf
-3GBAzx7KagV4Ny7RCnJYn7gR1eR04+ljvSN3aAyuEXSxjHvFgei8p0UluapRuYaV
-0a7QQPZGWKFXVJTp7Dm6eTjqoGJ4+myU4XLjgyxlSA7v8Y25zLjsSN0sehd9s9gX
-Wv09571qxXnOItsE0j/V/hJYnzYkbvc29vUAZ2qMXzAffNZO1Awz6rAYs33YWMkf
-H2/xy8pM4gIQbw0Ac3m9+NUW1V4zW7O3WcEa6MPF6k2AXqC02/6I2HdgDpTAGiY=
-=MHfB
------END PGP SIGNATURE-----
+Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
+Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ drivers/misc/atmel-ssc.c        |  1 +
+ sound/soc/atmel/atmel_ssc_dai.c | 27 ++++++++++++++++++---------
+ 2 files changed, 19 insertions(+), 9 deletions(-)
 
---RlRfhCwT9rWq1FZx--
-
---===============5213599183766633993==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5213599183766633993==--
+diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
+index e11a0bd6c66e..0516ecda54d3 100644
+--- a/drivers/misc/atmel-ssc.c
++++ b/drivers/misc/atmel-ssc.c
+@@ -34,6 +34,7 @@ struct ssc_device *ssc_request(unsigned int ssc_num)
+ 		if (ssc->pdev->dev.of_node) {
+ 			if (of_alias_get_id(ssc->pdev->dev.of_node, "ssc")
+ 				== ssc_num) {
++				ssc->pdev->id = ssc_num;
+ 				ssc_valid = 1;
+ 				break;
+ 			}
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index ba8def5665c4..276897033639 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -285,7 +285,8 @@ static int atmel_ssc_hw_rule_rate(struct snd_pcm_hw_params *params,
+ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
+ 			     struct snd_soc_dai *dai)
+ {
+-	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
++	struct platform_device *pdev = to_platform_device(dai->dev);
++	struct atmel_ssc_info *ssc_p = &ssc_info[pdev->id];
+ 	struct atmel_pcm_dma_params *dma_params;
+ 	int dir, dir_mask;
+ 	int ret;
+@@ -346,7 +347,8 @@ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
+ static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
+ 			       struct snd_soc_dai *dai)
+ {
+-	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
++	struct platform_device *pdev = to_platform_device(dai->dev);
++	struct atmel_ssc_info *ssc_p = &ssc_info[pdev->id];
+ 	struct atmel_pcm_dma_params *dma_params;
+ 	int dir, dir_mask;
+ 
+@@ -392,7 +394,8 @@ static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
+ static int atmel_ssc_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		unsigned int fmt)
+ {
+-	struct atmel_ssc_info *ssc_p = &ssc_info[cpu_dai->id];
++	struct platform_device *pdev = to_platform_device(cpu_dai->dev);
++	struct atmel_ssc_info *ssc_p = &ssc_info[pdev->id];
+ 
+ 	ssc_p->daifmt = fmt;
+ 	return 0;
+@@ -404,7 +407,8 @@ static int atmel_ssc_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ static int atmel_ssc_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
+ 	int div_id, int div)
+ {
+-	struct atmel_ssc_info *ssc_p = &ssc_info[cpu_dai->id];
++	struct platform_device *pdev = to_platform_device(cpu_dai->dev);
++	struct atmel_ssc_info *ssc_p = &ssc_info[pdev->id];
+ 
+ 	switch (div_id) {
+ 	case ATMEL_SSC_CMR_DIV:
+@@ -445,7 +449,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params,
+ 	struct snd_soc_dai *dai)
+ {
+-	int id = dai->id;
++	struct platform_device *pdev = to_platform_device(dai->dev);
++	int id = pdev->id;
+ 	struct atmel_ssc_info *ssc_p = &ssc_info[id];
+ 	struct ssc_device *ssc = ssc_p->ssc;
+ 	struct atmel_pcm_dma_params *dma_params;
+@@ -772,7 +777,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
+ 			     struct snd_soc_dai *dai)
+ {
+-	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
++	struct platform_device *pdev = to_platform_device(dai->dev);
++	struct atmel_ssc_info *ssc_p = &ssc_info[pdev->id];
+ 	struct atmel_pcm_dma_params *dma_params;
+ 	int dir;
+ 
+@@ -795,7 +801,8 @@ static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
+ static int atmel_ssc_trigger(struct snd_pcm_substream *substream,
+ 			     int cmd, struct snd_soc_dai *dai)
+ {
+-	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
++	struct platform_device *pdev = to_platform_device(dai->dev);
++	struct atmel_ssc_info *ssc_p = &ssc_info[pdev->id];
+ 	struct atmel_pcm_dma_params *dma_params;
+ 	int dir;
+ 
+@@ -824,11 +831,12 @@ static int atmel_ssc_trigger(struct snd_pcm_substream *substream,
+ static int atmel_ssc_suspend(struct snd_soc_dai *cpu_dai)
+ {
+ 	struct atmel_ssc_info *ssc_p;
++	struct platform_device *pdev = to_platform_device(cpu_dai->dev);
+ 
+ 	if (!cpu_dai->active)
+ 		return 0;
+ 
+-	ssc_p = &ssc_info[cpu_dai->id];
++	ssc_p = &ssc_info[pdev->id];
+ 
+ 	/* Save the status register before disabling transmit and receive */
+ 	ssc_p->ssc_state.ssc_sr = ssc_readl(ssc_p->ssc->regs, SR);
+@@ -852,12 +860,13 @@ static int atmel_ssc_suspend(struct snd_soc_dai *cpu_dai)
+ static int atmel_ssc_resume(struct snd_soc_dai *cpu_dai)
+ {
+ 	struct atmel_ssc_info *ssc_p;
++	struct platform_device *pdev = to_platform_device(cpu_dai->dev);
+ 	u32 cr;
+ 
+ 	if (!cpu_dai->active)
+ 		return 0;
+ 
+-	ssc_p = &ssc_info[cpu_dai->id];
++	ssc_p = &ssc_info[pdev->id];
+ 
+ 	/* restore SSC register settings */
+ 	ssc_writel(ssc_p->ssc->regs, TFMR, ssc_p->ssc_state.ssc_tfmr);
+-- 
+2.7.0
