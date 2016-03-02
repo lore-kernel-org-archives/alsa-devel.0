@@ -1,206 +1,35 @@
-From: han.lu@intel.com
-Subject: [PATCH 10/10] alsabat: add bash test script
-Date: Wed,  2 Mar 2016 16:53:20 +0800
-Message-ID: <fb7df8bc2b879986b55924073fe6fc70c2cd2197.1456907242.git.han.lu@intel.com>
-References: <cover.1456907242.git.han.lu@intel.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 1/2] ASoC: sh: rcar: core: don't open code of_device_get_match_data()
+Date: Wed, 2 Mar 2016 10:09:33 +0100
+Message-ID: <CAMuHMdVZb7J4TE-vdPMb28LJQF35rnrU_hy34zOa+Rn2aqf5wQ@mail.gmail.com>
+References: <1456850381-8621-1-git-send-email-wsa@the-dreams.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 9884526145A
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 09:51:20 +0100 (CET)
-In-Reply-To: <cover.1456907242.git.han.lu@intel.com>
-In-Reply-To: <cover.1456907242.git.han.lu@intel.com>
-References: <cover.1456907242.git.han.lu@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, liam.r.girdwood@linux.intel.com, bernard.gautier@intel.com, edward.c.popescu@intel.com, alsa-devel@alsa-project.org
-Cc: "Lu, Han" <han.lu@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <1456850381-8621-1-git-send-email-wsa@the-dreams.de>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Wolfram Sang <wsa@the-dreams.de>
+Cc: linux-renesas-soc@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Lu, Han" <han.lu@intel.com>
+On Tue, Mar 1, 2016 at 5:39 PM, Wolfram Sang <wsa@the-dreams.de> wrote:
+> From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+>
+> This change will also make Coverity happy by avoiding a theoretical NULL
+> pointer dereference; yet another reason is to use the above helper function
+> to tighten the code and make it more readable.
+>
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Add bash script for alsabat feature test.
-Examples for alsa tests:
-        ./bat/testbat.sh
-Examples for tinyalsa tests:
-        ./bat/testbat.sh plughw:1,0 plughw:1,0 1
+Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Signed-off-by: Lu, Han <han.lu@intel.com>
+Gr{oetje,eeting}s,
 
-diff --git a/bat/testbat.sh b/bat/testbat.sh
-new file mode 100644
-index 0000000..93b9f70
---- /dev/null
-+++ b/bat/testbat.sh
-@@ -0,0 +1,160 @@
-+#!/bin/bash
-+
-+exe="alsabat"
-+file_sin="default.wav"
-+file_sin_dual="default_dual.wav"
-+logdir="tmp"
-+# default devices
-+dev_playback="default"
-+dev_capture="default"
-+# features passes vs. features all
-+feature_pass=0
-+feature_cnt=0
-+
-+commands="$exe -P $dev_playback -C $dev_capture"
-+
-+init_counter () {
-+	feature_pass=0
-+	feature_all=0
-+}
-+
-+evaluate_result () {
-+	feature_cnt=$((feature_cnt+1))
-+	if [ $1 -eq 0 ]; then
-+		feature_pass=$((feature_pass+1))
-+		echo "pass"
-+	else
-+		echo "fail"
-+	fi
-+}
-+
-+print_result () {
-+	echo "[$feature_pass/$feature_cnt] features passes."
-+}
-+
-+feature_test () {
-+	echo "============================================"
-+	echo "$feature_cnt: ALSA $2"
-+	echo "-------------------------------------------"
-+	echo "$commands $1 --log=$logdir/$feature_cnt.log"
-+	$commands $1 --log=$logdir/$feature_cnt.log
-+	evaluate_result $?
-+	echo "$commands $1" >> $logdir/$((feature_cnt-1)).log
-+}
-+
-+# test items
-+feature_list_test () {
-+	commands="$exe"
-+	feature_test "--saveplay ${file_sin}" \
-+			"generate test file with default params"
-+	sleep 5
-+	feature_test "-P $dev_playback" "single line mode, playback"
-+	feature_test "-C $dev_capture --standalone" "single line mode, capture"
-+	commands="$exe -P $dev_playback -C $dev_capture"
-+	feature_test "--file ${file_sin}" "play wav file and detect"
-+	feature_test "" "generate sine wave and detect"
-+	feature_test "-c1" "configurable channel number: 1"
-+	feature_test "-c2 -F 19:16757" "configurable channel number: 2"
-+	feature_test "-r44100" "configurable sample rate: 44100"
-+	feature_test "-r48000" "configurable sample rate: 48000"
-+	feature_test "-n16387" "configurable duration: in samples"
-+	feature_test "-n2.5s" "configurable duration: in seconds"
-+	feature_test "-f U8 --saveplay U8.wav" "configurable data depth: 8 bit"
-+	feature_test "-f S16_LE --saveplay S16_LE.wav" \
-+			"configurable data depth: 16 bit"
-+	feature_test "-f S24_3LE --saveplay S24_3LE.wav" \
-+			"configurable data depth: 24 bit"
-+	feature_test "-f S32_LE --saveplay S32_LE.wav" \
-+			"configurable data depth: 32 bit"
-+	feature_test "-f cd --saveplay cd.wav" "configurable data depth: cd"
-+	feature_test "-f dat --saveplay dat.wav" "configurable data depth: dat"
-+	tmpfreq=17583
-+	feature_test "-F $tmpfreq --standalone" \
-+			"standalone mode: play and capture"
-+	latestfile=`ls -t1 /tmp/bat.wav.* | head -n 1`
-+	feature_test "--local -F $tmpfreq --file $latestfile" \
-+			"local mode: analyze local file"
-+
-+	print_result
-+}
-+
-+feature_test_tiny () {
-+	echo "============================================"
-+	echo "$feature_cnt: tinyalsa $2"
-+	echo "-------------------------------------------"
-+	echo "$commands -c2 -t $1 --log=$logdir/$feature_cnt.log"
-+	$commands -c2 -t $1 --log=$logdir/$feature_cnt.log
-+	evaluate_result $?
-+	echo "$commands -c2 -t $1" >> $logdir/$((feature_cnt-1)).log
-+}
-+
-+# tinyalsa test items; device may not support "default" name nor some formats
-+feature_list_test_tiny () {
-+	commands="$exe"
-+	feature_test_tiny "-P $dev_playback" "single line mode, playback"
-+	feature_test_tiny "-C $dev_capture --standalone" \
-+			"single line mode, capture"
-+	commands="$exe -P $dev_playback -C $dev_capture"
-+	feature_test_tiny "--saveplay ${file_sin_dual}" \
-+			"generate sine wave and detect"
-+	feature_test_tiny "--file ${file_sin_dual}" "play wav file and detect"
-+	feature_test_tiny "-F 19:16757" "configurable channel number: 2"
-+	feature_test_tiny "-r44100" "configurable sample rate: 44100"
-+	feature_test_tiny "-r48000" "configurable sample rate: 48000"
-+	feature_test_tiny "-n16387" "configurable duration: in samples"
-+	feature_test_tiny "-n2.5s" "configurable duration: in seconds"
-+	feature_test_tiny "-f S16_LE --saveplay S16_LE.wav" \
-+			"configurable data depth: 16 bit"
-+	feature_test_tiny "-f S32_LE --saveplay S32_LE.wav" \
-+			"configurable data depth: 32 bit"
-+	feature_test_tiny "-f cd --saveplay cd.wav" \
-+			"configurable data depth: cd"
-+	feature_test_tiny "-f dat --saveplay dat.wav" \
-+			"configurable data depth: dat"
-+	tmpfreq=17583
-+	feature_test_tiny "-F $tmpfreq --standalone" \
-+			"standalone mode: play and capture"
-+	latestfile=`ls -t1 /tmp/bat.wav.* | head -n 1`
-+	feature_test_tiny "--local -F $tmpfreq --file $latestfile" \
-+			"local mode: analyze local file"
-+
-+	print_result
-+}
-+
-+echo "*******************************************"
-+echo "                BAT Test                   "
-+echo "-------------------------------------------"
-+
-+# get device
-+echo "usage:"
-+echo "  $0 <sound card>"
-+echo "  $0 <device-playback> <device-capture> <1 for tinyalsa, blank for alsa>"
-+
-+use_tinyalsa="0"
-+
-+if [ $# -eq 3 ]; then
-+	dev_playback=$1
-+	dev_capture=$2
-+	use_tinyalsa=$3
-+elif [ $# -eq 2 ]; then
-+	dev_playback=$1
-+	dev_capture=$2
-+elif [ $# -eq 1 ]; then
-+	dev_playback=$1
-+	dev_capture=$1
-+fi
-+
-+echo "current setting:"
-+echo "  $0 $dev_playback $dev_capture $3"
-+
-+# run
-+logdir="tmp"
-+mkdir -p $logdir
-+init_counter
-+if [ $use_tinyalsa = "1" ]; then
-+	feature_list_test_tiny
-+else
-+	feature_list_test
-+fi
-+
-+echo "*******************************************"
--- 
-2.5.0
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
