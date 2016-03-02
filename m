@@ -1,74 +1,57 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5616: add kcontrol for headphone
-	channel switch
-Date: Wed, 2 Mar 2016 19:35:35 +0900
-Message-ID: <20160302103535.GH18327@sirena.org.uk>
-References: <1456910320-6979-1-git-send-email-john.lin@realtek.com>
+Subject: Re: [PATCH] ASoC: intel: remove unused variable
+Date: Wed, 2 Mar 2016 19:56:11 +0900
+Message-ID: <20160302105611.GL18327@sirena.org.uk>
+References: <1456766626-20807-1-git-send-email-sudipm.mukherjee@gmail.com>
+ <20160301025912.GF18327@sirena.org.uk>
+ <20160301054858.GA3814@sudip-pc>
+ <20160302010223.GI18327@sirena.org.uk>
+ <20160302062628.GA4020@sudip-pc>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6920759791161216506=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2EE74261566
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 11:35:38 +0100 (CET)
-In-Reply-To: <1456910320-6979-1-git-send-email-john.lin@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: John Lin <john.lin@realtek.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, bardliao@realtek.com, zhengsq@rock-chips.com, flove@realtek.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ANn8u+P9OAM+OhhT"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20160302062628.GA4020@sudip-pc>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6920759791161216506==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Gqm1jLeCp9Kqu8Dg"
-Content-Disposition: inline
-
-
---Gqm1jLeCp9Kqu8Dg
+--ANn8u+P9OAM+OhhT
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Mar 02, 2016 at 05:18:40PM +0800, John Lin wrote:
+On Wed, Mar 02, 2016 at 11:56:28AM +0530, Sudip Mukherjee wrote:
 
->  	SOC_DOUBLE("HP Playback Switch", RT5616_HP_VOL,
->  		   RT5616_L_MUTE_SFT, RT5616_R_MUTE_SFT, 1, 1),
-> +	SOC_DOUBLE("HP Channel Switch", RT5616_HP_VOL,
-> +		   RT5616_VOL_L_SFT, RT5616_VOL_R_SFT, 1, 1),
+> > > And AFAIK, the From: name and the Signed-off-by: name should match else
+> > > the tools used by Greg and others to generate the stats will break.
 
-What does "Channel Switch" mean?  It looks like this is a mute control
-in which case it shoiuld be HP Playback Switch or similar like other
-mute controls.
+> > I don't understand - what I'm pointing out here is that they do not
+> > match?
 
---Gqm1jLeCp9Kqu8Dg
+> Now I am confused. :(
+> My From: is Sudip Mukherjee <sudipm.mukherjee@gmaill.com>
+> and my Signed-off-by: is Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+> My From name and Signed-off name matches. But my emails donot match.
+
+The e-mail address is part of your signoff like the name.
+
+--ANn8u+P9OAM+OhhT
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJW1sH1AAoJECTWi3JdVIfQB0wH/38iV29NvZSs21Di1GARbckX
-UW3/E0UZSOoU3Rir157bRKdsYMWhpdS1c5WuzEgofFvdikW8ODFFuPJuQGBkFgBU
-P2JO+gdlcK2CEeZLGx4aQBy7i75TxGB9kgO+mkhBRGcltZ861gBb0zS6hsTlnxf3
-8vslKC2qFXhhiEHfvCYHntlwwDdgDizpq5WnJb20HH1qlsJgVQtKERrbiqD2+M06
-ZynvXk5znOpQGoQ+gIwC8FPn9MZ/0LedRE6yjsH2aGMUZTxeCuhQAjMeyClTHDzG
-yMROSvo6CNU/HEBk3aQaveNcpUmRtQOgPTMPMTwSFC+2YqCHFJgQxWXWDG6RVmM=
-=5QWD
+iQEcBAEBCAAGBQJW1sbKAAoJECTWi3JdVIfQ7YwH/iNb+OrfpyZwev7kb7hL9MOl
+PFFkpA3kL5kCzXg8nXYNSRXAG9yrCxjxjES0Vn0qK79uwvozaFUITSgpx1XWs3B5
+Pj+ZFUACGx8uk1Qm+O1HoaCGykd3aGVcd2paCWcPFEv2mfhwXlVlcnTglfhpGa2f
+f/kuvYsN3UQTUJfORrNmfQSYl2iIE/6GOy5cgxlCOI0y303qGju0CgrESFSRqCu1
+PpyQ2oZmzT3iWFeq6Nq2i0N8rMO50CxsfISW2yvJubX9jVVWNnW+s+8lNzhR9toq
+mFFDz+D+9t1unM8auIT1CGkuiP5TMhQXt98e5JTR3HA+2Rn4WzgqFqNI2v4Qc1A=
+=0hGR
 -----END PGP SIGNATURE-----
 
---Gqm1jLeCp9Kqu8Dg--
-
---===============6920759791161216506==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6920759791161216506==--
+--ANn8u+P9OAM+OhhT--
