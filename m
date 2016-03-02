@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sh: rcar: core: don't open code
+Subject: Applied "ASoC: sh: rcar: rsrc-card: don't open code
 	of_device_get_match_data()" to the asoc tree
-Date: Wed, 02 Mar 2016 20:03:53 +0900
-Message-ID: <E1ab4ZN-0005lq-B0@finisterre>
-References: <1456850381-8621-1-git-send-email-wsa@the-dreams.de>
+Date: Wed, 02 Mar 2016 20:03:52 +0900
+Message-ID: <E1ab4ZM-0005lM-MT@finisterre>
+References: <1456850381-8621-2-git-send-email-wsa@the-dreams.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C9CC261A06
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 12:04:02 +0100 (CET)
-In-Reply-To: <1456850381-8621-1-git-send-email-wsa@the-dreams.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D7FB26517F
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 12:04:03 +0100 (CET)
+In-Reply-To: <1456850381-8621-2-git-send-email-wsa@the-dreams.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sh: rcar: core: don't open code of_device_get_match_data()
+   ASoC: sh: rcar: rsrc-card: don't open code of_device_get_match_data()
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 6d8044b4ff305238503edca7d75f3ab7410396ba Mon Sep 17 00:00:00 2001
+>From 6a16c1765120abc8f58b2c5f275c95a33bb25572 Mon Sep 17 00:00:00 2001
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Date: Tue, 1 Mar 2016 17:39:19 +0100
-Subject: [PATCH] ASoC: sh: rcar: core: don't open code
+Date: Tue, 1 Mar 2016 17:39:20 +0100
+Subject: [PATCH] ASoC: sh: rcar: rsrc-card: don't open code
  of_device_get_match_data()
 
 This change will also make Coverity happy by avoiding a theoretical NULL
@@ -67,29 +67,38 @@ Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/sh/rcar/rsrc-card.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 21e13b3a356f..ba37b0d55b21 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1119,7 +1119,6 @@ static int rsnd_probe(struct platform_device *pdev)
- 	struct rsnd_priv *priv;
- 	struct device *dev = &pdev->dev;
- 	struct rsnd_dai *rdai;
--	const struct of_device_id *of_id = of_match_device(rsnd_of_match, dev);
- 	int (*probe_func[])(struct rsnd_priv *priv) = {
- 		rsnd_gen_probe,
- 		rsnd_dma_probe,
-@@ -1145,7 +1144,7 @@ static int rsnd_probe(struct platform_device *pdev)
- 	}
+diff --git a/sound/soc/sh/rcar/rsrc-card.c b/sound/soc/sh/rcar/rsrc-card.c
+index 8a357fdf1077..545e94245e62 100644
+--- a/sound/soc/sh/rcar/rsrc-card.c
++++ b/sound/soc/sh/rcar/rsrc-card.c
+@@ -71,7 +71,6 @@ struct rsrc_card_priv {
+ #define rsrc_priv_to_dev(priv) ((priv)->snd_card.dev)
+ #define rsrc_priv_to_link(priv, i) ((priv)->snd_card.dai_link + (i))
+ #define rsrc_priv_to_props(priv, i) ((priv)->dai_props + (i))
+-#define rsrc_dev_to_of_data(dev) (of_match_device(rsrc_card_of_match, (dev))->data)
  
- 	priv->pdev	= pdev;
--	priv->flags	= (unsigned long)of_id->data;
-+	priv->flags	= (unsigned long)of_device_get_match_data(dev);
- 	spin_lock_init(&priv->lock);
+ static int rsrc_card_startup(struct snd_pcm_substream *substream)
+ {
+@@ -246,7 +245,7 @@ static int rsrc_card_parse_links(struct device_node *np,
+ 		struct device *dev = rsrc_priv_to_dev(priv);
+ 		const struct rsrc_card_of_data *of_data;
  
- 	/*
+-		of_data = rsrc_dev_to_of_data(dev);
++		of_data = of_device_get_match_data(dev);
+ 
+ 		/* FE is dummy */
+ 		dai_link->cpu_of_node		= NULL;
+@@ -396,7 +395,7 @@ static int rsrc_card_parse_of(struct device_node *node,
+ 			      struct rsrc_card_priv *priv,
+ 			      struct device *dev)
+ {
+-	const struct rsrc_card_of_data *of_data = rsrc_dev_to_of_data(dev);
++	const struct rsrc_card_of_data *of_data = of_device_get_match_data(dev);
+ 	struct rsrc_card_dai *props;
+ 	struct snd_soc_dai_link *links;
+ 	int ret;
 -- 
 2.7.0
