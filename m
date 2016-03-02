@@ -1,47 +1,95 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: sh: rcar: rsrc-card: don't open code
- of_device_get_match_data()
-Date: Wed, 2 Mar 2016 20:01:20 +0900
-Message-ID: <20160302110120.GM18327@sirena.org.uk>
+Subject: Applied "ASoC: sh: rcar: core: don't open code
+	of_device_get_match_data()" to the asoc tree
+Date: Wed, 02 Mar 2016 20:03:53 +0900
+Message-ID: <E1ab4ZN-0005lq-B0@finisterre>
 References: <1456850381-8621-1-git-send-email-wsa@the-dreams.de>
- <1456850381-8621-2-git-send-email-wsa@the-dreams.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="dLlo2NaaNzuiURNs"
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1456850381-8621-2-git-send-email-wsa@the-dreams.de>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Wolfram Sang <wsa@the-dreams.de>
-Cc: linux-renesas-soc@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C9CC261A06
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 12:04:02 +0100 (CET)
+In-Reply-To: <1456850381-8621-1-git-send-email-wsa@the-dreams.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---dLlo2NaaNzuiURNs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: sh: rcar: core: don't open code of_device_get_match_data()
 
-On Tue, Mar 01, 2016 at 05:39:20PM +0100, Wolfram Sang wrote:
+has been applied to the asoc tree at
 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Please ensure that your signoffs match the domain you're sending from,
-at least the domain part - I'm fairly sure you're the same person but
-it's not something I should need to think about.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---dLlo2NaaNzuiURNs
-Content-Type: application/pgp-signature; name="signature.asc"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEcBAEBCAAGBQJW1sf/AAoJECTWi3JdVIfQ+XQH/jvzEVm+sD/FTgN26f8DzVfA
-K0Gbl+gIxJ/d83kzhm/XN3aT9Sih05zIhzyRQiaHHI6/8Ps9oEjA0gcuasgB3hiH
-8WQqRL1Dr4UzrYOozpz4L/+8OUKIZSt5xKFzuXdHkgzslzeeUc+dR2N66+goX1Ty
-QP1o9GRFK7LJQ4kHr6FzgV9U9+W7fkGziqiz8BtqMjfQNcW1lVyYboKUTX7d8rZA
-PPwEief3KBpY8D9FvodXMDuG8HVf9GwitkrJ/jAoGyrz9MoWP2RoTv4jx8jhN71E
-ZRt6cf4p2ZWr/z97+tLr+gkrvTCdKKQpzdnWRiY1oxBkV4dbZT9qNzcaJdVNcGE=
-=x51l
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---dLlo2NaaNzuiURNs--
+Thanks,
+Mark
+
+>From 6d8044b4ff305238503edca7d75f3ab7410396ba Mon Sep 17 00:00:00 2001
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Date: Tue, 1 Mar 2016 17:39:19 +0100
+Subject: [PATCH] ASoC: sh: rcar: core: don't open code
+ of_device_get_match_data()
+
+This change will also make Coverity happy by avoiding a theoretical NULL
+pointer dereference; yet another reason is to use the above helper function
+to tighten the code and make it more readable.
+
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 21e13b3a356f..ba37b0d55b21 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1119,7 +1119,6 @@ static int rsnd_probe(struct platform_device *pdev)
+ 	struct rsnd_priv *priv;
+ 	struct device *dev = &pdev->dev;
+ 	struct rsnd_dai *rdai;
+-	const struct of_device_id *of_id = of_match_device(rsnd_of_match, dev);
+ 	int (*probe_func[])(struct rsnd_priv *priv) = {
+ 		rsnd_gen_probe,
+ 		rsnd_dma_probe,
+@@ -1145,7 +1144,7 @@ static int rsnd_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	priv->pdev	= pdev;
+-	priv->flags	= (unsigned long)of_id->data;
++	priv->flags	= (unsigned long)of_device_get_match_data(dev);
+ 	spin_lock_init(&priv->lock);
+ 
+ 	/*
+-- 
+2.7.0
