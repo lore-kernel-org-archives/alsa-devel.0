@@ -1,8 +1,8 @@
 From: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v5 6/9] ASoC: hdmi-codec: Use HDMI notifications to add jack
- support
-Date: Wed,  2 Mar 2016 15:49:10 +0100
-Message-ID: <1456930153-11853-7-git-send-email-p.zabel@pengutronix.de>
+Subject: [PATCH v5 8/9] drm/mediatek: hdmi: use helper function for N and CTS
+ calculation
+Date: Wed,  2 Mar 2016 15:49:12 +0100
+Message-ID: <1456930153-11853-9-git-send-email-p.zabel@pengutronix.de>
 References: <1456930153-11853-1-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,194 +22,125 @@ To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Use HDMI connection / disconnection notifications to update an ALSA
-jack object. Also make a copy of the ELD block after every change.
+Use the hdmi helper function [1] to calculate N and CTS.
+
+[1] https://patchwork.kernel.org/patch/8091531/ ("video: hdmi: add helper
+    function for N and CTS")
 
 Signed-off-by: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 ---
- include/sound/hdmi-codec.h    |  6 +++
- sound/soc/codecs/hdmi-codec.c | 85 +++++++++++++++++++++++++++++++++++++++----
- 2 files changed, 83 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_hdmi_hw.c | 85 +++++++++-------------------------
+ 1 file changed, 21 insertions(+), 64 deletions(-)
 
-diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
-index 15fe70f..8b6219d 100644
---- a/include/sound/hdmi-codec.h
-+++ b/include/sound/hdmi-codec.h
-@@ -99,6 +99,12 @@ struct hdmi_codec_pdata {
- 	int max_i2s_channels;
+diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi_hw.c b/drivers/gpu/drm/mediatek/mtk_hdmi_hw.c
+index 6acbe77..9be50f5 100644
+--- a/drivers/gpu/drm/mediatek/mtk_hdmi_hw.c
++++ b/drivers/gpu/drm/mediatek/mtk_hdmi_hw.c
+@@ -492,65 +492,6 @@ static const struct hdmi_acr_n hdmi_rec_n_table[] = {
+ 	{      0, {  4096,  6272,  6144 } }, /* all other TMDS clocks */
  };
  
-+struct snd_soc_codec;
-+struct snd_soc_jack;
-+
-+int hdmi_codec_set_jack_detect(struct snd_soc_codec *codec,
-+			       struct snd_soc_jack *jack);
-+
- #define HDMI_CODEC_DRV_NAME "hdmi-audio-codec"
- 
- #endif /* __HDMI_CODEC_H__ */
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 687332d..7d5db11 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -12,9 +12,12 @@
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
-  * General Public License for more details.
-  */
-+#include <linux/hdmi-not.h>
- #include <linux/module.h>
-+#include <linux/notifier.h>
- #include <linux/string.h>
- #include <sound/core.h>
-+#include <sound/jack.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -27,11 +30,16 @@
- struct hdmi_codec_priv {
- 	struct hdmi_codec_pdata hcd;
- 	struct snd_soc_dai_driver *daidrv;
-+	struct snd_soc_jack *jack;
- 	struct hdmi_codec_daifmt daifmt[2];
- 	struct mutex current_stream_lock;
- 	struct snd_pcm_substream *current_stream;
- 	struct snd_pcm_hw_constraint_list ratec;
-+	struct mutex eld_lock;
- 	uint8_t eld[MAX_ELD_BYTES];
-+	struct device *dev;
-+	struct notifier_block nb;
-+	unsigned int jack_status;
- };
- 
- static const struct snd_soc_dapm_widget hdmi_widgets[] = {
-@@ -86,7 +94,7 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
- 			      struct snd_soc_dai *dai)
- {
- 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
--	int ret = 0;
-+	int ret;
- 
- 	dev_dbg(dai->dev, "%s()\n", __func__);
- 
-@@ -106,17 +114,15 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
- 	}
- 
- 	if (hcp->hcd.ops->get_eld) {
-+		mutex_lock(&hcp->eld_lock);
- 		ret = hcp->hcd.ops->get_eld(dai->dev->parent, hcp->eld,
- 					    sizeof(hcp->eld));
+-/**
+- * hdmi_recommended_n() - Return N value recommended by HDMI specification
+- * @freq: audio sample rate in Hz
+- * @clock: rounded TMDS clock in kHz
+- */
+-static unsigned int hdmi_recommended_n(unsigned int freq, unsigned int clock)
+-{
+-	const struct hdmi_acr_n *recommended;
+-	unsigned int i;
 -
--		if (!ret) {
-+		if (!ret)
- 			ret = snd_pcm_hw_constraint_eld(substream->runtime,
- 							hcp->eld);
--			if (ret)
--				return ret;
--		}
-+		mutex_unlock(&hcp->eld_lock);
- 	}
--	return 0;
-+	return ret;
+-	for (i = 0; i < ARRAY_SIZE(hdmi_rec_n_table) - 1; i++) {
+-		if (clock == hdmi_rec_n_table[i].clock)
+-			break;
+-	}
+-	recommended = hdmi_rec_n_table + i;
+-
+-	switch (freq) {
+-	case 32000:
+-		return recommended->n[0];
+-	case 44100:
+-		return recommended->n[1];
+-	case 48000:
+-		return recommended->n[2];
+-	case 88200:
+-		return recommended->n[1] * 2;
+-	case 96000:
+-		return recommended->n[2] * 2;
+-	case 176400:
+-		return recommended->n[1] * 4;
+-	case 192000:
+-		return recommended->n[2] * 4;
+-	default:
+-		return (128 * freq) / 1000;
+-	}
+-}
+-
+-static unsigned int hdmi_mode_clock_to_hz(unsigned int clock)
+-{
+-	switch (clock) {
+-	case 25175:
+-		return 25174825;	/* 25.2/1.001 MHz */
+-	case 74176:
+-		return 74175824;	/* 74.25/1.001 MHz */
+-	case 148352:
+-		return 148351648;	/* 148.5/1.001 MHz */
+-	case 296703:
+-		return 296703297;	/* 297/1.001 MHz */
+-	default:
+-		return clock * 1000;
+-	}
+-}
+-
+-static unsigned int hdmi_expected_cts(unsigned int audio_sample_rate,
+-				      unsigned int tmds_clock, unsigned int n)
+-{
+-	return DIV_ROUND_CLOSEST_ULL((u64)hdmi_mode_clock_to_hz(tmds_clock) * n,
+-				     128 * audio_sample_rate);
+-}
+-
+ static void do_hdmi_hw_aud_set_ncts(struct mtk_hdmi *hdmi, unsigned int n,
+ 				    unsigned int cts)
+ {
+@@ -575,18 +516,34 @@ static void do_hdmi_hw_aud_set_ncts(struct mtk_hdmi *hdmi, unsigned int n,
+ 		mtk_hdmi_write(hdmi, GRL_NCTS, val[i]);
  }
  
- static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
-@@ -326,6 +332,62 @@ static struct snd_soc_codec_driver hdmi_codec = {
- 	.num_dapm_routes = ARRAY_SIZE(hdmi_routes),
- };
- 
-+static void hdmi_codec_jack_report(struct hdmi_codec_priv *hcp,
-+				   unsigned int jack_status)
++static unsigned int hdmi_mode_clock_to_hz(unsigned int clock)
 +{
-+	if (!hcp->jack)
-+		return;
-+
-+	if (jack_status != hcp->jack_status) {
-+		snd_soc_jack_report(hcp->jack, jack_status, SND_JACK_LINEOUT);
-+		hcp->jack_status = jack_status;
++	switch (clock) {
++	case 25175:
++		return 25174825;	/* 25.2/1.001 MHz */
++	case 74176:
++		return 74175824;	/* 74.25/1.001 MHz */
++	case 148352:
++		return 148351648;	/* 148.5/1.001 MHz */
++	case 296703:
++		return 296703296;	/* 297/1.001 MHz */
++	default:
++		return clock * 1000;
 +	}
 +}
 +
-+static int hdmi_codec_notify(struct notifier_block *nb, unsigned long event,
-+			     void *data)
-+{
-+	struct hdmi_codec_priv *hcp = container_of(nb, struct hdmi_codec_priv,
-+						   nb);
-+	union hdmi_event *event_block = data;
-+
-+	if (hcp->dev->parent != event_block->base.source)
-+		return NOTIFY_OK;
-+
-+	if (!hcp->jack)
-+		return NOTIFY_OK;
-+
-+	switch (event) {
-+	case HDMI_CONNECTED:
-+		hdmi_codec_jack_report(hcp, SND_JACK_LINEOUT);
-+		break;
-+	case HDMI_DISCONNECTED:
-+		hdmi_codec_jack_report(hcp, 0);
-+		break;
-+	case HDMI_NEW_ELD:
-+		mutex_lock(&hcp->eld_lock);
-+		memcpy(hcp->eld, event_block->eld.eld, sizeof(hcp->eld));
-+		mutex_unlock(&hcp->eld_lock);
-+		break;
-+	}
-+
-+	return NOTIFY_OK;
-+}
-+
-+int hdmi_codec_set_jack_detect(struct snd_soc_codec *codec,
-+			       struct snd_soc_jack *jack)
-+{
-+	struct hdmi_codec_priv *hcp = snd_soc_codec_get_drvdata(codec);
-+
-+	hcp->jack = jack;
-+	hcp->nb.notifier_call = hdmi_codec_notify;
-+
-+	hdmi_register_notifier(&hcp->nb);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(hdmi_codec_set_jack_detect);
-+
- static int hdmi_codec_probe(struct platform_device *pdev)
+ void mtk_hdmi_hw_aud_set_ncts(struct mtk_hdmi *hdmi, unsigned int sample_rate,
+ 			      unsigned int clock)
  {
- 	struct hdmi_codec_pdata *hcd = pdev->dev.platform_data;
-@@ -354,6 +416,7 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+-	unsigned int n, cts;
++	struct hdmi_audio_n_cts n_cts;
  
- 	hcp->hcd = *hcd;
- 	mutex_init(&hcp->current_stream_lock);
-+	mutex_init(&hcp->eld_lock);
+-	n = hdmi_recommended_n(sample_rate, clock);
+-	cts = hdmi_expected_cts(sample_rate, clock, n);
++	hdmi_audio_get_coherent_n_cts(sample_rate, hdmi_mode_clock_to_hz(clock),
++				      &n_cts);
  
- 	hcp->daidrv = devm_kzalloc(dev, dai_count * sizeof(*hcp->daidrv),
- 				   GFP_KERNEL);
-@@ -370,6 +433,8 @@ static int hdmi_codec_probe(struct platform_device *pdev)
- 	if (hcd->spdif)
- 		hcp->daidrv[i] = hdmi_spdif_dai;
+ 	dev_dbg(hdmi->dev, "%s: sample_rate=%u, clock=%d, cts=%u, n=%u\n",
+-		__func__, sample_rate, clock, n, cts);
++		__func__, sample_rate, clock, n_cts.cts, n_cts.n);
  
-+	dev_set_drvdata(dev, hcp);
-+
- 	ret = snd_soc_register_codec(dev, &hdmi_codec, hcp->daidrv,
- 				     dai_count);
- 	if (ret) {
-@@ -378,12 +443,16 @@ static int hdmi_codec_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	dev_set_drvdata(dev, hcp);
-+	hcp->dev = dev;
-+
- 	return 0;
- }
- 
- static int hdmi_codec_remove(struct platform_device *pdev)
- {
-+	struct hdmi_codec_priv *hcp = platform_get_drvdata(pdev);
-+
-+	hdmi_unregister_notifier(&hcp->nb);
- 	snd_soc_unregister_codec(&pdev->dev);
- 	return 0;
+ 	mtk_hdmi_mask(hdmi, DUMMY_304, AUDIO_I2S_NCTS_SEL_64,
+ 		      AUDIO_I2S_NCTS_SEL);
+-	do_hdmi_hw_aud_set_ncts(hdmi, n, cts);
++	do_hdmi_hw_aud_set_ncts(hdmi, n_cts.n, n_cts.cts);
  }
 -- 
 2.7.0
