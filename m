@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 2/4] ASoC: core: add code to complete
- dai init after pcm creation
-Date: Wed, 2 Mar 2016 13:03:13 +0900
-Message-ID: <20160302040313.GY18327@sirena.org.uk>
-References: <1456820357-2545-1-git-send-email-arnaud.pouliquen@st.com>
- <1456820357-2545-3-git-send-email-arnaud.pouliquen@st.com>
+Subject: Re: [PATCH v2] ASoC: imx-wm8958: add imx-wm8958
+ machine driver
+Date: Wed, 2 Mar 2016 13:11:01 +0900
+Message-ID: <20160302041101.GZ18327@sirena.org.uk>
+References: <6f90780124a7f5bf31452623fdf04225873fc711.1456457898.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8730152575315156779=="
+Content-Type: multipart/mixed; boundary="===============1198946061654036929=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C9AC426145A
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 05:03:22 +0100 (CET)
-In-Reply-To: <1456820357-2545-3-git-send-email-arnaud.pouliquen@st.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 32F5E2606F5
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 05:11:08 +0100 (CET)
+In-Reply-To: <6f90780124a7f5bf31452623fdf04225873fc711.1456457898.git.zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,57 +21,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, David Airlie <airlied@linux.ie>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Iwai <tiwai@suse.de>, Philipp Zabel <p.zabel@pengutronix.de>, Moise Gergaud <moise.gergaud@st.com>
+To: Zidan Wang <zidan.wang@freescale.com>
+Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, Xiubo.Lee@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8730152575315156779==
+--===============1198946061654036929==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="zXwtYLeuv4p4yQJ9"
+	protocol="application/pgp-signature"; boundary="S+GnIiKg56iOFcRc"
 Content-Disposition: inline
 
 
---zXwtYLeuv4p4yQJ9
+--S+GnIiKg56iOFcRc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 01, 2016 at 09:19:15AM +0100, Arnaud Pouliquen wrote:
-> Some Controls defined in DAI need to be associated to PCM device (e.g. IE=
-C60958).
->=20
-> This allows to perform post initialization in DAI after PCM device creati=
-on.
+On Fri, Feb 26, 2016 at 11:42:42AM +0800, Zidan Wang wrote:
 
-Rather than add an explicit callback and make drivers open code this
-I'd prefer to see us either just move the control creation entirely (I
-can't immediately think of a particular need for the current ordering)
-or add a data based mechanism like we currently have.  Why do we need to
-do this via a callback?
+> +	if (id == HIFI_DAI) {
+> +		/*
+> +		 * Set GPIO1 pin function to reserve, so that DAC1 and ADC1
+> +		 * using shared LRCLK from DACLRCK1.
+> +		 */
+> +		snd_soc_update_bits(codec, WM8994_GPIO_1, 0x1f, 0x2);
 
---zXwtYLeuv4p4yQJ9
+No, this is broken - if you're writing directly into the register map of
+a device without the driver that's just asking for breakage.
+
+> +	} else if (id == VOICE_DAI) {
+> +		/*
+
+This looks like you're writing a switch statement...
+
+> +		if (card->dapm.bias_level == SND_SOC_BIAS_OFF) {
+> +			/* need to enable mclk to write/read wm8958 register */
+> +			for (i = 0; i < WM8958_MCLK_MAX; i++) {
+> +				if (!IS_ERR(data->mclk[i])) {
+> +					ret = clk_prepare_enable(data->mclk[i]);
+
+The CODEC needs to look after its own clocks.
+
+> +	[VOICE_DAI] =   {
+> +			.name = "Voice",
+> +			.stream_name = "Voice",
+> +			.cpu_dai_name = "snd-soc-dummy-dai",
+> +			.codec_name = "wm8994-codec",
+> +			.codec_dai_name = "wm8994-aif2",
+> +			.platform_name = "snd-soc-dummy",
+
+Why are you mapping in dummy DAIs?  If these devices aren't connected
+then they're not connected and you shouldn't represent them.  If they
+are connected to something then describe those connections, possibly in
+followup patches if you have other devices you need to support upstream
+first.
+
+--S+GnIiKg56iOFcRc
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJW1mYAAAoJECTWi3JdVIfQ/bIH/RF/7MMXXMT0nJ+HCJZOgkaM
-dsOS1LgtKYj+56pc2gu0F9NLxDyZZEQOsHtVygyo9hQAWqUEpJVi6S5hscBfLHvV
-+NED/Wms+g1nYU4Xi76V51FQNF9CSTVfFNhowiM5mXm1x02K0mEv8DCPMLRZ951e
-pxLabYDo9jPBJv1wVPGTPL+04IJ0ZmOKic36O2tCn/8u8aAVWjz+ftaLprZI5Nws
-akQ/ge44Ulflm/RH/6X4t/3Li4pmmLlaijZ0KfcagB6zFz4Q5NDZkbaCk2ba0mZ2
-9wI1/eRz+ouH9LJSUN0lMWLxxx53IO8kHnwopEb01/s3iJ9JI7A8FnBAecLLddY=
-=1rs3
+iQEcBAEBCAAGBQJW1mfUAAoJECTWi3JdVIfQCQAH/1i7DsF/ibRK3S/uPpWZtZhl
+Oz3Ob43qxB2naiGGNRqmysCs0BmJbFf1zt+Ml8Micbhg9ZaDR12toR/0O54KJQJD
+uxNnVFKY67nxQNpXx6eJtxZ9c3cHMvmjIY+nfDCjzYxqrA5/27imwD+HAeNg7H/Z
+2NQQe5zwi4xkPA2ebS6OhvXBPaeeYOHgd0Q1fqHQtfkfM3QogXN2zqDjZuoPECQw
+UB2CELUIy4NhV1SUXZOMKO2sLCwbHCHaW/dxS3oeku1wUoFk0T41y3ziTMFhW2ua
+OdE3YlsWRKGksLy0MdEFO2IlgRjLlSJSr/VlagofC1F9nQRUWtOnzlYhPkoYo3E=
+=UAaR
 -----END PGP SIGNATURE-----
 
---zXwtYLeuv4p4yQJ9--
+--S+GnIiKg56iOFcRc--
 
---===============8730152575315156779==
+--===============1198946061654036929==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8730152575315156779==--
+--===============1198946061654036929==--
