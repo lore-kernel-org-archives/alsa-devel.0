@@ -1,25 +1,14 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: Alternative binding proposal for tda998x audio
- (Was: Re: [PATCH RFC v5 4/8] drm/i2c: tda998x: Add support of a DT graph of
- ports)
-Date: Wed, 2 Mar 2016 10:34:22 +0200
-Message-ID: <56D6A58E.4020606@ti.com>
-References: <cover.1455720381.git.jsarha@ti.com>
- <842e221030a0b14bc862790eb2f5bc97bb29c012.1455720381.git.jsarha@ti.com>
- <20160218143530.GB9654@rob-hp-laptop> <56CF04DA.8080905@ti.com>
- <20160226004311.GM5783@n2100.arm.linux.org.uk> <56D02594.4020407@ti.com>
- <20160226112159.GO5783@n2100.arm.linux.org.uk> <56D41F1A.2030100@ti.com>
- <56D5A6AA.2030907@ti.com> <20160301163553.3ef298fb2c0bb25ef662a41d@free.fr>
- <56D5BA6D.8090904@ti.com> <20160301171630.630a47dc00060645f89bb8ab@free.fr>
- <56D5DF7D.7090608@ti.com> <20160301202619.011013effd265fdee93d4d8e@free.fr>
+From: han.lu@intel.com
+Subject: [PATCH 00/10] *** alsabat features and fixes ***
+Date: Wed,  2 Mar 2016 16:53:10 +0800
+Message-ID: <cover.1456907242.git.han.lu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id AA34B2606F5
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 09:34:30 +0100 (CET)
-In-Reply-To: <20160301202619.011013effd265fdee93d4d8e@free.fr>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id BFAAC2614D3
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 09:51:07 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,56 +18,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, peter.ujfalusi@ti.com, devicetree@vger.kernel.org, airlied@linux.ie, tomi.valkeinen@ti.com, arnaud.pouliquen@st.com, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, broonie@kernel.org, bcousson@baylibre.com, linux-omap@vger.kernel.org
+To: tiwai@suse.de, liam.r.girdwood@linux.intel.com, bernard.gautier@intel.com, edward.c.popescu@intel.com, alsa-devel@alsa-project.org
+Cc: "Lu, Han" <han.lu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/01/16 21:26, Jean-Francois Moine wrote:
-> On Tue, 1 Mar 2016 20:29:17 +0200
-> Jyri Sarha <jsarha@ti.com> wrote:
->
->> I understand the short comings of simple-card and it's binding. However,
->> the binding is documented and it is feasible to extract the audio
->> connections from a simple-card binding too. In fact it models the I2S
->> connections better than straight out of tehe box graph binding. Actually
->> a graph is not the best way describe an i2s-bus with multiple DAIs
->> (codec or CPU) connected to it.
->
-> I still don't understand your problem. You want something like:
->
+From: "Lu, Han" <han.lu@intel.com>
 
-The problem is adding redundant unused details into binding without any 
-plan of ever using them.
+add alsabat features and some fixes.
+	1. add default device name
+	2. add standalone mode
+	3. add tinyalsa support
+	4. add bash script for basic features test on alsa and tinyalsa
+	5. refactor alsa thread process to make clearer structure, and
+	allow more common functions shared by alsa and tinyalsa
+	6. some tiny fixes on code, text and comments
 
-Fundamentally my problem is finding some consensus on the tda998x ASoC 
-implementation. I've been reusing your binding for couple of review 
-rounds and there has been some well justified critique towards it. I 
-feel stupid in pushing forward something that I do not completely agree 
-myself, so I decided to try something else.
+Lu, Han (10):
+  alsabat: add default device name for playback and capture
+  alsabat: add standalone mode
+  alsabat: add tinyalsa support
+  alsabat: clean the thread loopback of alsa capture
+  alsabat: refactor wav file process
+  alsabat: use common data generator function
+  alsabat: add interrupt handler for shutdown
+  alsabat: fix an incorrect print
+  alsabat: use variable for thread return value
+  alsabat: add bash test script
 
-> 	audio-ports = <	TDA998x_SPDIF	0x04
-> 			TDA998x_I2S	0x03>;
->
-> and the graph definition would be:
->
-> 	port@03 {
-> 		reg = <0x03>;
-> 		port-type = "audio-i2s";
-> 		...
-> 	};
->
-> 	port@04 {
-> 		reg = <0x04>;
-> 		port-type = "audio-spdif";
-> 		...
-> 	};
->
-> Apart the syntax, I don't really see the difference.
->
+ bat/Makefile.am |  14 +-
+ bat/alsa.c      | 215 +++++++++--------------------
+ bat/alsa.h      |   3 +
+ bat/alsabat.1   |  12 ++
+ bat/bat.c       |  80 ++++++++++-
+ bat/common.c    |  89 ++++++++++++
+ bat/common.h    |  14 ++
+ bat/testbat.sh  | 160 +++++++++++++++++++++
+ bat/tinyalsa.c  | 422 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bat/tinyalsa.h  |  23 +++
+ configure.ac    |   9 +-
+ 11 files changed, 883 insertions(+), 158 deletions(-)
+ create mode 100644 bat/testbat.sh
+ create mode 100644 bat/tinyalsa.c
+ create mode 100644 bat/tinyalsa.h
 
-Yes, the necessary information is contained in both bindings. I can live 
-with either one of them, but I would prefer my version. Essentially I 
-would just like to move forward.
-
-Best regards,
-Jyri
+-- 
+2.5.0
