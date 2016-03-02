@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Add IVI feedback path
-	in nau88125_ssm4567 machine" to the asoc tree
-Date: Wed, 02 Mar 2016 13:00:43 +0900
-Message-ID: <E1aaxxr-0003bV-0h@finisterre>
-References: <1456799352-22653-3-git-send-email-vinod.koul@intel.com>
+Subject: Re: [PATCH v3 2/4] ASoC: core: add code to complete
+ dai init after pcm creation
+Date: Wed, 2 Mar 2016 13:03:13 +0900
+Message-ID: <20160302040313.GY18327@sirena.org.uk>
+References: <1456820357-2545-1-git-send-email-arnaud.pouliquen@st.com>
+ <1456820357-2545-3-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8730152575315156779=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 23E6026155D
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 05:00:48 +0100 (CET)
-In-Reply-To: <1456799352-22653-3-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C9AC426145A
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 05:03:22 +0100 (CET)
+In-Reply-To: <1456820357-2545-3-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,74 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, David Airlie <airlied@linux.ie>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Iwai <tiwai@suse.de>, Philipp Zabel <p.zabel@pengutronix.de>, Moise Gergaud <moise.gergaud@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: Intel: Skylake: Add IVI feedback path in nau88125_ssm4567 machine
+--===============8730152575315156779==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="zXwtYLeuv4p4yQJ9"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--zXwtYLeuv4p4yQJ9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Tue, Mar 01, 2016 at 09:19:15AM +0100, Arnaud Pouliquen wrote:
+> Some Controls defined in DAI need to be associated to PCM device (e.g. IE=
+C60958).
+>=20
+> This allows to perform post initialization in DAI after PCM device creati=
+on.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Rather than add an explicit callback and make drivers open code this
+I'd prefer to see us either just move the control creation entirely (I
+can't immediately think of a particular need for the current ordering)
+or add a data based mechanism like we currently have.  Why do we need to
+do this via a callback?
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--zXwtYLeuv4p4yQJ9
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Thanks,
-Mark
+iQEcBAEBCAAGBQJW1mYAAAoJECTWi3JdVIfQ/bIH/RF/7MMXXMT0nJ+HCJZOgkaM
+dsOS1LgtKYj+56pc2gu0F9NLxDyZZEQOsHtVygyo9hQAWqUEpJVi6S5hscBfLHvV
++NED/Wms+g1nYU4Xi76V51FQNF9CSTVfFNhowiM5mXm1x02K0mEv8DCPMLRZ951e
+pxLabYDo9jPBJv1wVPGTPL+04IJ0ZmOKic36O2tCn/8u8aAVWjz+ftaLprZI5Nws
+akQ/ge44Ulflm/RH/6X4t/3Li4pmmLlaijZ0KfcagB6zFz4Q5NDZkbaCk2ba0mZ2
+9wI1/eRz+ouH9LJSUN0lMWLxxx53IO8kHnwopEb01/s3iJ9JI7A8FnBAecLLddY=
+=1rs3
+-----END PGP SIGNATURE-----
 
->From 5188b95a60ce33d5445833f9b0a374a2ad3200f4 Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Tue, 1 Mar 2016 07:59:11 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Add IVI feedback path in
- nau88125_ssm4567 machine
+--zXwtYLeuv4p4yQJ9--
 
-We can enable the IVI feedback path by connecting Left/Right
-speaker sensors (codec) to  ssp0 Rx (soc-dsp). This way aDSP gets
-feedback data from codec to DSP algorithms
+--===============8730152575315156779==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index a75c09343f84..f6a672c55be9 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -132,6 +132,8 @@ static const struct snd_soc_dapm_route skylake_map[] = {
- 
- 	/* IV feedback path */
- 	{ "codec0_lp_in", NULL, "ssp0 Rx"},
-+	{ "ssp0 Rx", NULL, "Left Capture Sense" },
-+	{ "ssp0 Rx", NULL, "Right Capture Sense" },
- 
- 	{ "Playback", NULL, "ssp1 Tx"},
- 	{ "ssp1 Tx", NULL, "codec1_out"},
-@@ -534,6 +536,7 @@ static struct snd_soc_dai_link skylake_dais[] = {
- 		.ignore_pmdown_time = 1,
- 		.be_hw_params_fixup = skylake_ssp_fixup,
- 		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
- 	},
- 	{
- 		/* SSP1 - Codec */
--- 
-2.7.0
+--===============8730152575315156779==--
