@@ -1,12 +1,13 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/2] ASoC: sh: rcar: core: don't open code of_device_get_match_data()
-Date: Wed, 2 Mar 2016 10:09:33 +0100
-Message-ID: <CAMuHMdVZb7J4TE-vdPMb28LJQF35rnrU_hy34zOa+Rn2aqf5wQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: sh: rcar: rsrc-card: don't open code of_device_get_match_data()
+Date: Wed, 2 Mar 2016 10:10:26 +0100
+Message-ID: <CAMuHMdUHaCQxcr7qKoqm3hZ_4OeOqc5v-F+cXRdh7cvFRRPBFQ@mail.gmail.com>
 References: <1456850381-8621-1-git-send-email-wsa@the-dreams.de>
+	<1456850381-8621-2-git-send-email-wsa@the-dreams.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <1456850381-8621-1-git-send-email-wsa@the-dreams.de>
+In-Reply-To: <1456850381-8621-2-git-send-email-wsa@the-dreams.de>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Wolfram Sang <wsa@the-dreams.de>
 Cc: linux-renesas-soc@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
