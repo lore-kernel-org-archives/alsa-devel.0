@@ -1,184 +1,95 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: sound: uninterruptible hang in snd_seq_oss_writeq_sync
-Date: Wed, 2 Mar 2016 10:26:30 +0100
-Message-ID: <CACT4Y+ZZVwi3WGvhK7iVDx7Zft+YJKEL2KeQM5G0CujxeNiDPQ@mail.gmail.com>
-References: <CACT4Y+Y4kD-aBGj37rf-xBw9bH3GMU6P+MYg4W1e-s-paVD2pg@mail.gmail.com>
- <s5ha8miuuj9.wl-tiwai@suse.de> <CACT4Y+Z_j3=vx61_+iveEoVFWFs6TiVT9SeAeiVQVs6mWsrECg@mail.gmail.com>
- <CACT4Y+a1tnWaifUF5Nbg7EFABAhPTrbdN=-XG+UQ5VFMyYwF2Q@mail.gmail.com>
- <s5h1t7uuse9.wl-tiwai@suse.de> <CACT4Y+YCHwA1o-L=ZqwsEAFCnwAF856C=xokXJ_xXFqoP0vOeg@mail.gmail.com>
- <s5hoaayt7p0.wl-tiwai@suse.de>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH v3 2/4] ASoC: core: add code to complete
+ dai init after pcm creation
+Date: Wed, 2 Mar 2016 10:32:37 +0100
+Message-ID: <56D6B335.4090509@st.com>
+References: <1456820357-2545-1-git-send-email-arnaud.pouliquen@st.com>
+ <1456820357-2545-3-git-send-email-arnaud.pouliquen@st.com>
+ <20160302040313.GY18327@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hoaayt7p0.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, LKML <linux-kernel@vger.kernel.org>, Alexander Potapenko <glider@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>, Sasha Levin <sasha.levin@oracle.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5CB0C2614A1
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2016 10:32:44 +0100 (CET)
+In-Reply-To: <20160302040313.GY18327@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Jean-Francois Moine <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, David Airlie <airlied@linux.ie>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Iwai <tiwai@suse.de>, Philipp Zabel <p.zabel@pengutronix.de>, Moise GERGAUD <moise.gergaud@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 1, 2016 at 6:43 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Tue, 01 Mar 2016 16:45:22 +0100,
-> Dmitry Vyukov wrote:
->>
->> On Tue, Mar 1, 2016 at 4:31 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> > On Tue, 01 Mar 2016 16:04:43 +0100,
->> > Dmitry Vyukov wrote:
->> >>
->> >> On Tue, Mar 1, 2016 at 4:01 PM, Dmitry Vyukov <dvyukov@google.com> wrote:
->> >> > On Tue, Mar 1, 2016 at 3:44 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> >> >> On Tue, 01 Mar 2016 13:33:27 +0100,
->> >> >> Dmitry Vyukov wrote:
->> >> >>>
->> >> >>> Hello,
->> >> >>>
->> >> >>> The following program creates an unkillable process:
->> >> >> .....
->> >> >>> The hang stack is:
->> >> >>>
->> >> >>> [<ffffffff85309f77>] snd_seq_oss_writeq_sync+0x327/0x790
->> >> >>> sound/core/seq/oss/seq_oss_writeq.c:121
->> >> >>
->> >> >> This is
->> >> >>         wait_event_interruptible_timeout(q->sync_sleep, ! q->sync_event_put, HZ);
->> >> >>
->> >> >> and this should return zero
->> >> >>         if (signal_pending(current))
->> >> >>                 /* interrupted - return 0 to finish sync */
->> >> >>                 q->sync_event_put = 0;
->> >> >>         if (! q->sync_event_put || q->sync_time >= time)
->> >> >>                 return 0;
->> >> >>         return 1;
->> >> >>
->> >> >>> [<ffffffff852fa353>] snd_seq_oss_drain_write+0x113/0x160
->> >> >>
->> >> >> ... and this loop should break:
->> >> >>                 while (snd_seq_oss_writeq_sync(dp->writeq))
->> >> >>                         ;
->> >> >>
->> >> >> So, I see no obvious error in the code, so far.
->> >> >>
->> >> >> I'm running your test program now with 8 parallel runs, but I couldn't
->> >> >> reproduce it.  Any other specifics?
->> >>
->> >>
->> >> Hummm.. for me this process hangs every time, even if I just run it
->> >> once from console.
->> >> I've now retested in on clean commit
->> >> fc77dbd34c5c99bce46d40a2491937c3bcbd10af (without KASAN/KCOV and with
->> >> release gcc) and also got the same hang.
->> >> I can only think of a different config. I've attached mine, please try with it.
->> >>
->> >> Are signals delivered if we are already in process of dying?
->> >> When I kill -9 this process it does not react, so presumably wait is
->> >> not unblocked...
->> >
->> > Good point.
->> >
->> > But above all, it doesn't make much sense to loop this sync call.
->> > When wait_event*() returns, it should go out.  So, the patch like
->> > below should be good enough and fix your issue, too.
->>
->>
->>
->> The patch fixes the hang for me. There is a second delay at exit, but
->> otherwise the process exits fine.
->>
->> Tested-by: Dmitry Vyukov <dvyukov@google.com>
->>
->> Thanks for quick fix!
->
-> OK, I got the same result finally on my VM, too.  I had to disable
-> INPUT_PCSPKR that conflicts with SND_PCSP.
->
-> I reconsidered about this problem again, and concluded that the
-> currently implemented drain behavior is simply superfluous.  So, the
-> fix is just to remove all these relevant calls.  The patch is attached
-> below.  Try this one instead of the previous one.
-
-Replaced the previous fix with this one.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
 
-> -- 8< --
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: seq: oss: Don't drain at closing a client
->
-> The OSS sequencer client tries to drain the pending events at
-> releasing.  Unfortunately, as spotted by syzkaller fuzzer, this may
-> lead to an unkillable process state when the event has been queued at
-> the far future.  Since the process being released can't be signaled
-> any longer, it remains and waits for the echo-back event in that far
-> future.
->
-> Back to history, the draining feature was implemented at the time we
-> misinterpreted POSIX definition for blocking file operation.
-> Actually, such a behavior is superfluous at release, and we should
-> just release the device as is instead of keeping it up forever.
->
-> This patch just removes the draining call that may block the release
-> for too long time unexpectedly.
->
-> BugLink: http://lkml.kernel.org/r/CACT4Y+Y4kD-aBGj37rf-xBw9bH3GMU6P+MYg4W1e-s-paVD2pg@mail.gmail.com
-> Reported-by: Dmitry Vyukov <dvyukov@google.com>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/core/seq/oss/seq_oss.c        |  2 --
->  sound/core/seq/oss/seq_oss_device.h |  1 -
->  sound/core/seq/oss/seq_oss_init.c   | 16 ----------------
->  3 files changed, 19 deletions(-)
->
-> diff --git a/sound/core/seq/oss/seq_oss.c b/sound/core/seq/oss/seq_oss.c
-> index 8db156b207f1..8cdf489df80e 100644
-> --- a/sound/core/seq/oss/seq_oss.c
-> +++ b/sound/core/seq/oss/seq_oss.c
-> @@ -149,8 +149,6 @@ odev_release(struct inode *inode, struct file *file)
->         if ((dp = file->private_data) == NULL)
->                 return 0;
->
-> -       snd_seq_oss_drain_write(dp);
-> -
->         mutex_lock(&register_mutex);
->         snd_seq_oss_release(dp);
->         mutex_unlock(&register_mutex);
-> diff --git a/sound/core/seq/oss/seq_oss_device.h b/sound/core/seq/oss/seq_oss_device.h
-> index b43924325249..d7b4d016b547 100644
-> --- a/sound/core/seq/oss/seq_oss_device.h
-> +++ b/sound/core/seq/oss/seq_oss_device.h
-> @@ -127,7 +127,6 @@ int snd_seq_oss_write(struct seq_oss_devinfo *dp, const char __user *buf, int co
->  unsigned int snd_seq_oss_poll(struct seq_oss_devinfo *dp, struct file *file, poll_table * wait);
->
->  void snd_seq_oss_reset(struct seq_oss_devinfo *dp);
-> -void snd_seq_oss_drain_write(struct seq_oss_devinfo *dp);
->
->  /* */
->  void snd_seq_oss_process_queue(struct seq_oss_devinfo *dp, abstime_t time);
-> diff --git a/sound/core/seq/oss/seq_oss_init.c b/sound/core/seq/oss/seq_oss_init.c
-> index 6779e82b46dd..92c96a95a903 100644
-> --- a/sound/core/seq/oss/seq_oss_init.c
-> +++ b/sound/core/seq/oss/seq_oss_init.c
-> @@ -436,22 +436,6 @@ snd_seq_oss_release(struct seq_oss_devinfo *dp)
->
->
->  /*
-> - * Wait until the queue is empty (if we don't have nonblock)
-> - */
-> -void
-> -snd_seq_oss_drain_write(struct seq_oss_devinfo *dp)
-> -{
-> -       if (! dp->timer->running)
-> -               return;
-> -       if (is_write_mode(dp->file_mode) && !is_nonblock_mode(dp->file_mode) &&
-> -           dp->writeq) {
-> -               while (snd_seq_oss_writeq_sync(dp->writeq))
-> -                       ;
-> -       }
-> -}
-> -
-> -
-> -/*
->   * reset sequencer devices
->   */
->  void
-> --
-> 2.7.2
->
+
+On 03/02/2016 05:03 AM, Mark Brown wrote:
+> On Tue, Mar 01, 2016 at 09:19:15AM +0100, Arnaud Pouliquen wrote:
+>> Some Controls defined in DAI need to be associated to PCM device 
+>> (e.g. IEC60958).
+>> 
+>> This allows to perform post initialization in DAI after PCM 
+>> device creation.
+> 
+> Rather than add an explicit callback and make drivers open code 
+> this I'd prefer to see us either just move the control creation 
+> entirely (I can't immediately think of a particular need for the 
+> current ordering) or add a data based mechanism like we currently 
+> have.  Why do we need to do this via a callback?
+> 
+For time being I identify only a need to link controls to pcm device.
+So no other justification to implement the pcm_new callback.
+
+I implemented the pcm_new callback because straightforward way to
+handle generic iec958 control proposed in
+[PATCH v3 1/4] ALSA: pcm: add IEC958 channel status control helper
+
+Here is an alternative but with higher impact in soc-core:
+1)Create 2 helper functions in soc-core:
+ - snd_soc_add_dai_pcm_controls:
+ 	=>register a control that needs to be linked to pcm device.
+	 if dai probed(pcm device exist) => link control to pcm device
+	 else postpone link creation in soc_probe_link_dais
+ -  snd_soc_add_dai_iec_control
+	same but based on snd_pcm_create_iec958_ctrl
+
+2) add 2 news fields in snd-soc-dai struct
+struct snd_kcontrol *pcm_kctl /* list control that will be linked to
+pcm device*/
+struct snd_pcm_iec958_params *params /* if not null iec control is
+created */
+
+Abandon helper function for iec control should simplify implementation
+but that also makes sense to have helper for this generic control...
+
+Is is sometime that should be more reasonable?
+
+Thanks
+Arnaud
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAEBAgAGBQJW1rM1AAoJEP0ZQ+DAfqbfTnYP/3ILQb0WXjIEel9u40UcT5/z
+eN6kZSurKaNJq0kX3XpORa7USBct0jxXdgaQEsxMMZxLcc2nkJuxOMgHjtEb/EDj
+337mRT+TPG/pdg2e/AH+rafNsUSSgZfuyl1LudLmgxasEVk2cTEJTmz287LmNK9O
+CSp5U8gs0zGnKiUcEdqgSHLdJYNxJJ87kD7i3d510fx1koYjDPxfgxUnhqIKiqTP
+S9mEC6y0UqD7RfTVBPdYTHk8qGtJjrPvhuR1I8HiEfa/YUonFvvxxP7ec5ic56cv
+GQ0PYRLhUkH+45OIoB46rfvu2yCNtFbTqBC64QIV8x7FhbI8gLqkMAzvtmyKE2uk
+sZ9ZWri9HYpo9QNmVfFyqHoR7UcXKI4XmSZ7eVAcAPFlTf9K3dnPYpNPOeJ+lUoH
+bAj0I+Rq/rpPVEJnhggSqQPeDk6jyFffxZqIx4A3UEIuwgNtIv2QlWzQ7FhTwuGJ
+FQM94xqfIT5V7e75FPUkPC5ktTCcXFhg7ClLk3frP4kjXzFKg5BcvRsfT1ZyHSd2
+hYRwKIqIp8nsgiM5LYO3ujAz3UJDDtbP9dPE4G+foXokvQWsFl15lh2+4Knm1SNv
+jZ3MXL/PDaTQydTQ8Hs+jL9Xclpk/wFyIgDI9JYHiA1htuWnCvVF6GZCxBBup2jC
+R1wZ8q8kjN6JFjyaWgYl
+=gmEu
+-----END PGP SIGNATURE-----
