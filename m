@@ -1,67 +1,80 @@
-From: Thomas Klausner <tk@giga.or.at>
-Subject: Re: [PATCH] Make alsa asound.h header more portable.
-Date: Thu, 3 Mar 2016 16:29:26 +0100
-Message-ID: <20160303152926.GI26041@danbala.tuwien.ac.at>
-References: <1457014899-19669-1-git-send-email-tk@giga.or.at>
- <sfid-H20160303-162151-+046.66-1@spamfilter.osbf.lua>
- <s5htwkn4mf7.wl-tiwai@suse.de>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: Re: [PATCH v3 02/22] uapi/media.h: Declare interface types for ALSA
+Date: Thu, 3 Mar 2016 08:57:03 -0700
+Message-ID: <56D85ECF.40807@osg.samsung.com>
+References: <cover.1455233150.git.shuahkh@osg.samsung.com>
+ <a1b468c2933dc2b4f2b6cc6d1ac30baee2a89f77.1455233152.git.shuahkh@osg.samsung.com>
+ <56D85161.5070103@xs4all.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from danbala.ifoer.tuwien.ac.at (danbala.ifoer.tuwien.ac.at
- [128.130.168.64])
- by alsa0.perex.cz (Postfix) with ESMTP id BCA46266631
- for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 16:29:26 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5htwkn4mf7.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <56D85161.5070103@xs4all.nl>
+Sender: linux-media-owner@vger.kernel.org
+To: Hans Verkuil <hverkuil@xs4all.nl>, mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com
+Cc: pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittgam.net, johan@oljud.se, klock.android@gmail.com, nenggun.kim@samsung.com, j.anaszewski@samsung.com, geliangtang@163.com, albert@huitsing.nl, linux-ke
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 03, 2016 at 04:21:32PM +0100, Takashi Iwai wrote:
-> On Thu, 03 Mar 2016 15:21:39 +0100,
-> Thomas Klausner wrote:
-> > 
-> > From: Thomas Klausner <wiz@NetBSD.org>
-> > 
-> > This header is used as-is in the alsa-lib userland library,
-> > which is portable to other operating systems.
-> > For this reason, include linux/types.h only on Linux systems.
+On 03/03/2016 07:59 AM, Hans Verkuil wrote:
+> On 02/12/16 00:41, Shuah Khan wrote:
+>> Declare the interface types to be used on alsa for
+>> the new G_TOPOLOGY ioctl.
+>>
+>> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+>> ---
+>>  drivers/media/media-entity.c | 16 ++++++++++++++++
+>>  include/uapi/linux/media.h   | 10 ++++++++++
+>>  2 files changed, 26 insertions(+)
+>>
+>> diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
+>> index f2e4360..6179543 100644
+>> --- a/drivers/media/media-entity.c
+>> +++ b/drivers/media/media-entity.c
+>> @@ -65,6 +65,22 @@ static inline const char *intf_type(struct media_interface *intf)
+>>  		return "v4l2-subdev";
+>>  	case MEDIA_INTF_T_V4L_SWRADIO:
+>>  		return "swradio";
+>> +	case MEDIA_INTF_T_ALSA_PCM_CAPTURE:
+>> +		return "pcm-capture";
+>> +	case MEDIA_INTF_T_ALSA_PCM_PLAYBACK:
+>> +		return "pcm-playback";
+>> +	case MEDIA_INTF_T_ALSA_CONTROL:
+>> +		return "alsa-control";
+>> +	case MEDIA_INTF_T_ALSA_COMPRESS:
+>> +		return "compress";
+>> +	case MEDIA_INTF_T_ALSA_RAWMIDI:
+>> +		return "rawmidi";
+>> +	case MEDIA_INTF_T_ALSA_HWDEP:
+>> +		return "hwdep";
+>> +	case MEDIA_INTF_T_ALSA_SEQUENCER:
+>> +		return "sequencer";
+>> +	case MEDIA_INTF_T_ALSA_TIMER:
+>> +		return "timer";
 > 
-> This is needed also for building the Linux kernel.  So...
+> Wouldn't it be better to add an 'alsa' prefix for all of these?
 > 
-> > Add sys/ioctl.h for _IOR/_IOW/etc. (works at least on *BSD and Solaris).
-> > 
-> > Signed-off-by: Thomas Klausner <wiz@NetBSD.org>
-> > ---
-> >  include/uapi/sound/asound.h | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-> > index a82108e..3d581b5 100644
-> > --- a/include/uapi/sound/asound.h
-> > +++ b/include/uapi/sound/asound.h
-> > @@ -23,7 +23,11 @@
-> >  #ifndef _UAPI__SOUND_ASOUND_H
-> >  #define _UAPI__SOUND_ASOUND_H
-> >  
-> > +#ifdef __linux__
+> And 'dvb-' or 'v4l2-' (or v4l-) for the others as well.
 > 
-> ... the following might be better.
+> Names like 'timer' are very generic. I think it would be a good idea to
+> make the naming more regular and have it include the subsystem name just
+> as the define does.
 > 
-> #if defined(__KERNEL__) || defined(__linux__)
+> Regards,
 > 
-> At least the same style is found in include/uapi/drm/drm.h, too.
+> 	Hans
+> 
 
-Thank you! New patch sent.
- Thomas
+Yes adding more information 'dvb-' or 'v4l2-' (or v4l-), alsa
+to strings would help. I can fix all of them in a separate
+patch if that is okay with you.
+
+thanks,
+-- Shuah
+
+
+-- 
+Shuah Khan
+Sr. Linux Kernel Developer
+Open Source Innovation Group
+Samsung Research America (Silicon Valley)
+shuahkh@osg.samsung.com | (970) 217-8978
