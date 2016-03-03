@@ -1,77 +1,120 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v5 22/22] sound/usb: Use Media Controller API to share
- media resources
-Date: Thu, 3 Mar 2016 13:36:37 +0300
-Message-ID: <20160303103637.GW5273@mwanda>
-References: <1456937431-3794-1-git-send-email-shuahkh@osg.samsung.com>
- <20160302204131.GV5273@mwanda>
- <56D76FBF.9050209@osg.samsung.com>
+From: Michele Curti <michele.curti@gmail.com>
+Subject: Re: writing an alsa driver
+Date: Thu, 3 Mar 2016 12:11:10 +0100
+Message-ID: <20160303111110.GA13202@acervm>
+References: <20150529131753.GA339@asus> <1433156768.2642.21.camel@loki>
+ <20150608084951.GA7512@dellaz>
+ <loom.20150613T153708-781@post.gmane.org>
+ <20150615164623.GA693@asus> <1434387868.2434.50.camel@loki>
+ <20150623090932.GA6856@dellaz> <20150624102157.GL19530@localhost>
+ <20150624182120.GA481@asus> <20150625032407.GQ19530@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-media-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f41.google.com (mail-wm0-f41.google.com [74.125.82.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 67B252657AB
+ for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 12:11:13 +0100 (CET)
+Received: by mail-wm0-f41.google.com with SMTP id l68so126054396wml.0
+ for <alsa-devel@alsa-project.org>; Thu, 03 Mar 2016 03:11:13 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <56D76FBF.9050209@osg.samsung.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Shuah Khan <shuahkh@osg.samsung.com>
-Cc: mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittga
+In-Reply-To: <20150625032407.GQ19530@localhost>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Luka Karinja <luka.karinja@gmail.com>, Takashi Iwai <tiwai@suse.de>, ao2@ao2.it, alsa-devel@alsa-project.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Nikula,
+ Jarkko" <jarkko.nikula@intel.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 02, 2016 at 03:57:03PM -0700, Shuah Khan wrote:
-> On 03/02/2016 01:41 PM, Dan Carpenter wrote:
-> > On Wed, Mar 02, 2016 at 09:50:31AM -0700, Shuah Khan wrote:
-> >> +	mctl = kzalloc(sizeof(*mctl), GFP_KERNEL);
-> >> +	if (!mctl)
-> >> +		return -ENOMEM;
-> >> +
-> >> +	mctl->media_dev = mdev;
-> >> +	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-> >> +		intf_type = MEDIA_INTF_T_ALSA_PCM_PLAYBACK;
-> >> +		mctl->media_entity.function = MEDIA_ENT_F_AUDIO_PLAYBACK;
-> >> +		mctl->media_pad.flags = MEDIA_PAD_FL_SOURCE;
-> >> +		mixer_pad = 1;
-> >> +	} else {
-> >> +		intf_type = MEDIA_INTF_T_ALSA_PCM_CAPTURE;
-> >> +		mctl->media_entity.function = MEDIA_ENT_F_AUDIO_CAPTURE;
-> >> +		mctl->media_pad.flags = MEDIA_PAD_FL_SINK;
-> >> +		mixer_pad = 2;
-> >> +	}
-> >> +	mctl->media_entity.name = pcm->name;
-> >> +	media_entity_pads_init(&mctl->media_entity, 1, &mctl->media_pad);
-> >> +	ret =  media_device_register_entity(mctl->media_dev,
-> >> +					    &mctl->media_entity);
-> >> +	if (ret)
-> >> +		goto err1;
-> > 
-> > Could we give this label a meaningful name instead of a number?
-> > goto free_mctl;
+Hi Vinod,
+
+On Thu, Jun 25, 2015 at 08:54:07AM +0530, Vinod Koul wrote:
+> > [    2.700468] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in1_1 doesn't have DAPM widget!!!
+> this is unexpected, I will check on this
 > 
-> I do see other places where numbered labels are used.
-
-Yeah.  But it's the wrong idea.  If you remove a label then you have to
-renumber everything.  Plus it doesn't say what the goto does.
-
-> Names might help with code readability.
+> > ...
+> > [    7.970937] intel_sst_acpi 80860F28:00: Wait timed-out condition:0x0, msg_id:0x1 fw_state 0x3
+> > [    7.970964] intel_sst_acpi 80860F28:00: fw returned err -16
+> Yes this is a problem, which FW are you using
 > 
-> register_entity_fail probably makes more sense as a
-> label than free_mctl.
 
-A lot of people do that but the you wind up with code like:
+I have a question regarding the FW timeout, but since it has been a long
+time since last email, let me summarize the thread..
 
-	foo = whatever_register();
-	if (!foo)
-		goto whatever_failed;
+I tried to get sound working on an Asus X205TA laptop so, as far as I
+understood, 3 things are needed in the ASoC world:
+1. codec driver
+2. platform driver
+3. machine driver
 
-	if (something_else)
-		goto whatever_failed;
+1. codec driver (patch 0001 at [1])
 
-So it doesn't make sense.  Also it doesn't tell you what the goto does.
-(You can already see that whatever_failed from looking at the if
-statement on the line before.)  This function is larger than a page so
-you have to flip down to the other page to see what the goto does, then
-you have to flip back and find your place again.  But if the label says
-what the goto does then you can just say, "Have we allocated anything
-since mctl?  No, then freeing mctl is the right thing."  You don't need
-to flip to the othe page.
+It seems that the codec is a Relatek RT5648, and in kernel there is no
+driver for it, but since it has the same product Id of the RT5645
+(0x6308) I simply added an I2C and an ACPI match to the RT5645 codec
+driver.
 
-regards,
-dan carpenter
+2. platform driver (patch 0002 at [1])
+
+Used the sst-mfld-platform one (under sound/soc/intel/atom/sst), changing
+the .acpi_ipc_irq_index from 5 to 0 because the DSP interrupt order in
+the ACPI DSDT table of this laptop is different from the "normal" (see
+line 3745 of dsdt.dsl at [2]).
+
+$ cat /proc/interrupts | grep sst
+            CPU0       CPU1       CPU2       CPU3       
+   1:         24          0          0          0   IO-APIC   29-fasteoi   intel_sst_driver
+
+Used the SSP0 version of the ADSP firmware (found at [3]), beacuse the
+mainline FW uses the SSP2 port but this laptop has an atom Z3735F which
+has only two SSP ports.
+
+3. machine driver (patch 0003 at [1])
+
+It's a copy-paste of sound/soc/intel/boards/bytcr_rt5651.c, but using
+SSP0 instead of SSP2 and rt5645 instead of rt5651.
+
+
+
+So, applying the three patches to the mainline linux kernel the sound
+card shows up (aplay -l finds it) and at boot I got these errors:
+
+[    4.378238] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 0 doesn't have DAPM widget!!!
+[    4.381301] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 1 doesn't have DAPM widget!!!
+[    4.384307] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 2 doesn't have DAPM widget!!!
+[    4.387276] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 3 doesn't have DAPM widget!!!
+[    4.390229] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in0_0 doesn't have DAPM widget!!!
+[    4.390249] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in0_1 doesn't have DAPM widget!!!
+[    4.390268] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in1_0 doesn't have DAPM widget!!!
+[    4.390286] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in1_1 doesn't have DAPM widget!!!
+
+About a minute of these errors:
+
+[   62.894026] intel_sst_acpi 80860F28:00: Wait timed-out condition:0x0, msg_id:0x2 fw_state 0x3
+[   62.903888] intel_sst_acpi 80860F28:00: fw returned err -16
+
+And, when I play some audio, these ones:
+
+[  102.350606]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
+
+Full dmesg at [4].
+
+
+And, finally, the question: it is possible that the firmware timeout is
+due to a missing alsa audio path and not to a fw problem?
+
+Thanks,
+Michele
+
+
+[1] https://github.com/michelecurti/x205ta/tree/master/sound-patches
+[2] https://github.com/michelecurti/x205ta/tree/master/acpi-tables
+[3] https://git.kernel.org/cgit/linux/kernel/git/vkoul/firmware.git/commit/?h=byt
+[4] http://pastebin.com/XAQZUvkM
