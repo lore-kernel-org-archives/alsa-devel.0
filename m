@@ -1,12 +1,22 @@
-From: IceBsi <bsiice@msn.com>
-Subject: [PATCH - pcm 1/1] pcm: fix "unable to create IPC shm
-	instance" in some case
-Date: Thu, 3 Mar 2016 07:40:42 -0500
-Message-ID: <BLU437-SMTP418A25BEF034BD65DA159BD2BD0@phx.gbl>
+From: Carlo Caione <carlo@endlessm.com>
+Subject: Re: [PATCH v2] ASoC: cht_bsw_rt5645: Fix writing to
+	string literal
+Date: Thu, 3 Mar 2016 13:47:13 +0100
+Message-ID: <CAL9uMOHyqZeFBhLaW2Dh+NiVmCZ29eKzU4ABUd500x4eh=O02w@mail.gmail.com>
+References: <1456217420-9327-1-git-send-email-carlo@caione.org>
+ <20160226021210.GE18327@sirena.org.uk>
+ <20160303113255.GL11154@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ig0-f169.google.com (mail-ig0-f169.google.com
+ [209.85.213.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE1BA260535
+ for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 13:47:14 +0100 (CET)
+Received: by mail-ig0-f169.google.com with SMTP id hb3so63450821igb.0
+ for <alsa-devel@alsa-project.org>; Thu, 03 Mar 2016 04:47:14 -0800 (PST)
+In-Reply-To: <20160303113255.GL11154@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -16,56 +26,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Qing Cai <caiqing@neusoft.com>, alsa-devel@alsa-project.org, Qing Cai <bsiice@msn.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Yang Fang <yang.a.fang@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Carlo Caione <carlo@caione.org>, Linux Upstreaming Team <linux@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Qing Cai <caiqing@neusoft.com>
+On Thu, Mar 3, 2016 at 12:32 PM, Vinod Koul <vinod.koul@intel.com> wrote:
+> On Fri, Feb 26, 2016 at 11:12:10AM +0900, Mark Brown wrote:
+>> On Tue, Feb 23, 2016 at 09:50:20AM +0100, Carlo Caione wrote:
+>> > From: Carlo Caione <carlo@endlessm.com>
+>> >
+>> > We cannot use strcpy() to write to a const char * location. This is
+>> > causing a 'BUG: unable to handle kernel paging request' error at boot
+>> > when using the cht-bsw-rt5645 driver.
+>> >
+>> > With this patch we also fix a wrong indexing in the driver where the
+>> > codec_name of the wrong dai_link is being overwritten.
+>>
+>> So how was the original code tested then...?
+>
+> I know systems using this are shipping so surprised to see this.
+>
+> Carlo cna you please tell me the configuration where it is seen.
 
-As stated in manpage SHMCTL(2), shm_nattch is "No. of current attaches"
-(i.e., number of processes attached to the shared memeory). If an
-application uses alsa-lib and invokes fork() at some point, there should
-be the following execution sequence:
- 1. execute the following statement:
-      pcm_direct.c:110: dmix->shmptr = shmat(dmix->shmid, 0, 0)
-    (shm_nattch becomes 1)
- 2. invoke fork() in some thread.
-    (shm_nattch becomes 2)
- 3. execute the following statement:
-      pcm_direct.c:122: if (buf.shm_nattch == 1)
- 4. execute the following statement:
-      pcm_direct.c:131: if (dmix->shmptr->magic != SND_PCM_DIRECT_MAGIC)
-    (As stated in manpage SHMGET(2), "When a new shared memory segment
-     is created, its contents are initialized to zero values", so
-     dmix->shmptr->magic is 0)
- 5. execute the following statements:
-      pcm_direct.c:132: snd_pcm_direct_shm_discard(dmix)
-      pcm_direct.c:133: return -EINVAL
-The above execution sequence will cause the following error:
-  unable to create IPC shm instance
-This error causes multimedia application has no sound. This error rarely
-occurs, probability is about 1%.
-Because the first user of the shared memory will get that
-dmix->shmptr->magic is 0, check dmix->shmptr->magic's value to determine
-if "we're the first user" is OK.
-Tests have been made 400+ times after this fix, and the issue no longer
-exists.
+Hi Vinod,
+I'm working on the ECS EF20EA cherry-trail laptop. This is the used
+configuration:
 
-Signed-off-by: Qing Cai <bsiice@msn.com>
-Signed-off-by: Qing Cai <caiqing@neusoft.com>
+https://gist.github.com/carlocaione/925540bc7b04eff01aa8
 
-diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
-index fd3877c..93d6f3c 100644
---- a/src/pcm/pcm_direct.c
-+++ b/src/pcm/pcm_direct.c
-@@ -119,7 +119,7 @@ retryget:
- 		snd_pcm_direct_shm_discard(dmix);
- 		return err;
- 	}
--	if (buf.shm_nattch == 1) {	/* we're the first user, clear the segment */
-+	if (dmix->shmptr->magic != SND_PCM_DIRECT_MAGIC) {	/* we're the first user, clear the segment */
- 		memset(dmix->shmptr, 0, sizeof(snd_pcm_direct_share_t));
- 		if (dmix->ipc_gid >= 0) {
- 			buf.shm_perm.gid = dmix->ipc_gid;
+Cheers,
+
 -- 
-2.7.2
+Carlo Caione  |  +39.340.80.30.096  |  Endless
