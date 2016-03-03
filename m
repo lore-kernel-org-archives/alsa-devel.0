@@ -1,78 +1,113 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] ASoC: wm8994: codec driver should manage
- its own MCLK
-Date: Thu, 3 Mar 2016 10:14:53 -0800
-Message-ID: <20160303181452.GA19755@Asurada-Nvidia>
-References: <bc33ec0dcfc610657d60d4e1f381545a81147e3e.1456986779.git.zidan.wang@freescale.com>
+From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+Subject: Re: [PATCH v5 22/22] sound/usb: Use Media Controller API to share
+ media resources
+Date: Thu, 3 Mar 2016 15:21:52 -0300
+Message-ID: <20160303152152.303c85ea@recife.lan>
+References: <1456937431-3794-1-git-send-email-shuahkh@osg.samsung.com>
+	<20160302204131.GV5273@mwanda>
+	<56D76FBF.9050209@osg.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f45.google.com (mail-pa0-f45.google.com
- [209.85.220.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 8ADE72655A6
- for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 19:14:41 +0100 (CET)
-Received: by mail-pa0-f45.google.com with SMTP id fi3so16994179pac.3
- for <alsa-devel@alsa-project.org>; Thu, 03 Mar 2016 10:14:41 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <bc33ec0dcfc610657d60d4e1f381545a81147e3e.1456986779.git.zidan.wang@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: ckeepax@opensource.wolfsonmicro.com, broonie@kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <56D76FBF.9050209@osg.samsung.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Shuah Khan <shuahkh@osg.samsung.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 03, 2016 at 02:45:35PM +0800, Zidan Wang wrote:
-> codec driver should manage its own master clock, MCLK1 and MCLK2.
-> When bias_level change from standby to prepare, enable codec MCLK.
-> When bias_level change from prepare to standby, disable codec MCLK.
+Em Wed, 2 Mar 2016 15:57:03 -0700
+Shuah Khan <shuahkh@osg.samsung.com> escreveu:
 
-Not sure the desired sequence here, would be neater to use runtime pm?
+> On 03/02/2016 01:41 PM, Dan Carpenter wrote:
+> > On Wed, Mar 02, 2016 at 09:50:31AM -0700, Shuah Khan wrote:
+> >> +	mctl = kzalloc(sizeof(*mctl), GFP_KERNEL);
+> >> +	if (!mctl)
+> >> +		return -ENOMEM;
+> >> +
+> >> +	mctl->media_dev = mdev;
+> >> +	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> >> +		intf_type = MEDIA_INTF_T_ALSA_PCM_PLAYBACK;
+> >> +		mctl->media_entity.function = MEDIA_ENT_F_AUDIO_PLAYBACK;
+> >> +		mctl->media_pad.flags = MEDIA_PAD_FL_SOURCE;
+> >> +		mixer_pad = 1;
+> >> +	} else {
+> >> +		intf_type = MEDIA_INTF_T_ALSA_PCM_CAPTURE;
+> >> +		mctl->media_entity.function = MEDIA_ENT_F_AUDIO_CAPTURE;
+> >> +		mctl->media_pad.flags = MEDIA_PAD_FL_SINK;
+> >> +		mixer_pad = 2;
+> >> +	}
+> >> +	mctl->media_entity.name = pcm->name;
+> >> +	media_entity_pads_init(&mctl->media_entity, 1, &mctl->media_pad);
+> >> +	ret =  media_device_register_entity(mctl->media_dev,
+> >> +					    &mctl->media_entity);
+> >> +	if (ret)
+> >> +		goto err1;
+> > 
+> > Could we give this label a meaningful name instead of a number?
+> > goto free_mctl;
+> 
+> I do see other places where numbered labels are used.
+> Names might help with code readability.
+> 
+> register_entity_fail probably makes more sense as a
+> label than free_mctl. In any case, I can address the
+> labels in a follow-on patch.
+> 
+> > 
+> >> +
+> >> +	mctl->intf_devnode = media_devnode_create(mdev, intf_type, 0,
+> >> +						  MAJOR(pcm_dev->devt),
+> >> +						  MINOR(pcm_dev->devt));
+> >> +	if (!mctl->intf_devnode) {
+> >> +		ret = -ENOMEM;
+> >> +		goto err2;
+> > 
+> > goto unregister_device;
+> > 
+> >> +	}
+> >> +	mctl->intf_link = media_create_intf_link(&mctl->media_entity,
+> >> +						 &mctl->intf_devnode->intf,
+> >> +						 MEDIA_LNK_FL_ENABLED);
+> >> +	if (!mctl->intf_link) {
+> >> +		ret = -ENOMEM;
+> >> +		goto err3;
+> > 
+> > goto delete_devnode;
+> > 
+> >> +	}
+> >> +
+> >> +	/* create link between mixer and audio */
+> >> +	media_device_for_each_entity(entity, mdev) {
+> >> +		switch (entity->function) {
+> >> +		case MEDIA_ENT_F_AUDIO_MIXER:
+> >> +			ret = media_create_pad_link(entity, mixer_pad,
+> >> +						    &mctl->media_entity, 0,
+> >> +						    MEDIA_LNK_FL_ENABLED);
+> >> +			if (ret)
+> >> +				goto err4;
+> > 
+> > This is a bit weird because we're inside a loop.  Shouldn't we call
+> > media_entity_remove_links() or something if this is the second time
+> > through the loop?
+> 
+> Links are removed from media_device_unregister_entity()
+> which is called in the error path.
+> 
+> > 
+> > I don't understand this.  The kernel has the media_entity_cleanup() stub
+> > function which is supposed to do this but it hasn't been implemented
+> > yet?
+> > 
+> 
+> Please see above. Links are removed when entity is
+> unregistered. media_entity_cleanup() is a stub. It
+> isn't intended for removing links.
 
-> @@ -270,6 +271,7 @@ static int wm8994_set_pdata_from_of(struct wm8994 *wm8994)
->  {
->  	struct device_node *np = wm8994->dev->of_node;
->  	struct wm8994_pdata *pdata = &wm8994->pdata;
-> +	char tmp[8];
->  	int i;
->  
->  	if (!np)
-> @@ -310,6 +312,11 @@ static int wm8994_set_pdata_from_of(struct wm8994 *wm8994)
->  	if (pdata->ldo[1].enable < 0)
->  		pdata->ldo[1].enable = 0;
->  
-> +	for (i = 0; i < WM8994_NUM_MCLK; i++) {
-> +		sprintf(tmp, "MCLK%d", i + 1);
-> +		pdata->mclk[i] = devm_clk_get(wm8994->dev, tmp);
+Shuah,
 
-Probe defer?
+Please address the issue that Dan is pointing on a separate
+patch.
 
-> @@ -2474,6 +2475,8 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
->  {
->  	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
->  	struct wm8994 *control = wm8994->wm8994;
-> +	struct wm8994_pdata *pdata = &control->pdata;
-> +	int i;
->  
->  	wm_hubs_set_bias_level(codec, level);
->  
-> @@ -2495,8 +2498,13 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
->  			break;
->  		}
->  
-> -		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_STANDBY)
-> +		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_STANDBY) {
->  			active_reference(codec);
-> +
-> +			for (i = 0; i < WM8994_NUM_MCLK; i++)
-> +				if (!IS_ERR(pdata->mclk[i]))
-> +					clk_prepare_enable(pdata->mclk[i]);
-
-Return value? You probably should refer to wm8962 or wm8960.
+Thanks,
+Mauro
