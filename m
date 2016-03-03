@@ -1,126 +1,77 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [PATCH v5 22/22] sound/usb: Use Media Controller API to share
- media resources
-Date: Thu, 3 Mar 2016 12:06:43 -0700
-Message-ID: <56D88B43.8090803@osg.samsung.com>
-References: <1456937431-3794-1-git-send-email-shuahkh@osg.samsung.com>
- <20160302204131.GV5273@mwanda> <56D76FBF.9050209@osg.samsung.com>
- <20160303152152.303c85ea@recife.lan>
+Subject: Re: [PATCH v3 03/22] [media] Docbook: media-types.xml: Add Audio
+ Function Entities
+Date: Thu, 3 Mar 2016 15:50:19 -0700
+Message-ID: <56D8BFAB.7010509@osg.samsung.com>
+References: <cover.1455233150.git.shuahkh@osg.samsung.com>
+ <f591af59b7b1c77b5a17603a1a677a32b8e19132.1455233153.git.shuahkh@osg.samsung.com>
+ <1886674.Y0SDWvK9bd@avalon>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160303152152.303c85ea@recife.lan>
+In-Reply-To: <1886674.Y0SDWvK9bd@avalon>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittgam.netjo
 List-Id: alsa-devel@alsa-project.org
 
-On 03/03/2016 11:21 AM, Mauro Carvalho Chehab wrote:
-> Em Wed, 2 Mar 2016 15:57:03 -0700
-> Shuah Khan <shuahkh@osg.samsung.com> escreveu:
+On 02/28/2016 07:46 PM, Laurent Pinchart wrote:
+> Hi Shuah,
 > 
->> On 03/02/2016 01:41 PM, Dan Carpenter wrote:
->>> On Wed, Mar 02, 2016 at 09:50:31AM -0700, Shuah Khan wrote:
->>>> +	mctl = kzalloc(sizeof(*mctl), GFP_KERNEL);
->>>> +	if (!mctl)
->>>> +		return -ENOMEM;
->>>> +
->>>> +	mctl->media_dev = mdev;
->>>> +	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
->>>> +		intf_type = MEDIA_INTF_T_ALSA_PCM_PLAYBACK;
->>>> +		mctl->media_entity.function = MEDIA_ENT_F_AUDIO_PLAYBACK;
->>>> +		mctl->media_pad.flags = MEDIA_PAD_FL_SOURCE;
->>>> +		mixer_pad = 1;
->>>> +	} else {
->>>> +		intf_type = MEDIA_INTF_T_ALSA_PCM_CAPTURE;
->>>> +		mctl->media_entity.function = MEDIA_ENT_F_AUDIO_CAPTURE;
->>>> +		mctl->media_pad.flags = MEDIA_PAD_FL_SINK;
->>>> +		mixer_pad = 2;
->>>> +	}
->>>> +	mctl->media_entity.name = pcm->name;
->>>> +	media_entity_pads_init(&mctl->media_entity, 1, &mctl->media_pad);
->>>> +	ret =  media_device_register_entity(mctl->media_dev,
->>>> +					    &mctl->media_entity);
->>>> +	if (ret)
->>>> +		goto err1;
->>>
->>> Could we give this label a meaningful name instead of a number?
->>> goto free_mctl;
->>
->> I do see other places where numbered labels are used.
->> Names might help with code readability.
->>
->> register_entity_fail probably makes more sense as a
->> label than free_mctl. In any case, I can address the
->> labels in a follow-on patch.
->>
->>>
->>>> +
->>>> +	mctl->intf_devnode = media_devnode_create(mdev, intf_type, 0,
->>>> +						  MAJOR(pcm_dev->devt),
->>>> +						  MINOR(pcm_dev->devt));
->>>> +	if (!mctl->intf_devnode) {
->>>> +		ret = -ENOMEM;
->>>> +		goto err2;
->>>
->>> goto unregister_device;
->>>
->>>> +	}
->>>> +	mctl->intf_link = media_create_intf_link(&mctl->media_entity,
->>>> +						 &mctl->intf_devnode->intf,
->>>> +						 MEDIA_LNK_FL_ENABLED);
->>>> +	if (!mctl->intf_link) {
->>>> +		ret = -ENOMEM;
->>>> +		goto err3;
->>>
->>> goto delete_devnode;
->>>
->>>> +	}
->>>> +
->>>> +	/* create link between mixer and audio */
->>>> +	media_device_for_each_entity(entity, mdev) {
->>>> +		switch (entity->function) {
->>>> +		case MEDIA_ENT_F_AUDIO_MIXER:
->>>> +			ret = media_create_pad_link(entity, mixer_pad,
->>>> +						    &mctl->media_entity, 0,
->>>> +						    MEDIA_LNK_FL_ENABLED);
->>>> +			if (ret)
->>>> +				goto err4;
->>>
->>> This is a bit weird because we're inside a loop.  Shouldn't we call
->>> media_entity_remove_links() or something if this is the second time
->>> through the loop?
->>
->> Links are removed from media_device_unregister_entity()
->> which is called in the error path.
->>
->>>
->>> I don't understand this.  The kernel has the media_entity_cleanup() stub
->>> function which is supposed to do this but it hasn't been implemented
->>> yet?
->>>
->>
->> Please see above. Links are removed when entity is
->> unregistered. media_entity_cleanup() is a stub. It
->> isn't intended for removing links.
+> Thank you for the patch.
 > 
-> Shuah,
+> On Thursday 11 February 2016 16:41:19 Shuah Khan wrote:
+>> Add Audio Function Entities
+>>
+>> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+>> ---
+>>  Documentation/DocBook/media/v4l/media-types.xml | 12 ++++++++++++
+>>  1 file changed, 12 insertions(+)
+>>
+>> diff --git a/Documentation/DocBook/media/v4l/media-types.xml
+>> b/Documentation/DocBook/media/v4l/media-types.xml index 3730967..924a604
+>> 100644
+>> --- a/Documentation/DocBook/media/v4l/media-types.xml
+>> +++ b/Documentation/DocBook/media/v4l/media-types.xml
+>> @@ -113,6 +113,18 @@
+>>  		   decoder.
+>>  	    </entry>
+>>  	  </row>
+>> +	  <row>
+>> +	    <entry><constant>MEDIA_ENT_F_AUDIO_CAPTURE</constant></entry>
+>> +	    <entry>Audio Capture Function Entity.</entry>
+>> +	  </row>
+>> +	  <row>
+>> +	    <entry><constant>MEDIA_ENT_F_AUDIO_PLAYBACK</constant></entry>
+>> +	    <entry>Audio Playback Function Entity.</entry>
+>> +	  </row>
 > 
-> Please address the issue that Dan is pointing on a separate
-> patch.
+> I think this deserves a longer description. From the name and short 
+> description I'm not sure what the capture and playback functions are.
+> 
+>> +	  <row>
+>> +	    <entry><constant>MEDIA_ENT_F_AUDIO_MIXER</constant></entry>
+>> +	    <entry>Audio Mixer Function Entity.</entry>
+>> +	  </row>
+> 
+> Entities can implement multiple functions, so function descriptions shouldn't 
+> refer to entity this way. MEDIA_ENT_F_AUDIO_MIXER doesn't mean that the entity 
+> is an audio mixer, it means that the entity implements the audio mixer 
+> function. If you want to keep the description short you could just write 
+> "Audio mixer". A longer description could be "The entity can mix multiple 
+> input audio streams to produce an output audio stream.".
+> 
+>>  	</tbody>
+>>        </tgroup>
+>>      </table>
 > 
 
-Mauro,
-
-Sent it a couple of hours ago. 
-
-https://lkml.org/lkml/2016/3/3/601
-https://www.mail-archive.com/linux-media@vger.kernel.org/msg95141.html
+Thanks for the review. I will send a followup patch
+for this.
 
 thanks,
 -- Shuah
-
 
 -- 
 Shuah Khan
