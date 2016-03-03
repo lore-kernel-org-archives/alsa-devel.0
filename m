@@ -1,22 +1,16 @@
-From: Carlo Caione <carlo@endlessm.com>
-Subject: Re: [PATCH v2] ASoC: cht_bsw_rt5645: Fix writing to
-	string literal
-Date: Thu, 3 Mar 2016 13:47:13 +0100
-Message-ID: <CAL9uMOHyqZeFBhLaW2Dh+NiVmCZ29eKzU4ABUd500x4eh=O02w@mail.gmail.com>
-References: <1456217420-9327-1-git-send-email-carlo@caione.org>
- <20160226021210.GE18327@sirena.org.uk>
- <20160303113255.GL11154@localhost>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: USB audio2.0 status interrupt endpoint
+Date: Thu, 3 Mar 2016 14:07:52 +0100
+Message-ID: <56D83728.9090404@ladisch.de>
+References: <CAJha+Ve6wYyYMxU5FTpjDpih41OLmTWHX2UfOZZRAksJN6u8TA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f169.google.com (mail-ig0-f169.google.com
- [209.85.213.169])
- by alsa0.perex.cz (Postfix) with ESMTP id CE1BA260535
- for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 13:47:14 +0100 (CET)
-Received: by mail-ig0-f169.google.com with SMTP id hb3so63450821igb.0
- for <alsa-devel@alsa-project.org>; Thu, 03 Mar 2016 04:47:14 -0800 (PST)
-In-Reply-To: <20160303113255.GL11154@localhost>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 75F03260535
+ for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 14:07:54 +0100 (CET)
+In-Reply-To: <CAJha+Ve6wYyYMxU5FTpjDpih41OLmTWHX2UfOZZRAksJN6u8TA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,35 +20,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Yang Fang <yang.a.fang@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Carlo Caione <carlo@caione.org>, Linux Upstreaming Team <linux@endlessm.com>
+To: Puneet Sharma <punitsharma1181@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 3, 2016 at 12:32 PM, Vinod Koul <vinod.koul@intel.com> wrote:
-> On Fri, Feb 26, 2016 at 11:12:10AM +0900, Mark Brown wrote:
->> On Tue, Feb 23, 2016 at 09:50:20AM +0100, Carlo Caione wrote:
->> > From: Carlo Caione <carlo@endlessm.com>
->> >
->> > We cannot use strcpy() to write to a const char * location. This is
->> > causing a 'BUG: unable to handle kernel paging request' error at boot
->> > when using the cht-bsw-rt5645 driver.
->> >
->> > With this patch we also fix a wrong indexing in the driver where the
->> > codec_name of the wrong dai_link is being overwritten.
->>
->> So how was the original code tested then...?
+Puneet Sharma wrote:
+> As per my understanding, when the above interrupt endpoint is transferred
+> to host in response to Interrupt IN request, the host should send me a GET
+> CUR volume class-specific request to further qualify the cause of interrupt.
 >
-> I know systems using this are shipping so surprised to see this.
+> However, I am not getting any class-specific request from host in response
+> to the status interrupt transferred to host.
 >
-> Carlo cna you please tell me the configuration where it is seen.
+> My query is do i need to implement a mixer interface in the uac2 kernel
+> driver to get the request or i am doing something wrong in the process.
 
-Hi Vinod,
-I'm working on the ECS EF20EA cherry-trail laptop. This is the used
-configuration:
+You must not send a notification for a unit ID that does not exist, so
+you must implement the mixer interface.
 
-https://gist.github.com/carlocaione/925540bc7b04eff01aa8
+And you will get a request to read the control's current volume only if
+some application that cares about the value (e.g., alsamixer) actually
+happens to be running on the host.
 
-Cheers,
 
--- 
-Carlo Caione  |  +39.340.80.30.096  |  Endless
+Regards,
+Clemens
