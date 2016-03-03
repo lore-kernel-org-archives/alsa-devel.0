@@ -1,80 +1,74 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [PATCH v3 02/22] uapi/media.h: Declare interface types for ALSA
-Date: Thu, 3 Mar 2016 08:57:03 -0700
-Message-ID: <56D85ECF.40807@osg.samsung.com>
-References: <cover.1455233150.git.shuahkh@osg.samsung.com>
- <a1b468c2933dc2b4f2b6cc6d1ac30baee2a89f77.1455233152.git.shuahkh@osg.samsung.com>
- <56D85161.5070103@xs4all.nl>
+From: Eric Laurent <elaurent@google.com>
+Subject: compress offload patch
+Date: Thu, 3 Mar 2016 08:09:52 -0800
+Message-ID: <CAL-7xP8m+p2XZHwM1y+KrH+FZUiux33dy6Y6LVEuAEiW6g5mDQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <56D85161.5070103@xs4all.nl>
-Sender: linux-media-owner@vger.kernel.org
-To: Hans Verkuil <hverkuil@xs4all.nl>, mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com
-Cc: pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittgam.net, johan@oljud.se, klock.android@gmail.com, nenggun.kim@samsung.com, j.anaszewski@samsung.com, geliangtang@163.com, albert@huitsing.nl, linux-ke
+Content-Type: multipart/mixed; boundary=001a113ead288a0a6c052d273a89
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f52.google.com (mail-wm0-f52.google.com [74.125.82.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3109526149E
+ for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 17:09:53 +0100 (CET)
+Received: by mail-wm0-f52.google.com with SMTP id p65so41725414wmp.1
+ for <alsa-devel@alsa-project.org>; Thu, 03 Mar 2016 08:09:53 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/03/2016 07:59 AM, Hans Verkuil wrote:
-> On 02/12/16 00:41, Shuah Khan wrote:
->> Declare the interface types to be used on alsa for
->> the new G_TOPOLOGY ioctl.
->>
->> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
->> ---
->>  drivers/media/media-entity.c | 16 ++++++++++++++++
->>  include/uapi/linux/media.h   | 10 ++++++++++
->>  2 files changed, 26 insertions(+)
->>
->> diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
->> index f2e4360..6179543 100644
->> --- a/drivers/media/media-entity.c
->> +++ b/drivers/media/media-entity.c
->> @@ -65,6 +65,22 @@ static inline const char *intf_type(struct media_interface *intf)
->>  		return "v4l2-subdev";
->>  	case MEDIA_INTF_T_V4L_SWRADIO:
->>  		return "swradio";
->> +	case MEDIA_INTF_T_ALSA_PCM_CAPTURE:
->> +		return "pcm-capture";
->> +	case MEDIA_INTF_T_ALSA_PCM_PLAYBACK:
->> +		return "pcm-playback";
->> +	case MEDIA_INTF_T_ALSA_CONTROL:
->> +		return "alsa-control";
->> +	case MEDIA_INTF_T_ALSA_COMPRESS:
->> +		return "compress";
->> +	case MEDIA_INTF_T_ALSA_RAWMIDI:
->> +		return "rawmidi";
->> +	case MEDIA_INTF_T_ALSA_HWDEP:
->> +		return "hwdep";
->> +	case MEDIA_INTF_T_ALSA_SEQUENCER:
->> +		return "sequencer";
->> +	case MEDIA_INTF_T_ALSA_TIMER:
->> +		return "timer";
-> 
-> Wouldn't it be better to add an 'alsa' prefix for all of these?
-> 
-> And 'dvb-' or 'v4l2-' (or v4l-) for the others as well.
-> 
-> Names like 'timer' are very generic. I think it would be a good idea to
-> make the naming more regular and have it include the subsystem name just
-> as the define does.
-> 
-> Regards,
-> 
-> 	Hans
-> 
+--001a113ead288a0a6c052d273a89
+Content-Type: text/plain; charset=UTF-8
 
-Yes adding more information 'dvb-' or 'v4l2-' (or v4l-), alsa
-to strings would help. I can fix all of them in a separate
-patch if that is okay with you.
+Takashi, Vinod,
 
-thanks,
--- Shuah
+Can you help with merging the attached patch for compress offload core
+upstream?
+
+Thanks.
+
+Eric.
+
+--001a113ead288a0a6c052d273a89
+Content-Type: text/x-patch; charset=US-ASCII;
+	name="0001-ALSA-compress-allow-writes-in-SNDRV_PCM_STATE_PREPAR.patch"
+Content-Disposition: attachment;
+	filename="0001-ALSA-compress-allow-writes-in-SNDRV_PCM_STATE_PREPAR.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_ilcgvysz0
+
+RnJvbSAxMTY2YWRmNGI2M2VhM2VlMWQxMTljNDZkOTdmYTY1Yzc2YTA4NDQ3IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBFcmljIExhdXJlbnQgPGVsYXVyZW50QGdvb2dsZS5jb20+CkRh
+dGU6IFdlZCwgMiBNYXIgMjAxNiAwOTo1NDo1NyAtMDgwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6
+IGNvbXByZXNzOiBhbGxvdyB3cml0ZXMgaW4gU05EUlZfUENNX1NUQVRFX1BSRVBBUkVECiBzdGF0
+ZQoKQWxsb3cgd3JpdGVzIGluIFNORFJWX1BDTV9TVEFURV9QUkVQQVJFRCBzdGF0ZSBzbyB0aGF0
+IG1vcmUKdGhhbiBvbmUgYnVmZmVyIGZyYWdtZW50IGNhbiBiZSB3cml0dGVuIGZyb20gdXNlciBz
+cGFjZQpiZWZvcmUgY2FsbGluZyBTTkRSVl9DT01QUkVTU19TVEFSVC4KClNpZ25lZC1vZmYtYnk6
+IEVyaWMgTGF1cmVudCA8ZWxhdXJlbnRAZ29vZ2xlLmNvbT4KLS0tCiBzb3VuZC9jb3JlL2NvbXBy
+ZXNzX29mZmxvYWQuYyB8IDEgKwogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspCgpkaWZm
+IC0tZ2l0IGEvc291bmQvY29yZS9jb21wcmVzc19vZmZsb2FkLmMgYi9zb3VuZC9jb3JlL2NvbXBy
+ZXNzX29mZmxvYWQuYwppbmRleCAxYjc3ODUyLi43YzU3ZjM3IDEwMDY0NAotLS0gYS9zb3VuZC9j
+b3JlL2NvbXByZXNzX29mZmxvYWQuYworKysgYi9zb3VuZC9jb3JlL2NvbXByZXNzX29mZmxvYWQu
+YwpAQCAtMjgxLDYgKzI4MSw3IEBAIHN0YXRpYyBzc2l6ZV90IHNuZF9jb21wcl93cml0ZShzdHJ1
+Y3QgZmlsZSAqZiwgY29uc3QgY2hhciBfX3VzZXIgKmJ1ZiwKIAltdXRleF9sb2NrKCZzdHJlYW0t
+PmRldmljZS0+bG9jayk7CiAJLyogd3JpdGUgaXMgYWxsb3dlZCB3aGVuIHN0cmVhbSBpcyBydW5u
+aW5nIG9yIGhhcyBiZWVuIHN0ZXVwICovCiAJaWYgKHN0cmVhbS0+cnVudGltZS0+c3RhdGUgIT0g
+U05EUlZfUENNX1NUQVRFX1NFVFVQICYmCisJICAgIHN0cmVhbS0+cnVudGltZS0+c3RhdGUgIT0g
+U05EUlZfUENNX1NUQVRFX1BSRVBBUkVEICYmCiAJCQlzdHJlYW0tPnJ1bnRpbWUtPnN0YXRlICE9
+IFNORFJWX1BDTV9TVEFURV9SVU5OSU5HKSB7CiAJCW11dGV4X3VubG9jaygmc3RyZWFtLT5kZXZp
+Y2UtPmxvY2spOwogCQlyZXR1cm4gLUVCQURGRDsKLS0gCjIuNy4wLnJjMy4yMDcuZzBhYzUzNDQK
+Cg==
+--001a113ead288a0a6c052d273a89
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
--- 
-Shuah Khan
-Sr. Linux Kernel Developer
-Open Source Innovation Group
-Samsung Research America (Silicon Valley)
-shuahkh@osg.samsung.com | (970) 217-8978
+--001a113ead288a0a6c052d273a89--
