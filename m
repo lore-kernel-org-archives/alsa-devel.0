@@ -1,25 +1,22 @@
-From: Thomas Klausner <tk@giga.or.at>
-Subject: Re: byteswap.h
-Date: Thu, 3 Mar 2016 12:18:40 +0100
-Message-ID: <20160303111840.GJ8492@danbala.tuwien.ac.at>
-References: <20160302221454.GC8492@danbala.tuwien.ac.at>
- <s5h60x3sy97.wl-tiwai@suse.de>
- <20160303095041.GG8492@danbala.tuwien.ac.at>
- <s5hwppjriol.wl-tiwai@suse.de> <s5hvb53rimi.wl-tiwai@suse.de>
- <20160303095852.GH8492@danbala.tuwien.ac.at>
- <s5hsi07ribw.wl-tiwai@suse.de>
- <20160303101005.GI8492@danbala.tuwien.ac.at>
- <sfid-H20160303-112115-+039.78-1@spamfilter.osbf.lua>
- <s5hpovbrhf2.wl-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: writing an alsa driver
+Date: Thu, 3 Mar 2016 16:57:45 +0530
+Message-ID: <20160303112745.GJ11154@localhost>
+References: <1433156768.2642.21.camel@loki> <20150608084951.GA7512@dellaz>
+ <loom.20150613T153708-781@post.gmane.org>
+ <20150615164623.GA693@asus> <1434387868.2434.50.camel@loki>
+ <20150623090932.GA6856@dellaz> <20150624102157.GL19530@localhost>
+ <20150624182120.GA481@asus> <20150625032407.GQ19530@localhost>
+ <20160303111110.GA13202@acervm>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="EP0wieDxd4TSJjHq"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from danbala.ifoer.tuwien.ac.at (danbala.ifoer.tuwien.ac.at
- [128.130.168.64])
- by alsa0.perex.cz (Postfix) with ESMTP id C5A7426519F
- for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 12:18:40 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 35BE626519F
+ for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 12:23:41 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <s5hpovbrhf2.wl-tiwai@suse.de>
+In-Reply-To: <20160303111110.GA13202@acervm>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,349 +26,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Michele Curti <michele.curti@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Luka Karinja <luka.karinja@gmail.com>, Takashi Iwai <tiwai@suse.de>, ao2@ao2.it, alsa-devel@alsa-project.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Nikula,
+ Jarkko" <jarkko.nikula@intel.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---EP0wieDxd4TSJjHq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Mar 03, 2016 at 11:21:05AM +0100, Takashi Iwai wrote:
-> On Thu, 03 Mar 2016 11:10:05 +0100,
-> Thomas Klausner wrote:
-> > 
-> > On Thu, Mar 03, 2016 at 11:01:23AM +0100, Takashi Iwai wrote:
-> > > Applied now.  Thanks.
-> > 
-> > Thank you!
-> > 
-> > Next big issue: Many places include byteswap.h to get bswap_16,
-> > bswap_32, bswap_64.
-> > 
-> > This header does not exist on *BSD or Solaris.
-> > 
-> > However, all of these provide similar macros under different names,
-> > from different header files (bswap16 etc, or BSWAP_16).
-> > 
-> > Do you want a compat header, e.g. include/bswap.h that takes care of
-> > this and is included by local.h, or do you prefer a different
-> > solution?
+On Thu, Mar 03, 2016 at 12:11:10PM +0100, Michele Curti wrote:
+> Hi Vinod,
 > 
-> bswap.h looks better ATM.  Let's see.
+> On Thu, Jun 25, 2015 at 08:54:07AM +0530, Vinod Koul wrote:
+> > > [    2.700468] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in1_1 doesn't have DAPM widget!!!
+> > this is unexpected, I will check on this
+> > 
+> > > ...
+> > > [    7.970937] intel_sst_acpi 80860F28:00: Wait timed-out condition:0x0, msg_id:0x1 fw_state 0x3
+> > > [    7.970964] intel_sst_acpi 80860F28:00: fw returned err -16
+> > Yes this is a problem, which FW are you using
 
-Ok, here's my try for a version of bswap.h. Does it look ok?
- Thomas
+Have you tried the recent kernels, Pierre did a bunch of update and got many
+things working.
 
---EP0wieDxd4TSJjHq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="0001-Introduce-bswap.h-for-portable-definitions-of-byte-s.patch"
+As for timeout, that simply means we have send a message to DSP which failed
+to get a response. Perhpas the message had some bad element of FW had a
+bug/crashed...
 
->From 03185793bc290ad2de4506a553f9855ff7241fa0 Mon Sep 17 00:00:00 2001
-From: Thomas Klausner <wiz@NetBSD.org>
-Date: Thu, 3 Mar 2016 12:16:57 +0100
-Subject: [PATCH] Introduce bswap.h for portable definitions of byte swap
- macros.
+> > 
+> 
+> I have a question regarding the FW timeout, but since it has been a long
+> time since last email, let me summarize the thread..
+> 
+> I tried to get sound working on an Asus X205TA laptop so, as far as I
+> understood, 3 things are needed in the ASoC world:
+> 1. codec driver
+> 2. platform driver
+> 3. machine driver
+> 
+> 1. codec driver (patch 0001 at [1])
+> 
+> It seems that the codec is a Relatek RT5648, and in kernel there is no
+> driver for it, but since it has the same product Id of the RT5645
+> (0x6308) I simply added an I2C and an ACPI match to the RT5645 codec
+> driver.
+> 
+> 2. platform driver (patch 0002 at [1])
+> 
+> Used the sst-mfld-platform one (under sound/soc/intel/atom/sst), changing
+> the .acpi_ipc_irq_index from 5 to 0 because the DSP interrupt order in
+> the ACPI DSDT table of this laptop is different from the "normal" (see
+> line 3745 of dsdt.dsl at [2]).
+> 
+> $ cat /proc/interrupts | grep sst
+>             CPU0       CPU1       CPU2       CPU3       
+>    1:         24          0          0          0   IO-APIC   29-fasteoi   intel_sst_driver
+> 
+> Used the SSP0 version of the ADSP firmware (found at [3]), beacuse the
+> mainline FW uses the SSP2 port but this laptop has an atom Z3735F which
+> has only two SSP ports.
+> 
+> 3. machine driver (patch 0003 at [1])
+> 
+> It's a copy-paste of sound/soc/intel/boards/bytcr_rt5651.c, but using
+> SSP0 instead of SSP2 and rt5645 instead of rt5651.
+> 
+> 
+> 
+> So, applying the three patches to the mainline linux kernel the sound
+> card shows up (aplay -l finds it) and at boot I got these errors:
+> 
+> [    4.378238] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 0 doesn't have DAPM widget!!!
+> [    4.381301] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 1 doesn't have DAPM widget!!!
+> [    4.384307] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 2 doesn't have DAPM widget!!!
+> [    4.387276] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 3 doesn't have DAPM widget!!!
+> [    4.390229] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in0_0 doesn't have DAPM widget!!!
+> [    4.390249] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in0_1 doesn't have DAPM widget!!!
+> [    4.390268] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in1_0 doesn't have DAPM widget!!!
+> [    4.390286] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in1_1 doesn't have DAPM widget!!!
+> 
+> About a minute of these errors:
+> 
+> [   62.894026] intel_sst_acpi 80860F28:00: Wait timed-out condition:0x0, msg_id:0x2 fw_state 0x3
+> [   62.903888] intel_sst_acpi 80860F28:00: fw returned err -16
+> 
+> And, when I play some audio, these ones:
+> 
+> [  102.350606]  Audio Port: ASoC: no backend DAIs enabled for Audio Port
+> 
+> Full dmesg at [4].
+> 
+> 
+> And, finally, the question: it is possible that the firmware timeout is
+> due to a missing alsa audio path and not to a fw problem?
+> 
+> Thanks,
+> Michele
+> 
+> 
+> [1] https://github.com/michelecurti/x205ta/tree/master/sound-patches
+> [2] https://github.com/michelecurti/x205ta/tree/master/acpi-tables
+> [3] https://git.kernel.org/cgit/linux/kernel/git/vkoul/firmware.git/commit/?h=byt
+> [4] http://pastebin.com/XAQZUvkM
+> 
 
-Signed-off-by: Thomas Klausner <wiz@NetBSD.org>
----
- include/Makefile.am        |  2 +-
- include/bswap.h            | 39 +++++++++++++++++++++++++++++++++++++++
- src/pcm/pcm_adpcm.c        |  2 +-
- src/pcm/pcm_alaw.c         |  2 +-
- src/pcm/pcm_copy.c         |  2 +-
- src/pcm/pcm_dmix_generic.c |  2 +-
- src/pcm/pcm_file.c         |  2 +-
- src/pcm/pcm_iec958.c       |  2 +-
- src/pcm/pcm_lfloat.c       |  2 +-
- src/pcm/pcm_linear.c       |  2 +-
- src/pcm/pcm_meter.c        |  2 +-
- src/pcm/pcm_misc.c         |  2 +-
- src/pcm/pcm_mulaw.c        |  2 +-
- src/pcm/pcm_null.c         |  2 +-
- src/pcm/pcm_rate.c         |  2 +-
- src/pcm/pcm_rate_linear.c  |  2 +-
- src/pcm/pcm_route.c        |  2 +-
- src/pcm/pcm_softvol.c      |  2 +-
- 18 files changed, 56 insertions(+), 17 deletions(-)
- create mode 100644 include/bswap.h
-
-diff --git a/include/Makefile.am b/include/Makefile.am
-index 8c83c11..31a3f74 100644
---- a/include/Makefile.am
-+++ b/include/Makefile.am
-@@ -59,7 +59,7 @@ alsainclude_HEADERS += alisp.h
- endif
- 
- noinst_HEADERS = alsa sys.h search.h list.h aserver.h local.h alsa-symbols.h \
--	asoundlib-head.h asoundlib-tail.h type_compat.h
-+	asoundlib-head.h asoundlib-tail.h bswap.h type_compat.h
- 
- DISTCLEANFILES = stamp-vh version.h alsa asoundlib.h
- 
-diff --git a/include/bswap.h b/include/bswap.h
-new file mode 100644
-index 0000000..68adce3
---- /dev/null
-+++ b/include/bswap.h
-@@ -0,0 +1,39 @@
-+/*
-+ *  ALSA lib - compatibility header for providing byte swapping macros
-+ *  Copyright (c) 2016 by  Thomas Klausner <wiz@NetBSD.org>
-+ *
-+ *
-+ *   This library is free software; you can redistribute it and/or modify
-+ *   it under the terms of the GNU Lesser General Public License as
-+ *   published by the Free Software Foundation; either version 2.1 of
-+ *   the License, or (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *   GNU Lesser General Public License for more details.
-+ *
-+ *   You should have received a copy of the GNU Lesser General Public
-+ *   License along with this library; if not, write to the Free Software
-+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-+ *
-+ */
-+
-+#ifndef __BSWAP_H
-+#define __BSWAP_H
-+
-+#if defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__)
-+#include <sys/endian.h>
-+#define bswap_16 bswap16
-+#define bswap_32 bswap32
-+#define bswap_64 bswap64
-+#elif defined (__sun)
-+#include <sys/byteorder.h>
-+#define bswap_16 BSWAP_16
-+#define bswap_32 BSWAP_32
-+#define bswap_64 BSWAP_64
-+#else
-+#include <byteswap.h>
-+#endif
-+
-+#endif
-diff --git a/src/pcm/pcm_adpcm.c b/src/pcm/pcm_adpcm.c
-index 1a83c5a..1c88c83 100644
---- a/src/pcm/pcm_adpcm.c
-+++ b/src/pcm/pcm_adpcm.c
-@@ -56,7 +56,7 @@ IMA compatibility project proceedings, Vol 2, Issue 2, May 1992.
-   come across a good description of XA yet.
-  */
- 
--#include <byteswap.h>
-+#include "bswap.h"
- #include "pcm_local.h"
- #include "pcm_plugin.h"
- 
-diff --git a/src/pcm/pcm_alaw.c b/src/pcm/pcm_alaw.c
-index db759e3..fa58441 100644
---- a/src/pcm/pcm_alaw.c
-+++ b/src/pcm/pcm_alaw.c
-@@ -26,7 +26,7 @@
-  *
-  */
-   
--#include <byteswap.h>
-+#include "bswap.h"
- #include "pcm_local.h"
- #include "pcm_plugin.h"
- 
-diff --git a/src/pcm/pcm_copy.c b/src/pcm/pcm_copy.c
-index 66d3a47..0dbd5bd 100644
---- a/src/pcm/pcm_copy.c
-+++ b/src/pcm/pcm_copy.c
-@@ -26,7 +26,7 @@
-  *
-  */
-   
--#include <byteswap.h>
-+#include "bswap.h"
- #include "pcm_local.h"
- #include "pcm_plugin.h"
- 
-diff --git a/src/pcm/pcm_dmix_generic.c b/src/pcm/pcm_dmix_generic.c
-index 9e9d3c3..40c0874 100644
---- a/src/pcm/pcm_dmix_generic.c
-+++ b/src/pcm/pcm_dmix_generic.c
-@@ -125,7 +125,7 @@ static void mix_select_callbacks(snd_pcm_direct_t *dmix)
- 	 (1ULL << SND_PCM_FORMAT_S24_LE) | (1ULL << SND_PCM_FORMAT_S24_3LE) | \
- 	 (1ULL << SND_PCM_FORMAT_U8))
- 
--#include <byteswap.h>
-+#include "bswap.h"
- 
- static void generic_mix_areas_16_native(unsigned int size,
- 					volatile signed short *dst,
-diff --git a/src/pcm/pcm_file.c b/src/pcm/pcm_file.c
-index 9ab6964..92eb072 100644
---- a/src/pcm/pcm_file.c
-+++ b/src/pcm/pcm_file.c
-@@ -26,7 +26,7 @@
-  *
-  */
-   
--#include <byteswap.h>
-+#include "bswap.h"
- #include <ctype.h>
- #include <string.h>
- #include "pcm_local.h"
-diff --git a/src/pcm/pcm_iec958.c b/src/pcm/pcm_iec958.c
-index 38c4ce7..86ac9cf 100644
---- a/src/pcm/pcm_iec958.c
-+++ b/src/pcm/pcm_iec958.c
-@@ -26,7 +26,7 @@
-  *
-  */
-   
--#include <byteswap.h>
-+#include "bswap.h"
- #include "pcm_local.h"
- #include "pcm_plugin.h"
- 
-diff --git a/src/pcm/pcm_lfloat.c b/src/pcm/pcm_lfloat.c
-index 2f3e578..22201f8 100644
---- a/src/pcm/pcm_lfloat.c
-+++ b/src/pcm/pcm_lfloat.c
-@@ -26,7 +26,7 @@
-  *
-  */
-   
--#include <byteswap.h>
-+#include "bswap.h"
- #include "pcm_local.h"
- #include "pcm_plugin.h"
- 
-diff --git a/src/pcm/pcm_linear.c b/src/pcm/pcm_linear.c
-index 9a92abd..50df779 100644
---- a/src/pcm/pcm_linear.c
-+++ b/src/pcm/pcm_linear.c
-@@ -26,7 +26,7 @@
-  *
-  */
-   
--#include <byteswap.h>
-+#include "bswap.h"
- #include "pcm_local.h"
- #include "pcm_plugin.h"
- 
-diff --git a/src/pcm/pcm_meter.c b/src/pcm/pcm_meter.c
-index 034f582..1b0ccb4 100644
---- a/src/pcm/pcm_meter.c
-+++ b/src/pcm/pcm_meter.c
-@@ -27,7 +27,7 @@
-  */
-   
- 
--#include <byteswap.h>
-+#include "bswap.h"
- #include <time.h>
- #include <pthread.h>
- #include <dlfcn.h>
-diff --git a/src/pcm/pcm_misc.c b/src/pcm/pcm_misc.c
-index 5870f82..7d2b05d 100644
---- a/src/pcm/pcm_misc.c
-+++ b/src/pcm/pcm_misc.c
-@@ -23,7 +23,7 @@
- #include <stdlib.h>
- #include <unistd.h>
- #include <string.h>
--#include <byteswap.h>
-+#include "bswap.h"
- #include "pcm_local.h"
- 
- 
-diff --git a/src/pcm/pcm_mulaw.c b/src/pcm/pcm_mulaw.c
-index 011b2a5..15dbdc1 100644
---- a/src/pcm/pcm_mulaw.c
-+++ b/src/pcm/pcm_mulaw.c
-@@ -26,7 +26,7 @@
-  *
-  */
-   
--#include <byteswap.h>
-+#include "bswap.h"
- #include "pcm_local.h"
- #include "pcm_plugin.h"
- 
-diff --git a/src/pcm/pcm_null.c b/src/pcm/pcm_null.c
-index 5e63caa..685618e 100644
---- a/src/pcm/pcm_null.c
-+++ b/src/pcm/pcm_null.c
-@@ -26,7 +26,7 @@
-  *
-  */
-   
--#include <byteswap.h>
-+#include "bswap.h"
- #include <limits.h>
- #include "pcm_local.h"
- #include "pcm_plugin.h"
-diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
-index c76db25..41bddac 100644
---- a/src/pcm/pcm_rate.c
-+++ b/src/pcm/pcm_rate.c
-@@ -28,7 +28,7 @@
-  *
-  */
- #include <inttypes.h>
--#include <byteswap.h>
-+#include "bswap.h"
- #include "pcm_local.h"
- #include "pcm_plugin.h"
- #include "pcm_rate.h"
-diff --git a/src/pcm/pcm_rate_linear.c b/src/pcm/pcm_rate_linear.c
-index 7481b38..70399e0 100644
---- a/src/pcm/pcm_rate_linear.c
-+++ b/src/pcm/pcm_rate_linear.c
-@@ -21,7 +21,7 @@
-  */
- 
- #include <inttypes.h>
--#include <byteswap.h>
-+#include "bswap.h"
- #include "pcm_local.h"
- #include "pcm_plugin.h"
- #include "pcm_rate.h"
-diff --git a/src/pcm/pcm_route.c b/src/pcm/pcm_route.c
-index 646517d..3611603 100644
---- a/src/pcm/pcm_route.c
-+++ b/src/pcm/pcm_route.c
-@@ -26,7 +26,7 @@
-  *
-  */
-   
--#include <byteswap.h>
-+#include "bswap.h"
- #include <math.h>
- #include "pcm_local.h"
- #include "pcm_plugin.h"
-diff --git a/src/pcm/pcm_softvol.c b/src/pcm/pcm_softvol.c
-index c6cfd88..802aa4b 100644
---- a/src/pcm/pcm_softvol.c
-+++ b/src/pcm/pcm_softvol.c
-@@ -26,7 +26,7 @@
-  *
-  */
- 
--#include <byteswap.h>
-+#include "bswap.h"
- #include <math.h>
- #include "pcm_local.h"
- #include "pcm_plugin.h"
 -- 
-2.7.1
-
-
---EP0wieDxd4TSJjHq
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---EP0wieDxd4TSJjHq--
+~Vinod
