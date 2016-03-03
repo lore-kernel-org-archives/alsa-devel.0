@@ -1,113 +1,60 @@
-From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Subject: Re: [PATCH v5 22/22] sound/usb: Use Media Controller API to share
- media resources
-Date: Thu, 3 Mar 2016 15:21:52 -0300
-Message-ID: <20160303152152.303c85ea@recife.lan>
-References: <1456937431-3794-1-git-send-email-shuahkh@osg.samsung.com>
-	<20160302204131.GV5273@mwanda>
-	<56D76FBF.9050209@osg.samsung.com>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: Re: [PATCH] AsoC: tegra_max98090: honor headphone detect GPIO
+ polarity
+Date: Thu, 3 Mar 2016 11:37:14 -0700
+Message-ID: <56D8845A.4050704@wwwdotorg.org>
+References: <56CC9860.2060003@wwwdotorg.org>
+ <1456940623-1496-1-git-send-email-sctincman@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <56D76FBF.9050209@osg.samsung.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Shuah Khan <shuahkh@osg.samsung.com>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1456940623-1496-1-git-send-email-sctincman-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jonathan Tinkham <sctincman-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Dylan Reid <dgreid-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>
+Cc: linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Em Wed, 2 Mar 2016 15:57:03 -0700
-Shuah Khan <shuahkh@osg.samsung.com> escreveu:
+On 03/02/2016 10:43 AM, Jonathan Tinkham wrote:
+> Set the invert property for the headphone jack depending on the GPIO polarity
+> in the device-tree.
+>
+> Signed-off-by: Jonathan Tinkham <sctincman-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> ---
 
-> On 03/02/2016 01:41 PM, Dan Carpenter wrote:
-> > On Wed, Mar 02, 2016 at 09:50:31AM -0700, Shuah Khan wrote:
-> >> +	mctl = kzalloc(sizeof(*mctl), GFP_KERNEL);
-> >> +	if (!mctl)
-> >> +		return -ENOMEM;
-> >> +
-> >> +	mctl->media_dev = mdev;
-> >> +	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-> >> +		intf_type = MEDIA_INTF_T_ALSA_PCM_PLAYBACK;
-> >> +		mctl->media_entity.function = MEDIA_ENT_F_AUDIO_PLAYBACK;
-> >> +		mctl->media_pad.flags = MEDIA_PAD_FL_SOURCE;
-> >> +		mixer_pad = 1;
-> >> +	} else {
-> >> +		intf_type = MEDIA_INTF_T_ALSA_PCM_CAPTURE;
-> >> +		mctl->media_entity.function = MEDIA_ENT_F_AUDIO_CAPTURE;
-> >> +		mctl->media_pad.flags = MEDIA_PAD_FL_SINK;
-> >> +		mixer_pad = 2;
-> >> +	}
-> >> +	mctl->media_entity.name = pcm->name;
-> >> +	media_entity_pads_init(&mctl->media_entity, 1, &mctl->media_pad);
-> >> +	ret =  media_device_register_entity(mctl->media_dev,
-> >> +					    &mctl->media_entity);
-> >> +	if (ret)
-> >> +		goto err1;
-> > 
-> > Could we give this label a meaningful name instead of a number?
-> > goto free_mctl;
-> 
-> I do see other places where numbered labels are used.
-> Names might help with code readability.
-> 
-> register_entity_fail probably makes more sense as a
-> label than free_mctl. In any case, I can address the
-> labels in a follow-on patch.
-> 
-> > 
-> >> +
-> >> +	mctl->intf_devnode = media_devnode_create(mdev, intf_type, 0,
-> >> +						  MAJOR(pcm_dev->devt),
-> >> +						  MINOR(pcm_dev->devt));
-> >> +	if (!mctl->intf_devnode) {
-> >> +		ret = -ENOMEM;
-> >> +		goto err2;
-> > 
-> > goto unregister_device;
-> > 
-> >> +	}
-> >> +	mctl->intf_link = media_create_intf_link(&mctl->media_entity,
-> >> +						 &mctl->intf_devnode->intf,
-> >> +						 MEDIA_LNK_FL_ENABLED);
-> >> +	if (!mctl->intf_link) {
-> >> +		ret = -ENOMEM;
-> >> +		goto err3;
-> > 
-> > goto delete_devnode;
-> > 
-> >> +	}
-> >> +
-> >> +	/* create link between mixer and audio */
-> >> +	media_device_for_each_entity(entity, mdev) {
-> >> +		switch (entity->function) {
-> >> +		case MEDIA_ENT_F_AUDIO_MIXER:
-> >> +			ret = media_create_pad_link(entity, mixer_pad,
-> >> +						    &mctl->media_entity, 0,
-> >> +						    MEDIA_LNK_FL_ENABLED);
-> >> +			if (ret)
-> >> +				goto err4;
-> > 
-> > This is a bit weird because we're inside a loop.  Shouldn't we call
-> > media_entity_remove_links() or something if this is the second time
-> > through the loop?
-> 
-> Links are removed from media_device_unregister_entity()
-> which is called in the error path.
-> 
-> > 
-> > I don't understand this.  The kernel has the media_entity_cleanup() stub
-> > function which is supposed to do this but it hasn't been implemented
-> > yet?
-> > 
-> 
-> Please see above. Links are removed when entity is
-> unregistered. media_entity_cleanup() is a stub. It
-> isn't intended for removing links.
+I think this is an updatd version of a previous patch, so it should say 
+"[PATCH V2]" in the subject, and have a description of the changes you 
+made between the versions here, below the --- line.
 
-Shuah,
+> diff --git a/sound/soc/tegra/tegra_max98090.c b/sound/soc/tegra/tegra_max98090.c
+> index 902da36..da4e8d1 100644
+> --- a/sound/soc/tegra/tegra_max98090.c
+> +++ b/sound/soc/tegra/tegra_max98090.c
+> @@ -42,6 +42,7 @@
+>   struct tegra_max98090 {
+>   	struct tegra_asoc_utils_data util_data;
+>   	int gpio_hp_det;
+> +	enum of_gpio_flags gpio_hp_det_flags;
+>   	int gpio_mic_det;
+>   };
+>
+> @@ -155,6 +156,8 @@ static int tegra_max98090_asoc_init(struct snd_soc_pcm_runtime *rtd)
+>   				      ARRAY_SIZE(tegra_max98090_hp_jack_pins));
+>
+>   		tegra_max98090_hp_jack_gpio.gpio = machine->gpio_hp_det;
+> +		tegra_max98090_hp_jack_gpio.invert =
+> +			machine->gpio_hp_det_flags & OF_GPIO_ACTIVE_LOW;
 
-Please address the issue that Dan is pointing on a separate
-patch.
+So now, this .invert flag is always set directly based on the GPIO 
+flags. That's good.
 
-Thanks,
-Mauro
+I believe this means you should remove the .invert assignment from 
+static struct snd_soc_jack_gpio tegra_max98090_hp_jack_gpio too, since 
+it's always over-written, so doesn't need a default value.
+
+Question: Should we make the same change for DT property 
+nvidia,mic-det-gpios and value tegra_max98090_mic_jack_gpio.invert? 
+tegra124-nyan.dts currently says GPIO_ACTIVE_HIGH for both hp-det-gpios 
+and mic-det-gpios. I don't know if the DT is correct for both of those 
+(and hence making the same change for the mic-det-gpios would break 
+Nyan) or not.
