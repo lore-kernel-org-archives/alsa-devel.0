@@ -1,18 +1,19 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2] ASoC: cht_bsw_rt5645: Fix writing to
-	string literal
-Date: Thu, 3 Mar 2016 10:11:05 -0600
-Message-ID: <56D86219.4030606@linux.intel.com>
-References: <1456217420-9327-1-git-send-email-carlo@caione.org>
- <20160226021210.GE18327@sirena.org.uk> <20160303113255.GL11154@localhost>
+Subject: Re: Compute Stick baytrail audio problem
+Date: Thu, 3 Mar 2016 10:16:25 -0600
+Message-ID: <56D86359.6090800@linux.intel.com>
+References: <20160219203900.GA5202@monopoli.naic.edu>
+ <56C8826A.3030303@linux.intel.com> <56CBCB86.8040601@gmail.com>
+ <20160223143443.GA22458@monopoli.naic.edu> <56D72205.7020007@linux.intel.com>
+ <20160303040952.GA23703@monopoli.naic.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 8FE0E26149E
- for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 17:11:07 +0100 (CET)
-In-Reply-To: <20160303113255.GL11154@localhost>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id C60B22614A1
+ for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 17:16:27 +0100 (CET)
+In-Reply-To: <20160303040952.GA23703@monopoli.naic.edu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,35 +23,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, yang.a.fang@intel.com, lgirdwood@gmail.com, Carlo Caione <carlo@endlessm.com>, Carlo Caione <carlo@caione.org>, linux@endlessm.com
+To: Giacomo Comes <comes@naic.edu>
+Cc: alsa-devel@alsa-project.org, Toyo Abe <toyo.abe@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 3/3/16 5:32 AM, Vinod Koul wrote:
-> On Fri, Feb 26, 2016 at 11:12:10AM +0900, Mark Brown wrote:
->> On Tue, Feb 23, 2016 at 09:50:20AM +0100, Carlo Caione wrote:
->>> From: Carlo Caione <carlo@endlessm.com>
->>>
->>> We cannot use strcpy() to write to a const char * location. This is
->>> causing a 'BUG: unable to handle kernel paging request' error at boot
->>> when using the cht-bsw-rt5645 driver.
->>>
->>> With this patch we also fix a wrong indexing in the driver where the
->>> codec_name of the wrong dai_link is being overwritten.
+On 3/2/16 10:09 PM, Giacomo Comes wrote:
+> On Wed, Mar 02, 2016 at 11:25:25AM -0600, Pierre-Louis Bossart wrote:
 >>
->> So how was the original code tested then...?
+>>>> After some investigation, I found some problems on the driver and fixed a few of
+>>>> them. I pushed the fix to my github. I hope it might help you.
+>>>>    https://raw.githubusercontent.com/toyoabe/baytrailaudio/fix-underrun/hdmi_audio_20150319.patch
+>>>>
+>>>> Best Regards,
+>>>> -toyo
+>>>
+>>> Hi,
+>>> that was it!. I added your changes and now the audio works. I'm happy.
+>>> I got finally every subsystem of the Compute Stick working.
+>>
+>> If anyone is interested, I ported the code to v4.4, it seems to work
+>> on the Baytrail Compute stick w/ Ubuntu.
+>>
+>> https://github.com/plbossart/sound/commits/baytrail-stick-rebase-4.4
+>>
+>> Testers welcome, next steps are to add the CherryTrail parts, rebase
+>> to the drm-nightly-build branch and start talking upstream changes.
 >
-> I know systems using this are shipping so surprised to see this.
->
-> Carlo cna you please tell me the configuration where it is seen.
->
-> Also would be worth mentioning here that Pierre is working on a super fix
-> for this which involves removing this code and getting the right IDs from
-> BIOS, so we wont need this code.
+> I tested your rebased code and it works for me. Actually I haven't
+> used a 4.4 kernel but a 4.1 (openSUSE 42.1). I made a diff between
+> kernel 4.4 and your branch and then applied that diff (with very minor changes)
+> to the 4.1 openSUSE kernel. No sound issue so far.
 
-I am actually using the same code to find out which DAI fields need to 
-be replaced instead of hard-codec indices so the loop part is a good thing.
-There is still a need to copy a string, be it a constant to generated 
-from the HID, into the codec_name field. I am not clear why strcpy() 
-works on all my systems and why kstrdup() is required. Is the kernel 
-issue really due to this string handling or to the bad index?
+Thanks for testing.
+There are significant changes needed to apply the initial driver on 3.18 
+and 4.0, but the changes are minor after that and largely cosmetic.
