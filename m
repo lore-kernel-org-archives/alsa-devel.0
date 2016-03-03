@@ -1,49 +1,103 @@
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH] ASoC: pcm3168a: remove unused variable
-Date: Thu,  3 Mar 2016 19:07:49 +0530
-Message-ID: <1457012269-30481-1-git-send-email-sudipm.mukherjee@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+From: Thomas Klausner <tk@giga.or.at>
+Subject: Re: Remaining compatibility patches for NetBSD
+Date: Thu, 3 Mar 2016 14:46:41 +0100
+Message-ID: <20160303134641.GB26041@danbala.tuwien.ac.at>
+References: <20160303095852.GH8492@danbala.tuwien.ac.at>
+ <s5hsi07ribw.wl-tiwai@suse.de>
+ <20160303101005.GI8492@danbala.tuwien.ac.at>
+ <s5hpovbrhf2.wl-tiwai@suse.de>
+ <20160303111840.GJ8492@danbala.tuwien.ac.at>
+ <s5hsi076bd6.wl-tiwai@suse.de>
+ <20160303113921.GK8492@danbala.tuwien.ac.at>
+ <20160303120242.GL8492@danbala.tuwien.ac.at>
+ <sfid-H20160303-143519-+056.43-1@spamfilter.osbf.lua>
+ <s5hlh5z65x1.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from danbala.ifoer.tuwien.ac.at (danbala.ifoer.tuwien.ac.at
+ [128.130.168.64])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF4EB260535
+ for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 14:46:42 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hlh5z65x1.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-While building we were getting build warning about:
-sound/soc/codecs/pcm3168a.c:403:21: warning: variable 'channels' set but not used
+On Thu, Mar 03, 2016 at 02:35:06PM +0100, Takashi Iwai wrote:
+> On Thu, 03 Mar 2016 13:02:42 +0100,
+> Thomas Klausner wrote:
+> > 
+> > Here are the remaining patches to make the build succeed on NetBSD.
+> > More patches are needed for FreeBSD and Solaris, but let's take it one
+> > at a time :-)
+> > 
+> > I think the first two (0002 and 0003) should be uncontroversial.
+> > 
+> > For patch 0004 it would perhaps be good to have versionsort/alphasort
+> > in a central place instead of two. Do you have a suggestion where?
+> > 
+> > I'm not sure what to do about 0005 since you said you don't want to
+> > modify include/sound/asound.h.
+> 
+> Right.  If we need to modify, it must be applied to Linux kernel tree
+> at first, then copy back to alsa-lib.
 
-The variable channels were being assigned some value but that was never
-reused.
+I haven't done this before.
 
-Signed-off-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
----
+I see on https://www.kernel.org/doc/linux/MAINTAINERS
 
-Its upto you now. If you dont want to accept then I will add an extra
-From: in the commit. But since that will not be a part of my scripts so
-there will be chances of error. If you are worried about missing signoff,
-then I can assure you that my scripts will catch that before i can send
-it.
+SOUND
+M:	Jaroslav Kysela <perex@perex.cz>
+M:	Takashi Iwai <tiwai@suse.com>
+L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+W:	http://www.alsa-project.org/
+T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
+T:	git git://git.alsa-project.org/alsa-kernel.git
+Q:	http://patchwork.kernel.org/project/alsa-devel/list/
+S:	Maintained
+F:	Documentation/sound/
+F:	include/sound/
+F:	include/uapi/sound/
+F:	sound/
 
- sound/soc/codecs/pcm3168a.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Against which of the two git trees should I prepare the patch?
 
-diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
-index 0c7248a..992a77e 100644
---- a/sound/soc/codecs/pcm3168a.c
-+++ b/sound/soc/codecs/pcm3168a.c
-@@ -400,13 +400,12 @@ static int pcm3168a_hw_params(struct snd_pcm_substream *substream,
- 	struct pcm3168a_priv *pcm3168a = snd_soc_codec_get_drvdata(codec);
- 	bool tx, master_mode;
- 	u32 val, mask, shift, reg;
--	unsigned int rate, channels, fmt, ratio, max_ratio;
-+	unsigned int rate, fmt, ratio, max_ratio;
- 	int i, min_frame_size;
- 	snd_pcm_format_t format;
- 
- 	rate = params_rate(params);
- 	format = params_format(params);
--	channels = params_channels(params);
- 
- 	ratio = pcm3168a->sysclk / rate;
- 
--- 
-1.9.1
+> > endian.h seems to be unneeded on src/topology/tplg_local.h; if it's
+> > needed, I can move it inside the #ifdef.
+> 
+> src/topology/parser.c contains the code depending on the endian.
+> The include can be moved there, too.
+
+local.h already handles endianness:
+
+#ifdef HAVE_ENDIAN_H
+#include <endian.h>
+#elif defined(HAVE_SYS_ENDIAN_H)
+#include <sys/endian.h>
+#ifndef __BYTE_ORDER
+#define __BYTE_ORDER BYTE_ORDER
+#endif
+#ifndef __LITTLE_ENDIAN
+#define __LITTLE_ENDIAN LITTLE_ENDIAN
+#endif
+#ifndef __BIG_ENDIAN
+#define __BIG_ENDIAN BIG_ENDIAN
+#endif
+#else
+#error Header defining endianness not defined
+#endif
+
+So I think the endian.h include is not necessary and can just be removed.
+ Thomas
