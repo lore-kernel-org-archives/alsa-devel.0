@@ -1,89 +1,95 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [PATCH v5 22/22] sound/usb: Use Media Controller API to share
- media resources
-Date: Thu, 3 Mar 2016 07:25:37 -0700
-Message-ID: <56D84961.9050902@osg.samsung.com>
-References: <1456937431-3794-1-git-send-email-shuahkh@osg.samsung.com>
- <20160302204131.GV5273@mwanda> <56D76FBF.9050209@osg.samsung.com>
- <20160303103637.GW5273@mwanda>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH v3 02/22] uapi/media.h: Declare interface types for ALSA
+Date: Thu, 3 Mar 2016 15:59:45 +0100
+Message-ID: <56D85161.5070103@xs4all.nl>
+References: <cover.1455233150.git.shuahkh@osg.samsung.com>
+ <a1b468c2933dc2b4f2b6cc6d1ac30baee2a89f77.1455233152.git.shuahkh@osg.samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160303103637.GW5273@mwanda>
+In-Reply-To: <a1b468c2933dc2b4f2b6cc6d1ac30baee2a89f77.1455233152.git.shuahkh@osg.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittga
+To: Shuah Khan <shuahkh@osg.samsung.com>, mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com
+Cc: pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittgam.net, johan@oljud.se, klock.android@gmail.com, nenggun.kim@samsung.com, j.anaszewski@samsung.com, geliangtang@163.com, albert@huitsing.nl, linux-ke
 List-Id: alsa-devel@alsa-project.org
 
-On 03/03/2016 03:36 AM, Dan Carpenter wrote:
-> On Wed, Mar 02, 2016 at 03:57:03PM -0700, Shuah Khan wrote:
->> On 03/02/2016 01:41 PM, Dan Carpenter wrote:
->>> On Wed, Mar 02, 2016 at 09:50:31AM -0700, Shuah Khan wrote:
->>>> +	mctl = kzalloc(sizeof(*mctl), GFP_KERNEL);
->>>> +	if (!mctl)
->>>> +		return -ENOMEM;
->>>> +
->>>> +	mctl->media_dev = mdev;
->>>> +	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
->>>> +		intf_type = MEDIA_INTF_T_ALSA_PCM_PLAYBACK;
->>>> +		mctl->media_entity.function = MEDIA_ENT_F_AUDIO_PLAYBACK;
->>>> +		mctl->media_pad.flags = MEDIA_PAD_FL_SOURCE;
->>>> +		mixer_pad = 1;
->>>> +	} else {
->>>> +		intf_type = MEDIA_INTF_T_ALSA_PCM_CAPTURE;
->>>> +		mctl->media_entity.function = MEDIA_ENT_F_AUDIO_CAPTURE;
->>>> +		mctl->media_pad.flags = MEDIA_PAD_FL_SINK;
->>>> +		mixer_pad = 2;
->>>> +	}
->>>> +	mctl->media_entity.name = pcm->name;
->>>> +	media_entity_pads_init(&mctl->media_entity, 1, &mctl->media_pad);
->>>> +	ret =  media_device_register_entity(mctl->media_dev,
->>>> +					    &mctl->media_entity);
->>>> +	if (ret)
->>>> +		goto err1;
->>>
->>> Could we give this label a meaningful name instead of a number?
->>> goto free_mctl;
->>
->> I do see other places where numbered labels are used.
+On 02/12/16 00:41, Shuah Khan wrote:
+> Declare the interface types to be used on alsa for
+> the new G_TOPOLOGY ioctl.
 > 
-> Yeah.  But it's the wrong idea.  If you remove a label then you have to
-> renumber everything.  Plus it doesn't say what the goto does.
+> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+> ---
+>  drivers/media/media-entity.c | 16 ++++++++++++++++
+>  include/uapi/linux/media.h   | 10 ++++++++++
+>  2 files changed, 26 insertions(+)
 > 
->> Names might help with code readability.
->>
->> register_entity_fail probably makes more sense as a
->> label than free_mctl.
-> 
-> A lot of people do that but the you wind up with code like:
-> 
-> 	foo = whatever_register();
-> 	if (!foo)
-> 		goto whatever_failed;
-> 
-> 	if (something_else)
-> 		goto whatever_failed;
-> 
-> So it doesn't make sense.  Also it doesn't tell you what the goto does.
-> (You can already see that whatever_failed from looking at the if
-> statement on the line before.)  This function is larger than a page so
-> you have to flip down to the other page to see what the goto does, then
-> you have to flip back and find your place again.  But if the label says
-> what the goto does then you can just say, "Have we allocated anything
-> since mctl?  No, then freeing mctl is the right thing."  You don't need
-> to flip to the othe page.
-> 
+> diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
+> index f2e4360..6179543 100644
+> --- a/drivers/media/media-entity.c
+> +++ b/drivers/media/media-entity.c
+> @@ -65,6 +65,22 @@ static inline const char *intf_type(struct media_interface *intf)
+>  		return "v4l2-subdev";
+>  	case MEDIA_INTF_T_V4L_SWRADIO:
+>  		return "swradio";
+> +	case MEDIA_INTF_T_ALSA_PCM_CAPTURE:
+> +		return "pcm-capture";
+> +	case MEDIA_INTF_T_ALSA_PCM_PLAYBACK:
+> +		return "pcm-playback";
+> +	case MEDIA_INTF_T_ALSA_CONTROL:
+> +		return "alsa-control";
+> +	case MEDIA_INTF_T_ALSA_COMPRESS:
+> +		return "compress";
+> +	case MEDIA_INTF_T_ALSA_RAWMIDI:
+> +		return "rawmidi";
+> +	case MEDIA_INTF_T_ALSA_HWDEP:
+> +		return "hwdep";
+> +	case MEDIA_INTF_T_ALSA_SEQUENCER:
+> +		return "sequencer";
+> +	case MEDIA_INTF_T_ALSA_TIMER:
+> +		return "timer";
 
-Yeah. You are right about large routines and needing
-to check labels. I will fix it in a followup patch.
+Wouldn't it be better to add an 'alsa' prefix for all of these?
 
-thanks,
--- Shuah
+And 'dvb-' or 'v4l2-' (or v4l-) for the others as well.
 
--- 
-Shuah Khan
-Sr. Linux Kernel Developer
-Open Source Innovation Group
-Samsung Research America (Silicon Valley)
-shuahkh@osg.samsung.com | (970) 217-8978
+Names like 'timer' are very generic. I think it would be a good idea to
+make the naming more regular and have it include the subsystem name just
+as the define does.
+
+Regards,
+
+	Hans
+
+>  	default:
+>  		return "unknown-intf";
+>  	}
+> diff --git a/include/uapi/linux/media.h b/include/uapi/linux/media.h
+> index c9eb42a..3cc0366 100644
+> --- a/include/uapi/linux/media.h
+> +++ b/include/uapi/linux/media.h
+> @@ -265,6 +265,7 @@ struct media_links_enum {
+>  
+>  #define MEDIA_INTF_T_DVB_BASE	0x00000100
+>  #define MEDIA_INTF_T_V4L_BASE	0x00000200
+> +#define MEDIA_INTF_T_ALSA_BASE	0x00000300
+>  
+>  /* Interface types */
+>  
+> @@ -280,6 +281,15 @@ struct media_links_enum {
+>  #define MEDIA_INTF_T_V4L_SUBDEV (MEDIA_INTF_T_V4L_BASE + 3)
+>  #define MEDIA_INTF_T_V4L_SWRADIO (MEDIA_INTF_T_V4L_BASE + 4)
+>  
+> +#define MEDIA_INTF_T_ALSA_PCM_CAPTURE   (MEDIA_INTF_T_ALSA_BASE)
+> +#define MEDIA_INTF_T_ALSA_PCM_PLAYBACK  (MEDIA_INTF_T_ALSA_BASE + 1)
+> +#define MEDIA_INTF_T_ALSA_CONTROL       (MEDIA_INTF_T_ALSA_BASE + 2)
+> +#define MEDIA_INTF_T_ALSA_COMPRESS      (MEDIA_INTF_T_ALSA_BASE + 3)
+> +#define MEDIA_INTF_T_ALSA_RAWMIDI       (MEDIA_INTF_T_ALSA_BASE + 4)
+> +#define MEDIA_INTF_T_ALSA_HWDEP         (MEDIA_INTF_T_ALSA_BASE + 5)
+> +#define MEDIA_INTF_T_ALSA_SEQUENCER     (MEDIA_INTF_T_ALSA_BASE + 6)
+> +#define MEDIA_INTF_T_ALSA_TIMER         (MEDIA_INTF_T_ALSA_BASE + 7)
+> +
+>  /*
+>   * MC next gen API definitions
+>   *
+> 
