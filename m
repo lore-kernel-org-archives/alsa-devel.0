@@ -1,111 +1,55 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [PATCH v5 22/22] sound/usb: Use Media Controller API to share
- media resources
-Date: Wed, 2 Mar 2016 15:57:03 -0700
-Message-ID: <56D76FBF.9050209@osg.samsung.com>
-References: <1456937431-3794-1-git-send-email-shuahkh@osg.samsung.com>
- <20160302204131.GV5273@mwanda>
+From: John Lin <john.lin@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5616: add kcontrol for headphone
+	channel switch
+Date: Thu, 3 Mar 2016 02:45:32 +0000
+Message-ID: <14AE6189BDA733429BF8455FEEF632980110FFD1@RTITMBSV02.realtek.com.tw>
+References: <1456910320-6979-1-git-send-email-john.lin@realtek.com>
+ <20160302103535.GH18327@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160302204131.GV5273@mwanda>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittga
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A8D426066B
+ for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 03:45:50 +0100 (CET)
+In-Reply-To: <20160302103535.GH18327@sirena.org.uk>
+Content-Language: zh-TW
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, "zhengsq@rock-chips.com" <zhengsq@rock-chips.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/02/2016 01:41 PM, Dan Carpenter wrote:
-> On Wed, Mar 02, 2016 at 09:50:31AM -0700, Shuah Khan wrote:
->> +	mctl = kzalloc(sizeof(*mctl), GFP_KERNEL);
->> +	if (!mctl)
->> +		return -ENOMEM;
->> +
->> +	mctl->media_dev = mdev;
->> +	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
->> +		intf_type = MEDIA_INTF_T_ALSA_PCM_PLAYBACK;
->> +		mctl->media_entity.function = MEDIA_ENT_F_AUDIO_PLAYBACK;
->> +		mctl->media_pad.flags = MEDIA_PAD_FL_SOURCE;
->> +		mixer_pad = 1;
->> +	} else {
->> +		intf_type = MEDIA_INTF_T_ALSA_PCM_CAPTURE;
->> +		mctl->media_entity.function = MEDIA_ENT_F_AUDIO_CAPTURE;
->> +		mctl->media_pad.flags = MEDIA_PAD_FL_SINK;
->> +		mixer_pad = 2;
->> +	}
->> +	mctl->media_entity.name = pcm->name;
->> +	media_entity_pads_init(&mctl->media_entity, 1, &mctl->media_pad);
->> +	ret =  media_device_register_entity(mctl->media_dev,
->> +					    &mctl->media_entity);
->> +	if (ret)
->> +		goto err1;
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Wednesday, March 02, 2016 6:36 PM
+> To: John Lin
+> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; Bard Liao; Flove;
+> Oder Chiou; zhengsq@rock-chips.com
+> Subject: Re: [PATCH] ASoC: rt5616: add kcontrol for headphone channel switch
 > 
-> Could we give this label a meaningful name instead of a number?
-> goto free_mctl;
-
-I do see other places where numbered labels are used.
-Names might help with code readability.
-
-register_entity_fail probably makes more sense as a
-label than free_mctl. In any case, I can address the
-labels in a follow-on patch.
-
+> On Wed, Mar 02, 2016 at 05:18:40PM +0800, John Lin wrote:
 > 
->> +
->> +	mctl->intf_devnode = media_devnode_create(mdev, intf_type, 0,
->> +						  MAJOR(pcm_dev->devt),
->> +						  MINOR(pcm_dev->devt));
->> +	if (!mctl->intf_devnode) {
->> +		ret = -ENOMEM;
->> +		goto err2;
+> >  	SOC_DOUBLE("HP Playback Switch", RT5616_HP_VOL,
+> >  		   RT5616_L_MUTE_SFT, RT5616_R_MUTE_SFT, 1, 1),
+> > +	SOC_DOUBLE("HP Channel Switch", RT5616_HP_VOL,
+> > +		   RT5616_VOL_L_SFT, RT5616_VOL_R_SFT, 1, 1),
 > 
-> goto unregister_device;
-> 
->> +	}
->> +	mctl->intf_link = media_create_intf_link(&mctl->media_entity,
->> +						 &mctl->intf_devnode->intf,
->> +						 MEDIA_LNK_FL_ENABLED);
->> +	if (!mctl->intf_link) {
->> +		ret = -ENOMEM;
->> +		goto err3;
-> 
-> goto delete_devnode;
-> 
->> +	}
->> +
->> +	/* create link between mixer and audio */
->> +	media_device_for_each_entity(entity, mdev) {
->> +		switch (entity->function) {
->> +		case MEDIA_ENT_F_AUDIO_MIXER:
->> +			ret = media_create_pad_link(entity, mixer_pad,
->> +						    &mctl->media_entity, 0,
->> +						    MEDIA_LNK_FL_ENABLED);
->> +			if (ret)
->> +				goto err4;
-> 
-> This is a bit weird because we're inside a loop.  Shouldn't we call
-> media_entity_remove_links() or something if this is the second time
-> through the loop?
-
-Links are removed from media_device_unregister_entity()
-which is called in the error path.
-
-> 
-> I don't understand this.  The kernel has the media_entity_cleanup() stub
-> function which is supposed to do this but it hasn't been implemented
-> yet?
+> What does "Channel Switch" mean?  It looks like this is a mute control
+> in which case it shoiuld be HP Playback Switch or similar like other
+> mute controls.
 > 
 
-Please see above. Links are removed when entity is
-unregistered. media_entity_cleanup() is a stub. It
-isn't intended for removing links.
+Yes, It is another mute control that is missing on current driver.
+This mute control is for headphone volume mute. Is it OK to rename it to
+'Headphone Volume Playback Switch'?
 
-thanks,
--- Shuah
 
--- 
-Shuah Khan
-Sr. Linux Kernel Developer
-Open Source Innovation Group
-Samsung Research America (Silicon Valley)
-shuahkh@osg.samsung.com | (970) 217-8978
+> ------Please consider the environment before printing this e-mail.
