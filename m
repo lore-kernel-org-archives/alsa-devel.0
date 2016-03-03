@@ -1,19 +1,20 @@
-From: John Lin <john.lin@realtek.com>
-Subject: Re: [PATCH] ASoC: rt5616: add kcontrol for headphone
-	channel switch
-Date: Thu, 3 Mar 2016 02:45:32 +0000
-Message-ID: <14AE6189BDA733429BF8455FEEF632980110FFD1@RTITMBSV02.realtek.com.tw>
-References: <1456910320-6979-1-git-send-email-john.lin@realtek.com>
- <20160302103535.GH18327@sirena.org.uk>
+From: Giacomo Comes <comes@naic.edu>
+Subject: Re: Compute Stick baytrail audio problem
+Date: Thu, 3 Mar 2016 00:09:52 -0400
+Message-ID: <20160303040952.GA23703@monopoli.naic.edu>
+References: <20160219203900.GA5202@monopoli.naic.edu>
+ <56C8826A.3030303@linux.intel.com> <56CBCB86.8040601@gmail.com>
+ <20160223143443.GA22458@monopoli.naic.edu>
+ <56D72205.7020007@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A8D426066B
- for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 03:45:50 +0100 (CET)
-In-Reply-To: <20160302103535.GH18327@sirena.org.uk>
-Content-Language: zh-TW
+Received: from mailserver.naic.edu (mailserver.naic.edu [192.65.176.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CF1D26066B
+ for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 05:09:55 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <56D72205.7020007@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,33 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, "zhengsq@rock-chips.com" <zhengsq@rock-chips.com>, Flove <flove@realtek.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Giacomo Comes <comes@naic.edu>, alsa-devel@alsa-project.org, Toyo Abe <toyo.abe@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Wednesday, March 02, 2016 6:36 PM
-> To: John Lin
-> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; Bard Liao; Flove;
-> Oder Chiou; zhengsq@rock-chips.com
-> Subject: Re: [PATCH] ASoC: rt5616: add kcontrol for headphone channel switch
+On Wed, Mar 02, 2016 at 11:25:25AM -0600, Pierre-Louis Bossart wrote:
 > 
-> On Wed, Mar 02, 2016 at 05:18:40PM +0800, John Lin wrote:
+> >>After some investigation, I found some problems on the driver and fixed a few of
+> >>them. I pushed the fix to my github. I hope it might help you.
+> >>   https://raw.githubusercontent.com/toyoabe/baytrailaudio/fix-underrun/hdmi_audio_20150319.patch
+> >>
+> >>Best Regards,
+> >>-toyo
+> >
+> >Hi,
+> >that was it!. I added your changes and now the audio works. I'm happy.
+> >I got finally every subsystem of the Compute Stick working.
 > 
-> >  	SOC_DOUBLE("HP Playback Switch", RT5616_HP_VOL,
-> >  		   RT5616_L_MUTE_SFT, RT5616_R_MUTE_SFT, 1, 1),
-> > +	SOC_DOUBLE("HP Channel Switch", RT5616_HP_VOL,
-> > +		   RT5616_VOL_L_SFT, RT5616_VOL_R_SFT, 1, 1),
+> If anyone is interested, I ported the code to v4.4, it seems to work
+> on the Baytrail Compute stick w/ Ubuntu.
 > 
-> What does "Channel Switch" mean?  It looks like this is a mute control
-> in which case it shoiuld be HP Playback Switch or similar like other
-> mute controls.
+> https://github.com/plbossart/sound/commits/baytrail-stick-rebase-4.4
 > 
+> Testers welcome, next steps are to add the CherryTrail parts, rebase
+> to the drm-nightly-build branch and start talking upstream changes.
 
-Yes, It is another mute control that is missing on current driver.
-This mute control is for headphone volume mute. Is it OK to rename it to
-'Headphone Volume Playback Switch'?
+I tested your rebased code and it works for me. Actually I haven't
+used a 4.4 kernel but a 4.1 (openSUSE 42.1). I made a diff between 
+kernel 4.4 and your branch and then applied that diff (with very minor changes)
+to the 4.1 openSUSE kernel. No sound issue so far.
 
-
-> ------Please consider the environment before printing this e-mail.
+Giacomo
