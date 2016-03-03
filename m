@@ -1,16 +1,20 @@
-From: Zidan Wang <zidan.wang@freescale.com>
-Subject: [PATCH] ASoC: wm8994: codec driver should manage its
-	own MCLK
-Date: Thu, 3 Mar 2016 14:45:35 +0800
-Message-ID: <bc33ec0dcfc610657d60d4e1f381545a81147e3e.1456986779.git.zidan.wang@freescale.com>
+From: Shunqian Zheng <zhengsq@rock-chips.com>
+Subject: Re: [PATCH] ASoC: rt5616: add kcontrol for headphone
+	channel switch
+Date: Thu, 03 Mar 2016 15:21:26 +0800
+Message-ID: <56D7E5F6.7010605@rock-chips.com>
+References: <1456910320-6979-1-git-send-email-john.lin@realtek.com>
+ <20160302103535.GH18327@sirena.org.uk>
+ <14AE6189BDA733429BF8455FEEF632980110FFD1@RTITMBSV02.realtek.com.tw>
+Reply-To: zhengsq@rock-chips.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1bon0131.outbound.protection.outlook.com [157.56.111.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 40AAC26068F
- for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 07:42:02 +0100 (CET)
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.130])
+ by alsa0.perex.cz (Postfix) with ESMTP id 404FC26068F
+ for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 08:21:34 +0100 (CET)
+In-Reply-To: <14AE6189BDA733429BF8455FEEF632980110FFD1@RTITMBSV02.realtek.com.tw>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,124 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: nicoleotsuka@gmail.com, ckeepax@opensource.wolfsonmicro.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Zidan Wang <zidan.wang@freescale.com>
+To: John Lin <john.lin@realtek.com>, Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-codec driver should manage its own master clock, MCLK1 and MCLK2.
-When bias_level change from standby to prepare, enable codec MCLK.
-When bias_level change from prepare to standby, disable codec MCLK.
-
-Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
----
- drivers/mfd/wm8994-core.c        |  7 +++++++
- include/linux/mfd/wm8994/pdata.h |  3 +++
- sound/soc/codecs/wm8994.c        | 17 +++++++++++++++--
- 3 files changed, 25 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mfd/wm8994-core.c b/drivers/mfd/wm8994-core.c
-index 7eec619..ace2cea 100644
---- a/drivers/mfd/wm8994-core.c
-+++ b/drivers/mfd/wm8994-core.c
-@@ -14,6 +14,7 @@
- 
- #include <linux/kernel.h>
- #include <linux/module.h>
-+#include <linux/clk.h>
- #include <linux/slab.h>
- #include <linux/i2c.h>
- #include <linux/err.h>
-@@ -270,6 +271,7 @@ static int wm8994_set_pdata_from_of(struct wm8994 *wm8994)
- {
- 	struct device_node *np = wm8994->dev->of_node;
- 	struct wm8994_pdata *pdata = &wm8994->pdata;
-+	char tmp[8];
- 	int i;
- 
- 	if (!np)
-@@ -310,6 +312,11 @@ static int wm8994_set_pdata_from_of(struct wm8994 *wm8994)
- 	if (pdata->ldo[1].enable < 0)
- 		pdata->ldo[1].enable = 0;
- 
-+	for (i = 0; i < WM8994_NUM_MCLK; i++) {
-+		sprintf(tmp, "MCLK%d", i + 1);
-+		pdata->mclk[i] = devm_clk_get(wm8994->dev, tmp);
-+	}
-+
- 	return 0;
- }
- #else
-diff --git a/include/linux/mfd/wm8994/pdata.h b/include/linux/mfd/wm8994/pdata.h
-index 90c6052..657a828 100644
---- a/include/linux/mfd/wm8994/pdata.h
-+++ b/include/linux/mfd/wm8994/pdata.h
-@@ -18,6 +18,7 @@
- #define WM8994_NUM_LDO   2
- #define WM8994_NUM_GPIO 11
- #define WM8994_NUM_AIF   3
-+#define WM8994_NUM_MCLK  2
- 
- struct wm8994_ldo_pdata {
- 	/** GPIOs to enable regulator, 0 or less if not available */
-@@ -233,6 +234,8 @@ struct wm8994_pdata {
- 	 * GPIO for the IRQ pin if host only supports edge triggering
- 	 */
- 	int irq_gpio;
-+
-+	struct clk *mclk[WM8994_NUM_MCLK];
- };
- 
- #endif
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 2ccbb32..7379eae 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -17,6 +17,7 @@
- #include <linux/delay.h>
- #include <linux/pm.h>
- #include <linux/gcd.h>
-+#include <linux/clk.h>
- #include <linux/i2c.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-@@ -2474,6 +2475,8 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
- {
- 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
- 	struct wm8994 *control = wm8994->wm8994;
-+	struct wm8994_pdata *pdata = &control->pdata;
-+	int i;
- 
- 	wm_hubs_set_bias_level(codec, level);
- 
-@@ -2495,8 +2498,13 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
- 			break;
- 		}
- 
--		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_STANDBY)
-+		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_STANDBY) {
- 			active_reference(codec);
-+
-+			for (i = 0; i < WM8994_NUM_MCLK; i++)
-+				if (!IS_ERR(pdata->mclk[i]))
-+					clk_prepare_enable(pdata->mclk[i]);
-+		}
- 		break;
- 
- 	case SND_SOC_BIAS_STANDBY:
-@@ -2524,8 +2532,13 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
- 					    WM8994_LINEOUT2_DISCH);
- 		}
- 
--		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_PREPARE)
-+		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_PREPARE) {
-+			for (i = 0; i < WM8994_NUM_MCLK; i++)
-+				if (!IS_ERR(pdata->mclk[i]))
-+					clk_disable_unprepare(pdata->mclk[i]);
-+
- 			active_dereference(codec);
-+		}
- 
- 		/* MICBIAS into bypass mode on newer devices */
- 		switch (control->type) {
--- 
-1.9.1
+Sm9obiwKCk9uIDIwMTblubQwM+aciDAz5pelIDEwOjQ1LCBKb2huIExpbiB3cm90ZToKPj4gLS0t
+LS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0KPj4gRnJvbTogTWFyayBCcm93biBbbWFpbHRvOmJyb29u
+aWVAa2VybmVsLm9yZ10KPj4gU2VudDogV2VkbmVzZGF5LCBNYXJjaCAwMiwgMjAxNiA2OjM2IFBN
+Cj4+IFRvOiBKb2huIExpbgo+PiBDYzogbGdpcmR3b29kQGdtYWlsLmNvbTsgYWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnOyBCYXJkIExpYW87IEZsb3ZlOwo+PiBPZGVyIENoaW91OyB6aGVuZ3Nx
+QHJvY2stY2hpcHMuY29tCj4+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIEFTb0M6IHJ0NTYxNjogYWRk
+IGtjb250cm9sIGZvciBoZWFkcGhvbmUgY2hhbm5lbCBzd2l0Y2gKPj4KPj4gT24gV2VkLCBNYXIg
+MDIsIDIwMTYgYXQgMDU6MTg6NDBQTSArMDgwMCwgSm9obiBMaW4gd3JvdGU6Cj4+Cj4+PiAgIAlT
+T0NfRE9VQkxFKCJIUCBQbGF5YmFjayBTd2l0Y2giLCBSVDU2MTZfSFBfVk9MLAo+Pj4gICAJCSAg
+IFJUNTYxNl9MX01VVEVfU0ZULCBSVDU2MTZfUl9NVVRFX1NGVCwgMSwgMSksCj4+PiArCVNPQ19E
+T1VCTEUoIkhQIENoYW5uZWwgU3dpdGNoIiwgUlQ1NjE2X0hQX1ZPTCwKPj4+ICsJCSAgIFJUNTYx
+Nl9WT0xfTF9TRlQsIFJUNTYxNl9WT0xfUl9TRlQsIDEsIDEpLAo+PiBXaGF0IGRvZXMgIkNoYW5u
+ZWwgU3dpdGNoIiBtZWFuPyAgSXQgbG9va3MgbGlrZSB0aGlzIGlzIGEgbXV0ZSBjb250cm9sCj4+
+IGluIHdoaWNoIGNhc2UgaXQgc2hvaXVsZCBiZSBIUCBQbGF5YmFjayBTd2l0Y2ggb3Igc2ltaWxh
+ciBsaWtlIG90aGVyCj4+IG11dGUgY29udHJvbHMuCj4+Cj4gWWVzLCBJdCBpcyBhbm90aGVyIG11
+dGUgY29udHJvbCB0aGF0IGlzIG1pc3Npbmcgb24gY3VycmVudCBkcml2ZXIuCj4gVGhpcyBtdXRl
+IGNvbnRyb2wgaXMgZm9yIGhlYWRwaG9uZSB2b2x1bWUgbXV0ZS4gSXMgaXQgT0sgdG8gcmVuYW1l
+IGl0IHRvCj4gJ0hlYWRwaG9uZSBWb2x1bWUgUGxheWJhY2sgU3dpdGNoJz8KSW4gcnQ1NjE2LmMs
+IHRoZXJlIGlzIGFub3RoZXIgY29udHJvbCBuYW1lZCAiT1VUIENoYW5uZWwgU3dpdGNoIi4KWW91
+IG1heSB3YW50IHRvIHJlbmFtZSBpdCB0b28uCgotIFNodW5xaWFuCj4KPgo+PiAtLS0tLS1QbGVh
+c2UgY29uc2lkZXIgdGhlIGVudmlyb25tZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGUtbWFpbC4K
+Pgo+CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
