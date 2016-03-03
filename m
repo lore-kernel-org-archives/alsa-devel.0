@@ -1,22 +1,21 @@
-From: Carlo Caione <carlo@caione.org>
-Subject: Re: [PATCH v2] ASoC: cht_bsw_rt5645: Fix writing to
-	string literal
-Date: Thu, 3 Mar 2016 17:16:29 +0100
-Message-ID: <CAOQ7t2azg1Bp10ExoBVeJChh21y0U6wKxoU9QQYDk=eFFWmQjQ@mail.gmail.com>
-References: <1456217420-9327-1-git-send-email-carlo@caione.org>
- <20160226021210.GE18327@sirena.org.uk>
- <20160303113255.GL11154@localhost>
- <56D86219.4030606@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: writing an alsa driver
+Date: Thu, 3 Mar 2016 10:20:55 -0600
+Message-ID: <56D86467.9030703@linux.intel.com>
+References: <1433156768.2642.21.camel@loki> <20150608084951.GA7512@dellaz>
+ <loom.20150613T153708-781@post.gmane.org> <20150615164623.GA693@asus>
+ <1434387868.2434.50.camel@loki> <20150623090932.GA6856@dellaz>
+ <20150624102157.GL19530@localhost> <20150624182120.GA481@asus>
+ <20150625032407.GQ19530@localhost> <20160303111110.GA13202@acervm>
+ <20160303112745.GJ11154@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 502F226655C
- for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 17:16:30 +0100 (CET)
-Received: by mail-wm0-f67.google.com with SMTP id n186so4922320wmn.0
- for <alsa-devel@alsa-project.org>; Thu, 03 Mar 2016 08:16:30 -0800 (PST)
-In-Reply-To: <56D86219.4030606@linux.intel.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 466A126655C
+ for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 17:20:58 +0100 (CET)
+In-Reply-To: <20160303112745.GJ11154@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,49 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Yang Fang <yang.a.fang@intel.com>, Mark Brown <broonie@kernel.org>, Carlo Caione <carlo@endlessm.com>, Carlo Caione <carlo@caione.org>, linux@endlessm.com
+To: Vinod Koul <vinod.koul@intel.com>, Michele Curti <michele.curti@gmail.com>
+Cc: Luka Karinja <luka.karinja@gmail.com>, Takashi Iwai <tiwai@suse.de>, ao2@ao2.it, alsa-devel@alsa-project.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Nikula,
+ Jarkko" <jarkko.nikula@intel.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 3, 2016 at 5:11 PM, Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
-> On 3/3/16 5:32 AM, Vinod Koul wrote:
+On 3/3/16 5:27 AM, Vinod Koul wrote:
+> On Thu, Mar 03, 2016 at 12:11:10PM +0100, Michele Curti wrote:
+>> Hi Vinod,
 >>
->> On Fri, Feb 26, 2016 at 11:12:10AM +0900, Mark Brown wrote:
+>> On Thu, Jun 25, 2015 at 08:54:07AM +0530, Vinod Koul wrote:
+>>>> [    2.700468] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in1_1 doesn't have DAPM widget!!!
+>>> this is unexpected, I will check on this
 >>>
->>> On Tue, Feb 23, 2016 at 09:50:20AM +0100, Carlo Caione wrote:
->>>>
->>>> From: Carlo Caione <carlo@endlessm.com>
->>>>
->>>> We cannot use strcpy() to write to a const char * location. This is
->>>> causing a 'BUG: unable to handle kernel paging request' error at boot
->>>> when using the cht-bsw-rt5645 driver.
->>>>
->>>> With this patch we also fix a wrong indexing in the driver where the
->>>> codec_name of the wrong dai_link is being overwritten.
->>>
->>>
->>> So how was the original code tested then...?
->>
->>
->> I know systems using this are shipping so surprised to see this.
->>
->> Carlo cna you please tell me the configuration where it is seen.
->>
->> Also would be worth mentioning here that Pierre is working on a super fix
->> for this which involves removing this code and getting the right IDs from
->> BIOS, so we wont need this code.
+>>>> ...
+>>>> [    7.970937] intel_sst_acpi 80860F28:00: Wait timed-out condition:0x0, msg_id:0x1 fw_state 0x3
+>>>> [    7.970964] intel_sst_acpi 80860F28:00: fw returned err -16
+>>> Yes this is a problem, which FW are you using
 >
+> Have you tried the recent kernels, Pierre did a bunch of update and got many
+> things working.
 >
-> I am actually using the same code to find out which DAI fields need to be
-> replaced instead of hard-codec indices so the loop part is a good thing.
-> There is still a need to copy a string, be it a constant to generated from
-> the HID, into the codec_name field. I am not clear why strcpy() works on all
-> my systems and why kstrdup() is required. Is the kernel issue really due to
-> this string handling or to the bad index?
+> As for timeout, that simply means we have send a message to DSP which failed
+> to get a response. Perhpas the message had some bad element of FW had a
+> bug/crashed...
 
-In my tests using kstrdup() fixed the BUG issue and the bad indexing
-fix was required to have the driver working correctly.
-
--- 
-Carlo Caione
+The firmware timeout is due to a change in the BIOS for BYT-CR devices 
+that impacts the IPC interrupt number, I have a set of patches that fix 
+this on Asus T100TAF but I still can't get any sound out.
