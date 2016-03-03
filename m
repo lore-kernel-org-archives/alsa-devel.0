@@ -1,21 +1,19 @@
 From: Thomas Klausner <tk@giga.or.at>
-Subject: [PATCH 5/5] Remove unnecessary includes.
-Date: Thu,  3 Mar 2016 15:08:04 +0100
-Message-ID: <1457014084-27694-5-git-send-email-tk@giga.or.at>
-References: <1457014084-27694-1-git-send-email-tk@giga.or.at>
+Subject: [PATCH] Make alsa asound.h header more portable.
+Date: Thu,  3 Mar 2016 15:21:39 +0100
+Message-ID: <1457014899-19669-1-git-send-email-tk@giga.or.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vie01a-dmta-pe03-2.mx.upcmail.net
- (vie01a-dmta-pe03-2.mx.upcmail.net [62.179.121.161])
- by alsa0.perex.cz (Postfix) with ESMTP id BDCAB2606B8
- for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 15:08:50 +0100 (CET)
+Received: from vie01a-dmta-pe02-2.mx.upcmail.net
+ (vie01a-dmta-pe02-2.mx.upcmail.net [62.179.121.158])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F0BC26066B
+ for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 15:22:43 +0100 (CET)
 Received: from [172.31.216.44] (helo=vie01a-pemc-psmtp-pe02)
- by vie01a-dmta-pe03.mx.upcmail.net with esmtp (Exim 4.72)
- (envelope-from <wiz@yt.nih.at>) id 1abTvu-0004t4-Lj
- for alsa-devel@alsa-project.org; Thu, 03 Mar 2016 15:08:50 +0100
-In-Reply-To: <1457014084-27694-1-git-send-email-tk@giga.or.at>
+ by vie01a-dmta-pe02.mx.upcmail.net with esmtp (Exim 4.72)
+ (envelope-from <wiz@yt.nih.at>) id 1abU9K-0005wY-J3
+ for alsa-devel@alsa-project.org; Thu, 03 Mar 2016 15:22:42 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,29 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
 Cc: Thomas Klausner <wiz@NetBSD.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Thomas Klausner <wiz@NetBSD.org>
 
-Headers are already included in local.h.
----
- src/topology/tplg_local.h | 2 --
- 1 file changed, 2 deletions(-)
+This header is used as-is in the alsa-lib userland library,
+which is portable to other operating systems.
+For this reason, include linux/types.h only on Linux systems.
 
-diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
-index e66d7f4..5d0cb91 100644
---- a/src/topology/tplg_local.h
-+++ b/src/topology/tplg_local.h
-@@ -13,8 +13,6 @@
- #include <limits.h>
- #include <stdint.h>
- #include <stdbool.h>
--#include <endian.h>
--#include <linux/types.h>
+Add sys/ioctl.h for _IOR/_IOW/etc. (works at least on *BSD and Solaris).
+
+Signed-off-by: Thomas Klausner <wiz@NetBSD.org>
+---
+ include/uapi/sound/asound.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index a82108e..3d581b5 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -23,7 +23,11 @@
+ #ifndef _UAPI__SOUND_ASOUND_H
+ #define _UAPI__SOUND_ASOUND_H
  
- #include "local.h"
- #include "list.h"
++#ifdef __linux__
+ #include <linux/types.h>
++#else
++#include <sys/ioctl.h>
++#endif
+ 
+ #ifndef __KERNEL__
+ #include <stdlib.h>
 -- 
 2.7.1
