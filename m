@@ -1,84 +1,89 @@
-From: Thomas Klausner <tk@giga.or.at>
-Subject: Re: Remaining compatibility patches for NetBSD
-Date: Thu, 3 Mar 2016 15:23:17 +0100
-Message-ID: <20160303142317.GF26041@danbala.tuwien.ac.at>
-References: <20160303101005.GI8492@danbala.tuwien.ac.at>
- <s5hpovbrhf2.wl-tiwai@suse.de>
- <20160303111840.GJ8492@danbala.tuwien.ac.at>
- <s5hsi076bd6.wl-tiwai@suse.de>
- <20160303113921.GK8492@danbala.tuwien.ac.at>
- <20160303120242.GL8492@danbala.tuwien.ac.at>
- <s5hlh5z65x1.wl-tiwai@suse.de>
- <20160303134641.GB26041@danbala.tuwien.ac.at>
- <sfid-H20160303-145421-+070.75-1@spamfilter.osbf.lua>
- <s5hfuw7651a.wl-tiwai@suse.de>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: Re: [PATCH v5 22/22] sound/usb: Use Media Controller API to share
+ media resources
+Date: Thu, 3 Mar 2016 07:25:37 -0700
+Message-ID: <56D84961.9050902@osg.samsung.com>
+References: <1456937431-3794-1-git-send-email-shuahkh@osg.samsung.com>
+ <20160302204131.GV5273@mwanda> <56D76FBF.9050209@osg.samsung.com>
+ <20160303103637.GW5273@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from danbala.ifoer.tuwien.ac.at (danbala.ifoer.tuwien.ac.at
- [128.130.168.64])
- by alsa0.perex.cz (Postfix) with ESMTP id 440AA2666A3
- for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2016 15:23:17 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hfuw7651a.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160303103637.GW5273@mwanda>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittga
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 03, 2016 at 02:54:09PM +0100, Takashi Iwai wrote:
-> On Thu, 03 Mar 2016 14:46:41 +0100,
-> Thomas Klausner wrote:
-> > 
-> > On Thu, Mar 03, 2016 at 02:35:06PM +0100, Takashi Iwai wrote:
-> > > On Thu, 03 Mar 2016 13:02:42 +0100,
-> > > Thomas Klausner wrote:
-> > > > 
-> > > > Here are the remaining patches to make the build succeed on NetBSD.
-> > > > More patches are needed for FreeBSD and Solaris, but let's take it one
-> > > > at a time :-)
-> > > > 
-> > > > I think the first two (0002 and 0003) should be uncontroversial.
-> > > > 
-> > > > For patch 0004 it would perhaps be good to have versionsort/alphasort
-> > > > in a central place instead of two. Do you have a suggestion where?
-> > > > 
-> > > > I'm not sure what to do about 0005 since you said you don't want to
-> > > > modify include/sound/asound.h.
-> > > 
-> > > Right.  If we need to modify, it must be applied to Linux kernel tree
-> > > at first, then copy back to alsa-lib.
-> > 
-> > I haven't done this before.
-> > 
-> > I see on https://www.kernel.org/doc/linux/MAINTAINERS
-> > 
-> > SOUND
-> > M:	Jaroslav Kysela <perex@perex.cz>
-> > M:	Takashi Iwai <tiwai@suse.com>
-> > L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
-> > W:	http://www.alsa-project.org/
-> > T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
-> > T:	git git://git.alsa-project.org/alsa-kernel.git
-> > Q:	http://patchwork.kernel.org/project/alsa-devel/list/
-> > S:	Maintained
-> > F:	Documentation/sound/
-> > F:	include/sound/
-> > F:	include/uapi/sound/
-> > F:	sound/
-> > 
-> > Against which of the two git trees should I prepare the patch?
+On 03/03/2016 03:36 AM, Dan Carpenter wrote:
+> On Wed, Mar 02, 2016 at 03:57:03PM -0700, Shuah Khan wrote:
+>> On 03/02/2016 01:41 PM, Dan Carpenter wrote:
+>>> On Wed, Mar 02, 2016 at 09:50:31AM -0700, Shuah Khan wrote:
+>>>> +	mctl = kzalloc(sizeof(*mctl), GFP_KERNEL);
+>>>> +	if (!mctl)
+>>>> +		return -ENOMEM;
+>>>> +
+>>>> +	mctl->media_dev = mdev;
+>>>> +	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>>>> +		intf_type = MEDIA_INTF_T_ALSA_PCM_PLAYBACK;
+>>>> +		mctl->media_entity.function = MEDIA_ENT_F_AUDIO_PLAYBACK;
+>>>> +		mctl->media_pad.flags = MEDIA_PAD_FL_SOURCE;
+>>>> +		mixer_pad = 1;
+>>>> +	} else {
+>>>> +		intf_type = MEDIA_INTF_T_ALSA_PCM_CAPTURE;
+>>>> +		mctl->media_entity.function = MEDIA_ENT_F_AUDIO_CAPTURE;
+>>>> +		mctl->media_pad.flags = MEDIA_PAD_FL_SINK;
+>>>> +		mixer_pad = 2;
+>>>> +	}
+>>>> +	mctl->media_entity.name = pcm->name;
+>>>> +	media_entity_pads_init(&mctl->media_entity, 1, &mctl->media_pad);
+>>>> +	ret =  media_device_register_entity(mctl->media_dev,
+>>>> +					    &mctl->media_entity);
+>>>> +	if (ret)
+>>>> +		goto err1;
+>>>
+>>> Could we give this label a meaningful name instead of a number?
+>>> goto free_mctl;
+>>
+>> I do see other places where numbered labels are used.
 > 
-> Use my sound git tree.
+> Yeah.  But it's the wrong idea.  If you remove a label then you have to
+> renumber everything.  Plus it doesn't say what the goto does.
+> 
+>> Names might help with code readability.
+>>
+>> register_entity_fail probably makes more sense as a
+>> label than free_mctl.
+> 
+> A lot of people do that but the you wind up with code like:
+> 
+> 	foo = whatever_register();
+> 	if (!foo)
+> 		goto whatever_failed;
+> 
+> 	if (something_else)
+> 		goto whatever_failed;
+> 
+> So it doesn't make sense.  Also it doesn't tell you what the goto does.
+> (You can already see that whatever_failed from looking at the if
+> statement on the line before.)  This function is larger than a page so
+> you have to flip down to the other page to see what the goto does, then
+> you have to flip back and find your place again.  But if the label says
+> what the goto does then you can just say, "Have we allocated anything
+> since mctl?  No, then freeing mctl is the right thing."  You don't need
+> to flip to the othe page.
+> 
 
-Ok, I've just sent a patch against that repository to this mailing list.
- Thomas
+Yeah. You are right about large routines and needing
+to check labels. I will fix it in a followup patch.
+
+thanks,
+-- Shuah
+
+-- 
+Shuah Khan
+Sr. Linux Kernel Developer
+Open Source Innovation Group
+Samsung Research America (Silicon Valley)
+shuahkh@osg.samsung.com | (970) 217-8978
