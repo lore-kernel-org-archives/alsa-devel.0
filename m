@@ -1,14 +1,15 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v3 1/7] ALSA: hda - Create common chmap object
-Date: Fri,  4 Mar 2016 19:59:46 +0530
-Message-ID: <1457101792-19441-2-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v3 2/7] ALSA: hda - Register chmap obj as priv
+	data instead of codec
+Date: Fri,  4 Mar 2016 19:59:47 +0530
+Message-ID: <1457101792-19441-3-git-send-email-subhransu.s.prusty@intel.com>
 References: <1457101792-19441-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id B43A126147A
+ by alsa0.perex.cz (Postfix) with ESMTP id 062242651CF
  for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2016 15:29:50 +0100 (CET)
 In-Reply-To: <1457101792-19441-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,313 +25,210 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-chmap object represents multichannel capability and contains chmap
-ops. Legacy driver is updated to use this.
-
-With next set of patches chmap object is moved to common to be
-reused by other drivers (ex: skylake ASoC hdmi driver).
+With this chmap object is added as private data and new ops are
+added to access driver specific chmap.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- include/sound/hda_chmap.h  | 41 +++++++++++++++++++++++
- sound/pci/hda/patch_hdmi.c | 81 +++++++++++++++++++++++-----------------------
- 2 files changed, 81 insertions(+), 41 deletions(-)
- create mode 100644 include/sound/hda_chmap.h
+ include/sound/hda_chmap.h  |  6 +++
+ sound/pci/hda/patch_hdmi.c | 93 +++++++++++++++++++++++++++++-----------------
+ 2 files changed, 65 insertions(+), 34 deletions(-)
 
 diff --git a/include/sound/hda_chmap.h b/include/sound/hda_chmap.h
-new file mode 100644
-index 0000000..9ab20f0
---- /dev/null
+index 9ab20f0..713b2452 100644
+--- a/include/sound/hda_chmap.h
 +++ b/include/sound/hda_chmap.h
-@@ -0,0 +1,41 @@
-+/*
-+ * For multichannel support
-+ */
+@@ -30,6 +30,12 @@ struct hdac_chmap_ops {
+ 
+ 	/* check that the user-given chmap is supported */
+ 	int (*chmap_validate)(int ca, int channels, unsigned char *chmap);
 +
-+#ifndef __SOUND_HDA_CHMAP_H
-+#define __SOUND_HDA_CHMAP_H
-+
-+#include <sound/hdaudio.h>
-+
-+struct cea_channel_speaker_allocation {
-+	int ca_index;
-+	int speakers[8];
-+
-+	/* derived values, just for convenience */
-+	int channels;
-+	int spk_mask;
-+};
-+struct hdac_chmap;
-+
-+struct hdac_chmap_ops {
-+	/*
-+	 * Helpers for producing the channel map TLVs. These can be overridden
-+	 * for devices that have non-standard mapping requirements.
-+	 */
-+	int (*chmap_cea_alloc_validate_get_type)(struct hdac_chmap *chmap,
-+		struct cea_channel_speaker_allocation *cap, int channels);
-+	void (*cea_alloc_to_tlv_chmap)
-+		(struct cea_channel_speaker_allocation *cap,
-+		unsigned int *chmap, int channels);
-+
-+	/* check that the user-given chmap is supported */
-+	int (*chmap_validate)(int ca, int channels, unsigned char *chmap);
-+};
-+
-+struct hdac_chmap {
-+	unsigned int channels_max; /* max over all cvts */
-+	struct hdac_chmap_ops ops;
-+	struct hdac_device *hdac;
-+};
-+
-+#endif /* __SOUND_HDA_CHMAP_H */
++	void (*get_chmap)(struct hdac_device *hdac, int pcm_idx,
++					unsigned char *chmap);
++	void (*set_chmap)(struct hdac_device *hdac, int pcm_idx,
++			unsigned char *chmap, int prepared);
++	bool (*is_pcm_attached)(struct hdac_device *hdac, int pcm_idx);
+ };
+ 
+ struct hdac_chmap {
 diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 490931d..5f9d975 100644
+index 5f9d975..04333ec 100644
 --- a/sound/pci/hda/patch_hdmi.c
 +++ b/sound/pci/hda/patch_hdmi.c
-@@ -39,6 +39,7 @@
- #include <sound/tlv.h>
- #include <sound/hdaudio.h>
- #include <sound/hda_i915.h>
-+#include <sound/hda_chmap.h>
- #include "hda_codec.h"
- #include "hda_local.h"
- #include "hda_jack.h"
-@@ -121,15 +122,6 @@ struct hdmi_ops {
- 	int (*setup_stream)(struct hda_codec *codec, hda_nid_t cvt_nid,
- 			    hda_nid_t pin_nid, u32 stream_tag, int format);
- 
--	/* Helpers for producing the channel map TLVs. These can be overridden
--	 * for devices that have non-standard mapping requirements. */
--	int (*chmap_cea_alloc_validate_get_type)(struct cea_channel_speaker_allocation *cap,
--						 int channels);
--	void (*cea_alloc_to_tlv_chmap)(struct cea_channel_speaker_allocation *cap,
--				       unsigned int *chmap, int channels);
--
--	/* check that the user-given chmap is supported */
--	int (*chmap_validate)(int ca, int channels, unsigned char *chmap);
+@@ -100,8 +100,6 @@ struct hdmi_spec_per_pin {
+ #endif
  };
  
- struct hdmi_pcm {
-@@ -155,7 +147,6 @@ struct hdmi_spec {
- 	 * bit 1 means the second playback PCM, and so on.
- 	 */
- 	unsigned long pcm_in_use;
--	unsigned int channels_max; /* max over all cvts */
- 
- 	struct hdmi_eld temp_eld;
- 	struct hdmi_ops ops;
-@@ -171,6 +162,8 @@ struct hdmi_spec {
- 	/* i915/powerwell (Haswell+/Valleyview+) specific */
- 	struct i915_audio_component_audio_ops i915_audio_ops;
- 	bool i915_bound; /* was i915 bound in this driver? */
-+
-+	struct hdac_chmap chmap;
- };
- 
- #ifdef CONFIG_SND_HDA_I915
-@@ -264,15 +257,6 @@ static int eld_speaker_allocation_bits[] = {
- 	[10] = FCH,
- };
- 
--struct cea_channel_speaker_allocation {
--	int ca_index;
--	int speakers[8];
+-struct cea_channel_speaker_allocation;
 -
--	/* derived values, just for convenience */
--	int channels;
--	int spk_mask;
--};
--
- /*
-  * ALSA sequence is:
-  *
-@@ -2141,8 +2125,8 @@ static int hdmi_add_cvt(struct hda_codec *codec, hda_nid_t cvt_nid)
- 	per_cvt->channels_min = 2;
- 	if (chans <= 16) {
- 		per_cvt->channels_max = chans;
--		if (chans > spec->channels_max)
--			spec->channels_max = chans;
-+		if (chans > spec->chmap.channels_max)
-+			spec->chmap.channels_max = chans;
- 	}
- 
- 	err = snd_hda_query_supported_pcm(codec, cvt_nid,
-@@ -2368,15 +2352,17 @@ static int hdmi_chmap_ctl_info(struct snd_kcontrol *kcontrol,
+ /* operations used by generic code that can be overridden by patches */
+ struct hdmi_ops {
+ 	int (*pin_get_eld)(struct hda_codec *codec, hda_nid_t pin_nid,
+@@ -2350,9 +2348,7 @@ static int hdmi_chmap_ctl_info(struct snd_kcontrol *kcontrol,
+ 			       struct snd_ctl_elem_info *uinfo)
+ {
  	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
- 	struct hda_codec *codec = info->private_data;
- 	struct hdmi_spec *spec = codec->spec;
-+	struct hdac_chmap *chmap = &spec->chmap;
-+
+-	struct hda_codec *codec = info->private_data;
+-	struct hdmi_spec *spec = codec->spec;
+-	struct hdac_chmap *chmap = &spec->chmap;
++	struct hdac_chmap *chmap = info->private_data;
+ 
  	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
--	uinfo->count = spec->channels_max;
-+	uinfo->count = chmap->channels_max;
- 	uinfo->value.integer.min = 0;
- 	uinfo->value.integer.max = SNDRV_CHMAP_LAST;
- 	return 0;
+ 	uinfo->count = chmap->channels_max;
+@@ -2389,13 +2385,49 @@ static void hdmi_cea_alloc_to_tlv_chmap(struct cea_channel_speaker_allocation *c
+ 	WARN_ON(count != channels);
  }
  
--static int hdmi_chmap_cea_alloc_validate_get_type(struct cea_channel_speaker_allocation *cap,
--						  int channels)
-+static int hdmi_chmap_cea_alloc_validate_get_type(struct hdac_chmap *chmap,
-+		struct cea_channel_speaker_allocation *cap, int channels)
++static void hdmi_get_chmap(struct hdac_device *hdac, int pcm_idx,
++					unsigned char *chmap)
++{
++	struct hda_codec *codec = container_of(hdac, struct hda_codec, core);
++	struct hdmi_spec *spec = codec->spec;
++	struct hdmi_spec_per_pin *per_pin = pcm_idx_to_pin(spec, pcm_idx);
++
++	/* chmap is already set to 0 in caller */
++	if (!per_pin)
++		return;
++
++	memcpy(chmap, per_pin->chmap, ARRAY_SIZE(per_pin->chmap));
++}
++
++static void hdmi_set_chmap(struct hdac_device *hdac, int pcm_idx,
++				unsigned char *chmap, int prepared)
++{
++	struct hda_codec *codec = container_of(hdac, struct hda_codec, core);
++	struct hdmi_spec *spec = codec->spec;
++	struct hdmi_spec_per_pin *per_pin = pcm_idx_to_pin(spec, pcm_idx);
++
++	mutex_lock(&per_pin->lock);
++	per_pin->chmap_set = true;
++	memcpy(per_pin->chmap, chmap, ARRAY_SIZE(per_pin->chmap));
++	if (prepared)
++		hdmi_setup_audio_infoframe(codec, per_pin, per_pin->non_pcm);
++	mutex_unlock(&per_pin->lock);
++}
++
++static bool is_hdmi_pcm_attached(struct hdac_device *hdac, int pcm_idx)
++{
++	struct hda_codec *codec = container_of(hdac, struct hda_codec, core);
++	struct hdmi_spec *spec = codec->spec;
++	struct hdmi_spec_per_pin *per_pin = pcm_idx_to_pin(spec, pcm_idx);
++
++	return per_pin ? true:false;
++}
++
+ static int hdmi_chmap_ctl_tlv(struct snd_kcontrol *kcontrol, int op_flag,
+ 			      unsigned int size, unsigned int __user *tlv)
  {
- 	/* If the speaker allocation matches the channel count, it is OK.*/
- 	if (cap->channels != channels)
-@@ -2409,6 +2395,7 @@ static int hdmi_chmap_ctl_tlv(struct snd_kcontrol *kcontrol, int op_flag,
  	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
- 	struct hda_codec *codec = info->private_data;
- 	struct hdmi_spec *spec = codec->spec;
-+	struct hdac_chmap *chmap = &spec->chmap;
+-	struct hda_codec *codec = info->private_data;
+-	struct hdmi_spec *spec = codec->spec;
+-	struct hdac_chmap *chmap = &spec->chmap;
++	struct hdac_chmap *chmap = info->private_data;
  	unsigned int __user *dst;
  	int chs, count = 0;
  
-@@ -2418,13 +2405,14 @@ static int hdmi_chmap_ctl_tlv(struct snd_kcontrol *kcontrol, int op_flag,
- 		return -EFAULT;
- 	size -= 8;
- 	dst = tlv + 2;
--	for (chs = 2; chs <= spec->channels_max; chs++) {
-+	for (chs = 2; chs <= chmap->channels_max; chs++) {
- 		int i;
- 		struct cea_channel_speaker_allocation *cap;
- 		cap = channel_allocations;
- 		for (i = 0; i < ARRAY_SIZE(channel_allocations); i++, cap++) {
- 			int chs_bytes = chs * 4;
--			int type = spec->ops.chmap_cea_alloc_validate_get_type(cap, chs);
-+			int type = chmap->ops.chmap_cea_alloc_validate_get_type(
-+								chmap, cap, chs);
- 			unsigned int tlv_chmap[8];
- 
- 			if (type < 0)
-@@ -2441,7 +2429,7 @@ static int hdmi_chmap_ctl_tlv(struct snd_kcontrol *kcontrol, int op_flag,
- 				return -ENOMEM;
- 			size -= chs_bytes;
- 			count += chs_bytes;
--			spec->ops.cea_alloc_to_tlv_chmap(cap, tlv_chmap, chs);
-+			chmap->ops.cea_alloc_to_tlv_chmap(cap, tlv_chmap, chs);
- 			if (copy_to_user(dst, tlv_chmap, chs_bytes))
- 				return -EFAULT;
- 			dst += chs;
-@@ -2458,12 +2446,13 @@ static int hdmi_chmap_ctl_get(struct snd_kcontrol *kcontrol,
+@@ -2444,21 +2476,17 @@ static int hdmi_chmap_ctl_get(struct snd_kcontrol *kcontrol,
+ 			      struct snd_ctl_elem_value *ucontrol)
+ {
  	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
- 	struct hda_codec *codec = info->private_data;
- 	struct hdmi_spec *spec = codec->spec;
-+	struct hdac_chmap *chmap = &spec->chmap;
+-	struct hda_codec *codec = info->private_data;
+-	struct hdmi_spec *spec = codec->spec;
+-	struct hdac_chmap *chmap = &spec->chmap;
++	struct hdac_chmap *chmap = info->private_data;
  	int pcm_idx = kcontrol->private_value;
- 	struct hdmi_spec_per_pin *per_pin = pcm_idx_to_pin(spec, pcm_idx);
+-	struct hdmi_spec_per_pin *per_pin = pcm_idx_to_pin(spec, pcm_idx);
++	unsigned char pcm_chmap[8];
  	int i;
  
- 	if (!per_pin) {
--		for (i = 0; i < spec->channels_max; i++)
-+		for (i = 0; i < chmap->channels_max; i++)
- 			ucontrol->value.integer.value[i] = 0;
- 		return 0;
- 	}
-@@ -2479,6 +2468,7 @@ static int hdmi_chmap_ctl_put(struct snd_kcontrol *kcontrol,
+-	if (!per_pin) {
+-		for (i = 0; i < chmap->channels_max; i++)
+-			ucontrol->value.integer.value[i] = 0;
+-		return 0;
+-	}
++	memset(pcm_chmap, 0, sizeof(pcm_chmap));
++	chmap->ops.get_chmap(chmap->hdac, pcm_idx, pcm_chmap);
++
++	for (i = 0; i < sizeof(chmap); i++)
++		ucontrol->value.integer.value[i] = pcm_chmap[i];
+ 
+-	for (i = 0; i < ARRAY_SIZE(per_pin->chmap); i++)
+-		ucontrol->value.integer.value[i] = per_pin->chmap[i];
+ 	return 0;
+ }
+ 
+@@ -2466,20 +2494,17 @@ static int hdmi_chmap_ctl_put(struct snd_kcontrol *kcontrol,
+ 			      struct snd_ctl_elem_value *ucontrol)
+ {
  	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
- 	struct hda_codec *codec = info->private_data;
- 	struct hdmi_spec *spec = codec->spec;
-+	struct hdac_chmap *hchmap = &spec->chmap;
+-	struct hda_codec *codec = info->private_data;
+-	struct hdmi_spec *spec = codec->spec;
+-	struct hdac_chmap *hchmap = &spec->chmap;
++	struct hdac_chmap *hchmap = info->private_data;
  	int pcm_idx = kcontrol->private_value;
- 	struct hdmi_spec_per_pin *per_pin = pcm_idx_to_pin(spec, pcm_idx);
+-	struct hdmi_spec_per_pin *per_pin = pcm_idx_to_pin(spec, pcm_idx);
  	unsigned int ctl_idx;
-@@ -2514,8 +2504,8 @@ static int hdmi_chmap_ctl_put(struct snd_kcontrol *kcontrol,
+ 	struct snd_pcm_substream *substream;
+-	unsigned char chmap[8];
++	unsigned char chmap[8], per_pin_chmap[8];
+ 	int i, err, ca, prepared = 0;
+ 
+ 	/* No monitor is connected in dyn_pcm_assign.
+ 	 * It's invalid to setup the chmap
+ 	 */
+-	if (!per_pin)
++	if (!hchmap->ops.is_pcm_attached(hchmap->hdac, pcm_idx))
+ 		return 0;
+ 
+ 	ctl_idx = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
+@@ -2499,7 +2524,9 @@ static int hdmi_chmap_ctl_put(struct snd_kcontrol *kcontrol,
+ 	memset(chmap, 0, sizeof(chmap));
+ 	for (i = 0; i < ARRAY_SIZE(chmap); i++)
+ 		chmap[i] = ucontrol->value.integer.value[i];
+-	if (!memcmp(chmap, per_pin->chmap, sizeof(chmap)))
++
++	hchmap->ops.get_chmap(hchmap->hdac, pcm_idx, per_pin_chmap);
++	if (!memcmp(chmap, per_pin_chmap, sizeof(chmap)))
+ 		return 0;
  	ca = hdmi_manual_channel_allocation(ARRAY_SIZE(chmap), chmap);
  	if (ca < 0)
- 		return -EINVAL;
--	if (spec->ops.chmap_validate) {
--		err = spec->ops.chmap_validate(ca, ARRAY_SIZE(chmap), chmap);
-+	if (hchmap->ops.chmap_validate) {
-+		err = hchmap->ops.chmap_validate(ca, ARRAY_SIZE(chmap), chmap);
+@@ -2509,12 +2536,8 @@ static int hdmi_chmap_ctl_put(struct snd_kcontrol *kcontrol,
  		if (err)
  			return err;
  	}
-@@ -2806,6 +2796,9 @@ static const struct hdmi_ops generic_standard_hdmi_ops = {
- 	.pin_setup_infoframe			= hdmi_pin_setup_infoframe,
- 	.pin_hbr_setup				= hdmi_pin_hbr_setup,
- 	.setup_stream				= hdmi_setup_stream,
-+};
+-	mutex_lock(&per_pin->lock);
+-	per_pin->chmap_set = true;
+-	memcpy(per_pin->chmap, chmap, sizeof(chmap));
+-	if (prepared)
+-		hdmi_setup_audio_infoframe(codec, per_pin, per_pin->non_pcm);
+-	mutex_unlock(&per_pin->lock);
 +
-+static const struct hdac_chmap_ops chmap_ops = {
++	hchmap->ops.set_chmap(hchmap->hdac, pcm_idx, chmap, prepared);
+ 
+ 	return 0;
+ }
+@@ -2672,7 +2695,7 @@ static int generic_hdmi_build_controls(struct hda_codec *codec)
+ 		if (err < 0)
+ 			return err;
+ 		/* override handlers */
+-		chmap->private_data = codec;
++		chmap->private_data = &spec->chmap;
+ 		kctl = chmap->kctl;
+ 		for (i = 0; i < kctl->count; i++)
+ 			kctl->vd[i].access |= SNDRV_CTL_ELEM_ACCESS_WRITE;
+@@ -2801,9 +2824,11 @@ static const struct hdmi_ops generic_standard_hdmi_ops = {
+ static const struct hdac_chmap_ops chmap_ops = {
  	.chmap_cea_alloc_validate_get_type	= hdmi_chmap_cea_alloc_validate_get_type,
  	.cea_alloc_to_tlv_chmap			= hdmi_cea_alloc_to_tlv_chmap,
++	.get_chmap				= hdmi_get_chmap,
++	.set_chmap				= hdmi_set_chmap,
++	.is_pcm_attached			= is_hdmi_pcm_attached,
  };
-@@ -2912,6 +2905,8 @@ static int patch_generic_hdmi(struct hda_codec *codec)
  
- 	spec->ops = generic_standard_hdmi_ops;
- 	mutex_init(&spec->pcm_lock);
-+	spec->chmap.ops = chmap_ops;
-+	spec->chmap.hdac = &codec->core;
- 	codec->spec = spec;
- 	hdmi_array_init(spec, 4);
- 
-@@ -3498,13 +3493,14 @@ static int patch_nvhdmi_8ch_7x(struct hda_codec *codec)
-  * - 0x10de0015
-  * - 0x10de0040
-  */
--static int nvhdmi_chmap_cea_alloc_validate_get_type(struct cea_channel_speaker_allocation *cap,
--						    int channels)
-+static int nvhdmi_chmap_cea_alloc_validate_get_type(struct hdac_chmap *chmap,
-+		struct cea_channel_speaker_allocation *cap, int channels)
+-
+ static void intel_haswell_fixup_connect_list(struct hda_codec *codec,
+ 					     hda_nid_t nid)
  {
- 	if (cap->ca_index == 0x00 && channels == 2)
- 		return SNDRV_CTL_TLVT_CHMAP_FIXED;
- 
--	return hdmi_chmap_cea_alloc_validate_get_type(cap, channels);
-+	return chmap->ops.chmap_cea_alloc_validate_get_type(
-+				chmap, cap, channels);
- }
- 
- static int nvhdmi_chmap_validate(int ca, int chs, unsigned char *map)
-@@ -3527,9 +3523,9 @@ static int patch_nvhdmi(struct hda_codec *codec)
- 	spec = codec->spec;
- 	spec->dyn_pin_out = true;
- 
--	spec->ops.chmap_cea_alloc_validate_get_type =
-+	spec->chmap.ops.chmap_cea_alloc_validate_get_type =
- 		nvhdmi_chmap_cea_alloc_validate_get_type;
--	spec->ops.chmap_validate = nvhdmi_chmap_validate;
-+	spec->chmap.ops.chmap_validate = nvhdmi_chmap_validate;
- 
- 	return 0;
- }
-@@ -3888,8 +3884,10 @@ static int atihdmi_pin_get_slot_channel(struct hda_codec *codec, hda_nid_t pin_n
- 	return ((ati_channel_setup & 0xf0) >> 4) + !!was_odd;
- }
- 
--static int atihdmi_paired_chmap_cea_alloc_validate_get_type(struct cea_channel_speaker_allocation *cap,
--							    int channels)
-+static int atihdmi_paired_chmap_cea_alloc_validate_get_type(
-+		struct hdac_chmap *chmap,
-+		struct cea_channel_speaker_allocation *cap,
-+		int channels)
- {
- 	int c;
- 
-@@ -4036,10 +4034,11 @@ static int patch_atihdmi(struct hda_codec *codec)
- 
- 	if (!has_amd_full_remap_support(codec)) {
- 		/* override to ATI/AMD-specific versions with pairwise mapping */
--		spec->ops.chmap_cea_alloc_validate_get_type =
-+		spec->chmap.ops.chmap_cea_alloc_validate_get_type =
- 			atihdmi_paired_chmap_cea_alloc_validate_get_type;
--		spec->ops.cea_alloc_to_tlv_chmap = atihdmi_paired_cea_alloc_to_tlv_chmap;
--		spec->ops.chmap_validate = atihdmi_paired_chmap_validate;
-+		spec->chmap.ops.cea_alloc_to_tlv_chmap =
-+				atihdmi_paired_cea_alloc_to_tlv_chmap;
-+		spec->chmap.ops.chmap_validate = atihdmi_paired_chmap_validate;
- 	}
- 
- 	/* ATI/AMD converters do not advertise all of their capabilities */
-@@ -4051,7 +4050,7 @@ static int patch_atihdmi(struct hda_codec *codec)
- 		per_cvt->maxbps = max(per_cvt->maxbps, 24u);
- 	}
- 
--	spec->channels_max = max(spec->channels_max, 8u);
-+	spec->chmap.channels_max = max(spec->chmap.channels_max, 8u);
- 
- 	return 0;
- }
 -- 
 1.9.1
