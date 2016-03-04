@@ -1,17 +1,18 @@
-From: Nikita Orlov <nikitos1550@yandex.ru>
-Subject: CM6206-LX usb sound card
-Date: Fri, 04 Mar 2016 20:09:30 +0300
-Message-ID: <5855601457111370@web13j.yandex.ru>
+From: bsiice <bsiice@msn.com>
+Subject: Re: [PATCH - pcm 1/1] pcm: fix "unable to create IPC
+ shm instance" in some case
+Date: Sat, 5 Mar 2016 01:36:46 +0800
+Message-ID: <BLU436-SMTP243C74599C81C3BFF7E62E8D2BE0@phx.gbl>
+References: <BLU437-SMTP418A25BEF034BD65DA159BD2BD0@phx.gbl>	<s5hh9gn6537.wl-tiwai@suse.de>	<BLU437-SMTP82BDE731C190D149D05F74D2BE0@phx.gbl>
+ <s5hd1raci79.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from forward20o.cmail.yandex.net (forward20o.cmail.yandex.net
- [37.9.109.219]) by alsa0.perex.cz (Postfix) with ESMTP id 5CDAA265767
- for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2016 18:09:32 +0100 (CET)
-Received: from web13j.yandex.ru (web13j.yandex.ru [IPv6:2a02:6b8:0:1619::313])
- by forward20o.cmail.yandex.net (Yandex) with ESMTP id 7CF2B2113F
- for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2016 20:09:31 +0300 (MSK)
+Received: from BLU004-OMC3S8.hotmail.com (blu004-omc3s8.hotmail.com
+ [65.55.116.83]) by alsa0.perex.cz (Postfix) with ESMTP id 255F1265767
+ for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2016 18:35:55 +0100 (CET)
+In-Reply-To: <s5hd1raci79.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,100 +22,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Qing Cai <caiqing@neusoft.com>, alsa-devel@alsa-project.org, bsiice@msn.com
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8hIAoKRmlyc3QgSSBzZW50IHRoZXNlIHF1ZXN0aW9ucyB0byBhbHNhLXVzZXIsIGJ1dCBJ
-IHRoaW5rIHRoaXMgbWFpbGluZyBsaXN0IGlzIG1vcmUgcHJvcGVyIHBsYWNlIHRvIGFzayBzdWNo
-IHF1ZXN0aW9ucy4KCkkgaGF2ZSBjaGVhcCBjaGluZXNlIHVzYiBhdWRpbyBjYXJkLCBiYXNlZCBv
-biBDTTYyMDYtTFggY2hpcCBmcm9tIENNRURJQS4gQ002MjA2LUxYIGlzIHNpbWlsYXIgdG8gQ002
-MjA2LCBidXQgbm90IDcuMSBjaGFubmVscyBvdXRwdXQsIGl0IGlzIDUuMSBjaGFubmVscy4KSSB1
-c2UgdWJ1bnR1IDE1Liogd2l0aCBrZXJuZWwgNC4yLjAtMzAtZ2VuZXJpYy4gCgpkbWVzZyBzaG93
-IG1lIHNvbWUgd2FybmluZ3MgYWJvdXQgc291bmQgY2FyZDoKClszMTAxMC4zOTQ0ODddIHVzYiAx
-LTE6IG5ldyBmdWxsLXNwZWVkIFVTQiBkZXZpY2UgbnVtYmVyIDI0IHVzaW5nIHhoY2lfaGNkClsz
-MTAxMC41MjM5NTNdIHVzYiAxLTE6IE5ldyBVU0IgZGV2aWNlIGZvdW5kLCBpZFZlbmRvcj0wZDhj
-LCBpZFByb2R1Y3Q9MDEwMgpbMzEwMTAuNTIzOTU2XSB1c2IgMS0xOiBOZXcgVVNCIGRldmljZSBz
-dHJpbmdzOiBNZnI9MCwgUHJvZHVjdD0yLCBTZXJpYWxOdW1iZXI9MApbMzEwMTAuNTIzOTU3XSB1
-c2IgMS0xOiBQcm9kdWN0OiBVU0IgU291bmQgRGV2aWNlICAgICAgICAKWzMxMDEwLjUyNjIzNV0g
-aW5wdXQ6IFVTQiBTb3VuZCBEZXZpY2UgICAgICAgICBhcyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAw
-MDA6MDA6MTQuMC91c2IxLzEtMS8xLTE6MS4zLzAwMDM6MEQ4QzowMTAyLjAwMTAvaW5wdXQvaW5w
-dXQzMwpbMzEwMTAuNTc4ODc2XSBoaWQtZ2VuZXJpYyAwMDAzOjBEOEM6MDEwMi4wMDEwOiBpbnB1
-dCxoaWRyYXcwOiBVU0IgSElEIHYxLjAwIERldmljZSBbVVNCIFNvdW5kIERldmljZSAgICAgICAg
-XSBvbiB1c2ItMDAwMDowMDoxNC4wLTEvaW5wdXQzClszMTAxMC42NDM5MDhdIHVzYiAxLTE6IGN1
-cnJlbnQgcmF0ZSAzMDQ2NCBpcyBkaWZmZXJlbnQgZnJvbSB0aGUgcnVudGltZSByYXRlIDk2MDAw
-ClszMTAxMC42NDYxMjNdIHVzYiAxLTE6IFdhcm5pbmchIFVubGlrZWx5IGJpZyB2b2x1bWUgcmFu
-Z2UgKD04MDY1KSwgY3ZhbC0+cmVzIGlzIHByb2JhYmx5IHdyb25nLgpbMzEwMTAuNjQ2MTI2XSB1
-c2IgMS0xOiBbOV0gRlUgW01pYyBQbGF5YmFjayBWb2x1bWVdIGNoID0gMiwgdmFsID0gLTYxNDQv
-MTkyMS8xClszMTAxMC42NDY0ODVdIHVzYiAxLTE6IFdhcm5pbmchIFVubGlrZWx5IGJpZyB2b2x1
-bWUgcmFuZ2UgKD04MDY1KSwgY3ZhbC0+cmVzIGlzIHByb2JhYmx5IHdyb25nLgpbMzEwMTAuNjQ2
-NDg2XSB1c2IgMS0xOiBbMTFdIEZVIFtMaW5lIFBsYXliYWNrIFZvbHVtZV0gY2ggPSAyLCB2YWwg
-PSAtNjE0NC8xOTIxLzEKWzMxMDEwLjY0Nzg4NF0gdXNiIDEtMTogV2FybmluZyEgVW5saWtlbHkg
-YmlnIHZvbHVtZSByYW5nZSAoPTY5MjgpLCBjdmFsLT5yZXMgaXMgcHJvYmFibHkgd3JvbmcuClsz
-MTAxMC42NDc4ODddIHVzYiAxLTE6IFs4XSBGVSBbTWljIENhcHR1cmUgVm9sdW1lXSBjaCA9IDIs
-IHZhbCA9IC00MDk2LzI4MzIvMQpbMzEwMTAuNjQ4MjkxXSB1c2IgMS0xOiBXYXJuaW5nISBVbmxp
-a2VseSBiaWcgdm9sdW1lIHJhbmdlICg9NjkyOCksIGN2YWwtPnJlcyBpcyBwcm9iYWJseSB3cm9u
-Zy4KWzMxMDEwLjY0ODI5NV0gdXNiIDEtMTogWzE1XSBGVSBbTGluZSBDYXB0dXJlIFZvbHVtZV0g
-Y2ggPSAyLCB2YWwgPSAtNDA5Ni8yODMyLzEKWzMxMDEwLjY0ODY2Ml0gdXNiIDEtMTogV2Fybmlu
-ZyEgVW5saWtlbHkgYmlnIHZvbHVtZSByYW5nZSAoPTY5MjgpLCBjdmFsLT5yZXMgaXMgcHJvYmFi
-bHkgd3JvbmcuClszMTAxMC42NDg2NjRdIHVzYiAxLTE6IFsyXSBGVSBbUENNIENhcHR1cmUgVm9s
-dW1lXSBjaCA9IDIsIHZhbCA9IC00MDk2LzI4MzIvMQpbMzEwMTAuNjQ4ODg3XSB1c2Jjb3JlOiBy
-ZWdpc3RlcmVkIG5ldyBpbnRlcmZhY2UgZHJpdmVyIHNuZC11c2ItYXVkaW8KCgpUaGVyZSBhcmUg
-dHdvIHR5cGVzIG9mIGVycm9ycywgZmlyc3QgdGhhdCBjdXJyZW50IHJhdGUgMzA0NjQgaXMgZGlm
-ZmVyZW50IGZyb20gdGhlIHJ1bnRpbWUgcmF0ZSA5NjAwMC4gVW5mb3J0dW5hdGVseSBJIGhhdmUg
-bm8gaWRlYSBhYm91dCB0aGlzIHdhcm5pbmcuCgpBbmQgd2FybmluZ3MgbGlrZSBVbmxpa2VseSBi
-aWcgdm9sdW1lIHJhbmdlICg9ODA2NSksIGN2YWwtPnJlcyBpcyBwcm9iYWJseSB3cm9uZy4KQXMg
-SSB1bmRlcnN0YW5kIGl0IGlzIGJlY2F1c2UgYXV0byB2YWx1ZSByYW5nZSBmb3Igc29tZSBtaXhl
-cnMgYXJlIG5vdCBwcm9wZXIgZGV0ZWN0ZWQuCgpJIGhhdmUgdGVzdCBjYXB0dXJpbmcgd2l0aCBz
-aW1wbGUgdGVzdCBhcHAuCkl0IHNlZW1zIG9ubHkgb25lIGF2YWxpYmxlIHNhbXBsZSByYXRlIGlz
-IDQ4MDAwIEh6LgoKICAgICAgICBwcmludGYoIlNhbXBsZSByYXRlID0gJWRcbiIsIFNhbXBsZVJh
-dGUpOwogICAgICAgIHNuZF9wY21faHdfcGFyYW1zX3NldF9yYXRlX25lYXIoSGFuZGxlLCBwYXJh
-bXMsCiAgICAgICAgICAgICAgICAmU2FtcGxlUmF0ZSwgJmRpcik7CiAgICAgICAgcHJpbnRmKCJT
-YW1wbGUgcmF0ZSA9ICVkXG4iLCBTYW1wbGVSYXRlKTsKCkFmdGVyIGNhbGxpbmcgdGhlc2UgZnVu
-Y3Rpb24gU2FtcGxlUmF0ZSBiZWNvbWVzIDQ4MDAwLCBldmVuIGlmIGJlZm9yZSBpdCB3YXMgNDQx
-MDAuCk1heWJlIGl0IGlzIHJlbGF0ZWQgdG8gZmlyc3QgZXJyb3IgaW4gZG1lc2cuIEFueWJvZHkg
-a25vd3M/CgpCdXQsIGFjY29yZGluZyB0bwoKY2F0IC9wcm9jL2Fzb3VuZC9jYXJkMi9zdHJlYW0w
-ClVTQiBTb3VuZCBEZXZpY2UgYXQgdXNiLTAwMDA6MDA6MTQuMC0xLCBmdWxsIHNwZWVkIDogVVNC
-IEF1ZGlvCgpQbGF5YmFjazoKICBTdGF0dXM6IFN0b3AKICBJbnRlcmZhY2UgMQogICAgQWx0c2V0
-IDEKICAgIEZvcm1hdDogUzE2X0xFCiAgICBDaGFubmVsczogOAogICAgRW5kcG9pbnQ6IDYgT1VU
-IChBREFQVElWRSkKICAgIFJhdGVzOiA0NDEwMCwgNDgwMDAKICBJbnRlcmZhY2UgMQogICAgQWx0
-c2V0IDIKICAgIEZvcm1hdDogUzE2X0xFCiAgICBDaGFubmVsczogMgogICAgRW5kcG9pbnQ6IDYg
-T1VUIChBREFQVElWRSkKICAgIFJhdGVzOiA0NDEwMCwgNDgwMDAKICBJbnRlcmZhY2UgMQogICAg
-QWx0c2V0IDMKICAgIEZvcm1hdDogUzE2X0xFCiAgICBDaGFubmVsczogNAogICAgRW5kcG9pbnQ6
-IDYgT1VUIChBREFQVElWRSkKICAgIFJhdGVzOiA0NDEwMCwgNDgwMDAKICBJbnRlcmZhY2UgMQog
-ICAgQWx0c2V0IDQKICAgIEZvcm1hdDogUzE2X0xFCiAgICBDaGFubmVsczogNgogICAgRW5kcG9p
-bnQ6IDYgT1VUIChBREFQVElWRSkKICAgIFJhdGVzOiA0NDEwMCwgNDgwMDAKICBJbnRlcmZhY2Ug
-MQogICAgQWx0c2V0IDUKICAgIEZvcm1hdDogUzE2X0xFCiAgICBDaGFubmVsczogMgogICAgRW5k
-cG9pbnQ6IDYgT1VUIChBREFQVElWRSkKICAgIFJhdGVzOiA5NjAwMAoKQ2FwdHVyZToKICBTdGF0
-dXM6IFN0b3AKICBJbnRlcmZhY2UgMgogICAgQWx0c2V0IDEKICAgIEZvcm1hdDogUzE2X0xFCiAg
-ICBDaGFubmVsczogMgogICAgRW5kcG9pbnQ6IDUgSU4gKEFTWU5DKQogICAgUmF0ZXM6IDQ0MTAw
-LCA0ODAwMAoKSXQgaXMgYWJsZSB0byBjYXB0dXJlIDQ0MTAwLgoKSSBoYXZlIHRyaWVkIHRvIGNh
-cHR1cmUgdmlhIGFyZWNvcmQ6CiBhcmVjb3JkIC1EIGh3OjIsMCAtZiBjZCAtYyAyID4gLi90ZXN0
-Mi53YXYKCmFuZCBWTEMgc2FpZCBpdCBpcyA0NDEwMCwgYnV0IEkgZG9uYHQgaGF2ZSBtaWNyb3Bo
-b25lIGF0IHRoZSBtb21lbnQgdG8gdGVzdCBpcyB0aGVyZSBwcm9wZXIgc291bmQgcmVjb3JkZWQg
-b3Igbm90LiBJIHdpbGwgdHJ5IGl0IGxhdGVyLgoKSSBoYXZlIGZvdW5kIHRoYXQgaW5pdCBvZiBz
-b3VuZCBjYXJkIGlzIHJlbGF0ZWQgdG8gc25kX3VzYl9hdWRpby5rbyBtb2R1bGUgYW5kIGxlYXJu
-IGEgYml0IGhvdyBpdCB3b3Jrcy4KVGhlcmUgaXMgYSBxdWlyayB0aGF0IHdyaXRlIGludGVybmFs
-IHJlZ2lzdGVycy4gQWNjb3JkaW5nIHRvIG1haWxpbmcgbGlzdCBhcmNoaXZlcyBkYXRlZCBpbiAy
-MDA5LCB2YWx1ZXMgd2VyZSBmb3VuZCBieSB1c2IgdHJhZmZpYyBzbmlmZmluZyB1bmRlciBXaW5k
-b3dzLgpJIGhhdmUgZm91bmQgQ002MjA2IGRhdGFzaGVldCBhbmQgY2hlY2sgZGVzY3JpcHRpb24g
-b2YgaW50ZXJuYWwgcmVnaXN0ZXJzLgpodHRwOi8vd2Vua3UuYmFpZHUuY29tL2xpbms/dXJsPXZr
-UUxHaEtVdXZWbUhDN3Z5b2JqS2xGMHlpeHBqbjN1ZUFkRDgxT082VWxFaU9HcEpoRmlWb3g1N3Fy
-aVFyUnRpU2hQU2F5M2tXYnlTc25VMTNiMTNTS3RtRktST1Y3UkFvQmFMMldwM1lhCkl0IGlzIGxp
-bmsgdG8gZGF0YXNoZWV0LiBXZWJzaXRlIGlzIGNoaW5lc2UsIGJ1dCBkYXRhc2hlZXQgaXRzZWwg
-aXMgaW4gZW5nbGlzaC4gVG8gc2VlIGl0IGFmdGVyIDNyZCBwYWdlIGNsaWNrIOS4i+i9veaWh+ah
-o+WIsOeUteiEke+8jOafpeaJvuS9v+eUqOabtOaWueS+vy4KCkJ1dCB0aGVyZSBhcmUgbm8gaW50
-ZXJlc3RpbmcgdGhpbmdzIGFib3V0IHJlZ2lzdGVycyBhbmQgbW9zdGx5IHZhbHVlcyB0aGF0IGFy
-ZSBleGlzdCBpbiBjdXJyZW50IHNuZF91c2JfYXVkaW8gbXVzdCB3b3JrIG9rLgoKQWxzbyBpbiBk
-YXRhc2hlZXQgdGhlcmUgc29tZSBpbmZvIGFib3V0IHZhbHVlcyBvZiB2b2x1bWUgcmFuZ2VzIHRo
-YXQgY2FuIGJlIHJlbGF0ZWQgdG8gc2Vjb25kIGRtZXNnIHdhcm5pbmdzLgpJIGhhdmUgdXBsb2Fk
-ZWQgaW1hZ2VzIG9mIHJlbGF0ZWQgaW5mbyBmcm9tIGRhdGFzaGVldCBoZXJlIGh0dHBzOi8veWFk
-aS5zay9kLzFrZENGczdHcHY4TDgKCkkgaGF2ZSB0cnkgd2l0aCBtaXhlci5jIGluIHNvdW5kL3Vz
-Yi8gZGlyIG9mIGtlcm5lbCB0cmVlICg0LjIuMCkgYW5kIHRyaWVkIHRvIGFkZCBleHBlcmltZW50
-YWwgY29kZSBpbiB2b2x1bWVfY29udHJvbF9xdWlya3MgZnVuY3Rpb24uCkJ1dCBpdCBzZWVtcyBm
-dW5jdGlvbiBpcyBub3QgY2FsbGVkIGZvciBteSBkZXZpY2UgZm9yIHNvbWUgcmVhc29uLiBJdCBp
-cyBtb3JlIGNvbXBsaWNhdGVkIHRoYXQgSSB0aGluayBmaXJzdC4KClNvIGFub3RoZXIgcXVlc3Rp
-b24gaXMgaG93IHRvIG1ha2UgcXVpcmsgZm9yIHByb3BlciBtaXhlciB2YWx1ZXM/CgotLcKgCk5p
-a2l0YSBPcmxvdgpTa3lwZTogbmlrX3N0ZXQKUVE6IDI3MTc4NDYwODMKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 03/05/2016 12:37 AM, Takashi Iwai wrote:
+> On Fri, 04 Mar 2016 17:22:58 +0100,
+> bsiice wrote:
+>>
+>> On 03/03/2016 09:53 PM, Takashi Iwai wrote:
+>>> On Thu, 03 Mar 2016 13:40:42 +0100,
+>>> IceBsi wrote:
+>>>>
+>>>> From: Qing Cai <caiqing@neusoft.com>
+>>>>
+>>>> As stated in manpage SHMCTL(2), shm_nattch is "No. of current attaches"
+>>>> (i.e., number of processes attached to the shared memeory). If an
+>>>> application uses alsa-lib and invokes fork() at some point, there should
+>>>> be the following execution sequence:
+>>>>  1. execute the following statement:
+>>>>       pcm_direct.c:110: dmix->shmptr = shmat(dmix->shmid, 0, 0)
+>>>>     (shm_nattch becomes 1)
+>>>>  2. invoke fork() in some thread.
+>>>>     (shm_nattch becomes 2)
+>>>>  3. execute the following statement:
+>>>>       pcm_direct.c:122: if (buf.shm_nattch == 1)
+>>>>  4. execute the following statement:
+>>>>       pcm_direct.c:131: if (dmix->shmptr->magic != SND_PCM_DIRECT_MAGIC)
+>>>>     (As stated in manpage SHMGET(2), "When a new shared memory segment
+>>>>      is created, its contents are initialized to zero values", so
+>>>>      dmix->shmptr->magic is 0)
+>>>>  5. execute the following statements:
+>>>>       pcm_direct.c:132: snd_pcm_direct_shm_discard(dmix)
+>>>>       pcm_direct.c:133: return -EINVAL
+>>>> The above execution sequence will cause the following error:
+>>>>   unable to create IPC shm instance
+>>>> This error causes multimedia application has no sound. This error rarely
+>>>> occurs, probability is about 1%.
+>>>> Because the first user of the shared memory will get that
+>>>> dmix->shmptr->magic is 0, check dmix->shmptr->magic's value to determine
+>>>> if "we're the first user" is OK.
+>>>> Tests have been made 400+ times after this fix, and the issue no longer
+>>>> exists.
+>>>
+>>> I think this is still racy.  Multiple users can grab the shmem at the
+>>> very same time.  Maybe it looks as if working just because both users
+>>> behavior as the first user and do clear and initialize.
+>> I think this won't be a race condition. Since
+>> snd_pcm_direct_shm_create_or_connect() is protected by
+>> snd_pcm_direct_semaphore_down() and snd_pcm_direct_semaphore_up(),
+>> multiple processes won't do clear and initialization concurrently.
+> 
+> Hrm, OK, now understood the situation.
+> 
+>>> The check of bus.shm_nattach=1 should be fine, per se.  The problem is
+>>> the magic key check of the secondary.  In the current code, as you
+>>> pointed out, this may happen before the first client finishes the
+>>> initialization.
+>> I think the check of dmix->shmptr->magic!=SND_PCM_DIRECT_MAGIC is more
+>> robust. Assume there are two clients of shmem and shmem is initialized,
+>> if one of the clients exits, shm_nattach will become 1 and shmem may be
+>> initialized again.
+> 
+> Yeah, in the fork from a thread, the shm_nattch check doesn't work
+> reliably, indeed.
+> 
+>> In the current code, because there is semaphore, magic key check won't
+>> happen before initialization of shmem.
+>> In the scenario that I want to tell, there is only one process, and only
+>> one thread doning the clear and initialization of shmem, and the fork()
+>> is invoked in another thread of non alsa-lib context (i.e., the fork()
+>> code is not in alsa-lib). If the fork() is invoked before shmat(), the
+>> problem won't happen; If the fork() is invoked after the check of
+>> bus.shm_nattach=1, the problem won't happen too. Only if the fork() is
+>> invoked just after shmat() and just before the check of
+>> bus.shm_nattach=1, the problem happens.
+> 
+> Well, the reason why the magic key check was introduced was about the
+> safety.  Since the shmid is given explicitly, it might override some
+> shmem usages other than dmix accidentally.  With your patch, it
+> forcibly clears the region -- this is quite opposite to the intention 
+> of the magic key check.
+
+I just think it clears the region only once at the first time. Could you
+please show me the scenario in detail?
+
+thanks,
+
+Qing Cai
+
+> 
+> So, this isn't about the race.  But how to not destroy something else
+> unexpectedly.
+> 
+> I'd happily apply a good fix if there is a better alternative...
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> 
