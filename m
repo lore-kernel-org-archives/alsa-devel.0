@@ -1,43 +1,88 @@
 From: libin.yang@linux.intel.com
-Subject: [alsa-devel] [PATCH 1/2] ALSA: hda - hdmi add wmb
-	barrier for audio component
-Date: Fri,  4 Mar 2016 14:33:06 +0800
-Message-ID: <1457073186-73666-1-git-send-email-libin.yang@linux.intel.com>
+Subject: [PATCH 2/2] ALSA: hda - hdmi defer to register acomp
+	eld notifier
+Date: Fri,  4 Mar 2016 14:33:43 +0800
+Message-ID: <1457073223-73728-1-git-send-email-libin.yang@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id A77E92657B3
+ for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2016 07:38:12 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: intel-gfx@lists.freedesktop.org, Libin Yang <libin.yang@linux.intel.com>
+Cc: libin.yang@intel.com, mengdong.lin@intel.com, Libin Yang <libin.yang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogTGliaW4gWWFuZyA8bGliaW4ueWFuZ0BsaW51eC5pbnRlbC5jb20+CgpUbyBtYWtlIHN1
-cmUgYXVkaW9fcHRyIGlzIHNldCBiZWZvcmUgaW50ZWxfYXVkaW9fY29kZWNfZW5hYmxlKCkKb3Ig
-aW50ZWxfYXVkaW9fY29kZWNfZGlzYWJsZSgpIGNhbGxpbmcgcGluX2VsZF9ub3RpZnkoKSwKdGhp
-cyBwYXRjaCBhZGRzIHdtYiBiYXJyaWVyIHRvIHByZXZlbnQgb3B0aW1pemluZy4KClNpZ25lZC1v
-ZmYtYnk6IExpYmluIFlhbmcgPGxpYmluLnlhbmdAbGludXguaW50ZWwuY29tPgotLS0KIHNvdW5k
-L3BjaS9oZGEvcGF0Y2hfaGRtaS5jIHwgNSArKysrKwogMSBmaWxlIGNoYW5nZWQsIDUgaW5zZXJ0
-aW9ucygrKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jIGIvc291bmQv
-cGNpL2hkYS9wYXRjaF9oZG1pLmMKaW5kZXggYWEyZDZhMi4uYjUxOTBlMCAxMDA2NDQKLS0tIGEv
-c291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1p
-LmMKQEAgLTI5MzksNiArMjkzOSwxMSBAQCBzdGF0aWMgaW50IHBhdGNoX2dlbmVyaWNfaGRtaShz
-dHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIAlpZiAoY29kZWNfaGFzX2Fjb21wKGNvZGVjKSkgewog
-CQljb2RlYy0+ZGVwb3BfZGVsYXkgPSAwOwogCQlzcGVjLT5pOTE1X2F1ZGlvX29wcy5hdWRpb19w
-dHIgPSBjb2RlYzsKKwkJLyogaW50ZWxfYXVkaW9fY29kZWNfZW5hYmxlKCkgb3IgaW50ZWxfYXVk
-aW9fY29kZWNfZGlzYWJsZSgpCisJCSAqIHdpbGwgY2FsbCBwaW5fZWxkX25vdGlmeSB3aXRoIHVz
-aW5nIGF1ZGlvX3B0ciBwb2ludGVyCisJCSAqIFdlIG5lZWQgbWFrZSBzdXJlIGF1ZGlvX3B0ciBp
-cyByZWFsbHkgc2V0dXAKKwkJICovCisJCXdtYigpOwogCQlzcGVjLT5pOTE1X2F1ZGlvX29wcy5w
-aW5fZWxkX25vdGlmeSA9IGludGVsX3Bpbl9lbGRfbm90aWZ5OwogCQlzbmRfaGRhY19pOTE1X3Jl
-Z2lzdGVyX25vdGlmaWVyKCZzcGVjLT5pOTE1X2F1ZGlvX29wcyk7CiAJfQotLSAKMS45LjEKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBt
-YWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3Rz
-LmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+From: Libin Yang <libin.yang@linux.intel.com>
+
+Defer to register acomp eld notifier until hdmi audio driver
+is fully ready.
+
+After registering eld notifier, gfx driver can use this
+callback function to notify audio driver the monitor
+connection event. However this action may happen when
+audio driver is adding the pins or doing other initialization.
+This is not always safe, however. For example, using
+per_pin->lock before the lock is initialized.
+
+Let's register the eld notifier after the initialization is done.
+
+Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+---
+ sound/pci/hda/patch_hdmi.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index b5190e0..9bdb301 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2936,18 +2936,6 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 			is_broxton(codec))
+ 		codec->core.link_power_control = 1;
+ 
+-	if (codec_has_acomp(codec)) {
+-		codec->depop_delay = 0;
+-		spec->i915_audio_ops.audio_ptr = codec;
+-		/* intel_audio_codec_enable() or intel_audio_codec_disable()
+-		 * will call pin_eld_notify with using audio_ptr pointer
+-		 * We need make sure audio_ptr is really setup
+-		 */
+-		wmb();
+-		spec->i915_audio_ops.pin_eld_notify = intel_pin_eld_notify;
+-		snd_hdac_i915_register_notifier(&spec->i915_audio_ops);
+-	}
+-
+ 	if (hdmi_parse_codec(codec) < 0) {
+ 		if (spec->i915_bound)
+ 			snd_hdac_i915_exit(&codec->bus->core);
+@@ -2969,6 +2957,18 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 
+ 	init_channel_allocations();
+ 
++	if (codec_has_acomp(codec)) {
++		codec->depop_delay = 0;
++		spec->i915_audio_ops.audio_ptr = codec;
++		/* intel_audio_codec_enable() or intel_audio_codec_disable()
++		 * will call pin_eld_notify with using audio_ptr pointer
++		 * We need make sure audio_ptr is really setup
++		 */
++		wmb();
++		spec->i915_audio_ops.pin_eld_notify = intel_pin_eld_notify;
++		snd_hdac_i915_register_notifier(&spec->i915_audio_ops);
++	}
++
+ 	WARN_ON(spec->dyn_pcm_assign && !codec_has_acomp(codec));
+ 	return 0;
+ }
+-- 
+1.9.1
