@@ -1,45 +1,51 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: pcm3168a: remove unused variable
-Date: Fri, 4 Mar 2016 11:48:54 +0900
-Message-ID: <20160304024854.GT18327@sirena.org.uk>
-References: <1457012269-30481-1-git-send-email-sudipm.mukherjee@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/6] Support for CherryTrail devices
+Date: Thu,  3 Mar 2016 21:36:32 -0600
+Message-ID: <1457062599-10032-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="QKpqgEgpSsOSH1J5"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1457012269-30481-1-git-send-email-sudipm.mukherjee@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BB68260506
+ for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2016 04:36:47 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Fix dependency on DW_DMAC_CORE
+Fix BIOS issues with better ACPI filtering for active devices
+Change codec name based on filtered HID
+Re-use bytcr-rt5640 driver
 
---QKpqgEgpSsOSH1J5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Tested on Tronsmart Ara x5 (CHT, headset only) and Asus T100TA (BYT)
+to make sure nothing was broken
 
-On Thu, Mar 03, 2016 at 07:07:49PM +0530, Sudip Mukherjee wrote:
+Thanks to Mika Westerberg for his support on ACPI
 
-> Its upto you now. If you dont want to accept then I will add an extra
-> From: in the commit. But since that will not be a part of my scripts so
-> there will be chances of error. If you are worried about missing signoff,
+Pierre-Louis Bossart (6):
+  ASoC: Intel: allow for DW_DMAC_CORE as module
+  ASoC: Intel: common: filter ACPI devices with _STA return value
+  ASoC: Intel: common: add translation from HID to codec-name
+  ASoC: Intel: bytcr_rt5640: change quirk position
+  ASoC: Intel: bytcr_rt5640: use HID translation util
+  ASoC: Intel: Atom: add support for CHT w/ RT5640
 
-git config user.email
+ sound/soc/intel/Kconfig                 |  4 +--
+ sound/soc/intel/atom/sst/sst_acpi.c     |  4 +++
+ sound/soc/intel/boards/bytcr_rt5640.c   | 50 +++++++++++++++++++++----------
+ sound/soc/intel/common/sst-acpi.h       |  3 ++
+ sound/soc/intel/common/sst-match-acpi.c | 53 +++++++++++++++++++++++++++++++--
+ 5 files changed, 94 insertions(+), 20 deletions(-)
 
---QKpqgEgpSsOSH1J5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJW2PeRAAoJECTWi3JdVIfQyNQH/ipngyJNMeI/rxcaPnKzN8WE
-xYj0PhWiV/8OLzpG8ydojdbhgOomHb4rLLzRDR4Rh2EcB4Dkz/CsVRMNXFZE2oom
-RAYd7X2WoXAagOBhPZCM1t0kDvNo1/MkVAIgsI5jYU1Lf/cijXEf2eZ8B5u7MSsT
-TW2siHqmTD3vluHGMuxlR+3NLO5XM+iXbPgEnc59zYP3+be5NNdJANcJtRYhXvdd
-BUmEDyZhXQakzHrRUpQqm6K4Bk4b2oZeZHTIa8SCsCzlx7+0hWldMJ/J1DQ3Wd80
-y/4b0Fd7xyscRqo/YcFVxr+TYRXI8Sgx5CJT+NdVbQ7gz6LGPHRNt18nL6G3jr4=
-=bIxk
------END PGP SIGNATURE-----
-
---QKpqgEgpSsOSH1J5--
+-- 
+1.9.1
