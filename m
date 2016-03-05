@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: common: filter ACPI devices with
-	_STA return value" to the asoc tree
-Date: Sat, 05 Mar 2016 21:25:05 +0900
-Message-ID: <E1acBGb-0003KS-G8@finisterre>
-References: <1457062599-10032-3-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: rockchip: add bindings for spdif
+	controller" to the asoc tree
+Date: Sat, 05 Mar 2016 21:25:07 +0900
+Message-ID: <E1acBGd-0003Kw-7J@finisterre>
+References: <1457087514-1837-1-git-send-email-sugar.zhang@rock-chips.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 49D06265857
- for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2016 13:25:09 +0100 (CET)
-In-Reply-To: <1457062599-10032-3-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C4F4D261469
+ for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2016 13:25:11 +0100 (CET)
+In-Reply-To: <1457087514-1837-1-git-send-email-sugar.zhang@rock-chips.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>
+To: Sugar Zhang <sugar.zhang@rock-chips.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: common: filter ACPI devices with _STA return value
+   ASoC: rockchip: add bindings for spdif controller
 
 has been applied to the asoc tree at
 
@@ -53,70 +53,72 @@ to this mail.
 Thanks,
 Mark
 
->From cab473850226c3e41823453b5b80eb294dae6e0c Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 3 Mar 2016 21:36:34 -0600
-Subject: [PATCH] ASoC: Intel: common: filter ACPI devices with _STA return
- value
+>From ab8773943ab3126d39eb41531c8e06aea2107aa1 Mon Sep 17 00:00:00 2001
+From: Sugar Zhang <sugar.zhang@rock-chips.com>
+Date: Fri, 4 Mar 2016 18:31:54 +0800
+Subject: [PATCH] ASoC: rockchip: add bindings for spdif controller
 
-BIOS vendors typically list multiple audio codecs in the DSDT
-table and enable the relevant one by changing the return value
-of the _STA method.
+this patch add compatible for rk3366/rk3368/rk3399 spdif,
+these three spdifs share the same type.
 
-With the current code, all devices are reported by
-acpi_dev_present(), regardless of the _STA return values. This
-causes errors on probe with the wrong machine driver being loaded.
-
-This patch essentially reverts 'commit 6f08cbdaac5a
-("ASoC: Intel: Use acpi_dev_present()")' and adds code to
-force the evaluation of the _STA method.
-
-A better solution might be to make sure the ACPI subsystem only
-reports devices with a _STA value of 0xf but apparently it's
-problematic so dealing with this in the audio subsystem directly.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/common/sst-match-acpi.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/sound/rockchip-spdif.txt |  8 ++++++--
+ sound/soc/rockchip/rockchip_spdif.c                        | 13 ++++++++++---
+ 2 files changed, 16 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/common/sst-match-acpi.c b/sound/soc/intel/common/sst-match-acpi.c
-index c429e2226d40..cf2c27cd8651 100644
---- a/sound/soc/intel/common/sst-match-acpi.c
-+++ b/sound/soc/intel/common/sst-match-acpi.c
-@@ -16,14 +16,30 @@
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-spdif.txt b/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
+index e64dbdea7db9..11046429a118 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
++++ b/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
+@@ -7,8 +7,12 @@ a fibre cable.
+ Required properties:
  
- #include "sst-acpi.h"
+ - compatible: should be one of the following:
+-   - "rockchip,rk3288-spdif", "rockchip,rk3188-spdif" or
+-     "rockchip,rk3066-spdif"
++   - "rockchip,rk3066-spdif"
++   - "rockchip,rk3188-spdif"
++   - "rockchip,rk3288-spdif"
++   - "rockchip,rk3366-spdif"
++   - "rockchip,rk3368-spdif"
++   - "rockchip,rk3399-spdif"
+ - reg: physical base address of the controller and length of memory mapped
+   region.
+ - interrupts: should contain the SPDIF interrupt.
+diff --git a/sound/soc/rockchip/rockchip_spdif.c b/sound/soc/rockchip/rockchip_spdif.c
+index 274599d4caeb..100781e37848 100644
+--- a/sound/soc/rockchip/rockchip_spdif.c
++++ b/sound/soc/rockchip/rockchip_spdif.c
+@@ -28,6 +28,7 @@ enum rk_spdif_type {
+ 	RK_SPDIF_RK3066,
+ 	RK_SPDIF_RK3188,
+ 	RK_SPDIF_RK3288,
++	RK_SPDIF_RK3366,
+ };
  
-+static acpi_status sst_acpi_mach_match(acpi_handle handle, u32 level,
-+				       void *context, void **ret)
-+{
-+	unsigned long long sta;
-+	acpi_status status;
-+
-+	*(bool *)context = true;
-+	status = acpi_evaluate_integer(handle, "_STA", NULL, &sta);
-+	if (ACPI_FAILURE(status) || !(sta & ACPI_STA_DEVICE_PRESENT))
-+		*(bool *)context = false;
-+
-+	return AE_OK;
-+}
-+
- struct sst_acpi_mach *sst_acpi_find_machine(struct sst_acpi_mach *machines)
- {
- 	struct sst_acpi_mach *mach;
-+	bool found = false;
+ #define RK3288_GRF_SOC_CON2 0x24c
+@@ -45,11 +46,17 @@ struct rk_spdif_dev {
  
- 	for (mach = machines; mach->id[0]; mach++)
--		if (acpi_dev_present(mach->id))
-+		if (ACPI_SUCCESS(acpi_get_devices(mach->id,
-+						  sst_acpi_mach_match,
-+						  &found, NULL)) && found)
- 			return mach;
--
- 	return NULL;
- }
- EXPORT_SYMBOL_GPL(sst_acpi_find_machine);
+ static const struct of_device_id rk_spdif_match[] = {
+ 	{ .compatible = "rockchip,rk3066-spdif",
+-	  .data = (void *) RK_SPDIF_RK3066 },
++	  .data = (void *)RK_SPDIF_RK3066 },
+ 	{ .compatible = "rockchip,rk3188-spdif",
+-	  .data = (void *) RK_SPDIF_RK3188 },
++	  .data = (void *)RK_SPDIF_RK3188 },
+ 	{ .compatible = "rockchip,rk3288-spdif",
+-	  .data = (void *) RK_SPDIF_RK3288 },
++	  .data = (void *)RK_SPDIF_RK3288 },
++	{ .compatible = "rockchip,rk3366-spdif",
++	  .data = (void *)RK_SPDIF_RK3366 },
++	{ .compatible = "rockchip,rk3368-spdif",
++	  .data = (void *)RK_SPDIF_RK3366 },
++	{ .compatible = "rockchip,rk3399-spdif",
++	  .data = (void *)RK_SPDIF_RK3366 },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, rk_spdif_match);
 -- 
 2.7.0
