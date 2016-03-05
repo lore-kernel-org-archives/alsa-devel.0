@@ -1,101 +1,47 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: use __maybe_unused to hide
-	st_irq_syscfg_resume" to the asoc tree
-Date: Sat, 05 Mar 2016 21:25:10 +0900
-Message-ID: <E1acBGg-0003Lu-Oi@finisterre>
-References: <1456934350-1389172-15-git-send-email-arnd@arndb.de>
+Subject: Re: [PATCH 2/6] ASoC: rsrc-card: add convert channels support
+Date: Sat, 5 Mar 2016 13:24:50 +0900
+Message-ID: <20160305042450.GA18327@sirena.org.uk>
+References: <877fht7376.wl%kuninori.morimoto.gx@renesas.com>
+ <874mcx734l.wl%kuninori.morimoto.gx@renesas.com>
+ <20160302173921.GA6580@rob-hp-laptop>
+ <8760x4asmv.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 52122266A2C
- for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2016 13:25:16 +0100 (CET)
-In-Reply-To: <1456934350-1389172-15-git-send-email-arnd@arndb.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="yoBsNywy4J3JKC/M"
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <8760x4asmv.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Rob Herring <robh@kernel.org>, Simon <horms@verge.net.au>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Linux-DT <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Laurent <laurent.pinchart@ideasonboard.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: rockchip: use __maybe_unused to hide st_irq_syscfg_resume
+--yoBsNywy4J3JKC/M
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+On Thu, Mar 03, 2016 at 08:15:19AM +0000, Kuninori Morimoto wrote:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> Mark, can I send additional patch ?
+> or is v2 patch better ?
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+An incremental patch is fine.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+--yoBsNywy4J3JKC/M
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+iQEcBAEBCAAGBQJW2l+RAAoJECTWi3JdVIfQ7WwIAIFp07nFd/SqAOT4s5ALZzq9
+T0TDdk27bmw1IryzajApGhkhqOGHuYZ3p84EcNBSD51TR5guhmGOx7t/9Ejha8wr
+9V4VIcGTUMju0tzBh2KibwAYnodMQrIxLsDq17SS6YYNzM2s5YNsbYELWTXHrjYw
+CeexxvG2+oDqnCSZO/8KTuU203a6UtyU6j02M9SHTJaEo3YWcTSMIuj/sbAFL37O
+vTgdFygTOdx/Ms5VemkRO6VxB9gQgH1IA1p/CUHIGmOv2OdfdAlHaLMt2e2Pw2G9
+uigJZ//ngaWaYDxEmuqol7WyKCVMtHt3gup3svt0Go4dDZBEkMrNJ4hds1LJqTw=
+=4tST
+-----END PGP SIGNATURE-----
 
-Thanks,
-Mark
-
->From d8fc2198aab117a4bc16ee305caef19c4c7e7f5c Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Wed, 2 Mar 2016 16:59:06 +0100
-Subject: [PATCH] ASoC: rockchip: use __maybe_unused to hide
- st_irq_syscfg_resume
-
-The rockchip spdif driver uses SIMPLE_DEV_PM_OPS to conditionally
-set its power management functions, but we get a warning
-about rk_spdif_runtime_resume being unused when CONFIG_PM is not
-set:
-
-sound/soc/rockchip/rockchip_spdif.c:67:12: error: 'rk_spdif_runtime_resume' defined but not used [-Werror=unused-function]
-
-This adds a __maybe_unused annotation so the compiler knows
-it can silently drop it instead of warning.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/rockchip/rockchip_spdif.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/rockchip/rockchip_spdif.c b/sound/soc/rockchip/rockchip_spdif.c
-index 5a806da89f42..274599d4caeb 100644
---- a/sound/soc/rockchip/rockchip_spdif.c
-+++ b/sound/soc/rockchip/rockchip_spdif.c
-@@ -54,7 +54,7 @@ static const struct of_device_id rk_spdif_match[] = {
- };
- MODULE_DEVICE_TABLE(of, rk_spdif_match);
- 
--static int rk_spdif_runtime_suspend(struct device *dev)
-+static int __maybe_unused rk_spdif_runtime_suspend(struct device *dev)
- {
- 	struct rk_spdif_dev *spdif = dev_get_drvdata(dev);
- 
-@@ -64,7 +64,7 @@ static int rk_spdif_runtime_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int rk_spdif_runtime_resume(struct device *dev)
-+static int __maybe_unused rk_spdif_runtime_resume(struct device *dev)
- {
- 	struct rk_spdif_dev *spdif = dev_get_drvdata(dev);
- 	int ret;
--- 
-2.7.0
+--yoBsNywy4J3JKC/M--
