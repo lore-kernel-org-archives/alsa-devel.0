@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Atom: add support for CHT w/
-	RT5640" to the asoc tree
-Date: Sat, 05 Mar 2016 21:24:58 +0900
-Message-ID: <E1acBGU-0003IW-L6@finisterre>
-References: <1457062599-10032-8-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5640: use HID
+	translation util" to the asoc tree
+Date: Sat, 05 Mar 2016 21:25:00 +0900
+Message-ID: <E1acBGW-0003J0-C0@finisterre>
+References: <1457062599-10032-7-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D670F261A0D
- for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2016 13:25:02 +0100 (CET)
-In-Reply-To: <1457062599-10032-8-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 768882606F7
+ for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2016 13:25:04 +0100 (CET)
+In-Reply-To: <1457062599-10032-7-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Atom: add support for CHT w/ RT5640
+   ASoC: Intel: bytcr_rt5640: use HID translation util
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,59 @@ to this mail.
 Thanks,
 Mark
 
->From fdf841937e4fa08e767dbe83f1c65696cfec67c9 Mon Sep 17 00:00:00 2001
+>From a232b96dcece4761793d39b8fb2c9d050df30357 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 3 Mar 2016 21:36:39 -0600
-Subject: [PATCH] ASoC: Intel: Atom: add support for CHT w/ RT5640
+Date: Thu, 3 Mar 2016 21:36:38 -0600
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: use HID translation util
 
-Some CHT-T platforms make use of the Realtek RT5640 codec. Make use
-of the machine driver developed for Baytrail.
-
-Tested on Tronsmart Ara X5.
+Remove hard-coded generation of codec name, use translation routine
+to avoid issues with codec name not matching what the ACPI subsystem
+registered
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst/sst_acpi.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5640.c | 22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index 4fce03fc1870..3bc4b63b2f9d 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -342,6 +342,10 @@ static struct sst_acpi_mach sst_acpi_chv[] = {
- 						&chv_platform_data },
- 	{"193C9890", "cht-bsw-max98090", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
- 						&chv_platform_data },
-+	/* some CHT-T platforms rely on RT5640, use Baytrail machine driver */
-+	{"10EC5640", "bytcr_rt5640", "intel/fw_sst_22a8.bin", "bytcr_rt5640", NULL,
-+						&chv_platform_data },
-+
- 	{},
- };
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index a06cd1f99190..032a2e753f0b 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -340,15 +340,31 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ {
+ 	int ret_val = 0;
+ 	struct sst_acpi_mach *mach;
++	const char *i2c_name = NULL;
++	int i;
++	int dai_index;
  
+ 	/* register the soc card */
+ 	byt_rt5640_card.dev = &pdev->dev;
+ 	mach = byt_rt5640_card.dev->platform_data;
+ 
++	/* fix index of codec dai */
++	dai_index = MERR_DPCM_COMPR + 1;
++	for (i = 0; i < ARRAY_SIZE(byt_rt5640_dais); i++) {
++		if (!strcmp(byt_rt5640_dais[i].codec_name, "i2c-10EC5640:00")) {
++			dai_index = i;
++			break;
++		}
++	}
++
+ 	/* fixup codec name based on HID */
+-	snprintf(byt_rt5640_codec_name, sizeof(byt_rt5640_codec_name),
+-		 "%s%s%s", "i2c-", mach->id, ":00");
+-	byt_rt5640_dais[MERR_DPCM_COMPR+1].codec_name = byt_rt5640_codec_name;
++	i2c_name = sst_acpi_find_name_from_hid(mach->id);
++	if (i2c_name != NULL) {
++		snprintf(byt_rt5640_codec_name, sizeof(byt_rt5640_codec_name),
++			"%s%s", "i2c-", i2c_name);
++
++		byt_rt5640_dais[dai_index].codec_name = byt_rt5640_codec_name;
++	}
+ 
+ 	/* check quirks before creating card */
+ 	dmi_check_system(byt_rt5640_quirk_table);
 -- 
 2.7.0
