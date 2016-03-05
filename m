@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: common: add translation from HID
-	to codec-name" to the asoc tree
-Date: Sat, 05 Mar 2016 21:25:03 +0900
-Message-ID: <E1acBGZ-0003Jy-Og@finisterre>
-References: <1457062599-10032-5-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: common: filter ACPI devices with
+	_STA return value" to the asoc tree
+Date: Sat, 05 Mar 2016 21:25:05 +0900
+Message-ID: <E1acBGb-0003KS-G8@finisterre>
+References: <1457062599-10032-3-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 61395265821
- for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2016 13:25:07 +0100 (CET)
-In-Reply-To: <1457062599-10032-5-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 49D06265857
+ for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2016 13:25:09 +0100 (CET)
+In-Reply-To: <1457062599-10032-3-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: common: add translation from HID to codec-name
+   ASoC: Intel: common: filter ACPI devices with _STA return value
 
 has been applied to the asoc tree at
 
@@ -53,91 +53,70 @@ to this mail.
 Thanks,
 Mark
 
->From 1fdb7c14a24689e9c7ec51aa16a3970a7ec0fdde Mon Sep 17 00:00:00 2001
+>From cab473850226c3e41823453b5b80eb294dae6e0c Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 3 Mar 2016 21:36:36 -0600
-Subject: [PATCH] ASoC: Intel: common: add translation from HID to codec-name
+Date: Thu, 3 Mar 2016 21:36:34 -0600
+Subject: [PATCH] ASoC: Intel: common: filter ACPI devices with _STA return
+ value
 
-BIOS vendors sometimes declare multiple devices in the DSDT
-table that all refer to the same HID. This is not very smart
-but not illegal as long as only one device reports present with
-the _STA method. The ACPI subsystem tracks each device with an
-extension, e.g. 10EC5640:00 and 10EC5640:01
+BIOS vendors typically list multiple audio codecs in the DSDT
+table and enable the relevant one by changing the return value
+of the _STA method.
 
-In the ASoC machine driver, the DAI codec name needs to refer to the
-ACPI device that reported present, e.g. "i2c-10EC5640:01". The
-extension will vary depending on how the BIOS is written and which
-ACPI device is activated.
+With the current code, all devices are reported by
+acpi_dev_present(), regardless of the _STA return values. This
+causes errors on probe with the wrong machine driver being loaded.
 
-This patch adds a translation function that provides the codec
-name from the ACPI HID to avoid any hard-coded values in the
-machine driver.
+This patch essentially reverts 'commit 6f08cbdaac5a
+("ASoC: Intel: Use acpi_dev_present()")' and adds code to
+force the evaluation of the _STA method.
 
-Suggested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+A better solution might be to make sure the ACPI subsystem only
+reports devices with a _STA value of 0xf but apparently it's
+problematic so dealing with this in the audio subsystem directly.
+
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/common/sst-acpi.h       |  3 +++
- sound/soc/intel/common/sst-match-acpi.c | 33 +++++++++++++++++++++++++++++++++
- 2 files changed, 36 insertions(+)
+ sound/soc/intel/common/sst-match-acpi.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/common/sst-acpi.h b/sound/soc/intel/common/sst-acpi.h
-index 3ee3b7ab5d03..4dcfb7e5ed70 100644
---- a/sound/soc/intel/common/sst-acpi.h
-+++ b/sound/soc/intel/common/sst-acpi.h
-@@ -14,6 +14,9 @@
- 
- #include <linux/acpi.h>
- 
-+/* translation fron HID to I2C name, needed for DAI codec_name */
-+const char *sst_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN]);
-+
- /* acpi match */
- struct sst_acpi_mach *sst_acpi_find_machine(struct sst_acpi_mach *machines);
- 
 diff --git a/sound/soc/intel/common/sst-match-acpi.c b/sound/soc/intel/common/sst-match-acpi.c
-index cf2c27cd8651..2c0e7fca97db 100644
+index c429e2226d40..cf2c27cd8651 100644
 --- a/sound/soc/intel/common/sst-match-acpi.c
 +++ b/sound/soc/intel/common/sst-match-acpi.c
-@@ -16,6 +16,39 @@
+@@ -16,14 +16,30 @@
  
  #include "sst-acpi.h"
  
-+static acpi_status sst_acpi_find_name(acpi_handle handle, u32 level,
-+				      void *context, void **ret)
++static acpi_status sst_acpi_mach_match(acpi_handle handle, u32 level,
++				       void *context, void **ret)
 +{
-+	struct acpi_device *adev;
-+	const char *name = NULL;
++	unsigned long long sta;
++	acpi_status status;
 +
-+	if (acpi_bus_get_device(handle, &adev))
-+		return AE_OK;
-+
-+	if (adev->status.present && adev->status.functional) {
-+		name = acpi_dev_name(adev);
-+		*(const char **)ret = name;
-+		return AE_CTRL_TERMINATE;
-+	}
++	*(bool *)context = true;
++	status = acpi_evaluate_integer(handle, "_STA", NULL, &sta);
++	if (ACPI_FAILURE(status) || !(sta & ACPI_STA_DEVICE_PRESENT))
++		*(bool *)context = false;
 +
 +	return AE_OK;
 +}
 +
-+const char *sst_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN])
-+{
-+	const char *name = NULL;
-+	acpi_status status;
-+
-+	status = acpi_get_devices(hid, sst_acpi_find_name, NULL,
-+				  (void **)&name);
-+
-+	if (ACPI_FAILURE(status) || name[0] == '\0')
-+		return NULL;
-+
-+	return name;
-+}
-+EXPORT_SYMBOL_GPL(sst_acpi_find_name_from_hid);
-+
- static acpi_status sst_acpi_mach_match(acpi_handle handle, u32 level,
- 				       void *context, void **ret)
+ struct sst_acpi_mach *sst_acpi_find_machine(struct sst_acpi_mach *machines)
  {
+ 	struct sst_acpi_mach *mach;
++	bool found = false;
+ 
+ 	for (mach = machines; mach->id[0]; mach++)
+-		if (acpi_dev_present(mach->id))
++		if (ACPI_SUCCESS(acpi_get_devices(mach->id,
++						  sst_acpi_mach_match,
++						  &found, NULL)) && found)
+ 			return mach;
+-
+ 	return NULL;
+ }
+ EXPORT_SYMBOL_GPL(sst_acpi_find_machine);
 -- 
 2.7.0
