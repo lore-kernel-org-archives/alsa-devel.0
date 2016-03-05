@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: add bindings for spdif
-	controller" to the asoc tree
-Date: Sat, 05 Mar 2016 21:25:07 +0900
-Message-ID: <E1acBGd-0003Kw-7J@finisterre>
-References: <1457087514-1837-1-git-send-email-sugar.zhang@rock-chips.com>
+Subject: Applied "ASoC: pcm3168a: remove unused variable" to
+	the asoc tree
+Date: Sat, 05 Mar 2016 21:25:09 +0900
+Message-ID: <E1acBGf-0003LQ-1l@finisterre>
+References: <1457012269-30481-1-git-send-email-sudipm.mukherjee@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C4F4D261469
- for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2016 13:25:11 +0100 (CET)
-In-Reply-To: <1457087514-1837-1-git-send-email-sugar.zhang@rock-chips.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E9F4266A08
+ for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2016 13:25:15 +0100 (CET)
+In-Reply-To: <1457012269-30481-1-git-send-email-sudipm.mukherjee@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sugar Zhang <sugar.zhang@rock-chips.com>, Mark Brown <broonie@kernel.org>
+To: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: add bindings for spdif controller
+   ASoC: pcm3168a: remove unused variable
 
 has been applied to the asoc tree at
 
@@ -53,72 +53,42 @@ to this mail.
 Thanks,
 Mark
 
->From ab8773943ab3126d39eb41531c8e06aea2107aa1 Mon Sep 17 00:00:00 2001
-From: Sugar Zhang <sugar.zhang@rock-chips.com>
-Date: Fri, 4 Mar 2016 18:31:54 +0800
-Subject: [PATCH] ASoC: rockchip: add bindings for spdif controller
+>From e7a508f2b137092500fbad09d9713d3a1c5d4826 Mon Sep 17 00:00:00 2001
+From: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+Date: Fri, 4 Mar 2016 16:27:14 +0530
+Subject: [PATCH] ASoC: pcm3168a: remove unused variable
 
-this patch add compatible for rk3366/rk3368/rk3399 spdif,
-these three spdifs share the same type.
+While building we were getting build warning about:
+sound/soc/codecs/pcm3168a.c:403:21: warning: variable 'channels' set but
+not used
 
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+The variable channels were being assigned some value but that was never
+reused.
+
+Signed-off-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/rockchip-spdif.txt |  8 ++++++--
- sound/soc/rockchip/rockchip_spdif.c                        | 13 ++++++++++---
- 2 files changed, 16 insertions(+), 5 deletions(-)
+ sound/soc/codecs/pcm3168a.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-spdif.txt b/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
-index e64dbdea7db9..11046429a118 100644
---- a/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
-+++ b/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
-@@ -7,8 +7,12 @@ a fibre cable.
- Required properties:
+diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
+index 0c7248ab6a37..992a77edcd5d 100644
+--- a/sound/soc/codecs/pcm3168a.c
++++ b/sound/soc/codecs/pcm3168a.c
+@@ -400,13 +400,12 @@ static int pcm3168a_hw_params(struct snd_pcm_substream *substream,
+ 	struct pcm3168a_priv *pcm3168a = snd_soc_codec_get_drvdata(codec);
+ 	bool tx, master_mode;
+ 	u32 val, mask, shift, reg;
+-	unsigned int rate, channels, fmt, ratio, max_ratio;
++	unsigned int rate, fmt, ratio, max_ratio;
+ 	int i, min_frame_size;
+ 	snd_pcm_format_t format;
  
- - compatible: should be one of the following:
--   - "rockchip,rk3288-spdif", "rockchip,rk3188-spdif" or
--     "rockchip,rk3066-spdif"
-+   - "rockchip,rk3066-spdif"
-+   - "rockchip,rk3188-spdif"
-+   - "rockchip,rk3288-spdif"
-+   - "rockchip,rk3366-spdif"
-+   - "rockchip,rk3368-spdif"
-+   - "rockchip,rk3399-spdif"
- - reg: physical base address of the controller and length of memory mapped
-   region.
- - interrupts: should contain the SPDIF interrupt.
-diff --git a/sound/soc/rockchip/rockchip_spdif.c b/sound/soc/rockchip/rockchip_spdif.c
-index 274599d4caeb..100781e37848 100644
---- a/sound/soc/rockchip/rockchip_spdif.c
-+++ b/sound/soc/rockchip/rockchip_spdif.c
-@@ -28,6 +28,7 @@ enum rk_spdif_type {
- 	RK_SPDIF_RK3066,
- 	RK_SPDIF_RK3188,
- 	RK_SPDIF_RK3288,
-+	RK_SPDIF_RK3366,
- };
+ 	rate = params_rate(params);
+ 	format = params_format(params);
+-	channels = params_channels(params);
  
- #define RK3288_GRF_SOC_CON2 0x24c
-@@ -45,11 +46,17 @@ struct rk_spdif_dev {
+ 	ratio = pcm3168a->sysclk / rate;
  
- static const struct of_device_id rk_spdif_match[] = {
- 	{ .compatible = "rockchip,rk3066-spdif",
--	  .data = (void *) RK_SPDIF_RK3066 },
-+	  .data = (void *)RK_SPDIF_RK3066 },
- 	{ .compatible = "rockchip,rk3188-spdif",
--	  .data = (void *) RK_SPDIF_RK3188 },
-+	  .data = (void *)RK_SPDIF_RK3188 },
- 	{ .compatible = "rockchip,rk3288-spdif",
--	  .data = (void *) RK_SPDIF_RK3288 },
-+	  .data = (void *)RK_SPDIF_RK3288 },
-+	{ .compatible = "rockchip,rk3366-spdif",
-+	  .data = (void *)RK_SPDIF_RK3366 },
-+	{ .compatible = "rockchip,rk3368-spdif",
-+	  .data = (void *)RK_SPDIF_RK3366 },
-+	{ .compatible = "rockchip,rk3399-spdif",
-+	  .data = (void *)RK_SPDIF_RK3366 },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, rk_spdif_match);
 -- 
 2.7.0
