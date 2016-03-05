@@ -1,47 +1,45 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/6] ASoC: rsrc-card: add convert channels support
-Date: Sat, 5 Mar 2016 13:24:50 +0900
-Message-ID: <20160305042450.GA18327@sirena.org.uk>
-References: <877fht7376.wl%kuninori.morimoto.gx@renesas.com>
- <874mcx734l.wl%kuninori.morimoto.gx@renesas.com>
- <20160302173921.GA6580@rob-hp-laptop>
- <8760x4asmv.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 1/2] ASoC: cs35l32: avoid uninitialized variable access
+Date: Sat, 5 Mar 2016 14:39:34 +0900
+Message-ID: <20160305053934.GI18327@sirena.org.uk>
+References: <1453741678-1988125-1-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="yoBsNywy4J3JKC/M"
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="nmwC0J/XBWGmXIEM"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <8760x4asmv.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Rob Herring <robh@kernel.org>, Simon <horms@verge.net.au>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Linux-DT <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Laurent <laurent.pinchart@ideasonboard.com>
+In-Reply-To: <1453741678-1988125-1-git-send-email-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-arm-kernel@lists.infradead.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---yoBsNywy4J3JKC/M
+--nmwC0J/XBWGmXIEM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Mar 03, 2016 at 08:15:19AM +0000, Kuninori Morimoto wrote:
+On Mon, Jan 25, 2016 at 06:07:32PM +0100, Arnd Bergmann wrote:
 
-> Mark, can I send additional patch ?
-> or is v2 patch better ?
+> -		if (i2c_client->dev.of_node) {
+> +		if (IS_ENABLED(CONFIG_OF) && i2c_client->dev.of_node) {
 
-An incremental patch is fine.
+This feels it's going to be happening a lot and we should probably have
+a dev_has_of_node() helper that does the IS_ENABLED() check.
 
---yoBsNywy4J3JKC/M
+--nmwC0J/XBWGmXIEM
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJW2l+RAAoJECTWi3JdVIfQ7WwIAIFp07nFd/SqAOT4s5ALZzq9
-T0TDdk27bmw1IryzajApGhkhqOGHuYZ3p84EcNBSD51TR5guhmGOx7t/9Ejha8wr
-9V4VIcGTUMju0tzBh2KibwAYnodMQrIxLsDq17SS6YYNzM2s5YNsbYELWTXHrjYw
-CeexxvG2+oDqnCSZO/8KTuU203a6UtyU6j02M9SHTJaEo3YWcTSMIuj/sbAFL37O
-vTgdFygTOdx/Ms5VemkRO6VxB9gQgH1IA1p/CUHIGmOv2OdfdAlHaLMt2e2Pw2G9
-uigJZ//ngaWaYDxEmuqol7WyKCVMtHt3gup3svt0Go4dDZBEkMrNJ4hds1LJqTw=
-=4tST
+iQEcBAEBCAAGBQJW2nEVAAoJECTWi3JdVIfQz3kH/iY5JOxvcwxxRrBL1Q3/zbLY
+O0k8wB4lQflPxptU0FWl1TP1jnDw0fKiU24JHcxiMu8YO+1l8VGPJZe0XDILFO0m
+K1I6OivNWEEYEYJeZa2jcFgDFp03XIzonE4y20ITODIWV4XIsC6MglVEN6UsLYv2
+dazMqga/vtNr2CmOVKo0Z37m38cmRqrpTqfqtnaZJ/OhDgGfxBIw8pUc399zQnsD
+lDgUOg8ogbBJWKclVzhITEwkG5WTVq2K5K6Xzn/ZtJ8Hv2ybjJA0MoldJmgP3O+b
+a0PkktfRwfVKYg1YZHVJ8TQdnnG0/3F9SKGMlZETI3BE8UHkFjzCvoXU78xvTgQ=
+=OkgC
 -----END PGP SIGNATURE-----
 
---yoBsNywy4J3JKC/M--
+--nmwC0J/XBWGmXIEM--
