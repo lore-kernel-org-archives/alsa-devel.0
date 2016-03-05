@@ -1,170 +1,207 @@
-From: bsiice <bsiice@msn.com>
-Subject: Re: [PATCH - pcm 1/1] pcm: fix "unable to create IPC
- shm instance" in some case
-Date: Sat, 5 Mar 2016 16:35:51 +0800
-Message-ID: <BLU437-SMTP79BDE5A7860B1FF7766B75D2BF0@phx.gbl>
-References: <BLU437-SMTP418A25BEF034BD65DA159BD2BD0@phx.gbl>	<s5hh9gn6537.wl-tiwai@suse.de>	<BLU437-SMTP82BDE731C190D149D05F74D2BE0@phx.gbl>	<s5hd1raci79.wl-tiwai@suse.de>	<BLU436-SMTP243C74599C81C3BFF7E62E8D2BE0@phx.gbl>	<s5hmvqenmj8.wl-tiwai@suse.de>	<BLU436-SMTP601524DA72F530ADFEB5CD2BF0@phx.gbl>
- <s5hd1r9nzq3.wl-tiwai@suse.de>
+From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+Subject: Re: [PATCH v5 22/22] sound/usb: Use Media Controller API to share
+ media resources
+Date: Sat, 5 Mar 2016 07:00:55 -0300
+Message-ID: <20160305070055.6e17edcd@recife.lan>
+References: <1456937431-3794-1-git-send-email-shuahkh@osg.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from BLU004-OMC3S5.hotmail.com (blu004-omc3s5.hotmail.com
- [65.55.116.80]) by alsa0.perex.cz (Postfix) with ESMTP id 7A80C26062B
- for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2016 09:35:03 +0100 (CET)
-In-Reply-To: <s5hd1r9nzq3.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Qing Cai <caiqing@neusoft.com>, alsa-devel@alsa-project.org, bsiice@msn.com
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <1456937431-3794-1-git-send-email-shuahkh@osg.samsung.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Shuah Khan <shuahkh@osg.samsung.com>
+Cc: tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittga
 List-Id: alsa-devel@alsa-project.org
 
-On 03/05/2016 03:36 PM, Takashi Iwai wrote:
-> On Sat, 05 Mar 2016 07:37:34 +0100,
-> bsiice wrote:
->>
->> On 03/05/2016 02:08 AM, Takashi Iwai wrote:
->>> On Fri, 04 Mar 2016 18:36:46 +0100,
->>> bsiice wrote:
->>>>
->>>> On 03/05/2016 12:37 AM, Takashi Iwai wrote:
->>>>> On Fri, 04 Mar 2016 17:22:58 +0100,
->>>>> bsiice wrote:
->>>>>>
->>>>>> On 03/03/2016 09:53 PM, Takashi Iwai wrote:
->>>>>>> On Thu, 03 Mar 2016 13:40:42 +0100,
->>>>>>> IceBsi wrote:
->>>>>>>>
->>>>>>>> From: Qing Cai <caiqing@neusoft.com>
->>>>>>>>
->>>>>>>> As stated in manpage SHMCTL(2), shm_nattch is "No. of current attaches"
->>>>>>>> (i.e., number of processes attached to the shared memeory). If an
->>>>>>>> application uses alsa-lib and invokes fork() at some point, there should
->>>>>>>> be the following execution sequence:
->>>>>>>>  1. execute the following statement:
->>>>>>>>       pcm_direct.c:110: dmix->shmptr = shmat(dmix->shmid, 0, 0)
->>>>>>>>     (shm_nattch becomes 1)
->>>>>>>>  2. invoke fork() in some thread.
->>>>>>>>     (shm_nattch becomes 2)
->>>>>>>>  3. execute the following statement:
->>>>>>>>       pcm_direct.c:122: if (buf.shm_nattch == 1)
->>>>>>>>  4. execute the following statement:
->>>>>>>>       pcm_direct.c:131: if (dmix->shmptr->magic != SND_PCM_DIRECT_MAGIC)
->>>>>>>>     (As stated in manpage SHMGET(2), "When a new shared memory segment
->>>>>>>>      is created, its contents are initialized to zero values", so
->>>>>>>>      dmix->shmptr->magic is 0)
->>>>>>>>  5. execute the following statements:
->>>>>>>>       pcm_direct.c:132: snd_pcm_direct_shm_discard(dmix)
->>>>>>>>       pcm_direct.c:133: return -EINVAL
->>>>>>>> The above execution sequence will cause the following error:
->>>>>>>>   unable to create IPC shm instance
->>>>>>>> This error causes multimedia application has no sound. This error rarely
->>>>>>>> occurs, probability is about 1%.
->>>>>>>> Because the first user of the shared memory will get that
->>>>>>>> dmix->shmptr->magic is 0, check dmix->shmptr->magic's value to determine
->>>>>>>> if "we're the first user" is OK.
->>>>>>>> Tests have been made 400+ times after this fix, and the issue no longer
->>>>>>>> exists.
->>>>>>>
->>>>>>> I think this is still racy.  Multiple users can grab the shmem at the
->>>>>>> very same time.  Maybe it looks as if working just because both users
->>>>>>> behavior as the first user and do clear and initialize.
->>>>>> I think this won't be a race condition. Since
->>>>>> snd_pcm_direct_shm_create_or_connect() is protected by
->>>>>> snd_pcm_direct_semaphore_down() and snd_pcm_direct_semaphore_up(),
->>>>>> multiple processes won't do clear and initialization concurrently.
->>>>>
->>>>> Hrm, OK, now understood the situation.
->>>>>
->>>>>>> The check of bus.shm_nattach=1 should be fine, per se.  The problem is
->>>>>>> the magic key check of the secondary.  In the current code, as you
->>>>>>> pointed out, this may happen before the first client finishes the
->>>>>>> initialization.
->>>>>> I think the check of dmix->shmptr->magic!=SND_PCM_DIRECT_MAGIC is more
->>>>>> robust. Assume there are two clients of shmem and shmem is initialized,
->>>>>> if one of the clients exits, shm_nattach will become 1 and shmem may be
->>>>>> initialized again.
->>>>>
->>>>> Yeah, in the fork from a thread, the shm_nattch check doesn't work
->>>>> reliably, indeed.
->>>>>
->>>>>> In the current code, because there is semaphore, magic key check won't
->>>>>> happen before initialization of shmem.
->>>>>> In the scenario that I want to tell, there is only one process, and only
->>>>>> one thread doning the clear and initialization of shmem, and the fork()
->>>>>> is invoked in another thread of non alsa-lib context (i.e., the fork()
->>>>>> code is not in alsa-lib). If the fork() is invoked before shmat(), the
->>>>>> problem won't happen; If the fork() is invoked after the check of
->>>>>> bus.shm_nattach=1, the problem won't happen too. Only if the fork() is
->>>>>> invoked just after shmat() and just before the check of
->>>>>> bus.shm_nattach=1, the problem happens.
->>>>>
->>>>> Well, the reason why the magic key check was introduced was about the
->>>>> safety.  Since the shmid is given explicitly, it might override some
->>>>> shmem usages other than dmix accidentally.  With your patch, it
->>>>> forcibly clears the region -- this is quite opposite to the intention 
->>>>> of the magic key check.
->>>>
->>>> I just think it clears the region only once at the first time. Could you
->>>> please show me the scenario in detail?
->>>
->>> The shmid ipc key is given explicitly by an alsa-lib configuration,
->>> but there is no guarantee that this key has never been used by some
->>> other programs for a completely different purpose.  So, for non-first
->>> user, it verifies whether the attached region really belongs to
->>> alsa-lib dmix.
->>>
->>>
->>> Takashi
->>>
->>
->> Thank you for explanation! Now I understood.
->> I have tried changing ipc_key many times when I have been investigating
->> the problem, and changing ipc_key doesn't solve the problem I
->> encounterd.
->>
->> I think there is more benefits to do magic key check instead of
->> shm_nattch check, because the situation that I encounterd happens more
->> often than the situation that other program has a same ipc key with
->> alsa-lib.
-> 
-> Yes, possibly.  However, which may cause a severe problem?  It's the
-> question, too.
+Em Wed,  2 Mar 2016 09:50:31 -0700
+Shuah Khan <shuahkh@osg.samsung.com> escreveu:
 
-By 'severe problem', do you mean that alsa-lib may clear other program's
-shmem? If the key is unique, will the 'severe problem' still happen?
-
+> Change ALSA driver to use Media Controller API to
+> share media resources with DVB and V4L2 drivers
+> on a AU0828 media device. Media Controller specific
+> initialization is done after sound card is registered.
+> ALSA creates Media interface and entity function graph
+> nodes for Control, Mixer, PCM Playback, and PCM Capture
+> devices.
 > 
->> The problem left is to make ipc key as unique as possible.
->> Every program/library should fulfil the responsibility of generating a
->> unique key. As stated on http://www.tldp.org/LDP/lpg/node24.html, ftok()
->> should be used to generate a unique key.
+> snd_usb_hw_params() will call Media Controller enable
+> source handler interface to request the media resource.
+> If resource request is granted, it will release it from
+> snd_usb_hw_free(). If resource is busy, -EBUSY is returned.
 > 
-> This doesn't guarantee the uniqueness completely, obviously :)
-> In addition, we'd need more than 256 variants...
-
-Oh, sorry, I thought it would be unique if all program/library use their
-own full filename as arg to ftok(). Actually this doesn't guarantee
-uniqueness. :)
-
-What if alsa-lib changed to use POSIX shmem (i.e. shm_open()...)?
-
-
-thanks,
-
-Qing Cai
-
+> Media specific cleanup is done in usb_audio_disconnect().
 > 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> 
+> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+> Acked-by: Takashi Iwai <tiwai@suse.de>
+
+Shuah, by looking at the produced graphs:
+	https://mchehab.fedorapeople.org/mc-next-gen/au0828_test/
+
+I'm noticing the lack of ALSA I/O entities in the diagram
+(MEDIA_ENT_F_AUDIO_CAPTURE). The mixer there is not connected.
+
+Could you please check what's happening?
+
+Those are the relevant dmesg data:
+
+[   19.017276] usbcore: registered new interface driver snd-usb-audio
+[  230.706102] Linux video capture interface: v2.00
+[  230.856983] au0828: au0828 driver loaded
+[  231.230612] au0828: i2c bus registered
+[  231.822006] tveeprom 5-0050: Hauppauge model 72001, rev E1H3, serial# 4035199481
+[  231.822991] tveeprom 5-0050: MAC address is 00:0d:fe:84:41:f9
+[  231.823955] tveeprom 5-0050: tuner model is Xceive XC5000C (idx 173, type 88)
+[  231.824782] tveeprom 5-0050: TV standards NTSC(M) ATSC/DVB Digital (eeprom 0x88)
+[  231.825272] tveeprom 5-0050: audio processor is AU8522 (idx 44)
+[  231.825276] tveeprom 5-0050: decoder processor is AU8522 (idx 42)
+[  231.825280] tveeprom 5-0050: has no radio, has IR receiver, has no IR transmitter
+[  231.825283] au0828: hauppauge_eeprom: hauppauge eeprom: model=72001
+[  231.857567] au8522 5-0047: creating new instance
+[  231.857879] au8522_decoder creating new instance...
+[  231.910525] tuner 5-0061: Setting mode_mask to 0x06
+[  231.910532] tuner 5-0061: tuner 0x61: Tuner type absent
+[  231.910535] tuner 5-0061: Tuner -1 found with type(s) Radio TV.
+[  231.911343] tuner 5-0061: Calling set_type_addr for type=88, addr=0x61, mode=0x04, config=ffffffffa0e64100
+[  231.911347] tuner 5-0061: defining GPIO callback
+[  231.934896] xc5000 5-0061: creating new instance
+[  231.954664] xc5000: Successfully identified at address 0x61
+[  231.954987] xc5000: Firmware has not been loaded previously
+[  231.955327] tuner 5-0061: type set to Xceive XC5000
+[  231.955330] tuner 5-0061: au0828 tuner I2C addr 0xc2 with type 88 used for 0x04
+[  233.622614] au8522 5-0047: attaching existing instance
+[  233.636061] xc5000 5-0061: attaching existing instance
+[  233.645775] xc5000: Successfully identified at address 0x61
+[  233.646034] xc5000: Firmware has not been loaded previously
+[  233.646461] DVB: registering new adapter (au0828)
+[  233.647575] usb 2-3.3: DVB: registering adapter 0 frontend 0 (Auvitek AU8522 QAM/8VSB Frontend)...
+[  233.648344] dvb_create_media_entity: media entity 'Auvitek AU8522 QAM/8VSB Frontend' registered.
+[  233.656105] dvb_create_media_entity: media entity 'dvb-demux' registered.
+[  234.166644] IR keymap rc-hauppauge not found
+[  234.166962] Registered IR keymap rc-empty
+[  234.178055] input: au0828 IR (Hauppauge HVR950Q) as /devices/pci0000:00/0000:00:14.0/usb2/2-3/2-3.3/rc/rc0/input14
+[  234.203311] rc rc0: au0828 IR (Hauppauge HVR950Q) as /devices/pci0000:00/0000:00:14.0/usb2/2-3/2-3.3/rc/rc0
+[  234.207828] au0828: Remote controller au0828 IR (Hauppauge HVR950Q) initalized
+[  234.208270] au0828: Registered device AU0828 [Hauppauge HVR950Q]
+[  234.212073] usbcore: registered new interface driver au0828
+[  234.230371] lirc_dev: IR Remote Control driver registered, major 243 
+[  234.257555] rc rc0: lirc_dev: driver ir-lirc-codec (au0828-input) registered at minor = 0
+[  234.257960] IR LIRC bridge handler initialized
+
+(as au0828 is blacklisted, snd-usb-audio was probed first)
+
+====xxxx====
+
+I'm also getting some other weird behavior when removing/reinserting
+the modules a few times. OK, officially we don't support it, but,
+as devices can be bind/unbind all the times, removing modules is
+a way to simulate such things. Also, I use it a lot while testing
+USB drivers ;)
+
+This one is after removing both the media drivers and snd-usb-audio, 
+and then modprobing snd-usb-audio:
+
+[ 1839.510587] BUG: sleeping function called from invalid context at mm/slub.c:1289
+[ 1839.510881] in_atomic(): 1, irqs_disabled(): 0, pid: 3479, name: modprobe
+[ 1839.511157] 4 locks held by modprobe/3479:
+[ 1839.511415]  #0:  (&dev->mutex){......}, at: [<ffffffff81ce8933>] __driver_attach+0xa3/0x160
+[ 1839.512381]  #1:  (&dev->mutex){......}, at: [<ffffffff81ce8941>] __driver_attach+0xb1/0x160
+[ 1839.512388]  #2:  (register_mutex#5){+.+.+.}, at: [<ffffffffa10596c7>] usb_audio_probe+0x257/0x1c90 [snd_usb_audio]
+[ 1839.512401]  #3:  (&(&mdev->lock)->rlock){+.+.+.}, at: [<ffffffffa0e6051b>] media_device_register_entity+0x1cb/0x700 [media]
+[ 1839.512412] CPU: 2 PID: 3479 Comm: modprobe Not tainted 4.5.0-rc3+ #49
+[ 1839.512415] Hardware name:                  /NUC5i7RYB, BIOS RYBDWi35.86A.0350.2015.0812.1722 08/12/2015
+[ 1839.512417]  0000000000000000 ffff8803b3f6f288 ffffffff81933901 ffff8803c4bae000
+[ 1839.512422]  ffff8803c4bae5c8 ffff8803b3f6f2b0 ffffffff811c6af5 ffff8803c4bae000
+[ 1839.512427]  ffffffff8285d7f6 0000000000000509 ffff8803b3f6f2f0 ffffffff811c6ce5
+[ 1839.512432] Call Trace:
+[ 1839.512436]  [<ffffffff81933901>] dump_stack+0x85/0xc4
+[ 1839.512440]  [<ffffffff811c6af5>] ___might_sleep+0x245/0x3a0
+[ 1839.512443]  [<ffffffff811c6ce5>] __might_sleep+0x95/0x1a0
+[ 1839.512446]  [<ffffffff8155aade>] kmem_cache_alloc_trace+0x20e/0x300
+[ 1839.512451]  [<ffffffffa0e66e3d>] ? media_add_link+0x4d/0x140 [media]
+[ 1839.512455]  [<ffffffffa0e66e3d>] media_add_link+0x4d/0x140 [media]
+[ 1839.512459]  [<ffffffffa0e69931>] media_create_pad_link+0xa1/0x600 [media]
+[ 1839.512463]  [<ffffffffa0fe11b3>] au0828_media_graph_notify+0x173/0x360 [au0828]
+[ 1839.512467]  [<ffffffffa0e68a6a>] ? media_gobj_create+0x1ba/0x480 [media]
+[ 1839.512471]  [<ffffffffa0e606fb>] media_device_register_entity+0x3ab/0x700 [media]
+[ 1839.512475]  [<ffffffffa0e60350>] ? media_device_release_devres+0x10/0x10 [media]
+[ 1839.512479]  [<ffffffff8124068d>] ? trace_hardirqs_on+0xd/0x10
+[ 1839.512482]  [<ffffffff8159f992>] ? create_object+0x5a2/0x940
+[ 1839.512485]  [<ffffffff8159f3f0>] ? kmemleak_disable+0x90/0x90
+[ 1839.512489]  [<ffffffff8159f3f0>] ? kmemleak_disable+0x90/0x90
+[ 1839.512497]  [<ffffffffa109722c>] ? media_snd_mixer_init+0x16c/0x500 [snd_usb_audio]
+[ 1839.512501]  [<ffffffff8155f696>] ? kasan_unpoison_shadow+0x36/0x50
+[ 1839.512504]  [<ffffffff8155f70e>] ? kasan_kmalloc+0x5e/0x70
+[ 1839.512511]  [<ffffffffa1097352>] media_snd_mixer_init+0x292/0x500 [snd_usb_audio]
+[ 1839.512519]  [<ffffffffa1097693>] media_snd_device_create+0xd3/0x2e0 [snd_usb_audio]
+[ 1839.512525]  [<ffffffffa1059b05>] usb_audio_probe+0x695/0x1c90 [snd_usb_audio]
+[ 1839.512529]  [<ffffffff8128b217>] ? debug_lockdep_rcu_enabled+0x77/0x90
+[ 1839.512536]  [<ffffffffa1059470>] ? snd_usb_create_stream+0x4e0/0x4e0 [snd_usb_audio]
+[ 1839.512540]  [<ffffffff812404fa>] ? trace_hardirqs_on_caller+0x40a/0x590
+[ 1839.512543]  [<ffffffff8124068d>] ? trace_hardirqs_on+0xd/0x10
+[ 1839.512546]  [<ffffffff81dbb1dd>] usb_probe_interface+0x45d/0x940
+[ 1839.512550]  [<ffffffff81ce7e7a>] driver_probe_device+0x21a/0xc30
+[ 1839.512553]  [<ffffffff81ce8890>] ? driver_probe_device+0xc30/0xc30
+[ 1839.512556]  [<ffffffff81ce89b1>] __driver_attach+0x121/0x160
+[ 1839.512559]  [<ffffffff81ce21bf>] bus_for_each_dev+0x11f/0x1a0
+[ 1839.512562]  [<ffffffff81ce20a0>] ? subsys_dev_iter_exit+0x10/0x10
+[ 1839.512565]  [<ffffffff822e7be7>] ? _raw_spin_unlock+0x27/0x40
+[ 1839.512568]  [<ffffffff81ce6cdd>] driver_attach+0x3d/0x50
+[ 1839.512571]  [<ffffffff81ce5df9>] bus_add_driver+0x4c9/0x770
+[ 1839.512575]  [<ffffffff81cea39c>] driver_register+0x18c/0x3b0
+[ 1839.512578]  [<ffffffff81250f92>] ? __raw_spin_lock_init+0x32/0x100
+[ 1839.512581]  [<ffffffff81db6e98>] usb_register_driver+0x1f8/0x440
+[ 1839.512584]  [<ffffffff810021a1>] ? do_one_initcall+0x131/0x300
+[ 1839.512587]  [<ffffffffa10d8000>] ? 0xffffffffa10d8000
+[ 1839.512594]  [<ffffffffa10d801e>] usb_audio_driver_init+0x1e/0x1000 [snd_usb_audio]
+[ 1839.512597]  [<ffffffff810021b1>] do_one_initcall+0x141/0x300
+[ 1839.512600]  [<ffffffff81002070>] ? try_to_run_init_process+0x40/0x40
+[ 1839.512603]  [<ffffffff8155f696>] ? kasan_unpoison_shadow+0x36/0x50
+[ 1839.512606]  [<ffffffff8155f696>] ? kasan_unpoison_shadow+0x36/0x50
+[ 1839.512609]  [<ffffffff8155f7a7>] ? __asan_register_globals+0x87/0xa0
+[ 1839.512613]  [<ffffffff8144d8eb>] do_init_module+0x1d0/0x5ad
+[ 1839.512617]  [<ffffffff812f27b6>] load_module+0x6666/0x9ba0
+[ 1839.512620]  [<ffffffff812e9e20>] ? symbol_put_addr+0x50/0x50
+[ 1839.512627]  [<ffffffff812ec150>] ? module_frob_arch_sections+0x20/0x20
+[ 1839.512630]  [<ffffffff815be010>] ? open_exec+0x50/0x50
+[ 1839.512634]  [<ffffffff8116716b>] ? ns_capable+0x5b/0xd0
+[ 1839.512637]  [<ffffffff812f5fe8>] SyS_finit_module+0x108/0x130
+[ 1839.512640]  [<ffffffff812f5ee0>] ? SyS_init_module+0x1f0/0x1f0
+[ 1839.512643]  [<ffffffff81004044>] ? lockdep_sys_exit_thunk+0x12/0x14
+[ 1839.512647]  [<ffffffff822e8636>] entry_SYSCALL_64_fastpath+0x16/0x76
+[ 1839.514027] usbcore: registered new interface driver snd-usb-audio
+
+And an extra kmemleak issue:
+
+unreferenced object 0xffff8803bcbacf30 (size 128):
+  comm "modprobe", pid 2625, jiffies 4294950803 (age 1715.788s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff822cf76e>] kmemleak_alloc+0x4e/0xb0
+    [<ffffffff8155ab06>] kmem_cache_alloc_trace+0x236/0x300
+    [<ffffffff81937eb2>] ida_pre_get+0x1a2/0x250
+    [<ffffffff81938005>] ida_simple_get+0xa5/0x170
+    [<ffffffffa0f1469a>] 0xffffffffa0f1469a
+    [<ffffffffa0fe6951>] au0828_dvb_register+0xe21/0x12c0 [au0828]
+    [<ffffffffa0fd1d92>] vb2_thread+0xbb2/0xc10 [videobuf2_core]
+    [<ffffffff81dbb1dd>] usb_probe_interface+0x45d/0x940
+    [<ffffffff81ce7e7a>] driver_probe_device+0x21a/0xc30
+    [<ffffffff81ce89b1>] __driver_attach+0x121/0x160
+    [<ffffffff81ce21bf>] bus_for_each_dev+0x11f/0x1a0
+    [<ffffffff81ce6cdd>] driver_attach+0x3d/0x50
+    [<ffffffff81ce5df9>] bus_add_driver+0x4c9/0x770
+    [<ffffffff81cea39c>] driver_register+0x18c/0x3b0
+    [<ffffffff81db6e98>] usb_register_driver+0x1f8/0x440
+    [<ffffffffa0fb80b7>] au8522_get_frontend+0xb7/0x160 [au8522_dig]
+
+I did one extra module removal/reinsert, and this time, I got lots
+of bugs. Full dmesg is at:
+	http://pastebin.com/LEX5LD5K
+
+The Kernel hanged after a while with (at the serial console - with
+kind of explain why the message is truncated):
+
+[ 2117.282666] kasan: GPF could be caused by NULL-ptr deref or user memory accessgeneral protection fault: 0000 [#2] SMP KASAN
+[ 2117.284074] Modules linked in: videobuf2_v4l2 videobuf2_core tveeprom dvb_core rc_core v4l2_common videodev snd_usb_audio media cpufreq_powersave cpufreq_conservative cpufreq_userspace cpufreq_stats parport_pc ppdev lp parport snd_hda_codec_hdmi intel_rapl x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel iTCO_wdt iTCO_vendor_support kvm irqbypass crct10dif_pclmul crc32_
