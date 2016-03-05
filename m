@@ -1,18 +1,18 @@
-From: bsiice <bsiice@msn.com>
-Subject: Re: [PATCH - pcm 1/1] pcm: fix "unable to create IPC
- shm instance" in some case
-Date: Sat, 5 Mar 2016 22:21:22 +0800
-Message-ID: <BLU436-SMTP238E9C55A30CB3F5E3712CD2BF0@phx.gbl>
-References: <BLU437-SMTP418A25BEF034BD65DA159BD2BD0@phx.gbl>	<s5hh9gn6537.wl-tiwai@suse.de>	<BLU437-SMTP82BDE731C190D149D05F74D2BE0@phx.gbl>	<s5hd1raci79.wl-tiwai@suse.de>	<BLU436-SMTP243C74599C81C3BFF7E62E8D2BE0@phx.gbl>	<s5hmvqenmj8.wl-tiwai@suse.de>	<BLU436-SMTP601524DA72F530ADFEB5CD2BF0@phx.gbl>	<s5hd1r9nzq3.wl-tiwai@suse.de>	<BLU437-SMTP79BDE5A7860B1FF7766B75D2BF0@phx.gbl>
- <s5h8u1xnsp4.wl-tiwai@suse.de>
+From: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Subject: Re: [PATCH 2/4] ALSA: dice: handle whole available
+ isochronous streams
+Date: Sat, 5 Mar 2016 15:47:16 +0100
+Message-ID: <20160305154716.1ff2784b@kant>
+References: <1457179087-27604-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1457179087-27604-3-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from BLU004-OMC3S19.hotmail.com (blu004-omc3s19.hotmail.com
- [65.55.116.94]) by alsa0.perex.cz (Postfix) with ESMTP id D910E260515
- for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2016 15:20:44 +0100 (CET)
-In-Reply-To: <s5h8u1xnsp4.wl-tiwai@suse.de>
+Received: from einhorn.in-berlin.de (einhorn.in-berlin.de [192.109.42.8])
+ by alsa0.perex.cz (Postfix) with ESMTP id 502F9260515
+ for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2016 15:47:19 +0100 (CET)
+In-Reply-To: <1457179087-27604-3-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,202 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Qing Cai <caiqing@neusoft.com>, alsa-devel@alsa-project.org, bsiice@msn.com
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On 03/05/2016 06:07 PM, Takashi Iwai wrote:
-> On Sat, 05 Mar 2016 09:35:51 +0100,
-> bsiice wrote:
->>
->> On 03/05/2016 03:36 PM, Takashi Iwai wrote:
->>> On Sat, 05 Mar 2016 07:37:34 +0100,
->>> bsiice wrote:
->>>>
->>>> On 03/05/2016 02:08 AM, Takashi Iwai wrote:
->>>>> On Fri, 04 Mar 2016 18:36:46 +0100,
->>>>> bsiice wrote:
->>>>>>
->>>>>> On 03/05/2016 12:37 AM, Takashi Iwai wrote:
->>>>>>> On Fri, 04 Mar 2016 17:22:58 +0100,
->>>>>>> bsiice wrote:
->>>>>>>>
->>>>>>>> On 03/03/2016 09:53 PM, Takashi Iwai wrote:
->>>>>>>>> On Thu, 03 Mar 2016 13:40:42 +0100,
->>>>>>>>> IceBsi wrote:
->>>>>>>>>>
->>>>>>>>>> From: Qing Cai <caiqing@neusoft.com>
->>>>>>>>>>
->>>>>>>>>> As stated in manpage SHMCTL(2), shm_nattch is "No. of current attaches"
->>>>>>>>>> (i.e., number of processes attached to the shared memeory). If an
->>>>>>>>>> application uses alsa-lib and invokes fork() at some point, there should
->>>>>>>>>> be the following execution sequence:
->>>>>>>>>>  1. execute the following statement:
->>>>>>>>>>       pcm_direct.c:110: dmix->shmptr = shmat(dmix->shmid, 0, 0)
->>>>>>>>>>     (shm_nattch becomes 1)
->>>>>>>>>>  2. invoke fork() in some thread.
->>>>>>>>>>     (shm_nattch becomes 2)
->>>>>>>>>>  3. execute the following statement:
->>>>>>>>>>       pcm_direct.c:122: if (buf.shm_nattch == 1)
->>>>>>>>>>  4. execute the following statement:
->>>>>>>>>>       pcm_direct.c:131: if (dmix->shmptr->magic != SND_PCM_DIRECT_MAGIC)
->>>>>>>>>>     (As stated in manpage SHMGET(2), "When a new shared memory segment
->>>>>>>>>>      is created, its contents are initialized to zero values", so
->>>>>>>>>>      dmix->shmptr->magic is 0)
->>>>>>>>>>  5. execute the following statements:
->>>>>>>>>>       pcm_direct.c:132: snd_pcm_direct_shm_discard(dmix)
->>>>>>>>>>       pcm_direct.c:133: return -EINVAL
->>>>>>>>>> The above execution sequence will cause the following error:
->>>>>>>>>>   unable to create IPC shm instance
->>>>>>>>>> This error causes multimedia application has no sound. This error rarely
->>>>>>>>>> occurs, probability is about 1%.
->>>>>>>>>> Because the first user of the shared memory will get that
->>>>>>>>>> dmix->shmptr->magic is 0, check dmix->shmptr->magic's value to determine
->>>>>>>>>> if "we're the first user" is OK.
->>>>>>>>>> Tests have been made 400+ times after this fix, and the issue no longer
->>>>>>>>>> exists.
->>>>>>>>>
->>>>>>>>> I think this is still racy.  Multiple users can grab the shmem at the
->>>>>>>>> very same time.  Maybe it looks as if working just because both users
->>>>>>>>> behavior as the first user and do clear and initialize.
->>>>>>>> I think this won't be a race condition. Since
->>>>>>>> snd_pcm_direct_shm_create_or_connect() is protected by
->>>>>>>> snd_pcm_direct_semaphore_down() and snd_pcm_direct_semaphore_up(),
->>>>>>>> multiple processes won't do clear and initialization concurrently.
->>>>>>>
->>>>>>> Hrm, OK, now understood the situation.
->>>>>>>
->>>>>>>>> The check of bus.shm_nattach=1 should be fine, per se.  The problem is
->>>>>>>>> the magic key check of the secondary.  In the current code, as you
->>>>>>>>> pointed out, this may happen before the first client finishes the
->>>>>>>>> initialization.
->>>>>>>> I think the check of dmix->shmptr->magic!=SND_PCM_DIRECT_MAGIC is more
->>>>>>>> robust. Assume there are two clients of shmem and shmem is initialized,
->>>>>>>> if one of the clients exits, shm_nattach will become 1 and shmem may be
->>>>>>>> initialized again.
->>>>>>>
->>>>>>> Yeah, in the fork from a thread, the shm_nattch check doesn't work
->>>>>>> reliably, indeed.
->>>>>>>
->>>>>>>> In the current code, because there is semaphore, magic key check won't
->>>>>>>> happen before initialization of shmem.
->>>>>>>> In the scenario that I want to tell, there is only one process, and only
->>>>>>>> one thread doning the clear and initialization of shmem, and the fork()
->>>>>>>> is invoked in another thread of non alsa-lib context (i.e., the fork()
->>>>>>>> code is not in alsa-lib). If the fork() is invoked before shmat(), the
->>>>>>>> problem won't happen; If the fork() is invoked after the check of
->>>>>>>> bus.shm_nattach=1, the problem won't happen too. Only if the fork() is
->>>>>>>> invoked just after shmat() and just before the check of
->>>>>>>> bus.shm_nattach=1, the problem happens.
->>>>>>>
->>>>>>> Well, the reason why the magic key check was introduced was about the
->>>>>>> safety.  Since the shmid is given explicitly, it might override some
->>>>>>> shmem usages other than dmix accidentally.  With your patch, it
->>>>>>> forcibly clears the region -- this is quite opposite to the intention 
->>>>>>> of the magic key check.
->>>>>>
->>>>>> I just think it clears the region only once at the first time. Could you
->>>>>> please show me the scenario in detail?
->>>>>
->>>>> The shmid ipc key is given explicitly by an alsa-lib configuration,
->>>>> but there is no guarantee that this key has never been used by some
->>>>> other programs for a completely different purpose.  So, for non-first
->>>>> user, it verifies whether the attached region really belongs to
->>>>> alsa-lib dmix.
->>>>>
->>>>>
->>>>> Takashi
->>>>>
->>>>
->>>> Thank you for explanation! Now I understood.
->>>> I have tried changing ipc_key many times when I have been investigating
->>>> the problem, and changing ipc_key doesn't solve the problem I
->>>> encounterd.
->>>>
->>>> I think there is more benefits to do magic key check instead of
->>>> shm_nattch check, because the situation that I encounterd happens more
->>>> often than the situation that other program has a same ipc key with
->>>> alsa-lib.
->>>
->>> Yes, possibly.  However, which may cause a severe problem?  It's the
->>> question, too.
->>
->> By 'severe problem', do you mean that alsa-lib may clear other program's
->> shmem? If the key is unique, will the 'severe problem' still happen?
+On Mar 05 Takashi Sakamoto wrote:
+> This commit enables ALSA dice driver to handle whole available streams.
 > 
-> If it were unique...  Actually it's not with SYSV shmem.
+> In Dice, certain registers represent the number of available streams at
+> current sampling transfer frequency for both directions. The parameters
+> of each stream are represented in a block of register. This block is
+> aligned sequentially. These streams start simultaneously by writing
+> enable bit to a register.
 > 
->>>> The problem left is to make ipc key as unique as possible.
->>>> Every program/library should fulfil the responsibility of generating a
->>>> unique key. As stated on http://www.tldp.org/LDP/lpg/node24.html, ftok()
->>>> should be used to generate a unique key.
->>>
->>> This doesn't guarantee the uniqueness completely, obviously :)
->>> In addition, we'd need more than 256 variants...
->>
->> Oh, sorry, I thought it would be unique if all program/library use their
->> own full filename as arg to ftok(). Actually this doesn't guarantee
->> uniqueness. :)
->>
->> What if alsa-lib changed to use POSIX shmem (i.e. shm_open()...)?
-> 
-> This would be one option.  I thought it in the past, too, but
-> postponed by some reason I forgot.
-> 
-> Another possible way I can think of is to determine the first user by
-> shmget() call without IPC_CREAT.  If this succeeds, we are no first
-> user.  I'm not sure, though, whether this method is more robust.
+> This commit operates these registers when starting/stopping streams. I
+> note that this driver fails to handle dice units in which several streams
+> are available while IEEE 1394 host controllers support fewer isochronous
+> contexts.
 
-Sounds a good method, I think it can't be impacted by fork() from a
-thread.
+Regarding support by host controllers:
 
-Assume there is other program/process uses same ipc key to create shmem,
-and runs concurrently with alsa-lib, I can think of some methods and
-situations (I only think of situations with failure).
+OHCI-1394 mandates that host controllers implement at least 4 isochronous
+RX DMAs and at least 4 isochronous TX DMAs.  None of the OHCI controllers
+that ever came to market violate this requirement as far as I know.
 
-Method 1: call shmget() without IPC_CREAT firstly, if fail then call
-shmget(IPC_CREAT).
-Possible situation 1.1:
-(1) other program creates a shmem with same key
-(2) alsa-lib calls shmget() without IPC_CREAT
-(3) if (2) succeeds, alsa-lib connects to other program's shmem
-(4) alsa-lib is not the first user, so alsa-lib checks
-    dmix->shmptr->magic!=SND_PCM_DIRECT_MAGIC (true)
-(5) alsa-lib return -EINVAL
-Possible situation 1.2:
-(1) alsa-lib calls shmget() without IPC_CREAT, and fails
-(2) other program creates a shmem with same key
-(3) alsa-lib calls shmget(IPC_CREAT), and succeeds, but connects to
-    other program's shmem
-(4) alsa-lib doesn't know if the shmem is created by alsa-lib or not, so
-    method 1 is not applicable
+So if you have just a single audio device on the bus, or even two, the
+controller won't run out of DMA contexts.
 
-Method 2: call shmget() without IPC_CREAT firstly, if fail then call
-shmget(IPC_CREAT|IPC_EXCL).
-Possible situation 2.1:
-(1) alsa-lib calls shmget() without IPC_CREAT, and fails
-(2) other program creates a shmem with same key
-(3) alsa-lib calls shmget(IPC_CREAT|IPC_EXCL), and fails
+Regarding non-audio FireWire applications:  Most IEEE 1394 video cameras
+require one RX stream per camera; some industrial high-bandwidth cameras
+take two.  Some DV camcorders offer bidirectional DV transfer over 1394,
+hence use 1 RX and/or 1 TX stream depending on the application software on
+the host.  The IP-over-1394 protocol, implemented in Linux by the
+firewire-net driver, uses 1 isochronous RX DMA context for reception of
+asynchronous broadcast transmissions.  The SBP-2 protocol, mainly used as
+SCSI-over-1394 encapsulation, does not use isochronous streams.  The
+current SBP-3 protocol revision specifies optional isochronous I/O but I
+am not aware of any implementation of this protocol feature.
 
-Method 3: call shmget(IPC_CREAT|IPC_EXCL) firstly, if fail then call
-shmget() without IPC_CREAT.
-Possible situation 3.1:
-(1) alsa-lib calls shmget(IPC_CREAT|IPC_EXCL), and succeeds
-(2) other program tries to create a shmem with same key, and maybe fail
-(3) alsa-lib is the first user, so alsa-lib does clear and
-    initialization
-Possible situation 3.2:
-(1) other program creates a shmem with same key, and succeeds
-(2) alsa-lib calls shmget(IPC_CREAT|IPC_EXCL), and fails
-(3) alsa-lib calls shmget() without IPC_CREAT, and succeeds, but
-    connects to other program's shmem
-(4) alsa-lib is not the first user, so alsa-lib checks
-    dmix->shmptr->magic!=SND_PCM_DIRECT_MAGIC (true)
-(5) alsa-lib return -EINVAL
-
-So, which method should be used? Method 2 or Method 3 or something else?
-
-
-thanks,
-
-Qing Cai
+On the other hand, while all OHCIs offer at least 4+4 isoch RX+TX DMAs,
+practical experience with the FFADO userspace drivers indicate that most
+OHCIs quickly become unreliable when more contexts are being used
+simultaneously.  Particularly, the FFADO drivers have a hard time to
+maintain synchronicity of the streams, or are flat out unable to establish
+synchronization.  Though from what I understand, the ALSA firewire drivers
+do this differently, hence may not be affected in the same way as FFADO.
+In my and others experience, only LSI controllers (formerly Agere
+controllers) and Texas Instruments controllers do not suffer from these
+issues when multiple RX/TX streams are active in FFADO.
+-- 
+Stefan Richter
+-======----- --== --=-=
+http://arcgraph.de/sr/
