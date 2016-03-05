@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsrc-card: add convert channels
-	support" to the asoc tree
-Date: Sat, 05 Mar 2016 21:24:55 +0900
-Message-ID: <E1acBGR-0003HY-7x@finisterre>
-References: <874mcx734l.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: mediatek: address dai link array
+	entries by enum" to the asoc tree
+Date: Sat, 05 Mar 2016 21:24:45 +0900
+Message-ID: <E1acBGH-0003F4-L5@finisterre>
+References: <1451934551-21333-3-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 90EFD261481
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F24E261469
  for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2016 13:24:58 +0100 (CET)
-In-Reply-To: <874mcx734l.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <1451934551-21333-3-git-send-email-p.zabel@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+To: Philipp Zabel <p.zabel@pengutronix.de>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsrc-card: add convert channels support
+   ASoC: mediatek: address dai link array entries by enum
 
 has been applied to the asoc tree at
 
@@ -53,81 +53,79 @@ to this mail.
 Thanks,
 Mark
 
->From f90432fc6ec41c5bb1d7b75edc1f2bc58799ece3 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 25 Feb 2016 05:51:44 +0000
-Subject: [PATCH] ASoC: rsrc-card: add convert channels support
+>From 05f5afd3f0d915537b67d3cfcb464e6836a65caf Mon Sep 17 00:00:00 2001
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Date: Wed, 2 Mar 2016 15:49:06 +0100
+Subject: [PATCH] ASoC: mediatek: address dai link array entries by enum
 
-Renesas sound device has CTU (= Channel Transfer Unit), and
-sound card needs its support.
+This should be more robust to future changes than adressing
+array entries by index number.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../bindings/sound/renesas,rsrc-card.txt           |  1 +
- sound/soc/sh/rcar/rsrc-card.c                      | 22 ++++++++++++++++------
- 2 files changed, 17 insertions(+), 6 deletions(-)
+ sound/soc/mediatek/mt8173-rt5650-rt5676.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt b/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt
-index 2b2caa281ce3..5abebf7898d9 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt
-@@ -30,6 +30,7 @@ Optional subnode properties:
- - frame-inversion			: bool property. Add this if the
- 					  dai-link uses frame clock inversion.
- - convert-rate				: platform specified sampling rate convert
-+- convert-channels			: platform specified channel size convert
- - audio-prefix				: see audio-routing
- - audio-routing				: A list of the connections between audio components.
- 					  Each entry is a pair of strings, the first being the connection's sink,
-diff --git a/sound/soc/sh/rcar/rsrc-card.c b/sound/soc/sh/rcar/rsrc-card.c
-index 545e94245e62..1bc7ecfc42a9 100644
---- a/sound/soc/sh/rcar/rsrc-card.c
-+++ b/sound/soc/sh/rcar/rsrc-card.c
-@@ -66,6 +66,7 @@ struct rsrc_card_priv {
- 	struct snd_soc_dai_link *dai_link;
- 	int dai_num;
- 	u32 convert_rate;
-+	u32 convert_channels;
+diff --git a/sound/soc/mediatek/mt8173-rt5650-rt5676.c b/sound/soc/mediatek/mt8173-rt5650-rt5676.c
+index 50ba538eccb3..5c4c58c69c51 100644
+--- a/sound/soc/mediatek/mt8173-rt5650-rt5676.c
++++ b/sound/soc/mediatek/mt8173-rt5650-rt5676.c
+@@ -131,10 +131,17 @@ static struct snd_soc_dai_link_component mt8173_rt5650_rt5676_codecs[] = {
+ 	},
  };
  
- #define rsrc_priv_to_dev(priv) ((priv)->snd_card.dev)
-@@ -144,11 +145,16 @@ static int rsrc_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- 	struct rsrc_card_priv *priv = snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_interval *rate = hw_param_interval(params,
- 						      SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval *channels = hw_param_interval(params,
-+						SNDRV_PCM_HW_PARAM_CHANNELS);
- 
--	if (!priv->convert_rate)
--		return 0;
-+	if (priv->convert_rate)
-+		rate->min =
-+		rate->max = priv->convert_rate;
- 
--	rate->min = rate->max = priv->convert_rate;
-+	if (priv->convert_channels)
-+		channels->min =
-+		channels->max = priv->convert_channels;
- 
- 	return 0;
- }
-@@ -436,9 +442,13 @@ static int rsrc_card_parse_of(struct device_node *node,
- 	/* sampling rate convert */
- 	of_property_read_u32(node, "convert-rate", &priv->convert_rate);
- 
--	dev_dbg(dev, "New rsrc-audio-card: %s (%d)\n",
--		priv->snd_card.name ? priv->snd_card.name : "",
--		priv->convert_rate);
-+	/* channels transfer */
-+	of_property_read_u32(node, "convert-channels", &priv->convert_channels);
++enum {
++	DAI_LINK_PLAYBACK,
++	DAI_LINK_CAPTURE,
++	DAI_LINK_CODEC_I2S,
++	DAI_LINK_INTERCODEC
++};
 +
-+	dev_dbg(dev, "New rsrc-audio-card: %s\n",
-+		priv->snd_card.name ? priv->snd_card.name : "");
-+	dev_dbg(dev, "SRC : convert_rate     %d\n", priv->convert_rate);
-+	dev_dbg(dev, "CTU : convert_channels %d\n", priv->convert_channels);
+ /* Digital audio interface glue - connects codec <---> CPU */
+ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
+ 	/* Front End DAI links */
+-	{
++	[DAI_LINK_PLAYBACK] = {
+ 		.name = "rt5650_rt5676 Playback",
+ 		.stream_name = "rt5650_rt5676 Playback",
+ 		.cpu_dai_name = "DL1",
+@@ -144,7 +151,7 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
+ 		.dynamic = 1,
+ 		.dpcm_playback = 1,
+ 	},
+-	{
++	[DAI_LINK_CAPTURE] = {
+ 		.name = "rt5650_rt5676 Capture",
+ 		.stream_name = "rt5650_rt5676 Capture",
+ 		.cpu_dai_name = "VUL",
+@@ -156,7 +163,7 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
+ 	},
  
- 	ret = rsrc_card_dai_link_of(node, priv);
- 	if (ret < 0)
+ 	/* Back End DAI links */
+-	{
++	[DAI_LINK_CODEC_I2S] = {
+ 		.name = "Codec",
+ 		.cpu_dai_name = "I2S",
+ 		.no_pcm = 1,
+@@ -170,7 +177,8 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
+ 		.dpcm_playback = 1,
+ 		.dpcm_capture = 1,
+ 	},
+-	{ /* rt5676 <-> rt5650 intercodec link: Sets rt5676 I2S2 as master */
++	/* rt5676 <-> rt5650 intercodec link: Sets rt5676 I2S2 as master */
++	[DAI_LINK_INTERCODEC] = {
+ 		.name = "rt5650_rt5676 intercodec",
+ 		.stream_name = "rt5650_rt5676 intercodec",
+ 		.cpu_dai_name = "snd-soc-dummy-dai",
+@@ -240,7 +248,7 @@ static int mt8173_rt5650_rt5676_dev_probe(struct platform_device *pdev)
+ 	mt8173_rt5650_rt5676_codec_conf[0].of_node =
+ 		mt8173_rt5650_rt5676_codecs[1].of_node;
+ 
+-	mt8173_rt5650_rt5676_dais[3].codec_of_node =
++	mt8173_rt5650_rt5676_dais[DAI_LINK_INTERCODEC].codec_of_node =
+ 		mt8173_rt5650_rt5676_codecs[1].of_node;
+ 
+ 	card->dev = &pdev->dev;
 -- 
 2.7.0
