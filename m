@@ -1,18 +1,19 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] ASoC: rockchip: add bindings for spdif
-	controller
-Date: Fri, 4 Mar 2016 22:30:35 -0600
-Message-ID: <20160305043035.GF13525@rob-hp-laptop>
-References: <1457087514-1837-1-git-send-email-sugar.zhang@rock-chips.com>
+From: bsiice <bsiice@msn.com>
+Subject: Re: [PATCH - pcm 1/1] pcm: fix "unable to create IPC
+ shm instance" in some case
+Date: Sat, 5 Mar 2016 14:37:34 +0800
+Message-ID: <BLU436-SMTP601524DA72F530ADFEB5CD2BF0@phx.gbl>
+References: <BLU437-SMTP418A25BEF034BD65DA159BD2BD0@phx.gbl>	<s5hh9gn6537.wl-tiwai@suse.de>	<BLU437-SMTP82BDE731C190D149D05F74D2BE0@phx.gbl>	<s5hd1raci79.wl-tiwai@suse.de>	<BLU436-SMTP243C74599C81C3BFF7E62E8D2BE0@phx.gbl>
+ <s5hmvqenmj8.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D53F2605CA
- for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2016 05:30:44 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1457087514-1837-1-git-send-email-sugar.zhang@rock-chips.com>
+Received: from BLU004-OMC3S36.hotmail.com (blu004-omc3s36.hotmail.com
+ [65.55.116.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BF892605CA
+ for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2016 07:36:40 +0100 (CET)
+In-Reply-To: <s5hmvqenmj8.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,19 +23,118 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sugar Zhang <sugar.zhang@rock-chips.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Sjoerd Simons <sjoerd.simons@collabora.co.uk>, broonie@kernel.org, Kumar Gala <galak@codeaurora.org>, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Qing Cai <caiqing@neusoft.com>, alsa-devel@alsa-project.org, bsiice@msn.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 04, 2016 at 06:31:54PM +0800, Sugar Zhang wrote:
-> this patch add compatible for rk3366/rk3368/rk3399 spdif,
-> these three spdifs share the same type.
+On 03/05/2016 02:08 AM, Takashi Iwai wrote:
+> On Fri, 04 Mar 2016 18:36:46 +0100,
+> bsiice wrote:
+>>
+>> On 03/05/2016 12:37 AM, Takashi Iwai wrote:
+>>> On Fri, 04 Mar 2016 17:22:58 +0100,
+>>> bsiice wrote:
+>>>>
+>>>> On 03/03/2016 09:53 PM, Takashi Iwai wrote:
+>>>>> On Thu, 03 Mar 2016 13:40:42 +0100,
+>>>>> IceBsi wrote:
+>>>>>>
+>>>>>> From: Qing Cai <caiqing@neusoft.com>
+>>>>>>
+>>>>>> As stated in manpage SHMCTL(2), shm_nattch is "No. of current attaches"
+>>>>>> (i.e., number of processes attached to the shared memeory). If an
+>>>>>> application uses alsa-lib and invokes fork() at some point, there should
+>>>>>> be the following execution sequence:
+>>>>>>  1. execute the following statement:
+>>>>>>       pcm_direct.c:110: dmix->shmptr = shmat(dmix->shmid, 0, 0)
+>>>>>>     (shm_nattch becomes 1)
+>>>>>>  2. invoke fork() in some thread.
+>>>>>>     (shm_nattch becomes 2)
+>>>>>>  3. execute the following statement:
+>>>>>>       pcm_direct.c:122: if (buf.shm_nattch == 1)
+>>>>>>  4. execute the following statement:
+>>>>>>       pcm_direct.c:131: if (dmix->shmptr->magic != SND_PCM_DIRECT_MAGIC)
+>>>>>>     (As stated in manpage SHMGET(2), "When a new shared memory segment
+>>>>>>      is created, its contents are initialized to zero values", so
+>>>>>>      dmix->shmptr->magic is 0)
+>>>>>>  5. execute the following statements:
+>>>>>>       pcm_direct.c:132: snd_pcm_direct_shm_discard(dmix)
+>>>>>>       pcm_direct.c:133: return -EINVAL
+>>>>>> The above execution sequence will cause the following error:
+>>>>>>   unable to create IPC shm instance
+>>>>>> This error causes multimedia application has no sound. This error rarely
+>>>>>> occurs, probability is about 1%.
+>>>>>> Because the first user of the shared memory will get that
+>>>>>> dmix->shmptr->magic is 0, check dmix->shmptr->magic's value to determine
+>>>>>> if "we're the first user" is OK.
+>>>>>> Tests have been made 400+ times after this fix, and the issue no longer
+>>>>>> exists.
+>>>>>
+>>>>> I think this is still racy.  Multiple users can grab the shmem at the
+>>>>> very same time.  Maybe it looks as if working just because both users
+>>>>> behavior as the first user and do clear and initialize.
+>>>> I think this won't be a race condition. Since
+>>>> snd_pcm_direct_shm_create_or_connect() is protected by
+>>>> snd_pcm_direct_semaphore_down() and snd_pcm_direct_semaphore_up(),
+>>>> multiple processes won't do clear and initialization concurrently.
+>>>
+>>> Hrm, OK, now understood the situation.
+>>>
+>>>>> The check of bus.shm_nattach=1 should be fine, per se.  The problem is
+>>>>> the magic key check of the secondary.  In the current code, as you
+>>>>> pointed out, this may happen before the first client finishes the
+>>>>> initialization.
+>>>> I think the check of dmix->shmptr->magic!=SND_PCM_DIRECT_MAGIC is more
+>>>> robust. Assume there are two clients of shmem and shmem is initialized,
+>>>> if one of the clients exits, shm_nattach will become 1 and shmem may be
+>>>> initialized again.
+>>>
+>>> Yeah, in the fork from a thread, the shm_nattch check doesn't work
+>>> reliably, indeed.
+>>>
+>>>> In the current code, because there is semaphore, magic key check won't
+>>>> happen before initialization of shmem.
+>>>> In the scenario that I want to tell, there is only one process, and only
+>>>> one thread doning the clear and initialization of shmem, and the fork()
+>>>> is invoked in another thread of non alsa-lib context (i.e., the fork()
+>>>> code is not in alsa-lib). If the fork() is invoked before shmat(), the
+>>>> problem won't happen; If the fork() is invoked after the check of
+>>>> bus.shm_nattach=1, the problem won't happen too. Only if the fork() is
+>>>> invoked just after shmat() and just before the check of
+>>>> bus.shm_nattach=1, the problem happens.
+>>>
+>>> Well, the reason why the magic key check was introduced was about the
+>>> safety.  Since the shmid is given explicitly, it might override some
+>>> shmem usages other than dmix accidentally.  With your patch, it
+>>> forcibly clears the region -- this is quite opposite to the intention 
+>>> of the magic key check.
+>>
+>> I just think it clears the region only once at the first time. Could you
+>> please show me the scenario in detail?
 > 
-> Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
-> ---
+> The shmid ipc key is given explicitly by an alsa-lib configuration,
+> but there is no guarantee that this key has never been used by some
+> other programs for a completely different purpose.  So, for non-first
+> user, it verifies whether the attached region really belongs to
+> alsa-lib dmix.
 > 
->  Documentation/devicetree/bindings/sound/rockchip-spdif.txt |  8 ++++++--
->  sound/soc/rockchip/rockchip_spdif.c                        | 13 ++++++++++---
->  2 files changed, 16 insertions(+), 5 deletions(-)
+> 
+> Takashi
+> 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Thank you for explanation! Now I understood.
+I have tried changing ipc_key many times when I have been investigating
+the problem, and changing ipc_key doesn't solve the problem I
+encounterd.
+
+I think there is more benefits to do magic key check instead of
+shm_nattch check, because the situation that I encounterd happens more
+often than the situation that other program has a same ipc key with
+alsa-lib. The problem left is to make ipc key as unique as possible.
+Every program/library should fulfil the responsibility of generating a
+unique key. As stated on http://www.tldp.org/LDP/lpg/node24.html, ftok()
+should be used to generate a unique key.
+
+thanks,
+
+Qing Cai
