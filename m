@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: tidyup rsnd_ssiu_init_gen2()" to
-	the asoc tree
-Date: Sat, 05 Mar 2016 21:24:52 +0900
-Message-ID: <E1acBGO-0003H4-3X@finisterre>
-References: <8737sh733t.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: ads117x: Add bindings documentation for
+	TI ADS117x ADC" to the asoc tree
+Date: Sat, 05 Mar 2016 21:24:43 +0900
+Message-ID: <E1acBGF-0003EU-VL@finisterre>
+References: <1454686334-9668-2-git-send-email-florian.vaussard@heig-vd.ch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 98537260881
+ by alsa0.perex.cz (Postfix) with ESMTP id 33EC12606F7
  for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2016 13:24:55 +0100 (CET)
-In-Reply-To: <8737sh733t.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <1454686334-9668-2-git-send-email-florian.vaussard@heig-vd.ch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+To: Florian Vaussard <florian.vaussard@heig-vd.ch>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: tidyup rsnd_ssiu_init_gen2()
+   ASoC: ads117x: Add bindings documentation for TI ADS117x ADC
 
 has been applied to the asoc tree at
 
@@ -53,38 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From 135bb7d5c7b3fa40cd0559b5500a50d4e3663f6e Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 25 Feb 2016 05:52:13 +0000
-Subject: [PATCH] ASoC: rsnd: tidyup rsnd_ssiu_init_gen2()
+>From c9146fae4e88fa9864c4a7087289523b96cdbf2d Mon Sep 17 00:00:00 2001
+From: Florian Vaussard <florian.vaussard@gmail.com>
+Date: Fri, 5 Feb 2016 16:32:13 +0100
+Subject: [PATCH] ASoC: ads117x: Add bindings documentation for TI ADS117x ADC
 
-remove unnecessary variable
+Currently the binding is only made of the compatible string.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Florian Vaussard <florian.vaussard@heig-vd.ch>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssiu.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/sound/ti,ads117x.txt | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/ti,ads117x.txt
 
-diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
-index 1b8ea0e09bc2..0d964a0a3e31 100644
---- a/sound/soc/sh/rcar/ssiu.c
-+++ b/sound/soc/sh/rcar/ssiu.c
-@@ -115,13 +115,12 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
- 	}
- 
- 	if (rsnd_ssi_use_busif(io)) {
--		u32 val = rsnd_get_dalign(mod, io);
--
- 		rsnd_mod_write(mod, SSI_BUSIF_ADINR,
- 			       rsnd_get_adinr_bit(mod, io) |
- 			       rsnd_get_adinr_chan(mod, io));
- 		rsnd_mod_write(mod, SSI_BUSIF_MODE,  1);
--		rsnd_mod_write(mod, SSI_BUSIF_DALIGN, val);
-+		rsnd_mod_write(mod, SSI_BUSIF_DALIGN,
-+			       rsnd_get_dalign(mod, io));
- 	}
- 
- 	return 0;
+diff --git a/Documentation/devicetree/bindings/sound/ti,ads117x.txt b/Documentation/devicetree/bindings/sound/ti,ads117x.txt
+new file mode 100644
+index 000000000000..7db19b50865a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/ti,ads117x.txt
+@@ -0,0 +1,11 @@
++Texas Intstruments ADS117x ADC
++
++Required properties:
++
++  - compatible : "ti,ads1174" or "ti,ads1178"
++
++Example:
++
++ads1178 {
++	compatible = "ti,ads1178";
++};
 -- 
 2.7.0
