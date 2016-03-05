@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: don't call update callback if it
-	was NULL" to the asoc tree
-Date: Sat, 05 Mar 2016 21:24:56 +0900
-Message-ID: <E1acBGS-0003I2-VD@finisterre>
-References: <8760xd735h.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: Intel: Atom: add support for CHT w/
+	RT5640" to the asoc tree
+Date: Sat, 05 Mar 2016 21:24:58 +0900
+Message-ID: <E1acBGU-0003IW-L6@finisterre>
+References: <1457062599-10032-8-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F17AD261569
- for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2016 13:24:59 +0100 (CET)
-In-Reply-To: <8760xd735h.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D670F261A0D
+ for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2016 13:25:02 +0100 (CET)
+In-Reply-To: <1457062599-10032-8-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: don't call update callback if it was NULL
+   ASoC: Intel: Atom: add support for CHT w/ RT5640
 
 has been applied to the asoc tree at
 
@@ -53,29 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From d7289565483c65094d0473555625a4acd89567d3 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 25 Feb 2016 05:51:12 +0000
-Subject: [PATCH] ASoC: rsnd: don't call update callback if it was NULL
+>From fdf841937e4fa08e767dbe83f1c65696cfec67c9 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Thu, 3 Mar 2016 21:36:39 -0600
+Subject: [PATCH] ASoC: Intel: Atom: add support for CHT w/ RT5640
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Some CHT-T platforms make use of the Realtek RT5640 codec. Make use
+of the machine driver developed for Baytrail.
+
+Tested on Tronsmart Ara X5.
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/atom/sst/sst_acpi.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index ba37b0d55b21..3a3dc2ff18c9 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -927,7 +927,7 @@ static int rsnd_kctrl_put(struct snd_kcontrol *kctrl,
- 		}
- 	}
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index 4fce03fc1870..3bc4b63b2f9d 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -342,6 +342,10 @@ static struct sst_acpi_mach sst_acpi_chv[] = {
+ 						&chv_platform_data },
+ 	{"193C9890", "cht-bsw-max98090", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
+ 						&chv_platform_data },
++	/* some CHT-T platforms rely on RT5640, use Baytrail machine driver */
++	{"10EC5640", "bytcr_rt5640", "intel/fw_sst_22a8.bin", "bytcr_rt5640", NULL,
++						&chv_platform_data },
++
+ 	{},
+ };
  
--	if (change)
-+	if (change && cfg->update)
- 		cfg->update(cfg->io, mod);
- 
- 	return change;
 -- 
 2.7.0
