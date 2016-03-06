@@ -1,18 +1,19 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 1/2] ASoC: cs35l32: avoid uninitialized
-	variable access
-Date: Sun, 6 Mar 2016 21:43:25 +0100
-Message-ID: <201603062143.25158.arnd@arndb.de>
-References: <1453741678-1988125-1-git-send-email-arnd@arndb.de>
- <20160305145400.GF19428@n2100.arm.linux.org.uk>
+From: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Subject: Re: [PATCH 4/4] ALSA: dice: force to add two pcm
+ devices for listed models
+Date: Sun, 6 Mar 2016 23:55:21 +0100
+Message-ID: <20160306235521.7aabff60@kant>
+References: <1457179087-27604-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1457179087-27604-5-git-send-email-o-takashi@sakamocchi.jp>
+ <20160305160733.6306be3f@kant> <56DC2514.2010101@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.135])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F29C260592
- for <alsa-devel@alsa-project.org>; Sun,  6 Mar 2016 21:43:47 +0100 (CET)
-In-Reply-To: <20160305145400.GF19428@n2100.arm.linux.org.uk>
+Received: from einhorn.in-berlin.de (einhorn.in-berlin.de [192.109.42.8])
+ by alsa0.perex.cz (Postfix) with ESMTP id 609AD260592
+ for <alsa-devel@alsa-project.org>; Sun,  6 Mar 2016 23:55:23 +0100 (CET)
+In-Reply-To: <56DC2514.2010101@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,42 +23,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Brian Austin <brian.austin@cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday 05 March 2016, Russell King - ARM Linux wrote:
-> On Mon, Jan 25, 2016 at 06:07:32PM +0100, Arnd Bergmann wrote:
-> > gcc warns about the possibilty of accessing a property read from
-> > devicetree in cs35l32_i2c_probe() when it has not been initialized
-> > because CONFIG_OF is disabled:
+On Mar 06 Takashi Sakamoto wrote:
+> On Mar 6 2016 00:07, Stefan Richter wrote:
+> > On Mar 05 Takashi Sakamoto wrote:  
+> >> +static bool force_two_pcm_support(struct fw_unit *unit)
+> >> +{
+> >> +	const char *const models[] = {
+> >> +		/* TC Electronic models. */
+> >> +		"StudioKonnekt48",
+> >> +		/* Focusrite models. */
+> >> +		"SAFFIRE PRO 40",
+> >> +		"LIQUID SAFFIRE 56",
+> >> +		"SAFFIRE PRO 40 1",
+> >> +	};
+> >> +	char model[32];
+> >> +	unsigned int i;
+> >> +	int err;
+> >> +
+> >> +	err = fw_csr_string(unit->directory, CSR_MODEL, model, sizeof(model));
+> >> +	if (err < 0)
+> >> +		return false;
+> >> +
+> >> +	for (i = 0; i < ARRAY_SIZE(models); i++) {
+> >> +		if (strcmp(models[i], model) == 0)
+> >> +			break;
+> >> +	}
+> >> +
+> >> +	return i < ARRAY_SIZE(models);
+> >> +}  
 > > 
-> > sound/soc/codecs/cs35l32.c: In function 'cs35l32_i2c_probe':
-> > sound/soc/codecs/cs35l32.c:278:2: warning: 'val' may be used uninitialized in this function [-Wmaybe-uninitialized]
-> > 
-> > The code is actually correct because it checks the dev->of_node
-> > variable first and we know this is NULL here, but by adding a
-> > check for IS_ENABLED(CONFIG_OF), we can let the compiler know
-> > as well, and also generate smaller object code.
+> > The model name of my old Saffire PRO 40 is "SAFFIRE_PRO_40", and
+> > according to e.g. Alban Bernard on ffado-user, the newer model is
+> > "SAFFIRE_PRO_40_1".  Saffire 56's name is "LIQUID_SAFFIRE_56"
+> > according to https://forum.ubuntuusers.de/topic/focusrite-liquid/.  
 > 
-> No, the code is buggy, and the compiler is very correct in warning about
-> it.
-
-...
+> OK. Thanks for your correction. I'll include them in next patchset.
 > 
-> Note that 'out_values' is not written to if of_find_property_value_of_size()
-> returns an error.  Therefore, if cirrus,boost-manager is missing, the
-> resulting value of 'val' is left uninitialised.
+> Well, can this patchset enable snd-dice to drive your Saffire Pro 40
+> with several isochronous streams?  (of cource, the strings should be fixed.)
 
-You are right, this is an actual bug in the driver, and my patch just
-hides it. Interestingly, this is not the case that the warning was about,
-as we get the warning only when CONFIG_OF is disabled and the code
-is correct (because dev->of_node is guaranteed to be NULL), but we
-don't get the warning when CONFIG_OF is enabled and we can actually
-run into the problem.
+I did a first few tests on 4.5.0-rc6 now.  Hardware is Saffire Pro 40 and
+a XIO2213B OHCI card.  I first cherry-picked the following patches from 
+tiwai/sound.git:
+ALSA: dice: limit to current sampling transfer frequency
+ALSA: dice: limit stream to current sampling transfer frequency.
+ALSA: dice: add MIDI ports according to current number of MIDI substreams
+ALSA: dice: get the number of MBLA data channel at opening PCM substream
+ALSA: dice: purge generating channel cache
+ALSA: dice: ensure phase lock before starting streaming
+ALSA: dice: change notification mask to detect lock status change
+ALSA: dice: old firmware optimization for Dice notification
+ALSA: dice: drop duplex streams synchronization to transfer own time stamps
 
-Fixing the driver to have correct error handling on the property
-functions will make the warning go away and fix the bug you pointed
-out, so we should definitely do that and drop my patch.
+I then applied the current 4 patches, with underscores inserted into the
+model names in patch 4/4.
 
-	Arnd
+$ arecord -l
+[...]
+card 2: Pro4000dd28 [Pro40-00dd28], device 0: DICE [Pro40-00dd28]
+  Subdevices: 2/2
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+$ aplay -l
+[...]
+card 2: Pro4000dd28 [Pro40-00dd28], device 0: DICE [Pro40-00dd28]
+  Subdevices: 2/2
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+
+I tested capture and playback at 44100 and 48000 Hz at both subdevices,
+i.e. on plughw:2,0,0 and plughw:2,0,1 and it seems to work.  I only really
+checked subdevice 0 with I/O other than silence because I am not currently
+prepared to ADAT.  (As you remember there are only ADAT channels on the
+second stream.  Given some time I can probably arrange for another ADAT
+capable device to transmit and receive via ADAT.)
+
+Then I also tried 88200 and 96000 Hz.  This gives 16+16 channels at
+subdevice #0 like it should, and capture works, but playback is mute.
+
+I have not yet checked whether the muted playback at 88200/96000 is a
+consequence of these 4 new patches, or has been introduced earlier, or has
+always been the case with snd-dice.  (I haven't done many systematic tests
+with the Pro 40 and snd-dice yet.  If I unload snd-dice and use FFADO,
+playback at 88200/96000 works.)
+
+Furthermore I did a few quick tests with the entire patchset and Saffire
+PRO 24 (which uses only 1+1 transmitter+receiver, and consequently is
+shown only as 1+1 subdevice).  I tried 48000 and 96000 Hz, and capture
+and playback works at both sampling rates.  IOW the PRO 40's muting
+problem is not afflicting the PRO 24.
+
+Next thing for me to do will be to remove patches and figure out whether
+a previous driver revision gives me unmuted playback at 96000 Hz on the
+PRO 40. 
+-- 
+Stefan Richter
+-======----- --== --==-
+http://arcgraph.de/sr/
