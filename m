@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: SRC TIMSEL support for Capture"
+Subject: Applied "ASoC: rsnd: add rsnd_src_get_in/out_rate()"
 	to the asoc tree
-Date: Mon, 07 Mar 2016 14:42:47 +0700
-Message-ID: <E1acpoV-00071k-S4@finisterre>
-References: <87d1r6yj30.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 07 Mar 2016 14:42:49 +0700
+Message-ID: <E1acpoX-00072F-Ii@finisterre>
+References: <87egbmyj43.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3FF0F261504
+ by alsa0.perex.cz (Postfix) with ESMTP id EC4F126152C
  for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 08:42:52 +0100 (CET)
-In-Reply-To: <87d1r6yj30.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87egbmyj43.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: SRC TIMSEL support for Capture
+   ASoC: rsnd: add rsnd_src_get_in/out_rate()
 
 has been applied to the asoc tree at
 
@@ -53,354 +53,102 @@ to this mail.
 Thanks,
 Mark
 
->From 0102eed57c47371023c03b3b0c564f33d5e94570 Mon Sep 17 00:00:00 2001
+>From cbf1494fbcc80d363477af1efefb2380e7660a24 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 7 Mar 2016 05:09:14 +0000
-Subject: [PATCH] ASoC: rsnd: SRC TIMSEL support for Capture
+Date: Mon, 7 Mar 2016 05:08:33 +0000
+Subject: [PATCH] ASoC: rsnd: add rsnd_src_get_in/out_rate()
 
-SRC has Sync/Async mode, and it can't use Sync mode when Capture
-with CMD. In Async mode, it needs to care about in/out SRC rate
-for settings, but current driver supporting Playback case only.
-This patch supports Capture case.
+SRC will convert rate, and then, CMD and SSI want to know its
+rate (= SRC.in / SRC.out) for each purpose.
+Current driver is supporting only Playback, but SRC+Capture support
+needs more flexibility.
+This patch adds rsnd_src_get_in/out_rate() for it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/adg.c  | 204 ++++++++++++++++++++++++++---------------------
- sound/soc/sh/rcar/rsnd.h |   8 +-
- sound/soc/sh/rcar/src.c  |  26 +++---
- 3 files changed, 128 insertions(+), 110 deletions(-)
+ sound/soc/sh/rcar/rsnd.h | 10 +++++++---
+ sound/soc/sh/rcar/src.c  | 20 +++++++++++++++++---
+ sound/soc/sh/rcar/ssi.c  |  5 +++--
+ 3 files changed, 27 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
-index d74e1ccc0f8f..f7e164c89f33 100644
---- a/sound/soc/sh/rcar/adg.c
-+++ b/sound/soc/sh/rcar/adg.c
-@@ -90,6 +90,108 @@ static u32 rsnd_adg_ssi_ws_timing_gen2(struct rsnd_dai_stream *io)
- 	return (0x6 + ws) << 8;
- }
- 
-+static void __rsnd_adg_get_timesel_ratio(struct rsnd_priv *priv,
-+				       struct rsnd_dai_stream *io,
-+				       unsigned int target_rate,
-+				       unsigned int *target_val,
-+				       unsigned int *target_en)
-+{
-+	struct rsnd_adg *adg = rsnd_priv_to_adg(priv);
-+	struct device *dev = rsnd_priv_to_dev(priv);
-+	int idx, sel, div, step;
-+	unsigned int val, en;
-+	unsigned int min, diff;
-+	unsigned int sel_rate[] = {
-+		clk_get_rate(adg->clk[CLKA]),	/* 0000: CLKA */
-+		clk_get_rate(adg->clk[CLKB]),	/* 0001: CLKB */
-+		clk_get_rate(adg->clk[CLKC]),	/* 0010: CLKC */
-+		adg->rbga_rate_for_441khz,	/* 0011: RBGA */
-+		adg->rbgb_rate_for_48khz,	/* 0100: RBGB */
-+	};
-+
-+	min = ~0;
-+	val = 0;
-+	en = 0;
-+	for (sel = 0; sel < ARRAY_SIZE(sel_rate); sel++) {
-+		idx = 0;
-+		step = 2;
-+
-+		if (!sel_rate[sel])
-+			continue;
-+
-+		for (div = 2; div <= 98304; div += step) {
-+			diff = abs(target_rate - sel_rate[sel] / div);
-+			if (min > diff) {
-+				val = (sel << 8) | idx;
-+				min = diff;
-+				en = 1 << (sel + 1); /* fixme */
-+			}
-+
-+			/*
-+			 * step of 0_0000 / 0_0001 / 0_1101
-+			 * are out of order
-+			 */
-+			if ((idx > 2) && (idx % 2))
-+				step *= 2;
-+			if (idx == 0x1c) {
-+				div += step;
-+				step *= 2;
-+			}
-+			idx++;
-+		}
-+	}
-+
-+	if (min == ~0) {
-+		dev_err(dev, "no Input clock\n");
-+		return;
-+	}
-+
-+	*target_val = val;
-+	if (target_en)
-+		*target_en = en;
-+}
-+
-+static void rsnd_adg_get_timesel_ratio(struct rsnd_priv *priv,
-+				       struct rsnd_dai_stream *io,
-+				       unsigned int in_rate,
-+				       unsigned int out_rate,
-+				       u32 *in, u32 *out, u32 *en)
-+{
-+	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
-+	unsigned int target_rate;
-+	u32 *target_val;
-+	u32 _in;
-+	u32 _out;
-+	u32 _en;
-+
-+	/* default = SSI WS */
-+	_in =
-+	_out = rsnd_adg_ssi_ws_timing_gen2(io);
-+
-+	target_rate = 0;
-+	target_val = NULL;
-+	_en = 0;
-+	if (runtime->rate != in_rate) {
-+		target_rate = out_rate;
-+		target_val  = &_out;
-+	} else if (runtime->rate != out_rate) {
-+		target_rate = in_rate;
-+		target_val  = &_in;
-+	}
-+
-+	if (target_rate)
-+		__rsnd_adg_get_timesel_ratio(priv, io,
-+					     target_rate,
-+					     target_val, &_en);
-+
-+	if (in)
-+		*in = _in;
-+	if (out)
-+		*out = _out;
-+	if (en)
-+		*en = _en;
-+}
-+
- int rsnd_adg_set_cmd_timsel_gen2(struct rsnd_mod *cmd_mod,
- 				 struct rsnd_dai_stream *io)
- {
-@@ -110,25 +212,24 @@ int rsnd_adg_set_cmd_timsel_gen2(struct rsnd_mod *cmd_mod,
- 	return 0;
- }
- 
--static int rsnd_adg_set_src_timsel_gen2(struct rsnd_mod *src_mod,
--					struct rsnd_dai_stream *io,
--					u32 timsel)
-+int rsnd_adg_set_src_timesel_gen2(struct rsnd_mod *src_mod,
-+				  struct rsnd_dai_stream *io,
-+				  unsigned int in_rate,
-+				  unsigned int out_rate)
- {
- 	struct rsnd_priv *priv = rsnd_mod_to_priv(src_mod);
- 	struct rsnd_adg *adg = rsnd_priv_to_adg(priv);
- 	struct rsnd_mod *adg_mod = rsnd_mod_get(adg);
--	int is_play = rsnd_io_is_play(io);
-+	u32 in, out;
-+	u32 mask, en;
- 	int id = rsnd_mod_id(src_mod);
- 	int shift = (id % 2) ? 16 : 0;
--	u32 mask, ws;
--	u32 in, out;
- 
- 	rsnd_mod_confirm_src(src_mod);
- 
--	ws = rsnd_adg_ssi_ws_timing_gen2(io);
--
--	in  = (is_play) ? timsel : ws;
--	out = (is_play) ? ws     : timsel;
-+	rsnd_adg_get_timesel_ratio(priv, io,
-+				   in_rate, out_rate,
-+				   &in, &out, &en);
- 
- 	in   = in	<< shift;
- 	out  = out	<< shift;
-@@ -157,91 +258,12 @@ static int rsnd_adg_set_src_timsel_gen2(struct rsnd_mod *src_mod,
- 		break;
- 	}
- 
--	return 0;
--}
--
--int rsnd_adg_set_convert_clk_gen2(struct rsnd_mod *src_mod,
--				  struct rsnd_dai_stream *io,
--				  unsigned int src_rate,
--				  unsigned int dst_rate)
--{
--	struct rsnd_priv *priv = rsnd_mod_to_priv(src_mod);
--	struct rsnd_adg *adg = rsnd_priv_to_adg(priv);
--	struct rsnd_mod *adg_mod = rsnd_mod_get(adg);
--	struct device *dev = rsnd_priv_to_dev(priv);
--	int idx, sel, div, step, ret;
--	u32 val, en;
--	unsigned int min, diff;
--	unsigned int sel_rate [] = {
--		clk_get_rate(adg->clk[CLKA]),	/* 0000: CLKA */
--		clk_get_rate(adg->clk[CLKB]),	/* 0001: CLKB */
--		clk_get_rate(adg->clk[CLKC]),	/* 0010: CLKC */
--		adg->rbga_rate_for_441khz,	/* 0011: RBGA */
--		adg->rbgb_rate_for_48khz,	/* 0100: RBGB */
--	};
--
--	rsnd_mod_confirm_src(src_mod);
--
--	min = ~0;
--	val = 0;
--	en = 0;
--	for (sel = 0; sel < ARRAY_SIZE(sel_rate); sel++) {
--		idx = 0;
--		step = 2;
--
--		if (!sel_rate[sel])
--			continue;
--
--		for (div = 2; div <= 98304; div += step) {
--			diff = abs(src_rate - sel_rate[sel] / div);
--			if (min > diff) {
--				val = (sel << 8) | idx;
--				min = diff;
--				en = 1 << (sel + 1); /* fixme */
--			}
--
--			/*
--			 * step of 0_0000 / 0_0001 / 0_1101
--			 * are out of order
--			 */
--			if ((idx > 2) && (idx % 2))
--				step *= 2;
--			if (idx == 0x1c) {
--				div += step;
--				step *= 2;
--			}
--			idx++;
--		}
--	}
--
--	if (min == ~0) {
--		dev_err(dev, "no Input clock\n");
--		return -EIO;
--	}
--
--	ret = rsnd_adg_set_src_timsel_gen2(src_mod, io, val);
--	if (ret < 0) {
--		dev_err(dev, "timsel error\n");
--		return ret;
--	}
--
--	rsnd_mod_bset(adg_mod, DIV_EN, en, en);
--
--	dev_dbg(dev, "convert rate %d <-> %d\n", src_rate, dst_rate);
-+	if (en)
-+		rsnd_mod_bset(adg_mod, DIV_EN, en, en);
- 
- 	return 0;
- }
- 
--int rsnd_adg_set_convert_timing_gen2(struct rsnd_mod *src_mod,
--				     struct rsnd_dai_stream *io)
--{
--	u32 val = rsnd_adg_ssi_ws_timing_gen2(io);
--
--	rsnd_mod_confirm_src(src_mod);
--
--	return rsnd_adg_set_src_timsel_gen2(src_mod, io, val);
--}
--
- static void rsnd_adg_set_ssi_clk(struct rsnd_mod *ssi_mod, u32 val)
- {
- 	struct rsnd_priv *priv = rsnd_mod_to_priv(ssi_mod);
 diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 4b77f33358fb..fc89a67258ca 100644
+index ff53f96e5006..4b77f33358fb 100644
 --- a/sound/soc/sh/rcar/rsnd.h
 +++ b/sound/soc/sh/rcar/rsnd.h
-@@ -446,12 +446,10 @@ int rsnd_adg_ssi_clk_stop(struct rsnd_mod *mod);
- int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *mod, unsigned int rate);
- int rsnd_adg_probe(struct rsnd_priv *priv);
- void rsnd_adg_remove(struct rsnd_priv *priv);
--int rsnd_adg_set_convert_clk_gen2(struct rsnd_mod *mod,
-+int rsnd_adg_set_src_timesel_gen2(struct rsnd_mod *src_mod,
- 				  struct rsnd_dai_stream *io,
--				  unsigned int src_rate,
--				  unsigned int dst_rate);
--int rsnd_adg_set_convert_timing_gen2(struct rsnd_mod *mod,
--				     struct rsnd_dai_stream *io);
-+				  unsigned int in_rate,
-+				  unsigned int out_rate);
- int rsnd_adg_set_cmd_timsel_gen2(struct rsnd_mod *mod,
- 				 struct rsnd_dai_stream *io);
- 
+@@ -627,9 +627,13 @@ void rsnd_ssiu_remove(struct rsnd_priv *priv);
+ int rsnd_src_probe(struct rsnd_priv *priv);
+ void rsnd_src_remove(struct rsnd_priv *priv);
+ struct rsnd_mod *rsnd_src_mod_get(struct rsnd_priv *priv, int id);
+-unsigned int rsnd_src_get_ssi_rate(struct rsnd_priv *priv,
+-				   struct rsnd_dai_stream *io,
+-				   struct snd_pcm_runtime *runtime);
++
++#define rsnd_src_get_in_rate(priv, io) rsnd_src_get_rate(priv, io, 1)
++#define rsnd_src_get_out_rate(priv, io) rsnd_src_get_rate(priv, io, 0)
++unsigned int rsnd_src_get_rate(struct rsnd_priv *priv,
++			       struct rsnd_dai_stream *io,
++			       int is_in);
++
+ #define rsnd_src_of_node(priv)						\
+ 	of_get_child_by_name(rsnd_priv_to_dev(priv)->of_node, "rcar_sound,src")
+ #define rsnd_parse_connect_src(rdai, playback, capture)			\
 diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index d1a8741cc446..15d6ffe8be74 100644
+index 1d5aedb50213..d1a8741cc446 100644
 --- a/sound/soc/sh/rcar/src.c
 +++ b/sound/soc/sh/rcar/src.c
-@@ -189,7 +189,7 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
- 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
- 	struct device *dev = rsnd_priv_to_dev(priv);
- 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
--	u32 convert_rate = rsnd_src_convert_rate(io, mod);
-+	u32 fin, fout;
- 	u32 ifscr, fsrate, adinr;
- 	u32 cr, route;
- 	u32 bsdsr, bsisr;
-@@ -198,13 +198,16 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
- 	if (!runtime)
- 		return;
- 
-+	fin  = rsnd_src_get_in_rate(priv, io);
-+	fout = rsnd_src_get_out_rate(priv, io);
-+
- 	/* 6 - 1/6 are very enough ratio for SRC_BSDSR */
--	if (!convert_rate)
-+	if (fin == fout)
- 		ratio = 0;
--	else if (convert_rate > runtime->rate)
--		ratio = 100 * convert_rate / runtime->rate;
-+	else if (fin > fout)
-+		ratio = 100 * fin / fout;
- 	else
--		ratio = 100 * runtime->rate / convert_rate;
-+		ratio = 100 * fout / fin;
- 
- 	if (ratio > 600) {
- 		dev_err(dev, "FSO/FSI ratio error\n");
-@@ -222,9 +225,9 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
- 	 */
- 	ifscr = 0;
- 	fsrate = 0;
--	if (convert_rate) {
-+	if (fin != fout) {
- 		ifscr = 1;
--		fsrate = 0x0400000 / convert_rate * runtime->rate;
-+		fsrate = 0x0400000 / fout * fin;
- 	}
- 
- 	/*
-@@ -232,7 +235,7 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
- 	 */
- 	cr	= 0x00011110;
- 	route	= 0x0;
--	if (convert_rate) {
-+	if (fin != fout) {
- 		route	= 0x1;
- 
- 		if (rsnd_src_sync_is_enabled(mod)) {
-@@ -274,12 +277,7 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
- 	rsnd_mod_write(mod, SRC_O_BUSIF_MODE, 1);
- 	rsnd_mod_write(mod, SRC_BUSIF_DALIGN, rsnd_get_dalign(mod, io));
- 
--	if (convert_rate)
--		rsnd_adg_set_convert_clk_gen2(mod, io,
--					      runtime->rate,
--					      convert_rate);
--	else
--		rsnd_adg_set_convert_timing_gen2(mod, io);
-+	rsnd_adg_set_src_timesel_gen2(mod, io, fin, fout);
+@@ -116,12 +116,26 @@ static u32 rsnd_src_convert_rate(struct rsnd_dai_stream *io,
+ 	return convert_rate;
  }
  
- static int rsnd_src_irq(struct rsnd_mod *mod,
+-unsigned int rsnd_src_get_ssi_rate(struct rsnd_priv *priv,
+-				   struct rsnd_dai_stream *io,
+-				   struct snd_pcm_runtime *runtime)
++unsigned int rsnd_src_get_rate(struct rsnd_priv *priv,
++			       struct rsnd_dai_stream *io,
++			       int is_in)
+ {
+ 	struct rsnd_mod *src_mod = rsnd_io_to_mod_src(io);
++	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
+ 	unsigned int rate = 0;
++	int is_play = rsnd_io_is_play(io);
++
++	/*
++	 *
++	 * Playback
++	 * runtime_rate -> [SRC] -> convert_rate
++	 *
++	 * Capture
++	 * convert_rate -> [SRC] -> runtime_rate
++	 */
++
++	if (is_play == is_in)
++		return runtime->rate;
+ 
+ 	/*
+ 	 * return convert rate if SRC is used,
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 540489755367..5f848f054745 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -190,7 +190,6 @@ static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
+ 				     struct rsnd_dai_stream *io)
+ {
+ 	struct rsnd_priv *priv = rsnd_io_to_priv(io);
+-	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
+ 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+@@ -201,7 +200,9 @@ static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
+ 		1, 2, 4, 8, 16, 6, 12,
+ 	};
+ 	unsigned int main_rate;
+-	unsigned int rate = rsnd_src_get_ssi_rate(priv, io, runtime);
++	unsigned int rate = rsnd_io_is_play(io) ?
++		rsnd_src_get_out_rate(priv, io) :
++		rsnd_src_get_in_rate(priv, io);
+ 
+ 	if (!rsnd_rdai_is_clk_master(rdai))
+ 		return 0;
 -- 
 2.7.0
