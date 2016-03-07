@@ -1,15 +1,15 @@
-From: John Lin <john.lin@realtek.com>
-Subject: [PATCH] ASoC: rt5616: add missing mute control for
-	HPVOL
-Date: Mon, 7 Mar 2016 12:12:11 +0800
-Message-ID: <1457323931-31819-1-git-send-email-john.lin@realtek.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: cs35l32: avoid uninitialized variable
+	access
+Date: Mon,  7 Mar 2016 05:19:06 +0100
+Message-ID: <1457324374-3405023-1-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id AA35D2605C3
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 05:12:47 +0100 (CET)
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id 868CF2605C3
+ for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 05:20:10 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,29 +19,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, John Lin <john.lin@realtek.com>, bardliao@realtek.com, zhengsq@rock-chips.com, flove@realtek.com
+To: Mark Brown <broonie@kernel.org>
+Cc: Brian Austin <brian.austin@cirrus.com>, Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add missing kcontrol for HPVOL mute control.
+gcc warns about the possibilty of accessing a property read from
+devicetree in cs35l32_i2c_probe() when it has not been initialized
+because CONFIG_OF is disabled:
 
-Signed-off-by: John Lin <john.lin@realtek.com>
+sound/soc/codecs/cs35l32.c: In function 'cs35l32_i2c_probe':
+sound/soc/codecs/cs35l32.c:278:2: warning: 'val' may be used uninitialized in this function [-Wmaybe-uninitialized]
+
+The code is actually correct because it checks the dev->of_node
+variable first and we know this is NULL here when CONFIG_OF
+is disabled, but Russell King noticed that it's broken when
+we probe the device using DT, and the properties are absent.
+
+The code already has some checking for incorrect values, and
+I keep that checking unchanged here, but add an additional
+check for an error returned by the property accessor functions
+that now gets handled the same way as incorrect data in the
+properties.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- sound/soc/codecs/rt5616.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/cs35l32.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5616.c b/sound/soc/codecs/rt5616.c
-index 3704d07..f527b5b 100644
---- a/sound/soc/codecs/rt5616.c
-+++ b/sound/soc/codecs/rt5616.c
-@@ -309,6 +309,8 @@ static const struct snd_kcontrol_new rt5616_snd_controls[] = {
- 	/* Headphone Output Volume */
- 	SOC_DOUBLE("HP Playback Switch", RT5616_HP_VOL,
- 		   RT5616_L_MUTE_SFT, RT5616_R_MUTE_SFT, 1, 1),
-+	SOC_DOUBLE("HPVOL Playback Switch", RT5616_HP_VOL,
-+		   RT5616_VOL_L_SFT, RT5616_VOL_R_SFT, 1, 1),
- 	SOC_DOUBLE_TLV("HP Playback Volume", RT5616_HP_VOL,
- 		       RT5616_L_VOL_SFT, RT5616_R_VOL_SFT, 39, 1, out_vol_tlv),
- 	/* OUTPUT Control */
+diff --git a/sound/soc/codecs/cs35l32.c b/sound/soc/codecs/cs35l32.c
+index 44c30fe3e315..c490dc74121b 100644
+--- a/sound/soc/codecs/cs35l32.c
++++ b/sound/soc/codecs/cs35l32.c
+@@ -274,21 +274,24 @@ static int cs35l32_handle_of_data(struct i2c_client *i2c_client,
+ 	if (of_property_read_u32(np, "cirrus,sdout-share", &val) >= 0)
+ 		pdata->sdout_share = val;
+ 
+-	of_property_read_u32(np, "cirrus,boost-manager", &val);
++	if (of_property_read_u32(np, "cirrus,boost-manager", &val))
++		val = -1u;
++
+ 	switch (val) {
+ 	case CS35L32_BOOST_MGR_AUTO:
+ 	case CS35L32_BOOST_MGR_AUTO_AUDIO:
+ 	case CS35L32_BOOST_MGR_BYPASS:
+ 	case CS35L32_BOOST_MGR_FIXED:
+-		pdata->boost_mng = val;
+ 		break;
++	case -1u:
+ 	default:
+ 		dev_err(&i2c_client->dev,
+ 			"Wrong cirrus,boost-manager DT value %d\n", val);
+ 		pdata->boost_mng = CS35L32_BOOST_MGR_BYPASS;
+ 	}
+ 
+-	of_property_read_u32(np, "cirrus,sdout-datacfg", &val);
++	if (of_property_read_u32(np, "cirrus,sdout-datacfg", &val))
++		val = -1u;
+ 	switch (val) {
+ 	case CS35L32_DATA_CFG_LR_VP:
+ 	case CS35L32_DATA_CFG_LR_STAT:
+@@ -296,13 +299,15 @@ static int cs35l32_handle_of_data(struct i2c_client *i2c_client,
+ 	case CS35L32_DATA_CFG_LR_VPSTAT:
+ 		pdata->sdout_datacfg = val;
+ 		break;
++	case -1u:
+ 	default:
+ 		dev_err(&i2c_client->dev,
+ 			"Wrong cirrus,sdout-datacfg DT value %d\n", val);
+ 		pdata->sdout_datacfg = CS35L32_DATA_CFG_LR;
+ 	}
+ 
+-	of_property_read_u32(np, "cirrus,battery-threshold", &val);
++	if (of_property_read_u32(np, "cirrus,battery-threshold", &val))
++		val = -1u;
+ 	switch (val) {
+ 	case CS35L32_BATT_THRESH_3_1V:
+ 	case CS35L32_BATT_THRESH_3_2V:
+@@ -310,13 +315,15 @@ static int cs35l32_handle_of_data(struct i2c_client *i2c_client,
+ 	case CS35L32_BATT_THRESH_3_4V:
+ 		pdata->batt_thresh = val;
+ 		break;
++	case -1u:
+ 	default:
+ 		dev_err(&i2c_client->dev,
+ 			"Wrong cirrus,battery-threshold DT value %d\n", val);
+ 		pdata->batt_thresh = CS35L32_BATT_THRESH_3_3V;
+ 	}
+ 
+-	of_property_read_u32(np, "cirrus,battery-recovery", &val);
++	if (of_property_read_u32(np, "cirrus,battery-recovery", &val))
++		val = -1u;
+ 	switch (val) {
+ 	case CS35L32_BATT_RECOV_3_1V:
+ 	case CS35L32_BATT_RECOV_3_2V:
 -- 
-1.8.1.1.439.g50a6b54
+2.7.0
