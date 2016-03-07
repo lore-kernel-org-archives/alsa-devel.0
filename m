@@ -1,21 +1,20 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] Revert "ASoC: fsl_ssi: remove explicit
-	register defaults"
-Date: Sun, 6 Mar 2016 21:11:56 -0300
-Message-ID: <CAOMZO5BNY6V-Qbo+gBY1dW-9bHgBusXXAmEiG45BzuoZeKSm8w@mail.gmail.com>
-References: <1456065300-23752-1-git-send-email-festevam@gmail.com>
- <20160222025930.GO18327@sirena.org.uk>
+From: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Subject: Re: [PATCH 4/4] ALSA: dice: force to add two pcm
+ devices for listed models
+Date: Mon, 7 Mar 2016 01:24:42 +0100
+Message-ID: <20160307012442.6935bc04@kant>
+References: <1457179087-27604-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1457179087-27604-5-git-send-email-o-takashi@sakamocchi.jp>
+ <20160305160733.6306be3f@kant> <56DC2514.2010101@sakamocchi.jp>
+ <20160306235521.7aabff60@kant>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f176.google.com (mail-ig0-f176.google.com
- [209.85.213.176])
- by alsa0.perex.cz (Postfix) with ESMTP id D4D71260592
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 01:11:57 +0100 (CET)
-Received: by mail-ig0-f176.google.com with SMTP id ir4so36425485igb.1
- for <alsa-devel@alsa-project.org>; Sun, 06 Mar 2016 16:11:57 -0800 (PST)
-In-Reply-To: <20160222025930.GO18327@sirena.org.uk>
+Received: from einhorn.in-berlin.de (einhorn.in-berlin.de [192.109.42.8])
+ by alsa0.perex.cz (Postfix) with ESMTP id BF1882605C3
+ for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 01:24:43 +0100 (CET)
+In-Reply-To: <20160306235521.7aabff60@kant>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,22 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+On Mar 06 Stefan Richter wrote:
+[...]
+> Then I also tried 88200 and 96000 Hz.  This gives 16+16 channels at
+> subdevice #0 like it should, and capture works, but playback is mute.
+[...]
+> Next thing for me to do will be to remove patches and figure out whether
+> a previous driver revision gives me unmuted playback at 96000 Hz on the
+> PRO 40. 
 
-On Sun, Feb 21, 2016 at 11:59 PM, Mark Brown <broonie@kernel.org> wrote:
+Plain v4.5-rc6 gave me unmuted playback at 88200/96000 Hz once, but it was
+distorted by some sort of high clinking.  Other times plain v4.5-rc6 had
+muted playback at 88200/96000 Hz too.
 
-> There's no problem adding it back for v4.6 for that matter, the changes
-> will all have long enough to soak (and have already been soaking for a
-> little while).  I'll do that.
-
-I see you applied this one as 56e5fd8feb286ab7 ("ASoC: fsl_ssi: Go
-back to explicit register defaults") into your fix/fsl-ssi branch, but
-it is still not present in 4.5-rc7.
-
-Any plans to make this one into 4.5 final?
-
-Thanks
+I tested with mplayer+jack+alsa, audacious+jack+alsa, and
+audacious+alsa.
+-- 
+Stefan Richter
+-======----- --== --===
+http://arcgraph.de/sr/
