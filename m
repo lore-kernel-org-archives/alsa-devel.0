@@ -1,581 +1,242 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/4] ALSA: dice: handle whole available
-	isochronous streams
-Date: Mon,  7 Mar 2016 22:35:43 +0900
-Message-ID: <1457357745-24756-3-git-send-email-o-takashi@sakamocchi.jp>
-References: <1457357745-24756-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: Re: [PATCH v5 22/22] sound/usb: Use Media Controller API to share
+ media resources
+Date: Mon, 7 Mar 2016 07:16:42 -0700
+Message-ID: <56DD8D4A.1070901@osg.samsung.com>
+References: <1456937431-3794-1-git-send-email-shuahkh@osg.samsung.com>
+ <20160305070055.6e17edcd@recife.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id AEE4E26154F
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 14:35:49 +0100 (CET)
-In-Reply-To: <1457357745-24756-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, ffado-devel@lists.sf.net
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160305070055.6e17edcd@recife.lan>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+Cc: tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oampo.co.uk, linuxbugs@vittga
 List-Id: alsa-devel@alsa-project.org
 
-This commit enables ALSA dice driver to handle whole available streams.
+On 03/05/2016 03:00 AM, Mauro Carvalho Chehab wrote:
+> Em Wed,  2 Mar 2016 09:50:31 -0700
+> Shuah Khan <shuahkh@osg.samsung.com> escreveu:
+> 
+>> Change ALSA driver to use Media Controller API to
+>> share media resources with DVB and V4L2 drivers
+>> on a AU0828 media device. Media Controller specific
+>> initialization is done after sound card is registered.
+>> ALSA creates Media interface and entity function graph
+>> nodes for Control, Mixer, PCM Playback, and PCM Capture
+>> devices.
+>>
+>> snd_usb_hw_params() will call Media Controller enable
+>> source handler interface to request the media resource.
+>> If resource request is granted, it will release it from
+>> snd_usb_hw_free(). If resource is busy, -EBUSY is returned.
+>>
+>> Media specific cleanup is done in usb_audio_disconnect().
+>>
+>> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+>> Acked-by: Takashi Iwai <tiwai@suse.de>
+> 
+> Shuah, by looking at the produced graphs:
+> 	https://mchehab.fedorapeople.org/mc-next-gen/au0828_test/
+> 
+> I'm noticing the lack of ALSA I/O entities in the diagram
+> (MEDIA_ENT_F_AUDIO_CAPTURE). The mixer there is not connected.
+> 
+> Could you please check what's happening?
 
-In Dice, certain registers represent the number of available streams at
-current sampling transfer frequency for both directions. The parameters
-of each stream are represented in a block of register. This block is
-aligned sequentially. These streams start simultaneously by writing
-enable bit to a register.
+Mauro,
 
-This commit operates these registers when starting/stopping streams.
+Did you pull in this patch that fixes the graph problem:
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/dice/dice-stream.c | 398 ++++++++++++++++++++++++--------------
- 1 file changed, 255 insertions(+), 143 deletions(-)
+https://www.mail-archive.com/linux-media@vger.kernel.org/msg95047.html
 
-diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
-index 15d581d..2077f18 100644
---- a/sound/firewire/dice/dice-stream.c
-+++ b/sound/firewire/dice/dice-stream.c
-@@ -65,85 +65,84 @@ static int ensure_phase_lock(struct snd_dice *dice)
- 	return 0;
- }
- 
--static void release_resources(struct snd_dice *dice,
--			      struct fw_iso_resources *resources)
-+static int get_register_params(struct snd_dice *dice, unsigned int params[4])
- {
--	__be32 channel;
--
--	/* Reset channel number */
--	channel = cpu_to_be32((u32)-1);
--	if (resources == &dice->tx_resources[0])
--		snd_dice_transaction_write_tx(dice, TX_ISOCHRONOUS,
--					      &channel, sizeof(channel));
--	else
--		snd_dice_transaction_write_rx(dice, RX_ISOCHRONOUS,
--					      &channel, sizeof(channel));
--
--	fw_iso_resources_free(resources);
--}
--
--static int keep_resources(struct snd_dice *dice,
--			  struct fw_iso_resources *resources,
--			  unsigned int max_payload_bytes)
--{
--	__be32 channel;
-+	__be32 reg[2];
- 	int err;
- 
--	err = fw_iso_resources_allocate(resources, max_payload_bytes,
--				fw_parent_device(dice->unit)->max_speed);
-+	err = snd_dice_transaction_read_tx(dice, TX_NUMBER, reg, sizeof(reg));
- 	if (err < 0)
--		goto end;
-+		return err;
-+	params[0] = min_t(unsigned int, be32_to_cpu(reg[0]), MAX_STREAMS);
-+	params[1] = be32_to_cpu(reg[1]) * 4;
- 
--	/* Set channel number */
--	channel = cpu_to_be32(resources->channel);
--	if (resources == &dice->tx_resources[0])
--		err = snd_dice_transaction_write_tx(dice, TX_ISOCHRONOUS,
--						    &channel, sizeof(channel));
--	else
--		err = snd_dice_transaction_write_rx(dice, RX_ISOCHRONOUS,
--						    &channel, sizeof(channel));
-+	err = snd_dice_transaction_read_rx(dice, RX_NUMBER, reg, sizeof(reg));
- 	if (err < 0)
--		release_resources(dice, resources);
--end:
--	return err;
-+		return err;
-+	params[2] = min_t(unsigned int, be32_to_cpu(reg[0]), MAX_STREAMS);
-+	params[3] = be32_to_cpu(reg[1]) * 4;
-+
-+	return 0;
- }
- 
--static void stop_stream(struct snd_dice *dice, struct amdtp_stream *stream)
-+static void release_resources(struct snd_dice *dice)
- {
--	amdtp_stream_pcm_abort(stream);
--	amdtp_stream_stop(stream);
-+	unsigned int i;
-+
-+	for (i = 0; i < MAX_STREAMS; i++) {
-+		if (amdtp_stream_running(&dice->tx_stream[i])) {
-+			amdtp_stream_pcm_abort(&dice->tx_stream[i]);
-+			amdtp_stream_stop(&dice->tx_stream[i]);
-+		}
-+		if (amdtp_stream_running(&dice->rx_stream[i])) {
-+			amdtp_stream_pcm_abort(&dice->rx_stream[i]);
-+			amdtp_stream_stop(&dice->rx_stream[i]);
-+		}
- 
--	if (stream == &dice->tx_stream[0])
--		release_resources(dice, &dice->tx_resources[0]);
--	else
--		release_resources(dice, &dice->rx_resources[0]);
-+		fw_iso_resources_free(&dice->tx_resources[i]);
-+		fw_iso_resources_free(&dice->rx_resources[i]);
-+	}
- }
- 
--static int start_stream(struct snd_dice *dice, struct amdtp_stream *stream,
--			unsigned int rate)
-+static void stop_streams(struct snd_dice *dice, enum amdtp_stream_direction dir,
-+			 unsigned int count, unsigned int size)
- {
-+	__be32 reg;
-+	unsigned int i;
-+
-+	for (i = 0; i < count; i++) {
-+		reg = cpu_to_be32((u32)-1);
-+		if (dir == AMDTP_IN_STREAM) {
-+			snd_dice_transaction_write_tx(dice,
-+						size * i + TX_ISOCHRONOUS,
-+						&reg, sizeof(reg));
-+		} else {
-+			snd_dice_transaction_write_rx(dice,
-+						size * i + RX_ISOCHRONOUS,
-+						&reg, sizeof(reg));
-+		}
-+	}
-+}
-+
-+static int keep_resources(struct snd_dice *dice,
-+			  enum amdtp_stream_direction dir, unsigned int index,
-+			  unsigned int rate, unsigned int pcm_chs,
-+			  unsigned int midi_ports)
-+{
-+	struct amdtp_stream *stream;
- 	struct fw_iso_resources *resources;
--	__be32 reg[2];
--	unsigned int i, pcm_chs, midi_ports;
- 	bool double_pcm_frames;
-+	unsigned int i;
- 	int err;
- 
--	if (stream == &dice->tx_stream[0]) {
--		resources = &dice->tx_resources[0];
--		err = snd_dice_transaction_read_tx(dice, TX_NUMBER_AUDIO,
--						   reg, sizeof(reg));
-+	if (dir == AMDTP_IN_STREAM) {
-+		stream = &dice->tx_stream[index];
-+		resources = &dice->tx_resources[index];
- 	} else {
--		resources = &dice->rx_resources[0];
--		err = snd_dice_transaction_read_rx(dice, RX_NUMBER_AUDIO,
--						   reg, sizeof(reg));
-+		stream = &dice->rx_stream[index];
-+		resources = &dice->rx_resources[index];
- 	}
- 
--	if (err < 0)
--		goto end;
--
--	pcm_chs = be32_to_cpu(reg[0]);
--	midi_ports = be32_to_cpu(reg[1]);
--
- 	/*
- 	 * At 176.4/192.0 kHz, Dice has a quirk to transfer two PCM frames in
- 	 * one data block of AMDTP packet. Thus sampling transfer frequency is
-@@ -163,7 +162,7 @@ static int start_stream(struct snd_dice *dice, struct amdtp_stream *stream,
- 	err = amdtp_am824_set_parameters(stream, rate, pcm_chs, midi_ports,
- 					 double_pcm_frames);
- 	if (err < 0)
--		goto end;
-+		return err;
- 
- 	if (double_pcm_frames) {
- 		pcm_chs /= 2;
-@@ -175,122 +174,208 @@ static int start_stream(struct snd_dice *dice, struct amdtp_stream *stream,
- 		}
- 	}
- 
--	err = keep_resources(dice, resources,
--			     amdtp_stream_get_max_payload(stream));
--	if (err < 0) {
--		dev_err(&dice->unit->device,
--			"fail to keep isochronous resources\n");
--		goto end;
-+	return fw_iso_resources_allocate(resources,
-+				amdtp_stream_get_max_payload(stream),
-+				fw_parent_device(dice->unit)->max_speed);
-+}
-+
-+static int start_streams(struct snd_dice *dice, enum amdtp_stream_direction dir,
-+			 unsigned int rate, unsigned int count,
-+			 unsigned int size)
-+{
-+	__be32 reg[2];
-+	unsigned int i, pcm_chs, midi_ports;
-+	struct amdtp_stream *streams;
-+	struct fw_iso_resources *resources;
-+	int err = 0;
-+
-+	if (dir == AMDTP_IN_STREAM) {
-+		streams = dice->tx_stream;
-+		resources = dice->tx_resources;
-+	} else {
-+		streams = dice->rx_stream;
-+		resources = dice->rx_resources;
-+	}
-+
-+	for (i = 0; i < count; i++) {
-+		if (dir == AMDTP_IN_STREAM) {
-+			err = snd_dice_transaction_read_tx(dice,
-+						size * i + TX_NUMBER_AUDIO,
-+						reg, sizeof(reg));
-+		} else {
-+			err = snd_dice_transaction_read_rx(dice,
-+						size * i + RX_NUMBER_AUDIO,
-+						reg, sizeof(reg));
-+		}
-+		if (err < 0)
-+			return err;
-+		pcm_chs = be32_to_cpu(reg[0]);
-+		midi_ports = be32_to_cpu(reg[1]);
-+
-+		err = keep_resources(dice, dir, i, rate, pcm_chs, midi_ports);
-+		if (err < 0)
-+			return err;
-+
-+		reg[0] = cpu_to_be32(resources[i].channel);
-+		if (dir == AMDTP_IN_STREAM) {
-+			err = snd_dice_transaction_write_tx(dice,
-+						size * i + TX_ISOCHRONOUS,
-+						reg, sizeof(reg[0]));
-+		} else {
-+			err = snd_dice_transaction_write_rx(dice,
-+						size * i + RX_ISOCHRONOUS,
-+						reg, sizeof(reg[0]));
-+		}
-+		if (err < 0)
-+			return err;
-+
-+		err = amdtp_stream_start(&streams[i], resources[i].channel,
-+				fw_parent_device(dice->unit)->max_speed);
-+		if (err < 0)
-+			return err;
- 	}
- 
--	err = amdtp_stream_start(stream, resources->channel,
--				 fw_parent_device(dice->unit)->max_speed);
--	if (err < 0)
--		release_resources(dice, resources);
--end:
- 	return err;
- }
- 
-+/*
-+ * MEMO: After this function, there're two states of streams:
-+ *  - None streams are running.
-+ *  - All streams are running.
-+ */
- int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
- {
--	struct amdtp_stream *master, *slave;
- 	unsigned int curr_rate;
--	int err = 0;
-+	unsigned int i;
-+	unsigned int reg_params[4];
-+	bool need_to_start;
-+	int err;
- 
- 	if (dice->substreams_counter == 0)
--		goto end;
--
--	master = &dice->rx_stream[0];
--	slave  = &dice->tx_stream[0];
-+		return -EIO;
- 
--	/* Some packet queueing errors. */
--	if (amdtp_streaming_error(master) || amdtp_streaming_error(slave))
--		stop_stream(dice, master);
-+	err = get_register_params(dice, reg_params);
-+	if (err < 0)
-+		return err;
- 
--	/* Stop stream if rate is different. */
- 	err = snd_dice_transaction_get_rate(dice, &curr_rate);
- 	if (err < 0) {
- 		dev_err(&dice->unit->device,
- 			"fail to get sampling rate\n");
--		goto end;
-+		return err;
- 	}
- 	if (rate == 0)
- 		rate = curr_rate;
--	if (rate != curr_rate) {
--		err = -EINVAL;
--		goto end;
-+	if (rate != curr_rate)
-+		return -EINVAL;
-+
-+	/* Judge to need to restart streams. */
-+	for (i = 0; i < MAX_STREAMS; i++) {
-+		if (i < reg_params[0]) {
-+			if (amdtp_streaming_error(&dice->tx_stream[i]) ||
-+			    !amdtp_stream_running(&dice->tx_stream[i]))
-+				break;
-+		}
-+		if (i < reg_params[2]) {
-+			if (amdtp_streaming_error(&dice->rx_stream[i]) ||
-+			    !amdtp_stream_running(&dice->rx_stream[i]))
-+				break;
-+		}
- 	}
-+	need_to_start = (i < MAX_STREAMS);
- 
--	if (!amdtp_stream_running(master)) {
--		stop_stream(dice, slave);
-+	if (need_to_start) {
-+		/* Stop transmission. */
- 		snd_dice_transaction_clear_enable(dice);
-+		stop_streams(dice, AMDTP_IN_STREAM, reg_params[0],
-+			     reg_params[1]);
-+		stop_streams(dice, AMDTP_OUT_STREAM, reg_params[2],
-+			     reg_params[3]);
-+		release_resources(dice);
- 
- 		err = ensure_phase_lock(dice);
- 		if (err < 0) {
- 			dev_err(&dice->unit->device,
- 				"fail to ensure phase lock\n");
--			goto end;
-+			return err;
- 		}
- 
- 		/* Start both streams. */
--		err = start_stream(dice, master, rate);
--		if (err < 0) {
--			dev_err(&dice->unit->device,
--				"fail to start AMDTP master stream\n");
--			goto end;
--		}
--		err = start_stream(dice, slave, rate);
--		if (err < 0) {
--			dev_err(&dice->unit->device,
--				"fail to start AMDTP slave stream\n");
--			stop_stream(dice, master);
--			goto end;
--		}
-+		err = start_streams(dice, AMDTP_IN_STREAM, rate, reg_params[0],
-+				    reg_params[1]);
-+		if (err < 0)
-+			goto error;
-+		err = start_streams(dice, AMDTP_OUT_STREAM, rate, reg_params[2],
-+				    reg_params[3]);
-+		if (err < 0)
-+			goto error;
-+
- 		err = snd_dice_transaction_set_enable(dice);
- 		if (err < 0) {
- 			dev_err(&dice->unit->device,
- 				"fail to enable interface\n");
--			stop_stream(dice, master);
--			stop_stream(dice, slave);
--			goto end;
-+			goto error;
- 		}
- 
--		/* Wait first callbacks */
--		if (!amdtp_stream_wait_callback(master, CALLBACK_TIMEOUT) ||
--		    !amdtp_stream_wait_callback(slave, CALLBACK_TIMEOUT)) {
--			snd_dice_transaction_clear_enable(dice);
--			stop_stream(dice, master);
--			stop_stream(dice, slave);
--			err = -ETIMEDOUT;
-+		for (i = 0; i < MAX_STREAMS; i++) {
-+			if ((i < reg_params[0] &&
-+			    !amdtp_stream_wait_callback(&dice->tx_stream[i],
-+							CALLBACK_TIMEOUT)) ||
-+			    (i < reg_params[2] &&
-+			     !amdtp_stream_wait_callback(&dice->rx_stream[i],
-+							 CALLBACK_TIMEOUT))) {
-+				err = -ETIMEDOUT;
-+				goto error;
-+			}
- 		}
- 	}
--end:
-+
-+	return err;
-+error:
-+	snd_dice_transaction_clear_enable(dice);
-+	stop_streams(dice, AMDTP_IN_STREAM, reg_params[0], reg_params[1]);
-+	stop_streams(dice, AMDTP_OUT_STREAM, reg_params[2], reg_params[3]);
-+	release_resources(dice);
- 	return err;
- }
- 
-+/*
-+ * MEMO: After this function, there're two states of streams:
-+ *  - None streams are running.
-+ *  - All streams are running.
-+ */
- void snd_dice_stream_stop_duplex(struct snd_dice *dice)
- {
-+	unsigned int reg_params[4];
-+
- 	if (dice->substreams_counter > 0)
- 		return;
- 
- 	snd_dice_transaction_clear_enable(dice);
- 
--	stop_stream(dice, &dice->tx_stream[0]);
--	stop_stream(dice, &dice->rx_stream[0]);
-+	if (get_register_params(dice, reg_params) == 0) {
-+		stop_streams(dice, AMDTP_IN_STREAM, reg_params[0],
-+			     reg_params[1]);
-+		stop_streams(dice, AMDTP_OUT_STREAM, reg_params[2],
-+			     reg_params[3]);
-+	}
-+
-+	release_resources(dice);
- }
- 
--static int init_stream(struct snd_dice *dice, struct amdtp_stream *stream)
-+static int init_stream(struct snd_dice *dice, enum amdtp_stream_direction dir,
-+		       unsigned int index)
- {
--	int err;
-+	struct amdtp_stream *stream;
- 	struct fw_iso_resources *resources;
--	enum amdtp_stream_direction dir;
-+	int err;
- 
--	if (stream == &dice->tx_stream[0]) {
--		resources = &dice->tx_resources[0];
--		dir = AMDTP_IN_STREAM;
-+	if (dir == AMDTP_IN_STREAM) {
-+		stream = &dice->tx_stream[index];
-+		resources = &dice->tx_resources[index];
- 	} else {
--		resources = &dice->rx_resources[0];
--		dir = AMDTP_OUT_STREAM;
-+		stream = &dice->rx_stream[index];
-+		resources = &dice->rx_resources[index];
- 	}
- 
- 	err = fw_iso_resources_init(resources, dice->unit);
-@@ -311,14 +396,20 @@ end:
-  * This function should be called before starting streams or after stopping
-  * streams.
-  */
--static void destroy_stream(struct snd_dice *dice, struct amdtp_stream *stream)
-+static void destroy_stream(struct snd_dice *dice,
-+			   enum amdtp_stream_direction dir,
-+			   unsigned int index)
- {
-+	struct amdtp_stream *stream;
- 	struct fw_iso_resources *resources;
- 
--	if (stream == &dice->tx_stream[0])
--		resources = &dice->tx_resources[0];
--	else
--		resources = &dice->rx_resources[0];
-+	if (dir == AMDTP_IN_STREAM) {
-+		stream = &dice->tx_stream[index];
-+		resources = &dice->tx_resources[index];
-+	} else {
-+		stream = &dice->rx_stream[index];
-+		resources = &dice->rx_resources[index];
-+	}
- 
- 	amdtp_stream_destroy(stream);
- 	fw_iso_resources_destroy(resources);
-@@ -326,33 +417,53 @@ static void destroy_stream(struct snd_dice *dice, struct amdtp_stream *stream)
- 
- int snd_dice_stream_init_duplex(struct snd_dice *dice)
- {
--	int err;
-+	int i, err;
- 
--	dice->substreams_counter = 0;
--
--	err = init_stream(dice, &dice->tx_stream[0]);
--	if (err < 0)
--		goto end;
-+	for (i = 0; i < MAX_STREAMS; i++) {
-+		err = init_stream(dice, AMDTP_IN_STREAM, i);
-+		if (err < 0) {
-+			for (; i >= 0; i--)
-+				destroy_stream(dice, AMDTP_OUT_STREAM, i);
-+			goto end;
-+		}
-+	}
- 
--	err = init_stream(dice, &dice->rx_stream[0]);
--	if (err < 0)
--		destroy_stream(dice, &dice->tx_stream[0]);
-+	for (i = 0; i < MAX_STREAMS; i++) {
-+		err = init_stream(dice, AMDTP_OUT_STREAM, i);
-+		if (err < 0) {
-+			for (; i >= 0; i--)
-+				destroy_stream(dice, AMDTP_OUT_STREAM, i);
-+			for (i = 0; i < MAX_STREAMS; i++)
-+				destroy_stream(dice, AMDTP_IN_STREAM, i);
-+			break;
-+		}
-+	}
- end:
- 	return err;
- }
- 
- void snd_dice_stream_destroy_duplex(struct snd_dice *dice)
- {
-+	unsigned int reg_params[4];
-+
- 	snd_dice_transaction_clear_enable(dice);
- 
--	destroy_stream(dice, &dice->tx_stream[0]);
--	destroy_stream(dice, &dice->rx_stream[0]);
-+	if (get_register_params(dice, reg_params) == 0) {
-+		stop_streams(dice, AMDTP_IN_STREAM, reg_params[0],
-+			     reg_params[1]);
-+		stop_streams(dice, AMDTP_OUT_STREAM, reg_params[2],
-+			     reg_params[3]);
-+	}
-+
-+	release_resources(dice);
- 
- 	dice->substreams_counter = 0;
- }
- 
- void snd_dice_stream_update_duplex(struct snd_dice *dice)
- {
-+	unsigned int reg_params[4];
-+
- 	/*
- 	 * On a bus reset, the DICE firmware disables streaming and then goes
- 	 * off contemplating its own navel for hundreds of milliseconds before
-@@ -363,11 +474,12 @@ void snd_dice_stream_update_duplex(struct snd_dice *dice)
- 	 */
- 	dice->global_enabled = false;
- 
--	stop_stream(dice, &dice->rx_stream[0]);
--	stop_stream(dice, &dice->tx_stream[0]);
--
--	fw_iso_resources_update(&dice->rx_resources[0]);
--	fw_iso_resources_update(&dice->tx_resources[0]);
-+	if (get_register_params(dice, reg_params) == 0) {
-+		stop_streams(dice, AMDTP_IN_STREAM, reg_params[0],
-+			     reg_params[1]);
-+		stop_streams(dice, AMDTP_OUT_STREAM, reg_params[2],
-+			     reg_params[3]);
-+	}
- }
- 
- static void dice_lock_changed(struct snd_dice *dice)
+If you haven't, could you please pull this in.
+
+
+> 
+> Those are the relevant dmesg data:
+> 
+> [   19.017276] usbcore: registered new interface driver snd-usb-audio
+> [  230.706102] Linux video capture interface: v2.00
+> [  230.856983] au0828: au0828 driver loaded
+> [  231.230612] au0828: i2c bus registered
+> [  231.822006] tveeprom 5-0050: Hauppauge model 72001, rev E1H3, serial# 4035199481
+> [  231.822991] tveeprom 5-0050: MAC address is 00:0d:fe:84:41:f9
+> [  231.823955] tveeprom 5-0050: tuner model is Xceive XC5000C (idx 173, type 88)
+> [  231.824782] tveeprom 5-0050: TV standards NTSC(M) ATSC/DVB Digital (eeprom 0x88)
+> [  231.825272] tveeprom 5-0050: audio processor is AU8522 (idx 44)
+> [  231.825276] tveeprom 5-0050: decoder processor is AU8522 (idx 42)
+> [  231.825280] tveeprom 5-0050: has no radio, has IR receiver, has no IR transmitter
+> [  231.825283] au0828: hauppauge_eeprom: hauppauge eeprom: model=72001
+> [  231.857567] au8522 5-0047: creating new instance
+> [  231.857879] au8522_decoder creating new instance...
+> [  231.910525] tuner 5-0061: Setting mode_mask to 0x06
+> [  231.910532] tuner 5-0061: tuner 0x61: Tuner type absent
+> [  231.910535] tuner 5-0061: Tuner -1 found with type(s) Radio TV.
+> [  231.911343] tuner 5-0061: Calling set_type_addr for type=88, addr=0x61, mode=0x04, config=ffffffffa0e64100
+> [  231.911347] tuner 5-0061: defining GPIO callback
+> [  231.934896] xc5000 5-0061: creating new instance
+> [  231.954664] xc5000: Successfully identified at address 0x61
+> [  231.954987] xc5000: Firmware has not been loaded previously
+> [  231.955327] tuner 5-0061: type set to Xceive XC5000
+> [  231.955330] tuner 5-0061: au0828 tuner I2C addr 0xc2 with type 88 used for 0x04
+> [  233.622614] au8522 5-0047: attaching existing instance
+> [  233.636061] xc5000 5-0061: attaching existing instance
+> [  233.645775] xc5000: Successfully identified at address 0x61
+> [  233.646034] xc5000: Firmware has not been loaded previously
+> [  233.646461] DVB: registering new adapter (au0828)
+> [  233.647575] usb 2-3.3: DVB: registering adapter 0 frontend 0 (Auvitek AU8522 QAM/8VSB Frontend)...
+> [  233.648344] dvb_create_media_entity: media entity 'Auvitek AU8522 QAM/8VSB Frontend' registered.
+> [  233.656105] dvb_create_media_entity: media entity 'dvb-demux' registered.
+> [  234.166644] IR keymap rc-hauppauge not found
+> [  234.166962] Registered IR keymap rc-empty
+> [  234.178055] input: au0828 IR (Hauppauge HVR950Q) as /devices/pci0000:00/0000:00:14.0/usb2/2-3/2-3.3/rc/rc0/input14
+> [  234.203311] rc rc0: au0828 IR (Hauppauge HVR950Q) as /devices/pci0000:00/0000:00:14.0/usb2/2-3/2-3.3/rc/rc0
+> [  234.207828] au0828: Remote controller au0828 IR (Hauppauge HVR950Q) initalized
+> [  234.208270] au0828: Registered device AU0828 [Hauppauge HVR950Q]
+> [  234.212073] usbcore: registered new interface driver au0828
+> [  234.230371] lirc_dev: IR Remote Control driver registered, major 243 
+> [  234.257555] rc rc0: lirc_dev: driver ir-lirc-codec (au0828-input) registered at minor = 0
+> [  234.257960] IR LIRC bridge handler initialized
+> 
+> (as au0828 is blacklisted, snd-usb-audio was probed first)
+> 
+> ====xxxx====
+> 
+> I'm also getting some other weird behavior when removing/reinserting
+> the modules a few times. OK, officially we don't support it, but,
+> as devices can be bind/unbind all the times, removing modules is
+> a way to simulate such things. Also, I use it a lot while testing
+> USB drivers ;)
+
+I will do more testing on this. I didn't see any problems when
+I fixed the graph patch above - I will do more on the latest
+media branch today.
+
+thanks,
+-- Shuah
+
+> 
+> This one is after removing both the media drivers and snd-usb-audio, 
+> and then modprobing snd-usb-audio:
+> 
+> [ 1839.510587] BUG: sleeping function called from invalid context at mm/slub.c:1289
+> [ 1839.510881] in_atomic(): 1, irqs_disabled(): 0, pid: 3479, name: modprobe
+> [ 1839.511157] 4 locks held by modprobe/3479:
+> [ 1839.511415]  #0:  (&dev->mutex){......}, at: [<ffffffff81ce8933>] __driver_attach+0xa3/0x160
+> [ 1839.512381]  #1:  (&dev->mutex){......}, at: [<ffffffff81ce8941>] __driver_attach+0xb1/0x160
+> [ 1839.512388]  #2:  (register_mutex#5){+.+.+.}, at: [<ffffffffa10596c7>] usb_audio_probe+0x257/0x1c90 [snd_usb_audio]
+> [ 1839.512401]  #3:  (&(&mdev->lock)->rlock){+.+.+.}, at: [<ffffffffa0e6051b>] media_device_register_entity+0x1cb/0x700 [media]
+> [ 1839.512412] CPU: 2 PID: 3479 Comm: modprobe Not tainted 4.5.0-rc3+ #49
+> [ 1839.512415] Hardware name:                  /NUC5i7RYB, BIOS RYBDWi35.86A.0350.2015.0812.1722 08/12/2015
+> [ 1839.512417]  0000000000000000 ffff8803b3f6f288 ffffffff81933901 ffff8803c4bae000
+> [ 1839.512422]  ffff8803c4bae5c8 ffff8803b3f6f2b0 ffffffff811c6af5 ffff8803c4bae000
+> [ 1839.512427]  ffffffff8285d7f6 0000000000000509 ffff8803b3f6f2f0 ffffffff811c6ce5
+> [ 1839.512432] Call Trace:
+> [ 1839.512436]  [<ffffffff81933901>] dump_stack+0x85/0xc4
+> [ 1839.512440]  [<ffffffff811c6af5>] ___might_sleep+0x245/0x3a0
+> [ 1839.512443]  [<ffffffff811c6ce5>] __might_sleep+0x95/0x1a0
+> [ 1839.512446]  [<ffffffff8155aade>] kmem_cache_alloc_trace+0x20e/0x300
+> [ 1839.512451]  [<ffffffffa0e66e3d>] ? media_add_link+0x4d/0x140 [media]
+> [ 1839.512455]  [<ffffffffa0e66e3d>] media_add_link+0x4d/0x140 [media]
+> [ 1839.512459]  [<ffffffffa0e69931>] media_create_pad_link+0xa1/0x600 [media]
+> [ 1839.512463]  [<ffffffffa0fe11b3>] au0828_media_graph_notify+0x173/0x360 [au0828]
+> [ 1839.512467]  [<ffffffffa0e68a6a>] ? media_gobj_create+0x1ba/0x480 [media]
+> [ 1839.512471]  [<ffffffffa0e606fb>] media_device_register_entity+0x3ab/0x700 [media]
+> [ 1839.512475]  [<ffffffffa0e60350>] ? media_device_release_devres+0x10/0x10 [media]
+> [ 1839.512479]  [<ffffffff8124068d>] ? trace_hardirqs_on+0xd/0x10
+> [ 1839.512482]  [<ffffffff8159f992>] ? create_object+0x5a2/0x940
+> [ 1839.512485]  [<ffffffff8159f3f0>] ? kmemleak_disable+0x90/0x90
+> [ 1839.512489]  [<ffffffff8159f3f0>] ? kmemleak_disable+0x90/0x90
+> [ 1839.512497]  [<ffffffffa109722c>] ? media_snd_mixer_init+0x16c/0x500 [snd_usb_audio]
+> [ 1839.512501]  [<ffffffff8155f696>] ? kasan_unpoison_shadow+0x36/0x50
+> [ 1839.512504]  [<ffffffff8155f70e>] ? kasan_kmalloc+0x5e/0x70
+> [ 1839.512511]  [<ffffffffa1097352>] media_snd_mixer_init+0x292/0x500 [snd_usb_audio]
+> [ 1839.512519]  [<ffffffffa1097693>] media_snd_device_create+0xd3/0x2e0 [snd_usb_audio]
+> [ 1839.512525]  [<ffffffffa1059b05>] usb_audio_probe+0x695/0x1c90 [snd_usb_audio]
+> [ 1839.512529]  [<ffffffff8128b217>] ? debug_lockdep_rcu_enabled+0x77/0x90
+> [ 1839.512536]  [<ffffffffa1059470>] ? snd_usb_create_stream+0x4e0/0x4e0 [snd_usb_audio]
+> [ 1839.512540]  [<ffffffff812404fa>] ? trace_hardirqs_on_caller+0x40a/0x590
+> [ 1839.512543]  [<ffffffff8124068d>] ? trace_hardirqs_on+0xd/0x10
+> [ 1839.512546]  [<ffffffff81dbb1dd>] usb_probe_interface+0x45d/0x940
+> [ 1839.512550]  [<ffffffff81ce7e7a>] driver_probe_device+0x21a/0xc30
+> [ 1839.512553]  [<ffffffff81ce8890>] ? driver_probe_device+0xc30/0xc30
+> [ 1839.512556]  [<ffffffff81ce89b1>] __driver_attach+0x121/0x160
+> [ 1839.512559]  [<ffffffff81ce21bf>] bus_for_each_dev+0x11f/0x1a0
+> [ 1839.512562]  [<ffffffff81ce20a0>] ? subsys_dev_iter_exit+0x10/0x10
+> [ 1839.512565]  [<ffffffff822e7be7>] ? _raw_spin_unlock+0x27/0x40
+> [ 1839.512568]  [<ffffffff81ce6cdd>] driver_attach+0x3d/0x50
+> [ 1839.512571]  [<ffffffff81ce5df9>] bus_add_driver+0x4c9/0x770
+> [ 1839.512575]  [<ffffffff81cea39c>] driver_register+0x18c/0x3b0
+> [ 1839.512578]  [<ffffffff81250f92>] ? __raw_spin_lock_init+0x32/0x100
+> [ 1839.512581]  [<ffffffff81db6e98>] usb_register_driver+0x1f8/0x440
+> [ 1839.512584]  [<ffffffff810021a1>] ? do_one_initcall+0x131/0x300
+> [ 1839.512587]  [<ffffffffa10d8000>] ? 0xffffffffa10d8000
+> [ 1839.512594]  [<ffffffffa10d801e>] usb_audio_driver_init+0x1e/0x1000 [snd_usb_audio]
+> [ 1839.512597]  [<ffffffff810021b1>] do_one_initcall+0x141/0x300
+> [ 1839.512600]  [<ffffffff81002070>] ? try_to_run_init_process+0x40/0x40
+> [ 1839.512603]  [<ffffffff8155f696>] ? kasan_unpoison_shadow+0x36/0x50
+> [ 1839.512606]  [<ffffffff8155f696>] ? kasan_unpoison_shadow+0x36/0x50
+> [ 1839.512609]  [<ffffffff8155f7a7>] ? __asan_register_globals+0x87/0xa0
+> [ 1839.512613]  [<ffffffff8144d8eb>] do_init_module+0x1d0/0x5ad
+> [ 1839.512617]  [<ffffffff812f27b6>] load_module+0x6666/0x9ba0
+> [ 1839.512620]  [<ffffffff812e9e20>] ? symbol_put_addr+0x50/0x50
+> [ 1839.512627]  [<ffffffff812ec150>] ? module_frob_arch_sections+0x20/0x20
+> [ 1839.512630]  [<ffffffff815be010>] ? open_exec+0x50/0x50
+> [ 1839.512634]  [<ffffffff8116716b>] ? ns_capable+0x5b/0xd0
+> [ 1839.512637]  [<ffffffff812f5fe8>] SyS_finit_module+0x108/0x130
+> [ 1839.512640]  [<ffffffff812f5ee0>] ? SyS_init_module+0x1f0/0x1f0
+> [ 1839.512643]  [<ffffffff81004044>] ? lockdep_sys_exit_thunk+0x12/0x14
+> [ 1839.512647]  [<ffffffff822e8636>] entry_SYSCALL_64_fastpath+0x16/0x76
+> [ 1839.514027] usbcore: registered new interface driver snd-usb-audio
+> 
+> And an extra kmemleak issue:
+> 
+> unreferenced object 0xffff8803bcbacf30 (size 128):
+>   comm "modprobe", pid 2625, jiffies 4294950803 (age 1715.788s)
+>   hex dump (first 32 bytes):
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<ffffffff822cf76e>] kmemleak_alloc+0x4e/0xb0
+>     [<ffffffff8155ab06>] kmem_cache_alloc_trace+0x236/0x300
+>     [<ffffffff81937eb2>] ida_pre_get+0x1a2/0x250
+>     [<ffffffff81938005>] ida_simple_get+0xa5/0x170
+>     [<ffffffffa0f1469a>] 0xffffffffa0f1469a
+>     [<ffffffffa0fe6951>] au0828_dvb_register+0xe21/0x12c0 [au0828]
+>     [<ffffffffa0fd1d92>] vb2_thread+0xbb2/0xc10 [videobuf2_core]
+>     [<ffffffff81dbb1dd>] usb_probe_interface+0x45d/0x940
+>     [<ffffffff81ce7e7a>] driver_probe_device+0x21a/0xc30
+>     [<ffffffff81ce89b1>] __driver_attach+0x121/0x160
+>     [<ffffffff81ce21bf>] bus_for_each_dev+0x11f/0x1a0
+>     [<ffffffff81ce6cdd>] driver_attach+0x3d/0x50
+>     [<ffffffff81ce5df9>] bus_add_driver+0x4c9/0x770
+>     [<ffffffff81cea39c>] driver_register+0x18c/0x3b0
+>     [<ffffffff81db6e98>] usb_register_driver+0x1f8/0x440
+>     [<ffffffffa0fb80b7>] au8522_get_frontend+0xb7/0x160 [au8522_dig]
+> 
+> I did one extra module removal/reinsert, and this time, I got lots
+> of bugs. Full dmesg is at:
+> 	http://pastebin.com/LEX5LD5K
+> 
+> The Kernel hanged after a while with (at the serial console - with
+> kind of explain why the message is truncated):
+> 
+> [ 2117.282666] kasan: GPF could be caused by NULL-ptr deref or user memory accessgeneral protection fault: 0000 [#2] SMP KASAN
+> [ 2117.284074] Modules linked in: videobuf2_v4l2 videobuf2_core tveeprom dvb_core rc_core v4l2_common videodev snd_usb_audio media cpufreq_powersave cpufreq_conservative cpufreq_userspace cpufreq_stats parport_pc ppdev lp parport snd_hda_codec_hdmi intel_rapl x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel iTCO_wdt iTCO_vendor_support kvm irqbypass crct10dif_pclmul crc32_
+> 
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-media" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
+
+
 -- 
-2.7.0
+Shuah Khan
+Sr. Linux Kernel Developer
+Open Source Innovation Group
+Samsung Research America (Silicon Valley)
+shuahkh@osg.samsung.com | (970) 217-8978
