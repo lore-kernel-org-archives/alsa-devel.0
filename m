@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: rename rsnd_enable_sync_convert()
-	to rsnd_src_sync_is_enabled()" to the asoc tree
-Date: Mon, 07 Mar 2016 14:42:51 +0700
-Message-ID: <E1acpoZ-00072k-8a@finisterre>
-References: <87fuw2yj55.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: SRC function parameter uses "mod"
+	instead of "src"" to the asoc tree
+Date: Mon, 07 Mar 2016 14:42:52 +0700
+Message-ID: <E1acpoa-00073I-Tu@finisterre>
+References: <87h9giyj5v.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 38BAE26154F
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 08:42:54 +0100 (CET)
-In-Reply-To: <87fuw2yj55.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C7C02261555
+ for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 08:42:55 +0100 (CET)
+In-Reply-To: <87h9giyj5v.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: rename rsnd_enable_sync_convert() to rsnd_src_sync_is_enabled()
+   ASoC: rsnd: SRC function parameter uses "mod" instead of "src"
 
 has been applied to the asoc tree at
 
@@ -53,109 +53,70 @@ to this mail.
 Thanks,
 Mark
 
->From ab2049f9de72c901c07eec25eff74dae2e82df7e Mon Sep 17 00:00:00 2001
+>From 1a9be9ee194131465d945981969b85045f20e6af Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 7 Mar 2016 05:07:57 +0000
-Subject: [PATCH] ASoC: rsnd: rename rsnd_enable_sync_convert() to
- rsnd_src_sync_is_enabled()
+Date: Mon, 7 Mar 2016 05:07:29 +0000
+Subject: [PATCH] ASoC: rsnd: SRC function parameter uses "mod" instead of
+ "src"
 
-rsnd_enable_sync_convert() is for checking, not for setting.
-In order to avoid confusion, this patch renamed it to
-rsnd_src_sync_is_enabled()
+To reduce confusion, SRC uses "mod" instead of "src"
+as function parameter
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/src.c | 19 ++++++++-----------
- 1 file changed, 8 insertions(+), 11 deletions(-)
+ sound/soc/sh/rcar/src.c | 21 +++++++++------------
+ 1 file changed, 9 insertions(+), 12 deletions(-)
 
 diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index d520690409a2..1d5aedb50213 100644
+index ab974afe79eb..d520690409a2 100644
 --- a/sound/soc/sh/rcar/src.c
 +++ b/sound/soc/sh/rcar/src.c
-@@ -33,7 +33,7 @@ struct rsnd_src {
- #define rsnd_src_get(priv, id) ((struct rsnd_src *)(priv->src) + id)
- #define rsnd_src_to_dma(src) ((src)->dma)
- #define rsnd_src_nr(priv) ((priv)->src_nr)
--#define rsnd_enable_sync_convert(src) ((src)->sen.val)
-+#define rsnd_src_sync_is_enabled(mod) (rsnd_mod_to_src(mod)->sen.val)
+@@ -93,9 +93,10 @@ static struct dma_chan *rsnd_src_dma_req(struct rsnd_dai_stream *io,
+ }
  
- #define rsnd_mod_to_src(_mod)				\
- 	container_of((_mod), struct rsnd_src, mod)
-@@ -102,7 +102,7 @@ static u32 rsnd_src_convert_rate(struct rsnd_dai_stream *io,
+ static u32 rsnd_src_convert_rate(struct rsnd_dai_stream *io,
+-				 struct rsnd_src *src)
++				 struct rsnd_mod *mod)
+ {
+ 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
++	struct rsnd_src *src = rsnd_mod_to_src(mod);
+ 	u32 convert_rate;
+ 
  	if (!runtime)
- 		return 0;
+@@ -120,18 +121,14 @@ unsigned int rsnd_src_get_ssi_rate(struct rsnd_priv *priv,
+ 				   struct snd_pcm_runtime *runtime)
+ {
+ 	struct rsnd_mod *src_mod = rsnd_io_to_mod_src(io);
+-	struct rsnd_src *src;
+ 	unsigned int rate = 0;
  
--	if (!rsnd_enable_sync_convert(src))
-+	if (!rsnd_src_sync_is_enabled(mod))
- 		return src->convert_rate;
+-	if (src_mod) {
+-		src = rsnd_mod_to_src(src_mod);
+-
+-		/*
+-		 * return convert rate if SRC is used,
+-		 * otherwise, return runtime->rate as usual
+-		 */
+-		rate = rsnd_src_convert_rate(io, src);
+-	}
++	/*
++	 * return convert rate if SRC is used,
++	 * otherwise, return runtime->rate as usual
++	 */
++	if (src_mod)
++		rate = rsnd_src_convert_rate(io, src_mod);
  
- 	convert_rate = src->sync.val;
-@@ -175,7 +175,6 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
- 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
+ 	if (!rate)
+ 		rate = runtime->rate;
+@@ -179,7 +176,7 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
  	struct device *dev = rsnd_priv_to_dev(priv);
  	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
--	struct rsnd_src *src = rsnd_mod_to_src(mod);
- 	u32 convert_rate = rsnd_src_convert_rate(io, mod);
+ 	struct rsnd_src *src = rsnd_mod_to_src(mod);
+-	u32 convert_rate = rsnd_src_convert_rate(io, src);
++	u32 convert_rate = rsnd_src_convert_rate(io, mod);
  	u32 ifscr, fsrate, adinr;
  	u32 cr, route;
-@@ -222,7 +221,7 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
- 	if (convert_rate) {
- 		route	= 0x1;
- 
--		if (rsnd_enable_sync_convert(src)) {
-+		if (rsnd_src_sync_is_enabled(mod)) {
- 			cr |= 0x1;
- 			route |= rsnd_io_is_play(io) ?
- 				(0x1 << 24) : (0x1 << 25);
-@@ -296,9 +295,9 @@ static int rsnd_src_irq(struct rsnd_mod *mod,
- 	/*
- 	 * WORKAROUND
- 	 *
--	 * ignore over flow error when rsnd_enable_sync_convert()
-+	 * ignore over flow error when rsnd_src_sync_is_enabled()
- 	 */
--	if (rsnd_enable_sync_convert(src))
-+	if (rsnd_src_sync_is_enabled(mod))
- 		sys_int_val = sys_int_val & 0xffff;
- 
- 	rsnd_mod_write(mod, SRC_INT_ENABLE0, int_val);
-@@ -318,7 +317,6 @@ static void rsnd_src_status_clear(struct rsnd_mod *mod)
- 
- static bool rsnd_src_error_occurred(struct rsnd_mod *mod)
- {
--	struct rsnd_src *src = rsnd_mod_to_src(mod);
- 	u32 val0, val1;
- 	bool ret = false;
- 
-@@ -327,9 +325,9 @@ static bool rsnd_src_error_occurred(struct rsnd_mod *mod)
- 	/*
- 	 * WORKAROUND
- 	 *
--	 * ignore over flow error when rsnd_enable_sync_convert()
-+	 * ignore over flow error when rsnd_src_sync_is_enabled()
- 	 */
--	if (rsnd_enable_sync_convert(src))
-+	if (rsnd_src_sync_is_enabled(mod))
- 		val0 = val0 & 0xffff;
- 
- 	if ((rsnd_mod_read(mod, SCU_SYS_STATUS0) & val0) ||
-@@ -343,7 +341,6 @@ static int rsnd_src_start(struct rsnd_mod *mod,
- 			  struct rsnd_dai_stream *io,
- 			  struct rsnd_priv *priv)
- {
--	struct rsnd_src *src = rsnd_mod_to_src(mod);
- 	u32 val;
- 
- 	/*
-@@ -351,7 +348,7 @@ static int rsnd_src_start(struct rsnd_mod *mod,
- 	 *
- 	 * Enable SRC output if you want to use sync convert together with DVC
- 	 */
--	val = (rsnd_io_to_mod_dvc(io) && !rsnd_enable_sync_convert(src)) ?
-+	val = (rsnd_io_to_mod_dvc(io) && !rsnd_src_sync_is_enabled(mod)) ?
- 		0x01 : 0x11;
- 
- 	rsnd_mod_write(mod, SRC_CTRL, val);
+ 	u32 bsdsr, bsisr;
 -- 
 2.7.0
