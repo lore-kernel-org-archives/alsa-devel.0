@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsrc-card: tidyup convert-channels
-	explain" to the asoc tree
-Date: Mon, 07 Mar 2016 14:43:02 +0700
-Message-ID: <E1acpok-00075j-KU@finisterre>
-References: <87mvqayjlw.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rt5616: add missing mute control for
+	HPVOL" to the asoc tree
+Date: Mon, 07 Mar 2016 14:43:04 +0700
+Message-ID: <E1acpom-00076D-9t@finisterre>
+References: <1457323931-31819-1-git-send-email-john.lin@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8E394265130
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 08:43:05 +0100 (CET)
-In-Reply-To: <87mvqayjlw.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F43F26517C
+ for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 08:43:08 +0100 (CET)
+In-Reply-To: <1457323931-31819-1-git-send-email-john.lin@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+To: John Lin <john.lin@realtek.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsrc-card: tidyup convert-channels explain
+   ASoC: rt5616: add missing mute control for HPVOL
 
 has been applied to the asoc tree at
 
@@ -53,29 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From 74e26809fb47e072d0838f74a08a0a5aa428848f Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 7 Mar 2016 04:57:55 +0000
-Subject: [PATCH] ASoC: rsrc-card: tidyup convert-channels explain
+>From d7fcd13663fe43ad938fec1acd46ff196dddf914 Mon Sep 17 00:00:00 2001
+From: John Lin <john.lin@realtek.com>
+Date: Mon, 7 Mar 2016 12:12:11 +0800
+Subject: [PATCH] ASoC: rt5616: add missing mute control for HPVOL
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Add missing kcontrol for HPVOL mute control.
+
+Signed-off-by: John Lin <john.lin@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt5616.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt b/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt
-index 5abebf7898d9..255ece3043ad 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt
-@@ -30,7 +30,7 @@ Optional subnode properties:
- - frame-inversion			: bool property. Add this if the
- 					  dai-link uses frame clock inversion.
- - convert-rate				: platform specified sampling rate convert
--- convert-channels			: platform specified channel size convert
-+- convert-channels			: platform specified converted channel size (2 - 8 ch)
- - audio-prefix				: see audio-routing
- - audio-routing				: A list of the connections between audio components.
- 					  Each entry is a pair of strings, the first being the connection's sink,
+diff --git a/sound/soc/codecs/rt5616.c b/sound/soc/codecs/rt5616.c
+index 3704d0716c04..f527b5b2817b 100644
+--- a/sound/soc/codecs/rt5616.c
++++ b/sound/soc/codecs/rt5616.c
+@@ -309,6 +309,8 @@ static const struct snd_kcontrol_new rt5616_snd_controls[] = {
+ 	/* Headphone Output Volume */
+ 	SOC_DOUBLE("HP Playback Switch", RT5616_HP_VOL,
+ 		   RT5616_L_MUTE_SFT, RT5616_R_MUTE_SFT, 1, 1),
++	SOC_DOUBLE("HPVOL Playback Switch", RT5616_HP_VOL,
++		   RT5616_VOL_L_SFT, RT5616_VOL_R_SFT, 1, 1),
+ 	SOC_DOUBLE_TLV("HP Playback Volume", RT5616_HP_VOL,
+ 		       RT5616_L_VOL_SFT, RT5616_R_VOL_SFT, 39, 1, out_vol_tlv),
+ 	/* OUTPUT Control */
 -- 
 2.7.0
