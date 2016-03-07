@@ -1,20 +1,15 @@
-From: "Austin, Brian" <Brian.Austin@cirrus.com>
-Subject: Re: [PATCH] ASoC: cs35l32: avoid uninitialized
-	variable access
-Date: Mon, 7 Mar 2016 12:22:18 +0000
-Message-ID: <E771F005-D3E6-48A9-A0B1-1C11F1439E55@cirrus.com>
-References: <1457324374-3405023-1-git-send-email-arnd@arndb.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/4] ALSA: dice: enable to handle several
+	streams
+Date: Mon,  7 Mar 2016 22:35:41 +0900
+Message-ID: <1457357745-24756-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D6D52607F7
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 13:22:20 +0100 (CET)
-In-Reply-To: <1457324374-3405023-1-git-send-email-arnd@arndb.de>
-Content-Language: en-US
-Content-ID: <ADE8BC8E3101A143AB2BED850E6592CC@ad.cirrus.com>
+Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id B2089261584
+ for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 14:35:49 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,51 +19,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Austin,
- Brian" <Brian.Austin@cirrus.com>, "Handrigan,
- Paul" <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-DQo+IE9uIE1hciA2LCAyMDE2LCBhdCAxMDoxOSBQTSwgQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5k
-Yi5kZT4gd3JvdGU6DQo+IA0KPiBnY2Mgd2FybnMgYWJvdXQgdGhlIHBvc3NpYmlsdHkgb2YgYWNj
-ZXNzaW5nIGEgcHJvcGVydHkgcmVhZCBmcm9tDQo+IGRldmljZXRyZWUgaW4gY3MzNWwzMl9pMmNf
-cHJvYmUoKSB3aGVuIGl0IGhhcyBub3QgYmVlbiBpbml0aWFsaXplZA0KPiBiZWNhdXNlIENPTkZJ
-R19PRiBpcyBkaXNhYmxlZDoNCj4gDQo+IHNvdW5kL3NvYy9jb2RlY3MvY3MzNWwzMi5jOiBJbiBm
-dW5jdGlvbiAnY3MzNWwzMl9pMmNfcHJvYmUnOg0KPiBzb3VuZC9zb2MvY29kZWNzL2NzMzVsMzIu
-YzoyNzg6Mjogd2FybmluZzogJ3ZhbCcgbWF5IGJlIHVzZWQgdW5pbml0aWFsaXplZCBpbiB0aGlz
-IGZ1bmN0aW9uIFstV21heWJlLXVuaW5pdGlhbGl6ZWRdDQo+IA0KPiBUaGUgY29kZSBpcyBhY3R1
-YWxseSBjb3JyZWN0IGJlY2F1c2UgaXQgY2hlY2tzIHRoZSBkZXYtPm9mX25vZGUNCj4gdmFyaWFi
-bGUgZmlyc3QgYW5kIHdlIGtub3cgdGhpcyBpcyBOVUxMIGhlcmUgd2hlbiBDT05GSUdfT0YNCj4g
-aXMgZGlzYWJsZWQsIGJ1dCBSdXNzZWxsIEtpbmcgbm90aWNlZCB0aGF0IGl0J3MgYnJva2VuIHdo
-ZW4NCj4gd2UgcHJvYmUgdGhlIGRldmljZSB1c2luZyBEVCwgYW5kIHRoZSBwcm9wZXJ0aWVzIGFy
-ZSBhYnNlbnQuDQo+IA0KPiBUaGUgY29kZSBhbHJlYWR5IGhhcyBzb21lIGNoZWNraW5nIGZvciBp
-bmNvcnJlY3QgdmFsdWVzLCBhbmQNCj4gSSBrZWVwIHRoYXQgY2hlY2tpbmcgdW5jaGFuZ2VkIGhl
-cmUsIGJ1dCBhZGQgYW4gYWRkaXRpb25hbA0KPiBjaGVjayBmb3IgYW4gZXJyb3IgcmV0dXJuZWQg
-YnkgdGhlIHByb3BlcnR5IGFjY2Vzc29yIGZ1bmN0aW9ucw0KPiB0aGF0IG5vdyBnZXRzIGhhbmRs
-ZWQgdGhlIHNhbWUgd2F5IGFzIGluY29ycmVjdCBkYXRhIGluIHRoZQ0KPiBwcm9wZXJ0aWVzLg0K
-PiANCj4gU2lnbmVkLW9mZi1ieTogQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5kYi5kZT4NCj4gLS0t
-DQo+IHNvdW5kL3NvYy9jb2RlY3MvY3MzNWwzMi5jIHwgMTcgKysrKysrKysrKysrLS0tLS0NCj4g
-MSBmaWxlIGNoYW5nZWQsIDEyIGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pDQo+IA0KPiBk
-aWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy9jczM1bDMyLmMgYi9zb3VuZC9zb2MvY29kZWNz
-L2NzMzVsMzIuYw0KPiBpbmRleCA0NGMzMGZlM2UzMTUuLmM0OTBkYzc0MTIxYiAxMDA2NDQNCj4g
-LS0tIGEvc291bmQvc29jL2NvZGVjcy9jczM1bDMyLmMNCj4gKysrIGIvc291bmQvc29jL2NvZGVj
-cy9jczM1bDMyLmMNCj4gQEAgLTI3NCwyMSArMjc0LDI0IEBAIHN0YXRpYyBpbnQgY3MzNWwzMl9o
-YW5kbGVfb2ZfZGF0YShzdHJ1Y3QgaTJjX2NsaWVudCAqaTJjX2NsaWVudCwNCj4gCWlmIChvZl9w
-cm9wZXJ0eV9yZWFkX3UzMihucCwgImNpcnJ1cyxzZG91dC1zaGFyZSIsICZ2YWwpID49IDApDQo+
-IAkJcGRhdGEtPnNkb3V0X3NoYXJlID0gdmFsOw0KPiANCj4gLQlvZl9wcm9wZXJ0eV9yZWFkX3Uz
-MihucCwgImNpcnJ1cyxib29zdC1tYW5hZ2VyIiwgJnZhbCk7DQo+ICsJaWYgKG9mX3Byb3BlcnR5
-X3JlYWRfdTMyKG5wLCAiY2lycnVzLGJvb3N0LW1hbmFnZXIiLCAmdmFsKSkNCj4gKwkJdmFsID0g
-LTF1Ow0KPiArDQo+IAlzd2l0Y2ggKHZhbCkgew0KPiAJY2FzZSBDUzM1TDMyX0JPT1NUX01HUl9B
-VVRPOg0KPiAJY2FzZSBDUzM1TDMyX0JPT1NUX01HUl9BVVRPX0FVRElPOg0KPiAJY2FzZSBDUzM1
-TDMyX0JPT1NUX01HUl9CWVBBU1M6DQo+IAljYXNlIENTMzVMMzJfQk9PU1RfTUdSX0ZJWEVEOg0K
-PiAtCQlwZGF0YS0+Ym9vc3RfbW5nID0gdmFsOw0KV2l0aCB0aGlzIG9uZSBsaW5lIHJlbW92ZWQg
-d29u4oCZdCB0aGF0IGtlZXAgZnJvbSBhc3NpZ25pbmcgdGhlIHZhbHVlIGZvciBsYXRlcj8NClRo
-ZSBvdGhlciBvbmVzIGRvbuKAmXQgc2VlbSB0byBkbyB0aGlzIGJ1dCBqdXN0IGNoZWNrIGZvciBi
-YWQgdmFsdWUuDQo+IAkJYnJlYWs7DQo+ICsJY2FzZSAtMXU6DQo+IAlkZWZhdWx0Og0KPiAJCWRl
-dl9lcnIoJmkyY19jbGllbnQtPmRldiwNCj4gCQkJIldyb25nIGNpcnJ1cyxib29zdC1tYW5hZ2Vy
-IERUIHZhbHVlICVkXG4iLCB2YWwpOw0KPiAJCXBkYXRhLT5ib29zdF9tbmcgPSBDUzM1TDMyX0JP
-T1NUX01HUl9CWVBBU1M7DQo+IAl9DQo+IA0KUmVnYXJkcywNCkJyaWFuDQoNCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hi,
+
+This patchset updates my previous RFT, and goes for merging.
+[alsa-devel] [RFT][PATCH 0/4] ALSA: dice: enabled to handle several streams
+http://mailman.alsa-project.org/pipermail/alsa-devel/2016-March/105387.html
+
+For the previous one, Stefan Richter worked as a tester with his devices
+(Focusrite Saffire Pro 24 and 40), while current patchset includes changes
+related to userspace interface. Therefore, I don't add Tested-by.
+
+
+In previous one, ALSA dice driver uses subdevice for userspace to access
+any PCM substreams. On the other hand, the design of PCM subdevice leaves
+a bit cumbersome for userspace to handle several subdevices simultaneously
+in one process. These PCM substreams on a batch of AMDTP streams and it's
+better for ALSA dice driver to enable one process to handle them with
+simpler way.
+
+Based on this concept, this patchset adds PCM character devices, instead of
+PCM subdevice. Thus, userspace applications can utilize PCM substreams via
+individual PCM character devices. In configuration space of alsa-lib, via
+'hw:0,0' and 'hw:0,1' if available, like:
+
+$ arecord -l
+...
+card 1: Pro26000f5a [Pro26-000f5a], device 0: DICE [Pro26-000f5a]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: Pro26000f5a [Pro26-000f5a], device 1: DICE [Pro26-000f5a]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+
+For the other parts, there's no code changes. Therefore, Stefan's result
+still has meanings.
+
+Changes:
+ * Add additional PCM character device instead of PCM subdevice
+ * Correct string entries to force-pcm
+ * Improve comments
+
+Takashi Sakamoto (4):
+  ALSA: dice: have two sets of isochronous resources/streams
+  ALSA: dice: handle whole available isochronous streams
+  ALSA: dice: handle several PCM substreams when any isochronous streams
+    are available
+  ALSA: dice: force to add two pcm devices for listed models
+
+ sound/firewire/dice/dice-midi.c   |   8 +-
+ sound/firewire/dice/dice-pcm.c    | 147 +++++++++-----
+ sound/firewire/dice/dice-stream.c | 398 ++++++++++++++++++++++++--------------
+ sound/firewire/dice/dice.c        |  41 ++++
+ sound/firewire/dice/dice.h        |  33 +++-
+ 5 files changed, 424 insertions(+), 203 deletions(-)
+
+-- 
+2.7.0
