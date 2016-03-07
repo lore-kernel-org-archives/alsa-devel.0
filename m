@@ -1,8 +1,8 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
 Subject: Re: [PATCH v5 22/22] sound/usb: Use Media Controller API to share
  media resources
-Date: Mon, 7 Mar 2016 15:06:54 -0700
-Message-ID: <56DDFB7E.7020108@osg.samsung.com>
+Date: Mon, 7 Mar 2016 15:10:39 -0700
+Message-ID: <56DDFC5F.6080108@osg.samsung.com>
 References: <1456937431-3794-1-git-send-email-shuahkh@osg.samsung.com>
  <20160305070055.6e17edcd@recife.lan>
 Mime-Version: 1.0
@@ -148,7 +148,7 @@ media device unregister just like entity_notify() handler
 gets deleted from media device unregister. At the moment,
 either driver can call unregister and same cleanup happens.
 
-I will send a patch to do enable/disable hanlder cleanup
+I will send a patch to do enable/disable handler cleanup
 in unregister path.
 
 However, the root of the problem is media device is
