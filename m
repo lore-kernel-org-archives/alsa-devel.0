@@ -1,20 +1,20 @@
-From: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Subject: Re: [PATCH 4/4] ALSA: dice: force to add two pcm
- devices for listed models
-Date: Mon, 7 Mar 2016 01:24:42 +0100
-Message-ID: <20160307012442.6935bc04@kant>
-References: <1457179087-27604-1-git-send-email-o-takashi@sakamocchi.jp>
- <1457179087-27604-5-git-send-email-o-takashi@sakamocchi.jp>
- <20160305160733.6306be3f@kant> <56DC2514.2010101@sakamocchi.jp>
- <20160306235521.7aabff60@kant>
+From: "Lu, Han" <han.lu@intel.com>
+Subject: Re: [PATCH 01/10] alsabat: add default device name for
+ playback and capture
+Date: Mon, 7 Mar 2016 01:24:02 +0000
+Message-ID: <B51200AC81AB024499A3C2C9A1BB90A83D3A7CFF@SHSMSX101.ccr.corp.intel.com>
+References: <cover.1456907242.git.han.lu@intel.com>
+ <b3331c7bab38e2c078aa2ded55d04d6c25f92bae.1456907242.git.han.lu@intel.com>
+ <s5hh9gmneqh.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from einhorn.in-berlin.de (einhorn.in-berlin.de [192.109.42.8])
- by alsa0.perex.cz (Postfix) with ESMTP id BF1882605C3
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 01:24:43 +0100 (CET)
-In-Reply-To: <20160306235521.7aabff60@kant>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A5CE2605C3
+ for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 02:24:11 +0100 (CET)
+In-Reply-To: <s5hh9gmneqh.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,26 +24,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Gautier, Bernard" <bernard.gautier@intel.com>, "Popescu,
+ Edward C" <edward.c.popescu@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mar 06 Stefan Richter wrote:
-[...]
-> Then I also tried 88200 and 96000 Hz.  This gives 16+16 channels at
-> subdevice #0 like it should, and capture works, but playback is mute.
-[...]
-> Next thing for me to do will be to remove patches and figure out whether
-> a previous driver revision gives me unmuted playback at 96000 Hz on the
-> PRO 40. 
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Saturday, March 5, 2016 4:57 AM
+> To: Lu, Han <han.lu@intel.com>
+> Cc: liam.r.girdwood@linux.intel.com; Gautier, Bernard
+> <bernard.gautier@intel.com>; Popescu, Edward C
+> <edward.c.popescu@intel.com>; alsa-devel@alsa-project.org
+> Subject: Re: [PATCH 01/10] alsabat: add default device name for playback
+> and capture
+> 
+> On Wed, 02 Mar 2016 09:53:11 +0100,
+> han.lu@intel.com wrote:
+> >
+> > From: "Lu, Han" <han.lu@intel.com>
+> >
+> > Add default name for the playback and capture devices, in case they
+> > were not set by user through '-D', '-P' or '-C' options.
+> > The patch was tested on Ubuntu and Chrome OS.
+> >
+> > Signed-off-by: Lu, Han <han.lu@intel.com>
+> >
+> > diff --git a/bat/alsa.c b/bat/alsa.c
+> > index 5eaa25b..5775748 100644
+> > --- a/bat/alsa.c
+> > +++ b/bat/alsa.c
+> > @@ -377,12 +377,6 @@ void *playback_alsa(struct bat *bat)
+> >  	retval_play = 0;
+> >  	memset(&sndpcm, 0, sizeof(sndpcm));
+> >
+> > -	if (bat->playback.device == NULL) {
+> > -		fprintf(bat->err, _("No PCM device for playback: exit\n"));
+> > -		retval_play = 1;
+> > -		goto exit1;
+> > -	}
+> > -
+> >  	err = snd_pcm_open(&sndpcm.handle, bat->playback.device,
+> >  			SND_PCM_STREAM_PLAYBACK, 0);
+> >  	if (err != 0) {
+> > @@ -533,12 +527,6 @@ void *record_alsa(struct bat *bat)
+> >  	retval_record = 0;
+> >  	memset(&sndpcm, 0, sizeof(sndpcm));
+> >
+> > -	if (bat->capture.device == NULL) {
+> > -		fprintf(bat->err, _("No PCM device for capture: exit\n"));
+> > -		retval_record = 1;
+> > -		goto exit1;
+> > -	}
+> > -
+> >  	err = snd_pcm_open(&sndpcm.handle, bat->capture.device,
+> >  			SND_PCM_STREAM_CAPTURE, 0);
+> >  	if (err != 0) {
+> > diff --git a/bat/bat.c b/bat/bat.c
+> > index ddb60b7..9c637f2 100644
+> > --- a/bat/bat.c
+> > +++ b/bat/bat.c
+> > @@ -473,6 +473,10 @@ static int bat_init(struct bat *bat)
+> >  			return err;
+> >  	}
+> >
+> > +	/* Set default playback and capture devices */
+> > +	if (bat->playback.device == NULL && bat->capture.device == NULL)
+> > +		bat->playback.device = bat->capture.device =
+> DEFAULT_DEV_NAME;
+> 
+> What if only one of playback and capture is specified?
+> 
+> 
+> Takashi
 
-Plain v4.5-rc6 gave me unmuted playback at 88200/96000 Hz once, but it was
-distorted by some sort of high clinking.  Other times plain v4.5-rc6 had
-muted playback at 88200/96000 Hz too.
+If only one of playback and capture is specified, the alsabat shall work on
+single line mode, where only one thread (playback or capture) will be started.
+The testbat.sh covers the test cases of single mode:
+	feature_test "-P $dev_playback" "single line mode, playback"
+	feature_test "-C $dev_capture --standalone" "single line mode, capture"
+Previously, if not specify any device, the alsabat will start playback and capture
+Threads, and then quit threads with error text. The patch is intend to make the
+alsabat works in case no device be specified, and the patch does not influence
+the cases of single line mode. 
 
-I tested with mplayer+jack+alsa, audacious+jack+alsa, and
-audacious+alsa.
--- 
-Stefan Richter
--======----- --== --===
-http://arcgraph.de/sr/
+BR,
+Han
