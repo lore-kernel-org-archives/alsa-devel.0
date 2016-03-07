@@ -1,21 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5616: add kcontrol for headphone
-	channel switch
-Date: Mon, 7 Mar 2016 09:45:03 +0700
-Message-ID: <20160307024503.GP18327@sirena.org.uk>
-References: <1456910320-6979-1-git-send-email-john.lin@realtek.com>
- <20160302103535.GH18327@sirena.org.uk>
- <14AE6189BDA733429BF8455FEEF632980110FFD1@RTITMBSV02.realtek.com.tw>
- <20160305035137.GX18327@sirena.org.uk>
- <14AE6189BDA733429BF8455FEEF632980111074D@RTITMBSV02.realtek.com.tw>
+Subject: Applied "ASoC: rsnd: CMD TIMSEL support for Capture"
+	to the asoc tree
+Date: Mon, 07 Mar 2016 14:42:46 +0700
+Message-ID: <E1acpoU-00071G-6E@finisterre>
+References: <87bn6qyj2f.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7957839495780192671=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A7402607F7
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 08:13:35 +0100 (CET)
-In-Reply-To: <14AE6189BDA733429BF8455FEEF632980111074D@RTITMBSV02.realtek.com.tw>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C02F2607F7
+ for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 08:42:52 +0100 (CET)
+In-Reply-To: <87bn6qyj2f.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,60 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Lin <john.lin@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, "zhengsq@rock-chips.com" <zhengsq@rock-chips.com>, Flove <flove@realtek.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7957839495780192671==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="avnYMkYztPzqTqBp"
-Content-Disposition: inline
+   ASoC: rsnd: CMD TIMSEL support for Capture
 
+has been applied to the asoc tree at
 
---avnYMkYztPzqTqBp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Mar 07, 2016 at 02:35:55AM +0000, John Lin wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > No, you should call it "Headphone Playback Switch".  Please see
-> > ControlNames.txt for details.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> The schematic diagram of headphone is such as:
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> DAC --> HP Vol --> HP Vol Mute --> HP MIX --> HP Mute
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> The kcontrol named 'Headphone Playback Switch' was in use for 'HP Mute'.
-> The missing kcontrol is 'HP Vol Mute' in schematic diagram.
-> Could you give us advice in this case? Thank you very much.
+Thanks,
+Mark
 
-My point is that you shouldn't have both Volume and Switch in the same
-control name.  You could for example call them Headphone Switch and
-Headphone Playback Switch.
+>From 09e59075496517206351cc28226ad7263a1a5c4f Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 7 Mar 2016 05:09:34 +0000
+Subject: [PATCH] ASoC: rsnd: CMD TIMSEL support for Capture
 
---avnYMkYztPzqTqBp
-Content-Type: application/pgp-signature; name="signature.asc"
+CMD.out should use same as SRC.out for TIMSEL settings,
+but it cares Playback case only. This patch fixup it.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/adg.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-iQEcBAEBCAAGBQJW3OsuAAoJECTWi3JdVIfQZFMH/3BSn66qoNgxAfwaSU5ukIui
-TT8aPDSr/j7jl6viZtW7WJ6w/17Hd7hRY00LRX+2wr3/ooXURklqqUMpNnyTP6x0
-XG9J5XUmuiG0jVmGiJlkVEnh9KiYEKX5lb9kapnhxscoZYmVc6o8TAj/2GzAEnrs
-KC+C2vKBVneIRaA2eF/7RPll9E6t/UhrmuGs7tfxGr/c4uh2Z3FWWtc1p6j7FxFX
-/0l7ap9yT0fE1Rma4dJ9b5vytwje86NP8QCJbZ/Q8Ev32gqM7nJLlH1hWyCm7XEm
-PtMnTjwEEkaICrrFvvr9hb3A/f+ZbxdAkIps6MwhP5Y1/iGS0MULQMZSr3ijrDc=
-=3V4k
------END PGP SIGNATURE-----
-
---avnYMkYztPzqTqBp--
-
---===============7957839495780192671==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7957839495780192671==--
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index f7e164c89f33..606399de684d 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -202,7 +202,10 @@ int rsnd_adg_set_cmd_timsel_gen2(struct rsnd_mod *cmd_mod,
+ 	int shift = (id % 2) ? 16 : 0;
+ 	u32 mask, val;
+ 
+-	val = rsnd_adg_ssi_ws_timing_gen2(io);
++	rsnd_adg_get_timesel_ratio(priv, io,
++				   rsnd_src_get_in_rate(priv, io),
++				   rsnd_src_get_out_rate(priv, io),
++				   NULL, &val, NULL);
+ 
+ 	val  = val	<< shift;
+ 	mask = 0xffff	<< shift;
+-- 
+2.7.0
