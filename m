@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5640: Set PLL src according to
-	source" to the asoc tree
-Date: Mon, 07 Mar 2016 14:43:00 +0700
-Message-ID: <E1acpoi-00075F-Vc@finisterre>
-References: <1457334578-32302-1-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: rsrc-card: tidyup convert-channels
+	explain" to the asoc tree
+Date: Mon, 07 Mar 2016 14:43:02 +0700
+Message-ID: <E1acpok-00075j-KU@finisterre>
+References: <87mvqayjlw.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8478326512B
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E394265130
  for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 08:43:05 +0100 (CET)
-In-Reply-To: <1457334578-32302-1-git-send-email-bardliao@realtek.com>
+In-Reply-To: <87mvqayjlw.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jack Yu <jack.yu@realtek.com>, Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5640: Set PLL src according to source
+   ASoC: rsrc-card: tidyup convert-channels explain
 
 has been applied to the asoc tree at
 
@@ -53,52 +53,29 @@ to this mail.
 Thanks,
 Mark
 
->From c467fc0e010b66069c0d5bb3e8e869adf267115f Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Mon, 7 Mar 2016 15:09:37 +0800
-Subject: [PATCH] ASoC: rt5640: Set PLL src according to source
+>From 74e26809fb47e072d0838f74a08a0a5aa428848f Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 7 Mar 2016 04:57:55 +0000
+Subject: [PATCH] ASoC: rsrc-card: tidyup convert-channels explain
 
-rt5640_set_dai_pll set pll source according to given source and
-dai id. However, the pll source should be set according to given
-source only.
-
-Signed-off-by: Jack Yu <jack.yu@realtek.com>
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5640.c | 19 +++++--------------
- 1 file changed, 5 insertions(+), 14 deletions(-)
+ Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index 6cd84fb2196a..863c190c5076 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -1902,21 +1902,12 @@ static int rt5640_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
- 			RT5640_PLL1_SRC_MASK, RT5640_PLL1_SRC_MCLK);
- 		break;
- 	case RT5640_PLL1_S_BCLK1:
-+		snd_soc_update_bits(codec, RT5640_GLB_CLK,
-+			RT5640_PLL1_SRC_MASK, RT5640_PLL1_SRC_BCLK1);
-+		break;
- 	case RT5640_PLL1_S_BCLK2:
--		dai_sel = get_sdp_info(codec, dai->id);
--		if (dai_sel < 0) {
--			dev_err(codec->dev,
--				"Failed to get sdp info: %d\n", dai_sel);
--			return -EINVAL;
--		}
--		if (dai_sel & RT5640_U_IF1) {
--			snd_soc_update_bits(codec, RT5640_GLB_CLK,
--				RT5640_PLL1_SRC_MASK, RT5640_PLL1_SRC_BCLK1);
--		}
--		if (dai_sel & RT5640_U_IF2) {
--			snd_soc_update_bits(codec, RT5640_GLB_CLK,
--				RT5640_PLL1_SRC_MASK, RT5640_PLL1_SRC_BCLK2);
--		}
-+		snd_soc_update_bits(codec, RT5640_GLB_CLK,
-+			RT5640_PLL1_SRC_MASK, RT5640_PLL1_SRC_BCLK2);
- 		break;
- 	default:
- 		dev_err(codec->dev, "Unknown PLL source %d\n", source);
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt b/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt
+index 5abebf7898d9..255ece3043ad 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt
+@@ -30,7 +30,7 @@ Optional subnode properties:
+ - frame-inversion			: bool property. Add this if the
+ 					  dai-link uses frame clock inversion.
+ - convert-rate				: platform specified sampling rate convert
+-- convert-channels			: platform specified channel size convert
++- convert-channels			: platform specified converted channel size (2 - 8 ch)
+ - audio-prefix				: see audio-routing
+ - audio-routing				: A list of the connections between audio components.
+ 					  Each entry is a pair of strings, the first being the connection's sink,
 -- 
 2.7.0
