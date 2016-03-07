@@ -1,20 +1,25 @@
-From: "Lu, Han" <han.lu@intel.com>
-Subject: Re: [PATCH 01/10] alsabat: add default device name for
- playback and capture
-Date: Mon, 7 Mar 2016 01:24:02 +0000
-Message-ID: <B51200AC81AB024499A3C2C9A1BB90A83D3A7CFF@SHSMSX101.ccr.corp.intel.com>
-References: <cover.1456907242.git.han.lu@intel.com>
- <b3331c7bab38e2c078aa2ded55d04d6c25f92bae.1456907242.git.han.lu@intel.com>
- <s5hh9gmneqh.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] Revert "ASoC: fsl_ssi: remove explicit
+	register defaults"
+Date: Mon, 7 Mar 2016 09:20:41 +0700
+Message-ID: <20160307022041.GO18327@sirena.org.uk>
+References: <1456065300-23752-1-git-send-email-festevam@gmail.com>
+ <20160222025930.GO18327@sirena.org.uk>
+ <CAOMZO5BNY6V-Qbo+gBY1dW-9bHgBusXXAmEiG45BzuoZeKSm8w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7215853965477755072=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A5CE2605C3
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 02:24:11 +0100 (CET)
-In-Reply-To: <s5hh9gmneqh.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F3112605C3
+ for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 03:25:17 +0100 (CET)
+Received: from 110-170-137-3.static.asianet.co.th ([110.170.137.3]
+ helo=finisterre)
+ by mezzanine.sirena.org.uk with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
+ (Exim 4.80) (envelope-from <broonie@sirena.org.uk>)
+ id 1ackrB-0001Pk-TR
+ for alsa-devel@alsa-project.org; Mon, 07 Mar 2016 02:25:14 +0000
+In-Reply-To: <CAOMZO5BNY6V-Qbo+gBY1dW-9bHgBusXXAmEiG45BzuoZeKSm8w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,89 +29,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Gautier, Bernard" <bernard.gautier@intel.com>, "Popescu,
- Edward C" <edward.c.popescu@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, Mika =?iso-8859-1?Q?Penttil=E4?= <mika.penttila@nextfour.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Saturday, March 5, 2016 4:57 AM
-> To: Lu, Han <han.lu@intel.com>
-> Cc: liam.r.girdwood@linux.intel.com; Gautier, Bernard
-> <bernard.gautier@intel.com>; Popescu, Edward C
-> <edward.c.popescu@intel.com>; alsa-devel@alsa-project.org
-> Subject: Re: [PATCH 01/10] alsabat: add default device name for playback
-> and capture
-> 
-> On Wed, 02 Mar 2016 09:53:11 +0100,
-> han.lu@intel.com wrote:
-> >
-> > From: "Lu, Han" <han.lu@intel.com>
-> >
-> > Add default name for the playback and capture devices, in case they
-> > were not set by user through '-D', '-P' or '-C' options.
-> > The patch was tested on Ubuntu and Chrome OS.
-> >
-> > Signed-off-by: Lu, Han <han.lu@intel.com>
-> >
-> > diff --git a/bat/alsa.c b/bat/alsa.c
-> > index 5eaa25b..5775748 100644
-> > --- a/bat/alsa.c
-> > +++ b/bat/alsa.c
-> > @@ -377,12 +377,6 @@ void *playback_alsa(struct bat *bat)
-> >  	retval_play = 0;
-> >  	memset(&sndpcm, 0, sizeof(sndpcm));
-> >
-> > -	if (bat->playback.device == NULL) {
-> > -		fprintf(bat->err, _("No PCM device for playback: exit\n"));
-> > -		retval_play = 1;
-> > -		goto exit1;
-> > -	}
-> > -
-> >  	err = snd_pcm_open(&sndpcm.handle, bat->playback.device,
-> >  			SND_PCM_STREAM_PLAYBACK, 0);
-> >  	if (err != 0) {
-> > @@ -533,12 +527,6 @@ void *record_alsa(struct bat *bat)
-> >  	retval_record = 0;
-> >  	memset(&sndpcm, 0, sizeof(sndpcm));
-> >
-> > -	if (bat->capture.device == NULL) {
-> > -		fprintf(bat->err, _("No PCM device for capture: exit\n"));
-> > -		retval_record = 1;
-> > -		goto exit1;
-> > -	}
-> > -
-> >  	err = snd_pcm_open(&sndpcm.handle, bat->capture.device,
-> >  			SND_PCM_STREAM_CAPTURE, 0);
-> >  	if (err != 0) {
-> > diff --git a/bat/bat.c b/bat/bat.c
-> > index ddb60b7..9c637f2 100644
-> > --- a/bat/bat.c
-> > +++ b/bat/bat.c
-> > @@ -473,6 +473,10 @@ static int bat_init(struct bat *bat)
-> >  			return err;
-> >  	}
-> >
-> > +	/* Set default playback and capture devices */
-> > +	if (bat->playback.device == NULL && bat->capture.device == NULL)
-> > +		bat->playback.device = bat->capture.device =
-> DEFAULT_DEV_NAME;
-> 
-> What if only one of playback and capture is specified?
-> 
-> 
-> Takashi
 
-If only one of playback and capture is specified, the alsabat shall work on
-single line mode, where only one thread (playback or capture) will be started.
-The testbat.sh covers the test cases of single mode:
-	feature_test "-P $dev_playback" "single line mode, playback"
-	feature_test "-C $dev_capture --standalone" "single line mode, capture"
-Previously, if not specify any device, the alsabat will start playback and capture
-Threads, and then quit threads with error text. The patch is intend to make the
-alsabat works in case no device be specified, and the patch does not influence
-the cases of single line mode. 
+--===============7215853965477755072==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="XVy146w4QFEnwrLT"
+Content-Disposition: inline
 
-BR,
-Han
+
+--XVy146w4QFEnwrLT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sun, Mar 06, 2016 at 09:11:56PM -0300, Fabio Estevam wrote:
+> On Sun, Feb 21, 2016 at 11:59 PM, Mark Brown <broonie@kernel.org> wrote:
+
+> > There's no problem adding it back for v4.6 for that matter, the changes
+> > will all have long enough to soak (and have already been soaking for a
+> > little while).  I'll do that.
+
+> I see you applied this one as 56e5fd8feb286ab7 ("ASoC: fsl_ssi: Go
+> back to explicit register defaults") into your fix/fsl-ssi branch, but
+> it is still not present in 4.5-rc7.
+
+> Any plans to make this one into 4.5 final?
+
+It'll go next time I send fixes.
+
+--XVy146w4QFEnwrLT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJW3OVnAAoJECTWi3JdVIfQkgoH/AzEZgt76s6hZ6w74OA188pk
+v5yarTgHyqKncHzQUha2MiY9sXwhBviR6XHpPb3pgImgyfW0rTuU256qxeJZrmrr
+6FWqzYJlRHBEHECBdSnJ4CmFUplt2F24WJ6rBA+B7/e3Lgdqv2KKsYHkv3dg0YJS
+uDprsl5L4+eXjPoLJMxGktQYCxsDz4oJTo+f6tSfg+j4rLas9N40dJ1txhBshvMe
+zHfFKFmf/peJpy9JdwcY44aPwpubGVxuzXJ1H8HYRCY+0DZxctOxNZoVIiAf6jFZ
+czHW5FvD0/WiqR+nAIvVmL7NEz9zkTVLpkv/RcHS0eD0dOOEkDbhCtERYsj2jEQ=
+=dcpi
+-----END PGP SIGNATURE-----
+
+--XVy146w4QFEnwrLT--
+
+--===============7215853965477755072==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7215853965477755072==--
