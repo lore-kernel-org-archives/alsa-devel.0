@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: SRC function parameter uses "mod"
-	instead of "src"" to the asoc tree
-Date: Mon, 07 Mar 2016 14:42:52 +0700
-Message-ID: <E1acpoa-00073I-Tu@finisterre>
-References: <87h9giyj5v.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: don't enable SRC Sync mode when
+	Capture with CMD" to the asoc tree
+Date: Mon, 07 Mar 2016 14:42:56 +0700
+Message-ID: <E1acpoe-00074H-A2@finisterre>
+References: <87k2leyj7u.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C7C02261555
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 08:42:55 +0100 (CET)
-In-Reply-To: <87h9giyj5v.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 525582619BE
+ for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 08:42:59 +0100 (CET)
+In-Reply-To: <87k2leyj7u.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: SRC function parameter uses "mod" instead of "src"
+   ASoC: rsnd: don't enable SRC Sync mode when Capture with CMD
 
 has been applied to the asoc tree at
 
@@ -53,70 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From 1a9be9ee194131465d945981969b85045f20e6af Mon Sep 17 00:00:00 2001
+>From 61a219fe192412bca6c26657a4b0c99c67a3e7fc Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 7 Mar 2016 05:07:29 +0000
-Subject: [PATCH] ASoC: rsnd: SRC function parameter uses "mod" instead of
- "src"
+Date: Mon, 7 Mar 2016 05:06:17 +0000
+Subject: [PATCH] ASoC: rsnd: don't enable SRC Sync mode when Capture with CMD
 
-To reduce confusion, SRC uses "mod" instead of "src"
-as function parameter
+It can't use SRC Synchronous convert when Capture if it uses CMD,
+because no one provide out side clocks.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/src.c | 21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+ sound/soc/sh/rcar/src.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index ab974afe79eb..d520690409a2 100644
+index 8e1177aea6b1..541a478cf157 100644
 --- a/sound/soc/sh/rcar/src.c
 +++ b/sound/soc/sh/rcar/src.c
-@@ -93,9 +93,10 @@ static struct dma_chan *rsnd_src_dma_req(struct rsnd_dai_stream *io,
- }
- 
- static u32 rsnd_src_convert_rate(struct rsnd_dai_stream *io,
--				 struct rsnd_src *src)
-+				 struct rsnd_mod *mod)
+@@ -475,7 +475,6 @@ static int rsnd_src_pcm_new(struct rsnd_mod *mod,
+ 			    struct snd_soc_pcm_runtime *rtd)
  {
- 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
-+	struct rsnd_src *src = rsnd_mod_to_src(mod);
- 	u32 convert_rate;
- 
- 	if (!runtime)
-@@ -120,18 +121,14 @@ unsigned int rsnd_src_get_ssi_rate(struct rsnd_priv *priv,
- 				   struct snd_pcm_runtime *runtime)
- {
- 	struct rsnd_mod *src_mod = rsnd_io_to_mod_src(io);
--	struct rsnd_src *src;
- 	unsigned int rate = 0;
- 
--	if (src_mod) {
--		src = rsnd_mod_to_src(src_mod);
--
--		/*
--		 * return convert rate if SRC is used,
--		 * otherwise, return runtime->rate as usual
--		 */
--		rate = rsnd_src_convert_rate(io, src);
--	}
-+	/*
-+	 * return convert rate if SRC is used,
-+	 * otherwise, return runtime->rate as usual
-+	 */
-+	if (src_mod)
-+		rate = rsnd_src_convert_rate(io, src_mod);
- 
- 	if (!rate)
- 		rate = runtime->rate;
-@@ -179,7 +176,7 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
- 	struct device *dev = rsnd_priv_to_dev(priv);
- 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
+ 	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
+-	struct rsnd_mod *dvc = rsnd_io_to_mod_dvc(io);
  	struct rsnd_src *src = rsnd_mod_to_src(mod);
--	u32 convert_rate = rsnd_src_convert_rate(io, src);
-+	u32 convert_rate = rsnd_src_convert_rate(io, mod);
- 	u32 ifscr, fsrate, adinr;
- 	u32 cr, route;
- 	u32 bsdsr, bsisr;
+ 	int ret;
+ 
+@@ -490,9 +489,10 @@ static int rsnd_src_pcm_new(struct rsnd_mod *mod,
+ 		return 0;
+ 
+ 	/*
+-	 * SRC In doesn't work if DVC was enabled
++	 * It can't use SRC Synchronous convert
++	 * when Capture if it uses CMD
+ 	 */
+-	if (dvc && !rsnd_io_is_play(io))
++	if (rsnd_io_to_mod_cmd(io) && !rsnd_io_is_play(io))
+ 		return 0;
+ 
+ 	/*
 -- 
 2.7.0
