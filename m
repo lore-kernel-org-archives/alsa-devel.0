@@ -1,14 +1,15 @@
 From: libin.yang@linux.intel.com
-Subject: [PATCH 2/4] ALSA: hda - add DP mst verb support
-Date: Mon,  7 Mar 2016 22:57:44 +0800
-Message-ID: <1457362666-53937-3-git-send-email-libin.yang@linux.intel.com>
+Subject: [RFC PATCH 1/4] ALSA: hda - codec add DP MST support
+	for connection list
+Date: Mon,  7 Mar 2016 22:57:43 +0800
+Message-ID: <1457362666-53937-2-git-send-email-libin.yang@linux.intel.com>
 References: <1457362666-53937-1-git-send-email-libin.yang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 733E326154F
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E076261555
  for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 16:02:44 +0100 (CET)
 In-Reply-To: <1457362666-53937-1-git-send-email-libin.yang@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,142 +27,261 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Libin Yang <libin.yang@linux.intel.com>
 
-Add snd_hda_get_dev_select() and snd_hda_set_dev_select() functions
-for DP MST audio support.
+This patches adds the support of connection list for DP MST.
+With this, hdmi driver in DP MST mode can easily reuse
+the connection list mechanism.
 
 Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
 ---
- sound/pci/hda/hda_codec.c | 80 +++++++++++++++++++++++++++++++++++++++++++++--
- sound/pci/hda/hda_codec.h |  3 ++
- 2 files changed, 80 insertions(+), 3 deletions(-)
+ sound/pci/hda/hda_codec.c | 134 ++++++++++++++++++++++++++++++++++++++++++----
+ sound/pci/hda/hda_codec.h |   5 ++
+ 2 files changed, 128 insertions(+), 11 deletions(-)
 
 diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index d4c81f7..1a42c51 100644
+index 8374188..d4c81f7 100644
 --- a/sound/pci/hda/hda_codec.c
 +++ b/sound/pci/hda/hda_codec.c
-@@ -424,8 +424,16 @@ int snd_hda_get_conn_index(struct hda_codec *codec, hda_nid_t mux,
- EXPORT_SYMBOL_GPL(snd_hda_get_conn_index);
+@@ -110,23 +110,24 @@ struct hda_conn_list {
+ 	struct list_head list;
+ 	int len;
+ 	hda_nid_t nid;
++	int dev_id;
+ 	hda_nid_t conns[0];
+ };
  
- 
--/* return DEVLIST_LEN parameter of the given widget */
--static unsigned int get_num_devices(struct hda_codec *codec, hda_nid_t nid)
-+/**
-+ * snd_hda_get_num_devices - get DEVLIST_LEN parameter of the given widget
-+ *  @codec: the HDA codec
-+ *  @nid: NID of the pin to parse
-+ *
-+ * Get the device entry number on the given widget.
-+ * This is a feature of DP MST audio. Each pin can
-+ * have several device entries in it.
-+ */
-+unsigned int snd_hda_get_num_devices(struct hda_codec *codec, hda_nid_t nid)
+ /* look up the cached results */
+ static struct hda_conn_list *
+-lookup_conn_list(struct hda_codec *codec, hda_nid_t nid)
++lookup_conn_list(struct hda_codec *codec, hda_nid_t nid, int dev_id)
  {
- 	unsigned int wcaps = get_wcaps(codec, nid);
- 	unsigned int parm;
-@@ -439,6 +447,7 @@ static unsigned int get_num_devices(struct hda_codec *codec, hda_nid_t nid)
- 		parm = 0;
- 	return parm & AC_DEV_LIST_LEN_MASK;
+ 	struct hda_conn_list *p;
+ 	list_for_each_entry(p, &codec->conn_list, list) {
+-		if (p->nid == nid)
++		if ((p->nid == nid) && (p->dev_id == dev_id))
+ 			return p;
+ 	}
+ 	return NULL;
  }
-+EXPORT_SYMBOL_GPL(snd_hda_get_num_devices);
+ 
+-static int add_conn_list(struct hda_codec *codec, hda_nid_t nid, int len,
+-			 const hda_nid_t *list)
++static int add_conn_list(struct hda_codec *codec, hda_nid_t nid,
++			 int dev_id, int len, const hda_nid_t *list)
+ {
+ 	struct hda_conn_list *p;
+ 
+@@ -135,6 +136,7 @@ static int add_conn_list(struct hda_codec *codec, hda_nid_t nid, int len,
+ 		return -ENOMEM;
+ 	p->len = len;
+ 	p->nid = nid;
++	p->dev_id = dev_id;
+ 	memcpy(p->conns, list, len * sizeof(hda_nid_t));
+ 	list_add(&p->list, &codec->conn_list);
+ 	return 0;
+@@ -150,8 +152,13 @@ static void remove_conn_list(struct hda_codec *codec)
+ 	}
+ }
+ 
+-/* read the connection and add to the cache */
+-static int read_and_add_raw_conns(struct hda_codec *codec, hda_nid_t nid)
++/*
++ * read the connection and add to the cache
++ * the caller should select the device entry by sending the
++ * corresponding verb if necessary before calling this function
++ */
++static int read_and_add_raw_conns(struct hda_codec *codec, hda_nid_t nid,
++				  int dev_id)
+ {
+ 	hda_nid_t list[32];
+ 	hda_nid_t *result = list;
+@@ -166,7 +173,8 @@ static int read_and_add_raw_conns(struct hda_codec *codec, hda_nid_t nid)
+ 		len = snd_hda_get_raw_connections(codec, nid, result, len);
+ 	}
+ 	if (len >= 0)
+-		len = snd_hda_override_conn_list(codec, nid, len, result);
++		len = snd_hda_override_conn_list_mst(codec, nid,
++					     dev_id, len, result);
+ 	if (result != list)
+ 		kfree(result);
+ 	return len;
+@@ -197,7 +205,7 @@ int snd_hda_get_conn_list(struct hda_codec *codec, hda_nid_t nid,
+ 		const struct hda_conn_list *p;
+ 
+ 		/* if the connection-list is already cached, read it */
+-		p = lookup_conn_list(codec, nid);
++		p = lookup_conn_list(codec, nid, 0);
+ 		if (p) {
+ 			if (listp)
+ 				*listp = p->conns;
+@@ -206,7 +214,7 @@ int snd_hda_get_conn_list(struct hda_codec *codec, hda_nid_t nid,
+ 		if (snd_BUG_ON(added))
+ 			return -EINVAL;
+ 
+-		err = read_and_add_raw_conns(codec, nid);
++		err = read_and_add_raw_conns(codec, nid, 0);
+ 		if (err < 0)
+ 			return err;
+ 		added = true;
+@@ -215,6 +223,49 @@ int snd_hda_get_conn_list(struct hda_codec *codec, hda_nid_t nid,
+ EXPORT_SYMBOL_GPL(snd_hda_get_conn_list);
  
  /**
-  * snd_hda_get_devices - copy device list without cache
-@@ -456,7 +465,7 @@ int snd_hda_get_devices(struct hda_codec *codec, hda_nid_t nid,
- 	unsigned int parm;
- 	int i, dev_len, devices;
++ * snd_hda_get_conn_list_mst - get connection list in mst mode
++ * @codec: the HDA codec
++ * @nid: NID to parse
++ * @dev_id: device entry id
++ * @listp: the pointer to store NID list
++ *
++ * Parses the connection list of the given widget and stores the pointer
++ * to the list of NIDs.
++ *
++ * Returns the number of connections, or a negative error code.
++ *
++ * Note that the returned pointer isn't protected against the list
++ * modification.  If snd_hda_override_conn_list() might be called
++ * concurrently, protect with a mutex appropriately.
++ */
++int snd_hda_get_conn_list_mst(struct hda_codec *codec, hda_nid_t nid,
++			      int dev_id, const hda_nid_t **listp)
++{
++	bool added = false;
++
++	for (;;) {
++		int err;
++		const struct hda_conn_list *p;
++
++		/* if the connection-list is already cached, read it */
++		p = lookup_conn_list(codec, nid, dev_id);
++		if (p) {
++			if (listp)
++				*listp = p->conns;
++			return p->len;
++		}
++		if (snd_BUG_ON(added))
++			return -EINVAL;
++
++		err = read_and_add_raw_conns(codec, nid, dev_id);
++		if (err < 0)
++			return err;
++		added = true;
++	}
++}
++EXPORT_SYMBOL_GPL(snd_hda_get_conn_list_mst);
++
++/**
+  * snd_hda_get_connections - copy connection list
+  * @codec: the HDA codec
+  * @nid: NID to parse
+@@ -246,6 +297,39 @@ int snd_hda_get_connections(struct hda_codec *codec, hda_nid_t nid,
+ EXPORT_SYMBOL_GPL(snd_hda_get_connections);
  
--	parm = get_num_devices(codec, nid);
-+	parm = snd_hda_get_num_devices(codec, nid);
- 	if (!parm)	/* not multi-stream capable */
- 		return 0;
+ /**
++ * snd_hda_get_connections_mst - copy connection list in mst mode
++ * @codec: the HDA codec
++ * @nid: NID to parse
++ * @dev_id: device entry id
++ * @conn_list: connection list array; when NULL, checks only the size
++ * @max_conns: max. number of connections to store
++ *
++ * Parses the connection list of the given widget and stores the list
++ * of NIDs.
++ *
++ * Returns the number of connections, or a negative error code.
++ */
++int snd_hda_get_connections_mst(struct hda_codec *codec, hda_nid_t nid,
++				int dev_id, hda_nid_t *conn_list,
++				int max_conns)
++{
++	const hda_nid_t *list;
++	int len = snd_hda_get_conn_list_mst(codec, nid, dev_id, &list);
++
++	if (len > 0 && conn_list) {
++		if (len > max_conns) {
++			codec_err(codec, "Too many connections %d for NID 0x%x\n",
++				   len, nid);
++			return -EINVAL;
++		}
++		memcpy(conn_list, list, len * sizeof(hda_nid_t));
++	}
++
++	return len;
++}
++EXPORT_SYMBOL_GPL(snd_hda_get_connections_mst);
++
++/**
+  * snd_hda_override_conn_list - add/modify the connection-list to cache
+  * @codec: the HDA codec
+  * @nid: NID to parse
+@@ -262,17 +346,45 @@ int snd_hda_override_conn_list(struct hda_codec *codec, hda_nid_t nid, int len,
+ {
+ 	struct hda_conn_list *p;
  
-@@ -480,6 +489,71 @@ int snd_hda_get_devices(struct hda_codec *codec, hda_nid_t nid,
- 	return devices;
+-	p = lookup_conn_list(codec, nid);
++	p = lookup_conn_list(codec, nid, 0);
+ 	if (p) {
+ 		list_del(&p->list);
+ 		kfree(p);
+ 	}
+ 
+-	return add_conn_list(codec, nid, len, list);
++	return add_conn_list(codec, nid, 0, len, list);
  }
+ EXPORT_SYMBOL_GPL(snd_hda_override_conn_list);
  
-+/**
-+ * snd_hda_get_dev_select - get device entry select on the pin
+ /**
++ * snd_hda_override_conn_list_mst - add/modify the connection-list to cache
 + * @codec: the HDA codec
-+ * @nid: NID of the pin to get device entry select
++ * @nid: NID to parse
++ * @dev_id: device entry id
++ * @len: number of connection list entries
++ * @list: the list of connection entries
 + *
-+ * Get the devcie entry select on the pin. Return the device entry
-+ * id selected on the pin. Return 0 means the first device entry
-+ * is selected or MST is not supported.
++ * Add or modify the given connection-list to the cache.  If the corresponding
++ * cache already exists, invalidate it and append a new one.
++ *
++ * Returns zero or a negative error code.
 + */
-+int snd_hda_get_dev_select(struct hda_codec *codec, hda_nid_t nid)
++int snd_hda_override_conn_list_mst(struct hda_codec *codec, hda_nid_t nid,
++			   int dev_id, int len, const hda_nid_t *list)
 +{
-+	/* not support dp_mst will always return 0, using first dev_entry */
-+	if (!codec->dp_mst)
-+		return 0;
++	struct hda_conn_list *p;
 +
-+	return snd_hda_codec_read(codec, nid, 0, AC_VERB_GET_DEVICE_SEL, 0);
++	p = lookup_conn_list(codec, nid, dev_id);
++	if (p) {
++		list_del(&p->list);
++		kfree(p);
++	}
++
++	return add_conn_list(codec, nid, dev_id, len, list);
 +}
-+EXPORT_SYMBOL_GPL(snd_hda_get_dev_select);
++EXPORT_SYMBOL_GPL(snd_hda_override_conn_list_mst);
 +
 +/**
-+ * snd_hda_set_dev_select - set device entry select on the pin
-+ * @codec: the HDA codec
-+ * @nid: NID of the pin to set device entry select
-+ * @dev_id: device entry id to be set
-+ *
-+ * Set the device entry select on the pin nid.
-+ */
-+int snd_hda_set_dev_select(struct hda_codec *codec, hda_nid_t nid, int dev_id)
-+{
-+	int ret, dev;
-+	unsigned long timeout;
-+
-+	/* not support dp_mst will always return 0, using first dev_entry */
-+	if (!codec->dp_mst)
-+		return 0;
-+
-+	/* If Device List Length is 0, the pin is not multi stream capable.
-+	 */
-+	if ((snd_hda_get_num_devices(codec, nid) + 1) == 0)
-+		return 0;
-+
-+	/* Behavior of setting index being equal to or greater than
-+	 * Device List Length is not predictable
-+	 */
-+	if ((snd_hda_get_num_devices(codec, nid) + 1) <= dev_id)
-+		return 0;
-+
-+	timeout = jiffies + msecs_to_jiffies(500);
-+
-+	/* make sure the device entry selection takes effect */
-+	do {
-+		ret = snd_hda_codec_write(codec, nid, 0,
-+			AC_VERB_SET_DEVICE_SEL, dev_id);
-+		udelay(20);
-+
-+		dev = snd_hda_get_dev_select(codec, nid);
-+		if (dev == dev_id)
-+			break;
-+		msleep(20);
-+	} while (time_before(jiffies, timeout));
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(snd_hda_set_dev_select);
-+
- /*
-  * read widget caps for each widget and store in cache
-  */
+  * snd_hda_get_conn_index - get the connection index of the given NID
+  * @codec: the HDA codec
+  * @mux: NID containing the list
 diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index deeed35..8362cb6 100644
+index 373fcad..deeed35 100644
 --- a/sound/pci/hda/hda_codec.h
 +++ b/sound/pci/hda/hda_codec.h
-@@ -352,8 +352,11 @@ int snd_hda_override_conn_list_mst(struct hda_codec *codec, hda_nid_t nid,
- 			   int dev_id, int len, const hda_nid_t *list);
+@@ -330,6 +330,9 @@ snd_hda_codec_write(struct hda_codec *codec, hda_nid_t nid, int flags,
+ 	snd_hdac_get_sub_nodes(&(codec)->core, nid, start_nid)
+ int snd_hda_get_connections(struct hda_codec *codec, hda_nid_t nid,
+ 			    hda_nid_t *conn_list, int max_conns);
++int snd_hda_get_connections_mst(struct hda_codec *codec, hda_nid_t nid,
++				int dev_id, hda_nid_t *conn_list,
++				int max_conns);
+ static inline int
+ snd_hda_get_num_conns(struct hda_codec *codec, hda_nid_t nid)
+ {
+@@ -345,6 +348,8 @@ int snd_hda_get_conn_list(struct hda_codec *codec, hda_nid_t nid,
+ 			  const hda_nid_t **listp);
+ int snd_hda_override_conn_list(struct hda_codec *codec, hda_nid_t nid, int nums,
+ 			  const hda_nid_t *list);
++int snd_hda_override_conn_list_mst(struct hda_codec *codec, hda_nid_t nid,
++			   int dev_id, int len, const hda_nid_t *list);
  int snd_hda_get_conn_index(struct hda_codec *codec, hda_nid_t mux,
  			   hda_nid_t nid, int recursive);
-+unsigned int snd_hda_get_num_devices(struct hda_codec *codec, hda_nid_t nid);
  int snd_hda_get_devices(struct hda_codec *codec, hda_nid_t nid,
- 			u8 *dev_list, int max_devices);
-+int snd_hda_get_dev_select(struct hda_codec *codec, hda_nid_t nid);
-+int snd_hda_set_dev_select(struct hda_codec *codec, hda_nid_t nid, int dev_id);
- 
- struct hda_verb {
- 	hda_nid_t nid;
 -- 
 1.9.1
