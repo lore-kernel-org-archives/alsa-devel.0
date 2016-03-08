@@ -1,8 +1,8 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v4 4/6] ASoC: core: allow private data for
-	snd_soc_add_dai_pcm_controls
-Date: Tue, 8 Mar 2016 13:53:59 +0100
-Message-ID: <1457441641-7501-5-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH v4 3/6] ALSA: pcm: add IEC958 channel status
+	control helper
+Date: Tue, 8 Mar 2016 13:53:58 +0100
+Message-ID: <1457441641-7501-4-git-send-email-arnaud.pouliquen@st.com>
 References: <1457441641-7501-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
  [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id BD8D7264F8D
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2016 13:54:29 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 94B992619D0
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2016 13:54:28 +0100 (CET)
 In-Reply-To: <1457441641-7501-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,95 +26,191 @@ To: alsa-devel@alsa-project.org
 Cc: Jean-Francois Moine <moinejf@free.fr>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, David Airlie <airlied@linux.ie>, arnaud.pouliquen@st.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Moise Gergaud <moise.gergaud@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-To support generic iec958 control implementation, dai needs
-to provide control private data to allow to retrieve context.
+Add IEC958 channel status helper that creates control to handle the
+IEC60958 status bits.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- include/sound/soc.h          |  3 ++-
- sound/soc/soc-core.c         | 10 +++++++---
- sound/soc/sti/sti_uniperif.c |  2 +-
- 3 files changed, 10 insertions(+), 5 deletions(-)
+ include/sound/pcm_iec958.h |  21 ++++++++
+ sound/core/pcm_iec958.c    | 125 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 146 insertions(+)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 044adcf..e277e726 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -599,7 +599,8 @@ int snd_soc_add_card_controls(struct snd_soc_card *soc_card,
- int snd_soc_add_dai_controls(struct snd_soc_dai *dai,
- 	const struct snd_kcontrol_new *controls, int num_controls);
- int snd_soc_add_dai_pcm_controls(struct snd_soc_dai *dai,
--	const struct snd_kcontrol_new *controls, int num_controls);
-+				 const struct snd_kcontrol_new *controls,
-+				 int num_controls, void *data);
- int snd_soc_info_enum_double(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_info *uinfo);
- int snd_soc_get_enum_double(struct snd_kcontrol *kcontrol,
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 08a1b9f..780192b 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1606,6 +1606,7 @@ static int snd_soc_add_controls(struct snd_card *card, struct device *dev,
- struct snd_soc_dai_pcm_ctls {
- 	struct snd_kcontrol_new *controls;
- 	int num_controls;
-+	void *controls_data;
- 	struct list_head list;
- };
+diff --git a/include/sound/pcm_iec958.h b/include/sound/pcm_iec958.h
+index 0eed397..6d5e3d1 100644
+--- a/include/sound/pcm_iec958.h
++++ b/include/sound/pcm_iec958.h
+@@ -3,7 +3,28 @@
  
-@@ -1623,7 +1624,8 @@ static int soc_link_dai_pcm_controls(struct snd_soc_card *card,
- 			kctl[i].device = rtd->pcm->device;
+ #include <linux/types.h>
  
- 		ret = snd_soc_add_controls(card->snd_card, dai->dev, kctl,
--					   ctls->num_controls, NULL, dai);
-+					   ctls->num_controls, NULL,
-+					   ctls->controls_data);
- 		if (ret < 0)
- 			return ret;
- 		kfree(kctl);
-@@ -2387,12 +2389,13 @@ EXPORT_SYMBOL_GPL(snd_soc_add_dai_controls);
-  * @dai: DAI to add controls to
-  * @controls: array of controls to add
-  * @num_controls: number of elements in the array
-+ * @data: control private data
-  *
-  * Return 0 for success, else error.
++/**
++ * struct snd_pcm_iec958_params: IEC 60958 controls parameters
++ * @ctrl_set: control set callback
++ * This callback is optional and shall be used to set associated driver
++ * configuration. Calls under mutex protection.
++ * @iec: Mandatory pointer to iec958 structure.
++ * @pdata: Optional pointer to driver context.
++ * @mutex: Mandatory pointer to mutex
++ *         Provided by driver to handle race conditions.
++ */
++struct snd_pcm_iec958_params {
++	int (*ctrl_set)(void *pdata, u8 *status);
++	struct snd_aes_iec958 *iec;
++	void *pdata;
++	struct mutex *mutex;
++};
++
+ int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+ 	size_t len);
+ 
++int snd_pcm_create_iec958_ctl(struct snd_pcm *pcm, int subdevice,
++			      struct snd_pcm_iec958_params *params,
++			      int stream);
++const struct snd_kcontrol_new *snd_pcm_iec958_ctl_new(int stream);
+ #endif
+diff --git a/sound/core/pcm_iec958.c b/sound/core/pcm_iec958.c
+index 36b2d7a..24d6a8e 100644
+--- a/sound/core/pcm_iec958.c
++++ b/sound/core/pcm_iec958.c
+@@ -7,10 +7,97 @@
   */
- int snd_soc_add_dai_pcm_controls(struct snd_soc_dai *dai,
- 				 const struct snd_kcontrol_new *controls,
--				 int num_controls)
-+				 int num_controls, void *data)
- {
- 	struct snd_soc_card *card = dai->component->card;
- 	struct snd_soc_pcm_runtime *rtd;
-@@ -2425,13 +2428,14 @@ int snd_soc_add_dai_pcm_controls(struct snd_soc_dai *dai,
- 		for (i = 0; i < num_controls; i++)
- 			kctl[i].device = rtd->pcm->device;
- 		snd_soc_add_controls(card->snd_card, dai->dev, kctl,
--				     num_controls, NULL, dai);
-+				     num_controls, NULL, data);
- 		kfree(kctl);
- 	} else {
- 		/* pcm device does not exists. Postpone to dai link creation */
- 		ctls_list = kzalloc(sizeof(*ctls_list), GFP_KERNEL);
- 		ctls_list->controls = kctl;
- 		ctls_list->num_controls = num_controls;
-+		ctls_list->controls_data = data;
- 		list_add(&ctls_list->list, &dai->list_pcm_ctl);
- 	}
+ #include <linux/export.h>
+ #include <linux/types.h>
++#include <linux/wait.h>
+ #include <sound/asoundef.h>
++#include <sound/control.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_iec958.h>
  
-diff --git a/sound/soc/sti/sti_uniperif.c b/sound/soc/sti/sti_uniperif.c
-index 0c87380..267c44f 100644
---- a/sound/soc/sti/sti_uniperif.c
-+++ b/sound/soc/sti/sti_uniperif.c
-@@ -97,7 +97,7 @@ static int sti_uniperiph_dai_probe(struct snd_soc_dai *dai)
- 
- 	if (uni->num_ctrls)
- 		return snd_soc_add_dai_pcm_controls(dai, uni->snd_ctrls,
--						    uni->num_ctrls);
-+						    uni->num_ctrls, dai);
- 
- 	return 0;
++static int snd_pcm_iec958_info(struct snd_kcontrol *kcontrol,
++			       struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_IEC958;
++	uinfo->count = 1;
++	return 0;
++}
++
++/*
++ * IEC958 channel status default controls callbacks
++ *
++ * Callbacks are protected by a mutex provided by user.
++ */
++static int snd_pcm_iec958_get(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *uctl)
++{
++	struct snd_pcm_iec958_params *params = snd_kcontrol_chip(kcontrol);
++	int i;
++
++	if (!params->mutex)
++		return -EINVAL;
++
++	mutex_lock(params->mutex);
++	for (i = 0; i < 5; i++)
++		uctl->value.iec958.status[i] = params->iec->status[i];
++	mutex_unlock(params->mutex);
++
++	return 0;
++}
++
++static int snd_pcm_iec958_put(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *uctl)
++{
++	struct snd_pcm_iec958_params *params = snd_kcontrol_chip(kcontrol);
++	int err = 0;
++	int i, updated = 0;
++
++	if (!params->mutex)
++		return -EINVAL;
++
++	mutex_lock(params->mutex);
++	for (i = 0; i < 5; i++) {
++		if (params->iec->status[i] != uctl->value.iec958.status[i])
++			updated = 1;
++	}
++
++	if (!updated)
++		goto unlock;
++
++	if (params->ctrl_set)
++		err = params->ctrl_set(params->pdata,
++				       uctl->value.iec958.status);
++	if (err < 0) {
++		mutex_unlock(params->mutex);
++		return err;
++	}
++
++	for (i = 0; i < 5; i++)
++		params->iec->status[i] = uctl->value.iec958.status[i];
++
++ unlock:
++	mutex_unlock(params->mutex);
++	return updated;
++}
++
++static const struct snd_kcontrol_new iec958_ctls[] = {
++	{
++		.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE |
++			   SNDRV_CTL_ELEM_ACCESS_VOLATILE),
++		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
++		.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT),
++		.info = snd_pcm_iec958_info,
++		.get = snd_pcm_iec958_get,
++		.put = snd_pcm_iec958_put,
++	},
++	{
++		.access = (SNDRV_CTL_ELEM_ACCESS_READ |
++			   SNDRV_CTL_ELEM_ACCESS_VOLATILE),
++		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
++		.name = SNDRV_CTL_NAME_IEC958("", CAPTURE, DEFAULT),
++		.info = snd_pcm_iec958_info,
++		.get = snd_pcm_iec958_get,
++	},
++};
++
+ /**
+  * snd_pcm_create_iec958_consumer - create consumer format IEC958 channel status
+  * @runtime: pcm runtime structure with ->rate filled in
+@@ -93,3 +180,41 @@ int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+ 	return len;
  }
+ EXPORT_SYMBOL(snd_pcm_create_iec958_consumer);
++
++/**
++ * snd_pcm_create_iec958_ctl - Add a IEC958 control associated to the pcm device
++ * @pcm: pcm device to associate to the control.
++ * @subdevice: subdevice index.Must be set to 0 if unused
++ * @iec958: snd_pcm_iec958_params structure that contains callbacks
++ *          and channel status buffer.
++ * @stream: stream type SNDRV_PCM_STREAM_PLAYBACK or SNDRV_PCM_STREAM_CATURE.
++ * Returns:  negative error code if something failed.
++ */
++int snd_pcm_create_iec958_ctl(struct snd_pcm *pcm, int subdevice,
++			      struct snd_pcm_iec958_params *params, int stream)
++{
++	struct snd_kcontrol_new knew;
++
++	if (stream > SNDRV_PCM_STREAM_LAST)
++		return -EINVAL;
++
++	knew = iec958_ctls[stream];
++	knew.device = pcm->device;
++	knew.subdevice = subdevice;
++	return snd_ctl_add(pcm->card, snd_ctl_new1(&knew, params));
++}
++EXPORT_SYMBOL(snd_pcm_create_iec958_ctl);
++
++/**
++ * snd_pcm_iec958_ctl_new - create a IEC958 control instance from the template
++ * @stream: stream type SNDRV_PCM_STREAM_PLAYBACK or SNDRV_PCM_STREAM_CATURE.
++ * Returns:  pointer to snd_kcontrol_new structure, NULL if something failed.
++ */
++const struct snd_kcontrol_new *snd_pcm_iec958_ctl_new(int stream)
++{
++	if (stream > SNDRV_PCM_STREAM_LAST)
++		return NULL;
++
++	return &iec958_ctls[stream];
++}
++EXPORT_SYMBOL(snd_pcm_iec958_ctl_new);
 -- 
 1.9.1
