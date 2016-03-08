@@ -1,17 +1,15 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v4 5/6] ASoC: sti: use iec channel status
-	control helper
-Date: Tue, 8 Mar 2016 13:54:00 +0100
-Message-ID: <1457441641-7501-6-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH v4 6/6] ASoC: hdmi-codec: add IEC control.
+Date: Tue, 8 Mar 2016 13:54:01 +0100
+Message-ID: <1457441641-7501-7-git-send-email-arnaud.pouliquen@st.com>
 References: <1457441641-7501-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D4CD26519F
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2016 13:54:31 +0100 (CET)
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 4B242260524
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2016 13:54:32 +0100 (CET)
 In-Reply-To: <1457441641-7501-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,230 +24,118 @@ To: alsa-devel@alsa-project.org
 Cc: Jean-Francois Moine <moinejf@free.fr>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, David Airlie <airlied@linux.ie>, arnaud.pouliquen@st.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Moise Gergaud <moise.gergaud@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use helper function instead of internal function for iec control
+Create 'IEC958 Playback Default' controls to support IEC61937 formats.
+the use of the alsa control is optional, using 'iec_ctl' flag.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- sound/soc/sti/Kconfig           |  1 +
- sound/soc/sti/sti_uniperif.c    | 22 ++++++++++--
- sound/soc/sti/uniperif.h        |  1 +
- sound/soc/sti/uniperif_player.c | 78 ++++++++++-------------------------------
- 4 files changed, 41 insertions(+), 61 deletions(-)
+ include/sound/hdmi-codec.h    |  1 +
+ sound/soc/codecs/hdmi-codec.c | 54 ++++++++++++++++++++++++++++++++-----------
+ 2 files changed, 41 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/sti/Kconfig b/sound/soc/sti/Kconfig
-index 64a6900..8e616a4 100644
---- a/sound/soc/sti/Kconfig
-+++ b/sound/soc/sti/Kconfig
-@@ -6,6 +6,7 @@ menuconfig SND_SOC_STI
- 	depends on SND_SOC
- 	depends on ARCH_STI || COMPILE_TEST
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
-+	select SND_PCM_IEC958
- 	help
- 		Say Y if you want to enable ASoC-support for
- 		any of the STI platforms (e.g. STIH416).
-diff --git a/sound/soc/sti/sti_uniperif.c b/sound/soc/sti/sti_uniperif.c
-index 267c44f..97e777c 100644
---- a/sound/soc/sti/sti_uniperif.c
-+++ b/sound/soc/sti/sti_uniperif.c
-@@ -9,6 +9,7 @@
- #include <linux/pinctrl/consumer.h>
+diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
+index fc3a481..4366d9f 100644
+--- a/include/sound/hdmi-codec.h
++++ b/include/sound/hdmi-codec.h
+@@ -92,6 +92,7 @@ struct hdmi_codec_pdata {
+ 	const struct hdmi_codec_ops *ops;
+ 	uint i2s:1;
+ 	uint spdif:1;
++	uint iec_ctl:1;
+ 	int max_i2s_channels;
+ };
  
- #include "uniperif.h"
-+#include <sound/pcm_iec958.h>
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index bc47b9a..6d156ea 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -32,6 +32,7 @@ struct hdmi_codec_priv {
+ 	struct snd_pcm_substream *current_stream;
+ 	struct snd_pcm_hw_constraint_list ratec;
+ 	uint8_t eld[MAX_ELD_BYTES];
++	struct snd_aes_iec958 iec;
+ };
  
- /*
-  * DAI
-@@ -84,10 +85,14 @@ static int sti_uniperiph_dai_probe(struct snd_soc_dai *dai)
+ static const struct snd_soc_dapm_widget hdmi_widgets[] = {
+@@ -122,26 +123,29 @@ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_soc_dai *dai)
  {
- 	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
- 	struct sti_uniperiph_dai *dai_data = &priv->dai_data;
--	struct uniperif *uni = priv->dai_data.uni;
-+	struct uniperif *uni = dai_data->uni;
-+	int ret, stream;
+ 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+-	struct hdmi_codec_params hp = {
+-		.iec = {
+-			.status = { 0 },
+-			.subcode = { 0 },
+-			.pad = 0,
+-			.dig_subframe = { 0 },
+-		}
+-	};
++	struct hdmi_codec_params hp;
+ 	int ret;
  
- 	/* DMA settings*/
--	if (of_device_is_compatible(dai->dev->of_node, "st,sti-uni-player"))
-+	stream  = of_device_is_compatible(dai->dev->of_node,
-+					  "st,sti-uni-player") ?
-+			SNDRV_PCM_STREAM_PLAYBACK : SNDRV_PCM_STREAM_CAPTURE;
-+	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
- 		snd_soc_dai_init_dma_data(dai, &dai_data->dma_data, NULL);
- 	else
- 		snd_soc_dai_init_dma_data(dai, NULL, &dai_data->dma_data);
-@@ -95,6 +100,19 @@ static int sti_uniperiph_dai_probe(struct snd_soc_dai *dai)
- 	dai_data->dma_data.addr = uni->fifo_phys_address;
- 	dai_data->dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 	dev_dbg(dai->dev, "%s() width %d rate %d channels %d\n", __func__,
+ 		params_width(params), params_rate(params),
+ 		params_channels(params));
  
-+	if (uni->iec_param) {
-+		const struct snd_kcontrol_new *ctrl;
-+		/* create generic iec control*/
-+		ctrl = snd_pcm_iec958_ctl_new(stream);
-+		ret = snd_soc_add_dai_pcm_controls(dai, ctrl, 1,
-+						   uni->iec_param);
+-	ret = snd_pcm_create_iec958_consumer_hw_params(params, hp.iec.status,
+-						       sizeof(hp.iec.status));
+-	if (ret < 0) {
+-		dev_err(dai->dev, "Creating IEC958 channel status failed %d\n",
+-			ret);
+-		return ret;
++	mutex_lock(&hcp->current_stream_lock);
++	hp.iec = hcp->iec;
++	mutex_unlock(&hcp->current_stream_lock);
++
++	if (!hcp->hcd.iec_ctl) {
++		/*
++		* only PCM format supported
++		*channel status set according to runtime parameters
++		*/
++		ret = snd_pcm_create_iec958_consumer_hw_params(params,
++					hp.iec.status, sizeof(hp.iec.status));
 +		if (ret < 0) {
-+			dev_err(dai->dev, "%s: Failed to create iec control",
-+				__func__);
++			dev_err(dai->dev, "Creating IEC958 status failed %d\n",
++				ret);
 +			return ret;
 +		}
-+	}
-+
- 	if (uni->num_ctrls)
- 		return snd_soc_add_dai_pcm_controls(dai, uni->snd_ctrls,
- 						    uni->num_ctrls, dai);
-diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
-index f0fd5a9..ab06b4c 100644
---- a/sound/soc/sti/uniperif.h
-+++ b/sound/soc/sti/uniperif.h
-@@ -1189,6 +1189,7 @@ struct uniperif {
- 	/*alsa ctrl*/
- 	struct snd_kcontrol_new *snd_ctrls;
- 	int num_ctrls;
-+	struct snd_pcm_iec958_params *iec_param;
- 
- 	/* dai properties */
- 	unsigned int daifmt;
-diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-index 7aca6b9..ee69443 100644
---- a/sound/soc/sti/uniperif_player.c
-+++ b/sound/soc/sti/uniperif_player.c
-@@ -12,6 +12,7 @@
- 
- #include <sound/asoundef.h>
- #include <sound/soc.h>
-+#include <sound/pcm_iec958.h>
- 
- #include "uniperif.h"
- 
-@@ -250,7 +251,6 @@ static void uni_player_set_channel_status(struct uniperif *player,
- 	 * sampling frequency. If no sample rate is already specified, then
- 	 * set one.
- 	 */
--	mutex_lock(&player->ctrl_lock);
- 	if (runtime) {
- 		switch (runtime->rate) {
- 		case 22050:
-@@ -327,7 +327,6 @@ static void uni_player_set_channel_status(struct uniperif *player,
- 		player->stream_settings.iec958.status[3 + (n * 4)] << 24;
- 		SET_UNIPERIF_CHANNEL_STA_REGN(player, n, status);
  	}
--	mutex_unlock(&player->ctrl_lock);
  
- 	/* Update the channel status */
- 	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
-@@ -390,7 +389,9 @@ static int uni_player_prepare_iec958(struct uniperif *player,
- 	SET_UNIPERIF_CTRL_ZERO_STUFF_HW(player);
- 
- 	/* Update the channel status */
-+	mutex_lock(&player->ctrl_lock);
- 	uni_player_set_channel_status(player, runtime);
-+	mutex_unlock(&player->ctrl_lock);
- 
- 	/* Clear the user validity user bits */
- 	SET_UNIPERIF_USER_VALIDITY_VALIDITY_LR(player, 0);
-@@ -541,60 +542,16 @@ static int uni_player_prepare_pcm(struct uniperif *player,
- /*
-  * ALSA uniperipheral iec958 controls
-  */
--static int  uni_player_ctl_iec958_info(struct snd_kcontrol *kcontrol,
--				       struct snd_ctl_elem_info *uinfo)
--{
--	uinfo->type = SNDRV_CTL_ELEM_TYPE_IEC958;
--	uinfo->count = 1;
--
--	return 0;
--}
- 
--static int uni_player_ctl_iec958_get(struct snd_kcontrol *kcontrol,
--				     struct snd_ctl_elem_value *ucontrol)
-+static int uni_player_ctl_iec958_set(void *pdata, u8 *status)
- {
--	struct snd_soc_dai *dai = snd_kcontrol_chip(kcontrol);
--	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
--	struct uniperif *player = priv->dai_data.uni;
--	struct snd_aes_iec958 *iec958 = &player->stream_settings.iec958;
--
--	mutex_lock(&player->ctrl_lock);
--	ucontrol->value.iec958.status[0] = iec958->status[0];
--	ucontrol->value.iec958.status[1] = iec958->status[1];
--	ucontrol->value.iec958.status[2] = iec958->status[2];
--	ucontrol->value.iec958.status[3] = iec958->status[3];
--	mutex_unlock(&player->ctrl_lock);
--	return 0;
--}
--
--static int uni_player_ctl_iec958_put(struct snd_kcontrol *kcontrol,
--				     struct snd_ctl_elem_value *ucontrol)
--{
--	struct snd_soc_dai *dai = snd_kcontrol_chip(kcontrol);
--	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
--	struct uniperif *player = priv->dai_data.uni;
--	struct snd_aes_iec958 *iec958 =  &player->stream_settings.iec958;
--
--	mutex_lock(&player->ctrl_lock);
--	iec958->status[0] = ucontrol->value.iec958.status[0];
--	iec958->status[1] = ucontrol->value.iec958.status[1];
--	iec958->status[2] = ucontrol->value.iec958.status[2];
--	iec958->status[3] = ucontrol->value.iec958.status[3];
--	mutex_unlock(&player->ctrl_lock);
-+	struct uniperif *player = pdata;
- 
- 	uni_player_set_channel_status(player, NULL);
- 
+ 	ret = hdmi_codec_new_stream(substream, dai);
+@@ -248,6 +252,27 @@ static int hdmi_codec_digital_mute(struct snd_soc_dai *dai, int mute)
  	return 0;
  }
  
--static struct snd_kcontrol_new uni_player_iec958_ctl = {
--	.iface = SNDRV_CTL_ELEM_IFACE_PCM,
--	.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT),
--	.info = uni_player_ctl_iec958_info,
--	.get = uni_player_ctl_iec958_get,
--	.put = uni_player_ctl_iec958_put,
--};
--
- /*
-  * uniperif rate adjustement control
-  */
-@@ -654,12 +611,7 @@ static struct snd_kcontrol_new uni_player_clk_adj_ctl = {
- 	.put = snd_sti_clk_adjustment_put,
++static int hdmi_codec_dai_probe(struct snd_soc_dai *dai)
++{
++	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
++	struct snd_pcm_iec958_params *iec958_params;
++	const struct snd_kcontrol_new *ctrl;
++
++	if (!hcp->hcd.iec_ctl)
++		return 0;
++
++	iec958_params = devm_kzalloc(dai->dev, sizeof(*iec958_params),
++				     GFP_KERNEL);
++	if (!iec958_params)
++		return -ENOMEM;
++
++	iec958_params->iec = &hcp->iec;
++	iec958_params->mutex = &hcp->current_stream_lock;
++
++	ctrl = snd_pcm_iec958_ctl_new(SNDRV_PCM_STREAM_PLAYBACK);
++	return snd_soc_add_dai_pcm_controls(dai, ctrl, 1, iec958_params);
++}
++
+ static const struct snd_soc_dai_ops hdmi_dai_ops = {
+ 	.startup	= hdmi_codec_startup,
+ 	.shutdown	= hdmi_codec_shutdown,
+@@ -293,6 +318,7 @@ static struct snd_soc_dai_driver hdmi_i2s_dai = {
+ 		.sig_bits = 24,
+ 	},
+ 	.ops = &hdmi_dai_ops,
++	.probe = hdmi_codec_dai_probe,
  };
  
--static struct snd_kcontrol_new *snd_sti_pcm_ctl[] = {
--	&uni_player_clk_adj_ctl,
--};
--
--static struct snd_kcontrol_new *snd_sti_iec_ctl[] = {
--	&uni_player_iec958_ctl,
-+static struct snd_kcontrol_new *snd_sti_ctl[] = {
- 	&uni_player_clk_adj_ctl,
- };
- 
-@@ -1106,13 +1058,21 @@ int uni_player_init(struct platform_device *pdev,
- 					IEC958_AES4_CON_MAX_WORDLEN_24 |
- 					IEC958_AES4_CON_WORDLEN_24_20;
- 
--		player->num_ctrls = ARRAY_SIZE(snd_sti_iec_ctl);
--		player->snd_ctrls = snd_sti_iec_ctl[0];
--	} else {
--		player->num_ctrls = ARRAY_SIZE(snd_sti_pcm_ctl);
--		player->snd_ctrls = snd_sti_pcm_ctl[0];
-+		player->iec_param = devm_kzalloc(player->dev,
-+						 sizeof(*player->iec_param),
-+						 GFP_KERNEL);
-+		if (!player->iec_param)
-+			return -ENOMEM;
-+
-+		player->iec_param->iec = &player->stream_settings.iec958;
-+		player->iec_param->mutex = &player->ctrl_lock;
-+		player->iec_param->pdata = player;
-+		player->iec_param->ctrl_set = uni_player_ctl_iec958_set;
- 	}
- 
-+	player->num_ctrls = ARRAY_SIZE(snd_sti_ctl);
-+	player->snd_ctrls = snd_sti_ctl[0];
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(uni_player_init);
+ static const struct snd_soc_dai_driver hdmi_spdif_dai = {
 -- 
 1.9.1
