@@ -1,18 +1,22 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH v5 6/9] ASoC: hdmi-codec: Use HDMI
- notifications to add jack support
-Date: Tue, 8 Mar 2016 00:31:00 +0200
-Message-ID: <56DE0124.6080208@ti.com>
-References: <1456930153-11853-1-git-send-email-p.zabel@pengutronix.de>
- <1456930153-11853-7-git-send-email-p.zabel@pengutronix.de>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: Testing SAI with mainline
+Date: Mon, 7 Mar 2016 23:57:28 -0300
+Message-ID: <CAOMZO5BE6BitKccaYpP5sUf2zfAemUunFqht+Ke_4_Rykva41w@mail.gmail.com>
+References: <CAOMZO5DnC7NGd1+QPzeaVQ0GMY_yxq3KZBQSAOoj+QKQ8W+HfQ@mail.gmail.com>
+ <20160307205109.GA10095@Asurada-Nvidia>
+ <CAOMZO5BLyouO6VbkR=aUwygSfizd41naR5j92zkmcSKZrKMURQ@mail.gmail.com>
+ <AM3PR04MB14127296AFC982D9E19226B09AB20@AM3PR04MB1412.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D698261584
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2016 23:31:10 +0100 (CET)
-In-Reply-To: <1456930153-11853-7-git-send-email-p.zabel@pengutronix.de>
+Received: from mail-ig0-f182.google.com (mail-ig0-f182.google.com
+ [209.85.213.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C763264F3F
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2016 03:57:29 +0100 (CET)
+Received: by mail-ig0-f182.google.com with SMTP id z8so7465541ige.0
+ for <alsa-devel@alsa-project.org>; Mon, 07 Mar 2016 18:57:29 -0800 (PST)
+In-Reply-To: <AM3PR04MB14127296AFC982D9E19226B09AB20@AM3PR04MB1412.eurprd04.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,205 +26,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Philipp Zabel <p.zabel@pengutronix.de>, alsa-devel@alsa-project.org
-Cc: Jean-Francois Moine <moinejf@free.fr>, Koro Chen <koro.chen@mediatek.com>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, Daniel Kurtz <djkurtz@chromium.org>, Cawa Cheng <cawa.cheng@mediatek.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, kernel@pengutronix.de, Matthias Brugger <matthias.bgg@gmail.com>
+To: Zidan Wang <zidan.wang@nxp.com>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Zidan Wang <zidan.wang@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-I don't think this patch was updated according to updated "video: rmk's 
-HDMI notification prototype":
+Hi Zidan,
 
-On 03/02/16 16:49, Philipp Zabel wrote:
-> Use HDMI connection / disconnection notifications to update an ALSA
-> jack object. Also make a copy of the ELD block after every change.
->
-> Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
-> ---
->   include/sound/hdmi-codec.h    |  6 +++
->   sound/soc/codecs/hdmi-codec.c | 85 +++++++++++++++++++++++++++++++++++++++----
->   2 files changed, 83 insertions(+), 8 deletions(-)
->
-> diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
-> index 15fe70f..8b6219d 100644
-> --- a/include/sound/hdmi-codec.h
-> +++ b/include/sound/hdmi-codec.h
-> @@ -99,6 +99,12 @@ struct hdmi_codec_pdata {
->   	int max_i2s_channels;
->   };
->
-> +struct snd_soc_codec;
-> +struct snd_soc_jack;
-> +
-> +int hdmi_codec_set_jack_detect(struct snd_soc_codec *codec,
-> +			       struct snd_soc_jack *jack);
-> +
->   #define HDMI_CODEC_DRV_NAME "hdmi-audio-codec"
->
->   #endif /* __HDMI_CODEC_H__ */
-> diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-> index 687332d..7d5db11 100644
-> --- a/sound/soc/codecs/hdmi-codec.c
-> +++ b/sound/soc/codecs/hdmi-codec.c
-> @@ -12,9 +12,12 @@
->    * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
->    * General Public License for more details.
->    */
-> +#include <linux/hdmi-not.h>
+On Mon, Mar 7, 2016 at 11:49 PM, Zidan Wang <zidan.wang@nxp.com> wrote:
 
-This should be hdmi-notifier.h. "select HDMI_NOTIFIERS" also needs to be 
-added to SND_SOC_HDMI_CODEC config option for compilation to succeed.
+> You should change the sdma peripheral types of SAI to 24.
 
->   #include <linux/module.h>
-> +#include <linux/notifier.h>
->   #include <linux/string.h>
->   #include <sound/core.h>
-> +#include <sound/jack.h>
->   #include <sound/pcm.h>
->   #include <sound/pcm_params.h>
->   #include <sound/soc.h>
-> @@ -27,11 +30,16 @@
->   struct hdmi_codec_priv {
->   	struct hdmi_codec_pdata hcd;
->   	struct snd_soc_dai_driver *daidrv;
-> +	struct snd_soc_jack *jack;
->   	struct hdmi_codec_daifmt daifmt[2];
->   	struct mutex current_stream_lock;
->   	struct snd_pcm_substream *current_stream;
->   	struct snd_pcm_hw_constraint_list ratec;
-> +	struct mutex eld_lock;
->   	uint8_t eld[MAX_ELD_BYTES];
-> +	struct device *dev;
-> +	struct notifier_block nb;
-> +	unsigned int jack_status;
->   };
->
->   static const struct snd_soc_dapm_widget hdmi_widgets[] = {
-> @@ -86,7 +94,7 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
->   			      struct snd_soc_dai *dai)
->   {
->   	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
-> -	int ret = 0;
-> +	int ret;
->
->   	dev_dbg(dai->dev, "%s()\n", __func__);
->
-> @@ -106,17 +114,15 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
->   	}
->
->   	if (hcp->hcd.ops->get_eld) {
-> +		mutex_lock(&hcp->eld_lock);
->   		ret = hcp->hcd.ops->get_eld(dai->dev->parent, hcp->eld,
->   					    sizeof(hcp->eld));
-> -
-> -		if (!ret) {
-> +		if (!ret)
->   			ret = snd_pcm_hw_constraint_eld(substream->runtime,
->   							hcp->eld);
-> -			if (ret)
-> -				return ret;
-> -		}
-> +		mutex_unlock(&hcp->eld_lock);
->   	}
-> -	return 0;
-> +	return ret;
->   }
->
->   static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
-> @@ -326,6 +332,62 @@ static struct snd_soc_codec_driver hdmi_codec = {
->   	.num_dapm_routes = ARRAY_SIZE(hdmi_routes),
->   };
->
-> +static void hdmi_codec_jack_report(struct hdmi_codec_priv *hcp,
-> +				   unsigned int jack_status)
-> +{
-> +	if (!hcp->jack)
-> +		return;
-> +
-> +	if (jack_status != hcp->jack_status) {
-> +		snd_soc_jack_report(hcp->jack, jack_status, SND_JACK_LINEOUT);
-> +		hcp->jack_status = jack_status;
-> +	}
-> +}
-> +
-> +static int hdmi_codec_notify(struct notifier_block *nb, unsigned long event,
-> +			     void *data)
-> +{
-> +	struct hdmi_codec_priv *hcp = container_of(nb, struct hdmi_codec_priv,
-> +						   nb);
-> +	union hdmi_event *event_block = data;
-> +
-> +	if (hcp->dev->parent != event_block->base.source)
-> +		return NOTIFY_OK;
-> +
-> +	if (!hcp->jack)
-> +		return NOTIFY_OK;
-> +
-> +	switch (event) {
-> +	case HDMI_CONNECTED:
-> +		hdmi_codec_jack_report(hcp, SND_JACK_LINEOUT);
-> +		break;
-> +	case HDMI_DISCONNECTED:
-> +		hdmi_codec_jack_report(hcp, 0);
-> +		break;
-> +	case HDMI_NEW_ELD:
-> +		mutex_lock(&hcp->eld_lock);
-> +		memcpy(hcp->eld, event_block->eld.eld, sizeof(hcp->eld));
-> +		mutex_unlock(&hcp->eld_lock);
-> +		break;
-> +	}
-> +
-> +	return NOTIFY_OK;
-> +}
-> +
-> +int hdmi_codec_set_jack_detect(struct snd_soc_codec *codec,
-> +			       struct snd_soc_jack *jack)
-> +{
-> +	struct hdmi_codec_priv *hcp = snd_soc_codec_get_drvdata(codec);
-> +
-> +	hcp->jack = jack;
-> +	hcp->nb.notifier_call = hdmi_codec_notify;
-> +
-> +	hdmi_register_notifier(&hcp->nb);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(hdmi_codec_set_jack_detect);
-> +
->   static int hdmi_codec_probe(struct platform_device *pdev)
->   {
->   	struct hdmi_codec_pdata *hcd = pdev->dev.platform_data;
-> @@ -354,6 +416,7 @@ static int hdmi_codec_probe(struct platform_device *pdev)
->
->   	hcp->hcd = *hcd;
->   	mutex_init(&hcp->current_stream_lock);
-> +	mutex_init(&hcp->eld_lock);
->
->   	hcp->daidrv = devm_kzalloc(dev, dai_count * sizeof(*hcp->daidrv),
->   				   GFP_KERNEL);
-> @@ -370,6 +433,8 @@ static int hdmi_codec_probe(struct platform_device *pdev)
->   	if (hcd->spdif)
->   		hcp->daidrv[i] = hdmi_spdif_dai;
->
-> +	dev_set_drvdata(dev, hcp);
-> +
->   	ret = snd_soc_register_codec(dev, &hdmi_codec, hcp->daidrv,
->   				     dai_count);
->   	if (ret) {
-> @@ -378,12 +443,16 @@ static int hdmi_codec_probe(struct platform_device *pdev)
->   		return ret;
->   	}
->
-> -	dev_set_drvdata(dev, hcp);
-> +	hcp->dev = dev;
-> +
->   	return 0;
->   }
->
->   static int hdmi_codec_remove(struct platform_device *pdev)
->   {
-> +	struct hdmi_codec_priv *hcp = platform_get_drvdata(pdev);
-> +
-> +	hdmi_unregister_notifier(&hcp->nb);
->   	snd_soc_unregister_codec(&pdev->dev);
->   	return 0;
->   }
->
+Thanks! That did the trick.
+
+I have also tried with 25, which is what NXP BSP uses, but it did not work.
+
+Care to explain why 24 is needed here?
+
+I will prepare some patches and submit them tomorrow so that we have
+SAI working on this board.
+
+Thanks for your help
