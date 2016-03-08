@@ -1,19 +1,19 @@
-From: Philipp Zabel <p.zabel@pengutronix.de>
-Subject: Re: [PATCH v5 6/9] ASoC: hdmi-codec: Use HDMI
- notifications to add jack support
-Date: Tue, 08 Mar 2016 09:31:04 +0100
-Message-ID: <1457425864.4174.20.camel@pengutronix.de>
-References: <1456930153-11853-1-git-send-email-p.zabel@pengutronix.de>
- <1456930153-11853-7-git-send-email-p.zabel@pengutronix.de>
- <56DE0124.6080208@ti.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH v2 1/3] ALSA: seq: Provide card number /
+	PID	via sequencer client info
+Date: Tue, 8 Mar 2016 10:00:37 +0100
+Message-ID: <56DE94B5.4080601@ladisch.de>
+References: <1456943188-29600-1-git-send-email-martin@mail.zuhause>
+ <1456943188-29600-3-git-send-email-martin@mail.zuhause>
+ <s5h37s7sxq3.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.4.pengutronix.de (metis.ext.4.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id B4F7B2605C6
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2016 09:31:12 +0100 (CET)
-In-Reply-To: <56DE0124.6080208@ti.com>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 7194B2605C6
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2016 10:00:43 +0100 (CET)
+In-Reply-To: <s5h37s7sxq3.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,57 +23,138 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Koro Chen <koro.chen@mediatek.com>, Daniel Kurtz <djkurtz@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, kernel@pengutronix.de, Matthias Brugger <matthias.bgg@gmail.com>, Cawa Cheng <cawa.cheng@mediatek.com>
+To: Takashi Iwai <tiwai@suse.de>, Martin Koegler <martin.koegler@chello.at>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jyri,
+Takashi Iwai wrote:
+> Martin Koegler wrote:
+>> rawmidi devices expose the card number via IOCTLs, which allows to
+>> find the corresponding device in sysfs.
+>>
+>> The sequencer provides no identifing data. Chromium works around this
+>> issue by scanning rawmidi as well as sequencer devices and matching
+>> them by using assumtions, how the kernel register sequencer devices.
+>>
+>> This changes adds support for exposing the card number for kernel clients
+>> as well as the PID for user client.
+>>
+>> The minor of the API version is changed to distinguish between the zero
+>> initialised reserved field and card number 0.
+>>
+>> Signed-off-by: Martin Koegler <martin.koegler@chello.at>
+>
+> This ABI change itself looks simple enough, so I have no big problem
+> to merge if you can convince other people with it :)
 
-Am Dienstag, den 08.03.2016, 00:31 +0200 schrieb Jyri Sarha:
-> I don't think this patch was updated according to updated "video: rmk's 
-> HDMI notification prototype":
-> 
-> On 03/02/16 16:49, Philipp Zabel wrote:
-> > Use HDMI connection / disconnection notifications to update an ALSA
-> > jack object. Also make a copy of the ELD block after every change.
-> >
-> > Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
-> > ---
-> >   include/sound/hdmi-codec.h    |  6 +++
-> >   sound/soc/codecs/hdmi-codec.c | 85 +++++++++++++++++++++++++++++++++++++++----
-> >   2 files changed, 83 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
-> > index 15fe70f..8b6219d 100644
-> > --- a/include/sound/hdmi-codec.h
-> > +++ b/include/sound/hdmi-codec.h
-> > @@ -99,6 +99,12 @@ struct hdmi_codec_pdata {
-> >   	int max_i2s_channels;
-> >   };
-> >
-> > +struct snd_soc_codec;
-> > +struct snd_soc_jack;
-> > +
-> > +int hdmi_codec_set_jack_detect(struct snd_soc_codec *codec,
-> > +			       struct snd_soc_jack *jack);
-> > +
-> >   #define HDMI_CODEC_DRV_NAME "hdmi-audio-codec"
-> >
-> >   #endif /* __HDMI_CODEC_H__ */
-> > diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-> > index 687332d..7d5db11 100644
-> > --- a/sound/soc/codecs/hdmi-codec.c
-> > +++ b/sound/soc/codecs/hdmi-codec.c
-> > @@ -12,9 +12,12 @@
-> >    * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
-> >    * General Public License for more details.
-> >    */
-> > +#include <linux/hdmi-not.h>
-> 
-> This should be hdmi-notifier.h. "select HDMI_NOTIFIERS" also needs to be 
-> added to SND_SOC_HDMI_CODEC config option for compilation to succeed.
+Acked-by: Clemens Ladisch <clemens@ladisch.de>
 
-Yes, thank you for pointing that out. Will be fixed in v6.
-
-regards
-Philipp
+>> ---
+>>  include/uapi/sound/asequencer.h |  6 ++++--
+>>  sound/core/seq/seq_clientmgr.c  | 14 ++++++++++++++
+>>  sound/core/seq/seq_clientmgr.h  |  2 ++
+>>  3 files changed, 20 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/include/uapi/sound/asequencer.h b/include/uapi/sound/asequencer.h
+>> index 5a5fa49..8c7da5a 100644
+>> --- a/include/uapi/sound/asequencer.h
+>> +++ b/include/uapi/sound/asequencer.h
+>> @@ -25,7 +25,7 @@
+>>  #include <sound/asound.h>
+>>
+>>  /** version of the sequencer */
+>> -#define SNDRV_SEQ_VERSION SNDRV_PROTOCOL_VERSION (1, 0, 1)
+>> +#define SNDRV_SEQ_VERSION SNDRV_PROTOCOL_VERSION (1, 0, 2)
+>>
+>>  /**
+>>   * definition of sequencer event types
+>> @@ -357,7 +357,9 @@ struct snd_seq_client_info {
+>>  	unsigned char event_filter[32];	/* event filter bitmap */
+>>  	int num_ports;			/* RO: number of ports */
+>>  	int event_lost;			/* number of lost events */
+>> -	char reserved[64];		/* for future use */
+>> +	int card;			/* RO: card number[kernel] */
+>> +	int pid;			/* RO: pid[user] */
+>> +	char reserved[56];		/* for future use */
+>>  };
+>>
+>>
+>> diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
+>> index 58e79e0..d6d9419 100644
+>> --- a/sound/core/seq/seq_clientmgr.c
+>> +++ b/sound/core/seq/seq_clientmgr.c
+>> @@ -364,6 +364,7 @@ static int snd_seq_open(struct inode *inode, struct file *file)
+>>  	/* fill client data */
+>>  	user->file = file;
+>>  	sprintf(client->name, "Client-%d", c);
+>> +	client->data.user.owner = get_pid(task_pid(current));
+>>
+>>  	/* make others aware this new client */
+>>  	snd_seq_system_client_ev_client_start(c);
+>> @@ -380,6 +381,7 @@ static int snd_seq_release(struct inode *inode, struct file *file)
+>>  		seq_free_client(client);
+>>  		if (client->data.user.fifo)
+>>  			snd_seq_fifo_delete(&client->data.user.fifo);
+>> +		put_pid(client->data.user.owner);
+>>  		kfree(client);
+>>  	}
+>>
+>> @@ -1197,6 +1199,17 @@ static void get_client_info(struct snd_seq_client *cptr,
+>>  	info->event_lost = cptr->event_lost;
+>>  	memcpy(info->event_filter, cptr->event_filter, 32);
+>>  	info->num_ports = cptr->num_ports;
+>> +
+>> +	if (cptr->type == USER_CLIENT)
+>> +		info->pid = pid_vnr(cptr->data.user.owner);
+>> +	else
+>> +		info->pid = -1;
+>> +
+>> +	if (cptr->type == KERNEL_CLIENT)
+>> +		info->card = cptr->data.kernel.card ? cptr->data.kernel.card->number : -1;
+>> +	else
+>> +		info->card = -1;
+>> +
+>>  	memset(info->reserved, 0, sizeof(info->reserved));
+>>  }
+>>
+>> @@ -2271,6 +2284,7 @@ int snd_seq_create_kernel_client(struct snd_card *card, int client_index,
+>>
+>>  	client->accept_input = 1;
+>>  	client->accept_output = 1;
+>> +	client->data.kernel.card = card;
+>>  		
+>>  	va_start(args, name_fmt);
+>>  	vsnprintf(client->name, sizeof(client->name), name_fmt, args);
+>> diff --git a/sound/core/seq/seq_clientmgr.h b/sound/core/seq/seq_clientmgr.h
+>> index 20f0a72..031462e 100644
+>> --- a/sound/core/seq/seq_clientmgr.h
+>> +++ b/sound/core/seq/seq_clientmgr.h
+>> @@ -33,6 +33,7 @@
+>>  struct snd_seq_user_client {
+>>  	struct file *file;	/* file struct of client */
+>>  	/* ... */
+>> +	struct pid* owner;
+>>  	
+>>  	/* fifo */
+>>  	struct snd_seq_fifo *fifo;	/* queue for incoming events */
+>> @@ -41,6 +42,7 @@ struct snd_seq_user_client {
+>>
+>>  struct snd_seq_kernel_client {
+>>  	/* ... */
+>> +	struct snd_card* card;
+>>  };
+>>
+>>
+>> --
+>> 2.1.4
+>>
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
