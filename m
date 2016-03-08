@@ -1,19 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH v2 1/3] ALSA: seq: Provide card number /
-	PID	via sequencer client info
-Date: Tue, 8 Mar 2016 10:00:37 +0100
-Message-ID: <56DE94B5.4080601@ladisch.de>
-References: <1456943188-29600-1-git-send-email-martin@mail.zuhause>
- <1456943188-29600-3-git-send-email-martin@mail.zuhause>
- <s5h37s7sxq3.wl-tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/9] ASoC: wm*: Fix enum ctl accesses
+Date: Tue, 8 Mar 2016 09:02:56 +0000
+Message-ID: <20160308090256.GF1490@localhost.localdomain>
+References: <1456765278-5435-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 7194B2605C6
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2016 10:00:43 +0100 (CET)
-In-Reply-To: <s5h37s7sxq3.wl-tiwai@suse.de>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5045A2605C6
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2016 10:02:55 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1456765278-5435-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,138 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Martin Koegler <martin.koegler@chello.at>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Martin Koegler wrote:
->> rawmidi devices expose the card number via IOCTLs, which allows to
->> find the corresponding device in sysfs.
->>
->> The sequencer provides no identifing data. Chromium works around this
->> issue by scanning rawmidi as well as sequencer devices and matching
->> them by using assumtions, how the kernel register sequencer devices.
->>
->> This changes adds support for exposing the card number for kernel clients
->> as well as the PID for user client.
->>
->> The minor of the API version is changed to distinguish between the zero
->> initialised reserved field and card number 0.
->>
->> Signed-off-by: Martin Koegler <martin.koegler@chello.at>
->
-> This ABI change itself looks simple enough, so I have no big problem
-> to merge if you can convince other people with it :)
+On Mon, Feb 29, 2016 at 06:01:09PM +0100, Takashi Iwai wrote:
+> Hi,
+> 
+> here is a patchset for correcting the wrong access types to the enum
+> ctl values in various wm* codec drivers.
+> 
+> I didn't put Cc to stable.  If they might be used for 64 bit
+> architectures, it's a real problem.  In that case, feel free to put Cc
+> to stable.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> ===
 
-Acked-by: Clemens Ladisch <clemens@ladisch.de>
+For the whole series:
 
->> ---
->>  include/uapi/sound/asequencer.h |  6 ++++--
->>  sound/core/seq/seq_clientmgr.c  | 14 ++++++++++++++
->>  sound/core/seq/seq_clientmgr.h  |  2 ++
->>  3 files changed, 20 insertions(+), 2 deletions(-)
->>
->> diff --git a/include/uapi/sound/asequencer.h b/include/uapi/sound/asequencer.h
->> index 5a5fa49..8c7da5a 100644
->> --- a/include/uapi/sound/asequencer.h
->> +++ b/include/uapi/sound/asequencer.h
->> @@ -25,7 +25,7 @@
->>  #include <sound/asound.h>
->>
->>  /** version of the sequencer */
->> -#define SNDRV_SEQ_VERSION SNDRV_PROTOCOL_VERSION (1, 0, 1)
->> +#define SNDRV_SEQ_VERSION SNDRV_PROTOCOL_VERSION (1, 0, 2)
->>
->>  /**
->>   * definition of sequencer event types
->> @@ -357,7 +357,9 @@ struct snd_seq_client_info {
->>  	unsigned char event_filter[32];	/* event filter bitmap */
->>  	int num_ports;			/* RO: number of ports */
->>  	int event_lost;			/* number of lost events */
->> -	char reserved[64];		/* for future use */
->> +	int card;			/* RO: card number[kernel] */
->> +	int pid;			/* RO: pid[user] */
->> +	char reserved[56];		/* for future use */
->>  };
->>
->>
->> diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
->> index 58e79e0..d6d9419 100644
->> --- a/sound/core/seq/seq_clientmgr.c
->> +++ b/sound/core/seq/seq_clientmgr.c
->> @@ -364,6 +364,7 @@ static int snd_seq_open(struct inode *inode, struct file *file)
->>  	/* fill client data */
->>  	user->file = file;
->>  	sprintf(client->name, "Client-%d", c);
->> +	client->data.user.owner = get_pid(task_pid(current));
->>
->>  	/* make others aware this new client */
->>  	snd_seq_system_client_ev_client_start(c);
->> @@ -380,6 +381,7 @@ static int snd_seq_release(struct inode *inode, struct file *file)
->>  		seq_free_client(client);
->>  		if (client->data.user.fifo)
->>  			snd_seq_fifo_delete(&client->data.user.fifo);
->> +		put_pid(client->data.user.owner);
->>  		kfree(client);
->>  	}
->>
->> @@ -1197,6 +1199,17 @@ static void get_client_info(struct snd_seq_client *cptr,
->>  	info->event_lost = cptr->event_lost;
->>  	memcpy(info->event_filter, cptr->event_filter, 32);
->>  	info->num_ports = cptr->num_ports;
->> +
->> +	if (cptr->type == USER_CLIENT)
->> +		info->pid = pid_vnr(cptr->data.user.owner);
->> +	else
->> +		info->pid = -1;
->> +
->> +	if (cptr->type == KERNEL_CLIENT)
->> +		info->card = cptr->data.kernel.card ? cptr->data.kernel.card->number : -1;
->> +	else
->> +		info->card = -1;
->> +
->>  	memset(info->reserved, 0, sizeof(info->reserved));
->>  }
->>
->> @@ -2271,6 +2284,7 @@ int snd_seq_create_kernel_client(struct snd_card *card, int client_index,
->>
->>  	client->accept_input = 1;
->>  	client->accept_output = 1;
->> +	client->data.kernel.card = card;
->>  		
->>  	va_start(args, name_fmt);
->>  	vsnprintf(client->name, sizeof(client->name), name_fmt, args);
->> diff --git a/sound/core/seq/seq_clientmgr.h b/sound/core/seq/seq_clientmgr.h
->> index 20f0a72..031462e 100644
->> --- a/sound/core/seq/seq_clientmgr.h
->> +++ b/sound/core/seq/seq_clientmgr.h
->> @@ -33,6 +33,7 @@
->>  struct snd_seq_user_client {
->>  	struct file *file;	/* file struct of client */
->>  	/* ... */
->> +	struct pid* owner;
->>  	
->>  	/* fifo */
->>  	struct snd_seq_fifo *fifo;	/* queue for incoming events */
->> @@ -41,6 +42,7 @@ struct snd_seq_user_client {
->>
->>  struct snd_seq_kernel_client {
->>  	/* ... */
->> +	struct snd_card* card;
->>  };
->>
->>
->> --
->> 2.1.4
->>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+
+Thanks,
+Charles
