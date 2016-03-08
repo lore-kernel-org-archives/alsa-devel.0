@@ -1,7 +1,7 @@
 From: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v6 07/10] ASoC: hdmi-codec: Add ELD control
-Date: Tue,  8 Mar 2016 14:31:46 +0100
-Message-ID: <1457443909-14807-8-git-send-email-p.zabel@pengutronix.de>
+Subject: [PATCH v6 05/10] drm/mediatek: hdmi: issue notifications
+Date: Tue,  8 Mar 2016 14:31:44 +0100
+Message-ID: <1457443909-14807-6-git-send-email-p.zabel@pengutronix.de>
 References: <1457443909-14807-1-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,77 +21,74 @@ To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-ALSA doesn't know about all the different compressed audio formats,
-so there is no interface to let userspace enumerate the formats that
-are supported by the connected sink. Exporting the raw ELD bytes to
-userspace allows an application to select the appropriate audio format
-depending on the current capabilities of the connected HDMI sink device.
-Usually userspace then just pretends to ALSA that the data is in one of
-the raw 16-bit PCM audio formats and relies on the IEC controls to tell
-the sink how to interpret the data.
+Issue hot-plug detection, EDID update, and ELD update notifications
+from the CEC and HDMI drivers.
 
 Signed-off-by: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Reviewed-by: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Tested-by: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
 ---
- sound/soc/codecs/hdmi-codec.c | 38 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ drivers/gpu/drm/mediatek/mtk_cec.c          | 11 +++++++++++
+ drivers/gpu/drm/mediatek/mtk_drm_hdmi_drv.c |  3 +++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 3cf8c79..593f354 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -55,6 +55,42 @@ enum {
- 	DAI_ID_SPDIF,
- };
+diff --git a/drivers/gpu/drm/mediatek/mtk_cec.c b/drivers/gpu/drm/mediatek/mtk_cec.c
+index cba3647..11e3449 100644
+--- a/drivers/gpu/drm/mediatek/mtk_cec.c
++++ b/drivers/gpu/drm/mediatek/mtk_cec.c
+@@ -13,6 +13,7 @@
+  */
+ #include <linux/clk.h>
+ #include <linux/delay.h>
++#include <linux/hdmi-notifier.h>
+ #include <linux/io.h>
+ #include <linux/interrupt.h>
+ #include <linux/platform_device.h>
+@@ -79,6 +80,12 @@ void mtk_cec_set_hpd_event(struct device *dev,
  
-+static int hdmi_eld_ctl_info(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_info *uinfo)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
+ 	cec->hdmi_dev = hdmi_dev;
+ 	cec->hpd_event = hpd_event;
 +
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
-+	uinfo->count = sizeof(hcp->eld);
-+
-+	return 0;
-+}
-+
-+static int hdmi_eld_ctl_get(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
-+
-+	mutex_lock(&hcp->eld_lock);
-+	memcpy(ucontrol->value.bytes.data, hcp->eld, sizeof(hcp->eld));
-+	mutex_unlock(&hcp->eld_lock);
-+
-+	return 0;
-+}
-+
-+static const struct snd_kcontrol_new hdmi_controls[] = {
-+	{
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ |
-+			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name = "ELD",
-+		.info = hdmi_eld_ctl_info,
-+		.get = hdmi_eld_ctl_get,
-+	},
-+};
-+
- static void hdmi_codec_abort(struct device *dev)
- {
- 	struct hdmi_codec_priv *hcp = dev_get_drvdata(dev);
-@@ -326,6 +362,8 @@ static const struct snd_soc_dai_driver hdmi_spdif_dai = {
- };
++	/* Initial notification event to set jack state */
++	if (mtk_cec_hpd_high(dev))
++		hdmi_event_connect(hdmi_dev);
++	else
++		hdmi_event_disconnect(hdmi_dev);
+ }
  
- static struct snd_soc_codec_driver hdmi_codec = {
-+	.controls = hdmi_controls,
-+	.num_controls = ARRAY_SIZE(hdmi_controls),
- 	.dapm_widgets = hdmi_widgets,
- 	.num_dapm_widgets = ARRAY_SIZE(hdmi_widgets),
- 	.dapm_routes = hdmi_routes,
+ bool mtk_cec_hpd_high(struct device *dev)
+@@ -160,6 +167,10 @@ static irqreturn_t mtk_cec_htplg_isr_thread(int irq, void *arg)
+ 	if (cec->hpd != hpd) {
+ 		dev_info(dev, "hotplug event!,cur hpd = %d, hpd = %d\n",
+ 			 cec->hpd, hpd);
++		if (hpd)
++			hdmi_event_connect(cec->hdmi_dev);
++		else
++			hdmi_event_disconnect(cec->hdmi_dev);
+ 		cec->hpd = hpd;
+ 		if (cec->hpd_event)
+ 			cec->hpd_event(hpd, cec->hdmi_dev);
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_hdmi_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_hdmi_drv.c
+index 96ad53a..0775a17 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_hdmi_drv.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_hdmi_drv.c
+@@ -17,6 +17,7 @@
+ #include <drm/drm_crtc_helper.h>
+ #include <drm/drm_edid.h>
+ #include <linux/clk.h>
++#include <linux/hdmi-notifier.h>
+ #include <linux/i2c.h>
+ #include <linux/kernel.h>
+ #include <linux/mfd/syscon.h>
+@@ -122,9 +123,11 @@ static int mtk_hdmi_conn_get_modes(struct drm_connector *conn)
+ 	hdmi->dvi_mode = !drm_detect_monitor_audio(edid);
+ 
+ 	drm_mode_connector_update_edid_property(conn, edid);
++	hdmi_event_new_edid(hdmi->dev, edid, sizeof(*edid));
+ 
+ 	ret = drm_add_edid_modes(conn, edid);
+ 	drm_edid_to_eld(conn, edid);
++	hdmi_event_new_eld(hdmi->dev, conn->eld);
+ 	kfree(edid);
+ 	return ret;
+ }
 -- 
 2.7.0
