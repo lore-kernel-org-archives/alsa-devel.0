@@ -1,8 +1,8 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v4 3/6] ALSA: pcm: add IEC958 channel status
+Subject: [PATCH v4 5/6] ASoC: sti: use iec channel status
 	control helper
-Date: Tue, 8 Mar 2016 13:53:58 +0100
-Message-ID: <1457441641-7501-4-git-send-email-arnaud.pouliquen@st.com>
+Date: Tue, 8 Mar 2016 13:54:00 +0100
+Message-ID: <1457441641-7501-6-git-send-email-arnaud.pouliquen@st.com>
 References: <1457441641-7501-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
  [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 94B992619D0
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2016 13:54:28 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D4CD26519F
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2016 13:54:31 +0100 (CET)
 In-Reply-To: <1457441641-7501-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,191 +26,230 @@ To: alsa-devel@alsa-project.org
 Cc: Jean-Francois Moine <moinejf@free.fr>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, David Airlie <airlied@linux.ie>, arnaud.pouliquen@st.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Moise Gergaud <moise.gergaud@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add IEC958 channel status helper that creates control to handle the
-IEC60958 status bits.
+Use helper function instead of internal function for iec control
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- include/sound/pcm_iec958.h |  21 ++++++++
- sound/core/pcm_iec958.c    | 125 +++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 146 insertions(+)
+ sound/soc/sti/Kconfig           |  1 +
+ sound/soc/sti/sti_uniperif.c    | 22 ++++++++++--
+ sound/soc/sti/uniperif.h        |  1 +
+ sound/soc/sti/uniperif_player.c | 78 ++++++++++-------------------------------
+ 4 files changed, 41 insertions(+), 61 deletions(-)
 
-diff --git a/include/sound/pcm_iec958.h b/include/sound/pcm_iec958.h
-index 0eed397..6d5e3d1 100644
---- a/include/sound/pcm_iec958.h
-+++ b/include/sound/pcm_iec958.h
-@@ -3,7 +3,28 @@
+diff --git a/sound/soc/sti/Kconfig b/sound/soc/sti/Kconfig
+index 64a6900..8e616a4 100644
+--- a/sound/soc/sti/Kconfig
++++ b/sound/soc/sti/Kconfig
+@@ -6,6 +6,7 @@ menuconfig SND_SOC_STI
+ 	depends on SND_SOC
+ 	depends on ARCH_STI || COMPILE_TEST
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
++	select SND_PCM_IEC958
+ 	help
+ 		Say Y if you want to enable ASoC-support for
+ 		any of the STI platforms (e.g. STIH416).
+diff --git a/sound/soc/sti/sti_uniperif.c b/sound/soc/sti/sti_uniperif.c
+index 267c44f..97e777c 100644
+--- a/sound/soc/sti/sti_uniperif.c
++++ b/sound/soc/sti/sti_uniperif.c
+@@ -9,6 +9,7 @@
+ #include <linux/pinctrl/consumer.h>
  
- #include <linux/types.h>
+ #include "uniperif.h"
++#include <sound/pcm_iec958.h>
  
-+/**
-+ * struct snd_pcm_iec958_params: IEC 60958 controls parameters
-+ * @ctrl_set: control set callback
-+ * This callback is optional and shall be used to set associated driver
-+ * configuration. Calls under mutex protection.
-+ * @iec: Mandatory pointer to iec958 structure.
-+ * @pdata: Optional pointer to driver context.
-+ * @mutex: Mandatory pointer to mutex
-+ *         Provided by driver to handle race conditions.
-+ */
-+struct snd_pcm_iec958_params {
-+	int (*ctrl_set)(void *pdata, u8 *status);
-+	struct snd_aes_iec958 *iec;
-+	void *pdata;
-+	struct mutex *mutex;
-+};
+ /*
+  * DAI
+@@ -84,10 +85,14 @@ static int sti_uniperiph_dai_probe(struct snd_soc_dai *dai)
+ {
+ 	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
+ 	struct sti_uniperiph_dai *dai_data = &priv->dai_data;
+-	struct uniperif *uni = priv->dai_data.uni;
++	struct uniperif *uni = dai_data->uni;
++	int ret, stream;
+ 
+ 	/* DMA settings*/
+-	if (of_device_is_compatible(dai->dev->of_node, "st,sti-uni-player"))
++	stream  = of_device_is_compatible(dai->dev->of_node,
++					  "st,sti-uni-player") ?
++			SNDRV_PCM_STREAM_PLAYBACK : SNDRV_PCM_STREAM_CAPTURE;
++	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		snd_soc_dai_init_dma_data(dai, &dai_data->dma_data, NULL);
+ 	else
+ 		snd_soc_dai_init_dma_data(dai, NULL, &dai_data->dma_data);
+@@ -95,6 +100,19 @@ static int sti_uniperiph_dai_probe(struct snd_soc_dai *dai)
+ 	dai_data->dma_data.addr = uni->fifo_phys_address;
+ 	dai_data->dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 
++	if (uni->iec_param) {
++		const struct snd_kcontrol_new *ctrl;
++		/* create generic iec control*/
++		ctrl = snd_pcm_iec958_ctl_new(stream);
++		ret = snd_soc_add_dai_pcm_controls(dai, ctrl, 1,
++						   uni->iec_param);
++		if (ret < 0) {
++			dev_err(dai->dev, "%s: Failed to create iec control",
++				__func__);
++			return ret;
++		}
++	}
 +
- int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
- 	size_t len);
+ 	if (uni->num_ctrls)
+ 		return snd_soc_add_dai_pcm_controls(dai, uni->snd_ctrls,
+ 						    uni->num_ctrls, dai);
+diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
+index f0fd5a9..ab06b4c 100644
+--- a/sound/soc/sti/uniperif.h
++++ b/sound/soc/sti/uniperif.h
+@@ -1189,6 +1189,7 @@ struct uniperif {
+ 	/*alsa ctrl*/
+ 	struct snd_kcontrol_new *snd_ctrls;
+ 	int num_ctrls;
++	struct snd_pcm_iec958_params *iec_param;
  
-+int snd_pcm_create_iec958_ctl(struct snd_pcm *pcm, int subdevice,
-+			      struct snd_pcm_iec958_params *params,
-+			      int stream);
-+const struct snd_kcontrol_new *snd_pcm_iec958_ctl_new(int stream);
- #endif
-diff --git a/sound/core/pcm_iec958.c b/sound/core/pcm_iec958.c
-index 36b2d7a..24d6a8e 100644
---- a/sound/core/pcm_iec958.c
-+++ b/sound/core/pcm_iec958.c
-@@ -7,10 +7,97 @@
-  */
- #include <linux/export.h>
- #include <linux/types.h>
-+#include <linux/wait.h>
+ 	/* dai properties */
+ 	unsigned int daifmt;
+diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
+index 7aca6b9..ee69443 100644
+--- a/sound/soc/sti/uniperif_player.c
++++ b/sound/soc/sti/uniperif_player.c
+@@ -12,6 +12,7 @@
+ 
  #include <sound/asoundef.h>
-+#include <sound/control.h>
- #include <sound/pcm.h>
- #include <sound/pcm_iec958.h>
+ #include <sound/soc.h>
++#include <sound/pcm_iec958.h>
  
-+static int snd_pcm_iec958_info(struct snd_kcontrol *kcontrol,
-+			       struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_IEC958;
-+	uinfo->count = 1;
-+	return 0;
-+}
-+
-+/*
-+ * IEC958 channel status default controls callbacks
-+ *
-+ * Callbacks are protected by a mutex provided by user.
-+ */
-+static int snd_pcm_iec958_get(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *uctl)
-+{
-+	struct snd_pcm_iec958_params *params = snd_kcontrol_chip(kcontrol);
-+	int i;
-+
-+	if (!params->mutex)
-+		return -EINVAL;
-+
-+	mutex_lock(params->mutex);
-+	for (i = 0; i < 5; i++)
-+		uctl->value.iec958.status[i] = params->iec->status[i];
-+	mutex_unlock(params->mutex);
-+
-+	return 0;
-+}
-+
-+static int snd_pcm_iec958_put(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *uctl)
-+{
-+	struct snd_pcm_iec958_params *params = snd_kcontrol_chip(kcontrol);
-+	int err = 0;
-+	int i, updated = 0;
-+
-+	if (!params->mutex)
-+		return -EINVAL;
-+
-+	mutex_lock(params->mutex);
-+	for (i = 0; i < 5; i++) {
-+		if (params->iec->status[i] != uctl->value.iec958.status[i])
-+			updated = 1;
-+	}
-+
-+	if (!updated)
-+		goto unlock;
-+
-+	if (params->ctrl_set)
-+		err = params->ctrl_set(params->pdata,
-+				       uctl->value.iec958.status);
-+	if (err < 0) {
-+		mutex_unlock(params->mutex);
-+		return err;
-+	}
-+
-+	for (i = 0; i < 5; i++)
-+		params->iec->status[i] = uctl->value.iec958.status[i];
-+
-+ unlock:
-+	mutex_unlock(params->mutex);
-+	return updated;
-+}
-+
-+static const struct snd_kcontrol_new iec958_ctls[] = {
-+	{
-+		.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE |
-+			   SNDRV_CTL_ELEM_ACCESS_VOLATILE),
-+		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT),
-+		.info = snd_pcm_iec958_info,
-+		.get = snd_pcm_iec958_get,
-+		.put = snd_pcm_iec958_put,
-+	},
-+	{
-+		.access = (SNDRV_CTL_ELEM_ACCESS_READ |
-+			   SNDRV_CTL_ELEM_ACCESS_VOLATILE),
-+		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name = SNDRV_CTL_NAME_IEC958("", CAPTURE, DEFAULT),
-+		.info = snd_pcm_iec958_info,
-+		.get = snd_pcm_iec958_get,
-+	},
-+};
-+
- /**
-  * snd_pcm_create_iec958_consumer - create consumer format IEC958 channel status
-  * @runtime: pcm runtime structure with ->rate filled in
-@@ -93,3 +180,41 @@ int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
- 	return len;
+ #include "uniperif.h"
+ 
+@@ -250,7 +251,6 @@ static void uni_player_set_channel_status(struct uniperif *player,
+ 	 * sampling frequency. If no sample rate is already specified, then
+ 	 * set one.
+ 	 */
+-	mutex_lock(&player->ctrl_lock);
+ 	if (runtime) {
+ 		switch (runtime->rate) {
+ 		case 22050:
+@@ -327,7 +327,6 @@ static void uni_player_set_channel_status(struct uniperif *player,
+ 		player->stream_settings.iec958.status[3 + (n * 4)] << 24;
+ 		SET_UNIPERIF_CHANNEL_STA_REGN(player, n, status);
+ 	}
+-	mutex_unlock(&player->ctrl_lock);
+ 
+ 	/* Update the channel status */
+ 	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
+@@ -390,7 +389,9 @@ static int uni_player_prepare_iec958(struct uniperif *player,
+ 	SET_UNIPERIF_CTRL_ZERO_STUFF_HW(player);
+ 
+ 	/* Update the channel status */
++	mutex_lock(&player->ctrl_lock);
+ 	uni_player_set_channel_status(player, runtime);
++	mutex_unlock(&player->ctrl_lock);
+ 
+ 	/* Clear the user validity user bits */
+ 	SET_UNIPERIF_USER_VALIDITY_VALIDITY_LR(player, 0);
+@@ -541,60 +542,16 @@ static int uni_player_prepare_pcm(struct uniperif *player,
+ /*
+  * ALSA uniperipheral iec958 controls
+  */
+-static int  uni_player_ctl_iec958_info(struct snd_kcontrol *kcontrol,
+-				       struct snd_ctl_elem_info *uinfo)
+-{
+-	uinfo->type = SNDRV_CTL_ELEM_TYPE_IEC958;
+-	uinfo->count = 1;
+-
+-	return 0;
+-}
+ 
+-static int uni_player_ctl_iec958_get(struct snd_kcontrol *kcontrol,
+-				     struct snd_ctl_elem_value *ucontrol)
++static int uni_player_ctl_iec958_set(void *pdata, u8 *status)
+ {
+-	struct snd_soc_dai *dai = snd_kcontrol_chip(kcontrol);
+-	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
+-	struct uniperif *player = priv->dai_data.uni;
+-	struct snd_aes_iec958 *iec958 = &player->stream_settings.iec958;
+-
+-	mutex_lock(&player->ctrl_lock);
+-	ucontrol->value.iec958.status[0] = iec958->status[0];
+-	ucontrol->value.iec958.status[1] = iec958->status[1];
+-	ucontrol->value.iec958.status[2] = iec958->status[2];
+-	ucontrol->value.iec958.status[3] = iec958->status[3];
+-	mutex_unlock(&player->ctrl_lock);
+-	return 0;
+-}
+-
+-static int uni_player_ctl_iec958_put(struct snd_kcontrol *kcontrol,
+-				     struct snd_ctl_elem_value *ucontrol)
+-{
+-	struct snd_soc_dai *dai = snd_kcontrol_chip(kcontrol);
+-	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
+-	struct uniperif *player = priv->dai_data.uni;
+-	struct snd_aes_iec958 *iec958 =  &player->stream_settings.iec958;
+-
+-	mutex_lock(&player->ctrl_lock);
+-	iec958->status[0] = ucontrol->value.iec958.status[0];
+-	iec958->status[1] = ucontrol->value.iec958.status[1];
+-	iec958->status[2] = ucontrol->value.iec958.status[2];
+-	iec958->status[3] = ucontrol->value.iec958.status[3];
+-	mutex_unlock(&player->ctrl_lock);
++	struct uniperif *player = pdata;
+ 
+ 	uni_player_set_channel_status(player, NULL);
+ 
+ 	return 0;
  }
- EXPORT_SYMBOL(snd_pcm_create_iec958_consumer);
+ 
+-static struct snd_kcontrol_new uni_player_iec958_ctl = {
+-	.iface = SNDRV_CTL_ELEM_IFACE_PCM,
+-	.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT),
+-	.info = uni_player_ctl_iec958_info,
+-	.get = uni_player_ctl_iec958_get,
+-	.put = uni_player_ctl_iec958_put,
+-};
+-
+ /*
+  * uniperif rate adjustement control
+  */
+@@ -654,12 +611,7 @@ static struct snd_kcontrol_new uni_player_clk_adj_ctl = {
+ 	.put = snd_sti_clk_adjustment_put,
+ };
+ 
+-static struct snd_kcontrol_new *snd_sti_pcm_ctl[] = {
+-	&uni_player_clk_adj_ctl,
+-};
+-
+-static struct snd_kcontrol_new *snd_sti_iec_ctl[] = {
+-	&uni_player_iec958_ctl,
++static struct snd_kcontrol_new *snd_sti_ctl[] = {
+ 	&uni_player_clk_adj_ctl,
+ };
+ 
+@@ -1106,13 +1058,21 @@ int uni_player_init(struct platform_device *pdev,
+ 					IEC958_AES4_CON_MAX_WORDLEN_24 |
+ 					IEC958_AES4_CON_WORDLEN_24_20;
+ 
+-		player->num_ctrls = ARRAY_SIZE(snd_sti_iec_ctl);
+-		player->snd_ctrls = snd_sti_iec_ctl[0];
+-	} else {
+-		player->num_ctrls = ARRAY_SIZE(snd_sti_pcm_ctl);
+-		player->snd_ctrls = snd_sti_pcm_ctl[0];
++		player->iec_param = devm_kzalloc(player->dev,
++						 sizeof(*player->iec_param),
++						 GFP_KERNEL);
++		if (!player->iec_param)
++			return -ENOMEM;
 +
-+/**
-+ * snd_pcm_create_iec958_ctl - Add a IEC958 control associated to the pcm device
-+ * @pcm: pcm device to associate to the control.
-+ * @subdevice: subdevice index.Must be set to 0 if unused
-+ * @iec958: snd_pcm_iec958_params structure that contains callbacks
-+ *          and channel status buffer.
-+ * @stream: stream type SNDRV_PCM_STREAM_PLAYBACK or SNDRV_PCM_STREAM_CATURE.
-+ * Returns:  negative error code if something failed.
-+ */
-+int snd_pcm_create_iec958_ctl(struct snd_pcm *pcm, int subdevice,
-+			      struct snd_pcm_iec958_params *params, int stream)
-+{
-+	struct snd_kcontrol_new knew;
++		player->iec_param->iec = &player->stream_settings.iec958;
++		player->iec_param->mutex = &player->ctrl_lock;
++		player->iec_param->pdata = player;
++		player->iec_param->ctrl_set = uni_player_ctl_iec958_set;
+ 	}
+ 
++	player->num_ctrls = ARRAY_SIZE(snd_sti_ctl);
++	player->snd_ctrls = snd_sti_ctl[0];
 +
-+	if (stream > SNDRV_PCM_STREAM_LAST)
-+		return -EINVAL;
-+
-+	knew = iec958_ctls[stream];
-+	knew.device = pcm->device;
-+	knew.subdevice = subdevice;
-+	return snd_ctl_add(pcm->card, snd_ctl_new1(&knew, params));
-+}
-+EXPORT_SYMBOL(snd_pcm_create_iec958_ctl);
-+
-+/**
-+ * snd_pcm_iec958_ctl_new - create a IEC958 control instance from the template
-+ * @stream: stream type SNDRV_PCM_STREAM_PLAYBACK or SNDRV_PCM_STREAM_CATURE.
-+ * Returns:  pointer to snd_kcontrol_new structure, NULL if something failed.
-+ */
-+const struct snd_kcontrol_new *snd_pcm_iec958_ctl_new(int stream)
-+{
-+	if (stream > SNDRV_PCM_STREAM_LAST)
-+		return NULL;
-+
-+	return &iec958_ctls[stream];
-+}
-+EXPORT_SYMBOL(snd_pcm_iec958_ctl_new);
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(uni_player_init);
 -- 
 1.9.1
