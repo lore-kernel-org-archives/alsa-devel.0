@@ -1,16 +1,20 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v4 6/6] ASoC: hdmi-codec: add IEC control.
-Date: Tue, 8 Mar 2016 13:54:01 +0100
-Message-ID: <1457441641-7501-7-git-send-email-arnaud.pouliquen@st.com>
-References: <1457441641-7501-1-git-send-email-arnaud.pouliquen@st.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH v4] ASoC: imx-wm8958: add imx-wm8958
+	machine driver
+Date: Tue, 8 Mar 2016 10:04:36 -0300
+Message-ID: <CAOMZO5AdwnV8RremJAmMBMeZXmm33pPFjjd=1rvHmpBMsDDxvQ@mail.gmail.com>
+References: <4db703a76e01f1c9ad3eda78758f3e121098e515.1457417904.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 4B242260524
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2016 13:54:32 +0100 (CET)
-In-Reply-To: <1457441641-7501-1-git-send-email-arnaud.pouliquen@st.com>
+Received: from mail-ig0-f182.google.com (mail-ig0-f182.google.com
+ [209.85.213.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 602982612D7
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2016 14:04:40 +0100 (CET)
+Received: by mail-ig0-f182.google.com with SMTP id ir4so74031995igb.1
+ for <alsa-devel@alsa-project.org>; Tue, 08 Mar 2016 05:04:40 -0800 (PST)
+In-Reply-To: <4db703a76e01f1c9ad3eda78758f3e121098e515.1457417904.git.zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,122 +24,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Jean-Francois Moine <moinejf@free.fr>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, David Airlie <airlied@linux.ie>, arnaud.pouliquen@st.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Moise Gergaud <moise.gergaud@st.com>
+To: Zidan Wang <zidan.wang@freescale.com>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Create 'IEC958 Playback Default' controls to support IEC61937 formats.
-the use of the alsa control is optional, using 'iec_ctl' flag.
+On Tue, Mar 8, 2016 at 3:27 AM, Zidan Wang <zidan.wang@freescale.com> wrote:
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
----
- include/sound/hdmi-codec.h    |  1 +
- sound/soc/codecs/hdmi-codec.c | 54 ++++++++++++++++++++++++++++++++-----------
- 2 files changed, 41 insertions(+), 14 deletions(-)
+> --- /dev/null
+> +++ b/sound/soc/fsl/imx-wm8958.c
+...
 
-diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
-index fc3a481..4366d9f 100644
---- a/include/sound/hdmi-codec.h
-+++ b/include/sound/hdmi-codec.h
-@@ -92,6 +92,7 @@ struct hdmi_codec_pdata {
- 	const struct hdmi_codec_ops *ops;
- 	uint i2s:1;
- 	uint spdif:1;
-+	uint iec_ctl:1;
- 	int max_i2s_channels;
- };
- 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index bc47b9a..6d156ea 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -32,6 +32,7 @@ struct hdmi_codec_priv {
- 	struct snd_pcm_substream *current_stream;
- 	struct snd_pcm_hw_constraint_list ratec;
- 	uint8_t eld[MAX_ELD_BYTES];
-+	struct snd_aes_iec958 iec;
- };
- 
- static const struct snd_soc_dapm_widget hdmi_widgets[] = {
-@@ -122,26 +123,29 @@ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai)
- {
- 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
--	struct hdmi_codec_params hp = {
--		.iec = {
--			.status = { 0 },
--			.subcode = { 0 },
--			.pad = 0,
--			.dig_subframe = { 0 },
--		}
--	};
-+	struct hdmi_codec_params hp;
- 	int ret;
- 
- 	dev_dbg(dai->dev, "%s() width %d rate %d channels %d\n", __func__,
- 		params_width(params), params_rate(params),
- 		params_channels(params));
- 
--	ret = snd_pcm_create_iec958_consumer_hw_params(params, hp.iec.status,
--						       sizeof(hp.iec.status));
--	if (ret < 0) {
--		dev_err(dai->dev, "Creating IEC958 channel status failed %d\n",
--			ret);
--		return ret;
-+	mutex_lock(&hcp->current_stream_lock);
-+	hp.iec = hcp->iec;
-+	mutex_unlock(&hcp->current_stream_lock);
-+
-+	if (!hcp->hcd.iec_ctl) {
-+		/*
-+		* only PCM format supported
-+		*channel status set according to runtime parameters
-+		*/
-+		ret = snd_pcm_create_iec958_consumer_hw_params(params,
-+					hp.iec.status, sizeof(hp.iec.status));
-+		if (ret < 0) {
-+			dev_err(dai->dev, "Creating IEC958 status failed %d\n",
-+				ret);
-+			return ret;
-+		}
- 	}
- 
- 	ret = hdmi_codec_new_stream(substream, dai);
-@@ -248,6 +252,27 @@ static int hdmi_codec_digital_mute(struct snd_soc_dai *dai, int mute)
- 	return 0;
- }
- 
-+static int hdmi_codec_dai_probe(struct snd_soc_dai *dai)
-+{
-+	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
-+	struct snd_pcm_iec958_params *iec958_params;
-+	const struct snd_kcontrol_new *ctrl;
-+
-+	if (!hcp->hcd.iec_ctl)
-+		return 0;
-+
-+	iec958_params = devm_kzalloc(dai->dev, sizeof(*iec958_params),
-+				     GFP_KERNEL);
-+	if (!iec958_params)
-+		return -ENOMEM;
-+
-+	iec958_params->iec = &hcp->iec;
-+	iec958_params->mutex = &hcp->current_stream_lock;
-+
-+	ctrl = snd_pcm_iec958_ctl_new(SNDRV_PCM_STREAM_PLAYBACK);
-+	return snd_soc_add_dai_pcm_controls(dai, ctrl, 1, iec958_params);
-+}
-+
- static const struct snd_soc_dai_ops hdmi_dai_ops = {
- 	.startup	= hdmi_codec_startup,
- 	.shutdown	= hdmi_codec_shutdown,
-@@ -293,6 +318,7 @@ static struct snd_soc_dai_driver hdmi_i2s_dai = {
- 		.sig_bits = 24,
- 	},
- 	.ops = &hdmi_dai_ops,
-+	.probe = hdmi_codec_dai_probe,
- };
- 
- static const struct snd_soc_dai_driver hdmi_spdif_dai = {
--- 
-1.9.1
+> +#include <linux/mfd/wm8994/registers.h>
+> +#include "../fsl/fsl_sai.h"
+
+This include is not needed.
