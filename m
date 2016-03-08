@@ -1,8 +1,8 @@
 From: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v6 03/10] ASoC: mediatek: Add HDMI dai-links to the
- mt8173-rt5650 machine driver
-Date: Tue,  8 Mar 2016 14:31:42 +0100
-Message-ID: <1457443909-14807-4-git-send-email-p.zabel@pengutronix.de>
+Subject: [PATCH v6 06/10] ASoC: hdmi-codec: Use HDMI notifications to add jack
+ support
+Date: Tue,  8 Mar 2016 14:31:45 +0100
+Message-ID: <1457443909-14807-7-git-send-email-p.zabel@pengutronix.de>
 References: <1457443909-14807-1-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -19,118 +19,214 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
 Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, PC Liao <pc.liao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: PC Liao <pc.liao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Use HDMI connection / disconnection notifications to update an ALSA
+jack object. Also make a copy of the ELD block after every change.
 
-This patch adds HDMI audio output support to the MT8173 RT5650 machine
-driver.
-
-Signed-off-by: PC Liao <pc.liao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 Signed-off-by: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 ---
 Changes since v5:
- - split out jack support
+ - Select HDMI_NOTIFIERS
+ - fix include of hdmi-notifier.h
 ---
- .../devicetree/bindings/sound/mt8173-rt5650.txt    |  5 +++--
- sound/soc/mediatek/Kconfig                         |  1 +
- sound/soc/mediatek/mt8173-rt5650.c                 | 26 ++++++++++++++++++++++
- 3 files changed, 30 insertions(+), 2 deletions(-)
+ include/sound/hdmi-codec.h    |  6 +++
+ sound/soc/codecs/Kconfig      |  1 +
+ sound/soc/codecs/hdmi-codec.c | 85 +++++++++++++++++++++++++++++++++++++++----
+ 3 files changed, 84 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
-index fe5a5ef..6b182c4 100644
---- a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
-+++ b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
-@@ -1,15 +1,16 @@
--MT8173 with RT5650 CODECS
-+MT8173 with RT5650 CODECS and HDMI via I2S
- 
- Required properties:
- - compatible : "mediatek,mt8173-rt5650"
- - mediatek,audio-codec: the phandles of rt5650 codecs
-+                        and of the hdmi encoder node
- - mediatek,platform: the phandle of MT8173 ASoC platform
- 
- Example:
- 
- 	sound {
- 		compatible = "mediatek,mt8173-rt5650";
--		mediatek,audio-codec = <&rt5650>;
-+		mediatek,audio-codec = <&rt5650 &hdmi0>;
- 		mediatek,platform = <&afe>;
- 	};
- 
-diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-index 61389ac..fd53992 100644
---- a/sound/soc/mediatek/Kconfig
-+++ b/sound/soc/mediatek/Kconfig
-@@ -21,6 +21,7 @@ config SND_SOC_MT8173_RT5650
-         tristate "ASoC Audio driver for MT8173 with RT5650 codec"
-         depends on SND_SOC_MEDIATEK && I2C
-         select SND_SOC_RT5645
-+        select SND_SOC_HDMI_CODEC
-         help
-           This adds ASoC driver for Mediatek MT8173 boards
-           with the RT5650 audio codec.
-diff --git a/sound/soc/mediatek/mt8173-rt5650.c b/sound/soc/mediatek/mt8173-rt5650.c
-index bb09bb1..0bd8324 100644
---- a/sound/soc/mediatek/mt8173-rt5650.c
-+++ b/sound/soc/mediatek/mt8173-rt5650.c
-@@ -117,7 +117,9 @@ static struct snd_soc_dai_link_component mt8173_rt5650_codecs[] = {
- enum {
- 	DAI_LINK_PLAYBACK,
- 	DAI_LINK_CAPTURE,
-+	DAI_LINK_HDMI,
- 	DAI_LINK_CODEC_I2S,
-+	DAI_LINK_HDMI_I2S,
+diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
+index 15fe70f..8b6219d 100644
+--- a/include/sound/hdmi-codec.h
++++ b/include/sound/hdmi-codec.h
+@@ -99,6 +99,12 @@ struct hdmi_codec_pdata {
+ 	int max_i2s_channels;
  };
  
- /* Digital audio interface glue - connects codec <---> CPU */
-@@ -143,6 +145,16 @@ static struct snd_soc_dai_link mt8173_rt5650_dais[] = {
- 		.dynamic = 1,
- 		.dpcm_capture = 1,
- 	},
-+	[DAI_LINK_HDMI] = {
-+		.name = "HDMI",
-+		.stream_name = "HDMI PCM",
-+		.cpu_dai_name = "HDMI",
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-+		.dynamic = 1,
-+		.dpcm_playback = 1,
-+	},
- 	/* Back End DAI links */
- 	[DAI_LINK_CODEC_I2S] = {
- 		.name = "Codec",
-@@ -158,6 +170,13 @@ static struct snd_soc_dai_link mt8173_rt5650_dais[] = {
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
- 	},
-+	[DAI_LINK_HDMI_I2S] = {
-+		.name = "HDMI BE",
-+		.cpu_dai_name = "HDMIO",
-+		.no_pcm = 1,
-+		.codec_dai_name = "i2s-hifi",
-+		.dpcm_playback = 1,
-+	},
++struct snd_soc_codec;
++struct snd_soc_jack;
++
++int hdmi_codec_set_jack_detect(struct snd_soc_codec *codec,
++			       struct snd_soc_jack *jack);
++
+ #define HDMI_CODEC_DRV_NAME "hdmi-audio-codec"
+ 
+ #endif /* __HDMI_CODEC_H__ */
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 52fbed7..d0e763e 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -476,6 +476,7 @@ config SND_SOC_DMIC
+ 
+ config SND_SOC_HDMI_CODEC
+        tristate
++       select HDMI_NOTIFIERS
+        select SND_PCM_ELD
+        select SND_PCM_IEC958
+ 
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 687332d..3cf8c79 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -12,9 +12,12 @@
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+  * General Public License for more details.
+  */
++#include <linux/hdmi-notifier.h>
+ #include <linux/module.h>
++#include <linux/notifier.h>
+ #include <linux/string.h>
+ #include <sound/core.h>
++#include <sound/jack.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+@@ -27,11 +30,16 @@
+ struct hdmi_codec_priv {
+ 	struct hdmi_codec_pdata hcd;
+ 	struct snd_soc_dai_driver *daidrv;
++	struct snd_soc_jack *jack;
+ 	struct hdmi_codec_daifmt daifmt[2];
+ 	struct mutex current_stream_lock;
+ 	struct snd_pcm_substream *current_stream;
+ 	struct snd_pcm_hw_constraint_list ratec;
++	struct mutex eld_lock;
+ 	uint8_t eld[MAX_ELD_BYTES];
++	struct device *dev;
++	struct notifier_block nb;
++	unsigned int jack_status;
  };
  
- static struct snd_soc_card mt8173_rt5650_card = {
-@@ -199,6 +218,13 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
- 			"Property 'audio-codec' missing or invalid\n");
- 		return -EINVAL;
+ static const struct snd_soc_dapm_widget hdmi_widgets[] = {
+@@ -86,7 +94,7 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
+ 			      struct snd_soc_dai *dai)
+ {
+ 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+-	int ret = 0;
++	int ret;
+ 
+ 	dev_dbg(dai->dev, "%s()\n", __func__);
+ 
+@@ -106,17 +114,15 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
  	}
-+	mt8173_rt5650_dais[DAI_LINK_HDMI_I2S].codec_of_node =
-+		of_parse_phandle(pdev->dev.of_node, "mediatek,audio-codec", 1);
-+	if (!mt8173_rt5650_dais[DAI_LINK_HDMI_I2S].codec_of_node) {
-+		dev_err(&pdev->dev,
-+			"Property 'audio-codec' missing or invalid\n");
-+		return -EINVAL;
-+	}
- 	card->dev = &pdev->dev;
- 	platform_set_drvdata(pdev, card);
  
+ 	if (hcp->hcd.ops->get_eld) {
++		mutex_lock(&hcp->eld_lock);
+ 		ret = hcp->hcd.ops->get_eld(dai->dev->parent, hcp->eld,
+ 					    sizeof(hcp->eld));
+-
+-		if (!ret) {
++		if (!ret)
+ 			ret = snd_pcm_hw_constraint_eld(substream->runtime,
+ 							hcp->eld);
+-			if (ret)
+-				return ret;
+-		}
++		mutex_unlock(&hcp->eld_lock);
+ 	}
+-	return 0;
++	return ret;
+ }
+ 
+ static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
+@@ -326,6 +332,62 @@ static struct snd_soc_codec_driver hdmi_codec = {
+ 	.num_dapm_routes = ARRAY_SIZE(hdmi_routes),
+ };
+ 
++static void hdmi_codec_jack_report(struct hdmi_codec_priv *hcp,
++				   unsigned int jack_status)
++{
++	if (!hcp->jack)
++		return;
++
++	if (jack_status != hcp->jack_status) {
++		snd_soc_jack_report(hcp->jack, jack_status, SND_JACK_LINEOUT);
++		hcp->jack_status = jack_status;
++	}
++}
++
++static int hdmi_codec_notify(struct notifier_block *nb, unsigned long event,
++			     void *data)
++{
++	struct hdmi_codec_priv *hcp = container_of(nb, struct hdmi_codec_priv,
++						   nb);
++	union hdmi_event *event_block = data;
++
++	if (hcp->dev->parent != event_block->base.source)
++		return NOTIFY_OK;
++
++	if (!hcp->jack)
++		return NOTIFY_OK;
++
++	switch (event) {
++	case HDMI_CONNECTED:
++		hdmi_codec_jack_report(hcp, SND_JACK_LINEOUT);
++		break;
++	case HDMI_DISCONNECTED:
++		hdmi_codec_jack_report(hcp, 0);
++		break;
++	case HDMI_NEW_ELD:
++		mutex_lock(&hcp->eld_lock);
++		memcpy(hcp->eld, event_block->eld.eld, sizeof(hcp->eld));
++		mutex_unlock(&hcp->eld_lock);
++		break;
++	}
++
++	return NOTIFY_OK;
++}
++
++int hdmi_codec_set_jack_detect(struct snd_soc_codec *codec,
++			       struct snd_soc_jack *jack)
++{
++	struct hdmi_codec_priv *hcp = snd_soc_codec_get_drvdata(codec);
++
++	hcp->jack = jack;
++	hcp->nb.notifier_call = hdmi_codec_notify;
++
++	hdmi_register_notifier(&hcp->nb);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(hdmi_codec_set_jack_detect);
++
+ static int hdmi_codec_probe(struct platform_device *pdev)
+ {
+ 	struct hdmi_codec_pdata *hcd = pdev->dev.platform_data;
+@@ -354,6 +416,7 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 
+ 	hcp->hcd = *hcd;
+ 	mutex_init(&hcp->current_stream_lock);
++	mutex_init(&hcp->eld_lock);
+ 
+ 	hcp->daidrv = devm_kzalloc(dev, dai_count * sizeof(*hcp->daidrv),
+ 				   GFP_KERNEL);
+@@ -370,6 +433,8 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 	if (hcd->spdif)
+ 		hcp->daidrv[i] = hdmi_spdif_dai;
+ 
++	dev_set_drvdata(dev, hcp);
++
+ 	ret = snd_soc_register_codec(dev, &hdmi_codec, hcp->daidrv,
+ 				     dai_count);
+ 	if (ret) {
+@@ -378,12 +443,16 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	dev_set_drvdata(dev, hcp);
++	hcp->dev = dev;
++
+ 	return 0;
+ }
+ 
+ static int hdmi_codec_remove(struct platform_device *pdev)
+ {
++	struct hdmi_codec_priv *hcp = platform_get_drvdata(pdev);
++
++	hdmi_unregister_notifier(&hcp->nb);
+ 	snd_soc_unregister_codec(&pdev->dev);
+ 	return 0;
+ }
 -- 
 2.7.0
