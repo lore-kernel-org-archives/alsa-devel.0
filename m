@@ -1,18 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Scheduled alsa-lib release?
-Date: Wed, 9 Mar 2016 17:40:30 +0900
-Message-ID: <56DFE17E.4090105@sakamocchi.jp>
-References: <s5hr3fk9apc.wl-tiwai@suse.de> <20160309061624.GU11154@localhost>
- <s5hbn6ob2fc.wl-tiwai@suse.de> <56DFD4FD.8090701@sakamocchi.jp>
- <s5h1t7kay1k.wl-tiwai@suse.de>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH v6 1/6] ALSA: pcm: add IEC958 channel
+ status helper for hw_params
+Date: Wed, 9 Mar 2016 11:08:54 +0100
+Message-ID: <56DFF636.9090304@st.com>
+References: <cover.1457465383.git.jsarha@ti.com>
+ <3d9fbdac702b93742841221e3e8d2468a3d18f12.1457465383.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 14E6C260524
- for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2016 09:40:33 +0100 (CET)
-In-Reply-To: <s5h1t7kay1k.wl-tiwai@suse.de>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 4D68826062B
+ for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2016 11:09:00 +0100 (CET)
+In-Reply-To: <3d9fbdac702b93742841221e3e8d2468a3d18f12.1457465383.git.jsarha@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,49 +22,136 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org
+To: Jyri Sarha <jsarha@ti.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "airlied@linux.ie" <airlied@linux.ie>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "bcousson@baylibre.com" <bcousson@baylibre.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, "tony@atomide.com" <tony@atomide.com>, "broonie@kernel.org" <broonie@kernel.org>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "tomi.valkeinen@ti.com" <tomi.valkeinen@ti.com>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "rmk+kernel@arm.linux.org.uk" <rmk+kernel@arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mar 9 2016 16:52, Takashi Iwai wrote:
-> On Wed, 09 Mar 2016 08:47:09 +0100,
-> Takashi Sakamoto wrote:
->>
->> Hi,
->>
->> On Mar 9 2016 15:17, Takashi Iwai wrote:
->>> On Wed, 09 Mar 2016 07:16:24 +0100,
->>> Vinod Koul wrote:
->>>>
->>>> On Tue, Mar 08, 2016 at 05:49:19PM +0100, Takashi Iwai wrote:
->>>>> Hi,
->>>>>
->>>>> in the previous meeting, there have been requests about the regular
->>>>> "predictable" release of alsa-lib.  We thought of aligning with kernel
->>>>> release cycle, judging from the nature of alsa-lib.
->>
->> As a quick glance of the number of commits per month (see in the end of
->> this message), alsa-lib is not so actively developed recently. (except
->> for topology APIs)
->>
->> I think releasing every 2 months makes the release maintenance effort
->> more hard than its actual advantage. It better to release alsa-lib for 2
->> or more kernel release cycles.
->
-> Yes, that was the proposal in the meeting.  It wasn't meant to release
-> every cycle.
->
-> The point is to align with the kernel release cycle so that people can
-> know the possible release point beforehand.  The actual release can be
-> skipped easily if nothing happens, of course.
+Hello Jyri,
 
-To me, it doesn't mean _scheduled_ release. It's just within a policy 
-for releasing about an aspect of 'date'.
+Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 
-Anyway, I have no objections about it, as long as the cycle is not so 
-frequent and people are not so busy for the release maintenance.
-
+With few nitpicking remarks on form.
 
 Regards
+Arnaud
 
-Takashi Skamaoto
+On 03/08/2016 09:14 PM, Jyri Sarha wrote:
+> Add IEC958 channel status helper that gets the audio properties from
+> snd_pcm_hw_params instead of snd_pcm_runtime. This is needed to
+> produce the channel status bits already in audio stream configuration
+> phase.
+> 
+> Signed-off-by: Jyri Sarha <jsarha@ti.com>
+> ---
+>  include/sound/pcm_iec958.h |  2 ++
+>  sound/core/pcm_iec958.c    | 53 +++++++++++++++++++++++++++++++---------------
+>  2 files changed, 38 insertions(+), 17 deletions(-)
+> 
+> diff --git a/include/sound/pcm_iec958.h b/include/sound/pcm_iec958.h
+> index 0eed397..36f023a 100644
+> --- a/include/sound/pcm_iec958.h
+> +++ b/include/sound/pcm_iec958.h
+> @@ -6,4 +6,6 @@
+>  int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+>  	size_t len);
+>  
+> +int snd_pcm_create_iec958_consumer_hw_params(struct snd_pcm_hw_params *params,
+> +					     u8 *cs, size_t len);
+>  #endif
+> diff --git a/sound/core/pcm_iec958.c b/sound/core/pcm_iec958.c
+> index 36b2d7a..27e0981 100644
+> --- a/sound/core/pcm_iec958.c
+> +++ b/sound/core/pcm_iec958.c
+> @@ -9,30 +9,18 @@
+>  #include <linux/types.h>
+>  #include <sound/asoundef.h>
+>  #include <sound/pcm.h>
+> +#include <sound/pcm_params.h>
+>  #include <sound/pcm_iec958.h>
+>  
+> -/**
+> - * snd_pcm_create_iec958_consumer - create consumer format IEC958 channel status
+> - * @runtime: pcm runtime structure with ->rate filled in
+> - * @cs: channel status buffer, at least four bytes
+> - * @len: length of channel status buffer
+> - *
+> - * Create the consumer format channel status data in @cs of maximum size
+> - * @len corresponding to the parameters of the PCM runtime @runtime.
+> - *
+> - * Drivers may wish to tweak the contents of the buffer after creation.
+> - *
+> - * Returns: length of buffer, or negative error code if something failed.
+> - */
+> -int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+> -	size_t len)
+> +static int create_iec958_consumer(uint rate, uint sample_width,
+> +				  u8 *cs, size_t len)
+>  {
+>  	unsigned int fs, ws;
+>  
+>  	if (len < 4)
+>  		return -EINVAL;
+>  
+> -	switch (runtime->rate) {
+> +	switch (rate) {
+>  	case 32000:
+>  		fs = IEC958_AES3_CON_FS_32000;
+>  		break;
+> @@ -59,7 +47,7 @@ int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+>  	}
+>  
+>  	if (len > 4) {
+> -		switch (snd_pcm_format_width(runtime->format)) {
+> +		switch (sample_width) {
+>  		case 16:
+>  			ws = IEC958_AES4_CON_WORDLEN_20_16;
+>  			break;
+> @@ -71,6 +59,7 @@ int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+>  			     IEC958_AES4_CON_MAX_WORDLEN_24;
+>  			break;
+>  		case 24:
+> +		case 32: /* Assume 24-bit width for 32-bit samples. */
+>  			ws = IEC958_AES4_CON_WORDLEN_24_20 |
+>  			     IEC958_AES4_CON_MAX_WORDLEN_24;
+>  			break;
+> @@ -92,4 +81,34 @@ int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+>  
+>  	return len;
+>  }
+> +
+> +/**
+> + * snd_pcm_create_iec958_consumer - create consumer format IEC958 channel status
+> + * @runtime: pcm runtime structure with ->rate filled in
+> + * @cs: channel status buffer, at least four bytes
+> + * @len: length of channel status buffer
+> + *
+> + * Create the consumer format channel status data in @cs of maximum size
+> + * @len corresponding to the parameters of the PCM runtime @runtime.
+> + *
+> + * Drivers may wish to tweak the contents of the buffer after creation.
+> + *
+> + * Returns: length of buffer, or negative error code if something failed.
+> + */
+> +int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+> +	size_t len)
+should be aligned on parenthesis
+> +{
+> +	return create_iec958_consumer(runtime->rate,
+> +				      snd_pcm_format_width(runtime->format),
+> +				      cs, len);
+> +}
+>  EXPORT_SYMBOL(snd_pcm_create_iec958_consumer);
+> +
+> +
+No kernel-doc comment?
+> +int snd_pcm_create_iec958_consumer_hw_params(struct snd_pcm_hw_params *params,
+Could be snd_pcm_hw_params_create_iec958_consumer to be coherent with
+functions declared in pcm.h
+> +					     u8 *cs, size_t len)
+should be aligned on parenthesis
+> +{
+> +	return create_iec958_consumer(params_rate(params), params_width(params),
+> +				      cs, len);
+> +}
+> +EXPORT_SYMBOL(snd_pcm_create_iec958_consumer_hw_params);
+> 
