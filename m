@@ -1,17 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 0/4] ALSA: dice: enable to handle several
-	streams
-Date: Wed, 9 Mar 2016 22:15:03 +0900
-Message-ID: <56E021D7.9020909@sakamocchi.jp>
-References: <1457357745-24756-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Scheduled alsa-lib release?
+Date: Wed, 9 Mar 2016 14:39:30 +0100
+Message-ID: <56E02792.6080207@perex.cz>
+References: <s5hr3fk9apc.wl-tiwai@suse.de> <20160309061624.GU11154@localhost>
+ <s5hbn6ob2fc.wl-tiwai@suse.de> <56DFD4FD.8090701@sakamocchi.jp>
+ <s5h1t7kay1k.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id AFA7526071E
- for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2016 14:15:06 +0100 (CET)
-In-Reply-To: <1457357745-24756-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id C1F2726071E
+ for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2016 14:39:31 +0100 (CET)
+In-Reply-To: <s5h1t7kay1k.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,73 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, ffado-devel@lists.sf.net
+To: Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Dne 9.3.2016 v 08:52 Takashi Iwai napsal(a):
+> On Wed, 09 Mar 2016 08:47:09 +0100,
+> Takashi Sakamoto wrote:
+>>
+>> Hi,
+>>
+>> On Mar 9 2016 15:17, Takashi Iwai wrote:
+>>> On Wed, 09 Mar 2016 07:16:24 +0100,
+>>> Vinod Koul wrote:
+>>>>
+>>>> On Tue, Mar 08, 2016 at 05:49:19PM +0100, Takashi Iwai wrote:
+>>>>> Hi,
+>>>>>
+>>>>> in the previous meeting, there have been requests about the regular
+>>>>> "predictable" release of alsa-lib.  We thought of aligning with kernel
+>>>>> release cycle, judging from the nature of alsa-lib.
+>>
+>> As a quick glance of the number of commits per month (see in the end of 
+>> this message), alsa-lib is not so actively developed recently. (except 
+>> for topology APIs)
+>>
+>> I think releasing every 2 months makes the release maintenance effort 
+>> more hard than its actual advantage. It better to release alsa-lib for 2 
+>> or more kernel release cycles.
+> 
+> Yes, that was the proposal in the meeting.  It wasn't meant to release
+> every cycle.
+> 
+> The point is to align with the kernel release cycle so that people can
+> know the possible release point beforehand.  The actual release can be
+> skipped easily if nothing happens, of course.
 
-On mar 7 2016 22:35, Takashi Sakamoto wrote:
-> Hi,
-> 
-> This patchset updates my previous RFT, and goes for merging.
-> [alsa-devel] [RFT][PATCH 0/4] ALSA: dice: enabled to handle several streams
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2016-March/105387.html
-> 
-> For the previous one, Stefan Richter worked as a tester with his devices
-> (Focusrite Saffire Pro 24 and 40), while current patchset includes changes
-> related to userspace interface. Therefore, I don't add Tested-by.
-> 
-> 
-> In previous one, ALSA dice driver uses subdevice for userspace to access
-> any PCM substreams. On the other hand, the design of PCM subdevice leaves
-> a bit cumbersome for userspace to handle several subdevices simultaneously
-> in one process. These PCM substreams on a batch of AMDTP streams and it's
-> better for ALSA dice driver to enable one process to handle them with
-> simpler way.
-> 
-> Based on this concept, this patchset adds PCM character devices, instead of
-> PCM subdevice. Thus, userspace applications can utilize PCM substreams via
-> individual PCM character devices. In configuration space of alsa-lib, via
-> 'hw:0,0' and 'hw:0,1' if available, like:
-> 
-> $ arecord -l
-> ...
-> card 1: Pro26000f5a [Pro26-000f5a], device 0: DICE [Pro26-000f5a]
->   Subdevices: 1/1
->   Subdevice #0: subdevice #0
-> card 1: Pro26000f5a [Pro26-000f5a], device 1: DICE [Pro26-000f5a]
->   Subdevices: 1/1
->   Subdevice #0: subdevice #0
-> 
-> 
-> For the other parts, there's no code changes. Therefore, Stefan's result
-> still has meanings.
-> 
-> Changes:
->  * Add additional PCM character device instead of PCM subdevice
->  * Correct string entries to force-pcm
->  * Improve comments
-> 
-> Takashi Sakamoto (4):
->   ALSA: dice: have two sets of isochronous resources/streams
->   ALSA: dice: handle whole available isochronous streams
->   ALSA: dice: handle several PCM substreams when any isochronous streams
->     are available
->   ALSA: dice: force to add two pcm devices for listed models
-> 
->  sound/firewire/dice/dice-midi.c   |   8 +-
->  sound/firewire/dice/dice-pcm.c    | 147 +++++++++-----
->  sound/firewire/dice/dice-stream.c | 398 ++++++++++++++++++++++++--------------
->  sound/firewire/dice/dice.c        |  41 ++++
->  sound/firewire/dice/dice.h        |  33 +++-
->  5 files changed, 424 insertions(+), 203 deletions(-)
+I agree. I'll release ALSA packages in the week after 4.5 kernel release
+(next week?). And I (we) can do a decision after every kernel release,
+if we have enough changes (or there are any required changes to support
+new kernels).
 
-I strongly request to merge this patchset to linux-next for 4.6 kernel.
-For already supported models, this patchset basically adds no changes
-except for actual codes. Therefore few possibilities of regressions.
+			Thanks,
+				Jaroslav
 
-
-Regards
-
-Takashi Sakamoto
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
