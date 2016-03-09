@@ -1,87 +1,74 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/6] ASoC: Intel: allow for DW_DMAC_CORE as
-	module
-Date: Wed, 9 Mar 2016 09:43:26 +0700
-Message-ID: <20160309024326.GE3898@sirena.org.uk>
-References: <1457062599-10032-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <1457062599-10032-2-git-send-email-pierre-louis.bossart@linux.intel.com>
- <20160305040303.GY18327@sirena.org.uk>
- <56DDBF29.2010809@linux.intel.com>
+Subject: Re: [PATCH v6 0/6] Implement generic ASoC HDMI codec and use it in
+ tda998x
+Date: Wed, 9 Mar 2016 10:27:08 +0700
+Message-ID: <20160309032708.GF3898@sirena.org.uk>
+References: <cover.1457465383.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0735042699449683071=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A4FBF261537
- for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2016 03:43:29 +0100 (CET)
-In-Reply-To: <56DDBF29.2010809@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============2067412802=="
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <cover.1457465383.git.jsarha@ti.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Jyri Sarha <jsarha@ti.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, arnaud.pouliquen@st.com, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, tomi.valkeinen@ti.com, bcousson@baylibre.com, rmk+kernel@arm.linux.org.uk, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0735042699449683071==
+--===============2067412802==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="imjhCm/Pyz7Rq5F2"
+	protocol="application/pgp-signature"; boundary="l+goss899txtYvYf"
 Content-Disposition: inline
 
 
---imjhCm/Pyz7Rq5F2
+--l+goss899txtYvYf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Mar 07, 2016 at 11:49:29AM -0600, Pierre-Louis Bossart wrote:
-> On 3/4/16 10:03 PM, Mark Brown wrote:
-> >On Thu, Mar 03, 2016 at 09:36:33PM -0600, Pierre-Louis Bossart wrote:
+On Tue, Mar 08, 2016 at 10:14:24PM +0200, Jyri Sarha wrote:
+> There is currently two other patch series[1][2] that depend on the
+> three first (ALSA-) patches of this series. It would be nice to get at
+> least those three applied sooner rather than later, so please tell me
+> if I can do anything to get those in.
 
-> >>-	depends on DW_DMAC_CORE=y && (SND_SST_IPC_ACPI = n)
-> >>+	depends on (DW_DMAC_CORE != n) && (SND_SST_IPC_ACPI = n)
+It would be good if the people working on those other series could
+review this code then - there's no Reviwed-by or Acked-by on those
+patches or anything like that.  This is what I mean about a lack of
+visible collaboration, there is no real enagagment that can be seen
+here.
 
-> >What is the expected difference between a dependency on DW_DMAC_CORE and
-> >one on DW_DMAC_CORE != n?
-
-> No functional difference, it's more to make the menuconfig options more
-> obvious.
-> Without this patch, menuconfig will not show the legacy byt-max98090 and
-> byt-rt5640 options if the DW_DMAC_CORE is built as a module.
-> While we want to encourage folks to use the newer DPCM drivers, we also want
-> to leave these options accessible.
-
-My point is that you've written the above in a very confusing manner - I
-have to think about what it means while just a dependency would be clear
-and obvious.
-
---imjhCm/Pyz7Rq5F2
+--l+goss899txtYvYf
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJW343NAAoJECTWi3JdVIfQ6l0H/iw0+8KAfDw9BL2VFf7LbiZR
-aCf2plEhKQ8kOIy8+4BOuoLPxMkLg1J/Hy03qOhwUpMQjMN6/CxhfWDCnDZmI9eF
-xPZgfYm234fVlx2ODtXWZUzPqgG7a4OmvGb10uLHvBaOP3ZNA28GuViR+pffHWRs
-nHIuGJA0/IYu/7nBMF/sY6U8QyNPQeQvplROTHrn+22WuGgDvMA7JkXsEevzPUwd
-w7n9sVeF5tiqVwzbHgVK3Aqmnt5/xY17IOK3yK4/DrSCZ2731XnVXGMWbZJMAtAK
-X+CMDCo8kIJrXos5aBJacPdr2vIboutezPRIiUyZiXQcDs9DNlu6Y8V4viMuv68=
-=WqUh
+iQEcBAEBCAAGBQJW35gHAAoJECTWi3JdVIfQv8kH/2idHRO+3i5Rr+AVGtuC1279
+Z4SHO+DEGj41H3ezrjsxEnZArXdhYVmP3eVkedbmzj3k0yHrocsMUXSptUR5RXym
+l4hwDeQi+JiORkDs7S7rabwIbzAbdoVUCIA/HUsoXjXbntlWtDtXgKxXpx6uoZxm
+WnEIMWg/muSantBeUtkqgxQw+x1VB1Wh74woLLoWju13RNULTiQ6SZMsuJnDO3eX
+cII2hrJFBf2QfHcT2XqOjXsf8zHxK9EXa1uC0NfEejiQwOS0HovzM+OaU11NL1Jl
+qfKmmrg4+uPuKMJMy4Xmm9YdhEHKmXe/SmUiTAVNjUjlZPHS6Hf0bT+YZ2y2QJ4=
+=pT2X
 -----END PGP SIGNATURE-----
 
---imjhCm/Pyz7Rq5F2--
+--l+goss899txtYvYf--
 
---===============0735042699449683071==
-Content-Type: text/plain; charset="us-ascii"
+--===============2067412802==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Content-Disposition: inline
 
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
+IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
 
---===============0735042699449683071==--
+--===============2067412802==--
