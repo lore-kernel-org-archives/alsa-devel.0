@@ -1,19 +1,21 @@
-From: Jeeja KP <jeeja.kp@intel.com>
-Subject: Re: [RFD] Add hw_params support for hostless stream BE
-	DAIs
-Date: Fri, 11 Mar 2016 02:27:03 +0530
-Message-ID: <12692.3332842582$1457616080@news.gmane.org>
-References: <20160216161747.GA18103@jeeja.kp@intel.com>
- <20160302020215.GN18327@sirena.org.uk>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH v4 1/6] ASoC: core: add
+ snd_soc_add_dai_pcm_controls helper
+Date: Thu, 10 Mar 2016 15:03:16 +0100
+Message-ID: <56E17EA4.7080409@st.com>
+References: <1457441641-7501-1-git-send-email-arnaud.pouliquen@st.com>
+ <1457441641-7501-2-git-send-email-arnaud.pouliquen@st.com>
+ <20160310050646.GD11154@localhost> <56E13971.9030909@st.com>
+ <20160310125817.GB6839@subhransu-desktop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 2AF462614AF
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 14:20:33 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20160302020215.GN18327@sirena.org.uk>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5ACD22664AD
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 15:03:23 +0100 (CET)
+In-Reply-To: <20160310125817.GB6839@subhransu-desktop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,61 +25,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: tiwai@suse.de, vinod.koul@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com, patches.audio@intel.com
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: Jean-Francois Moine <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Philipp Zabel <p.zabel@pengutronix.de>, "Koul, Vinod" <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, David Airlie <airlied@linux.ie>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Moise GERGAUD <moise.gergaud@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 02, 2016 at 11:02:15AM +0900, Mark Brown wrote:
-> On Tue, Feb 16, 2016 at 09:47:47PM +0530, Jeeja KP wrote:
-> > We have no mechanism to configure hw_params for DAIs which are hostless.
-> > Like a loop or DAIs connected to internal sinks/sources.
+
+
+On 03/10/2016 01:58 PM, Subhransu S. Prusty wrote:
+> On Thu, Mar 10, 2016 at 02:38:01PM +0530, Arnaud Pouliquen wrote:
+>>
+>>
+>> On 03/10/2016 06:06 AM, Vinod Koul wrote:
+>>> On Tue, Mar 08, 2016 at 01:53:56PM +0100, Arnaud Pouliquen wrote:
+>>>> Add helper function to register DAI controls that need to be 
+>>>> linked to pcm device.
+>>>> A list is handled in case controls are created before dai_link probe
+>>>
+>>> Overall this patch looks good to us. But on first read it is not very clear
+>>> how PCM and DAIs are inter related and why you need to do this. Since we are
+>>> having similar issues we were able to quickly understand this, the
+>>> suggestion would be to elborate a bit more in changelog.
+>> Right, i will provide more details in commit message.
+>>>
+>>> Second, why do we need a new API for this. Why not use existing asoc
+>>> concepts and add one more field in dai_driver for dai_controls.
+>>> Core can automagically create those controls and link to PCM.
+>> Yes this was my first approach. Finally, i created a separate API, to be
+>> able to support iec generic control in DAI ( patch 3/6 and 4/6).
+>> These patches need possibility to attach private data to control.
+>> If patches 3/6 and 4/6 are rejected, for sure i will rework it to use
+>> existing API.
+>> Today It is more on compromise than an optimized solution...
+>> But, creating a generic iec control also implies a compatibility with
+>> ASoC and none ASoC drivers...
 > 
-> Please propose patches, don't send enormous design documents.  They're
-> big, take a long time to read and don't really get us anywhere unless
-> they're extremely clear.
+> In our view, iec controls should be made generic alsa controls and asoc
+> should have wrapper over these and create these controls on card enumeration
+> and use these wrappers.
+Please, could you details what you have in mind please, because I
+thought it was exactly what I proposed my patch-set...
 
-Ok. I have the patches ready, will post it.
-
-> 
-> > Approach:
-> > 	1. Allow params to be defined for other BE dai link also. this
-> > 	currently applicable only for codec_codec link.
-> 
-> Like I keep saying if you're thinking about this in terms of DPCM you're
-> solving the wrong problem - we already support supplying parameters for
-> device<->device links, we already have systems that need to configure
-> things for device<->device links so we can already see that if we're
-> doing something that only works for things that are on SoC and can use
-> DPCM then we're not solving the problem.
-
-No this is not exactly about DPCM. It is about the device<->device links that
-assume you can have only codecs as hostless and thus change the direction
-for the link. Since we are rendering from SoC we don't need direction change.
+My approach is that i would like to take into account the creation of
+generic controls in the way of handling pcm control in ASoC.
+I tried to treat iec generic control as another PCM control in soc core,
+not as an exception. Because this could also be reused in future for
+some other generic pcm controls.
 
 > 
-> DPCM works pretty well for small, simple DSPs that are mostly in line
-> in the middle of a standard DAI but it does have limitations which
-> you're now running into.  Your systems don't fit well with what DPCM
-> supports naturally.
+>>
+>>>
+>>> Lastly, this doesn't help our usecase of DPCM where the HDMI codec is
+>>> connected to a BE, so that rtd cannot be used and we need to link to FE, so
+>>> not sure how we can solve that...
+>> DPCM seems another story... I'm not fully up to date on DPCM concept,
+>> but as i can remember no link between FE and BE except DAPM routing.
+>> Perhaps, for DPCM, a solution should be to use index field for control,
+>> instead of trying to dynamically link the codec control to PCM device?
 > 
-> > struct snd_soc_dai_link {
-> >         const struct snd_soc_pcm_stream *params;
-> >         unsigned int num_params;
-> > 
-> > +       /* flag to create codec codec based on the flag*/
-> > +       unsigned int codec_link:1;
-> > +
+> That calls for a discussion on how the controls should be represented for
+> DPCM. Takashi/Mark/Liam we need your opinion on how the PCM related controls
+> should be represented in DPCM concepts.
 > 
-> This is clearly confused, if we can't figure out what the two devices we
-> are connecting are based on just looking at the devices then that's
-> really not a good sign that our interfaces are sensible and easy to work
-> with.
-
-Right now dai_link assumes device<->device links based on params so we
-cannot specify params for anything where we dont want direction change and would
-like to treat as normal direction dai_link. So we propose this to move to
-codec_link flag and use params only for creating controls based on params
-provided.
-
-
--- 
+>>
+>> Thanks
+>> Arnaud
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
