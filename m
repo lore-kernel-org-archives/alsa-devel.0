@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: remove IS_ERR_VALUE usage on
-	int." to the asoc tree
-Date: Thu, 31 Mar 2016 11:45:09 -0700
-Message-ID: <E1alhaf-0005JD-Aj@finisterre>
-References: <1459448595-18620-3-git-send-email-srinivas.kandagatla@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C38D0266742
- for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2016 20:45:22 +0200 (CEST)
-In-Reply-To: <1459448595-18620-3-git-send-email-srinivas.kandagatla@linaro.org>
+Return-Path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2AF462614AF
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 14:20:33 +0100 (CET)
+Date: Fri, 11 Mar 2016 02:27:03 +0530
+From: Jeeja KP <jeeja.kp@intel.com>
+Message-ID: <20160310205703.GA26632@jeeja.kp@intel.com>
+References: <20160216161747.GA18103@jeeja.kp@intel.com>
+ <20160302020215.GN18327@sirena.org.uk>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20160302020215.GN18327@sirena.org.uk>
+Subject: Re: [alsa-devel] [RFD] Add hw_params support for hostless stream BE
+	DAIs
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,80 +19,69 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
-List-Id: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: tiwai@suse.de, vinod.koul@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com, patches.audio@intel.com
+List-ID: <alsa-devel@alsa-project.org>
 
-The patch
+On Wed, Mar 02, 2016 at 11:02:15AM +0900, Mark Brown wrote:
+> On Tue, Feb 16, 2016 at 09:47:47PM +0530, Jeeja KP wrote:
+> > We have no mechanism to configure hw_params for DAIs which are hostless.
+> > Like a loop or DAIs connected to internal sinks/sources.
+> 
+> Please propose patches, don't send enormous design documents.  They're
+> big, take a long time to read and don't really get us anywhere unless
+> they're extremely clear.
 
-   ASoC: qcom: remove IS_ERR_VALUE usage on int.
+Ok. I have the patches ready, will post it.
 
-has been applied to the asoc tree at
+> 
+> > Approach:
+> > 	1. Allow params to be defined for other BE dai link also. this
+> > 	currently applicable only for codec_codec link.
+> 
+> Like I keep saying if you're thinking about this in terms of DPCM you're
+> solving the wrong problem - we already support supplying parameters for
+> device<->device links, we already have systems that need to configure
+> things for device<->device links so we can already see that if we're
+> doing something that only works for things that are on SoC and can use
+> DPCM then we're not solving the problem.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+No this is not exactly about DPCM. It is about the device<->device links that
+assume you can have only codecs as hostless and thus change the direction
+for the link. Since we are rendering from SoC we don't need direction change.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+> 
+> DPCM works pretty well for small, simple DSPs that are mostly in line
+> in the middle of a standard DAI but it does have limitations which
+> you're now running into.  Your systems don't fit well with what DPCM
+> supports naturally.
+> 
+> > struct snd_soc_dai_link {
+> >         const struct snd_soc_pcm_stream *params;
+> >         unsigned int num_params;
+> > 
+> > +       /* flag to create codec codec based on the flag*/
+> > +       unsigned int codec_link:1;
+> > +
+> 
+> This is clearly confused, if we can't figure out what the two devices we
+> are connecting are based on just looking at the devices then that's
+> really not a good sign that our interfaces are sensible and easy to work
+> with.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Right now dai_link assumes device<->device links based on params so we
+cannot specify params for anything where we dont want direction change and would
+like to treat as normal direction dai_link. So we propose this to move to
+codec_link flag and use params only for creating controls based on params
+provided.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From cef794f76485f4a4e6affd851ae9f9d0eb4287a5 Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Thu, 31 Mar 2016 19:23:15 +0100
-Subject: [PATCH] ASoC: qcom: remove IS_ERR_VALUE usage on int.
-
-IS_ERR_VALUE should be used only with unsigned long type,
-signed types should use comparison 'ret < 0'
-
-This patch removes such usages.
-
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/qcom/lpass-platform.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index f5cae01d18bd..db000c6987a1 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -491,7 +491,7 @@ static int lpass_platform_pcm_new(struct snd_soc_pcm_runtime *soc_runtime)
- 			data->rdma_ch = v->alloc_dma_channel(drvdata,
- 						SNDRV_PCM_STREAM_PLAYBACK);
- 
--		if (IS_ERR_VALUE(data->rdma_ch))
-+		if (data->rdma_ch < 0)
- 			return data->rdma_ch;
- 
- 		drvdata->substream[data->rdma_ch] = psubstream;
-@@ -518,8 +518,10 @@ static int lpass_platform_pcm_new(struct snd_soc_pcm_runtime *soc_runtime)
- 			data->wrdma_ch = v->alloc_dma_channel(drvdata,
- 						SNDRV_PCM_STREAM_CAPTURE);
- 
--		if (IS_ERR_VALUE(data->wrdma_ch))
-+		if (data->wrdma_ch < 0) {
-+			ret = data->wrdma_ch;
- 			goto capture_alloc_err;
-+		}
- 
- 		drvdata->substream[data->wrdma_ch] = csubstream;
- 
 -- 
-2.8.0.rc3
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
