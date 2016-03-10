@@ -1,66 +1,57 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [PATCH v4 1/6] ASoC: core: add
- snd_soc_add_dai_pcm_controls helper
-Date: Thu, 10 Mar 2016 10:08:01 +0100
-Message-ID: <56E13971.9030909@st.com>
-References: <1457441641-7501-1-git-send-email-arnaud.pouliquen@st.com>
- <1457441641-7501-2-git-send-email-arnaud.pouliquen@st.com>
- <20160310050646.GD11154@localhost>
+From: Michael Trimarchi <michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>
+Subject: Re: [PATCH V3] ASoC: pcm179x: Add support for pcm1795 and pcm1796
+Date: Thu, 10 Mar 2016 10:59:42 +0100
+Message-ID: <CAOf5uwnJ6PpeFunDuEUPhQ-5ArOB6y3Xw8E3gxUA0GiLREkY+g@mail.gmail.com>
+References: <1452382685-18009-1-git-send-email-michael@amarulasolutions.com>
+	<1452382685-18009-4-git-send-email-michael@amarulasolutions.com>
+	<20160110120045.GW6588@sirena.org.uk>
+	<20160110173812.GA16304@panicking>
+	<20160205172451.GA30542@panicking>
+	<20160222031944.GT18327@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 17E55260732
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 10:08:08 +0100 (CET)
-In-Reply-To: <20160310050646.GD11154@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Jean-Francois Moine <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, David Airlie <airlied@linux.ie>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Moise GERGAUD <moise.gergaud@st.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20160222031944.GT18327-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Jacob Siverskog <jacob-EZCvousvhKUZux3j3Bed6dkegs52MxvZ@public.gmane.org>, Johan Hovold <johan-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark
 
+On Mon, Feb 22, 2016 at 4:19 AM, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+> On Fri, Feb 05, 2016 at 06:24:57PM +0100, Michael Trimarchi wrote:
+>
+>> +#define PCM1795      1
+>> +     unsigned int codec_model;
+>
+> It looks like you're trying to define an enum here.
+>
+>> +static const unsigned int codec_model = PCM1795;
+>
 
-On 03/10/2016 06:06 AM, Vinod Koul wrote:
-> On Tue, Mar 08, 2016 at 01:53:56PM +0100, Arnaud Pouliquen wrote:
->> Add helper function to register DAI controls that need to be 
->> linked to pcm device.
->> A list is handled in case controls are created before dai_link probe
-> 
-> Overall this patch looks good to us. But on first read it is not very clear
-> how PCM and DAIs are inter related and why you need to do this. Since we are
-> having similar issues we were able to quickly understand this, the
-> suggestion would be to elborate a bit more in changelog.
-Right, i will provide more details in commit message.
-> 
-> Second, why do we need a new API for this. Why not use existing asoc
-> concepts and add one more field in dai_driver for dai_controls.
-> Core can automagically create those controls and link to PCM.
-Yes this was my first approach. Finally, i created a separate API, to be
-able to support iec generic control in DAI ( patch 3/6 and 4/6).
-These patches need possibility to attach private data to control.
-If patches 3/6 and 4/6 are rejected, for sure i will rework it to use
-existing API.
-Today It is more on compromise than an optimized solution...
-But, creating a generic iec control also implies a compatibility with
-ASoC and none ASoC drivers...
+Ok
 
-> 
-> Lastly, this doesn't help our usecase of DPCM where the HDMI codec is
-> connected to a BE, so that rtd cannot be used and we need to link to FE, so
-> not sure how we can solve that...
-DPCM seems another story... I'm not fully up to date on DPCM concept,
-but as i can remember no link between FE and BE except DAPM routing.
-Perhaps, for DPCM, a solution should be to use index field for control,
-instead of trying to dynamically link the codec control to PCM device?
+> That's a weird name to use here.  Call it pcm1795 or something, though
+> normally we just cast the integer to and from a pointer.
+>
+>> +     { .compatible = "ti,pcm1795",
+>> +       .data = &codec_model,
+>> +     },
+>
+> This is strange indentation, just keep it on one line and it's easier to
+> follow.
 
-Thanks
-Arnaud
+Ok
+
+Michael
+
+-- 
+| Michael Nazzareno Trimarchi                     Amarula Solutions BV |
+| COO  -  Founder                                      Cruquiuskade 47 |
+| +31(0)851119172                                 Amsterdam 1018 AM NL |
+|                  [`as] http://www.amarulasolutions.com               |
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
