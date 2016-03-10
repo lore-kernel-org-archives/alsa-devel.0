@@ -1,17 +1,20 @@
-From: bsiice <bsiice@msn.com>
-Subject: Re: [PATCH - pcm 1/1] pcm: fix 'unable to create IPC
- shm instance' caused by fork from a thread
-Date: Thu, 10 Mar 2016 20:50:24 +0800
-Message-ID: <BLU436-SMTP10571CE460C579C26FDF6BCD2B40@phx.gbl>
-References: <BLU436-SMTP231971C20166F7E91EA3C9AD2B40@phx.gbl>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: Re: [PATCH v4 1/6] ASoC: core: add
+ snd_soc_add_dai_pcm_controls helper
+Date: Thu, 10 Mar 2016 18:28:18 +0530
+Message-ID: <20160310125817.GB6839@subhransu-desktop>
+References: <1457441641-7501-1-git-send-email-arnaud.pouliquen@st.com>
+ <1457441641-7501-2-git-send-email-arnaud.pouliquen@st.com>
+ <20160310050646.GD11154@localhost> <56E13971.9030909@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from BLU004-OMC3S18.hotmail.com (blu004-omc3s18.hotmail.com
- [65.55.116.93]) by alsa0.perex.cz (Postfix) with ESMTP id 7204A265866
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 13:49:46 +0100 (CET)
-In-Reply-To: <BLU436-SMTP231971C20166F7E91EA3C9AD2B40@phx.gbl>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 245FE2606F3
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 13:58:04 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <56E13971.9030909@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,86 +24,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Qing Cai <caiqing@neusoft.com>, alsa-devel@alsa-project.org, bsiice@msn.com
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc: Jean-Francois Moine <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Philipp Zabel <p.zabel@pengutronix.de>, "Koul, Vinod" <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, David Airlie <airlied@linux.ie>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Moise GERGAUD <moise.gergaud@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi Iwai:
-
-Is this patch OK?
-
-I have automatically tested 422 times after this fix, and
-'unable to create IPC shm instance' doesn't happen, and so the multimedia
-application functions properly.
-
-I would be very happy if I could do a bit contribution to the open source
-world! :)
-
-
-On 03/10/2016 08:40 PM, IceBsi wrote:
-> From: Qing Cai <bsiice@msn.com>
+On Thu, Mar 10, 2016 at 02:38:01PM +0530, Arnaud Pouliquen wrote:
 > 
-> As stated in manpage SHMCTL(2), shm_nattch is "No. of current attaches"
-> (i.e., number of processes attached to the shared memeory). If an
-> application uses alsa-lib and invokes fork() from a thread of the
-> application, there may be the following execution sequence:
->  1. execute the following statement:
->       pcm_direct.c:110: dmix->shmptr = shmat(dmix->shmid, 0, 0)
->     (shm_nattch becomes 1)
->  2. invoke fork() in some thread.
->     (shm_nattch becomes 2)
->  3. execute the following statement:
->       pcm_direct.c:122: if (buf.shm_nattch == 1)
->  4. execute the following statement:
->       pcm_direct.c:131: if (dmix->shmptr->magic != SND_PCM_DIRECT_MAGIC)
->     (As stated in manpage SHMGET(2), "When a new shared memory segment
->      is created, its contents are initialized to zero values", so
->      dmix->shmptr->magic is 0)
->  5. execute the following statements:
->       pcm_direct.c:132: snd_pcm_direct_shm_discard(dmix)
->       pcm_direct.c:133: return -EINVAL
-> The above execution sequence will cause the following error:
->   unable to create IPC shm instance
-> This error causes multimedia application has no sound. This error rarely
-> occurs, probability is about 1%.
 > 
-> Signed-off-by: Qing Cai <bsiice@msn.com>
-> Signed-off-by: Qing Cai <caiqing@neusoft.com>
+> On 03/10/2016 06:06 AM, Vinod Koul wrote:
+> > On Tue, Mar 08, 2016 at 01:53:56PM +0100, Arnaud Pouliquen wrote:
+> >> Add helper function to register DAI controls that need to be 
+> >> linked to pcm device.
+> >> A list is handled in case controls are created before dai_link probe
+> > 
+> > Overall this patch looks good to us. But on first read it is not very clear
+> > how PCM and DAIs are inter related and why you need to do this. Since we are
+> > having similar issues we were able to quickly understand this, the
+> > suggestion would be to elborate a bit more in changelog.
+> Right, i will provide more details in commit message.
+> > 
+> > Second, why do we need a new API for this. Why not use existing asoc
+> > concepts and add one more field in dai_driver for dai_controls.
+> > Core can automagically create those controls and link to PCM.
+> Yes this was my first approach. Finally, i created a separate API, to be
+> able to support iec generic control in DAI ( patch 3/6 and 4/6).
+> These patches need possibility to attach private data to control.
+> If patches 3/6 and 4/6 are rejected, for sure i will rework it to use
+> existing API.
+> Today It is more on compromise than an optimized solution...
+> But, creating a generic iec control also implies a compatibility with
+> ASoC and none ASoC drivers...
+
+In our view, iec controls should be made generic alsa controls and asoc
+should have wrapper over these and create these controls on card enumeration
+and use these wrappers.
+
 > 
-> diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
-> index fd3877c..14de734 100644
-> --- a/src/pcm/pcm_direct.c
-> +++ b/src/pcm/pcm_direct.c
-> @@ -91,13 +91,19 @@ int snd_pcm_direct_semaphore_create_or_connect(snd_pcm_direct_t *dmix)
->  int snd_pcm_direct_shm_create_or_connect(snd_pcm_direct_t *dmix)
->  {
->  	struct shmid_ds buf;
-> -	int tmpid, err;
-> +	int tmpid, err, first_instance = 0;
->  	
->  retryget:
->  	dmix->shmid = shmget(dmix->ipc_key, sizeof(snd_pcm_direct_share_t),
-> -			     IPC_CREAT | dmix->ipc_perm);
-> +			     dmix->ipc_perm);
-> +	if (dmix->shmid < 0) {
-> +		if (errno == ENOENT)
-> +		if ((dmix->shmid = shmget(dmix->ipc_key, sizeof(snd_pcm_direct_share_t),
-> +					     IPC_CREAT | IPC_EXCL | dmix->ipc_perm)) != -1)
-> +			first_instance = 1;
-> +	}
->  	err = -errno;
-> -	if (dmix->shmid < 0){
-> +	if (dmix->shmid < 0) {
->  		if (errno == EINVAL)
->  		if ((tmpid = shmget(dmix->ipc_key, 0, dmix->ipc_perm)) != -1)
->  		if (!shmctl(tmpid, IPC_STAT, &buf))
-> @@ -119,7 +125,7 @@ retryget:
->  		snd_pcm_direct_shm_discard(dmix);
->  		return err;
->  	}
-> -	if (buf.shm_nattch == 1) {	/* we're the first user, clear the segment */
-> +	if (first_instance) {	/* we're the first user, clear the segment */
->  		memset(dmix->shmptr, 0, sizeof(snd_pcm_direct_share_t));
->  		if (dmix->ipc_gid >= 0) {
->  			buf.shm_perm.gid = dmix->ipc_gid;
+> > 
+> > Lastly, this doesn't help our usecase of DPCM where the HDMI codec is
+> > connected to a BE, so that rtd cannot be used and we need to link to FE, so
+> > not sure how we can solve that...
+> DPCM seems another story... I'm not fully up to date on DPCM concept,
+> but as i can remember no link between FE and BE except DAPM routing.
+> Perhaps, for DPCM, a solution should be to use index field for control,
+> instead of trying to dynamically link the codec control to PCM device?
+
+That calls for a discussion on how the controls should be represented for
+DPCM. Takashi/Mark/Liam we need your opinion on how the PCM related controls
+should be represented in DPCM concepts.
+
 > 
+> Thanks
+> Arnaud
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+-- 
