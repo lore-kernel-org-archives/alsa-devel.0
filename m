@@ -1,91 +1,52 @@
-From: Petr Kulhavy <petr@barix.com>
-Subject: [PATCH 3/5] Sound: SOC: TAS571x: implemented digital
-	mute
-Date: Thu, 10 Mar 2016 12:22:39 +0100
-Message-ID: <1457608960-16913-3-git-send-email-petr@barix.com>
-References: <1457608960-16913-1-git-send-email-petr@barix.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f53.google.com (mail-wm0-f53.google.com [74.125.82.53])
- by alsa0.perex.cz (Postfix) with ESMTP id E18342612AC
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 12:24:01 +0100 (CET)
-Received: by mail-wm0-f53.google.com with SMTP id p65so24183818wmp.1
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 03:24:01 -0800 (PST)
-In-Reply-To: <1457608960-16913-1-git-send-email-petr@barix.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: cernekee@chromium.org, lgirdwood@gmail.com
-Cc: petr@barix.com, alsa-devel@alsa-project.org
+From: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH 5/5] dt/bindings: sound: new chip added into TAS571x binding
+Date: Thu, 10 Mar 2016 12:25:00 +0100
+Message-ID: <1457609100-17164-1-git-send-email-petr@barix.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: cernekee-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The driver did not have a mute function. The amplifier was brought out of
-shutdown mode (hard-mute) once for ever in probe(), which was causing
-clicks and pops when altering the I2C register configuration later.
+This adds the TAS5721 into the TAS571x binding.
 
-This adds the digital_mute() function. The amplifier unmute in probe()
-was removed.
-
-Signed-off-by: Petr Kulhavy <petr@barix.com>
-Tested-by: Petr Kulhavy <petr@barix.com>
+Signed-off-by: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
 ---
- sound/soc/codecs/tas571x.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+ Documentation/devicetree/bindings/sound/tas571x.txt | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
-index 2a63069..431dffa 100644
---- a/sound/soc/codecs/tas571x.c
-+++ b/sound/soc/codecs/tas571x.c
-@@ -171,6 +171,23 @@ static int tas571x_hw_params(struct snd_pcm_substream *substream,
- 				  TAS571X_SDI_FMT_MASK, val);
- }
+diff --git a/Documentation/devicetree/bindings/sound/tas571x.txt b/Documentation/devicetree/bindings/sound/tas571x.txt
+index 0ac31d8..f1aade3 100644
+--- a/Documentation/devicetree/bindings/sound/tas571x.txt
++++ b/Documentation/devicetree/bindings/sound/tas571x.txt
+@@ -1,4 +1,4 @@
+-Texas Instruments TAS5711/TAS5717/TAS5719 stereo power amplifiers
++Texas Instruments TAS5711/TAS5717/TAS5719/TAS5721 stereo power amplifiers
  
-+static int tas571x_mute(struct snd_soc_dai *dai, int mute)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	u8 sysctl2;
-+	int ret;
-+
-+	sysctl2 = mute ? TAS571X_SYS_CTRL_2_SDN_MASK : 0;
-+
-+	ret = snd_soc_update_bits(codec,
-+			    TAS571X_SYS_CTRL_2_REG,
-+		     TAS571X_SYS_CTRL_2_SDN_MASK,
-+		     sysctl2);
-+	usleep_range(1000, 2000);
-+
-+	return ret;
-+}
-+
- static int tas571x_set_bias_level(struct snd_soc_codec *codec,
- 				  enum snd_soc_bias_level level)
- {
-@@ -218,6 +235,7 @@ static int tas571x_set_bias_level(struct snd_soc_codec *codec,
- static const struct snd_soc_dai_ops tas571x_dai_ops = {
- 	.set_fmt	= tas571x_set_dai_fmt,
- 	.hw_params	= tas571x_hw_params,
-+	.digital_mute	= tas571x_mute,
- };
+ The codec is controlled through an I2C interface.  It also has two other
+ signals that can be wired up to GPIOs: reset (strongly recommended), and
+@@ -6,7 +6,7 @@ powerdown (optional).
  
- static const char *const tas5711_supply_names[] = {
-@@ -448,10 +466,6 @@ static int tas571x_i2c_probe(struct i2c_client *client,
- 	if (ret)
- 		return ret;
+ Required properties:
  
--	ret = regmap_update_bits(priv->regmap, TAS571X_SYS_CTRL_2_REG,
--				 TAS571X_SYS_CTRL_2_SDN_MASK, 0);
--	if (ret)
--		return ret;
+-- compatible: "ti,tas5711", "ti,tas5717", or "ti,tas5719"
++- compatible: "ti,tas5711", "ti,tas5717", or "ti,tas5719", "ti,tas5721"
+ - reg: The I2C address of the device
+ - #sound-dai-cells: must be equal to 0
  
- 	memcpy(&priv->codec_driver, &tas571x_codec, sizeof(priv->codec_driver));
- 	priv->codec_driver.controls = priv->chip->controls;
+@@ -25,6 +25,8 @@ Optional properties:
+ - PVDD_B-supply: regulator phandle for the PVDD_B supply (5711)
+ - PVDD_C-supply: regulator phandle for the PVDD_C supply (5711)
+ - PVDD_D-supply: regulator phandle for the PVDD_D supply (5711)
++- DRVDD-supply: regulator phandle for the DRVDD supply (5721)
++- PVDD-supply: regulator phandle for the PVDD supply (5721)
+ 
+ Example:
+ 
 -- 
 1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
