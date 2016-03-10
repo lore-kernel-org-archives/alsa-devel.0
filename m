@@ -1,58 +1,99 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: Re: [PATCH] ASoC: nau8825: fix interrupt fails and
- unstable after resume
-Date: Thu, 10 Mar 2016 14:12:46 +0800
-Message-ID: <56E1105E.8010604@nuvoton.com>
-References: <1456686105-6885-1-git-send-email-KCHSU0@nuvoton.com>
- <20160301032623.GH18327@sirena.org.uk>
+From: Sakari Ailus <sakari.ailus@iki.fi>
+Subject: Re: [PATCH v3 06/22] media: Media Controller enable/disable source
+ handler API
+Date: Thu, 10 Mar 2016 09:35:00 +0200
+Message-ID: <20160310073500.GK11084@valkosipuli.retiisi.org.uk>
+References: <cover.1455233150.git.shuahkh@osg.samsung.com>
+ <2d8b035ec723346dfeed5db859aba67738e049cc.1455233153.git.shuahkh@osg.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id DE378260614
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 07:12:47 +0100 (CET)
-In-Reply-To: <20160301032623.GH18327@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <2d8b035ec723346dfeed5db859aba67738e049cc.1455233153.git.shuahkh@osg.samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Shuah Khan <shuahkh@osg.samsung.com>
+Cc: mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oam
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi Shuah,
 
-On 3/1/2016 11:26 AM, Mark Brown wrote:
-> On Mon, Feb 29, 2016 at 03:01:45AM +0800, John Hsu wrote:
->
->   
->> +static int nau8825_resume_setup(struct nau8825 *nau8825)
->> +{
->>     
->
-> I'd expect to see this shared with initial power on?
->
->   
+On Thu, Feb 11, 2016 at 04:41:22PM -0700, Shuah Khan wrote:
+> Add new fields to struct media_device to add enable_source, and
+> disable_source handlers, and source_priv to stash driver private
+> data that is used to run these handlers. The enable_source handler
+> finds source entity for the passed in entity and checks if it is
+> available. When link is found, it activates it. Disable source
+> handler deactivates the link.
+> 
+> Bridge driver is expected to implement and set these handlers.
+> 
+> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+> ---
+>  include/media/media-device.h | 30 ++++++++++++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+> 
+> diff --git a/include/media/media-device.h b/include/media/media-device.h
+> index 075a482..1a04644 100644
+> --- a/include/media/media-device.h
+> +++ b/include/media/media-device.h
+> @@ -302,6 +302,11 @@ struct media_entity_notify {
+>   * @entity_notify: List of registered entity_notify callbacks
+>   * @lock:	Entities list lock
+>   * @graph_mutex: Entities graph operation lock
+> + *
+> + * @source_priv: Driver Private data for enable/disable source handlers
+> + * @enable_source: Enable Source Handler function pointer
+> + * @disable_source: Disable Source Handler function pointer
+> + *
+>   * @link_notify: Link state change notification callback
+>   *
+>   * This structure represents an abstract high-level media device. It allows easy
+> @@ -313,6 +318,26 @@ struct media_entity_notify {
+>   *
+>   * @model is a descriptive model name exported through sysfs. It doesn't have to
+>   * be unique.
+> + *
+> + * @enable_source is a handler to find source entity for the
+> + * sink entity  and activate the link between them if source
+> + * entity is free. Drivers should call this handler before
+> + * accessing the source.
+> + *
+> + * @disable_source is a handler to find source entity for the
+> + * sink entity  and deactivate the link between them. Drivers
+> + * should call this handler to release the source.
+> + *
 
-There is a little things different between resume and initiation.
-But I think the function could be reused.
+Is there a particular reason you're not simply (de)activating the link, but
+instead add a new callback?
 
->>  	regcache_cache_only(nau8825->regmap, false);
->> -	regcache_sync(nau8825->regmap);
->> -	enable_irq(client->irq);
->> +	enable_irq(nau8825->irq);
->>     
->
-> We're removing the register cache sync here but I don't see us adding it
-> anywhere else.
->   
-A part of suspend and resume action moves to set bias function, 
-nau8825_set_bias_level.
-We make register cache dirty in bias off; and make register cache sync 
-after resume in bias standby.
+> + * Note: Bridge driver is expected to implement and set the
+> + * handler when media_device is registered or when
+> + * bridge driver finds the media_device during probe.
+> + * Bridge driver sets source_priv with information
+> + * necessary to run enable/disable source handlers.
+> + *
+> + * Use-case: find tuner entity connected to the decoder
+> + * entity and check if it is available, and activate the
+> + * the link between them from enable_source and deactivate
+> + * from disable_source.
+>   */
+>  struct media_device {
+>  	/* dev->driver_data points to this struct. */
+> @@ -344,6 +369,11 @@ struct media_device {
+>  	/* Serializes graph operations. */
+>  	struct mutex graph_mutex;
+>  
+> +	void *source_priv;
+> +	int (*enable_source)(struct media_entity *entity,
+> +			     struct media_pipeline *pipe);
+> +	void (*disable_source)(struct media_entity *entity);
+> +
+>  	int (*link_notify)(struct media_link *link, u32 flags,
+>  			   unsigned int notification);
+>  };
+
+-- 
+Kind regards,
+
+Sakari Ailus
+e-mail: sakari.ailus@iki.fi	XMPP: sailus@retiisi.org.uk
