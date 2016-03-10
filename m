@@ -1,15 +1,17 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: dice: use structure to represent
-	register parameters instead of array with basic type element
-Date: Thu, 10 Mar 2016 21:44:28 +0900
-Message-ID: <1457613868-14891-1-git-send-email-o-takashi@sakamocchi.jp>
+From: bsiice <bsiice@msn.com>
+Subject: Re: [PATCH - pcm 1/1] pcm: fix 'unable to create IPC
+ shm instance' caused by fork from a thread
+Date: Thu, 10 Mar 2016 20:50:24 +0800
+Message-ID: <BLU436-SMTP10571CE460C579C26FDF6BCD2B40@phx.gbl>
+References: <BLU436-SMTP231971C20166F7E91EA3C9AD2B40@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id E49AC261492
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 13:44:35 +0100 (CET)
+Received: from BLU004-OMC3S18.hotmail.com (blu004-omc3s18.hotmail.com
+ [65.55.116.93]) by alsa0.perex.cz (Postfix) with ESMTP id 7204A265866
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 13:49:46 +0100 (CET)
+In-Reply-To: <BLU436-SMTP231971C20166F7E91EA3C9AD2B40@phx.gbl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,299 +21,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Qing Cai <caiqing@neusoft.com>, alsa-devel@alsa-project.org, bsiice@msn.com
 List-Id: alsa-devel@alsa-project.org
 
-In dice interface, two blocks of register are accessible via IEEE 1394
-asynchronous transaction to represent the number of supported isochronous
-streams and the number of quadlets for stream information.
+Hi Takashi Iwai:
 
-Current ALSA dice driver uses array with 'unsigned int' element for
-temporary cache of these information. But using structure is preferable
-for begin easily comprehensible.
+Is this patch OK?
 
-This commit applies a local structure for this aim.
+I have automatically tested 422 times after this fix, and
+'unable to create IPC shm instance' doesn't happen, and so the multimedia
+application functions properly.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/dice/dice-stream.c | 110 +++++++++++++++++++-------------------
- 1 file changed, 54 insertions(+), 56 deletions(-)
+I would be very happy if I could do a bit contribution to the open source
+world! :)
 
-diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
-index 2077f18..845d5e5 100644
---- a/sound/firewire/dice/dice-stream.c
-+++ b/sound/firewire/dice/dice-stream.c
-@@ -12,6 +12,11 @@
- #define	CALLBACK_TIMEOUT	200
- #define NOTIFICATION_TIMEOUT_MS	(2 * MSEC_PER_SEC)
- 
-+struct reg_params {
-+	unsigned int count;
-+	unsigned int size;
-+};
-+
- const unsigned int snd_dice_rates[SND_DICE_RATES_COUNT] = {
- 	/* mode 0 */
- 	[0] =  32000,
-@@ -65,7 +70,9 @@ static int ensure_phase_lock(struct snd_dice *dice)
- 	return 0;
- }
- 
--static int get_register_params(struct snd_dice *dice, unsigned int params[4])
-+static int get_register_params(struct snd_dice *dice,
-+			       struct reg_params *tx_params,
-+			       struct reg_params *rx_params)
- {
- 	__be32 reg[2];
- 	int err;
-@@ -73,14 +80,16 @@ static int get_register_params(struct snd_dice *dice, unsigned int params[4])
- 	err = snd_dice_transaction_read_tx(dice, TX_NUMBER, reg, sizeof(reg));
- 	if (err < 0)
- 		return err;
--	params[0] = min_t(unsigned int, be32_to_cpu(reg[0]), MAX_STREAMS);
--	params[1] = be32_to_cpu(reg[1]) * 4;
-+	tx_params->count =
-+			min_t(unsigned int, be32_to_cpu(reg[0]), MAX_STREAMS);
-+	tx_params->size = be32_to_cpu(reg[1]) * 4;
- 
- 	err = snd_dice_transaction_read_rx(dice, RX_NUMBER, reg, sizeof(reg));
- 	if (err < 0)
- 		return err;
--	params[2] = min_t(unsigned int, be32_to_cpu(reg[0]), MAX_STREAMS);
--	params[3] = be32_to_cpu(reg[1]) * 4;
-+	rx_params->count =
-+			min_t(unsigned int, be32_to_cpu(reg[0]), MAX_STREAMS);
-+	rx_params->size = be32_to_cpu(reg[1]) * 4;
- 
- 	return 0;
- }
-@@ -105,21 +114,21 @@ static void release_resources(struct snd_dice *dice)
- }
- 
- static void stop_streams(struct snd_dice *dice, enum amdtp_stream_direction dir,
--			 unsigned int count, unsigned int size)
-+			 struct reg_params *params)
- {
- 	__be32 reg;
- 	unsigned int i;
- 
--	for (i = 0; i < count; i++) {
-+	for (i = 0; i < params->count; i++) {
- 		reg = cpu_to_be32((u32)-1);
- 		if (dir == AMDTP_IN_STREAM) {
- 			snd_dice_transaction_write_tx(dice,
--						size * i + TX_ISOCHRONOUS,
--						&reg, sizeof(reg));
-+					params->size * i + TX_ISOCHRONOUS,
-+					&reg, sizeof(reg));
- 		} else {
- 			snd_dice_transaction_write_rx(dice,
--						size * i + RX_ISOCHRONOUS,
--						&reg, sizeof(reg));
-+					params->size * i + RX_ISOCHRONOUS,
-+					&reg, sizeof(reg));
- 		}
- 	}
- }
-@@ -180,8 +189,7 @@ static int keep_resources(struct snd_dice *dice,
- }
- 
- static int start_streams(struct snd_dice *dice, enum amdtp_stream_direction dir,
--			 unsigned int rate, unsigned int count,
--			 unsigned int size)
-+			 unsigned int rate, struct reg_params *params)
- {
- 	__be32 reg[2];
- 	unsigned int i, pcm_chs, midi_ports;
-@@ -197,15 +205,15 @@ static int start_streams(struct snd_dice *dice, enum amdtp_stream_direction dir,
- 		resources = dice->rx_resources;
- 	}
- 
--	for (i = 0; i < count; i++) {
-+	for (i = 0; i < params->count; i++) {
- 		if (dir == AMDTP_IN_STREAM) {
- 			err = snd_dice_transaction_read_tx(dice,
--						size * i + TX_NUMBER_AUDIO,
--						reg, sizeof(reg));
-+					params->size * i + TX_NUMBER_AUDIO,
-+					reg, sizeof(reg));
- 		} else {
- 			err = snd_dice_transaction_read_rx(dice,
--						size * i + RX_NUMBER_AUDIO,
--						reg, sizeof(reg));
-+					params->size * i + RX_NUMBER_AUDIO,
-+					reg, sizeof(reg));
- 		}
- 		if (err < 0)
- 			return err;
-@@ -219,12 +227,12 @@ static int start_streams(struct snd_dice *dice, enum amdtp_stream_direction dir,
- 		reg[0] = cpu_to_be32(resources[i].channel);
- 		if (dir == AMDTP_IN_STREAM) {
- 			err = snd_dice_transaction_write_tx(dice,
--						size * i + TX_ISOCHRONOUS,
--						reg, sizeof(reg[0]));
-+					params->size * i + TX_ISOCHRONOUS,
-+					reg, sizeof(reg[0]));
- 		} else {
- 			err = snd_dice_transaction_write_rx(dice,
--						size * i + RX_ISOCHRONOUS,
--						reg, sizeof(reg[0]));
-+					params->size * i + RX_ISOCHRONOUS,
-+					reg, sizeof(reg[0]));
- 		}
- 		if (err < 0)
- 			return err;
-@@ -247,14 +255,14 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
- {
- 	unsigned int curr_rate;
- 	unsigned int i;
--	unsigned int reg_params[4];
-+	struct reg_params tx_params, rx_params;
- 	bool need_to_start;
- 	int err;
- 
- 	if (dice->substreams_counter == 0)
- 		return -EIO;
- 
--	err = get_register_params(dice, reg_params);
-+	err = get_register_params(dice, &tx_params, &rx_params);
- 	if (err < 0)
- 		return err;
- 
-@@ -271,12 +279,12 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
- 
- 	/* Judge to need to restart streams. */
- 	for (i = 0; i < MAX_STREAMS; i++) {
--		if (i < reg_params[0]) {
-+		if (i < tx_params.count) {
- 			if (amdtp_streaming_error(&dice->tx_stream[i]) ||
- 			    !amdtp_stream_running(&dice->tx_stream[i]))
- 				break;
- 		}
--		if (i < reg_params[2]) {
-+		if (i < rx_params.count) {
- 			if (amdtp_streaming_error(&dice->rx_stream[i]) ||
- 			    !amdtp_stream_running(&dice->rx_stream[i]))
- 				break;
-@@ -287,10 +295,8 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
- 	if (need_to_start) {
- 		/* Stop transmission. */
- 		snd_dice_transaction_clear_enable(dice);
--		stop_streams(dice, AMDTP_IN_STREAM, reg_params[0],
--			     reg_params[1]);
--		stop_streams(dice, AMDTP_OUT_STREAM, reg_params[2],
--			     reg_params[3]);
-+		stop_streams(dice, AMDTP_IN_STREAM, &tx_params);
-+		stop_streams(dice, AMDTP_OUT_STREAM, &rx_params);
- 		release_resources(dice);
- 
- 		err = ensure_phase_lock(dice);
-@@ -301,12 +307,10 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
- 		}
- 
- 		/* Start both streams. */
--		err = start_streams(dice, AMDTP_IN_STREAM, rate, reg_params[0],
--				    reg_params[1]);
-+		err = start_streams(dice, AMDTP_IN_STREAM, rate, &tx_params);
- 		if (err < 0)
- 			goto error;
--		err = start_streams(dice, AMDTP_OUT_STREAM, rate, reg_params[2],
--				    reg_params[3]);
-+		err = start_streams(dice, AMDTP_OUT_STREAM, rate, &rx_params);
- 		if (err < 0)
- 			goto error;
- 
-@@ -318,10 +322,10 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
- 		}
- 
- 		for (i = 0; i < MAX_STREAMS; i++) {
--			if ((i < reg_params[0] &&
-+			if ((i < tx_params.count &&
- 			    !amdtp_stream_wait_callback(&dice->tx_stream[i],
- 							CALLBACK_TIMEOUT)) ||
--			    (i < reg_params[2] &&
-+			    (i < rx_params.count &&
- 			     !amdtp_stream_wait_callback(&dice->rx_stream[i],
- 							 CALLBACK_TIMEOUT))) {
- 				err = -ETIMEDOUT;
-@@ -333,8 +337,8 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
- 	return err;
- error:
- 	snd_dice_transaction_clear_enable(dice);
--	stop_streams(dice, AMDTP_IN_STREAM, reg_params[0], reg_params[1]);
--	stop_streams(dice, AMDTP_OUT_STREAM, reg_params[2], reg_params[3]);
-+	stop_streams(dice, AMDTP_IN_STREAM, &tx_params);
-+	stop_streams(dice, AMDTP_OUT_STREAM, &rx_params);
- 	release_resources(dice);
- 	return err;
- }
-@@ -346,18 +350,16 @@ error:
-  */
- void snd_dice_stream_stop_duplex(struct snd_dice *dice)
- {
--	unsigned int reg_params[4];
-+	struct reg_params tx_params, rx_params;
- 
- 	if (dice->substreams_counter > 0)
- 		return;
- 
- 	snd_dice_transaction_clear_enable(dice);
- 
--	if (get_register_params(dice, reg_params) == 0) {
--		stop_streams(dice, AMDTP_IN_STREAM, reg_params[0],
--			     reg_params[1]);
--		stop_streams(dice, AMDTP_OUT_STREAM, reg_params[2],
--			     reg_params[3]);
-+	if (get_register_params(dice, &tx_params, &rx_params) == 0) {
-+		stop_streams(dice, AMDTP_IN_STREAM, &tx_params);
-+		stop_streams(dice, AMDTP_OUT_STREAM, &rx_params);
- 	}
- 
- 	release_resources(dice);
-@@ -444,15 +446,13 @@ end:
- 
- void snd_dice_stream_destroy_duplex(struct snd_dice *dice)
- {
--	unsigned int reg_params[4];
-+	struct reg_params tx_params, rx_params;
- 
- 	snd_dice_transaction_clear_enable(dice);
- 
--	if (get_register_params(dice, reg_params) == 0) {
--		stop_streams(dice, AMDTP_IN_STREAM, reg_params[0],
--			     reg_params[1]);
--		stop_streams(dice, AMDTP_OUT_STREAM, reg_params[2],
--			     reg_params[3]);
-+	if (get_register_params(dice, &tx_params, &rx_params) == 0) {
-+		stop_streams(dice, AMDTP_IN_STREAM, &tx_params);
-+		stop_streams(dice, AMDTP_OUT_STREAM, &rx_params);
- 	}
- 
- 	release_resources(dice);
-@@ -462,7 +462,7 @@ void snd_dice_stream_destroy_duplex(struct snd_dice *dice)
- 
- void snd_dice_stream_update_duplex(struct snd_dice *dice)
- {
--	unsigned int reg_params[4];
-+	struct reg_params tx_params, rx_params;
- 
- 	/*
- 	 * On a bus reset, the DICE firmware disables streaming and then goes
-@@ -474,11 +474,9 @@ void snd_dice_stream_update_duplex(struct snd_dice *dice)
- 	 */
- 	dice->global_enabled = false;
- 
--	if (get_register_params(dice, reg_params) == 0) {
--		stop_streams(dice, AMDTP_IN_STREAM, reg_params[0],
--			     reg_params[1]);
--		stop_streams(dice, AMDTP_OUT_STREAM, reg_params[2],
--			     reg_params[3]);
-+	if (get_register_params(dice, &tx_params, &rx_params) == 0) {
-+		stop_streams(dice, AMDTP_IN_STREAM, &tx_params);
-+		stop_streams(dice, AMDTP_OUT_STREAM, &rx_params);
- 	}
- }
- 
--- 
-2.7.0
+
+On 03/10/2016 08:40 PM, IceBsi wrote:
+> From: Qing Cai <bsiice@msn.com>
+> 
+> As stated in manpage SHMCTL(2), shm_nattch is "No. of current attaches"
+> (i.e., number of processes attached to the shared memeory). If an
+> application uses alsa-lib and invokes fork() from a thread of the
+> application, there may be the following execution sequence:
+>  1. execute the following statement:
+>       pcm_direct.c:110: dmix->shmptr = shmat(dmix->shmid, 0, 0)
+>     (shm_nattch becomes 1)
+>  2. invoke fork() in some thread.
+>     (shm_nattch becomes 2)
+>  3. execute the following statement:
+>       pcm_direct.c:122: if (buf.shm_nattch == 1)
+>  4. execute the following statement:
+>       pcm_direct.c:131: if (dmix->shmptr->magic != SND_PCM_DIRECT_MAGIC)
+>     (As stated in manpage SHMGET(2), "When a new shared memory segment
+>      is created, its contents are initialized to zero values", so
+>      dmix->shmptr->magic is 0)
+>  5. execute the following statements:
+>       pcm_direct.c:132: snd_pcm_direct_shm_discard(dmix)
+>       pcm_direct.c:133: return -EINVAL
+> The above execution sequence will cause the following error:
+>   unable to create IPC shm instance
+> This error causes multimedia application has no sound. This error rarely
+> occurs, probability is about 1%.
+> 
+> Signed-off-by: Qing Cai <bsiice@msn.com>
+> Signed-off-by: Qing Cai <caiqing@neusoft.com>
+> 
+> diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
+> index fd3877c..14de734 100644
+> --- a/src/pcm/pcm_direct.c
+> +++ b/src/pcm/pcm_direct.c
+> @@ -91,13 +91,19 @@ int snd_pcm_direct_semaphore_create_or_connect(snd_pcm_direct_t *dmix)
+>  int snd_pcm_direct_shm_create_or_connect(snd_pcm_direct_t *dmix)
+>  {
+>  	struct shmid_ds buf;
+> -	int tmpid, err;
+> +	int tmpid, err, first_instance = 0;
+>  	
+>  retryget:
+>  	dmix->shmid = shmget(dmix->ipc_key, sizeof(snd_pcm_direct_share_t),
+> -			     IPC_CREAT | dmix->ipc_perm);
+> +			     dmix->ipc_perm);
+> +	if (dmix->shmid < 0) {
+> +		if (errno == ENOENT)
+> +		if ((dmix->shmid = shmget(dmix->ipc_key, sizeof(snd_pcm_direct_share_t),
+> +					     IPC_CREAT | IPC_EXCL | dmix->ipc_perm)) != -1)
+> +			first_instance = 1;
+> +	}
+>  	err = -errno;
+> -	if (dmix->shmid < 0){
+> +	if (dmix->shmid < 0) {
+>  		if (errno == EINVAL)
+>  		if ((tmpid = shmget(dmix->ipc_key, 0, dmix->ipc_perm)) != -1)
+>  		if (!shmctl(tmpid, IPC_STAT, &buf))
+> @@ -119,7 +125,7 @@ retryget:
+>  		snd_pcm_direct_shm_discard(dmix);
+>  		return err;
+>  	}
+> -	if (buf.shm_nattch == 1) {	/* we're the first user, clear the segment */
+> +	if (first_instance) {	/* we're the first user, clear the segment */
+>  		memset(dmix->shmptr, 0, sizeof(snd_pcm_direct_share_t));
+>  		if (dmix->ipc_gid >= 0) {
+>  			buf.shm_perm.gid = dmix->ipc_gid;
+> 
