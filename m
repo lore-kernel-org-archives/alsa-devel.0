@@ -1,96 +1,122 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [PATCH v4 1/6] ASoC: core: add
- snd_soc_add_dai_pcm_controls helper
-Date: Thu, 10 Mar 2016 15:03:16 +0100
-Message-ID: <56E17EA4.7080409@st.com>
-References: <1457441641-7501-1-git-send-email-arnaud.pouliquen@st.com>
- <1457441641-7501-2-git-send-email-arnaud.pouliquen@st.com>
- <20160310050646.GD11154@localhost> <56E13971.9030909@st.com>
- <20160310125817.GB6839@subhransu-desktop>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: Re: [PATCH v3 06/22] media: Media Controller enable/disable source
+ handler API
+Date: Thu, 10 Mar 2016 07:29:59 -0700
+Message-ID: <56E184E7.80603@osg.samsung.com>
+References: <cover.1455233150.git.shuahkh@osg.samsung.com>
+ <2d8b035ec723346dfeed5db859aba67738e049cc.1455233153.git.shuahkh@osg.samsung.com>
+ <20160310073500.GK11084@valkosipuli.retiisi.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 5ACD22664AD
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 15:03:23 +0100 (CET)
-In-Reply-To: <20160310125817.GB6839@subhransu-desktop>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Cc: Jean-Francois Moine <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Philipp Zabel <p.zabel@pengutronix.de>, "Koul, Vinod" <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, David Airlie <airlied@linux.ie>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Moise GERGAUD <moise.gergaud@st.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <20160310073500.GK11084@valkosipuli.retiisi.org.uk>
+Sender: linux-media-owner@vger.kernel.org
+To: Sakari Ailus <sakari.ailus@iki.fi>
+Cc: mchehab@osg.samsung.com, tiwai@suse.com, clemens@ladisch.de, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, javier@osg.samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, perex@perex.cz, arnd@arndb.de, dan.carpenter@oracle.com, tvboxspy@gmail.com, crope@iki.fi, ruchandani.tina@gmail.com, corbet@lwn.net, chehabrafael@gmail.com, k.kozlowski@samsung.com, stefanr@s5r6.in-berlin.de, inki.dae@samsung.com, jh1009.sung@samsung.com, elfring@users.sourceforge.net, prabhakar.csengg@gmail.com, sw0312.kim@samsung.com, p.zabel@pengutronix.de, ricardo.ribalda@gmail.com, labbott@fedoraproject.org, pierre-louis.bossart@linux.intel.com, ricard.wanderlof@axis.com, julian@jusst.de, takamichiho@gmail.com, dominic.sacre@gmx.de, misterpib@gmail.com, daniel@zonque.org, gtmkramer@xs4all.nl, normalperson@yhbt.net, joe@oam
 List-Id: alsa-devel@alsa-project.org
 
+On 03/10/2016 12:35 AM, Sakari Ailus wrote:
+> Hi Shuah,
+> 
+> On Thu, Feb 11, 2016 at 04:41:22PM -0700, Shuah Khan wrote:
+>> Add new fields to struct media_device to add enable_source, and
+>> disable_source handlers, and source_priv to stash driver private
+>> data that is used to run these handlers. The enable_source handler
+>> finds source entity for the passed in entity and checks if it is
+>> available. When link is found, it activates it. Disable source
+>> handler deactivates the link.
+>>
+>> Bridge driver is expected to implement and set these handlers.
+>>
+>> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+>> ---
+>>  include/media/media-device.h | 30 ++++++++++++++++++++++++++++++
+>>  1 file changed, 30 insertions(+)
+>>
+>> diff --git a/include/media/media-device.h b/include/media/media-device.h
+>> index 075a482..1a04644 100644
+>> --- a/include/media/media-device.h
+>> +++ b/include/media/media-device.h
+>> @@ -302,6 +302,11 @@ struct media_entity_notify {
+>>   * @entity_notify: List of registered entity_notify callbacks
+>>   * @lock:	Entities list lock
+>>   * @graph_mutex: Entities graph operation lock
+>> + *
+>> + * @source_priv: Driver Private data for enable/disable source handlers
+>> + * @enable_source: Enable Source Handler function pointer
+>> + * @disable_source: Disable Source Handler function pointer
+>> + *
+>>   * @link_notify: Link state change notification callback
+>>   *
+>>   * This structure represents an abstract high-level media device. It allows easy
+>> @@ -313,6 +318,26 @@ struct media_entity_notify {
+>>   *
+>>   * @model is a descriptive model name exported through sysfs. It doesn't have to
+>>   * be unique.
+>> + *
+>> + * @enable_source is a handler to find source entity for the
+>> + * sink entity  and activate the link between them if source
+>> + * entity is free. Drivers should call this handler before
+>> + * accessing the source.
+>> + *
+>> + * @disable_source is a handler to find source entity for the
+>> + * sink entity  and deactivate the link between them. Drivers
+>> + * should call this handler to release the source.
+>> + *
+> 
+> Is there a particular reason you're not simply (de)activating the link, but
+> instead add a new callback?
+
+These two handlers are separate for a couple of reasons:
+
+1. Explicit and symmetric API is easier to use and maintain.
+   Similar what we do in other cases, register/unregister
+   get/put etc.
+2. This is more important. Disable handler makes sure the
+   owner is releasing the resource. Otherwise, when some
+   other application does enable, the owner could loose
+   the resource, if enable and disable are the same.
+
+   e.g: Video app is holding the resource, DVB app does
+   enable. Disable handler makes sure Video/owner  is the one
+   that is asking to do the release.
+
+thanks,
+-- Shuah
+
+> 
+>> + * Note: Bridge driver is expected to implement and set the
+>> + * handler when media_device is registered or when
+>> + * bridge driver finds the media_device during probe.
+>> + * Bridge driver sets source_priv with information
+>> + * necessary to run enable/disable source handlers.
+>> + *
+>> + * Use-case: find tuner entity connected to the decoder
+>> + * entity and check if it is available, and activate the
+>> + * the link between them from enable_source and deactivate
+>> + * from disable_source.
+>>   */
+>>  struct media_device {
+>>  	/* dev->driver_data points to this struct. */
+>> @@ -344,6 +369,11 @@ struct media_device {
+>>  	/* Serializes graph operations. */
+>>  	struct mutex graph_mutex;
+>>  
+>> +	void *source_priv;
+>> +	int (*enable_source)(struct media_entity *entity,
+>> +			     struct media_pipeline *pipe);
+>> +	void (*disable_source)(struct media_entity *entity);
+>> +
+>>  	int (*link_notify)(struct media_link *link, u32 flags,
+>>  			   unsigned int notification);
+>>  };
+> 
 
 
-On 03/10/2016 01:58 PM, Subhransu S. Prusty wrote:
-> On Thu, Mar 10, 2016 at 02:38:01PM +0530, Arnaud Pouliquen wrote:
->>
->>
->> On 03/10/2016 06:06 AM, Vinod Koul wrote:
->>> On Tue, Mar 08, 2016 at 01:53:56PM +0100, Arnaud Pouliquen wrote:
->>>> Add helper function to register DAI controls that need to be 
->>>> linked to pcm device.
->>>> A list is handled in case controls are created before dai_link probe
->>>
->>> Overall this patch looks good to us. But on first read it is not very clear
->>> how PCM and DAIs are inter related and why you need to do this. Since we are
->>> having similar issues we were able to quickly understand this, the
->>> suggestion would be to elborate a bit more in changelog.
->> Right, i will provide more details in commit message.
->>>
->>> Second, why do we need a new API for this. Why not use existing asoc
->>> concepts and add one more field in dai_driver for dai_controls.
->>> Core can automagically create those controls and link to PCM.
->> Yes this was my first approach. Finally, i created a separate API, to be
->> able to support iec generic control in DAI ( patch 3/6 and 4/6).
->> These patches need possibility to attach private data to control.
->> If patches 3/6 and 4/6 are rejected, for sure i will rework it to use
->> existing API.
->> Today It is more on compromise than an optimized solution...
->> But, creating a generic iec control also implies a compatibility with
->> ASoC and none ASoC drivers...
-> 
-> In our view, iec controls should be made generic alsa controls and asoc
-> should have wrapper over these and create these controls on card enumeration
-> and use these wrappers.
-Please, could you details what you have in mind please, because I
-thought it was exactly what I proposed my patch-set...
-
-My approach is that i would like to take into account the creation of
-generic controls in the way of handling pcm control in ASoC.
-I tried to treat iec generic control as another PCM control in soc core,
-not as an exception. Because this could also be reused in future for
-some other generic pcm controls.
-
-> 
->>
->>>
->>> Lastly, this doesn't help our usecase of DPCM where the HDMI codec is
->>> connected to a BE, so that rtd cannot be used and we need to link to FE, so
->>> not sure how we can solve that...
->> DPCM seems another story... I'm not fully up to date on DPCM concept,
->> but as i can remember no link between FE and BE except DAPM routing.
->> Perhaps, for DPCM, a solution should be to use index field for control,
->> instead of trying to dynamically link the codec control to PCM device?
-> 
-> That calls for a discussion on how the controls should be represented for
-> DPCM. Takashi/Mark/Liam we need your opinion on how the PCM related controls
-> should be represented in DPCM concepts.
-> 
->>
->> Thanks
->> Arnaud
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+-- 
+Shuah Khan
+Sr. Linux Kernel Developer
+Open Source Innovation Group
+Samsung Research America (Silicon Valley)
+shuahkh@osg.samsung.com | (970) 217-8978
