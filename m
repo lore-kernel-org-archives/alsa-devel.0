@@ -1,89 +1,67 @@
-From: IceBsi <bsiice@msn.com>
-Subject: [PATCH - pcm 1/1] pcm: fix 'unable to create IPC shm
-	instance' caused by fork from a thread
-Date: Thu, 10 Mar 2016 07:40:51 -0500
-Message-ID: <BLU436-SMTP231971C20166F7E91EA3C9AD2B40@phx.gbl>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH v6 5/6] drm/i2c: tda998x: Register ASoC hdmi-codec and add
+ audio DT binding
+Date: Thu, 10 Mar 2016 14:44:20 +0200
+Message-ID: <56E16C24.3070207@ti.com>
+References: <201603092102.WhNJg52h%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Qing Cai <caiqing@neusoft.com>, alsa-devel@alsa-project.org, Qing Cai <bsiice@msn.com>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <201603092102.WhNJg52h%fengguang.wu@intel.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: kbuild test robot <lkp@intel.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, arnaud.pouliquen@st.com, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, broonie@kernel.org, kbuild-all@01.org, bcousson@baylibre.com, rmk+kernel@arm.linux.org.uk, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Qing Cai <bsiice@msn.com>
-
-As stated in manpage SHMCTL(2), shm_nattch is "No. of current attaches"
-(i.e., number of processes attached to the shared memeory). If an
-application uses alsa-lib and invokes fork() from a thread of the
-application, there may be the following execution sequence:
- 1. execute the following statement:
-      pcm_direct.c:110: dmix->shmptr = shmat(dmix->shmid, 0, 0)
-    (shm_nattch becomes 1)
- 2. invoke fork() in some thread.
-    (shm_nattch becomes 2)
- 3. execute the following statement:
-      pcm_direct.c:122: if (buf.shm_nattch == 1)
- 4. execute the following statement:
-      pcm_direct.c:131: if (dmix->shmptr->magic != SND_PCM_DIRECT_MAGIC)
-    (As stated in manpage SHMGET(2), "When a new shared memory segment
-     is created, its contents are initialized to zero values", so
-     dmix->shmptr->magic is 0)
- 5. execute the following statements:
-      pcm_direct.c:132: snd_pcm_direct_shm_discard(dmix)
-      pcm_direct.c:133: return -EINVAL
-The above execution sequence will cause the following error:
-  unable to create IPC shm instance
-This error causes multimedia application has no sound. This error rarely
-occurs, probability is about 1%.
-
-Signed-off-by: Qing Cai <bsiice@msn.com>
-Signed-off-by: Qing Cai <caiqing@neusoft.com>
-
-diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
-index fd3877c..14de734 100644
---- a/src/pcm/pcm_direct.c
-+++ b/src/pcm/pcm_direct.c
-@@ -91,13 +91,19 @@ int snd_pcm_direct_semaphore_create_or_connect(snd_pcm_direct_t *dmix)
- int snd_pcm_direct_shm_create_or_connect(snd_pcm_direct_t *dmix)
- {
- 	struct shmid_ds buf;
--	int tmpid, err;
-+	int tmpid, err, first_instance = 0;
- 	
- retryget:
- 	dmix->shmid = shmget(dmix->ipc_key, sizeof(snd_pcm_direct_share_t),
--			     IPC_CREAT | dmix->ipc_perm);
-+			     dmix->ipc_perm);
-+	if (dmix->shmid < 0) {
-+		if (errno == ENOENT)
-+		if ((dmix->shmid = shmget(dmix->ipc_key, sizeof(snd_pcm_direct_share_t),
-+					     IPC_CREAT | IPC_EXCL | dmix->ipc_perm)) != -1)
-+			first_instance = 1;
-+	}
- 	err = -errno;
--	if (dmix->shmid < 0){
-+	if (dmix->shmid < 0) {
- 		if (errno == EINVAL)
- 		if ((tmpid = shmget(dmix->ipc_key, 0, dmix->ipc_perm)) != -1)
- 		if (!shmctl(tmpid, IPC_STAT, &buf))
-@@ -119,7 +125,7 @@ retryget:
- 		snd_pcm_direct_shm_discard(dmix);
- 		return err;
- 	}
--	if (buf.shm_nattch == 1) {	/* we're the first user, clear the segment */
-+	if (first_instance) {	/* we're the first user, clear the segment */
- 		memset(dmix->shmptr, 0, sizeof(snd_pcm_direct_share_t));
- 		if (dmix->ipc_gid >= 0) {
- 			buf.shm_perm.gid = dmix->ipc_gid;
--- 
-2.7.2
+T24gMDMvMDkvMTYgMTU6NTIsIGtidWlsZCB0ZXN0IHJvYm90IHdyb3RlOgo+IEhpIEp5cmksCj4K
+PiBbYXV0byBidWlsZCB0ZXN0IFdBUk5JTkcgb24gZHJtL2RybS1uZXh0XQo+IFthbHNvIGJ1aWxk
+IHRlc3QgV0FSTklORyBvbiB2NC41LXJjNyBuZXh0LTIwMTYwMzA5XQo+IFtpZiB5b3VyIHBhdGNo
+IGlzIGFwcGxpZWQgdG8gdGhlIHdyb25nIGdpdCB0cmVlLCBwbGVhc2UgZHJvcCB1cyBhIG5vdGUg
+dG8gaGVscCBpbXByb3ZpbmcgdGhlIHN5c3RlbV0KPgo+IHVybDogICAgaHR0cHM6Ly9naXRodWIu
+Y29tLzBkYXktY2kvbGludXgvY29tbWl0cy9KeXJpLVNhcmhhL0ltcGxlbWVudC1nZW5lcmljLUFT
+b0MtSERNSS1jb2RlYy1hbmQtdXNlLWl0LWluLXRkYTk5OHgvMjAxNjAzMDktMDQxODIxCj4gYmFz
+ZTogICBnaXQ6Ly9wZW9wbGUuZnJlZWRlc2t0b3Aub3JnL35haXJsaWVkL2xpbnV4LmdpdCBkcm0t
+bmV4dAo+IGNvbmZpZzogeDg2XzY0LXJoZWwgKGF0dGFjaGVkIGFzIC5jb25maWcpCj4gcmVwcm9k
+dWNlOgo+ICAgICAgICAgICMgc2F2ZSB0aGUgYXR0YWNoZWQgLmNvbmZpZyB0byBsaW51eCBidWls
+ZCB0cmVlCj4gICAgICAgICAgbWFrZSBBUkNIPXg4Nl82NAo+Cj4gQWxsIHdhcm5pbmdzIChuZXcg
+b25lcyBwcmVmaXhlZCBieSA+Pik6Cj4KPiAgICAgZHJpdmVycy9ncHUvZHJtL2kyYy90ZGE5OTh4
+X2Rydi5jOiBJbiBmdW5jdGlvbiAndGRhOTk4eF9nZXRfYXVkaW9fcG9ydHMnOgo+Pj4gZHJpdmVy
+cy9ncHUvZHJtL2kyYy90ZGE5OTh4X2Rydi5jOjEzNDU6Nzogd2FybmluZzogJ3NpemUnIGlzIHVz
+ZWQgdW5pbml0aWFsaXplZCBpbiB0aGlzIGZ1bmN0aW9uIFstV3VuaW5pdGlhbGl6ZWRdCj4gICAg
+ICAgc2l6ZSAvPSBzaXplb2YodTMyKTsKPiAgICAgICAgICAgIF4KPgo+IHZpbSArL3NpemUgKzEz
+NDUgZHJpdmVycy9ncHUvZHJtL2kyYy90ZGE5OTh4X2Rydi5jCj4KPiAgICAxMzI5CQlpZiAoSVNf
+RVJSKHByaXYtPmF1ZGlvX3BkZXYpKQo+ICAgIDEzMzAJCQlyZXR1cm4gUFRSX0VSUihwcml2LT5h
+dWRpb19wZGV2KTsKPiAgICAxMzMxCQo+ICAgIDEzMzIJCXJldHVybiAwOwo+ICAgIDEzMzMJfQo+
+ICAgIDEzMzQJCj4gICAgMTMzNQkvKiBJMkMgZHJpdmVyIGZ1bmN0aW9ucyAqLwo+ICAgIDEzMzYJ
+Cj4gICAgMTMzNwlzdGF0aWMgaW50IHRkYTk5OHhfZ2V0X2F1ZGlvX3BvcnRzKHN0cnVjdCB0ZGE5
+OTh4X3ByaXYgKnByaXYsCj4gICAgMTMzOAkJCQkJICAgc3RydWN0IGRldmljZV9ub2RlICpucCkK
+PiAgICAxMzM5CXsKPiAgICAxMzQwCQljb25zdCB1MzIgKnBvcnRfZGF0YTsKPiAgICAxMzQxCQl1
+MzIgc2l6ZTsKPiAgICAxMzQyCQlpbnQgaTsKPiAgICAxMzQzCQo+ICAgIDEzNDQJCXBvcnRfZGF0
+YSA9IG9mX2dldF9wcm9wZXJ0eShucCwgImF1ZGlvLXBvcnRzIiwgJnNpemUpOwogPj4gMTM0NQkJ
+c2l6ZSAvPSBzaXplb2YodTMyKTsKCk9vcHMsIHRoYXQgaXMgYSByZWFsIGJ1Zy4gSSBzaG91bGQg
+dGVzdCBpZiBwb3J0X2RhdGEgaXMgbm90IG51bGwgYmVmb3JlIAphc3N1bWluZyB0aGF0IHRoZSBz
+aXplIGhhcyBiZWVuIHNldCAoL21lIHRoaW5rcyB0aGF0IGhlIGhhZCB0aGF0IGxpbmUgCnRoZXJl
+IGF0IHNvbWUgcG9pbnQgYnV0IHRoZW4gaXQgdmFuaXNoZWQpLiBBY3R1YWxseSBpbml0aWFsaXpp
+bmcgc2l6ZSB0byAKMCB3b3VsZCBiZSBlbm91Z2gsIGJ1dCBJIHRoaW5rIEknbGwgZG8gdGhlIGJv
+dGgganVzdCB0byBiZSBtb3JlIGV4cGxpY2l0LgoKQW5kIEknbGwgc3RhcnQgdXNpbmcgUFRSX0VS
+Ul9PUl9aRVJPKCkgd2hpbGUgSSBhbSBhdCBpdC4KCj4gICAgMTM0NgkKPiAgICAxMzQ3CQlpZiAo
+c2l6ZSA+IDIgKiBBUlJBWV9TSVpFKHByaXYtPmF1ZGlvX3BvcnQpIHx8IHNpemUgJSAyICE9IDAp
+IHsKPiAgICAxMzQ4CQkJZGV2X2VycigmcHJpdi0+aGRtaS0+ZGV2LAo+ICAgIDEzNDkJCQkJIkJh
+ZCBudW1iZXIgb2YgZWxlbWVudHMgaW4gYXVkaW8tcG9ydHMgZHQtcHJvcGVydHlcbiIpOwo+ICAg
+IDEzNTAJCQlyZXR1cm4gLUVJTlZBTDsKPiAgICAxMzUxCQl9Cj4gICAgMTM1MgkKPiAgICAxMzUz
+CQlzaXplIC89IDI7Cj4KPiAtLS0KPiAwLURBWSBrZXJuZWwgdGVzdCBpbmZyYXN0cnVjdHVyZSAg
+ICAgICAgICAgICAgICBPcGVuIFNvdXJjZSBUZWNobm9sb2d5IENlbnRlcgo+IGh0dHBzOi8vbGlz
+dHMuMDEub3JnL3BpcGVybWFpbC9rYnVpbGQtYWxsICAgICAgICAgICAgICAgICAgIEludGVsIENv
+cnBvcmF0aW9uCj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9y
+ZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZl
+bAo=
