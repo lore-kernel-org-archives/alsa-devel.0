@@ -1,18 +1,20 @@
-From: bsiice <bsiice@msn.com>
-Subject: Re: [PATCH - pcm 1/1] pcm: fix 'unable to create IPC
- shm instance' caused by fork from a thread
-Date: Thu, 10 Mar 2016 23:09:46 +0800
-Message-ID: <BLU436-SMTP201FE60C33C1CA7B0895D52D2B40@phx.gbl>
-References: <BLU436-SMTP231971C20166F7E91EA3C9AD2B40@phx.gbl>	<BLU436-SMTP10571CE460C579C26FDF6BCD2B40@phx.gbl>
- <s5hh9ge5r7f.wl-tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 4/4] ASoC: wm_adsp: Improve DSP error
+	handling
+Date: Thu, 10 Mar 2016 16:41:31 +0000
+Message-ID: <20160310164131.GG1490@localhost.localdomain>
+References: <1457606694-10985-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1457606694-10985-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from BLU004-OMC3S5.hotmail.com (blu004-omc3s5.hotmail.com
- [65.55.116.80]) by alsa0.perex.cz (Postfix) with ESMTP id 78178260564
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 16:09:01 +0100 (CET)
-In-Reply-To: <s5hh9ge5r7f.wl-tiwai@suse.de>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 04EB6260564
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 17:41:41 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1457606694-10985-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,30 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Qing Cai <caiqing@neusoft.com>, alsa-devel@alsa-project.org, bsiice@msn.com
+To: broonie@kernel.org, tiwai@suse.com
+Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 03/10/2016 10:43 PM, Takashi Iwai wrote:
-> On Thu, 10 Mar 2016 13:50:24 +0100,
-> bsiice wrote:
->>
->> Hi Takashi Iwai:
->>
->> Is this patch OK?
->>
->> I have automatically tested 422 times after this fix, and
->> 'unable to create IPC shm instance' doesn't happen, and so the multimedia
->> application functions properly.
+On Thu, Mar 10, 2016 at 10:44:54AM +0000, Charles Keepax wrote:
+> If we encounter an error on the DSP side whilst user-space is waiting on
+> the poll we should call snd_compr_fragment_elapsed, although data is
+> not actually available we want to wake user-space such that the error
+> can be propagated out quickly. Additionally some versions of the DSP
+> firmware are not super consistent about actually generating an IRQ if
+> they encounter an error, as such we will check the DSP error status
+> every time we run out of available data as well, to ensure we catch it.
 > 
-> The patch looks good, and working as far as I've tested, so merged to
-> git tree now.  I added a few more changelog texts to explain what
-> exactly this patch does.
+> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+> ---
 
-Thanks a million for the changelog texts!
-Very glad and exciting with my patch is adopted!
+Apologies please drop this last change I need to do a respin.
+This will ping the poll for spurious interrupts which is not very
+desirable. I will fix that and send a rev 2 but the rest of the
+chain is good to merge as is.
 
-
-thanks,
-
-Qing Cai
+Thanks,
+Charles
