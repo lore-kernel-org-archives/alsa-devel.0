@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdac_hdmi: Fix infoframe programming"
-	to the asoc tree
-Date: Thu, 10 Mar 2016 10:39:05 +0700
-Message-ID: <E1adrRJ-0007U5-N7@finisterre>
-References: <1457580847-32479-1-git-send-email-subhransu.s.prusty@intel.com>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: Re: [PATCH] ASoC: nau8825: extend FLL function
+Date: Thu, 10 Mar 2016 12:31:54 +0800
+Message-ID: <56E0F8BA.4010209@nuvoton.com>
+References: <1456683827-6597-1-git-send-email-KCHSU0@nuvoton.com>
+ <20160301032316.GG18327@sirena.org.uk> <56DEBE7D.70100@nuvoton.com>
+ <20160309024034.GC3898@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 635D7260694
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 04:39:14 +0100 (CET)
-In-Reply-To: <1457580847-32479-1-git-send-email-subhransu.s.prusty@intel.com>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 27A1D260694
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 05:31:58 +0100 (CET)
+In-Reply-To: <20160309024034.GC3898@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,74 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 3/9/2016 10:40 AM, Mark Brown wrote:
+> On Tue, Mar 08, 2016 at 07:58:53PM +0800, John Hsu wrote:
+>
+>   
+>> In the patch, we add FLL clock source selection. The source can be from
+>> MCLK, BCLK or FS.
+>> Besides, driver extend higher frequency for better performance in FLL
+>> calculation,
+>> and has different register apply if fraction or not. Just separate it.
+>> Right?
+>>     
+>
+> I think that's what I was asking for, yes.
+>   
 
-   ASoC: hdac_hdmi: Fix infoframe programming
+I'll split these solution into two patches later and resubmit.
 
-has been applied to the asoc tree at
+>   
+>>> That comment sounds *very* suspicous, if we are using MCLK we should
+>>> manage it via the clock API.  If the platform doesn't have good clock
+>>> support we should fix the platform.
+>>>       
+>
+>   
+>> In initiation, we get mclk object from platform as the following code.
+>> If the mclk is not found, we don't need to prepare it in the driver.
+>>     
+>
+>   
+>>    nau8825->mclk = devm_clk_get(dev, "mclk");
+>>    ...
+>>    } else if (PTR_ERR(nau8825->mclk) == -ENOENT) {
+>>        /* The MCLK is managed externally or not used at all */
+>>        nau8825->mclk = NULL;
+>>        dev_info(dev, "No 'mclk' clock found, assume MCLK is managed
+>> externally");
+>>     
+>
+> This really isn't a good way to be handling things, you should be
+> ensuring that platforms that have an MCLK provide one via the clock API.
+> If the clock is missing that should indicate that it's the second case
+> where it's not used at all.
+>   
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 391005e8e3cd5bb641dff5abb1ad37254602cd7e Mon Sep 17 00:00:00 2001
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Date: Thu, 10 Mar 2016 09:04:07 +0530
-Subject: [PATCH] ASoC: hdac_hdmi: Fix infoframe programming
-
-Audio infoframe used incorrect buffer, so fix it.
-
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/hdac_hdmi.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 7851dd204a49..4f7bd1fae0db 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -303,7 +303,6 @@ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
- 		if (ret < 0)
- 			return ret;
- 
--		dip = (u8 *)&frame;
- 		break;
- 
- 	case DRM_ELD_CONN_TYPE_DP:
-@@ -332,9 +331,9 @@ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
- 	/*  Fill infoframe. Index auto-incremented */
- 	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
- 	if (conn_type == DRM_ELD_CONN_TYPE_HDMI) {
--		for (i = 0; i < sizeof(frame); i++)
-+		for (i = 0; i < sizeof(buffer); i++)
- 			snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
--				AC_VERB_SET_HDMI_DIP_DATA, dip[i]);
-+				AC_VERB_SET_HDMI_DIP_DATA, buffer[i]);
- 	} else {
- 		for (i = 0; i < sizeof(dp_ai); i++)
- 			snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
--- 
-2.7.0
+Do you mean I should use devm_clk_get to check mclk exist instead of
+nau8825->mclk in nau8825_mclk_prepare function? And return a warn-
+ing message if mclk is missing?
