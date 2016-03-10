@@ -1,16 +1,18 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/4] ASoC: compress: Pass error out of
-	soc_compr_pointer
-Date: Thu, 10 Mar 2016 10:44:51 +0000
-Message-ID: <1457606694-10985-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/4] ASoC: wm_adsp: Factor out checking of
+	stream errors from the DSP
+Date: Thu, 10 Mar 2016 10:44:53 +0000
+Message-ID: <1457606694-10985-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1457606694-10985-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id CCFC8261293
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 11:44:56 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 26F93260686
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 11:45:03 +0100 (CET)
+In-Reply-To: <1457606694-10985-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,35 +26,60 @@ To: broonie@kernel.org, tiwai@suse.com
 Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The soc_compr_pointer does not correctly pass any errors returned by the
-driver callback back up the stack. This patch corrects this issue.
+Factor out the reading of the DSP error flag into its own function to
+support further improvements to the code.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/soc-compress.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 28 +++++++++++++++++++---------
+ 1 file changed, 19 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 875733c..d2df46c 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -530,14 +530,15 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
- {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
- 	struct snd_soc_platform *platform = rtd->platform;
-+	int ret = 0;
- 
- 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
- 
- 	if (platform->driver->compr_ops && platform->driver->compr_ops->pointer)
--		 platform->driver->compr_ops->pointer(cstream, tstamp);
-+		ret = platform->driver->compr_ops->pointer(cstream, tstamp);
- 
- 	mutex_unlock(&rtd->pcm_mutex);
--	return 0;
-+	return ret;
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index e2e0d81..f28c244 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -2812,6 +2812,23 @@ static int wm_adsp_buffer_update_avail(struct wm_adsp_compr_buf *buf)
+ 	return 0;
  }
  
- static int soc_compr_copy(struct snd_compr_stream *cstream,
++static int wm_adsp_buffer_check_error(struct wm_adsp_compr_buf *buf)
++{
++	int ret;
++
++	ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(error), &buf->error);
++	if (ret < 0) {
++		adsp_err(buf->dsp, "Failed to check buffer error: %d\n", ret);
++		return ret;
++	}
++	if (buf->error != 0) {
++		adsp_err(buf->dsp, "Buffer error occurred: %d\n", buf->error);
++		return -EIO;
++	}
++
++	return 0;
++}
++
+ int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
+ {
+ 	struct wm_adsp_compr_buf *buf = dsp->buffer;
+@@ -2827,16 +2844,9 @@ int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
+ 
+ 	adsp_dbg(dsp, "Handling buffer IRQ\n");
+ 
+-	ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(error), &buf->error);
+-	if (ret < 0) {
+-		adsp_err(dsp, "Failed to check buffer error: %d\n", ret);
+-		goto out;
+-	}
+-	if (buf->error != 0) {
+-		adsp_err(dsp, "Buffer error occurred: %d\n", buf->error);
+-		ret = -EIO;
++	ret = wm_adsp_buffer_check_error(buf);
++	if (ret < 0)
+ 		goto out;
+-	}
+ 
+ 	ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(irq_count),
+ 				  &buf->irq_count);
 -- 
 2.1.4
