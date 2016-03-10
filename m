@@ -1,17 +1,16 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 4/4] ASoC: wm_adsp: Improve DSP error handling
-Date: Thu, 10 Mar 2016 10:44:54 +0000
-Message-ID: <1457606694-10985-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1457606694-10985-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/4] ASoC: compress: Pass error out of
+	soc_compr_pointer
+Date: Thu, 10 Mar 2016 10:44:51 +0000
+Message-ID: <1457606694-10985-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id CFEAF2612D0
+ by alsa0.perex.cz (Postfix) with ESMTP id CCFC8261293
  for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 11:44:56 +0100 (CET)
-In-Reply-To: <1457606694-10985-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,45 +24,35 @@ To: broonie@kernel.org, tiwai@suse.com
 Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-If we encounter an error on the DSP side whilst user-space is waiting on
-the poll we should call snd_compr_fragment_elapsed, although data is
-not actually available we want to wake user-space such that the error
-can be propagated out quickly. Additionally some versions of the DSP
-firmware are not super consistent about actually generating an IRQ if
-they encounter an error, as such we will check the DSP error status
-every time we run out of available data as well, to ensure we catch it.
+The soc_compr_pointer does not correctly pass any errors returned by the
+driver callback back up the stack. This patch corrects this issue.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm_adsp.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/soc-compress.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index f28c244..3ee1c72 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -2861,10 +2861,10 @@ int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
- 		goto out;
- 	}
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 875733c..d2df46c 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -530,14 +530,15 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+ 	struct snd_soc_platform *platform = rtd->platform;
++	int ret = 0;
  
-+out:
- 	if (compr && compr->stream)
- 		snd_compr_fragment_elapsed(compr->stream);
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
  
--out:
- 	mutex_unlock(&dsp->pwr_lock);
+ 	if (platform->driver->compr_ops && platform->driver->compr_ops->pointer)
+-		 platform->driver->compr_ops->pointer(cstream, tstamp);
++		ret = platform->driver->compr_ops->pointer(cstream, tstamp);
  
- 	return ret;
-@@ -2926,6 +2926,10 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
- 					 ret);
- 				goto out;
- 			}
-+
-+			ret = wm_adsp_buffer_check_error(buf);
-+			if (ret < 0)
-+				goto out;
- 		}
- 	}
+ 	mutex_unlock(&rtd->pcm_mutex);
+-	return 0;
++	return ret;
+ }
  
+ static int soc_compr_copy(struct snd_compr_stream *cstream,
 -- 
 2.1.4
