@@ -1,67 +1,317 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH v6 5/6] drm/i2c: tda998x: Register ASoC hdmi-codec and add
- audio DT binding
-Date: Thu, 10 Mar 2016 14:44:20 +0200
-Message-ID: <56E16C24.3070207@ti.com>
-References: <201603092102.WhNJg52h%fengguang.wu@intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: dice: use structure to represent
+	register parameters instead of array with basic type element
+Date: Thu, 10 Mar 2016 21:44:28 +0900
+Message-ID: <1457613868-14891-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <201603092102.WhNJg52h%fengguang.wu@intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: kbuild test robot <lkp@intel.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, arnaud.pouliquen@st.com, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, broonie@kernel.org, kbuild-all@01.org, bcousson@baylibre.com, rmk+kernel@arm.linux.org.uk, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id E49AC261492
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 13:44:35 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDMvMDkvMTYgMTU6NTIsIGtidWlsZCB0ZXN0IHJvYm90IHdyb3RlOgo+IEhpIEp5cmksCj4K
-PiBbYXV0byBidWlsZCB0ZXN0IFdBUk5JTkcgb24gZHJtL2RybS1uZXh0XQo+IFthbHNvIGJ1aWxk
-IHRlc3QgV0FSTklORyBvbiB2NC41LXJjNyBuZXh0LTIwMTYwMzA5XQo+IFtpZiB5b3VyIHBhdGNo
-IGlzIGFwcGxpZWQgdG8gdGhlIHdyb25nIGdpdCB0cmVlLCBwbGVhc2UgZHJvcCB1cyBhIG5vdGUg
-dG8gaGVscCBpbXByb3ZpbmcgdGhlIHN5c3RlbV0KPgo+IHVybDogICAgaHR0cHM6Ly9naXRodWIu
-Y29tLzBkYXktY2kvbGludXgvY29tbWl0cy9KeXJpLVNhcmhhL0ltcGxlbWVudC1nZW5lcmljLUFT
-b0MtSERNSS1jb2RlYy1hbmQtdXNlLWl0LWluLXRkYTk5OHgvMjAxNjAzMDktMDQxODIxCj4gYmFz
-ZTogICBnaXQ6Ly9wZW9wbGUuZnJlZWRlc2t0b3Aub3JnL35haXJsaWVkL2xpbnV4LmdpdCBkcm0t
-bmV4dAo+IGNvbmZpZzogeDg2XzY0LXJoZWwgKGF0dGFjaGVkIGFzIC5jb25maWcpCj4gcmVwcm9k
-dWNlOgo+ICAgICAgICAgICMgc2F2ZSB0aGUgYXR0YWNoZWQgLmNvbmZpZyB0byBsaW51eCBidWls
-ZCB0cmVlCj4gICAgICAgICAgbWFrZSBBUkNIPXg4Nl82NAo+Cj4gQWxsIHdhcm5pbmdzIChuZXcg
-b25lcyBwcmVmaXhlZCBieSA+Pik6Cj4KPiAgICAgZHJpdmVycy9ncHUvZHJtL2kyYy90ZGE5OTh4
-X2Rydi5jOiBJbiBmdW5jdGlvbiAndGRhOTk4eF9nZXRfYXVkaW9fcG9ydHMnOgo+Pj4gZHJpdmVy
-cy9ncHUvZHJtL2kyYy90ZGE5OTh4X2Rydi5jOjEzNDU6Nzogd2FybmluZzogJ3NpemUnIGlzIHVz
-ZWQgdW5pbml0aWFsaXplZCBpbiB0aGlzIGZ1bmN0aW9uIFstV3VuaW5pdGlhbGl6ZWRdCj4gICAg
-ICAgc2l6ZSAvPSBzaXplb2YodTMyKTsKPiAgICAgICAgICAgIF4KPgo+IHZpbSArL3NpemUgKzEz
-NDUgZHJpdmVycy9ncHUvZHJtL2kyYy90ZGE5OTh4X2Rydi5jCj4KPiAgICAxMzI5CQlpZiAoSVNf
-RVJSKHByaXYtPmF1ZGlvX3BkZXYpKQo+ICAgIDEzMzAJCQlyZXR1cm4gUFRSX0VSUihwcml2LT5h
-dWRpb19wZGV2KTsKPiAgICAxMzMxCQo+ICAgIDEzMzIJCXJldHVybiAwOwo+ICAgIDEzMzMJfQo+
-ICAgIDEzMzQJCj4gICAgMTMzNQkvKiBJMkMgZHJpdmVyIGZ1bmN0aW9ucyAqLwo+ICAgIDEzMzYJ
-Cj4gICAgMTMzNwlzdGF0aWMgaW50IHRkYTk5OHhfZ2V0X2F1ZGlvX3BvcnRzKHN0cnVjdCB0ZGE5
-OTh4X3ByaXYgKnByaXYsCj4gICAgMTMzOAkJCQkJICAgc3RydWN0IGRldmljZV9ub2RlICpucCkK
-PiAgICAxMzM5CXsKPiAgICAxMzQwCQljb25zdCB1MzIgKnBvcnRfZGF0YTsKPiAgICAxMzQxCQl1
-MzIgc2l6ZTsKPiAgICAxMzQyCQlpbnQgaTsKPiAgICAxMzQzCQo+ICAgIDEzNDQJCXBvcnRfZGF0
-YSA9IG9mX2dldF9wcm9wZXJ0eShucCwgImF1ZGlvLXBvcnRzIiwgJnNpemUpOwogPj4gMTM0NQkJ
-c2l6ZSAvPSBzaXplb2YodTMyKTsKCk9vcHMsIHRoYXQgaXMgYSByZWFsIGJ1Zy4gSSBzaG91bGQg
-dGVzdCBpZiBwb3J0X2RhdGEgaXMgbm90IG51bGwgYmVmb3JlIAphc3N1bWluZyB0aGF0IHRoZSBz
-aXplIGhhcyBiZWVuIHNldCAoL21lIHRoaW5rcyB0aGF0IGhlIGhhZCB0aGF0IGxpbmUgCnRoZXJl
-IGF0IHNvbWUgcG9pbnQgYnV0IHRoZW4gaXQgdmFuaXNoZWQpLiBBY3R1YWxseSBpbml0aWFsaXpp
-bmcgc2l6ZSB0byAKMCB3b3VsZCBiZSBlbm91Z2gsIGJ1dCBJIHRoaW5rIEknbGwgZG8gdGhlIGJv
-dGgganVzdCB0byBiZSBtb3JlIGV4cGxpY2l0LgoKQW5kIEknbGwgc3RhcnQgdXNpbmcgUFRSX0VS
-Ul9PUl9aRVJPKCkgd2hpbGUgSSBhbSBhdCBpdC4KCj4gICAgMTM0NgkKPiAgICAxMzQ3CQlpZiAo
-c2l6ZSA+IDIgKiBBUlJBWV9TSVpFKHByaXYtPmF1ZGlvX3BvcnQpIHx8IHNpemUgJSAyICE9IDAp
-IHsKPiAgICAxMzQ4CQkJZGV2X2VycigmcHJpdi0+aGRtaS0+ZGV2LAo+ICAgIDEzNDkJCQkJIkJh
-ZCBudW1iZXIgb2YgZWxlbWVudHMgaW4gYXVkaW8tcG9ydHMgZHQtcHJvcGVydHlcbiIpOwo+ICAg
-IDEzNTAJCQlyZXR1cm4gLUVJTlZBTDsKPiAgICAxMzUxCQl9Cj4gICAgMTM1MgkKPiAgICAxMzUz
-CQlzaXplIC89IDI7Cj4KPiAtLS0KPiAwLURBWSBrZXJuZWwgdGVzdCBpbmZyYXN0cnVjdHVyZSAg
-ICAgICAgICAgICAgICBPcGVuIFNvdXJjZSBUZWNobm9sb2d5IENlbnRlcgo+IGh0dHBzOi8vbGlz
-dHMuMDEub3JnL3BpcGVybWFpbC9rYnVpbGQtYWxsICAgICAgICAgICAgICAgICAgIEludGVsIENv
-cnBvcmF0aW9uCj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9y
-ZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZl
-bAo=
+In dice interface, two blocks of register are accessible via IEEE 1394
+asynchronous transaction to represent the number of supported isochronous
+streams and the number of quadlets for stream information.
+
+Current ALSA dice driver uses array with 'unsigned int' element for
+temporary cache of these information. But using structure is preferable
+for begin easily comprehensible.
+
+This commit applies a local structure for this aim.
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/dice/dice-stream.c | 110 +++++++++++++++++++-------------------
+ 1 file changed, 54 insertions(+), 56 deletions(-)
+
+diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
+index 2077f18..845d5e5 100644
+--- a/sound/firewire/dice/dice-stream.c
++++ b/sound/firewire/dice/dice-stream.c
+@@ -12,6 +12,11 @@
+ #define	CALLBACK_TIMEOUT	200
+ #define NOTIFICATION_TIMEOUT_MS	(2 * MSEC_PER_SEC)
+ 
++struct reg_params {
++	unsigned int count;
++	unsigned int size;
++};
++
+ const unsigned int snd_dice_rates[SND_DICE_RATES_COUNT] = {
+ 	/* mode 0 */
+ 	[0] =  32000,
+@@ -65,7 +70,9 @@ static int ensure_phase_lock(struct snd_dice *dice)
+ 	return 0;
+ }
+ 
+-static int get_register_params(struct snd_dice *dice, unsigned int params[4])
++static int get_register_params(struct snd_dice *dice,
++			       struct reg_params *tx_params,
++			       struct reg_params *rx_params)
+ {
+ 	__be32 reg[2];
+ 	int err;
+@@ -73,14 +80,16 @@ static int get_register_params(struct snd_dice *dice, unsigned int params[4])
+ 	err = snd_dice_transaction_read_tx(dice, TX_NUMBER, reg, sizeof(reg));
+ 	if (err < 0)
+ 		return err;
+-	params[0] = min_t(unsigned int, be32_to_cpu(reg[0]), MAX_STREAMS);
+-	params[1] = be32_to_cpu(reg[1]) * 4;
++	tx_params->count =
++			min_t(unsigned int, be32_to_cpu(reg[0]), MAX_STREAMS);
++	tx_params->size = be32_to_cpu(reg[1]) * 4;
+ 
+ 	err = snd_dice_transaction_read_rx(dice, RX_NUMBER, reg, sizeof(reg));
+ 	if (err < 0)
+ 		return err;
+-	params[2] = min_t(unsigned int, be32_to_cpu(reg[0]), MAX_STREAMS);
+-	params[3] = be32_to_cpu(reg[1]) * 4;
++	rx_params->count =
++			min_t(unsigned int, be32_to_cpu(reg[0]), MAX_STREAMS);
++	rx_params->size = be32_to_cpu(reg[1]) * 4;
+ 
+ 	return 0;
+ }
+@@ -105,21 +114,21 @@ static void release_resources(struct snd_dice *dice)
+ }
+ 
+ static void stop_streams(struct snd_dice *dice, enum amdtp_stream_direction dir,
+-			 unsigned int count, unsigned int size)
++			 struct reg_params *params)
+ {
+ 	__be32 reg;
+ 	unsigned int i;
+ 
+-	for (i = 0; i < count; i++) {
++	for (i = 0; i < params->count; i++) {
+ 		reg = cpu_to_be32((u32)-1);
+ 		if (dir == AMDTP_IN_STREAM) {
+ 			snd_dice_transaction_write_tx(dice,
+-						size * i + TX_ISOCHRONOUS,
+-						&reg, sizeof(reg));
++					params->size * i + TX_ISOCHRONOUS,
++					&reg, sizeof(reg));
+ 		} else {
+ 			snd_dice_transaction_write_rx(dice,
+-						size * i + RX_ISOCHRONOUS,
+-						&reg, sizeof(reg));
++					params->size * i + RX_ISOCHRONOUS,
++					&reg, sizeof(reg));
+ 		}
+ 	}
+ }
+@@ -180,8 +189,7 @@ static int keep_resources(struct snd_dice *dice,
+ }
+ 
+ static int start_streams(struct snd_dice *dice, enum amdtp_stream_direction dir,
+-			 unsigned int rate, unsigned int count,
+-			 unsigned int size)
++			 unsigned int rate, struct reg_params *params)
+ {
+ 	__be32 reg[2];
+ 	unsigned int i, pcm_chs, midi_ports;
+@@ -197,15 +205,15 @@ static int start_streams(struct snd_dice *dice, enum amdtp_stream_direction dir,
+ 		resources = dice->rx_resources;
+ 	}
+ 
+-	for (i = 0; i < count; i++) {
++	for (i = 0; i < params->count; i++) {
+ 		if (dir == AMDTP_IN_STREAM) {
+ 			err = snd_dice_transaction_read_tx(dice,
+-						size * i + TX_NUMBER_AUDIO,
+-						reg, sizeof(reg));
++					params->size * i + TX_NUMBER_AUDIO,
++					reg, sizeof(reg));
+ 		} else {
+ 			err = snd_dice_transaction_read_rx(dice,
+-						size * i + RX_NUMBER_AUDIO,
+-						reg, sizeof(reg));
++					params->size * i + RX_NUMBER_AUDIO,
++					reg, sizeof(reg));
+ 		}
+ 		if (err < 0)
+ 			return err;
+@@ -219,12 +227,12 @@ static int start_streams(struct snd_dice *dice, enum amdtp_stream_direction dir,
+ 		reg[0] = cpu_to_be32(resources[i].channel);
+ 		if (dir == AMDTP_IN_STREAM) {
+ 			err = snd_dice_transaction_write_tx(dice,
+-						size * i + TX_ISOCHRONOUS,
+-						reg, sizeof(reg[0]));
++					params->size * i + TX_ISOCHRONOUS,
++					reg, sizeof(reg[0]));
+ 		} else {
+ 			err = snd_dice_transaction_write_rx(dice,
+-						size * i + RX_ISOCHRONOUS,
+-						reg, sizeof(reg[0]));
++					params->size * i + RX_ISOCHRONOUS,
++					reg, sizeof(reg[0]));
+ 		}
+ 		if (err < 0)
+ 			return err;
+@@ -247,14 +255,14 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
+ {
+ 	unsigned int curr_rate;
+ 	unsigned int i;
+-	unsigned int reg_params[4];
++	struct reg_params tx_params, rx_params;
+ 	bool need_to_start;
+ 	int err;
+ 
+ 	if (dice->substreams_counter == 0)
+ 		return -EIO;
+ 
+-	err = get_register_params(dice, reg_params);
++	err = get_register_params(dice, &tx_params, &rx_params);
+ 	if (err < 0)
+ 		return err;
+ 
+@@ -271,12 +279,12 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
+ 
+ 	/* Judge to need to restart streams. */
+ 	for (i = 0; i < MAX_STREAMS; i++) {
+-		if (i < reg_params[0]) {
++		if (i < tx_params.count) {
+ 			if (amdtp_streaming_error(&dice->tx_stream[i]) ||
+ 			    !amdtp_stream_running(&dice->tx_stream[i]))
+ 				break;
+ 		}
+-		if (i < reg_params[2]) {
++		if (i < rx_params.count) {
+ 			if (amdtp_streaming_error(&dice->rx_stream[i]) ||
+ 			    !amdtp_stream_running(&dice->rx_stream[i]))
+ 				break;
+@@ -287,10 +295,8 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
+ 	if (need_to_start) {
+ 		/* Stop transmission. */
+ 		snd_dice_transaction_clear_enable(dice);
+-		stop_streams(dice, AMDTP_IN_STREAM, reg_params[0],
+-			     reg_params[1]);
+-		stop_streams(dice, AMDTP_OUT_STREAM, reg_params[2],
+-			     reg_params[3]);
++		stop_streams(dice, AMDTP_IN_STREAM, &tx_params);
++		stop_streams(dice, AMDTP_OUT_STREAM, &rx_params);
+ 		release_resources(dice);
+ 
+ 		err = ensure_phase_lock(dice);
+@@ -301,12 +307,10 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
+ 		}
+ 
+ 		/* Start both streams. */
+-		err = start_streams(dice, AMDTP_IN_STREAM, rate, reg_params[0],
+-				    reg_params[1]);
++		err = start_streams(dice, AMDTP_IN_STREAM, rate, &tx_params);
+ 		if (err < 0)
+ 			goto error;
+-		err = start_streams(dice, AMDTP_OUT_STREAM, rate, reg_params[2],
+-				    reg_params[3]);
++		err = start_streams(dice, AMDTP_OUT_STREAM, rate, &rx_params);
+ 		if (err < 0)
+ 			goto error;
+ 
+@@ -318,10 +322,10 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
+ 		}
+ 
+ 		for (i = 0; i < MAX_STREAMS; i++) {
+-			if ((i < reg_params[0] &&
++			if ((i < tx_params.count &&
+ 			    !amdtp_stream_wait_callback(&dice->tx_stream[i],
+ 							CALLBACK_TIMEOUT)) ||
+-			    (i < reg_params[2] &&
++			    (i < rx_params.count &&
+ 			     !amdtp_stream_wait_callback(&dice->rx_stream[i],
+ 							 CALLBACK_TIMEOUT))) {
+ 				err = -ETIMEDOUT;
+@@ -333,8 +337,8 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
+ 	return err;
+ error:
+ 	snd_dice_transaction_clear_enable(dice);
+-	stop_streams(dice, AMDTP_IN_STREAM, reg_params[0], reg_params[1]);
+-	stop_streams(dice, AMDTP_OUT_STREAM, reg_params[2], reg_params[3]);
++	stop_streams(dice, AMDTP_IN_STREAM, &tx_params);
++	stop_streams(dice, AMDTP_OUT_STREAM, &rx_params);
+ 	release_resources(dice);
+ 	return err;
+ }
+@@ -346,18 +350,16 @@ error:
+  */
+ void snd_dice_stream_stop_duplex(struct snd_dice *dice)
+ {
+-	unsigned int reg_params[4];
++	struct reg_params tx_params, rx_params;
+ 
+ 	if (dice->substreams_counter > 0)
+ 		return;
+ 
+ 	snd_dice_transaction_clear_enable(dice);
+ 
+-	if (get_register_params(dice, reg_params) == 0) {
+-		stop_streams(dice, AMDTP_IN_STREAM, reg_params[0],
+-			     reg_params[1]);
+-		stop_streams(dice, AMDTP_OUT_STREAM, reg_params[2],
+-			     reg_params[3]);
++	if (get_register_params(dice, &tx_params, &rx_params) == 0) {
++		stop_streams(dice, AMDTP_IN_STREAM, &tx_params);
++		stop_streams(dice, AMDTP_OUT_STREAM, &rx_params);
+ 	}
+ 
+ 	release_resources(dice);
+@@ -444,15 +446,13 @@ end:
+ 
+ void snd_dice_stream_destroy_duplex(struct snd_dice *dice)
+ {
+-	unsigned int reg_params[4];
++	struct reg_params tx_params, rx_params;
+ 
+ 	snd_dice_transaction_clear_enable(dice);
+ 
+-	if (get_register_params(dice, reg_params) == 0) {
+-		stop_streams(dice, AMDTP_IN_STREAM, reg_params[0],
+-			     reg_params[1]);
+-		stop_streams(dice, AMDTP_OUT_STREAM, reg_params[2],
+-			     reg_params[3]);
++	if (get_register_params(dice, &tx_params, &rx_params) == 0) {
++		stop_streams(dice, AMDTP_IN_STREAM, &tx_params);
++		stop_streams(dice, AMDTP_OUT_STREAM, &rx_params);
+ 	}
+ 
+ 	release_resources(dice);
+@@ -462,7 +462,7 @@ void snd_dice_stream_destroy_duplex(struct snd_dice *dice)
+ 
+ void snd_dice_stream_update_duplex(struct snd_dice *dice)
+ {
+-	unsigned int reg_params[4];
++	struct reg_params tx_params, rx_params;
+ 
+ 	/*
+ 	 * On a bus reset, the DICE firmware disables streaming and then goes
+@@ -474,11 +474,9 @@ void snd_dice_stream_update_duplex(struct snd_dice *dice)
+ 	 */
+ 	dice->global_enabled = false;
+ 
+-	if (get_register_params(dice, reg_params) == 0) {
+-		stop_streams(dice, AMDTP_IN_STREAM, reg_params[0],
+-			     reg_params[1]);
+-		stop_streams(dice, AMDTP_OUT_STREAM, reg_params[2],
+-			     reg_params[3]);
++	if (get_register_params(dice, &tx_params, &rx_params) == 0) {
++		stop_streams(dice, AMDTP_IN_STREAM, &tx_params);
++		stop_streams(dice, AMDTP_OUT_STREAM, &rx_params);
+ 	}
+ }
+ 
+-- 
+2.7.0
