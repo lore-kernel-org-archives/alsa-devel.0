@@ -1,18 +1,18 @@
-From: nebelbank@posteo.de
-Subject: [PATCH 1/1] aplay/arecord: handle parsing errors of
-	parameter values
-Date: Thu, 10 Mar 2016 18:17:33 +0000
-Message-ID: <1457633853-9386-1-git-send-email-nebelbank@posteo.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: pcm: Avoid "BUG:" string for warnings
+	again
+Date: Thu, 10 Mar 2016 21:01:35 +0100
+Message-ID: <1457640095-23232-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 99E372606A9
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 19:17:56 +0100 (CET)
-Received: from dovecot03.posteo.de (dovecot03.posteo.de [172.16.0.13])
- by mout01.posteo.de (Postfix) with ESMTPS id 7C94220B5F
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 19:17:54 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E44B260515
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 21:01:36 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id A80A6ABD3
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2016 20:01:35 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,168 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, erwin <nebelbank@posteo.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: erwin <nebelbank@posteo.de>
+The commit [d507941beb1e: ALSA: pcm: Correct PCM BUG error message]
+made the warning prefix back to "BUG:" due to its previous wrong
+prefix.  But a kernel message containing "BUG:" seems taken as an Oops
+message wrongly by some brain-dead daemons, and it annoys users in the
+end.  Instead of teaching daemons, change the string again to a more
+reasonable one.
 
-Signed-off-by: erwin <nebelbank@posteo.de>
+Fixes: 507941beb1e ('ALSA: pcm: Correct PCM BUG error message')
+Cc: <stable@vger.kernel.org> # v3.19+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
-It took me a while to find out why the signal from "-d hw:1,0" sounded so
-unexpected: was from another pair of microphones...
+ sound/core/pcm_lib.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/aplay/aplay.c b/aplay/aplay.c
-index 7eacee3..7acaa83 100644
---- a/aplay/aplay.c
-+++ b/aplay/aplay.c
-@@ -427,6 +427,22 @@ enum {
- 	OPT_FATAL_ERRORS,
- };
- 
-+static long parse_long(const char *str, int *err)
-+{
-+	long val;
-+	char *endptr;
-+
-+	errno = 0;
-+	val = strtol(str, &endptr, 0);
-+
-+	if (errno != 0 || *endptr != '\0')
-+		*err = -1;
-+	else
-+		*err = 0;
-+
-+	return val;
-+}
-+
- int main(int argc, char *argv[])
- {
- 	int option_index;
-@@ -558,7 +574,11 @@ int main(int argc, char *argv[])
- 			}
- 			break;
- 		case 'c':
--			rhwparams.channels = strtol(optarg, NULL, 0);
-+			rhwparams.channels = parse_long(optarg, &err);
-+			if (err < 0) {
-+				error(_("invalid channels argument '%s'"), optarg);
-+				return 1;
-+			}
- 			if (rhwparams.channels < 1 || rhwparams.channels > 256) {
- 				error(_("value %i for channels is invalid"), rhwparams.channels);
- 				return 1;
-@@ -585,7 +605,11 @@ int main(int argc, char *argv[])
- 			}
- 			break;
- 		case 'r':
--			tmp = strtol(optarg, NULL, 0);
-+			tmp = parse_long(optarg, &err);
-+			if (err < 0) {
-+				error(_("invalid rate argument '%s'"), optarg);
-+				return 1;
-+			}
- 			if (tmp < 300)
- 				tmp *= 1000;
- 			rhwparams.rate = tmp;
-@@ -595,32 +619,64 @@ int main(int argc, char *argv[])
- 			}
- 			break;
- 		case 'd':
--			timelimit = strtol(optarg, NULL, 0);
-+			timelimit = parse_long(optarg, &err);
-+			if (err < 0) {
-+				error(_("invalid duration argument '%s'"), optarg);
-+				return 1;
-+			}
- 			break;
- 		case 'N':
- 			nonblock = 1;
- 			open_mode |= SND_PCM_NONBLOCK;
- 			break;
- 		case 'F':
--			period_time = strtol(optarg, NULL, 0);
-+			period_time = parse_long(optarg, &err);
-+			if (err < 0) {
-+				error(_("invalid period time argument '%s'"), optarg);
-+				return 1;
-+			}
- 			break;
- 		case 'B':
--			buffer_time = strtol(optarg, NULL, 0);
-+			buffer_time = parse_long(optarg, &err);
-+			if (err < 0) {
-+				error(_("invalid buffer time argument '%s'"), optarg);
-+				return 1;
-+			}
- 			break;
- 		case OPT_PERIOD_SIZE:
--			period_frames = strtol(optarg, NULL, 0);
-+			period_frames = parse_long(optarg, &err);
-+			if (err < 0) {
-+				error(_("invalid period size argument '%s'"), optarg);
-+				return 1;
-+			}
- 			break;
- 		case OPT_BUFFER_SIZE:
--			buffer_frames = strtol(optarg, NULL, 0);
-+			buffer_frames = parse_long(optarg, &err);
-+			if (err < 0) {
-+				error(_("invalid buffer size argument '%s'"), optarg);
-+				return 1;
-+			}
- 			break;
- 		case 'A':
--			avail_min = strtol(optarg, NULL, 0);
-+			avail_min = parse_long(optarg, &err);
-+			if (err < 0) {
-+				error(_("invalid min available space argument '%s'"), optarg);
-+				return 1;
-+			}
- 			break;
- 		case 'R':
--			start_delay = strtol(optarg, NULL, 0);
-+			start_delay = parse_long(optarg, &err);
-+			if (err < 0) {
-+				error(_("invalid start delay argument '%s'"), optarg);
-+				return 1;
-+			}
- 			break;
- 		case 'T':
--			stop_delay = strtol(optarg, NULL, 0);
-+			stop_delay = parse_long(optarg, &err);
-+			if (err < 0) {
-+				error(_("invalid stop delay argument '%s'"), optarg);
-+				return 1;
-+			}
- 			break;
- 		case 'v':
- 			verbose++;
-@@ -671,7 +727,11 @@ int main(int argc, char *argv[])
- 			test_position = 1;
- 			break;
- 		case OPT_TEST_COEF:
--			test_coef = strtol(optarg, NULL, 0);
-+			test_coef = parse_long(optarg, &err);
-+			if (err < 0) {
-+				error(_("invalid test coef argument '%s'"), optarg);
-+				return 1;
-+			}
- 			if (test_coef < 1)
- 				test_coef = 1;
- 			break;
-@@ -679,7 +739,11 @@ int main(int argc, char *argv[])
- 			test_nowait = 1;
- 			break;
- 		case OPT_MAX_FILE_TIME:
--			max_file_time = strtol(optarg, NULL, 0);
-+			max_file_time = parse_long(optarg, &err);
-+			if (err < 0) {
-+				error(_("invalid max file time argument '%s'"), optarg);
-+				return 1;
-+			}
- 			break;
- 		case OPT_PROCESS_ID_FILE:
- 			pidfile_name = optarg;
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index 6b5a811e01a5..3a9b66c6e09c 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -322,7 +322,7 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 			char name[16];
+ 			snd_pcm_debug_name(substream, name, sizeof(name));
+ 			pcm_err(substream->pcm,
+-				"BUG: %s, pos = %ld, buffer size = %ld, period size = %ld\n",
++				"invalid position: %s, pos = %ld, buffer size = %ld, period size = %ld\n",
+ 				name, pos, runtime->buffer_size,
+ 				runtime->period_size);
+ 		}
 -- 
-2.5.0
+2.7.2
