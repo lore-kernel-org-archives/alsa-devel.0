@@ -1,8 +1,8 @@
-From: Vinod Koul <vinod.koul@intel.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH 1/4] ASoC: compress: Pass error out of
- soc_compr_pointer
-Date: Fri, 11 Mar 2016 16:44:28 +0530
-Message-ID: <20160311111428.GB11154@localhost>
+	soc_compr_pointer
+Date: Fri, 11 Mar 2016 11:13:11 +0000
+Message-ID: <20160311111311.GI1490@localhost.localdomain>
 References: <1457606694-10985-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
  <20160311074843.GV11154@localhost>
  <20160311100425.GH1490@localhost.localdomain>
@@ -11,9 +11,10 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 885A326655C
- for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2016 12:10:17 +0100 (CET)
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0ED2A2610A6
+ for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2016 12:13:32 +0100 (CET)
 Content-Disposition: inline
 In-Reply-To: <s5hbn6l5meo.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,7 +27,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, broonie@kernel.org, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 On Fri, Mar 11, 2016 at 11:39:11AM +0100, Takashi Iwai wrote:
@@ -67,91 +68,12 @@ On Fri, Mar 11, 2016 at 11:39:11AM +0100, Takashi Iwai wrote:
 > > don't seem to have a stopped state in ALSA, that bit would need refinement
 > 
 > In PCM, the stopped state is either SETUP/PREPARE or XRUN.
+> 
+> 
+> Takashi
 
-We didn't use PREPARE so we can set to XRUN. So here is alternate patch for
-this, whcih looks much better :)
+Thanks guys, I will take a look at all this and look at
+respinning the series.
 
--- >8 --
-
-diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
-index c0abcdc11470..a42c64248ad7 100644
---- a/include/sound/compress_driver.h
-+++ b/include/sound/compress_driver.h
-@@ -187,4 +187,5 @@ static inline void snd_compr_drain_notify(struct snd_compr_stream *stream)
- 	wake_up(&stream->runtime->sleep);
- }
- 
-+int snd_compr_stop(struct snd_compr_stream *stream);
- #endif
-diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index 18b8dc45bb8f..5d2a4d30eb6e 100644
---- a/sound/core/compress_offload.c
-+++ b/sound/core/compress_offload.c
-@@ -224,6 +224,14 @@ snd_compr_ioctl_avail(struct snd_compr_stream *stream, unsigned long arg)
- 	struct snd_compr_avail ioctl_avail;
- 	size_t avail;
- 
-+	mutex_lock(&stream->device->lock);
-+	if (stream->runtime->state == SNDRV_PCM_STATE_OPEN ||
-+			stream->runtime->state == SNDRV_PCM_STATE_XRUN) {
-+		mutex_unlock(&stream->device->lock);
-+		return -EBADFD;
-+	}
-+	mutex_unlock(&stream->device->lock);
-+
- 	avail = snd_compr_calc_avail(stream, &ioctl_avail);
- 	ioctl_avail.avail = avail;
- 
-@@ -386,7 +394,8 @@ static unsigned int snd_compr_poll(struct file *f, poll_table *wait)
- 		return -EFAULT;
- 
- 	mutex_lock(&stream->device->lock);
--	if (stream->runtime->state == SNDRV_PCM_STATE_OPEN) {
-+	if (stream->runtime->state == SNDRV_PCM_STATE_OPEN ||
-+			stream->runtime->state == SNDRV_PCM_STATE_XRUN) {
- 		retval = -EBADFD;
- 		goto out;
- 	}
-@@ -669,7 +678,7 @@ static int snd_compr_start(struct snd_compr_stream *stream)
- 	return retval;
- }
- 
--static int snd_compr_stop(struct snd_compr_stream *stream)
-+static int _snd_compr_stop(struct snd_compr_stream *stream)
- {
- 	int retval;
- 
-@@ -685,6 +694,20 @@ static int snd_compr_stop(struct snd_compr_stream *stream)
- 	return retval;
- }
- 
-+int snd_compr_stop(struct snd_compr_stream *stream)
-+{
-+	int ret = _snd_compr_stop(stream);
-+
-+	if (ret) {
-+		mutex_lock(&stream->device->lock);
-+		stream->runtime->state = SNDRV_PCM_STATE_XRUN;
-+		mutex_unlock(&stream->device->lock);
-+	}
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(snd_compr_stop);
-+
- static int snd_compress_wait_for_drain(struct snd_compr_stream *stream)
- {
- 	int ret;
-@@ -832,7 +855,7 @@ static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
- 		retval = snd_compr_start(stream);
- 		break;
- 	case _IOC_NR(SNDRV_COMPRESS_STOP):
--		retval = snd_compr_stop(stream);
-+		retval = _snd_compr_stop(stream);
- 		break;
- 	case _IOC_NR(SNDRV_COMPRESS_DRAIN):
- 		retval = snd_compr_drain(stream);
-
-
--- 
-~Vinod
+Thanks,
+Charles
