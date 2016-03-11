@@ -1,35 +1,68 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH] ALSA: hda - fix the mic mute button and led problem for a Lenovo AIO
-Date: Fri, 11 Mar 2016 12:04:02 +0800
-Message-ID: <1457669042-25826-1-git-send-email-hui.wang@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org, hui.wang@canonical.com
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH 1/8] ASoC: Intel: Skylake: Move module id
+	defines
+Date: Fri, 11 Mar 2016 10:12:49 +0530
+Message-ID: <1457671376-18667-2-git-send-email-vinod.koul@intel.com>
+References: <1457671376-18667-1-git-send-email-vinod.koul@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 05FC42606A9
+ for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2016 05:38:54 +0100 (CET)
+In-Reply-To: <1457671376-18667-1-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This Lenovo ThinkCentre AIO also uses Line2 as mic mute button and
-uses GPIO2 to control the mic mute led, so applying this quirk can
-make both the button and led work.
+The module ID defines are common to other platforms so can be
+reused if moved to a common driver header so move it
 
-Cc: stable@vger.kernel.org
-BugLink: https://bugs.launchpad.net/bugs/1555912
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/intel/skylake/skl-sst-dsp.h | 4 ++++
+ sound/soc/intel/skylake/skl-sst.c     | 3 ---
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 93d2156..4f5ca0b 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5556,6 +5556,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x2226, "ThinkPad X250", ALC292_FIXUP_TPT440_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x2233, "Thinkpad", ALC293_FIXUP_LENOVO_SPK_NOISE),
- 	SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
-+	SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
- 	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
- 	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
- 	SND_PCI_QUIRK(0x17aa, 0x3978, "IdeaPad Y410P", ALC269_FIXUP_NO_SHUTUP),
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
+index cbb40751c37e..a82c3de1a228 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.h
++++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+@@ -53,6 +53,10 @@ struct sst_dsp_device;
+ /* HIPCT */
+ #define SKL_ADSP_REG_HIPCT_BUSY		BIT(31)
+ 
++/* FW base IDs */
++#define SKL_INSTANCE_ID			0
++#define SKL_BASE_FW_MODULE_ID		0
++
+ /* Intel HD Audio SRAM Window 1 */
+ #define SKL_ADSP_SRAM1_BASE		0xA000
+ 
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index e26f4746afb7..348a734f8e24 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -35,9 +35,6 @@
+ #define SKL_ADSP_FW_STATUS	SKL_ADSP_SRAM0_BASE
+ #define SKL_ADSP_ERROR_CODE	(SKL_ADSP_FW_STATUS + 0x4)
+ 
+-#define SKL_INSTANCE_ID		0
+-#define SKL_BASE_FW_MODULE_ID	0
+-
+ #define SKL_NUM_MODULES		1
+ 
+ static bool skl_check_fw_status(struct sst_dsp *ctx, u32 status)
 -- 
 1.9.1
