@@ -1,22 +1,15 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/4] ASoC: compress: Pass error out of
-	soc_compr_pointer
-Date: Fri, 11 Mar 2016 11:13:11 +0000
-Message-ID: <20160311111311.GI1490@localhost.localdomain>
-References: <1457606694-10985-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20160311074843.GV11154@localhost>
- <20160311100425.GH1490@localhost.localdomain>
- <20160311103747.GZ11154@localhost> <s5hbn6l5meo.wl-tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: davinci-mcasp: dai format runtime
+	reconfiguration
+Date: Fri, 11 Mar 2016 13:18:51 +0200
+Message-ID: <1457695131-4841-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 0ED2A2610A6
- for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2016 12:13:32 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hbn6l5meo.wl-tiwai@suse.de>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 03BD22608B4
+ for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2016 12:19:05 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,54 +19,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, broonie@kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 11, 2016 at 11:39:11AM +0100, Takashi Iwai wrote:
-> On Fri, 11 Mar 2016 11:37:47 +0100,
-> Vinod Koul wrote:
-> > 
-> > On Fri, Mar 11, 2016 at 10:04:25AM +0000, Charles Keepax wrote:
-> > > On Fri, Mar 11, 2016 at 01:18:43PM +0530, Vinod Koul wrote:
-> > > > On Thu, Mar 10, 2016 at 10:44:51AM +0000, Charles Keepax wrote:
-> > > > > The soc_compr_pointer does not correctly pass any errors returned by the
-> > > > > driver callback back up the stack. This patch corrects this issue.
-> > > > 
-> > > > Should we do that :) I am not too sure. Pointer query is supposed to read
-> > > > the current value and return. You are trying to indicate that stream has
-> > > > gone bad which is not the same as read faced an error...
-> > > > 
-> > > > Also please use cover letter for these things to describe problem you are
-> > > > trying to solve.
-> > > 
-> > > Apologies for not doing so, I had been viewing this as more of a
-> > > simple oversight in the framework rather than a design choice.
-> > > 
-> > > The problem I am looking at is the DSP suffers an unrecoverable
-> > > error. We can find out about this error in our driver because the
-> > > DSP returns some error status to us.  This is fine if user-space
-> > > is doing a read as reads return error status back to user-space
-> > > so the user can find out that things have gone bad. However, if
-> > > user-space is doing an avail request there is no path for the
-> > > error to come back up to user-space. The pointer request returns
-> > > zero available data, so a read never happens and we basically
-> > > just end up sitting waiting for data on a stream that we know
-> > > full well has died.
-> > 
-> > So this confirms my hunch and we should then notify core of error by stopping
-> > the stream properly and then return error on poll/pointer query.
-> > 
-> > So cna try this untested patch, whcih includes a hack for stopped state. We
-> > don't seem to have a stopped state in ALSA, that bit would need refinement
-> 
-> In PCM, the stopped state is either SETUP/PREPARE or XRUN.
-> 
-> 
-> Takashi
+In case when the dai format is set via the dai_link the format
+configuration happens once when the links are probed. If the McASP lose
+context after this, the information will be lost and McASP will not going
+to work correctly.
+To overcome this issue, we save the fmt and set it within hw_params as
+well.
 
-Thanks guys, I will take a look at all this and look at
-respinning the series.
+Reported-by: Misael Lopez Cruz <misael.lopez@ti.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Jyri Sarha <jsarha@ti.com>
+---
+ sound/soc/davinci/davinci-mcasp.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Thanks,
-Charles
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 1bd86c8e7bc8..b0d1b9f93fa1 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -78,6 +78,7 @@ struct davinci_mcasp {
+ 	u32 fifo_base;
+ 	struct device *dev;
+ 	struct snd_pcm_substream *substreams[2];
++	unsigned int dai_fmt;
+ 
+ 	/* McASP specific data */
+ 	int	tdm_slots;
+@@ -399,6 +400,9 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 	bool fs_pol_rising;
+ 	bool inv_fs = false;
+ 
++	if (!fmt)
++		return 0;
++
+ 	pm_runtime_get_sync(mcasp->dev);
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_DSP_A:
+@@ -530,6 +534,8 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		mcasp_set_bits(mcasp, DAVINCI_MCASP_TXFMCTL_REG, FSXPOL);
+ 		mcasp_set_bits(mcasp, DAVINCI_MCASP_RXFMCTL_REG, FSRPOL);
+ 	}
++
++	mcasp->dai_fmt = fmt;
+ out:
+ 	pm_runtime_put(mcasp->dev);
+ 	return ret;
+@@ -1048,6 +1054,10 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
+ 	int period_size = params_period_size(params);
+ 	int ret;
+ 
++	ret = davinci_mcasp_set_dai_fmt(cpu_dai, mcasp->dai_fmt);
++	if (ret)
++		return ret;
++
+ 	/*
+ 	 * If mcasp is BCLK master, and a BCLK divider was not provided by
+ 	 * the machine driver, we need to calculate the ratio.
+-- 
+2.7.2
