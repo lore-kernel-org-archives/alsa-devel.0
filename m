@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Use correct local length in
-	error message" to the asoc tree
-Date: Fri, 11 Mar 2016 14:24:51 +0700
-Message-ID: <E1aeHRL-0002sW-2i@finisterre>
-References: <1457606767-11090-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 1/4] ASoC: compress: Pass error out of
+	soc_compr_pointer
+Date: Fri, 11 Mar 2016 13:18:43 +0530
+Message-ID: <20160311074843.GV11154@localhost>
+References: <1457606694-10985-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 78CBE2605D4
- for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2016 08:25:02 +0100 (CET)
-In-Reply-To: <1457606767-11090-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3866B2605D4
+ for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2016 08:44:42 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1457606694-10985-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,61 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Thu, Mar 10, 2016 at 10:44:51AM +0000, Charles Keepax wrote:
+> The soc_compr_pointer does not correctly pass any errors returned by the
+> driver callback back up the stack. This patch corrects this issue.
 
-   ASoC: wm_adsp: Use correct local length in error message
+Should we do that :) I am not too sure. Pointer query is supposed to read
+the current value and return. You are trying to indicate that stream has
+gone bad which is not the same as read faced an error...
 
-has been applied to the asoc tree at
+Also please use cover letter for these things to describe problem you are
+trying to solve.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> 
+> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/soc-compress.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+> index 875733c..d2df46c 100644
+> --- a/sound/soc/soc-compress.c
+> +++ b/sound/soc/soc-compress.c
+> @@ -530,14 +530,15 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
+>  {
+>  	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+>  	struct snd_soc_platform *platform = rtd->platform;
+> +	int ret = 0;
+>  
+>  	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+>  
+>  	if (platform->driver->compr_ops && platform->driver->compr_ops->pointer)
+> -		 platform->driver->compr_ops->pointer(cstream, tstamp);
+> +		ret = platform->driver->compr_ops->pointer(cstream, tstamp);
+>  
+>  	mutex_unlock(&rtd->pcm_mutex);
+> -	return 0;
+> +	return ret;
+>  }
+>  
+>  static int soc_compr_copy(struct snd_compr_stream *cstream,
+> -- 
+> 2.1.4
+> 
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 5602a64318a4a6aad028141bb68e9bbd6bb5749a Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Thu, 10 Mar 2016 10:46:07 +0000
-Subject: [PATCH] ASoC: wm_adsp: Use correct local length in error message
-
-Fixes: 44029e9e1290 ("ASoC: wm_adsp: wm_coeff_{read|write}_control should use passed length")
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/wm_adsp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 36687db5da61..ba9213c0ad53 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -787,7 +787,7 @@ static int wm_coeff_read_control(struct wm_coeff_ctl *ctl,
- 	ret = regmap_raw_read(dsp->regmap, reg, scratch, len);
- 	if (ret) {
- 		adsp_err(dsp, "Failed to read %zu bytes from %x: %d\n",
--			 ctl->len, reg, ret);
-+			 len, reg, ret);
- 		kfree(scratch);
- 		return ret;
- 	}
 -- 
-2.7.0
+~Vinod
