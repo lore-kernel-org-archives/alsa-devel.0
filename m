@@ -1,49 +1,37 @@
-From: Michael Trimarchi <michael@amarulasolutions.com>
-Subject: [PATCH V4] ASoC: pcm179x: Add support for pcm1795 and
-	pcm1796
-Date: Fri, 11 Mar 2016 23:59:42 +0100
-Message-ID: <20160311225937.GA27257@panicking>
+From: Michael Trimarchi <michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>
+Subject: [PATCH V5] ASoC: pcm179x: Add support for pcm1795 and pcm1796
+Date: Sat, 12 Mar 2016 00:09:34 +0100
+Message-ID: <20160311230930.GB27257@panicking>
 References: <1452382685-18009-1-git-send-email-michael@amarulasolutions.com>
  <1452382685-18009-4-git-send-email-michael@amarulasolutions.com>
  <20160110120045.GW6588@sirena.org.uk>
  <20160110173812.GA16304@panicking>
  <20160205172451.GA30542@panicking>
  <20160222031944.GT18327@sirena.org.uk>
+ <20160311225937.GA27257@panicking>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f46.google.com (mail-wm0-f46.google.com [74.125.82.46])
- by alsa0.perex.cz (Postfix) with ESMTP id D242C2605F0
- for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2016 23:59:45 +0100 (CET)
-Received: by mail-wm0-f46.google.com with SMTP id p65so35234826wmp.0
- for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2016 14:59:45 -0800 (PST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <20160222031944.GT18327@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, adamo.a60@gmail.com, lgirdwood@gmail.com, Johan Hovold <johan@kernel.org>, Jacob Siverskog <jacob@teenage.engineering>
+In-Reply-To: <20160311225937.GA27257@panicking>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jacob Siverskog <jacob-EZCvousvhKUZux3j3Bed6dkegs52MxvZ@public.gmane.org>, Johan Hovold <johan-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, adamo.a60-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 ASoC: pcm179x: Add support for pcm1795 and pcm1796
 
-Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
-Tested-by: Angelo Adamo <adamo.a60@gmail.com>
+Signed-off-by: Michael Trimarchi <michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>
+Tested-by: Angelo Adamo <adamo.a60-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 ---
+Changes v4 -> v5
+	- remove dead code
 
-Changes v4 -> v3:
+Changes v3 -> v4:
 	- clean up compatible list
 	- use enum type instead of pointer of int
 
-Changes v3 -> v2:
+Changes v2 -> v3:
 	- rebase after i2c support
 
 Changes v1 -> v2:
@@ -52,9 +40,9 @@ Changes v1 -> v2:
 
  sound/soc/codecs/pcm179x-i2c.c |  6 ----
  sound/soc/codecs/pcm179x-spi.c |  6 ----
- sound/soc/codecs/pcm179x.c     | 65 ++++++++++++++++++++++++++++++++++++++++--
+ sound/soc/codecs/pcm179x.c     | 63 ++++++++++++++++++++++++++++++++++++++++--
  sound/soc/codecs/pcm179x.h     |  9 ++++--
- 4 files changed, 69 insertions(+), 17 deletions(-)
+ 4 files changed, 67 insertions(+), 17 deletions(-)
 
 diff --git a/sound/soc/codecs/pcm179x-i2c.c b/sound/soc/codecs/pcm179x-i2c.c
 index 4118106..609f07f 100644
@@ -91,7 +79,7 @@ index da924d4..6ae0e4d 100644
  	{ "pcm179x", 0 },
  	{ },
 diff --git a/sound/soc/codecs/pcm179x.c b/sound/soc/codecs/pcm179x.c
-index 06a6657..5be782e 100644
+index 06a6657..52b2d4b 100644
 --- a/sound/soc/codecs/pcm179x.c
 +++ b/sound/soc/codecs/pcm179x.c
 @@ -20,6 +20,8 @@
@@ -185,12 +173,10 @@ index 06a6657..5be782e 100644
  	.ops = &pcm179x_dai_ops,
  };
  
-@@ -214,15 +249,39 @@ static struct snd_soc_codec_driver soc_codec_dev_pcm179x = {
+@@ -214,15 +249,37 @@ static struct snd_soc_codec_driver soc_codec_dev_pcm179x = {
  	.num_dapm_routes	= ARRAY_SIZE(pcm179x_dapm_routes),
  };
  
-+static const unsigned int codec_model = PCM1795;
-+
 +const struct of_device_id pcm179x_of_match[] = {
 +	{ .compatible = "ti,pcm1792a", },
 +	{ .compatible = "ti,pcm1795", .data = (void *)PCM1795, },
@@ -255,3 +241,7 @@ index 11e3312..4c00047 100644
 | COO  -  Founder                                      Cruquiuskade 47 |
 | +31(0)851119172                                 Amsterdam 1018 AM NL |
 |                  [`as] http://www.amarulasolutions.com               |
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
