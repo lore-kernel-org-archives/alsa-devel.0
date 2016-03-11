@@ -1,18 +1,19 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: dice: use structure to represent
- register parameters instead of array with basic type element
-Date: Fri, 11 Mar 2016 11:57:22 +0900
-Message-ID: <56E23412.2020604@sakamocchi.jp>
-References: <1457613868-14891-1-git-send-email-o-takashi@sakamocchi.jp>
- <s5hegbi5r4i.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFD] Add hw_params support for hostless stream BE
+	DAIs
+Date: Fri, 11 Mar 2016 10:59:27 +0700
+Message-ID: <20160311035927.GQ3898@sirena.org.uk>
+References: <20160216161747.GA18103@jeeja.kp@intel.com>
+ <20160302020215.GN18327@sirena.org.uk>
+ <20160310205703.GA26632@jeeja.kp@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7152616537553633211=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 72219260541
- for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2016 03:57:26 +0100 (CET)
-In-Reply-To: <s5hegbi5r4i.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 75EED260541
+ for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2016 04:59:34 +0100 (CET)
+In-Reply-To: <20160310205703.GA26632@jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,384 +23,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
+To: Jeeja KP <jeeja.kp@intel.com>
+Cc: tiwai@suse.de, vinod.koul@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mar 10 2016 23:45, Takashi Iwai wrote:
-> On Thu, 10 Mar 2016 13:44:28 +0100,
-> Takashi Sakamoto wrote:
->>
->> In dice interface, two blocks of register are accessible via IEEE 1394
->> asynchronous transaction to represent the number of supported isochronous
->> streams and the number of quadlets for stream information.
->>
->> Current ALSA dice driver uses array with 'unsigned int' element for
->> temporary cache of these information. But using structure is preferable
->> for begin easily comprehensible.
->>
->> This commit applies a local structure for this aim.
->>
->> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
->
-> Applied, thanks.
 
-OK. Thanks.
-(And now I realize to misspell 'being' with 'begin'...)
-
-That's all of my work for Linux 4.6. In this developing cycle, I did:
-  * firewire-tascam module
-    * Add support for FW-1804
-  * oxfw module
-    * Apply some refactoring for scs1x stuffs, including Clemens' TODO.
-  * bebob module
-    * Simplify handling events related to bus-reset.
-  * fireworks module
-    * Improve handling events related to bus-reset.
-  * dice module
-    * Postopone card registration to wait for calmness of IEEE 1394 bus.
-    * Drop auto-adjustment for sampling rate, according to hardware
-      design.
-    * Ensure phase lock before starting streaming, to prevent ETIMEDOUT.
-    * Drop duplex stream synchronization to transfer driver's time stamp,
-      according to hardware design.
-    * Enable to handle several isochronous streams, according to hardware
-      design. As a result, for some models, some PCM substreams are
-      available.
-    * Describe a part of capabilities of each ASICs named as 'dice'.
-  * libhinawa implementation
-    * I released version 0.7.0
-    * ITP for debian project was approved and libhinawa packages are now
-      available in repositories of Debian and Ubuntu.
-    * I have no time to work for the other distribution project such as
-      Fedora, Gentoo and ArchLinux.
-
-For next cycle to Linux 4.7, I plan to do:
-  * Improve time stamp generator in firewire-lib module
-   * For some units of firewire-digi00x and dice, current
-     AMDTP implementation brings periodical noise at sampling transfer
-     frequency multiplied by 44.1kHz. About the sub-effect to
-     firewire-digi00x units, see commit 44b7308871ac.
-   * On the other hand, at sampling transfer frequency multiplied by
-     48.0kHz, this doesn't occur.
-   * This may be a bug of time stamp (=offset) generator in firewire-lib.
-   * When fixing it, I'll post patches to for-next, 4.5-rc and stable
-     branchs as bug fixes.
-  * Work for firewire-transceiver module
-   * This is basically to check the series of offsets in AMDTP packets
-     generated by peer Linux machine.
-   * As a side effect, two Linux machines can communicate on IEEE 1394
-     bus for PCM samples and MIDI messages with many channels via ALSA
-     PCM/Rawmidi/Sequencer interfaces.
-  * alsa-lib APIs to add control element set.
-   * I'll work for it _after_ waiting for alsa-lib 1.1.1 release (I'll
-     postpone it to avoid having much work in short term).
-   * In detail, see my previous post.
-    * 
-http://mailman.alsa-project.org/pipermail/alsa-devel/2016-February/104795.html
-
-Pending issues (not yet scheduled):
-  * Mmap implementation for hwdep character devices of firewire-tascam
-    to share status and control messages transferred from units.
-  * Driver module for a part of units in RME FireFace series.
-  * Driver module for a part of units in Mark of the unicorn firewire
-    series.
-  * EPIPE error for ALSA rawmidi interface.
-  * Propose in systemd project about udev rules for supported units.
-
-(Oh, much to do I have...)
+--===============7152616537553633211==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="xiprIVX1FSGBv8kC"
+Content-Disposition: inline
 
 
-Regards
+--xiprIVX1FSGBv8kC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Takashi Sakamoto
+On Fri, Mar 11, 2016 at 02:27:03AM +0530, Jeeja KP wrote:
+> On Wed, Mar 02, 2016 at 11:02:15AM +0900, Mark Brown wrote:
+> > On Tue, Feb 16, 2016 at 09:47:47PM +0530, Jeeja KP wrote:
 
-> Takashi
->
->> ---
->>   sound/firewire/dice/dice-stream.c | 110 +++++++++++++++++++-------------------
->>   1 file changed, 54 insertions(+), 56 deletions(-)
->>
->> diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
->> index 2077f18..845d5e5 100644
->> --- a/sound/firewire/dice/dice-stream.c
->> +++ b/sound/firewire/dice/dice-stream.c
->> @@ -12,6 +12,11 @@
->>   #define	CALLBACK_TIMEOUT	200
->>   #define NOTIFICATION_TIMEOUT_MS	(2 * MSEC_PER_SEC)
->>
->> +struct reg_params {
->> +	unsigned int count;
->> +	unsigned int size;
->> +};
->> +
->>   const unsigned int snd_dice_rates[SND_DICE_RATES_COUNT] = {
->>   	/* mode 0 */
->>   	[0] =  32000,
->> @@ -65,7 +70,9 @@ static int ensure_phase_lock(struct snd_dice *dice)
->>   	return 0;
->>   }
->>
->> -static int get_register_params(struct snd_dice *dice, unsigned int params[4])
->> +static int get_register_params(struct snd_dice *dice,
->> +			       struct reg_params *tx_params,
->> +			       struct reg_params *rx_params)
->>   {
->>   	__be32 reg[2];
->>   	int err;
->> @@ -73,14 +80,16 @@ static int get_register_params(struct snd_dice *dice, unsigned int params[4])
->>   	err = snd_dice_transaction_read_tx(dice, TX_NUMBER, reg, sizeof(reg));
->>   	if (err < 0)
->>   		return err;
->> -	params[0] = min_t(unsigned int, be32_to_cpu(reg[0]), MAX_STREAMS);
->> -	params[1] = be32_to_cpu(reg[1]) * 4;
->> +	tx_params->count =
->> +			min_t(unsigned int, be32_to_cpu(reg[0]), MAX_STREAMS);
->> +	tx_params->size = be32_to_cpu(reg[1]) * 4;
->>
->>   	err = snd_dice_transaction_read_rx(dice, RX_NUMBER, reg, sizeof(reg));
->>   	if (err < 0)
->>   		return err;
->> -	params[2] = min_t(unsigned int, be32_to_cpu(reg[0]), MAX_STREAMS);
->> -	params[3] = be32_to_cpu(reg[1]) * 4;
->> +	rx_params->count =
->> +			min_t(unsigned int, be32_to_cpu(reg[0]), MAX_STREAMS);
->> +	rx_params->size = be32_to_cpu(reg[1]) * 4;
->>
->>   	return 0;
->>   }
->> @@ -105,21 +114,21 @@ static void release_resources(struct snd_dice *dice)
->>   }
->>
->>   static void stop_streams(struct snd_dice *dice, enum amdtp_stream_direction dir,
->> -			 unsigned int count, unsigned int size)
->> +			 struct reg_params *params)
->>   {
->>   	__be32 reg;
->>   	unsigned int i;
->>
->> -	for (i = 0; i < count; i++) {
->> +	for (i = 0; i < params->count; i++) {
->>   		reg = cpu_to_be32((u32)-1);
->>   		if (dir == AMDTP_IN_STREAM) {
->>   			snd_dice_transaction_write_tx(dice,
->> -						size * i + TX_ISOCHRONOUS,
->> -						&reg, sizeof(reg));
->> +					params->size * i + TX_ISOCHRONOUS,
->> +					&reg, sizeof(reg));
->>   		} else {
->>   			snd_dice_transaction_write_rx(dice,
->> -						size * i + RX_ISOCHRONOUS,
->> -						&reg, sizeof(reg));
->> +					params->size * i + RX_ISOCHRONOUS,
->> +					&reg, sizeof(reg));
->>   		}
->>   	}
->>   }
->> @@ -180,8 +189,7 @@ static int keep_resources(struct snd_dice *dice,
->>   }
->>
->>   static int start_streams(struct snd_dice *dice, enum amdtp_stream_direction dir,
->> -			 unsigned int rate, unsigned int count,
->> -			 unsigned int size)
->> +			 unsigned int rate, struct reg_params *params)
->>   {
->>   	__be32 reg[2];
->>   	unsigned int i, pcm_chs, midi_ports;
->> @@ -197,15 +205,15 @@ static int start_streams(struct snd_dice *dice, enum amdtp_stream_direction dir,
->>   		resources = dice->rx_resources;
->>   	}
->>
->> -	for (i = 0; i < count; i++) {
->> +	for (i = 0; i < params->count; i++) {
->>   		if (dir == AMDTP_IN_STREAM) {
->>   			err = snd_dice_transaction_read_tx(dice,
->> -						size * i + TX_NUMBER_AUDIO,
->> -						reg, sizeof(reg));
->> +					params->size * i + TX_NUMBER_AUDIO,
->> +					reg, sizeof(reg));
->>   		} else {
->>   			err = snd_dice_transaction_read_rx(dice,
->> -						size * i + RX_NUMBER_AUDIO,
->> -						reg, sizeof(reg));
->> +					params->size * i + RX_NUMBER_AUDIO,
->> +					reg, sizeof(reg));
->>   		}
->>   		if (err < 0)
->>   			return err;
->> @@ -219,12 +227,12 @@ static int start_streams(struct snd_dice *dice, enum amdtp_stream_direction dir,
->>   		reg[0] = cpu_to_be32(resources[i].channel);
->>   		if (dir == AMDTP_IN_STREAM) {
->>   			err = snd_dice_transaction_write_tx(dice,
->> -						size * i + TX_ISOCHRONOUS,
->> -						reg, sizeof(reg[0]));
->> +					params->size * i + TX_ISOCHRONOUS,
->> +					reg, sizeof(reg[0]));
->>   		} else {
->>   			err = snd_dice_transaction_write_rx(dice,
->> -						size * i + RX_ISOCHRONOUS,
->> -						reg, sizeof(reg[0]));
->> +					params->size * i + RX_ISOCHRONOUS,
->> +					reg, sizeof(reg[0]));
->>   		}
->>   		if (err < 0)
->>   			return err;
->> @@ -247,14 +255,14 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
->>   {
->>   	unsigned int curr_rate;
->>   	unsigned int i;
->> -	unsigned int reg_params[4];
->> +	struct reg_params tx_params, rx_params;
->>   	bool need_to_start;
->>   	int err;
->>
->>   	if (dice->substreams_counter == 0)
->>   		return -EIO;
->>
->> -	err = get_register_params(dice, reg_params);
->> +	err = get_register_params(dice, &tx_params, &rx_params);
->>   	if (err < 0)
->>   		return err;
->>
->> @@ -271,12 +279,12 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
->>
->>   	/* Judge to need to restart streams. */
->>   	for (i = 0; i < MAX_STREAMS; i++) {
->> -		if (i < reg_params[0]) {
->> +		if (i < tx_params.count) {
->>   			if (amdtp_streaming_error(&dice->tx_stream[i]) ||
->>   			    !amdtp_stream_running(&dice->tx_stream[i]))
->>   				break;
->>   		}
->> -		if (i < reg_params[2]) {
->> +		if (i < rx_params.count) {
->>   			if (amdtp_streaming_error(&dice->rx_stream[i]) ||
->>   			    !amdtp_stream_running(&dice->rx_stream[i]))
->>   				break;
->> @@ -287,10 +295,8 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
->>   	if (need_to_start) {
->>   		/* Stop transmission. */
->>   		snd_dice_transaction_clear_enable(dice);
->> -		stop_streams(dice, AMDTP_IN_STREAM, reg_params[0],
->> -			     reg_params[1]);
->> -		stop_streams(dice, AMDTP_OUT_STREAM, reg_params[2],
->> -			     reg_params[3]);
->> +		stop_streams(dice, AMDTP_IN_STREAM, &tx_params);
->> +		stop_streams(dice, AMDTP_OUT_STREAM, &rx_params);
->>   		release_resources(dice);
->>
->>   		err = ensure_phase_lock(dice);
->> @@ -301,12 +307,10 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
->>   		}
->>
->>   		/* Start both streams. */
->> -		err = start_streams(dice, AMDTP_IN_STREAM, rate, reg_params[0],
->> -				    reg_params[1]);
->> +		err = start_streams(dice, AMDTP_IN_STREAM, rate, &tx_params);
->>   		if (err < 0)
->>   			goto error;
->> -		err = start_streams(dice, AMDTP_OUT_STREAM, rate, reg_params[2],
->> -				    reg_params[3]);
->> +		err = start_streams(dice, AMDTP_OUT_STREAM, rate, &rx_params);
->>   		if (err < 0)
->>   			goto error;
->>
->> @@ -318,10 +322,10 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
->>   		}
->>
->>   		for (i = 0; i < MAX_STREAMS; i++) {
->> -			if ((i < reg_params[0] &&
->> +			if ((i < tx_params.count &&
->>   			    !amdtp_stream_wait_callback(&dice->tx_stream[i],
->>   							CALLBACK_TIMEOUT)) ||
->> -			    (i < reg_params[2] &&
->> +			    (i < rx_params.count &&
->>   			     !amdtp_stream_wait_callback(&dice->rx_stream[i],
->>   							 CALLBACK_TIMEOUT))) {
->>   				err = -ETIMEDOUT;
->> @@ -333,8 +337,8 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
->>   	return err;
->>   error:
->>   	snd_dice_transaction_clear_enable(dice);
->> -	stop_streams(dice, AMDTP_IN_STREAM, reg_params[0], reg_params[1]);
->> -	stop_streams(dice, AMDTP_OUT_STREAM, reg_params[2], reg_params[3]);
->> +	stop_streams(dice, AMDTP_IN_STREAM, &tx_params);
->> +	stop_streams(dice, AMDTP_OUT_STREAM, &rx_params);
->>   	release_resources(dice);
->>   	return err;
->>   }
->> @@ -346,18 +350,16 @@ error:
->>    */
->>   void snd_dice_stream_stop_duplex(struct snd_dice *dice)
->>   {
->> -	unsigned int reg_params[4];
->> +	struct reg_params tx_params, rx_params;
->>
->>   	if (dice->substreams_counter > 0)
->>   		return;
->>
->>   	snd_dice_transaction_clear_enable(dice);
->>
->> -	if (get_register_params(dice, reg_params) == 0) {
->> -		stop_streams(dice, AMDTP_IN_STREAM, reg_params[0],
->> -			     reg_params[1]);
->> -		stop_streams(dice, AMDTP_OUT_STREAM, reg_params[2],
->> -			     reg_params[3]);
->> +	if (get_register_params(dice, &tx_params, &rx_params) == 0) {
->> +		stop_streams(dice, AMDTP_IN_STREAM, &tx_params);
->> +		stop_streams(dice, AMDTP_OUT_STREAM, &rx_params);
->>   	}
->>
->>   	release_resources(dice);
->> @@ -444,15 +446,13 @@ end:
->>
->>   void snd_dice_stream_destroy_duplex(struct snd_dice *dice)
->>   {
->> -	unsigned int reg_params[4];
->> +	struct reg_params tx_params, rx_params;
->>
->>   	snd_dice_transaction_clear_enable(dice);
->>
->> -	if (get_register_params(dice, reg_params) == 0) {
->> -		stop_streams(dice, AMDTP_IN_STREAM, reg_params[0],
->> -			     reg_params[1]);
->> -		stop_streams(dice, AMDTP_OUT_STREAM, reg_params[2],
->> -			     reg_params[3]);
->> +	if (get_register_params(dice, &tx_params, &rx_params) == 0) {
->> +		stop_streams(dice, AMDTP_IN_STREAM, &tx_params);
->> +		stop_streams(dice, AMDTP_OUT_STREAM, &rx_params);
->>   	}
->>
->>   	release_resources(dice);
->> @@ -462,7 +462,7 @@ void snd_dice_stream_destroy_duplex(struct snd_dice *dice)
->>
->>   void snd_dice_stream_update_duplex(struct snd_dice *dice)
->>   {
->> -	unsigned int reg_params[4];
->> +	struct reg_params tx_params, rx_params;
->>
->>   	/*
->>   	 * On a bus reset, the DICE firmware disables streaming and then goes
->> @@ -474,11 +474,9 @@ void snd_dice_stream_update_duplex(struct snd_dice *dice)
->>   	 */
->>   	dice->global_enabled = false;
->>
->> -	if (get_register_params(dice, reg_params) == 0) {
->> -		stop_streams(dice, AMDTP_IN_STREAM, reg_params[0],
->> -			     reg_params[1]);
->> -		stop_streams(dice, AMDTP_OUT_STREAM, reg_params[2],
->> -			     reg_params[3]);
->> +	if (get_register_params(dice, &tx_params, &rx_params) == 0) {
->> +		stop_streams(dice, AMDTP_IN_STREAM, &tx_params);
->> +		stop_streams(dice, AMDTP_OUT_STREAM, &rx_params);
->>   	}
->>   }
->>
->> --
->> 2.7.0
->>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+> > Like I keep saying if you're thinking about this in terms of DPCM you're
+> > solving the wrong problem - we already support supplying parameters for
+> > device<->device links, we already have systems that need to configure
+> > things for device<->device links so we can already see that if we're
+> > doing something that only works for things that are on SoC and can use
+> > DPCM then we're not solving the problem.
+
+> No this is not exactly about DPCM. It is about the device<->device links that
+> assume you can have only codecs as hostless and thus change the direction
+> for the link. Since we are rendering from SoC we don't need direction change.
+
+You're routing them via DSP though?
+
+> > This is clearly confused, if we can't figure out what the two devices we
+> > are connecting are based on just looking at the devices then that's
+> > really not a good sign that our interfaces are sensible and easy to work
+> > with.
+
+> Right now dai_link assumes device<->device links based on params so we
+> cannot specify params for anything where we dont want direction change and would
+> like to treat as normal direction dai_link. So we propose this to move to
+> codec_link flag and use params only for creating controls based on params
+> provided.
+
+What I'm telling you is that you shouldn't be writing hacks like this to
+bodge things but coming up with scalable and maintainable solutions.  I
+already discussed this with Vinod several times, we've discussed the
+idea that if you're having trouble with the asymmetries in the
+definitions of DAI links you should make the DAI links symmetric so
+things like this just work.  We need clear, comprehensible abstractions
+which work robustly not some mess of special case handling.
+
+--xiprIVX1FSGBv8kC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJW4kKaAAoJECTWi3JdVIfQ1LQH/R9keiVgfaC9Td4kC0czeH75
+T3v32DxQJvOdDfvAbq4ch1QiuP5Dtce3jAB0ducROH+Y6+phXpM9jZ09GGDFlry5
+b9gZ09WUBDUJEZ4uhwY4SLHAuXyL8VDv4a0YL14L2Iz1I9sf2Bkr4BrroQqpR2S3
++R0Yo9PP6AaYgj6APlKbIEwYZis+dX0/T3eYiWm65TgRcetJByl+L4VfRf/IU1KZ
+EFrJzjM/9MR9hvWJP0WJJLkCfjXU8/pFJexlVhgDB+xoIIlc2B1wauv3zE/NN1X3
+t3cCxa5A0K75JMbGQV0KQuRidWXy1F1Lvfd1sIhsdl39UwBIEDbt1R9uhSd5TGY=
+=KHXE
+-----END PGP SIGNATURE-----
+
+--xiprIVX1FSGBv8kC--
+
+--===============7152616537553633211==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7152616537553633211==--
