@@ -1,95 +1,75 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH V6] ASoC: pcm179x: Add support for pcm1795 and pcm1796
-Date: Sat, 12 Mar 2016 12:53:17 +0700
-Message-ID: <20160312055317.GT3898@sirena.org.uk>
-References: <1452382685-18009-1-git-send-email-michael@amarulasolutions.com>
- <1452382685-18009-4-git-send-email-michael@amarulasolutions.com>
- <20160110120045.GW6588@sirena.org.uk>
- <20160110173812.GA16304@panicking>
- <20160205172451.GA30542@panicking>
- <20160222031944.GT18327@sirena.org.uk>
- <20160311225937.GA27257@panicking>
- <20160311230930.GB27257@panicking>
- <20160311232856.GC27257@panicking>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 1/6] ASoC: core: add
+ snd_soc_add_dai_pcm_controls helper
+Date: Sat, 12 Mar 2016 13:11:05 +0700
+Message-ID: <20160312061105.GX3898@sirena.org.uk>
+References: <1457441641-7501-1-git-send-email-arnaud.pouliquen@st.com>
+ <1457441641-7501-2-git-send-email-arnaud.pouliquen@st.com>
+ <20160310050646.GD11154@localhost> <56E13971.9030909@st.com>
+ <20160310125817.GB6839@subhransu-desktop>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="QCC2I/2CckNfI+Tr"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20160311232856.GC27257@panicking>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Michael Trimarchi <michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>
-Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jacob Siverskog <jacob-EZCvousvhKUZux3j3Bed6dkegs52MxvZ@public.gmane.org>, Johan Hovold <johan-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, adamo.a60-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============7070641761461700417=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 37CAA260714
+ for <alsa-devel@alsa-project.org>; Sun, 13 Mar 2016 09:34:33 +0100 (CET)
+In-Reply-To: <20160310125817.GB6839@subhransu-desktop>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: Jean-Francois Moine <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Philipp Zabel <p.zabel@pengutronix.de>, "Koul, Vinod" <vinod.koul@intel.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, David Airlie <airlied@linux.ie>, Takashi Iwai <tiwai@suse.de>, Moise GERGAUD <moise.gergaud@st.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---QCC2I/2CckNfI+Tr
+--===============7070641761461700417==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="3rzwkXnKuCXxoL5m"
+Content-Disposition: inline
+
+
+--3rzwkXnKuCXxoL5m
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 12, 2016 at 12:29:00AM +0100, Michael Trimarchi wrote:
+On Thu, Mar 10, 2016 at 06:28:18PM +0530, Subhransu S. Prusty wrote:
 
-> diff --git a/sound/soc/codecs/pcm179x-i2c.c b/sound/soc/codecs/pcm179x-i2=
-c.c
-> index 4118106..609f07f 100644
-> --- a/sound/soc/codecs/pcm179x-i2c.c
-> +++ b/sound/soc/codecs/pcm179x-i2c.c
-> @@ -44,12 +44,6 @@ static int pcm179x_i2c_remove(struct i2c_client *clien=
-t)
->  	return pcm179x_common_exit(&client->dev);
->  }
-> =20
-> -static const struct of_device_id pcm179x_of_match[] =3D {
-> -	{ .compatible =3D "ti,pcm1792a", },
-> -	{ }
-> -};
-> -MODULE_DEVICE_TABLE(of, pcm179x_of_match);
-> -
+> That calls for a discussion on how the controls should be represented for
+> DPCM. Takashi/Mark/Liam we need your opinion on how the PCM related controls
+> should be represented in DPCM concepts.
 
-One effect of moving this out of the I2C driver is to break module
-autoloading: currently modutils does not pay attention to the reference
-=66rom the driver structure to the ID table but instead just looks at the
-MODULE_DEVICE_TABLE.  This is a problem with some existing devices but
-we shouldn't introduce new instances.
+I think we should be moving away from DPCM towards something that scales
+to cover off-SoC devices as well.
 
-I don't actually know if MODULE_DEVICE_TABLE can reference an object in
-a different file off the top of my head, though a brief test suggests it
-has issues.
-
-> +static int pcm179x_startup(struct snd_pcm_substream *substream,
-> +			    struct snd_soc_dai *dai)
-> +{
-> +	struct snd_soc_codec *codec =3D dai->codec;
-> +	struct pcm179x_private *priv =3D snd_soc_codec_get_drvdata(codec);
-> +	u64 formats =3D PCM1792A_FORMATS;
-> +
-> +	switch (priv->codec_model) {
-> +	case PCM1795:
-> +		formats =3D PCM1795_FORMATS;
-> +		break;
-
-It would be more data driven to just register a different DAI structure
-for the 1795.  Both approaches work, it's just a little nicer to avoid
-code where possible.
-
---QCC2I/2CckNfI+Tr
+--3rzwkXnKuCXxoL5m
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJW467JAAoJECTWi3JdVIfQDYUH/R+mYlu9kVevy7EmXdMj3qCy
-bVzrDCOV+M0qmXMqUGMcGdssHbWoW0SI34IfXmmFf3wue/grLc5jdsTe1xbZ1bG3
-RDLo3JFhgutBT5mqx1VjpIu7cWVCQAQhhOD7kwpAYSWzFsiVWnf/WcIa6rC2DmGL
-UgwjK+Dv8ddfdk5Tb+BMeHsm3JPn7+eWB8/CSrCz7ysCqudBhxHx8mNoOUoZswFz
-6nRCqHV7K5JhdpUO4brPqAoEjGZRov2JcRk5V02jZDyZlBEohbl2xl03GV7pLFZK
-4ZrScYpPWJEXw2wa3YjYxexMKcHm9lKHRs1aKj/ArkqrEW6J8DqN0KoMnFY/Dac=
-=ODrI
+iQEcBAEBCAAGBQJW47L4AAoJECTWi3JdVIfQ8qsH/2Zj/CexWUFUr8lASx4qgqNb
+s8R25e4HtgzexvYnPelOXA+mjlmor4BkkZhRiS4vbxiWehwoWVOJynQeWenCWmtQ
+dFsUYs6FAOUd56fxptREQ+oO2mntKAajdH5+j7lk+jx8zAKpGVGTCJ8dVFO3eIHu
+vNd28t8TmByjZtQayrDHVnyMFOW86mSQfFVoYcd4vpUiC8WqEsx/5u5edMweVSYb
+JZlDT9lTB5acnfqIs9l/RejXx0uxhd2CqMF3o7qBWcvGxcyYkuxBsiE41jB/bPW+
+g8wk7/pUgmpJPLpLl71NLMLVYy026GX+oQumIef5KZpkjfxscIMQoL1yj5TAXDE=
+=O69W
 -----END PGP SIGNATURE-----
 
---QCC2I/2CckNfI+Tr--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--3rzwkXnKuCXxoL5m--
+
+--===============7070641761461700417==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7070641761461700417==--
