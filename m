@@ -1,1129 +1,493 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH] media: add GFP flag to media_*() that could get called in atomic context
-Date: Sat, 12 Mar 2016 18:48:09 -0700
-Message-ID: <1457833689-4926-1-git-send-email-shuahkh@osg.samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: mchehab@osg.samsung.com, kyungmin.park@samsung.com, a.hajda@samsung.com, sakari.ailus@iki.fi, s.nawrocki@samsung.com, kgene@kernel.org, k.kozlowski@samsung.com, laurent.pinchart@ideasonboard.com, hyun.kwon@xilinx.com, soren.brinkmann@xilinx.com, gregkh@linuxfoundation.org, perex@perex.cz, tiwai@suse.com, hans.verkuil@cisco.com, lixiubo@cmss.chinamobile.com, javier@osg.samsung.com, g.liakhovetski@gmx.de, chehabrafael@gmail.com, crope@iki.fi, tommi.franttila@intel.com, dan.carpenter@oracle.com, prabhakar.csengg@gmail.com, hamohammed.sa@gmail.com, der.herr@hofr.at, navyasri.tech@gmail.com, Julia.Lawall@lip6.fr, amitoj1606@gmail.com
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, linux-renesas-soc@vger.kernel.org, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rsnd: add simplified module
+	explanation" to the asoc tree
+Date: Sun, 13 Mar 2016 15:14:54 +0700
+Message-ID: <E1af1As-0004Fb-On@finisterre>
+References: <87oaamvrae.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CE27260504
+ for <alsa-devel@alsa-project.org>; Sun, 13 Mar 2016 09:15:11 +0100 (CET)
+In-Reply-To: <87oaamvrae.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add GFP flags to media_create_pad_link(), media_create_intf_link(),
-media_devnode_create(), and media_add_link() that could get called
-in atomic context to allow callers to pass in the right flags for
-memory allocation.
+The patch
 
-tree-wide driver changes for media_*() GFP flags change:
-Change drivers to add gfpflags to interffaces, media_create_pad_link(),
-media_create_intf_link() and media_devnode_create().
+   ASoC: rsnd: add simplified module explanation
 
-Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
-Suggested-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From f1511a14a4a94d063cf8f8f12f36cf2ebb0cc8a8 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 10 Mar 2016 05:29:21 +0000
+Subject: [PATCH] ASoC: rsnd: add simplified module explanation
+
+Renesas sound driver user needs to read its datasheet when create DT.
+But it is difficult to understand, because it has many modules
+(SRC/CTU/MIX/DVC/SSIU/SSI/AudioDMAC/AudioDMACperiperi),
+and many features (Asynchronous/Synchronous mode on SRC, CTU matrix,
+DVC volume settings feature, Multi-SSI/TDM-SSI, etc).
+This patch adds simplified explanation to help setting/understanding.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
-Ran through kbuild-all compile testing.
-Tested the changes in Win-TV HVR-950Q device
+ .../devicetree/bindings/sound/renesas,rsnd.txt     | 340 +++++++++++++++++++++
+ sound/soc/sh/rcar/dvc.c                            |  23 ++
+ 2 files changed, 363 insertions(+)
 
- drivers/media/dvb-core/dvbdev.c                    | 26 +++++++-----
- drivers/media/i2c/s5c73m3/s5c73m3-core.c           |  6 ++-
- drivers/media/i2c/s5k5baf.c                        |  3 +-
- drivers/media/i2c/smiapp/smiapp-core.c             |  3 +-
- drivers/media/i2c/tvp5150.c                        |  3 +-
- drivers/media/media-entity.c                       | 30 ++++++++------
- drivers/media/platform/exynos4-is/media-dev.c      | 19 +++++----
- drivers/media/platform/omap3isp/isp.c              | 47 ++++++++++++++--------
- drivers/media/platform/s3c-camif/camif-core.c      |  4 +-
- drivers/media/platform/vsp1/vsp1_drm.c             |  6 +--
- drivers/media/platform/vsp1/vsp1_drv.c             |  9 +++--
- drivers/media/platform/xilinx/xilinx-vipp.c        |  4 +-
- drivers/media/usb/au0828/au0828-core.c             |  3 +-
- drivers/media/usb/uvc/uvc_entity.c                 |  2 +-
- drivers/media/v4l2-core/v4l2-dev.c                 |  5 ++-
- drivers/media/v4l2-core/v4l2-device.c              |  3 +-
- drivers/media/v4l2-core/v4l2-mc.c                  | 25 +++++++-----
- drivers/staging/media/davinci_vpfe/dm365_ipipeif.c |  3 +-
- drivers/staging/media/davinci_vpfe/dm365_isif.c    |  2 +-
- drivers/staging/media/davinci_vpfe/dm365_resizer.c | 10 +++--
- .../staging/media/davinci_vpfe/vpfe_mc_capture.c   | 10 ++---
- drivers/staging/media/omap4iss/iss.c               | 17 +++++---
- drivers/staging/media/omap4iss/iss_csi2.c          |  6 ++-
- drivers/staging/media/omap4iss/iss_ipipeif.c       |  3 +-
- drivers/staging/media/omap4iss/iss_resizer.c       |  3 +-
- include/media/media-entity.h                       |  9 +++--
- sound/usb/media.c                                  | 15 ++++---
- 27 files changed, 170 insertions(+), 106 deletions(-)
-
-diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
-index e1684c5..57f3e1e 100644
---- a/drivers/media/dvb-core/dvbdev.c
-+++ b/drivers/media/dvb-core/dvbdev.c
-@@ -399,7 +399,8 @@ static int dvb_register_media_device(struct dvb_device *dvbdev,
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+index 8ee0fa91e4a0..c7b29df4a963 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+@@ -1,6 +1,337 @@
+ Renesas R-Car sound
  
- 	dvbdev->intf_devnode = media_devnode_create(dvbdev->adapter->mdev,
- 						    intf_type, 0,
--						    DVB_MAJOR, minor);
-+						    DVB_MAJOR, minor,
-+						    GFP_KERNEL);
++=============================================
++* Modules
++=============================================
++
++Renesas R-Car sound is constructed from below modules
++(for Gen2 or later)
++
++ SCU		: Sampling Rate Converter Unit
++  - SRC		: Sampling Rate Converter
++  - CMD
++   - CTU	: Channel Transfer Unit
++   - MIX	: Mixer
++   - DVC	: Digital Volume and Mute Function
++ SSIU		: Serial Sound Interface Unit
++ SSI		: Serial Sound Interface
++
++See detail of each module's channels, connection, limitation on datasheet
++
++=============================================
++* Multi channel
++=============================================
++
++Multi channel is supported by Multi-SSI, or TDM-SSI.
++
++ Multi-SSI	: 6ch case, you can use stereo x 3 SSI
++ TDM-SSI	: 6ch case, you can use TDM
++
++=============================================
++* Enable/Disable each modules
++=============================================
++
++See datasheet to check SRC/CTU/MIX/DVC connect-limitation.
++DT controls enabling/disabling module.
++${LINUX}/arch/arm/boot/dts/r8a7790-lager.dts can be good example.
++This is example of
++
++Playback: [MEM] -> [SRC2] -> [DVC0] -> [SSIU0/SSI0] -> [codec]
++Capture:  [MEM] <- [DVC1] <- [SRC3] <- [SSIU1/SSI1] <- [codec]
++
++	&rcar_sound {
++		...
++		rcar_sound,dai {
++			dai0 {
++				playback = <&ssi0 &src2 &dvc0>;
++				capture  = <&ssi1 &src3 &dvc1>;
++			};
++		};
++	};
++
++You can use below.
++${LINUX}/arch/arm/boot/dts/r8a7790.dts can be good example.
++
++	&src0	&ctu00	&mix0	&dvc0	&ssi0
++	&src1	&ctu01	&mix1	&dvc1	&ssi1
++	&src2	&ctu02			&ssi2
++	&src3	&ctu03			&ssi3
++	&src4				&ssi4
++	&src5	&ctu10			&ssi5
++	&src6	&ctu11			&ssi6
++	&src7	&ctu12			&ssi7
++	&src8	&ctu13			&ssi8
++	&src9				&ssi9
++
++=============================================
++* SRC (Sampling Rate Converter)
++=============================================
++
++ [xx]Hz        [yy]Hz
++ ------> [SRC] ------>
++
++SRC can convert [xx]Hz to [yy]Hz. Then, it has below 2 modes
++
++ Asynchronous mode:	input data / output data are based on different clocks.
++			you can use this mode on Playback / Capture
++ Synchronous mode:	input data / output data are based on same clocks.
++			This mode will be used if system doesn't have its input clock,
++			for example digital TV case.
++			you can use this mode on Playback
++
++------------------
++**     Asynchronous mode
++------------------
++
++You need to use "renesas,rsrc-card" sound card for it.
++example)
++
++	sound {
++		compatible = "renesas,rsrc-card";
++		...
++		/*
++		 * SRC Asynchronous mode setting
++		 * Playback:
++		 * All input data will be converted to 48kHz
++		 * Capture:
++		 * Inputed 48kHz data will be converted to
++		 * system specified Hz
++		 */
++		convert-rate = <48000>;
++		...
++		cpu {
++			sound-dai = <&rcar_sound>;
++		};
++		codec {
++			...
++		};
++	};
++
++------------------
++**     Synchronous mode
++------------------
++
++	> amixer set "SRC Out Rate" on
++	> aplay xxxx.wav
++	> amixer set "SRC Out Rate" 48000
++	> amixer set "SRC Out Rate" 44100
++
++=============================================
++* CTU (Channel Transfer Unit)
++=============================================
++
++ [xx]ch        [yy]ch
++ ------> [CTU] -------->
++
++CTU can convert [xx]ch to [yy]ch, or exchange outputed channel.
++CTU conversion needs matrix settings.
++For more detail information, see below
++
++	Renesas R-Car datasheet
++	 - Sampling Rate Converter Unit (SCU)
++	  - SCU Operation
++	   - CMD Block
++	    - Functional Blocks in CMD
++
++	Renesas R-Car datasheet
++	 - Sampling Rate Converter Unit (SCU)
++	  - Register Description
++	   - CTUn Scale Value exx Register (CTUn_SVxxR)
++
++	${LINUX}/sound/soc/sh/rcar/ctu.c
++	 - comment of header
++
++You need to use "renesas,rsrc-card" sound card for it.
++example)
++
++	sound {
++		compatible = "renesas,rsrc-card";
++		...
++		/*
++		 * CTU setting
++		 * All input data will be converted to 2ch
++		 * as output data
++		 */
++		convert-channels = <2>;
++		...
++		cpu {
++			sound-dai = <&rcar_sound>;
++		};
++		codec {
++			...
++		};
++	};
++
++Ex) Exchange output channel
++ Input -> Output
++  1ch  ->  0ch
++  0ch  ->  1ch
++
++  example of using matrix
++	output 0ch = (input 0ch x 0) + (input 1ch x 1)
++	output 1ch = (input 0ch x 1) + (input 1ch x 0)
++
++	amixer set "CTU Reset" on
++	amixer set "CTU Pass" 9,10
++	amixer set "CTU SV0" 0,4194304
++	amixer set "CTU SV1" 4194304,0
++
++ example of changing connection
++	amixer set "CTU Reset" on
++	amixer set "CTU Pass" 2,1
++
++=============================================
++* MIX (Mixer)
++=============================================
++
++MIX merges 2 sounds path. You can see 2 sound interface on system,
++and these sounds will be merged by MIX.
++
++	aplay -D plughw:0,0 xxxx.wav &
++	aplay -D plughw:0,1 yyyy.wav
++
++You need to use "renesas,rsrc-card" sound card for it.
++Ex)
++	[MEM] -> [SRC1] -> [CTU02] -+-> [MIX0] -> [DVC0] -> [SSI0]
++	                            |
++	[MEM] -> [SRC2] -> [CTU03] -+
++
++	sound {
++		compatible = "renesas,rsrc-card";
++		...
++		cpu@0 {
++			sound-dai = <&rcar_sound 0>;
++		};
++		cpu@1 {
++			sound-dai = <&rcar_sound 1>;
++		};
++		codec {
++			...
++		};
++	};
++
++	&rcar_sound {
++		...
++		rcar_sound,dai {
++			dai0 {
++				playback = <&src1 &ctu02 &mix0 &dvc0 &ssi0>;
++			};
++			dai1 {
++				playback = <&src2 &ctu03 &mix0 &dvc0 &ssi0>;
++			};
++		};
++	};
++
++=============================================
++* DVC (Digital Volume and Mute Function)
++=============================================
++
++DVC controls Playback/Capture volume.
++
++Playback Volume
++	amixer set "DVC Out" 100%
++
++Capture Volume
++	amixer set "DVC In" 100%
++
++Playback Mute
++	amixer set "DVC Out Mute" on
++
++Capture Mute
++	amixer set "DVC In Mute" on
++
++Volume Ramp
++	amixer set "DVC Out Ramp Up Rate"   "0.125 dB/64 steps"
++	amixer set "DVC Out Ramp Down Rate" "0.125 dB/512 steps"
++	amixer set "DVC Out Ramp" on
++	aplay xxx.wav &
++	amixer set "DVC Out"  80%  // Volume Down
++	amixer set "DVC Out" 100%  // Volume Up
++
++=============================================
++* SSIU (Serial Sound Interface Unit)
++=============================================
++
++There is no DT settings for SSIU, because SSIU will be automatically
++selected via SSI.
++SSIU can avoid some under/over run error, because it has some buffer.
++But you can't use it if SSI was PIO mode.
++In DMA mode, you can select not to use SSIU by using "no-busif" on DT.
++
++	&ssi0 {
++		no-busif;
++	};
++
++=============================================
++* SSI (Serial Sound Interface)
++=============================================
++
++**  PIO mode
++
++You can use PIO mode which is for connection check by using.
++Note: The system will drop non-SSI modules in PIO mode
++even though if DT is selecting other modules.
++
++	&ssi0 {
++		pio-transfer
++	};
++
++** DMA mode without SSIU
++
++You can use DMA without SSIU.
++Note: under/over run, or noise are likely to occur
++
++	&ssi0 {
++		no-busif;
++	};
++
++** PIN sharing
++
++Each SSI can share WS pin. It is based on platform.
++This is example if SSI1 want to share WS pin with SSI0
++
++	&ssi1 {
++		shared-pin;
++	};
++
++** Multi-SSI
++
++You can use Multi-SSI.
++This is example of SSI0/SSI1/SSI2 (= for 6ch)
++
++	&rcar_sound {
++		...
++		rcar_sound,dai {
++			dai0 {
++				playback = <&ssi0 &ssi1 &ssi2 &src0 &dvc0>;
++			};
++		};
++	};
++
++** TDM-SSI
++
++You can use TDM with SSI.
++This is example of TDM 6ch.
++Driver can automatically switches TDM <-> stereo mode in this case.
++
++	rsnd_tdm: sound {
++		compatible = "simple-audio-card";
++		...
++		simple-audio-card,cpu {
++			/* system can use TDM 6ch */
++			dai-tdm-slot-num = <6>;
++			sound-dai = <&rcar_sound>;
++		};
++		simple-audio-card,codec {
++			...
++		};
++	};
++
++
++=============================================
+ Required properties:
++=============================================
++
+ - compatible			: "renesas,rcar_sound-<soctype>", fallbacks
+ 				  "renesas,rcar_sound-gen1" if generation1, and
+ 				  "renesas,rcar_sound-gen2" if generation2
+@@ -64,7 +395,10 @@ DAI subnode properties:
+ - playback			: list of playback modules
+ - capture			: list of capture  modules
  
- 	if (!dvbdev->intf_devnode)
- 		return -ENOMEM;
-@@ -416,7 +417,7 @@ static int dvb_register_media_device(struct dvb_device *dvbdev,
- 		return 0;
++
++=============================================
+ Example:
++=============================================
  
- 	link = media_create_intf_link(dvbdev->entity, &dvbdev->intf_devnode->intf,
--				      MEDIA_LNK_FL_ENABLED);
-+				      MEDIA_LNK_FL_ENABLED, GFP_KERNEL);
- 	if (!link)
- 		return -ENOMEM;
- #endif
-@@ -558,7 +559,8 @@ static int dvb_create_io_intf_links(struct dvb_adapter *adap,
- 			if (strncmp(entity->name, name, strlen(name)))
- 				continue;
- 			link = media_create_intf_link(entity, intf,
--						      MEDIA_LNK_FL_ENABLED);
-+						      MEDIA_LNK_FL_ENABLED,
-+						      GFP_KERNEL);
- 			if (!link)
- 				return -ENOMEM;
- 		}
-@@ -680,7 +682,8 @@ int dvb_create_media_graph(struct dvb_adapter *adap,
- 	}
- 	if (demux && ca) {
- 		ret = media_create_pad_link(demux, 1, ca,
--					    0, MEDIA_LNK_FL_ENABLED);
-+					    0, MEDIA_LNK_FL_ENABLED,
-+					    GFP_KERNEL);
- 		if (ret)
- 			return -ENOMEM;
- 	}
-@@ -693,7 +696,8 @@ int dvb_create_media_graph(struct dvb_adapter *adap,
- 				    strlen(DVR_TSOUT))) {
- 					ret = media_create_pad_link(demux,
- 								++dvr_pad,
--							    entity, 0, 0);
-+							    entity, 0, 0,
-+								GFP_KERNEL);
- 					if (ret)
- 						return ret;
- 				}
-@@ -701,7 +705,8 @@ int dvb_create_media_graph(struct dvb_adapter *adap,
- 				    strlen(DEMUX_TSOUT))) {
- 					ret = media_create_pad_link(demux,
- 							      ++demux_pad,
--							    entity, 0, 0);
-+							    entity, 0, 0,
-+								GFP_KERNEL);
- 					if (ret)
- 						return ret;
- 				}
-@@ -713,14 +718,16 @@ int dvb_create_media_graph(struct dvb_adapter *adap,
- 	media_device_for_each_intf(intf, mdev) {
- 		if (intf->type == MEDIA_INTF_T_DVB_CA && ca) {
- 			link = media_create_intf_link(ca, intf,
--						      MEDIA_LNK_FL_ENABLED);
-+						      MEDIA_LNK_FL_ENABLED,
-+						      GFP_KERNEL);
- 			if (!link)
- 				return -ENOMEM;
- 		}
+ rcar_sound: sound@ec500000 {
+ 	#sound-dai-cells = <1>;
+@@ -250,7 +584,9 @@ rcar_sound: sound@ec500000 {
+ 	};
+ };
  
- 		if (intf->type == MEDIA_INTF_T_DVB_FE && tuner) {
- 			link = media_create_intf_link(tuner, intf,
--						      MEDIA_LNK_FL_ENABLED);
-+						      MEDIA_LNK_FL_ENABLED,
-+						      GFP_KERNEL);
- 			if (!link)
- 				return -ENOMEM;
- 		}
-@@ -732,7 +739,8 @@ int dvb_create_media_graph(struct dvb_adapter *adap,
- 		 */
- 		if (intf->type == MEDIA_INTF_T_DVB_DVR && demux) {
- 			link = media_create_intf_link(demux, intf,
--						      MEDIA_LNK_FL_ENABLED);
-+						      MEDIA_LNK_FL_ENABLED,
-+						      GFP_KERNEL);
- 			if (!link)
- 				return -ENOMEM;
- 		}
-diff --git a/drivers/media/i2c/s5c73m3/s5c73m3-core.c b/drivers/media/i2c/s5c73m3/s5c73m3-core.c
-index 08af58f..dd994f1 100644
---- a/drivers/media/i2c/s5c73m3/s5c73m3-core.c
-+++ b/drivers/media/i2c/s5c73m3/s5c73m3-core.c
-@@ -1484,11 +1484,13 @@ static int s5c73m3_oif_registered(struct v4l2_subdev *sd)
++=============================================
+ Example: simple sound card
++=============================================
  
- 	ret = media_create_pad_link(&state->sensor_sd.entity,
- 			S5C73M3_ISP_PAD, &state->oif_sd.entity, OIF_ISP_PAD,
--			MEDIA_LNK_FL_IMMUTABLE | MEDIA_LNK_FL_ENABLED);
-+			MEDIA_LNK_FL_IMMUTABLE | MEDIA_LNK_FL_ENABLED,
-+			GFP_KERNEL);
+ 	rsnd_ak4643: sound {
+ 		compatible = "simple-audio-card";
+@@ -290,7 +626,9 @@ Example: simple sound card
+ 	shared-pin;
+ };
  
- 	ret = media_create_pad_link(&state->sensor_sd.entity,
- 			S5C73M3_JPEG_PAD, &state->oif_sd.entity, OIF_JPEG_PAD,
--			MEDIA_LNK_FL_IMMUTABLE | MEDIA_LNK_FL_ENABLED);
-+			MEDIA_LNK_FL_IMMUTABLE | MEDIA_LNK_FL_ENABLED,
-+			GFP_KERNEL);
++=============================================
+ Example: simple sound card for TDM
++=============================================
  
- 	return ret;
- }
-diff --git a/drivers/media/i2c/s5k5baf.c b/drivers/media/i2c/s5k5baf.c
-index db82ed0..3692bec 100644
---- a/drivers/media/i2c/s5k5baf.c
-+++ b/drivers/media/i2c/s5k5baf.c
-@@ -1759,7 +1759,8 @@ static int s5k5baf_registered(struct v4l2_subdev *sd)
- 		ret = media_create_pad_link(&state->cis_sd.entity, PAD_CIS,
- 					       &state->sd.entity, PAD_CIS,
- 					       MEDIA_LNK_FL_IMMUTABLE |
--					       MEDIA_LNK_FL_ENABLED);
-+					       MEDIA_LNK_FL_ENABLED,
-+					       GFP_KERNEL);
- 	return ret;
- }
+ 	rsnd_tdm: sound {
+ 		compatible = "simple-audio-card";
+@@ -309,7 +647,9 @@ Example: simple sound card for TDM
+ 		};
+ 	};
  
-diff --git a/drivers/media/i2c/smiapp/smiapp-core.c b/drivers/media/i2c/smiapp/smiapp-core.c
-index a215efe..8c2e9ad 100644
---- a/drivers/media/i2c/smiapp/smiapp-core.c
-+++ b/drivers/media/i2c/smiapp/smiapp-core.c
-@@ -2508,7 +2508,8 @@ static int smiapp_register_subdevs(struct smiapp_sensor *sensor)
- 					     &last->sd.entity,
- 					     last->sink_pad,
- 					     MEDIA_LNK_FL_ENABLED |
--					     MEDIA_LNK_FL_IMMUTABLE);
-+					     MEDIA_LNK_FL_IMMUTABLE,
-+					     GFP_KERNEL);
- 		if (rval) {
- 			dev_err(&client->dev,
- 				"media_create_pad_link failed\n");
-diff --git a/drivers/media/i2c/tvp5150.c b/drivers/media/i2c/tvp5150.c
-index ff18444..fd99683 100644
---- a/drivers/media/i2c/tvp5150.c
-+++ b/drivers/media/i2c/tvp5150.c
-@@ -1197,7 +1197,8 @@ static int tvp5150_registered_async(struct v4l2_subdev *sd)
- 			return ret;
++=============================================
+ Example: simple sound card for Multi channel
++=============================================
  
- 		ret = media_create_pad_link(input, 0, &sd->entity,
--					    DEMOD_PAD_IF_INPUT, 0);
-+					    DEMOD_PAD_IF_INPUT, 0,
-+					    GFP_KERNEL);
- 		if (ret < 0) {
- 			media_device_unregister_entity(input);
- 			return ret;
-diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
-index 66a5392..115435b 100644
---- a/drivers/media/media-entity.c
-+++ b/drivers/media/media-entity.c
-@@ -566,14 +566,14 @@ EXPORT_SYMBOL_GPL(media_entity_put);
-  * Links management
+ &rcar_sound {
+ 	pinctrl-0 = <&sound_pins &sound_clk_pins>;
+diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
+index 93b11e1c5d7f..02d971f69eff 100644
+--- a/sound/soc/sh/rcar/dvc.c
++++ b/sound/soc/sh/rcar/dvc.c
+@@ -8,6 +8,29 @@
+  * it under the terms of the GNU General Public License version 2 as
+  * published by the Free Software Foundation.
   */
- 
--static struct media_link *media_add_link(struct list_head *head)
-+static struct media_link *media_add_link(struct list_head *head, gfp_t gfpflags)
- {
- 	struct media_link *link;
- 
- 	if (in_atomic())
- 		dump_stack();
- 
--	link = kzalloc(sizeof(*link), GFP_KERNEL);
-+	link = kzalloc(sizeof(*link), gfpflags);
- 	if (link == NULL)
- 		return NULL;
- 
-@@ -615,7 +615,8 @@ static void __media_entity_remove_link(struct media_entity *entity,
- 
- int
- media_create_pad_link(struct media_entity *source, u16 source_pad,
--			 struct media_entity *sink, u16 sink_pad, u32 flags)
-+		      struct media_entity *sink, u16 sink_pad, u32 flags,
-+		      gfp_t gfpflags)
- {
- 	struct media_link *link;
- 	struct media_link *backlink;
-@@ -624,7 +625,7 @@ media_create_pad_link(struct media_entity *source, u16 source_pad,
- 	BUG_ON(source_pad >= source->num_pads);
- 	BUG_ON(sink_pad >= sink->num_pads);
- 
--	link = media_add_link(&source->links);
-+	link = media_add_link(&source->links, gfpflags);
- 	if (link == NULL)
- 		return -ENOMEM;
- 
-@@ -639,7 +640,7 @@ media_create_pad_link(struct media_entity *source, u16 source_pad,
- 	/* Create the backlink. Backlinks are used to help graph traversal and
- 	 * are not reported to userspace.
- 	 */
--	backlink = media_add_link(&sink->links);
-+	backlink = media_add_link(&sink->links, gfpflags);
- 	if (backlink == NULL) {
- 		__media_entity_remove_link(source, link);
- 		return -ENOMEM;
-@@ -682,7 +683,7 @@ int media_create_pad_links(const struct media_device *mdev,
- 	/* Trivial case: 1:1 relation */
- 	if (source && sink)
- 		return media_create_pad_link(source, source_pad,
--					     sink, sink_pad, flags);
-+					     sink, sink_pad, flags, GFP_KERNEL);
- 
- 	/* Worse case scenario: n:n relation */
- 	if (!source && !sink) {
-@@ -696,7 +697,7 @@ int media_create_pad_links(const struct media_device *mdev,
- 					continue;
- 				ret = media_create_pad_link(source, source_pad,
- 							    sink, sink_pad,
--							    flags);
-+							    flags, GFP_KERNEL);
- 				if (ret)
- 					return ret;
- 				flags &= ~(MEDIA_LNK_FL_ENABLED |
-@@ -718,10 +719,12 @@ int media_create_pad_links(const struct media_device *mdev,
- 
- 		if (source)
- 			ret = media_create_pad_link(source, source_pad,
--						    entity, sink_pad, flags);
-+						    entity, sink_pad, flags,
-+						    GFP_KERNEL);
- 		else
- 			ret = media_create_pad_link(entity, source_pad,
--						    sink, sink_pad, flags);
-+						    sink, sink_pad, flags,
-+						    GFP_KERNEL);
- 		if (ret)
- 			return ret;
- 		flags &= ~(MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE);
-@@ -890,14 +893,15 @@ static void media_interface_init(struct media_device *mdev,
- 
- struct media_intf_devnode *media_devnode_create(struct media_device *mdev,
- 						u32 type, u32 flags,
--						u32 major, u32 minor)
-+						u32 major, u32 minor,
-+						gfp_t gfpflags)
- {
- 	struct media_intf_devnode *devnode;
- 
- 	if (in_atomic())
- 		dump_stack();
- 
--	devnode = kzalloc(sizeof(*devnode), GFP_KERNEL);
-+	devnode = kzalloc(sizeof(*devnode), gfpflags);
- 	if (!devnode)
- 		return NULL;
- 
-@@ -921,11 +925,11 @@ EXPORT_SYMBOL_GPL(media_devnode_remove);
- 
- struct media_link *media_create_intf_link(struct media_entity *entity,
- 					    struct media_interface *intf,
--					    u32 flags)
-+					    u32 flags, gfp_t gfpflags)
- {
- 	struct media_link *link;
- 
--	link = media_add_link(&intf->links);
-+	link = media_add_link(&intf->links, gfpflags);
- 	if (link == NULL)
- 		return NULL;
- 
-diff --git a/drivers/media/platform/exynos4-is/media-dev.c b/drivers/media/platform/exynos4-is/media-dev.c
-index feb521f..145d90e 100644
---- a/drivers/media/platform/exynos4-is/media-dev.c
-+++ b/drivers/media/platform/exynos4-is/media-dev.c
-@@ -798,7 +798,8 @@ static int __fimc_md_create_fimc_sink_links(struct fimc_md *fmd,
- 
- 		sink = &fmd->fimc[i]->vid_cap.subdev.entity;
- 		ret = media_create_pad_link(source, pad, sink,
--					      FIMC_SD_PAD_SINK_CAM, flags);
-+					      FIMC_SD_PAD_SINK_CAM, flags,
-+					    GFP_KERNEL);
- 		if (ret)
- 			return ret;
- 
-@@ -818,7 +819,8 @@ static int __fimc_md_create_fimc_sink_links(struct fimc_md *fmd,
- 
- 		sink = &fmd->fimc_lite[i]->subdev.entity;
- 		ret = media_create_pad_link(source, pad, sink,
--					       FLITE_SD_PAD_SINK, 0);
-+					       FLITE_SD_PAD_SINK, 0,
-+					    GFP_KERNEL);
- 		if (ret)
- 			return ret;
- 
-@@ -850,13 +852,13 @@ static int __fimc_md_create_flite_source_links(struct fimc_md *fmd)
- 		sink = &fimc->ve.vdev.entity;
- 		/* FIMC-LITE's subdev and video node */
- 		ret = media_create_pad_link(source, FLITE_SD_PAD_SOURCE_DMA,
--					       sink, 0, 0);
-+					       sink, 0, 0, GFP_KERNEL);
- 		if (ret)
- 			break;
- 		/* Link from FIMC-LITE to IS-ISP subdev */
- 		sink = &fmd->fimc_is->isp.subdev.entity;
- 		ret = media_create_pad_link(source, FLITE_SD_PAD_SOURCE_ISP,
--					       sink, 0, 0);
-+					       sink, 0, 0, GFP_KERNEL);
- 		if (ret)
- 			break;
- 	}
-@@ -880,7 +882,8 @@ static int __fimc_md_create_fimc_is_links(struct fimc_md *fmd)
- 		/* Link from FIMC-IS-ISP subdev to FIMC */
- 		sink = &fmd->fimc[i]->vid_cap.subdev.entity;
- 		ret = media_create_pad_link(source, FIMC_ISP_SD_PAD_SRC_FIFO,
--					       sink, FIMC_SD_PAD_SINK_FIFO, 0);
-+					       sink, FIMC_SD_PAD_SINK_FIFO, 0,
-+					    GFP_KERNEL);
- 		if (ret)
- 			return ret;
- 	}
-@@ -893,7 +896,7 @@ static int __fimc_md_create_fimc_is_links(struct fimc_md *fmd)
- 		return 0;
- 
- 	return media_create_pad_link(source, FIMC_ISP_SD_PAD_SRC_DMA,
--					sink, 0, 0);
-+					sink, 0, 0, GFP_KERNEL);
- }
- 
- /**
-@@ -944,7 +947,7 @@ static int fimc_md_create_links(struct fimc_md *fmd)
- 			ret = media_create_pad_link(&sensor->entity, pad,
- 					      &csis->entity, CSIS_PAD_SINK,
- 					      MEDIA_LNK_FL_IMMUTABLE |
--					      MEDIA_LNK_FL_ENABLED);
-+					      MEDIA_LNK_FL_ENABLED, GFP_KERNEL);
- 			if (ret)
- 				return ret;
- 
-@@ -996,7 +999,7 @@ static int fimc_md_create_links(struct fimc_md *fmd)
- 		sink = &fmd->fimc[i]->vid_cap.ve.vdev.entity;
- 
- 		ret = media_create_pad_link(source, FIMC_SD_PAD_SOURCE,
--					      sink, 0, flags);
-+					      sink, 0, flags, GFP_KERNEL);
- 		if (ret)
- 			break;
- 	}
-diff --git a/drivers/media/platform/omap3isp/isp.c b/drivers/media/platform/omap3isp/isp.c
-index 5d54e2c..f8d9c84 100644
---- a/drivers/media/platform/omap3isp/isp.c
-+++ b/drivers/media/platform/omap3isp/isp.c
-@@ -1669,7 +1669,7 @@ static int isp_link_entity(
- 		return -EINVAL;
- 	}
- 
--	return media_create_pad_link(entity, i, input, pad, flags);
-+	return media_create_pad_link(entity, i, input, pad, flags, GFP_KERNEL);
- }
- 
- static int isp_register_entities(struct isp_device *isp)
-@@ -1748,43 +1748,50 @@ static int isp_create_links(struct isp_device *isp)
- 	/* Create links between entities and video nodes. */
- 	ret = media_create_pad_link(
- 			&isp->isp_csi2a.subdev.entity, CSI2_PAD_SOURCE,
--			&isp->isp_csi2a.video_out.video.entity, 0, 0);
-+			&isp->isp_csi2a.video_out.video.entity, 0, 0,
-+			GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = media_create_pad_link(
- 			&isp->isp_ccp2.video_in.video.entity, 0,
--			&isp->isp_ccp2.subdev.entity, CCP2_PAD_SINK, 0);
-+			&isp->isp_ccp2.subdev.entity, CCP2_PAD_SINK, 0,
-+			GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = media_create_pad_link(
- 			&isp->isp_ccdc.subdev.entity, CCDC_PAD_SOURCE_OF,
--			&isp->isp_ccdc.video_out.video.entity, 0, 0);
-+			&isp->isp_ccdc.video_out.video.entity, 0, 0,
-+			GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = media_create_pad_link(
- 			&isp->isp_prev.video_in.video.entity, 0,
--			&isp->isp_prev.subdev.entity, PREV_PAD_SINK, 0);
-+			&isp->isp_prev.subdev.entity, PREV_PAD_SINK, 0,
-+			GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = media_create_pad_link(
- 			&isp->isp_prev.subdev.entity, PREV_PAD_SOURCE,
--			&isp->isp_prev.video_out.video.entity, 0, 0);
-+			&isp->isp_prev.video_out.video.entity, 0, 0,
-+			GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = media_create_pad_link(
- 			&isp->isp_res.video_in.video.entity, 0,
--			&isp->isp_res.subdev.entity, RESZ_PAD_SINK, 0);
-+			&isp->isp_res.subdev.entity, RESZ_PAD_SINK, 0,
-+			GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = media_create_pad_link(
- 			&isp->isp_res.subdev.entity, RESZ_PAD_SOURCE,
--			&isp->isp_res.video_out.video.entity, 0, 0);
-+			&isp->isp_res.video_out.video.entity, 0, 0,
-+			GFP_KERNEL);
- 
- 	if (ret < 0)
- 		return ret;
-@@ -1792,52 +1799,60 @@ static int isp_create_links(struct isp_device *isp)
- 	/* Create links between entities. */
- 	ret = media_create_pad_link(
- 			&isp->isp_csi2a.subdev.entity, CSI2_PAD_SOURCE,
--			&isp->isp_ccdc.subdev.entity, CCDC_PAD_SINK, 0);
-+			&isp->isp_ccdc.subdev.entity, CCDC_PAD_SINK, 0,
-+			GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = media_create_pad_link(
- 			&isp->isp_ccp2.subdev.entity, CCP2_PAD_SOURCE,
--			&isp->isp_ccdc.subdev.entity, CCDC_PAD_SINK, 0);
-+			&isp->isp_ccdc.subdev.entity, CCDC_PAD_SINK, 0,
-+			GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = media_create_pad_link(
- 			&isp->isp_ccdc.subdev.entity, CCDC_PAD_SOURCE_VP,
--			&isp->isp_prev.subdev.entity, PREV_PAD_SINK, 0);
-+			&isp->isp_prev.subdev.entity, PREV_PAD_SINK, 0,
-+			GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = media_create_pad_link(
- 			&isp->isp_ccdc.subdev.entity, CCDC_PAD_SOURCE_OF,
--			&isp->isp_res.subdev.entity, RESZ_PAD_SINK, 0);
-+			&isp->isp_res.subdev.entity, RESZ_PAD_SINK, 0,
-+			GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = media_create_pad_link(
- 			&isp->isp_prev.subdev.entity, PREV_PAD_SOURCE,
--			&isp->isp_res.subdev.entity, RESZ_PAD_SINK, 0);
-+			&isp->isp_res.subdev.entity, RESZ_PAD_SINK, 0,
-+			GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = media_create_pad_link(
- 			&isp->isp_ccdc.subdev.entity, CCDC_PAD_SOURCE_VP,
- 			&isp->isp_aewb.subdev.entity, 0,
--			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE);
-+			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE,
-+			GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = media_create_pad_link(
- 			&isp->isp_ccdc.subdev.entity, CCDC_PAD_SOURCE_VP,
- 			&isp->isp_af.subdev.entity, 0,
--			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE);
-+			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE,
-+			GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = media_create_pad_link(
- 			&isp->isp_ccdc.subdev.entity, CCDC_PAD_SOURCE_VP,
- 			&isp->isp_hist.subdev.entity, 0,
--			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE);
-+			MEDIA_LNK_FL_ENABLED | MEDIA_LNK_FL_IMMUTABLE,
-+			GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
-diff --git a/drivers/media/platform/s3c-camif/camif-core.c b/drivers/media/platform/s3c-camif/camif-core.c
-index 0b44b9a..a49b4c3 100644
---- a/drivers/media/platform/s3c-camif/camif-core.c
-+++ b/drivers/media/platform/s3c-camif/camif-core.c
-@@ -266,7 +266,7 @@ static int camif_create_media_links(struct camif_dev *camif)
- 	ret = media_create_pad_link(&camif->sensor.sd->entity, 0,
- 				&camif->subdev.entity, CAMIF_SD_PAD_SINK,
- 				MEDIA_LNK_FL_IMMUTABLE |
--				MEDIA_LNK_FL_ENABLED);
-+				MEDIA_LNK_FL_ENABLED, GFP_KERNEL);
- 	if (ret)
- 		return ret;
- 
-@@ -274,7 +274,7 @@ static int camif_create_media_links(struct camif_dev *camif)
- 		ret = media_create_pad_link(&camif->subdev.entity, i,
- 				&camif->vp[i - 1].vdev.entity, 0,
- 				MEDIA_LNK_FL_IMMUTABLE |
--				MEDIA_LNK_FL_ENABLED);
-+				MEDIA_LNK_FL_ENABLED, GFP_KERNEL);
- 	}
- 
- 	return ret;
-diff --git a/drivers/media/platform/vsp1/vsp1_drm.c b/drivers/media/platform/vsp1/vsp1_drm.c
-index 021fe57..f868dec 100644
---- a/drivers/media/platform/vsp1/vsp1_drm.c
-+++ b/drivers/media/platform/vsp1/vsp1_drm.c
-@@ -525,7 +525,7 @@ int vsp1_drm_create_links(struct vsp1_device *vsp1)
- 		ret = media_create_pad_link(&rpf->entity.subdev.entity,
- 					    RWPF_PAD_SOURCE,
- 					    &vsp1->bru->entity.subdev.entity,
--					    i, flags);
-+					    i, flags, GFP_KERNEL);
- 		if (ret < 0)
- 			return ret;
- 
-@@ -536,7 +536,7 @@ int vsp1_drm_create_links(struct vsp1_device *vsp1)
- 	ret = media_create_pad_link(&vsp1->bru->entity.subdev.entity,
- 				    vsp1->bru->entity.source_pad,
- 				    &vsp1->wpf[0]->entity.subdev.entity,
--				    RWPF_PAD_SINK, flags);
-+				    RWPF_PAD_SINK, flags, GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -546,7 +546,7 @@ int vsp1_drm_create_links(struct vsp1_device *vsp1)
- 	ret = media_create_pad_link(&vsp1->wpf[0]->entity.subdev.entity,
- 				    RWPF_PAD_SOURCE,
- 				    &vsp1->lif->entity.subdev.entity,
--				    LIF_PAD_SINK, flags);
-+				    LIF_PAD_SINK, flags, GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
-diff --git a/drivers/media/platform/vsp1/vsp1_drv.c b/drivers/media/platform/vsp1/vsp1_drv.c
-index 25750a0..7295587 100644
---- a/drivers/media/platform/vsp1/vsp1_drv.c
-+++ b/drivers/media/platform/vsp1/vsp1_drv.c
-@@ -125,7 +125,8 @@ static int vsp1_create_sink_links(struct vsp1_device *vsp1,
- 
- 			ret = media_create_pad_link(&source->subdev.entity,
- 						       source->source_pad,
--						       entity, pad, flags);
-+						       entity, pad, flags,
-+						    GFP_KERNEL);
- 			if (ret < 0)
- 				return ret;
- 
-@@ -157,7 +158,7 @@ static int vsp1_uapi_create_links(struct vsp1_device *vsp1)
- 		ret = media_create_pad_link(&vsp1->wpf[0]->entity.subdev.entity,
- 					    RWPF_PAD_SOURCE,
- 					    &vsp1->lif->entity.subdev.entity,
--					    LIF_PAD_SINK, 0);
-+					    LIF_PAD_SINK, 0, GFP_KERNEL);
- 		if (ret < 0)
- 			return ret;
- 	}
-@@ -169,7 +170,7 @@ static int vsp1_uapi_create_links(struct vsp1_device *vsp1)
- 					    &rpf->entity.subdev.entity,
- 					    RWPF_PAD_SINK,
- 					    MEDIA_LNK_FL_ENABLED |
--					    MEDIA_LNK_FL_IMMUTABLE);
-+					    MEDIA_LNK_FL_IMMUTABLE, GFP_KERNEL);
- 		if (ret < 0)
- 			return ret;
- 	}
-@@ -188,7 +189,7 @@ static int vsp1_uapi_create_links(struct vsp1_device *vsp1)
- 		ret = media_create_pad_link(&wpf->entity.subdev.entity,
- 					    RWPF_PAD_SOURCE,
- 					    &wpf->video->video.entity, 0,
--					    flags);
-+					    flags, GFP_KERNEL);
- 		if (ret < 0)
- 			return ret;
- 	}
-diff --git a/drivers/media/platform/xilinx/xilinx-vipp.c b/drivers/media/platform/xilinx/xilinx-vipp.c
-index e795a45..b444db4 100644
---- a/drivers/media/platform/xilinx/xilinx-vipp.c
-+++ b/drivers/media/platform/xilinx/xilinx-vipp.c
-@@ -158,7 +158,7 @@ static int xvip_graph_build_one(struct xvip_composite_device *xdev,
- 
- 		ret = media_create_pad_link(local, local_pad->index,
- 					       remote, remote_pad->index,
--					       link_flags);
-+					       link_flags, GFP_KERNEL);
- 		if (ret < 0) {
- 			dev_err(xdev->dev,
- 				"failed to create %s:%u -> %s:%u link\n",
-@@ -272,7 +272,7 @@ static int xvip_graph_build_dma(struct xvip_composite_device *xdev)
- 
- 		ret = media_create_pad_link(source, source_pad->index,
- 					       sink, sink_pad->index,
--					       link_flags);
-+					       link_flags, GFP_KERNEL);
- 		if (ret < 0) {
- 			dev_err(xdev->dev,
- 				"failed to create %s:%u -> %s:%u link\n",
-diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
-index 552ac58..de9ab11 100644
---- a/drivers/media/usb/au0828/au0828-core.c
-+++ b/drivers/media/usb/au0828/au0828-core.c
-@@ -251,7 +251,8 @@ create_link:
- 		ret = media_create_pad_link(decoder,
- 					    DEMOD_PAD_AUDIO_OUT,
- 					    mixer, 0,
--					    MEDIA_LNK_FL_ENABLED);
-+					    MEDIA_LNK_FL_ENABLED,
-+					    GFP_KERNEL);
- 		if (ret)
- 			dev_err(&dev->usbdev->dev,
- 				"Mixer Pad Link Create Error: %d\n", ret);
-diff --git a/drivers/media/usb/uvc/uvc_entity.c b/drivers/media/usb/uvc/uvc_entity.c
-index ac386bb..d9555dc 100644
---- a/drivers/media/usb/uvc/uvc_entity.c
-+++ b/drivers/media/usb/uvc/uvc_entity.c
-@@ -53,7 +53,7 @@ static int uvc_mc_create_links(struct uvc_video_chain *chain,
- 
- 		remote_pad = remote->num_pads - 1;
- 		ret = media_create_pad_link(source, remote_pad,
--					       sink, i, flags);
-+					       sink, i, flags, GFP_KERNEL);
- 		if (ret < 0)
- 			return ret;
- 	}
-diff --git a/drivers/media/v4l2-core/v4l2-dev.c b/drivers/media/v4l2-core/v4l2-dev.c
-index d8e5994..b0f53a2 100644
---- a/drivers/media/v4l2-core/v4l2-dev.c
-+++ b/drivers/media/v4l2-core/v4l2-dev.c
-@@ -786,7 +786,7 @@ static int video_register_media_controller(struct video_device *vdev, int type)
- 	vdev->intf_devnode = media_devnode_create(vdev->v4l2_dev->mdev,
- 						  intf_type,
- 						  0, VIDEO_MAJOR,
--						  vdev->minor);
-+						  vdev->minor, GFP_KERNEL);
- 	if (!vdev->intf_devnode) {
- 		media_device_unregister_entity(&vdev->entity);
- 		return -ENOMEM;
-@@ -797,7 +797,8 @@ static int video_register_media_controller(struct video_device *vdev, int type)
- 
- 		link = media_create_intf_link(&vdev->entity,
- 					      &vdev->intf_devnode->intf,
--					      MEDIA_LNK_FL_ENABLED);
-+					      MEDIA_LNK_FL_ENABLED,
-+					      GFP_KERNEL);
- 		if (!link) {
- 			media_devnode_remove(vdev->intf_devnode);
- 			media_device_unregister_entity(&vdev->entity);
-diff --git a/drivers/media/v4l2-core/v4l2-device.c b/drivers/media/v4l2-core/v4l2-device.c
-index 06fa5f1..c7514e7 100644
---- a/drivers/media/v4l2-core/v4l2-device.c
-+++ b/drivers/media/v4l2-core/v4l2-device.c
-@@ -266,7 +266,8 @@ int v4l2_device_register_subdev_nodes(struct v4l2_device *v4l2_dev)
- 
- 			link = media_create_intf_link(&sd->entity,
- 						      &vdev->intf_devnode->intf,
--						      MEDIA_LNK_FL_ENABLED);
-+						      MEDIA_LNK_FL_ENABLED,
-+						      GFP_KERNEL);
- 			if (!link) {
- 				err = -ENOMEM;
- 				goto clean_up;
-diff --git a/drivers/media/v4l2-core/v4l2-mc.c b/drivers/media/v4l2-core/v4l2-mc.c
-index 40ee864..b1652f9 100644
---- a/drivers/media/v4l2-core/v4l2-mc.c
-+++ b/drivers/media/v4l2-core/v4l2-mc.c
-@@ -92,7 +92,8 @@ int v4l2_mc_create_media_graph(struct media_device *mdev)
- 				continue;
- 			ret = media_create_pad_link(entity, 0,
- 						    io_v4l, 0,
--						    MEDIA_LNK_FL_ENABLED);
-+						    MEDIA_LNK_FL_ENABLED,
-+						    GFP_KERNEL);
- 			if (ret)
- 				return ret;
- 		}
-@@ -110,18 +111,21 @@ int v4l2_mc_create_media_graph(struct media_device *mdev)
- 			ret = media_create_pad_link(tuner, TUNER_PAD_OUTPUT,
- 						    if_vid,
- 						    IF_VID_DEC_PAD_IF_INPUT,
--						    MEDIA_LNK_FL_ENABLED);
-+						    MEDIA_LNK_FL_ENABLED,
-+						    GFP_KERNEL);
- 			if (ret)
- 				return ret;
- 			ret = media_create_pad_link(if_vid, IF_VID_DEC_PAD_OUT,
- 						decoder, DEMOD_PAD_IF_INPUT,
--						MEDIA_LNK_FL_ENABLED);
-+						MEDIA_LNK_FL_ENABLED,
-+						    GFP_KERNEL);
- 			if (ret)
- 				return ret;
- 		} else {
- 			ret = media_create_pad_link(tuner, TUNER_PAD_OUTPUT,
- 						decoder, DEMOD_PAD_IF_INPUT,
--						MEDIA_LNK_FL_ENABLED);
-+						MEDIA_LNK_FL_ENABLED,
-+						GFP_KERNEL);
- 			if (ret)
- 				return ret;
- 		}
-@@ -130,7 +134,8 @@ int v4l2_mc_create_media_graph(struct media_device *mdev)
- 			ret = media_create_pad_link(tuner, TUNER_PAD_AUD_OUT,
- 						    if_aud,
- 						    IF_AUD_DEC_PAD_IF_INPUT,
--						    MEDIA_LNK_FL_ENABLED);
-+						    MEDIA_LNK_FL_ENABLED,
-+						    GFP_KERNEL);
- 			if (ret)
- 				return ret;
- 		} else {
-@@ -143,7 +148,7 @@ int v4l2_mc_create_media_graph(struct media_device *mdev)
- 	if (io_v4l) {
- 		ret = media_create_pad_link(decoder, DEMOD_PAD_VID_OUT,
- 					io_v4l, 0,
--					MEDIA_LNK_FL_ENABLED);
-+					MEDIA_LNK_FL_ENABLED, GFP_KERNEL);
- 		if (ret)
- 			return ret;
- 	}
-@@ -151,7 +156,7 @@ int v4l2_mc_create_media_graph(struct media_device *mdev)
- 	if (io_swradio) {
- 		ret = media_create_pad_link(decoder, DEMOD_PAD_VID_OUT,
- 					io_swradio, 0,
--					MEDIA_LNK_FL_ENABLED);
-+					MEDIA_LNK_FL_ENABLED, GFP_KERNEL);
- 		if (ret)
- 			return ret;
- 	}
-@@ -159,7 +164,7 @@ int v4l2_mc_create_media_graph(struct media_device *mdev)
- 	if (io_vbi) {
- 		ret = media_create_pad_link(decoder, DEMOD_PAD_VBI_OUT,
- 					    io_vbi, 0,
--					    MEDIA_LNK_FL_ENABLED);
-+					    MEDIA_LNK_FL_ENABLED, GFP_KERNEL);
- 		if (ret)
- 			return ret;
- 	}
-@@ -174,13 +179,13 @@ int v4l2_mc_create_media_graph(struct media_device *mdev)
- 
- 			ret = media_create_pad_link(entity, 0, tuner,
- 						    TUNER_PAD_RF_INPUT,
--						    flags);
-+						    flags, GFP_KERNEL);
- 			break;
- 		case MEDIA_ENT_F_CONN_SVIDEO:
- 		case MEDIA_ENT_F_CONN_COMPOSITE:
- 			ret = media_create_pad_link(entity, 0, decoder,
- 						    DEMOD_PAD_IF_INPUT,
--						    flags);
-+						    flags, GFP_KERNEL);
- 			break;
- 		default:
- 			continue;
-diff --git a/drivers/staging/media/davinci_vpfe/dm365_ipipeif.c b/drivers/staging/media/davinci_vpfe/dm365_ipipeif.c
-index 633d645..d1442b9 100644
---- a/drivers/staging/media/davinci_vpfe/dm365_ipipeif.c
-+++ b/drivers/staging/media/davinci_vpfe/dm365_ipipeif.c
-@@ -977,7 +977,8 @@ vpfe_ipipeif_register_entities(struct vpfe_ipipeif_device *ipipeif,
- 
- 	flags = 0;
- 	ret = media_create_pad_link(&ipipeif->video_in.video_dev.entity, 0,
--					&ipipeif->subdev.entity, 0, flags);
-+					&ipipeif->subdev.entity, 0, flags,
-+				    GFP_KERNEL);
- 	if (ret < 0)
- 		goto fail;
- 
-diff --git a/drivers/staging/media/davinci_vpfe/dm365_isif.c b/drivers/staging/media/davinci_vpfe/dm365_isif.c
-index 9905789..2470655 100644
---- a/drivers/staging/media/davinci_vpfe/dm365_isif.c
-+++ b/drivers/staging/media/davinci_vpfe/dm365_isif.c
-@@ -1824,7 +1824,7 @@ int vpfe_isif_register_entities(struct vpfe_isif_device *isif,
- 	/* connect isif to video node */
- 	ret = media_create_pad_link(&isif->subdev.entity, 1,
- 				       &isif->video_out.video_dev.entity,
--				       0, flags);
-+				       0, flags, GFP_KERNEL);
- 	if (ret < 0)
- 		goto out_create_link;
- 	return 0;
-diff --git a/drivers/staging/media/davinci_vpfe/dm365_resizer.c b/drivers/staging/media/davinci_vpfe/dm365_resizer.c
-index a91395c..067f699 100644
---- a/drivers/staging/media/davinci_vpfe/dm365_resizer.c
-+++ b/drivers/staging/media/davinci_vpfe/dm365_resizer.c
-@@ -1833,26 +1833,28 @@ int vpfe_resizer_register_entities(struct vpfe_resizer_device *resizer,
- 	/* create link between Resizer Crop----> Resizer A*/
- 	ret = media_create_pad_link(&resizer->crop_resizer.subdev.entity, 1,
- 				&resizer->resizer_a.subdev.entity,
--				0, flags);
-+				0, flags, GFP_KERNEL);
- 	if (ret < 0)
- 		goto out_create_link;
- 
- 	/* create link between Resizer Crop----> Resizer B*/
- 	ret = media_create_pad_link(&resizer->crop_resizer.subdev.entity, 2,
- 				&resizer->resizer_b.subdev.entity,
--				0, flags);
-+				0, flags, GFP_KERNEL);
- 	if (ret < 0)
- 		goto out_create_link;
- 
- 	/* create link between Resizer A ----> video out */
- 	ret = media_create_pad_link(&resizer->resizer_a.subdev.entity, 1,
--		&resizer->resizer_a.video_out.video_dev.entity, 0, flags);
-+		&resizer->resizer_a.video_out.video_dev.entity, 0, flags,
-+		GFP_KERNEL);
- 	if (ret < 0)
- 		goto out_create_link;
- 
- 	/* create link between Resizer B ----> video out */
- 	ret = media_create_pad_link(&resizer->resizer_b.subdev.entity, 1,
--		&resizer->resizer_b.video_out.video_dev.entity, 0, flags);
-+		&resizer->resizer_b.video_out.video_dev.entity, 0, flags,
-+		GFP_KERNEL);
- 	if (ret < 0)
- 		goto out_create_link;
- 
-diff --git a/drivers/staging/media/davinci_vpfe/vpfe_mc_capture.c b/drivers/staging/media/davinci_vpfe/vpfe_mc_capture.c
-index ec46f36..bee9f5c 100644
---- a/drivers/staging/media/davinci_vpfe/vpfe_mc_capture.c
-+++ b/drivers/staging/media/davinci_vpfe/vpfe_mc_capture.c
-@@ -447,32 +447,32 @@ static int vpfe_register_entities(struct vpfe_device *vpfe_dev)
- 		if (vpfe_dev->sd[i]->entity.num_pads) {
- 			ret = media_create_pad_link(&vpfe_dev->sd[i]->entity,
- 				0, &vpfe_dev->vpfe_isif.subdev.entity,
--				0, flags);
-+				0, flags, GFP_KERNEL);
- 			if (ret < 0)
- 				goto out_resizer_register;
- 		}
- 
- 	ret = media_create_pad_link(&vpfe_dev->vpfe_isif.subdev.entity, 1,
- 				       &vpfe_dev->vpfe_ipipeif.subdev.entity,
--				       0, flags);
-+				       0, flags, GFP_KERNEL);
- 	if (ret < 0)
- 		goto out_resizer_register;
- 
- 	ret = media_create_pad_link(&vpfe_dev->vpfe_ipipeif.subdev.entity, 1,
- 				       &vpfe_dev->vpfe_ipipe.subdev.entity,
--				       0, flags);
-+				       0, flags, GFP_KERNEL);
- 	if (ret < 0)
- 		goto out_resizer_register;
- 
- 	ret = media_create_pad_link(&vpfe_dev->vpfe_ipipe.subdev.entity,
- 			1, &vpfe_dev->vpfe_resizer.crop_resizer.subdev.entity,
--			0, flags);
-+			0, flags, GFP_KERNEL);
- 	if (ret < 0)
- 		goto out_resizer_register;
- 
- 	ret = media_create_pad_link(&vpfe_dev->vpfe_ipipeif.subdev.entity, 1,
- 			&vpfe_dev->vpfe_resizer.crop_resizer.subdev.entity,
--			0, flags);
-+			0, flags, GFP_KERNEL);
- 	if (ret < 0)
- 		goto out_resizer_register;
- 
-diff --git a/drivers/staging/media/omap4iss/iss.c b/drivers/staging/media/omap4iss/iss.c
-index fb80d2b..933c8a7 100644
---- a/drivers/staging/media/omap4iss/iss.c
-+++ b/drivers/staging/media/omap4iss/iss.c
-@@ -1065,7 +1065,7 @@ static int iss_register_entities(struct iss_device *iss)
- 		}
- 
- 		ret = media_create_pad_link(&sensor->entity, 0, input, pad,
--					       flags);
-+					       flags, GFP_KERNEL);
- 		if (ret < 0)
- 			goto done;
- 	}
-@@ -1110,31 +1110,36 @@ static int iss_create_links(struct iss_device *iss)
- 	/* Connect the submodules. */
- 	ret = media_create_pad_link(
- 			&iss->csi2a.subdev.entity, CSI2_PAD_SOURCE,
--			&iss->ipipeif.subdev.entity, IPIPEIF_PAD_SINK, 0);
-+			&iss->ipipeif.subdev.entity, IPIPEIF_PAD_SINK, 0,
-+			GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = media_create_pad_link(
- 			&iss->csi2b.subdev.entity, CSI2_PAD_SOURCE,
--			&iss->ipipeif.subdev.entity, IPIPEIF_PAD_SINK, 0);
-+			&iss->ipipeif.subdev.entity, IPIPEIF_PAD_SINK, 0,
-+			GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = media_create_pad_link(
- 			&iss->ipipeif.subdev.entity, IPIPEIF_PAD_SOURCE_VP,
--			&iss->resizer.subdev.entity, RESIZER_PAD_SINK, 0);
-+			&iss->resizer.subdev.entity, RESIZER_PAD_SINK, 0,
-+			GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = media_create_pad_link(
- 			&iss->ipipeif.subdev.entity, IPIPEIF_PAD_SOURCE_VP,
--			&iss->ipipe.subdev.entity, IPIPE_PAD_SINK, 0);
-+			&iss->ipipe.subdev.entity, IPIPE_PAD_SINK, 0,
-+			GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = media_create_pad_link(
- 			&iss->ipipe.subdev.entity, IPIPE_PAD_SOURCE_VP,
--			&iss->resizer.subdev.entity, RESIZER_PAD_SINK, 0);
-+			&iss->resizer.subdev.entity, RESIZER_PAD_SINK, 0,
-+			GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
-diff --git a/drivers/staging/media/omap4iss/iss_csi2.c b/drivers/staging/media/omap4iss/iss_csi2.c
-index aaca39d..4b40132 100644
---- a/drivers/staging/media/omap4iss/iss_csi2.c
-+++ b/drivers/staging/media/omap4iss/iss_csi2.c
-@@ -1352,13 +1352,15 @@ int omap4iss_csi2_create_links(struct iss_device *iss)
- 
- 	/* Connect the CSI2a subdev to the video node. */
- 	ret = media_create_pad_link(&csi2a->subdev.entity, CSI2_PAD_SOURCE,
--				    &csi2a->video_out.video.entity, 0, 0);
-+				    &csi2a->video_out.video.entity, 0, 0,
-+				    GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
- 	/* Connect the CSI2b subdev to the video node. */
- 	ret = media_create_pad_link(&csi2b->subdev.entity, CSI2_PAD_SOURCE,
--				    &csi2b->video_out.video.entity, 0, 0);
-+				    &csi2b->video_out.video.entity, 0, 0,
-+				    GFP_KERNEL);
- 	if (ret < 0)
- 		return ret;
- 
-diff --git a/drivers/staging/media/omap4iss/iss_ipipeif.c b/drivers/staging/media/omap4iss/iss_ipipeif.c
-index 23de833..2f124b0 100644
---- a/drivers/staging/media/omap4iss/iss_ipipeif.c
-+++ b/drivers/staging/media/omap4iss/iss_ipipeif.c
-@@ -827,7 +827,8 @@ int omap4iss_ipipeif_create_links(struct iss_device *iss)
- 	/* Connect the IPIPEIF subdev to the video node. */
- 	return media_create_pad_link(&ipipeif->subdev.entity,
- 				     IPIPEIF_PAD_SOURCE_ISIF_SF,
--				     &ipipeif->video_out.video.entity, 0, 0);
-+				     &ipipeif->video_out.video.entity, 0, 0,
-+				     GFP_KERNEL);
- }
- 
- /*
-diff --git a/drivers/staging/media/omap4iss/iss_resizer.c b/drivers/staging/media/omap4iss/iss_resizer.c
-index f1d352c..8d5766a 100644
---- a/drivers/staging/media/omap4iss/iss_resizer.c
-+++ b/drivers/staging/media/omap4iss/iss_resizer.c
-@@ -869,7 +869,8 @@ int omap4iss_resizer_create_links(struct iss_device *iss)
- 	/* Connect the RESIZER subdev to the video node. */
- 	return media_create_pad_link(&resizer->subdev.entity,
- 				     RESIZER_PAD_SOURCE_MEM,
--				     &resizer->video_out.video.entity, 0, 0);
-+				     &resizer->video_out.video.entity, 0, 0,
-+				     GFP_KERNEL);
- }
- 
- /*
-diff --git a/include/media/media-entity.h b/include/media/media-entity.h
-index 6dc9e4e..0665c2d 100644
---- a/include/media/media-entity.h
-+++ b/include/media/media-entity.h
-@@ -595,6 +595,7 @@ static inline void media_entity_cleanup(struct media_entity *entity) {};
-  * @sink:	pointer to &media_entity of the sink pad.
-  * @sink_pad:	number of the sink pad in the pads array.
-  * @flags:	Link flags, as defined in include/uapi/linux/media.h.
-+ * @gfpflags:	Get Free Page (GFP) flags, as defined in include/linux/gfp.h
-  *
-  * Valid values for flags:
-  * A %MEDIA_LNK_FL_ENABLED flag indicates that the link is enabled and can be
-@@ -613,7 +614,7 @@ static inline void media_entity_cleanup(struct media_entity *entity) {};
-  */
- __must_check int media_create_pad_link(struct media_entity *source,
- 			u16 source_pad, struct media_entity *sink,
--			u16 sink_pad, u32 flags);
-+			u16 sink_pad, u32 flags, gfp_t gfpflags);
- 
- /**
-  * media_create_pad_links() - creates a link between two entities.
-@@ -883,11 +884,12 @@ void __media_entity_pipeline_stop(struct media_entity *entity);
- struct media_intf_devnode *
- __must_check media_devnode_create(struct media_device *mdev,
- 				  u32 type, u32 flags,
--				  u32 major, u32 minor);
-+				  u32 major, u32 minor, gfp_t gfpflags);
- /**
-  * media_devnode_remove() - removes a device node interface
-  *
-  * @devnode:	pointer to &media_intf_devnode to be freed.
-+ * @gfpflags:	Get Free Page (GFP) flags, as defined in include/linux/gfp.h
-  *
-  * When a device node interface is removed, all links to it are automatically
-  * removed.
-@@ -901,6 +903,7 @@ struct media_link *
-  * @entity:	pointer to %media_entity
-  * @intf:	pointer to %media_interface
-  * @flags:	Link flags, as defined in include/uapi/linux/media.h.
-+ * @gfpflags:	Get Free Page (GFP) flags, as defined in include/linux/gfp.h
-  *
-  *
-  * Valid values for flags:
-@@ -921,7 +924,7 @@ struct media_link *
-  */
- __must_check media_create_intf_link(struct media_entity *entity,
- 				    struct media_interface *intf,
--				    u32 flags);
-+				    u32 flags, gfp_t gfpflags);
- /**
-  * __media_remove_intf_link() - remove a single interface link
-  *
-diff --git a/sound/usb/media.c b/sound/usb/media.c
-index 93a50d01..f5ac038 100644
---- a/sound/usb/media.c
-+++ b/sound/usb/media.c
-@@ -88,14 +88,16 @@ int media_snd_stream_init(struct snd_usb_substream *subs, struct snd_pcm *pcm,
- 
- 	mctl->intf_devnode = media_devnode_create(mdev, intf_type, 0,
- 						  MAJOR(pcm_dev->devt),
--						  MINOR(pcm_dev->devt));
-+						  MINOR(pcm_dev->devt),
-+						  GFP_KERNEL);
- 	if (!mctl->intf_devnode) {
- 		ret = -ENOMEM;
- 		goto unregister_entity;
- 	}
- 	mctl->intf_link = media_create_intf_link(&mctl->media_entity,
- 						 &mctl->intf_devnode->intf,
--						 MEDIA_LNK_FL_ENABLED);
-+						 MEDIA_LNK_FL_ENABLED,
-+						 GFP_KERNEL);
- 	if (!mctl->intf_link) {
- 		ret = -ENOMEM;
- 		goto devnode_remove;
-@@ -107,7 +109,8 @@ int media_snd_stream_init(struct snd_usb_substream *subs, struct snd_pcm *pcm,
- 		case MEDIA_ENT_F_AUDIO_MIXER:
- 			ret = media_create_pad_link(entity, mixer_pad,
- 						    &mctl->media_entity, 0,
--						    MEDIA_LNK_FL_ENABLED);
-+						    MEDIA_LNK_FL_ENABLED,
-+						    GFP_KERNEL);
- 			if (ret)
- 				goto remove_intf_link;
- 			break;
-@@ -180,7 +183,8 @@ int media_snd_mixer_init(struct snd_usb_audio *chip)
- 	if (!ctl_intf) {
- 		ctl_intf = media_devnode_create(mdev, intf_type, 0,
- 						MAJOR(ctl_dev->devt),
--						MINOR(ctl_dev->devt));
-+						MINOR(ctl_dev->devt),
-+						GFP_KERNEL);
- 		if (!ctl_intf)
- 			return -ENOMEM;
- 		chip->ctl_intf_media_devnode = ctl_intf;
-@@ -213,7 +217,8 @@ int media_snd_mixer_init(struct snd_usb_audio *chip)
- 
- 		mctl->intf_link = media_create_intf_link(&mctl->media_entity,
- 							 &ctl_intf->intf,
--							 MEDIA_LNK_FL_ENABLED);
-+							 MEDIA_LNK_FL_ENABLED,
-+							 GFP_KERNEL);
- 		if (!mctl->intf_link) {
- 			media_device_unregister_entity(&mctl->media_entity);
- 			media_entity_cleanup(&mctl->media_entity);
++
++/*
++ * Playback Volume
++ *	amixer set "DVC Out" 100%
++ *
++ * Capture Volume
++ *	amixer set "DVC In" 100%
++ *
++ * Playback Mute
++ *	amixer set "DVC Out Mute" on
++ *
++ * Capture Mute
++ *	amixer set "DVC In Mute" on
++ *
++ * Volume Ramp
++ *	amixer set "DVC Out Ramp Up Rate"   "0.125 dB/64 steps"
++ *	amixer set "DVC Out Ramp Down Rate" "0.125 dB/512 steps"
++ *	amixer set "DVC Out Ramp" on
++ *	aplay xxx.wav &
++ *	amixer set "DVC Out"  80%  // Volume Down
++ *	amixer set "DVC Out" 100%  // Volume Up
++ */
++
+ #include "rsnd.h"
+ 
+ #define RSND_DVC_NAME_SIZE	16
 -- 
-2.5.0
+2.7.0
