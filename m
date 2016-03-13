@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Move module id defines"
-	to the asoc tree
-Date: Sun, 13 Mar 2016 15:15:06 +0700
-Message-ID: <E1af1B4-0004JF-6D@finisterre>
-References: <1457671376-18667-2-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: omap-hdmi-audio: Support for DRA7xx
+	family" to the asoc tree
+Date: Sun, 13 Mar 2016 15:15:07 +0700
+Message-ID: <E1af1B5-0004Jl-Ng@finisterre>
+References: <1457705094-7556-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2FB562605B6
- for <alsa-devel@alsa-project.org>; Sun, 13 Mar 2016 09:15:13 +0100 (CET)
-In-Reply-To: <1457671376-18667-2-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A60182608F0
+ for <alsa-devel@alsa-project.org>; Sun, 13 Mar 2016 09:15:15 +0100 (CET)
+In-Reply-To: <1457705094-7556-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Move module id defines
+   ASoC: omap-hdmi-audio: Support for DRA7xx family
 
 has been applied to the asoc tree at
 
@@ -53,50 +53,30 @@ to this mail.
 Thanks,
 Mark
 
->From 39fa37d51ae904968c49ef49165df7fec66fd9ea Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Fri, 11 Mar 2016 10:12:49 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Move module id defines
+>From e04fadaa169b09609fb55779236d35fb3197c932 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Fri, 11 Mar 2016 16:04:54 +0200
+Subject: [PATCH] ASoC: omap-hdmi-audio: Support for DRA7xx family
 
-The module ID defines are common to other platforms so can be
-reused if moved to a common driver header so move it
+DRA7xx family is compatible with the OMAP5 HDMI.
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-sst-dsp.h | 4 ++++
- sound/soc/intel/skylake/skl-sst.c     | 3 ---
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/omap/omap-hdmi-audio.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
-index cbb40751c37e..a82c3de1a228 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.h
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.h
-@@ -53,6 +53,10 @@ struct sst_dsp_device;
- /* HIPCT */
- #define SKL_ADSP_REG_HIPCT_BUSY		BIT(31)
- 
-+/* FW base IDs */
-+#define SKL_INSTANCE_ID			0
-+#define SKL_BASE_FW_MODULE_ID		0
-+
- /* Intel HD Audio SRAM Window 1 */
- #define SKL_ADSP_SRAM1_BASE		0xA000
- 
-diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
-index e26f4746afb7..348a734f8e24 100644
---- a/sound/soc/intel/skylake/skl-sst.c
-+++ b/sound/soc/intel/skylake/skl-sst.c
-@@ -35,9 +35,6 @@
- #define SKL_ADSP_FW_STATUS	SKL_ADSP_SRAM0_BASE
- #define SKL_ADSP_ERROR_CODE	(SKL_ADSP_FW_STATUS + 0x4)
- 
--#define SKL_INSTANCE_ID		0
--#define SKL_BASE_FW_MODULE_ID	0
--
- #define SKL_NUM_MODULES		1
- 
- static bool skl_check_fw_status(struct sst_dsp *ctx, u32 status)
+diff --git a/sound/soc/omap/omap-hdmi-audio.c b/sound/soc/omap/omap-hdmi-audio.c
+index f83cc2bc0fc4..64425d352962 100644
+--- a/sound/soc/omap/omap-hdmi-audio.c
++++ b/sound/soc/omap/omap-hdmi-audio.c
+@@ -345,6 +345,7 @@ static int omap_hdmi_audio_probe(struct platform_device *pdev)
+ 		dai_drv = &omap4_hdmi_dai;
+ 		break;
+ 	case OMAPDSS_VER_OMAP5:
++	case OMAPDSS_VER_DRA7xx:
+ 		dai_drv = &omap5_hdmi_dai;
+ 		break;
+ 	default:
 -- 
 2.7.0
