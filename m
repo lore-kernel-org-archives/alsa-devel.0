@@ -1,75 +1,122 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 1/6] ASoC: core: add
- snd_soc_add_dai_pcm_controls helper
-Date: Sat, 12 Mar 2016 13:11:05 +0700
-Message-ID: <20160312061105.GX3898@sirena.org.uk>
-References: <1457441641-7501-1-git-send-email-arnaud.pouliquen@st.com>
- <1457441641-7501-2-git-send-email-arnaud.pouliquen@st.com>
- <20160310050646.GD11154@localhost> <56E13971.9030909@st.com>
- <20160310125817.GB6839@subhransu-desktop>
+From: Michael Trimarchi <michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>
+Subject: Re: [PATCH V6] ASoC: pcm179x: Add support for pcm1795 and pcm1796
+Date: Sun, 13 Mar 2016 09:53:50 +0100
+Message-ID: <20160313085346.GA8896@panicking>
+References: <1452382685-18009-1-git-send-email-michael@amarulasolutions.com>
+ <1452382685-18009-4-git-send-email-michael@amarulasolutions.com>
+ <20160110120045.GW6588@sirena.org.uk>
+ <20160110173812.GA16304@panicking>
+ <20160205172451.GA30542@panicking>
+ <20160222031944.GT18327@sirena.org.uk>
+ <20160311225937.GA27257@panicking>
+ <20160311230930.GB27257@panicking>
+ <20160311232856.GC27257@panicking>
+ <20160312055317.GT3898@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7070641761461700417=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 37CAA260714
- for <alsa-devel@alsa-project.org>; Sun, 13 Mar 2016 09:34:33 +0100 (CET)
-In-Reply-To: <20160310125817.GB6839@subhransu-desktop>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Cc: Jean-Francois Moine <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Philipp Zabel <p.zabel@pengutronix.de>, "Koul, Vinod" <vinod.koul@intel.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, David Airlie <airlied@linux.ie>, Takashi Iwai <tiwai@suse.de>, Moise GERGAUD <moise.gergaud@st.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20160312055317.GT3898-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jacob Siverskog <jacob-EZCvousvhKUZux3j3Bed6dkegs52MxvZ@public.gmane.org>, Johan Hovold <johan-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, adamo.a60-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, Mar 12, 2016 at 12:53:17PM +0700, Mark Brown wrote:
+> On Sat, Mar 12, 2016 at 12:29:00AM +0100, Michael Trimarchi wrote:
+> 
+> > diff --git a/sound/soc/codecs/pcm179x-i2c.c b/sound/soc/codecs/pcm179x-i2c.c
+> > index 4118106..609f07f 100644
+> > --- a/sound/soc/codecs/pcm179x-i2c.c
+> > +++ b/sound/soc/codecs/pcm179x-i2c.c
+> > @@ -44,12 +44,6 @@ static int pcm179x_i2c_remove(struct i2c_client *client)
+> >  	return pcm179x_common_exit(&client->dev);
+> >  }
+> >  
+> > -static const struct of_device_id pcm179x_of_match[] = {
+> > -	{ .compatible = "ti,pcm1792a", },
+> > -	{ }
+> > -};
+> > -MODULE_DEVICE_TABLE(of, pcm179x_of_match);
+> > -
+> 
+> One effect of moving this out of the I2C driver is to break module
+> autoloading: currently modutils does not pay attention to the reference
+> from the driver structure to the ID table but instead just looks at the
+> MODULE_DEVICE_TABLE.  This is a problem with some existing devices but
+> we shouldn't introduce new instances.
+> 
+> I don't actually know if MODULE_DEVICE_TABLE can reference an object in
+> a different file off the top of my head, though a brief test suggests it
+> has issues.
+> 
+Does this approch can work?
 
---===============7070641761461700417==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="3rzwkXnKuCXxoL5m"
-Content-Disposition: inline
+diff --git a/sound/soc/codecs/pcm179x-i2c.c b/sound/soc/codecs/pcm179x-i2c.c
+index 609f07f..6bed54f 100644
+--- a/sound/soc/codecs/pcm179x-i2c.c
++++ b/sound/soc/codecs/pcm179x-i2c.c
+@@ -49,6 +49,7 @@ static const struct i2c_device_id pcm179x_i2c_ids[] = {
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(i2c, pcm179x_i2c_ids);
++MODULE_DEVICE_TABLE(of, pcm179x_of_match);
+ 
+ static struct i2c_driver pcm179x_i2c_driver = {
+ 	.driver = {
+diff --git a/sound/soc/codecs/pcm179x-spi.c b/sound/soc/codecs/pcm179x-spi.c
+index 6ae0e4d..556c875 100644
+--- a/sound/soc/codecs/pcm179x-spi.c
++++ b/sound/soc/codecs/pcm179x-spi.c
+@@ -48,6 +48,7 @@ static const struct spi_device_id pcm179x_spi_ids[] = {
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(spi, pcm179x_spi_ids);
++MODULE_DEVICE_TABLE(of, pcm179x_of_match);
+ 
+ static struct spi_driver pcm179x_spi_driver = {
+ 	.driver = {
+diff --git a/sound/soc/codecs/pcm179x.c b/sound/soc/codecs/pcm179x.c
+index fb01822..a34af5b 100644
+--- a/sound/soc/codecs/pcm179x.c
++++ b/sound/soc/codecs/pcm179x.c
+@@ -255,7 +255,6 @@ const struct of_device_id pcm179x_of_match[] = {
+ 	{ .compatible = "ti,pcm1796", },
+ 	{ }
+ };
+-MODULE_DEVICE_TABLE(of, pcm179x_of_match);
+ EXPORT_SYMBOL_GPL(pcm179x_of_match);
+ 
+ int pcm179x_common_init(struct device *dev, struct regmap *regmap)
+> > +static int pcm179x_startup(struct snd_pcm_substream *substream,
+> > +			    struct snd_soc_dai *dai)
+> > +{
+> > +	struct snd_soc_codec *codec = dai->codec;
+> > +	struct pcm179x_private *priv = snd_soc_codec_get_drvdata(codec);
+> > +	u64 formats = PCM1792A_FORMATS;
+> > +
+> > +	switch (priv->codec_model) {
+> > +	case PCM1795:
+> > +		formats = PCM1795_FORMATS;
+> > +		break;
+> 
+> It would be more data driven to just register a different DAI structure
+> for the 1795.  Both approaches work, it's just a little nicer to avoid
+> code where possible.
+
+Yes I know but my idea was exactly to not create special DAI because
+technically they are the same code with diffferent constraints. This even
+give an other example of the usage of the API.
+
+Michael
 
 
---3rzwkXnKuCXxoL5m
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Mar 10, 2016 at 06:28:18PM +0530, Subhransu S. Prusty wrote:
-
-> That calls for a discussion on how the controls should be represented for
-> DPCM. Takashi/Mark/Liam we need your opinion on how the PCM related controls
-> should be represented in DPCM concepts.
-
-I think we should be moving away from DPCM towards something that scales
-to cover off-SoC devices as well.
-
---3rzwkXnKuCXxoL5m
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJW47L4AAoJECTWi3JdVIfQ8qsH/2Zj/CexWUFUr8lASx4qgqNb
-s8R25e4HtgzexvYnPelOXA+mjlmor4BkkZhRiS4vbxiWehwoWVOJynQeWenCWmtQ
-dFsUYs6FAOUd56fxptREQ+oO2mntKAajdH5+j7lk+jx8zAKpGVGTCJ8dVFO3eIHu
-vNd28t8TmByjZtQayrDHVnyMFOW86mSQfFVoYcd4vpUiC8WqEsx/5u5edMweVSYb
-JZlDT9lTB5acnfqIs9l/RejXx0uxhd2CqMF3o7qBWcvGxcyYkuxBsiE41jB/bPW+
-g8wk7/pUgmpJPLpLl71NLMLVYy026GX+oQumIef5KZpkjfxscIMQoL1yj5TAXDE=
-=O69W
------END PGP SIGNATURE-----
-
---3rzwkXnKuCXxoL5m--
-
---===============7070641761461700417==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7070641761461700417==--
+-- 
+| Michael Nazzareno Trimarchi                     Amarula Solutions BV |
+| COO  -  Founder                                      Cruquiuskade 47 |
+| +31(0)851119172                                 Amsterdam 1018 AM NL |
+|                  [`as] http://www.amarulasolutions.com               |
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
