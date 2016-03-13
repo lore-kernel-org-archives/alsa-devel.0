@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Unstatify
-	skl_dsp_enable_core" to the asoc tree
-Date: Sun, 13 Mar 2016 15:15:03 +0700
-Message-ID: <E1af1B1-0004IC-4D@finisterre>
-References: <1457671376-18667-4-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Move module id defines"
+	to the asoc tree
+Date: Sun, 13 Mar 2016 15:15:06 +0700
+Message-ID: <E1af1B4-0004JF-6D@finisterre>
+References: <1457671376-18667-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A7C9260534
- for <alsa-devel@alsa-project.org>; Sun, 13 Mar 2016 09:15:11 +0100 (CET)
-In-Reply-To: <1457671376-18667-4-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2FB562605B6
+ for <alsa-devel@alsa-project.org>; Sun, 13 Mar 2016 09:15:13 +0100 (CET)
+In-Reply-To: <1457671376-18667-2-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jayachandran B <jayachandran.b@intel.com>, GuruprasadX Pawse <guruprasadx.pawse@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Unstatify skl_dsp_enable_core
+   ASoC: Intel: Skylake: Move module id defines
 
 has been applied to the asoc tree at
 
@@ -53,47 +53,50 @@ to this mail.
 Thanks,
 Mark
 
->From 130e69a4773fb65af284d3fd1f3de762324d06e6 Mon Sep 17 00:00:00 2001
-From: Jayachandran B <jayachandran.b@intel.com>
-Date: Fri, 11 Mar 2016 10:12:51 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Unstatify skl_dsp_enable_core
+>From 39fa37d51ae904968c49ef49165df7fec66fd9ea Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Fri, 11 Mar 2016 10:12:49 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Move module id defines
 
-The function skl_dsp_enable_core will be called by other parts of
-driver so this can no longer be a static function.
+The module ID defines are common to other platforms so can be
+reused if moved to a common driver header so move it
 
-Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
-Signed-off-by: GuruprasadX Pawse <guruprasadx.pawse@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-sst-dsp.c | 2 +-
- sound/soc/intel/skylake/skl-sst-dsp.h | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-sst-dsp.h | 4 ++++
+ sound/soc/intel/skylake/skl-sst.c     | 3 ---
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.c b/sound/soc/intel/skylake/skl-sst-dsp.c
-index 646d10a0d176..a5267e8a96e0 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.c
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.c
-@@ -181,7 +181,7 @@ static int skl_dsp_core_power_down(struct sst_dsp *ctx)
- 			"Power down");
- }
- 
--static int skl_dsp_enable_core(struct sst_dsp *ctx)
-+int skl_dsp_enable_core(struct sst_dsp *ctx)
- {
- 	int ret;
- 
 diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
-index 676e78be0169..b6e310d49dd6 100644
+index cbb40751c37e..a82c3de1a228 100644
 --- a/sound/soc/intel/skylake/skl-sst-dsp.h
 +++ b/sound/soc/intel/skylake/skl-sst-dsp.h
-@@ -148,6 +148,7 @@ int skl_cldma_prepare(struct sst_dsp *ctx);
- void skl_dsp_set_state_locked(struct sst_dsp *ctx, int state);
- struct sst_dsp *skl_dsp_ctx_init(struct device *dev,
- 		struct sst_dsp_device *sst_dev, int irq);
-+int skl_dsp_enable_core(struct sst_dsp *ctx);
- int skl_dsp_disable_core(struct sst_dsp *ctx);
- bool is_skl_dsp_running(struct sst_dsp *ctx);
- irqreturn_t skl_dsp_sst_interrupt(int irq, void *dev_id);
+@@ -53,6 +53,10 @@ struct sst_dsp_device;
+ /* HIPCT */
+ #define SKL_ADSP_REG_HIPCT_BUSY		BIT(31)
+ 
++/* FW base IDs */
++#define SKL_INSTANCE_ID			0
++#define SKL_BASE_FW_MODULE_ID		0
++
+ /* Intel HD Audio SRAM Window 1 */
+ #define SKL_ADSP_SRAM1_BASE		0xA000
+ 
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index e26f4746afb7..348a734f8e24 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -35,9 +35,6 @@
+ #define SKL_ADSP_FW_STATUS	SKL_ADSP_SRAM0_BASE
+ #define SKL_ADSP_ERROR_CODE	(SKL_ADSP_FW_STATUS + 0x4)
+ 
+-#define SKL_INSTANCE_ID		0
+-#define SKL_BASE_FW_MODULE_ID	0
+-
+ #define SKL_NUM_MODULES		1
+ 
+ static bool skl_check_fw_status(struct sst_dsp *ctx, u32 status)
 -- 
 2.7.0
