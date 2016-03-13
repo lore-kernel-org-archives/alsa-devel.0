@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: davinci-mcasp: dai format runtime
-	reconfiguration" to the asoc tree
-Date: Sun, 13 Mar 2016 15:15:13 +0700
-Message-ID: <E1af1BB-0004Ll-9n@finisterre>
-References: <1457695131-4841-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Applied "ASoC: qcom: fix build error" to the asoc tree
+Date: Sun, 13 Mar 2016 15:15:10 +0700
+Message-ID: <E1af1B8-0004Kn-Ls@finisterre>
+References: <1457719972-9416-1-git-send-email-sudipm.mukherjee@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 607CA2619FA
- for <alsa-devel@alsa-project.org>; Sun, 13 Mar 2016 09:15:21 +0100 (CET)
-In-Reply-To: <1457695131-4841-1-git-send-email-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A626B261A96
+ for <alsa-devel@alsa-project.org>; Sun, 13 Mar 2016 09:15:24 +0100 (CET)
+In-Reply-To: <1457719972-9416-1-git-send-email-sudipm.mukherjee@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Misael Lopez Cruz <misael.lopez@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>
+To: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: davinci-mcasp: dai format runtime reconfiguration
+   ASoC: qcom: fix build error
 
 has been applied to the asoc tree at
 
@@ -53,67 +52,64 @@ to this mail.
 Thanks,
 Mark
 
->From 4a11ff260053b1097a5afa6c51e8d5e064aa88a7 Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Fri, 11 Mar 2016 13:18:51 +0200
-Subject: [PATCH] ASoC: davinci-mcasp: dai format runtime reconfiguration
+>From 568cecf42f35bf40bdf94107fb638997f82827f7 Mon Sep 17 00:00:00 2001
+From: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+Date: Fri, 11 Mar 2016 23:42:52 +0530
+Subject: [PATCH] ASoC: qcom: fix build error
 
-In case when the dai format is set via the dai_link the format
-configuration happens once when the links are probed. If the McASP lose
-context after this, the information will be lost and McASP will not going
-to work correctly.
-To overcome this issue, we save the fmt and set it within hw_params as
-well.
+While building m32r allmodconfig the build failed with:
+ERROR: "bad_dma_ops" [sound/soc/qcom/snd-soc-lpass-platform.ko] undefined!
+ERROR: "dma_common_mmap" [sound/soc/qcom/snd-soc-lpass-platform.ko] undefined!
 
-Reported-by: Misael Lopez Cruz <misael.lopez@ti.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
+To satisfy the dependency CONFIG_SND_SOC_LPASS_PLATFORM should depend
+on HAS_DMA.
+Some other configs also needs the dependency on HAS_DMA as they are
+directly or indirectly selecting SND_SOC_LPASS_PLATFORM.
+
+Signed-off-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/davinci/davinci-mcasp.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/qcom/Kconfig | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 3cf46afb353f..e1324989bd6b 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -77,6 +77,7 @@ struct davinci_mcasp {
- 	u32 fifo_base;
- 	struct device *dev;
- 	struct snd_pcm_substream *substreams[2];
-+	unsigned int dai_fmt;
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index 3cc252e55468..8ec9a074b38b 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -11,21 +11,24 @@ config SND_SOC_LPASS_CPU
  
- 	/* McASP specific data */
- 	int	tdm_slots;
-@@ -398,6 +399,9 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 	bool fs_pol_rising;
- 	bool inv_fs = false;
+ config SND_SOC_LPASS_PLATFORM
+ 	tristate
++	depends on HAS_DMA
+ 	select REGMAP_MMIO
  
-+	if (!fmt)
-+		return 0;
-+
- 	pm_runtime_get_sync(mcasp->dev);
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_DSP_A:
-@@ -529,6 +533,8 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_TXFMCTL_REG, FSXPOL);
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_RXFMCTL_REG, FSRPOL);
- 	}
-+
-+	mcasp->dai_fmt = fmt;
- out:
- 	pm_runtime_put(mcasp->dev);
- 	return ret;
-@@ -1026,6 +1032,10 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
- 	int period_size = params_period_size(params);
- 	int ret;
+ config SND_SOC_LPASS_IPQ806X
+ 	tristate
++	depends on HAS_DMA
+ 	select SND_SOC_LPASS_CPU
+ 	select SND_SOC_LPASS_PLATFORM
  
-+	ret = davinci_mcasp_set_dai_fmt(cpu_dai, mcasp->dai_fmt);
-+	if (ret)
-+		return ret;
-+
- 	/*
- 	 * If mcasp is BCLK master, and a BCLK divider was not provided by
- 	 * the machine driver, we need to calculate the ratio.
+ config SND_SOC_LPASS_APQ8016
+ 	tristate
++	depends on HAS_DMA
+ 	select SND_SOC_LPASS_CPU
+ 	select SND_SOC_LPASS_PLATFORM
+ 
+ config SND_SOC_STORM
+ 	tristate "ASoC I2S support for Storm boards"
+-	depends on SND_SOC_QCOM
++	depends on SND_SOC_QCOM && HAS_DMA
+ 	select SND_SOC_LPASS_IPQ806X
+ 	select SND_SOC_MAX98357A
+ 	help
+@@ -34,7 +37,7 @@ config SND_SOC_STORM
+ 
+ config SND_SOC_APQ8016_SBC
+ 	tristate "SoC Audio support for APQ8016 SBC platforms"
+-	depends on SND_SOC_QCOM
++	depends on SND_SOC_QCOM && HAS_DMA
+ 	select SND_SOC_LPASS_APQ8016
+ 	help
+           Support for Qualcomm Technologies LPASS audio block in
 -- 
 2.7.0
