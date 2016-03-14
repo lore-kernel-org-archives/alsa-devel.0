@@ -1,70 +1,69 @@
-From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: Re: [PATCH v8 2/2] ASoc: sun4i-codec: Add FM, Line
- and Mic inputs
-Date: Mon, 14 Mar 2016 11:49:39 +0100
-Message-ID: <20160314104939.GL8418@lukather>
-References: <20151221123148.1ab6480b@dayas>
- <20151221123416.51aa938e@dayas>
- <20151227182157.GI30359@lukather>
- <20151228040649.475a742f@dayas>
- <20160106220908.GE9631@lukather>
- <20160109164832.515d69b0@dayas>
- <20160312085222.226d89bf@scratchpost.org>
-Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+From: Sakari Ailus <sakari.ailus@iki.fi>
+Subject: Re: [PATCH] media: add GFP flag to media_*() that could get called
+ in atomic context
+Date: Mon, 14 Mar 2016 12:52:54 +0200
+Message-ID: <20160314105253.GQ11084@valkosipuli.retiisi.org.uk>
+References: <1457833689-4926-1-git-send-email-shuahkh@osg.samsung.com>
+ <20160314072236.GO11084@valkosipuli.retiisi.org.uk>
+ <20160314071358.27c87dab@recife.lan>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="k8YaXj956qNxBs/V"
-Return-path: <linux-sunxi+bncBD2ZNBF5VYJRBRNOTK3QKGQETVAIVEY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20160312085222.226d89bf-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20160314071358.27c87dab@recife.lan>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+Cc: Shuah Khan <shuahkh@osg.samsung.com>, kyungmin.park@samsung.com, a.hajda@samsung.com, s.nawrocki@samsung.com, kgene@kernel.org, k.kozlowski@samsung.com, laurent.pinchart@ideasonboard.com, hyun.kwon@xilinx.com, soren.brinkmann@xilinx.com, gregkh@linuxfoundation.org, perex@perex.cz, tiwai@suse.com, hans.verkuil@cisco.com, lixiubo@cmss.chinamobile.com, javier@osg.samsung.com, g.liakhovetski@gmx.de, chehabrafael@gmail.com, crope@iki.fi, tommi.franttila@intel.com, dan.carpenter@oracle.com, prabhakar.csengg@gmail.com, hamohammed.sa@gmail.com, der.herr@hofr.at, navyasri.tech@gmail.com, Julia.Lawall@lip6.fr, amitoj1606@gmail.com, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, linux-renesas-soc@vger.kernel.org, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---k8YaXj956qNxBs/V
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline
+Hi Mauro,
 
-On Sat, Mar 12, 2016 at 08:52:22AM +0100, Danny Milosavljevic wrote:
-> Hi,
+On Mon, Mar 14, 2016 at 07:13:58AM -0300, Mauro Carvalho Chehab wrote:
+> Em Mon, 14 Mar 2016 09:22:37 +0200
+> Sakari Ailus <sakari.ailus@iki.fi> escreveu:
 > 
-> does anyone know the answer to the questions below?
-> 
-> > The other direction (making two controls which both do the same and update 
-> > each other's value) doesn't seem to be easily available. 
-> 
-> > Should I write a _put handler that does it manually?
-> 
-> > (Or should that be handled by alsa-lib mixer modules instead?)
-> 
-> > Is it possible to merge the "Left Mixer" control and respective 
-> > "Right Mixer" control into one selem in alsamixer?
+> > Hi Shuah,
 > > 
-> > Because alsamixer actually has support for one-sided muting.
+> > On Sat, Mar 12, 2016 at 06:48:09PM -0700, Shuah Khan wrote:
+> > > Add GFP flags to media_create_pad_link(), media_create_intf_link(),
+> > > media_devnode_create(), and media_add_link() that could get called
+> > > in atomic context to allow callers to pass in the right flags for
+> > > memory allocation.
+> > > 
+> > > tree-wide driver changes for media_*() GFP flags change:
+> > > Change drivers to add gfpflags to interffaces, media_create_pad_link(),
+> > > media_create_intf_link() and media_devnode_create().
+> > > 
+> > > Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+> > > Suggested-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>  
+> > 
+> > What's the use case for calling the above functions in an atomic context?
+> > 
+> 
+> ALSA code seems to do a lot of stuff at atomic context. That's what
+> happens on my test machine when au0828 gets probed before
+> snd-usb-audio:
+> 	http://pastebin.com/LEX5LD5K
+> 
+> It seems that ALSA USB probe routine (usb_audio_probe) happens in
+> atomic context.
 
-Mark, do you know how to do it?
+usb_audio_probe() grabs a mutex (register_mutex) on its own. It certainly
+cannot be called in atomic context.
 
-IIRC, in order to have shared controls, you just needed to share the
-controls structure.
+In the above log, what I did notice, though, was that because *we* grab
+mdev->lock spinlock in media_device_register_entity(), we may not sleep
+which is what the notify() callback implementation in au0828 driver does
+(for memory allocation).
 
-> If that's unknown, I can post v9 without doing the grouping-together
-> of mixer controls and we can use it like that - I don't want the
-> patch to stall indefinitely on mere usability issues...
+Could we instead replace mdev->lock by a mutex?
 
-Unfortunately, that is exposed to the user-space. Once it's in, you
-cannot change it / fix it anymore.
-
-Maxime
+If there is no pressing need to implement atomic memory allocation I simply
+wouldn't do it, especially in device initialisation where an allocation
+failure will lead to probe failure as well.
 
 -- 
-Maxime Ripard, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
---k8YaXj956qNxBs/V--
+Kind regards,
+
+Sakari Ailus
+e-mail: sakari.ailus@iki.fi	XMPP: sailus@retiisi.org.uk
