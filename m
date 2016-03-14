@@ -1,14 +1,19 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH v2] ASoC: rt5514: add rt5514 SPI driver
-Date: Mon, 14 Mar 2016 18:58:21 +0800
-Message-ID: <1457953101-19348-1-git-send-email-oder_chiou@realtek.com>
+From: Timur Karaldin <karaldin@mcsplus.ru>
+Subject: ASoC: TLV320AIC3x: Adding additional functionality for
+ 3106 with [Patch] for discuss
+Date: Mon, 14 Mar 2016 14:06:39 +0300
+Message-ID: <56E69B3F.8090306@mcsplus.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E16F2606C7
- for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2016 11:58:45 +0100 (CET)
+Received: from smtp21.mail.ru (smtp21.mail.ru [94.100.179.250])
+ by alsa0.perex.cz (Postfix) with ESMTP id ECFF72607F7
+ for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2016 12:06:44 +0100 (CET)
+Received: from [83.242.226.142] (port=15369 helo=[192.168.100.105])
+ by smtp21.mail.ru with esmtpa (envelope-from <karaldin@mcsplus.ru>)
+ id 1afQKi-0008Ub-2d
+ for alsa-devel@alsa-project.org; Mon, 14 Mar 2016 14:06:44 +0300
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,887 +23,155 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, koro.chen@mediatek.com, john.lin@realtek.com, pc.liao@mediatek.com, bardliao@realtek.com, flove@realtek.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The device has multiple control interfaces, I2C and SPI. The I2C interface
-mainly controls the register settings of codec. The SPI interface is in
-order to provide the high speed transmission of data. For example, high
-bandwidth memory read/write of DSP. The patch adds the rt5514 SPI driver
-for loading the firmware of DSP and retrieving the voice data from DSP
-after the system is waked up by specific voice.
-
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/Kconfig      |   3 +
- sound/soc/codecs/Makefile     |   2 +
- sound/soc/codecs/rt5514-spi.c | 458 ++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/rt5514-spi.h |  38 ++++
- sound/soc/codecs/rt5514.c     | 249 +++++++++++++++++++++++
- sound/soc/codecs/rt5514.h     |   4 +
- 6 files changed, 754 insertions(+)
- create mode 100644 sound/soc/codecs/rt5514-spi.c
- create mode 100644 sound/soc/codecs/rt5514-spi.h
-
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 2f99b11..306c4e3 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -627,6 +627,9 @@ config SND_SOC_RT298
- config SND_SOC_RT5514
- 	tristate
- 
-+config SND_SOC_RT5514_SPI
-+	tristate
-+
- config SND_SOC_RT5616
- 	tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 185a712..501bf43 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -97,6 +97,7 @@ snd-soc-rl6347a-objs := rl6347a.o
- snd-soc-rt286-objs := rt286.o
- snd-soc-rt298-objs := rt298.o
- snd-soc-rt5514-objs := rt5514.o
-+snd-soc-rt5514-spi-objs := rt5514-spi.o
- snd-soc-rt5616-objs := rt5616.o
- snd-soc-rt5631-objs := rt5631.o
- snd-soc-rt5640-objs := rt5640.o
-@@ -306,6 +307,7 @@ obj-$(CONFIG_SND_SOC_RL6347A)	+= snd-soc-rl6347a.o
- obj-$(CONFIG_SND_SOC_RT286)	+= snd-soc-rt286.o
- obj-$(CONFIG_SND_SOC_RT298)	+= snd-soc-rt298.o
- obj-$(CONFIG_SND_SOC_RT5514)	+= snd-soc-rt5514.o
-+obj-$(CONFIG_SND_SOC_RT5514_SPI)	+= snd-soc-rt5514-spi.o
- obj-$(CONFIG_SND_SOC_RT5616)	+= snd-soc-rt5616.o
- obj-$(CONFIG_SND_SOC_RT5631)	+= snd-soc-rt5631.o
- obj-$(CONFIG_SND_SOC_RT5640)	+= snd-soc-rt5640.o
-diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
-new file mode 100644
-index 0000000..631865d
---- /dev/null
-+++ b/sound/soc/codecs/rt5514-spi.c
-@@ -0,0 +1,458 @@
-+/*
-+ * rt5514-spi.c  --  RT5514 SPI driver
-+ *
-+ * Copyright 2015 Realtek Semiconductor Corp.
-+ * Author: Oder Chiou <oder_chiou@realtek.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/input.h>
-+#include <linux/spi/spi.h>
-+#include <linux/device.h>
-+#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/interrupt.h>
-+#include <linux/irq.h>
-+#include <linux/slab.h>
-+#include <linux/gpio.h>
-+#include <linux/sched.h>
-+#include <linux/kthread.h>
-+#include <linux/uaccess.h>
-+#include <linux/miscdevice.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/pm_qos.h>
-+#include <linux/sysfs.h>
-+#include <linux/clk.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/initval.h>
-+#include <sound/tlv.h>
-+
-+#include "rt5514-spi.h"
-+
-+static struct spi_device *rt5514_spi;
-+
-+struct rt5514_dsp {
-+	struct device *dev;
-+	struct delayed_work copy_work;
-+	struct mutex dma_lock;
-+	struct snd_pcm_substream *substream;
-+	unsigned int buf_base, buf_limit, buf_rp;
-+	size_t buf_size;
-+	size_t dma_offset;
-+	size_t dsp_offset;
-+};
-+
-+static const struct snd_pcm_hardware rt5514_spi_pcm_hardware = {
-+	.info			= SNDRV_PCM_INFO_MMAP |
-+				  SNDRV_PCM_INFO_MMAP_VALID |
-+				  SNDRV_PCM_INFO_INTERLEAVED,
-+	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
-+	.period_bytes_min	= PAGE_SIZE,
-+	.period_bytes_max	= 0x20000 / 8,
-+	.periods_min		= 8,
-+	.periods_max		= 8,
-+	.channels_min		= 1,
-+	.channels_max		= 1,
-+	.buffer_bytes_max	= 0x20000,
-+};
-+
-+static struct snd_soc_dai_driver rt5514_spi_dai = {
-+	.name = "rt5514-dsp-cpu-dai",
-+	.id = 0,
-+	.capture = {
-+		.stream_name = "DSP Capture",
-+		.channels_min = 1,
-+		.channels_max = 1,
-+		.rates = SNDRV_PCM_RATE_16000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+};
-+
-+static void rt5514_spi_copy_work(struct work_struct *work)
-+{
-+	struct rt5514_dsp *rt5514_dsp =
-+		container_of(work, struct rt5514_dsp, copy_work.work);
-+	struct snd_pcm_runtime *runtime = rt5514_dsp->substream->runtime;
-+	size_t period_bytes, truncated_bytes = 0;
-+
-+	mutex_lock(&rt5514_dsp->dma_lock);
-+	if (!rt5514_dsp->substream) {
-+		dev_err(rt5514_dsp->dev, "No pcm substream\n");
-+		goto done;
-+	}
-+
-+	period_bytes = snd_pcm_lib_period_bytes(rt5514_dsp->substream);
-+
-+	if (rt5514_dsp->buf_size - rt5514_dsp->dsp_offset <  period_bytes)
-+		period_bytes = rt5514_dsp->buf_size - rt5514_dsp->dsp_offset;
-+
-+	if (rt5514_dsp->buf_rp + period_bytes <= rt5514_dsp->buf_limit) {
-+		rt5514_spi_burst_read(rt5514_dsp->buf_rp,
-+			runtime->dma_area + rt5514_dsp->dma_offset,
-+			period_bytes);
-+
-+		if (rt5514_dsp->buf_rp + period_bytes == rt5514_dsp->buf_limit)
-+			rt5514_dsp->buf_rp = rt5514_dsp->buf_base;
-+		else
-+			rt5514_dsp->buf_rp += period_bytes;
-+	} else {
-+		truncated_bytes = rt5514_dsp->buf_limit - rt5514_dsp->buf_rp;
-+		rt5514_spi_burst_read(rt5514_dsp->buf_rp,
-+			runtime->dma_area + rt5514_dsp->dma_offset,
-+			truncated_bytes);
-+
-+		rt5514_spi_burst_read(rt5514_dsp->buf_base,
-+			runtime->dma_area + rt5514_dsp->dma_offset +
-+			truncated_bytes, period_bytes - truncated_bytes);
-+
-+			rt5514_dsp->buf_rp = rt5514_dsp->buf_base +
-+				period_bytes - truncated_bytes;
-+	}
-+
-+	rt5514_dsp->dma_offset += period_bytes;
-+	if (rt5514_dsp->dma_offset >= runtime->dma_bytes)
-+		rt5514_dsp->dma_offset = 0;
-+
-+	rt5514_dsp->dsp_offset += period_bytes;
-+
-+	snd_pcm_period_elapsed(rt5514_dsp->substream);
-+
-+	if (rt5514_dsp->dsp_offset < rt5514_dsp->buf_size)
-+		schedule_delayed_work(&rt5514_dsp->copy_work, 5);
-+done:
-+	mutex_unlock(&rt5514_dsp->dma_lock);
-+}
-+
-+/* PCM for streaming audio from the DSP buffer */
-+static int rt5514_spi_pcm_open(struct snd_pcm_substream *substream)
-+{
-+	snd_soc_set_runtime_hwparams(substream, &rt5514_spi_pcm_hardware);
-+
-+	return 0;
-+}
-+
-+static int rt5514_spi_hw_params(struct snd_pcm_substream *substream,
-+			       struct snd_pcm_hw_params *hw_params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct rt5514_dsp *rt5514_dsp =
-+			snd_soc_platform_get_drvdata(rtd->platform);
-+	int ret;
-+
-+	mutex_lock(&rt5514_dsp->dma_lock);
-+	ret = snd_pcm_lib_alloc_vmalloc_buffer(substream,
-+			params_buffer_bytes(hw_params));
-+	rt5514_dsp->substream = substream;
-+	mutex_unlock(&rt5514_dsp->dma_lock);
-+
-+	return ret;
-+}
-+
-+static int rt5514_spi_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct rt5514_dsp *rt5514_dsp =
-+			snd_soc_platform_get_drvdata(rtd->platform);
-+
-+	mutex_lock(&rt5514_dsp->dma_lock);
-+	cancel_delayed_work_sync(&rt5514_dsp->copy_work);
-+	rt5514_dsp->substream = NULL;
-+	mutex_unlock(&rt5514_dsp->dma_lock);
-+
-+	return snd_pcm_lib_free_vmalloc_buffer(substream);
-+}
-+
-+static int rt5514_spi_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct rt5514_dsp *rt5514_dsp =
-+			snd_soc_platform_get_drvdata(rtd->platform);
-+	u8 buf[8];
-+
-+	rt5514_dsp->dma_offset = 0;
-+	rt5514_dsp->dsp_offset = 0;
-+
-+	/**
-+	 * The address area x1800XXXX is the register address, and it cannot
-+	 * support spi burst read perfectly. So we use the spi burst read
-+	 * individually to make sure the data correctly.
-+	*/
-+	rt5514_spi_burst_read(RT5514_BUFFER_VOICE_BASE, (u8 *)&buf,
-+		sizeof(buf));
-+	rt5514_dsp->buf_base = buf[0] | buf[1] << 8 | buf[2] << 16 |
-+				buf[3] << 24;
-+
-+	rt5514_spi_burst_read(RT5514_BUFFER_VOICE_LIMIT, (u8 *)&buf,
-+		sizeof(buf));
-+	rt5514_dsp->buf_limit = buf[0] | buf[1] << 8 | buf[2] << 16 |
-+				buf[3] << 24;
-+
-+	rt5514_spi_burst_read(RT5514_BUFFER_VOICE_RP, (u8 *)&buf,
-+		sizeof(buf));
-+	rt5514_dsp->buf_rp = buf[0] | buf[1] << 8 | buf[2] << 16 |
-+				buf[3] << 24;
-+
-+	rt5514_spi_burst_read(RT5514_BUFFER_VOICE_SIZE, (u8 *)&buf,
-+		sizeof(buf));
-+	rt5514_dsp->buf_size = buf[0] | buf[1] << 8 | buf[2] << 16 |
-+				buf[3] << 24;
-+
-+	return 0;
-+}
-+
-+static int rt5514_spi_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct rt5514_dsp *rt5514_dsp =
-+			snd_soc_platform_get_drvdata(rtd->platform);
-+
-+	if (cmd == SNDRV_PCM_TRIGGER_START) {
-+		if (rt5514_dsp->buf_base && rt5514_dsp->buf_limit &&
-+			rt5514_dsp->buf_rp && rt5514_dsp->buf_size)
-+			schedule_delayed_work(&rt5514_dsp->copy_work, 0);
-+	}
-+
-+	return 0;
-+}
-+
-+static snd_pcm_uframes_t rt5514_spi_pcm_pointer(
-+		struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct rt5514_dsp *rt5514_dsp =
-+		snd_soc_platform_get_drvdata(rtd->platform);
-+
-+	return bytes_to_frames(runtime, rt5514_dsp->dma_offset);
-+}
-+
-+static struct snd_pcm_ops rt5514_spi_pcm_ops = {
-+	.open		= rt5514_spi_pcm_open,
-+	.hw_params	= rt5514_spi_hw_params,
-+	.hw_free	= rt5514_spi_hw_free,
-+	.trigger	= rt5514_spi_trigger,
-+	.prepare	= rt5514_spi_prepare,
-+	.pointer	= rt5514_spi_pcm_pointer,
-+	.mmap		= snd_pcm_lib_mmap_vmalloc,
-+	.page		= snd_pcm_lib_get_vmalloc_page,
-+};
-+
-+static int rt5514_spi_pcm_probe(struct snd_soc_platform *platform)
-+{
-+	struct rt5514_dsp *rt5514_dsp;
-+
-+	rt5514_dsp = devm_kzalloc(platform->dev, sizeof(*rt5514_dsp),
-+			GFP_KERNEL);
-+
-+	rt5514_dsp->dev = &rt5514_spi->dev;
-+	mutex_init(&rt5514_dsp->dma_lock);
-+	INIT_DELAYED_WORK(&rt5514_dsp->copy_work, rt5514_spi_copy_work);
-+	snd_soc_platform_set_drvdata(platform, rt5514_dsp);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_platform_driver rt5514_spi_platform = {
-+	.probe = rt5514_spi_pcm_probe,
-+	.ops = &rt5514_spi_pcm_ops,
-+};
-+
-+static const struct snd_soc_component_driver rt5514_spi_dai_component = {
-+	.name		= "rt5514-spi-dai",
-+};
-+
-+/**
-+ * rt5514_spi_burst_read - Read data from SPI by rt5514 address.
-+ * @addr: Start address.
-+ * @rxbuf: Data Buffer for reading.
-+ * @len: Data length, it must be a multiple of 8.
-+ *
-+ *
-+ * Returns true for success.
-+ */
-+int rt5514_spi_burst_read(unsigned int addr, u8 *rxbuf, size_t len)
-+{
-+	u8 spi_cmd = RT5514_SPI_CMD_BURST_READ;
-+	int status;
-+	u8 write_buf[8];
-+	unsigned int i, end, offset = 0;
-+
-+	struct spi_message message;
-+	struct spi_transfer x[3];
-+
-+	while (offset < len) {
-+		if (offset + RT5514_SPI_BUF_LEN <= len)
-+			end = RT5514_SPI_BUF_LEN;
-+		else
-+			end = len % RT5514_SPI_BUF_LEN;
-+
-+		write_buf[0] = spi_cmd;
-+		write_buf[1] = ((addr + offset) & 0xff000000) >> 24;
-+		write_buf[2] = ((addr + offset) & 0x00ff0000) >> 16;
-+		write_buf[3] = ((addr + offset) & 0x0000ff00) >> 8;
-+		write_buf[4] = ((addr + offset) & 0x000000ff) >> 0;
-+
-+		spi_message_init(&message);
-+		memset(x, 0, sizeof(x));
-+
-+		x[0].len = 5;
-+		x[0].tx_buf = write_buf;
-+		spi_message_add_tail(&x[0], &message);
-+
-+		x[1].len = 4;
-+		x[1].tx_buf = write_buf;
-+		spi_message_add_tail(&x[1], &message);
-+
-+		x[2].len = end;
-+		x[2].rx_buf = rxbuf + offset;
-+		spi_message_add_tail(&x[2], &message);
-+
-+		status = spi_sync(rt5514_spi, &message);
-+
-+		if (status)
-+			return false;
-+
-+		offset += RT5514_SPI_BUF_LEN;
-+	}
-+
-+	for (i = 0; i < len; i += 8) {
-+		write_buf[0] = rxbuf[i + 0];
-+		write_buf[1] = rxbuf[i + 1];
-+		write_buf[2] = rxbuf[i + 2];
-+		write_buf[3] = rxbuf[i + 3];
-+		write_buf[4] = rxbuf[i + 4];
-+		write_buf[5] = rxbuf[i + 5];
-+		write_buf[6] = rxbuf[i + 6];
-+		write_buf[7] = rxbuf[i + 7];
-+
-+		rxbuf[i + 0] = write_buf[7];
-+		rxbuf[i + 1] = write_buf[6];
-+		rxbuf[i + 2] = write_buf[5];
-+		rxbuf[i + 3] = write_buf[4];
-+		rxbuf[i + 4] = write_buf[3];
-+		rxbuf[i + 5] = write_buf[2];
-+		rxbuf[i + 6] = write_buf[1];
-+		rxbuf[i + 7] = write_buf[0];
-+	}
-+
-+	return true;
-+}
-+
-+/**
-+ * rt5514_spi_burst_write - Write data to SPI by rt5514 address.
-+ * @addr: Start address.
-+ * @txbuf: Data Buffer for writng.
-+ * @len: Data length, it must be a multiple of 8.
-+ *
-+ *
-+ * Returns true for success.
-+ */
-+int rt5514_spi_burst_write(u32 addr, const u8 *txbuf, size_t len)
-+{
-+	u8 spi_cmd = RT5514_SPI_CMD_BURST_WRITE;
-+	u8 *write_buf;
-+	unsigned int i, end, offset = 0;
-+
-+	write_buf = kmalloc(RT5514_SPI_BUF_LEN + 6, GFP_KERNEL);
-+
-+	if (write_buf == NULL)
-+		return -ENOMEM;
-+
-+	while (offset < len) {
-+		if (offset + RT5514_SPI_BUF_LEN <= len)
-+			end = RT5514_SPI_BUF_LEN;
-+		else
-+			end = len % RT5514_SPI_BUF_LEN;
-+
-+		write_buf[0] = spi_cmd;
-+		write_buf[1] = ((addr + offset) & 0xff000000) >> 24;
-+		write_buf[2] = ((addr + offset) & 0x00ff0000) >> 16;
-+		write_buf[3] = ((addr + offset) & 0x0000ff00) >> 8;
-+		write_buf[4] = ((addr + offset) & 0x000000ff) >> 0;
-+
-+		for (i = 0; i < end; i += 8) {
-+			write_buf[i + 12] = txbuf[offset + i + 0];
-+			write_buf[i + 11] = txbuf[offset + i + 1];
-+			write_buf[i + 10] = txbuf[offset + i + 2];
-+			write_buf[i +  9] = txbuf[offset + i + 3];
-+			write_buf[i +  8] = txbuf[offset + i + 4];
-+			write_buf[i +  7] = txbuf[offset + i + 5];
-+			write_buf[i +  6] = txbuf[offset + i + 6];
-+			write_buf[i +  5] = txbuf[offset + i + 7];
-+		}
-+
-+		write_buf[end + 5] = spi_cmd;
-+
-+		spi_write(rt5514_spi, write_buf, end + 6);
-+
-+		offset += RT5514_SPI_BUF_LEN;
-+	}
-+
-+	kfree(write_buf);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(rt5514_spi_burst_write);
-+
-+static int rt5514_spi_probe(struct spi_device *spi)
-+{
-+	int ret;
-+
-+	rt5514_spi = spi;
-+
-+	ret = snd_soc_register_platform(&spi->dev, &rt5514_spi_platform);
-+	if (ret < 0) {
-+		dev_err(&spi->dev, "Failed to register platform.\n");
-+		goto err_plat;
-+	}
-+
-+	ret = snd_soc_register_component(&spi->dev, &rt5514_spi_dai_component,
-+					 &rt5514_spi_dai, 1);
-+	if (ret < 0) {
-+		dev_err(&spi->dev, "Failed to register component.\n");
-+		goto err_comp;
-+	}
-+
-+	return 0;
-+err_comp:
-+	snd_soc_unregister_platform(&spi->dev);
-+err_plat:
-+
-+	return 0;
-+}
-+
-+static int rt5514_spi_remove(struct spi_device *spi)
-+{
-+	snd_soc_unregister_component(&spi->dev);
-+	snd_soc_unregister_platform(&spi->dev);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id rt5514_of_match[] = {
-+	{ .compatible = "realtek,rt5514", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, rt5514_of_match);
-+
-+static struct spi_driver rt5514_spi_driver = {
-+	.driver = {
-+			.name = "rt5514",
-+			.of_match_table = of_match_ptr(rt5514_of_match),
-+	},
-+	.probe = rt5514_spi_probe,
-+	.remove = rt5514_spi_remove,
-+};
-+module_spi_driver(rt5514_spi_driver);
-+
-+MODULE_DESCRIPTION("RT5514 SPI driver");
-+MODULE_AUTHOR("Oder Chiou <oder_chiou@realtek.com>");
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/codecs/rt5514-spi.h b/sound/soc/codecs/rt5514-spi.h
-new file mode 100644
-index 0000000..f69b1cd
---- /dev/null
-+++ b/sound/soc/codecs/rt5514-spi.h
-@@ -0,0 +1,38 @@
-+/*
-+ * rt5514-spi.h  --  RT5514 driver
-+ *
-+ * Copyright 2015 Realtek Semiconductor Corp.
-+ * Author: Oder Chiou <oder_chiou@realtek.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef __RT5514_SPI_H__
-+#define __RT5514_SPI_H__
-+
-+/**
-+ * RT5514_SPI_BUF_LEN is the buffer size of SPI master controller.
-+*/
-+#define RT5514_SPI_BUF_LEN		240
-+
-+#define RT5514_BUFFER_VOICE_BASE	0x18001034
-+#define RT5514_BUFFER_VOICE_LIMIT	0x18001038
-+#define RT5514_BUFFER_VOICE_RP		0x1800103c
-+#define RT5514_BUFFER_VOICE_SIZE	0x18001040
-+
-+/* SPI Command */
-+enum {
-+	RT5514_SPI_CMD_16_READ = 0,
-+	RT5514_SPI_CMD_16_WRITE,
-+	RT5514_SPI_CMD_32_READ,
-+	RT5514_SPI_CMD_32_WRITE,
-+	RT5514_SPI_CMD_BURST_READ,
-+	RT5514_SPI_CMD_BURST_WRITE,
-+};
-+
-+int rt5514_spi_burst_read(unsigned int addr, u8 *rxbuf, size_t len);
-+int rt5514_spi_burst_write(u32 addr, const u8 *txbuf, size_t len);
-+
-+#endif /* __RT5514_SPI_H__ */
-diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index 879bf60..517242a 100644
---- a/sound/soc/codecs/rt5514.c
-+++ b/sound/soc/codecs/rt5514.c
-@@ -30,6 +30,9 @@
- 
- #include "rl6231.h"
- #include "rt5514.h"
-+#if defined(CONFIG_SND_SOC_RT5514_SPI)
-+#include "rt5514-spi.h"
-+#endif
- 
- static const struct reg_sequence rt5514_i2c_patch[] = {
- 	{0x1800101c, 0x00000000},
-@@ -110,6 +113,159 @@ static const struct reg_default rt5514_reg[] = {
- 	{RT5514_VENDOR_ID2,		0x10ec5514},
- };
- 
-+static void rt5514_enable_dsp_prepare(struct rt5514_priv *rt5514)
-+{
-+	/* Reset */
-+	regmap_write(rt5514->i2c_regmap, 0x18002000, 0x000010ec);
-+	/* LDO_I_limit */
-+	regmap_write(rt5514->i2c_regmap, 0x18002200, 0x00028604);
-+	/* (for reset DSP) mini-core reset */
-+	regmap_write(rt5514->i2c_regmap, 0x18002f00, 0x0005514b);
-+	/* (for reset DSP) mini-core reset */
-+	regmap_write(rt5514->i2c_regmap, 0x18002f00, 0x00055149);
-+	/* DMIC_OUT1/2=HiZ */
-+	regmap_write(rt5514->i2c_regmap, 0x180020a0, 0x00000000);
-+	/* PIN config */
-+	regmap_write(rt5514->i2c_regmap, 0x18002070, 0x00000040);
-+	/* pll3(QN)=RCOSC*(10+2) */
-+	regmap_write(rt5514->i2c_regmap, 0x18002240, 0x0000000a);
-+	/* pll3 source=RCOSC, fsi=rt_clk */
-+	regmap_write(rt5514->i2c_regmap, 0x18002100, 0x0000000b);
-+	/* PU RCOSC, pll3 */
-+	regmap_write(rt5514->i2c_regmap, 0x18002004, 0x00808b81);
-+	/* PD ADC1/2 */
-+	regmap_write(rt5514->i2c_regmap, 0x18002008, 0x00220000);
-+	/* DSP clk source=pll3, ENABLE DSP clk */
-+	regmap_write(rt5514->i2c_regmap, 0x18002f08, 0x00000005);
-+	/* 256fs=/4,DMIC_CLK_OUT=/16(disable ad2) */
-+	regmap_write(rt5514->i2c_regmap, 0x18002104, 0x10023541);
-+	/* clk_sys source=mux_out */
-+	regmap_write(rt5514->i2c_regmap, 0x18002108, 0x00000000);
-+	/* DSP clk= 15M*(20+1)/32 =10M */
-+	regmap_write(rt5514->i2c_regmap, 0x18001100, 0x00000214);
-+	/* DB, pointer */
-+	regmap_write(rt5514->i2c_regmap, 0x18002148, 0x80000000);
-+	/* DB, pop=4x */
-+	regmap_write(rt5514->i2c_regmap, 0x18002140, 0x3fff00fa);
-+	/* DB, pointer */
-+	regmap_write(rt5514->i2c_regmap, 0x18002148, 0x00000000);
-+	/* DFLL reset */
-+	regmap_write(rt5514->i2c_regmap, 0x18002124, 0x00220012);
-+	/* DFLL, set m/n */
-+	regmap_write(rt5514->i2c_regmap, 0x18002110, 0x000101f4);
-+	/* DFLL,reset DFLL */
-+	regmap_write(rt5514->i2c_regmap, 0x18002124, 0x80220012);
-+	/* DFLL */
-+	regmap_write(rt5514->i2c_regmap, 0x18002124, 0xc0220012);
-+	/* (I2S) i2s format, TDM 4ch */
-+	regmap_write(rt5514->i2c_regmap, 0x18002010, 0x10000772);
-+	/* (I2S) source sel; tdm_0=ad0, tdm_1=ad1 */
-+	regmap_write(rt5514->i2c_regmap, 0x180020ac, 0x44000eee);
-+	/* (ad0) source of DMIC */
-+	regmap_write(rt5514->i2c_regmap, 0x18002190, 0x0002042f);
-+	/* (ad0) source of DMIC */
-+	regmap_write(rt5514->i2c_regmap, 0x18002194, 0x0002042f);
-+	/* (ad0) DMIC-IN1 L/R select */
-+	regmap_write(rt5514->i2c_regmap, 0x18002198, 0x10000362);
-+	/* (ad1) source of DMIC */
-+	regmap_write(rt5514->i2c_regmap, 0x180021a0, 0x0002042f);
-+	/* (ad1) source of DMIC */
-+	regmap_write(rt5514->i2c_regmap, 0x180021a4, 0x0002042f);
-+	/* (ad1) DMIC-IN2 L/R select */
-+	regmap_write(rt5514->i2c_regmap, 0x180021a8, 0x10000362);
-+	/* (ad2) gain=24dB for WOV */
-+	regmap_write(rt5514->i2c_regmap, 0x180020d0, 0x00008a2f);
-+	/* dsp clk auto switch */
-+	regmap_write(rt5514->i2c_regmap, 0x18001114, 0x00000001);
-+	/* reduce DSP power */
-+	regmap_write(rt5514->i2c_regmap, 0x18001118, 0x00000001);
-+	/* UART clk=off */
-+	regmap_write(rt5514->i2c_regmap, 0x18001104, 0x00000003);
-+	/* (pitch VAD)fix1 */
-+	regmap_write(rt5514->i2c_regmap, 0x1800201c, 0x69f32067);
-+	/* (pitch VAD)fix2 */
-+	regmap_write(rt5514->i2c_regmap, 0x18002020, 0x50d500a5);
-+	/* (pitch VAD)fix3 */
-+	regmap_write(rt5514->i2c_regmap, 0x18002024, 0x000a0206);
-+	/* (pitch VAD)fix4 */
-+	regmap_write(rt5514->i2c_regmap, 0x18002028, 0x01800114);
-+	/* (hello VAD)fix1 */
-+	regmap_write(rt5514->i2c_regmap, 0x18002038, 0x00100010);
-+	/* (ok VAD)fix1 */
-+	regmap_write(rt5514->i2c_regmap, 0x1800204c, 0x000503c8);
-+	/* (ok VAD)fix2 */
-+	regmap_write(rt5514->i2c_regmap, 0x18002050, 0x001a0308);
-+	/* (ok VAD)fix3 */
-+	regmap_write(rt5514->i2c_regmap, 0x18002054, 0x50020502);
-+	/* (ok VAD)fix4 */
-+	regmap_write(rt5514->i2c_regmap, 0x18002058, 0x50000d18);
-+	/* (ok VAD)fix5 */
-+	regmap_write(rt5514->i2c_regmap, 0x1800205c, 0x640c0b14);
-+	/* (ok VAD)fix6 */
-+	regmap_write(rt5514->i2c_regmap, 0x18002060, 0x00100001);
-+	/* (FW) SENSORY_SVSCORE(for UDT+SID) */
-+	regmap_write(rt5514->i2c_regmap, 0x18002fa4, 0x00000000);
-+	/* (FW) SENSORY_THRS(for UDT+SID) */
-+	regmap_write(rt5514->i2c_regmap, 0x18002fa8, 0x00000000);
-+	/* (FW) DLY_BUF_LTC_OFFSET (for ok/hello VAD) */
-+	regmap_write(rt5514->i2c_regmap, 0x18002fbc, 0x00000000);
-+}
-+
-+static void rt5514_enable_dsp(struct rt5514_priv *rt5514)
-+{
-+	/* (FW) DRIVER_CTRL0:	(1)VAD timeout[7:0]: unit = 0.1s
-+	*			(2)buffer mode[15:14]:
-+	*				0 = key phrase+voice command
-+	*				1 = voice command
-+	*				2 = key phrase
-+	*/
-+	regmap_write(rt5514->i2c_regmap, 0x18001028, 0x0000000a);
-+	/* PU RCOSC, pll3 */
-+	regmap_write(rt5514->i2c_regmap, 0x18002004, 0x00808b81);
-+	/* PD ADC1/2 */
-+	regmap_write(rt5514->i2c_regmap, 0x18002008, 0x00220000);
-+	/* dsp stop */
-+	regmap_write(rt5514->i2c_regmap, 0x18002f00, 0x00055149);
-+	/* CLK, 256fs=/4,DMIC_CLK_OUT=/16(enable ad2) */
-+	regmap_write(rt5514->i2c_regmap, 0x18002104, 0x14023541);
-+	/* CLK, clk_sys=mux_out/1 */
-+	regmap_write(rt5514->i2c_regmap, 0x18002108, 0x00000000);
-+	/* (PATH) DMIC_IN1(ri)->ad2, ad2(db_PCM)->IB2 */
-+	regmap_write(rt5514->i2c_regmap, 0x180020a4, 0x00808002);
-+	/* DSP clk source=pll3, ENABLE DSP clk */
-+	regmap_write(rt5514->i2c_regmap, 0x18002f08, 0x00000005);
-+	/* (opt)VAD, clr and enable pitch/hello VAD
-+	*  (0x800007d2 for ok VAD, 0x800007d3 for pitch/hello VAD)
-+	*/
-+	regmap_write(rt5514->i2c_regmap, 0x18002030, 0x800007d3);
-+	/* (opt)VAD, clr and enable ok VAD
-+	*  (0x80000003 for ok VAD, 0x80000002 for pitch/hello VAD)
-+	*/
-+	regmap_write(rt5514->i2c_regmap, 0x18002064, 0x80000002);
-+	/* (opt)VAD type sel(..90h:hello, ..80h:pitch, ..A0h:ok) */
-+	regmap_write(rt5514->i2c_regmap, 0x1800206c, 0x80000080);
-+	/* dsp run */
-+	regmap_write(rt5514->i2c_regmap, 0x18002f00, 0x00055148);
-+	/* clear IRQ */
-+	regmap_write(rt5514->i2c_regmap, 0x18002e04, 0x00000000);
-+	/* (opt)VAD, release and enable pitch/hello VAD
-+	*  (0x7d2 for ok VAD, 0x7d3 for pitch/hello VAD)
-+	*/
-+	regmap_write(rt5514->i2c_regmap, 0x18002030, 0x000007d3);
-+	/* (opt)VAD, release and enable ok VAD
-+	*  (0x3 for ok VAD, 0x2 for pitch/hello VAD)
-+	*/
-+	regmap_write(rt5514->i2c_regmap, 0x18002064, 0x00000002);
-+	/* (opt)VAD, release and enable pitch/hello VAD
-+	*  (0x7d2 for ok VAD, 0x7d3 for pitch/hello VAD)
-+	*/
-+	regmap_write(rt5514->i2c_regmap, 0x18002030, 0x000007d3);
-+	/* (opt)VAD, release and enable ok VAD
-+	*  (0x3 for ok VAD, 0x2 for pitch/hello VAD)
-+	*/
-+	regmap_write(rt5514->i2c_regmap, 0x18002064, 0x00000002);
-+}
-+
- static bool rt5514_volatile_register(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
-@@ -248,6 +404,64 @@ static const DECLARE_TLV_DB_RANGE(bst_tlv,
- 
- static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
- 
-+static int rt5514_dsp_voice_wake_up_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct rt5514_priv *rt5514 = snd_soc_component_get_drvdata(component);
-+
-+	ucontrol->value.integer.value[0] = rt5514->dsp_enabled;
-+
-+	return 0;
-+}
-+
-+static int rt5514_dsp_voice_wake_up_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct rt5514_priv *rt5514 = snd_soc_component_get_drvdata(component);
-+	struct snd_soc_codec *codec = rt5514->codec;
-+	const struct firmware *fw = NULL;
-+
-+	if (ucontrol->value.integer.value[0] == rt5514->dsp_enabled)
-+		return 0;
-+
-+	rt5514->dsp_enabled = ucontrol->value.integer.value[0];
-+
-+	if (rt5514->dsp_enabled) {
-+		rt5514_enable_dsp_prepare(rt5514);
-+
-+		request_firmware(&fw, RT5514_FIRMWARE1, codec->dev);
-+		if (fw) {
-+#if defined(CONFIG_SND_SOC_RT5514_SPI)
-+			rt5514_spi_burst_write(0x4ff60000, fw->data,
-+				((fw->size/8)+1)*8);
-+#endif
-+			release_firmware(fw);
-+			fw = NULL;
-+		}
-+
-+		request_firmware(&fw, RT5514_FIRMWARE2, codec->dev);
-+		if (fw) {
-+#if defined(CONFIG_SND_SOC_RT5514_SPI)
-+			rt5514_spi_burst_write(0x4ffc0000, fw->data,
-+				((fw->size/8)+1)*8);
-+#endif
-+			release_firmware(fw);
-+			fw = NULL;
-+		}
-+
-+		rt5514_enable_dsp(rt5514);
-+	} else {
-+		regcache_mark_dirty(rt5514->i2c_regmap);
-+		regcache_mark_dirty(rt5514->regmap);
-+		regcache_sync(rt5514->i2c_regmap);
-+		regcache_sync(rt5514->regmap);
-+	}
-+
-+	return 0;
-+}
-+
- static const struct snd_kcontrol_new rt5514_snd_controls[] = {
- 	SOC_DOUBLE_TLV("MIC Boost Volume", RT5514_ANA_CTRL_MICBST,
- 		RT5514_SEL_BSTL_SFT, RT5514_SEL_BSTR_SFT, 8, 0, bst_tlv),
-@@ -257,6 +471,8 @@ static const struct snd_kcontrol_new rt5514_snd_controls[] = {
- 	SOC_DOUBLE_R_TLV("ADC2 Capture Volume", RT5514_DOWNFILTER1_CTRL1,
- 		RT5514_DOWNFILTER1_CTRL2, RT5514_AD_GAIN_SFT, 127, 0,
- 		adc_vol_tlv),
-+	SOC_SINGLE_EXT("DSP Voice Wake Up", SND_SOC_NOPM, 0, 1, 0,
-+		rt5514_dsp_voice_wake_up_get, rt5514_dsp_voice_wake_up_put),
- };
- 
- /* ADC Mixer*/
-@@ -799,6 +1015,38 @@ static int rt5514_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 	return 0;
- }
- 
-+static int rt5514_set_bias_level(struct snd_soc_codec *codec,
-+			enum snd_soc_bias_level level)
-+{
-+	struct rt5514_priv *rt5514 = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (level) {
-+	case SND_SOC_BIAS_PREPARE:
-+		if (snd_soc_codec_get_bias_level(codec) ==
-+			SND_SOC_BIAS_STANDBY) {
-+			/**
-+			 * If the DSP is enabled in start of recording, the
-+			 * DSP should be disabled, and sync back to normal
-+			 * recording settings to make sure recording
-+			 * properly.
-+			*/
-+			if (rt5514->dsp_enabled) {
-+				rt5514->dsp_enabled = 0;
-+				regcache_mark_dirty(rt5514->i2c_regmap);
-+				regcache_mark_dirty(rt5514->regmap);
-+				regcache_sync(rt5514->i2c_regmap);
-+				regcache_sync(rt5514->regmap);
-+			}
-+		}
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
- static int rt5514_probe(struct snd_soc_codec *codec)
- {
- 	struct rt5514_priv *rt5514 = snd_soc_codec_get_drvdata(codec);
-@@ -857,6 +1105,7 @@ struct snd_soc_dai_driver rt5514_dai[] = {
- 
- static struct snd_soc_codec_driver soc_codec_dev_rt5514 = {
- 	.probe = rt5514_probe,
-+	.set_bias_level = rt5514_set_bias_level,
- 	.idle_bias_off = true,
- 	.controls = rt5514_snd_controls,
- 	.num_controls = ARRAY_SIZE(rt5514_snd_controls),
-diff --git a/sound/soc/codecs/rt5514.h b/sound/soc/codecs/rt5514.h
-index 6ad8a61..6e89e7d 100644
---- a/sound/soc/codecs/rt5514.h
-+++ b/sound/soc/codecs/rt5514.h
-@@ -225,6 +225,9 @@
- #define RT5514_PLL_INP_MAX			40000000
- #define RT5514_PLL_INP_MIN			256000
- 
-+#define RT5514_FIRMWARE1	"rt5514_dsp_fw1.bin"
-+#define RT5514_FIRMWARE2	"rt5514_dsp_fw2.bin"
-+
- /* System Clock Source */
- enum {
- 	RT5514_SCLK_S_MCLK,
-@@ -247,6 +250,7 @@ struct rt5514_priv {
- 	int pll_src;
- 	int pll_in;
- 	int pll_out;
-+	int dsp_enabled;
- };
- 
- #endif /* __RT5514_H__ */
--- 
-1.8.1.1.439.g50a6b54
+SGksIGNvbGxlYWd1ZXMhCgpJJ20gbmV3YmllIHdpdGggQUxTQSBkZXZlbC4gSSBuZWVkIHRvIGdl
+dCBleHRyYSBmdW5jdGlvbmFsaXR5IGZyb20gY29kZWMgCnRocm91Z2ggQUxTQSBtaXhlci4KVGFz
+azogMS4gbWFraW5nIHBvc3NpYmlsaXR5IHRvIHNldC11cCBnYWluIGZvciBlYWNoIGlucHV0IAoo
+WFhYXzJfTEFEQ0NUUkwgYW5kIFhYWF8yX1JBRENDVFJMIHJlZ2lzdGVycykKMi4gbWFraW5nIHBv
+c3NpYmlsaXR5IHRvIHNldC11cCBkZWJvdW5jZSBmb3IgYnV0dG9uIGFuZCBoZWFkc2V0IApkZXRl
+Y3Rpb24gKCBIRUFEU0VUX0RFVEVDVF9DVFJMX0EgcmVnaXN0ZXIpCjMuIG1ha2luZyBwb3NzaWJp
+bGl0eSB0byBlbmFibGUgaGlnaC1wb3dlciBBQy1jb3VwbGVkIG91dHB1dCAKKEhFQURTRVRfREVU
+RUNUX0NUUkxfQSByZWdpc3RlcikKNC4gbWFraW5nIHBvc3NpYmlsaXR5IHRvIGVuYWJsZSBzdGVy
+ZW8gcHNldWRvIGRpZmZlcmVudGlhbCBvdXRwdXQgCihIRUFEU0VUX0RFVEVDVF9DVFJMX0IgcmVn
+aXN0ZXIpCjUuIGVuYWJsZSBoZWFkc2V0IGRldGVjdGlvbiAoSEVBRFNFVF9ERVRFQ1RfQ1RSTF9B
+KQo2LiBnZXR0aW5nIGhlYWRzZXQgZGV0ZWN0IHN0YXR1cyAoSEVBRFNFVF9ERVRFQ1RfQ1RSTF9B
+KQoKV2VsbCwgbXkgcGF0Y2ggd29ya3MgaW4gZ2VuZXJhbGx5LCBidXQgSSBkb24ndCBsaWtlIGl0
+IHZlcnkgbXVjaCwgYmVjYXVzZToKMS4gQWxsIGNvbnRyb2xzIGZvciBpbnB1dCBhbXBsaWZpZXJz
+JyBnYWluIGFyZSBzaG93biBpbiAKQWxzYW1peGVyLVBsYXliYWNrIHNlY3Rpb24uIEJ1dCBub3Qg
+b25seSBtaW5lLCBjYXB0dXJlIGNvbnRyb2xzIGZyb20gCmJhc2UgY29kZWMncyB2ZXJzaW9uIGFy
+ZSBzaG93biBpbiBwbGF5YmFjayBzZWN0aW9uIHRvbywgZm9yIGV4YW1wbGUgCihSaWdodCBvciBM
+ZWZ0KSBQR0EgTWl4ZXIgTGluZTEoTCBvciBSKS8yKEwgb3IgUikvTUlDMyhMIG9yIFIpLCB3aGlj
+aCBpcyAKZGVmaW5pdGVseSBjYXB0dXJlIHNldHRpbmdzLiBTaG91bGQgSSB3b3JyaWVkIGFib3V0
+IGl0PyBiZWNhdXNlLCBhcyBJIAp1bmRlcnN0YW5kLCBpdCBjb3VsZCBub3QgYmUgc2V0dGVkIGNv
+cnJlY3RseSBkdXJpbmcgY2hhbmdpbmcgCnBsYXliYWNrL2NhcHR1cmUgbW9kZSBmb3IgcG93ZXIt
+c2F2aW5nIHJlYXNvbi4KMi4gICJSaWdodCBQR0EgTWl4ZXIgTGluZTFSIiBjb250cm9sIChhbmQg
+c2ltaWxhcikgdXNpbmcgdGhlIHNhbWUgYml0cyAKaW4gTElORTFSXzJfUkFEQ0NUUkwgcmVnaXN0
+ZXIgYXMgbXkgIkxpbmUxUiBSQURDIEdhaW4iIGNvbnRyb2wgKGFuZCAKc2ltaWxhcikgYW5kIHB1
+dCB0aGVyZSBiIjExMTEiIHdoZW4gdXNlciBzd2l0Y2ggZGlzY29ubmVjdCBpdCBmcm9tIEFEQy4g
+ClNvIG15IGNvbnRyb2wgaXMgbm90IHNob3duIHdoZW4gdXNlciBkaXNjb25uZWN0IGl0IGZyb20g
+QURDLgozLiBXaGVuIEkgc3RhcnQvc3RvcCBhcmVjb3JkIHNvbWUgb2YgbXkgb3B0aW9ucyB3ZXJl
+IHJlc2V0IChkZWJvdW5jZXMsIApoZWFkc2V0IGVuYWJsZSwgaGlnaC1wb3dlciBBQy1jb3VwbGVk
+LCBwc2V1ZG8gZGlmZmVyZW50aWFsIG91dHB1dCkuIFdoZW4gCkkgc2V0IHVwIGl0IGluIHNoZWxs
+IGFuZCB0aGVuIHN0YXJ0IGFyZWNvcmQsIGl0J3MgcmVzZXQgYWdhaW4uIElzIGl0IHRoZSAKcmVh
+c29uIGJlY2F1c2Ugb2YgZGlzcGxheWluZyBjb250cm9scyBpbiBwbGF5YmFjayBtaXhlciBzZWN0
+aW9uPwoKSSB3aWxsIGJlIHZlcnkgcGxlYXNlZCBmb3IgYW55IGFkdmlzZSwgdGhhbmsgeW91IQoK
+CmhlcmUgaXMgbXkgcGF0Y2ggZm9yIHRsdjMyMGFpYzN4LmMKLS0tCiAgc291bmQvc29jL2NvZGVj
+cy90bHYzMjBhaWMzeC5jIHwgNTUgCisrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKy0tLQogIDEgZmlsZSBjaGFuZ2VkLCA1MiBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygt
+KQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljM3guYyBiL3NvdW5kL3Nv
+Yy9jb2RlY3MvdGx2MzIwYWljM3guYwppbmRleCBkNzM0OWJjLi4yN2QwMzFlIDEwMDY0NAotLS0g
+YS9zb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFpYzN4LmMKKysrIGIvc291bmQvc29jL2NvZGVjcy90
+bHYzMjBhaWMzeC5jCkBAIC0xMjIsMTEgKzEyMiwyNCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHJl
+Z19kZWZhdWx0IGFpYzN4X3JlZ1tdID0gewogICAgICAgICB7IDEwOCwgMHgwMCB9LCB7IDEwOSwg
+MHgwMCB9LAogIH07Cgorc3RhdGljIGJvb2wgYWljMzEwNl92b2xhdGlsZShzdHJ1Y3QgZGV2aWNl
+ICpkZXYsIHVuc2lnbmVkIGludCByZWcpCit7CisgICAgc3dpdGNoKHJlZykKKyAgICB7CisgICAg
+ICAgIGNhc2UgQUlDM1hfSEVBRFNFVF9ERVRFQ1RfQ1RSTF9BOgorICAgICAgICBjYXNlIEFJQzNY
+X0hFQURTRVRfREVURUNUX0NUUkxfQjoKKyAgICAgICAgICAgIHJldHVybiB0cnVlOworICAgICAg
+ICBkZWZhdWx0OgorICAgICAgICAgICAgcmV0dXJuIGZhbHNlOworICAgIH0KK30KKwogIHN0YXRp
+YyBjb25zdCBzdHJ1Y3QgcmVnbWFwX2NvbmZpZyBhaWMzeF9yZWdtYXAgPSB7CiAgICAgICAgIC5y
+ZWdfYml0cyA9IDgsCiAgICAgICAgIC52YWxfYml0cyA9IDgsCgogICAgICAgICAubWF4X3JlZ2lz
+dGVyID0gREFDX0lDQ19BREosCisgICAgLnZvbGF0aWxlX3JlZyA9IGFpYzMxMDZfdm9sYXRpbGUs
+CiAgICAgICAgIC5yZWdfZGVmYXVsdHMgPSBhaWMzeF9yZWcsCiAgICAgICAgIC5udW1fcmVnX2Rl
+ZmF1bHRzID0gQVJSQVlfU0laRShhaWMzeF9yZWcpLAogICAgICAgICAuY2FjaGVfdHlwZSA9IFJF
+R0NBQ0hFX1JCVFJFRSwKQEAgLTE5Niw3ICsyMDksNyBAQCBzdGF0aWMgaW50IG1pY19iaWFzX2V2
+ZW50KHN0cnVjdCBzbmRfc29jX2RhcG1fd2lkZ2V0ICp3LAogICAgICAgICBzdHJ1Y3Qgc25kX2tj
+b250cm9sICprY29udHJvbCwgaW50IGV2ZW50KQogIHsKICAgICAgICAgc3RydWN0IHNuZF9zb2Nf
+Y29kZWMgKmNvZGVjID0gdy0+Y29kZWM7Ci0gICAgICAgc3RydWN0IGFpYzN4X3ByaXYgKmFpYzN4
+ID0gc25kX3NvY19jb2RlY19nZXRfZHJ2ZGF0YShjb2RlYyk7CisgICAgc3RydWN0IGFpYzN4X3By
+aXYgKmFpYzN4ID0gc25kX3NvY19jb2RlY19nZXRfZHJ2ZGF0YShjb2RlYyk7CgogICAgICAgICBz
+d2l0Y2ggKGV2ZW50KSB7CiAgICAgICAgIGNhc2UgU05EX1NPQ19EQVBNX1BPU1RfUE1VOgpAQCAt
+MjcwLDYgKzI4MywyNiBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNvY19lbnVtIGFpYzN4X2FnY19k
+ZWNheV9lbnVtW10gPSB7CiAgICAgICAgIFNPQ19FTlVNX1NJTkdMRShSQUdDX0NUUkxfQSwgMCwg
+NCwgYWljM3hfYWdjX2RlY2F5KSwKICB9OwoKK3N0YXRpYyBjb25zdCBjaGFyICphaWMzeF9hZGNf
+Z2FpbltdID0geyAiMGRCIiwgIi0xLjVkQiIsICItM2RCIiwgCiItNC41ZEIiLCAiLTZkQiIsICIt
+Ny41ZEIiLCAiLTlkQiIsICItMTAuNWRCIiwgIi0xMmRCIiB9Oworc3RhdGljIGNvbnN0IHN0cnVj
+dCBzb2NfZW51bSBhaWMzeF9hZGNfZ2Fpbl9lbnVtW10gPSB7CisgICAgICAgU09DX0VOVU1fU0lO
+R0xFKE1JQzNMUl8yX0xBRENfQ1RSTCwgNCwgOSwgYWljM3hfYWRjX2dhaW4pLAorICAgICAgIFNP
+Q19FTlVNX1NJTkdMRShNSUMzTFJfMl9SQURDX0NUUkwsIDAsIDksIGFpYzN4X2FkY19nYWluKSwK
+KyAgICAgICBTT0NfRU5VTV9TSU5HTEUoTElORTFMXzJfTEFEQ19DVFJMLCAzLCA5LCBhaWMzeF9h
+ZGNfZ2FpbiksCisgICAgICAgU09DX0VOVU1fU0lOR0xFKExJTkUxUl8yX1JBRENfQ1RSTCwgMywg
+OSwgYWljM3hfYWRjX2dhaW4pLAorICAgICAgIFNPQ19FTlVNX1NJTkdMRShMSU5FMkxfMl9MQURD
+X0NUUkwsIDMsIDksIGFpYzN4X2FkY19nYWluKSwKKyAgICAgICBTT0NfRU5VTV9TSU5HTEUoTElO
+RTJSXzJfUkFEQ19DVFJMLCAzLCA5LCBhaWMzeF9hZGNfZ2FpbiksCit9Oworc3RhdGljIGNvbnN0
+IGNoYXIgKmFpYzN4X2hlYWRzZXRfZGVib3VuY2VbXSA9IHsgIjE2bXMiLCAiMzJtcyIsICI2NG1z
+IiwgCiIxMjhtcyIsICIyNTZtcyIsICI1MTJtcyIgfTsKK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc29j
+X2VudW0gYWljM3hfaGVhZHNldF9kZWJvdW5jZV9lbnVtW10gPSB7CisgICAgU09DX0VOVU1fU0lO
+R0xFKEFJQzNYX0hFQURTRVRfREVURUNUX0NUUkxfQSwgMiwgNiwgCmFpYzN4X2hlYWRzZXRfZGVi
+b3VuY2UpLAorfTsKK3N0YXRpYyBjb25zdCBjaGFyICphaWMzeF9idXR0b25fZGVib3VuY2VbXSA9
+IHsgIjBtcyIsICI4bXMiLCAiMTZtcyIsIAoiMzJtcyIgfTsKK3N0YXRpYyBjb25zdCBzdHJ1Y3Qg
+c29jX2VudW0gYWljM3hfYnV0dG9uX2RlYm91bmNlX2VudW1bXSA9IHsKKyAgICBTT0NfRU5VTV9T
+SU5HTEUoQUlDM1hfSEVBRFNFVF9ERVRFQ1RfQ1RSTF9BLCAwLCA0LCAKYWljM3hfYnV0dG9uX2Rl
+Ym91bmNlKSwKK307CisKKworCiAgLyoKICAgKiBEQUMgZGlnaXRhbCB2b2x1bWVzLiBGcm9tIC02
+My41IHRvIDAgZEIgaW4gMC41IGRCIHN0ZXBzCiAgICovCkBAIC0zOTksNiArNDMyLDE5IEBAIHN0
+YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX2tjb250cm9sX25ldyAKYWljM3hfc25kX2NvbnRyb2xzW10g
+PSB7CiAgICAgICAgIFNPQ19ET1VCTEVfUigiUEdBIENhcHR1cmUgU3dpdGNoIiwgTEFEQ19WT0ws
+IFJBRENfVk9MLCA3LCAweDAxLCAxKSwKCiAgICAgICAgIFNPQ19FTlVNKCJBREMgSFBGIEN1dC1v
+ZmYiLCBhaWMzeF9lbnVtW0FEQ19IUEZfRU5VTV0pLAorICAgIC8qIEFkZGl0aW9uYWwgY29udHJv
+bHMgKi8KKyAgICAgICBTT0NfRU5VTSgiTWljM0wgTEFEQyBHYWluIiwgYWljM3hfYWRjX2dhaW5f
+ZW51bVswXSksCisgICAgICAgU09DX0VOVU0oIk1pYzNSIFJBREMgR2FpbiIsIGFpYzN4X2FkY19n
+YWluX2VudW1bMV0pLAorICAgICAgIFNPQ19FTlVNKCJMaW5lMUwgTEFEQyBHYWluIiwgYWljM3hf
+YWRjX2dhaW5fZW51bVsyXSksCisgICAgICAgU09DX0VOVU0oIkxpbmUxUiBSQURDIEdhaW4iLCBh
+aWMzeF9hZGNfZ2Fpbl9lbnVtWzNdKSwKKyAgICAgICBTT0NfRU5VTSgiTGluZTJMIExBREMgR2Fp
+biIsIGFpYzN4X2FkY19nYWluX2VudW1bNF0pLAorICAgICAgIFNPQ19FTlVNKCJMaW5lMlIgUkFE
+QyBHYWluIiwgYWljM3hfYWRjX2dhaW5fZW51bVs1XSksCisgICAgU09DX0VOVU0oIkhlYWRzZXQg
+RGVib3VuY2UiLCBhaWMzeF9oZWFkc2V0X2RlYm91bmNlX2VudW0pLAorICAgIFNPQ19FTlVNKCJC
+dXR0b24gRGVib3VuY2UiLCBhaWMzeF9idXR0b25fZGVib3VuY2VfZW51bSksCisgICAgU09DX1NJ
+TkdMRSgiSGVhZHNldCBEZXRlY3RlZCIsIEFJQzNYX0hFQURTRVRfREVURUNUX0NUUkxfQSwgCkFJ
+QzNYX0hFQURTRVRfREVURUNUX1NISUZULCBBSUMzWF9IRUFEU0VUX0RFVEVDVF9NQVNLLCAwKSwK
+KyAgICBTT0NfU0lOR0xFKCJIZWFkc2V0IERldGVjdCBFbmFibGUiLCBBSUMzWF9IRUFEU0VUX0RF
+VEVDVF9DVFJMX0EsIDcsIAoxLCAwKSwKKyAgICBTT0NfU0lOR0xFKCJIaWdoIHBvd2VyIG91dHB1
+dCBBYy1jb3VwbGVkIiwgCkFJQzNYX0hFQURTRVRfREVURUNUX0NUUkxfQiwgNywgMSwgMCksCisg
+ICAgU09DX1NJTkdMRSgiU3RlcmVvIHBzZXVkb2RpZmZlcmVudGlhbCBvdXRwdXQiLCAKQUlDM1hf
+SEVBRFNFVF9ERVRFQ1RfQ1RSTF9CLCAzLCAxLCAwKSwKICB9OwoKICBzdGF0aWMgY29uc3Qgc3Ry
+dWN0IHNuZF9rY29udHJvbF9uZXcgYWljM3hfbW9ub19jb250cm9sc1tdID0gewpAQCAtNjE0LDcg
+KzY2MCw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCAKYWljM3hf
+ZGFwbV93aWRnZXRzW10gPSB7CiAgICAgICAgIFNORF9TT0NfREFQTV9SRUcoc25kX3NvY19kYXBt
+X21pY2JpYXMsICJETWljIFJhdGUgMzIiLAogICAgICAgICAgICAgICAgICAgICAgICAgIEFJQzNY
+X0FTRF9JTlRGX0NUUkxBLCAwLCAzLCAzLCAwKSwKCi0gICAgICAgLyogTWljIEJpYXMgKi8KKyAg
+ICAvKiBNaWMgQmlhcyAqLwogICAgICAgICBTTkRfU09DX0RBUE1fU1VQUExZKCJNaWMgQmlhcyIs
+IE1JQ0JJQVNfQ1RSTCwgNiwgMCwKICAgICAgICAgICAgICAgICAgICAgICAgICBtaWNfYmlhc19l
+dmVudCwKICAgICAgICAgICAgICAgICAgICAgICAgICBTTkRfU09DX0RBUE1fUE9TVF9QTVUgfCBT
+TkRfU09DX0RBUE1fUFJFX1BNRCksCkBAIC02OTIsNyArNzM4LDcgQEAgc3RhdGljIGNvbnN0IHN0
+cnVjdCBzbmRfc29jX2RhcG1fcm91dGUgaW50ZXJjb25bXSA9IHsKICAgICAgICAgeyJMZWZ0IExp
+bmUyTCBNdXgiLCAic2luZ2xlLWVuZGVkIiwgIkxJTkUyTCJ9LAogICAgICAgICB7IkxlZnQgTGlu
+ZTJMIE11eCIsICJkaWZmZXJlbnRpYWwiLCAiTElORTJMIn0sCgotICAgICAgIHsiTGVmdCBQR0Eg
+TWl4ZXIiLCAiTGluZTFMIFN3aXRjaCIsICJMZWZ0IExpbmUxTCBNdXgifSwKKyAgICB7IkxlZnQg
+UEdBIE1peGVyIiwgIkxpbmUxTCBTd2l0Y2giLCAiTGVmdCBMaW5lMUwgTXV4In0sCiAgICAgICAg
+IHsiTGVmdCBQR0EgTWl4ZXIiLCAiTGluZTFSIFN3aXRjaCIsICJMZWZ0IExpbmUxUiBNdXgifSwK
+ICAgICAgICAgeyJMZWZ0IFBHQSBNaXhlciIsICJMaW5lMkwgU3dpdGNoIiwgIkxlZnQgTGluZTJM
+IE11eCJ9LAogICAgICAgICB7IkxlZnQgUEdBIE1peGVyIiwgIk1pYzNMIFN3aXRjaCIsICJNSUMz
+TCJ9LApAQCAtODE0LDYgKzg2MCw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBt
+X3JvdXRlIGludGVyY29uW10gPSB7CiAgICAgICAgIHsiUmlnaHQgSFBDT00gTXV4IiwgImV4dGVy
+bmFsIGZlZWRiYWNrIiwgIlJpZ2h0IEhQQ09NIE1peGVyIn0sCiAgICAgICAgIHsiUmlnaHQgSFAg
+Q29tIiwgTlVMTCwgIlJpZ2h0IEhQQ09NIE11eCJ9LAogICAgICAgICB7IkhQUkNPTSIsIE5VTEws
+ICJSaWdodCBIUCBDb20ifSwKKwogIH07CgogIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19k
+YXBtX3JvdXRlIGludGVyY29uX21vbm9bXSA9IHsKQEAgLTkxOCw3ICs5NjUsOSBAQCBzdGF0aWMg
+aW50IGFpYzN4X2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gCipzdWJzdHJlYW0s
+CiAgICAgICAgIGRhdGEgPSAoTERBQzJMQ0ggfCBSREFDMlJDSCk7CiAgICAgICAgIGRhdGEgfD0g
+KGZzcmVmID09IDQ0MTAwKSA/IEZTUkVGXzQ0MTAwIDogRlNSRUZfNDgwMDA7CiAgICAgICAgIGlm
+IChwYXJhbXNfcmF0ZShwYXJhbXMpID49IDY0MDAwKQorICAgICAgIHsKICAgICAgICAgICAgICAg
+ICBkYXRhIHw9IERVQUxfUkFURV9NT0RFOworICAgICAgIH0KICAgICAgICAgc25kX3NvY193cml0
+ZShjb2RlYywgQUlDM1hfQ09ERUNfREFUQVBBVEhfUkVHLCBkYXRhKTsKCiAgICAgICAgIC8qIGNv
+ZGVjIHNhbXBsZSByYXRlIHNlbGVjdCAqLwotLQphbmQgdGx2MzIwYWljM3guaAotLS0KICBzb3Vu
+ZC9zb2MvY29kZWNzL3RsdjMyMGFpYzN4LmggfCA2ICsrKysrKwogIDEgZmlsZSBjaGFuZ2VkLCA2
+IGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFpYzN4
+LmggYi9zb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFpYzN4LmgKaW5kZXggZTUyMWFjMy4uOGZmNDJk
+MiAxMDA2NDQKLS0tIGEvc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzeC5oCisrKyBiL3NvdW5k
+L3NvYy9jb2RlY3MvdGx2MzIwYWljM3guaApAQCAtMjcxLDYgKzI3MSwxMiBAQCBlbnVtIHsKICAg
+ICAgICAgQUlDM1hfQlVUVE9OX0RFQk9VTkNFXzMyTVMgICAgICA9IDMKICB9OwoKK3R5cGVkZWYg
+c3RydWN0IHsKKyAgICBzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlKiBwZGV2OworICAgIHN0cnVjdCBw
+cm9jX2Rpcl9lbnRyeSAqcHJvY192YWx1ZTsKKyAgICBzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29k
+ZWM7Cit9IGFpYzMxMDZfZGV0ZWN0X3Q7CisKICAjZGVmaW5lIEFJQzNYX0hFQURTRVRfREVURUNU
+X0VOQUJMRUQgICAweDgwCiAgI2RlZmluZSBBSUMzWF9IRUFEU0VUX0RFVEVDVF9TSElGVCAgICAg
+NQogICNkZWZpbmUgQUlDM1hfSEVBRFNFVF9ERVRFQ1RfTUFTSyAgICAgIDMKLS0KCgoKCgotLSAK
+0KEg0YPQstCw0LbQtdC90LjQtdC8LArQoNGD0LrQvtCy0L7QtNC40YLQtdC70Ywg0L/RgNC+0LXQ
+utGC0L7QsgrQnNC+0YDRgdC60LjQtSDQutC+0LzQv9C70LXQutGB0Ysg0Lgg0YHQuNGB0YLQtdC8
+0Ysg0L/Qu9GO0YEK0JrQsNGA0LDQu9C00LjQvSDQoi7QnC4KLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLQpCZXN0IHJlZ2FyZHMsClByb2plY3RzIGRpcmVjdG9yCk1hcmluZSBjb21wbGV4ZXMgYW5k
+IHN5c3RlbXMgcGx1cwpUaW11ciBLYXJhbGRpbgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
