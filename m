@@ -1,48 +1,89 @@
-From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Subject: Re: [PATCH] media: add GFP flag to media_*() that could get called
- in atomic context
-Date: Mon, 14 Mar 2016 07:13:58 -0300
-Message-ID: <20160314071358.27c87dab@recife.lan>
-References: <1457833689-4926-1-git-send-email-shuahkh@osg.samsung.com>
-	<20160314072236.GO11084@valkosipuli.retiisi.org.uk>
+From: Jeeja KP <jeeja.kp@intel.com>
+Subject: Re: [RFD] Add hw_params support for hostless stream BE
+	DAIs
+Date: Mon, 14 Mar 2016 23:27:42 +0530
+Message-ID: <47523.6779232093$1457950903@news.gmane.org>
+References: <20160216161747.GA18103@jeeja.kp@intel.com>
+ <20160302020215.GN18327@sirena.org.uk>
+ <20160310205703.GA26632@jeeja.kp@intel.com>
+ <20160311035927.GQ3898@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20160314072236.GO11084@valkosipuli.retiisi.org.uk>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sakari Ailus <sakari.ailus@iki.fi>
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, kyungmin.park@samsung.com, a.hajda@samsung.com, s.nawrocki@samsung.com, kgene@kernel.org, k.kozlowski@samsung.com, laurent.pinchart@ideasonboard.com, hyun.kwon@xilinx.com, soren.brinkmann@xilinx.com, gregkh@linuxfoundation.org, perex@perex.cz, tiwai@suse.com, hans.verkuil@cisco.com, lixiubo@cmss.chinamobile.com, javier@osg.samsung.com, g.liakhovetski@gmx.de, chehabrafael@gmail.com, crope@iki.fi, tommi.franttila@intel.com, dan.carpenter@oracle.com, prabhakar.csengg@gmail.com, hamohammed.sa@gmail.com, der.herr@hofr.at, navyasri.tech@gmail.com, Julia.Lawall@lip6.fr, amitoj1606@gmail.com, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, linux-renesas-soc@vger.kernel.org, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF95B260673
+ for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2016 11:21:10 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20160311035927.GQ3898@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: tiwai@suse.de, vinod.koul@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Em Mon, 14 Mar 2016 09:22:37 +0200
-Sakari Ailus <sakari.ailus@iki.fi> escreveu:
-
-> Hi Shuah,
+On Fri, Mar 11, 2016 at 10:59:27AM +0700, Mark Brown wrote:
+> On Fri, Mar 11, 2016 at 02:27:03AM +0530, Jeeja KP wrote:
+> > On Wed, Mar 02, 2016 at 11:02:15AM +0900, Mark Brown wrote:
+> > > On Tue, Feb 16, 2016 at 09:47:47PM +0530, Jeeja KP wrote:
 > 
-> On Sat, Mar 12, 2016 at 06:48:09PM -0700, Shuah Khan wrote:
-> > Add GFP flags to media_create_pad_link(), media_create_intf_link(),
-> > media_devnode_create(), and media_add_link() that could get called
-> > in atomic context to allow callers to pass in the right flags for
-> > memory allocation.
-> > 
-> > tree-wide driver changes for media_*() GFP flags change:
-> > Change drivers to add gfpflags to interffaces, media_create_pad_link(),
-> > media_create_intf_link() and media_devnode_create().
-> > 
-> > Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
-> > Suggested-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>  
+> > > Like I keep saying if you're thinking about this in terms of DPCM you're
+> > > solving the wrong problem - we already support supplying parameters for
+> > > device<->device links, we already have systems that need to configure
+> > > things for device<->device links so we can already see that if we're
+> > > doing something that only works for things that are on SoC and can use
+> > > DPCM then we're not solving the problem.
 > 
-> What's the use case for calling the above functions in an atomic context?
+> > No this is not exactly about DPCM. It is about the device<->device links that
+> > assume you can have only codecs as hostless and thus change the direction
+> > for the link. Since we are rendering from SoC we don't need direction change.
 > 
+> You're routing them via DSP though?
 
-ALSA code seems to do a lot of stuff at atomic context. That's what
-happens on my test machine when au0828 gets probed before
-snd-usb-audio:
-	http://pastebin.com/LEX5LD5K
+Yes, but this would have been the same issue for things like internal
+sinks and sources. For example we have a tone generator which is dapm
+source and connects to codec. This hostless connection is triggered from
+DAPM but we don't have hw_params, so tried to provide hardware params
+for DAIs and not overloaded .params field in this approach
 
-It seems that ALSA USB probe routine (usb_audio_probe) happens in
-atomic context.
+> > > This is clearly confused, if we can't figure out what the two devices we
+> > > are connecting are based on just looking at the devices then that's
+> > > really not a good sign that our interfaces are sensible and easy to work
+> > > with.
+> 
+> > Right now dai_link assumes device<->device links based on params so we
+> > cannot specify params for anything where we dont want direction change and would
+> > like to treat as normal direction dai_link. So we propose this to move to
+> > codec_link flag and use params only for creating controls based on params
+> > provided.
+> 
+> What I'm telling you is that you shouldn't be writing hacks like this to
+> bodge things but coming up with scalable and maintainable solutions.  I
+> already discussed this with Vinod several times, we've discussed the
+> idea that if you're having trouble with the asymmetries in the
+> definitions of DAI links you should make the DAI links symmetric so
+> things like this just work.  We need clear, comprehensible abstractions
+> which work robustly not some mess of special case handling.
 
-Regards,
-Mauro
+At least this one is not really DPCM based as we have the same problem
+with DAPM based approach when we consider internal sinks and sources.
+
+We discussed this and yes we are looking at ways to solve this longer
+term with DAPM but today DAPM doesn't help us in managing DMAs for our
+controller. I believe Vinod did discuss this limitation during ELC.
+We are starting this discussion internally and will try to solve
+this part.
+
+Now for us to mange the internal sinks and source how should we go about
+modelling them in DAPM and provide hw_params for the configuration?
+
+Thanks
+-- 
+Jeeja
