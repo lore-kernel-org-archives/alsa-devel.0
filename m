@@ -1,62 +1,38 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH] ALSA: hda - Fixes double fault in
-	nvhdmi_chmap_cea_alloc_validate_get_type
-Date: Mon, 14 Mar 2016 10:35:06 +0530
-Message-ID: <1457931906-23780-1-git-send-email-subhransu.s.prusty@intel.com>
+From: Sakari Ailus <sakari.ailus@iki.fi>
+Subject: Re: [PATCH] media: add GFP flag to media_*() that could get called
+ in atomic context
+Date: Mon, 14 Mar 2016 09:22:37 +0200
+Message-ID: <20160314072236.GO11084@valkosipuli.retiisi.org.uk>
+References: <1457833689-4926-1-git-send-email-shuahkh@osg.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 171702612D7
- for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2016 06:05:11 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1457833689-4926-1-git-send-email-shuahkh@osg.samsung.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Shuah Khan <shuahkh@osg.samsung.com>
+Cc: mchehab@osg.samsung.com, kyungmin.park@samsung.com, a.hajda@samsung.com, s.nawrocki@samsung.com, kgene@kernel.org, k.kozlowski@samsung.com, laurent.pinchart@ideasonboard.com, hyun.kwon@xilinx.com, soren.brinkmann@xilinx.com, gregkh@linuxfoundation.org, perex@perex.cz, tiwai@suse.com, hans.verkuil@cisco.com, lixiubo@cmss.chinamobile.com, javier@osg.samsung.com, g.liakhovetski@gmx.de, chehabrafael@gmail.com, crope@iki.fi, tommi.franttila@intel.com, dan.carpenter@oracle.com, prabhakar.csengg@gmail.com, hamohammed.sa@gmail.com, der.herr@hofr.at, navyasri.tech@gmail.com, Julia.Lawall@lip6.fr, amitoj1606@gmail.com, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, linux-renesas-soc@vger.kernel.org, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-nvhdmi_chmap_cea_alloc_validate_get_type calls itself recursively
-using chmap ops causing the double fault.
+Hi Shuah,
 
-Fixed by adding the default validate_get_type handling inside nvdia
-validate_get_type handler.
+On Sat, Mar 12, 2016 at 06:48:09PM -0700, Shuah Khan wrote:
+> Add GFP flags to media_create_pad_link(), media_create_intf_link(),
+> media_devnode_create(), and media_add_link() that could get called
+> in atomic context to allow callers to pass in the right flags for
+> memory allocation.
+> 
+> tree-wide driver changes for media_*() GFP flags change:
+> Change drivers to add gfpflags to interffaces, media_create_pad_link(),
+> media_create_intf_link() and media_devnode_create().
+> 
+> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+> Suggested-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=114311
-Fixes: 67b90cb ("ALSA: hda - Create common chmap object")
-Reported-by: Andreas Reis <andreas.reis@gmail.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Tested-by: Andreas Reis <andreas.reis@gmail.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/pci/hda/patch_hdmi.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+What's the use case for calling the above functions in an atomic context?
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index f59e87b..a386a65 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2827,8 +2827,12 @@ static int nvhdmi_chmap_cea_alloc_validate_get_type(struct hdac_chmap *chmap,
- 	if (cap->ca_index == 0x00 && channels == 2)
- 		return SNDRV_CTL_TLVT_CHMAP_FIXED;
- 
--	return chmap->ops.chmap_cea_alloc_validate_get_type(
--				chmap, cap, channels);
-+	/* If the speaker allocation matches the channel count, it is OK. */
-+	if (cap->channels != channels)
-+		return -1;
-+
-+	/* all channels are remappable freely */
-+	return SNDRV_CTL_TLVT_CHMAP_VAR;
- }
- 
- static int nvhdmi_chmap_validate(struct hdac_chmap *chmap,
 -- 
-1.9.1
+Regards,
+
+Sakari Ailus
+e-mail: sakari.ailus@iki.fi	XMPP: sailus@retiisi.org.uk
