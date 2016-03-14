@@ -1,15 +1,16 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH] topology: Add ops to bytes control.
-Date: Mon, 14 Mar 2016 08:07:35 +0000
-Message-ID: <1457942858-5652-2-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH] topology: add support for pasring external ops
+	in conf files
+Date: Mon, 14 Mar 2016 08:07:36 +0000
+Message-ID: <1457942858-5652-3-git-send-email-liam.r.girdwood@linux.intel.com>
 References: <1457942858-5652-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 943B526066B
- for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2016 09:08:01 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 590772614BB
+ for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2016 09:08:04 +0100 (CET)
 In-Reply-To: <1457942858-5652-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,25 +25,28 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Byte controls can also support ops. Add them to the parser.
+Parsing external ops was missing from the conf files but was in the
+C API. Fix this now by making sure we also check for external ops.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- src/topology/ctl.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ src/topology/ctl.c        |  8 ++++++++
+ src/topology/ops.c        | 38 ++++++++++++++++++++++++++++++++++++++
+ src/topology/tplg_local.h |  2 ++
+ 3 files changed, 48 insertions(+)
 
 diff --git a/src/topology/ctl.c b/src/topology/ctl.c
-index c250227..a8ac398 100644
+index a8ac398..23c196a 100644
 --- a/src/topology/ctl.c
 +++ b/src/topology/ctl.c
-@@ -385,6 +385,14 @@ int tplg_parse_control_bytes(snd_tplg_t *tplg,
- 			tplg_dbg("\t%s: %s\n", id, val);
+@@ -393,6 +393,14 @@ int tplg_parse_control_bytes(snd_tplg_t *tplg,
+ 				return err;
  			continue;
  		}
 +
-+		if (strcmp(id, "ops") == 0) {
-+			err = tplg_parse_compound(tplg, n, tplg_parse_ops,
-+				&be->hdr);
++		if (strcmp(id, "extops") == 0) {
++			err = tplg_parse_compound(tplg, n, tplg_parse_ext_ops,
++				be);
 +			if (err < 0)
 +				return err;
 +			continue;
@@ -50,5 +54,64 @@ index c250227..a8ac398 100644
  	}
  
  	return 0;
+diff --git a/src/topology/ops.c b/src/topology/ops.c
+index 243d8c5..1b5c1e2 100644
+--- a/src/topology/ops.c
++++ b/src/topology/ops.c
+@@ -82,3 +82,41 @@ int tplg_parse_ops(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
+ 
+ 	return 0;
+ }
++
++/* Parse External Control operations. Ops can come from standard names above or
++ * bespoke driver controls with numbers >= 256
++ */
++int tplg_parse_ext_ops(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
++	snd_config_t *cfg, void *private)
++{
++	snd_config_iterator_t i, next;
++	snd_config_t *n;
++	struct snd_soc_tplg_bytes_control *be = private;
++	const char *id, *value;
++
++	tplg_dbg("\tExt Ops\n");
++
++	snd_config_for_each(i, next, cfg) {
++
++		n = snd_config_iterator_entry(i);
++
++		/* get id */
++		if (snd_config_get_id(n, &id) < 0)
++			continue;
++
++		/* get value - try strings then ints */
++		if (snd_config_get_string(n, &value) < 0)
++			continue;
++
++		if (strcmp(id, "info") == 0)
++			be->ext_ops.info = lookup_ops(value);
++		else if (strcmp(id, "put") == 0)
++			be->ext_ops.put = lookup_ops(value);
++		else if (strcmp(id, "get") == 0)
++			be->ext_ops.get = lookup_ops(value);
++
++		tplg_dbg("\t\t%s = %s\n", id, value);
++	}
++
++	return 0;
++}
+diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
+index e66d7f4..84050af 100644
+--- a/src/topology/tplg_local.h
++++ b/src/topology/tplg_local.h
+@@ -208,6 +208,8 @@ int tplg_parse_channel(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
+ 
+ int tplg_parse_ops(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
+ 	snd_config_t *cfg, void *private);
++int tplg_parse_ext_ops(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
++	snd_config_t *cfg, void *private);
+ 
+ struct tplg_elem *lookup_pcm_dai_stream(struct list_head *base,
+ 	const char* id);
 -- 
 2.5.0
