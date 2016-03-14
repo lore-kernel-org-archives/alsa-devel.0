@@ -1,141 +1,101 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: ASoC and pulseaudio
-Date: Mon, 14 Mar 2016 08:19:27 +0000
-Message-ID: <1457943567.3888.18.camel@loki>
-References: <CAL9uMOHRjcCJomr6zzR0ySh384AVj1FRvASZSp3KsPqfeS8Lzw@mail.gmail.com>
- <56C8AEFD.4060808@linux.intel.com> <1456225994.6424.35.camel@loki>
- <B51200AC81AB024499A3C2C9A1BB90A83D3AABF9@SHSMSX101.ccr.corp.intel.com>
-Reply-To: General PulseAudio Discussion
- <pulseaudio-discuss@lists.freedesktop.org>
+From: "Lu, Han" <han.lu@intel.com>
+Subject: Re: [PATCH 09/10] alsabat: use variable for thread
+ return	value
+Date: Mon, 14 Mar 2016 09:15:20 +0000
+Message-ID: <B51200AC81AB024499A3C2C9A1BB90A83D3AAC58@SHSMSX101.ccr.corp.intel.com>
+References: <cover.1456907242.git.han.lu@intel.com>
+ <3788d26a68d34132a918b0eb19f7f0a7eb552641.1456907242.git.han.lu@intel.com>
+ <s5hegbhyw88.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-In-Reply-To: <B51200AC81AB024499A3C2C9A1BB90A83D3AABF9@SHSMSX101.ccr.corp.intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
-To: General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Linux Upstreaming Team <linux@endlessm.com>, "han.lu" <han.lu@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 55ED42605CA
+ for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2016 10:17:22 +0100 (CET)
+In-Reply-To: <s5hegbhyw88.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Gautier, Bernard" <bernard.gautier@intel.com>, "Popescu,
+ Edward C" <edward.c.popescu@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-KyBhbHNhLCBUYWthc2hpIGFuZCBNYXJrIHNpbmNlIGl0J3MgYSBuYW1pbmcgY29udmVudGlvbiBi
-ZWluZyBkaXNjdXNzZWQKYXMgcGFydCBvZiB0aGlzIHdvcmsuCgpPbiBNb24sIDIwMTYtMDMtMTQg
-YXQgMDg6MTcgKzAwMDAsIEx1LCBIYW4gd3JvdGU6Cj4gSGksCj4gCj4gPiAtLS0tLU9yaWdpbmFs
-IE1lc3NhZ2UtLS0tLQo+ID4gRnJvbTogcHVsc2VhdWRpby1kaXNjdXNzIFttYWlsdG86cHVsc2Vh
-dWRpby1kaXNjdXNzLQo+ID4gYm91bmNlc0BsaXN0cy5mcmVlZGVza3RvcC5vcmddIE9uIEJlaGFs
-ZiBPZiBMaWFtIEdpcmR3b29kCj4gPiBTZW50OiBUdWVzZGF5LCBGZWJydWFyeSAyMywgMjAxNiA3
-OjEzIFBNCj4gPiBUbzogR2VuZXJhbCBQdWxzZUF1ZGlvIERpc2N1c3Npb24gPHB1bHNlYXVkaW8t
-Cj4gPiBkaXNjdXNzQGxpc3RzLmZyZWVkZXNrdG9wLm9yZz4KPiA+IENjOiBMaW51eCBVcHN0cmVh
-bWluZyBUZWFtIDxsaW51eEBlbmRsZXNzbS5jb20+OyBoYW4ubHUKPiA+IDxoYW4ubHVAbGludXgu
-aW50ZWwuY29tPgo+ID4gU3ViamVjdDogUmU6IFtwdWxzZWF1ZGlvLWRpc2N1c3NdIEFTb0MgYW5k
-IHB1bHNlYXVkaW8KPiA+IAo+ID4gT24gU2F0LCAyMDE2LTAyLTIwIGF0IDEyOjIyIC0wNjAwLCBQ
-aWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPiA+ID4gcgo+ID4gPiBPbiAwMi8xNy8yMDE2IDA5
-OjI3IEFNLCBDYXJsbyBDYWlvbmUgd3JvdGU6Cj4gPiA+ID4gSGksCj4gPiA+ID4gSW4gb3VyIGRh
-aWx5IHdvcmsgd2UgYXJlIHNlZWluZyBtb3JlIGFuZCBtb3JlIGxhcHRvcHMgY29taW5nIGluIHdp
-dGgKPiA+ID4gPiBTb0MgYXVkaW8gKEFTb0MpLiBJbiB0aGUgbW9zdCByZWNlbnQgY2FzZSwgd2Ug
-YXJlIHdvcmtpbmcgd2l0aCBhIG5ldwo+ID4gPiA+IGNvbnN1bWVyIGxhcHRvcCBiYXNlZCBvbiBJ
-bnRlbCBDaGVycnkgVHJhaWwuIEFzIHlvdSBwcm9iYWJseSBrbm93IHRvCj4gPiA+ID4gaGF2ZSBh
-dWRpbyB3b3JraW5nIG9uIHRoZXNlIGxhcHRvcHMgLyBjb2RlY3MgYSBmYWlybHkgbGVuZ3RoeSBo
-dwo+ID4gPiA+IHNwZWNpZmljIG1peGVyIGNvbmZpZ3VyYXRpb24gaXMgbmVlZGVkLgo+ID4gPiA+
-IFRoZSBwcm9ibGVtIHdlIGFyZSBmYWNpbmcgaXMgaG93IHRvIHNoaXAgYSBzaW5nbGUgUEEgLyBB
-TFNBIHBhY2thZ2UKPiA+ID4gPiBjb250YWluaW5nIGEgd29ya2luZyBjb25maWd1cmF0aW9uIGZv
-ciBzZXZlcmFsIG9mIHRob3NlIGxhcHRvcHMgYW5kCj4gPiA+ID4gd2Ugd2VyZSB3b25kZXJpbmcg
-d2hhdCBpcyB0aGUgbW9zdCBjb3JyZWN0IC8gdXBzdHJlYW0tZnJpZW5kbHkgd2F5Cj4gPiA+ID4g
-dG8gZG8gdGhhdC4KPiA+ID4gPgo+ID4gPiA+IEknbSBhbHJlYWR5IGV4Y2x1ZGluZyBoZXJlIHNv
-bWUgdHJpdmlhbCB3b3JrYXJvdW5kcyBsaWtlOiBzaGlwcGluZyBhCj4gPiA+ID4gZGlmZmVyZW50
-IFBBIHBhY2thZ2UgZm9yIGVhY2ggaHcgb3IgdXNpbmcgYW4gaHctdGFpbG9yZWQgc2NyaXB0IHRv
-Cj4gPiA+ID4gbG9hZCB0aGUgY29ycmVjdCBBTFNBIGNvbmZpZ3VyYXRpb24uCj4gPiA+ID4KPiA+
-ID4gPiBUaGUgZmlyc3Qgc29sdXRpb24gd2UgY2FtZSB1cCB3aXRoIGlzIGp1c3QgdG8gd3JpdGUg
-YSBwcm9maWxlLXNldAo+ID4gPiA+IGNvbmZpZ3VyYXRpb24gZmlsZSBsb2FkZWQgYnkgdWRldiBm
-b3IgZWFjaCBjYXJkcyAvIGxhcHRvcCB3aXRoIHRoZQo+ID4gPiA+IGNvcnJlY3QgbWl4ZXIgY29u
-ZmlndXJhdGlvbiBhbHJlYWR5IGVtYmVkZGVkIGluIHRoZSBwYXRoCj4gPiA+ID4gY29uZmlndXJh
-dGlvbiBmaWxlcy4gVGhpcyBsb29rcyBhIGJpdCBsaWtlIGFuIG92ZXJraWxsIHdoZW4geW91IGhh
-dmUKPiA+ID4gPiB0byBjaGFuZ2UgdGVucyBvZiBjb250cm9scyBtb3N0IG9mIHdoaWNoIGp1c3Qg
-b25lIHRpbWUgKG9uY2UgeW91Cj4gPiA+ID4gaGF2ZSBzZXR1cCB0aGUgY29kZWMgc2VsZWN0aW5n
-IHRoZSBtYWluIHBhdGggaXMgdXN1YWxseSBqdXN0IG1hdHRlcgo+ID4gPiA+IG9mIGNoYW5naW5n
-IGEgZmV3IGNvbnRyb2xzIHRvIGNoYW5nZSB0aGUgb3V0cHV0IC8gaW5wdXQgcGF0aCkuCj4gPiA+
-ID4KPiA+ID4gPiBBbm90aGVyIHBvc3NpYmlsaXR5IGlzIHRvIHVzZSBVQ00gYW5kIGxldCBQQSBj
-cmVhdGUgYXV0b21hdGljYWxseQo+ID4gPiA+IGZyb20gdGhhdCBwcm9maWxlIGFuZCBwYXRoIGNv
-bmZpZ3VyYXRpb24gZmlsZXMuIFRoaXMgbG9va3MgcHJvbWlzaW5nCj4gPiA+ID4gYnV0IHdlIHdl
-cmUgYSBiaXQgd29ycmllZCBhYm91dCB0aGUgVUNNIHN1cHBvcnQgaW4gUEEgYW5kIGhvdwo+ID4g
-PiA+IHN0YWJsZS9hZG9wdGVkIGlzIFVDTSBpdHNlbGYuCj4gPiAKPiA+IEZ3aXcsIEkndmUgbm90
-IGhhZCBhbnkgcHJvYmxlbXMgdXNpbmcgUEEgYW5kIFVDTSB0b2dldGhlciBvbiBteSBCRFcgKwo+
-ID4gUlQyODYgYmFzZWQgZGV2ZWxvcG1lbnQgcGxhdGZvcm1zLiBUaGUgcHJvYmxlbSB3ZSBoYXZl
-IGF0bSBpcyBtYXRjaGluZwo+ID4gYW5kIHF1aXJrcyBhcyBQaWVycmUgZGVzY3JpYmVzLgo+ID4g
-Cj4gPiA+ID4KPiA+ID4gPiBTbywgd2hhdCBpcyB0aGUgc3VnZ2VzdGVkIHdheSB0byBhY2NvbXBs
-aXNoIHRoaXMgYW5kIGluIGdlbmVyYWwgaG93Cj4gPiA+ID4gUEEgaXMgdHJ5aW5nIHRvIGFkZHJl
-c3MgdGhpcyBwcm9ibGVtPyBJIGV4cGVjdCBpbiB0aGUgZnV0dXJlIHRvIHNlZQo+ID4gPiA+IG1h
-bnkgbW9yZSBBU29DIGNvbWluZyBpbnRvIHRoZSBsYXB0b3BzIHdvcmxkLCBob3cgd2lsbCB0aGUg
-Y29tbXVuaXR5Cj4gPiA+ID4gbWFrZSBpdCBzbyB0aGF0IHlvdSBpbnN0YWxsIGEgZGlzdHJvIGFu
-ZCB0aGVuIHNvdW5kICJqdXN0IHdvcmtzIj8KPiA+ID4KPiA+ID4gTm90IGFuIGVhc3kgcHJvYmxl
-bS4gSSBnZW5lcmF0ZWQgYSBzZXQgb2YgVUNNIGZpbGVzIGZvciBiYXl0cmFpbC1iYXNlZAo+ID4g
-cGxhdGZvcm1zIGFuZCBJIHdhcyBwbGFubmluZyBvbiBkb2luZyB0aGUgc2FtZSBmb3IgQ0hUIG5v
-dyB0aGF0IHRoZXJlIGFyZSBhCj4gPiBzZXQgb2YgY29tbWVyY2lhbGx5IGF2YWlsYWJsZSBkZXZp
-Y2VzLgo+ID4gPiBUaGVyZSBhcmUgaG93ZXZlciBhIHNldCBvZiBsaW1pdGF0aW9ucyB0aGF0IGFy
-ZSBrbm93biBhbHJlYWR5LCBlLmcuCj4gPiA+IHRoZSBVQ00gZmlsZSBtYXRjaGVzIHRoZSBtYWNo
-aW5lIGRyaXZlciBuYW1lLCBzbyBpZiB0aGVyZSBhcmUgYW55IHF1aXJrcwo+ID4gaW5zaWRlIHRo
-ZSBkcml2ZXIgd2UnZCBuZWVkIHRvIGFkZCBhIERNSS1iYXNlZCBpbmZvIHRvIHRoZSBjYXJkIG5h
-bWUgYW5kCj4gPiBhbHNvIGJ1aWxkIFVDTSBmaWxlcyBiYXNlZCBvbiBhbiBpbmNsdWRlIG1lY2hh
-bmlzbSwgb3RoZXJ3aXNlIGl0J3MgZ29pbmcgdG8KPiA+IGJlIGNvcHkvcGFzdGUgaGVsbCBBZGRp
-bmcgTGlhbSB0byBtYWtlIHN1cmUgaGUgc2VlcyB0aGlzIHRocmVhZC4KPiA+ID4KPiA+IAo+ID4g
-Rndpdywgd2UgaGF2ZSBiZWVuIGxvb2tpbmcgYXQgcHJvdmlkaW5nIHNvbWUgZml4ZXMgZm9yIG5h
-bWluZyBhbmQgcXVpcmtzLgo+ID4gV2Ugc2hvdWxkIHByb2JhYmx5IHNjaGVkdWxlIHRoZSB3b3Jr
-IG5vdy4KPiA+IAo+ID4gRm9yIG5hbWluZyB3ZSBoYXZlIHRoZSBwcm9ibGVtIG9mIGR1cGxpY2F0
-aW9uIGluIHRoZSBkcml2ZXIgbmFtZSBlLmcuCj4gPiAKPiA+IGNhdCAvcHJvYy9hc291bmQvY2Fy
-ZHMKPiA+ICAwIFtieXRydDU2NDAgICAgICBdOiBieXQtcnQ1NjQwIC0gYnl0LXJ0NTY0MAo+ID4g
-ICAgICAgICAgICAgICAgICAgICAgIGJ5dC1ydDU2NDAKPiA+IAo+ID4gVGhlIGRyaXZlciBuYW1l
-IGFjdHVhbGx5IGhhcyB0aHJlZSBzdHJpbmdzIGlpcmMgYW5kIHdlIGNvdWxkIGRpZmZlcmVudGlh
-dGUgaGVyZQo+ID4gKGJ5IGFkZGluZyBETUkgbmFtZSwgcGx1cyBhbnkgb3RoZXJzPz8gKSB0byBo
-ZWxwIFVDTSBhbmQgUEEgZGVhbCB3aXRoIGFueQo+ID4gcXVpcmtzLgo+ID4gCj4gPiBVQ00gYWxz
-byBkb2VzIG5vdCBjdXJyZW50bHkgc3VwcG9ydCAjaW5jbHVkZS4gVGhlIGludGVudGlvbiBpcyB0
-byBwcm92aWRlIGEKPiA+IG1ldGhvZCB0byBkZWZpbmUgbWl4ZXIgc2V0dGluZ3Mgb24gYSBjb2Rl
-YyBwZXIgY29kZWMgYmFzaXMgYW5kIHRoZSB0aGVzZQo+ID4gY291bGQgYmUgI2luY2x1ZGVkIGlu
-dG8gYSBtYWNoaW5lIFVDTSBmaWxlLiBUaGUgbWFjaGluZSBVQ00gZmlsZSB3b3VsZAo+ID4gYWxz
-byBkZWZpbmUgc2V0dGluZ3MgZm9yIGFueSBxdWlya3MgYW5kIHdvdWxkICNpbmNsdWRlIGFueSBj
-b2RlYyBVQ00gZmlsZXMKPiA+IHRoYXQgd2VyZSBuZWVkZWQuIFBBIHdvdWxkIGxvYWQgdGhlIG1h
-Y2hpbmUgVUNNIGZpbGUgKGJhc2VkIG9uCj4gPiBpbXByb3ZlbWVudHMgdG8gdGhlIGRyaXZlciBu
-YW1pbmcgYWJvdmUpIGludGVhZCBvZiB0aGUgZ2VuZXJpYyBVQ00gZmlsZQo+ID4gdGhhdCBpcyBs
-b2FkZWQgYXRtLgo+ID4gCj4gPiBMaWFtCj4gPiAKPiAKPiBXZSBjYW4gZml4IHRoaXMgZnJvbSBk
-cml2ZXIgbGV2ZWwgYW5kIHVzZXIgc3BhY2UgbGV2ZWw6Cj4gKDEpIHRvIHJlcG9ydGluZyBtb3Jl
-IGluZm9ybWF0aW9uIGZyb20gZHJpdmVyLiAKPiBBTFNBIHNvdW5kIGNhcmRzIGhhdmUgMyBuYW1l
-cy4gbG9uZ25hbWUsIHNob3J0bmFtZSBhbmQgZHJpdmVybmFtZS4gZS5nLgo+IGZyb20gc29jLWNv
-cmUuYyA6LQo+IAo+IAlzbnByaW50ZihjYXJkLT5zbmRfY2FyZC0+c2hvcnRuYW1lLCBzaXplb2Yo
-Y2FyZC0+c25kX2NhcmQtPnNob3J0bmFtZSksCj4gCQkgIiVzIiwgY2FyZC0+bmFtZSk7Cj4gCXNu
-cHJpbnRmKGNhcmQtPnNuZF9jYXJkLT5sb25nbmFtZSwgc2l6ZW9mKGNhcmQtPnNuZF9jYXJkLT5s
-b25nbmFtZSksCj4gCQkgIiVzIiwgY2FyZC0+bG9uZ19uYW1lID8gY2FyZC0+bG9uZ19uYW1lIDog
-Y2FyZC0+bmFtZSk7Cj4gCXNucHJpbnRmKGNhcmQtPnNuZF9jYXJkLT5kcml2ZXIsIHNpemVvZihj
-YXJkLT5zbmRfY2FyZC0+ZHJpdmVyKSwKPiAJCSAiJXMiLCBjYXJkLT5kcml2ZXJfbmFtZSA/IGNh
-cmQtPmRyaXZlcl9uYW1lIDogY2FyZC0+bmFtZSk7Cj4gCj4gV2UgY2FuIGFkZGl0aW9uYWxseSBz
-ZXQgdGhlIGxvbmdfbmFtZSBhbmQgZHJpdmVyX25hbWUgaW4gQVNvQyBpZiB0aGV5IHdlcmUgbm90
-IHNldC4gCj4gCj4gVGhlIG5hbWluZyBzY2hlbWUgY291bGQgYmUgOi0KPiAKPiBhKSBzaG9ydG5h
-bWUgaXMgY3VycmVudCBtYWNoaW5lIGRyaXZlciBuYW1lIGkuZS4gImJ5dC1ydDU2NDAiCj4gYikg
-bG9uZ25hbWUgaXMgRE1JIGJvYXJkbmFtZSArIDEgaS5lLiAiTWlubm93Ym9hcmQgTWF4OiBieXQt
-cnQ1NjQwIgo+IGMpIGRyaXZlciBuYW1lIGlzIHBsYXRmb3JtIGRyaXZlciBuYW1lICBpLmUuICJi
-YXl0cmFpbC1wY20tYXVkaW8iCj4gCj4gKDIpIHRvIGVuYWJsZSBVQ00gdG8gc3VwcG9ydCAiaW5j
-bHVkZSIgcGFyc2luZywgc28gZWFjaCBjb2RlYyB3aWxsIGhhdmUgaXRzIG93biBVQ00gZmlsZSB0
-byBkZWZpbmUgYWxsIHRoZSB1c2UgY2FzZXMgZm9yIHRoZSBjb2RlYyBvbmx5LCBhbmQgdGhlIGNv
-ZGVjIFVDTSBmaWxlIGNhbiBiZSBpbmNsdWRlZCBhbmQgdGhlIGNvZGVjIHVzZSBjYXNlcyBjYW4g
-YmUgcmVmZXJlbmNlZCBieSBkaWZmZXJlbnQgbWFjaGluZSBkcml2ZXIgVUNNIGZpbGVzLgo+IAo+
-IEknbGwgdHJ5IHRvIHdvcmsgb3V0IFJGQyBwYXRjaGVzIHRvIGltcGxlbWVudCB0aGUgZmVhdHVy
-ZXMgYWJvdmUuCj4gCj4gQlIsCj4gSGFuCj4gCj4gPiAKPiA+IAo+ID4gPiBfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+ID4gPiBwdWxzZWF1ZGlvLWRpc2N1
-c3MgbWFpbGluZyBsaXN0Cj4gPiA+IHB1bHNlYXVkaW8tZGlzY3Vzc0BsaXN0cy5mcmVlZGVza3Rv
-cC5vcmcKPiA+ID4gaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9wdWxzZWF1ZGlvLWRpc2N1c3MKPiA+IAo+ID4gCj4gPiBfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwo+ID4gcHVsc2VhdWRpby1kaXNjdXNzIG1haWxpbmcg
-bGlzdAo+ID4gcHVsc2VhdWRpby1kaXNjdXNzQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwo+ID4gaHR0
-cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9wdWxzZWF1ZGlvLWRp
-c2N1c3MKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+
-IHB1bHNlYXVkaW8tZGlzY3VzcyBtYWlsaW5nIGxpc3QKPiBwdWxzZWF1ZGlvLWRpc2N1c3NAbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnCj4gaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9wdWxzZWF1ZGlvLWRpc2N1c3MKCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpwdWxzZWF1ZGlvLWRpc2N1c3MgbWFpbGluZyBsaXN0CnB1
-bHNlYXVkaW8tZGlzY3Vzc0BsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVl
-ZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9wdWxzZWF1ZGlvLWRpc2N1c3MK
+Hi Takashi,
+
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Friday, March 11, 2016 9:34 PM
+> To: Lu, Han <han.lu@intel.com>
+> Cc: liam.r.girdwood@linux.intel.com; Gautier, Bernard
+> <bernard.gautier@intel.com>; Popescu, Edward C
+> <edward.c.popescu@intel.com>; alsa-devel@alsa-project.org
+> Subject: Re: [alsa-devel] [PATCH 09/10] alsabat: use variable for thread
+> return value
+> 
+> On Wed, 02 Mar 2016 09:53:19 +0100,
+> han.lu@intel.com wrote:
+> >
+> > From: "Lu, Han" <han.lu@intel.com>
+> >
+> > Replace fixed "1" to variable for thread return value.
+> >
+> > Signed-off-by: Lu, Han <han.lu@intel.com>
+> >
+> > diff --git a/bat/alsa.c b/bat/alsa.c
+> > index 0a5f899..189b0e9 100644
+> > --- a/bat/alsa.c
+> > +++ b/bat/alsa.c
+> > @@ -309,13 +309,13 @@ void *playback_alsa(struct bat *bat)
+> >  	if (err != 0) {
+> >  		fprintf(bat->err, _("Cannot open PCM playback device: "));
+> >  		fprintf(bat->err, _("%s(%d)\n"), snd_strerror(err), err);
+> > -		retval_play = 1;
+> > +		retval_play = err;
+> >  		goto exit1;
+> >  	}
+> >
+> >  	err = set_snd_pcm_params(bat, &sndpcm);
+> >  	if (err != 0) {
+> > -		retval_play = 1;
+> > +		retval_play = err;
+> >  		goto exit2;
+> >  	}
+> >
+> > @@ -332,13 +332,13 @@ void *playback_alsa(struct bat *bat)
+> >  			fprintf(bat->err, _("Cannot open file for playback: "));
+> >  			fprintf(bat->err, _("%s %d\n"),
+> >  					bat->playback.file, -errno);
+> > -			retval_play = 1;
+> > +			retval_play = -errno;
+> 
+> Is the original errno still preserved at this point...?
+
+[han] I think so, the complete code section here is
+	...
+	bat->fp = fopen(bat->playback.file, "rb");
+	if (bat->fp == NULL) {
+		fprintf(bat->err, _("Cannot open file for playback: "));
+		fprintf(bat->err, _("%s %d\n"),
+				bat->playback.file, -errno);
+-		retval_play = 1;
++		retval_play = -errno;
+		goto exit3;
+	}
+	...
+So the use of errno should be safe.
+
+BR,
+Han
+
+> 
+> 
+> Takashi
