@@ -1,16 +1,16 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH] topology: add support for pasring external ops
-	in conf files
-Date: Mon, 14 Mar 2016 08:07:36 +0000
-Message-ID: <1457942858-5652-3-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH] topology: add support for CTL access flags to
+	config file
+Date: Mon, 14 Mar 2016 08:07:37 +0000
+Message-ID: <1457942858-5652-4-git-send-email-liam.r.girdwood@linux.intel.com>
 References: <1457942858-5652-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 590772614BB
- for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2016 09:08:04 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E268261507
+ for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2016 09:08:06 +0100 (CET)
 In-Reply-To: <1457942858-5652-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,93 +25,256 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Parsing external ops was missing from the conf files but was in the
-C API. Fix this now by making sure we also check for external ops.
+Allow the config files to define CTL access flags.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- src/topology/ctl.c        |  8 ++++++++
- src/topology/ops.c        | 38 ++++++++++++++++++++++++++++++++++++++
- src/topology/tplg_local.h |  2 ++
- 3 files changed, 48 insertions(+)
+ include/topology.h |  29 ++++++++++++
+ src/topology/ctl.c | 136 +++++++++++++++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 161 insertions(+), 4 deletions(-)
 
+diff --git a/include/topology.h b/include/topology.h
+index 993537c..011f6ae 100644
+--- a/include/topology.h
++++ b/include/topology.h
+@@ -93,6 +93,35 @@ extern "C" {
+  *  * range
+  *  * strobe
+  *
++* <h5>Control Access</h5>
++ * Controls access can be specified using the "access" section. If no "access"
++ * section is defined then default RW access flags are set for normal and TLV
++ * controls.
++ *
++ * <pre>
++ *	access [
++ *		read
++ *		write
++ *		tlv_command
++ *	]
++ * </pre>
++ *
++ * The standard access flags are as follows :-
++ *  * read
++ *  * write
++ *  * read_write
++ *  * volatile
++ *  * timestamp
++ *  * tlv_read
++ *  * tlv_write
++ *  * tlv_read_write
++ *  * tlv_command
++ *  * inactive
++ *  * lock
++ *  * owner
++ *  * tlv_callback
++ *  * user
++ *
+  * <h5>Control TLV Data</h5>
+  * Controls can also use TLV data to represent dB information. This can be done
+  * by defining a TLV section and using the TLV section within the control.
 diff --git a/src/topology/ctl.c b/src/topology/ctl.c
-index a8ac398..23c196a 100644
+index 23c196a..b948ac0 100644
 --- a/src/topology/ctl.c
 +++ b/src/topology/ctl.c
-@@ -393,6 +393,14 @@ int tplg_parse_control_bytes(snd_tplg_t *tplg,
- 				return err;
- 			continue;
- 		}
-+
-+		if (strcmp(id, "extops") == 0) {
-+			err = tplg_parse_compound(tplg, n, tplg_parse_ext_ops,
-+				be);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
- 	}
+@@ -21,6 +21,88 @@
  
- 	return 0;
-diff --git a/src/topology/ops.c b/src/topology/ops.c
-index 243d8c5..1b5c1e2 100644
---- a/src/topology/ops.c
-+++ b/src/topology/ops.c
-@@ -82,3 +82,41 @@ int tplg_parse_ops(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
+ #define ENUM_VAL_SIZE 	(SNDRV_CTL_ELEM_ID_NAME_MAXLEN >> 2)
  
- 	return 0;
- }
++struct ctl_access_elem {
++	const char *name;
++	unsigned int value;
++};
 +
-+/* Parse External Control operations. Ops can come from standard names above or
-+ * bespoke driver controls with numbers >= 256
-+ */
-+int tplg_parse_ext_ops(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
-+	snd_config_t *cfg, void *private)
++/* CTL access strings and codes */
++static const struct ctl_access_elem ctl_access[] = {
++	{"read", SNDRV_CTL_ELEM_ACCESS_READ},
++	{"write", SNDRV_CTL_ELEM_ACCESS_WRITE},
++	{"read_write", SNDRV_CTL_ELEM_ACCESS_READWRITE},
++	{"volatile", SNDRV_CTL_ELEM_ACCESS_VOLATILE},
++	{"timestamp", SNDRV_CTL_ELEM_ACCESS_TIMESTAMP},
++	{"tlv_read", SNDRV_CTL_ELEM_ACCESS_TLV_READ},
++	{"tlv_write", SNDRV_CTL_ELEM_ACCESS_TLV_WRITE},
++	{"tlv_read_write", SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE},
++	{"tlv_command", SNDRV_CTL_ELEM_ACCESS_TLV_COMMAND},
++	{"inactive", SNDRV_CTL_ELEM_ACCESS_INACTIVE},
++	{"lock", SNDRV_CTL_ELEM_ACCESS_LOCK},
++	{"owner", SNDRV_CTL_ELEM_ACCESS_OWNER},
++	{"tlv_callback", SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK},
++	{"user", SNDRV_CTL_ELEM_ACCESS_USER},
++};
++
++/* find CTL access strings and conver to values */
++static int parse_access_values(snd_config_t *cfg,
++	struct snd_soc_tplg_ctl_hdr *hdr)
 +{
 +	snd_config_iterator_t i, next;
 +	snd_config_t *n;
-+	struct snd_soc_tplg_bytes_control *be = private;
-+	const char *id, *value;
++	const char *value = NULL;
++	unsigned int j;
 +
-+	tplg_dbg("\tExt Ops\n");
++	tplg_dbg(" Access:\n");
 +
 +	snd_config_for_each(i, next, cfg) {
-+
 +		n = snd_config_iterator_entry(i);
 +
-+		/* get id */
-+		if (snd_config_get_id(n, &id) < 0)
-+			continue;
-+
-+		/* get value - try strings then ints */
++		/* get value */
 +		if (snd_config_get_string(n, &value) < 0)
 +			continue;
 +
-+		if (strcmp(id, "info") == 0)
-+			be->ext_ops.info = lookup_ops(value);
-+		else if (strcmp(id, "put") == 0)
-+			be->ext_ops.put = lookup_ops(value);
-+		else if (strcmp(id, "get") == 0)
-+			be->ext_ops.get = lookup_ops(value);
-+
-+		tplg_dbg("\t\t%s = %s\n", id, value);
++		/* match access value and set flags */
++		for (j = 0; j < ARRAY_SIZE(ctl_access); j++) {
++			if (strcmp(value, ctl_access[j].name) == 0) {
++				hdr->access |= ctl_access[j].value;
++				tplg_dbg("\t%s\n", value);
++				break;
++			}
++		}
 +	}
 +
 +	return 0;
 +}
-diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
-index e66d7f4..84050af 100644
---- a/src/topology/tplg_local.h
-+++ b/src/topology/tplg_local.h
-@@ -208,6 +208,8 @@ int tplg_parse_channel(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
++
++/* Parse Access */
++int parse_access(snd_config_t *cfg,
++	struct snd_soc_tplg_ctl_hdr *hdr)
++{
++	snd_config_iterator_t i, next;
++	snd_config_t *n;
++	const char *id;
++	int err = 0;
++
++	snd_config_for_each(i, next, cfg) {
++
++		n = snd_config_iterator_entry(i);
++		if (snd_config_get_id(n, &id) < 0)
++			continue;
++
++		if (strcmp(id, "access") == 0) {
++			err = parse_access_values(n, hdr);
++			if (err < 0) {
++				SNDERR("error: failed to parse access");
++				return err;
++			}
++			continue;
++		}
++	}
++
++	return err;
++}
++
+ /* copy referenced TLV to the mixer control */
+ static int copy_tlv(struct tplg_elem *elem, struct tplg_elem *ref)
+ {
+@@ -295,6 +377,7 @@ int tplg_parse_control_bytes(snd_tplg_t *tplg,
+ 	snd_config_t *n;
+ 	const char *id, *val = NULL;
+ 	int err;
++	bool access_set = false, tlv_set = false;
  
- int tplg_parse_ops(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
- 	snd_config_t *cfg, void *private);
-+int tplg_parse_ext_ops(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
-+	snd_config_t *cfg, void *private);
+ 	elem = tplg_elem_new_common(tplg, cfg, NULL, SND_TPLG_TYPE_BYTES);
+ 	if (!elem)
+@@ -380,8 +463,7 @@ int tplg_parse_control_bytes(snd_tplg_t *tplg,
+ 			if (err < 0)
+ 				return err;
  
- struct tplg_elem *lookup_pcm_dai_stream(struct list_head *base,
- 	const char* id);
+-			be->hdr.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |
+-				SNDRV_CTL_ELEM_ACCESS_READWRITE;
++			tlv_set = true;
+ 			tplg_dbg("\t%s: %s\n", id, val);
+ 			continue;
+ 		}
+@@ -401,6 +483,22 @@ int tplg_parse_control_bytes(snd_tplg_t *tplg,
+ 				return err;
+ 			continue;
+ 		}
++
++		if (strcmp(id, "access") == 0) {
++			err = parse_access(cfg, &be->hdr);
++			if (err < 0)
++				return err;
++			access_set = true;
++			continue;
++		}
++	}
++
++	/* set CTL access to default values if none are provided */
++	if (!access_set) {
++
++		be->hdr.access = SNDRV_CTL_ELEM_ACCESS_READWRITE;
++		if (tlv_set)
++			be->hdr.access |= SNDRV_CTL_ELEM_ACCESS_TLV_READ;
+ 	}
+ 
+ 	return 0;
+@@ -416,6 +514,7 @@ int tplg_parse_control_enum(snd_tplg_t *tplg, snd_config_t *cfg,
+ 	snd_config_t *n;
+ 	const char *id, *val = NULL;
+ 	int err, j;
++	bool access_set = false;
+ 
+ 	elem = tplg_elem_new_common(tplg, cfg, NULL, SND_TPLG_TYPE_ENUM);
+ 	if (!elem)
+@@ -495,6 +594,19 @@ int tplg_parse_control_enum(snd_tplg_t *tplg, snd_config_t *cfg,
+ 			tplg_dbg("\t%s: %s\n", id, val);
+ 			continue;
+ 		}
++
++		if (strcmp(id, "access") == 0) {
++			err = parse_access(cfg, &ec->hdr);
++			if (err < 0)
++				return err;
++			access_set = true;
++			continue;
++		}
++	}
++
++	/* set CTL access to default values if none are provided */
++	if (!access_set) {
++		ec->hdr.access = SNDRV_CTL_ELEM_ACCESS_READWRITE;
+ 	}
+ 
+ 	return 0;
+@@ -513,6 +625,7 @@ int tplg_parse_control_mixer(snd_tplg_t *tplg,
+ 	snd_config_t *n;
+ 	const char *id, *val = NULL;
+ 	int err, j;
++	bool access_set = false, tlv_set = false;
+ 
+ 	elem = tplg_elem_new_common(tplg, cfg, NULL, SND_TPLG_TYPE_MIXER);
+ 	if (!elem)
+@@ -606,8 +719,7 @@ int tplg_parse_control_mixer(snd_tplg_t *tplg,
+ 			if (err < 0)
+ 				return err;
+ 
+-			mc->hdr.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |
+-				SNDRV_CTL_ELEM_ACCESS_READWRITE;
++			tlv_set = true;
+ 			tplg_dbg("\t%s: %s\n", id, val);
+ 			continue;
+ 		}
+@@ -620,6 +732,22 @@ int tplg_parse_control_mixer(snd_tplg_t *tplg,
+ 			tplg_dbg("\t%s: %s\n", id, val);
+ 			continue;
+ 		}
++
++		if (strcmp(id, "access") == 0) {
++			err = parse_access(cfg, &mc->hdr);
++			if (err < 0)
++				return err;
++			access_set = true;
++			continue;
++		}
++	}
++
++	/* set CTL access to default values if none are provided */
++	if (!access_set) {
++
++		mc->hdr.access = SNDRV_CTL_ELEM_ACCESS_READWRITE;
++		if (tlv_set)
++			mc->hdr.access |= SNDRV_CTL_ELEM_ACCESS_TLV_READ;
+ 	}
+ 
+ 	return 0;
 -- 
 2.5.0
