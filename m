@@ -1,57 +1,86 @@
-From: Timur Karaldin <karaldin@mcsplus.ru>
-Subject: Re: ASoC: TLV320AIC3x: Adding additional functionality
- for 3106 with [Patch] for discuss
-Date: Tue, 15 Mar 2016 15:12:44 +0300
-Message-ID: <56E7FC3C.1030503@mcsplus.ru>
-References: <56E69B3F.8090306@mcsplus.ru> <56E6CEE9.5030802@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5.mail.ru (smtp5.mail.ru [94.100.179.24])
- by alsa0.perex.cz (Postfix) with ESMTP id EF5DD2614A0
- for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2016 13:12:47 +0100 (CET)
-In-Reply-To: <56E6CEE9.5030802@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
+From: Nicolai Stange <nicstange@gmail.com>
+Subject: [PATCH] [media] sound/usb: fix NULL dereference in usb_audio_probe()
+Date: Tue, 15 Mar 2016 13:35:06 +0100
+Message-ID: <1458045306-4170-1-git-send-email-nicstange@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Shuah Khan <shuahkh@osg.samsung.com>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Nicolai Stange <nicstange@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgUGV0ZXIhCgoxNC4wMy4yMDE2IDE3OjQ3LCBQZXRlciBVamZhbHVzaSDQv9C40YjQtdGCOgo+
-IFNvIHRoZSBpc3N1ZSBpcyB0aGF0IHdlIGhhdmUgdGhlIERBUE0gc3dpdGNoZXMgY29udHJvbGxp
-bmcgZXhhY3RseSB0aGUgCj4gc2FtZSByZWdpc3RlcnMuIEkgYmVsaWV2ZSBpZiB5b3Ugd291bGQg
-c2V0IHRoZSBnYWluIGluIGEgd2F5IHRoYXQgYml0MCAKPiBpcyAxLCB0aGVuIERBUE0gd2lsbCB0
-aGluayB0aGF0IHRoZSBwYXRoIGlzIGRpc2Nvbm5lY3RlZC4gQWxzbyBpZiB5b3UgCj4gd291bGQg
-c2V0IHRoZSBnYWluIGFuZCB0aGVuIG11dGUgYW5kIHVubXV0ZSB0aGUgcGF0aCB5b3Ugd291bGQg
-aGF2ZSAKPiBsb3N0IHRoZSBnYWluIHlvdSB3YW50ZWQgdG8gaGF2ZS4uIFRoZSBvbmx5IHdheSBJ
-IGNhbiB0aGluayBvZiAKPiBpbXBsZW1lbnRpbmcgdGhlc2UgbWl4ZXJzIGlzIHRvIGhhdmUgdHdv
-IHNldHMgb2YgY3VzdG9tIGNhbGxiYWNrcy4gb25lIAo+IHNldCBpcyB0byBzZXQvZ2V0IHRoZSBn
-YWluIGFuZCB0aGUgb3RoZXIgaXMgdG8gc2V0L2dldCB0aGUgCj4gbXV0ZS9kaXNjb25uZWN0IG9u
-IHRoZXNlLiBXaGVuIHRoZSBwYXRoIGlzIGRpc2Nvbm5lY3RlZCB5b3Ugc2hvdWxkIG5vdCAKPiB3
-cml0ZSB0aGUgZ2FpbiBjaGFuZ2UgdG8gdGhlIGNoaXAsIGJ1dCBjYWNoZSBpdCBhbmQgaWYgdGhl
-IHBhdGggaXMgCj4gdW5tdXRlZCwgeW91IHdyaXRlIHRoZSBjYWNoZWQgZ2Fpbi4gV2hlbiB5b3Ug
-bXV0ZSB0aGUgcGF0aCB5b3Ugc2hvdWxkIAo+IHRha2UgdGhlIHNldCBnYWluIGZpcnN0LCBjYWNo
-ZSBpdCwgdGhlbiBkaXNjb25uZWN0IHRoZSBwYXRoLiBGb3IgdGhlc2UgCj4gZ2FpbnMgeW91IHNo
-b3VsZCBoYXZlIERFQ0xBUkVfVExWX0RCX1NDQUxFKCkgYW5kIHVzZSBTT0NfU0lOR0xFX1RMVigp
-LiAKPiBNYWtlIHN1cmUgdGhhdCB0aGUgY29udHJvbCBuYW1lIG1hdGNoZXMgd2l0aCB0aGUgY29y
-cmVzcG9uZGluZyBEQVBNIAo+IHdpZGdldCdzIG5hbWUgc28gQUxTQSBjYW4gbWF0Y2ggdGhlbSBj
-b3JyZWN0bHkuIApUaGF0J3Mgbm90IGNsZWFyIGZvciBtZS4gQXMgSSB1bmRlcnN0YW5kLCBJIG5l
-ZWQgdG8gY3JlYXRlIApTT0NfU0lOR0xFX1RMVigpIGZvciBlYWNoIGdhaW4gSSB3b3VsZCBsaWtl
-IHRvIGNoYW5nZSwgd2l0aCB0aGUgc2FtZSAKbmFtZSBhcyBTT0NfREFQTV9TSU5HTEVfQUlDM3gg
-KGZvciBleGFtcGxlICJMaW5lMUwgU3dpdGNoIiBmb3IgTGluZTEpIAphbmQgbWFrZSBjYWxsYmFj
-a3Mgd2l0aCBjYWNoZWQgZ2FpbiB2YWx1ZXMuIEFtIEkgcmlnaHQ/Ck1heSBiZSB0aGUgYmV0dGVy
-IHNvbGx1dGlvbiBpcyB0byBjaGFuZ2UgU09DX0RBUE1fU0lOR0xFX0FJQzN4IG9uL29mZiAKc3dp
-dGNoIHRvIG90aGVyIHR5cGUgd2l0aCBzd2l0Y2ggYW5kIGdhaW4gY29udHJvbCB0b2dldGhlcj8g
-U28gaXQgY291bGQgCmhhdmUgc29tZSBjb25uZWN0ZWQgc3RhdGVzIHdpdGggZGlmZmVyZW50IGdh
-aW5zIGFuZCBkaXNjb25uZWN0ZWQgc3RhdGUgCihTb21ldGhpbmcgbGlrZSB2b2x1bWUvbXV0ZSBj
-b250cm9sKS4KCkNoZWVycywgVGltCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+With commit
+
+  aebb2b89bff0 ("[media] sound/usb: Use Media Controller API to share
+                 media resources")
+
+an access to quirk->media_device without checking for quirk != NULL has
+been introduced in usb_audio_probe().
+
+With a Plantronics USB headset (device ID 0x047f:0xc010) attached,
+this results in the following splat at boot time:
+
+  BUG: unable to handle kernel NULL pointer dereference at 0000000000000014
+  IP: [<ffffffffa089aa6c>] usb_audio_probe+0x2cc/0x9a0 [snd_usb_audio]
+  Oops: 0000 [#1] SMP
+  [...]
+  CPU: 2 PID: 696 Comm: systemd-udevd Not tainted 4.5.0-next-20160315 #13
+  Hardware name: Dell Inc. Latitude E6540/0725FP, BIOS A10 06/26/2014
+  task: ffff88021c88d7c0 ti: ffff88003d5b0000 task.ti: ffff88003d5b0000
+  RIP: 0010:[<ffffffffa089aa6c>]  [<ffffffffa089aa6c>]
+                                usb_audio_probe+0x2cc/0x9a0 [snd_usb_audio]
+  [...]
+  Call Trace:
+   [<ffffffff815a8e16>] usb_probe_interface+0x136/0x2d0
+   [<ffffffff81509edc>] driver_probe_device+0x22c/0x440
+   [<ffffffff8150a1c1>] __driver_attach+0xd1/0xf0
+   [<ffffffff8150a0f0>] ? driver_probe_device+0x440/0x440
+   [<ffffffff815077ec>] bus_for_each_dev+0x6c/0xc0
+   [<ffffffff815095ce>] driver_attach+0x1e/0x20
+   [<ffffffff81509013>] bus_add_driver+0x1c3/0x280
+   [<ffffffff8150ab10>] driver_register+0x60/0xe0
+   [<ffffffff815a7711>] usb_register_driver+0x81/0x140
+   [<ffffffffa08c7000>] ? 0xffffffffa08c7000
+   [<ffffffffa08c701e>] usb_audio_driver_init+0x1e/0x1000 [snd_usb_audio]
+   [<ffffffff81002123>] do_one_initcall+0xb3/0x1f0
+   [<ffffffff811fb091>] ? __vunmap+0x81/0xd0
+   [<ffffffff8121b8d2>] ? kmem_cache_alloc_trace+0x182/0x1d0
+   [<ffffffff811b0267>] ? do_init_module+0x27/0x1d8
+   [<ffffffff811b029f>] do_init_module+0x5f/0x1d8
+   [<ffffffff8112ce35>] load_module+0x1fe5/0x27a0
+   [<ffffffff81129870>] ? __symbol_put+0x60/0x60
+   [<ffffffff81241690>] ? vfs_read+0x110/0x130
+   [<ffffffff8112d866>] SYSC_finit_module+0xe6/0x120
+   [<ffffffff8112d8be>] SyS_finit_module+0xe/0x10
+   [<ffffffff81003d94>] do_syscall_64+0x64/0x110
+   [<ffffffff817c0b61>] entry_SYSCALL64_slow_path+0x25/0x25
+
+After encountering this, the system-udevd process seems to be blocked
+until it is killed when hitting its timeout of 3min.
+
+In analogy to the other accesses to members of quirk in usb_audio_probe(),
+check for quirk != NULL before accessing its ->media_device.
+
+Fixes: aebb2b89bff0 ("[media] sound/usb: Use Media Controller API to share
+                      media resources")
+Signed-off-by: Nicolai Stange <nicstange@gmail.com>
+---
+ Applicable to linux-next-20160315.
+
+ sound/usb/card.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 63244bb..479621e 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -612,7 +612,7 @@ static int usb_audio_probe(struct usb_interface *intf,
+ 	if (err < 0)
+ 		goto __error;
+ 
+-	if (quirk->media_device) {
++	if (quirk && quirk->media_device) {
+ 		/* don't want to fail when media_snd_device_create() fails */
+ 		media_snd_device_create(chip, intf);
+ 	}
+-- 
+2.7.2
