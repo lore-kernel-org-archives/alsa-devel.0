@@ -1,17 +1,14 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 1/6] ALSA: hda: use list macro for parsing
-	on cleanup
-Date: Tue, 15 Mar 2016 16:39:23 +0530
-Message-ID: <1458040168-3769-2-git-send-email-vinod.koul@intel.com>
-References: <1458040168-3769-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 0/6] ASoC: Intel: Skylake: Fix module removal
+Date: Tue, 15 Mar 2016 16:39:22 +0530
+Message-ID: <1458040168-3769-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F2C22657CA
- for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2016 12:05:46 +0100 (CET)
-In-Reply-To: <1458040168-3769-1-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A1A8D265727
+ for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2016 12:05:45 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,38 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-It is always better to use list_for_each_entry_safe() while doing
-cleanup. So use this instead of open coding this in list in
-snd_hdac_stream_free_all()
+Skylake driver were crashing on module removal when we run "alsa reload".
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Acked-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/hda/ext/hdac_ext_stream.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+The first issues was caused by component framework regression which Russell
+fixed and in in 4.5. In driver there were still some missing order which
+needs to be fixed. This series first update the list parsing in core, then
+ensure proper freeup of code objects, and then ensuring driver does proper
+cleanup and i915 dependency
 
-diff --git a/sound/hda/ext/hdac_ext_stream.c b/sound/hda/ext/hdac_ext_stream.c
-index 023cc4cad5c1..626f3bb24c55 100644
---- a/sound/hda/ext/hdac_ext_stream.c
-+++ b/sound/hda/ext/hdac_ext_stream.c
-@@ -104,12 +104,11 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_init_all);
-  */
- void snd_hdac_stream_free_all(struct hdac_ext_bus *ebus)
- {
--	struct hdac_stream *s;
-+	struct hdac_stream *s, *_s;
- 	struct hdac_ext_stream *stream;
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
- 
--	while (!list_empty(&bus->stream_list)) {
--		s = list_first_entry(&bus->stream_list, struct hdac_stream, list);
-+	list_for_each_entry_safe(s, _s, &bus->stream_list, list) {
- 		stream = stream_to_hdac_ext_stream(s);
- 		snd_hdac_ext_stream_decouple(ebus, stream, false);
- 		list_del(&s->list);
+
+Changes in v2:
+- Add acked by Takashi
+- Remove codec destructor wrapper
+
+Vinod Koul (6):
+  ALSA: hda: use list macro for parsing on cleanup
+  ASoC: Intel: Skylake: free codec objects on removal
+  ASoC: Intel: Skylake: Freeup properly on skl_dsp_free
+  ASoC: Intel: Skylake: Unmap the address last
+  ASoC: Intel: Skylake: Call i915 exit last
+  ASoC: Intel: Skylake: remove call to pci_dev_put
+
+ sound/hda/ext/hdac_ext_stream.c       |  5 ++---
+ sound/soc/intel/skylake/skl-sst-dsp.c |  5 +++++
+ sound/soc/intel/skylake/skl.c         | 17 ++++++++++-------
+ 3 files changed, 17 insertions(+), 10 deletions(-)
+
 -- 
 1.9.1
