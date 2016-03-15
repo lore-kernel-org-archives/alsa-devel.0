@@ -1,15 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 5/6] ASoC: Intel: Skylake: Call i915 exit last
-Date: Tue, 15 Mar 2016 15:27:15 +0530
-Message-ID: <1458035836-1843-6-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 6/6] ASoC: Intel: Skylake: remove call to
+	pci_dev_put
+Date: Tue, 15 Mar 2016 15:27:16 +0530
+Message-ID: <1458035836-1843-7-git-send-email-vinod.koul@intel.com>
 References: <1458035836-1843-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id AC8AD261298
- for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2016 10:53:17 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4567F265812
+ for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2016 10:53:20 +0100 (CET)
 In-Reply-To: <1458035836-1843-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,39 +25,26 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The Skylake driver uses i915 component APIs to talk to display.
-On remove we should free up by invoking snd_hdac_i915_exit() but
-that should be last thing in remove routine, so move it to last
-in skl_free()
+In driver remove we call pci_dev_put(), that is not required as we never
+call pci_dev_get() so remove that.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/intel/skylake/skl.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 06887eacffa7..fdf345b1ace5 100644
+index fdf345b1ace5..c8ab21245177 100644
 --- a/sound/soc/intel/skylake/skl.c
 +++ b/sound/soc/intel/skylake/skl.c
-@@ -328,6 +328,8 @@ static int skl_free(struct hdac_ext_bus *ebus)
+@@ -732,7 +732,6 @@ static void skl_remove(struct pci_dev *pci)
  
- 	snd_hdac_ext_bus_exit(ebus);
- 
-+	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
-+		snd_hdac_i915_exit(&ebus->bus);
- 	return 0;
- }
- 
-@@ -728,9 +730,6 @@ static void skl_remove(struct pci_dev *pci)
- 	if (skl->tplg)
- 		release_firmware(skl->tplg);
- 
--	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
--		snd_hdac_i915_exit(&ebus->bus);
--
  	if (pci_dev_run_wake(pci))
  		pm_runtime_get_noresume(&pci->dev);
- 	pci_dev_put(pci);
+-	pci_dev_put(pci);
+ 	skl_codecs_remove(ebus);
+ 	skl_platform_unregister(&pci->dev);
+ 	skl_free_dsp(skl);
 -- 
 1.9.1
