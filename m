@@ -1,80 +1,48 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: ASoC and pulseaudio
-Date: Tue, 15 Mar 2016 09:48:51 +0000
-Message-ID: <1458035331.8522.52.camel@loki>
-References: <CAL9uMOHRjcCJomr6zzR0ySh384AVj1FRvASZSp3KsPqfeS8Lzw@mail.gmail.com>
- <56C8AEFD.4060808@linux.intel.com> <1456225994.6424.35.camel@loki>
- <B51200AC81AB024499A3C2C9A1BB90A83D3AABF9@SHSMSX101.ccr.corp.intel.com>
- <1457943567.3888.18.camel@loki> <20160314160654.GA2566@sirena.org.uk>
- <1458021688.8522.16.camel@loki> <20160315084544.GF2566@sirena.org.uk>
- <s5hmvq0glxj.wl-tiwai@suse.de>
-Reply-To: General PulseAudio Discussion
- <pulseaudio-discuss@lists.freedesktop.org>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH 0/6] ASoC: Intel: Skylake: Fix module removal
+Date: Tue, 15 Mar 2016 15:27:10 +0530
+Message-ID: <1458035836-1843-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-In-Reply-To: <s5hmvq0glxj.wl-tiwai@suse.de>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Linux Upstreaming Team <linux@endlessm.com>, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, "han.lu" <han.lu@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id E62B5261298
+ for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2016 10:53:05 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAyMDE2LTAzLTE1IGF0IDA5OjU1ICswMTAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
-T24gVHVlLCAxNSBNYXIgMjAxNiAwOTo0NTo0NCArMDEwMCwKPiBNYXJrIEJyb3duIHdyb3RlOgo+
-ID4gCj4gPiBPbiBUdWUsIE1hciAxNSwgMjAxNiBhdCAwNjowMToyOEFNICswMDAwLCBMaWFtIEdp
-cmR3b29kIHdyb3RlOgo+ID4gCj4gPiA+IDEpIFNob3J0bmFtZSBpcyBib2FyZC9tYWNoaW5lIG5h
-bWUuIFRoaXMgY2FuIGNvbWUgZnJvbSBETUkgb3IgZGV2aWNlCj4gPiA+IHRyZWUuIGUuZy4gIkFz
-dXMgVDEwMCIKPiA+IAo+ID4gVGhhdCBzZWVtcyBtb3JlIHVzZWZ1bCBmb3IgdXNlcnMuCj4gPiAK
-PiA+ID4gMikgTG9uZyBuYW1lIGlzIDEgKyBkcml2ZXIgbmFtZSArIG9wdGlvbmFsIGZpcm13YXJl
-IG5hbWUuIChJJ3ZlIGp1c3QKPiA+ID4gYWRkZWQgdGhlIEZXIG5hbWUgaGVyZSB0b28gYXMgd2Ug
-Y2FuIGhhdmUgcG90ZW50aWFsbHkgPiAxIEZXIHBlciBkcml2ZXIKPiA+ID4gLSBCWVQgaXMgYW4g
-ZXhhbXBsZSkgZS5nLiAiQXN1cyBUMDA6IGJ5dC1ydDU2NDA6IEludFNTVDEuYmluIi4KPiA+IAo+
-ID4gU2hvdWxkbid0IHdlIHVzZSB3aGF0ZXZlciB3ZSB1c2UgdG8gZmlndXJlIG91dCB3aGljaCBm
-aXJtd2FyZSB0byBsb2FkCj4gPiByYXRoZXIgdGhhbiB0aGUgZmlybXdhcmUgbmFtZT8gIFNvbWVv
-bmUgbWlnaHQgZG8gc29tZXRoaW5nIGxpa2UgdHJ5IHRvCj4gPiByZXBsYWNlIG9uZSBmaXJtd2Fy
-ZSB3aXRoIGFub3RoZXIgYW5kIGdldCBldmVyeXRoaW5nIGNvbmZ1c2VkLgo+IAoKVGhpcyBpcyBu
-b3QgdG8gbG9hZCBGVyBmb3Igb3VyIHVzZSBjYXNlLCB0aGUgRlcgbmFtZSBpcyBoYXJkIGNvZGVk
-IGluCmRyaXZlciB0YWJsZXMuIFdlIGRvIGhhdmUgc2V2ZXJhbCBGV3MgZm9yIHRoZSBCWVQgZHJp
-dmVyIHRoYXQgYWxsIGhhdmUKZGlmZmVyZW50IGNhcGFiaWxpdGllcy4gVXNlcnNwYWNlIGNvdWxk
-IHNldCB0aGUgY29ycmVjdCBjb25maWcgZm9yIGVhY2gKRlcgaWYgaXQga25ldyB0aGUgRlcgdGhh
-dCB3YXMgYmVpbmcgdXNlZC4KCj4gSSBhZ3JlZSB0aGF0IGEgY29uc2lzdGVudCBuYW1lIHdvdWxk
-IGJlIGJldHRlci4gIFRob3VnaCwgcHJhY3RpY2FsbHkKPiBzZWVuLCB0aGUgbG9uZyBuYW1lIGlz
-bid0IHBlcnNpc3RlbnQgd2l0aCBtYW55IGRyaXZlcnMsIGFzIGl0IG9mdGVuCj4gY29udGFpbnMg
-dGhlIGlycSBvciBwb3J0IG51bWJlcnMgdGhhdCBhcmUgYXNzaWduZWQgZHluYW1pY2FsbHkuICBU
-aGF0Cj4gc2FpZCwgdGhlIGNvbnNpc3RlbmN5IG9mIGxvbmcgbmFtZSBpc24ndCBzdHJpY3RseSBy
-ZXF1aXJlZC4gIEl0J3MKPiByZWdhcmRlZCByYXRoZXIgYXMgYSB2ZXJib3NlIGluZm9ybWF0aW9u
-IHRvIHVzZXIsIHdoaWNoIHNob3VsZG4ndCBiZQo+IHVzZWQgYXMgYW4gaWRlbnRpZmllciBrZXku
-Cj4gCj4gT1RPSCwgdGhlIGRyaXZlciBuYW1lIGlzIHRoZSBwcmltYXJ5IGlkIGtleSB1c2VkIGJ5
-IGFsc2EtbGliIGZvciBpdHMKPiBjb25maWd1cmF0aW9uLiAgU28gdGhpcyBtdXN0IGJlIHJldGFp
-bmVkIHRocm91Z2ggdmVyc2lvbnMgYW5kIHVuaXF1ZQo+IGZvciBlYWNoIGNvbmZpZ3VyYXRpb24u
-Cj4gCgpPaywgc28gd2UgcHJvYmFibHkgbmVlZCB0byBhZGQgaW4gdGhlIGJvYXJkL21hY2hpbmUg
-bmFtZSBoZXJlIChmcm9tIERNSQpvciBEVCkuIFdlIGN1cnJlbnRseSBoYXZlIHNldmVyYWwgeDg2
-IG1hY2hpbmVzIGFsbCB1c2luZyB0aGUgc2FtZSBjb2RlYworIERTUCArIEZXLCBidXQgYWxsIGhh
-dmUgc2xpZ2h0bHkgZGlmZmVyZW50IGNsb2NraW5nIGFuZCByb3V0aW5nIHRoYXQgaXMKY2F1c2lu
-ZyBwcm9ibGVtcyBhcyB1c2Vyc3BhY2UgY2Fubm90IGNvbmZpZ3VyZSBjb3JyZWN0bHkuIAoKPiBU
-aGUgc2hvcnQgbmFtZSBpcyBzb21ldGhpbmcgYmV0d2VlbiB0aGVtLiAgVGhlIGFsc2EtbGliIFVT
-Qi1hdWRpbwo+IGNvbmZpZyBmaWxlIHJlZmVycyB0byB0aGUgc2hvcnQgbmFtZSBiZWNhdXNlIHRo
-ZSBkcml2ZXIgZG9lc24ndAo+IHByb3ZpZGUgYSB1bmlxdWUgaWQgZm9yIGRyaXZlcl9uYW1lIGZv
-ciB2YXJpb3VzIHdvcmthcm91bmRzLiAgQnV0IGl0Cj4gc2hvdWxkIGJlIGNvbnNpZGVyZWQgYXMg
-YW4gZXhjZXB0aW9uLiAgSWRlYWxseSwgZHJpdmVyX25hbWUgc2hvdWxkIGJlCj4gdW5pcXVlIGVu
-b3VnaCBmb3IgZWFjaCBkaWZmZXJlbnQgY29uZmlndXJhdGlvbi4KClNvIElJVUMgdGhpcyB3b3Vs
-ZCBtZWFuID8KCjEpIHNob3J0IG5hbWUgaXMgb3B0aW9uYWwsIGJ1dCBjb3VsZCBiZSBib2FyZCBu
-YW1lLgoKMikgbG9uZyBuYW1lIGlzIGRyaXZlcl9uYW1lIHBsdXMgYW55IG90aGVyIG9wdGlvbmFs
-IGluZm9ybWF0aW9uIGZvciB0aGUKdXNlci4gTm90IHVzZWQgYnkgYXBwbGljYXRpb25zIG9yIGFs
-c2EtbGliIHRvIGRldGVybWluZSBzb3VuZCBjYXJkCmNhcGFiaWxpdGllcy4KCjMpIERyaXZlciBu
-YW1lIGlzIHVuaXF1ZS4gbWFjaGluZSBkcml2ZXIgbmFtZSArIChvcHRpb25hbCkgYm9hcmQgbmFt
-ZSArCihvcHRpb25hbCkgZncgbmFtZS4gZS5nLiAiYnl0LXJ0NTY0MDogQXN1cyBUMTAwOiBJbnRT
-U1QxLmJpbiIgdXNlZCBieQphbHNhLWxpYiBhbmQgdXNlcnNwYWNlIHRvIGRldGVybWluZSBzb3Vu
-ZCBjYXJkIGFuZCBzZXQgY29uZmlnLgoKTGlhbQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCnB1bHNlYXVkaW8tZGlzY3VzcyBtYWlsaW5nIGxpc3QKcHVs
-c2VhdWRpby1kaXNjdXNzQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVk
-ZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL3B1bHNlYXVkaW8tZGlzY3Vzcwo=
+Skyalke driver were crashing on module removal when we run "alsa reload".
+
+The first issues was caused by component framwork regression which Russell
+fixed and in in 4.5. In driver there were still some missing order which
+needs to be fixed. This series first update the list parsing in core, then
+ensure proper freeup of code objects, and then esnureing driver does proper
+cleanup and i915 dependency
+
+Vinod Koul (6):
+  ALSA: hda: use list macro for parsing on cleanup
+  ASoC: Intel: Skylake: free codec objects on removal
+  ASoC: Intel: Skylake: Freeup properly on skl_dsp_free
+  ASoC: Intel: Skylake: Unmap the address last
+  ASoC: Intel: Skylake: Call i915 exit last
+  ASoC: Intel: Skylake: remove call to pci_dev_put
+
+ sound/hda/ext/hdac_ext_stream.c       |  5 ++---
+ sound/soc/intel/skylake/skl-sst-dsp.c |  5 +++++
+ sound/soc/intel/skylake/skl.c         | 22 +++++++++++++++-------
+ 3 files changed, 22 insertions(+), 10 deletions(-)
+
+Thanks
+-- 
+1.9.1
