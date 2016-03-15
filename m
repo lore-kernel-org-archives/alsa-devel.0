@@ -1,247 +1,153 @@
-From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Subject: Re: [PATCH] media: add GFP flag to media_*() that could get called
- in atomic context
-Date: Tue, 15 Mar 2016 12:55:35 -0300
-Message-ID: <20160315125535.775c8cc3@recife.lan>
-References: <1457833689-4926-1-git-send-email-shuahkh@osg.samsung.com>
-	<20160314072236.GO11084@valkosipuli.retiisi.org.uk>
-	<20160314071358.27c87dab@recife.lan>
-	<20160314105253.GQ11084@valkosipuli.retiisi.org.uk>
-	<20160314084633.521d3e35@recife.lan>
-	<20160314120909.GS11084@valkosipuli.retiisi.org.uk>
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Subject: New snd-hda warning spew
+Date: Tue, 15 Mar 2016 18:02:07 +0200
+Message-ID: <20160315160207.GY4329@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <20160314120909.GS11084@valkosipuli.retiisi.org.uk>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Sakari Ailus <sakari.ailus@iki.fi>
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, kyungmin.park@samsung.com, a.hajda@samsung.com, s.nawrocki@samsung.com, kgene@kernel.org, k.kozlowski@samsung.com, laurent.pinchart@ideasonboard.com, hyun.kwon@xilinx.com, soren.brinkmann@xilinx.com, gregkh@linuxfoundation.org, perex@perex.cz, tiwai@suse.com, hans.verkuil@cisco.com, lixiubo@cmss.chinamobile.com, javier@osg.samsung.com, g.liakhovetski@gmx.de, chehabrafael@gmail.com, crope@iki.fi, tommi.franttila@intel.com, dan.carpenter@oracle.com, prabhakar.csengg@gmail.com, hamohammed.sa@gmail.com, der.herr@hofr.at, navyasri.tech@gmail.com, Julia.Lawall@lip6.fr, amitoj1606@gmail.com, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, linux-renesas-soc@vger.kernel.org, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B8842654D5
+ for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2016 17:03:07 +0100 (CET)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Libin Yang <libin.yang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Em Mon, 14 Mar 2016 14:09:09 +0200
-Sakari Ailus <sakari.ailus@iki.fi> escreveu:
+We have a few new WARN spews from snd-hda causing some grief in i915 CI.
 
-> Hi Mauro,
-> 
-> On Mon, Mar 14, 2016 at 08:46:33AM -0300, Mauro Carvalho Chehab wrote:
-> > Em Mon, 14 Mar 2016 12:52:54 +0200
-> > Sakari Ailus <sakari.ailus@iki.fi> escreveu:
-> >   
-> > > Hi Mauro,
-> > > 
-> > > On Mon, Mar 14, 2016 at 07:13:58AM -0300, Mauro Carvalho Chehab wrote:  
-> > > > Em Mon, 14 Mar 2016 09:22:37 +0200
-> > > > Sakari Ailus <sakari.ailus@iki.fi> escreveu:
-> > > >     
-> > > > > Hi Shuah,
-> > > > > 
-> > > > > On Sat, Mar 12, 2016 at 06:48:09PM -0700, Shuah Khan wrote:    
-> > > > > > Add GFP flags to media_create_pad_link(), media_create_intf_link(),
-> > > > > > media_devnode_create(), and media_add_link() that could get called
-> > > > > > in atomic context to allow callers to pass in the right flags for
-> > > > > > memory allocation.
-> > > > > > 
-> > > > > > tree-wide driver changes for media_*() GFP flags change:
-> > > > > > Change drivers to add gfpflags to interffaces, media_create_pad_link(),
-> > > > > > media_create_intf_link() and media_devnode_create().
-> > > > > > 
-> > > > > > Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
-> > > > > > Suggested-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>      
-> > > > > 
-> > > > > What's the use case for calling the above functions in an atomic context?
-> > > > >     
-> > > > 
-> > > > ALSA code seems to do a lot of stuff at atomic context. That's what
-> > > > happens on my test machine when au0828 gets probed before
-> > > > snd-usb-audio:
-> > > > 	http://pastebin.com/LEX5LD5K
-> > > > 
-> > > > It seems that ALSA USB probe routine (usb_audio_probe) happens in
-> > > > atomic context.    
-> > > 
-> > > usb_audio_probe() grabs a mutex (register_mutex) on its own. It certainly
-> > > cannot be called in atomic context.
-> > > 
-> > > In the above log, what I did notice, though, was that because *we* grab
-> > > mdev->lock spinlock in media_device_register_entity(), we may not sleep
-> > > which is what the notify() callback implementation in au0828 driver does
-> > > (for memory allocation).  
-> > 
-> > True. After looking into the code, the problem is that the notify
-> > callbacks are called with the spinlock hold. I don't see any reason
-> > to do that.  
-> 
-> Notify callbacks, perhaps not, but the list is still protected by the
-> spinlock. It perhaps is not likely that another process would change it but
-> I don't think we can rely on that.
+This one happens on ILK and BYT. Looks like it happens 100% of the time on =
+driver load:
+[   18.809850] ------------[ cut here ]------------
+[   18.809866] WARNING: CPU: 0 PID: 39 at sound/hda/hdac_i915.c:129 pin2por=
+t+0x25/0x30 [snd_hda_core]()
+[   18.809869] Modules linked in: ax88179_178a usbnet mii intel_powerclamp =
+coretemp crct10dif_pclmul i915 snd_hda_codec_hdmi snd_hda_codec_generic crc=
+32_pclmul ghash_clmulni_intel snd_hda_intel snd_hda_codec snd_hwdep snd_hda=
+_core snd_pcm mei_me mei lpc_ich sdhci_pci sdhci mmc_core e1000e ptp pps_co=
+re
+[   18.809903] CPU: 0 PID: 39 Comm: kworker/0:1 Not tainted 4.5.0-gfxbench+=
+ #1
+[   18.809905] Hardware name: Hewlett-Packard HP EliteBook 8440p/172A, BIOS=
+ 68CCU Ver. F.24 09/13/2013
+[   18.809912] Workqueue: events azx_probe_work [snd_hda_intel]
+[   18.809915]  0000000000000000 ffff8800b646b9e8 ffffffff813fef15 00000000=
+00000000
+[   18.809920]  ffffffffa00f277c ffff8800b646ba20 ffffffff81078a21 ffff8800=
+b2436000
+[   18.809924]  ffff8800b24755e8 ffff8800b24755f0 0000000000000100 ffff8800=
+aed08330
+[   18.809929] Call Trace:
+[   18.809936]  [<ffffffff813fef15>] dump_stack+0x67/0x92
+[   18.809942]  [<ffffffff81078a21>] warn_slowpath_common+0x81/0xc0
+[   18.809945]  [<ffffffff81078b15>] warn_slowpath_null+0x15/0x20
+[   18.809953]  [<ffffffffa00f12d5>] pin2port+0x25/0x30 [snd_hda_core]
+[   18.809960]  [<ffffffffa00f1378>] snd_hdac_acomp_get_eld+0x38/0x70 [snd_=
+hda_core]
+[   18.809966]  [<ffffffffa017da52>] hdmi_present_sense+0x92/0x370 [snd_hda=
+_codec_hdmi]
+[   18.809971]  [<ffffffffa017e0ff>] generic_hdmi_build_controls+0x11f/0x20=
+0 [snd_hda_codec_hdmi]
+[   18.809985]  [<ffffffffa01105b1>] snd_hda_codec_build_controls+0x191/0x1=
+d0 [snd_hda_codec]
+[   18.809993]  [<ffffffffa0110881>] ? snd_hda_codec_build_pcms+0xe1/0x1a0 =
+[snd_hda_codec]
+[   18.809999]  [<ffffffffa010b442>] hda_codec_driver_probe+0x82/0x100 [snd=
+_hda_codec]
+[   18.810005]  [<ffffffff8153d729>] driver_probe_device+0x229/0x450
+[   18.810008]  [<ffffffff8153da7d>] __device_attach_driver+0x6d/0x80
+[   18.810011]  [<ffffffff8153da10>] ? driver_allows_async_probing+0x30/0x30
+[   18.810015]  [<ffffffff8153b4b8>] bus_for_each_drv+0x58/0x90
+[   18.810018]  [<ffffffff8153d3c8>] __device_attach+0xb8/0x130
+[   18.810022]  [<ffffffff8153dc0e>] device_initial_probe+0xe/0x10
+[   18.810025]  [<ffffffff8153c76e>] bus_probe_device+0x9e/0xb0
+[   18.810028]  [<ffffffff8153a5a1>] device_add+0x421/0x5f0
+[   18.810035]  [<ffffffff817c2599>] ? mutex_unlock+0x9/0x10
+[   18.810041]  [<ffffffffa00eba7f>] snd_hdac_device_register+0xf/0x40 [snd=
+_hda_core]
+[   18.810048]  [<ffffffffa010b1f6>] snd_hda_codec_configure+0x36/0x180 [sn=
+d_hda_codec]
+[   18.810057]  [<ffffffffa01150c3>] azx_codec_configure+0x23/0x40 [snd_hda=
+_codec]
+[   18.810062]  [<ffffffffa0134707>] azx_probe_work+0x567/0x870 [snd_hda_in=
+tel]
+[   18.810067]  [<ffffffff81093c8b>] process_one_work+0x1cb/0x680
+[   18.810070]  [<ffffffff81093c06>] ? process_one_work+0x146/0x680
+[   18.810073]  [<ffffffff81094189>] worker_thread+0x49/0x490
+[   18.810076]  [<ffffffff81094140>] ? process_one_work+0x680/0x680
+[   18.810081]  [<ffffffff8109a87a>] kthread+0xea/0x100
+[   18.810085]  [<ffffffff817c5407>] ? _raw_spin_unlock_irq+0x27/0x50
+[   18.810090]  [<ffffffff8109a790>] ? kthread_create_on_node+0x1f0/0x1f0
+[   18.810093]  [<ffffffff817c60bf>] ret_from_fork+0x3f/0x70
+[   18.810097]  [<ffffffff8109a790>] ? kthread_create_on_node+0x1f0/0x1f0
+[   18.810277] ---[ end trace 2d4983bcfed2cd4b ]---
 
-I can see only 2 risks protected by the lock:
+This other one was seen at least on on SKL:
+[  124.808525] ------------[ cut here ]------------
+[  124.808545] WARNING: CPU: 3 PID: 173 at sound/hda/hdac_i915.c:91 snd_hda=
+c_display_power+0xf1/0x110 [snd_hda_core]()
+[  124.808551] Modules linked in: snd_hda_codec_hdmi snd_hda_codec_realtek =
+snd_hda_codec_generic x86_pkg_temp_thermal intel_powerclamp coretemp i915 c=
+rct10dif_pclmul snd_hda_intel crc32_pclmul snd_hda_codec ghash_clmulni_inte=
+l snd_hwdep snd_hda_core snd_pcm mei_me mei i2c_hid sdhci_pci e1000e ptp sd=
+hci pps_core mmc_core
+[  124.808603] CPU: 3 PID: 173 Comm: kworker/3:2 Tainted: G        W       =
+4.5.0-gfxbench+ #1
+[  124.808608] Hardware name:                  /NUC6i5SYB, BIOS SYSKLi35.86=
+A.0028.2015.1112.1822 11/12/2015
+[  124.808616] Workqueue: pm pm_runtime_work
+[  124.808639]  0000000000000000 ffff88026423fbb8 ffffffff813fef15 00000000=
+00000000
+[  124.808644]  ffffffffa00f877c ffff88026423fbf0 ffffffff81078a21 00000000=
+00000000
+[  124.808648]  ffff880085a11148 ffff880085586ab8 ffff8800861b8000 00000000=
+00000000
+[  124.808652] Call Trace:
+[  124.808656]  [<ffffffff813fef15>] dump_stack+0x67/0x92
+[  124.808660]  [<ffffffff81078a21>] warn_slowpath_common+0x81/0xc0
+[  124.808662]  [<ffffffff81078b15>] warn_slowpath_null+0x15/0x20
+[  124.808668]  [<ffffffffa00f77e1>] snd_hdac_display_power+0xf1/0x110 [snd=
+_hda_core]
+[  124.808673]  [<ffffffffa015039d>] azx_intel_link_power+0xd/0x10 [snd_hda=
+_intel]
+[  124.808680]  [<ffffffffa011e32a>] azx_link_power+0x1a/0x30 [snd_hda_code=
+c]
+[  124.808684]  [<ffffffffa00f21f9>] snd_hdac_link_power+0x29/0x40 [snd_hda=
+_core]
+[  124.808690]  [<ffffffffa01192a6>] hda_codec_runtime_suspend+0x76/0xa0 [s=
+nd_hda_codec]
+[  124.808697]  [<ffffffffa0119230>] ? hda_codec_runtime_resume+0x50/0x50 [=
+snd_hda_codec]
+[  124.808701]  [<ffffffff8154719d>] __rpm_callback+0x2d/0x70
+[  124.808704]  [<ffffffff815471ff>] rpm_callback+0x1f/0x80
+[  124.808710]  [<ffffffffa0119230>] ? hda_codec_runtime_resume+0x50/0x50 [=
+snd_hda_codec]
+[  124.808713]  [<ffffffff81547764>] rpm_suspend+0x134/0x7f0
+[  124.808716]  [<ffffffff810c80a9>] ? __lock_is_held+0x49/0x70
+[  124.808719]  [<ffffffff81548129>] rpm_idle+0x209/0x530
+[  124.808722]  [<ffffffff815494f9>] pm_runtime_work+0xa9/0xc0
+[  124.808725]  [<ffffffff81093c8b>] process_one_work+0x1cb/0x680
+[  124.808728]  [<ffffffff81093c06>] ? process_one_work+0x146/0x680
+[  124.808731]  [<ffffffff81094189>] worker_thread+0x49/0x490
+[  124.808733]  [<ffffffff81094140>] ? process_one_work+0x680/0x680
+[  124.808735]  [<ffffffff81094140>] ? process_one_work+0x680/0x680
+[  124.808738]  [<ffffffff8109a87a>] kthread+0xea/0x100
+[  124.808742]  [<ffffffff817c53d7>] ? _raw_spin_unlock_irq+0x27/0x50
+[  124.808745]  [<ffffffff8109a790>] ? kthread_create_on_node+0x1f0/0x1f0
+[  124.808749]  [<ffffffff817c607f>] ret_from_fork+0x3f/0x70
+[  124.808752]  [<ffffffff8109a790>] ? kthread_create_on_node+0x1f0/0x1f0
+[  124.808755] ---[ end trace 2b97e417eb08d213 ]---
 
-1) mdev gets freed while an entity is being created. This is a problem
-   with the current memory protection schema we're using. I guess the
-   only way to fix it is to use kref for mdev/entities/interfaces/links/pads.
-   This change doesn't make it better or worse.
-   Also, I don't think we have such risk with the current devices.
+-- =
 
-2) a notifier may be inserted or removed by another driver, while the
-   loop is running.
-
-To avoid (2), I see 3 alternatives:
-
-a) keep the loop as proposed on this patch. As the list is navigated using 
-list_for_each_entry_safe(), I guess[1] it should be safe to remove/add
-new notify callbacks there while the loop is running by some other process. 
-
-[1] It *is* safe if the change were done inside the loop - but I'm not
-100% sure that it is safe if some other CPU touches the notify list.
-
-b) Unlock/relock the spinlock every time:
-
-	/* previous code that locks mdev->lock spinlock */
-
- 	/* invoke entity_notify callbacks */
- 	list_for_each_entry_safe(notify, next, &mdev->entity_notify, list) {
-		spin_unlock(&mdev->lock);
- 		(notify)->notify(entity, notify->notify_data);
-		spin_lock(&mdev->lock);
- 	}
- 
-	spin_unlock(&mdev->lock);
-
-c) use a separate lock for the notify list -this seems to be an overkill.
-
-d) Protect it with the graph traversal mutex. That sounds the worse idea,
-   IMHO, as we'll be abusing the lock.
-
-> 
-> >   
-> > > Could we instead replace mdev->lock by a mutex?  
-> > 
-> > We changed the code to use a spinlock for a reason: this fixed some
-> > troubles in the past with the code locking (can't remember the problem,
-> > but this was documented at the kernel logs and at the ML). Yet, the code
-> > under the spinlock never sleeps, so this is fine.  
-> 
-> struct media_device.lock was added by this patch:
-> 
-> commit 53e269c102fbaf77e7dc526b1606ad4a48e57200
-> Author: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Date:   Wed Dec 9 08:40:00 2009 -0300
-> 
->     [media] media: Entities, pads and links
-> 
->     As video hardware pipelines become increasingly complex and
->     configurable, the current hardware description through v4l2 subdevices
->     reaches its limits. In addition to enumerating and configuring
->     subdevices, video camera drivers need a way to discover and modify at
->     runtime how those subdevices are connected. This is done through new
->     elements called entities, pads and links.
-> 
-> ...
-> 
->     Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->     Signed-off-by: Sakari Ailus <sakari.ailus@iki.fi>
->     Acked-by: Hans Verkuil <hverkuil@xs4all.nl>
->     Signed-off-by: Mauro Carvalho Chehab <mchehab@redhat.com>
-> 
-> I think it was always a spinlock, for the reason you stated above as well:
-> it did not need to sleep. But if there is a need to sleep, I think we should
-> consider changing that.
-
-True, but there were some places that were using the graph_mutex
-instead of the spinlock. 
-
-> 
-> > 
-> > Yet, in the future, we'll need to do a review of all the locking schema,
-> > in order to better support dynamic graph changes.  
-> 
-> Agreed. I think more fine grained locking should be considered. The media
-> graph mutex will become a bottleneck at some point, especially if we make
-> the media devices system wide at some point.
-
-Yes. I guess we should protect the memory allocated stuff with a kref,
-and try to use RCS on most places, but we need more discussions and
-more tests to implement a solution that would be reliable even if the
-callers don't behave well.
-
-> >   
-> > > If there is no pressing need to implement atomic memory allocation I simply
-> > > wouldn't do it, especially in device initialisation where an allocation
-> > > failure will lead to probe failure as well.  
-> > 
-> > The fix for this issue should be simple. See the enclosed code. Btw.
-> > it probably makes sense to add some code here to avoid starving the
-> > stack, as a notify callback could try to create an entity, with,
-> > in turn, would call the notify callback again.
-> > 
-> > I'll run some tests here to double check if it fixes the issue.
-> > 
-> > ---
-> > 
-> > [media] media-device: Don't call notify callbacks holding a spinlock
-> > 
-> > The notify routines may sleep. So, they can't be called in spinlock
-> > context. Also, they may want to call other media routines that might
-> > be spinning the spinlock, like creating a link.
-> > 
-> > This fixes the following bug:
-> > 
-> > [ 1839.510587] BUG: sleeping function called from invalid context at mm/slub.c:1289
-> > [ 1839.510881] in_atomic(): 1, irqs_disabled(): 0, pid: 3479, name: modprobe
-> > [ 1839.511157] 4 locks held by modprobe/3479:
-> > [ 1839.511415]  #0:  (&dev->mutex){......}, at: [<ffffffff81ce8933>] __driver_attach+0xa3/0x160
-> > [ 1839.512381]  #1:  (&dev->mutex){......}, at: [<ffffffff81ce8941>] __driver_attach+0xb1/0x160
-> > [ 1839.512388]  #2:  (register_mutex#5){+.+.+.}, at: [<ffffffffa10596c7>] usb_audio_probe+0x257/0x1c90 [snd_usb_audio]
-> > [ 1839.512401]  #3:  (&(&mdev->lock)->rlock){+.+.+.}, at: [<ffffffffa0e6051b>] media_device_register_entity+0x1cb/0x700 [media]
-> > [ 1839.512412] CPU: 2 PID: 3479 Comm: modprobe Not tainted 4.5.0-rc3+ #49
-> > [ 1839.512415] Hardware name:                  /NUC5i7RYB, BIOS RYBDWi35.86A.0350.2015.0812.1722 08/12/2015
-> > [ 1839.512417]  0000000000000000 ffff8803b3f6f288 ffffffff81933901 ffff8803c4bae000
-> > [ 1839.512422]  ffff8803c4bae5c8 ffff8803b3f6f2b0 ffffffff811c6af5 ffff8803c4bae000
-> > [ 1839.512427]  ffffffff8285d7f6 0000000000000509 ffff8803b3f6f2f0 ffffffff811c6ce5
-> > [ 1839.512432] Call Trace:
-> > [ 1839.512436]  [<ffffffff81933901>] dump_stack+0x85/0xc4
-> > [ 1839.512440]  [<ffffffff811c6af5>] ___might_sleep+0x245/0x3a0
-> > [ 1839.512443]  [<ffffffff811c6ce5>] __might_sleep+0x95/0x1a0
-> > [ 1839.512446]  [<ffffffff8155aade>] kmem_cache_alloc_trace+0x20e/0x300
-> > [ 1839.512451]  [<ffffffffa0e66e3d>] ? media_add_link+0x4d/0x140 [media]
-> > [ 1839.512455]  [<ffffffffa0e66e3d>] media_add_link+0x4d/0x140 [media]
-> > [ 1839.512459]  [<ffffffffa0e69931>] media_create_pad_link+0xa1/0x600 [media]
-> > [ 1839.512463]  [<ffffffffa0fe11b3>] au0828_media_graph_notify+0x173/0x360 [au0828]
-> > [ 1839.512467]  [<ffffffffa0e68a6a>] ? media_gobj_create+0x1ba/0x480 [media]
-> > [ 1839.512471]  [<ffffffffa0e606fb>] media_device_register_entity+0x3ab/0x700 [media]
-> > 
-> > (untested)
-> > 
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-> > 
-> > diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
-> > index 6ba6e8f982fc..fc3c199e5500 100644
-> > --- a/drivers/media/media-device.c
-> > +++ b/drivers/media/media-device.c
-> > @@ -587,14 +587,15 @@ int __must_check media_device_register_entity(struct media_device *mdev,
-> >  		media_gobj_create(mdev, MEDIA_GRAPH_PAD,
-> >  			       &entity->pads[i].graph_obj);
-> >  
-> > +	spin_unlock(&mdev->lock);
-> > +
-> >  	/* invoke entity_notify callbacks */
-> >  	list_for_each_entry_safe(notify, next, &mdev->entity_notify, list) {
-> >  		(notify)->notify(entity, notify->notify_data);
-> >  	}
-> >  
-> > -	spin_unlock(&mdev->lock);
-> > -
-> >  	mutex_lock(&mdev->graph_mutex);
-> > +
-> >  	if (mdev->entity_internal_idx_max  
-> >  	    >= mdev->pm_count_walk.ent_enum.idx_max) {  
-> >  		struct media_entity_graph new = { .top = 0 };
-> >   
-> 
-
-
--- 
-Thanks,
-Mauro
+Ville Syrj=E4l=E4
+Intel OTC
