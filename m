@@ -1,100 +1,57 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: ASoC and pulseaudio
-Date: Tue, 15 Mar 2016 10:58:26 +0000
-Message-ID: <1458039506.8522.70.camel@loki>
-References: <CAL9uMOHRjcCJomr6zzR0ySh384AVj1FRvASZSp3KsPqfeS8Lzw@mail.gmail.com>
- <56C8AEFD.4060808@linux.intel.com> <1456225994.6424.35.camel@loki>
- <B51200AC81AB024499A3C2C9A1BB90A83D3AABF9@SHSMSX101.ccr.corp.intel.com>
- <1457943567.3888.18.camel@loki> <20160314160654.GA2566@sirena.org.uk>
- <1458021688.8522.16.camel@loki> <20160315084544.GF2566@sirena.org.uk>
- <s5hmvq0glxj.wl-tiwai@suse.de> <1458035331.8522.52.camel@loki>
- <s5h8u1kgj3c.wl-tiwai@suse.de>
-Reply-To: General PulseAudio Discussion
- <pulseaudio-discuss@lists.freedesktop.org>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: Re: [PATCH v8 2/2] ASoc: sun4i-codec: Add FM, Line
+ and Mic inputs
+Date: Tue, 15 Mar 2016 10:58:02 +0000
+Message-ID: <20160315105802.GN2566@sirena.org.uk>
+References: <20151221123148.1ab6480b@dayas>
+ <20151221123416.51aa938e@dayas>
+ <20151227182157.GI30359@lukather>
+ <20151228040649.475a742f@dayas>
+ <20160106220908.GE9631@lukather>
+ <20160109164832.515d69b0@dayas>
+ <20160312085222.226d89bf@scratchpost.org>
+ <20160314104939.GL8418@lukather>
+Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-In-Reply-To: <s5h8u1kgj3c.wl-tiwai@suse.de>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Linux Upstreaming Team <linux@endlessm.com>, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, "han.lu" <han.lu@linux.intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="sy9WyBOsCRoUO165"
+Return-path: <linux-sunxi+bncBDQ2L75W5QGBBBGWT63QKGQEC32W7CY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Disposition: inline
+In-Reply-To: <20160314104939.GL8418@lukather>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAyMDE2LTAzLTE1IGF0IDEwOjU2ICswMTAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
-T24gVHVlLCAxNSBNYXIgMjAxNiAxMDo0ODo1MSArMDEwMCwKPiBMaWFtIEdpcmR3b29kIHdyb3Rl
-Ogo+ID4gCj4gPiBPbiBUdWUsIDIwMTYtMDMtMTUgYXQgMDk6NTUgKzAxMDAsIFRha2FzaGkgSXdh
-aSB3cm90ZToKPiA+ID4gT24gVHVlLCAxNSBNYXIgMjAxNiAwOTo0NTo0NCArMDEwMCwKPiA+ID4g
-TWFyayBCcm93biB3cm90ZToKPiA+ID4gPiAKPiA+ID4gPiBPbiBUdWUsIE1hciAxNSwgMjAxNiBh
-dCAwNjowMToyOEFNICswMDAwLCBMaWFtIEdpcmR3b29kIHdyb3RlOgo+ID4gPiA+IAo+ID4gPiA+
-ID4gMSkgU2hvcnRuYW1lIGlzIGJvYXJkL21hY2hpbmUgbmFtZS4gVGhpcyBjYW4gY29tZSBmcm9t
-IERNSSBvciBkZXZpY2UKPiA+ID4gPiA+IHRyZWUuIGUuZy4gIkFzdXMgVDEwMCIKPiA+ID4gPiAK
-PiA+ID4gPiBUaGF0IHNlZW1zIG1vcmUgdXNlZnVsIGZvciB1c2Vycy4KPiA+ID4gPiAKPiA+ID4g
-PiA+IDIpIExvbmcgbmFtZSBpcyAxICsgZHJpdmVyIG5hbWUgKyBvcHRpb25hbCBmaXJtd2FyZSBu
-YW1lLiAoSSd2ZSBqdXN0Cj4gPiA+ID4gPiBhZGRlZCB0aGUgRlcgbmFtZSBoZXJlIHRvbyBhcyB3
-ZSBjYW4gaGF2ZSBwb3RlbnRpYWxseSA+IDEgRlcgcGVyIGRyaXZlcgo+ID4gPiA+ID4gLSBCWVQg
-aXMgYW4gZXhhbXBsZSkgZS5nLiAiQXN1cyBUMDA6IGJ5dC1ydDU2NDA6IEludFNTVDEuYmluIi4K
-PiA+ID4gPiAKPiA+ID4gPiBTaG91bGRuJ3Qgd2UgdXNlIHdoYXRldmVyIHdlIHVzZSB0byBmaWd1
-cmUgb3V0IHdoaWNoIGZpcm13YXJlIHRvIGxvYWQKPiA+ID4gPiByYXRoZXIgdGhhbiB0aGUgZmly
-bXdhcmUgbmFtZT8gIFNvbWVvbmUgbWlnaHQgZG8gc29tZXRoaW5nIGxpa2UgdHJ5IHRvCj4gPiA+
-ID4gcmVwbGFjZSBvbmUgZmlybXdhcmUgd2l0aCBhbm90aGVyIGFuZCBnZXQgZXZlcnl0aGluZyBj
-b25mdXNlZC4KPiA+ID4gCj4gPiAKPiA+IFRoaXMgaXMgbm90IHRvIGxvYWQgRlcgZm9yIG91ciB1
-c2UgY2FzZSwgdGhlIEZXIG5hbWUgaXMgaGFyZCBjb2RlZCBpbgo+ID4gZHJpdmVyIHRhYmxlcy4g
-V2UgZG8gaGF2ZSBzZXZlcmFsIEZXcyBmb3IgdGhlIEJZVCBkcml2ZXIgdGhhdCBhbGwgaGF2ZQo+
-ID4gZGlmZmVyZW50IGNhcGFiaWxpdGllcy4gVXNlcnNwYWNlIGNvdWxkIHNldCB0aGUgY29ycmVj
-dCBjb25maWcgZm9yIGVhY2gKPiA+IEZXIGlmIGl0IGtuZXcgdGhlIEZXIHRoYXQgd2FzIGJlaW5n
-IHVzZWQuCj4gPiAKPiA+ID4gSSBhZ3JlZSB0aGF0IGEgY29uc2lzdGVudCBuYW1lIHdvdWxkIGJl
-IGJldHRlci4gIFRob3VnaCwgcHJhY3RpY2FsbHkKPiA+ID4gc2VlbiwgdGhlIGxvbmcgbmFtZSBp
-c24ndCBwZXJzaXN0ZW50IHdpdGggbWFueSBkcml2ZXJzLCBhcyBpdCBvZnRlbgo+ID4gPiBjb250
-YWlucyB0aGUgaXJxIG9yIHBvcnQgbnVtYmVycyB0aGF0IGFyZSBhc3NpZ25lZCBkeW5hbWljYWxs
-eS4gIFRoYXQKPiA+ID4gc2FpZCwgdGhlIGNvbnNpc3RlbmN5IG9mIGxvbmcgbmFtZSBpc24ndCBz
-dHJpY3RseSByZXF1aXJlZC4gIEl0J3MKPiA+ID4gcmVnYXJkZWQgcmF0aGVyIGFzIGEgdmVyYm9z
-ZSBpbmZvcm1hdGlvbiB0byB1c2VyLCB3aGljaCBzaG91bGRuJ3QgYmUKPiA+ID4gdXNlZCBhcyBh
-biBpZGVudGlmaWVyIGtleS4KPiA+ID4gCj4gPiA+IE9UT0gsIHRoZSBkcml2ZXIgbmFtZSBpcyB0
-aGUgcHJpbWFyeSBpZCBrZXkgdXNlZCBieSBhbHNhLWxpYiBmb3IgaXRzCj4gPiA+IGNvbmZpZ3Vy
-YXRpb24uICBTbyB0aGlzIG11c3QgYmUgcmV0YWluZWQgdGhyb3VnaCB2ZXJzaW9ucyBhbmQgdW5p
-cXVlCj4gPiA+IGZvciBlYWNoIGNvbmZpZ3VyYXRpb24uCj4gPiA+IAo+ID4gCj4gPiBPaywgc28g
-d2UgcHJvYmFibHkgbmVlZCB0byBhZGQgaW4gdGhlIGJvYXJkL21hY2hpbmUgbmFtZSBoZXJlIChm
-cm9tIERNSQo+ID4gb3IgRFQpLiBXZSBjdXJyZW50bHkgaGF2ZSBzZXZlcmFsIHg4NiBtYWNoaW5l
-cyBhbGwgdXNpbmcgdGhlIHNhbWUgY29kZWMKPiA+ICsgRFNQICsgRlcsIGJ1dCBhbGwgaGF2ZSBz
-bGlnaHRseSBkaWZmZXJlbnQgY2xvY2tpbmcgYW5kIHJvdXRpbmcgdGhhdCBpcwo+ID4gY2F1c2lu
-ZyBwcm9ibGVtcyBhcyB1c2Vyc3BhY2UgY2Fubm90IGNvbmZpZ3VyZSBjb3JyZWN0bHkuIAo+ID4g
-Cj4gPiA+IFRoZSBzaG9ydCBuYW1lIGlzIHNvbWV0aGluZyBiZXR3ZWVuIHRoZW0uICBUaGUgYWxz
-YS1saWIgVVNCLWF1ZGlvCj4gPiA+IGNvbmZpZyBmaWxlIHJlZmVycyB0byB0aGUgc2hvcnQgbmFt
-ZSBiZWNhdXNlIHRoZSBkcml2ZXIgZG9lc24ndAo+ID4gPiBwcm92aWRlIGEgdW5pcXVlIGlkIGZv
-ciBkcml2ZXJfbmFtZSBmb3IgdmFyaW91cyB3b3JrYXJvdW5kcy4gIEJ1dCBpdAo+ID4gPiBzaG91
-bGQgYmUgY29uc2lkZXJlZCBhcyBhbiBleGNlcHRpb24uICBJZGVhbGx5LCBkcml2ZXJfbmFtZSBz
-aG91bGQgYmUKPiA+ID4gdW5pcXVlIGVub3VnaCBmb3IgZWFjaCBkaWZmZXJlbnQgY29uZmlndXJh
-dGlvbi4KPiA+IAo+ID4gU28gSUlVQyB0aGlzIHdvdWxkIG1lYW4gPwo+ID4gCj4gPiAxKSBzaG9y
-dCBuYW1lIGlzIG9wdGlvbmFsLCBidXQgY291bGQgYmUgYm9hcmQgbmFtZS4KPiAKPiBSaWdodC4K
-PiAKPiA+IDIpIGxvbmcgbmFtZSBpcyBkcml2ZXJfbmFtZSBwbHVzIGFueSBvdGhlciBvcHRpb25h
-bCBpbmZvcm1hdGlvbiBmb3IgdGhlCj4gPiB1c2VyLiBOb3QgdXNlZCBieSBhcHBsaWNhdGlvbnMg
-b3IgYWxzYS1saWIgdG8gZGV0ZXJtaW5lIHNvdW5kIGNhcmQKPiA+IGNhcGFiaWxpdGllcy4KPiAK
-PiBJbiBtb3N0IGNhc2VzLCBsb25nIG5hbWUgaXMgc2hvcnQgbmFtZSArIG1vcmUgb3B0aW9uYWwg
-aW5mb3JtYXRpb24uCj4gCj4gPiAzKSBEcml2ZXIgbmFtZSBpcyB1bmlxdWUuIG1hY2hpbmUgZHJp
-dmVyIG5hbWUgKyAob3B0aW9uYWwpIGJvYXJkIG5hbWUgKwo+ID4gKG9wdGlvbmFsKSBmdyBuYW1l
-LiBlLmcuICJieXQtcnQ1NjQwOiBBc3VzIFQxMDA6IEludFNTVDEuYmluIiB1c2VkIGJ5Cj4gPiBh
-bHNhLWxpYiBhbmQgdXNlcnNwYWNlIHRvIGRldGVybWluZSBzb3VuZCBjYXJkIGFuZCBzZXQgY29u
-ZmlnLgo+IAo+IEJ1dCwgYmV3YXJlIHRoYXQgZHJpdmVyIG5hbWUgaXMgZmFpcmx5IHNob3J0LCBp
-dCdzIGEgMTYgYnl0ZXMgc3RyaW5nLgo+IFRoZSBzaG9ydCBuYW1lIGlzIDMyIGJ5dGVzIGFuZCBs
-b25nIG5hbWUgaXMgODAgYnl0ZXMuICBUaHVzLCB5b3UgbmVlZAo+IGEgc3BlY2lhbCBjYXJlIHRv
-IHByb3ZpZGUgYSB1bmlxdWUgZHJpdmVyIG5hbWUuCgpPaywgdGhhdCBpcyBwcm9iYWJseSB0b28g
-c2hvcnQgOigKCkkndmUgcXVpY2tseSByZWNoZWNrZWQgdGhlIHVzZXJzcGFjZSBBUEkgYW5kIHdl
-IGRvIGhhdmUgdGhlCmZ1bmN0aW9uYWxpdHkgdG8gcmVhZCBiYWNrIHRoZSBsb25nIG5hbWUgYW1v
-bmdzdCBvdGhlciBzdHJpbmdzLiBJdCBtYXkKYmUgdGhhdCB3ZSBoYXZlIHRvIHVzZSB0aGUgbG9u
-ZyBuYW1lIHRvIHNwZWNpZnkgZnVydGhlciBpbmZvcm1hdGlvbi4KCmUuZy4gUHVsc2VhdWRpbyBj
-b3VsZCByZWFkIHRoZSBsb25nIG5hbWUgdG8gZGV0ZXJtaW5lIHRoZSBjb3JyZWN0IFVDTQpmaWxl
-IHRvIGxvYWQgZm9yIEFzdXMgMTAwIChpbnN0ZWFkIG9mIGxvYWRpbmcgdGhlIGRlZmF1bHQgQllU
-IFVDTSB3aGljaAptYXkgb3IgbWF5IG5vdCB3b3JrIG9uIEFzdXMgVDEwMCkuIAoKTGlhbQoKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCnB1bHNlYXVkaW8t
-ZGlzY3VzcyBtYWlsaW5nIGxpc3QKcHVsc2VhdWRpby1kaXNjdXNzQGxpc3RzLmZyZWVkZXNrdG9w
-Lm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL3B1bHNl
-YXVkaW8tZGlzY3Vzcwo=
+--sy9WyBOsCRoUO165
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
+
+On Mon, Mar 14, 2016 at 11:49:39AM +0100, Maxime Ripard wrote:
+> On Sat, Mar 12, 2016 at 08:52:22AM +0100, Danny Milosavljevic wrote:
+
+> > > The other direction (making two controls which both do the same and update 
+> > > each other's value) doesn't seem to be easily available. 
+
+> > > Should I write a _put handler that does it manually?
+
+> > > (Or should that be handled by alsa-lib mixer modules instead?)
+
+> > > Is it possible to merge the "Left Mixer" control and respective 
+> > > "Right Mixer" control into one selem in alsamixer?
+
+> > > Because alsamixer actually has support for one-sided muting.
+
+> Mark, do you know how to do it?
+
+> IIRC, in order to have shared controls, you just needed to share the
+> controls structure.
+
+I'm having a really hard time telling what "it" is here.
+--sy9WyBOsCRoUO165--
