@@ -1,17 +1,19 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 5/6] ASoC: Intel: Skylake: Call i915 exit
-	last
-Date: Tue, 15 Mar 2016 16:39:27 +0530
-Message-ID: <1458040168-3769-6-git-send-email-vinod.koul@intel.com>
-References: <1458040168-3769-1-git-send-email-vinod.koul@intel.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: ASoC: TLV320AIC3x: Adding additional functionality
+ for 3106 with [Patch] for discuss
+Date: Tue, 15 Mar 2016 13:47:19 +0200
+Message-ID: <56E7F647.7060500@ti.com>
+References: <56E69B3F.8090306@mcsplus.ru> <56E6CEE9.5030802@ti.com>
+ <56E6D177.5050108@mcsplus.ru> <56E6E921.5030007@ti.com>
+ <56E7E145.5010904@mcsplus.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 92D3B2659EA
- for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2016 12:05:55 +0100 (CET)
-In-Reply-To: <1458040168-3769-1-git-send-email-vinod.koul@intel.com>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id A28472612AF
+ for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2016 12:47:25 +0100 (CET)
+In-Reply-To: <56E7E145.5010904@mcsplus.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,43 +23,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
+To: Timur Karaldin <karaldin@mcsplus.ru>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Jyri Sarha <jsarha@ti.com>, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-The Skylake driver uses i915 component APIs to talk to display.
-On remove we should free up by invoking snd_hdac_i915_exit() but
-that should be last thing in remove routine, so move it to last
-in skl_free()
-
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/skylake/skl.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 6e916c3c3a4b..72971dc55c52 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -328,6 +328,8 @@ static int skl_free(struct hdac_ext_bus *ebus)
- 
- 	snd_hdac_ext_bus_exit(ebus);
- 
-+	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
-+		snd_hdac_i915_exit(&ebus->bus);
- 	return 0;
- }
- 
-@@ -720,9 +722,6 @@ static void skl_remove(struct pci_dev *pci)
- 	if (skl->tplg)
- 		release_firmware(skl->tplg);
- 
--	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
--		snd_hdac_i915_exit(&ebus->bus);
--
- 	if (pci_dev_run_wake(pci))
- 		pm_runtime_get_noresume(&pci->dev);
- 	pci_dev_put(pci);
--- 
-1.9.1
+T24gMDMvMTUvMTYgMTI6MTcsIFRpbXVyIEthcmFsZGluIHdyb3RlOgo+IDE0LjAzLjIwMTYgMTk6
+MzgsIFBldGVyIFVqZmFsdXNpINC/0LjRiNC10YI6Cj4+IE9uIDAzLzE0LzIwMTYgMDQ6NTcgUE0s
+IFRpbXVyIEthcmFsZGluIHdyb3RlOgo+Pj4gSGksIFBldGVyIQo+Pj4gV2hhdCdzIGFib3V0IHBs
+YWNpbmcgY2FwdHVyZSBjb250cm9scyBpbiB0aGUgUGxheWJhY2sgc2VjdGlvbiBvZiBBbHNhbWl4
+ZXIKPj4+IHZpZXc/Cj4+IFllYWgsIGl0IGlzIGFubm95aW5nLiBUaGV5IGNhbiBiZSBmaXhlZCBi
+eToKPj4gIkxpbmUxTCBTd2l0Y2giIC0+ICJMaW5lMUwgQ2FwdHVyZSBTd2l0Y2giIGFuZCBzbyBv
+bi4gT24gdGhlIG90aGVyIGhhbmQgd2UgaGFkCj4+IHRoZXNlIHVuZm9ydHVuYXRlIGNvbnRyb2wg
+bmFtZXMgSSB0aGluayBzaW5jZSB0aGUgYmVnaW5uaW5nIGFuZCBpdCBpcyBraW5kIG9mCj4+IGFu
+IEFCSSBmb3IgZXhpc3RpbmcgcHJvZHVjdHMuIEkgZG9uJ3QgaGF2ZSBpc3N1ZSBjaGFuZ2luZyB0
+aGVtLCBidXQgZXhpc3RpbmcKPj4gc2V0dXBzIHJlbHlpbmcgb24gdGhlIGNvbnRyb2wgbmFtZXMg
+bWlnaHQgYnJlYWsuLi4KPj4KPj4+IERvZXMgcmVzZXR0aW5nIG9mIHNvbWUgcmVnaXN0ZXJzIGR1
+cmluZyBzdGFydC9zdG9wIG9mIHJlY29yZGluZwo+Pj4gY29ubmVjdCB3aXRoIGl0Pwo+PiBOb3Qg
+c3VyZSB3aGF0IHlvdSBtZWFuLgo+Pgo+IEkgbWVhbiBjdXJyZW50IHNpdHVhdGlvbjoKPiAKPiAj
+aTJjZHVtcCAtZiAteSAtciAxMy0xMyAxIDB4MWIKPiBSZXN1bHQ6IDB4MDAKPiAjYXJlY29yZCB0
+ZXN0LndhdiAmCj4gI2kyY2R1bXAgLWYgLXkgLXIgMTMtMTMgMSAweDFiCj4gUmVzdWx0OiAweDAw
+Cj4gIyBhbWl4ZXIgc3NldCAnSGVhZHNldCBEZXRlY3QgRW5hYmxlJyAqb24qCj4gI2kyY2R1bXAg
+LWYgLXkgLXIgMTMtMTMgMSAweDFiCj4gUmVzdWx0OioweDgwKgo+ICNraWxsYWxsIGFyZWNvcmQK
+PiAjaTJjZHVtcCAtZiAteSAtciAxMy0xMyAxIDB4MWIKPiBSZXN1bHQ6IDB4MDAKPiAjYXJlY29y
+ZCB0ZXN0LndhdiAmCj4gI2kyY2R1bXAgLWYgLXkgLXIgMTMtMTMgMSAweDFiCj4gUmVzdWx0Oiow
+eDAwCj4gKiNraWxsYWxsIGFyZWNvcmQqCj4gKmFtaXhlciBzc2V0ICdIZWFkc2V0IERldGVjdCBF
+bmFibGUnKm9uKioKPiAqI2kyY2R1bXAgLWYgLXkgLXIgMTMtMTMgMSAweDFiCj4gUmVzdWx0Oioq
+MHgwMAo+ICoqI2FtaXhlciBzc2V0ICdIZWFkc2V0IERldGVjdCBFbmFibGUnIG9mZgo+ICphbWl4
+ZXI6IEludmFsaWQgY29tbWFuZCEqCj4gCj4gU28gc3RhdGUgb2YgJ0hlYWRzZXQgRGV0ZWN0IEVu
+YWJsZScgYW5kIG90aGVycyBvZiBteSBjb250cm9scyB3ZXJlIG5vdCBzdG9yZWQKPiBkdXJpbmcg
+YXJlY29yZC9hcGxheSByZXN0YXJ0IChvcGVuIGFuZCBjbG9zZSBkZXZpY2UpLgoKYWljM3hfc2V0
+X3Bvd2VyKCkgd2lsbCBzb2Z0IHJlc2V0IHRoZSBjb2RlYyBvbiBwb3dlciBvZmYgd2hpY2ggcmVz
+ZXRzIGFsc28gdGhlCmhlYWRzZXQgZGV0ZWN0IHJlZ2lzdGVycy4KCi0tIApQw6l0ZXIKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
