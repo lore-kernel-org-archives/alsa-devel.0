@@ -1,17 +1,17 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [PATCH] [media] sound/usb: fix NULL dereference in
- usb_audio_probe()
-Date: Tue, 15 Mar 2016 07:37:01 -0600
-Message-ID: <56E80FFD.2060601@osg.samsung.com>
-References: <1458045306-4170-1-git-send-email-nicstange@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: cs35l32: prevent unexpected parse
+ result of device tree
+Date: Tue, 15 Mar 2016 14:30:35 +0000
+Message-ID: <20160315143035.GO2566@sirena.org.uk>
+References: <1458043574-6078-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1458043574-6078-2-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8013576428143831180=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lists.s-osg.org (lists.s-osg.org [54.187.51.154])
- by alsa0.perex.cz (Postfix) with ESMTP id 6EAA8261484
- for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2016 14:37:04 +0100 (CET)
-In-Reply-To: <1458045306-4170-1-git-send-email-nicstange@gmail.com>
+Received: from mezzanine.sirena.org.uk (unknown [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BE07265475
+ for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2016 15:31:03 +0100 (CET)
+In-Reply-To: <1458043574-6078-2-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,96 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolai Stange <nicstange@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/15/2016 06:35 AM, Nicolai Stange wrote:
-> With commit
-> 
->   aebb2b89bff0 ("[media] sound/usb: Use Media Controller API to share
->                  media resources")
-> 
-> an access to quirk->media_device without checking for quirk != NULL has
-> been introduced in usb_audio_probe().
-> 
-> With a Plantronics USB headset (device ID 0x047f:0xc010) attached,
-> this results in the following splat at boot time:
-> 
->   BUG: unable to handle kernel NULL pointer dereference at 0000000000000014
->   IP: [<ffffffffa089aa6c>] usb_audio_probe+0x2cc/0x9a0 [snd_usb_audio]
->   Oops: 0000 [#1] SMP
->   [...]
->   CPU: 2 PID: 696 Comm: systemd-udevd Not tainted 4.5.0-next-20160315 #13
->   Hardware name: Dell Inc. Latitude E6540/0725FP, BIOS A10 06/26/2014
->   task: ffff88021c88d7c0 ti: ffff88003d5b0000 task.ti: ffff88003d5b0000
->   RIP: 0010:[<ffffffffa089aa6c>]  [<ffffffffa089aa6c>]
->                                 usb_audio_probe+0x2cc/0x9a0 [snd_usb_audio]
->   [...]
->   Call Trace:
->    [<ffffffff815a8e16>] usb_probe_interface+0x136/0x2d0
->    [<ffffffff81509edc>] driver_probe_device+0x22c/0x440
->    [<ffffffff8150a1c1>] __driver_attach+0xd1/0xf0
->    [<ffffffff8150a0f0>] ? driver_probe_device+0x440/0x440
->    [<ffffffff815077ec>] bus_for_each_dev+0x6c/0xc0
->    [<ffffffff815095ce>] driver_attach+0x1e/0x20
->    [<ffffffff81509013>] bus_add_driver+0x1c3/0x280
->    [<ffffffff8150ab10>] driver_register+0x60/0xe0
->    [<ffffffff815a7711>] usb_register_driver+0x81/0x140
->    [<ffffffffa08c7000>] ? 0xffffffffa08c7000
->    [<ffffffffa08c701e>] usb_audio_driver_init+0x1e/0x1000 [snd_usb_audio]
->    [<ffffffff81002123>] do_one_initcall+0xb3/0x1f0
->    [<ffffffff811fb091>] ? __vunmap+0x81/0xd0
->    [<ffffffff8121b8d2>] ? kmem_cache_alloc_trace+0x182/0x1d0
->    [<ffffffff811b0267>] ? do_init_module+0x27/0x1d8
->    [<ffffffff811b029f>] do_init_module+0x5f/0x1d8
->    [<ffffffff8112ce35>] load_module+0x1fe5/0x27a0
->    [<ffffffff81129870>] ? __symbol_put+0x60/0x60
->    [<ffffffff81241690>] ? vfs_read+0x110/0x130
->    [<ffffffff8112d866>] SYSC_finit_module+0xe6/0x120
->    [<ffffffff8112d8be>] SyS_finit_module+0xe/0x10
->    [<ffffffff81003d94>] do_syscall_64+0x64/0x110
->    [<ffffffff817c0b61>] entry_SYSCALL64_slow_path+0x25/0x25
-> 
-> After encountering this, the system-udevd process seems to be blocked
-> until it is killed when hitting its timeout of 3min.
-> 
-> In analogy to the other accesses to members of quirk in usb_audio_probe(),
-> check for quirk != NULL before accessing its ->media_device.
-> 
-> Fixes: aebb2b89bff0 ("[media] sound/usb: Use Media Controller API to share
->                       media resources")
-> Signed-off-by: Nicolai Stange <nicstange@gmail.com>
-> ---
->  Applicable to linux-next-20160315.
-> 
->  sound/usb/card.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/usb/card.c b/sound/usb/card.c
-> index 63244bb..479621e 100644
-> --- a/sound/usb/card.c
-> +++ b/sound/usb/card.c
-> @@ -612,7 +612,7 @@ static int usb_audio_probe(struct usb_interface *intf,
->  	if (err < 0)
->  		goto __error;
->  
-> -	if (quirk->media_device) {
-> +	if (quirk && quirk->media_device) {
->  		/* don't want to fail when media_snd_device_create() fails */
->  		media_snd_device_create(chip, intf);
->  	}
-> 
 
-Thanks for finding the problem and fixing it.
+--===============8013576428143831180==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="0lsrIB+s628ok5gC"
+Content-Disposition: inline
 
-Reviewed-by: Shuah Khan <shuahkh@osg.samsung.com>
 
--- Shuah
+--0lsrIB+s628ok5gC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-Shuah Khan
-Sr. Linux Kernel Developer
-Open Source Innovation Group
-Samsung Research America (Silicon Valley)
-shuahkh@osg.samsung.com | (970) 217-8978
+On Tue, Mar 15, 2016 at 09:06:14PM +0900, Takashi Sakamoto wrote:
+> When device tree blob has no node properties requested by callers,
+> of_property_read_u32() returns minus value, then given argument is
+> not changed.
+
+This is probably fixed by a recent patch, please check with current code.
+
+Please don't send cover latters for single patches, if they're needed
+they indicate that you need to improve the commit log for the change.
+
+--0lsrIB+s628ok5gC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJW6ByKAAoJECTWi3JdVIfQSgYH/00O/RInmlVAVYWzOSDBnWsF
+uBAKPMjPWQo+zorK70GxBoidRawZjs2o2ffzZom9lQSEtMm5AFkwm+IFFeXG4KRJ
+nVsja1CotnsqRPwJCblJLN2DtbeNbuyCcw0cA2AOJFOTO/AdWi71RT1tDSbYB/PU
+BeaUecz+vYaeHzORN1QX3nF07PwOfRC/7eOG0xxybzpHEbb3Afi8HbyD04afFx/a
+2gqsD91u7tzXVAoUTBJrTjpmNZ412Ew+Ou0Cu3UzrRWSFMXBpSYLV3UW6TLrowcd
+/6/mRzhpUw/x5V/J5XK8K/2RLQS1c5oB4nBUK6n1adJhMNdE0RJkW8qPlh1pAAg=
+=naZG
+-----END PGP SIGNATURE-----
+
+--0lsrIB+s628ok5gC--
+
+--===============8013576428143831180==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8013576428143831180==--
