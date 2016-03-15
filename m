@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8825: support different clock source
-	for FLL function" to the asoc tree
-Date: Tue, 15 Mar 2016 09:29:00 +0000
-Message-ID: <E1aflHg-0005SC-JD@debutante>
-References: <1458014901-28049-1-git-send-email-KCHSU0@nuvoton.com>
+Subject: Applied "ASoC: cs35l32: avoid uninitialized variable
+	access" to the asoc tree
+Date: Tue, 15 Mar 2016 09:29:01 +0000
+Message-ID: <E1aflHh-0005Sg-GA@debutante>
+References: <1457967019-3901380-1-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (unknown [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D1FB62612AD
- for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2016 10:29:26 +0100 (CET)
-In-Reply-To: <1458014901-28049-1-git-send-email-KCHSU0@nuvoton.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0518D26568C
+ for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2016 10:29:27 +0100 (CET)
+In-Reply-To: <1457967019-3901380-1-git-send-email-arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>, Mark Brown <broonie@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>, Brian Austin <brian.austin@cirrus.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nau8825: support different clock source for FLL function
+   ASoC: cs35l32: avoid uninitialized variable access
 
 has been applied to the asoc tree at
 
@@ -52,154 +52,109 @@ to this mail.
 Thanks,
 Mark
 
->From ac61ae979d92cb99c18c938f5854179ed54d111a Mon Sep 17 00:00:00 2001
-From: John Hsu <KCHSU0@nuvoton.com>
-Date: Tue, 15 Mar 2016 12:08:21 +0800
-Subject: [PATCH] ASoC: nau8825: support different clock source for FLL
- function
+>From dd5dc001581a7cf6f563e188c302caae1be998c2 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 14 Mar 2016 15:49:54 +0100
+Subject: [PATCH] ASoC: cs35l32: avoid uninitialized variable access
 
-Extend FLL clock source selection. The source can be from MCLK, BCLK or FS.
+gcc warns about the possibilty of accessing a property read from
+devicetree in cs35l32_i2c_probe() when it has not been initialized
+because CONFIG_OF is disabled:
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+sound/soc/codecs/cs35l32.c: In function 'cs35l32_i2c_probe':
+sound/soc/codecs/cs35l32.c:278:2: warning: 'val' may be used uninitialized in this function [-Wmaybe-uninitialized]
+
+The code is actually correct because it checks the dev->of_node
+variable first and we know this is NULL here when CONFIG_OF
+is disabled, but Russell King noticed that it's broken when
+we probe the device using DT, and the properties are absent.
+
+The code already has some checking for incorrect values, and
+I keep that checking unchanged here, but add an additional
+check for an error returned by the property accessor functions
+that now gets handled the same way as incorrect data in the
+properties.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Brian Austin <brian.austin@cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/nau8825.c | 82 +++++++++++++++++++++++++++++++++-------------
- sound/soc/codecs/nau8825.h |  8 +++++
- 2 files changed, 67 insertions(+), 23 deletions(-)
+ sound/soc/codecs/cs35l32.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 1c8729984c2b..ac264ec3d15e 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -1053,6 +1053,37 @@ static int nau8825_set_pll(struct snd_soc_codec *codec, int pll_id, int source,
- 	return 0;
- }
+diff --git a/sound/soc/codecs/cs35l32.c b/sound/soc/codecs/cs35l32.c
+index 44c30fe3e315..287d13740be4 100644
+--- a/sound/soc/codecs/cs35l32.c
++++ b/sound/soc/codecs/cs35l32.c
+@@ -274,7 +274,9 @@ static int cs35l32_handle_of_data(struct i2c_client *i2c_client,
+ 	if (of_property_read_u32(np, "cirrus,sdout-share", &val) >= 0)
+ 		pdata->sdout_share = val;
  
-+static int nau8825_mclk_prepare(struct nau8825 *nau8825, unsigned int freq)
-+{
-+	int ret = 0;
+-	of_property_read_u32(np, "cirrus,boost-manager", &val);
++	if (of_property_read_u32(np, "cirrus,boost-manager", &val))
++		val = -1u;
 +
-+	nau8825->mclk = devm_clk_get(nau8825->dev, "mclk");
-+	if (IS_ERR(nau8825->mclk)) {
-+		dev_info(nau8825->dev, "No 'mclk' clock found, assume MCLK is managed externally");
-+		return 0;
-+	}
-+
-+	if (!nau8825->mclk_freq) {
-+		ret = clk_prepare_enable(nau8825->mclk);
-+		if (ret) {
-+			dev_err(nau8825->dev, "Unable to prepare codec mclk\n");
-+			return ret;
-+		}
-+	}
-+
-+	if (nau8825->mclk_freq != freq) {
-+		freq = clk_round_rate(nau8825->mclk, freq);
-+		ret = clk_set_rate(nau8825->mclk, freq);
-+		if (ret) {
-+			dev_err(nau8825->dev, "Unable to set mclk rate\n");
-+			return ret;
-+		}
-+		nau8825->mclk_freq = freq;
-+	}
-+
-+	return 0;
-+}
-+
- static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
- 	unsigned int freq)
- {
-@@ -1064,29 +1095,9 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
- 		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
- 			NAU8825_CLK_SRC_MASK, NAU8825_CLK_SRC_MCLK);
- 		regmap_update_bits(regmap, NAU8825_REG_FLL6, NAU8825_DCO_EN, 0);
--
--		/* We selected MCLK source but the clock itself managed externally */
--		if (!nau8825->mclk)
--			break;
--
--		if (!nau8825->mclk_freq) {
--			ret = clk_prepare_enable(nau8825->mclk);
--			if (ret) {
--				dev_err(nau8825->dev, "Unable to prepare codec mclk\n");
--				return ret;
--			}
--		}
--
--		if (nau8825->mclk_freq != freq) {
--			nau8825->mclk_freq = freq;
--
--			freq = clk_round_rate(nau8825->mclk, freq);
--			ret = clk_set_rate(nau8825->mclk, freq);
--			if (ret) {
--				dev_err(nau8825->dev, "Unable to set mclk rate\n");
--				return ret;
--			}
--		}
-+		ret = nau8825_mclk_prepare(nau8825, freq);
-+		if (ret)
-+			return ret;
- 
+ 	switch (val) {
+ 	case CS35L32_BOOST_MGR_AUTO:
+ 	case CS35L32_BOOST_MGR_AUTO_AUDIO:
+@@ -282,13 +284,15 @@ static int cs35l32_handle_of_data(struct i2c_client *i2c_client,
+ 	case CS35L32_BOOST_MGR_FIXED:
+ 		pdata->boost_mng = val;
  		break;
- 	case NAU8825_CLK_INTERNAL:
-@@ -1094,7 +1105,32 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
- 			NAU8825_DCO_EN);
- 		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
- 			NAU8825_CLK_SRC_MASK, NAU8825_CLK_SRC_VCO);
-+		if (nau8825->mclk_freq) {
-+			clk_disable_unprepare(nau8825->mclk);
-+			nau8825->mclk_freq = 0;
-+		}
++	case -1u:
+ 	default:
+ 		dev_err(&i2c_client->dev,
+ 			"Wrong cirrus,boost-manager DT value %d\n", val);
+ 		pdata->boost_mng = CS35L32_BOOST_MGR_BYPASS;
+ 	}
  
-+		break;
-+	case NAU8825_CLK_FLL_MCLK:
-+		regmap_update_bits(regmap, NAU8825_REG_FLL3,
-+			NAU8825_FLL_CLK_SRC_MASK, NAU8825_FLL_CLK_SRC_MCLK);
-+		ret = nau8825_mclk_prepare(nau8825, freq);
-+		if (ret)
-+			return ret;
-+
-+		break;
-+	case NAU8825_CLK_FLL_BLK:
-+		regmap_update_bits(regmap, NAU8825_REG_FLL3,
-+			NAU8825_FLL_CLK_SRC_MASK, NAU8825_FLL_CLK_SRC_BLK);
-+		if (nau8825->mclk_freq) {
-+			clk_disable_unprepare(nau8825->mclk);
-+			nau8825->mclk_freq = 0;
-+		}
-+
-+		break;
-+	case NAU8825_CLK_FLL_FS:
-+		regmap_update_bits(regmap, NAU8825_REG_FLL3,
-+			NAU8825_FLL_CLK_SRC_MASK, NAU8825_FLL_CLK_SRC_FS);
- 		if (nau8825->mclk_freq) {
- 			clk_disable_unprepare(nau8825->mclk);
- 			nau8825->mclk_freq = 0;
-diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
-index 8ceb5f385478..ed0d8f3df65f 100644
---- a/sound/soc/codecs/nau8825.h
-+++ b/sound/soc/codecs/nau8825.h
-@@ -113,6 +113,11 @@
+-	of_property_read_u32(np, "cirrus,sdout-datacfg", &val);
++	if (of_property_read_u32(np, "cirrus,sdout-datacfg", &val))
++		val = -1u;
+ 	switch (val) {
+ 	case CS35L32_DATA_CFG_LR_VP:
+ 	case CS35L32_DATA_CFG_LR_STAT:
+@@ -296,13 +300,15 @@ static int cs35l32_handle_of_data(struct i2c_client *i2c_client,
+ 	case CS35L32_DATA_CFG_LR_VPSTAT:
+ 		pdata->sdout_datacfg = val;
+ 		break;
++	case -1u:
+ 	default:
+ 		dev_err(&i2c_client->dev,
+ 			"Wrong cirrus,sdout-datacfg DT value %d\n", val);
+ 		pdata->sdout_datacfg = CS35L32_DATA_CFG_LR;
+ 	}
  
- /* FLL3 (0x06) */
- #define NAU8825_FLL_INTEGER_MASK		(0x3ff << 0)
-+#define NAU8825_FLL_CLK_SRC_SFT		10
-+#define NAU8825_FLL_CLK_SRC_MASK		(0x3 << NAU8825_FLL_CLK_SRC_SFT)
-+#define NAU8825_FLL_CLK_SRC_MCLK		(0 << NAU8825_FLL_CLK_SRC_SFT)
-+#define NAU8825_FLL_CLK_SRC_BLK		(0x2 << NAU8825_FLL_CLK_SRC_SFT)
-+#define NAU8825_FLL_CLK_SRC_FS			(0x3 << NAU8825_FLL_CLK_SRC_SFT)
+-	of_property_read_u32(np, "cirrus,battery-threshold", &val);
++	if (of_property_read_u32(np, "cirrus,battery-threshold", &val))
++		val = -1u;
+ 	switch (val) {
+ 	case CS35L32_BATT_THRESH_3_1V:
+ 	case CS35L32_BATT_THRESH_3_2V:
+@@ -310,13 +316,15 @@ static int cs35l32_handle_of_data(struct i2c_client *i2c_client,
+ 	case CS35L32_BATT_THRESH_3_4V:
+ 		pdata->batt_thresh = val;
+ 		break;
++	case -1u:
+ 	default:
+ 		dev_err(&i2c_client->dev,
+ 			"Wrong cirrus,battery-threshold DT value %d\n", val);
+ 		pdata->batt_thresh = CS35L32_BATT_THRESH_3_3V;
+ 	}
  
- /* FLL4 (0x07) */
- #define NAU8825_FLL_REF_DIV_MASK		(0x3 << 10)
-@@ -320,6 +325,9 @@
- enum {
- 	NAU8825_CLK_MCLK = 0,
- 	NAU8825_CLK_INTERNAL,
-+	NAU8825_CLK_FLL_MCLK,
-+	NAU8825_CLK_FLL_BLK,
-+	NAU8825_CLK_FLL_FS,
- };
- 
- struct nau8825 {
+-	of_property_read_u32(np, "cirrus,battery-recovery", &val);
++	if (of_property_read_u32(np, "cirrus,battery-recovery", &val))
++		val = -1u;
+ 	switch (val) {
+ 	case CS35L32_BATT_RECOV_3_1V:
+ 	case CS35L32_BATT_RECOV_3_2V:
+@@ -326,6 +334,7 @@ static int cs35l32_handle_of_data(struct i2c_client *i2c_client,
+ 	case CS35L32_BATT_RECOV_3_6V:
+ 		pdata->batt_recov = val;
+ 		break;
++	case -1u:
+ 	default:
+ 		dev_err(&i2c_client->dev,
+ 			"Wrong cirrus,battery-recovery DT value %d\n", val);
 -- 
 2.7.0
