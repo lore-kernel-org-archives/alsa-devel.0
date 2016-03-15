@@ -1,17 +1,17 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ASoC: cs35l32: prevent unexpected parse result
-	of device tree
-Date: Tue, 15 Mar 2016 21:06:14 +0900
-Message-ID: <1458043574-6078-2-git-send-email-o-takashi@sakamocchi.jp>
-References: <1458043574-6078-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Timur Karaldin <karaldin@mcsplus.ru>
+Subject: Re: ASoC: TLV320AIC3x: Adding additional functionality
+ for 3106 with [Patch] for discuss
+Date: Tue, 15 Mar 2016 15:12:44 +0300
+Message-ID: <56E7FC3C.1030503@mcsplus.ru>
+References: <56E69B3F.8090306@mcsplus.ru> <56E6CEE9.5030802@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id BF3D42614A0
- for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2016 13:06:23 +0100 (CET)
-In-Reply-To: <1458043574-6078-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from smtp5.mail.ru (smtp5.mail.ru [94.100.179.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF5DD2614A0
+ for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2016 13:12:47 +0100 (CET)
+In-Reply-To: <56E6CEE9.5030802@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,68 +21,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: brian.austin@cirrus.com, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When device tree blob has no node properties requested by callers,
-of_property_read_u32() returns minus value, then given argument is
-not changed.
-
-In current code of cs35l32 codec, the function is used with no condition
-statement for evaluation of the return value. Thus, the value of 'val'
-argument can be evaluated in following switch statement without
-initialization or assignment.
-
-This causes a bug that the property retrieved by previous function calls
-can be evaluated in later switch statements when some properties are
-missing.
-
-This commit fixes the bug. Unfortunately, these switch statements include
-cases with zero value. I initialize the argument with maximum number for
-argument type so that it apparently matches default cases and generates
-debug messages when missing.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/soc/codecs/cs35l32.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/sound/soc/codecs/cs35l32.c b/sound/soc/codecs/cs35l32.c
-index 44c30fe..e464107 100644
---- a/sound/soc/codecs/cs35l32.c
-+++ b/sound/soc/codecs/cs35l32.c
-@@ -274,6 +274,7 @@ static int cs35l32_handle_of_data(struct i2c_client *i2c_client,
- 	if (of_property_read_u32(np, "cirrus,sdout-share", &val) >= 0)
- 		pdata->sdout_share = val;
- 
-+	val = UINT_MAX;
- 	of_property_read_u32(np, "cirrus,boost-manager", &val);
- 	switch (val) {
- 	case CS35L32_BOOST_MGR_AUTO:
-@@ -288,6 +289,7 @@ static int cs35l32_handle_of_data(struct i2c_client *i2c_client,
- 		pdata->boost_mng = CS35L32_BOOST_MGR_BYPASS;
- 	}
- 
-+	val = UINT_MAX;
- 	of_property_read_u32(np, "cirrus,sdout-datacfg", &val);
- 	switch (val) {
- 	case CS35L32_DATA_CFG_LR_VP:
-@@ -302,6 +304,7 @@ static int cs35l32_handle_of_data(struct i2c_client *i2c_client,
- 		pdata->sdout_datacfg = CS35L32_DATA_CFG_LR;
- 	}
- 
-+	val = UINT_MAX;
- 	of_property_read_u32(np, "cirrus,battery-threshold", &val);
- 	switch (val) {
- 	case CS35L32_BATT_THRESH_3_1V:
-@@ -316,6 +319,7 @@ static int cs35l32_handle_of_data(struct i2c_client *i2c_client,
- 		pdata->batt_thresh = CS35L32_BATT_THRESH_3_3V;
- 	}
- 
-+	val = UINT_MAX;
- 	of_property_read_u32(np, "cirrus,battery-recovery", &val);
- 	switch (val) {
- 	case CS35L32_BATT_RECOV_3_1V:
--- 
-2.7.0
+SGkgUGV0ZXIhCgoxNC4wMy4yMDE2IDE3OjQ3LCBQZXRlciBVamZhbHVzaSDQv9C40YjQtdGCOgo+
+IFNvIHRoZSBpc3N1ZSBpcyB0aGF0IHdlIGhhdmUgdGhlIERBUE0gc3dpdGNoZXMgY29udHJvbGxp
+bmcgZXhhY3RseSB0aGUgCj4gc2FtZSByZWdpc3RlcnMuIEkgYmVsaWV2ZSBpZiB5b3Ugd291bGQg
+c2V0IHRoZSBnYWluIGluIGEgd2F5IHRoYXQgYml0MCAKPiBpcyAxLCB0aGVuIERBUE0gd2lsbCB0
+aGluayB0aGF0IHRoZSBwYXRoIGlzIGRpc2Nvbm5lY3RlZC4gQWxzbyBpZiB5b3UgCj4gd291bGQg
+c2V0IHRoZSBnYWluIGFuZCB0aGVuIG11dGUgYW5kIHVubXV0ZSB0aGUgcGF0aCB5b3Ugd291bGQg
+aGF2ZSAKPiBsb3N0IHRoZSBnYWluIHlvdSB3YW50ZWQgdG8gaGF2ZS4uIFRoZSBvbmx5IHdheSBJ
+IGNhbiB0aGluayBvZiAKPiBpbXBsZW1lbnRpbmcgdGhlc2UgbWl4ZXJzIGlzIHRvIGhhdmUgdHdv
+IHNldHMgb2YgY3VzdG9tIGNhbGxiYWNrcy4gb25lIAo+IHNldCBpcyB0byBzZXQvZ2V0IHRoZSBn
+YWluIGFuZCB0aGUgb3RoZXIgaXMgdG8gc2V0L2dldCB0aGUgCj4gbXV0ZS9kaXNjb25uZWN0IG9u
+IHRoZXNlLiBXaGVuIHRoZSBwYXRoIGlzIGRpc2Nvbm5lY3RlZCB5b3Ugc2hvdWxkIG5vdCAKPiB3
+cml0ZSB0aGUgZ2FpbiBjaGFuZ2UgdG8gdGhlIGNoaXAsIGJ1dCBjYWNoZSBpdCBhbmQgaWYgdGhl
+IHBhdGggaXMgCj4gdW5tdXRlZCwgeW91IHdyaXRlIHRoZSBjYWNoZWQgZ2Fpbi4gV2hlbiB5b3Ug
+bXV0ZSB0aGUgcGF0aCB5b3Ugc2hvdWxkIAo+IHRha2UgdGhlIHNldCBnYWluIGZpcnN0LCBjYWNo
+ZSBpdCwgdGhlbiBkaXNjb25uZWN0IHRoZSBwYXRoLiBGb3IgdGhlc2UgCj4gZ2FpbnMgeW91IHNo
+b3VsZCBoYXZlIERFQ0xBUkVfVExWX0RCX1NDQUxFKCkgYW5kIHVzZSBTT0NfU0lOR0xFX1RMVigp
+LiAKPiBNYWtlIHN1cmUgdGhhdCB0aGUgY29udHJvbCBuYW1lIG1hdGNoZXMgd2l0aCB0aGUgY29y
+cmVzcG9uZGluZyBEQVBNIAo+IHdpZGdldCdzIG5hbWUgc28gQUxTQSBjYW4gbWF0Y2ggdGhlbSBj
+b3JyZWN0bHkuIApUaGF0J3Mgbm90IGNsZWFyIGZvciBtZS4gQXMgSSB1bmRlcnN0YW5kLCBJIG5l
+ZWQgdG8gY3JlYXRlIApTT0NfU0lOR0xFX1RMVigpIGZvciBlYWNoIGdhaW4gSSB3b3VsZCBsaWtl
+IHRvIGNoYW5nZSwgd2l0aCB0aGUgc2FtZSAKbmFtZSBhcyBTT0NfREFQTV9TSU5HTEVfQUlDM3gg
+KGZvciBleGFtcGxlICJMaW5lMUwgU3dpdGNoIiBmb3IgTGluZTEpIAphbmQgbWFrZSBjYWxsYmFj
+a3Mgd2l0aCBjYWNoZWQgZ2FpbiB2YWx1ZXMuIEFtIEkgcmlnaHQ/Ck1heSBiZSB0aGUgYmV0dGVy
+IHNvbGx1dGlvbiBpcyB0byBjaGFuZ2UgU09DX0RBUE1fU0lOR0xFX0FJQzN4IG9uL29mZiAKc3dp
+dGNoIHRvIG90aGVyIHR5cGUgd2l0aCBzd2l0Y2ggYW5kIGdhaW4gY29udHJvbCB0b2dldGhlcj8g
+U28gaXQgY291bGQgCmhhdmUgc29tZSBjb25uZWN0ZWQgc3RhdGVzIHdpdGggZGlmZmVyZW50IGdh
+aW5zIGFuZCBkaXNjb25uZWN0ZWQgc3RhdGUgCihTb21ldGhpbmcgbGlrZSB2b2x1bWUvbXV0ZSBj
+b250cm9sKS4KCkNoZWVycywgVGltCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
