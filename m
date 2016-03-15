@@ -1,19 +1,19 @@
-From: PC Liao <pc.liao@mediatek.com>
-Subject: Re: [PATCH v5 3/9] ASoC: mediatek: Add HDMI dai-links
- in the mt8173-rt5650-rt5676 machine driver
-Date: Tue, 15 Mar 2016 11:22:12 +0800
-Message-ID: <1458012132.13144.10.camel@mtksdaap41>
-References: <1456930153-11853-1-git-send-email-p.zabel@pengutronix.de>
- <1456930153-11853-4-git-send-email-p.zabel@pengutronix.de>
- <56E74AFB.6070105@gmail.com>
+From: "Lu, Han" <han.lu@intel.com>
+Subject: Re: [PATCH 02/10] alsabat: add standalone mode
+Date: Tue, 15 Mar 2016 03:45:40 +0000
+Message-ID: <B51200AC81AB024499A3C2C9A1BB90A83D3AAE7A@SHSMSX101.ccr.corp.intel.com>
+References: <cover.1456907242.git.han.lu@intel.com>
+ <5c8e6ec9f17e113f77f4ac89b02c51809e377400.1456907242.git.han.lu@intel.com>
+ <s5hr3fl9srx.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- by alsa0.perex.cz (Postfix) with ESMTP id 0885B2605CA
- for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2016 04:22:18 +0100 (CET)
-In-Reply-To: <56E74AFB.6070105@gmail.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D4182605CA
+ for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2016 04:45:45 +0100 (CET)
+In-Reply-To: <s5hr3fl9srx.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,167 +23,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: Jean-Francois Moine <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, "kernel@pengutronix.de" <kernel@pengutronix.de>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Koro Chen =?UTF-8?Q?=28=E9=99=B3=E6=80=9D=E7=BF=B0=29?= <koro.chen@mediatek.com>, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>, Daniel Kurtz <djkurtz@chromium.org>, Philipp Zabel <p.zabel@pengutronix.de>, Cawa Cheng =?UTF-8?Q?=28=E9=84=AD=E6=9B=84=E7=A6=A7=29?= <cawa.cheng@mediatek.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Gautier, Bernard" <bernard.gautier@intel.com>, "Popescu,
+ Edward C" <edward.c.popescu@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Matthias,
-
-On Tue, 2016-03-15 at 07:36 +0800, Matthias Brugger wrote:
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Tuesday, March 8, 2016 6:19 PM
+> To: Lu, Han <han.lu@intel.com>
+> Cc: liam.r.girdwood@linux.intel.com; Gautier, Bernard
+> <bernard.gautier@intel.com>; Popescu, Edward C
+> <edward.c.popescu@intel.com>; alsa-devel@alsa-project.org
+> Subject: Re: [PATCH 02/10] alsabat: add standalone mode
 > 
-> On 02/03/16 15:49, Philipp Zabel wrote:
-> > From: Koro Chen <koro.chen@mediatek.com>
+> On Wed, 02 Mar 2016 09:53:12 +0100,
+> han.lu@intel.com wrote:
 > >
-> > This creates pcmC0D2p for the HDMI playback in the same card.
+> > From: "Lu, Han" <han.lu@intel.com>
 > >
-> > Signed-off-by: Koro Chen <koro.chen@mediatek.com>
-> > Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
-> > ---
-> >   .../bindings/sound/mt8173-rt5650-rt5676.txt        |  5 ++-
-> >   sound/soc/mediatek/mt8173-rt5650-rt5676.c          | 48 ++++++++++++++++++++++
-> >   2 files changed, 51 insertions(+), 2 deletions(-)
+> > Add support for standalone mode where alsabat will run on a different
+> > machine to the one being tested.
+> > In standalone mode, the sound data can be generated, playback and
+> > captured just like in normal mode, but will not be analyzed.
+> > The alsabat being built without libfftw3 support is always work in
+> > standalone mode.
+> > The alsabat in normal mode can also bypass data analysis using option
+> > "--standalone".
 > >
-> > diff --git a/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt b/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt
-> > index f205ce9..ac28cdb 100644
-> > --- a/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt
-> > +++ b/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt
-> > @@ -1,15 +1,16 @@
-> > -MT8173 with RT5650 RT5676 CODECS
-> > +MT8173 with RT5650 RT5676 CODECS and HDMI via I2S
+> > Signed-off-by: Lu, Han <han.lu@intel.com>
 > >
-> >   Required properties:
-> >   - compatible : "mediatek,mt8173-rt5650-rt5676"
-> >   - mediatek,audio-codec: the phandles of rt5650 and rt5676 codecs
-> > +			and of the hdmi encoder node
-> >   - mediatek,platform: the phandle of MT8173 ASoC platform
-> >
-> >   Example:
-> >
-> >   	sound {
-> >   		compatible = "mediatek,mt8173-rt5650-rt5676";
-> > -		mediatek,audio-codec = <&rt5650 &rt5676>;
-> > +		mediatek,audio-codec = <&rt5650 &rt5676 &hdmi0>;
-> >   		mediatek,platform = <&afe>;
-> >   	};
-> >
-> > diff --git a/sound/soc/mediatek/mt8173-rt5650-rt5676.c b/sound/soc/mediatek/mt8173-rt5650-rt5676.c
-> > index 5c4c58c..def9d95 100644
-> > --- a/sound/soc/mediatek/mt8173-rt5650-rt5676.c
-> > +++ b/sound/soc/mediatek/mt8173-rt5650-rt5676.c
-> > @@ -18,6 +18,7 @@
-> >   #include <linux/gpio.h>
-> >   #include <linux/of_gpio.h>
-> >   #include <sound/soc.h>
-> > +#include <sound/hdmi-codec.h>
-> >   #include <sound/jack.h>
-> >   #include "../codecs/rt5645.h"
-> >   #include "../codecs/rt5677.h"
-> > @@ -131,10 +132,31 @@ static struct snd_soc_dai_link_component mt8173_rt5650_rt5676_codecs[] = {
-> >   	},
-> >   };
-> >
-> > +static struct snd_soc_jack mt8173_hdmi_card_jack;
+> > diff --git a/bat/Makefile.am b/bat/Makefile.am index 8dfafa9..5646e9a
+> > 100644
+> > --- a/bat/Makefile.am
+> > +++ b/bat/Makefile.am
+> > @@ -6,7 +6,6 @@ EXTRA_DIST = alsabat.1  alsabat_SOURCES = \
+> >  	bat.c \
+> >  	common.c \
+> > -	analyze.c \
+> >  	signal.c \
+> >  	convert.c \
+> >  	alsa.c
+> > @@ -15,8 +14,12 @@ noinst_HEADERS = \
+> >  	common.h \
+> >  	bat-signal.h \
+> >  	alsa.h \
+> > -	convert.h \
+> > -	analyze.h
+> > +	convert.h
 > > +
-> > +static int mt8173_hdmi_init(struct snd_soc_pcm_runtime *runtime)
-> > +{
-> > +	struct snd_soc_card *card = runtime->card;
-> > +	struct snd_soc_codec *codec = runtime->codec;
-> > +	int ret;
-> > +
-> > +	/* enable jack detection */
-> > +	ret = snd_soc_card_jack_new(card, "HDMI Jack", SND_JACK_LINEOUT,
-> > +				    &mt8173_hdmi_card_jack, NULL, 0);
-> > +	if (ret) {
-> > +		dev_err(card->dev, "Can't new HDMI Jack %d\n", ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	return hdmi_codec_set_jack_detect(codec, &mt8173_hdmi_card_jack);
-> > +}
-> > +
-> >   enum {
-> >   	DAI_LINK_PLAYBACK,
-> >   	DAI_LINK_CAPTURE,
-> > +	DAI_LINK_HDMI,
-> >   	DAI_LINK_CODEC_I2S,
-> > +	DAI_LINK_HDMI_I2S,
-> >   	DAI_LINK_INTERCODEC
-> >   };
-> >
-> > @@ -161,6 +183,16 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
-> >   		.dynamic = 1,
-> >   		.dpcm_capture = 1,
-> >   	},
-> > +	[DAI_LINK_HDMI] = {
-> > +		.name = "HDMI",
-> > +		.stream_name = "HDMI PCM",
-> > +		.cpu_dai_name = "HDMI",
-> > +		.codec_name = "snd-soc-dummy",
-> > +		.codec_dai_name = "snd-soc-dummy-dai",
-> > +		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-> > +		.dynamic = 1,
-> > +		.dpcm_playback = 1,
-> > +	},
-> >
-> >   	/* Back End DAI links */
-> >   	[DAI_LINK_CODEC_I2S] = {
-> > @@ -177,6 +209,14 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
-> >   		.dpcm_playback = 1,
-> >   		.dpcm_capture = 1,
-> >   	},
-> > +	[DAI_LINK_HDMI_I2S] = {
-> > +		.name = "HDMI BE",
-> > +		.cpu_dai_name = "HDMIO",
-> > +		.no_pcm = 1,
-> > +		.codec_dai_name = "i2s-hifi",
-> > +		.dpcm_playback = 1,
-> > +		.init = mt8173_hdmi_init,
-> > +	},
-> >   	/* rt5676 <-> rt5650 intercodec link: Sets rt5676 I2S2 as master */
-> >   	[DAI_LINK_INTERCODEC] = {
-> >   		.name = "rt5650_rt5676 intercodec",
-> > @@ -251,6 +291,14 @@ static int mt8173_rt5650_rt5676_dev_probe(struct platform_device *pdev)
-> >   	mt8173_rt5650_rt5676_dais[DAI_LINK_INTERCODEC].codec_of_node =
-> >   		mt8173_rt5650_rt5676_codecs[1].of_node;
-> >
-> > +	mt8173_rt5650_rt5676_dais[DAI_LINK_HDMI_I2S].codec_of_node =
-> > +		of_parse_phandle(pdev->dev.of_node, "mediatek,audio-codec", 2);
-> > +	if (!mt8173_rt5650_rt5676_dais[DAI_LINK_HDMI_I2S].codec_of_node) {
-> > +		dev_err(&pdev->dev,
-> > +			"Property 'audio-codec' missing or invalid\n");
-> > +		return -EINVAL;
+> > +if HAVE_LIBFFTW3
+> > +alsabat_SOURCES += analyze.c
+> > +noinst_HEADERS += analyze.h
+> > +endif
 > 
-> Do we really need to break the old dts binding?
-> Can't we just drop the return and keep add the audio-codec as optional?
+> I wonder how "make dist" works if running on a system without fftw3...
+> Does it pack these conditional files, too?
 > 
-> Regards,
-> Matthias
-
-I think that it really needs to break dts binding, because it has
-declared DAI_LINK_HDMI_I2S in static struct snd_soc_dai_link
-mt8173_rt5650_rt5676_dais[].
-
-If I just remove this line: 
-	return -EINVAL;
-it will probe failed like:
-[    2.498403] mtk-rt5650-rt5676 sound: Property 'audio-codec' missing
-or invalid
-[    2.505031] mtk-rt5650-rt5676 sound: ASoC: Neither/both codec
-name/of_node are set for HDMI BE
-[    2.513090] mtk-rt5650-rt5676 sound: mt8173_rt5650_rt5676_dev_probe
-snd_soc_register_card fail -22
-[    2.520896] mtk-rt5650-rt5676: probe of sound failed with error -22
-
-Thanks!
-
 > 
-> > +	}
-> > +
-> >   	card->dev = &pdev->dev;
-> >   	platform_set_drvdata(pdev, card);
-> >
-> >
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> Takashi
+
+[han] after remove libfftw3 by "sudo apt-get remove libfftw3-dev", I cloned
+a new alsabat repo, patch and build with
+	./gitcompile
+	./configure
+	make
+	sudo make install
+and then ran "make dist", and the analyze.c and analyze.h are included in the
+.bz2 and the .gz packages. I suppose it's the result we expected?
+
+BR,
+Han
