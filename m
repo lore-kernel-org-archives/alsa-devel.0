@@ -1,18 +1,21 @@
-From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+From: Nicolai Stange <nicstange@gmail.com>
 Subject: Re: [PATCH] [media] sound/usb: fix NULL dereference in
- usb_audio_probe()
-Date: Tue, 15 Mar 2016 11:53:39 -0300
-Message-ID: <20160315115339.2a50466a@recife.lan>
+	usb_audio_probe()
+Date: Tue, 15 Mar 2016 16:00:04 +0100
+Message-ID: <87vb4nokgb.fsf@gmail.com>
 References: <1458045306-4170-1-git-send-email-nicstange@gmail.com>
- <s5hio0ngbgn.wl-tiwai@suse.de>
+ <s5hio0ngbgn.wl-tiwai@suse.de> <20160315115339.2a50466a@recife.lan>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lists.s-osg.org (lists.s-osg.org [54.187.51.154])
- by alsa0.perex.cz (Postfix) with ESMTP id B5A1926145E
- for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2016 15:53:46 +0100 (CET)
-In-Reply-To: <s5hio0ngbgn.wl-tiwai@suse.de>
+Received: from mail-wm0-f48.google.com (mail-wm0-f48.google.com [74.125.82.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5DAA52654D5
+ for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2016 16:00:07 +0100 (CET)
+Received: by mail-wm0-f48.google.com with SMTP id l68so154356209wml.0
+ for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2016 08:00:07 -0700 (PDT)
+In-Reply-To: <20160315115339.2a50466a@recife.lan> (Mauro Carvalho Chehab's
+ message of "Tue, 15 Mar 2016 11:53:39 -0300")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,112 +25,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, Nicolai Stange <nicstange@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Shuah Khan <shuahkh@osg.samsung.com>, linux-kernel@vger.kernel.org, Nicolai Stange <nicstange@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Em Tue, 15 Mar 2016 13:41:28 +0100
-Takashi Iwai <tiwai@suse.de> escreveu:
+Mauro Carvalho Chehab <mchehab@osg.samsung.com> writes:
 
-> On Tue, 15 Mar 2016 13:35:06 +0100,
-> Nicolai Stange wrote:
-> > 
-> > With commit
-> > 
-> >   aebb2b89bff0 ("[media] sound/usb: Use Media Controller API to share
-> >                  media resources")
-> > 
-> > an access to quirk->media_device without checking for quirk != NULL has
-> > been introduced in usb_audio_probe().
-> > 
-> > With a Plantronics USB headset (device ID 0x047f:0xc010) attached,
-> > this results in the following splat at boot time:
-> > 
-> >   BUG: unable to handle kernel NULL pointer dereference at 0000000000000014
-> >   IP: [<ffffffffa089aa6c>] usb_audio_probe+0x2cc/0x9a0 [snd_usb_audio]
-> >   Oops: 0000 [#1] SMP
-> >   [...]
-> >   CPU: 2 PID: 696 Comm: systemd-udevd Not tainted 4.5.0-next-20160315 #13
-> >   Hardware name: Dell Inc. Latitude E6540/0725FP, BIOS A10 06/26/2014
-> >   task: ffff88021c88d7c0 ti: ffff88003d5b0000 task.ti: ffff88003d5b0000
-> >   RIP: 0010:[<ffffffffa089aa6c>]  [<ffffffffa089aa6c>]
-> >                                 usb_audio_probe+0x2cc/0x9a0 [snd_usb_audio]
-> >   [...]
-> >   Call Trace:
-> >    [<ffffffff815a8e16>] usb_probe_interface+0x136/0x2d0
-> >    [<ffffffff81509edc>] driver_probe_device+0x22c/0x440
-> >    [<ffffffff8150a1c1>] __driver_attach+0xd1/0xf0
-> >    [<ffffffff8150a0f0>] ? driver_probe_device+0x440/0x440
-> >    [<ffffffff815077ec>] bus_for_each_dev+0x6c/0xc0
-> >    [<ffffffff815095ce>] driver_attach+0x1e/0x20
-> >    [<ffffffff81509013>] bus_add_driver+0x1c3/0x280
-> >    [<ffffffff8150ab10>] driver_register+0x60/0xe0
-> >    [<ffffffff815a7711>] usb_register_driver+0x81/0x140
-> >    [<ffffffffa08c7000>] ? 0xffffffffa08c7000
-> >    [<ffffffffa08c701e>] usb_audio_driver_init+0x1e/0x1000 [snd_usb_audio]
-> >    [<ffffffff81002123>] do_one_initcall+0xb3/0x1f0
-> >    [<ffffffff811fb091>] ? __vunmap+0x81/0xd0
-> >    [<ffffffff8121b8d2>] ? kmem_cache_alloc_trace+0x182/0x1d0
-> >    [<ffffffff811b0267>] ? do_init_module+0x27/0x1d8
-> >    [<ffffffff811b029f>] do_init_module+0x5f/0x1d8
-> >    [<ffffffff8112ce35>] load_module+0x1fe5/0x27a0
-> >    [<ffffffff81129870>] ? __symbol_put+0x60/0x60
-> >    [<ffffffff81241690>] ? vfs_read+0x110/0x130
-> >    [<ffffffff8112d866>] SYSC_finit_module+0xe6/0x120
-> >    [<ffffffff8112d8be>] SyS_finit_module+0xe/0x10
-> >    [<ffffffff81003d94>] do_syscall_64+0x64/0x110
-> >    [<ffffffff817c0b61>] entry_SYSCALL64_slow_path+0x25/0x25
-> > 
-> > After encountering this, the system-udevd process seems to be blocked
-> > until it is killed when hitting its timeout of 3min.
-> > 
-> > In analogy to the other accesses to members of quirk in usb_audio_probe(),
-> > check for quirk != NULL before accessing its ->media_device.
-> > 
-> > Fixes: aebb2b89bff0 ("[media] sound/usb: Use Media Controller API to share
-> >                       media resources")
-> > Signed-off-by: Nicolai Stange <nicstange@gmail.com>  
-> 
-> Reviewed-by: Takashi Iwai <tiwai@suse.de>
-> 
-> Mauro, please merge through your tree.  I haven't merged MC changes
-> into my tree yet.
+> Em Tue, 15 Mar 2016 13:41:28 +0100
+> Takashi Iwai <tiwai@suse.de> escreveu:
+>
+>> On Tue, 15 Mar 2016 13:35:06 +0100,
+>> Nicolai Stange wrote:
+>> > 
+>> > With commit
+>> > 
+>> >   aebb2b89bff0 ("[media] sound/usb: Use Media Controller API to share
+>> >                  media resources")
+>> > 
+>> > an access to quirk->media_device without checking for quirk != NULL has
+>> > been introduced in usb_audio_probe().
+>> > 
+>> > With a Plantronics USB headset (device ID 0x047f:0xc010) attached,
+>> > this results in the following splat at boot time:
+>> > 
+>> >   BUG: unable to handle kernel NULL pointer dereference at 0000000000000014
+>> >   IP: [<ffffffffa089aa6c>] usb_audio_probe+0x2cc/0x9a0 [snd_usb_audio]
+>> >   Oops: 0000 [#1] SMP
+>> >   [...]
+>> >   CPU: 2 PID: 696 Comm: systemd-udevd Not tainted 4.5.0-next-20160315 #13
+>> >   Hardware name: Dell Inc. Latitude E6540/0725FP, BIOS A10 06/26/2014
+>> >   task: ffff88021c88d7c0 ti: ffff88003d5b0000 task.ti: ffff88003d5b0000
+>> >   RIP: 0010:[<ffffffffa089aa6c>]  [<ffffffffa089aa6c>]
+>> >                                 usb_audio_probe+0x2cc/0x9a0 [snd_usb_audio]
+>> >   [...]
+>> >   Call Trace:
+>> >    [<ffffffff815a8e16>] usb_probe_interface+0x136/0x2d0
+>> >    [<ffffffff81509edc>] driver_probe_device+0x22c/0x440
+>> >    [<ffffffff8150a1c1>] __driver_attach+0xd1/0xf0
+>> >    [<ffffffff8150a0f0>] ? driver_probe_device+0x440/0x440
+>> >    [<ffffffff815077ec>] bus_for_each_dev+0x6c/0xc0
+>> >    [<ffffffff815095ce>] driver_attach+0x1e/0x20
+>> >    [<ffffffff81509013>] bus_add_driver+0x1c3/0x280
+>> >    [<ffffffff8150ab10>] driver_register+0x60/0xe0
+>> >    [<ffffffff815a7711>] usb_register_driver+0x81/0x140
+>> >    [<ffffffffa08c7000>] ? 0xffffffffa08c7000
+>> >    [<ffffffffa08c701e>] usb_audio_driver_init+0x1e/0x1000 [snd_usb_audio]
+>> >    [<ffffffff81002123>] do_one_initcall+0xb3/0x1f0
+>> >    [<ffffffff811fb091>] ? __vunmap+0x81/0xd0
+>> >    [<ffffffff8121b8d2>] ? kmem_cache_alloc_trace+0x182/0x1d0
+>> >    [<ffffffff811b0267>] ? do_init_module+0x27/0x1d8
+>> >    [<ffffffff811b029f>] do_init_module+0x5f/0x1d8
+>> >    [<ffffffff8112ce35>] load_module+0x1fe5/0x27a0
+>> >    [<ffffffff81129870>] ? __symbol_put+0x60/0x60
+>> >    [<ffffffff81241690>] ? vfs_read+0x110/0x130
+>> >    [<ffffffff8112d866>] SYSC_finit_module+0xe6/0x120
+>> >    [<ffffffff8112d8be>] SyS_finit_module+0xe/0x10
+>> >    [<ffffffff81003d94>] do_syscall_64+0x64/0x110
+>> >    [<ffffffff817c0b61>] entry_SYSCALL64_slow_path+0x25/0x25
+>> > 
+>> > After encountering this, the system-udevd process seems to be blocked
+>> > until it is killed when hitting its timeout of 3min.
+>> > 
+>> > In analogy to the other accesses to members of quirk in usb_audio_probe(),
+>> > check for quirk != NULL before accessing its ->media_device.
+>> > 
+>> > Fixes: aebb2b89bff0 ("[media] sound/usb: Use Media Controller API to share
+>> >                       media resources")
+>> > Signed-off-by: Nicolai Stange <nicstange@gmail.com>  
+>> 
+>> Reviewed-by: Takashi Iwai <tiwai@suse.de>
+>> 
+>> Mauro, please merge through your tree.  I haven't merged MC changes
+>> into my tree yet.
+>
+> OK, I'll send this fix together with some other patches in a couple
+> of days (it needs to go first to linux-next ;) ).
+>
 
-OK, I'll send this fix together with some other patches in a couple
-of days (it needs to go first to linux-next ;) ).
+Thank you all!
 
-> 
-> 
-> thanks
-> 
-> Takashi
-> 
-> 
-> > ---
-> >  Applicable to linux-next-20160315.
-> > 
-> >  sound/usb/card.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/sound/usb/card.c b/sound/usb/card.c
-> > index 63244bb..479621e 100644
-> > --- a/sound/usb/card.c
-> > +++ b/sound/usb/card.c
-> > @@ -612,7 +612,7 @@ static int usb_audio_probe(struct usb_interface *intf,
-> >  	if (err < 0)
-> >  		goto __error;
-> >  
-> > -	if (quirk->media_device) {
-> > +	if (quirk && quirk->media_device) {
-> >  		/* don't want to fail when media_snd_device_create() fails */
-> >  		media_snd_device_create(chip, intf);
-> >  	}
-> > -- 
-> > 2.7.2
-> > 
-> >   
+Nicolai
 
-
--- 
-Thanks,
-Mauro
+>> 
+>> 
+>> > ---
+>> >  Applicable to linux-next-20160315.
+>> > 
+>> >  sound/usb/card.c | 2 +-
+>> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>> > 
+>> > diff --git a/sound/usb/card.c b/sound/usb/card.c
+>> > index 63244bb..479621e 100644
+>> > --- a/sound/usb/card.c
+>> > +++ b/sound/usb/card.c
+>> > @@ -612,7 +612,7 @@ static int usb_audio_probe(struct usb_interface *intf,
+>> >  	if (err < 0)
+>> >  		goto __error;
+>> >  
+>> > -	if (quirk->media_device) {
+>> > +	if (quirk && quirk->media_device) {
+>> >  		/* don't want to fail when media_snd_device_create() fails */
+>> >  		media_snd_device_create(chip, intf);
+>> >  	}
+>> > -- 
+>> > 2.7.2
+>> > 
+>> >   
