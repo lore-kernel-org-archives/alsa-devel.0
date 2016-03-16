@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 6/6] ASoC: Intel: Skylake: remove call
-	to pci_dev_put
-Date: Wed, 16 Mar 2016 10:08:29 +0000
-Message-ID: <20160316100829.GS2566@sirena.org.uk>
-References: <1458040168-3769-1-git-send-email-vinod.koul@intel.com>
- <1458040168-3769-7-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Call i915 exit last" to
+	the asoc tree
+Date: Wed, 16 Mar 2016 10:09:17 +0000
+Message-ID: <E1ag8OD-00061K-Ge@debutante>
+References: <1458035836-1843-6-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5030804275841499903=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 63C38265275
- for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 11:08:38 +0100 (CET)
-In-Reply-To: <1458040168-3769-7-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 72934265DEA
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 11:09:26 +0100 (CET)
+In-Reply-To: <1458035836-1843-6-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,49 +22,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>, patches.audio@intel.com
+To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============5030804275841499903==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="U7F658e60E1K4csu"
-Content-Disposition: inline
+   ASoC: Intel: Skylake: Call i915 exit last
 
+has been applied to the asoc tree at
 
---U7F658e60E1K4csu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Mar 15, 2016 at 04:39:28PM +0530, Vinod Koul wrote:
-> In driver remove we call pci_dev_put(), that is not required as we never
-> call pci_dev_get() so remove that.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Why is the fix for this not to call pci_dev_get()?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---U7F658e60E1K4csu
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEcBAEBCAAGBQJW6TCbAAoJECTWi3JdVIfQZ2IH/i82Xss0G4Rr3ItlKolbF6Ta
-siIdqYnkUBfQ/CsqTpwvvQjg3moHzIXuByLDm43kKhpJcxQEvMXnK0l/vkzkG1Gy
-uRqXnqHNhA5i1+knnHWMjay8Ho69bQw69cbtZ6oOErR3qfZYFiGY3tC54S5X/zgm
-LqguO1qY+oMRKYoNNxQukAGuSB4aEnE1/92MevTff6bYpLkwWxaICJaBg7jFscjS
-UXfjK3UEOROYE2pYt01+OUqYELpcF2+PfA/NK50dIB0CcESqbJDi0Aa/atJYAe4v
-nZgIQLHKJkGlmwgpgC/UAIXHD5LvpR+zgn8sVRGrh7SO5ckPUxCze756Rm3OEfg=
-=6uyu
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---U7F658e60E1K4csu--
+>From 5b2fe89856b2d0faaaea9e4b4b2c4920de7a600c Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Tue, 15 Mar 2016 16:39:27 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Call i915 exit last
 
---===============5030804275841499903==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+The Skylake driver uses i915 component APIs to talk to display.
+On remove we should free up by invoking snd_hdac_i915_exit() but
+that should be last thing in remove routine, so move it to last
+in skl_free()
 
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/skylake/skl.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---===============5030804275841499903==--
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 6e916c3c3a4b..72971dc55c52 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -328,6 +328,8 @@ static int skl_free(struct hdac_ext_bus *ebus)
+ 
+ 	snd_hdac_ext_bus_exit(ebus);
+ 
++	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
++		snd_hdac_i915_exit(&ebus->bus);
+ 	return 0;
+ }
+ 
+@@ -720,9 +722,6 @@ static void skl_remove(struct pci_dev *pci)
+ 	if (skl->tplg)
+ 		release_firmware(skl->tplg);
+ 
+-	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
+-		snd_hdac_i915_exit(&ebus->bus);
+-
+ 	if (pci_dev_run_wake(pci))
+ 		pm_runtime_get_noresume(&pci->dev);
+ 	pci_dev_put(pci);
+-- 
+2.7.0
