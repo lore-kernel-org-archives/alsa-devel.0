@@ -1,84 +1,103 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/3] ALSA: usb-audio: Minor code cleanup in
-	create_fixed_stream_quirk()
-Date: Wed, 16 Mar 2016 12:50:15 +0100
-Message-ID: <1458129016-27188-3-git-send-email-tiwai@suse.de>
-References: <1458129016-27188-1-git-send-email-tiwai@suse.de>
+From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+Subject: Re: [PATCH] media: add GFP flag to media_*() that could get called
+ in atomic context
+Date: Wed, 16 Mar 2016 09:02:21 -0300
+Message-ID: <20160316090221.02d0a699@recife.lan>
+References: <1457833689-4926-1-git-send-email-shuahkh@osg.samsung.com>
+	<20160314072236.GO11084@valkosipuli.retiisi.org.uk>
+	<20160314071358.27c87dab@recife.lan>
+	<20160314105253.GQ11084@valkosipuli.retiisi.org.uk>
+	<20160314084633.521d3e35@recife.lan>
+	<20160314120909.GS11084@valkosipuli.retiisi.org.uk>
+	<20160315125535.775c8cc3@recife.lan>
+	<20160316082834.GX11084@valkosipuli.retiisi.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D16E265E3F
- for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 12:50:19 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 08CB6ACDF
- for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 11:50:17 +0000 (UTC)
-In-Reply-To: <1458129016-27188-1-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20160316082834.GX11084@valkosipuli.retiisi.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sakari Ailus <sakari.ailus@iki.fi>
+Cc: Shuah Khan <shuahkh@osg.samsung.com>, kyungmin.park@samsung.com, a.hajda@samsung.com, s.nawrocki@samsung.com, kgene@kernel.org, k.kozlowski@samsung.com, laurent.pinchart@ideasonboard.com, hyun.kwon@xilinx.com, soren.brinkmann@xilinx.com, gregkh@linuxfoundation.org, perex@perex.cz, tiwai@suse.com, hans.verkuil@cisco.com, lixiubo@cmss.chinamobile.com, javier@osg.samsung.com, g.liakhovetski@gmx.de, chehabrafael@gmail.com, crope@iki.fi, tommi.franttila@intel.com, dan.carpenter@oracle.com, prabhakar.csengg@gmail.com, hamohammed.sa@gmail.com, der.herr@hofr.at, navyasri.tech@gmail.com, Julia.Lawall@lip6.fr, amitoj1606@gmail.com, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, linux-renesas-soc@vger.kernel.org, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Just a minor code cleanup: unify the error paths.
+Em Wed, 16 Mar 2016 10:28:35 +0200
+Sakari Ailus <sakari.ailus@iki.fi> escreveu:
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/quirks.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+> Hi Mauro,
+> 
+> On Tue, Mar 15, 2016 at 12:55:35PM -0300, Mauro Carvalho Chehab wrote:
+> > Em Mon, 14 Mar 2016 14:09:09 +0200
+> > Sakari Ailus <sakari.ailus@iki.fi> escreveu:
+> >   
+> > > Hi Mauro,
+> > > 
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 529c35cceaa6..a889d433cbdf 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -167,23 +167,18 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
- 	stream = (fp->endpoint & USB_DIR_IN)
- 		? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
- 	err = snd_usb_add_audio_stream(chip, stream, fp);
--	if (err < 0) {
--		kfree(fp);
--		kfree(rate_table);
--		return err;
--	}
-+	if (err < 0)
-+		goto error;
- 	if (fp->iface != get_iface_desc(&iface->altsetting[0])->bInterfaceNumber ||
- 	    fp->altset_idx >= iface->num_altsetting) {
--		kfree(fp);
--		kfree(rate_table);
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto error;
- 	}
- 	alts = &iface->altsetting[fp->altset_idx];
- 	altsd = get_iface_desc(alts);
- 	if (altsd->bNumEndpoints < 1) {
--		kfree(fp);
--		kfree(rate_table);
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto error;
- 	}
- 
- 	fp->protocol = altsd->bInterfaceProtocol;
-@@ -196,6 +191,11 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
- 	snd_usb_init_pitch(chip, fp->iface, alts, fp);
- 	snd_usb_init_sample_rate(chip, fp->iface, alts, fp, fp->rate_max);
- 	return 0;
-+
-+ error:
-+	kfree(fp);
-+	kfree(rate_table);
-+	return err;
- }
- 
- static int create_auto_pcm_quirk(struct snd_usb_audio *chip,
--- 
-2.7.3
+...
+
+> > > Notify callbacks, perhaps not, but the list is still protected by the
+> > > spinlock. It perhaps is not likely that another process would change it but
+> > > I don't think we can rely on that.  
+> > 
+> > I can see only 2 risks protected by the lock:
+> > 
+> > 1) mdev gets freed while an entity is being created. This is a problem
+> >    with the current memory protection schema we're using. I guess the
+> >    only way to fix it is to use kref for mdev/entities/interfaces/links/pads.
+> >    This change doesn't make it better or worse.
+> >    Also, I don't think we have such risk with the current devices.
+> > 
+> > 2) a notifier may be inserted or removed by another driver, while the
+> >    loop is running.
+> > 
+> > To avoid (2), I see 3 alternatives:
+> > 
+> > a) keep the loop as proposed on this patch. As the list is navigated using 
+> > list_for_each_entry_safe(), I guess[1] it should be safe to remove/add
+> > new notify callbacks there while the loop is running by some other process.   
+> 
+> list_for_each_entry_safe() does not protect against concurrent access, only
+> against adding and removing list entries by the same user. List access
+> serialisation is still needed, whether you use _safe() functions or not.
+> 
+> > 
+> > [1] It *is* safe if the change were done inside the loop - but I'm not
+> > 100% sure that it is safe if some other CPU touches the notify list.  
+> 
+> Indeed.
+> 
+> > 
+> > b) Unlock/relock the spinlock every time:
+> > 
+> > 	/* previous code that locks mdev->lock spinlock */
+> > 
+> >  	/* invoke entity_notify callbacks */
+> >  	list_for_each_entry_safe(notify, next, &mdev->entity_notify, list) {
+> > 		spin_unlock(&mdev->lock);
+> >  		(notify)->notify(entity, notify->notify_data);
+> > 		spin_lock(&mdev->lock);
+> >  	}
+> >  
+> > 	spin_unlock(&mdev->lock);
+> > 
+> > c) use a separate lock for the notify list -this seems to be an overkill.
+> > 
+> > d) Protect it with the graph traversal mutex. That sounds the worse idea,
+> >    IMHO, as we'll be abusing the lock.  
+> 
+> I'd simply replace the spinlock with a mutex here. As we want to get rid of
+> the graph mutex anyway in the long run, let's not mix the two as they're
+> well separated now. As long as the mutex users do not sleep (i.e. the
+> notify() callback) the mutex is about as fast to use as the spinlock.
+
+It could work. I added such patch on an experimental branch, where
+I'm addressing a few troubles with au0828 unbind logic:
+	https://git.linuxtv.org/mchehab/experimental.git/log/?h=au0828-unbind-fixes
+
+The patch itself is at:
+	https://git.linuxtv.org/mchehab/experimental.git/commit/?h=au0828-unbind-fixes&id=dba4d41bdfa6bb8dc51cb0f692102919b2b7c8b4
+
+At least for au0828, it seems to work fine.
+
+Regards,
+Mauro
