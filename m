@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/3] ALSA: usb-audio: Add sanity checks for
-	endpoint accesses
-Date: Wed, 16 Mar 2016 12:50:16 +0100
-Message-ID: <1458129016-27188-4-git-send-email-tiwai@suse.de>
+Subject: [PATCH 1/3] ALSA: usb-audio: Fix NULL dereference in
+	create_fixed_stream_quirk()
+Date: Wed, 16 Mar 2016 12:50:14 +0100
+Message-ID: <1458129016-27188-2-git-send-email-tiwai@suse.de>
 References: <1458129016-27188-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 0AB12265DE3
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F199265E5B
  for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 12:50:19 +0100 (CET)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 08FD8AD02
+ by mx2.suse.de (Postfix) with ESMTP id 08F29AD00
  for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 11:50:17 +0000 (UTC)
 In-Reply-To: <1458129016-27188-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,77 +27,36 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add some sanity check codes before actually accessing the endpoint via
-get_endpoint() in order to avoid the invalid access through a
-malformed USB descriptor.  Mostly just checking bNumEndpoints, but in
-one place (snd_microii_spdif_default_get()), the validity of iface and
-altsetting index is checked as well.
+create_fixed_stream_quirk() may cause a NULL-pointer dereference by
+accessing the non-existing endpoint when a USB device with a malformed
+USB descriptor is used.
+
+This patch avoids it simply by adding a sanity check of bNumEndpoints
+before the accesses.
 
 Bugzilla: https://bugzilla.suse.com/show_bug.cgi?id=971125
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/clock.c        | 2 ++
- sound/usb/endpoint.c     | 3 +++
- sound/usb/mixer_quirks.c | 4 ++++
- sound/usb/pcm.c          | 2 ++
- 4 files changed, 11 insertions(+)
+ sound/usb/quirks.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/usb/clock.c b/sound/usb/clock.c
-index 2ed260b10f6d..7ccbcaf6a147 100644
---- a/sound/usb/clock.c
-+++ b/sound/usb/clock.c
-@@ -285,6 +285,8 @@ static int set_sample_rate_v1(struct snd_usb_audio *chip, int iface,
- 	unsigned char data[3];
- 	int err, crate;
- 
-+	if (get_iface_desc(alts)->bNumEndpoints < 1)
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 5b03296a5bd9..529c35cceaa6 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -180,6 +180,12 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
+ 	}
+ 	alts = &iface->altsetting[fp->altset_idx];
+ 	altsd = get_iface_desc(alts);
++	if (altsd->bNumEndpoints < 1) {
++		kfree(fp);
++		kfree(rate_table);
 +		return -EINVAL;
- 	ep = get_endpoint(alts, 0)->bEndpointAddress;
++	}
++
+ 	fp->protocol = altsd->bInterfaceProtocol;
  
- 	/* if endpoint doesn't have sampling rate control, bail out */
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 7b1cb365ffab..c07a7eda42a2 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -438,6 +438,9 @@ exit_clear:
-  *
-  * New endpoints will be added to chip->ep_list and must be freed by
-  * calling snd_usb_endpoint_free().
-+ *
-+ * For SND_USB_ENDPOINT_TYPE_SYNC, the caller needs to guarantee that
-+ * bNumEndpoints > 1 beforehand.
-  */
- struct snd_usb_endpoint *snd_usb_add_endpoint(struct snd_usb_audio *chip,
- 					      struct usb_host_interface *alts,
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index 279025650568..f6c3bf79af9a 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -1519,7 +1519,11 @@ static int snd_microii_spdif_default_get(struct snd_kcontrol *kcontrol,
- 
- 	/* use known values for that card: interface#1 altsetting#1 */
- 	iface = usb_ifnum_to_if(chip->dev, 1);
-+	if (!iface || iface->num_altsetting < 2)
-+		return -EINVAL;
- 	alts = &iface->altsetting[1];
-+	if (get_iface_desc(alts)->bNumEndpoints < 1)
-+		return -EINVAL;
- 	ep = get_endpoint(alts, 0)->bEndpointAddress;
- 
- 	err = snd_usb_ctl_msg(chip->dev,
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 9245f52d43bd..44d178ee9177 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -159,6 +159,8 @@ static int init_pitch_v1(struct snd_usb_audio *chip, int iface,
- 	unsigned char data[1];
- 	int err;
- 
-+	if (get_iface_desc(alts)->bNumEndpoints < 1)
-+		return -EINVAL;
- 	ep = get_endpoint(alts, 0)->bEndpointAddress;
- 
- 	data[0] = 1;
+ 	if (fp->datainterval == 0)
 -- 
 2.7.3
