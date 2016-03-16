@@ -1,197 +1,87 @@
-From: Sakari Ailus <sakari.ailus@iki.fi>
-Subject: Re: [PATCH] media: add GFP flag to media_*() that could get called
- in atomic context
-Date: Wed, 16 Mar 2016 10:28:35 +0200
-Message-ID: <20160316082834.GX11084@valkosipuli.retiisi.org.uk>
-References: <1457833689-4926-1-git-send-email-shuahkh@osg.samsung.com>
- <20160314072236.GO11084@valkosipuli.retiisi.org.uk>
- <20160314071358.27c87dab@recife.lan>
- <20160314105253.GQ11084@valkosipuli.retiisi.org.uk>
- <20160314084633.521d3e35@recife.lan>
- <20160314120909.GS11084@valkosipuli.retiisi.org.uk>
- <20160315125535.775c8cc3@recife.lan>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: ASoC: TLV320AIC3x: Adding additional functionality
+ for 3106 with [Patch] for discuss
+Date: Wed, 16 Mar 2016 10:57:18 +0200
+Message-ID: <56E91FEE.4070604@ti.com>
+References: <56E69B3F.8090306@mcsplus.ru> <56E6CEE9.5030802@ti.com>
+ <56E7FC3C.1030503@mcsplus.ru> <56E802D9.4040501@ti.com>
+ <56E834B0.5010808@mcsplus.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20160315125535.775c8cc3@recife.lan>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, kyungmin.park@samsung.com, a.hajda@samsung.com, s.nawrocki@samsung.com, kgene@kernel.org, k.kozlowski@samsung.com, laurent.pinchart@ideasonboard.com, hyun.kwon@xilinx.com, soren.brinkmann@xilinx.com, gregkh@linuxfoundation.org, perex@perex.cz, tiwai@suse.com, hans.verkuil@cisco.com, lixiubo@cmss.chinamobile.com, javier@osg.samsung.com, g.liakhovetski@gmx.de, chehabrafael@gmail.com, crope@iki.fi, tommi.franttila@intel.com, dan.carpenter@oracle.com, prabhakar.csengg@gmail.com, hamohammed.sa@gmail.com, der.herr@hofr.at, navyasri.tech@gmail.com, Julia.Lawall@lip6.fr, amitoj1606@gmail.com, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, linux-renesas-soc@vger.kernel.org, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id CCE96261A0D
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 09:57:25 +0100 (CET)
+In-Reply-To: <56E834B0.5010808@mcsplus.ru>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Timur Karaldin <karaldin@mcsplus.ru>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mauro,
-
-On Tue, Mar 15, 2016 at 12:55:35PM -0300, Mauro Carvalho Chehab wrote:
-> Em Mon, 14 Mar 2016 14:09:09 +0200
-> Sakari Ailus <sakari.ailus@iki.fi> escreveu:
-> 
-> > Hi Mauro,
-> > 
-> > On Mon, Mar 14, 2016 at 08:46:33AM -0300, Mauro Carvalho Chehab wrote:
-> > > Em Mon, 14 Mar 2016 12:52:54 +0200
-> > > Sakari Ailus <sakari.ailus@iki.fi> escreveu:
-> > >   
-> > > > Hi Mauro,
-> > > > 
-> > > > On Mon, Mar 14, 2016 at 07:13:58AM -0300, Mauro Carvalho Chehab wrote:  
-> > > > > Em Mon, 14 Mar 2016 09:22:37 +0200
-> > > > > Sakari Ailus <sakari.ailus@iki.fi> escreveu:
-> > > > >     
-> > > > > > Hi Shuah,
-> > > > > > 
-> > > > > > On Sat, Mar 12, 2016 at 06:48:09PM -0700, Shuah Khan wrote:    
-> > > > > > > Add GFP flags to media_create_pad_link(), media_create_intf_link(),
-> > > > > > > media_devnode_create(), and media_add_link() that could get called
-> > > > > > > in atomic context to allow callers to pass in the right flags for
-> > > > > > > memory allocation.
-> > > > > > > 
-> > > > > > > tree-wide driver changes for media_*() GFP flags change:
-> > > > > > > Change drivers to add gfpflags to interffaces, media_create_pad_link(),
-> > > > > > > media_create_intf_link() and media_devnode_create().
-> > > > > > > 
-> > > > > > > Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
-> > > > > > > Suggested-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>      
-> > > > > > 
-> > > > > > What's the use case for calling the above functions in an atomic context?
-> > > > > >     
-> > > > > 
-> > > > > ALSA code seems to do a lot of stuff at atomic context. That's what
-> > > > > happens on my test machine when au0828 gets probed before
-> > > > > snd-usb-audio:
-> > > > > 	http://pastebin.com/LEX5LD5K
-> > > > > 
-> > > > > It seems that ALSA USB probe routine (usb_audio_probe) happens in
-> > > > > atomic context.    
-> > > > 
-> > > > usb_audio_probe() grabs a mutex (register_mutex) on its own. It certainly
-> > > > cannot be called in atomic context.
-> > > > 
-> > > > In the above log, what I did notice, though, was that because *we* grab
-> > > > mdev->lock spinlock in media_device_register_entity(), we may not sleep
-> > > > which is what the notify() callback implementation in au0828 driver does
-> > > > (for memory allocation).  
-> > > 
-> > > True. After looking into the code, the problem is that the notify
-> > > callbacks are called with the spinlock hold. I don't see any reason
-> > > to do that.  
-> > 
-> > Notify callbacks, perhaps not, but the list is still protected by the
-> > spinlock. It perhaps is not likely that another process would change it but
-> > I don't think we can rely on that.
-> 
-> I can see only 2 risks protected by the lock:
-> 
-> 1) mdev gets freed while an entity is being created. This is a problem
->    with the current memory protection schema we're using. I guess the
->    only way to fix it is to use kref for mdev/entities/interfaces/links/pads.
->    This change doesn't make it better or worse.
->    Also, I don't think we have such risk with the current devices.
-> 
-> 2) a notifier may be inserted or removed by another driver, while the
->    loop is running.
-> 
-> To avoid (2), I see 3 alternatives:
-> 
-> a) keep the loop as proposed on this patch. As the list is navigated using 
-> list_for_each_entry_safe(), I guess[1] it should be safe to remove/add
-> new notify callbacks there while the loop is running by some other process. 
-
-list_for_each_entry_safe() does not protect against concurrent access, only
-against adding and removing list entries by the same user. List access
-serialisation is still needed, whether you use _safe() functions or not.
-
-> 
-> [1] It *is* safe if the change were done inside the loop - but I'm not
-> 100% sure that it is safe if some other CPU touches the notify list.
-
-Indeed.
-
-> 
-> b) Unlock/relock the spinlock every time:
-> 
-> 	/* previous code that locks mdev->lock spinlock */
-> 
->  	/* invoke entity_notify callbacks */
->  	list_for_each_entry_safe(notify, next, &mdev->entity_notify, list) {
-> 		spin_unlock(&mdev->lock);
->  		(notify)->notify(entity, notify->notify_data);
-> 		spin_lock(&mdev->lock);
->  	}
->  
-> 	spin_unlock(&mdev->lock);
-> 
-> c) use a separate lock for the notify list -this seems to be an overkill.
-> 
-> d) Protect it with the graph traversal mutex. That sounds the worse idea,
->    IMHO, as we'll be abusing the lock.
-
-I'd simply replace the spinlock with a mutex here. As we want to get rid of
-the graph mutex anyway in the long run, let's not mix the two as they're
-well separated now. As long as the mutex users do not sleep (i.e. the
-notify() callback) the mutex is about as fast to use as the spinlock.
-
-> 
-> > 
-> > >   
-> > > > Could we instead replace mdev->lock by a mutex?  
-> > > 
-> > > We changed the code to use a spinlock for a reason: this fixed some
-> > > troubles in the past with the code locking (can't remember the problem,
-> > > but this was documented at the kernel logs and at the ML). Yet, the code
-> > > under the spinlock never sleeps, so this is fine.  
-> > 
-> > struct media_device.lock was added by this patch:
-> > 
-> > commit 53e269c102fbaf77e7dc526b1606ad4a48e57200
-> > Author: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > Date:   Wed Dec 9 08:40:00 2009 -0300
-> > 
-> >     [media] media: Entities, pads and links
-> > 
-> >     As video hardware pipelines become increasingly complex and
-> >     configurable, the current hardware description through v4l2 subdevices
-> >     reaches its limits. In addition to enumerating and configuring
-> >     subdevices, video camera drivers need a way to discover and modify at
-> >     runtime how those subdevices are connected. This is done through new
-> >     elements called entities, pads and links.
-> > 
-> > ...
-> > 
-> >     Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> >     Signed-off-by: Sakari Ailus <sakari.ailus@iki.fi>
-> >     Acked-by: Hans Verkuil <hverkuil@xs4all.nl>
-> >     Signed-off-by: Mauro Carvalho Chehab <mchehab@redhat.com>
-> > 
-> > I think it was always a spinlock, for the reason you stated above as well:
-> > it did not need to sleep. But if there is a need to sleep, I think we should
-> > consider changing that.
-> 
-> True, but there were some places that were using the graph_mutex
-> instead of the spinlock. 
-
-Hmm. If it's used to serialise access to the same data, it's most likely a
-bug.
-
-> 
-> > 
-> > > 
-> > > Yet, in the future, we'll need to do a review of all the locking schema,
-> > > in order to better support dynamic graph changes.  
-> > 
-> > Agreed. I think more fine grained locking should be considered. The media
-> > graph mutex will become a bottleneck at some point, especially if we make
-> > the media devices system wide at some point.
-> 
-> Yes. I guess we should protect the memory allocated stuff with a kref,
-> and try to use RCS on most places, but we need more discussions and
-> more tests to implement a solution that would be reliable even if the
-> callers don't behave well.
-
-Yes.
-
--- 
-Kind regards,
-
-Sakari Ailus
-e-mail: sakari.ailus@iki.fi	XMPP: sailus@retiisi.org.uk
+SGkgVGltdXIsCgpwbGVhc2UgYXZvaWQgdG9wIHBvc3RpbmcuCgpPbiAwMy8xNS8xNiAxODoxMywg
+VGltdXIgS2FyYWxkaW4gd3JvdGU6Cj4gT2ssIEkgY2hvb3NlIHRoZSB3YXkgIzEgd2l0aG91dCBj
+aGFuZ2luZyBrY29udHJvbCBuYW1lcy4KPiBBbm90aGVyIHRoaW5nIEkgZG9uJ3QgdW5kZXJzdGFu
+ZCBpcyB0aGUgd2F5IGZvciBjYWNoaW5nIGdhaW4gdm9sdW1lIGlmIEkgaGF2ZQo+IHN3aXRjaGVz
+IG11dGVkLiBJcyB0aGVyZSBhbnkgcHJvcGVyIHdheSBmb3Igc3RvcmluZyBjYWNoZWQgdmFsdWVz
+IGJldHdlZW4gZ2Fpbgo+IGFuZCBzd2l0Y2ggaGFuZGxlcnMgaW5jbHVkZXMgc29mdCByZXNldCBv
+ciBJIG5lZWQgbWFudWFsbHkgY2hlY2sga2NvbnRyb2wgbmFtZQo+IGluIGhhbmRsZXIgYW5kIGNh
+Y2hlIHZhbHVlcyBpbiBleHRlbmRlZCBwcml2YXRlIHN0cnVjdHVyZT8gVGhlIHNhbWUgcXVlc3Rp
+b24KPiBmb3Igc3dpdGNoIGhhbmRsZXIsIGJlY2F1c2UgSSBuZWVkIHRvIHNoYXJlIGNhY2hlZCB2
+YWx1ZXMgYmV0d2VlbiB0aGVzZSBoYW5kbGVycy4KClNpbmNlIHRoZSBwcm9ibGVtYXRpYyByZWdp
+c3RlcnMgYXJlOiAxNywgMTgsIC4uIDI0LiBJIHdvdWxkIGhhdmUgYW4gYXJyYXkKaW5zaWRlIHN0
+cnVjdCBhaWMzeF9wcml2IHRvIHN0b3JlIHRoZSBjb25maWd1cmVkIGdhaW4uIFlvdSBjb3VsZCBz
+dG9yZSB0aGUKbXV0ZSBhcyB3ZWxsLCBidXQgc2luY2UgcmVnbWFwIGlzIGNhY2hpbmcgdGhlIGNv
+bnRlbnQgSSB3b3VsZCBzaW1wbHkgcmVhZCBiYWNrCnRoZSBnYWluIHZhbHVlIGFuZCBpZiBpdCBp
+cyAweGYsIGl0IGlzIG11dGVkLCBzbyB1cGRhdGUgb25seSB0aGUgbG9jYWwgc2hhZG93LAppZiBp
+dCBpcyBub3QgbXV0ZWQsIHdyaXRlIHRoZSBnYWluLgpJbiB0aGUgbXV0ZS91bm11dGUgY29udHJv
+bHMgSSB3b3VsZCB0aGVuIHNhdmUgdGhlIGdhaW4gdG8gc2hhZG93IHdoZW4gbXV0aW5nCnRoZSBw
+YXRoIGFuZCB3cml0ZSB0aGUgY2FjaGVkIGdhaW4gdG8gdGhlIHJlZ2lzdGVyIHdoZW4gdW5tdXRp
+bmcgaXQuIFlvdQpzaG91bGQgYWxzbyByZXR1cm4gY29ycmVjdCAwLzEgZm9yIHRoZSB1bm11dGUg
+c3RhdGUgYW5kIG5vdCB0aGUgYWN0dWFsCnJlZ2lzdGVyIHZhbHVlLgoKPiAKPiAxNS4wMy4yMDE2
+IDE1OjQwLCBQZXRlciBVamZhbHVzaSDQv9C40YjQtdGCOgo+PiBPbiAwMy8xNS8xNiAxNDoxMiwg
+VGltdXIgS2FyYWxkaW4gd3JvdGU6Cj4+PiBIaSBQZXRlciEKPj4+Cj4+PiAxNC4wMy4yMDE2IDE3
+OjQ3LCBQZXRlciBVamZhbHVzaSDQv9C40YjQtdGCOgo+Pj4+IFNvIHRoZSBpc3N1ZSBpcyB0aGF0
+IHdlIGhhdmUgdGhlIERBUE0gc3dpdGNoZXMgY29udHJvbGxpbmcgZXhhY3RseSB0aGUgc2FtZQo+
+Pj4+IHJlZ2lzdGVycy4gSSBiZWxpZXZlIGlmIHlvdSB3b3VsZCBzZXQgdGhlIGdhaW4gaW4gYSB3
+YXkgdGhhdCBiaXQwIGlzIDEsIHRoZW4KPj4+PiBEQVBNIHdpbGwgdGhpbmsgdGhhdCB0aGUgcGF0
+aCBpcyBkaXNjb25uZWN0ZWQuIEFsc28gaWYgeW91IHdvdWxkIHNldCB0aGUKPj4+PiBnYWluIGFu
+ZCB0aGVuIG11dGUgYW5kIHVubXV0ZSB0aGUgcGF0aCB5b3Ugd291bGQgaGF2ZSBsb3N0IHRoZSBn
+YWluIHlvdQo+Pj4+IHdhbnRlZCB0byBoYXZlLi4gVGhlIG9ubHkgd2F5IEkgY2FuIHRoaW5rIG9m
+IGltcGxlbWVudGluZyB0aGVzZSBtaXhlcnMgaXMgdG8KPj4+PiBoYXZlIHR3byBzZXRzIG9mIGN1
+c3RvbSBjYWxsYmFja3MuIG9uZSBzZXQgaXMgdG8gc2V0L2dldCB0aGUgZ2FpbiBhbmQgdGhlCj4+
+Pj4gb3RoZXIgaXMgdG8gc2V0L2dldCB0aGUgbXV0ZS9kaXNjb25uZWN0IG9uIHRoZXNlLiBXaGVu
+IHRoZSBwYXRoIGlzCj4+Pj4gZGlzY29ubmVjdGVkIHlvdSBzaG91bGQgbm90IHdyaXRlIHRoZSBn
+YWluIGNoYW5nZSB0byB0aGUgY2hpcCwgYnV0IGNhY2hlIGl0Cj4+Pj4gYW5kIGlmIHRoZSBwYXRo
+IGlzIHVubXV0ZWQsIHlvdSB3cml0ZSB0aGUgY2FjaGVkIGdhaW4uIFdoZW4geW91IG11dGUgdGhl
+Cj4+Pj4gcGF0aCB5b3Ugc2hvdWxkIHRha2UgdGhlIHNldCBnYWluIGZpcnN0LCBjYWNoZSBpdCwg
+dGhlbiBkaXNjb25uZWN0IHRoZSBwYXRoLgo+Pj4+IEZvciB0aGVzZSBnYWlucyB5b3Ugc2hvdWxk
+IGhhdmUgREVDTEFSRV9UTFZfREJfU0NBTEUoKSBhbmQgdXNlCj4+Pj4gU09DX1NJTkdMRV9UTFYo
+KS4gTWFrZSBzdXJlIHRoYXQgdGhlIGNvbnRyb2wgbmFtZSBtYXRjaGVzIHdpdGggdGhlCj4+Pj4g
+Y29ycmVzcG9uZGluZyBEQVBNIHdpZGdldCdzIG5hbWUgc28gQUxTQSBjYW4gbWF0Y2ggdGhlbSBj
+b3JyZWN0bHkuCj4+PiBUaGF0J3Mgbm90IGNsZWFyIGZvciBtZS4gQXMgSSB1bmRlcnN0YW5kLCBJ
+IG5lZWQgdG8gY3JlYXRlIFNPQ19TSU5HTEVfVExWKCkKPj4+IGZvciBlYWNoIGdhaW4gSSB3b3Vs
+ZCBsaWtlIHRvIGNoYW5nZSwgd2l0aCB0aGUgc2FtZSBuYW1lIGFzCj4+PiBTT0NfREFQTV9TSU5H
+TEVfQUlDM3ggKGZvciBleGFtcGxlICJMaW5lMUwgU3dpdGNoIiBmb3IgTGluZTEpIGFuZCBtYWtl
+Cj4+PiBjYWxsYmFja3Mgd2l0aCBjYWNoZWQgZ2FpbiB2YWx1ZXMuIEFtIEkgcmlnaHQ/Cj4+IE1v
+c3RseSB5ZXMsIGJ1dCB5b3UgbmVlZCB0byBuYW1lIHRoZSBjb250cm9sczoKPj4gZXhpc3Rpbmcg
+c3dpdGNoICsgbmV3IGdhaW4gY29udHJvbAo+PiAiTGluZTFMIFN3aXRjaCIgKyAiTGluZTFMIFZv
+bHVtZSIKPj4gIkxpbmUxUiBTd2l0Y2giICsgIkxpbmUxUiBWb2x1bWUiCj4+Cj4+IEluIHRoaXMg
+d2F5IGFsc2FtaXhlciBjYW4gY29tYmluZSB0aGVtLgo+Pgo+Pj4gTWF5IGJlIHRoZSBiZXR0ZXIg
+c29sbHV0aW9uIGlzIHRvIGNoYW5nZSBTT0NfREFQTV9TSU5HTEVfQUlDM3ggb24vb2ZmIHN3aXRj
+aAo+Pj4gdG8gb3RoZXIgdHlwZSB3aXRoIHN3aXRjaCBhbmQgZ2FpbiBjb250cm9sIHRvZ2V0aGVy
+PyBTbyBpdCBjb3VsZCBoYXZlIHNvbWUKPj4+IGNvbm5lY3RlZCBzdGF0ZXMgd2l0aCBkaWZmZXJl
+bnQgZ2FpbnMgYW5kIGRpc2Nvbm5lY3RlZCBzdGF0ZSAoU29tZXRoaW5nIGxpa2UKPj4+IHZvbHVt
+ZS9tdXRlIGNvbnRyb2wpLgo+PiBTb21ldGhpbmcgYmFzZWQgb24gU09DX0RBUE1fU0lOR0xFX1RM
+ViBzaG91bGQgd29yay4gQnV0IHRoYXQgbWVhbnMgYWdhaW4KPj4gY2hhbmdlIGluIEtjb250cm9s
+IG5hbWVzLgo+Pgo+IAo+IAoKCi0tIApQw6l0ZXIKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
