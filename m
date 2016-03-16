@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: remove call to
-	pci_dev_put" to the asoc tree
-Date: Wed, 16 Mar 2016 16:24:21 +0000
-Message-ID: <E1agEFB-0006Cp-Ko@debutante>
-References: <1458040168-3769-7-git-send-email-vinod.koul@intel.com>
+From: Timur Karaldin <karaldin@mcsplus.ru>
+Subject: Re: ASoC: TLV320AIC3x: Adding additional functionality
+ for 3106 with [Patch] for discuss
+Date: Wed, 16 Mar 2016 19:53:45 +0300
+Message-ID: <56E98F99.2060100@mcsplus.ru>
+References: <56E69B3F.8090306@mcsplus.ru> <56E6CEE9.5030802@ti.com>
+ <56E7FC3C.1030503@mcsplus.ru> <56E802D9.4040501@ti.com>
+ <56E834B0.5010808@mcsplus.ru> <56E91FEE.4070604@ti.com>
+ <56E934CB.4040209@mcsplus.ru> <56E97A75.7030700@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8233A26652A
- for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 17:24:33 +0100 (CET)
-In-Reply-To: <1458040168-3769-7-git-send-email-vinod.koul@intel.com>
+Received: from smtp34.i.mail.ru (smtp34.i.mail.ru [94.100.177.94])
+ by alsa0.perex.cz (Postfix) with ESMTP id 836E426652A
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 17:53:48 +0100 (CET)
+In-Reply-To: <56E97A75.7030700@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,64 +24,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: Intel: Skylake: remove call to pci_dev_put
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 36e7972c0d3f8819a5d9335c36c5dcd168cd2b72 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Wed, 16 Mar 2016 21:51:31 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: remove call to pci_dev_put
-
-The PCI bus takes pci_dev_get() and pci_dev_put() is also there.
-So no need for drivers to invoke these. In SKL driver we were
-calling pci_dev_put() only which is not right, so remove this
-
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 72971dc55c52..07d9bc1cf3cb 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -724,7 +724,6 @@ static void skl_remove(struct pci_dev *pci)
- 
- 	if (pci_dev_run_wake(pci))
- 		pm_runtime_get_noresume(&pci->dev);
--	pci_dev_put(pci);
- 
- 	/* codec removal, invoke bus_device_remove */
- 	snd_hdac_ext_bus_device_remove(ebus);
--- 
-2.7.0
+MTYuMDMuMjAxNiAxODoyMywgUGV0ZXIgVWpmYWx1c2kg0L/QuNGI0LXRgjoKPiBPbiAwMy8xNi8y
+MDE2IDEyOjI2IFBNLCBUaW11ciBLYXJhbGRpbiB3cm90ZToKPj4gSGkgUGV0ZXIhCj4+Cj4+IDE2
+LjAzLjIwMTYgMTE6NTcsIFBldGVyIFVqZmFsdXNpINC/0LjRiNC10YI6Cj4+PiBIaSBUaW11ciwK
+Pj4+Cj4+PiBwbGVhc2UgYXZvaWQgdG9wIHBvc3RpbmcuCj4+Pgo+Pj4gT24gMDMvMTUvMTYgMTg6
+MTMsIFRpbXVyIEthcmFsZGluIHdyb3RlOgo+Pj4+IE9rLCBJIGNob29zZSB0aGUgd2F5ICMxIHdp
+dGhvdXQgY2hhbmdpbmcga2NvbnRyb2wgbmFtZXMuCj4+Pj4gQW5vdGhlciB0aGluZyBJIGRvbid0
+IHVuZGVyc3RhbmQgaXMgdGhlIHdheSBmb3IgY2FjaGluZyBnYWluIHZvbHVtZSBpZiBJIGhhdmUK
+Pj4+PiBzd2l0Y2hlcyBtdXRlZC4gSXMgdGhlcmUgYW55IHByb3BlciB3YXkgZm9yIHN0b3Jpbmcg
+Y2FjaGVkIHZhbHVlcyBiZXR3ZWVuIGdhaW4KPj4+PiBhbmQgc3dpdGNoIGhhbmRsZXJzIGluY2x1
+ZGVzIHNvZnQgcmVzZXQgb3IgSSBuZWVkIG1hbnVhbGx5IGNoZWNrIGtjb250cm9sIG5hbWUKPj4+
+PiBpbiBoYW5kbGVyIGFuZCBjYWNoZSB2YWx1ZXMgaW4gZXh0ZW5kZWQgcHJpdmF0ZSBzdHJ1Y3R1
+cmU/IFRoZSBzYW1lIHF1ZXN0aW9uCj4+Pj4gZm9yIHN3aXRjaCBoYW5kbGVyLCBiZWNhdXNlIEkg
+bmVlZCB0byBzaGFyZSBjYWNoZWQgdmFsdWVzIGJldHdlZW4gdGhlc2UKPj4+PiBoYW5kbGVycy4K
+Pj4+IFNpbmNlIHRoZSBwcm9ibGVtYXRpYyByZWdpc3RlcnMgYXJlOiAxNywgMTgsIC4uIDI0LiBJ
+IHdvdWxkIGhhdmUgYW4gYXJyYXkKPj4+IGluc2lkZSBzdHJ1Y3QgYWljM3hfcHJpdiB0byBzdG9y
+ZSB0aGUgY29uZmlndXJlZCBnYWluLiBZb3UgY291bGQgc3RvcmUgdGhlCj4+PiBtdXRlIGFzIHdl
+bGwsIGJ1dCBzaW5jZSByZWdtYXAgaXMgY2FjaGluZyB0aGUgY29udGVudCBJIHdvdWxkIHNpbXBs
+eSByZWFkIGJhY2sKPj4+IHRoZSBnYWluIHZhbHVlIGFuZCBpZiBpdCBpcyAweGYsIGl0IGlzIG11
+dGVkLCBzbyB1cGRhdGUgb25seSB0aGUgbG9jYWwgc2hhZG93LAo+Pj4gaWYgaXQgaXMgbm90IG11
+dGVkLCB3cml0ZSB0aGUgZ2Fpbi4KPj4+IEluIHRoZSBtdXRlL3VubXV0ZSBjb250cm9scyBJIHdv
+dWxkIHRoZW4gc2F2ZSB0aGUgZ2FpbiB0byBzaGFkb3cgd2hlbiBtdXRpbmcKPj4+IHRoZSBwYXRo
+IGFuZCB3cml0ZSB0aGUgY2FjaGVkIGdhaW4gdG8gdGhlIHJlZ2lzdGVyIHdoZW4gdW5tdXRpbmcg
+aXQuIFlvdQo+Pj4gc2hvdWxkIGFsc28gcmV0dXJuIGNvcnJlY3QgMC8xIGZvciB0aGUgdW5tdXRl
+IHN0YXRlIGFuZCBub3QgdGhlIGFjdHVhbAo+Pj4gcmVnaXN0ZXIgdmFsdWUuCj4geW91ciBtYWls
+IGNsaWVudCBkb2VzIG5vdCBzZWVtIHRvIHdyYXAgdGhlIGxpbmVzIGNvcnJlY3RseSwgY2FuIHlv
+dSBjaGVjayB0aGF0LgpJIGhhdmUgbm8gaWRlYSBob3cgdGhlc2UgbGluZXMgc2hvdWxkIGxvb2tz
+LCBzbyBpdCdzIHZlcnkgaGFyZCBmb3IgbWUgdG8gCnNlZSB3aGF0J3Mgd3JvbmcuIENvdWxkIHlv
+dSBwb2ludCBtZSBob3cgaXQgbG9va3MgaW4gb3JpZ2luYWw/Cj4KPj4gQWN0dWFsbHkgSSB0cnkg
+dG8gYXZvaWQgY29tcGxleCBoYW5kbGVyLCB3aXRoIHN3aXRjaC1jYXNlIHdoaWNoIGRlcGVuZHMg
+b24gcmVnCj4+IG51bWJlciBvciBrY29udHJvbCBuYW1lIGluc2lkZSBvZiBpdC4KPj4gSSBoYXZl
+IGZvdW5kIHNpbWlsYXIgZGlzY3Vzc2lvbiB3aXRoIHlvdSBhYm91dCBvbmUgeWVhciBhZ28gaGVy
+ZQo+PiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVs
+LzIwMTUtRmVicnVhcnkvMDg3NDMwLmh0bWwuIFRoZXJlCj4+IGlzIGEgcHJvcG9zYWwgdG8gdXNl
+IFRMVl9EQl9SQU5HRV9IRUFEKCkgYW5kIFRMVl9EQl9TQ0FMRV9JVEVNKCkgYmVjYXVzZSBvZgo+
+PiBpbnZlcnQgd2l0aCBTT0NfREFQTV9TSU5HTEVfVExWLgo+IEFzIEkgcmVjYWxsIHRoZXJlIHdl
+cmUgc29tZSBpc3N1ZXMgd2l0aCB0aGF0IGJhY2sgdGhlbiwgYnV0IGNhbiBub3QgcmVjYWxsLiBB
+dAo+IGxlYXN0IEkgZG9uJ3Qgc2VlIGZvbGxvd3VwIHBhdGNoZXMgcmVnYXJkaW5nIHRvIHRoYXQu
+Cj4KPj4gQXMgSSB1bmRlcnN0YW5kIHdlIGNvdWxkIG1ha2UgdGx2IHdpdGggdXNpbmcKPj4gMCBh
+cyBtdXRlLCBza2lwIHZhbHVlcyAxLTYsIHVzZSB2YWx1ZXMgNy0xNSAoNyA9IC0xMmRCIGFuZCAx
+NT0wZEIpIHRoZW4KPj4gZGVjbGFyZSBTT0NfREFQTV9TSU5HTEVfVExWIGFzICJMaW5lMUwgVm9s
+dW1lIiBmb3IgZXhhbXBsZS4gSXMgaXQgc3RpbGwKPj4gYWN0dWFsPwo+IFdvcnRoIGEgdHJ5IDsp
+Cj4gVGhlIG5hbWluZyBuZWVkcyB0byBiZSBkaWZmZXJlbnQsIHRha2UgYSBsb29rIGF0IHR3bDQw
+MzAgY29kZWMncwo+IHR3bDQwMzBfZGFwbV9kYnlwYXNzX3RsdiBhbmQgaG93IGl0IGlzIHVzZWQu
+Cj4KPj4gRmV3IHRoaW5ncyB3aGljaCBJIGRpZG4ndCB1bmRlcnN0YW5kOgo+PiAtIHNob3VsZCBJ
+IHVzZSAiTGluZTFMIFN3aXRjaCIgdG9nZXRoZXIgd2l0aCAiTGluZTFMIFZvbHVtZSIgaW4gdGhp
+cyBjYXNlLiBJCj4+IHRoaW5rIG5vLCBiZWNhdXNlIERBUE1fU0lOR0xFX1RMViBzaG91bGQgcmVw
+bGFjZSBzd2l0Y2guCj4gU2luY2Ugd2Ugd2lsbCBoYXZlIHRoZSBnYWluIGFuZCBtdXRlIHdpdGgg
+dm9sdW1lIGNvbnRyb2wgd2Ugd2lsbCBoYXZlIG9ubHkgb25lCj4gY29udHJvbC4KPgo+PiAtIGkg
+ZG9uJ3QgdW5kZXJzdGFuZCBob3cgZGVjbGFyZSB0bHYgd2l0aCBza2lwcGluZyB2YWx1ZXMgMS02
+Cj4gWWVhaCwgSSdtIG5vdCBzdXJlIGhvdyBsZWF2aW5nICdob2xlJyBiZXR3ZWVuIHRoZSBUTFZf
+REJfU0NBTEVfSVRFTXMgd2lsbCBiZQo+IGhhbmRsZWQgaWYgaXQgd29ya3MuCj4KPj4gQ2hlZXJz
+LCBUaW0KT2ssIG5vdyBpdCdzIG11Y2ggbW9yZSBjbGVhciBmb3IgbWUuCkFub3RoZXIgcXVlc3Rp
+b24gaXMgcmVnaXN0ZXIgYmVoYXZpb3VyIGR1cmluZyBzb2Z0IHJlc2V0LiBUaGVyZSBpcyAKImFp
+YzN4X3NldF9wb3dlciIgaGFuZGxlLiBJbiB0aGlzIGhhbmRsZSBrZXJuZWwgbWFrZXMgU09GVF9S
+RVNFVCwgbWFya2VzIApjYWNoZSBhcyBkaXJ0eSwgdGhlbiBwb3dlciBkb3duIHRoZSBjb2RlYyBm
+b3IgaGFuZGxlIHBvd2VyIGRvd24gcmVxdWVzdC4KQnV0IGFzIEkgY291bGQgc2VlIG1haW4gdm9s
+dW1lcyBsaWtlICJIUCBEQUMiIGFuZCAiUENNIiBzdG9yZXMgdmFsdWVzIApiZXR3ZWVuIGNsb3Nl
+IGFuZCBvcGVuIGluIG1peGVyIGFuZCBJIGNvdWxkIG5vdCBzZWUgYW55IGNvZGUgdG8gaGFuZGxl
+IAppdC4gT24gdGhlIG90aGVyIGhhbmQgbXkgY29udHJvbHMgZG8gbm90IHNhdmUgc3RhdGVzLCBh
+cyB5b3UgbWVudGlvbmVkIApiZWNhdXNlIG9mIFNPRlRfUkVTRVQsIGNvdWxkIHlvdSBleHBsYWlu
+IHN1Y2ggZGlmZmVyZW50IGJlaGF2aW91cj8KCkNoZWVycywKVGltCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
