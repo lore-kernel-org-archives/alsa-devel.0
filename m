@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Unmap the address last"
-	to the asoc tree
-Date: Wed, 16 Mar 2016 10:09:19 +0000
-Message-ID: <E1ag8OF-00061o-4f@debutante>
-References: <1458035836-1843-5-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Freeup properly on
+	skl_dsp_free" to the asoc tree
+Date: Wed, 16 Mar 2016 10:09:20 +0000
+Message-ID: <E1ag8OG-00062J-Lk@debutante>
+References: <1458035836-1843-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 540BB265DC8
- for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 11:09:27 +0100 (CET)
-In-Reply-To: <1458035836-1843-5-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 986F7266009
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 11:09:28 +0100 (CET)
+In-Reply-To: <1458035836-1843-4-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Unmap the address last
+   ASoC: Intel: Skylake: Freeup properly on skl_dsp_free
 
 has been applied to the asoc tree at
 
@@ -53,44 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From 077411e5eb8872736fdc5f3e7277719160918dde Mon Sep 17 00:00:00 2001
+>From 3f7f8489e25b180cf8de8a3ae3896b3f18fc4aa5 Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Tue, 15 Mar 2016 16:39:26 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Unmap the address last
+Date: Tue, 15 Mar 2016 16:39:25 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Freeup properly on skl_dsp_free
 
-In Skylake destructor we unmap the hardware address and then free
-links and streams. The stream free accesses hardware to write to
-registers and predictably causes oops.
-
-So change the order and unmap last in destructor.
+We are supposed to freeup the Code loader DMA allocation and
+ensure all interrupts are disabled before we disable dsp cores.
+So invoke these to ensure DSP shuts down properly.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/intel/skylake/skl-sst-dsp.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 292d51db9a22..6e916c3c3a4b 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -316,12 +316,13 @@ static int skl_free(struct hdac_ext_bus *ebus)
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.c b/sound/soc/intel/skylake/skl-sst-dsp.c
+index a5267e8a96e0..2962ef22fc84 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.c
++++ b/sound/soc/intel/skylake/skl-sst-dsp.c
+@@ -336,6 +336,11 @@ void skl_dsp_free(struct sst_dsp *dsp)
+ 	skl_ipc_int_disable(dsp);
  
- 	if (bus->irq >= 0)
- 		free_irq(bus->irq, (void *)bus);
--	if (bus->remap_addr)
--		iounmap(bus->remap_addr);
--
- 	snd_hdac_bus_free_stream_pages(bus);
- 	snd_hdac_stream_free_all(ebus);
- 	snd_hdac_link_free_all(ebus);
+ 	free_irq(dsp->irq, dsp);
++	dsp->cl_dev.ops.cl_cleanup_controller(dsp);
++	skl_cldma_int_disable(dsp);
++	skl_ipc_op_int_disable(dsp);
++	skl_ipc_int_disable(dsp);
 +
-+	if (bus->remap_addr)
-+		iounmap(bus->remap_addr);
-+
- 	pci_release_regions(skl->pci);
- 	pci_disable_device(skl->pci);
- 
+ 	skl_dsp_disable_core(dsp);
+ }
+ EXPORT_SYMBOL_GPL(skl_dsp_free);
 -- 
 2.7.0
