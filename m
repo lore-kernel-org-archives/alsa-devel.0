@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Call i915 exit last" to
-	the asoc tree
-Date: Wed, 16 Mar 2016 10:09:17 +0000
-Message-ID: <E1ag8OD-00061K-Ge@debutante>
-References: <1458035836-1843-6-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Unmap the address last"
+	to the asoc tree
+Date: Wed, 16 Mar 2016 10:09:19 +0000
+Message-ID: <E1ag8OF-00061o-4f@debutante>
+References: <1458035836-1843-5-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 72934265DEA
- for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 11:09:26 +0100 (CET)
-In-Reply-To: <1458035836-1843-6-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 540BB265DC8
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 11:09:27 +0100 (CET)
+In-Reply-To: <1458035836-1843-5-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Call i915 exit last
+   ASoC: Intel: Skylake: Unmap the address last
 
 has been applied to the asoc tree at
 
@@ -53,45 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From 5b2fe89856b2d0faaaea9e4b4b2c4920de7a600c Mon Sep 17 00:00:00 2001
+>From 077411e5eb8872736fdc5f3e7277719160918dde Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Tue, 15 Mar 2016 16:39:27 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Call i915 exit last
+Date: Tue, 15 Mar 2016 16:39:26 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Unmap the address last
 
-The Skylake driver uses i915 component APIs to talk to display.
-On remove we should free up by invoking snd_hdac_i915_exit() but
-that should be last thing in remove routine, so move it to last
-in skl_free()
+In Skylake destructor we unmap the hardware address and then free
+links and streams. The stream free accesses hardware to write to
+registers and predictably causes oops.
+
+So change the order and unmap last in destructor.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/intel/skylake/skl.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 6e916c3c3a4b..72971dc55c52 100644
+index 292d51db9a22..6e916c3c3a4b 100644
 --- a/sound/soc/intel/skylake/skl.c
 +++ b/sound/soc/intel/skylake/skl.c
-@@ -328,6 +328,8 @@ static int skl_free(struct hdac_ext_bus *ebus)
+@@ -316,12 +316,13 @@ static int skl_free(struct hdac_ext_bus *ebus)
  
- 	snd_hdac_ext_bus_exit(ebus);
- 
-+	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
-+		snd_hdac_i915_exit(&ebus->bus);
- 	return 0;
- }
- 
-@@ -720,9 +722,6 @@ static void skl_remove(struct pci_dev *pci)
- 	if (skl->tplg)
- 		release_firmware(skl->tplg);
- 
--	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
--		snd_hdac_i915_exit(&ebus->bus);
+ 	if (bus->irq >= 0)
+ 		free_irq(bus->irq, (void *)bus);
+-	if (bus->remap_addr)
+-		iounmap(bus->remap_addr);
 -
- 	if (pci_dev_run_wake(pci))
- 		pm_runtime_get_noresume(&pci->dev);
- 	pci_dev_put(pci);
+ 	snd_hdac_bus_free_stream_pages(bus);
+ 	snd_hdac_stream_free_all(ebus);
+ 	snd_hdac_link_free_all(ebus);
++
++	if (bus->remap_addr)
++		iounmap(bus->remap_addr);
++
+ 	pci_release_regions(skl->pci);
+ 	pci_disable_device(skl->pci);
+ 
 -- 
 2.7.0
