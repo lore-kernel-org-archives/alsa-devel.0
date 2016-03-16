@@ -1,16 +1,18 @@
-From: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: dpcm: prevent error for paths including
-	static links
-Date: Tue, 15 Mar 2016 15:34:49 +0000
-Message-ID: <1458056089-885-1-git-send-email-piotrs@opensource.wolfsonmicro.com>
+From: Klement Sekera <klement@klementsekera.com>
+Subject: pulseaudio[1203]: E: [alsa-sink-USB Audio]
+ alsa-util.c: snd_pcm_avail() returned a value that is exceptionally large
+Date: Wed, 16 Mar 2016 11:49:57 +0100
+Message-ID: <9dc74bc3ee5f245209f1c8717b7546bb@klementsekera.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E199265344
- for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2016 16:37:29 +0100 (CET)
+Received: from mail.zeroone.sk (phoenix.wheel.sk [92.240.244.16])
+ by alsa0.perex.cz (Postfix) with ESMTP id 596FF265DF8
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 11:50:01 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by mail.zeroone.sk (Postfix) with ESMTP id 01D928FFF2C
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 11:50:01 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,124 +22,157 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-According to the DPCM documentation using static codec <-> codec links
-along dynamic ones is a valid use case, however this causes errors of
-the following form to be printed to the kernel log:
+Hi devs,
 
-ASoC: can't get [playback|caputure] BE for <widget name>
-ASoC: no BE found for <widget name>
+ I'm experiencing random hick-ups on my Carbon X1 2nd version with a
+Xonar U3 USB sound card plugged into the onelink dock. When this
+happens, the whole desktop freezes, whatever was last playing (second or
+two) loops and after a while (~30seconds) everything recovers..
 
-This happens when setting up, e.g. a route starting with a dynamic
-DAI, which passes through a static DAI (say, "Some FE" -> "Some BE"
--> "Codec to Modem link"). All DAPM widgets involved in that path will
-be passed to dpcm_add_paths in order to establish FE <-> BE connections,
-which will result in dpcm_get_be trying to locate back-ends for dynamic,
-as well as static links, causing a spurious error to be logged for the
-latter.
+I see this in my logs: 
 
-This patch changes dpcm_get_be to look up a non front-end runtime
-for a stream widget, and renames it accordingly. Like this both dynamic
-and static links can be handled properly in dpcm_add_paths, i.e. an actual
-missing BE can be distinguished from a normal link.
+Mar 16 11:37:07 ksekera-arch rtkit-daemon[1207]: The canary thread is
+apparently starving. Taking action.
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: snd_pcm_avail() returned a value that is exceptionally
+large: 4194088 bytes (23776 ms).
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: Most likely this is a bug in the ALSA driver
+'snd_usb_audio'. Please report this issue to the ALSA develop
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: snd_pcm_dump():
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: Hardware PCM card 2 'USB Advanced Audio Device' device 0
+subdevice 0
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: Its setup is:
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: stream : PLAYBACK
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: access : MMAP_INTERLEAVED
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: format : S16_LE
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: subformat : STD
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: channels : 2
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: rate : 44100
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: exact rate : 44100 (44100/1)
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: msbits : 16
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: buffer_size : 88200
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: period_size : 44100
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: period_time : 1000000
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: tstamp_mode : ENABLE
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: tstamp_type : MONOTONIC
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: period_step : 1
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: avail_min : 87319
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: period_event : 0
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: start_threshold : -1
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: stop_threshold : 6206523236469964800
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: silence_threshold: 0
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: silence_size : 0
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: boundary : 6206523236469964800
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: appl_ptr : 20607492
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: hw_ptr : 21567814 
 
-Signed-off-by: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>
----
- sound/soc/soc-pcm.c |   44 ++++++++++++++++++++++----------------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
+Mar 16 11:37:07 ksekera-arch rtkit-daemon[1207]: Demoting known
+real-time threads.
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: snd_pcm_delay() returned a value that is exceptionally
+large: -3674960 bytes (-20833 ms).
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: Most likely this is a bug in the ALSA driver
+'snd_usb_audio'. Please report this issue to the ALSA develop
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: snd_pcm_dump():
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: Hardware PCM card 2 'USB Advanced Audio Device' device 0
+subdevice 0
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: Its setup is:
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: stream : PLAYBACK
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: access : MMAP_INTERLEAVED
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: format : S16_LE
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: subformat : STD
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: channels : 2
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: rate : 44100
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: exact rate : 44100 (44100/1)
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: msbits : 16
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: buffer_size : 88200
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: period_size : 44100
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: period_time : 1000000
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: tstamp_mode : ENABLE
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: tstamp_type : MONOTONIC
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: period_step : 1
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: avail_min : 87319
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: period_event : 0
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: start_threshold : -1
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: stop_threshold : 6206523236469964800
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: silence_threshold: 0
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: silence_size : 0
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: boundary : 6206523236469964800
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: appl_ptr : 20653792
+Mar 16 11:37:12 ksekera-arch pulseaudio[1203]: E: [alsa-sink-USB Audio]
+alsa-util.c: hw_ptr : 21572797
+Mar 16 11:37:07 ksekera-arch rtkit-daemon[1207]: Successfully demoted
+thread 1203 of process 1203 (/usr/bin/pulseaudio).
+Mar 16 11:37:07 ksekera-arch rtkit-daemon[1207]: Demoted 1 threads. 
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 1af4f23..ff5ea7e 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1220,47 +1220,47 @@ void dpcm_be_disconnect(struct snd_soc_pcm_runtime *fe, int stream)
- 	}
- }
- 
--/* get BE for DAI widget and stream */
--static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
-+/* get runtime for DAI widget and stream */
-+static struct snd_soc_pcm_runtime *dpcm_get_rtd(struct snd_soc_card *card,
- 		struct snd_soc_dapm_widget *widget, int stream)
- {
--	struct snd_soc_pcm_runtime *be;
-+	struct snd_soc_pcm_runtime *rtd;
- 	int i;
- 
- 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		list_for_each_entry(be, &card->rtd_list, list) {
-+		list_for_each_entry(rtd, &card->rtd_list, list) {
- 
--			if (!be->dai_link->no_pcm)
-+			if (rtd->dai_link->dynamic)
- 				continue;
- 
--			if (be->cpu_dai->playback_widget == widget)
--				return be;
-+			if (rtd->cpu_dai->playback_widget == widget)
-+				return rtd;
- 
--			for (i = 0; i < be->num_codecs; i++) {
--				struct snd_soc_dai *dai = be->codec_dais[i];
-+			for (i = 0; i < rtd->num_codecs; i++) {
-+				struct snd_soc_dai *dai = rtd->codec_dais[i];
- 				if (dai->playback_widget == widget)
--					return be;
-+					return rtd;
- 			}
- 		}
- 	} else {
- 
--		list_for_each_entry(be, &card->rtd_list, list) {
-+		list_for_each_entry(rtd, &card->rtd_list, list) {
- 
--			if (!be->dai_link->no_pcm)
-+			if (rtd->dai_link->dynamic)
- 				continue;
- 
--			if (be->cpu_dai->capture_widget == widget)
--				return be;
-+			if (rtd->cpu_dai->capture_widget == widget)
-+				return rtd;
- 
--			for (i = 0; i < be->num_codecs; i++) {
--				struct snd_soc_dai *dai = be->codec_dais[i];
-+			for (i = 0; i < rtd->num_codecs; i++) {
-+				struct snd_soc_dai *dai = rtd->codec_dais[i];
- 				if (dai->capture_widget == widget)
--					return be;
-+					return rtd;
- 			}
- 		}
- 	}
- 
--	dev_err(card->dev, "ASoC: can't get %s BE for %s\n",
-+	dev_err(card->dev, "ASoC: can't get %s runtime for %s\n",
- 		stream ? "capture" : "playback", widget->name);
- 	return NULL;
- }
-@@ -1367,15 +1367,15 @@ static int dpcm_add_paths(struct snd_soc_pcm_runtime *fe, int stream,
- 			continue;
- 		}
- 
--		/* is there a valid BE rtd for this widget */
--		be = dpcm_get_be(card, list->widgets[i], stream);
-+		/* is there a valid rtd for this widget */
-+		be = dpcm_get_rtd(card, list->widgets[i], stream);
- 		if (!be) {
--			dev_err(fe->dev, "ASoC: no BE found for %s\n",
-+			dev_err(fe->dev, "ASoC: no runtime found for %s\n",
- 					list->widgets[i]->name);
- 			continue;
- 		}
- 
--		/* make sure BE is a real BE */
-+		/* check if the runtime is a BE */
- 		if (!be->dai_link->no_pcm)
- 			continue;
- 
--- 
-1.7.10.4
+I'm on arch linux: 
+
+ksekera@ksekera-arch ~> cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version k4.3.6-1-ck.
+ksekera@ksekera-arch ~> uname -a
+Linux ksekera-arch 4.3.6-1-ck #1 SMP PREEMPT Fri Feb 19 20:24:27 EST
+2016 x86_64 GNU/Linux 
+
+Let me know if you need any more info, 
+
+Regards, 
+
+Klement
+
+  
