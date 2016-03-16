@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Freeup properly on
-	skl_dsp_free" to the asoc tree
-Date: Wed, 16 Mar 2016 10:09:20 +0000
-Message-ID: <E1ag8OG-00062J-Lk@debutante>
-References: <1458035836-1843-4-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: free codec objects on
+	removal" to the asoc tree
+Date: Wed, 16 Mar 2016 10:09:22 +0000
+Message-ID: <E1ag8OI-00062n-5f@debutante>
+References: <1458040168-3769-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 986F7266009
- for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 11:09:28 +0100 (CET)
-In-Reply-To: <1458035836-1843-4-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A496D266005
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 11:09:29 +0100 (CET)
+In-Reply-To: <1458040168-3769-3-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Freeup properly on skl_dsp_free
+   ASoC: Intel: Skylake: free codec objects on removal
 
 has been applied to the asoc tree at
 
@@ -53,37 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From 3f7f8489e25b180cf8de8a3ae3896b3f18fc4aa5 Mon Sep 17 00:00:00 2001
+>From 7373f481dc4098a844a756201e98341bc56baaa2 Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Tue, 15 Mar 2016 16:39:25 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Freeup properly on skl_dsp_free
+Date: Tue, 15 Mar 2016 16:39:24 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: free codec objects on removal
 
-We are supposed to freeup the Code loader DMA allocation and
-ensure all interrupts are disabled before we disable dsp cores.
-So invoke these to ensure DSP shuts down properly.
+On driver removal we should ask the core to remove the device
+objects as well, so invoke snd_hdac_ext_bus_device_remove() in
+remove.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-sst-dsp.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/intel/skylake/skl.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.c b/sound/soc/intel/skylake/skl-sst-dsp.c
-index a5267e8a96e0..2962ef22fc84 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.c
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.c
-@@ -336,6 +336,11 @@ void skl_dsp_free(struct sst_dsp *dsp)
- 	skl_ipc_int_disable(dsp);
- 
- 	free_irq(dsp->irq, dsp);
-+	dsp->cl_dev.ops.cl_cleanup_controller(dsp);
-+	skl_cldma_int_disable(dsp);
-+	skl_ipc_op_int_disable(dsp);
-+	skl_ipc_int_disable(dsp);
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index ab5e25aaeee3..292d51db9a22 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -725,6 +725,10 @@ static void skl_remove(struct pci_dev *pci)
+ 	if (pci_dev_run_wake(pci))
+ 		pm_runtime_get_noresume(&pci->dev);
+ 	pci_dev_put(pci);
 +
- 	skl_dsp_disable_core(dsp);
- }
- EXPORT_SYMBOL_GPL(skl_dsp_free);
++	/* codec removal, invoke bus_device_remove */
++	snd_hdac_ext_bus_device_remove(ebus);
++
+ 	skl_platform_unregister(&pci->dev);
+ 	skl_free_dsp(skl);
+ 	skl_machine_device_unregister(skl);
 -- 
 2.7.0
