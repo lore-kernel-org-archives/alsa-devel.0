@@ -1,16 +1,19 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: ALSA: lx6464es - driver for the digigram lx6464es
-	interface
-Date: Wed, 16 Mar 2016 10:43:57 +0300
-Message-ID: <20160316074357.GE12860@mwanda>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH] ALSA: hda - codec add DP MST support
+	for	connection list
+Date: Wed, 16 Mar 2016 07:48:58 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D19046824FE@SHSMSX103.ccr.corp.intel.com>
+References: <1458092851-121925-1-git-send-email-libin.yang@linux.intel.com>
+ <s5h1t7ax4ce.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
- by alsa0.perex.cz (Postfix) with ESMTP id 42D80261A0D
- for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 08:44:05 +0100 (CET)
-Content-Disposition: inline
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id B10B7261AE0
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 08:49:02 +0100 (CET)
+In-Reply-To: <s5h1t7ax4ce.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,80 +23,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tim@klingt.org
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>
+Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Tim Blechmann,
-
-The patch 02bec4904508: "ALSA: lx6464es - driver for the digigram
-lx6464es interface" from Mar 24, 2009, leads to the following static
-checker warning:
-
-	sound/pci/lx6464es/lx_core.c:647 lx_pipe_wait_for_state()
-	error: uninitialized symbol'current_state'.
-
-sound/pci/lx6464es/lx_core.c
-   612  int lx_pipe_state(struct lx6464es *chip, u32 pipe, int is_capture, u16 *rstate)
-   613  {
-   614          int err;
-   615          u32 pipe_cmd = PIPE_INFO_TO_CMD(is_capture, pipe);
-   616  
-   617          mutex_lock(&chip->msg_lock);
-   618          lx_message_init(&chip->rmh, CMD_0A_GET_PIPE_SPL_COUNT);
-   619  
-   620          chip->rmh.cmd[0] |= pipe_cmd;
-   621  
-   622          err = lx_message_send_atomic(chip, &chip->rmh);
-
-lx_message_send_atomic() returns either negative error codes or a bit
-mask.
-
-   623  
-   624          if (err != 0)
-                    ^^^^^^^^
-
-This code assumes that all non-zero values are errors which seems not
-true since it could be a bit mask.
-
-   625                  dev_err(chip->card->dev, "could not query pipe's state\n");
-   626          else
-   627                  *rstate = (chip->rmh.stat[0] >> PSTATE_OFFSET) & 0x0F;
-   628  
-   629          mutex_unlock(&chip->msg_lock);
-   630          return err;
-   631  }
-   632  
-   633  static int lx_pipe_wait_for_state(struct lx6464es *chip, u32 pipe,
-   634                                    int is_capture, u16 state)
-   635  {
-   636          int i;
-   637  
-   638          /* max 2*PCMOnlyGranularity = 2*1024 at 44100 = < 50 ms:
-   639           * timeout 50 ms */
-   640          for (i = 0; i != 50; ++i) {
-   641                  u16 current_state;
-   642                  int err = lx_pipe_state(chip, pipe, is_capture, &current_state);
-   643  
-   644                  if (err < 0)
-                            ^^^^^^^
-This code assume that only negatives are errors.
-
-   645                          return err;
-   646  
-   647                  if (current_state == state)
-                            ^^^^^^^^^^^^^^^^^^^^^^
-This is potentially slightly buggy because we returned a bit mask so we
-didn't initialize it.  It not terribly harmful but the warning message
-is annoying.
-
-   648                          return 0;
-   649  
-   650                  mdelay(1);
-   651          }
-   652  
-   653          return -ETIMEDOUT;
-   654  }
-
-regards,
-dan carpenter
+SGkgVGFrYXNoaSwNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBUYWth
+c2hpIEl3YWkgW21haWx0bzp0aXdhaUBzdXNlLmRlXQ0KPiBTZW50OiBXZWRuZXNkYXksIE1hcmNo
+IDE2LCAyMDE2IDM6MzUgUE0NCj4gVG86IGxpYmluLnlhbmdAbGludXguaW50ZWwuY29tDQo+IENj
+OiBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IFlhbmcsIExpYmluOyBMaW4sIE1lbmdkb25n
+DQo+IFN1YmplY3Q6IFJlOiBbYWxzYS1kZXZlbF0gW1BBVENIXSBBTFNBOiBoZGEgLSBjb2RlYyBh
+ZGQgRFAgTVNUIHN1cHBvcnQNCj4gZm9yIGNvbm5lY3Rpb24gbGlzdA0KPiANCj4gT24gV2VkLCAx
+NiBNYXIgMjAxNiAwMjo0NzozMSArMDEwMCwNCj4gbGliaW4ueWFuZ0BsaW51eC5pbnRlbC5jb20g
+d3JvdGU6DQo+ID4NCj4gPiBGcm9tOiBMaWJpbiBZYW5nIDxsaWJpbi55YW5nQGxpbnV4LmludGVs
+LmNvbT4NCj4gPg0KPiA+IFRoaXMgcGF0Y2hlcyBhZGRzIHRoZSBzdXBwb3J0IG9mIGNvbm5lY3Rp
+b24gbGlzdCBmb3IgRFAgTVNULg0KPiA+IFdpdGggdGhpcywgaGRtaSBkcml2ZXIgaW4gRFAgTVNU
+IG1vZGUgY2FuIGVhc2lseSByZXVzZQ0KPiA+IHRoZSBjb25uZWN0aW9uIGxpc3QgbWVjaGFuaXNt
+Lg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogTGliaW4gWWFuZyA8bGliaW4ueWFuZ0BsaW51eC5p
+bnRlbC5jb20+DQo+IA0KPiBUaGUgbWVyZ2Ugd2luZG93IHdhcyBhbHJlYWR5IG9wZW5lZCwgc28g
+aXQncyB0b28gbGF0ZSBmb3IgdGhpcyBraW5kIG9mDQo+IGNoYW5nZSBmb3IgNC42LCBpbiBhbnl3
+YXkuDQoNClRoYXQncyBPSy4gV2UgY2FuIHdhaXQgZm9yIGxhdGVyIHZlcnNpb24uIFdoYXQgZG8g
+eW91IHRoaW5rIHB1dCB0aGlzIHBhdGNoDQphbmQgbXkgbGF0ZXIgcGF0Y2hlcyBmb3IgTVNUIGlu
+IHRoZSB0b3BpYyBicmFuY2gsIHN1Y2ggYXMgaGRtaS1qYWNrIGJyYWNoDQpsaWtlIGJlZm9yZS4g
+TGF0ZXIgcGF0Y2hlcyBmb3IgTVNUIG5lZWRzIGdmeCBkcml2ZXIgc3VwcG9ydCBhbmQgb3VyDQpn
+ZnggZHJpdmVyIGlzIG5vdCByZWFkeSBmb3IgaXQuDQoNCj4gDQo+IEJ1dCwgdGhlIGZ1bmRhbWVu
+dGFsIHF1ZXN0aW9uOiB3aHkgZG8gd2UgbmVlZCB0byBtYW5hZ2UgdGhlIGNhY2hlZA0KPiBsaXN0
+IG9mIHRoZSB3aWRnZXQgY29ubmVjdGlvbiB3aXRoIGEgZGV2aWNlIGluZGV4PyAgSW4gb3RoZXIg
+d29yZHMsIGlmDQo+IHlvdSBoYXZlIGEgZGlmZmVyZW50IGRldmljZSBpbmRleCwgZG9lcyB0aGUg
+d2lkZ2V0IGNvbm5lY3Rpb24gaXRzZWxmDQo+IGFsc28gY2hhbmdlPw0KDQpCYXNlZCBvbiBteSB0
+ZXN0LCBpdCBzaG91bGQgYmUgdGhlIHNhbWUuIEJ1dCBmcm9tIHRoZSBzcGVjLCBpdCBzYXlzOg0K
+DQo3LjMuMy40MiBEZXZpY2UgU2VsZWN0DQpGb3IgRGlnaXRhbCBEaXNwbGF5IFBpbiBXaWRnZXQg
+dGhhdCBpcyBtdWx0aSBzdHJlYW0gY2FwYWJsZSwgdGhlIERldmljZSBTZWxlY3QgY29udHJvbCBk
+ZXRlcm1pbmVzIHdoaWNoIA0KRGV2aWNlIEVudHJ5IGlzIGN1cnJlbnRseSBzZWxlY3RlZCBhbmQg
+YWNjZXNzaWJsZSBieSB0aGUgUGluIFdpZGdldCB2ZXJicyB3aGljaCBhcmUgY29udHJvbGxpbmcg
+dGhlIHNpbmsgDQpkZXZpY2Ugb3BlcmF0aW9ucy4gVGhpcyBjb250cm9sIHZlcmIgaXMgb25seSBy
+ZXF1aXJlZCBpZiBpdCBpcyBhIERpZ2l0YWwgRGlzcGxheSBQaW4gV2lkZ2V0IGFuZCBtdWx0aSBz
+dHJlYW0gDQpjYXBhYmxlLg0KVGhlIGluZGV4IGlzIGluIHJlbGF0aW9uIHRvIHRoZSBEZXZpY2Ug
+TGlzdCBhc3NvY2lhdGVkIHdpdGggdGhlIHdpZGdldC4gIFRoZSBpbmRleCBpcyBhIHplcm8tYmFz
+ZWQgb2Zmc2V0IA0KaW50byB0aGUgRGV2aWNlIExpc3QuIE9uY2UgdGhlIERldmljZSBFbnRyeSBp
+cyBzZWxlY3RlZCBieSB0aGUgU2V0IGluZGV4LCBhbGwgc3Vic2VxdWVudCBQaW4gV2lkZ2V0IHZl
+cmJzIA0KY29udHJvbGxpbmcgdGhlIHNpbmsgZGV2aWNlIG9wZXJhdGlvbnMgd2lsbCBiZSBkaXJl
+Y3RlZCB0byB0aGUgc2VsZWN0ZWQgRGV2aWNlIEVudHJ5LCB1bnRpbCB0aGUgRGV2aWNlIFNlbGVj
+dCANCnZlcmIgZ2V0IHVwZGF0ZWQgd2l0aCBhIG5ldyB2YWx1ZS4gVGhlc2UgUGluIFdpZGdldCB2
+ZXJicyBpbmNsdWRlOg0K74K3ICBDb25uZWN0aW9uIFNlbGVjdCANCu+CtyAgR2V0IENvbm5lY3Rp
+b24gTGlzdCBFbnRyeQ0K74K3ICBBbXBsaWZpZXIgR2Fpbi9NdXRlDQrvgrcgIFBvd2VyIFN0YXRl
+DQrvgrcgIFBpbiBXaWRnZXQgQ29udHJvbA0K74K3ICBFTEQgRGF0YQ0K74K3ICBESVAtU2l6ZQ0K
+74K3ICBESVAtSW5kZXgNCu+CtyAgRElQLURhdGENCu+CtyAgRElQLVhtaXRDdHJsDQrvgrcgIENv
+bnRlbnQgUHJvdGVjdGlvbiBDb250cm9sDQrvgrcgIEFTUCBDaGFubmVsIE1hcHBpbmcNCg0KU28g
+bXkgdW5kZXJzdGFuZCBpcyB0aGlzIG1heSBiZSBjaGFuZ2VkLg0KDQpSZWdhcmRzLA0KTGliaW4N
+Cg0KPiANCj4gDQo+IFRha2FzaGkNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
