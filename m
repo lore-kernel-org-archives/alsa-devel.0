@@ -1,66 +1,48 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re:
-	=?utf-8?q?=E2=9C=97_Fi=2ECI=2EBAT=3A_failure_for_drm/?=
-	=?utf-8?q?i915/bxt=3A_Fix_off-by-one_error_in_Broxton_PLL_IDs_=28r?=
-	=?utf-8?q?ev3=29?=
-Date: Wed, 16 Mar 2016 16:54:49 +0100
-Message-ID: <CAKMK7uGAhHnpy_1k45J+=rrnm0-hV3Cr2WafwfdxZ6mWEFveeA@mail.gmail.com>
-References: <1457977942-11772-1-git-send-email-imre.deak@intel.com>
- <20160316073153.17251.51881@emeril.freedesktop.org>
- <1458118123.27377.11.camel@intel.com> <6454956.W1mfK3ePPj@fractal>
- <20160316153706.GT14170@phenom.ffwll.local>
- <87twk6777n.fsf@intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH v3] ASoC: Intel: Skylake: remove call to
+	pci_dev_put
+Date: Wed, 16 Mar 2016 21:37:18 +0530
+Message-ID: <1458144438-28912-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <87twk6777n.fsf@intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: Tomi Sarvela <tomi.p.sarvela@intel.com>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, intel-gfx <intel-gfx@lists.freedesktop.org>, Libin Yang <libin.yang@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6CB072661EE
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 17:04:26 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBNYXIgMTYsIDIwMTYgYXQgNDo1MCBQTSwgSmFuaSBOaWt1bGEKPGphbmkubmlrdWxh
-QGxpbnV4LmludGVsLmNvbT4gd3JvdGU6Cj4gT24gV2VkLCAxNiBNYXIgMjAxNiwgRGFuaWVsIFZl
-dHRlciA8ZGFuaWVsQGZmd2xsLmNoPiB3cm90ZToKPj4gWyB0ZXh0L3BsYWluIF0KPj4gT24gV2Vk
-LCBNYXIgMTYsIDIwMTYgYXQgMDI6Mzc6MjRQTSArMDIwMCwgVG9taSBTYXJ2ZWxhIHdyb3RlOgo+
-Pj4gT24gV2VkbmVzZGF5IDE2IE1hcmNoIDIwMTYgMTA6NDg6NDMgSW1yZSBEZWFrIHdyb3RlOgo+
-Pj4gPiBUb21pLCBub3RpY2VkIHR3byB0aGluZ3MgdGhhdCBtYXliZSBpbmZyYXN0cnVjdHVyZSBy
-ZWxhdGVkLCBzZWUgYmVsb3c6Cj4+PiA+Cj4+PiA+ID4gVGVzdCBkcnZfbW9kdWxlX3JlbG9hZF9i
-YXNpYzoKPj4+ID4gPiAgICAgICAgICAgICAgICAgc2tpcCAgICAgICAtPiBQQVNTICAgICAgIChi
-ZHctbnVjaTcpCj4+PiA+ID4gVGVzdCBnZW1fcmluZ2ZpbGw6Cj4+PiA+ID4gICAgICAgICBTdWJn
-cm91cCBiYXNpYy1kZWZhdWx0LXMzOgo+Pj4gPiA+ICAgICAgICAgICAgICAgICBwYXNzICAgICAg
-IC0+IERNRVNHLVdBUk4gKHNrbC1udWNpNSkKPj4+ID4gPiBUZXN0IGdlbV9zdG9yZWR3X2xvb3A6
-Cj4+PiA+ID4gICAgICAgICBTdWJncm91cCBiYXNpYy1ic2Q6Cj4+PiA+ID4gICAgICAgICAgICAg
-ICAgIHBhc3MgICAgICAgLT4gRE1FU0ctV0FSTiAoc2tsLW51Y2k1KQo+Pj4gPiA+ICAgICAgICAg
-U3ViZ3JvdXAgYmFzaWMtYnNkMToKPj4+ID4gPiAgICAgICAgICAgICAgICAgcGFzcyAgICAgICAt
-PiBETUVTRy1XQVJOIChza2wtbnVjaTUpCj4+PiA+Cj4+PiA+IFVucmVsYXRlZCBwbGF0Zm9ybS4g
-QWxsIG9mIHRoZSBhYm92ZSBhcmUgU05EIHJlc3VtZSBmYWlsdXJlcy4gVmlsbGUKPj4+ID4gc2Fp
-ZCBoZSBjb250YWN0ZWQgVGFrYXNoaSBhYm91dCB0aGVtLgo+Pj4KPj4+IFNORCBpcyByZWN1cnJp
-bmcgcHJvYmxlbS4gSSdkIGxpa2UgdG8gc2VlIGRybS1pbnRlbC1uaWdodGx5IG5vdCBicmVha2lu
-ZyB3aGVuCj4+PiBwdWxsaW5nIHNvdW5kIHVwZGF0ZXMuCj4+Cj4+IFdlIG5lZWQgdG8gZXNjYWxh
-dGUgdGhpcyBhZ2Fpbiwgc25kIHRlYW0gc2VyaW91c2x5IHN1Y2tzIGF0IHF1YWxpdHkKPj4gY29u
-dHJvbCA6KCBBZGRpbmcgTGliaW4mVGFrYXNoaS4gSWYgdGhpcyBkb2Vzbid0IGltcHJvdmUgSSBu
-ZWVkIHRvIHRocm93Cj4+IHNvdW5kIHRyZWVzIG91dCBvZiAtbmlnaHRseSBmb3IgcmVhbC4KPgo+
-IFdpdGggdGhhdCwgd2UnZCBnZXQgbW9yZSBzdGFibGUgQ0ksIGJ1dCB3ZSdkIGFsc28gb25seSBz
-ZWUgdGhlIGZhaWx1cmVzCj4gb25jZSB0aGUgc291bmQgdHJlZXMgZ2V0IG1lcmdlZCB1cHN0cmVh
-bS4gV2UgZG9uJ3Qgd2FudCB0aGF0IGVpdGhlci4KPgo+IE9uZSBpZGVhIHdvdWxkIGJlIHRvIGhh
-dmUgc2VwYXJhdGUgQ0kgcnVucyBmb3IgdXBkYXRpbmcgdHJlZXMgbm90IGluIG91cgo+IGNvbnRy
-b2wuIEJ1dCB3ZSdyZSBwcmV0dHkgZmFyIGZyb20gbWFraW5nIHRoYXQgaGFwcGVuLgoKWWVzIGFn
-cmVlZCwgaXQgd291bGQgcHJvYmFibHkgbm90IGhlbHAgYSBsb3QgYXQgYWxsIHRvIGRyb3Agc291
-bmQKdHJlZXMsIHdlJ2Qgc2ltcGx5IG5vdGljZSBhIGJpdCBsYXRlci4gSSdtIG5vdCBzdXJlIHdo
-YXQgd291bGQgYmUgdGhlCmJlc3Qgb3B0aW9uIGhlcmUsIGp1c3QgZXhwcmVzc2luZyBtYWludGFp
-bmVyIGdydW1waW5lc3MgOy0pIEdvb2QgaWRlYXMKdmVyeSBtdWNoIHdlbGNvbWUgLi4uCi1EYW5p
-ZWwKLS0gCkRhbmllbCBWZXR0ZXIKU29mdHdhcmUgRW5naW5lZXIsIEludGVsIENvcnBvcmF0aW9u
-Cis0MSAoMCkgNzkgMzY1IDU3IDQ4IC0gaHR0cDovL2Jsb2cuZmZ3bGwuY2gKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlz
-dApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0
-b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+The PCI bus takes pci_dev_get() and pci_dev_put() is also there.
+So no need for drivers to invoke these. In SKL driver we were
+calling pci_dev_put() only which is not right, so remove this
+
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/skylake/skl.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index b67f3bd0fccd..c337d06793ec 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -732,7 +732,6 @@ static void skl_remove(struct pci_dev *pci)
+ 
+ 	if (pci_dev_run_wake(pci))
+ 		pm_runtime_get_noresume(&pci->dev);
+-	pci_dev_put(pci);
+ 	skl_codecs_remove(ebus);
+ 	skl_platform_unregister(&pci->dev);
+ 	skl_free_dsp(skl);
+-- 
+1.9.1
