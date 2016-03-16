@@ -1,19 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: ASoC: TLV320AIC3x: Adding additional functionality
- for 3106 with [Patch] for discuss
-Date: Wed, 16 Mar 2016 10:57:18 +0200
-Message-ID: <56E91FEE.4070604@ti.com>
-References: <56E69B3F.8090306@mcsplus.ru> <56E6CEE9.5030802@ti.com>
- <56E7FC3C.1030503@mcsplus.ru> <56E802D9.4040501@ti.com>
- <56E834B0.5010808@mcsplus.ru>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rt5616: add I2C dependency" to the asoc
+	tree
+Date: Wed, 16 Mar 2016 10:00:56 +0000
+Message-ID: <E1ag8G8-0005Tv-FJ@debutante>
+References: <1458078220-551551-1-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id CCE96261A0D
- for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 09:57:25 +0100 (CET)
-In-Reply-To: <56E834B0.5010808@mcsplus.ru>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F072265967
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 11:01:10 +0100 (CET)
+In-Reply-To: <1458078220-551551-1-git-send-email-arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,65 +22,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Karaldin <karaldin@mcsplus.ru>, alsa-devel@alsa-project.org
+To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgVGltdXIsCgpwbGVhc2UgYXZvaWQgdG9wIHBvc3RpbmcuCgpPbiAwMy8xNS8xNiAxODoxMywg
-VGltdXIgS2FyYWxkaW4gd3JvdGU6Cj4gT2ssIEkgY2hvb3NlIHRoZSB3YXkgIzEgd2l0aG91dCBj
-aGFuZ2luZyBrY29udHJvbCBuYW1lcy4KPiBBbm90aGVyIHRoaW5nIEkgZG9uJ3QgdW5kZXJzdGFu
-ZCBpcyB0aGUgd2F5IGZvciBjYWNoaW5nIGdhaW4gdm9sdW1lIGlmIEkgaGF2ZQo+IHN3aXRjaGVz
-IG11dGVkLiBJcyB0aGVyZSBhbnkgcHJvcGVyIHdheSBmb3Igc3RvcmluZyBjYWNoZWQgdmFsdWVz
-IGJldHdlZW4gZ2Fpbgo+IGFuZCBzd2l0Y2ggaGFuZGxlcnMgaW5jbHVkZXMgc29mdCByZXNldCBv
-ciBJIG5lZWQgbWFudWFsbHkgY2hlY2sga2NvbnRyb2wgbmFtZQo+IGluIGhhbmRsZXIgYW5kIGNh
-Y2hlIHZhbHVlcyBpbiBleHRlbmRlZCBwcml2YXRlIHN0cnVjdHVyZT8gVGhlIHNhbWUgcXVlc3Rp
-b24KPiBmb3Igc3dpdGNoIGhhbmRsZXIsIGJlY2F1c2UgSSBuZWVkIHRvIHNoYXJlIGNhY2hlZCB2
-YWx1ZXMgYmV0d2VlbiB0aGVzZSBoYW5kbGVycy4KClNpbmNlIHRoZSBwcm9ibGVtYXRpYyByZWdp
-c3RlcnMgYXJlOiAxNywgMTgsIC4uIDI0LiBJIHdvdWxkIGhhdmUgYW4gYXJyYXkKaW5zaWRlIHN0
-cnVjdCBhaWMzeF9wcml2IHRvIHN0b3JlIHRoZSBjb25maWd1cmVkIGdhaW4uIFlvdSBjb3VsZCBz
-dG9yZSB0aGUKbXV0ZSBhcyB3ZWxsLCBidXQgc2luY2UgcmVnbWFwIGlzIGNhY2hpbmcgdGhlIGNv
-bnRlbnQgSSB3b3VsZCBzaW1wbHkgcmVhZCBiYWNrCnRoZSBnYWluIHZhbHVlIGFuZCBpZiBpdCBp
-cyAweGYsIGl0IGlzIG11dGVkLCBzbyB1cGRhdGUgb25seSB0aGUgbG9jYWwgc2hhZG93LAppZiBp
-dCBpcyBub3QgbXV0ZWQsIHdyaXRlIHRoZSBnYWluLgpJbiB0aGUgbXV0ZS91bm11dGUgY29udHJv
-bHMgSSB3b3VsZCB0aGVuIHNhdmUgdGhlIGdhaW4gdG8gc2hhZG93IHdoZW4gbXV0aW5nCnRoZSBw
-YXRoIGFuZCB3cml0ZSB0aGUgY2FjaGVkIGdhaW4gdG8gdGhlIHJlZ2lzdGVyIHdoZW4gdW5tdXRp
-bmcgaXQuIFlvdQpzaG91bGQgYWxzbyByZXR1cm4gY29ycmVjdCAwLzEgZm9yIHRoZSB1bm11dGUg
-c3RhdGUgYW5kIG5vdCB0aGUgYWN0dWFsCnJlZ2lzdGVyIHZhbHVlLgoKPiAKPiAxNS4wMy4yMDE2
-IDE1OjQwLCBQZXRlciBVamZhbHVzaSDQv9C40YjQtdGCOgo+PiBPbiAwMy8xNS8xNiAxNDoxMiwg
-VGltdXIgS2FyYWxkaW4gd3JvdGU6Cj4+PiBIaSBQZXRlciEKPj4+Cj4+PiAxNC4wMy4yMDE2IDE3
-OjQ3LCBQZXRlciBVamZhbHVzaSDQv9C40YjQtdGCOgo+Pj4+IFNvIHRoZSBpc3N1ZSBpcyB0aGF0
-IHdlIGhhdmUgdGhlIERBUE0gc3dpdGNoZXMgY29udHJvbGxpbmcgZXhhY3RseSB0aGUgc2FtZQo+
-Pj4+IHJlZ2lzdGVycy4gSSBiZWxpZXZlIGlmIHlvdSB3b3VsZCBzZXQgdGhlIGdhaW4gaW4gYSB3
-YXkgdGhhdCBiaXQwIGlzIDEsIHRoZW4KPj4+PiBEQVBNIHdpbGwgdGhpbmsgdGhhdCB0aGUgcGF0
-aCBpcyBkaXNjb25uZWN0ZWQuIEFsc28gaWYgeW91IHdvdWxkIHNldCB0aGUKPj4+PiBnYWluIGFu
-ZCB0aGVuIG11dGUgYW5kIHVubXV0ZSB0aGUgcGF0aCB5b3Ugd291bGQgaGF2ZSBsb3N0IHRoZSBn
-YWluIHlvdQo+Pj4+IHdhbnRlZCB0byBoYXZlLi4gVGhlIG9ubHkgd2F5IEkgY2FuIHRoaW5rIG9m
-IGltcGxlbWVudGluZyB0aGVzZSBtaXhlcnMgaXMgdG8KPj4+PiBoYXZlIHR3byBzZXRzIG9mIGN1
-c3RvbSBjYWxsYmFja3MuIG9uZSBzZXQgaXMgdG8gc2V0L2dldCB0aGUgZ2FpbiBhbmQgdGhlCj4+
-Pj4gb3RoZXIgaXMgdG8gc2V0L2dldCB0aGUgbXV0ZS9kaXNjb25uZWN0IG9uIHRoZXNlLiBXaGVu
-IHRoZSBwYXRoIGlzCj4+Pj4gZGlzY29ubmVjdGVkIHlvdSBzaG91bGQgbm90IHdyaXRlIHRoZSBn
-YWluIGNoYW5nZSB0byB0aGUgY2hpcCwgYnV0IGNhY2hlIGl0Cj4+Pj4gYW5kIGlmIHRoZSBwYXRo
-IGlzIHVubXV0ZWQsIHlvdSB3cml0ZSB0aGUgY2FjaGVkIGdhaW4uIFdoZW4geW91IG11dGUgdGhl
-Cj4+Pj4gcGF0aCB5b3Ugc2hvdWxkIHRha2UgdGhlIHNldCBnYWluIGZpcnN0LCBjYWNoZSBpdCwg
-dGhlbiBkaXNjb25uZWN0IHRoZSBwYXRoLgo+Pj4+IEZvciB0aGVzZSBnYWlucyB5b3Ugc2hvdWxk
-IGhhdmUgREVDTEFSRV9UTFZfREJfU0NBTEUoKSBhbmQgdXNlCj4+Pj4gU09DX1NJTkdMRV9UTFYo
-KS4gTWFrZSBzdXJlIHRoYXQgdGhlIGNvbnRyb2wgbmFtZSBtYXRjaGVzIHdpdGggdGhlCj4+Pj4g
-Y29ycmVzcG9uZGluZyBEQVBNIHdpZGdldCdzIG5hbWUgc28gQUxTQSBjYW4gbWF0Y2ggdGhlbSBj
-b3JyZWN0bHkuCj4+PiBUaGF0J3Mgbm90IGNsZWFyIGZvciBtZS4gQXMgSSB1bmRlcnN0YW5kLCBJ
-IG5lZWQgdG8gY3JlYXRlIFNPQ19TSU5HTEVfVExWKCkKPj4+IGZvciBlYWNoIGdhaW4gSSB3b3Vs
-ZCBsaWtlIHRvIGNoYW5nZSwgd2l0aCB0aGUgc2FtZSBuYW1lIGFzCj4+PiBTT0NfREFQTV9TSU5H
-TEVfQUlDM3ggKGZvciBleGFtcGxlICJMaW5lMUwgU3dpdGNoIiBmb3IgTGluZTEpIGFuZCBtYWtl
-Cj4+PiBjYWxsYmFja3Mgd2l0aCBjYWNoZWQgZ2FpbiB2YWx1ZXMuIEFtIEkgcmlnaHQ/Cj4+IE1v
-c3RseSB5ZXMsIGJ1dCB5b3UgbmVlZCB0byBuYW1lIHRoZSBjb250cm9sczoKPj4gZXhpc3Rpbmcg
-c3dpdGNoICsgbmV3IGdhaW4gY29udHJvbAo+PiAiTGluZTFMIFN3aXRjaCIgKyAiTGluZTFMIFZv
-bHVtZSIKPj4gIkxpbmUxUiBTd2l0Y2giICsgIkxpbmUxUiBWb2x1bWUiCj4+Cj4+IEluIHRoaXMg
-d2F5IGFsc2FtaXhlciBjYW4gY29tYmluZSB0aGVtLgo+Pgo+Pj4gTWF5IGJlIHRoZSBiZXR0ZXIg
-c29sbHV0aW9uIGlzIHRvIGNoYW5nZSBTT0NfREFQTV9TSU5HTEVfQUlDM3ggb24vb2ZmIHN3aXRj
-aAo+Pj4gdG8gb3RoZXIgdHlwZSB3aXRoIHN3aXRjaCBhbmQgZ2FpbiBjb250cm9sIHRvZ2V0aGVy
-PyBTbyBpdCBjb3VsZCBoYXZlIHNvbWUKPj4+IGNvbm5lY3RlZCBzdGF0ZXMgd2l0aCBkaWZmZXJl
-bnQgZ2FpbnMgYW5kIGRpc2Nvbm5lY3RlZCBzdGF0ZSAoU29tZXRoaW5nIGxpa2UKPj4+IHZvbHVt
-ZS9tdXRlIGNvbnRyb2wpLgo+PiBTb21ldGhpbmcgYmFzZWQgb24gU09DX0RBUE1fU0lOR0xFX1RM
-ViBzaG91bGQgd29yay4gQnV0IHRoYXQgbWVhbnMgYWdhaW4KPj4gY2hhbmdlIGluIEtjb250cm9s
-IG5hbWVzLgo+Pgo+IAo+IAoKCi0tIApQw6l0ZXIKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+The patch
+
+   ASoC: rt5616: add I2C dependency
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From af139d5592bc812e7a1997727172ddba3e6be968 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 15 Mar 2016 22:42:50 +0100
+Subject: [PATCH] ASoC: rt5616: add I2C dependency
+
+The rt5616 codec registers itself as an i2c driver, but can
+be enabled even when i2c is turned off, which leads to a build
+error:
+
+codecs/rt5616.c:1419:1: error: data definition has no type or storage class [-Werror]
+ module_i2c_driver(rt5616_i2c_driver);
+
+This adds an explicit Kconfig dependency, like the other codec
+drivers.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: 288bc356a881 ("ASoC: rt5616: allow to build with CONFIG_SND_SOC_RT5616")
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 649e92a252ae..7ef3a0c16478 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -629,6 +629,7 @@ config SND_SOC_RT5514
+ 
+ config SND_SOC_RT5616
+ 	tristate "Realtek RT5616 CODEC"
++	depends on I2C
+ 
+ config SND_SOC_RT5631
+ 	tristate "Realtek ALC5631/RT5631 CODEC"
+-- 
+2.7.0
