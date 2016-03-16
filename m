@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: Intel: Skylake: remove call to
-	pci_dev_put
-Date: Wed, 16 Mar 2016 16:18:53 +0000
-Message-ID: <20160316161853.GZ2566@sirena.org.uk>
-References: <1458144438-28912-1-git-send-email-vinod.koul@intel.com>
- <20160316160717.GY2566@sirena.org.uk>
- <20160316161605.GX13211@localhost>
+Subject: Applied "ASoC: Intel: Skylake: remove call to
+	pci_dev_put" to the asoc tree
+Date: Wed, 16 Mar 2016 16:24:21 +0000
+Message-ID: <E1agEFB-0006Cp-Ko@debutante>
+References: <1458040168-3769-7-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7801418757473779030=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C9E42266507
- for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 17:18:58 +0100 (CET)
-In-Reply-To: <20160316161605.GX13211@localhost>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8233A26652A
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 17:24:33 +0100 (CET)
+In-Reply-To: <1458040168-3769-7-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,54 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, patches.audio@intel.com
+To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7801418757473779030==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="CjAlqr6ZqJYkDGFX"
-Content-Disposition: inline
+   ASoC: Intel: Skylake: remove call to pci_dev_put
 
+has been applied to the asoc tree at
 
---CjAlqr6ZqJYkDGFX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Mar 16, 2016 at 09:46:05PM +0530, Vinod Koul wrote:
-> On Wed, Mar 16, 2016 at 04:07:17PM +0000, Mark Brown wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > This doesn't seem to apply against current code (I don't have the
-> > relevant SHA1s for the dependency) - can you please check and resend?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Thats surprising as I amended the commit in last series and sent this one. I
-> will re-fetch your tree and do this again.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Is it depending on some -next only stuff or something?
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---CjAlqr6ZqJYkDGFX
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+>From 36e7972c0d3f8819a5d9335c36c5dcd168cd2b72 Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Wed, 16 Mar 2016 21:51:31 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: remove call to pci_dev_put
 
-iQEcBAEBCAAGBQJW6YdqAAoJECTWi3JdVIfQoEwH/3hh2MXS1vsxpJk5mEolpdXk
-GT0Nigo3JK10Eo3xI04hXhtBBkEtQLIN/Kjhh8iWB0wAVr15OcYmMQRKYaiRu1QC
-S3dspgcAQV1tR7BUJiSJwks75cukLfFryevlZVXRtsDTHBf3erMvn9zgupEJcL3U
-g8l3/m4nEkjb65bYhFKTTYOAE0a9R79jPT9D7Kegxj+n6jNZJAxyxPQUFQY3bBPq
-S8i17288OMHpBfdTwgNNNJXyBamncvC8BJgyVWVQo2FBRH+Edf1Hdt+OE3DX/nni
-gGP6lAwI3ng5JBBtuvsDqm/agEa4Ye1STn4xAozJaKI1ZThWBmFCdH9PleJxW1U=
-=sda4
------END PGP SIGNATURE-----
+The PCI bus takes pci_dev_get() and pci_dev_put() is also there.
+So no need for drivers to invoke these. In SKL driver we were
+calling pci_dev_put() only which is not right, so remove this
 
---CjAlqr6ZqJYkDGFX--
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/skylake/skl.c | 1 -
+ 1 file changed, 1 deletion(-)
 
---===============7801418757473779030==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7801418757473779030==--
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 72971dc55c52..07d9bc1cf3cb 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -724,7 +724,6 @@ static void skl_remove(struct pci_dev *pci)
+ 
+ 	if (pci_dev_run_wake(pci))
+ 		pm_runtime_get_noresume(&pci->dev);
+-	pci_dev_put(pci);
+ 
+ 	/* codec removal, invoke bus_device_remove */
+ 	snd_hdac_ext_bus_device_remove(ebus);
+-- 
+2.7.0
