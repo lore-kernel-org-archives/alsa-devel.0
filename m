@@ -1,24 +1,22 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [pulseaudio-discuss] ASoC and pulseaudio
-Date: Wed, 16 Mar 2016 21:23:42 +0530
-Message-ID: <20160316155342.GV13211@localhost>
-References: <20160314160654.GA2566@sirena.org.uk>
- <1458021688.8522.16.camel@loki>
- <20160315084544.GF2566@sirena.org.uk>
- <s5hmvq0glxj.wl-tiwai@suse.de> <1458035331.8522.52.camel@loki>
- <s5h8u1kgj3c.wl-tiwai@suse.de> <1458039506.8522.70.camel@loki>
- <20160316145704.GU13211@localhost>
- <20160316150949.GX2566@sirena.org.uk>
- <s5hwpp2bggh.wl-tiwai@suse.de>
+Subject: Re: [PATCH v2 6/6] ASoC: Intel: Skylake: remove call
+	to pci_dev_put
+Date: Wed, 16 Mar 2016 21:24:21 +0530
+Message-ID: <20160316155421.GW13211@localhost>
+References: <1458040168-3769-1-git-send-email-vinod.koul@intel.com>
+ <1458040168-3769-7-git-send-email-vinod.koul@intel.com>
+ <20160316100829.GS2566@sirena.org.uk>
+ <20160316105244.GR13211@localhost>
+ <20160316110310.GT2566@sirena.org.uk>
+ <s5hwpp2d5ar.wl-tiwai@suse.de> <20160316144405.GT13211@localhost>
+ <20160316145753.GW2566@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9194956988995020005=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id AA8CD2660CF
- for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 16:49:24 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hwpp2bggh.wl-tiwai@suse.de>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id E1FA726655D
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 16:50:05 +0100 (CET)
+In-Reply-To: <20160316145753.GW2566@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,32 +26,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, "han.lu" <han.lu@linux.intel.com>, Linux Upstreaming Team <linux@endlessm.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 16, 2016 at 04:17:02PM +0100, Takashi Iwai wrote:
-> On Wed, 16 Mar 2016 16:09:49 +0100,
-> Mark Brown wrote:
-> > 
-> > On Wed, Mar 16, 2016 at 08:27:04PM +0530, Vinod Koul wrote:
-> > 
-> > > So I don't think FW name would help, if required we should add dev_info
-> > > to print the firmware which is getting loaded.
-> > 
-> > We can't really be relying on userspace trawling through the logs -
-> > quite apart from anything else the message might be long gone by the
-> > time the relevant program gets started.
-> > 
-> > Might be an idea to record it in sysfs somewhere?
 
-Sounds good to me
+--===============9194956988995020005==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="uJrvpPjGB3z5kYrA"
+Content-Disposition: inline
 
-> Yeah, that should be feasible.  Also, there is a "component" field
-> assigned to the card.  This is supposed to be referred by user-space
-> as additional information.  See snd_component_add().
 
-Will add this to my ever growing list of things to do... :D
+--uJrvpPjGB3z5kYrA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
+On Wed, Mar 16, 2016 at 02:57:53PM +0000, Mark Brown wrote:
+> On Wed, Mar 16, 2016 at 08:14:05PM +0530, Vinod Koul wrote:
+> > On Wed, Mar 16, 2016 at 12:35:08PM +0100, Takashi Iwai wrote:
+>=20
+> > > Maybe the document is obsoleted.  The PCI core, at least the probe /
+> > > remove via the normal PCI bus, takes pci_dev_get() and pci_dev_put()
+> > > already there.
+>=20
+> > Yes that is my understanding too, that is why we removed this from driv=
+er
+> > here..
+>=20
+> > Mark, is this fine now?
+>=20
+> You might want to put some of this analysis in the changelog.
+
+Yup makes sense, v3 on the way then !
+
+--=20
 ~Vinod
+
+--uJrvpPjGB3z5kYrA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJW6YGtAAoJEHwUBw8lI4NHKSsP/2FN3ACcLcwaMB2Ax/GNx7SW
+YogmxQva4GFwLDpvpuuftPkLvlvTXiouWF/FIwpYLCBZbByBYZ+a5B9H1y2GMI1E
+44otsUeydW3iCZWbGdjHVc3tnI7VCQHQN/5ZaqUbLzBRNwMImSaCQ/dUfy35jx4q
+2K+GyXQUuaE+4h4Vk5ySBBRoJf0RYvPtioI451trSA009zIHvDt0ur4hc6yWLs0e
+xeWxABTRF9Y4F59WFWm+BDALQOz22agr1GkvDPQSPP0eXxz1CoZSRzMAdvoDCvmW
+iEYCbcn4YQ18R2bVhD9gs6BRWiqrfnXpKGb5hsYItCVCyQvl0buBljiFmhzwhS5S
+BA/DgqXl8QYAzb5s0CNyd3JJLG4F9MNRyM+8MViF7Qih/lXzvsA1BxkzyN+SRGn7
+qg+mYlR+tC5i8JXl+USb8QrOTvM+8YvSrbeyWMWvaANd43wm8O0iFLnKgFZdOBu9
+b4/a2pTpRWCtC9Uo37xt5u75j+JyK6KNj4e4zycF1fq3q5u5ivEYWMFAL3j9ImTL
+SpTWskBRqFoQUOnkMEbw541YzN6PUhWDxKDAvp9DWhbhrIODndA4x1WV+y6PwZHt
+hVJXZ6w8UZ6M/rGwsef/Wcltp9dPyK8cnXpcJPUpYwDgVA6mt5L6LyHrv43/YJB+
+I+ckXeJx7mWXLA/PvFzZ
+=cTfC
+-----END PGP SIGNATURE-----
+
+--uJrvpPjGB3z5kYrA--
+
+--===============9194956988995020005==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9194956988995020005==--
