@@ -1,17 +1,21 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [media] sound/usb: Use Media Controller API to
- share media resources
-Date: Wed, 16 Mar 2016 07:51:39 -0600
-Message-ID: <56E964EB.6090002@osg.samsung.com>
-References: <20160316074054.GA12860@mwanda>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH] ALSA: hda - codec add DP MST support
+	for	connection list
+Date: Wed, 16 Mar 2016 13:53:09 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D190468286E@SHSMSX103.ccr.corp.intel.com>
+References: <1458092851-121925-1-git-send-email-libin.yang@linux.intel.com>
+ <s5h1t7ax4ce.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19046824FE@SHSMSX103.ccr.corp.intel.com>
+ <s5hy49ivotb.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lists.s-osg.org (lists.s-osg.org [54.187.51.154])
- by alsa0.perex.cz (Postfix) with ESMTP id F403A26585C
- for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 14:51:51 +0100 (CET)
-In-Reply-To: <20160316074054.GA12860@mwanda>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D8502605C4
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 14:53:20 +0100 (CET)
+In-Reply-To: <s5hy49ivotb.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,78 +25,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org, Shuah Khan <shuahkh@osg.samsung.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/16/2016 01:40 AM, Dan Carpenter wrote:
-> Hello Shuah Khan,
-> 
-> This is a semi-automatic email about new static checker warnings.
-> 
-> The patch aebb2b89bff0: "[media] sound/usb: Use Media Controller API 
-> to share media resources" from Mar 2, 2016, leads to the following 
-> Smatch complaint:
-> 
-> sound/usb/card.c:615 usb_audio_probe()
-> 	 error: we previously assumed 'quirk' could be null (see line 534)
-> 
-> sound/usb/card.c
->    583		/*
->    584		 * For devices with more than one control interface, we assume the
->    585		 * first contains the audio controls. We might need a more specific
->    586		 * check here in the future.
->    587		 */
->    588		if (!chip->ctrl_intf)
->    589			chip->ctrl_intf = alts;
->    590	
->    591		chip->txfr_quirk = 0;
->    592		err = 1; /* continue */
->    593		if (quirk && quirk->ifnum != QUIRK_NO_INTERFACE) {
->                     ^^^^^
-> Old code assumes "quirk" can be NULL.
-> 
->    594			/* need some special handlings */
->    595			err = snd_usb_create_quirk(chip, intf, &usb_audio_driver, quirk);
->    596			if (err < 0)
->    597				goto __error;
->    598		}
->    599	
->    600		if (err > 0) {
->    601			/* create normal USB audio interfaces */
->    602			err = snd_usb_create_streams(chip, ifnum);
->    603			if (err < 0)
->    604				goto __error;
->    605			err = snd_usb_create_mixer(chip, ifnum, ignore_ctl_error);
->    606			if (err < 0)
->    607				goto __error;
->    608		}
->    609	
->    610		/* we are allowed to call snd_card_register() many times */
->    611		err = snd_card_register(chip->card);
->    612		if (err < 0)
->    613			goto __error;
->    614	
->    615		if (quirk->media_device) {
->                     ^^^^^^^^^^^^^^^^^^^
-> Patch adds an unchecked dereference.
-
-Nicolai Stange sent in a patch to fix this.
-
-thanks,
--- Shuah
-> 
->    616			/* don't want to fail when media_snd_device_create() fails */
->    617			media_snd_device_create(chip, intf);
-> 
-> regards,
-> dan carpenter
-> 
-
-
--- 
-Shuah Khan
-Sr. Linux Kernel Developer
-Open Source Innovation Group
-Samsung Research America (Silicon Valley)
-shuahkh@osg.samsung.com | (970) 217-8978
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFRha2FzaGkgSXdhaSBbbWFp
+bHRvOnRpd2FpQHN1c2UuZGVdDQo+IFNlbnQ6IFdlZG5lc2RheSwgTWFyY2ggMTYsIDIwMTYgMzo1
+NiBQTQ0KPiBUbzogWWFuZywgTGliaW4NCj4gQ2M6IGxpYmluLnlhbmdAbGludXguaW50ZWwuY29t
+OyBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IExpbiwNCj4gTWVuZ2RvbmcNCj4gU3ViamVj
+dDogUmU6IFthbHNhLWRldmVsXSBbUEFUQ0hdIEFMU0E6IGhkYSAtIGNvZGVjIGFkZCBEUCBNU1Qg
+c3VwcG9ydA0KPiBmb3IgY29ubmVjdGlvbiBsaXN0DQo+IA0KPiBPbiBXZWQsIDE2IE1hciAyMDE2
+IDA4OjQ4OjU4ICswMTAwLA0KPiBZYW5nLCBMaWJpbiB3cm90ZToNCj4gPg0KPiA+IEhpIFRha2Fz
+aGksDQo+ID4NCj4gPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gPiBGcm9tOiBU
+YWthc2hpIEl3YWkgW21haWx0bzp0aXdhaUBzdXNlLmRlXQ0KPiA+ID4gU2VudDogV2VkbmVzZGF5
+LCBNYXJjaCAxNiwgMjAxNiAzOjM1IFBNDQo+ID4gPiBUbzogbGliaW4ueWFuZ0BsaW51eC5pbnRl
+bC5jb20NCj4gPiA+IENjOiBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IFlhbmcsIExpYmlu
+OyBMaW4sIE1lbmdkb25nDQo+ID4gPiBTdWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIFtQQVRDSF0g
+QUxTQTogaGRhIC0gY29kZWMgYWRkIERQIE1TVA0KPiBzdXBwb3J0DQo+ID4gPiBmb3IgY29ubmVj
+dGlvbiBsaXN0DQo+ID4gPg0KPiA+ID4gT24gV2VkLCAxNiBNYXIgMjAxNiAwMjo0NzozMSArMDEw
+MCwNCj4gPiA+IGxpYmluLnlhbmdAbGludXguaW50ZWwuY29tIHdyb3RlOg0KPiA+ID4gPg0KPiA+
+ID4gPiBGcm9tOiBMaWJpbiBZYW5nIDxsaWJpbi55YW5nQGxpbnV4LmludGVsLmNvbT4NCj4gPiA+
+ID4NCj4gPiA+ID4gVGhpcyBwYXRjaGVzIGFkZHMgdGhlIHN1cHBvcnQgb2YgY29ubmVjdGlvbiBs
+aXN0IGZvciBEUCBNU1QuDQo+ID4gPiA+IFdpdGggdGhpcywgaGRtaSBkcml2ZXIgaW4gRFAgTVNU
+IG1vZGUgY2FuIGVhc2lseSByZXVzZQ0KPiA+ID4gPiB0aGUgY29ubmVjdGlvbiBsaXN0IG1lY2hh
+bmlzbS4NCj4gPiA+ID4NCj4gPiA+ID4gU2lnbmVkLW9mZi1ieTogTGliaW4gWWFuZyA8bGliaW4u
+eWFuZ0BsaW51eC5pbnRlbC5jb20+DQo+ID4gPg0KPiA+ID4gVGhlIG1lcmdlIHdpbmRvdyB3YXMg
+YWxyZWFkeSBvcGVuZWQsIHNvIGl0J3MgdG9vIGxhdGUgZm9yIHRoaXMga2luZCBvZg0KPiA+ID4g
+Y2hhbmdlIGZvciA0LjYsIGluIGFueXdheS4NCj4gPg0KPiA+IFRoYXQncyBPSy4gV2UgY2FuIHdh
+aXQgZm9yIGxhdGVyIHZlcnNpb24uIFdoYXQgZG8geW91IHRoaW5rIHB1dCB0aGlzDQo+IHBhdGNo
+DQo+ID4gYW5kIG15IGxhdGVyIHBhdGNoZXMgZm9yIE1TVCBpbiB0aGUgdG9waWMgYnJhbmNoLCBz
+dWNoIGFzIGhkbWktamFjaw0KPiBicmFjaA0KPiA+IGxpa2UgYmVmb3JlLiBMYXRlciBwYXRjaGVz
+IGZvciBNU1QgbmVlZHMgZ2Z4IGRyaXZlciBzdXBwb3J0IGFuZCBvdXINCj4gPiBnZnggZHJpdmVy
+IGlzIG5vdCByZWFkeSBmb3IgaXQuDQo+ID4NCj4gPiA+DQo+ID4gPiBCdXQsIHRoZSBmdW5kYW1l
+bnRhbCBxdWVzdGlvbjogd2h5IGRvIHdlIG5lZWQgdG8gbWFuYWdlIHRoZQ0KPiBjYWNoZWQNCj4g
+PiA+IGxpc3Qgb2YgdGhlIHdpZGdldCBjb25uZWN0aW9uIHdpdGggYSBkZXZpY2UgaW5kZXg/ICBJ
+biBvdGhlciB3b3JkcywgaWYNCj4gPiA+IHlvdSBoYXZlIGEgZGlmZmVyZW50IGRldmljZSBpbmRl
+eCwgZG9lcyB0aGUgd2lkZ2V0IGNvbm5lY3Rpb24gaXRzZWxmDQo+ID4gPiBhbHNvIGNoYW5nZT8N
+Cj4gPg0KPiA+IEJhc2VkIG9uIG15IHRlc3QsIGl0IHNob3VsZCBiZSB0aGUgc2FtZS4gQnV0IGZy
+b20gdGhlIHNwZWMsIGl0IHNheXM6DQo+ID4NCj4gPiA3LjMuMy40MiBEZXZpY2UgU2VsZWN0DQo+
+ID4gRm9yIERpZ2l0YWwgRGlzcGxheSBQaW4gV2lkZ2V0IHRoYXQgaXMgbXVsdGkgc3RyZWFtIGNh
+cGFibGUsIHRoZSBEZXZpY2UNCj4gU2VsZWN0IGNvbnRyb2wgZGV0ZXJtaW5lcyB3aGljaA0KPiA+
+IERldmljZSBFbnRyeSBpcyBjdXJyZW50bHkgc2VsZWN0ZWQgYW5kIGFjY2Vzc2libGUgYnkgdGhl
+IFBpbiBXaWRnZXQgdmVyYnMNCj4gd2hpY2ggYXJlIGNvbnRyb2xsaW5nIHRoZSBzaW5rDQo+ID4g
+ZGV2aWNlIG9wZXJhdGlvbnMuIFRoaXMgY29udHJvbCB2ZXJiIGlzIG9ubHkgcmVxdWlyZWQgaWYg
+aXQgaXMgYSBEaWdpdGFsDQo+IERpc3BsYXkgUGluIFdpZGdldCBhbmQgbXVsdGkgc3RyZWFtDQo+
+ID4gY2FwYWJsZS4NCj4gPiBUaGUgaW5kZXggaXMgaW4gcmVsYXRpb24gdG8gdGhlIERldmljZSBM
+aXN0IGFzc29jaWF0ZWQgd2l0aCB0aGUgd2lkZ2V0LiAgVGhlDQo+IGluZGV4IGlzIGEgemVyby1i
+YXNlZCBvZmZzZXQNCj4gPiBpbnRvIHRoZSBEZXZpY2UgTGlzdC4gT25jZSB0aGUgRGV2aWNlIEVu
+dHJ5IGlzIHNlbGVjdGVkIGJ5IHRoZSBTZXQgaW5kZXgsDQo+IGFsbCBzdWJzZXF1ZW50IFBpbiBX
+aWRnZXQgdmVyYnMNCj4gPiBjb250cm9sbGluZyB0aGUgc2luayBkZXZpY2Ugb3BlcmF0aW9ucyB3
+aWxsIGJlIGRpcmVjdGVkIHRvIHRoZSBzZWxlY3RlZA0KPiBEZXZpY2UgRW50cnksIHVudGlsIHRo
+ZSBEZXZpY2UgU2VsZWN0DQo+ID4gdmVyYiBnZXQgdXBkYXRlZCB3aXRoIGEgbmV3IHZhbHVlLiBU
+aGVzZSBQaW4gV2lkZ2V0IHZlcmJzIGluY2x1ZGU6DQo+ID4g74K3ICBDb25uZWN0aW9uIFNlbGVj
+dA0KPiA+IO+CtyAgR2V0IENvbm5lY3Rpb24gTGlzdCBFbnRyeQ0KPiA+IO+CtyAgQW1wbGlmaWVy
+IEdhaW4vTXV0ZQ0KPiA+IO+CtyAgUG93ZXIgU3RhdGUNCj4gPiDvgrcgIFBpbiBXaWRnZXQgQ29u
+dHJvbA0KPiA+IO+CtyAgRUxEIERhdGENCj4gPiDvgrcgIERJUC1TaXplDQo+ID4g74K3ICBESVAt
+SW5kZXgNCj4gPiDvgrcgIERJUC1EYXRhDQo+ID4g74K3ICBESVAtWG1pdEN0cmwNCj4gPiDvgrcg
+IENvbnRlbnQgUHJvdGVjdGlvbiBDb250cm9sDQo+ID4g74K3ICBBU1AgQ2hhbm5lbCBNYXBwaW5n
+DQo+ID4NCj4gPiBTbyBteSB1bmRlcnN0YW5kIGlzIHRoaXMgbWF5IGJlIGNoYW5nZWQuDQo+IA0K
+PiBCdXQgdGhlIHBpbiB3aWRnZXQgaXMgdGhlIHRlcm1pbmFsLiAgU28sIGlmIHlvdSBoYXZlIGEg
+ZGV2aWNlIGluZGV4IHRvDQo+IGNob29zZSBhIGRldmljZSB0aGVyZSwgdGhlIHdpZGdldCBjb25u
+ZWN0aW9uIGxpc3QgaXRzZWxmIGRvZXNuJ3QNCj4gY2hhbmdlLiAgT3IgYW0gSSBtaXNzaW5nIGFu
+eXRoaW5nPw0KDQpUaGUgcGluIG1heSBjb25uZWN0IHRvIHNldmVyYWwgY29udmVydGVycyAoZm9y
+IGV4YW1wbGUpLCBhbmQgaXQNCmNhbiBjaG9vc2Ugd2hpY2ggY29udmVydGVyIHRvIHVzZS4gQW5k
+IGZyb20gdGhlIHNwZWMsIGl0IHNlZW1zDQplYWNoIGRldmljZSBlbnRyeSBjYW4gaGF2ZSBkaWZm
+ZXJlbnQgY29ubmVjdGlvbiBsaXN0IGVudHJ5Lg0KSG93ZXZlciBmcm9tIG15IHRlc3QsIGFsbCBk
+ZXZpY2UgZW50cmllcyBvbiB0aGUgc2FtZSBwaW4gd2lsbCBoYXZlIA0KdGhlIHNhbWUgbGlzdC4N
+Cg0KPiANCj4gDQo+IFRha2FzaGkNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
