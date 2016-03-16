@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ALSA: hda: use list macro for parsing on
-	cleanup" to the asoc tree
-Date: Wed, 16 Mar 2016 10:09:23 +0000
-Message-ID: <E1ag8OJ-00063K-PO@debutante>
-References: <1458035836-1843-2-git-send-email-vinod.koul@intel.com>
+From: Timur Karaldin <karaldin@mcsplus.ru>
+Subject: Re: ASoC: TLV320AIC3x: Adding additional functionality
+ for 3106 with [Patch] for discuss
+Date: Wed, 16 Mar 2016 13:26:19 +0300
+Message-ID: <56E934CB.4040209@mcsplus.ru>
+References: <56E69B3F.8090306@mcsplus.ru> <56E6CEE9.5030802@ti.com>
+ <56E7FC3C.1030503@mcsplus.ru> <56E802D9.4040501@ti.com>
+ <56E834B0.5010808@mcsplus.ru> <56E91FEE.4070604@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 33621265E0E
- for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 11:09:33 +0100 (CET)
-In-Reply-To: <1458035836-1843-2-git-send-email-vinod.koul@intel.com>
+Received: from smtp3.mail.ru (smtp3.mail.ru [94.100.179.58])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CDB7265D8D
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 11:26:22 +0100 (CET)
+In-Reply-To: <56E91FEE.4070604@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,72 +23,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ALSA: hda: use list macro for parsing on cleanup
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 4a6c5e6a8d29e4d33858227db9179e91aa8a7407 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Tue, 15 Mar 2016 16:39:23 +0530
-Subject: [PATCH] ALSA: hda: use list macro for parsing on cleanup
-
-It is always better to use list_for_each_entry_safe() while doing
-cleanup. So use this instead of open coding this in list in
-snd_hdac_stream_free_all()
-
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Acked-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/hda/ext/hdac_ext_stream.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/sound/hda/ext/hdac_ext_stream.c b/sound/hda/ext/hdac_ext_stream.c
-index 023cc4cad5c1..626f3bb24c55 100644
---- a/sound/hda/ext/hdac_ext_stream.c
-+++ b/sound/hda/ext/hdac_ext_stream.c
-@@ -104,12 +104,11 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_init_all);
-  */
- void snd_hdac_stream_free_all(struct hdac_ext_bus *ebus)
- {
--	struct hdac_stream *s;
-+	struct hdac_stream *s, *_s;
- 	struct hdac_ext_stream *stream;
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
- 
--	while (!list_empty(&bus->stream_list)) {
--		s = list_first_entry(&bus->stream_list, struct hdac_stream, list);
-+	list_for_each_entry_safe(s, _s, &bus->stream_list, list) {
- 		stream = stream_to_hdac_ext_stream(s);
- 		snd_hdac_ext_stream_decouple(ebus, stream, false);
- 		list_del(&s->list);
--- 
-2.7.0
+SGkgUGV0ZXIhCgoxNi4wMy4yMDE2IDExOjU3LCBQZXRlciBVamZhbHVzaSDQv9C40YjQtdGCOgo+
+IEhpIFRpbXVyLAo+Cj4gcGxlYXNlIGF2b2lkIHRvcCBwb3N0aW5nLgo+Cj4gT24gMDMvMTUvMTYg
+MTg6MTMsIFRpbXVyIEthcmFsZGluIHdyb3RlOgo+PiBPaywgSSBjaG9vc2UgdGhlIHdheSAjMSB3
+aXRob3V0IGNoYW5naW5nIGtjb250cm9sIG5hbWVzLgo+PiBBbm90aGVyIHRoaW5nIEkgZG9uJ3Qg
+dW5kZXJzdGFuZCBpcyB0aGUgd2F5IGZvciBjYWNoaW5nIGdhaW4gdm9sdW1lIGlmIEkgaGF2ZQo+
+PiBzd2l0Y2hlcyBtdXRlZC4gSXMgdGhlcmUgYW55IHByb3BlciB3YXkgZm9yIHN0b3JpbmcgY2Fj
+aGVkIHZhbHVlcyBiZXR3ZWVuIGdhaW4KPj4gYW5kIHN3aXRjaCBoYW5kbGVycyBpbmNsdWRlcyBz
+b2Z0IHJlc2V0IG9yIEkgbmVlZCBtYW51YWxseSBjaGVjayBrY29udHJvbCBuYW1lCj4+IGluIGhh
+bmRsZXIgYW5kIGNhY2hlIHZhbHVlcyBpbiBleHRlbmRlZCBwcml2YXRlIHN0cnVjdHVyZT8gVGhl
+IHNhbWUgcXVlc3Rpb24KPj4gZm9yIHN3aXRjaCBoYW5kbGVyLCBiZWNhdXNlIEkgbmVlZCB0byBz
+aGFyZSBjYWNoZWQgdmFsdWVzIGJldHdlZW4gdGhlc2UgaGFuZGxlcnMuCj4gU2luY2UgdGhlIHBy
+b2JsZW1hdGljIHJlZ2lzdGVycyBhcmU6IDE3LCAxOCwgLi4gMjQuIEkgd291bGQgaGF2ZSBhbiBh
+cnJheQo+IGluc2lkZSBzdHJ1Y3QgYWljM3hfcHJpdiB0byBzdG9yZSB0aGUgY29uZmlndXJlZCBn
+YWluLiBZb3UgY291bGQgc3RvcmUgdGhlCj4gbXV0ZSBhcyB3ZWxsLCBidXQgc2luY2UgcmVnbWFw
+IGlzIGNhY2hpbmcgdGhlIGNvbnRlbnQgSSB3b3VsZCBzaW1wbHkgcmVhZCBiYWNrCj4gdGhlIGdh
+aW4gdmFsdWUgYW5kIGlmIGl0IGlzIDB4ZiwgaXQgaXMgbXV0ZWQsIHNvIHVwZGF0ZSBvbmx5IHRo
+ZSBsb2NhbCBzaGFkb3csCj4gaWYgaXQgaXMgbm90IG11dGVkLCB3cml0ZSB0aGUgZ2Fpbi4KPiBJ
+biB0aGUgbXV0ZS91bm11dGUgY29udHJvbHMgSSB3b3VsZCB0aGVuIHNhdmUgdGhlIGdhaW4gdG8g
+c2hhZG93IHdoZW4gbXV0aW5nCj4gdGhlIHBhdGggYW5kIHdyaXRlIHRoZSBjYWNoZWQgZ2FpbiB0
+byB0aGUgcmVnaXN0ZXIgd2hlbiB1bm11dGluZyBpdC4gWW91Cj4gc2hvdWxkIGFsc28gcmV0dXJu
+IGNvcnJlY3QgMC8xIGZvciB0aGUgdW5tdXRlIHN0YXRlIGFuZCBub3QgdGhlIGFjdHVhbAo+IHJl
+Z2lzdGVyIHZhbHVlLgpBY3R1YWxseSBJIHRyeSB0byBhdm9pZCBjb21wbGV4IGhhbmRsZXIsIHdp
+dGggc3dpdGNoLWNhc2Ugd2hpY2ggZGVwZW5kcyAKb24gcmVnIG51bWJlciBvciBrY29udHJvbCBu
+YW1lIGluc2lkZSBvZiBpdC4KSSBoYXZlIGZvdW5kIHNpbWlsYXIgZGlzY3Vzc2lvbiB3aXRoIHlv
+dSBhYm91dCBvbmUgeWVhciBhZ28gaGVyZSAKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
+Zy9waXBlcm1haWwvYWxzYS1kZXZlbC8yMDE1LUZlYnJ1YXJ5LzA4NzQzMC5odG1sLiAKVGhlcmUg
+aXMgYSBwcm9wb3NhbCB0byB1c2UgVExWX0RCX1JBTkdFX0hFQUQoKSBhbmQgVExWX0RCX1NDQUxF
+X0lURU0oKSAKYmVjYXVzZSBvZiBpbnZlcnQgd2l0aCBTT0NfREFQTV9TSU5HTEVfVExWLiBBcyBJ
+IHVuZGVyc3RhbmQgd2UgY291bGQgCm1ha2UgdGx2IHdpdGggdXNpbmcgMCBhcyBtdXRlLCBza2lw
+IHZhbHVlcyAxLTYsIHVzZSB2YWx1ZXMgNy0xNSAoNyA9IAotMTJkQiBhbmQgMTU9MGRCKSB0aGVu
+IGRlY2xhcmUgU09DX0RBUE1fU0lOR0xFX1RMViBhcyAiTGluZTFMIFZvbHVtZSIgCmZvciBleGFt
+cGxlLiBJcyBpdCBzdGlsbCBhY3R1YWw/IEZldyB0aGluZ3Mgd2hpY2ggSSBkaWRuJ3QgdW5kZXJz
+dGFuZDoKLSBzaG91bGQgSSB1c2UgIkxpbmUxTCBTd2l0Y2giIHRvZ2V0aGVyIHdpdGggIkxpbmUx
+TCBWb2x1bWUiIGluIHRoaXMgCmNhc2UuIEkgdGhpbmsgbm8sIGJlY2F1c2UgREFQTV9TSU5HTEVf
+VExWIHNob3VsZCByZXBsYWNlIHN3aXRjaC4KLSBpIGRvbid0IHVuZGVyc3RhbmQgaG93IGRlY2xh
+cmUgdGx2IHdpdGggc2tpcHBpbmcgdmFsdWVzIDEtNgoKQ2hlZXJzLCBUaW0KX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
