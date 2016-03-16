@@ -1,40 +1,73 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [alsa-devel]  ASoC and pulseaudio
-Date: Wed, 16 Mar 2016 17:59:37 +0000
-Message-ID: <1458151177.3844.50.camel@loki>
-References: <20160314160654.GA2566@sirena.org.uk>
- <1458021688.8522.16.camel@loki> <20160315084544.GF2566@sirena.org.uk>
- <s5hmvq0glxj.wl-tiwai@suse.de> <1458035331.8522.52.camel@loki>
- <s5h8u1kgj3c.wl-tiwai@suse.de> <1458039506.8522.70.camel@loki>
- <20160316145704.GU13211@localhost> <20160316150949.GX2566@sirena.org.uk>
- <s5hwpp2bggh.wl-tiwai@suse.de> <20160316155342.GV13211@localhost>
-Reply-To: General PulseAudio Discussion
- <pulseaudio-discuss@lists.freedesktop.org>
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Subject: Re: [PATCH] ASoC: nau8825: support different clock
+	source for FLL function
+Date: Wed, 16 Mar 2016 16:06:35 -0700
+Message-ID: <CAOMFOmXH-0cZ-VON3Ozttpaouuu+QWMTpdmB_fbELd+BhOUEaw@mail.gmail.com>
+References: <1458014901-28049-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-In-Reply-To: <20160316155342.GV13211@localhost>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, "han.lu" <han.lu@linux.intel.com>, Linux Upstreaming Team <linux@endlessm.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-io0-f181.google.com (mail-io0-f181.google.com
+ [209.85.223.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id D79E22661BF
+ for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2016 00:06:36 +0100 (CET)
+Received: by mail-io0-f181.google.com with SMTP id n190so78372797iof.0
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 16:06:36 -0700 (PDT)
+In-Reply-To: <1458014901-28049-1-git-send-email-KCHSU0@nuvoton.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, YHCHuang@nuvoton.com, Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>, Mark Brown <broonie@kernel.org>, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, Yong Zhi <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAyMDE2LTAzLTE2IGF0IDIxOjIzICswNTMwLCBWaW5vZCBLb3VsIHdyb3RlOgoKPiAK
-PiA+IFllYWgsIHRoYXQgc2hvdWxkIGJlIGZlYXNpYmxlLiAgQWxzbywgdGhlcmUgaXMgYSAiY29t
-cG9uZW50IiBmaWVsZAo+ID4gYXNzaWduZWQgdG8gdGhlIGNhcmQuICBUaGlzIGlzIHN1cHBvc2Vk
-IHRvIGJlIHJlZmVycmVkIGJ5IHVzZXItc3BhY2UKPiA+IGFzIGFkZGl0aW9uYWwgaW5mb3JtYXRp
-b24uICBTZWUgc25kX2NvbXBvbmVudF9hZGQoKS4KPiAKPiBXaWxsIGFkZCB0aGlzIHRvIG15IGV2
-ZXIgZ3Jvd2luZyBsaXN0IG9mIHRoaW5ncyB0byBkby4uLiA6RAoKWW91IGRvbid0IGhhdmUgdG8g
-OikKCkl0J3Mgb24gSGFuJ3MgbGlzdC4KCkxpYW0KCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpwdWxzZWF1ZGlvLWRpc2N1c3MgbWFpbGluZyBsaXN0CnB1
-bHNlYXVkaW8tZGlzY3Vzc0BsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVl
-ZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9wdWxzZWF1ZGlvLWRpc2N1c3MK
+Hi
+
+On Mon, Mar 14, 2016 at 9:08 PM, John Hsu <KCHSU0@nuvoton.com> wrote:
+> Extend FLL clock source selection. The source can be from MCLK, BCLK or FS.
+>
+> Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+> ---
+>  sound/soc/codecs/nau8825.c | 82 +++++++++++++++++++++++++++++++++-------------
+>  sound/soc/codecs/nau8825.h |  8 +++++
+>  2 files changed, 67 insertions(+), 23 deletions(-)
+>
+> diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+> index 1c87299..ac264ec 100644
+> --- a/sound/soc/codecs/nau8825.c
+> +++ b/sound/soc/codecs/nau8825.c
+> @@ -1053,6 +1053,37 @@ static int nau8825_set_pll(struct snd_soc_codec *codec, int pll_id, int source,
+>         return 0;
+>  }
+>
+> +static int nau8825_mclk_prepare(struct nau8825 *nau8825, unsigned int freq)
+> +{
+> +       int ret = 0;
+> +
+> +       nau8825->mclk = devm_clk_get(nau8825->dev, "mclk");
+> +       if (IS_ERR(nau8825->mclk)) {
+
+Is it possible that clock system is not ready at this point and the
+method returns -EPROBE_DEFER? If so it matches IS_ERR() but not a real
+error and the nua8825 driver should backoff and wait a little before
+clocks are ready.
+
+> +               dev_info(nau8825->dev, "No 'mclk' clock found, assume MCLK is managed externally");
+> +               return 0;
+> +       }
+> +
+> +       if (!nau8825->mclk_freq) {
+> +               ret = clk_prepare_enable(nau8825->mclk);
+> +               if (ret) {
+> +                       dev_err(nau8825->dev, "Unable to prepare codec mclk\n");
+> +                       return ret;
+> +               }
+> +       }
+> +
