@@ -1,19 +1,18 @@
-From: Timur Karaldin <karaldin@mcsplus.ru>
-Subject: Re: ASoC: TLV320AIC3x: Adding additional functionality
- for 3106 with [Patch] for discuss
-Date: Wed, 16 Mar 2016 13:26:19 +0300
-Message-ID: <56E934CB.4040209@mcsplus.ru>
-References: <56E69B3F.8090306@mcsplus.ru> <56E6CEE9.5030802@ti.com>
- <56E7FC3C.1030503@mcsplus.ru> <56E802D9.4040501@ti.com>
- <56E834B0.5010808@mcsplus.ru> <56E91FEE.4070604@ti.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v2 6/6] ASoC: Intel: Skylake: remove call
+	to pci_dev_put
+Date: Wed, 16 Mar 2016 16:22:44 +0530
+Message-ID: <20160316105244.GR13211@localhost>
+References: <1458040168-3769-1-git-send-email-vinod.koul@intel.com>
+ <1458040168-3769-7-git-send-email-vinod.koul@intel.com>
+ <20160316100829.GS2566@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============5667675666310669966=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp3.mail.ru (smtp3.mail.ru [94.100.179.58])
- by alsa0.perex.cz (Postfix) with ESMTP id 1CDB7265D8D
- for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 11:26:22 +0100 (CET)
-In-Reply-To: <56E91FEE.4070604@ti.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC137265DC8
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2016 11:48:26 +0100 (CET)
+In-Reply-To: <20160316100829.GS2566@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,45 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-SGkgUGV0ZXIhCgoxNi4wMy4yMDE2IDExOjU3LCBQZXRlciBVamZhbHVzaSDQv9C40YjQtdGCOgo+
-IEhpIFRpbXVyLAo+Cj4gcGxlYXNlIGF2b2lkIHRvcCBwb3N0aW5nLgo+Cj4gT24gMDMvMTUvMTYg
-MTg6MTMsIFRpbXVyIEthcmFsZGluIHdyb3RlOgo+PiBPaywgSSBjaG9vc2UgdGhlIHdheSAjMSB3
-aXRob3V0IGNoYW5naW5nIGtjb250cm9sIG5hbWVzLgo+PiBBbm90aGVyIHRoaW5nIEkgZG9uJ3Qg
-dW5kZXJzdGFuZCBpcyB0aGUgd2F5IGZvciBjYWNoaW5nIGdhaW4gdm9sdW1lIGlmIEkgaGF2ZQo+
-PiBzd2l0Y2hlcyBtdXRlZC4gSXMgdGhlcmUgYW55IHByb3BlciB3YXkgZm9yIHN0b3JpbmcgY2Fj
-aGVkIHZhbHVlcyBiZXR3ZWVuIGdhaW4KPj4gYW5kIHN3aXRjaCBoYW5kbGVycyBpbmNsdWRlcyBz
-b2Z0IHJlc2V0IG9yIEkgbmVlZCBtYW51YWxseSBjaGVjayBrY29udHJvbCBuYW1lCj4+IGluIGhh
-bmRsZXIgYW5kIGNhY2hlIHZhbHVlcyBpbiBleHRlbmRlZCBwcml2YXRlIHN0cnVjdHVyZT8gVGhl
-IHNhbWUgcXVlc3Rpb24KPj4gZm9yIHN3aXRjaCBoYW5kbGVyLCBiZWNhdXNlIEkgbmVlZCB0byBz
-aGFyZSBjYWNoZWQgdmFsdWVzIGJldHdlZW4gdGhlc2UgaGFuZGxlcnMuCj4gU2luY2UgdGhlIHBy
-b2JsZW1hdGljIHJlZ2lzdGVycyBhcmU6IDE3LCAxOCwgLi4gMjQuIEkgd291bGQgaGF2ZSBhbiBh
-cnJheQo+IGluc2lkZSBzdHJ1Y3QgYWljM3hfcHJpdiB0byBzdG9yZSB0aGUgY29uZmlndXJlZCBn
-YWluLiBZb3UgY291bGQgc3RvcmUgdGhlCj4gbXV0ZSBhcyB3ZWxsLCBidXQgc2luY2UgcmVnbWFw
-IGlzIGNhY2hpbmcgdGhlIGNvbnRlbnQgSSB3b3VsZCBzaW1wbHkgcmVhZCBiYWNrCj4gdGhlIGdh
-aW4gdmFsdWUgYW5kIGlmIGl0IGlzIDB4ZiwgaXQgaXMgbXV0ZWQsIHNvIHVwZGF0ZSBvbmx5IHRo
-ZSBsb2NhbCBzaGFkb3csCj4gaWYgaXQgaXMgbm90IG11dGVkLCB3cml0ZSB0aGUgZ2Fpbi4KPiBJ
-biB0aGUgbXV0ZS91bm11dGUgY29udHJvbHMgSSB3b3VsZCB0aGVuIHNhdmUgdGhlIGdhaW4gdG8g
-c2hhZG93IHdoZW4gbXV0aW5nCj4gdGhlIHBhdGggYW5kIHdyaXRlIHRoZSBjYWNoZWQgZ2FpbiB0
-byB0aGUgcmVnaXN0ZXIgd2hlbiB1bm11dGluZyBpdC4gWW91Cj4gc2hvdWxkIGFsc28gcmV0dXJu
-IGNvcnJlY3QgMC8xIGZvciB0aGUgdW5tdXRlIHN0YXRlIGFuZCBub3QgdGhlIGFjdHVhbAo+IHJl
-Z2lzdGVyIHZhbHVlLgpBY3R1YWxseSBJIHRyeSB0byBhdm9pZCBjb21wbGV4IGhhbmRsZXIsIHdp
-dGggc3dpdGNoLWNhc2Ugd2hpY2ggZGVwZW5kcyAKb24gcmVnIG51bWJlciBvciBrY29udHJvbCBu
-YW1lIGluc2lkZSBvZiBpdC4KSSBoYXZlIGZvdW5kIHNpbWlsYXIgZGlzY3Vzc2lvbiB3aXRoIHlv
-dSBhYm91dCBvbmUgeWVhciBhZ28gaGVyZSAKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9waXBlcm1haWwvYWxzYS1kZXZlbC8yMDE1LUZlYnJ1YXJ5LzA4NzQzMC5odG1sLiAKVGhlcmUg
-aXMgYSBwcm9wb3NhbCB0byB1c2UgVExWX0RCX1JBTkdFX0hFQUQoKSBhbmQgVExWX0RCX1NDQUxF
-X0lURU0oKSAKYmVjYXVzZSBvZiBpbnZlcnQgd2l0aCBTT0NfREFQTV9TSU5HTEVfVExWLiBBcyBJ
-IHVuZGVyc3RhbmQgd2UgY291bGQgCm1ha2UgdGx2IHdpdGggdXNpbmcgMCBhcyBtdXRlLCBza2lw
-IHZhbHVlcyAxLTYsIHVzZSB2YWx1ZXMgNy0xNSAoNyA9IAotMTJkQiBhbmQgMTU9MGRCKSB0aGVu
-IGRlY2xhcmUgU09DX0RBUE1fU0lOR0xFX1RMViBhcyAiTGluZTFMIFZvbHVtZSIgCmZvciBleGFt
-cGxlLiBJcyBpdCBzdGlsbCBhY3R1YWw/IEZldyB0aGluZ3Mgd2hpY2ggSSBkaWRuJ3QgdW5kZXJz
-dGFuZDoKLSBzaG91bGQgSSB1c2UgIkxpbmUxTCBTd2l0Y2giIHRvZ2V0aGVyIHdpdGggIkxpbmUx
-TCBWb2x1bWUiIGluIHRoaXMgCmNhc2UuIEkgdGhpbmsgbm8sIGJlY2F1c2UgREFQTV9TSU5HTEVf
-VExWIHNob3VsZCByZXBsYWNlIHN3aXRjaC4KLSBpIGRvbid0IHVuZGVyc3RhbmQgaG93IGRlY2xh
-cmUgdGx2IHdpdGggc2tpcHBpbmcgdmFsdWVzIDEtNgoKQ2hlZXJzLCBUaW0KX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+--===============5667675666310669966==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="sDKAb4OeUBrWWL6P"
+Content-Disposition: inline
+
+
+--sDKAb4OeUBrWWL6P
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Mar 16, 2016 at 10:08:29AM +0000, Mark Brown wrote:
+> On Tue, Mar 15, 2016 at 04:39:28PM +0530, Vinod Koul wrote:
+> > In driver remove we call pci_dev_put(), that is not required as we never
+> > call pci_dev_get() so remove that.
+>=20
+> Why is the fix for this not to call pci_dev_get()?
+
+Why do I need either, I see no reason why driver should be doing this,
+so removed :)
+
+
+--=20
+~Vinod
+
+--sDKAb4OeUBrWWL6P
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJW6Tr8AAoJEHwUBw8lI4NHBj8QAMuPNs+e1mJ59vpebn47kF/D
+vgI9YQHOssSkWKqtElTkUsOJecBf+Jfue4WwFupcw6LAWoMajojEoPIKHX3Ax0ZO
+jaHIkexbSCCK4pDffRYgt+3UZMxxRgHeosxv/S3FvrsOQpmahVNxnDhh0gZE07K0
+dfeY8nMRgTdeMZbb8SjorzDL6bgIZu0/6GFBHVP6LLzGG8UpRPr4+x9oDpsk/qpH
+DSSHEby60Yq5y3t+udcGKXK8bNbKjIdpvDHEPdMSj6xgtO+GxqmNOqwfxw2DVb2v
+roOBP33sZyn6Az1R0kujGN3qW8xdKJooh1tus/9zUOzEGG/Zw61mcz9CG2q0jAjW
+PMuFVsv1aID8bsdizAdwR0YIADsZWpLlZM6xdsyyOv3NUqU+feiBnFWLR1F6LJ2/
+K+BHQgSBCPs4ZFhw7Z0Ve3VXi2KbuEX6uTMwNo6Mn1wWD0VwHRS0Me+UV855hj+J
+77AaXYS8NsiZjr09xaJvDmsnXf/GZi8gTcNjlIF8CdW04B9hIHWbswQbOUQz9jEA
+FLkglTxP2OEMs1o96cAs7v5p7gI2/ceoI/f+6+JzKiNbLV0KCGlVv9tPsCAE10qz
+x94LjPZO9ePSRafwE58Ma2kGGStlydV9baktUcvHmrBVvUUneKWhrsXVoKhF8DEq
+lZ6GPIqW5l51xYG7aYgu
+=vAxI
+-----END PGP SIGNATURE-----
+
+--sDKAb4OeUBrWWL6P--
+
+--===============5667675666310669966==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5667675666310669966==--
