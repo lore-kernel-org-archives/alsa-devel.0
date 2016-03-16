@@ -1,103 +1,53 @@
 From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Subject: Re: [PATCH] media: add GFP flag to media_*() that could get called
- in atomic context
-Date: Wed, 16 Mar 2016 09:02:21 -0300
-Message-ID: <20160316090221.02d0a699@recife.lan>
-References: <1457833689-4926-1-git-send-email-shuahkh@osg.samsung.com>
-	<20160314072236.GO11084@valkosipuli.retiisi.org.uk>
-	<20160314071358.27c87dab@recife.lan>
-	<20160314105253.GQ11084@valkosipuli.retiisi.org.uk>
-	<20160314084633.521d3e35@recife.lan>
-	<20160314120909.GS11084@valkosipuli.retiisi.org.uk>
-	<20160315125535.775c8cc3@recife.lan>
-	<20160316082834.GX11084@valkosipuli.retiisi.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20160316082834.GX11084@valkosipuli.retiisi.org.uk>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sakari Ailus <sakari.ailus@iki.fi>
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, kyungmin.park@samsung.com, a.hajda@samsung.com, s.nawrocki@samsung.com, kgene@kernel.org, k.kozlowski@samsung.com, laurent.pinchart@ideasonboard.com, hyun.kwon@xilinx.com, soren.brinkmann@xilinx.com, gregkh@linuxfoundation.org, perex@perex.cz, tiwai@suse.com, hans.verkuil@cisco.com, lixiubo@cmss.chinamobile.com, javier@osg.samsung.com, g.liakhovetski@gmx.de, chehabrafael@gmail.com, crope@iki.fi, tommi.franttila@intel.com, dan.carpenter@oracle.com, prabhakar.csengg@gmail.com, hamohammed.sa@gmail.com, der.herr@hofr.at, navyasri.tech@gmail.com, Julia.Lawall@lip6.fr, amitoj1606@gmail.com, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, linux-renesas-soc@vger.kernel.org, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
+Subject: [PATCH 1/2] sound/usb/media: use core routine to initialize media_device
+Date: Wed, 16 Mar 2016 10:00:37 -0300
+Message-ID: <907cfedffb3524aeffcdfde0efe3f23f2eb70dd1.1458133227.git.mchehab@osg.samsung.com>
+Return-path: <linux-media-owner@vger.kernel.org>
+Sender: linux-media-owner@vger.kernel.org
+To: Linux Media Mailing List <linux-media@vger.kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Mauro Carvalho Chehab <mchehab@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Shuah Khan <shuahkh@osg.samsung.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Em Wed, 16 Mar 2016 10:28:35 +0200
-Sakari Ailus <sakari.ailus@iki.fi> escreveu:
+The media core has now a routine to initialize media_device
+for USB devices. Use it, instead of doing its own logic,
+as it warrants that all USB drivers will behave the same. It
+also warrants that the device will get the same data, no matter
+if it was initialized initially via snd-usb-audio or via
+some other driver, like au0828.
 
-> Hi Mauro,
-> 
-> On Tue, Mar 15, 2016 at 12:55:35PM -0300, Mauro Carvalho Chehab wrote:
-> > Em Mon, 14 Mar 2016 14:09:09 +0200
-> > Sakari Ailus <sakari.ailus@iki.fi> escreveu:
-> >   
-> > > Hi Mauro,
-> > > 
+Signed-off-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+---
+ sound/usb/media.c | 18 +++++-------------
+ 1 file changed, 5 insertions(+), 13 deletions(-)
 
-...
-
-> > > Notify callbacks, perhaps not, but the list is still protected by the
-> > > spinlock. It perhaps is not likely that another process would change it but
-> > > I don't think we can rely on that.  
-> > 
-> > I can see only 2 risks protected by the lock:
-> > 
-> > 1) mdev gets freed while an entity is being created. This is a problem
-> >    with the current memory protection schema we're using. I guess the
-> >    only way to fix it is to use kref for mdev/entities/interfaces/links/pads.
-> >    This change doesn't make it better or worse.
-> >    Also, I don't think we have such risk with the current devices.
-> > 
-> > 2) a notifier may be inserted or removed by another driver, while the
-> >    loop is running.
-> > 
-> > To avoid (2), I see 3 alternatives:
-> > 
-> > a) keep the loop as proposed on this patch. As the list is navigated using 
-> > list_for_each_entry_safe(), I guess[1] it should be safe to remove/add
-> > new notify callbacks there while the loop is running by some other process.   
-> 
-> list_for_each_entry_safe() does not protect against concurrent access, only
-> against adding and removing list entries by the same user. List access
-> serialisation is still needed, whether you use _safe() functions or not.
-> 
-> > 
-> > [1] It *is* safe if the change were done inside the loop - but I'm not
-> > 100% sure that it is safe if some other CPU touches the notify list.  
-> 
-> Indeed.
-> 
-> > 
-> > b) Unlock/relock the spinlock every time:
-> > 
-> > 	/* previous code that locks mdev->lock spinlock */
-> > 
-> >  	/* invoke entity_notify callbacks */
-> >  	list_for_each_entry_safe(notify, next, &mdev->entity_notify, list) {
-> > 		spin_unlock(&mdev->lock);
-> >  		(notify)->notify(entity, notify->notify_data);
-> > 		spin_lock(&mdev->lock);
-> >  	}
-> >  
-> > 	spin_unlock(&mdev->lock);
-> > 
-> > c) use a separate lock for the notify list -this seems to be an overkill.
-> > 
-> > d) Protect it with the graph traversal mutex. That sounds the worse idea,
-> >    IMHO, as we'll be abusing the lock.  
-> 
-> I'd simply replace the spinlock with a mutex here. As we want to get rid of
-> the graph mutex anyway in the long run, let's not mix the two as they're
-> well separated now. As long as the mutex users do not sleep (i.e. the
-> notify() callback) the mutex is about as fast to use as the spinlock.
-
-It could work. I added such patch on an experimental branch, where
-I'm addressing a few troubles with au0828 unbind logic:
-	https://git.linuxtv.org/mchehab/experimental.git/log/?h=au0828-unbind-fixes
-
-The patch itself is at:
-	https://git.linuxtv.org/mchehab/experimental.git/commit/?h=au0828-unbind-fixes&id=dba4d41bdfa6bb8dc51cb0f692102919b2b7c8b4
-
-At least for au0828, it seems to work fine.
-
-Regards,
-Mauro
+diff --git a/sound/usb/media.c b/sound/usb/media.c
+index 93a50d01490c..44a5de91f748 100644
+--- a/sound/usb/media.c
++++ b/sound/usb/media.c
+@@ -263,19 +263,11 @@ int media_snd_device_create(struct snd_usb_audio *chip,
+ 	mdev = media_device_get_devres(&usbdev->dev);
+ 	if (!mdev)
+ 		return -ENOMEM;
+-	if (!mdev->dev) {
+-		/* register media device */
+-		mdev->dev = &usbdev->dev;
+-		if (usbdev->product)
+-			strlcpy(mdev->model, usbdev->product,
+-				sizeof(mdev->model));
+-		if (usbdev->serial)
+-			strlcpy(mdev->serial, usbdev->serial,
+-				sizeof(mdev->serial));
+-		strcpy(mdev->bus_info, usbdev->devpath);
+-		mdev->hw_revision = le16_to_cpu(usbdev->descriptor.bcdDevice);
+-		media_device_init(mdev);
+-	}
++
++	/* Initialize media device */
++	if (!mdev->dev)
++		media_device_usb_init(mdev, usbdev, NULL);
++
+ 	if (!media_devnode_is_registered(&mdev->devnode)) {
+ 		ret = media_device_register(mdev);
+ 		if (ret) {
+-- 
+2.5.0
