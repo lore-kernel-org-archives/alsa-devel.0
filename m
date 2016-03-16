@@ -1,11 +1,11 @@
 From: Harry Pan <harry.pan@intel.com>
 Subject: [PATCH] ASoC: dapm: Do not traverse widget hooks to snd-soc-dummy
-Date: Wed, 16 Mar 2016 19:17:51 +0800
-Message-ID: <1458127071-14417-1-git-send-email-harry.pan@intel.com>
+Date: Wed, 16 Mar 2016 18:43:40 +0800
+Message-ID: <1458125020-13792-1-git-send-email-harry.pan@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: LKML <linux-kernel@vger.kernel.org>
-Cc: Harry Pan <gs0622@gmail.com>, Harry Pan <harry.pan@intel.com>, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Cc: gs0622@gmail.com, Harry Pan <harry.pan@intel.com>, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 All components are initially given an empty card when registering platform,
