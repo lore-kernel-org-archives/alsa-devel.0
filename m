@@ -1,27 +1,15 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH] ALSA: hda - codec add DP MST support
-	for	connection list
-Date: Thu, 17 Mar 2016 01:28:16 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D1904682AC2@SHSMSX103.ccr.corp.intel.com>
-References: <1458092851-121925-1-git-send-email-libin.yang@linux.intel.com>
- <s5h1t7ax4ce.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19046824FE@SHSMSX103.ccr.corp.intel.com>
- <s5hy49ivotb.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D190468286E@SHSMSX103.ccr.corp.intel.com>
- <s5hfuvqcygd.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19046828A6@SHSMSX103.ccr.corp.intel.com>
- <s5h7fh2cx9w.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19046828C9@SHSMSX103.ccr.corp.intel.com>
- <s5h1t7acwqo.wl-tiwai@suse.de>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: [PATCH] sound/usb: Fix memory leak in
+	media_snd_stream_delete() during unbind
+Date: Wed, 16 Mar 2016 20:58:06 -0600
+Message-ID: <1458183486-8113-1-git-send-email-shuahkh@osg.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id D9A9426602C
- for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2016 02:28:22 +0100 (CET)
-In-Reply-To: <s5h1t7acwqo.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mailout.easymail.ca (mailout.easymail.ca [64.68.201.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 474EC261564
+ for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2016 03:58:13 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,131 +19,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: mchehab@osg.samsung.com, perex@perex.cz
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFRha2FzaGkgSXdhaSBbbWFp
-bHRvOnRpd2FpQHN1c2UuZGVdDQo+IFNlbnQ6IFdlZG5lc2RheSwgTWFyY2ggMTYsIDIwMTYgMTA6
-NDAgUE0NCj4gVG86IFlhbmcsIExpYmluDQo+IENjOiBsaWJpbi55YW5nQGxpbnV4LmludGVsLmNv
-bTsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBMaW4sDQo+IE1lbmdkb25nDQo+IFN1Ympl
-Y3Q6IFJlOiBbYWxzYS1kZXZlbF0gW1BBVENIXSBBTFNBOiBoZGEgLSBjb2RlYyBhZGQgRFAgTVNU
-IHN1cHBvcnQNCj4gZm9yIGNvbm5lY3Rpb24gbGlzdA0KPiANCj4gT24gV2VkLCAxNiBNYXIgMjAx
-NiAxNTozNzowOCArMDEwMCwNCj4gWWFuZywgTGliaW4gd3JvdGU6DQo+ID4NCj4gPg0KPiA+ID4g
-LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+IEZyb206IFRha2FzaGkgSXdhaSBbbWFp
-bHRvOnRpd2FpQHN1c2UuZGVdDQo+ID4gPiBTZW50OiBXZWRuZXNkYXksIE1hcmNoIDE2LCAyMDE2
-IDEwOjI4IFBNDQo+ID4gPiBUbzogWWFuZywgTGliaW4NCj4gPiA+IENjOiBsaWJpbi55YW5nQGxp
-bnV4LmludGVsLmNvbTsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBMaW4sDQo+ID4gPiBN
-ZW5nZG9uZw0KPiA+ID4gU3ViamVjdDogUmU6IFthbHNhLWRldmVsXSBbUEFUQ0hdIEFMU0E6IGhk
-YSAtIGNvZGVjIGFkZCBEUCBNU1QNCj4gc3VwcG9ydA0KPiA+ID4gZm9yIGNvbm5lY3Rpb24gbGlz
-dA0KPiA+ID4NCj4gPiA+IE9uIFdlZCwgMTYgTWFyIDIwMTYgMTU6MjQ6NTQgKzAxMDAsDQo+ID4g
-PiBZYW5nLCBMaWJpbiB3cm90ZToNCj4gPiA+ID4NCj4gPiA+ID4NCj4gPiA+ID4gPiAtLS0tLU9y
-aWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+ID4gPiA+IEZyb206IFRha2FzaGkgSXdhaSBbbWFpbHRv
-OnRpd2FpQHN1c2UuZGVdDQo+ID4gPiA+ID4gU2VudDogV2VkbmVzZGF5LCBNYXJjaCAxNiwgMjAx
-NiAxMDowMyBQTQ0KPiA+ID4gPiA+IFRvOiBZYW5nLCBMaWJpbg0KPiA+ID4gPiA+IENjOiBsaWJp
-bi55YW5nQGxpbnV4LmludGVsLmNvbTsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBMaW4s
-DQo+ID4gPiA+ID4gTWVuZ2RvbmcNCj4gPiA+ID4gPiBTdWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxd
-IFtQQVRDSF0gQUxTQTogaGRhIC0gY29kZWMgYWRkIERQIE1TVA0KPiA+ID4gc3VwcG9ydA0KPiA+
-ID4gPiA+IGZvciBjb25uZWN0aW9uIGxpc3QNCj4gPiA+ID4gPg0KPiA+ID4gPiA+IE9uIFdlZCwg
-MTYgTWFyIDIwMTYgMTQ6NTM6MDkgKzAxMDAsDQo+ID4gPiA+ID4gWWFuZywgTGliaW4gd3JvdGU6
-DQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gRnJvbTogVGFrYXNoaSBJ
-d2FpIFttYWlsdG86dGl3YWlAc3VzZS5kZV0NCj4gPiA+ID4gPiA+ID4gU2VudDogV2VkbmVzZGF5
-LCBNYXJjaCAxNiwgMjAxNiAzOjU2IFBNDQo+ID4gPiA+ID4gPiA+IFRvOiBZYW5nLCBMaWJpbg0K
-PiA+ID4gPiA+ID4gPiBDYzogbGliaW4ueWFuZ0BsaW51eC5pbnRlbC5jb207IGFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZzsNCj4gTGluLA0KPiA+ID4gPiA+ID4gPiBNZW5nZG9uZw0KPiA+ID4g
-PiA+ID4gPiBTdWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIFtQQVRDSF0gQUxTQTogaGRhIC0gY29k
-ZWMgYWRkIERQDQo+IE1TVA0KPiA+ID4gPiA+IHN1cHBvcnQNCj4gPiA+ID4gPiA+ID4gZm9yIGNv
-bm5lY3Rpb24gbGlzdA0KPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiBPbiBXZWQsIDE2IE1h
-ciAyMDE2IDA4OjQ4OjU4ICswMTAwLA0KPiA+ID4gPiA+ID4gPiBZYW5nLCBMaWJpbiB3cm90ZToN
-Cj4gPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiA+IEhpIFRha2FzaGksDQo+ID4gPiA+ID4g
-PiA+ID4NCj4gPiA+ID4gPiA+ID4gPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4g
-PiA+ID4gPiA+ID4gPiBGcm9tOiBUYWthc2hpIEl3YWkgW21haWx0bzp0aXdhaUBzdXNlLmRlXQ0K
-PiA+ID4gPiA+ID4gPiA+ID4gU2VudDogV2VkbmVzZGF5LCBNYXJjaCAxNiwgMjAxNiAzOjM1IFBN
-DQo+ID4gPiA+ID4gPiA+ID4gPiBUbzogbGliaW4ueWFuZ0BsaW51eC5pbnRlbC5jb20NCj4gPiA+
-ID4gPiA+ID4gPiA+IENjOiBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IFlhbmcsIExpYmlu
-OyBMaW4sDQo+IE1lbmdkb25nDQo+ID4gPiA+ID4gPiA+ID4gPiBTdWJqZWN0OiBSZTogW2Fsc2Et
-ZGV2ZWxdIFtQQVRDSF0gQUxTQTogaGRhIC0gY29kZWMgYWRkIERQDQo+ID4gPiBNU1QNCj4gPiA+
-ID4gPiA+ID4gc3VwcG9ydA0KPiA+ID4gPiA+ID4gPiA+ID4gZm9yIGNvbm5lY3Rpb24gbGlzdA0K
-PiA+ID4gPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gPiA+IE9uIFdlZCwgMTYgTWFyIDIwMTYg
-MDI6NDc6MzEgKzAxMDAsDQo+ID4gPiA+ID4gPiA+ID4gPiBsaWJpbi55YW5nQGxpbnV4LmludGVs
-LmNvbSB3cm90ZToNCj4gPiA+ID4gPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gPiA+ID4gRnJv
-bTogTGliaW4gWWFuZyA8bGliaW4ueWFuZ0BsaW51eC5pbnRlbC5jb20+DQo+ID4gPiA+ID4gPiA+
-ID4gPiA+DQo+ID4gPiA+ID4gPiA+ID4gPiA+IFRoaXMgcGF0Y2hlcyBhZGRzIHRoZSBzdXBwb3J0
-IG9mIGNvbm5lY3Rpb24gbGlzdCBmb3IgRFANCj4gTVNULg0KPiA+ID4gPiA+ID4gPiA+ID4gPiBX
-aXRoIHRoaXMsIGhkbWkgZHJpdmVyIGluIERQIE1TVCBtb2RlIGNhbiBlYXNpbHkgcmV1c2UNCj4g
-PiA+ID4gPiA+ID4gPiA+ID4gdGhlIGNvbm5lY3Rpb24gbGlzdCBtZWNoYW5pc20uDQo+ID4gPiA+
-ID4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiA+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IExpYmluIFlh
-bmcgPGxpYmluLnlhbmdAbGludXguaW50ZWwuY29tPg0KPiA+ID4gPiA+ID4gPiA+ID4NCj4gPiA+
-ID4gPiA+ID4gPiA+IFRoZSBtZXJnZSB3aW5kb3cgd2FzIGFscmVhZHkgb3BlbmVkLCBzbyBpdCdz
-IHRvbyBsYXRlIGZvcg0KPiB0aGlzDQo+ID4gPiA+ID4ga2luZCBvZg0KPiA+ID4gPiA+ID4gPiA+
-ID4gY2hhbmdlIGZvciA0LjYsIGluIGFueXdheS4NCj4gPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+
-ID4gPiA+IFRoYXQncyBPSy4gV2UgY2FuIHdhaXQgZm9yIGxhdGVyIHZlcnNpb24uIFdoYXQgZG8g
-eW91IHRoaW5rDQo+IHB1dA0KPiA+ID4gdGhpcw0KPiA+ID4gPiA+ID4gPiBwYXRjaA0KPiA+ID4g
-PiA+ID4gPiA+IGFuZCBteSBsYXRlciBwYXRjaGVzIGZvciBNU1QgaW4gdGhlIHRvcGljIGJyYW5j
-aCwgc3VjaCBhcw0KPiBoZG1pLQ0KPiA+ID4gamFjaw0KPiA+ID4gPiA+ID4gPiBicmFjaA0KPiA+
-ID4gPiA+ID4gPiA+IGxpa2UgYmVmb3JlLiBMYXRlciBwYXRjaGVzIGZvciBNU1QgbmVlZHMgZ2Z4
-IGRyaXZlciBzdXBwb3J0DQo+IGFuZA0KPiA+ID4gb3VyDQo+ID4gPiA+ID4gPiA+ID4gZ2Z4IGRy
-aXZlciBpcyBub3QgcmVhZHkgZm9yIGl0Lg0KPiA+ID4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiA+
-ID4gPg0KPiA+ID4gPiA+ID4gPiA+ID4gQnV0LCB0aGUgZnVuZGFtZW50YWwgcXVlc3Rpb246IHdo
-eSBkbyB3ZSBuZWVkIHRvDQo+IG1hbmFnZQ0KPiA+ID4gdGhlDQo+ID4gPiA+ID4gPiA+IGNhY2hl
-ZA0KPiA+ID4gPiA+ID4gPiA+ID4gbGlzdCBvZiB0aGUgd2lkZ2V0IGNvbm5lY3Rpb24gd2l0aCBh
-IGRldmljZSBpbmRleD8gIEluIG90aGVyDQo+ID4gPiB3b3JkcywNCj4gPiA+ID4gPiBpZg0KPiA+
-ID4gPiA+ID4gPiA+ID4geW91IGhhdmUgYSBkaWZmZXJlbnQgZGV2aWNlIGluZGV4LCBkb2VzIHRo
-ZSB3aWRnZXQNCj4gY29ubmVjdGlvbg0KPiA+ID4gPiA+IGl0c2VsZg0KPiA+ID4gPiA+ID4gPiA+
-ID4gYWxzbyBjaGFuZ2U/DQo+ID4gPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gPiBCYXNlZCBv
-biBteSB0ZXN0LCBpdCBzaG91bGQgYmUgdGhlIHNhbWUuIEJ1dCBmcm9tIHRoZSBzcGVjLCBpdA0K
-PiA+ID4gc2F5czoNCj4gPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiA+IDcuMy4zLjQyIERl
-dmljZSBTZWxlY3QNCj4gPiA+ID4gPiA+ID4gPiBGb3IgRGlnaXRhbCBEaXNwbGF5IFBpbiBXaWRn
-ZXQgdGhhdCBpcyBtdWx0aSBzdHJlYW0gY2FwYWJsZSwNCj4gdGhlDQo+ID4gPiA+ID4gRGV2aWNl
-DQo+ID4gPiA+ID4gPiA+IFNlbGVjdCBjb250cm9sIGRldGVybWluZXMgd2hpY2gNCj4gPiA+ID4g
-PiA+ID4gPiBEZXZpY2UgRW50cnkgaXMgY3VycmVudGx5IHNlbGVjdGVkIGFuZCBhY2Nlc3NpYmxl
-IGJ5IHRoZSBQaW4NCj4gPiA+IFdpZGdldA0KPiA+ID4gPiA+IHZlcmJzDQo+ID4gPiA+ID4gPiA+
-IHdoaWNoIGFyZSBjb250cm9sbGluZyB0aGUgc2luaw0KPiA+ID4gPiA+ID4gPiA+IGRldmljZSBv
-cGVyYXRpb25zLiBUaGlzIGNvbnRyb2wgdmVyYiBpcyBvbmx5IHJlcXVpcmVkIGlmIGl0IGlzIGEN
-Cj4gPiA+IERpZ2l0YWwNCj4gPiA+ID4gPiA+ID4gRGlzcGxheSBQaW4gV2lkZ2V0IGFuZCBtdWx0
-aSBzdHJlYW0NCj4gPiA+ID4gPiA+ID4gPiBjYXBhYmxlLg0KPiA+ID4gPiA+ID4gPiA+IFRoZSBp
-bmRleCBpcyBpbiByZWxhdGlvbiB0byB0aGUgRGV2aWNlIExpc3QgYXNzb2NpYXRlZCB3aXRoIHRo
-ZQ0KPiA+ID4gd2lkZ2V0Lg0KPiA+ID4gPiA+IFRoZQ0KPiA+ID4gPiA+ID4gPiBpbmRleCBpcyBh
-IHplcm8tYmFzZWQgb2Zmc2V0DQo+ID4gPiA+ID4gPiA+ID4gaW50byB0aGUgRGV2aWNlIExpc3Qu
-IE9uY2UgdGhlIERldmljZSBFbnRyeSBpcyBzZWxlY3RlZCBieSB0aGUNCj4gU2V0DQo+ID4gPiA+
-ID4gaW5kZXgsDQo+ID4gPiA+ID4gPiA+IGFsbCBzdWJzZXF1ZW50IFBpbiBXaWRnZXQgdmVyYnMN
-Cj4gPiA+ID4gPiA+ID4gPiBjb250cm9sbGluZyB0aGUgc2luayBkZXZpY2Ugb3BlcmF0aW9ucyB3
-aWxsIGJlIGRpcmVjdGVkIHRvIHRoZQ0KPiA+ID4gc2VsZWN0ZWQNCj4gPiA+ID4gPiA+ID4gRGV2
-aWNlIEVudHJ5LCB1bnRpbCB0aGUgRGV2aWNlIFNlbGVjdA0KPiA+ID4gPiA+ID4gPiA+IHZlcmIg
-Z2V0IHVwZGF0ZWQgd2l0aCBhIG5ldyB2YWx1ZS4gVGhlc2UgUGluIFdpZGdldCB2ZXJicw0KPiA+
-ID4gaW5jbHVkZToNCj4gPiA+ID4gPiA+ID4gPiDvgrcgIENvbm5lY3Rpb24gU2VsZWN0DQo+ID4g
-PiA+ID4gPiA+ID4g74K3ICBHZXQgQ29ubmVjdGlvbiBMaXN0IEVudHJ5DQo+ID4gPiA+ID4gPiA+
-ID4g74K3ICBBbXBsaWZpZXIgR2Fpbi9NdXRlDQo+ID4gPiA+ID4gPiA+ID4g74K3ICBQb3dlciBT
-dGF0ZQ0KPiA+ID4gPiA+ID4gPiA+IO+CtyAgUGluIFdpZGdldCBDb250cm9sDQo+ID4gPiA+ID4g
-PiA+ID4g74K3ICBFTEQgRGF0YQ0KPiA+ID4gPiA+ID4gPiA+IO+CtyAgRElQLVNpemUNCj4gPiA+
-ID4gPiA+ID4gPiDvgrcgIERJUC1JbmRleA0KPiA+ID4gPiA+ID4gPiA+IO+CtyAgRElQLURhdGEN
-Cj4gPiA+ID4gPiA+ID4gPiDvgrcgIERJUC1YbWl0Q3RybA0KPiA+ID4gPiA+ID4gPiA+IO+CtyAg
-Q29udGVudCBQcm90ZWN0aW9uIENvbnRyb2wNCj4gPiA+ID4gPiA+ID4gPiDvgrcgIEFTUCBDaGFu
-bmVsIE1hcHBpbmcNCj4gPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiA+IFNvIG15IHVuZGVy
-c3RhbmQgaXMgdGhpcyBtYXkgYmUgY2hhbmdlZC4NCj4gPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+
-ID4gQnV0IHRoZSBwaW4gd2lkZ2V0IGlzIHRoZSB0ZXJtaW5hbC4gIFNvLCBpZiB5b3UgaGF2ZSBh
-IGRldmljZQ0KPiBpbmRleCB0bw0KPiA+ID4gPiA+ID4gPiBjaG9vc2UgYSBkZXZpY2UgdGhlcmUs
-IHRoZSB3aWRnZXQgY29ubmVjdGlvbiBsaXN0IGl0c2VsZiBkb2Vzbid0DQo+ID4gPiA+ID4gPiA+
-IGNoYW5nZS4gIE9yIGFtIEkgbWlzc2luZyBhbnl0aGluZz8NCj4gPiA+ID4gPiA+DQo+ID4gPiA+
-ID4gPiBUaGUgcGluIG1heSBjb25uZWN0IHRvIHNldmVyYWwgY29udmVydGVycyAoZm9yIGV4YW1w
-bGUpLCBhbmQgaXQNCj4gPiA+ID4gPiA+IGNhbiBjaG9vc2Ugd2hpY2ggY29udmVydGVyIHRvIHVz
-ZS4gQW5kIGZyb20gdGhlIHNwZWMsIGl0IHNlZW1zDQo+ID4gPiA+ID4gPiBlYWNoIGRldmljZSBl
-bnRyeSBjYW4gaGF2ZSBkaWZmZXJlbnQgY29ubmVjdGlvbiBsaXN0IGVudHJ5Lg0KPiA+ID4gPiA+
-ID4gSG93ZXZlciBmcm9tIG15IHRlc3QsIGFsbCBkZXZpY2UgZW50cmllcyBvbiB0aGUgc2FtZSBw
-aW4gd2lsbA0KPiBoYXZlDQo+ID4gPiA+ID4gPiB0aGUgc2FtZSBsaXN0Lg0KPiA+ID4gPiA+DQo+
-ID4gPiA+ID4gSHJtLCBPSywgc28gaXQgbWFrZXMgc2Vuc2UgdG8ga2VlcCB0aGUgbGlzdC4gIE9U
-T0gsIGl0IG1lYW5zIHRoYXQNCj4gdGhlDQo+ID4gPiA+ID4gY29ubmVjdGlvbiBsaXN0IG1heSBj
-aGFuZ2UgZW5kbGVzc2x5IGRlcGVuZGluZyBvbiB0aGUgZGV2aWNlDQo+IGluZGV4Lg0KPiA+ID4g
-PiA+IEFuZCwgd2UgbGlrZWx5IG5lZWQgdG8gY2xlYW4gdXAgdGhlIGNvbm5lY3Rpb24gbGlzdCBh
-dCB1bnBsdWcuDQo+ID4gPiA+DQo+ID4gPiA+IEknbSBub3Qgc3VyZSB3aGV0aGVyIHRoZSBjb25u
-ZWN0aW9uIGxpc3Qgd2lsbCBiZSBjaGFuZ2VkIHdoZW4NCj4gdW5wbHVnLg0KPiA+ID4gPiBTdXBw
-b3NlIGl0IHNob3VsZCBiZSB0aGUgY2FwYWJpbGl0eSBhbmQgd2lsbCBub3QgY2hhbmdlPw0KPiA+
-ID4NCj4gPiA+IEhvdyBjYW4gd2Uga25vdz8gIEhhcmR3YXJlIGRlc2lnbmVycyBoYXZlIG9mdGVu
-IGEgdG9vIGNyZWF0aXZlDQo+IG1pbmQgOikNCj4gPg0KPiA+IFdlIHNob3VsZCB0YWtlIGNhcmUg
-b2YgaXQgOikNCj4gDQo+IFllcC4gIEJ1dCwgTGliaW4sIGNvdWxkIHlvdSByYXRoZXIgZm9jdXMg
-b24gdGhlIHJlZ3Jlc3Npb24gVmlsbGUNCj4gcmVwb3J0ZWQgc2hvcnRseSBhZ28/DQoNCkRvIHlv
-dSBtZWFuIHRoZSBpc3N1ZTogTmV3IHNuZC1oZGEgd2FybmluZyBzcGV3Pw0KDQpJIHdpbGwgY2hl
-Y2sgaXQuDQoNClJlZ2FyZHMsDQpMaWJpbg0KDQo+IA0KPiANCj4gdGhhbmtzLA0KPiANCj4gVGFr
-YXNoaQ0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+media_snd_stream_delete() fails to release resources during unbind. This
+leads to use-after-free in media_gobj_create() on a subsequent bind.
+
+[ 1445.086410] BUG: KASAN: use-after-free in media_gobj_create+0x3a1/0x470 [media] at addr ffff8801ead49998
+
+[ 1445.086771] Call Trace:
+[ 1445.086779]  [<ffffffff81ade373>] dump_stack+0x67/0x94
+[ 1445.086785]  [<ffffffff81523c29>] print_trailer+0xf9/0x150
+[ 1445.086790]  [<ffffffff81529644>] object_err+0x34/0x40
+[ 1445.086796]  [<ffffffff8152b9e1>] kasan_report_error+0x221/0x530
+[ 1445.086803]  [<ffffffff8152bfb3>] __asan_report_store8_noabort+0x43/0x50
+[ 1445.086813]  [<ffffffffa0a79341>] ? media_gobj_create+0x3a1/0x470 [media]
+[ 1445.086822]  [<ffffffffa0a79341>] media_gobj_create+0x3a1/0x470 [media]
+[ 1445.086831]  [<ffffffffa0a705a9>] media_device_register_entity+0x259/0x6f0 [media]
+[ 1445.086841]  [<ffffffffa0a70350>] ? media_device_unregister_entity_notify+0x100/0x100 [media]
+[ 1445.086846]  [<ffffffff81526232>] ? ___slab_alloc+0x172/0x500
+[ 1445.086854]  [<ffffffff81203548>] ? mark_held_locks+0xc8/0x120
+[ 1445.086859]  [<ffffffff81526610>] ? __slab_alloc+0x50/0x70
+[ 1445.086878]  [<ffffffffa0fe711c>] ? media_snd_mixer_init+0x16c/0x500 [snd_usb_audio]
+[ 1445.086884]  [<ffffffff8152b086>] ? kasan_unpoison_shadow+0x36/0x50
+[ 1445.086890]  [<ffffffff8152b086>] ? kasan_unpoison_shadow+0x36/0x50
+[ 1445.086895]  [<ffffffff8152b0fe>] ? kasan_kmalloc+0x5e/0x70
+
+Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+---
+ sound/usb/media.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/usb/media.c b/sound/usb/media.c
+index 44a5de9..0d03773 100644
+--- a/sound/usb/media.c
++++ b/sound/usb/media.c
+@@ -135,7 +135,7 @@ void media_snd_stream_delete(struct snd_usb_substream *subs)
+ 	if (mctl && mctl->media_dev) {
+ 		struct media_device *mdev;
+ 
+-		mdev = subs->stream->chip->media_dev;
++		mdev = mctl->media_dev;
+ 		if (mdev && media_devnode_is_registered(&mdev->devnode)) {
+ 			media_devnode_remove(mctl->intf_devnode);
+ 			media_device_unregister_entity(&mctl->media_entity);
+-- 
+2.5.0
