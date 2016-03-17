@@ -1,54 +1,104 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: ctl: change return value in
-	compatibility layer so that it's the same value in core
-	implementation
-Date: Thu, 17 Mar 2016 21:14:36 +0900
-Message-ID: <1458216876-5402-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH v8 1/6] ALSA: pcm: add IEC958 channel status helper for
+ hw_params
+Date: Thu, 17 Mar 2016 14:22:29 +0200
+Message-ID: <164484552294777b0b9b88d7982bd6bfb0da9a9f.1458214526.git.jsarha@ti.com>
+References: <cover.1458214526.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id D40F2261564
- for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2016 13:14:40 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <cover.1458214526.git.jsarha@ti.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: dri-devel@lists.freedesktop.org, airlied@linux.ie, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, bcousson@baylibre.com, alsa-devel@alsa-project.org
+Cc: peter.ujfalusi@ti.com, tony@atomide.com, broonie@kernel.org, arnaud.pouliquen@st.com, Jyri Sarha <jsarha@ti.com>, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, rmk+kernel@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-In control compatibility layer, when no elements are found by
-ELEM_READ/ELEM_WRITE ioctl commands, ENXIO is returned. On the other hand,
-in core implementation, ENOENT is returned. This is not good for
-ALSA ctl applications.
-
-This commit changes the return value from the compatibility layer so
-that the same value is returned.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/core/control_compat.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/core/control_compat.c b/sound/core/control_compat.c
-index 0608f21..1fa7076 100644
---- a/sound/core/control_compat.c
-+++ b/sound/core/control_compat.c
-@@ -196,7 +196,7 @@ static int get_ctl_type(struct snd_card *card, struct snd_ctl_elem_id *id,
- 	kctl = snd_ctl_find_id(card, id);
- 	if (! kctl) {
- 		up_read(&card->controls_rwsem);
--		return -ENXIO;
-+		return -ENOENT;
- 	}
- 	info = kzalloc(sizeof(*info), GFP_KERNEL);
- 	if (info == NULL) {
--- 
-2.7.0
+QWRkIElFQzk1OCBjaGFubmVsIHN0YXR1cyBoZWxwZXIgdGhhdCBnZXRzIHRoZSBhdWRpbyBwcm9w
+ZXJ0aWVzIGZyb20Kc25kX3BjbV9od19wYXJhbXMgaW5zdGVhZCBvZiBzbmRfcGNtX3J1bnRpbWUu
+IFRoaXMgaXMgbmVlZGVkIHRvCnByb2R1Y2UgdGhlIGNoYW5uZWwgc3RhdHVzIGJpdHMgYWxyZWFk
+eSBpbiBhdWRpbyBzdHJlYW0gY29uZmlndXJhdGlvbgpwaGFzZS4KClNpZ25lZC1vZmYtYnk6IEp5
+cmkgU2FyaGEgPGpzYXJoYUB0aS5jb20+Ci0tLQogaW5jbHVkZS9zb3VuZC9wY21faWVjOTU4Lmgg
+fCAgMiArKwogc291bmQvY29yZS9wY21faWVjOTU4LmMgICAgfCA2NSArKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tCiAyIGZpbGVzIGNoYW5nZWQsIDUwIGluc2Vy
+dGlvbnMoKyksIDE3IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2luY2x1ZGUvc291bmQvcGNt
+X2llYzk1OC5oIGIvaW5jbHVkZS9zb3VuZC9wY21faWVjOTU4LmgKaW5kZXggMGVlZDM5Ny4uMzZm
+MDIzYSAxMDA2NDQKLS0tIGEvaW5jbHVkZS9zb3VuZC9wY21faWVjOTU4LmgKKysrIGIvaW5jbHVk
+ZS9zb3VuZC9wY21faWVjOTU4LmgKQEAgLTYsNCArNiw2IEBACiBpbnQgc25kX3BjbV9jcmVhdGVf
+aWVjOTU4X2NvbnN1bWVyKHN0cnVjdCBzbmRfcGNtX3J1bnRpbWUgKnJ1bnRpbWUsIHU4ICpjcywK
+IAlzaXplX3QgbGVuKTsKIAoraW50IHNuZF9wY21fY3JlYXRlX2llYzk1OF9jb25zdW1lcl9od19w
+YXJhbXMoc3RydWN0IHNuZF9wY21faHdfcGFyYW1zICpwYXJhbXMsCisJCQkJCSAgICAgdTggKmNz
+LCBzaXplX3QgbGVuKTsKICNlbmRpZgpkaWZmIC0tZ2l0IGEvc291bmQvY29yZS9wY21faWVjOTU4
+LmMgYi9zb3VuZC9jb3JlL3BjbV9pZWM5NTguYwppbmRleCAzNmIyZDdhLi41ZTZhZWQ2IDEwMDY0
+NAotLS0gYS9zb3VuZC9jb3JlL3BjbV9pZWM5NTguYworKysgYi9zb3VuZC9jb3JlL3BjbV9pZWM5
+NTguYwpAQCAtOSwzMCArOSwxOCBAQAogI2luY2x1ZGUgPGxpbnV4L3R5cGVzLmg+CiAjaW5jbHVk
+ZSA8c291bmQvYXNvdW5kZWYuaD4KICNpbmNsdWRlIDxzb3VuZC9wY20uaD4KKyNpbmNsdWRlIDxz
+b3VuZC9wY21fcGFyYW1zLmg+CiAjaW5jbHVkZSA8c291bmQvcGNtX2llYzk1OC5oPgogCi0vKioK
+LSAqIHNuZF9wY21fY3JlYXRlX2llYzk1OF9jb25zdW1lciAtIGNyZWF0ZSBjb25zdW1lciBmb3Jt
+YXQgSUVDOTU4IGNoYW5uZWwgc3RhdHVzCi0gKiBAcnVudGltZTogcGNtIHJ1bnRpbWUgc3RydWN0
+dXJlIHdpdGggLT5yYXRlIGZpbGxlZCBpbgotICogQGNzOiBjaGFubmVsIHN0YXR1cyBidWZmZXIs
+IGF0IGxlYXN0IGZvdXIgYnl0ZXMKLSAqIEBsZW46IGxlbmd0aCBvZiBjaGFubmVsIHN0YXR1cyBi
+dWZmZXIKLSAqCi0gKiBDcmVhdGUgdGhlIGNvbnN1bWVyIGZvcm1hdCBjaGFubmVsIHN0YXR1cyBk
+YXRhIGluIEBjcyBvZiBtYXhpbXVtIHNpemUKLSAqIEBsZW4gY29ycmVzcG9uZGluZyB0byB0aGUg
+cGFyYW1ldGVycyBvZiB0aGUgUENNIHJ1bnRpbWUgQHJ1bnRpbWUuCi0gKgotICogRHJpdmVycyBt
+YXkgd2lzaCB0byB0d2VhayB0aGUgY29udGVudHMgb2YgdGhlIGJ1ZmZlciBhZnRlciBjcmVhdGlv
+bi4KLSAqCi0gKiBSZXR1cm5zOiBsZW5ndGggb2YgYnVmZmVyLCBvciBuZWdhdGl2ZSBlcnJvciBj
+b2RlIGlmIHNvbWV0aGluZyBmYWlsZWQuCi0gKi8KLWludCBzbmRfcGNtX2NyZWF0ZV9pZWM5NThf
+Y29uc3VtZXIoc3RydWN0IHNuZF9wY21fcnVudGltZSAqcnVudGltZSwgdTggKmNzLAotCXNpemVf
+dCBsZW4pCitzdGF0aWMgaW50IGNyZWF0ZV9pZWM5NThfY29uc3VtZXIodWludCByYXRlLCB1aW50
+IHNhbXBsZV93aWR0aCwKKwkJCQkgIHU4ICpjcywgc2l6ZV90IGxlbikKIHsKIAl1bnNpZ25lZCBp
+bnQgZnMsIHdzOwogCiAJaWYgKGxlbiA8IDQpCiAJCXJldHVybiAtRUlOVkFMOwogCi0Jc3dpdGNo
+IChydW50aW1lLT5yYXRlKSB7CisJc3dpdGNoIChyYXRlKSB7CiAJY2FzZSAzMjAwMDoKIAkJZnMg
+PSBJRUM5NThfQUVTM19DT05fRlNfMzIwMDA7CiAJCWJyZWFrOwpAQCAtNTksNyArNDcsNyBAQCBp
+bnQgc25kX3BjbV9jcmVhdGVfaWVjOTU4X2NvbnN1bWVyKHN0cnVjdCBzbmRfcGNtX3J1bnRpbWUg
+KnJ1bnRpbWUsIHU4ICpjcywKIAl9CiAKIAlpZiAobGVuID4gNCkgewotCQlzd2l0Y2ggKHNuZF9w
+Y21fZm9ybWF0X3dpZHRoKHJ1bnRpbWUtPmZvcm1hdCkpIHsKKwkJc3dpdGNoIChzYW1wbGVfd2lk
+dGgpIHsKIAkJY2FzZSAxNjoKIAkJCXdzID0gSUVDOTU4X0FFUzRfQ09OX1dPUkRMRU5fMjBfMTY7
+CiAJCQlicmVhazsKQEAgLTcxLDYgKzU5LDcgQEAgaW50IHNuZF9wY21fY3JlYXRlX2llYzk1OF9j
+b25zdW1lcihzdHJ1Y3Qgc25kX3BjbV9ydW50aW1lICpydW50aW1lLCB1OCAqY3MsCiAJCQkgICAg
+IElFQzk1OF9BRVM0X0NPTl9NQVhfV09SRExFTl8yNDsKIAkJCWJyZWFrOwogCQljYXNlIDI0Ogor
+CQljYXNlIDMyOiAvKiBBc3N1bWUgMjQtYml0IHdpZHRoIGZvciAzMi1iaXQgc2FtcGxlcy4gKi8K
+IAkJCXdzID0gSUVDOTU4X0FFUzRfQ09OX1dPUkRMRU5fMjRfMjAgfAogCQkJICAgICBJRUM5NThf
+QUVTNF9DT05fTUFYX1dPUkRMRU5fMjQ7CiAJCQlicmVhazsKQEAgLTkyLDQgKzgxLDQ2IEBAIGlu
+dCBzbmRfcGNtX2NyZWF0ZV9pZWM5NThfY29uc3VtZXIoc3RydWN0IHNuZF9wY21fcnVudGltZSAq
+cnVudGltZSwgdTggKmNzLAogCiAJcmV0dXJuIGxlbjsKIH0KKworLyoqCisgKiBzbmRfcGNtX2Ny
+ZWF0ZV9pZWM5NThfY29uc3VtZXIgLSBjcmVhdGUgY29uc3VtZXIgZm9ybWF0IElFQzk1OCBjaGFu
+bmVsIHN0YXR1cworICogQHJ1bnRpbWU6IHBjbSBydW50aW1lIHN0cnVjdHVyZSB3aXRoIC0+cmF0
+ZSBmaWxsZWQgaW4KKyAqIEBjczogY2hhbm5lbCBzdGF0dXMgYnVmZmVyLCBhdCBsZWFzdCBmb3Vy
+IGJ5dGVzCisgKiBAbGVuOiBsZW5ndGggb2YgY2hhbm5lbCBzdGF0dXMgYnVmZmVyCisgKgorICog
+Q3JlYXRlIHRoZSBjb25zdW1lciBmb3JtYXQgY2hhbm5lbCBzdGF0dXMgZGF0YSBpbiBAY3Mgb2Yg
+bWF4aW11bSBzaXplCisgKiBAbGVuIGNvcnJlc3BvbmRpbmcgdG8gdGhlIHBhcmFtZXRlcnMgb2Yg
+dGhlIFBDTSBydW50aW1lIEBydW50aW1lLgorICoKKyAqIERyaXZlcnMgbWF5IHdpc2ggdG8gdHdl
+YWsgdGhlIGNvbnRlbnRzIG9mIHRoZSBidWZmZXIgYWZ0ZXIgY3JlYXRpb24uCisgKgorICogUmV0
+dXJuczogbGVuZ3RoIG9mIGJ1ZmZlciwgb3IgbmVnYXRpdmUgZXJyb3IgY29kZSBpZiBzb21ldGhp
+bmcgZmFpbGVkLgorICovCitpbnQgc25kX3BjbV9jcmVhdGVfaWVjOTU4X2NvbnN1bWVyKHN0cnVj
+dCBzbmRfcGNtX3J1bnRpbWUgKnJ1bnRpbWUsIHU4ICpjcywKKwlzaXplX3QgbGVuKQoreworCXJl
+dHVybiBjcmVhdGVfaWVjOTU4X2NvbnN1bWVyKHJ1bnRpbWUtPnJhdGUsCisJCQkJICAgICAgc25k
+X3BjbV9mb3JtYXRfd2lkdGgocnVudGltZS0+Zm9ybWF0KSwKKwkJCQkgICAgICBjcywgbGVuKTsK
+K30KIEVYUE9SVF9TWU1CT0woc25kX3BjbV9jcmVhdGVfaWVjOTU4X2NvbnN1bWVyKTsKKworLyoq
+CisgKiBzbmRfcGNtX2NyZWF0ZV9pZWM5NThfY29uc3VtZXJfaHdfcGFyYW1zIC0gY3JlYXRlIElF
+Qzk1OCBjaGFubmVsIHN0YXR1cworICogQGh3X3BhcmFtczogdGhlIGh3X3BhcmFtcyBpbnN0YW5j
+ZSBmb3IgZXh0cmFjdGluZyByYXRlIGFuZCBzYW1wbGUgZm9ybWF0CisgKiBAY3M6IGNoYW5uZWwg
+c3RhdHVzIGJ1ZmZlciwgYXQgbGVhc3QgZm91ciBieXRlcworICogQGxlbjogbGVuZ3RoIG9mIGNo
+YW5uZWwgc3RhdHVzIGJ1ZmZlcgorICoKKyAqIENyZWF0ZSB0aGUgY29uc3VtZXIgZm9ybWF0IGNo
+YW5uZWwgc3RhdHVzIGRhdGEgaW4gQGNzIG9mIG1heGltdW0gc2l6ZQorICogQGxlbiBjb3JyZXNw
+b25kaW5nIHRvIHRoZSBwYXJhbWV0ZXJzIG9mIHRoZSBQQ00gcnVudGltZSBAcnVudGltZS4KKyAq
+CisgKiBEcml2ZXJzIG1heSB3aXNoIHRvIHR3ZWFrIHRoZSBjb250ZW50cyBvZiB0aGUgYnVmZmVy
+IGFmdGVyIGNyZWF0aW9uLgorICoKKyAqIFJldHVybnM6IGxlbmd0aCBvZiBidWZmZXIsIG9yIG5l
+Z2F0aXZlIGVycm9yIGNvZGUgaWYgc29tZXRoaW5nIGZhaWxlZC4KKyAqLworaW50IHNuZF9wY21f
+Y3JlYXRlX2llYzk1OF9jb25zdW1lcl9od19wYXJhbXMoc3RydWN0IHNuZF9wY21faHdfcGFyYW1z
+ICpwYXJhbXMsCisJCQkJCSAgICAgdTggKmNzLCBzaXplX3QgbGVuKQoreworCXJldHVybiBjcmVh
+dGVfaWVjOTU4X2NvbnN1bWVyKHBhcmFtc19yYXRlKHBhcmFtcyksIHBhcmFtc193aWR0aChwYXJh
+bXMpLAorCQkJCSAgICAgIGNzLCBsZW4pOworfQorRVhQT1JUX1NZTUJPTChzbmRfcGNtX2NyZWF0
+ZV9pZWM5NThfY29uc3VtZXJfaHdfcGFyYW1zKTsKLS0gCjEuOS4xCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRy
+aS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
