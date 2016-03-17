@@ -1,69 +1,86 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [PATCH] sound/usb: Fix memory leak in media_snd_stream_delete()
- during unbind
-Date: Wed, 16 Mar 2016 21:01:12 -0600
-Message-ID: <56EA1DF8.9060500@osg.samsung.com>
-References: <1458183486-8113-1-git-send-email-shuahkh@osg.samsung.com>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: Re: [PATCH] ASoC: nau8825: support different clock
+ source for FLL function
+Date: Thu, 17 Mar 2016 11:04:20 +0800
+Message-ID: <56EA1EB4.9000409@nuvoton.com>
+References: <1458014901-28049-1-git-send-email-KCHSU0@nuvoton.com>
+ <CAOMFOmXH-0cZ-VON3Ozttpaouuu+QWMTpdmB_fbELd+BhOUEaw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <1458183486-8113-1-git-send-email-shuahkh@osg.samsung.com>
-Sender: linux-media-owner@vger.kernel.org
-To: mchehab@osg.samsung.com, perex@perex.cz, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, Shuah Khan <shuahkh@osg.samsung.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id B7EDE261564
+ for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2016 04:04:29 +0100 (CET)
+In-Reply-To: <CAOMFOmXH-0cZ-VON3Ozttpaouuu+QWMTpdmB_fbELd+BhOUEaw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Anatol Pomozov <anatol.pomozov@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, YHCHuang@nuvoton.com, Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>, Mark Brown <broonie@kernel.org>, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, Yong Zhi <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Adding Takashi Iwai
+Hi,
 
-On 03/16/2016 08:58 PM, Shuah Khan wrote:
-> media_snd_stream_delete() fails to release resources during unbind. This
-> leads to use-after-free in media_gobj_create() on a subsequent bind.
-> 
-> [ 1445.086410] BUG: KASAN: use-after-free in media_gobj_create+0x3a1/0x470 [media] at addr ffff8801ead49998
-> 
-> [ 1445.086771] Call Trace:
-> [ 1445.086779]  [<ffffffff81ade373>] dump_stack+0x67/0x94
-> [ 1445.086785]  [<ffffffff81523c29>] print_trailer+0xf9/0x150
-> [ 1445.086790]  [<ffffffff81529644>] object_err+0x34/0x40
-> [ 1445.086796]  [<ffffffff8152b9e1>] kasan_report_error+0x221/0x530
-> [ 1445.086803]  [<ffffffff8152bfb3>] __asan_report_store8_noabort+0x43/0x50
-> [ 1445.086813]  [<ffffffffa0a79341>] ? media_gobj_create+0x3a1/0x470 [media]
-> [ 1445.086822]  [<ffffffffa0a79341>] media_gobj_create+0x3a1/0x470 [media]
-> [ 1445.086831]  [<ffffffffa0a705a9>] media_device_register_entity+0x259/0x6f0 [media]
-> [ 1445.086841]  [<ffffffffa0a70350>] ? media_device_unregister_entity_notify+0x100/0x100 [media]
-> [ 1445.086846]  [<ffffffff81526232>] ? ___slab_alloc+0x172/0x500
-> [ 1445.086854]  [<ffffffff81203548>] ? mark_held_locks+0xc8/0x120
-> [ 1445.086859]  [<ffffffff81526610>] ? __slab_alloc+0x50/0x70
-> [ 1445.086878]  [<ffffffffa0fe711c>] ? media_snd_mixer_init+0x16c/0x500 [snd_usb_audio]
-> [ 1445.086884]  [<ffffffff8152b086>] ? kasan_unpoison_shadow+0x36/0x50
-> [ 1445.086890]  [<ffffffff8152b086>] ? kasan_unpoison_shadow+0x36/0x50
-> [ 1445.086895]  [<ffffffff8152b0fe>] ? kasan_kmalloc+0x5e/0x70
-> 
-> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
-> ---
->  sound/usb/media.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/usb/media.c b/sound/usb/media.c
-> index 44a5de9..0d03773 100644
-> --- a/sound/usb/media.c
-> +++ b/sound/usb/media.c
-> @@ -135,7 +135,7 @@ void media_snd_stream_delete(struct snd_usb_substream *subs)
->  	if (mctl && mctl->media_dev) {
->  		struct media_device *mdev;
->  
-> -		mdev = subs->stream->chip->media_dev;
-> +		mdev = mctl->media_dev;
->  		if (mdev && media_devnode_is_registered(&mdev->devnode)) {
->  			media_devnode_remove(mctl->intf_devnode);
->  			media_device_unregister_entity(&mctl->media_entity);
-> 
+On 3/17/2016 7:06 AM, Anatol Pomozov wrote:
+> Hi
+>
+> On Mon, Mar 14, 2016 at 9:08 PM, John Hsu <KCHSU0@nuvoton.com> wrote:
+>   
+>> Extend FLL clock source selection. The source can be from MCLK, BCLK or FS.
+>>
+>> Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+>> ---
+>>  sound/soc/codecs/nau8825.c | 82 +++++++++++++++++++++++++++++++++-------------
+>>  sound/soc/codecs/nau8825.h |  8 +++++
+>>  2 files changed, 67 insertions(+), 23 deletions(-)
+>>
+>> diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+>> index 1c87299..ac264ec 100644
+>> --- a/sound/soc/codecs/nau8825.c
+>> +++ b/sound/soc/codecs/nau8825.c
+>> @@ -1053,6 +1053,37 @@ static int nau8825_set_pll(struct snd_soc_codec *codec, int pll_id, int source,
+>>         return 0;
+>>  }
+>>
+>> +static int nau8825_mclk_prepare(struct nau8825 *nau8825, unsigned int freq)
+>> +{
+>> +       int ret = 0;
+>> +
+>> +       nau8825->mclk = devm_clk_get(nau8825->dev, "mclk");
+>> +       if (IS_ERR(nau8825->mclk)) {
+>>     
+>
+> Is it possible that clock system is not ready at this point and the
+> method returns -EPROBE_DEFER? If so it matches IS_ERR() but not a real
+> error and the nua8825 driver should backoff and wait a little before
+> clocks are ready.
+>
+>   
 
+The function is used when playback startup not in the driver initiation.
+At this moment, we just skip mclk operation and let thing go on.
+Should driver return the errorno to machine driver to handle it?
 
--- 
-Shuah Khan
-Sr. Linux Kernel Developer
-Open Source Innovation Group
-Samsung Research America (Silicon Valley)
-shuahkh@osg.samsung.com | (970) 217-8978
+>> +               dev_info(nau8825->dev, "No 'mclk' clock found, assume MCLK is managed externally");
+>> +               return 0;
+>> +       }
+>> +
+>> +       if (!nau8825->mclk_freq) {
+>> +               ret = clk_prepare_enable(nau8825->mclk);
+>> +               if (ret) {
+>> +                       dev_err(nau8825->dev, "Unable to prepare codec mclk\n");
+>> +                       return ret;
+>> +               }
+>> +       }
+>> +
+>>     
+> .
+>
+>   
