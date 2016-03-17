@@ -1,97 +1,101 @@
-From: "Lu, Han" <han.lu@intel.com>
-Subject: Re: [alsa-devel]  ASoC and pulseaudio
-Date: Thu, 17 Mar 2016 11:28:11 +0000
-Message-ID: <B51200AC81AB024499A3C2C9A1BB90A83D3AB901@SHSMSX101.ccr.corp.intel.com>
-References: <20160314160654.GA2566@sirena.org.uk>
- <1458021688.8522.16.camel@loki> <20160315084544.GF2566@sirena.org.uk>
- <s5hmvq0glxj.wl-tiwai@suse.de> <1458035331.8522.52.camel@loki>
- <s5h8u1kgj3c.wl-tiwai@suse.de> <1458039506.8522.70.camel@loki>
- <20160316145704.GU13211@localhost> <20160316150949.GX2566@sirena.org.uk>
- <s5hwpp2bggh.wl-tiwai@suse.de> <20160316155342.GV13211@localhost>
- <1458151177.3844.50.camel@loki>
-Reply-To: General PulseAudio Discussion
- <pulseaudio-discuss@lists.freedesktop.org>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: different return value from some ioctl commands
+ for x86 binary executed on x86_64
+Date: Thu, 17 Mar 2016 20:59:09 +0900
+Message-ID: <56EA9C0D.9060307@sakamocchi.jp>
+References: <56EA2A14.5000305@sakamocchi.jp> <s5hoaada0ut.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
-To: General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, "Koul, Vinod" <vinod.koul@intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Linux Upstreaming Team <linux@endlessm.com>, "han.lu" <han.lu@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 10D6C261564
+ for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2016 12:59:12 +0100 (CET)
+In-Reply-To: <s5hoaada0ut.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-U29ycnksIEkgbWFudWFsbHkgd3JhcHBlZCBsaW5lcyBidXQgdGhlIGZvcm1hdCBsb29rcyBjb3Jy
-dXB0ZWQgZnJvbSBteSAic2VudCINCmZvbGRlci4gRG8geW91IGhhdmUgYW55IHN1Z2dlc3Rpb25z
-IHRvIGF2b2lkIHRoaXM/IFRoYW5rcy4NCg0KQlIsDQpIYW4gTHUNCg0KDQo+IC0tLS0tT3JpZ2lu
-YWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEx1LCBIYW4NCj4gU2VudDogVGh1cnNkYXksIE1hcmNo
-IDE3LCAyMDE2IDc6MjMgUE0NCj4gVG86IEdlbmVyYWwgUHVsc2VBdWRpbyBEaXNjdXNzaW9uIDxw
-dWxzZWF1ZGlvLQ0KPiBkaXNjdXNzQGxpc3RzLmZyZWVkZXNrdG9wLm9yZz47IEtvdWwsIFZpbm9k
-IDx2aW5vZC5rb3VsQGludGVsLmNvbT47DQo+IGxpYW0uci5naXJkd29vZEBsaW51eC5pbnRlbC5j
-b20NCj4gQ2M6IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgVGFrYXNoaSBJd2FpIDx0aXdh
-aUBzdXNlLmRlPjsgTWFyayBCcm93bg0KPiA8YnJvb25pZUBrZXJuZWwub3JnPjsgaGFuLmx1IDxo
-YW4ubHVAbGludXguaW50ZWwuY29tPjsgTGludXggVXBzdHJlYW1pbmcNCj4gVGVhbSA8bGludXhA
-ZW5kbGVzc20uY29tPg0KPiBTdWJqZWN0OiBSRTogW3B1bHNlYXVkaW8tZGlzY3Vzc10gW2Fsc2Et
-ZGV2ZWxdIEFTb0MgYW5kIHB1bHNlYXVkaW8NCj4gDQo+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdl
-LS0tLS0NCj4gPiBGcm9tOiBwdWxzZWF1ZGlvLWRpc2N1c3MgW21haWx0bzpwdWxzZWF1ZGlvLWRp
-c2N1c3MtDQo+ID4gYm91bmNlc0BsaXN0cy5mcmVlZGVza3RvcC5vcmddIE9uIEJlaGFsZiBPZiBM
-aWFtIEdpcmR3b29kDQo+ID4gU2VudDogVGh1cnNkYXksIE1hcmNoIDE3LCAyMDE2IDI6MDAgQU0N
-Cj4gPiBUbzogS291bCwgVmlub2QgPHZpbm9kLmtvdWxAaW50ZWwuY29tPg0KPiA+IENjOiBhbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IEdlbmVyYWwgUHVsc2VBdWRpbyBEaXNjdXNzaW9uDQo+
-ID4gPHB1bHNlYXVkaW8tIGRpc2N1c3NAbGlzdHMuZnJlZWRlc2t0b3Aub3JnPjsgVGFrYXNoaSBJ
-d2FpDQo+ID4gPHRpd2FpQHN1c2UuZGU+OyBNYXJrIEJyb3duIDxicm9vbmllQGtlcm5lbC5vcmc+
-OyBoYW4ubHUNCj4gPiA8aGFuLmx1QGxpbnV4LmludGVsLmNvbT47IExpbnV4IFVwc3RyZWFtaW5n
-IFRlYW0gPGxpbnV4QGVuZGxlc3NtLmNvbT4NCj4gPiBTdWJqZWN0OiBSZTogW3B1bHNlYXVkaW8t
-ZGlzY3Vzc10gW2Fsc2EtZGV2ZWxdIEFTb0MgYW5kIHB1bHNlYXVkaW8NCj4gPg0KPiA+IE9uIFdl
-ZCwgMjAxNi0wMy0xNiBhdCAyMToyMyArMDUzMCwgVmlub2QgS291bCB3cm90ZToNCj4gPg0KPiA+
-ID4NCj4gPiA+ID4gWWVhaCwgdGhhdCBzaG91bGQgYmUgZmVhc2libGUuICBBbHNvLCB0aGVyZSBp
-cyBhICJjb21wb25lbnQiIGZpZWxkDQo+ID4gPiA+IGFzc2lnbmVkIHRvIHRoZSBjYXJkLiAgVGhp
-cyBpcyBzdXBwb3NlZCB0byBiZSByZWZlcnJlZCBieQ0KPiA+ID4gPiB1c2VyLXNwYWNlIGFzIGFk
-ZGl0aW9uYWwgaW5mb3JtYXRpb24uICBTZWUgc25kX2NvbXBvbmVudF9hZGQoKS4NCj4gPiA+DQo+
-ID4gPiBXaWxsIGFkZCB0aGlzIHRvIG15IGV2ZXIgZ3Jvd2luZyBsaXN0IG9mIHRoaW5ncyB0byBk
-by4uLiA6RA0KPiA+DQo+ID4gWW91IGRvbid0IGhhdmUgdG8gOikNCj4gPg0KPiA+IEl0J3Mgb24g
-SGFuJ3MgbGlzdC4NCj4gPg0KPiA+IExpYW0NCj4gPg0KPiANCj4gSSBpbnN0YWxsZWQgVWJ1bnR1
-IDE0LjA0IHRvIFQxMDAgYW5kIHVwZGF0ZSB0aGUga2VybmVsIHRvIDQuNS4wKyB0b2RheSwgYW5k
-IEkNCj4gdGVzdGVkIHdpdGggYSBzaW1wbGUgcGF0Y2gsIHdoaWNoIG9ubHkgYWRkZWQgbG9uZ19u
-YW1lIGluIGZvcm1hdA0KPiAiRE1JX1BST0RVQ1RfTkFNRTpjYXJkLT5uYW1lIiwgYW5kIG5vdyBp
-biBUMTAwLCBjb21tYW5kICJjYXQNCj4gL3Byb2Mvc291bmQvY2FyZHMiIHdpbGwgcHJpbnQNCj4g
-IDAgIFtieXRjcnJ0NTY0MCAgICBdOiBieXRjci1ydDU2NDAgLSBieXRjci1ydDU2NDANCj4gICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBUMTAwVEE6Ynl0Y3ItcnQ1NjQwIFBs
-ZWFzZSBmaW5kIGRldGFpbHMgYmVsb3cuIEknbGwgY29udGludWUNCj4gdG8gYWRkIGZ3IG5hbWUu
-DQo+IE9yIHNoYWxsIHdlIHVzZSBzeXNmcyBhbmQgc25kX2NvbXBvbmVudF9hZGQgaW5zdGVhZD8N
-Cj4gDQo+IEZyb20gNTExZTZmNmE2MDY0MzhhOTc3ZDllMDA2YzQ2MjlmYTliOTY3ZDZhOCBNb24g
-U2VwIDE3IDAwOjAwOjAwDQo+IDIwMDENCj4gRnJvbTogIkx1LCBIYW4iIDxoYW4ubHVAaW50ZWwu
-Y29tPg0KPiBEYXRlOiBUaHUsIDE3IE1hciAyMDE2IDE2OjUwOjU0ICswODAwDQo+IFN1YmplY3Q6
-IFtQQVRDSCBSRkMgMS8xXSBBc29jOiBydDU2NDA6IGFkZCBtb3JlIG1hY2hpbmUvYm9hcmQgaW5m
-b3JtYXRpb24NCj4gZm9yICB1c2VyDQo+IA0KPiBBZGQgbW9yZSBtYWNoaW5lL2JvYXJkIGluZm9y
-bWF0aW9uIGZvciBQQSBhbmQgVUNNLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogTHUsIEhhbiA8aGFu
-Lmx1QGludGVsLmNvbT4NCj4gDQo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvYm9hcmRz
-L2J5dGNyX3J0NTY0MC5jDQo+ICBiL3NvdW5kL3NvYy9pbnRlbC9ib2FyZHMvYnl0Y3JfcnQ1NjQw
-LmMNCj4gaW5kZXggMDMyYTJlNy4uOWJkNWUyMSAxMDA2NDQNCj4gLS0tIGEvc291bmQvc29jL2lu
-dGVsL2JvYXJkcy9ieXRjcl9ydDU2NDAuYw0KPiArKysgYi9zb3VuZC9zb2MvaW50ZWwvYm9hcmRz
-L2J5dGNyX3J0NTY0MC5jDQo+IEBAIC0xNjAsNiArMTYwLDEyIEBAIHN0YXRpYyBpbnQgYnl0X3J0
-NTY0MF9pbml0KHN0cnVjdA0KPiBzbmRfc29jX3BjbV9ydW50aW1lDQo+ICAqcnVudGltZSkNCj4g
-ICAgICAgICBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3JvdXRlICpjdXN0b21fbWFwOw0KPiAg
-ICAgICAgIGludCBudW1fcm91dGVzOw0KPiANCj4gKyAgICAgICBpZiAoIWNhcmQtPmxvbmdfbmFt
-ZSkgew0KPiArICAgICAgICAgICAgICAgY2FyZC0+bG9uZ19uYW1lID0gZG1pX2dldF9zeXN0ZW1f
-aW5mbyhETUlfUFJPRFVDVF9OQU1FKTsNCj4gKyAgICAgICAgICAgICAgIHN0cmNhdCgoY2hhciAq
-KWNhcmQtPmxvbmdfbmFtZSwgIjoiKTsNCj4gKyAgICAgICAgICAgICAgIHN0cmNhdCgoY2hhciAq
-KWNhcmQtPmxvbmdfbmFtZSwgY2FyZC0+bmFtZSk7DQo+ICsgICAgICAgfQ0KPiArDQo+ICAgICAg
-ICAgY2FyZC0+ZGFwbS5pZGxlX2JpYXNfb2ZmID0gdHJ1ZTsNCj4gDQo+ICAgICAgICAgcnQ1NjQw
-X3NlbF9hc3JjX2Nsa19zcmMoY29kZWMsDQo+IC0tDQo+IDIuNS4wDQo+IA0KPiBCUiwNCj4gSGFu
-DQo+ID4NCj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Xw0KPiA+IHB1bHNlYXVkaW8tZGlzY3VzcyBtYWlsaW5nIGxpc3QNCj4gPiBwdWxzZWF1ZGlvLWRp
-c2N1c3NAbGlzdHMuZnJlZWRlc2t0b3Aub3JnDQo+ID4gaHR0cHM6Ly9saXN0cy5mcmVlZGVza3Rv
-cC5vcmcvbWFpbG1hbi9saXN0aW5mby9wdWxzZWF1ZGlvLWRpc2N1c3MNCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCnB1bHNlYXVkaW8tZGlzY3VzcyBtYWls
-aW5nIGxpc3QKcHVsc2VhdWRpby1kaXNjdXNzQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczov
-L2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL3B1bHNlYXVkaW8tZGlzY3Vz
-cwo=
+On Mar 17 2016 18:51, Takashi Iwai wrote:
+> On Thu, 17 Mar 2016 04:52:52 +0100,
+> Takashi Sakamoto wrote:
+>>
+>> Hi,
+>>
+>> When testing ioctl compatibility layer for ALSA ctl interface, I found
+>> that error code of some ioctl commands are different depending on binary
+>> architecture.
+>>
+>> The commands are SNDRV_CTL_IOCTL_ELEM_READ/SNDRV_CTL_IOCTL_ELEM_WRITE.
+>> When passing data for non-existent element, ENOENT is returned by the
+>> core implementation. On the other hand, ENXIO is returned by the
+>> compatibility layer.
+>>
+>> This code is for reproduction of this bug.
+>>
+>> (snip)
+>>
+>> I tested on x86_64 machine with enough support for multi-arch.
+>>
+>> $ gcc -Wall -m64 -o ./test ./test.c ; ./test
+>> ioctl(SNDRV_CTL_IOCTL_ELEM_READ): No such file or directory
+>> ioctl(SNDRV_CTL_IOCTL_ELEM_WRITE): No such file or directory
+>>
+>> $ gcc -Wall -m32 -o ./test ./test.c ; ./test
+>> ioctl(SNDRV_CTL_IOCTL_ELEM_READ): No such device or address
+>> ioctl(SNDRV_CTL_IOCTL_ELEM_WRITE): No such device or address
+>>
+>>
+>> This bug is due to return value of condition statement for
+>> 'snd_ctl_find()'. I wrote a patch to fix it.
+>>
+>>
+>> >From d7a8fd14a1bc100dbaf9bf28af47094d5ccb882b Mon Sep 17 00:00:00 2001
+>> From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+>> Date: Wed, 16 Mar 2016 13:40:31 +0900
+>> Subject: [PATCH] ALSA: ctl: change error code in compatibility layer so that
+>>  it's the same code as core implementation
+>>
+>> In control compatibility layer, when no elements are found by
+>> ELEM_READ/ELEM_WRITE ioctl commands, ENXIO is returned. On the other
+>> hand, in core implementation, ENOENT is returned. This is not good for
+>> applications.
+>>
+>> This commit changes the return value from the compatibility layer so
+>> that the same error code is returned.
+>>
+>> diff --git a/sound/core/control_compat.c b/sound/core/control_compat.c
+>> index 0608f21..1fa7076 100644
+>> --- a/sound/core/control_compat.c
+>> +++ b/sound/core/control_compat.c
+>> @@ -196,7 +196,7 @@ static int get_ctl_type(struct snd_card *card,
+>> struct snd_ctl_elem_id *id,
+>>         kctl = snd_ctl_find_id(card, id);
+>>         if (! kctl) {
+>>                 up_read(&card->controls_rwsem);
+>> -               return -ENXIO;
+>> +               return -ENOENT;
+>>         }
+>>         info = kzalloc(sizeof(*info), GFP_KERNEL);
+>>         if (info == NULL) {
+>>
+>> Well, it's already in merge window for Linux 4.6. I don't mind to
+>> postpone this patch to next developing cycle, while I also think it
+>> better to fix the bug now. So I leave the decision to maintainers.
+> 
+> Looks good to me, and trivial enough to be merged for 4.6.
+> Please resubmit with a proper sign off.
+
+OK, thanks.
+
+
+Takashi Sakamoto
