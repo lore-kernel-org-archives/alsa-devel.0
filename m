@@ -1,74 +1,66 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH] ALSA: hda - codec add DP MST support
-	for	connection list
-Date: Thu, 17 Mar 2016 06:52:21 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D1904682D2E@SHSMSX103.ccr.corp.intel.com>
-References: <1458092851-121925-1-git-send-email-libin.yang@linux.intel.com>
- <s5h1t7ax4ce.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19046824FE@SHSMSX103.ccr.corp.intel.com>
- <s5hy49ivotb.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D190468286E@SHSMSX103.ccr.corp.intel.com>
- <s5hfuvqcygd.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19046828A6@SHSMSX103.ccr.corp.intel.com>
- <s5h7fh2cx9w.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19046828C9@SHSMSX103.ccr.corp.intel.com>
- <s5h1t7acwqo.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D1904682AC2@SHSMSX103.ccr.corp.intel.com>
- <s5hshzpvbtq.wl-tiwai@suse.de>
+From: Tomi Sarvela <tomi.p.sarvela@intel.com>
+Subject: Re:
+	=?utf-8?q?=E2=9C=97_Fi=2ECI=2EBAT=3A_failure_for_drm/?=
+	=?utf-8?q?i915/bxt=3A_Fix_off-by-one_error_in_Broxton_PLL_IDs_=28r?=
+	=?utf-8?q?ev3=29?=
+Date: Thu, 17 Mar 2016 09:57:23 +0200
+Message-ID: <1656335.ihdoht0X68@fractal>
+References: <1457977942-11772-1-git-send-email-imre.deak@intel.com>
+ <20160316153706.GT14170@phenom.ffwll.local> <s5hlh5ibfdj.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 4618F261564
- for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2016 07:52:26 +0100 (CET)
-In-Reply-To: <s5hshzpvbtq.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5hlh5ibfdj.wl-tiwai@suse.de>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Libin Yang <libin.yang@linux.intel.com>, alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Thursday, March 17, 2016 2:49 PM
-> To: Yang, Libin
-> Cc: libin.yang@linux.intel.com; alsa-devel@alsa-project.org; Lin,
-> Mengdong
-> Subject: Re: [alsa-devel] [PATCH] ALSA: hda - codec add DP MST support
-> for connection list
-> 
-> On Thu, 17 Mar 2016 02:28:16 +0100,
-> Yang, Libin wrote:
-> >
-> > > Yep.  But, Libin, could you rather focus on the regression Ville
-> > > reported shortly ago?
-> >
-> > Do you mean the issue: New snd-hda warning spew?
-> 
-> Yes.  Also we have the bugzilla:
->   https://bugs.freedesktop.org/show_bug.cgi?id=94566
-> 
-> Feel free to join there.  I couldn't reproduce the SKL pm refcount bug
-> in my side, so it'd be helpful if you can get more information or
-> reproducer.
-
-OK. I will try to reproduce it firstly.
-
-Regards,
-Libin
-
-> 
-> 
-> thanks,
-> 
-> Takashi
+T24gV2VkbmVzZGF5IDE2IE1hcmNoIDIwMTYgMTY6NDA6MjQgVGFrYXNoaSBJd2FpIHdyb3RlOgo+
+IE9uIFdlZCwgMTYgTWFyIDIwMTYgMTY6Mzc6MDYgKzAxMDAsIERhbmllbCBWZXR0ZXIgd3JvdGU6
+Cj4gPiBPbiBXZWQsIE1hciAxNiwgMjAxNiBhdCAwMjozNzoyNFBNICswMjAwLCBUb21pIFNhcnZl
+bGEgd3JvdGU6Cj4gPiA+IAo+ID4gPiBTTkQgaXMgcmVjdXJyaW5nIHByb2JsZW0uIEknZCBsaWtl
+IHRvIHNlZSBkcm0taW50ZWwtbmlnaHRseSBub3QgYnJlYWtpbmcKPiA+ID4gd2hlbiBwdWxsaW5n
+IHNvdW5kIHVwZGF0ZXMuCj4gPiAKPiA+IFdlIG5lZWQgdG8gZXNjYWxhdGUgdGhpcyBhZ2Fpbiwg
+c25kIHRlYW0gc2VyaW91c2x5IHN1Y2tzIGF0IHF1YWxpdHkKPiA+IGNvbnRyb2wgOiggQWRkaW5n
+IExpYmluJlRha2FzaGkuIElmIHRoaXMgZG9lc24ndCBpbXByb3ZlIEkgbmVlZCB0byB0aHJvdwo+
+ID4gc291bmQgdHJlZXMgb3V0IG9mIC1uaWdodGx5IGZvciByZWFsLgo+IAo+IFNvcnJ5IGFib3V0
+IHRoYXQsIGJ1dCBJIGNvdWxkbid0IGdldCB0aGUgd2FybmluZyBvbiBteSBtYWNoaW5lLgo+IAo+
+IEhvdyBpcyB0aGUgcHJvY2VkdXJlIHRvIHJlcHJvZHVjZSB0aGUgYnVnPyAgUGxlYXNlIGdpdmUg
+dGhlIGV4YWN0Cj4gY29tbWl0IGlkIGFuZCBlbnZpcm9ubWVudCB5b3UncmUgdGVzdGluZywgdG9v
+LgoKT3VyIENJIGhhcyBiZWVuIGJ1aWx0IHRvIG1pbWljIHVzZXIgZW52aXJvbm1lbnQsIHNvIGJh
+c2UgaXMgdXAtdG8tZGF0ZSBVYnVudHUgCjE1LjA0LiBUaGlzIGFmZmVjdHMgdG8gYm9vdC11cCBt
+ZWNoYW5pY3MgYW5kIHVzZXJtb2RlIHNvZnR3YXJlIHZlcnNpb25zLiBUaGVyZSAKYXJlIGFib3V0
+IGRvemVuIG1hY2hpbmVzLCA4IGdlbnMsIGZyb20gSUxLIHRvIFNLTC4KClJlcHJvZHVjdGlvbjog
+Q0kgaXMgZG9pbmcgdGhlc2Ugc3RlcHMKCi0gQ29tcGlsZSBrZXJuZWw6IENJX0RSTSBpcyBkcm0t
+aW50ZWwtbmlnaHRseSBIRUFECi0gRGVwbG95IGl0IHRvIHRlc3Rob3N0OiBjb3B5IHRvIC9ib290
+LCByZWNyZWF0ZSBpbml0cmQKLSBCb290IHRlc3Rob3N0IHRvIGluaXQgMwotIFJ1biBuZXdlc3Qg
+SUdUL3BpZ2xpdCB3aXRoIGJhc2ljIHRlc3RzZXQKLSBDb2xsZWN0IHJlc3VsdHMKClRoZSBsYXN0
+IGNvbW1pdHMgdGVzdGVkIGFyZToKCkNJX0RSTV8xMTQwIGdpdDovL2Fub25naXQuZnJlZWRlc2t0
+b3Aub3JnL2RybS1pbnRlbCAKM2U1ZWNjOGM1ZmY4MGNiMWZiNjM1Y2UxY2YxNmI3Y2Q0Y2ZiMTk3
+OQoKQ0lfRFJNXzExNDEgZ2l0Oi8vYW5vbmdpdC5mcmVlZGVza3RvcC5vcmcvZHJtLWludGVsIApm
+Yzg4MWViZDljM2MyNjkxOWM3ZDExMTNmOGJmNzAxNGUxYTA1NTYzCgpDSV9EUk1fMTE0MiBnaXQ6
+Ly9hbm9uZ2l0LmZyZWVkZXNrdG9wLm9yZy9kcm0taW50ZWwgCjlmODcwOWZmZDA5OWU4NWU1ZTEx
+NmVkN2QwOWYxYjgwMDlmNDA4NDcKCkNJX0RSTV8xMTQzIGdpdDovL2Fub25naXQuZnJlZWRlc2t0
+b3Aub3JnL2RybS1pbnRlbCAKNTM1NmMyMjM3OWZjOTZjYjA4N2VlNTliZmRiYmU0NmVjM2JkZjY1
+NAoKQ0lfRFJNXzExNDQgZ2l0Oi8vYW5vbmdpdC5mcmVlZGVza3RvcC5vcmcvZHJtLWludGVsIAph
+NWM0M2Y1ZDFiNDk2OGEzNzBmNTRiZGRhNTM4N2NlMjEzYWNhNzg1CgpDSV9EUk1fMTE0NSBnaXQ6
+Ly9hbm9uZ2l0LmZyZWVkZXNrdG9wLm9yZy9kcm0taW50ZWwgCmJmM2RjZDUzODIxYTdkNmM4MWY3
+MDYxYzZjNzk1NmFhZDU3ZWM2MTUKCkNJX0RSTV8xMTQ2IGdpdDovL2Fub25naXQuZnJlZWRlc2t0
+b3Aub3JnL2RybS1pbnRlbCAKYmUwZDE0ODFmYjFhMmZkMWNiMTk5YjgxYzljMDExNTRhNzhkNDNk
+ZAoKQ0lfRFJNXzExNDcgZ2l0Oi8vYW5vbmdpdC5mcmVlZGVza3RvcC5vcmcvZHJtLWludGVsIApk
+YmJjNmQyNzY4NjRkN2I3YTNhMWVkYjA0ZjA1MTExNTNmOWMzODUyCgpOb3RlIHRoYXQgZHJtLWlu
+dGVsLW5pZ2h0bHkgaGlzdG9yeSBjaGFuZ2VzLCBzbyB0aGUgZXhhY3QgY29tbWl0cyBtaWdodCBu
+b3QgYmUgCnRoZXJlIGFueSBtb3JlLgoKVG9taQoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4v
+bGlzdGluZm8vaW50ZWwtZ2Z4Cg==
