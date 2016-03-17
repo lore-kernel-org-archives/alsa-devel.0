@@ -1,90 +1,88 @@
-From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Subject: [PATCH v8 3/6] ASoC: hdmi-codec: Add audio abort() callback for video side to use
-Date: Thu, 17 Mar 2016 14:22:31 +0200
-Message-ID: <47206922b9580db740fcdf2d09186a27d1e5f1bf.1458214526.git.jsarha@ti.com>
-References: <cover.1458214526.git.jsarha@ti.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: dapm: Do not traverse widget hooks to snd-soc-dummy
+Date: Thu, 17 Mar 2016 13:37:16 +0100
+Message-ID: <56EAA4FC.5090408@metafoo.de>
+References: <1458127071-14417-1-git-send-email-harry.pan@intel.com>
+ <20160317095438.GD2566@sirena.org.uk> <1458211115.965.13.camel@intel.com>
+ <20160317112514.GE2566@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <cover.1458214526.git.jsarha-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, airlied-cv59FeDIM0c@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, tomi.valkeinen-l0cyMroinI0@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="Cv2biiibNwtgtOvmpmobob0PsRFPBQmNi"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160317112514.GE2566@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, "Pan, Harry" <harry.pan@intel.com>
+Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "gs0622@gmail.com" <gs0622@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.com" <tiwai@suse.com>, "perex@perex.cz" <perex@perex.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Add audio abort() callback, that is provided at audio stream start,
-for video side. This is for video side to use in case there is a
-pressing need to tear down the audio playback for some reason.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Cv2biiibNwtgtOvmpmobob0PsRFPBQmNi
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
----
- include/sound/hdmi-codec.h    |  8 ++++++--
- sound/soc/codecs/hdmi-codec.c | 20 +++++++++++++++++++-
- 2 files changed, 25 insertions(+), 3 deletions(-)
+On 03/17/2016 12:25 PM, Mark Brown wrote:
+> On Thu, Mar 17, 2016 at 10:38:36AM +0000, Pan, Harry wrote:
+>=20
+>> Allow me to explain more detail that I saw during debug; since the
+>> commit 6e78108bda78 (ASoC: core: Don't probe the component which is
+>> dummy), an exception has been made that dummy component won't be probe=
+d,
+>> thus the 'card' passed into soc_probe_component() would not be assigne=
+d
+>> to this component. In the other hand, the component struct is initiall=
+y
+>> created in snd_soc_register_platform() by kzalloc() of platform struct=
+,
+>> its 'card' pointer is remaining an NULL pointer even the widget node
+>> being read.
+>=20
+>> Perhaps another option is to refine soc_probe_component(), which I hav=
+e
+>> not dive in.
+>=20
+> Another approach might be to create a separate dummy component for each=
 
-diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
-index fc3a481..15fe70f 100644
---- a/include/sound/hdmi-codec.h
-+++ b/include/sound/hdmi-codec.h
-@@ -55,10 +55,14 @@ struct hdmi_codec_params {
- 
- struct hdmi_codec_ops {
- 	/*
--	 * Called when ASoC starts an audio stream setup.
-+	 * Called when ASoC starts an audio stream setup. The call
-+	 * provides an audio abort callback for stoping an ongoing
-+	 * stream from video side driver if the HDMI audio becomes
-+	 * unavailable.
- 	 * Optional
- 	 */
--	int (*audio_startup)(struct device *dev);
-+	int (*audio_startup)(struct device *dev,
-+			     void (*abort_cb)(struct device *dev));
- 
- 	/*
- 	 * Configures HDMI-encoder for audio stream.
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index bc47b9a..cc08097 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -47,6 +47,23 @@ enum {
- 	DAI_ID_SPDIF,
- };
- 
-+static void hdmi_codec_abort(struct device *dev)
-+{
-+	struct hdmi_codec_priv *hcp = dev_get_drvdata(dev);
-+
-+	dev_dbg(dev, "%s()\n", __func__);
-+
-+	mutex_lock(&hcp->current_stream_lock);
-+	if (hcp->current_stream && hcp->current_stream->runtime &&
-+	    snd_pcm_running(hcp->current_stream)) {
-+		dev_info(dev, "HDMI audio playback aborted\n");
-+		snd_pcm_stream_lock_irq(hcp->current_stream);
-+		snd_pcm_stop(hcp->current_stream, SNDRV_PCM_STATE_DISCONNECTED);
-+		snd_pcm_stream_unlock_irq(hcp->current_stream);
-+	}
-+	mutex_unlock(&hcp->current_stream_lock);
-+}
-+
- static int hdmi_codec_new_stream(struct snd_pcm_substream *substream,
- 				 struct snd_soc_dai *dai)
- {
-@@ -78,7 +95,8 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
- 		return ret;
- 
- 	if (hcp->hcd.ops->audio_startup) {
--		ret = hcp->hcd.ops->audio_startup(dai->dev->parent);
-+		ret = hcp->hcd.ops->audio_startup(dai->dev->parent,
-+						  hdmi_codec_abort);
- 		if (ret) {
- 			mutex_lock(&hcp->current_stream_lock);
- 			hcp->current_stream = NULL;
--- 
-1.9.1
+> card rather than trying to reuse the same one for all of them (which wa=
+s
+> what the commit you mention was doing) - that way we don't need to worr=
+y
+> about it getting added to multiple cards which was the original problem=
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> that was being looked at here.
+
+I'd say as a quick fix for stable check that card is not NULL in
+dapm_widget_show_component(). And as a longterm fix get rid of dapm_widge=
+t
+file. Nobody should hopefully use it anymore with debugfs being available=
+ as
+the far better alternative.
+
+- Lars
+
+
+
+--Cv2biiibNwtgtOvmpmobob0PsRFPBQmNi
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJW6qUEAAoJEOj3aLScRbOZV4EQALErneQLzJ8/PkqJiHcoFSFJ
+67dTkkXKgOnhHS0FEV2vwy2W9YWFj6F87DP8Ji/cuyP2neL5/O4CODDiDJndJqWz
+jOMFhIeJgqVCJAeLvf0xIajKWNWyWOpEXVsNRerzgCgvAYo8acyAE2QvjUNPnviB
+a84TqP0qK8dVrJYq+TA45+LsjFOmJbYNGXZqaRKJV2R8PrM/9bkU87OI7pokG75O
+Yabba2Dz+aYgDg65Lv1J9tZw24Kl1dWgZ47Rt2dtckKTofV14IoTYtEHApnOW84o
+5+ksDhxw2lTX6r2EKzfgQWs7w5/EuNzHUEWDC1/pyzOXsRIv9uIg9+5WRR8Zvt2I
+AXCnf3wT2z9lBeL9MKdnWcdKl3g/q/dwcaqVJOGiwfYcUYufVrddq1axYVqmLUb6
+LWc7AS9hoX98YmNV+tDK+F2Hh9w0c6NCxa62YrZ5Mt2ymHhSd3VLFiObJ22sURdg
+0A3or3vvaFq2Y7ySeqe8gQcia+0RW2TnFGVfBhAnv1XwvoJZF5/IYFiyA+vW5UfM
+Po/YF6Jd8U+gt74RZls9QNFLLQh9W+9uY8UcBsB9RrMhfc96v3BIBrhAbNraRDkT
+KhK0fzN1KBi6q00BApJXXXfL2Z/EiN5DLPDsWi2nNE7TtpBXEDSi5VlKZwikWiyD
+pvZuhJZGWt8h2Si3wB7c
+=Kn5e
+-----END PGP SIGNATURE-----
+
+--Cv2biiibNwtgtOvmpmobob0PsRFPBQmNi--
