@@ -1,43 +1,51 @@
-From: "Pan, Harry" <harry.pan@intel.com>
-Subject: Re: [PATCH] ASoC: dapm: Do not traverse widget hooks to
- snd-soc-dummy
-Date: Thu, 17 Mar 2016 10:38:36 +0000
-Message-ID: <1458211115.965.13.camel@intel.com>
-References: <1458127071-14417-1-git-send-email-harry.pan@intel.com>
-	 <20160317095438.GD2566@sirena.org.uk>
+From: Pascal Huerst <pascal.huerst@gmail.com>
+Subject: adau1701: Different sample rates need different
+	firmwares
+Date: Thu, 17 Mar 2016 11:51:24 +0100
+Message-ID: <56EA8C2C.4010606@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160317095438.GD2566@sirena.org.uk>
-Content-Language: en-US
-Content-ID: <F3C4348C570B8E45855E0BF36B83E96C@intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "broonie@kernel.org" <broonie@kernel.org>
-Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "gs0622@gmail.com" <gs0622@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.com" <tiwai@suse.com>, "perex@perex.cz" <perex@perex.cz>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f41.google.com (mail-wm0-f41.google.com [74.125.82.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id DFC75260694
+ for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2016 11:51:25 +0100 (CET)
+Received: by mail-wm0-f41.google.com with SMTP id p65so20120960wmp.1
+ for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2016 03:51:25 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCAyMDE2LTAzLTE3IGF0IDA5OjU0ICswMDAwLCBNYXJrIEJyb3duIHdyb3RlOg0KPiBP
-biBXZWQsIE1hciAxNiwgMjAxNiBhdCAwNzoxNzo1MVBNICswODAwLCBIYXJyeSBQYW4gd3JvdGU6
-DQo+IA0KPiA+IENvbmZsaWN0czoNCj4gPiAJc291bmQvc29jL3NvYy1kYXBtLmMNCj4gDQo+IERv
-bid0IGluY2x1ZGUgbm9pc2UgbGlrZSB0aGlzIGluIHVwc3RyZWFtIHN1Ym1pc3Npb25zLg0KPiAN
-CkkgbGVhcm5lZCwgdGhhbmtzLg0KPiA+ICsJaWYgKCFzdHJjbXAoY21wbnQtPm5hbWUsICJzbmQt
-c29jLWR1bW15IikpDQo+ID4gKwkJcmV0dXJuIDA7DQo+ID4gKw0KPiANCj4gVGhpcyBkb2Vzbid0
-IG1ha2UgbXVjaCBzZW5zZSBhbmQgaXMgZ29pbmcgdG8gYmUgdmVyeSBmcmFnaWxlLiAgV2UNCj4g
-c2hvdWxkIGVpdGhlciBtYWtlIHRoZSBkdW1teSBjb21wb25lbnQgbG9vayBsaWtlIG90aGVyIGNv
-bXBvbmVudHMgb3INCj4gbWFrZSB0aGUgY29kZSBjb3BlIHdpdGggdGhlbSBhcyB0aGV5IHN0YW5k
-LCB0aGF0IHdheSB3ZSBkb24ndCBoYXZlDQo+IHJhbmRvbSB1bmRvY3VtZW50ZWQgc3BlY2lhbCBj
-YXNlcyBzY2F0dGVyZWQgdGhyb3VnaCB0aGUgY29kZS4gIFByb2JhYmx5DQo+IGl0J3MgYmV0dGVy
-IHRvIG1ha2UgdGhlIGR1bW15IGNvbXBvbmVudCBsb29rIGxpa2Ugb3RoZXJzLg0KDQpJIGRvIGFn
-cmVlLCBiYXNpY2FsbHkuDQoNCkFsbG93IG1lIHRvIGV4cGxhaW4gbW9yZSBkZXRhaWwgdGhhdCBJ
-IHNhdyBkdXJpbmcgZGVidWc7IHNpbmNlIHRoZQ0KY29tbWl0IDZlNzgxMDhiZGE3OCAoQVNvQzog
-Y29yZTogRG9uJ3QgcHJvYmUgdGhlIGNvbXBvbmVudCB3aGljaCBpcw0KZHVtbXkpLCBhbiBleGNl
-cHRpb24gaGFzIGJlZW4gbWFkZSB0aGF0IGR1bW15IGNvbXBvbmVudCB3b24ndCBiZSBwcm9iZWQs
-DQp0aHVzIHRoZSAnY2FyZCcgcGFzc2VkIGludG8gc29jX3Byb2JlX2NvbXBvbmVudCgpIHdvdWxk
-IG5vdCBiZSBhc3NpZ25lZA0KdG8gdGhpcyBjb21wb25lbnQuIEluIHRoZSBvdGhlciBoYW5kLCB0
-aGUgY29tcG9uZW50IHN0cnVjdCBpcyBpbml0aWFsbHkNCmNyZWF0ZWQgaW4gc25kX3NvY19yZWdp
-c3Rlcl9wbGF0Zm9ybSgpIGJ5IGt6YWxsb2MoKSBvZiBwbGF0Zm9ybSBzdHJ1Y3QsDQppdHMgJ2Nh
-cmQnIHBvaW50ZXIgaXMgcmVtYWluaW5nIGFuIE5VTEwgcG9pbnRlciBldmVuIHRoZSB3aWRnZXQg
-bm9kZQ0KYmVpbmcgcmVhZC4NCg0KUGVyaGFwcyBhbm90aGVyIG9wdGlvbiBpcyB0byByZWZpbmUg
-c29jX3Byb2JlX2NvbXBvbmVudCgpLCB3aGljaCBJIGhhdmUNCm5vdCBkaXZlIGluLg0KDQpTaW5j
-ZXJlbHksDQpIYXJyeQ0KDQo=
+Hey Lars,
+
+I'm having an issue with the adau1701 codec. There is this line which
+checks, if the mclk/lrclk ratio has changed and whether it is necessary
+to reset the codec and upload a new firmware.
+
+http://lxr.free-electrons.com/source/sound/soc/codecs/adau1701.c#L444
+
+But if we change mclk in the machine driver (for example to playback
+44.1), this ration might not change, but still we have to upload a new
+firmware, so shouldn't we probably be checking for sample rate changes
+instead:
+
+if (adau1701->current_rate != params_rate(params) {
+	adau1701->current_rate = params_rate(params);
+	ret = adau1701_reset(codec, clkdiv, params_rate(params));
+	if (ret < 0)
+		return ret;
+}
+
+Or did I miss something?
+
+regards
+pascal
