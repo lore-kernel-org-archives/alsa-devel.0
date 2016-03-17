@@ -1,66 +1,83 @@
-From: Tomi Sarvela <tomi.p.sarvela@intel.com>
-Subject: Re:
-	=?utf-8?q?=E2=9C=97_Fi=2ECI=2EBAT=3A_failure_for_drm/?=
-	=?utf-8?q?i915/bxt=3A_Fix_off-by-one_error_in_Broxton_PLL_IDs_=28r?=
-	=?utf-8?q?ev3=29?=
-Date: Thu, 17 Mar 2016 09:57:23 +0200
-Message-ID: <1656335.ihdoht0X68@fractal>
-References: <1457977942-11772-1-git-send-email-imre.deak@intel.com>
- <20160316153706.GT14170@phenom.ffwll.local> <s5hlh5ibfdj.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: nau8825: support different clock
+ source for FLL function
+Date: Thu, 17 Mar 2016 09:18:16 +0000
+Message-ID: <20160317091816.GB2566@sirena.org.uk>
+References: <1458014901-28049-1-git-send-email-KCHSU0@nuvoton.com>
+ <CAOMFOmXH-0cZ-VON3Ozttpaouuu+QWMTpdmB_fbELd+BhOUEaw@mail.gmail.com>
+ <56EA1EB4.9000409@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <s5hlh5ibfdj.wl-tiwai@suse.de>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Libin Yang <libin.yang@linux.intel.com>, alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org
+Content-Type: multipart/mixed; boundary="===============4228487612988520669=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57722260831
+ for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2016 10:18:24 +0100 (CET)
+In-Reply-To: <56EA1EB4.9000409@nuvoton.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Anatol Pomozov <anatol.pomozov@gmail.com>, YHCHuang@nuvoton.com, Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, Yong Zhi <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkbmVzZGF5IDE2IE1hcmNoIDIwMTYgMTY6NDA6MjQgVGFrYXNoaSBJd2FpIHdyb3RlOgo+
-IE9uIFdlZCwgMTYgTWFyIDIwMTYgMTY6Mzc6MDYgKzAxMDAsIERhbmllbCBWZXR0ZXIgd3JvdGU6
-Cj4gPiBPbiBXZWQsIE1hciAxNiwgMjAxNiBhdCAwMjozNzoyNFBNICswMjAwLCBUb21pIFNhcnZl
-bGEgd3JvdGU6Cj4gPiA+IAo+ID4gPiBTTkQgaXMgcmVjdXJyaW5nIHByb2JsZW0uIEknZCBsaWtl
-IHRvIHNlZSBkcm0taW50ZWwtbmlnaHRseSBub3QgYnJlYWtpbmcKPiA+ID4gd2hlbiBwdWxsaW5n
-IHNvdW5kIHVwZGF0ZXMuCj4gPiAKPiA+IFdlIG5lZWQgdG8gZXNjYWxhdGUgdGhpcyBhZ2Fpbiwg
-c25kIHRlYW0gc2VyaW91c2x5IHN1Y2tzIGF0IHF1YWxpdHkKPiA+IGNvbnRyb2wgOiggQWRkaW5n
-IExpYmluJlRha2FzaGkuIElmIHRoaXMgZG9lc24ndCBpbXByb3ZlIEkgbmVlZCB0byB0aHJvdwo+
-ID4gc291bmQgdHJlZXMgb3V0IG9mIC1uaWdodGx5IGZvciByZWFsLgo+IAo+IFNvcnJ5IGFib3V0
-IHRoYXQsIGJ1dCBJIGNvdWxkbid0IGdldCB0aGUgd2FybmluZyBvbiBteSBtYWNoaW5lLgo+IAo+
-IEhvdyBpcyB0aGUgcHJvY2VkdXJlIHRvIHJlcHJvZHVjZSB0aGUgYnVnPyAgUGxlYXNlIGdpdmUg
-dGhlIGV4YWN0Cj4gY29tbWl0IGlkIGFuZCBlbnZpcm9ubWVudCB5b3UncmUgdGVzdGluZywgdG9v
-LgoKT3VyIENJIGhhcyBiZWVuIGJ1aWx0IHRvIG1pbWljIHVzZXIgZW52aXJvbm1lbnQsIHNvIGJh
-c2UgaXMgdXAtdG8tZGF0ZSBVYnVudHUgCjE1LjA0LiBUaGlzIGFmZmVjdHMgdG8gYm9vdC11cCBt
-ZWNoYW5pY3MgYW5kIHVzZXJtb2RlIHNvZnR3YXJlIHZlcnNpb25zLiBUaGVyZSAKYXJlIGFib3V0
-IGRvemVuIG1hY2hpbmVzLCA4IGdlbnMsIGZyb20gSUxLIHRvIFNLTC4KClJlcHJvZHVjdGlvbjog
-Q0kgaXMgZG9pbmcgdGhlc2Ugc3RlcHMKCi0gQ29tcGlsZSBrZXJuZWw6IENJX0RSTSBpcyBkcm0t
-aW50ZWwtbmlnaHRseSBIRUFECi0gRGVwbG95IGl0IHRvIHRlc3Rob3N0OiBjb3B5IHRvIC9ib290
-LCByZWNyZWF0ZSBpbml0cmQKLSBCb290IHRlc3Rob3N0IHRvIGluaXQgMwotIFJ1biBuZXdlc3Qg
-SUdUL3BpZ2xpdCB3aXRoIGJhc2ljIHRlc3RzZXQKLSBDb2xsZWN0IHJlc3VsdHMKClRoZSBsYXN0
-IGNvbW1pdHMgdGVzdGVkIGFyZToKCkNJX0RSTV8xMTQwIGdpdDovL2Fub25naXQuZnJlZWRlc2t0
-b3Aub3JnL2RybS1pbnRlbCAKM2U1ZWNjOGM1ZmY4MGNiMWZiNjM1Y2UxY2YxNmI3Y2Q0Y2ZiMTk3
-OQoKQ0lfRFJNXzExNDEgZ2l0Oi8vYW5vbmdpdC5mcmVlZGVza3RvcC5vcmcvZHJtLWludGVsIApm
-Yzg4MWViZDljM2MyNjkxOWM3ZDExMTNmOGJmNzAxNGUxYTA1NTYzCgpDSV9EUk1fMTE0MiBnaXQ6
-Ly9hbm9uZ2l0LmZyZWVkZXNrdG9wLm9yZy9kcm0taW50ZWwgCjlmODcwOWZmZDA5OWU4NWU1ZTEx
-NmVkN2QwOWYxYjgwMDlmNDA4NDcKCkNJX0RSTV8xMTQzIGdpdDovL2Fub25naXQuZnJlZWRlc2t0
-b3Aub3JnL2RybS1pbnRlbCAKNTM1NmMyMjM3OWZjOTZjYjA4N2VlNTliZmRiYmU0NmVjM2JkZjY1
-NAoKQ0lfRFJNXzExNDQgZ2l0Oi8vYW5vbmdpdC5mcmVlZGVza3RvcC5vcmcvZHJtLWludGVsIAph
-NWM0M2Y1ZDFiNDk2OGEzNzBmNTRiZGRhNTM4N2NlMjEzYWNhNzg1CgpDSV9EUk1fMTE0NSBnaXQ6
-Ly9hbm9uZ2l0LmZyZWVkZXNrdG9wLm9yZy9kcm0taW50ZWwgCmJmM2RjZDUzODIxYTdkNmM4MWY3
-MDYxYzZjNzk1NmFhZDU3ZWM2MTUKCkNJX0RSTV8xMTQ2IGdpdDovL2Fub25naXQuZnJlZWRlc2t0
-b3Aub3JnL2RybS1pbnRlbCAKYmUwZDE0ODFmYjFhMmZkMWNiMTk5YjgxYzljMDExNTRhNzhkNDNk
-ZAoKQ0lfRFJNXzExNDcgZ2l0Oi8vYW5vbmdpdC5mcmVlZGVza3RvcC5vcmcvZHJtLWludGVsIApk
-YmJjNmQyNzY4NjRkN2I3YTNhMWVkYjA0ZjA1MTExNTNmOWMzODUyCgpOb3RlIHRoYXQgZHJtLWlu
-dGVsLW5pZ2h0bHkgaGlzdG9yeSBjaGFuZ2VzLCBzbyB0aGUgZXhhY3QgY29tbWl0cyBtaWdodCBu
-b3QgYmUgCnRoZXJlIGFueSBtb3JlLgoKVG9taQoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4v
-bGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+
+--===============4228487612988520669==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="HO3Ykb1C9doWAHv0"
+Content-Disposition: inline
+
+
+--HO3Ykb1C9doWAHv0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Mar 17, 2016 at 11:04:20AM +0800, John Hsu wrote:
+> On 3/17/2016 7:06 AM, Anatol Pomozov wrote:
+
+> >>+       nau8825->mclk = devm_clk_get(nau8825->dev, "mclk");
+> >>+       if (IS_ERR(nau8825->mclk)) {
+
+> >Is it possible that clock system is not ready at this point and the
+> >method returns -EPROBE_DEFER? If so it matches IS_ERR() but not a real
+> >error and the nua8825 driver should backoff and wait a little before
+> >clocks are ready.
+
+> The function is used when playback startup not in the driver initiation.
+> At this moment, we just skip mclk operation and let thing go on.
+> Should driver return the errorno to machine driver to handle it?
+
+Well, what should really be happening here is that the clock is
+requested at probe time.
+
+--HO3Ykb1C9doWAHv0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJW6nZXAAoJECTWi3JdVIfQSFIH+gMEIfHnPpJvoFbTJ2y7hdJR
+0tO6L8WuQAnhcfEzjRVTZPcmj5iKkU2OSSAE+9hMXiNzIejCAaJlbDIAt8hhEFNJ
+DzSYYPAcL2yjZ0RAZRvL5Ait6poub1IrnGdfbehF2U2UXuXIaFKhUuVUxjRfOAgi
+EsSZh9fCKhYsWIS/w+dagndOVxBA/i8VRubJ007Rh/Z1mq6qUKrI6XN/hcHxSZct
+pbQfSXu1BcpXq78ydkZgs0IVremH24twvsyO33kEL/obGknVr6Hp9MOjMI8Ur3aJ
+nKGHHua0yM/FBSzNDy/f2bl5o4QdFYC9OJJEeHKfVQAtSGjyi5jt3qzEV37e9FE=
+=5bpT
+-----END PGP SIGNATURE-----
+
+--HO3Ykb1C9doWAHv0--
+
+--===============4228487612988520669==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4228487612988520669==--
