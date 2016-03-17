@@ -1,53 +1,103 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: Do not traverse widget hooks to snd-soc-dummy
-Date: Thu, 17 Mar 2016 15:42:36 +0000
-Message-ID: <20160317154236.GH2566@sirena.org.uk>
-References: <1458127071-14417-1-git-send-email-harry.pan@intel.com>
- <20160317095438.GD2566@sirena.org.uk>
- <1458211115.965.13.camel@intel.com>
- <20160317112514.GE2566@sirena.org.uk>
- <56EAA4FC.5090408@metafoo.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [alsa-devel]  ASoC and pulseaudio
+Date: Thu, 17 Mar 2016 21:59:26 +0530
+Message-ID: <20160317162925.GA2490@localhost>
+References: <s5hmvq0glxj.wl-tiwai@suse.de> <1458035331.8522.52.camel@loki>
+ <s5h8u1kgj3c.wl-tiwai@suse.de> <1458039506.8522.70.camel@loki>
+ <20160316145704.GU13211@localhost>
+ <20160316150949.GX2566@sirena.org.uk>
+ <s5hwpp2bggh.wl-tiwai@suse.de> <20160316155342.GV13211@localhost>
+ <1458151177.3844.50.camel@loki>
+ <B51200AC81AB024499A3C2C9A1BB90A83D3AB901@SHSMSX101.ccr.corp.intel.com>
+Reply-To: General PulseAudio Discussion
+ <pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="qABWltju4eaUXBmg"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
 Content-Disposition: inline
-In-Reply-To: <56EAA4FC.5090408@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "Pan, Harry" <harry.pan@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "gs0622@gmail.com" <gs0622@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.com" <tiwai@suse.com>, "perex@perex.cz" <perex@perex.cz>
+In-Reply-To: <B51200AC81AB024499A3C2C9A1BB90A83D3AB901@SHSMSX101.ccr.corp.intel.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
+To: "Lu, Han" <han.lu@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, "han.lu" <han.lu@linux.intel.com>, Linux Upstreaming Team <linux@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---qABWltju4eaUXBmg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Mar 17, 2016 at 01:37:16PM +0100, Lars-Peter Clausen wrote:
-
-> I'd say as a quick fix for stable check that card is not NULL in
-> dapm_widget_show_component(). And as a longterm fix get rid of dapm_widget
-> file. Nobody should hopefully use it anymore with debugfs being available as
-> the far better alternative.
-
-Getting rid of the file is definitely not a bad idea but I'd still like
-to see us make the dummy component more consistent with other components
-in order to minimise the chances that we'll run into other special
-cases.
-
---qABWltju4eaUXBmg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEbBAEBCAAGBQJW6tBrAAoJECTWi3JdVIfQptYH9Ah627SJUZ8xbaGKvsWNa14o
-LAx6C54MDeDTYvOLXFK879Mz5IW8bKrFO6VsQTWi4OmmKjyqRXiCOlR5v4TKsR/d
-lBsBUM9dHFzmt/8wCvyPpx4TR+Vst9ethMSnKpO0zK8tbcqPLhYmpntnz1Xtx3ze
-Qy37JxR+zyDOijEWvxm06klKGTjW1P/3KCpzsHgkjYm+HdS9YmzGPDEXmdxvOUY1
-Vdeyeh8lSvh0O7/gEg2n6lXiFTiacAIxUTZXkWw12P5oXfpd6E9ZpKUp9YeTCyvT
-2Sbyz0oiEum4RchDaeOkjIhU6EfVuPnZpV2uvXSH0f6pxUxvxSLZfYzEX6xRWw==
-=L2EW
------END PGP SIGNATURE-----
-
---qABWltju4eaUXBmg--
+T24gVGh1LCBNYXIgMTcsIDIwMTYgYXQgMDQ6NTg6MTFQTSArMDUzMCwgTHUsIEhhbiB3cm90ZToK
+PiBTb3JyeSwgSSBtYW51YWxseSB3cmFwcGVkIGxpbmVzIGJ1dCB0aGUgZm9ybWF0IGxvb2tzIGNv
+cnJ1cHRlZCBmcm9tIG15ICJzZW50Igo+IGZvbGRlci4gRG8geW91IGhhdmUgYW55IHN1Z2dlc3Rp
+b25zIHRvIGF2b2lkIHRoaXM/IFRoYW5rcy4KClllcywgZG9uJ3QgdXNlIE0kIHRvb2xzIHRvIHNl
+bmQgTGludXggQ29kZSA6KQoKWW91IGNhbiB1c2UgZXZvbHV0aW9uLCBtdXR0IG9yIGFueSBvdGhl
+ciB0b29sLCB0aGV5IHdvcmsgd2VsbCB3aXRoIG91cgpjb3Jwb3JhdGUgYWNjb3VudHMuLi4KCj4g
+Cj4gQlIsCj4gSGFuIEx1Cj4gCj4gCj4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+ID4g
+RnJvbTogTHUsIEhhbgo+ID4gU2VudDogVGh1cnNkYXksIE1hcmNoIDE3LCAyMDE2IDc6MjMgUE0K
+PiA+IFRvOiBHZW5lcmFsIFB1bHNlQXVkaW8gRGlzY3Vzc2lvbiA8cHVsc2VhdWRpby0KPiA+IGRp
+c2N1c3NAbGlzdHMuZnJlZWRlc2t0b3Aub3JnPjsgS291bCwgVmlub2QgPHZpbm9kLmtvdWxAaW50
+ZWwuY29tPjsKPiA+IGxpYW0uci5naXJkd29vZEBsaW51eC5pbnRlbC5jb20KPiA+IENjOiBhbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT47IE1h
+cmsgQnJvd24KPiA+IDxicm9vbmllQGtlcm5lbC5vcmc+OyBoYW4ubHUgPGhhbi5sdUBsaW51eC5p
+bnRlbC5jb20+OyBMaW51eCBVcHN0cmVhbWluZwo+ID4gVGVhbSA8bGludXhAZW5kbGVzc20uY29t
+Pgo+ID4gU3ViamVjdDogUkU6IFtwdWxzZWF1ZGlvLWRpc2N1c3NdIFthbHNhLWRldmVsXSBBU29D
+IGFuZCBwdWxzZWF1ZGlvCj4gPiAKPiA+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0KPiA+
+ID4gRnJvbTogcHVsc2VhdWRpby1kaXNjdXNzIFttYWlsdG86cHVsc2VhdWRpby1kaXNjdXNzLQo+
+ID4gPiBib3VuY2VzQGxpc3RzLmZyZWVkZXNrdG9wLm9yZ10gT24gQmVoYWxmIE9mIExpYW0gR2ly
+ZHdvb2QKPiA+ID4gU2VudDogVGh1cnNkYXksIE1hcmNoIDE3LCAyMDE2IDI6MDAgQU0KPiA+ID4g
+VG86IEtvdWwsIFZpbm9kIDx2aW5vZC5rb3VsQGludGVsLmNvbT4KPiA+ID4gQ2M6IGFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgR2VuZXJhbCBQdWxzZUF1ZGlvIERpc2N1c3Npb24KPiA+ID4g
+PHB1bHNlYXVkaW8tIGRpc2N1c3NAbGlzdHMuZnJlZWRlc2t0b3Aub3JnPjsgVGFrYXNoaSBJd2Fp
+Cj4gPiA+IDx0aXdhaUBzdXNlLmRlPjsgTWFyayBCcm93biA8YnJvb25pZUBrZXJuZWwub3JnPjsg
+aGFuLmx1Cj4gPiA+IDxoYW4ubHVAbGludXguaW50ZWwuY29tPjsgTGludXggVXBzdHJlYW1pbmcg
+VGVhbSA8bGludXhAZW5kbGVzc20uY29tPgo+ID4gPiBTdWJqZWN0OiBSZTogW3B1bHNlYXVkaW8t
+ZGlzY3Vzc10gW2Fsc2EtZGV2ZWxdIEFTb0MgYW5kIHB1bHNlYXVkaW8KPiA+ID4KPiA+ID4gT24g
+V2VkLCAyMDE2LTAzLTE2IGF0IDIxOjIzICswNTMwLCBWaW5vZCBLb3VsIHdyb3RlOgo+ID4gPgo+
+ID4gPiA+Cj4gPiA+ID4gPiBZZWFoLCB0aGF0IHNob3VsZCBiZSBmZWFzaWJsZS4gIEFsc28sIHRo
+ZXJlIGlzIGEgImNvbXBvbmVudCIgZmllbGQKPiA+ID4gPiA+IGFzc2lnbmVkIHRvIHRoZSBjYXJk
+LiAgVGhpcyBpcyBzdXBwb3NlZCB0byBiZSByZWZlcnJlZCBieQo+ID4gPiA+ID4gdXNlci1zcGFj
+ZSBhcyBhZGRpdGlvbmFsIGluZm9ybWF0aW9uLiAgU2VlIHNuZF9jb21wb25lbnRfYWRkKCkuCj4g
+PiA+ID4KPiA+ID4gPiBXaWxsIGFkZCB0aGlzIHRvIG15IGV2ZXIgZ3Jvd2luZyBsaXN0IG9mIHRo
+aW5ncyB0byBkby4uLiA6RAo+ID4gPgo+ID4gPiBZb3UgZG9uJ3QgaGF2ZSB0byA6KQo+ID4gPgo+
+ID4gPiBJdCdzIG9uIEhhbidzIGxpc3QuCj4gPiA+Cj4gPiA+IExpYW0KPiA+ID4KPiA+IAo+ID4g
+SSBpbnN0YWxsZWQgVWJ1bnR1IDE0LjA0IHRvIFQxMDAgYW5kIHVwZGF0ZSB0aGUga2VybmVsIHRv
+IDQuNS4wKyB0b2RheSwgYW5kIEkKPiA+IHRlc3RlZCB3aXRoIGEgc2ltcGxlIHBhdGNoLCB3aGlj
+aCBvbmx5IGFkZGVkIGxvbmdfbmFtZSBpbiBmb3JtYXQKPiA+ICJETUlfUFJPRFVDVF9OQU1FOmNh
+cmQtPm5hbWUiLCBhbmQgbm93IGluIFQxMDAsIGNvbW1hbmQgImNhdAo+ID4gL3Byb2Mvc291bmQv
+Y2FyZHMiIHdpbGwgcHJpbnQKPiA+ICAwICBbYnl0Y3JydDU2NDAgICAgXTogYnl0Y3ItcnQ1NjQw
+IC0gYnl0Y3ItcnQ1NjQwCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IFQxMDBUQTpieXRjci1ydDU2NDAgUGxlYXNlIGZpbmQgZGV0YWlscyBiZWxvdy4gSSdsbCBjb250
+aW51ZQo+ID4gdG8gYWRkIGZ3IG5hbWUuCj4gPiBPciBzaGFsbCB3ZSB1c2Ugc3lzZnMgYW5kIHNu
+ZF9jb21wb25lbnRfYWRkIGluc3RlYWQ/Cj4gPiAKPiA+IEZyb20gNTExZTZmNmE2MDY0MzhhOTc3
+ZDllMDA2YzQ2MjlmYTliOTY3ZDZhOCBNb24gU2VwIDE3IDAwOjAwOjAwCj4gPiAyMDAxCj4gPiBG
+cm9tOiAiTHUsIEhhbiIgPGhhbi5sdUBpbnRlbC5jb20+Cj4gPiBEYXRlOiBUaHUsIDE3IE1hciAy
+MDE2IDE2OjUwOjU0ICswODAwCj4gPiBTdWJqZWN0OiBbUEFUQ0ggUkZDIDEvMV0gQXNvYzogcnQ1
+NjQwOiBhZGQgbW9yZSBtYWNoaW5lL2JvYXJkIGluZm9ybWF0aW9uCj4gPiBmb3IgIHVzZXIKPiA+
+IAo+ID4gQWRkIG1vcmUgbWFjaGluZS9ib2FyZCBpbmZvcm1hdGlvbiBmb3IgUEEgYW5kIFVDTS4K
+PiA+IAo+ID4gU2lnbmVkLW9mZi1ieTogTHUsIEhhbiA8aGFuLmx1QGludGVsLmNvbT4KPiA+IAo+
+ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9pbnRlbC9ib2FyZHMvYnl0Y3JfcnQ1NjQwLmMKPiA+
+ICBiL3NvdW5kL3NvYy9pbnRlbC9ib2FyZHMvYnl0Y3JfcnQ1NjQwLmMKPiA+IGluZGV4IDAzMmEy
+ZTcuLjliZDVlMjEgMTAwNjQ0Cj4gPiAtLS0gYS9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2J5dGNy
+X3J0NTY0MC5jCj4gPiArKysgYi9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2J5dGNyX3J0NTY0MC5j
+Cj4gPiBAQCAtMTYwLDYgKzE2MCwxMiBAQCBzdGF0aWMgaW50IGJ5dF9ydDU2NDBfaW5pdChzdHJ1
+Y3QKPiA+IHNuZF9zb2NfcGNtX3J1bnRpbWUKPiA+ICAqcnVudGltZSkKPiA+ICAgICAgICAgY29u
+c3Qgc3RydWN0IHNuZF9zb2NfZGFwbV9yb3V0ZSAqY3VzdG9tX21hcDsKPiA+ICAgICAgICAgaW50
+IG51bV9yb3V0ZXM7Cj4gPiAKPiA+ICsgICAgICAgaWYgKCFjYXJkLT5sb25nX25hbWUpIHsKPiA+
+ICsgICAgICAgICAgICAgICBjYXJkLT5sb25nX25hbWUgPSBkbWlfZ2V0X3N5c3RlbV9pbmZvKERN
+SV9QUk9EVUNUX05BTUUpOwo+ID4gKyAgICAgICAgICAgICAgIHN0cmNhdCgoY2hhciAqKWNhcmQt
+PmxvbmdfbmFtZSwgIjoiKTsKPiA+ICsgICAgICAgICAgICAgICBzdHJjYXQoKGNoYXIgKiljYXJk
+LT5sb25nX25hbWUsIGNhcmQtPm5hbWUpOwo+ID4gKyAgICAgICB9Cj4gPiArCj4gPiAgICAgICAg
+IGNhcmQtPmRhcG0uaWRsZV9iaWFzX29mZiA9IHRydWU7Cj4gPiAKPiA+ICAgICAgICAgcnQ1NjQw
+X3NlbF9hc3JjX2Nsa19zcmMoY29kZWMsCj4gPiAtLQo+ID4gMi41LjAKPiA+IAo+ID4gQlIsCj4g
+PiBIYW4KPiA+ID4KPiA+ID4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KPiA+ID4gcHVsc2VhdWRpby1kaXNjdXNzIG1haWxpbmcgbGlzdAo+ID4gPiBwdWxz
+ZWF1ZGlvLWRpc2N1c3NAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCj4gPiA+IGh0dHBzOi8vbGlzdHMu
+ZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vcHVsc2VhdWRpby1kaXNjdXNzCgotLSAK
+flZpbm9kCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCnB1
+bHNlYXVkaW8tZGlzY3VzcyBtYWlsaW5nIGxpc3QKcHVsc2VhdWRpby1kaXNjdXNzQGxpc3RzLmZy
+ZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL3B1bHNlYXVkaW8tZGlzY3Vzcwo=
