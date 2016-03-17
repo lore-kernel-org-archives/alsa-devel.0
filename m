@@ -1,18 +1,19 @@
 From: John Hsu <KCHSU0@nuvoton.com>
-Subject: Re: [PATCH] ASoC: nau8825: support different clock
- source for FLL function
-Date: Thu, 17 Mar 2016 11:04:20 +0800
-Message-ID: <56EA1EB4.9000409@nuvoton.com>
-References: <1458014901-28049-1-git-send-email-KCHSU0@nuvoton.com>
- <CAOMFOmXH-0cZ-VON3Ozttpaouuu+QWMTpdmB_fbELd+BhOUEaw@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: nau8825: add crosstalk suppression
+	feature
+Date: Thu, 17 Mar 2016 12:17:27 +0800
+Message-ID: <56EA2FD7.2020209@nuvoton.com>
+References: <1454651566-28451-1-git-send-email-KCHSU0@nuvoton.com>
+ <20160209183944.GL13270@sirena.org.uk> <56D380EC.6070302@nuvoton.com>
+ <20160302043130.GB18327@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id B7EDE261564
- for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2016 04:04:29 +0100 (CET)
-In-Reply-To: <CAOMFOmXH-0cZ-VON3Ozttpaouuu+QWMTpdmB_fbELd+BhOUEaw@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8BAB4261564
+ for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2016 05:17:37 +0100 (CET)
+In-Reply-To: <20160302043130.GB18327@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,65 +23,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anatol Pomozov <anatol.pomozov@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, YHCHuang@nuvoton.com, Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>, Mark Brown <broonie@kernel.org>, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, Yong Zhi <yong.zhi@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On 3/17/2016 7:06 AM, Anatol Pomozov wrote:
-> Hi
+On 3/2/2016 12:31 PM, Mark Brown wrote:
+> On Mon, Feb 29, 2016 at 07:21:16AM +0800, John Hsu wrote:
 >
-> On Mon, Mar 14, 2016 at 9:08 PM, John Hsu <KCHSU0@nuvoton.com> wrote:
+> Please fix your mail client to word wrap within paragraphs at something
+> substantially less than 80 columns.  Doing this makes your messages much
+> easier to read and reply to.
+>
 >   
->> Extend FLL clock source selection. The source can be from MCLK, BCLK or FS.
->>
->> Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
->> ---
->>  sound/soc/codecs/nau8825.c | 82 +++++++++++++++++++++++++++++++++-------------
->>  sound/soc/codecs/nau8825.h |  8 +++++
->>  2 files changed, 67 insertions(+), 23 deletions(-)
->>
->> diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
->> index 1c87299..ac264ec 100644
->> --- a/sound/soc/codecs/nau8825.c
->> +++ b/sound/soc/codecs/nau8825.c
->> @@ -1053,6 +1053,37 @@ static int nau8825_set_pll(struct snd_soc_codec *codec, int pll_id, int source,
->>         return 0;
->>  }
->>
->> +static int nau8825_mclk_prepare(struct nau8825 *nau8825, unsigned int freq)
->> +{
->> +       int ret = 0;
->> +
->> +       nau8825->mclk = devm_clk_get(nau8825->dev, "mclk");
->> +       if (IS_ERR(nau8825->mclk)) {
+>> On 2/10/2016 2:39 AM, Mark Brown wrote:
+>>     
+>>> On Fri, Feb 05, 2016 at 01:52:46PM +0800, John Hsu wrote:
+>>>       
+>
+>   
+>>>> +static u32 nau8825_intlog10_dec3(u32 value)
+>>>>         
+>
+>   
+>>> This doesn't look driver specific, it should go somewhere generic
+>>> (though I can't immediately see any relevant place for it...).
+>>>       
+>
+>   
+>> Do you have any advise what we can do? It's possible to move these functions
+>> to other files, isn't it?
 >>     
 >
-> Is it possible that clock system is not ready at this point and the
-> method returns -EPROBE_DEFER? If so it matches IS_ERR() but not a real
-> error and the nua8825 driver should backoff and wait a little before
-> clocks are ready.
->
+> Propose a maths helper library?
 >   
 
-The function is used when playback startup not in the driver initiation.
-At this moment, we just skip mclk operation and let thing go on.
-Should driver return the errorno to machine driver to handle it?
+I have no idea where to locate the logarithm function. The function was 
+writen
+in reference to dvb-math which provides some math functions for other dvb
+driver to use. But I'm not sure the math is common for audio.
 
->> +               dev_info(nau8825->dev, "No 'mclk' clock found, assume MCLK is managed externally");
->> +               return 0;
->> +       }
->> +
->> +       if (!nau8825->mclk_freq) {
->> +               ret = clk_prepare_enable(nau8825->mclk);
->> +               if (ret) {
->> +                       dev_err(nau8825->dev, "Unable to prepare codec mclk\n");
->> +                       return ret;
->> +               }
->> +       }
->> +
+>   
+>> It has to enable DAC and ADC path for detection and measurement. A little
+>> like simple playback and record.
+>> Indeed, it spent some time to finish the whole sequence and the situation
+>> you mention will happen possibly.
+>> Do we can add some mutex in driver to avoid something like race condition
+>> happened? Could you give us suggenstion? Very thanks.
 >>     
-> .
 >
+> Take a look at the da7219 driver, it is doing something similar.
 >   
+
+Now, we suffer an issue that the detection will interfere DAPM and clock
+control when they start at the same time. I thought it's hard to protect
+playback start sequence because audio hardware parameter and
+preparation are independent operations from user application.
+Is it better to let user application control it with kcontrol?
