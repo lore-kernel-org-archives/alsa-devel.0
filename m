@@ -1,90 +1,132 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: Bad rever-select of CONFIG_SND_HDA_I915
-Date: Fri, 18 Mar 2016 16:24:07 +0530
-Message-ID: <20160318105407.GJ2490@localhost>
-References: <s5hk2l0utly.wl-tiwai@suse.de> <20160318080648.GH2490@localhost>
- <s5hshzo5ee2.wl-tiwai@suse.de> <20160318102806.GI2490@localhost>
- <s5hfuvo5b3x.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 66EB1261481
- for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2016 11:49:48 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hfuvo5b3x.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rt5640: Correct the digital interface data select" to the asoc tree
+Date: Fri, 18 Mar 2016 10:58:03 +0000
+Message-ID: <E1ags6V-0004FP-I7@debutante>
+References: <1458284062-46472-1-git-send-email-sugar.zhang@rock-chips.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1458284062-46472-1-git-send-email-sugar.zhang@rock-chips.com>
+Sender: stable-owner@vger.kernel.org
+To: Sugar Zhang <sugar.zhang@rock-chips.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 18, 2016 at 11:33:38AM +0100, Takashi Iwai wrote:
-> On Fri, 18 Mar 2016 11:28:06 +0100,
-> Vinod Koul wrote:
-> > 
-> > On Fri, Mar 18, 2016 at 10:22:45AM +0100, Takashi Iwai wrote:
-> > > On Fri, 18 Mar 2016 09:06:49 +0100,
-> > > Vinod Koul wrote:
-> > > > 
-> > > > On Fri, Mar 18, 2016 at 08:34:49AM +0100, Takashi Iwai wrote:
-> > > > > Hi,
-> > > > > 
-> > > > > while build testing, I noticed the following warning:
-> > > > >   warning: (SND_SOC_INTEL_SKYLAKE) selects SND_HDA_I915 which has unmet direct dependencies (SOUND && !M68K && !UML && SND && DRM_I915 && SND_HDA_CORE)
-> > > > 
-> > > > Thanks Takashi for reporting,
-> > > > 
-> > > > > And it's indeed broken: you can't select CONFIG_SND_HDA_I915 from the
-> > > > > driver side.  This is the condition depending on DRM i915 driver.
-> > > > 
-> > > > But who selects CONFIG_SND_HDA_I915. It is a bool symbol, so someone needs
-> > > > to select it. I didn't see anyone select it, either from Gfx side or HDA
-> > > > side?
-> > > 
-> > > No, it's not a kconfig to be selected manually by others, but it
-> > > adjusts itself automatically depending on DRM_I915.  That is, it's a
-> > > read-only value.
-> > 
-> > Okay then
-> > 
-> > > > > Fixing this doesn't look too trivial, though.  Since
-> > > > > SND_SOC_INTEL_SKYLAKE is the item to be selected, it can't have
-> > > > > "depends on".  So, the top-level configs that select
-> > > > > SND_SOC_INTEL_SKYLAKE need to have "depends on DRM_I915" lines, or
-> > > > > modify the driver to be built without i915 binding.
-> > > > 
-> > > > can you please share the config where you saw this...
-> > > 
-> > > Just set DRM_I915=n and run config again on your machine.
-> > 
-> > Yes saw this now. I made depends on DRM_I915 to make it disappear.
->  
-> OTOH, this makes impossible to use the driver without graphics, even
-> if you want only Realtek codec.
-> 
-> > I will check again for compilation fix and get back on proper patch either
-> > which depends on DRM or ensure we compile clean
-> 
-> I guess the build failure won't happen even if you rip off
-> SND_HDA_I915 dependency from SND_SOC_INTEL_SKYLAKE.  Let's check.
+The patch
 
-It doesn't. So both work well :)
+   ASoC: rt5640: Correct the digital interface data select
 
-Depends on DRM_I915 as well as removing current select.
+has been applied to the asoc tree at
 
-FWIW, the removing the DRM will not work as HDMI will fail so dailinks wont
-be there and sound card will not get registered :)
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-So which one to do in above?
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 653aa4645244042826f105aab1be3d01b3d493ca Mon Sep 17 00:00:00 2001
+From: Sugar Zhang <sugar.zhang@rock-chips.com>
+Date: Fri, 18 Mar 2016 14:54:22 +0800
+Subject: [PATCH] ASoC: rt5640: Correct the digital interface data select
+
+this patch corrects the interface adc/dac control register definition
+according to datasheet.
+
+Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/codecs/rt5640.c |  2 +-
+ sound/soc/codecs/rt5640.h | 36 ++++++++++++++++++------------------
+ 2 files changed, 19 insertions(+), 19 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index e8b5ba04417a..09e8988bbb2d 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -359,7 +359,7 @@ static const DECLARE_TLV_DB_RANGE(bst_tlv,
+ 
+ /* Interface data select */
+ static const char * const rt5640_data_select[] = {
+-	"Normal", "left copy to right", "right copy to left", "Swap"};
++	"Normal", "Swap", "left copy to right", "right copy to left"};
+ 
+ static SOC_ENUM_SINGLE_DECL(rt5640_if1_dac_enum, RT5640_DIG_INF_DATA,
+ 			    RT5640_IF1_DAC_SEL_SFT, rt5640_data_select);
+diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
+index 1761c3a98b76..58b664b06c16 100644
+--- a/sound/soc/codecs/rt5640.h
++++ b/sound/soc/codecs/rt5640.h
+@@ -443,39 +443,39 @@
+ #define RT5640_IF1_DAC_SEL_MASK			(0x3 << 14)
+ #define RT5640_IF1_DAC_SEL_SFT			14
+ #define RT5640_IF1_DAC_SEL_NOR			(0x0 << 14)
+-#define RT5640_IF1_DAC_SEL_L2R			(0x1 << 14)
+-#define RT5640_IF1_DAC_SEL_R2L			(0x2 << 14)
+-#define RT5640_IF1_DAC_SEL_SWAP			(0x3 << 14)
++#define RT5640_IF1_DAC_SEL_SWAP			(0x1 << 14)
++#define RT5640_IF1_DAC_SEL_L2R			(0x2 << 14)
++#define RT5640_IF1_DAC_SEL_R2L			(0x3 << 14)
+ #define RT5640_IF1_ADC_SEL_MASK			(0x3 << 12)
+ #define RT5640_IF1_ADC_SEL_SFT			12
+ #define RT5640_IF1_ADC_SEL_NOR			(0x0 << 12)
+-#define RT5640_IF1_ADC_SEL_L2R			(0x1 << 12)
+-#define RT5640_IF1_ADC_SEL_R2L			(0x2 << 12)
+-#define RT5640_IF1_ADC_SEL_SWAP			(0x3 << 12)
++#define RT5640_IF1_ADC_SEL_SWAP			(0x1 << 12)
++#define RT5640_IF1_ADC_SEL_L2R			(0x2 << 12)
++#define RT5640_IF1_ADC_SEL_R2L			(0x3 << 12)
+ #define RT5640_IF2_DAC_SEL_MASK			(0x3 << 10)
+ #define RT5640_IF2_DAC_SEL_SFT			10
+ #define RT5640_IF2_DAC_SEL_NOR			(0x0 << 10)
+-#define RT5640_IF2_DAC_SEL_L2R			(0x1 << 10)
+-#define RT5640_IF2_DAC_SEL_R2L			(0x2 << 10)
+-#define RT5640_IF2_DAC_SEL_SWAP			(0x3 << 10)
++#define RT5640_IF2_DAC_SEL_SWAP			(0x1 << 10)
++#define RT5640_IF2_DAC_SEL_L2R			(0x2 << 10)
++#define RT5640_IF2_DAC_SEL_R2L			(0x3 << 10)
+ #define RT5640_IF2_ADC_SEL_MASK			(0x3 << 8)
+ #define RT5640_IF2_ADC_SEL_SFT			8
+ #define RT5640_IF2_ADC_SEL_NOR			(0x0 << 8)
+-#define RT5640_IF2_ADC_SEL_L2R			(0x1 << 8)
+-#define RT5640_IF2_ADC_SEL_R2L			(0x2 << 8)
+-#define RT5640_IF2_ADC_SEL_SWAP			(0x3 << 8)
++#define RT5640_IF2_ADC_SEL_SWAP			(0x1 << 8)
++#define RT5640_IF2_ADC_SEL_L2R			(0x2 << 8)
++#define RT5640_IF2_ADC_SEL_R2L			(0x3 << 8)
+ #define RT5640_IF3_DAC_SEL_MASK			(0x3 << 6)
+ #define RT5640_IF3_DAC_SEL_SFT			6
+ #define RT5640_IF3_DAC_SEL_NOR			(0x0 << 6)
+-#define RT5640_IF3_DAC_SEL_L2R			(0x1 << 6)
+-#define RT5640_IF3_DAC_SEL_R2L			(0x2 << 6)
+-#define RT5640_IF3_DAC_SEL_SWAP			(0x3 << 6)
++#define RT5640_IF3_DAC_SEL_SWAP			(0x1 << 6)
++#define RT5640_IF3_DAC_SEL_L2R			(0x2 << 6)
++#define RT5640_IF3_DAC_SEL_R2L			(0x3 << 6)
+ #define RT5640_IF3_ADC_SEL_MASK			(0x3 << 4)
+ #define RT5640_IF3_ADC_SEL_SFT			4
+ #define RT5640_IF3_ADC_SEL_NOR			(0x0 << 4)
+-#define RT5640_IF3_ADC_SEL_L2R			(0x1 << 4)
+-#define RT5640_IF3_ADC_SEL_R2L			(0x2 << 4)
+-#define RT5640_IF3_ADC_SEL_SWAP			(0x3 << 4)
++#define RT5640_IF3_ADC_SEL_SWAP			(0x1 << 4)
++#define RT5640_IF3_ADC_SEL_L2R			(0x2 << 4)
++#define RT5640_IF3_ADC_SEL_R2L			(0x3 << 4)
+ 
+ /* REC Left Mixer Control 1 (0x3b) */
+ #define RT5640_G_HP_L_RM_L_MASK			(0x7 << 13)
 -- 
-~Vinod
+2.7.0
