@@ -1,45 +1,68 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: dapm: Make sure we have a card when displaying component widgets
-Date: Fri, 18 Mar 2016 15:04:34 +0000
-Message-ID: <1458313474-28355-1-git-send-email-broonie@kernel.org>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: Harry Pan <harry.pan@intel.com>, Lars-Peter Clausen <lars@metafoo.de>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+From: Timur Karaldin <karaldin@mcsplus.ru>
+Subject: Re: ASoC: TLV320AIC3x: Adding additional functionality
+ for 3106 with [Patch] for discuss
+Date: Fri, 18 Mar 2016 18:45:58 +0300
+Message-ID: <56EC22B6.70100@mcsplus.ru>
+References: <56E69B3F.8090306@mcsplus.ru> <56E6CEE9.5030802@ti.com>
+ <56E7FC3C.1030503@mcsplus.ru> <56E802D9.4040501@ti.com>
+ <56E834B0.5010808@mcsplus.ru> <56E91FEE.4070604@ti.com>
+ <56E934CB.4040209@mcsplus.ru> <56E97A75.7030700@ti.com>
+ <56E98F99.2060100@mcsplus.ru> <56EA7833.7080302@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp24.mail.ru (smtp24.mail.ru [94.100.181.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA3F52625EE
+ for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2016 16:46:01 +0100 (CET)
+In-Reply-To: <56EA7833.7080302@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The dummy component is reused for all cards so we special case and don't
-bind it to any of them.  This means that code like that displaying the
-component widgets that tries to look at the card will crash.  In the
-future we will fix this by ensuring that the dummy component looks like
-other components but that is invasive and so not suitable for a fix.
-Instead add a special case check here.
-
-Reported-by: Harry Pan <harry.pan@intel.com>
-Suggested-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
----
- sound/soc/soc-dapm.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 801ae1a81dfd..c4464858bf01 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2188,6 +2188,13 @@ static ssize_t dapm_widget_show_component(struct snd_soc_component *cmpnt,
- 	int count = 0;
- 	char *state = "not set";
- 
-+	/* card won't be set for the dummy component, as a spot fix
-+	 * we're checking for that case specifically here but in future
-+	 * we will ensure that the dummy component looks like others.
-+	 */
-+	if (!cmpnt->card)
-+		return 0;
-+
- 	list_for_each_entry(w, &cmpnt->card->widgets, list) {
- 		if (w->dapm != dapm)
- 			continue;
--- 
-2.7.0
+SGkgUGV0ZXIhCgoxNy4wMy4yMDE2IDEyOjI2LCBQZXRlciBVamZhbHVzaSDQv9C40YjQtdGCOgo+
+PiBPaywgbm93IGl0J3MgbXVjaCBtb3JlIGNsZWFyIGZvciBtZS4KPj4gQW5vdGhlciBxdWVzdGlv
+biBpcyByZWdpc3RlciBiZWhhdmlvdXIgZHVyaW5nIHNvZnQgcmVzZXQuIFRoZXJlIGlzCj4+ICJh
+aWMzeF9zZXRfcG93ZXIiIGhhbmRsZS4gSW4gdGhpcyBoYW5kbGUga2VybmVsIG1ha2VzIFNPRlRf
+UkVTRVQsIG1hcmtlcyBjYWNoZQo+PiBhcyBkaXJ0eSwgdGhlbiBwb3dlciBkb3duIHRoZSBjb2Rl
+YyBmb3IgaGFuZGxlIHBvd2VyIGRvd24gcmVxdWVzdC4KPj4gQnV0IGFzIEkgY291bGQgc2VlIG1h
+aW4gdm9sdW1lcyBsaWtlICJIUCBEQUMiIGFuZCAiUENNIiBzdG9yZXMgdmFsdWVzIGJldHdlZW4K
+Pj4gY2xvc2UgYW5kIG9wZW4gaW4gbWl4ZXIgYW5kIEkgY291bGQgbm90IHNlZSBhbnkgY29kZSB0
+byBoYW5kbGUgaXQuIE9uIHRoZQo+PiBvdGhlciBoYW5kIG15IGNvbnRyb2xzIGRvIG5vdCBzYXZl
+IHN0YXRlcywgYXMgeW91IG1lbnRpb25lZCBiZWNhdXNlIG9mCj4+IFNPRlRfUkVTRVQsIGNvdWxk
+IHlvdSBleHBsYWluIHN1Y2ggZGlmZmVyZW50IGJlaGF2aW91cj8KCj4gQWxsIGNhY2hlZCByZWdp
+c3RlcnMgYXJlIGdvaW5nIHRvIGJlIHJlc3RvcmVkIGFmdGVyIHBvd2VyIG9uIHdpdGggZXhjZXB0
+aW9uIG9mCj4gdm9sYXRpbGUgcmVnaXN0ZXJzLiBZb3UgbmVlZCB0byByZXN0b3JlIHRoZSBiaXRz
+IGluIGEgdm9sYXRpbGUgcmVnaXN0ZXJzIGluCj4gdGhlIGRyaXZlci4KPgpJJ20gdmVyeSBjbG9z
+ZSB0byBwYXRjaCB2MiwgIGJ1dCBJIGhhdmUgc29tZSBwcm9ibGVtcyB3aXRoIAptaXN1bmRlcnN0
+YW5kaW5nIHRoZSBrZXkgbW9tZW50IHdpdGggZGFwbSBoYW5kbGVyIApzbmRfc29jX2RhcG1fcHV0
+X3ZvbHN3X2FpYzN4IEkgdGhpbmsuCkkgc3VjY2Vzc2Z1bHkgd3JvdGUgcHV0L2dldCBoYW5kbGVy
+cyBmb3IgRE9VQkxFX1JfRVhUX1RMViBhbmQgClNJTkdMRV9FWFRfVExWIHZvbHVtZSBjb250cm9s
+cyB1c2luZyBzbmRfa2NvbnRyb2xfY2hpcCBhbmQgCnNuZF9zb2NfY29kZWNfZ2V0X2RydmRhdGEg
+ZnVuY3Rpb24gZm9yIGFjY2Vzc2luZyBjb2RlYydzIHByaXZhdGUgZGF0YS4gCkl0J3Mgd29yay4g
+QnV0IGFueSBhdHRlbXB0cyBpbiBzbmRfc29jX2RhcG1fcHV0X3ZvbHN3X2FpYzN4IHRvIGdldCBw
+cml2IApkYXRhIGFpeDN4X3ByaXYqIG1ha2Uga2VybmVsIGVycm9yOiAgVW5hYmxlIHRvIGhhbmRs
+ZSBrZXJuZWwgTlVMTCAKcG9pbnRlciBkZXJlZmVyZW5jZSBhdCB2aXJ0dWFsIGFkZHJlc3MgMDAw
+MDAwOWUuIElmIEkgcmVtb3ZlIApzbmRfc29jX2NvZGVjX2dldF9kcnZkYXRhIGNhbGwgYW5kIGFj
+Y2Vzc2luZyB0byBjYWNoZWQgcmVncyBpdCdzIGJlY29tZSAKbm9ybWFsIGFnYWluLgpDdXJyZW50
+bHkgSSB1c2Uga2VybmVsIDMuMTUgYW5kIHRoZXJlIGlzIHNvbWUgZXhhbXBsZSBpbiB3bTg5MDMu
+YwoKc3RhdGljIGludCB3bTg5MDNfY2xhc3Nfd19wdXQoc3RydWN0IHNuZF9rY29udHJvbCAqa2Nv
+bnRyb2wsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3Qgc25kX2N0bF9lbGVt
+X3ZhbHVlICp1Y29udHJvbCkKewogICAgICAgICAgc3RydWN0IHNuZF9zb2NfY29kZWMgKmNvZGVj
+ID0gCnNuZF9zb2NfZGFwbV9rY29udHJvbF9jb2RlYyhrY29udHJvbCk7CiAgICAgICAgICBzdHJ1
+Y3Qgd204OTAzX3ByaXYgKndtODkwMyA9IHNuZF9zb2NfY29kZWNfZ2V0X2RydmRhdGEoY29kZWMp
+OwogICAgICAgICAuLi4KYW5kIGl0J3MgbG9vayBvaywgYW5kIEkgaG9wZSBpdCdzIHdvcmtpbmcs
+IGJ1dCBub3QgZ29vZCBmb3IgbWUgaW4gCnNuZF9zb2NfZGFwbV9wdXRfdm9sc3dfYWljM3ggaGFu
+ZGxlci4KRG8geW91IGhhdmUgYW55IGlkZWEgb3IgYW55IHRpcHMgSSBzaG91bGQga2VlcCBpbiBt
+aW5kLCB3aGVuIHdvcmtpbmcgaW4gCkRBUE0gY29udGV4dD8KCgoKQ2hlZXJzLCBUaW0KX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
