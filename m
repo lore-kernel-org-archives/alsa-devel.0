@@ -1,171 +1,59 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Subject: Re: New snd-hda warning spew
-Date: Fri, 18 Mar 2016 21:29:45 +0200
-Message-ID: <20160318192945.GW4329@intel.com>
-References: <20160315160207.GY4329@intel.com> <s5hio0nejv3.wl-tiwai@suse.de>
- <20160316140420.GB4329@intel.com> <20160318135459.GF4329@intel.com>
- <s5hwpoz50iw.wl-tiwai@suse.de> <20160318174919.GR4329@intel.com>
- <s5ha8lvvcu8.wl-tiwai@suse.de> <20160318191058.GU4329@intel.com>
- <s5h1t77vbm5.wl-tiwai@suse.de>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH V6] ASoC: pcm179x: Add support for pcm1795 and pcm1796
+Date: Fri, 18 Mar 2016 15:08:58 -0500
+Message-ID: <20160318200858.GA31755@rob-hp-laptop>
+References: <1452382685-18009-1-git-send-email-michael@amarulasolutions.com>
+ <1452382685-18009-4-git-send-email-michael@amarulasolutions.com>
+ <20160110120045.GW6588@sirena.org.uk>
+ <20160110173812.GA16304@panicking>
+ <20160205172451.GA30542@panicking>
+ <20160222031944.GT18327@sirena.org.uk>
+ <20160311225937.GA27257@panicking>
+ <20160311230930.GB27257@panicking>
+ <20160311232856.GC27257@panicking>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 6080B264FF6
- for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2016 20:29:50 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <s5h1t77vbm5.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Libin Yang <libin.yang@linux.intel.com>
+In-Reply-To: <20160311232856.GC27257@panicking>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Michael Trimarchi <michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jacob Siverskog <jacob-EZCvousvhKUZux3j3Bed6dkegs52MxvZ@public.gmane.org>, Johan Hovold <johan-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, adamo.a60-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 18, 2016 at 08:18:10PM +0100, Takashi Iwai wrote:
-> On Fri, 18 Mar 2016 20:10:58 +0100,
-> Ville Syrj=E4l=E4 wrote:
-> > =
+On Sat, Mar 12, 2016 at 12:29:00AM +0100, Michael Trimarchi wrote:
+> ASoC: pcm179x: Add support for pcm1795 and pcm1796
+> 
+> Signed-off-by: Michael Trimarchi <michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>
+> Tested-by: Angelo Adamo <adamo.a60-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> ---
+> Changes v5 -> v6
+> 	- Add device tree documentation
+> 
+> Changes v4 -> v5
+> 	- remove dead code
+> 
+> Changes v3 -> v4:
+> 	- clean up compatible list
+> 	- use enum type instead of pointer of int
+> 
+> Changes v2 -> v3:
+> 	- rebase after i2c support
+> 
+> Changes v1 -> v2:
+> 	- Use switch for support new variants
+> 	- sort the compatible list
+> 
+>  .../devicetree/bindings/sound/pcm179x.txt          |  2 +
 
-> > On Fri, Mar 18, 2016 at 07:51:43PM +0100, Takashi Iwai wrote:
-> > > On Fri, 18 Mar 2016 18:49:19 +0100,
-> > > Ville Syrj=E4l=E4 wrote:
-> > > > =
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 
-> > > > On Fri, Mar 18, 2016 at 03:22:15PM +0100, Takashi Iwai wrote:
-> > > > > On Fri, 18 Mar 2016 14:54:59 +0100,
-> > > > > Ville Syrj=E4l=E4 wrote:
-> > > > > > =
-
-> > > > > > On Wed, Mar 16, 2016 at 04:04:20PM +0200, Ville Syrj=E4l=E4 wro=
-te:
-> > > > > > > On Tue, Mar 15, 2016 at 06:22:56PM +0100, Takashi Iwai wrote:
-> > > > > > > > On Tue, 15 Mar 2016 17:02:07 +0100,
-> > > > > > > > Ville Syrj=E4l=E4 wrote:
-> > > > > > > > > =
-
-> > > > > > > > > We have a few new WARN spews from snd-hda causing some gr=
-ief in i915 CI.
-> > > > > > > > > =
-
-> > > > > > > > > This one happens on ILK and BYT. Looks like it happens 10=
-0% of the time on driver load:
-> > > > > > > > > [   18.809850] ------------[ cut here ]------------
-> > > > > > > > > [   18.809866] WARNING: CPU: 0 PID: 39 at sound/hda/hdac_=
-i915.c:129 pin2port+0x25/0x30 [snd_hda_core]()
-> > > > > > > > =
-
-> > > > > > > > This is bad.  Basically we had a naive assumption of the fi=
-xed mapping
-> > > > > > > > between the port number and the HD-audio widget, but it doe=
-sn't apply
-> > > > > > > > properly to pre-HSW models.
-> > > > > > > > =
-
-> > > > > > > > The patch attached below disables the audio binding for pre=
--HSW
-> > > > > > > > models.  I'm going to queue to for-linus branch.
-> > > > > > > =
-
-> > > > > > > That seems to eliminate the warn on my ILK.
-> > > > > > =
-
-> > > > > > Apparently it was less effective on BYT. We still get this:
-> > > > > =
-
-> > > > > Ouch, I forgot that Baytrail had already i915 component binding i=
-n the
-> > > > > controller side.  I assumed too naively that all old models have =
-no
-> > > > > binding.
-> > > > > =
-
-> > > > > Below is the additional fix patch.
-> > > > =
-
-> > > > Still getting blasted at least via snd_hdac_sync_audio_rate()
-> > > =
-
-> > > That code path is a slightly different.  This is a kind of false
-> > > positive, but now the function checks the validity of the passed
-> > > argument more strictly, and starts grumbling.
-> > > =
-
-> > > The fix is attached below.
-> > > =
-
-> > > =
-
-> > > Takashi
-> > > =
-
-> > > -- 8< --
-> > > From: Takashi Iwai <tiwai@suse.de>
-> > > Subject: [PATCH] ALSA: hda - Fix spurious kernel WARNING on Baytrail =
-HDMI
-> > > =
-
-> > > snd_hdac_sync_audio_rate() call is mandatory only for HSW and later
-> > > models, but we call the function unconditionally blindly assuming that
-> > > the function doesn't do anything harmful.  But since recently, the
-> > > function checks the validity of the passed pin NID, and eventually
-> > > spews the warning if an unexpected pin is passed.  This is seen on old
-> > > chips like Baytrail.
-> > > =
-
-> > > The fix is to limit the call of this function again only for the chips
-> > > with the proper binding.  This can be identified by the same flag as
-> > > the eld notifier.
-> > > =
-
-> > > Reported-by: Ville Syrj=E4l=E4 <ville.syrjala@linux.intel.com>
-> > > Cc: <stable@vger.kernel.org> # v4.5
-> > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > > ---
-> > >  sound/pci/hda/patch_hdmi.c | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > =
-
-> > > diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-> > > index e7d9453ecd10..56d3575ee6cc 100644
-> > > --- a/sound/pci/hda/patch_hdmi.c
-> > > +++ b/sound/pci/hda/patch_hdmi.c
-> > > @@ -1741,7 +1741,8 @@ static int generic_hdmi_playback_pcm_prepare(st=
-ruct hda_pcm_stream *hinfo,
-> > >  =
-
-> > >  	/* Call sync_audio_rate to set the N/CTS/M manually if necessary */
-> > >  	/* Todo: add DP1.2 MST audio support later */
-> > > -	snd_hdac_sync_audio_rate(&codec->bus->core, pin_nid, runtime->rate);
-> > > +	if (codec_has_acomp(codec))
-> > > +		snd_hdac_sync_audio_rate(&codec->bus->core, pin_nid, runtime->rate=
-);
-> > =
-
-> > Yeah seems like it should do it.
-> > =
-
-> > Though I'm not entirely enthusiastic about maintaining two code paths
-> > for audio stuff. So longer term I'd love to be able rip out the
-> > hardware based ELD passing from i915 and just use the audio component
-> > even for the oldest platforms.
-> =
-
-> Yes, that was my "grand plan", but it failed miserably because of the
-> uncertain mapping between the digital port and audio widget node.
-> Once when this mapping is clarified, we can reenable the direct
-> notification.  I hope it can be done for 4.7.
-
-Cool. I'll keep my fingers crossed :)
-
--- =
-
-Ville Syrj=E4l=E4
-Intel OTC
+>  sound/soc/codecs/pcm179x-i2c.c                     |  6 --
+>  sound/soc/codecs/pcm179x-spi.c                     |  6 --
+>  sound/soc/codecs/pcm179x.c                         | 65 ++++++++++++++++++++--
+>  sound/soc/codecs/pcm179x.h                         |  9 ++-
+>  5 files changed, 70 insertions(+), 18 deletions(-)
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
