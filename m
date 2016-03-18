@@ -1,18 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: Bad rever-select of CONFIG_SND_HDA_I915
-Date: Fri, 18 Mar 2016 15:58:06 +0530
-Message-ID: <20160318102806.GI2490@localhost>
-References: <s5hk2l0utly.wl-tiwai@suse.de> <20160318080648.GH2490@localhost>
- <s5hshzo5ee2.wl-tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 0/3] ARM: OMAP3: Fix McBSP2/3 hwmod setup for
+	sidetone
+Date: Fri, 18 Mar 2016 12:28:46 +0200
+Message-ID: <1458296929-718-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 06788260511
- for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2016 11:23:47 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hshzo5ee2.wl-tiwai@suse.de>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 17599260511
+ for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2016 11:28:56 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,50 +19,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Paul Walmsley <paul@pwsan.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Tero Kristo <t-kristo@ti.com>, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 18, 2016 at 10:22:45AM +0100, Takashi Iwai wrote:
-> On Fri, 18 Mar 2016 09:06:49 +0100,
-> Vinod Koul wrote:
-> > 
-> > On Fri, Mar 18, 2016 at 08:34:49AM +0100, Takashi Iwai wrote:
-> > > Hi,
-> > > 
-> > > while build testing, I noticed the following warning:
-> > >   warning: (SND_SOC_INTEL_SKYLAKE) selects SND_HDA_I915 which has unmet direct dependencies (SOUND && !M68K && !UML && SND && DRM_I915 && SND_HDA_CORE)
-> > 
-> > Thanks Takashi for reporting,
-> > 
-> > > And it's indeed broken: you can't select CONFIG_SND_HDA_I915 from the
-> > > driver side.  This is the condition depending on DRM i915 driver.
-> > 
-> > But who selects CONFIG_SND_HDA_I915. It is a bool symbol, so someone needs
-> > to select it. I didn't see anyone select it, either from Gfx side or HDA
-> > side?
-> 
-> No, it's not a kconfig to be selected manually by others, but it
-> adjusts itself automatically depending on DRM_I915.  That is, it's a
-> read-only value.
+Hi,
 
-Okay then
+The series addresses a long standing issue with McBSP2/3 regarding to hwmod
+setup. When booting with DT a warning is printed that mcbsp2/3 is using two
+hwmod.
+The root of the issue is the way how the hwmod data was constructed in the first
+place for OMAP3 McBSP2/3.
+After re-reading the TRM it is clear that the sidetone should not have it's
+own hwmod data as it is not a separate IP, it is part of the McBSP module. It
+can not affect PRCM either since it's SYSCONFIG register's AUTOIDLE bit is only
+sets the autoidle from the internal McBSP_iclk clock to the sidetone block of
+the same McBSP.
 
-> > > Fixing this doesn't look too trivial, though.  Since
-> > > SND_SOC_INTEL_SKYLAKE is the item to be selected, it can't have
-> > > "depends on".  So, the top-level configs that select
-> > > SND_SOC_INTEL_SKYLAKE need to have "depends on DRM_I915" lines, or
-> > > modify the driver to be built without i915 binding.
-> > 
-> > can you please share the config where you saw this...
-> 
-> Just set DRM_I915=n and run config again on your machine.
+The first two patch will remove the omap2/3_sidetone hwmod and it's use from DT.
+The ASoC patch is clear the autoidle bit in McBSP sidetone as it is adviced in
+the TRM.
 
-Yes saw this now. I made depends on DRM_I915 to make it disappear.
+Mark: The ASoC patch can be safely merged via ASoC tree.
 
-I will check again for compilation fix and get back on proper patch either
-which depends on DRM or ensure we compile clean
+Regards,
+Peter
+---
+Peter Ujfalusi (3):
+  ARM: DTS: omap3: Remove mcbsp2/3_sidetone hwmod reference for McBSP2/3
+  ARM: OMAP3: hwmod data: Merge and remove the McBSP sidetone related
+    data
+  ASoC: omap-mcbsp: Enable/disable sidetone block auto clock gating for
+    omap3
 
-Thanks
+ arch/arm/boot/dts/omap3.dtsi               |   4 +-
+ arch/arm/mach-omap2/omap_hwmod_3xxx_data.c | 120 ++++-------------------------
+ sound/soc/omap/mcbsp.c                     |   8 ++
+ 3 files changed, 24 insertions(+), 108 deletions(-)
+
 -- 
-~Vinod
+2.7.3
