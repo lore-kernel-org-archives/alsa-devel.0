@@ -1,21 +1,18 @@
-From: Timur Karaldin <karaldin@mcsplus.ru>
-Subject: Re: ASoC: TLV320AIC3x: Adding additional functionality
- for 3106 with [Patch] for discuss
-Date: Fri, 18 Mar 2016 18:45:58 +0300
-Message-ID: <56EC22B6.70100@mcsplus.ru>
-References: <56E69B3F.8090306@mcsplus.ru> <56E6CEE9.5030802@ti.com>
- <56E7FC3C.1030503@mcsplus.ru> <56E802D9.4040501@ti.com>
- <56E834B0.5010808@mcsplus.ru> <56E91FEE.4070604@ti.com>
- <56E934CB.4040209@mcsplus.ru> <56E97A75.7030700@ti.com>
- <56E98F99.2060100@mcsplus.ru> <56EA7833.7080302@ti.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 1/1] sst: select DW_DMAC_CORE since it's
+ mandatory
+Date: Fri, 18 Mar 2016 11:15:36 -0500
+Message-ID: <56EC29A8.3030400@linux.intel.com>
+References: <1442576689-32221-1-git-send-email-andriy.shevchenko@linux.intel.com>
+ <1458303883.1347.141.camel@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp24.mail.ru (smtp24.mail.ru [94.100.181.179])
- by alsa0.perex.cz (Postfix) with ESMTP id AA3F52625EE
- for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2016 16:46:01 +0100 (CET)
-In-Reply-To: <56EA7833.7080302@ti.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id E168B2625EE
+ for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2016 17:15:36 +0100 (CET)
+In-Reply-To: <1458303883.1347.141.camel@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,44 +22,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>
+Cc: dmaengine <dmaengine@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgUGV0ZXIhCgoxNy4wMy4yMDE2IDEyOjI2LCBQZXRlciBVamZhbHVzaSDQv9C40YjQtdGCOgo+
-PiBPaywgbm93IGl0J3MgbXVjaCBtb3JlIGNsZWFyIGZvciBtZS4KPj4gQW5vdGhlciBxdWVzdGlv
-biBpcyByZWdpc3RlciBiZWhhdmlvdXIgZHVyaW5nIHNvZnQgcmVzZXQuIFRoZXJlIGlzCj4+ICJh
-aWMzeF9zZXRfcG93ZXIiIGhhbmRsZS4gSW4gdGhpcyBoYW5kbGUga2VybmVsIG1ha2VzIFNPRlRf
-UkVTRVQsIG1hcmtlcyBjYWNoZQo+PiBhcyBkaXJ0eSwgdGhlbiBwb3dlciBkb3duIHRoZSBjb2Rl
-YyBmb3IgaGFuZGxlIHBvd2VyIGRvd24gcmVxdWVzdC4KPj4gQnV0IGFzIEkgY291bGQgc2VlIG1h
-aW4gdm9sdW1lcyBsaWtlICJIUCBEQUMiIGFuZCAiUENNIiBzdG9yZXMgdmFsdWVzIGJldHdlZW4K
-Pj4gY2xvc2UgYW5kIG9wZW4gaW4gbWl4ZXIgYW5kIEkgY291bGQgbm90IHNlZSBhbnkgY29kZSB0
-byBoYW5kbGUgaXQuIE9uIHRoZQo+PiBvdGhlciBoYW5kIG15IGNvbnRyb2xzIGRvIG5vdCBzYXZl
-IHN0YXRlcywgYXMgeW91IG1lbnRpb25lZCBiZWNhdXNlIG9mCj4+IFNPRlRfUkVTRVQsIGNvdWxk
-IHlvdSBleHBsYWluIHN1Y2ggZGlmZmVyZW50IGJlaGF2aW91cj8KCj4gQWxsIGNhY2hlZCByZWdp
-c3RlcnMgYXJlIGdvaW5nIHRvIGJlIHJlc3RvcmVkIGFmdGVyIHBvd2VyIG9uIHdpdGggZXhjZXB0
-aW9uIG9mCj4gdm9sYXRpbGUgcmVnaXN0ZXJzLiBZb3UgbmVlZCB0byByZXN0b3JlIHRoZSBiaXRz
-IGluIGEgdm9sYXRpbGUgcmVnaXN0ZXJzIGluCj4gdGhlIGRyaXZlci4KPgpJJ20gdmVyeSBjbG9z
-ZSB0byBwYXRjaCB2MiwgIGJ1dCBJIGhhdmUgc29tZSBwcm9ibGVtcyB3aXRoIAptaXN1bmRlcnN0
-YW5kaW5nIHRoZSBrZXkgbW9tZW50IHdpdGggZGFwbSBoYW5kbGVyIApzbmRfc29jX2RhcG1fcHV0
-X3ZvbHN3X2FpYzN4IEkgdGhpbmsuCkkgc3VjY2Vzc2Z1bHkgd3JvdGUgcHV0L2dldCBoYW5kbGVy
-cyBmb3IgRE9VQkxFX1JfRVhUX1RMViBhbmQgClNJTkdMRV9FWFRfVExWIHZvbHVtZSBjb250cm9s
-cyB1c2luZyBzbmRfa2NvbnRyb2xfY2hpcCBhbmQgCnNuZF9zb2NfY29kZWNfZ2V0X2RydmRhdGEg
-ZnVuY3Rpb24gZm9yIGFjY2Vzc2luZyBjb2RlYydzIHByaXZhdGUgZGF0YS4gCkl0J3Mgd29yay4g
-QnV0IGFueSBhdHRlbXB0cyBpbiBzbmRfc29jX2RhcG1fcHV0X3ZvbHN3X2FpYzN4IHRvIGdldCBw
-cml2IApkYXRhIGFpeDN4X3ByaXYqIG1ha2Uga2VybmVsIGVycm9yOiAgVW5hYmxlIHRvIGhhbmRs
-ZSBrZXJuZWwgTlVMTCAKcG9pbnRlciBkZXJlZmVyZW5jZSBhdCB2aXJ0dWFsIGFkZHJlc3MgMDAw
-MDAwOWUuIElmIEkgcmVtb3ZlIApzbmRfc29jX2NvZGVjX2dldF9kcnZkYXRhIGNhbGwgYW5kIGFj
-Y2Vzc2luZyB0byBjYWNoZWQgcmVncyBpdCdzIGJlY29tZSAKbm9ybWFsIGFnYWluLgpDdXJyZW50
-bHkgSSB1c2Uga2VybmVsIDMuMTUgYW5kIHRoZXJlIGlzIHNvbWUgZXhhbXBsZSBpbiB3bTg5MDMu
-YwoKc3RhdGljIGludCB3bTg5MDNfY2xhc3Nfd19wdXQoc3RydWN0IHNuZF9rY29udHJvbCAqa2Nv
-bnRyb2wsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3Qgc25kX2N0bF9lbGVt
-X3ZhbHVlICp1Y29udHJvbCkKewogICAgICAgICAgc3RydWN0IHNuZF9zb2NfY29kZWMgKmNvZGVj
-ID0gCnNuZF9zb2NfZGFwbV9rY29udHJvbF9jb2RlYyhrY29udHJvbCk7CiAgICAgICAgICBzdHJ1
-Y3Qgd204OTAzX3ByaXYgKndtODkwMyA9IHNuZF9zb2NfY29kZWNfZ2V0X2RydmRhdGEoY29kZWMp
-OwogICAgICAgICAuLi4KYW5kIGl0J3MgbG9vayBvaywgYW5kIEkgaG9wZSBpdCdzIHdvcmtpbmcs
-IGJ1dCBub3QgZ29vZCBmb3IgbWUgaW4gCnNuZF9zb2NfZGFwbV9wdXRfdm9sc3dfYWljM3ggaGFu
-ZGxlci4KRG8geW91IGhhdmUgYW55IGlkZWEgb3IgYW55IHRpcHMgSSBzaG91bGQga2VlcCBpbiBt
-aW5kLCB3aGVuIHdvcmtpbmcgaW4gCkRBUE0gY29udGV4dD8KCgoKQ2hlZXJzLCBUaW0KX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 3/18/16 7:24 AM, Andy Shevchenko wrote:
+> On Fri, 2015-09-18 at 14:44 +0300, Andy Shevchenko wrote:
+>> While here group selectors under SND_SOC_INTEL_HASWELL and
+>> SND_SOC_INTEL_BAYTRAIL.
+>
+> It seems patch is not applied anymore.
+> I will send v2 if no one objects on the approach.
+
+I don't think DW_DMAC_CORE is mandatory at all for BAYTRAIL. We've have 
+a thread with Keyon on this.
+
+>
+>>
+>> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>> ---
+>>   sound/soc/intel/Kconfig | 15 +++++----------
+>>   1 file changed, 5 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+>> index 05fde5e6e..bc5281e 100644
+>> --- a/sound/soc/intel/Kconfig
+>> +++ b/sound/soc/intel/Kconfig
+>> @@ -35,15 +35,17 @@ config SND_SOC_INTEL_SST_ACPI
+>>
+>>   config SND_SOC_INTEL_HASWELL
+>>   	tristate
+>> +	select DW_DMAC_CORE
+>> +	select SND_SOC_INTEL_SST
+>>
+>>   config SND_SOC_INTEL_BAYTRAIL
+>>   	tristate
+>> +	select DW_DMAC_CORE
+>> +	select SND_SOC_INTEL_SST
+>>
+>>   config SND_SOC_INTEL_HASWELL_MACH
+>>   	tristate "ASoC Audio DSP support for Intel Haswell
+>> Lynxpoint"
+>>   	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM
+>> -	depends on DW_DMAC_CORE
+>> -	select SND_SOC_INTEL_SST
+>>   	select SND_SOC_INTEL_HASWELL
+>>   	select SND_SOC_RT5640
+>>   	help
+>> @@ -55,8 +57,6 @@ config SND_SOC_INTEL_HASWELL_MACH
+>>   config SND_SOC_INTEL_BYT_RT5640_MACH
+>>   	tristate "ASoC Audio driver for Intel Baytrail with RT5640
+>> codec"
+>>   	depends on X86_INTEL_LPSS && I2C
+>> -	depends on DW_DMAC_CORE
+>> -	select SND_SOC_INTEL_SST
+>>   	select SND_SOC_INTEL_BAYTRAIL
+>>   	select SND_SOC_RT5640
+>>   	help
+>> @@ -66,8 +66,6 @@ config SND_SOC_INTEL_BYT_RT5640_MACH
+>>   config SND_SOC_INTEL_BYT_MAX98090_MACH
+>>   	tristate "ASoC Audio driver for Intel Baytrail with MAX98090
+>> codec"
+>>   	depends on X86_INTEL_LPSS && I2C
+>> -	depends on DW_DMAC_CORE
+>> -	select SND_SOC_INTEL_SST
+>>   	select SND_SOC_INTEL_BAYTRAIL
+>>   	select SND_SOC_MAX98090
+>>   	help
+>> @@ -76,10 +74,7 @@ config SND_SOC_INTEL_BYT_MAX98090_MACH
+>>
+>>   config SND_SOC_INTEL_BROADWELL_MACH
+>>   	tristate "ASoC Audio DSP support for Intel Broadwell
+>> Wildcatpoint"
+>> -	depends on X86_INTEL_LPSS && I2C && DW_DMAC && \
+>> -		   I2C_DESIGNWARE_PLATFORM
+>> -	depends on DW_DMAC_CORE
+>> -	select SND_SOC_INTEL_SST
+>> +	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM
+>>   	select SND_SOC_INTEL_HASWELL
+>>   	select SND_SOC_RT286
+>>   	help
+>
