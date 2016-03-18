@@ -1,40 +1,84 @@
-From: Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>
-Subject: Re: USB Sound oops in Linus's latest tree
-Date: Fri, 18 Mar 2016 16:17:43 -0700
-Message-ID: <20160318231743.GB6909@kroah.com>
-References: <20160318222625.GA1200@kroah.com>
- <CAKocOOOHOt+VLioHt0qcOA_sGnLynMW99RBaARgZbysr8Nf4kw@mail.gmail.com>
+From: Andreas Dannenberg <dannenberg@ti.com>
+Subject: [PATCH 1/2] ASoC: codecs: add TA5720 digital amplifier
+	DT bindings
+Date: Fri, 18 Mar 2016 18:27:57 -0500
+Message-ID: <1458343678-4086-2-git-send-email-dannenberg@ti.com>
+References: <1458343678-4086-1-git-send-email-dannenberg@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <CAKocOOOHOt+VLioHt0qcOA_sGnLynMW99RBaARgZbysr8Nf4kw-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Shuah Khan <shuahkhan-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Linus Torvalds <torvalds-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, LKML <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "Mauro Carvalho Chehab (Google+)" <reply-109152370613783863478-YufVqqjVJEdOwrogniBlMUEOCMrvLtNR@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B3C92615F7
+ for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2016 00:28:08 +0100 (CET)
+In-Reply-To: <1458343678-4086-1-git-send-email-dannenberg@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Cc: Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, Kumar Gala <galak@codeaurora.org>, Andreas Dannenberg <dannenberg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 18, 2016 at 05:00:25PM -0600, Shuah Khan wrote:
-> On Fri, Mar 18, 2016 at 4:26 PM,
-> Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org> wrote:
-> > Hi,
-> >
-> > I'm getting the following oops with my USB sound device using Linus's
-> > latest tree of the moment, which has the sound tree pull in it.  Anyone
-> > seen this before?
-> >
-> 
-> Hi Greg,
-> 
-> Nicolai Stange sent in a fix for this problem - I can't find the link to this.
-> It is coming in through Linux Media tree.
+The Texas Instruments TAS5720L/M device is a high-efficiency mono
+Class-D audio power amplifier optimized for high transient power
+capability to use the dynamic power headroom of small loudspeakers.
+Its digital time division multiplexed (TDM) interface enables up to
+16 devices to share the same bus.
 
-Thanks, Nicolai sent a link, your inline patch was somehow corrupted :(
+Signed-off-by: Andreas Dannenberg <dannenberg@ti.com>
+---
+ .../devicetree/bindings/sound/tas5720.txt          | 37 ++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/tas5720.txt
 
-thanks,
-
-greg k-h
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/Documentation/devicetree/bindings/sound/tas5720.txt b/Documentation/devicetree/bindings/sound/tas5720.txt
+new file mode 100644
+index 0000000..3775a3f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/tas5720.txt
+@@ -0,0 +1,37 @@
++Texas Instruments TAS5720 Mono Audio amplifier
++
++The TAS5720 serial control bus communicates through the I2C protocol only.
++
++Required properties:
++
++- compatible : "ti,tas5720"
++- reg : I2C slave address
++
++Optional properties:
++
++- dvdd-supply : phandle to a 3.3-V supply for the digital circuitry
++- pvdd-supply : phandle to a supply used for the Class-D amp and the analog
++- interrupts-extended : reference to a GPIO pin connected to the TAS5720
++                        FAULTZ pin for error reporting purposes
++
++Note that in case of codec errors the driver relies on the TAS5720 datasheet-
++proposed "Auto Recovery Circuit" (connection between the FAULTZ and SDZ device
++pins) for continued operation. This connection should always be made independent
++of whether the optional interrupt-based fault-reporting feature is used.
++
++For more product information please see the links below:
++
++http://www.ti.com/product/TAS5720L
++http://www.ti.com/product/TAS5720M
++
++Example:
++
++tas5720: tas5720@6c {
++	status = "okay";
++	compatible = "ti,tas5720";
++	reg = <0x6c>;
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&tas572x_int_pin>;
++	interrupts-extended = <&gpio1 28 IRQ_TYPE_EDGE_FALLING>;
++};
+-- 
+2.6.4
