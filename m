@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5640: Correct the digital interface data select" to the asoc tree
-Date: Fri, 18 Mar 2016 10:58:03 +0000
-Message-ID: <E1ags6V-0004FP-I7@debutante>
-References: <1458284062-46472-1-git-send-email-sugar.zhang@rock-chips.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1458284062-46472-1-git-send-email-sugar.zhang@rock-chips.com>
-Sender: stable-owner@vger.kernel.org
-To: Sugar Zhang <sugar.zhang@rock-chips.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Subject: Applied "ASoC: omap-mcbsp: Enable/disable sidetone
+	block auto clock gating for omap3" to the asoc tree
+Date: Fri, 18 Mar 2016 10:58:02 +0000
+Message-ID: <E1ags6U-0004Eu-LH@debutante>
+References: <1458296929-718-4-git-send-email-peter.ujfalusi@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E45452619BF
+ for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2016 11:58:15 +0100 (CET)
+In-Reply-To: <1458296929-718-4-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5640: Correct the digital interface data select
+   ASoC: omap-mcbsp: Enable/disable sidetone block auto clock gating for omap3
 
 has been applied to the asoc tree at
 
@@ -37,96 +53,52 @@ to this mail.
 Thanks,
 Mark
 
->From 653aa4645244042826f105aab1be3d01b3d493ca Mon Sep 17 00:00:00 2001
-From: Sugar Zhang <sugar.zhang@rock-chips.com>
-Date: Fri, 18 Mar 2016 14:54:22 +0800
-Subject: [PATCH] ASoC: rt5640: Correct the digital interface data select
+>From d4e44f1418d71cf53d685e236a95c525089e065a Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Fri, 18 Mar 2016 12:28:49 +0200
+Subject: [PATCH] ASoC: omap-mcbsp: Enable/disable sidetone block auto clock
+ gating for omap3
 
-this patch corrects the interface adc/dac control register definition
-according to datasheet.
+OMAP3's McBSP2 and McBSP3 module have integrated sidetone block with
+dedicated SYSCONFIG register. The sidetone is operating from the maain
+McBSP module's ICLK. For normal operation the sidetone clock auto idle
+support needs to be disabled when it is activated.
+Note: This is not enough to avoid choppy sidetone because this AUTOIDLE
+bit is controlling only the clock auto idle from the McBSP to the sidetone
+block. If the McBSP_ICLK is idling, the sidetone clock is going to do the
+same.
 
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/codecs/rt5640.c |  2 +-
- sound/soc/codecs/rt5640.h | 36 ++++++++++++++++++------------------
- 2 files changed, 19 insertions(+), 19 deletions(-)
+ sound/soc/omap/mcbsp.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index e8b5ba04417a..09e8988bbb2d 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -359,7 +359,7 @@ static const DECLARE_TLV_DB_RANGE(bst_tlv,
+diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
+index c7563e230c7d..4a16e778966b 100644
+--- a/sound/soc/omap/mcbsp.c
++++ b/sound/soc/omap/mcbsp.c
+@@ -260,6 +260,10 @@ static void omap_st_on(struct omap_mcbsp *mcbsp)
+ 	if (mcbsp->pdata->enable_st_clock)
+ 		mcbsp->pdata->enable_st_clock(mcbsp->id, 1);
  
- /* Interface data select */
- static const char * const rt5640_data_select[] = {
--	"Normal", "left copy to right", "right copy to left", "Swap"};
-+	"Normal", "Swap", "left copy to right", "right copy to left"};
++	/* Disable Sidetone clock auto-gating for normal operation */
++	w = MCBSP_ST_READ(mcbsp, SYSCONFIG);
++	MCBSP_ST_WRITE(mcbsp, SYSCONFIG, w & ~(ST_AUTOIDLE));
++
+ 	/* Enable McBSP Sidetone */
+ 	w = MCBSP_READ(mcbsp, SSELCR);
+ 	MCBSP_WRITE(mcbsp, SSELCR, w | SIDETONEEN);
+@@ -279,6 +283,10 @@ static void omap_st_off(struct omap_mcbsp *mcbsp)
+ 	w = MCBSP_READ(mcbsp, SSELCR);
+ 	MCBSP_WRITE(mcbsp, SSELCR, w & ~(SIDETONEEN));
  
- static SOC_ENUM_SINGLE_DECL(rt5640_if1_dac_enum, RT5640_DIG_INF_DATA,
- 			    RT5640_IF1_DAC_SEL_SFT, rt5640_data_select);
-diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
-index 1761c3a98b76..58b664b06c16 100644
---- a/sound/soc/codecs/rt5640.h
-+++ b/sound/soc/codecs/rt5640.h
-@@ -443,39 +443,39 @@
- #define RT5640_IF1_DAC_SEL_MASK			(0x3 << 14)
- #define RT5640_IF1_DAC_SEL_SFT			14
- #define RT5640_IF1_DAC_SEL_NOR			(0x0 << 14)
--#define RT5640_IF1_DAC_SEL_L2R			(0x1 << 14)
--#define RT5640_IF1_DAC_SEL_R2L			(0x2 << 14)
--#define RT5640_IF1_DAC_SEL_SWAP			(0x3 << 14)
-+#define RT5640_IF1_DAC_SEL_SWAP			(0x1 << 14)
-+#define RT5640_IF1_DAC_SEL_L2R			(0x2 << 14)
-+#define RT5640_IF1_DAC_SEL_R2L			(0x3 << 14)
- #define RT5640_IF1_ADC_SEL_MASK			(0x3 << 12)
- #define RT5640_IF1_ADC_SEL_SFT			12
- #define RT5640_IF1_ADC_SEL_NOR			(0x0 << 12)
--#define RT5640_IF1_ADC_SEL_L2R			(0x1 << 12)
--#define RT5640_IF1_ADC_SEL_R2L			(0x2 << 12)
--#define RT5640_IF1_ADC_SEL_SWAP			(0x3 << 12)
-+#define RT5640_IF1_ADC_SEL_SWAP			(0x1 << 12)
-+#define RT5640_IF1_ADC_SEL_L2R			(0x2 << 12)
-+#define RT5640_IF1_ADC_SEL_R2L			(0x3 << 12)
- #define RT5640_IF2_DAC_SEL_MASK			(0x3 << 10)
- #define RT5640_IF2_DAC_SEL_SFT			10
- #define RT5640_IF2_DAC_SEL_NOR			(0x0 << 10)
--#define RT5640_IF2_DAC_SEL_L2R			(0x1 << 10)
--#define RT5640_IF2_DAC_SEL_R2L			(0x2 << 10)
--#define RT5640_IF2_DAC_SEL_SWAP			(0x3 << 10)
-+#define RT5640_IF2_DAC_SEL_SWAP			(0x1 << 10)
-+#define RT5640_IF2_DAC_SEL_L2R			(0x2 << 10)
-+#define RT5640_IF2_DAC_SEL_R2L			(0x3 << 10)
- #define RT5640_IF2_ADC_SEL_MASK			(0x3 << 8)
- #define RT5640_IF2_ADC_SEL_SFT			8
- #define RT5640_IF2_ADC_SEL_NOR			(0x0 << 8)
--#define RT5640_IF2_ADC_SEL_L2R			(0x1 << 8)
--#define RT5640_IF2_ADC_SEL_R2L			(0x2 << 8)
--#define RT5640_IF2_ADC_SEL_SWAP			(0x3 << 8)
-+#define RT5640_IF2_ADC_SEL_SWAP			(0x1 << 8)
-+#define RT5640_IF2_ADC_SEL_L2R			(0x2 << 8)
-+#define RT5640_IF2_ADC_SEL_R2L			(0x3 << 8)
- #define RT5640_IF3_DAC_SEL_MASK			(0x3 << 6)
- #define RT5640_IF3_DAC_SEL_SFT			6
- #define RT5640_IF3_DAC_SEL_NOR			(0x0 << 6)
--#define RT5640_IF3_DAC_SEL_L2R			(0x1 << 6)
--#define RT5640_IF3_DAC_SEL_R2L			(0x2 << 6)
--#define RT5640_IF3_DAC_SEL_SWAP			(0x3 << 6)
-+#define RT5640_IF3_DAC_SEL_SWAP			(0x1 << 6)
-+#define RT5640_IF3_DAC_SEL_L2R			(0x2 << 6)
-+#define RT5640_IF3_DAC_SEL_R2L			(0x3 << 6)
- #define RT5640_IF3_ADC_SEL_MASK			(0x3 << 4)
- #define RT5640_IF3_ADC_SEL_SFT			4
- #define RT5640_IF3_ADC_SEL_NOR			(0x0 << 4)
--#define RT5640_IF3_ADC_SEL_L2R			(0x1 << 4)
--#define RT5640_IF3_ADC_SEL_R2L			(0x2 << 4)
--#define RT5640_IF3_ADC_SEL_SWAP			(0x3 << 4)
-+#define RT5640_IF3_ADC_SEL_SWAP			(0x1 << 4)
-+#define RT5640_IF3_ADC_SEL_L2R			(0x2 << 4)
-+#define RT5640_IF3_ADC_SEL_R2L			(0x3 << 4)
- 
- /* REC Left Mixer Control 1 (0x3b) */
- #define RT5640_G_HP_L_RM_L_MASK			(0x7 << 13)
++	/* Enable Sidetone clock auto-gating to reduce power consumption */
++	w = MCBSP_ST_READ(mcbsp, SYSCONFIG);
++	MCBSP_ST_WRITE(mcbsp, SYSCONFIG, w | ST_AUTOIDLE);
++
+ 	if (mcbsp->pdata->enable_st_clock)
+ 		mcbsp->pdata->enable_st_clock(mcbsp->id, 0);
+ }
 -- 
 2.7.0
