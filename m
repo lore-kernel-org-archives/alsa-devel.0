@@ -1,110 +1,97 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: timer: fix ioctl compatibility for
-	different data models
-Date: Sat, 19 Mar 2016 22:58:21 +0900
-Message-ID: <1458395901-2223-2-git-send-email-o-takashi@sakamocchi.jp>
-References: <1458395901-2223-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Subject: Re: Re: [PATCH v8 2/2] ASoc: sun4i-codec: Add FM, Line
+ and Mic inputs
+Date: Sat, 19 Mar 2016 17:13:36 +0100
+Message-ID: <20160319171336.6e16eb5a@scratchpost.org>
+References: <20151221123148.1ab6480b@dayas>
+	<20151221123416.51aa938e@dayas>
+	<20151227182157.GI30359@lukather>
+	<20151228040649.475a742f@dayas>
+	<20160106220908.GE9631@lukather>
+	<20160109164832.515d69b0@dayas>
+	<20160312085222.226d89bf@scratchpost.org>
+	<20160314104939.GL8418@lukather>
+	<20160315105802.GN2566@sirena.org.uk>
+Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id DCBC6261507
- for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2016 14:58:30 +0100 (CET)
-In-Reply-To: <1458395901-2223-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-sunxi+bncBCPKHTHNWIPBBOHVWW3QKGQEAPTFAOI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20160315105802.GN2566-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-'struct snd_timer_gparams' includes some members with 'unsigned long',
-therefore its size differs depending on data models (ILP32/LP64). As a
-result, x86/x32 applications fail to execute ioctl(2) with
-SNDRV_TIMER_GPARAMS on x86_64 machine.
+Hi Mark,
 
-This commit fixes this bug by adding a pair of structure and ioctl
-command for the compatibility.
+my question is whether it's possible to group together the left and right c=
+hannel into one selem, and also if it's possible to reuse volumes then. For=
+ example:
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/core/timer_compat.c | 29 ++++++++++++++++++++++++++++-
- 1 file changed, 28 insertions(+), 1 deletion(-)
+For sun4i-codec Mic there's right now:
+- Left Mixer Mic1 Playback Switch
+- Left Mixer Mic2 Playback Switch
+- Right Mixer Mic1 Playback Switch
+- Right Mixer Mic2 Playback Switch
+- Mic Playback Volume
 
-diff --git a/sound/core/timer_compat.c b/sound/core/timer_compat.c
-index 2e90822..5809387 100644
---- a/sound/core/timer_compat.c
-+++ b/sound/core/timer_compat.c
-@@ -22,6 +22,18 @@
- 
- #include <linux/compat.h>
- 
-+/*
-+ * In LP64, 64 bit storage alignment is used, therefore the size of this
-+ * structure is expanded to multiple of 8. But the size should be aligned to
-+ * multiple of 4 for ILP32. This is a reason to use 'packed' attribute.
-+ */
-+struct snd_timer_gparams32 {
-+	struct snd_timer_id tid;
-+	u32 period_num;
-+	u32 period_den;
-+	unsigned char reserved[32];
-+}__attribute__((packed));
-+
- struct snd_timer_info32 {
- 	u32 flags;
- 	s32 card;
-@@ -32,6 +44,19 @@ struct snd_timer_info32 {
- 	unsigned char reserved[64];
- };
- 
-+static int snd_timer_user_gparams_compat(struct file *file,
-+					struct snd_timer_gparams32 __user *user)
-+{
-+	struct snd_timer_gparams gparams;
-+
-+	if (copy_from_user(&gparams, user,
-+		sizeof(struct snd_timer_id) + sizeof(u32) + sizeof(u32)))
-+		return -EFAULT;
-+
-+	return snd_timer_user_gparams(file,
-+				(struct snd_timer_gparams __user *)&gparams);
-+}
-+
- static int snd_timer_user_info_compat(struct file *file,
- 				      struct snd_timer_info32 __user *_info)
- {
-@@ -99,6 +124,7 @@ static int snd_timer_user_status_compat(struct file *file,
-  */
- 
- enum {
-+	SNDRV_TIMER_IOCTL_GPARAMS32 = _IOR('T', 0x04, struct snd_timer_gparams32),
- 	SNDRV_TIMER_IOCTL_INFO32 = _IOR('T', 0x11, struct snd_timer_info32),
- 	SNDRV_TIMER_IOCTL_STATUS32 = _IOW('T', 0x14, struct snd_timer_status32),
- #ifdef CONFIG_X86_X32
-@@ -114,7 +140,6 @@ static long snd_timer_user_ioctl_compat(struct file *file, unsigned int cmd, uns
- 	case SNDRV_TIMER_IOCTL_PVERSION:
- 	case SNDRV_TIMER_IOCTL_TREAD:
- 	case SNDRV_TIMER_IOCTL_GINFO:
--	case SNDRV_TIMER_IOCTL_GPARAMS:
- 	case SNDRV_TIMER_IOCTL_GSTATUS:
- 	case SNDRV_TIMER_IOCTL_SELECT:
- 	case SNDRV_TIMER_IOCTL_PARAMS:
-@@ -128,6 +153,8 @@ static long snd_timer_user_ioctl_compat(struct file *file, unsigned int cmd, uns
- 	case SNDRV_TIMER_IOCTL_PAUSE_OLD:
- 	case SNDRV_TIMER_IOCTL_NEXT_DEVICE:
- 		return snd_timer_user_ioctl(file, cmd, (unsigned long)argp);
-+	case SNDRV_TIMER_IOCTL_GPARAMS32:
-+		return snd_timer_user_gparams_compat(file, argp);
- 	case SNDRV_TIMER_IOCTL_INFO32:
- 		return snd_timer_user_info_compat(file, argp);
- 	case SNDRV_TIMER_IOCTL_STATUS32:
--- 
-2.7.3
+If possible, it could also then be collected together as:
+- Mic1 Playback:
+    Left Mixer Mic1 Playback Switch,=20
+    Right Mixer Mic1 Playback Switch,=20
+    Mic Playback Volume
+- Mic2 Playback:
+    Left Mixer Mic2 Playback Switch,=20
+    Right Mixer Mic2 Playback Switch,=20
+    Mic Playback Volume [note: there it is again]
+
+... where each outer group (f.e. "- Mic1 Playback:") is a selem (slider wit=
+h two mutes in alsamixer).
+
+alsamixer has support for seperate left and right channel muting so it woul=
+d cut down a lot on the number of visible controls.
+
+But as you can see, Mic Playback Volume is also shared.
+
+Is it possible to group them together like this? How?
+
+Right now, while everything technically works, it's overwhelming to use als=
+amixer with sun4i-codec as a user - you have to *scroll* for quite a while.
+
+Additionally, while I'm at it:=20
+
+There's one capture volume right in front of the ADC. Whatever it is you ca=
+pture, this tells you the gain for the ADC. But for some inputs, there are =
+additional preamps. Right now in the v8 patch we don't distinguish between =
+preamps and ADC gains (because I don't think it's possible), although the u=
+ser has to kinda distinguish them in his head because for inputs which have=
+ preamps only the preamp and the adc gain *together* specify the total gain=
+ in the end.
+
+E.g. in the hardware it's
+
+  Mic In -> | Mic Preamp | -> | ADC Gain | -> | ADC |
+
+while in alsamixer it's:
+
+  [Capture Controls:]
+
+  | Mic Preamp |  | Capture Volume | | xyz Preamp | | abc Preamp | | qrs Pr=
+eamp |
+                    ^--- ADC Gain
+
+Is it possible to somehow distinguish those in alsamixer? Do we want to?
+
+--=20
+You received this message because you are subscribed to the Google Groups "=
+linux-sunxi" group.
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+For more options, visit https://groups.google.com/d/optout.
