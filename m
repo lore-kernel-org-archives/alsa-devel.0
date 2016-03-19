@@ -1,928 +1,311 @@
-From: Andreas Dannenberg <dannenberg@ti.com>
-Subject: [PATCH 2/2] ASoC: codecs: add support for TAS5720
-	digital amplifier
-Date: Fri, 18 Mar 2016 18:27:58 -0500
-Message-ID: <1458343678-4086-3-git-send-email-dannenberg@ti.com>
-References: <1458343678-4086-1-git-send-email-dannenberg@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C21F2617B8
- for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2016 00:28:09 +0100 (CET)
-In-Reply-To: <1458343678-4086-1-git-send-email-dannenberg@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org
-Cc: Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, Kumar Gala <galak@codeaurora.org>, Andreas Dannenberg <dannenberg@ti.com>
+From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+Subject: [PATCH v2] [media] media-device: use kref for media_device instance
+Date: Fri, 18 Mar 2016 21:42:16 -0300
+Message-ID: <9d8830150475bc4d4dde2fa1f5163aef82a35477.1458347578.git.mchehab@osg.samsung.com>
+Return-path: <linux-media-owner@vger.kernel.org>
+Sender: linux-media-owner@vger.kernel.org
+To: Linux Media Mailing List <linux-media@vger.kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Mauro Carvalho Chehab <mchehab@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Shuah Khan <shuahkh@osg.samsung.com>, Hans Verkuil <hans.verkuil@cisco.com>, Javier Martinez Canillas <javier@osg.samsung.com>, =?UTF-8?q?Rafael=20Louren=C3=A7o=20de=20Lima=20Chehab?= <chehabrafael@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The Texas Instruments TAS5720L/M device is a high-efficiency mono
-Class-D audio power amplifier optimized for high transient power
-capability to use the dynamic power headroom of small loudspeakers.
-Its digital time division multiplexed (TDM) interface enables up to
-16 devices to share the same bus.
+Now that the media_device can be used by multiple drivers,
+via devres, we need to be sure that it will be dropped only
+when all drivers stop using it.
 
-Signed-off-by: Andreas Dannenberg <dannenberg@ti.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
 ---
- sound/soc/codecs/Kconfig   |  10 +
- sound/soc/codecs/Makefile  |   2 +
- sound/soc/codecs/tas5720.c | 733 +++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/tas5720.h |  90 ++++++
- 4 files changed, 835 insertions(+)
- create mode 100644 sound/soc/codecs/tas5720.c
- create mode 100644 sound/soc/codecs/tas5720.h
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 7ef3a0c..a0bb8cb 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -124,6 +124,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_TAS2552 if I2C
- 	select SND_SOC_TAS5086 if I2C
- 	select SND_SOC_TAS571X if I2C
-+	select SND_SOC_TAS5720 if I2C
- 	select SND_SOC_TFA9879 if I2C
- 	select SND_SOC_TLV320AIC23_I2C if I2C
- 	select SND_SOC_TLV320AIC23_SPI if SPI_MASTER
-@@ -741,6 +742,15 @@ config SND_SOC_TAS571X
- 	tristate "Texas Instruments TAS5711/TAS5717/TAS5719 power amplifiers"
- 	depends on I2C
+v2: The kref is now used only when media_device is allocated via 
+    the media_device*_devress. This warrants that other drivers won't be
+    affected, and that we can keep media_device_cleanup() balanced with
+    media_device_init().
+
+ drivers/media/media-device.c           | 117 +++++++++++++++++++++++++--------
+ drivers/media/usb/au0828/au0828-core.c |   3 +-
+ include/media/media-device.h           |  28 ++++++++
+ sound/usb/media.c                      |   3 +-
+ 4 files changed, 118 insertions(+), 33 deletions(-)
+
+diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
+index c32fa15cc76e..4a97d92a7e7d 100644
+--- a/drivers/media/media-device.c
++++ b/drivers/media/media-device.c
+@@ -707,11 +707,16 @@ void media_device_init(struct media_device *mdev)
+ }
+ EXPORT_SYMBOL_GPL(media_device_init);
  
-+config SND_SOC_TAS5720
-+	tristate "Texas Instruments TAS5720 Mono Audio amplifier"
-+	depends on I2C
-+	help
-+	  Enable support for Texas Instruments TAS5720L/M high-efficiency mono
-+	  Class-D audio power amplifiers. The devices use an I2C interface for
-+	  setup/control and support an optional GPIO interrupt signal for fault
-+	  reporting.
-+
- config SND_SOC_TFA9879
- 	tristate "NXP Semiconductors TFA9879 amplifier"
- 	depends on I2C
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 185a712..83d352e 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -129,6 +129,7 @@ snd-soc-stac9766-objs := stac9766.o
- snd-soc-sti-sas-objs := sti-sas.o
- snd-soc-tas5086-objs := tas5086.o
- snd-soc-tas571x-objs := tas571x.o
-+snd-soc-tas5720-objs := tas5720.o
- snd-soc-tfa9879-objs := tfa9879.o
- snd-soc-tlv320aic23-objs := tlv320aic23.o
- snd-soc-tlv320aic23-i2c-objs := tlv320aic23-i2c.o
-@@ -335,6 +336,7 @@ obj-$(CONFIG_SND_SOC_STI_SAS)	+= snd-soc-sti-sas.o
- obj-$(CONFIG_SND_SOC_TAS2552)	+= snd-soc-tas2552.o
- obj-$(CONFIG_SND_SOC_TAS5086)	+= snd-soc-tas5086.o
- obj-$(CONFIG_SND_SOC_TAS571X)	+= snd-soc-tas571x.o
-+obj-$(CONFIG_SND_SOC_TAS5720)	+= snd-soc-tas5720.o
- obj-$(CONFIG_SND_SOC_TFA9879)	+= snd-soc-tfa9879.o
- obj-$(CONFIG_SND_SOC_TLV320AIC23)	+= snd-soc-tlv320aic23.o
- obj-$(CONFIG_SND_SOC_TLV320AIC23_I2C)	+= snd-soc-tlv320aic23-i2c.o
-diff --git a/sound/soc/codecs/tas5720.c b/sound/soc/codecs/tas5720.c
-new file mode 100644
-index 0000000..ac22c22
---- /dev/null
-+++ b/sound/soc/codecs/tas5720.c
-@@ -0,0 +1,733 @@
-+/*
-+ * tas5720.c - ALSA SoC Texas Instruments TAS5720 Mono Audio Amplifier
-+ *
-+ * Copyright (C)2015-2016 Texas Instruments Incorporated -  http://www.ti.com
-+ *
-+ * Author: Andreas Dannenberg <dannenberg@ti.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/errno.h>
-+#include <linux/device.h>
-+#include <linux/i2c.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/delay.h>
-+
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/tlv.h>
-+
-+#include "tas5720.h"
-+
-+static const char * const tas5720_supply_names[] = {
-+	"dvdd",		/* Digital power supply. Connect to 3.3-V supply. */
-+	"pvdd",		/* Class-D amp and analog power supply (connected). */
-+};
-+#define TAS5720_NUM_SUPPLIES	ARRAY_SIZE(tas5720_supply_names)
-+
-+struct tas5720_data {
-+	struct snd_soc_codec *codec;
-+	struct regmap *regmap;
-+	struct i2c_client *tas5720_client;
-+	struct regulator_bulk_data supplies[TAS5720_NUM_SUPPLIES];
-+	struct gpio_desc *gpiod_faultz;
-+	struct delayed_work irq_enable_work;
-+};
-+
-+static int tas5720_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params,
-+			     struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	int width = params_width(params);
-+	unsigned int rate = params_rate(params);
-+	bool ssz_ds;
-+	int ret;
-+
-+	switch (width) {
-+	case 16:
-+	case 18:
-+	case 20:
-+	case 24:
-+		/*
-+		 * We only support the different left-justified serial audio
-+		 * formats in which case there is nothing to configure in the
-+		 * TAS5720.
-+		 */
-+		break;
-+	default:
-+		dev_err(codec->dev, "unsupported sample size: %d\n", width);
-+		return -EINVAL;
-+	}
-+
-+	switch (rate) {
-+	case 44100:
-+	case 48000:
-+		ssz_ds = false;
-+		break;
-+	case 88200:
-+	case 96000:
-+		ssz_ds = true;
-+		break;
-+	default:
-+		dev_err(codec->dev, "unsupported sample rate: %u\n", rate);
-+		return -EINVAL;
-+	}
-+
-+	ret = snd_soc_update_bits(codec, TAS5720_DIGITAL_CTRL1_REG,
-+				  TAS5720_SSZ_DS, ssz_ds);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "error setting sample rate: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
+-void media_device_cleanup(struct media_device *mdev)
++static void __media_device_cleanup(struct media_device *mdev)
+ {
+ 	ida_destroy(&mdev->entity_internal_idx);
+ 	mdev->entity_internal_idx_max = 0;
+ 	media_entity_graph_walk_cleanup(&mdev->pm_count_walk);
 +}
 +
-+static int tas5720_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++void media_device_cleanup(struct media_device *mdev)
 +{
-+	struct snd_soc_codec *codec = dai->codec;
-+	u8 serial_format;
-+	int ret;
++	__media_device_cleanup(mdev);
+ 	mutex_destroy(&mdev->graph_mutex);
+ }
+ EXPORT_SYMBOL_GPL(media_device_cleanup);
+@@ -721,6 +726,9 @@ int __must_check __media_device_register(struct media_device *mdev,
+ {
+ 	int ret;
+ 
++	/* Check if mdev was ever registered at all */
++	mutex_lock(&mdev->graph_mutex);
 +
-+	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS) {
-+		dev_vdbg(codec->dev, "DAI Format master is not found\n");
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & (SND_SOC_DAIFMT_FORMAT_MASK |
-+		       SND_SOC_DAIFMT_INV_MASK)) {
-+	case (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF):
-+		/* 1st data bit occur one BCLK cycle after the frame sync */
-+		serial_format = TAS5720_SAIF_I2S;
-+		break;
-+	case (SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_NB_NF):
-+		/*
-+		 * Note that although the TAS5720 does not have a dedicated DSP
-+		 * mode it doesn't care about the LRCLK duty cycle during TDM
-+		 * operation. Therefore we can use the device's I2S mode with
-+		 * its delaying of the 1st data bit to receive DSP_A formatted
-+		 * data. See device datasheet for additional details.
-+		 */
-+		serial_format = TAS5720_SAIF_I2S;
-+		break;
-+	case (SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_NB_NF):
-+		/*
-+		 * Similar to DSP_A, we can use the fact that the TAS5720 does
-+		 * not care about the LRCLK duty cycle during TDM to receive
-+		 * DSP_B formatted data in LEFTJ mode (no delaying of the 1st
-+		 * data bit).
-+		 */
-+		serial_format = TAS5720_SAIF_LEFTJ;
-+		break;
-+	case (SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_NB_NF):
-+		/* No delay after the frame sync */
-+		serial_format = TAS5720_SAIF_LEFTJ;
-+		break;
-+	default:
-+		dev_vdbg(codec->dev, "DAI Format is not found\n");
-+		return -EINVAL;
-+	}
-+
-+	ret = snd_soc_update_bits(codec, TAS5720_DIGITAL_CTRL1_REG,
-+				  TAS5720_SAIF_FORMAT_MASK,
-+				  serial_format);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "error setting SAIF format: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int tas5720_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
-+				  unsigned int freq, int dir)
-+{
-+	/*
-+	 * Nothing to configure here for TAS5720. It's a simple codec slave.
-+	 * However we need to keep this function in here otherwise the ASoC
-+	 * platform driver will throw an ENOTSUPP at us when trying to play
-+	 * audio.
-+	 */
-+
-+	return 0;
-+}
-+
-+static int tas5720_set_dai_tdm_slot(struct snd_soc_dai *dai,
-+				    unsigned int tx_mask, unsigned int rx_mask,
-+				    int slots, int slot_width)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	unsigned int first_slot;
-+	int ret;
-+
-+	if (unlikely(!tx_mask)) {
-+		dev_err(codec->dev, "tx masks must not be 0\n");
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * Determine the first slot that is being requested. We will only
-+	 * use the first slot that is found since the TAS5720 is a mono
-+	 * amplifier.
-+	 */
-+	first_slot = __ffs(tx_mask);
-+
-+	if (first_slot > 7) {
-+		dev_err(codec->dev, "slot selection out of bounds (%u)\n",
-+			first_slot);
-+		return -EINVAL;
-+	}
-+
-+	/* Enable manual TDM slot selection (instead of I2C ID based) */
-+	ret = snd_soc_update_bits(codec, TAS5720_DIGITAL_CTRL1_REG,
-+				  TAS5720_TDM_CFG_SRC, TAS5720_TDM_CFG_SRC);
-+	if (ret < 0)
-+		goto error_snd_soc_update_bits;
-+
-+	/* Configure the TDM slot to process audio from */
-+	ret = snd_soc_update_bits(codec, TAS5720_DIGITAL_CTRL2_REG,
-+				  TAS5720_TDM_SLOT_SEL_MASK, first_slot);
-+	if (ret < 0)
-+		goto error_snd_soc_update_bits;
-+
-+	return 0;
-+
-+error_snd_soc_update_bits:
-+	dev_err(codec->dev, "error configuring TDM mode: %d\n", ret);
+ 	/* Register the device node. */
+ 	mdev->devnode.fops = &media_device_fops;
+ 	mdev->devnode.parent = mdev->dev;
+@@ -731,17 +739,19 @@ int __must_check __media_device_register(struct media_device *mdev,
+ 
+ 	ret = media_devnode_register(&mdev->devnode, owner);
+ 	if (ret < 0)
+-		return ret;
++		goto err;
+ 
+ 	ret = device_create_file(&mdev->devnode.dev, &dev_attr_model);
+ 	if (ret < 0) {
+ 		media_devnode_unregister(&mdev->devnode);
+-		return ret;
++		goto err;
+ 	}
+ 
+ 	dev_dbg(mdev->dev, "Media device registered\n");
+ 
+-	return 0;
++err:
++	mutex_unlock(&mdev->graph_mutex);
 +	return ret;
-+}
+ }
+ EXPORT_SYMBOL_GPL(__media_device_register);
+ 
+@@ -773,24 +783,13 @@ void media_device_unregister_entity_notify(struct media_device *mdev,
+ }
+ EXPORT_SYMBOL_GPL(media_device_unregister_entity_notify);
+ 
+-void media_device_unregister(struct media_device *mdev)
++static void __media_device_unregister(struct media_device *mdev)
+ {
+ 	struct media_entity *entity;
+ 	struct media_entity *next;
+ 	struct media_interface *intf, *tmp_intf;
+ 	struct media_entity_notify *notify, *nextp;
+ 
+-	if (mdev == NULL)
+-		return;
+-
+-	mutex_lock(&mdev->graph_mutex);
+-
+-	/* Check if mdev was ever registered at all */
+-	if (!media_devnode_is_registered(&mdev->devnode)) {
+-		mutex_unlock(&mdev->graph_mutex);
+-		return;
+-	}
+-
+ 	/* Remove all entities from the media device */
+ 	list_for_each_entry_safe(entity, next, &mdev->entities, graph_obj.list)
+ 		__media_device_unregister_entity(entity);
+@@ -807,38 +806,98 @@ void media_device_unregister(struct media_device *mdev)
+ 		kfree(intf);
+ 	}
+ 
+-	mutex_unlock(&mdev->graph_mutex);
+-
+-	device_remove_file(&mdev->devnode.dev, &dev_attr_model);
+-	media_devnode_unregister(&mdev->devnode);
++	/* Check if mdev devnode was registered */
++	if (media_devnode_is_registered(&mdev->devnode)) {
++		device_remove_file(&mdev->devnode.dev, &dev_attr_model);
++		media_devnode_unregister(&mdev->devnode);
++	}
+ 
+ 	dev_dbg(mdev->dev, "Media device unregistered\n");
+ }
 +
-+static int tas5720_mute(struct snd_soc_dai *dai, int mute)
++void media_device_unregister(struct media_device *mdev)
 +{
-+	struct snd_soc_codec *codec = dai->codec;
++	if (mdev == NULL)
++		return;
++
++	mutex_lock(&mdev->graph_mutex);
++	__media_device_unregister(mdev);
++	mutex_unlock(&mdev->graph_mutex);
++}
+ EXPORT_SYMBOL_GPL(media_device_unregister);
+ 
+ static void media_device_release_devres(struct device *dev, void *res)
+ {
+ }
+ 
+-struct media_device *media_device_get_devres(struct device *dev)
++static void do_media_device_unregister_devres(struct kref *kref)
+ {
++	struct media_device_devres *mdev_devres;
+ 	struct media_device *mdev;
 +	int ret;
+ 
+-	mdev = devres_find(dev, media_device_release_devres, NULL, NULL);
+-	if (mdev)
+-		return mdev;
++	mdev_devres = container_of(kref, struct media_device_devres, kref);
+ 
+-	mdev = devres_alloc(media_device_release_devres,
+-				sizeof(struct media_device), GFP_KERNEL);
+-	if (!mdev)
++	if (!mdev_devres)
++		return;
 +
-+	ret = snd_soc_update_bits(codec, TAS5720_DIGITAL_CTRL2_REG,
-+				  TAS5720_MUTE, mute ? TAS5720_MUTE : 0);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "error (un-)muting device: %d\n", ret);
-+		return ret;
-+	}
++	mdev = &mdev_devres->mdev;
 +
-+	return 0;
++	mutex_lock(&mdev->graph_mutex);
++	__media_device_unregister(mdev);
++	__media_device_cleanup(mdev);
++	mutex_unlock(&mdev->graph_mutex);
++	mutex_destroy(&mdev->graph_mutex);
++
++	ret = devres_destroy(mdev->dev, media_device_release_devres,
++			     NULL, NULL);
++	pr_debug("%s: devres_destroy() returned %d\n", __func__, ret);
 +}
 +
-+static irqreturn_t tas5720_irq_handler(int irq, void *_dev)
++void media_device_unregister_devres(struct media_device *mdev)
 +{
-+	/*
-+	 * Immediately disable TAS5720 FAULTZ interrupts inside the low-level
-+	 * handler to prevent the system getting saturated or even overrun
-+	 * by interrupt requests. Normally the fact that we create a threaded
-+	 * interrupt with IRQF_ONESHOT should take care of this as by design
-+	 * it masks interrupts while the thread is processed however testing
-+	 * has shown that at the high frequency the FAULTZ signal triggers
-+	 * (every 300us!) occasionally the system would lock up even with a
-+	 * threaded handler that's completely empty until the Kernel breaks the
-+	 * cycle, disables that interrupt, and reports a "nobody cared" error.
-+	 *
-+	 * Disabling the interrupt here combined with a deferred re-enabling
-+	 * after the thread has run not only prevents this lock condition but
-+	 * also helps to rate-limit the processing of FAULTZ interrupts.
-+	 */
-+	disable_irq_nosync(irq);
++	struct media_device_devres *mdev_devres;
 +
-+	return IRQ_WAKE_THREAD;
++	mdev_devres = container_of(mdev, struct media_device_devres, mdev);
++	kref_put(&mdev_devres->kref, do_media_device_unregister_devres);
 +}
++EXPORT_SYMBOL_GPL(media_device_unregister_devres);
 +
-+static irqreturn_t tas5720_irq_thread(int irq, void *_dev)
++struct media_device *media_device_get_devres(struct device *dev)
 +{
-+	struct device *dev = _dev;
-+	struct tas5720_data *tas5720 = dev_get_drvdata(dev);
-+	unsigned int fault_val;
-+	int ret;
++	struct media_device_devres *mdev_devres, *ptr;
 +
-+	ret = regmap_read(tas5720->regmap, TAS5720_FAULT_REG, &fault_val);
-+	if (ret < 0) {
-+		dev_err(dev, "failed to read FAULT register: %d\n", ret);
-+		goto out;
++	mdev_devres = devres_find(dev, media_device_release_devres, NULL, NULL);
++	if (mdev_devres) {
++		kref_get(&mdev_devres->kref);
++		return &mdev_devres->mdev;
 +	}
 +
-+	/*
-+	 * Check all errors except SAIF clock errors which can only be checked
-+	 * during actual audio playback. However currently there is no good way
-+	 * to start allowing those checks just after the audio stream is being
-+	 * output and vice versa. Note that we rely on a connection between the
-+	 * TAS5720 SDZ and FAULTZ pins to automatically clear and recover from
-+	 * error conditions. See the "Auto Recovery Circuit" in the datasheet
-+	 * for further information.
-+	 */
-+	if (fault_val & TAS5720_OCE)
-+		dev_warn(dev, "The Class-D output stage has experienced an over current event\n");
++	mdev_devres = devres_alloc(media_device_release_devres,
++				   sizeof(struct media_device_devres),
++				   GFP_KERNEL);
++	if (!mdev_devres)
+ 		return NULL;
+-	return devres_get(dev, mdev, NULL, NULL);
 +
-+	if (fault_val & TAS5720_DCE)
-+		dev_warn(dev, "The Class-D output stage has experienced a DC detect error\n");
++	ptr = devres_get(dev, mdev_devres, NULL, NULL);
++	if (ptr)
++		kref_init(&ptr->kref);
++	else
++		devres_free(mdev_devres);
 +
-+	if (fault_val & TAS5720_OTE)
-+		dev_warn(dev, "The Class-D output stage has experienced an over temperature error\n");
++	return &ptr->mdev;
+ }
+ EXPORT_SYMBOL_GPL(media_device_get_devres);
+ 
+ struct media_device *media_device_find_devres(struct device *dev)
+ {
+-	return devres_find(dev, media_device_release_devres, NULL, NULL);
++	struct media_device_devres *mdev_devres;
 +
-+	/*
-+	 * Re-enable interrupts 100ms after this handler has finished. This
-+	 * will allow us to rate-limit the TAS5720-generated SAIF interrupt
-+	 * storm that starts once the audio signal is shut off while the
-+	 * device has not yet entered shutdown mode.
-+	 *
-+	 * We chose 100ms to strike a reasonable balance between reacting to
-+	 * actual fault conditions quickly while not overwhelming the system
-+	 * as checking the fault condition involves expensive I2C operations.
-+	 */
-+out:
-+	ret = schedule_delayed_work(&tas5720->irq_enable_work,
-+				    msecs_to_jiffies(100));
-+	if (!ret) {
-+		/*
-+		 * This should never happen, but just as another safety net
-+		 * add some error reporting nevertheless. If we do get this
-+		 * error that's bad since it likely means that our interrupt
-+		 * disable/enable scheme became unbalanced and with this the
-+		 * fault reporting stopped functioning.
-+		 */
-+		dev_err(dev, "scheduled irq enable work already in queue!\n");
-+	}
++	mdev_devres = devres_find(dev, media_device_release_devres, NULL, NULL);
++	if (!mdev_devres)
++		return NULL;
 +
-+	return IRQ_HANDLED;
-+}
-+
-+static void tas5720_irq_enable_work(struct work_struct *work)
-+{
-+	struct tas5720_data *tas5720 =
-+		container_of(work, struct tas5720_data, irq_enable_work.work);
-+	int irq = tas5720->tas5720_client->irq;
-+
-+	enable_irq(irq);
-+}
-+
-+static int tas5720_codec_probe(struct snd_soc_codec *codec)
-+{
-+	struct tas5720_data *tas5720 = snd_soc_codec_get_drvdata(codec);
-+	int irq = tas5720->tas5720_client->irq;
-+	unsigned int device_id;
-+	int ret;
-+
-+	tas5720->codec = codec;
-+
-+	ret = regulator_bulk_enable(ARRAY_SIZE(tas5720->supplies),
-+				    tas5720->supplies);
-+	if (ret != 0) {
-+		dev_err(codec->dev, "failed to enable supplies: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = regmap_read(tas5720->regmap, TAS5720_DEVICE_ID_REG, &device_id);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "failed to read device ID register: %d\n",
-+			ret);
-+		goto probe_fail;
-+	}
-+
-+	if (device_id != TAS5720_DEVICE_ID) {
-+		dev_err(codec->dev, "wrong device ID. expected: %u read: %u\n",
-+			TAS5720_DEVICE_ID, device_id);
-+		ret = -ENODEV;
-+		goto probe_fail;
-+	}
-+
-+	/* Set device to mute */
-+	ret = snd_soc_update_bits(codec, TAS5720_DIGITAL_CTRL2_REG,
-+				  TAS5720_MUTE, TAS5720_MUTE);
-+	if (ret < 0)
-+		goto error_snd_soc_update_bits;
-+
-+	/*
-+	 * Enter shutdown mode - our default when not playing audio. This has
-+	 * also the desired side-effect of squelching TAS5720-generated fault
-+	 * interrupts (that can't be masked on the TAS5720 itself in a more
-+	 * elegant fashion) before we install the IRQ handler so that we don't
-+	 * get hammered with interrupts that we are not yet interested in.
-+	 */
-+	ret = snd_soc_update_bits(codec, TAS5720_POWER_CTRL_REG,
-+				  TAS5720_SDZ, 0);
-+	if (ret < 0)
-+		goto error_snd_soc_update_bits;
-+
-+	/*
-+	 * The use of a fault interrupt is optional. If used, the processor
-+	 * interrupt signal should be connected to the TAS5720 FAULTZ pin.
-+	 * Note that the connection between the TAS5720 FAULTZ and SDZ pins
-+	 * should always be made to allow automatic fault recovery.
-+	 */
-+	if (irq > 0) {
-+		ret = request_threaded_irq(irq,
-+					   tas5720_irq_handler,
-+					   tas5720_irq_thread,
-+					   IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-+					   "tas5720", codec->dev);
-+		if (ret) {
-+			dev_err(codec->dev, "failed to request IRQ #%d\n", irq);
-+			return ret;
-+		}
-+
-+		dev_info(codec->dev, "using host FAULTZ reporting\n");
-+	}
-+
-+	INIT_DELAYED_WORK(&tas5720->irq_enable_work, tas5720_irq_enable_work);
-+
-+	return 0;
-+
-+error_snd_soc_update_bits:
-+	dev_err(codec->dev, "error configuring device registers: %d\n", ret);
-+
-+probe_fail:
-+	regulator_bulk_disable(ARRAY_SIZE(tas5720->supplies),
-+			       tas5720->supplies);
-+	return ret;
-+}
-+
-+static int tas5720_codec_remove(struct snd_soc_codec *codec)
-+{
-+	struct tas5720_data *tas5720 = snd_soc_codec_get_drvdata(codec);
-+	int irq = tas5720->tas5720_client->irq;
-+	int ret;
-+
-+	cancel_delayed_work_sync(&tas5720->irq_enable_work);
-+
-+	if (irq > 0)
-+		free_irq(irq, codec->dev);
-+
-+	ret = regulator_bulk_disable(ARRAY_SIZE(tas5720->supplies),
-+				     tas5720->supplies);
-+	if (ret < 0)
-+		dev_err(codec->dev, "failed to disable supplies: %d\n", ret);
-+
-+	return ret;
-+};
-+
-+static int tas5720_dapm_post_event(struct snd_soc_dapm_widget *w,
-+				   struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	int ret;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		/*
-+		 * Check if the codec is still powered up in which case exit
-+		 * right away also skipping the shutdown-to-active wait time.
-+		 */
-+		ret = snd_soc_test_bits(codec, TAS5720_POWER_CTRL_REG,
-+					TAS5720_SDZ, 0);
-+		if (ret < 0) {
-+			dev_err(codec->dev, "error reading codec: %d\n", ret);
-+			return ret;
-+		} else if (ret) {
-+			break;
-+		}
-+
-+		/*
-+		 * Take TAS5720 out of shutdown mode in preparation for widget
-+		 * power up.
-+		 */
-+		ret = snd_soc_update_bits(codec, TAS5720_POWER_CTRL_REG,
-+					  TAS5720_SDZ, TAS5720_SDZ);
-+		if (ret < 0) {
-+			dev_err(codec->dev, "error waking codec: %d\n", ret);
-+			return ret;
-+		}
-+
-+		/*
-+		 * Observe codec shutdown-to-active time. The datasheet only
-+		 * lists a nominal value however just use-it as-is without
-+		 * additional padding to minimize the delay introduced in
-+		 * starting to play audio (actually there is other setup done
-+		 * by the ASoC framework that will provide additional delays,
-+		 * so we should always be safe).
-+		 */
-+		msleep(25);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int tas5720_dapm_pre_event(struct snd_soc_dapm_widget *w,
-+				  struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	int ret;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMD:
-+		/*
-+		 * Place TAS5720 in shutdown mode in preparation for widget
-+		 * power down. As a desired side effect, this will also prevent
-+		 * the TAS5270 from inundating the host with SAIF fault
-+		 * interrupts (if used)
-+		 */
-+		ret = snd_soc_update_bits(codec, TAS5720_POWER_CTRL_REG,
-+					  TAS5720_SDZ, 0);
-+		if (ret < 0) {
-+			dev_err(codec->dev, "error shutting down codec: %d\n",
-+				ret);
-+			return ret;
-+		}
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM
-+static int tas5720_suspend(struct snd_soc_codec *codec)
-+{
-+	struct tas5720_data *tas5720 = snd_soc_codec_get_drvdata(codec);
-+	int ret;
-+
-+	regcache_cache_only(tas5720->regmap, true);
-+	regcache_mark_dirty(tas5720->regmap);
-+
-+	ret = regulator_bulk_disable(ARRAY_SIZE(tas5720->supplies),
-+				     tas5720->supplies);
-+	if (ret < 0)
-+		dev_err(codec->dev, "failed to disable supplies: %d\n", ret);
-+
-+	return ret;
-+}
-+
-+static int tas5720_resume(struct snd_soc_codec *codec)
-+{
-+	struct tas5720_data *tas5720 = snd_soc_codec_get_drvdata(codec);
-+	int ret;
-+
-+	ret = regulator_bulk_enable(ARRAY_SIZE(tas5720->supplies),
-+				    tas5720->supplies);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "failed to enable supplies: %d\n", ret);
-+		return ret;
-+	}
-+
-+	regcache_cache_only(tas5720->regmap, false);
-+
-+	ret = regcache_sync(tas5720->regmap);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "failed to sync regcache: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+#else
-+#define tas5720_suspend NULL
-+#define tas5720_resume NULL
-+#endif
-+
-+static bool tas5720_is_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case TAS5720_DEVICE_ID_REG:
-+	case TAS5720_FAULT_REG:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static const struct regmap_config tas5720_regmap_config = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+
-+	.max_register = TAS5720_MAX_REG,
-+	.cache_type = REGCACHE_RBTREE,
-+	.volatile_reg = tas5720_is_volatile_reg,
-+};
-+
-+/*
-+ * DAC analog gain. There are four discrete values to select from, ranging
-+ * from 19.2 dB to 26.3dB.
++	return &mdev_devres->mdev;
+ }
+ EXPORT_SYMBOL_GPL(media_device_find_devres);
+ 
+diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
+index 06da73f1ff22..060904ed8f20 100644
+--- a/drivers/media/usb/au0828/au0828-core.c
++++ b/drivers/media/usb/au0828/au0828-core.c
+@@ -157,8 +157,7 @@ static void au0828_unregister_media_device(struct au0828_dev *dev)
+ 	dev->media_dev->enable_source = NULL;
+ 	dev->media_dev->disable_source = NULL;
+ 
+-	media_device_unregister(dev->media_dev);
+-	media_device_cleanup(dev->media_dev);
++	media_device_unregister_devres(dev->media_dev);
+ 	dev->media_dev = NULL;
+ #endif
+ }
+diff --git a/include/media/media-device.h b/include/media/media-device.h
+index b21ef244ad3e..e59772ed8494 100644
+--- a/include/media/media-device.h
++++ b/include/media/media-device.h
+@@ -23,6 +23,7 @@
+ #ifndef _MEDIA_DEVICE_H
+ #define _MEDIA_DEVICE_H
+ 
++#include <linux/kref.h>
+ #include <linux/list.h>
+ #include <linux/mutex.h>
+ 
+@@ -382,6 +383,16 @@ struct media_device {
+ 			   unsigned int notification);
+ };
+ 
++/**
++ * struct media_device_devres - Media device device resource
++ * @mdev:	pointer to struct media_device
++ * @kref:	Object refcount
 + */
-+static const DECLARE_TLV_DB_RANGE(dac_analog_tlv,
-+	0x0, 0x0, TLV_DB_SCALE_ITEM(1920, 0, 0),
-+	0x1, 0x1, TLV_DB_SCALE_ITEM(2070, 0, 0),
-+	0x2, 0x2, TLV_DB_SCALE_ITEM(2350, 0, 0),
-+	0x3, 0x3, TLV_DB_SCALE_ITEM(2630, 0, 0),
-+);
-+
-+/*
-+ * DAC digital volumes. From -103.5 to 24 dB in 0.5 dB steps. Note that
-+ * setting the gain below -100 dB (register value <0x7) is effectively a MUTE
-+ * as per device datasheet.
-+ */
-+static DECLARE_TLV_DB_SCALE(dac_tlv, -10350, 50, 0);
-+
-+static const struct snd_kcontrol_new tas5720_snd_controls[] = {
-+	SOC_SINGLE_TLV("Speaker Driver Playback Volume",
-+		       TAS5720_VOLUME_CTRL_REG, 0, 0xff, 0, dac_tlv),
-+	SOC_SINGLE_TLV("Speaker Driver Analog Gain", TAS5720_ANALOG_CTRL_REG,
-+		       TAS5720_ANALOG_GAIN_SHIFT, 3, 0, dac_analog_tlv),
++struct media_device_devres {
++	struct media_device mdev;
++	struct kref kref;
 +};
 +
-+static const struct snd_soc_dapm_widget tas5720_dapm_widgets[] = {
-+	SND_SOC_DAPM_AIF_IN("DAC IN", "Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_DAC("DAC", NULL, SND_SOC_NOPM, 0, 0),
-+
-+	/* Events used to control the TAS5720 SHUTDOWN state */
-+	SND_SOC_DAPM_PRE("Pre Event", tas5720_dapm_pre_event),
-+	SND_SOC_DAPM_POST("Post Event", tas5720_dapm_post_event),
-+
-+	SND_SOC_DAPM_OUTPUT("OUT")
-+};
-+
-+static const struct snd_soc_dapm_route tas5720_audio_map[] = {
-+	{ "OUT", NULL, "DAC IN" },
-+};
-+
-+static struct snd_soc_codec_driver soc_codec_dev_tas5720 = {
-+	.probe = tas5720_codec_probe,
-+	.remove = tas5720_codec_remove,
-+	.suspend = tas5720_suspend,
-+	.resume = tas5720_resume,
-+
-+	.controls = tas5720_snd_controls,
-+	.num_controls = ARRAY_SIZE(tas5720_snd_controls),
-+	.dapm_widgets = tas5720_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(tas5720_dapm_widgets),
-+	.dapm_routes = tas5720_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(tas5720_audio_map),
-+};
-+
-+/* PCM rates supported by the TAS5720 driver */
-+#define TAS5720_RATES	(SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |\
-+			 SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
-+
-+/* Formats supported by TAS5720 driver */
-+#define TAS5720_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S18_3LE |\
-+			 SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE)
-+
-+static struct snd_soc_dai_ops tas5720_speaker_dai_ops = {
-+	.hw_params	= tas5720_hw_params,
-+	.set_sysclk	= tas5720_set_dai_sysclk,
-+	.set_fmt	= tas5720_set_dai_fmt,
-+	.set_tdm_slot	= tas5720_set_dai_tdm_slot,
-+	.digital_mute	= tas5720_mute,
-+};
-+
-+/*
-+ * TAS5720 DAI structure
+ /* We don't need to include pci.h or usb.h here */
+ struct pci_dev;
+ struct usb_device;
+@@ -604,6 +615,19 @@ struct media_device *media_device_get_devres(struct device *dev);
+  */
+ struct media_device *media_device_find_devres(struct device *dev);
+ 
++/**
++ * media_device_unregister_devres) - Unregister media device allocated as
++ *				     as device resource
 + *
-+ * Note that were are advertising .playback.channels_max = 2 despite this being
-+ * a mono amplifier. The reason for that is that some serial ports such as TI's
-+ * McASP module have a minimum number of channels (2) that they can output.
-+ * Advertising more channels than we have will allow us to interface with such
-+ * a serial port without really any negative side effects as the TAS5720 will
-+ * simply ignore any extra channel(s) asides from the one channel that is
-+ * configured to be played back.
++ * @dev: pointer to struct &device.
++ *
++ * Devices allocated via media_device_get_devres should be de-alocalted
++ * and freed via this function. Callers should not call
++ * media_device_unregister() nor media_device_cleanup() on devices
++ * allocated via media_device_get_devres().
 + */
-+static struct snd_soc_dai_driver tas5720_dai[] = {
-+	{
-+		.name = "tas5720-amplifier",
-+		.playback = {
-+			.stream_name = "Playback",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = TAS5720_RATES,
-+			.formats = TAS5720_FORMATS,
-+		},
-+		.ops = &tas5720_speaker_dai_ops,
-+	},
-+};
++void media_device_unregister_devres(struct media_device *mdev);
 +
-+static int tas5720_probe(struct i2c_client *client,
-+			 const struct i2c_device_id *id)
+ /* Iterate over all entities. */
+ #define media_device_for_each_entity(entity, mdev)			\
+ 	list_for_each_entry(entity, &(mdev)->entities, graph_obj.list)
+@@ -688,6 +712,10 @@ static inline struct media_device *media_device_find_devres(struct device *dev)
+ 	return NULL;
+ }
+ 
++static inline void media_device_unregister_devres(struct media_device *mdev)
 +{
-+	struct device *dev = &client->dev;
-+	struct tas5720_data *data;
-+	int ret;
-+	int i;
-+
-+	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-+	if (data == NULL)
-+		return -ENOMEM;
-+
-+	data->tas5720_client = client;
-+	data->regmap = devm_regmap_init_i2c(client, &tas5720_regmap_config);
-+	if (IS_ERR(data->regmap)) {
-+		ret = PTR_ERR(data->regmap);
-+		dev_err(dev, "failed to allocate register map: %d\n", ret);
-+		return ret;
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(data->supplies); i++)
-+		data->supplies[i].supply = tas5720_supply_names[i];
-+
-+	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(data->supplies),
-+				      data->supplies);
-+	if (ret != 0) {
-+		dev_err(dev, "failed to request supplies: %d\n", ret);
-+		return ret;
-+	}
-+
-+	dev_set_drvdata(dev, data);
-+
-+	ret = snd_soc_register_codec(&client->dev,
-+				     &soc_codec_dev_tas5720,
-+				     tas5720_dai, ARRAY_SIZE(tas5720_dai));
-+	if (ret < 0) {
-+		dev_err(dev, "failed to register codec: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
 +}
 +
-+static int tas5720_remove(struct i2c_client *client)
-+{
-+	struct device *dev = &client->dev;
-+
-+	snd_soc_unregister_codec(dev);
-+
-+	return 0;
-+}
-+
-+static const struct i2c_device_id tas5720_id[] = {
-+	{ "tas5720", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, tas5720_id);
-+
-+#if IS_ENABLED(CONFIG_OF)
-+static const struct of_device_id tas5720_of_match[] = {
-+	{ .compatible = "ti,tas5720", },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, tas5720_of_match);
-+#endif
-+
-+static struct i2c_driver tas5720_i2c_driver = {
-+	.driver = {
-+		.name = "tas5720",
-+		.owner = THIS_MODULE,
-+		.of_match_table = of_match_ptr(tas5720_of_match),
-+	},
-+	.probe = tas5720_probe,
-+	.remove = tas5720_remove,
-+	.id_table = tas5720_id,
-+};
-+
-+module_i2c_driver(tas5720_i2c_driver);
-+
-+MODULE_AUTHOR("Andreas Dannenberg <dannenberg@ti.com>");
-+MODULE_DESCRIPTION("TAS5720 Audio amplifier driver");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/tas5720.h b/sound/soc/codecs/tas5720.h
-new file mode 100644
-index 0000000..3d077c7
---- /dev/null
-+++ b/sound/soc/codecs/tas5720.h
-@@ -0,0 +1,90 @@
-+/*
-+ * tas5720.h - ALSA SoC Texas Instruments TAS5720 Mono Audio Amplifier
-+ *
-+ * Copyright (C)2015-2016 Texas Instruments Incorporated -  http://www.ti.com
-+ *
-+ * Author: Andreas Dannenberg <dannenberg@ti.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ */
-+
-+#ifndef __TAS5720_H__
-+#define __TAS5720_H__
-+
-+/* Register Address Map */
-+#define TAS5720_DEVICE_ID_REG		0x00
-+#define TAS5720_POWER_CTRL_REG		0x01
-+#define TAS5720_DIGITAL_CTRL1_REG	0x02
-+#define TAS5720_DIGITAL_CTRL2_REG	0x03
-+#define TAS5720_VOLUME_CTRL_REG		0x04
-+#define TAS5720_ANALOG_CTRL_REG		0x06
-+#define TAS5720_FAULT_REG		0x08
-+#define TAS5720_DIGITAL_CLIP2_REG	0x10
-+#define TAS5720_DIGITAL_CLIP1_REG	0x11
-+#define TAS5720_MAX_REG			TAS5720_DIGITAL_CLIP1_REG
-+
-+/* TAS5720_DEVICE_ID_REG */
-+#define TAS5720_DEVICE_ID		0x01
-+
-+/* TAS5720_POWER_CTRL_REG */
-+#define TAS5720_DIG_CLIP_MASK		GENMASK(7, 2)
-+#define TAS5720_SLEEP			BIT(1)
-+#define TAS5720_SDZ			BIT(0)
-+
-+/* TAS5720_DIGITAL_CTRL1_REG */
-+#define TAS5720_HPF_BYPASS		BIT(7)
-+#define TAS5720_TDM_CFG_SRC		BIT(6)
-+#define TAS5720_SSZ_DS			BIT(3)
-+#define TAS5720_SAIF_RIGHTJ_24BIT	(0x0)
-+#define TAS5720_SAIF_RIGHTJ_20BIT	(0x1)
-+#define TAS5720_SAIF_RIGHTJ_18BIT	(0x2)
-+#define TAS5720_SAIF_RIGHTJ_16BIT	(0x3)
-+#define TAS5720_SAIF_I2S		(0x4)
-+#define TAS5720_SAIF_LEFTJ		(0x5)
-+#define TAS5720_SAIF_FORMAT_MASK	GENMASK(2, 0)
-+
-+/* TAS5720_DIGITAL_CTRL2_REG */
-+#define TAS5720_MUTE			BIT(4)
-+#define TAS5720_TDM_SLOT_SEL_MASK	GENMASK(2, 0)
-+
-+/* TAS5720_ANALOG_CTRL_REG */
-+#define TAS5720_PWM_RATE_6_3_FSYNC	(0x0 << 4)
-+#define TAS5720_PWM_RATE_8_4_FSYNC	(0x1 << 4)
-+#define TAS5720_PWM_RATE_10_5_FSYNC	(0x2 << 4)
-+#define TAS5720_PWM_RATE_12_6_FSYNC	(0x3 << 4)
-+#define TAS5720_PWM_RATE_14_7_FSYNC	(0x4 << 4)
-+#define TAS5720_PWM_RATE_16_8_FSYNC	(0x5 << 4)
-+#define TAS5720_PWM_RATE_20_10_FSYNC	(0x6 << 4)
-+#define TAS5720_PWM_RATE_24_12_FSYNC	(0x7 << 4)
-+#define TAS5720_PWM_RATE_MASK		GENMASK(6, 4)
-+#define TAS5720_ANALOG_GAIN_19_2DBV	(0x0 << 2)
-+#define TAS5720_ANALOG_GAIN_20_7DBV	(0x1 << 2)
-+#define TAS5720_ANALOG_GAIN_23_5DBV	(0x2 << 2)
-+#define TAS5720_ANALOG_GAIN_26_3DBV	(0x3 << 2)
-+#define TAS5720_ANALOG_GAIN_MASK	GENMASK(3, 2)
-+#define TAS5720_ANALOG_GAIN_SHIFT	(0x2)
-+
-+/* TAS5720_FAULT_REG */
-+#define TAS5720_OC_THRESH_100PCT	(0x0 << 4)
-+#define TAS5720_OC_THRESH_75PCT		(0x1 << 4)
-+#define TAS5720_OC_THRESH_50PCT		(0x2 << 4)
-+#define TAS5720_OC_THRESH_25PCT		(0x3 << 4)
-+#define TAS5720_OC_THRESH_MASK		GENMASK(5, 4)
-+#define TAS5720_CLKE			BIT(3)
-+#define TAS5720_OCE			BIT(2)
-+#define TAS5720_DCE			BIT(1)
-+#define TAS5720_OTE			BIT(0)
-+#define TAS5720_FAULT_MASK		GENMASK(3, 0)
-+
-+/* TAS5720_DIGITAL_CLIP1_REG */
-+#define TAS5720_CLIP1_MASK		GENMASK(7, 2)
-+#define TAS5720_CLIP1_SHIFT		(0x2)
-+
-+#endif /* __TAS5720_H__ */
+ static inline void media_device_pci_init(struct media_device *mdev,
+ 					 struct pci_dev *pci_dev,
+ 					 char *name)
+diff --git a/sound/usb/media.c b/sound/usb/media.c
+index 93a50d01490c..f78955fd0d6e 100644
+--- a/sound/usb/media.c
++++ b/sound/usb/media.c
+@@ -311,8 +311,7 @@ void media_snd_device_delete(struct snd_usb_audio *chip)
+ 	media_snd_mixer_delete(chip);
+ 
+ 	if (mdev) {
+-		if (media_devnode_is_registered(&mdev->devnode))
+-			media_device_unregister(mdev);
++		media_device_unregister_devres(mdev);
+ 		chip->media_dev = NULL;
+ 	}
+ }
 -- 
-2.6.4
+2.5.0
