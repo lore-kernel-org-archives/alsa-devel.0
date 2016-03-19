@@ -1,120 +1,81 @@
-From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-Subject: Re: Re: [PATCH v8 2/2] ASoc: sun4i-codec: Add FM, Line
- and Mic inputs
-Date: Sat, 19 Mar 2016 17:51:24 +0100
-Message-ID: <20160319175124.6bfe3617@scratchpost.org>
-References: <20151221123148.1ab6480b@dayas>
-	<20151221123416.51aa938e@dayas>
-	<20151227182157.GI30359@lukather>
-	<20151228040649.475a742f@dayas>
-	<20160106220908.GE9631@lukather>
-	<20160109164832.515d69b0@dayas>
-	<20160312085222.226d89bf@scratchpost.org>
-	<20160314104939.GL8418@lukather>
-Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
+From: Paul Walmsley <paul@pwsan.com>
+Subject: Re: [PATCH 0/3] ARM: OMAP3: Fix McBSP2/3 hwmod setup
+	for sidetone
+Date: Sat, 19 Mar 2016 19:31:06 +0000 (UTC)
+Message-ID: <alpine.DEB.2.02.1603191908070.6629@utopia.booyaka.com>
+References: <1458296929-718-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCPKHTHNWIPBBE4HW23QKGQEOEQ2L2I-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20160314104939.GL8418@lukather>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from utopia.booyaka.com (utopia.booyaka.com [74.50.51.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 76093260515
+ for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2016 20:31:11 +0100 (CET)
+In-Reply-To: <1458296929-718-1-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Tero Kristo <t-kristo@ti.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Maxime,
+On Fri, 18 Mar 2016, Peter Ujfalusi wrote:
 
-> IIRC, in order to have shared controls, you just needed to share the
-> controls structure.
+> The series addresses a long standing issue with McBSP2/3 regarding to hwmod
+> setup. When booting with DT a warning is printed that mcbsp2/3 is using two
+> hwmod.
+> The root of the issue is the way how the hwmod data was constructed in the first
+> place for OMAP3 McBSP2/3.
+> After re-reading the TRM it is clear that the sidetone should not have it's
+> own hwmod data as it is not a separate IP, it is part of the McBSP module.
 
-Yeah. I did this and it actually works in a way, but in doesn't do all that I want.
+Odd.  I come to exactly the opposite conclusion from reading the TRM.  In 
+fact the SIDETONE blocks clearly should be hwmods, according to the 
+documentation.
 
-There are two different kinds of sharing I mean:
+Consider:
 
-The one kind with the controls structure causes the control to rename itself
-to not state its mixer but there's still just one slider in the end. 
-So instead of "Left Mixer Left XXX" it will just say "Left XXX" if you put it 
-inside Left Mixer and Right Mixer and share the entry - for this hardware, 
-that's of doubtful use.
+1. The SIDETONE blocks have their own L4 ports - as documented in the 
+OMAP36xx public TRM rev Z,  Table 2-5 "L4-Peripheral Memory Space".
 
-But what I would like to have is that the same Mic Playback Volume (the very 
-same bits) be used for different sliders
-(1) Mic1 Left Channel Playback Volume
-(2) Mic1 Right Channel Playback Volume
-(3) Mic2 Left Channel Playback Volume (!!)
-(4) Mic2 Right Channel Playback Volume
+2. The SIDETONE blocks have different register access width restrictions 
+from the McBSP.  Ibid., Table 2-7 "Register Access Restrictions".
 
-Additionally, Mic1 Playback and Mic2 Playback have two mutes each in the 
-hardware (all separately switchable).
+3. The SIDETONE blocks have distinct L4-Per firewall region IDs from their 
+corresponding McBSP IP blocks.  Ibid., Table 9-114 "Region Allocation for 
+L4-Per Interconnect".
 
-Now if we could make the alsamixer selems look like the following, 
-that would be nice:
+4. The SIDETONE blocks have their own L4 target interconnect agents.  
+Table 9-128 "L4-Per Instance Summary"
 
-Mic1_Playback     Mic2_Playback
+5. The SIDETONE blocks have their own MPU IRQ lines, distinct from the 
+McBSP block IRQ lines.  Table 12-4 "Interrupt Mapping to the MPU 
+Subsystem"
 
-  MM                  MM
-  ii                  ii
-  cc                  cc
+6. The SIDETONE IP block register target space is distinct from the 
+corresponding McBSP address ranges.  Table 21-36 "McBSP Instance Summary"
 
-  PP                  PP
-  ll                  ll
-  aa                  aa
-  yy                  yy
-  bb                  bb
-  aa                  aa
-  cc                  cc
-  kk                  kk
+7. The SIDETONE IP blocks have their own "TI OCP" integration registers.  
+Table 21-134 "ST_REV_REG", Table 21-136 "ST_SYSCONFIG_REG".
 
-  VV                  VV
-  oo                  oo
-  ll                  ll
-  uu                  uu
-  mm                  mm
-  ee                  ee
+A better solution to the warnings you mention at the top of the message is 
+to provide a separate low-level McBSP SIDETONE IP block device driver, 
+distinct from the existing McBSP low-level IP block driver.
 
- [Mm]                [Nn]
-   ^                  ^^-- so are those, separately
-   +-- this one is a different muter :-)
+> It can not affect PRCM either since it's SYSCONFIG register's AUTOIDLE 
+> bit is only sets the autoidle from the internal McBSP_iclk clock to the 
+> sidetone block of the same McBSP.
 
-Where the text is the same, it's supposed to signify the same bits 
-in the hardware.
+Can't parse this - could you try again?  Are you referring to the erratum 
+where someone forgot to hook up the SIDETONE idle signals to the PRCM, and 
+the MCBSP_ICLK has to be manually kept active when the SIDETONE block is 
+active?
 
-Right now in v8 it's (and that's going to take a lot of horizontal space, 
-sorry - I know E-Mails like this aren't so nice to read):
 
-Mic_Playback_Volume Left_Mic1_Playback_Switch Right_Mic1_Playback_Switch Left_Mic2_Playback_Switch Right_Mic2_Playback_Switch
-
-  MM                  
-  ii                  
-  cc                  
-
-  PP                  
-  ll                  
-  aa                  
-  yy                  
-  bb                  
-  aa                  
-  cc                  
-  kk                  
-
-  VV                  
-  oo                  
-  ll                  
-  uu                  
-  mm                  
-  ee                  
-
-                    [MM]                      [NN]                       [OO]                      [PP]
-                      ^- WTF                   ^- WTF                      ^- WTF                   ^- WTF
-
-(Actually, it's worse - believe it or not, that's how the simplified explanation looks)
-
-> Unfortunately, that is exposed to the user-space. Once it's in, you
-> cannot change it / fix it anymore.
-
-Hmm. Right. Let's get it to work nicely then.
+- Paul
