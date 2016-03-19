@@ -1,45 +1,63 @@
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [GIT PULL]: Update sst audio firmware for Skylake
-Date: Sat, 19 Mar 2016 00:07:14 -0400
-Message-ID: <20160319040713.GF21789@merlin.infradead.org>
-References: <20160316064441.GQ13211@localhost>
+From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Subject: Re: [PATCH v8 6/6] ARM: dts: am335x-boneblack: Add HDMI audio
+ support
+Date: Sat, 19 Mar 2016 07:39:49 +0100
+Message-ID: <20160319073949.b8bcd213e92355353368fad5@free.fr>
+References: <cover.1458214526.git.jsarha@ti.com>
+	<dd3484868647610840d4803dd3378014ce1c95b7.1458214526.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
- by alsa0.perex.cz (Postfix) with ESMTP id 57F522615F7
- for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2016 05:07:17 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20160316064441.GQ13211@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org, linux-firmware@kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <dd3484868647610840d4803dd3378014ce1c95b7.1458214526.git.jsarha-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+Cc: dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, airlied-cv59FeDIM0c@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, tomi.valkeinen-l0cyMroinI0@public.gmane.org, rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 16, 2016 at 12:14:41PM +0530, Vinod Koul wrote:
-> Hello Linux firmware maintainers,
-> 
-> Please PULL to receive the updated version of Skylake audio firmware
-> version 896. This contains some bug fixes and wov module fixes.
-> 
-> The following changes since commit 9be9ff282635c25694819c39aae0f6cc6c251c12:
-> 
->   iwlwifi: add -21.ucode to WHENCE (2016-03-10 11:28:28 -0800)
-> 
-> are available in the git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git skl
-> 
+On Thu, 17 Mar 2016 14:22:34 +0200
+Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org> wrote:
 
-pulled... please remember to update WHENCE.
+> @@ -76,16 +87,22 @@
+>  };
+> =20
+>  &i2c0 {
+> -	tda19988 {
+> +	tda19988: tda19988 {
+>  		compatible =3D "nxp,tda998x";
+>  		reg =3D <0x70>;
+> +
+>  		pinctrl-names =3D "default", "off";
+>  		pinctrl-0 =3D <&nxp_hdmi_bonelt_pins>;
+>  		pinctrl-1 =3D <&nxp_hdmi_bonelt_off_pins>;
+> =20
+> -		port {
+> -			hdmi_0: endpoint@0 {
+> -				remote-endpoint =3D <&lcdc_0>;
+> +		#sound-dai-cells =3D <0>;
+> +		audio-ports =3D <	AFMT_I2S	0x03>;
+> +
+> +		ports {
+> +			port@0 {
+> +				hdmi_0: endpoint@0 {
+> +					remote-endpoint =3D <&lcdc_0>;
+> +				};
+>  			};
+>  		};
+>  	};
 
-regards, --Kyle
+Why did you add a 'ports' container? As there is only one port,
+it is useless.
+
+Also, you don't need '@0' in the 'port' and 'endpoint'.
+If you want to keep it, you must add 'reg =3D 0;'s.
+
+--=20
+Ken ar c'henta=F1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
