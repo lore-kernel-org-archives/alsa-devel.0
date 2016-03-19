@@ -1,14 +1,18 @@
-From: =?UTF-8?q?Victor=20Cl=C3=A9ment?= <victor.clement@openmailbox.org>
-Subject: [PATCH] sound: usb: add Microsoft HD-5001 to quirks
-Date: Sat, 19 Mar 2016 13:17:42 +0100
-Message-ID: <1458389862-26640-1-git-send-email-victor.clement@openmailbox.org>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: Re: [PATCH] sound/usb: fix to release stream resources
+ from media_snd_device_delete()
+Date: Sat, 19 Mar 2016 07:25:23 -0600
+Message-ID: <56ED5343.1060401@osg.samsung.com>
+References: <1458355831-9467-1-git-send-email-shuahkh@osg.samsung.com>
+ <20160318235708.1eccf0e6@recife.lan> <20160319073944.60235d88@recife.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail2.openmailbox.org (mail2.openmailbox.org [62.4.1.33])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A25D2614BB
- for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2016 13:18:13 +0100 (CET)
+Received: from lists.s-osg.org (lists.s-osg.org [54.187.51.154])
+ by alsa0.perex.cz (Postfix) with ESMTP id 346702614BB
+ for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2016 14:25:32 +0100 (CET)
+In-Reply-To: <20160319073944.60235d88@recife.lan>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,26 +22,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, =?UTF-8?q?Victor=20Cl=C3=A9ment?= <victor.clement@openmailbox.org>, tiwai@suse.com
+To: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, Shuah Khan <shuahkh@osg.samsung.com>, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIE1pY3Jvc29mdCBIRC01MDAxIHdlYmNhbSBtaWNyb3Bob25lIGRvZXMgbm90IHN1cHBvcnQg
-c2FtcGxlIHJhdGUKcmVhZGluZyBhcyB0aGUgSEQtNTAwMCBvbmUuClRoaXMgcmVzdWx0cyBpbiBk
-bWVzZyBlcnJvcnMgYW5kIHNvdW5kIGhhbmdpbmcgd2l0aCBwdWxzZWF1ZGlvLgoKU2lnbmVkLW9m
-Zi1ieTogVmljdG9yIENsw6ltZW50IDx2aWN0b3IuY2xlbWVudEBvcGVubWFpbGJveC5vcmc+Ci0t
-LQogc291bmQvdXNiL3F1aXJrcy5jIHwgMSArCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24o
-KykKCmRpZmYgLS1naXQgYS9zb3VuZC91c2IvcXVpcmtzLmMgYi9zb3VuZC91c2IvcXVpcmtzLmMK
-aW5kZXggNGY2Y2UxYy4uZjI3MDE2ZiAxMDA2NDQKLS0tIGEvc291bmQvdXNiL3F1aXJrcy5jCisr
-KyBiL3NvdW5kL3VzYi9xdWlya3MuYwpAQCAtMTEyMSw2ICsxMTIxLDcgQEAgYm9vbCBzbmRfdXNi
-X2dldF9zYW1wbGVfcmF0ZV9xdWlyayhzdHJ1Y3Qgc25kX3VzYl9hdWRpbyAqY2hpcCkKIAlzd2l0
-Y2ggKGNoaXAtPnVzYl9pZCkgewogCWNhc2UgVVNCX0lEKDB4MDQ1RSwgMHgwNzVEKTogLyogTVMg
-TGlmZWNhbSBDaW5lbWEgICovCiAJY2FzZSBVU0JfSUQoMHgwNDVFLCAweDA3NkQpOiAvKiBNUyBM
-aWZlY2FtIEhELTUwMDAgKi8KKwljYXNlIFVTQl9JRCgweDA0NUUsIDB4MDc2RSk6IC8qIE1TIExp
-ZmVjYW0gSEQtNTAwMSAqLwogCWNhc2UgVVNCX0lEKDB4MDQ1RSwgMHgwNzZGKTogLyogTVMgTGlm
-ZWNhbSBIRC02MDAwICovCiAJY2FzZSBVU0JfSUQoMHgwNDVFLCAweDA3NzIpOiAvKiBNUyBMaWZl
-Y2FtIFN0dWRpbyAqLwogCWNhc2UgVVNCX0lEKDB4MDQ1RSwgMHgwNzc5KTogLyogTVMgTGlmZWNh
-bSBIRC0zMDAwICovCi0tIAoyLjcuMgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hbHNhLWRldmVsCg==
+On 03/19/2016 04:39 AM, Mauro Carvalho Chehab wrote:
+> Em Fri, 18 Mar 2016 23:57:08 -0300
+> Mauro Carvalho Chehab <mchehab@osg.samsung.com> escreveu:
+> 
+>> Em Fri, 18 Mar 2016 20:50:31 -0600
+>> Shuah Khan <shuahkh@osg.samsung.com> escreveu:
+>>
+>>> Fix to release stream resources from media_snd_device_delete() before
+>>> media device is unregistered. Without this change, stream resource free
+>>> is attempted after the media device is unregistered which would result
+>>> in use-after-free errors.
+>>>
+>>> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+>>> ---
+>>>
+>>> - Ran bind/unbind loop (1000 iteration) test on snd-usb-audio
+>>>   while running mc_nextgen_test loop (1000 iterations) in parallel.
+>>> - Ran bind/unbind and rmmod/modprobe tests on both drivers. Also
+>>>   generated graphs when after bind/unbind, rmmod/modprobe. Graphs
+>>>   look good.
+>>> - Note: Please apply the following patch to fix memory leak:
+>>>   sound/usb: Fix memory leak in media_snd_stream_delete() during unbind
+>>>   https://lkml.org/lkml/2016/3/16/1050
+>>>
+>>>  sound/usb/media.c | 7 +++++++
+>>>  1 file changed, 7 insertions(+)
+>>>
+>>> diff --git a/sound/usb/media.c b/sound/usb/media.c
+>>> index de4a815..e35af88 100644
+>>> --- a/sound/usb/media.c
+>>> +++ b/sound/usb/media.c
+>>> @@ -301,6 +301,13 @@ int media_snd_device_create(struct snd_usb_audio *chip,
+>>>  void media_snd_device_delete(struct snd_usb_audio *chip)
+>>>  {
+>>>  	struct media_device *mdev = chip->media_dev;
+>>> +	struct snd_usb_stream *stream;
+>>> +
+>>> +	/* release resources */
+>>> +	list_for_each_entry(stream, &chip->pcm_list, list) {
+>>> +		media_snd_stream_delete(&stream->substream[0]);
+>>> +		media_snd_stream_delete(&stream->substream[1]);  
+>>
+>> I'll look on it better tomorrow, but it sounds weird to hardcode
+>> substream[0] and [1] here... are you sure that this is valid for
+>> *all* devices supported by snd-usb-audio?
+> 
+> After looking at pcm.c and finding this:
+> 
+> static void snd_usb_audio_stream_free(struct snd_usb_stream *stream)
+> {
+> 	free_substream(&stream->substream[0]);
+> 	free_substream(&stream->substream[1]);
+> 	list_del(&stream->list);
+> 	kfree(stream);
+> }
+> 
+> It seems that assuming that substream is always an array with size 2
+> is right.
+> 
+> I'll do some tests with it today with your patch.
+> 
+
+Right. snd-usb-audio uses this in several places like the one above you found.
+
+thanks,
+-- Shuah
+
+
+-- 
+Shuah Khan
+Sr. Linux Kernel Developer
+Open Source Innovation Group
+Samsung Research America (Silicon Valley)
+shuahkh@osg.samsung.com | (970) 217-8978
