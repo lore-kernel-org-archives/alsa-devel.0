@@ -1,70 +1,45 @@
-From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Subject: Re: [PATCH] sound/usb: fix to release stream resources from
- media_snd_device_delete()
-Date: Fri, 18 Mar 2016 23:57:08 -0300
-Message-ID: <20160318235708.1eccf0e6@recife.lan>
-References: <1458355831-9467-1-git-send-email-shuahkh@osg.samsung.com>
+From: Kyle McMartin <kyle@infradead.org>
+Subject: Re: [GIT PULL]: Update sst audio firmware for Skylake
+Date: Sat, 19 Mar 2016 00:07:14 -0400
+Message-ID: <20160319040713.GF21789@merlin.infradead.org>
+References: <20160316064441.GQ13211@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <1458355831-9467-1-git-send-email-shuahkh@osg.samsung.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Shuah Khan <shuahkh@osg.samsung.com>
-Cc: tiwai@suse.com, perex@perex.cz, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57F522615F7
+ for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2016 05:07:17 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20160316064441.GQ13211@localhost>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org, linux-firmware@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Em Fri, 18 Mar 2016 20:50:31 -0600
-Shuah Khan <shuahkh@osg.samsung.com> escreveu:
-
-> Fix to release stream resources from media_snd_device_delete() before
-> media device is unregistered. Without this change, stream resource free
-> is attempted after the media device is unregistered which would result
-> in use-after-free errors.
+On Wed, Mar 16, 2016 at 12:14:41PM +0530, Vinod Koul wrote:
+> Hello Linux firmware maintainers,
 > 
-> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
-> ---
+> Please PULL to receive the updated version of Skylake audio firmware
+> version 896. This contains some bug fixes and wov module fixes.
 > 
-> - Ran bind/unbind loop (1000 iteration) test on snd-usb-audio
->   while running mc_nextgen_test loop (1000 iterations) in parallel.
-> - Ran bind/unbind and rmmod/modprobe tests on both drivers. Also
->   generated graphs when after bind/unbind, rmmod/modprobe. Graphs
->   look good.
-> - Note: Please apply the following patch to fix memory leak:
->   sound/usb: Fix memory leak in media_snd_stream_delete() during unbind
->   https://lkml.org/lkml/2016/3/16/1050
+> The following changes since commit 9be9ff282635c25694819c39aae0f6cc6c251c12:
 > 
->  sound/usb/media.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+>   iwlwifi: add -21.ucode to WHENCE (2016-03-10 11:28:28 -0800)
 > 
-> diff --git a/sound/usb/media.c b/sound/usb/media.c
-> index de4a815..e35af88 100644
-> --- a/sound/usb/media.c
-> +++ b/sound/usb/media.c
-> @@ -301,6 +301,13 @@ int media_snd_device_create(struct snd_usb_audio *chip,
->  void media_snd_device_delete(struct snd_usb_audio *chip)
->  {
->  	struct media_device *mdev = chip->media_dev;
-> +	struct snd_usb_stream *stream;
-> +
-> +	/* release resources */
-> +	list_for_each_entry(stream, &chip->pcm_list, list) {
-> +		media_snd_stream_delete(&stream->substream[0]);
-> +		media_snd_stream_delete(&stream->substream[1]);
+> are available in the git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git skl
+> 
 
-I'll look on it better tomorrow, but it sounds weird to hardcode
-substream[0] and [1] here... are you sure that this is valid for
-*all* devices supported by snd-usb-audio?
+pulled... please remember to update WHENCE.
 
-Regards,
-Mauro
-
-> +	}
->  
->  	media_snd_mixer_delete(chip);
->  
-
-
--- 
-Thanks,
-Mauro
+regards, --Kyle
