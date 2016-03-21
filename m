@@ -1,55 +1,45 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [linux-sunxi] Re: [PATCH v8 2/2] ASoc: sun4i-codec: Add FM, Line
- and Mic inputs
-Date: Mon, 21 Mar 2016 18:19:00 +0000
-Message-ID: <20160321181900.GZ2566@sirena.org.uk>
-References: <20151221123148.1ab6480b@dayas>
- <20151221123416.51aa938e@dayas>
- <20151227182157.GI30359@lukather>
- <20151228040649.475a742f@dayas>
- <20160106220908.GE9631@lukather>
- <20160109164832.515d69b0@dayas>
- <20160312085222.226d89bf@scratchpost.org>
- <20160314104939.GL8418@lukather>
- <20160319175124.6bfe3617@scratchpost.org>
- <20160321180605.GE30977@lukather>
+From: Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: [PATCH 0/3] ARM: OMAP3: Fix McBSP2/3 hwmod setup for sidetone
+Date: Mon, 21 Mar 2016 13:21:07 -0700
+Message-ID: <20160321202107.GO9329@atomide.com>
+References: <1458296929-718-1-git-send-email-peter.ujfalusi@ti.com>
+ <alpine.DEB.2.02.1603191908070.6629@utopia.booyaka.com>
+ <56EFB31C.9090103@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Ftt3SnK74BQwCaZF"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <20160321180605.GE30977@lukather>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: Danny Milosavljevic <dannym@scratchpost.org>, Chen-Yu Tsai <wens@csie.org>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-sunxi@googlegroups.com
+In-Reply-To: <56EFB31C.9090103-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
+Cc: Paul Walmsley <paul-DWxLp4Yu+b8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jarkko Nikula <jarkko.nikula-FVTvWyuFUl3QT0dZR+AlfA@public.gmane.org>, Tero Kristo <t-kristo-l0cyMroinI0@public.gmane.org>, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---Ftt3SnK74BQwCaZF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+* Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org> [160321 01:39]:
+> 
+> This is also interesting:
+> McBSP2 sidetone is in region 39 and 40 (module and L4 interconnect) which is
+> unique in case of OMAP34xx and OMAP35xx, but it is overlapping with GPIO6 on
+> OMAP36xx. Not sure what are the implications.
 
-On Mon, Mar 21, 2016 at 07:06:05PM +0100, Maxime Ripard wrote:
+Hmm GPIO6 is in a different L4 segment though? Maybe
+you did not account for the segments?
 
-> I don't think you should focus too much on alsamixer, there's other
-> tools to modify the configuration.
+0x49000000 + 0x20000 + 0x2000/0x4000/0x6000 for McBSP
+0x49000000 + 0x50000 + 0x8000 for GPIO6
 
-The expectation is that most users will use something like UCM and only
-system integrators will see the full control set in normal operation.
+Or maybe I don't understand at which physical address the
+overlap is? :)
 
---Ftt3SnK74BQwCaZF
-Content-Type: application/pgp-signature; name="signature.asc"
+Let me know if you need me to dump out the IO ranges for
+you from the AP table for 34xx and 36xx.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Regards,
 
-iQEcBAEBCAAGBQJW8DsTAAoJECTWi3JdVIfQRGUH/1TETqJeFif9cHHc2ck4C+pO
-v1e+5uIVvQrA+7s7PF2DYU9DUJ0yhNxZiUkwdchhIh4mHxYZIDOsz7b89p4QVpLm
-EdmfpMcbFzdtqm0fZFmm7gQx5Kt+2zTRxVQHtOWfioR9IVM7FZ9C0QmmZ1QYlZ2f
-JVw3bOn2bGaiLw2+iq7nFio5LlCMTs0/ExBxPFRktNMOR9O5GIA8TEx0uoUJuqC7
-Oz1zBVvoux/pl6I63TWbioNXH3kXoJq7wgpsS+YensQkEt81dvcbgTjp3mTurWf7
-xF6WNpMvHSQSbnIhf8XV4s2i9KDtyaB0FpF1jn8JVHpk14DsXtTIIWEtGh7Cwuo=
-=4XLk
------END PGP SIGNATURE-----
-
---Ftt3SnK74BQwCaZF--
+Tony
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
