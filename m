@@ -1,16 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: amidi.c.patch review request
-Date: Mon, 21 Mar 2016 08:46:40 +0100
-Message-ID: <56EFA6E0.1010303@ladisch.de>
-References: <alpine.LFD.2.20.1603201658110.27665@mylaptop>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH v8 6/6] ARM: dts: am335x-boneblack: Add
+	HDMI audio support
+Date: Mon, 21 Mar 2016 09:53:34 +0200
+Message-ID: <56EFA87E.9020209@ti.com>
+References: <cover.1458214526.git.jsarha@ti.com>
+ <dd3484868647610840d4803dd3378014ce1c95b7.1458214526.git.jsarha@ti.com>
+ <20160319073949.b8bcd213e92355353368fad5@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 4B422261A5E
- for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2016 08:46:41 +0100 (CET)
-In-Reply-To: <alpine.LFD.2.20.1603201658110.27665@mylaptop>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 53AD9261AD0
+ for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2016 08:53:40 +0100 (CET)
+In-Reply-To: <20160319073949.b8bcd213e92355353368fad5@free.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,28 +23,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: m.tarenskeen@zonnet.nl, Alsa-devel mailinglist <alsa-devel@alsa-project.org>
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, airlied@linux.ie, tomi.valkeinen@ti.com, arnaud.pouliquen@st.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, tony@atomide.com, broonie@kernel.org, bcousson@baylibre.com, rmk+kernel@arm.linux.org.uk, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Martin Tarenskeen wrote:
-> My synth sends continuously not only 0xFE (Active Sensing) but also
-> 0xF8 (Timing Clock). 24 times per quarter note to be exactly. With
-> a fast tempo like 250 BPM this gives a 0xF8 byte every 10 ms. Until
-> now when I tried to fetch a SysEx dump from my synth using amidi the
-> data were polluted with lots of 0xF8 bytes and the -t option would
-> not work. A bug I would say.
->
-> The attached patch seems to solve this issue, but please comment and
-> improve where needed.
+On 03/19/16 08:39, Jean-Francois Moine wrote:
+> On Thu, 17 Mar 2016 14:22:34 +0200
+> Jyri Sarha <jsarha@ti.com> wrote:
+> 
+>> @@ -76,16 +87,22 @@
+>>  };
+>>  
+>>  &i2c0 {
+>> -	tda19988 {
+>> +	tda19988: tda19988 {
+>>  		compatible = "nxp,tda998x";
+>>  		reg = <0x70>;
+>> +
+>>  		pinctrl-names = "default", "off";
+>>  		pinctrl-0 = <&nxp_hdmi_bonelt_pins>;
+>>  		pinctrl-1 = <&nxp_hdmi_bonelt_off_pins>;
+>>  
+>> -		port {
+>> -			hdmi_0: endpoint@0 {
+>> -				remote-endpoint = <&lcdc_0>;
+>> +		#sound-dai-cells = <0>;
+>> +		audio-ports = <	AFMT_I2S	0x03>;
+>> +
+>> +		ports {
+>> +			port@0 {
+>> +				hdmi_0: endpoint@0 {
+>> +					remote-endpoint = <&lcdc_0>;
+>> +				};
+>>  			};
+>>  		};
+>>  	};
+> 
+> Why did you add a 'ports' container? As there is only one port,
+> it is useless.
+> 
 
-> -			err = poll(pfds, npfds, 200);
-> +			err = poll(pfds, npfds, 5);
+Well, I just left it there. The node parsing code should handle the
+container if it follows graph[1] binding. Putting the ports container
+node is equally correct as leaving it out, but surely I can leave it out
+next time (when ever it comes).
 
-This does not help when the clocks are sent faster.
+> Also, you don't need '@0' in the 'port' and 'endpoint'.
+> If you want to keep it, you must add 'reg = 0;'s.
+> 
 
-To properly handle this, there needs to be a separate timer for the
-timeout.  I'm working on this ...
+I am still not sure about the "must" part. From all that I have read[2]
+the unit number should be the same as reg property if possible. But then
+again if the reg property consists of multiple addresses, how do you put
+them in the unit address? To me no unit address at all is an analogue
+situation and I see no point in adding an artificial reg property if I
+need multiple nodes by same name. This actually happens quite often with
+sound-nodes when I have multiple audio devices in the same system.
 
+But still, there is no need for the unit address here and it should be
+removed. I'll do that next time.
 
-Regards,
-Clemens
+Best regard,
+Jyri
+
+[1] Documentation/devicetree/bindings/graph.txt
+[2] http://devicetree.org/Device_Tree_Usage
