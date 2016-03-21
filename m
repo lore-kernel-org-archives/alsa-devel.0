@@ -1,89 +1,120 @@
-From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Subject: Re: [PATCH v2] [media] media-device: use kref for media_device
- instance
-Date: Mon, 21 Mar 2016 08:58:05 -0300
-Message-ID: <20160321085805.5e8c4634@recife.lan>
-References: <9d8830150475bc4d4dde2fa1f5163aef82a35477.1458347578.git.mchehab@osg.samsung.com>
-	<3052381.o5ho2okSRi@avalon>
+From: Imre Deak <imre.deak@intel.com>
+Subject: Re: New snd-hda warning spew
+Date: Mon, 21 Mar 2016 14:34:35 +0200
+Message-ID: <1458563675.19231.13.camel@intel.com>
+References: <20160315160207.GY4329@intel.com> <s5hio0nejv3.wl-tiwai@suse.de>
+ <s5hk2kyu5yf.wl-tiwai@suse.de>
+Reply-To: imre.deak@intel.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <3052381.o5ho2okSRi@avalon>
-Sender: linux-media-owner@vger.kernel.org
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Linux Media Mailing List <linux-media@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Shuah Khan <shuahkh@osg.samsung.com>, Hans Verkuil <hans.verkuil@cisco.com>, Javier Martinez Canillas <javier@osg.samsung.com>, Rafael =?UTF-8?B?TG91cmVuw6dv?= de Lima Chehab <chehabrafael@gmail.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id C1926264F37
+ for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2016 13:34:40 +0100 (CET)
+In-Reply-To: <s5hk2kyu5yf.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Libin Yang <libin.yang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Em Mon, 21 Mar 2016 13:10:33 +0200
-Laurent Pinchart <laurent.pinchart@ideasonboard.com> escreveu:
-
-> Hi Mauro,
-> 
-> Thank you for the patch.
-> 
-> On Friday 18 Mar 2016 21:42:16 Mauro Carvalho Chehab wrote:
-> > Now that the media_device can be used by multiple drivers,
-> > via devres, we need to be sure that it will be dropped only
-> > when all drivers stop using it.  
-> 
-> I've discussed this with Shuah previously and I'm surprised to see that the 
-> problem hasn't been fixed : using devres for this purpose is just plain wrong. 
-
-I didn't follow your discussions with Shuah. I'm pretty sure I didn't
-see any such reply to the /22 patch series. 
-
-For sure there are other approaches, although I wouldn't say that this
-approach is plain wrong. It was actually suggested by Greg KH at the
-USB summit, back in 2011:
-	https://lkml.org/lkml/2011/8/21/61
-
-It works fine in the cases like the ones Shuah is currently addressing: 
-USB devices that have multiple interfaces handled by independent drivers.
-
-Going further, right now, as far as I'm aware of, there are only two use
-cases for a driver-independent media_device struct in the media subsystem
-(on the upstream Kernel):
-
-- USB devices with USB Audio Class: au0828 and em28xx drivers,
-  plus snd-usb-audio;
-
-- bt878/bt879 PCI devices, where the DVB driver is independent
-  from the V4L2 one (affects bt87x and bttv drivers).
-
-The devres approach fits well for both use cases.
-
-Ok, there are a plenty of OOT SoC drivers that might benefit of some
-other solution, but we should care about them only if/when they got
-upstreamed.
-
-> The empty media_device_release_devres() function should have given you a hint.
-> 
-> What we need instead is a list of media devices indexed by struct device (for 
-> this use case) or by struct device_node (for DT use cases). It will both 
-> simplify the code and get rid of the devres abuse.
-
-Yeah, Shuah's approach should be changed to a different one, in order to
-work for DT use cases. It would be good to have a real DT use case for us
-to validate the solution, before we start implementing something in the
-wild.
-
-Still, it would very likely need a kref there, in order to destroy the
-media controller struct only after all drivers stop using it.
-
-> Shuah, if I recall correctly you worked on implementing such a solution after 
-> our last discussion on the topic. Could you please update us on the status ?
-
-I saw a Shuah's email proposing to discuss this at the media summit.
-
-> In the mean time, let's hold off on this patch, and merge a proper solution 
-> instead.
-
-Well, we should send a fix for the current issues for Kernel 4.6.
-
-As the number of drivers that would be using this internal API is small
-(right now, only 2 drivers), replacing devres by some other strategy
-in the future should be easy.
-
-Regards,
-Mauro
+T24gbGEsIDIwMTYtMDMtMTkgYXQgMTE6MTggKzAxMDAsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBP
+biBUdWUsIDE1IE1hciAyMDE2IDE4OjIyOjU2ICswMTAwLAo+IFRha2FzaGkgSXdhaSB3cm90ZToK
+PiA+IAo+ID4gT24gVHVlLCAxNSBNYXIgMjAxNiAxNzowMjowNyArMDEwMCwKPiA+IFZpbGxlIFN5
+cmrDpGzDpCB3cm90ZToKPiA+ID4gVGhpcyBvdGhlciBvbmUgd2FzIHNlZW4gYXQgbGVhc3Qgb24g
+b24gU0tMOgo+ID4gPiBbwqDCoDEyNC44MDg1MjVdIC0tLS0tLS0tLS0tLVsgY3V0IGhlcmUgXS0t
+LS0tLS0tLS0tLQo+ID4gPiBbwqDCoDEyNC44MDg1NDVdIFdBUk5JTkc6IENQVTogMyBQSUQ6IDE3
+MyBhdAo+ID4gPiBzb3VuZC9oZGEvaGRhY19pOTE1LmM6OTEgc25kX2hkYWNfZGlzcGxheV9wb3dl
+cisweGYxLzB4MTEwCj4gPiA+IFtzbmRfaGRhX2NvcmVdKCkKPiA+IAo+ID4gVGhpcyBpcyBhIGRp
+ZmZlcmVudCBvbmUsIGFuZCBpdCBpbXBsaWVzIHRoYXQgdGhlIHVuYmFsYW5jZWQgcG93ZXIKPiA+
+IHJlZmNvdW50LsKgwqBNaWdodCBiZSByZWxhdGVkIHdpdGggdGhlIHJlY2VudCBmaXggZm9yIHRo
+ZSByZWN1cnNpdmUKPiA+IHJlZ21hcCBkZWFkbG9jay7CoMKgSSdsbCB0cnkgbGF0ZXIgd2l0aCBh
+IFNLTCBtYWNoaW5lIGhlcmUsIHRvby4KPiA+IAo+ID4gRGlkbid0IHlvdSBzZWUgdGhpcyBiZWZv
+cmUgdGhlIHJlY2VudCB0cmVlLCByaWdodD/CoMKgU29tZSBnb29kL2JhZAo+ID4gY29tbWl0cyB3
+b3VsZCBiZSByZWFsbHkgaGVscGZ1bC4uLgo+IAo+IFNvLCB3ZSBnb3QgYSBmdWxsIGxvZyBpbiBi
+dWd6aWxsYSwgYW5kIHRoaXMgbG9va3MgbGlrZSB0aGUgb24tZGVtYW5kCj4gYmluZGluZyBsZWFk
+aW5nIHRvIHRoZSB1bmJhbGFuY2VkIHJlZmNvdW50Lgo+IAo+IENvdWxkIHlvdSB0cnkgdGhlIHBh
+dGNoIGJlbG93P8KgwqBUaGlzIGVzc2VudGlhbGx5IHJldmVydHMgdG8gdGhlIDQuNAo+IHN0YXRl
+LCBzbyBhICJyZWdyZXNzaW9uIiBzaG91bGQgYmUgY292ZXJlZCwgYXQgbGVhc3QuwqDCoEl0J3Mg
+YXBwbGllZAo+IG9uCj4gdG9wIG9mIHNvdW5kLmdpdCB0cmVlIGZvci1saW51cyBicmFuY2guwqDC
+oChCdXQgaXQgc2hvdWxkIGJlIGVhc2lseQo+IGFwcGxpY2FibGUgdG8gb2xkZXIgdHJlZXMsIHRv
+by4pCj4gCj4gV2UgbmVlZCBhIHByb3BlciBmaXggbGF0ZXIsIGJ1dCBub3cgbW9yZSB1cmdlbnRs
+eSB0aGUgQ0kgdGVzdAo+IHJlZ3Jlc3Npb24gaGFzIHRvIGJlIHBhcGVyZWQgb3Zlci4KCkxvb2tp
+bmcgbW9yZSBpbnRvIHRoaXMsIGl0IHNlZW1zIHRoZSByb290IGNhdXNlIGZvciB0aGlzIGZhaWx1
+cmUgaXMKdGhhdCByZXF1ZXN0X21vZHVsZSByZXR1cm5lZCBwcmUtbWF0dXJlbHkgKGFuZCB3aXRo
+IDAgcmV0dXJuIHZhbHVlKQp3aGVuIGk5MTUgcHJvYmluZyB3YXMgc3RpbGwgbm90IGZpbmlzaGVk
+LiBJIHRyYWNrZWQgdGhpcyBpc3N1ZSBkb3duIHRvCnRoZSBmb2xsb3dpbmcga21vZCBidWcsIGZp
+eGVkIG1lYW53aGlsZSB1cHN0cmVhbToKaHR0cDovL2dpdC5rZXJuZWwub3JnL2NnaXQvdXRpbHMv
+a2VybmVsL2ttb2Qva21vZC5naXQvY29tbWl0Lz9pZD1mZDQ0YTk4YWUyZWI1ZWIzMjE2MTA4ODk1
+NGFiMjFlNThlMTlkZmM0CgpVcGRhdGluZyB0byB0aGUgbGF0ZXN0IGttb2QgZml4ZWQgdGhlIGlz
+c3VlLiBUaGluZ3Mgd2lsbCBvZiBjb3Vyc2Ugd29yawpvbmx5IGluIHRoZSBnZW5lcmFsIGNhc2Ug
+d2hlcmUgYm90aCB0aGUgaTkxNSBhbmQgdGhlIHNvdW5kIGRyaXZlciBhcmUKYnVpbHQgYXMgbW9k
+dWxlcywgdG8gc3VwcG9ydCBvdGhlciBjb25maWd1cmF0aW9ucyB3ZSdkIG5lZWQgdG8gbW92ZSB0
+aGUKYXVkaW8gcHJvYmluZyB0byBoYXBwZW4gYXQgY29tcG9uZW50IGJpbmQgdGltZS7CoAoKLS1J
+bXJlCgo+IAo+IAo+IHRoYW5rcywKPiAKPiBUYWthc2hpCj4gCj4gLS0gODwgLS0KPiBGcm9tOiBU
+YWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Cj4gU3ViamVjdDogW1BBVENIXSBBTFNBOiBoZGEg
+LSBXb3JrYXJvdW5kIGZvciB1bmJhbGFuY2VkIGk5MTUgcG93ZXIKPiByZWZjb3VudCBieQo+IMKg
+Y29uY3VycmVudCBwcm9iZQo+IAo+IFRoZSByZWNlbnQgYWRkaXRpb24gb2Ygb24tZGVtYW5kIGk5
+MTUgYXVkaW8gY29tcG9uZW50IGJpbmRpbmcgaW4gdGhlCj4gY29kZWMgZHJpdmVyIHNlZW1zIGxl
+YWRpbmcgdG8gdGhlIHVuYmFsYW5jZWQgaTkxNSBwb3dlciByZWZjb3VudCwKPiBhY2NvcmRpbmcg
+dG8gSW50ZWwgQ0kgdGVzdHMuwqDCoFR5cGljYWxseSwgaXQgZ2V0cyBhIGtlcm5lbCBXQVJOSU5H
+Cj4gbGlrZToKPiDCoCBXQVJOSU5HOiBDUFU6IDMgUElEOiAxNzMgYXQgc291bmQvaGRhL2hkYWNf
+aTkxNS5jOjkxCj4gc25kX2hkYWNfZGlzcGxheV9wb3dlcisweGYxLzB4MTEwIFtzbmRfaGRhX2Nv
+cmVdKCkKPiDCoCBDYWxsIFRyYWNlOgo+IMKgwqDCoFs8ZmZmZmZmZmY4MTNmZWYxNT5dIGR1bXBf
+c3RhY2srMHg2Ny8weDkyCj4gwqDCoMKgWzxmZmZmZmZmZjgxMDc4YTIxPl0gd2Fybl9zbG93cGF0
+aF9jb21tb24rMHg4MS8weGMwCj4gwqDCoMKgWzxmZmZmZmZmZjgxMDc4YjE1Pl0gd2Fybl9zbG93
+cGF0aF9udWxsKzB4MTUvMHgyMAo+IMKgwqDCoFs8ZmZmZmZmZmZhMDBmNzdlMT5dIHNuZF9oZGFj
+X2Rpc3BsYXlfcG93ZXIrMHhmMS8weDExMAo+IFtzbmRfaGRhX2NvcmVdCj4gwqDCoMKgWzxmZmZm
+ZmZmZmEwMTUwMzlkPl0gYXp4X2ludGVsX2xpbmtfcG93ZXIrMHhkLzB4MTAgW3NuZF9oZGFfaW50
+ZWxdCj4gwqDCoMKgWzxmZmZmZmZmZmEwMTFlMzJhPl0gYXp4X2xpbmtfcG93ZXIrMHgxYS8weDMw
+IFtzbmRfaGRhX2NvZGVjXQo+IMKgwqDCoFs8ZmZmZmZmZmZhMDBmMjFmOT5dIHNuZF9oZGFjX2xp
+bmtfcG93ZXIrMHgyOS8weDQwIFtzbmRfaGRhX2NvcmVdCj4gwqDCoMKgWzxmZmZmZmZmZmEwMTE5
+MmE2Pl0gaGRhX2NvZGVjX3J1bnRpbWVfc3VzcGVuZCsweDc2LzB4YTAKPiBbc25kX2hkYV9jb2Rl
+Y10KPiDCoMKgwqAuLi4uLgo+IAo+IFRoZSBzY2VuYXJpbyBpcyBsaWtlIGJlbG93Ogo+IC0gSEQt
+YXVkaW8gZHJpdmVyIGFuZCBpOTE1IGRyaXZlciBhcmUgcHJvYmVkIGNvbmN1cnJlbnRseSBhdCB0
+aGUKPiDCoCAoYWxtb3N0KSBzYW1lIHRpbWU7IEhEQSBidXMgdHJpZXMgdG8gYmluZCB3aXRoIGk5
+MTUsIGJ1dCBpdCBmYWlscwo+IMKgIGJlY2F1c2UgaTkxNSBpbml0aWFsaXphdGlvbiBpcyBzdGls
+bCBiZWluZyBwcm9jZXNzZWQuCj4gLSBMYXRlciBvbiwgSEQtYXVkaW8gcHJvYmVzIHRoZSBIRE1J
+IGNvZGVjLCB3aGVyZSBpdCBhZ2FpbiB0cmllcyB0bwo+IMKgIGJpbmQgd2l0aCBpOTE1LsKgwqBB
+dCB0aGlzIHRpbWUsIGl0IHN1Y2NlZWRzLgo+IC0gQXQgZmluaXNoaW5nIHRoZSBwcm9iZSBvZiBI
+REEsIGl0IGRlY3JlYXNlcyB0aGUgcmVmY291bnQgYXMgaWYgaXQKPiDCoCB3ZXJlIGFscmVhZHkg
+Ym91bmQgYXQgdGhlIGJ1cyBwcm9iZSwgc2luY2UgdGhlIGNvbXBvbmVudCBpcyBib3VuZAo+IMKg
+IG5vdy7CoMKgVGhpcyB0cmlnZ2VycyBhIGtlcm5lbCBXQVJOSU5HIGR1ZSB0byB0aGUgdW5iYWxh
+bmNlLgo+IAo+IEFzIGEgd29ya2Fyb3VuZCwgaW4gdGhpcyBwYXRjaCwgd2UganVzdCBkaXNhYmxl
+IHRoZSBvbi1kZW1hbmQgaTkxNQo+IGNvbXBvbmVudCBiaW5kaW5nIGluIHRoZSBjb2RlYyBkcml2
+ZXIuwqDCoFRoaXMgZXNzZW50aWFsbHkgcmV2ZXJ0cyBiYWNrCj4gdG8gdGhlIHN0YXRlIG9mIDQu
+NCBrZXJuZWwuCj4gCj4gV2Uga25vdyB0aGF0IHRoaXMgaXMgbm8gcmVhbCBzb2x1dGlvbiwgYnV0
+IGl0J3MgYSBtaW5pbWFsaXN0aWMgc2ltcGxlCj4gY2hhbmdlIHRoYXQgY2FuIGJlIGFwcGxpZWQg
+dG8gNC41Lngga2VybmVsIGFzIHN0YWJsZS4KPiAKPiBCdWd6aWxsYTogaHR0cHM6Ly9idWdzLmZy
+ZWVkZXNrdG9wLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9OTQ1NjYKPiBSZXBvcnRlZC1ieTogVmlsbGUg
+U3lyasOkbMOkIDx2aWxsZS5zeXJqYWxhQGxpbnV4LmludGVsLmNvbT4KPiBDYzogPHN0YWJsZUB2
+Z2VyLmtlcm5lbC5vcmc+ICMgdjQuNQo+IFNpZ25lZC1vZmYtYnk6IFRha2FzaGkgSXdhaSA8dGl3
+YWlAc3VzZS5kZT4KPiAtLS0KPiDCoHNvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jIHwgNiArKysr
+KysKPiDCoDEgZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKykKPiAKPiBkaWZmIC0tZ2l0IGEv
+c291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYwo+
+IGluZGV4IDU2ZDM1NzVlZTZjYy4uN2FlNjE0ZDI3OTU0IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3Bj
+aS9oZGEvcGF0Y2hfaGRtaS5jCj4gKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMKPiBA
+QCAtMjI1OCw5ICsyMjU4LDE1IEBAIHN0YXRpYyBpbnQgcGF0Y2hfZ2VuZXJpY19oZG1pKHN0cnVj
+dCBoZGFfY29kZWMKPiAqY29kZWMpCj4gwqAJLyogVHJ5IHRvIGJpbmQgd2l0aCBpOTE1IGZvciBJ
+bnRlbCBIU1crIGNvZGVjcyAoaWYgbm90IGRvbmUKPiB5ZXQpICovCj4gwqAJaWYgKChjb2RlYy0+
+Y29yZS52ZW5kb3JfaWQgPj4gMTYpID09IDB4ODA4NiAmJgo+IMKgCcKgwqDCoMKgaXNfaGFzd2Vs
+bF9wbHVzKGNvZGVjKSkgewo+ICsjaWYgMAo+ICsJCS8qIG9uLWRlbWFuZCBiaW5kaW5nIGxlYWRz
+IHRvIGFuIHVuYmFsYW5jZWQgcmVmY291bnQKPiB3aGVuCj4gKwkJwqAqIGJvdGggaTkxNSBhbmQg
+aGRhIGRyaXZlcnMgYXJlIHByb2JlZAo+IGNvbmN1cnJlbnRseTsKPiArCQnCoCogZGlzYWJsZWQg
+dGVtcG9yYXJpbHkgZm9yIG5vdwo+ICsJCcKgKi8KPiDCoAkJaWYgKCFjb2RlYy0+YnVzLT5jb3Jl
+LmF1ZGlvX2NvbXBvbmVudCkKPiDCoAkJCWlmICghc25kX2hkYWNfaTkxNV9pbml0KCZjb2RlYy0+
+YnVzLT5jb3JlKSkKPiDCoAkJCQlzcGVjLT5pOTE1X2JvdW5kID0gdHJ1ZTsKPiArI2VuZGlmCj4g
+wqAJCS8qIHVzZSBpOTE1IGF1ZGlvIGNvbXBvbmVudCBub3RpZmllciBmb3IgaG90cGx1ZyAqLwo+
+IMKgCQlpZiAoY29kZWMtPmJ1cy0+Y29yZS5hdWRpb19jb21wb25lbnQpCj4gwqAJCQlzcGVjLT51
+c2VfYWNvbXBfbm90aWZpZXIgPSB0cnVlOwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwK
