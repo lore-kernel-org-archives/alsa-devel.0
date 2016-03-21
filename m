@@ -1,8 +1,8 @@
 From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
 Subject: Re: Re: [PATCH v8 2/2] ASoc: sun4i-codec: Add FM, Line
  and Mic inputs
-Date: Mon, 21 Mar 2016 18:54:36 +0100
-Message-ID: <20160321175436.GD30977@lukather>
+Date: Mon, 21 Mar 2016 19:06:05 +0100
+Message-ID: <20160321180605.GE30977@lukather>
 References: <20151221123148.1ab6480b@dayas>
  <20151221123416.51aa938e@dayas>
  <20151227182157.GI30359@lukather>
@@ -11,16 +11,15 @@ References: <20151221123148.1ab6480b@dayas>
  <20160109164832.515d69b0@dayas>
  <20160312085222.226d89bf@scratchpost.org>
  <20160314104939.GL8418@lukather>
- <20160315105802.GN2566@sirena.org.uk>
- <20160319171336.6e16eb5a@scratchpost.org>
+ <20160319175124.6bfe3617@scratchpost.org>
 Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dyTp/pkqtoagvozp"
-Return-path: <linux-sunxi+bncBD2ZNBF5VYJRB2HKYC3QKGQE4TLK6HQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="TBDBusIORirWKjWQ"
+Return-path: <linux-sunxi+bncBD2ZNBF5VYJRBHPQYC3QKGQEMPNVQGQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Content-Disposition: inline
-In-Reply-To: <20160319171336.6e16eb5a-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+In-Reply-To: <20160319175124.6bfe3617-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
@@ -31,84 +30,100 @@ To: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
---dyTp/pkqtoagvozp
+--TBDBusIORirWKjWQ
 Content-Type: text/plain; charset=UTF-8
 Content-Disposition: inline
 
-On Sat, Mar 19, 2016 at 05:13:36PM +0100, Danny Milosavljevic wrote:
-> Hi Mark,
+On Sat, Mar 19, 2016 at 05:51:24PM +0100, Danny Milosavljevic wrote:
+> Hi Maxime,
 > 
-> my question is whether it's possible to group together the left and
-> right channel into one selem, and also if it's possible to reuse
-> volumes then. For example:
+> > IIRC, in order to have shared controls, you just needed to share the
+> > controls structure.
 > 
-> For sun4i-codec Mic there's right now:
-> - Left Mixer Mic1 Playback Switch
-> - Left Mixer Mic2 Playback Switch
-> - Right Mixer Mic1 Playback Switch
-> - Right Mixer Mic2 Playback Switch
-> - Mic Playback Volume
+> Yeah. I did this and it actually works in a way, but in doesn't do all that I want.
 > 
-> If possible, it could also then be collected together as:
-> - Mic1 Playback:
->     Left Mixer Mic1 Playback Switch, 
->     Right Mixer Mic1 Playback Switch, 
->     Mic Playback Volume
-> - Mic2 Playback:
->     Left Mixer Mic2 Playback Switch, 
->     Right Mixer Mic2 Playback Switch, 
->     Mic Playback Volume [note: there it is again]
+> There are two different kinds of sharing I mean:
 > 
-> ... where each outer group (f.e. "- Mic1 Playback:") is a selem
-> (slider with two mutes in alsamixer).
+> The one kind with the controls structure causes the control to rename itself
+> to not state its mixer but there's still just one slider in the end. 
+> So instead of "Left Mixer Left XXX" it will just say "Left XXX" if you put it 
+> inside Left Mixer and Right Mixer and share the entry - for this hardware, 
+> that's of doubtful use.
 > 
-> alsamixer has support for seperate left and right channel muting so
-> it would cut down a lot on the number of visible controls.
+> But what I would like to have is that the same Mic Playback Volume (the very 
+> same bits) be used for different sliders
+> (1) Mic1 Left Channel Playback Volume
+> (2) Mic1 Right Channel Playback Volume
+> (3) Mic2 Left Channel Playback Volume (!!)
+> (4) Mic2 Right Channel Playback Volume
 > 
-> But as you can see, Mic Playback Volume is also shared.
+> Additionally, Mic1 Playback and Mic2 Playback have two mutes each in the 
+> hardware (all separately switchable).
 > 
-> Is it possible to group them together like this? How?
+> Now if we could make the alsamixer selems look like the following, 
+> that would be nice:
 > 
-> Right now, while everything technically works, it's overwhelming to
-> use alsamixer with sun4i-codec as a user - you have to *scroll* for
-> quite a while.
+> Mic1_Playback     Mic2_Playback
 > 
-> Additionally, while I'm at it: 
+>   MM                  MM
+>   ii                  ii
+>   cc                  cc
 > 
-> There's one capture volume right in front of the ADC. Whatever it is
-> you capture, this tells you the gain for the ADC. But for some
-> inputs, there are additional preamps. Right now in the v8 patch we
-> don't distinguish between preamps and ADC gains (because I don't
-> think it's possible), although the user has to kinda distinguish
-> them in his head because for inputs which have preamps only the
-> preamp and the adc gain *together* specify the total gain in the
-> end.
+>   PP                  PP
+>   ll                  ll
+>   aa                  aa
+>   yy                  yy
+>   bb                  bb
+>   aa                  aa
+>   cc                  cc
+>   kk                  kk
 > 
-> E.g. in the hardware it's
+>   VV                  VV
+>   oo                  oo
+>   ll                  ll
+>   uu                  uu
+>   mm                  mm
+>   ee                  ee
 > 
->   Mic In -> | Mic Preamp | -> | ADC Gain | -> | ADC |
+>  [Mm]                [Nn]
+>    ^                  ^^-- so are those, separately
+>    +-- this one is a different muter :-)
 > 
-> while in alsamixer it's:
+> Where the text is the same, it's supposed to signify the same bits 
+> in the hardware.
 > 
->   [Capture Controls:]
+> Right now in v8 it's (and that's going to take a lot of horizontal space, 
+> sorry - I know E-Mails like this aren't so nice to read):
 > 
->   | Mic Preamp |  | Capture Volume | | xyz Preamp | | abc Preamp | | qrs Preamp |
->                     ^--- ADC Gain
+> Mic_Playback_Volume Left_Mic1_Playback_Switch Right_Mic1_Playback_Switch Left_Mic2_Playback_Switch Right_Mic2_Playback_Switch
 > 
-> Is it possible to somehow distinguish those in alsamixer? Do we want
-> to?
+>   MM                  
+>   ii                  
+>   cc                  
+> 
+>   PP                  
+>   ll                  
+>   aa                  
+>   yy                  
+>   bb                  
+>   aa                  
+>   cc                  
+>   kk                  
+> 
+>   VV                  
+>   oo                  
+>   ll                  
+>   uu                  
+>   mm                  
+>   ee                  
+> 
+>                     [MM]                      [NN]                       [OO]                      [PP]
+>                       ^- WTF                   ^- WTF                      ^- WTF                   ^- WTF
+> 
+> (Actually, it's worse - believe it or not, that's how the simplified explanation looks)
 
-
-As I recall it, we were mostly discussing the how to deal with the ADC
-muxer that muxes both left and right at the same time (so shared
-controls), but with different source on each channel.
-
-For example, some valid values are:
-4: left channel Mic 1, right channel mic 2
-5: left and right channel are Mic1 and Mic2 mixed
-
-As I understand it, you can have shared controls by sharing the
-kcontrols structure, but then, you can't different labels.
+I don't think you should focus too much on alsamixer, there's other
+tools to modify the configuration.
 
 Maxime
 
@@ -116,4 +131,4 @@ Maxime
 Maxime Ripard, Free Electrons
 Embedded Linux, Kernel and Android engineering
 http://free-electrons.com
---dyTp/pkqtoagvozp--
+--TBDBusIORirWKjWQ--
