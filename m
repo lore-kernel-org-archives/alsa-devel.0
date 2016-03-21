@@ -1,15 +1,17 @@
-From: Martin Tarenskeen <m.tarenskeen@zonnet.nl>
-Subject: amidi.c.patch review request
-Date: Sun, 20 Mar 2016 17:15:35 +0100 (CET)
-Message-ID: <alpine.LFD.2.20.1603201658110.27665@mylaptop>
-Reply-To: m.tarenskeen@zonnet.nl
+From: anish kumar <yesanishhere@gmail.com>
+Subject: [PATCH] ASoC: Add max98371 codec driver
+Date: Sun, 20 Mar 2016 18:59:02 -0700
+Message-ID: <1458525542-2168-1-git-send-email-yesanishhere@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- BOUNDARY="-1463810558-47762958-1458490539=:28736"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cpsmtpb-ews02.kpnxchange.com (cpsmtpb-ews02.kpnxchange.com
- [213.75.39.5]) by alsa0.perex.cz (Postfix) with ESMTP id 01815261299
- for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2016 17:15:39 +0100 (CET)
+Received: from mail-pf0-f181.google.com (mail-pf0-f181.google.com
+ [209.85.192.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id C4B712612AF
+ for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2016 02:59:11 +0100 (CET)
+Received: by mail-pf0-f181.google.com with SMTP id u190so246767578pfb.3
+ for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2016 18:59:11 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,71 +21,545 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel mailinglist <alsa-devel@alsa-project.org>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, anish kumar <yesanishhere@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Signed-off-by: anish kumar <yesanishhere@gmail.com>
+---
+ .../devicetree/bindings/sound/max98371.txt         |  17 +
+ sound/soc/codecs/max98371.c                        | 428 +++++++++++++++++++++
+ sound/soc/codecs/max98371.h                        |  63 +++
+ 3 files changed, 508 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/max98371.txt
+ create mode 100644 sound/soc/codecs/max98371.c
+ create mode 100644 sound/soc/codecs/max98371.h
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
----1463810558-47762958-1458490539=:28736
-Content-Type: text/plain; format=flowed; charset=US-ASCII
-
-
-Hi,
-
-I improved my own patch to amidi.c
-
-As a result I can now succesfully fetch a SysEx dump from my Yamaha Reface 
-DX, and it exits succesfully after the timeout that I specify using the 
--t option.
-
-Problem: My synth sends continuously not only 0xFE (Active Sensing) but 
-also 0xF8 (Timing Clock). 24 times per quarter note to be exactly. With a 
-fast tempo like 250 BPM this gives a 0xF8 byte every 10 ms. Until now when 
-I tried to fetch a SysEx dump from my synth using amidi the data were 
-polluted with lots of 0xF8 bytes and the -t option would not work. A bug I 
-would say.
-
-The attached patch seems to solve this issue, but please comment and 
-improve where needed. Please try with other synths also.
-
-Can someone submit my patch to the official sources? I don't know how to.
-See attached.
-
+diff --git a/Documentation/devicetree/bindings/sound/max98371.txt b/Documentation/devicetree/bindings/sound/max98371.txt
+new file mode 100644
+index 0000000..6c28523
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/max98371.txt
+@@ -0,0 +1,17 @@
++max98371 codec
++
++This device supports I2C mode only.
++
++Required properties:
++
++- compatible : "maxim,max98371"
++- reg : The chip select number on the I2C bus
++
++Example:
++
++&i2c {
++	max98371: max98371@0x31 {
++		compatible = "maxim,max98371";
++		reg = <0x31>;
++	};
++};
+diff --git a/sound/soc/codecs/max98371.c b/sound/soc/codecs/max98371.c
+new file mode 100644
+index 0000000..1aba140
+--- /dev/null
++++ b/sound/soc/codecs/max98371.c
+@@ -0,0 +1,428 @@
++/*
++ * max98371.c -- ALSA SoC Stereo MAX98371 driver
++ *
++ * Copyright 2015-16 Maxim Integrated Products
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/i2c.h>
++#include <linux/module.h>
++#include <linux/regmap.h>
++#include <linux/slab.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/tlv.h>
++#include "max98371.h"
++
++static const char *const monomix_text[] = {
++	"Left", "Right", "LeftRightDiv2",
++};
++
++static const char *const voltage_level_text[] = {
++	"9.5dB", "10.5dB", "11.5dB", "11.5dB", "12.5dB",
++	"13.5dB", "14.5dB", "15.5dB", "16.5dB", "17.5dB",
++	"18.5dB", "19.5dB", "20.5dB"
++};
++
++static const char *const hpf_cutoff_txt[] = {
++	"Disable", "DC Block", "50Hz",
++	"100Hz", "200Hz", "400Hz", "800Hz",
++};
++
++static SOC_ENUM_SINGLE_DECL(max98371_voltage, MAX98371_GAIN, 0,
++		voltage_level_text);
++
++static SOC_ENUM_SINGLE_DECL(max98371_monomix, MAX98371_MONOMIX_CFG, 0,
++		monomix_text);
++
++static SOC_ENUM_SINGLE_DECL(max98371_hpf_cutoff, MAX98371_HPF, 0,
++		hpf_cutoff_txt);
++
++static struct reg_default max98371_reg[] = {
++	{ 0x01, 0x00 },
++	{ 0x02, 0x00 },
++	{ 0x03, 0x00 },
++	{ 0x04, 0x00 },
++	{ 0x05, 0x00 },
++	{ 0x06, 0x00 },
++	{ 0x07, 0x00 },
++	{ 0x08, 0x00 },
++	{ 0x09, 0x00 },
++	{ 0x0A, 0x00 },
++	{ 0x10, 0x06 },
++	{ 0x11, 0x08 },
++	{ 0x14, 0x80 },
++	{ 0x15, 0x00 },
++	{ 0x16, 0x00 },
++	{ 0x18, 0x00 },
++	{ 0x19, 0x00 },
++	{ 0x1C, 0x00 },
++	{ 0x1D, 0x00 },
++	{ 0x1E, 0x00 },
++	{ 0x1F, 0x00 },
++	{ 0x20, 0x00 },
++	{ 0x21, 0x00 },
++	{ 0x22, 0x00 },
++	{ 0x23, 0x00 },
++	{ 0x24, 0x00 },
++	{ 0x25, 0x00 },
++	{ 0x26, 0x00 },
++	{ 0x27, 0x00 },
++	{ 0x28, 0x00 },
++	{ 0x29, 0x00 },
++	{ 0x2A, 0x00 },
++	{ 0x2B, 0x00 },
++	{ 0x2C, 0x00 },
++	{ 0x2D, 0x00 },
++	{ 0x2E, 0x0B },
++	{ 0x31, 0x00 },
++	{ 0x32, 0x18 },
++	{ 0x33, 0x00 },
++	{ 0x34, 0x00 },
++	{ 0x36, 0x00 },
++	{ 0x37, 0x00 },
++	{ 0x38, 0x00 },
++	{ 0x39, 0x00 },
++	{ 0x3A, 0x00 },
++	{ 0x3B, 0x00 },
++	{ 0x3B, 0x00 },
++	{ 0x3C, 0x00 },
++	{ 0x3D, 0x00 },
++	{ 0x3E, 0x00 },
++	{ 0x3F, 0x00 },
++	{ 0x40, 0x00 },
++	{ 0x41, 0x00 },
++	{ 0x42, 0x00 },
++	{ 0x43, 0x00 },
++	{ 0x4A, 0x00 },
++	{ 0x4B, 0x00 },
++	{ 0x4C, 0x00 },
++	{ 0x4D, 0x00 },
++	{ 0x4E, 0x00 },
++	{ 0x50, 0x00 },
++	{ 0x51, 0x00 },
++	{ 0x55, 0x00 },
++	{ 0x58, 0x00 },
++	{ 0x59, 0x00 },
++	{ 0x5C, 0x00 },
++	{ 0xFF, 0x43 },
++};
++
++static bool max98371_volatile_register(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case MAX98371_IRQ_CLEAR1:
++	case MAX98371_IRQ_CLEAR2:
++	case MAX98371_IRQ_CLEAR3:
++	case MAX98371_VERSION:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static bool max98371_readable_register(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case MAX98371_SOFT_RESET:
++		return false;
++	default:
++		return true;
++	}
++};
++
++static const unsigned int max98371_gain_tlv[] = {
++	0, 8, TLV_DB_SCALE_ITEM(0, 50, 0),
++	9, 10, TLV_DB_SCALE_ITEM(500, 100, 0),
++	11, 15, TLV_DB_SCALE_ITEM(0, 0, 0),
++};
++static const DECLARE_TLV_DB_SCALE(digital_tlv, -6300, 50, 1);
++
++static const struct snd_kcontrol_new max98371_snd_controls[] = {
++	SOC_SINGLE_TLV("Speaker Gain", MAX98371_GAIN,
++			MAX98371_GAIN_SHIFT, (1<<MAX98371_GAIN_WIDTH)-1, 0,
++			max98371_gain_tlv),
++	SOC_SINGLE_TLV("Digital Volume", MAX98371_DIGITAL_GAIN, 0,
++			(1<<MAX98371_DIGITAL_GAIN_WIDTH)-1, 1, digital_tlv),
++	SOC_SINGLE("DHT Attack Step", MAX98371_DHT, MAX98371_DHT_STEP, 3, 0),
++	SOC_SINGLE("DHT Attack Rate", MAX98371_DHT, 0, 7, 0),
++	SOC_ENUM("Voltage Level", max98371_voltage),
++	SOC_ENUM("Monomix Select", max98371_monomix),
++	SOC_ENUM("HPF Cutoff", max98371_hpf_cutoff),
++};
++
++static int max98371_dai_set_fmt(struct snd_soc_dai *codec_dai,
++		unsigned int fmt)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	struct max98371_priv *max98371 = snd_soc_codec_get_drvdata(codec);
++	unsigned int val = 0;
++
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBS_CFS:
++		break;
++	default:
++		dev_err(codec->dev, "DAI clock mode unsupported");
++		return -EINVAL;
++	}
++
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		val |= 0;
++		break;
++	case SND_SOC_DAIFMT_RIGHT_J:
++		val |= MAX98371_DAI_RIGHT;
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		val |= MAX98371_DAI_LEFT;
++		break;
++	default:
++		dev_err(codec->dev, "DAI wrong mode unsupported");
++		return -EINVAL;
++	}
++	regmap_update_bits(max98371->regmap, MAX98371_FMT,
++			MAX98371_FMT_MODE_MASK, val);
++	return 0;
++}
++
++static int max98371_dai_hw_params(struct snd_pcm_substream *substream,
++		struct snd_pcm_hw_params *params,
++		struct snd_soc_dai *dai)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct max98371_priv *max98371 = snd_soc_codec_get_drvdata(codec);
++	int blr_clk_ratio, ch_size, channels = params_channels(params);
++	int rate = params_rate(params);
++
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S8:
++		regmap_update_bits(max98371->regmap, MAX98371_FMT,
++				MAX98371_FMT_MASK, MAX98371_DAI_CHANSZ_16);
++		ch_size = 8;
++		break;
++	case SNDRV_PCM_FORMAT_S16_LE:
++		regmap_update_bits(max98371->regmap, MAX98371_FMT,
++				MAX98371_FMT_MASK, MAX98371_DAI_CHANSZ_16);
++		ch_size = 16;
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		regmap_update_bits(max98371->regmap, MAX98371_FMT,
++				MAX98371_FMT_MASK, MAX98371_DAI_CHANSZ_32);
++		ch_size = 24;
++		break;
++	case SNDRV_PCM_FORMAT_S32_LE:
++		regmap_update_bits(max98371->regmap, MAX98371_FMT,
++				MAX98371_FMT_MASK, MAX98371_DAI_CHANSZ_32);
++		ch_size = 32;
++		break;
++	default:
++		pr_info("%s: format unsupported %d",
++				__func__, params_format(params));
++		return -EINVAL;
++	}
++
++	/* BCLK/LRCLK ratio calculation */
++	blr_clk_ratio = channels * ch_size;
++	switch (blr_clk_ratio) {
++	case 32:
++		regmap_update_bits(max98371->regmap,
++			MAX98371_DAI_CLK,
++			MAX98371_DAI_BSEL_MASK, MAX98371_DAI_BSEL_32);
++		break;
++	case 48:
++		regmap_update_bits(max98371->regmap,
++			MAX98371_DAI_CLK,
++			MAX98371_DAI_BSEL_MASK, MAX98371_DAI_BSEL_48);
++		break;
++	case 64:
++		regmap_update_bits(max98371->regmap,
++			MAX98371_DAI_CLK,
++			MAX98371_DAI_BSEL_MASK, MAX98371_DAI_BSEL_64);
++		break;
++	default:
++		pr_info("%s: ratio unsupported %d", __func__, blr_clk_ratio);
++		return -EINVAL;
++	}
++
++	switch (rate) {
++	case 32000:
++		regmap_update_bits(max98371->regmap,
++			MAX98371_SPK_SR,
++			MAX98371_SPK_SR_MASK, MAX98371_SPK_SR_32);
++		break;
++	case 44100:
++		regmap_update_bits(max98371->regmap,
++			MAX98371_SPK_SR,
++			MAX98371_SPK_SR_MASK, MAX98371_SPK_SR_44);
++		break;
++	case 48000:
++		regmap_update_bits(max98371->regmap,
++			MAX98371_SPK_SR,
++			MAX98371_SPK_SR_MASK, MAX98371_SPK_SR_48);
++		break;
++	case 88200:
++		regmap_update_bits(max98371->regmap,
++			MAX98371_SPK_SR,
++			MAX98371_SPK_SR_MASK, MAX98371_SPK_SR_88);
++		break;
++	case 96000:
++		regmap_update_bits(max98371->regmap,
++			MAX98371_SPK_SR,
++			MAX98371_SPK_SR_MASK, MAX98371_SPK_SR_96);
++		break;
++	default:
++		pr_info("%s: rate unsupported %d", __func__, rate);
++		return -EINVAL;
++	}
++
++	/* enabling both the RX channels*/
++	regmap_update_bits(max98371->regmap, MAX98371_MONOMIX_SRC,
++			MAX98371_MONOMIX_SRC_MASK, MONOMIX_RX_0_1);
++	regmap_update_bits(max98371->regmap, MAX98371_DAI_CHANNEL,
++			MAX98371_CHANNEL_MASK, MAX98371_CHANNEL_MASK);
++	return 0;
++}
++
++static const struct snd_soc_dapm_widget max98371_dapm_widgets[] = {
++	SND_SOC_DAPM_AIF_IN("DAI_OUT",
++		"HiFi Playback", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_DAC("DAC Enable",
++		"HiFi Playback", MAX98371_SPK_ENABLE, 0, 0),
++	SND_SOC_DAPM_SUPPLY("Global Enable",
++		MAX98371_GLOBAL_ENABLE, 0, 0, NULL, 0),
++	SND_SOC_DAPM_OUTPUT("SPK_OUT"),
++};
++
++static const struct snd_soc_dapm_route max98371_audio_map[] = {
++	{"DAC Enable", NULL, "DAI_OUT"},
++	{"SPK_OUT", NULL, "DAC Enable"},
++	{"SPK_OUT", NULL, "Global Enable"},
++};
++
++#define MAX98371_RATES SNDRV_PCM_RATE_8000_48000
++#define MAX98371_FORMATS (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_BE | \
++		SNDRV_PCM_FMTBIT_S24_BE | SNDRV_PCM_FMTBIT_S32_BE)
++
++static struct snd_soc_dai_ops max98371_dai_ops = {
++	.set_fmt = max98371_dai_set_fmt,
++	.hw_params = max98371_dai_hw_params,
++};
++
++static struct snd_soc_dai_driver max98371_dai[] = {
++	{
++		.name = "max98371-aif1",
++		.playback = {
++			.stream_name = "HiFi Playback",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = SNDRV_PCM_RATE_8000_48000,
++			.formats = MAX98371_FORMATS,
++		},
++		.ops = &max98371_dai_ops,
++	}
++};
++
++static int max98371_probe(struct snd_soc_codec *codec)
++{
++	struct max98371_priv *max98371 = snd_soc_codec_get_drvdata(codec);
++
++	max98371->codec = codec;
++	return 0;
++}
++
++static struct snd_soc_codec_driver max98371_codec = {
++	.probe = max98371_probe,
++	.controls = max98371_snd_controls,
++	.num_controls = ARRAY_SIZE(max98371_snd_controls),
++	.dapm_routes = max98371_audio_map,
++	.num_dapm_routes = ARRAY_SIZE(max98371_audio_map),
++	.dapm_widgets = max98371_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(max98371_dapm_widgets),
++};
++
++static const struct regmap_config max98371_regmap = {
++	.reg_bits         = 8,
++	.val_bits         = 8,
++	.max_register     = MAX98371_VERSION,
++	.reg_defaults     = max98371_reg,
++	.num_reg_defaults = ARRAY_SIZE(max98371_reg),
++	.volatile_reg     = max98371_volatile_register,
++	.readable_reg     = max98371_readable_register,
++	.cache_type       = REGCACHE_RBTREE,
++};
++
++static int max98371_i2c_probe(struct i2c_client *i2c,
++		const struct i2c_device_id *id)
++{
++	struct max98371_priv *max98371;
++	int ret, reg;
++
++	max98371 = devm_kzalloc(&i2c->dev,
++			sizeof(*max98371), GFP_KERNEL);
++	if (!max98371)
++		return -ENOMEM;
++
++	i2c_set_clientdata(i2c, max98371);
++	max98371->regmap = devm_regmap_init_i2c(i2c, &max98371_regmap);
++	if (IS_ERR(max98371->regmap)) {
++		ret = PTR_ERR(max98371->regmap);
++		dev_err(&i2c->dev,
++				"Failed to allocate regmap: %d\n", ret);
++		return ret;
++	}
++
++	ret = regmap_read(max98371->regmap, MAX98371_VERSION, &reg);
++	if (ret < 0) {
++		dev_info(&i2c->dev, "device error %d\n", ret);
++		return ret;
++	}
++	dev_info(&i2c->dev, "device version %x\n", reg);
++
++	ret = snd_soc_register_codec(&i2c->dev, &max98371_codec,
++			max98371_dai, ARRAY_SIZE(max98371_dai));
++	if (ret < 0) {
++		dev_err(&i2c->dev, "Failed to register codec: %d\n", ret);
++		return ret;
++	}
++	return ret;
++}
++
++static int max98371_i2c_remove(struct i2c_client *client)
++{
++	snd_soc_unregister_codec(&client->dev);
++	return 0;
++}
++
++static const struct i2c_device_id max98371_i2c_id[] = {
++	{ "max98371", 0 },
++};
++
++MODULE_DEVICE_TABLE(i2c, max98371_i2c_id);
++
++static const struct of_device_id max98371_of_match[] = {
++	{ .compatible = "maxim,max98371", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, max98371_of_match);
++
++static struct i2c_driver max98371_i2c_driver = {
++	.driver = {
++		.name = "max98371",
++		.owner = THIS_MODULE,
++		.pm = NULL,
++		.of_match_table = of_match_ptr(max98371_of_match),
++	},
++	.probe  = max98371_i2c_probe,
++	.remove = max98371_i2c_remove,
++	.id_table = max98371_i2c_id,
++};
++
++module_i2c_driver(max98371_i2c_driver);
++
++MODULE_AUTHOR("anish kumar <yesanishhere@gmail.com>");
++MODULE_DESCRIPTION("ALSA SoC MAX98371 driver");
++MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/max98371.h b/sound/soc/codecs/max98371.h
+new file mode 100644
+index 0000000..644316a
+--- /dev/null
++++ b/sound/soc/codecs/max98371.h
+@@ -0,0 +1,63 @@
++/*
++ * max98371.h -- MAX98371 ALSA SoC Audio driver
++ *
++ * Copyright 2011-2012 Maxim Integrated Products
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef _MAX98371_H
++#define _MAX98371_H
++
++#define MAX98371_IRQ_CLEAR1			0x01
++#define MAX98371_IRQ_CLEAR2			0x02
++#define MAX98371_IRQ_CLEAR3			0x03
++#define MAX98371_DAI_CLK			0x10
++#define MAX98371_DAI_BSEL_MASK			0xF
++#define MAX98371_DAI_BSEL_32			2
++#define MAX98371_DAI_BSEL_48			3
++#define MAX98371_DAI_BSEL_64			4
++#define MAX98371_SPK_SR				0x11
++#define MAX98371_SPK_SR_MASK			0xF
++#define MAX98371_SPK_SR_32			6
++#define MAX98371_SPK_SR_44			7
++#define MAX98371_SPK_SR_48			8
++#define MAX98371_SPK_SR_88			10
++#define MAX98371_SPK_SR_96			11
++#define MAX98371_DAI_CHANNEL			0x15
++#define MAX98371_CHANNEL_MASK			0x3
++#define MAX98371_MONOMIX_SRC			0x18
++#define MAX98371_MONOMIX_CFG			0x19
++#define MAX98371_HPF				0x1C
++#define MAX98371_MONOMIX_SRC_MASK		0xFF
++#define MONOMIX_RX_0_1				((0x1)<<(4))
++#define M98371_DAI_CHANNEL_I2S			0x3
++#define MAX98371_DIGITAL_GAIN			0x2D
++#define MAX98371_DIGITAL_GAIN_WIDTH		0x7
++#define MAX98371_GAIN				0x2E
++#define MAX98371_GAIN_SHIFT			0x4
++#define MAX98371_GAIN_WIDTH			0x4
++#define MAX98371_FMT				0x14
++#define MAX98371_CHANSZ_WIDTH			6
++#define MAX98371_FMT_MASK		        ((0x3)<<(MAX98371_CHANSZ_WIDTH))
++#define MAX98371_FMT_MODE_MASK		        ((0x7)<<(3))
++#define MAX98371_DAI_LEFT		        ((0x1)<<(3))
++#define MAX98371_DAI_RIGHT		        ((0x2)<<(3))
++#define MAX98371_DAI_CHANSZ_16                  ((1)<<(MAX98371_CHANSZ_WIDTH))
++#define MAX98371_DAI_CHANSZ_24                  ((2)<<(MAX98371_CHANSZ_WIDTH))
++#define MAX98371_DAI_CHANSZ_32                  ((3)<<(MAX98371_CHANSZ_WIDTH))
++#define MAX98371_DHT  0x32
++#define MAX98371_DHT_STEP			0x3
++#define MAX98371_SPK_ENABLE			0x4A
++#define MAX98371_GLOBAL_ENABLE			0x50
++#define MAX98371_SOFT_RESET			0x51
++#define MAX98371_VERSION			0xFF
++
++
++struct max98371_priv {
++	struct regmap *regmap;
++	struct snd_soc_codec *codec;
++};
++#endif
 -- 
-
-Martin
----1463810558-47762958-1458490539=:28736
-Content-Type: text/plain; charset=US-ASCII; name=amidi.c.patch
-Content-Transfer-Encoding: BASE64
-Content-ID: <alpine.LFD.2.20.1603201715350.28736@mylaptop>
-Content-Description: 
-Content-Disposition: attachment; filename=amidi.c.patch
-
-LS0tIGFtaWRpLmMub3JpZwkyMDE1LTExLTIwIDIzOjEwOjIxLjIzMDUwMjU0
-NyArMDEwMA0KKysrIGFtaWRpLmMJMjAxNi0wMy0yMCAxNjo1Mjo1NS4zNjYw
-NjY0NzYgKzAxMDANCkBAIC01NTksNyArNTU5LDcgQEANCiAJCQlpbnQgaSwg
-bGVuZ3RoOw0KIAkJCXVuc2lnbmVkIHNob3J0IHJldmVudHM7DQogDQotCQkJ
-ZXJyID0gcG9sbChwZmRzLCBucGZkcywgMjAwKTsNCisJCQllcnIgPSBwb2xs
-KHBmZHMsIG5wZmRzLCA1KTsNCiAJCQlpZiAoc3RvcCB8fCAoZXJyIDwgMCAm
-JiBlcnJubyA9PSBFSU5UUikpDQogCQkJCWJyZWFrOw0KIAkJCWlmIChlcnIg
-PCAwKSB7DQpAQCAtNTY3LDcgKzU2Nyw3IEBADQogCQkJCWJyZWFrOw0KIAkJ
-CX0NCiAJCQlpZiAoZXJyID09IDApIHsNCi0JCQkJdGltZSArPSAyMDA7DQor
-CQkJCXRpbWUgKz0gNTsNCiAJCQkJaWYgKHRpbWVvdXQgJiYgdGltZSA+PSB0
-aW1lb3V0KQ0KIAkJCQkJYnJlYWs7DQogCQkJCWNvbnRpbnVlOw0KQEAgLTU4
-OSw3ICs1ODksNyBAQA0KIAkJCX0NCiAJCQlsZW5ndGggPSAwOw0KIAkJCWZv
-ciAoaSA9IDA7IGkgPCBlcnI7ICsraSkNCi0JCQkJaWYgKCFpZ25vcmVfYWN0
-aXZlX3NlbnNpbmcgfHwgYnVmW2ldICE9IDB4ZmUpDQorCQkJCWlmICghaWdu
-b3JlX2FjdGl2ZV9zZW5zaW5nIHx8IGJ1ZltpXSA8IDB4ZjgpDQogCQkJCQli
-dWZbbGVuZ3RoKytdID0gYnVmW2ldOw0KIAkJCWlmIChsZW5ndGggPT0gMCkN
-CiAJCQkJY29udGludWU7DQo=
-
----1463810558-47762958-1458490539=:28736
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
----1463810558-47762958-1458490539=:28736--
+1.9.3
