@@ -1,19 +1,18 @@
-From: Micka <mickamusset@gmail.com>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] ASoC: Add max98371 codec driver
-Date: Mon, 21 Mar 2016 15:29:00 +0000
-Message-ID: <CAF+MRtkm+OHQHwW4cTihSV5MOnJWiq4XfjoxghYN7eq05e0pWw@mail.gmail.com>
+Date: Mon, 21 Mar 2016 15:56:59 +0000
+Message-ID: <20160321155659.GW2566@sirena.org.uk>
 References: <1458525542-2168-1-git-send-email-yesanishhere@gmail.com>
  <20160321145642.GV2566@sirena.org.uk>
+ <CAF+MRtkm+OHQHwW4cTihSV5MOnJWiq4XfjoxghYN7eq05e0pWw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============6877590647280822382=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f48.google.com (mail-wm0-f48.google.com [74.125.82.48])
- by alsa0.perex.cz (Postfix) with ESMTP id BE2F22654BA
- for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2016 16:29:09 +0100 (CET)
-Received: by mail-wm0-f48.google.com with SMTP id l68so115020972wml.0
- for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2016 08:29:09 -0700 (PDT)
-In-Reply-To: <20160321145642.GV2566@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E8A8326500C
+ for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2016 16:57:05 +0100 (CET)
+In-Reply-To: <CAF+MRtkm+OHQHwW4cTihSV5MOnJWiq4XfjoxghYN7eq05e0pWw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,33 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, anish kumar <yesanishhere@gmail.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: Micka <mickamusset@gmail.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, anish kumar <yesanishhere@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTWFyaywKCkNvdWxkIHlvdSB0ZWxsIG1lIGhvdyBkbyB5b3UgY29udHJvbCB0aGlzIGRldmlj
-ZS9jb2RlYyB3aXRoIExpbnV4ID8gV2hhdCBpcwp0aGUgY29tbWFuZCA/CgpUaGFuayB5b3UgIQoK
-TGUgbHVuLiAyMSBtYXJzIDIwMTYgw6AgMTY6MDMsIE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVs
-Lm9yZz4gYSDDqWNyaXQgOgoKPiBPbiBTdW4sIE1hciAyMCwgMjAxNiBhdCAwNjo1OTowMlBNIC0w
-NzAwLCBhbmlzaCBrdW1hciB3cm90ZToKPgo+IFRoaXMgbG9va3MgbW9zdGx5IGdvb2QsIGEgZmV3
-IHNtYWxsIHRoaW5nczoKPgo+ID4gK3N0YXRpYyBjb25zdCBjaGFyICpjb25zdCB2b2x0YWdlX2xl
-dmVsX3RleHRbXSA9IHsKPiA+ICsgICAgICI5LjVkQiIsICIxMC41ZEIiLCAiMTEuNWRCIiwgIjEx
-LjVkQiIsICIxMi41ZEIiLAo+ID4gKyAgICAgIjEzLjVkQiIsICIxNC41ZEIiLCAiMTUuNWRCIiwg
-IjE2LjVkQiIsICIxNy41ZEIiLAo+ID4gKyAgICAgIjE4LjVkQiIsICIxOS41ZEIiLCAiMjAuNWRC
-Igo+ID4gK307Cj4KPiBWb2x1bWUgY29udHJvbHMgc2hvdWxkIGJlIGRvbmUgd2l0aCBUTFYgZGF0
-YSBub3QgZW51bXMuCj4KPiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9rY29udHJvbF9uZXcg
-bWF4OTgzNzFfc25kX2NvbnRyb2xzW10gPSB7Cj4gPiArICAgICBTT0NfU0lOR0xFX1RMVigiU3Bl
-YWtlciBHYWluIiwgTUFYOTgzNzFfR0FJTiwKPiA+ICsgICAgICAgICAgICAgICAgICAgICBNQVg5
-ODM3MV9HQUlOX1NISUZULCAoMTw8TUFYOTgzNzFfR0FJTl9XSURUSCktMSwgMCwKPiA+ICsgICAg
-ICAgICAgICAgICAgICAgICBtYXg5ODM3MV9nYWluX3RsdiksCj4KPiBWb2x1bWUgY29udHJvbHMg
-c2hvdWxkIGVuZCB3aXRoIFZvbHVtZS4KPgo+ID4gK3N0YXRpYyBpbnQgbWF4OTgzNzFfcHJvYmUo
-c3RydWN0IHNuZF9zb2NfY29kZWMgKmNvZGVjKQo+ID4gK3sKPiA+ICsgICAgIHN0cnVjdCBtYXg5
-ODM3MV9wcml2ICptYXg5ODM3MSA9IHNuZF9zb2NfY29kZWNfZ2V0X2RydmRhdGEoY29kZWMpOwo+
-ID4gKwo+ID4gKyAgICAgbWF4OTgzNzEtPmNvZGVjID0gY29kZWM7Cj4gPiArICAgICByZXR1cm4g
-MDsKPiA+ICt9Cj4KPiBEbyB3ZSBldmVyIGFjdHVhbGx5IHVzZSB0aGlzPwo+IF9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+Cl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+--===============6877590647280822382==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="CVqly4l7FfnzS7sR"
+Content-Disposition: inline
+
+
+--CVqly4l7FfnzS7sR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Mar 21, 2016 at 03:29:00PM +0000, Micka wrote:
+> Hi Mark,
+
+Please don't top post, reply in line with needed context.  This allows
+readers to readily follow the flow of conversation and understand what
+you are talking about and also helps ensure that everything in the
+discussion is being addressed.
+
+> Could you tell me how do you control this device/codec with Linux ? What is
+> the command ?
+
+Using any ALSA userspace applications.
+
+--CVqly4l7FfnzS7sR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJW8BnKAAoJECTWi3JdVIfQXh8H/RS+mmSiD4l5JDdFjlZtVacE
+Kuv6ePkMpxADXhmVG/JuARBaRG89ob2UKXGDDgcnmmrWJrIT0cMWbXZXjlV8UEhQ
+onNKbu90B5yNAWo+WDdC08i6XjZCuZb+YcAtrPnPxeJrmoCL5kmSyL0m3KC/d2/2
+UmOnB3npv7WFQ+aGBRUhjpNJuYFYjDj/531PrPFkdFLtz2hFbcJ1b/x8M4wMWdTX
+MdqA32BHppf9/BClos8KDXKh83Ulwdbi6hHwPsu9Q5Dhyr2kRyeRYSS40gHr1K+w
+99mdTzQQ3stXHU0Cnvs2SFgy/KdIH3ZXJHwMo2utdQY/4U6ZUuFqFmQt0qyy9I4=
+=rZSh
+-----END PGP SIGNATURE-----
+
+--CVqly4l7FfnzS7sR--
+
+--===============6877590647280822382==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6877590647280822382==--
