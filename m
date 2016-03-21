@@ -1,16 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
+From: Micka <mickamusset@gmail.com>
 Subject: Re: [PATCH] ASoC: Add max98371 codec driver
-Date: Mon, 21 Mar 2016 14:56:42 +0000
-Message-ID: <20160321145642.GV2566@sirena.org.uk>
+Date: Mon, 21 Mar 2016 15:29:00 +0000
+Message-ID: <CAF+MRtkm+OHQHwW4cTihSV5MOnJWiq4XfjoxghYN7eq05e0pWw@mail.gmail.com>
 References: <1458525542-2168-1-git-send-email-yesanishhere@gmail.com>
+ <20160321145642.GV2566@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7691318826054743424=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A2195265707
- for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2016 15:56:49 +0100 (CET)
-In-Reply-To: <1458525542-2168-1-git-send-email-yesanishhere@gmail.com>
+Received: from mail-wm0-f48.google.com (mail-wm0-f48.google.com [74.125.82.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id BE2F22654BA
+ for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2016 16:29:09 +0100 (CET)
+Received: by mail-wm0-f48.google.com with SMTP id l68so115020972wml.0
+ for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2016 08:29:09 -0700 (PDT)
+In-Reply-To: <20160321145642.GV2566@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,72 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: anish kumar <yesanishhere@gmail.com>
+To: Mark Brown <broonie@kernel.org>, anish kumar <yesanishhere@gmail.com>
 Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-
---===============7691318826054743424==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="mCdhXfk5CmamXiy1"
-Content-Disposition: inline
-
-
---mCdhXfk5CmamXiy1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Sun, Mar 20, 2016 at 06:59:02PM -0700, anish kumar wrote:
-
-This looks mostly good, a few small things:
-
-> +static const char *const voltage_level_text[] = {
-> +	"9.5dB", "10.5dB", "11.5dB", "11.5dB", "12.5dB",
-> +	"13.5dB", "14.5dB", "15.5dB", "16.5dB", "17.5dB",
-> +	"18.5dB", "19.5dB", "20.5dB"
-> +};
-
-Volume controls should be done with TLV data not enums.
-
-> +static const struct snd_kcontrol_new max98371_snd_controls[] = {
-> +	SOC_SINGLE_TLV("Speaker Gain", MAX98371_GAIN,
-> +			MAX98371_GAIN_SHIFT, (1<<MAX98371_GAIN_WIDTH)-1, 0,
-> +			max98371_gain_tlv),
-
-Volume controls should end with Volume.
-
-> +static int max98371_probe(struct snd_soc_codec *codec)
-> +{
-> +	struct max98371_priv *max98371 = snd_soc_codec_get_drvdata(codec);
-> +
-> +	max98371->codec = codec;
-> +	return 0;
-> +}
-
-Do we ever actually use this?
-
---mCdhXfk5CmamXiy1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJW8AupAAoJECTWi3JdVIfQ4FoH/jHKqPpDFSesVB2MVo35TKyw
-gJgBkF+djGuoOeTeZWAxNdcCx4MJWfZwtuyVO+fs70f4dTfFN/7L4CsQB/5+euJR
-tP/VViUcEahAU6FPtr2iK9vVJvILVrV1nY2867mOPZ0gUP6/yzbEowc8h3+IUc3l
-csXEolOcQ2ZaDKQHnTAI0OkGJRrVLfH+2tPgkTFeoeva0ipDbXc9yl+NSssULhHc
-r2Z6gylaOEIEqbF/H2I9gq77q93qBztvvhNPE7+I0kZYJlBxm3AIx5WGyxA92e1v
-L38fTO52XPbo1BNAlsWaycjAeD35xCrEli11ysamVc+aXJIxUtkw5hY9LicJxGA=
-=Pt3R
------END PGP SIGNATURE-----
-
---mCdhXfk5CmamXiy1--
-
---===============7691318826054743424==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7691318826054743424==--
+SGkgTWFyaywKCkNvdWxkIHlvdSB0ZWxsIG1lIGhvdyBkbyB5b3UgY29udHJvbCB0aGlzIGRldmlj
+ZS9jb2RlYyB3aXRoIExpbnV4ID8gV2hhdCBpcwp0aGUgY29tbWFuZCA/CgpUaGFuayB5b3UgIQoK
+TGUgbHVuLiAyMSBtYXJzIDIwMTYgw6AgMTY6MDMsIE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVs
+Lm9yZz4gYSDDqWNyaXQgOgoKPiBPbiBTdW4sIE1hciAyMCwgMjAxNiBhdCAwNjo1OTowMlBNIC0w
+NzAwLCBhbmlzaCBrdW1hciB3cm90ZToKPgo+IFRoaXMgbG9va3MgbW9zdGx5IGdvb2QsIGEgZmV3
+IHNtYWxsIHRoaW5nczoKPgo+ID4gK3N0YXRpYyBjb25zdCBjaGFyICpjb25zdCB2b2x0YWdlX2xl
+dmVsX3RleHRbXSA9IHsKPiA+ICsgICAgICI5LjVkQiIsICIxMC41ZEIiLCAiMTEuNWRCIiwgIjEx
+LjVkQiIsICIxMi41ZEIiLAo+ID4gKyAgICAgIjEzLjVkQiIsICIxNC41ZEIiLCAiMTUuNWRCIiwg
+IjE2LjVkQiIsICIxNy41ZEIiLAo+ID4gKyAgICAgIjE4LjVkQiIsICIxOS41ZEIiLCAiMjAuNWRC
+Igo+ID4gK307Cj4KPiBWb2x1bWUgY29udHJvbHMgc2hvdWxkIGJlIGRvbmUgd2l0aCBUTFYgZGF0
+YSBub3QgZW51bXMuCj4KPiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9rY29udHJvbF9uZXcg
+bWF4OTgzNzFfc25kX2NvbnRyb2xzW10gPSB7Cj4gPiArICAgICBTT0NfU0lOR0xFX1RMVigiU3Bl
+YWtlciBHYWluIiwgTUFYOTgzNzFfR0FJTiwKPiA+ICsgICAgICAgICAgICAgICAgICAgICBNQVg5
+ODM3MV9HQUlOX1NISUZULCAoMTw8TUFYOTgzNzFfR0FJTl9XSURUSCktMSwgMCwKPiA+ICsgICAg
+ICAgICAgICAgICAgICAgICBtYXg5ODM3MV9nYWluX3RsdiksCj4KPiBWb2x1bWUgY29udHJvbHMg
+c2hvdWxkIGVuZCB3aXRoIFZvbHVtZS4KPgo+ID4gK3N0YXRpYyBpbnQgbWF4OTgzNzFfcHJvYmUo
+c3RydWN0IHNuZF9zb2NfY29kZWMgKmNvZGVjKQo+ID4gK3sKPiA+ICsgICAgIHN0cnVjdCBtYXg5
+ODM3MV9wcml2ICptYXg5ODM3MSA9IHNuZF9zb2NfY29kZWNfZ2V0X2RydmRhdGEoY29kZWMpOwo+
+ID4gKwo+ID4gKyAgICAgbWF4OTgzNzEtPmNvZGVjID0gY29kZWM7Cj4gPiArICAgICByZXR1cm4g
+MDsKPiA+ICt9Cj4KPiBEbyB3ZSBldmVyIGFjdHVhbGx5IHVzZSB0aGlzPwo+IF9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+Cl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
