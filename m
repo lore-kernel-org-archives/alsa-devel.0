@@ -1,51 +1,61 @@
-From: Andreas Dannenberg <dannenberg@ti.com>
-Subject: Re: [PATCH 1/2] ASoC: codecs: add TA5720 digital
- amplifier DT bindings
-Date: Mon, 21 Mar 2016 09:06:03 -0500
-Message-ID: <20160321140603.GN20025@borg.dal.design.ti.com>
-References: <1458343678-4086-1-git-send-email-dannenberg@ti.com>
- <1458343678-4086-2-git-send-email-dannenberg@ti.com>
- <20160321124555.GA12693@rob-hp-laptop>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: Re: [PATCH v8 2/2] ASoc: sun4i-codec: Add FM, Line
+ and Mic inputs
+Date: Mon, 21 Mar 2016 14:24:39 +0000
+Message-ID: <20160321142438.GU2566@sirena.org.uk>
+References: <20151221123148.1ab6480b@dayas>
+ <20151221123416.51aa938e@dayas>
+ <20151227182157.GI30359@lukather>
+ <20151228040649.475a742f@dayas>
+ <20160106220908.GE9631@lukather>
+ <20160109164832.515d69b0@dayas>
+ <20160312085222.226d89bf@scratchpost.org>
+ <20160314104939.GL8418@lukather>
+ <20160315105802.GN2566@sirena.org.uk>
+ <20160319171336.6e16eb5a@scratchpost.org>
+Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 03DAD264F37
- for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2016 15:06:06 +0100 (CET)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="2+Swrz5l75R1PXkU"
+Return-path: <linux-sunxi+bncBDQ2L75W5QGBBRUIYC3QKGQEGRIQY7Y-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Content-Disposition: inline
-In-Reply-To: <20160321124555.GA12693@rob-hp-laptop>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Kumar Gala <galak@codeaurora.org>
+In-Reply-To: <20160319171336.6e16eb5a-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 21, 2016 at 07:45:55AM -0500, Rob Herring wrote:
-> > +Optional properties:
-> > +
-> > +- dvdd-supply : phandle to a 3.3-V supply for the digital circuitry
-> > +- pvdd-supply : phandle to a supply used for the Class-D amp and the analog
-> > +- interrupts-extended : reference to a GPIO pin connected to the TAS5720
-> > +                        FAULTZ pin for error reporting purposes
-> 
-> There's no point in having interrupts-extended here with a single 
-> interrupt. It is fine to use, but really that's outside the scope of 
-> this binding. So I'd just document "interrupts" here as that is what 
-> most docs do, and that implies interrupts-extended could be used.
+--2+Swrz5l75R1PXkU
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
 
-Hi Rob,
-Good point. Will remove it for v2.
+On Sat, Mar 19, 2016 at 05:13:36PM +0100, Danny Milosavljevic wrote:
+> Hi Mark,
 
-Regards,
+> my question is whether it's possible to group together the left and right channel into one selem, and also if it's possible to reuse volumes then. For example:
 
---
-Andreas Dannenberg
-Texas Instruments Inc
+Please fix your mail client to word wrap within paragraphs at something
+substantially less than 80 columns.  Doing this makes your messages much
+easier to read and reply to.  This is particularly important for large
+walls of text like this.
+
+> Is it possible to group them together like this? How?
+
+This is something you'd need to change in alsamixer and the control
+naming standards.  None of this stuff is really supposed to be directly
+edited by normal users, they should mostly be using a UCM configuration,
+so at the minute this is essentially bikeshedding.
+
+> Is it possible to somehow distinguish those in alsamixer? Do we want to?
+
+I think you're looking for something that exports routing to userspace.
+Doing that would also help with reducing the faff with naming rules.
+Currently nobody is working on that but I think people would be very
+happy if someone were to work on it.
+--2+Swrz5l75R1PXkU--
