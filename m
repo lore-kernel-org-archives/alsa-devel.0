@@ -1,120 +1,62 @@
-From: Imre Deak <imre.deak@intel.com>
-Subject: Re: New snd-hda warning spew
-Date: Mon, 21 Mar 2016 14:34:35 +0200
-Message-ID: <1458563675.19231.13.camel@intel.com>
-References: <20160315160207.GY4329@intel.com> <s5hio0nejv3.wl-tiwai@suse.de>
- <s5hk2kyu5yf.wl-tiwai@suse.de>
-Reply-To: imre.deak@intel.com
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 1/2] ASoC: codecs: add TA5720 digital amplifier DT
+ bindings
+Date: Mon, 21 Mar 2016 07:45:55 -0500
+Message-ID: <20160321124555.GA12693@rob-hp-laptop>
+References: <1458343678-4086-1-git-send-email-dannenberg@ti.com>
+ <1458343678-4086-2-git-send-email-dannenberg@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id C1926264F37
- for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2016 13:34:40 +0100 (CET)
-In-Reply-To: <s5hk2kyu5yf.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Libin Yang <libin.yang@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1458343678-4086-2-git-send-email-dannenberg-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Andreas Dannenberg <dannenberg-l0cyMroinI0@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gbGEsIDIwMTYtMDMtMTkgYXQgMTE6MTggKzAxMDAsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBP
-biBUdWUsIDE1IE1hciAyMDE2IDE4OjIyOjU2ICswMTAwLAo+IFRha2FzaGkgSXdhaSB3cm90ZToK
-PiA+IAo+ID4gT24gVHVlLCAxNSBNYXIgMjAxNiAxNzowMjowNyArMDEwMCwKPiA+IFZpbGxlIFN5
-cmrDpGzDpCB3cm90ZToKPiA+ID4gVGhpcyBvdGhlciBvbmUgd2FzIHNlZW4gYXQgbGVhc3Qgb24g
-b24gU0tMOgo+ID4gPiBbwqDCoDEyNC44MDg1MjVdIC0tLS0tLS0tLS0tLVsgY3V0IGhlcmUgXS0t
-LS0tLS0tLS0tLQo+ID4gPiBbwqDCoDEyNC44MDg1NDVdIFdBUk5JTkc6IENQVTogMyBQSUQ6IDE3
-MyBhdAo+ID4gPiBzb3VuZC9oZGEvaGRhY19pOTE1LmM6OTEgc25kX2hkYWNfZGlzcGxheV9wb3dl
-cisweGYxLzB4MTEwCj4gPiA+IFtzbmRfaGRhX2NvcmVdKCkKPiA+IAo+ID4gVGhpcyBpcyBhIGRp
-ZmZlcmVudCBvbmUsIGFuZCBpdCBpbXBsaWVzIHRoYXQgdGhlIHVuYmFsYW5jZWQgcG93ZXIKPiA+
-IHJlZmNvdW50LsKgwqBNaWdodCBiZSByZWxhdGVkIHdpdGggdGhlIHJlY2VudCBmaXggZm9yIHRo
-ZSByZWN1cnNpdmUKPiA+IHJlZ21hcCBkZWFkbG9jay7CoMKgSSdsbCB0cnkgbGF0ZXIgd2l0aCBh
-IFNLTCBtYWNoaW5lIGhlcmUsIHRvby4KPiA+IAo+ID4gRGlkbid0IHlvdSBzZWUgdGhpcyBiZWZv
-cmUgdGhlIHJlY2VudCB0cmVlLCByaWdodD/CoMKgU29tZSBnb29kL2JhZAo+ID4gY29tbWl0cyB3
-b3VsZCBiZSByZWFsbHkgaGVscGZ1bC4uLgo+IAo+IFNvLCB3ZSBnb3QgYSBmdWxsIGxvZyBpbiBi
-dWd6aWxsYSwgYW5kIHRoaXMgbG9va3MgbGlrZSB0aGUgb24tZGVtYW5kCj4gYmluZGluZyBsZWFk
-aW5nIHRvIHRoZSB1bmJhbGFuY2VkIHJlZmNvdW50Lgo+IAo+IENvdWxkIHlvdSB0cnkgdGhlIHBh
-dGNoIGJlbG93P8KgwqBUaGlzIGVzc2VudGlhbGx5IHJldmVydHMgdG8gdGhlIDQuNAo+IHN0YXRl
-LCBzbyBhICJyZWdyZXNzaW9uIiBzaG91bGQgYmUgY292ZXJlZCwgYXQgbGVhc3QuwqDCoEl0J3Mg
-YXBwbGllZAo+IG9uCj4gdG9wIG9mIHNvdW5kLmdpdCB0cmVlIGZvci1saW51cyBicmFuY2guwqDC
-oChCdXQgaXQgc2hvdWxkIGJlIGVhc2lseQo+IGFwcGxpY2FibGUgdG8gb2xkZXIgdHJlZXMsIHRv
-by4pCj4gCj4gV2UgbmVlZCBhIHByb3BlciBmaXggbGF0ZXIsIGJ1dCBub3cgbW9yZSB1cmdlbnRs
-eSB0aGUgQ0kgdGVzdAo+IHJlZ3Jlc3Npb24gaGFzIHRvIGJlIHBhcGVyZWQgb3Zlci4KCkxvb2tp
-bmcgbW9yZSBpbnRvIHRoaXMsIGl0IHNlZW1zIHRoZSByb290IGNhdXNlIGZvciB0aGlzIGZhaWx1
-cmUgaXMKdGhhdCByZXF1ZXN0X21vZHVsZSByZXR1cm5lZCBwcmUtbWF0dXJlbHkgKGFuZCB3aXRo
-IDAgcmV0dXJuIHZhbHVlKQp3aGVuIGk5MTUgcHJvYmluZyB3YXMgc3RpbGwgbm90IGZpbmlzaGVk
-LiBJIHRyYWNrZWQgdGhpcyBpc3N1ZSBkb3duIHRvCnRoZSBmb2xsb3dpbmcga21vZCBidWcsIGZp
-eGVkIG1lYW53aGlsZSB1cHN0cmVhbToKaHR0cDovL2dpdC5rZXJuZWwub3JnL2NnaXQvdXRpbHMv
-a2VybmVsL2ttb2Qva21vZC5naXQvY29tbWl0Lz9pZD1mZDQ0YTk4YWUyZWI1ZWIzMjE2MTA4ODk1
-NGFiMjFlNThlMTlkZmM0CgpVcGRhdGluZyB0byB0aGUgbGF0ZXN0IGttb2QgZml4ZWQgdGhlIGlz
-c3VlLiBUaGluZ3Mgd2lsbCBvZiBjb3Vyc2Ugd29yawpvbmx5IGluIHRoZSBnZW5lcmFsIGNhc2Ug
-d2hlcmUgYm90aCB0aGUgaTkxNSBhbmQgdGhlIHNvdW5kIGRyaXZlciBhcmUKYnVpbHQgYXMgbW9k
-dWxlcywgdG8gc3VwcG9ydCBvdGhlciBjb25maWd1cmF0aW9ucyB3ZSdkIG5lZWQgdG8gbW92ZSB0
-aGUKYXVkaW8gcHJvYmluZyB0byBoYXBwZW4gYXQgY29tcG9uZW50IGJpbmQgdGltZS7CoAoKLS1J
-bXJlCgo+IAo+IAo+IHRoYW5rcywKPiAKPiBUYWthc2hpCj4gCj4gLS0gODwgLS0KPiBGcm9tOiBU
-YWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Cj4gU3ViamVjdDogW1BBVENIXSBBTFNBOiBoZGEg
-LSBXb3JrYXJvdW5kIGZvciB1bmJhbGFuY2VkIGk5MTUgcG93ZXIKPiByZWZjb3VudCBieQo+IMKg
-Y29uY3VycmVudCBwcm9iZQo+IAo+IFRoZSByZWNlbnQgYWRkaXRpb24gb2Ygb24tZGVtYW5kIGk5
-MTUgYXVkaW8gY29tcG9uZW50IGJpbmRpbmcgaW4gdGhlCj4gY29kZWMgZHJpdmVyIHNlZW1zIGxl
-YWRpbmcgdG8gdGhlIHVuYmFsYW5jZWQgaTkxNSBwb3dlciByZWZjb3VudCwKPiBhY2NvcmRpbmcg
-dG8gSW50ZWwgQ0kgdGVzdHMuwqDCoFR5cGljYWxseSwgaXQgZ2V0cyBhIGtlcm5lbCBXQVJOSU5H
-Cj4gbGlrZToKPiDCoCBXQVJOSU5HOiBDUFU6IDMgUElEOiAxNzMgYXQgc291bmQvaGRhL2hkYWNf
-aTkxNS5jOjkxCj4gc25kX2hkYWNfZGlzcGxheV9wb3dlcisweGYxLzB4MTEwIFtzbmRfaGRhX2Nv
-cmVdKCkKPiDCoCBDYWxsIFRyYWNlOgo+IMKgwqDCoFs8ZmZmZmZmZmY4MTNmZWYxNT5dIGR1bXBf
-c3RhY2srMHg2Ny8weDkyCj4gwqDCoMKgWzxmZmZmZmZmZjgxMDc4YTIxPl0gd2Fybl9zbG93cGF0
-aF9jb21tb24rMHg4MS8weGMwCj4gwqDCoMKgWzxmZmZmZmZmZjgxMDc4YjE1Pl0gd2Fybl9zbG93
-cGF0aF9udWxsKzB4MTUvMHgyMAo+IMKgwqDCoFs8ZmZmZmZmZmZhMDBmNzdlMT5dIHNuZF9oZGFj
-X2Rpc3BsYXlfcG93ZXIrMHhmMS8weDExMAo+IFtzbmRfaGRhX2NvcmVdCj4gwqDCoMKgWzxmZmZm
-ZmZmZmEwMTUwMzlkPl0gYXp4X2ludGVsX2xpbmtfcG93ZXIrMHhkLzB4MTAgW3NuZF9oZGFfaW50
-ZWxdCj4gwqDCoMKgWzxmZmZmZmZmZmEwMTFlMzJhPl0gYXp4X2xpbmtfcG93ZXIrMHgxYS8weDMw
-IFtzbmRfaGRhX2NvZGVjXQo+IMKgwqDCoFs8ZmZmZmZmZmZhMDBmMjFmOT5dIHNuZF9oZGFjX2xp
-bmtfcG93ZXIrMHgyOS8weDQwIFtzbmRfaGRhX2NvcmVdCj4gwqDCoMKgWzxmZmZmZmZmZmEwMTE5
-MmE2Pl0gaGRhX2NvZGVjX3J1bnRpbWVfc3VzcGVuZCsweDc2LzB4YTAKPiBbc25kX2hkYV9jb2Rl
-Y10KPiDCoMKgwqAuLi4uLgo+IAo+IFRoZSBzY2VuYXJpbyBpcyBsaWtlIGJlbG93Ogo+IC0gSEQt
-YXVkaW8gZHJpdmVyIGFuZCBpOTE1IGRyaXZlciBhcmUgcHJvYmVkIGNvbmN1cnJlbnRseSBhdCB0
-aGUKPiDCoCAoYWxtb3N0KSBzYW1lIHRpbWU7IEhEQSBidXMgdHJpZXMgdG8gYmluZCB3aXRoIGk5
-MTUsIGJ1dCBpdCBmYWlscwo+IMKgIGJlY2F1c2UgaTkxNSBpbml0aWFsaXphdGlvbiBpcyBzdGls
-bCBiZWluZyBwcm9jZXNzZWQuCj4gLSBMYXRlciBvbiwgSEQtYXVkaW8gcHJvYmVzIHRoZSBIRE1J
-IGNvZGVjLCB3aGVyZSBpdCBhZ2FpbiB0cmllcyB0bwo+IMKgIGJpbmQgd2l0aCBpOTE1LsKgwqBB
-dCB0aGlzIHRpbWUsIGl0IHN1Y2NlZWRzLgo+IC0gQXQgZmluaXNoaW5nIHRoZSBwcm9iZSBvZiBI
-REEsIGl0IGRlY3JlYXNlcyB0aGUgcmVmY291bnQgYXMgaWYgaXQKPiDCoCB3ZXJlIGFscmVhZHkg
-Ym91bmQgYXQgdGhlIGJ1cyBwcm9iZSwgc2luY2UgdGhlIGNvbXBvbmVudCBpcyBib3VuZAo+IMKg
-IG5vdy7CoMKgVGhpcyB0cmlnZ2VycyBhIGtlcm5lbCBXQVJOSU5HIGR1ZSB0byB0aGUgdW5iYWxh
-bmNlLgo+IAo+IEFzIGEgd29ya2Fyb3VuZCwgaW4gdGhpcyBwYXRjaCwgd2UganVzdCBkaXNhYmxl
-IHRoZSBvbi1kZW1hbmQgaTkxNQo+IGNvbXBvbmVudCBiaW5kaW5nIGluIHRoZSBjb2RlYyBkcml2
-ZXIuwqDCoFRoaXMgZXNzZW50aWFsbHkgcmV2ZXJ0cyBiYWNrCj4gdG8gdGhlIHN0YXRlIG9mIDQu
-NCBrZXJuZWwuCj4gCj4gV2Uga25vdyB0aGF0IHRoaXMgaXMgbm8gcmVhbCBzb2x1dGlvbiwgYnV0
-IGl0J3MgYSBtaW5pbWFsaXN0aWMgc2ltcGxlCj4gY2hhbmdlIHRoYXQgY2FuIGJlIGFwcGxpZWQg
-dG8gNC41Lngga2VybmVsIGFzIHN0YWJsZS4KPiAKPiBCdWd6aWxsYTogaHR0cHM6Ly9idWdzLmZy
-ZWVkZXNrdG9wLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9OTQ1NjYKPiBSZXBvcnRlZC1ieTogVmlsbGUg
-U3lyasOkbMOkIDx2aWxsZS5zeXJqYWxhQGxpbnV4LmludGVsLmNvbT4KPiBDYzogPHN0YWJsZUB2
-Z2VyLmtlcm5lbC5vcmc+ICMgdjQuNQo+IFNpZ25lZC1vZmYtYnk6IFRha2FzaGkgSXdhaSA8dGl3
-YWlAc3VzZS5kZT4KPiAtLS0KPiDCoHNvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jIHwgNiArKysr
-KysKPiDCoDEgZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKykKPiAKPiBkaWZmIC0tZ2l0IGEv
-c291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYwo+
-IGluZGV4IDU2ZDM1NzVlZTZjYy4uN2FlNjE0ZDI3OTU0IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3Bj
-aS9oZGEvcGF0Y2hfaGRtaS5jCj4gKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMKPiBA
-QCAtMjI1OCw5ICsyMjU4LDE1IEBAIHN0YXRpYyBpbnQgcGF0Y2hfZ2VuZXJpY19oZG1pKHN0cnVj
-dCBoZGFfY29kZWMKPiAqY29kZWMpCj4gwqAJLyogVHJ5IHRvIGJpbmQgd2l0aCBpOTE1IGZvciBJ
-bnRlbCBIU1crIGNvZGVjcyAoaWYgbm90IGRvbmUKPiB5ZXQpICovCj4gwqAJaWYgKChjb2RlYy0+
-Y29yZS52ZW5kb3JfaWQgPj4gMTYpID09IDB4ODA4NiAmJgo+IMKgCcKgwqDCoMKgaXNfaGFzd2Vs
-bF9wbHVzKGNvZGVjKSkgewo+ICsjaWYgMAo+ICsJCS8qIG9uLWRlbWFuZCBiaW5kaW5nIGxlYWRz
-IHRvIGFuIHVuYmFsYW5jZWQgcmVmY291bnQKPiB3aGVuCj4gKwkJwqAqIGJvdGggaTkxNSBhbmQg
-aGRhIGRyaXZlcnMgYXJlIHByb2JlZAo+IGNvbmN1cnJlbnRseTsKPiArCQnCoCogZGlzYWJsZWQg
-dGVtcG9yYXJpbHkgZm9yIG5vdwo+ICsJCcKgKi8KPiDCoAkJaWYgKCFjb2RlYy0+YnVzLT5jb3Jl
-LmF1ZGlvX2NvbXBvbmVudCkKPiDCoAkJCWlmICghc25kX2hkYWNfaTkxNV9pbml0KCZjb2RlYy0+
-YnVzLT5jb3JlKSkKPiDCoAkJCQlzcGVjLT5pOTE1X2JvdW5kID0gdHJ1ZTsKPiArI2VuZGlmCj4g
-wqAJCS8qIHVzZSBpOTE1IGF1ZGlvIGNvbXBvbmVudCBub3RpZmllciBmb3IgaG90cGx1ZyAqLwo+
-IMKgCQlpZiAoY29kZWMtPmJ1cy0+Y29yZS5hdWRpb19jb21wb25lbnQpCj4gwqAJCQlzcGVjLT51
-c2VfYWNvbXBfbm90aWZpZXIgPSB0cnVlOwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+On Fri, Mar 18, 2016 at 06:27:57PM -0500, Andreas Dannenberg wrote:
+> The Texas Instruments TAS5720L/M device is a high-efficiency mono
+> Class-D audio power amplifier optimized for high transient power
+> capability to use the dynamic power headroom of small loudspeakers.
+> Its digital time division multiplexed (TDM) interface enables up to
+> 16 devices to share the same bus.
+> 
+> Signed-off-by: Andreas Dannenberg <dannenberg-l0cyMroinI0@public.gmane.org>
+> ---
+>  .../devicetree/bindings/sound/tas5720.txt          | 37 ++++++++++++++++++++++
+>  1 file changed, 37 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/tas5720.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/tas5720.txt b/Documentation/devicetree/bindings/sound/tas5720.txt
+> new file mode 100644
+> index 0000000..3775a3f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/tas5720.txt
+> @@ -0,0 +1,37 @@
+> +Texas Instruments TAS5720 Mono Audio amplifier
+> +
+> +The TAS5720 serial control bus communicates through the I2C protocol only.
+> +
+> +Required properties:
+> +
+> +- compatible : "ti,tas5720"
+> +- reg : I2C slave address
+> +
+> +Optional properties:
+> +
+> +- dvdd-supply : phandle to a 3.3-V supply for the digital circuitry
+> +- pvdd-supply : phandle to a supply used for the Class-D amp and the analog
+> +- interrupts-extended : reference to a GPIO pin connected to the TAS5720
+> +                        FAULTZ pin for error reporting purposes
+
+There's no point in having interrupts-extended here with a single 
+interrupt. It is fine to use, but really that's outside the scope of 
+this binding. So I'd just document "interrupts" here as that is what 
+most docs do, and that implies interrupts-extended could be used.
+
+Rob
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
