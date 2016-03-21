@@ -1,87 +1,58 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 3/3] ASoC: omap-mcbsp: Enable/disable
- sidetone block auto clock gating for omap3
-Date: Mon, 21 Mar 2016 10:44:38 +0200
-Message-ID: <56EFB476.70709@ti.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 3/3] ASoC: omap-mcbsp: Enable/disable sidetone block auto
+ clock gating for omap3
+Date: Mon, 21 Mar 2016 09:52:19 +0000
+Message-ID: <20160321095219.GM2566@sirena.org.uk>
 References: <1458296929-718-1-git-send-email-peter.ujfalusi@ti.com>
  <1458296929-718-4-git-send-email-peter.ujfalusi@ti.com>
  <alpine.DEB.2.02.1603191932240.6629@utopia.booyaka.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id E7370261A5E
- for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2016 09:44:43 +0100 (CET)
-In-Reply-To: <alpine.DEB.2.02.1603191932240.6629@utopia.booyaka.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Paul Walmsley <paul@pwsan.com>, Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Tero Kristo <t-kristo@ti.com>, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="633Qqqc8nwy7lrt9"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.02.1603191932240.6629-rwI8Ez+7Ko+d5PgPZx9QOdBPR1lH4CV8@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Paul Walmsley <paul-DWxLp4Yu+b8AvxtiuMwx3w@public.gmane.org>
+Cc: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jarkko Nikula <jarkko.nikula-FVTvWyuFUl3QT0dZR+AlfA@public.gmane.org>, Tero Kristo <t-kristo-l0cyMroinI0@public.gmane.org>, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Paul,
 
-On 03/19/16 21:37, Paul Walmsley wrote:
-> On Fri, 18 Mar 2016, Peter Ujfalusi wrote:
-> =
+--633Qqqc8nwy7lrt9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->> OMAP3's McBSP2 and McBSP3 module have integrated sidetone block with
->> dedicated SYSCONFIG register. The sidetone is operating from the maain
->> McBSP module's ICLK. For normal operation the sidetone clock auto idle
->> support needs to be disabled when it is activated.
->> Note: This is not enough to avoid choppy sidetone because this AUTOIDLE
->> bit is controlling only the clock auto idle from the McBSP to the sideto=
-ne
->> block. If the McBSP_ICLK is idling, the sidetone clock is going to do the
->> same.
->>
->> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> =
+On Sat, Mar 19, 2016 at 07:37:33PM +0000, Paul Walmsley wrote:
 
 > Mark, please drop this patch for the time being, until the SoC integratio=
-n =
-
-> issues can be sorted out first.  It's best to wait a little while before =
-
-> applying patches like these so folks have a chance to comment on their =
-
+n=20
+> issues can be sorted out first.  It's best to wait a little while before=
+=20
+> applying patches like these so folks have a chance to comment on their=20
 > correctness first.
-> =
 
-> We used to handle this problem in the OMAP hwmod SoC integration layer =
+Nobody except Peter and Jarkko ever shows any interest in the OMAP code
+- the amount of time I wait for review depends on who's sending the
+patches and if I expect anyone else is going to respond.
 
-> with a flag that forced the interface clock to stay active as long as the =
+--633Qqqc8nwy7lrt9
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> underlying IP blocks were active.  However I can't find that flag right =
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-> now in the current data, so maybe it got accidentally or inadvertently =
+iQEcBAEBCAAGBQJW78RSAAoJECTWi3JdVIfQi9AH/jbkOJkGHzLLOo8IDDRzNNaC
+mNUmVWHpYTeA622b1XdV+fGTSLe+tKC9AYFwYU32Bd242cwqssjcXwRMRSmV7bvr
+sZGkKLXXgm/0bzgbWMw5duV59ZYUB1tmp83l/T+GfZHjoc1kKxnXdFNAKEmtxTvd
+Kz/Smd0WxXh4Zn+iFk+10twUsmn1PpgSWNLneF8zxIJe0utxF9AhZZeRmUBtsoCd
+80fagad9sT49H7bD8PBTkpWcTbnrzApIOMmcFQr3xnVeRGZj76Rm52lvpYwmAmBb
+gi7Zj0mKqcB+mdEYvIS3grdsve0hMx1Y7IY4RXI/GwihBD4GsfwR4Gz+aGJgdWk=
+=Xx3v
+-----END PGP SIGNATURE-----
 
-> removed at some point in time in the past.  The right way to fix this =
-
-> would be to add that flag back in, rather than messing with the SoC =
-
-> integration registers from the McBSP drivers.
-
-I can not recall such a flag. We had both hwmods attached to the given McBSP
-mkodule via dev_attr and we dealt with the McBSP_ICLK autoidle enable/disab=
-le
-via callbacks provided to the driver via platform data.
-arch/arm/mach-omap2/mcbsp.c: omap3_enable_st_clock() In there we use
-omap2_clk_deny_idle()/omap2_clk_allow_idle() to make sure that the ICLK is =
-not
-gated when the ST is enabled in the given McBSP module.
-But this only works when we boot in legacy mode. The DT boot is broken in t=
-his
-regards as long we have first booted OMAP3 with DT.
-
--- =
-
-P=E9ter
+--633Qqqc8nwy7lrt9--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
