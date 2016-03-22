@@ -1,56 +1,341 @@
-From: Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH 0/3] ARM: OMAP3: Fix McBSP2/3 hwmod setup for sidetone
-Date: Tue, 22 Mar 2016 12:29:52 -0700
-Message-ID: <20160322192951.GP9329@atomide.com>
-References: <1458296929-718-1-git-send-email-peter.ujfalusi@ti.com>
- <alpine.DEB.2.02.1603191908070.6629@utopia.booyaka.com>
- <56EFB31C.9090103@ti.com>
- <20160321202107.GO9329@atomide.com>
- <56F107FF.8080006@ti.com>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: Re: [PATCH v2] [media] media-device: use kref for media_device
+ instance
+Date: Tue, 22 Mar 2016 14:09:11 -0600
+Message-ID: <56F1A667.8000107@osg.samsung.com>
+References: <9d8830150475bc4d4dde2fa1f5163aef82a35477.1458347578.git.mchehab@osg.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <56F107FF.8080006-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-Cc: Paul Walmsley <paul-DWxLp4Yu+b8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jarkko Nikula <jarkko.nikula-FVTvWyuFUl3QT0dZR+AlfA@public.gmane.org>, Tero Kristo <t-kristo-l0cyMroinI0@public.gmane.org>, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <9d8830150475bc4d4dde2fa1f5163aef82a35477.1458347578.git.mchehab@osg.samsung.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Linux Media Mailing List <linux-media@vger.kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Hans Verkuil <hans.verkuil@cisco.com>, Javier Martinez Canillas <javier@osg.samsung.com>, =?UTF-8?Q?Rafael_Louren=c3=a7o_de_Lima_Chehab?= <chehabrafael@gmail.com>, alsa-devel@alsa-project.org, Shuah Khan <shuahkh@osg.samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-* Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org> [160322 01:54]:
-> Tony,
+On 03/18/2016 06:42 PM, Mauro Carvalho Chehab wrote:
+> Now that the media_device can be used by multiple drivers,
+> via devres, we need to be sure that it will be dropped only
+> when all drivers stop using it.
 > 
-> On 03/21/16 22:21, Tony Lindgren wrote:
-> > Hi,
-> > 
-> > * Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org> [160321 01:39]:
-> >>
-> >> This is also interesting:
-> >> McBSP2 sidetone is in region 39 and 40 (module and L4 interconnect) which is
-> >> unique in case of OMAP34xx and OMAP35xx, but it is overlapping with GPIO6 on
-> >> OMAP36xx. Not sure what are the implications.
-> > 
-> > Hmm GPIO6 is in a different L4 segment though? Maybe
-> > you did not account for the segments?
-> > 
-> > 0x49000000 + 0x20000 + 0x2000/0x4000/0x6000 for McBSP
-> > 0x49000000 + 0x50000 + 0x8000 for GPIO6
-> > 
-> > Or maybe I don't understand at which physical address the
-> > overlap is? :)
+> Signed-off-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+> ---
 > 
-> The addresses are not overlapping, but the Region Numbers for GPIO6 and McBSP2
-> sidetone in Table 9-114 "Region Allocation for
-> L4-Per Interconnect". But only in case of OMAP36xx
+> v2: The kref is now used only when media_device is allocated via 
+>     the media_device*_devress. This warrants that other drivers won't be
+>     affected, and that we can keep media_device_cleanup() balanced with
+>     media_device_init().
 
-Oh OK, yeah the TRM region numbers are wrong, they skip unused
-entries compared to the hardware AP table :) Basically the
-TRM AP region numbering is useless and wrong.
+Tested bind_unbind au0828 loop 1000 times, followed by bind_unbind
+snd_usb_audio loop 1000 times. Didn't see any lock warnings on a
+KASAN enabled kernel (lock testing enabled). No use-after-free errors
+during these runs.
 
-Regards,
+Ran device removal test and rmmod and modprobe tests on both drivers.
 
-Tony
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Generated graph after the runs and the graph looks good.
+
+Reviewed-by: Shuah Khan <shuahkh@osg.samsung.com>
+Tested-by: Shuah Khan <shuahkh@osg.samsung.com>
+
+thanks,
+-- Shuah
+
+> 
+>  drivers/media/media-device.c           | 117 +++++++++++++++++++++++++--------
+>  drivers/media/usb/au0828/au0828-core.c |   3 +-
+>  include/media/media-device.h           |  28 ++++++++
+>  sound/usb/media.c                      |   3 +-
+>  4 files changed, 118 insertions(+), 33 deletions(-)
+> 
+> diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
+> index c32fa15cc76e..4a97d92a7e7d 100644
+> --- a/drivers/media/media-device.c
+> +++ b/drivers/media/media-device.c
+> @@ -707,11 +707,16 @@ void media_device_init(struct media_device *mdev)
+>  }
+>  EXPORT_SYMBOL_GPL(media_device_init);
+>  
+> -void media_device_cleanup(struct media_device *mdev)
+> +static void __media_device_cleanup(struct media_device *mdev)
+>  {
+>  	ida_destroy(&mdev->entity_internal_idx);
+>  	mdev->entity_internal_idx_max = 0;
+>  	media_entity_graph_walk_cleanup(&mdev->pm_count_walk);
+> +}
+> +
+> +void media_device_cleanup(struct media_device *mdev)
+> +{
+> +	__media_device_cleanup(mdev);
+>  	mutex_destroy(&mdev->graph_mutex);
+>  }
+>  EXPORT_SYMBOL_GPL(media_device_cleanup);
+> @@ -721,6 +726,9 @@ int __must_check __media_device_register(struct media_device *mdev,
+>  {
+>  	int ret;
+>  
+> +	/* Check if mdev was ever registered at all */
+> +	mutex_lock(&mdev->graph_mutex);
+> +
+>  	/* Register the device node. */
+>  	mdev->devnode.fops = &media_device_fops;
+>  	mdev->devnode.parent = mdev->dev;
+> @@ -731,17 +739,19 @@ int __must_check __media_device_register(struct media_device *mdev,
+>  
+>  	ret = media_devnode_register(&mdev->devnode, owner);
+>  	if (ret < 0)
+> -		return ret;
+> +		goto err;
+>  
+>  	ret = device_create_file(&mdev->devnode.dev, &dev_attr_model);
+>  	if (ret < 0) {
+>  		media_devnode_unregister(&mdev->devnode);
+> -		return ret;
+> +		goto err;
+>  	}
+>  
+>  	dev_dbg(mdev->dev, "Media device registered\n");
+>  
+> -	return 0;
+> +err:
+> +	mutex_unlock(&mdev->graph_mutex);
+> +	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(__media_device_register);
+>  
+> @@ -773,24 +783,13 @@ void media_device_unregister_entity_notify(struct media_device *mdev,
+>  }
+>  EXPORT_SYMBOL_GPL(media_device_unregister_entity_notify);
+>  
+> -void media_device_unregister(struct media_device *mdev)
+> +static void __media_device_unregister(struct media_device *mdev)
+>  {
+>  	struct media_entity *entity;
+>  	struct media_entity *next;
+>  	struct media_interface *intf, *tmp_intf;
+>  	struct media_entity_notify *notify, *nextp;
+>  
+> -	if (mdev == NULL)
+> -		return;
+> -
+> -	mutex_lock(&mdev->graph_mutex);
+> -
+> -	/* Check if mdev was ever registered at all */
+> -	if (!media_devnode_is_registered(&mdev->devnode)) {
+> -		mutex_unlock(&mdev->graph_mutex);
+> -		return;
+> -	}
+> -
+>  	/* Remove all entities from the media device */
+>  	list_for_each_entry_safe(entity, next, &mdev->entities, graph_obj.list)
+>  		__media_device_unregister_entity(entity);
+> @@ -807,38 +806,98 @@ void media_device_unregister(struct media_device *mdev)
+>  		kfree(intf);
+>  	}
+>  
+> -	mutex_unlock(&mdev->graph_mutex);
+> -
+> -	device_remove_file(&mdev->devnode.dev, &dev_attr_model);
+> -	media_devnode_unregister(&mdev->devnode);
+> +	/* Check if mdev devnode was registered */
+> +	if (media_devnode_is_registered(&mdev->devnode)) {
+> +		device_remove_file(&mdev->devnode.dev, &dev_attr_model);
+> +		media_devnode_unregister(&mdev->devnode);
+> +	}
+>  
+>  	dev_dbg(mdev->dev, "Media device unregistered\n");
+>  }
+> +
+> +void media_device_unregister(struct media_device *mdev)
+> +{
+> +	if (mdev == NULL)
+> +		return;
+> +
+> +	mutex_lock(&mdev->graph_mutex);
+> +	__media_device_unregister(mdev);
+> +	mutex_unlock(&mdev->graph_mutex);
+> +}
+>  EXPORT_SYMBOL_GPL(media_device_unregister);
+>  
+>  static void media_device_release_devres(struct device *dev, void *res)
+>  {
+>  }
+>  
+> -struct media_device *media_device_get_devres(struct device *dev)
+> +static void do_media_device_unregister_devres(struct kref *kref)
+>  {
+> +	struct media_device_devres *mdev_devres;
+>  	struct media_device *mdev;
+> +	int ret;
+>  
+> -	mdev = devres_find(dev, media_device_release_devres, NULL, NULL);
+> -	if (mdev)
+> -		return mdev;
+> +	mdev_devres = container_of(kref, struct media_device_devres, kref);
+>  
+> -	mdev = devres_alloc(media_device_release_devres,
+> -				sizeof(struct media_device), GFP_KERNEL);
+> -	if (!mdev)
+> +	if (!mdev_devres)
+> +		return;
+> +
+> +	mdev = &mdev_devres->mdev;
+> +
+> +	mutex_lock(&mdev->graph_mutex);
+> +	__media_device_unregister(mdev);
+> +	__media_device_cleanup(mdev);
+> +	mutex_unlock(&mdev->graph_mutex);
+> +	mutex_destroy(&mdev->graph_mutex);
+> +
+> +	ret = devres_destroy(mdev->dev, media_device_release_devres,
+> +			     NULL, NULL);
+> +	pr_debug("%s: devres_destroy() returned %d\n", __func__, ret);
+> +}
+> +
+> +void media_device_unregister_devres(struct media_device *mdev)
+> +{
+> +	struct media_device_devres *mdev_devres;
+> +
+> +	mdev_devres = container_of(mdev, struct media_device_devres, mdev);
+> +	kref_put(&mdev_devres->kref, do_media_device_unregister_devres);
+> +}
+> +EXPORT_SYMBOL_GPL(media_device_unregister_devres);
+> +
+> +struct media_device *media_device_get_devres(struct device *dev)
+> +{
+> +	struct media_device_devres *mdev_devres, *ptr;
+> +
+> +	mdev_devres = devres_find(dev, media_device_release_devres, NULL, NULL);
+> +	if (mdev_devres) {
+> +		kref_get(&mdev_devres->kref);
+> +		return &mdev_devres->mdev;
+> +	}
+> +
+> +	mdev_devres = devres_alloc(media_device_release_devres,
+> +				   sizeof(struct media_device_devres),
+> +				   GFP_KERNEL);
+> +	if (!mdev_devres)
+>  		return NULL;
+> -	return devres_get(dev, mdev, NULL, NULL);
+> +
+> +	ptr = devres_get(dev, mdev_devres, NULL, NULL);
+> +	if (ptr)
+> +		kref_init(&ptr->kref);
+> +	else
+> +		devres_free(mdev_devres);
+> +
+> +	return &ptr->mdev;
+>  }
+>  EXPORT_SYMBOL_GPL(media_device_get_devres);
+>  
+>  struct media_device *media_device_find_devres(struct device *dev)
+>  {
+> -	return devres_find(dev, media_device_release_devres, NULL, NULL);
+> +	struct media_device_devres *mdev_devres;
+> +
+> +	mdev_devres = devres_find(dev, media_device_release_devres, NULL, NULL);
+> +	if (!mdev_devres)
+> +		return NULL;
+> +
+> +	return &mdev_devres->mdev;
+>  }
+>  EXPORT_SYMBOL_GPL(media_device_find_devres);
+>  
+> diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
+> index 06da73f1ff22..060904ed8f20 100644
+> --- a/drivers/media/usb/au0828/au0828-core.c
+> +++ b/drivers/media/usb/au0828/au0828-core.c
+> @@ -157,8 +157,7 @@ static void au0828_unregister_media_device(struct au0828_dev *dev)
+>  	dev->media_dev->enable_source = NULL;
+>  	dev->media_dev->disable_source = NULL;
+>  
+> -	media_device_unregister(dev->media_dev);
+> -	media_device_cleanup(dev->media_dev);
+> +	media_device_unregister_devres(dev->media_dev);
+>  	dev->media_dev = NULL;
+>  #endif
+>  }
+> diff --git a/include/media/media-device.h b/include/media/media-device.h
+> index b21ef244ad3e..e59772ed8494 100644
+> --- a/include/media/media-device.h
+> +++ b/include/media/media-device.h
+> @@ -23,6 +23,7 @@
+>  #ifndef _MEDIA_DEVICE_H
+>  #define _MEDIA_DEVICE_H
+>  
+> +#include <linux/kref.h>
+>  #include <linux/list.h>
+>  #include <linux/mutex.h>
+>  
+> @@ -382,6 +383,16 @@ struct media_device {
+>  			   unsigned int notification);
+>  };
+>  
+> +/**
+> + * struct media_device_devres - Media device device resource
+> + * @mdev:	pointer to struct media_device
+> + * @kref:	Object refcount
+> + */
+> +struct media_device_devres {
+> +	struct media_device mdev;
+> +	struct kref kref;
+> +};
+> +
+>  /* We don't need to include pci.h or usb.h here */
+>  struct pci_dev;
+>  struct usb_device;
+> @@ -604,6 +615,19 @@ struct media_device *media_device_get_devres(struct device *dev);
+>   */
+>  struct media_device *media_device_find_devres(struct device *dev);
+>  
+> +/**
+> + * media_device_unregister_devres) - Unregister media device allocated as
+> + *				     as device resource
+> + *
+> + * @dev: pointer to struct &device.
+> + *
+> + * Devices allocated via media_device_get_devres should be de-alocalted
+> + * and freed via this function. Callers should not call
+> + * media_device_unregister() nor media_device_cleanup() on devices
+> + * allocated via media_device_get_devres().
+> + */
+> +void media_device_unregister_devres(struct media_device *mdev);
+> +
+>  /* Iterate over all entities. */
+>  #define media_device_for_each_entity(entity, mdev)			\
+>  	list_for_each_entry(entity, &(mdev)->entities, graph_obj.list)
+> @@ -688,6 +712,10 @@ static inline struct media_device *media_device_find_devres(struct device *dev)
+>  	return NULL;
+>  }
+>  
+> +static inline void media_device_unregister_devres(struct media_device *mdev)
+> +{
+> +}
+> +
+>  static inline void media_device_pci_init(struct media_device *mdev,
+>  					 struct pci_dev *pci_dev,
+>  					 char *name)
+> diff --git a/sound/usb/media.c b/sound/usb/media.c
+> index 93a50d01490c..f78955fd0d6e 100644
+> --- a/sound/usb/media.c
+> +++ b/sound/usb/media.c
+> @@ -311,8 +311,7 @@ void media_snd_device_delete(struct snd_usb_audio *chip)
+>  	media_snd_mixer_delete(chip);
+>  
+>  	if (mdev) {
+> -		if (media_devnode_is_registered(&mdev->devnode))
+> -			media_device_unregister(mdev);
+> +		media_device_unregister_devres(mdev);
+>  		chip->media_dev = NULL;
+>  	}
+>  }
+> 
+
+
+-- 
+Shuah Khan
+Sr. Linux Kernel Developer
+Open Source Innovation Group
+Samsung Research America (Silicon Valley)
+shuahkh@osg.samsung.com | (970) 217-8978
