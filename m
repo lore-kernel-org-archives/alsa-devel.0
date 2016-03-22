@@ -1,100 +1,56 @@
-From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Subject: Re: [PATCH] sound/usb: fix to release stream resources
- from media_snd_device_delete()
-Date: Tue, 22 Mar 2016 14:37:16 -0300
-Message-ID: <20160322143716.4164f763@recife.lan>
-References: <1458355831-9467-1-git-send-email-shuahkh@osg.samsung.com>
- <20160319091026.3f2cbaf2@recife.lan>
- <56ED54C0.7030802@osg.samsung.com>
- <56F0C39B.6090802@osg.samsung.com>
- <56F142AE.8060704@osg.samsung.com>
- <56F180FE.6020104@osg.samsung.com>
+From: Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: [PATCH 0/3] ARM: OMAP3: Fix McBSP2/3 hwmod setup for sidetone
+Date: Tue, 22 Mar 2016 12:29:52 -0700
+Message-ID: <20160322192951.GP9329@atomide.com>
+References: <1458296929-718-1-git-send-email-peter.ujfalusi@ti.com>
+ <alpine.DEB.2.02.1603191908070.6629@utopia.booyaka.com>
+ <56EFB31C.9090103@ti.com>
+ <20160321202107.GO9329@atomide.com>
+ <56F107FF.8080006@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lists.s-osg.org (lists.s-osg.org [54.187.51.154])
- by alsa0.perex.cz (Postfix) with ESMTP id C899F260711
- for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2016 18:37:23 +0100 (CET)
-In-Reply-To: <56F180FE.6020104@osg.samsung.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Shuah Khan <shuahkh@osg.samsung.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-media@vger.kernel.org, tiwai@suse.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <56F107FF.8080006-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
+Cc: Paul Walmsley <paul-DWxLp4Yu+b8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jarkko Nikula <jarkko.nikula-FVTvWyuFUl3QT0dZR+AlfA@public.gmane.org>, Tero Kristo <t-kristo-l0cyMroinI0@public.gmane.org>, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Em Tue, 22 Mar 2016 11:29:34 -0600
-Shuah Khan <shuahkh@osg.samsung.com> escreveu:
-
-> On 03/22/2016 07:03 AM, Shuah Khan wrote:
-> > On 03/21/2016 10:01 PM, Shuah Khan wrote:  
-> >> On 03/19/2016 07:31 AM, Shuah Khan wrote:  
-> >>> On 03/19/2016 06:10 AM, Mauro Carvalho Chehab wrote:  
-> >>>> Em Fri, 18 Mar 2016 20:50:31 -0600
-> >>>> Shuah Khan <shuahkh@osg.samsung.com> escreveu:
-> >>>>  
-> >>>>> Fix to release stream resources from media_snd_device_delete() before
-> >>>>> media device is unregistered. Without this change, stream resource free
-> >>>>> is attempted after the media device is unregistered which would result
-> >>>>> in use-after-free errors.
-> >>>>>
-> >>>>> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
-> >>>>> ---
-> >>>>>
-> >>>>> - Ran bind/unbind loop (1000 iteration) test on snd-usb-audio
-> >>>>>   while running mc_nextgen_test loop (1000 iterations) in parallel.
-> >>>>> - Ran bind/unbind and rmmod/modprobe tests on both drivers. Also
-> >>>>>   generated graphs when after bind/unbind, rmmod/modprobe. Graphs
-> >>>>>   look good.
-> >>>>> - Note: Please apply the following patch to fix memory leak:
-> >>>>>   sound/usb: Fix memory leak in media_snd_stream_delete() during unbind
-> >>>>>   https://lkml.org/lkml/2016/3/16/1050  
-> >>>>
-> >>>> Yeah, a way better!
-> >>>>
-> >>>> For normal bind/unbind, it seems to be working fine. Also
-> >>>> for driver's rmmod, so:
-> >>>>
-> >>>> Tested-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>  
+* Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org> [160322 01:54]:
+> Tony,
 > 
-> Takashi,
+> On 03/21/16 22:21, Tony Lindgren wrote:
+> > Hi,
+> > 
+> > * Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org> [160321 01:39]:
+> >>
+> >> This is also interesting:
+> >> McBSP2 sidetone is in region 39 and 40 (module and L4 interconnect) which is
+> >> unique in case of OMAP34xx and OMAP35xx, but it is overlapping with GPIO6 on
+> >> OMAP36xx. Not sure what are the implications.
+> > 
+> > Hmm GPIO6 is in a different L4 segment though? Maybe
+> > you did not account for the segments?
+> > 
+> > 0x49000000 + 0x20000 + 0x2000/0x4000/0x6000 for McBSP
+> > 0x49000000 + 0x50000 + 0x8000 for GPIO6
+> > 
+> > Or maybe I don't understand at which physical address the
+> > overlap is? :)
 > 
-> Could please ack this patch - please see below that the problem
-> Mauro and I both saw ended up to a latent bug in au0828 that is
-> in Linux 4.5 as well. It is now fixed.
+> The addresses are not overlapping, but the Region Numbers for GPIO6 and McBSP2
+> sidetone in Table 9-114 "Region Allocation for
+> L4-Per Interconnect". But only in case of OMAP36xx
 
-FYI, the patches we're intending to send to fix the issues with
-au0828 and snd-usb-audio are at my experimental tree:
-	https://git.linuxtv.org/mchehab/experimental.git/log/?h=au0828-unbind-fixes
-
-The patches are:
-
-f9dca0c46f12 [media] au0828: Fix dev_state handling
-d9898e2e7bb3 [media] au0828: fix au0828_v4l2_close() dev_state race condition
-52a6e1f97587 [media] media-devnode: add missing mutex lock in error handler
-db268d4f59c5 [media] media-device: Simplify compat32 logic
-105817f85b02 sound/usb: fix to release stream resources from media_snd_device_delete()
-70fafd948468 sound/usb: Fix memory leak in media_snd_stream_delete() during unbind
-a78a4b10ecd3 sound/usb/media: use core routine to initialize media_device
-9d8830150475 [media] media-device: use kref for media_device instance
-544439bf084a [media] media-device: make topology_version u64
-4e18ca9ce0c2 [media] media-device: Fix a comment
-c38077d39c7e [media] media-device: get rid of the spinlock
-a50d06389fdf sound/usb: fix NULL dereference in usb_audio_probe()
-b39950960d2b [media] media: au0828 fix to clear enable/disable/change source handlers
-d9f03ad36a9d [media] v4l2-mc: cleanup a warning
-6a4f10cff976 [media] au0828: disable tuner links and cache tuner/decoder
-
-We're running some stress tests today, so we may need to send a few
-other patches later on, but I guess they'll be either at au0828 or
-at the media core.
+Oh OK, yeah the TRM region numbers are wrong, they skip unused
+entries compared to the hardware AP table :) Basically the
+TRM AP region numbering is useless and wrong.
 
 Regards,
-Mauro
+
+Tony
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
