@@ -1,18 +1,17 @@
-From: han.lu@intel.com
-Subject: [PATCH 6/6] alsabat: add tinyalsa support
-Date: Tue, 22 Mar 2016 13:10:29 +0800
-Message-ID: <e228cfd2369678fc831f399b02c38366b1a33315.1458623090.git.han.lu@intel.com>
-References: <cover.1458623090.git.han.lu@intel.com>
+From: anish kumar <yesanishhere@gmail.com>
+Subject: [PATCH] ASoC: Add max98371 codec driver
+Date: Mon, 21 Mar 2016 23:53:25 -0700
+Message-ID: <1458629605-6225-1-git-send-email-yesanishhere@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id BCB9326516A
- for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2016 06:09:06 +0100 (CET)
-In-Reply-To: <cover.1458623090.git.han.lu@intel.com>
-In-Reply-To: <cover.1458623090.git.han.lu@intel.com>
-References: <cover.1458623090.git.han.lu@intel.com>
+Received: from mail-pf0-f173.google.com (mail-pf0-f173.google.com
+ [209.85.192.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0989A26172C
+ for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2016 07:53:35 +0100 (CET)
+Received: by mail-pf0-f173.google.com with SMTP id 4so166195310pfd.0
+ for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2016 23:53:34 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,634 +21,548 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org
-Cc: "Lu, Han" <han.lu@intel.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, anish kumar <yesanishhere@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Lu, Han" <han.lu@intel.com>
+Signed-off-by: anish kumar <yesanishhere@gmail.com>
+---
+Changes in this version:
+1. Removed the probe callback as it was not used.
+2. Replaced the control with tlv
+ .../devicetree/bindings/sound/max98371.txt         |  17 +
+ sound/soc/codecs/max98371.c                        | 427 +++++++++++++++++++++
+ sound/soc/codecs/max98371.h                        |  64 +++
+ 3 files changed, 508 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/max98371.txt
+ create mode 100644 sound/soc/codecs/max98371.c
+ create mode 100644 sound/soc/codecs/max98371.h
 
-Alsabat will use tinyalsa instead of ALSA, if tinyalsa is installed
-in system. So alsabat can run on tinyalsa platforms such as
-IoT/Android devices.
-The patch is tested on Ubuntu with libasound.so be replaced by
-libtinyalsa.so.
-
-Signed-off-by: Lu, Han <han.lu@intel.com>
-
-diff --git a/bat/Makefile.am b/bat/Makefile.am
-index 712f5bf..24e3eb8 100644
---- a/bat/Makefile.am
-+++ b/bat/Makefile.am
-@@ -7,13 +7,11 @@ alsabat_SOURCES = \
- 	bat.c \
- 	common.c \
- 	signal.c \
--	convert.c \
--	alsa.c
-+	convert.c
- 
- noinst_HEADERS = \
- 	common.h \
- 	bat-signal.h \
--	alsa.h \
- 	convert.h
- 
- if HAVE_LIBFFTW3
-@@ -21,6 +19,14 @@ alsabat_SOURCES += analyze.c
- noinst_HEADERS += analyze.h
- endif
- 
-+if HAVE_LIBTINYALSA
-+alsabat_SOURCES += tinyalsa.c
-+noinst_HEADERS += tinyalsa.h
-+else
-+alsabat_SOURCES += alsa.c
-+noinst_HEADERS += alsa.h
-+endif
-+
- AM_CPPFLAGS = \
- 	      -Wall -I$(top_srcdir)/include
- 
-diff --git a/bat/alsabat.1 b/bat/alsabat.1
-index 5f41669..9b969c2 100644
---- a/bat/alsabat.1
-+++ b/bat/alsabat.1
-@@ -33,6 +33,9 @@ analog loopback :-
- 
- https://source.android.com/devices/audio/loopback.html
- 
-+If tinyalsa lib is installed in system, ALSABAT will use tinyalsa lib instead
-+of ALSA lib.
-+
- .SH OPTIONS
- .TP
- \fI\-h, \-\-help\fP
-diff --git a/bat/bat.c b/bat/bat.c
-index f10c647..e824065 100644
---- a/bat/bat.c
-+++ b/bat/bat.c
-@@ -31,7 +31,11 @@
- 
- #include "common.h"
- 
-+#ifdef HAVE_LIBTINYALSA
-+#include "tinyalsa.h"
-+#else
- #include "alsa.h"
-+#endif
- #include "convert.h"
- #ifdef HAVE_LIBFFTW3
- #include "analyze.h"
-@@ -301,7 +305,6 @@ static void set_defaults(struct bat *bat)
- 
- 	/* Set default values */
- 	bat->rate = 44100;
--	bat->channels = 1;
- 	bat->frame_size = 2;
- 	bat->sample_size = 2;
- 	bat->format = BAT_PCM_FORMAT_S16_LE;
-@@ -315,8 +318,15 @@ static void set_defaults(struct bat *bat)
- 	bat->capture.device = NULL;
- 	bat->buf = NULL;
- 	bat->local = false;
-+#ifdef HAVE_LIBTINYALSA
-+	bat->channels = 2;
-+	bat->playback.fct = &playback_tinyalsa;
-+	bat->capture.fct = &record_tinyalsa;
-+#else
-+	bat->channels = 1;
- 	bat->playback.fct = &playback_alsa;
- 	bat->capture.fct = &record_alsa;
-+#endif
- 	bat->playback.mode = MODE_LOOPBACK;
- 	bat->capture.mode = MODE_LOOPBACK;
- 	bat->period_is_limited = false;
-diff --git a/bat/common.h b/bat/common.h
-index ed33d51..b789af5 100644
---- a/bat/common.h
-+++ b/bat/common.h
-@@ -125,6 +125,8 @@ enum _bat_op_mode {
- };
- 
- struct pcm {
-+	unsigned int card_tiny;
-+	unsigned int device_tiny;
- 	char *device;
- 	char *file;
- 	enum _bat_op_mode mode;
-diff --git a/bat/tinyalsa.c b/bat/tinyalsa.c
+diff --git a/Documentation/devicetree/bindings/sound/max98371.txt b/Documentation/devicetree/bindings/sound/max98371.txt
 new file mode 100644
-index 0000000..ea5f848
+index 0000000..6c28523
 --- /dev/null
-+++ b/bat/tinyalsa.c
-@@ -0,0 +1,460 @@
++++ b/Documentation/devicetree/bindings/sound/max98371.txt
+@@ -0,0 +1,17 @@
++max98371 codec
++
++This device supports I2C mode only.
++
++Required properties:
++
++- compatible : "maxim,max98371"
++- reg : The chip select number on the I2C bus
++
++Example:
++
++&i2c {
++	max98371: max98371@0x31 {
++		compatible = "maxim,max98371";
++		reg = <0x31>;
++	};
++};
+diff --git a/sound/soc/codecs/max98371.c b/sound/soc/codecs/max98371.c
+new file mode 100644
+index 0000000..fe7f08f
+--- /dev/null
++++ b/sound/soc/codecs/max98371.c
+@@ -0,0 +1,427 @@
 +/*
-+ * Copyright (C) 2013-2015 Intel Corporation
++ * max98371.c -- ALSA SoC Stereo MAX98371 driver
++ *
++ * Copyright 2015-16 Maxim Integrated Products
 + *
 + * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
 + */
 +
-+#include <stdio.h>
-+#include <string.h>
-+#include <stdbool.h>
-+#include <stdlib.h>
-+#include <pthread.h>
-+#include <errno.h>
++#include <linux/i2c.h>
++#include <linux/module.h>
++#include <linux/regmap.h>
++#include <linux/slab.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/tlv.h>
++#include "max98371.h"
 +
-+#include <tinyalsa/asoundlib.h>
-+
-+#include "aconfig.h"
-+#include "gettext.h"
-+
-+#include "common.h"
-+#include "tinyalsa.h"
-+
-+struct format_map_table {
-+	enum _bat_pcm_format format_bat;
-+	enum pcm_format format_tiny;
++static const char *const monomix_text[] = {
++	"Left", "Right", "LeftRightDiv2",
 +};
 +
-+static struct format_map_table map_tables[] = {
-+	{ BAT_PCM_FORMAT_S16_LE, PCM_FORMAT_S16_LE },
-+	{ BAT_PCM_FORMAT_S32_LE, PCM_FORMAT_S32_LE },
-+	{ BAT_PCM_FORMAT_MAX, },
++static const char *const voltage_level_text[] = {
++	"9.5dB", "10.5dB", "11.5dB", "11.5dB", "12.5dB",
++	"13.5dB", "14.5dB", "15.5dB", "16.5dB", "17.5dB",
++	"18.5dB", "19.5dB", "20.5dB"
 +};
 +
-+static int format_convert(struct bat *bat, struct pcm_config *config)
-+{
-+	struct format_map_table *t = map_tables;
++static const char *const hpf_cutoff_txt[] = {
++	"Disable", "DC Block", "50Hz",
++	"100Hz", "200Hz", "400Hz", "800Hz",
++};
 +
-+	for (; t->format_bat != BAT_PCM_FORMAT_MAX; t++) {
-+		if (t->format_bat == bat->format) {
-+			config->format = t->format_tiny;
-+			return 0;
-+		}
++static SOC_ENUM_SINGLE_DECL(max98371_voltage, MAX98371_GAIN, 0,
++		voltage_level_text);
++
++static SOC_ENUM_SINGLE_DECL(max98371_monomix, MAX98371_MONOMIX_CFG, 0,
++		monomix_text);
++
++static SOC_ENUM_SINGLE_DECL(max98371_hpf_cutoff, MAX98371_HPF, 0,
++		hpf_cutoff_txt);
++
++static struct reg_default max98371_reg[] = {
++	{ 0x01, 0x00 },
++	{ 0x02, 0x00 },
++	{ 0x03, 0x00 },
++	{ 0x04, 0x00 },
++	{ 0x05, 0x00 },
++	{ 0x06, 0x00 },
++	{ 0x07, 0x00 },
++	{ 0x08, 0x00 },
++	{ 0x09, 0x00 },
++	{ 0x0A, 0x00 },
++	{ 0x10, 0x06 },
++	{ 0x11, 0x08 },
++	{ 0x14, 0x80 },
++	{ 0x15, 0x00 },
++	{ 0x16, 0x00 },
++	{ 0x18, 0x00 },
++	{ 0x19, 0x00 },
++	{ 0x1C, 0x00 },
++	{ 0x1D, 0x00 },
++	{ 0x1E, 0x00 },
++	{ 0x1F, 0x00 },
++	{ 0x20, 0x00 },
++	{ 0x21, 0x00 },
++	{ 0x22, 0x00 },
++	{ 0x23, 0x00 },
++	{ 0x24, 0x00 },
++	{ 0x25, 0x00 },
++	{ 0x26, 0x00 },
++	{ 0x27, 0x00 },
++	{ 0x28, 0x00 },
++	{ 0x29, 0x00 },
++	{ 0x2A, 0x00 },
++	{ 0x2B, 0x00 },
++	{ 0x2C, 0x00 },
++	{ 0x2D, 0x00 },
++	{ 0x2E, 0x0B },
++	{ 0x31, 0x00 },
++	{ 0x32, 0x18 },
++	{ 0x33, 0x00 },
++	{ 0x34, 0x00 },
++	{ 0x36, 0x00 },
++	{ 0x37, 0x00 },
++	{ 0x38, 0x00 },
++	{ 0x39, 0x00 },
++	{ 0x3A, 0x00 },
++	{ 0x3B, 0x00 },
++	{ 0x3B, 0x00 },
++	{ 0x3C, 0x00 },
++	{ 0x3D, 0x00 },
++	{ 0x3E, 0x00 },
++	{ 0x3F, 0x00 },
++	{ 0x40, 0x00 },
++	{ 0x41, 0x00 },
++	{ 0x42, 0x00 },
++	{ 0x43, 0x00 },
++	{ 0x4A, 0x00 },
++	{ 0x4B, 0x00 },
++	{ 0x4C, 0x00 },
++	{ 0x4D, 0x00 },
++	{ 0x4E, 0x00 },
++	{ 0x50, 0x00 },
++	{ 0x51, 0x00 },
++	{ 0x55, 0x00 },
++	{ 0x58, 0x00 },
++	{ 0x59, 0x00 },
++	{ 0x5C, 0x00 },
++	{ 0xFF, 0x43 },
++};
++
++static bool max98371_volatile_register(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case MAX98371_IRQ_CLEAR1:
++	case MAX98371_IRQ_CLEAR2:
++	case MAX98371_IRQ_CLEAR3:
++	case MAX98371_VERSION:
++		return true;
++	default:
++		return false;
 +	}
-+	fprintf(bat->err, _("Invalid format!\n"));
-+	return -EINVAL;
 +}
 +
-+static int init_config(struct bat *bat, struct pcm_config *config)
++static bool max98371_readable_register(struct device *dev, unsigned int reg)
 +{
-+	config->channels = bat->channels;
-+	config->rate = bat->rate;
-+	config->period_size = 1024;
-+	config->period_count = 4;
-+	config->start_threshold = 0;
-+	config->stop_threshold = 0;
-+	config->silence_threshold = 0;
-+
-+	return format_convert(bat, config);
-+}
-+
-+/**
-+ * Called when thread is finished
-+ */
-+static void close_handle(void *handle)
-+{
-+	struct pcm *pcm = handle;
-+
-+	if (NULL != pcm)
-+		pcm_close(pcm);
-+}
-+
-+/**
-+ * Check that a parameter is inside bounds
-+ */
-+static int check_param(struct bat *bat, struct pcm_params *params,
-+		unsigned int param, unsigned int value,
-+		char *param_name, char *param_unit)
-+{
-+	unsigned int min;
-+	unsigned int max;
-+	int ret = 0;
-+
-+	min = pcm_params_get_min(params, param);
-+	if (value < min) {
-+		fprintf(bat->err,
-+			_("%s is %u%s, device only supports >= %u%s!\n"),
-+			param_name, value, param_unit, min, param_unit);
-+		ret = -EINVAL;
++	switch (reg) {
++	case MAX98371_SOFT_RESET:
++		return false;
++	default:
++		return true;
 +	}
++};
 +
-+	max = pcm_params_get_max(params, param);
-+	if (value > max) {
-+		fprintf(bat->err,
-+			_("%s is %u%s, device only supports <= %u%s!\n"),
-+			param_name, value, param_unit, max, param_unit);
-+		ret = -EINVAL;
-+	}
++static const unsigned int max98371_gain_tlv[] = {
++	0, 8, TLV_DB_SCALE_ITEM(0, 50, 0),
++	9, 10, TLV_DB_SCALE_ITEM(500, 100, 0),
++	11, 15, TLV_DB_SCALE_ITEM(0, 0, 0),
++};
 +
-+	return ret;
-+}
++static const unsigned int max98371_noload_gain_tlv[] = {
++	0, 11, TLV_DB_SCALE_ITEM(0, 100, 0),
++};
 +
-+/**
-+ * Check all parameters
-+ */
-+static int check_playback_params(struct bat *bat,
-+		struct pcm_config *config)
++static const DECLARE_TLV_DB_SCALE(digital_tlv, -6300, 50, 1);
++
++static const struct snd_kcontrol_new max98371_snd_controls[] = {
++	SOC_SINGLE_TLV("Speaker Volume", MAX98371_GAIN,
++			MAX98371_GAIN_SHIFT, (1<<MAX98371_GAIN_WIDTH)-1, 0,
++			max98371_gain_tlv),
++	SOC_SINGLE_TLV("Digital Volume", MAX98371_DIGITAL_GAIN, 0,
++			(1<<MAX98371_DIGITAL_GAIN_WIDTH)-1, 1, digital_tlv),
++	SOC_SINGLE_TLV("Speaker No-load Volume", MAX98371_GAIN,
++			0, (1<<MAX98371_NO_LOAD_WIDTH)-1, 0,
++			max98371_noload_gain_tlv),
++	SOC_SINGLE("DHT Attack Step", MAX98371_DHT, MAX98371_DHT_STEP, 3, 0),
++	SOC_SINGLE("DHT Attack Rate", MAX98371_DHT, 0, 7, 0),
++	SOC_ENUM("Voltage Level", max98371_voltage),
++	SOC_ENUM("Monomix Select", max98371_monomix),
++	SOC_ENUM("HPF Cutoff", max98371_hpf_cutoff),
++};
++
++static int max98371_dai_set_fmt(struct snd_soc_dai *codec_dai,
++		unsigned int fmt)
 +{
-+	struct pcm_params *params;
-+	unsigned int card = bat->playback.card_tiny;
-+	unsigned int device = bat->playback.device_tiny;
-+	int err = 0;
++	struct snd_soc_codec *codec = codec_dai->codec;
++	struct max98371_priv *max98371 = snd_soc_codec_get_drvdata(codec);
++	unsigned int val = 0;
 +
-+	params = pcm_params_get(card, device, PCM_OUT);
-+	if (params == NULL) {
-+		fprintf(bat->err, _("Unable to open PCM device %u!\n"),
-+				device);
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBS_CFS:
++		break;
++	default:
++		dev_err(codec->dev, "DAI clock mode unsupported");
 +		return -EINVAL;
 +	}
 +
-+	err = check_param(bat, params, PCM_PARAM_RATE,
-+			config->rate, "Sample rate", "Hz");
-+	if (err < 0)
-+		goto exit;
-+	err = check_param(bat, params, PCM_PARAM_CHANNELS,
-+			config->channels, "Sample", " channels");
-+	if (err < 0)
-+		goto exit;
-+	err = check_param(bat, params, PCM_PARAM_SAMPLE_BITS,
-+			bat->sample_size * 8, "Bitrate", " bits");
-+	if (err < 0)
-+		goto exit;
-+	err = check_param(bat, params, PCM_PARAM_PERIOD_SIZE,
-+			config->period_size, "Period size", "Hz");
-+	if (err < 0)
-+		goto exit;
-+	err = check_param(bat, params, PCM_PARAM_PERIODS,
-+			config->period_count, "Period count", "Hz");
-+	if (err < 0)
-+		goto exit;
-+
-+exit:
-+	pcm_params_free(params);
-+
-+	return err;
-+}
-+
-+/**
-+ * Play sample
-+ */
-+static int play_sample(struct bat *bat, struct pcm *pcm,
-+		void *buffer, int bytes)
-+{
-+	int err = 0;
-+	int frames = bytes / bat->frame_size;
-+	FILE *fp = NULL;
-+	int bytes_total = 0;
-+
-+	if (bat->debugplay) {
-+		fp = fopen(bat->debugplay, "wb");
-+		err = -errno;
-+		if (fp == NULL) {
-+			fprintf(bat->err, _("Cannot open file: %s %d\n"),
-+					bat->debugplay, err);
-+			return err;
-+		}
-+		/* leave space for file header */
-+		if (fseek(fp, sizeof(struct wav_container), SEEK_SET) != 0) {
-+			err = -errno;
-+			fclose(fp);
-+			return err;
-+		}
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		val |= 0;
++		break;
++	case SND_SOC_DAIFMT_RIGHT_J:
++		val |= MAX98371_DAI_RIGHT;
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		val |= MAX98371_DAI_LEFT;
++		break;
++	default:
++		dev_err(codec->dev, "DAI wrong mode unsupported");
++		return -EINVAL;
 +	}
-+
-+	while (1) {
-+		err = generate_input_data(bat, buffer, bytes, frames);
-+		if (err != 0)
-+			break;
-+
-+		if (bat->debugplay) {
-+			if (fwrite(buffer, 1, bytes, fp) != bytes) {
-+				err = -EIO;
-+				break;
-+			}
-+			bytes_total += bytes;
-+		}
-+
-+		bat->periods_played++;
-+		if (bat->period_is_limited
-+				&& bat->periods_played >= bat->periods_total)
-+			break;
-+
-+		err = pcm_write(pcm, buffer, bytes);
-+		if (err != 0)
-+			break;
-+	}
-+
-+	if (bat->debugplay) {
-+		update_wav_header(bat, fp, bytes_total);
-+		fclose(fp);
-+	}
-+	return err;
-+}
-+
-+static int get_tiny_device(struct bat *bat, char *alsa_device,
-+		unsigned int *tiny_card, unsigned int *tiny_device)
-+{
-+	char *tmp1, *tmp2, *tmp3;
-+
-+	if (alsa_device == NULL)
-+		goto fail;
-+
-+	tmp1 = strchr(alsa_device, ':');
-+	if (tmp1 == NULL)
-+		goto fail;
-+
-+	tmp3 = tmp1 + 1;
-+	tmp2 = strchr(tmp3, ',');
-+	if (tmp2 == NULL)
-+		goto fail;
-+
-+	tmp1 = tmp2 + 1;
-+	*tiny_device = atoi(tmp1);
-+	*tmp2 = '\0';
-+	*tiny_card = atoi(tmp3);
-+	*tmp2 = ',';
-+
++	regmap_update_bits(max98371->regmap, MAX98371_FMT,
++			MAX98371_FMT_MODE_MASK, val);
 +	return 0;
-+fail:
-+	fprintf(bat->err, _("Invalid tiny device: %s\n"), alsa_device);
-+	return -EINVAL;
 +}
 +
-+/**
-+ * Play
-+ */
-+void *playback_tinyalsa(struct bat *bat)
++static int max98371_dai_hw_params(struct snd_pcm_substream *substream,
++		struct snd_pcm_hw_params *params,
++		struct snd_soc_dai *dai)
 +{
-+	int err = 0;
-+	struct pcm_config config;
-+	struct pcm *pcm = NULL;
-+	void *buffer = NULL;
-+	int bufbytes;
++	struct snd_soc_codec *codec = dai->codec;
++	struct max98371_priv *max98371 = snd_soc_codec_get_drvdata(codec);
++	int blr_clk_ratio, ch_size, channels = params_channels(params);
++	int rate = params_rate(params);
 +
-+	fprintf(bat->log, _("Entering playback thread (tinyalsa).\n"));
-+
-+	retval_play = 0;
-+
-+	/* init device */
-+	err = get_tiny_device(bat, bat->playback.device,
-+			&bat->playback.card_tiny,
-+			&bat->playback.device_tiny);
-+	if (err < 0) {
-+		retval_play = err;
-+		goto exit1;
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S8:
++		regmap_update_bits(max98371->regmap, MAX98371_FMT,
++				MAX98371_FMT_MASK, MAX98371_DAI_CHANSZ_16);
++		ch_size = 8;
++		break;
++	case SNDRV_PCM_FORMAT_S16_LE:
++		regmap_update_bits(max98371->regmap, MAX98371_FMT,
++				MAX98371_FMT_MASK, MAX98371_DAI_CHANSZ_16);
++		ch_size = 16;
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		regmap_update_bits(max98371->regmap, MAX98371_FMT,
++				MAX98371_FMT_MASK, MAX98371_DAI_CHANSZ_32);
++		ch_size = 24;
++		break;
++	case SNDRV_PCM_FORMAT_S32_LE:
++		regmap_update_bits(max98371->regmap, MAX98371_FMT,
++				MAX98371_FMT_MASK, MAX98371_DAI_CHANSZ_32);
++		ch_size = 32;
++		break;
++	default:
++		pr_info("%s: format unsupported %d",
++				__func__, params_format(params));
++		return -EINVAL;
 +	}
 +
-+	/* init config */
-+	err = init_config(bat, &config);
-+	if (err < 0) {
-+		retval_play = err;
-+		goto exit1;
++	/* BCLK/LRCLK ratio calculation */
++	blr_clk_ratio = channels * ch_size;
++	switch (blr_clk_ratio) {
++	case 32:
++		regmap_update_bits(max98371->regmap,
++			MAX98371_DAI_CLK,
++			MAX98371_DAI_BSEL_MASK, MAX98371_DAI_BSEL_32);
++		break;
++	case 48:
++		regmap_update_bits(max98371->regmap,
++			MAX98371_DAI_CLK,
++			MAX98371_DAI_BSEL_MASK, MAX98371_DAI_BSEL_48);
++		break;
++	case 64:
++		regmap_update_bits(max98371->regmap,
++			MAX98371_DAI_CLK,
++			MAX98371_DAI_BSEL_MASK, MAX98371_DAI_BSEL_64);
++		break;
++	default:
++		pr_info("%s: ratio unsupported %d", __func__, blr_clk_ratio);
++		return -EINVAL;
 +	}
 +
-+	/* check param before open device */
-+	err = check_playback_params(bat, &config);
-+	if (err < 0) {
-+		retval_play = err;
-+		goto exit1;
++	switch (rate) {
++	case 32000:
++		regmap_update_bits(max98371->regmap,
++			MAX98371_SPK_SR,
++			MAX98371_SPK_SR_MASK, MAX98371_SPK_SR_32);
++		break;
++	case 44100:
++		regmap_update_bits(max98371->regmap,
++			MAX98371_SPK_SR,
++			MAX98371_SPK_SR_MASK, MAX98371_SPK_SR_44);
++		break;
++	case 48000:
++		regmap_update_bits(max98371->regmap,
++			MAX98371_SPK_SR,
++			MAX98371_SPK_SR_MASK, MAX98371_SPK_SR_48);
++		break;
++	case 88200:
++		regmap_update_bits(max98371->regmap,
++			MAX98371_SPK_SR,
++			MAX98371_SPK_SR_MASK, MAX98371_SPK_SR_88);
++		break;
++	case 96000:
++		regmap_update_bits(max98371->regmap,
++			MAX98371_SPK_SR,
++			MAX98371_SPK_SR_MASK, MAX98371_SPK_SR_96);
++		break;
++	default:
++		pr_info("%s: rate unsupported %d", __func__, rate);
++		return -EINVAL;
 +	}
 +
-+	/* open device */
-+	pcm = pcm_open(bat->playback.card_tiny, bat->playback.device_tiny,
-+			PCM_OUT, &config);
-+	if (!pcm || !pcm_is_ready(pcm)) {
-+		fprintf(bat->err, _("Unable to open PCM device %u (%s)!\n"),
-+				bat->playback.device_tiny, pcm_get_error(pcm));
-+		retval_play = -EINVAL;
-+		goto exit1;
-+	}
-+
-+	/* init buffer */
-+	bufbytes = pcm_frames_to_bytes(pcm, pcm_get_buffer_size(pcm));
-+	buffer = malloc(bufbytes);
-+	if (!buffer) {
-+		retval_play = -ENOMEM;
-+		goto exit2;
-+	}
-+
-+	/* init playback source */
-+	if (bat->playback.file == NULL) {
-+		fprintf(bat->log, _("Playing generated audio sine wave"));
-+		bat->sinus_duration == 0 ?
-+			fprintf(bat->log, _(" endlessly\n")) :
-+			fprintf(bat->log, _("\n"));
-+	} else {
-+		fprintf(bat->log, _("Playing input audio file: %s\n"),
-+				bat->playback.file);
-+		bat->fp = fopen(bat->playback.file, "rb");
-+		err = -errno;
-+		if (bat->fp == NULL) {
-+			fprintf(bat->err, _("Cannot open file: %s %d\n"),
-+					bat->playback.file, err);
-+			retval_play = err;
-+			goto exit3;
-+		}
-+		/* Skip header */
-+		err = read_wav_header(bat, bat->playback.file, bat->fp, true);
-+		if (err != 0) {
-+			retval_play = err;
-+			goto exit4;
-+		}
-+	}
-+
-+	err = play_sample(bat, pcm, buffer, bufbytes);
-+	if (err < 0) {
-+		retval_play = err;
-+		goto exit4;
-+	}
-+
-+exit4:
-+	if (bat->playback.file)
-+		fclose(bat->fp);
-+exit3:
-+	free(buffer);
-+exit2:
-+	pcm_close(pcm);
-+exit1:
-+	pthread_exit(&retval_play);
++	/* enabling both the RX channels*/
++	regmap_update_bits(max98371->regmap, MAX98371_MONOMIX_SRC,
++			MAX98371_MONOMIX_SRC_MASK, MONOMIX_RX_0_1);
++	regmap_update_bits(max98371->regmap, MAX98371_DAI_CHANNEL,
++			MAX98371_CHANNEL_MASK, MAX98371_CHANNEL_MASK);
++	return 0;
 +}
 +
-+/**
-+ * Capture sample
-+ */
-+static int capture_sample(struct bat *bat, struct pcm *pcm,
-+		void *buffer, unsigned int bytes)
++static const struct snd_soc_dapm_widget max98371_dapm_widgets[] = {
++	SND_SOC_DAPM_AIF_IN("DAI_OUT",
++		"HiFi Playback", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_DAC("DAC Enable",
++		"HiFi Playback", MAX98371_SPK_ENABLE, 0, 0),
++	SND_SOC_DAPM_SUPPLY("Global Enable",
++		MAX98371_GLOBAL_ENABLE, 0, 0, NULL, 0),
++	SND_SOC_DAPM_OUTPUT("SPK_OUT"),
++};
++
++static const struct snd_soc_dapm_route max98371_audio_map[] = {
++	{"DAC Enable", NULL, "DAI_OUT"},
++	{"SPK_OUT", NULL, "DAC Enable"},
++	{"SPK_OUT", NULL, "Global Enable"},
++};
++
++#define MAX98371_RATES SNDRV_PCM_RATE_8000_48000
++#define MAX98371_FORMATS (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_BE | \
++		SNDRV_PCM_FMTBIT_S24_BE | SNDRV_PCM_FMTBIT_S32_BE)
++
++static struct snd_soc_dai_ops max98371_dai_ops = {
++	.set_fmt = max98371_dai_set_fmt,
++	.hw_params = max98371_dai_hw_params,
++};
++
++static struct snd_soc_dai_driver max98371_dai[] = {
++	{
++		.name = "max98371-aif1",
++		.playback = {
++			.stream_name = "HiFi Playback",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = SNDRV_PCM_RATE_8000_48000,
++			.formats = MAX98371_FORMATS,
++		},
++		.ops = &max98371_dai_ops,
++	}
++};
++
++static struct snd_soc_codec_driver max98371_codec = {
++	.controls = max98371_snd_controls,
++	.num_controls = ARRAY_SIZE(max98371_snd_controls),
++	.dapm_routes = max98371_audio_map,
++	.num_dapm_routes = ARRAY_SIZE(max98371_audio_map),
++	.dapm_widgets = max98371_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(max98371_dapm_widgets),
++};
++
++static const struct regmap_config max98371_regmap = {
++	.reg_bits         = 8,
++	.val_bits         = 8,
++	.max_register     = MAX98371_VERSION,
++	.reg_defaults     = max98371_reg,
++	.num_reg_defaults = ARRAY_SIZE(max98371_reg),
++	.volatile_reg     = max98371_volatile_register,
++	.readable_reg     = max98371_readable_register,
++	.cache_type       = REGCACHE_RBTREE,
++};
++
++static int max98371_i2c_probe(struct i2c_client *i2c,
++		const struct i2c_device_id *id)
 +{
-+	int err = 0;
-+	FILE *fp = NULL;
-+	unsigned int bytes_read = 0;
-+	unsigned int bytes_count = bat->frames * bat->frame_size;
++	struct max98371_priv *max98371;
++	int ret, reg;
 +
-+	remove(bat->capture.file);
-+	fp = fopen(bat->capture.file, "wb");
-+	err = -errno;
-+	if (fp == NULL) {
-+		fprintf(bat->err, _("Cannot open file: %s %d\n"),
-+				bat->capture.file, err);
-+		return err;
-+	}
-+	/* leave space for file header */
-+	if (fseek(fp, sizeof(struct wav_container), SEEK_SET) != 0) {
-+		err = -errno;
-+		fclose(fp);
-+		return err;
++	max98371 = devm_kzalloc(&i2c->dev,
++			sizeof(*max98371), GFP_KERNEL);
++	if (!max98371)
++		return -ENOMEM;
++
++	i2c_set_clientdata(i2c, max98371);
++	max98371->regmap = devm_regmap_init_i2c(i2c, &max98371_regmap);
++	if (IS_ERR(max98371->regmap)) {
++		ret = PTR_ERR(max98371->regmap);
++		dev_err(&i2c->dev,
++				"Failed to allocate regmap: %d\n", ret);
++		return ret;
 +	}
 +
-+	while (bytes_read < bytes_count && !pcm_read(pcm, buffer, bytes)) {
-+		if (fwrite(buffer, 1, bytes, fp) != bytes)
-+			break;
-+
-+		bytes_read += bytes;
-+
-+		bat->periods_played++;
-+
-+		if (bat->period_is_limited
-+				&& bat->periods_played >= bat->periods_total)
-+			break;
++	ret = regmap_read(max98371->regmap, MAX98371_VERSION, &reg);
++	if (ret < 0) {
++		dev_info(&i2c->dev, "device error %d\n", ret);
++		return ret;
 +	}
++	dev_info(&i2c->dev, "device version %x\n", reg);
 +
-+	err = update_wav_header(bat, fp, bytes_read);
-+
-+	fclose(fp);
-+	return err;
++	ret = snd_soc_register_codec(&i2c->dev, &max98371_codec,
++			max98371_dai, ARRAY_SIZE(max98371_dai));
++	if (ret < 0) {
++		dev_err(&i2c->dev, "Failed to register codec: %d\n", ret);
++		return ret;
++	}
++	return ret;
 +}
 +
-+/**
-+ * Record
-+ */
-+void *record_tinyalsa(struct bat *bat)
++static int max98371_i2c_remove(struct i2c_client *client)
 +{
-+	int err = 0;
-+	struct pcm_config config;
-+	struct pcm *pcm;
-+	void *buffer;
-+	unsigned int bufbytes;
-+
-+	pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-+
-+	fprintf(bat->log, _("Entering capture thread (tinyalsa).\n"));
-+
-+	retval_record = 0;
-+
-+	/* init device */
-+	err = get_tiny_device(bat, bat->capture.device,
-+			&bat->capture.card_tiny,
-+			&bat->capture.device_tiny);
-+	if (err < 0) {
-+		retval_record = err;
-+		goto exit1;
-+	}
-+
-+	/* init config */
-+	err = init_config(bat, &config);
-+	if (err < 0) {
-+		retval_record = err;
-+		goto exit1;
-+	}
-+
-+	/* open device */
-+	pcm = pcm_open(bat->capture.card_tiny, bat->capture.device_tiny,
-+			PCM_IN, &config);
-+	if (!pcm || !pcm_is_ready(pcm)) {
-+		fprintf(bat->err, _("Unable to open PCM device (%s)!\n"),
-+				pcm_get_error(pcm));
-+		retval_record = -EINVAL;
-+		goto exit1;
-+	}
-+
-+	/* init buffer */
-+	bufbytes = pcm_frames_to_bytes(pcm, pcm_get_buffer_size(pcm));
-+	buffer = malloc(bufbytes);
-+	if (!buffer) {
-+		retval_record = -ENOMEM;
-+		goto exit2;
-+	}
-+
-+	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-+	pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL);
-+	pthread_cleanup_push(close_handle, pcm);
-+	pthread_cleanup_push(free, buffer);
-+
-+	fprintf(bat->log, _("Recording ...\n"));
-+	err = capture_sample(bat, pcm, buffer, bufbytes);
-+	if (err != 0) {
-+		retval_record = err;
-+		goto exit3;
-+	}
-+
-+	/* Normally we will never reach this part of code (unless error in
-+	 * previous call) (before exit3) as this thread will be cancelled
-+	 *  by end of play thread. Except in single line mode. */
-+	pthread_cleanup_pop(0);
-+	pthread_cleanup_pop(0);
-+	pthread_exit(&retval_record);
-+
-+exit3:
-+	free(buffer);
-+exit2:
-+	pcm_close(pcm);
-+exit1:
-+	pthread_exit(&retval_record);
++	snd_soc_unregister_codec(&client->dev);
++	return 0;
 +}
-diff --git a/bat/tinyalsa.h b/bat/tinyalsa.h
++
++static const struct i2c_device_id max98371_i2c_id[] = {
++	{ "max98371", 0 },
++};
++
++MODULE_DEVICE_TABLE(i2c, max98371_i2c_id);
++
++static const struct of_device_id max98371_of_match[] = {
++	{ .compatible = "maxim,max98371", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, max98371_of_match);
++
++static struct i2c_driver max98371_i2c_driver = {
++	.driver = {
++		.name = "max98371",
++		.owner = THIS_MODULE,
++		.pm = NULL,
++		.of_match_table = of_match_ptr(max98371_of_match),
++	},
++	.probe  = max98371_i2c_probe,
++	.remove = max98371_i2c_remove,
++	.id_table = max98371_i2c_id,
++};
++
++module_i2c_driver(max98371_i2c_driver);
++
++MODULE_AUTHOR("anish kumar <yesanishhere@gmail.com>");
++MODULE_DESCRIPTION("ALSA SoC MAX98371 driver");
++MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/max98371.h b/sound/soc/codecs/max98371.h
 new file mode 100644
-index 0000000..60f78f7
+index 0000000..c75b259
 --- /dev/null
-+++ b/bat/tinyalsa.h
-@@ -0,0 +1,20 @@
++++ b/sound/soc/codecs/max98371.h
+@@ -0,0 +1,64 @@
 +/*
-+ * Copyright (C) 2013-2015 Intel Corporation
++ * max98371.h -- MAX98371 ALSA SoC Audio driver
++ *
++ * Copyright 2011-2012 Maxim Integrated Products
 + *
 + * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
 + */
 +
-+extern int retval_play;
-+extern int retval_record;
++#ifndef _MAX98371_H
++#define _MAX98371_H
 +
-+void *playback_tinyalsa(struct bat *);
-+void *record_tinyalsa(struct bat *);
-diff --git a/configure.ac b/configure.ac
-index d712872..b539fb2 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -82,6 +82,9 @@ if test x$bat = xtrue; then
-   dnl Check for libfftw3
-   have_libfftw3="yes"
-   AC_CHECK_LIB([fftw3], [fftw_malloc], , [have_libfftw3="no"])
-+  dnl Check for libtinyalsa
-+  have_libtinyalsa="yes"
-+  AC_CHECK_LIB([tinyalsa], [pcm_open], , [have_libtinyalsa="no"])
-   AC_CHECK_LIB([m], [sqrtf], , [AC_MSG_ERROR([Error: Need sqrtf])])
-   AC_CHECK_LIB([pthread], [pthread_create], , [AC_MSG_ERROR([Error: need PTHREAD library])])
-   FFTW_CFLAGS="$CFLAGS"
-@@ -95,6 +98,7 @@ if test x$bat = xtrue; then
- 
- fi
- AM_CONDITIONAL(HAVE_LIBFFTW3, test "$have_libfftw3" = "yes")
-+AM_CONDITIONAL(HAVE_LIBTINYALSA, test "$have_libtinyalsa" = "yes")
- 
- dnl Check for librt
- LIBRT=""
++#define MAX98371_IRQ_CLEAR1			0x01
++#define MAX98371_IRQ_CLEAR2			0x02
++#define MAX98371_IRQ_CLEAR3			0x03
++#define MAX98371_DAI_CLK			0x10
++#define MAX98371_DAI_BSEL_MASK			0xF
++#define MAX98371_DAI_BSEL_32			2
++#define MAX98371_DAI_BSEL_48			3
++#define MAX98371_DAI_BSEL_64			4
++#define MAX98371_SPK_SR				0x11
++#define MAX98371_SPK_SR_MASK			0xF
++#define MAX98371_SPK_SR_32			6
++#define MAX98371_SPK_SR_44			7
++#define MAX98371_SPK_SR_48			8
++#define MAX98371_SPK_SR_88			10
++#define MAX98371_SPK_SR_96			11
++#define MAX98371_DAI_CHANNEL			0x15
++#define MAX98371_CHANNEL_MASK			0x3
++#define MAX98371_MONOMIX_SRC			0x18
++#define MAX98371_MONOMIX_CFG			0x19
++#define MAX98371_HPF				0x1C
++#define MAX98371_MONOMIX_SRC_MASK		0xFF
++#define MONOMIX_RX_0_1				((0x1)<<(4))
++#define M98371_DAI_CHANNEL_I2S			0x3
++#define MAX98371_DIGITAL_GAIN			0x2D
++#define MAX98371_DIGITAL_GAIN_WIDTH		0x7
++#define MAX98371_GAIN				0x2E
++#define MAX98371_GAIN_SHIFT			0x4
++#define MAX98371_GAIN_WIDTH			0x4
++#define MAX98371_NO_LOAD_WIDTH			4
++#define MAX98371_FMT				0x14
++#define MAX98371_CHANSZ_WIDTH			6
++#define MAX98371_FMT_MASK		        ((0x3)<<(MAX98371_CHANSZ_WIDTH))
++#define MAX98371_FMT_MODE_MASK		        ((0x7)<<(3))
++#define MAX98371_DAI_LEFT		        ((0x1)<<(3))
++#define MAX98371_DAI_RIGHT		        ((0x2)<<(3))
++#define MAX98371_DAI_CHANSZ_16                  ((1)<<(MAX98371_CHANSZ_WIDTH))
++#define MAX98371_DAI_CHANSZ_24                  ((2)<<(MAX98371_CHANSZ_WIDTH))
++#define MAX98371_DAI_CHANSZ_32                  ((3)<<(MAX98371_CHANSZ_WIDTH))
++#define MAX98371_DHT  0x32
++#define MAX98371_DHT_STEP			0x3
++#define MAX98371_SPK_ENABLE			0x4A
++#define MAX98371_GLOBAL_ENABLE			0x50
++#define MAX98371_SOFT_RESET			0x51
++#define MAX98371_VERSION			0xFF
++
++
++struct max98371_priv {
++	struct regmap *regmap;
++	struct snd_soc_codec *codec;
++};
++#endif
 -- 
-2.5.0
+1.9.3
