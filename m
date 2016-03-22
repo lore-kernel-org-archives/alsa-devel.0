@@ -1,45 +1,62 @@
-From: Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH 0/3] ARM: OMAP3: Fix McBSP2/3 hwmod setup for sidetone
-Date: Mon, 21 Mar 2016 13:21:07 -0700
-Message-ID: <20160321202107.GO9329@atomide.com>
-References: <1458296929-718-1-git-send-email-peter.ujfalusi@ti.com>
- <alpine.DEB.2.02.1603191908070.6629@utopia.booyaka.com>
- <56EFB31C.9090103@ti.com>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: [PATCH] ASoC: nau8825: reduce standby power consumption
+Date: Tue, 22 Mar 2016 11:57:05 +0800
+Message-ID: <1458619025-28306-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <56EFB31C.9090103-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-Cc: Paul Walmsley <paul-DWxLp4Yu+b8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jarkko Nikula <jarkko.nikula-FVTvWyuFUl3QT0dZR+AlfA@public.gmane.org>, Tero Kristo <t-kristo-l0cyMroinI0@public.gmane.org>, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A9F126516A
+ for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2016 04:56:57 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Decrease internal clock frequency for power saving when standby.
+But clock divider needs restore when MCLK as system clock in playback.
 
-* Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org> [160321 01:39]:
-> 
-> This is also interesting:
-> McBSP2 sidetone is in region 39 and 40 (module and L4 interconnect) which is
-> unique in case of OMAP34xx and OMAP35xx, but it is overlapping with GPIO6 on
-> OMAP36xx. Not sure what are the implications.
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+---
+ sound/soc/codecs/nau8825.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Hmm GPIO6 is in a different L4 segment though? Maybe
-you did not account for the segments?
-
-0x49000000 + 0x20000 + 0x2000/0x4000/0x6000 for McBSP
-0x49000000 + 0x50000 + 0x8000 for GPIO6
-
-Or maybe I don't understand at which physical address the
-overlap is? :)
-
-Let me know if you need me to dump out the IO ranges for
-you from the AP table for 34xx and 36xx.
-
-Regards,
-
-Tony
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index 3e7bee2..4c8572c 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -1116,6 +1116,9 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
+ 		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
+ 			NAU8825_CLK_SRC_MASK, NAU8825_CLK_SRC_MCLK);
+ 		regmap_update_bits(regmap, NAU8825_REG_FLL6, NAU8825_DCO_EN, 0);
++		/* MCLK not changed by clock tree */
++		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
++			NAU8825_CLK_MCLK_SRC_MASK, 0);
+ 		ret = nau8825_mclk_prepare(nau8825, freq);
+ 		if (ret)
+ 			return ret;
+@@ -1126,6 +1129,13 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
+ 			NAU8825_DCO_EN);
+ 		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
+ 			NAU8825_CLK_SRC_MASK, NAU8825_CLK_SRC_VCO);
++		/* Decrease the VCO frequency for power saving */
++		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
++			NAU8825_CLK_MCLK_SRC_MASK, 0xf);
++		regmap_update_bits(regmap, NAU8825_REG_FLL1,
++			NAU8825_FLL_RATIO_MASK, 0x10);
++		regmap_update_bits(regmap, NAU8825_REG_FLL6,
++			NAU8825_SDM_EN, NAU8825_SDM_EN);
+ 		if (nau8825->mclk_freq) {
+ 			clk_disable_unprepare(nau8825->mclk);
+ 			nau8825->mclk_freq = 0;
+-- 
+2.6.4
