@@ -1,19 +1,17 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 0/3] ARM: OMAP3: Fix McBSP2/3 hwmod setup
-	for sidetone
-Date: Tue, 22 Mar 2016 10:53:19 +0200
-Message-ID: <56F107FF.8080006@ti.com>
-References: <1458296929-718-1-git-send-email-peter.ujfalusi@ti.com>
- <alpine.DEB.2.02.1603191908070.6629@utopia.booyaka.com>
- <56EFB31C.9090103@ti.com> <20160321202107.GO9329@atomide.com>
+From: Hsin-Yu Chao <hychao@chromium.org>
+Subject: [PATCH] ucm: add cset-tlv command
+Date: Tue, 22 Mar 2016 17:10:34 +0800
+Message-ID: <1458637834-15947-1-git-send-email-hychao@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 71A13261A40
- for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2016 09:53:26 +0100 (CET)
-In-Reply-To: <20160321202107.GO9329@atomide.com>
+Received: from mail-pf0-f169.google.com (mail-pf0-f169.google.com
+ [209.85.192.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18144260591
+ for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2016 10:10:40 +0100 (CET)
+Received: by mail-pf0-f169.google.com with SMTP id x3so301676523pfb.1
+ for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2016 02:10:40 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,42 +21,178 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: devicetree@vger.kernel.org, Paul Walmsley <paul@pwsan.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Tero Kristo <t-kristo@ti.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: alsa-devel@alsa-project.org
+Cc: vinod.koul@intel.com, dgreid@chromium.org, Hsin-Yu Chao <hychao@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Tony,
+This patch enables UCM to set a file in TLV format to kcontrol by:
+cset-tlv "name='<kcontrol-name>' <path-to-file>"
+This new 'cset-tlv' command will be used to write audio DSP to
+specific alsa control, where the driver expectes a file in TLV
+format.
 
-On 03/21/16 22:21, Tony Lindgren wrote:
-> Hi,
-> =
+Signed-off-by: Hsin-Yu Chao <hychao@chromium.org>
+---
+ src/ucm/main.c      | 80 ++++++++++++++++++++++++++++++++++++++++++++---------
+ src/ucm/parser.c    | 10 +++++++
+ src/ucm/ucm_local.h |  1 +
+ 3 files changed, 78 insertions(+), 13 deletions(-)
 
-> * Peter Ujfalusi <peter.ujfalusi@ti.com> [160321 01:39]:
->>
->> This is also interesting:
->> McBSP2 sidetone is in region 39 and 40 (module and L4 interconnect) whic=
-h is
->> unique in case of OMAP34xx and OMAP35xx, but it is overlapping with GPIO=
-6 on
->> OMAP36xx. Not sure what are the implications.
-> =
-
-> Hmm GPIO6 is in a different L4 segment though? Maybe
-> you did not account for the segments?
-> =
-
-> 0x49000000 + 0x20000 + 0x2000/0x4000/0x6000 for McBSP
-> 0x49000000 + 0x50000 + 0x8000 for GPIO6
-> =
-
-> Or maybe I don't understand at which physical address the
-> overlap is? :)
-
-The addresses are not overlapping, but the Region Numbers for GPIO6 and McB=
-SP2
-sidetone in Table 9-114 "Region Allocation for
-L4-Per Interconnect". But only in case of OMAP36xx
-
--- =
-
-P=E9ter
+diff --git a/src/ucm/main.c b/src/ucm/main.c
+index 7e44603..a4ccb65 100644
+--- a/src/ucm/main.c
++++ b/src/ucm/main.c
+@@ -161,6 +161,47 @@ static int open_ctl(snd_use_case_mgr_t *uc_mgr,
+ 	return 0;
+ }
+ 
++static int tlv_parse(char **res,
++		     snd_ctl_elem_info_t *info,
++		     const char *filepath)
++{
++	int err = 0;
++	int fd;
++	struct stat st;
++	size_t sz;
++	ssize_t sz_read;
++
++	if (!snd_ctl_elem_info_is_tlv_writable(info)) {
++		err = -EINVAL;
++		return err;
++	}
++	fd = open(filepath, O_RDONLY);
++	if (fd < 0) {
++		err = -errno;
++		return err;
++	}
++	if (stat(filepath, &st) == -1) {
++		err = -errno;
++		goto __fail;
++	}
++	sz = st.st_size;
++	*res = malloc(sz);
++	if (res == NULL) {
++		err = -ENOMEM;
++		goto __fail;
++	}
++	sz_read = read(fd, *res, sz);
++	if (sz_read < 0 || (size_t)sz_read != sz) {
++		err = -errno;
++		free(*res);
++		*res = NULL;
++	}
++
++      __fail:
++	close(fd);
++	return err;
++}
++
+ static int binary_file_parse(snd_ctl_elem_value_t *dst,
+ 			      snd_ctl_elem_info_t *info,
+ 			      const char *filepath)
+@@ -226,6 +267,7 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
+ 	snd_ctl_elem_id_t *id;
+ 	snd_ctl_elem_value_t *value;
+ 	snd_ctl_elem_info_t *info;
++	char *res = NULL;
+ 
+ 	snd_ctl_elem_id_malloc(&id);
+ 	snd_ctl_elem_value_malloc(&value);
+@@ -241,23 +283,32 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
+ 		err = -EINVAL;
+ 		goto __fail;
+ 	}
+-	snd_ctl_elem_value_set_id(value, id);
+ 	snd_ctl_elem_info_set_id(info, id);
+-	err = snd_ctl_elem_read(ctl, value);
+-	if (err < 0)
+-		goto __fail;
+ 	err = snd_ctl_elem_info(ctl, info);
+ 	if (err < 0)
+ 		goto __fail;
+-	if (type == SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE)
+-		err = binary_file_parse(value, info, pos);
+-	else
+-		err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
+-	if (err < 0)
+-		goto __fail;
+-	err = snd_ctl_elem_write(ctl, value);
+-	if (err < 0)
+-		goto __fail;
++	if (type == SEQUENCE_ELEMENT_TYPE_CSET_TLV) {
++		err = tlv_parse(&res, info, pos);
++		if (err < 0)
++			goto __fail;
++		err = snd_ctl_elem_tlv_write(ctl, id, (unsigned int *)res);
++		if (err < 0)
++			goto __fail;
++	} else {
++		snd_ctl_elem_value_set_id(value, id);
++		err = snd_ctl_elem_read(ctl, value);
++		if (err < 0)
++			goto __fail;
++		if (type == SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE)
++			err = binary_file_parse(value, info, pos);
++		else
++			err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
++		if (err < 0)
++			goto __fail;
++		err = snd_ctl_elem_write(ctl, value);
++		if (err < 0)
++			goto __fail;
++	}
+ 	err = 0;
+       __fail:
+ 	if (id != NULL)
+@@ -266,6 +317,8 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
+ 		free(value);
+ 	if (info != NULL)
+ 		free(info);
++	if (res != NULL)
++		free(res);
+ 
+ 	return err;
+ }
+@@ -298,6 +351,7 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
+ 			break;
+ 		case SEQUENCE_ELEMENT_TYPE_CSET:
+ 		case SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE:
++		case SEQUENCE_ELEMENT_TYPE_CSET_TLV:
+ 			if (cdev == NULL) {
+ 				char *playback_ctl = NULL;
+ 				char *capture_ctl = NULL;
+diff --git a/src/ucm/parser.c b/src/ucm/parser.c
+index 9e1cb41..d781e1b 100644
+--- a/src/ucm/parser.c
++++ b/src/ucm/parser.c
+@@ -316,6 +316,16 @@ static int parse_sequence(snd_use_case_mgr_t *uc_mgr ATTRIBUTE_UNUSED,
+ 			continue;
+ 		}
+ 
++		if (strcmp(cmd, "cset-tlv") == 0) {
++			curr->type = SEQUENCE_ELEMENT_TYPE_CSET_TLV;
++			err = parse_string(n, &curr->data.cset);
++			if (err < 0) {
++				uc_error("error: cset-tlv requires a string!");
++				return err;
++			}
++			continue;
++		}
++
+ 		if (strcmp(cmd, "usleep") == 0) {
+ 			curr->type = SEQUENCE_ELEMENT_TYPE_SLEEP;
+ 			err = snd_config_get_integer(n, &curr->data.sleep);
+diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
+index 3a5d2c2..b89de2a 100644
+--- a/src/ucm/ucm_local.h
++++ b/src/ucm/ucm_local.h
+@@ -48,6 +48,7 @@
+ #define SEQUENCE_ELEMENT_TYPE_SLEEP	3
+ #define SEQUENCE_ELEMENT_TYPE_EXEC	4
+ #define SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE	5
++#define SEQUENCE_ELEMENT_TYPE_CSET_TLV	6
+ 
+ struct ucm_value {
+         struct list_head list;
+-- 
+2.1.2
