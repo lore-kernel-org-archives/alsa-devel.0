@@ -1,341 +1,190 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [PATCH v2] [media] media-device: use kref for media_device
- instance
-Date: Tue, 22 Mar 2016 14:09:11 -0600
-Message-ID: <56F1A667.8000107@osg.samsung.com>
-References: <9d8830150475bc4d4dde2fa1f5163aef82a35477.1458347578.git.mchehab@osg.samsung.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: timer: fix gparams ioctl
+ compatibility for different architectures
+Date: Wed, 23 Mar 2016 08:00:59 +0900
+Message-ID: <56F1CEAB.3080100@sakamocchi.jp>
+References: <1458659046-16850-1-git-send-email-o-takashi@sakamocchi.jp>
+ <s5h4mby4kfq.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <9d8830150475bc4d4dde2fa1f5163aef82a35477.1458347578.git.mchehab@osg.samsung.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Linux Media Mailing List <linux-media@vger.kernel.org>
-Cc: Mauro Carvalho Chehab <mchehab@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Hans Verkuil <hans.verkuil@cisco.com>, Javier Martinez Canillas <javier@osg.samsung.com>, =?UTF-8?Q?Rafael_Louren=c3=a7o_de_Lima_Chehab?= <chehabrafael@gmail.com>, alsa-devel@alsa-project.org, Shuah Khan <shuahkh@osg.samsung.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52133265233
+ for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 00:01:03 +0100 (CET)
+In-Reply-To: <s5h4mby4kfq.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/18/2016 06:42 PM, Mauro Carvalho Chehab wrote:
-> Now that the media_device can be used by multiple drivers,
-> via devres, we need to be sure that it will be dropped only
-> when all drivers stop using it.
+Hi,
+
+On Mar 23 2016 00:11, Takashi Iwai wrote:
+> On Tue, 22 Mar 2016 16:04:06 +0100,
+> Takashi Sakamoto wrote:
+>>
+>> 'struct snd_timer_gparams' includes some members with 'unsigned long',
+>> therefore its size differs depending on data models of architecture. As
+>> a result, x86/x32 applications fail to execute ioctl(2) with
+>> SNDRV_TIMER_GPARAMS command on x86_64 machine.
+>>
+>> This commit fixes this bug by adding a pair of structure and ioctl
+>> command for the compatibility.
+>>
+>> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+>> ---
+>>  sound/core/timer.c        | 20 +++++++++++++-------
+>>  sound/core/timer_compat.c | 34 +++++++++++++++++++++++++++++++++-
+>>  2 files changed, 46 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/sound/core/timer.c b/sound/core/timer.c
+>> index aa1b15c..ea4d999 100644
+>> --- a/sound/core/timer.c
+>> +++ b/sound/core/timer.c
+>> @@ -1502,17 +1502,13 @@ static int snd_timer_user_ginfo(struct file *file,
+>>  	return err;
+>>  }
+>>  
+>> -static int snd_timer_user_gparams(struct file *file,
+>> -				  struct snd_timer_gparams __user *_gparams)
+>> +static int timer_set_gparams(struct snd_timer_gparams *gparams)
+>>  {
+>> -	struct snd_timer_gparams gparams;
+>>  	struct snd_timer *t;
+>>  	int err;
+>>  
+>> -	if (copy_from_user(&gparams, _gparams, sizeof(gparams)))
+>> -		return -EFAULT;
+>>  	mutex_lock(&register_mutex);
+>> -	t = snd_timer_find(&gparams.tid);
+>> +	t = snd_timer_find(&gparams->tid);
+>>  	if (!t) {
+>>  		err = -ENODEV;
+>>  		goto _error;
+>> @@ -1525,12 +1521,22 @@ static int snd_timer_user_gparams(struct file *file,
+>>  		err = -ENOSYS;
+>>  		goto _error;
+>>  	}
+>> -	err = t->hw.set_period(t, gparams.period_num, gparams.period_den);
+>> +	err = t->hw.set_period(t, gparams->period_num, gparams->period_den);
+>>  _error:
+>>  	mutex_unlock(&register_mutex);
+>>  	return err;
+>>  }
+>>  
+>> +static int snd_timer_user_gparams(struct file *file,
+>> +				  struct snd_timer_gparams __user *_gparams)
+>> +{
+>> +	struct snd_timer_gparams gparams;
+>> +
+>> +	if (copy_from_user(&gparams, _gparams, sizeof(gparams)))
+>> +		return -EFAULT;
+>> +	return timer_set_gparams(&gparams);
+>> +}
+>> +
+>>  static int snd_timer_user_gstatus(struct file *file,
+>>  				  struct snd_timer_gstatus __user *_gstatus)
+>>  {
+>> diff --git a/sound/core/timer_compat.c b/sound/core/timer_compat.c
+>> index 2e90822..d10c792 100644
+>> --- a/sound/core/timer_compat.c
+>> +++ b/sound/core/timer_compat.c
+>> @@ -22,6 +22,19 @@
+>>  
+>>  #include <linux/compat.h>
+>>  
+>> +/*
+>> + * ILP32/LP64 has different size for 'long' type. Additionally, the size
+>> + * of storage alignment differs depending on architectures. Here, '__packed'
+>> + * qualifier is used so that the size of this structure is multiple of 4 and
+>> + * it fits to any architectures with 32 bit storage alignment.
+>> + */
+>> +struct snd_timer_gparams32 {
+>> +	struct snd_timer_id tid;
+>> +	u32 period_num;
+>> +	u32 period_den;
+>> +	unsigned char reserved[32];
+>> +} __packed;
+>> +
+>>  struct snd_timer_info32 {
+>>  	u32 flags;
+>>  	s32 card;
+>> @@ -32,6 +45,23 @@ struct snd_timer_info32 {
+>>  	unsigned char reserved[64];
+>>  };
+>>  
+>> +static int snd_timer_user_gparams_compat(struct file *file,
+>> +					struct snd_timer_gparams32 __user *user)
+>> +{
+>> +	struct snd_timer_gparams gparams;
+>> +
+>> +	if (get_user(gparams.tid.dev_class, &user->tid.dev_class) ||
+>> +	    get_user(gparams.tid.dev_sclass, &user->tid.dev_sclass) ||
+>> +	    get_user(gparams.tid.card, &user->tid.card) ||
+>> +	    get_user(gparams.tid.device, &user->tid.device) ||
+>> +	    get_user(gparams.tid.subdevice, &user->tid.subdevice) ||
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-> ---
+> struct snd_timer_id is compatible, so you can use just
+> copy_from_user() for the whole tid, while the rest two fields need to
+> be copied individually.
 > 
-> v2: The kref is now used only when media_device is allocated via 
->     the media_device*_devress. This warrants that other drivers won't be
->     affected, and that we can keep media_device_cleanup() balanced with
->     media_device_init().
+> Other than that, the patch looks good.
 
-Tested bind_unbind au0828 loop 1000 times, followed by bind_unbind
-snd_usb_audio loop 1000 times. Didn't see any lock warnings on a
-KASAN enabled kernel (lock testing enabled). No use-after-free errors
-during these runs.
+OK. I'll post revised version (v3), soon.
 
-Ran device removal test and rmmod and modprobe tests on both drivers.
 
-Generated graph after the runs and the graph looks good.
+Regards
 
-Reviewed-by: Shuah Khan <shuahkh@osg.samsung.com>
-Tested-by: Shuah Khan <shuahkh@osg.samsung.com>
+Takashi Sakamoto
 
-thanks,
--- Shuah
-
+> thanks,
 > 
->  drivers/media/media-device.c           | 117 +++++++++++++++++++++++++--------
->  drivers/media/usb/au0828/au0828-core.c |   3 +-
->  include/media/media-device.h           |  28 ++++++++
->  sound/usb/media.c                      |   3 +-
->  4 files changed, 118 insertions(+), 33 deletions(-)
+> Takashi
 > 
-> diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
-> index c32fa15cc76e..4a97d92a7e7d 100644
-> --- a/drivers/media/media-device.c
-> +++ b/drivers/media/media-device.c
-> @@ -707,11 +707,16 @@ void media_device_init(struct media_device *mdev)
->  }
->  EXPORT_SYMBOL_GPL(media_device_init);
->  
-> -void media_device_cleanup(struct media_device *mdev)
-> +static void __media_device_cleanup(struct media_device *mdev)
->  {
->  	ida_destroy(&mdev->entity_internal_idx);
->  	mdev->entity_internal_idx_max = 0;
->  	media_entity_graph_walk_cleanup(&mdev->pm_count_walk);
-> +}
-> +
-> +void media_device_cleanup(struct media_device *mdev)
-> +{
-> +	__media_device_cleanup(mdev);
->  	mutex_destroy(&mdev->graph_mutex);
->  }
->  EXPORT_SYMBOL_GPL(media_device_cleanup);
-> @@ -721,6 +726,9 @@ int __must_check __media_device_register(struct media_device *mdev,
->  {
->  	int ret;
->  
-> +	/* Check if mdev was ever registered at all */
-> +	mutex_lock(&mdev->graph_mutex);
-> +
->  	/* Register the device node. */
->  	mdev->devnode.fops = &media_device_fops;
->  	mdev->devnode.parent = mdev->dev;
-> @@ -731,17 +739,19 @@ int __must_check __media_device_register(struct media_device *mdev,
->  
->  	ret = media_devnode_register(&mdev->devnode, owner);
->  	if (ret < 0)
-> -		return ret;
-> +		goto err;
->  
->  	ret = device_create_file(&mdev->devnode.dev, &dev_attr_model);
->  	if (ret < 0) {
->  		media_devnode_unregister(&mdev->devnode);
-> -		return ret;
-> +		goto err;
->  	}
->  
->  	dev_dbg(mdev->dev, "Media device registered\n");
->  
-> -	return 0;
-> +err:
-> +	mutex_unlock(&mdev->graph_mutex);
-> +	return ret;
->  }
->  EXPORT_SYMBOL_GPL(__media_device_register);
->  
-> @@ -773,24 +783,13 @@ void media_device_unregister_entity_notify(struct media_device *mdev,
->  }
->  EXPORT_SYMBOL_GPL(media_device_unregister_entity_notify);
->  
-> -void media_device_unregister(struct media_device *mdev)
-> +static void __media_device_unregister(struct media_device *mdev)
->  {
->  	struct media_entity *entity;
->  	struct media_entity *next;
->  	struct media_interface *intf, *tmp_intf;
->  	struct media_entity_notify *notify, *nextp;
->  
-> -	if (mdev == NULL)
-> -		return;
-> -
-> -	mutex_lock(&mdev->graph_mutex);
-> -
-> -	/* Check if mdev was ever registered at all */
-> -	if (!media_devnode_is_registered(&mdev->devnode)) {
-> -		mutex_unlock(&mdev->graph_mutex);
-> -		return;
-> -	}
-> -
->  	/* Remove all entities from the media device */
->  	list_for_each_entry_safe(entity, next, &mdev->entities, graph_obj.list)
->  		__media_device_unregister_entity(entity);
-> @@ -807,38 +806,98 @@ void media_device_unregister(struct media_device *mdev)
->  		kfree(intf);
->  	}
->  
-> -	mutex_unlock(&mdev->graph_mutex);
-> -
-> -	device_remove_file(&mdev->devnode.dev, &dev_attr_model);
-> -	media_devnode_unregister(&mdev->devnode);
-> +	/* Check if mdev devnode was registered */
-> +	if (media_devnode_is_registered(&mdev->devnode)) {
-> +		device_remove_file(&mdev->devnode.dev, &dev_attr_model);
-> +		media_devnode_unregister(&mdev->devnode);
-> +	}
->  
->  	dev_dbg(mdev->dev, "Media device unregistered\n");
->  }
-> +
-> +void media_device_unregister(struct media_device *mdev)
-> +{
-> +	if (mdev == NULL)
-> +		return;
-> +
-> +	mutex_lock(&mdev->graph_mutex);
-> +	__media_device_unregister(mdev);
-> +	mutex_unlock(&mdev->graph_mutex);
-> +}
->  EXPORT_SYMBOL_GPL(media_device_unregister);
->  
->  static void media_device_release_devres(struct device *dev, void *res)
->  {
->  }
->  
-> -struct media_device *media_device_get_devres(struct device *dev)
-> +static void do_media_device_unregister_devres(struct kref *kref)
->  {
-> +	struct media_device_devres *mdev_devres;
->  	struct media_device *mdev;
-> +	int ret;
->  
-> -	mdev = devres_find(dev, media_device_release_devres, NULL, NULL);
-> -	if (mdev)
-> -		return mdev;
-> +	mdev_devres = container_of(kref, struct media_device_devres, kref);
->  
-> -	mdev = devres_alloc(media_device_release_devres,
-> -				sizeof(struct media_device), GFP_KERNEL);
-> -	if (!mdev)
-> +	if (!mdev_devres)
-> +		return;
-> +
-> +	mdev = &mdev_devres->mdev;
-> +
-> +	mutex_lock(&mdev->graph_mutex);
-> +	__media_device_unregister(mdev);
-> +	__media_device_cleanup(mdev);
-> +	mutex_unlock(&mdev->graph_mutex);
-> +	mutex_destroy(&mdev->graph_mutex);
-> +
-> +	ret = devres_destroy(mdev->dev, media_device_release_devres,
-> +			     NULL, NULL);
-> +	pr_debug("%s: devres_destroy() returned %d\n", __func__, ret);
-> +}
-> +
-> +void media_device_unregister_devres(struct media_device *mdev)
-> +{
-> +	struct media_device_devres *mdev_devres;
-> +
-> +	mdev_devres = container_of(mdev, struct media_device_devres, mdev);
-> +	kref_put(&mdev_devres->kref, do_media_device_unregister_devres);
-> +}
-> +EXPORT_SYMBOL_GPL(media_device_unregister_devres);
-> +
-> +struct media_device *media_device_get_devres(struct device *dev)
-> +{
-> +	struct media_device_devres *mdev_devres, *ptr;
-> +
-> +	mdev_devres = devres_find(dev, media_device_release_devres, NULL, NULL);
-> +	if (mdev_devres) {
-> +		kref_get(&mdev_devres->kref);
-> +		return &mdev_devres->mdev;
-> +	}
-> +
-> +	mdev_devres = devres_alloc(media_device_release_devres,
-> +				   sizeof(struct media_device_devres),
-> +				   GFP_KERNEL);
-> +	if (!mdev_devres)
->  		return NULL;
-> -	return devres_get(dev, mdev, NULL, NULL);
-> +
-> +	ptr = devres_get(dev, mdev_devres, NULL, NULL);
-> +	if (ptr)
-> +		kref_init(&ptr->kref);
-> +	else
-> +		devres_free(mdev_devres);
-> +
-> +	return &ptr->mdev;
->  }
->  EXPORT_SYMBOL_GPL(media_device_get_devres);
->  
->  struct media_device *media_device_find_devres(struct device *dev)
->  {
-> -	return devres_find(dev, media_device_release_devres, NULL, NULL);
-> +	struct media_device_devres *mdev_devres;
-> +
-> +	mdev_devres = devres_find(dev, media_device_release_devres, NULL, NULL);
-> +	if (!mdev_devres)
-> +		return NULL;
-> +
-> +	return &mdev_devres->mdev;
->  }
->  EXPORT_SYMBOL_GPL(media_device_find_devres);
->  
-> diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
-> index 06da73f1ff22..060904ed8f20 100644
-> --- a/drivers/media/usb/au0828/au0828-core.c
-> +++ b/drivers/media/usb/au0828/au0828-core.c
-> @@ -157,8 +157,7 @@ static void au0828_unregister_media_device(struct au0828_dev *dev)
->  	dev->media_dev->enable_source = NULL;
->  	dev->media_dev->disable_source = NULL;
->  
-> -	media_device_unregister(dev->media_dev);
-> -	media_device_cleanup(dev->media_dev);
-> +	media_device_unregister_devres(dev->media_dev);
->  	dev->media_dev = NULL;
->  #endif
->  }
-> diff --git a/include/media/media-device.h b/include/media/media-device.h
-> index b21ef244ad3e..e59772ed8494 100644
-> --- a/include/media/media-device.h
-> +++ b/include/media/media-device.h
-> @@ -23,6 +23,7 @@
->  #ifndef _MEDIA_DEVICE_H
->  #define _MEDIA_DEVICE_H
->  
-> +#include <linux/kref.h>
->  #include <linux/list.h>
->  #include <linux/mutex.h>
->  
-> @@ -382,6 +383,16 @@ struct media_device {
->  			   unsigned int notification);
->  };
->  
-> +/**
-> + * struct media_device_devres - Media device device resource
-> + * @mdev:	pointer to struct media_device
-> + * @kref:	Object refcount
-> + */
-> +struct media_device_devres {
-> +	struct media_device mdev;
-> +	struct kref kref;
-> +};
-> +
->  /* We don't need to include pci.h or usb.h here */
->  struct pci_dev;
->  struct usb_device;
-> @@ -604,6 +615,19 @@ struct media_device *media_device_get_devres(struct device *dev);
->   */
->  struct media_device *media_device_find_devres(struct device *dev);
->  
-> +/**
-> + * media_device_unregister_devres) - Unregister media device allocated as
-> + *				     as device resource
-> + *
-> + * @dev: pointer to struct &device.
-> + *
-> + * Devices allocated via media_device_get_devres should be de-alocalted
-> + * and freed via this function. Callers should not call
-> + * media_device_unregister() nor media_device_cleanup() on devices
-> + * allocated via media_device_get_devres().
-> + */
-> +void media_device_unregister_devres(struct media_device *mdev);
-> +
->  /* Iterate over all entities. */
->  #define media_device_for_each_entity(entity, mdev)			\
->  	list_for_each_entry(entity, &(mdev)->entities, graph_obj.list)
-> @@ -688,6 +712,10 @@ static inline struct media_device *media_device_find_devres(struct device *dev)
->  	return NULL;
->  }
->  
-> +static inline void media_device_unregister_devres(struct media_device *mdev)
-> +{
-> +}
-> +
->  static inline void media_device_pci_init(struct media_device *mdev,
->  					 struct pci_dev *pci_dev,
->  					 char *name)
-> diff --git a/sound/usb/media.c b/sound/usb/media.c
-> index 93a50d01490c..f78955fd0d6e 100644
-> --- a/sound/usb/media.c
-> +++ b/sound/usb/media.c
-> @@ -311,8 +311,7 @@ void media_snd_device_delete(struct snd_usb_audio *chip)
->  	media_snd_mixer_delete(chip);
->  
->  	if (mdev) {
-> -		if (media_devnode_is_registered(&mdev->devnode))
-> -			media_device_unregister(mdev);
-> +		media_device_unregister_devres(mdev);
->  		chip->media_dev = NULL;
->  	}
->  }
 > 
-
-
--- 
-Shuah Khan
-Sr. Linux Kernel Developer
-Open Source Innovation Group
-Samsung Research America (Silicon Valley)
-shuahkh@osg.samsung.com | (970) 217-8978
+>> +	    get_user(gparams.period_num, &user->period_num) ||
+>> +	    get_user(gparams.period_den, &user->period_den))
+>> +		return -EFAULT;
+>> +
+>> +	return timer_set_gparams(&gparams);
+>> +}
+>> +
+>>  static int snd_timer_user_info_compat(struct file *file,
+>>  				      struct snd_timer_info32 __user *_info)
+>>  {
+>> @@ -99,6 +129,7 @@ static int snd_timer_user_status_compat(struct file *file,
+>>   */
+>>  
+>>  enum {
+>> +	SNDRV_TIMER_IOCTL_GPARAMS32 = _IOW('T', 0x04, struct snd_timer_gparams32),
+>>  	SNDRV_TIMER_IOCTL_INFO32 = _IOR('T', 0x11, struct snd_timer_info32),
+>>  	SNDRV_TIMER_IOCTL_STATUS32 = _IOW('T', 0x14, struct snd_timer_status32),
+>>  #ifdef CONFIG_X86_X32
+>> @@ -114,7 +145,6 @@ static long snd_timer_user_ioctl_compat(struct file *file, unsigned int cmd, uns
+>>  	case SNDRV_TIMER_IOCTL_PVERSION:
+>>  	case SNDRV_TIMER_IOCTL_TREAD:
+>>  	case SNDRV_TIMER_IOCTL_GINFO:
+>> -	case SNDRV_TIMER_IOCTL_GPARAMS:
+>>  	case SNDRV_TIMER_IOCTL_GSTATUS:
+>>  	case SNDRV_TIMER_IOCTL_SELECT:
+>>  	case SNDRV_TIMER_IOCTL_PARAMS:
+>> @@ -128,6 +158,8 @@ static long snd_timer_user_ioctl_compat(struct file *file, unsigned int cmd, uns
+>>  	case SNDRV_TIMER_IOCTL_PAUSE_OLD:
+>>  	case SNDRV_TIMER_IOCTL_NEXT_DEVICE:
+>>  		return snd_timer_user_ioctl(file, cmd, (unsigned long)argp);
+>> +	case SNDRV_TIMER_IOCTL_GPARAMS32:
+>> +		return snd_timer_user_gparams_compat(file, argp);
+>>  	case SNDRV_TIMER_IOCTL_INFO32:
+>>  		return snd_timer_user_info_compat(file, argp);
+>>  	case SNDRV_TIMER_IOCTL_STATUS32:
+>> -- 
+>> 2.7.3
