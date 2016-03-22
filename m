@@ -1,16 +1,15 @@
 From: han.lu@intel.com
-Subject: [PATCH V2 5/6] alsabat: move alsa process to a single
-	block
-Date: Tue, 22 Mar 2016 22:31:37 +0800
-Message-ID: <acc14fcd406075208b95e930f7c5f4a2d485727a.1458655876.git.han.lu@intel.com>
+Subject: [PATCH V2 6/6] alsabat: add tinyalsa support
+Date: Tue, 22 Mar 2016 22:31:38 +0800
+Message-ID: <7833c314bbeb4cfdd9a67365586623e738fa18d9.1458655876.git.han.lu@intel.com>
 References: <cover.1458655876.git.han.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 05DD8261536
- for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2016 15:30:20 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id B0F54260881
+ for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2016 15:30:24 +0100 (CET)
 In-Reply-To: <cover.1458655876.git.han.lu@intel.com>
 In-Reply-To: <cover.1458655876.git.han.lu@intel.com>
 References: <cover.1458655876.git.han.lu@intel.com>
@@ -29,42 +28,171 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Lu, Han" <han.lu@intel.com>
 
-Move all alsa callings to a single block (alsa.c), so other blocks
-such as the main structure, the signal process and the data analysis
-modules will be independent to alsa, and new modules such as a
-tinyalsa interface can be easily embedded into alsabat.
+Use "configure --enable-tinyalsa" for alsabat to use tinyalsa
+instead of ALSA.
+On a system that has both ALSA and tinyalsa libraries installed,
+User can choose either library through configure option. By
+default alsabat will use ALSA library.
+The intention is for alsabat to run on tinyalsa platforms such
+as Android or some Internet of Things(IoT) devices.
 
 Signed-off-by: Lu, Han <han.lu@intel.com>
 
-diff --git a/bat/alsa.c b/bat/alsa.c
-index 94f47f4..75158cb 100644
---- a/bat/alsa.c
-+++ b/bat/alsa.c
-@@ -40,15 +40,49 @@ struct pcm_container {
- 	char *buffer;
+diff --git a/bat/Makefile.am b/bat/Makefile.am
+index 712f5bf..24e3eb8 100644
+--- a/bat/Makefile.am
++++ b/bat/Makefile.am
+@@ -7,13 +7,11 @@ alsabat_SOURCES = \
+ 	bat.c \
+ 	common.c \
+ 	signal.c \
+-	convert.c \
+-	alsa.c
++	convert.c
+ 
+ noinst_HEADERS = \
+ 	common.h \
+ 	bat-signal.h \
+-	alsa.h \
+ 	convert.h
+ 
+ if HAVE_LIBFFTW3
+@@ -21,6 +19,14 @@ alsabat_SOURCES += analyze.c
+ noinst_HEADERS += analyze.h
+ endif
+ 
++if HAVE_LIBTINYALSA
++alsabat_SOURCES += tinyalsa.c
++noinst_HEADERS += tinyalsa.h
++else
++alsabat_SOURCES += alsa.c
++noinst_HEADERS += alsa.h
++endif
++
+ AM_CPPFLAGS = \
+ 	      -Wall -I$(top_srcdir)/include
+ 
+diff --git a/bat/alsabat.1 b/bat/alsabat.1
+index 5f41669..9b969c2 100644
+--- a/bat/alsabat.1
++++ b/bat/alsabat.1
+@@ -33,6 +33,9 @@ analog loopback :-
+ 
+ https://source.android.com/devices/audio/loopback.html
+ 
++If tinyalsa lib is installed in system, ALSABAT will use tinyalsa lib instead
++of ALSA lib.
++
+ .SH OPTIONS
+ .TP
+ \fI\-h, \-\-help\fP
+diff --git a/bat/bat.c b/bat/bat.c
+index f10c647..e824065 100644
+--- a/bat/bat.c
++++ b/bat/bat.c
+@@ -31,7 +31,11 @@
+ 
+ #include "common.h"
+ 
++#ifdef HAVE_LIBTINYALSA
++#include "tinyalsa.h"
++#else
+ #include "alsa.h"
++#endif
+ #include "convert.h"
+ #ifdef HAVE_LIBFFTW3
+ #include "analyze.h"
+@@ -301,7 +305,6 @@ static void set_defaults(struct bat *bat)
+ 
+ 	/* Set default values */
+ 	bat->rate = 44100;
+-	bat->channels = 1;
+ 	bat->frame_size = 2;
+ 	bat->sample_size = 2;
+ 	bat->format = BAT_PCM_FORMAT_S16_LE;
+@@ -315,8 +318,15 @@ static void set_defaults(struct bat *bat)
+ 	bat->capture.device = NULL;
+ 	bat->buf = NULL;
+ 	bat->local = false;
++#ifdef HAVE_LIBTINYALSA
++	bat->channels = 2;
++	bat->playback.fct = &playback_tinyalsa;
++	bat->capture.fct = &record_tinyalsa;
++#else
++	bat->channels = 1;
+ 	bat->playback.fct = &playback_alsa;
+ 	bat->capture.fct = &record_alsa;
++#endif
+ 	bat->playback.mode = MODE_LOOPBACK;
+ 	bat->capture.mode = MODE_LOOPBACK;
+ 	bat->period_is_limited = false;
+diff --git a/bat/common.h b/bat/common.h
+index ed33d51..b789af5 100644
+--- a/bat/common.h
++++ b/bat/common.h
+@@ -125,6 +125,8 @@ enum _bat_op_mode {
  };
  
+ struct pcm {
++	unsigned int card_tiny;
++	unsigned int device_tiny;
+ 	char *device;
+ 	char *file;
+ 	enum _bat_op_mode mode;
+diff --git a/bat/tinyalsa.c b/bat/tinyalsa.c
+new file mode 100644
+index 0000000..ea5f848
+--- /dev/null
++++ b/bat/tinyalsa.c
+@@ -0,0 +1,460 @@
++/*
++ * Copyright (C) 2013-2015 Intel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++
++#include <stdio.h>
++#include <string.h>
++#include <stdbool.h>
++#include <stdlib.h>
++#include <pthread.h>
++#include <errno.h>
++
++#include <tinyalsa/asoundlib.h>
++
++#include "aconfig.h"
++#include "gettext.h"
++
++#include "common.h"
++#include "tinyalsa.h"
++
 +struct format_map_table {
 +	enum _bat_pcm_format format_bat;
-+	snd_pcm_format_t format_alsa;
++	enum pcm_format format_tiny;
 +};
 +
 +static struct format_map_table map_tables[] = {
-+	{ BAT_PCM_FORMAT_UNKNOWN, SND_PCM_FORMAT_UNKNOWN },
-+	{ BAT_PCM_FORMAT_U8, SND_PCM_FORMAT_U8 },
-+	{ BAT_PCM_FORMAT_S16_LE, SND_PCM_FORMAT_S16_LE },
-+	{ BAT_PCM_FORMAT_S24_3LE, SND_PCM_FORMAT_S24_3LE },
-+	{ BAT_PCM_FORMAT_S32_LE, SND_PCM_FORMAT_S32_LE },
++	{ BAT_PCM_FORMAT_S16_LE, PCM_FORMAT_S16_LE },
++	{ BAT_PCM_FORMAT_S32_LE, PCM_FORMAT_S32_LE },
 +	{ BAT_PCM_FORMAT_MAX, },
 +};
 +
-+static int format_convert(struct bat *bat, snd_pcm_format_t *fmt)
++static int format_convert(struct bat *bat, struct pcm_config *config)
 +{
 +	struct format_map_table *t = map_tables;
 +
 +	for (; t->format_bat != BAT_PCM_FORMAT_MAX; t++) {
 +		if (t->format_bat == bat->format) {
-+			*fmt = t->format_alsa;
++			config->format = t->format_tiny;
 +			return 0;
 +		}
 +	}
@@ -72,220 +200,478 @@ index 94f47f4..75158cb 100644
 +	return -EINVAL;
 +}
 +
- static int set_snd_pcm_params(struct bat *bat, struct pcm_container *sndpcm)
- {
- 	snd_pcm_hw_params_t *params;
-+	snd_pcm_format_t format;
- 	unsigned int buffer_time = 0;
- 	unsigned int period_time = 0;
- 	unsigned int rate;
- 	int err;
- 	const char *device_name = snd_pcm_name(sndpcm->handle);
- 
-+	/* Convert common format to ALSA format */
-+	err = format_convert(bat, &format);
-+	if (err != 0)
-+		return err;
++static int init_config(struct bat *bat, struct pcm_config *config)
++{
++	config->channels = bat->channels;
++	config->rate = bat->rate;
++	config->period_size = 1024;
++	config->period_count = 4;
++	config->start_threshold = 0;
++	config->stop_threshold = 0;
++	config->silence_threshold = 0;
 +
- 	/* Allocate a hardware parameters object. */
- 	snd_pcm_hw_params_alloca(&params);
- 
-@@ -72,11 +106,10 @@ static int set_snd_pcm_params(struct bat *bat, struct pcm_container *sndpcm)
- 	}
- 
- 	/* Set format */
--	err = snd_pcm_hw_params_set_format(sndpcm->handle, params, bat->format);
-+	err = snd_pcm_hw_params_set_format(sndpcm->handle, params, format);
- 	if (err < 0) {
- 		fprintf(bat->err, _("Set parameter to device error: "));
--		fprintf(bat->err, _("PCM format: %d %s: %s(%d)\n"),
--				bat->format,
-+		fprintf(bat->err, _("PCM format: %d %s: %s(%d)\n"), format,
- 				device_name, snd_strerror(err), err);
- 		return err;
- 	}
-@@ -181,7 +214,7 @@ static int set_snd_pcm_params(struct bat *bat, struct pcm_container *sndpcm)
- 		return -EINVAL;
- 	}
- 
--	err = snd_pcm_format_physical_width(bat->format);
-+	err = snd_pcm_format_physical_width(format);
- 	if (err < 0) {
- 		fprintf(bat->err, _("Invalid parameters: "));
- 		fprintf(bat->err, _("snd_pcm_format_physical_width: %d\n"),
-diff --git a/bat/bat.c b/bat/bat.c
-index 85a7282..f10c647 100644
---- a/bat/bat.c
-+++ b/bat/bat.c
-@@ -92,37 +92,30 @@ static void get_sine_frequencies(struct bat *bat, char *freq)
- static void get_format(struct bat *bat, char *optarg)
- {
- 	if (strcasecmp(optarg, "cd") == 0) {
--		bat->format = SND_PCM_FORMAT_S16_LE;
-+		bat->format = BAT_PCM_FORMAT_S16_LE;
- 		bat->rate = 44100;
- 		bat->channels = 2;
-+		bat->sample_size = 2;
- 	} else if (strcasecmp(optarg, "dat") == 0) {
--		bat->format = SND_PCM_FORMAT_S16_LE;
-+		bat->format = BAT_PCM_FORMAT_S16_LE;
- 		bat->rate = 48000;
- 		bat->channels = 2;
--	} else {
--		bat->format = snd_pcm_format_value(optarg);
--		if (bat->format == SND_PCM_FORMAT_UNKNOWN) {
--			fprintf(bat->err, _("wrong extended format '%s'\n"),
--					optarg);
--			exit(EXIT_FAILURE);
--		}
--	}
--
--	switch (bat->format) {
--	case SND_PCM_FORMAT_U8:
-+		bat->sample_size = 2;
-+	} else if (strcasecmp(optarg, "U8") == 0) {
-+		bat->format = BAT_PCM_FORMAT_U8;
- 		bat->sample_size = 1;
--		break;
--	case SND_PCM_FORMAT_S16_LE:
-+	} else if (strcasecmp(optarg, "S16_LE") == 0) {
-+		bat->format = BAT_PCM_FORMAT_S16_LE;
- 		bat->sample_size = 2;
--		break;
--	case SND_PCM_FORMAT_S24_3LE:
-+	} else if (strcasecmp(optarg, "S24_3LE") == 0) {
-+		bat->format = BAT_PCM_FORMAT_S24_3LE;
- 		bat->sample_size = 3;
--		break;
--	case SND_PCM_FORMAT_S32_LE:
-+	} else if (strcasecmp(optarg, "S32_LE") == 0) {
-+		bat->format = BAT_PCM_FORMAT_S32_LE;
- 		bat->sample_size = 4;
--		break;
--	default:
--		fprintf(bat->err, _("unsupported format: %d\n"), bat->format);
++	return format_convert(bat, config);
++}
++
++/**
++ * Called when thread is finished
++ */
++static void close_handle(void *handle)
++{
++	struct pcm *pcm = handle;
++
++	if (NULL != pcm)
++		pcm_close(pcm);
++}
++
++/**
++ * Check that a parameter is inside bounds
++ */
++static int check_param(struct bat *bat, struct pcm_params *params,
++		unsigned int param, unsigned int value,
++		char *param_name, char *param_unit)
++{
++	unsigned int min;
++	unsigned int max;
++	int ret = 0;
++
++	min = pcm_params_get_min(params, param);
++	if (value < min) {
++		fprintf(bat->err,
++			_("%s is %u%s, device only supports >= %u%s!\n"),
++			param_name, value, param_unit, min, param_unit);
++		ret = -EINVAL;
++	}
++
++	max = pcm_params_get_max(params, param);
++	if (value > max) {
++		fprintf(bat->err,
++			_("%s is %u%s, device only supports <= %u%s!\n"),
++			param_name, value, param_unit, max, param_unit);
++		ret = -EINVAL;
++	}
++
++	return ret;
++}
++
++/**
++ * Check all parameters
++ */
++static int check_playback_params(struct bat *bat,
++		struct pcm_config *config)
++{
++	struct pcm_params *params;
++	unsigned int card = bat->playback.card_tiny;
++	unsigned int device = bat->playback.device_tiny;
++	int err = 0;
++
++	params = pcm_params_get(card, device, PCM_OUT);
++	if (params == NULL) {
++		fprintf(bat->err, _("Unable to open PCM device %u!\n"),
++				device);
++		return -EINVAL;
++	}
++
++	err = check_param(bat, params, PCM_PARAM_RATE,
++			config->rate, "Sample rate", "Hz");
++	if (err < 0)
++		goto exit;
++	err = check_param(bat, params, PCM_PARAM_CHANNELS,
++			config->channels, "Sample", " channels");
++	if (err < 0)
++		goto exit;
++	err = check_param(bat, params, PCM_PARAM_SAMPLE_BITS,
++			bat->sample_size * 8, "Bitrate", " bits");
++	if (err < 0)
++		goto exit;
++	err = check_param(bat, params, PCM_PARAM_PERIOD_SIZE,
++			config->period_size, "Period size", "Hz");
++	if (err < 0)
++		goto exit;
++	err = check_param(bat, params, PCM_PARAM_PERIODS,
++			config->period_count, "Period count", "Hz");
++	if (err < 0)
++		goto exit;
++
++exit:
++	pcm_params_free(params);
++
++	return err;
++}
++
++/**
++ * Play sample
++ */
++static int play_sample(struct bat *bat, struct pcm *pcm,
++		void *buffer, int bytes)
++{
++	int err = 0;
++	int frames = bytes / bat->frame_size;
++	FILE *fp = NULL;
++	int bytes_total = 0;
++
++	if (bat->debugplay) {
++		fp = fopen(bat->debugplay, "wb");
++		err = -errno;
++		if (fp == NULL) {
++			fprintf(bat->err, _("Cannot open file: %s %d\n"),
++					bat->debugplay, err);
++			return err;
++		}
++		/* leave space for file header */
++		if (fseek(fp, sizeof(struct wav_container), SEEK_SET) != 0) {
++			err = -errno;
++			fclose(fp);
++			return err;
++		}
++	}
++
++	while (1) {
++		err = generate_input_data(bat, buffer, bytes, frames);
++		if (err != 0)
++			break;
++
++		if (bat->debugplay) {
++			if (fwrite(buffer, 1, bytes, fp) != bytes) {
++				err = -EIO;
++				break;
++			}
++			bytes_total += bytes;
++		}
++
++		bat->periods_played++;
++		if (bat->period_is_limited
++				&& bat->periods_played >= bat->periods_total)
++			break;
++
++		err = pcm_write(pcm, buffer, bytes);
++		if (err != 0)
++			break;
++	}
++
++	if (bat->debugplay) {
++		update_wav_header(bat, fp, bytes_total);
++		fclose(fp);
++	}
++	return err;
++}
++
++static int get_tiny_device(struct bat *bat, char *alsa_device,
++		unsigned int *tiny_card, unsigned int *tiny_device)
++{
++	char *tmp1, *tmp2, *tmp3;
++
++	if (alsa_device == NULL)
++		goto fail;
++
++	tmp1 = strchr(alsa_device, ':');
++	if (tmp1 == NULL)
++		goto fail;
++
++	tmp3 = tmp1 + 1;
++	tmp2 = strchr(tmp3, ',');
++	if (tmp2 == NULL)
++		goto fail;
++
++	tmp1 = tmp2 + 1;
++	*tiny_device = atoi(tmp1);
++	*tmp2 = '\0';
++	*tiny_card = atoi(tmp3);
++	*tmp2 = ',';
++
++	return 0;
++fail:
++	fprintf(bat->err, _("Invalid tiny device: %s\n"), alsa_device);
++	return -EINVAL;
++}
++
++/**
++ * Play
++ */
++void *playback_tinyalsa(struct bat *bat)
++{
++	int err = 0;
++	struct pcm_config config;
++	struct pcm *pcm = NULL;
++	void *buffer = NULL;
++	int bufbytes;
++
++	fprintf(bat->log, _("Entering playback thread (tinyalsa).\n"));
++
++	retval_play = 0;
++
++	/* init device */
++	err = get_tiny_device(bat, bat->playback.device,
++			&bat->playback.card_tiny,
++			&bat->playback.device_tiny);
++	if (err < 0) {
++		retval_play = err;
++		goto exit1;
++	}
++
++	/* init config */
++	err = init_config(bat, &config);
++	if (err < 0) {
++		retval_play = err;
++		goto exit1;
++	}
++
++	/* check param before open device */
++	err = check_playback_params(bat, &config);
++	if (err < 0) {
++		retval_play = err;
++		goto exit1;
++	}
++
++	/* open device */
++	pcm = pcm_open(bat->playback.card_tiny, bat->playback.device_tiny,
++			PCM_OUT, &config);
++	if (!pcm || !pcm_is_ready(pcm)) {
++		fprintf(bat->err, _("Unable to open PCM device %u (%s)!\n"),
++				bat->playback.device_tiny, pcm_get_error(pcm));
++		retval_play = -EINVAL;
++		goto exit1;
++	}
++
++	/* init buffer */
++	bufbytes = pcm_frames_to_bytes(pcm, pcm_get_buffer_size(pcm));
++	buffer = malloc(bufbytes);
++	if (!buffer) {
++		retval_play = -ENOMEM;
++		goto exit2;
++	}
++
++	/* init playback source */
++	if (bat->playback.file == NULL) {
++		fprintf(bat->log, _("Playing generated audio sine wave"));
++		bat->sinus_duration == 0 ?
++			fprintf(bat->log, _(" endlessly\n")) :
++			fprintf(bat->log, _("\n"));
 +	} else {
-+		bat->format = BAT_PCM_FORMAT_UNKNOWN;
-+		fprintf(bat->err, _("wrong extended format '%s'\n"), optarg);
- 		exit(EXIT_FAILURE);
- 	}
- }
-@@ -295,11 +288,8 @@ _("Usage: alsabat [-options]...\n"
- "      --local            internal loop, set to bypass pcm hardware devices\n"
- "      --standalone       standalone mode, to bypass analysis\n"
- ));
--	fprintf(bat->log, _("Recognized sample formats are: %s %s %s %s\n"),
--			snd_pcm_format_name(SND_PCM_FORMAT_U8),
--			snd_pcm_format_name(SND_PCM_FORMAT_S16_LE),
--			snd_pcm_format_name(SND_PCM_FORMAT_S24_3LE),
--			snd_pcm_format_name(SND_PCM_FORMAT_S32_LE));
-+	fprintf(bat->log, _("Recognized sample formats are: "));
-+	fprintf(bat->log, _("U8 S16_LE S24_3LE S32_LE\n"));
- 	fprintf(bat->log, _("The available format shotcuts are:\n"));
- 	fprintf(bat->log, _("-f cd (16 bit little endian, 44100, stereo)\n"));
- 	fprintf(bat->log, _("-f dat (16 bit little endian, 48000, stereo)\n"));
-@@ -314,7 +304,7 @@ static void set_defaults(struct bat *bat)
- 	bat->channels = 1;
- 	bat->frame_size = 2;
- 	bat->sample_size = 2;
--	bat->format = SND_PCM_FORMAT_S16_LE;
-+	bat->format = BAT_PCM_FORMAT_S16_LE;
- 	bat->convert_float_to_sample = convert_float_to_int16;
- 	bat->convert_sample_to_double = convert_int16_to_double;
- 	bat->frames = bat->rate * 2;
-diff --git a/bat/common.c b/bat/common.c
-index 11a7e4e..d3d1f28 100644
---- a/bat/common.c
-+++ b/bat/common.c
-@@ -17,6 +17,7 @@
- #include <stddef.h>
- #include <stdlib.h>
- #include <stdbool.h>
-+#include <errno.h>
- 
- #include "aconfig.h"
- #include "gettext.h"
-diff --git a/bat/common.h b/bat/common.h
-index 37d1e4b..ed33d51 100644
---- a/bat/common.h
-+++ b/bat/common.h
-@@ -13,8 +13,6 @@
-  *
-  */
- 
--#include <alsa/asoundlib.h>
--
- #define TEMP_RECORD_FILE_NAME		"/tmp/bat.wav.XXXXXX"
- #define DEFAULT_DEV_NAME		"default"
- 
-@@ -110,6 +108,15 @@ struct wav_container {
- 
- struct bat;
- 
-+enum _bat_pcm_format {
-+	BAT_PCM_FORMAT_UNKNOWN = -1,
-+	BAT_PCM_FORMAT_S16_LE = 0,
-+	BAT_PCM_FORMAT_S32_LE,
-+	BAT_PCM_FORMAT_U8,
-+	BAT_PCM_FORMAT_S24_3LE,
-+	BAT_PCM_FORMAT_MAX
-+};
++		fprintf(bat->log, _("Playing input audio file: %s\n"),
++				bat->playback.file);
++		bat->fp = fopen(bat->playback.file, "rb");
++		err = -errno;
++		if (bat->fp == NULL) {
++			fprintf(bat->err, _("Cannot open file: %s %d\n"),
++					bat->playback.file, err);
++			retval_play = err;
++			goto exit3;
++		}
++		/* Skip header */
++		err = read_wav_header(bat, bat->playback.file, bat->fp, true);
++		if (err != 0) {
++			retval_play = err;
++			goto exit4;
++		}
++	}
 +
- enum _bat_op_mode {
- 	MODE_UNKNOWN = -1,
- 	MODE_SINGLE = 0,
-@@ -142,7 +149,7 @@ struct bat {
- 	int frames;			/* nb of frames */
- 	int frame_size;			/* size of frame */
- 	int sample_size;		/* size of sample */
--	snd_pcm_format_t format;	/* PCM format */
-+	enum _bat_pcm_format format;	/* PCM format */
++	err = play_sample(bat, pcm, buffer, bufbytes);
++	if (err < 0) {
++		retval_play = err;
++		goto exit4;
++	}
++
++exit4:
++	if (bat->playback.file)
++		fclose(bat->fp);
++exit3:
++	free(buffer);
++exit2:
++	pcm_close(pcm);
++exit1:
++	pthread_exit(&retval_play);
++}
++
++/**
++ * Capture sample
++ */
++static int capture_sample(struct bat *bat, struct pcm *pcm,
++		void *buffer, unsigned int bytes)
++{
++	int err = 0;
++	FILE *fp = NULL;
++	unsigned int bytes_read = 0;
++	unsigned int bytes_count = bat->frames * bat->frame_size;
++
++	remove(bat->capture.file);
++	fp = fopen(bat->capture.file, "wb");
++	err = -errno;
++	if (fp == NULL) {
++		fprintf(bat->err, _("Cannot open file: %s %d\n"),
++				bat->capture.file, err);
++		return err;
++	}
++	/* leave space for file header */
++	if (fseek(fp, sizeof(struct wav_container), SEEK_SET) != 0) {
++		err = -errno;
++		fclose(fp);
++		return err;
++	}
++
++	while (bytes_read < bytes_count && !pcm_read(pcm, buffer, bytes)) {
++		if (fwrite(buffer, 1, bytes, fp) != bytes)
++			break;
++
++		bytes_read += bytes;
++
++		bat->periods_played++;
++
++		if (bat->period_is_limited
++				&& bat->periods_played >= bat->periods_total)
++			break;
++	}
++
++	err = update_wav_header(bat, fp, bytes_read);
++
++	fclose(fp);
++	return err;
++}
++
++/**
++ * Record
++ */
++void *record_tinyalsa(struct bat *bat)
++{
++	int err = 0;
++	struct pcm_config config;
++	struct pcm *pcm;
++	void *buffer;
++	unsigned int bufbytes;
++
++	pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
++
++	fprintf(bat->log, _("Entering capture thread (tinyalsa).\n"));
++
++	retval_record = 0;
++
++	/* init device */
++	err = get_tiny_device(bat, bat->capture.device,
++			&bat->capture.card_tiny,
++			&bat->capture.device_tiny);
++	if (err < 0) {
++		retval_record = err;
++		goto exit1;
++	}
++
++	/* init config */
++	err = init_config(bat, &config);
++	if (err < 0) {
++		retval_record = err;
++		goto exit1;
++	}
++
++	/* open device */
++	pcm = pcm_open(bat->capture.card_tiny, bat->capture.device_tiny,
++			PCM_IN, &config);
++	if (!pcm || !pcm_is_ready(pcm)) {
++		fprintf(bat->err, _("Unable to open PCM device (%s)!\n"),
++				pcm_get_error(pcm));
++		retval_record = -EINVAL;
++		goto exit1;
++	}
++
++	/* init buffer */
++	bufbytes = pcm_frames_to_bytes(pcm, pcm_get_buffer_size(pcm));
++	buffer = malloc(bufbytes);
++	if (!buffer) {
++		retval_record = -ENOMEM;
++		goto exit2;
++	}
++
++	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
++	pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL);
++	pthread_cleanup_push(close_handle, pcm);
++	pthread_cleanup_push(free, buffer);
++
++	fprintf(bat->log, _("Recording ...\n"));
++	err = capture_sample(bat, pcm, buffer, bufbytes);
++	if (err != 0) {
++		retval_record = err;
++		goto exit3;
++	}
++
++	/* Normally we will never reach this part of code (unless error in
++	 * previous call) (before exit3) as this thread will be cancelled
++	 *  by end of play thread. Except in single line mode. */
++	pthread_cleanup_pop(0);
++	pthread_cleanup_pop(0);
++	pthread_exit(&retval_record);
++
++exit3:
++	free(buffer);
++exit2:
++	pcm_close(pcm);
++exit1:
++	pthread_exit(&retval_record);
++}
+diff --git a/bat/tinyalsa.h b/bat/tinyalsa.h
+new file mode 100644
+index 0000000..60f78f7
+--- /dev/null
++++ b/bat/tinyalsa.h
+@@ -0,0 +1,20 @@
++/*
++ * Copyright (C) 2013-2015 Intel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++
++extern int retval_play;
++extern int retval_record;
++
++void *playback_tinyalsa(struct bat *);
++void *record_tinyalsa(struct bat *);
+diff --git a/configure.ac b/configure.ac
+index d712872..bd39c6f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -58,6 +58,16 @@ AM_CONDITIONAL(HAVE_UCM, test "$have_ucm" = "yes")
+ AM_CONDITIONAL(HAVE_TOPOLOGY, test "$have_topology" = "yes")
+ AM_CONDITIONAL(HAVE_SAMPLERATE, test "$have_samplerate" = "yes")
  
- 	float sigma_k;			/* threshold for peak detection */
- 	float target_freq[MAX_CHANNELS];
-diff --git a/bat/signal.c b/bat/signal.c
-index 8026a35..a47ba97 100644
---- a/bat/signal.c
-+++ b/bat/signal.c
-@@ -23,9 +23,11 @@
- #include <stdio.h>
- #include <stddef.h>
- #include <stdlib.h>
-+#include <string.h>
- #include <math.h>
- #include <stdint.h>
- #include <stdbool.h>
-+#include <errno.h>
++dnl Use tinyalsa
++tinyalsa=
++AC_ARG_ENABLE(tinyalsa,
++    AS_HELP_STRING([--disable-tinyalsa], [Use tinyalsa instead of ALSA]),
++    [case "${enableval}" in
++      yes) tinyalsa=true ;;
++      no) tinyalsa=false ;;
++      *) AC_MSG_ERROR(bad value ${enableval} for --enable-tinyalsa) ;;
++    esac],[tinyalsa=false])
++
+ dnl Disable bat
+ bat=
+ if test "$have_pcm" = "yes"; then
+@@ -82,6 +92,12 @@ if test x$bat = xtrue; then
+   dnl Check for libfftw3
+   have_libfftw3="yes"
+   AC_CHECK_LIB([fftw3], [fftw_malloc], , [have_libfftw3="no"])
++  dnl Check for libtinyalsa
++  have_libtinyalsa=
++  if test x$tinyalsa = xtrue; then
++    have_libtinyalsa="yes"
++    AC_CHECK_LIB([tinyalsa], [pcm_open], , [have_libtinyalsa="no"])
++  fi
+   AC_CHECK_LIB([m], [sqrtf], , [AC_MSG_ERROR([Error: Need sqrtf])])
+   AC_CHECK_LIB([pthread], [pthread_create], , [AC_MSG_ERROR([Error: need PTHREAD library])])
+   FFTW_CFLAGS="$CFLAGS"
+@@ -95,6 +111,7 @@ if test x$bat = xtrue; then
  
- #include "gettext.h"
- #include "common.h"
-@@ -113,22 +115,21 @@ static int adjust_waveform(struct bat *bat, float *val, int frames)
- 	float factor, offset = 0.0;
+ fi
+ AM_CONDITIONAL(HAVE_LIBFFTW3, test "$have_libfftw3" = "yes")
++AM_CONDITIONAL(HAVE_LIBTINYALSA, test "$have_libtinyalsa" = "yes")
  
- 	switch (bat->format) {
--	case SND_PCM_FORMAT_U8:
-+	case BAT_PCM_FORMAT_U8:
- 		max = INT8_MAX;
- 		offset = max;	/* shift for unsigned format */
- 		break;
--	case SND_PCM_FORMAT_S16_LE:
-+	case BAT_PCM_FORMAT_S16_LE:
- 		max  = INT16_MAX;
- 		break;
--	case SND_PCM_FORMAT_S24_3LE:
-+	case BAT_PCM_FORMAT_S24_3LE:
- 		max = (1 << 23) - 1;
- 		break;
--	case SND_PCM_FORMAT_S32_LE:
-+	case BAT_PCM_FORMAT_S32_LE:
- 		max = INT32_MAX;
- 		break;
- 	default:
--		fprintf(bat->err, _("Invalid PCM format: %s\n"),
--				snd_pcm_format_name(bat->format));
-+		fprintf(bat->err, _("Invalid PCM format: %d\n"), bat->format);
- 		return -EINVAL;
- 	}
- 
+ dnl Check for librt
+ LIBRT=""
 -- 
 2.5.0
