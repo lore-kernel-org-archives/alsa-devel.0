@@ -1,19 +1,15 @@
 From: han.lu@intel.com
-Subject: [PATCH V2 2/6] alsabat: use general function for wav
-	header update
-Date: Tue, 22 Mar 2016 22:31:34 +0800
-Message-ID: <b1e1ce5e7f4c435d96345fb7c8580ec02e241f7d.1458655876.git.han.lu@intel.com>
-References: <cover.1458655876.git.han.lu@intel.com>
+Subject: [PATCH V2 0/6] alsabat: clean structure and tinyalsa
+	support
+Date: Tue, 22 Mar 2016 22:31:32 +0800
+Message-ID: <cover.1458655876.git.han.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 629D7261536
- for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2016 15:30:14 +0100 (CET)
-In-Reply-To: <cover.1458655876.git.han.lu@intel.com>
-In-Reply-To: <cover.1458655876.git.han.lu@intel.com>
-References: <cover.1458655876.git.han.lu@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 691C7260711
+ for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2016 15:30:13 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,58 +25,35 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Lu, Han" <han.lu@intel.com>
 
-In playback thread, use general function update_wav_header()
-to replace a bunch of code, so the structure is cleaner and
-no need to define variable "wav".
+ 1. refactoring alsa process to make structure simpler and cleaner,
+ use general functions and unified return value for convenience of
+ maintaining;
+ 2. add tinyalsa support, user can choose tinyalsa with "configure
+  --enable-tinyalsa" option. By default ALSA lib is used. The purpose
+ is for alsabat to run on tinyalsa platforms such as Android and some
+ IoT devices.
 
-Signed-off-by: Lu, Han <han.lu@intel.com>
+Lu, Han (6):
+  alsabat: refactoring alsa capture thread
+  alsabat: use general function for wav header update
+  alsabat: clean return value for playback and capture threads
+  alsabat: use general data generator function
+  alsabat: move alsa process to a single block
+  alsabat: add tinyalsa support
 
-diff --git a/bat/alsa.c b/bat/alsa.c
-index 666bcf2..5acc2bc 100644
---- a/bat/alsa.c
-+++ b/bat/alsa.c
-@@ -292,11 +292,10 @@ static int write_to_pcm(const struct pcm_container *sndpcm,
- 
- static int write_to_pcm_loop(struct pcm_container *sndpcm, struct bat *bat)
- {
--	int err;
-+	int err = 0;
- 	int bytes = sndpcm->period_bytes; /* playback buffer size */
- 	int frames = bytes * 8 / sndpcm->frame_bits; /* frame count */
- 	FILE *fp = NULL;
--	struct wav_container wav;
- 	int bytes_total = 0;
- 
- 	if (bat->debugplay) {
-@@ -308,7 +307,7 @@ static int write_to_pcm_loop(struct pcm_container *sndpcm, struct bat *bat)
- 			return err;
- 		}
- 		/* leave space for wav header */
--		if (fseek(fp, sizeof(wav), SEEK_SET) != 0) {
-+		if (fseek(fp, sizeof(struct wav_container), SEEK_SET) != 0) {
- 			err = -errno;
- 			fclose(fp);
- 			return err;
-@@ -344,19 +343,7 @@ static int write_to_pcm_loop(struct pcm_container *sndpcm, struct bat *bat)
- 	}
- 
- 	if (bat->debugplay) {
--		/* update wav header */
--		prepare_wav_info(&wav, bat);
--		wav.chunk.length = bytes_total;
--		wav.header.length = (wav.chunk.length) + sizeof(wav.chunk)
--			+ sizeof(wav.format) + sizeof(wav.header) - 8;
--
--		rewind(fp);
--		err = write_wav_header(fp, &wav, bat);
--		if (err != 0) {
--			fprintf(bat->err, _("Write file error: %s %s(%d)\n"),
--					bat->debugplay, snd_strerror(err), err);
--			return err;
--		}
-+		update_wav_header(bat, fp, bytes_total);
- 		fclose(fp);
- 	}
- 
+ bat/Makefile.am |  12 +-
+ bat/alsa.c      | 217 +++++++++++---------------
+ bat/alsabat.1   |   3 +
+ bat/bat.c       |  58 +++----
+ bat/common.c    |  68 +++++++++
+ bat/common.h    |  17 ++-
+ bat/signal.c    |  13 +-
+ bat/tinyalsa.c  | 460 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bat/tinyalsa.h  |  20 +++
+ configure.ac    |  17 +++
+ 10 files changed, 711 insertions(+), 174 deletions(-)
+ create mode 100644 bat/tinyalsa.c
+ create mode 100644 bat/tinyalsa.h
+
 -- 
 2.5.0
