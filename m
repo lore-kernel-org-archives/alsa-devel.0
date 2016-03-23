@@ -1,23 +1,17 @@
-From: Micka <mickamusset@gmail.com>
-Subject: Re: [PATCH] ASoC: Add max98371 codec driver
-Date: Wed, 23 Mar 2016 12:45:52 +0000
-Message-ID: <CAF+MRt=UHE335omReg7mW_P0caWZTRb7fiCwD9X_hYi7XaXtXg@mail.gmail.com>
-References: <1458525542-2168-1-git-send-email-yesanishhere@gmail.com>
- <20160321145642.GV2566@sirena.org.uk>
- <CAF+MRtkm+OHQHwW4cTihSV5MOnJWiq4XfjoxghYN7eq05e0pWw@mail.gmail.com>
- <20160321155659.GW2566@sirena.org.uk>
- <CAF+MRtm16ThnHwPvmR6oDeZcavvwVvMmvmgq6en-_e6U81hFeg@mail.gmail.com>
- <20160321170536.GX2566@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: adau1701: Reset codec based on
+	sample rate changes
+Date: Wed, 23 Mar 2016 12:48:49 +0000
+Message-ID: <20160323124849.GL2566@sirena.org.uk>
+References: <1458734303-16307-1-git-send-email-pascal.huerst@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============9065404009247602688=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f41.google.com (mail-wm0-f41.google.com [74.125.82.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 718BE260534
- for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 13:46:03 +0100 (CET)
-Received: by mail-wm0-f41.google.com with SMTP id l68so232116961wml.0
- for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 05:46:03 -0700 (PDT)
-In-Reply-To: <20160321170536.GX2566@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 46323260534
+ for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 13:49:01 +0100 (CET)
+In-Reply-To: <1458734303-16307-1-git-send-email-pascal.huerst@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,41 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, anish kumar <yesanishhere@gmail.com>
+To: pascal.huerst@gmail.com
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-T2ssCgpJICAndiBhIHByb2JsZW0gd2l0aCB0aGUgY29kZWMgbWF4OTc2OCwgYmVjYXVzZSBJIGRv
-bid0IHNlZSBpdCBpbiB0aGUKZGV2aWNlIGxpc3QuCgpidXQgaW4gdGhlIGtlcm5lbCBsb2csIGV2
-ZXJ5dGhpbmcgbG9va3Mgb2sgIQoKClsgICAgOS41ODIxNzldIGkyQyBtYXg5NzY4IHByb2JlClsg
-ICAgOS41ODIzNjldIEFTb0M6IFJlZ2lzdGVyZWQgY29kZWMgJ21heDk3NjguMi0wMDQ5JwoKcm9v
-dEBiZWFnbGVib25lOi8jIC9zYmluL2xzbW9kIHwgZ3JlcCBzbmQKc25kX3NvY19zaW1wbGVfY2Fy
-ZCAgICAgNzU5NyAgMAoqc25kX3NvY19tYXg5NzY4KiAgICAgICAgIDQ3MzYgIDAKc25kX3NvY190
-bHYzMjBhaWMzeCAgICA0MDA1MyAgMQpzbmRfc29jX2RhdmluY2lfbWNhc3AgICAgMTQzODMgIDIK
-c25kX3NvY19lZG1hICAgICAgICAgICAgMTE1MCAgMSBzbmRfc29jX2RhdmluY2lfbWNhc3AKc25k
-X3NvY19vbWFwICAgICAgICAgICAgMjU4MSAgMSBzbmRfc29jX2RhdmluY2lfbWNhc3AKc25kX3Nv
-Y19jb3JlICAgICAgICAgIDE1NTgyNiAgNgpzbmRfc29jX2RhdmluY2lfbWNhc3Asc25kX3NvY19l
-ZG1hLHNuZF9zb2Nfb21hcCxzbmRfc29jX3RsdjMyMGFpYzN4LHNuZF9zb2NfbWF4OTc2OCxzbmRf
-c29jX3NpbXBsZV9jYXJkCnNuZF9jb21wcmVzcyAgICAgICAgICAgMTE1ODkgIDEgc25kX3NvY19j
-b3JlCnNuZF9wY21fZG1hZW5naW5lICAgICAgIDUwNjEgIDIgc25kX3NvY19jb3JlLHNuZF9zb2Nf
-b21hcApzbmRfcGNtICAgICAgICAgICAgICAgIDc2OTg1ICA1CnNuZF9zb2NfZGF2aW5jaV9tY2Fz
-cCxzbmRfc29jX2NvcmUsc25kX3NvY19vbWFwLHNuZF9zb2NfdGx2MzIwYWljM3gsc25kX3BjbV9k
-bWFlbmdpbmUKc25kX3NlcSAgICAgICAgICAgICAgICA0NTE3NyAgMApzbmRfc2VxX2RldmljZSAg
-ICAgICAgICA0NTM0ICAxIHNuZF9zZXEKc25kX3RpbWVyICAgICAgICAgICAgICAxNjg2NyAgMiBz
-bmRfcGNtLHNuZF9zZXEKc25kICAgICAgICAgICAgICAgICAgICA1NjkwNyAgNwpzbmRfc29jX2Nv
-cmUsc25kX3RpbWVyLHNuZF9wY20sc25kX3NlcSxzbmRfc29jX21heDk3Njgsc25kX3NlcV9kZXZp
-Y2Usc25kX2NvbXByZXNzCnNvdW5kY29yZSAgICAgICAgICAgICAgIDY4OTMgIDEgc25kCgoKTGUg
-bHVuLiAyMSBtYXJzIDIwMTYgw6AgMTg6MDUsIE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9y
-Zz4gYSDDqWNyaXQgOgoKPiBPbiBNb24sIE1hciAyMSwgMjAxNiBhdCAwNDo0MTo0M1BNICswMDAw
-LCBNaWNrYSB3cm90ZToKPgo+ID4gKj4gQ291bGQgeW91IHRlbGwgbWUgaG93IGRvIHlvdSBjb250
-cm9sIHRoaXMgZGV2aWNlL2NvZGVjIHdpdGggTGludXggPwo+IFdoYXQKPiA+IGlzPiB0aGUgY29t
-bWFuZCA/Kgo+ID4gKlVzaW5nIGFueSBBTFNBIHVzZXJzcGFjZSBhcHBsaWNhdGlvbnMuKgo+Cj4g
-PiBCdXQgSG93IGRvIHlvdSBmaW5kIHRoZSBkZXZpY2UgaW4gdGhlIGFtaXhlciBhcHBsaWNhdGlv
-biA/IFRoYXQgdGhlIHBhcnQKPiA+IGRvbid0IEkgZG9uJ3QgZ2V0IGl0ICEKPgo+IFRoZSBtYWNo
-aW5lIGRyaXZlciB0aGF0IHVzZXMgdGhlIENPREVDIHdpbGwgY3JlYXRlIGEgY2FyZC4gIFByb2Jh
-Ymx5Cj4gaXQncyBnb2luZyB0byBiZSB0aGUgb25seSBjYXJkIGluIHRoZSBzeXN0ZW0sIGlmIG5v
-dCB5b3UgbWlnaHQgbmVlZCB0bwo+IGZsaXAgYmV0d2VlbiBjYXJkcyB1c2luZyB3aGF0ZXZlciBV
-SSB5b3UgaGF2ZS4gIFdpdGggYW1peGVyIHRoYXQncyB0aGUKPiAtYyBvcHRpb24uCj4KX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+--===============9065404009247602688==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="uuwIKJs7er60DmzI"
+Content-Disposition: inline
+
+
+--uuwIKJs7er60DmzI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Mar 23, 2016 at 12:58:23PM +0100, pascal.huerst@gmail.com wrote:
+
+> Instead of checking if mclk/lrclk ratio has changed, check if
+> sample rate has changed. In certain cases, the mclk might be
+> changed in the machine driver, which can lead to the same
+> mclk/lrclk ration, eventhow the sample rate has changed.
+
+> Since the codec has to be programmed differently for every
+> sample rate, its better to check for samplerate changes instead
+> of mclk/lrclk ration changes.
+
+Why does this mean we have to reset the CODEC rather than just
+reprogramming it?
+
+--uuwIKJs7er60DmzI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJW8pCwAAoJECTWi3JdVIfQlNQH/jm4bjMXaYth2opBNPS5jPh0
+mq2KFklmr2p1oayGt19wDhJBvL+aE4WS8xebJwWORW0Zr+n9DaidlEzTTafoHZaz
+mKH33TuPcY0RgjsVYBTOcmgV8kiOFqZXG7EcPpP+D77SP1YS8MF9zSUq8Fkt7NLx
+n0OJDpvdT/5Qcz5V01X3b/gJ+ssZEWp5bYzE3DOHrsIDNAmVhlTU8nopewaVcSDq
+5UGfDLnlSrJrovXvDt6YQbYGeKXb+wihRArO3V5cCjoC37Vs1uQXltWwOKY1r4Hu
+SI9PRHMJ8Q8wRigtyHIHNY0iGbBOdrgnVpYwGphOUMQUfl+DhXb00a7yKXXDZqc=
+=DNFk
+-----END PGP SIGNATURE-----
+
+--uuwIKJs7er60DmzI--
+
+--===============9065404009247602688==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9065404009247602688==--
