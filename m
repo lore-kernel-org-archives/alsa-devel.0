@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: Add dmi_system_id "Google
-	Setzer"" to the asoc tree
+Subject: Re: [PATCH] ASoC: adau1701: Reset codec based on
+	sample rate changes
 Date: Wed, 23 Mar 2016 13:42:48 +0000
-Message-ID: <E1aij3g-00049h-AB@debutante>
-References: <1455504017-4194-1-git-send-email-john.lin@realtek.com>
+Message-ID: <20160323134248.GP2566@sirena.org.uk>
+References: <1458734303-16307-1-git-send-email-pascal.huerst@gmail.com>
+ <20160323124849.GL2566@sirena.org.uk> <56F29C06.3090004@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4823574919609083233=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E452266852
- for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 14:42:59 +0100 (CET)
-In-Reply-To: <1455504017-4194-1-git-send-email-john.lin@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DE50E266850
+ for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 14:42:57 +0100 (CET)
+In-Reply-To: <56F29C06.3090004@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,66 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Lin <john.lin@realtek.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, pascal.huerst@gmail.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: rt5645: Add dmi_system_id "Google Setzer"
+--===============4823574919609083233==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="AZ3TfZx6WW1DY2Jl"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--AZ3TfZx6WW1DY2Jl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Wed, Mar 23, 2016 at 02:37:10PM +0100, Lars-Peter Clausen wrote:
+> On 03/23/2016 01:48 PM, Mark Brown wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> > Why does this mean we have to reset the CODEC rather than just
+> > reprogramming it?
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> Quoting from the datasheet:
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> 	The clock mode should not be changed without also resetting
+> 	the ADAU1701. If the mode is changed during operation, a
+> 	click or pop can result in the output signals. The state of the
+> 	PLL_MODEx pins should be changed while RESET is held low.
 
-Thanks,
-Mark
+That should be in the commit log and/or code since that's *extremely*
+unusual and is likely to surprise people.
 
->From 178ff7c6f3916aff3c3eaaec8636be3b41e93011 Mon Sep 17 00:00:00 2001
-From: John Lin <john.lin@realtek.com>
-Date: Mon, 15 Feb 2016 10:40:17 +0800
-Subject: [PATCH] ASoC: rt5645: Add dmi_system_id "Google Setzer"
+--AZ3TfZx6WW1DY2Jl
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Add platform specific data for Setzer project.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Signed-off-by: John Lin <john.lin@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt5645.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+iQEcBAEBCAAGBQJW8p1XAAoJECTWi3JdVIfQXugH/jXplurdzwwNrt5AtzUFXOi2
+l+b9AO11gV1vcyaNWK5UdbMWkaq4qwBf3iQv7c2bPklm5nRNBkxy8XXFIp0HpuNe
+7JZLWIdmy7sCc7PWsEFT9ADzPU6j7zvhMlyMHeL1y4rslAPCMmIFewS9Oo8zDbTB
+l5v1DaJtGPY68OMgNG+PXtY0Hv04hqQo+f66HiGhoYPYcdtqirs+uI824PktFYRX
+wsd+B9kxxJDEj/J5QvI4XblReYqZSoRg6h7/3eTbsXI3S5Ylm8mH8nilMq3Cz8oR
+lfyA2Gr4rNuR3YQRYNp18S9QjQ7j5v4r/iqzeUUkW2WBVJgCnUfCXLRN1GGgnFg=
+=PB/2
+-----END PGP SIGNATURE-----
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 7af5e7380d61..dff706ac7895 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3557,6 +3557,12 @@ static const struct dmi_system_id dmi_platform_intel_braswell[] = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "GOOGLE"),
- 		},
- 	},
-+	{
-+		.ident = "Google Setzer",
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Setzer"),
-+		},
-+	},
- 	{ }
- };
- 
--- 
-2.7.0
+--AZ3TfZx6WW1DY2Jl--
+
+--===============4823574919609083233==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4823574919609083233==--
