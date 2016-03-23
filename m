@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
 Subject: Re: [PATCH] ASoC: adau1701: Reset codec based on
 	sample rate changes
-Date: Wed, 23 Mar 2016 13:42:48 +0000
-Message-ID: <20160323134248.GP2566@sirena.org.uk>
+Date: Wed, 23 Mar 2016 14:44:43 +0100
+Message-ID: <56F29DCB.2090208@metafoo.de>
 References: <1458734303-16307-1-git-send-email-pascal.huerst@gmail.com>
- <20160323124849.GL2566@sirena.org.uk> <56F29C06.3090004@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4823574919609083233=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DE50E266850
- for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 14:42:57 +0100 (CET)
-In-Reply-To: <56F29C06.3090004@metafoo.de>
+Received: from smtp-out-033.synserver.de (smtp-out-033.synserver.de
+ [212.40.185.33])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6215C267260
+ for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 14:44:55 +0100 (CET)
+In-Reply-To: <1458734303-16307-1-git-send-email-pascal.huerst@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,59 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, pascal.huerst@gmail.com, lgirdwood@gmail.com
+To: pascal.huerst@gmail.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+On 03/23/2016 12:58 PM, pascal.huerst@gmail.com wrote:
+> From: Pascal Huerst <pascal.huerst@gmail.com>
+> 
+> Instead of checking if mclk/lrclk ratio has changed, check if
+> sample rate has changed. In certain cases, the mclk might be
+> changed in the machine driver, which can lead to the same
+> mclk/lrclk ration, eventhow the sample rate has changed.
+> 
+> Since the codec has to be programmed differently for every
+> sample rate, its better to check for samplerate changes instead
+> of mclk/lrclk ration changes.
 
---===============4823574919609083233==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="AZ3TfZx6WW1DY2Jl"
-Content-Disposition: inline
-
-
---AZ3TfZx6WW1DY2Jl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Mar 23, 2016 at 02:37:10PM +0100, Lars-Peter Clausen wrote:
-> On 03/23/2016 01:48 PM, Mark Brown wrote:
-
-> > Why does this mean we have to reset the CODEC rather than just
-> > reprogramming it?
-
-> Quoting from the datasheet:
-
-> 	The clock mode should not be changed without also resetting
-> 	the ADAU1701. If the mode is changed during operation, a
-> 	click or pop can result in the output signals. The state of the
-> 	PLL_MODEx pins should be changed while RESET is held low.
-
-That should be in the commit log and/or code since that's *extremely*
-unusual and is likely to surprise people.
-
---AZ3TfZx6WW1DY2Jl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJW8p1XAAoJECTWi3JdVIfQXugH/jXplurdzwwNrt5AtzUFXOi2
-l+b9AO11gV1vcyaNWK5UdbMWkaq4qwBf3iQv7c2bPklm5nRNBkxy8XXFIp0HpuNe
-7JZLWIdmy7sCc7PWsEFT9ADzPU6j7zvhMlyMHeL1y4rslAPCMmIFewS9Oo8zDbTB
-l5v1DaJtGPY68OMgNG+PXtY0Hv04hqQo+f66HiGhoYPYcdtqirs+uI824PktFYRX
-wsd+B9kxxJDEj/J5QvI4XblReYqZSoRg6h7/3eTbsXI3S5Ylm8mH8nilMq3Cz8oR
-lfyA2Gr4rNuR3YQRYNp18S9QjQ7j5v4r/iqzeUUkW2WBVJgCnUfCXLRN1GGgnFg=
-=PB/2
------END PGP SIGNATURE-----
-
---AZ3TfZx6WW1DY2Jl--
-
---===============4823574919609083233==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4823574919609083233==--
+Mark's comment made me give this some additional though. Do we actually
+need to reset the device if the clkdiv did not change. Stopping the DSP,
+uploading the new firmware and then restarting it should be sufficient.
+But on the other hand the time the reset takes should be negligible
+compared to programming the firmware, so it might be ok to always do it.
+Let me know what you think.
