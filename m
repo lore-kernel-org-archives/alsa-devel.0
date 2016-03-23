@@ -1,61 +1,121 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v2] [media] media-device: use kref for media_device instance
-Date: Wed, 23 Mar 2016 11:15:57 +0200
-Message-ID: <4350208.vzA33hqtSr@avalon>
-References: <9d8830150475bc4d4dde2fa1f5163aef82a35477.1458347578.git.mchehab@osg.samsung.com> <3052381.o5ho2okSRi@avalon> <56EFFA4A.6040002@osg.samsung.com>
+From: Hsin-yu Chao <hychao@chromium.org>
+Subject: Re: [PATCH] ucm: add cset-tlv command
+Date: Wed, 23 Mar 2016 17:15:21 +0800
+Message-ID: <CANyK0SkCBWQNi1_NX+wvehx9h3M+ZtdCkV4tDp_8zxkpwgQYzQ@mail.gmail.com>
+References: <1458637834-15947-1-git-send-email-hychao@chromium.org>
+ <s5hpoumzqaz.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <56EFFA4A.6040002@osg.samsung.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Shuah Khan <shuahkh@osg.samsung.com>
-Cc: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Linux Media Mailing List <linux-media@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Hans Verkuil <hans.verkuil@cisco.com>, Javier Martinez Canillas <javier@osg.samsung.com>, Rafael =?ISO-8859-1?Q?Louren=E7o?= de Lima Chehab <chehabrafael@gmail.com>, alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f48.google.com (mail-oi0-f48.google.com
+ [209.85.218.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 949082619BF
+ for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 10:15:22 +0100 (CET)
+Received: by mail-oi0-f48.google.com with SMTP id d205so11177016oia.0
+ for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 02:15:22 -0700 (PDT)
+In-Reply-To: <s5hpoumzqaz.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Koul, Vinod" <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Dylan Reid <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Shuah,
+On Tue, Mar 22, 2016 at 7:48 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Tue, 22 Mar 2016 10:10:34 +0100,
+> Hsin-Yu Chao wrote:
+>>
+>> This patch enables UCM to set a file in TLV format to kcontrol by:
+>> cset-tlv "name='<kcontrol-name>' <path-to-file>"
+>> This new 'cset-tlv' command will be used to write audio DSP to
+>> specific alsa control, where the driver expectes a file in TLV
+>> format.
+>>
+>> Signed-off-by: Hsin-Yu Chao <hychao@chromium.org>
+>
+> One problem in this approach is that the provided TLV data file isn't
+> portable.  Since we deal TLV as int arrays, it's endian-sensitive.
+> At least, some endian check would be needed.
+Thanks for the review. I think by extracting the length attribute (i.e
+tlv[1]) and compare it with the file size is sufficient here, since
+there is no way to figure out the endianness of the binary file passed
+in.
+Also I agree that additional check for crazy large or small file is
+necessary. According to the dsp files I test with, I'll set the tlv
+file size limit to between 8 bytes and 1MB.
+Will upload a v2 patch shortly, thanks!
 
-On Monday 21 Mar 2016 07:42:34 Shuah Khan wrote:
-> On 03/21/2016 05:10 AM, Laurent Pinchart wrote:
-> > On Friday 18 Mar 2016 21:42:16 Mauro Carvalho Chehab wrote:
-> >> Now that the media_device can be used by multiple drivers,
-> >> via devres, we need to be sure that it will be dropped only
-> >> when all drivers stop using it.
-> > 
-> > I've discussed this with Shuah previously and I'm surprised to see that
-> > the problem hasn't been fixed : using devres for this purpose is just
-> > plain wrong. The empty media_device_release_devres() function should have
-> > given you a hint.
-> > 
-> > What we need instead is a list of media devices indexed by struct device
-> > (for this use case) or by struct device_node (for DT use cases). It will
-> > both simplify the code and get rid of the devres abuse.
-> > 
-> > Shuah, if I recall correctly you worked on implementing such a solution
-> > after our last discussion on the topic. Could you please update us on the
-> > status ?
-> It is work in progress. I have a working prototype for au0828 which is an
-> easier case. I am working on resolving a couple of issues to differentiate
-> media devices allocated using the global media device list vs. the ones
-> embedded in the driver data structures. We have many of those.
-> 
-> I had to put this work on the back burner to get the au0882 and
-> snd-usb-audio wrapped up. I can get the RFC patches on top of the au0882
-> and snd-usb-audio. We can discuss them at the upcoming media summit.
-> 
-> > In the mean time, let's hold off on this patch, and merge a proper
-> > solution instead.
-> 
-> I think Mauro's restructure helps us with such differentiation and it will
-> be easy enough to change out devres to get media get API.
-
-We have build too much technical debt already. I would really dislike seeing 
-another hack being merged to fix partial problems when we know what needs to 
-be done for a proper implementation. That's not the Linux upstream development 
-I've known and grown to love, we don't pile up half-baked patches and hope 
-that everything will be magically cleaned up later :-)
-
--- 
-Regards,
-
-Laurent Pinchart
+Hsin-yu
+>
+> Some other nitpicks:
+>
+>> ---
+>>  src/ucm/main.c      | 80 ++++++++++++++++++++++++++++++++++++++++++++---------
+>>  src/ucm/parser.c    | 10 +++++++
+>>  src/ucm/ucm_local.h |  1 +
+>>  3 files changed, 78 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/src/ucm/main.c b/src/ucm/main.c
+>> index 7e44603..a4ccb65 100644
+>> --- a/src/ucm/main.c
+>> +++ b/src/ucm/main.c
+>> @@ -161,6 +161,47 @@ static int open_ctl(snd_use_case_mgr_t *uc_mgr,
+>>       return 0;
+>>  }
+>>
+>> +static int tlv_parse(char **res,
+>> +                  snd_ctl_elem_info_t *info,
+>> +                  const char *filepath)
+>
+> The function name is somehow confusing.  It appears as if it parses
+> TLV.  And what it actually does are two things:
+> - check snd_ctl_elem_info_is_tlv_writable(),
+> and
+> - allocate the whole TLV file.
+>
+> IMO, snd_ctl_elem_info_is_tlv_writable() check can be in the caller
+> side, and this function (rename whatever better) can just do allocate
+> and read the TLV data into a buffer.
+>
+>
+>> +{
+>> +     int err = 0;
+>> +     int fd;
+>> +     struct stat st;
+>> +     size_t sz;
+>> +     ssize_t sz_read;
+>> +
+>> +     if (!snd_ctl_elem_info_is_tlv_writable(info)) {
+>> +             err = -EINVAL;
+>> +             return err;
+>> +     }
+>> +     fd = open(filepath, O_RDONLY);
+>> +     if (fd < 0) {
+>> +             err = -errno;
+>> +             return err;
+>> +     }
+>> +     if (stat(filepath, &st) == -1) {
+>> +             err = -errno;
+>> +             goto __fail;
+>> +     }
+>> +     sz = st.st_size;
+>> +     *res = malloc(sz);
+>
+> What if a crazy large file was passed?  A sanity check of the file
+> size might be good.
+>
+>
+> thanks,
+>
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
