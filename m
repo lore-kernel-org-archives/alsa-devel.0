@@ -1,16 +1,16 @@
 From: han.lu@intel.com
-Subject: [PATCH V3 2/6] alsabat: use general function for wav
-	header update
-Date: Wed, 23 Mar 2016 15:52:43 +0800
-Message-ID: <3fdea8c7365508c6b6ca74931601a86fb0ce4b6f.1458718230.git.han.lu@intel.com>
+Subject: [PATCH V3 3/6] alsabat: clean return value for
+	playback and capture threads
+Date: Wed, 23 Mar 2016 15:52:44 +0800
+Message-ID: <4f516c469d177e3b0c2a74a7f0ca23edb7f9c6a5.1458718230.git.han.lu@intel.com>
 References: <cover.1458718230.git.han.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id EB255261481
- for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 08:51:23 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id C97512615F7
+ for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 08:51:24 +0100 (CET)
 In-Reply-To: <cover.1458718230.git.han.lu@intel.com>
 In-Reply-To: <cover.1458718230.git.han.lu@intel.com>
 References: <cover.1458718230.git.han.lu@intel.com>
@@ -29,58 +29,92 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Lu, Han" <han.lu@intel.com>
 
-In playback thread, use general function update_wav_header()
-to replace a bunch of code, so the structure is cleaner and
-no need to define variable "wav".
+Remove unnecessary prints in playback and capture threads, and replace
+the return value "0" with error code for convenience of maintaining.
 
 Signed-off-by: Lu, Han <han.lu@intel.com>
 
 diff --git a/bat/alsa.c b/bat/alsa.c
-index 666bcf2..5acc2bc 100644
+index 5acc2bc..aae2eb0 100644
 --- a/bat/alsa.c
 +++ b/bat/alsa.c
-@@ -292,11 +292,10 @@ static int write_to_pcm(const struct pcm_container *sndpcm,
+@@ -316,18 +316,13 @@ static int write_to_pcm_loop(struct pcm_container *sndpcm, struct bat *bat)
  
- static int write_to_pcm_loop(struct pcm_container *sndpcm, struct bat *bat)
- {
--	int err;
-+	int err = 0;
- 	int bytes = sndpcm->period_bytes; /* playback buffer size */
- 	int frames = bytes * 8 / sndpcm->frame_bits; /* frame count */
- 	FILE *fp = NULL;
--	struct wav_container wav;
- 	int bytes_total = 0;
- 
- 	if (bat->debugplay) {
-@@ -308,7 +307,7 @@ static int write_to_pcm_loop(struct pcm_container *sndpcm, struct bat *bat)
- 			return err;
- 		}
- 		/* leave space for wav header */
--		if (fseek(fp, sizeof(wav), SEEK_SET) != 0) {
-+		if (fseek(fp, sizeof(struct wav_container), SEEK_SET) != 0) {
- 			err = -errno;
- 			fclose(fp);
- 			return err;
-@@ -344,19 +343,7 @@ static int write_to_pcm_loop(struct pcm_container *sndpcm, struct bat *bat)
- 	}
- 
- 	if (bat->debugplay) {
--		/* update wav header */
--		prepare_wav_info(&wav, bat);
--		wav.chunk.length = bytes_total;
--		wav.header.length = (wav.chunk.length) + sizeof(wav.chunk)
--			+ sizeof(wav.format) + sizeof(wav.header) - 8;
--
--		rewind(fp);
--		err = write_wav_header(fp, &wav, bat);
--		if (err != 0) {
--			fprintf(bat->err, _("Write file error: %s %s(%d)\n"),
--					bat->debugplay, snd_strerror(err), err);
+ 	while (1) {
+ 		err = generate_input_data(sndpcm, bytes, bat);
+-		if (err < 0)
 -			return err;
--		}
-+		update_wav_header(bat, fp, bytes_total);
- 		fclose(fp);
+-		else if (err > 0)
++		if (err != 0)
+ 			break;
+ 
+ 		if (bat->debugplay) {
+-			err = fwrite(sndpcm->buffer, 1, bytes, fp);
+-			if (err != bytes) {
+-				fprintf(bat->err, _("Write file error: "));
+-				fprintf(bat->err, _("%s(%d)\n"),
+-						snd_strerror(err), err);
+-				return -EIO;
++			if (fwrite(sndpcm->buffer, 1, bytes, fp) != bytes) {
++				err = -EIO;
++				break;
+ 			}
+ 			bytes_total += bytes;
+ 		}
+@@ -339,7 +334,7 @@ static int write_to_pcm_loop(struct pcm_container *sndpcm, struct bat *bat)
+ 
+ 		err = write_to_pcm(sndpcm, frames, bat);
+ 		if (err != 0)
+-			return err;
++			break;
  	}
  
+ 	if (bat->debugplay) {
+@@ -349,7 +344,7 @@ static int write_to_pcm_loop(struct pcm_container *sndpcm, struct bat *bat)
+ 
+ 	snd_pcm_drain(sndpcm->handle);
+ 
+-	return 0;
++	return err;
+ }
+ 
+ /**
+@@ -405,7 +400,7 @@ void *playback_alsa(struct bat *bat)
+ 	}
+ 
+ 	err = write_to_pcm_loop(&sndpcm, bat);
+-	if (err != 0) {
++	if (err < 0) {
+ 		retval_play = err;
+ 		goto exit4;
+ 	}
+@@ -484,14 +479,12 @@ static int read_from_pcm_loop(struct pcm_container *sndpcm, struct bat *bat)
+ 		/* read a chunk from pcm device */
+ 		err = read_from_pcm(sndpcm, frames, bat);
+ 		if (err != 0)
+-			return err;
++			break;
+ 
+ 		/* write the chunk to file */
+-		err = fwrite(sndpcm->buffer, 1, size, fp);
+-		if (err != size) {
+-			fprintf(bat->err, _("Write file error: %s(%d)\n"),
+-					snd_strerror(err), err);
+-			return -EIO;
++		if (fwrite(sndpcm->buffer, 1, size, fp) != size) {
++			err = -EIO;
++			break;
+ 		}
+ 
+ 		bytes_read += size;
+@@ -506,7 +499,7 @@ static int read_from_pcm_loop(struct pcm_container *sndpcm, struct bat *bat)
+ 	update_wav_header(bat, fp, bytes_read);
+ 
+ 	fclose(fp);
+-	return 0;
++	return err;
+ }
+ 
+ static void pcm_cleanup(void *p)
 -- 
 2.5.0
