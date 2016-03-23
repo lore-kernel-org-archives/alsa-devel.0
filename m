@@ -1,17 +1,23 @@
-From: pascal.huerst@gmail.com
-Subject: [PATCH] ASoC: adau1701: Reset codec based on sample
-	rate changes
-Date: Wed, 23 Mar 2016 12:58:23 +0100
-Message-ID: <1458734303-16307-1-git-send-email-pascal.huerst@gmail.com>
+From: Micka <mickamusset@gmail.com>
+Subject: Re: [PATCH] ASoC: Add max98371 codec driver
+Date: Wed, 23 Mar 2016 12:45:52 +0000
+Message-ID: <CAF+MRt=UHE335omReg7mW_P0caWZTRb7fiCwD9X_hYi7XaXtXg@mail.gmail.com>
+References: <1458525542-2168-1-git-send-email-yesanishhere@gmail.com>
+ <20160321145642.GV2566@sirena.org.uk>
+ <CAF+MRtkm+OHQHwW4cTihSV5MOnJWiq4XfjoxghYN7eq05e0pWw@mail.gmail.com>
+ <20160321155659.GW2566@sirena.org.uk>
+ <CAF+MRtm16ThnHwPvmR6oDeZcavvwVvMmvmgq6en-_e6U81hFeg@mail.gmail.com>
+ <20160321170536.GX2566@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id E782D260534
- for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 12:58:34 +0100 (CET)
-Received: by mail-wm0-f68.google.com with SMTP id l68so3629992wml.3
- for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 04:58:34 -0700 (PDT)
+Received: from mail-wm0-f41.google.com (mail-wm0-f41.google.com [74.125.82.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 718BE260534
+ for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 13:46:03 +0100 (CET)
+Received: by mail-wm0-f41.google.com with SMTP id l68so232116961wml.0
+ for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 05:46:03 -0700 (PDT)
+In-Reply-To: <20160321170536.GX2566@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,67 +27,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lars@metafoo.de
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Pascal Huerst <pascal.huerst@gmail.com>, lgirdwood@gmail.com
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, anish kumar <yesanishhere@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Pascal Huerst <pascal.huerst@gmail.com>
-
-Instead of checking if mclk/lrclk ratio has changed, check if
-sample rate has changed. In certain cases, the mclk might be
-changed in the machine driver, which can lead to the same
-mclk/lrclk ration, eventhow the sample rate has changed.
-
-Since the codec has to be programmed differently for every
-sample rate, its better to check for samplerate changes instead
-of mclk/lrclk ration changes.
-
-Signed-off-by: Pascal Huerst <pascal.huerst@gmail.com>
----
- sound/soc/codecs/adau1701.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
-
-diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
-index 202dea1..1dbbcda 100644
---- a/sound/soc/codecs/adau1701.c
-+++ b/sound/soc/codecs/adau1701.c
-@@ -111,6 +111,7 @@ struct adau1701 {
- 	unsigned int dai_fmt;
- 	unsigned int pll_clkdiv;
- 	unsigned int sysclk;
-+	unsigned int current_rate;
- 	struct regmap *regmap;
- 	struct i2c_client *client;
- 	u8 pin_config[12];
-@@ -436,22 +437,24 @@ static int adau1701_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct adau1701 *adau1701 = snd_soc_codec_get_drvdata(codec);
--	unsigned int clkdiv = adau1701->sysclk / params_rate(params);
-+	unsigned int rate = params_rate(params);
-+	unsigned int clkdiv = adau1701->sysclk / rate;
- 	unsigned int val;
- 	int ret;
-
- 	/*
--	 * If the mclk/lrclk ratio changes, the chip needs updated PLL
-+	 * If the sample rate changes, the chip needs updated PLL
- 	 * mode GPIO settings, and a full reset cycle, including a new
- 	 * firmware upload.
- 	 */
--	if (clkdiv != adau1701->pll_clkdiv) {
--		ret = adau1701_reset(codec, clkdiv, params_rate(params));
-+	if (adau1701->current_rate != rate) {
-+		adau1701->current_rate = rate;
-+		ret = adau1701_reset(codec, clkdiv, rate);
- 		if (ret < 0)
- 			return ret;
- 	}
-
--	switch (params_rate(params)) {
-+	switch (rate) {
- 	case 192000:
- 		val = ADAU1701_DSPCTRL_SR_192;
- 		break;
---
-2.5.0
+T2ssCgpJICAndiBhIHByb2JsZW0gd2l0aCB0aGUgY29kZWMgbWF4OTc2OCwgYmVjYXVzZSBJIGRv
+bid0IHNlZSBpdCBpbiB0aGUKZGV2aWNlIGxpc3QuCgpidXQgaW4gdGhlIGtlcm5lbCBsb2csIGV2
+ZXJ5dGhpbmcgbG9va3Mgb2sgIQoKClsgICAgOS41ODIxNzldIGkyQyBtYXg5NzY4IHByb2JlClsg
+ICAgOS41ODIzNjldIEFTb0M6IFJlZ2lzdGVyZWQgY29kZWMgJ21heDk3NjguMi0wMDQ5JwoKcm9v
+dEBiZWFnbGVib25lOi8jIC9zYmluL2xzbW9kIHwgZ3JlcCBzbmQKc25kX3NvY19zaW1wbGVfY2Fy
+ZCAgICAgNzU5NyAgMAoqc25kX3NvY19tYXg5NzY4KiAgICAgICAgIDQ3MzYgIDAKc25kX3NvY190
+bHYzMjBhaWMzeCAgICA0MDA1MyAgMQpzbmRfc29jX2RhdmluY2lfbWNhc3AgICAgMTQzODMgIDIK
+c25kX3NvY19lZG1hICAgICAgICAgICAgMTE1MCAgMSBzbmRfc29jX2RhdmluY2lfbWNhc3AKc25k
+X3NvY19vbWFwICAgICAgICAgICAgMjU4MSAgMSBzbmRfc29jX2RhdmluY2lfbWNhc3AKc25kX3Nv
+Y19jb3JlICAgICAgICAgIDE1NTgyNiAgNgpzbmRfc29jX2RhdmluY2lfbWNhc3Asc25kX3NvY19l
+ZG1hLHNuZF9zb2Nfb21hcCxzbmRfc29jX3RsdjMyMGFpYzN4LHNuZF9zb2NfbWF4OTc2OCxzbmRf
+c29jX3NpbXBsZV9jYXJkCnNuZF9jb21wcmVzcyAgICAgICAgICAgMTE1ODkgIDEgc25kX3NvY19j
+b3JlCnNuZF9wY21fZG1hZW5naW5lICAgICAgIDUwNjEgIDIgc25kX3NvY19jb3JlLHNuZF9zb2Nf
+b21hcApzbmRfcGNtICAgICAgICAgICAgICAgIDc2OTg1ICA1CnNuZF9zb2NfZGF2aW5jaV9tY2Fz
+cCxzbmRfc29jX2NvcmUsc25kX3NvY19vbWFwLHNuZF9zb2NfdGx2MzIwYWljM3gsc25kX3BjbV9k
+bWFlbmdpbmUKc25kX3NlcSAgICAgICAgICAgICAgICA0NTE3NyAgMApzbmRfc2VxX2RldmljZSAg
+ICAgICAgICA0NTM0ICAxIHNuZF9zZXEKc25kX3RpbWVyICAgICAgICAgICAgICAxNjg2NyAgMiBz
+bmRfcGNtLHNuZF9zZXEKc25kICAgICAgICAgICAgICAgICAgICA1NjkwNyAgNwpzbmRfc29jX2Nv
+cmUsc25kX3RpbWVyLHNuZF9wY20sc25kX3NlcSxzbmRfc29jX21heDk3Njgsc25kX3NlcV9kZXZp
+Y2Usc25kX2NvbXByZXNzCnNvdW5kY29yZSAgICAgICAgICAgICAgIDY4OTMgIDEgc25kCgoKTGUg
+bHVuLiAyMSBtYXJzIDIwMTYgw6AgMTg6MDUsIE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9y
+Zz4gYSDDqWNyaXQgOgoKPiBPbiBNb24sIE1hciAyMSwgMjAxNiBhdCAwNDo0MTo0M1BNICswMDAw
+LCBNaWNrYSB3cm90ZToKPgo+ID4gKj4gQ291bGQgeW91IHRlbGwgbWUgaG93IGRvIHlvdSBjb250
+cm9sIHRoaXMgZGV2aWNlL2NvZGVjIHdpdGggTGludXggPwo+IFdoYXQKPiA+IGlzPiB0aGUgY29t
+bWFuZCA/Kgo+ID4gKlVzaW5nIGFueSBBTFNBIHVzZXJzcGFjZSBhcHBsaWNhdGlvbnMuKgo+Cj4g
+PiBCdXQgSG93IGRvIHlvdSBmaW5kIHRoZSBkZXZpY2UgaW4gdGhlIGFtaXhlciBhcHBsaWNhdGlv
+biA/IFRoYXQgdGhlIHBhcnQKPiA+IGRvbid0IEkgZG9uJ3QgZ2V0IGl0ICEKPgo+IFRoZSBtYWNo
+aW5lIGRyaXZlciB0aGF0IHVzZXMgdGhlIENPREVDIHdpbGwgY3JlYXRlIGEgY2FyZC4gIFByb2Jh
+Ymx5Cj4gaXQncyBnb2luZyB0byBiZSB0aGUgb25seSBjYXJkIGluIHRoZSBzeXN0ZW0sIGlmIG5v
+dCB5b3UgbWlnaHQgbmVlZCB0bwo+IGZsaXAgYmV0d2VlbiBjYXJkcyB1c2luZyB3aGF0ZXZlciBV
+SSB5b3UgaGF2ZS4gIFdpdGggYW1peGVyIHRoYXQncyB0aGUKPiAtYyBvcHRpb24uCj4KX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
