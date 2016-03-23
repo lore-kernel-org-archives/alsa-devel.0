@@ -1,22 +1,17 @@
-From: Hsin-yu Chao <hychao@chromium.org>
-Subject: Re: [PATCH] ucm: add cset-tlv command
-Date: Wed, 23 Mar 2016 17:44:31 +0800
-Message-ID: <CANyK0Snvs-oJz+God7GBry-DGibW-3Fhyyj3juR73UBkGBAhbg@mail.gmail.com>
-References: <1458637834-15947-1-git-send-email-hychao@chromium.org>
- <s5hpoumzqaz.wl-tiwai@suse.de>
- <CANyK0SkCBWQNi1_NX+wvehx9h3M+ZtdCkV4tDp_8zxkpwgQYzQ@mail.gmail.com>
- <s5hlh59eei5.wl-tiwai@suse.de>
+From: pascal.huerst@gmail.com
+Subject: [PATCH] ASoC: adau1701: Reset codec based on sample
+	rate changes
+Date: Wed, 23 Mar 2016 12:58:23 +0100
+Message-ID: <1458734303-16307-1-git-send-email-pascal.huerst@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f46.google.com (mail-oi0-f46.google.com
- [209.85.218.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 916D4265832
- for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 10:44:32 +0100 (CET)
-Received: by mail-oi0-f46.google.com with SMTP id w20so12073034oia.2
- for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 02:44:32 -0700 (PDT)
-In-Reply-To: <s5hlh59eei5.wl-tiwai@suse.de>
+Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id E782D260534
+ for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 12:58:34 +0100 (CET)
+Received: by mail-wm0-f68.google.com with SMTP id l68so3629992wml.3
+ for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 04:58:34 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,49 +21,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Koul, Vinod" <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Dylan Reid <dgreid@chromium.org>
+To: lars@metafoo.de
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Pascal Huerst <pascal.huerst@gmail.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 23, 2016 at 5:21 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Wed, 23 Mar 2016 10:15:21 +0100,
-> Hsin-yu Chao wrote:
->>
->> On Tue, Mar 22, 2016 at 7:48 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> > On Tue, 22 Mar 2016 10:10:34 +0100,
->> > Hsin-Yu Chao wrote:
->> >>
->> >> This patch enables UCM to set a file in TLV format to kcontrol by:
->> >> cset-tlv "name='<kcontrol-name>' <path-to-file>"
->> >> This new 'cset-tlv' command will be used to write audio DSP to
->> >> specific alsa control, where the driver expectes a file in TLV
->> >> format.
->> >>
->> >> Signed-off-by: Hsin-Yu Chao <hychao@chromium.org>
->> >
->> > One problem in this approach is that the provided TLV data file isn't
->> > portable.  Since we deal TLV as int arrays, it's endian-sensitive.
->> > At least, some endian check would be needed.
->> Thanks for the review. I think by extracting the length attribute (i.e
->> tlv[1]) and compare it with the file size is sufficient here, since
->> there is no way to figure out the endianness of the binary file passed
->> in.
->
-> Yeah, that should be good enough.
->
->
->> Also I agree that additional check for crazy large or small file is
->> necessary. According to the dsp files I test with, I'll set the tlv
->> file size limit to between 8 bytes and 1MB.
->
-> I guess the size will grow quickly in near future, so it'd be safer to
-> take a bit bigger.
->
-How about using 16MB as upper limit?
-DSP file larger than that would take 1 second or more to load through USB 2.0.
+From: Pascal Huerst <pascal.huerst@gmail.com>
 
-Hsin-yu
->
-> thanks,
->
-> Takashi
+Instead of checking if mclk/lrclk ratio has changed, check if
+sample rate has changed. In certain cases, the mclk might be
+changed in the machine driver, which can lead to the same
+mclk/lrclk ration, eventhow the sample rate has changed.
+
+Since the codec has to be programmed differently for every
+sample rate, its better to check for samplerate changes instead
+of mclk/lrclk ration changes.
+
+Signed-off-by: Pascal Huerst <pascal.huerst@gmail.com>
+---
+ sound/soc/codecs/adau1701.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
+index 202dea1..1dbbcda 100644
+--- a/sound/soc/codecs/adau1701.c
++++ b/sound/soc/codecs/adau1701.c
+@@ -111,6 +111,7 @@ struct adau1701 {
+ 	unsigned int dai_fmt;
+ 	unsigned int pll_clkdiv;
+ 	unsigned int sysclk;
++	unsigned int current_rate;
+ 	struct regmap *regmap;
+ 	struct i2c_client *client;
+ 	u8 pin_config[12];
+@@ -436,22 +437,24 @@ static int adau1701_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct adau1701 *adau1701 = snd_soc_codec_get_drvdata(codec);
+-	unsigned int clkdiv = adau1701->sysclk / params_rate(params);
++	unsigned int rate = params_rate(params);
++	unsigned int clkdiv = adau1701->sysclk / rate;
+ 	unsigned int val;
+ 	int ret;
+
+ 	/*
+-	 * If the mclk/lrclk ratio changes, the chip needs updated PLL
++	 * If the sample rate changes, the chip needs updated PLL
+ 	 * mode GPIO settings, and a full reset cycle, including a new
+ 	 * firmware upload.
+ 	 */
+-	if (clkdiv != adau1701->pll_clkdiv) {
+-		ret = adau1701_reset(codec, clkdiv, params_rate(params));
++	if (adau1701->current_rate != rate) {
++		adau1701->current_rate = rate;
++		ret = adau1701_reset(codec, clkdiv, rate);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+
+-	switch (params_rate(params)) {
++	switch (rate) {
+ 	case 192000:
+ 		val = ADAU1701_DSPCTRL_SR_192;
+ 		break;
+--
+2.5.0
