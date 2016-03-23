@@ -1,18 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: adau1701: Reset codec based on
-	sample rate changes
-Date: Wed, 23 Mar 2016 14:37:10 +0100
-Message-ID: <56F29C06.3090004@metafoo.de>
-References: <1458734303-16307-1-git-send-email-pascal.huerst@gmail.com>
- <20160323124849.GL2566@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rt5645: Add dmi_system_id "Google
+	Setzer"" to the asoc tree
+Date: Wed, 23 Mar 2016 13:42:48 +0000
+Message-ID: <E1aij3g-00049h-AB@debutante>
+References: <1455504017-4194-1-git-send-email-john.lin@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5435052255220096334=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-033.synserver.de (smtp-out-033.synserver.de
- [212.40.185.33])
- by alsa0.perex.cz (Postfix) with ESMTP id 05F2B2667F3
- for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 14:37:36 +0100 (CET)
-In-Reply-To: <20160323124849.GL2566@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E452266852
+ for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 14:42:59 +0100 (CET)
+In-Reply-To: <1455504017-4194-1-git-send-email-john.lin@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,77 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, pascal.huerst@gmail.com
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: John Lin <john.lin@realtek.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---===============5435052255220096334==
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="oxbF86Ft6jwWvJAhTVTcUoR3X7oSjMUv3"
+The patch
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---oxbF86Ft6jwWvJAhTVTcUoR3X7oSjMUv3
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+   ASoC: rt5645: Add dmi_system_id "Google Setzer"
 
-On 03/23/2016 01:48 PM, Mark Brown wrote:
-> On Wed, Mar 23, 2016 at 12:58:23PM +0100, pascal.huerst@gmail.com wrote=
-:
->=20
->> Instead of checking if mclk/lrclk ratio has changed, check if
->> sample rate has changed. In certain cases, the mclk might be
->> changed in the machine driver, which can lead to the same
->> mclk/lrclk ration, eventhow the sample rate has changed.
->=20
->> Since the codec has to be programmed differently for every
->> sample rate, its better to check for samplerate changes instead
->> of mclk/lrclk ration changes.
->=20
-> Why does this mean we have to reset the CODEC rather than just
-> reprogramming it?
+has been applied to the asoc tree at
 
-Quoting from the datasheet:
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-	The clock mode should not be changed without also resetting
-	the ADAU1701. If the mode is changed during operation, a
-	click or pop can result in the output signals. The state of the
-	PLL_MODEx pins should be changed while RESET is held low.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-- Lars
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---oxbF86Ft6jwWvJAhTVTcUoR3X7oSjMUv3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Thanks,
+Mark
 
-iQIcBAEBCAAGBQJW8pwRAAoJEOj3aLScRbOZPJAP/07tV5dbRrQ5OIj29oqg9GjG
-wOio6lskBTgtpmDjLqgFz1vXoYtYqrpwrr0v2tL+SqjG643kZ9iWVwVg5Ks9XC2g
-AfrtZnJcQRd64/s3MoUHzCmczmVJOQT3iOABUQxqgYrZ5ZVABsJN9L0aNN7HC8rK
-q9wMEWUHu04/CX8jInK4+h5VUc2KFKbFMWu90zUhnmLms1KfqbK3ojqIxnpMAlmd
-E6x5cUSusoeuCp7b2OdSbHnNJISOtyOvNUC4XCh16nZmfN7cnnsZMELH9vmSYON8
-h0q2kzOSdueEAeFtmn0rNFbp91ZC6XTuT9oSAVe1l+A0ypVbIOYTEAVTXHQmDY0s
-fCDISFoDUGN5GjwxNXxh/PjMpOqZ219VWOyj4vIuKRBn6wRcnZ1u6PdMET22cAVO
-HV9BL1CORfTdLYTaJJdsvFlmoY2PGxdy4B4rfEwAAZl2fXo5cIlgI4lAfiHHKhE6
-PXoMWsO9Wl64Uo1ENxkalc3BNA/stY+h1uWawqEQkd45KtHM+Eqom0eHoM3O7K85
-CpNj39Z4tTxnGQoVcBo3OU0L+z153vT/WtEZt5Y41V7+JE7Vn8ZTpbH28ybVrjUI
-D40s5O5hx9OSF638lRmVCaupUKPLhm+7DFZox62/wMWpJu7aVLq4gPsrEklX66s4
-noGenAR4UuywwboqseRC
-=ttNU
------END PGP SIGNATURE-----
+>From 178ff7c6f3916aff3c3eaaec8636be3b41e93011 Mon Sep 17 00:00:00 2001
+From: John Lin <john.lin@realtek.com>
+Date: Mon, 15 Feb 2016 10:40:17 +0800
+Subject: [PATCH] ASoC: rt5645: Add dmi_system_id "Google Setzer"
 
---oxbF86Ft6jwWvJAhTVTcUoR3X7oSjMUv3--
+Add platform specific data for Setzer project.
 
---===============5435052255220096334==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: John Lin <john.lin@realtek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt5645.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-
---===============5435052255220096334==--
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 7af5e7380d61..dff706ac7895 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3557,6 +3557,12 @@ static const struct dmi_system_id dmi_platform_intel_braswell[] = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "GOOGLE"),
+ 		},
+ 	},
++	{
++		.ident = "Google Setzer",
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Setzer"),
++		},
++	},
+ 	{ }
+ };
+ 
+-- 
+2.7.0
