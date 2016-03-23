@@ -1,78 +1,48 @@
-From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Subject: Re: [PATCH v2] [media] media-device: use kref for media_device
- instance
-Date: Wed, 23 Mar 2016 14:35:30 -0300
-Message-ID: <20160323143530.695af1c3@recife.lan>
-References: <9d8830150475bc4d4dde2fa1f5163aef82a35477.1458347578.git.mchehab@osg.samsung.com>
-	<1547540.zgadtG4fpe@avalon>
+From: "Alvarado, Claudia" <claudia.alvarado@intel.com>
+Subject: question about cross compilation with alsa
+Date: Wed, 23 Mar 2016 17:39:15 +0000
+Message-ID: <D31822D2.E38F%claudia.alvarado@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <1547540.zgadtG4fpe@avalon>
-Sender: linux-media-owner@vger.kernel.org
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Linux Media Mailing List <linux-media@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Shuah Khan <shuahkh@osg.samsung.com>, Hans Verkuil <hans.verkuil@cisco.com>, Javier Martinez Canillas <javier@osg.samsung.com>, Rafael =?UTF-8?B?TG91cmVuw6dv?= de Lima Chehab <chehabrafael@gmail.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 64AE3261481
+ for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 18:48:06 +0100 (CET)
+Content-Language: en-US
+Content-ID: <58954AB90837D642B8822379C8218F76@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Laurent,
+Hello!  I have a general question.  We are cross compiling on a Linux machi=
+ne for an ARM processor on an embedded device.  When compiling, we specify =
+paths for the include files and our cross compiled Alsa library.  We then t=
+ry to port this to our embedded device.  When trying to run the executable =
+on the embedded device we get two problems:
 
-Thanks for reviewing it.
 
-Em Wed, 23 Mar 2016 18:57:50 +0200
-Laurent Pinchart <laurent.pinchart@ideasonboard.com> escreveu:
+  1.  it doesn=92t recognize the PCM device called =91default=92=97 I think=
+ we just need to call this out with hw:0,0 but we need to play with this.
+  2.  We get this error: =93ALSA lib conf.c(snd_config_update_r)Cannot acce=
+ss file /path/to/alsa.conf"
+     *   The path that it lists is the path to our cross compiled alsa lib =
+on our linux box=85 so it seems that in the compilation process, this path =
+is preserved and transferred to the executable somehow.
 
-> On Friday 18 Mar 2016 21:42:16 Mauro Carvalho Chehab wrote:
-> > Now that the media_device can be used by multiple drivers,
-> > via devres, we need to be sure that it will be dropped only
-> > when all drivers stop using it.
-> > 
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-> > ---
-> > 
-> > v2: The kref is now used only when media_device is allocated via
-> >     the media_device*_devress. This warrants that other drivers won't be
-> >     affected, and that we can keep media_device_cleanup() balanced with
-> >     media_device_init().
-> > 
-> >  drivers/media/media-device.c           | 117 ++++++++++++++++++++++--------
-> >  drivers/media/usb/au0828/au0828-core.c |   3 +-
-> >  include/media/media-device.h           |  28 ++++++++
-> >  sound/usb/media.c                      |   3 +-
-> >  4 files changed, 118 insertions(+), 33 deletions(-)
-> > 
-> > diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
-> > index c32fa15cc76e..4a97d92a7e7d 100644
-> > --- a/drivers/media/media-device.c
-> > +++ b/drivers/media/media-device.c
-> > @@ -707,11 +707,16 @@ void media_device_init(struct media_device *mdev)
-> >  }
-> >  EXPORT_SYMBOL_GPL(media_device_init);
-> > 
-> > -void media_device_cleanup(struct media_device *mdev)
-> > +static void __media_device_cleanup(struct media_device *mdev)
-> >  {
-> >  	ida_destroy(&mdev->entity_internal_idx);
-> >  	mdev->entity_internal_idx_max = 0;
-> >  	media_entity_graph_walk_cleanup(&mdev->pm_count_walk);
-> > +}
-> > +
-> > +void media_device_cleanup(struct media_device *mdev)
-> > +{
-> > +	__media_device_cleanup(mdev);
-> >  	mutex_destroy(&mdev->graph_mutex);
-> >  }
-> >  EXPORT_SYMBOL_GPL(media_device_cleanup);
-> > @@ -721,6 +726,9 @@ int __must_check __media_device_register(struct
-> > media_device *mdev, {
-> >  	int ret;
-> > 
-> > +	/* Check if mdev was ever registered at all */  
-> 
-> This comment doesn't seem to apply to the next line, is it a leftover ? If so, 
-> please remove it.
+So my question is, is there a way to specify two different library paths fo=
+r the two devices (linux and embedded) while compiling so that when we port=
+ to the embedded device, the executable knows where to look for the alsa li=
+brary?  Normally, this wouldn=92t be an issue because the default on a linu=
+x machine is usr/include, which I believe gets searched by default.  Howeve=
+r, on our embedded device, the path is different.
 
-Yes, it is a left over. I'll remove it. Thanks for noticing it.
-
-Thanks,
-Mauro
+Thanks in advance!
