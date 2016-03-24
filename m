@@ -1,17 +1,15 @@
-From: Hsin-Yu Chao <hychao@chromium.org>
-Subject: [PATCH v3] ucm: add cset-tlv
-Date: Thu, 24 Mar 2016 10:28:21 +0800
-Message-ID: <1458786501-8914-1-git-send-email-hychao@chromium.org>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH] ASoC: topology: ABI - Define types for vendor
+	tuples
+Date: Thu, 24 Mar 2016 10:53:14 +0800
+Message-ID: <1458787994-28260-1-git-send-email-mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f173.google.com (mail-pf0-f173.google.com
- [209.85.192.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 953032619D0
- for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 03:28:29 +0100 (CET)
-Received: by mail-pf0-f173.google.com with SMTP id 4so45417530pfd.0
- for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2016 19:28:29 -0700 (PDT)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 661342619D0
+ for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 03:51:23 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,192 +19,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: vinod.koul@intel.com, dgreid@chromium.org, Hsin-Yu Chao <hychao@chromium.org>
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch enables UCM to set a file in TLV format to kcontrol by:
-cset-tlv "name='<kcontrol-name>' <path-to-file>"
-This new 'cset-tlv' command will be used to write audio DSP to
-specific alsa control, where the driver expectes a file in TLV
-format.
-The TLV file to set to kcontrol will be checked first by file size
-not larger than 16 MB, and then examine if the length field reports
-correct number of bytes in the TLV file.
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Signed-off-by: Hsin-Yu Chao <hychao@chromium.org>
----
- src/ucm/main.c      | 91 +++++++++++++++++++++++++++++++++++++++++++++--------
- src/ucm/parser.c    | 10 ++++++
- src/ucm/ucm_local.h |  1 +
- 3 files changed, 89 insertions(+), 13 deletions(-)
+Tuples, a pair of token and value, can be used to define vendor specific
+data, for controls and widgets. This can avoid importing binary data blob
+from other files.
 
-diff --git a/src/ucm/main.c b/src/ucm/main.c
-index 7e44603..d0929a2 100644
---- a/src/ucm/main.c
-+++ b/src/ucm/main.c
-@@ -161,6 +161,54 @@ static int open_ctl(snd_use_case_mgr_t *uc_mgr,
- 	return 0;
- }
+Vendor specific tuple arrays will be embeded in the private data buffer
+of a control or widget object. To be backward compatible, union is used
+to define the tuple arrays in the existing private data ABI object
+'struct snd_soc_tplg_private'.
+
+Vendors need to make sure the token values defined by the topology conf
+file match those defined by their driver.
+
+Now supported tuple types are uuid, string, bool, byte, short and word.
+
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index c4cc1e4..db86b447 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -116,6 +116,14 @@
+ #define SND_SOC_TPLG_STREAM_PLAYBACK	0
+ #define SND_SOC_TPLG_STREAM_CAPTURE	1
  
-+static int read_tlv_file(char **res,
-+			 const char *filepath)
-+{
-+	int err = 0;
-+	int fd;
-+	struct stat st;
-+	size_t sz;
-+	ssize_t sz_read;
-+	unsigned int *tlv;
++/* vendor tuple types */
++#define SND_SOC_TPLG_TUPLE_TYPE_UUID	0
++#define SND_SOC_TPLG_TUPLE_TYPE_STRING	1
++#define SND_SOC_TPLG_TUPLE_TYPE_BOOL	2
++#define SND_SOC_TPLG_TUPLE_TYPE_BYTE	3
++#define SND_SOC_TPLG_TUPLE_TYPE_WORD	4
++#define SND_SOC_TPLG_TUPLE_TYPE_SHORT	5
 +
-+	fd = open(filepath, O_RDONLY);
-+	if (fd < 0) {
-+		err = -errno;
-+		return err;
-+	}
-+	if (stat(filepath, &st) == -1) {
-+		err = -errno;
-+		goto __fail;
-+	}
-+	sz = st.st_size;
-+	if (sz > 16 * 1024 * 1024 || sz < 8) {
-+		uc_error("File size should be less than 16 MB");
-+		goto __fail;
-+	}
-+	*res = malloc(sz);
-+	if (res == NULL) {
-+		err = -ENOMEM;
-+		goto __fail;
-+	}
-+	sz_read = read(fd, *res, sz);
-+	if (sz_read < 0 || (size_t)sz_read != sz) {
-+		err = -errno;
-+		free(*res);
-+		*res = NULL;
-+	}
-+	/* Check if the tlv file specifies valid size. */
-+	tlv = (unsigned int *)(*res);
-+	if (tlv[1] + 2 * sizeof(unsigned int) != sz) {
-+		uc_error("Invalid tlv size");
-+		free(*res);
-+		*res = NULL;
-+	}
+ /*
+  * Block Header.
+  * This header precedes all object and object arrays below.
+@@ -132,6 +140,35 @@ struct snd_soc_tplg_hdr {
+ 	__le32 count;		/* number of elements in block */
+ } __attribute__((packed));
+ 
++/* vendor tuple for uuid */
++struct snd_soc_tplg_vendor_uuid_elem {
++	__le32 token;
++	char uuid[16];
++} __attribute__((packed));
 +
-+      __fail:
-+	close(fd);
-+	return err;
-+}
++/* vendor tuple for a bool/byte/short/word value */
++struct snd_soc_tplg_vendor_value_elem {
++	__le32 token;
++	__le32 value;
++} __attribute__((packed));
 +
- static int binary_file_parse(snd_ctl_elem_value_t *dst,
- 			      snd_ctl_elem_info_t *info,
- 			      const char *filepath)
-@@ -226,6 +274,7 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
- 	snd_ctl_elem_id_t *id;
- 	snd_ctl_elem_value_t *value;
- 	snd_ctl_elem_info_t *info;
-+	char *res = NULL;
- 
- 	snd_ctl_elem_id_malloc(&id);
- 	snd_ctl_elem_value_malloc(&value);
-@@ -241,23 +290,36 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
- 		err = -EINVAL;
- 		goto __fail;
- 	}
--	snd_ctl_elem_value_set_id(value, id);
- 	snd_ctl_elem_info_set_id(info, id);
--	err = snd_ctl_elem_read(ctl, value);
--	if (err < 0)
--		goto __fail;
- 	err = snd_ctl_elem_info(ctl, info);
- 	if (err < 0)
- 		goto __fail;
--	if (type == SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE)
--		err = binary_file_parse(value, info, pos);
--	else
--		err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
--	if (err < 0)
--		goto __fail;
--	err = snd_ctl_elem_write(ctl, value);
--	if (err < 0)
--		goto __fail;
-+	if (type == SEQUENCE_ELEMENT_TYPE_CSET_TLV) {
-+		if (!snd_ctl_elem_info_is_tlv_writable(info)) {
-+			err = -EINVAL;
-+			goto __fail;
-+		}
-+		err = read_tlv_file(&res, pos);
-+		if (err < 0)
-+			goto __fail;
-+		err = snd_ctl_elem_tlv_write(ctl, id, (unsigned int *)res);
-+		if (err < 0)
-+			goto __fail;
-+	} else {
-+		snd_ctl_elem_value_set_id(value, id);
-+		err = snd_ctl_elem_read(ctl, value);
-+		if (err < 0)
-+			goto __fail;
-+		if (type == SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE)
-+			err = binary_file_parse(value, info, pos);
-+		else
-+			err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
-+		if (err < 0)
-+			goto __fail;
-+		err = snd_ctl_elem_write(ctl, value);
-+		if (err < 0)
-+			goto __fail;
-+	}
- 	err = 0;
-       __fail:
- 	if (id != NULL)
-@@ -266,6 +328,8 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
- 		free(value);
- 	if (info != NULL)
- 		free(info);
-+	if (res != NULL)
-+		free(res);
- 
- 	return err;
- }
-@@ -298,6 +362,7 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
- 			break;
- 		case SEQUENCE_ELEMENT_TYPE_CSET:
- 		case SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE:
-+		case SEQUENCE_ELEMENT_TYPE_CSET_TLV:
- 			if (cdev == NULL) {
- 				char *playback_ctl = NULL;
- 				char *capture_ctl = NULL;
-diff --git a/src/ucm/parser.c b/src/ucm/parser.c
-index 9e1cb41..d781e1b 100644
---- a/src/ucm/parser.c
-+++ b/src/ucm/parser.c
-@@ -316,6 +316,16 @@ static int parse_sequence(snd_use_case_mgr_t *uc_mgr ATTRIBUTE_UNUSED,
- 			continue;
- 		}
- 
-+		if (strcmp(cmd, "cset-tlv") == 0) {
-+			curr->type = SEQUENCE_ELEMENT_TYPE_CSET_TLV;
-+			err = parse_string(n, &curr->data.cset);
-+			if (err < 0) {
-+				uc_error("error: cset-tlv requires a string!");
-+				return err;
-+			}
-+			continue;
-+		}
++/* vendor tuple for string */
++struct snd_soc_tplg_vendor_string_elem {
++	__le32 token;
++	char string[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
++} __attribute__((packed));
 +
- 		if (strcmp(cmd, "usleep") == 0) {
- 			curr->type = SEQUENCE_ELEMENT_TYPE_SLEEP;
- 			err = snd_config_get_integer(n, &curr->data.sleep);
-diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
-index 3a5d2c2..b89de2a 100644
---- a/src/ucm/ucm_local.h
-+++ b/src/ucm/ucm_local.h
-@@ -48,6 +48,7 @@
- #define SEQUENCE_ELEMENT_TYPE_SLEEP	3
- #define SEQUENCE_ELEMENT_TYPE_EXEC	4
- #define SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE	5
-+#define SEQUENCE_ELEMENT_TYPE_CSET_TLV	6
++struct snd_soc_tplg_vendor_array {
++	__le32 size;	/* size in bytes of the array, including all elements */
++	__le32 type;	/* SND_SOC_TPLG_TUPLE_TYPE_ */
++	__le32 num_elems;	/* number of elements in array */
++	union {
++		struct snd_soc_tplg_vendor_uuid_elem uuid[0];
++		struct snd_soc_tplg_vendor_value_elem value[0];
++		struct snd_soc_tplg_vendor_string_elem string[0];
++	};
++} __attribute__((packed));
++
+ /*
+  * Private data.
+  * All topology objects may have private data that can be used by the driver or
+@@ -139,7 +176,10 @@ struct snd_soc_tplg_hdr {
+  */
+ struct snd_soc_tplg_private {
+ 	__le32 size;	/* in bytes of private data */
+-	char data[0];
++	union {
++		char data[0];
++		struct snd_soc_tplg_vendor_array array[0];
++	};
+ } __attribute__((packed));
  
- struct ucm_value {
-         struct list_head list;
+ /*
 -- 
-2.8.0.rc3.226.g39d4020
+2.5.0
