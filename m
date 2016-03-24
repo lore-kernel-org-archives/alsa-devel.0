@@ -1,16 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/7] topology: Add support for vendor tuples
-Date: Thu, 24 Mar 2016 11:20:51 +0000
-Message-ID: <20160324112051.GW2566@sirena.org.uk>
-References: <cover.1458788076.git.mengdong.lin@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Add max98371 codec driver
+Date: Thu, 24 Mar 2016 11:21:32 +0000
+Message-ID: <20160324112132.GX2566@sirena.org.uk>
+References: <1458525542-2168-1-git-send-email-yesanishhere@gmail.com>
+ <20160321145642.GV2566@sirena.org.uk>
+ <CAF+MRtnwdsDdEfmnZLcO=-kKURAt9uf5kTsxfGiAbVrsrSP49g@mail.gmail.com>
+ <20160324110512.GV2566@sirena.org.uk>
+ <CAF+MRtnV0FhmVjuvRua-jWjJQn1Q_Ynn=7x+VpGhPPuXp5=cFQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8021739873139989093=="
+Content-Type: multipart/mixed; boundary="===============0962872056309237477=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CC5DA266B4C
- for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 12:21:01 +0100 (CET)
-In-Reply-To: <cover.1458788076.git.mengdong.lin@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1251D266B5E
+ for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 12:21:37 +0100 (CET)
+In-Reply-To: <CAF+MRtnV0FhmVjuvRua-jWjJQn1Q_Ynn=7x+VpGhPPuXp5=cFQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,59 +24,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@linux.intel.com
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, mengdong.lin@intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, liam.r.girdwood@intel.com, hardik.t.shah@intel.com, subhransu.s.prusty@intel.com
+To: Micka <mickamusset@gmail.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, anish kumar <yesanishhere@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8021739873139989093==
+--===============0962872056309237477==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="oU1dbz5gi9IL2UGH"
+	protocol="application/pgp-signature"; boundary="beyCpKA84xV/nXfr"
 Content-Disposition: inline
 
 
---oU1dbz5gi9IL2UGH
+--beyCpKA84xV/nXfr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 24, 2016 at 11:05:29AM +0800, mengdong.lin@linux.intel.com wrot=
-e:
-> From: Mengdong Lin <mengdong.lin@linux.intel.com>
->=20
-> This series addes support for vendor tuples to topology, to avoid=20
-> importing binary data blob from other files.
->=20
-> Backward compatibility of ABI is not impacted. A kernel patch is also
-> submitted "ASoC: topology: ABI - Define types for vendor tuples".
+On Thu, Mar 24, 2016 at 11:19:13AM +0000, Micka wrote:
+> Mark, the subject of this mail is asoc: add max98371 codex driver.
 
-It's now been three kernel releases since the original code was merged
-and we've still not seen any effort to make the ABI actually available.
-Where are we with that?  I've mentioned it a few times previously but
-don't really recall any response.
+> > Please don't top post, reply in line with needed context.  This allows
+> > readers to readily follow the flow of conversation and understand what
+> > you are talking about and also helps ensure that everything in the
+> > discussion is being addressed.
 
---oU1dbz5gi9IL2UGH
+--beyCpKA84xV/nXfr
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJW882SAAoJECTWi3JdVIfQa84IAIWHexL1ZNujOSuUpF6qCjSy
-o/x+yAj7TqlYaa3N3NuKe4z1AcYt8HUHnT+HqM757mFlTUj+aGP1tVNuNxBGsS/7
-TjpoyjDXxoxYSeRntUopArKVv9THYQNQWmTLFOL+wJ4U7pP5RhL0iZLEC8lW4RcT
-uV1Y/RsVJtqZLvaaz/vSG7mDxPdmRUoOMuNqgoCWRldK/3C1e/PzbK995dbexEvt
-FQ/UoltYwjXcqLddPapT+r2p9Ka434SZk7EUg06TMEGlg39fRA+cOtXKYKdohXRB
-1vm6bR/MX62ZVzlx15+TbqYj8FPrMgB9BbzcGmf+/fk4gtUQ2gldBaWaovqEQwc=
-=XUyA
+iQEcBAEBCAAGBQJW8827AAoJECTWi3JdVIfQysQH/iE7sM/+zYvwB2Ltp3TppF40
+JW+aP8sXl4SIPI3xF/uhFyrTYlP2um/FGHx1itk38qWuMvdl8+C9nHAHFILXeviY
+i0EXY6lt1ByIl5FdyBlHhjzXi1Vje1Rgw1WU5x0Z7TOghuBNGTuWRN3dkfDfOxA2
+C6IraG/UJeCMxAp+6o7Yg8m8O7JBNU8mqq+cQWfFYaAgdmwzmfW+AGmBh2RTeOrQ
+pUPiEDb902LOBro8o4R7crfdJH0nKj7tBEaw25gBLoPgGN1ezZXhv3Xhv86JgKRe
+xTeeFo433sLRUiRMPLJpk7vwmcOZY36jcF7DNG6PBVhptvS/GSOpTXu6hKmHRzw=
+=AhR4
 -----END PGP SIGNATURE-----
 
---oU1dbz5gi9IL2UGH--
+--beyCpKA84xV/nXfr--
 
---===============8021739873139989093==
+--===============0962872056309237477==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8021739873139989093==--
+--===============0962872056309237477==--
