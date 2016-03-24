@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 1/7] topology: Use the generic pointer to free
-	an element's object
-Date: Thu, 24 Mar 2016 11:06:31 +0800
-Message-ID: <c8d960fe4b38966d873f0f3951aff9879208d112.1458788076.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 2/7] topology: Define a free handler for the
+	element
+Date: Thu, 24 Mar 2016 11:06:40 +0800
+Message-ID: <c84880ade867ba29181f49c8a06a93f2c3136993.1458788076.git.mengdong.lin@linux.intel.com>
 References: <cover.1458788076.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 92AD3264EBF
- for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 04:04:31 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id A631E261ABB
+ for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 04:04:41 +0100 (CET)
 In-Reply-To: <cover.1458788076.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,26 +27,40 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-The element is a wrapper for different types of objects.So use the
-generic pointer 'obj' instead of the type-specific pointer to free
-the object.
+This handler is defined for type-specific destruction of an element.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
 diff --git a/src/topology/elem.c b/src/topology/elem.c
-index 12d6a72..00f9eea 100644
+index 00f9eea..f2afaaf 100644
 --- a/src/topology/elem.c
 +++ b/src/topology/elem.c
-@@ -83,8 +83,8 @@ void tplg_elem_free(struct tplg_elem *elem)
+@@ -83,8 +83,12 @@ void tplg_elem_free(struct tplg_elem *elem)
  	/* free struct snd_tplg_ object,
  	 * the union pointers share the same address
  	 */
--	if (elem->mixer_ctrl)
--		free(elem->mixer_ctrl);
-+	if (elem->obj)
-+		free(elem->obj);
+-	if (elem->obj)
++	if (elem->obj) {
++		if (elem->free)
++			elem->free(elem->obj);
++
+ 		free(elem->obj);
++	}
  
  	free(elem);
  }
+diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
+index 4915b1a..7368a86 100644
+--- a/src/topology/tplg_local.h
++++ b/src/topology/tplg_local.h
+@@ -127,6 +127,8 @@ struct tplg_elem {
+ 	 */
+ 	struct list_head ref_list;
+ 	struct list_head list; /* list of all elements with same type */
++
++	void (*free)(void *obj);
+ };
+ 
+ struct map_elem {
 -- 
 2.5.0
