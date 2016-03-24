@@ -1,14 +1,17 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 0/7] topology: Add support for vendor tuples
-Date: Thu, 24 Mar 2016 11:05:29 +0800
-Message-ID: <cover.1458788076.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 1/7] topology: Use the generic pointer to free
+	an element's object
+Date: Thu, 24 Mar 2016 11:06:31 +0800
+Message-ID: <c8d960fe4b38966d873f0f3951aff9879208d112.1458788076.git.mengdong.lin@linux.intel.com>
+References: <cover.1458788076.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id A50F02619D0
- for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 04:03:31 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 92AD3264EBF
+ for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 04:04:31 +0100 (CET)
+In-Reply-To: <cover.1458788076.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,32 +27,26 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-This series addes support for vendor tuples to topology, to avoid 
-importing binary data blob from other files.
+The element is a wrapper for different types of objects.So use the
+generic pointer 'obj' instead of the type-specific pointer to free
+the object.
 
-Backward compatibility of ABI is not impacted. A kernel patch is also
-submitted "ASoC: topology: ABI - Define types for vendor tuples".
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-The 1st patch is small code cleanup.
-The 2nd patch is a preparation, since tuples will need the type-specific
-free handler.
-
-Mengdong Lin (7):
-  topology: Use the generic pointer to free an element's object
-  topology: Define a free handler for the element
-  topology: Add doc for vendor tuples
-  topology: ABI - Define types for vendor tuples
-  topology: Add support for vendor tokens
-  topology: Add support for parsing vendor tuples
-  topology: Build data objects with tuples
-
- include/sound/asoc.h      |  42 ++++-
- include/topology.h        |  79 +++++++-
- src/topology/data.c       | 470 +++++++++++++++++++++++++++++++++++++++++++++-
- src/topology/elem.c       |  15 +-
- src/topology/parser.c     |  24 +++
- src/topology/tplg_local.h |  47 +++++
- 6 files changed, 669 insertions(+), 8 deletions(-)
-
+diff --git a/src/topology/elem.c b/src/topology/elem.c
+index 12d6a72..00f9eea 100644
+--- a/src/topology/elem.c
++++ b/src/topology/elem.c
+@@ -83,8 +83,8 @@ void tplg_elem_free(struct tplg_elem *elem)
+ 	/* free struct snd_tplg_ object,
+ 	 * the union pointers share the same address
+ 	 */
+-	if (elem->mixer_ctrl)
+-		free(elem->mixer_ctrl);
++	if (elem->obj)
++		free(elem->obj);
+ 
+ 	free(elem);
+ }
 -- 
 2.5.0
