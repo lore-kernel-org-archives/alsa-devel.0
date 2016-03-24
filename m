@@ -1,20 +1,29 @@
-From: Pascal Huerst <pascal.huerst@gmail.com>
-Subject: Re: [PATCH] ASoC: adau1701: Reset codec based on
-	sample rate changes
-Date: Thu, 24 Mar 2016 17:48:26 +0100
-Message-ID: <56F41A5A.6030605@gmail.com>
-References: <1458734303-16307-1-git-send-email-pascal.huerst@gmail.com>
- <56F29DCB.2090208@metafoo.de>
+From: =?UTF-8?Q?Emmanuel_Fust=c3=a9?= <emmanuel.fuste@laposte.net>
+Subject: simple-audio-card and external dynamic clock
+Date: Thu, 24 Mar 2016 22:51:36 +0100
+Message-ID: <56F46168.7040201@laposte.net>
+Reply-To: emmanuel.fuste@laposte.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 97DD8265B5B
- for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 17:48:27 +0100 (CET)
-Received: by mail-wm0-f67.google.com with SMTP id s187so4656864wme.2
- for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 09:48:27 -0700 (PDT)
-In-Reply-To: <56F29DCB.2090208@metafoo.de>
+Received: from smtp.laposte.net (smtpoutz26.laposte.net [194.117.213.101])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5BB3F260515
+ for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 22:51:30 +0100 (CET)
+Received: from smtp.laposte.net (localhost [127.0.0.1])
+ by lpn-prd-vrout014 (Postfix) with ESMTP id DD6D611F1B9
+ for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 22:51:29 +0100 (CET)
+Received: from lpn-prd-vrin004 (lpn-prd-vrin004.laposte [10.128.63.5])
+ by lpn-prd-vrout014 (Postfix) with ESMTP id D894D11EDA8
+ for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 22:51:29 +0100 (CET)
+Received: from lpn-prd-vrin004 (localhost [127.0.0.1])
+ by lpn-prd-vrin004 (Postfix) with ESMTP id C9C2D70E2B9
+ for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 22:51:29 +0100 (CET)
+Received: from [10.0.0.20] (161.165.115.78.rev.sfr.net [78.115.165.161])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by lpn-prd-vrin004 (Postfix) with ESMTPSA id A402970E2B8
+ for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 22:51:29 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,47 +33,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
+I m very new to ASoC (and not native english speaker) so be indulgent ;-)
+The context  : am335x-boneblack.
+I want to drive simple I2S targets. With the ongoing developments, and 
+recent patches posted here, this is a very simple job for the 
+simple-audio-card machine driver even with fixed external master clock.
+I want to go further using a programmable external clock (si570) which 
+is not very complicated thanks to the CCF.
+But now I want to use the dynamic nature of this external master clock 
+(through CCF) to be able to generate 44.1khz AND 48 multiples of fs 
+which is not natively possible on the BBB because of integer fs scaling 
+only and/or no dedicated audio PLL.
+I know that the same could be achieved on the BBB with switching between 
+internal clock (24mhz) and external one (24.576mhz) gated by GPIO1_27, 
+but this is another story.
 
-On 23.03.2016 14:44, Lars-Peter Clausen wrote:
-> On 03/23/2016 12:58 PM, pascal.huerst@gmail.com wrote:
->> From: Pascal Huerst <pascal.huerst@gmail.com>
->>
->> Instead of checking if mclk/lrclk ratio has changed, check if
->> sample rate has changed. In certain cases, the mclk might be
->> changed in the machine driver, which can lead to the same
->> mclk/lrclk ration, eventhow the sample rate has changed.
->>
->> Since the codec has to be programmed differently for every
->> sample rate, its better to check for samplerate changes instead
->> of mclk/lrclk ration changes.
-> 
-> Mark's comment made me give this some additional though. Do we actually
-> need to reset the device if the clkdiv did not change. Stopping the DSP,
-> uploading the new firmware and then restarting it should be sufficient.
-> But on the other hand the time the reset takes should be negligible
-> compared to programming the firmware, so it might be ok to always do it.
-> Let me know what you think.
+Which direction is the right one ?
+- dedicated machine driver ?
+- or something more generic / reusable implemented in the 
+simple-audio-card drivers through helpers routines ?
+- or something else ?
 
-Ok, I see your point. So I did some measurements.
-
-On our devices,
-
-a firmware download takes about: 844ms
-Resetting the pll settings takes about: 87ms
-
-I'm not sure, if this worth the effort, but certainly it could be done.
-I would probably leave it for now, be a bit more precise in the comment
-above and add a note to the commit message, as Mark suggested (?)
-
-While at it I also saw, that we should keep the reset line low, while
-changing the pll settings. (Which we don't right now)
-
-The datasheet states:
-
-... "The state of the PLL_MODEx pins should be changed while RESET is
-held low." ...
+Than you.
+Emmanuel.
