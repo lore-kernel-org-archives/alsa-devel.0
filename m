@@ -1,15 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 3/7] topology: Add doc for vendor tuples
-Date: Thu, 24 Mar 2016 11:07:09 +0800
-Message-ID: <bbec90cdc53fe084b53d57b07614604a4eb05901.1458788076.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 4/7] topology: ABI - Define types for vendor
+	tuples
+Date: Thu, 24 Mar 2016 11:07:19 +0800
+Message-ID: <a75bdfc07ce0be766e1f5b8516cd02e921d0d138.1458788076.git.mengdong.lin@linux.intel.com>
 References: <cover.1458788076.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id B4D152659FF
- for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 04:05:11 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 674C7265960
+ for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 04:05:18 +0100 (CET)
 In-Reply-To: <cover.1458788076.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,106 +27,88 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Describe how to define vendor tokens and tuples in the text conf file.
+Tuples, a pair of token and value, can be used to define vendor specific
+data, for controls and widgets. This can avoid importing binary data blob
+from other files.
+
+Vendor specific tuple arrays will be embeded in the private data buffer
+of a control or widget object. To be backward compatible, union is used
+to define the tuple arrays in the existing private data ABI object
+'struct snd_soc_tplg_private'.
+
+Vendors need to make sure the token values defined by the topology conf
+file match those defined by their driver.
+
+Now supported tuple types are uuid, string, bool, byte, short and word.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/include/topology.h b/include/topology.h
-index 011f6ae..51d282f 100644
---- a/include/topology.h
-+++ b/include/topology.h
-@@ -203,12 +203,77 @@ extern "C" {
-  *	bytes "0x12,0x34,0x56,0x78"
-  *	shorts "0x1122,0x3344,0x5566,0x7788"
-  *	words "0xaabbccdd,0x11223344,0x66aa77bb,0xefef1234"
-+ *	tuples "section id of the vendor tuples"
-  * };
-  * </pre>
-- * The file, bytes, shorts and words keywords are all mutually exclusive as
-- * the private data should only be taken from one source.  The private data can
-- * either be read from a separate file or defined in the topology file using
-- * the bytes, shorts or words keywords.
-+ * The file, bytes, shorts, words and tuples keywords are all mutually
-+ * exclusive as the private data should only be taken from one source.
-+ * The private data can either be read from a separate file or defined in
-+ * the topology file using the bytes, shorts, words or tuples keywords.
-+ * The keyword tuples is to define vendor specific tuples. Please refer to
-+ * section Vendor Tokens and Vendor tuples.
-+ *
-+ *  <h6>Vendor Tokens</h6>
-+ * A vendor token list is defined as a new section. Each token element is
-+ * a pair of string ID and integer value. And both the ID and value are
-+ * vendor-specific.
-+ *
-+ * <pre>
-+ * SectionVendorTokens."id of the vendor tokens" {
-+ *	comment "optional comments"
-+ *	VENDOR_TOKEN_ID1 "1"
-+ *	VENDOR_TOKEN_ID2 "2"
-+ *	VENDOR_TOKEN_ID3 "3"
-+ *	...
-+ * }
-+ * </pre>
-+ *
-+ *  <h6>Vendor Tuples</h6>
-+ * Vendor tuples are defined as a new section. It contains a reference to
-+ * a vendor token list and several tuple arrays.
-+ * All arrays share a vendor token list, defined by the tokens keyword.
-+ * Each tuple array is for a specific type, defined by the string following
-+ * the tuples keyword. Supported types are: string, uuid, bool, byte,
-+ * short and word.
-+ *
-+ * <pre>
-+ * SectionVendorTuples."id of the vendor tuples" {
-+ *	tokens "id of the vendor tokens"
-+ *
-+ *	tuples."string" {
-+ *		VENDOR_TOKEN_ID1 "character string"
-+ *		...
-+ *	}
-+ *
-+ *	tuples."uuid" {
-+ *		VENDOR_TOKEN_ID2 "16 character uuid"
-+ *		...
-+ *	}
-+ *
-+ *	tuples."bool" {
-+ *		VENDOR_TOKEN_ID3 "true/false"
-+ *		...
-+ *	}
-+ *
-+ *	tuples."byte" {
-+ *		VENDOR_TOKEN_ID4 "0x11"
-+ *		VENDOR_TOKEN_ID5 "0x22"
-+ *		...
-+ *	}
-+ *
-+ *	tuples."short" {
-+ *		VENDOR_TOKEN_ID6 "0x1122"
-+ *		VENDOR_TOKEN_ID7 "0x3344"
-+ *		...
-+ *	}
-+ *
-+ *	tuples."word" {
-+ *		VENDOR_TOKEN_ID8 "0x11223344"
-+ *		VENDOR_TOKEN_ID9 "0x55667788"
-+ *		...
-+ *	}
-+ * }
-+ * </pre>
-  *
-  * <h5>Mixer Controls</h5>
-  * A mixer control is defined as a new section that can include channel mapping,
-@@ -389,6 +454,10 @@ extern "C" {
-  * fields are the same for widgets as they are for controls whilst the other
-  * fields map on very closely to the driver widget fields.
-  *
-+ * <h5>Widget Private Data</h5>
-+ * Widget can have private data. For the format of the private data, please
-+ * refer to section Control Private Data.
-+ *
-  * <h4>PCM Capabilities</h4>
-  * Topology can also define the capabilities of FE and BE PCMs. Capabilities
-  * can be defined with the following section :-
+diff --git a/include/sound/asoc.h b/include/sound/asoc.h
+index a29c05c..920c9e0 100644
+--- a/include/sound/asoc.h
++++ b/include/sound/asoc.h
+@@ -107,6 +107,14 @@
+ #define SND_SOC_TPLG_STREAM_PLAYBACK	0
+ #define SND_SOC_TPLG_STREAM_CAPTURE	1
+ 
++/* vendor tuple types */
++#define SND_SOC_TPLG_TUPLE_TYPE_UUID	0
++#define SND_SOC_TPLG_TUPLE_TYPE_STRING	1
++#define SND_SOC_TPLG_TUPLE_TYPE_BOOL	2
++#define SND_SOC_TPLG_TUPLE_TYPE_BYTE	3
++#define SND_SOC_TPLG_TUPLE_TYPE_WORD	4
++#define SND_SOC_TPLG_TUPLE_TYPE_SHORT	5
++
+ /*
+  * Block Header.
+  * This header precedes all object and object arrays below.
+@@ -123,6 +131,35 @@ struct snd_soc_tplg_hdr {
+ 	__le32 count;		/* number of elements in block */
+ } __attribute__((packed));
+ 
++/* vendor tuple for uuid */
++struct snd_soc_tplg_vendor_uuid_elem {
++	__le32 token;
++	char uuid[16];
++} __attribute__((packed));
++
++/* vendor tuple for a bool/byte/short/word value */
++struct snd_soc_tplg_vendor_value_elem {
++	__le32 token;
++	__le32 value;
++} __attribute__((packed));
++
++/* vendor tuple for string */
++struct snd_soc_tplg_vendor_string_elem {
++	__le32 token;
++	char string[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
++} __attribute__((packed));
++
++struct snd_soc_tplg_vendor_array {
++	__le32 size;	/* size in bytes of the array, including all elements */
++	__le32 type;	/* SND_SOC_TPLG_TUPLE_TYPE_ */
++	__le32 num_elems;	/* number of elements in array */
++	union {
++		struct snd_soc_tplg_vendor_uuid_elem uuid[0];
++		struct snd_soc_tplg_vendor_value_elem value[0];
++		struct snd_soc_tplg_vendor_string_elem string[0];
++	};
++} __attribute__((packed));
++
+ /*
+  * Private data.
+  * All topology objects may have private data that can be used by the driver or
+@@ -130,7 +167,10 @@ struct snd_soc_tplg_hdr {
+  */
+ struct snd_soc_tplg_private {
+ 	__le32 size;	/* in bytes of private data */
+-	char data[0];
++	union {
++		char data[0];
++		struct snd_soc_tplg_vendor_array array[0];
++	};
+ } __attribute__((packed));
+ 
+ /*
 -- 
 2.5.0
