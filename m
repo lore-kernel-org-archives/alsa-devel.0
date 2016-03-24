@@ -1,20 +1,12 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Add max98371 codec driver
-Date: Thu, 24 Mar 2016 11:21:32 +0000
-Message-ID: <20160324112132.GX2566@sirena.org.uk>
-References: <1458525542-2168-1-git-send-email-yesanishhere@gmail.com>
- <20160321145642.GV2566@sirena.org.uk>
- <CAF+MRtnwdsDdEfmnZLcO=-kKURAt9uf5kTsxfGiAbVrsrSP49g@mail.gmail.com>
- <20160324110512.GV2566@sirena.org.uk>
- <CAF+MRtnV0FhmVjuvRua-jWjJQn1Q_Ynn=7x+VpGhPPuXp5=cFQ@mail.gmail.com>
+From: francois.gaffie@intel.com
+Subject: [PATCH - tinycompress - brace issue 1/1] tinycompress:
+	fix compilation error: missing brace issue
+Date: Thu, 24 Mar 2016 15:31:30 +0100
+Message-ID: <1458829890-22436-1-git-send-email-francois.gaffie@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0962872056309237477=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1251D266B5E
- for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 12:21:37 +0100 (CET)
-In-Reply-To: <CAF+MRtnV0FhmVjuvRua-jWjJQn1Q_Ynn=7x+VpGhPPuXp5=cFQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,51 +16,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Micka <mickamusset@gmail.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, anish kumar <yesanishhere@gmail.com>
+To: patch@alsa-project.org
+Cc: koul.vinod@intel.com, alsa-devel@alsa-project.org, =?UTF-8?q?Fran=C3=A7ois=20Gaffie?= <francois.gaffie@intel.com>, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-
---===============0962872056309237477==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="beyCpKA84xV/nXfr"
-Content-Disposition: inline
-
-
---beyCpKA84xV/nXfr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Mar 24, 2016 at 11:19:13AM +0000, Micka wrote:
-> Mark, the subject of this mail is asoc: add max98371 codex driver.
-
-> > Please don't top post, reply in line with needed context.  This allows
-> > readers to readily follow the flow of conversation and understand what
-> > you are talking about and also helps ensure that everything in the
-> > discussion is being addressed.
-
---beyCpKA84xV/nXfr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJW8827AAoJECTWi3JdVIfQysQH/iE7sM/+zYvwB2Ltp3TppF40
-JW+aP8sXl4SIPI3xF/uhFyrTYlP2um/FGHx1itk38qWuMvdl8+C9nHAHFILXeviY
-i0EXY6lt1ByIl5FdyBlHhjzXi1Vje1Rgw1WU5x0Z7TOghuBNGTuWRN3dkfDfOxA2
-C6IraG/UJeCMxAp+6o7Yg8m8O7JBNU8mqq+cQWfFYaAgdmwzmfW+AGmBh2RTeOrQ
-pUPiEDb902LOBro8o4R7crfdJH0nKj7tBEaw25gBLoPgGN1ezZXhv3Xhv86JgKRe
-xTeeFo433sLRUiRMPLJpk7vwmcOZY36jcF7DNG6PBVhptvS/GSOpTXu6hKmHRzw=
-=AhR4
------END PGP SIGNATURE-----
-
---beyCpKA84xV/nXfr--
-
---===============0962872056309237477==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0962872056309237477==--
+RnJvbTogRnJhbsOnb2lzIEdhZmZpZSA8ZnJhbmNvaXMuZ2FmZmllQGludGVsLmNvbT4KClNpZ25l
+ZC1vZmYtYnk6IEZyYW7Dp29pcyBHYWZmaWUgPGZyYW5jb2lzLmdhZmZpZUBpbnRlbC5jb20+Cgpk
+aWZmIC0tZ2l0IGEvaW5jbHVkZS90aW55Y29tcHJlc3MvdGlueWNvbXByZXNzLmggYi9pbmNsdWRl
+L3Rpbnljb21wcmVzcy90aW55Y29tcHJlc3MuaAppbmRleCA2ODYyNmE0Li5kMzU4MDFiIDEwMDY0
+NAotLS0gYS9pbmNsdWRlL3Rpbnljb21wcmVzcy90aW55Y29tcHJlc3MuaAorKysgYi9pbmNsdWRl
+L3Rpbnljb21wcmVzcy90aW55Y29tcHJlc3MuaApAQCAtMjczLDQgKzI3Myw3IEBAIGludCBpc19j
+b21wcmVzc19yZWFkeShzdHJ1Y3QgY29tcHJlc3MgKmNvbXByZXNzKTsKIC8qIFJldHVybnMgYSBo
+dW1hbiByZWFkYWJsZSByZWFzb24gZm9yIHRoZSBsYXN0IGVycm9yICovCiBjb25zdCBjaGFyICpj
+b21wcmVzc19nZXRfZXJyb3Ioc3RydWN0IGNvbXByZXNzICpjb21wcmVzcyk7CiAKKyNpZiBkZWZp
+bmVkKF9fY3BsdXNwbHVzKQorfQorI2VuZGlmCiAjZW5kaWYKZGlmZiAtLWdpdCBhL2luY2x1ZGUv
+dGlueWNvbXByZXNzL3RpbnltcDMuaCBiL2luY2x1ZGUvdGlueWNvbXByZXNzL3RpbnltcDMuaApp
+bmRleCBhNzA5YzM5Li43MDE1MzIwIDEwMDY0NAotLS0gYS9pbmNsdWRlL3Rpbnljb21wcmVzcy90
+aW55bXAzLmgKKysrIGIvaW5jbHVkZS90aW55Y29tcHJlc3MvdGlueW1wMy5oCkBAIC0xMDIsNSAr
+MTAyLDcgQEAgZW51bSBtcDNfc3RlcmVvX21vZGUgewogCURVQUwgPSAweDAyLAogCU1PTk8gPSAw
+eDAzCiB9OwotCisjaWYgZGVmaW5lZChfX2NwbHVzcGx1cykKK30KKyNlbmRpZgogI2VuZGlmCi0t
+IAoyLjUuMAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tCkludGVsIENvcnBvcmF0aW9uIFNBUyAoRnJlbmNoIHNpbXBs
+aWZpZWQgam9pbnQgc3RvY2sgY29tcGFueSkKUmVnaXN0ZXJlZCBoZWFkcXVhcnRlcnM6ICJMZXMg
+TW9udGFsZXRzIi0gMiwgcnVlIGRlIFBhcmlzLCAKOTIxOTYgTWV1ZG9uIENlZGV4LCBGcmFuY2UK
+UmVnaXN0cmF0aW9uIE51bWJlcjogIDMwMiA0NTYgMTk5IFIuQy5TLiBOQU5URVJSRQpDYXBpdGFs
+OiA0LDU3MiwwMDAgRXVyb3MKClRoaXMgZS1tYWlsIGFuZCBhbnkgYXR0YWNobWVudHMgbWF5IGNv
+bnRhaW4gY29uZmlkZW50aWFsIG1hdGVyaWFsIGZvcgp0aGUgc29sZSB1c2Ugb2YgdGhlIGludGVu
+ZGVkIHJlY2lwaWVudChzKS4gQW55IHJldmlldyBvciBkaXN0cmlidXRpb24KYnkgb3RoZXJzIGlz
+IHN0cmljdGx5IHByb2hpYml0ZWQuIElmIHlvdSBhcmUgbm90IHRoZSBpbnRlbmRlZApyZWNpcGll
+bnQsIHBsZWFzZSBjb250YWN0IHRoZSBzZW5kZXIgYW5kIGRlbGV0ZSBhbGwgY29waWVzLgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
