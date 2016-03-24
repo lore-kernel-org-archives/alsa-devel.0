@@ -1,16 +1,15 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 4/7] topology: ABI - Define types for vendor
-	tuples
-Date: Thu, 24 Mar 2016 11:07:19 +0800
-Message-ID: <a75bdfc07ce0be766e1f5b8516cd02e921d0d138.1458788076.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 5/7] topology: Add support for vendor tokens
+Date: Thu, 24 Mar 2016 11:07:27 +0800
+Message-ID: <328bb6886e03ea3a34ec3afd2cb06c6e13f5fbbe.1458788076.git.mengdong.lin@linux.intel.com>
 References: <cover.1458788076.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 674C7265960
- for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 04:05:18 +0100 (CET)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 75CD3265AFC
+ for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 04:05:27 +0100 (CET)
 In-Reply-To: <cover.1458788076.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,88 +26,180 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Tuples, a pair of token and value, can be used to define vendor specific
-data, for controls and widgets. This can avoid importing binary data blob
-from other files.
-
-Vendor specific tuple arrays will be embeded in the private data buffer
-of a control or widget object. To be backward compatible, union is used
-to define the tuple arrays in the existing private data ABI object
-'struct snd_soc_tplg_private'.
-
-Vendors need to make sure the token values defined by the topology conf
-file match those defined by their driver.
-
-Now supported tuple types are uuid, string, bool, byte, short and word.
+Vendor can define a token list in SectionVendorTokens. Each token element
+is a pair of string ID and integer value. And both the ID and value are
+vendor-specific.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/include/sound/asoc.h b/include/sound/asoc.h
-index a29c05c..920c9e0 100644
---- a/include/sound/asoc.h
-+++ b/include/sound/asoc.h
-@@ -107,6 +107,14 @@
- #define SND_SOC_TPLG_STREAM_PLAYBACK	0
- #define SND_SOC_TPLG_STREAM_CAPTURE	1
+diff --git a/include/topology.h b/include/topology.h
+index 51d282f..0df112c 100644
+--- a/include/topology.h
++++ b/include/topology.h
+@@ -578,6 +578,7 @@ enum snd_tplg_type {
+ 	SND_TPLG_TYPE_BE,		/*!< BE DAI link */
+ 	SND_TPLG_TYPE_CC,		/*!< Hostless codec <-> codec link */
+ 	SND_TPLG_TYPE_MANIFEST,		/*!< Topology manifest */
++	SND_TPLG_TYPE_TOKEN,		/*!< Vendor tokens */
+ };
  
-+/* vendor tuple types */
-+#define SND_SOC_TPLG_TUPLE_TYPE_UUID	0
-+#define SND_SOC_TPLG_TUPLE_TYPE_STRING	1
-+#define SND_SOC_TPLG_TUPLE_TYPE_BOOL	2
-+#define SND_SOC_TPLG_TUPLE_TYPE_BYTE	3
-+#define SND_SOC_TPLG_TUPLE_TYPE_WORD	4
-+#define SND_SOC_TPLG_TUPLE_TYPE_SHORT	5
-+
- /*
-  * Block Header.
-  * This header precedes all object and object arrays below.
-@@ -123,6 +131,35 @@ struct snd_soc_tplg_hdr {
- 	__le32 count;		/* number of elements in block */
- } __attribute__((packed));
+ /**
+diff --git a/src/topology/data.c b/src/topology/data.c
+index 370c0fa..8455c15 100644
+--- a/src/topology/data.c
++++ b/src/topology/data.c
+@@ -253,6 +253,56 @@ static int tplg_parse_data_hex(snd_config_t *cfg, struct tplg_elem *elem,
+ 	return ret;
+ }
  
-+/* vendor tuple for uuid */
-+struct snd_soc_tplg_vendor_uuid_elem {
-+	__le32 token;
-+	char uuid[16];
-+} __attribute__((packed));
++/* Parse vendor tokens
++ */
++int tplg_parse_tokens(snd_tplg_t *tplg, snd_config_t *cfg,
++	void *private ATTRIBUTE_UNUSED)
++{
++	snd_config_iterator_t i, next;
++	snd_config_t *n;
++	const char *id, *value;
++	struct tplg_elem *elem;
++	struct tplg_vendor_tokens *tokens;
++	int num_tokens = 0;
 +
-+/* vendor tuple for a bool/byte/short/word value */
-+struct snd_soc_tplg_vendor_value_elem {
-+	__le32 token;
-+	__le32 value;
-+} __attribute__((packed));
++	elem = tplg_elem_new_common(tplg, cfg, NULL, SND_TPLG_TYPE_TOKEN);
++	if (!elem)
++		return -ENOMEM;
 +
-+/* vendor tuple for string */
-+struct snd_soc_tplg_vendor_string_elem {
-+	__le32 token;
-+	char string[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-+} __attribute__((packed));
++	snd_config_for_each(i, next, cfg) {
++		num_tokens++;
++	}
 +
-+struct snd_soc_tplg_vendor_array {
-+	__le32 size;	/* size in bytes of the array, including all elements */
-+	__le32 type;	/* SND_SOC_TPLG_TUPLE_TYPE_ */
-+	__le32 num_elems;	/* number of elements in array */
-+	union {
-+		struct snd_soc_tplg_vendor_uuid_elem uuid[0];
-+		struct snd_soc_tplg_vendor_value_elem value[0];
-+		struct snd_soc_tplg_vendor_string_elem string[0];
-+	};
-+} __attribute__((packed));
++	if (!num_tokens)
++		return 0;
 +
- /*
-  * Private data.
-  * All topology objects may have private data that can be used by the driver or
-@@ -130,7 +167,10 @@ struct snd_soc_tplg_hdr {
-  */
- struct snd_soc_tplg_private {
- 	__le32 size;	/* in bytes of private data */
--	char data[0];
-+	union {
-+		char data[0];
-+		struct snd_soc_tplg_vendor_array array[0];
-+	};
- } __attribute__((packed));
++	tplg_dbg(" Vendor tokens: %s, %d tokens\n", elem->id, num_tokens);
++
++	tokens = calloc(1, sizeof(*tokens)
++			+ num_tokens * sizeof(struct tplg_token));
++	if (!tokens)
++		return -ENOMEM;
++	elem->tokens = tokens;
++
++	snd_config_for_each(i, next, cfg) {
++
++		n = snd_config_iterator_entry(i);
++		if (snd_config_get_id(n, &id) < 0)
++			continue;
++
++		if (snd_config_get_string(n, &value) < 0)
++			continue;
++
++		elem_copy_text(tokens->token[tokens->num_tokens].id, id,
++				SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
++		tokens->token[tokens->num_tokens].value = atoi(value);
++		tplg_dbg("\t\t %s : %d\n", tokens->token[tokens->num_tokens].id,
++			tokens->token[tokens->num_tokens].value);
++		tokens->num_tokens++;
++	}
++
++	return 0;
++}
  
- /*
+ /* Parse Private data.
+  *
+diff --git a/src/topology/elem.c b/src/topology/elem.c
+index f2afaaf..95e3fd4 100644
+--- a/src/topology/elem.c
++++ b/src/topology/elem.c
+@@ -193,6 +193,9 @@ struct tplg_elem* tplg_elem_new_common(snd_tplg_t *tplg,
+ 		list_add_tail(&elem->list, &tplg->cc_list);
+ 		obj_size = sizeof(struct snd_soc_tplg_link_config);
+ 		break;
++	case SND_TPLG_TYPE_TOKEN:
++		list_add_tail(&elem->list, &tplg->token_list);
++		break;
+ 	default:
+ 		free(elem);
+ 		return NULL;
+diff --git a/src/topology/parser.c b/src/topology/parser.c
+index 4546257..264abc8 100644
+--- a/src/topology/parser.c
++++ b/src/topology/parser.c
+@@ -173,6 +173,14 @@ static int tplg_parse_config(snd_tplg_t *tplg, snd_config_t *cfg)
+ 			continue;
+ 		}
+ 
++		if (strcmp(id, "SectionVendorTokens") == 0) {
++			err = tplg_parse_compound(tplg, n, tplg_parse_tokens,
++				NULL);
++			if (err < 0)
++				return err;
++			continue;
++		}
++
+ 		SNDERR("error: unknown section %s\n", id);
+ 	}
+ 	return 0;
+@@ -407,6 +415,7 @@ snd_tplg_t *snd_tplg_new(void)
+ 	INIT_LIST_HEAD(&tplg->mixer_list);
+ 	INIT_LIST_HEAD(&tplg->enum_list);
+ 	INIT_LIST_HEAD(&tplg->bytes_ext_list);
++	INIT_LIST_HEAD(&tplg->token_list);
+ 
+ 	return tplg;
+ }
+@@ -426,6 +435,7 @@ void snd_tplg_free(snd_tplg_t *tplg)
+ 	tplg_elem_free_list(&tplg->mixer_list);
+ 	tplg_elem_free_list(&tplg->enum_list);
+ 	tplg_elem_free_list(&tplg->bytes_ext_list);
++	tplg_elem_free_list(&tplg->token_list);
+ 
+ 	free(tplg);
+ }
+diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
+index 7368a86..679bfff 100644
+--- a/src/topology/tplg_local.h
++++ b/src/topology/tplg_local.h
+@@ -69,6 +69,7 @@ struct snd_tplg {
+ 	struct list_head route_list;
+ 	struct list_head text_list;
+ 	struct list_head pdata_list;
++	struct list_head token_list;
+ 	struct list_head pcm_config_list;
+ 	struct list_head pcm_caps_list;
+ 
+@@ -86,6 +87,16 @@ struct tplg_ref {
+ 	struct list_head list;
+ };
+ 
++/* element for vendor tokens */
++struct tplg_token {
++	char id[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
++	unsigned int value;
++};
++
++struct tplg_vendor_tokens {
++	unsigned int num_tokens;
++	struct tplg_token token[0];
++};
+ /* topology element */
+ struct tplg_elem {
+ 
+@@ -118,6 +129,7 @@ struct tplg_elem {
+ 		/* these do not map to UAPI structs but are internal only */
+ 		struct snd_soc_tplg_ctl_tlv *tlv;
+ 		struct snd_soc_tplg_private *data;
++		struct tplg_vendor_tokens *tokens;
+ 	};
+ 
+ 	/* an element may refer to other elements:
+@@ -151,6 +163,9 @@ int tplg_parse_text(snd_tplg_t *tplg, snd_config_t *cfg,
+ int tplg_parse_data(snd_tplg_t *tplg, snd_config_t *cfg,
+ 	void *private ATTRIBUTE_UNUSED);
+ 
++int tplg_parse_tokens(snd_tplg_t *tplg, snd_config_t *cfg,
++	void *private ATTRIBUTE_UNUSED);
++
+ int tplg_parse_control_bytes(snd_tplg_t *tplg,
+ 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED);
+ 
 -- 
 2.5.0
