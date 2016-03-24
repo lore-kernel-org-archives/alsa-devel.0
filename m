@@ -1,16 +1,15 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 2/7] topology: Define a free handler for the
-	element
-Date: Thu, 24 Mar 2016 11:06:40 +0800
-Message-ID: <c84880ade867ba29181f49c8a06a93f2c3136993.1458788076.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 3/7] topology: Add doc for vendor tuples
+Date: Thu, 24 Mar 2016 11:07:09 +0800
+Message-ID: <bbec90cdc53fe084b53d57b07614604a4eb05901.1458788076.git.mengdong.lin@linux.intel.com>
 References: <cover.1458788076.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id A631E261ABB
- for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 04:04:41 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id B4D152659FF
+ for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 04:05:11 +0100 (CET)
 In-Reply-To: <cover.1458788076.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,40 +26,106 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-This handler is defined for type-specific destruction of an element.
+Describe how to define vendor tokens and tuples in the text conf file.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/src/topology/elem.c b/src/topology/elem.c
-index 00f9eea..f2afaaf 100644
---- a/src/topology/elem.c
-+++ b/src/topology/elem.c
-@@ -83,8 +83,12 @@ void tplg_elem_free(struct tplg_elem *elem)
- 	/* free struct snd_tplg_ object,
- 	 * the union pointers share the same address
- 	 */
--	if (elem->obj)
-+	if (elem->obj) {
-+		if (elem->free)
-+			elem->free(elem->obj);
-+
- 		free(elem->obj);
-+	}
- 
- 	free(elem);
- }
-diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
-index 4915b1a..7368a86 100644
---- a/src/topology/tplg_local.h
-+++ b/src/topology/tplg_local.h
-@@ -127,6 +127,8 @@ struct tplg_elem {
- 	 */
- 	struct list_head ref_list;
- 	struct list_head list; /* list of all elements with same type */
-+
-+	void (*free)(void *obj);
- };
- 
- struct map_elem {
+diff --git a/include/topology.h b/include/topology.h
+index 011f6ae..51d282f 100644
+--- a/include/topology.h
++++ b/include/topology.h
+@@ -203,12 +203,77 @@ extern "C" {
+  *	bytes "0x12,0x34,0x56,0x78"
+  *	shorts "0x1122,0x3344,0x5566,0x7788"
+  *	words "0xaabbccdd,0x11223344,0x66aa77bb,0xefef1234"
++ *	tuples "section id of the vendor tuples"
+  * };
+  * </pre>
+- * The file, bytes, shorts and words keywords are all mutually exclusive as
+- * the private data should only be taken from one source.  The private data can
+- * either be read from a separate file or defined in the topology file using
+- * the bytes, shorts or words keywords.
++ * The file, bytes, shorts, words and tuples keywords are all mutually
++ * exclusive as the private data should only be taken from one source.
++ * The private data can either be read from a separate file or defined in
++ * the topology file using the bytes, shorts, words or tuples keywords.
++ * The keyword tuples is to define vendor specific tuples. Please refer to
++ * section Vendor Tokens and Vendor tuples.
++ *
++ *  <h6>Vendor Tokens</h6>
++ * A vendor token list is defined as a new section. Each token element is
++ * a pair of string ID and integer value. And both the ID and value are
++ * vendor-specific.
++ *
++ * <pre>
++ * SectionVendorTokens."id of the vendor tokens" {
++ *	comment "optional comments"
++ *	VENDOR_TOKEN_ID1 "1"
++ *	VENDOR_TOKEN_ID2 "2"
++ *	VENDOR_TOKEN_ID3 "3"
++ *	...
++ * }
++ * </pre>
++ *
++ *  <h6>Vendor Tuples</h6>
++ * Vendor tuples are defined as a new section. It contains a reference to
++ * a vendor token list and several tuple arrays.
++ * All arrays share a vendor token list, defined by the tokens keyword.
++ * Each tuple array is for a specific type, defined by the string following
++ * the tuples keyword. Supported types are: string, uuid, bool, byte,
++ * short and word.
++ *
++ * <pre>
++ * SectionVendorTuples."id of the vendor tuples" {
++ *	tokens "id of the vendor tokens"
++ *
++ *	tuples."string" {
++ *		VENDOR_TOKEN_ID1 "character string"
++ *		...
++ *	}
++ *
++ *	tuples."uuid" {
++ *		VENDOR_TOKEN_ID2 "16 character uuid"
++ *		...
++ *	}
++ *
++ *	tuples."bool" {
++ *		VENDOR_TOKEN_ID3 "true/false"
++ *		...
++ *	}
++ *
++ *	tuples."byte" {
++ *		VENDOR_TOKEN_ID4 "0x11"
++ *		VENDOR_TOKEN_ID5 "0x22"
++ *		...
++ *	}
++ *
++ *	tuples."short" {
++ *		VENDOR_TOKEN_ID6 "0x1122"
++ *		VENDOR_TOKEN_ID7 "0x3344"
++ *		...
++ *	}
++ *
++ *	tuples."word" {
++ *		VENDOR_TOKEN_ID8 "0x11223344"
++ *		VENDOR_TOKEN_ID9 "0x55667788"
++ *		...
++ *	}
++ * }
++ * </pre>
+  *
+  * <h5>Mixer Controls</h5>
+  * A mixer control is defined as a new section that can include channel mapping,
+@@ -389,6 +454,10 @@ extern "C" {
+  * fields are the same for widgets as they are for controls whilst the other
+  * fields map on very closely to the driver widget fields.
+  *
++ * <h5>Widget Private Data</h5>
++ * Widget can have private data. For the format of the private data, please
++ * refer to section Control Private Data.
++ *
+  * <h4>PCM Capabilities</h4>
+  * Topology can also define the capabilities of FE and BE PCMs. Capabilities
+  * can be defined with the following section :-
 -- 
 2.5.0
