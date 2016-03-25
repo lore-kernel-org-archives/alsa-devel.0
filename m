@@ -1,29 +1,22 @@
-From: =?UTF-8?Q?Emmanuel_Fust=c3=a9?= <emmanuel.fuste@laposte.net>
-Subject: simple-audio-card and external dynamic clock
-Date: Thu, 24 Mar 2016 22:51:36 +0100
-Message-ID: <56F46168.7040201@laposte.net>
-Reply-To: emmanuel.fuste@laposte.net
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [RFC PATCH v2 1/3] ALSA: hda - add DP mst verb
+ support
+Date: Fri, 25 Mar 2016 02:26:06 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D19046855AD@SHSMSX103.ccr.corp.intel.com>
+References: <1458549476-77040-1-git-send-email-libin.yang@linux.intel.com>
+ <1458549476-77040-2-git-send-email-libin.yang@linux.intel.com>
+ <s5htwjyzrrf.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D1904685133@SHSMSX103.ccr.corp.intel.com>
+ <s5hwposb5cw.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.laposte.net (smtpoutz26.laposte.net [194.117.213.101])
- by alsa0.perex.cz (Postfix) with ESMTP id 5BB3F260515
- for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 22:51:30 +0100 (CET)
-Received: from smtp.laposte.net (localhost [127.0.0.1])
- by lpn-prd-vrout014 (Postfix) with ESMTP id DD6D611F1B9
- for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 22:51:29 +0100 (CET)
-Received: from lpn-prd-vrin004 (lpn-prd-vrin004.laposte [10.128.63.5])
- by lpn-prd-vrout014 (Postfix) with ESMTP id D894D11EDA8
- for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 22:51:29 +0100 (CET)
-Received: from lpn-prd-vrin004 (localhost [127.0.0.1])
- by lpn-prd-vrin004 (Postfix) with ESMTP id C9C2D70E2B9
- for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 22:51:29 +0100 (CET)
-Received: from [10.0.0.20] (161.165.115.78.rev.sfr.net [78.115.165.161])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by lpn-prd-vrin004 (Postfix) with ESMTPSA id A402970E2B8
- for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2016 22:51:29 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id DDD3F260515
+ for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2016 03:26:27 +0100 (CET)
+In-Reply-To: <s5hwposb5cw.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,31 +26,238 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi Takashi,
 
-I m very new to ASoC (and not native english speaker) so be indulgent ;-)
-The context  : am335x-boneblack.
-I want to drive simple I2S targets. With the ongoing developments, and 
-recent patches posted here, this is a very simple job for the 
-simple-audio-card machine driver even with fixed external master clock.
-I want to go further using a programmable external clock (si570) which 
-is not very complicated thanks to the CCF.
-But now I want to use the dynamic nature of this external master clock 
-(through CCF) to be able to generate 44.1khz AND 48 multiples of fs 
-which is not natively possible on the BBB because of integer fs scaling 
-only and/or no dedicated audio PLL.
-I know that the same could be achieved on the BBB with switching between 
-internal clock (24mhz) and external one (24.576mhz) gated by GPIO1_27, 
-but this is another story.
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Thursday, March 24, 2016 5:19 PM
+> To: Yang, Libin
+> Cc: libin.yang@linux.intel.com; alsa-devel@alsa-project.org; Lin,
+> Mengdong
+> Subject: Re: [alsa-devel] [RFC PATCH v2 1/3] ALSA: hda - add DP mst verb
+> support
+> 
+> On Thu, 24 Mar 2016 09:44:32 +0100,
+> Yang, Libin wrote:
+> >
+> > Hi Takashi,
+> >
+> > > -----Original Message-----
+> > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > Sent: Tuesday, March 22, 2016 7:17 PM
+> > > To: libin.yang@linux.intel.com
+> > > Cc: alsa-devel@alsa-project.org; Lin, Mengdong; Yang, Libin
+> > > Subject: Re: [alsa-devel] [RFC PATCH v2 1/3] ALSA: hda - add DP mst
+> verb
+> > > support
+> > >
+> > > On Mon, 21 Mar 2016 09:37:54 +0100,
+> > > libin.yang@linux.intel.com wrote:
+> > > >
+> > > > From: Libin Yang <libin.yang@linux.intel.com>
+> > > >
+> > > > Add snd_hda_get_dev_select() and snd_hda_set_dev_select()
+> > > functions
+> > > > for DP MST audio support.
+> > > >
+> > > > Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+> > > > ---
+> > > >  sound/pci/hda/hda_codec.c | 83
+> > > ++++++++++++++++++++++++++++++++++++++++++++---
+> > > >  sound/pci/hda/hda_codec.h |  3 ++
+> > > >  2 files changed, 82 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/sound/pci/hda/hda_codec.c
+> b/sound/pci/hda/hda_codec.c
+> > > > index d17e38e..db94a66 100644
+> > > > --- a/sound/pci/hda/hda_codec.c
+> > > > +++ b/sound/pci/hda/hda_codec.c
+> > > > @@ -325,9 +325,16 @@ int snd_hda_get_conn_index(struct
+> > > hda_codec *codec, hda_nid_t mux,
+> > > >  }
+> > > >  EXPORT_SYMBOL_GPL(snd_hda_get_conn_index);
+> > > >
+> > > > -
+> > > > -/* return DEVLIST_LEN parameter of the given widget */
+> > > > -static unsigned int get_num_devices(struct hda_codec *codec,
+> > > hda_nid_t nid)
+> > > > +/**
+> > > > + * snd_hda_get_num_devices - get DEVLIST_LEN parameter of the
+> > > given widget
+> > > > + *  @codec: the HDA codec
+> > > > + *  @nid: NID of the pin to parse
+> > > > + *
+> > > > + * Get the device entry number on the given widget.
+> > > > + * This is a feature of DP MST audio. Each pin can
+> > > > + * have several device entries in it.
+> > > > + */
+> > > > +unsigned int snd_hda_get_num_devices(struct hda_codec *codec,
+> > > hda_nid_t nid)
+> > > >  {
+> > > >  	unsigned int wcaps = get_wcaps(codec, nid);
+> > > >  	unsigned int parm;
+> > > > @@ -341,6 +348,7 @@ static unsigned int get_num_devices(struct
+> > > hda_codec *codec, hda_nid_t nid)
+> > > >  		parm = 0;
+> > > >  	return parm & AC_DEV_LIST_LEN_MASK;
+> > > >  }
+> > > > +EXPORT_SYMBOL_GPL(snd_hda_get_num_devices);
+> > > >
+> > > >  /**
+> > > >   * snd_hda_get_devices - copy device list without cache
+> > > > @@ -358,7 +366,7 @@ int snd_hda_get_devices(struct hda_codec
+> > > *codec, hda_nid_t nid,
+> > > >  	unsigned int parm;
+> > > >  	int i, dev_len, devices;
+> > > >
+> > > > -	parm = get_num_devices(codec, nid);
+> > > > +	parm = snd_hda_get_num_devices(codec, nid);
+> > > >  	if (!parm)	/* not multi-stream capable */
+> > > >  		return 0;
+> > > >
+> > > > @@ -382,6 +390,73 @@ int snd_hda_get_devices(struct
+> hda_codec
+> > > *codec, hda_nid_t nid,
+> > > >  	return devices;
+> > > >  }
+> > > >
+> > > > +/**
+> > > > + * snd_hda_get_dev_select - get device entry select on the pin
+> > > > + * @codec: the HDA codec
+> > > > + * @nid: NID of the pin to get device entry select
+> > > > + *
+> > > > + * Get the devcie entry select on the pin. Return the device entry
+> > > > + * id selected on the pin. Return 0 means the first device entry
+> > > > + * is selected or MST is not supported.
+> > > > + */
+> > > > +int snd_hda_get_dev_select(struct hda_codec *codec, hda_nid_t
+> nid)
+> > > > +{
+> > > > +	/* not support dp_mst will always return 0, using first dev_entry
+> > > */
+> > > > +	if (!codec->dp_mst)
+> > > > +		return 0;
+> > > > +
+> > > > +	return snd_hda_codec_read(codec, nid, 0,
+> > > AC_VERB_GET_DEVICE_SEL, 0);
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(snd_hda_get_dev_select);
+> > > > +
+> > > > +/**
+> > > > + * snd_hda_set_dev_select - set device entry select on the pin
+> > > > + * @codec: the HDA codec
+> > > > + * @nid: NID of the pin to set device entry select
+> > > > + * @dev_id: device entry id to be set
+> > > > + *
+> > > > + * Set the device entry select on the pin nid.
+> > > > + */
+> > > > +int snd_hda_set_dev_select(struct hda_codec *codec, hda_nid_t
+> nid,
+> > > int dev_id)
+> > > > +{
+> > > > +	int ret, dev, num_devices;
+> > > > +	unsigned long timeout;
+> > > > +
+> > > > +	/* not support dp_mst will always return 0, using first dev_entry
+> > > */
+> > > > +	if (!codec->dp_mst)
+> > > > +		return 0;
+> > > > +
+> > > > +	/* AC_PAR_DEVLIST_LEN is 0 based. */
+> > > > +	num_devices = snd_hda_get_num_devices(codec, nid);
+> > > > +	/* If Device List Length is 0, the pin is not multi stream capable.
+> > > > +	 */
+> > > > +	if (num_devices == 0)
+> > > > +		return 0;
+> > > > +
+> > > > +	/* Behavior of setting index being equal to or greater than
+> > > > +	 * Device List Length is not predictable
+> > > > +	 */
+> > > > +	if (num_devices + 1 <= dev_id)
+> > > > +		return 0;
+> > >
+> > > Is this correct?  Doesn't num_devices=1 mean that there is only a
+> > > single device?  If dev_id=1 must be invalid, but the check above
+> > > passes.  The standard form of such index check is like
+> >
+> > num_device is the return value of the verb AC_PAR_DEVLIST_LEN.
+> > device number is AC_PAR_DEVLIST_LEN + 1.
+> >
+> > >From the spec:
+> > Device List Length is a 0 based integer value indicating the number
+> >  of sink device that a multi stream capable Digital Display Pin
+> > Widget can support. If Device List Length is value is 0, there is
+> > only one sink device connection possible indicating the Pin Widget
+> >  is not multi stream capable, and there is no Device Select control
+> >
+> > And dev_id is 0 based.
+> >
+> > If dev_id = 1, it means set the second device entry, and
+> > num_device + 1 (the real number of device entries)
+> > must be equal to or greater than 2.
+> > (num_device + 1 > dev_id )
+> >
+> > So (num_device + 1 <= dev_id) is wrong situation.
+> 
+> If so, the term "num_devices" is counter-intuitive.  It should be
+> corrected to the natural value, i.e. based on 1, or renamed to a
+> different one.  Readers would assume that the number of devices is 1
+> if there is a single element, not 0.  If this isn't true, it just
+> confuses readers.
 
-Which direction is the right one ?
-- dedicated machine driver ?
-- or something more generic / reusable implemented in the 
-simple-audio-card drivers through helpers routines ?
-- or something else ?
+Get it. So what do you think if using:
 
-Than you.
-Emmanuel.
+if (dev_id > num_device)  //both is 0 based.
+
+Regards,
+Libin
+
+> 
+> 
+> > >
+> > > 	if (dev_id >= num_devices)
+> > > 		error;
+> > >
+> > > And this also leads to the question.  Shouldn't we return an error if
+> > > an invalid dev_id is given?
+> >
+> > I'm thinking if the wrong dev_id is given, we just leave as it is before.
+> > I will return the -EINVAL in next version.
+> 
+> IMO, it's safer to return an error.  Since non-zero dev_id is only for
+> MST, the code path that passes such a value must handle MST properly,
+> i.e. not through the default code path.
+> 
+> 
+> > > > +
+> > > > +	timeout = jiffies + msecs_to_jiffies(500);
+> > > > +
+> > > > +	/* make sure the device entry selection takes effect */
+> > > > +	do {
+> > > > +		ret = snd_hda_codec_write(codec, nid, 0,
+> > > > +			AC_VERB_SET_DEVICE_SEL, dev_id);
+> > > > +		udelay(20);
+> > > > +
+> > > > +		dev = snd_hda_get_dev_select(codec, nid);
+> > > > +		if (dev == dev_id)
+> > > > +			break;
+> > > > +		msleep(20);
+> > > > +	} while (time_before(jiffies, timeout));
+> > >
+> > > Is this loop needed?  Most verbs take effect immediately, and so far,
+> > > the only exception is the power state.
+> >
+> > OK, I will remove the loop.
+> 
+> Well, I don't mean to remove forcibly.  Just want to be sure.
+> If such a loop is needed practically, we must have it, of course.
+> Let's check.
+> 
+> 
+> thanks,
+> 
+> Takashi
