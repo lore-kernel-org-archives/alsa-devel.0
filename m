@@ -1,138 +1,61 @@
-From: PC Liao <pc.liao@mediatek.com>
-Subject: [PATCH] ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver
-Date: Fri, 25 Mar 2016 11:42:05 +0800
-Message-ID: <1458877325-33980-1-git-send-email-pc.liao@mediatek.com>
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Subject: Re: [PATCH 0/7] topology: Add support for vendor tuples
+Date: Fri, 25 Mar 2016 13:39:19 +0800
+Message-ID: <56F4CF07.6080001@linux.intel.com>
+References: <cover.1458788076.git.mengdong.lin@linux.intel.com>
+ <20160324112051.GW2566@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, tiwai@suse.de
-Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, koro.chen@mediatek.com, PC Liao <pc.liao@mediatek.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF096260682
+ for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2016 06:37:34 +0100 (CET)
+In-Reply-To: <20160324112051.GW2566@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, mengdong.lin@intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, liam.r.girdwood@intel.com, hardik.t.shah@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds second I2S for rt5650 codec on mt8173-rt5650 machine driver.
 
-Signed-off-by: PC Liao <pc.liao@mediatek.com>
----
- .../devicetree/bindings/sound/mt8173-rt5650.txt    |    6 +++
- sound/soc/mediatek/mt8173-rt5650.c                 |   55 ++++++++++++++++++--
- 2 files changed, 56 insertions(+), 5 deletions(-)
+On 03/24/2016 07:20 PM, Mark Brown wrote:
+> On Thu, Mar 24, 2016 at 11:05:29AM +0800, mengdong.lin@linux.intel.com wrote:
+>> From: Mengdong Lin <mengdong.lin@linux.intel.com>
+>>
+>> This series addes support for vendor tuples to topology, to avoid
+>> importing binary data blob from other files.
+>>
+>> Backward compatibility of ABI is not impacted. A kernel patch is also
+>> submitted "ASoC: topology: ABI - Define types for vendor tuples".
+>
+> It's now been three kernel releases since the original code was merged
+> and we've still not seen any effort to make the ABI actually available.
+> Where are we with that?  I've mentioned it a few times previously but
+> don't really recall any response.
+>
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
-index fe5a5ef..0046926 100644
---- a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
-+++ b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
-@@ -5,11 +5,17 @@ Required properties:
- - mediatek,audio-codec: the phandles of rt5650 codecs
- - mediatek,platform: the phandle of MT8173 ASoC platform
- 
-+Optional properties:
-+- mediatek,rt5650_i2s: I2S mode of rt5650
-+  0: using I2S1 on rt5650 for record
-+  1: using I2S2 on rt5650 for record
-+
- Example:
- 
- 	sound {
- 		compatible = "mediatek,mt8173-rt5650";
- 		mediatek,audio-codec = <&rt5650>;
- 		mediatek,platform = <&afe>;
-+		mediatek,rt5650_i2s = <0>;
- 	};
- 
-diff --git a/sound/soc/mediatek/mt8173-rt5650.c b/sound/soc/mediatek/mt8173-rt5650.c
-index bb09bb1..ab4c806 100644
---- a/sound/soc/mediatek/mt8173-rt5650.c
-+++ b/sound/soc/mediatek/mt8173-rt5650.c
-@@ -23,6 +23,20 @@
- 
- #define MCLK_FOR_CODECS		12288000
- 
-+struct mt8173_rt5650_platform_data {
-+	unsigned int rt5650_i2s;
-+	/* 0 = I2S1; 1 = I2S2 */
-+};
-+
-+static struct mt8173_rt5650_platform_data mt8173_rt5650_priv = {
-+	.rt5650_i2s = 0,
-+};
-+
-+enum mt8173_rt5650_i2s {
-+	MT8173_RT5650_I2S1 = 0,
-+	MT8173_RT5650_I2S2,
-+};
-+
- static const struct snd_soc_dapm_widget mt8173_rt5650_widgets[] = {
- 	SND_SOC_DAPM_SPK("Speaker", NULL),
- 	SND_SOC_DAPM_MIC("Int Mic", NULL),
-@@ -87,10 +101,25 @@ static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
- 	struct snd_soc_codec *codec = runtime->codec_dais[0]->codec;
- 	int ret;
- 
--	rt5645_sel_asrc_clk_src(codec,
--				RT5645_DA_STEREO_FILTER |
--				RT5645_AD_STEREO_FILTER,
--				RT5645_CLK_SEL_I2S1_ASRC);
-+	switch (mt8173_rt5650_priv.rt5650_i2s) {
-+	case MT8173_RT5650_I2S1:
-+		rt5645_sel_asrc_clk_src(codec,
-+					RT5645_DA_STEREO_FILTER |
-+					RT5645_AD_STEREO_FILTER,
-+					RT5645_CLK_SEL_I2S1_ASRC);
-+		break;
-+	case MT8173_RT5650_I2S2:
-+		rt5645_sel_asrc_clk_src(codec,
-+					RT5645_DA_STEREO_FILTER,
-+					RT5645_CLK_SEL_I2S1_ASRC);
-+		rt5645_sel_asrc_clk_src(codec,
-+					RT5645_AD_STEREO_FILTER,
-+					RT5645_CLK_SEL_I2S2_ASRC);
-+		break;
-+	default:
-+		break;
-+	}
-+
- 	/* enable jack detection */
- 	ret = snd_soc_card_jack_new(card, "Headset Jack",
- 				    SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
-@@ -112,6 +141,9 @@ static struct snd_soc_dai_link_component mt8173_rt5650_codecs[] = {
- 	{
- 		.dai_name = "rt5645-aif1",
- 	},
-+	{
-+		.dai_name = "rt5645-aif2",
-+	},
- };
- 
- enum {
-@@ -149,7 +181,7 @@ static struct snd_soc_dai_link mt8173_rt5650_dais[] = {
- 		.cpu_dai_name = "I2S",
- 		.no_pcm = 1,
- 		.codecs = mt8173_rt5650_codecs,
--		.num_codecs = 1,
-+		.num_codecs = 2,
- 		.init = mt8173_rt5650_init,
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			   SND_SOC_DAIFMT_CBS_CFS,
-@@ -199,6 +231,19 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
- 			"Property 'audio-codec' missing or invalid\n");
- 		return -EINVAL;
- 	}
-+	mt8173_rt5650_codecs[1].of_node = mt8173_rt5650_codecs[0].of_node;
-+
-+	if (device_property_present(&pdev->dev, "mediatek,rt5650_i2s")) {
-+		ret = device_property_read_u32(&pdev->dev,
-+					       "mediatek,rt5650_i2s",
-+					       &mt8173_rt5650_priv.rt5650_i2s);
-+		if (ret) {
-+			dev_err(&pdev->dev,
-+				"%s snd_soc_register_card fail %d\n",
-+				__func__, ret);
-+		}
-+	}
-+
- 	card->dev = &pdev->dev;
- 	platform_set_drvdata(pdev, card);
- 
--- 
-1.7.9.5
+We've been working on this. I'm sorry we're still not fast enough.
+
+This ABI update is introduced by previous failure to upstream the 
+topology configuration file for Skylake, which imports vendor-specific 
+binary data from another file. It was refused because of the license of 
+the binary data is not obvious. So we turn to use vendor tuples, because 
+the vendor tuples can show the layout and meaning of binary data, which 
+can help to check if the data is safe to open source.
+This ABI change has no impact on backward compatibility.
+
+Also, the audio device driver for new platforms are under development 
+now, which uses topology for DAI and DAI links. We're checking if 
+current ABI can meet all requirements for the new platforms. This may 
+still need a few weeks.
+
+Thanks
+Mengdong
