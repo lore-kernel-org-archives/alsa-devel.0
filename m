@@ -1,263 +1,138 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [RFC PATCH v2 1/3] ALSA: hda - add DP mst verb
- support
-Date: Fri, 25 Mar 2016 02:26:06 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D19046855AD@SHSMSX103.ccr.corp.intel.com>
-References: <1458549476-77040-1-git-send-email-libin.yang@linux.intel.com>
- <1458549476-77040-2-git-send-email-libin.yang@linux.intel.com>
- <s5htwjyzrrf.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D1904685133@SHSMSX103.ccr.corp.intel.com>
- <s5hwposb5cw.wl-tiwai@suse.de>
+From: PC Liao <pc.liao@mediatek.com>
+Subject: [PATCH] ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver
+Date: Fri, 25 Mar 2016 11:42:05 +0800
+Message-ID: <1458877325-33980-1-git-send-email-pc.liao@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id DDD3F260515
- for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2016 03:26:27 +0100 (CET)
-In-Reply-To: <s5hwposb5cw.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, tiwai@suse.de
+Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, koro.chen@mediatek.com, PC Liao <pc.liao@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+This patch adds second I2S for rt5650 codec on mt8173-rt5650 machine driver.
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Thursday, March 24, 2016 5:19 PM
-> To: Yang, Libin
-> Cc: libin.yang@linux.intel.com; alsa-devel@alsa-project.org; Lin,
-> Mengdong
-> Subject: Re: [alsa-devel] [RFC PATCH v2 1/3] ALSA: hda - add DP mst verb
-> support
-> 
-> On Thu, 24 Mar 2016 09:44:32 +0100,
-> Yang, Libin wrote:
-> >
-> > Hi Takashi,
-> >
-> > > -----Original Message-----
-> > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > Sent: Tuesday, March 22, 2016 7:17 PM
-> > > To: libin.yang@linux.intel.com
-> > > Cc: alsa-devel@alsa-project.org; Lin, Mengdong; Yang, Libin
-> > > Subject: Re: [alsa-devel] [RFC PATCH v2 1/3] ALSA: hda - add DP mst
-> verb
-> > > support
-> > >
-> > > On Mon, 21 Mar 2016 09:37:54 +0100,
-> > > libin.yang@linux.intel.com wrote:
-> > > >
-> > > > From: Libin Yang <libin.yang@linux.intel.com>
-> > > >
-> > > > Add snd_hda_get_dev_select() and snd_hda_set_dev_select()
-> > > functions
-> > > > for DP MST audio support.
-> > > >
-> > > > Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
-> > > > ---
-> > > >  sound/pci/hda/hda_codec.c | 83
-> > > ++++++++++++++++++++++++++++++++++++++++++++---
-> > > >  sound/pci/hda/hda_codec.h |  3 ++
-> > > >  2 files changed, 82 insertions(+), 4 deletions(-)
-> > > >
-> > > > diff --git a/sound/pci/hda/hda_codec.c
-> b/sound/pci/hda/hda_codec.c
-> > > > index d17e38e..db94a66 100644
-> > > > --- a/sound/pci/hda/hda_codec.c
-> > > > +++ b/sound/pci/hda/hda_codec.c
-> > > > @@ -325,9 +325,16 @@ int snd_hda_get_conn_index(struct
-> > > hda_codec *codec, hda_nid_t mux,
-> > > >  }
-> > > >  EXPORT_SYMBOL_GPL(snd_hda_get_conn_index);
-> > > >
-> > > > -
-> > > > -/* return DEVLIST_LEN parameter of the given widget */
-> > > > -static unsigned int get_num_devices(struct hda_codec *codec,
-> > > hda_nid_t nid)
-> > > > +/**
-> > > > + * snd_hda_get_num_devices - get DEVLIST_LEN parameter of the
-> > > given widget
-> > > > + *  @codec: the HDA codec
-> > > > + *  @nid: NID of the pin to parse
-> > > > + *
-> > > > + * Get the device entry number on the given widget.
-> > > > + * This is a feature of DP MST audio. Each pin can
-> > > > + * have several device entries in it.
-> > > > + */
-> > > > +unsigned int snd_hda_get_num_devices(struct hda_codec *codec,
-> > > hda_nid_t nid)
-> > > >  {
-> > > >  	unsigned int wcaps = get_wcaps(codec, nid);
-> > > >  	unsigned int parm;
-> > > > @@ -341,6 +348,7 @@ static unsigned int get_num_devices(struct
-> > > hda_codec *codec, hda_nid_t nid)
-> > > >  		parm = 0;
-> > > >  	return parm & AC_DEV_LIST_LEN_MASK;
-> > > >  }
-> > > > +EXPORT_SYMBOL_GPL(snd_hda_get_num_devices);
-> > > >
-> > > >  /**
-> > > >   * snd_hda_get_devices - copy device list without cache
-> > > > @@ -358,7 +366,7 @@ int snd_hda_get_devices(struct hda_codec
-> > > *codec, hda_nid_t nid,
-> > > >  	unsigned int parm;
-> > > >  	int i, dev_len, devices;
-> > > >
-> > > > -	parm = get_num_devices(codec, nid);
-> > > > +	parm = snd_hda_get_num_devices(codec, nid);
-> > > >  	if (!parm)	/* not multi-stream capable */
-> > > >  		return 0;
-> > > >
-> > > > @@ -382,6 +390,73 @@ int snd_hda_get_devices(struct
-> hda_codec
-> > > *codec, hda_nid_t nid,
-> > > >  	return devices;
-> > > >  }
-> > > >
-> > > > +/**
-> > > > + * snd_hda_get_dev_select - get device entry select on the pin
-> > > > + * @codec: the HDA codec
-> > > > + * @nid: NID of the pin to get device entry select
-> > > > + *
-> > > > + * Get the devcie entry select on the pin. Return the device entry
-> > > > + * id selected on the pin. Return 0 means the first device entry
-> > > > + * is selected or MST is not supported.
-> > > > + */
-> > > > +int snd_hda_get_dev_select(struct hda_codec *codec, hda_nid_t
-> nid)
-> > > > +{
-> > > > +	/* not support dp_mst will always return 0, using first dev_entry
-> > > */
-> > > > +	if (!codec->dp_mst)
-> > > > +		return 0;
-> > > > +
-> > > > +	return snd_hda_codec_read(codec, nid, 0,
-> > > AC_VERB_GET_DEVICE_SEL, 0);
-> > > > +}
-> > > > +EXPORT_SYMBOL_GPL(snd_hda_get_dev_select);
-> > > > +
-> > > > +/**
-> > > > + * snd_hda_set_dev_select - set device entry select on the pin
-> > > > + * @codec: the HDA codec
-> > > > + * @nid: NID of the pin to set device entry select
-> > > > + * @dev_id: device entry id to be set
-> > > > + *
-> > > > + * Set the device entry select on the pin nid.
-> > > > + */
-> > > > +int snd_hda_set_dev_select(struct hda_codec *codec, hda_nid_t
-> nid,
-> > > int dev_id)
-> > > > +{
-> > > > +	int ret, dev, num_devices;
-> > > > +	unsigned long timeout;
-> > > > +
-> > > > +	/* not support dp_mst will always return 0, using first dev_entry
-> > > */
-> > > > +	if (!codec->dp_mst)
-> > > > +		return 0;
-> > > > +
-> > > > +	/* AC_PAR_DEVLIST_LEN is 0 based. */
-> > > > +	num_devices = snd_hda_get_num_devices(codec, nid);
-> > > > +	/* If Device List Length is 0, the pin is not multi stream capable.
-> > > > +	 */
-> > > > +	if (num_devices == 0)
-> > > > +		return 0;
-> > > > +
-> > > > +	/* Behavior of setting index being equal to or greater than
-> > > > +	 * Device List Length is not predictable
-> > > > +	 */
-> > > > +	if (num_devices + 1 <= dev_id)
-> > > > +		return 0;
-> > >
-> > > Is this correct?  Doesn't num_devices=1 mean that there is only a
-> > > single device?  If dev_id=1 must be invalid, but the check above
-> > > passes.  The standard form of such index check is like
-> >
-> > num_device is the return value of the verb AC_PAR_DEVLIST_LEN.
-> > device number is AC_PAR_DEVLIST_LEN + 1.
-> >
-> > >From the spec:
-> > Device List Length is a 0 based integer value indicating the number
-> >  of sink device that a multi stream capable Digital Display Pin
-> > Widget can support. If Device List Length is value is 0, there is
-> > only one sink device connection possible indicating the Pin Widget
-> >  is not multi stream capable, and there is no Device Select control
-> >
-> > And dev_id is 0 based.
-> >
-> > If dev_id = 1, it means set the second device entry, and
-> > num_device + 1 (the real number of device entries)
-> > must be equal to or greater than 2.
-> > (num_device + 1 > dev_id )
-> >
-> > So (num_device + 1 <= dev_id) is wrong situation.
-> 
-> If so, the term "num_devices" is counter-intuitive.  It should be
-> corrected to the natural value, i.e. based on 1, or renamed to a
-> different one.  Readers would assume that the number of devices is 1
-> if there is a single element, not 0.  If this isn't true, it just
-> confuses readers.
+Signed-off-by: PC Liao <pc.liao@mediatek.com>
+---
+ .../devicetree/bindings/sound/mt8173-rt5650.txt    |    6 +++
+ sound/soc/mediatek/mt8173-rt5650.c                 |   55 ++++++++++++++++++--
+ 2 files changed, 56 insertions(+), 5 deletions(-)
 
-Get it. So what do you think if using:
-
-if (dev_id > num_device)  //both is 0 based.
-
-Regards,
-Libin
-
-> 
-> 
-> > >
-> > > 	if (dev_id >= num_devices)
-> > > 		error;
-> > >
-> > > And this also leads to the question.  Shouldn't we return an error if
-> > > an invalid dev_id is given?
-> >
-> > I'm thinking if the wrong dev_id is given, we just leave as it is before.
-> > I will return the -EINVAL in next version.
-> 
-> IMO, it's safer to return an error.  Since non-zero dev_id is only for
-> MST, the code path that passes such a value must handle MST properly,
-> i.e. not through the default code path.
-> 
-> 
-> > > > +
-> > > > +	timeout = jiffies + msecs_to_jiffies(500);
-> > > > +
-> > > > +	/* make sure the device entry selection takes effect */
-> > > > +	do {
-> > > > +		ret = snd_hda_codec_write(codec, nid, 0,
-> > > > +			AC_VERB_SET_DEVICE_SEL, dev_id);
-> > > > +		udelay(20);
-> > > > +
-> > > > +		dev = snd_hda_get_dev_select(codec, nid);
-> > > > +		if (dev == dev_id)
-> > > > +			break;
-> > > > +		msleep(20);
-> > > > +	} while (time_before(jiffies, timeout));
-> > >
-> > > Is this loop needed?  Most verbs take effect immediately, and so far,
-> > > the only exception is the power state.
-> >
-> > OK, I will remove the loop.
-> 
-> Well, I don't mean to remove forcibly.  Just want to be sure.
-> If such a loop is needed practically, we must have it, of course.
-> Let's check.
-> 
-> 
-> thanks,
-> 
-> Takashi
+diff --git a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
+index fe5a5ef..0046926 100644
+--- a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
++++ b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
+@@ -5,11 +5,17 @@ Required properties:
+ - mediatek,audio-codec: the phandles of rt5650 codecs
+ - mediatek,platform: the phandle of MT8173 ASoC platform
+ 
++Optional properties:
++- mediatek,rt5650_i2s: I2S mode of rt5650
++  0: using I2S1 on rt5650 for record
++  1: using I2S2 on rt5650 for record
++
+ Example:
+ 
+ 	sound {
+ 		compatible = "mediatek,mt8173-rt5650";
+ 		mediatek,audio-codec = <&rt5650>;
+ 		mediatek,platform = <&afe>;
++		mediatek,rt5650_i2s = <0>;
+ 	};
+ 
+diff --git a/sound/soc/mediatek/mt8173-rt5650.c b/sound/soc/mediatek/mt8173-rt5650.c
+index bb09bb1..ab4c806 100644
+--- a/sound/soc/mediatek/mt8173-rt5650.c
++++ b/sound/soc/mediatek/mt8173-rt5650.c
+@@ -23,6 +23,20 @@
+ 
+ #define MCLK_FOR_CODECS		12288000
+ 
++struct mt8173_rt5650_platform_data {
++	unsigned int rt5650_i2s;
++	/* 0 = I2S1; 1 = I2S2 */
++};
++
++static struct mt8173_rt5650_platform_data mt8173_rt5650_priv = {
++	.rt5650_i2s = 0,
++};
++
++enum mt8173_rt5650_i2s {
++	MT8173_RT5650_I2S1 = 0,
++	MT8173_RT5650_I2S2,
++};
++
+ static const struct snd_soc_dapm_widget mt8173_rt5650_widgets[] = {
+ 	SND_SOC_DAPM_SPK("Speaker", NULL),
+ 	SND_SOC_DAPM_MIC("Int Mic", NULL),
+@@ -87,10 +101,25 @@ static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
+ 	struct snd_soc_codec *codec = runtime->codec_dais[0]->codec;
+ 	int ret;
+ 
+-	rt5645_sel_asrc_clk_src(codec,
+-				RT5645_DA_STEREO_FILTER |
+-				RT5645_AD_STEREO_FILTER,
+-				RT5645_CLK_SEL_I2S1_ASRC);
++	switch (mt8173_rt5650_priv.rt5650_i2s) {
++	case MT8173_RT5650_I2S1:
++		rt5645_sel_asrc_clk_src(codec,
++					RT5645_DA_STEREO_FILTER |
++					RT5645_AD_STEREO_FILTER,
++					RT5645_CLK_SEL_I2S1_ASRC);
++		break;
++	case MT8173_RT5650_I2S2:
++		rt5645_sel_asrc_clk_src(codec,
++					RT5645_DA_STEREO_FILTER,
++					RT5645_CLK_SEL_I2S1_ASRC);
++		rt5645_sel_asrc_clk_src(codec,
++					RT5645_AD_STEREO_FILTER,
++					RT5645_CLK_SEL_I2S2_ASRC);
++		break;
++	default:
++		break;
++	}
++
+ 	/* enable jack detection */
+ 	ret = snd_soc_card_jack_new(card, "Headset Jack",
+ 				    SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
+@@ -112,6 +141,9 @@ static struct snd_soc_dai_link_component mt8173_rt5650_codecs[] = {
+ 	{
+ 		.dai_name = "rt5645-aif1",
+ 	},
++	{
++		.dai_name = "rt5645-aif2",
++	},
+ };
+ 
+ enum {
+@@ -149,7 +181,7 @@ static struct snd_soc_dai_link mt8173_rt5650_dais[] = {
+ 		.cpu_dai_name = "I2S",
+ 		.no_pcm = 1,
+ 		.codecs = mt8173_rt5650_codecs,
+-		.num_codecs = 1,
++		.num_codecs = 2,
+ 		.init = mt8173_rt5650_init,
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 			   SND_SOC_DAIFMT_CBS_CFS,
+@@ -199,6 +231,19 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
+ 			"Property 'audio-codec' missing or invalid\n");
+ 		return -EINVAL;
+ 	}
++	mt8173_rt5650_codecs[1].of_node = mt8173_rt5650_codecs[0].of_node;
++
++	if (device_property_present(&pdev->dev, "mediatek,rt5650_i2s")) {
++		ret = device_property_read_u32(&pdev->dev,
++					       "mediatek,rt5650_i2s",
++					       &mt8173_rt5650_priv.rt5650_i2s);
++		if (ret) {
++			dev_err(&pdev->dev,
++				"%s snd_soc_register_card fail %d\n",
++				__func__, ret);
++		}
++	}
++
+ 	card->dev = &pdev->dev;
+ 	platform_set_drvdata(pdev, card);
+ 
+-- 
+1.7.9.5
