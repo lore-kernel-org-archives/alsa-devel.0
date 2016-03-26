@@ -1,195 +1,224 @@
-From: Ben Zhang <benzh@chromium.org>
-Subject: Re: [PATCH] ASoC: nau8825: fix interrupt fails and
-	unstable after resume
-Date: Fri, 25 Mar 2016 17:08:29 -0700
-Message-ID: <CAOV7ByJ_=Mvn6PqR8w5HMJea5LwHqJOd0LPncgHO=6fqfn1-XA@mail.gmail.com>
-References: <1458619048-28405-1-git-send-email-KCHSU0@nuvoton.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f179.google.com (mail-io0-f179.google.com
- [209.85.223.179])
- by alsa0.perex.cz (Postfix) with ESMTP id BC6AE2610A3
- for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2016 01:08:30 +0100 (CET)
-Received: by mail-io0-f179.google.com with SMTP id c63so129780020iof.0
- for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2016 17:08:30 -0700 (PDT)
-In-Reply-To: <1458619048-28405-1-git-send-email-KCHSU0@nuvoton.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Anatol Pomozov <anatol.pomozov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, YHCHuang@nuvoton.com, Mark Brown <broonie@kernel.org>, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: [RFC PATCH 3/4] media: Add refcount to keep track of media device registrations
+Date: Fri, 25 Mar 2016 22:38:44 -0600
+Message-ID: <dd4a411224763aa8a8e83ba43e2fbf668c2ba15f.1458966594.git.shuahkh@osg.samsung.com>
+References: <cover.1458966594.git.shuahkh@osg.samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1458966594.git.shuahkh@osg.samsung.com>
+In-Reply-To: <cover.1458966594.git.shuahkh@osg.samsung.com>
+References: <cover.1458966594.git.shuahkh@osg.samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: laurent.pinchart@ideasonboard.com, mchehab@osg.samsung.com, perex@perex.cz, tiwai@suse.com, hans.verkuil@cisco.com, chehabrafael@gmail.com, javier@osg.samsung.com, jh1009.sung@samsung.com
+Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 21, 2016 at 8:57 PM, John Hsu <KCHSU0@nuvoton.com> wrote:
-> Modify power management function to sync behavior with set bias function.
-> And codec needs to config interrupt setting again to recover interrupt.
->
-> Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
-> ---
->  sound/soc/codecs/nau8825.c | 70 ++++++++++++++++++++++++++++------------------
->  1 file changed, 43 insertions(+), 27 deletions(-)
->
-> diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-> index 106c391..b8af46b 100644
-> --- a/sound/soc/codecs/nau8825.c
-> +++ b/sound/soc/codecs/nau8825.c
-> @@ -1204,6 +1204,42 @@ static int nau8825_set_sysclk(struct snd_soc_codec *codec, int clk_id,
->         return nau8825_configure_sysclk(nau8825, clk_id, freq);
->  }
->
-> +static void nau8825_configure_interrupt(struct nau8825 *nau8825)
-> +{
-> +       struct regmap *regmap = nau8825->regmap;
-> +
-> +       /* IRQ Output Enable */
-> +       regmap_update_bits(regmap, NAU8825_REG_INTERRUPT_MASK,
-> +               NAU8825_IRQ_OUTPUT_EN, NAU8825_IRQ_OUTPUT_EN);
-> +
-> +       /* Enable internal VCO needed for interruptions */
-> +       nau8825_configure_sysclk(nau8825, NAU8825_CLK_INTERNAL, 0);
+Add refcount to keep track of media device registrations to avoid release
+of media device when one of the drivers does unregister when media device
+belongs to more than one driver. Also add a new interfaces to unregister
+a media device allocated using Media Device Allocator and a hold register
+refcount. Change media_open() to get media device reference and put the
+reference in media_release().
 
-It seems more flexible to let ASoC machine drivers manage
-the sysclk with snd_soc_dai_set_sysclk, instead of force
-switching to the internal VCO clock at resume. Some platforms
-may have external clock available all the time. If a platform
-doesn't supply clock to the codec when there is no active
-playback/capture, but wants jack detection interrupt, the
-machine driver should explicitly request the internal VCO clock.
+Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+---
+ drivers/media/media-device.c  | 53 +++++++++++++++++++++++++++++++++++++++++++
+ drivers/media/media-devnode.c |  3 +++
+ include/media/media-device.h  | 32 ++++++++++++++++++++++++++
+ 3 files changed, 88 insertions(+)
 
-> +
-> +       /* Enable ADC needed for interrupts
-> +        * It is the same as force_enable_pin("ADC") we do later
-> +        */
-> +       regmap_update_bits(regmap, NAU8825_REG_ENA_CTRL,
-> +               NAU8825_ENABLE_ADC, NAU8825_ENABLE_ADC);
-
-The register values for the above irq/clock/adc configurations
-are saved and restored by regcache, so we don't need to set
-them explicitly at every resume.
-
-> +
-> +       /* Chip needs one FSCLK cycle in order to generate interrupts,
-> +        * as we cannot guarantee one will be provided by the system. Turning
-> +        * master mode on then off enables us to generate that FSCLK cycle
-> +        * with a minimum of contention on the clock bus.
-> +        */
-> +       regmap_update_bits(regmap, NAU8825_REG_I2S_PCM_CTRL2,
-> +               NAU8825_I2S_MS_MASK, NAU8825_I2S_MS_MASTER);
-> +       regmap_update_bits(regmap, NAU8825_REG_I2S_PCM_CTRL2,
-> +               NAU8825_I2S_MS_MASK, NAU8825_I2S_MS_SLAVE);
-> +}
-> +
-> +static void nau8825_resume_setup(struct nau8825 *nau8825)
-> +{
-> +       struct regmap *regmap = nau8825->regmap;
-> +
-> +       nau8825_configure_interrupt(nau8825);
-> +       nau8825_restart_jack_detection(regmap);
-> +}
-> +
->  static int nau8825_set_bias_level(struct snd_soc_codec *codec,
->                                    enum snd_soc_bias_level level)
->  {
-> @@ -1233,6 +1269,8 @@ static int nau8825_set_bias_level(struct snd_soc_codec *codec,
->                                         "Failed to sync cache: %d\n", ret);
->                                 return ret;
->                         }
-> +                       if (nau8825->irq)
-> +                               nau8825_resume_setup(nau8825);
->                 }
->
->                 break;
-> @@ -1346,29 +1384,9 @@ static int nau8825_read_device_properties(struct device *dev,
->
->  static int nau8825_setup_irq(struct nau8825 *nau8825)
->  {
-> -       struct regmap *regmap = nau8825->regmap;
->         int ret;
->
-> -       /* IRQ Output Enable */
-> -       regmap_update_bits(regmap, NAU8825_REG_INTERRUPT_MASK,
-> -               NAU8825_IRQ_OUTPUT_EN, NAU8825_IRQ_OUTPUT_EN);
-> -
-> -       /* Enable internal VCO needed for interruptions */
-> -       nau8825_configure_sysclk(nau8825, NAU8825_CLK_INTERNAL, 0);
-> -
-> -       /* Enable ADC needed for interrupts */
-> -       regmap_update_bits(regmap, NAU8825_REG_ENA_CTRL,
-> -               NAU8825_ENABLE_ADC, NAU8825_ENABLE_ADC);
-> -
-> -       /* Chip needs one FSCLK cycle in order to generate interrupts,
-> -        * as we cannot guarantee one will be provided by the system. Turning
-> -        * master mode on then off enables us to generate that FSCLK cycle
-> -        * with a minimum of contention on the clock bus.
-> -        */
-> -       regmap_update_bits(regmap, NAU8825_REG_I2S_PCM_CTRL2,
-> -               NAU8825_I2S_MS_MASK, NAU8825_I2S_MS_MASTER);
-> -       regmap_update_bits(regmap, NAU8825_REG_I2S_PCM_CTRL2,
-> -               NAU8825_I2S_MS_MASK, NAU8825_I2S_MS_SLAVE);
-> +       nau8825_configure_interrupt(nau8825);
->
->         ret = devm_request_threaded_irq(nau8825->dev, nau8825->irq, NULL,
->                 nau8825_interrupt, IRQF_TRIGGER_LOW | IRQF_ONESHOT,
-> @@ -1440,24 +1458,22 @@ static int nau8825_i2c_remove(struct i2c_client *client)
->  #ifdef CONFIG_PM_SLEEP
->  static int nau8825_suspend(struct device *dev)
->  {
-> -       struct i2c_client *client = to_i2c_client(dev);
->         struct nau8825 *nau8825 = dev_get_drvdata(dev);
-> +       struct snd_soc_codec *codec = snd_soc_dapm_to_codec(nau8825->dapm);
->
-> -       disable_irq(client->irq);
-> +       disable_irq(nau8825->irq);
-> +       snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_OFF);
-
-Shouldn't have to force bias off. When there is no force
-enabled ADC/DACs, dapm_power_widgets will power
-the codec off at suspend:
-
-"SAR" can be changed to a dapm supply or micbias widget.
-"DDACR" will be fixed by
-"ASoC: nau8825: change output power for interrupt"
-
->         regcache_cache_only(nau8825->regmap, true);
-> -       regcache_mark_dirty(nau8825->regmap);
->
->         return 0;
->  }
->
->  static int nau8825_resume(struct device *dev)
->  {
-> -       struct i2c_client *client = to_i2c_client(dev);
->         struct nau8825 *nau8825 = dev_get_drvdata(dev);
->
->         regcache_cache_only(nau8825->regmap, false);
-> -       regcache_sync(nau8825->regmap);
-> -       enable_irq(client->irq);
-> +       enable_irq(nau8825->irq);
-
-The dev_pm_ops.resume races against nau8825_set_bias_level
-and nau8825_resume_setup. It may be better to use the
-snd_soc_codec_driver.resume so that ASoC core can sync
-everything correctly.
-
->
->         return 0;
->  }
-> --
-> 2.6.4
->
-
-Hi John,
-
-I've uploaded "ASoC: nau8825: Fix jack detection across suspend"
-which fixes jack detection and the issues mentioned above.
-
-Thanks,
-Ben
+diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
+index 93aff4e..3359235 100644
+--- a/drivers/media/media-device.c
++++ b/drivers/media/media-device.c
+@@ -36,6 +36,7 @@
+ #include <media/media-device.h>
+ #include <media/media-devnode.h>
+ #include <media/media-entity.h>
++#include <media/media-dev-allocator.h>
+ 
+ #ifdef CONFIG_MEDIA_CONTROLLER
+ 
+@@ -702,6 +703,7 @@ void media_device_init(struct media_device *mdev)
+ 	INIT_LIST_HEAD(&mdev->entity_notify);
+ 	mutex_init(&mdev->graph_mutex);
+ 	ida_init(&mdev->entity_internal_idx);
++	kref_init(&mdev->refcount);
+ 
+ 	dev_dbg(mdev->dev, "Media device initialized\n");
+ }
+@@ -730,6 +732,13 @@ printk("%s: mdev %p\n", __func__, mdev);
+ 	/* Check if mdev was ever registered at all */
+ 	mutex_lock(&mdev->graph_mutex);
+ 
++	/* if media device is already registered, bump the register refcount */
++	if (media_devnode_is_registered(&mdev->devnode)) {
++		kref_get(&mdev->refcount);
++		mutex_unlock(&mdev->graph_mutex);
++		return 0;
++	}
++
+ 	/* Register the device node. */
+ 	mdev->devnode.fops = &media_device_fops;
+ 	mdev->devnode.parent = mdev->dev;
+@@ -756,6 +765,22 @@ err:
+ }
+ EXPORT_SYMBOL_GPL(__media_device_register);
+ 
++void media_device_register_ref(struct media_device *mdev)
++{
++	if (!mdev)
++		return;
++
++	pr_info("%s: mdev %p\n", __func__, mdev);
++	mutex_lock(&mdev->graph_mutex);
++
++	/* Check if mdev is registered - bump registered refcount */
++	if (media_devnode_is_registered(&mdev->devnode))
++		kref_get(&mdev->refcount);
++
++	mutex_unlock(&mdev->graph_mutex);
++}
++EXPORT_SYMBOL_GPL(media_device_register_ref);
++
+ int __must_check media_device_register_entity_notify(struct media_device *mdev,
+ 					struct media_entity_notify *nptr)
+ {
+@@ -829,6 +854,34 @@ printk("%s: mdev=%p\n", __func__, mdev);
+ }
+ EXPORT_SYMBOL_GPL(media_device_unregister);
+ 
++static void __media_device_unregister_kref(struct kref *kref)
++{
++	struct media_device *mdev;
++
++	mdev = container_of(kref, struct media_device, refcount);
++	__media_device_unregister(mdev);
++}
++
++void media_device_unregister_put(struct media_device *mdev)
++{
++	int ret;
++
++	if (mdev == NULL)
++		return;
++
++	pr_info("%s: mdev=%p\n", __func__, mdev);
++	ret = kref_put_mutex(&mdev->refcount, __media_device_unregister_kref,
++			     &mdev->graph_mutex);
++	if (ret) {
++		/* __media_device_unregister() ran */
++		__media_device_cleanup(mdev);
++		mutex_unlock(&mdev->graph_mutex);
++		mutex_destroy(&mdev->graph_mutex);
++		media_device_set_to_delete_state(mdev->dev);
++	}
++}
++EXPORT_SYMBOL_GPL(media_device_unregister_put);
++
+ static void media_device_release_devres(struct device *dev, void *res)
+ {
+ }
+diff --git a/drivers/media/media-devnode.c b/drivers/media/media-devnode.c
+index 29409f4..d1d1263 100644
+--- a/drivers/media/media-devnode.c
++++ b/drivers/media/media-devnode.c
+@@ -44,6 +44,7 @@
+ #include <linux/uaccess.h>
+ 
+ #include <media/media-devnode.h>
++#include <media/media-dev-allocator.h>
+ 
+ #define MEDIA_NUM_DEVICES	256
+ #define MEDIA_NAME		"media"
+@@ -186,6 +187,7 @@ static int media_open(struct inode *inode, struct file *filp)
+ 		}
+ 	}
+ 
++	media_device_get_ref(mdev->parent);
+ 	return 0;
+ }
+ 
+@@ -201,6 +203,7 @@ static int media_release(struct inode *inode, struct file *filp)
+ 	   return value is ignored. */
+ 	put_device(&mdev->dev);
+ 	filp->private_data = NULL;
++	media_device_put(mdev->parent);
+ 	return 0;
+ }
+ 
+diff --git a/include/media/media-device.h b/include/media/media-device.h
+index e59772e..64114ae 100644
+--- a/include/media/media-device.h
++++ b/include/media/media-device.h
+@@ -284,6 +284,8 @@ struct media_entity_notify {
+  * struct media_device - Media device
+  * @dev:	Parent device
+  * @devnode:	Media device node
++ * @refcount:	Media device register reference count. Used when more
++ *		than one driver owns the device.
+  * @driver_name: Optional device driver name. If not set, calls to
+  *		%MEDIA_IOC_DEVICE_INFO will return dev->driver->name.
+  *		This is needed for USB drivers for example, as otherwise
+@@ -348,6 +350,7 @@ struct media_device {
+ 	/* dev->driver_data points to this struct. */
+ 	struct device *dev;
+ 	struct media_devnode devnode;
++	struct kref refcount;
+ 
+ 	char model[32];
+ 	char driver_name[32];
+@@ -501,6 +504,17 @@ int __must_check __media_device_register(struct media_device *mdev,
+ #define media_device_register(mdev) __media_device_register(mdev, THIS_MODULE)
+ 
+ /**
++ * media_device_register_ref() - Increments media device register refcount
++ *
++ * @mdev:	pointer to struct &media_device
++ *
++ * When more than one driver is associated with the media device, it is
++ * necessary to refcount the number of registrations to avoid unregister
++ * when it is still in use.
++ */
++void media_device_register_ref(struct media_device *mdev);
++
++/**
+  * media_device_unregister() - Unregisters a media device element
+  *
+  * @mdev:	pointer to struct &media_device
+@@ -512,6 +526,18 @@ int __must_check __media_device_register(struct media_device *mdev,
+ void media_device_unregister(struct media_device *mdev);
+ 
+ /**
++ * media_device_unregister_put() - Unregisters a media device element
++ *
++ * @mdev:	pointer to struct &media_device
++ *
++ * Should be called to unregister media device allocated with Media Device
++ * Allocator API media_device_get() interface.
++ * It is safe to call this function on an unregistered (but initialised)
++ * media device.
++ */
++void media_device_unregister_put(struct media_device *mdev);
++
++/**
+  * media_device_register_entity() - registers a media entity inside a
+  *	previously registered media device.
+  *
+@@ -681,9 +707,15 @@ static inline int media_device_register(struct media_device *mdev)
+ {
+ 	return 0;
+ }
++static inline void media_device_register_ref(struct media_device *mdev)
++{
++}
+ static inline void media_device_unregister(struct media_device *mdev)
+ {
+ }
++static inline void media_device_unregister_put(struct media_device *mdev)
++{
++}
+ static inline int media_device_register_entity(struct media_device *mdev,
+ 						struct media_entity *entity)
+ {
+-- 
+2.5.0
