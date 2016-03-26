@@ -1,73 +1,53 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [RFC PATCH 0/4] Media Device Allocator API
-Date: Fri, 25 Mar 2016 22:38:41 -0600
-Message-ID: <cover.1458966594.git.shuahkh@osg.samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: laurent.pinchart@ideasonboard.com, mchehab@osg.samsung.com, perex@perex.cz, tiwai@suse.com, hans.verkuil@cisco.com, chehabrafael@gmail.com, javier@osg.samsung.com, jh1009.sung@samsung.com
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/2] ALSA: dice: fix a fatal bug when no sound
+	card is registered
+Date: Sat, 26 Mar 2016 21:05:57 +0900
+Message-ID: <1458993959-22637-1-git-send-email-o-takashi@sakamocchi.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id ECC9D2614FD
+ for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2016 13:06:04 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-There are known problems with media device life time management. When media
-device is released while an media ioctl is in progress, ioctls fail with
-use-after-free errors and kernel hangs in some cases.
+Hi,
 
-Media Device can be in any the following states:
+This patchset is for Linux 4.6-rc2.
 
-- Allocated
-- Registered (could be tied to more than one driver)
-- Unregistered, not in use (media device file is not open)
-- Unregistered, in use (media device file is not open)
-- Released
+ALSA dice driver causes kernel NULL pointer dereference in a case that
+no sound card instance is registered and unit is going to be removed.
+This is observed when dice-based units are connected to Linux system and
+disconnected within 2 seconds, thus it's rare.
 
-When media device belongs to  more than one driver, registrations should be
-refcounted to avoid unregistering when one of the drivers does unregister.
-A refcount field in the struct media_device covers this case. Unregister on
-a Media Allocator media device is a kref_put() call. The media device should
-be unregistered only when the last unregister occurs.
+Additionally, even if the bug is fixed, the driver dumps warnings for
+most dice-based models which supports a pair of isochronous streams.
+This can occur regardless of the former bug. Users can see this for
+unsupported dice-based models.
 
+This patchset fixes these bugs.
 
-When a media device is in use when it is unregistered, it should not be
-released until the application exits when it detects the unregistered
-status. Media device that is in use when it is unregistered is moved to
-to_delete_list. When the last unregister occurs, media device is unregistered
-and becomes an unregistered, still allocated device. Unregister marks the
-device to be deleted.
+Takashi Sakamoto (2):
+  ALSA: dice: fix NULL pointer dereference at remove units when sound
+    card is not registered
+  ALSA: firewire-lib: skip releasing stream data when it's not
+    initialized
 
-When media device belongs to more than one driver, as both drivers could be
-unbound/bound, driver should not end up getting stale media device that is
-on its way out. Moving the unregistered media device to to_delete_list helps
-this case as well.
-
-I am sending this RFC series out for review. I tested to verify media ioctls
-don't fail when media device is unregistered and it gets released when the
-last reference goes. I still need to do more testing. I didb't fully test
-if the media device gets deleted in all cases. So please consider this as
-work in progress. I decided to send this out to get early review to see if
-this solution is viable.
-
-Shuah Khan (4):
-  media: Add Media Device Allocator API
-  media: Add Media Device Allocator API documentation
-  media: Add refcount to keep track of media device registrations
-  drivers: change au0828, uvcvideo, snd-usb-audio to use Media Device
-    Allocator
-
- drivers/media/Makefile                 |   3 +-
- drivers/media/media-dev-allocator.c    | 153 +++++++++++++++++++++++++++++++++
- drivers/media/media-device.c           |  53 ++++++++++++
- drivers/media/media-devnode.c          |   3 +
- drivers/media/usb/au0828/au0828-core.c |   7 +-
- drivers/media/usb/au0828/au0828.h      |   1 +
- drivers/media/usb/uvc/uvc_driver.c     |  32 ++++---
- drivers/media/usb/uvc/uvcvideo.h       |   3 +-
- include/media/media-dev-allocator.h    | 113 ++++++++++++++++++++++++
- include/media/media-device.h           |  32 +++++++
- sound/usb/media.c                      |  10 ++-
- sound/usb/media.h                      |   1 +
- 12 files changed, 390 insertions(+), 21 deletions(-)
- create mode 100644 drivers/media/media-dev-allocator.c
- create mode 100644 include/media/media-dev-allocator.h
+ sound/firewire/amdtp-stream.c     |  4 ++++
+ sound/firewire/dice/dice-stream.c | 14 ++++----------
+ 2 files changed, 8 insertions(+), 10 deletions(-)
 
 -- 
-2.5.0
+2.7.3
