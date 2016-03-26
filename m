@@ -1,56 +1,50 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/2] ALSA: firewire-lib: skip releasing stream
-	data when it's not initialized
-Date: Sat, 26 Mar 2016 21:05:59 +0900
-Message-ID: <1458993959-22637-3-git-send-email-o-takashi@sakamocchi.jp>
-References: <1458993959-22637-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Joe Perches <joe@perches.com>
+Subject: Re: [RFC PATCH 1/4] media: Add Media Device Allocator API
+Date: Sat, 26 Mar 2016 05:50:22 -0700
+Message-ID: <1458996622.23450.4.camel@perches.com>
+References: <cover.1458966594.git.shuahkh@osg.samsung.com>
+	 <41d017ef76e3206780c018399ec60b63d865f65c.1458966594.git.shuahkh@osg.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id EBAA42612D1
- for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2016 13:06:04 +0100 (CET)
-In-Reply-To: <1458993959-22637-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <41d017ef76e3206780c018399ec60b63d865f65c.1458966594.git.shuahkh@osg.samsung.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Shuah Khan <shuahkh@osg.samsung.com>, laurent.pinchart@ideasonboard.com, mchehab@osg.samsung.com, perex@perex.cz, tiwai@suse.com, hans.verkuil@cisco.com, chehabrafael@gmail.com, javier@osg.samsung.com, jh1009.sung@samsung.com
+Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When any of AMDTP stream data are not initialized and private data is
-going to be released, WARN_ON() in amdtp_stream_destroy() is hit and
-dump messages. This may take users irritated.
+On Fri, 2016-03-25 at 22:38 -0600, Shuah Khan wrote:
+> Add Media Device Allocator API to manage Media Device life time probl=
+ems.
+> There are known problems with media device life time management. When=
+ media
+> device is released while an media ioctl is in progress, ioctls fail w=
+ith
+> use-after-free errors and kernel hangs in some cases.
 
-This commit fixes the bug to skip releasing stream data when the data is
-not initialized.
+Seems reasonable, thanks.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/amdtp-stream.c | 4 ++++
- 1 file changed, 4 insertions(+)
+trivial:
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index ed29026..4484242 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -102,6 +102,10 @@ EXPORT_SYMBOL(amdtp_stream_init);
-  */
- void amdtp_stream_destroy(struct amdtp_stream *s)
- {
-+	/* Not initialized. */
-+	if (s->protocol == NULL)
-+		return;
-+
- 	WARN_ON(amdtp_stream_running(s));
- 	kfree(s->protocol);
- 	mutex_destroy(&s->mutex);
--- 
-2.7.3
+> diff --git a/drivers/media/media-dev-allocator.c b/drivers/media/medi=
+a-dev-allocator.c
+[]
+> +static struct media_device *__media_device_get(struct device *dev,
+> +					=A0=A0=A0=A0=A0=A0=A0bool alloc, bool kref)
+> +{
+[]
+> +	pr_info("%s: mdev=3D%p\n", __func__, &mdi->mdev);
+
+All of the pr_info uses here seem like debugging
+and should likely be pr_debug instead.
+> +struct media_device *media_device_find(struct device *dev)
+> +{
+> +	pr_info("%s\n", __func__);
+
+These seem like function tracing and maybe could/should
+use ftrace instead.
++/* don't allocate - increment kref if one is found */
+> +struct media_device *media_device_get_ref(struct device *dev)
+> +{
+> +	pr_info("%s\n", __func__);
