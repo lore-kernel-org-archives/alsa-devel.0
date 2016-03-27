@@ -1,14 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 0/4] ALSA: firewire: some trivial fixes
-Date: Sun, 27 Mar 2016 16:09:05 +0900
-Message-ID: <1459062549-18721-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/4] ALSA: firewire-tascam: add Kconfig entry
+	for TASCAM FW-1804
+Date: Sun, 27 Mar 2016 16:09:09 +0900
+Message-ID: <1459062549-18721-5-git-send-email-o-takashi@sakamocchi.jp>
+References: <1459062549-18721-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B084260711
+ by alsa0.perex.cz (Postfix) with ESMTP id 99C3B260591
  for <alsa-devel@alsa-project.org>; Sun, 27 Mar 2016 09:09:14 +0200 (CEST)
+In-Reply-To: <1459062549-18721-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,25 +25,25 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+I forgot it.
 
-This patchset includes some trivial fixes for ALSA firewire stack. I don't
-mind to postpone them to 4.7 instead of 4.6-rc2.
+Fixes: 3e78e1518e12('ALSA: firewire-tascam: add support for FW-1804')
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-
-Regards
-
-Takashi Sakamoto (4):
-  ALSA: bebob: remove needless argument from local function
-  ALSA: oxfw: remove needless member from private structure
-  ALSA: fireworks: move model quirk detection code to information parser
-  ALSA: firewire-tascam: add Kconfig entry for TASCAM FW-1804
-
- sound/firewire/Kconfig               |  1 +
- sound/firewire/bebob/bebob.c         |  4 ++--
- sound/firewire/fireworks/fireworks.c | 21 +++++++++++----------
- sound/firewire/oxfw/oxfw.h           |  1 -
- 4 files changed, 14 insertions(+), 13 deletions(-)
-
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index 2a779c2..ab894ed 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -134,6 +134,7 @@ config SND_FIREWIRE_TASCAM
+ 	 Say Y here to include support for TASCAM.
+ 	  * FW-1884
+ 	  * FW-1082
++	  * FW-1804
+ 
+ 	 To compile this driver as a module, choose M here: the module
+ 	 will be called snd-firewire-tascam.
 -- 
 2.7.3
