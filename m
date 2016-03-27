@@ -1,18 +1,14 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/4] ASoC: wm_adsp: Fix some subtle races on
-	compressed stream
-Date: Mon, 28 Mar 2016 14:29:22 +0100
-Message-ID: <1459171764-29921-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1459171764-29921-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: =?UTF-8?Q?Bernhard_=c3=9cbelacker?= <bernhardu@vr-web.de>
+Subject: bytcr_rt5640, baytrail: trying to get audio working
+Date: Sun, 27 Mar 2016 20:37:58 +0200
+Message-ID: <56F82886.6010002@vr-web.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id E68D12670C6
- for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2016 15:29:20 +0200 (CEST)
-In-Reply-To: <1459171764-29921-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from mx0.vr-web.de (mx1.vr-web.de [195.200.35.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 94B302608EA
+ for <alsa-devel@alsa-project.org>; Sun, 27 Mar 2016 20:38:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,73 +18,437 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Firstly, we should be locking the pwr_lock when we initialise the
-compressed buffer. Secondly, fixup a couple of places when we should be
-pulling pointers only under the pwr_lock as they may be affected by
-operations that take that lock.
+Hello,
+(This message was sent to alsa-user a week ago, but created no response there.
+Therefore I hope I am allowed to ask here again.)
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm_adsp.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+I am trying to get audio working on a small Intel Z3736F based device.
+Some more details I have collected in Debian wiki [1].
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 3c5ef13..953c427 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -2240,9 +2240,13 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 		if (ret != 0)
- 			goto err;
- 
-+		mutex_lock(&dsp->pwr_lock);
-+
- 		if (wm_adsp_fw[dsp->fw].num_caps != 0)
- 			ret = wm_adsp_buffer_init(dsp);
- 
-+		mutex_unlock(&dsp->pwr_lock);
-+
- 		break;
- 
- 	case SND_SOC_DAPM_PRE_PMD:
-@@ -2814,12 +2818,15 @@ static int wm_adsp_buffer_update_avail(struct wm_adsp_compr_buf *buf)
- 
- int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
- {
--	struct wm_adsp_compr_buf *buf = dsp->buffer;
--	struct wm_adsp_compr *compr = dsp->compr;
-+	struct wm_adsp_compr_buf *buf;
-+	struct wm_adsp_compr *compr;
- 	int ret = 0;
- 
- 	mutex_lock(&dsp->pwr_lock);
- 
-+	buf = dsp->buffer;
-+	compr = dsp->compr;
-+
- 	if (!buf) {
- 		ret = -ENODEV;
- 		goto out;
-@@ -2879,14 +2886,16 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
- 			  struct snd_compr_tstamp *tstamp)
- {
- 	struct wm_adsp_compr *compr = stream->runtime->private_data;
--	struct wm_adsp_compr_buf *buf = compr->buf;
- 	struct wm_adsp *dsp = compr->dsp;
-+	struct wm_adsp_compr_buf *buf;
- 	int ret = 0;
- 
- 	adsp_dbg(dsp, "Pointer request\n");
- 
- 	mutex_lock(&dsp->pwr_lock);
- 
-+	buf = compr->buf;
-+
- 	if (!compr->buf) {
- 		ret = -ENXIO;
- 		goto out;
--- 
-2.1.4
+My tests are done with a current Debian testing.
+
+Firmware is from package firmware-intel-sound:
+sha1sum: 9e7c514b224d674cd3fb1301ce693c42b01f02e0  fw_sst_0f28.bin
+md5sum: 63765966238afad810b6a568d9b59620  fw_sst_0f28.bin
+
+Tests were done on linux v4.5-rc7-244-g03c668a.
+With a change adjusting the IRQ described in [2].
+
+After a fresh boot I tried the commands below (from [3]).
+
+But did not get hearable output, except a "crack" on device open and close.
+
+Now I am not sure how to proceed.
+Am I using the right firmware?
+Is the amixer sequence ok for this device?
+Can all the options in alsamixer be tested or is there a risk of
+damaging the device?
+
+
+Kind regards,
+Bernhard
+
+
+[1] https://wiki.debian.org/InstallingDebianOn/PIPO/PIPO%20X8
+[2] http://mailman.alsa-project.org/pipermail/alsa-devel/2015-July/094663.html
+[3] http://mailman.alsa-project.org/pipermail/alsa-devel/2015-June/094080.html
+[4] http://mailman.alsa-project.org/pipermail/alsa-devel/2015-July/094583.html
+[5] https://sourceforge.net/p/alsa/mailman/alsa-user/thread/56EC0F8A.4010009%40vr-web.de/#msg34946769
+
+
+
+echo -n 'module snd_soc_sst_mfld_platform +p' > /sys/kernel/debug/dynamic_debug/control     
+
+#DSP routing
+amixer -c0 sset 'codec_out0 mix 0 pcm0_in' on
+amixer -c0 sset 'media0_out mix 0 media1_in' on
+amixer -c0 sset 'media1_in Gain 0' 80%
+amixer -c0 sset 'media1_in Gain 0 Ramp Delay' 50
+amixer -c0 sset 'media1_in Gain 0' off
+amixer -c0 sset 'pcm0_in Gain 0' 80%
+amixer -c0 sset 'pcm0_in Gain 0 Ramp Delay' 50
+amixer -c0 sset 'pcm0_in Gain 0' off
+amixer -c0 sset 'codec_out0 Gain 0' 80%
+amixer -c0 sset 'codec_out0 Gain 0 Ramp Delay' 50
+amixer -c0 sset 'codec_out0 Gain 0' off
+
+#Codec routin, if you have different one please modfiy
+amixer -c0 sset "DAC MIXL INF1" on
+amixer -c0 sset "DAC MIXR INF1" on
+amixer -c0 sset "Stereo DAC MIXL DAC L1" on
+amixer -c0 sset "Stereo DAC MIXR DAC R1" on
+amixer -c0 sset "SPK MIXL DAC L1" on
+amixer -c0 sset "SPK MIXR DAC R1" on
+amixer -c0 sset "SPOL MIX SPKVOL L" on
+amixer -c0 sset "SPOR MIX SPKVOL R" on
+amixer -c0 sset "SPOL MIX DAC L1" on
+amixer -c0 sset "SPOR MIX DAC R1" on
+amixer -c0 sset "Speaker L" on
+amixer -c0 sset "Speaker R" on
+amixer -c0 sset "Headphone" off
+    #amixer -c0 sset "Ext Spk" on #does not exist
+amixer -c0 sset "Speaker" on
+
+
+
+
+
+# LANG=C speaker-test --nloops=1
+
+speaker-test 1.1.0
+
+Playback device is default
+Stream parameters are 48000Hz, S16_LE, 1 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 16 to 204800
+Period size range from 8 to 102400
+Using max buffer size 204800
+Periods = 4
+was set period_size = 51200
+was set buffer_size = 204800
+ 0 - Front Left
+Time per period = 2.109224
+
+
+
+
+
+# cat /proc/interrupts | grep -E "CPU|sst"
+            CPU0       CPU1       CPU2       CPU3
+   1:          1         35          0          0   IO-APIC   29-fasteoi   intel_sst_driver
+
+
+
+
+# LANG=C dmesg -T | grep -i -E "bytcr|snd|rt56|alsa|sst|Baytrail|80860F28:00|SSP|lpe" --color  [Thu Mar 17 11:49:59 2016] intel_sst_acpi 80860F28:00: LPE base: 0x90a00000 size:0x200000
+[Thu Mar 17 11:49:59 2016] intel_sst_acpi 80860F28:00: IRAM base: 0x90ac0000
+[Thu Mar 17 11:49:59 2016] intel_sst_acpi 80860F28:00: DRAM base: 0x90b00000
+[Thu Mar 17 11:49:59 2016] intel_sst_acpi 80860F28:00: SHIM base: 0x90b40000
+[Thu Mar 17 11:49:59 2016] intel_sst_acpi 80860F28:00: Mailbox base: 0x90b44000
+[Thu Mar 17 11:49:59 2016] intel_sst_acpi 80860F28:00: DDR base: 0x20000000
+[Thu Mar 17 11:49:59 2016] intel_sst_acpi 80860F28:00: Got drv data max stream 25
+[Thu Mar 17 11:49:59 2016] bytcr_rt5640 bytcr_rt5640: snd-soc-dummy-dai <-> media-cpu-dai mapping ok
+[Thu Mar 17 11:49:59 2016] bytcr_rt5640 bytcr_rt5640: snd-soc-dummy-dai <-> deepbuffer-cpu-dai mapping ok
+[Thu Mar 17 11:49:59 2016] compress asoc: snd-soc-dummy-dai <-> compress-cpu-dai mapping ok
+[Thu Mar 17 11:49:59 2016] bytcr_rt5640 bytcr_rt5640: rt5640-aif1 <-> ssp2-port mapping ok
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: media1_in: Volume 0, -1440
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: media1_in: Mute 1
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: media1_in: Volume 0, 0
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: media1_in: Mute 1
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: media1_in: Ramp Delay50
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: pcm0_in: Volume 0, -1440
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: pcm0_in: Mute 1
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: pcm0_in: Volume 0, 0
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: pcm0_in: Mute 1
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:56 2016] sst-mfld-platform sst-mfld-platform: pcm0_in: Ramp Delay50
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: codec_out0: Volume 0, -1440
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: codec_out0: Mute 1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: codec_out0: Volume 0, 0
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: codec_out0: Mute 1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: codec_out0: Ramp Delay50
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 2 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: rx slot - slot 3 map = 0x8
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_0 map = 0x1
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out0_1 map = 0x2
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_0 map = 0x4
+[Thu Mar 17 11:50:57 2016] sst-mfld-platform sst-mfld-platform: tx channel - codec_out1_1 map = 0x8
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: enable=1, usage=0
+[Thu Mar 17 11:51:08 2016] writing to lpe: 00000000: 01 01 01 01 00 00 08 00 ff ff ff ff 55 00 00 00  ............U...
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: Enter:sst_get_ssp_mode, format=4000
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: Enter:sst_get_frame_sync_polarity, format=200
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: Enter: enable=1 port_name=ssp2-port
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: ssp_id: 3
+[Thu Mar 17 11:51:08 2016] writing to lpe: 00000000: 01 01 01 01 00 00 1a 00 ff ff ff ff 75 00 12 00  ............u...
+[Thu Mar 17 11:51:08 2016] writing to lpe: 00000010: 03 00 03 00 98 00 03 ff 03 ff 03 00 01 00 18 00  ................
+[Thu Mar 17 11:51:08 2016] writing to lpe: 00000020: 01 01                                            ..
+[Thu Mar 17 11:51:08 2016] intel_sst_acpi 80860F28:00: Alloc for str 1 pipe 0x90
+[Thu Mar 17 11:51:08 2016]  Baytrail Audio Port: setting buffer ptr param
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: Enter: widget=codec_out0
+[Thu Mar 17 11:51:08 2016] writing to lpe: 00000000: 01 02 01 01 00 00 1e 00 ff ff ff ff 82 00 16 00  ................
+[Thu Mar 17 11:51:08 2016] writing to lpe: 00000010: 82 00 12 00 03 00 01 02 04 08 10 20 40 80 01 02  ........... @...
+[Thu Mar 17 11:51:08 2016] writing to lpe: 00000020: 04 08 10 20 40 80                                ... @.
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: Enter: widget=codec_out0
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: control name=codec_out0 Gain 0 Volume
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: Enter
+[Thu Mar 17 11:51:08 2016] writing to lpe: 00000000: 01 02 01 01 00 00 14 00 ff ff ff ff 21 00 0c 00  ............!...
+[Thu Mar 17 11:51:08 2016] writing to lpe: 00000010: 01 00 00 02 67 00 60 fa 60 fa 32 00              ....g.`.`.2.
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: widget = codec_out0 mix 0
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: val = 0x2000
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: reg: 0x2000
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: input id: 0x8dff, nb_inputs: 1
+[Thu Mar 17 11:51:08 2016] writing to lpe: 00000000: 01 01 01 01 00 00 14 00 ff ff ff ff 72 00 0c 00  ............r...
+[Thu Mar 17 11:51:08 2016] writing to lpe: 00000010: ff 02 ff ff 03 00 01 00 ff 8d ff ff              ............
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: widget = media0_out mix 0
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: val = 0x40000
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: reg: 0x40000
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: input id: 0x90ff, nb_inputs: 1
+[Thu Mar 17 11:51:08 2016] writing to lpe: 00000000: 01 01 01 03 00 00 14 00 ff ff ff ff 72 00 0c 00  ............r...
+[Thu Mar 17 11:51:08 2016] writing to lpe: 00000010: ff 12 ff ff 03 00 01 00 ff 90 ff ff              ............
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: widget=media0_out
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: task=3, location=0x12ff
+[Thu Mar 17 11:51:08 2016] writing to lpe: 00000000: 01 01 01 03 00 00 0a 00 ff 12 ff ff 77 00 02 00  ............w...
+[Thu Mar 17 11:51:08 2016] writing to lpe: 00000010: 01 00                                            ..
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: Enter: widget=media0_out
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: widget=pcm0_in
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: task=1, location=0x8dff
+[Thu Mar 17 11:51:08 2016] writing to lpe: 00000000: 01 01 01 01 00 00 0a 00 ff 8d ff ff 77 00 02 00  ............w...
+[Thu Mar 17 11:51:08 2016] writing to lpe: 00000010: 01 00                                            ..
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: Enter: widget=pcm0_in
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: control name=pcm0_in Gain 0 Volume
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: Enter
+[Thu Mar 17 11:51:08 2016] writing to lpe: 00000000: 01 02 01 01 00 00 14 00 ff ff ff ff 21 00 0c 00  ............!...
+[Thu Mar 17 11:51:08 2016] writing to lpe: 00000010: 01 00 00 8d 67 00 60 fa 60 fa 32 00              ....g.`.`.2.
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: enter, dai-name=media-cpu-dai dir=0
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: Stream name=Headset Playback
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: send gains for widget=media1_in
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: control name=media1_in Gain 0 Volume
+[Thu Mar 17 11:51:08 2016] sst-mfld-platform sst-mfld-platform: Enter
+[Thu Mar 17 11:51:08 2016] writing to lpe: 00000000: 01 02 01 03 00 00 14 00 ff ff ff ff 21 00 0c 00  ............!...
+[Thu Mar 17 11:51:08 2016] writing to lpe: 00000010: 01 00 00 90 67 00 60 fa 60 fa 32 00              ....g.`.`.2.
+[Thu Mar 17 11:51:08 2016]  Baytrail Audio Port: sst_platform_pcm_trigger called
+[Thu Mar 17 11:51:08 2016]  Baytrail Audio Port: sst: Trigger Start
+[Thu Mar 17 11:51:08 2016]  SSP2-Codec: sst_platform_pcm_trigger called
+[Thu Mar 17 11:51:10 2016]  Baytrail Audio Port: sst_platform_pcm_trigger called
+[Thu Mar 17 11:51:10 2016]  Baytrail Audio Port: sst: in stop
+[Thu Mar 17 11:51:10 2016]  SSP2-Codec: sst_platform_pcm_trigger called
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: enter, dai-name=media-cpu-dai dir=0
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: Stream name=Headset Playback
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: send gains for widget=media1_in
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: control name=media1_in Gain 0 Volume
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: Enter
+[Thu Mar 17 11:51:10 2016] writing to lpe: 00000000: 01 02 01 03 00 00 14 00 ff ff ff ff 21 00 0c 00  ............!...
+[Thu Mar 17 11:51:10 2016] writing to lpe: 00000010: 01 00 00 90 67 00 60 fa 60 fa 32 00              ....g.`.`.2.
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: Enter: enable=0 port_name=ssp2-port
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: ssp_id: 3
+[Thu Mar 17 11:51:10 2016] writing to lpe: 00000000: 01 01 01 01 00 00 1a 00 ff ff ff ff 75 00 12 00  ............u...
+[Thu Mar 17 11:51:10 2016] writing to lpe: 00000010: 03 00 00 00 98 00 03 ff 03 ff 03 00 01 00 18 00  ................
+[Thu Mar 17 11:51:10 2016] writing to lpe: 00000020: 01 01                                            ..
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: enable=0, usage=1
+[Thu Mar 17 11:51:10 2016] writing to lpe: 00000000: 01 01 01 01 00 00 08 00 ff ff ff ff 0e 00 00 00  ................
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: enter, dai-name=media-cpu-dai dir=0
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: Stream name=Headset Playback
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: send gains for widget=media1_in
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: control name=media1_in Gain 0 Volume
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: Enter
+[Thu Mar 17 11:51:10 2016] writing to lpe: 00000000: 01 02 01 03 00 00 14 00 ff ff ff ff 21 00 0c 00  ............!...
+[Thu Mar 17 11:51:10 2016] writing to lpe: 00000010: 01 00 00 90 67 00 60 fa 60 fa 32 00              ....g.`.`.2.
+[Thu Mar 17 11:51:10 2016] intel_sst_acpi 80860F28:00: Free for str 1 pipe 0x90
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: widget=pcm0_in
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: task=1, location=0x8dff
+[Thu Mar 17 11:51:10 2016] writing to lpe: 00000000: 01 01 01 01 00 00 0a 00 ff 8d ff ff 77 00 02 00  ............w...
+[Thu Mar 17 11:51:10 2016] writing to lpe: 00000010: 00 00                                            ..
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: widget=media0_out
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: task=3, location=0x12ff
+[Thu Mar 17 11:51:10 2016] writing to lpe: 00000000: 01 01 01 03 00 00 0a 00 ff 12 ff ff 77 00 02 00  ............w...
+[Thu Mar 17 11:51:10 2016] writing to lpe: 00000010: 00 00                                            ..
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: widget = codec_out0 mix 0
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: val = 0x2000
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: reg: 0x2000
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: input id: 0x8dff, nb_inputs: 1
+[Thu Mar 17 11:51:10 2016] writing to lpe: 00000000: 01 01 01 01 00 00 14 00 ff ff ff ff 72 00 0c 00  ............r...
+[Thu Mar 17 11:51:10 2016] writing to lpe: 00000010: ff 02 ff ff 00 00 01 00 ff 8d ff ff              ............
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: widget = media0_out mix 0
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: val = 0x40000
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: reg: 0x40000
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: input id: 0x90ff, nb_inputs: 1
+[Thu Mar 17 11:51:10 2016] writing to lpe: 00000000: 01 01 01 03 00 00 14 00 ff ff ff ff 72 00 0c 00  ............r...
+[Thu Mar 17 11:51:10 2016] writing to lpe: 00000010: ff 12 ff ff 00 00 01 00 ff 90 ff ff              ............
+[Thu Mar 17 11:51:10 2016] sst-mfld-platform sst-mfld-platform: Enter: widget=codec_out0
