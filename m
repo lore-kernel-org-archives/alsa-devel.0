@@ -1,60 +1,49 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [RFC PATCH 1/4] media: Add Media Device Allocator API
-Date: Mon, 28 Mar 2016 07:45:45 -0600
-Message-ID: <56F93589.4020102@osg.samsung.com>
-References: <cover.1458966594.git.shuahkh@osg.samsung.com>
- <41d017ef76e3206780c018399ec60b63d865f65c.1458966594.git.shuahkh@osg.samsung.com>
- <1458996622.23450.4.camel@perches.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <1458996622.23450.4.camel@perches.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Joe Perches <joe@perches.com>, laurent.pinchart@ideasonboard.com, mchehab@osg.samsung.com, perex@perex.cz, tiwai@suse.com, hans.verkuil@cisco.com, chehabrafael@gmail.com, javier@osg.samsung.com, jh1009.sung@samsung.com
-Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, Shuah Khan <shuahkh@osg.samsung.com>
+From: Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Subject: [PATCH 0/3 v2] Add I2S/ADV7511 audio support for ARC AXS10x boards
+Date: Mon, 28 Mar 2016 15:36:08 +0100
+Message-ID: <cover.1459174494.git.joabreu@synopsys.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: airlied-cv59FeDIM0c@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, laurent.pinchart+renesas-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org, wsa+renesas-jBu1N2QxHDJrcw3mvpCnnVaTQe2KTcn/@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, ville.syrjala-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, nariman-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, alexander.deucher-5C7GfCeVMHo@public.gmane.org, Maruthi.Bayyavarapu-5C7GfCeVMHo@public.gmane.org, buyitian-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, tixy-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, yitian.bu-sf4bEIuTEZ8/jFmSBShxMA@public.gmane.org, Alexey.Brodkin-HKixBCOQz3hWk0Htik3J/w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, Vineet.Gupta1-HKixBCOQz3hWk0Htik3J/w@public.gmane.org, CARLOS.PALMINHA-HKixBCOQz3hWk0Htik3J/w@public.gmane.org, Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/26/2016 06:50 AM, Joe Perches wrote:
-> On Fri, 2016-03-25 at 22:38 -0600, Shuah Khan wrote:
->> Add Media Device Allocator API to manage Media Device life time problems.
->> There are known problems with media device life time management. When media
->> device is released while an media ioctl is in progress, ioctls fail with
->> use-after-free errors and kernel hangs in some cases.
-> 
-> Seems reasonable, thanks.
-> 
-> trivial:
-> 
->> diff --git a/drivers/media/media-dev-allocator.c b/drivers/media/media-dev-allocator.c
-> []
->> +static struct media_device *__media_device_get(struct device *dev,
->> +					       bool alloc, bool kref)
->> +{
-> []
->> +	pr_info("%s: mdev=%p\n", __func__, &mdi->mdev);
-> 
-> All of the pr_info uses here seem like debugging
-> and should likely be pr_debug instead.
+ARC AXS10x platforms consist of a mainboard with several peripherals.
+One of those peripherals is an HDMI output port controlled by the ADV7511
+transmitter.
 
-Correct. These are for debug and I plan to either remove them completely
-or make them pr_debug().
+This patch set adds audio for the ADV7511 transmitter and I2S audio for
+the AXS10x platform.
 
->> +struct media_device *media_device_find(struct device *dev)
->> +{
->> +	pr_info("%s\n", __func__);
-> 
-> These seem like function tracing and maybe could/should
-> use ftrace instead.
-> +/* don't allocate - increment kref if one is found */
->> +struct media_device *media_device_get_ref(struct device *dev)
->> +{
->> +	pr_info("%s\n", __func__);
-> 
+Changes v1 -> v2:
+* DT bindings moved to separate patch (as suggested by Alexey Brodkin)
+* Removed defconfigs entries (as suggested by Alexey Brodkin)
 
-Same here. This is also debug. However, you gave me an idea, this could be a
-tracevent, if I find it useful for event tracing. It might be useful to be able
-to track kref holds on this.
+Jose Abreu (3):
+  drm/i2c/adv7511: Add audio support
+  ASoC: dwc: Add I2S HDMI audio support
+  arc: axs10x: Add support for Designware I2S on DT
 
-thanks,
--- Shuah
+ arch/arc/boot/dts/axs10x_mb.dtsi    |   49 +-
+ drivers/gpu/drm/i2c/Kconfig         |   11 +
+ drivers/gpu/drm/i2c/Makefile        |    2 +
+ drivers/gpu/drm/i2c/adv7511.c       | 1024 -----------------------------------
+ drivers/gpu/drm/i2c/adv7511.h       |   41 ++
+ drivers/gpu/drm/i2c/adv7511_audio.c |  310 +++++++++++
+ drivers/gpu/drm/i2c/adv7511_core.c  | 1005 ++++++++++++++++++++++++++++++++++
+ include/sound/soc-dai.h             |    1 +
+ sound/soc/dwc/Kconfig               |    1 +
+ sound/soc/dwc/designware_i2s.c      |  385 ++++++++++++-
+ 10 files changed, 1788 insertions(+), 1041 deletions(-)
+ delete mode 100644 drivers/gpu/drm/i2c/adv7511.c
+ create mode 100644 drivers/gpu/drm/i2c/adv7511_audio.c
+ create mode 100644 drivers/gpu/drm/i2c/adv7511_core.c
+
+-- 
+1.9.1
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
