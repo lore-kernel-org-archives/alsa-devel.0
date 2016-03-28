@@ -1,18 +1,19 @@
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Subject: Re: [PATCH 0/7] topology: Add support for vendor tuples
-Date: Mon, 28 Mar 2016 16:56:08 +0800
-Message-ID: <56F8F1A8.4010604@linux.intel.com>
-References: <cover.1458788076.git.mengdong.lin@linux.intel.com>
- <20160324112051.GW2566@sirena.org.uk> <56F4CF07.6080001@linux.intel.com>
- <56F8E210.5000108@linux.intel.com> <s5hshzb6nlp.wl-tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm8962: Adjust clk definitions so
+ that simple card can work
+Date: Mon, 28 Mar 2016 10:32:56 +0100
+Message-ID: <20160328093256.GA31814@localhost.localdomain>
+References: <1459114573-2006-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id B00F8260511
- for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2016 10:54:00 +0200 (CEST)
-In-Reply-To: <s5hshzb6nlp.wl-tiwai@suse.de>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 26F2126517A
+ for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2016 11:33:13 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1459114573-2006-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,51 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, mengdong.lin@intel.com, Mark Brown <broonie@kernel.org>, rakesh.a.ughreja@intel.com, liam.r.girdwood@intel.com, hardik.t.shah@intel.com, subhransu.s.prusty@intel.com
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, Mar 27, 2016 at 06:36:13PM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@nxp.com>
+> 
+> When trying to use simple card with wm8962 the following probe
+> error happens:
+> 
+> wm8962 0-001a: simple-card: set_sysclk error
+> asoc-simple-card sound: ASoC: failed to init 202c000.ssi-wm8962: -22
+> asoc-simple-card sound: ASoC: failed to instantiate card -22
+> asoc-simple-card: probe of sound failed with error -22
+> 
+> In simple-card.c the snd_soc_dai_set_sysclk() function is called with
+> clk_id as 0, which is an invalid clock for wm8962.
+> 
+> Adjust the clocks source definitions in wm8962.h so that the
+> simple card driver can work successfully.
+> 
+> Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+> ---
 
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
-On 03/28/2016 03:57 PM, Takashi Iwai wrote:
-> On Mon, 28 Mar 2016 09:49:36 +0200,
-> Mengdong Lin wrote:
->>
->> Hi Takashi and Mark,
->>
->> Despite the ABI update, could you help to review if this is a doable
->> solution to define vendor-specific data by tuples?
->
-> I'll check it tomorrow, as now it's still in Easter holidays.
-
-Thank you very much!
-
->
->> Previously there was a patch for Skylake topology conf file, but this
->> file try to import vendor specific config data as a binary blob from
->> other files. The patch was refused for on license of the binary blob and
->> we were suggested to expose the layout of the data. This patch series is
->> to meet this request, providing a way for vendors to define their
->> structured private data.
->>
->> Here is the link of the refused patch:
->> [alsa-devel] [PATCH] conf: topology: Add topolgy for skylake i2s
->> configuration
->>
->> http://mailman.alsa-project.org/pipermail/alsa-devel/2016-February/104099.html
->
-> The changes are good if they are mandatory.  But too late for 4.6, in
-> anyway.  And, the missing piece is the "grand plan".  When this
-> API/ABI is supposed to be stabilized and released?
->
-
-We're checking topology feature requests for platforms later than 
-Skylake. We expect to finish the feature collection this or next week. 
-Then we can give a more accurate schedule.
-
-Now the unstable ABI is mainly for ASoC DAI and DAI links. Platforms 
-later than Skylake need them. We're checking the gap between existing 
-ABI and new requests.
-
-Thanks
-Mengdong
+Thanks,
+Charles
