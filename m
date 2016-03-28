@@ -1,96 +1,51 @@
-From: Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
-Subject: [PATCH 2/4] ARC: axs10x: Update defconfigs so that audio is enabled
-Date: Mon, 28 Mar 2016 10:41:50 +0100
-Message-ID: <88015401488eed4f253f49d5831be13e0007339f.1458839710.git.joabreu@synopsys.com>
-References: <cover.1458839710.git.joabreu@synopsys.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <cover.1458839710.git.joabreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
-In-Reply-To: <cover.1458839710.git.joabreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
-References: <cover.1458839710.git.joabreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: airlied-cv59FeDIM0c@public.gmane.org, lgirdwoord-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Vineet.Gupta1-HKixBCOQz3hWk0Htik3J/w@public.gmane.org, Alexey.Brodkin-HKixBCOQz3hWk0Htik3J/w@public.gmane.org, mjonker-HKixBCOQz3hWk0Htik3J/w@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm8962: Correct typo,
+	when setting DSPCLK rate
+Date: Mon, 28 Mar 2016 10:47:34 +0100
+Message-ID: <1459158454-5635-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id B727A26590E
+ for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2016 11:47:32 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: fabio.estevam@nxp.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, zidan.wang@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-The defconfigs for the AXS boards were updated so that
-ALSA SoC is enabled and also the audio for the ADV7511
-HDMI transmitter.
+The variable dspclk holds the rate of the DSPCLK, but the variable
+sysclk holds an identifier for the clock. Currently if read a
+non-sensical value from the DSPCLK_DIV register we assign sysclk to
+dspclk, clearly this was intended to be sysclk_rate.
 
-Signed-off-by: Jose Abreu <joabreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- arch/arc/configs/axs101_defconfig     | 3 +++
- arch/arc/configs/axs103_defconfig     | 5 +++++
- arch/arc/configs/axs103_smp_defconfig | 5 +++++
- 3 files changed, 13 insertions(+)
+ sound/soc/codecs/wm8962.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arc/configs/axs101_defconfig b/arch/arc/configs/axs101_defconfig
-index e359099..7c22163 100644
---- a/arch/arc/configs/axs101_defconfig
-+++ b/arch/arc/configs/axs101_defconfig
-@@ -113,3 +113,6 @@ CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=10
- # CONFIG_SCHED_DEBUG is not set
- # CONFIG_DEBUG_PREEMPT is not set
- # CONFIG_FTRACE is not set
-+CONFIG_SOUND=y
-+CONFIG_SND=y
-+CONFIG_SND_SOC=y
-diff --git a/arch/arc/configs/axs103_defconfig b/arch/arc/configs/axs103_defconfig
-index 323486d..d63aef0 100644
---- a/arch/arc/configs/axs103_defconfig
-+++ b/arch/arc/configs/axs103_defconfig
-@@ -76,12 +76,14 @@ CONFIG_SERIAL_OF_PLATFORM=y
- CONFIG_I2C=y
- CONFIG_I2C_CHARDEV=y
- CONFIG_I2C_DESIGNWARE_PLATFORM=y
-+CONFIG_DRM=y
- # CONFIG_HWMON is not set
- CONFIG_FB=y
- # CONFIG_VGA_CONSOLE is not set
- CONFIG_FRAMEBUFFER_CONSOLE=y
- CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY=y
- CONFIG_LOGO=y
-+CONFIG_DRM_I2C_ADV7511=y
- # CONFIG_LOGO_LINUX_MONO is not set
- # CONFIG_LOGO_LINUX_VGA16 is not set
- # CONFIG_LOGO_LINUX_CLUT224 is not set
-@@ -114,3 +116,6 @@ CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=10
- # CONFIG_SCHED_DEBUG is not set
- # CONFIG_DEBUG_PREEMPT is not set
- # CONFIG_FTRACE is not set
-+CONFIG_SOUND=y
-+CONFIG_SND=y
-+CONFIG_SND_SOC=y
-diff --git a/arch/arc/configs/axs103_smp_defconfig b/arch/arc/configs/axs103_smp_defconfig
-index 66191cd..f4b51ce 100644
---- a/arch/arc/configs/axs103_smp_defconfig
-+++ b/arch/arc/configs/axs103_smp_defconfig
-@@ -77,12 +77,14 @@ CONFIG_SERIAL_OF_PLATFORM=y
- CONFIG_I2C=y
- CONFIG_I2C_CHARDEV=y
- CONFIG_I2C_DESIGNWARE_PLATFORM=y
-+CONFIG_DRM=y
- # CONFIG_HWMON is not set
- CONFIG_FB=y
- # CONFIG_VGA_CONSOLE is not set
- CONFIG_FRAMEBUFFER_CONSOLE=y
- CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY=y
- CONFIG_LOGO=y
-+CONFIG_DRM_I2C_ADV7511=y
- # CONFIG_LOGO_LINUX_MONO is not set
- # CONFIG_LOGO_LINUX_VGA16 is not set
- # CONFIG_LOGO_LINUX_CLUT224 is not set
-@@ -115,3 +117,6 @@ CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=10
- # CONFIG_SCHED_DEBUG is not set
- # CONFIG_DEBUG_PREEMPT is not set
- # CONFIG_FTRACE is not set
-+CONFIG_SOUND=y
-+CONFIG_SND=y
-+CONFIG_SND_SOC=y
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 8822360..720a14e 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -2471,7 +2471,7 @@ static void wm8962_configure_bclk(struct snd_soc_codec *codec)
+ 		break;
+ 	default:
+ 		dev_warn(codec->dev, "Unknown DSPCLK divisor read back\n");
+-		dspclk = wm8962->sysclk;
++		dspclk = wm8962->sysclk_rate;
+ 	}
+ 
+ 	dev_dbg(codec->dev, "DSPCLK is %dHz, BCLK %d\n", dspclk, wm8962->bclk);
 -- 
-1.9.1
-
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+2.1.4
