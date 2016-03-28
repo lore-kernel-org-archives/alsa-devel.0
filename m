@@ -1,14 +1,15 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v2] ALSA: dice: fix memory leak when unplugging
-Date: Mon, 28 Mar 2016 08:29:32 +0900
-Message-ID: <1459121372-7441-1-git-send-email-o-takashi@sakamocchi.jp>
+From: jeeja.kp@intel.com
+Subject: [PATCH 1/2] ASoC: Intel: Skylake: Fix for unloading
+	module only when it is loaded
+Date: Mon, 28 Mar 2016 22:11:30 +0530
+Message-ID: <1459183291-16395-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id B9B5B2619D7
- for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2016 01:29:38 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B16E2619D7
+ for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2016 05:13:07 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,49 +19,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tiwai@suse.de, vinod.koul@intel.com, patches.audio@intel.com
+Cc: Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-When sound card is going to be released, dice private data is
-also released. Then all of data should be released. However,
-stream data is not released. This causes memory leak when
-unplugging dice unit.
+From: Jeeja KP <jeeja.kp@intel.com>
 
-This commit fixes the bug.
+Module needs to be unloaded only when it is loaded successfully.
+To fix this, first correct the module state sequence and set module
+state to LOADED if module is loaded successfully.
+When unloading the module check if module state is not in UNINIT,
+then unload it.
 
-Fixes: 4bdc495c87b3('ALSA: dice: handle several PCM substreams when any isochronous streams are available')
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/firewire/dice/dice-stream.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+ sound/soc/intel/skylake/skl-topology.c | 5 ++++-
+ sound/soc/intel/skylake/skl-topology.h | 8 ++++----
+ 2 files changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
-index 845d5e5..ec4db3a 100644
---- a/sound/firewire/dice/dice-stream.c
-+++ b/sound/firewire/dice/dice-stream.c
-@@ -446,18 +446,12 @@ end:
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 545b4e7..3f393cb 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -490,6 +490,8 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
+ 				mconfig->id.module_id, mconfig->guid);
+ 			if (ret < 0)
+ 				return ret;
++
++			mconfig->m_state = SKL_MODULE_LOADED;
+ 		}
  
- void snd_dice_stream_destroy_duplex(struct snd_dice *dice)
- {
--	struct reg_params tx_params, rx_params;
--
--	snd_dice_transaction_clear_enable(dice);
-+	unsigned int i;
+ 		/* update blob if blob is null for be with default value */
+@@ -524,7 +526,8 @@ static int skl_tplg_unload_pipe_modules(struct skl_sst *ctx,
+ 	list_for_each_entry(w_module, &pipe->w_list, node) {
+ 		mconfig  = w_module->w->priv;
  
--	if (get_register_params(dice, &tx_params, &rx_params) == 0) {
--		stop_streams(dice, AMDTP_IN_STREAM, &tx_params);
--		stop_streams(dice, AMDTP_OUT_STREAM, &rx_params);
-+	for (i = 0; i < MAX_STREAMS; i++) {
-+		destroy_stream(dice, AMDTP_IN_STREAM, i);
-+		destroy_stream(dice, AMDTP_OUT_STREAM, i);
+-		if (mconfig->is_loadable && ctx->dsp->fw_ops.unload_mod)
++		if (mconfig->is_loadable && ctx->dsp->fw_ops.unload_mod &&
++			mconfig->m_state > SKL_MODULE_UNINIT)
+ 			return ctx->dsp->fw_ops.unload_mod(ctx->dsp,
+ 						mconfig->id.module_id);
  	}
--
--	release_resources(dice);
--
--	dice->substreams_counter = 0;
- }
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index de3c401..d2d9230 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -274,10 +274,10 @@ struct skl_pipe {
  
- void snd_dice_stream_update_duplex(struct snd_dice *dice)
+ enum skl_module_state {
+ 	SKL_MODULE_UNINIT = 0,
+-	SKL_MODULE_INIT_DONE = 1,
+-	SKL_MODULE_LOADED = 2,
+-	SKL_MODULE_UNLOADED = 3,
+-	SKL_MODULE_BIND_DONE = 4
++	SKL_MODULE_LOADED = 1,
++	SKL_MODULE_INIT_DONE = 2,
++	SKL_MODULE_BIND_DONE = 3,
++	SKL_MODULE_UNLOADED = 4,
+ };
+ 
+ struct skl_module_cfg {
 -- 
-2.7.3
+2.5.0
