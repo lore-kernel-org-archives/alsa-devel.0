@@ -1,149 +1,256 @@
-From: Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
-Subject: Re: [PATCH 2/3 v2] ASoC: dwc: Add I2S HDMI audio support
-Date: Mon, 28 Mar 2016 17:07:28 +0100
-Message-ID: <56F956C0.80705@synopsys.com>
-References: <cover.1459174494.git.joabreu@synopsys.com>
- <538be366488bf0d7633d702f2d0bab16707b7a47.1459174494.git.joabreu@synopsys.com>
- <1459179345.4785.127.camel@synopsys.com>
+From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+Subject: Re: [RFC PATCH 3/4] media: Add refcount to keep track of media
+ device registrations
+Date: Mon, 28 Mar 2016 15:28:41 -0300
+Message-ID: <20160328152841.64b99e42@recife.lan>
+References: <cover.1458966594.git.shuahkh@osg.samsung.com>
+ <dd4a411224763aa8a8e83ba43e2fbf668c2ba15f.1458966594.git.shuahkh@osg.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1459179345.4785.127.camel-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Alexey Brodkin <Alexey.Brodkin-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
-Cc: "lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org" <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, "laurent.pinchart+renesas-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org" <laurent.pinchart+renesas-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "pawel.moll-5wv7dgnIgG8@public.gmane.org" <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Carlos Palminha <CARLOS.PALMINHA-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, "nariman-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org" <nariman-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "ville.syrjala-VuQAYsv1563Yd54FQh9/CA@public.gmane.org" <ville.syrjala-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, "alexander.deucher-5C7GfCeVMHo@public.gmane.org" <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, "tixy-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org" <tixy-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, "yitian.bu-sf4bEIuTEZ8/jFmSBShxMA@public.gmane.org" <yitian.bu-sf4bEIuTEZ8/jFmSBShxMA@public.gmane.org>, "linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org" <galak@codea>
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <dd4a411224763aa8a8e83ba43e2fbf668c2ba15f.1458966594.git.shuahkh@osg.samsung.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Shuah Khan <shuahkh@osg.samsung.com>
+Cc: laurent.pinchart@ideasonboard.com, perex@perex.cz, tiwai@suse.com, hans.verkuil@cisco.com, chehabrafael@gmail.com, javier@osg.samsung.com, jh1009.sung@samsung.com, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Alexey,
+Em Fri, 25 Mar 2016 22:38:44 -0600
+Shuah Khan <shuahkh@osg.samsung.com> escreveu:
 
-On 28-03-2016 16:35, Alexey Brodkin wrote:
-> Hi Jose,
->
-> On Mon, 2016-03-28 at 15:36 +0100, Jose Abreu wrote:
->> HDMI audio support was added to the AXS board using an
->> I2S cpu driver and a custom platform driver.
->>
->> The platform driver supports two channels @ 16 bits with
->> rates 32k, 44.1k and 48k. ALSA Simple audio card is used to
->> glue the cpu, platform and codec driver (adv7511).
->>
->> Signed-off-by: Jose Abreu <joabreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
->> ---
->>
->> No changes v1 -> v2.
->>
->>  sound/soc/dwc/Kconfig          |   1 +
->>  sound/soc/dwc/designware_i2s.c | 385 +++++++++++++++++++++++++++++++++++++++--
->>  2 files changed, 373 insertions(+), 13 deletions(-)
->>
->> diff --git a/sound/soc/dwc/Kconfig b/sound/soc/dwc/Kconfig
->> index d50e085..bc3fae7 100644
->> --- a/sound/soc/dwc/Kconfig
->> +++ b/sound/soc/dwc/Kconfig
->> @@ -2,6 +2,7 @@ config SND_DESIGNWARE_I2S
->>  	tristate "Synopsys I2S Device Driver"
->>  	depends on CLKDEV_LOOKUP
->>  	select SND_SOC_GENERIC_DMAENGINE_PCM
->> +	select SND_SIMPLE_CARD
->>  	help
->>  	 Say Y or M if you want to add support for I2S driver for
->>  	 Synopsys desigwnware I2S device. The device supports upto
->> diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
->> index bff258d..0f2f588 100644
->> --- a/sound/soc/dwc/designware_i2s.c
->> +++ b/sound/soc/dwc/designware_i2s.c
->> @@ -84,11 +84,37 @@
->>  #define MAX_CHANNEL_NUM		8
->>  #define MIN_CHANNEL_NUM		2
->>  
->> +/* FPGA Version Info */
->> +#define FPGA_VER_INFO	0xE0011230
->> +#define FPGA_VER_27M	0x000FBED9
->> +
->> +/* PLL registers addresses */
->> +#define PLL_IDIV_ADDR	0xE00100A0
->> +#define PLL_FBDIV_ADDR	0xE00100A4
->> +#define PLL_ODIV0_ADDR	0xE00100A8
->> +#define PLL_ODIV1_ADDR	0xE00100AC
-> Well I think all is not acceptable.
-> See all these FPGA_VER_xxx as well as PLL_xxx
-> are strictly ARC SDP specific things and have nothing to do with generic driver.
->
-> That's so pity we don't have a driver for all clocks/PLLs on ARC SDP yet.
-> So as of now I may only propose to use hard-coded fixed clocks as I did with
-> ARC PGU, see "pguclk" here:
-> http://lists.infradead.org/pipermail/linux-snps-arc/2016-March/000790.html
->
-> Again I'll try to implement missing clock driver sometime soon because
-> more and more stuff requires it but for now let's use a work-around.
-Yes, this is a workaround that we are using so that the driver works in ARC SDP
-platforms. The driver still has the functionality to operate using a clock
-driver (it must be declared in device tree) but if the clock handle is not
-declared the driver will assume that must use the internal PLL config options.
-This is currently the only option to make it work in ARC SDP.
+> Add refcount to keep track of media device registrations to avoid release
+> of media device when one of the drivers does unregister when media device
+> belongs to more than one driver. Also add a new interfaces to unregister
+> a media device allocated using Media Device Allocator and a hold register
+> refcount. Change media_open() to get media device reference and put the
+> reference in media_release().
+> 
+> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+> ---
+>  drivers/media/media-device.c  | 53 +++++++++++++++++++++++++++++++++++++++++++
+>  drivers/media/media-devnode.c |  3 +++
+>  include/media/media-device.h  | 32 ++++++++++++++++++++++++++
+>  3 files changed, 88 insertions(+)
+> 
+> diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
+> index 93aff4e..3359235 100644
+> --- a/drivers/media/media-device.c
+> +++ b/drivers/media/media-device.c
+> @@ -36,6 +36,7 @@
+>  #include <media/media-device.h>
+>  #include <media/media-devnode.h>
+>  #include <media/media-entity.h>
+> +#include <media/media-dev-allocator.h>
+>  
+>  #ifdef CONFIG_MEDIA_CONTROLLER
+>  
+> @@ -702,6 +703,7 @@ void media_device_init(struct media_device *mdev)
+>  	INIT_LIST_HEAD(&mdev->entity_notify);
+>  	mutex_init(&mdev->graph_mutex);
+>  	ida_init(&mdev->entity_internal_idx);
+> +	kref_init(&mdev->refcount);
+>  
+>  	dev_dbg(mdev->dev, "Media device initialized\n");
+>  }
+> @@ -730,6 +732,13 @@ printk("%s: mdev %p\n", __func__, mdev);
+>  	/* Check if mdev was ever registered at all */
+>  	mutex_lock(&mdev->graph_mutex);
+>  
+> +	/* if media device is already registered, bump the register refcount */
+> +	if (media_devnode_is_registered(&mdev->devnode)) {
+> +		kref_get(&mdev->refcount);
+> +		mutex_unlock(&mdev->graph_mutex);
+> +		return 0;
+> +	}
+> +
+>  	/* Register the device node. */
+>  	mdev->devnode.fops = &media_device_fops;
+>  	mdev->devnode.parent = mdev->dev;
+> @@ -756,6 +765,22 @@ err:
+>  }
+>  EXPORT_SYMBOL_GPL(__media_device_register);
+>  
+> +void media_device_register_ref(struct media_device *mdev)
+> +{
+> +	if (!mdev)
+> +		return;
+> +
+> +	pr_info("%s: mdev %p\n", __func__, mdev);
+> +	mutex_lock(&mdev->graph_mutex);
+> +
+> +	/* Check if mdev is registered - bump registered refcount */
+> +	if (media_devnode_is_registered(&mdev->devnode))
+> +		kref_get(&mdev->refcount);
+> +
+> +	mutex_unlock(&mdev->graph_mutex);
+> +}
+> +EXPORT_SYMBOL_GPL(media_device_register_ref);
+> +
+>  int __must_check media_device_register_entity_notify(struct media_device *mdev,
+>  					struct media_entity_notify *nptr)
+>  {
+> @@ -829,6 +854,34 @@ printk("%s: mdev=%p\n", __func__, mdev);
+>  }
+>  EXPORT_SYMBOL_GPL(media_device_unregister);
+>  
+> +static void __media_device_unregister_kref(struct kref *kref)
+> +{
+> +	struct media_device *mdev;
+> +
+> +	mdev = container_of(kref, struct media_device, refcount);
+> +	__media_device_unregister(mdev);
+> +}
+> +
+> +void media_device_unregister_put(struct media_device *mdev)
+> +{
+> +	int ret;
+> +
+> +	if (mdev == NULL)
+> +		return;
+> +
+> +	pr_info("%s: mdev=%p\n", __func__, mdev);
+> +	ret = kref_put_mutex(&mdev->refcount, __media_device_unregister_kref,
+> +			     &mdev->graph_mutex);
+> +	if (ret) {
+> +		/* __media_device_unregister() ran */
+> +		__media_device_cleanup(mdev);
+> +		mutex_unlock(&mdev->graph_mutex);
+> +		mutex_destroy(&mdev->graph_mutex);
+> +		media_device_set_to_delete_state(mdev->dev);
 
-I will send a v3 soon without this workaround and when the missing clock drivers
-are implemented I will re-test this.
->> +struct dw_i2s_pll {
->> +	unsigned int rate;
->> +	unsigned int data_width;
->> +	unsigned int idiv;
->> +	unsigned int fbdiv;
->> +	unsigned int odiv0;
->> +	unsigned int odiv1;
->> +};
->> +
->> +static const struct dw_i2s_pll dw_i2s_pll_cfg_27m[] = {
->> +	/* 27Mhz */
->> +	{ 32000, 16, 0x104, 0x451, 0x10E38, 0x2000 },
->> +	{ 44100, 16, 0x104, 0x596, 0x10D35, 0x2000 },
->> +	{ 48000, 16, 0x208, 0xA28, 0x10B2C, 0x2000 },
->> +	{ 0, 0, 0, 0, 0, 0 },
->>  };
->>  
->> +static const struct dw_i2s_pll dw_i2s_pll_cfg_28m[] = {
->> +	/* 28.224Mhz */
->> +	{ 32000, 16, 0x82, 0x105, 0x107DF, 0x2000 },
->> +	{ 44100, 16, 0x28A, 0x1, 0x10001, 0x2000 },
->> +	{ 48000, 16, 0xA28, 0x187, 0x10042, 0x2000 },
->> +	{ 0, 0, 0, 0, 0, 0 },
->> +};
-> These 2 hunks as well should go in ARC SDP clocks.
->
->> +static int i2s_pll_cfg(struct i2s_clk_config_data *config)
->> +{
->> +	const struct dw_i2s_pll *pll_cfg;
->> +	u32 rate = config->sample_rate;
->> +	u32 data_width = config->data_width;
->> +	int i;
->> +
->> +	if (readl((void *)FPGA_VER_INFO) <= FPGA_VER_27M)
->> +		pll_cfg = dw_i2s_pll_cfg_27m;
->> +	else
->> +		pll_cfg = dw_i2s_pll_cfg_28m;
->> +
->> +	for (i = 0; pll_cfg[i].rate != 0; i++) {
->> +		if ((pll_cfg[i].rate == rate) &&
->> +				(pll_cfg[i].data_width == data_width)) {
->> +			writel(pll_cfg[i].idiv, (void *)PLL_IDIV_ADDR);
->> +			writel(pll_cfg[i].fbdiv, (void *)PLL_FBDIV_ADDR);
->> +			writel(pll_cfg[i].odiv0, (void *)PLL_ODIV0_ADDR);
->> +			writel(pll_cfg[i].odiv1, (void *)PLL_ODIV1_ADDR);
->> +			return 0;
->> +		}
->> +	}
->> +
->> +	return -EINVAL;
->> +}
-> Ditto.
->
-> -Alexey
+Where you're freeing the media_dev (or its container struct)?
 
-Best regards,
-Jose Miguel Abreu
+You need to be sure that it will be freed only here.
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> +	}
+> +}
+> +EXPORT_SYMBOL_GPL(media_device_unregister_put);
+> +
+>  static void media_device_release_devres(struct device *dev, void *res)
+>  {
+>  }
+> diff --git a/drivers/media/media-devnode.c b/drivers/media/media-devnode.c
+> index 29409f4..d1d1263 100644
+> --- a/drivers/media/media-devnode.c
+> +++ b/drivers/media/media-devnode.c
+> @@ -44,6 +44,7 @@
+>  #include <linux/uaccess.h>
+>  
+>  #include <media/media-devnode.h>
+> +#include <media/media-dev-allocator.h>
+>  
+>  #define MEDIA_NUM_DEVICES	256
+>  #define MEDIA_NAME		"media"
+> @@ -186,6 +187,7 @@ static int media_open(struct inode *inode, struct file *filp)
+>  		}
+>  	}
+>  
+> +	media_device_get_ref(mdev->parent);
+>  	return 0;
+>  }
+>  
+> @@ -201,6 +203,7 @@ static int media_release(struct inode *inode, struct file *filp)
+>  	   return value is ignored. */
+>  	put_device(&mdev->dev);
+>  	filp->private_data = NULL;
+> +	media_device_put(mdev->parent);
+>  	return 0;
+>  }
+>  
+> diff --git a/include/media/media-device.h b/include/media/media-device.h
+> index e59772e..64114ae 100644
+> --- a/include/media/media-device.h
+> +++ b/include/media/media-device.h
+> @@ -284,6 +284,8 @@ struct media_entity_notify {
+>   * struct media_device - Media device
+>   * @dev:	Parent device
+>   * @devnode:	Media device node
+> + * @refcount:	Media device register reference count. Used when more
+> + *		than one driver owns the device.
+>   * @driver_name: Optional device driver name. If not set, calls to
+>   *		%MEDIA_IOC_DEVICE_INFO will return dev->driver->name.
+>   *		This is needed for USB drivers for example, as otherwise
+> @@ -348,6 +350,7 @@ struct media_device {
+>  	/* dev->driver_data points to this struct. */
+>  	struct device *dev;
+>  	struct media_devnode devnode;
+> +	struct kref refcount;
+
+You can't simply embed a kref at media_device. The problem is that
+several conditions should be met for this approach to work:
+
+1) The structs that have struct media_device should not have a kref
+their own (I guess that's the current case, but it should be documented
+somewhere);
+
+2) the struct that embeds it can only be destroyed when kref refcount
+reaches zero. That actually means that the core should either allocate
+the struct itself or that a release callback for those structs should
+do the kfree(). It means that all drivers should be changed for it to
+happen.
+
+Also, if you're adding a kref here, you likely should not have a kref
+at struct media_device_instance(), as there's no need for two kref
+destroy logic.
+
+>  
+>  	char model[32];
+>  	char driver_name[32];
+> @@ -501,6 +504,17 @@ int __must_check __media_device_register(struct media_device *mdev,
+>  #define media_device_register(mdev) __media_device_register(mdev, THIS_MODULE)
+>  
+>  /**
+> + * media_device_register_ref() - Increments media device register refcount
+> + *
+> + * @mdev:	pointer to struct &media_device
+> + *
+> + * When more than one driver is associated with the media device, it is
+> + * necessary to refcount the number of registrations to avoid unregister
+> + * when it is still in use.
+> + */
+> +void media_device_register_ref(struct media_device *mdev);
+> +
+> +/**
+>   * media_device_unregister() - Unregisters a media device element
+>   *
+>   * @mdev:	pointer to struct &media_device
+> @@ -512,6 +526,18 @@ int __must_check __media_device_register(struct media_device *mdev,
+>  void media_device_unregister(struct media_device *mdev);
+>  
+>  /**
+> + * media_device_unregister_put() - Unregisters a media device element
+> + *
+> + * @mdev:	pointer to struct &media_device
+> + *
+> + * Should be called to unregister media device allocated with Media Device
+> + * Allocator API media_device_get() interface.
+> + * It is safe to call this function on an unregistered (but initialised)
+> + * media device.
+> + */
+> +void media_device_unregister_put(struct media_device *mdev);
+> +
+> +/**
+>   * media_device_register_entity() - registers a media entity inside a
+>   *	previously registered media device.
+>   *
+> @@ -681,9 +707,15 @@ static inline int media_device_register(struct media_device *mdev)
+>  {
+>  	return 0;
+>  }
+> +static inline void media_device_register_ref(struct media_device *mdev)
+> +{
+> +}
+>  static inline void media_device_unregister(struct media_device *mdev)
+>  {
+>  }
+> +static inline void media_device_unregister_put(struct media_device *mdev)
+> +{
+> +}
+>  static inline int media_device_register_entity(struct media_device *mdev,
+>  						struct media_entity *entity)
+>  {
+
+
+-- 
+Thanks,
+Mauro
