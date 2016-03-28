@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: nau8825: reduce standby power
-	consumption
-Date: Mon, 28 Mar 2016 20:05:44 +0100
-Message-ID: <20160328190544.GD2350@sirena.org.uk>
-References: <1458619025-28306-1-git-send-email-KCHSU0@nuvoton.com>
+Subject: Re: [PATCH v5] ASoC: cs53l30: Add support for Cirrus
+	Logic CS53L30
+Date: Mon, 28 Mar 2016 10:51:50 +0100
+Message-ID: <20160328095150.GB2350@sirena.org.uk>
+References: <1458082066-2859-1-git-send-email-tim.howe@cirrus.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6454652095316614641=="
+Content-Type: multipart/mixed; boundary="===============7051562874515862244=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8094D26066B
- for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2016 09:45:58 +0200 (CEST)
-In-Reply-To: <1458619025-28306-1-git-send-email-KCHSU0@nuvoton.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C8AE265703
+ for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2016 09:46:21 +0200 (CEST)
+In-Reply-To: <1458082066-2859-1-git-send-email-tim.howe@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +21,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
+To: tim.howe@cirrus.com
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, paul.handrigan@cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6454652095316614641==
+--===============7051562874515862244==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="zbGR4y+acU1DwHSi"
+	protocol="application/pgp-signature"; boundary="b5gNqxB1S1yM7hjW"
 Content-Disposition: inline
 
 
---zbGR4y+acU1DwHSi
+--b5gNqxB1S1yM7hjW
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Mar 22, 2016 at 11:57:05AM +0800, John Hsu wrote:
+On Tue, Mar 15, 2016 at 05:47:46PM -0500, tim.howe@cirrus.com wrote:
 
-> @@ -1116,6 +1116,9 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
->  		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
->  			NAU8825_CLK_SRC_MASK, NAU8825_CLK_SRC_MCLK);
->  		regmap_update_bits(regmap, NAU8825_REG_FLL6, NAU8825_DCO_EN, 0);
-> +		/* MCLK not changed by clock tree */
-> +		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
-> +			NAU8825_CLK_MCLK_SRC_MASK, 0);
+> +/* ADC Preamp gain select */
+> +static const char * const cs53l30_preamp_gain_sel_text[] = {
+> +	"0dB", "10dB", "20dB"};
+> +
+> +static const struct soc_enum adc1a_preamp_gain_enum =
+> +	SOC_ENUM_SINGLE(CS53L30_ADC1A_AFE_CTL, 6,
+> +		ARRAY_SIZE(cs53l30_preamp_gain_sel_text),
+> +		cs53l30_preamp_gain_sel_text);
 
-I'm going to apply this since I suspect there are already similar
-assumptions in the code but it does look like the issues Ben raised with
-one of your other patches with confusing sysclk management and overall
-device power might apply here.  We can't rely on people changing the
-clock configuration in lower power modes.
+Why are you writing volume controls as enums?  Please use normal volume
+controls with TLV information.
 
---zbGR4y+acU1DwHSi
+> +/* Set MIC Bias Voltage Control */
+> +static const char * const cs53l30_micbias_text[] = {
+> +	"HiZ", "1.8V", "2.75V"};
+
+Why is this exposed to userspace and not platform data like other bias
+controls?  The voltage to use will normally be determined by the
+hardware design and the enable/disable should be managed via DAPM.
+
+> +	case SND_SOC_DAPM_PRE_PMU:
+> +		regmap_update_bits(priv->regmap, CS53L30_ASP1_CTL,
+> +				   CS53L30_ASP1_3ST, 0);
+> +		break;
+> +	case SND_SOC_DAPM_POST_PMD:
+> +		regmap_update_bits(priv->regmap, CS53L30_ASP1_CTL,
+> +				   CS53L30_ASP1_3ST, 1);
+> +		break;
+
+Could this be a supply widget?
+
+> +	regmap_read(priv->regmap, CS53L30_MCLKCTL, &mclk_ctl);
+> +	mclk_ctl &= ~CS53L30_MCLK_DIV;
+> +	mclk_ctl |= cs53l30_mclkx_coeffs[mclkx_coeff].mclkdiv;
+> +
+> +	regmap_update_bits(priv->regmap, CS53L30_MCLKCTL, CS53L30_MCLK_DIV,
+> +			   mclk_ctl << CS53L30_MCLK_DIV);
+
+You're using regmap_update_bits() but still implementing a manual
+read/modify write cycle.  Just use regmap_update_bits.
+
+> +	regmap_read(priv->regmap, CS53L30_ASPCFG_CTL, &asp_config_ctl);
+> +
+> +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+> +	case SND_SOC_DAIFMT_CBM_CFM:
+> +		asp_config_ctl |= CS53L30_ASP_MS;
+
+> +	priv->asp_config_ctl = asp_config_ctl;
+
+The driver appears to be mixing use of priv->asp_config_ctl and the
+physical value, that seems likely to go wrong somewhere along the line.
+Either the variable is authorative and we should always work from that
+then write it to the device when needed or the device is authorative but
+currently we're mixing both.
+
+> +	regmap_update_bits(priv->regmap, CS53L30_ASPCFG_CTL,
+> +			   CS53L30_ASP_RATE_MASK, priv->asp_config_ctl);
+
+We also write out via update_bits but don't specify all the bits
+sometimes...
+
+--b5gNqxB1S1yM7hjW
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJW+YCHAAoJECTWi3JdVIfQtwgH/37zDwy2RHz7TjPEN8QNCNxl
-LGBLWseie+h6dHN9LPmuR0M18W5hxa3Tfpv+UdqrKCTh8CZ2qPBTYyALI9mICIas
-yjJPjBXCNzxaNTyanc4yuAWaodl4sKycOYfvttL4pnYiwv4pC0Qcbc6iPyyFPgBf
-ex2cb2iojV2GVRcGldYKPRpyoAogmk/R+1qxPTh5n9nwz39sfD36v+vs9kNP27zK
-R8nwhi+lJwFX9+ccL3RA5iSrNuxa1uQzEV8aFmznBy3p8g6+9aW6CwggqpY2kzAO
-V36BaHdcjJ0ggHC/Iar+ogOZen7M4fmGJCbZ39/2OQYt3nEV/k8LOfXOVWiAc3k=
-=Lago
+iQEcBAEBCAAGBQJW+P60AAoJECTWi3JdVIfQ4gQIAIVgvMgTXUESq9tUngo1MzuG
+9rTzjoEOxaUymvyS4yxlQ531C9+NPzS5pq00Wyd/gLKxIDlYw6NHfgmOp1u1AW0/
+gSeXfwUBTKrnX3FCOs2dHmcYMDjcvhBtTcFRDrCR7pgpoXFxgvcTD0nldlSbh0d9
+hdwtTyPpibm4wcten3arK6tfdwSgKqRfLENgcAbJTOIXs08CMLigCFZfzN+CYPDs
+L2jDsjD1izE87dU8SrklOnBUnoaYcPkmWR+ZEuhJeggcHPm8k4/W5hGNYCsHQ2mA
+mZpqUqsedrzU164d+L5OPTpdWBQ5R0M44sfUSwl32bG3wZQNIRIwSbFk0gEp8G4=
+=2PbY
 -----END PGP SIGNATURE-----
 
---zbGR4y+acU1DwHSi--
+--b5gNqxB1S1yM7hjW--
 
---===============6454652095316614641==
+--===============7051562874515862244==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6454652095316614641==--
+--===============7051562874515862244==--
