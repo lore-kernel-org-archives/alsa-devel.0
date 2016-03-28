@@ -1,18 +1,17 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 0/2] ALSA: dice: fix a fatal bug when no
- sound card is registered
-Date: Mon, 28 Mar 2016 16:44:45 +0900
-Message-ID: <56F8E0ED.7090709@sakamocchi.jp>
-References: <1458993959-22637-1-git-send-email-o-takashi@sakamocchi.jp>
- <56F8696B.8000704@sakamocchi.jp> <s5hzitj6olw.wl-tiwai@suse.de>
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Subject: Re: [PATCH 0/7] topology: Add support for vendor tuples
+Date: Mon, 28 Mar 2016 15:49:36 +0800
+Message-ID: <56F8E210.5000108@linux.intel.com>
+References: <cover.1458788076.git.mengdong.lin@linux.intel.com>
+ <20160324112051.GW2566@sirena.org.uk> <56F4CF07.6080001@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E0E3260511
- for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2016 09:44:50 +0200 (CEST)
-In-Reply-To: <s5hzitj6olw.wl-tiwai@suse.de>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id BB48B260694
+ for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2016 09:47:27 +0200 (CEST)
+In-Reply-To: <56F4CF07.6080001@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,36 +21,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
+To: Mark Brown <broonie@kernel.org>, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, mengdong.lin@intel.com, rakesh.a.ughreja@intel.com, liam.r.girdwood@intel.com, hardik.t.shah@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiAyMDE25bm0MDPmnIgyOOaXpSAxNjozNiwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9u
-IE1vbiwgMjggTWFyIDIwMTYgMDE6MTQ6NTEgKzAyMDAsCj4gVGFrYXNoaSBTYWthbW90byB3cm90
-ZToKPj4KPj4gSGksCj4+Cj4+IE9uIE1hciAyNiAyMDE2IDIxOjA1LCBUYWthc2hpIFNha2Ftb3Rv
-IHdyb3RlOgo+Pj4gSGksCj4+Pgo+Pj4gVGhpcyBwYXRjaHNldCBpcyBmb3IgTGludXggNC42LXJj
-Mi4KPj4+Cj4+PiBBTFNBIGRpY2UgZHJpdmVyIGNhdXNlcyBrZXJuZWwgTlVMTCBwb2ludGVyIGRl
-cmVmZXJlbmNlIGluIGEgY2FzZSB0aGF0Cj4+PiBubyBzb3VuZCBjYXJkIGluc3RhbmNlIGlzIHJl
-Z2lzdGVyZWQgYW5kIHVuaXQgaXMgZ29pbmcgdG8gYmUgcmVtb3ZlZC4KPj4+IFRoaXMgaXMgb2Jz
-ZXJ2ZWQgd2hlbiBkaWNlLWJhc2VkIHVuaXRzIGFyZSBjb25uZWN0ZWQgdG8gTGludXggc3lzdGVt
-IGFuZAo+Pj4gZGlzY29ubmVjdGVkIHdpdGhpbiAyIHNlY29uZHMsIHRodXMgaXQncyByYXJlLgo+
-Pj4KPj4+IEFkZGl0aW9uYWxseSwgZXZlbiBpZiB0aGUgYnVnIGlzIGZpeGVkLCB0aGUgZHJpdmVy
-IGR1bXBzIHdhcm5pbmdzIGZvcgo+Pj4gbW9zdCBkaWNlLWJhc2VkIG1vZGVscyB3aGljaCBzdXBw
-b3J0cyBhIHBhaXIgb2YgaXNvY2hyb25vdXMgc3RyZWFtcy4KPj4+IFRoaXMgY2FuIG9jY3VyIHJl
-Z2FyZGxlc3Mgb2YgdGhlIGZvcm1lciBidWcuIFVzZXJzIGNhbiBzZWUgdGhpcyBmb3IKPj4+IHVu
-c3VwcG9ydGVkIGRpY2UtYmFzZWQgbW9kZWxzLgo+Pj4KPj4+IFRoaXMgcGF0Y2hzZXQgZml4ZXMg
-dGhlc2UgYnVncy4KPj4KPj4gSSByZWFsaXplZCB0aGF0IHRoaXMgcGF0Y2hzZXQgaXMgbm90IHBy
-b3BlciB0byBMaW51eCA0LjYtcmMyLiBUaGUgc3RyZWFtCj4+IGRhdGEgaXMgY29uZmlybWVkIHRv
-IGluaXRpYWxpemVkIGluIHVuaXQgcHJvYmUgY2FsbGJhY2ssIGFuZCBzYWZlbHkKPj4gcmVsZWFz
-ZWQgd2hlbiByZWxlYXNpbmcgcHJpdmF0ZSBkYXRhLiBJIHdvcmtlZCBvbiB0aGUgb3RoZXIgYnJh
-bmNoIGFuZAo+PiBoYWQgYSBjb25mdXNpb24uIFNvIHBsZWFzZSBkcm9wIHRoaXMuCj4+Cj4+IEhv
-d2V2ZXIsIGN1cnJlbnQgQUxTQSBkaWNlIGRyaXZlciBoYXMgYSBidWcgbm90IHRvIHJlbGVhc2Ug
-c3RyZWFtIGRhdGEKPj4gd2hlbiByZWxlYXNpbmcgcHJpdmF0ZSBkYXRhLiBUaGlzIGNhdXNlcyBt
-ZW1vcnkgbGVhayBhbmQgc2hvdWxkIGJlIGZpeGVkCj4+IGluIDQuNi1yYzIuIEknbGwgcG9zdCBh
-IHBhdGNoIGZvciB0aGUgYnVnIHNvb24uCj4KPiBTbywgSSBkb24ndCBuZWVkIHRvIHBpY2sgdXAg
-dGhpcyBwYXRjaHNldCBhZnRlciBhcHBseWluZyB5b3VyIGZpeAo+IChbUEFUQ0ggdjJdIEFMU0E6
-IGRpY2U6IGZpeCBtZW1vcnkgbGVhayB3aGVuIHVucGx1Z2dpbmcpPwoKRXhhY3RseS4gU29ycnkg
-dG8gdHJvdWJsZSB5b3UuCgo+IHRoYW5rcywKPgo+IFRha2FzaGkKCgpSZWdhcmRzCgpUYWthc2hp
-IFNha2Ftb3RvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
-Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hi Takashi and Mark,
+
+Despite the ABI update, could you help to review if this is a doable 
+solution to define vendor-specific data by tuples?
+
+Previously there was a patch for Skylake topology conf file, but this 
+file try to import vendor specific config data as a binary blob from 
+other files. The patch was refused for on license of the binary blob and 
+we were suggested to expose the layout of the data. This patch series is 
+to meet this request, providing a way for vendors to define their 
+structured private data.
+
+Here is the link of the refused patch:
+[alsa-devel] [PATCH] conf: topology: Add topolgy for skylake i2s 
+configuration
+
+http://mailman.alsa-project.org/pipermail/alsa-devel/2016-February/104099.html
+
+Thanks
+Mengdong
+
+
+On 03/25/2016 01:39 PM, Mengdong Lin wrote:
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2016-February/104099.html
+> On 03/24/2016 07:20 PM, Mark Brown wrote:
+>> On Thu, Mar 24, 2016 at 11:05:29AM +0800, mengdong.lin@linux.intel.com
+>> wrote:
+>>> From: Mengdong Lin <mengdong.lin@linux.intel.com>
+>>>
+>>> This series addes support for vendor tuples to topology, to avoid
+>>> importing binary data blob from other files.
+>>>
+>>> Backward compatibility of ABI is not impacted. A kernel patch is also
+>>> submitted "ASoC: topology: ABI - Define types for vendor tuples".
+>>
+>> It's now been three kernel releases since the original code was merged
+>> and we've still not seen any effort to make the ABI actually available.
+>> Where are we with that?  I've mentioned it a few times previously but
+>> don't really recall any response.
+>>
+>
+> We've been working on this. I'm sorry we're still not fast enough.
+>
+> This ABI update is introduced by previous failure to upstream the
+> topology configuration file for Skylake, which imports vendor-specific
+> binary data from another file. It was refused because of the license of
+> the binary data is not obvious. So we turn to use vendor tuples, because
+> the vendor tuples can show the layout and meaning of binary data, which
+> can help to check if the data is safe to open source.
+> This ABI change has no impact on backward compatibility.
+>
+> Also, the audio device driver for new platforms are under development
+> now, which uses topology for DAI and DAI links. We're checking if
+> current ABI can meet all requirements for the new platforms. This may
+> still need a few weeks.
+>
+> Thanks
+> Mengdong
