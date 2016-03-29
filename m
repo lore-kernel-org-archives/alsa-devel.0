@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8962: Disable clock if
-	wm8962_runtime_resume() fails" to the asoc tree
-Date: Tue, 29 Mar 2016 10:08:13 -0700
-Message-ID: <E1akx7l-0001Hv-8O@finisterre>
-References: <1459164679-17961-1-git-send-email-festevam@gmail.com>
+Subject: Applied "ASoC: wm8962: Adjust clk definitions so that
+	simple card can work" to the asoc tree
+Date: Tue, 29 Mar 2016 10:08:11 -0700
+Message-ID: <E1akx7j-0001GZ-Ro@finisterre>
+References: <1459114573-2006-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 948092668C5
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E5882668C6
  for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2016 19:08:23 +0200 (CEST)
-In-Reply-To: <1459164679-17961-1-git-send-email-festevam@gmail.com>
+In-Reply-To: <1459114573-2006-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8962: Disable clock if wm8962_runtime_resume() fails
+   ASoC: wm8962: Adjust clk definitions so that simple card can work
 
 has been applied to the asoc tree at
 
@@ -53,44 +53,49 @@ to this mail.
 Thanks,
 Mark
 
->From 65147846796bd443972d9055b3b4c1339e15d53a Mon Sep 17 00:00:00 2001
+>From 937e92dc50231bb41294262abf56d2bdddc4d38c Mon Sep 17 00:00:00 2001
 From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Mon, 28 Mar 2016 08:31:18 -0300
-Subject: [PATCH] ASoC: wm8962: Disable clock if wm8962_runtime_resume() fails
+Date: Sun, 27 Mar 2016 18:36:13 -0300
+Subject: [PATCH] ASoC: wm8962: Adjust clk definitions so that simple card can
+ work
 
-When regulator_bulk_enable() fails inside wm8962_runtime_resume(),
-we should disable the previously enabled clock.
+When trying to use simple card with wm8962 the following probe
+error happens:
+
+wm8962 0-001a: simple-card: set_sysclk error
+asoc-simple-card sound: ASoC: failed to init 202c000.ssi-wm8962: -22
+asoc-simple-card sound: ASoC: failed to instantiate card -22
+asoc-simple-card: probe of sound failed with error -22
+
+In simple-card.c the snd_soc_dai_set_sysclk() function is called with
+clk_id as 0, which is an invalid clock for wm8962.
+
+Adjust the clocks source definitions in wm8962.h so that the
+simple card driver can work successfully.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8962.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wm8962.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 88223608a33f..f3f71ba0ed12 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -3800,7 +3800,7 @@ static int wm8962_runtime_resume(struct device *dev)
- 	if (ret != 0) {
- 		dev_err(dev,
- 			"Failed to enable supplies: %d\n", ret);
--		return ret;
-+		goto disable_clock;
- 	}
+diff --git a/sound/soc/codecs/wm8962.h b/sound/soc/codecs/wm8962.h
+index 910aafd09d21..e63a318a3015 100644
+--- a/sound/soc/codecs/wm8962.h
++++ b/sound/soc/codecs/wm8962.h
+@@ -16,9 +16,9 @@
+ #include <asm/types.h>
+ #include <sound/soc.h>
  
- 	regcache_cache_only(wm8962->regmap, false);
-@@ -3838,6 +3838,10 @@ static int wm8962_runtime_resume(struct device *dev)
- 	msleep(5);
+-#define WM8962_SYSCLK_MCLK 1
+-#define WM8962_SYSCLK_FLL  2
+-#define WM8962_SYSCLK_PLL3 3
++#define WM8962_SYSCLK_MCLK 0
++#define WM8962_SYSCLK_FLL  1
++#define WM8962_SYSCLK_PLL3 2
  
- 	return 0;
-+
-+disable_clock:
-+	clk_disable_unprepare(wm8962->pdata.mclk);
-+	return ret;
- }
+ #define WM8962_FLL  1
  
- static int wm8962_runtime_suspend(struct device *dev)
 -- 
 2.8.0.rc3
