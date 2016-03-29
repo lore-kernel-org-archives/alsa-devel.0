@@ -1,74 +1,68 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3 v2] ASoC: dwc: Add I2S HDMI audio support
-Date: Tue, 29 Mar 2016 11:22:22 -0700
-Message-ID: <20160329182222.GC2350@sirena.org.uk>
-References: <cover.1459174494.git.joabreu@synopsys.com>
- <538be366488bf0d7633d702f2d0bab16707b7a47.1459174494.git.joabreu@synopsys.com>
- <20160329173158.GB2350@sirena.org.uk>
- <56FAC355.1040705@synopsys.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0449166296=="
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <56FAC355.1040705@synopsys.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jose Abreu <Jose.Abreu@synopsys.com>
-Cc: tixy@linaro.org, mark.rutland@arm.com, alsa-devel@alsa-project.org, Alexey.Brodkin@synopsys.com, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, yitian.bu@tangramtek.com, wsa+renesas@sang-engineering.com, laurent.pinchart+renesas@ideasonboard.com, tiwai@suse.com, nariman@opensource.wolfsonmicro.com, linux-snps-arc@lists.infradead.org, devicetree@vger.kernel.org, Maruthi.Bayyavarapu@amd.com, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, Vineet.Gupta1@synopsys.com, buyitian@gmail.com, robh+dt@kernel.org, perex@perex.cz, lgirdwood@gmail.com, CARLOS.PALMINHA@synopsys.com, galak@codeaurora.org, alexander.deucher@amd.com
+From: Simran Rai <simran.rai-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
+Subject: [PATCH resend v5 0/3] ASoC: cygnus: Add audio support for Broadcom Cygnus SoC
+Date: Tue, 29 Mar 2016 11:46:29 -0700
+Message-ID: <1459277192-10942-1-git-send-email-simran.rai@broadcom.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Ray Jui <rjui-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Scott Branden <sbranden-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
+Cc: Simran Rai <ssimran-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Lori Hikichi <lhikichi-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, bcm-kernel-feedback-list-dY08KVG/lbpWk0Htik3J/w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Arun Parameswaran <arunp-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Simran Rai <simran.rai-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============0449166296==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="aHyShe78FfJzbeER"
-Content-Disposition: inline
+This patchset contains audio support for Broadcom's Cygnus SoC.
+It contains DT bindings and core audio driver. The audio driver supports
+both capture and playback of Audio PCM samples over I2S/TDM interface and
+provides playback support over SPDIF interface.
 
+This patchset is derived from a previously submitted patchset:
+http://lkml.iu.edu/hypermail/linux/kernel/1503.3/05434.html
 
---aHyShe78FfJzbeER
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This patchset has been tested on Cygnus wireless audio bcm958305K board.
+It is rebased on top of v4.6-rc1 and is available from github:
 
-On Tue, Mar 29, 2016 at 07:03:01PM +0100, Jose Abreu wrote:
+repo: https://github.com/Broadcom/cygnus-linux/tree/cygnus-sound-v5
 
-> The major part of this patch is the adding of an ALSA platform driver so that
-> audio comes out of the box in AXS boards but we also added functionalities to
-> the i2s driver and performed one bug fix related with the mask/unmask of
-> interrupts. I will split the patches but they will depend on each other.
+Changes from v4:
+- Fix power suspend function and add power resume function
+- Remove clock initialization code from audio driver to clock framework
+Changes from v3:
+- Fix the subject lines to match the style for the subsystem
+Changes from v2:
+- Split patchset 2/2 from v2 into patchsets 2/3 and 3/3.
+- Remove SND_SOC_CYGNUS_DIAG. Diagnostics can be performed using
+standard kernel trace infrastructure.
+- Fix interrupt handler. Acknowledge only those interrupts that are
+handledby ISR.
+- Modify configure_vco() and the pll_macro_entry() struct to make it
+better readable. The functionality did not change.
+- Remove casts on macros
+- Removed surround sound channel grouping from the driver.
+Changes from v1:
+- Address code review comments. Fixed print format of type size_t and
+pointer.
 
-If you want to add a new platform driver you need to add a new platform
-driver, not shove the code into an existing driver for a seperate IP.
+Simran Rai (3):
+  ASoC: cygnus: Add DT bindings for Broadcom Cygnus audio
+  ASoC: cygnus: Add Cygnus audio DAI driver
+  ASoC: cygnus: Add Cygnus audio DMA driver
 
---aHyShe78FfJzbeER
-Content-Type: application/pgp-signature; name="signature.asc"
+ .../bindings/sound/brcm,cygnus-audio.txt           |   67 +
+ sound/soc/bcm/Kconfig                              |    9 +
+ sound/soc/bcm/Makefile                             |    5 +
+ sound/soc/bcm/cygnus-pcm.c                         |  861 +++++++++++
+ sound/soc/bcm/cygnus-ssp.c                         | 1513 ++++++++++++++++++++
+ sound/soc/bcm/cygnus-ssp.h                         |  139 ++
+ 6 files changed, 2594 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
+ create mode 100644 sound/soc/bcm/cygnus-pcm.c
+ create mode 100644 sound/soc/bcm/cygnus-ssp.c
+ create mode 100644 sound/soc/bcm/cygnus-ssp.h
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+-- 
+1.7.9.5
 
-iQEcBAEBCAAGBQJW+sfaAAoJECTWi3JdVIfQYpEH/RzPMkqAI7jWNntBaun7Hkxz
-F+FfQAT68EzXhK+14LbGZ/yFG4CYyW5oFIDL9CtZjqQoVq1AtOVV9eU7aOpgOjkn
-IJVz9QB1uncmNLmQrUkql6wDjcao6MjocVHPHaLr6myqvEaaGzCGIKB/5QdbR95H
-PEcufiFwW5iabn3ExjNA5u1vVQmEC6a5bjwVgFKO4QzcwajokZ4UvOWeRKHPDXcV
-t7q+A0yF5w8G5e4IchX1pcdlcJ+jPC2LCB+KTUGvljjjEYbikfzuniAZBZdQIiJD
-eP//Var3mV6UjXZeZ1yfo+nPd2Rf94SAj5wcd6CFZJcFm0CIdpOE6UX/MIhtS4U=
-=KF9a
------END PGP SIGNATURE-----
-
---aHyShe78FfJzbeER--
-
---===============0449166296==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
-
---===============0449166296==--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
