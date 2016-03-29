@@ -1,120 +1,47 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH resend v5 2/3] ASoC: cygnus: Add Cygnus audio DAI driver
-Date: Tue, 29 Mar 2016 15:16:34 -0700
-Message-ID: <20160329221634.GQ2350@sirena.org.uk>
+Subject: Re: [PATCH resend v5 3/3] ASoC: cygnus: Add Cygnus audio DMA driver
+Date: Tue, 29 Mar 2016 15:23:30 -0700
+Message-ID: <20160329222330.GR2350@sirena.org.uk>
 References: <1459277192-10942-1-git-send-email-simran.rai@broadcom.com>
- <1459277192-10942-3-git-send-email-simran.rai@broadcom.com>
+ <1459277192-10942-4-git-send-email-simran.rai@broadcom.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2fV3mxwFPWhsKHyX"
+	protocol="application/pgp-signature"; boundary="GUWDakHTpZ9AxSMt"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1459277192-10942-3-git-send-email-simran.rai@broadcom.com>
+In-Reply-To: <1459277192-10942-4-git-send-email-simran.rai@broadcom.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Simran Rai <simran.rai@broadcom.com>
 Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Simran Rai <ssimran@broadcom.com>, Lori Hikichi <lhikichi@broadcom.com>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org, Arun Parameswaran <arunp@broadcom.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---2fV3mxwFPWhsKHyX
+--GUWDakHTpZ9AxSMt
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 29, 2016 at 11:46:31AM -0700, Simran Rai wrote:
+On Tue, Mar 29, 2016 at 11:46:32AM -0700, Simran Rai wrote:
+> From: Simran Rai <ssimran@broadcom.com>
+>=20
+> This patch adds Cygnus audio DMA driver. It supports playback
+> and capture modes and uses ringbuffers for data transfer.
 
-A few issues here, a lot of them are stylistic though there's what look
-like a couple of small bugs here too.
+This looks good.
 
-> +static int cygnus_ssp_set_clocks(struct cygnus_aio_port *aio,
-> +			struct cygnus_audio *cygaud)
-> +{
-> +	u32 value, i = 0;
-> +	u32 mask = 0xf;
-> +	u32 sclk;
-> +	bool found = false;
-> +	const struct _ssp_clk_coeff *p_entry = NULL;
-> +
-> +	if ((!aio->lrclk) || (!aio->bit_per_frame)) {
-> +		dev_err(aio->cygaud->dev, "First set up port through hw_params()\n");
-> +		return -EINVAL;
-> +	}
-
-This function is only ever called from one site in hw_prams().  What is
-this defending against?  A check like this seems very worrying, if it
-ever goes off that seems to indicate either something is seriously wrong
-or we should be recording something then coming back and trying again
-later.
-
-> +	for (i = 0; i < ARRAY_SIZE(ssp_clk_coeff); i++) {
-> +		p_entry = &ssp_clk_coeff[i];
-> +		if ((p_entry->rate == aio->lrclk) &&
-> +				(p_entry->sclk_rate == aio->bit_per_frame) &&
-> +				(p_entry->mclk == aio->mclk)) {
-
-Why the strange indentation here?
-
-> +	/* Set sclk rate */
-> +	if (aio->port_type == PORT_TDM) {
-
-switch statment here for extensibility.
-
-> +		/* Configure channels as mono or stereo */
-> +		if (params_channels(params) == 1) {
-> +			value = readl(aio->cygaud->audio +
-> +				aio->regs.bf_sourcech_cfg);
-> +			value |= BIT(BF_SRC_CFGX_SAMPLE_CH_MODE);
-> +			value &= ~BIT(BF_SRC_CFGX_BUFFER_PAIR_ENABLE);
-> +			writel(value, aio->cygaud->audio +
-> +				aio->regs.bf_sourcech_cfg);
-> +		} else {
-> +			value = readl(aio->cygaud->audio +
-> +				aio->regs.bf_sourcech_cfg);
-> +			value &= ~BIT(BF_SRC_CFGX_SAMPLE_CH_MODE);
-> +			writel(value, aio->cygaud->audio +
-> +				aio->regs.bf_sourcech_cfg);
-> +		}
-
-Either this should be a switch statement or the comment should say we
-support more than stereo.  It's also not clear to me how
-BUFFER_PAIR_ENABLE gets set again if we go from mono to stereo.
-
-> +	if (!aio->is_slave) {
-> +		if (aio->clk_trace.cap_clk_en)
-> +			clk_prepare_enable(aio->cygaud->
-> +					audio_clk[aio->pll_clk_num]);
-
-Should check the return value of clk_prepare_enable().
-
-> +	.playback = {
-> +		.channels_min = 2,
-> +		.channels_max = 2,
-> +		.rates = CYGNUS_TDM_RATE | SNDRV_PCM_RATE_88200 |
-> +			SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 |
-> +			SNDRV_PCM_RATE_192000,
-> +		.formats = SNDRV_PCM_FMTBIT_S16_LE |
-> +			SNDRV_PCM_FMTBIT_S32_LE,
-
-According to hw_params() the driver also supports S8 and S24.
-
-> +	if (port_type == PORT_TDM) {
-
-> +	} else { /* SPDIF case */
-
-switch statement...
-
---2fV3mxwFPWhsKHyX
+--GUWDakHTpZ9AxSMt
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJW+v69AAoJECTWi3JdVIfQVRIH/jJDUHK7urUUrT/sk1YVKWIq
-mFzwJZ7LabExZHTZEh8aHzYh58egvje4us+mqOku995xIXxSO5VuE0uPBHzmZ7JV
-gb6/bZaQ5lthP4CXYowhvUjxqDs1f9oX/QnWQWBTQaUI5JxwUB99dPgO1h6PEdtC
-o9PfF+kmVDGlZL5C2utqPhtTFakb/nJSq1yhpSg3LDDjrbgZtv/hByH+e9f/CK1O
-npKLRM/abepOhZh7MZkUQ4E3kI24LaDkX2ey0qSKkj/I2+qPBlezUYcOQqRTvUrx
-S3xmQ0/nbypofWPui7BIaVZ9QMWiYR4rYEbV+FNarVdLEHHzKR1tqKs0cNqTXtM=
-=SyWT
+iQEcBAEBCAAGBQJW+wBhAAoJECTWi3JdVIfQg0QH/2YjNzNuZMdO9jlG2AFZIFDC
+WRd9espJamxis1WJw7FYreQpKYYW1Gw111WJB7n11tNRBCr10pr2U1evmE8AAy6V
+OT0SJL3eEgPOnTCoDmqJwfD1UjDTBLIcO2trIrj5Y3Kzr33Vxkb/cLNYxdh89hMY
+qoyDTpCXcHzZBpUM+0La02wW200zNS8oCklO9SekbhPH2eg11UZXGVkZGQAPHRzI
+G5Pya7gY37F9e5pcG8w4nDuo7i4VameB1JWXzpWig3eiKz3d52kjeTnM7QSgDJe1
+Gp7qk+BupDNbmL5tUSn+ZX64MQWOjTE8If449ltae+bU+J/cXgaP5aWqquwPCHk=
+=NAnV
 -----END PGP SIGNATURE-----
 
---2fV3mxwFPWhsKHyX--
+--GUWDakHTpZ9AxSMt--
