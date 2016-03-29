@@ -1,55 +1,74 @@
 From: Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] ASoC: intel: add function stub when ACPI is not enabled
-Date: Tue, 29 Mar 2016 09:45:00 -0700
-Message-ID: <56FAB10C.502@infradead.org>
+Subject: [PATCH] ASoC: intel: make Kconfig selects depend on ACPI
+Date: Tue, 29 Mar 2016 09:45:05 -0700
+Message-ID: <56FAB111.2070503@infradead.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: moderated for non-subscribers <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
-Cc: Borislav Petkov <bp@alien8.de>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Jie Yang <yang.jie@linux.intel.com>
+Cc: Borislav Petkov <bp@alien8.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: Randy Dunlap <rdunlap@infradead.org>
 
-Add function stub for "sst_acpi_find_name_from_hid()"
-when CONFIG_ACPI is not enabled so that the driver will build
-successfully. This fixes the following build errors:
+Prevent SND_SST_IPC_ACPI from being selected when CONFIG_ACPI is
+not enabled.  This fixes the kconfig warning:
 
-(loadable module)
-ERROR: "sst_acpi_find_name_from_hid" [sound/soc/intel/boards/snd-soc-sst-bytcr-rt5640.ko] undefined!
-(or built-in)
-bytcr_rt5640.c:(.text+0x26fc52): undefined reference to `sst_acpi_find_name_from_hid'
+warning: (SND_SOC_INTEL_BYTCR_RT5640_MACH && SND_SOC_INTEL_BYTCR_RT5651_MACH && SND_SOC_INTEL_CHT_BSW_RT5672_MACH && SND_SOC_INTEL_CHT_BSW_RT5645_MACH && SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH) selects SND_SST_IPC_ACPI which has unmet direct dependencies (SOUND && !M68K && !UML && SND && SND_SOC && ACPI)
 
-Reported-by: Borislav Petkov <bp@alien8.de>
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Cc:	Jie Yang <yang.jie@linux.intel.com>
 Cc:	alsa-devel@alsa-project.org
 ---
- sound/soc/intel/common/sst-acpi.h |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/intel/Kconfig |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- linux-next-20160308.orig/sound/soc/intel/common/sst-acpi.h
-+++ linux-next-20160308/sound/soc/intel/common/sst-acpi.h
-@@ -12,10 +12,19 @@
-  *
-  */
- 
-+#include <linux/kconfig.h>
-+#include <linux/stddef.h>
- #include <linux/acpi.h>
- 
- /* translation fron HID to I2C name, needed for DAI codec_name */
-+#if IS_ENABLED(CONFIG_ACPI)
- const char *sst_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN]);
-+#else
-+inline const char *sst_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN])
-+{
-+	return NULL;
-+}
-+#endif
- 
- /* acpi match */
- struct sst_acpi_mach *sst_acpi_find_machine(struct sst_acpi_mach *machines);
+--- linux-next-20160308.orig/sound/soc/intel/Kconfig
++++ linux-next-20160308/sound/soc/intel/Kconfig
+@@ -100,7 +100,7 @@ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+ 	depends on X86 && I2C
+ 	select SND_SOC_RT5640
+ 	select SND_SST_MFLD_PLATFORM
+-	select SND_SST_IPC_ACPI
++	select SND_SST_IPC_ACPI if ACPI
+ 	select SND_SOC_INTEL_SST_MATCH if ACPI
+ 	help
+           This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
+@@ -113,7 +113,7 @@ config SND_SOC_INTEL_BYTCR_RT5651_MACH
+ 	depends on X86 && I2C
+ 	select SND_SOC_RT5651
+ 	select SND_SST_MFLD_PLATFORM
+-	select SND_SST_IPC_ACPI
++	select SND_SST_IPC_ACPI if ACPI
+ 	select SND_SOC_INTEL_SST_MATCH if ACPI
+ 	help
+           This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
+@@ -126,7 +126,7 @@ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+         depends on X86_INTEL_LPSS && I2C
+         select SND_SOC_RT5670
+         select SND_SST_MFLD_PLATFORM
+-        select SND_SST_IPC_ACPI
++        select SND_SST_IPC_ACPI if ACPI
+ 	select SND_SOC_INTEL_SST_MATCH if ACPI
+         help
+           This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
+@@ -139,7 +139,7 @@ config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
+ 	depends on X86_INTEL_LPSS && I2C
+ 	select SND_SOC_RT5645
+ 	select SND_SST_MFLD_PLATFORM
+-	select SND_SST_IPC_ACPI
++	select SND_SST_IPC_ACPI if ACPI
+ 	select SND_SOC_INTEL_SST_MATCH if ACPI
+ 	help
+ 	  This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
+@@ -152,7 +152,7 @@ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI
+ 	select SND_SOC_MAX98090
+ 	select SND_SOC_TS3A227E
+ 	select SND_SST_MFLD_PLATFORM
+-	select SND_SST_IPC_ACPI
++	select SND_SST_IPC_ACPI if ACPI
+ 	select SND_SOC_INTEL_SST_MATCH if ACPI
+ 	help
+       This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
