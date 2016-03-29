@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8825: change output power for
-	interrupt" to the asoc tree
+Subject: Applied "ASoC: nau8825: reduce standby power
+	consumption" to the asoc tree
 Date: Tue, 29 Mar 2016 00:38:51 -0700
-Message-ID: <E1akoEl-0007C8-6i@finisterre>
-References: <1458619040-28355-1-git-send-email-KCHSU0@nuvoton.com>
+Message-ID: <E1akoEl-0007Ca-I7@finisterre>
+References: <1458619025-28306-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DED9526055C
+ by alsa0.perex.cz (Postfix) with ESMTP id E6E7926066B
  for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2016 09:39:05 +0200 (CEST)
-In-Reply-To: <1458619040-28355-1-git-send-email-KCHSU0@nuvoton.com>
+In-Reply-To: <1458619025-28306-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nau8825: change output power for interrupt
+   ASoC: nau8825: reduce standby power consumption
 
 has been applied to the asoc tree at
 
@@ -53,108 +53,47 @@ to this mail.
 Thanks,
 Mark
 
->From fcd576e2b9872b3588f72352d9f50adc03876118 Mon Sep 17 00:00:00 2001
+>From 5a78e7c37d5d27702fdc019d610361c95491f989 Mon Sep 17 00:00:00 2001
 From: John Hsu <KCHSU0@nuvoton.com>
-Date: Tue, 22 Mar 2016 11:57:20 +0800
-Subject: [PATCH] ASoC: nau8825: change output power for interrupt
+Date: Tue, 22 Mar 2016 11:57:05 +0800
+Subject: [PATCH] ASoC: nau8825: reduce standby power consumption
 
-The interrupt clock is gated by x1[10:8], one of them needs to be enabled
-all the time for interrupts to happen. We change codec to enable ADC
-because it's helpful to reduce playback pop noise.
-Don't use force enable pin to enable ADC instead of ADC widget event.
-That won't interfere DAPM operation and let bias work normally.
+Decrease internal clock frequency for power saving when standby.
+But clock divider needs restore when MCLK as system clock in playback.
 
 Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/nau8825.c | 40 ++++++++++++++++++++++++++++------------
- sound/soc/codecs/nau8825.h |  1 +
- 2 files changed, 29 insertions(+), 12 deletions(-)
+ sound/soc/codecs/nau8825.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
 diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 4c8572cdec94..106c391f9ec3 100644
+index 3e7bee29eed4..4c8572cdec94 100644
 --- a/sound/soc/codecs/nau8825.c
 +++ b/sound/soc/codecs/nau8825.c
-@@ -223,6 +223,29 @@ static bool nau8825_volatile_reg(struct device *dev, unsigned int reg)
- 	}
- }
- 
-+static int nau8825_adc_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_ENA_CTRL,
-+			NAU8825_ENABLE_ADC, NAU8825_ENABLE_ADC);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		if (!nau8825->irq)
-+			regmap_update_bits(nau8825->regmap,
-+				NAU8825_REG_ENA_CTRL, NAU8825_ENABLE_ADC, 0);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static int nau8825_pump_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
-@@ -338,7 +361,9 @@ static const struct snd_soc_dapm_widget nau8825_dapm_widgets[] = {
- 	SND_SOC_DAPM_PGA("Frontend PGA", NAU8825_REG_POWER_UP_CONTROL, 14, 0,
- 		NULL, 0),
- 
--	SND_SOC_DAPM_ADC("ADC", NULL, NAU8825_REG_ENA_CTRL, 8, 0),
-+	SND_SOC_DAPM_ADC_E("ADC", NULL, SND_SOC_NOPM, 0, 0,
-+		nau8825_adc_event, SND_SOC_DAPM_POST_PMU |
-+		SND_SOC_DAPM_POST_PMD),
- 	SND_SOC_DAPM_SUPPLY("ADC Clock", NAU8825_REG_ENA_CTRL, 7, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("ADC Power", NAU8825_REG_ANALOG_ADC_2, 6, 0, NULL,
- 		0),
-@@ -928,13 +953,6 @@ static int nau8825_codec_probe(struct snd_soc_codec *codec)
- 
- 	nau8825->dapm = dapm;
- 
--	/* The interrupt clock is gated by x1[10:8],
--	 * one of them needs to be enabled all the time for
--	 * interrupts to happen.
--	 */
--	snd_soc_dapm_force_enable_pin(dapm, "DDACR");
--	snd_soc_dapm_sync(dapm);
--
- 	/* Unmask interruptions. Handler uses dapm object so we can enable
- 	 * interruptions only after dapm is fully initialized.
- 	 */
-@@ -1338,11 +1356,9 @@ static int nau8825_setup_irq(struct nau8825 *nau8825)
- 	/* Enable internal VCO needed for interruptions */
- 	nau8825_configure_sysclk(nau8825, NAU8825_CLK_INTERNAL, 0);
- 
--	/* Enable DDACR needed for interrupts
--	 * It is the same as force_enable_pin("DDACR") we do later
--	 */
-+	/* Enable ADC needed for interrupts */
- 	regmap_update_bits(regmap, NAU8825_REG_ENA_CTRL,
--		NAU8825_ENABLE_DACR, NAU8825_ENABLE_DACR);
-+		NAU8825_ENABLE_ADC, NAU8825_ENABLE_ADC);
- 
- 	/* Chip needs one FSCLK cycle in order to generate interrupts,
- 	 * as we cannot guarantee one will be provided by the system. Turning
-diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
-index 5fe009dcfb3d..4427df99de24 100644
---- a/sound/soc/codecs/nau8825.h
-+++ b/sound/soc/codecs/nau8825.h
-@@ -99,6 +99,7 @@
- #define NAU8825_ENABLE_DACR	(1 << NAU8825_ENABLE_DACR_SFT)
- #define NAU8825_ENABLE_DACL_SFT	9
- #define NAU8825_ENABLE_ADC_SFT	8
-+#define NAU8825_ENABLE_ADC		(1 << NAU8825_ENABLE_ADC_SFT)
- #define NAU8825_ENABLE_SAR_SFT	1
- 
- /* CLK_DIVIDER (0x3) */
+@@ -1116,6 +1116,9 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
+ 		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
+ 			NAU8825_CLK_SRC_MASK, NAU8825_CLK_SRC_MCLK);
+ 		regmap_update_bits(regmap, NAU8825_REG_FLL6, NAU8825_DCO_EN, 0);
++		/* MCLK not changed by clock tree */
++		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
++			NAU8825_CLK_MCLK_SRC_MASK, 0);
+ 		ret = nau8825_mclk_prepare(nau8825, freq);
+ 		if (ret)
+ 			return ret;
+@@ -1126,6 +1129,13 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
+ 			NAU8825_DCO_EN);
+ 		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
+ 			NAU8825_CLK_SRC_MASK, NAU8825_CLK_SRC_VCO);
++		/* Decrease the VCO frequency for power saving */
++		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
++			NAU8825_CLK_MCLK_SRC_MASK, 0xf);
++		regmap_update_bits(regmap, NAU8825_REG_FLL1,
++			NAU8825_FLL_RATIO_MASK, 0x10);
++		regmap_update_bits(regmap, NAU8825_REG_FLL6,
++			NAU8825_SDM_EN, NAU8825_SDM_EN);
+ 		if (nau8825->mclk_freq) {
+ 			clk_disable_unprepare(nau8825->mclk);
+ 			nau8825->mclk_freq = 0;
 -- 
 2.8.0.rc3
