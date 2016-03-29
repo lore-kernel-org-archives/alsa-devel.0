@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs47l24: Add support for audio trace
-	firmware" to the asoc tree
-Date: Tue, 29 Mar 2016 10:13:55 -0700
-Message-ID: <E1akxDH-0001Uq-Jy@finisterre>
-References: <1459171764-29921-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: wm_adsp: Show avail in bytes to match
+	other messages" to the asoc tree
+Date: Tue, 29 Mar 2016 10:13:56 -0700
+Message-ID: <E1akxDI-0001Vk-KL@finisterre>
+References: <1459171764-29921-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D68D26695B
- for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2016 19:14:03 +0200 (CEST)
-In-Reply-To: <1459171764-29921-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F6DC266955
+ for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2016 19:14:02 +0200 (CEST)
+In-Reply-To: <1459171764-29921-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs47l24: Add support for audio trace firmware
+   ASoC: wm_adsp: Show avail in bytes to match other messages
 
 has been applied to the asoc tree at
 
@@ -53,91 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From c13202f7d7101a6f5542f3a31b9a6787ae7b746c Mon Sep 17 00:00:00 2001
+>From 33d740e07d1f565e44d35e7f7756a619b4f1e4ba Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Mon, 28 Mar 2016 14:29:24 +0100
-Subject: [PATCH] ASoC: cs47l24: Add support for audio trace firmware
+Date: Mon, 28 Mar 2016 14:29:21 +0100
+Subject: [PATCH] ASoC: wm_adsp: Show avail in bytes to match other messages
 
-cs47l24 supports the audio trace firmware, this streams of audio to be
-captured from the CODEC over a compressed audio channel for
-analysis/debugging of audio processing firmwares.
+All other debug messages talk about data on the compressed stream in
+bytes except avail which is shown in words. To avoid confusion show
+avail in bytes as well.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs47l24.c | 38 +++++++++++++++++++++++++++++++++++---
- 1 file changed, 35 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
-index 383700a178c7..6b8b5571d3cc 100644
---- a/sound/soc/codecs/cs47l24.c
-+++ b/sound/soc/codecs/cs47l24.c
-@@ -807,6 +807,9 @@ static const struct snd_soc_dapm_route cs47l24_dapm_routes[] = {
- 	{ "IN2L PGA", NULL, "IN2L" },
- 	{ "IN2R PGA", NULL, "IN2R" },
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 4839d195c72a..953c4278b75e 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -2809,7 +2809,7 @@ static int wm_adsp_buffer_update_avail(struct wm_adsp_compr_buf *buf)
+ 		avail += wm_adsp_buffer_size(buf);
  
-+	{ "Audio Trace DSP", NULL, "DSP2" },
-+	{ "Audio Trace DSP", NULL, "SYSCLK" },
-+
- 	ARIZONA_MIXER_ROUTES("OUT1L", "HPOUT1L"),
- 	ARIZONA_MIXER_ROUTES("OUT1R", "HPOUT1R"),
+ 	adsp_dbg(buf->dsp, "readindex=0x%x, writeindex=0x%x, avail=%d\n",
+-		 buf->read_index, write_index, avail);
++		 buf->read_index, write_index, avail * WM_ADSP_DATA_WORD_SIZE);
  
-@@ -1016,6 +1019,27 @@ static struct snd_soc_dai_driver cs47l24_dai[] = {
- 			.formats = CS47L24_FORMATS,
- 		},
- 	},
-+	{
-+		.name = "cs47l24-cpu-trace",
-+		.capture = {
-+			.stream_name = "Audio Trace CPU",
-+			.channels_min = 1,
-+			.channels_max = 6,
-+			.rates = CS47L24_RATES,
-+			.formats = CS47L24_FORMATS,
-+		},
-+		.compress_new = snd_soc_new_compress,
-+	},
-+	{
-+		.name = "cs47l24-dsp-trace",
-+		.capture = {
-+			.stream_name = "Audio Trace DSP",
-+			.channels_min = 1,
-+			.channels_max = 6,
-+			.rates = CS47L24_RATES,
-+			.formats = CS47L24_FORMATS,
-+		},
-+	},
- };
+ 	buf->avail = avail;
  
- static int cs47l24_open(struct snd_compr_stream *stream)
-@@ -1027,6 +1051,8 @@ static int cs47l24_open(struct snd_compr_stream *stream)
- 
- 	if (strcmp(rtd->codec_dai->name, "cs47l24-dsp-voicectrl") == 0) {
- 		n_adsp = 2;
-+	} else if (strcmp(rtd->codec_dai->name, "cs47l24-dsp-trace") == 0) {
-+		n_adsp = 1;
- 	} else {
- 		dev_err(arizona->dev,
- 			"No suitable compressed stream for DAI '%s'\n",
-@@ -1041,10 +1067,16 @@ static irqreturn_t cs47l24_adsp2_irq(int irq, void *data)
- {
- 	struct cs47l24_priv *priv = data;
- 	struct arizona *arizona = priv->core.arizona;
--	int ret;
-+	int serviced = 0;
-+	int i, ret;
-+
-+	for (i = 1; i <= 2; ++i) {
-+		ret = wm_adsp_compr_handle_irq(&priv->core.adsp[i]);
-+		if (ret != -ENODEV)
-+			serviced++;
-+	}
- 
--	ret = wm_adsp_compr_handle_irq(&priv->core.adsp[2]);
--	if (ret == -ENODEV) {
-+	if (!serviced) {
- 		dev_err(arizona->dev, "Spurious compressed data IRQ\n");
- 		return IRQ_NONE;
- 	}
 -- 
 2.8.0.rc3
