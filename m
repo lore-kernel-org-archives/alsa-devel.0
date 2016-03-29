@@ -1,51 +1,59 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH resend v5 0/3] ASoC: cygnus: Add audio support for
- Broadcom Cygnus SoC
-Date: Tue, 29 Mar 2016 12:46:29 -0700
-Message-ID: <20160329194629.GH2350@sirena.org.uk>
-References: <1459277192-10942-1-git-send-email-simran.rai@broadcom.com>
- <20160329190910.GF2350@sirena.org.uk>
- <56FAD579.3060703@broadcom.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 1/5] Sound: SOC: TAS571x: added missing register
+ literals
+Date: Tue, 29 Mar 2016 14:33:05 -0700
+Message-ID: <20160329213305.GO2350@sirena.org.uk>
+References: <1459237178-12920-1-git-send-email-petr@barix.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="NncV4Eud7lVzK4Rv"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="oDT6ON1uLKeoILhE"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <56FAD579.3060703@broadcom.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Florian Fainelli <florian.fainelli@broadcom.com>
-Cc: Simran Rai <simran.rai@broadcom.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Simran Rai <ssimran@broadcom.com>, Lori Hikichi <lhikichi@broadcom.com>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org, Arun Parameswaran <arunp@broadcom.com>, alsa-devel@alsa-project.org
+In-Reply-To: <1459237178-12920-1-git-send-email-petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+Cc: cernekee-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---NncV4Eud7lVzK4Rv
+--oDT6ON1uLKeoILhE
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Mar 29, 2016 at 12:20:25PM -0700, Florian Fainelli wrote:
+On Tue, Mar 29, 2016 at 09:39:34AM +0200, Petr Kulhavy wrote:
 
-> Subject apart, and thanks for the education, is there something wrong
-> with this patch series?
+> The list of TAS571x registers was incomplete.
+> Added the missing register definitions up to register 0x25
 
-I've not yet reviewed it, I was just doing first pass triage and was
-about to complain that my review comments had been ignored since it was
-flagged as a resend but there were issues with the last version.  It's
-fortunate that I actually went to look for that version to paste my
-comments back in...
+According to the driver the device has registers up to 0xff?
 
---NncV4Eud7lVzK4Rv
+>  /* device registers */
+> +#define TAS571X_CLK_CTRL_REG		0x00
+> +#define TAS571X_DEV_ID_REG		0x01
+> +#define TAS571X_ERR_STATUS_REG		0x02
+> +#define TAS571X_SYS_CTRL_1_REG		0x03
+
+These look like volatile registers but the device has a register cache
+and we're not adding a list of volatile registers (or readable registers
+for that matter).
+
+--oDT6ON1uLKeoILhE
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJW+tuUAAoJECTWi3JdVIfQEsEH/1lOGN6GEJH9iCgMvvHb6D7j
-eguFRhyVtmWTBECeb+aZfyz2l8XrUXe4/mvg4XFUaw5upgaDVmaR9PxSXZV5MqGU
-okrpER1MfeZjA9CL33upml/zaHA5bmY65TyZV1ZC6J7tLE7yzwbUzs1EfhenKz/g
-k34dXNxKUN4VRRfjMy0oQEpzcN9Ptyc0EVL5/g1hfGKxv2D7Yqh7icfGeg8k3UYP
-SZPDOg4BINvBLcNKTbZZId3f5l3w/+uAsNF1pz2y8N1uUGyL3TUmTWCi3LIQe8fH
-kxN6r+FeJo2c5U457y6G6+4nBVCo3xLux6/P9qJwte/X608VAvJg52RTedrjsdY=
-=VLAC
+iQEcBAEBCAAGBQJW+vSQAAoJECTWi3JdVIfQ0hcH/j2A1pw2/5YeT0kd8I67ZYvn
+ZjgO+05xZlvbXk7pN3TsvlrbKLLmATUK8NUWwP8HiuU5fuPXNYSyzeKAwc6/6H2b
+0Qn/2S6K3SiLIk7tfpM/eNUiK2k84RNvPl+HCis5QigWeAV9236Hox4lCc50gnFd
+bM7TPPMzb1ZC/bm0oPQ7NtV9tHvTQ5lre6kbYHa1expIaAcD6BGrHu6ZdUavFNDu
+cem5gJFLiEW/rMjgTSncySLmr2uU3gMnHsfQbYnI8kLlbafqsEi1/FyCG54FA7Bh
+GUhHOYs47L1zU2y7VdzVRN+JVSibogfiBj3fygL/bluz/PnWL9eKdKsN59Hs9QI=
+=j+1O
 -----END PGP SIGNATURE-----
 
---NncV4Eud7lVzK4Rv--
+--oDT6ON1uLKeoILhE--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
