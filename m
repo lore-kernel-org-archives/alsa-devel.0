@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: nau8825: assign DAC Ch to match
-	headset L/R
-Date: Wed, 30 Mar 2016 10:39:20 -0700
-Message-ID: <20160330173920.GO2350@sirena.org.uk>
-References: <1459321031-2365-1-git-send-email-KCHSU0@nuvoton.com>
+Subject: Applied "ASoC: wm8960: Depends on I2C" to the asoc tree
+Date: Wed, 30 Mar 2016 11:07:13 -0700
+Message-ID: <E1alKWP-0006Yh-8F@finisterre>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0397954896524486690=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E2E9A265CF1
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2016 19:39:27 +0200 (CEST)
-In-Reply-To: <1459321031-2365-1-git-send-email-KCHSU0@nuvoton.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 16EEE265011
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2016 20:07:20 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,49 +20,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
+To: kbuild test robot <fengguang.wu@intel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============0397954896524486690==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="jASSyw8pZdwiLt00"
-Content-Disposition: inline
+   ASoC: wm8960: Depends on I2C
 
+has been applied to the asoc tree at
 
---jASSyw8pZdwiLt00
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Mar 30, 2016 at 02:57:11PM +0800, John Hsu wrote:
-> The default value of DAC channel select is reverse in codec.
-> For normal usage, switch the channel select when codec bootup.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-I would expect this to be exposed as DAPM routing?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---jASSyw8pZdwiLt00
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEcBAEBCAAGBQJW/A9HAAoJECTWi3JdVIfQQ3oH/303uVd3m8kkvTwrEZwklVu9
-A42h/Q6vrgn1bBTwfi4SkaGRcTqyH378/eaqso4fisSjV3J8Z8w9j6WKOp/UbIb/
-7d6VQ0TlXDwjvYAUwTU1Ilnm5brXYIHWt7AIY2+K88aETIhhuq6LwqQs6yGkKUaa
-NLpU/f8RERJsnu4D9sIynLyvDp3v90uSMmU96JvDULXCI28ohujGmwBfMYns9Lvk
-B2K9DeJVtn+S1WiqLL+GG4TTfSHbh+V2UR7qKz+BN0cwi0WjVm2xEN08pL5VjtQ8
-HtTVTat8sDsN2NU45D57jUMeVC9ly/vugY5mXgwCgAVOCS20YCWz1iqWsfD3Z5c=
-=0nVH
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---jASSyw8pZdwiLt00--
+>From 3fcdfc9dad07c2a6ea19dfb98a2151cd86d06c6a Mon Sep 17 00:00:00 2001
+From: Mark Brown <broonie@kernel.org>
+Date: Wed, 30 Mar 2016 11:02:49 -0700
+Subject: [PATCH] ASoC: wm8960: Depends on I2C
 
---===============0397954896524486690==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Now that this is directly user selectable it needs to care about its
+dependencies.
 
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
---===============0397954896524486690==--
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 196101b2eab5..3ebf29bc87d3 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -910,6 +910,7 @@ config SND_SOC_WM8955
+ 
+ config SND_SOC_WM8960
+ 	tristate "Wolfson Microelectronics WM8960 CODEC"
++	depends on I2C
+ 
+ config SND_SOC_WM8961
+ 	tristate
+-- 
+2.8.0.rc3
