@@ -1,270 +1,99 @@
 From: Vladis Dronov <vdronov@redhat.com>
 Subject: [PATCH] ALSA: usb-audio: Fix double-free in snd_usb_add_audio_stream()
-Date: Wed, 30 Mar 2016 21:03:21 +0200
-Message-ID: <1459364602-28997-1-git-send-email-vdronov@redhat.com>
+Date: Wed, 30 Mar 2016 21:03:22 +0200
+Message-ID: <1459364602-28997-2-git-send-email-vdronov@redhat.com>
+References: <1459364602-28997-1-git-send-email-vdronov@redhat.com>
 Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <1459364602-28997-1-git-send-email-vdronov@redhat.com>
 Sender: linux-sound-owner@vger.kernel.org
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org
+Cc: Vladis Dronov <vdronov@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello, Takashi, Jaroslav, all,
-Please, see the research and the following patch on a double-free bug in [snd-usb-audio].
+There is a double-free bug in [snd-usb-audio] module due to alloc/free logic
+flaw in snd_usb_add_audio_stream() function. This leads to kernel structures
+corruption and panic. Fix the code flow and alloc/free logic so there is no
+double-free.
 
-1) The upstream commits 0f886ca1, 902eb7fd and 447d6275f (many thanks to Takashi Iwai) revealed that there is a double-free bug in [snd-usb-audio] module due to alloc/free logic flaw in snd_usb_add_audio_stream() function. A double-free leads to kernel structure/list/slab corruptions and shortly to null-deref, GPF or lockup.
+The detailed analysis: https://bugzilla.redhat.com/show_bug.cgi?id=1283358
 
-2.1) Let me describe what happens with the current code in usb_audio_probe(), create_fixed_stream_quirk() and snd_usb_add_audio_stream():
+Reported-by: Ralf Spenneberg <ralf@spenneberg.net>
+Signed-off-by: Vladis Dronov <vdronov@redhat.com>
+---
+ sound/usb/quirks.c | 17 ++++++++++++-----
+ sound/usb/stream.c | 10 ++++++++--
+ 2 files changed, 20 insertions(+), 7 deletions(-)
 
-> [ sound/usb/card.c ]
-> static int usb_audio_probe(struct usb_interface *intf,
->                            const struct usb_device_id *usb_id)
-> {
->         ...
->         if (quirk && quirk->ifnum != QUIRK_NO_INTERFACE) {
->                 /* need some special handlings */
->                 err = snd_usb_create_quirk(chip, intf, &usb_audio_driver, quirk);
->                 if (err < 0)
->                         goto __error;
->         }
->         ...
->  __error:
->         if (chip) {
->                 if (!chip->num_interfaces)
->                         snd_card_free(chip->card);
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index fb62bce..1d41b47 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -164,11 +164,6 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
+ 		fp->rate_table = rate_table;
+ 	}
 
-Somewhere in the middle of usb_audio_probe() the function snd_usb_create_quirk() is called, and if it returns with an error and no interfaces were created, the sound card is destroyed with "snd_card_free(chip->card)".
+-	stream = (fp->endpoint & USB_DIR_IN)
+-		? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
+-	err = snd_usb_add_audio_stream(chip, stream, fp);
+-	if (err < 0)
+-		goto error;
+ 	if (fp->iface != get_iface_desc(&iface->altsetting[0])->bInterfaceNumber ||
+ 	    fp->altset_idx >= iface->num_altsetting) {
+ 		err = -EINVAL;
+@@ -181,6 +176,17 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
+ 		goto error;
+ 	}
 
-2.2) create_fixed_stream_quirk() is called from snd_usb_create_quirk():
++	stream = (fp->endpoint & USB_DIR_IN)
++		? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
++	err = snd_usb_add_audio_stream(chip, stream, fp);
++	if (err < 0)
++		goto error;
++
++	/* From this point error paths should jump to
++	 * error_after_add_audio_stream: not to error: as fp
++	 * and rate_table will be freed on stream removal
++	 */
++
+ 	fp->protocol = altsd->bInterfaceProtocol;
 
-> [ sound/usb/quirks.c ]
-> static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
->                                      struct usb_interface *iface,
->                                      struct usb_driver *driver,
->                                      const struct snd_usb_audio_quirk *quirk)
-> {
->         struct audioformat *fp;
->         struct usb_host_interface *alts;
->         struct usb_interface_descriptor *altsd;
->         ...
->         fp = kmemdup(quirk->data, sizeof(*fp), GFP_KERNEL);
->         ...
-> (*)     stream = (fp->endpoint & USB_DIR_IN)
-> (*)             ? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
-> (*)     err = snd_usb_add_audio_stream(chip, stream, fp);
-> (*)     if (err < 0)
-> (*)             goto error;
-> 
->         if (fp->iface != get_iface_desc(&iface->altsetting[0])->bInterfaceNumber ||
->             fp->altset_idx >= iface->num_altsetting) {
->                 err = -EINVAL;
->                 goto error;
->         }
->         alts = &iface->altsetting[fp->altset_idx];
->         altsd = get_iface_desc(alts);
->         if (altsd->bNumEndpoints < 1) {
->                 err = -EINVAL;
->                 goto error;
->         }
->         ...
->  error:
->         kfree(fp);
->         kfree(rate_table);
->         return err;
-> }
+ 	if (fp->datainterval == 0)
+@@ -195,6 +201,7 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
+  error:
+ 	kfree(fp);
+ 	kfree(rate_table);
++ error_after_add_audio_stream:
+ 	return err;
+ }
 
-2.3) *fp is allocated and passed to snd_usb_add_audio_stream() where snd_usb_init_substream() is called:
+diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+index 51258a1..f8ed8b49 100644
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -349,7 +349,10 @@ int snd_usb_add_audio_stream(struct snd_usb_audio *chip,
+ 		if (err < 0)
+ 			return err;
+ 		snd_usb_init_substream(as, stream, fp);
+-		return add_chmap(as->pcm, stream, subs);
++		err = add_chmap(as->pcm, stream, subs);
++		if (err < 0)
++			list_del_init(&fp->list);
++		return err;
+ 	}
 
-> [ sound/usb/stream.c ]
-> int snd_usb_add_audio_stream(struct snd_usb_audio *chip,
->                              int stream,
->                              struct audioformat *fp)
-> {
->         struct snd_usb_stream *as;
->         struct snd_usb_substream *subs;
->         struct snd_pcm *pcm;
->         ...
->         /* create a new pcm */
->         as = kzalloc(sizeof(*as), GFP_KERNEL);
->         ...
->         snd_usb_init_substream(as, stream, fp);
+ 	/* create a new pcm */
+@@ -391,7 +394,10 @@ int snd_usb_add_audio_stream(struct snd_usb_audio *chip,
 
-2.4) In turn snd_usb_init_substream() adds audioformat *fp by its &fp->list to substream's fmt_list list:
+ 	snd_usb_proc_pcm_format_add(as);
 
-> [ sound/usb/stream.c ]
-> static void snd_usb_init_substream(struct snd_usb_stream *as,
->                                    int stream,
->                                    struct audioformat *fp)
-> {
->         struct snd_usb_substream *subs = &as->substream[stream];
-> 
->         INIT_LIST_HEAD(&subs->fmt_list);
->         ...
->         list_add_tail(&fp->list, &subs->fmt_list);
->         subs->num_formats++;
+-	return add_chmap(pcm, stream, &as->substream[stream]);
++	err = add_chmap(pcm, stream, &as->substream[stream]);
++	if (err < 0)
++		list_del_init(&fp->list);
++	return err;
+ }
 
-2.5) Things go bad from this point in case snd_usb_add_audio_stream() or the caller go the error path. The bug is that the caller frees (see "error: kfree(fp);" code) *fp on the error path, BUT the pointer to the already-freed memory remains in the substream's fmt_list list.
+ static int parse_uac_endpoint_attributes(struct snd_usb_audio *chip,
+--
+2.5.5
 
-The double-free happens after create_fixed_stream_quirk() returns with an error and usb_audio_probe() calls snd_card_free()->...->snd_usb_audio_pcm_free()->free_substream(). As subs->fmt_list is already corrupted, iterating it with list_for_each_entry_safe() leads to any and unpredictable results.
-
-> static void free_substream(struct snd_usb_substream *subs)
-> {
->         struct audioformat *fp, *n;
->         ...
->         list_for_each_entry_safe(fp, n, &subs->fmt_list, list) {
->         ...
->                 kfree(fp);
-
-3.1) The crash is reproduceable by faking the USB device with no endpoints as described in https://bugzilla.redhat.com/show_bug.cgi?id=1283355 and https://bugzilla.redhat.com/show_bug.cgi?id=1283358.
-
-Please see as a proof the following kernel log with debug printing added to the code. First, *fp is added to fmt_list in snd_usb_init_substream():
-
-[  322.797223] usb 1-1: new full-speed USB device number 2 using xhci_hcd
-[  322.974083] usb 1-1: config 1 interface 0 altsetting 0 has 3 endpoint descriptors, different from the interface descriptor's value: 0
-[  322.987031] usb 1-1: New USB device found, idVendor=045e, idProduct=0283
-[  322.998318] usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-[  323.083913] media: Linux media interface: v0.10
-[  323.231249] init_substream: add_tail() fp=ffff88003364ba80 fp->list.next=ffff8800b1e898b8 fp->list.prev=ffff8800b1e898b8 fmt_list=ffff8800b1e898b8 fmt_list.next=ffff88003364ba80 prev=ffff88003364ba80 num_formats=1
-
-As you can see we have a correct list here with head at fmt_list=ffff8800b1e898b8 and single element fp=ffff88003364ba80.
-
-3.2) The code finds out that there are too few endpoints present and goes the error path (to the "error:" label):
-
-[  323.307927] usb 1-1: too few endpoints
-[  323.312964] trace-before-free: substream-0 ffff8800b1e89818 numf 1 fmt_list ffff8800b1e898b8 next ffff88003364ba80
-[  323.353759] fp=ffff88003364ba80 next=ffff8800b1e898b8 prev=ffff8800b1e898b8 rate=(null) chmap=(null)
-[  323.362118] struct sane
-
-As you can see the substream's fmt_list is sane at this point.
-
-3.3) After "kfree(fp)" in the error path of create_fixed_stream_quirk() *fp is freed, BUT the pointer to the freed memory remains in fmt_list. After *fp is freed the list is corrupted and contains trash:
-
-[  323.371752] KFREE(fp) ffff88003364ba80
-[  323.380383] trace-after-free: substream-0 ffff8800b1e89818 numf 1 fmt_list ffff8800b1e898b8 next ffff88003364ba80
-[  323.400003] fp=ffff88003364ba80 next=ffff88003364bf80 prev=ffff8800b1e898b8 rate=(null) chmap=(null)
-[  323.406786] fp=ffff88003364bf80 next=          (null) prev=          (null) rate=(null) chmap=(null)
-[  323.422211] next == NULL: FAIL, struct INSANE
-[  323.436706] KFREE(rate_table) (null)
-
-3.4) After error return from create_fixed_stream_quirk() the sound card is destroyed with "snd_card_free(chip->card)" in usb_audio_probe(). In the end free_substream() is called:
-
-[  323.511256] usb 1-1: snd_usb_create_quirk() failed: -22
-[  323.565108] list_for_each_entry_safe(): fp=ffff88003364ba80 n=ffff88003364bf80
-[  323.586337] kfree fp ffff88003364ba80                                  <<< DOUBLE-FREE
-[  323.588509] loop-end: fp=ffff88003364ba80 n=ffff88003364bf80
-[  323.599969] list_for_each_entry_safe(): fp=ffff88003364bf80 n=(null)
-[  323.610460] kfree fp ffff88003364bf80                                  <<< FREEING SOMEONE ELSE'S MEMORY
-[  323.613181] loop-end: fp=ffff88003364bf80 n=(null)                     <<< NULL-PTR DEREF
-...
-[  324.247113] BUG: unable to handle kernel NULL pointer dereference at           (null)
-[  324.247533] IP: [<ffffffffc02d40ef>] free_substream.part.0+0xef/0x100 [snd_usb_audio]
-[  324.248088] PGD 0 
-[  324.248088] Oops: 0000 [#1] SMP 
-[  324.248088] Modules linked in: snd_usb_audio(+) snd_usbmidi_lib snd_hwdep ...
-[  324.248088] CPU: 2 PID: 767 Comm: systemd-udevd Not tainted 4.5.0-vladis #25
-[  324.248088] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.8.2-0-g33fbe13 by qemu-project.org 04/01/2014
-[  324.248088] task: ffff880034718000 ti: ffff8800b2fbc000 task.ti: ffff8800b2fbc000
-[  324.248088] RIP: 0010:[<ffffffffc02d40ef>]  [<ffffffffc02d40ef>] free_substream.part.0+0xef/0x100 [snd_usb_audio]
-[  324.248088] RSP: 0018:ffff8800b2fbf898  EFLAGS: 00010217
-...
-[  324.248088] Call Trace:
-[  324.248088]  [<ffffffffc02d43fa>] snd_usb_audio_pcm_free+0x9a/0xa0 [snd_usb_audio]
-[  324.248088]  [<ffffffffc028d982>] snd_pcm_free+0x32/0xa0 [snd_pcm]
-[  324.248088]  [<ffffffffc028da02>] snd_pcm_dev_free+0x12/0x20 [snd_pcm]
-[  324.248088]  [<ffffffffc027d279>] __snd_device_free+0x29/0x70 [snd]
-[  324.248088]  [<ffffffffc027d660>] snd_device_free_all+0x30/0x60 [snd]
-[  324.248088]  [<ffffffffc02777a4>] release_card_device+0x34/0x90 [snd]
-[  324.248088]  [<ffffffff815ae2b2>] device_release+0x32/0x90
-[  324.248088]  [<ffffffff81455f8a>] kobject_release+0x7a/0x190
-[  324.248088]  [<ffffffff81455e47>] kobject_put+0x27/0x50
-[  324.248088]  [<ffffffff815ae5f7>] put_device+0x17/0x20
-[  324.248088]  [<ffffffffc0277b57>] snd_card_free+0x67/0x90 [snd]
-[  324.248088]  [<ffffffffc02c4f14>] usb_audio_probe+0x754/0x9d0 [snd_usb_audio]
-...
-
-4.1) The suggested patch consists of 2 changes. First, I suppose we should move the code in create_fixed_stream_quirk() marked as "(*)" (see above) after "if (altsd->bNumEndpoints < 1)" check. This way no allocations is done if we go an error path. I've checked that fp->iface and fp->altset_idx are not changed in snd_usb_add_audio_stream() and functions called from it, so it is safe to swap these 2 pieces of code.
-
-4.2) The problem with double-free still remains. I've verified that all the callers of snd_usb_add_audio_stream() free *fp in case of error:
-
-$ git grep snd_usb_add_audio_stream
-sound/usb/quirks.c:     err = snd_usb_add_audio_stream(chip, stream, fp);
-
-> *        err = snd_usb_add_audio_stream(chip, stream, fp);
-> *        if (err < 0)
-> *                goto error;
-> * error:
-> *        kfree(fp);
-> *        kfree(rate_table);
-> *        return err;
-
-sound/usb/quirks.c:     err = snd_usb_add_audio_stream(chip, stream, fp);
-
-> *        err = snd_usb_add_audio_stream(chip, stream, fp);
-> *        if (err < 0) {
-> *                kfree(fp);
-> *                return err;
-> *        }
-
-sound/usb/stream.c:             err = snd_usb_add_audio_stream(chip, stream, fp);
-
-> *                err = snd_usb_add_audio_stream(chip, stream, fp);
-> *                if (err < 0) {
-> *                        kfree(fp->rate_table);
-> *                        kfree(fp->chmap);
-> *                        kfree(fp);
-> *                        return err;
-> *                }
-
-This means that snd_usb_add_audio_stream() should remove *fp from the substream's fmt_list list on the error path, if it was already added. Such places are:
-
-
-> int snd_usb_add_audio_stream(struct snd_usb_audio *chip, int stream, struct audioformat *fp)
-> {
->         struct snd_usb_stream *as;
->         struct snd_usb_substream *subs;
->         struct snd_pcm *pcm;
->         int err;
-> 
->         list_for_each_entry(as, &chip->pcm_list, list) {
->                 subs = &as->substream[stream];
->                 ...
->                         list_add_tail(&fp->list, &subs->fmt_list); <<< ADDING fp HERE
->                         subs->num_formats++;
->                         return 0;                                  <<< NO ERROR PATH HERE
->                 }
->         }
-> 
->         /* look for an empty stream */
->         list_for_each_entry(as, &chip->pcm_list, list) {
->                 subs = &as->substream[stream];
->                 ...
->                 snd_usb_init_substream(as, stream, fp);  <<< ADDING fp HERE, IF add_chmap() FAILS
->                 return add_chmap(as->pcm, stream, subs); <<< fp SHOULD BE REMOVED FROM fmt_list
->         }
-> 
->         /* create a new pcm */
->         as = kzalloc(sizeof(*as), GFP_KERNEL);
->         err = snd_pcm_new(chip->card, "USB Audio", chip->pcm_devs,
->         ...
->         if (err < 0) {            <<< fp IS NOT ADDED YET HERE, SO FINE
->                 kfree(as);
->                 return err;
->         }
->         ...
->         snd_usb_init_substream(as, stream, fp);                 <<< ADDING fp HERE
->         ...                                                     <<< IF add_chmap() FAILS fp SHOULD
->         return add_chmap(pcm, stream, &as->substream[stream]);  <<< BE REMOVED FROM fmt_list
-> }
-
-add_chmap() itself does not add anything to fmt_list list, so we indeed need to remove only the single list element from the list. Having all the above in mind, the patch follows.
-
-4.3) How to handle possible error paths after successful call to snd_usb_add_audio_stream() in create_fixed_stream_quirk() is d
-iscussable. Properly it should be like the below, but I believe it is overcomplication here would and stick to a simple error_after_add_audio_stream: label:
-
->  error2:
->         snd_usb_del_audio_stream(...something...);
->  error:
->         kfree(fp);
->         kfree(rate_table);
->         return err;
-
-Best regards,
-Vladis Dronov | Red Hat, Inc. | Product Security Engineer
