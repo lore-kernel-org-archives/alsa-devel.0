@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 3/8] ALSA: firewire-lib: add new function to
-	schedule a work for sound card registration
-Date: Thu, 31 Mar 2016 08:47:04 +0900
-Message-ID: <1459381629-24189-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/8] ALSA: bebob: delayed registration of sound
+	card
+Date: Thu, 31 Mar 2016 08:47:05 +0900
+Message-ID: <1459381629-24189-5-git-send-email-o-takashi@sakamocchi.jp>
 References: <1459381629-24189-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C479265041
+ by alsa0.perex.cz (Postfix) with ESMTP id 89B8A264FFF
  for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2016 01:47:14 +0200 (CEST)
 In-Reply-To: <1459381629-24189-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,136 +25,342 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In former commit, ALSA dice driver postpone sound card registration after
-IEEE 1394 bus is calm. This idea has advantages for the other drivers.
+Some bebob based units tends to fail asynchronous communication when
+IEEE 1394 bus is under bus-reset state. When registering sound card
+instance at unit probe callback, userspace applications can be involved
+to the state.
 
-This commit adds a helper function for it to firewire-lib module. The
-function is really for the specific purpose. Callers should initialize
-delayed work structure with callback function.
+This commit postpones the registration till the bus is calm.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/dice/dice.c | 23 +++--------------------
- sound/firewire/lib.c       | 32 ++++++++++++++++++++++++++++++++
- sound/firewire/lib.h       |  3 +++
- 3 files changed, 38 insertions(+), 20 deletions(-)
+ sound/firewire/bebob/bebob.c | 215 +++++++++++++++++++++++++------------------
+ sound/firewire/bebob/bebob.h |   5 +-
+ 2 files changed, 131 insertions(+), 89 deletions(-)
 
-diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
-index 53ca441..96fe68f4 100644
---- a/sound/firewire/dice/dice.c
-+++ b/sound/firewire/dice/dice.c
-@@ -20,8 +20,6 @@ MODULE_LICENSE("GPL v2");
- #define WEISS_CATEGORY_ID	0x00
- #define LOUD_CATEGORY_ID	0x10
- 
--#define PROBE_DELAY_MS		(2 * MSEC_PER_SEC)
--
- /*
-  * Some models support several isochronous channels, while these streams are not
-  * always available. In this case, add the model name to this list.
-@@ -235,27 +233,12 @@ static void do_registration(struct work_struct *work)
- error:
- 	snd_dice_stream_destroy_duplex(dice);
- 	snd_dice_transaction_destroy(dice);
-+	snd_dice_stream_destroy_duplex(dice);
- 	snd_card_free(dice->card);
- 	dev_info(&dice->unit->device,
- 		 "Sound card registration failed: %d\n", err);
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+index 932901d..f7e2cbd 100644
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -126,6 +126,17 @@ end:
+ 	return err;
  }
  
--static void schedule_registration(struct snd_dice *dice)
--{
--	struct fw_card *fw_card = fw_parent_device(dice->unit)->card;
--	u64 now, delay;
--
--	now = get_jiffies_64();
--	delay = fw_card->reset_jiffies + msecs_to_jiffies(PROBE_DELAY_MS);
--
--	if (time_after64(delay, now))
--		delay -= now;
--	else
--		delay = 0;
--
--	mod_delayed_work(system_wq, &dice->dwork, delay);
--}
--
- static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
- {
- 	struct snd_dice *dice;
-@@ -280,7 +263,7 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
- 
- 	/* Allocate and register this sound card later. */
- 	INIT_DEFERRABLE_WORK(&dice->dwork, do_registration);
--	schedule_registration(dice);
-+	snd_fw_schedule_registration(unit, &dice->dwork);
- 
- 	return 0;
- }
-@@ -311,7 +294,7 @@ static void dice_bus_reset(struct fw_unit *unit)
- 
- 	/* Postpone a workqueue for deferred registration. */
- 	if (!dice->registered)
--		schedule_registration(dice);
-+		snd_fw_schedule_registration(unit, &dice->dwork);
- 
- 	/* The handler address register becomes initialized. */
- 	snd_dice_transaction_reinit(dice);
-diff --git a/sound/firewire/lib.c b/sound/firewire/lib.c
-index f80aafa..ca4dfcf 100644
---- a/sound/firewire/lib.c
-+++ b/sound/firewire/lib.c
-@@ -67,6 +67,38 @@ int snd_fw_transaction(struct fw_unit *unit, int tcode,
- }
- EXPORT_SYMBOL(snd_fw_transaction);
- 
-+#define PROBE_DELAY_MS		(2 * MSEC_PER_SEC)
-+
-+/**
-+ * snd_fw_schedule_registration - schedule work for sound card registration
-+ * @unit: an instance for unit on IEEE 1394 bus
-+ * @dwork: delayed work with callback function
-+ *
-+ * This function is not designed for general purposes. When new unit is
-+ * connected to IEEE 1394 bus, the bus is under bus-reset state because of
-+ * topological change. In this state, units tend to fail both of asynchronous
-+ * and isochronous communication. To avoid this problem, this function is used
-+ * to postpone sound card registration after the state. The callers must
-+ * set up instance of delayed work in advance.
-+ */
-+void snd_fw_schedule_registration(struct fw_unit *unit,
-+				  struct delayed_work *dwork)
++static void bebob_free(struct snd_bebob *bebob)
 +{
-+	u64 now, delay;
++	snd_bebob_stream_destroy_duplex(bebob);
++	fw_unit_put(bebob->unit);
 +
-+	now = get_jiffies_64();
-+	delay = fw_parent_device(unit)->card->reset_jiffies
-+					+ msecs_to_jiffies(PROBE_DELAY_MS);
++	kfree(bebob->maudio_special_quirk);
 +
-+	if (time_after64(delay, now))
-+		delay -= now;
-+	else
-+		delay = 0;
-+
-+	mod_delayed_work(system_wq, dwork, delay);
++	mutex_destroy(&bebob->mutex);
++	kfree(bebob);
 +}
-+EXPORT_SYMBOL(snd_fw_schedule_registration);
 +
- static void async_midi_port_callback(struct fw_card *card, int rcode,
- 				     void *data, size_t length,
- 				     void *callback_data)
-diff --git a/sound/firewire/lib.h b/sound/firewire/lib.h
-index f3f6f84..f676931 100644
---- a/sound/firewire/lib.h
-+++ b/sound/firewire/lib.h
-@@ -22,6 +22,9 @@ static inline bool rcode_is_permanent_error(int rcode)
- 	return rcode == RCODE_TYPE_ERROR || rcode == RCODE_ADDRESS_ERROR;
+ /*
+  * This module releases the FireWire unit data after all ALSA character devices
+  * are released by applications. This is for releasing stream data or finishing
+@@ -137,18 +148,11 @@ bebob_card_free(struct snd_card *card)
+ {
+ 	struct snd_bebob *bebob = card->private_data;
+ 
+-	snd_bebob_stream_destroy_duplex(bebob);
+-	fw_unit_put(bebob->unit);
+-
+-	kfree(bebob->maudio_special_quirk);
+-
+-	if (bebob->card_index >= 0) {
+-		mutex_lock(&devices_mutex);
+-		clear_bit(bebob->card_index, devices_used);
+-		mutex_unlock(&devices_mutex);
+-	}
++	mutex_lock(&devices_mutex);
++	clear_bit(bebob->card_index, devices_used);
++	mutex_unlock(&devices_mutex);
+ 
+-	mutex_destroy(&bebob->mutex);
++	bebob_free(card->private_data);
  }
  
-+void snd_fw_schedule_registration(struct fw_unit *unit,
-+				  struct delayed_work *dwork);
+ static const struct snd_bebob_spec *
+@@ -176,16 +180,17 @@ check_audiophile_booted(struct fw_unit *unit)
+ 	return strncmp(name, "FW Audiophile Bootloader", 15) != 0;
+ }
+ 
+-static int
+-bebob_probe(struct fw_unit *unit,
+-	    const struct ieee1394_device_id *entry)
++static void
++do_registration(struct work_struct *work)
+ {
+-	struct snd_card *card;
+-	struct snd_bebob *bebob;
+-	const struct snd_bebob_spec *spec;
++	struct snd_bebob *bebob =
++			container_of(work, struct snd_bebob, dwork.work);
+ 	unsigned int card_index;
+ 	int err;
+ 
++	if (bebob->registered)
++		return;
 +
- struct snd_fw_async_midi_port;
- typedef int (*snd_fw_async_midi_port_fill)(
- 				struct snd_rawmidi_substream *substream,
+ 	mutex_lock(&devices_mutex);
+ 
+ 	for (card_index = 0; card_index < SNDRV_CARDS; card_index++) {
+@@ -193,64 +198,39 @@ bebob_probe(struct fw_unit *unit,
+ 			break;
+ 	}
+ 	if (card_index >= SNDRV_CARDS) {
+-		err = -ENOENT;
+-		goto end;
++		mutex_unlock(&devices_mutex);
++		return;
+ 	}
+ 
+-	if ((entry->vendor_id == VEN_FOCUSRITE) &&
+-	    (entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH))
+-		spec = get_saffire_spec(unit);
+-	else if ((entry->vendor_id == VEN_MAUDIO1) &&
+-		 (entry->model_id == MODEL_MAUDIO_AUDIOPHILE_BOTH) &&
+-		 !check_audiophile_booted(unit))
+-		spec = NULL;
+-	else
+-		spec = (const struct snd_bebob_spec *)entry->driver_data;
+-
+-	if (spec == NULL) {
+-		if ((entry->vendor_id == VEN_MAUDIO1) ||
+-		    (entry->vendor_id == VEN_MAUDIO2))
+-			err = snd_bebob_maudio_load_firmware(unit);
+-		else
+-			err = -ENOSYS;
+-		goto end;
++	err = snd_card_new(&bebob->unit->device, index[card_index],
++			   id[card_index], THIS_MODULE, 0, &bebob->card);
++	if (err < 0) {
++		mutex_unlock(&devices_mutex);
++		return;
+ 	}
+ 
+-	err = snd_card_new(&unit->device, index[card_index], id[card_index],
+-			   THIS_MODULE, sizeof(struct snd_bebob), &card);
+-	if (err < 0)
+-		goto end;
+-	bebob = card->private_data;
+-	bebob->card_index = card_index;
+-	set_bit(card_index, devices_used);
+-	card->private_free = bebob_card_free;
+-
+-	bebob->card = card;
+-	bebob->unit = fw_unit_get(unit);
+-	bebob->spec = spec;
+-	mutex_init(&bebob->mutex);
+-	spin_lock_init(&bebob->lock);
+-	init_waitqueue_head(&bebob->hwdep_wait);
+-
+ 	err = name_device(bebob);
+ 	if (err < 0)
+ 		goto error;
+ 
+-	if ((entry->vendor_id == VEN_MAUDIO1) &&
+-	    (entry->model_id == MODEL_MAUDIO_FW1814))
+-		err = snd_bebob_maudio_special_discover(bebob, true);
+-	else if ((entry->vendor_id == VEN_MAUDIO1) &&
+-		 (entry->model_id == MODEL_MAUDIO_PROJECTMIX))
+-		err = snd_bebob_maudio_special_discover(bebob, false);
+-	else
++	if (bebob->spec == &maudio_special_spec) {
++		if (bebob->entry->model_id == MODEL_MAUDIO_FW1814)
++			err = snd_bebob_maudio_special_discover(bebob, true);
++		else
++			err = snd_bebob_maudio_special_discover(bebob, false);
++	} else {
+ 		err = snd_bebob_stream_discover(bebob);
++	}
++	if (err < 0)
++		goto error;
++
++	err = snd_bebob_stream_init_duplex(bebob);
+ 	if (err < 0)
+ 		goto error;
+ 
+ 	snd_bebob_proc_init(bebob);
+ 
+-	if ((bebob->midi_input_ports > 0) ||
+-	    (bebob->midi_output_ports > 0)) {
++	if (bebob->midi_input_ports > 0 || bebob->midi_output_ports > 0) {
+ 		err = snd_bebob_create_midi_devices(bebob);
+ 		if (err < 0)
+ 			goto error;
+@@ -264,16 +244,75 @@ bebob_probe(struct fw_unit *unit,
+ 	if (err < 0)
+ 		goto error;
+ 
+-	err = snd_bebob_stream_init_duplex(bebob);
++	err = snd_card_register(bebob->card);
+ 	if (err < 0)
+ 		goto error;
+ 
+-	if (!bebob->maudio_special_quirk) {
+-		err = snd_card_register(card);
+-		if (err < 0) {
+-			snd_bebob_stream_destroy_duplex(bebob);
+-			goto error;
+-		}
++	set_bit(card_index, devices_used);
++	mutex_unlock(&devices_mutex);
++
++	/*
++	 * After registered, bebob instance can be released corresponding to
++	 * releasing the sound card instance.
++	 */
++	bebob->card->private_free = bebob_card_free;
++	bebob->card->private_data = bebob;
++	bebob->registered = true;
++
++	return;
++error:
++	mutex_unlock(&devices_mutex);
++	snd_bebob_stream_destroy_duplex(bebob);
++	snd_card_free(bebob->card);
++	dev_info(&bebob->unit->device,
++		 "Sound card registration failed: %d\n", err);
++}
++
++static int
++bebob_probe(struct fw_unit *unit, const struct ieee1394_device_id *entry)
++{
++	struct snd_bebob *bebob;
++	const struct snd_bebob_spec *spec;
++
++	if (entry->vendor_id == VEN_FOCUSRITE &&
++	    entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH)
++		spec = get_saffire_spec(unit);
++	else if (entry->vendor_id == VEN_MAUDIO1 &&
++		 entry->model_id == MODEL_MAUDIO_AUDIOPHILE_BOTH &&
++		 !check_audiophile_booted(unit))
++		spec = NULL;
++	else
++		spec = (const struct snd_bebob_spec *)entry->driver_data;
++
++	if (spec == NULL) {
++		if (entry->vendor_id == VEN_MAUDIO1 ||
++		    entry->vendor_id == VEN_MAUDIO2)
++			return snd_bebob_maudio_load_firmware(unit);
++		else
++			return -ENODEV;
++	}
++
++	/* Allocate this independent of sound card instance. */
++	bebob = kzalloc(sizeof(struct snd_bebob), GFP_KERNEL);
++	if (bebob == NULL)
++		return -ENOMEM;
++
++	bebob->unit = fw_unit_get(unit);
++	bebob->entry = entry;
++	bebob->spec = spec;
++	dev_set_drvdata(&unit->device, bebob);
++
++	mutex_init(&bebob->mutex);
++	spin_lock_init(&bebob->lock);
++	init_waitqueue_head(&bebob->hwdep_wait);
++
++	/* Allocate and register this sound card later. */
++	INIT_DEFERRABLE_WORK(&bebob->dwork, do_registration);
++
++	if (entry->vendor_id != VEN_MAUDIO1 ||
++	    (entry->model_id != MODEL_MAUDIO_FW1814 &&
++	     entry->model_id != MODEL_MAUDIO_PROJECTMIX)) {
++		snd_fw_schedule_registration(unit, &bebob->dwork);
+ 	} else {
+ 		/*
+ 		 * This is a workaround. This bus reset seems to have an effect
+@@ -285,19 +324,11 @@ bebob_probe(struct fw_unit *unit,
+ 		 * signals from dbus and starts I/Os. To avoid I/Os till the
+ 		 * future bus reset, registration is done in next update().
+ 		 */
+-		bebob->deferred_registration = true;
+ 		fw_schedule_bus_reset(fw_parent_device(bebob->unit)->card,
+ 				      false, true);
+ 	}
+ 
+-	dev_set_drvdata(&unit->device, bebob);
+-end:
+-	mutex_unlock(&devices_mutex);
+-	return err;
+-error:
+-	mutex_unlock(&devices_mutex);
+-	snd_card_free(card);
+-	return err;
++	return 0;
+ }
+ 
+ /*
+@@ -324,15 +355,11 @@ bebob_update(struct fw_unit *unit)
+ 	if (bebob == NULL)
+ 		return;
+ 
+-	fcp_bus_reset(bebob->unit);
+-
+-	if (bebob->deferred_registration) {
+-		if (snd_card_register(bebob->card) < 0) {
+-			snd_bebob_stream_destroy_duplex(bebob);
+-			snd_card_free(bebob->card);
+-		}
+-		bebob->deferred_registration = false;
+-	}
++	/* Postpone a workqueue for deferred registration. */
++	if (!bebob->registered)
++		snd_fw_schedule_registration(unit, &bebob->dwork);
++	else
++		fcp_bus_reset(bebob->unit);
+ }
+ 
+ static void bebob_remove(struct fw_unit *unit)
+@@ -342,8 +369,20 @@ static void bebob_remove(struct fw_unit *unit)
+ 	if (bebob == NULL)
+ 		return;
+ 
+-	/* No need to wait for releasing card object in this context. */
+-	snd_card_free_when_closed(bebob->card);
++	/*
++	 * Confirm to stop the work for registration before the sound card is
++	 * going to be released. The work is not scheduled again because bus
++	 * reset handler is not called anymore.
++	 */
++	cancel_delayed_work_sync(&bebob->dwork);
++
++	if (bebob->registered) {
++		/* No need to wait for releasing card object in this context. */
++		snd_card_free_when_closed(bebob->card);
++	} else {
++		/* Don't forget this case. */
++		bebob_free(bebob);
++	}
+ }
+ 
+ static const struct snd_bebob_rate_spec normal_rate_spec = {
+diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
+index b50bb33d..2a442a7 100644
+--- a/sound/firewire/bebob/bebob.h
++++ b/sound/firewire/bebob/bebob.h
+@@ -83,6 +83,10 @@ struct snd_bebob {
+ 	struct mutex mutex;
+ 	spinlock_t lock;
+ 
++	bool registered;
++	struct delayed_work dwork;
++
++	const struct ieee1394_device_id *entry;
+ 	const struct snd_bebob_spec *spec;
+ 
+ 	unsigned int midi_input_ports;
+@@ -111,7 +115,6 @@ struct snd_bebob {
+ 
+ 	/* for M-Audio special devices */
+ 	void *maudio_special_quirk;
+-	bool deferred_registration;
+ 
+ 	/* For BeBoB version quirk. */
+ 	unsigned int version;
 -- 
 2.7.4
