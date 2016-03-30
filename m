@@ -1,15 +1,22 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 0/7] ALSA: firewire: apply deleyed registration
-	to all drivers
-Date: Thu, 31 Mar 2016 08:47:01 +0900
-Message-ID: <1459381629-24189-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Simran Rai <simran.rai@broadcom.com>
+Subject: Re: [PATCH resend v5 2/3] ASoC: cygnus: Add Cygnus
+	audio DAI driver
+Date: Wed, 30 Mar 2016 16:50:59 -0700
+Message-ID: <CAES42NYpsV-1eePzoee+JO_FnAVyzM2z_mUuT4g7AvdwwVHdTA@mail.gmail.com>
+References: <1459277192-10942-1-git-send-email-simran.rai@broadcom.com>
+ <1459277192-10942-3-git-send-email-simran.rai@broadcom.com>
+ <20160329221634.GQ2350@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F3402650BD
- for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2016 01:47:14 +0200 (CEST)
+Received: from mail-oi0-f42.google.com (mail-oi0-f42.google.com
+ [209.85.218.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id E964D266610
+ for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2016 01:51:39 +0200 (CEST)
+Received: by mail-oi0-f42.google.com with SMTP id o62so37761857oig.1
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2016 16:51:39 -0700 (PDT)
+In-Reply-To: <20160329221634.GQ2350@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,68 +26,119 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: Mark Brown <broonie@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lori Hikichi <lhikichi@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Ray Jui <rjui@broadcom.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, bcm-kernel-feedback-list@broadcom.com, Kumar Gala <galak@codeaurora.org>, Arun Parameswaran <arunp@broadcom.com>, linux-arm-kernel@lists.infradead.org, Simran Rai <ssimran@broadcom.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi Mark,
 
-Commit b59fb1900b4fee('ALSA: dice: postpone card registration') applied
-delayed registration[1] of sound card instance to ALSA dice driver. This idea
-is also nice for drivers in ALSA firewire stack because in IEEE 1394 bus adding
-units is corresponding to bus reset and the actual units tend not to work well
-during bus-reset state.
+On Tue, Mar 29, 2016 at 3:16 PM, Mark Brown <broonie@kernel.org> wrote:
 
-This patchset adds a new function to firewire-lib module to schedule a delayed
-work for sound card registration. Currently, the work is commonly scheduled 2
-seconds after time of the last bus-reset recorded by Linux firewire core. Then,
-take all drivers to use it as Dice driver does.
+> On Tue, Mar 29, 2016 at 11:46:31AM -0700, Simran Rai wrote:
+>
+> A few issues here, a lot of them are stylistic though there's what look
+> like a couple of small bugs here too.
+>
+> > +static int cygnus_ssp_set_clocks(struct cygnus_aio_port *aio,
+> > +                     struct cygnus_audio *cygaud)
+> > +{
+> > +     u32 value, i = 0;
+> > +     u32 mask = 0xf;
+> > +     u32 sclk;
+> > +     bool found = false;
+> > +     const struct _ssp_clk_coeff *p_entry = NULL;
+> > +
+> > +     if ((!aio->lrclk) || (!aio->bit_per_frame)) {
+> > +             dev_err(aio->cygaud->dev, "First set up port through
+> hw_params()\n");
+> > +             return -EINVAL;
+> > +     }
+>
+> This function is only ever called from one site in hw_prams().  What is
+> this defending against?  A check like this seems very worrying, if it
+> ever goes off that seems to indicate either something is seriously wrong
+> or we should be recording something then coming back and trying again
+> later.
+>
+Will remove it.
+>
+>
+> > +     for (i = 0; i < ARRAY_SIZE(ssp_clk_coeff); i++) {
+> > +             p_entry = &ssp_clk_coeff[i];
+> > +             if ((p_entry->rate == aio->lrclk) &&
+> > +                             (p_entry->sclk_rate == aio->bit_per_frame)
+> &&
+> > +                             (p_entry->mclk == aio->mclk)) {
+>
+> Why the strange indentation here?
+>
+Will fix this.
+>
+>
+> > +     /* Set sclk rate */
+> > +     if (aio->port_type == PORT_TDM) {
+>
+> switch statment here for extensibility.
+>
+Will replace if statement with switch statement
+>
+>
+> > +             /* Configure channels as mono or stereo */
+> > +             if (params_channels(params) == 1) {
+> > +                     value = readl(aio->cygaud->audio +
+> > +                             aio->regs.bf_sourcech_cfg);
+> > +                     value |= BIT(BF_SRC_CFGX_SAMPLE_CH_MODE);
+> > +                     value &= ~BIT(BF_SRC_CFGX_BUFFER_PAIR_ENABLE);
+> > +                     writel(value, aio->cygaud->audio +
+> > +                             aio->regs.bf_sourcech_cfg);
+> > +             } else {
+> > +                     value = readl(aio->cygaud->audio +
+> > +                             aio->regs.bf_sourcech_cfg);
+> > +                     value &= ~BIT(BF_SRC_CFGX_SAMPLE_CH_MODE);
+> > +                     writel(value, aio->cygaud->audio +
+> > +                             aio->regs.bf_sourcech_cfg);
+> > +             }
+>
+> Either this should be a switch statement or the comment should say we
+> support more than stereo.  It's also not clear to me how
+> BUFFER_PAIR_ENABLE gets set again if we go from mono to stereo.
+>
+Will change to switch statement. Thanks for exposing the bug related to
+BUFFER_PAIR_ENABLE. Will fix it.
+>
+>
+> > +     if (!aio->is_slave) {
+> > +             if (aio->clk_trace.cap_clk_en)
+> > +                     clk_prepare_enable(aio->cygaud->
+> > +                                     audio_clk[aio->pll_clk_num]);
+>
+> Should check the return value of clk_prepare_enable().
+>
+Will do.
+>
+>
+> > +     .playback = {
+> > +             .channels_min = 2,
+> > +             .channels_max = 2,
+> > +             .rates = CYGNUS_TDM_RATE | SNDRV_PCM_RATE_88200 |
+> > +                     SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 |
+> > +                     SNDRV_PCM_RATE_192000,
+> > +             .formats = SNDRV_PCM_FMTBIT_S16_LE |
+> > +                     SNDRV_PCM_FMTBIT_S32_LE,
+>
+> According to hw_params() the driver also supports S8 and S24.
 
-Related to this patchset, I'd like to cancel a discussion about my proposed
-patchset to remove unpractical module parameters from ALSA bebob/fireworks[2].
-I'm sorry for reviewers but my work priority to this patchset is prior to the
-former one.
+ SSP and TDM playback supports S8, S16 and S32. SSP and TDM capture supports
+S16 and S32. SPDIF playback supports S16 and S32. Will fix the code to
+reflect this.
 
+> > +     if (port_type == PORT_TDM) {
+>
+> > +     } else { /* SPDIF case */
+>
+> switch statement...
+>
+Will do.
 
-[1]: [alsa-devel] [PATCH 0/4 v5] ALSA: dice: improve card registration
-processing
-http://mailman.alsa-project.org/pipermail/alsa-devel/2015-December/102562.html
-
-[2]: [alsa-devel] [PATCH 0/2] ALSA: bebob/fireworks: remove module parameters to
-reduce maintenance work
-http://mailman.alsa-project.org/pipermail/alsa-devel/2016-March/106219.html
-
-Regards
-
-
-Takashi Sakamoto (8):
-  ALSA: firewire-lib: suppress kernel warnings when releasing
-    uninitialized stream data
-  ALSA: dice: simplify unit probe processing
-  ALSA: firewire-lib: add new function to schedule a work for sound card
-    registration
-  ALSA: bebob: delayed registration of sound card
-  ALSA: fireworks: delayed registration of sound card
-  ALSA: oxfw: delayed registration of sound card
-  ALSA: firewire-digi00x: delayed registration of sound card
-  ALSA: firewire-tascam: deleyed registration of sound card
-
- sound/firewire/amdtp-stream.c                |   4 +
- sound/firewire/bebob/bebob.c                 | 215 ++++++++++++++++-----------
- sound/firewire/bebob/bebob.h                 |   5 +-
- sound/firewire/dice/dice.c                   |  34 +----
- sound/firewire/digi00x/digi00x-transaction.c |   7 +-
- sound/firewire/digi00x/digi00x.c             | 107 +++++++++----
- sound/firewire/digi00x/digi00x.h             |   3 +
- sound/firewire/fireworks/fireworks.c         | 147 ++++++++++++------
- sound/firewire/fireworks/fireworks.h         |   3 +
- sound/firewire/lib.c                         |  32 ++++
- sound/firewire/lib.h                         |   3 +
- sound/firewire/oxfw/oxfw.c                   | 151 ++++++++++++-------
- sound/firewire/oxfw/oxfw.h                   |   3 +
- sound/firewire/tascam/tascam.c               | 118 ++++++++++-----
- sound/firewire/tascam/tascam.h               |   2 +
- 15 files changed, 551 insertions(+), 283 deletions(-)
-
--- 
-2.7.4
+Thanks,
+Simran
