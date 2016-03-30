@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8960: Depends on I2C" to the asoc tree
-Date: Wed, 30 Mar 2016 11:07:13 -0700
-Message-ID: <E1alKWP-0006Yh-8F@finisterre>
+Subject: Applied "ASoC: rt5677: Avoid duplicate the same test
+	in each switch case" to the asoc tree
+Date: Wed, 30 Mar 2016 11:07:14 -0700
+Message-ID: <E1alKWQ-0006Z9-7k@finisterre>
+References: <1459333507.6111.0.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 16EEE265011
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2016 20:07:20 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 77612265026
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2016 20:07:22 +0200 (CEST)
+In-Reply-To: <1459333507.6111.0.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: kbuild test robot <fengguang.wu@intel.com>, Mark Brown <broonie@kernel.org>
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8960: Depends on I2C
+   ASoC: rt5677: Avoid duplicate the same test in each switch case
 
 has been applied to the asoc tree at
 
@@ -51,31 +53,87 @@ to this mail.
 Thanks,
 Mark
 
->From 3fcdfc9dad07c2a6ea19dfb98a2151cd86d06c6a Mon Sep 17 00:00:00 2001
-From: Mark Brown <broonie@kernel.org>
-Date: Wed, 30 Mar 2016 11:02:49 -0700
-Subject: [PATCH] ASoC: wm8960: Depends on I2C
+>From 2dfadff69e8b1da8f8661e9edb131b208cc389b7 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Wed, 30 Mar 2016 18:25:07 +0800
+Subject: [PATCH] ASoC: rt5677: Avoid duplicate the same test in each switch
+ case
 
-Now that this is directly user selectable it needs to care about its
-dependencies.
-
-Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/rt5677.c | 24 +++++-------------------
+ 1 file changed, 5 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 196101b2eab5..3ebf29bc87d3 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -910,6 +910,7 @@ config SND_SOC_WM8955
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index 33e290b703df..b3f1db5bae4a 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -1241,60 +1241,46 @@ static int rt5677_dmic_use_asrc(struct snd_soc_dapm_widget *source,
+ 		regmap_read(rt5677->regmap, RT5677_ASRC_5, &asrc_setting);
+ 		asrc_setting = (asrc_setting & RT5677_AD_STO1_CLK_SEL_MASK) >>
+ 				RT5677_AD_STO1_CLK_SEL_SFT;
+-		if (asrc_setting >= RT5677_CLK_SEL_I2S1_ASRC &&
+-			asrc_setting <= RT5677_CLK_SEL_I2S6_ASRC)
+-			return 1;
+ 		break;
  
- config SND_SOC_WM8960
- 	tristate "Wolfson Microelectronics WM8960 CODEC"
-+	depends on I2C
+ 	case 10:
+ 		regmap_read(rt5677->regmap, RT5677_ASRC_5, &asrc_setting);
+ 		asrc_setting = (asrc_setting & RT5677_AD_STO2_CLK_SEL_MASK) >>
+ 				RT5677_AD_STO2_CLK_SEL_SFT;
+-		if (asrc_setting >= RT5677_CLK_SEL_I2S1_ASRC &&
+-			asrc_setting <= RT5677_CLK_SEL_I2S6_ASRC)
+-			return 1;
+ 		break;
  
- config SND_SOC_WM8961
- 	tristate
+ 	case 9:
+ 		regmap_read(rt5677->regmap, RT5677_ASRC_5, &asrc_setting);
+ 		asrc_setting = (asrc_setting & RT5677_AD_STO3_CLK_SEL_MASK) >>
+ 				RT5677_AD_STO3_CLK_SEL_SFT;
+-		if (asrc_setting >= RT5677_CLK_SEL_I2S1_ASRC &&
+-			asrc_setting <= RT5677_CLK_SEL_I2S6_ASRC)
+-			return 1;
+ 		break;
+ 
+ 	case 8:
+ 		regmap_read(rt5677->regmap, RT5677_ASRC_5, &asrc_setting);
+ 		asrc_setting = (asrc_setting & RT5677_AD_STO4_CLK_SEL_MASK) >>
+ 			RT5677_AD_STO4_CLK_SEL_SFT;
+-		if (asrc_setting >= RT5677_CLK_SEL_I2S1_ASRC &&
+-			asrc_setting <= RT5677_CLK_SEL_I2S6_ASRC)
+-			return 1;
+ 		break;
+ 
+ 	case 7:
+ 		regmap_read(rt5677->regmap, RT5677_ASRC_6, &asrc_setting);
+ 		asrc_setting = (asrc_setting & RT5677_AD_MONOL_CLK_SEL_MASK) >>
+ 			RT5677_AD_MONOL_CLK_SEL_SFT;
+-		if (asrc_setting >= RT5677_CLK_SEL_I2S1_ASRC &&
+-			asrc_setting <= RT5677_CLK_SEL_I2S6_ASRC)
+-			return 1;
+ 		break;
+ 
+ 	case 6:
+ 		regmap_read(rt5677->regmap, RT5677_ASRC_6, &asrc_setting);
+ 		asrc_setting = (asrc_setting & RT5677_AD_MONOR_CLK_SEL_MASK) >>
+ 			RT5677_AD_MONOR_CLK_SEL_SFT;
+-		if (asrc_setting >= RT5677_CLK_SEL_I2S1_ASRC &&
+-			asrc_setting <= RT5677_CLK_SEL_I2S6_ASRC)
+-			return 1;
+ 		break;
+ 
+ 	default:
+-		break;
++		return 0;
+ 	}
+ 
++	if (asrc_setting >= RT5677_CLK_SEL_I2S1_ASRC &&
++	    asrc_setting <= RT5677_CLK_SEL_I2S6_ASRC)
++		return 1;
++
+ 	return 0;
+ }
+ 
 -- 
 2.8.0.rc3
