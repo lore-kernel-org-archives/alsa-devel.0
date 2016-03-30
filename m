@@ -1,76 +1,84 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 1/5] Sound: SOC: TAS571x: added missing register
- literals
-Date: Wed, 30 Mar 2016 10:21:27 -0700
-Message-ID: <20160330172127.GL2350@sirena.org.uk>
-References: <1459237178-12920-1-git-send-email-petr@barix.com>
- <20160329213305.GO2350@sirena.org.uk>
- <56FB8B00.4000408@barix.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: dpcm: prevent error for paths
+ including static links
+Date: Wed, 30 Mar 2016 10:27:02 -0700
+Message-ID: <20160330172702.GM2350@sirena.org.uk>
+References: <1458056089-885-1-git-send-email-piotrs@opensource.wolfsonmicro.com>
+ <20160329212224.GM2350@sirena.org.uk>
+ <20160330085812.GE31814@localhost.localdomain>
+ <20160330163650.GG2350@sirena.org.uk>
+ <20160330171314.GF31814@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ura8jf0QYTXVPAoa"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <56FB8B00.4000408-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Cc: cernekee-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============3453447154561103196=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 95B19265CC0
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2016 19:27:07 +0200 (CEST)
+In-Reply-To: <20160330171314.GF31814@localhost.localdomain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---ura8jf0QYTXVPAoa
+--===============3453447154561103196==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="nc/lueCMLdgjBWoP"
+Content-Disposition: inline
+
+
+--nc/lueCMLdgjBWoP
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Mar 30, 2016 at 10:14:56AM +0200, Petr Kulhavy wrote:
-> On 29.03.2016 23:33, Mark Brown wrote:
+On Wed, Mar 30, 2016 at 06:13:14PM +0100, Charles Keepax wrote:
+> On Wed, Mar 30, 2016 at 09:36:50AM -0700, Mark Brown wrote:
 
-> >On Tue, Mar 29, 2016 at 09:39:34AM +0200, Petr Kulhavy wrote:
+> > Doesn't this mean that the appropriate fix is to terminate the DPCM
+> > routing at the first back end DAI so we're not trying to DPCM outside
+> > the SoC?
 
-> >>The list of TAS571x registers was incomplete.
-> >>Added the missing register definitions up to register 0x25
+> I think (not 100% certain) you can have multiple backends
+> connected to a single front end, which makes it hard to know when
+> to stop or even if it is assured that all the backends will be
+> before any other spurious DAIs in the widget list.
 
-> >According to the driver the device has registers up to 0xff?
+You can have multiple backends connected but they shouldn't be chained
+together, they should be connected in parallel.  We can tell if we're
+walking a node that's a backend, why would we walk the graph beyond
+that?
 
-> That is indeed true. But from address 0x29 on (0x26 to 0x28 are reserved)
-> the register width varies between 20, 12 and 8 bytes, which I'm afraid the
-> register map is unable to represent.
-
-Say what's going on in your changelog then.
-
-> >>+#define TAS571X_DEV_ID_REG		0x01
-> >>+#define TAS571X_ERR_STATUS_REG		0x02
-
-> >These look like volatile registers but the device has a register cache
-> >and we're not adding a list of volatile registers (or readable registers
-> >for that matter).
-
-> That's a good point, thanks! 0x03 is a regular RW register but 0x00 to 0x02
-> are indeed volatile.
-> Is it better to make them read-only, or volatile?
-
-It's not an either/or.  If they are read only they should be flagged as
-that.  If they are volatile (if they could change value at runtime) then
-they need to be flagged as that, I'd expect this applies to
-ERR_STATUS_REG.
-
---ura8jf0QYTXVPAoa
+--nc/lueCMLdgjBWoP
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJW/AsIAAoJECTWi3JdVIfQ5fsH/3Ifubqa+pegij8BLimPJiUe
-Iyruh6Egm305kGUKEzfAlnZ080vHj4QxSnOR+atoiJG8gjl2qG6WPNhLex3pm0PN
-0L4Hym5TmfX06z3xVOeVKIIhxST5AW0w1glTVZ2aU4Uzv7EKX0tyAfJxS+HJGuhj
-90tyO4G0I8A1zGROhERBRqc3GqLuXAvg4HJoPCdxE7uKFupyWKOaxJk9tWg8N7oG
-M289RxfCCLcHmb6n8i6vfpjxGbnN4cPy+nlT7qCpBre5xLD+EQQIGwIf8FSl+jsr
-WOtj3e27P5lUmF7ttSdlUNw+EmWuqZoB90vn0birDVjYgZTpY+qWBlzuTnz8UOo=
-=3PH6
+iQEcBAEBCAAGBQJW/AxkAAoJECTWi3JdVIfQ5VEH/RTxbnRF9OnDyMGBuE6dOecs
+QZDA/NM4QjfJcn8EZqpOnTi2tpOWNFIWSdY2OWGO/HWuHuPqCLFnFPpICpcVFSxa
+Tk7AWJWlpDTf/cz2d06CHLfqfuvvxeTLPv0mPpqd5wr5n1RexKRFchHHJ8p/3DCb
+CrDZktDi3SUp6W0kUI5PEGRbHaSO1AQdRu59LAyrrCKjQE3xBBk35Xm7OuW2Cu+2
+vhOkV5E/5L/q3Ub8aUJD6zJ7eazZM52vDVvDUKD49s+5jpz4UK4jg0SpA8ybuusX
+peua6jBWtLSlHyesHYMN/rrYZlAZgGEQehsmOmn/sMLbaxz1t/qeIgW9xKWbEQA=
+=KNsD
 -----END PGP SIGNATURE-----
 
---ura8jf0QYTXVPAoa--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--nc/lueCMLdgjBWoP--
+
+--===============3453447154561103196==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3453447154561103196==--
