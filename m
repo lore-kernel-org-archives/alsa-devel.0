@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH v2 4/7] topology: ABI - Define types for vendor
-	tuples
-Date: Wed, 30 Mar 2016 15:11:00 +0800
-Message-ID: <a75bdfc07ce0be766e1f5b8516cd02e921d0d138.1459321387.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH v2 2/7] topology: Define a free handler for the
+	element
+Date: Wed, 30 Mar 2016 15:10:45 +0800
+Message-ID: <c84880ade867ba29181f49c8a06a93f2c3136993.1459321387.git.mengdong.lin@linux.intel.com>
 References: <cover.1459321387.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 094182606F8
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2016 09:08:49 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B16D26170F
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2016 09:09:02 +0200 (CEST)
 In-Reply-To: <cover.1459321387.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,88 +27,40 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Tuples, a pair of token and value, can be used to define vendor specific
-data, for controls and widgets. This can avoid importing binary data blob
-from other files.
-
-Vendor specific tuple arrays will be embeded in the private data buffer
-of a control or widget object. To be backward compatible, union is used
-to define the tuple arrays in the existing private data ABI object
-'struct snd_soc_tplg_private'.
-
-Vendors need to make sure the token values defined by the topology conf
-file match those defined by their driver.
-
-Now supported tuple types are uuid, string, bool, byte, short and word.
+This handler is defined for type-specific destruction of an element.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/include/sound/asoc.h b/include/sound/asoc.h
-index a29c05c..920c9e0 100644
---- a/include/sound/asoc.h
-+++ b/include/sound/asoc.h
-@@ -107,6 +107,14 @@
- #define SND_SOC_TPLG_STREAM_PLAYBACK	0
- #define SND_SOC_TPLG_STREAM_CAPTURE	1
+diff --git a/src/topology/elem.c b/src/topology/elem.c
+index 00f9eea..f2afaaf 100644
+--- a/src/topology/elem.c
++++ b/src/topology/elem.c
+@@ -83,8 +83,12 @@ void tplg_elem_free(struct tplg_elem *elem)
+ 	/* free struct snd_tplg_ object,
+ 	 * the union pointers share the same address
+ 	 */
+-	if (elem->obj)
++	if (elem->obj) {
++		if (elem->free)
++			elem->free(elem->obj);
++
+ 		free(elem->obj);
++	}
  
-+/* vendor tuple types */
-+#define SND_SOC_TPLG_TUPLE_TYPE_UUID	0
-+#define SND_SOC_TPLG_TUPLE_TYPE_STRING	1
-+#define SND_SOC_TPLG_TUPLE_TYPE_BOOL	2
-+#define SND_SOC_TPLG_TUPLE_TYPE_BYTE	3
-+#define SND_SOC_TPLG_TUPLE_TYPE_WORD	4
-+#define SND_SOC_TPLG_TUPLE_TYPE_SHORT	5
+ 	free(elem);
+ }
+diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
+index 4915b1a..7368a86 100644
+--- a/src/topology/tplg_local.h
++++ b/src/topology/tplg_local.h
+@@ -127,6 +127,8 @@ struct tplg_elem {
+ 	 */
+ 	struct list_head ref_list;
+ 	struct list_head list; /* list of all elements with same type */
 +
- /*
-  * Block Header.
-  * This header precedes all object and object arrays below.
-@@ -123,6 +131,35 @@ struct snd_soc_tplg_hdr {
- 	__le32 count;		/* number of elements in block */
- } __attribute__((packed));
++	void (*free)(void *obj);
+ };
  
-+/* vendor tuple for uuid */
-+struct snd_soc_tplg_vendor_uuid_elem {
-+	__le32 token;
-+	char uuid[16];
-+} __attribute__((packed));
-+
-+/* vendor tuple for a bool/byte/short/word value */
-+struct snd_soc_tplg_vendor_value_elem {
-+	__le32 token;
-+	__le32 value;
-+} __attribute__((packed));
-+
-+/* vendor tuple for string */
-+struct snd_soc_tplg_vendor_string_elem {
-+	__le32 token;
-+	char string[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-+} __attribute__((packed));
-+
-+struct snd_soc_tplg_vendor_array {
-+	__le32 size;	/* size in bytes of the array, including all elements */
-+	__le32 type;	/* SND_SOC_TPLG_TUPLE_TYPE_ */
-+	__le32 num_elems;	/* number of elements in array */
-+	union {
-+		struct snd_soc_tplg_vendor_uuid_elem uuid[0];
-+		struct snd_soc_tplg_vendor_value_elem value[0];
-+		struct snd_soc_tplg_vendor_string_elem string[0];
-+	};
-+} __attribute__((packed));
-+
- /*
-  * Private data.
-  * All topology objects may have private data that can be used by the driver or
-@@ -130,7 +167,10 @@ struct snd_soc_tplg_hdr {
-  */
- struct snd_soc_tplg_private {
- 	__le32 size;	/* in bytes of private data */
--	char data[0];
-+	union {
-+		char data[0];
-+		struct snd_soc_tplg_vendor_array array[0];
-+	};
- } __attribute__((packed));
- 
- /*
+ struct map_elem {
 -- 
 2.5.0
