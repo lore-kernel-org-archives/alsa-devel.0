@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tas571x: chip type detection via I2C
-	name" to the asoc tree
-Date: Tue, 29 Mar 2016 16:40:16 -0700
-Message-ID: <E1al3FA-0005QD-Ij@finisterre>
-References: <1457608960-16913-2-git-send-email-petr@barix.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [RFC][PATCH] ALSA: firewire-lib: support Linux
+ tracing to dump a part of packet data
+Date: Wed, 30 Mar 2016 09:47:06 +0900
+Message-ID: <56FB220A.4010102@sakamocchi.jp>
+References: <1459081086-6145-1-git-send-email-o-takashi@sakamocchi.jp>
+ <s5hpoud2xvj.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 222A92669F5
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2016 01:40:23 +0200 (CEST)
-In-Reply-To: <1457608960-16913-2-git-send-email-petr@barix.com>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id A3543266A1B
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2016 02:47:10 +0200 (CEST)
+In-Reply-To: <s5hpoud2xvj.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,85 +22,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Petr Kulhavy <petr@barix.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi,
 
-   ASoC: tas571x: chip type detection via I2C name
+On Mar 29 2016 22:54, Takashi Iwai wrote:
+> On Sun, 27 Mar 2016 14:18:06 +0200,
+> Takashi Sakamoto wrote:
+>>
+>> When audio and music units have some quirks in their sequence of packet,
+>> it's really hard for non-owners to identify the quirks. To handle the
+>> quirks, developers need a dump for sequence of packets at least, however
+>> it's difficult to users who have no knowledge and equipment for this
+>> purpose.
+>>
+>> This commit adds tracepoints for this situation. When users encounter
+>> the issue, they can dump a part of packet data via Linux tracing framework
+>> as long as using drivers in ALSA firewire stack.
+>>
+>> This commit adds 'snd-firewire-lib' subsystem with 'in_packet' and
+>> 'out_packet' events. In the events, the content of CIP headers, the number
+>> of included quadlets and the index of packet managed by this module are
+>> recorded per packet.
+>>
+>> This is a sample:
+>>
+>> $ trace-cmd record -e snd_firewire_lib:out_packet -e snd_firewire_lib:in_packet
+>> /sys/kernel/tracing/events/snd_firewire_lib/out_packet/filter
+>> /sys/kernel/tracing/events/snd_firewire_lib/in_packet/filter
+>> Hit Ctrl^C to stop recording
+>> ^C
+>> $ trace-cmd report trace.dat
+>> ...
+>> <idle>-0  [002] 40398.221702: out_packet: 00070008 9001427a: 058: 31
+>> <idle>-0  [002] 40398.221703: in_packet:  01020010 9001ffff: 002: 15
+>> <idle>-0  [002] 40398.221703: out_packet: 00070010 9001ffff: 002: 32
+>> <idle>-0  [002] 40398.223679: in_packet:  010b0010 900157e4: 090: 16
+>> <idle>-0  [002] 40398.223681: out_packet: 00070010 900157e4: 058: 33
+>> <idle>-0  [002] 40398.223681: in_packet:  010b0018 9001714f: 090: 17
+>> ...
+>>
+>> One line represent one packet. The legend for the last four fields is:
+>>   - The first quadlet of CIP header
+>>   - The second quadlet of CIP header
+>>   - The number of included quadlets
+>>   - The index of packet inner buffer maintained by this module
+>>
+>> Currently, when detecting packet discontinuity, this module stops packet
+>> streaming. This is reasonable to packet streaming implementation. However,
+>> to identify the quirks, packet streaming should continue to dump enough
+>> sequence of packet. This commit adds a condition statement and a marker
+>> for this purpose.
+>
+> The packet tracing is nice, and I don't see any reason against it.
+> But changing the driver behavior depending on the trace state is
+> unusual, rather a thing to be avoided in general.
 
-has been applied to the asoc tree at
+See already-identified quirks:
+  - 13f3a46d2a6c('ALSA: oxfw: add Mackie Onyx Satellite quirk to inform 
+wrong value in 'dbs' field in tx CIP header')
+  - 18f5ed365d3f('ALSA: fireworks/firewire-lib: add support for recent 
+firmware quirk')
+  - c4d860a0d256('ALSA: bebob: loosen up severity of checking continuity 
+for BeBoB v3 quirk')
+  - 9d59124cacf5('ALSA: bebob/firewire-lib: Add a quirk of wrong dbc in 
+empty packet for M-Audio special Firewire series')
+  - d9cd0065c8a4('ALSA: fireworks/firewire-lib: Add a quirk for fixed 
+interval of reported dbc')
+  - c8bdf49b9935('ALSA: fireworks/firewire-lib: Add a quirk for the 
+meaning of dbc')
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+To investigate quirks similar to these, the sequence of packet 
+before/after detecting discontinuity helps us. It's a reason to change 
+the behaviour against the general issue.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Regards
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From f40d5ea2f48a3ad78f80b60f209507f160aa044b Mon Sep 17 00:00:00 2001
-From: Petr Kulhavy <petr@barix.com>
-Date: Tue, 29 Mar 2016 09:39:35 +0200
-Subject: [PATCH] ASoC: tas571x: chip type detection via I2C name
-
-The chip selection was relying only on DT. It was not possible to use the
-driver without DT.
-This adds the chip type detection from the I2C name, which
-allows to use the driver from the platform driver without DT.
-
-Signed-off-by: Petr Kulhavy <petr@barix.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/tas571x.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
-index d003c6ce0794..aafee9bbe01a 100644
---- a/sound/soc/codecs/tas571x.c
-+++ b/sound/soc/codecs/tas571x.c
-@@ -404,11 +404,10 @@ static int tas571x_i2c_probe(struct i2c_client *client,
- 	i2c_set_clientdata(client, priv);
- 
- 	of_id = of_match_device(tas571x_of_match, dev);
--	if (!of_id) {
--		dev_err(dev, "Unknown device type\n");
--		return -EINVAL;
--	}
--	priv->chip = of_id->data;
-+	if (of_id)
-+		priv->chip = of_id->data;
-+	else
-+		priv->chip = (void *) id->driver_data;
- 
- 	priv->mclk = devm_clk_get(dev, "mclk");
- 	if (IS_ERR(priv->mclk) && PTR_ERR(priv->mclk) != -ENOENT) {
-@@ -505,9 +504,9 @@ static const struct of_device_id tas571x_of_match[] = {
- MODULE_DEVICE_TABLE(of, tas571x_of_match);
- 
- static const struct i2c_device_id tas571x_i2c_id[] = {
--	{ "tas5711", 0 },
--	{ "tas5717", 0 },
--	{ "tas5719", 0 },
-+	{ "tas5711", (kernel_ulong_t) &tas5711_chip },
-+	{ "tas5717", (kernel_ulong_t) &tas5717_chip },
-+	{ "tas5719", (kernel_ulong_t) &tas5717_chip },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, tas571x_i2c_id);
--- 
-2.8.0.rc3
+Takashi Sakamoto
