@@ -1,15 +1,15 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH v2 5/7] topology: Add support for vendor tokens
-Date: Wed, 30 Mar 2016 15:11:08 +0800
-Message-ID: <328bb6886e03ea3a34ec3afd2cb06c6e13f5fbbe.1459321387.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH v2 7/7] topology: Build data objects with tuples
+Date: Wed, 30 Mar 2016 15:11:24 +0800
+Message-ID: <88de122381aba6eee0a9b86a5de85db36a3d44fe.1459321387.git.mengdong.lin@linux.intel.com>
 References: <cover.1459321387.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B4A62605D4
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2016 09:09:14 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF46D2617B8
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2016 09:09:30 +0200 (CEST)
 In-Reply-To: <cover.1459321387.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,180 +26,267 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Vendor can define a token list in SectionVendorTokens. Each token element
-is a pair of string ID and integer value. And both the ID and value are
-vendor-specific.
+For data objects with tuples, the parser will bind the vendor tuples
+and tokens, copy the tuples to the private buffer of its parent data
+object. Then later the builder will export the vendor tuples as private
+binary data for the control or widgets objects.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/include/topology.h b/include/topology.h
-index 51d282f..0df112c 100644
---- a/include/topology.h
-+++ b/include/topology.h
-@@ -578,6 +578,7 @@ enum snd_tplg_type {
- 	SND_TPLG_TYPE_BE,		/*!< BE DAI link */
- 	SND_TPLG_TYPE_CC,		/*!< Hostless codec <-> codec link */
- 	SND_TPLG_TYPE_MANIFEST,		/*!< Topology manifest */
-+	SND_TPLG_TYPE_TOKEN,		/*!< Vendor tokens */
- };
- 
- /**
 diff --git a/src/topology/data.c b/src/topology/data.c
-index 370c0fa..8455c15 100644
+index 8ce1a0a..7482b82 100644
 --- a/src/topology/data.c
 +++ b/src/topology/data.c
-@@ -253,6 +253,56 @@ static int tplg_parse_data_hex(snd_config_t *cfg, struct tplg_elem *elem,
+@@ -253,6 +253,198 @@ static int tplg_parse_data_hex(snd_config_t *cfg, struct tplg_elem *elem,
  	return ret;
  }
  
-+/* Parse vendor tokens
-+ */
-+int tplg_parse_tokens(snd_tplg_t *tplg, snd_config_t *cfg,
-+	void *private ATTRIBUTE_UNUSED)
++/* get the token integer value from its id */
++static int get_token_value(const char *token_id,
++	struct tplg_vendor_tokens *tokens)
 +{
-+	snd_config_iterator_t i, next;
-+	snd_config_t *n;
-+	const char *id, *value;
-+	struct tplg_elem *elem;
-+	struct tplg_vendor_tokens *tokens;
-+	int num_tokens = 0;
++	int i;
 +
-+	elem = tplg_elem_new_common(tplg, cfg, NULL, SND_TPLG_TYPE_TOKEN);
-+	if (!elem)
-+		return -ENOMEM;
-+
-+	snd_config_for_each(i, next, cfg) {
-+		num_tokens++;
++	for (i = 0; i < tokens->num_tokens; i++) {
++		if (strcmp(token_id, tokens->token[i].id) == 0)
++			return tokens->token[i].value;
 +	}
 +
-+	if (!num_tokens)
-+		return 0;
++	SNDERR("error: cannot find token id '%s'\n", token_id);
++	return -1;
++}
 +
-+	tplg_dbg(" Vendor tokens: %s, %d tokens\n", elem->id, num_tokens);
++/* get the vendor tokens referred by the vendor tuples */
++static struct tplg_elem *get_tokens(snd_tplg_t *tplg, struct tplg_elem *elem)
++{
++	struct tplg_ref *ref;
++	struct list_head *base, *pos;
++	int err = 0;
 +
-+	tokens = calloc(1, sizeof(*tokens)
-+			+ num_tokens * sizeof(struct tplg_token));
-+	if (!tokens)
-+		return -ENOMEM;
-+	elem->tokens = tokens;
++	base = &elem->ref_list;
++	list_for_each(pos, base) {
 +
-+	snd_config_for_each(i, next, cfg) {
++		ref = list_entry(pos, struct tplg_ref, list);
 +
-+		n = snd_config_iterator_entry(i);
-+		if (snd_config_get_id(n, &id) < 0)
++		if (!ref->id || ref->type != SND_TPLG_TYPE_TOKEN)
 +			continue;
 +
-+		if (snd_config_get_string(n, &value) < 0)
++		if (!ref->elem) {
++			ref->elem = tplg_elem_lookup(&tplg->token_list,
++						ref->id, SND_TPLG_TYPE_TOKEN);
++		}
++
++		return ref->elem;
++	}
++
++	return NULL;
++}
++
++/* check if a data element has tuples */
++static bool has_tuples(struct tplg_elem *elem)
++{
++	struct tplg_ref *ref;
++	struct list_head *base, *pos;
++	int err = 0;
++
++	base = &elem->ref_list;
++	list_for_each(pos, base) {
++
++		ref = list_entry(pos, struct tplg_ref, list);
++		if (ref->id && ref->type == SND_TPLG_TYPE_TUPLE)
++			return true;
++	}
++
++	return false;
++}
++
++/* get size of a tuple element from its type */
++static unsigned int get_tuple_size(int type)
++{
++	switch (type) {
++
++	case SND_SOC_TPLG_TUPLE_TYPE_UUID:
++		return sizeof(struct snd_soc_tplg_vendor_uuid_elem);
++
++	case SND_SOC_TPLG_TUPLE_TYPE_STRING:
++		return sizeof(struct snd_soc_tplg_vendor_string_elem);
++
++	default:
++		return sizeof(struct snd_soc_tplg_vendor_value_elem);
++	}
++}
++
++/* fill a data element's private buffer with its tuples */
++static int copy_tuples(struct tplg_elem *elem,
++	struct tplg_vendor_tuples *tuples, struct tplg_vendor_tokens *tokens)
++{
++	struct snd_soc_tplg_private *priv = elem->data;
++	struct tplg_tuple_set *tuple_set;
++	struct tplg_tuple *tuple;
++	struct snd_soc_tplg_vendor_array *array;
++	struct snd_soc_tplg_vendor_uuid_elem *uuid;
++	struct snd_soc_tplg_vendor_string_elem *string;
++	struct snd_soc_tplg_vendor_value_elem *value;
++	int set_size, size, off;
++	int i, j, token_val;
++
++	if (priv) {
++		SNDERR("error: %s has more data than tuples\n", elem->id);
++		return -EINVAL;
++	}
++
++	size = 0;
++	for (i = 0; i < tuples->num_sets ; i++) {
++		tuple_set = tuples->set[i];
++		set_size = sizeof(struct snd_soc_tplg_vendor_array)
++			+ get_tuple_size(tuple_set->type)
++			* tuple_set->num_tuples;
++		size += set_size;
++		if (size > TPLG_MAX_PRIV_SIZE) {
++			SNDERR("error: data too big %d\n", size);
++			return -EINVAL;
++		}
++
++		if (priv != NULL)
++			priv = realloc(priv, sizeof(*priv) + size);
++		else
++			priv = calloc(1, sizeof(*priv) + size);
++		if (!priv)
++			return -ENOMEM;
++
++		off = priv->size;
++		priv->size = size;
++
++		array = (struct snd_soc_tplg_vendor_array *)(priv->data + off);
++		array->size = set_size;
++		array->type = tuple_set->type;
++		array->num_elems = tuple_set->num_tuples;
++
++		/* fill the private data buffer */
++		for (j = 0; j < tuple_set->num_tuples; j++) {
++			tuple = &tuple_set->tuple[j];
++			token_val = get_token_value(tuple->token, tokens);
++			if (token_val  < 0)
++				return -EINVAL;
++
++			switch (tuple_set->type) {
++			case SND_SOC_TPLG_TUPLE_TYPE_UUID:
++				uuid = &array->uuid[j];
++				uuid->token = token_val;
++				memcpy(uuid->uuid, tuple->uuid, 16);
++				break;
++
++			case SND_SOC_TPLG_TUPLE_TYPE_STRING:
++				string = &array->string[j];
++				string->token = token_val;
++				elem_copy_text(string->string, tuple->string,
++					SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
++				break;
++
++			default:
++				value = &array->value[j];
++				value->token = token_val;
++				value->value = tuple->value;
++				break;
++			}
++		}
++	}
++
++	elem->data = priv;
++	return 0;
++}
++
++/* build a data element from its tuples */
++static int build_tuples(snd_tplg_t *tplg, struct tplg_elem *elem)
++{
++	struct tplg_ref *ref;
++	struct list_head *base, *pos;
++	struct tplg_elem *tuples, *tokens;
++
++	base = &elem->ref_list;
++	list_for_each(pos, base) {
++
++		ref = list_entry(pos, struct tplg_ref, list);
++
++		if (!ref->id || ref->type != SND_TPLG_TYPE_TUPLE)
 +			continue;
 +
-+		elem_copy_text(tokens->token[tokens->num_tokens].id, id,
-+				SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
-+		tokens->token[tokens->num_tokens].value = atoi(value);
-+		tplg_dbg("\t\t %s : %d\n", tokens->token[tokens->num_tokens].id,
-+			tokens->token[tokens->num_tokens].value);
-+		tokens->num_tokens++;
++		tplg_dbg("look up tuples %s\n", ref->id);
++
++		if (!ref->elem)
++			ref->elem = tplg_elem_lookup(&tplg->tuple_list,
++						ref->id, SND_TPLG_TYPE_TUPLE);
++		tuples = ref->elem;
++		if (!tuples)
++			return -EINVAL;
++
++		tplg_dbg("found tuples %s\n", tuples->id);
++		tokens = get_tokens(tplg, tuples);
++		if (!tokens)
++			return -EINVAL;
++
++		tplg_dbg("found tokens %s\n", tokens->id);
++		/* a data object can only have one tuples object */
++		return copy_tuples(elem, tuples->tuples, tokens->tokens);
 +	}
 +
 +	return 0;
 +}
- 
- /* Parse Private data.
-  *
-diff --git a/src/topology/elem.c b/src/topology/elem.c
-index f2afaaf..95e3fd4 100644
---- a/src/topology/elem.c
-+++ b/src/topology/elem.c
-@@ -193,6 +193,9 @@ struct tplg_elem* tplg_elem_new_common(snd_tplg_t *tplg,
- 		list_add_tail(&elem->list, &tplg->cc_list);
- 		obj_size = sizeof(struct snd_soc_tplg_link_config);
- 		break;
-+	case SND_TPLG_TYPE_TOKEN:
-+		list_add_tail(&elem->list, &tplg->token_list);
-+		break;
- 	default:
- 		free(elem);
- 		return NULL;
-diff --git a/src/topology/parser.c b/src/topology/parser.c
-index 4546257..264abc8 100644
---- a/src/topology/parser.c
-+++ b/src/topology/parser.c
-@@ -173,6 +173,14 @@ static int tplg_parse_config(snd_tplg_t *tplg, snd_config_t *cfg)
- 			continue;
- 		}
- 
-+		if (strcmp(id, "SectionVendorTokens") == 0) {
-+			err = tplg_parse_compound(tplg, n, tplg_parse_tokens,
-+				NULL);
++
+ static int parse_tuple_set(snd_tplg_t *tplg, snd_config_t *cfg,
+ 	struct tplg_tuple_set **s)
+ {
+@@ -676,3 +868,24 @@ int tplg_copy_data(struct tplg_elem *elem, struct tplg_elem *ref)
+ 	memcpy(priv->data, ref->data->data, priv_data_size);
+ 	return 0;
+ }
++
++/* check data objects and build those with tuples */
++int tplg_build_data(snd_tplg_t *tplg)
++{
++	struct list_head *base, *pos;
++	struct tplg_elem *elem;
++	int err = 0;
++
++	base = &tplg->pdata_list;
++	list_for_each(pos, base) {
++
++		elem = list_entry(pos, struct tplg_elem, list);
++		if (has_tuples(elem)) {
++			err = build_tuples(tplg, elem);
 +			if (err < 0)
 +				return err;
-+			continue;
 +		}
++	}
 +
- 		SNDERR("error: unknown section %s\n", id);
- 	}
- 	return 0;
-@@ -407,6 +415,7 @@ snd_tplg_t *snd_tplg_new(void)
- 	INIT_LIST_HEAD(&tplg->mixer_list);
- 	INIT_LIST_HEAD(&tplg->enum_list);
- 	INIT_LIST_HEAD(&tplg->bytes_ext_list);
-+	INIT_LIST_HEAD(&tplg->token_list);
++	return 0;
++}
+diff --git a/src/topology/parser.c b/src/topology/parser.c
+index 0d967b4..30d91f9 100644
+--- a/src/topology/parser.c
++++ b/src/topology/parser.c
+@@ -242,6 +242,10 @@ static int tplg_build_integ(snd_tplg_t *tplg)
+ {
+ 	int err;
  
- 	return tplg;
- }
-@@ -426,6 +435,7 @@ void snd_tplg_free(snd_tplg_t *tplg)
- 	tplg_elem_free_list(&tplg->mixer_list);
- 	tplg_elem_free_list(&tplg->enum_list);
- 	tplg_elem_free_list(&tplg->bytes_ext_list);
-+	tplg_elem_free_list(&tplg->token_list);
- 
- 	free(tplg);
- }
++	err = tplg_build_data(tplg);
++	if (err <  0)
++		return err;
++
+ 	err = tplg_build_controls(tplg);
+ 	if (err <  0)
+ 		return err;
 diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
-index 7368a86..679bfff 100644
+index 4d59a1f..4c601d4 100644
 --- a/src/topology/tplg_local.h
 +++ b/src/topology/tplg_local.h
-@@ -69,6 +69,7 @@ struct snd_tplg {
- 	struct list_head route_list;
- 	struct list_head text_list;
- 	struct list_head pdata_list;
-+	struct list_head token_list;
- 	struct list_head pcm_config_list;
- 	struct list_head pcm_caps_list;
- 
-@@ -86,6 +87,16 @@ struct tplg_ref {
- 	struct list_head list;
- };
- 
-+/* element for vendor tokens */
-+struct tplg_token {
-+	char id[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-+	unsigned int value;
-+};
-+
-+struct tplg_vendor_tokens {
-+	unsigned int num_tokens;
-+	struct tplg_token token[0];
-+};
- /* topology element */
- struct tplg_elem {
- 
-@@ -118,6 +129,7 @@ struct tplg_elem {
- 		/* these do not map to UAPI structs but are internal only */
- 		struct snd_soc_tplg_ctl_tlv *tlv;
- 		struct snd_soc_tplg_private *data;
-+		struct tplg_vendor_tokens *tokens;
- 	};
- 
- 	/* an element may refer to other elements:
-@@ -151,6 +163,9 @@ int tplg_parse_text(snd_tplg_t *tplg, snd_config_t *cfg,
- int tplg_parse_data(snd_tplg_t *tplg, snd_config_t *cfg,
- 	void *private ATTRIBUTE_UNUSED);
- 
-+int tplg_parse_tokens(snd_tplg_t *tplg, snd_config_t *cfg,
-+	void *private ATTRIBUTE_UNUSED);
-+
- int tplg_parse_control_bytes(snd_tplg_t *tplg,
+@@ -222,6 +222,7 @@ int tplg_parse_be(snd_tplg_t *tplg,
+ int tplg_parse_cc(snd_tplg_t *tplg,
  	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED);
  
++int tplg_build_data(snd_tplg_t *tplg);
+ int tplg_build_controls(snd_tplg_t *tplg);
+ int tplg_build_widgets(snd_tplg_t *tplg);
+ int tplg_build_routes(snd_tplg_t *tplg);
 -- 
 2.5.0
