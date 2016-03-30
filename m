@@ -1,199 +1,163 @@
-From: Jose Abreu <Jose.Abreu@synopsys.com>
-Subject: Re: [PATCH 2/3 v2] ASoC: dwc: Add I2S HDMI audio support
-Date: Tue, 29 Mar 2016 19:03:01 +0100
-Message-ID: <56FAC355.1040705@synopsys.com>
-References: <cover.1459174494.git.joabreu@synopsys.com>
- <538be366488bf0d7633d702f2d0bab16707b7a47.1459174494.git.joabreu@synopsys.com>
- <20160329173158.GB2350@sirena.org.uk>
+From: Andreas Dannenberg <dannenberg-l0cyMroinI0@public.gmane.org>
+Subject: Re: [PATCH v2 2/2] ASoC: codecs: add support for TAS5720 digital
+ amplifier
+Date: Tue, 29 Mar 2016 21:53:18 -0500
+Message-ID: <20160330025318.GB2073@borg.dal.design.ti.com>
+References: <1458580107-4632-1-git-send-email-dannenberg@ti.com>
+ <1458580107-4632-3-git-send-email-dannenberg@ti.com>
+ <20160328190143.GC2350@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0641152503=="
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20160329173158.GB2350@sirena.org.uk>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Mark Brown <broonie@kernel.org>, Jose Abreu <Jose.Abreu@synopsys.com>
-Cc: tixy@linaro.org, mark.rutland@arm.com, alsa-devel@alsa-project.org, Alexey.Brodkin@synopsys.com, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, yitian.bu@tangramtek.com, wsa+renesas@sang-engineering.com, laurent.pinchart+renesas@ideasonboard.com, tiwai@suse.com, nariman@opensource.wolfsonmicro.com, linux-snps-arc@lists.infradead.org, devicetree@vger.kernel.org, Maruthi.Bayyavarapu@amd.com, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, Vineet.Gupta1@synopsys.com, buyitian@gmail.com, robh+dt@kernel.org, perex@perex.cz, lgirdwood@gmail.com, CARLOS.PALMINHA@synopsys.com, galak@codeaurora.org, alexander.deucher@amd.com
+Content-Type: text/plain; charset="us-ascii"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20160328190143.GC2350-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
---===============0641152503==
-Content-Type: multipart/alternative;
-	boundary="------------030807040907080501060103"
-
---------------030807040907080501060103
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-
 Hi Mark,
+thanks for taking time reviewing the driver. Some comments below...
 
-On 29-03-2016 18:31, Mark Brown wrote:
-> On Mon, Mar 28, 2016 at 03:36:10PM +0100, Jose Abreu wrote:
->> HDMI audio support was added to the AXS board using an
->> I2S cpu driver and a custom platform driver.
->>
->> The platform driver supports two channels @ 16 bits with
->> rates 32k, 44.1k and 48k. ALSA Simple audio card is used to
->> glue the cpu, platform and codec driver (adv7511).
->>  sound/soc/dwc/Kconfig          |   1 +
->>  sound/soc/dwc/designware_i2s.c | 385 +++++++++++++++++++++++++++++++++++++++--
-> Your changelog appears to describe the writing of a machine driver but
-> this is a large patch adding code to an I2S controller driver.  This
-> means I can't review your patch since I can't tell what it is supposed
-> to do.  If you've added functionality to this driver you need to send
-> one or more patches each of which adds a single feature to the driver
-> together with a changelog which describes what that feature is.
->
-> Glancing at the patch I'm not 100% sure that the features you're adding
-> are part of the Synopsis device but I'm not entirely sure.
->
+On Mon, Mar 28, 2016 at 08:01:43PM +0100, Mark Brown wrote:
+> On Mon, Mar 21, 2016 at 12:08:27PM -0500, Andreas Dannenberg wrote:
+> 
+> > +static int tas5720_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
+> > +				  unsigned int freq, int dir)
+> > +{
+> > +	/*
+> > +	 * Nothing to configure here for TAS5720. It's a simple codec slave.
+> > +	 * However we need to keep this function in here otherwise the ASoC
+> > +	 * platform driver will throw an ENOTSUPP at us when trying to play
+> > +	 * audio.
+> > +	 */
+> > +
+> > +	return 0;
+> > +}
+> 
+> Remove empty funnctions, -ENOTSUPP is expected behaviour for anything
+> that isn't explicitly supported by a driver.
 
-The major part of this patch is the adding of an ALSA platform driver so that
-audio comes out of the box in AXS boards but we also added functionalities to
-the i2s driver and performed one bug fix related with the mask/unmask of
-interrupts. I will split the patches but they will depend on each other.
+Ok will double-check. Very early during my driver development I was not
+able to play audio through aplay if this function was not provided. I
+don't recall what specific Kernel version that was but it may have been
+something like 4.1.
 
->>  2 files changed, 373 insertions(+), 13 deletions(-)
->>
->> diff --git a/sound/soc/dwc/Kconfig b/sound/soc/dwc/Kconfig
->> index d50e085..bc3fae7 100644
->> --- a/sound/soc/dwc/Kconfig
->> +++ b/sound/soc/dwc/Kconfig
->> @@ -2,6 +2,7 @@ config SND_DESIGNWARE_I2S
->>  	tristate "Synopsys I2S Device Driver"
->>  	depends on CLKDEV_LOOKUP
->>  	select SND_SOC_GENERIC_DMAENGINE_PCM
->> +	select SND_SIMPLE_CARD
-> No, this doesn't make sense - the fact that someone has used a Synopsis
-> I2S controller doesn't mean that they have a system which uses
-> simple-card.  If the user wants to use simple-card they need to enable
-> it separately, this is the same pattern we follow for all CPU controller
-> drivers.
->
+> 
+> > +	if (unlikely(!tx_mask)) {
+> 
+> unlikely() is for optimising hot paths, just write the logic clearly
+> unless there's a reason for it.
 
-I will remove this.
+Got it. This was plagiarized from a similar driver but I agree this
+is not a performance critical loop or something.
 
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > +static irqreturn_t tas5720_irq_handler(int irq, void *_dev)
+> > +{
+> > +	/*
+> > +	 * Immediately disable TAS5720 FAULTZ interrupts inside the low-level
+> > +	 * handler to prevent the system getting saturated or even overrun
+> > +	 * by interrupt requests. Normally the fact that we create a threaded
+> > +	 * interrupt with IRQF_ONESHOT should take care of this as by design
+> > +	 * it masks interrupts while the thread is processed however testing
+> > +	 * has shown that at the high frequency the FAULTZ signal triggers
+> > +	 * (every 300us!) occasionally the system would lock up even with a
+> > +	 * threaded handler that's completely empty until the Kernel breaks the
+> > +	 * cycle, disables that interrupt, and reports a "nobody cared" error.
+> > +	 *
+> > +	 * Disabling the interrupt here combined with a deferred re-enabling
+> > +	 * after the thread has run not only prevents this lock condition but
+> > +	 * also helps to rate-limit the processing of FAULTZ interrupts.
+> > +	 */
+> > +	disable_irq_nosync(irq);
+> 
+> No, this is completely broken.  Whatever is going on in your system with
+> the interrupt core you need to address that at the appropriate level not
+> by putting a nonsensical bodge in here.  The interrupt is disabled while
+> the threaded handler is running, if that's not having the desired effect
+> then whatever causes that needs to be fixed.
 
-Best regards,
-Jose Miguel Abreu
+Good feedback, I needed some outside guidance here. Definitely will dig
+into this again but I'll be on vacation for a bit starting tomorrow so I
+won't get to it right away.
 
---------------030807040907080501060103
-Content-Type: text/html; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+As explained in the code comment even with a boiled-down test code that
+has an empty threaded handler the system would come to a grinding halt
+when bombarded with interrupts every 300us which I found odd but not
+completely unexpected (from my MCU background POV that is). And while
+digging I had seen that the interrupts do get disabled just like you
+mention during threaded handling to operate in a more graceful manner.
+But I wasn't sure at this point if the additional (high priority, I
+suppose) overhead of creating/starting the thread (even an empty one)
+every 300us was just too much for my poor single-core SoC to handle so
+my assumption was that it never got cycles to process stuff other than
+interrupts, and disabling interrupts in the low-level handler fixed just
+that. But I'm going to spend some extra cycles trying to re-digest the
+realtime behavior of my particular SoC/setup to understand why exactly
+this is happening.
 
-<html>
-  <head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-  </head>
-  <body bgcolor="#FFFFFF" text="#000000">
-    Hi Mark,<br>
-    <br>
-    <div class="moz-cite-prefix">On 29-03-2016 18:31, Mark Brown wrote:<br>
-    </div>
-    <blockquote cite="mid:20160329173158.GB2350@sirena.org.uk"
-      type="cite">
-      <pre wrap="">On Mon, Mar 28, 2016 at 03:36:10PM +0100, Jose Abreu wrote:
-</pre>
-      <blockquote type="cite">
-        <pre wrap="">HDMI audio support was added to the AXS board using an
-I2S cpu driver and a custom platform driver.
+> 
+> > +static int tas5720_dapm_post_event(struct snd_soc_dapm_widget *w,
+> > +				   struct snd_kcontrol *kcontrol, int event)
+> > +{
+> > +	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+> > +	int ret;
+> > +
+> > +	switch (event) {
+> > +	case SND_SOC_DAPM_POST_PMU:
+> > +		/*
+> > +		 * Check if the codec is still powered up in which case exit
+> > +		 * right away also skipping the shutdown-to-active wait time.
+> > +		 */
+> > +		ret = snd_soc_test_bits(codec, TAS5720_POWER_CTRL_REG,
+> > +					TAS5720_SDZ, 0);
+> 
+> I don't understand this.  Why on earth would we be calling the PMU
+> handler if the widget was not previously powered? 
+> 
+> > +		/*
+> > +		 * Take TAS5720 out of shutdown mode in preparation for widget
+> > +		 * power up.
+> > +		 */
+> > +		ret = snd_soc_update_bits(codec, TAS5720_POWER_CTRL_REG,
+> > +					  TAS5720_SDZ, TAS5720_SDZ);
+> > +		if (ret < 0) {
+> > +			dev_err(codec->dev, "error waking codec: %d\n", ret);
+> > +			return ret;
+> > +		}
+> 
+> This is a _POST_PMU handler not a pre-PMU handler...
+> 
+> > +	/* Events used to control the TAS5720 SHUTDOWN state */
+> > +	SND_SOC_DAPM_PRE("Pre Event", tas5720_dapm_pre_event),
+> > +	SND_SOC_DAPM_POST("Post Event", tas5720_dapm_post_event),
+> 
+> Oh, we're using _PRE() and _POST() events...  this almost certainly
+> indicates a problem, there are very few circumstances where these are a
+> good idea and I'm not seeing anything in this driver which indicates
+> that this is going on.  Please just use normal DAPM widgets (I'm
+> guessing a PGA) to represent the device and work within DAPM, don't
+> shoehorn some bodge around the side.
 
-The platform driver supports two channels @ 16 bits with
-rates 32k, 44.1k and 48k. ALSA Simple audio card is used to
-glue the cpu, platform and codec driver (adv7511).
-</pre>
-      </blockquote>
-      <pre wrap="">
-</pre>
-      <blockquote type="cite">
-        <pre wrap=""> sound/soc/dwc/Kconfig          |   1 +
- sound/soc/dwc/designware_i2s.c | 385 +++++++++++++++++++++++++++++++++++++++--
-</pre>
-      </blockquote>
-      <pre wrap="">
-Your changelog appears to describe the writing of a machine driver but
-this is a large patch adding code to an I2S controller driver.  This
-means I can't review your patch since I can't tell what it is supposed
-to do.  If you've added functionality to this driver you need to send
-one or more patches each of which adds a single feature to the driver
-together with a changelog which describes what that feature is.
+I'm currently using these handlers to essentially tame the TAS5720 error
+reporting. Only when the device is in shutdown mode it will seize
+bombarding the host with 300us-spaced FAULT interrupts (that will come
+as soon as the SAIF stream stops).  Unfortunately that's the way the
+TAS5720 was designed and I've already provided feedback internally that
+this makes an elegant / low-overhead SW implementation quite
+challenging. Anyways I did see several places where this shutdown mode
+handling could get added so I simply picked the one that was not directly
+associated with the audio stream itself to make it more explicit what
+this is about but this can certainly be changed.
 
-Glancing at the patch I'm not 100% sure that the features you're adding
-are part of the Synopsis device but I'm not entirely sure.
 
-</pre>
-    </blockquote>
-    <br>
-    The major part of this patch is the adding of an ALSA platform
-    driver so that audio comes out of the box in AXS boards but we also
-    added functionalities to the i2s driver and performed one bug fix
-    related with the mask/unmask of interrupts. I will split the patches
-    but they will depend on each other.<br>
-    <br>
-    <blockquote cite="mid:20160329173158.GB2350@sirena.org.uk"
-      type="cite">
-      <blockquote type="cite">
-        <pre wrap=""> 2 files changed, 373 insertions(+), 13 deletions(-)
+Regards,
 
-diff --git a/sound/soc/dwc/Kconfig b/sound/soc/dwc/Kconfig
-index d50e085..bc3fae7 100644
---- a/sound/soc/dwc/Kconfig
-+++ b/sound/soc/dwc/Kconfig
-@@ -2,6 +2,7 @@ config SND_DESIGNWARE_I2S
- 	tristate "Synopsys I2S Device Driver"
- 	depends on CLKDEV_LOOKUP
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
-+	select SND_SIMPLE_CARD
-</pre>
-      </blockquote>
-      <pre wrap="">
-No, this doesn't make sense - the fact that someone has used a Synopsis
-I2S controller doesn't mean that they have a system which uses
-simple-card.  If the user wants to use simple-card they need to enable
-it separately, this is the same pattern we follow for all CPU controller
-drivers.
-</pre>
-      <br>
-    </blockquote>
-    <br>
-    I will remove this.<br>
-    <br>
-    <blockquote cite="mid:20160329173158.GB2350@sirena.org.uk"
-      type="cite">
-      <fieldset class="mimeAttachmentHeader"></fieldset>
-      <br>
-      <pre wrap="">_______________________________________________
-dri-devel mailing list
-<a class="moz-txt-link-abbreviated" href="mailto:dri-devel@lists.freedesktop.org">dri-devel@lists.freedesktop.org</a>
-<a class="moz-txt-link-freetext" href="https://lists.freedesktop.org/mailman/listinfo/dri-devel">https://lists.freedesktop.org/mailman/listinfo/dri-devel</a>
-</pre>
-    </blockquote>
-    <br>
-    Best regards,<br>
-    Jose Miguel Abreu<br>
-  </body>
-</html>
+--
+Andreas Dannenberg
+Texas Instruments Inc
 
---------------030807040907080501060103--
-
---===============0641152503==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
-
---===============0641152503==--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
