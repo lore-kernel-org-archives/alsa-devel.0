@@ -1,20 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/2] ASoC: codecs: add support for
- TAS5720 digital amplifier
-Date: Wed, 30 Mar 2016 08:38:53 -0700
-Message-ID: <20160330153853.GW2350@sirena.org.uk>
-References: <1458580107-4632-1-git-send-email-dannenberg@ti.com>
- <1458580107-4632-3-git-send-email-dannenberg@ti.com>
- <20160328190143.GC2350@sirena.org.uk>
- <20160330025318.GB2073@borg.dal.design.ti.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 1/2] ALSA: hda - Enable i915 binding for gen3/4
+	HDMI/DP
+Date: Wed, 30 Mar 2016 17:46:01 +0200
+Message-ID: <1459352762-28681-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8768354843492315371=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B45C626066B
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2016 17:39:18 +0200 (CEST)
-In-Reply-To: <20160330025318.GB2073@borg.dal.design.ti.com>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 92B9226501B
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2016 17:46:04 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 7BB11AC8D
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2016 15:46:03 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,100 +22,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andreas Dannenberg <dannenberg@ti.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This patch fills the holes and now all i915 HDMI/DP codecs are managed
+over the audio ELD notifier, finally.  The old gen3/gen4 chips have
+usually only a single pin/converter pair, and the digital port mapping
+is fixed.
 
---===============8768354843492315371==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="1hAU+gb7eAuiw2fm"
-Content-Disposition: inline
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/hda/hdac_i915.c      | 11 +++++++++++
+ sound/pci/hda/patch_hdmi.c | 21 +++++++++++++++------
+ 2 files changed, 26 insertions(+), 6 deletions(-)
 
-
---1hAU+gb7eAuiw2fm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Mar 29, 2016 at 09:53:18PM -0500, Andreas Dannenberg wrote:
-> On Mon, Mar 28, 2016 at 08:01:43PM +0100, Mark Brown wrote:
-> > On Mon, Mar 21, 2016 at 12:08:27PM -0500, Andreas Dannenberg wrote:
-
-> > Remove empty funnctions, -ENOTSUPP is expected behaviour for anything
-> > that isn't explicitly supported by a driver.
-
-> Ok will double-check. Very early during my driver development I was not
-> able to play audio through aplay if this function was not provided. I
-> don't recall what specific Kernel version that was but it may have been
-> something like 4.1.
-
-This would be a bug in your machine driver then.
-
-> As explained in the code comment even with a boiled-down test code that
-> has an empty threaded handler the system would come to a grinding halt
-> when bombarded with interrupts every 300us which I found odd but not
-> completely unexpected (from my MCU background POV that is). And while
-> digging I had seen that the interrupts do get disabled just like you
-> mention during threaded handling to operate in a more graceful manner.
-> But I wasn't sure at this point if the additional (high priority, I
-> suppose) overhead of creating/starting the thread (even an empty one)
-> every 300us was just too much for my poor single-core SoC to handle so
-> my assumption was that it never got cycles to process stuff other than
-> interrupts, and disabling interrupts in the low-level handler fixed just
-> that. But I'm going to spend some extra cycles trying to re-digest the
-> realtime behavior of my particular SoC/setup to understand why exactly
-> this is happening.
-
-If your device is constantly retriggering the same interrupt that
-suggests there is a problem with how you are handling your device,
-perhaps you need to disable the interrupts at source if it's truly
-broken beyond repair.
-
-> > Oh, we're using _PRE() and _POST() events...  this almost certainly
-> > indicates a problem, there are very few circumstances where these are a
-> > good idea and I'm not seeing anything in this driver which indicates
-> > that this is going on.  Please just use normal DAPM widgets (I'm
-> > guessing a PGA) to represent the device and work within DAPM, don't
-> > shoehorn some bodge around the side.
-
-> I'm currently using these handlers to essentially tame the TAS5720 error
-> reporting. Only when the device is in shutdown mode it will seize
-> bombarding the host with 300us-spaced FAULT interrupts (that will come
-> as soon as the SAIF stream stops).  Unfortunately that's the way the
-> TAS5720 was designed and I've already provided feedback internally that
-> this makes an elegant / low-overhead SW implementation quite
-> challenging. Anyways I did see several places where this shutdown mode
-> handling could get added so I simply picked the one that was not directly
-> associated with the audio stream itself to make it more explicit what
-> this is about but this can certainly be changed.
-
-It sounds like this feature is unusably broken...  possibly you could do
-something in the mute handler but it seems that anything you try to do
-to use this feature is going to be both fragile and disruptive to the
-system.  What is the value in implementing it?
-
---1hAU+gb7eAuiw2fm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJW+/MMAAoJECTWi3JdVIfQZbcH/20Lx1LBKZrVaftP6bVLusQX
-VfFd9y19rk+a1HUna3HioDt/jqQ2s6hRArFT8Hgst94+gplQJZ+Cd/Y4C7uMKcw7
-WDu2yPZ8JPladmHuNUmKWoPuuloBGRMQEwZCvm+/QW3IBv1i8R/NU4yAifYn0D8S
-E3vFai5usYyzRn1kTPc15I7JkCpHrLJrc9MQo0EFY0zCRf/w3IYZS6IuRgr5mDOy
-NBSX1sJzIu0fgIBdFyIRslr2j+ByK9LyurT5nRrtSBdK2iPlM4TSkJ0i06WHfKQy
-4HJg+vYxTkuair9rJuBZ0Aaz+OJE+EGsXfXWEqmN6RDj34ioJhpb5DzmTlUzKlc=
-=sRMq
------END PGP SIGNATURE-----
-
---1hAU+gb7eAuiw2fm--
-
---===============8768354843492315371==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8768354843492315371==--
+diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
+index d0da2508823e..c62a9f830b84 100644
+--- a/sound/hda/hdac_i915.c
++++ b/sound/hda/hdac_i915.c
+@@ -128,6 +128,9 @@ EXPORT_SYMBOL_GPL(snd_hdac_get_display_clk);
+  * Pin Widget 4 - PORT B (port = 1 in i915 driver)
+  * Pin Widget 5 - PORT C (port = 2 in i915 driver)
+  * Pin Widget 6 - PORT D (port = 3 in i915 driver)
++ *
++ * on earlier models:
++ * Pin Widget 3 - PORT B
+  */
+ static int pin2port(struct hdac_device *codec, hda_nid_t pin_nid)
+ {
+@@ -139,6 +142,14 @@ static int pin2port(struct hdac_device *codec, hda_nid_t pin_nid)
+ 	case 0x80862882: /* VLV */
+ 		base_nid = 3;
+ 		break;
++	case 0x80862801: /* Bearlake */
++	case 0x80862802: /* Cantiga */
++	case 0x80862803: /* Eaglelake */
++	case 0x80862880: /* CedarTrail */
++	case 0x808629fb: /* Crestline HDMI */
++		if (WARN_ON(pin_nid != 0x03))
++			return -1;
++		return 1; /* only port B */
+ 	default:
+ 		base_nid = 4;
+ 		break;
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 4833c7bdd1e8..2a3bf1584f3b 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2286,6 +2286,15 @@ static void intel_pin_eld_notify(void *audio_ptr, int port)
+ 	case 0x80862882: /* VLV */
+ 		pin_nid = port + 0x03;
+ 		break;
++	case 0x80862801: /* Bearlake */
++	case 0x80862802: /* Cantiga */
++	case 0x80862803: /* Eaglelake */
++	case 0x80862880: /* CedarTrail */
++	case 0x808629fb: /* Crestline HDMI */
++		if (WARN_ON(port != 1)) /* assume only port B */
++			return;
++		pin_nid = 0x03;
++		break;
+ 	default:
+ 		pin_nid = port + 0x04;
+ 		break;
+@@ -2424,7 +2433,7 @@ static int patch_i915_byt_hdmi(struct hda_codec *codec)
+ 	return 0;
+ }
+ 
+-/* Intel IronLake, SandyBridge and IvyBridge; with eld notifier */
++/* Intel Gen3/Gen4, IronLake, SandyBridge and IvyBridge; with eld notifier */
+ static int patch_i915_cpt_hdmi(struct hda_codec *codec)
+ {
+ 	struct hdmi_spec *spec;
+@@ -3627,9 +3636,9 @@ HDA_CODEC_ENTRY(0x11069f81, "VX900 HDMI/DP",	patch_via_hdmi),
+ HDA_CODEC_ENTRY(0x11069f84, "VX11 HDMI/DP",	patch_generic_hdmi),
+ HDA_CODEC_ENTRY(0x11069f85, "VX11 HDMI/DP",	patch_generic_hdmi),
+ HDA_CODEC_ENTRY(0x80860054, "IbexPeak HDMI",	patch_i915_cpt_hdmi),
+-HDA_CODEC_ENTRY(0x80862801, "Bearlake HDMI",	patch_generic_hdmi),
+-HDA_CODEC_ENTRY(0x80862802, "Cantiga HDMI",	patch_generic_hdmi),
+-HDA_CODEC_ENTRY(0x80862803, "Eaglelake HDMI",	patch_generic_hdmi),
++HDA_CODEC_ENTRY(0x80862801, "Bearlake HDMI",	patch_i915_cpt_hdmi),
++HDA_CODEC_ENTRY(0x80862802, "Cantiga HDMI",	patch_i915_cpt_hdmi),
++HDA_CODEC_ENTRY(0x80862803, "Eaglelake HDMI",	patch_i915_cpt_hdmi),
+ HDA_CODEC_ENTRY(0x80862804, "IbexPeak HDMI",	patch_i915_cpt_hdmi),
+ HDA_CODEC_ENTRY(0x80862805, "CougarPoint HDMI",	patch_i915_cpt_hdmi),
+ HDA_CODEC_ENTRY(0x80862806, "PantherPoint HDMI", patch_i915_cpt_hdmi),
+@@ -3638,10 +3647,10 @@ HDA_CODEC_ENTRY(0x80862808, "Broadwell HDMI",	patch_i915_hsw_hdmi),
+ HDA_CODEC_ENTRY(0x80862809, "Skylake HDMI",	patch_i915_hsw_hdmi),
+ HDA_CODEC_ENTRY(0x8086280a, "Broxton HDMI",	patch_i915_hsw_hdmi),
+ HDA_CODEC_ENTRY(0x8086280b, "Kabylake HDMI",	patch_i915_hsw_hdmi),
+-HDA_CODEC_ENTRY(0x80862880, "CedarTrail HDMI",	patch_generic_hdmi),
++HDA_CODEC_ENTRY(0x80862880, "CedarTrail HDMI",	patch_i915_cpt_hdmi),
+ HDA_CODEC_ENTRY(0x80862882, "Valleyview2 HDMI",	patch_i915_byt_hdmi),
+ HDA_CODEC_ENTRY(0x80862883, "Braswell HDMI",	patch_i915_byt_hdmi),
+-HDA_CODEC_ENTRY(0x808629fb, "Crestline HDMI",	patch_generic_hdmi),
++HDA_CODEC_ENTRY(0x808629fb, "Crestline HDMI",	patch_i915_cpt_hdmi),
+ /* special ID for generic HDMI */
+ HDA_CODEC_ENTRY(HDA_CODEC_ID_GENERIC_HDMI, "Generic HDMI", patch_generic_hdmi),
+ {} /* terminator */
+-- 
+2.7.4
