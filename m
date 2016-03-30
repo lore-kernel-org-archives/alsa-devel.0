@@ -1,21 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dpcm: prevent error for paths
- including static links
-Date: Wed, 30 Mar 2016 10:27:02 -0700
-Message-ID: <20160330172702.GM2350@sirena.org.uk>
-References: <1458056089-885-1-git-send-email-piotrs@opensource.wolfsonmicro.com>
- <20160329212224.GM2350@sirena.org.uk>
- <20160330085812.GE31814@localhost.localdomain>
- <20160330163650.GG2350@sirena.org.uk>
- <20160330171314.GF31814@localhost.localdomain>
+Subject: Re: [PATCH] ASoC: nau8825: assign DAC Ch to match
+	headset L/R
+Date: Wed, 30 Mar 2016 10:39:20 -0700
+Message-ID: <20160330173920.GO2350@sirena.org.uk>
+References: <1459321031-2365-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3453447154561103196=="
+Content-Type: multipart/mixed; boundary="===============0397954896524486690=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 95B19265CC0
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2016 19:27:07 +0200 (CEST)
-In-Reply-To: <20160330171314.GF31814@localhost.localdomain>
+ by alsa0.perex.cz (Postfix) with ESMTP id E2E9A265CF1
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2016 19:39:27 +0200 (CEST)
+In-Reply-To: <1459321031-2365-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,60 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3453447154561103196==
+--===============0397954896524486690==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="nc/lueCMLdgjBWoP"
+	protocol="application/pgp-signature"; boundary="jASSyw8pZdwiLt00"
 Content-Disposition: inline
 
 
---nc/lueCMLdgjBWoP
+--jASSyw8pZdwiLt00
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Mar 30, 2016 at 06:13:14PM +0100, Charles Keepax wrote:
-> On Wed, Mar 30, 2016 at 09:36:50AM -0700, Mark Brown wrote:
+On Wed, Mar 30, 2016 at 02:57:11PM +0800, John Hsu wrote:
+> The default value of DAC channel select is reverse in codec.
+> For normal usage, switch the channel select when codec bootup.
 
-> > Doesn't this mean that the appropriate fix is to terminate the DPCM
-> > routing at the first back end DAI so we're not trying to DPCM outside
-> > the SoC?
+I would expect this to be exposed as DAPM routing?
 
-> I think (not 100% certain) you can have multiple backends
-> connected to a single front end, which makes it hard to know when
-> to stop or even if it is assured that all the backends will be
-> before any other spurious DAIs in the widget list.
-
-You can have multiple backends connected but they shouldn't be chained
-together, they should be connected in parallel.  We can tell if we're
-walking a node that's a backend, why would we walk the graph beyond
-that?
-
---nc/lueCMLdgjBWoP
+--jASSyw8pZdwiLt00
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJW/AxkAAoJECTWi3JdVIfQ5VEH/RTxbnRF9OnDyMGBuE6dOecs
-QZDA/NM4QjfJcn8EZqpOnTi2tpOWNFIWSdY2OWGO/HWuHuPqCLFnFPpICpcVFSxa
-Tk7AWJWlpDTf/cz2d06CHLfqfuvvxeTLPv0mPpqd5wr5n1RexKRFchHHJ8p/3DCb
-CrDZktDi3SUp6W0kUI5PEGRbHaSO1AQdRu59LAyrrCKjQE3xBBk35Xm7OuW2Cu+2
-vhOkV5E/5L/q3Ub8aUJD6zJ7eazZM52vDVvDUKD49s+5jpz4UK4jg0SpA8ybuusX
-peua6jBWtLSlHyesHYMN/rrYZlAZgGEQehsmOmn/sMLbaxz1t/qeIgW9xKWbEQA=
-=KNsD
+iQEcBAEBCAAGBQJW/A9HAAoJECTWi3JdVIfQQ3oH/303uVd3m8kkvTwrEZwklVu9
+A42h/Q6vrgn1bBTwfi4SkaGRcTqyH378/eaqso4fisSjV3J8Z8w9j6WKOp/UbIb/
+7d6VQ0TlXDwjvYAUwTU1Ilnm5brXYIHWt7AIY2+K88aETIhhuq6LwqQs6yGkKUaa
+NLpU/f8RERJsnu4D9sIynLyvDp3v90uSMmU96JvDULXCI28ohujGmwBfMYns9Lvk
+B2K9DeJVtn+S1WiqLL+GG4TTfSHbh+V2UR7qKz+BN0cwi0WjVm2xEN08pL5VjtQ8
+HtTVTat8sDsN2NU45D57jUMeVC9ly/vugY5mXgwCgAVOCS20YCWz1iqWsfD3Z5c=
+=0nVH
 -----END PGP SIGNATURE-----
 
---nc/lueCMLdgjBWoP--
+--jASSyw8pZdwiLt00--
 
---===============3453447154561103196==
+--===============0397954896524486690==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3453447154561103196==--
+--===============0397954896524486690==--
