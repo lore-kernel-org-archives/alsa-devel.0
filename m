@@ -1,18 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 0/2] ALSA: bebob/fireworks: remove module
- parameters to reduce maintenance work
-Date: Wed, 30 Mar 2016 21:52:31 +0900
-Message-ID: <56FBCC0F.40200@sakamocchi.jp>
-References: <1459257735-13596-1-git-send-email-o-takashi@sakamocchi.jp>
- <s5hshz92y41.wl-tiwai@suse.de>
+Subject: Re: [RFC][PATCH] ALSA: firewire-lib: support Linux
+ tracing to dump a part of packet data
+Date: Wed, 30 Mar 2016 22:17:31 +0900
+Message-ID: <56FBD1EB.5030900@sakamocchi.jp>
+References: <1459081086-6145-1-git-send-email-o-takashi@sakamocchi.jp>
+ <s5hpoud2xvj.wl-tiwai@suse.de> <56FB220A.4010102@sakamocchi.jp>
+ <s5h7fgk8ri0.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 83C96266A1A
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2016 14:52:40 +0200 (CEST)
-In-Reply-To: <s5hshz92y41.wl-tiwai@suse.de>
+Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id A64172665AB
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2016 15:17:34 +0200 (CEST)
+In-Reply-To: <s5h7fgk8ri0.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,73 +27,79 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Mar 29 2016 22:49, Takashi Iwai wrote:
-> On Tue, 29 Mar 2016 15:22:13 +0200,
-> Takashi Sakamoto wrote:
->>
->> Hi,
->>
->> This patchset removes some module parameters from ALSA bebob and fireworks
->> driver.
->>
->> These two modules have three parameters for users to assign preferable
->> number and strings to a sound card as some modules in ALSA kernel land.
->> However, they're not used so widely, and practically I suspect their
->> advantages.
->>
->> To simplify and unify the shape of modules in ALSA firewire stack, I'd
->> like to remove them.
->
-> Well, "it simplifies the code" alone doesn't justify the removal of
-> these long-time existing parameters.  You can't know how it's been
-> used only from the narrow range surveys.  These are mostly workarounds
-> for some special setups, so they don't hit usually.
->
-> The usefulness of these parameters is another question, though.
-> They are far from perfect, and have logic flaws.  They are present,
-> however, mostly for consistency and historical reasons.
-> (In some cases it's useful, e.g. a device gives some id string you
->   don't want to spell.  The parameter allows you to rename it.
->   Or, in most cases, the index is used for reserving the first slot to
->   onboard chip for some legacy apps.)
->
-> So, the question is how much benefit we can get by this action.  Is
-> this small piece of code really so much burden to maintain?  If yes,
-> I'd like to hear it at first.  If not, we should evaluate the risk of
-> possible breakage as the first priority.
-
-At least, to me. When purging these codes, I do never bother anymore the 
-unpractical parameters and the differences of shape between drivers in 
-ALSA firewire stack. It's good that I have no need to explain how these 
-parameters works and when they don't works as expected.
-
-Actually, ALSA firewire stack is not attractive for most of users and 
-developers. It's preferable to keep the amount of codes in the stack as 
-small as possible because I can't expect to gain dedicated testers and 
-developers. In short, I hope to keep the codes within my capacity and 
-exclude the confusion.
-
-If it was as major as HDA, or it had impact to actual market as ASoC, I 
-would use the other logic and strategy for software. But in fact, it's not.
-
-I understand what you say. It's within my expectation. However, I hope.
-
-
-Regards
-
->>
->> Takashi Sakamoto (2):
->>    ALSA: bebob: remove module parameters to reduce maintenance work
->>    ALSA: fireworks: remove module parameters to reduce maintenance work
->>
->>   sound/firewire/bebob/bebob.c         | 49 +++++-------------------------------
->>   sound/firewire/bebob/bebob.h         |  1 -
->>   sound/firewire/fireworks/fireworks.c | 43 +++----------------------------
->>   sound/firewire/fireworks/fireworks.h |  1 -
->>   4 files changed, 10 insertions(+), 84 deletions(-)
->>
->> --
->> 2.7.3
->>
+SGksCgpPbiAyMDE25bm0MDPmnIgzMOaXpSAxNDoyNywgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9u
+IFdlZCwgMzAgTWFyIDIwMTYgMDI6NDc6MDYgKzAyMDAsCj4gVGFrYXNoaSBTYWthbW90byB3cm90
+ZToKPj4KPj4gSGksCj4+Cj4+IE9uIE1hciAyOSAyMDE2IDIyOjU0LCBUYWthc2hpIEl3YWkgd3Jv
+dGU6Cj4+PiBPbiBTdW4sIDI3IE1hciAyMDE2IDE0OjE4OjA2ICswMjAwLAo+Pj4gVGFrYXNoaSBT
+YWthbW90byB3cm90ZToKPj4+Pgo+Pj4+IFdoZW4gYXVkaW8gYW5kIG11c2ljIHVuaXRzIGhhdmUg
+c29tZSBxdWlya3MgaW4gdGhlaXIgc2VxdWVuY2Ugb2YgcGFja2V0LAo+Pj4+IGl0J3MgcmVhbGx5
+IGhhcmQgZm9yIG5vbi1vd25lcnMgdG8gaWRlbnRpZnkgdGhlIHF1aXJrcy4gVG8gaGFuZGxlIHRo
+ZQo+Pj4+IHF1aXJrcywgZGV2ZWxvcGVycyBuZWVkIGEgZHVtcCBmb3Igc2VxdWVuY2Ugb2YgcGFj
+a2V0cyBhdCBsZWFzdCwgaG93ZXZlcgo+Pj4+IGl0J3MgZGlmZmljdWx0IHRvIHVzZXJzIHdobyBo
+YXZlIG5vIGtub3dsZWRnZSBhbmQgZXF1aXBtZW50IGZvciB0aGlzCj4+Pj4gcHVycG9zZS4KPj4+
+Pgo+Pj4+IFRoaXMgY29tbWl0IGFkZHMgdHJhY2Vwb2ludHMgZm9yIHRoaXMgc2l0dWF0aW9uLiBX
+aGVuIHVzZXJzIGVuY291bnRlcgo+Pj4+IHRoZSBpc3N1ZSwgdGhleSBjYW4gZHVtcCBhIHBhcnQg
+b2YgcGFja2V0IGRhdGEgdmlhIExpbnV4IHRyYWNpbmcgZnJhbWV3b3JrCj4+Pj4gYXMgbG9uZyBh
+cyB1c2luZyBkcml2ZXJzIGluIEFMU0EgZmlyZXdpcmUgc3RhY2suCj4+Pj4KPj4+PiBUaGlzIGNv
+bW1pdCBhZGRzICdzbmQtZmlyZXdpcmUtbGliJyBzdWJzeXN0ZW0gd2l0aCAnaW5fcGFja2V0JyBh
+bmQKPj4+PiAnb3V0X3BhY2tldCcgZXZlbnRzLiBJbiB0aGUgZXZlbnRzLCB0aGUgY29udGVudCBv
+ZiBDSVAgaGVhZGVycywgdGhlIG51bWJlcgo+Pj4+IG9mIGluY2x1ZGVkIHF1YWRsZXRzIGFuZCB0
+aGUgaW5kZXggb2YgcGFja2V0IG1hbmFnZWQgYnkgdGhpcyBtb2R1bGUgYXJlCj4+Pj4gcmVjb3Jk
+ZWQgcGVyIHBhY2tldC4KPj4+Pgo+Pj4+IFRoaXMgaXMgYSBzYW1wbGU6Cj4+Pj4KPj4+PiAkIHRy
+YWNlLWNtZCByZWNvcmQgLWUgc25kX2ZpcmV3aXJlX2xpYjpvdXRfcGFja2V0IC1lIHNuZF9maXJl
+d2lyZV9saWI6aW5fcGFja2V0Cj4+Pj4gL3N5cy9rZXJuZWwvdHJhY2luZy9ldmVudHMvc25kX2Zp
+cmV3aXJlX2xpYi9vdXRfcGFja2V0L2ZpbHRlcgo+Pj4+IC9zeXMva2VybmVsL3RyYWNpbmcvZXZl
+bnRzL3NuZF9maXJld2lyZV9saWIvaW5fcGFja2V0L2ZpbHRlcgo+Pj4+IEhpdCBDdHJsXkMgdG8g
+c3RvcCByZWNvcmRpbmcKPj4+PiBeQwo+Pj4+ICQgdHJhY2UtY21kIHJlcG9ydCB0cmFjZS5kYXQK
+Pj4+PiAuLi4KPj4+PiA8aWRsZT4tMCAgWzAwMl0gNDAzOTguMjIxNzAyOiBvdXRfcGFja2V0OiAw
+MDA3MDAwOCA5MDAxNDI3YTogMDU4OiAzMQo+Pj4+IDxpZGxlPi0wICBbMDAyXSA0MDM5OC4yMjE3
+MDM6IGluX3BhY2tldDogIDAxMDIwMDEwIDkwMDFmZmZmOiAwMDI6IDE1Cj4+Pj4gPGlkbGU+LTAg
+IFswMDJdIDQwMzk4LjIyMTcwMzogb3V0X3BhY2tldDogMDAwNzAwMTAgOTAwMWZmZmY6IDAwMjog
+MzIKPj4+PiA8aWRsZT4tMCAgWzAwMl0gNDAzOTguMjIzNjc5OiBpbl9wYWNrZXQ6ICAwMTBiMDAx
+MCA5MDAxNTdlNDogMDkwOiAxNgo+Pj4+IDxpZGxlPi0wICBbMDAyXSA0MDM5OC4yMjM2ODE6IG91
+dF9wYWNrZXQ6IDAwMDcwMDEwIDkwMDE1N2U0OiAwNTg6IDMzCj4+Pj4gPGlkbGU+LTAgIFswMDJd
+IDQwMzk4LjIyMzY4MTogaW5fcGFja2V0OiAgMDEwYjAwMTggOTAwMTcxNGY6IDA5MDogMTcKPj4+
+PiAuLi4KPj4+Pgo+Pj4+IE9uZSBsaW5lIHJlcHJlc2VudCBvbmUgcGFja2V0LiBUaGUgbGVnZW5k
+IGZvciB0aGUgbGFzdCBmb3VyIGZpZWxkcyBpczoKPj4+PiAgICAtIFRoZSBmaXJzdCBxdWFkbGV0
+IG9mIENJUCBoZWFkZXIKPj4+PiAgICAtIFRoZSBzZWNvbmQgcXVhZGxldCBvZiBDSVAgaGVhZGVy
+Cj4+Pj4gICAgLSBUaGUgbnVtYmVyIG9mIGluY2x1ZGVkIHF1YWRsZXRzCj4+Pj4gICAgLSBUaGUg
+aW5kZXggb2YgcGFja2V0IGlubmVyIGJ1ZmZlciBtYWludGFpbmVkIGJ5IHRoaXMgbW9kdWxlCj4+
+Pj4KPj4+PiBDdXJyZW50bHksIHdoZW4gZGV0ZWN0aW5nIHBhY2tldCBkaXNjb250aW51aXR5LCB0
+aGlzIG1vZHVsZSBzdG9wcyBwYWNrZXQKPj4+PiBzdHJlYW1pbmcuIFRoaXMgaXMgcmVhc29uYWJs
+ZSB0byBwYWNrZXQgc3RyZWFtaW5nIGltcGxlbWVudGF0aW9uLiBIb3dldmVyLAo+Pj4+IHRvIGlk
+ZW50aWZ5IHRoZSBxdWlya3MsIHBhY2tldCBzdHJlYW1pbmcgc2hvdWxkIGNvbnRpbnVlIHRvIGR1
+bXAgZW5vdWdoCj4+Pj4gc2VxdWVuY2Ugb2YgcGFja2V0LiBUaGlzIGNvbW1pdCBhZGRzIGEgY29u
+ZGl0aW9uIHN0YXRlbWVudCBhbmQgYSBtYXJrZXIKPj4+PiBmb3IgdGhpcyBwdXJwb3NlLgo+Pj4K
+Pj4+IFRoZSBwYWNrZXQgdHJhY2luZyBpcyBuaWNlLCBhbmQgSSBkb24ndCBzZWUgYW55IHJlYXNv
+biBhZ2FpbnN0IGl0Lgo+Pj4gQnV0IGNoYW5naW5nIHRoZSBkcml2ZXIgYmVoYXZpb3IgZGVwZW5k
+aW5nIG9uIHRoZSB0cmFjZSBzdGF0ZSBpcwo+Pj4gdW51c3VhbCwgcmF0aGVyIGEgdGhpbmcgdG8g
+YmUgYXZvaWRlZCBpbiBnZW5lcmFsLgo+Pgo+PiBTZWUgYWxyZWFkeS1pZGVudGlmaWVkIHF1aXJr
+czoKPj4gICAgLSAxM2YzYTQ2ZDJhNmMoJ0FMU0E6IG94Znc6IGFkZCBNYWNraWUgT255eCBTYXRl
+bGxpdGUgcXVpcmsgdG8gaW5mb3JtCj4+IHdyb25nIHZhbHVlIGluICdkYnMnIGZpZWxkIGluIHR4
+IENJUCBoZWFkZXInKQo+PiAgICAtIDE4ZjVlZDM2NWQzZignQUxTQTogZmlyZXdvcmtzL2ZpcmV3
+aXJlLWxpYjogYWRkIHN1cHBvcnQgZm9yIHJlY2VudAo+PiBmaXJtd2FyZSBxdWlyaycpCj4+ICAg
+IC0gYzRkODYwYTBkMjU2KCdBTFNBOiBiZWJvYjogbG9vc2VuIHVwIHNldmVyaXR5IG9mIGNoZWNr
+aW5nIGNvbnRpbnVpdHkKPj4gZm9yIEJlQm9CIHYzIHF1aXJrJykKPj4gICAgLSA5ZDU5MTI0Y2Fj
+ZjUoJ0FMU0E6IGJlYm9iL2ZpcmV3aXJlLWxpYjogQWRkIGEgcXVpcmsgb2Ygd3JvbmcgZGJjIGlu
+Cj4+IGVtcHR5IHBhY2tldCBmb3IgTS1BdWRpbyBzcGVjaWFsIEZpcmV3aXJlIHNlcmllcycpCj4+
+ICAgIC0gZDljZDAwNjVjOGE0KCdBTFNBOiBmaXJld29ya3MvZmlyZXdpcmUtbGliOiBBZGQgYSBx
+dWlyayBmb3IgZml4ZWQKPj4gaW50ZXJ2YWwgb2YgcmVwb3J0ZWQgZGJjJykKPj4gICAgLSBjOGJk
+ZjQ5Yjk5MzUoJ0FMU0E6IGZpcmV3b3Jrcy9maXJld2lyZS1saWI6IEFkZCBhIHF1aXJrIGZvciB0
+aGUKPj4gbWVhbmluZyBvZiBkYmMnKQo+Pgo+PiBUbyBpbnZlc3RpZ2F0ZSBxdWlya3Mgc2ltaWxh
+ciB0byB0aGVzZSwgdGhlIHNlcXVlbmNlIG9mIHBhY2tldAo+PiBiZWZvcmUvYWZ0ZXIgZGV0ZWN0
+aW5nIGRpc2NvbnRpbnVpdHkgaGVscHMgdXMuIEl0J3MgYSByZWFzb24gdG8gY2hhbmdlCj4+IHRo
+ZSBiZWhhdmlvdXIgYWdhaW5zdCB0aGUgZ2VuZXJhbCBpc3N1ZS4KPgo+IFllYWgsIEkga25vdyB0
+aGUgcmVhc29uLiAgQnV0IG15IHBvaW50IGlzIHRoYXQgdHJhY2luZyBpcyBvbmx5IGZvcgo+IHNo
+b3dpbmcgdGhlIHN0YXRlIG9mIHRoZSBjb2RlIGZsb3csIGFuZCBpdCdzIG5vdCBhIGRlYnVnIGZs
+YWcgdG8KPiBjaGFuZ2UgdGhlIGNvZGUgZmxvdyBpdHNlbGYuICBJdCdzIHVudXN1YWwgdGhhdCB0
+aGUgZHJpdmVyIGJlaGF2aW9yCj4gZGVwZW5kcyBvbiB0aGUgdHJhY2luZyBzdGF0ZS4KPgo+IFRo
+YXQgYmVpbmcgc2FpZCwgeW91IHNob3VsZCBzaG93IHRoYXQgdGhpcyBkcml2ZXIgYmVoYXZpb3Ig
+Y2hhbmdlCj4gd29uJ3QgYWZmZWN0IGFueSBvdGhlciBkZXZpY2UgYmVoYXZpb3IsIGkuZS4gaXQg
+d29uJ3QgYmUgYW55IGNhdXNlIG9mCj4gaGVpc2VuYnVncy4KCk5vIHVuY2VydGFpbnR5IHRoZXJl
+IGlzLCBldmVuIGlmIHRoZSByZXR1cm4gc3RhdGVtZW50IGlzIHNraXBwZWQuIEZvciAKbWUsIGl0
+IGhhcyBiZWVuIG9uZSBvZiB3YXlzIHRvIGdhdGhlciBwYWNrZXQgZHVtcHMgKHdpdGggcHJpbnRr
+KS4KCihCdXQgbmVhciBmdXR1cmUsIEvDtm5pZ3NiZXJnIDE5MzEsIGJ5IG15c2VsZi4pCgoKUmVn
+YXJkcwoKVGFrYXNoaSBTYWthbW90bwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwK
