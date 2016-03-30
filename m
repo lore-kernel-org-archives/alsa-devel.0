@@ -1,54 +1,170 @@
-From: Emil Velikov <emil.l.velikov@gmail.com>
-Subject: Re: [PATCH 1/3 v2] drm/i2c/adv7511: Add audio support
-Date: Wed, 30 Mar 2016 10:58:42 +0100
-Message-ID: <CACvgo53rc2DhQdJUZJB5Lsj57vJGytU7GKqp-O_YZvzH7Df1XA@mail.gmail.com>
-References: <cover.1459174494.git.joabreu@synopsys.com>
- <15b1936d307912ba12df7fa09ec3a7a80ac5fcef.1459174494.git.joabreu@synopsys.com>
+From: han.lu@intel.com
+Subject: [PATCH V2 1/1] ASoC: add a core API to share more
+	product information with user space
+Date: Wed, 30 Mar 2016 16:52:32 +0800
+Message-ID: <1459327952-5313-1-git-send-email-han.lu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <15b1936d307912ba12df7fa09ec3a7a80ac5fcef.1459174494.git.joabreu@synopsys.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jose Abreu <Jose.Abreu@synopsys.com>
-Cc: Jon Medhurst <tixy@linaro.org>, Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Alexey Brodkin <Alexey.Brodkin@synopsys.com>, ML dri-devel <dri-devel@lists.freedesktop.org>, lgirdwood@gmail.com, yitian.bu@tangramtek.com, wsa+renesas@sang-engineering.com, laurent.pinchart+renesas@ideasonboard.com, tiwai@suse.com, nariman@opensource.wolfsonmicro.com, linux-snps-arc@lists.infradead.org, devicetree <devicetree@vger.kernel.org>, Maruthi.Bayyavarapu@amd.com, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Vineet.Gupta1@synopsys.com, buyitian@gmail.com, Rob Herring <robh+dt@kernel.org>, perex@perex.cz, "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>, broonie@kernel.org, Kumar Gala <galak@codeaurora.org>, Alex Deucher <alexander.deucher@amd.com>, CARLOS.PALMINHA@synopsys.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1DAF0265AB0
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2016 10:51:45 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, tiwai@suse.de, vinod.koul@intel.com, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org
+Cc: "Lu, Han" <han.lu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgSm9zZSwKCk9uIDI4IE1hcmNoIDIwMTYgYXQgMTU6MzYsIEpvc2UgQWJyZXUgPEpvc2UuQWJy
-ZXVAc3lub3BzeXMuY29tPiB3cm90ZToKPiBUaGlzIHBhdGNoIGFkZHMgYXVkaW8gc3VwcG9ydCBm
-b3IgdGhlIEFEVjc1MTEgSERNSSB0cmFuc21pdHRlcgo+IHVzaW5nIEFMU0EgU29DLgo+Cj4gVGhl
-IGNvZGUgd2FzIHBvcnRlZCBmcm9tIEFuYWxvZyBEZXZpY2VzIGxpbnV4IHRyZWUgZnJvbQo+IGNv
-bW1pdCAxNzcwYzRhMWUzMmIgKCJNZXJnZSByZW1vdGUtdHJhY2tpbmcgYnJhbmNoCj4gJ3hpbGlu
-eC9tYXN0ZXInIGludG8geGNvbW1fenlucSIpLCB3aGljaCBpcyBhdmFpbGFibGUgYXQ6Cj4gICAg
-ICAgICAtIGh0dHBzOi8vZ2l0aHViLmNvbS9hbmFsb2dkZXZpY2VzaW5jL2xpbnV4Lwo+Cj4gVGhl
-IG1haW4gY29yZSBmaWxlIHdhcyByZW5hbWVkIGZyb20gYWR2NzUxMS5jIHRvIGFkdjc1MTFfY29y
-ZS5jCj4gc28gdGhhdCBhdWRpbyBhbmQgdmlkZW8gY29tcGlsZSBpbnRvIGEgc2luZ2xlIGFkdjc1
-MTEua28gbW9kdWxlCj4gYW5kIHRvIGtlZXAgdXAgd2l0aCBBbmFsb2cgRGV2aWNlcyBrZXJuZWwg
-dHJlZS4KPgo+IFRoZSBhdWRpbyBjYW4gYmUgZGlzYWJsZWQgdXNpbmcgbWVudS1jb25maWcgc28g
-aXQgaXMgcG9zc2libGUKPiB0byB1c2Ugb25seSB2aWRlbyBtb2RlLgo+Cj4gVGhlIEhETUkgbW9k
-ZSBpcyBhdXRvbWF0aWNhbGx5IHN0YXJ0ZWQgYXQgYm9vdCBhbmQgdGhlIGF1ZGlvCj4gKHdoZW4g
-ZW5hYmxlZCkgcmVnaXN0ZXJzIGFzIGEgY29kZWMgaW50byBBTFNBLgo+Cj4gU1BESUYgREFJIGZv
-cm1hdCB3YXMgYWxzbyBhZGRlZCB0byBBU29DIGFzIGl0IGlzIHJlcXVpcmVkCj4gYnkgYWR2NzUx
-MSBhdWRpby4KPgo+IFNpZ25lZC1vZmYtYnk6IEpvc2UgQWJyZXUgPGpvYWJyZXVAc3lub3BzeXMu
-Y29tPgo+IC0tLQo+Cj4gTm8gY2hhbmdlcyB2MSAtPiB2Mi4KPgo+ICBkcml2ZXJzL2dwdS9kcm0v
-aTJjL0tjb25maWcgICAgICAgICB8ICAgMTEgKwo+ICBkcml2ZXJzL2dwdS9kcm0vaTJjL01ha2Vm
-aWxlICAgICAgICB8ICAgIDIgKwo+ICBkcml2ZXJzL2dwdS9kcm0vaTJjL2Fkdjc1MTEuYyAgICAg
-ICB8IDEwMjQgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiAgZHJpdmVycy9n
-cHUvZHJtL2kyYy9hZHY3NTExLmggICAgICAgfCAgIDQxICsrCj4gIGRyaXZlcnMvZ3B1L2RybS9p
-MmMvYWR2NzUxMV9hdWRpby5jIHwgIDMxMCArKysrKysrKysrKwo+ICBkcml2ZXJzL2dwdS9kcm0v
-aTJjL2Fkdjc1MTFfY29yZS5jICB8IDEwMDUgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKwpQbGVhc2Uga2VlcCB0aGUgZmlsZSByZW5hbWUgc2VwYXJhdGUgKGFuZCB1c2UgLU0gZmxh
-ZyB3aGVuIGdlbmVyYXRpbmcKdGhlIHBhdGNoKSBmcm9tIHRoZSBpbnRyb2R1Y3Rpb24gb2YgYXVk
-aW8gc3VwcG9ydC4gSGF2aW5nIHRvIGNoZWNrIDFrCkxPQyBtb3ZlbWVudCBhbG9uZ3NpZGUgdGhl
-IGludHJvZHVjdGlvbiBvZiBuZXcgb25lIGlzIGEgYml0Li4uCnN1Ym9wdGltYWwuCgpSZWdhcmRz
-LApFbWlsCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRy
-aS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRw
-czovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
+From: "Lu, Han" <han.lu@intel.com>
+
+Add a core API to share more machine/board information, for user space
+apps such as PA and UCM to distinguish various products.
+Previously on ASoC, the card short name, driver name and long name are
+all the same as the machine driver name.
+For example, on T100TA:
+  $ cat /proc/asound/cards
+    0 [bytcr-rt5640]: bytcr-rt5640 -  bytcr-rt5640
+                      bytcr-rt5640
+
+The patch adds more board information:
+  card driver name --->  machine driver name
+  card short name  --->  DMI_PRODUCT_NAME or DMI_BOARD_NAME
+  card long name and
+  card component   --->  short name:driver name(:DMI_SYS_VENDOR if
+                         available)(:firmware name if available)
+For example, on T100TA:
+  $ cat /proc/asound/cards
+    0 [T100TA      ]: bytcr-rt5640 -  T100TA
+                      T100TA:bytcr-rt5640:ASUSTek COMPUTER INC.:intel/fw_
+  sst_0f28.bin
+  $ amixer -c0 info
+  Card hw:0 'T100TA'/'T100TA:bytcr-rt5640:ASUSTek COMPUTER INC.:intel/fw_
+  sst_0f28.bin'
+    Mixer name    : ''
+    Components    : 'T100TA:bytcr-rt5640:ASUSTek COMPUTER INC.:intel/fw_s
+  st_0f28.bin'
+    Controls      : 256
+    Simple ctrls  : 228
+
+Signed-off-by: Lu, Han <han.lu@intel.com>
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 02b4a21..4e80444 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -486,6 +486,9 @@ void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream);
+ int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
+ 	unsigned int dai_fmt);
+ 
++int snd_soc_set_card_names(struct snd_soc_card *card, const char *board,
++		const char *vendor, const char *firmware);
++
+ /* Utility functions to get clock rates from various things */
+ int snd_soc_calc_frame_size(int sample_size, int channels, int tdm_slots);
+ int snd_soc_params_to_frame_size(struct snd_pcm_hw_params *params);
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 032a2e7..3162f3e 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -152,6 +152,8 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 	{}
+ };
+ 
++static struct snd_soc_card byt_rt5640_card;
++
+ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
+ {
+ 	int ret;
+@@ -159,6 +161,19 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
+ 	struct snd_soc_card *card = runtime->card;
+ 	const struct snd_soc_dapm_route *custom_map;
+ 	int num_routes;
++	const char *board, *vendor;
++	struct sst_acpi_mach *mach = byt_rt5640_card.dev->platform_data;
++
++	/* Add machine/board information for userspace */
++	board = dmi_get_system_info(DMI_PRODUCT_NAME);
++	if (!board)
++		board = dmi_get_system_info(DMI_BOARD_NAME);
++	vendor = dmi_get_system_info(DMI_SYS_VENDOR);
++	ret = snd_soc_set_card_names(card, board, vendor, mach->fw_filename);
++	if (ret < 0) {
++		dev_err(card->dev, "unable to set card names\n");
++		return ret;
++	}
+ 
+ 	card->dapm.idle_bias_off = true;
+ 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index d2e62b15..ab8e7e3 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1828,6 +1828,58 @@ int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_runtime_set_dai_fmt);
+ 
++/**
++ * snd_soc_set_card_names() - Set the shortname/drivername/longname/component
++ * of a ASoC card.
++ * @card: The card to set names
++ * @board: The board name or product name
++ * @vendor: The vendor name
++ * @firmware: The firmware name
++ *
++ * This function adds more information for the userspace to distinguish
++ * different products:
++ *   card driver name --->  machine driver name
++ *   card short name  --->  DMI_PRODUCT_NAME or DMI_BOARD_NAME
++ *   card long name and
++ *   card component   --->  short name:driver name(:DMI_SYS_VENDOR)
++ *                          (:firmware name)
++ *
++ * Returns 0 on success, otherwise a negative error code.
++ */
++int snd_soc_set_card_names(struct snd_soc_card *card, const char *board,
++		const char *vendor, const char *firmware)
++{
++	int ret = 0;
++	char *name;
++
++	if (!board) {
++		dev_err(card->dev, "ASoC: the board/product name is empty!\n");
++		return -1;
++	}
++	/* card driver name */
++	card->driver_name = card->name;
++	/* card short name */
++	card->name = board;
++	/* card long name / card component */
++	name = kstrdup(card->name, GFP_KERNEL);
++	if (!name)
++		return -ENOMEM;
++	strcat(name, ":");
++	strcat(name, card->driver_name);
++	strcat(name, ":");
++	if (vendor)
++		strcat(name, vendor);
++	strcat(name, ":");
++	if (firmware)
++		strcat(name, firmware);
++	ret = snd_component_add(card->snd_card, name);
++	card->long_name = card->snd_card->components;
++
++	kfree(name);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(snd_soc_set_card_names);
++
+ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ {
+ 	struct snd_soc_codec *codec;
+-- 
+2.5.0
