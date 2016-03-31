@@ -1,82 +1,91 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: rt5514: add rt5514 SPI driver
-Date: Thu, 31 Mar 2016 09:50:48 -0700
-Message-ID: <20160331165048.GE2350@sirena.org.uk>
-References: <1457953101-19348-1-git-send-email-oder_chiou@realtek.com>
- <20160329215121.GP2350@sirena.org.uk>
- <7EB0DE829A537248AF2ED30C97D12694FCEA41@RTITMBSV03.realtek.com.tw>
+Subject: Re: [PATCH 2/3 v2] ASoC: dwc: Add I2S HDMI audio support
+Date: Thu, 31 Mar 2016 09:56:42 -0700
+Message-ID: <20160331165642.GG2350@sirena.org.uk>
+References: <cover.1459174494.git.joabreu@synopsys.com>
+ <538be366488bf0d7633d702f2d0bab16707b7a47.1459174494.git.joabreu@synopsys.com>
+ <20160329173158.GB2350@sirena.org.uk>
+ <56FAC355.1040705@synopsys.com>
+ <20160329182222.GC2350@sirena.org.uk>
+ <56FCEFD0.8090509@synopsys.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3948639648200594209=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3BDEA2666D6
- for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2016 18:50:55 +0200 (CEST)
-In-Reply-To: <7EB0DE829A537248AF2ED30C97D12694FCEA41@RTITMBSV03.realtek.com.tw>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, "pc.liao@mediatek.com" <pc.liao@mediatek.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
+Content-Type: multipart/mixed; boundary="===============1138398617=="
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <56FCEFD0.8090509@synopsys.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Jose Abreu <Jose.Abreu@synopsys.com>
+Cc: tixy@linaro.org, mark.rutland@arm.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Alexey.Brodkin@synopsys.com, dri-devel@lists.freedesktop.org, tiwai@suse.com, yitian.bu@tangramtek.com, wsa+renesas@sang-engineering.com, laurent.pinchart+renesas@ideasonboard.com, nariman@opensource.wolfsonmicro.com, linux-snps-arc@lists.infradead.org, devicetree@vger.kernel.org, Maruthi.Bayyavarapu@amd.com, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, Vineet.Gupta1@synopsys.com, buyitian@gmail.com, robh+dt@kernel.org, perex@perex.cz, linux-kernel@vger.kernel.org, CARLOS.PALMINHA@synopsys.com, galak@codeaurora.org, alexander.deucher@amd.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3948639648200594209==
+--===============1138398617==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ou2/pFdZC1wHLsdF"
+	protocol="application/pgp-signature"; boundary="piopQj3F5GMtthHx"
 Content-Disposition: inline
 
 
---ou2/pFdZC1wHLsdF
+--piopQj3F5GMtthHx
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Mar 31, 2016 at 06:29:51AM +0000, Oder Chiou wrote:
-> > > +static void rt5514_enable_dsp_prepare(struct rt5514_priv *rt5514)
-> > > +{
-> > > +	/* Reset */
-> > > +	regmap_write(rt5514->i2c_regmap, 0x18002000, 0x000010ec);
+On Thu, Mar 31, 2016 at 10:37:20AM +0100, Jose Abreu wrote:
+> On 29-03-2016 19:22, Mark Brown wrote:
 
-> > This is a *very* big table of magic numbers with what look like system
-> > specific settings in there (there seem to be some things routing to and
-> > from the ADC, and some clocking setup...).  Are you sure none of this
-> > depends on the runtime configuration?
+> > If you want to add a new platform driver you need to add a new platform
+> > driver, not shove the code into an existing driver for a seperate IP.
 
-> Yes, it is independent of the ASoC runtime configuration. The table of
-> magic numbers is the settings for the voice wake up, so it is not required
-> to be run on ASoC framework.
+> I can separate the platform driver into a new file but they will have to be
+> compiled into the same module as the new additions to the i2s driver depend on
+> functions of the platform driver (see i2s_irq_handler()). Or should I divide
 
-Are you *positive* about that?  There look to be routing things going on
-for example which might be system dependant.
+No, that's not at all acceptable.  The Designware IP is not specific to
+your system, you can't make it depend on your platform driver.  The
+kernel needs to work on other people's systems too.  You need to work
+through and/or extend the abstractions the framework provides to
+separate the drivers for different IPs.
 
---ou2/pFdZC1wHLsdF
+> this into two modules and add a Kconfig option to the platform driver? Besides
+> this I first wanted the driver to be compiled into the same module so that it is
+> compatible with kernel 3.18 where simple audio card requires that platform
+> driver == cpu driver.
+
+That's not OK upstream, we're working on the current kernel not on
+random old kernels.  We don't carry compatibility code to enable current
+kernel code to be run on years old kernels.
+
+--piopQj3F5GMtthHx
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJW/VVnAAoJECTWi3JdVIfQ0fAH/AmZAGAJVq+JITm6qSva6Bm8
-pK7HSnEKbt9dKHe0fj33VmGHmXpbQGF9uf20LKU0pN6fU8uevkTqPNT7ekSYk+rz
-gndoVu418q6hwQdE6kU5Fv5qLLxzfU722fTh6lE/4S7UTfXWty7a0iN6HonIix17
-qjAULEMRONd/fhafOE0iBCA/3wU3o1ZZEt4NrbPsPnVXpRKJxz3H0iDE/5jsgYXk
-KhIYEKTHdXwjiuVxUsHA8GBuhivXRLPh64/5w/2j2/pCEzvtLnx6AMIXl4ajrFJk
-c83TZjPnkELqvxZjkdQ18FHYBFve0Z4ezf0YbgddpuE5lJvgZBkHJ1VOuN+WlEg=
-=jrKt
+iQEcBAEBCAAGBQJW/VbJAAoJECTWi3JdVIfQneAH/j6fiMmUYVuswFhQ5h3V1ezC
+VW61HfhEQVmAoYEw3lxArepUlIODE6UFzt8sz+J/kTAGTAromOvN58NkIn0+sQxB
+jp6CmzC4ohEC4/5fziwPBHjbzFkQ7mbjiiHDJBonMG4IylBrKRpRrHTWYFM4SUOV
+GnCAbAGj/zU39vxsZpAw9Nmar4rkpohHbJUC6C6fRoEDY5iZ+D8EcCSIZLHRlEC5
+fZBDh9VVicBk5xykQH2uFBowoBV6jfU8HHRUeeu4/Q7kirk2YAePQFoY/qw1lXfK
+7XcGl9ZhhduIJd2bCKZuG5ribrE68mel2QNaT1QtEJPFzpcVGun2BYPYRJBLLEo=
+=Wf6v
 -----END PGP SIGNATURE-----
 
---ou2/pFdZC1wHLsdF--
+--piopQj3F5GMtthHx--
 
---===============3948639648200594209==
-Content-Type: text/plain; charset="us-ascii"
+--===============1138398617==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Content-Disposition: inline
 
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
+IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
 
---===============3948639648200594209==--
+--===============1138398617==--
