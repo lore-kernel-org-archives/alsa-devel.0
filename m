@@ -1,108 +1,48 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8825: assign DAC Ch to match headset
-	L/R" to the asoc tree
-Date: Thu, 31 Mar 2016 10:20:24 -0700
-Message-ID: <E1algGe-0003gi-KE@finisterre>
-References: <1459321031-2365-1-git-send-email-KCHSU0@nuvoton.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v4 3/3] dt/bindings: sound: new chip added into TAS571x
+ binding
+Date: Thu, 31 Mar 2016 10:25:15 -0700
+Message-ID: <20160331172515.GK2350@sirena.org.uk>
+References: <1459442487-32284-1-git-send-email-petr@barix.com>
+ <1459442487-32284-3-git-send-email-petr@barix.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6822D2666D6
- for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2016 19:20:31 +0200 (CEST)
-In-Reply-To: <1459321031-2365-1-git-send-email-KCHSU0@nuvoton.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="s6Wo+7iKhEdF4/RK"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1459442487-32284-3-git-send-email-petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+Cc: cernekee-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: nau8825: assign DAC Ch to match headset L/R
+--s6Wo+7iKhEdF4/RK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+On Thu, Mar 31, 2016 at 06:41:27PM +0200, Petr Kulhavy wrote:
+> This adds the TAS5721 into the TAS571x binding.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Please use subject lines reflecting the style for the subsystem.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+--s6Wo+7iKhEdF4/RK
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+iQEcBAEBCAAGBQJW/V16AAoJECTWi3JdVIfQ9w8H/RLS5Fk3DV3Uz/9dpttxFNcA
+Zz1X2PBbrjGqpuX+ZvtPp4/uBMUrEQNzPDM+9wwpuzYVKSu59vXC8HVOmN6838jR
+M1xQDxD1PZ1DmhqbfJZb8QWdNG+CtvpJSR8iucZMSmDhSxzkcKWRYeGN58cbSDFj
+GjfrwtWpKdzdqSV5Y05JYo3fkdKoytBui9czzoNbnN8MArFEygFHlNJxmoGx6/+c
+YVH33HpbQIA+taTCkE1QvSND8vYLFtGvQlBdXfnbWWZea3Ztb7Zs3eF1Sz39m2Bv
+v8eFaK68r4S8Mh5NKLp6fuqJamRfCbNTJroYCBbvpKgEFNb/NGjZ2RgR2IEEOb8=
+=RJOE
+-----END PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From c5a85d8a61a91c13278e3c4ca32fecbc86dc2ede Mon Sep 17 00:00:00 2001
-From: John Hsu <KCHSU0@nuvoton.com>
-Date: Wed, 30 Mar 2016 14:57:11 +0800
-Subject: [PATCH] ASoC: nau8825: assign DAC Ch to match headset L/R
-
-The default value of DAC channel select is reverse in codec.
-For normal usage, switch the channel select when codec bootup.
-
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/nau8825.c | 5 +++++
- sound/soc/codecs/nau8825.h | 6 ++++++
- 2 files changed, 11 insertions(+)
-
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 106c391f9ec3..f35019a0db1d 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -930,6 +930,11 @@ static void nau8825_init_regs(struct nau8825 *nau8825)
- 		NAU8825_RDAC_CLK_DELAY_MASK | NAU8825_RDAC_VREF_MASK,
- 		(0x2 << NAU8825_RDAC_CLK_DELAY_SFT) |
- 		(0x3 << NAU8825_RDAC_VREF_SFT));
-+	/* Config L/R channel */
-+	regmap_update_bits(nau8825->regmap, NAU8825_REG_DACL_CTRL,
-+		NAU8825_DACL_CH_SEL_MASK, NAU8825_DACL_CH_SEL_L);
-+	regmap_update_bits(nau8825->regmap, NAU8825_REG_DACR_CTRL,
-+		NAU8825_DACL_CH_SEL_MASK, NAU8825_DACL_CH_SEL_R);
- }
- 
- static const struct regmap_config nau8825_regmap_config = {
-diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
-index 4427df99de24..9e6cb6262bf2 100644
---- a/sound/soc/codecs/nau8825.h
-+++ b/sound/soc/codecs/nau8825.h
-@@ -257,9 +257,15 @@
- 
- /* DACL_CTRL (0x33) */
- #define NAU8825_DACL_CH_SEL_SFT	9
-+#define NAU8825_DACL_CH_SEL_MASK (0x1 << NAU8825_DACL_CH_SEL_SFT)
-+#define NAU8825_DACL_CH_SEL_L    (0x0 << NAU8825_DACL_CH_SEL_SFT)
-+#define NAU8825_DACL_CH_SEL_R    (0x1 << NAU8825_DACL_CH_SEL_SFT)
- 
- /* DACR_CTRL (0x34) */
- #define NAU8825_DACR_CH_SEL_SFT	9
-+#define NAU8825_DACR_CH_SEL_MASK (0x1 << NAU8825_DACR_CH_SEL_SFT)
-+#define NAU8825_DACR_CH_SEL_L    (0x0 << NAU8825_DACR_CH_SEL_SFT)
-+#define NAU8825_DACR_CH_SEL_R    (0x1 << NAU8825_DACR_CH_SEL_SFT)
- 
- /* CLASSG_CTRL (0x50) */
- #define NAU8825_CLASSG_TIMER_SFT	8
--- 
-2.8.0.rc3
+--s6Wo+7iKhEdF4/RK--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
