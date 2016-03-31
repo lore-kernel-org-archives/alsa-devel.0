@@ -1,118 +1,112 @@
-From: Moise Gergaud <moise.gergaud@st.com>
-Subject: [PATCH 4/4] Documentation: sti-asoc-card: update tdm
-	mode
-Date: Thu, 31 Mar 2016 18:00:58 +0200
-Message-ID: <1459440058-12234-5-git-send-email-moise.gergaud@st.com>
-References: <1459440058-12234-1-git-send-email-moise.gergaud@st.com>
+From: Vladis Dronov <vdronov@redhat.com>
+Subject: Re: [PATCH] ALSA: usb-audio: Fix double-free in
+ snd_usb_add_audio_stream()
+Date: Thu, 31 Mar 2016 12:05:43 -0400 (EDT)
+Message-ID: <2105584083.43718399.1459440343149.JavaMail.zimbra@redhat.com>
+References: <1459364602-28997-1-git-send-email-vdronov@redhat.com> <1459364602-28997-2-git-send-email-vdronov@redhat.com> <s5hbn5v7lnw.wl-tiwai@suse.de> <s5h8u0zgen2.wl-tiwai@suse.de> <882494379.43642280.1459427790768.JavaMail.zimbra@redhat.com> <s5hegaqg5zj.wl-tiwai@suse.de> <805340847.43676741.1459433035733.JavaMail.zimbra@redhat.com> <s5hh9fmenkr.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id CFEE926506E
- for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2016 18:01:28 +0200 (CEST)
-In-Reply-To: <1459440058-12234-1-git-send-email-moise.gergaud@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: arnaud.pouliquen@st.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.de, rmk+kernel@arm.linux.org.uk
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hh9fmenkr.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-- Add "TDM" in the st,mode property list
-- st,mode property is also mandatory for reader
-- add tdm playback dai-link example
+From: Vladis Dronov <vdronov@redhat.com>
+Subject: [PATCH] ALSA: usb-audio: Fix double-free in error paths after snd_usb_add_audio_stream() call
 
-Signed-off-by: Moise Gergaud <moise.gergaud@st.com>
-Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+create_fixed_stream_quirk(), snd_usb_parse_audio_interface() and
+create_uaxx_quirk() functions allocate the audioformat object by themselves
+and free it upon error before returning. However, once the object is linked
+to a stream, it's freed again in snd_usb_audio_pcm_free(), thus it'll be
+double-freed, eventually resulting in a memory corruption.
+
+This patch fixes these failures in the error paths by unlinking the audioformat
+object before freeing it.
+
+Based on a patch by Takashi Iwai" <tiwai@suse.de>
+
+[Note for stable backports:
+ this patch requires the commit 902eb7fd1e4a ('ALSA: usb-audio: Minor
+ code cleanup in create_fixed_stream_quirk()')]
+
+Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=1283358
+Reported-by: Ralf Spenneberg <ralf@spenneberg.net>
+Cc: <stable@vger.kernel.org> # see the note above
+Signed-off-by: Vladis Dronov <vdronov@redhat.com>
 ---
- .../devicetree/bindings/sound/st,sti-asoc-card.txt | 44 +++++++++++++++++++---
- 1 file changed, 39 insertions(+), 5 deletions(-)
+ sound/usb/quirks.c | 4 ++++
+ sound/usb/stream.c | 6 +++++-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt b/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt
-index f546dd9..4d9a83d 100644
---- a/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt
-+++ b/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt
-@@ -37,17 +37,18 @@ Required properties:
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index fb62bce..6178bb5 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -150,6 +150,7 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
+ 		usb_audio_err(chip, "cannot memdup\n");
+ 		return -ENOMEM;
+ 	}
++	INIT_LIST_HEAD(&fp->list);
+ 	if (fp->nr_rates > MAX_NR_RATES) {
+ 		kfree(fp);
+ 		return -EINVAL;
+@@ -193,6 +194,7 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
+ 	return 0;
  
-   - dai-name: DAI name that describes the IP.
+  error:
++	list_del(&fp->list); /* unlink for avoiding double-free */
+ 	kfree(fp);
+ 	kfree(rate_table);
+ 	return err;
+@@ -469,6 +471,7 @@ static int create_uaxx_quirk(struct snd_usb_audio *chip,
+ 	fp->ep_attr = get_endpoint(alts, 0)->bmAttributes;
+ 	fp->datainterval = 0;
+ 	fp->maxpacksize = le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize);
++	INIT_LIST_HEAD(&fp->list);
  
-+  - IP mode: IP working mode depending on associated codec.
-+	"HDMI" connected to HDMI codec and support IEC HDMI formats (player only).
-+	"SPDIF" connected to SPDIF codec and support SPDIF formats (player only).
-+	"PCM" PCM standard mode for I2S or TDM bus.
-+	"TDM" TDM mode for TDM bus.
-+
- Required properties ("st,sti-uni-player" compatibility only):
-   - clocks: CPU_DAI IP clock source, listed in the same order than the
- 	    CPU_DAI properties.
+ 	switch (fp->maxpacksize) {
+ 	case 0x120:
+@@ -492,6 +495,7 @@ static int create_uaxx_quirk(struct snd_usb_audio *chip,
+ 		? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
+ 	err = snd_usb_add_audio_stream(chip, stream, fp);
+ 	if (err < 0) {
++		list_del(&fp->list); /* unlink for avoiding double-free */
+ 		kfree(fp);
+ 		return err;
+ 	}
+diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+index 51258a1..6fe7f21 100644
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -316,7 +316,9 @@ static struct snd_pcm_chmap_elem *convert_chmap(int channels, unsigned int bits,
+ /*
+  * add this endpoint to the chip instance.
+  * if a stream with the same endpoint already exists, append to it.
+- * if not, create a new pcm stream.
++ * if not, create a new pcm stream. note, fp is added to the substream
++ * fmt_list and will be freed on the chip instance release. do not free
++ * fp or do remove it from the substream fmt_list to avoid double-free.
+  */
+ int snd_usb_add_audio_stream(struct snd_usb_audio *chip,
+ 			     int stream,
+@@ -677,6 +679,7 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
+ 					* (fp->maxpacksize & 0x7ff);
+ 		fp->attributes = parse_uac_endpoint_attributes(chip, alts, protocol, iface_no);
+ 		fp->clock = clock;
++		INIT_LIST_HEAD(&fp->list);
  
-   - uniperiph-id: internal SOC IP instance ID.
+ 		/* some quirks for attributes here */
  
--  - IP mode: IP working mode depending on associated codec.
--	"HDMI" connected to HDMI codec IP and IEC HDMI formats.
--	"SPDIF"connected to SPDIF codec and support SPDIF formats.
--	"PCM"  PCM standard mode for I2S or TDM bus.
--
- Optional properties:
-   - pinctrl-0: defined for CPU_DAI@1 and CPU_DAI@4 to describe I2S PIOs for
- 	       external codecs connection.
-@@ -56,6 +57,22 @@ Optional properties:
- 
- Example:
- 
-+	sti_uni_player1: sti-uni-player@1 {
-+		compatible = "st,sti-uni-player";
-+		status = "okay";
-+		#sound-dai-cells = <0>;
-+		st,syscfg = <&syscfg_core>;
-+		clocks = <&clk_s_d0_flexgen CLK_PCM_1>;
-+		reg = <0x8D81000 0x158>;
-+		interrupts = <GIC_SPI 85 IRQ_TYPE_NONE>;
-+		dmas = <&fdma0 3 0 1>;
-+		st,dai-name = "Uni Player #1 (I2S)";
-+		dma-names = "tx";
-+		st,uniperiph-id = <1>;
-+		st,version = <5>;
-+		st,mode = "TDM";
-+	};
-+
- 	sti_uni_player2: sti-uni-player@2 {
- 		compatible = "st,sti-uni-player";
- 		status = "okay";
-@@ -99,6 +116,7 @@ Example:
- 		dma-names = "rx";
- 		dai-name = "Uni Reader #1 (HDMI RX)";
- 		version = <3>;
-+		st,mode = "PCM";
- 	};
- 
- 2) sti-sas-codec: internal audio codec IPs driver
-@@ -152,4 +170,20 @@ Example of audio card declaration:
- 				sound-dai = <&sti_sasg_codec 0>;
- 			};
- 		};
-+		simple-audio-card,dai-link@2 {
-+			/* TDM playback  */
-+			format = "left_j";
-+			frame-inversion = <1>;
-+			cpu {
-+				sound-dai = <&sti_uni_player1>;
-+				dai-tdm-slot-num = <16>;
-+				dai-tdm-slot-width = <16>;
-+				dai-tdm-slot-tx-mask =
-+					<1 1 1 1 0 0 0 0 0 0 1 1 0 0 1 1>;
-+			};
-+
-+			codec {
-+				sound-dai = <&sti_sasg_codec 3>;
-+			};
-+		};
- 	};
+@@ -725,6 +728,7 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
+ 		dev_dbg(&dev->dev, "%u:%d: add audio endpoint %#x\n", iface_no, altno, fp->endpoint);
+ 		err = snd_usb_add_audio_stream(chip, stream, fp);
+ 		if (err < 0) {
++			list_del(&fp->list); /* unlink for avoiding double-free */
+ 			kfree(fp->rate_table);
+ 			kfree(fp->chmap);
+ 			kfree(fp);
 -- 
-1.9.1
+2.5.5
