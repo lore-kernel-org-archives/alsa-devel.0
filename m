@@ -1,15 +1,20 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2] ALSA: hda - Bind with i915 only when Intel
-	graphics is present
-Date: Thu, 31 Mar 2016 16:31:33 +0200
-Message-ID: <1459434693-1633-1-git-send-email-tiwai@suse.de>
+From: "Lu, Han" <han.lu@intel.com>
+Subject: Re: [PATCH V3 1/2] ASoC: core: add API for registering
+ DMI card names
+Date: Thu, 31 Mar 2016 14:48:32 +0000
+Message-ID: <B51200AC81AB024499A3C2C9A1BB90A83D3AF834@SHSMSX101.ccr.corp.intel.com>
+References: <cover.1459414492.git.han.lu@intel.com>
+ <79fd64c59dd44d44e018245ad411d48f5ba01b24.1459414492.git.han.lu@intel.com>
+ <56FD116B.7000703@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E03E266895
- for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2016 16:31:36 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A6B4266B48
+ for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2016 16:49:45 +0200 (CEST)
+In-Reply-To: <56FD116B.7000703@metafoo.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,63 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>
+To: Lars-Peter Clausen <lars@metafoo.de>, "broonie@kernel.org" <broonie@kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Skylake and onwards, the HD-audio controller driver needs to bind
-with i915 for having the control of power well audio domain before
-actually probing the codec.  This leads to the load of i915 driver
-from the audio driver side.  But, there are systems that have no Intel
-graphics but Nvidia or AMD GPU, although they still use HD-audio bus
-for the onboard audio codecs.  On these, loading the i915 driver is
-nothing but a useless memory and CPU consumption.
+> -----Original Message-----
+> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
+> Sent: Thursday, March 31, 2016 8:01 PM
+> To: Lu, Han <han.lu@intel.com>; broonie@kernel.org; tiwai@suse.de; Koul,
+> Vinod <vinod.koul@intel.com>; pierre-louis.bossart@linux.intel.com;
+> liam.r.girdwood@linux.intel.com; alsa-devel@alsa-project.org
+> Subject: Re: [alsa-devel] [PATCH V3 1/2] ASoC: core: add API for registering
+> DMI card names
+> 
+> On 03/31/2016 10:58 AM, han.lu@intel.com wrote:
+> [...]
+> > +	name_size = strlen(card->name) + strlen(card->driver_name)
+> > +			+ strlen(vendor) + strlen(firmware) + 4;
+> > +	if (buf_size < name_size + strlen(card->snd_card->components))
+> > +		return -ENOMEM;
+> > +	name = kmalloc(buf_size, GFP_KERNEL);
+> > +	if (!name)
+> > +		return -ENOMEM;
+> > +	snprintf(name, buf_size, "%s:%s:%s:%s", card->name,
+> > +			card->driver_name, vendor, firmware);
+> 
+> Have a look at kasprintf(). It will allow you to simplify the code here
+> 
 
-A simple way to avoid it is just to look for the Intel graphics PCI
-entry beforehand, and try to bind with i915 only when such an entry is
-found.  Currently, it assumes the PCI display class.  If another class
-appears, this needs to be extended (although it's very unlikely).
+Thanks Lars-Peter, I'll use kasprintf() to replace kmalloc() and snprintf() in V4.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
-v1->v2: Check also PCI vendor id to match only with Intel
-Now get out of a series, as this should be applied to 4.6, too.
-
- sound/hda/hdac_i915.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
-index d0da2508823e..6800e0c5a38f 100644
---- a/sound/hda/hdac_i915.c
-+++ b/sound/hda/hdac_i915.c
-@@ -287,6 +287,18 @@ int snd_hdac_i915_register_notifier(const struct i915_audio_component_audio_ops
- }
- EXPORT_SYMBOL_GPL(snd_hdac_i915_register_notifier);
- 
-+/* check whether intel graphics is present */
-+static bool i915_gfx_present(void)
-+{
-+	static struct pci_device_id ids[] = {
-+		{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_ANY_ID),
-+		  .class = PCI_BASE_CLASS_DISPLAY << 16,
-+		  .class_mask = 0xff << 16 },
-+		{}
-+	};
-+	return pci_dev_present(ids);
-+}
-+
- /**
-  * snd_hdac_i915_init - Initialize i915 audio component
-  * @bus: HDA core bus
-@@ -309,6 +321,9 @@ int snd_hdac_i915_init(struct hdac_bus *bus)
- 	if (WARN_ON(hdac_acomp))
- 		return -EBUSY;
- 
-+	if (!i915_gfx_present())
-+		return -ENODEV;
-+
- 	acomp = kzalloc(sizeof(*acomp), GFP_KERNEL);
- 	if (!acomp)
- 		return -ENOMEM;
--- 
-2.7.4
+BR,
+Han
