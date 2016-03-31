@@ -1,15 +1,16 @@
 From: Moise Gergaud <moise.gergaud@st.com>
-Subject: [PATCH 3/4] ASoC: sti: select player for I2S/TDM TX bus
-Date: Thu, 31 Mar 2016 18:00:57 +0200
-Message-ID: <1459440058-12234-4-git-send-email-moise.gergaud@st.com>
+Subject: [PATCH 4/4] Documentation: sti-asoc-card: update tdm
+	mode
+Date: Thu, 31 Mar 2016 18:00:58 +0200
+Message-ID: <1459440058-12234-5-git-send-email-moise.gergaud@st.com>
 References: <1459440058-12234-1-git-send-email-moise.gergaud@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 8BB5E26506E
- for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2016 18:01:18 +0200 (CEST)
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id CFEE926506E
+ for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2016 18:01:28 +0200 (CEST)
 In-Reply-To: <1459440058-12234-1-git-send-email-moise.gergaud@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,118 +24,95 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: arnaud.pouliquen@st.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.de, rmk+kernel@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-By default, player#0 is connected to I2S/TDM TX bus.
-This patch connects player#1 to I2S/TDM TX bus.
+- Add "TDM" in the st,mode property list
+- st,mode property is also mandatory for reader
+- add tdm playback dai-link example
 
 Signed-off-by: Moise Gergaud <moise.gergaud@st.com>
 Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- sound/soc/sti/uniperif.h        |  1 +
- sound/soc/sti/uniperif_player.c | 42 +++++++++++++++++++++++++++--------------
- 2 files changed, 29 insertions(+), 14 deletions(-)
+ .../devicetree/bindings/sound/st,sti-asoc-card.txt | 44 +++++++++++++++++++---
+ 1 file changed, 39 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
-index d0e2446..eb9933c 100644
---- a/sound/soc/sti/uniperif.h
-+++ b/sound/soc/sti/uniperif.h
-@@ -1302,6 +1302,7 @@ struct uniperif {
- 	struct device *dev;
- 	int ver; /* IP version, used by register access macros */
- 	struct regmap_field *clk_sel;
-+	struct regmap_field *valid_sel;
+diff --git a/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt b/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt
+index f546dd9..4d9a83d 100644
+--- a/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt
++++ b/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt
+@@ -37,17 +37,18 @@ Required properties:
  
- 	/* capabilities */
- 	const struct snd_pcm_hardware *hw;
-diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-index ff2d735..ee1c7c2 100644
---- a/sound/soc/sti/uniperif_player.c
-+++ b/sound/soc/sti/uniperif_player.c
-@@ -21,7 +21,6 @@
+   - dai-name: DAI name that describes the IP.
  
- /* sys config registers definitions */
- #define SYS_CFG_AUDIO_GLUE 0xA4
--#define SYS_CFG_AUDI0_GLUE_PCM_CLKX 8
++  - IP mode: IP working mode depending on associated codec.
++	"HDMI" connected to HDMI codec and support IEC HDMI formats (player only).
++	"SPDIF" connected to SPDIF codec and support SPDIF formats (player only).
++	"PCM" PCM standard mode for I2S or TDM bus.
++	"TDM" TDM mode for TDM bus.
++
+ Required properties ("st,sti-uni-player" compatibility only):
+   - clocks: CPU_DAI IP clock source, listed in the same order than the
+ 	    CPU_DAI properties.
  
- /*
-  * Driver specific types.
-@@ -29,6 +28,7 @@
+   - uniperiph-id: internal SOC IP instance ID.
  
- #define UNIPERIF_PLAYER_CLK_ADJ_MIN  -999999
- #define UNIPERIF_PLAYER_CLK_ADJ_MAX  1000000
-+#define UNIPERIF_PLAYER_I2S_OUT 1 /* player id connected to I2S/TDM TX bus */
- 
- /*
-  * Note: snd_pcm_hardware is linked to DMA controller but is declared here to
-@@ -1013,27 +1013,30 @@ static void uni_player_shutdown(struct snd_pcm_substream *substream,
- 	player->substream = NULL;
- }
- 
--static int uni_player_parse_dt_clk_glue(struct platform_device *pdev,
--					struct uniperif *player)
-+static int uni_player_parse_dt_audio_glue(struct platform_device *pdev,
-+					  struct uniperif *player)
- {
--	int bit_offset;
- 	struct device_node *node = pdev->dev.of_node;
- 	struct regmap *regmap;
+-  - IP mode: IP working mode depending on associated codec.
+-	"HDMI" connected to HDMI codec IP and IEC HDMI formats.
+-	"SPDIF"connected to SPDIF codec and support SPDIF formats.
+-	"PCM"  PCM standard mode for I2S or TDM bus.
 -
--	bit_offset = SYS_CFG_AUDI0_GLUE_PCM_CLKX + player->info->id;
-+	struct reg_field regfield[2] = {
-+		/* PCM_CLK_SEL */
-+		REG_FIELD(SYS_CFG_AUDIO_GLUE,
-+			  8 + player->info->id,
-+			  8 + player->info->id),
-+		/* PCMP_VALID_SEL */
-+		REG_FIELD(SYS_CFG_AUDIO_GLUE, 0, 1)
+ Optional properties:
+   - pinctrl-0: defined for CPU_DAI@1 and CPU_DAI@4 to describe I2S PIOs for
+ 	       external codecs connection.
+@@ -56,6 +57,22 @@ Optional properties:
+ 
+ Example:
+ 
++	sti_uni_player1: sti-uni-player@1 {
++		compatible = "st,sti-uni-player";
++		status = "okay";
++		#sound-dai-cells = <0>;
++		st,syscfg = <&syscfg_core>;
++		clocks = <&clk_s_d0_flexgen CLK_PCM_1>;
++		reg = <0x8D81000 0x158>;
++		interrupts = <GIC_SPI 85 IRQ_TYPE_NONE>;
++		dmas = <&fdma0 3 0 1>;
++		st,dai-name = "Uni Player #1 (I2S)";
++		dma-names = "tx";
++		st,uniperiph-id = <1>;
++		st,version = <5>;
++		st,mode = "TDM";
 +	};
- 
- 	regmap = syscon_regmap_lookup_by_phandle(node, "st,syscfg");
- 
--	if (regmap) {
--		struct reg_field regfield =
--			REG_FIELD(SYS_CFG_AUDIO_GLUE, bit_offset, bit_offset);
--
--		player->clk_sel = regmap_field_alloc(regmap, regfield);
--	} else {
-+	if (!regmap) {
- 		dev_err(&pdev->dev, "sti-audio-clk-glue syscf not found\n");
- 		return -EINVAL;
- 	}
- 
-+	player->clk_sel = regmap_field_alloc(regmap, regfield[0]);
-+	player->valid_sel = regmap_field_alloc(regmap, regfield[1]);
 +
- 	return 0;
- }
+ 	sti_uni_player2: sti-uni-player@2 {
+ 		compatible = "st,sti-uni-player";
+ 		status = "okay";
+@@ -99,6 +116,7 @@ Example:
+ 		dma-names = "rx";
+ 		dai-name = "Uni Reader #1 (HDMI RX)";
+ 		version = <3>;
++		st,mode = "PCM";
+ 	};
  
-@@ -1084,8 +1087,8 @@ static int uni_player_parse_dt(struct platform_device *pdev,
- 	/* Save the info structure */
- 	player->info = info;
- 
--	/* Get the PCM_CLK_SEL bit from audio-glue-ctrl SoC register */
--	if (uni_player_parse_dt_clk_glue(pdev, player))
-+	/* Get PCM_CLK_SEL & PCMP_VALID_SEL from audio-glue-ctrl SoC reg */
-+	if (uni_player_parse_dt_audio_glue(pdev, player))
- 		return -EINVAL;
- 
- 	return 0;
-@@ -1139,6 +1142,17 @@ int uni_player_init(struct platform_device *pdev,
- 		}
- 	}
- 
-+	/* connect to I2S/TDM TX bus */
-+	if (player->valid_sel &&
-+	    (player->info->id == UNIPERIF_PLAYER_I2S_OUT)) {
-+		ret = regmap_field_write(player->valid_sel, player->info->id);
-+		if (ret) {
-+			dev_err(player->dev,
-+				"%s: unable to connect to tdm bus", __func__);
-+			return ret;
-+		}
-+	}
+ 2) sti-sas-codec: internal audio codec IPs driver
+@@ -152,4 +170,20 @@ Example of audio card declaration:
+ 				sound-dai = <&sti_sasg_codec 0>;
+ 			};
+ 		};
++		simple-audio-card,dai-link@2 {
++			/* TDM playback  */
++			format = "left_j";
++			frame-inversion = <1>;
++			cpu {
++				sound-dai = <&sti_uni_player1>;
++				dai-tdm-slot-num = <16>;
++				dai-tdm-slot-width = <16>;
++				dai-tdm-slot-tx-mask =
++					<1 1 1 1 0 0 0 0 0 0 1 1 0 0 1 1>;
++			};
 +
- 	ret = devm_request_irq(&pdev->dev, player->irq,
- 			       uni_player_irq_handler, IRQF_SHARED,
- 			       dev_name(&pdev->dev), player);
++			codec {
++				sound-dai = <&sti_sasg_codec 3>;
++			};
++		};
+ 	};
 -- 
 1.9.1
