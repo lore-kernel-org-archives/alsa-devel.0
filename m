@@ -1,235 +1,104 @@
-From: Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
-Subject: Re: [PATCH 1/3 v2] drm/i2c/adv7511: Add audio support
-Date: Thu, 31 Mar 2016 13:57:56 +0100
-Message-ID: <56FD1ED4.4040200@synopsys.com>
-References: <cover.1459174494.git.joabreu@synopsys.com>
- <15b1936d307912ba12df7fa09ec3a7a80ac5fcef.1459174494.git.joabreu@synopsys.com>
- <56FA3745.3000807@codeaurora.org> <56FA5E57.2000506@synopsys.com>
- <56FAB557.3060900@codeaurora.org>
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Subject: Re: [PATCH 2/2] ALSA: hda - Bind with i915 only when
+ Intel graphics is present
+Date: Thu, 31 Mar 2016 15:56:40 +0300
+Message-ID: <20160331125640.GO4329@intel.com>
+References: <1459352762-28681-1-git-send-email-tiwai@suse.de>
+ <1459352762-28681-2-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <56FAB557.3060900-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Archit Taneja <architt-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: tixy-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Alexey.Brodkin-HKixBCOQz3hWk0Htik3J/w@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, yitian.bu-sf4bEIuTEZ8/jFmSBShxMA@public.gmane.org, wsa+renesas-jBu1N2QxHDJrcw3mvpCnnVaTQe2KTcn/@public.gmane.org, laurent.pinchart+renesas-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org, nariman-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, Maruthi.Bayyavarapu-5C7GfCeVMHo@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, Vineet.Gupta1-HKixBCOQz3hWk0Htik3J/w@public.gmane.org, buyitian-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, alexander.deucher-5C7GfCeVMHo@public.gmane.org, CARLOS.PALMINHA-HKixBCOQz3hWk0Htik3J/w@public.gmane.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EE8D2667B3
+ for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2016 14:56:47 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1459352762-28681-2-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Archit,
+On Wed, Mar 30, 2016 at 05:46:02PM +0200, Takashi Iwai wrote:
+> On Skylake and onwards, the HD-audio controller driver needs to bind
+> with i915 for having the control of power well audio domain before
+> actually probing the codec.  This leads to the load of i915 driver
+> from the audio driver side.  But, there are systems that have no Intel
+> graphics but Nvidia or AMD GPU, although they still use HD-audio bus
+> for the onboard audio codecs.  On these, loading the i915 driver is
+> nothing but a useless memory and CPU consumption.
+> =
 
+> A simple way to avoid it is just to look for the Intel graphics PCI
+> entry beforehand, and try to bind with i915 only when such an entry is
+> found.  Currently, it assumes the PCI display class.  If another class
+> appears, this needs to be extended (although it's very unlikely).
+> =
 
-On 29-03-2016 18:03, Archit Taneja wrote:
->
->
-> On 3/29/2016 4:22 PM, Jose Abreu wrote:
->> Hi Archit,
->>
->> On 29-03-2016 09:05, Archit Taneja wrote:
->>> Hi,
->>>
->>> On 03/28/2016 08:06 PM, Jose Abreu wrote:
->>>> This patch adds audio support for the ADV7511 HDMI transmitter
->>>> using ALSA SoC.
->>>>
->>>> The code was ported from Analog Devices linux tree from
->>>> commit 1770c4a1e32b ("Merge remote-tracking branch
->>>> 'xilinx/master' into xcomm_zynq"), which is available at:
->>>>      - https://github.com/analogdevicesinc/linux/
->>>>
->>>> The main core file was renamed from adv7511.c to adv7511_core.c
->>>> so that audio and video compile into a single adv7511.ko module
->>>> and to keep up with Analog Devices kernel tree.
->>>>
->>>> The audio can be disabled using menu-config so it is possible
->>>> to use only video mode.
->>>>
->>>> The HDMI mode is automatically started at boot and the audio
->>>> (when enabled) registers as a codec into ALSA.
->>>
->>> Is there a reason why we set the mode to HDMI at probe itself?
->>> Shouldn't it be okay to set the mode later once we read the
->>> EDID off the panel?
->>>
->>> Some more comments below.
->>>
->>
->> Well, when I was using this in kernel 3.18 (with an older version of the driver)
->> I noticed that DVI mode was being used even when HDMI was connected so I forced
->> the driver to start in HDMI mode. There were some changes in the driver so it is
->> possible that this is no longer needed. Should I drop it?
->
-> Mode selection works fine with ADV7533 on a 4.5 kernel. I'm assuming it
-> should work out of the box for ADV7511 too. We should drop this.
->
->
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/hda/hdac_i915.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> =
 
-Ok, will drop.
+> diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
+> index c62a9f830b84..3c8e6d93d4df 100644
+> --- a/sound/hda/hdac_i915.c
+> +++ b/sound/hda/hdac_i915.c
+> @@ -298,6 +298,17 @@ int snd_hdac_i915_register_notifier(const struct i91=
+5_audio_component_audio_ops
+>  }
+>  EXPORT_SYMBOL_GPL(snd_hdac_i915_register_notifier);
+>  =
 
->>
->>>>
->>>> SPDIF DAI format was also added to ASoC as it is required
->>>> by adv7511 audio.
->>>>
->>>> Signed-off-by: Jose Abreu <joabreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
->>>> ---
->>>>
->>>> No changes v1 -> v2.
->>>>
->>>>    drivers/gpu/drm/i2c/Kconfig         |   11 +
->>>>    drivers/gpu/drm/i2c/Makefile        |    2 +
->>>>    drivers/gpu/drm/i2c/adv7511.c       | 1024
->>>> -----------------------------------
->>>>    drivers/gpu/drm/i2c/adv7511.h       |   41 ++
->>>>    drivers/gpu/drm/i2c/adv7511_audio.c |  310 +++++++++++
->>>>    drivers/gpu/drm/i2c/adv7511_core.c  | 1005
->>>> ++++++++++++++++++++++++++++++++++
->>>>    include/sound/soc-dai.h             |    1 +
->>>>    7 files changed, 1370 insertions(+), 1024 deletions(-)
->>>>    delete mode 100644 drivers/gpu/drm/i2c/adv7511.c
->>>>    create mode 100644 drivers/gpu/drm/i2c/adv7511_audio.c
->>>>    create mode 100644 drivers/gpu/drm/i2c/adv7511_core.c
->>>
->>> <snip>
->>>
->>>> +
->>>> +static int adv7511_probe(struct i2c_client *i2c, const struct i2c_device_id
->>>> *id)
->>>> +{
->>>> +    struct adv7511_link_config link_config;
->>>> +    struct adv7511 *adv7511;
->>>> +    struct device *dev = &i2c->dev;
->>>> +    unsigned int val;
->>>> +    int ret;
->>>> +
->>>> +    if (!dev->of_node)
->>>> +        return -EINVAL;
->>>> +
->>>> +    adv7511 = devm_kzalloc(dev, sizeof(*adv7511), GFP_KERNEL);
->>>> +    if (!adv7511)
->>>> +        return -ENOMEM;
->>>> +
->>>> +    adv7511->powered = false;
->>>> +    adv7511->status = connector_status_disconnected;
->>>> +
->>>> +    ret = adv7511_parse_dt(dev->of_node, &link_config);
->>>> +    if (ret)
->>>> +        return ret;
->>>> +
->>>> +    /*
->>>> +     * The power down GPIO is optional. If present, toggle it from active to
->>>> +     * inactive to wake up the encoder.
->>>> +     */
->>>> +    adv7511->gpio_pd = devm_gpiod_get_optional(dev, "pd", GPIOD_OUT_HIGH);
->>>> +    if (IS_ERR(adv7511->gpio_pd))
->>>> +        return PTR_ERR(adv7511->gpio_pd);
->>>> +
->>>> +    if (adv7511->gpio_pd) {
->>>> +        mdelay(5);
->>>> +        gpiod_set_value_cansleep(adv7511->gpio_pd, 0);
->>>> +    }
->>>> +
->>>> +    adv7511->regmap = devm_regmap_init_i2c(i2c, &adv7511_regmap_config);
->>>> +    if (IS_ERR(adv7511->regmap))
->>>> +        return PTR_ERR(adv7511->regmap);
->>>> +
->>>> +    ret = regmap_read(adv7511->regmap, ADV7511_REG_CHIP_REVISION, &val);
->>>> +    if (ret)
->>>> +        return ret;
->>>> +    dev_dbg(dev, "Rev. %d\n", val);
->>>> +
->>>> +    ret = regmap_register_patch(adv7511->regmap, adv7511_fixed_registers,
->>>> +                    ARRAY_SIZE(adv7511_fixed_registers));
->>>> +    if (ret)
->>>> +        return ret;
->>>> +
->>>> +    regmap_write(adv7511->regmap, ADV7511_REG_EDID_I2C_ADDR, edid_i2c_addr);
->>>> +    regmap_write(adv7511->regmap, ADV7511_REG_PACKET_I2C_ADDR,
->>>> +             packet_i2c_addr);
->>>> +    regmap_write(adv7511->regmap, ADV7511_REG_CEC_I2C_ADDR, cec_i2c_addr);
->>>> +    adv7511_packet_disable(adv7511, 0xffff);
->>>> +
->>>> +    adv7511->i2c_main = i2c;
->>>> +    adv7511->i2c_edid = i2c_new_dummy(i2c->adapter, edid_i2c_addr >> 1);
->>>> +    if (!adv7511->i2c_edid)
->>>> +        return -ENOMEM;
->>>> +
->>>> +    if (i2c->irq) {
->>>> +        init_waitqueue_head(&adv7511->wq);
->>>> +
->>>> +        ret = devm_request_threaded_irq(dev, i2c->irq, NULL,
->>>> +                        adv7511_irq_handler,
->>>> +                        IRQF_ONESHOT, dev_name(dev),
->>>> +                        adv7511);
->>>> +        if (ret)
->>>> +            goto err_i2c_unregister_device;
->>>> +    }
->>>> +
->>>> +    /* CEC is unused for now */
->>>> +    regmap_write(adv7511->regmap, ADV7511_REG_CEC_CTRL,
->>>> +             ADV7511_CEC_CTRL_POWER_DOWN);
->>>> +
->>>> +    adv7511_power_off(adv7511);
->>>> +
->>>> +    i2c_set_clientdata(i2c, adv7511);
->>>> +
->>>> +#ifdef CONFIG_DRM_I2C_ADV7511_AUDIO
->>>> +    adv7511_audio_init(&i2c->dev);
->>>> +#endif
->>>
->>> If we intend to have more audio funcs being used by the core in the
->>> future, it would be nice to have NOP audio funcs rather than having
->>> multiple #ifdef checks in the driver when CONFIG_DRM_I2C_ADV7511_AUDIO
->>> isn't set.
->>>
->>
->> I will move this ifdef to adv751_audio and use NOP functions.
->
-> Thanks, I think it should help in the longer run.
->
->>
->>>> +
->>>> +    adv7511_set_link_config(adv7511, &link_config);
->>>> +
->>>> +    /* Enable HDMI mode */
->>>> +    regmap_update_bits(adv7511->regmap, ADV7511_REG_HDCP_HDMI_CFG,
->>>> +            ADV7511_HDMI_CFG_MODE_MASK,
->>>> +            ADV7511_HDMI_CFG_MODE_HDMI);
->>>> +
->>>> +    return 0;
->>>> +
->>>> +err_i2c_unregister_device:
->>>> +    i2c_unregister_device(adv7511->i2c_edid);
->>>> +
->>>> +    return ret;
->>>> +}
->>>> +
->>>> +static int adv7511_remove(struct i2c_client *i2c)
->>>> +{
->>>> +    struct adv7511 *adv7511 = i2c_get_clientdata(i2c);
->>>> +
->>>
->>> Are we missing a call to adv7511_audio_exit() here?
->>
->> I followed the code in Analog Devices tree where there is no call to
->> audio_exit() but indeed you are correct. I will add this call.
->>
->
-> Since we have 3 files for adv7511 now, could we also move the driver
-> to a separate folder? The long term plan is to convert all the i2c
-> slave encoder drivers to bridges. Keeping them together would be nicer
-> when we migrate this driver to the bridge folder.
+> +/* check whether intel graphics is present */
+> +static bool i915_gfx_present(void)
+> +{
+> +	static struct pci_device_id ids[] =3D {
+> +		{ PCI_DEVICE_CLASS(PCI_BASE_CLASS_DISPLAY << 16, 0xff0000) },
+> +		{}
+> +	};
+> +	return pci_dev_present(ids);
+> +}
 
-Ok, will move to separate folder.
+Should this be checking for at least the Intel vendor ID? External GPUs
+should be display class devices too, no?
 
->
-> Thanks,
-> Archit
->
+> +
+> +
+>  /**
+>   * snd_hdac_i915_init - Initialize i915 audio component
+>   * @bus: HDA core bus
+> @@ -320,6 +331,9 @@ int snd_hdac_i915_init(struct hdac_bus *bus)
+>  	if (WARN_ON(hdac_acomp))
+>  		return -EBUSY;
+>  =
 
-Best regards,
-Jose Miguel Abreu
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> +	if (!i915_gfx_present())
+> +		return -ENODEV;
+> +
+>  	acomp =3D kzalloc(sizeof(*acomp), GFP_KERNEL);
+>  	if (!acomp)
+>  		return -ENOMEM;
+> -- =
+
+> 2.7.4
+> =
+
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+-- =
+
+Ville Syrj=E4l=E4
+Intel OTC
