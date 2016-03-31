@@ -1,17 +1,18 @@
-From: Daniel Wagner <wagi@hotel311.server4you.de>
-Subject: Re: [FFADO-devel] [RFC][PATCH] ALSA: firewire-lib:
- support Linux tracing to dump a part of packet data
-Date: Wed, 30 Mar 2016 20:49:43 +0200
-Message-ID: <56FC1FC7.4040600@hotel311.server4you.de>
-References: <1459081086-6145-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: Re: [PATCH v2] ASoC: rt5514: add rt5514 SPI driver
+Date: Thu, 31 Mar 2016 06:29:51 +0000
+Message-ID: <7EB0DE829A537248AF2ED30C97D12694FCEA41@RTITMBSV03.realtek.com.tw>
+References: <1457953101-19348-1-git-send-email-oder_chiou@realtek.com>
+ <20160329215121.GP2350@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hotel311.server4you.de (hotel311.server4you.de [85.25.146.15])
- by alsa0.perex.cz (Postfix) with ESMTP id A58BA2612CC
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2016 20:49:54 +0200 (CEST)
-In-Reply-To: <1459081086-6145-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7AA9261299
+ for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2016 08:30:07 +0200 (CEST)
+In-Reply-To: <20160329215121.GP2350@sirena.org.uk>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,27 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: Mark Brown <broonie@kernel.org>
+Cc: Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, "pc.liao@mediatek.com" <pc.liao@mediatek.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 27.03.2016 14:18, Takashi Sakamoto wrote:
->  	/*
->  	 * This module supports 'Two-quadlet CIP header with SYT field'.
->  	 * For convenience, also check FMT field is AM824 or not.
-> @@ -523,7 +534,11 @@ static int handle_in_packet(struct amdtp_stream *s,
->  		dev_err(&s->unit->device,
->  			"Detect discontinuity of CIP: %02X %02X\n",
->  			s->data_block_counter, data_block_counter);
-> -		return -EIO;
-> +		if (!trace_in_packet_enabled())
-> +			return -EIO;
-> +
-> +		/* To identifying this situation. */
-> +		trace_in_packet(0xffffffff, 0xffffffff, 999, 99);
->  	}
-
-This looks wrong. Tracing should not change the path taken.
-
-cheers,
-daniel
+> > +static void rt5514_enable_dsp_prepare(struct rt5514_priv *rt5514)
+> > +{
+> > +	/* Reset */
+> > +	regmap_write(rt5514->i2c_regmap, 0x18002000, 0x000010ec);
+> 
+> This is a *very* big table of magic numbers with what look like system
+> specific settings in there (there seem to be some things routing to and
+> from the ADC, and some clocking setup...).  Are you sure none of this
+> depends on the runtime configuration?
+> 
+Yes, it is independent of the ASoC runtime configuration. The table of
+magic numbers is the settings for the voice wake up, so it is not required
+to be run on ASoC framework.
