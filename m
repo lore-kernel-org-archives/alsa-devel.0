@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tas571x: added support for TAS5721" to
-	the asoc tree
+Subject: Applied "ASoC: tas571x: new chip added into TAS571x
+	binding" to the asoc tree
 Date: Thu, 31 Mar 2016 10:33:34 -0700
-Message-ID: <E1algTO-0004Cm-Ga@finisterre>
-References: <1459425241-21941-4-git-send-email-petr@barix.com>
+Message-ID: <E1algTO-0004CK-2t@finisterre>
+References: <1459237178-12920-5-git-send-email-petr@barix.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B0E72666D6
+ by alsa0.perex.cz (Postfix) with ESMTP id 6BB95266700
  for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2016 19:33:39 +0200 (CEST)
-In-Reply-To: <1459425241-21941-4-git-send-email-petr@barix.com>
+In-Reply-To: <1459237178-12920-5-git-send-email-petr@barix.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Petr Kulhavy <petr@barix.com>, Mark Brown <broonie@kernel.org>
+To: Petr Kulhavy <petr@barix.com>, Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tas571x: added support for TAS5721
+   ASoC: tas571x: new chip added into TAS571x binding
 
 has been applied to the asoc tree at
 
@@ -53,140 +53,52 @@ to this mail.
 Thanks,
 Mark
 
->From 23a282c4f088efb337957ffa21c677d30eda0784 Mon Sep 17 00:00:00 2001
+>From a42121b7a1d80a0eaac9ed1442760bf4e65f5352 Mon Sep 17 00:00:00 2001
 From: Petr Kulhavy <petr@barix.com>
-Date: Thu, 31 Mar 2016 18:41:26 +0200
-Subject: [PATCH] ASoC: tas571x: added support for TAS5721
+Date: Thu, 31 Mar 2016 18:41:27 +0200
+Subject: [PATCH] ASoC: tas571x: new chip added into TAS571x binding
 
-This adds support for TAS5721.
+This adds the TAS5721 into the TAS571x binding.
 
 Signed-off-by: Petr Kulhavy <petr@barix.com>
+Reviewed-by: Kevin Cernekee <cernekee@chromium.org>
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Kconfig   |  2 +-
- sound/soc/codecs/tas571x.c | 76 ++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 77 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/tas571x.txt | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 649e92a252ae..c011f076d58b 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -737,7 +737,7 @@ config SND_SOC_TAS5086
- 	depends on I2C
+diff --git a/Documentation/devicetree/bindings/sound/tas571x.txt b/Documentation/devicetree/bindings/sound/tas571x.txt
+index 0ac31d8d5ac4..b4959f10b74b 100644
+--- a/Documentation/devicetree/bindings/sound/tas571x.txt
++++ b/Documentation/devicetree/bindings/sound/tas571x.txt
+@@ -1,4 +1,4 @@
+-Texas Instruments TAS5711/TAS5717/TAS5719 stereo power amplifiers
++Texas Instruments TAS5711/TAS5717/TAS5719/TAS5721 stereo power amplifiers
  
- config SND_SOC_TAS571X
--	tristate "Texas Instruments TAS5711/TAS5717/TAS5719 power amplifiers"
-+	tristate "Texas Instruments TAS5711/TAS5717/TAS5719/TAS5721 power amplifiers"
- 	depends on I2C
+ The codec is controlled through an I2C interface.  It also has two other
+ signals that can be wired up to GPIOs: reset (strongly recommended), and
+@@ -6,7 +6,11 @@ powerdown (optional).
  
- config SND_SOC_TFA9879
-diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
-index ef6c8d9b251a..b8d19b77bde9 100644
---- a/sound/soc/codecs/tas571x.c
-+++ b/sound/soc/codecs/tas571x.c
-@@ -4,6 +4,9 @@
-  * Copyright (C) 2015 Google, Inc.
-  * Copyright (c) 2013 Daniel Mack <zonque@gmail.com>
-  *
-+ * TAS5721 support:
-+ * Copyright (C) 2016 Petr Kulhavy, Barix AG <petr@barix.com>
-+ *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation; either version 2 of the License, or
-@@ -372,6 +375,77 @@ static const struct tas571x_chip tas5717_chip = {
- 	.vol_reg_size			= 2,
- };
+ Required properties:
  
-+static const char *const tas5721_supply_names[] = {
-+	"AVDD",
-+	"DVDD",
-+	"DRVDD",
-+	"PVDD",
-+};
-+
-+static const struct snd_kcontrol_new tas5721_controls[] = {
-+	SOC_SINGLE_TLV("Master Volume",
-+		       TAS571X_MVOL_REG,
-+		       0, 0xff, 1, tas5711_volume_tlv),
-+	SOC_DOUBLE_R_TLV("Speaker Volume",
-+			 TAS571X_CH1_VOL_REG,
-+			 TAS571X_CH2_VOL_REG,
-+			 0, 0xff, 1, tas5711_volume_tlv),
-+	SOC_DOUBLE("Speaker Switch",
-+		   TAS571X_SOFT_MUTE_REG,
-+		   TAS571X_SOFT_MUTE_CH1_SHIFT, TAS571X_SOFT_MUTE_CH2_SHIFT,
-+		   1, 1),
-+};
-+
-+static const struct reg_default tas5721_reg_defaults[] = {
-+	{TAS571X_CLK_CTRL_REG,		0x6c},
-+	{TAS571X_DEV_ID_REG,		0x00},
-+	{TAS571X_ERR_STATUS_REG,	0x00},
-+	{TAS571X_SYS_CTRL_1_REG,	0xa0},
-+	{TAS571X_SDI_REG,		0x05},
-+	{TAS571X_SYS_CTRL_2_REG,	0x40},
-+	{TAS571X_SOFT_MUTE_REG,		0x00},
-+	{TAS571X_MVOL_REG,		0xff},
-+	{TAS571X_CH1_VOL_REG,		0x30},
-+	{TAS571X_CH2_VOL_REG,		0x30},
-+	{TAS571X_CH3_VOL_REG,		0x30},
-+	{TAS571X_VOL_CFG_REG,		0x91},
-+	{TAS571X_MODULATION_LIMIT_REG,	0x02},
-+	{TAS571X_IC_DELAY_CH1_REG,	0xac},
-+	{TAS571X_IC_DELAY_CH2_REG,	0x54},
-+	{TAS571X_IC_DELAY_CH3_REG,	0xac},
-+	{TAS571X_IC_DELAY_CH4_REG,	0x54},
-+	{TAS571X_PWM_CH_SDN_GROUP_REG,	0x30},
-+	{TAS571X_START_STOP_PERIOD_REG,	0x0f},
-+	{TAS571X_OSC_TRIM_REG,		0x82},
-+	{TAS571X_BKND_ERR_REG,		0x02},
-+	{TAS571X_INPUT_MUX_REG,		0x17772},
-+	{TAS571X_CH4_SRC_SELECT_REG,	0x4303},
-+	{TAS571X_PWM_MUX_REG,		0x1021345},
-+};
-+
-+static const struct regmap_config tas5721_regmap_config = {
-+	.reg_bits			= 8,
-+	.val_bits			= 32,
-+	.max_register			= 0xff,
-+	.reg_read			= tas571x_reg_read,
-+	.reg_write			= tas571x_reg_write,
-+	.reg_defaults			= tas5721_reg_defaults,
-+	.num_reg_defaults		= ARRAY_SIZE(tas5721_reg_defaults),
-+	.cache_type			= REGCACHE_RBTREE,
-+	.wr_table			= &tas571x_write_regs,
-+	.volatile_table			= &tas571x_volatile_regs,
-+};
-+
-+
-+static const struct tas571x_chip tas5721_chip = {
-+	.supply_names			= tas5721_supply_names,
-+	.num_supply_names		= ARRAY_SIZE(tas5721_supply_names),
-+	.controls			= tas5711_controls,
-+	.num_controls			= ARRAY_SIZE(tas5711_controls),
-+	.regmap_config			= &tas5721_regmap_config,
-+	.vol_reg_size			= 1,
-+};
-+
- static const struct snd_soc_dapm_widget tas571x_dapm_widgets[] = {
- 	SND_SOC_DAPM_DAC("DACL", NULL, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_DAC("DACR", NULL, SND_SOC_NOPM, 0, 0),
-@@ -527,6 +601,7 @@ static const struct of_device_id tas571x_of_match[] = {
- 	{ .compatible = "ti,tas5711", .data = &tas5711_chip, },
- 	{ .compatible = "ti,tas5717", .data = &tas5717_chip, },
- 	{ .compatible = "ti,tas5719", .data = &tas5717_chip, },
-+	{ .compatible = "ti,tas5721", .data = &tas5721_chip, },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, tas571x_of_match);
-@@ -535,6 +610,7 @@ static const struct i2c_device_id tas571x_i2c_id[] = {
- 	{ "tas5711", (kernel_ulong_t) &tas5711_chip },
- 	{ "tas5717", (kernel_ulong_t) &tas5717_chip },
- 	{ "tas5719", (kernel_ulong_t) &tas5717_chip },
-+	{ "tas5721", (kernel_ulong_t) &tas5721_chip },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, tas571x_i2c_id);
+-- compatible: "ti,tas5711", "ti,tas5717", or "ti,tas5719"
++- compatible: should be one of the following:
++  - "ti,tas5711",
++  - "ti,tas5717",
++  - "ti,tas5719",
++  - "ti,tas5721"
+ - reg: The I2C address of the device
+ - #sound-dai-cells: must be equal to 0
+ 
+@@ -25,6 +29,8 @@ Optional properties:
+ - PVDD_B-supply: regulator phandle for the PVDD_B supply (5711)
+ - PVDD_C-supply: regulator phandle for the PVDD_C supply (5711)
+ - PVDD_D-supply: regulator phandle for the PVDD_D supply (5711)
++- DRVDD-supply: regulator phandle for the DRVDD supply (5721)
++- PVDD-supply: regulator phandle for the PVDD supply (5721)
+ 
+ Example:
+ 
 -- 
 2.8.0.rc3
