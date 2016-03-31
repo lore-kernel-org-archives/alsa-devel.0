@@ -1,97 +1,41 @@
-From: han.lu@intel.com
-Subject: [PATCH V3 2/2] ASoC: bytcr-rt5640: register DMI names
-	to card
-Date: Thu, 31 Mar 2016 16:58:04 +0800
-Message-ID: <4bd542058c98824248122beb2c99f1737a94379e.1459414492.git.han.lu@intel.com>
-References: <cover.1459414492.git.han.lu@intel.com>
+From: Jose Abreu <Jose.Abreu@synopsys.com>
+Subject: Re: [PATCH 2/3 v2] ASoC: dwc: Add I2S HDMI audio support
+Date: Thu, 31 Mar 2016 10:37:20 +0100
+Message-ID: <56FCEFD0.8090509@synopsys.com>
+References: <cover.1459174494.git.joabreu@synopsys.com>
+ <538be366488bf0d7633d702f2d0bab16707b7a47.1459174494.git.joabreu@synopsys.com>
+ <20160329173158.GB2350@sirena.org.uk> <56FAC355.1040705@synopsys.com>
+ <20160329182222.GC2350@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id B35B92612CC
- for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2016 10:56:53 +0200 (CEST)
-In-Reply-To: <cover.1459414492.git.han.lu@intel.com>
-In-Reply-To: <cover.1459414492.git.han.lu@intel.com>
-References: <cover.1459414492.git.han.lu@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, tiwai@suse.de, vinod.koul@intel.com, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org
-Cc: "Lu, Han" <han.lu@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160329182222.GC2350@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Jose Abreu <Jose.Abreu@synopsys.com>
+Cc: tixy@linaro.org, mark.rutland@arm.com, alsa-devel@alsa-project.org, Alexey.Brodkin@synopsys.com, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, yitian.bu@tangramtek.com, wsa+renesas@sang-engineering.com, laurent.pinchart+renesas@ideasonboard.com, tiwai@suse.com, nariman@opensource.wolfsonmicro.com, linux-snps-arc@lists.infradead.org, devicetree@vger.kernel.org, Maruthi.Bayyavarapu@amd.com, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, Vineet.Gupta1@synopsys.com, buyitian@gmail.com, robh+dt@kernel.org, perex@perex.cz, lgirdwood@gmail.com, CARLOS.PALMINHA@synopsys.com, galak@codeaurora.org, alexander.deucher@amd.com
 List-Id: alsa-devel@alsa-project.org
 
-From: "Lu, Han" <han.lu@intel.com>
+Hi Mark,
 
-Register DMI names for products using bytcr-rt5640 driver, such as ASUS
-T100TA and Dell Venue 8 Pro 5830, for user space utils to distinguish
-different products.
+On 29-03-2016 19:22, Mark Brown wrote:
+> On Tue, Mar 29, 2016 at 07:03:01PM +0100, Jose Abreu wrote:
+>
+>> The major part of this patch is the adding of an ALSA platform driver so that
+>> audio comes out of the box in AXS boards but we also added functionalities to
+>> the i2s driver and performed one bug fix related with the mask/unmask of
+>> interrupts. I will split the patches but they will depend on each other.
+> If you want to add a new platform driver you need to add a new platform
+> driver, not shove the code into an existing driver for a seperate IP.
+>
 
-For example, previously on T100TA:
-  $ cat /proc/asound/cards
-    0 [bytcrrt5640 ]: bytcr-rt5640 -  bytcr-rt5640
-                      bytcr-rt5640
-  $ amixer -c0 info
-  Card hw:0 'bytcrrt5640'/'bytcr-rt5640'
-    Mixer name    : ''
-    Components    : ''
-    Controls      : 256
-    Simple ctrls  : 228
+I can separate the platform driver into a new file but they will have to be
+compiled into the same module as the new additions to the i2s driver depend on
+functions of the platform driver (see i2s_irq_handler()). Or should I divide
+this into two modules and add a Kconfig option to the platform driver? Besides
+this I first wanted the driver to be compiled into the same module so that it is
+compatible with kernel 3.18 where simple audio card requires that platform
+driver == cpu driver.
 
-After apply the patch:
-  $ cat /proc/asound/cards
-    0 [T100TA      ]: bytcr-rt5640 -  T100TA
-                      T100TA:bytcr-rt5640:ASUSTek COMPUTER INC.:intel/fw_
-  sst_0f28.bin
-  $ amixer -c0 info
-  Card hw:0 'T100TA'/'T100TA:bytcr-rt5640:ASUSTek COMPUTER INC.:intel/fw_
-  sst_0f28.bin'
-    Mixer name    : ''
-    Components    : 'T100TA:bytcr-rt5640:ASUSTek COMPUTER INC.:intel/fw_s
-  st_0f28.bin'
-    Controls      : 256
-    Simple ctrls  : 228
-
-Signed-off-by: Lu, Han <han.lu@intel.com>
-
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 032a2e7..468a724 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -152,6 +152,8 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 	{}
- };
- 
-+static struct snd_soc_card byt_rt5640_card;
-+
- static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
- {
- 	int ret;
-@@ -159,6 +161,19 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
- 	struct snd_soc_card *card = runtime->card;
- 	const struct snd_soc_dapm_route *custom_map;
- 	int num_routes;
-+	const char *board, *vendor;
-+	struct sst_acpi_mach *mach = byt_rt5640_card.dev->platform_data;
-+
-+	/* Add board/product/vendor/firmware name for userspace */
-+	board = dmi_get_system_info(DMI_BOARD_NAME);
-+	if (!board)
-+		board = dmi_get_system_info(DMI_PRODUCT_NAME);
-+	vendor = dmi_get_system_info(DMI_SYS_VENDOR);
-+	ret = snd_soc_set_card_names(card, board, vendor, mach->fw_filename);
-+	if (ret < 0) {
-+		dev_err(card->dev, "unable to set card names\n");
-+		return ret;
-+	}
- 
- 	card->dapm.idle_bias_off = true;
- 
--- 
-2.5.0
+Best regards,
+Jose Miguel Abreu
