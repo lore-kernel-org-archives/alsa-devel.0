@@ -1,91 +1,108 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3 v2] ASoC: dwc: Add I2S HDMI audio support
-Date: Thu, 31 Mar 2016 09:56:42 -0700
-Message-ID: <20160331165642.GG2350@sirena.org.uk>
-References: <cover.1459174494.git.joabreu@synopsys.com>
- <538be366488bf0d7633d702f2d0bab16707b7a47.1459174494.git.joabreu@synopsys.com>
- <20160329173158.GB2350@sirena.org.uk>
- <56FAC355.1040705@synopsys.com>
- <20160329182222.GC2350@sirena.org.uk>
- <56FCEFD0.8090509@synopsys.com>
+Subject: Applied "ASoC: nau8825: assign DAC Ch to match headset
+	L/R" to the asoc tree
+Date: Thu, 31 Mar 2016 10:20:24 -0700
+Message-ID: <E1algGe-0003gi-KE@finisterre>
+References: <1459321031-2365-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1138398617=="
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <56FCEFD0.8090509@synopsys.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jose Abreu <Jose.Abreu@synopsys.com>
-Cc: tixy@linaro.org, mark.rutland@arm.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Alexey.Brodkin@synopsys.com, dri-devel@lists.freedesktop.org, tiwai@suse.com, yitian.bu@tangramtek.com, wsa+renesas@sang-engineering.com, laurent.pinchart+renesas@ideasonboard.com, nariman@opensource.wolfsonmicro.com, linux-snps-arc@lists.infradead.org, devicetree@vger.kernel.org, Maruthi.Bayyavarapu@amd.com, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, Vineet.Gupta1@synopsys.com, buyitian@gmail.com, robh+dt@kernel.org, perex@perex.cz, linux-kernel@vger.kernel.org, CARLOS.PALMINHA@synopsys.com, galak@codeaurora.org, alexander.deucher@amd.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6822D2666D6
+ for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2016 19:20:31 +0200 (CEST)
+In-Reply-To: <1459321031-2365-1-git-send-email-KCHSU0@nuvoton.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: John Hsu <KCHSU0@nuvoton.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============1138398617==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="piopQj3F5GMtthHx"
-Content-Disposition: inline
+   ASoC: nau8825: assign DAC Ch to match headset L/R
 
+has been applied to the asoc tree at
 
---piopQj3F5GMtthHx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Mar 31, 2016 at 10:37:20AM +0100, Jose Abreu wrote:
-> On 29-03-2016 19:22, Mark Brown wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > If you want to add a new platform driver you need to add a new platform
-> > driver, not shove the code into an existing driver for a seperate IP.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> I can separate the platform driver into a new file but they will have to be
-> compiled into the same module as the new additions to the i2s driver depend on
-> functions of the platform driver (see i2s_irq_handler()). Or should I divide
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-No, that's not at all acceptable.  The Designware IP is not specific to
-your system, you can't make it depend on your platform driver.  The
-kernel needs to work on other people's systems too.  You need to work
-through and/or extend the abstractions the framework provides to
-separate the drivers for different IPs.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> this into two modules and add a Kconfig option to the platform driver? Besides
-> this I first wanted the driver to be compiled into the same module so that it is
-> compatible with kernel 3.18 where simple audio card requires that platform
-> driver == cpu driver.
+Thanks,
+Mark
 
-That's not OK upstream, we're working on the current kernel not on
-random old kernels.  We don't carry compatibility code to enable current
-kernel code to be run on years old kernels.
+>From c5a85d8a61a91c13278e3c4ca32fecbc86dc2ede Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Wed, 30 Mar 2016 14:57:11 +0800
+Subject: [PATCH] ASoC: nau8825: assign DAC Ch to match headset L/R
 
---piopQj3F5GMtthHx
-Content-Type: application/pgp-signature; name="signature.asc"
+The default value of DAC channel select is reverse in codec.
+For normal usage, switch the channel select when codec bootup.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/nau8825.c | 5 +++++
+ sound/soc/codecs/nau8825.h | 6 ++++++
+ 2 files changed, 11 insertions(+)
 
-iQEcBAEBCAAGBQJW/VbJAAoJECTWi3JdVIfQneAH/j6fiMmUYVuswFhQ5h3V1ezC
-VW61HfhEQVmAoYEw3lxArepUlIODE6UFzt8sz+J/kTAGTAromOvN58NkIn0+sQxB
-jp6CmzC4ohEC4/5fziwPBHjbzFkQ7mbjiiHDJBonMG4IylBrKRpRrHTWYFM4SUOV
-GnCAbAGj/zU39vxsZpAw9Nmar4rkpohHbJUC6C6fRoEDY5iZ+D8EcCSIZLHRlEC5
-fZBDh9VVicBk5xykQH2uFBowoBV6jfU8HHRUeeu4/Q7kirk2YAePQFoY/qw1lXfK
-7XcGl9ZhhduIJd2bCKZuG5ribrE68mel2QNaT1QtEJPFzpcVGun2BYPYRJBLLEo=
-=Wf6v
------END PGP SIGNATURE-----
-
---piopQj3F5GMtthHx--
-
---===============1138398617==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
-
---===============1138398617==--
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index 106c391f9ec3..f35019a0db1d 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -930,6 +930,11 @@ static void nau8825_init_regs(struct nau8825 *nau8825)
+ 		NAU8825_RDAC_CLK_DELAY_MASK | NAU8825_RDAC_VREF_MASK,
+ 		(0x2 << NAU8825_RDAC_CLK_DELAY_SFT) |
+ 		(0x3 << NAU8825_RDAC_VREF_SFT));
++	/* Config L/R channel */
++	regmap_update_bits(nau8825->regmap, NAU8825_REG_DACL_CTRL,
++		NAU8825_DACL_CH_SEL_MASK, NAU8825_DACL_CH_SEL_L);
++	regmap_update_bits(nau8825->regmap, NAU8825_REG_DACR_CTRL,
++		NAU8825_DACL_CH_SEL_MASK, NAU8825_DACL_CH_SEL_R);
+ }
+ 
+ static const struct regmap_config nau8825_regmap_config = {
+diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
+index 4427df99de24..9e6cb6262bf2 100644
+--- a/sound/soc/codecs/nau8825.h
++++ b/sound/soc/codecs/nau8825.h
+@@ -257,9 +257,15 @@
+ 
+ /* DACL_CTRL (0x33) */
+ #define NAU8825_DACL_CH_SEL_SFT	9
++#define NAU8825_DACL_CH_SEL_MASK (0x1 << NAU8825_DACL_CH_SEL_SFT)
++#define NAU8825_DACL_CH_SEL_L    (0x0 << NAU8825_DACL_CH_SEL_SFT)
++#define NAU8825_DACL_CH_SEL_R    (0x1 << NAU8825_DACL_CH_SEL_SFT)
+ 
+ /* DACR_CTRL (0x34) */
+ #define NAU8825_DACR_CH_SEL_SFT	9
++#define NAU8825_DACR_CH_SEL_MASK (0x1 << NAU8825_DACR_CH_SEL_SFT)
++#define NAU8825_DACR_CH_SEL_L    (0x0 << NAU8825_DACR_CH_SEL_SFT)
++#define NAU8825_DACR_CH_SEL_R    (0x1 << NAU8825_DACR_CH_SEL_SFT)
+ 
+ /* CLASSG_CTRL (0x50) */
+ #define NAU8825_CLASSG_TIMER_SFT	8
+-- 
+2.8.0.rc3
