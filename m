@@ -1,68 +1,40 @@
-From: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH v3 2/5] ASoC: tas571x: chip type detection via I2C name
-Date: Thu, 31 Mar 2016 13:53:58 +0200
-Message-ID: <1459425241-21941-2-git-send-email-petr@barix.com>
-References: <1459425241-21941-1-git-send-email-petr@barix.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1459425241-21941-1-git-send-email-petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: cernekee-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH V3 1/2] ASoC: core: add API for registering
+ DMI card names
+Date: Thu, 31 Mar 2016 14:00:43 +0200
+Message-ID: <56FD116B.7000703@metafoo.de>
+References: <cover.1459414492.git.han.lu@intel.com>
+ <79fd64c59dd44d44e018245ad411d48f5ba01b24.1459414492.git.han.lu@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3868E2612CC
+ for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2016 14:00:51 +0200 (CEST)
+In-Reply-To: <79fd64c59dd44d44e018245ad411d48f5ba01b24.1459414492.git.han.lu@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: han.lu@intel.com, broonie@kernel.org, tiwai@suse.de, vinod.koul@intel.com, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The chip selection was relying only on DT. It was not possible to use the
-driver without DT.
-This adds the chip type detection from the I2C name, which
-allows to use the driver from the platform driver without DT.
+On 03/31/2016 10:58 AM, han.lu@intel.com wrote:
+[...]
+> +	name_size = strlen(card->name) + strlen(card->driver_name)
+> +			+ strlen(vendor) + strlen(firmware) + 4;
+> +	if (buf_size < name_size + strlen(card->snd_card->components))
+> +		return -ENOMEM;
+> +	name = kmalloc(buf_size, GFP_KERNEL);
+> +	if (!name)
+> +		return -ENOMEM;
+> +	snprintf(name, buf_size, "%s:%s:%s:%s", card->name,
+> +			card->driver_name, vendor, firmware);
 
-Signed-off-by: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Reviewed-by: Kevin Cernekee <cernekee-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
----
-v1: <initial>
-v2: <no change>
-v3: <no change>
-
- sound/soc/codecs/tas571x.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
-index d255d65..2107322 100644
---- a/sound/soc/codecs/tas571x.c
-+++ b/sound/soc/codecs/tas571x.c
-@@ -414,11 +414,10 @@ static int tas571x_i2c_probe(struct i2c_client *client,
- 	i2c_set_clientdata(client, priv);
- 
- 	of_id = of_match_device(tas571x_of_match, dev);
--	if (!of_id) {
--		dev_err(dev, "Unknown device type\n");
--		return -EINVAL;
--	}
--	priv->chip = of_id->data;
-+	if (of_id)
-+		priv->chip = of_id->data;
-+	else
-+		priv->chip = (void *) id->driver_data;
- 
- 	priv->mclk = devm_clk_get(dev, "mclk");
- 	if (IS_ERR(priv->mclk) && PTR_ERR(priv->mclk) != -ENOENT) {
-@@ -519,9 +518,9 @@ static const struct of_device_id tas571x_of_match[] = {
- MODULE_DEVICE_TABLE(of, tas571x_of_match);
- 
- static const struct i2c_device_id tas571x_i2c_id[] = {
--	{ "tas5711", 0 },
--	{ "tas5717", 0 },
--	{ "tas5719", 0 },
-+	{ "tas5711", (kernel_ulong_t) &tas5711_chip },
-+	{ "tas5717", (kernel_ulong_t) &tas5717_chip },
-+	{ "tas5719", (kernel_ulong_t) &tas5717_chip },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, tas571x_i2c_id);
--- 
-1.9.1
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Have a look at kasprintf(). It will allow you to simplify the code here
