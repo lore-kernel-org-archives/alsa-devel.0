@@ -1,130 +1,204 @@
-From: PC Liao <pc.liao@mediatek.com>
-Subject: [PATCH v2] ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver
-Date: Fri, 1 Apr 2016 16:21:17 +0800
-Message-ID: <1459498877-5810-1-git-send-email-pc.liao@mediatek.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: [PATCH] ALSA: hda - Update chmap tlv to report sink's
+	capability
+Date: Fri,  1 Apr 2016 14:18:37 +0530
+Message-ID: <1459500517-19092-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, tiwai@suse.de
-Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, koro.chen@mediatek.com, PC Liao <pc.liao@mediatek.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4303E2651BE
+ for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2016 10:49:11 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds second I2S connection to rt5650 codec for capture path
-on mt8173-rt5650 machine driver.
+Currently channel map controls don't reflect the sink's
+capability to userspace. It reports the complete hdmi spec
+channel allocation table to the userspace which is of little use
+to the userspace applications.
 
-Signed-off-by: PC Liao <pc.liao@mediatek.com>
+With this patch, tlv callback is modified to read the speaker
+allocation block from sink, and a mapping alsa channel map is
+presented to the userspace.
+
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
-Changes since v1:
-Use codec dai name to determine the capture path. 
----
+ include/sound/hda_chmap.h  |  2 ++
+ sound/hda/hdmi_chmap.c     | 90 +++++++++++++++++++++++++++++-----------------
+ sound/pci/hda/patch_hdmi.c | 13 +++++++
+ 3 files changed, 72 insertions(+), 33 deletions(-)
 
- .../devicetree/bindings/sound/mt8173-rt5650.txt    |    6 +++
- sound/soc/mediatek/mt8173-rt5650.c                 |   39 ++++++++++++++++++--
- 2 files changed, 41 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
-index fe5a5ef..383cba9 100644
---- a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
-+++ b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
-@@ -5,11 +5,17 @@ Required properties:
- - mediatek,audio-codec: the phandles of rt5650 codecs
- - mediatek,platform: the phandle of MT8173 ASoC platform
+diff --git a/include/sound/hda_chmap.h b/include/sound/hda_chmap.h
+index e20d219..babd445 100644
+--- a/include/sound/hda_chmap.h
++++ b/include/sound/hda_chmap.h
+@@ -36,6 +36,8 @@ struct hdac_chmap_ops {
+ 	int (*chmap_validate)(struct hdac_chmap *hchmap, int ca,
+ 			int channels, unsigned char *chmap);
  
-+Optional properties:
-+- mediatek,audio-codec-dai-capture: audio codec dai on capture path
-+  rt5645-aif1: Default setting. Connect rt5650 I2S1 for capture
-+  rt5645-aif2: Connect rt5650 I2S2 for capture
++	int (*get_spk_alloc)(struct hdac_device *hdac, int pcm_idx);
 +
- Example:
+ 	void (*get_chmap)(struct hdac_device *hdac, int pcm_idx,
+ 					unsigned char *chmap);
+ 	void (*set_chmap)(struct hdac_device *hdac, int pcm_idx,
+diff --git a/sound/hda/hdmi_chmap.c b/sound/hda/hdmi_chmap.c
+index d7ec862..9406203 100644
+--- a/sound/hda/hdmi_chmap.c
++++ b/sound/hda/hdmi_chmap.c
+@@ -625,13 +625,40 @@ static void hdmi_cea_alloc_to_tlv_chmap(struct hdac_chmap *hchmap,
+ 	WARN_ON(count != channels);
+ }
  
- 	sound {
- 		compatible = "mediatek,mt8173-rt5650";
- 		mediatek,audio-codec = <&rt5650>;
- 		mediatek,platform = <&afe>;
-+		mediatek,audio-codec-dai-capture = "rt5645-aif2";
- 	};
- 
-diff --git a/sound/soc/mediatek/mt8173-rt5650.c b/sound/soc/mediatek/mt8173-rt5650.c
-index bb09bb1..fd2ca66 100644
---- a/sound/soc/mediatek/mt8173-rt5650.c
-+++ b/sound/soc/mediatek/mt8173-rt5650.c
-@@ -85,12 +85,26 @@ static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
- {
- 	struct snd_soc_card *card = runtime->card;
- 	struct snd_soc_codec *codec = runtime->codec_dais[0]->codec;
-+	const char *codec_dai_name_capture = runtime->codec_dais[1]->name;
- 	int ret;
- 
- 	rt5645_sel_asrc_clk_src(codec,
--				RT5645_DA_STEREO_FILTER |
--				RT5645_AD_STEREO_FILTER,
--				RT5645_CLK_SEL_I2S1_ASRC);
-+					RT5645_DA_STEREO_FILTER,
-+					RT5645_CLK_SEL_I2S1_ASRC);
++static struct hdac_cea_channel_speaker_allocation *get_cap_from_spk_alloc(
++							int spk_alloc)
++{
++	int i, spk_mask = 0;
 +
-+	if (!strcmp(codec_dai_name_capture, "rt5645-aif1")) {
-+		rt5645_sel_asrc_clk_src(codec,
-+					RT5645_AD_STEREO_FILTER,
-+					RT5645_CLK_SEL_I2S1_ASRC);
-+	} else if (!strcmp(codec_dai_name_capture, "rt5645-aif2")) {
-+		rt5645_sel_asrc_clk_src(codec,
-+					RT5645_AD_STEREO_FILTER,
-+					RT5645_CLK_SEL_I2S2_ASRC);
-+	} else {
-+		dev_err(card->dev, "Can't get the right codec dai\n");
-+		return -EINVAL;
++	if (!spk_alloc)
++		return &channel_allocations[0];
++
++	for (i = 0; i < ARRAY_SIZE(eld_speaker_allocation_bits); i++) {
++		if (spk_alloc & (1 << i))
++			spk_mask |= eld_speaker_allocation_bits[i];
 +	}
 +
- 	/* enable jack detection */
- 	ret = snd_soc_card_jack_new(card, "Headset Jack",
- 				    SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
-@@ -110,6 +124,11 @@ static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
++	/* Get num channels using spk mask */
++	for (i = 0; i < ARRAY_SIZE(channel_allocations); i++) {
++		if ((spk_mask & channel_allocations[i].spk_mask) == spk_mask)
++			return &channel_allocations[i];
++	}
++
++	return &channel_allocations[0];
++}
++
+ static int hdmi_chmap_ctl_tlv(struct snd_kcontrol *kcontrol, int op_flag,
+ 			      unsigned int size, unsigned int __user *tlv)
+ {
+ 	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
+ 	struct hdac_chmap *chmap = info->private_data;
++	int pcm_idx = kcontrol->private_value;
+ 	unsigned int __user *dst;
+-	int chs, count = 0;
++	int chs, count = 0, chs_bytes;
++	int type;
++	unsigned int tlv_chmap[8];
++	int spk_alloc;
++	struct hdac_cea_channel_speaker_allocation *cap;
  
- static struct snd_soc_dai_link_component mt8173_rt5650_codecs[] = {
- 	{
-+		/* Playback */
-+		.dai_name = "rt5645-aif1",
-+	},
-+	{
-+		/* Capture */
- 		.dai_name = "rt5645-aif1",
- 	},
+ 	if (size < 8)
+ 		return -ENOMEM;
+@@ -639,40 +666,37 @@ static int hdmi_chmap_ctl_tlv(struct snd_kcontrol *kcontrol, int op_flag,
+ 		return -EFAULT;
+ 	size -= 8;
+ 	dst = tlv + 2;
+-	for (chs = 2; chs <= chmap->channels_max; chs++) {
+-		int i;
+-		struct hdac_cea_channel_speaker_allocation *cap;
+-
+-		cap = channel_allocations;
+-		for (i = 0; i < ARRAY_SIZE(channel_allocations); i++, cap++) {
+-			int chs_bytes = chs * 4;
+-			int type = chmap->ops.chmap_cea_alloc_validate_get_type(
+-								chmap, cap, chs);
+-			unsigned int tlv_chmap[8];
+-
+-			if (type < 0)
+-				continue;
+-			if (size < 8)
+-				return -ENOMEM;
+-			if (put_user(type, dst) ||
+-			    put_user(chs_bytes, dst + 1))
+-				return -EFAULT;
+-			dst += 2;
+-			size -= 8;
+-			count += 8;
+-			if (size < chs_bytes)
+-				return -ENOMEM;
+-			size -= chs_bytes;
+-			count += chs_bytes;
+-			chmap->ops.cea_alloc_to_tlv_chmap(chmap, cap,
+-						tlv_chmap, chs);
+-			if (copy_to_user(dst, tlv_chmap, chs_bytes))
+-				return -EFAULT;
+-			dst += chs;
+-		}
+-	}
++
++	if (size < 8)
++		return -ENOMEM;
++
++	spk_alloc = chmap->ops.get_spk_alloc(chmap->hdac, pcm_idx);
++	cap = get_cap_from_spk_alloc(spk_alloc);
++	chs = cap->channels;
++
++	chs_bytes = chs * 4;
++	type = chmap->ops.chmap_cea_alloc_validate_get_type(chmap, cap, chs);
++	if (type < 0)
++		return -ENODEV;
++
++	if (put_user(type, dst) ||
++	    put_user(chs_bytes, dst + 1))
++		return -EFAULT;
++
++	dst += 2;
++	size -= 8;
++	count += 8;
++	if (size < chs_bytes)
++		return -ENOMEM;
++
++	count += chs_bytes;
++	chmap->ops.cea_alloc_to_tlv_chmap(chmap, cap, tlv_chmap, chs);
++	if (copy_to_user(dst, tlv_chmap, chs_bytes))
++		return -EFAULT;
++
+ 	if (put_user(count, tlv + 1))
+ 		return -EFAULT;
++
+ 	return 0;
+ }
+ 
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 5af372d..dd25f2c 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1838,6 +1838,18 @@ static const struct hda_pcm_ops generic_ops = {
+ 	.cleanup = generic_hdmi_playback_pcm_cleanup,
  };
-@@ -149,7 +168,7 @@ static struct snd_soc_dai_link mt8173_rt5650_dais[] = {
- 		.cpu_dai_name = "I2S",
- 		.no_pcm = 1,
- 		.codecs = mt8173_rt5650_codecs,
--		.num_codecs = 1,
-+		.num_codecs = 2,
- 		.init = mt8173_rt5650_init,
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			   SND_SOC_DAIFMT_CBS_CFS,
-@@ -177,6 +196,7 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
+ 
++static int hdmi_get_spk_alloc(struct hdac_device *hdac, int pcm_idx)
++{
++	struct hda_codec *codec = container_of(hdac, struct hda_codec, core);
++	struct hdmi_spec *spec = codec->spec;
++	struct hdmi_spec_per_pin *per_pin = pcm_idx_to_pin(spec, pcm_idx);
++
++	if (!per_pin)
++		return 0;
++
++	return per_pin->sink_eld.info.spk_alloc;
++}
++
+ static void hdmi_get_chmap(struct hdac_device *hdac, int pcm_idx,
+ 					unsigned char *chmap)
  {
- 	struct snd_soc_card *card = &mt8173_rt5650_card;
- 	struct device_node *platform_node;
-+	const char *codec_dai_name_capture;
- 	int i, ret;
+@@ -2249,6 +2261,7 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 	spec->chmap.ops.get_chmap = hdmi_get_chmap;
+ 	spec->chmap.ops.set_chmap = hdmi_set_chmap;
+ 	spec->chmap.ops.is_pcm_attached = is_hdmi_pcm_attached;
++	spec->chmap.ops.get_spk_alloc = hdmi_get_spk_alloc,
  
- 	platform_node = of_parse_phandle(pdev->dev.of_node,
-@@ -199,6 +219,17 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
- 			"Property 'audio-codec' missing or invalid\n");
- 		return -EINVAL;
- 	}
-+	mt8173_rt5650_codecs[1].of_node = mt8173_rt5650_codecs[0].of_node;
-+
-+	if (device_property_present(&pdev->dev,
-+				    "mediatek,audio-codec-dai-capture")) {
-+		device_property_read_string(&pdev->dev,
-+					    "mediatek,audio-codec-dai-capture",
-+					    &codec_dai_name_capture);
-+
-+		mt8173_rt5650_codecs[1].dai_name = codec_dai_name_capture;
-+	}
-+
- 	card->dev = &pdev->dev;
- 	platform_set_drvdata(pdev, card);
- 
+ 	codec->spec = spec;
+ 	hdmi_array_init(spec, 4);
 -- 
-1.7.9.5
+1.9.1
