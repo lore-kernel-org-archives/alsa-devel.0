@@ -1,113 +1,36 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH 1/3 v2] drm/i2c/adv7511: Add audio support
-Date: Fri, 01 Apr 2016 20:10:14 +0300
-Message-ID: <5276355.2bQYPXCpz6@avalon>
-References: <cover.1459174494.git.joabreu@synopsys.com>
- <15b1936d307912ba12df7fa09ec3a7a80ac5fcef.1459174494.git.joabreu@synopsys.com>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v6 1/3] ASoC: cygnus: Add DT bindings for Broadcom Cygnus
+ audio
+Date: Fri, 1 Apr 2016 12:13:08 -0500
+Message-ID: <20160401171308.GA7095@rob-hp-laptop>
+References: <1459383886-20317-1-git-send-email-simran.rai@broadcom.com>
+ <1459383886-20317-2-git-send-email-simran.rai@broadcom.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <15b1936d307912ba12df7fa09ec3a7a80ac5fcef.1459174494.git.joabreu@synopsys.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: dri-devel@lists.freedesktop.org
-Cc: tixy@linaro.org, mark.rutland@arm.com, alsa-devel@alsa-project.org, Alexey.Brodkin@synopsys.com, lgirdwood@gmail.com, yitian.bu@tangramtek.com, wsa+renesas@sang-engineering.com, laurent.pinchart+renesas@ideasonboard.com, tiwai@suse.com, nariman@opensource.wolfsonmicro.com, linux-snps-arc@lists.infradead.org, Jose Abreu <Jose.Abreu@synopsys.com>, devicetree@vger.kernel.org, Maruthi.Bayyavarapu@amd.com, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, Vineet.Gupta1@synopsys.com, buyitian@gmail.com, robh+dt@kernel.org, perex@perex.cz, linux-kernel@vger.kernel.org, broonie@kernel.org, galak@codeaurora.org, alexander.deucher@amd.com, CARLOS.PALMINHA@synopsys.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1459383886-20317-2-git-send-email-simran.rai-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Simran Rai <simran.rai-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
+Cc: Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Ray Jui <rjui-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Scott Branden <sbranden-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Simran Rai <ssimran-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Lori Hikichi <lhikichi-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, bcm-kernel-feedback-list-dY08KVG/lbpWk0Htik3J/w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Arun Parameswaran <arunp-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgSm9zZSwKClRoYW5rIHlvdSBmb3IgdGhlIHBhdGNoLgoKT24gTW9uZGF5IDI4IE1hciAyMDE2
-IDE1OjM2OjA5IEpvc2UgQWJyZXUgd3JvdGU6Cj4gVGhpcyBwYXRjaCBhZGRzIGF1ZGlvIHN1cHBv
-cnQgZm9yIHRoZSBBRFY3NTExIEhETUkgdHJhbnNtaXR0ZXIKPiB1c2luZyBBTFNBIFNvQy4KPiAK
-PiBUaGUgY29kZSB3YXMgcG9ydGVkIGZyb20gQW5hbG9nIERldmljZXMgbGludXggdHJlZSBmcm9t
-Cj4gY29tbWl0IDE3NzBjNGExZTMyYiAoIk1lcmdlIHJlbW90ZS10cmFja2luZyBicmFuY2gKPiAn
-eGlsaW54L21hc3RlcicgaW50byB4Y29tbV96eW5xIiksIHdoaWNoIGlzIGF2YWlsYWJsZSBhdDoK
-PiAJLSBodHRwczovL2dpdGh1Yi5jb20vYW5hbG9nZGV2aWNlc2luYy9saW51eC8KPiAKPiBUaGUg
-bWFpbiBjb3JlIGZpbGUgd2FzIHJlbmFtZWQgZnJvbSBhZHY3NTExLmMgdG8gYWR2NzUxMV9jb3Jl
-LmMKPiBzbyB0aGF0IGF1ZGlvIGFuZCB2aWRlbyBjb21waWxlIGludG8gYSBzaW5nbGUgYWR2NzUx
-MS5rbyBtb2R1bGUKPiBhbmQgdG8ga2VlcCB1cCB3aXRoIEFuYWxvZyBEZXZpY2VzIGtlcm5lbCB0
-cmVlLgo+IAo+IFRoZSBhdWRpbyBjYW4gYmUgZGlzYWJsZWQgdXNpbmcgbWVudS1jb25maWcgc28g
-aXQgaXMgcG9zc2libGUKPiB0byB1c2Ugb25seSB2aWRlbyBtb2RlLgo+IAo+IFRoZSBIRE1JIG1v
-ZGUgaXMgYXV0b21hdGljYWxseSBzdGFydGVkIGF0IGJvb3QgYW5kIHRoZSBhdWRpbwo+ICh3aGVu
-IGVuYWJsZWQpIHJlZ2lzdGVycyBhcyBhIGNvZGVjIGludG8gQUxTQS4KPiAKPiBTUERJRiBEQUkg
-Zm9ybWF0IHdhcyBhbHNvIGFkZGVkIHRvIEFTb0MgYXMgaXQgaXMgcmVxdWlyZWQKPiBieSBhZHY3
-NTExIGF1ZGlvLgo+IAo+IFNpZ25lZC1vZmYtYnk6IEpvc2UgQWJyZXUgPGpvYWJyZXVAc3lub3Bz
-eXMuY29tPgo+IC0tLQo+IAo+IE5vIGNoYW5nZXMgdjEgLT4gdjIuCj4gCj4gIGRyaXZlcnMvZ3B1
-L2RybS9pMmMvS2NvbmZpZyAgICAgICAgIHwgICAxMSArCj4gIGRyaXZlcnMvZ3B1L2RybS9pMmMv
-TWFrZWZpbGUgICAgICAgIHwgICAgMiArCj4gIGRyaXZlcnMvZ3B1L2RybS9pMmMvYWR2NzUxMS5j
-ICAgICAgIHwgMTAyNCAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gIGRyaXZlcnMv
-Z3B1L2RybS9pMmMvYWR2NzUxMS5oICAgICAgIHwgICA0MSArKwo+ICBkcml2ZXJzL2dwdS9kcm0v
-aTJjL2Fkdjc1MTFfYXVkaW8uYyB8ICAzMTAgKysrKysrKysrKysKPiAgZHJpdmVycy9ncHUvZHJt
-L2kyYy9hZHY3NTExX2NvcmUuYyAgfCAxMDA1ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KwoKUGxlYXNlIHVzZSBnaXQtZm9ybWF0LXBhdGNoIC1NIHRvIGRldGVjdCByZW5hbWVzIGlmIHlv
-dSBzZW5kIGEgbmV3IHZlcnNpb24gb2YgCnRoaXMgc2VyaWVzLCBpdCB3aWxsIGhlbHAgd2l0aCBy
-ZXZpZXcuCgo+ICBpbmNsdWRlL3NvdW5kL3NvYy1kYWkuaCAgICAgICAgICAgICB8ICAgIDEgKwo+
-ICA3IGZpbGVzIGNoYW5nZWQsIDEzNzAgaW5zZXJ0aW9ucygrKSwgMTAyNCBkZWxldGlvbnMoLSkK
-PiAgZGVsZXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvZ3B1L2RybS9pMmMvYWR2NzUxMS5jCj4gIGNy
-ZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2dwdS9kcm0vaTJjL2Fkdjc1MTFfYXVkaW8uYwo+ICBj
-cmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9ncHUvZHJtL2kyYy9hZHY3NTExX2NvcmUuYwoKW3Nu
-aXBdCgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTJjL2Fkdjc1MTFfY29yZS5jCj4g
-Yi9kcml2ZXJzL2dwdS9kcm0vaTJjL2Fkdjc1MTFfY29yZS5jIG5ldyBmaWxlIG1vZGUgMTAwNjQ0
-Cj4gaW5kZXggMDAwMDAwMC4uZDU0MjU2YQo+IC0tLSAvZGV2L251bGwKPiArKysgYi9kcml2ZXJz
-L2dwdS9kcm0vaTJjL2Fkdjc1MTFfY29yZS5jCgpbc25pcF0KCj4gK3N0YXRpYyBpbnQgYWR2NzUx
-MV9wcm9iZShzdHJ1Y3QgaTJjX2NsaWVudCAqaTJjLCBjb25zdCBzdHJ1Y3QgaTJjX2RldmljZV9p
-ZAo+ICppZCkgK3sKPiArCXN0cnVjdCBhZHY3NTExX2xpbmtfY29uZmlnIGxpbmtfY29uZmlnOwo+
-ICsJc3RydWN0IGFkdjc1MTEgKmFkdjc1MTE7Cj4gKwlzdHJ1Y3QgZGV2aWNlICpkZXYgPSAmaTJj
-LT5kZXY7Cj4gKwl1bnNpZ25lZCBpbnQgdmFsOwo+ICsJaW50IHJldDsKPiArCj4gKwlpZiAoIWRl
-di0+b2Zfbm9kZSkKPiArCQlyZXR1cm4gLUVJTlZBTDsKPiArCj4gKwlhZHY3NTExID0gZGV2bV9r
-emFsbG9jKGRldiwgc2l6ZW9mKCphZHY3NTExKSwgR0ZQX0tFUk5FTCk7Cj4gKwlpZiAoIWFkdjc1
-MTEpCj4gKwkJcmV0dXJuIC1FTk9NRU07Cj4gKwo+ICsJYWR2NzUxMS0+cG93ZXJlZCA9IGZhbHNl
-Owo+ICsJYWR2NzUxMS0+c3RhdHVzID0gY29ubmVjdG9yX3N0YXR1c19kaXNjb25uZWN0ZWQ7Cj4g
-Kwo+ICsJcmV0ID0gYWR2NzUxMV9wYXJzZV9kdChkZXYtPm9mX25vZGUsICZsaW5rX2NvbmZpZyk7
-Cj4gKwlpZiAocmV0KQo+ICsJCXJldHVybiByZXQ7Cj4gKwo+ICsJLyoKPiArCSAqIFRoZSBwb3dl
-ciBkb3duIEdQSU8gaXMgb3B0aW9uYWwuIElmIHByZXNlbnQsIHRvZ2dsZSBpdCBmcm9tIGFjdGl2
-ZSB0bwo+ICsJICogaW5hY3RpdmUgdG8gd2FrZSB1cCB0aGUgZW5jb2Rlci4KPiArCSAqLwo+ICsJ
-YWR2NzUxMS0+Z3Bpb19wZCA9IGRldm1fZ3Bpb2RfZ2V0X29wdGlvbmFsKGRldiwgInBkIiwgR1BJ
-T0RfT1VUX0hJR0gpOwo+ICsJaWYgKElTX0VSUihhZHY3NTExLT5ncGlvX3BkKSkKPiArCQlyZXR1
-cm4gUFRSX0VSUihhZHY3NTExLT5ncGlvX3BkKTsKPiArCj4gKwlpZiAoYWR2NzUxMS0+Z3Bpb19w
-ZCkgewo+ICsJCW1kZWxheSg1KTsKPiArCQlncGlvZF9zZXRfdmFsdWVfY2Fuc2xlZXAoYWR2NzUx
-MS0+Z3Bpb19wZCwgMCk7Cj4gKwl9Cj4gKwo+ICsJYWR2NzUxMS0+cmVnbWFwID0gZGV2bV9yZWdt
-YXBfaW5pdF9pMmMoaTJjLCAmYWR2NzUxMV9yZWdtYXBfY29uZmlnKTsKPiArCWlmIChJU19FUlIo
-YWR2NzUxMS0+cmVnbWFwKSkKPiArCQlyZXR1cm4gUFRSX0VSUihhZHY3NTExLT5yZWdtYXApOwo+
-ICsKPiArCXJldCA9IHJlZ21hcF9yZWFkKGFkdjc1MTEtPnJlZ21hcCwgQURWNzUxMV9SRUdfQ0hJ
-UF9SRVZJU0lPTiwgJnZhbCk7Cj4gKwlpZiAocmV0KQo+ICsJCXJldHVybiByZXQ7Cj4gKwlkZXZf
-ZGJnKGRldiwgIlJldi4gJWRcbiIsIHZhbCk7Cj4gKwo+ICsJcmV0ID0gcmVnbWFwX3JlZ2lzdGVy
-X3BhdGNoKGFkdjc1MTEtPnJlZ21hcCwgYWR2NzUxMV9maXhlZF9yZWdpc3RlcnMsCj4gKwkJCQkg
-ICAgQVJSQVlfU0laRShhZHY3NTExX2ZpeGVkX3JlZ2lzdGVycykpOwo+ICsJaWYgKHJldCkKPiAr
-CQlyZXR1cm4gcmV0Owo+ICsKPiArCXJlZ21hcF93cml0ZShhZHY3NTExLT5yZWdtYXAsIEFEVjc1
-MTFfUkVHX0VESURfSTJDX0FERFIsIGVkaWRfaTJjX2FkZHIpOwo+ICsJcmVnbWFwX3dyaXRlKGFk
-djc1MTEtPnJlZ21hcCwgQURWNzUxMV9SRUdfUEFDS0VUX0kyQ19BRERSLAo+ICsJCSAgICAgcGFj
-a2V0X2kyY19hZGRyKTsKPiArCXJlZ21hcF93cml0ZShhZHY3NTExLT5yZWdtYXAsIEFEVjc1MTFf
-UkVHX0NFQ19JMkNfQUREUiwgY2VjX2kyY19hZGRyKTsKPiArCWFkdjc1MTFfcGFja2V0X2Rpc2Fi
-bGUoYWR2NzUxMSwgMHhmZmZmKTsKPiArCj4gKwlhZHY3NTExLT5pMmNfbWFpbiA9IGkyYzsKPiAr
-CWFkdjc1MTEtPmkyY19lZGlkID0gaTJjX25ld19kdW1teShpMmMtPmFkYXB0ZXIsIGVkaWRfaTJj
-X2FkZHIgPj4gMSk7Cj4gKwlpZiAoIWFkdjc1MTEtPmkyY19lZGlkKQo+ICsJCXJldHVybiAtRU5P
-TUVNOwo+ICsKPiArCWlmIChpMmMtPmlycSkgewo+ICsJCWluaXRfd2FpdHF1ZXVlX2hlYWQoJmFk
-djc1MTEtPndxKTsKPiArCj4gKwkJcmV0ID0gZGV2bV9yZXF1ZXN0X3RocmVhZGVkX2lycShkZXYs
-IGkyYy0+aXJxLCBOVUxMLAo+ICsJCQkJCQlhZHY3NTExX2lycV9oYW5kbGVyLAo+ICsJCQkJCQlJ
-UlFGX09ORVNIT1QsIGRldl9uYW1lKGRldiksCj4gKwkJCQkJCWFkdjc1MTEpOwo+ICsJCWlmIChy
-ZXQpCj4gKwkJCWdvdG8gZXJyX2kyY191bnJlZ2lzdGVyX2RldmljZTsKPiArCX0KPiArCj4gKwkv
-KiBDRUMgaXMgdW51c2VkIGZvciBub3cgKi8KPiArCXJlZ21hcF93cml0ZShhZHY3NTExLT5yZWdt
-YXAsIEFEVjc1MTFfUkVHX0NFQ19DVFJMLAo+ICsJCSAgICAgQURWNzUxMV9DRUNfQ1RSTF9QT1dF
-Ul9ET1dOKTsKPiArCj4gKwlhZHY3NTExX3Bvd2VyX29mZihhZHY3NTExKTsKPiArCj4gKwlpMmNf
-c2V0X2NsaWVudGRhdGEoaTJjLCBhZHY3NTExKTsKPiArCj4gKyNpZmRlZiBDT05GSUdfRFJNX0ky
-Q19BRFY3NTExX0FVRElPCj4gKwlhZHY3NTExX2F1ZGlvX2luaXQoJmkyYy0+ZGV2KTsKPiArI2Vu
-ZGlmCgpTaG91bGRuJ3Qgd2UgY29uZGl0aW9uIHRoaXMgdG8gdGhlIGF1ZGlvIGNoYW5uZWwgYmVp
-bmcgc29tZWhvdyBkZXNjcmliZWQgaW4gRFQgCj8gSWYgYSBib2FyZCBkb2Vzbid0IHJvdXRlIGF1
-ZGlvIHNpZ25hbHMgdG8gdGhlIEFEVjc1MTEgYXVkaW8gaW5wdXQsIHRoZXJlJ3MgCm5vIG5lZWQg
-dG8gcmVnaXN0ZXIgYW4gYXVkaW8gY29kZWMuCgo+ICsKPiArCWFkdjc1MTFfc2V0X2xpbmtfY29u
-ZmlnKGFkdjc1MTEsICZsaW5rX2NvbmZpZyk7Cj4gKwo+ICsJLyogRW5hYmxlIEhETUkgbW9kZSAq
-Lwo+ICsJcmVnbWFwX3VwZGF0ZV9iaXRzKGFkdjc1MTEtPnJlZ21hcCwgQURWNzUxMV9SRUdfSERD
-UF9IRE1JX0NGRywKPiArCQkJQURWNzUxMV9IRE1JX0NGR19NT0RFX01BU0ssCj4gKwkJCUFEVjc1
-MTFfSERNSV9DRkdfTU9ERV9IRE1JKTsKPiArCj4gKwlyZXR1cm4gMDsKPiArCj4gK2Vycl9pMmNf
-dW5yZWdpc3Rlcl9kZXZpY2U6Cj4gKwlpMmNfdW5yZWdpc3Rlcl9kZXZpY2UoYWR2NzUxMS0+aTJj
-X2VkaWQpOwo+ICsKPiArCXJldHVybiByZXQ7Cj4gK30KCi0tIApSZWdhcmRzLAoKTGF1cmVudCBQ
-aW5jaGFydAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-ZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0
-dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+On Wed, Mar 30, 2016 at 05:24:44PM -0700, Simran Rai wrote:
+> From: Simran Rai <ssimran-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
+> 
+> Add bindings for audio driver in Broadcom Cygnus.
+> 
+> Signed-off-by: Lori Hikichi <lhikichi-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
+> Signed-off-by: Simran Rai <ssimran-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
+> Reviewed-by: Ray Jui <rjui-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
+> Reviewed-by: Scott Branden <sbranden-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
+> ---
+>  .../bindings/sound/brcm,cygnus-audio.txt           |   67 ++++++++++++++++++++
+>  1 file changed, 67 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
+
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
