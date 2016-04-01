@@ -1,20 +1,15 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: Re: [PATCH v2] ASoC: rt5514: add rt5514 SPI driver
-Date: Fri, 1 Apr 2016 06:01:47 +0000
-Message-ID: <7EB0DE829A537248AF2ED30C97D12694FCF18D@RTITMBSV03.realtek.com.tw>
-References: <1457953101-19348-1-git-send-email-oder_chiou@realtek.com>
- <20160329215121.GP2350@sirena.org.uk>
- <7EB0DE829A537248AF2ED30C97D12694FCEA41@RTITMBSV03.realtek.com.tw>
- <20160331165048.GE2350@sirena.org.uk>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: [PATCH 0/3] ASoC: hdac_hdmi: Fix codec power state in
+	S3
+Date: Fri,  1 Apr 2016 13:36:24 +0530
+Message-ID: <1459497987-28979-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B4C32654CE
- for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2016 08:01:52 +0200 (CEST)
-In-Reply-To: <20160331165048.GE2350@sirena.org.uk>
-Content-Language: zh-TW
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78D572651BE
+ for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2016 10:07:04 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,28 +19,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, "pc.liao@mediatek.com" <pc.liao@mediatek.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-> On Thu, Mar 31, 2016 at 06:29:51AM +0000, Oder Chiou wrote:
-> > > > +static void rt5514_enable_dsp_prepare(struct rt5514_priv *rt5514)
-> > > > +{
-> > > > +	/* Reset */
-> > > > +	regmap_write(rt5514->i2c_regmap, 0x18002000, 0x000010ec);
-> 
-> > > This is a *very* big table of magic numbers with what look like
-> > > system specific settings in there (there seem to be some things
-> > > routing to and from the ADC, and some clocking setup...).  Are you
-> > > sure none of this depends on the runtime configuration?
-> 
-> > Yes, it is independent of the ASoC runtime configuration. The table of
-> > magic numbers is the settings for the voice wake up, so it is not
-> > required to be run on ASoC framework.
-> 
-> Are you *positive* about that?  There look to be routing things going on for
-> example which might be system dependant.
-> 
-They are the default settings for the our common hardware planning. If the
-developer wants to modify the settings to match the different hardware
-planning, they can consider to change the settings in the DSP firmware.
+With this series, the codec power is turned OFF when entering
+suspend if the playback is already in progress. And during resume
+the power is restored. Codec driver registers the S3 callbacks
+with prepare/complete to synchronize with Jack notification from
+display driver. Codec driver takes care of putting the AFG node
+to proper power state during S3 and controller driver takes care
+of managing the codec power.
+
+Also setting the power state for AFG node is optimized by
+removing the timeout loop. The driver instead uses a codec_read,
+which sets the power state and waits for response before the
+codec power is turned OFF.
+
+Subhransu S. Prusty (3):
+  ASoC: hdac_hdmi: Fix to use dev_pm ops instead soc pm
+  ASoC: hdac_hdmi: Fix codec power state in S3 during playback
+  ASoC: Intel: Skylake: Fix to turn OFF codec power when entering S3
+
+ sound/soc/codecs/hdac_hdmi.c  | 94 +++++++++++++++++++------------------------
+ sound/soc/intel/skylake/skl.c | 15 ++++++-
+ 2 files changed, 55 insertions(+), 54 deletions(-)
+
+-- 
+1.9.1
