@@ -1,59 +1,165 @@
-From: Martin Koegler <martin.koegler@chello.at>
-Subject: Re: [PATCH - aconnect 1/1] Fix aconnect printing card
- and pid on older kernels
-Date: Fri, 1 Apr 2016 23:28:05 +0200
-Message-ID: <20160401212805.GB20661@mail.zuhause>
-References: <1459532101-6582-1-git-send-email-agoode@google.com>
+From: "Luis R. Rodriguez" <mcgrof@kernel.org>
+Subject: Re: Getting rid of inside_vm in intel8x0
+Date: Sat, 2 Apr 2016 00:28:31 +0200
+Message-ID: <20160401222831.GX1990@wotan.suse.de>
+References: <CALCETrWnsn4CoRXcKDXpMTjxCYj8==mZQHkZRuXfZQyvERB3Gw@mail.gmail.com>
+ <s5h60w48po7.wl-tiwai@suse.de>
+ <20160331222618.GE1990@wotan.suse.de>
+ <s5hvb4151v1.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vie01a-dmta-pe04-2.mx.upcmail.net
- (vie01a-dmta-pe04-2.mx.upcmail.net [62.179.121.164])
- by alsa0.perex.cz (Postfix) with ESMTP id CA1F72651D1
- for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2016 23:28:07 +0200 (CEST)
-Received: from [172.31.216.44] (helo=vie01a-pemc-psmtp-pe02)
- by vie01a-dmta-pe04.mx.upcmail.net with esmtp (Exim 4.72)
- (envelope-from <martin.koegler@chello.at>) id 1am6bv-0006Q8-F1
- for alsa-devel@alsa-project.org; Fri, 01 Apr 2016 23:28:07 +0200
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1459532101-6582-1-git-send-email-agoode@google.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Adam Goode <agoode@google.com>
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org, martin.koegler@chello.at
+In-Reply-To: <s5hvb4151v1.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Luis R. Rodriguez" <mcgrof@kernel.org>, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Andrew Cooper <andrew.cooper3@citrix.com>, Stephen Hemminger <stephen@networkplumber.org>, Jim Gettys <jg@freedesktop.org>, Dario Faggioli <dario.faggioli@citrix.com>, George.Dunlap@eu.citrix.com, Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Steven Rostedt <rostedt@goodmis.org>, Mel Gorman <mgorman@suse.de>, Andy Lutomirski <luto@amacapital.net>, Konstantin Ozerkov <kozerkov@parallels.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, ALSA development <alsa-devel@alsa-project.org>, Matt Fleming <matt@codeblueprint.co.uk>, Borislav Petkov <bp@alien8.de>, xen-devel <xen-devel@lists.xenproject.org>, Joerg Roedel <joro@8bytes.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 01, 2016 at 01:35:01PM -0400, Adam Goode wrote:
-> alsa-lib is changed to return a distinct negative value if running on
-> an older kernel. -1 is only returned now if the kernel knows for sure
-> that there is no card or pid. On older kernels, alsa-lib will return
-> -ENOSYS.
+On Fri, Apr 01, 2016 at 07:34:10AM +0200, Takashi Iwai wrote:
+> On Fri, 01 Apr 2016 00:26:18 +0200,
+> Luis R. Rodriguez wrote:
+> > 
+> > On Wed, Mar 30, 2016 at 08:07:04AM +0200, Takashi Iwai wrote:
+> > > On Tue, 29 Mar 2016 23:37:32 +0200,
+> > > Andy Lutomirski wrote:
+> > > > 
+> > > > Would it be possible to revert:
+> > > > 
+> > > > commit 228cf79376f13b98f2e1ac10586311312757675c
+> > > > Author: Konstantin Ozerkov <kozerkov@parallels.com>
+> > > > Date:   Wed Oct 26 19:11:01 2011 +0400
+> > > > 
+> > > >     ALSA: intel8x0: Improve performance in virtual environment
+> > > > 
+> > > > Presumably one or more of the following is true:
+> > > > 
+> > > > a) The inside_vm == true case is just an optimization and should apply
+> > > > unconditionally.
+> > > > 
+> > > > b) The inside_vm == true case is incorrect and should be fixed or disabled.
+> > > > 
+> > > > c) The inside_vm == true case is a special case that makes sense then
+> > > > IO is very very slow but doesn't make sense when IO is fast.  If so,
+> > > > why not literally measure the time that the IO takes and switch over
+> > > > to the "inside VM" path when IO is slow?
+> > 
+> > BTW can we simulate this on bare metal by throttling an IO bus, or
+> > perhaps mucking with the scheduler ?
+> > 
+> > I ask as I wonder if similar type of optimization may be useful
+> > to first simulate with other types of buses for other IO devices
+> > we might use in virtualization environments. If so, I'd be curious
+> > to know if similar type of optimizations might be possible for
+> > other sounds cards, or other IO devices.
 > 
+> There aren't so many sound devices requiring such a workaround.
 
-Shouldn't we also update the default values of card/pid to -ENOSYS to be more consistent:
-                int card = -1, pid = -1;
+Why not, what makes this special?
 
-> @@ -177,13 +177,13 @@ static void print_port(snd_seq_t *seq, snd_seq_client_info_t *cinfo,
->  #ifdef HAVE_SEQ_CLIENT_INFO_GET_CARD
->  		card = snd_seq_client_info_get_card(cinfo);
->  #endif
-> -		if (card != -1)
-> +		if (card >= 0)
->  			printf(",card=%d", card);
+> > > More important condition is rather that the register updates of CIV
+> > > and PICB are atomic.
+> > 
+> > To help with this can you perhaps elaborate a bit more on what the code
+> > does? As I read it snd_intel8x0_pcm_pointer() gets a pointer to some
+> > sort of audio frame we are in and uses two values to see if we are
+> > going to be evaluating the right frame, we use an optimization of
+> > some sort to skip one check for virtual environments. We seem to need
+> > this given that on a virtual environment it is assumed that the sound
+> > card is emulated, and as such an IO read there is rather expensive.
+> > 
+> > Can you confirm and/or elaborate a bit more what this does ?
+> > 
+> > To try to help understand what is going on can you describe what CIV
+> > and PICB are exactly ?
+> 
+> CIV and PICB registers are a pair and we calculate the linear position
+> in a ring buffer from both two.
 
-aconnect from alsa-utils 1.1.1 will break with alsa-lib containing your patch.
+What type of ring buffer is this ?
 
-The new API is propably not yet widely used, so I think that a ABI change can still be possible.
-But in that case, alsa-lib/alsa-utils 1.1.1 need quickly be replaced by new releases, so that people
-don't start using the old API.
+> However, they are divorced sometimes
+> under stress, and the position calculated from such values may go
+> backward wrongly.  For avoiding it, there is the second read of the
+> PICB register and compare with the previous value, and loop until it
+> matches.  This check is skipped on VM.
 
-Regards,
-Martin
+I see. Is this a software emulation *bug*, or an IO issue due to
+virtualization? I tried to read what the pointer() (that's what its called)
+callback does but since there is no documentation for any of the callbacks I
+have no clue what so ever.
+
+If the former, could a we somehow detect an emulated device other than through
+this type of check ? Or could we *add* a capability of some sort to detect it
+on the driver ? This would not address the removal, but it could mean finding a
+way to address emulation issues.
+
+If its an IO issue -- exactly what is the causing the delays in IO ?
+
+> > > This is satisfied mostly only on VM, and can't
+> > > be measured easily unlike the IO read speed.
+> > 
+> > Interesting, note the original patch claimed it was for KVM and
+> > Parallels hypervisor only, but since the code uses:
+> > 
+> > +#if defined(__i386__) || defined(__x86_64__)
+> > +               inside_vm = inside_vm || boot_cpu_has(X86_FEATURE_HYPERVISOR);
+> > +#endif
+> > 
+> > This makes it apply also to Xen as well, this makes this hack more
+> > broad, but does is it only applicable when an emulated device is
+> > used ? What about if a hypervisor is used and PCI passthrough is
+> > used ?
+> 
+> A good question.  Xen was added there at the time from positive
+> results by quick tests, but it might show an issue if it's running on
+> a very old chip with PCI passthrough.  But I'm not sure whether PCI
+> passthrough would work on such old chipsets at all.
+
+If it did have an issue then that would have to be special cased, that
+is the module parameter would not need to be enabled for such type of
+systems, and heuristics would be needed. As you note, fortunately this
+may not be common though... but if this type of work around may be
+taken as a precedent to enable other types of hacks in other drivers
+I'm very fearful of more hacks later needing these considerations as
+well.
+
+> > > > There are a pile of nonsensical "are we in a VM" checks of various
+> > > > sorts scattered throughout the kernel, they're all a mess to maintain
+> > > > (there are lots of kinds of VMs in the world, and Linux may not even
+> > > > know it's a guest), and, in most cases, it appears that the correct
+> > > > solution is to delete the checks.  I just removed a nasty one in the
+> > > > x86_32 entry asm, and this one is written in C so it should be a piece
+> > > > of cake :)
+> > > 
+> > > This cake looks sweet, but a worm is hidden behind the cream.
+> > > The loop in the code itself is already a kludge for the buggy hardware
+> > > where the inconsistent read happens not so often (only at the boundary
+> > > and in a racy way).  It would be nice if we can have a more reliably
+> > > way to know the hardware buggyness, but it's difficult,
+> > > unsurprisingly.
+> > 
+> > The concern here is setting precedents for VM cases sprinkled in the kernel.
+> > The assumption here is such special cases are really paper'ing over another
+> > type of issue, so its best to ultimately try to root cause the issue in
+> > a more generalized fashion.
+>  
+> Well, it's rather bare metal that shows the buggy behavior, thus we
+> need to paper over it.   In that sense, it's other way round; we don't
+> tune for VM.  The VM check we're discussing is rather for skipping the
+> strange workaround.
+
+What is it exactly about a VM that enables this work around to be skipped?
+I don't quite get it yet.
+
+> You may ask whether we can reduce the whole workaround instead.  It's
+> practically impossible.  We don't know which models doing so and which
+> not.  And, the hardware in question are (literally) thousands of
+> variants of damn old PC mobos.  Any fundamental change needs to be
+> verified on all these machines...
+
+What if we can come up with algorithm on the ring buffer that would
+satisfy both cases without special casing it ? Is removing this VM
+check impossible really?
+
+  Luis
