@@ -1,37 +1,81 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v3 5/5] dt/bindings: sound: new chip added into TAS571x
- binding
-Date: Fri, 1 Apr 2016 13:33:39 -0500
-Message-ID: <20160401183339.GA8688@rob-hp-laptop>
-References: <1459425241-21941-1-git-send-email-petr@barix.com>
- <1459425241-21941-5-git-send-email-petr@barix.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v9 6/7] drm/i2c: tda998x: Register ASoC hdmi-codec and
+ add audio DT binding
+Date: Fri, 1 Apr 2016 13:37:06 -0500
+Message-ID: <20160401183706.GA17145@rob-hp-laptop>
+References: <cover.1459431292.git.jsarha@ti.com>
+ <f8bdb070efdf6724ddc6bdb28baaa624ce6fb8af.1459431292.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
 Content-Disposition: inline
-In-Reply-To: <1459425241-21941-5-git-send-email-petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Cc: cernekee-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+In-Reply-To: <f8bdb070efdf6724ddc6bdb28baaa624ce6fb8af.1459431292.git.jsarha@ti.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Jyri Sarha <jsarha@ti.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, arnaud.pouliquen@st.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, tony@atomide.com, broonie@kernel.org, bcousson@baylibre.com, rmk+kernel@arm.linux.org.uk, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 31, 2016 at 01:54:01PM +0200, Petr Kulhavy wrote:
-> This adds the TAS5721 into the TAS571x binding.
-> 
-> Signed-off-by: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-> Reviewed-by: Kevin Cernekee <cernekee-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-> ---
-> v1: <initial>
-> 
-> v2: formatting of the "compatible" strings amended
-> 
-> v3: <no change>
-> 
->  Documentation/devicetree/bindings/sound/tas571x.txt | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
-
-Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+T24gVGh1LCBNYXIgMzEsIDIwMTYgYXQgMDQ6MzY6MDNQTSArMDMwMCwgSnlyaSBTYXJoYSB3cm90
+ZToKPiBSZWdpc3RlciBBU29DIEhETUkgY29kZWMgZm9yIGF1ZGlvIGZ1bmN0aW9uYWxpdHkgYW5k
+IGFkZHMgZGV2aWNlIHRyZWUKPiBiaW5kaW5nIGZvciBhdWRpbyBjb25maWd1cmF0aW9uLgo+IAo+
+IFdpdGggdGhlIHJlZ2lzdGVyZWQgSERNSSBjb2RlYyB0aGUgdGRhOTk4eCBub2RlIGNhbiBiZSB1
+c2VkIGxpa2UgYQo+IHJlZ3VsYXIgY29kZWMgbm9kZSBpbiBBU29DIGNhcmQgY29uZmlndXJhdGlv
+bnMuIEhETUkgYXVkaW8gaW5mby1mcmFtZQo+IGFuZCBhdWRpbyBzdHJlYW0gaGVhZGVyIGlzIGdl
+bmVyYXRlZCBieSB0aGUgQVNvQyBIRE1JIGNvZGVjLiBUaGUgY29kZWMKPiBhbHNvIGFwcGxpZXMg
+Y29uc3RyYWludHMgZm9yIGF2YWlsYWJsZSBzYW1wbGUtcmF0ZXMgYmFzZWQgb24gRWRpZCBMaWtl
+Cj4gRGF0YSBmcm9tIHRoZSBkaXNwbGF5LiBUaGUgZGV2aWNlIHRyZWUgYmluZGluZyBkb2N1bWVu
+dCBoYXMgYmVlbgo+IHVwZGF0ZWQgWzFdLgo+IAo+IFBhcnQgb2YgdGhpcyBwYXRjaCBoYXMgYmVl
+biBpbnNwaXJlZCBieSBKZWFuIEZyYW5jb2lzZSdzICJkcm0vaTJjOiB0ZGE5OTh4Ogo+IEFkZCBz
+dXBwb3J0IG9mIGEgRFQgZ3JhcGggb2YgcG9ydHMiLXBhdGNoIFsyXS4gVGhlcmUgbWF5IHN0aWxs
+IGJlIHNvbWUKPiBpZGVudGljYWwgbGluZXMgbGVmdCBmcm9tIHRoZSBvcmlnaW5hbCBwYXRjaCBh
+bmQgc29tZSBvZiB0aGUgaWRlYXMKPiBoYXZlIGNvbWUgZnJvbSB0aGVyZS4KPiAKPiBbMV0gRG9j
+dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvYnJpZGdlL3RkYTk5OHgudHh0
+Cj4gWzJdIGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2
+ZWwvMjAxNS1KdWx5LzA5NTI1NS5odG1sCj4gCj4gU2lnbmVkLW9mZi1ieTogSnlyaSBTYXJoYSA8
+anNhcmhhQHRpLmNvbT4KPiAtLS0KPiAgLi4uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9i
+cmlkZ2UvdGRhOTk4eC50eHQgfCAgMTggKysKPiAgZHJpdmVycy9ncHUvZHJtL2kyYy9LY29uZmln
+ICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDEgKwo+ICBkcml2ZXJzL2dwdS9kcm0vaTJjL3Rk
+YTk5OHhfZHJ2LmMgICAgICAgICAgICAgICAgICB8IDE5OCArKysrKysrKysrKysrKysrKysrKy0K
+PiAgaW5jbHVkZS9kcm0vaTJjL3RkYTk5OHguaCAgICAgICAgICAgICAgICAgICAgICAgICAgfCAg
+IDQgKy0KPiAgaW5jbHVkZS9kdC1iaW5kaW5ncy9kaXNwbGF5L3RkYTk5OHguaCAgICAgICAgICAg
+ICAgfCAgIDcgKwo+ICA1IGZpbGVzIGNoYW5nZWQsIDIyMyBpbnNlcnRpb25zKCspLCA1IGRlbGV0
+aW9ucygtKQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9kdC1iaW5kaW5ncy9kaXNwbGF5
+L3RkYTk5OHguaAo+IAo+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
+ZGluZ3MvZGlzcGxheS9icmlkZ2UvdGRhOTk4eC50eHQgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRy
+ZWUvYmluZGluZ3MvZGlzcGxheS9icmlkZ2UvdGRhOTk4eC50eHQKPiBpbmRleCBlMTc4ZTZiLi4y
+NGNjMjQ2IDEwMDY0NAo+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9k
+aXNwbGF5L2JyaWRnZS90ZGE5OTh4LnR4dAo+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
+ZS9iaW5kaW5ncy9kaXNwbGF5L2JyaWRnZS90ZGE5OTh4LnR4dAo+IEBAIC0yMSw4ICsyMSwxOSBA
+QCBPcHRpb25hbCBwcm9wZXJ0aWVzOgo+ICAgIC0gdmlkZW8tcG9ydHM6IDI0IGJpdHMgdmFsdWUg
+d2hpY2ggZGVmaW5lcyBob3cgdGhlIHZpZGVvIGNvbnRyb2xsZXIKPiAgCW91dHB1dCBpcyB3aXJl
+ZCB0byB0aGUgVERBOTk4eCBpbnB1dCAtIGRlZmF1bHQ6IDwweDIzMDE0NT4KPiAgCj4gKyAgLSBh
+dWRpby1wb3J0czogYXJyYXkgb2YgOC1iaXQgdmFsdWVzLCAyIHZhbHVlcyBwZXIgb25lIERBSVsx
+XS4KClRoaXMgc2hvdWxkIGhhdmUgbnhwIHByZWZpeC4gV2l0aCB0aGF0LAoKQWNrZWQtYnk6IFJv
+YiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5vcmc+CgoKPiArCVRoZSBmaXJzdCB2YWx1ZSBkZWZpbmVz
+IHRoZSBEQUkgdHlwZTogVERBOTk4eF9TUERJRiBvciBUREE5OTh4X0kyU1syXS4KPiArCVRoZSBz
+ZWNvbmQgdmFsdWUgZGVmaW5lcyB0aGUgdGRhOTk4eCBBUF9FTkEgcmVnIGNvbnRlbnQgd2hlbiB0
+aGUgREFJCj4gKwlpbiBxdWVzdGlvbiBpcyB1c2VkLiBUaGUgaW1wbGVtZW50YXRpb24gYWxsb3dz
+IG9uZSBvciB0d28gREFJcy4gSWYgdHdvCj4gKwlEQUlzIGFyZSBkZWZpbmVkLCB0aGV5IG11c3Qg
+YmUgb2YgZGlmZmVyZW50IHR5cGUuCj4gKwo+ICtbMV0gRG9jdW1lbnRhdGlvbi9zb3VuZC9hbHNh
+L3NvYy9EQUkudHh0Cj4gK1syXSBpbmNsdWRlL2R0LWJpbmRpbmdzL2Rpc3BsYXkvdGRhOTk4eC5o
+Cj4gKwo+ICBFeGFtcGxlOgo+ICAKPiArI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2Rpc3BsYXkvdGRh
+OTk4eC5oPgo+ICsKPiAgCXRkYTk5OHg6IGhkbWktZW5jb2RlciB7Cj4gIAkJY29tcGF0aWJsZSA9
+ICJueHAsdGRhOTk4eCI7Cj4gIAkJcmVnID0gPDB4NzA+Owo+IEBAIC0zMCw0ICs0MSwxMSBAQCBF
+eGFtcGxlOgo+ICAJCWludGVycnVwdHMgPSA8MjcgMj47CQkvKiBmYWxsaW5nIGVkZ2UgKi8KPiAg
+CQlwaW5jdHJsLTAgPSA8JnBteF9jYW1lcmE+Owo+ICAJCXBpbmN0cmwtbmFtZXMgPSAiZGVmYXVs
+dCI7Cj4gKwkJdmlkZW8tcG9ydHMgPSA8MHgyMzAxNDU+Owo+ICsKPiArCQkjc291bmQtZGFpLWNl
+bGxzID0gPDI+Owo+ICsJCQkgICAgIC8qCURBSS1mb3JtYXQJQVBfRU5BIHJlZyB2YWx1ZSAqLwo+
+ICsJCWF1ZGlvLXBvcnRzID0gPAlUREE5OTh4X1NQRElGCTB4MDQKPiArCQkJCVREQTk5OHhfSTJT
+CTB4MDM+Owo+ICsKPiAgCX07Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNr
+dG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Ry
+aS1kZXZlbAo=
