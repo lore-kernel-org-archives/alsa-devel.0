@@ -1,81 +1,75 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v9 6/7] drm/i2c: tda998x: Register ASoC hdmi-codec and
- add audio DT binding
-Date: Fri, 1 Apr 2016 13:37:06 -0500
-Message-ID: <20160401183706.GA17145@rob-hp-laptop>
-References: <cover.1459431292.git.jsarha@ti.com>
- <f8bdb070efdf6724ddc6bdb28baaa624ce6fb8af.1459431292.git.jsarha@ti.com>
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Subject: Re: [PATCH] a52: Make compatible with ffmpeg 3.0
+Date: Fri, 1 Apr 2016 11:47:38 -0700
+Message-ID: <CAOMFOmWD2gm3XH-MzDdLrrNuaOy0rqevzn7Az24y6Uj2xedfow@mail.gmail.com>
+References: <1455587362-7366-1-git-send-email-anatol.pomozov@gmail.com>
+ <s5hr3gb4or2.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <f8bdb070efdf6724ddc6bdb28baaa624ce6fb8af.1459431292.git.jsarha@ti.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jyri Sarha <jsarha@ti.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, arnaud.pouliquen@st.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, tony@atomide.com, broonie@kernel.org, bcousson@baylibre.com, rmk+kernel@arm.linux.org.uk, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ig0-f171.google.com (mail-ig0-f171.google.com
+ [209.85.213.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 03629265173
+ for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2016 20:47:40 +0200 (CEST)
+Received: by mail-ig0-f171.google.com with SMTP id ma7so3029755igc.0
+ for <alsa-devel@alsa-project.org>; Fri, 01 Apr 2016 11:47:39 -0700 (PDT)
+In-Reply-To: <s5hr3gb4or2.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>, Anton Khirnov <anton@khirnov.net>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBNYXIgMzEsIDIwMTYgYXQgMDQ6MzY6MDNQTSArMDMwMCwgSnlyaSBTYXJoYSB3cm90
-ZToKPiBSZWdpc3RlciBBU29DIEhETUkgY29kZWMgZm9yIGF1ZGlvIGZ1bmN0aW9uYWxpdHkgYW5k
-IGFkZHMgZGV2aWNlIHRyZWUKPiBiaW5kaW5nIGZvciBhdWRpbyBjb25maWd1cmF0aW9uLgo+IAo+
-IFdpdGggdGhlIHJlZ2lzdGVyZWQgSERNSSBjb2RlYyB0aGUgdGRhOTk4eCBub2RlIGNhbiBiZSB1
-c2VkIGxpa2UgYQo+IHJlZ3VsYXIgY29kZWMgbm9kZSBpbiBBU29DIGNhcmQgY29uZmlndXJhdGlv
-bnMuIEhETUkgYXVkaW8gaW5mby1mcmFtZQo+IGFuZCBhdWRpbyBzdHJlYW0gaGVhZGVyIGlzIGdl
-bmVyYXRlZCBieSB0aGUgQVNvQyBIRE1JIGNvZGVjLiBUaGUgY29kZWMKPiBhbHNvIGFwcGxpZXMg
-Y29uc3RyYWludHMgZm9yIGF2YWlsYWJsZSBzYW1wbGUtcmF0ZXMgYmFzZWQgb24gRWRpZCBMaWtl
-Cj4gRGF0YSBmcm9tIHRoZSBkaXNwbGF5LiBUaGUgZGV2aWNlIHRyZWUgYmluZGluZyBkb2N1bWVu
-dCBoYXMgYmVlbgo+IHVwZGF0ZWQgWzFdLgo+IAo+IFBhcnQgb2YgdGhpcyBwYXRjaCBoYXMgYmVl
-biBpbnNwaXJlZCBieSBKZWFuIEZyYW5jb2lzZSdzICJkcm0vaTJjOiB0ZGE5OTh4Ogo+IEFkZCBz
-dXBwb3J0IG9mIGEgRFQgZ3JhcGggb2YgcG9ydHMiLXBhdGNoIFsyXS4gVGhlcmUgbWF5IHN0aWxs
-IGJlIHNvbWUKPiBpZGVudGljYWwgbGluZXMgbGVmdCBmcm9tIHRoZSBvcmlnaW5hbCBwYXRjaCBh
-bmQgc29tZSBvZiB0aGUgaWRlYXMKPiBoYXZlIGNvbWUgZnJvbSB0aGVyZS4KPiAKPiBbMV0gRG9j
-dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvYnJpZGdlL3RkYTk5OHgudHh0
-Cj4gWzJdIGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2
-ZWwvMjAxNS1KdWx5LzA5NTI1NS5odG1sCj4gCj4gU2lnbmVkLW9mZi1ieTogSnlyaSBTYXJoYSA8
-anNhcmhhQHRpLmNvbT4KPiAtLS0KPiAgLi4uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9i
-cmlkZ2UvdGRhOTk4eC50eHQgfCAgMTggKysKPiAgZHJpdmVycy9ncHUvZHJtL2kyYy9LY29uZmln
-ICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDEgKwo+ICBkcml2ZXJzL2dwdS9kcm0vaTJjL3Rk
-YTk5OHhfZHJ2LmMgICAgICAgICAgICAgICAgICB8IDE5OCArKysrKysrKysrKysrKysrKysrKy0K
-PiAgaW5jbHVkZS9kcm0vaTJjL3RkYTk5OHguaCAgICAgICAgICAgICAgICAgICAgICAgICAgfCAg
-IDQgKy0KPiAgaW5jbHVkZS9kdC1iaW5kaW5ncy9kaXNwbGF5L3RkYTk5OHguaCAgICAgICAgICAg
-ICAgfCAgIDcgKwo+ICA1IGZpbGVzIGNoYW5nZWQsIDIyMyBpbnNlcnRpb25zKCspLCA1IGRlbGV0
-aW9ucygtKQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9kdC1iaW5kaW5ncy9kaXNwbGF5
-L3RkYTk5OHguaAo+IAo+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3MvZGlzcGxheS9icmlkZ2UvdGRhOTk4eC50eHQgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRy
-ZWUvYmluZGluZ3MvZGlzcGxheS9icmlkZ2UvdGRhOTk4eC50eHQKPiBpbmRleCBlMTc4ZTZiLi4y
-NGNjMjQ2IDEwMDY0NAo+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9k
-aXNwbGF5L2JyaWRnZS90ZGE5OTh4LnR4dAo+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
-ZS9iaW5kaW5ncy9kaXNwbGF5L2JyaWRnZS90ZGE5OTh4LnR4dAo+IEBAIC0yMSw4ICsyMSwxOSBA
-QCBPcHRpb25hbCBwcm9wZXJ0aWVzOgo+ICAgIC0gdmlkZW8tcG9ydHM6IDI0IGJpdHMgdmFsdWUg
-d2hpY2ggZGVmaW5lcyBob3cgdGhlIHZpZGVvIGNvbnRyb2xsZXIKPiAgCW91dHB1dCBpcyB3aXJl
-ZCB0byB0aGUgVERBOTk4eCBpbnB1dCAtIGRlZmF1bHQ6IDwweDIzMDE0NT4KPiAgCj4gKyAgLSBh
-dWRpby1wb3J0czogYXJyYXkgb2YgOC1iaXQgdmFsdWVzLCAyIHZhbHVlcyBwZXIgb25lIERBSVsx
-XS4KClRoaXMgc2hvdWxkIGhhdmUgbnhwIHByZWZpeC4gV2l0aCB0aGF0LAoKQWNrZWQtYnk6IFJv
-YiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5vcmc+CgoKPiArCVRoZSBmaXJzdCB2YWx1ZSBkZWZpbmVz
-IHRoZSBEQUkgdHlwZTogVERBOTk4eF9TUERJRiBvciBUREE5OTh4X0kyU1syXS4KPiArCVRoZSBz
-ZWNvbmQgdmFsdWUgZGVmaW5lcyB0aGUgdGRhOTk4eCBBUF9FTkEgcmVnIGNvbnRlbnQgd2hlbiB0
-aGUgREFJCj4gKwlpbiBxdWVzdGlvbiBpcyB1c2VkLiBUaGUgaW1wbGVtZW50YXRpb24gYWxsb3dz
-IG9uZSBvciB0d28gREFJcy4gSWYgdHdvCj4gKwlEQUlzIGFyZSBkZWZpbmVkLCB0aGV5IG11c3Qg
-YmUgb2YgZGlmZmVyZW50IHR5cGUuCj4gKwo+ICtbMV0gRG9jdW1lbnRhdGlvbi9zb3VuZC9hbHNh
-L3NvYy9EQUkudHh0Cj4gK1syXSBpbmNsdWRlL2R0LWJpbmRpbmdzL2Rpc3BsYXkvdGRhOTk4eC5o
-Cj4gKwo+ICBFeGFtcGxlOgo+ICAKPiArI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2Rpc3BsYXkvdGRh
-OTk4eC5oPgo+ICsKPiAgCXRkYTk5OHg6IGhkbWktZW5jb2RlciB7Cj4gIAkJY29tcGF0aWJsZSA9
-ICJueHAsdGRhOTk4eCI7Cj4gIAkJcmVnID0gPDB4NzA+Owo+IEBAIC0zMCw0ICs0MSwxMSBAQCBF
-eGFtcGxlOgo+ICAJCWludGVycnVwdHMgPSA8MjcgMj47CQkvKiBmYWxsaW5nIGVkZ2UgKi8KPiAg
-CQlwaW5jdHJsLTAgPSA8JnBteF9jYW1lcmE+Owo+ICAJCXBpbmN0cmwtbmFtZXMgPSAiZGVmYXVs
-dCI7Cj4gKwkJdmlkZW8tcG9ydHMgPSA8MHgyMzAxNDU+Owo+ICsKPiArCQkjc291bmQtZGFpLWNl
-bGxzID0gPDI+Owo+ICsJCQkgICAgIC8qCURBSS1mb3JtYXQJQVBfRU5BIHJlZyB2YWx1ZSAqLwo+
-ICsJCWF1ZGlvLXBvcnRzID0gPAlUREE5OTh4X1NQRElGCTB4MDQKPiArCQkJCVREQTk5OHhfSTJT
-CTB4MDM+Owo+ICsKPiAgCX07Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNr
-dG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Ry
-aS1kZXZlbAo=
+Thank you.
+
+I also see a number of "deprecated API" message that makes sense to
+look at as well:
+
+
+
+
+rate_lavcrate.c:70:3: warning: 'av_resample_close' is deprecated
+[-Wdeprecated-declarations]
+   av_resample_close(rate->context);
+   ^
+In file included from rate_lavcrate.c:22:0:
+/usr/include/libavcodec/avcodec.h:4854:6: note: declared here
+ void av_resample_close(struct AVResampleContext *c);
+      ^
+rate_lavcrate.c: In function 'pcm_src_init':
+rate_lavcrate.c:96:3: warning: 'av_resample_init' is deprecated
+[-Wdeprecated-declarations]
+   rate->context = av_resample_init(info->out.rate, info->in.rate,
+   ^
+In file included from rate_lavcrate.c:22:0:
+/usr/include/libavcodec/avcodec.h:4824:27: note: declared here
+ struct AVResampleContext *av_resample_init(int out_rate, int in_rate,
+int filter_length, int log2_phase_count, int linear, double cutoff);
+                           ^
+rate_lavcrate.c: In function 'pcm_src_convert_s16':
+rate_lavcrate.c:186:3: warning: 'av_resample' is deprecated
+[-Wdeprecated-declarations]
+   ret = av_resample(rate->context, rate->out[i],
+   ^
+In file included from rate_lavcrate.c:22:0:
+/usr/include/libavcodec/avcodec.h:4836:5: note: declared here
+ int av_resample(struct AVResampleContext *c, short *dst, short *src,
+int *consumed, int src_size, int dst_size, int update_ctx);
+     ^
+rate_lavcrate.c:194:2: warning: 'av_resample_compensate' is deprecated
+[-Wdeprecated-declarations]
+  av_resample_compensate(rate->context,
+  ^
+In file included from rate_lavcrate.c:22:0:
+/usr/include/libavcodec/avcodec.h:4852:6: note: declared here
+ void av_resample_compensate(struct AVResampleContext *c, int
+sample_delta, int compensation_distance);
+      ^
