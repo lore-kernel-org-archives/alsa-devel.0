@@ -1,195 +1,113 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sti: correct typo errors" to the asoc
-	tree
-Date: Fri, 01 Apr 2016 09:12:47 -0700
-Message-ID: <E1am1gl-00019c-NH@finisterre>
-References: <1459440058-12234-2-git-send-email-moise.gergaud@st.com>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH 1/3 v2] drm/i2c/adv7511: Add audio support
+Date: Fri, 01 Apr 2016 20:10:14 +0300
+Message-ID: <5276355.2bQYPXCpz6@avalon>
+References: <cover.1459174494.git.joabreu@synopsys.com>
+ <15b1936d307912ba12df7fa09ec3a7a80ac5fcef.1459174494.git.joabreu@synopsys.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1322D261536
- for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2016 18:13:00 +0200 (CEST)
-In-Reply-To: <1459440058-12234-2-git-send-email-moise.gergaud@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Moise Gergaud <moise.gergaud@st.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <15b1936d307912ba12df7fa09ec3a7a80ac5fcef.1459174494.git.joabreu@synopsys.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: dri-devel@lists.freedesktop.org
+Cc: tixy@linaro.org, mark.rutland@arm.com, alsa-devel@alsa-project.org, Alexey.Brodkin@synopsys.com, lgirdwood@gmail.com, yitian.bu@tangramtek.com, wsa+renesas@sang-engineering.com, laurent.pinchart+renesas@ideasonboard.com, tiwai@suse.com, nariman@opensource.wolfsonmicro.com, linux-snps-arc@lists.infradead.org, Jose Abreu <Jose.Abreu@synopsys.com>, devicetree@vger.kernel.org, Maruthi.Bayyavarapu@amd.com, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, Vineet.Gupta1@synopsys.com, buyitian@gmail.com, robh+dt@kernel.org, perex@perex.cz, linux-kernel@vger.kernel.org, broonie@kernel.org, galak@codeaurora.org, alexander.deucher@amd.com, CARLOS.PALMINHA@synopsys.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: sti: correct typo errors
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 5ba10dd4a1727714faaac9a48f6aa69d8ee33248 Mon Sep 17 00:00:00 2001
-From: Moise Gergaud <moise.gergaud@st.com>
-Date: Thu, 31 Mar 2016 18:00:55 +0200
-Subject: [PATCH] ASoC: sti: correct typo errors
-
-Signed-off-by: Moise Gergaud <moise.gergaud@st.com>
-Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- .../devicetree/bindings/sound/st,sti-asoc-card.txt |  4 ++--
- sound/soc/sti/uniperif.h                           | 22 +++++++++++-----------
- 2 files changed, 13 insertions(+), 13 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt b/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt
-index 028fa1c82f50..f546dd914812 100644
---- a/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt
-+++ b/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt
-@@ -65,7 +65,7 @@ Example:
- 		reg = <0x8D82000 0x158>;
- 		interrupts = <GIC_SPI 86 IRQ_TYPE_NONE>;
- 		dmas = <&fdma0 4 0 1>;
--		dai-name = "Uni Player #1 (DAC)";
-+		dai-name = "Uni Player #2 (DAC)";
- 		dma-names = "tx";
- 		uniperiph-id = <2>;
- 		version = <5>;
-@@ -82,7 +82,7 @@ Example:
- 		interrupts = <GIC_SPI 89 IRQ_TYPE_NONE>;
- 		dmas = <&fdma0 7 0 1>;
- 		dma-names = "tx";
--		dai-name = "Uni Player #1 (PIO)";
-+		dai-name = "Uni Player #3 (SPDIF)";
- 		uniperiph-id = <3>;
- 		version = <5>;
- 		mode = "SPDIF";
-diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
-index f0fd5a9944e9..1f82faafb869 100644
---- a/sound/soc/sti/uniperif.h
-+++ b/sound/soc/sti/uniperif.h
-@@ -25,7 +25,7 @@
- 	writel_relaxed((((value) & mask) << shift), ip->base + offset)
- 
- /*
-- * AUD_UNIPERIF_SOFT_RST reg
-+ * UNIPERIF_SOFT_RST reg
-  */
- 
- #define UNIPERIF_SOFT_RST_OFFSET(ip) 0x0000
-@@ -50,7 +50,7 @@
- 		UNIPERIF_SOFT_RST_SOFT_RST_MASK(ip))
- 
- /*
-- * AUD_UNIPERIF_FIFO_DATA reg
-+ * UNIPERIF_FIFO_DATA reg
-  */
- 
- #define UNIPERIF_FIFO_DATA_OFFSET(ip) 0x0004
-@@ -58,7 +58,7 @@
- 	writel_relaxed(value, ip->base + UNIPERIF_FIFO_DATA_OFFSET(ip))
- 
- /*
-- * AUD_UNIPERIF_CHANNEL_STA_REGN reg
-+ * UNIPERIF_CHANNEL_STA_REGN reg
-  */
- 
- #define UNIPERIF_CHANNEL_STA_REGN(ip, n) (0x0060 + (4 * n))
-@@ -105,7 +105,7 @@
- 	writel_relaxed(value, ip->base + UNIPERIF_CHANNEL_STA_REG5_OFFSET(ip))
- 
- /*
-- *  AUD_UNIPERIF_ITS reg
-+ *  UNIPERIF_ITS reg
-  */
- 
- #define UNIPERIF_ITS_OFFSET(ip) 0x000C
-@@ -143,7 +143,7 @@
- 		0 : (BIT(UNIPERIF_ITS_UNDERFLOW_REC_FAILED_SHIFT(ip))))
- 
- /*
-- *  AUD_UNIPERIF_ITS_BCLR reg
-+ *  UNIPERIF_ITS_BCLR reg
-  */
- 
- /* FIFO_ERROR */
-@@ -160,7 +160,7 @@
- 	writel_relaxed(value, ip->base + UNIPERIF_ITS_BCLR_OFFSET(ip))
- 
- /*
-- *  AUD_UNIPERIF_ITM reg
-+ *  UNIPERIF_ITM reg
-  */
- 
- #define UNIPERIF_ITM_OFFSET(ip) 0x0018
-@@ -188,7 +188,7 @@
- 		0 : (BIT(UNIPERIF_ITM_UNDERFLOW_REC_FAILED_SHIFT(ip))))
- 
- /*
-- *  AUD_UNIPERIF_ITM_BCLR reg
-+ *  UNIPERIF_ITM_BCLR reg
-  */
- 
- #define UNIPERIF_ITM_BCLR_OFFSET(ip) 0x001c
-@@ -213,7 +213,7 @@
- 		UNIPERIF_ITM_BCLR_DMA_ERROR_MASK(ip))
- 
- /*
-- *  AUD_UNIPERIF_ITM_BSET reg
-+ *  UNIPERIF_ITM_BSET reg
-  */
- 
- #define UNIPERIF_ITM_BSET_OFFSET(ip) 0x0020
-@@ -767,7 +767,7 @@
- 	SET_UNIPERIF_REG(ip, \
- 		UNIPERIF_CTRL_OFFSET(ip), \
- 		UNIPERIF_CTRL_READER_OUT_SEL_SHIFT(ip), \
--		CORAUD_UNIPERIF_CTRL_READER_OUT_SEL_MASK(ip), 1)
-+		UNIPERIF_CTRL_READER_OUT_SEL_MASK(ip), 1)
- 
- /* UNDERFLOW_REC_WINDOW */
- #define UNIPERIF_CTRL_UNDERFLOW_REC_WINDOW_SHIFT(ip) 20
-@@ -1046,7 +1046,7 @@
- 		UNIPERIF_STATUS_1_UNDERFLOW_DURATION_MASK(ip), value)
- 
- /*
-- * AUD_UNIPERIF_CHANNEL_STA_REGN reg
-+ * UNIPERIF_CHANNEL_STA_REGN reg
-  */
- 
- #define UNIPERIF_CHANNEL_STA_REGN(ip, n) (0x0060 + (4 * n))
-@@ -1057,7 +1057,7 @@
- 			UNIPERIF_CHANNEL_STA_REGN(ip, n))
- 
- /*
-- * AUD_UNIPERIF_USER_VALIDITY reg
-+ * UNIPERIF_USER_VALIDITY reg
-  */
- 
- #define UNIPERIF_USER_VALIDITY_OFFSET(ip) 0x0090
--- 
-2.8.0.rc3
+SGkgSm9zZSwKClRoYW5rIHlvdSBmb3IgdGhlIHBhdGNoLgoKT24gTW9uZGF5IDI4IE1hciAyMDE2
+IDE1OjM2OjA5IEpvc2UgQWJyZXUgd3JvdGU6Cj4gVGhpcyBwYXRjaCBhZGRzIGF1ZGlvIHN1cHBv
+cnQgZm9yIHRoZSBBRFY3NTExIEhETUkgdHJhbnNtaXR0ZXIKPiB1c2luZyBBTFNBIFNvQy4KPiAK
+PiBUaGUgY29kZSB3YXMgcG9ydGVkIGZyb20gQW5hbG9nIERldmljZXMgbGludXggdHJlZSBmcm9t
+Cj4gY29tbWl0IDE3NzBjNGExZTMyYiAoIk1lcmdlIHJlbW90ZS10cmFja2luZyBicmFuY2gKPiAn
+eGlsaW54L21hc3RlcicgaW50byB4Y29tbV96eW5xIiksIHdoaWNoIGlzIGF2YWlsYWJsZSBhdDoK
+PiAJLSBodHRwczovL2dpdGh1Yi5jb20vYW5hbG9nZGV2aWNlc2luYy9saW51eC8KPiAKPiBUaGUg
+bWFpbiBjb3JlIGZpbGUgd2FzIHJlbmFtZWQgZnJvbSBhZHY3NTExLmMgdG8gYWR2NzUxMV9jb3Jl
+LmMKPiBzbyB0aGF0IGF1ZGlvIGFuZCB2aWRlbyBjb21waWxlIGludG8gYSBzaW5nbGUgYWR2NzUx
+MS5rbyBtb2R1bGUKPiBhbmQgdG8ga2VlcCB1cCB3aXRoIEFuYWxvZyBEZXZpY2VzIGtlcm5lbCB0
+cmVlLgo+IAo+IFRoZSBhdWRpbyBjYW4gYmUgZGlzYWJsZWQgdXNpbmcgbWVudS1jb25maWcgc28g
+aXQgaXMgcG9zc2libGUKPiB0byB1c2Ugb25seSB2aWRlbyBtb2RlLgo+IAo+IFRoZSBIRE1JIG1v
+ZGUgaXMgYXV0b21hdGljYWxseSBzdGFydGVkIGF0IGJvb3QgYW5kIHRoZSBhdWRpbwo+ICh3aGVu
+IGVuYWJsZWQpIHJlZ2lzdGVycyBhcyBhIGNvZGVjIGludG8gQUxTQS4KPiAKPiBTUERJRiBEQUkg
+Zm9ybWF0IHdhcyBhbHNvIGFkZGVkIHRvIEFTb0MgYXMgaXQgaXMgcmVxdWlyZWQKPiBieSBhZHY3
+NTExIGF1ZGlvLgo+IAo+IFNpZ25lZC1vZmYtYnk6IEpvc2UgQWJyZXUgPGpvYWJyZXVAc3lub3Bz
+eXMuY29tPgo+IC0tLQo+IAo+IE5vIGNoYW5nZXMgdjEgLT4gdjIuCj4gCj4gIGRyaXZlcnMvZ3B1
+L2RybS9pMmMvS2NvbmZpZyAgICAgICAgIHwgICAxMSArCj4gIGRyaXZlcnMvZ3B1L2RybS9pMmMv
+TWFrZWZpbGUgICAgICAgIHwgICAgMiArCj4gIGRyaXZlcnMvZ3B1L2RybS9pMmMvYWR2NzUxMS5j
+ICAgICAgIHwgMTAyNCAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gIGRyaXZlcnMv
+Z3B1L2RybS9pMmMvYWR2NzUxMS5oICAgICAgIHwgICA0MSArKwo+ICBkcml2ZXJzL2dwdS9kcm0v
+aTJjL2Fkdjc1MTFfYXVkaW8uYyB8ICAzMTAgKysrKysrKysrKysKPiAgZHJpdmVycy9ncHUvZHJt
+L2kyYy9hZHY3NTExX2NvcmUuYyAgfCAxMDA1ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KwoKUGxlYXNlIHVzZSBnaXQtZm9ybWF0LXBhdGNoIC1NIHRvIGRldGVjdCByZW5hbWVzIGlmIHlv
+dSBzZW5kIGEgbmV3IHZlcnNpb24gb2YgCnRoaXMgc2VyaWVzLCBpdCB3aWxsIGhlbHAgd2l0aCBy
+ZXZpZXcuCgo+ICBpbmNsdWRlL3NvdW5kL3NvYy1kYWkuaCAgICAgICAgICAgICB8ICAgIDEgKwo+
+ICA3IGZpbGVzIGNoYW5nZWQsIDEzNzAgaW5zZXJ0aW9ucygrKSwgMTAyNCBkZWxldGlvbnMoLSkK
+PiAgZGVsZXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvZ3B1L2RybS9pMmMvYWR2NzUxMS5jCj4gIGNy
+ZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2dwdS9kcm0vaTJjL2Fkdjc1MTFfYXVkaW8uYwo+ICBj
+cmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9ncHUvZHJtL2kyYy9hZHY3NTExX2NvcmUuYwoKW3Nu
+aXBdCgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTJjL2Fkdjc1MTFfY29yZS5jCj4g
+Yi9kcml2ZXJzL2dwdS9kcm0vaTJjL2Fkdjc1MTFfY29yZS5jIG5ldyBmaWxlIG1vZGUgMTAwNjQ0
+Cj4gaW5kZXggMDAwMDAwMC4uZDU0MjU2YQo+IC0tLSAvZGV2L251bGwKPiArKysgYi9kcml2ZXJz
+L2dwdS9kcm0vaTJjL2Fkdjc1MTFfY29yZS5jCgpbc25pcF0KCj4gK3N0YXRpYyBpbnQgYWR2NzUx
+MV9wcm9iZShzdHJ1Y3QgaTJjX2NsaWVudCAqaTJjLCBjb25zdCBzdHJ1Y3QgaTJjX2RldmljZV9p
+ZAo+ICppZCkgK3sKPiArCXN0cnVjdCBhZHY3NTExX2xpbmtfY29uZmlnIGxpbmtfY29uZmlnOwo+
+ICsJc3RydWN0IGFkdjc1MTEgKmFkdjc1MTE7Cj4gKwlzdHJ1Y3QgZGV2aWNlICpkZXYgPSAmaTJj
+LT5kZXY7Cj4gKwl1bnNpZ25lZCBpbnQgdmFsOwo+ICsJaW50IHJldDsKPiArCj4gKwlpZiAoIWRl
+di0+b2Zfbm9kZSkKPiArCQlyZXR1cm4gLUVJTlZBTDsKPiArCj4gKwlhZHY3NTExID0gZGV2bV9r
+emFsbG9jKGRldiwgc2l6ZW9mKCphZHY3NTExKSwgR0ZQX0tFUk5FTCk7Cj4gKwlpZiAoIWFkdjc1
+MTEpCj4gKwkJcmV0dXJuIC1FTk9NRU07Cj4gKwo+ICsJYWR2NzUxMS0+cG93ZXJlZCA9IGZhbHNl
+Owo+ICsJYWR2NzUxMS0+c3RhdHVzID0gY29ubmVjdG9yX3N0YXR1c19kaXNjb25uZWN0ZWQ7Cj4g
+Kwo+ICsJcmV0ID0gYWR2NzUxMV9wYXJzZV9kdChkZXYtPm9mX25vZGUsICZsaW5rX2NvbmZpZyk7
+Cj4gKwlpZiAocmV0KQo+ICsJCXJldHVybiByZXQ7Cj4gKwo+ICsJLyoKPiArCSAqIFRoZSBwb3dl
+ciBkb3duIEdQSU8gaXMgb3B0aW9uYWwuIElmIHByZXNlbnQsIHRvZ2dsZSBpdCBmcm9tIGFjdGl2
+ZSB0bwo+ICsJICogaW5hY3RpdmUgdG8gd2FrZSB1cCB0aGUgZW5jb2Rlci4KPiArCSAqLwo+ICsJ
+YWR2NzUxMS0+Z3Bpb19wZCA9IGRldm1fZ3Bpb2RfZ2V0X29wdGlvbmFsKGRldiwgInBkIiwgR1BJ
+T0RfT1VUX0hJR0gpOwo+ICsJaWYgKElTX0VSUihhZHY3NTExLT5ncGlvX3BkKSkKPiArCQlyZXR1
+cm4gUFRSX0VSUihhZHY3NTExLT5ncGlvX3BkKTsKPiArCj4gKwlpZiAoYWR2NzUxMS0+Z3Bpb19w
+ZCkgewo+ICsJCW1kZWxheSg1KTsKPiArCQlncGlvZF9zZXRfdmFsdWVfY2Fuc2xlZXAoYWR2NzUx
+MS0+Z3Bpb19wZCwgMCk7Cj4gKwl9Cj4gKwo+ICsJYWR2NzUxMS0+cmVnbWFwID0gZGV2bV9yZWdt
+YXBfaW5pdF9pMmMoaTJjLCAmYWR2NzUxMV9yZWdtYXBfY29uZmlnKTsKPiArCWlmIChJU19FUlIo
+YWR2NzUxMS0+cmVnbWFwKSkKPiArCQlyZXR1cm4gUFRSX0VSUihhZHY3NTExLT5yZWdtYXApOwo+
+ICsKPiArCXJldCA9IHJlZ21hcF9yZWFkKGFkdjc1MTEtPnJlZ21hcCwgQURWNzUxMV9SRUdfQ0hJ
+UF9SRVZJU0lPTiwgJnZhbCk7Cj4gKwlpZiAocmV0KQo+ICsJCXJldHVybiByZXQ7Cj4gKwlkZXZf
+ZGJnKGRldiwgIlJldi4gJWRcbiIsIHZhbCk7Cj4gKwo+ICsJcmV0ID0gcmVnbWFwX3JlZ2lzdGVy
+X3BhdGNoKGFkdjc1MTEtPnJlZ21hcCwgYWR2NzUxMV9maXhlZF9yZWdpc3RlcnMsCj4gKwkJCQkg
+ICAgQVJSQVlfU0laRShhZHY3NTExX2ZpeGVkX3JlZ2lzdGVycykpOwo+ICsJaWYgKHJldCkKPiAr
+CQlyZXR1cm4gcmV0Owo+ICsKPiArCXJlZ21hcF93cml0ZShhZHY3NTExLT5yZWdtYXAsIEFEVjc1
+MTFfUkVHX0VESURfSTJDX0FERFIsIGVkaWRfaTJjX2FkZHIpOwo+ICsJcmVnbWFwX3dyaXRlKGFk
+djc1MTEtPnJlZ21hcCwgQURWNzUxMV9SRUdfUEFDS0VUX0kyQ19BRERSLAo+ICsJCSAgICAgcGFj
+a2V0X2kyY19hZGRyKTsKPiArCXJlZ21hcF93cml0ZShhZHY3NTExLT5yZWdtYXAsIEFEVjc1MTFf
+UkVHX0NFQ19JMkNfQUREUiwgY2VjX2kyY19hZGRyKTsKPiArCWFkdjc1MTFfcGFja2V0X2Rpc2Fi
+bGUoYWR2NzUxMSwgMHhmZmZmKTsKPiArCj4gKwlhZHY3NTExLT5pMmNfbWFpbiA9IGkyYzsKPiAr
+CWFkdjc1MTEtPmkyY19lZGlkID0gaTJjX25ld19kdW1teShpMmMtPmFkYXB0ZXIsIGVkaWRfaTJj
+X2FkZHIgPj4gMSk7Cj4gKwlpZiAoIWFkdjc1MTEtPmkyY19lZGlkKQo+ICsJCXJldHVybiAtRU5P
+TUVNOwo+ICsKPiArCWlmIChpMmMtPmlycSkgewo+ICsJCWluaXRfd2FpdHF1ZXVlX2hlYWQoJmFk
+djc1MTEtPndxKTsKPiArCj4gKwkJcmV0ID0gZGV2bV9yZXF1ZXN0X3RocmVhZGVkX2lycShkZXYs
+IGkyYy0+aXJxLCBOVUxMLAo+ICsJCQkJCQlhZHY3NTExX2lycV9oYW5kbGVyLAo+ICsJCQkJCQlJ
+UlFGX09ORVNIT1QsIGRldl9uYW1lKGRldiksCj4gKwkJCQkJCWFkdjc1MTEpOwo+ICsJCWlmIChy
+ZXQpCj4gKwkJCWdvdG8gZXJyX2kyY191bnJlZ2lzdGVyX2RldmljZTsKPiArCX0KPiArCj4gKwkv
+KiBDRUMgaXMgdW51c2VkIGZvciBub3cgKi8KPiArCXJlZ21hcF93cml0ZShhZHY3NTExLT5yZWdt
+YXAsIEFEVjc1MTFfUkVHX0NFQ19DVFJMLAo+ICsJCSAgICAgQURWNzUxMV9DRUNfQ1RSTF9QT1dF
+Ul9ET1dOKTsKPiArCj4gKwlhZHY3NTExX3Bvd2VyX29mZihhZHY3NTExKTsKPiArCj4gKwlpMmNf
+c2V0X2NsaWVudGRhdGEoaTJjLCBhZHY3NTExKTsKPiArCj4gKyNpZmRlZiBDT05GSUdfRFJNX0ky
+Q19BRFY3NTExX0FVRElPCj4gKwlhZHY3NTExX2F1ZGlvX2luaXQoJmkyYy0+ZGV2KTsKPiArI2Vu
+ZGlmCgpTaG91bGRuJ3Qgd2UgY29uZGl0aW9uIHRoaXMgdG8gdGhlIGF1ZGlvIGNoYW5uZWwgYmVp
+bmcgc29tZWhvdyBkZXNjcmliZWQgaW4gRFQgCj8gSWYgYSBib2FyZCBkb2Vzbid0IHJvdXRlIGF1
+ZGlvIHNpZ25hbHMgdG8gdGhlIEFEVjc1MTEgYXVkaW8gaW5wdXQsIHRoZXJlJ3MgCm5vIG5lZWQg
+dG8gcmVnaXN0ZXIgYW4gYXVkaW8gY29kZWMuCgo+ICsKPiArCWFkdjc1MTFfc2V0X2xpbmtfY29u
+ZmlnKGFkdjc1MTEsICZsaW5rX2NvbmZpZyk7Cj4gKwo+ICsJLyogRW5hYmxlIEhETUkgbW9kZSAq
+Lwo+ICsJcmVnbWFwX3VwZGF0ZV9iaXRzKGFkdjc1MTEtPnJlZ21hcCwgQURWNzUxMV9SRUdfSERD
+UF9IRE1JX0NGRywKPiArCQkJQURWNzUxMV9IRE1JX0NGR19NT0RFX01BU0ssCj4gKwkJCUFEVjc1
+MTFfSERNSV9DRkdfTU9ERV9IRE1JKTsKPiArCj4gKwlyZXR1cm4gMDsKPiArCj4gK2Vycl9pMmNf
+dW5yZWdpc3Rlcl9kZXZpY2U6Cj4gKwlpMmNfdW5yZWdpc3Rlcl9kZXZpY2UoYWR2NzUxMS0+aTJj
+X2VkaWQpOwo+ICsKPiArCXJldHVybiByZXQ7Cj4gK30KCi0tIApSZWdhcmRzLAoKTGF1cmVudCBQ
+aW5jaGFydAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+ZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0
+dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
