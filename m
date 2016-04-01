@@ -1,74 +1,79 @@
-From: Sven Eckelmann <sven@narfation.org>
-Subject: [PATCH] ALSA: hda/realtek - Enable the ALC292 dock fixup on the Thinkpad T460s
-Date: Fri,  1 Apr 2016 14:59:08 +0200
-Message-ID: <1459515548-3267-1-git-send-email-sven@narfation.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Simon Wunderlich <sw@simonwunderlich.de>, Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org, Sven Eckelmann <sven@narfation.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: rt5514: add rt5514 SPI driver
+Date: Fri, 1 Apr 2016 07:17:40 -0700
+Message-ID: <20160401141740.GY2350@sirena.org.uk>
+References: <1457953101-19348-1-git-send-email-oder_chiou@realtek.com>
+ <20160329215121.GP2350@sirena.org.uk>
+ <7EB0DE829A537248AF2ED30C97D12694FCEA41@RTITMBSV03.realtek.com.tw>
+ <20160331165048.GE2350@sirena.org.uk>
+ <7EB0DE829A537248AF2ED30C97D12694FCF18D@RTITMBSV03.realtek.com.tw>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============9084149147651564147=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 12BD1261536
+ for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2016 16:17:52 +0200 (CEST)
+In-Reply-To: <7EB0DE829A537248AF2ED30C97D12694FCF18D@RTITMBSV03.realtek.com.tw>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, "pc.liao@mediatek.com" <pc.liao@mediatek.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-The Lenovo Thinkpad T460s requires the alc_fixup_tpt440_dock as well in
-order to get working sound output on the docking stations headphone jack.
 
-Patch tested on a Thinkpad T460s (20F9CT01WW) using a ThinkPad Ultradock
-on kernel 4.4.6.
+--===============9084149147651564147==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="bL2/s+BzS+0mqUOB"
+Content-Disposition: inline
 
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
-Tested-by: Simon Wunderlich <sw@simonwunderlich.de>
----
- sound/pci/hda/patch_realtek.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 73978c7..5b85019 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4759,6 +4759,8 @@ enum {
- 	ALC255_FIXUP_DELL_SPK_NOISE,
- 	ALC225_FIXUP_DELL1_MIC_NO_PRESENCE,
- 	ALC280_FIXUP_HP_HEADSET_MIC,
-+	ALC292_FIXUP_TPT460_DOCK,
-+	ALC292_FIXUP_TPT460,
- };
- 
- static const struct hda_fixup alc269_fixups[] = {
-@@ -5401,6 +5403,18 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_HEADSET_MIC,
- 	},
-+	[ALC292_FIXUP_TPT460_DOCK] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_tpt440_dock,
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_THINKPAD_ACPI
-+	},
-+	[ALC292_FIXUP_TPT460] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_disable_aamix,
-+		.chained = true,
-+		.chain_id = ALC292_FIXUP_TPT460_DOCK,
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -5554,7 +5568,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x2218, "Thinkpad X1 Carbon 2nd", ALC292_FIXUP_TPT440_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x2223, "ThinkPad T550", ALC292_FIXUP_TPT440_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x2226, "ThinkPad X250", ALC292_FIXUP_TPT440_DOCK),
--	SND_PCI_QUIRK(0x17aa, 0x2233, "Thinkpad", ALC293_FIXUP_LENOVO_SPK_NOISE),
-+	SND_PCI_QUIRK(0x17aa, 0x2233, "Thinkpad", ALC292_FIXUP_TPT460),
- 	SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
- 	SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
- 	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
-@@ -5649,6 +5663,8 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
- 	{.id = ALC283_FIXUP_SENSE_COMBO_JACK, .name = "alc283-sense-combo"},
- 	{.id = ALC292_FIXUP_TPT440_DOCK, .name = "tpt440-dock"},
- 	{.id = ALC292_FIXUP_TPT440, .name = "tpt440"},
-+	{.id = ALC292_FIXUP_TPT460_DOCK, .name = "tpt460-dock"},
-+	{.id = ALC292_FIXUP_TPT460, .name = "tpt460"},
- 	{}
- };
- #define ALC225_STANDARD_PINS \
--- 
-2.8.0.rc3
+--bL2/s+BzS+0mqUOB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Apr 01, 2016 at 06:01:47AM +0000, Oder Chiou wrote:
+
+> > Are you *positive* about that?  There look to be routing things going on for
+> > example which might be system dependant.
+
+> They are the default settings for the our common hardware planning. If the
+> developer wants to modify the settings to match the different hardware
+> planning, they can consider to change the settings in the DSP firmware.
+
+So if they do that the driver will not be compatible with their
+reconfigured firmware...  this needs to work on all systems, including
+end user ones with different system integrations.
+
+--bL2/s+BzS+0mqUOB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJW/oMDAAoJECTWi3JdVIfQW20H/2XcvRUQTNun96faT1CU+II/
+xlhrnQhb0dE0sBGgHbJLY8v9sTKUG29TEvLKUm0TOSF0jZIdbdimH1eJ1cFYAyUA
+valgKVcCuzQA43vjuspePmhyhh/ErX/yJ/MDnWr94zTZ6Ustgu4frXdQdLddn9rm
+Yg28+EacyNjlMSrKcO4jq4ZOrx0J5buV13j8hE61/opARW7Sp9MO+r+++EOcfuQp
+6ZRpJSq0CasxMG7liCSMSiq90mVM8grT/TONzRMZ259MYobC31URS0JP0jab/6Xj
+zkmTSbW5Cw3ifk7rSKSEJVf6/aWWBc6jNbumgQPuDZYVts2Q9B0LPgmAdtfniO8=
+=/+O0
+-----END PGP SIGNATURE-----
+
+--bL2/s+BzS+0mqUOB--
+
+--===============9084149147651564147==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9084149147651564147==--
