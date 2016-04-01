@@ -1,42 +1,57 @@
-From: PC Liao <pc.liao@mediatek.com>
-Subject: Re: [PATCH] ASoC: mediatek: Add second I2S on mt8173-rt5650 machine
- driver
-Date: Fri, 1 Apr 2016 10:50:52 +0800
-Message-ID: <1459479052.24414.3.camel@mtksdaap41>
-References: <1458877325-33980-1-git-send-email-pc.liao@mediatek.com>
-	 <20160328191115.GE2350@sirena.org.uk> <1459258103.3747.7.camel@mtksdaap41>
-	 <20160329160703.GN2350@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160329160703.GN2350@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, srv_heupstream <srv_heupstream@mediatek.com>, "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Koro Chen =?UTF-8?Q?=28=E9=99=B3=E6=80=9D=E7=BF=B0=29?= <koro.chen@mediatek.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - fix front mic problem for a HP desktop
+Date: Fri,  1 Apr 2016 11:00:15 +0800
+Message-ID: <1459479615-5206-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+The front mic jack (pink color) can't detect any plug or unplug. After
+applying this fix, both detecting function and recording function
+work well.
 
-On Wed, 2016-03-30 at 00:07 +0800, Mark Brown wrote:
-> On Tue, Mar 29, 2016 at 09:28:23PM +0800, PC Liao wrote:
-> 
-> > - mediatek,rt5650_i2s: I2S mode of rt5650
-> > 0: Default setting. Playback and record path use same set of I2S.
-> > Playback/Record path using same I2S clock connect from MT8173 I2S1 to
-> > rt5650 I2S1.
-> > 1: Playback and record path use different set of I2S. Playback path
-> > connects from MT8173 I2S1 to rt5650 I2S1 and record path connects from
-> > MT8173 I2S2 to rt5650 I2S2.
-> 
-> > Because we use codec ASRC function and need to initialize on different
-> > setting about this parts:
-> 
-> This sort of arrangement is very common - it's often needed to get
-> different sample rates for playback and capture.  Normally it'd be
-> represented in the DT by having the two DAI links specified normally and
-> then having the driver look at the DT to see what's connected to work
-> out what mode to use.
+BugLink: https://bugs.launchpad.net/bugs/1564712
+Cc: stable@vger.kernel.org
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Could you please suggest the reference driver about this?
-Thanks!
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 73978c7..fefe83f 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4759,6 +4759,7 @@ enum {
+ 	ALC255_FIXUP_DELL_SPK_NOISE,
+ 	ALC225_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 	ALC280_FIXUP_HP_HEADSET_MIC,
++	ALC221_FIXUP_HP_FRONT_MIC,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -5401,6 +5402,13 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MIC,
+ 	},
++	[ALC221_FIXUP_HP_FRONT_MIC] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x19, 0x02a19020 }, /* Front Mic */
++			{ }
++		},
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -5506,6 +5514,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x2336, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+ 	SND_PCI_QUIRK(0x103c, 0x2337, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+ 	SND_PCI_QUIRK(0x103c, 0x221c, "HP EliteBook 755 G2", ALC280_FIXUP_HP_HEADSET_MIC),
++	SND_PCI_QUIRK(0x103c, 0x8256, "HP", ALC221_FIXUP_HP_FRONT_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
+ 	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x1043, 0x115d, "Asus 1015E", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+-- 
+1.9.1
