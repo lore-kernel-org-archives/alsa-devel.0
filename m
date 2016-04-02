@@ -1,56 +1,162 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: mediatek: Add second I2S on mt8173-rt5650 machine
- driver
-Date: Sat, 2 Apr 2016 10:04:04 -0700
-Message-ID: <20160402170404.GG2350@sirena.org.uk>
-References: <1458877325-33980-1-git-send-email-pc.liao@mediatek.com>
- <20160328191115.GE2350@sirena.org.uk>
- <1459258103.3747.7.camel@mtksdaap41>
- <20160329160703.GN2350@sirena.org.uk>
- <1459479052.24414.3.camel@mtksdaap41>
+From: Andy Lutomirski <luto@amacapital.net>
+Subject: Re: Getting rid of inside_vm in intel8x0
+Date: Sat, 2 Apr 2016 11:05:21 -0700
+Message-ID: <CALCETrW8jBXwCqXNMra667qk-CALOTvAXnQqYQuPBC_sWoJxHg@mail.gmail.com>
+References: <CALCETrWnsn4CoRXcKDXpMTjxCYj8==mZQHkZRuXfZQyvERB3Gw@mail.gmail.com>
+ <s5h60w48po7.wl-tiwai@suse.de> <20160331222618.GE1990@wotan.suse.de>
+ <s5hvb4151v1.wl-tiwai@suse.de> <20160401222831.GX1990@wotan.suse.de>
+ <s5hwpog377v.wl-tiwai@suse.de> <CALCETrW6Og2_cNnmgMWkGhfFNdLyJjtojqn6_s+BfFCsdzzczg@mail.gmail.com>
+ <s5hfuv42dve.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="nkinyqrdwMuqz198"
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1459479052.24414.3.camel@mtksdaap41>
+In-Reply-To: <s5hfuv42dve.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: PC Liao <pc.liao@mediatek.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, srv_heupstream <srv_heupstream@mediatek.com>, "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Koro Chen =?utf-8?B?KOmZs+aAnee/sCk=?= <koro.chen@mediatek.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Konstantin Ozerkov <kozerkov@parallels.com>, Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, Stephen Hemminger <stephen@networkplumber.org>, Andrew Cooper <andrew.cooper3@citrix.com>, George Dunlap <George.Dunlap@eu.citrix.com>, xen-devel <xen-devel@lists.xenproject.org>, Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@kernel.org>, Jim Gettys <jg@freedesktop.org>, ALSA development <alsa-devel@alsa-project.org>, Matt Fleming <matt@codeblueprint.co.uk>, "Luis R. Rodriguez" <mcgrof@kernel.org>, Dario Faggioli <dario.faggioli@citrix.com>, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Joerg Roedel <joro@8bytes.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mel Gorman <mgorman@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+On Apr 2, 2016 12:07 PM, "Takashi Iwai" <tiwai@suse.de> wrote:
+>
+> On Sat, 02 Apr 2016 14:57:44 +0200,
+> Andy Lutomirski wrote:
+> >
+> > On Fri, Apr 1, 2016 at 10:33 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> > > On Sat, 02 Apr 2016 00:28:31 +0200,
+> > > Luis R. Rodriguez wrote:
+> > >> If the former, could a we somehow detect an emulated device other than through
+> > >> this type of check ? Or could we *add* a capability of some sort to detect it
+> > >> on the driver ? This would not address the removal, but it could mean finding a
+> > >> way to address emulation issues.
+> > >>
+> > >> If its an IO issue -- exactly what is the causing the delays in IO ?
+> > >
+> > > Luis, there is no problem about emulation itself.  It's rather an
+> > > optimization to lighten the host side load, as I/O access on a VM is
+> > > much heavier.
+> > >
+> > >> > > > This is satisfied mostly only on VM, and can't
+> > >> > > > be measured easily unlike the IO read speed.
+> > >> > >
+> > >> > > Interesting, note the original patch claimed it was for KVM and
+> > >> > > Parallels hypervisor only, but since the code uses:
+> > >> > >
+> > >> > > +#if defined(__i386__) || defined(__x86_64__)
+> > >> > > +               inside_vm = inside_vm || boot_cpu_has(X86_FEATURE_HYPERVISOR);
+> > >> > > +#endif
+> > >> > >
+> > >> > > This makes it apply also to Xen as well, this makes this hack more
+> > >> > > broad, but does is it only applicable when an emulated device is
+> > >> > > used ? What about if a hypervisor is used and PCI passthrough is
+> > >> > > used ?
+> > >> >
+> > >> > A good question.  Xen was added there at the time from positive
+> > >> > results by quick tests, but it might show an issue if it's running on
+> > >> > a very old chip with PCI passthrough.  But I'm not sure whether PCI
+> > >> > passthrough would work on such old chipsets at all.
+> > >>
+> > >> If it did have an issue then that would have to be special cased, that
+> > >> is the module parameter would not need to be enabled for such type of
+> > >> systems, and heuristics would be needed. As you note, fortunately this
+> > >> may not be common though...
+> > >
+> > > Actually this *is* module parametered.  If set to a boolean value, it
+> > > can be applied / skipped forcibly.  So, if there has been a problem on
+> > > Xen, this should have been reported.  That's why I wrote it's no
+> > > common case.  This comes from the real experience.
+> > >
+> > >> but if this type of work around may be
+> > >> taken as a precedent to enable other types of hacks in other drivers
+> > >> I'm very fearful of more hacks later needing these considerations as
+> > >> well.
+> > >>
+> > >> > > > > There are a pile of nonsensical "are we in a VM" checks of various
+> > >> > > > > sorts scattered throughout the kernel, they're all a mess to maintain
+> > >> > > > > (there are lots of kinds of VMs in the world, and Linux may not even
+> > >> > > > > know it's a guest), and, in most cases, it appears that the correct
+> > >> > > > > solution is to delete the checks.  I just removed a nasty one in the
+> > >> > > > > x86_32 entry asm, and this one is written in C so it should be a piece
+> > >> > > > > of cake :)
+> > >> > > >
+> > >> > > > This cake looks sweet, but a worm is hidden behind the cream.
+> > >> > > > The loop in the code itself is already a kludge for the buggy hardware
+> > >> > > > where the inconsistent read happens not so often (only at the boundary
+> > >> > > > and in a racy way).  It would be nice if we can have a more reliably
+> > >> > > > way to know the hardware buggyness, but it's difficult,
+> > >> > > > unsurprisingly.
+> > >> > >
+> > >> > > The concern here is setting precedents for VM cases sprinkled in the kernel.
+> > >> > > The assumption here is such special cases are really paper'ing over another
+> > >> > > type of issue, so its best to ultimately try to root cause the issue in
+> > >> > > a more generalized fashion.
+> > >> >
+> > >> > Well, it's rather bare metal that shows the buggy behavior, thus we
+> > >> > need to paper over it.   In that sense, it's other way round; we don't
+> > >> > tune for VM.  The VM check we're discussing is rather for skipping the
+> > >> > strange workaround.
+> > >>
+> > >> What is it exactly about a VM that enables this work around to be skipped?
+> > >> I don't quite get it yet.
+> > >
+> > > VM -- at least the full one with the sound hardware emulation --
+> > > doesn't have the hardware bug.  So, the check isn't needed.
+> >
+> > Here's the issue, though: asking "am I in a VM" is not a good way to
+> > learn properties of hardware.  Just off the top of my head, here are
+> > some types of VM and what they might imply about hardware:
+> >
+> > Intel Kernel Guard: your sound card is passed through from real hardware.
+> >
+> > Xen: could go either way.  In dom0, it's likely passed through.  In
+> > domU, it could be passed through or emulated, and I believe this is
+> > the case for all of the Xen variants.
+> >
+> > KVM: Probably emulated, but could be passed through.
+> >
+> > I think the main reason that Luis and I are both uncomfortable with
+> > "am I in a VM" checks is that they're rarely the right thing to be
+> > detecting, the APIs are poorly designed, and most of the use cases in
+> > the kernel are using them as a proxy for something else and would be
+> > clearer and more future proof if they tested what they actually need
+> > to test more directly.
+>
+> Please, guys, take a look at the code more closely.  This is applied
+> only to the known emulated PCI devices, and the driver shows the
+> kernel message:
+>
+> static int snd_intel8x0_inside_vm(struct pci_dev *pci)
+> ....
+>         /* check for known (emulated) devices */
+>         if (pci->subsystem_vendor == PCI_SUBVENDOR_ID_REDHAT_QUMRANET &&
+>             pci->subsystem_device == PCI_SUBDEVICE_ID_QEMU) {
+>                 /* KVM emulated sound, PCI SSID: 1af4:1100 */
+>                 msg = "enable KVM";
+>         } else if (pci->subsystem_vendor == 0x1ab8) {
+>                 /* Parallels VM emulated sound, PCI SSID: 1ab8:xxxx */
+>                 msg = "enable Parallels VM";
+>         } else {
+>                 msg = "disable (unknown or VT-d) VM";
+>                 result = 0;
+>         }
 
---nkinyqrdwMuqz198
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Now I'm more confused.  Why are you checking the PCI IDs *and* whether
+a hypervisor is detected?  Why not check only the IDs?
 
-On Fri, Apr 01, 2016 at 10:50:52AM +0800, PC Liao wrote:
-> On Wed, 2016-03-30 at 00:07 +0800, Mark Brown wrote:
+In any event, at the very least the comment is misleading:
 
-> > This sort of arrangement is very common - it's often needed to get
-> > different sample rates for playback and capture.  Normally it'd be
-> > represented in the DT by having the two DAI links specified normally and
-> > then having the driver look at the DT to see what's connected to work
-> > out what mode to use.
+        /* detect KVM and Parallels virtual environments */
+        result = kvm_para_available();
+#ifdef X86_FEATURE_HYPERVISOR
+        result = result || boot_cpu_has(X86_FEATURE_HYPERVISOR);
+#endif
 
-> Could you please suggest the reference driver about this?
+You're detecting KVM (sometimes) and the x86 "hypervisor" bit.  The
+latter has no particularly well-defined meaning.  You're also missing
+Xen PV, I believe, and I think that Xen PV + QEMU is a real thing, and
+you'll fail to detect it, even though it can present a QEMU-emulated
+card.
 
-Any driver that can identify an individual DAI within a device by using
-sound-dai references, even simple-card does this.
+In other words, how is this code any different from a simple whitelist
+of two specific cards that work a little differently from others?
 
---nkinyqrdwMuqz198
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJW//uDAAoJECTWi3JdVIfQ3FgH/ROWaWYBI6mXxYWyU5oMGv7i
-4MVhEw44JPUNK5ubVWZLwtYodggkzPs+oRruHKwjnxsmFV8eczbnez2/2YgZSjkL
-v5yMTYtSJut7FTfYmPN1KTFyQYoLw+W3HA9j8Z2ZVsjY+grCeItvo7zdZ6wDL3LE
-BQTbvBuwzRafJvxjef1rN3RfDjamCEjhs+Nv6T0NF26o60WM6HMBHztq+KPJRvl1
-1pnzOK/qMliv6wCjd1V2IwVXGVeWLw0gg2rNNGqadENK+AfaYv2J3NXeZrU4KlpC
-iiAXZ34B7YpzbhuL8V/xZQQY6K0riKnIbEpjF0ln28njaXyApmgTKaBOijRn/oY=
-=TA0z
------END PGP SIGNATURE-----
-
---nkinyqrdwMuqz198--
+--Andy
