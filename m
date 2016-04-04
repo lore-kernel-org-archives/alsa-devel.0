@@ -1,119 +1,188 @@
-From: George Dunlap <george.dunlap@citrix.com>
-Subject: Re: Getting rid of inside_vm in intel8x0
-Date: Mon, 4 Apr 2016 10:05:43 +0100
-Message-ID: <57022E67.7050907@citrix.com>
-References: <CALCETrWnsn4CoRXcKDXpMTjxCYj8==mZQHkZRuXfZQyvERB3Gw@mail.gmail.com>
- <s5h60w48po7.wl-tiwai@suse.de> <20160331222618.GE1990@wotan.suse.de>
- <s5hvb4151v1.wl-tiwai@suse.de> <20160401222831.GX1990@wotan.suse.de>
- <s5hwpog377v.wl-tiwai@suse.de>
- <CALCETrW6Og2_cNnmgMWkGhfFNdLyJjtojqn6_s+BfFCsdzzczg@mail.gmail.com>
+From: Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Subject: Re: [PATCH 1/3 v2] drm/i2c/adv7511: Add audio support
+Date: Mon, 4 Apr 2016 10:05:39 +0100
+Message-ID: <57022E63.2010900@synopsys.com>
+References: <cover.1459174494.git.joabreu@synopsys.com>
+ <15b1936d307912ba12df7fa09ec3a7a80ac5fcef.1459174494.git.joabreu@synopsys.com>
+ <5276355.2bQYPXCpz6@avalon>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CALCETrW6Og2_cNnmgMWkGhfFNdLyJjtojqn6_s+BfFCsdzzczg@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andy Lutomirski <luto@amacapital.net>, Takashi Iwai <tiwai@suse.de>
-Cc: "Luis R. Rodriguez" <mcgrof@kernel.org>, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Andrew Cooper <andrew.cooper3@citrix.com>, Stephen Hemminger <stephen@networkplumber.org>, Jim Gettys <jg@freedesktop.org>, Dario Faggioli <dario.faggioli@citrix.com>, George.Dunlap@eu.citrix.com, Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Steven Rostedt <rostedt@goodmis.org>, Mel Gorman <mgorman@suse.de>, Konstantin Ozerkov <kozerkov@parallels.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, ALSA development <alsa-devel@alsa-project.org>, Matt Fleming <matt@codeblueprint.co.uk>, Borislav Petkov <bp@alien8.de>, xen-devel <xen-devel@lists.xenproject.org>, Joerg Roedel <joro@8bytes.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <5276355.2bQYPXCpz6@avalon>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Laurent Pinchart <laurent.pinchart-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
+Cc: Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, tixy-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Alexey.Brodkin-HKixBCOQz3hWk0Htik3J/w@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, yitian.bu-sf4bEIuTEZ8/jFmSBShxMA@public.gmane.org, wsa+renesas-jBu1N2QxHDJrcw3mvpCnnVaTQe2KTcn/@public.gmane.org, laurent.pinchart+renesas-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org, nariman-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, Maruthi.Bayyavarapu-5C7GfCeVMHo@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, Vineet.Gupta1-HKixBCOQz3hWk0Htik3J/w@public.gmane.org, buyitian-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, alexander.deucher-5C7GfCeVMHo@public.gmane.org, CARLOS.PALMINHA-HKixBCOQz3hWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/04/16 13:57, Andy Lutomirski wrote:
-> On Fri, Apr 1, 2016 at 10:33 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> On Sat, 02 Apr 2016 00:28:31 +0200,
->> Luis R. Rodriguez wrote:
->>> If the former, could a we somehow detect an emulated device other than through
->>> this type of check ? Or could we *add* a capability of some sort to detect it
->>> on the driver ? This would not address the removal, but it could mean finding a
->>> way to address emulation issues.
->>>
->>> If its an IO issue -- exactly what is the causing the delays in IO ?
->>
->> Luis, there is no problem about emulation itself.  It's rather an
->> optimization to lighten the host side load, as I/O access on a VM is
->> much heavier.
->>
->>>>>> This is satisfied mostly only on VM, and can't
->>>>>> be measured easily unlike the IO read speed.
->>>>>
->>>>> Interesting, note the original patch claimed it was for KVM and
->>>>> Parallels hypervisor only, but since the code uses:
->>>>>
->>>>> +#if defined(__i386__) || defined(__x86_64__)
->>>>> +               inside_vm = inside_vm || boot_cpu_has(X86_FEATURE_HYPERVISOR);
->>>>> +#endif
->>>>>
->>>>> This makes it apply also to Xen as well, this makes this hack more
->>>>> broad, but does is it only applicable when an emulated device is
->>>>> used ? What about if a hypervisor is used and PCI passthrough is
->>>>> used ?
->>>>
->>>> A good question.  Xen was added there at the time from positive
->>>> results by quick tests, but it might show an issue if it's running on
->>>> a very old chip with PCI passthrough.  But I'm not sure whether PCI
->>>> passthrough would work on such old chipsets at all.
->>>
->>> If it did have an issue then that would have to be special cased, that
->>> is the module parameter would not need to be enabled for such type of
->>> systems, and heuristics would be needed. As you note, fortunately this
->>> may not be common though...
->>
->> Actually this *is* module parametered.  If set to a boolean value, it
->> can be applied / skipped forcibly.  So, if there has been a problem on
->> Xen, this should have been reported.  That's why I wrote it's no
->> common case.  This comes from the real experience.
->>
->>> but if this type of work around may be
->>> taken as a precedent to enable other types of hacks in other drivers
->>> I'm very fearful of more hacks later needing these considerations as
->>> well.
->>>
->>>>>>> There are a pile of nonsensical "are we in a VM" checks of various
->>>>>>> sorts scattered throughout the kernel, they're all a mess to maintain
->>>>>>> (there are lots of kinds of VMs in the world, and Linux may not even
->>>>>>> know it's a guest), and, in most cases, it appears that the correct
->>>>>>> solution is to delete the checks.  I just removed a nasty one in the
->>>>>>> x86_32 entry asm, and this one is written in C so it should be a piece
->>>>>>> of cake :)
->>>>>>
->>>>>> This cake looks sweet, but a worm is hidden behind the cream.
->>>>>> The loop in the code itself is already a kludge for the buggy hardware
->>>>>> where the inconsistent read happens not so often (only at the boundary
->>>>>> and in a racy way).  It would be nice if we can have a more reliably
->>>>>> way to know the hardware buggyness, but it's difficult,
->>>>>> unsurprisingly.
->>>>>
->>>>> The concern here is setting precedents for VM cases sprinkled in the kernel.
->>>>> The assumption here is such special cases are really paper'ing over another
->>>>> type of issue, so its best to ultimately try to root cause the issue in
->>>>> a more generalized fashion.
->>>>
->>>> Well, it's rather bare metal that shows the buggy behavior, thus we
->>>> need to paper over it.   In that sense, it's other way round; we don't
->>>> tune for VM.  The VM check we're discussing is rather for skipping the
->>>> strange workaround.
->>>
->>> What is it exactly about a VM that enables this work around to be skipped?
->>> I don't quite get it yet.
->>
->> VM -- at least the full one with the sound hardware emulation --
->> doesn't have the hardware bug.  So, the check isn't needed.
-> 
-> Here's the issue, though: asking "am I in a VM" is not a good way to
-> learn properties of hardware.  Just off the top of my head, here are
-> some types of VM and what they might imply about hardware:
-> 
-> Intel Kernel Guard: your sound card is passed through from real hardware.
-> 
-> Xen: could go either way.  In dom0, it's likely passed through.  In
-> domU, it could be passed through or emulated, and I believe this is
-> the case for all of the Xen variants.
-> 
-> KVM: Probably emulated, but could be passed through.
+Hi Laurent,
 
-I'm not sure exactly why I was CC'd into this thread, but this is an
-important point -- even if you're running in a VM, you may actually have
-direct un-emulated IO access to a real (buggy) piece of hardware; in
-which case it sounds like you still need the work-around.  So
-boot_cpu_has(X86_FEATURE_HYPERVISOR) is probably not the right check.
 
- -George
+On 01-04-2016 18:10, Laurent Pinchart wrote:
+> Hi Jose,
+>
+> Thank you for the patch.
+>
+> On Monday 28 Mar 2016 15:36:09 Jose Abreu wrote:
+>> This patch adds audio support for the ADV7511 HDMI transmitter
+>> using ALSA SoC.
+>>
+>> The code was ported from Analog Devices linux tree from
+>> commit 1770c4a1e32b ("Merge remote-tracking branch
+>> 'xilinx/master' into xcomm_zynq"), which is available at:
+>> 	- https://github.com/analogdevicesinc/linux/
+>>
+>> The main core file was renamed from adv7511.c to adv7511_core.c
+>> so that audio and video compile into a single adv7511.ko module
+>> and to keep up with Analog Devices kernel tree.
+>>
+>> The audio can be disabled using menu-config so it is possible
+>> to use only video mode.
+>>
+>> The HDMI mode is automatically started at boot and the audio
+>> (when enabled) registers as a codec into ALSA.
+>>
+>> SPDIF DAI format was also added to ASoC as it is required
+>> by adv7511 audio.
+>>
+>> Signed-off-by: Jose Abreu <joabreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+>> ---
+>>
+>> No changes v1 -> v2.
+>>
+>>  drivers/gpu/drm/i2c/Kconfig         |   11 +
+>>  drivers/gpu/drm/i2c/Makefile        |    2 +
+>>  drivers/gpu/drm/i2c/adv7511.c       | 1024 -------------------------------
+>>  drivers/gpu/drm/i2c/adv7511.h       |   41 ++
+>>  drivers/gpu/drm/i2c/adv7511_audio.c |  310 +++++++++++
+>>  drivers/gpu/drm/i2c/adv7511_core.c  | 1005 ++++++++++++++++++++++++++++++
+> Please use git-format-patch -M to detect renames if you send a new version of 
+> this series, it will help with review.
+
+Ok, will do that in next version.
+
+>>  include/sound/soc-dai.h             |    1 +
+>>  7 files changed, 1370 insertions(+), 1024 deletions(-)
+>>  delete mode 100644 drivers/gpu/drm/i2c/adv7511.c
+>>  create mode 100644 drivers/gpu/drm/i2c/adv7511_audio.c
+>>  create mode 100644 drivers/gpu/drm/i2c/adv7511_core.c
+> [snip]
+>
+>> diff --git a/drivers/gpu/drm/i2c/adv7511_core.c
+>> b/drivers/gpu/drm/i2c/adv7511_core.c new file mode 100644
+>> index 0000000..d54256a
+>> --- /dev/null
+>> +++ b/drivers/gpu/drm/i2c/adv7511_core.c
+> [snip]
+>
+>> +static int adv7511_probe(struct i2c_client *i2c, const struct i2c_device_id
+>> *id) +{
+>> +	struct adv7511_link_config link_config;
+>> +	struct adv7511 *adv7511;
+>> +	struct device *dev = &i2c->dev;
+>> +	unsigned int val;
+>> +	int ret;
+>> +
+>> +	if (!dev->of_node)
+>> +		return -EINVAL;
+>> +
+>> +	adv7511 = devm_kzalloc(dev, sizeof(*adv7511), GFP_KERNEL);
+>> +	if (!adv7511)
+>> +		return -ENOMEM;
+>> +
+>> +	adv7511->powered = false;
+>> +	adv7511->status = connector_status_disconnected;
+>> +
+>> +	ret = adv7511_parse_dt(dev->of_node, &link_config);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	/*
+>> +	 * The power down GPIO is optional. If present, toggle it from active to
+>> +	 * inactive to wake up the encoder.
+>> +	 */
+>> +	adv7511->gpio_pd = devm_gpiod_get_optional(dev, "pd", GPIOD_OUT_HIGH);
+>> +	if (IS_ERR(adv7511->gpio_pd))
+>> +		return PTR_ERR(adv7511->gpio_pd);
+>> +
+>> +	if (adv7511->gpio_pd) {
+>> +		mdelay(5);
+>> +		gpiod_set_value_cansleep(adv7511->gpio_pd, 0);
+>> +	}
+>> +
+>> +	adv7511->regmap = devm_regmap_init_i2c(i2c, &adv7511_regmap_config);
+>> +	if (IS_ERR(adv7511->regmap))
+>> +		return PTR_ERR(adv7511->regmap);
+>> +
+>> +	ret = regmap_read(adv7511->regmap, ADV7511_REG_CHIP_REVISION, &val);
+>> +	if (ret)
+>> +		return ret;
+>> +	dev_dbg(dev, "Rev. %d\n", val);
+>> +
+>> +	ret = regmap_register_patch(adv7511->regmap, adv7511_fixed_registers,
+>> +				    ARRAY_SIZE(adv7511_fixed_registers));
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	regmap_write(adv7511->regmap, ADV7511_REG_EDID_I2C_ADDR, edid_i2c_addr);
+>> +	regmap_write(adv7511->regmap, ADV7511_REG_PACKET_I2C_ADDR,
+>> +		     packet_i2c_addr);
+>> +	regmap_write(adv7511->regmap, ADV7511_REG_CEC_I2C_ADDR, cec_i2c_addr);
+>> +	adv7511_packet_disable(adv7511, 0xffff);
+>> +
+>> +	adv7511->i2c_main = i2c;
+>> +	adv7511->i2c_edid = i2c_new_dummy(i2c->adapter, edid_i2c_addr >> 1);
+>> +	if (!adv7511->i2c_edid)
+>> +		return -ENOMEM;
+>> +
+>> +	if (i2c->irq) {
+>> +		init_waitqueue_head(&adv7511->wq);
+>> +
+>> +		ret = devm_request_threaded_irq(dev, i2c->irq, NULL,
+>> +						adv7511_irq_handler,
+>> +						IRQF_ONESHOT, dev_name(dev),
+>> +						adv7511);
+>> +		if (ret)
+>> +			goto err_i2c_unregister_device;
+>> +	}
+>> +
+>> +	/* CEC is unused for now */
+>> +	regmap_write(adv7511->regmap, ADV7511_REG_CEC_CTRL,
+>> +		     ADV7511_CEC_CTRL_POWER_DOWN);
+>> +
+>> +	adv7511_power_off(adv7511);
+>> +
+>> +	i2c_set_clientdata(i2c, adv7511);
+>> +
+>> +#ifdef CONFIG_DRM_I2C_ADV7511_AUDIO
+>> +	adv7511_audio_init(&i2c->dev);
+>> +#endif
+> Shouldn't we condition this to the audio channel being somehow described in DT 
+> ? If a board doesn't route audio signals to the ADV7511 audio input, there's 
+> no need to register an audio codec.
+
+I can do this but the audio is already conditionally compiled using menuconfig.
+Is it really necessary to add this extra layer of condition?
+
+>> +
+>> +	adv7511_set_link_config(adv7511, &link_config);
+>> +
+>> +	/* Enable HDMI mode */
+>> +	regmap_update_bits(adv7511->regmap, ADV7511_REG_HDCP_HDMI_CFG,
+>> +			ADV7511_HDMI_CFG_MODE_MASK,
+>> +			ADV7511_HDMI_CFG_MODE_HDMI);
+>> +
+>> +	return 0;
+>> +
+>> +err_i2c_unregister_device:
+>> +	i2c_unregister_device(adv7511->i2c_edid);
+>> +
+>> +	return ret;
+>> +}
+
+Best regards,
+Jose Miguel Abreu
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
