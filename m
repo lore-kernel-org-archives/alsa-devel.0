@@ -1,55 +1,131 @@
-From: Julian Margetson <runaway@candw.ms>
-Subject: Re: Issues with ALSA:ice1724 sound cards on powerpc
-	machines
-Date: Mon, 4 Apr 2016 15:58:14 -0400
-Message-ID: <5702C756.1050904@candw.ms>
-References: <56C4BC13.2010306@candw.ms>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH 1/3 v2] drm/i2c/adv7511: Add audio support
+Date: Tue, 05 Apr 2016 00:41:27 +0300
+Message-ID: <2037371.nWufVmEmFd@avalon>
+References: <cover.1459174494.git.joabreu@synopsys.com>
+ <5276355.2bQYPXCpz6@avalon> <57022E63.2010900@synopsys.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp754.redcondor.net (smtp754.redcondor.net [208.80.206.54])
- by alsa0.perex.cz (Postfix) with ESMTP id D1E3A2608CF
- for <alsa-devel@alsa-project.org>; Mon,  4 Apr 2016 21:58:27 +0200 (CEST)
-In-Reply-To: <56C4BC13.2010306@candw.ms>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <57022E63.2010900@synopsys.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Jose Abreu <Jose.Abreu@synopsys.com>
+Cc: tixy@linaro.org, mark.rutland@arm.com, alsa-devel@alsa-project.org, Alexey.Brodkin@synopsys.com, dri-devel@lists.freedesktop.org, lgirdwood@gmail.com, yitian.bu@tangramtek.com, wsa+renesas@sang-engineering.com, laurent.pinchart+renesas@ideasonboard.com, tiwai@suse.com, nariman@opensource.wolfsonmicro.com, linux-snps-arc@lists.infradead.org, devicetree@vger.kernel.org, Maruthi.Bayyavarapu@amd.com, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, Vineet.Gupta1@synopsys.com, buyitian@gmail.com, robh+dt@kernel.org, perex@perex.cz, linux-kernel@vger.kernel.org, broonie@kernel.org, galak@codeaurora.org, alexander.deucher@amd.com, CARLOS.PALMINHA@synopsys.com
 List-Id: alsa-devel@alsa-project.org
 
-On 2/17/2016 2:29 PM, Julian Margetson wrote:
-> Hi
->
-> Having an issue issue with ice1724 sound cards on powerpc motherboards.
-> Motherboards in question Acube Sam460ex .
-> The card appears as a valid device but there is no sound output on the 
-> majority of boots of the computer.
-> Logs attached.
-> On the first set boot audio playback produced sound ok.
-> On the second set boot no sound was produce with audio playback
->
->
-> Regards
-> Julian Margetson
->
->
->
-Anyone have any ideas ?
-
-Resubmitting again with links to logs instead of included as attachments.
-The issue also seen on A-Eon Cyrus P5020 motherboard .
-
-https://www.dropbox.com/s/72labcje9z1r1b7/1alsa-info.txt.7CLHMG0Gap?dl=0
-https://www.dropbox.com/s/v1pn5kjqrvwu16f/boot_1.log?dl=0
-https://www.dropbox.com/s/uuaa14rkpmmz1o0/2alsa-info.txt.VKiEVuytiJ?dl=0
-https://www.dropbox.com/s/wwu2f5t93l8g26d/boot_2.log?dl=0
-
-Thanks
+SGkgSm9zZSwKCk9uIE1vbmRheSAwNCBBcHIgMjAxNiAxMDowNTozOSBKb3NlIEFicmV1IHdyb3Rl
+Ogo+IE9uIDAxLTA0LTIwMTYgMTg6MTAsIExhdXJlbnQgUGluY2hhcnQgd3JvdGU6Cj4gPiBPbiBN
+b25kYXkgMjggTWFyIDIwMTYgMTU6MzY6MDkgSm9zZSBBYnJldSB3cm90ZToKPiA+PiBUaGlzIHBh
+dGNoIGFkZHMgYXVkaW8gc3VwcG9ydCBmb3IgdGhlIEFEVjc1MTEgSERNSSB0cmFuc21pdHRlcgo+
+ID4+IHVzaW5nIEFMU0EgU29DLgo+ID4+IAo+ID4+IFRoZSBjb2RlIHdhcyBwb3J0ZWQgZnJvbSBB
+bmFsb2cgRGV2aWNlcyBsaW51eCB0cmVlIGZyb20KPiA+PiBjb21taXQgMTc3MGM0YTFlMzJiICgi
+TWVyZ2UgcmVtb3RlLXRyYWNraW5nIGJyYW5jaAo+ID4+IAo+ID4+ICd4aWxpbngvbWFzdGVyJyBp
+bnRvIHhjb21tX3p5bnEiKSwgd2hpY2ggaXMgYXZhaWxhYmxlIGF0Ogo+ID4+IAktIGh0dHBzOi8v
+Z2l0aHViLmNvbS9hbmFsb2dkZXZpY2VzaW5jL2xpbnV4Lwo+ID4+IAo+ID4+IFRoZSBtYWluIGNv
+cmUgZmlsZSB3YXMgcmVuYW1lZCBmcm9tIGFkdjc1MTEuYyB0byBhZHY3NTExX2NvcmUuYwo+ID4+
+IHNvIHRoYXQgYXVkaW8gYW5kIHZpZGVvIGNvbXBpbGUgaW50byBhIHNpbmdsZSBhZHY3NTExLmtv
+IG1vZHVsZQo+ID4+IGFuZCB0byBrZWVwIHVwIHdpdGggQW5hbG9nIERldmljZXMga2VybmVsIHRy
+ZWUuCj4gPj4gCj4gPj4gVGhlIGF1ZGlvIGNhbiBiZSBkaXNhYmxlZCB1c2luZyBtZW51LWNvbmZp
+ZyBzbyBpdCBpcyBwb3NzaWJsZQo+ID4+IHRvIHVzZSBvbmx5IHZpZGVvIG1vZGUuCj4gPj4gCj4g
+Pj4gVGhlIEhETUkgbW9kZSBpcyBhdXRvbWF0aWNhbGx5IHN0YXJ0ZWQgYXQgYm9vdCBhbmQgdGhl
+IGF1ZGlvCj4gPj4gKHdoZW4gZW5hYmxlZCkgcmVnaXN0ZXJzIGFzIGEgY29kZWMgaW50byBBTFNB
+Lgo+ID4+IAo+ID4+IFNQRElGIERBSSBmb3JtYXQgd2FzIGFsc28gYWRkZWQgdG8gQVNvQyBhcyBp
+dCBpcyByZXF1aXJlZAo+ID4+IGJ5IGFkdjc1MTEgYXVkaW8uCj4gPj4gCj4gPj4gU2lnbmVkLW9m
+Zi1ieTogSm9zZSBBYnJldSA8am9hYnJldUBzeW5vcHN5cy5jb20+Cj4gPj4gLS0tCj4gPj4gCj4g
+Pj4gTm8gY2hhbmdlcyB2MSAtPiB2Mi4KPiA+PiAKPiA+PiAgZHJpdmVycy9ncHUvZHJtL2kyYy9L
+Y29uZmlnICAgICAgICAgfCAgIDExICsKPiA+PiAgZHJpdmVycy9ncHUvZHJtL2kyYy9NYWtlZmls
+ZSAgICAgICAgfCAgICAyICsKPiA+PiAgZHJpdmVycy9ncHUvZHJtL2kyYy9hZHY3NTExLmMgICAg
+ICAgfCAxMDI0IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiA+PiAgZHJpdmVycy9ncHUv
+ZHJtL2kyYy9hZHY3NTExLmggICAgICAgfCAgIDQxICsrCj4gPj4gIGRyaXZlcnMvZ3B1L2RybS9p
+MmMvYWR2NzUxMV9hdWRpby5jIHwgIDMxMCArKysrKysrKysrKwo+ID4+ICBkcml2ZXJzL2dwdS9k
+cm0vaTJjL2Fkdjc1MTFfY29yZS5jICB8IDEwMDUgKysrKysrKysrKysrKysrKysrKysrKysrKysr
+Kwo+ID4gCj4gPiBQbGVhc2UgdXNlIGdpdC1mb3JtYXQtcGF0Y2ggLU0gdG8gZGV0ZWN0IHJlbmFt
+ZXMgaWYgeW91IHNlbmQgYSBuZXcgdmVyc2lvbgo+ID4gb2YgdGhpcyBzZXJpZXMsIGl0IHdpbGwg
+aGVscCB3aXRoIHJldmlldy4KPiAKPiBPaywgd2lsbCBkbyB0aGF0IGluIG5leHQgdmVyc2lvbi4K
+PiAKPiA+PiAgaW5jbHVkZS9zb3VuZC9zb2MtZGFpLmggICAgICAgICAgICAgfCAgICAxICsKPiA+
+PiAgNyBmaWxlcyBjaGFuZ2VkLCAxMzcwIGluc2VydGlvbnMoKyksIDEwMjQgZGVsZXRpb25zKC0p
+Cj4gPj4gIGRlbGV0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2dwdS9kcm0vaTJjL2Fkdjc1MTEuYwo+
+ID4+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9ncHUvZHJtL2kyYy9hZHY3NTExX2F1ZGlv
+LmMKPiA+PiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvZ3B1L2RybS9pMmMvYWR2NzUxMV9j
+b3JlLmMKPiA+IAo+ID4gW3NuaXBdCj4gPiAKPiA+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUv
+ZHJtL2kyYy9hZHY3NTExX2NvcmUuYwo+ID4+IGIvZHJpdmVycy9ncHUvZHJtL2kyYy9hZHY3NTEx
+X2NvcmUuYyBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+ID4+IGluZGV4IDAwMDAwMDAuLmQ1NDI1NmEK
+PiA+PiAtLS0gL2Rldi9udWxsCj4gPj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2kyYy9hZHY3NTEx
+X2NvcmUuYwo+ID4gCj4gPiBbc25pcF0KPiA+IAo+ID4+ICtzdGF0aWMgaW50IGFkdjc1MTFfcHJv
+YmUoc3RydWN0IGkyY19jbGllbnQgKmkyYywgY29uc3Qgc3RydWN0Cj4gPj4gaTJjX2RldmljZV9p
+ZCAqaWQpICt7Cj4gPj4gKwlzdHJ1Y3QgYWR2NzUxMV9saW5rX2NvbmZpZyBsaW5rX2NvbmZpZzsK
+PiA+PiArCXN0cnVjdCBhZHY3NTExICphZHY3NTExOwo+ID4+ICsJc3RydWN0IGRldmljZSAqZGV2
+ID0gJmkyYy0+ZGV2Owo+ID4+ICsJdW5zaWduZWQgaW50IHZhbDsKPiA+PiArCWludCByZXQ7Cj4g
+Pj4gKwo+ID4+ICsJaWYgKCFkZXYtPm9mX25vZGUpCj4gPj4gKwkJcmV0dXJuIC1FSU5WQUw7Cj4g
+Pj4gKwo+ID4+ICsJYWR2NzUxMSA9IGRldm1fa3phbGxvYyhkZXYsIHNpemVvZigqYWR2NzUxMSks
+IEdGUF9LRVJORUwpOwo+ID4+ICsJaWYgKCFhZHY3NTExKQo+ID4+ICsJCXJldHVybiAtRU5PTUVN
+Owo+ID4+ICsKPiA+PiArCWFkdjc1MTEtPnBvd2VyZWQgPSBmYWxzZTsKPiA+PiArCWFkdjc1MTEt
+PnN0YXR1cyA9IGNvbm5lY3Rvcl9zdGF0dXNfZGlzY29ubmVjdGVkOwo+ID4+ICsKPiA+PiArCXJl
+dCA9IGFkdjc1MTFfcGFyc2VfZHQoZGV2LT5vZl9ub2RlLCAmbGlua19jb25maWcpOwo+ID4+ICsJ
+aWYgKHJldCkKPiA+PiArCQlyZXR1cm4gcmV0Owo+ID4+ICsKPiA+PiArCS8qCj4gPj4gKwkgKiBU
+aGUgcG93ZXIgZG93biBHUElPIGlzIG9wdGlvbmFsLiBJZiBwcmVzZW50LCB0b2dnbGUgaXQgZnJv
+bSBhY3RpdmUKPiA+PiB0bwo+ID4+ICsJICogaW5hY3RpdmUgdG8gd2FrZSB1cCB0aGUgZW5jb2Rl
+ci4KPiA+PiArCSAqLwo+ID4+ICsJYWR2NzUxMS0+Z3Bpb19wZCA9IGRldm1fZ3Bpb2RfZ2V0X29w
+dGlvbmFsKGRldiwgInBkIiwgCkdQSU9EX09VVF9ISUdIKTsKPiA+PiArCWlmIChJU19FUlIoYWR2
+NzUxMS0+Z3Bpb19wZCkpCj4gPj4gKwkJcmV0dXJuIFBUUl9FUlIoYWR2NzUxMS0+Z3Bpb19wZCk7
+Cj4gPj4gKwo+ID4+ICsJaWYgKGFkdjc1MTEtPmdwaW9fcGQpIHsKPiA+PiArCQltZGVsYXkoNSk7
+Cj4gPj4gKwkJZ3Bpb2Rfc2V0X3ZhbHVlX2NhbnNsZWVwKGFkdjc1MTEtPmdwaW9fcGQsIDApOwo+
+ID4+ICsJfQo+ID4+ICsKPiA+PiArCWFkdjc1MTEtPnJlZ21hcCA9IGRldm1fcmVnbWFwX2luaXRf
+aTJjKGkyYywgJmFkdjc1MTFfcmVnbWFwX2NvbmZpZyk7Cj4gPj4gKwlpZiAoSVNfRVJSKGFkdjc1
+MTEtPnJlZ21hcCkpCj4gPj4gKwkJcmV0dXJuIFBUUl9FUlIoYWR2NzUxMS0+cmVnbWFwKTsKPiA+
+PiArCj4gPj4gKwlyZXQgPSByZWdtYXBfcmVhZChhZHY3NTExLT5yZWdtYXAsIEFEVjc1MTFfUkVH
+X0NISVBfUkVWSVNJT04sICZ2YWwpOwo+ID4+ICsJaWYgKHJldCkKPiA+PiArCQlyZXR1cm4gcmV0
+Owo+ID4+ICsJZGV2X2RiZyhkZXYsICJSZXYuICVkXG4iLCB2YWwpOwo+ID4+ICsKPiA+PiArCXJl
+dCA9IHJlZ21hcF9yZWdpc3Rlcl9wYXRjaChhZHY3NTExLT5yZWdtYXAsIGFkdjc1MTFfZml4ZWRf
+cmVnaXN0ZXJzLAo+ID4+ICsJCQkJICAgIEFSUkFZX1NJWkUoYWR2NzUxMV9maXhlZF9yZWdpc3Rl
+cnMpKTsKPiA+PiArCWlmIChyZXQpCj4gPj4gKwkJcmV0dXJuIHJldDsKPiA+PiArCj4gPj4gKwly
+ZWdtYXBfd3JpdGUoYWR2NzUxMS0+cmVnbWFwLCBBRFY3NTExX1JFR19FRElEX0kyQ19BRERSLAo+
+ID4+IGVkaWRfaTJjX2FkZHIpOwo+ID4+ICsJcmVnbWFwX3dyaXRlKGFkdjc1MTEtPnJlZ21hcCwg
+QURWNzUxMV9SRUdfUEFDS0VUX0kyQ19BRERSLAo+ID4+ICsJCSAgICAgcGFja2V0X2kyY19hZGRy
+KTsKPiA+PiArCXJlZ21hcF93cml0ZShhZHY3NTExLT5yZWdtYXAsIEFEVjc1MTFfUkVHX0NFQ19J
+MkNfQUREUiwgCmNlY19pMmNfYWRkcik7Cj4gPj4gKwlhZHY3NTExX3BhY2tldF9kaXNhYmxlKGFk
+djc1MTEsIDB4ZmZmZik7Cj4gPj4gKwo+ID4+ICsJYWR2NzUxMS0+aTJjX21haW4gPSBpMmM7Cj4g
+Pj4gKwlhZHY3NTExLT5pMmNfZWRpZCA9IGkyY19uZXdfZHVtbXkoaTJjLT5hZGFwdGVyLCBlZGlk
+X2kyY19hZGRyID4+IDEpOwo+ID4+ICsJaWYgKCFhZHY3NTExLT5pMmNfZWRpZCkKPiA+PiArCQly
+ZXR1cm4gLUVOT01FTTsKPiA+PiArCj4gPj4gKwlpZiAoaTJjLT5pcnEpIHsKPiA+PiArCQlpbml0
+X3dhaXRxdWV1ZV9oZWFkKCZhZHY3NTExLT53cSk7Cj4gPj4gKwo+ID4+ICsJCXJldCA9IGRldm1f
+cmVxdWVzdF90aHJlYWRlZF9pcnEoZGV2LCBpMmMtPmlycSwgTlVMTCwKPiA+PiArCQkJCQkJYWR2
+NzUxMV9pcnFfaGFuZGxlciwKPiA+PiArCQkJCQkJSVJRRl9PTkVTSE9ULCBkZXZfbmFtZShkZXYp
+LAo+ID4+ICsJCQkJCQlhZHY3NTExKTsKPiA+PiArCQlpZiAocmV0KQo+ID4+ICsJCQlnb3RvIGVy
+cl9pMmNfdW5yZWdpc3Rlcl9kZXZpY2U7Cj4gPj4gKwl9Cj4gPj4gKwo+ID4+ICsJLyogQ0VDIGlz
+IHVudXNlZCBmb3Igbm93ICovCj4gPj4gKwlyZWdtYXBfd3JpdGUoYWR2NzUxMS0+cmVnbWFwLCBB
+RFY3NTExX1JFR19DRUNfQ1RSTCwKPiA+PiArCQkgICAgIEFEVjc1MTFfQ0VDX0NUUkxfUE9XRVJf
+RE9XTik7Cj4gPj4gKwo+ID4+ICsJYWR2NzUxMV9wb3dlcl9vZmYoYWR2NzUxMSk7Cj4gPj4gKwo+
+ID4+ICsJaTJjX3NldF9jbGllbnRkYXRhKGkyYywgYWR2NzUxMSk7Cj4gPj4gKwo+ID4+ICsjaWZk
+ZWYgQ09ORklHX0RSTV9JMkNfQURWNzUxMV9BVURJTwo+ID4+ICsJYWR2NzUxMV9hdWRpb19pbml0
+KCZpMmMtPmRldik7Cj4gPj4gKyNlbmRpZgo+ID4gCj4gPiBTaG91bGRuJ3Qgd2UgY29uZGl0aW9u
+IHRoaXMgdG8gdGhlIGF1ZGlvIGNoYW5uZWwgYmVpbmcgc29tZWhvdyBkZXNjcmliZWQKPiA+IGlu
+IERUID8gSWYgYSBib2FyZCBkb2Vzbid0IHJvdXRlIGF1ZGlvIHNpZ25hbHMgdG8gdGhlIEFEVjc1
+MTEgYXVkaW8KPiA+IGlucHV0LCB0aGVyZSdzIG5vIG5lZWQgdG8gcmVnaXN0ZXIgYW4gYXVkaW8g
+Y29kZWMuCj4gCj4gSSBjYW4gZG8gdGhpcyBidXQgdGhlIGF1ZGlvIGlzIGFscmVhZHkgY29uZGl0
+aW9uYWxseSBjb21waWxlZCB1c2luZwo+IG1lbnVjb25maWcuIElzIGl0IHJlYWxseSBuZWNlc3Nh
+cnkgdG8gYWRkIHRoaXMgZXh0cmEgbGF5ZXIgb2YgY29uZGl0aW9uPwoKVGhlIGlkZWEgaXMgdGhh
+dCBlbmFibGluZyBzdXBwb3J0IGZvciBBRFY3NTExIGF1ZGlvIGluIHRoZSBrZXJuZWwgaXNuJ3Qg
+CmNvdXBsZWQgd2l0aCB3aGV0aGVyIHRoZSBzeXN0ZW0gaW5jbHVkZXMgYXVkaW8gc3VwcG9ydC4g
+SXQgd291bGQgYmUgY29uZnVzaW5nLCAKYW5kIHdvdWxkIGFsc28gd2FzdGUgcmVzb3VyY2VzLCB0
+byBjcmVhdGUgYSBMaW51eCBzb3VuZCBkZXZpY2Ugd2hlbiBubyBzb3VuZCAKY2hhbm5lbCBpcyBy
+b3V0ZWQgb24gdGhlIGJvYXJkLgoKPiA+PiArCj4gPj4gKwlhZHY3NTExX3NldF9saW5rX2NvbmZp
+ZyhhZHY3NTExLCAmbGlua19jb25maWcpOwo+ID4+ICsKPiA+PiArCS8qIEVuYWJsZSBIRE1JIG1v
+ZGUgKi8KPiA+PiArCXJlZ21hcF91cGRhdGVfYml0cyhhZHY3NTExLT5yZWdtYXAsIEFEVjc1MTFf
+UkVHX0hEQ1BfSERNSV9DRkcsCj4gPj4gKwkJCUFEVjc1MTFfSERNSV9DRkdfTU9ERV9NQVNLLAo+
+ID4+ICsJCQlBRFY3NTExX0hETUlfQ0ZHX01PREVfSERNSSk7Cj4gPj4gKwo+ID4+ICsJcmV0dXJu
+IDA7Cj4gPj4gKwo+ID4+ICtlcnJfaTJjX3VucmVnaXN0ZXJfZGV2aWNlOgo+ID4+ICsJaTJjX3Vu
+cmVnaXN0ZXJfZGV2aWNlKGFkdjc1MTEtPmkyY19lZGlkKTsKPiA+PiArCj4gPj4gKwlyZXR1cm4g
+cmV0Owo+ID4+ICt9CgotLSAKUmVnYXJkcywKCkxhdXJlbnQgUGluY2hhcnQKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxp
+c3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNr
+dG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
