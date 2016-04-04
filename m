@@ -1,185 +1,55 @@
-From: "Luis R. Rodriguez" <mcgrof@suse.com>
-Subject: Re: Getting rid of inside_vm in intel8x0
-Date: Mon, 4 Apr 2016 20:31:03 +0200
-Message-ID: <20160404183103.GC1990@wotan.suse.de>
-References: <CALCETrWnsn4CoRXcKDXpMTjxCYj8==mZQHkZRuXfZQyvERB3Gw@mail.gmail.com>
- <s5h60w48po7.wl-tiwai@suse.de>
- <20160331222618.GE1990@wotan.suse.de>
- <s5hvb4151v1.wl-tiwai@suse.de>
- <20160401222831.GX1990@wotan.suse.de>
- <s5hwpog377v.wl-tiwai@suse.de>
- <CALCETrW6Og2_cNnmgMWkGhfFNdLyJjtojqn6_s+BfFCsdzzczg@mail.gmail.com>
- <s5hfuv42dve.wl-tiwai@suse.de>
- <CALCETrW8jBXwCqXNMra667qk-CALOTvAXnQqYQuPBC_sWoJxHg@mail.gmail.com>
- <s5h8u0v3gmj.wl-tiwai@suse.de>
+From: Julian Margetson <runaway@candw.ms>
+Subject: Re: Issues with ALSA:ice1724 sound cards on powerpc
+	machines
+Date: Mon, 4 Apr 2016 15:58:14 -0400
+Message-ID: <5702C756.1050904@candw.ms>
+References: <56C4BC13.2010306@candw.ms>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5h8u0v3gmj.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>, Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Andy Lutomirski <luto@amacapital.net>, Konstantin Ozerkov <kozerkov@parallels.com>, Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, Stephen Hemminger <stephen@networkplumber.org>, Andrew Cooper <andrew.cooper3@citrix.com>, George Dunlap <George.Dunlap@eu.citrix.com>, xen-devel <xen-devel@lists.xenproject.org>, Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@kernel.org>, Jim Gettys <jg@freedesktop.org>, ALSA development <alsa-devel@alsa-project.org>, Matt Fleming <matt@codeblueprint.co.uk>, "Luis R. Rodriguez" <mcgrof@kernel.org>, Dario Faggioli <dario.faggioli@citrix.com>, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Joerg Roedel <joro@8bytes.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mel Gorman <mgorman@suse.de>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp754.redcondor.net (smtp754.redcondor.net [208.80.206.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id D1E3A2608CF
+ for <alsa-devel@alsa-project.org>; Mon,  4 Apr 2016 21:58:27 +0200 (CEST)
+In-Reply-To: <56C4BC13.2010306@candw.ms>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Apr 02, 2016 at 10:22:44PM +0200, Takashi Iwai wrote:
-> On Sat, 02 Apr 2016 20:05:21 +0200,
-> Andy Lutomirski wrote:
-> > 
-> > On Apr 2, 2016 12:07 PM, "Takashi Iwai" <tiwai@suse.de> wrote:
-> > >
-> > > On Sat, 02 Apr 2016 14:57:44 +0200,
-> > > Andy Lutomirski wrote:
-> > > >
-> > > > On Fri, Apr 1, 2016 at 10:33 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> > > > > On Sat, 02 Apr 2016 00:28:31 +0200,
-> > > > > Luis R. Rodriguez wrote:
-> > > > >> If the former, could a we somehow detect an emulated device other than through
-> > > > >> this type of check ? Or could we *add* a capability of some sort to detect it
-> > > > >> on the driver ? This would not address the removal, but it could mean finding a
-> > > > >> way to address emulation issues.
-> > > > >>
-> > > > >> If its an IO issue -- exactly what is the causing the delays in IO ?
-> > > > >
-> > > > > Luis, there is no problem about emulation itself.  It's rather an
-> > > > > optimization to lighten the host side load, as I/O access on a VM is
-> > > > > much heavier.
-> > > > >
-> > > > >> > > > This is satisfied mostly only on VM, and can't
-> > > > >> > > > be measured easily unlike the IO read speed.
-> > > > >> > >
-> > > > >> > > Interesting, note the original patch claimed it was for KVM and
-> > > > >> > > Parallels hypervisor only, but since the code uses:
-> > > > >> > >
-> > > > >> > > +#if defined(__i386__) || defined(__x86_64__)
-> > > > >> > > +               inside_vm = inside_vm || boot_cpu_has(X86_FEATURE_HYPERVISOR);
-> > > > >> > > +#endif
-> > > > >> > >
-> > > > >> > > This makes it apply also to Xen as well, this makes this hack more
-> > > > >> > > broad, but does is it only applicable when an emulated device is
-> > > > >> > > used ? What about if a hypervisor is used and PCI passthrough is
-> > > > >> > > used ?
-> > > > >> >
-> > > > >> > A good question.  Xen was added there at the time from positive
-> > > > >> > results by quick tests, but it might show an issue if it's running on
-> > > > >> > a very old chip with PCI passthrough.  But I'm not sure whether PCI
-> > > > >> > passthrough would work on such old chipsets at all.
-> > > > >>
-> > > > >> If it did have an issue then that would have to be special cased, that
-> > > > >> is the module parameter would not need to be enabled for such type of
-> > > > >> systems, and heuristics would be needed. As you note, fortunately this
-> > > > >> may not be common though...
-> > > > >
-> > > > > Actually this *is* module parametered.  If set to a boolean value, it
-> > > > > can be applied / skipped forcibly.  So, if there has been a problem on
-> > > > > Xen, this should have been reported.  That's why I wrote it's no
-> > > > > common case.  This comes from the real experience.
-> > > > >
-> > > > >> but if this type of work around may be
-> > > > >> taken as a precedent to enable other types of hacks in other drivers
-> > > > >> I'm very fearful of more hacks later needing these considerations as
-> > > > >> well.
-> > > > >>
-> > > > >> > > > > There are a pile of nonsensical "are we in a VM" checks of various
-> > > > >> > > > > sorts scattered throughout the kernel, they're all a mess to maintain
-> > > > >> > > > > (there are lots of kinds of VMs in the world, and Linux may not even
-> > > > >> > > > > know it's a guest), and, in most cases, it appears that the correct
-> > > > >> > > > > solution is to delete the checks.  I just removed a nasty one in the
-> > > > >> > > > > x86_32 entry asm, and this one is written in C so it should be a piece
-> > > > >> > > > > of cake :)
-> > > > >> > > >
-> > > > >> > > > This cake looks sweet, but a worm is hidden behind the cream.
-> > > > >> > > > The loop in the code itself is already a kludge for the buggy hardware
-> > > > >> > > > where the inconsistent read happens not so often (only at the boundary
-> > > > >> > > > and in a racy way).  It would be nice if we can have a more reliably
-> > > > >> > > > way to know the hardware buggyness, but it's difficult,
-> > > > >> > > > unsurprisingly.
-> > > > >> > >
-> > > > >> > > The concern here is setting precedents for VM cases sprinkled in the kernel.
-> > > > >> > > The assumption here is such special cases are really paper'ing over another
-> > > > >> > > type of issue, so its best to ultimately try to root cause the issue in
-> > > > >> > > a more generalized fashion.
-> > > > >> >
-> > > > >> > Well, it's rather bare metal that shows the buggy behavior, thus we
-> > > > >> > need to paper over it.   In that sense, it's other way round; we don't
-> > > > >> > tune for VM.  The VM check we're discussing is rather for skipping the
-> > > > >> > strange workaround.
-> > > > >>
-> > > > >> What is it exactly about a VM that enables this work around to be skipped?
-> > > > >> I don't quite get it yet.
-> > > > >
-> > > > > VM -- at least the full one with the sound hardware emulation --
-> > > > > doesn't have the hardware bug.  So, the check isn't needed.
-> > > >
-> > > > Here's the issue, though: asking "am I in a VM" is not a good way to
-> > > > learn properties of hardware.  Just off the top of my head, here are
-> > > > some types of VM and what they might imply about hardware:
-> > > >
-> > > > Intel Kernel Guard: your sound card is passed through from real hardware.
-> > > >
-> > > > Xen: could go either way.  In dom0, it's likely passed through.  In
-> > > > domU, it could be passed through or emulated, and I believe this is
-> > > > the case for all of the Xen variants.
-> > > >
-> > > > KVM: Probably emulated, but could be passed through.
-> > > >
-> > > > I think the main reason that Luis and I are both uncomfortable with
-> > > > "am I in a VM" checks is that they're rarely the right thing to be
-> > > > detecting, the APIs are poorly designed, and most of the use cases in
-> > > > the kernel are using them as a proxy for something else and would be
-> > > > clearer and more future proof if they tested what they actually need
-> > > > to test more directly.
-> > >
-> > > Please, guys, take a look at the code more closely.  This is applied
-> > > only to the known emulated PCI devices, and the driver shows the
-> > > kernel message:
-> > >
-> > > static int snd_intel8x0_inside_vm(struct pci_dev *pci)
-> > > ....
-> > >         /* check for known (emulated) devices */
-> > >         if (pci->subsystem_vendor == PCI_SUBVENDOR_ID_REDHAT_QUMRANET &&
-> > >             pci->subsystem_device == PCI_SUBDEVICE_ID_QEMU) {
-> > >                 /* KVM emulated sound, PCI SSID: 1af4:1100 */
-> > >                 msg = "enable KVM";
-> > >         } else if (pci->subsystem_vendor == 0x1ab8) {
-> > >                 /* Parallels VM emulated sound, PCI SSID: 1ab8:xxxx */
-> > >                 msg = "enable Parallels VM";
-> > >         } else {
-> > >                 msg = "disable (unknown or VT-d) VM";
-> > >                 result = 0;
-> > >         }
-> > 
-> > Now I'm more confused.  Why are you checking the PCI IDs *and* whether
-> > a hypervisor is detected?  Why not check only the IDs?
-> > 
-> > In any event, at the very least the comment is misleading:
-> > 
-> >         /* detect KVM and Parallels virtual environments */
-> >         result = kvm_para_available();
-> > #ifdef X86_FEATURE_HYPERVISOR
-> >         result = result || boot_cpu_has(X86_FEATURE_HYPERVISOR);
-> > #endif
-> > 
-> > You're detecting KVM (sometimes) and the x86 "hypervisor" bit.  The
-> > latter has no particularly well-defined meaning.  You're also missing
-> > Xen PV, I believe, and I think that Xen PV + QEMU is a real thing, and
-> > you'll fail to detect it, even though it can present a QEMU-emulated
-> > card.
+On 2/17/2016 2:29 PM, Julian Margetson wrote:
+> Hi
+>
+> Having an issue issue with ice1724 sound cards on powerpc motherboards.
+> Motherboards in question Acube Sam460ex .
+> The card appears as a valid device but there is no sound output on the 
+> majority of boots of the computer.
+> Logs attached.
+> On the first set boot audio playback produced sound ok.
+> On the second set boot no sound was produce with audio playback
+>
+>
+> Regards
+> Julian Margetson
+>
+>
+>
+Anyone have any ideas ?
 
-Indeed, I think some Xen instances would fail to check with this.
+Resubmitting again with links to logs instead of included as attachments.
+The issue also seen on A-Eon Cyrus P5020 motherboard .
 
-> > In other words, how is this code any different from a simple whitelist
-> > of two specific cards that work a little differently from others?
-> 
-> The PCI ID whitelist was introduced later in the commit 7fb4f392bd27,
-> and before that, we relied on the VM detection as a switch for
-> skipping the workaround.  The VM detection code was kept there just to
-> be sure, in case the whitelist isn't 100% correct.
-> 
-> Looking at the current status, the whitelist alone seems enough, so
-> the VM detection code could be dropped, I suppose.
+https://www.dropbox.com/s/72labcje9z1r1b7/1alsa-info.txt.7CLHMG0Gap?dl=0
+https://www.dropbox.com/s/v1pn5kjqrvwu16f/boot_1.log?dl=0
+https://www.dropbox.com/s/uuaa14rkpmmz1o0/2alsa-info.txt.VKiEVuytiJ?dl=0
+https://www.dropbox.com/s/wwu2f5t93l8g26d/boot_2.log?dl=0
 
-Great, such a change should perhaps highligh the impact also to Xen
-then.
-
-  Luis
+Thanks
