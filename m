@@ -1,88 +1,128 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [RFC PATCH v2 0/5] Media Device Allocator API
-Date: Mon,  4 Apr 2016 21:35:55 -0600
-Message-ID: <cover.1459825702.git.shuahkh@osg.samsung.com>
-Return-path: <linux-media-owner@vger.kernel.org>
-Sender: linux-media-owner@vger.kernel.org
+Subject: [RFC PATCH v2 4/5] media: au0828 change to use Media
+	Device Allocator API
+Date: Mon,  4 Apr 2016 21:35:59 -0600
+Message-ID: <655763f7980edc899f73a6760fe1763a8212d188.1459825702.git.shuahkh@osg.samsung.com>
+References: <cover.1459825702.git.shuahkh@osg.samsung.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout.easymail.ca (mailout.easymail.ca [64.68.201.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9BB372617B8
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2016 05:36:14 +0200 (CEST)
+In-Reply-To: <cover.1459825702.git.shuahkh@osg.samsung.com>
+In-Reply-To: <cover.1459825702.git.shuahkh@osg.samsung.com>
+References: <cover.1459825702.git.shuahkh@osg.samsung.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: mchehab@osg.samsung.com, laurent.pinchart@ideasonboard.com, perex@perex.cz, tiwai@suse.com, hans.verkuil@cisco.com, chehabrafael@gmail.com, javier@osg.samsung.com, jh1009.sung@samsung.com, ricard.wanderlof@axis.com, julian@jusst.de, pierre-louis.bossart@linux.intel.com, clemens@ladisch.de, dominic.sacre@gmx.de, takamichiho@gmail.com, johan@oljud.se, geliangtang@163.com
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-There are known problems with media device life time management. When media
-device is released while an media ioctl is in progress, ioctls fail with
-use-after-free errors and kernel hangs in some cases.
+Change au0828 to use Media Device Allocator API and new Media Controller
+media_device_unregister_put() interface. Fix to unregister entity_notify
+hook.
 
-Media Device can be in any the following states:
+Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+---
+ drivers/media/usb/au0828/au0828-core.c | 40 ++++++++++++++++++++++++----------
+ drivers/media/usb/au0828/au0828.h      |  1 +
+ 2 files changed, 29 insertions(+), 12 deletions(-)
 
-- Allocated
-- Registered (could be tied to more than one driver)
-- Unregistered, not in use (media device file is not open)
-- Unregistered, in use (media device file is not open)
-- Released
-
-When media device belongs to  more than one driver, registrations should be
-tracked to avoid unregistering when one of the drivers does unregister. A new
-num_drivers field in the struct media_device covers this case. The media device
-should be unregistered only when the last unregister occurs with num_drivers
-count zero.
-
-When a media device is in use when it is unregistered, it should not be
-released until the application exits when it detects the unregistered
-status. Media device that is in use when it is unregistered is moved to
-to_delete_list. When the last unregister occurs, media device is unregistered
-and becomes an unregistered, still allocated device. Unregister marks the
-device to be deleted.
-
-When media device belongs to more than one driver, as both drivers could be
-unbound/bound, driver should not end up getting stale media device that is
-on its way out. Moving the unregistered media device to to_delete_list helps
-this case as well.
-
-I ran bind/unbind loop tests on uvcvideo, au0828, and snd-usb-audio while
-running application that does ioctls. Didn't see any use-after-free errors
-on media device. A couple of known issues seen:
-
-1. When application exits, cdev_put() gets called after media device is
-   released. This is a known issue to resolve and Media Device Allocator
-   can't solve this one.
-2. When au0828 module is removed and then ioctls fail when cdev_get() looks
-   for the owning module as au0828 is very often the module that owns the
-   media devnode. This is a cdev related issue that needs to be resolved and
-   Media Device Allocator can't solve this one.
-
-Shuah Khan (5):
-  media: Add Media Device Allocator API
-  media: Add driver count to keep track of media device registrations
-  media: uvcvideo change to use Media Device Allocator API
-  media: au0828 change to use Media Device Allocator API
-  sound/usb: Use Media Controller API to share media resources
-
- drivers/media/Makefile                 |   3 +-
- drivers/media/media-dev-allocator.c    | 154 ++++++++++++++++
- drivers/media/media-device.c           |  49 ++++-
- drivers/media/media-devnode.c          |  10 +-
- drivers/media/usb/au0828/au0828-core.c |  40 +++--
- drivers/media/usb/au0828/au0828.h      |   1 +
- drivers/media/usb/uvc/uvc_driver.c     |  36 ++--
- drivers/media/usb/uvc/uvcvideo.h       |   3 +-
- include/media/media-dev-allocator.h    | 116 ++++++++++++
- include/media/media-device.h           |  31 ++++
- sound/usb/Kconfig                      |   4 +
- sound/usb/Makefile                     |   2 +
- sound/usb/card.c                       |  14 ++
- sound/usb/card.h                       |   3 +
- sound/usb/media.c                      | 320 +++++++++++++++++++++++++++++++++
- sound/usb/media.h                      |  73 ++++++++
- sound/usb/mixer.h                      |   3 +
- sound/usb/pcm.c                        |  28 ++-
- sound/usb/quirks-table.h               |   1 +
- sound/usb/stream.c                     |   2 +
- sound/usb/usbaudio.h                   |   6 +
- 21 files changed, 862 insertions(+), 37 deletions(-)
- create mode 100644 drivers/media/media-dev-allocator.c
- create mode 100644 include/media/media-dev-allocator.h
- create mode 100644 sound/usb/media.c
- create mode 100644 sound/usb/media.h
-
+diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
+index cc22b32..c34af36 100644
+--- a/drivers/media/usb/au0828/au0828-core.c
++++ b/drivers/media/usb/au0828/au0828-core.c
+@@ -131,22 +131,36 @@ static int recv_control_msg(struct au0828_dev *dev, u16 request, u32 value,
+ 	return status;
+ }
+ 
++#ifdef CONFIG_MEDIA_CONTROLLER
++static void au0828_media_graph_notify(struct media_entity *new,
++				      void *notify_data);
++#endif
++
+ static void au0828_unregister_media_device(struct au0828_dev *dev)
+ {
+ 
+ #ifdef CONFIG_MEDIA_CONTROLLER
+-	if (dev->media_dev &&
+-		media_devnode_is_registered(&dev->media_dev->devnode)) {
+-		/* clear enable_source, disable_source */
+-		dev->media_dev->source_priv = NULL;
+-		dev->media_dev->enable_source = NULL;
+-		dev->media_dev->disable_source = NULL;
+-
+-		media_device_unregister(dev->media_dev);
+-		media_device_cleanup(dev->media_dev);
+-		kfree(dev->media_dev);
+-		dev->media_dev = NULL;
++	struct media_device *mdev = dev->media_dev;
++	struct media_entity_notify *notify, *nextp;
++
++	if (!mdev || !media_devnode_is_registered(&mdev->devnode))
++		return;
++
++	/* Remove au0828 entity_notify callbacks */
++	list_for_each_entry_safe(notify, nextp, &mdev->entity_notify, list) {
++		if (notify->notify != au0828_media_graph_notify)
++			continue;
++			media_device_unregister_entity_notify(mdev, notify);
+ 	}
++
++	/* clear enable_source, disable_source */
++	dev->media_dev->source_priv = NULL;
++	dev->media_dev->enable_source = NULL;
++	dev->media_dev->disable_source = NULL;
++
++	media_device_unregister_put(dev->media_dev);
++	media_device_put(dev->media_dev->dev);
++	dev->media_dev = NULL;
+ #endif
+ }
+ 
+@@ -198,7 +212,7 @@ static int au0828_media_device_init(struct au0828_dev *dev,
+ #ifdef CONFIG_MEDIA_CONTROLLER
+ 	struct media_device *mdev;
+ 
+-	mdev = kzalloc(sizeof(*mdev), GFP_KERNEL);
++	mdev = media_device_get(&udev->dev);
+ 	if (!mdev)
+ 		return -ENOMEM;
+ 
+@@ -473,11 +487,13 @@ static int au0828_media_device_register(struct au0828_dev *dev,
+ 		/* register media device */
+ 		ret = media_device_register(dev->media_dev);
+ 		if (ret) {
++			media_device_put(dev->media_dev->dev);
+ 			dev_err(&udev->dev,
+ 				"Media Device Register Error: %d\n", ret);
+ 			return ret;
+ 		}
+ 	} else {
++		media_device_register_ref(dev->media_dev);
+ 		/*
+ 		 * Call au0828_media_graph_notify() to connect
+ 		 * audio graph to our graph. In this case, audio
+diff --git a/drivers/media/usb/au0828/au0828.h b/drivers/media/usb/au0828/au0828.h
+index 87f3284..3edd50f 100644
+--- a/drivers/media/usb/au0828/au0828.h
++++ b/drivers/media/usb/au0828/au0828.h
+@@ -35,6 +35,7 @@
+ #include <media/v4l2-ctrls.h>
+ #include <media/v4l2-fh.h>
+ #include <media/media-device.h>
++#include <media/media-dev-allocator.h>
+ 
+ /* DVB */
+ #include "demux.h"
 -- 
 2.5.0
