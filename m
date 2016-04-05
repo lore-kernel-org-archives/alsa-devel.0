@@ -1,17 +1,21 @@
-From: Konstantin Ozerkov <kozerkov@parallels.com>
-Subject: Re: [PATCH] ALSA: intel8x0: Drop superfluous VM checks
-Date: Tue, 5 Apr 2016 17:58:59 +0300
-Message-ID: <5703D2B3.7050403@parallels.com>
-References: <1459867994-22143-1-git-send-email-tiwai@suse.de>
+From: Adam Goode <agoode@google.com>
+Subject: Re: [PATCH - alsa-lib 1/1] Change card/pid get
+ functions to return -ENOSYS if the kernel is too old
+Date: Tue, 5 Apr 2016 11:21:15 -0400
+Message-ID: <CAOf41N=uNxoNpsVf+YD1XVwaM3TBkSq0GLxJ_JPLeHcoyb8c3w@mail.gmail.com>
+References: <1459532030-6387-1-git-send-email-agoode@google.com>
+ <20160401211558.GA20661@mail.zuhause> <s5hpou5a0g0.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1on0083.outbound.protection.outlook.com [157.56.110.83])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B35C26055E
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2016 16:59:18 +0200 (CEST)
-In-Reply-To: <1459867994-22143-1-git-send-email-tiwai@suse.de>
+Received: from mail-vk0-f51.google.com (mail-vk0-f51.google.com
+ [209.85.213.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 035E826055E
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2016 17:21:55 +0200 (CEST)
+Received: by mail-vk0-f51.google.com with SMTP id e185so22013814vkb.1
+ for <alsa-devel@alsa-project.org>; Tue, 05 Apr 2016 08:21:55 -0700 (PDT)
+In-Reply-To: <s5hpou5a0g0.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,90 +25,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: "Luis R . Rodriguez" <mcgrof@kernel.org>, Andy Lutomirski <luto@amacapital.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Martin Koegler <martin.koegler@chello.at>
 List-Id: alsa-devel@alsa-project.org
 
-Ack
+On Mon, Apr 4, 2016 at 10:54 AM, Takashi Iwai <tiwai@suse.de> wrote:
 
-On 05/04/16 17:53, Takashi Iwai wrote:
-> intel8x0 driver has the inside_vm check for skipping a buggy hardware
-> workaround in the PCM pointer callback in the commit [228cf79376f1:
-> ALSA: intel8x0: Improve performance in virtual environment].  This was
-> originally applied to all devices on known VMs, but the code was
-> switched to use the PCI  ID matching for applying to only known
-> devices (KVM and Parallels), in order to avoid applying wrongly to
-> VT-d and other such cases, in the commit [7fb4f392bd27: ALSA:
-> intel8x0: improve virtual environment detection].
+> On Fri, 01 Apr 2016 23:15:58 +0200,
+> Martin Koegler wrote:
+> >
+> > On Fri, Apr 01, 2016 at 01:33:50PM -0400, Adam Goode wrote:
+> > > When trying to get the pid or card of a client, the get functions will
+> > > return -1 if there is no pid or card for a client. Clients have zero or
+> > > one of these, so -1 is correct for these cases. But we also need to
+> detect
+> > > the case where the kernel cannot tell us if there is a card or pid, so
+> > > that userspace can fallback to probing this information in the old way.
+> >
+> > Its a pity, that alsa-lib 1.1.1 has just been released, which just
+> returns -1.
+> > If the time between releases is really about 2 kernel releases, you will
+> very likely
+> > have to cope with the old API for some time.
 >
-> Meanwhile, the original VM check was kept even after switching to the
-> PCI ID matching.  It was partly because we weren't 100% sure whether
-> we had covered all well, and partly because this would help
-> identifying the issue once when a user of another VM hit the same
-> problem or a regression.  Currently the VM check is used only for
-> showing the kernel message that the VM-optimization isn't applied, and
-> the VM check itself doesn't change the actual driver behavior at all.
+> Strictly speaking, for the function behavior change, we'd need a new
+> API function and deprecated the old one eventually.  But, this case is
+> in a gray zone; the function definition doesn't prohibit to return an
+> error value yet, but the change like this is incompatible with the
+> current aconnect code, which is likely regarded as a template for
+> other programs.
 >
-> Despite the relatively safe driver behavior, the code caught attention
-> of developers badly and brought many confusion / misunderstanding.
-> Since we've got neither regression nor enhancement report for other
-> VMs for five years long, it's likely safe to drop this superfluous VM
-> check now.
+> OTOH, this is a pretty new API function, and it might be not too bad
+> to fix the usage in the early stage, especially when it's a good
+> improvement of the function behavior.
 >
-> The module option is still kept, so if a user still needs to adjust,
-> it can be applied as was.
+> So, for now, I'm inclined to take this change with a slight risk of
+> breakage.  But I'm open for more arguments, and would like to hear any
+> objections.
 >
-> Cc: Andy Lutomirski <luto@amacapital.net>
-> Cc: Luis R. Rodriguez <mcgrof@kernel.org>
-> Cc: Konstantin Ozerkov <kozerkov@parallels.com>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->   sound/pci/intel8x0.c | 20 +++-----------------
->   1 file changed, 3 insertions(+), 17 deletions(-)
 >
-> diff --git a/sound/pci/intel8x0.c b/sound/pci/intel8x0.c
-> index 8151318a69a2..9720a30dbfff 100644
-> --- a/sound/pci/intel8x0.c
-> +++ b/sound/pci/intel8x0.c
-> @@ -42,12 +42,6 @@
->   #include <asm/pgtable.h>
->   #include <asm/cacheflush.h>
->   
-> -#ifdef CONFIG_KVM_GUEST
-> -#include <linux/kvm_para.h>
-> -#else
-> -#define kvm_para_available() (0)
-> -#endif
-> -
->   MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
->   MODULE_DESCRIPTION("Intel 82801AA,82901AB,i810,i820,i830,i840,i845,MX440; SiS 7012; Ali 5455");
->   MODULE_LICENSE("GPL");
-> @@ -2972,25 +2966,17 @@ static int snd_intel8x0_inside_vm(struct pci_dev *pci)
->   		goto fini;
->   	}
->   
-> -	/* detect KVM and Parallels virtual environments */
-> -	result = kvm_para_available();
-> -#ifdef X86_FEATURE_HYPERVISOR
-> -	result = result || boot_cpu_has(X86_FEATURE_HYPERVISOR);
-> -#endif
-> -	if (!result)
-> -		goto fini;
-> -
->   	/* check for known (emulated) devices */
-> +	result = 0;
->   	if (pci->subsystem_vendor == PCI_SUBVENDOR_ID_REDHAT_QUMRANET &&
->   	    pci->subsystem_device == PCI_SUBDEVICE_ID_QEMU) {
->   		/* KVM emulated sound, PCI SSID: 1af4:1100 */
->   		msg = "enable KVM";
-> +		result = 1;
->   	} else if (pci->subsystem_vendor == 0x1ab8) {
->   		/* Parallels VM emulated sound, PCI SSID: 1ab8:xxxx */
->   		msg = "enable Parallels VM";
-> -	} else {
-> -		msg = "disable (unknown or VT-d) VM";
-> -		result = 0;
-> +		result = 1;
->   	}
->   
->   fini:
+Thanks for reviewing this. As an alternative, we could introduce a
+completely new function that either returns the kernel interface version
+(which means client code would have to keep a mapping of versions ->
+implemented features) or returns the implementation state of this
+particular feature. In some ways that would be slightly more
+straightforward for Chromium, since I could probe ALSA once for the kernel
+state using a function specifically for that purpose. But it doesn't matter
+to me either way.
+
+
+Thanks,
+
+Adam
+
+
+
+>
+> thanks,
+>
+> Takashi
+>
