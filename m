@@ -1,20 +1,21 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH v2- ALSA 2/3] HDA - create headset mic jack
- which use headphone pin sense
-Date: Tue, 5 Apr 2016 22:35:35 +0800
-Message-ID: <CAN8ccibi-xCRpUxX8M_jF+wU_DHLZjGa-A0JTMXvBFMrLyo7wQ@mail.gmail.com>
-References: <CALivufeCutVbhC7iQ5VGPpjm3Nds3YejzcKsm2NDFRsObi+nSA@mail.gmail.com>
+From: "Koul, Vinod" <vinod.koul@intel.com>
+Subject: Re: [PATCH v2 2/2] conf: topology: Generate Private
+ data binary blobs
+Date: Tue, 5 Apr 2016 14:38:49 +0000
+Message-ID: <1459867127.3136.39.camel@intel.com>
+References: <1459833605-11223-1-git-send-email-vinod.koul@intel.com>
+ <1459833605-11223-3-git-send-email-vinod.koul@intel.com>
+ <s5h8u0s9sep.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f68.google.com (mail-lf0-f68.google.com
- [209.85.215.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 7FB972606F8
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2016 16:35:36 +0200 (CEST)
-Received: by mail-lf0-f68.google.com with SMTP id r62so1490299lfd.0
- for <alsa-devel@alsa-project.org>; Tue, 05 Apr 2016 07:35:36 -0700 (PDT)
-In-Reply-To: <CALivufeCutVbhC7iQ5VGPpjm3Nds3YejzcKsm2NDFRsObi+nSA@mail.gmail.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 944112606F8
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2016 16:39:06 +0200 (CEST)
+In-Reply-To: <s5h8u0s9sep.wl-tiwai@suse.de>
+Content-Language: en-US
+Content-ID: <C31F3048C067C642A02B917B72C6B38D@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,23 +25,139 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Justin Monk <jmonk86@gmail.com>, tiwai@suse.de
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: "tiwai@suse.de" <tiwai@suse.de>
+Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Nc,
+ Shreyas" <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Pgo+IFRlYW0sCj4KPiBJIHdhcyB3b25kZXJpbmcgd2hlbiB0aGlzIHBhdGNoIHdvdWxkIGJlIGF2
-YWlsYWJsZSwgSSBmaWd1cmVkIGl0IHdvdWxkCj4gYWxyZWFkeSBiZSBpbiB0aGUgZG93biBzdHJl
-YW0uIElmIG5vdCBJIHdvdWxkIGxvdmUgdG8gdGVzdCBpdC4gSSBoYXZlCj4gbWluaW1hbCBwcm9n
-cmFtbWluZyBza2lsbHMgYnV0IHdvdWxkIGxvdmUgdG8gaGVscC4KPgo+IEtlcm5lbCBCdWcgVHJh
-Y2tlciDigJMgQnVnIDEwNzg1MQo+Cj4gNC4yLjAtMTgtZ2VuZXJpYwo+Cj4gY3VycmVudGx5IHJ1
-bm5pbmcKPiA0LjQuNi0zMDAuZmMyMy54ODZfNjQKClRoZSBwYXRjaCBkZXBlbmQgb24gZnVuY3Rp
-b24gX19zbmRfaGRhX2phY2tfYWRkX2tjdGwgd2hpY2ggd2FzIHJlbW92ZWQgYnkKdGhpcyBwYXRj
-aAoKaHR0cHM6Ly9naXQua2VybmVsLm9yZy9jZ2l0L2xpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291
-bmQuZ2l0L2NvbW1pdC9zb3VuZC9wY2kvaGRhL2hkYV9qYWNrLmM/aWQ9OTA5Y2FkYzZjOGM3ZTUy
-MTQ5ZmI0Njg3NDUzMjc3ZDZjYWJlOGM4MAoKVGhpcyBtZWFuIHlvdSBoYXZlIHRvIGZpbmQgYW5v
-dGhlciB3YXkgdG8gaW1wbGVtZW50IGhlYWRzZXQgbWljIGphY2sga2N0bAp3aGljaCB1c2UgaGVh
-ZHBob25lIGphY2sgcGluIHNlbnNlIG9yIGhhY2sgcHVsc2VhdWRpbyBjb25mIGZpbGUgdG8gdXNl
-CmhlYWRwaG9uZSBqYWNrIHRvIHN3aXRjaCBoZWFkc2V0IG1pYwpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Tue, 2016-04-05 at 14:00 +0200, Takashi Iwai wrote:
+> On Tue, 05 Apr 2016 07:20:05 +0200,
+> Vinod Koul wrote:
+> > 
+> > From: Shreyas NC <shreyas.nc@intel.com>
+> > 
+> > The DSP modules need private data and that is provided as binary
+> > blob. These blobs are compiled from C structures which specify
+> > module
+> > configuration.
+> > 
+> > Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
+> > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> > ---
+> >  src/conf/topology/sklrt286/data/Makefile.am      |    4 +
+> >  src/conf/topology/sklrt286/data/README           |    2 +
+> >  src/conf/topology/sklrt286/data/compile_local    |   16 +
+> >  src/conf/topology/sklrt286/data/configure.ac     |   30 +
+> >  src/conf/topology/sklrt286/data/pvt.c            | 1815
+> > ++++++++++++++++++++++
+> >  src/conf/topology/sklrt286/data/pvt_data.c       |   90 ++
+> >  src/conf/topology/sklrt286/data/pvt_data_local.h |  115 ++
+> >  7 files changed, 2072 insertions(+)
+> >  create mode 100644 src/conf/topology/sklrt286/data/Makefile.am
+> >  create mode 100644 src/conf/topology/sklrt286/data/README
+> >  create mode 100755 src/conf/topology/sklrt286/data/compile_local
+> >  create mode 100644 src/conf/topology/sklrt286/data/configure.ac
+> >  create mode 100644 src/conf/topology/sklrt286/data/pvt.c
+> >  create mode 100644 src/conf/topology/sklrt286/data/pvt_data.c
+> >  create mode 100644 src/conf/topology/sklrt286/data/pvt_data_local.h
+> > 
+> > diff --git a/src/conf/topology/sklrt286/data/Makefile.am
+> > b/src/conf/topology/sklrt286/data/Makefile.am
+> > new file mode 100644
+> > index 000000000000..9898b9808055
+> > --- /dev/null
+> > +++ b/src/conf/topology/sklrt286/data/Makefile.am
+> > @@ -0,0 +1,4 @@
+> > +bin_PROGRAMS = pvt_data
+> > +pvt_data_SOURCES = pvt_data.c
+> > +AM_CPPFLAGS = \
+> > +         -Wall -I../../../../../include
+> 
+> What is this path?
+> 
+> 
+> > diff --git a/src/conf/topology/sklrt286/data/README
+> > b/src/conf/topology/sklrt286/data/README
+> > new file mode 100644
+> > index 000000000000..7d1261069dae
+> > --- /dev/null
+> > +++ b/src/conf/topology/sklrt286/data/README
+> > @@ -0,0 +1,2 @@
+> > +To compile the src file, run ./compile_local and then ./pvt_data to
+> > execute the binary.
+> > +The private data blobs will be generated in the sklrt286 folder.
+> > diff --git a/src/conf/topology/sklrt286/data/compile_local
+> > b/src/conf/topology/sklrt286/data/compile_local
+> > new file mode 100755
+> > index 000000000000..4b935f8b760d
+> > --- /dev/null
+> > +++ b/src/conf/topology/sklrt286/data/compile_local
+> > @@ -0,0 +1,16 @@
+> > +#Helper script to compile
+> > +touch ltconfig NEWS README AUTHORS ChangeLog
+> > +libtoolize --force --copy --automake
+> > +aclocal $ACLOCAL_FLAGS
+> > +autoheader
+> > +automake --foreign --copy --add-missing
+> > +touch depcomp		# seems to be missing for old automake
+> > +autoconf
+> > +export CFLAGS='-O2 -Wall -W -pipe -g'
+> > +echo "CFLAGS=$CFLAGS"
+> > +echo "./configure $args"
+> > +./configure $args || exit 1
+> > +unset CFLAGS
+> > +if [ -z "$GITCOMPILE_NO_MAKE" ]; then
+> > +  make
+> > +fi
+> > diff --git a/src/conf/topology/sklrt286/data/configure.ac
+> > b/src/conf/topology/sklrt286/data/configure.ac
+> > new file mode 100644
+> > index 000000000000..72c9021edeaf
+> > --- /dev/null
+> > +++ b/src/conf/topology/sklrt286/data/configure.ac
+> > @@ -0,0 +1,30 @@
+> > +#                                               -*- Autoconf -*-
+> > +# Process this file with autoconf to produce a configure script.
+> > +
+> > +AC_PREREQ([2.69])
+> > +AC_INIT(pvt_data, [VERSION], [BUG-REPORT-ADDRESS])
+> > +AM_INIT_AUTOMAKE(pvt_data, 2.6)
+> > +AC_CONFIG_SRCDIR([pvt_data.c])
+> > +AC_CONFIG_HEADERS([])
+> > +
+> > +# Checks for programs.
+> > +AC_PROG_CC
+> > +
+> > +# Checks for libraries.
+> > +
+> > +# Checks for header files.
+> > +AC_CHECK_HEADERS([limits.h stdint.h])
+> > +
+> > +# Checks for typedefs, structures, and compiler characteristics.
+> > +AC_TYPE_INT16_T
+> > +AC_TYPE_INT32_T
+> > +AC_TYPE_INT8_T
+> > +AC_TYPE_UINT16_T
+> > +AC_TYPE_UINT32_T
+> > +AC_TYPE_UINT8_T
+> > +
+> > +# Checks for library functions.
+> > +AC_CHECK_FUNCS([memset strchr])
+> > +AC_CONFIG_FILES([Makefile])
+> > +
+> > +AC_OUTPUT
+> 
+> There is no special dependency here, so we can just add
+> src/conf/toplogty/*/data/Makefile.am in the toplevel configure.ac?
+
+Yes that seems better. Also please note if we do that alsa-lib can
+compile the data before it compiles skl topology so we can get rid of
+bnary blobs whcih are prebuilt and get them generated on alsa-lib
+compile.
+
+This will solve above header patch and will use std path in lib
+
+Is that okay with you?
+
+-- 
+~Vinod
