@@ -1,107 +1,88 @@
-From: =?UTF-8?Q?Emmanuel_Fust=c3=a9?= <emmanuel.fuste@laposte.net>
-Subject: simple-audio-card and external dynamic clock
-Date: Mon, 4 Apr 2016 23:56:16 +0200
-Message-ID: <5702E300.8060101@laposte.net>
-References: <56F46168.7040201@laposte.net>
-Reply-To: emmanuel.fuste@laposte.net
-Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.laposte.net (smtpoutz25.laposte.net [194.117.213.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 54E73261504
- for <alsa-devel@alsa-project.org>; Mon,  4 Apr 2016 23:56:14 +0200 (CEST)
-Received: from smtp.laposte.net (localhost [127.0.0.1])
- by lpn-prd-vrout013 (Postfix) with ESMTP id D352B1040B7
- for <alsa-devel@alsa-project.org>; Mon,  4 Apr 2016 23:56:13 +0200 (CEST)
-Received: from lpn-prd-vrin003 (lpn-prd-vrin003.laposte [10.128.63.4])
- by lpn-prd-vrout013 (Postfix) with ESMTP id CE68A1040B2
- for <alsa-devel@alsa-project.org>; Mon,  4 Apr 2016 23:56:13 +0200 (CEST)
-Received: from lpn-prd-vrin003 (localhost [127.0.0.1])
- by lpn-prd-vrin003 (Postfix) with ESMTP id B4A3348C380
- for <alsa-devel@alsa-project.org>; Mon,  4 Apr 2016 23:56:13 +0200 (CEST)
-In-Reply-To: <56F46168.7040201@laposte.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: peter.ujfalusi@ti.com
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: [RFC PATCH v2 0/5] Media Device Allocator API
+Date: Mon,  4 Apr 2016 21:35:55 -0600
+Message-ID: <cover.1459825702.git.shuahkh@osg.samsung.com>
+Return-path: <linux-media-owner@vger.kernel.org>
+Sender: linux-media-owner@vger.kernel.org
+To: mchehab@osg.samsung.com, laurent.pinchart@ideasonboard.com, perex@perex.cz, tiwai@suse.com, hans.verkuil@cisco.com, chehabrafael@gmail.com, javier@osg.samsung.com, jh1009.sung@samsung.com, ricard.wanderlof@axis.com, julian@jusst.de, pierre-louis.bossart@linux.intel.com, clemens@ladisch.de, dominic.sacre@gmx.de, takamichiho@gmail.com, johan@oljud.se, geliangtang@163.com
+Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Le 24/03/2016 22:51, Emmanuel Fust=E9 a =E9crit :
-> Hello,
->
-> I m very new to ASoC (and not native english speaker) so be indulgent ;-)
-> The context  : am335x-boneblack.
-> I want to drive simple I2S targets. With the ongoing developments, and =
+There are known problems with media device life time management. When media
+device is released while an media ioctl is in progress, ioctls fail with
+use-after-free errors and kernel hangs in some cases.
 
-> recent patches posted here, this is a very simple job for the =
+Media Device can be in any the following states:
 
-> simple-audio-card machine driver even with fixed external master clock.
-> I want to go further using a programmable external clock (si570) which =
+- Allocated
+- Registered (could be tied to more than one driver)
+- Unregistered, not in use (media device file is not open)
+- Unregistered, in use (media device file is not open)
+- Released
 
-> is not very complicated thanks to the CCF.
-> But now I want to use the dynamic nature of this external master clock =
+When media device belongs to  more than one driver, registrations should be
+tracked to avoid unregistering when one of the drivers does unregister. A new
+num_drivers field in the struct media_device covers this case. The media device
+should be unregistered only when the last unregister occurs with num_drivers
+count zero.
 
-> (through CCF) to be able to generate 44.1khz AND 48 multiples of fs =
+When a media device is in use when it is unregistered, it should not be
+released until the application exits when it detects the unregistered
+status. Media device that is in use when it is unregistered is moved to
+to_delete_list. When the last unregister occurs, media device is unregistered
+and becomes an unregistered, still allocated device. Unregister marks the
+device to be deleted.
 
-> which is not natively possible on the BBB because of integer fs =
+When media device belongs to more than one driver, as both drivers could be
+unbound/bound, driver should not end up getting stale media device that is
+on its way out. Moving the unregistered media device to to_delete_list helps
+this case as well.
 
-> scaling only and/or no dedicated audio PLL.
-> I know that the same could be achieved on the BBB with switching =
+I ran bind/unbind loop tests on uvcvideo, au0828, and snd-usb-audio while
+running application that does ioctls. Didn't see any use-after-free errors
+on media device. A couple of known issues seen:
 
-> between internal clock (24mhz) and external one (24.576mhz) gated by =
+1. When application exits, cdev_put() gets called after media device is
+   released. This is a known issue to resolve and Media Device Allocator
+   can't solve this one.
+2. When au0828 module is removed and then ioctls fail when cdev_get() looks
+   for the owning module as au0828 is very often the module that owns the
+   media devnode. This is a cdev related issue that needs to be resolved and
+   Media Device Allocator can't solve this one.
 
-> GPIO1_27, but this is another story.
->
-> Which direction is the right one ?
-> - dedicated machine driver ?
-> - or something more generic / reusable implemented in the =
+Shuah Khan (5):
+  media: Add Media Device Allocator API
+  media: Add driver count to keep track of media device registrations
+  media: uvcvideo change to use Media Device Allocator API
+  media: au0828 change to use Media Device Allocator API
+  sound/usb: Use Media Controller API to share media resources
 
-> simple-audio-card drivers through helpers routines ?
-> - or something else ?
->
+ drivers/media/Makefile                 |   3 +-
+ drivers/media/media-dev-allocator.c    | 154 ++++++++++++++++
+ drivers/media/media-device.c           |  49 ++++-
+ drivers/media/media-devnode.c          |  10 +-
+ drivers/media/usb/au0828/au0828-core.c |  40 +++--
+ drivers/media/usb/au0828/au0828.h      |   1 +
+ drivers/media/usb/uvc/uvc_driver.c     |  36 ++--
+ drivers/media/usb/uvc/uvcvideo.h       |   3 +-
+ include/media/media-dev-allocator.h    | 116 ++++++++++++
+ include/media/media-device.h           |  31 ++++
+ sound/usb/Kconfig                      |   4 +
+ sound/usb/Makefile                     |   2 +
+ sound/usb/card.c                       |  14 ++
+ sound/usb/card.h                       |   3 +
+ sound/usb/media.c                      | 320 +++++++++++++++++++++++++++++++++
+ sound/usb/media.h                      |  73 ++++++++
+ sound/usb/mixer.h                      |   3 +
+ sound/usb/pcm.c                        |  28 ++-
+ sound/usb/quirks-table.h               |   1 +
+ sound/usb/stream.c                     |   2 +
+ sound/usb/usbaudio.h                   |   6 +
+ 21 files changed, 862 insertions(+), 37 deletions(-)
+ create mode 100644 drivers/media/media-dev-allocator.c
+ create mode 100644 include/media/media-dev-allocator.h
+ create mode 100644 sound/usb/media.c
+ create mode 100644 sound/usb/media.h
 
-Ok,
-
-I did a little bit of homework and mailing list digging.
-If I understand the "problem"  correctly, here we are:
-- ASoc is now completely CCF aware
-- McASP driver is not, but it is not a real problem in most use cases =
-
-when we omit the possibilities offered by AHCLKX or if we use a static =
-
-AHCLKX configuration.
-My use case needs two different level of ccf work on the McASP driver:
-First, a "basic" conversion to CCF to be able to use simple-audio-card, =
-
-choosing the used clock (AHCLKX or AUXCLK) with the =
-
-assigned-clocks/assigned-clock-parents standard DT properties as it =
-
-seems to be the way to go (February discussion about selecting system =
-
-clocks by ID ).
-Next, a more advanced support for the external AHCLKX case, which could =
-
-be driven by a programmable clock (clk_set_rate available). Most use =
-
-cases would be covered by a 24mhz and 24.576mhz AHCLKX and the correct =
-
-divisors sets as need by the McASP driver.
-With more complexity, arbitrary I2S rate (with arbitrary AHCLKX) or =
-
-better accuracy ( dynamic switching between internal AUXCLK @24mhz and =
-
-external fixed AHCLKX @24.576mhz) could be achieved.
-And no need for a machine driver, simple-audio-card would be sufficient.
-
-Right ?
-
-Emmanuel.
+-- 
+2.5.0
