@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [RFC PATCH v2 2/5] media: Add driver count to keep track of media device registrations
-Date: Mon,  4 Apr 2016 21:35:57 -0600
-Message-ID: <07bb92168242dc8a30338cf2978b22ec31395dc3.1459825702.git.shuahkh@osg.samsung.com>
+Subject: [RFC PATCH v2 1/5] media: Add Media Device Allocator API
+Date: Mon,  4 Apr 2016 21:35:56 -0600
+Message-ID: <11649550bd418b55f48000b5354ab70b1b52a1e8.1459825702.git.shuahkh@osg.samsung.com>
 References: <cover.1459825702.git.shuahkh@osg.samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1459825702.git.shuahkh@osg.samsung.com>
@@ -12,218 +12,319 @@ To: mchehab@osg.samsung.com, laurent.pinchart@ideasonboard.com, perex@perex.cz, 
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add driver count to keep track of media device registrations to avoid
-releasing the media device, when one of the drivers does unregister when
-media device belongs to more than one driver. Also add a new interfaces
-to unregister a media device allocated using Media Device Allocator and
-a increment register count.
+Add Media Device Allocator API to manage Media Device life time problems.
+There are known problems with media device life time management. When media
+device is released while an media ioctl is in progress, ioctls fail with
+use-after-free errors and kernel hangs in some cases.
 
-Change media_open() to get media device reference and put the reference
-in media_release().
+Media Allocator API provides interfaces to allocate a refcounted media
+device instance from system wide global list and maintains the state until
+the last user of the media device releases it.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/media-device.c  | 49 ++++++++++++++++++++++++++++++++++++++++++-
- drivers/media/media-devnode.c | 10 ++++++---
- include/media/media-device.h  | 31 +++++++++++++++++++++++++++
- 3 files changed, 86 insertions(+), 4 deletions(-)
+ drivers/media/Makefile              |   3 +-
+ drivers/media/media-dev-allocator.c | 154 ++++++++++++++++++++++++++++++++++++
+ include/media/media-dev-allocator.h | 116 +++++++++++++++++++++++++++
+ 3 files changed, 272 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/media/media-dev-allocator.c
+ create mode 100644 include/media/media-dev-allocator.h
 
-diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
-index 6e43c95..f22cf0f 100644
---- a/drivers/media/media-device.c
-+++ b/drivers/media/media-device.c
-@@ -36,6 +36,7 @@
- #include <media/media-device.h>
- #include <media/media-devnode.h>
- #include <media/media-entity.h>
-+#include <media/media-dev-allocator.h>
+diff --git a/drivers/media/Makefile b/drivers/media/Makefile
+index e608bbc..b08f091 100644
+--- a/drivers/media/Makefile
++++ b/drivers/media/Makefile
+@@ -2,7 +2,8 @@
+ # Makefile for the kernel multimedia device drivers.
+ #
  
- #ifdef CONFIG_MEDIA_CONTROLLER
+-media-objs	:= media-device.o media-devnode.o media-entity.o
++media-objs	:= media-device.o media-devnode.o media-entity.o \
++		   media-dev-allocator.o
  
-@@ -743,12 +744,31 @@ int __must_check __media_device_register(struct media_device *mdev,
- 		return ret;
- 	}
- 
--	dev_dbg(mdev->dev, "Media device registered\n");
-+	mdev->num_drivers++;
-+	dev_dbg(mdev->dev, "Media device registered num_drivers %d\n",
-+		mdev->num_drivers);
- 
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(__media_device_register);
- 
-+void media_device_register_ref(struct media_device *mdev)
+ #
+ # I2C drivers should come before other drivers, otherwise they'll fail
+diff --git a/drivers/media/media-dev-allocator.c b/drivers/media/media-dev-allocator.c
+new file mode 100644
+index 0000000..8c3a5f0
+--- /dev/null
++++ b/drivers/media/media-dev-allocator.c
+@@ -0,0 +1,154 @@
++/*
++ * media-devkref.c - Media Controller Device Allocator API
++ *
++ * Copyright (c) 2016 Shuah Khan <shuahkh@osg.samsung.com>
++ * Copyright (c) 2016 Samsung Electronics Co., Ltd.
++ *
++ * This file is released under the GPLv2.
++ * Credits: Suggested by Laurent Pinchart <laurent.pinchart@ideasonboard.com>
++ */
++
++/*
++ * This file adds Media Controller Device Instance with
++ * Kref support. A system wide global media device list
++ * is managed and each  media device is refcounted. The
++ * last put on the media device releases the media device
++ * instance.
++*/
++
++#include <linux/slab.h>
++#include <linux/kref.h>
++#include <media/media-device.h>
++
++static LIST_HEAD(media_device_list);
++static LIST_HEAD(media_device_to_delete_list);
++static DEFINE_MUTEX(media_device_lock);
++
++struct media_device_instance {
++	struct media_device mdev;
++	struct list_head list;
++	struct device *dev;
++	struct kref refcount;
++	bool to_delete; /* should be set when devnode is deleted */
++};
++
++static struct media_device *__media_device_get(struct device *dev,
++					       bool allocate, bool get_kref)
 +{
-+	if (!mdev)
-+		return;
++	struct media_device_instance *mdi;
 +
-+	mutex_lock(&mdev->graph_mutex);
++	mutex_lock(&media_device_lock);
 +
-+	/* Check if mdev is registered - bump registered driver count */
-+	if (media_devnode_is_registered(&mdev->devnode))
-+		mdev->num_drivers++;
-+
-+	dev_dbg(mdev->dev, "%s: mdev %p num_drivers %d\n", __func__, mdev,
-+		mdev->num_drivers);
-+	mutex_unlock(&mdev->graph_mutex);
-+}
-+EXPORT_SYMBOL_GPL(media_device_register_ref);
-+
- int __must_check media_device_register_entity_notify(struct media_device *mdev,
- 					struct media_entity_notify *nptr)
- {
-@@ -820,6 +840,33 @@ void media_device_unregister(struct media_device *mdev)
- }
- EXPORT_SYMBOL_GPL(media_device_unregister);
- 
-+void media_device_unregister_put(struct media_device *mdev)
-+{
-+	if (mdev == NULL)
-+		return;
-+
-+	dev_dbg(mdev->dev, "%s: mdev %p num_drivers %d\n", __func__, mdev,
-+		mdev->num_drivers);
-+
-+	mutex_lock(&mdev->graph_mutex);
-+	mdev->num_drivers--;
-+	if (mdev->num_drivers == 0) {
-+		mutex_unlock(&mdev->graph_mutex);
-+
-+		/* unregister media device and cleanup */
-+		media_device_unregister(mdev);
-+		media_device_cleanup(mdev);
-+
-+		/* mark the media device for deletion */
-+		media_device_set_to_delete_state(mdev->dev);
-+	} else
-+		mutex_unlock(&mdev->graph_mutex);
-+
-+	dev_dbg(mdev->dev, "%s: end mdev %p num_drivers %d\n", __func__, mdev,
-+		mdev->num_drivers);
-+}
-+EXPORT_SYMBOL_GPL(media_device_unregister_put);
-+
- static void media_device_release_devres(struct device *dev, void *res)
- {
- }
-diff --git a/drivers/media/media-devnode.c b/drivers/media/media-devnode.c
-index 29409f4..ec18815 100644
---- a/drivers/media/media-devnode.c
-+++ b/drivers/media/media-devnode.c
-@@ -44,6 +44,7 @@
- #include <linux/uaccess.h>
- 
- #include <media/media-devnode.h>
-+#include <media/media-dev-allocator.h>
- 
- #define MEDIA_NUM_DEVICES	256
- #define MEDIA_NAME		"media"
-@@ -173,7 +174,6 @@ static int media_open(struct inode *inode, struct file *filp)
- 	}
- 	/* and increase the device refcount */
- 	get_device(&mdev->dev);
--	mutex_unlock(&media_devnode_lock);
- 
- 	filp->private_data = mdev;
- 
-@@ -182,11 +182,14 @@ static int media_open(struct inode *inode, struct file *filp)
- 		if (ret) {
- 			put_device(&mdev->dev);
- 			filp->private_data = NULL;
--			return ret;
++	list_for_each_entry(mdi, &media_device_list, list) {
++		if (mdi->dev == dev) {
++			if (get_kref) {
++				kref_get(&mdi->refcount);
++				pr_debug("%s: mdev=%p\n", __func__, &mdi->mdev);
++			}
 +			goto done;
- 		}
- 	}
- 
--	return 0;
-+	media_device_get_ref(mdev->parent);
++		}
++	}
++
++	if (!allocate) {
++		mdi = NULL;
++		goto done;
++	}
++
++	mdi = kzalloc(sizeof(*mdi), GFP_KERNEL);
++	if (!mdi)
++		goto done;
++
++	mdi->dev = dev;
++	kref_init(&mdi->refcount);
++	list_add_tail(&mdi->list, &media_device_list);
++	pr_debug("%s: mdev=%p\n", __func__, &mdi->mdev);
++
 +done:
-+	mutex_unlock(&media_devnode_lock);
-+	return ret;
- }
- 
- /* Override for the release function */
-@@ -201,6 +204,7 @@ static int media_release(struct inode *inode, struct file *filp)
- 	   return value is ignored. */
- 	put_device(&mdev->dev);
- 	filp->private_data = NULL;
-+	media_device_put(mdev->parent);
- 	return 0;
- }
- 
-diff --git a/include/media/media-device.h b/include/media/media-device.h
-index df74cfa..aaeac7a 100644
---- a/include/media/media-device.h
-+++ b/include/media/media-device.h
-@@ -284,6 +284,7 @@ struct media_entity_notify {
-  * struct media_device - Media device
-  * @dev:	Parent device
-  * @devnode:	Media device node
-+ * @num_drivers: Number of drivers that own the media device and register.
-  * @driver_name: Optional device driver name. If not set, calls to
-  *		%MEDIA_IOC_DEVICE_INFO will return dev->driver->name.
-  *		This is needed for USB drivers for example, as otherwise
-@@ -349,6 +350,7 @@ struct media_device {
- 	/* dev->driver_data points to this struct. */
- 	struct device *dev;
- 	struct media_devnode devnode;
-+	int num_drivers;
- 
- 	char model[32];
- 	char driver_name[32];
-@@ -494,6 +496,17 @@ int __must_check __media_device_register(struct media_device *mdev,
- #define media_device_register(mdev) __media_device_register(mdev, THIS_MODULE)
- 
- /**
-+ * media_device_register_ref() - Increments media device register driver count
-+ *
-+ * @mdev:	pointer to struct &media_device
-+ *
-+ * When more than one driver is associated with the media device, it is
-+ * necessary to maintain the number of registrations to avoid unregister
-+ * when it is still in use.
-+ */
-+void media_device_register_ref(struct media_device *mdev);
++	mutex_unlock(&media_device_lock);
 +
-+/**
-  * __media_device_unregister() - Unegisters a media device element
-  *
-  * @mdev:	pointer to struct &media_device
-@@ -505,6 +518,18 @@ int __must_check __media_device_register(struct media_device *mdev,
- void media_device_unregister(struct media_device *mdev);
- 
- /**
-+ * media_device_unregister_put() - Unregisters a media device element
-+ *
-+ * @mdev:	pointer to struct &media_device
-+ *
-+ * Should be called to unregister media device allocated with Media Device
-+ * Allocator API media_device_get() interface.
-+ * It is safe to call this function on an unregistered (but initialised)
-+ * media device.
-+ */
-+void media_device_unregister_put(struct media_device *mdev);
++	return mdi ? &mdi->mdev : NULL;
++}
 +
++struct media_device *media_device_get(struct device *dev)
++{
++	pr_debug("%s\n", __func__);
++	return __media_device_get(dev, true, true);
++}
++EXPORT_SYMBOL_GPL(media_device_get);
++
++/* Don't increment kref - this is a search and find */
++struct media_device *media_device_find(struct device *dev)
++{
++	pr_debug("%s\n", __func__);
++	return __media_device_get(dev, false, false);
++}
++EXPORT_SYMBOL_GPL(media_device_find);
++
++/* don't allocate - increment kref if one is found */
++struct media_device *media_device_get_ref(struct device *dev)
++{
++	pr_debug("%s\n", __func__);
++	return __media_device_get(dev, false, true);
++}
++EXPORT_SYMBOL_GPL(media_device_get_ref);
++
++static void media_device_instance_release(struct kref *kref)
++{
++	struct media_device_instance *mdi =
++		container_of(kref, struct media_device_instance, refcount);
++
++	pr_debug("%s: mdev=%p\n", __func__, &mdi->mdev);
++
++	list_del(&mdi->list);
++	kfree(mdi);
++}
++
++void media_device_put(struct device *dev)
++{
++	struct media_device_instance *mdi;
++
++	mutex_lock(&media_device_lock);
++	/* search first in the media_device_list */
++	list_for_each_entry(mdi, &media_device_list, list) {
++		if (mdi->dev == dev) {
++			pr_debug("%s: mdev=%p\n", __func__, &mdi->mdev);
++			kref_put(&mdi->refcount, media_device_instance_release);
++			goto done;
++		}
++		pr_debug("%s: media_device_list mdev=%p\n", __func__,
++			&mdi->mdev);
++	}
++	/* search in the media_device_to_delete_list */
++	list_for_each_entry(mdi, &media_device_to_delete_list, list) {
++		if (mdi->dev == dev) {
++			pr_debug("%s: mdev=%p\n", __func__, &mdi->mdev);
++			kref_put(&mdi->refcount,
++				 media_device_instance_release);
++			goto done;
++		}
++		pr_debug("%s: media_device_to_delete_list mdev=%p\n", __func__,
++			&mdi->mdev);
++	}
++done:
++	mutex_unlock(&media_device_lock);
++}
++EXPORT_SYMBOL_GPL(media_device_put);
++
++void media_device_set_to_delete_state(struct device *dev)
++{
++	struct media_device_instance *mdi;
++
++	mutex_lock(&media_device_lock);
++	list_for_each_entry(mdi, &media_device_list, list) {
++		if (mdi->dev == dev) {
++			pr_debug("%s: mdev=%p\n", __func__, &mdi->mdev);
++			mdi->to_delete = true;
++			list_move_tail(&mdi->list,
++				       &media_device_to_delete_list);
++			goto done;
++		}
++	}
++done:
++	mutex_unlock(&media_device_lock);
++}
++EXPORT_SYMBOL_GPL(media_device_set_to_delete_state);
+diff --git a/include/media/media-dev-allocator.h b/include/media/media-dev-allocator.h
+new file mode 100644
+index 0000000..6003bad
+--- /dev/null
++++ b/include/media/media-dev-allocator.h
+@@ -0,0 +1,116 @@
++/*
++ * media-devkref.c - Media Controller Device Allocator API
++ *
++ * Copyright (c) 2016 Shuah Khan <shuahkh@osg.samsung.com>
++ * Copyright (c) 2016 Samsung Electronics Co., Ltd.
++ *
++ * This file is released under the GPLv2.
++ * Credits: Suggested by Laurent Pinchart <laurent.pinchart@ideasonboard.com>
++ */
++
++/*
++ * This file adds Media Controller Device Instance with Kref support.
++ * A system wide global media device list is managed and each media
++ * device is refcounted. The last put on the media device releases
++ * the media device instance.
++*/
++
++#ifndef _MEDIA_DEV_ALLOCTOR_H
++#define _MEDIA_DEV_ALLOCTOR_H
++
++#ifdef CONFIG_MEDIA_CONTROLLER
 +/**
-  * media_device_register_entity() - registers a media entity inside a
-  *	previously registered media device.
-  *
-@@ -661,9 +686,15 @@ static inline int media_device_register(struct media_device *mdev)
- {
- 	return 0;
- }
-+static inline void media_device_register_ref(struct media_device *mdev)
-+{
-+}
- static inline void media_device_unregister(struct media_device *mdev)
- {
- }
-+static inline void media_device_unregister_put(struct media_device *mdev)
-+{
-+}
- static inline int media_device_register_entity(struct media_device *mdev,
- 						struct media_entity *entity)
- {
++ * DOC: Media Controller Device Allocator API
++ * There are known problems with media device life time management. When media
++ * device is released while an media ioctl is in progress, ioctls fail with
++ * use-after-free errors and kernel hangs in some cases.
++ *
++ * Media Device can be in any the following states:
++ *
++ * - Allocated
++ * - Registered (could be tied to more than one driver)
++ * - Unregistered, not in use (media device file is not open)
++ * - Unregistered, in use (media device file is not open)
++ * - Released
++ *
++ * When media device belongs to  more than one driver, registrations should be
++ * refcounted to avoid unregistering when one of the drivers does unregister.
++ * A refcount field in the struct media_device covers this case. Unregister on
++ * a Media Allocator media device is a kref_put() call. The media device should
++ * be unregistered only when the last unregister occurs.
++ *
++ * When a media device is in use when it is unregistered, it should not be
++ * released until the application exits when it detects the unregistered
++ * status. Media device that is in use when it is unregistered is moved to
++ * to_delete_list. When the last unregister occurs, media device is unregistered
++ * and becomes an unregistered, still allocated device. Unregister marks the
++ * device to be deleted.
++ *
++ * When media device belongs to more than one driver, as both drivers could be
++ * unbound/bound, driver should not end up getting stale media device that is
++ * on its way out. Moving the unregistered media device to to_delete_list helps
++ * this case as well.
++ */
++/**
++ * media_device_get() - Allocate and return global media device
++ *
++ * @mdev
++ *
++ * This interface should be called to allocate media device. A new media
++ * device instance is created and added to the system wide media device
++ * instance list. If media device instance exists, media_device_get()
++ * increments the reference count and returns the media device. When
++ * more than one driver control the media device, the first driver to
++ * probe will allocate and the second driver when it calls media_device_get()
++ * it will get a reference.
++ *
++ */
++struct media_device *media_device_get(struct device *dev);
++/**
++ * media_device_get_ref() - Get reference to an allocated and registered
++ *			    media device.
++ *
++ * @mdev
++ *
++ * This interface should be called to get a reference to an allocated media
++ * device. media_open() ioctl should call this to hold a reference to ensure
++ * the media device will not be released until the media_release() does a put
++ * on it.
++ */
++struct media_device *media_device_get_ref(struct device *dev);
++/**
++ * media_device_find() - Find an allocated and registered media device.
++ *
++ * @mdev
++ *
++ * This interface should be called to find a media device. This will not
++ * incremnet the reference count.
++ */
++struct media_device *media_device_find(struct device *dev);
++/**
++ * media_device_put() - Release refcounted media device. Calls kref_put()
++ *
++ * @mdev
++ *
++ * This interface should be called to decrement refcount.
++ */
++void media_device_put(struct device *dev);
++/**
++ * media_device_set_to_delete_state() - Set the state to be deleted.
++ *
++ * @mdev
++ *
++ * This interface is used to not release the media device under from
++ * an active ioctl if unregister happens.
++ */
++void media_device_set_to_delete_state(struct device *dev);
++#else
++static inline struct media_device *media_device_get(struct device *dev)
++			{ return NULL; }
++static inline struct media_device *media_device_get_ref(struct device *dev);
++static inline struct media_device *media_device_find(struct device *dev)
++			{ return NULL; }
++static inline void media_device_put(struct device *dev) { }
++static inline void media_device_set_to_delete_state(struct device *dev) { }
++#endif /* CONFIG_MEDIA_CONTROLLER */
++#endif
 -- 
 2.5.0
