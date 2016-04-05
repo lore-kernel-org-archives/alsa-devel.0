@@ -1,15 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
 Subject: [PATCH v2 0/2] conf: topology: Add the conf for
 	SKL-rt286
-Date: Mon,  4 Apr 2016 22:04:23 -0700
-Message-ID: <1459832665-11015-1-git-send-email-vinod.koul@intel.com>
+Date: Mon,  4 Apr 2016 22:20:03 -0700
+Message-ID: <1459833605-11223-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 413032608CF
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2016 07:04:44 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 09FD626170F
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2016 07:20:10 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
