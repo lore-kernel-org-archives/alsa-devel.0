@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [RFC PATCH v2 3/5] media: uvcvideo change to use Media Device Allocator API
-Date: Mon,  4 Apr 2016 21:35:58 -0600
-Message-ID: <7788c0ae7eea624d5d855358d781cd99a3e3f95f.1459825702.git.shuahkh@osg.samsung.com>
+Subject: [RFC PATCH v2 2/5] media: Add driver count to keep track of media device registrations
+Date: Mon,  4 Apr 2016 21:35:57 -0600
+Message-ID: <07bb92168242dc8a30338cf2978b22ec31395dc3.1459825702.git.shuahkh@osg.samsung.com>
 References: <cover.1459825702.git.shuahkh@osg.samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1459825702.git.shuahkh@osg.samsung.com>
@@ -12,104 +12,218 @@ To: mchehab@osg.samsung.com, laurent.pinchart@ideasonboard.com, perex@perex.cz, 
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Change uvcvideo to use Media Device Allocator API and new Media Controller
-media_device_unregister_put() interface.
+Add driver count to keep track of media device registrations to avoid
+releasing the media device, when one of the drivers does unregister when
+media device belongs to more than one driver. Also add a new interfaces
+to unregister a media device allocated using Media Device Allocator and
+a increment register count.
+
+Change media_open() to get media device reference and put the reference
+in media_release().
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/usb/uvc/uvc_driver.c | 36 ++++++++++++++++++++++--------------
- drivers/media/usb/uvc/uvcvideo.h   |  3 ++-
- 2 files changed, 24 insertions(+), 15 deletions(-)
+ drivers/media/media-device.c  | 49 ++++++++++++++++++++++++++++++++++++++++++-
+ drivers/media/media-devnode.c | 10 ++++++---
+ include/media/media-device.h  | 31 +++++++++++++++++++++++++++
+ 3 files changed, 86 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 451e84e9..95e30c4 100644
---- a/drivers/media/usb/uvc/uvc_driver.c
-+++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -1674,9 +1674,10 @@ static void uvc_delete(struct uvc_device *dev)
- 	if (dev->vdev.dev)
- 		v4l2_device_unregister(&dev->vdev);
- #ifdef CONFIG_MEDIA_CONTROLLER
--	if (media_devnode_is_registered(&dev->mdev.devnode))
--		media_device_unregister(&dev->mdev);
--	media_device_cleanup(&dev->mdev);
-+	if (media_devnode_is_registered(&dev->mdev->devnode)) {
-+		media_device_unregister_put(dev->mdev);
-+		media_device_put(dev->mdev->dev);
-+	}
- #endif
- 
- 	list_for_each_safe(p, n, &dev->chains) {
-@@ -1929,17 +1930,20 @@ static int uvc_probe(struct usb_interface *intf,
- 
- 	/* Initialize the media device and register the V4L2 device. */
- #ifdef CONFIG_MEDIA_CONTROLLER
--	dev->mdev.dev = &intf->dev;
--	strlcpy(dev->mdev.model, dev->name, sizeof(dev->mdev.model));
-+	dev->mdev = media_device_get(&intf->dev);
-+	if (!dev->mdev)
-+		goto media_device_get_error;
-+	dev->mdev->dev = &intf->dev;
-+	strlcpy(dev->mdev->model, dev->name, sizeof(dev->mdev->model));
- 	if (udev->serial)
--		strlcpy(dev->mdev.serial, udev->serial,
--			sizeof(dev->mdev.serial));
--	strcpy(dev->mdev.bus_info, udev->devpath);
--	dev->mdev.hw_revision = le16_to_cpu(udev->descriptor.bcdDevice);
--	dev->mdev.driver_version = LINUX_VERSION_CODE;
--	media_device_init(&dev->mdev);
--
--	dev->vdev.mdev = &dev->mdev;
-+		strlcpy(dev->mdev->serial, udev->serial,
-+			sizeof(dev->mdev->serial));
-+	strcpy(dev->mdev->bus_info, udev->devpath);
-+	dev->mdev->hw_revision = le16_to_cpu(udev->descriptor.bcdDevice);
-+	dev->mdev->driver_version = LINUX_VERSION_CODE;
-+	media_device_init(dev->mdev);
-+
-+	dev->vdev.mdev = dev->mdev;
- #endif
- 	if (v4l2_device_register(&intf->dev, &dev->vdev) < 0)
- 		goto error;
-@@ -1958,7 +1962,7 @@ static int uvc_probe(struct usb_interface *intf,
- 
- #ifdef CONFIG_MEDIA_CONTROLLER
- 	/* Register the media device node */
--	if (media_device_register(&dev->mdev) < 0)
-+	if (media_device_register(dev->mdev) < 0)
- 		goto error;
- #endif
- 	/* Save our data pointer in the interface data. */
-@@ -1976,6 +1980,10 @@ static int uvc_probe(struct usb_interface *intf,
- 	return 0;
- 
- error:
-+#ifdef CONFIG_MEDIA_CONTROLLER
-+	media_device_put(&intf->dev);
-+media_device_get_error:
-+#endif
- 	uvc_unregister_video(dev);
- 	return -ENODEV;
- }
-diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-index 7e4d3ee..a5ef719 100644
---- a/drivers/media/usb/uvc/uvcvideo.h
-+++ b/drivers/media/usb/uvc/uvcvideo.h
-@@ -12,6 +12,7 @@
- #include <linux/uvcvideo.h>
- #include <linux/videodev2.h>
+diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
+index 6e43c95..f22cf0f 100644
+--- a/drivers/media/media-device.c
++++ b/drivers/media/media-device.c
+@@ -36,6 +36,7 @@
  #include <media/media-device.h>
+ #include <media/media-devnode.h>
+ #include <media/media-entity.h>
 +#include <media/media-dev-allocator.h>
- #include <media/v4l2-device.h>
- #include <media/v4l2-event.h>
- #include <media/v4l2-fh.h>
-@@ -543,7 +544,7 @@ struct uvc_device {
  
- 	/* Video control interface */
  #ifdef CONFIG_MEDIA_CONTROLLER
--	struct media_device mdev;
-+	struct media_device *mdev;
- #endif
- 	struct v4l2_device vdev;
- 	__u16 uvc_version;
+ 
+@@ -743,12 +744,31 @@ int __must_check __media_device_register(struct media_device *mdev,
+ 		return ret;
+ 	}
+ 
+-	dev_dbg(mdev->dev, "Media device registered\n");
++	mdev->num_drivers++;
++	dev_dbg(mdev->dev, "Media device registered num_drivers %d\n",
++		mdev->num_drivers);
+ 
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(__media_device_register);
+ 
++void media_device_register_ref(struct media_device *mdev)
++{
++	if (!mdev)
++		return;
++
++	mutex_lock(&mdev->graph_mutex);
++
++	/* Check if mdev is registered - bump registered driver count */
++	if (media_devnode_is_registered(&mdev->devnode))
++		mdev->num_drivers++;
++
++	dev_dbg(mdev->dev, "%s: mdev %p num_drivers %d\n", __func__, mdev,
++		mdev->num_drivers);
++	mutex_unlock(&mdev->graph_mutex);
++}
++EXPORT_SYMBOL_GPL(media_device_register_ref);
++
+ int __must_check media_device_register_entity_notify(struct media_device *mdev,
+ 					struct media_entity_notify *nptr)
+ {
+@@ -820,6 +840,33 @@ void media_device_unregister(struct media_device *mdev)
+ }
+ EXPORT_SYMBOL_GPL(media_device_unregister);
+ 
++void media_device_unregister_put(struct media_device *mdev)
++{
++	if (mdev == NULL)
++		return;
++
++	dev_dbg(mdev->dev, "%s: mdev %p num_drivers %d\n", __func__, mdev,
++		mdev->num_drivers);
++
++	mutex_lock(&mdev->graph_mutex);
++	mdev->num_drivers--;
++	if (mdev->num_drivers == 0) {
++		mutex_unlock(&mdev->graph_mutex);
++
++		/* unregister media device and cleanup */
++		media_device_unregister(mdev);
++		media_device_cleanup(mdev);
++
++		/* mark the media device for deletion */
++		media_device_set_to_delete_state(mdev->dev);
++	} else
++		mutex_unlock(&mdev->graph_mutex);
++
++	dev_dbg(mdev->dev, "%s: end mdev %p num_drivers %d\n", __func__, mdev,
++		mdev->num_drivers);
++}
++EXPORT_SYMBOL_GPL(media_device_unregister_put);
++
+ static void media_device_release_devres(struct device *dev, void *res)
+ {
+ }
+diff --git a/drivers/media/media-devnode.c b/drivers/media/media-devnode.c
+index 29409f4..ec18815 100644
+--- a/drivers/media/media-devnode.c
++++ b/drivers/media/media-devnode.c
+@@ -44,6 +44,7 @@
+ #include <linux/uaccess.h>
+ 
+ #include <media/media-devnode.h>
++#include <media/media-dev-allocator.h>
+ 
+ #define MEDIA_NUM_DEVICES	256
+ #define MEDIA_NAME		"media"
+@@ -173,7 +174,6 @@ static int media_open(struct inode *inode, struct file *filp)
+ 	}
+ 	/* and increase the device refcount */
+ 	get_device(&mdev->dev);
+-	mutex_unlock(&media_devnode_lock);
+ 
+ 	filp->private_data = mdev;
+ 
+@@ -182,11 +182,14 @@ static int media_open(struct inode *inode, struct file *filp)
+ 		if (ret) {
+ 			put_device(&mdev->dev);
+ 			filp->private_data = NULL;
+-			return ret;
++			goto done;
+ 		}
+ 	}
+ 
+-	return 0;
++	media_device_get_ref(mdev->parent);
++done:
++	mutex_unlock(&media_devnode_lock);
++	return ret;
+ }
+ 
+ /* Override for the release function */
+@@ -201,6 +204,7 @@ static int media_release(struct inode *inode, struct file *filp)
+ 	   return value is ignored. */
+ 	put_device(&mdev->dev);
+ 	filp->private_data = NULL;
++	media_device_put(mdev->parent);
+ 	return 0;
+ }
+ 
+diff --git a/include/media/media-device.h b/include/media/media-device.h
+index df74cfa..aaeac7a 100644
+--- a/include/media/media-device.h
++++ b/include/media/media-device.h
+@@ -284,6 +284,7 @@ struct media_entity_notify {
+  * struct media_device - Media device
+  * @dev:	Parent device
+  * @devnode:	Media device node
++ * @num_drivers: Number of drivers that own the media device and register.
+  * @driver_name: Optional device driver name. If not set, calls to
+  *		%MEDIA_IOC_DEVICE_INFO will return dev->driver->name.
+  *		This is needed for USB drivers for example, as otherwise
+@@ -349,6 +350,7 @@ struct media_device {
+ 	/* dev->driver_data points to this struct. */
+ 	struct device *dev;
+ 	struct media_devnode devnode;
++	int num_drivers;
+ 
+ 	char model[32];
+ 	char driver_name[32];
+@@ -494,6 +496,17 @@ int __must_check __media_device_register(struct media_device *mdev,
+ #define media_device_register(mdev) __media_device_register(mdev, THIS_MODULE)
+ 
+ /**
++ * media_device_register_ref() - Increments media device register driver count
++ *
++ * @mdev:	pointer to struct &media_device
++ *
++ * When more than one driver is associated with the media device, it is
++ * necessary to maintain the number of registrations to avoid unregister
++ * when it is still in use.
++ */
++void media_device_register_ref(struct media_device *mdev);
++
++/**
+  * __media_device_unregister() - Unegisters a media device element
+  *
+  * @mdev:	pointer to struct &media_device
+@@ -505,6 +518,18 @@ int __must_check __media_device_register(struct media_device *mdev,
+ void media_device_unregister(struct media_device *mdev);
+ 
+ /**
++ * media_device_unregister_put() - Unregisters a media device element
++ *
++ * @mdev:	pointer to struct &media_device
++ *
++ * Should be called to unregister media device allocated with Media Device
++ * Allocator API media_device_get() interface.
++ * It is safe to call this function on an unregistered (but initialised)
++ * media device.
++ */
++void media_device_unregister_put(struct media_device *mdev);
++
++/**
+  * media_device_register_entity() - registers a media entity inside a
+  *	previously registered media device.
+  *
+@@ -661,9 +686,15 @@ static inline int media_device_register(struct media_device *mdev)
+ {
+ 	return 0;
+ }
++static inline void media_device_register_ref(struct media_device *mdev)
++{
++}
+ static inline void media_device_unregister(struct media_device *mdev)
+ {
+ }
++static inline void media_device_unregister_put(struct media_device *mdev)
++{
++}
+ static inline int media_device_register_entity(struct media_device *mdev,
+ 						struct media_entity *entity)
+ {
 -- 
 2.5.0
