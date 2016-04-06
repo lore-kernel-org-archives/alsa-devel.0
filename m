@@ -1,90 +1,28 @@
-From: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH 6/6] ARM: DTS: da850: Add McBSP0 and McBSP1
-Date: Wed,  6 Apr 2016 15:21:33 +0200
-Message-ID: <1459948893-4206-7-git-send-email-petr@barix.com>
-References: <1459948893-4206-1-git-send-email-petr@barix.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1459948893-4206-1-git-send-email-petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: nsekhar-l0cyMroinI0@public.gmane.org, khilman-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+From: Petr Kulhavy <petr@barix.com>
+Subject: [PATCH 0/6] ASoC: davinci-mcbsp: add binding for McBSP
+Date: Wed,  6 Apr 2016 15:21:27 +0200
+Message-ID: <1459948893-4206-1-git-send-email-petr@barix.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f50.google.com (mail-wm0-f50.google.com [74.125.82.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 45A5B265DAC
+ for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 15:21:44 +0200 (CEST)
+Received: by mail-wm0-f50.google.com with SMTP id u206so45349081wme.1
+ for <alsa-devel@alsa-project.org>; Wed, 06 Apr 2016 06:21:44 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: nsekhar@ti.com, khilman@kernel.org, lgirdwood@gmail.com, broonie@kernel.org, devicetree@vger.kernel.org
+Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, Petr Kulhavy <petr@barix.com>, robh+dt@kernel.org, galak@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-Add SoC nodes for McBSP0 and McBSP1 as well as the corresponding pinmux
-configurations.
-
-Signed-off-by: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
----
- arch/arm/boot/dts/da850.dtsi | 45 +++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 44 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm/boot/dts/da850.dtsi b/arch/arm/boot/dts/da850.dtsi
-index 5996e765e59c..9e2b1e97377c 100644
---- a/arch/arm/boot/dts/da850.dtsi
-+++ b/arch/arm/boot/dts/da850.dtsi
-@@ -148,7 +148,24 @@
- 					0xc 0x88888888 0xffffffff
- 				>;
- 			};
--
-+			mcbsp0_pins: pinmux_mcbsp0_pins {
-+				pinctrl-single,bits = <
-+					/* PINMUX2:
-+					* CLKS0, DX0, DR0, FSX0
-+					* FSR0, CLKX0, CLKR0
-+					*/
-+					0x8 0x02222220 0xfffffff0
-+				>;
-+			};
-+			mcbsp1_pins: pinmux_mcbsp1_pins {
-+				pinctrl-single,bits = <
-+					/* PINMUX1:
-+					* CLKS1, DX1, DR1, FSX1,
-+					* FSR1, CLKX1, CLKR1
-+					*/
-+					0x4 0x22222220 0xfffffff0
-+				>;
-+			};
- 		};
- 		edma0: edma@01c00000 {
- 			compatible = "ti,edma3-tpcc";
-@@ -335,6 +352,32 @@
- 				<&edma0 0 1>;
- 			dma-names = "tx", "rx";
- 		};
-+
-+		mcbsp0: mcbsp@1d10000 {
-+			compatible = "ti,da850-mcbsp-audio";
-+			reg =	<0x00110000 0x1000>,
-+				<0x00310000 0x1000>;
-+			reg-names = "mpu", "dat";
-+			interrupts = <97 98>;
-+			interrupts-names = "rx", "tx";
-+			dmas = <&edma0 3
-+				&edma0 2>;
-+			dma-names = "tx", "rx";
-+			status = "disabled";
-+		};
-+		mcbsp1: mcbsp@1d11000 {
-+			compatible = "ti,da850-mcbsp-audio";
-+			reg =	<0x00111000 0x1000>,
-+				<0x00311000 0x1000>;
-+			reg-names = "mpu", "dat";
-+			interrupts = <99 100>;
-+			interrupts-names = "rx", "tx";
-+			dmas = <&edma0 5
-+				&edma0 4>;
-+			dma-names = "tx", "rx";
-+			status = "disabled";
-+		};
-+
- 	};
- 	nand_cs3@62000000 {
- 		compatible = "ti,davinci-nand";
--- 
-1.9.1
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+This series of patches adds devicetree support for the davinci McBSP audio
+interface.
