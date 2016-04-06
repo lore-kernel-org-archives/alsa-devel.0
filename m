@@ -1,7 +1,7 @@
 From: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH 5/6] ARM: DTS: da850: Fix wrong number of interrupts
-Date: Wed,  6 Apr 2016 15:21:32 +0200
-Message-ID: <1459948893-4206-6-git-send-email-petr@barix.com>
+Subject: [PATCH 1/6] ASoC: davinci-mcbsp: add binding for McBSP
+Date: Wed,  6 Apr 2016 15:21:28 +0200
+Message-ID: <1459948893-4206-2-git-send-email-petr@barix.com>
 References: <1459948893-4206-1-git-send-email-petr@barix.com>
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 In-Reply-To: <1459948893-4206-1-git-send-email-petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
@@ -10,27 +10,82 @@ To: nsekhar-l0cyMroinI0@public.gmane.org, khilman-DgEjT+Ai2ygdnm+yROfE0A@public.
 Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The DA850 supports interrupts 0 to 100. The number of interrupts
-property "ti,intc-size" was wrongly set to 100. Corrected to 101.
+Add devicetree binding for the TI DA8xx/OMAP-L1x/AM17xx/AM18xx
+MultiChannel Buffered Serial Port (McBSP)
+
+The optional register range "dat" is not implemented at the moment.
+The current driver supports only DMA into RX/TX registers but no FIFO.
+Once the FIFO is implemented in the driver the "dat" range will be used.
 
 Signed-off-by: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
 ---
- arch/arm/boot/dts/da850.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../bindings/sound/davinci-mcbsp-audio.txt         | 57 ++++++++++++++++++++++
+ 1 file changed, 57 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcbsp-audio.txt
 
-diff --git a/arch/arm/boot/dts/da850.dtsi b/arch/arm/boot/dts/da850.dtsi
-index 226cda76e77c..5996e765e59c 100644
---- a/arch/arm/boot/dts/da850.dtsi
-+++ b/arch/arm/boot/dts/da850.dtsi
-@@ -19,7 +19,7 @@
- 			compatible = "ti,cp-intc";
- 			interrupt-controller;
- 			#interrupt-cells = <1>;
--			ti,intc-size = <100>;
-+			ti,intc-size = <101>;
- 			reg = <0xfffee000 0x2000>;
- 		};
- 	};
+diff --git a/Documentation/devicetree/bindings/sound/davinci-mcbsp-audio.txt b/Documentation/devicetree/bindings/sound/davinci-mcbsp-audio.txt
+new file mode 100644
+index 000000000000..f60fceb927dd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/davinci-mcbsp-audio.txt
+@@ -0,0 +1,57 @@
++Texas Instruments DaVinci McBSP module
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++This binding describes the "Multi-channel Buffered Serial Port" (McBSP)
++audio interface found in some TI DaVinci processors like e.g. the DA850,
++DM6446, DA355.
++
++
++Required properties:
++~~~~~~~~~~~~~~~~~~~~
++- compatible : "ti,da850-mcbsp-audio"
++
++- reg : physical base address and length of the controller memory mapped
++        region(s).
++- reg-names : Should contain:
++         * "mpu" for the main registers (required). For compatibility with
++           existing software, it is recommended this is the first entry.
++         * "dat" for the data FIFO (optional).
++
++- dmas: two element list of DMA controller phandles and DMA request line
++        ordered pairs.
++- dma-names: identifier string for each DMA request line in the dmas property.
++	     These strings correspond 1:1 with the ordered pairs in dmas. The dma
++	     identifiers must be "rx" and "tx".
++
++Optional properties:
++~~~~~~~~~~~~~~~~~~~~
++- interrupts : Interrupt numbers for McBSP
++- interrupt-names : Known interrupt names are "rx" and "tx"
++
++- pinctrl-0: Should specify pin control group used for this controller.
++- pinctrl-names: Should contain only one value - "default", for more details
++  		 please refer to pinctrl-bindings.txt
++
++- channel-combine : boolean. If present L and R channels are combined into one
++		DMA transfer, however the labelling of the channels is swapped.
++		Therefore this option should be used only if the channels can
++		be swapped back at the codec side again.
++
++Example (AM1808):
++~~~~~~~~~~~~~~~~~
++
++mcbsp0: mcbsp@1d10000 {
++	compatible = "ti,davinci-mcbsp-audio";
++	pinctrl-names = "default";
++	pinctrl-0 = <&mcbsp0_pins>;
++
++	reg = 	<0x00110000 0x1000>,
++		<0x00310000 0x1000>;
++	reg-names = "mpu", "dat";
++	interrupts = <97 98>;
++	interrupts-names = "rx", "tx";
++	dmas = <&edma0 3
++		&edma0 2>;
++	dma-names = "tx", "rx";
++	status = "okay";
++};
 -- 
 1.9.1
 
