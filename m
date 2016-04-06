@@ -1,46 +1,53 @@
-From: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH 4/6] ARM: davinci: da8xx-dt: add OF_DEV_AUXDATA entries for mcbsp0 and mcbsp1
-Date: Wed,  6 Apr 2016 15:21:31 +0200
-Message-ID: <1459948893-4206-5-git-send-email-petr@barix.com>
-References: <1459948893-4206-1-git-send-email-petr@barix.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1459948893-4206-1-git-send-email-petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: nsekhar-l0cyMroinI0@public.gmane.org, khilman-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+From: PC Liao <pc.liao@mediatek.com>
+Subject: Re: [PATCH] ASoC: mediatek: Add second I2S on
+ mt8173-rt5650 machine driver
+Date: Wed, 6 Apr 2016 21:58:25 +0800
+Message-ID: <1459951105.28748.12.camel@mtksdaap41>
+References: <1458877325-33980-1-git-send-email-pc.liao@mediatek.com>
+ <20160328191115.GE2350@sirena.org.uk> <1459258103.3747.7.camel@mtksdaap41>
+ <20160329160703.GN2350@sirena.org.uk> <1459479052.24414.3.camel@mtksdaap41>
+ <20160402170404.GG2350@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
+ by alsa0.perex.cz (Postfix) with ESMTP id 249E8265130
+ for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 15:58:32 +0200 (CEST)
+In-Reply-To: <20160402170404.GG2350@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, srv_heupstream <srv_heupstream@mediatek.com>, "tiwai@suse.de" <tiwai@suse.de>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Koro Chen =?UTF-8?Q?=28=E9=99=B3=E6=80=9D=E7=BF=B0=29?= <koro.chen@mediatek.com>, "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add OF_DEV_AUXDATA for mcbsp to be able to use clocks.
+Hi Mark,
 
-Signed-off-by: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
----
- arch/arm/mach-davinci/da8xx-dt.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+On Sun, 2016-04-03 at 01:04 +0800, Mark Brown wrote:
+> On Fri, Apr 01, 2016 at 10:50:52AM +0800, PC Liao wrote:
+> > On Wed, 2016-03-30 at 00:07 +0800, Mark Brown wrote:
+> 
+> > > This sort of arrangement is very common - it's often needed to get
+> > > different sample rates for playback and capture.  Normally it'd be
+> > > represented in the DT by having the two DAI links specified normally and
+> > > then having the driver look at the DT to see what's connected to work
+> > > out what mode to use.
+> 
+> > Could you please suggest the reference driver about this?
+> 
+> Any driver that can identify an individual DAI within a device by using
+> sound-dai references, even simple-card does this.
 
-diff --git a/arch/arm/mach-davinci/da8xx-dt.c b/arch/arm/mach-davinci/da8xx-dt.c
-index c4b5808ca7c1..fd9ac0bcf7a6 100644
---- a/arch/arm/mach-davinci/da8xx-dt.c
-+++ b/arch/arm/mach-davinci/da8xx-dt.c
-@@ -45,8 +45,13 @@ static struct of_dev_auxdata da850_auxdata_lookup[] __initdata = {
- 	OF_DEV_AUXDATA("ns16550a", 0x01d0d000, "serial8250.2", NULL),
- 	OF_DEV_AUXDATA("ti,davinci_mdio", 0x01e24000, "davinci_mdio.0", NULL),
- 	OF_DEV_AUXDATA("ti,davinci-dm6467-emac", 0x01e20000, "davinci_emac.1",
--		       NULL),
--	OF_DEV_AUXDATA("ti,da830-mcasp-audio", 0x01d00000, "davinci-mcasp.0", NULL),
-+			NULL),
-+	OF_DEV_AUXDATA("ti,da830-mcasp-audio", 0x01d00000, "davinci-mcasp.0",
-+			NULL),
-+	OF_DEV_AUXDATA("ti,da850-mcbsp-audio", 0x01d10000, "davinci-mcbsp.0",
-+			NULL),
-+	OF_DEV_AUXDATA("ti,da850-mcbsp-audio", 0x01d11000, "davinci-mcbsp.1",
-+			NULL),
- 	{}
- };
- 
--- 
-1.9.1
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks for suggestion.
+This machine driver is based on DPCM.
+Should I add BE DAI and use DAPM, then using ucm-config(mixer control)
+to control the path?
+Or, do I think the wrong direction?
+Thanks!
