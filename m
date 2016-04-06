@@ -1,19 +1,43 @@
-From: han.lu@intel.com
-Subject: [PATCH V7 2/2] ASoC: bytcr-rt5640: register DMI names
-	for card
-Date: Wed,  6 Apr 2016 15:29:19 +0800
-Message-ID: <de03e0764c93699cb59472be851240547d8b0157.1459926898.git.han.lu@intel.com>
-References: <cover.1459926898.git.han.lu@intel.com>
+From: Karolina <karolina.majstrovic@gmail.com>
+Subject: Re: Help with wm8731 support for the Utilite (imx6q)
+Date: Wed, 6 Apr 2016 08:25:24 +0000 (UTC)
+Message-ID: <loom.20160406T102223-511@post.gmane.org>
+References: <CAB-pspc5KZ0sTB-7uxjBq+PEFxFdAPO5NAXof_+uwQBJ_JCejg@mail.gmail.com>
+ <CAOMZO5C-EG+beiK1M10vX0Xhg4avYLExxG7MZOQq8gM6gRnANw@mail.gmail.com>
+ <CAB-pspcNOuW=JN9_avEvyPFUvTfs99PB=ah43YdqMC65mZ8psQ@mail.gmail.com>
+ <CAB-pspei1a3TbuFGBT-kupEWU5UY10kQoTtiV895WTi-j+-dzQ@mail.gmail.com>
+ <CAOMZO5AVr0xJjf9JjYNuXG-jJC3ft84+fO-5ToSieP9NFP=-+g@mail.gmail.com>
+ <CAOMZO5CU+Y8cGJsn4O1ccFZUSjLM1iH3QN2fAv4UyaLMk5yAEg@mail.gmail.com>
+ <CAB-pspdvzFX-KjYSC3z3xoDMPvq4g3iFhBG76Y=DGy=YBf5dow@mail.gmail.com>
+ <54464C32.8020100@compulab.co.il>
+ <CAB-pspcaMh9DL8bND1kSmphZfMYNOvPS_CYZ8UYZ2EZuVjjksg@mail.gmail.com>
+ <CAOMZO5A=RSodq=JmjrjHTJSg9QaEx42uu7vAbON=Jk5-Gmiv9Q@mail.gmail.com>
+ <CAB-pspcmxQAzR=jX1_fp06UUgNbC_LXFDN4g6RnOn6vTTvJjTw@mail.gmail.com>
+ <CAB-pspcZ8bhLMPDS2NbDOEugfzO+TZfOnA_h05pvkU5ZPv6qVQ@mail.gmail.com>
+ <544764F4.8070904@compulab.co.il>
+ <CAB-pspeg-sP4Ebk+SF8WAxOJwobEk_rgeYnPr=thK2j7O638QA@mail.gmail.com>
+ <CAOMZO5A_K9MV+Y5cBWcoLDOCnBH9VX7tkOmBTQh43UdqAtLzGA@mail.gmail.com>
+ <CAB-pspcoyzQNWhGf_1ex86f2E9spotPGVJzDR0i2=98eMXfxiw@mail.gmail.com>
+ <CAOMZO5B95cBvHOyOMzSqYQ+LedPj4OsWc=opjEzuRA7Tgkv97w@mail.gmail.com>
+ <CAOMZO5DDZZiu0w6mD0T-SDXdYWOdjimwruAp2LivskeiuTii9w@mail.gmail.com>
+ <CAB-pspcK5+YnVHmMKXVnUPJBSUp6kV7GO_Cw9RKwNPJqXHOsWw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A7512651B7
- for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 09:28:28 +0200 (CEST)
-In-Reply-To: <cover.1459926898.git.han.lu@intel.com>
-In-Reply-To: <cover.1459926898.git.han.lu@intel.com>
-References: <cover.1459926898.git.han.lu@intel.com>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8781226506E
+ for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 10:30:06 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1aniqi-0000E6-3U
+ for alsa-devel@alsa-project.org; Wed, 06 Apr 2016 10:30:04 +0200
+Received: from 130.237.84.49 ([130.237.84.49])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Wed, 06 Apr 2016 10:30:04 +0200
+Received: from karolina.majstrovic by 130.237.84.49 with local (Gmexim 0.1
+ (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Wed, 06 Apr 2016 10:30:04 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,91 +47,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, tiwai@suse.de, vinod.koul@intel.com, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org
-Cc: "Lu, Han" <han.lu@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: "Lu, Han" <han.lu@intel.com>
+Jonathan,
 
-Register DMI names for products using bytcr-rt5640 driver, such as ASUS
-T100TA and Dell Venue 8 Pro 5830, for user space utils to distinguish
-different products.
+could you please tell me how did you connect WM8731 to development board?
 
-For example, previously on T100TA:
-  $ cat /proc/asound/cards
-    0 [bytcrrt5640 ]: bytcr-rt5640 -  bytcr-rt5640
-                      bytcr-rt5640
-  $ amixer -c0 info
-  Card hw:0 'bytcrrt5640'/'bytcr-rt5640'
-    Mixer name    : ''
-    Components    : ''
-    Controls      : 256
-    Simple ctrls  : 228
-
-After apply the patch:
-  $ cat /proc/asound/cards
-    0 [T100TA      ]: bytcr-rt5640 -  T100TA
-                      T100TA;bytcr-rt5640;ASUSTek COMPUTER INC.;intel/fw_
-  sst_0f28.bin
-  $ amixer -c0 info
-  Card hw:0 'T100TA'/'T100TA;bytcr-rt5640;ASUSTek COMPUTER INC.;intel/fw_
-  sst_0f28.bin'
-    Mixer name    : ''
-    Components    : 'T100TA;bytcr-rt5640;ASUSTek COMPUTER INC.;intel/fw_s
-  st_0f28.bin'
-    Controls      : 256
-    Simple ctrls  : 228
-
-Signed-off-by: Lu, Han <han.lu@intel.com>
-
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 032a2e7..014b549 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -152,6 +152,8 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 	{}
- };
- 
-+static struct snd_soc_card byt_rt5640_card;
-+
- static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
- {
- 	int ret;
-@@ -159,6 +161,13 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
- 	struct snd_soc_card *card = runtime->card;
- 	const struct snd_soc_dapm_route *custom_map;
- 	int num_routes;
-+	struct sst_acpi_mach *mach = byt_rt5640_card.dev->platform_data;
-+
-+	ret = snd_soc_set_card_names(card, mach->fw_filename);
-+	if (ret < 0) {
-+		dev_err(card->dev, "unable to register card names\n");
-+		return ret;
-+	}
- 
- 	card->dapm.idle_bias_off = true;
- 
-@@ -380,12 +389,21 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	return ret_val;
- }
- 
-+static int snd_byt_rt5640_mc_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = &byt_rt5640_card;
-+
-+	snd_soc_cleanup_card_names(card);
-+	return 0;
-+}
-+
- static struct platform_driver snd_byt_rt5640_mc_driver = {
- 	.driver = {
- 		.name = "bytcr_rt5640",
- 		.pm = &snd_soc_pm_ops,
- 	},
- 	.probe = snd_byt_rt5640_mc_probe,
-+	.remove = snd_byt_rt5640_mc_remove,
- };
- 
- module_platform_driver(snd_byt_rt5640_mc_driver);
--- 
-2.5.0
+I have Carambola2 and am trying to play .wav file. Have downloaded and build
+this module: https://github.com/sonnyyu/ar9331-i2s-alsa
+No I just don't know how to connect pins on
+http://www.mikroe.com/add-on-boards/audio-voice/audio-codec-proto/ and
+Carambola...
