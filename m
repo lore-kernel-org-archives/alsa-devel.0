@@ -1,85 +1,64 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: sst: fix a loop timeout in
-	sst_hsw_stream_reset()" to the asoc tree
-Date: Wed, 06 Apr 2016 10:19:49 -0700
-Message-ID: <E1anr7N-0003NC-Oa@finisterre>
-References: <20160406113606.GA23032@mwanda>
+Subject: Applied "ALSA: pcm: Allow 32 bit sample format in IEC958 channel
+ status helper" to the asoc tree
+Date: Wed, 06 Apr 2016 14:42:18 -0700
+Message-ID: <E1anvDO-0008I3-LI@finisterre>
+References: <44ee7ac5c0ddb4d25ac1bd4f189d328f8205e4a0.1459431292.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 11257265370
- for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 19:20:01 +0200 (CEST)
-In-Reply-To: <20160406113606.GA23032@mwanda>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <44ee7ac5c0ddb4d25ac1bd4f189d328f8205e4a0.1459431292.git.jsarha@ti.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Jyri Sarha <jsarha@ti.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, arnaud.pouliquen@st.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, tony@atomide.com, broonie@kernel.org, bcousson@baylibre.com, rmk+kernel@arm.linux.org.uk, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: Intel: sst: fix a loop timeout in sst_hsw_stream_reset()
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From b8af8b1d80db13dd4f5e5a3698180bd9c14aee03 Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Wed, 6 Apr 2016 14:36:06 +0300
-Subject: [PATCH] ASoC: Intel: sst: fix a loop timeout in
- sst_hsw_stream_reset()
-
-In the original code we ended the loop with tries set to -1 instead of
-zero.
-
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/haswell/sst-haswell-ipc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/haswell/sst-haswell-ipc.c b/sound/soc/intel/haswell/sst-haswell-ipc.c
-index ac60f1301e21..91565229d074 100644
---- a/sound/soc/intel/haswell/sst-haswell-ipc.c
-+++ b/sound/soc/intel/haswell/sst-haswell-ipc.c
-@@ -1345,7 +1345,7 @@ int sst_hsw_stream_reset(struct sst_hsw *hsw, struct sst_hsw_stream *stream)
- 		return 0;
- 
- 	/* wait for pause to complete before we reset the stream */
--	while (stream->running && tries--)
-+	while (stream->running && --tries)
- 		msleep(1);
- 	if (!tries) {
- 		dev_err(hsw->dev, "error: reset stream %d still running\n",
--- 
-2.8.0.rc3
+VGhlIHBhdGNoCgogICBBTFNBOiBwY206IEFsbG93IDMyIGJpdCBzYW1wbGUgZm9ybWF0IGluIElF
+Qzk1OCBjaGFubmVsIHN0YXR1cyBoZWxwZXIKCmhhcyBiZWVuIGFwcGxpZWQgdG8gdGhlIGFzb2Mg
+dHJlZSBhdAoKICAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0
+L2Jyb29uaWUvc291bmQuZ2l0IAoKQWxsIGJlaW5nIHdlbGwgdGhpcyBtZWFucyB0aGF0IGl0IHdp
+bGwgYmUgaW50ZWdyYXRlZCBpbnRvIHRoZSBsaW51eC1uZXh0CnRyZWUgKHVzdWFsbHkgc29tZXRp
+bWUgaW4gdGhlIG5leHQgMjQgaG91cnMpIGFuZCBzZW50IHRvIExpbnVzIGR1cmluZwp0aGUgbmV4
+dCBtZXJnZSB3aW5kb3cgKG9yIHNvb25lciBpZiBpdCBpcyBhIGJ1ZyBmaXgpLCBob3dldmVyIGlm
+CnByb2JsZW1zIGFyZSBkaXNjb3ZlcmVkIHRoZW4gdGhlIHBhdGNoIG1heSBiZSBkcm9wcGVkIG9y
+IHJldmVydGVkLiAgCgpZb3UgbWF5IGdldCBmdXJ0aGVyIGUtbWFpbHMgcmVzdWx0aW5nIGZyb20g
+YXV0b21hdGVkIG9yIG1hbnVhbCB0ZXN0aW5nCmFuZCByZXZpZXcgb2YgdGhlIHRyZWUsIHBsZWFz
+ZSBlbmdhZ2Ugd2l0aCBwZW9wbGUgcmVwb3J0aW5nIHByb2JsZW1zIGFuZApzZW5kIGZvbGxvd3Vw
+IHBhdGNoZXMgYWRkcmVzc2luZyBhbnkgaXNzdWVzIHRoYXQgYXJlIHJlcG9ydGVkIGlmIG5lZWRl
+ZC4KCklmIGFueSB1cGRhdGVzIGFyZSByZXF1aXJlZCBvciB5b3UgYXJlIHN1Ym1pdHRpbmcgZnVy
+dGhlciBjaGFuZ2VzIHRoZXkKc2hvdWxkIGJlIHNlbnQgYXMgaW5jcmVtZW50YWwgdXBkYXRlcyBh
+Z2FpbnN0IGN1cnJlbnQgZ2l0LCBleGlzdGluZwpwYXRjaGVzIHdpbGwgbm90IGJlIHJlcGxhY2Vk
+LgoKUGxlYXNlIGFkZCBhbnkgcmVsZXZhbnQgbGlzdHMgYW5kIG1haW50YWluZXJzIHRvIHRoZSBD
+Q3Mgd2hlbiByZXBseWluZwp0byB0aGlzIG1haWwuCgpUaGFua3MsCk1hcmsKCkZyb20gNGE0NjJj
+ZTA4NGQ1YmViOTJjZmM2OGY1M2Y4OGMwMzVjODJlNmI1OSBNb24gU2VwIDE3IDAwOjAwOjAwIDIw
+MDEKRnJvbTogSnlyaSBTYXJoYSA8anNhcmhhQHRpLmNvbT4KRGF0ZTogVGh1LCAzMSBNYXIgMjAx
+NiAxNjozNTo1OSArMDMwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6IHBjbTogQWxsb3cgMzIgYml0
+IHNhbXBsZSBmb3JtYXQgaW4gSUVDOTU4IGNoYW5uZWwKIHN0YXR1cyBoZWxwZXIKClRyZWF0IDMy
+IGJpdCBzYW1wbGUgd2lkdGggYXMgaWYgaXQgd2FzIDI0IGJpdHMgd2hlbiBnZW5lcmF0aW5nIElF
+Qzk1OApjaGFubmVsIHN0YXR1cyBiaXRzLiBPbiBzb21lIHBsYXRmb3JtcyAyNCBzYW1wbGUgd2lk
+dGggaXMgcHJvYmxlbWF0aWMKYW5kIHRvIGdldCBmdWxsIDI0IGJpdCBwcmVjaXNpb24gYSAzMiBi
+aXQgZm9ybWF0LCB1c2luZyBvbmx5IHRoZSAyNAptb3N0IHNpZ25pZmljYW50IGJpdHMsIG1heSBo
+YXZlIHRvIGJlIHVzZWQuCgpTaWduZWQtb2ZmLWJ5OiBKeXJpIFNhcmhhIDxqc2FyaGFAdGkuY29t
+PgpSZXZpZXdlZC1ieTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgpTaWduZWQtb2ZmLWJ5
+OiBNYXJrIEJyb3duIDxicm9vbmllQGtlcm5lbC5vcmc+Ci0tLQogc291bmQvY29yZS9wY21faWVj
+OTU4LmMgfCAxICsKIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKQoKZGlmZiAtLWdpdCBh
+L3NvdW5kL2NvcmUvcGNtX2llYzk1OC5jIGIvc291bmQvY29yZS9wY21faWVjOTU4LmMKaW5kZXgg
+ZTAxNjg3MWE5NzhmLi41ZTZhZWQ2NGY0NTEgMTAwNjQ0Ci0tLSBhL3NvdW5kL2NvcmUvcGNtX2ll
+Yzk1OC5jCisrKyBiL3NvdW5kL2NvcmUvcGNtX2llYzk1OC5jCkBAIC01OSw2ICs1OSw3IEBAIHN0
+YXRpYyBpbnQgY3JlYXRlX2llYzk1OF9jb25zdW1lcih1aW50IHJhdGUsIHVpbnQgc2FtcGxlX3dp
+ZHRoLAogCQkJICAgICBJRUM5NThfQUVTNF9DT05fTUFYX1dPUkRMRU5fMjQ7CiAJCQlicmVhazsK
+IAkJY2FzZSAyNDoKKwkJY2FzZSAzMjogLyogQXNzdW1lIDI0LWJpdCB3aWR0aCBmb3IgMzItYml0
+IHNhbXBsZXMuICovCiAJCQl3cyA9IElFQzk1OF9BRVM0X0NPTl9XT1JETEVOXzI0XzIwIHwKIAkJ
+CSAgICAgSUVDOTU4X0FFUzRfQ09OX01BWF9XT1JETEVOXzI0OwogCQkJYnJlYWs7Ci0tIAoyLjgu
+MC5yYzMKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRy
+aS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRw
+czovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
