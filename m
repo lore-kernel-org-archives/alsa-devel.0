@@ -1,121 +1,77 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ALSA: pcm: add IEC958 channel status helper for hw_params"
- to the asoc tree
-Date: Wed, 06 Apr 2016 14:42:35 -0700
-Message-ID: <E1anvDf-0008Iw-Ad@finisterre>
-References: <c8b96b9eac96b5dee2bdd4b7fc3ee724ce069a81.1459431292.git.jsarha@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <c8b96b9eac96b5dee2bdd4b7fc3ee724ce069a81.1459431292.git.jsarha@ti.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jyri Sarha <jsarha@ti.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, arnaud.pouliquen@st.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, tony@atomide.com, broonie@kernel.org, bcousson@baylibre.com, rmk+kernel@arm.linux.org.uk, linux-omap@vger.kernel.org
+From: Rick Mann <rmann@latencyzero.com>
+Subject: CircuitCo AudioCape and 4.4.6-bone-rt-r7 kernel,
+	not quite there
+Date: Wed, 6 Apr 2016 15:52:13 -0700
+Message-ID: <5A691E07-AB96-44FC-93C1-CB3640927118@latencyzero.com>
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
+ [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id D4E6626506E
+ for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2016 00:52:14 +0200 (CEST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+ by mailout.nyi.internal (Postfix) with ESMTP id 175D4219CF
+ for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 18:52:14 -0400 (EDT)
+Received: from [10.2.28.137] (unknown [12.97.18.26])
+ by mail.messagingengine.com (Postfix) with ESMTPA id AE9E568014F
+ for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 18:52:13 -0400 (EDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIHBhdGNoCgogICBBTFNBOiBwY206IGFkZCBJRUM5NTggY2hhbm5lbCBzdGF0dXMgaGVscGVy
-IGZvciBod19wYXJhbXMKCmhhcyBiZWVuIGFwcGxpZWQgdG8gdGhlIGFzb2MgdHJlZSBhdAoKICAg
-Z2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L2Jyb29uaWUvc291
-bmQuZ2l0IAoKQWxsIGJlaW5nIHdlbGwgdGhpcyBtZWFucyB0aGF0IGl0IHdpbGwgYmUgaW50ZWdy
-YXRlZCBpbnRvIHRoZSBsaW51eC1uZXh0CnRyZWUgKHVzdWFsbHkgc29tZXRpbWUgaW4gdGhlIG5l
-eHQgMjQgaG91cnMpIGFuZCBzZW50IHRvIExpbnVzIGR1cmluZwp0aGUgbmV4dCBtZXJnZSB3aW5k
-b3cgKG9yIHNvb25lciBpZiBpdCBpcyBhIGJ1ZyBmaXgpLCBob3dldmVyIGlmCnByb2JsZW1zIGFy
-ZSBkaXNjb3ZlcmVkIHRoZW4gdGhlIHBhdGNoIG1heSBiZSBkcm9wcGVkIG9yIHJldmVydGVkLiAg
-CgpZb3UgbWF5IGdldCBmdXJ0aGVyIGUtbWFpbHMgcmVzdWx0aW5nIGZyb20gYXV0b21hdGVkIG9y
-IG1hbnVhbCB0ZXN0aW5nCmFuZCByZXZpZXcgb2YgdGhlIHRyZWUsIHBsZWFzZSBlbmdhZ2Ugd2l0
-aCBwZW9wbGUgcmVwb3J0aW5nIHByb2JsZW1zIGFuZApzZW5kIGZvbGxvd3VwIHBhdGNoZXMgYWRk
-cmVzc2luZyBhbnkgaXNzdWVzIHRoYXQgYXJlIHJlcG9ydGVkIGlmIG5lZWRlZC4KCklmIGFueSB1
-cGRhdGVzIGFyZSByZXF1aXJlZCBvciB5b3UgYXJlIHN1Ym1pdHRpbmcgZnVydGhlciBjaGFuZ2Vz
-IHRoZXkKc2hvdWxkIGJlIHNlbnQgYXMgaW5jcmVtZW50YWwgdXBkYXRlcyBhZ2FpbnN0IGN1cnJl
-bnQgZ2l0LCBleGlzdGluZwpwYXRjaGVzIHdpbGwgbm90IGJlIHJlcGxhY2VkLgoKUGxlYXNlIGFk
-ZCBhbnkgcmVsZXZhbnQgbGlzdHMgYW5kIG1haW50YWluZXJzIHRvIHRoZSBDQ3Mgd2hlbiByZXBs
-eWluZwp0byB0aGlzIG1haWwuCgpUaGFua3MsCk1hcmsKCkZyb20gNGE0NDM2NTczYTY2Njk1MTZm
-NzNiYWMyNTAxNjY4M2QzOTZlZDRjNCBNb24gU2VwIDE3IDAwOjAwOjAwIDIwMDEKRnJvbTogSnly
-aSBTYXJoYSA8anNhcmhhQHRpLmNvbT4KRGF0ZTogVGh1LCAzMSBNYXIgMjAxNiAxNjozNTo1OCAr
-MDMwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6IHBjbTogYWRkIElFQzk1OCBjaGFubmVsIHN0YXR1
-cyBoZWxwZXIgZm9yIGh3X3BhcmFtcwoKQWRkIElFQzk1OCBjaGFubmVsIHN0YXR1cyBoZWxwZXIg
-dGhhdCBnZXRzIHRoZSBhdWRpbyBwcm9wZXJ0aWVzIGZyb20Kc25kX3BjbV9od19wYXJhbXMgaW5z
-dGVhZCBvZiBzbmRfcGNtX3J1bnRpbWUuIFRoaXMgaXMgbmVlZGVkIHRvCnByb2R1Y2UgdGhlIGNo
-YW5uZWwgc3RhdHVzIGJpdHMgYWxyZWFkeSBpbiBhdWRpbyBzdHJlYW0gY29uZmlndXJhdGlvbgpw
-aGFzZS4KClNpZ25lZC1vZmYtYnk6IEp5cmkgU2FyaGEgPGpzYXJoYUB0aS5jb20+ClJldmlld2Vk
-LWJ5OiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+ClNpZ25lZC1vZmYtYnk6IE1hcmsgQnJv
-d24gPGJyb29uaWVAa2VybmVsLm9yZz4KLS0tCiBpbmNsdWRlL3NvdW5kL3BjbV9pZWM5NTguaCB8
-ICAyICsrCiBzb3VuZC9jb3JlL3BjbV9pZWM5NTguYyAgICB8IDY0ICsrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0KIDIgZmlsZXMgY2hhbmdlZCwgNDkgaW5zZXJ0
-aW9ucygrKSwgMTcgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9zb3VuZC9wY21f
-aWVjOTU4LmggYi9pbmNsdWRlL3NvdW5kL3BjbV9pZWM5NTguaAppbmRleCAwZWVkMzk3YWNhOGUu
-LjM2ZjAyM2FjYjIwMSAxMDA2NDQKLS0tIGEvaW5jbHVkZS9zb3VuZC9wY21faWVjOTU4LmgKKysr
-IGIvaW5jbHVkZS9zb3VuZC9wY21faWVjOTU4LmgKQEAgLTYsNCArNiw2IEBACiBpbnQgc25kX3Bj
-bV9jcmVhdGVfaWVjOTU4X2NvbnN1bWVyKHN0cnVjdCBzbmRfcGNtX3J1bnRpbWUgKnJ1bnRpbWUs
-IHU4ICpjcywKIAlzaXplX3QgbGVuKTsKIAoraW50IHNuZF9wY21fY3JlYXRlX2llYzk1OF9jb25z
-dW1lcl9od19wYXJhbXMoc3RydWN0IHNuZF9wY21faHdfcGFyYW1zICpwYXJhbXMsCisJCQkJCSAg
-ICAgdTggKmNzLCBzaXplX3QgbGVuKTsKICNlbmRpZgpkaWZmIC0tZ2l0IGEvc291bmQvY29yZS9w
-Y21faWVjOTU4LmMgYi9zb3VuZC9jb3JlL3BjbV9pZWM5NTguYwppbmRleCAzNmIyZDdhY2ExYmQu
-LmUwMTY4NzFhOTc4ZiAxMDA2NDQKLS0tIGEvc291bmQvY29yZS9wY21faWVjOTU4LmMKKysrIGIv
-c291bmQvY29yZS9wY21faWVjOTU4LmMKQEAgLTksMzAgKzksMTggQEAKICNpbmNsdWRlIDxsaW51
-eC90eXBlcy5oPgogI2luY2x1ZGUgPHNvdW5kL2Fzb3VuZGVmLmg+CiAjaW5jbHVkZSA8c291bmQv
-cGNtLmg+CisjaW5jbHVkZSA8c291bmQvcGNtX3BhcmFtcy5oPgogI2luY2x1ZGUgPHNvdW5kL3Bj
-bV9pZWM5NTguaD4KIAotLyoqCi0gKiBzbmRfcGNtX2NyZWF0ZV9pZWM5NThfY29uc3VtZXIgLSBj
-cmVhdGUgY29uc3VtZXIgZm9ybWF0IElFQzk1OCBjaGFubmVsIHN0YXR1cwotICogQHJ1bnRpbWU6
-IHBjbSBydW50aW1lIHN0cnVjdHVyZSB3aXRoIC0+cmF0ZSBmaWxsZWQgaW4KLSAqIEBjczogY2hh
-bm5lbCBzdGF0dXMgYnVmZmVyLCBhdCBsZWFzdCBmb3VyIGJ5dGVzCi0gKiBAbGVuOiBsZW5ndGgg
-b2YgY2hhbm5lbCBzdGF0dXMgYnVmZmVyCi0gKgotICogQ3JlYXRlIHRoZSBjb25zdW1lciBmb3Jt
-YXQgY2hhbm5lbCBzdGF0dXMgZGF0YSBpbiBAY3Mgb2YgbWF4aW11bSBzaXplCi0gKiBAbGVuIGNv
-cnJlc3BvbmRpbmcgdG8gdGhlIHBhcmFtZXRlcnMgb2YgdGhlIFBDTSBydW50aW1lIEBydW50aW1l
-LgotICoKLSAqIERyaXZlcnMgbWF5IHdpc2ggdG8gdHdlYWsgdGhlIGNvbnRlbnRzIG9mIHRoZSBi
-dWZmZXIgYWZ0ZXIgY3JlYXRpb24uCi0gKgotICogUmV0dXJuczogbGVuZ3RoIG9mIGJ1ZmZlciwg
-b3IgbmVnYXRpdmUgZXJyb3IgY29kZSBpZiBzb21ldGhpbmcgZmFpbGVkLgotICovCi1pbnQgc25k
-X3BjbV9jcmVhdGVfaWVjOTU4X2NvbnN1bWVyKHN0cnVjdCBzbmRfcGNtX3J1bnRpbWUgKnJ1bnRp
-bWUsIHU4ICpjcywKLQlzaXplX3QgbGVuKQorc3RhdGljIGludCBjcmVhdGVfaWVjOTU4X2NvbnN1
-bWVyKHVpbnQgcmF0ZSwgdWludCBzYW1wbGVfd2lkdGgsCisJCQkJICB1OCAqY3MsIHNpemVfdCBs
-ZW4pCiB7CiAJdW5zaWduZWQgaW50IGZzLCB3czsKIAogCWlmIChsZW4gPCA0KQogCQlyZXR1cm4g
-LUVJTlZBTDsKIAotCXN3aXRjaCAocnVudGltZS0+cmF0ZSkgeworCXN3aXRjaCAocmF0ZSkgewog
-CWNhc2UgMzIwMDA6CiAJCWZzID0gSUVDOTU4X0FFUzNfQ09OX0ZTXzMyMDAwOwogCQlicmVhazsK
-QEAgLTU5LDcgKzQ3LDcgQEAgaW50IHNuZF9wY21fY3JlYXRlX2llYzk1OF9jb25zdW1lcihzdHJ1
-Y3Qgc25kX3BjbV9ydW50aW1lICpydW50aW1lLCB1OCAqY3MsCiAJfQogCiAJaWYgKGxlbiA+IDQp
-IHsKLQkJc3dpdGNoIChzbmRfcGNtX2Zvcm1hdF93aWR0aChydW50aW1lLT5mb3JtYXQpKSB7CisJ
-CXN3aXRjaCAoc2FtcGxlX3dpZHRoKSB7CiAJCWNhc2UgMTY6CiAJCQl3cyA9IElFQzk1OF9BRVM0
-X0NPTl9XT1JETEVOXzIwXzE2OwogCQkJYnJlYWs7CkBAIC05Miw0ICs4MCw0NiBAQCBpbnQgc25k
-X3BjbV9jcmVhdGVfaWVjOTU4X2NvbnN1bWVyKHN0cnVjdCBzbmRfcGNtX3J1bnRpbWUgKnJ1bnRp
-bWUsIHU4ICpjcywKIAogCXJldHVybiBsZW47CiB9CisKKy8qKgorICogc25kX3BjbV9jcmVhdGVf
-aWVjOTU4X2NvbnN1bWVyIC0gY3JlYXRlIGNvbnN1bWVyIGZvcm1hdCBJRUM5NTggY2hhbm5lbCBz
-dGF0dXMKKyAqIEBydW50aW1lOiBwY20gcnVudGltZSBzdHJ1Y3R1cmUgd2l0aCAtPnJhdGUgZmls
-bGVkIGluCisgKiBAY3M6IGNoYW5uZWwgc3RhdHVzIGJ1ZmZlciwgYXQgbGVhc3QgZm91ciBieXRl
-cworICogQGxlbjogbGVuZ3RoIG9mIGNoYW5uZWwgc3RhdHVzIGJ1ZmZlcgorICoKKyAqIENyZWF0
-ZSB0aGUgY29uc3VtZXIgZm9ybWF0IGNoYW5uZWwgc3RhdHVzIGRhdGEgaW4gQGNzIG9mIG1heGlt
-dW0gc2l6ZQorICogQGxlbiBjb3JyZXNwb25kaW5nIHRvIHRoZSBwYXJhbWV0ZXJzIG9mIHRoZSBQ
-Q00gcnVudGltZSBAcnVudGltZS4KKyAqCisgKiBEcml2ZXJzIG1heSB3aXNoIHRvIHR3ZWFrIHRo
-ZSBjb250ZW50cyBvZiB0aGUgYnVmZmVyIGFmdGVyIGNyZWF0aW9uLgorICoKKyAqIFJldHVybnM6
-IGxlbmd0aCBvZiBidWZmZXIsIG9yIG5lZ2F0aXZlIGVycm9yIGNvZGUgaWYgc29tZXRoaW5nIGZh
-aWxlZC4KKyAqLworaW50IHNuZF9wY21fY3JlYXRlX2llYzk1OF9jb25zdW1lcihzdHJ1Y3Qgc25k
-X3BjbV9ydW50aW1lICpydW50aW1lLCB1OCAqY3MsCisJc2l6ZV90IGxlbikKK3sKKwlyZXR1cm4g
-Y3JlYXRlX2llYzk1OF9jb25zdW1lcihydW50aW1lLT5yYXRlLAorCQkJCSAgICAgIHNuZF9wY21f
-Zm9ybWF0X3dpZHRoKHJ1bnRpbWUtPmZvcm1hdCksCisJCQkJICAgICAgY3MsIGxlbik7Cit9CiBF
-WFBPUlRfU1lNQk9MKHNuZF9wY21fY3JlYXRlX2llYzk1OF9jb25zdW1lcik7CisKKy8qKgorICog
-c25kX3BjbV9jcmVhdGVfaWVjOTU4X2NvbnN1bWVyX2h3X3BhcmFtcyAtIGNyZWF0ZSBJRUM5NTgg
-Y2hhbm5lbCBzdGF0dXMKKyAqIEBod19wYXJhbXM6IHRoZSBod19wYXJhbXMgaW5zdGFuY2UgZm9y
-IGV4dHJhY3RpbmcgcmF0ZSBhbmQgc2FtcGxlIGZvcm1hdAorICogQGNzOiBjaGFubmVsIHN0YXR1
-cyBidWZmZXIsIGF0IGxlYXN0IGZvdXIgYnl0ZXMKKyAqIEBsZW46IGxlbmd0aCBvZiBjaGFubmVs
-IHN0YXR1cyBidWZmZXIKKyAqCisgKiBDcmVhdGUgdGhlIGNvbnN1bWVyIGZvcm1hdCBjaGFubmVs
-IHN0YXR1cyBkYXRhIGluIEBjcyBvZiBtYXhpbXVtIHNpemUKKyAqIEBsZW4gY29ycmVzcG9uZGlu
-ZyB0byB0aGUgcGFyYW1ldGVycyBvZiB0aGUgUENNIHJ1bnRpbWUgQHJ1bnRpbWUuCisgKgorICog
-RHJpdmVycyBtYXkgd2lzaCB0byB0d2VhayB0aGUgY29udGVudHMgb2YgdGhlIGJ1ZmZlciBhZnRl
-ciBjcmVhdGlvbi4KKyAqCisgKiBSZXR1cm5zOiBsZW5ndGggb2YgYnVmZmVyLCBvciBuZWdhdGl2
-ZSBlcnJvciBjb2RlIGlmIHNvbWV0aGluZyBmYWlsZWQuCisgKi8KK2ludCBzbmRfcGNtX2NyZWF0
-ZV9pZWM5NThfY29uc3VtZXJfaHdfcGFyYW1zKHN0cnVjdCBzbmRfcGNtX2h3X3BhcmFtcyAqcGFy
-YW1zLAorCQkJCQkgICAgIHU4ICpjcywgc2l6ZV90IGxlbikKK3sKKwlyZXR1cm4gY3JlYXRlX2ll
-Yzk1OF9jb25zdW1lcihwYXJhbXNfcmF0ZShwYXJhbXMpLCBwYXJhbXNfd2lkdGgocGFyYW1zKSwK
-KwkJCQkgICAgICBjcywgbGVuKTsKK30KK0VYUE9SVF9TWU1CT0woc25kX3BjbV9jcmVhdGVfaWVj
-OTU4X2NvbnN1bWVyX2h3X3BhcmFtcyk7Ci0tIAoyLjguMC5yYzMKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJp
-LWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
+I'm thinking my problems are more ALSA-related than Beaglebone-specific. I wonder if anyone can help. With kernel 4.4.6-bone-rt-r7, and the CircuitCo AudioCape, I get a sound card in the system, but speaker-test reports errors (Unable to set hw params for playback: Invalid argument). I may have issues in various ALSA config settings; I'm hoping someone here can help me by showing me what to look at and change.
+
+The CODEC is a tlv320aic3104. 
+
+Thanks!
+
+-----------
+# aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: B [AudioCape Rev B], device 0: davinci-mcasp.0-tlv320aic3x-hifi tlv320aic3x-hifi-0 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+
+-----------
+# speaker-test 
+
+speaker-test 1.0.28
+
+Playback device is default
+Stream parameters are 48000Hz, S16_LE, 1 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 16 to 32768
+Period size range from 8 to 16384
+Using max buffer size 32768
+Periods = 4
+Unable to set hw params for playback: Invalid argument
+Setting of hwparams failed: Invalid argument
+
+-----
+More info:
+
+My DTB: http://pastebin.com/Wja7ZQRk
+and DTBO: https://github.com/RobertCNelson/bb.org-overlays/blob/master/src/arm/BB-BONE-AUDI-02-00A0.dts
+
+Results of speaker-test, aplay, etc.:
+
+http://pastebin.com/mMPbReAV
+
+One possibility, ALSA is still not configured correctly for this cape, but I wonder if anyone has the right configuration for it?
+
+Thanks!
+
+-- 
+Rick Mann
+rmann@latencyzero.com
