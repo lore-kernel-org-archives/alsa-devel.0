@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Factor out fetching of stream
-	errors from the DSP" to the asoc tree
-Date: Wed, 06 Apr 2016 10:19:43 -0700
-Message-ID: <E1anr7H-0003Md-DY@finisterre>
-References: <1459938115-25456-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: Intel: sst: fix a loop timeout in
+	sst_hsw_stream_reset()" to the asoc tree
+Date: Wed, 06 Apr 2016 10:19:49 -0700
+Message-ID: <E1anr7N-0003NC-Oa@finisterre>
+References: <20160406113606.GA23032@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 66BBC26506E
- for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 19:19:53 +0200 (CEST)
-In-Reply-To: <1459938115-25456-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 11257265370
+ for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 19:20:01 +0200 (CEST)
+In-Reply-To: <20160406113606.GA23032@mwanda>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Factor out fetching of stream errors from the DSP
+   ASoC: Intel: sst: fix a loop timeout in sst_hsw_stream_reset()
 
 has been applied to the asoc tree at
 
@@ -53,67 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From 9771b18a0b374b6e6ecfa84c8b59d5ef79e969b1 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Wed, 6 Apr 2016 11:21:53 +0100
-Subject: [PATCH] ASoC: wm_adsp: Factor out fetching of stream errors from the
- DSP
+>From b8af8b1d80db13dd4f5e5a3698180bd9c14aee03 Mon Sep 17 00:00:00 2001
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Wed, 6 Apr 2016 14:36:06 +0300
+Subject: [PATCH] ASoC: Intel: sst: fix a loop timeout in
+ sst_hsw_stream_reset()
 
-Factor out the reading of the DSP error flag into its own function to
-support further improvements to the code.
+In the original code we ended the loop with tries set to -1 instead of
+zero.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 28 +++++++++++++++++++---------
- 1 file changed, 19 insertions(+), 9 deletions(-)
+ sound/soc/intel/haswell/sst-haswell-ipc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 953c4278b75e..f70c60914042 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -2816,6 +2816,23 @@ static int wm_adsp_buffer_update_avail(struct wm_adsp_compr_buf *buf)
- 	return 0;
- }
+diff --git a/sound/soc/intel/haswell/sst-haswell-ipc.c b/sound/soc/intel/haswell/sst-haswell-ipc.c
+index ac60f1301e21..91565229d074 100644
+--- a/sound/soc/intel/haswell/sst-haswell-ipc.c
++++ b/sound/soc/intel/haswell/sst-haswell-ipc.c
+@@ -1345,7 +1345,7 @@ int sst_hsw_stream_reset(struct sst_hsw *hsw, struct sst_hsw_stream *stream)
+ 		return 0;
  
-+static int wm_adsp_buffer_get_error(struct wm_adsp_compr_buf *buf)
-+{
-+	int ret;
-+
-+	ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(error), &buf->error);
-+	if (ret < 0) {
-+		adsp_err(buf->dsp, "Failed to check buffer error: %d\n", ret);
-+		return ret;
-+	}
-+	if (buf->error != 0) {
-+		adsp_err(buf->dsp, "Buffer error occurred: %d\n", buf->error);
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
- int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
- {
- 	struct wm_adsp_compr_buf *buf;
-@@ -2834,16 +2851,9 @@ int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
- 
- 	adsp_dbg(dsp, "Handling buffer IRQ\n");
- 
--	ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(error), &buf->error);
--	if (ret < 0) {
--		adsp_err(dsp, "Failed to check buffer error: %d\n", ret);
--		goto out;
--	}
--	if (buf->error != 0) {
--		adsp_err(dsp, "Buffer error occurred: %d\n", buf->error);
--		ret = -EIO;
-+	ret = wm_adsp_buffer_get_error(buf);
-+	if (ret < 0)
- 		goto out;
--	}
- 
- 	ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(irq_count),
- 				  &buf->irq_count);
+ 	/* wait for pause to complete before we reset the stream */
+-	while (stream->running && tries--)
++	while (stream->running && --tries)
+ 		msleep(1);
+ 	if (!tries) {
+ 		dev_err(hsw->dev, "error: reset stream %d still running\n",
 -- 
 2.8.0.rc3
