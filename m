@@ -1,22 +1,16 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: Re: [PATCH v2] ASoC: rt5514: add rt5514 SPI driver
-Date: Wed, 6 Apr 2016 11:30:25 +0000
-Message-ID: <7EB0DE829A537248AF2ED30C97D12694FD0CE7@RTITMBSV03.realtek.com.tw>
-References: <1457953101-19348-1-git-send-email-oder_chiou@realtek.com>
- <20160329215121.GP2350@sirena.org.uk>
- <7EB0DE829A537248AF2ED30C97D12694FCEA41@RTITMBSV03.realtek.com.tw>
- <20160331165048.GE2350@sirena.org.uk>
- <7EB0DE829A537248AF2ED30C97D12694FCF18D@RTITMBSV03.realtek.com.tw>
- <20160401141740.GY2350@sirena.org.uk>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ASoC: Intel: sst: fix a loop timeout in
+ sst_hsw_stream_reset()
+Date: Wed, 6 Apr 2016 14:36:06 +0300
+Message-ID: <20160406113606.GA23032@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id AD66226070F
- for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 13:30:34 +0200 (CEST)
-In-Reply-To: <20160401141740.GY2350@sirena.org.uk>
-Content-Language: zh-TW
+Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
+ by alsa0.perex.cz (Postfix) with ESMTP id C6E9F260851
+ for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 13:36:20 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,22 +20,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, "pc.liao@mediatek.com" <pc.liao@mediatek.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
+To: Jie Yang <yang.jie@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-> > > Are you *positive* about that?  There look to be routing things going on for
-> > > example which might be system dependant.
-> 
-> > They are the default settings for the our common hardware planning. If the
-> > developer wants to modify the settings to match the different hardware
-> > planning, they can consider to change the settings in the DSP firmware.
-> 
-> So if they do that the driver will not be compatible with their
-> reconfigured firmware...  this needs to work on all systems, including
-> end user ones with different system integrations.
-> 
-The DSP of ALC5514 is a programmable DSP, and it also can control the all
-setting domain including routing path. So they can modify the different
-setting on the same register address in DSP firmware. The default settings
-also can be reference for the development of user's DSP firmware.
+In the original code we ended the loop with tries set to -1 instead of
+zero.
+
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+Not tested.
+
+diff --git a/sound/soc/intel/haswell/sst-haswell-ipc.c b/sound/soc/intel/haswell/sst-haswell-ipc.c
+index ac60f13..9156522 100644
+--- a/sound/soc/intel/haswell/sst-haswell-ipc.c
++++ b/sound/soc/intel/haswell/sst-haswell-ipc.c
+@@ -1345,7 +1345,7 @@ int sst_hsw_stream_reset(struct sst_hsw *hsw, struct sst_hsw_stream *stream)
+ 		return 0;
+ 
+ 	/* wait for pause to complete before we reset the stream */
+-	while (stream->running && tries--)
++	while (stream->running && --tries)
+ 		msleep(1);
+ 	if (!tries) {
+ 		dev_err(hsw->dev, "error: reset stream %d still running\n",
