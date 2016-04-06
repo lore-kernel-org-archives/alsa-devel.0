@@ -1,31 +1,31 @@
-From: denk <denk@post.com>
+From: Dennis Kadioglu <denk@post.com>
 Subject: [PATCH] Add a quirk for Plantronics BT300
-Date: Wed, 6 Apr 2016 08:37:17 +0200 (CEST)
-Message-ID: <640357602.7415605.1459924637134.JavaMail.zimbra@dkadioglu.de>
+Date: Wed, 6 Apr 2016 08:39:01 +0200 (CEST)
+Message-ID: <2102632517.7417885.1459924741577.JavaMail.zimbra@dkadioglu.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from skylla.efm.de (skylla.efm.de [195.190.148.248])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A66026506E
- for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 08:37:18 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id DD37226506E
+ for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 08:39:01 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
- by skylla.efm.de (Postfix) with ESMTP id BB65B761794
- for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 08:37:17 +0200 (CEST)
+ by skylla.efm.de (Postfix) with ESMTP id C3E9C761794
+ for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 08:39:01 +0200 (CEST)
 Received: from skylla.efm.de ([127.0.0.1])
  by localhost (skylla.efm.de [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id HRHNFd5JBO4N for <alsa-devel@alsa-project.org>;
- Wed,  6 Apr 2016 08:37:17 +0200 (CEST)
+ with ESMTP id tNITFNHBV0xo for <alsa-devel@alsa-project.org>;
+ Wed,  6 Apr 2016 08:39:01 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
- by skylla.efm.de (Postfix) with ESMTP id 9D5EC7618A0
- for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 08:37:17 +0200 (CEST)
+ by skylla.efm.de (Postfix) with ESMTP id A74717618A0
+ for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 08:39:01 +0200 (CEST)
 Received: from skylla.efm.de ([127.0.0.1])
  by localhost (skylla.efm.de [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id I0mu8taBZqih for <alsa-devel@alsa-project.org>;
- Wed,  6 Apr 2016 08:37:17 +0200 (CEST)
+ with ESMTP id QDGlMjQGf7GL for <alsa-devel@alsa-project.org>;
+ Wed,  6 Apr 2016 08:39:01 +0200 (CEST)
 Received: from skylla.efm.de (skylla.efm.de [195.190.148.248])
- by skylla.efm.de (Postfix) with ESMTP id 89B67761794
- for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 08:37:17 +0200 (CEST)
+ by skylla.efm.de (Postfix) with ESMTP id 93664761794
+ for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 08:39:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
