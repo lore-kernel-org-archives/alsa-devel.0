@@ -1,16 +1,16 @@
 From: han.lu@intel.com
-Subject: [PATCH V7 1/2] ASoC: core: add API for registering and
-	cleaning up DMI card names
-Date: Wed,  6 Apr 2016 15:29:18 +0800
-Message-ID: <61f4ce19dfebc462623ef95d959f49e98c09cd2a.1459926898.git.han.lu@intel.com>
+Subject: [PATCH V7 2/2] ASoC: bytcr-rt5640: register DMI names
+	for card
+Date: Wed,  6 Apr 2016 15:29:19 +0800
+Message-ID: <de03e0764c93699cb59472be851240547d8b0157.1459926898.git.han.lu@intel.com>
 References: <cover.1459926898.git.han.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id A228A265130
- for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 09:28:27 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A7512651B7
+ for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 09:28:28 +0200 (CEST)
 In-Reply-To: <cover.1459926898.git.han.lu@intel.com>
 In-Reply-To: <cover.1459926898.git.han.lu@intel.com>
 References: <cover.1459926898.git.han.lu@intel.com>
@@ -29,135 +29,85 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Lu, Han" <han.lu@intel.com>
 
-Add core API for registering and cleaning up DMI card names, so user
-space utils such as PA and UCM can distinguish various products.
-Previously on ASoC, the card short name, driver name and long name were
-all the same as the machine driver name.
-The patch adds more board information:
-  card driver name     --->  machine driver name
-  card short name      --->  DMI_BOARD_NAME or DMI_PRODUCT_NAME
-  card long name and
-  card component       --->  short name;driver name;(DMI_SYS_VENDOR,
-                             optional);(the firmware name, optional)
+Register DMI names for products using bytcr-rt5640 driver, such as ASUS
+T100TA and Dell Venue 8 Pro 5830, for user space utils to distinguish
+different products.
+
+For example, previously on T100TA:
+  $ cat /proc/asound/cards
+    0 [bytcrrt5640 ]: bytcr-rt5640 -  bytcr-rt5640
+                      bytcr-rt5640
+  $ amixer -c0 info
+  Card hw:0 'bytcrrt5640'/'bytcr-rt5640'
+    Mixer name    : ''
+    Components    : ''
+    Controls      : 256
+    Simple ctrls  : 228
+
+After apply the patch:
+  $ cat /proc/asound/cards
+    0 [T100TA      ]: bytcr-rt5640 -  T100TA
+                      T100TA;bytcr-rt5640;ASUSTek COMPUTER INC.;intel/fw_
+  sst_0f28.bin
+  $ amixer -c0 info
+  Card hw:0 'T100TA'/'T100TA;bytcr-rt5640;ASUSTek COMPUTER INC.;intel/fw_
+  sst_0f28.bin'
+    Mixer name    : ''
+    Components    : 'T100TA;bytcr-rt5640;ASUSTek COMPUTER INC.;intel/fw_s
+  st_0f28.bin'
+    Controls      : 256
+    Simple ctrls  : 228
 
 Signed-off-by: Lu, Han <han.lu@intel.com>
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 02b4a21..911d09e 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -486,6 +486,9 @@ void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream);
- int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
- 	unsigned int dai_fmt);
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 032a2e7..014b549 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -152,6 +152,8 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 	{}
+ };
  
-+int snd_soc_set_card_names(struct snd_soc_card *card, const char *firmware);
-+void snd_soc_cleanup_card_names(struct snd_soc_card *card);
++static struct snd_soc_card byt_rt5640_card;
 +
- /* Utility functions to get clock rates from various things */
- int snd_soc_calc_frame_size(int sample_size, int channels, int tdm_slots);
- int snd_soc_params_to_frame_size(struct snd_pcm_hw_params *params);
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index d2e62b15..c1f3520 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -34,6 +34,7 @@
- #include <linux/ctype.h>
- #include <linux/slab.h>
- #include <linux/of.h>
-+#include <linux/dmi.h>
- #include <sound/core.h>
- #include <sound/jack.h>
- #include <sound/pcm.h>
-@@ -1828,6 +1829,90 @@ int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
- }
- EXPORT_SYMBOL_GPL(snd_soc_runtime_set_dai_fmt);
- 
-+/**
-+ * snd_soc_set_card_names() - Register DMI names to card
-+ * @card: The card to register DMI names
-+ * @firmware: The firmware name, optional
-+ *
-+ * This function registers DMI names to card for the userspace to distinguish
-+ * different boards/products:
-+ *   card driver name     --->  machine driver name
-+ *   card short name      --->  DMI_BOARD_NAME or DMI_PRODUCT_NAME
-+ *   card long name and
-+ *   card component       --->  short name;driver name;(DMI_SYS_VENDOR,
-+ *                              optional);(firmware name, optional)
-+ *
-+ * Returns 0 on success, otherwise a negative error code.
-+ */
-+int snd_soc_set_card_names(struct snd_soc_card *card, const char *firmware)
-+{
-+	int ret = 0;
-+	size_t buf_size, name_size;
-+	const char *board, *vendor;
-+	char *longname;
-+
-+	board = dmi_get_system_info(DMI_BOARD_NAME);
-+	if (!board)
-+		board = dmi_get_system_info(DMI_PRODUCT_NAME);
-+	if (!board) {
-+		dev_err(card->dev, "ASoC: the board/product name is empty!\n");
-+		return -EINVAL;
-+	}
-+
-+	vendor = dmi_get_system_info(DMI_SYS_VENDOR);
-+
-+	/* card driver name */
-+	card->driver_name = card->name;
-+
-+	/* card short name */
-+	card->name = board;
-+
-+	/* card long name */
-+	buf_size = sizeof(card->snd_card->longname);
-+	name_size = strlen(card->name) + strlen(card->driver_name) + 4;
-+	if (vendor)
-+		name_size += strlen(vendor);
-+	if (firmware)
-+		name_size += strlen(firmware);
-+	if (name_size > buf_size)
-+		return -ENOMEM;
-+
-+	longname = kmalloc(buf_size, GFP_KERNEL);
-+	if (!longname)
-+		return -ENOMEM;
-+	snprintf(longname, buf_size, "%s;%s;",
-+			card->name, card->driver_name);
-+	if (vendor)
-+		strlcat(longname, vendor, buf_size);
-+	strlcat(longname, ";", buf_size);
-+	if (firmware)
-+		strlcat(longname, firmware, buf_size);
-+
-+	card->long_name = longname;
-+
-+	/* card component */
-+	if (sizeof(card->snd_card->components) < name_size
-+			+ strlen(card->snd_card->components))
-+		return -ENOMEM;
-+
-+	ret = snd_component_add(card->snd_card, card->long_name);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_set_card_names);
-+
-+/**
-+ * snd_soc_cleanup_card_names() - cleanup registered DMI names
-+ * @card: The card to cleanup
-+ *
-+ * This function cleanup the registered DMI names from card
-+ */
-+void snd_soc_cleanup_card_names(struct snd_soc_card *card)
-+{
-+	kfree(card->long_name);
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_cleanup_card_names);
-+
- static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
  {
- 	struct snd_soc_codec *codec;
+ 	int ret;
+@@ -159,6 +161,13 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
+ 	struct snd_soc_card *card = runtime->card;
+ 	const struct snd_soc_dapm_route *custom_map;
+ 	int num_routes;
++	struct sst_acpi_mach *mach = byt_rt5640_card.dev->platform_data;
++
++	ret = snd_soc_set_card_names(card, mach->fw_filename);
++	if (ret < 0) {
++		dev_err(card->dev, "unable to register card names\n");
++		return ret;
++	}
+ 
+ 	card->dapm.idle_bias_off = true;
+ 
+@@ -380,12 +389,21 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 	return ret_val;
+ }
+ 
++static int snd_byt_rt5640_mc_remove(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = &byt_rt5640_card;
++
++	snd_soc_cleanup_card_names(card);
++	return 0;
++}
++
+ static struct platform_driver snd_byt_rt5640_mc_driver = {
+ 	.driver = {
+ 		.name = "bytcr_rt5640",
+ 		.pm = &snd_soc_pm_ops,
+ 	},
+ 	.probe = snd_byt_rt5640_mc_probe,
++	.remove = snd_byt_rt5640_mc_remove,
+ };
+ 
+ module_platform_driver(snd_byt_rt5640_mc_driver);
 -- 
 2.5.0
