@@ -1,18 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH V7 1/2] ASoC: core: add API for registering
- and cleaning up DMI card names
-Date: Wed, 6 Apr 2016 18:48:01 +0900
-Message-ID: <5704DB51.4020303@sakamocchi.jp>
-References: <cover.1459926898.git.han.lu@intel.com>
- <61f4ce19dfebc462623ef95d959f49e98c09cd2a.1459926898.git.han.lu@intel.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH v2 4/6] ASoC: wm_adsp: Factor out fetching of
+	stream errors from the DSP
+Date: Wed, 6 Apr 2016 11:21:53 +0100
+Message-ID: <1459938115-25456-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1459938115-25456-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D9962606F8
- for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 11:48:06 +0200 (CEST)
-In-Reply-To: <61f4ce19dfebc462623ef95d959f49e98c09cd2a.1459926898.git.han.lu@intel.com>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 585202606F8
+ for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2016 12:21:52 +0200 (CEST)
+In-Reply-To: <1459938115-25456-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,65 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: han.lu@intel.com, broonie@kernel.org, tiwai@suse.de, vinod.koul@intel.com, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org
+To: vinod.koul@intel.com, tiwai@suse.com, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Factor out the reading of the DSP error flag into its own function to
+support further improvements to the code.
 
-On Apr 6 2016 16:29, han.lu@intel.com wrote:
-> From: "Lu, Han" <han.lu@intel.com>
-> 
-> Add core API for registering and cleaning up DMI card names, so user
-> space utils such as PA and UCM can distinguish various products.
-> Previously on ASoC, the card short name, driver name and long name were
-> all the same as the machine driver name.
-> The patch adds more board information:
->   card driver name     --->  machine driver name
->   card short name      --->  DMI_BOARD_NAME or DMI_PRODUCT_NAME
->   card long name and
->   card component       --->  short name;driver name;(DMI_SYS_VENDOR,
->                              optional);(the firmware name, optional)
-> 
-> Signed-off-by: Lu, Han <han.lu@intel.com>
-> 
-> diff --git a/include/sound/soc.h b/include/sound/soc.h
-> index 02b4a21..911d09e 100644
-> --- a/include/sound/soc.h
-> +++ b/include/sound/soc.h
-> @@ -486,6 +486,9 @@ void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream);
->  int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
->  	unsigned int dai_fmt);
->  
-> +int snd_soc_set_card_names(struct snd_soc_card *card, const char *firmware);
-> +void snd_soc_cleanup_card_names(struct snd_soc_card *card);
-> +
->  /* Utility functions to get clock rates from various things */
->  int snd_soc_calc_frame_size(int sample_size, int channels, int tdm_slots);
->  int snd_soc_params_to_frame_size(struct snd_pcm_hw_params *params);
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index d2e62b15..c1f3520 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> (omit)
-> +/**
-> + * snd_soc_cleanup_card_names() - cleanup registered DMI names
-> + * @card: The card to cleanup
-> + *
-> + * This function cleanup the registered DMI names from card
-> + */
-> +void snd_soc_cleanup_card_names(struct snd_soc_card *card)
-> +{
-> +	kfree(card->long_name);
-> +}
-> +EXPORT_SYMBOL_GPL(snd_soc_cleanup_card_names);
-> +
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm_adsp.c | 28 +++++++++++++++++++---------
+ 1 file changed, 19 insertions(+), 9 deletions(-)
 
-In linux kernel development, such a function with a little statements
-tends to be 'static inline function' defined in a header, instead of
-maintaining more symbols. I think some APIs of Linux workqueue are good
-examples to you. See 'include/linux/workqueue.h'.
-
-
-Regards
-
-Takashi Sakamoto
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 953c427..f70c609 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -2816,6 +2816,23 @@ static int wm_adsp_buffer_update_avail(struct wm_adsp_compr_buf *buf)
+ 	return 0;
+ }
+ 
++static int wm_adsp_buffer_get_error(struct wm_adsp_compr_buf *buf)
++{
++	int ret;
++
++	ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(error), &buf->error);
++	if (ret < 0) {
++		adsp_err(buf->dsp, "Failed to check buffer error: %d\n", ret);
++		return ret;
++	}
++	if (buf->error != 0) {
++		adsp_err(buf->dsp, "Buffer error occurred: %d\n", buf->error);
++		return -EIO;
++	}
++
++	return 0;
++}
++
+ int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
+ {
+ 	struct wm_adsp_compr_buf *buf;
+@@ -2834,16 +2851,9 @@ int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
+ 
+ 	adsp_dbg(dsp, "Handling buffer IRQ\n");
+ 
+-	ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(error), &buf->error);
+-	if (ret < 0) {
+-		adsp_err(dsp, "Failed to check buffer error: %d\n", ret);
+-		goto out;
+-	}
+-	if (buf->error != 0) {
+-		adsp_err(dsp, "Buffer error occurred: %d\n", buf->error);
+-		ret = -EIO;
++	ret = wm_adsp_buffer_get_error(buf);
++	if (ret < 0)
+ 		goto out;
+-	}
+ 
+ 	ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(irq_count),
+ 				  &buf->irq_count);
+-- 
+2.1.4
