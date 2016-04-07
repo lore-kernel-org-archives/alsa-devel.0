@@ -1,27 +1,20 @@
-From: "Harvey, Ryan" <Ryan.Harvey@cirrus.com>
-Subject: Checkpatch warnings on switch case fallthru
-Date: Thu, 7 Apr 2016 22:23:03 +0000
-Message-ID: <D32C47F6.1E2FD%ryan.harvey@cirrus.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH - alsa-lib 1/1] Change card/pid get
+ functions to return -ENOSYS if the kernel is too old
+Date: Fri, 8 Apr 2016 08:00:14 +0900
+Message-ID: <5706E67E.5060908@sakamocchi.jp>
+References: <1459532030-6387-1-git-send-email-agoode@google.com>
+ <20160401211558.GA20661@mail.zuhause> <s5hpou5a0g0.wl-tiwai@suse.de>
+ <CAOf41NmK6V1MMUrQ=UwO=nttYuk3a5b63jH5VTBxeJM9px1yow@mail.gmail.com>
+ <20160407201041.GB26683@mail.zuhause>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A990260824
- for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2016 00:23:06 +0200 (CEST)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.0.11/8.16.0.11) with SMTP id
- u37MJVQw030394
- for <alsa-devel@alsa-project.org>; Thu, 7 Apr 2016 17:23:04 -0500
-Received: from mail2.cirrus.com (mail2.cirrus.com [141.131.128.20])
- by mx0b-001ae601.pphosted.com with ESMTP id 225vk88b0k-1
- for <alsa-devel@alsa-project.org>; Thu, 07 Apr 2016 17:23:04 -0500
-Received: from ex4.ad.cirrus.com (ex4.ad.cirrus.com [141.131.36.35])
- by mail2.cirrus.com (Postfix) with ESMTP id 7E18EFC03F
- for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2016 17:23:09 -0500 (CDT)
-Content-Language: en-US
-Content-ID: <A83F192EE6985947A05C00785A34515C@ad.cirrus.com>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2C67E260824
+ for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2016 01:00:17 +0200 (CEST)
+In-Reply-To: <20160407201041.GB26683@mail.zuhause>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,70 +24,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Martin Koegler <martin.koegler@chello.at>, Adam Goode <agoode@google.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi,
 
-I receive a set of checkpatch warnings against my switch fallthru
-structure in readable_registers().  I=B9m able to eliminate these warnings
-with a preceding comment, but that does messy the code.  Is there a method
-better than switch for accomplishing this?
+On Apr 8 2016 05:10, Martin Koegler wrote:
+> On Thu, Apr 07, 2016 at 03:23:01PM -0400, Adam Goode wrote:
+>> Have you heard any objections?
+>>
+>> Also, would you plan to do a 1.1.2 release soon after accepting this, to
+>> get this functionality out quickly?
+> 
+> Distributions already start to pick 1.1.1 up:
+> https://build.opensuse.org/request/show/382608
+> https://build.opensuse.org/request/show/382611
+> 
+> I would object merging that patch, if there is no immediate patched 1.1.2 release available, 
+> as otherwise 1.1.1 with a different API will get used by the mass. 
 
-static bool cs43130_readable_register(struct device *dev, unsigned int reg)
-{
-        switch (reg) {
-        case CS43130_DEVID_AB ... CS43130_SYS_CLK_CTL_1:
-        case CS43130_PWDN_CTL:
-        case CS43130_PLL_SET_1 ... CS43130_PLL_SET_6:
-        case CS43130_PLL_SET_7:
-        case CS43130_PLL_SET_8:
-        case CS43130_PLL_SET_9:
-        case CS43130_PLL_SET_10:
-        case CS43130_CLKOUT_CTL:
-        case CS43130_ASP_NUM_1 ... CS43130_ASP_FRAME_CONF:
-        case CS43130_HP_OUT_CTL_1:
-        case CS43130_PCM_FILT_OPT ... CS43130_PCM_PATH_CTL_2:
-        case CS43130_CLASS_H_CTL:
-        case CS43130_HP_DETECT ... CS43130_HP_STATUS:
-        case CS43130_HP_LOAD_1:
-        case CS43130_HP_LOAD_STAT:
-        case CS43130_INT_MASK_1 ... CS43130_INT_MASK_5:
-                return true;
-        default:
-                return false;
-        }
-}
+Let's be careful. I also consider about this issue for this week, but
+still have no good idea. Band-aid sometimes fixes issues, but in this
+case, it's not better.
 
 
-140: [WARNING] Possible switch case/default not preceeded by break or
-fallthrough comment
-+	case CS43130_PLL_SET_7:
-141: [WARNING] Possible switch case/default not preceeded by break or
-fallthrough comment
-+	case CS43130_PLL_SET_8:
-142: [WARNING] Possible switch case/default not preceeded by break or
-fallthrough comment
-+	case CS43130_PLL_SET_9:
-143: [WARNING] Possible switch case/default not preceeded by break or
-fallthrough comment
-+	case CS43130_PLL_SET_10:
-144: [WARNING] Possible switch case/default not preceeded by break or
-fallthrough comment
-+	case CS43130_CLKOUT_CTL:
-152: [WARNING] Possible switch case/default not preceeded by break or
-fallthrough comment
-+	case CS43130_HP_OUT_CTL_1:
-154: [WARNING] Possible switch case/default not preceeded by break or
-fallthrough comment
-+	case CS43130_CLASS_H_CTL:
-156: [WARNING] Possible switch case/default not preceeded by break or
-fallthrough comment
-+	case CS43130_HP_LOAD_1:
-160: [WARNING] Possible switch case/default not preceeded by break or
-fallthrough comment
-+	case CS43130_HP_LOAD_STAT:
+The design of alsa-lib is based on backend modules splitted from
+frontend API to applications. When a new feature is introduced, we tend
+to change the frontend API directly, ignoring the series of backends.
+This is not good in a view of the design. When adding new features to
+frontend API and the feature is just handled to one backend module, how
+do we implement it to the others.
 
 
-Thanks
--Ryan
+Well, I think this issue of sequencer APIs includes below issues lying
+on the whole alsa-lib:
+- How to pass information of unsupported feature to frontend APIs from
+backend of the backend modules (i.e. kernel/userspace interface or
+perhaps IPC peer such as PulseAudio).
+- Some frontend APIs are designed as an accessor to structure members of
+opaque pointer. How to notify the information of unsupported feature to
+applications via the APIs.
+- How to prevent applications from confusion comes from implementation
+difference between the backend modules.
+
+
+I think alsa-lib still has no good framework to solve these, against its
+long history of 15 years... Or long history might bring this issue.
+
+Of cource, if few persons have interests in these issues to keep a good
+shape or quick fixes are more important than API consistency, it's
+better to apply your band-aid.
+
+
+Regards
+
+Takashi Sakamoto
