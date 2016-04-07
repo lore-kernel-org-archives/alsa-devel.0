@@ -1,20 +1,26 @@
-From: anish kumar <yesanishhere@gmail.com>
-Subject: Re: [PATCH] ASoC: Add max98371 codec driver
-Date: Thu, 7 Apr 2016 12:34:51 -0700
-Message-ID: <CABCoZhA6gXd2cCu4j7ZXG7Y8yiakO04k5_eob7YbP56aP20waQ@mail.gmail.com>
-References: <1458629605-6225-1-git-send-email-yesanishhere@gmail.com>
- <20160328191304.GF2350@sirena.org.uk>
+From: Martin Koegler <martin.koegler@chello.at>
+Subject: Re: [PATCH - alsa-lib 1/1] Change card/pid get
+ functions to return -ENOSYS if the kernel is too old
+Date: Thu, 7 Apr 2016 22:10:41 +0200
+Message-ID: <20160407201041.GB26683@mail.zuhause>
+References: <1459532030-6387-1-git-send-email-agoode@google.com>
+ <20160401211558.GA20661@mail.zuhause>
+ <s5hpou5a0g0.wl-tiwai@suse.de>
+ <CAOf41NmK6V1MMUrQ=UwO=nttYuk3a5b63jH5VTBxeJM9px1yow@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f67.google.com (mail-vk0-f67.google.com
- [209.85.213.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 6BFF42650DB
- for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2016 21:34:52 +0200 (CEST)
-Received: by mail-vk0-f67.google.com with SMTP id a6so2977098vkh.1
- for <alsa-devel@alsa-project.org>; Thu, 07 Apr 2016 12:34:52 -0700 (PDT)
-In-Reply-To: <20160328191304.GF2350@sirena.org.uk>
+Received: from vie01a-dmta-pe02-1.mx.upcmail.net
+ (vie01a-dmta-pe02-1.mx.upcmail.net [62.179.121.157])
+ by alsa0.perex.cz (Postfix) with ESMTP id CD8A12619D0
+ for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2016 22:10:43 +0200 (CEST)
+Received: from [172.31.216.44] (helo=vie01a-pemc-psmtp-pe02)
+ by vie01a-dmta-pe02.mx.upcmail.net with esmtp (Exim 4.72)
+ (envelope-from <martin.koegler@chello.at>) id 1aoGGJ-0005ZY-Ik
+ for alsa-devel@alsa-project.org; Thu, 07 Apr 2016 22:10:43 +0200
+Content-Disposition: inline
+In-Reply-To: <CAOf41NmK6V1MMUrQ=UwO=nttYuk3a5b63jH5VTBxeJM9px1yow@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,22 +30,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Adam Goode <agoode@google.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Martin Koegler <martin.koegler@chello.at>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 28, 2016 at 12:13 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Mon, Mar 21, 2016 at 11:53:25PM -0700, anish kumar wrote:
->
->> +static const char *const voltage_level_text[] = {
->> +     "9.5dB", "10.5dB", "11.5dB", "11.5dB", "12.5dB",
->> +     "13.5dB", "14.5dB", "15.5dB", "16.5dB", "17.5dB",
->> +     "18.5dB", "19.5dB", "20.5dB"
->> +};
->
-> These look like this control is a gain and so I'd expect it to be a
-> normal TLV control.  What does this control do exactly?
+On Thu, Apr 07, 2016 at 03:23:01PM -0400, Adam Goode wrote:
+> Have you heard any objections?
+> 
+> Also, would you plan to do a 1.1.2 release soon after accepting this, to
+> get this functionality out quickly?
 
-It is "Speaker No-Load Output Voltage Maximum". It is
-described here on page 50.
-https://datasheets.maximintegrated.com/en/ds/MAX98371.pdf
+Distributions already start to pick 1.1.1 up:
+https://build.opensuse.org/request/show/382608
+https://build.opensuse.org/request/show/382611
+
+I would object merging that patch, if there is no immediate patched 1.1.2 release available, 
+as otherwise 1.1.1 with a different API will get used by the mass. 
+
+Regards,
+Martin
