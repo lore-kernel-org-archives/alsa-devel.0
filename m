@@ -1,314 +1,129 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 2/6] ASoC: Davinci: McBSP: add device tree
- support for McBSP
-Date: Thu, 7 Apr 2016 15:42:38 +0300
-Message-ID: <570655BE.7030109@ti.com>
+From: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 6/6] ARM: DTS: da850: Add McBSP0 and McBSP1
+Date: Thu, 7 Apr 2016 15:45:47 +0300
+Message-ID: <5706567B.5000501@ti.com>
 References: <1459948893-4206-1-git-send-email-petr@barix.com>
- <1459948893-4206-3-git-send-email-petr@barix.com>
+ <1459948893-4206-7-git-send-email-petr@barix.com> <570645B4.6060606@ti.com>
+ <57064F8B.3020501@barix.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id BD3AA2662CB
- for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2016 14:42:45 +0200 (CEST)
-In-Reply-To: <1459948893-4206-3-git-send-email-petr@barix.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Petr Kulhavy <petr@barix.com>, nsekhar@ti.com, khilman@kernel.org, lgirdwood@gmail.com, broonie@kernel.org, devicetree@vger.kernel.org
-Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, robh+dt@kernel.org, galak@codeaurora.org
+Content-Type: text/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <57064F8B.3020501-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>, nsekhar-l0cyMroinI0@public.gmane.org, khilman-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: mark.rutland-5wv7dgnIgG8@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/06/16 16:21, Petr Kulhavy wrote:
-> This adds DT support for the TI DA8xx/OMAP-L1x/AM17xx/AM18xx McBSP driver.
-> =
+On 04/07/16 15:16, Petr Kulhavy wrote:
+>=20
+> On 07.04.2016 13:34, Peter Ujfalusi wrote:
+>> On 04/06/16 16:21, Petr Kulhavy wrote:
+>>> Add SoC nodes for McBSP0 and McBSP1 as well as the corresponding pi=
+nmux
+>>> configurations.
+>>>
+>>> Signed-off-by: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+>>> ---
+>>>   arch/arm/boot/dts/da850.dtsi | 45
+>>> +++++++++++++++++++++++++++++++++++++++++++-
+>>>   1 file changed, 44 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/arm/boot/dts/da850.dtsi b/arch/arm/boot/dts/da850=
+=2Edtsi
+>>> index 5996e765e59c..9e2b1e97377c 100644
+>>> --- a/arch/arm/boot/dts/da850.dtsi
+>>> +++ b/arch/arm/boot/dts/da850.dtsi
+>>> @@ -148,7 +148,24 @@
+>>>                       0xc 0x88888888 0xffffffff
+>>>                   >;
+>>>               };
+>>> -
+>>> +            mcbsp0_pins: pinmux_mcbsp0_pins {
+>>> +                pinctrl-single,bits =3D <
+>>> +                    /* PINMUX2:
+>>> +                    * CLKS0, DX0, DR0, FSX0
+>>> +                    * FSR0, CLKX0, CLKR0
+>>> +                    */
+>>> +                    0x8 0x02222220 0xfffffff0
+>>> +                >;
+>>> +            };
+>>> +            mcbsp1_pins: pinmux_mcbsp1_pins {
+>>> +                pinctrl-single,bits =3D <
+>>> +                    /* PINMUX1:
+>>> +                    * CLKS1, DX1, DR1, FSX1,
+>>> +                    * FSR1, CLKX1, CLKR1
+>>> +                    */
+>>> +                    0x4 0x22222220 0xfffffff0
+>> This will conflict with the mcasp0_pins in da850-evm as AXR11 and AX=
+R12 is
+>> used by the board for audio. When I say conflict, I mean that audio =
+will be
+>> completely broken on the board.
+>=20
+> I agree with you, the EVM uses the pins for other peripherals. Howeve=
+r I
+> understand that the da850.dtsi is a generic description of the DA850 =
+platform.
+> Other DA850 based designs that use the McBSP will not have conflicts.=
+ For
+> instance my two AM1808 based boards don't use the McASP.
+> Of course the board's DTS must enable only non-conflicting peripheral=
+s/pinmux
+> configurations.
+> But having the pinmuxes defined does not break anything and actually =
+helps
+> creating the DTS file.
 
-> Signed-off-by: Petr Kulhavy <petr@barix.com>
-> ---
->  sound/soc/davinci/Kconfig       |   6 ++-
->  sound/soc/davinci/davinci-i2s.c | 106 ++++++++++++++++++++++++++++++++++=
-------
->  2 files changed, 96 insertions(+), 16 deletions(-)
-> =
+I think what the da850.dtsi does is wrong. The dtsi file should not set=
+ any
+pinmux, those need to be set by the board .dts files If one board uses =
+McASP0,
+it will set up the pins for that and leave McBSP pins as they were, but=
+ other
+board might use McBSP1 and not use McASP0, there you will have pincontr=
+ol for
+McBSP1.
 
-> diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
-> index 50ca291cc225..6b732d8e5896 100644
-> --- a/sound/soc/davinci/Kconfig
-> +++ b/sound/soc/davinci/Kconfig
-> @@ -16,7 +16,11 @@ config SND_EDMA_SOC
->  	  - DRA7xx family
->  =
-
->  config SND_DAVINCI_SOC_I2S
-> -	tristate
-> +	tristate "DaVinci Multichannel Buffered Serial Port (McBSP) support"
-> +	depends on SND_EDMA_SOC
-> +	help
-> +	  Say Y or M here if you want to have support for McBSP IP found in
-> +	  Texas Instruments DaVinci DA850 SoCs.
->  =
-
->  config SND_DAVINCI_SOC_MCASP
->  	tristate "Multichannel Audio Serial Port (McASP) support"
-> diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-=
-i2s.c
-> index ec98548a5fc9..2ebfe86dd584 100644
-> --- a/sound/soc/davinci/davinci-i2s.c
-> +++ b/sound/soc/davinci/davinci-i2s.c
-> @@ -4,9 +4,15 @@
->   * Author:      Vladimir Barinov, <vbarinov@embeddedalley.com>
->   * Copyright:   (C) 2007 MontaVista Software, Inc., <source@mvista.com>
->   *
-> + * DT support	(c) 2016 Petr Kulhavy, Barix AG <petr@barix.com>
-> + *		based on davinci-mcasp.c DT support
-> + *
->   * This program is free software; you can redistribute it and/or modify
->   * it under the terms of the GNU General Public License version 2 as
->   * published by the Free Software Foundation.
-> + *
-> + * TODO:
-> + * on DA850 implement HW FIFOs instead of DMA into DXR and DRR registers
-
-The BFIFO looks identical to AFIFO for McASP...
-
->   */
->  =
-
->  #include <linux/init.h>
-> @@ -648,15 +654,82 @@ static const struct snd_soc_component_driver davinc=
-i_i2s_component =3D {
->  	.name		=3D "davinci-i2s",
->  };
->  =
-
-> +static struct snd_platform_data*
-> +davinci_i2s_set_pdata_from_of(struct platform_device *pdev)
-> +{
-> +	struct snd_platform_data *pdata =3D NULL;
-> +	struct device_node *np;
-> +	struct of_phandle_args dma_spec;
-> +	int ret;
-> +
-> +	if (!IS_ENABLED(CONFIG_OF) || !pdev->dev.of_node)
-> +		return dev_get_platdata(&pdev->dev);
-> +
-> +	pdata =3D devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
-> +	if (!pdata)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	np =3D pdev->dev.of_node;
-> +
-> +	ret =3D of_property_match_string(np, "dma-names", "tx");
-> +	if (ret >=3D 0) {
-> +		ret =3D of_parse_phandle_with_args(np, "dmas", "#dma-cells", ret,
-> +						 &dma_spec);
-> +		if (ret >=3D 0)
-> +			pdata->tx_dma_channel =3D dma_spec.args[0];
-> +	}
-> +
-> +	ret =3D of_property_match_string(np, "dma-names", "rx");
-> +	if (ret >=3D 0) {
-> +		ret =3D of_parse_phandle_with_args(np, "dmas", "#dma-cells", ret,
-> +						 &dma_spec);
-> +		if (ret >=3D 0)
-> +			pdata->rx_dma_channel =3D dma_spec.args[0];
-> +	}
-
-Why would you do this? If we booted with DT the only thing needed by the
-edma-pcm (dmaengine) is the name of the DMA channel...
-
-> +
-> +	/* optional parameters */
-> +
-> +	pdata->enable_channel_combine =3D
-> +		of_property_read_bool(np, "channel-combine");
-
-This can only be done when the McBSP is used in DSP_x mode since this will
-make the McBSP to transmit the stereo audio as mono on the bus.
-
-After a quick look at the relevant parts in the driver, I think most of the
-things are pretty much broken or at least they are not totally correct. McB=
-SP
-do support real I2S (SRGR:FWID), and the phase setup is wrong in the code. =
-IMO.
-I don't have HW to test the daVinci-MCBSP or the ASP so I can not comment on
-how well things are working.
-
-> +
-> +	/*
-> +	 * pdata->clk_input_pin is deliberately not exported to DT
-> +	 * and the default value of the clk_input_pin is MCBSP_CLKR.
-> +	 * The value MCBSP_CLKS makes no sense as it turns the CPU
-> +	 * to a bit clock master in the SND_SOC_DAIFMT_CBM_CFS mode
-> +	 * where it should be bit clock slave!
-> +	 */
-
-Interesting. As a whole the clock selection part is mostly broken in the dr=
-iver...
-It would be better to add davinci_i2s_set_sysclk() to deal with the system
-clock configuration.
-
-> +
-> +	return pdata;
-> +}
-> +
->  static int davinci_i2s_probe(struct platform_device *pdev)
->  {
-> +	struct snd_platform_data *pdata;
->  	struct davinci_mcbsp_dev *dev;
->  	struct resource *mem, *res;
->  	void __iomem *io_base;
->  	int *dma;
->  	int ret;
->  =
-
-> -	mem =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	pdata =3D davinci_i2s_set_pdata_from_of(pdev);
-> +	if (IS_ERR(pdata)) {
-> +		dev_err(&pdev->dev, "Error populating platform data, err %ld\n",
-> +			PTR_ERR(pdata));
-> +		return PTR_ERR(pdata);
-> +	}
-> +
-> +	mem =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, "mpu");
-> +	if (!mem) {
-> +		dev_warn(&pdev->dev,
-> +			 "\"mpu\" mem resource not found, using index 0\n");
-> +		mem =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +		if (!mem) {
-> +			dev_err(&pdev->dev, "no mem resource?\n");
-> +			return -ENODEV;
-> +		}
-> +	}
-> +
->  	io_base =3D devm_ioremap_resource(&pdev->dev, mem);
->  	if (IS_ERR(io_base))
->  		return PTR_ERR(io_base);
-> @@ -680,25 +753,21 @@ static int davinci_i2s_probe(struct platform_device=
- *pdev)
->  	    (dma_addr_t)(mem->start + DAVINCI_MCBSP_DRR_REG);
->  =
-
->  	/* first TX, then RX */
-> -	res =3D platform_get_resource(pdev, IORESOURCE_DMA, 0);
-> -	if (!res) {
-> -		dev_err(&pdev->dev, "no DMA resource\n");
-> -		ret =3D -ENXIO;
-> -		goto err_release_clk;
-> -	}
->  	dma =3D &dev->dma_request[SNDRV_PCM_STREAM_PLAYBACK];
-> -	*dma =3D res->start;
->  	dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK].filter_data =3D dma;
-> +	res =3D platform_get_resource(pdev, IORESOURCE_DMA, 0);
-> +	if (res)
-> +		*dma =3D res->start;
-> +	else
-> +		*dma =3D pdata->tx_dma_channel;
-
-Please follow the way davinci-mcasp does it right now:
-	dma_data =3D &mcasp->dma_data[SNDRV_PCM_STREAM_PLAYBACK];
-	...
-	dma =3D &mcasp->dma_request[SNDRV_PCM_STREAM_PLAYBACK];
-	res =3D platform_get_resource(pdev, IORESOURCE_DMA, 0);
-	if (res)
-		*dma =3D res->start;
-	else
-		*dma =3D pdata->tx_dma_channel;
-
-	/* dmaengine filter data for DT and non-DT boot */
-	if (pdev->dev.of_node)
-		dma_data->filter_data =3D "tx";
-	else
-		dma_data->filter_data =3D dma;
-
-while we are here, I think the tx/rx_dma_channel is something we should just
-get rid of. It is not used as far as I can tell.
-Something like this would do I think:
-	dma_data =3D &mcasp->dma_data[SNDRV_PCM_STREAM_PLAYBACK];
-	...
-	res =3D platform_get_resource(pdev, IORESOURCE_DMA, 0);
-	if (res) {
-		dma =3D &mcasp->dma_request[SNDRV_PCM_STREAM_PLAYBACK];
-		*dma =3D res->start;
-		dma_data->filter_data =3D dma;
-	} else if (pdev->dev.of_node) {
-		dma_data->filter_data =3D "tx";
-	} else {
-		dev_err(&pdev->dev, "Missing DMA tx resource\n");
-		return -ENODEV;
-	}
-
->  =
-
-> -	res =3D platform_get_resource(pdev, IORESOURCE_DMA, 1);
-> -	if (!res) {
-> -		dev_err(&pdev->dev, "no DMA resource\n");
-> -		ret =3D -ENXIO;
-> -		goto err_release_clk;
-> -	}
->  	dma =3D &dev->dma_request[SNDRV_PCM_STREAM_CAPTURE];
-> -	*dma =3D res->start;
->  	dev->dma_data[SNDRV_PCM_STREAM_CAPTURE].filter_data =3D dma;
-> +	res =3D platform_get_resource(pdev, IORESOURCE_DMA, 1);
-> +	if (res)
-> +		*dma =3D res->start;
-> +	else
-> +		*dma =3D pdata->rx_dma_channel;
-
-same comment as for the TX dma part.
-
->  =
-
->  	dev->dev =3D &pdev->dev;
->  	dev_set_drvdata(&pdev->dev, dev);
-> @@ -737,11 +806,18 @@ static int davinci_i2s_remove(struct platform_devic=
-e *pdev)
->  	return 0;
->  }
->  =
-
-> +static const struct of_device_id davinci_mcbsp_match[] =3D {
-> +	{ .compatible =3D "ti,da850-mcbsp-audio" },
-
-I would drop the "-audio" for the binding...
-
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, davinci_mcbsp_match);
-> +
->  static struct platform_driver davinci_mcbsp_driver =3D {
->  	.probe		=3D davinci_i2s_probe,
->  	.remove		=3D davinci_i2s_remove,
->  	.driver		=3D {
->  		.name	=3D "davinci-mcbsp",
-> +		.of_match_table =3D of_match_ptr(davinci_mcbsp_match),
-
-The driver calls itself davinci-i2s.c and the prefixes internally used are
-davinci_i2s_*.
-The driver name is "davinci-mcbsp".
-And it is basically a driver for daVinci ASP (the McBSP additions are not
-configured at all).
-
-I still think we should keep the davinci_i2s_* when adding new code, or ren=
-ame
-the whole driver and it's prefixes to something more sensible?
+> Or did I miss something?
+>=20
+>>
+>>> +                >;
+>>> +            };
+>>>           };
+>>>           edma0: edma@01c00000 {
+>>>               compatible =3D "ti,edma3-tpcc";
+>>> @@ -335,6 +352,32 @@
+>>>                   <&edma0 0 1>;
+>>>               dma-names =3D "tx", "rx";
+>>>           };
+>>> +
+>>> +        mcbsp0: mcbsp@1d10000 {
+>>> +            compatible =3D "ti,da850-mcbsp-audio";
+>>> +            reg =3D    <0x00110000 0x1000>,
+>>> +                <0x00310000 0x1000>;
+>>> +            reg-names =3D "mpu", "dat";
+>>> +            interrupts =3D <97 98>;
+>>> +            interrupts-names =3D "rx", "tx";
+>>> +            dmas =3D <&edma0 3
+>>> +                &edma0 2>;
+>> This will not work since the eDMA now has the new binding in use, yo=
+u need to
+>> have:
+>>             dmas =3D <&edma0 3 1>,
+>>                 <&edma0 2 1>;
+>>
+>> McBSP should also select the higher priority TPTC as the McASP does.
+> Absolutely, you are right! I still use the old DMA phandles. I will c=
+orrect that.
+>=20
+> Petr
 
 
->  	},
->  };
->  =
-
-> =
-
-
-
--- =
-
+--=20
 P=E9ter
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
