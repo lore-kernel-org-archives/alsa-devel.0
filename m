@@ -1,132 +1,76 @@
-From: PC Liao <pc.liao@mediatek.com>
-Subject: [PATCH v3] ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver
-Date: Thu, 7 Apr 2016 15:35:17 +0800
-Message-ID: <1460014517-20359-1-git-send-email-pc.liao@mediatek.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 2/6] ALSA: compress: Add function to
+ indicate the stream has gone bad
+Date: Thu, 7 Apr 2016 09:28:42 +0100
+Message-ID: <20160407082842.GL31814@localhost.localdomain>
+References: <1459938115-25456-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1459938115-25456-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1459989603.3136.95.camel@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, tiwai@suse.de
-Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, koro.chen@mediatek.com, PC Liao <pc.liao@mediatek.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A63E265158
+ for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2016 10:28:55 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1459989603.3136.95.camel@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Koul, Vinod" <vinod.koul@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, "tiwai@suse.com" <tiwai@suse.com>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds second I2S connection to rt5650 codec for capture path on
-mt8173-rt5650 machine driver.
+On Thu, Apr 07, 2016 at 12:40:03AM +0000, Koul, Vinod wrote:
+> On Wed, 2016-04-06 at 11:21 +0100, Charles Keepax wrote:
+> 
+> > +int snd_compr_stop_xrun(struct snd_compr_stream *stream)
+> > +{
+> > +	if (stream->runtime->state == SNDRV_PCM_STATE_XRUN)
+> > +		return 0;
+> > +
+> > +	stream->runtime->state = SNDRV_PCM_STATE_XRUN;
+> > +
+> > +	queue_delayed_work(system_power_efficient_wq, &stream
+> > ->xrun_work, 0);
+> 
+> why do we want to do this in workqueue and not stop the compress stream
+> immediately.
 
-Signed-off-by: PC Liao <pc.liao@mediatek.com>
----
-Changes since v2:
-Use sound-dai to determine the capture path.
----
- .../devicetree/bindings/sound/mt8173-rt5650.txt    |    6 +++
- sound/soc/mediatek/mt8173-rt5650.c                 |   42 ++++++++++++++++++--
- 2 files changed, 44 insertions(+), 4 deletions(-)
+We need to defer this to a work queue because it is very likely
+we will detect the errors whilst already in a callback in the
+driver. For example we notice the stream is bad whilst processing
+a read or a pointer callback in the driver. Because this call by
+definition goes right back to the top of the stack rather than
+unwinding the stack nicely as returning an error would do, we
+need to be careful of all the locks that are likely to be held in
+between.
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
-index fe5a5ef..4ed768e 100644
---- a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
-+++ b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
-@@ -5,11 +5,17 @@ Required properties:
- - mediatek,audio-codec: the phandles of rt5650 codecs
- - mediatek,platform: the phandle of MT8173 ASoC platform
- 
-+Optional properties:
-+- sound-dai: audio codec dai on capture path
-+  <&rt5650 0> : Default setting. Connect rt5650 I2S1 for capture. (dai_name = rt5645-aif1)
-+  <&rt5650 1> : Connect rt5650 I2S2 for capture. (dai_name = rt5645-aif2)
-+
- Example:
- 
- 	sound {
- 		compatible = "mediatek,mt8173-rt5650";
- 		mediatek,audio-codec = <&rt5650>;
- 		mediatek,platform = <&afe>;
-+		sound-dai = <&rt5650 1>;
- 	};
- 
-diff --git a/sound/soc/mediatek/mt8173-rt5650.c b/sound/soc/mediatek/mt8173-rt5650.c
-index bb09bb1..9f56df9 100644
---- a/sound/soc/mediatek/mt8173-rt5650.c
-+++ b/sound/soc/mediatek/mt8173-rt5650.c
-@@ -85,12 +85,26 @@ static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
- {
- 	struct snd_soc_card *card = runtime->card;
- 	struct snd_soc_codec *codec = runtime->codec_dais[0]->codec;
-+	const char *codec_dai_capture = runtime->codec_dais[1]->name;
- 	int ret;
- 
- 	rt5645_sel_asrc_clk_src(codec,
--				RT5645_DA_STEREO_FILTER |
--				RT5645_AD_STEREO_FILTER,
--				RT5645_CLK_SEL_I2S1_ASRC);
-+					RT5645_DA_STEREO_FILTER,
-+					RT5645_CLK_SEL_I2S1_ASRC);
-+
-+	if (!strcmp(codec_dai_capture, "rt5645-aif1")) {
-+		rt5645_sel_asrc_clk_src(codec,
-+					RT5645_AD_STEREO_FILTER,
-+					RT5645_CLK_SEL_I2S1_ASRC);
-+	} else if (!strcmp(codec_dai_capture, "rt5645-aif2")) {
-+		rt5645_sel_asrc_clk_src(codec,
-+					RT5645_AD_STEREO_FILTER,
-+					RT5645_CLK_SEL_I2S2_ASRC);
-+	} else {
-+		dev_err(card->dev, "Can't get the right codec dai\n");
-+		return -EINVAL;
-+	}
-+
- 	/* enable jack detection */
- 	ret = snd_soc_card_jack_new(card, "Headset Jack",
- 				    SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
-@@ -110,6 +124,11 @@ static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
- 
- static struct snd_soc_dai_link_component mt8173_rt5650_codecs[] = {
- 	{
-+		/* Playback */
-+		.dai_name = "rt5645-aif1",
-+	},
-+	{
-+		/* Capture */
- 		.dai_name = "rt5645-aif1",
- 	},
- };
-@@ -149,7 +168,7 @@ static struct snd_soc_dai_link mt8173_rt5650_dais[] = {
- 		.cpu_dai_name = "I2S",
- 		.no_pcm = 1,
- 		.codecs = mt8173_rt5650_codecs,
--		.num_codecs = 1,
-+		.num_codecs = 2,
- 		.init = mt8173_rt5650_init,
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			   SND_SOC_DAIFMT_CBS_CFS,
-@@ -177,6 +196,7 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card = &mt8173_rt5650_card;
- 	struct device_node *platform_node;
-+	const char *codec_dai_capture;
- 	int i, ret;
- 
- 	platform_node = of_parse_phandle(pdev->dev.of_node,
-@@ -199,6 +219,20 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
- 			"Property 'audio-codec' missing or invalid\n");
- 		return -EINVAL;
- 	}
-+	mt8173_rt5650_codecs[1].of_node = mt8173_rt5650_codecs[0].of_node;
-+
-+	if (device_property_present(&pdev->dev, "sound-dai")) {
-+		ret = snd_soc_of_get_dai_name(pdev->dev.of_node,
-+					      &codec_dai_capture);
-+		if (ret < 0) {
-+			dev_err(&pdev->dev,
-+				"%s snd_soc_of_get_dai_name fail %d\n",
-+				__func__, ret);
-+			return ret;
-+		}
-+		mt8173_rt5650_codecs[1].dai_name = codec_dai_capture;
-+	}
-+
- 	card->dev = &pdev->dev;
- 	platform_set_drvdata(pdev, card);
- 
--- 
-1.7.9.5
+snd_compr_ioctl - takes stream->device->lock
+snd_compr_tstamp
+soc_compr_pointer - takes rtd->pcm_mutex
+wm_adsp_compr_pointer - takes dsp->pwr_lock
+snd_compr_stop_xrun
+snd_compr_stop
+soc_compr_trigger - Deadlock as we take rtd->pcm_mutex again
+
+> 
+> Also if we do this, then why should pointer return error?
+
+The first patch in the chain could indeed be changed to have
+pointer calls not return an error status. But I feel that would
+be making the code worse. Ok the situation I am most interested
+here indicates a failure of the stream, but its a very small leap
+to imagine situations where pointer fails temporarily and the
+stream is still good.
+
+Thanks,
+Charles
