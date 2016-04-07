@@ -1,20 +1,22 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH - alsa-lib 1/1] Change card/pid get
- functions to return -ENOSYS if the kernel is too old
-Date: Fri, 8 Apr 2016 08:00:14 +0900
-Message-ID: <5706E67E.5060908@sakamocchi.jp>
-References: <1459532030-6387-1-git-send-email-agoode@google.com>
- <20160401211558.GA20661@mail.zuhause> <s5hpou5a0g0.wl-tiwai@suse.de>
- <CAOf41NmK6V1MMUrQ=UwO=nttYuk3a5b63jH5VTBxeJM9px1yow@mail.gmail.com>
- <20160407201041.GB26683@mail.zuhause>
+From: "Koul, Vinod" <vinod.koul@intel.com>
+Subject: Re: [PATCH v2 2/6] ALSA: compress: Add function to
+ indicate the stream has gone bad
+Date: Thu, 7 Apr 2016 23:07:12 +0000
+Message-ID: <1460070431.23155.75.camel@intel.com>
+References: <1459938115-25456-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1459938115-25456-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1459989603.3136.95.camel@intel.com>
+ <20160407082842.GL31814@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 2C67E260824
- for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2016 01:00:17 +0200 (CEST)
-In-Reply-To: <20160407201041.GB26683@mail.zuhause>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id CBD4D2619D0
+ for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2016 01:07:54 +0200 (CEST)
+In-Reply-To: <20160407082842.GL31814@localhost.localdomain>
+Content-Language: en-US
+Content-ID: <D439465B575C2043A0844F382CDD4395@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,59 +26,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Martin Koegler <martin.koegler@chello.at>, Adam Goode <agoode@google.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: "ckeepax@opensource.wolfsonmicro.com" <ckeepax@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "tiwai@suse.com" <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Apr 8 2016 05:10, Martin Koegler wrote:
-> On Thu, Apr 07, 2016 at 03:23:01PM -0400, Adam Goode wrote:
->> Have you heard any objections?
->>
->> Also, would you plan to do a 1.1.2 release soon after accepting this, to
->> get this functionality out quickly?
+On Thu, 2016-04-07 at 09:28 +0100, Charles Keepax wrote:
+> On Thu, Apr 07, 2016 at 12:40:03AM +0000, Koul, Vinod wrote:
+> > On Wed, 2016-04-06 at 11:21 +0100, Charles Keepax wrote:
+> > 
+> > > +int snd_compr_stop_xrun(struct snd_compr_stream *stream)
+> > > +{
+> > > +	if (stream->runtime->state == SNDRV_PCM_STATE_XRUN)
+> > > +		return 0;
+> > > +
+> > > +	stream->runtime->state = SNDRV_PCM_STATE_XRUN;
+> > > +
+> > > +	queue_delayed_work(system_power_efficient_wq, &stream
+> > > ->xrun_work, 0);
+> > 
+> > why do we want to do this in workqueue and not stop the compress
+> > stream
+> > immediately.
 > 
-> Distributions already start to pick 1.1.1 up:
-> https://build.opensuse.org/request/show/382608
-> https://build.opensuse.org/request/show/382611
+> We need to defer this to a work queue because it is very likely
+> we will detect the errors whilst already in a callback in the
+> driver. For example we notice the stream is bad whilst processing
+> a read or a pointer callback in the driver. Because this call by
+> definition goes right back to the top of the stack rather than
+> unwinding the stack nicely as returning an error would do, we
+> need to be careful of all the locks that are likely to be held in
+> between.
 > 
-> I would object merging that patch, if there is no immediate patched 1.1.2 release available, 
-> as otherwise 1.1.1 with a different API will get used by the mass. 
+> snd_compr_ioctl - takes stream->device->lock
+> snd_compr_tstamp
+> soc_compr_pointer - takes rtd->pcm_mutex
+> wm_adsp_compr_pointer - takes dsp->pwr_lock
+> snd_compr_stop_xrun
+> snd_compr_stop
+> soc_compr_trigger - Deadlock as we take rtd->pcm_mutex again
 
-Let's be careful. I also consider about this issue for this week, but
-still have no good idea. Band-aid sometimes fixes issues, but in this
-case, it's not better.
+This is what I suspected as well :D so this should be fine. I will take
+a detailed look at the changes once am back home.
 
+Also should this be made a generic stop rather than xrun. Perhaps the
+reason can be specified as an argument.
 
-The design of alsa-lib is based on backend modules splitted from
-frontend API to applications. When a new feature is introduced, we tend
-to change the frontend API directly, ignoring the series of backends.
-This is not good in a view of the design. When adding new features to
-frontend API and the feature is just handled to one backend module, how
-do we implement it to the others.
-
-
-Well, I think this issue of sequencer APIs includes below issues lying
-on the whole alsa-lib:
-- How to pass information of unsupported feature to frontend APIs from
-backend of the backend modules (i.e. kernel/userspace interface or
-perhaps IPC peer such as PulseAudio).
-- Some frontend APIs are designed as an accessor to structure members of
-opaque pointer. How to notify the information of unsupported feature to
-applications via the APIs.
-- How to prevent applications from confusion comes from implementation
-difference between the backend modules.
+Btw Takashi you okay with this approach?
 
 
-I think alsa-lib still has no good framework to solve these, against its
-long history of 15 years... Or long history might bring this issue.
+> 
+> > 
+> > Also if we do this, then why should pointer return error?
+> 
+> The first patch in the chain could indeed be changed to have
+> pointer calls not return an error status. But I feel that would
+> be making the code worse. Ok the situation I am most interested
+> here indicates a failure of the stream, but its a very small leap
+> to imagine situations where pointer fails temporarily and the
+> stream is still good.
 
-Of cource, if few persons have interests in these issues to keep a good
-shape or quick fixes are more important than API consistency, it's
-better to apply your band-aid.
+The point here is that we are anyway propagating error by invoking the
+new API so why return error here.
+Btw can you please explain how this makes code worse?
+
+I think on PCM we don't do that.
 
 
-Regards
-
-Takashi Sakamoto
+-- 
+~Vinod
