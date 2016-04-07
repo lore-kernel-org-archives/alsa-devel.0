@@ -1,18 +1,21 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] ASoC: rockchip: i2s: configure the sdio
-	pins' iomux mode
-Date: Thu, 7 Apr 2016 12:58:11 -0500
-Message-ID: <20160407175811.GP32257@rob-hp-laptop>
-References: <1459931902-77324-1-git-send-email-sugar.zhang@rock-chips.com>
+From: Adam Goode <agoode@google.com>
+Subject: Re: [PATCH - alsa-lib 1/1] Change card/pid get
+ functions to return -ENOSYS if the kernel is too old
+Date: Thu, 7 Apr 2016 15:23:01 -0400
+Message-ID: <CAOf41NmK6V1MMUrQ=UwO=nttYuk3a5b63jH5VTBxeJM9px1yow@mail.gmail.com>
+References: <1459532030-6387-1-git-send-email-agoode@google.com>
+ <20160401211558.GA20661@mail.zuhause> <s5hpou5a0g0.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 31D3526512A
- for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2016 19:58:17 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1459931902-77324-1-git-send-email-sugar.zhang@rock-chips.com>
+Received: from mail-vk0-f51.google.com (mail-vk0-f51.google.com
+ [209.85.213.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E7DA2650F7
+ for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2016 21:23:42 +0200 (CEST)
+Received: by mail-vk0-f51.google.com with SMTP id k1so112215850vkb.0
+ for <alsa-devel@alsa-project.org>; Thu, 07 Apr 2016 12:23:42 -0700 (PDT)
+In-Reply-To: <s5hpou5a0g0.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,51 +25,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sugar Zhang <sugar.zhang@rock-chips.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Sjoerd Simons <sjoerd.simons@collabora.co.uk>, broonie@kernel.org, Kumar Gala <galak@codeaurora.org>, Jianqun Xu <jay.xu@rock-chips.com>, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Martin Koegler <martin.koegler@chello.at>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 06, 2016 at 04:38:22PM +0800, Sugar Zhang wrote:
-> There are 3 i2s sdio pins, which iomux mode is as follows:
+On Mon, Apr 4, 2016 at 10:54 AM, Takashi Iwai <tiwai@suse.de> wrote:
 
-s/i2s sdio/I2S\/SDIO muxed/
+> On Fri, 01 Apr 2016 23:15:58 +0200,
+> Martin Koegler wrote:
+> >
+> > On Fri, Apr 01, 2016 at 01:33:50PM -0400, Adam Goode wrote:
+> > > When trying to get the pid or card of a client, the get functions will
+> > > return -1 if there is no pid or card for a client. Clients have zero or
+> > > one of these, so -1 is correct for these cases. But we also need to
+> detect
+> > > the case where the kernel cannot tell us if there is a card or pid, so
+> > > that userspace can fallback to probing this information in the old way.
+> >
+> > Its a pity, that alsa-lib 1.1.1 has just been released, which just
+> returns -1.
+> > If the time between releases is really about 2 kernel releases, you will
+> very likely
+> > have to cope with the old API for some time.
+>
+> Strictly speaking, for the function behavior change, we'd need a new
+> API function and deprecated the old one eventually.  But, this case is
+> in a gray zone; the function definition doesn't prohibit to return an
+> error value yet, but the change like this is incompatible with the
+> current aconnect code, which is likely regarded as a template for
+> other programs.
+>
+> OTOH, this is a pretty new API function, and it might be not too bad
+> to fix the usage in the early stage, especially when it's a good
+> improvement of the function behavior.
+>
+> So, for now, I'm inclined to take this change with a slight risk of
+> breakage.  But I'm open for more arguments, and would like to hear any
+> objections.
+>
+>
+Hi Takashi,
 
-> 
->  - sdi3_sdo1
->  - sdi2_sdo2
->  - sdi1_sdo3
-> 
-> we need to configure these pins' iomux mode via the GRF register
-> when use multi channel playback/capture.
+Have you heard any objections?
 
-Why not a pinctrl binding here? If you want SDIO mode, then you need 
-similar code in the SDIO driver (or just rely on default mode).
+Also, would you plan to do a 1.1.2 release soon after accepting this, to
+get this functionality out quickly?
 
-> 
-> Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
-> ---
-> 
->  .../devicetree/bindings/sound/rockchip-i2s.txt     |  5 +++
->  sound/soc/rockchip/rockchip_i2s.c                  | 39 +++++++++++++++++++++-
->  sound/soc/rockchip/rockchip_i2s.h                  |  8 +++++
->  3 files changed, 51 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-> index 6e86d8a..ad72a7d 100644
-> --- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-> +++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-> @@ -23,6 +23,11 @@ Required properties:
->  - rockchip,playback-channels: max playback channels, if not set, 8 channels default.
->  - rockchip,capture-channels: max capture channels, if not set, 2 channels default.
->  
-> +Required properties for controller which support multi channels playback/capture:
-> +
-> +- rockchip,grf: Should be phandle/offset pair. the phandle of the syscon node for GRF register,
 
-Wrap your lines at less than 80 chars.
+Thanks,
 
-> +  and the offset of the GRF for control register.
-> +
->  Example for rk3288 I2S controller:
->  
->  i2s@ff890000 {
+Adam
+
+
+
+
+>
+> thanks,
+>
+> Takashi
+>
