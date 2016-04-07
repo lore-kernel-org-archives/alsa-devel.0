@@ -1,84 +1,72 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dwc: Use fifo depth to program FCR" to the asoc tree
-Date: Thu, 07 Apr 2016 10:57:04 -0700
-Message-ID: <E1aoEAy-0001TQ-NW@finisterre>
-References: <5aa4bcb0eba226af2e78fc530ad7d0429d2c96ca.1460047238.git.joabreu@synopsys.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH] ASoC: rockchip: i2s: configure the sdio
+	pins' iomux mode
+Date: Thu, 7 Apr 2016 12:58:11 -0500
+Message-ID: <20160407175811.GP32257@rob-hp-laptop>
+References: <1459931902-77324-1-git-send-email-sugar.zhang@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <5aa4bcb0eba226af2e78fc530ad7d0429d2c96ca.1460047238.git.joabreu@synopsys.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jose Abreu <Jose.Abreu@synopsys.com>
-Cc: Jose Abreu <joabreu@synopsys.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Vineet.Gupta1@synopsys.com, Alexey.Brodkin@synopsys.com, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, broonie@kernel.org, CARLOS.PALMINHA@synopsys.com, tiwai@suse.com, linux-snps-arc@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id 31D3526512A
+ for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2016 19:58:17 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1459931902-77324-1-git-send-email-sugar.zhang@rock-chips.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sugar Zhang <sugar.zhang@rock-chips.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Sjoerd Simons <sjoerd.simons@collabora.co.uk>, broonie@kernel.org, Kumar Gala <galak@codeaurora.org>, Jianqun Xu <jay.xu@rock-chips.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIHBhdGNoCgogICBBU29DOiBkd2M6IFVzZSBmaWZvIGRlcHRoIHRvIHByb2dyYW0gRkNSCgpo
-YXMgYmVlbiBhcHBsaWVkIHRvIHRoZSBhc29jIHRyZWUgYXQKCiAgIGdpdDovL2dpdC5rZXJuZWwu
-b3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9icm9vbmllL3NvdW5kLmdpdCAKCkFsbCBiZWlu
-ZyB3ZWxsIHRoaXMgbWVhbnMgdGhhdCBpdCB3aWxsIGJlIGludGVncmF0ZWQgaW50byB0aGUgbGlu
-dXgtbmV4dAp0cmVlICh1c3VhbGx5IHNvbWV0aW1lIGluIHRoZSBuZXh0IDI0IGhvdXJzKSBhbmQg
-c2VudCB0byBMaW51cyBkdXJpbmcKdGhlIG5leHQgbWVyZ2Ugd2luZG93IChvciBzb29uZXIgaWYg
-aXQgaXMgYSBidWcgZml4KSwgaG93ZXZlciBpZgpwcm9ibGVtcyBhcmUgZGlzY292ZXJlZCB0aGVu
-IHRoZSBwYXRjaCBtYXkgYmUgZHJvcHBlZCBvciByZXZlcnRlZC4gIAoKWW91IG1heSBnZXQgZnVy
-dGhlciBlLW1haWxzIHJlc3VsdGluZyBmcm9tIGF1dG9tYXRlZCBvciBtYW51YWwgdGVzdGluZwph
-bmQgcmV2aWV3IG9mIHRoZSB0cmVlLCBwbGVhc2UgZW5nYWdlIHdpdGggcGVvcGxlIHJlcG9ydGlu
-ZyBwcm9ibGVtcyBhbmQKc2VuZCBmb2xsb3d1cCBwYXRjaGVzIGFkZHJlc3NpbmcgYW55IGlzc3Vl
-cyB0aGF0IGFyZSByZXBvcnRlZCBpZiBuZWVkZWQuCgpJZiBhbnkgdXBkYXRlcyBhcmUgcmVxdWly
-ZWQgb3IgeW91IGFyZSBzdWJtaXR0aW5nIGZ1cnRoZXIgY2hhbmdlcyB0aGV5CnNob3VsZCBiZSBz
-ZW50IGFzIGluY3JlbWVudGFsIHVwZGF0ZXMgYWdhaW5zdCBjdXJyZW50IGdpdCwgZXhpc3RpbmcK
-cGF0Y2hlcyB3aWxsIG5vdCBiZSByZXBsYWNlZC4KClBsZWFzZSBhZGQgYW55IHJlbGV2YW50IGxp
-c3RzIGFuZCBtYWludGFpbmVycyB0byB0aGUgQ0NzIHdoZW4gcmVwbHlpbmcKdG8gdGhpcyBtYWls
-LgoKVGhhbmtzLApNYXJrCgpGcm9tIDNmYWZkMTRkOTQyMmM0NmY1YzJhMTQyMjk4Mzg0ZGMxNWRi
-Zjg4YjIgTW9uIFNlcCAxNyAwMDowMDowMCAyMDAxCkZyb206IEpvc2UgQWJyZXUgPEpvc2UuQWJy
-ZXVAc3lub3BzeXMuY29tPgpEYXRlOiBUaHUsIDcgQXByIDIwMTYgMTc6NTM6NTcgKzAxMDAKU3Vi
-amVjdDogW1BBVENIXSBBU29DOiBkd2M6IFVzZSBmaWZvIGRlcHRoIHRvIHByb2dyYW0gRkNSCgpU
-aGlzIHBhdGNoIG1ha2VzIERlc2lnbndhcmUgSTJTIGRyaXZlciB1c2UgdGhlIGZpZm8KZGVwdGgg
-dmFsdWUgdG8gcHJvZ3JhbSB0aGUgZmlmbyBjb25maWd1cmF0aW9uIHJlZ2lzdGVyCmluc3RlYWQg
-b2YgdXNpbmcgaGFyZGNvZGVkIHZhbHVlcy4KClNpZ25lZC1vZmYtYnk6IEpvc2UgQWJyZXUgPGpv
-YWJyZXVAc3lub3BzeXMuY29tPgpTaWduZWQtb2ZmLWJ5OiBNYXJrIEJyb3duIDxicm9vbmllQGtl
-cm5lbC5vcmc+Ci0tLQogc291bmQvc29jL2R3Yy9kZXNpZ253YXJlX2kycy5jIHwgOSArKysrKysr
-LS0KIDEgZmlsZSBjaGFuZ2VkLCA3IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCgpkaWZm
-IC0tZ2l0IGEvc291bmQvc29jL2R3Yy9kZXNpZ253YXJlX2kycy5jIGIvc291bmQvc29jL2R3Yy9k
-ZXNpZ253YXJlX2kycy5jCmluZGV4IDNlZmZjZDFhN2RmOC4uMGRiNjliN2U5NjE3IDEwMDY0NAot
-LS0gYS9zb3VuZC9zb2MvZHdjL2Rlc2lnbndhcmVfaTJzLmMKKysrIGIvc291bmQvc29jL2R3Yy9k
-ZXNpZ253YXJlX2kycy5jCkBAIC0xMDAsNiArMTAwLDcgQEAgc3RydWN0IGR3X2kyc19kZXYgewog
-CXN0cnVjdCBkZXZpY2UgKmRldjsKIAl1MzIgY2NyOwogCXUzMiB4ZmVyX3Jlc29sdXRpb247CisJ
-dTMyIGZpZm9fdGg7CiAKIAkvKiBkYXRhIHJlbGF0ZWQgdG8gRE1BIHRyYW5zZmVycyBiL3cgaTJz
-IGFuZCBETUFDICovCiAJdW5pb24gZHdfaTJzX3NuZF9kbWFfZGF0YSBwbGF5X2RtYV9kYXRhOwpA
-QCAtMjMyLDE0ICsyMzMsMTYgQEAgc3RhdGljIHZvaWQgZHdfaTJzX2NvbmZpZyhzdHJ1Y3QgZHdf
-aTJzX2RldiAqZGV2LCBpbnQgc3RyZWFtKQogCQlpZiAoc3RyZWFtID09IFNORFJWX1BDTV9TVFJF
-QU1fUExBWUJBQ0spIHsKIAkJCWkyc193cml0ZV9yZWcoZGV2LT5pMnNfYmFzZSwgVENSKGNoX3Jl
-ZyksCiAJCQkJICAgICAgZGV2LT54ZmVyX3Jlc29sdXRpb24pOwotCQkJaTJzX3dyaXRlX3JlZyhk
-ZXYtPmkyc19iYXNlLCBURkNSKGNoX3JlZyksIDB4MDIpOworCQkJaTJzX3dyaXRlX3JlZyhkZXYt
-Pmkyc19iYXNlLCBURkNSKGNoX3JlZyksCisJCQkJICAgICAgZGV2LT5maWZvX3RoIC0gMSk7CiAJ
-CQlpcnEgPSBpMnNfcmVhZF9yZWcoZGV2LT5pMnNfYmFzZSwgSU1SKGNoX3JlZykpOwogCQkJaTJz
-X3dyaXRlX3JlZyhkZXYtPmkyc19iYXNlLCBJTVIoY2hfcmVnKSwgaXJxICYgfjB4MzApOwogCQkJ
-aTJzX3dyaXRlX3JlZyhkZXYtPmkyc19iYXNlLCBURVIoY2hfcmVnKSwgMSk7CiAJCX0gZWxzZSB7
-CiAJCQlpMnNfd3JpdGVfcmVnKGRldi0+aTJzX2Jhc2UsIFJDUihjaF9yZWcpLAogCQkJCSAgICAg
-IGRldi0+eGZlcl9yZXNvbHV0aW9uKTsKLQkJCWkyc193cml0ZV9yZWcoZGV2LT5pMnNfYmFzZSwg
-UkZDUihjaF9yZWcpLCAweDA3KTsKKwkJCWkyc193cml0ZV9yZWcoZGV2LT5pMnNfYmFzZSwgUkZD
-UihjaF9yZWcpLAorCQkJCSAgICAgIGRldi0+Zmlmb190aCAtIDEpOwogCQkJaXJxID0gaTJzX3Jl
-YWRfcmVnKGRldi0+aTJzX2Jhc2UsIElNUihjaF9yZWcpKTsKIAkJCWkyc193cml0ZV9yZWcoZGV2
-LT5pMnNfYmFzZSwgSU1SKGNoX3JlZyksIGlycSAmIH4weDAzKTsKIAkJCWkyc193cml0ZV9yZWco
-ZGV2LT5pMnNfYmFzZSwgUkVSKGNoX3JlZyksIDEpOwpAQCAtNDk5LDYgKzUwMiw3IEBAIHN0YXRp
-YyBpbnQgZHdfY29uZmlndXJlX2RhaShzdHJ1Y3QgZHdfaTJzX2RldiAqZGV2LAogCSAqLwogCXUz
-MiBjb21wMSA9IGkyc19yZWFkX3JlZyhkZXYtPmkyc19iYXNlLCBkZXYtPmkyc19yZWdfY29tcDEp
-OwogCXUzMiBjb21wMiA9IGkyc19yZWFkX3JlZyhkZXYtPmkyc19iYXNlLCBkZXYtPmkyc19yZWdf
-Y29tcDIpOworCXUzMiBmaWZvX2RlcHRoID0gMSA8PCAoMSArIENPTVAxX0ZJRk9fREVQVEhfR0xP
-QkFMKGNvbXAxKSk7CiAJdTMyIGlkeDsKIAogCWlmIChkZXYtPmNhcGFiaWxpdHkgJiBEV0NfSTJT
-X1JFQ09SRCAmJgpAQCAtNTM3LDYgKzU0MSw3IEBAIHN0YXRpYyBpbnQgZHdfY29uZmlndXJlX2Rh
-aShzdHJ1Y3QgZHdfaTJzX2RldiAqZGV2LAogCQlkZXYtPmNhcGFiaWxpdHkgfD0gRFdfSTJTX1NM
-QVZFOwogCX0KIAorCWRldi0+Zmlmb190aCA9IGZpZm9fZGVwdGggLyAyOwogCXJldHVybiAwOwog
-fQogCi0tIAoyLjguMC5yYzMKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNr
-dG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Ry
-aS1kZXZlbAo=
+On Wed, Apr 06, 2016 at 04:38:22PM +0800, Sugar Zhang wrote:
+> There are 3 i2s sdio pins, which iomux mode is as follows:
+
+s/i2s sdio/I2S\/SDIO muxed/
+
+> 
+>  - sdi3_sdo1
+>  - sdi2_sdo2
+>  - sdi1_sdo3
+> 
+> we need to configure these pins' iomux mode via the GRF register
+> when use multi channel playback/capture.
+
+Why not a pinctrl binding here? If you want SDIO mode, then you need 
+similar code in the SDIO driver (or just rely on default mode).
+
+> 
+> Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+> ---
+> 
+>  .../devicetree/bindings/sound/rockchip-i2s.txt     |  5 +++
+>  sound/soc/rockchip/rockchip_i2s.c                  | 39 +++++++++++++++++++++-
+>  sound/soc/rockchip/rockchip_i2s.h                  |  8 +++++
+>  3 files changed, 51 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+> index 6e86d8a..ad72a7d 100644
+> --- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+> +++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+> @@ -23,6 +23,11 @@ Required properties:
+>  - rockchip,playback-channels: max playback channels, if not set, 8 channels default.
+>  - rockchip,capture-channels: max capture channels, if not set, 2 channels default.
+>  
+> +Required properties for controller which support multi channels playback/capture:
+> +
+> +- rockchip,grf: Should be phandle/offset pair. the phandle of the syscon node for GRF register,
+
+Wrap your lines at less than 80 chars.
+
+> +  and the offset of the GRF for control register.
+> +
+>  Example for rk3288 I2S controller:
+>  
+>  i2s@ff890000 {
