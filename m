@@ -1,180 +1,314 @@
-From: Imre Deak <imre.deak@intel.com>
-Subject: Re: [PATCH 1/3] drm/i915/hda: Add audio component stub
-Date: Thu, 07 Apr 2016 15:30:45 +0300
-Message-ID: <1460032245.5001.11.camel@intel.com>
-References: <1460026644-30479-1-git-send-email-tiwai@suse.de>
- <1460026644-30479-2-git-send-email-tiwai@suse.de>
- <20160407115552.GB4329@intel.com>
-Reply-To: imre.deak@intel.com
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 2/6] ASoC: Davinci: McBSP: add device tree
+ support for McBSP
+Date: Thu, 7 Apr 2016 15:42:38 +0300
+Message-ID: <570655BE.7030109@ti.com>
+References: <1459948893-4206-1-git-send-email-petr@barix.com>
+ <1459948893-4206-3-git-send-email-petr@barix.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20160407115552.GB4329@intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
-Cc: Daniel Vetter <daniel.vetter@intel.com>, alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id BD3AA2662CB
+ for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2016 14:42:45 +0200 (CEST)
+In-Reply-To: <1459948893-4206-3-git-send-email-petr@barix.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Petr Kulhavy <petr@barix.com>, nsekhar@ti.com, khilman@kernel.org, lgirdwood@gmail.com, broonie@kernel.org, devicetree@vger.kernel.org
+Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, robh+dt@kernel.org, galak@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gdG8sIDIwMTYtMDQtMDcgYXQgMTQ6NTUgKzAzMDAsIFZpbGxlIFN5cmrDpGzDpCB3cm90ZToK
-PiBPbiBUaHUsIEFwciAwNywgMjAxNiBhdCAxMjo1NzoyMlBNICswMjAwLCBUYWthc2hpIEl3YWkg
-d3JvdGU6Cj4gPiBGcm9tOiBJbXJlIERlYWsgPGltcmUuZGVha0BpbnRlbC5jb20+Cj4gPiAKPiA+
-IFVzZXIgbWF5IHBhc3Mgbm9tb2Rlc2V0IG9yIGk5MTUubW9kZXNldD0wIG9wdGlvbiB0byBkaXNh
-YmxlIGk5MTUKPiA+IEtNUwo+ID4gZXhwbGljaXRseS7CoMKgQWx0aG91Z2ggdGhpcyBpdHNlbGYg
-d29ya3MgZmluZSwgaXQgYnJlYWtzIHRoZSB3ZWFrCj4gPiBkZXBlbmRlbmN5IHRoZSBIRC1hdWRp
-byBkcml2ZXIgcmVxdWlyZXMsIGFuZCBpdCdzIHRoZSByZWFzb24gdGhlCj4gPiBkZWxheWVkIGNv
-bXBvbmVudCBiaW5kaW5nIGlzbid0IGltcGxlbWVudGVkIGluIEhELWF1ZGlvLsKgwqBTaW5jZQo+
-ID4gaTkxNQo+ID4gZG9lc24ndCBub3RpZnkgaXRzIGRpc2FibGVtZW50LCBIRC1hdWRpbyB3b3Vs
-ZCBiZSBibG9ja2VkCj4gPiB1bm5lY2Vzc2FyaWx5IGVuZGxlc3NseSwgd2FpdGluZyBmb3IgdGhl
-IGJpbmQgd2l0aCBpOTE1Lgo+ID4gCj4gPiBUaGlzIHBhdGNoIGludHJvZHVjZXMgYSBzdHViIGF1
-ZGlvIGNvbXBvbmVudCBiaW5kaW5nIHdoZW4gaTkxNQo+ID4gZHJpdmVyCj4gPiBpcyBsb2FkZWQg
-d2l0aCBLTVMgb2ZmIGxpa2UgdGhlIGJvb3Qgb3B0aW9ucyBhYm92ZS7CoMKgVGhlbiBpOTE1Cj4g
-PiBkcml2ZXIKPiA+IHN0aWxsIHJlZ2lzdGVycyB0aGUgc2xhdmUgY29tcG9uZW50IGJ1dCB3aXRo
-IHRoZSBuZXcgImRpc2FibGVkIiBvcHMKPiA+IGZsYWcsIHNvIHRoYXQgdGhlIG1hc3RlciBjb21w
-b25lbnQgKEhELWF1ZGlvKSBjYW4ga25vdyBjbGVhcmx5IHRoZQo+ID4gc2xhdmUgc3RhdGUuCj4g
-PiAKPiA+IFNpZ25lZC1vZmYtYnk6IEltcmUgRGVhayA8aW1yZS5kZWFrQGludGVsLmNvbT4KPiA+
-IFNpZ25lZC1vZmYtYnk6IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4KPiA+IC0tLQo+ID4g
-wqBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5jwqDCoMKgwqB8IDM0ICsrKysrKysrKysr
-KystLS0tLS0tLQo+ID4gwqBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jIHwgNjEK
-PiA+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCj4gPiDCoGRyaXZlcnMv
-Z3B1L2RybS9pOTE1L2ludGVsX2Rydi5owqDCoMKgfMKgwqAyICsrCj4gPiDCoGluY2x1ZGUvZHJt
-L2k5MTVfY29tcG9uZW50LmjCoMKgwqDCoMKgwqDCoHzCoMKgNSArKysrCj4gPiDCoDQgZmlsZXMg
-Y2hhbmdlZCwgOTAgaW5zZXJ0aW9ucygrKSwgMTIgZGVsZXRpb25zKC0pCj4gPiAKPiA+IGRpZmYg
-LS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5jCj4gPiBiL2RyaXZlcnMvZ3B1
-L2RybS9pOTE1L2k5MTVfZHJ2LmMKPiA+IGluZGV4IDIwZTgyMDA4YjhiNi4uMjFjNmJhYzU0Njhl
-IDEwMDY0NAo+ID4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYuYwo+ID4gKysr
-IGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYuYwo+ID4gQEAgLTk1MCw2ICs5NTAsMTkg
-QEAgc3RhdGljIGludCBpOTE1X3BjaV9wcm9iZShzdHJ1Y3QgcGNpX2Rldgo+ID4gKnBkZXYsIGNv
-bnN0IHN0cnVjdCBwY2lfZGV2aWNlX2lkICplbnQpCj4gPiDCoAlzdHJ1Y3QgaW50ZWxfZGV2aWNl
-X2luZm8gKmludGVsX2luZm8gPQo+ID4gwqAJCShzdHJ1Y3QgaW50ZWxfZGV2aWNlX2luZm8gKikg
-ZW50LT5kcml2ZXJfZGF0YTsKPiA+IMKgCj4gPiArCWlmICghKGRyaXZlci5kcml2ZXJfZmVhdHVy
-ZXMgJiBEUklWRVJfTU9ERVNFVCkpIHsKPiA+ICsJCS8qCj4gPiArCQnCoCogTm90aWZ5IHRoZSBI
-REEgZHJpdmVyIHNvIHRoYXQgaXQgZG9lc24ndCBibG9jawo+ID4gd2FpdGluZyBmb3IKPiA+ICsJ
-CcKgKiBpOTE1IHRvIGJlY29tZSByZWFkeS4KPiA+ICsJCcKgKi8KPiA+ICsJCWk5MTVfYXVkaW9f
-Y29tcG9uZW50X3N0dWJfaW5pdCgmcGRldi0+ZGV2KTsKPiA+ICsKPiA+ICsJCS8qIFNpbGVudGx5
-IGZhaWwgbG9hZGluZyB0byBub3QgdXBzZXQgdXNlcnNwYWNlLgo+ID4gKi8KPiA+ICsJCURSTV9E
-RUJVR19EUklWRVIoIktNUyBhbmQgVU1TIGRpc2FibGVkLlxuIik7Cj4gPiArCj4gPiArCQlyZXR1
-cm4gMDsKPiA+ICsJfQo+ID4gKwo+IAo+IE1vdmluZyB0aGlzIGhlcmUgbWVhbnMgd2UncmUgYWN0
-dWFsbHkgZ29pbmcgdG8gYmluZCB0byB0aGUgZGV2aWNlCj4gZXZlbgo+IHcvbyBEUklWRVJfTU9E
-RVNFVC4gSG9wZWZ1bGx5IHRoZSBmYWN0IHRoYXQgd2UgZG9uJ3QgcmVnaXN0ZXIgd2l0aAo+IGFu
-eQo+IHN1YnN5c3RlbXMgd291bGQgbWFrZSB0aGF0IE9LLiBCdXQgc2luY2Ugd2UgbmVlZCB0aGUg
-YWN0dWFsIGRldmljZQo+IGZvcgo+IHRoZSBjb21wb25lbnQgc3R1ZmYsIEkgZ3Vlc3MgdGhpcyBp
-cyB0aGUgb25seSB3YXkuCgpZZXMsIHRoZSBuZWVkIGZvciB0aGUgZGV2aWNlIHdhcyB0aGUgcmVh
-c29uIEkgbW92ZWQgdGhpcyBoZXJlLiBBbgphbHRlcm5hdGl2ZSB3b3VsZCBiZSB0byBhZGQgYSBt
-aXNjZGV2aWNlLiBJIHdhbnRlZCB0byBrZWVwIHRoaW5ncwpzaW1wbGUgYW5kIGRpZG4ndCBzZWUg
-YW55IHByb2JsZW0gb2Yga2VlcGluZyB0aGUgZGV2aWNlIGJvdW5kLCBzbyBjaG9zZQp0aGlzIHdh
-eS4KCk9uZSBvdGhlciB0aGluZyBJIHdhcyB0aGlua2luZyBhYm91dCBpcyB0byBhbHNvIGJpbmQg
-dGhlIHN0dWIgY29tcG9uZW50CmlmIHRoZSByZWFsIHByb2JpbmcgZmFpbGVkIHRvIG1ha2UgdGhp
-bmdzIG1vcmUgY29uc2lzdGVudCBhbmQgYXZvaWQgdGhlCmxvbmdpc2ggdGltZW91dCBvbiB0aGUg
-SERBIHNpZGUuIFRoaXMgd291bGQgYWxzbyBnZXQgbWVzc2llciB3aXRoIHRoZQptaXNjZGV2aWNl
-IGFwcHJvYWNoLCBzaW5jZSB0aGUgcHJvYmUgZXJyb3IgaXMgbm90IHByb3BhZ2F0ZWQgdG8gdGhl
-CmNhbGxlciBvZsKgcGNpX3JlZ2lzdGVyX2RyaXZlcigpLiBJZiBwZW9wbGUgZG9uJ3Qgc2VlIGEg
-cHJvYmxlbSB3aXRoCnRoaXMgSSBjb3VsZCBhZGQgdGhpcyBpbiB0aGUgbmV4dCB2ZXJzaW9uLgoK
-PiA+IMKgCWlmIChJU19QUkVMSU1JTkFSWV9IVyhpbnRlbF9pbmZvKSAmJgo+ID4gIWk5MTUucHJl
-bGltaW5hcnlfaHdfc3VwcG9ydCkgewo+ID4gwqAJCURSTV9JTkZPKCJUaGlzIGhhcmR3YXJlIHJl
-cXVpcmVzIHByZWxpbWluYXJ5Cj4gPiBoYXJkd2FyZSBzdXBwb3J0LlxuIgo+ID4gwqAJCQnCoCJT
-ZWUKPiA+IENPTkZJR19EUk1fSTkxNV9QUkVMSU1JTkFSWV9IV19TVVBQT1JULCBhbmQvb3IgbW9k
-cGFyYW0KPiA+IHByZWxpbWluYXJ5X2h3X3N1cHBvcnRcbiIpOwo+ID4gQEAgLTk3OSw4ICs5OTIs
-MTQgQEAgc3RhdGljIGludCBpOTE1X3BjaV9wcm9iZShzdHJ1Y3QgcGNpX2Rldgo+ID4gKnBkZXYs
-IGNvbnN0IHN0cnVjdCBwY2lfZGV2aWNlX2lkICplbnQpCj4gPiDCoHN0YXRpYyB2b2lkCj4gPiDC
-oGk5MTVfcGNpX3JlbW92ZShzdHJ1Y3QgcGNpX2RldiAqcGRldikKPiA+IMKgewo+ID4gLQlzdHJ1
-Y3QgZHJtX2RldmljZSAqZGV2ID0gcGNpX2dldF9kcnZkYXRhKHBkZXYpOwo+ID4gKwlzdHJ1Y3Qg
-ZHJtX2RldmljZSAqZGV2Owo+ID4gwqAKPiA+ICsJaWYgKCEoZHJpdmVyLmRyaXZlcl9mZWF0dXJl
-cyAmIERSSVZFUl9NT0RFU0VUKSkgewo+ID4gKwkJaTkxNV9hdWRpb19jb21wb25lbnRfc3R1Yl9j
-bGVhbnVwKCZwZGV2LT5kZXYpOwo+ID4gKwkJcmV0dXJuOwo+ID4gKwl9Cj4gPiArCj4gPiArCWRl
-diA9IHBjaV9nZXRfZHJ2ZGF0YShwZGV2KTsKPiA+IMKgCWRybV9wdXRfZGV2KGRldik7Cj4gPiDC
-oH0KPiA+IMKgCj4gPiBAQCAtMTc0NywyNCArMTc2NiwxNSBAQCBzdGF0aWMgaW50IF9faW5pdCBp
-OTE1X2luaXQodm9pZCkKPiA+IMKgCQlkcml2ZXIuZHJpdmVyX2ZlYXR1cmVzICY9IH5EUklWRVJf
-TU9ERVNFVDsKPiA+IMKgI2VuZGlmCj4gPiDCoAo+ID4gLQlpZiAoIShkcml2ZXIuZHJpdmVyX2Zl
-YXR1cmVzICYgRFJJVkVSX01PREVTRVQpKSB7Cj4gPiAtCQkvKiBTaWxlbnRseSBmYWlsIGxvYWRp
-bmcgdG8gbm90IHVwc2V0IHVzZXJzcGFjZS4KPiA+ICovCj4gPiAtCQlEUk1fREVCVUdfRFJJVkVS
-KCJLTVMgYW5kIFVNUyBkaXNhYmxlZC5cbiIpOwo+ID4gLQkJcmV0dXJuIDA7Cj4gPiAtCX0KPiA+
-IC0KPiA+IMKgCWlmIChpOTE1Lm51Y2xlYXJfcGFnZWZsaXApCj4gPiDCoAkJZHJpdmVyLmRyaXZl
-cl9mZWF0dXJlcyB8PSBEUklWRVJfQVRPTUlDOwo+ID4gwqAKPiA+IC0JcmV0dXJuIGRybV9wY2lf
-aW5pdCgmZHJpdmVyLCAmaTkxNV9wY2lfZHJpdmVyKTsKPiA+ICsJcmV0dXJuIHBjaV9yZWdpc3Rl
-cl9kcml2ZXIoJmk5MTVfcGNpX2RyaXZlcik7Cj4gPiDCoH0KPiA+IMKgCj4gPiDCoHN0YXRpYyB2
-b2lkIF9fZXhpdCBpOTE1X2V4aXQodm9pZCkKPiA+IMKgewo+ID4gLQlpZiAoIShkcml2ZXIuZHJp
-dmVyX2ZlYXR1cmVzICYgRFJJVkVSX01PREVTRVQpKQo+ID4gLQkJcmV0dXJuOyAvKiBOZXZlciBs
-b2FkZWQgYSBkcml2ZXIuICovCj4gPiAtCj4gPiAtCWRybV9wY2lfZXhpdCgmZHJpdmVyLCAmaTkx
-NV9wY2lfZHJpdmVyKTsKPiA+ICsJcGNpX3VucmVnaXN0ZXJfZHJpdmVyKCZpOTE1X3BjaV9kcml2
-ZXIpOwo+ID4gwqB9Cj4gPiDCoAo+ID4gwqBtb2R1bGVfaW5pdChpOTE1X2luaXQpOwo+ID4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKPiA+IGIvZHJpdmVy
-cy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwo+ID4gaW5kZXggMzBmOTIxNDIxYjBjLi5iZDll
-OTc2MDkwM2EgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRp
-by5jCj4gPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCj4gPiBAQCAt
-ODM1LDMgKzgzNSw2NCBAQCB2b2lkIGk5MTVfYXVkaW9fY29tcG9uZW50X2NsZWFudXAoc3RydWN0
-Cj4gPiBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdikKPiA+IMKgCWNvbXBvbmVudF9kZWwoZGV2
-X3ByaXYtPmRldi0+ZGV2LAo+ID4gJmk5MTVfYXVkaW9fY29tcG9uZW50X2JpbmRfb3BzKTsKPiA+
-IMKgCWRldl9wcml2LT5hdWRpb19jb21wb25lbnRfcmVnaXN0ZXJlZCA9IGZhbHNlOwo+ID4gwqB9
-Cj4gPiArCj4gPiArc3RhdGljIGNvbnN0IHN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9vcHMK
-PiA+IGk5MTVfYXVkaW9fY29tcG9uZW50X3N0dWJfb3BzID0gewo+ID4gKwkub3duZXIJCT0gVEhJ
-U19NT0RVTEUsCj4gPiArCS5kaXNhYmxlZAk9IHRydWUsCj4gPiArfTsKPiA+ICsKPiA+ICtzdGF0
-aWMgaW50IGk5MTVfYXVkaW9fY29tcG9uZW50X3N0dWJfYmluZChzdHJ1Y3QgZGV2aWNlCj4gPiAq
-aTkxNV9zdHViX2RldiwKPiA+ICsJCQkJCcKgwqBzdHJ1Y3QgZGV2aWNlICpoZGFfZGV2LAo+ID4g
-dm9pZCAqZGF0YSkKPiA+ICt7Cj4gPiArCXN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudCAqYWNv
-bXAgPSBkYXRhOwo+ID4gKwo+ID4gKwlpZiAoV0FSTl9PTihhY29tcC0+b3BzIHx8IGFjb21wLT5k
-ZXYpKQo+ID4gKwkJcmV0dXJuIC1FRVhJU1Q7Cj4gPiArCj4gPiArCWFjb21wLT5vcHMgPSAmaTkx
-NV9hdWRpb19jb21wb25lbnRfc3R1Yl9vcHM7Cj4gPiArCWFjb21wLT5kZXYgPSBpOTE1X3N0dWJf
-ZGV2Owo+ID4gKwo+ID4gKwlyZXR1cm4gMDsKPiA+ICt9Cj4gPiArCj4gPiArc3RhdGljIHZvaWQg
-aTkxNV9hdWRpb19jb21wb25lbnRfc3R1Yl91bmJpbmQoc3RydWN0IGRldmljZQo+ID4gKmk5MTVf
-c3R1Yl9kZXYsCj4gPiArCQkJCQnCoMKgwqDCoMKgc3RydWN0IGRldmljZQo+ID4gKmhkYV9kZXYs
-IHZvaWQgKmRhdGEpCj4gPiArewo+ID4gKwlzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25lbnQgKmFj
-b21wID0gZGF0YTsKPiA+ICsKPiA+ICsJYWNvbXAtPm9wcyA9IE5VTEw7Cj4gPiArCWFjb21wLT5k
-ZXYgPSBOVUxMOwo+ID4gK30KPiA+ICsKPiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0IGNvbXBvbmVu
-dF9vcHMKPiA+IGk5MTVfYXVkaW9fY29tcG9uZW50X3N0dWJfYmluZF9vcHMgPSB7Cj4gPiArCS5i
-aW5kCT0gaTkxNV9hdWRpb19jb21wb25lbnRfc3R1Yl9iaW5kLAo+ID4gKwkudW5iaW5kCT0gaTkx
-NV9hdWRpb19jb21wb25lbnRfc3R1Yl91bmJpbmQsCj4gPiArfTsKPiA+ICsKPiA+ICtzdGF0aWMg
-Y29uc3Qgc3RydWN0IGZpbGVfb3BlcmF0aW9ucyBjb21wb25lbnRfc3R1Yl9kZXZfb3BzID0gewo+
-ID4gKwkub3duZXIgPSBUSElTX01PRFVMRSwKPiA+ICt9Owo+ID4gKwo+ID4gK3N0YXRpYyBib29s
-IGk5MTVfYXVkaW9fY29tcG9uZW50X3N0dWJfcmVnaXN0ZXJlZDsKPiA+ICsKPiA+ICt2b2lkIGk5
-MTVfYXVkaW9fY29tcG9uZW50X3N0dWJfaW5pdChzdHJ1Y3QgZGV2aWNlICpkZXYpCj4gPiArewo+
-ID4gKwlpbnQgcmV0Owo+ID4gKwo+ID4gKwlyZXQgPSBjb21wb25lbnRfYWRkKGRldiwKPiA+ICZp
-OTE1X2F1ZGlvX2NvbXBvbmVudF9zdHViX2JpbmRfb3BzKTsKPiA+ICsJaWYgKHJldCA8IDApIHsK
-PiA+ICsJCURSTV9FUlJPUigiZmFpbGVkIHRvIGFkZCBhdWRpbyBzdHViIGNvbXBvbmVudAo+ID4g
-KCVkKVxuIiwgcmV0KTsKPiA+ICsJCXJldHVybjsKPiA+ICsJfQo+ID4gKwo+ID4gKwlpOTE1X2F1
-ZGlvX2NvbXBvbmVudF9zdHViX3JlZ2lzdGVyZWQgPSB0cnVlOwo+IAo+IE1heWJlIGp1c3QgZmFp
-bCB0aGUgcHJvYmUgb24gZXJyb3IgYW5kIGF2b2lkIHRoZSBmbGFnPwoKTWFrZXMgc2Vuc2UsIHdp
-bGwgY2hhbmdlIHRoYXQuCgo+ID4gK30KPiA+ICsKPiA+ICt2b2lkIGk5MTVfYXVkaW9fY29tcG9u
-ZW50X3N0dWJfY2xlYW51cChzdHJ1Y3QgZGV2aWNlICpkZXYpCj4gPiArewo+ID4gKwlpZiAoIWk5
-MTVfYXVkaW9fY29tcG9uZW50X3N0dWJfcmVnaXN0ZXJlZCkKPiA+ICsJCXJldHVybjsKPiA+ICsK
-PiA+ICsJY29tcG9uZW50X2RlbChkZXYsICZpOTE1X2F1ZGlvX2NvbXBvbmVudF9zdHViX2JpbmRf
-b3BzKTsKPiA+ICsJaTkxNV9hdWRpb19jb21wb25lbnRfc3R1Yl9yZWdpc3RlcmVkID0gZmFsc2U7
-Cj4gPiArfQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2Rydi5o
-Cj4gPiBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2Rydi5oCj4gPiBpbmRleCA0YzAyN2Q2
-OWZhYzkuLmUxZDljMzNiMTEzZSAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1
-L2ludGVsX2Rydi5oCj4gPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9kcnYuaAo+
-ID4gQEAgLTEwNTYsNiArMTA1Niw4IEBAIHZvaWQgaW50ZWxfYXVkaW9fY29kZWNfZW5hYmxlKHN0
-cnVjdAo+ID4gaW50ZWxfZW5jb2RlciAqZW5jb2Rlcik7Cj4gPiDCoHZvaWQgaW50ZWxfYXVkaW9f
-Y29kZWNfZGlzYWJsZShzdHJ1Y3QgaW50ZWxfZW5jb2RlciAqZW5jb2Rlcik7Cj4gPiDCoHZvaWQg
-aTkxNV9hdWRpb19jb21wb25lbnRfaW5pdChzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3By
-aXYpOwo+ID4gwqB2b2lkIGk5MTVfYXVkaW9fY29tcG9uZW50X2NsZWFudXAoc3RydWN0IGRybV9p
-OTE1X3ByaXZhdGUKPiA+ICpkZXZfcHJpdik7Cj4gPiArdm9pZCBpOTE1X2F1ZGlvX2NvbXBvbmVu
-dF9zdHViX2luaXQoc3RydWN0IGRldmljZSAqZGV2KTsKPiA+ICt2b2lkIGk5MTVfYXVkaW9fY29t
-cG9uZW50X3N0dWJfY2xlYW51cChzdHJ1Y3QgZGV2aWNlICpkZXYpOwo+ID4gwqAKPiA+IMKgLyog
-aW50ZWxfZGlzcGxheS5jICovCj4gPiDCoGV4dGVybiBjb25zdCBzdHJ1Y3QgZHJtX3BsYW5lX2Z1
-bmNzIGludGVsX3BsYW5lX2Z1bmNzOwo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvZHJtL2k5MTVf
-Y29tcG9uZW50LmgKPiA+IGIvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaAo+ID4gaW5kZXgg
-YjQ2ZmEwZWYzMDA1Li4zM2RhODVhYTcwYzMgMTAwNjQ0Cj4gPiAtLS0gYS9pbmNsdWRlL2RybS9p
-OTE1X2NvbXBvbmVudC5oCj4gPiArKysgYi9pbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oCj4g
-PiBAQCAtMzksNiArMzksMTEgQEAgc3RydWN0IGk5MTVfYXVkaW9fY29tcG9uZW50X29wcyB7Cj4g
-PiDCoAnCoCovCj4gPiDCoAlzdHJ1Y3QgbW9kdWxlICpvd25lcjsKPiA+IMKgCS8qKgo+ID4gKwnC
-oCogQGRpc2FibGVkOiBpOTE1IGRyaXZlciBsb2FkZWQgd2l0aCBtb2Rlc2V0PTAsIHRoZQo+ID4g
-c2VydmljZXMgcHJvdmlkZWQKPiA+ICsJwqAqIHZpYSB0aGUgYXVkaW8gY29tcG9uZW50IGludGVy
-ZmFjZSBhcmUgbm90IGF2YWlsYWJsZS4KPiA+ICsJwqAqLwo+ID4gKwlib29sIGRpc2FibGVkOwo+
-ID4gKwkvKioKPiA+IMKgCcKgKiBAZ2V0X3Bvd2VyOiBnZXQgdGhlIFBPV0VSX0RPTUFJTl9BVURJ
-TyBwb3dlciB3ZWxsCj4gPiDCoAnCoCoKPiA+IMKgCcKgKiBSZXF1ZXN0IHRoZSBwb3dlciB3ZWxs
-IHRvIGJlIHR1cm5lZCBvbi4KPiA+IC0tIAo+ID4gMi44LjEKPiA+IAo+ID4gX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiA+IEludGVsLWdmeCBtYWlsaW5n
-IGxpc3QKPiA+IEludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKPiA+IGh0dHBzOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cj4gCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5n
-IGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVk
-ZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+On 04/06/16 16:21, Petr Kulhavy wrote:
+> This adds DT support for the TI DA8xx/OMAP-L1x/AM17xx/AM18xx McBSP driver.
+> =
+
+> Signed-off-by: Petr Kulhavy <petr@barix.com>
+> ---
+>  sound/soc/davinci/Kconfig       |   6 ++-
+>  sound/soc/davinci/davinci-i2s.c | 106 ++++++++++++++++++++++++++++++++++=
+------
+>  2 files changed, 96 insertions(+), 16 deletions(-)
+> =
+
+> diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
+> index 50ca291cc225..6b732d8e5896 100644
+> --- a/sound/soc/davinci/Kconfig
+> +++ b/sound/soc/davinci/Kconfig
+> @@ -16,7 +16,11 @@ config SND_EDMA_SOC
+>  	  - DRA7xx family
+>  =
+
+>  config SND_DAVINCI_SOC_I2S
+> -	tristate
+> +	tristate "DaVinci Multichannel Buffered Serial Port (McBSP) support"
+> +	depends on SND_EDMA_SOC
+> +	help
+> +	  Say Y or M here if you want to have support for McBSP IP found in
+> +	  Texas Instruments DaVinci DA850 SoCs.
+>  =
+
+>  config SND_DAVINCI_SOC_MCASP
+>  	tristate "Multichannel Audio Serial Port (McASP) support"
+> diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-=
+i2s.c
+> index ec98548a5fc9..2ebfe86dd584 100644
+> --- a/sound/soc/davinci/davinci-i2s.c
+> +++ b/sound/soc/davinci/davinci-i2s.c
+> @@ -4,9 +4,15 @@
+>   * Author:      Vladimir Barinov, <vbarinov@embeddedalley.com>
+>   * Copyright:   (C) 2007 MontaVista Software, Inc., <source@mvista.com>
+>   *
+> + * DT support	(c) 2016 Petr Kulhavy, Barix AG <petr@barix.com>
+> + *		based on davinci-mcasp.c DT support
+> + *
+>   * This program is free software; you can redistribute it and/or modify
+>   * it under the terms of the GNU General Public License version 2 as
+>   * published by the Free Software Foundation.
+> + *
+> + * TODO:
+> + * on DA850 implement HW FIFOs instead of DMA into DXR and DRR registers
+
+The BFIFO looks identical to AFIFO for McASP...
+
+>   */
+>  =
+
+>  #include <linux/init.h>
+> @@ -648,15 +654,82 @@ static const struct snd_soc_component_driver davinc=
+i_i2s_component =3D {
+>  	.name		=3D "davinci-i2s",
+>  };
+>  =
+
+> +static struct snd_platform_data*
+> +davinci_i2s_set_pdata_from_of(struct platform_device *pdev)
+> +{
+> +	struct snd_platform_data *pdata =3D NULL;
+> +	struct device_node *np;
+> +	struct of_phandle_args dma_spec;
+> +	int ret;
+> +
+> +	if (!IS_ENABLED(CONFIG_OF) || !pdev->dev.of_node)
+> +		return dev_get_platdata(&pdev->dev);
+> +
+> +	pdata =3D devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
+> +	if (!pdata)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	np =3D pdev->dev.of_node;
+> +
+> +	ret =3D of_property_match_string(np, "dma-names", "tx");
+> +	if (ret >=3D 0) {
+> +		ret =3D of_parse_phandle_with_args(np, "dmas", "#dma-cells", ret,
+> +						 &dma_spec);
+> +		if (ret >=3D 0)
+> +			pdata->tx_dma_channel =3D dma_spec.args[0];
+> +	}
+> +
+> +	ret =3D of_property_match_string(np, "dma-names", "rx");
+> +	if (ret >=3D 0) {
+> +		ret =3D of_parse_phandle_with_args(np, "dmas", "#dma-cells", ret,
+> +						 &dma_spec);
+> +		if (ret >=3D 0)
+> +			pdata->rx_dma_channel =3D dma_spec.args[0];
+> +	}
+
+Why would you do this? If we booted with DT the only thing needed by the
+edma-pcm (dmaengine) is the name of the DMA channel...
+
+> +
+> +	/* optional parameters */
+> +
+> +	pdata->enable_channel_combine =3D
+> +		of_property_read_bool(np, "channel-combine");
+
+This can only be done when the McBSP is used in DSP_x mode since this will
+make the McBSP to transmit the stereo audio as mono on the bus.
+
+After a quick look at the relevant parts in the driver, I think most of the
+things are pretty much broken or at least they are not totally correct. McB=
+SP
+do support real I2S (SRGR:FWID), and the phase setup is wrong in the code. =
+IMO.
+I don't have HW to test the daVinci-MCBSP or the ASP so I can not comment on
+how well things are working.
+
+> +
+> +	/*
+> +	 * pdata->clk_input_pin is deliberately not exported to DT
+> +	 * and the default value of the clk_input_pin is MCBSP_CLKR.
+> +	 * The value MCBSP_CLKS makes no sense as it turns the CPU
+> +	 * to a bit clock master in the SND_SOC_DAIFMT_CBM_CFS mode
+> +	 * where it should be bit clock slave!
+> +	 */
+
+Interesting. As a whole the clock selection part is mostly broken in the dr=
+iver...
+It would be better to add davinci_i2s_set_sysclk() to deal with the system
+clock configuration.
+
+> +
+> +	return pdata;
+> +}
+> +
+>  static int davinci_i2s_probe(struct platform_device *pdev)
+>  {
+> +	struct snd_platform_data *pdata;
+>  	struct davinci_mcbsp_dev *dev;
+>  	struct resource *mem, *res;
+>  	void __iomem *io_base;
+>  	int *dma;
+>  	int ret;
+>  =
+
+> -	mem =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	pdata =3D davinci_i2s_set_pdata_from_of(pdev);
+> +	if (IS_ERR(pdata)) {
+> +		dev_err(&pdev->dev, "Error populating platform data, err %ld\n",
+> +			PTR_ERR(pdata));
+> +		return PTR_ERR(pdata);
+> +	}
+> +
+> +	mem =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, "mpu");
+> +	if (!mem) {
+> +		dev_warn(&pdev->dev,
+> +			 "\"mpu\" mem resource not found, using index 0\n");
+> +		mem =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +		if (!mem) {
+> +			dev_err(&pdev->dev, "no mem resource?\n");
+> +			return -ENODEV;
+> +		}
+> +	}
+> +
+>  	io_base =3D devm_ioremap_resource(&pdev->dev, mem);
+>  	if (IS_ERR(io_base))
+>  		return PTR_ERR(io_base);
+> @@ -680,25 +753,21 @@ static int davinci_i2s_probe(struct platform_device=
+ *pdev)
+>  	    (dma_addr_t)(mem->start + DAVINCI_MCBSP_DRR_REG);
+>  =
+
+>  	/* first TX, then RX */
+> -	res =3D platform_get_resource(pdev, IORESOURCE_DMA, 0);
+> -	if (!res) {
+> -		dev_err(&pdev->dev, "no DMA resource\n");
+> -		ret =3D -ENXIO;
+> -		goto err_release_clk;
+> -	}
+>  	dma =3D &dev->dma_request[SNDRV_PCM_STREAM_PLAYBACK];
+> -	*dma =3D res->start;
+>  	dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK].filter_data =3D dma;
+> +	res =3D platform_get_resource(pdev, IORESOURCE_DMA, 0);
+> +	if (res)
+> +		*dma =3D res->start;
+> +	else
+> +		*dma =3D pdata->tx_dma_channel;
+
+Please follow the way davinci-mcasp does it right now:
+	dma_data =3D &mcasp->dma_data[SNDRV_PCM_STREAM_PLAYBACK];
+	...
+	dma =3D &mcasp->dma_request[SNDRV_PCM_STREAM_PLAYBACK];
+	res =3D platform_get_resource(pdev, IORESOURCE_DMA, 0);
+	if (res)
+		*dma =3D res->start;
+	else
+		*dma =3D pdata->tx_dma_channel;
+
+	/* dmaengine filter data for DT and non-DT boot */
+	if (pdev->dev.of_node)
+		dma_data->filter_data =3D "tx";
+	else
+		dma_data->filter_data =3D dma;
+
+while we are here, I think the tx/rx_dma_channel is something we should just
+get rid of. It is not used as far as I can tell.
+Something like this would do I think:
+	dma_data =3D &mcasp->dma_data[SNDRV_PCM_STREAM_PLAYBACK];
+	...
+	res =3D platform_get_resource(pdev, IORESOURCE_DMA, 0);
+	if (res) {
+		dma =3D &mcasp->dma_request[SNDRV_PCM_STREAM_PLAYBACK];
+		*dma =3D res->start;
+		dma_data->filter_data =3D dma;
+	} else if (pdev->dev.of_node) {
+		dma_data->filter_data =3D "tx";
+	} else {
+		dev_err(&pdev->dev, "Missing DMA tx resource\n");
+		return -ENODEV;
+	}
+
+>  =
+
+> -	res =3D platform_get_resource(pdev, IORESOURCE_DMA, 1);
+> -	if (!res) {
+> -		dev_err(&pdev->dev, "no DMA resource\n");
+> -		ret =3D -ENXIO;
+> -		goto err_release_clk;
+> -	}
+>  	dma =3D &dev->dma_request[SNDRV_PCM_STREAM_CAPTURE];
+> -	*dma =3D res->start;
+>  	dev->dma_data[SNDRV_PCM_STREAM_CAPTURE].filter_data =3D dma;
+> +	res =3D platform_get_resource(pdev, IORESOURCE_DMA, 1);
+> +	if (res)
+> +		*dma =3D res->start;
+> +	else
+> +		*dma =3D pdata->rx_dma_channel;
+
+same comment as for the TX dma part.
+
+>  =
+
+>  	dev->dev =3D &pdev->dev;
+>  	dev_set_drvdata(&pdev->dev, dev);
+> @@ -737,11 +806,18 @@ static int davinci_i2s_remove(struct platform_devic=
+e *pdev)
+>  	return 0;
+>  }
+>  =
+
+> +static const struct of_device_id davinci_mcbsp_match[] =3D {
+> +	{ .compatible =3D "ti,da850-mcbsp-audio" },
+
+I would drop the "-audio" for the binding...
+
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, davinci_mcbsp_match);
+> +
+>  static struct platform_driver davinci_mcbsp_driver =3D {
+>  	.probe		=3D davinci_i2s_probe,
+>  	.remove		=3D davinci_i2s_remove,
+>  	.driver		=3D {
+>  		.name	=3D "davinci-mcbsp",
+> +		.of_match_table =3D of_match_ptr(davinci_mcbsp_match),
+
+The driver calls itself davinci-i2s.c and the prefixes internally used are
+davinci_i2s_*.
+The driver name is "davinci-mcbsp".
+And it is basically a driver for daVinci ASP (the McBSP additions are not
+configured at all).
+
+I still think we should keep the davinci_i2s_* when adding new code, or ren=
+ame
+the whole driver and it's prefixes to something more sensible?
+
+
+>  	},
+>  };
+>  =
+
+> =
+
+
+
+-- =
+
+P=E9ter
