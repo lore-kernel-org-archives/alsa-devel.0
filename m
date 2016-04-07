@@ -1,20 +1,14 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: Dell USB audio driver workaround
-Date: Thu, 7 Apr 2016 07:05:52 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A17A330E6@RTITMBSV09.realtek.com.tw>
-References: <6FAB7C47BCF00940BB0999A99BE3547A17A32FFC@RTITMBSV09.realtek.com.tw>
- <s5h1t6jxgh5.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A17A33059@RTITMBSV09.realtek.com.tw>
- <s5h37qzm63e.wl-tiwai@suse.de>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH v3 0/7] topology: Add support for vendor tuples
+Date: Thu,  7 Apr 2016 15:27:20 +0800
+Message-ID: <cover.1460013338.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 00C54265158
- for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2016 09:06:01 +0200 (CEST)
-In-Reply-To: <s5h37qzm63e.wl-tiwai@suse.de>
-Content-Language: zh-TW
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2EC4F265158
+ for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2016 09:25:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,133 +18,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, liam.r.girdwood@intel.com, hardik.t.shah@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
- 
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de] 
-> Sent: Wednesday, April 06, 2016 5:37 PM
-> To: Kailang
-> Cc: (alsa-devel@alsa-project.org)
-> Subject: Re: Dell USB audio driver workaround
-> 
-> On Wed, 06 Apr 2016 11:22:43 +0200,
-> Kailang wrote:
-> > 
-> >  
-> > 
-> > > -----Original Message-----
-> > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > Sent: Wednesday, April 06, 2016 4:57 PM
-> > > To: Kailang
-> > > Cc: (alsa-devel@alsa-project.org)
-> > > Subject: Re: Dell USB audio driver workaround
-> > > 
-> > > On Wed, 06 Apr 2016 08:29:12 +0200,
-> > > Kailang wrote:
-> > > > 
-> > > > Hi Takashi,
-> > > > 
-> > > > Dell had USB dock.
-> > > > Maybe firmware issue, the master volume always keep at 0x57.
-> > > > Attach patch will fix it to keep at Max volume.
-> > > > 
-> > > > Could you help us to update it?
-> > > 
-> > > Well, I don't get how this patch works..
-> > > 
-> > > > diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c index 
-> > > > 4f85757..84d9a4e 100644
-> > > > --- a/sound/usb/mixer.c
-> > > > +++ b/sound/usb/mixer.c
-> > > > @@ -846,6 +846,12 @@ static void volume_control_quirks(struct 
-> > > > usb_mixer_elem_info *cval,  {
-> > > >  	struct snd_usb_audio *chip = cval->head.mixer->chip;
-> > > >  	switch (chip->usb_id) {
-> > > > +	case USB_ID(0x0bda, 0x4014): /* Dell workaround */
-> > > > +		if (strstr(kctl->id.name, "Playback 
-> Volume") != NULL) {
-> > > > +			cval->min = 0x0000;
-> > > > +			cval->max = 0x0000;
-> > > > +		}
-> > > > +		break;
-> > > 
-> > > So, this means that this value has to be fixed to 0?
-> > > If yes, can't we simply remove this volume instead?
-> > 
-> > Yes, but it need to set Max volume to 0. This is test on my site.
-> > Because it will rewrite 0x57 value to codec register when 
-> driver is loaded.
-> > And keep 0x57 volume value all the time. So, Master volume 
-> will lower than windows machine.
-> > This case which driver fail to build the alsa mixer(This is 
-> firmware cause it). So, no hardware volume control on this.
-> > If the Max volume value is 0,  system will not set default 
-> value 0x57 for first time loading driver.
-> 
-> Which values (min/max) does this FU take and which values are buggy?
-Max value. 
-But it is not buggy value. Min and Max value are all safe. It got right value from firmware.
-But if Max value > 0, maybe < 0x57, it will be not rewrited value.
-Please look for belowing function. 
+This series addes support for vendor tuples to topology, to avoid
+importing binary data blob from other files.
 
-Our USB firmware fail for build alsa mixer. And we fixed the firmware already.
-But Dell didn't want to update firmware. Because they release this MP more and more.
-So, they request a workaround for this unit.
+Backward compatibility of ABI is not impacted. A kernel patch is also
+submitted "ASoC: topology: ABI - Define types for vendor tuples".
 
-Below is in mixer.c
+The 1st patch is small code cleanup.
+The 2nd patch is a preparation, since tuples will need the type-specific
+free handler.
 
-static int mixer_ctl_feature_put(struct snd_kcontrol *kcontrol,
-     struct snd_ctl_elem_value *ucontrol)
-{
- struct usb_mixer_elem_info *cval = kcontrol->private_data;
- int c, cnt, val, oval, err;
- int changed = 0;
- 
- if (cval->cmask) {
-  cnt = 0;
-  for (c = 0; c < MAX_CHANNELS; c++) {
-   if (!(cval->cmask & (1 << c)))
-    continue;
-   err = get_cur_mix_value(cval, c + 1, cnt, &oval);
-   if (err < 0)
-    return cval->mixer->ignore_ctl_error ? 0 : err;
-   val = ucontrol->value.integer.value[cnt];   =========> This line will get default value( 0x57) from mixer.
-   val = get_abs_value(cval, val);
-   if (oval != val) {
-    set_cur_mix_value(cval, c + 1, cnt, val);
-    changed = 1;
-   }
-   cnt++;
-  }
- } else {
-  /* master channel */
-  err = get_cur_mix_value(cval, 0, 0, &oval);
-  if (err < 0)
-   return cval->mixer->ignore_ctl_error ? 0 : err;
-  val = ucontrol->value.integer.value[0];
-  val = get_abs_value(cval, val);
-  if (val != oval) {
-   set_cur_mix_value(cval, 0, 0, val);
-   changed = 1;
-  }
- }
- return changed;
-}
+History:
+v2: add check on string length, use strtol() to get hex value,
+    and fix memory leak.
+v3: Fix overflow on uuid string copy. Use strtoul() to get unsigned
+    vendor values and check range, tested on 32 & 64 bit systems.
 
-> Judging from your description, the firmware gives the bogus 
-> max value (white min value = 0) and a volume higher than zero 
-> is attenuation?
+Mengdong Lin (7):
+  topology: Use the generic pointer to free an element's object
+  topology: Define a free handler for the element
+  topology: Add doc for vendor tuples
+  topology: ABI - Define types for vendor tuples
+  topology: Add support for vendor tokens
+  topology: Add support for parsing vendor tuples
+  topology: Build data objects with tuples
 
-I had not test Max value > 0 and < 0x57.
-cval->min = 0x0000;  => this is original. I just post it. Remove this line is OK.
+ include/sound/asoc.h      |  42 +++-
+ include/topology.h        |  79 +++++++-
+ src/topology/data.c       | 503 +++++++++++++++++++++++++++++++++++++++++++++-
+ src/topology/elem.c       |  15 +-
+ src/topology/parser.c     |  24 +++
+ src/topology/tplg_local.h |  47 +++++
+ 6 files changed, 702 insertions(+), 8 deletions(-)
 
-> 
-> 
-> Takashi
-> 
-> ------Please consider the environment before printing this e-mail.
-> 
+-- 
+2.5.0
