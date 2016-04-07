@@ -1,292 +1,132 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH v3 7/7] topology: Build data objects with tuples
-Date: Thu,  7 Apr 2016 15:29:49 +0800
-Message-ID: <da1169e46c1b4ff73d401f9e31e210339e6e5054.1460013338.git.mengdong.lin@linux.intel.com>
-References: <cover.1460013338.git.mengdong.lin@linux.intel.com>
+From: PC Liao <pc.liao@mediatek.com>
+Subject: [PATCH v3] ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver
+Date: Thu, 7 Apr 2016 15:35:17 +0800
+Message-ID: <1460014517-20359-1-git-send-email-pc.liao@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 3AF56266084
- for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2016 09:27:28 +0200 (CEST)
-In-Reply-To: <cover.1460013338.git.mengdong.lin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, liam.r.girdwood@intel.com, hardik.t.shah@intel.com, subhransu.s.prusty@intel.com
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, tiwai@suse.de
+Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, koro.chen@mediatek.com, PC Liao <pc.liao@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+This patch adds second I2S connection to rt5650 codec for capture path on
+mt8173-rt5650 machine driver.
 
-For data objects with tuples, the parser will bind the vendor tuples
-and tokens, copy the tuples to the private buffer of its parent data
-object. Then later the builder will export the vendor tuples as private
-binary data for the control or widgets objects.
+Signed-off-by: PC Liao <pc.liao@mediatek.com>
+---
+Changes since v2:
+Use sound-dai to determine the capture path.
+---
+ .../devicetree/bindings/sound/mt8173-rt5650.txt    |    6 +++
+ sound/soc/mediatek/mt8173-rt5650.c                 |   42 ++++++++++++++++++--
+ 2 files changed, 44 insertions(+), 4 deletions(-)
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
-
-diff --git a/src/topology/data.c b/src/topology/data.c
-index 606fcd3..19c31bf 100644
---- a/src/topology/data.c
-+++ b/src/topology/data.c
-@@ -253,6 +253,198 @@ static int tplg_parse_data_hex(snd_config_t *cfg, struct tplg_elem *elem,
- 	return ret;
- }
+diff --git a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
+index fe5a5ef..4ed768e 100644
+--- a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
++++ b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
+@@ -5,11 +5,17 @@ Required properties:
+ - mediatek,audio-codec: the phandles of rt5650 codecs
+ - mediatek,platform: the phandle of MT8173 ASoC platform
  
-+/* get the token integer value from its id */
-+static int get_token_value(const char *token_id,
-+	struct tplg_vendor_tokens *tokens)
-+{
-+	int i;
++Optional properties:
++- sound-dai: audio codec dai on capture path
++  <&rt5650 0> : Default setting. Connect rt5650 I2S1 for capture. (dai_name = rt5645-aif1)
++  <&rt5650 1> : Connect rt5650 I2S2 for capture. (dai_name = rt5645-aif2)
 +
-+	for (i = 0; i < tokens->num_tokens; i++) {
-+		if (strcmp(token_id, tokens->token[i].id) == 0)
-+			return tokens->token[i].value;
-+	}
+ Example:
+ 
+ 	sound {
+ 		compatible = "mediatek,mt8173-rt5650";
+ 		mediatek,audio-codec = <&rt5650>;
+ 		mediatek,platform = <&afe>;
++		sound-dai = <&rt5650 1>;
+ 	};
+ 
+diff --git a/sound/soc/mediatek/mt8173-rt5650.c b/sound/soc/mediatek/mt8173-rt5650.c
+index bb09bb1..9f56df9 100644
+--- a/sound/soc/mediatek/mt8173-rt5650.c
++++ b/sound/soc/mediatek/mt8173-rt5650.c
+@@ -85,12 +85,26 @@ static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
+ {
+ 	struct snd_soc_card *card = runtime->card;
+ 	struct snd_soc_codec *codec = runtime->codec_dais[0]->codec;
++	const char *codec_dai_capture = runtime->codec_dais[1]->name;
+ 	int ret;
+ 
+ 	rt5645_sel_asrc_clk_src(codec,
+-				RT5645_DA_STEREO_FILTER |
+-				RT5645_AD_STEREO_FILTER,
+-				RT5645_CLK_SEL_I2S1_ASRC);
++					RT5645_DA_STEREO_FILTER,
++					RT5645_CLK_SEL_I2S1_ASRC);
 +
-+	SNDERR("error: cannot find token id '%s'\n", token_id);
-+	return -1;
-+}
-+
-+/* get the vendor tokens referred by the vendor tuples */
-+static struct tplg_elem *get_tokens(snd_tplg_t *tplg, struct tplg_elem *elem)
-+{
-+	struct tplg_ref *ref;
-+	struct list_head *base, *pos;
-+	int err = 0;
-+
-+	base = &elem->ref_list;
-+	list_for_each(pos, base) {
-+
-+		ref = list_entry(pos, struct tplg_ref, list);
-+
-+		if (!ref->id || ref->type != SND_TPLG_TYPE_TOKEN)
-+			continue;
-+
-+		if (!ref->elem) {
-+			ref->elem = tplg_elem_lookup(&tplg->token_list,
-+						ref->id, SND_TPLG_TYPE_TOKEN);
-+		}
-+
-+		return ref->elem;
-+	}
-+
-+	return NULL;
-+}
-+
-+/* check if a data element has tuples */
-+static bool has_tuples(struct tplg_elem *elem)
-+{
-+	struct tplg_ref *ref;
-+	struct list_head *base, *pos;
-+	int err = 0;
-+
-+	base = &elem->ref_list;
-+	list_for_each(pos, base) {
-+
-+		ref = list_entry(pos, struct tplg_ref, list);
-+		if (ref->id && ref->type == SND_TPLG_TYPE_TUPLE)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
-+/* get size of a tuple element from its type */
-+static unsigned int get_tuple_size(int type)
-+{
-+	switch (type) {
-+
-+	case SND_SOC_TPLG_TUPLE_TYPE_UUID:
-+		return sizeof(struct snd_soc_tplg_vendor_uuid_elem);
-+
-+	case SND_SOC_TPLG_TUPLE_TYPE_STRING:
-+		return sizeof(struct snd_soc_tplg_vendor_string_elem);
-+
-+	default:
-+		return sizeof(struct snd_soc_tplg_vendor_value_elem);
-+	}
-+}
-+
-+/* fill a data element's private buffer with its tuples */
-+static int copy_tuples(struct tplg_elem *elem,
-+	struct tplg_vendor_tuples *tuples, struct tplg_vendor_tokens *tokens)
-+{
-+	struct snd_soc_tplg_private *priv = elem->data;
-+	struct tplg_tuple_set *tuple_set;
-+	struct tplg_tuple *tuple;
-+	struct snd_soc_tplg_vendor_array *array;
-+	struct snd_soc_tplg_vendor_uuid_elem *uuid;
-+	struct snd_soc_tplg_vendor_string_elem *string;
-+	struct snd_soc_tplg_vendor_value_elem *value;
-+	int set_size, size, off;
-+	int i, j, token_val;
-+
-+	if (priv) {
-+		SNDERR("error: %s has more data than tuples\n", elem->id);
++	if (!strcmp(codec_dai_capture, "rt5645-aif1")) {
++		rt5645_sel_asrc_clk_src(codec,
++					RT5645_AD_STEREO_FILTER,
++					RT5645_CLK_SEL_I2S1_ASRC);
++	} else if (!strcmp(codec_dai_capture, "rt5645-aif2")) {
++		rt5645_sel_asrc_clk_src(codec,
++					RT5645_AD_STEREO_FILTER,
++					RT5645_CLK_SEL_I2S2_ASRC);
++	} else {
++		dev_err(card->dev, "Can't get the right codec dai\n");
 +		return -EINVAL;
 +	}
 +
-+	size = 0;
-+	for (i = 0; i < tuples->num_sets ; i++) {
-+		tuple_set = tuples->set[i];
-+		set_size = sizeof(struct snd_soc_tplg_vendor_array)
-+			+ get_tuple_size(tuple_set->type)
-+			* tuple_set->num_tuples;
-+		size += set_size;
-+		if (size > TPLG_MAX_PRIV_SIZE) {
-+			SNDERR("error: data too big %d\n", size);
-+			return -EINVAL;
-+		}
-+
-+		if (priv != NULL)
-+			priv = realloc(priv, sizeof(*priv) + size);
-+		else
-+			priv = calloc(1, sizeof(*priv) + size);
-+		if (!priv)
-+			return -ENOMEM;
-+
-+		off = priv->size;
-+		priv->size = size;
-+
-+		array = (struct snd_soc_tplg_vendor_array *)(priv->data + off);
-+		array->size = set_size;
-+		array->type = tuple_set->type;
-+		array->num_elems = tuple_set->num_tuples;
-+
-+		/* fill the private data buffer */
-+		for (j = 0; j < tuple_set->num_tuples; j++) {
-+			tuple = &tuple_set->tuple[j];
-+			token_val = get_token_value(tuple->token, tokens);
-+			if (token_val  < 0)
-+				return -EINVAL;
-+
-+			switch (tuple_set->type) {
-+			case SND_SOC_TPLG_TUPLE_TYPE_UUID:
-+				uuid = &array->uuid[j];
-+				uuid->token = token_val;
-+				memcpy(uuid->uuid, tuple->uuid, 16);
-+				break;
-+
-+			case SND_SOC_TPLG_TUPLE_TYPE_STRING:
-+				string = &array->string[j];
-+				string->token = token_val;
-+				elem_copy_text(string->string, tuple->string,
-+					SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
-+				break;
-+
-+			default:
-+				value = &array->value[j];
-+				value->token = token_val;
-+				value->value = tuple->value;
-+				break;
-+			}
-+		}
-+	}
-+
-+	elem->data = priv;
-+	return 0;
-+}
-+
-+/* build a data element from its tuples */
-+static int build_tuples(snd_tplg_t *tplg, struct tplg_elem *elem)
-+{
-+	struct tplg_ref *ref;
-+	struct list_head *base, *pos;
-+	struct tplg_elem *tuples, *tokens;
-+
-+	base = &elem->ref_list;
-+	list_for_each(pos, base) {
-+
-+		ref = list_entry(pos, struct tplg_ref, list);
-+
-+		if (!ref->id || ref->type != SND_TPLG_TYPE_TUPLE)
-+			continue;
-+
-+		tplg_dbg("look up tuples %s\n", ref->id);
-+
-+		if (!ref->elem)
-+			ref->elem = tplg_elem_lookup(&tplg->tuple_list,
-+						ref->id, SND_TPLG_TYPE_TUPLE);
-+		tuples = ref->elem;
-+		if (!tuples)
-+			return -EINVAL;
-+
-+		tplg_dbg("found tuples %s\n", tuples->id);
-+		tokens = get_tokens(tplg, tuples);
-+		if (!tokens)
-+			return -EINVAL;
-+
-+		tplg_dbg("found tokens %s\n", tokens->id);
-+		/* a data object can only have one tuples object */
-+		return copy_tuples(elem, tuples->tuples, tokens->tokens);
-+	}
-+
-+	return 0;
-+}
-+
- static int parse_tuple_set(snd_tplg_t *tplg, snd_config_t *cfg,
- 	struct tplg_tuple_set **s)
- {
-@@ -683,3 +875,24 @@ int tplg_copy_data(struct tplg_elem *elem, struct tplg_elem *ref)
- 	memcpy(priv->data, ref->data->data, priv_data_size);
- 	return 0;
- }
-+
-+/* check data objects and build those with tuples */
-+int tplg_build_data(snd_tplg_t *tplg)
-+{
-+	struct list_head *base, *pos;
-+	struct tplg_elem *elem;
-+	int err = 0;
-+
-+	base = &tplg->pdata_list;
-+	list_for_each(pos, base) {
-+
-+		elem = list_entry(pos, struct tplg_elem, list);
-+		if (has_tuples(elem)) {
-+			err = build_tuples(tplg, elem);
-+			if (err < 0)
-+				return err;
-+		}
-+	}
-+
-+	return 0;
-+}
-diff --git a/src/topology/parser.c b/src/topology/parser.c
-index 0d967b4..30d91f9 100644
---- a/src/topology/parser.c
-+++ b/src/topology/parser.c
-@@ -242,6 +242,10 @@ static int tplg_build_integ(snd_tplg_t *tplg)
- {
- 	int err;
+ 	/* enable jack detection */
+ 	ret = snd_soc_card_jack_new(card, "Headset Jack",
+ 				    SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
+@@ -110,6 +124,11 @@ static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
  
-+	err = tplg_build_data(tplg);
-+	if (err <  0)
-+		return err;
-+
- 	err = tplg_build_controls(tplg);
- 	if (err <  0)
- 		return err;
-diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
-index 4d59a1f..4c601d4 100644
---- a/src/topology/tplg_local.h
-+++ b/src/topology/tplg_local.h
-@@ -222,6 +222,7 @@ int tplg_parse_be(snd_tplg_t *tplg,
- int tplg_parse_cc(snd_tplg_t *tplg,
- 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED);
+ static struct snd_soc_dai_link_component mt8173_rt5650_codecs[] = {
+ 	{
++		/* Playback */
++		.dai_name = "rt5645-aif1",
++	},
++	{
++		/* Capture */
+ 		.dai_name = "rt5645-aif1",
+ 	},
+ };
+@@ -149,7 +168,7 @@ static struct snd_soc_dai_link mt8173_rt5650_dais[] = {
+ 		.cpu_dai_name = "I2S",
+ 		.no_pcm = 1,
+ 		.codecs = mt8173_rt5650_codecs,
+-		.num_codecs = 1,
++		.num_codecs = 2,
+ 		.init = mt8173_rt5650_init,
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 			   SND_SOC_DAIFMT_CBS_CFS,
+@@ -177,6 +196,7 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = &mt8173_rt5650_card;
+ 	struct device_node *platform_node;
++	const char *codec_dai_capture;
+ 	int i, ret;
  
-+int tplg_build_data(snd_tplg_t *tplg);
- int tplg_build_controls(snd_tplg_t *tplg);
- int tplg_build_widgets(snd_tplg_t *tplg);
- int tplg_build_routes(snd_tplg_t *tplg);
+ 	platform_node = of_parse_phandle(pdev->dev.of_node,
+@@ -199,6 +219,20 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
+ 			"Property 'audio-codec' missing or invalid\n");
+ 		return -EINVAL;
+ 	}
++	mt8173_rt5650_codecs[1].of_node = mt8173_rt5650_codecs[0].of_node;
++
++	if (device_property_present(&pdev->dev, "sound-dai")) {
++		ret = snd_soc_of_get_dai_name(pdev->dev.of_node,
++					      &codec_dai_capture);
++		if (ret < 0) {
++			dev_err(&pdev->dev,
++				"%s snd_soc_of_get_dai_name fail %d\n",
++				__func__, ret);
++			return ret;
++		}
++		mt8173_rt5650_codecs[1].dai_name = codec_dai_capture;
++	}
++
+ 	card->dev = &pdev->dev;
+ 	platform_set_drvdata(pdev, card);
+ 
 -- 
-2.5.0
+1.7.9.5
