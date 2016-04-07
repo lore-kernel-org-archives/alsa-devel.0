@@ -1,16 +1,16 @@
 From: Moise Gergaud <moise.gergaud@st.com>
-Subject: [PATCH v2 1/7] ASoC: sti: macro for uniperif tdm regs
-	access
-Date: Thu, 7 Apr 2016 11:25:30 +0200
-Message-ID: <1460021136-27822-2-git-send-email-moise.gergaud@st.com>
+Subject: [PATCH v2 2/7] ASoC: sti: rename unip player type into
+	common player & reader type
+Date: Thu, 7 Apr 2016 11:25:31 +0200
+Message-ID: <1460021136-27822-3-git-send-email-moise.gergaud@st.com>
 References: <1460021136-27822-1-git-send-email-moise.gergaud@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 53E0B26512B
- for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2016 11:25:49 +0200 (CEST)
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id CFBFD265158
+ for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2016 11:25:54 +0200 (CEST)
 In-Reply-To: <1460021136-27822-1-git-send-email-moise.gergaud@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,131 +27,130 @@ List-Id: alsa-devel@alsa-project.org
 Signed-off-by: Moise Gergaud <moise.gergaud@st.com>
 Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- sound/soc/sti/uniperif.h | 112 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 112 insertions(+)
+ sound/soc/sti/uniperif.h        | 19 ++++++++++++++-----
+ sound/soc/sti/uniperif_player.c | 31 +++++++++++--------------------
+ 2 files changed, 25 insertions(+), 25 deletions(-)
 
 diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
-index 1f82faa..400788b 100644
+index 400788b..75116ab 100644
 --- a/sound/soc/sti/uniperif.h
 +++ b/sound/soc/sti/uniperif.h
-@@ -1101,6 +1101,118 @@
- 		UNIPERIF_DBG_STANDBY_LEFT_SP_MASK(ip), value)
+@@ -1219,6 +1219,15 @@
+ #define UNIPERIF_FIFO_SIZE		70 /* FIFO is 70 cells deep */
+ #define UNIPERIF_FIFO_FRAMES		4  /* FDMA trigger limit in frames */
  
++#define UNIPERIF_TYPE_IS_HDMI(p) \
++	((p)->info->type == SND_ST_UNIPERIF_TYPE_HDMI)
++#define UNIPERIF_TYPE_IS_PCM(p) \
++	((p)->info->type == SND_ST_UNIPERIF_TYPE_PCM)
++#define UNIPERIF_TYPE_IS_SPDIF(p) \
++	((p)->info->type == SND_ST_UNIPERIF_TYPE_SPDIF)
++#define UNIPERIF_TYPE_IS_IEC958(p) \
++	(UNIPERIF_TYPE_IS_HDMI(p) || \
++		UNIPERIF_TYPE_IS_SPDIF(p))
  /*
-+ * UNIPERIF_TDM_ENABLE
-+ */
-+#define UNIPERIF_TDM_ENABLE_OFFSET(ip) 0x0118
-+#define GET_UNIPERIF_TDM_ENABLE(ip) \
-+	readl_relaxed(ip->base + UNIPERIF_TDM_ENABLE_OFFSET(ip))
-+#define SET_UNIPERIF_TDM_ENABLE(ip, value) \
-+	writel_relaxed(value, ip->base + UNIPERIF_TDM_ENABLE_OFFSET(ip))
-+
-+/* TDM_ENABLE */
-+#define UNIPERIF_TDM_ENABLE_EN_TDM_SHIFT(ip) 0x0
-+#define UNIPERIF_TDM_ENABLE_EN_TDM_MASK(ip) 0x1
-+#define GET_UNIPERIF_TDM_ENABLE_EN_TDM(ip) \
-+		GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_TDM_ENABLE_OFFSET(ip), \
-+		UNIPERIF_TDM_ENABLE_EN_TDM_SHIFT(ip), \
-+		UNIPERIF_TDM_ENABLE_EN_TDM_MASK(ip))
-+#define SET_UNIPERIF_TDM_ENABLE_TDM_ENABLE(ip) \
-+		SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_TDM_ENABLE_OFFSET(ip), \
-+		UNIPERIF_TDM_ENABLE_EN_TDM_SHIFT(ip), \
-+		UNIPERIF_TDM_ENABLE_EN_TDM_MASK(ip), 1)
-+#define SET_UNIPERIF_TDM_ENABLE_TDM_DISABLE(ip) \
-+		SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_TDM_ENABLE_OFFSET(ip), \
-+		UNIPERIF_TDM_ENABLE_EN_TDM_SHIFT(ip), \
-+		UNIPERIF_TDM_ENABLE_EN_TDM_MASK(ip), 0)
-+
-+/*
-+ * UNIPERIF_TDM_FS_REF_FREQ
-+ */
-+#define UNIPERIF_TDM_FS_REF_FREQ_OFFSET(ip) 0x011c
-+#define GET_UNIPERIF_TDM_FS_REF_FREQ(ip) \
-+	readl_relaxed(ip->base + UNIPERIF_TDM_FS_REF_FREQ_OFFSET(ip))
-+#define SET_UNIPERIF_TDM_FS_REF_FREQ(ip, value) \
-+	writel_relaxed(value, ip->base + \
-+			UNIPERIF_TDM_FS_REF_FREQ_OFFSET(ip))
-+
-+/* REF_FREQ */
-+#define UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_SHIFT(ip) 0x0
-+#define VALUE_UNIPERIF_TDM_FS_REF_FREQ_8KHZ(ip) 0
-+#define VALUE_UNIPERIF_TDM_FS_REF_FREQ_16KHZ(ip) 1
-+#define VALUE_UNIPERIF_TDM_FS_REF_FREQ_32KHZ(ip) 2
-+#define VALUE_UNIPERIF_TDM_FS_REF_FREQ_48KHZ(ip) 3
-+#define UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_MASK(ip) 0x3
-+#define GET_UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ(ip) \
-+		GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_TDM_FS_REF_FREQ_OFFSET(ip), \
-+		UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_SHIFT(ip), \
-+		UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_MASK(ip))
-+#define SET_UNIPERIF_TDM_FS_REF_FREQ_8KHZ(ip) \
-+		SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_TDM_FS_REF_FREQ_OFFSET(ip), \
-+		UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_SHIFT(ip), \
-+		UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_MASK(ip), \
-+		VALUE_UNIPERIF_TDM_FS_REF_FREQ_8KHZ(ip))
-+#define SET_UNIPERIF_TDM_FS_REF_FREQ_16KHZ(ip) \
-+		SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_TDM_FS_REF_FREQ_OFFSET(ip), \
-+		UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_SHIFT(ip), \
-+		UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_MASK(ip), \
-+		VALUE_UNIPERIF_TDM_FS_REF_FREQ_16KHZ(ip))
-+#define SET_UNIPERIF_TDM_FS_REF_FREQ_32KHZ(ip) \
-+		SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_TDM_FS_REF_FREQ_OFFSET(ip), \
-+		UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_SHIFT(ip), \
-+		UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_MASK(ip), \
-+		VALUE_UNIPERIF_TDM_FS_REF_FREQ_32KHZ(ip))
-+#define SET_UNIPERIF_TDM_FS_REF_FREQ_48KHZ(ip) \
-+		SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_TDM_FS_REF_FREQ_OFFSET(ip), \
-+		UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_SHIFT(ip), \
-+		UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_MASK(ip), \
-+		VALUE_UNIPERIF_TDM_FS_REF_FREQ_48KHZ(ip))
-+
-+/*
-+ * UNIPERIF_TDM_FS_REF_DIV
-+ */
-+#define UNIPERIF_TDM_FS_REF_DIV_OFFSET(ip) 0x0120
-+#define GET_UNIPERIF_TDM_FS_REF_DIV(ip) \
-+	readl_relaxed(ip->base + UNIPERIF_TDM_FS_REF_DIV_OFFSET(ip))
-+#define SET_UNIPERIF_TDM_FS_REF_DIV(ip, value) \
-+		writel_relaxed(value, ip->base + \
-+			UNIPERIF_TDM_FS_REF_DIV_OFFSET(ip))
-+
-+/* NUM_TIMESLOT */
-+#define UNIPERIF_TDM_FS_REF_DIV_NUM_TIMESLOT_SHIFT(ip) 0x0
-+#define UNIPERIF_TDM_FS_REF_DIV_NUM_TIMESLOT_MASK(ip) 0xff
-+#define GET_UNIPERIF_TDM_FS_REF_DIV_NUM_TIMESLOT(ip) \
-+		GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_TDM_FS_REF_DIV_OFFSET(ip), \
-+		UNIPERIF_TDM_FS_REF_DIV_NUM_TIMESLOT_SHIFT(ip), \
-+		UNIPERIF_TDM_FS_REF_DIV_NUM_TIMESLOT_MASK(ip))
-+#define SET_UNIPERIF_TDM_FS_REF_DIV_NUM_TIMESLOT(ip, value) \
-+		SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_TDM_FS_REF_DIV_OFFSET(ip), \
-+		UNIPERIF_TDM_FS_REF_DIV_NUM_TIMESLOT_SHIFT(ip), \
-+		UNIPERIF_TDM_FS_REF_DIV_NUM_TIMESLOT_MASK(ip), value)
-+
-+/*
-+ * UNIPERIF_TDM_WORD_POS_X_Y
-+ * 32 bits of UNIPERIF_TDM_WORD_POS_X_Y register shall be set in 1 shot
-+ */
-+#define UNIPERIF_TDM_WORD_POS_1_2_OFFSET(ip) 0x013c
-+#define UNIPERIF_TDM_WORD_POS_3_4_OFFSET(ip) 0x0140
-+#define UNIPERIF_TDM_WORD_POS_5_6_OFFSET(ip) 0x0144
-+#define UNIPERIF_TDM_WORD_POS_7_8_OFFSET(ip) 0x0148
-+#define GET_UNIPERIF_TDM_WORD_POS(ip, words) \
-+	readl_relaxed(ip->base + UNIPERIF_TDM_WORD_POS_##words##_OFFSET(ip))
-+#define SET_UNIPERIF_TDM_WORD_POS(ip, words, value) \
-+		writel_relaxed(value, ip->base + \
-+		UNIPERIF_TDM_WORD_POS_##words##_OFFSET(ip))
-+/*
-  * uniperipheral IP capabilities
+  * Uniperipheral IP revisions
   */
+@@ -1237,10 +1246,10 @@ enum uniperif_version {
+ };
  
+ enum uniperif_type {
+-	SND_ST_UNIPERIF_PLAYER_TYPE_NONE,
+-	SND_ST_UNIPERIF_PLAYER_TYPE_HDMI,
+-	SND_ST_UNIPERIF_PLAYER_TYPE_PCM,
+-	SND_ST_UNIPERIF_PLAYER_TYPE_SPDIF
++	SND_ST_UNIPERIF_TYPE_NONE,
++	SND_ST_UNIPERIF_TYPE_HDMI,
++	SND_ST_UNIPERIF_TYPE_PCM,
++	SND_ST_UNIPERIF_TYPE_SPDIF
+ };
+ 
+ enum uniperif_state {
+@@ -1259,7 +1268,7 @@ enum uniperif_iec958_encoding_mode {
+ 
+ struct uniperif_info {
+ 	int id; /* instance value of the uniperipheral IP */
+-	enum uniperif_type player_type;
++	enum uniperif_type type;
+ 	int underflow_enabled;		/* Underflow recovery mode */
+ };
+ 
+diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
+index 7aca6b9..ab4310a 100644
+--- a/sound/soc/sti/uniperif_player.c
++++ b/sound/soc/sti/uniperif_player.c
+@@ -26,15 +26,6 @@
+ /*
+  * Driver specific types.
+  */
+-#define UNIPERIF_PLAYER_TYPE_IS_HDMI(p) \
+-	((p)->info->player_type == SND_ST_UNIPERIF_PLAYER_TYPE_HDMI)
+-#define UNIPERIF_PLAYER_TYPE_IS_PCM(p) \
+-	((p)->info->player_type == SND_ST_UNIPERIF_PLAYER_TYPE_PCM)
+-#define UNIPERIF_PLAYER_TYPE_IS_SPDIF(p) \
+-	((p)->info->player_type == SND_ST_UNIPERIF_PLAYER_TYPE_SPDIF)
+-#define UNIPERIF_PLAYER_TYPE_IS_IEC958(p) \
+-	(UNIPERIF_PLAYER_TYPE_IS_HDMI(p) || \
+-		UNIPERIF_PLAYER_TYPE_IS_SPDIF(p))
+ 
+ #define UNIPERIF_PLAYER_CLK_ADJ_MIN  -999999
+ #define UNIPERIF_PLAYER_CLK_ADJ_MAX  1000000
+@@ -738,14 +729,14 @@ static int uni_player_prepare(struct snd_pcm_substream *substream,
+ 	SET_UNIPERIF_CONFIG_DMA_TRIG_LIMIT(player, trigger_limit);
+ 
+ 	/* Uniperipheral setup depends on player type */
+-	switch (player->info->player_type) {
+-	case SND_ST_UNIPERIF_PLAYER_TYPE_HDMI:
++	switch (player->info->type) {
++	case SND_ST_UNIPERIF_TYPE_HDMI:
+ 		ret = uni_player_prepare_iec958(player, runtime);
+ 		break;
+-	case SND_ST_UNIPERIF_PLAYER_TYPE_PCM:
++	case SND_ST_UNIPERIF_TYPE_PCM:
+ 		ret = uni_player_prepare_pcm(player, runtime);
+ 		break;
+-	case SND_ST_UNIPERIF_PLAYER_TYPE_SPDIF:
++	case SND_ST_UNIPERIF_TYPE_SPDIF:
+ 		ret = uni_player_prepare_iec958(player, runtime);
+ 		break;
+ 	default:
+@@ -852,8 +843,8 @@ static int uni_player_start(struct uniperif *player)
+ 	 * will not take affect and hang the player.
+ 	 */
+ 	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
+-		if (UNIPERIF_PLAYER_TYPE_IS_IEC958(player))
+-				SET_UNIPERIF_CTRL_SPDIF_FMT_ON(player);
++		if (UNIPERIF_TYPE_IS_IEC958(player))
++			SET_UNIPERIF_CTRL_SPDIF_FMT_ON(player);
+ 
+ 	/* Force channel status update (no update if clk disable) */
+ 	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
+@@ -1012,13 +1003,13 @@ static int uni_player_parse_dt(struct platform_device *pdev,
+ 	}
+ 
+ 	if (strcasecmp(mode, "hdmi") == 0)
+-		info->player_type = SND_ST_UNIPERIF_PLAYER_TYPE_HDMI;
++		info->type = SND_ST_UNIPERIF_TYPE_HDMI;
+ 	else if (strcasecmp(mode, "pcm") == 0)
+-		info->player_type = SND_ST_UNIPERIF_PLAYER_TYPE_PCM;
++		info->type = SND_ST_UNIPERIF_TYPE_PCM;
+ 	else if (strcasecmp(mode, "spdif") == 0)
+-		info->player_type = SND_ST_UNIPERIF_PLAYER_TYPE_SPDIF;
++		info->type = SND_ST_UNIPERIF_TYPE_SPDIF;
+ 	else
+-		info->player_type = SND_ST_UNIPERIF_PLAYER_TYPE_NONE;
++		info->type = SND_ST_UNIPERIF_TYPE_NONE;
+ 
+ 	/* Save the info structure */
+ 	player->info = info;
+@@ -1087,7 +1078,7 @@ int uni_player_init(struct platform_device *pdev,
+ 	SET_UNIPERIF_CTRL_SPDIF_LAT_OFF(player);
+ 	SET_UNIPERIF_CONFIG_IDLE_MOD_DISABLE(player);
+ 
+-	if (UNIPERIF_PLAYER_TYPE_IS_IEC958(player)) {
++	if (UNIPERIF_TYPE_IS_IEC958(player)) {
+ 		/* Set default iec958 status bits  */
+ 
+ 		/* Consumer, PCM, copyright, 2ch, mode 0 */
 -- 
 1.9.1
