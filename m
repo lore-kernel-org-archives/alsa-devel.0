@@ -1,86 +1,50 @@
 From: Jose Abreu <Jose.Abreu@synopsys.com>
-Subject: [PATCH 3/5 v4] ASoC: dwc: Use fifo depth to program FCR
-Date: Thu,  7 Apr 2016 17:53:57 +0100
-Message-ID: <5aa4bcb0eba226af2e78fc530ad7d0429d2c96ca.1460047238.git.joabreu@synopsys.com>
+Subject: [PATCH 5/5 v4] ASoC: dwc: Update DOCUMENTATION for I2S Driver
+Date: Thu,  7 Apr 2016 17:53:59 +0100
+Message-ID: <ce97e6bb7ddb71e532c4066334ceead4d4d3e692.1460047238.git.joabreu@synopsys.com>
 References: <cover.1460047238.git.joabreu@synopsys.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1460047238.git.joabreu@synopsys.com>
 In-Reply-To: <cover.1460047238.git.joabreu@synopsys.com>
 References: <cover.1460047238.git.joabreu@synopsys.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
- <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
-List-Post: <mailto:linux-snps-arc@lists.infradead.org>
-List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
- <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-snps-arc" <linux-snps-arc-bounces@lists.infradead.org>
-Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: Jose Abreu <Jose.Abreu@synopsys.com>, architt@codeaurora.org, airlied@linux.ie, Vineet.Gupta1@synopsys.com, Alexey.Brodkin@synopsys.com, CARLOS.PALMINHA@synopsys.com, lgirdwood@gmail.com, broonie@kernel.org, tiwai@suse.com, perex@perex.cz
+Cc: broonie@kernel.org, CARLOS.PALMINHA@synopsys.com, Alexey.Brodkin@synopsys.com, Vineet.Gupta1@synopsys.com, architt@codeaurora.org, airlied@linux.ie, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, Jose Abreu <Jose.Abreu@synopsys.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch makes Designware I2S driver use the fifo
-depth value to program the fifo configuration register
-instead of using hardcoded values.
+This patch updates documentation for the Designware I2S
+driver.
 
 Signed-off-by: Jose Abreu <joabreu@synopsys.com>
 ---
 
 This patch was only introduced in v4.
 
- sound/soc/dwc/designware_i2s.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/sound/designware-i2s.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
-index 3effcd1..0db69b7 100644
---- a/sound/soc/dwc/designware_i2s.c
-+++ b/sound/soc/dwc/designware_i2s.c
-@@ -100,6 +100,7 @@ struct dw_i2s_dev {
- 	struct device *dev;
- 	u32 ccr;
- 	u32 xfer_resolution;
-+	u32 fifo_th;
- 
- 	/* data related to DMA transfers b/w i2s and DMAC */
- 	union dw_i2s_snd_dma_data play_dma_data;
-@@ -232,14 +233,16 @@ static void dw_i2s_config(struct dw_i2s_dev *dev, int stream)
- 		if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 			i2s_write_reg(dev->i2s_base, TCR(ch_reg),
- 				      dev->xfer_resolution);
--			i2s_write_reg(dev->i2s_base, TFCR(ch_reg), 0x02);
-+			i2s_write_reg(dev->i2s_base, TFCR(ch_reg),
-+				      dev->fifo_th - 1);
- 			irq = i2s_read_reg(dev->i2s_base, IMR(ch_reg));
- 			i2s_write_reg(dev->i2s_base, IMR(ch_reg), irq & ~0x30);
- 			i2s_write_reg(dev->i2s_base, TER(ch_reg), 1);
- 		} else {
- 			i2s_write_reg(dev->i2s_base, RCR(ch_reg),
- 				      dev->xfer_resolution);
--			i2s_write_reg(dev->i2s_base, RFCR(ch_reg), 0x07);
-+			i2s_write_reg(dev->i2s_base, RFCR(ch_reg),
-+				      dev->fifo_th - 1);
- 			irq = i2s_read_reg(dev->i2s_base, IMR(ch_reg));
- 			i2s_write_reg(dev->i2s_base, IMR(ch_reg), irq & ~0x03);
- 			i2s_write_reg(dev->i2s_base, RER(ch_reg), 1);
-@@ -499,6 +502,7 @@ static int dw_configure_dai(struct dw_i2s_dev *dev,
- 	 */
- 	u32 comp1 = i2s_read_reg(dev->i2s_base, dev->i2s_reg_comp1);
- 	u32 comp2 = i2s_read_reg(dev->i2s_base, dev->i2s_reg_comp2);
-+	u32 fifo_depth = 1 << (1 + COMP1_FIFO_DEPTH_GLOBAL(comp1));
- 	u32 idx;
- 
- 	if (dev->capability & DWC_I2S_RECORD &&
-@@ -537,6 +541,7 @@ static int dw_configure_dai(struct dw_i2s_dev *dev,
- 		dev->capability |= DW_I2S_SLAVE;
- 	}
- 
-+	dev->fifo_th = fifo_depth / 2;
- 	return 0;
- }
- 
+diff --git a/Documentation/devicetree/bindings/sound/designware-i2s.txt b/Documentation/devicetree/bindings/sound/designware-i2s.txt
+index 7bb5424..f3b5c17 100644
+--- a/Documentation/devicetree/bindings/sound/designware-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/designware-i2s.txt
+@@ -7,6 +7,10 @@ Required properties:
+    clocks. The controller expects one clock: the clock used as the sampling
+    rate reference clock sample.
+  - clock-names : "i2sclk" for the sample rate reference clock.
++
++ Optional properties:
++ - snps,use-dmaengine: If set the driver will use ALSA DMA engine. If set
++   it is required to use the properties 'dmas' and 'dma-names'.
+  - dmas: Pairs of phandle and specifier for the DMA channels that are used by
+    the core. The core expects one or two dma channels: one for transmit and
+    one for receive.
+@@ -26,6 +30,7 @@ Example:
+ 		clocks = <&scpi_i2sclk 0>;
+ 		clock-names = "i2sclk";
+ 		#sound-dai-cells = <0>;
++		snps,use-dmaengine;
+ 		dmas = <&dma0 5>;
+ 		dma-names = "tx";
+ 	};
 -- 
 1.9.1
