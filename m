@@ -1,298 +1,136 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH] ASoC: samsung: Remove unused Odroid x2/u3 machine driver
-Date: Fri, 08 Apr 2016 18:54:57 +0200
-Message-ID: <1460134497-31590-1-git-send-email-s.nawrocki@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
+From: Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
+Subject: Re: [PATCH] ASoC: rockchip: i2s: configure the sdio pins' iomux mode
+Date: Fri, 08 Apr 2016 19:14:57 +0200
+Message-ID: <3304388.ZeDefZvcUO@phil>
+References: <1459931902-77324-1-git-send-email-sugar.zhang@rock-chips.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1459931902-77324-1-git-send-email-sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Sugar Zhang <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Jianqun Xu <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-We have been using "simple-audio-card" for Odroid X2/U3 boards,
-as can be seen from sound node in arch/arm/boot/dts/
-exynos4412-odroid-common.dtsi. A dedicated machine driver is not
-needed and it is removed in this patch.
-There is no dts files using "samsung,odroidx2-audio" or
-"samsung,odroidu3-audio" compatible strings.
+Hi,
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
----
- .../bindings/sound/samsung,odroidx2-max98090.txt   |  35 ----
- sound/soc/samsung/Kconfig                          |   8 -
- sound/soc/samsung/Makefile                         |   2 -
- sound/soc/samsung/odroidx2_max98090.c              | 185 ---------------------
- 4 files changed, 230 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/samsung,odroidx2-max98090.txt
- delete mode 100644 sound/soc/samsung/odroidx2_max98090.c
+Am Mittwoch, 6. April 2016, 16:38:22 schrieb Sugar Zhang:
+> There are 3 i2s sdio pins, which iomux mode is as follows:
+> 
+>  - sdi3_sdo1
+>  - sdi2_sdo2
+>  - sdi1_sdo3
+> 
+> we need to configure these pins' iomux mode via the GRF register
+> when use multi channel playback/capture.
+> 
+> Signed-off-by: Sugar Zhang <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+> ---
+> 
+>  .../devicetree/bindings/sound/rockchip-i2s.txt     |  5 +++
+>  sound/soc/rockchip/rockchip_i2s.c                  | 39
+> +++++++++++++++++++++- sound/soc/rockchip/rockchip_i2s.h                 
+> |  8 +++++
+>  3 files changed, 51 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+> b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt index
+> 6e86d8a..ad72a7d 100644
+> --- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+> +++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+> @@ -23,6 +23,11 @@ Required properties:
+>  - rockchip,playback-channels: max playback channels, if not set, 8
+> channels default. - rockchip,capture-channels: max capture channels, if
+> not set, 2 channels default.
+> 
+> +Required properties for controller which support multi channels
+> playback/capture: +
+> +- rockchip,grf: Should be phandle/offset pair. the phandle of the syscon
+> node for GRF register, +  and the offset of the GRF for control register.
 
-diff --git a/Documentation/devicetree/bindings/sound/samsung,odroidx2-max98090.txt b/Documentation/devicetree/bindings/sound/samsung,odroidx2-max98090.txt
-deleted file mode 100644
-index 9148f72..0000000
---- a/Documentation/devicetree/bindings/sound/samsung,odroidx2-max98090.txt
-+++ /dev/null
-@@ -1,35 +0,0 @@
--Samsung Exynos Odroid X2/U3 audio complex with MAX98090 codec
--
--Required properties:
-- - compatible : "samsung,odroidx2-audio" - for Odroid X2 board,
--		"samsung,odroidu3-audio" - for Odroid U3 board
-- - samsung,model : the user-visible name of this sound complex
-- - samsung,i2s-controller : the phandle of the I2S controller
-- - samsung,audio-codec : the phandle of the MAX98090 audio codec
-- - samsung,audio-routing : a list of the connections between audio
--   components;  each entry is a pair of strings, the first being the
--   connection's sink, the second being the connection's source;
--   valid names for sources and sinks are the MAX98090's pins (as
--   documented in its binding), and the jacks on the board
--   For Odroid X2:
--     * Headphone Jack
--     * Mic Jack
--     * DMIC
--
--   For Odroid U3:
--     * Headphone Jack
--     * Speakers
--
--Example:
--
--sound {
--	compatible = "samsung,odroidu3-audio";
--	samsung,i2s-controller = <&i2s0>;
--	samsung,audio-codec = <&max98090>;
--	samsung,model = "Odroid-X2";
--	samsung,audio-routing =
--		"Headphone Jack", "HPL",
--		"Headphone Jack", "HPR",
--		"IN1", "Mic Jack",
--		"Mic Jack", "MICBIAS";
--};
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index 78baa26..7b722b0 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -224,14 +224,6 @@ config SND_SOC_SNOW
- 	  Say Y if you want to add audio support for various Snow
- 	  boards based on Exynos5 series of SoCs.
- 
--config SND_SOC_ODROIDX2
--	tristate "Audio support for Odroid-X2 and Odroid-U3"
--	depends on SND_SOC_SAMSUNG && I2C
--	select SND_SOC_MAX98090
--	select SND_SAMSUNG_I2S
--	help
--	  Say Y here to enable audio support for the Odroid-X2/U3.
--
- config SND_SOC_ARNDALE_RT5631_ALC5631
-         tristate "Audio support for RT5631(ALC5631) on Arndale Board"
-         depends on SND_SOC_SAMSUNG && I2C
-diff --git a/sound/soc/samsung/Makefile b/sound/soc/samsung/Makefile
-index 052fe71..5d03f5c 100644
---- a/sound/soc/samsung/Makefile
-+++ b/sound/soc/samsung/Makefile
-@@ -43,7 +43,6 @@ snd-soc-tobermory-objs := tobermory.o
- snd-soc-lowland-objs := lowland.o
- snd-soc-littlemill-objs := littlemill.o
- snd-soc-bells-objs := bells.o
--snd-soc-odroidx2-max98090-objs := odroidx2_max98090.o
- snd-soc-arndale-rt5631-objs := arndale_rt5631.o
- 
- obj-$(CONFIG_SND_SOC_SAMSUNG_JIVE_WM8750) += snd-soc-jive-wm8750.o
-@@ -69,5 +68,4 @@ obj-$(CONFIG_SND_SOC_TOBERMORY) += snd-soc-tobermory.o
- obj-$(CONFIG_SND_SOC_LOWLAND) += snd-soc-lowland.o
- obj-$(CONFIG_SND_SOC_LITTLEMILL) += snd-soc-littlemill.o
- obj-$(CONFIG_SND_SOC_BELLS) += snd-soc-bells.o
--obj-$(CONFIG_SND_SOC_ODROIDX2) += snd-soc-odroidx2-max98090.o
- obj-$(CONFIG_SND_SOC_ARNDALE_RT5631_ALC5631) += snd-soc-arndale-rt5631.o
-diff --git a/sound/soc/samsung/odroidx2_max98090.c b/sound/soc/samsung/odroidx2_max98090.c
-deleted file mode 100644
-index 0421727..0000000
---- a/sound/soc/samsung/odroidx2_max98090.c
-+++ /dev/null
-@@ -1,185 +0,0 @@
--/*
-- * Copyright (C) 2014 Samsung Electronics Co., Ltd.
-- *
-- * This program is free software; you can redistribute  it and/or modify it
-- * under  the terms of  the GNU General  Public License as published by the
-- * Free Software Foundation;  either version 2 of the  License, or (at your
-- * option) any later version.
-- */
--
--#include <linux/of.h>
--#include <linux/module.h>
--#include <sound/soc.h>
--#include <sound/pcm_params.h>
--#include "i2s.h"
--
--struct odroidx2_drv_data {
--	const struct snd_soc_dapm_widget *dapm_widgets;
--	unsigned int num_dapm_widgets;
--};
--
--/* The I2S CDCLK output clock frequency for the MAX98090 codec */
--#define MAX98090_MCLK 19200000
--
--static struct snd_soc_dai_link odroidx2_dai[];
--
--static int odroidx2_late_probe(struct snd_soc_card *card)
--{
--	struct snd_soc_pcm_runtime *rtd;
--	struct snd_soc_dai *codec_dai;
--	struct snd_soc_dai *cpu_dai;
--	int ret;
--
--	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
--	codec_dai = rtd->codec_dai;
--	cpu_dai = rtd->cpu_dai;
--
--	ret = snd_soc_dai_set_sysclk(codec_dai, 0, MAX98090_MCLK,
--						SND_SOC_CLOCK_IN);
--
--	if (ret < 0 || of_find_property(odroidx2_dai[0].codec_of_node,
--					"clocks", NULL))
--		return ret;
--
--	/* Set the cpu DAI configuration in order to use CDCLK */
--	return snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_CDCLK,
--					0, SND_SOC_CLOCK_OUT);
--}
--
--static const struct snd_soc_dapm_widget odroidx2_dapm_widgets[] = {
--	SND_SOC_DAPM_HP("Headphone Jack", NULL),
--	SND_SOC_DAPM_MIC("Mic Jack", NULL),
--	SND_SOC_DAPM_MIC("DMIC", NULL),
--};
--
--static const struct snd_soc_dapm_widget odroidu3_dapm_widgets[] = {
--	SND_SOC_DAPM_HP("Headphone Jack", NULL),
--	SND_SOC_DAPM_SPK("Speakers", NULL),
--};
--
--static struct snd_soc_dai_link odroidx2_dai[] = {
--	{
--		.name		= "MAX98090",
--		.stream_name	= "MAX98090 PCM",
--		.codec_dai_name	= "HiFi",
--		.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
--				  SND_SOC_DAIFMT_CBM_CFM,
--	}
--};
--
--static struct snd_soc_card odroidx2 = {
--	.owner			= THIS_MODULE,
--	.dai_link		= odroidx2_dai,
--	.num_links		= ARRAY_SIZE(odroidx2_dai),
--	.fully_routed		= true,
--	.late_probe		= odroidx2_late_probe,
--};
--
--static const struct odroidx2_drv_data odroidx2_drvdata = {
--	.dapm_widgets		= odroidx2_dapm_widgets,
--	.num_dapm_widgets	= ARRAY_SIZE(odroidx2_dapm_widgets),
--};
--
--static const struct odroidx2_drv_data odroidu3_drvdata = {
--	.dapm_widgets		= odroidu3_dapm_widgets,
--	.num_dapm_widgets	= ARRAY_SIZE(odroidu3_dapm_widgets),
--};
--
--static const struct of_device_id odroidx2_audio_of_match[] = {
--	{
--		.compatible	= "samsung,odroidx2-audio",
--		.data		= &odroidx2_drvdata,
--	}, {
--		.compatible	= "samsung,odroidu3-audio",
--		.data		= &odroidu3_drvdata,
--	},
--	{ },
--};
--MODULE_DEVICE_TABLE(of, odroidx2_audio_of_match);
--
--static int odroidx2_audio_probe(struct platform_device *pdev)
--{
--	struct device_node *snd_node = pdev->dev.of_node;
--	struct snd_soc_card *card = &odroidx2;
--	struct device_node *i2s_node, *codec_node;
--	struct odroidx2_drv_data *dd;
--	const struct of_device_id *of_id;
--	int ret;
--
--	of_id = of_match_node(odroidx2_audio_of_match, snd_node);
--	dd = (struct odroidx2_drv_data *)of_id->data;
--
--	card->num_dapm_widgets = dd->num_dapm_widgets;
--	card->dapm_widgets = dd->dapm_widgets;
--
--	card->dev = &pdev->dev;
--
--	ret = snd_soc_of_parse_card_name(card, "samsung,model");
--	if (ret < 0)
--		return ret;
--
--	ret = snd_soc_of_parse_audio_routing(card, "samsung,audio-routing");
--	if (ret < 0)
--		return ret;
--
--	codec_node = of_parse_phandle(snd_node, "samsung,audio-codec", 0);
--	if (!codec_node) {
--		dev_err(&pdev->dev,
--			"Failed parsing samsung,i2s-codec property\n");
--		return -EINVAL;
--	}
--
--	i2s_node = of_parse_phandle(snd_node, "samsung,i2s-controller", 0);
--	if (!i2s_node) {
--		dev_err(&pdev->dev,
--			"Failed parsing samsung,i2s-controller property\n");
--		ret = -EINVAL;
--		goto err_put_codec_n;
--	}
--
--	odroidx2_dai[0].codec_of_node = codec_node;
--	odroidx2_dai[0].cpu_of_node = i2s_node;
--	odroidx2_dai[0].platform_of_node = i2s_node;
--
--	ret = snd_soc_register_card(card);
--	if (ret) {
--		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
--			ret);
--		goto err_put_i2s_n;
--	}
--	return 0;
--
--err_put_i2s_n:
--	of_node_put(i2s_node);
--err_put_codec_n:
--	of_node_put(codec_node);
--	return ret;
--}
--
--static int odroidx2_audio_remove(struct platform_device *pdev)
--{
--	struct snd_soc_card *card = platform_get_drvdata(pdev);
--
--	snd_soc_unregister_card(card);
--
--	of_node_put(odroidx2_dai[0].cpu_of_node);
--	of_node_put(odroidx2_dai[0].codec_of_node);
--
--	return 0;
--}
--
--static struct platform_driver odroidx2_audio_driver = {
--	.driver = {
--		.name		= "odroidx2-audio",
--		.of_match_table	= odroidx2_audio_of_match,
--		.pm		= &snd_soc_pm_ops,
--	},
--	.probe	= odroidx2_audio_probe,
--	.remove	= odroidx2_audio_remove,
--};
--module_platform_driver(odroidx2_audio_driver);
--
--MODULE_AUTHOR("Chen Zhen <zhen1.chen@samsung.com>");
--MODULE_AUTHOR("Sylwester Nawrocki <s.nawrocki@samsung.com>");
--MODULE_DESCRIPTION("ALSA SoC Odroid X2/U3 Audio Support");
--MODULE_LICENSE("GPL v2");
--- 
-1.9.1
+I think I'd like it more to use the generic grf-binding we always use 
+everwhere else (just the phandle without any offset) and keep the actual 
+offset in the driver on a per-soc basis.
+
+That way rockchip,grf stays consistent over all users.
+
+We already have the per-soc compatible values, so it should a easy to add a 
+.data element with the necessary offset-information.
+
+> +
+>  Example for rk3288 I2S controller:
+> 
+>  i2s@ff890000 {
+> diff --git a/sound/soc/rockchip/rockchip_i2s.c
+> b/sound/soc/rockchip/rockchip_i2s.c index 2f8e204..bc72780 100644
+> --- a/sound/soc/rockchip/rockchip_i2s.c
+> +++ b/sound/soc/rockchip/rockchip_i2s.c
+
+[...]
+
+> @@ -478,6 +504,18 @@ static int rockchip_i2s_probe(struct platform_device
+> *pdev) return -ENOMEM;
+>  	}
+> 
+> +	i2s->dev = &pdev->dev;
+> +
+> +	i2s->grf = syscon_regmap_lookup_by_phandle(node, "rockchip,grf");
+> +	if (!IS_ERR(i2s->grf)) {
+> +		ret = of_property_read_u32_index(node, "rockchip,grf",
+> +						 1, &i2s->iocfg_reg);
+> +		if (ret) {
+> +			dev_err(&pdev->dev, "Can't get iocfg_reg offset\n");
+> +			return ret;
+> +		}
+> +	}
+> +
+
+as said in the binding part, please use the generic grf handling and get the 
+io-offset from per-soc devicetree data in the driver itself.
+
+
+>  	/* try to prepare related clocks */
+>  	i2s->hclk = devm_clk_get(&pdev->dev, "i2s_hclk");
+>  	if (IS_ERR(i2s->hclk)) {
+> @@ -517,7 +555,6 @@ static int rockchip_i2s_probe(struct platform_device
+> *pdev) i2s->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+> i2s->capture_dma_data.maxburst = 4;
+> 
+> -	i2s->dev = &pdev->dev;
+>  	dev_set_drvdata(&pdev->dev, i2s);
+> 
+>  	pm_runtime_enable(&pdev->dev);
+> diff --git a/sound/soc/rockchip/rockchip_i2s.h
+> b/sound/soc/rockchip/rockchip_i2s.h index dc6e2c7..9a6aabf 100644
+> --- a/sound/soc/rockchip/rockchip_i2s.h
+> +++ b/sound/soc/rockchip/rockchip_i2s.h
+> @@ -236,4 +236,12 @@ enum {
+>  #define I2S_TXDR	(0x0024)
+>  #define I2S_RXDR	(0x0028)
+> 
+> +/* io direction cfg register */
+> +#define I2S_IO_DIRECTION_SHIFT	11
+
+this setting is sitting in GRF_SOC_CON8 on the rk3399. That is part of the 
+very volatile register set where settings move around a lot for each soc.
+
+So if we're having the io-offset in per-soc data, we can easily put the 
+shift into it as well.
+
+> +#define I2S_IO_DIRECTION_MASK	(7 << I2S_IO_DIRECTION_SHIFT)
+> +#define I2S_IO_8CH_OUT_2CH_IN	(0 << I2S_IO_DIRECTION_SHIFT)
+> +#define I2S_IO_6CH_OUT_4CH_IN	(1 << I2S_IO_DIRECTION_SHIFT)
+> +#define I2S_IO_4CH_OUT_6CH_IN	(3 << I2S_IO_DIRECTION_SHIFT)
+> +#define I2S_IO_2CH_OUT_8CH_IN	(7 << I2S_IO_DIRECTION_SHIFT)
+
+Keep the settings without the shift here and do the shift dynamically with 
+the per-soc setting when changing the setting.
+
+
+Thanks
+Heiko
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
