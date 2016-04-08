@@ -1,15 +1,30 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: [PATCH 1/2] sound: usb: add UAC2 clock sources as
-	mixer controls
-Date: Fri,  8 Apr 2016 19:52:01 +0200
-Message-ID: <1460137922-8993-1-git-send-email-daniel@zonque.org>
+From: Martin Koegler <martin.koegler@chello.at>
+Subject: Re: [PATCH - alsa-lib 1/1] Change card/pid get
+ functions to return -ENOSYS if the kernel is too old
+Date: Fri, 8 Apr 2016 19:56:33 +0200
+Message-ID: <20160408175633.GA14123@mail.zuhause>
+References: <1459532030-6387-1-git-send-email-agoode@google.com>
+ <20160401211558.GA20661@mail.zuhause>
+ <s5hpou5a0g0.wl-tiwai@suse.de>
+ <CAOf41NmK6V1MMUrQ=UwO=nttYuk3a5b63jH5VTBxeJM9px1yow@mail.gmail.com>
+ <20160407201041.GB26683@mail.zuhause>
+ <s5hpou0mm87.wl-tiwai@suse.de> <5707AA7C.5030804@perex.cz>
+ <s5hegagmekc.wl-tiwai@suse.de>
+ <CAOf41N=vdhUu+y08JZLs7c=DL_LYx4wQgxxnMkWw-eQCUT-etw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 1BD3A265132
- for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2016 19:52:12 +0200 (CEST)
+Received: from vie01a-dmta-pe02-2.mx.upcmail.net
+ (vie01a-dmta-pe02-2.mx.upcmail.net [62.179.121.158])
+ by alsa0.perex.cz (Postfix) with ESMTP id 469E626531F
+ for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2016 19:56:36 +0200 (CEST)
+Received: from [172.31.216.44] (helo=vie01a-pemc-psmtp-pe02)
+ by vie01a-dmta-pe02.mx.upcmail.net with esmtp (Exim 4.72)
+ (envelope-from <martin.koegler@chello.at>) id 1aoae3-0005uP-RT
+ for alsa-devel@alsa-project.org; Fri, 08 Apr 2016 19:56:35 +0200
+Content-Disposition: inline
+In-Reply-To: <CAOf41N=vdhUu+y08JZLs7c=DL_LYx4wQgxxnMkWw-eQCUT-etw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,118 +34,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, orm.finnendahl@selma.hfmdk-frankfurt.de, clemens@ladisch.de, jan.baumgart@selma.hfmdk-frankfurt.de, Daniel Mack <daniel@zonque.org>
+To: Adam Goode <agoode@google.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Martin Koegler <martin.koegler@chello.at>
 List-Id: alsa-devel@alsa-project.org
 
-UAC2 specifies clock sources that optionally have validity controls.
-This patch exposes them as mixer controls, so they can be read (and
-at least in theory even be written) by userspace applications in order
-to make clock selection policy decisions.
+On Fri, Apr 08, 2016 at 11:21:57AM -0400, Adam Goode wrote:
+> So there are 2 alternatives I can think of:
+> 
+> option 1: introduce snd_seq_client_info_get_pid_2() and leave the existing
+> function alone. This new function can return a new constant,
+> SND_SEQ_CLIENT_INFO_PID_UNKNOWN for missing kernel support. Same for card.
+> option 2: introduce snd_seq_client_info_pid_known() that returns a bool if
+> there is kernel support. Same for card.
 
-This implementation does nothing if the device is not UAC2 compliant,
-or if the clock source does not define said validity control bits.
+I wouldn't implement option 1. Using that methode for API changes will result in lots of rarely used functions.
 
-Tested with a miniDSP USBStreamer (0x2752/0x0016),
+Chrome will probable need that information to enable a fallback-code - if a application has no fallback code, 
+it has no need for different returncodes. In a few years, most distributions will likely ship kernel including that functions,
+so there is no need to for fallback-code and the kernel support check any more.
 
-Signed-off-by: Daniel Mack <daniel@zonque.org>
----
- sound/usb/mixer.c | 66 ++++++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 65 insertions(+), 1 deletion(-)
+Why not a snd_seq_client_info_get_capatibilites() returing bit flags: .._CAP_CARD_NUMBER | .._CAP_PID ?
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 4f85757..973274b 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -45,6 +45,7 @@
- #include <linux/bitops.h>
- #include <linux/init.h>
- #include <linux/list.h>
-+#include <linux/log2.h>
- #include <linux/slab.h>
- #include <linux/string.h>
- #include <linux/usb.h>
-@@ -1378,6 +1379,68 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
- 	snd_usb_mixer_add_control(&cval->head, kctl);
- }
- 
-+static int parse_clock_source_unit(struct mixer_build *state, int unitid,
-+				   void *_ftr)
-+
-+{
-+	struct uac_clock_source_descriptor *hdr = _ftr;
-+	struct usb_mixer_elem_info *cval;
-+	struct snd_kcontrol *kctl;
-+	char name[100];
-+	int ret;
-+
-+	if (state->mixer->protocol != UAC_VERSION_2)
-+		return -EINVAL;
-+
-+	if (hdr->bLength != sizeof(*hdr))
-+		return -EINVAL;
-+
-+	/*
-+	 * The only property of this unit we are interested in is the
-+	 * clock source validity. If that isn't readable, just bail out.
-+	 */
-+	if (!uac2_control_is_readable(hdr->bmControls,
-+				      ilog2(UAC2_CS_CONTROL_CLOCK_VALID)))
-+		return 0;
-+
-+	cval = kzalloc(sizeof(*cval), GFP_KERNEL);
-+	if (!cval)
-+		return -ENOMEM;
-+
-+	snd_usb_mixer_elem_init_std(&cval->head, state->mixer, hdr->bClockID);
-+
-+	cval->min = 0;
-+	cval->max = 1;
-+	cval->channels = 1;
-+	cval->val_type = USB_MIXER_BOOLEAN;
-+	cval->control = UAC2_CS_CONTROL_CLOCK_VALID;
-+
-+	if (uac2_control_is_writeable(hdr->bmControls,
-+				      ilog2(UAC2_CS_CONTROL_CLOCK_VALID)))
-+		kctl = snd_ctl_new1(&usb_feature_unit_ctl, cval);
-+	else {
-+		cval->master_readonly = 1;
-+		kctl = snd_ctl_new1(&usb_feature_unit_ctl_ro, cval);
-+	}
-+
-+	if (!kctl) {
-+		kfree(cval);
-+		return -ENOMEM;
-+	}
-+
-+	kctl->private_free = snd_usb_mixer_elem_free;
-+	ret = snd_usb_copy_string_desc(state, hdr->iClockSource,
-+				       name, sizeof(name));
-+	if (ret > 0)
-+		snprintf(kctl->id.name, sizeof(kctl->id.name),
-+			 "%s validity", name);
-+	else
-+		snprintf(kctl->id.name, sizeof(kctl->id.name),
-+			 "Clock source %d validity", hdr->bClockID);
-+
-+	return snd_usb_mixer_add_control(&cval->head, kctl);
-+}
-+
- /*
-  * parse a feature unit
-  *
-@@ -2126,10 +2189,11 @@ static int parse_audio_unit(struct mixer_build *state, int unitid)
- 
- 	switch (p1[2]) {
- 	case UAC_INPUT_TERMINAL:
--	case UAC2_CLOCK_SOURCE:
- 		return 0; /* NOP */
- 	case UAC_MIXER_UNIT:
- 		return parse_audio_mixer_unit(state, unitid, p1);
-+	case UAC2_CLOCK_SOURCE:
-+		return parse_clock_source_unit(state, unitid, p1);
- 	case UAC_SELECTOR_UNIT:
- 	case UAC2_CLOCK_SELECTOR:
- 		return parse_audio_selector_unit(state, unitid, p1);
--- 
-2.4.3
+Regards,
+Martin
