@@ -1,90 +1,54 @@
-From: sugar <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Subject: Re: [PATCH] ASoC: rockchip: i2s: configure the sdio pins' iomux mode
-Date: Fri, 8 Apr 2016 17:26:57 +0800
-Message-ID: <57077961.6010200@rock-chips.com>
-References: <1459931902-77324-1-git-send-email-sugar.zhang@rock-chips.com>
- <20160407175811.GP32257@rob-hp-laptop>
+From: Jose Abreu <Jose.Abreu@synopsys.com>
+Subject: Re: [PATCH 5/5 v4] ASoC: dwc: Update DOCUMENTATION for
+	I2S Driver
+Date: Fri, 8 Apr 2016 11:06:55 +0100
+Message-ID: <570782BF.10402@synopsys.com>
+References: <cover.1460047238.git.joabreu@synopsys.com>
+ <ce97e6bb7ddb71e532c4066334ceead4d4d3e692.1460047238.git.joabreu@synopsys.com>
+ <20160407175326.GX1924@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20160407175811.GP32257@rob-hp-laptop>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Jianqun Xu <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtprelay.synopsys.com (smtprelay.synopsys.com [198.182.47.9])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB14A260824
+ for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2016 12:07:10 +0200 (CEST)
+In-Reply-To: <20160407175326.GX1924@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Jose Abreu <Jose.Abreu@synopsys.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, airlied@linux.ie, Vineet.Gupta1@synopsys.com, Alexey.Brodkin@synopsys.com, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, CARLOS.PALMINHA@synopsys.com, tiwai@suse.com, linux-snps-arc@lists.infradead.org, architt@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Rob,
+Hi Mark,
 
-On 4/8/2016 01:58, Rob Herring Wrote:
-> On Wed, Apr 06, 2016 at 04:38:22PM +0800, Sugar Zhang wrote:
->> There are 3 i2s sdio pins, which iomux mode is as follows:
->
-> s/i2s sdio/I2S\/SDIO muxed/
->
->>
->>   - sdi3_sdo1
->>   - sdi2_sdo2
->>   - sdi1_sdo3
->>
->> we need to configure these pins' iomux mode via the GRF register
->> when use multi channel playback/capture.
->
-> Why not a pinctrl binding here? If you want SDIO mode, then you need
-> similar code in the SDIO driver (or just rely on default mode).
->
-here, i2s_sdio means i2s_sdi/i2s_sdo, not means SDIO bus interface.
-for example:
 
-gpio3d[6] iomux select:
-2'b 00: gpio
-2'b 01: i2s0_sdi3sdo1
-2'b 10: xxx
-2'b 11: xxx
+On 07-04-2016 18:53, Mark Brown wrote:
+> On Thu, Apr 07, 2016 at 05:53:59PM +0100, Jose Abreu wrote:
+>
+>> + Optional properties:
+>> + - snps,use-dmaengine: If set the driver will use ALSA DMA engine. If set
+>> +   it is required to use the properties 'dmas' and 'dma-names'.
+> This is not a good interface, it's describing Linux internal APIs.  If
+> the device needs to operate in PIO mode it should just do that.
 
-we configure the i2s_sdi3sdo1 mode via the pinctrl, and then need another
-grf register to configure it is used for i2s0_sdi3 or i2s0_sdo1.
+I added this interface because there is no direct way to check if DMA is
+available on the I2S controller so it is not possible to automatically change
+between DMA and PIO mode. As the I2S controller can be built with or without DMA
+support it is necessary to somehow check if DMA is enabled or not and according
+to that use either ALSA DMA engine or the custom platform driver sent in these
+patches. I did not want to remove drivers functionality so I added this property
+to the DT. This way a user can select between DMA and PIO mode.
 
->>
->> Signed-off-by: Sugar Zhang <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
->> ---
->>
->>   .../devicetree/bindings/sound/rockchip-i2s.txt     |  5 +++
->>   sound/soc/rockchip/rockchip_i2s.c                  | 39 +++++++++++++++++++++-
->>   sound/soc/rockchip/rockchip_i2s.h                  |  8 +++++
->>   3 files changed, 51 insertions(+), 1 deletion(-)
->>
->> diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
->> index 6e86d8a..ad72a7d 100644
->> --- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
->> +++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
->> @@ -23,6 +23,11 @@ Required properties:
->>   - rockchip,playback-channels: max playback channels, if not set, 8 channels default.
->>   - rockchip,capture-channels: max capture channels, if not set, 2 channels default.
->>
->> +Required properties for controller which support multi channels playback/capture:
->> +
->> +- rockchip,grf: Should be phandle/offset pair. the phandle of the syscon node for GRF register,
->
-> Wrap your lines at less than 80 chars.
+Is there a better option to do this without removing the possibility of using
+ALSA DMA engine in the driver?
 
-Ok, will fix.
->
->> +  and the offset of the GRF for control register.
->> +
->>   Example for rk3288 I2S controller:
->>
->>   i2s@ff890000 {
->
-> _______________________________________________
-> Linux-rockchip mailing list
-> Linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-> http://lists.infradead.org/mailman/listinfo/linux-rockchip
->
->
->
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Best regards,
+Jose Miguel Abreu
