@@ -1,47 +1,88 @@
-From: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH 1/6] ASoC: davinci-mcbsp: add binding for
- McBSP
-Date: Fri, 8 Apr 2016 11:24:28 +0200
-Message-ID: <570778CC.1000600@barix.com>
-References: <1459948893-4206-1-git-send-email-petr@barix.com>
- <1459948893-4206-2-git-send-email-petr@barix.com> <570661A6.6020804@ti.com>
+From: sugar <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Subject: Re: [PATCH] ASoC: rockchip: i2s: configure the sdio pins' iomux mode
+Date: Fri, 8 Apr 2016 17:26:57 +0800
+Message-ID: <57077961.6010200@rock-chips.com>
+References: <1459931902-77324-1-git-send-email-sugar.zhang@rock-chips.com>
+ <20160407175811.GP32257@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <570661A6.6020804-l0cyMroinI0@public.gmane.org>
+In-Reply-To: <20160407175811.GP32257@rob-hp-laptop>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>, nsekhar-l0cyMroinI0@public.gmane.org, khilman-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: mark.rutland-5wv7dgnIgG8@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
+To: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Jianqun Xu <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07.04.2016 15:33, Peter Ujfalusi wrote:
+Hi Rob,
 
-> Given that the driver is actually a driver for daVinci ASP and it 
-> completely ignores registers introduced when the IP is renamed from 
-> ASP to McBSP, should we say something about this? That the ASP is 
-> compatible or subset of McBSP (w/o the multichannel support) and these 
-> bindings could be used for ASP, with adding new compatible? Or just 
-> leave that out and bother with it when we have such a device booting 
-> with DT? 
-Hi Peter,
+On 4/8/2016 01:58, Rob Herring Wrote:
+> On Wed, Apr 06, 2016 at 04:38:22PM +0800, Sugar Zhang wrote:
+>> There are 3 i2s sdio pins, which iomux mode is as follows:
+>
+> s/i2s sdio/I2S\/SDIO muxed/
+>
+>>
+>>   - sdi3_sdo1
+>>   - sdi2_sdo2
+>>   - sdi1_sdo3
+>>
+>> we need to configure these pins' iomux mode via the GRF register
+>> when use multi channel playback/capture.
+>
+> Why not a pinctrl binding here? If you want SDIO mode, then you need
+> similar code in the SDIO driver (or just rely on default mode).
+>
+here, i2s_sdio means i2s_sdi/i2s_sdo, not means SDIO bus interface.
+for example:
 
-what do you think about the following formulation?
+gpio3d[6] iomux select:
+2'b 00: gpio
+2'b 01: i2s0_sdi3sdo1
+2'b 10: xxx
+2'b 11: xxx
 
---
-This binding describes the "Multi-channel Buffered Serial Port" (McBSP)
-audio interface found in some TI DaVinci processors like the OMAP-L138 
-or AM180x.
+we configure the i2s_sdi3sdo1 mode via the pinctrl, and then need another
+grf register to configure it is used for i2s0_sdi3 or i2s0_sdo1.
 
-Some older DaVinci processors like the DM6446 or DA355 use a simpler 
-version of
-the digital audio interface, called ASP. This driver can support them as 
-well if
-the appropriate compatible string is added.
---
+>>
+>> Signed-off-by: Sugar Zhang <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+>> ---
+>>
+>>   .../devicetree/bindings/sound/rockchip-i2s.txt     |  5 +++
+>>   sound/soc/rockchip/rockchip_i2s.c                  | 39 +++++++++++++++++++++-
+>>   sound/soc/rockchip/rockchip_i2s.h                  |  8 +++++
+>>   3 files changed, 51 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+>> index 6e86d8a..ad72a7d 100644
+>> --- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+>> +++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+>> @@ -23,6 +23,11 @@ Required properties:
+>>   - rockchip,playback-channels: max playback channels, if not set, 8 channels default.
+>>   - rockchip,capture-channels: max capture channels, if not set, 2 channels default.
+>>
+>> +Required properties for controller which support multi channels playback/capture:
+>> +
+>> +- rockchip,grf: Should be phandle/offset pair. the phandle of the syscon node for GRF register,
+>
+> Wrap your lines at less than 80 chars.
 
-Thanks
-Petr
+Ok, will fix.
+>
+>> +  and the offset of the GRF for control register.
+>> +
+>>   Example for rk3288 I2S controller:
+>>
+>>   i2s@ff890000 {
+>
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
+>
+>
+>
 
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
