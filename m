@@ -1,47 +1,49 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH 2/5 v4] drm/i2c/adv7511: Add audio support
-Date: Fri, 8 Apr 2016 17:46:17 +0200
-Message-ID: <5707D249.5040707@metafoo.de>
-References: <cover.1460047238.git.joabreu@synopsys.com>
- <d56087fae14074198f6c1bc749ce4da3cab62324.1460047238.git.joabreu@synopsys.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: arizona: Do not create OUT4R widget for
+	CS47L24/WM1831
+Date: Fri, 8 Apr 2016 16:50:14 +0100
+Message-ID: <1460130614-23230-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <d56087fae14074198f6c1bc749ce4da3cab62324.1460047238.git.joabreu@synopsys.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jose Abreu <Jose.Abreu@synopsys.com>, linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: architt@codeaurora.org, airlied@linux.ie, Vineet.Gupta1@synopsys.com, Alexey.Brodkin@synopsys.com, CARLOS.PALMINHA@synopsys.com, lgirdwood@gmail.com, broonie@kernel.org, tiwai@suse.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D6BB265132
+ for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2016 17:51:13 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/07/2016 06:53 PM, Jose Abreu wrote:
-> This patch adds audio support for the ADV7511 HDMI transmitter
-> using ALSA SoC.
-> 
-> The code was ported from Analog Devices linux tree from
-> commit 1770c4a1e32b ("Merge remote-tracking branch
-> 'xilinx/master' into xcomm_zynq"), which is available at:
-> 	- https://github.com/analogdevicesinc/linux/
+The CS47L24 and WM1831 codecs only use the OUT4L widget so we can
+skip creation of the OUT4R widget.
 
-The reason why this driver is still out of tree, is because there has been
-no conclusion yet on how to go forward with the whole HDMI integration. So
-this is not going to get merged until that issue has been addressed.
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-[...]
-> +- adi,enable-audio: If set the ADV7511 driver will register a codec interface
-> +  into ALSA SoC.
-
-This is not a description of the hardware.
-
-[...]
-> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-> index 964b7de..539c091 100644
-> --- a/include/sound/soc-dai.h
-> +++ b/include/sound/soc-dai.h
-> @@ -33,6 +33,7 @@ struct snd_compr_stream;
->  #define SND_SOC_DAIFMT_DSP_B		5 /* L data MSB during FRM LRC */
->  #define SND_SOC_DAIFMT_AC97		6 /* AC97 */
->  #define SND_SOC_DAIFMT_PDM		7 /* Pulse density modulation */
-> +#define SND_SOC_DAIFMT_SPDIF		8 /* SPDIF */
-
-This needs to be a separate patch.
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 92d22a0..d8a6823 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -221,6 +221,8 @@ int arizona_init_spk(struct snd_soc_codec *codec)
+ 
+ 	switch (arizona->type) {
+ 	case WM8997:
++	case CS47L24:
++	case WM1831:
+ 		break;
+ 	default:
+ 		ret = snd_soc_dapm_new_controls(dapm, &arizona_spkr, 1);
+-- 
+1.9.1
