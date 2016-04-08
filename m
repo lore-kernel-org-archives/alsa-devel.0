@@ -1,23 +1,20 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 2/6] ALSA: compress: Add function to
- indicate the stream has gone bad
-Date: Fri, 8 Apr 2016 11:58:24 +0100
-Message-ID: <20160408105824.GN31814@localhost.localdomain>
-References: <1459938115-25456-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1459938115-25456-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1459989603.3136.95.camel@intel.com>
- <20160407082842.GL31814@localhost.localdomain>
- <1460070431.23155.75.camel@intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH - alsa-lib 1/1] Change card/pid get
+ functions to return -ENOSYS if the kernel is too old
+Date: Fri, 8 Apr 2016 14:56:28 +0200
+Message-ID: <5707AA7C.5030804@perex.cz>
+References: <1459532030-6387-1-git-send-email-agoode@google.com>
+ <20160401211558.GA20661@mail.zuhause> <s5hpou5a0g0.wl-tiwai@suse.de>
+ <CAOf41NmK6V1MMUrQ=UwO=nttYuk3a5b63jH5VTBxeJM9px1yow@mail.gmail.com>
+ <20160407201041.GB26683@mail.zuhause> <s5hpou0mm87.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C308260867
- for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2016 12:58:24 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1460070431.23155.75.camel@intel.com>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id B9DE6265132
+ for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2016 14:56:29 +0200 (CEST)
+In-Reply-To: <s5hpou0mm87.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,38 +24,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "tiwai@suse.com" <tiwai@suse.com>
+To: Takashi Iwai <tiwai@suse.de>, Martin Koegler <martin.koegler@chello.at>
+Cc: Adam Goode <agoode@google.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 07, 2016 at 11:07:12PM +0000, Koul, Vinod wrote:
-> On Thu, 2016-04-07 at 09:28 +0100, Charles Keepax wrote:
-> > On Thu, Apr 07, 2016 at 12:40:03AM +0000, Koul, Vinod wrote:
-> > > On Wed, 2016-04-06 at 11:21 +0100, Charles Keepax wrote:
-> > > Also if we do this, then why should pointer return error?
-> > 
-> > The first patch in the chain could indeed be changed to have
-> > pointer calls not return an error status. But I feel that would
-> > be making the code worse. Ok the situation I am most interested
-> > here indicates a failure of the stream, but its a very small leap
-> > to imagine situations where pointer fails temporarily and the
-> > stream is still good.
+Dne 8.4.2016 v 12:24 Takashi Iwai napsal(a):
+> On Thu, 07 Apr 2016 22:10:41 +0200,
+> Martin Koegler wrote:
+>>
+>> On Thu, Apr 07, 2016 at 03:23:01PM -0400, Adam Goode wrote:
+>>> Have you heard any objections?
+>>>
+>>> Also, would you plan to do a 1.1.2 release soon after accepting this, to
+>>> get this functionality out quickly?
+>>
+>> Distributions already start to pick 1.1.1 up:
+>> https://build.opensuse.org/request/show/382608
+>> https://build.opensuse.org/request/show/382611
+>>
+>> I would object merging that patch, if there is no immediate patched 1.1.2 release available, 
+>> as otherwise 1.1.1 with a different API will get used by the mass. 
 > 
-> The point here is that we are anyway propagating error by invoking the
-> new API so why return error here.
-> Btw can you please explain how this makes code worse?
+> I have no strong opinion on this, so far.  Either way (a quick 1.1.2
+> fix release, or introducing a new function in 1.1.2) isn't a big
+> deal.  Maybe the former is easier, but the latter is safer.
+> 
+> Jaroslav, what's your take?
+> (And no, let's not use the versioned symbols again :)
 
-So if I make pointer return void, the two possible error paths
-are either return zero available data or call xrun. Xrun will
-stop the stream so I only want to do that if I think the stream
-is dead. But that likely leaves various catagories of errors I
-don't want to do that for. Returning zero on the other hand hides
-the error so no one will ever know an error occurs (well except by
-inspecting the kernel log). It feels to me like someone is going
-to hit a case where they need to do that at some point. So
-removing the return type seems wrong, but at the moment you have
-two functions that return ints but don't propogate their values
-though which just looks odd in the code.
+What about 1.1.1.2 ? This + "pcm_plugin: fix appl pointer not correct
+when mmap_commit() return error" patch ?
 
-Thanks,
-Charles
+					Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
