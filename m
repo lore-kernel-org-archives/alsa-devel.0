@@ -1,58 +1,63 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH 2/2] sound: usb: allow clock source
-	validity interrupts
-Date: Sat, 9 Apr 2016 16:37:28 +0200
-Message-ID: <570913A8.6090203@zonque.org>
-References: <1460137922-8993-1-git-send-email-daniel@zonque.org>
- <1460137922-8993-2-git-send-email-daniel@zonque.org>
- <s5hk2k7cgfy.wl-tiwai@suse.de> <5708C88B.8080809@zonque.org>
- <s5hegafcdoz.wl-tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [alsa-devel] [PATCH 5/5 v4] ASoC: dwc: Update DOCUMENTATION for
+ I2S Driver
+Date: Sat, 9 Apr 2016 16:55:37 +0200
+Message-ID: <570917E9.8020804@metafoo.de>
+References: <cover.1460047238.git.joabreu@synopsys.com>
+ <ce97e6bb7ddb71e532c4066334ceead4d4d3e692.1460047238.git.joabreu@synopsys.com>
+ <20160407175326.GX1924@sirena.org.uk> <570782BF.10402@synopsys.com>
+ <5707D3AD.8030308@metafoo.de> <5707D780.4050406@synopsys.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id A5508261685
- for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2016 16:37:31 +0200 (CEST)
-In-Reply-To: <s5hegafcdoz.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: orm.finnendahl@selma.hfmdk-frankfurt.de, alsa-devel@alsa-project.org, clemens@ladisch.de, jan.baumgart@selma.hfmdk-frankfurt.de
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <5707D780.4050406@synopsys.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Jose Abreu <Jose.Abreu@synopsys.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Vineet.Gupta1@synopsys.com, Alexey.Brodkin@synopsys.com, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, CARLOS.PALMINHA@synopsys.com, tiwai@suse.com, linux-snps-arc@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/09/2016 11:51 AM, Takashi Iwai wrote:
-> On Sat, 09 Apr 2016 11:16:59 +0200, Daniel Mack wrote:
->> On 04/09/2016 10:52 AM, Takashi Iwai wrote:
-
->>> Just for checking count=0 and count=1, we need no loop to count
->>> beforehand.
->>> 		if (info->control != control &&
->>> 		    (list != mixer->id_elems[unit] ||
->>> 		     list->list_next_id_elem))
->>> 			continue;
->>>
->>> But, this doesn't look better and is more harder to understand, so I'm
->>> not willing to sell it :)
->>
->> I had something like that before but opted for the more readable
->> version. But you're right. I'll add a comment and do it your way.
-> 
-> Oh no, sorry, I wasn't clear: I meant that my version is worse in the
-> end, and I prefer your first version, just for simplicity.
-
-Ah ok :) Well, ultimately up to you; you have both versions, and the two
-patches should apply independently anyway.
-
-Or I can resend both if you prefer that.
-
-
-Thanks,
-Daniel
+T24gMDQvMDgvMjAxNiAwNjowOCBQTSwgSm9zZSBBYnJldSB3cm90ZToKPiBIaSBMYXJzLAo+IAo+
+IAo+IE9uIDA4LTA0LTIwMTYgMTY6NTIsIExhcnMtUGV0ZXIgQ2xhdXNlbiB3cm90ZToKPj4gT24g
+MDQvMDgvMjAxNiAxMjowNiBQTSwgSm9zZSBBYnJldSB3cm90ZToKPj4+IEhpIE1hcmssCj4+Pgo+
+Pj4KPj4+IE9uIDA3LTA0LTIwMTYgMTg6NTMsIE1hcmsgQnJvd24gd3JvdGU6Cj4+Pj4gT24gVGh1
+LCBBcHIgMDcsIDIwMTYgYXQgMDU6NTM6NTlQTSArMDEwMCwgSm9zZSBBYnJldSB3cm90ZToKPj4+
+Pgo+Pj4+PiArIE9wdGlvbmFsIHByb3BlcnRpZXM6Cj4+Pj4+ICsgLSBzbnBzLHVzZS1kbWFlbmdp
+bmU6IElmIHNldCB0aGUgZHJpdmVyIHdpbGwgdXNlIEFMU0EgRE1BIGVuZ2luZS4gSWYgc2V0Cj4+
+Pj4+ICsgICBpdCBpcyByZXF1aXJlZCB0byB1c2UgdGhlIHByb3BlcnRpZXMgJ2RtYXMnIGFuZCAn
+ZG1hLW5hbWVzJy4KPj4+PiBUaGlzIGlzIG5vdCBhIGdvb2QgaW50ZXJmYWNlLCBpdCdzIGRlc2Ny
+aWJpbmcgTGludXggaW50ZXJuYWwgQVBJcy4gIElmCj4+Pj4gdGhlIGRldmljZSBuZWVkcyB0byBv
+cGVyYXRlIGluIFBJTyBtb2RlIGl0IHNob3VsZCBqdXN0IGRvIHRoYXQuCj4+PiBJIGFkZGVkIHRo
+aXMgaW50ZXJmYWNlIGJlY2F1c2UgdGhlcmUgaXMgbm8gZGlyZWN0IHdheSB0byBjaGVjayBpZiBE
+TUEgaXMKPj4+IGF2YWlsYWJsZSBvbiB0aGUgSTJTIGNvbnRyb2xsZXIgc28gaXQgaXMgbm90IHBv
+c3NpYmxlIHRvIGF1dG9tYXRpY2FsbHkgY2hhbmdlCj4+PiBiZXR3ZWVuIERNQSBhbmQgUElPIG1v
+ZGUuIEFzIHRoZSBJMlMgY29udHJvbGxlciBjYW4gYmUgYnVpbHQgd2l0aCBvciB3aXRob3V0IERN
+QQo+Pj4gc3VwcG9ydCBpdCBpcyBuZWNlc3NhcnkgdG8gc29tZWhvdyBjaGVjayBpZiBETUEgaXMg
+ZW5hYmxlZCBvciBub3QgYW5kIGFjY29yZGluZwo+Pj4gdG8gdGhhdCB1c2UgZWl0aGVyIEFMU0Eg
+RE1BIGVuZ2luZSBvciB0aGUgY3VzdG9tIHBsYXRmb3JtIGRyaXZlciBzZW50IGluIHRoZXNlCj4+
+PiBwYXRjaGVzLiBJIGRpZCBub3Qgd2FudCB0byByZW1vdmUgZHJpdmVycyBmdW5jdGlvbmFsaXR5
+IHNvIEkgYWRkZWQgdGhpcyBwcm9wZXJ0eQo+Pj4gdG8gdGhlIERULiBUaGlzIHdheSBhIHVzZXIg
+Y2FuIHNlbGVjdCBiZXR3ZWVuIERNQSBhbmQgUElPIG1vZGUuCj4+IFRoYXQncyBPSywgYnV0IHlv
+dSBuZWVkIHRvIGRlc2NyaWJlIHRoZSBoYXJkd2FyZSwgbm90IHRoZSBpbmRlbnRlZCBiZWhhdmlv
+cgo+PiBvZiB0aGUgc29mdHdhcmUgZHJpdmVyLgo+Pgo+IAo+IElzIHRoaXMgb2theTogInNucHMs
+dXNlLWRtYWVuZ2luZTogU2V0IHRoaXMgYm9vbGVhbiBwYXJhbWF0ZXIgaWYgSTJTIGNvbnRyb2xs
+ZXIKPiBoYXMgRE1BIHN1cHBvcnQuIElmIHNldCB0aGUgcHJvcGVydGllcyAnZG1hcycgYW5kICdk
+bWEtbmFtZXMnIG11c3QgYmUgYWxzbyBzZXQiID8KClRoZSBkZXNjcmlwdGlvbiBpcyBiZXR0ZXIu
+IEJ1dCB0aGUgbmFtZSBvZiB0aGUgcHJvcGVydHkgaXMgc3RpbGwgaW1wZXJhdGl2ZQpyYXRoZXIg
+dGhlbiBkZXNjcmlwdGl2ZS4gSXQgdGVsbHMgdGhlIHNvZnR3YXJlIHdoYXQgc2hvdWxkIGJlIGRv
+bmUgcmF0aGVyCnRoZW4gZGVzY3JpYmluZyB3aGF0IHRoZSBoYXJkd2FyZSBsb29rcyBsaWtlLgoK
+U2luY2UgdGhlcmUgaXMgYWxyZWFkeSB0aGUgZG1hcyBwcm9wZXJ0eSB3aGljaCBpcyBwcmVzZW50
+IGlmIGEgRE1BIGlzCmNvbm5lY3RlZCBhbmQgaXMgYWJzZW50IHdoZW4gbm8gRE1BIGlzIHByZXNl
+bnQgaXQgc2hvdWxkIGJlIGVub3VnaCB0byBqdXN0CmNoZWNrIHRoYXQgcHJvcGVydHkgcmF0aGVy
+IHRoYW4gcmVxdWlyaW5nIGFuIGFkZGl0aW9uYWwgb25lLgoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2
+ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21h
+aWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
