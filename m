@@ -1,17 +1,22 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: Checkpatch warnings on switch case fallthru
-Date: Sat, 9 Apr 2016 18:07:40 +0200
-Message-ID: <570928CC.6030404@metafoo.de>
-References: <D32C47F6.1E2FD%ryan.harvey@cirrus.com>
- <s5hfuuvcfsr.wl-tiwai@suse.de>
+From: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Subject: Re: [PATCH 4/4] ALSA: dice: force to add two pcm
+ devices for listed models
+Date: Sat, 9 Apr 2016 18:34:27 +0200
+Message-ID: <20160409183427.00a59f1b@kant>
+References: <1457179087-27604-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1457179087-27604-5-git-send-email-o-takashi@sakamocchi.jp>
+ <20160305160733.6306be3f@kant> <56DC2514.2010101@sakamocchi.jp>
+ <20160306235521.7aabff60@kant> <20160307012442.6935bc04@kant>
+ <56DCEF78.2080107@sakamocchi.jp> <20160307144306.39f60537@kant>
+ <56DD8D1B.5040903@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 01B0B261685
- for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2016 18:07:51 +0200 (CEST)
-In-Reply-To: <s5hfuuvcfsr.wl-tiwai@suse.de>
+Received: from einhorn.in-berlin.de (einhorn.in-berlin.de [192.109.42.8])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9EACC261685
+ for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2016 18:34:46 +0200 (CEST)
+In-Reply-To: <56DD8D1B.5040903@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +26,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, "Harvey, Ryan" <Ryan.Harvey@cirrus.com>
-Cc: Joe Perches <joe@perches.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDQvMDkvMjAxNiAxMTowNiBBTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9uIEZyaSwgMDgg
-QXByIDIwMTYgMDA6MjM6MDMgKzAyMDAsCj4gSGFydmV5LCBSeWFuIHdyb3RlOgo+Pgo+PiBIZWxs
-bywKPj4KPj4gSSByZWNlaXZlIGEgc2V0IG9mIGNoZWNrcGF0Y2ggd2FybmluZ3MgYWdhaW5zdCBt
-eSBzd2l0Y2ggZmFsbHRocnUKPj4gc3RydWN0dXJlIGluIHJlYWRhYmxlX3JlZ2lzdGVycygpLiAg
-ScK5bSBhYmxlIHRvIGVsaW1pbmF0ZSB0aGVzZSB3YXJuaW5ncwo+PiB3aXRoIGEgcHJlY2VkaW5n
-IGNvbW1lbnQsIGJ1dCB0aGF0IGRvZXMgbWVzc3kgdGhlIGNvZGUuICBJcyB0aGVyZSBhIG1ldGhv
-ZAo+PiBiZXR0ZXIgdGhhbiBzd2l0Y2ggZm9yIGFjY29tcGxpc2hpbmcgdGhpcz8KPj4KPj4gc3Rh
-dGljIGJvb2wgY3M0MzEzMF9yZWFkYWJsZV9yZWdpc3RlcihzdHJ1Y3QgZGV2aWNlICpkZXYsIHVu
-c2lnbmVkIGludCByZWcpCj4+IHsKPj4gICAgICAgICBzd2l0Y2ggKHJlZykgewo+PiAgICAgICAg
-IGNhc2UgQ1M0MzEzMF9ERVZJRF9BQiAuLi4gQ1M0MzEzMF9TWVNfQ0xLX0NUTF8xOgo+PiAgICAg
-ICAgIGNhc2UgQ1M0MzEzMF9QV0ROX0NUTDoKPj4gICAgICAgICBjYXNlIENTNDMxMzBfUExMX1NF
-VF8xIC4uLiBDUzQzMTMwX1BMTF9TRVRfNjoKPj4gICAgICAgICBjYXNlIENTNDMxMzBfUExMX1NF
-VF83Ogo+PiAgICAgICAgIGNhc2UgQ1M0MzEzMF9QTExfU0VUXzg6Cj4+ICAgICAgICAgY2FzZSBD
-UzQzMTMwX1BMTF9TRVRfOToKPj4gICAgICAgICBjYXNlIENTNDMxMzBfUExMX1NFVF8xMDoKPj4g
-ICAgICAgICBjYXNlIENTNDMxMzBfQ0xLT1VUX0NUTDoKPj4gICAgICAgICBjYXNlIENTNDMxMzBf
-QVNQX05VTV8xIC4uLiBDUzQzMTMwX0FTUF9GUkFNRV9DT05GOgo+PiAgICAgICAgIGNhc2UgQ1M0
-MzEzMF9IUF9PVVRfQ1RMXzE6Cj4+ICAgICAgICAgY2FzZSBDUzQzMTMwX1BDTV9GSUxUX09QVCAu
-Li4gQ1M0MzEzMF9QQ01fUEFUSF9DVExfMjoKPj4gICAgICAgICBjYXNlIENTNDMxMzBfQ0xBU1Nf
-SF9DVEw6Cj4+ICAgICAgICAgY2FzZSBDUzQzMTMwX0hQX0RFVEVDVCAuLi4gQ1M0MzEzMF9IUF9T
-VEFUVVM6Cj4+ICAgICAgICAgY2FzZSBDUzQzMTMwX0hQX0xPQURfMToKPj4gICAgICAgICBjYXNl
-IENTNDMxMzBfSFBfTE9BRF9TVEFUOgo+PiAgICAgICAgIGNhc2UgQ1M0MzEzMF9JTlRfTUFTS18x
-IC4uLiBDUzQzMTMwX0lOVF9NQVNLXzU6Cj4+ICAgICAgICAgICAgICAgICByZXR1cm4gdHJ1ZTsK
-Pj4gICAgICAgICBkZWZhdWx0Ogo+PiAgICAgICAgICAgICAgICAgcmV0dXJuIGZhbHNlOwo+PiAg
-ICAgICAgIH0KPj4gfQo+Pgo+Pgo+PiAxNDA6IFtXQVJOSU5HXSBQb3NzaWJsZSBzd2l0Y2ggY2Fz
-ZS9kZWZhdWx0IG5vdCBwcmVjZWVkZWQgYnkgYnJlYWsgb3IKPj4gZmFsbHRocm91Z2ggY29tbWVu
-dAo+PiArCWNhc2UgQ1M0MzEzMF9QTExfU0VUXzc6Cj4+IDE0MTogW1dBUk5JTkddIFBvc3NpYmxl
-IHN3aXRjaCBjYXNlL2RlZmF1bHQgbm90IHByZWNlZWRlZCBieSBicmVhayBvcgo+PiBmYWxsdGhy
-b3VnaCBjb21tZW50Cj4+ICsJY2FzZSBDUzQzMTMwX1BMTF9TRVRfODoKPj4gMTQyOiBbV0FSTklO
-R10gUG9zc2libGUgc3dpdGNoIGNhc2UvZGVmYXVsdCBub3QgcHJlY2VlZGVkIGJ5IGJyZWFrIG9y
-Cj4+IGZhbGx0aHJvdWdoIGNvbW1lbnQKPj4gKwljYXNlIENTNDMxMzBfUExMX1NFVF85Ogo+PiAx
-NDM6IFtXQVJOSU5HXSBQb3NzaWJsZSBzd2l0Y2ggY2FzZS9kZWZhdWx0IG5vdCBwcmVjZWVkZWQg
-YnkgYnJlYWsgb3IKPj4gZmFsbHRocm91Z2ggY29tbWVudAo+PiArCWNhc2UgQ1M0MzEzMF9QTExf
-U0VUXzEwOgo+PiAxNDQ6IFtXQVJOSU5HXSBQb3NzaWJsZSBzd2l0Y2ggY2FzZS9kZWZhdWx0IG5v
-dCBwcmVjZWVkZWQgYnkgYnJlYWsgb3IKPj4gZmFsbHRocm91Z2ggY29tbWVudAo+PiArCWNhc2Ug
-Q1M0MzEzMF9DTEtPVVRfQ1RMOgo+PiAxNTI6IFtXQVJOSU5HXSBQb3NzaWJsZSBzd2l0Y2ggY2Fz
-ZS9kZWZhdWx0IG5vdCBwcmVjZWVkZWQgYnkgYnJlYWsgb3IKPj4gZmFsbHRocm91Z2ggY29tbWVu
-dAo+PiArCWNhc2UgQ1M0MzEzMF9IUF9PVVRfQ1RMXzE6Cj4+IDE1NDogW1dBUk5JTkddIFBvc3Np
-YmxlIHN3aXRjaCBjYXNlL2RlZmF1bHQgbm90IHByZWNlZWRlZCBieSBicmVhayBvcgo+PiBmYWxs
-dGhyb3VnaCBjb21tZW50Cj4+ICsJY2FzZSBDUzQzMTMwX0NMQVNTX0hfQ1RMOgo+PiAxNTY6IFtX
-QVJOSU5HXSBQb3NzaWJsZSBzd2l0Y2ggY2FzZS9kZWZhdWx0IG5vdCBwcmVjZWVkZWQgYnkgYnJl
-YWsgb3IKPj4gZmFsbHRocm91Z2ggY29tbWVudAo+PiArCWNhc2UgQ1M0MzEzMF9IUF9MT0FEXzE6
-Cj4+IDE2MDogW1dBUk5JTkddIFBvc3NpYmxlIHN3aXRjaCBjYXNlL2RlZmF1bHQgbm90IHByZWNl
-ZWRlZCBieSBicmVhayBvcgo+PiBmYWxsdGhyb3VnaCBjb21tZW50Cj4+ICsJY2FzZSBDUzQzMTMw
-X0hQX0xPQURfU1RBVDoKPiAKPiBZb3UgbWF5IGlnbm9yZSB0aGUgd2FybmluZ3MuICBUaGUgcHVy
-cG9zZSBvZiBjaGVja3BhdGNoIGlzIHRvIGltcHJvdmUKPiB0aGUgY29kZSByZWFkYWJpbGl0eSwg
-YW5kIHdoYXQgaXQgc3VnZ2VzdHMgaXMgZXhhY3RseSBvcHBvc2l0ZS4KCkl0J3MgYSBidWcgaW4g
-Y2hlY2twYXRjaC4gSXQgc2VlbXMgdG8gZ2V0IGNvbmZ1c2VkIGJ5IHRoZSAiLi4uIi4gVGhlCmJl
-c3QgYXBwcm9hY2ggdG8gc29sdmluZyB0aG9zZSB3YXJuaW5ncyBpcyB0byBjcmVhdGUgYSBmaXgg
-Zm9yIGNoZWNrcGF0Y2guCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+On Mar 07 Takashi Sakamoto wrote:
+> On Mar 7 2016 22:43, Stefan Richter wrote:
+> > On Mar 07 Takashi Sakamoto wrote:
+> >>   * Dice II units
+> >>    * TC Electronic ImpactTwin
+> >>    * TC Electronic Konnekt24D
+> >>    * TC Electronic Konnekt8
+> >> * Dice Jr. units
+> >>    * TC Electronic DesktopKonnect6
+> >> * Dice Mini units
+> >>    * Focusrite Saffire Pro 26  
+> > 
+> > FWIW, Saffire PRO 24 and 40 are based on Dice Junior according to FFADO's
+> > device database.  If desired I could open up my 24 and 40 to check.  
+> 
+> If you don't mind it, please.
+> (Because once opening your unit, usually, you cannot get repair service
+> from sellers.)
+> 
+> And I wrote wrong for Dice Jr./Mini units. Correctly:
+>  * Dice Jr. units
+>   * TC Electronic DesktopKonnect6
+>   * Focusrite Saffire Pro 26
+>  * I have no units with Dice Mini (Oh...).
+> 
+> Anyway, all of my units with Dice Jr. works fine. So we can judge that
+> Pro 40 has its own quirk which we don't know.
+
+Written on the Dice chip in my Saffire PRO 24, purchased in 2010:
+
+	TCD2210
+	K34FAAB
+	C0906
+
+So that's a DICE Mini.
+
+And the Saffire PRO 40, purchased in early 2015:
+
+	TCD2220
+	K8GVUF
+	A1246
+
+i.e. DICE JR.
+-- 
+Stefan Richter
+-======----- -=-- -=--=
+http://arcgraph.de/sr/
