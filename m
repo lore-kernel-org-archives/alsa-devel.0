@@ -1,15 +1,16 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH 1/2] amidi: ignore not only Active Sensing but
-	all System	Real-Time messages
-Date: Sun, 10 Apr 2016 21:29:04 +0200
-Message-ID: <570AA980.3070802@ladisch.de>
+Subject: [PATCH 2/2] amidi: fix timeout handling
+Date: Sun, 10 Apr 2016 21:30:29 +0200
+Message-ID: <570AA9D5.4010708@ladisch.de>
+References: <570AA980.3070802@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id BD09326074D
- for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2016 21:29:27 +0200 (CEST)
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id E25F2261469
+ for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2016 21:30:52 +0200 (CEST)
+In-Reply-To: <570AA980.3070802@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,110 +24,166 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Martin Tarenskeen <m.tarenskeen@zonnet.nl>
 List-Id: alsa-devel@alsa-project.org
 
-By default, amidi ignores Active Sensing messages because they are sent
-by many devices in the background and would only interfere with the
-actual messages that amidi is supposed to capture.  However, there are
-also devices that send Clock messages with the same problem, so it is
-a better idea to filter out all System Real-Time messages.
+The timeout is not supposed to expire when ignored messages are
+received.  This cannot be handled with the poll() timeout, so add
+a separate timer.
 
 Reported-by: Martin Tarenskeen <m.tarenskeen@zonnet.nl>
 Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
 ---
- amidi/amidi.1 |   19 +++++++++++++------
- amidi/amidi.c |   11 ++++++-----
- 2 files changed, 19 insertions(+), 11 deletions(-)
-
-diff --git a/amidi/amidi.1 b/amidi/amidi.1
-index 1b4cfb1..46e9c50 100644
---- a/amidi/amidi.1
-+++ b/amidi/amidi.1
-@@ -1,4 +1,4 @@
--.TH AMIDI 1 "26 Jun 2006"
-+.TH AMIDI 1 "26 Mar 2016"
-
- .SH NAME
- amidi \- read from and write to ALSA RawMIDI ports
-@@ -80,7 +80,7 @@ to record a Standard MIDI (.mid) file, use
- .B arecordmidi(1).
-
- .B amidi
--will filter out any Active Sensing bytes (FEh), unless the
-+will filter out System Real-Time messages (F8h...FFh), unless the
- .I \-a
- option has been given.
-
-@@ -91,7 +91,7 @@ Sends the bytes specified as hexadecimal numbers to the MIDI port.
- .TP
- .I \-d, \-\-dump
- Prints data received from the MIDI port as hexadecimal bytes.
--Active Sensing bytes (FEh) will not be shown, unless the
-+System Real-Time messages (F8h...FFh) will not be shown, unless the
- .I \-a
- option has been given.
-
-@@ -107,9 +107,16 @@ If this option has not been given, you must press Ctrl+C (or kill
- to stop receiving data.
-
- .TP
--.I \-a, \-\-active\-sensing
--Does not ignore Active Sensing bytes (FEh) when saving or printing
--received MIDI commands.
-+.I \-a, \-\-all\-messages
-+Includes System Real-Time messages (F8h...FFh) when saving or
-+printing received MIDI commands.
-+By default, these messages are ignored.
-+
-+(Clock (F8h) or Active Sensing (FEh) messages are sent in the
-+background by many devices, but typically are not wanted and would
-+only clutter up
-+.B amidi\fR's
-+output.)
-
- .SH EXAMPLES
+ amidi/amidi.c |   69 ++++++++++++++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 53 insertions(+), 16 deletions(-)
 
 diff --git a/amidi/amidi.c b/amidi/amidi.c
-index cedf18c..4978249 100644
+index 4978249..a3515b1 100644
 --- a/amidi/amidi.c
 +++ b/amidi/amidi.c
-@@ -77,7 +77,7 @@ static void usage(void)
- 		"-d, --dump             print received data as hexadecimal bytes\n"
- 		"-t, --timeout=seconds  exits when no data has been received\n"
- 		"                       for the specified duration\n"
--		"-a, --active-sensing   don't ignore active sensing bytes\n");
-+		"-a, --all-messages     include system real-time messages\n");
- }
+@@ -25,9 +25,11 @@
+ #include <stdarg.h>
+ #include <string.h>
+ #include <ctype.h>
++#include <math.h>
+ #include <getopt.h>
+ #include <errno.h>
+ #include <signal.h>
++#include <sys/timerfd.h>
+ #include <sys/types.h>
+ #include <sys/poll.h>
+ #include <sys/stat.h>
+@@ -37,6 +39,8 @@
+ #include "aconfig.h"
+ #include "version.h"
 
- static void version(void)
-@@ -418,11 +418,12 @@ int main(int argc, char *argv[])
- 		{"send-hex", 2, NULL, 'S'},
- 		{"dump", 0, NULL, 'd'},
- 		{"timeout", 1, NULL, 't'},
--		{"active-sensing", 0, NULL, 'a'},
-+		{"all-messages", 0, NULL, 'a'},
-+		{"active-sensing", 0, NULL, 'a'}, /* for backwards compatibility */
- 		{ }
- 	};
++#define NSEC_PER_SEC 1000000000L
++
+ static int do_device_list, do_rawmidi_list;
+ static char *port_name = "default";
+ static char *send_file_name;
+@@ -46,7 +50,7 @@ static char *send_data;
+ static int send_data_length;
+ static int receive_file;
+ static int dump;
+-static int timeout;
++static float timeout;
+ static int stop;
+ static snd_rawmidi_t *input, **inputp;
+ static snd_rawmidi_t *output, **outputp;
+@@ -425,6 +429,7 @@ int main(int argc, char *argv[])
  	int c, err, ok = 0;
--	int ignore_active_sensing = 1;
-+	int ignore_system_realtime = 1;
+ 	int ignore_system_realtime = 1;
  	int do_send_hex = 0;
++	struct itimerspec itimerspec = { .it_interval = { 0, 0 } };
 
  	while ((c = getopt_long(argc, argv, short_options,
-@@ -461,7 +462,7 @@ int main(int argc, char *argv[])
- 			timeout = atoi(optarg);
+ 		     		long_options, NULL)) != -1) {
+@@ -459,7 +464,7 @@ int main(int argc, char *argv[])
+ 			dump = 1;
+ 			break;
+ 		case 't':
+-			timeout = atoi(optarg);
++			timeout = atof(optarg);
  			break;
  		case 'a':
--			ignore_active_sensing = 0;
-+			ignore_system_realtime = 0;
- 			break;
- 		default:
- 			error("Try `amidi --help' for more information.");
-@@ -589,7 +590,7 @@ int main(int argc, char *argv[])
+ 			ignore_system_realtime = 0;
+@@ -547,40 +552,64 @@ int main(int argc, char *argv[])
+
+ 	if (inputp) {
+ 		int read = 0;
+-		int npfds, time = 0;
++		int npfds;
+ 		struct pollfd *pfds;
+
+-		timeout *= 1000;
+-		npfds = snd_rawmidi_poll_descriptors_count(input);
++		npfds = 1 + snd_rawmidi_poll_descriptors_count(input);
+ 		pfds = alloca(npfds * sizeof(struct pollfd));
+-		snd_rawmidi_poll_descriptors(input, pfds, npfds);
++
++		if (timeout > 0) {
++			pfds[0].fd = timerfd_create(CLOCK_MONOTONIC, 0);
++			if (pfds[0].fd == -1) {
++				error("cannot create timer: %s", strerror(errno));
++				goto _exit;
++			}
++			pfds[0].events = POLLIN;
++		} else {
++			pfds[0].fd = -1;
++		}
++
++		snd_rawmidi_poll_descriptors(input, &pfds[1], npfds - 1);
++
+ 		signal(SIGINT, sig_handler);
++
++		if (timeout > 0) {
++			float timeout_int;
++
++			itimerspec.it_value.tv_nsec = modff(timeout, &timeout_int) * NSEC_PER_SEC;
++			itimerspec.it_value.tv_sec = timeout_int;
++			err = timerfd_settime(pfds[0].fd, 0, &itimerspec, NULL);
++			if (err < 0) {
++				error("cannot set timer: %s", strerror(errno));
++				goto _exit;
++			}
++		}
+ 		for (;;) {
+ 			unsigned char buf[256];
+ 			int i, length;
+ 			unsigned short revents;
+
+-			err = poll(pfds, npfds, 200);
++			err = poll(pfds, npfds, -1);
+ 			if (stop || (err < 0 && errno == EINTR))
+ 				break;
+ 			if (err < 0) {
+ 				error("poll failed: %s", strerror(errno));
+ 				break;
  			}
- 			length = 0;
- 			for (i = 0; i < err; ++i)
--				if (!ignore_active_sensing || buf[i] != 0xfe)
-+				if (!ignore_system_realtime || buf[i] < 0xf8)
- 					buf[length++] = buf[i];
+-			if (err == 0) {
+-				time += 200;
+-				if (timeout && time >= timeout)
+-					break;
+-				continue;
+-			}
+-			if ((err = snd_rawmidi_poll_descriptors_revents(input, pfds, npfds, &revents)) < 0) {
++
++			err = snd_rawmidi_poll_descriptors_revents(input, &pfds[1], npfds - 1, &revents);
++			if (err < 0) {
+ 				error("cannot get poll events: %s", snd_strerror(errno));
+ 				break;
+ 			}
+ 			if (revents & (POLLERR | POLLHUP))
+ 				break;
+-			if (!(revents & POLLIN))
++			if (!(revents & POLLIN)) {
++				if (pfds[0].revents & POLLIN)
++					break;
+ 				continue;
++			}
++
+ 			err = snd_rawmidi_read(input, buf, sizeof(buf));
+ 			if (err == -EAGAIN)
+ 				continue;
+@@ -595,7 +624,7 @@ int main(int argc, char *argv[])
  			if (length == 0)
  				continue;
+ 			read += length;
+-			time = 0;
++
+ 			if (receive_file != -1)
+ 				write(receive_file, buf, length);
+ 			if (dump) {
+@@ -603,6 +632,14 @@ int main(int argc, char *argv[])
+ 					print_byte(buf[i]);
+ 				fflush(stdout);
+ 			}
++
++			if (timeout > 0) {
++				err = timerfd_settime(pfds[0].fd, 0, &itimerspec, NULL);
++				if (err < 0) {
++					error("cannot set timer: %s", strerror(errno));
++					break;
++				}
++			}
+ 		}
+ 		if (isatty(fileno(stdout)))
+ 			printf("\n%d bytes read\n", read);
