@@ -1,21 +1,18 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: [PATCH 1/2] amidi: ignore not only Active Sensing
- but all System Real-Time messages
-Date: Mon, 11 Apr 2016 16:18:25 +0200
-Message-ID: <alpine.DEB.2.02.1604111615550.9999@lnxricardw1.se.axis.com>
-References: <570AA980.3070802@ladisch.de>
- <alpine.DEB.2.02.1604110858100.9999@lnxricardw1.se.axis.com>
- <570BA6B1.8060101@ladisch.de>
- <alpine.DEB.2.02.1604111535500.9999@lnxricardw1.se.axis.com>
- <570BB0F4.2020504@ladisch.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH v3 2/4] ALSA: compress: Add function to
+	indicate the stream has gone bad
+Date: Mon, 11 Apr 2016 15:27:33 +0100
+Message-ID: <1460384855-10567-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1460384855-10567-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id EDF8D2604D6
- for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2016 16:18:32 +0200 (CEST)
-In-Reply-To: <570BB0F4.2020504@ladisch.de>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id AF6962604D6
+ for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2016 16:27:39 +0200 (CEST)
+In-Reply-To: <1460384855-10567-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,49 +22,165 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Martin Tarenskeen <m.tarenskeen@zonnet.nl>
+To: vinod.koul@intel.com, tiwai@suse.com, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+Currently, the avail IOCTL doesn't pass any error status, which
+means typically on error it simply shows no data available. This
+can lead to situations where user-space is waiting indefinitely
+for data that will never come as the DSP has suffered an
+unrecoverable error.
 
-On Mon, 11 Apr 2016, Clemens Ladisch wrote:
+Add snd_compr_stop_error which end drivers can call to indicate
+the stream has suffered an unrecoverable error and stop it. The
+avail and poll IOCTLs are then updated to report if the stream is
+in an error state to user-space. Allowing the error to propagate
+out. Processing of the actual snd_compr_stop needs to be deferred
+to a worker thread as the end driver may detect the errors during
+an existing operation callback.
 
-> >> Filtering out clock messages serves an actual need.  But I am not
-> >> willing to add complexity for a problem that is, at the moment, nothing
-> >> but a figment of our imaginations.
-> >
-> > My argument is really that currently amidi has an option for filtering =
-out
-> > active sensing, which has probably been added as it serves a useful
-> > purpose in its own right. The patch replaces that filter with one that
-> > filters out everything from F8 (clock) and up
-> =
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ include/sound/compress_driver.h |  4 +++
+ sound/core/compress_offload.c   | 60 ++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 63 insertions(+), 1 deletion(-)
 
-> I consider this change a bug fix; I just forgot about clock messages
-> when I originally impemented the filter.
-
-Fair enough, although regardless of the original intention, the current =
-
-version is out there (although I honestly haven't checked how long the =
-
-filtering option has been available, perhaps it's not that long), and it's =
-
-not buggy in the sense that it does what the corresponding (long) option =
-
-says it will do.
-
-> > I think it would be better to keep the existing option, and add a new
-> > one, rather than to essentially change the meaning of the existing
-> > option.
-> =
-
-> That would be a new feature.
-
-Yes.
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
+index c0abcdc..a057038 100644
+--- a/include/sound/compress_driver.h
++++ b/include/sound/compress_driver.h
+@@ -78,6 +78,7 @@ struct snd_compr_stream {
+ 	struct snd_compr_ops *ops;
+ 	struct snd_compr_runtime *runtime;
+ 	struct snd_compr *device;
++	struct delayed_work error_work;
+ 	enum snd_compr_direction direction;
+ 	bool metadata_set;
+ 	bool next_track;
+@@ -187,4 +188,7 @@ static inline void snd_compr_drain_notify(struct snd_compr_stream *stream)
+ 	wake_up(&stream->runtime->sleep);
+ }
+ 
++int snd_compr_stop_error(struct snd_compr_stream *stream,
++			 snd_pcm_state_t state);
++
+ #endif
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index 507071d..86d1d85 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -67,6 +67,8 @@ struct snd_compr_file {
+ 	struct snd_compr_stream stream;
+ };
+ 
++static void error_delayed_work(struct work_struct *work);
++
+ /*
+  * a note on stream states used:
+  * we use following states in the compressed core
+@@ -123,6 +125,9 @@ static int snd_compr_open(struct inode *inode, struct file *f)
+ 		snd_card_unref(compr->card);
+ 		return -ENOMEM;
+ 	}
++
++	INIT_DELAYED_WORK(&data->stream.error_work, error_delayed_work);
++
+ 	data->stream.ops = compr->ops;
+ 	data->stream.direction = dirn;
+ 	data->stream.private_data = compr->private_data;
+@@ -153,6 +158,8 @@ static int snd_compr_free(struct inode *inode, struct file *f)
+ 	struct snd_compr_file *data = f->private_data;
+ 	struct snd_compr_runtime *runtime = data->stream.runtime;
+ 
++	cancel_delayed_work_sync(&data->stream.error_work);
++
+ 	switch (runtime->state) {
+ 	case SNDRV_PCM_STATE_RUNNING:
+ 	case SNDRV_PCM_STATE_DRAINING:
+@@ -237,6 +244,14 @@ snd_compr_ioctl_avail(struct snd_compr_stream *stream, unsigned long arg)
+ 	avail = snd_compr_calc_avail(stream, &ioctl_avail);
+ 	ioctl_avail.avail = avail;
+ 
++	switch (stream->runtime->state) {
++	case SNDRV_PCM_STATE_OPEN:
++	case SNDRV_PCM_STATE_XRUN:
++		return -EBADFD;
++	default:
++		break;
++	}
++
+ 	if (copy_to_user((__u64 __user *)arg,
+ 				&ioctl_avail, sizeof(ioctl_avail)))
+ 		return -EFAULT;
+@@ -400,10 +415,16 @@ static unsigned int snd_compr_poll(struct file *f, poll_table *wait)
+ 		return -EFAULT;
+ 
+ 	mutex_lock(&stream->device->lock);
+-	if (stream->runtime->state == SNDRV_PCM_STATE_OPEN) {
++
++	switch (stream->runtime->state) {
++	case SNDRV_PCM_STATE_OPEN:
++	case SNDRV_PCM_STATE_XRUN:
+ 		retval = -EBADFD;
+ 		goto out;
++	default:
++		break;
+ 	}
++
+ 	poll_wait(f, &stream->runtime->sleep, wait);
+ 
+ 	avail = snd_compr_get_avail(stream);
+@@ -423,6 +444,9 @@ static unsigned int snd_compr_poll(struct file *f, poll_table *wait)
+ 		if (avail >= stream->runtime->fragment_size)
+ 			retval = snd_compr_get_poll(stream);
+ 		break;
++	case SNDRV_PCM_STATE_XRUN:
++		retval = -EBADFD;
++		break;
+ 	default:
+ 		if (stream->direction == SND_COMPRESS_PLAYBACK)
+ 			retval = POLLOUT | POLLWRNORM | POLLERR;
+@@ -701,6 +725,40 @@ static int snd_compr_stop(struct snd_compr_stream *stream)
+ 	return retval;
+ }
+ 
++static void error_delayed_work(struct work_struct *work)
++{
++	struct snd_compr_stream *stream;
++
++	stream = container_of(work, struct snd_compr_stream, error_work.work);
++
++	mutex_lock(&stream->device->lock);
++	snd_compr_stop(stream);
++	mutex_unlock(&stream->device->lock);
++}
++
++/*
++ * snd_compr_stop_error: Report a fatal error on a stream
++ * @stream: pointer to stream
++ * @state: state to transition the stream to
++ *
++ * Stop the stream and set its state.
++ *
++ * Should be called with compressed device lock held.
++ */
++int snd_compr_stop_error(struct snd_compr_stream *stream,
++			 snd_pcm_state_t state)
++{
++	if (stream->runtime->state == state)
++		return 0;
++
++	stream->runtime->state = state;
++
++	queue_delayed_work(system_power_efficient_wq, &stream->error_work, 0);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_compr_stop_error);
++
+ static int snd_compress_wait_for_drain(struct snd_compr_stream *stream)
+ {
+ 	int ret;
+-- 
+2.1.4
