@@ -1,82 +1,207 @@
-From: Jose Abreu <Jose.Abreu@synopsys.com>
-Subject: Re: [PATCH 5/5 v4] ASoC: dwc: Update DOCUMENTATION for
- I2S Driver
-Date: Mon, 11 Apr 2016 10:24:54 +0100
-Message-ID: <570B6D66.4080309@synopsys.com>
-References: <cover.1460047238.git.joabreu@synopsys.com>
- <ce97e6bb7ddb71e532c4066334ceead4d4d3e692.1460047238.git.joabreu@synopsys.com>
- <20160407175326.GX1924@sirena.org.uk> <570782BF.10402@synopsys.com>
- <5707D3AD.8030308@metafoo.de> <5707D780.4050406@synopsys.com>
- <570917E9.8020804@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtprelay.synopsys.com (smtprelay.synopsys.com [198.182.47.9])
- by alsa0.perex.cz (Postfix) with ESMTP id B512126154C
- for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2016 11:25:32 +0200 (CEST)
-In-Reply-To: <570917E9.8020804@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Jose Abreu <Jose.Abreu@synopsys.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Vineet.Gupta1@synopsys.com, Alexey.Brodkin@synopsys.com, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, lgirdwood@gmail.com, CARLOS.PALMINHA@synopsys.com, tiwai@suse.com, linux-snps-arc@lists.infradead.org
+From: Sugar Zhang <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Subject: [PATCH v2] ASoC: rockchip: i2s: configure the sdio pins' iomux mode
+Date: Mon, 11 Apr 2016 17:26:03 +0800
+Message-ID: <1460366763-25658-1-git-send-email-sugar.zhang@rock-chips.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sugar Zhang <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Jianqun Xu <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Lars,
+There are 3 i2s sdio pins, which iomux mode is as follows:
+
+ - sdi3_sdo1
+ - sdi2_sdo2
+ - sdi1_sdo3
+
+we need to configure these pins' iomux mode via the GRF register
+when use multi channel playback/capture.
+
+Signed-off-by: Sugar Zhang <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+---
+
+Changes in v2:
+- fix a typo error.
+as suggested by Heiko:
+- use the general grf-binding without any offset
+- keep the actual offset in the driver on a per-soc basis.
+
+ .../devicetree/bindings/sound/rockchip-i2s.txt     |  5 ++
+ sound/soc/rockchip/rockchip_i2s.c                  | 67 +++++++++++++++++++---
+ sound/soc/rockchip/rockchip_i2s.h                  |  7 +++
+ 3 files changed, 70 insertions(+), 9 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+index 6e86d8a..4ea29aa 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+@@ -23,6 +23,11 @@ Required properties:
+ - rockchip,playback-channels: max playback channels, if not set, 8 channels default.
+ - rockchip,capture-channels: max capture channels, if not set, 2 channels default.
+ 
++Required properties for controller which support multi channels
++playback/capture:
++
++- rockchip,grf: the phandle of the syscon node for GRF register.
++
+ Example for rk3288 I2S controller:
+ 
+ i2s@ff890000 {
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 2f8e204..d4f7eac 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -11,8 +11,10 @@
+  */
+ 
+ #include <linux/module.h>
++#include <linux/mfd/syscon.h>
+ #include <linux/delay.h>
+ #include <linux/of_gpio.h>
++#include <linux/of_device.h>
+ #include <linux/clk.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
+@@ -23,6 +25,11 @@
+ 
+ #define DRV_NAME "rockchip-i2s"
+ 
++struct rk_i2s_pins {
++	u32 reg_offset;
++	u32 shift;
++};
++
+ struct rk_i2s_dev {
+ 	struct device *dev;
+ 
+@@ -33,8 +40,10 @@ struct rk_i2s_dev {
+ 	struct snd_dmaengine_dai_dma_data playback_dma_data;
+ 
+ 	struct regmap *regmap;
++	struct regmap *grf;
+ 
+ 	bool is_master_mode;
++	const struct rk_i2s_pins *pins;
+ };
+ 
+ static int i2s_runtime_suspend(struct device *dev)
+@@ -277,6 +286,30 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
+ 				   I2S_TXCR_VDW_MASK | I2S_TXCR_CSR_MASK,
+ 				   val);
+ 
++	if (!IS_ERR(i2s->grf) && i2s->pins) {
++		regmap_read(i2s->regmap, I2S_TXCR, &val);
++		val &= I2S_TXCR_CSR_MASK;
++
++		switch (val) {
++		case I2S_CHN_4:
++			val = I2S_IO_4CH_OUT_6CH_IN;
++			break;
++		case I2S_CHN_6:
++			val = I2S_IO_6CH_OUT_4CH_IN;
++			break;
++		case I2S_CHN_8:
++			val = I2S_IO_8CH_OUT_2CH_IN;
++			break;
++		default:
++			val = I2S_IO_2CH_OUT_8CH_IN;
++			break;
++		}
++
++		val <<= i2s->pins->shift;
++		val |= (I2S_IO_DIRECTION_MASK << i2s->pins->shift) << 16;
++		regmap_write(i2s->grf, i2s->pins->reg_offset, val);
++	}
++
+ 	regmap_update_bits(i2s->regmap, I2S_DMACR, I2S_DMACR_TDL_MASK,
+ 			   I2S_DMACR_TDL(16));
+ 	regmap_update_bits(i2s->regmap, I2S_DMACR, I2S_DMACR_RDL_MASK,
+@@ -462,9 +495,23 @@ static const struct regmap_config rockchip_i2s_regmap_config = {
+ 	.cache_type = REGCACHE_FLAT,
+ };
+ 
++static const struct rk_i2s_pins rk3399_i2s_pins = {
++	.reg_offset = 0xe220,
++	.shift = 11,
++};
++
++static const struct of_device_id rockchip_i2s_match[] = {
++	{ .compatible = "rockchip,rk3066-i2s", },
++	{ .compatible = "rockchip,rk3188-i2s", },
++	{ .compatible = "rockchip,rk3288-i2s", },
++	{ .compatible = "rockchip,rk3399-i2s", .data = &rk3399_i2s_pins },
++	{},
++};
++
+ static int rockchip_i2s_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *node = pdev->dev.of_node;
++	const struct of_device_id *of_id;
+ 	struct rk_i2s_dev *i2s;
+ 	struct snd_soc_dai_driver *soc_dai;
+ 	struct resource *res;
+@@ -478,6 +525,17 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 	}
+ 
++	i2s->dev = &pdev->dev;
++
++	i2s->grf = syscon_regmap_lookup_by_phandle(node, "rockchip,grf");
++	if (!IS_ERR(i2s->grf)) {
++		of_id = of_match_device(rockchip_i2s_match, &pdev->dev);
++		if (!of_id || !of_id->data)
++			return -EINVAL;
++
++		i2s->pins = of_id->data;
++	}
++
+ 	/* try to prepare related clocks */
+ 	i2s->hclk = devm_clk_get(&pdev->dev, "i2s_hclk");
+ 	if (IS_ERR(i2s->hclk)) {
+@@ -517,7 +575,6 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
+ 	i2s->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 	i2s->capture_dma_data.maxburst = 4;
+ 
+-	i2s->dev = &pdev->dev;
+ 	dev_set_drvdata(&pdev->dev, i2s);
+ 
+ 	pm_runtime_enable(&pdev->dev);
+@@ -583,14 +640,6 @@ static int rockchip_i2s_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static const struct of_device_id rockchip_i2s_match[] = {
+-	{ .compatible = "rockchip,rk3066-i2s", },
+-	{ .compatible = "rockchip,rk3188-i2s", },
+-	{ .compatible = "rockchip,rk3288-i2s", },
+-	{ .compatible = "rockchip,rk3399-i2s", },
+-	{},
+-};
+-
+ static const struct dev_pm_ops rockchip_i2s_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(i2s_runtime_suspend, i2s_runtime_resume,
+ 			   NULL)
+diff --git a/sound/soc/rockchip/rockchip_i2s.h b/sound/soc/rockchip/rockchip_i2s.h
+index dc6e2c7..8e239d3 100644
+--- a/sound/soc/rockchip/rockchip_i2s.h
++++ b/sound/soc/rockchip/rockchip_i2s.h
+@@ -236,4 +236,11 @@ enum {
+ #define I2S_TXDR	(0x0024)
+ #define I2S_RXDR	(0x0028)
+ 
++/* io direction cfg register */
++#define I2S_IO_DIRECTION_MASK	(7)
++#define I2S_IO_8CH_OUT_2CH_IN	(0)
++#define I2S_IO_6CH_OUT_4CH_IN	(4)
++#define I2S_IO_4CH_OUT_6CH_IN	(6)
++#define I2S_IO_2CH_OUT_8CH_IN	(7)
++
+ #endif /* _ROCKCHIP_IIS_H */
+-- 
+1.9.1
 
 
-On 09-04-2016 15:55, Lars-Peter Clausen wrote:
-> On 04/08/2016 06:08 PM, Jose Abreu wrote:
->> Hi Lars,
->>
->>
->> On 08-04-2016 16:52, Lars-Peter Clausen wrote:
->>> On 04/08/2016 12:06 PM, Jose Abreu wrote:
->>>> Hi Mark,
->>>>
->>>>
->>>> On 07-04-2016 18:53, Mark Brown wrote:
->>>>> On Thu, Apr 07, 2016 at 05:53:59PM +0100, Jose Abreu wrote:
->>>>>
->>>>>> + Optional properties:
->>>>>> + - snps,use-dmaengine: If set the driver will use ALSA DMA engine. If set
->>>>>> +   it is required to use the properties 'dmas' and 'dma-names'.
->>>>> This is not a good interface, it's describing Linux internal APIs.  If
->>>>> the device needs to operate in PIO mode it should just do that.
->>>> I added this interface because there is no direct way to check if DMA is
->>>> available on the I2S controller so it is not possible to automatically change
->>>> between DMA and PIO mode. As the I2S controller can be built with or without DMA
->>>> support it is necessary to somehow check if DMA is enabled or not and according
->>>> to that use either ALSA DMA engine or the custom platform driver sent in these
->>>> patches. I did not want to remove drivers functionality so I added this property
->>>> to the DT. This way a user can select between DMA and PIO mode.
->>> That's OK, but you need to describe the hardware, not the indented behavior
->>> of the software driver.
->>>
->> Is this okay: "snps,use-dmaengine: Set this boolean paramater if I2S controller
->> has DMA support. If set the properties 'dmas' and 'dma-names' must be also set" ?
-> The description is better. But the name of the property is still imperative
-> rather then descriptive. It tells the software what should be done rather
-> then describing what the hardware looks like.
->
-> Since there is already the dmas property which is present if a DMA is
-> connected and is absent when no DMA is present it should be enough to just
-> check that property rather than requiring an additional one.
-
-Ok, will then use the DMA property to decide which mode to use: PIO or DMA.
-
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-
-Best regards,
-Jose Miguel Abreu
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
