@@ -1,55 +1,56 @@
-From: William Breathitt Gray <vilhelm.gray@gmail.com>
-Subject: [PATCH 3/4] scsi: ultrastor: Use correct format identifier for kernel pointer
-Date: Mon, 11 Apr 2016 09:25:53 -0400
-Message-ID: <e3ec50672b8e8fd8279178bdba00edfe9af85cbe.1460379702.git.vilhelm.gray@gmail.com>
-References: <cover.1460379702.git.vilhelm.gray@gmail.com>
-Return-path: <linux-scsi-owner@vger.kernel.org>
-In-Reply-To: <cover.1460379702.git.vilhelm.gray@gmail.com>
-In-Reply-To: <cover.1460379702.git.vilhelm.gray@gmail.com>
-References: <cover.1460379702.git.vilhelm.gray@gmail.com>
-Sender: linux-scsi-owner@vger.kernel.org
-To: tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, gregkh@linuxfoundation.org
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org, alsa-devel@alsa-project.org, William Breathitt Gray <vilhelm.gray@gmail.com>, "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>, "Martin K . Petersen" <martin.petersen@oracle.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 1/2] amidi: ignore not only Active
+	Sensing	but all System Real-Time messages
+Date: Mon, 11 Apr 2016 15:29:21 +0200
+Message-ID: <570BA6B1.8060101@ladisch.de>
+References: <570AA980.3070802@ladisch.de>
+ <alpine.DEB.2.02.1604110858100.9999@lnxricardw1.se.axis.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 9479E26527F
+ for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2016 15:29:24 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.02.1604110858100.9999@lnxricardw1.se.axis.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Martin Tarenskeen <m.tarenskeen@zonnet.nl>
 List-Id: alsa-devel@alsa-project.org
 
-The 'bios_segment' member of a struct ultrastor_config is passed to the
-sprintf function with a respective %05X format identifier. The
-'bio_segment' member is a kernel pointer, but the %X format identifier
-expects an int data type. A cast to int is correctly used to satisfy the
-format identifier, but this assumes that the int data type is the same
-size as the kernel pointer, which is not the case on several
-architectures such as X86_64. This patch removes the int cast and
-replaces the %05X format identifier with %pK in order to print the
-'bio_segment' member regardless of architecture.
+Ricard Wanderlof wrote:
+> On Sun, 10 Apr 2016, Clemens Ladisch wrote:
+>> By default, amidi ignores Active Sensing messages because they are sent
+>> by many devices in the background and would only interfere with the
+>> actual messages that amidi is supposed to capture.  However, there are
+>> also devices that send Clock messages with the same problem, so it is
+>> a better idea to filter out all System Real-Time messages.
+>
+> I would argue that it would be better to have both options, somehow. I.e.
+> active sensing is mostly a nuisance, but I can imagine occasions
+> (analyzing the output from a sequencer perhaps) where one would want to
+> keep the rest of the real time messages.
 
-Cc: James E.J. Bottomley <jejb@linux.vnet.ibm.com>
-Cc: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
----
- drivers/scsi/ultrastor.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+I can imagine this too, and even more complex filters.
 
-diff --git a/drivers/scsi/ultrastor.c b/drivers/scsi/ultrastor.c
-index 14e0c40..2e99f98 100644
---- a/drivers/scsi/ultrastor.c
-+++ b/drivers/scsi/ultrastor.c
-@@ -670,12 +670,12 @@ static const char *ultrastor_info(struct Scsi_Host * shpnt)
-       sprintf(buf, "UltraStor 24F SCSI @ Slot %u IRQ%u",
- 	      config.slot, config.interrupt);
-     else if (config.subversion)
--      sprintf(buf, "UltraStor 34F SCSI @ Port %03X BIOS %05X IRQ%u",
--	      config.port_address, (int)config.bios_segment,
-+      sprintf(buf, "UltraStor 34F SCSI @ Port %03X BIOS %pK IRQ%u",
-+	      config.port_address, config.bios_segment,
- 	      config.interrupt);
-     else
--      sprintf(buf, "UltraStor 14F SCSI @ Port %03X BIOS %05X IRQ%u DMA%u",
--	      config.port_address, (int)config.bios_segment,
-+      sprintf(buf, "UltraStor 14F SCSI @ Port %03X BIOS %pK IRQ%u DMA%u",
-+	      config.port_address, config.bios_segment,
- 	      config.interrupt, config.dma_channel);
-     return buf;
- }
--- 
-2.7.3
+But the amidi tool is designed to be simple, and works on the lowest
+level, with raw MIDI bytes.  This makes it appropriate to handle SysEx
+stuff and to debug low-level hardware problems, but when you care about
+the semantics of the messages, you should use a higher-level tool, such
+as aseqdump.
 
+Filtering out clock messages serves an actual need.  But I am not
+willing to add complexity for a problem that is, at the moment, nothing
+but a figment of our imaginations.
+
+
+Regards,
+Clemens
