@@ -1,45 +1,108 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH 2/5 v4] drm/i2c/adv7511: Add audio support
-Date: Mon, 11 Apr 2016 21:34:26 +0200
-Message-ID: <570BFC42.7040705@metafoo.de>
-References: <cover.1460047238.git.joabreu@synopsys.com>
- <d56087fae14074198f6c1bc749ce4da3cab62324.1460047238.git.joabreu@synopsys.com>
- <5707D249.5040707@metafoo.de> <5707D88A.3010400@synopsys.com>
- <57091999.4010906@metafoo.de> <570B6DF2.1080008@synopsys.com>
- <570B6F7B.2020906@metafoo.de> <570B8B59.7000900@synopsys.com>
- <570B975C.50702@metafoo.de> <570BAFE7.8040206@synopsys.com>
+From: Julian Margetson <runaway@candw.ms>
+Subject: Re: Issues with ALSA:ice1724 sound cards on powerpc
+ machines
+Date: Mon, 11 Apr 2016 18:14:45 -0400
+Message-ID: <570C21D5.7000106@candw.ms>
+References: <56C4BC13.2010306@candw.ms> <5702C756.1050904@candw.ms>
+ <s5hy48k2q26.wl-tiwai@suse.de> <570BB84A.9040400@ivitera.com>
+ <570BDFCB.20601@candw.ms>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <570BAFE7.8040206@synopsys.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jose Abreu <Jose.Abreu@synopsys.com>, linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: Vineet.Gupta1@synopsys.com, Alexey.Brodkin@synopsys.com, CARLOS.PALMINHA@synopsys.com, lgirdwood@gmail.com, broonie@kernel.org, tiwai@suse.com
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp618.redcondor.net (smtp618.redcondor.net [208.80.206.18])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B251265335
+ for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 00:14:58 +0200 (CEST)
+In-Reply-To: <570BDFCB.20601@candw.ms>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pavel Hofman <pavel.hofman@ivitera.com>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDQvMTEvMjAxNiAwNDowOCBQTSwgSm9zZSBBYnJldSB3cm90ZToKWy4uLl0KPj4gQ3VycmVu
-dGx5IHRoZXJlIGlzIGFsc28gemVybyBzdXBwb3J0IG9mIG9mLWdyYXBoIGluIEFTb0MsIHNvIGEg
-Yml0IG9mIHdvcmsKPj4gaXMgcmVxdWlyZWQgdG8gZ2V0IHRoaXMgaW50ZWdyYXRlZCBwcm9wZXJs
-eS4KPj4KPiAKPiBJIGFsc28gYmVsaWV2ZSB0aGlzIHdvdWxkIGJlIHRoZSBiZXR0ZXIgb3B0aW9u
-IGJ1dCBpbiB0aGUgbWVhbnRpbWUgY2FuJ3QgSQo+IGludGVncmF0ZSB0aGUgYXVkaW8gbGlrZSBp
-dCBpcyBiZWluZyBkb25lIGluIHRoZSBkdy1oZG1pIGRyaXZlclsxXT8gSW4gdGhpcwo+IGRyaXZl
-ciB0aGUgYXVkaW8gaXMgcmVnaXN0ZXJlZCBhcyBhIHNvdW5kIGNhcmQgYW5kIGlzIGNvbmRpdGlv
-bmFsbHkgYnVpbHQgdXNpbmcKPiBLY29uZmlnLCBqdXN0IGxpa2UgSSB3YXMgZG9pbmcgaW4gdGhl
-IHByZXZpb3VzIHZlcnNpb25zLiBJIGtub3cgeW91IHNhaWQgdGhlCj4gSERNSSBhdWRpbyBpcyBz
-dGlsbCBhbiBvcGVuIGlzc3VlIGJ1dCBpdCBzZWVtcyB0aGF0IGZvciB0aGlzIGNhc2UgaXQgd2Fz
-IGFjY2VwdGVkLgo+IAo+IFsxXSBodHRwOi8vbHhyLmZyZWUtZWxlY3Ryb25zLmNvbS9zb3VyY2Uv
-ZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9kdy1oZG1pLWFoYi1hdWRpby5jCgpNYXliZSwgYnV0IEkn
-bSBub3Qgc3VyZSBpdCB3b3VsZCB3b3JrIGluIHRoaXMgY2FzZS4gUmVzb3VyY2VzIGFyZSBwcm9i
-YWJseQpiZXR0ZXIgaW52ZXN0ZWQgaW4gd29ya2luZyB0b3dhcmRzIGEgcHJvcGVyIHNvbHV0aW9u
-LgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRl
-dmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8v
-bGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+On 4/11/2016 1:32 PM, Julian Margetson wrote:
+> On 4/11/2016 10:44 AM, Pavel Hofman wrote:
+>> Dne 11.4.2016 v 16:11 Takashi Iwai napsal(a):
+>>> On Mon, 04 Apr 2016 21:58:14 +0200,
+>>> Julian Margetson wrote:
+>>>>
+>>>> On 2/17/2016 2:29 PM, Julian Margetson wrote:
+>>>>> Hi
+>>>>>
+>>>>> Having an issue issue with ice1724 sound cards on powerpc 
+>>>>> motherboards.
+>>>>> Motherboards in question Acube Sam460ex .
+>>>>> The card appears as a valid device but there is no sound output on 
+>>>>> the
+>>>>> majority of boots of the computer.
+>>>>> Logs attached.
+>>>>> On the first set boot audio playback produced sound ok.
+>>>>> On the second set boot no sound was produce with audio playback
+>>>>>
+>>>>>
+>>>>> Regards
+>>>>> Julian Margetson
+>>>>>
+>>>>>
+>>>>>
+>>>> Anyone have any ideas ?
+>>>>
+>>>> Resubmitting again with links to logs instead of included as 
+>>>> attachments.
+>>>> The issue also seen on A-Eon Cyrus P5020 motherboard .
+>>>>
+>>>> https://www.dropbox.com/s/72labcje9z1r1b7/1alsa-info.txt.7CLHMG0Gap?dl=0 
+>>>>
+>>>> https://www.dropbox.com/s/v1pn5kjqrvwu16f/boot_1.log?dl=0
+>>>> https://www.dropbox.com/s/uuaa14rkpmmz1o0/2alsa-info.txt.VKiEVuytiJ?dl=0 
+>>>>
+>>>> https://www.dropbox.com/s/wwu2f5t93l8g26d/boot_2.log?dl=0
+>>>
+>>> I have no concrete idea, but in general, the usual problems on PPC are
+>>> either related with cache coherency or byte endianness.  I don't know
+>>> of any issue with the latter in ice1724 driver, so likely it's the
+>>> former.
+>>>
+>>
+>> Perhaps the ice1724 driver was not even tested properly with the AC97 
+>> codec. Do we know of any separate PCI ice1724 card with this codec?
+>>
+>> Regards,
+>>
+>> Pavel Hofman.
+>>
+>>
+> The second board mentioned , the Aeon Cyrus ,uses a P5020 so is cache 
+> coherent .
+> The problem may be in the initialization of the sound card as on some 
+> boots with my board , an Acube Sam460ex, it works perfectly. I have  
+> tested a CMI8738 pciex1 sound card which works perfectly as do USB 
+> cm108 based external cards .
+>
+> I also have a PCI ice1724 version of the card  (never used in this 
+> machine) as well as 2 different pciex1  ice1724 cards with the codec .
+> The Sam460ex only has 1 pci slot normally used for the SATA card and 1 
+> shared pcie or SATA II.
+> I could test with  the pci card by booting from USB .
+> So either configure as 1 pciex1 slot or 1 on board SATA II .
+> I am helping to test the onboard sata-dwc but am happy to test any 
+> ideas for a solution to the audio issues as well.
+> Will mean reconfiguring my machine back an forth but worth it for 
+> solutions in both areas .
+>
+> Regards
+> Julian
+>
+>
+>
+>
+This is the pci model .
+
+http://www.amazon.com/SIIG-Soundwave-5-1-Pci-lp-LP-000022-S2/dp/B0036VNVWE
