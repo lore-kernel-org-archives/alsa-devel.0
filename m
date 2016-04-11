@@ -1,7 +1,7 @@
 From: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH v2 6/6] ARM: DTS: da850: Add McBSP0 and McBSP1
-Date: Mon, 11 Apr 2016 13:45:17 +0200
-Message-ID: <1460375117-4311-7-git-send-email-petr@barix.com>
+Subject: [PATCH v2 4/6] ARM: davinci: da8xx-dt: add OF_DEV_AUXDATA entries for mcbsp0 and mcbsp1
+Date: Mon, 11 Apr 2016 13:45:15 +0200
+Message-ID: <1460375117-4311-5-git-send-email-petr@barix.com>
 References: <1460375117-4311-1-git-send-email-petr@barix.com>
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 In-Reply-To: <1460375117-4311-1-git-send-email-petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
@@ -10,81 +10,34 @@ To: nsekhar-l0cyMroinI0@public.gmane.org, khilman-DgEjT+Ai2ygdnm+yROfE0A@public.
 Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add SoC nodes for McBSP0 and McBSP1 as well as the corresponding pinmux
-configurations.
+Add OF_DEV_AUXDATA for mcbsp to be able to use clocks.
 
 Signed-off-by: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
 ---
 v1: initial
-v2: add missing TC channel in dmas properties (for compatibility with the new EDMA3 binding)
-    remove "-audio" postfix from the compatible string 
+v2: remove "-audio" postfix from the compatible string
 
- arch/arm/boot/dts/da850.dtsi | 45 +++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 44 insertions(+), 1 deletion(-)
+ arch/arm/mach-davinci/da8xx-dt.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/da850.dtsi b/arch/arm/boot/dts/da850.dtsi
-index 5996e765e59c..708d48e1b6d1 100644
---- a/arch/arm/boot/dts/da850.dtsi
-+++ b/arch/arm/boot/dts/da850.dtsi
-@@ -148,7 +148,24 @@
- 					0xc 0x88888888 0xffffffff
- 				>;
- 			};
--
-+			mcbsp0_pins: pinmux_mcbsp0_pins {
-+				pinctrl-single,bits = <
-+					/* PINMUX2:
-+					* CLKS0, DX0, DR0, FSX0
-+					* FSR0, CLKX0, CLKR0
-+					*/
-+					0x8 0x02222220 0xfffffff0
-+				>;
-+			};
-+			mcbsp1_pins: pinmux_mcbsp1_pins {
-+				pinctrl-single,bits = <
-+					/* PINMUX1:
-+					* CLKS1, DX1, DR1, FSX1,
-+					* FSR1, CLKX1, CLKR1
-+					*/
-+					0x4 0x22222220 0xfffffff0
-+				>;
-+			};
- 		};
- 		edma0: edma@01c00000 {
- 			compatible = "ti,edma3-tpcc";
-@@ -335,6 +352,32 @@
- 				<&edma0 0 1>;
- 			dma-names = "tx", "rx";
- 		};
-+
-+		mcbsp0: mcbsp@1d10000 {
-+			compatible = "ti,da850-mcbsp";
-+			reg =	<0x00110000 0x1000>,
-+				<0x00310000 0x1000>;
-+			reg-names = "mpu", "dat";
-+			interrupts = <97 98>;
-+			interrupts-names = "rx", "tx";
-+			dmas = <&edma0 3 1
-+				&edma0 2 1>;
-+			dma-names = "tx", "rx";
-+			status = "disabled";
-+		};
-+		mcbsp1: mcbsp@1d11000 {
-+			compatible = "ti,da850-mcbsp";
-+			reg =	<0x00111000 0x1000>,
-+				<0x00311000 0x1000>;
-+			reg-names = "mpu", "dat";
-+			interrupts = <99 100>;
-+			interrupts-names = "rx", "tx";
-+			dmas = <&edma0 5 1
-+				&edma0 4 1>;
-+			dma-names = "tx", "rx";
-+			status = "disabled";
-+		};
-+
- 	};
- 	nand_cs3@62000000 {
- 		compatible = "ti,davinci-nand";
+diff --git a/arch/arm/mach-davinci/da8xx-dt.c b/arch/arm/mach-davinci/da8xx-dt.c
+index c4b5808ca7c1..d2f5bfbba629 100644
+--- a/arch/arm/mach-davinci/da8xx-dt.c
++++ b/arch/arm/mach-davinci/da8xx-dt.c
+@@ -45,8 +45,11 @@ static struct of_dev_auxdata da850_auxdata_lookup[] __initdata = {
+ 	OF_DEV_AUXDATA("ns16550a", 0x01d0d000, "serial8250.2", NULL),
+ 	OF_DEV_AUXDATA("ti,davinci_mdio", 0x01e24000, "davinci_mdio.0", NULL),
+ 	OF_DEV_AUXDATA("ti,davinci-dm6467-emac", 0x01e20000, "davinci_emac.1",
+-		       NULL),
+-	OF_DEV_AUXDATA("ti,da830-mcasp-audio", 0x01d00000, "davinci-mcasp.0", NULL),
++			NULL),
++	OF_DEV_AUXDATA("ti,da830-mcasp-audio", 0x01d00000, "davinci-mcasp.0",
++			NULL),
++	OF_DEV_AUXDATA("ti,da850-mcbsp", 0x01d10000, "davinci-mcbsp.0", NULL),
++	OF_DEV_AUXDATA("ti,da850-mcbsp", 0x01d11000, "davinci-mcbsp.1", NULL),
+ 	{}
+ };
+ 
 -- 
 1.9.1
 
