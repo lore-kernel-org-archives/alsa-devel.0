@@ -1,57 +1,61 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH 2/5 v4] drm/i2c/adv7511: Add audio support
-Date: Mon, 11 Apr 2016 11:33:47 +0200
-Message-ID: <570B6F7B.2020906@metafoo.de>
-References: <cover.1460047238.git.joabreu@synopsys.com>
- <d56087fae14074198f6c1bc749ce4da3cab62324.1460047238.git.joabreu@synopsys.com>
- <5707D249.5040707@metafoo.de> <5707D88A.3010400@synopsys.com>
- <57091999.4010906@metafoo.de> <570B6DF2.1080008@synopsys.com>
+From: Martin Tarenskeen <m.tarenskeen@zonnet.nl>
+Subject: Re: [PATCH 1/2] amidi: ignore not only Active Sensing
+ but all System Real-Time messages
+Date: Mon, 11 Apr 2016 13:17:54 +0200 (CEST)
+Message-ID: <alpine.LFD.2.20.1604111304310.4695@localhost.localdomain>
+References: <570AA980.3070802@ladisch.de>
+ <alpine.DEB.2.02.1604110858100.9999@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <570B6DF2.1080008@synopsys.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jose Abreu <Jose.Abreu@synopsys.com>, linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: Vineet.Gupta1@synopsys.com, Alexey.Brodkin@synopsys.com, CARLOS.PALMINHA@synopsys.com, lgirdwood@gmail.com, broonie@kernel.org, tiwai@suse.com
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cpsmtpb-ews09.kpnxchange.com (cpsmtpb-ews09.kpnxchange.com
+ [213.75.39.14]) by alsa0.perex.cz (Postfix) with ESMTP id 828FB26055E
+ for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2016 13:17:58 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.02.1604110858100.9999@lnxricardw1.se.axis.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Alsa-devel mailinglist <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDQvMTEvMjAxNiAxMToyNyBBTSwgSm9zZSBBYnJldSB3cm90ZToKPiBIaSBMYXJzLAo+IAo+
-IAo+IE9uIDA5LTA0LTIwMTYgMTY6MDIsIExhcnMtUGV0ZXIgQ2xhdXNlbiB3cm90ZToKPj4gT24g
-MDQvMDgvMjAxNiAwNjoxMiBQTSwgSm9zZSBBYnJldSB3cm90ZToKPj4gWy4uLl0KPj4+PiBbLi4u
-XQo+Pj4+PiArLSBhZGksZW5hYmxlLWF1ZGlvOiBJZiBzZXQgdGhlIEFEVjc1MTEgZHJpdmVyIHdp
-bGwgcmVnaXN0ZXIgYSBjb2RlYyBpbnRlcmZhY2UKPj4+Pj4gKyAgaW50byBBTFNBIFNvQy4KPj4+
-PiBUaGlzIGlzIG5vdCBhIGRlc2NyaXB0aW9uIG9mIHRoZSBoYXJkd2FyZS4KPj4+IElzIHRoaXMg
-b2theTogImFkaSxlbmFibGUtYXVkaW86IFNldCB0aGlzIGJvb2xlYW4gcGFyYW1ldGVyIGlmIEFE
-Vjc1MTEKPj4+IHRyYW5zbWl0dGVyIHJvdXRlcyBhdWRpbyBzaWduYWxzIiA/Cj4+IEkgZG9uJ3Qg
-dGhpbmsgd2UgbmVlZCB0aGlzIHByb3BlcnR5LiBUaGVyZSBpcyBubyBwcm9ibGVtIHdpdGggcmVn
-aXN0ZXJpbmcKPj4gdGhlIGF1ZGlvIHBhcnQgdW5jb25kaXRpb25hbGx5LiBBcyBsb25nIGFzIHRo
-ZXJlIGlzIG5vIGNvbm5lY3Rpb24gd2Ugd29udAo+PiBjcmVhdGUgYSBzb3VuZCBjYXJkIHRoYXQg
-aXMgZXhwb3NlZCB0byB1c2Vyc3BhY2UuCj4+Cj4gCj4gVGhpcyBjaGFuZ2Ugd2FzIHN1Z2dlc3Rl
-ZCBieSBMYXVyZW50IFBpbmNoYXJ0IGFuZCB3YXMgaW50cm9kdWNlZCBpbiB2My4gUXVvdGluZwo+
-IExhdXJlbnQ6Cj4gIlRoZSBpZGVhIGlzIHRoYXQgZW5hYmxpbmcgc3VwcG9ydCBmb3IgQURWNzUx
-MSBhdWRpbyBpbiB0aGUga2VybmVsIGlzbid0IGNvdXBsZWQKPiB3aXRoIHdoZXRoZXIgdGhlIHN5
-c3RlbSBpbmNsdWRlcyBhdWRpbyBzdXBwb3J0LiBJdCB3b3VsZCBiZSBjb25mdXNpbmcsIGFuZCB3
-b3VsZAo+IGFsc28gd2FzdGUgcmVzb3VyY2VzLCB0byBjcmVhdGUgYSBMaW51eCBzb3VuZCBkZXZp
-Y2Ugd2hlbiBubyBzb3VuZCBjaGFubmVsIGlzCj4gcm91dGVkIG9uIHRoZSBib2FyZC4iCgpJIHdv
-dWxkbid0IGNhcmUgdG9vIG11Y2ggYWJvdXQgdGhpcyBhdCB0aGlzIHBvaW50LCB0aGUgZXh0cmEg
-YW1vdW50IG9mCnJlc291cmNlcyByZXF1aXJlZCBmb3IgcmVnaXN0ZXJpbmcgdGhlIENPREVDIChi
-dXQgbm90IHRoZSBzb3VuZCBjYXJkKSBpcwpqdXN0IGEgZmV3IGJ5dGVzIChzaXplb2Yoc3RydWN0
-IHNuZF9zb2NfY29kZWMpKS4KCk5ldmVydGhlbGVzcyB3aGF0IHdlIHNob3VsZCBkbyBpcyBkZXNj
-cmliZSB0aGUgaGFyZHdhcmUgYW5kIGZyb20gdGhpcwppbmZvcm1hdGlvbiBpbmZlciB3aGV0aGVy
-IHRoZXJlIGlzIGEgYXVkaW8gY29ubmVjdGlvbiBvciBub3QgYW5kIGlmIHRoZXJlIGlzCm5vbmUg
-d2UgbWlnaHQgc2tpcCByZWdpc3RlcmluZyB0aGUgQ09ERUMuIEluIG15IG9waW5pb24gdGhpcyBo
-YXJkd2FyZQpkZXNjcmlwdGlvbiBzaG91bGQgYmUgbW9kZWxlZCB1c2luZyBvZi1ncmFwaCwgaGF2
-aW5nIGEgY29ubmVjdGlvbiBiZXR3ZWVuCnRoZSBTb0Mgc2lkZSBhbmQgdGhlIGFkdjc1MTEgU1BE
-SUYgb3IgSTJTIHBvcnQuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3Rv
-cC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmkt
-ZGV2ZWwK
+
+
+On Mon, 11 Apr 2016, Ricard Wanderlof wrote:
+
+>
+> On Sun, 10 Apr 2016, Clemens Ladisch wrote:
+>
+>> By default, amidi ignores Active Sensing messages because they are sent
+>> by many devices in the background and would only interfere with the
+>> actual messages that amidi is supposed to capture.  However, there are
+>> also devices that send Clock messages with the same problem, so it is
+>> a better idea to filter out all System Real-Time messages.
+>
+> I would argue that it would be better to have both options, somehow. I.e.
+> active sensing is mostly a nuisance, but I can imagine occasions
+> (analyzing the output from a sequencer perhaps) where one would want to
+> keep the rest of the real time messages.
+
+Hi,
+
+I can see your point. I have been thinking about that but my coding skills 
+are somewhat limited. I can image keeping the -a (--allow-realtime) option 
+the way it is and adding a new option -c (--allow-clock) to allow 
+receiving of 0xf8 midiclock messages. At the same time 0xf8 should be 
+filtered by default, just like 0xfe. The other realtime messages are much 
+less a problem because they are not sent continuously (e.g. start and 
+stop)
+
+What do you think Clemens Ladich, is this doable?
+
+-- 
+
+Martin Tarenskeen
