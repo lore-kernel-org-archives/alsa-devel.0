@@ -1,75 +1,54 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH 2/5 v4] drm/i2c/adv7511: Add audio support
-Date: Mon, 11 Apr 2016 14:23:56 +0200
-Message-ID: <570B975C.50702@metafoo.de>
-References: <cover.1460047238.git.joabreu@synopsys.com>
- <d56087fae14074198f6c1bc749ce4da3cab62324.1460047238.git.joabreu@synopsys.com>
- <5707D249.5040707@metafoo.de> <5707D88A.3010400@synopsys.com>
- <57091999.4010906@metafoo.de> <570B6DF2.1080008@synopsys.com>
- <570B6F7B.2020906@metafoo.de> <570B8B59.7000900@synopsys.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <570B8B59.7000900@synopsys.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jose Abreu <Jose.Abreu@synopsys.com>, linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: Vineet.Gupta1@synopsys.com, Alexey.Brodkin@synopsys.com, CARLOS.PALMINHA@synopsys.com, lgirdwood@gmail.com, broonie@kernel.org, tiwai@suse.com
+From: William Breathitt Gray <vilhelm.gray@gmail.com>
+Subject: [PATCH 0/4] Decouple X86_32 dependency from the ISA Kconfig option
+Date: Mon, 11 Apr 2016 09:25:50 -0400
+Message-ID: <cover.1460379702.git.vilhelm.gray@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, gregkh@linuxfoundation.org
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org, alsa-devel@alsa-project.org, William Breathitt Gray <vilhelm.gray@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDQvMTEvMjAxNiAwMTozMiBQTSwgSm9zZSBBYnJldSB3cm90ZToKPiBIaSBMYXJzLAo+IAo+
-IAo+IE9uIDExLTA0LTIwMTYgMTA6MzMsIExhcnMtUGV0ZXIgQ2xhdXNlbiB3cm90ZToKPj4gT24g
-MDQvMTEvMjAxNiAxMToyNyBBTSwgSm9zZSBBYnJldSB3cm90ZToKPj4+IEhpIExhcnMsCj4+Pgo+
-Pj4KPj4+IE9uIDA5LTA0LTIwMTYgMTY6MDIsIExhcnMtUGV0ZXIgQ2xhdXNlbiB3cm90ZToKPj4+
-PiBPbiAwNC8wOC8yMDE2IDA2OjEyIFBNLCBKb3NlIEFicmV1IHdyb3RlOgo+Pj4+IFsuLi5dCj4+
-Pj4+PiBbLi4uXQo+Pj4+Pj4+ICstIGFkaSxlbmFibGUtYXVkaW86IElmIHNldCB0aGUgQURWNzUx
-MSBkcml2ZXIgd2lsbCByZWdpc3RlciBhIGNvZGVjIGludGVyZmFjZQo+Pj4+Pj4+ICsgIGludG8g
-QUxTQSBTb0MuCj4+Pj4+PiBUaGlzIGlzIG5vdCBhIGRlc2NyaXB0aW9uIG9mIHRoZSBoYXJkd2Fy
-ZS4KPj4+Pj4gSXMgdGhpcyBva2F5OiAiYWRpLGVuYWJsZS1hdWRpbzogU2V0IHRoaXMgYm9vbGVh
-biBwYXJhbWV0ZXIgaWYgQURWNzUxMQo+Pj4+PiB0cmFuc21pdHRlciByb3V0ZXMgYXVkaW8gc2ln
-bmFscyIgPwo+Pj4+IEkgZG9uJ3QgdGhpbmsgd2UgbmVlZCB0aGlzIHByb3BlcnR5LiBUaGVyZSBp
-cyBubyBwcm9ibGVtIHdpdGggcmVnaXN0ZXJpbmcKPj4+PiB0aGUgYXVkaW8gcGFydCB1bmNvbmRp
-dGlvbmFsbHkuIEFzIGxvbmcgYXMgdGhlcmUgaXMgbm8gY29ubmVjdGlvbiB3ZSB3b250Cj4+Pj4g
-Y3JlYXRlIGEgc291bmQgY2FyZCB0aGF0IGlzIGV4cG9zZWQgdG8gdXNlcnNwYWNlLgo+Pj4+Cj4+
-PiBUaGlzIGNoYW5nZSB3YXMgc3VnZ2VzdGVkIGJ5IExhdXJlbnQgUGluY2hhcnQgYW5kIHdhcyBp
-bnRyb2R1Y2VkIGluIHYzLiBRdW90aW5nCj4+PiBMYXVyZW50Ogo+Pj4gIlRoZSBpZGVhIGlzIHRo
-YXQgZW5hYmxpbmcgc3VwcG9ydCBmb3IgQURWNzUxMSBhdWRpbyBpbiB0aGUga2VybmVsIGlzbid0
-IGNvdXBsZWQKPj4+IHdpdGggd2hldGhlciB0aGUgc3lzdGVtIGluY2x1ZGVzIGF1ZGlvIHN1cHBv
-cnQuIEl0IHdvdWxkIGJlIGNvbmZ1c2luZywgYW5kIHdvdWxkCj4+PiBhbHNvIHdhc3RlIHJlc291
-cmNlcywgdG8gY3JlYXRlIGEgTGludXggc291bmQgZGV2aWNlIHdoZW4gbm8gc291bmQgY2hhbm5l
-bCBpcwo+Pj4gcm91dGVkIG9uIHRoZSBib2FyZC4iCj4+IEkgd291bGRuJ3QgY2FyZSB0b28gbXVj
-aCBhYm91dCB0aGlzIGF0IHRoaXMgcG9pbnQsIHRoZSBleHRyYSBhbW91bnQgb2YKPj4gcmVzb3Vy
-Y2VzIHJlcXVpcmVkIGZvciByZWdpc3RlcmluZyB0aGUgQ09ERUMgKGJ1dCBub3QgdGhlIHNvdW5k
-IGNhcmQpIGlzCj4+IGp1c3QgYSBmZXcgYnl0ZXMgKHNpemVvZihzdHJ1Y3Qgc25kX3NvY19jb2Rl
-YykpLgo+Pgo+PiBOZXZlcnRoZWxlc3Mgd2hhdCB3ZSBzaG91bGQgZG8gaXMgZGVzY3JpYmUgdGhl
-IGhhcmR3YXJlIGFuZCBmcm9tIHRoaXMKPj4gaW5mb3JtYXRpb24gaW5mZXIgd2hldGhlciB0aGVy
-ZSBpcyBhIGF1ZGlvIGNvbm5lY3Rpb24gb3Igbm90IGFuZCBpZiB0aGVyZSBpcwo+PiBub25lIHdl
-IG1pZ2h0IHNraXAgcmVnaXN0ZXJpbmcgdGhlIENPREVDLiBJbiBteSBvcGluaW9uIHRoaXMgaGFy
-ZHdhcmUKPj4gZGVzY3JpcHRpb24gc2hvdWxkIGJlIG1vZGVsZWQgdXNpbmcgb2YtZ3JhcGgsIGhh
-dmluZyBhIGNvbm5lY3Rpb24gYmV0d2Vlbgo+PiB0aGUgU29DIHNpZGUgYW5kIHRoZSBhZHY3NTEx
-IFNQRElGIG9yIEkyUyBwb3J0Lgo+Pgo+IAo+IFlvdSBtZWFuIHNvbWV0aGluZyBsaWtlIHRoaXM6
-Cj4gCj4gc291bmRfcGxheWJhY2s6IHNvdW5kX3BsYXliYWNrIHsKPiAgICAgY29tcGF0aWJsZSA9
-ICJzaW1wbGUtYXVkaW8tY2FyZCI7Cj4gICAgIFsuLi5dCj4gICAgIHNpbXBsZS1hdWRpby1jYXJk
-LGZvcm1hdCA9ICJpMnMiOwo+ICAgICBbLi4uXQo+IH0KPiAKPiBhZHY3NTExQHh4IHsKPiAgICAg
-Y29tcGF0aWJsZSA9ICJhZGksYWR2NzUxMSI7Cj4gICAgIFsuLi5dCj4gCj4gICAgIHBvcnRzIHsK
-PiAgICAgICAgIFsuLi5dCj4gICAgICAgICAvKiBBdWRpbyBPdXRwdXQgKi8KPiAgICAgICAgIHBv
-cnRAeCB7Cj4gICAgICAgICAgICAgcmVnID0gPHg+Owo+ICAgICAgICAgICAgIGVuZHBvaW50IHsK
-PiAgICAgICAgICAgICAgICAgcmVtb3RlLWVuZHBvaW50ID0gPCZzb3VuZF9wbGF5YmFjaz47Cj4g
-ICAgICAgICAgICAgfQo+ICAgICAgICAgfQo+ICAgICB9Cj4gfQoKWWVzLCBzb21ldGhpbmcgbGlr
-ZSB0aGF0LiBOb3QgZXhhY3RseSBsaWtlIHRoYXQsIGJ1dCBzaW1pbGFyLiBPbmUgb2YgdGhlCmNv
-cmUgY29uY2VwdHMgb2Ygb2YtZ3JhcGggaXMgdGhhdCB0aGVyZSBpcyBhbHdheXMgYSBkZXNjcmlw
-dGlvbiBvZiB0aGUKY29ubmVjdGlvbiBmcm9tIGJvdGggc2lkZXMsIHRoaXMgd2F5IGVhY2ggc2lk
-ZSBjYW4gaW5kZXBlbmRlbnRseSBmaWd1cmUgb3V0CndoZXJlIGl0IGlzIGNvbm5lY3RlZC4KCkN1
-cnJlbnRseSB0aGVyZSBpcyBhbHNvIHplcm8gc3VwcG9ydCBvZiBvZi1ncmFwaCBpbiBBU29DLCBz
-byBhIGJpdCBvZiB3b3JrCmlzIHJlcXVpcmVkIHRvIGdldCB0aGlzIGludGVncmF0ZWQgcHJvcGVy
-bHkuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmkt
-ZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6
-Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+This patchset is based on top of commit 3a3a5fece6f2 ("fs: kernfs: Replace
+CURRENT_TIME by current_fs_time()") of the driver-core-testing branch of
+the driver-core repository.
+
+The introduction of the ISA_BUS option in commit b3c1be1b789c
+("base: isa: Remove X86_32 dependency") blocks the compilation of ISA
+drivers on non-x86 platforms. The ISA_BUS configuration option should not
+be necessary if the X86_32 dependency can be decoupled from the ISA
+configuration option. This patchset both removes the ISA_BUS configuration
+option entirely and decouples the X86_32 dependency from the ISA
+configuration option.
+
+The PNPBIOS driver requires preprocessor defines (located in
+include/asm/segment.h) only declared if the architecture is set to X86_32.
+If the architecture is set to X86_64, the PNPBIOS driver will not build
+properly. The X86 dependecy for the PNPBIOS configuration option is changed
+to an explicit X86_32 dependency in order to prevent an attempt to build
+for an unsupported architecture.
+
+Changes to the ISA SSCAPE and SCSI ULTRASTOR drivers are also included. The
+relevant patches simply fix format string identifier mismatches exposed
+during an attempted X86_64 compilation after the decoupling of the X86_32
+dependency from the ISA configuration option. These patches fix compilation
+warnings rather than errors, but the solutions were so trivial that I
+decided to include them in this patchset. If it would be inappropriate to
+include them in this patchset, let me know and I will rebase to remove the
+relevant patches.
+
+William Breathitt Gray (4):
+  pnp: pnpbios: Add explicit X86_32 dependency to PNPBIOS
+  sound: isa: sscape: Use correct format identifier for size_t
+  scsi: ultrastor: Use correct format identifier for kernel pointer
+  isa: Remove the ISA_BUS Kconfig option
+
+ arch/x86/Kconfig            | 10 ++--------
+ drivers/base/Makefile       |  2 +-
+ drivers/pnp/pnpbios/Kconfig |  2 +-
+ drivers/scsi/ultrastor.c    |  8 ++++----
+ include/linux/isa.h         |  2 +-
+ sound/isa/sscape.c          |  2 +-
+ 6 files changed, 10 insertions(+), 16 deletions(-)
+
+-- 
+2.7.3
