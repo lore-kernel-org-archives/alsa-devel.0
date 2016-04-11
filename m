@@ -1,151 +1,118 @@
-From: sugar <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Subject: Re: [PATCH] ASoC: rockchip: i2s: configure the sdio pins' iomux mode
-Date: Mon, 11 Apr 2016 09:18:40 +0800
-Message-ID: <570AFB70.8040003@rock-chips.com>
-References: <1459931902-77324-1-git-send-email-sugar.zhang@rock-chips.com>
- <3304388.ZeDefZvcUO@phil>
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH] checkpatch: Improve missing break for
+	switch/case tests
+Date: Sun, 10 Apr 2016 19:26:22 -0700
+Message-ID: <1460341582.1800.66.camel@perches.com>
+References: <D32C47F6.1E2FD%ryan.harvey@cirrus.com>
+ <s5hfuuvcfsr.wl-tiwai@suse.de> <570928CC.6030404@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <3304388.ZeDefZvcUO@phil>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
-Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Jianqun Xu <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtprelay.hostedemail.com (smtprelay0239.hostedemail.com
+ [216.40.44.239])
+ by alsa0.perex.cz (Postfix) with ESMTP id 45713261469
+ for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2016 04:26:27 +0200 (CEST)
+In-Reply-To: <570928CC.6030404@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Andrew Morton <akpm@linux-foundation.org>, Andy Whitcroft <apw@shadowen.org>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, LKML <linux-kernel@vger.kernel.org>, "Harvey, Ryan" <Ryan.Harvey@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Heiko,
+The current switch/case test doesn't handle ... case labels like:
 
-Got it, thanks for your advice, these will be done in next version.
+	switch (foo) {
+	case bar ... baz:
+		etc...
+	}
 
-On 4/9/2016 01:14, Heiko Stuebner Wrote:
-> Hi,
->
-> Am Mittwoch, 6. April 2016, 16:38:22 schrieb Sugar Zhang:
->> There are 3 i2s sdio pins, which iomux mode is as follows:
->>
->>   - sdi3_sdo1
->>   - sdi2_sdo2
->>   - sdi1_sdo3
->>
->> we need to configure these pins' iomux mode via the GRF register
->> when use multi channel playback/capture.
->>
->> Signed-off-by: Sugar Zhang <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
->> ---
->>
->>   .../devicetree/bindings/sound/rockchip-i2s.txt     |  5 +++
->>   sound/soc/rockchip/rockchip_i2s.c                  | 39
->> +++++++++++++++++++++- sound/soc/rockchip/rockchip_i2s.h
->> |  8 +++++
->>   3 files changed, 51 insertions(+), 1 deletion(-)
->>
->> diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
->> b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt index
->> 6e86d8a..ad72a7d 100644
->> --- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
->> +++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
->> @@ -23,6 +23,11 @@ Required properties:
->>   - rockchip,playback-channels: max playback channels, if not set, 8
->> channels default. - rockchip,capture-channels: max capture channels, if
->> not set, 2 channels default.
->>
->> +Required properties for controller which support multi channels
->> playback/capture: +
->> +- rockchip,grf: Should be phandle/offset pair. the phandle of the syscon
->> node for GRF register, +  and the offset of the GRF for control register.
->
-> I think I'd like it more to use the generic grf-binding we always use
-> everwhere else (just the phandle without any offset) and keep the actual
-> offset in the driver on a per-soc basis.
->
-> That way rockchip,grf stays consistent over all users.
->
-> We already have the per-soc compatible values, so it should a easy to add a
-> .data element with the necessary offset-information.
->
->> +
->>   Example for rk3288 I2S controller:
->>
->>   i2s@ff890000 {
->> diff --git a/sound/soc/rockchip/rockchip_i2s.c
->> b/sound/soc/rockchip/rockchip_i2s.c index 2f8e204..bc72780 100644
->> --- a/sound/soc/rockchip/rockchip_i2s.c
->> +++ b/sound/soc/rockchip/rockchip_i2s.c
->
-> [...]
->
->> @@ -478,6 +504,18 @@ static int rockchip_i2s_probe(struct platform_device
->> *pdev) return -ENOMEM;
->>   	}
->>
->> +	i2s->dev = &pdev->dev;
->> +
->> +	i2s->grf = syscon_regmap_lookup_by_phandle(node, "rockchip,grf");
->> +	if (!IS_ERR(i2s->grf)) {
->> +		ret = of_property_read_u32_index(node, "rockchip,grf",
->> +						 1, &i2s->iocfg_reg);
->> +		if (ret) {
->> +			dev_err(&pdev->dev, "Can't get iocfg_reg offset\n");
->> +			return ret;
->> +		}
->> +	}
->> +
->
-> as said in the binding part, please use the generic grf handling and get the
-> io-offset from per-soc devicetree data in the driver itself.
->
->
->>   	/* try to prepare related clocks */
->>   	i2s->hclk = devm_clk_get(&pdev->dev, "i2s_hclk");
->>   	if (IS_ERR(i2s->hclk)) {
->> @@ -517,7 +555,6 @@ static int rockchip_i2s_probe(struct platform_device
->> *pdev) i2s->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
->> i2s->capture_dma_data.maxburst = 4;
->>
->> -	i2s->dev = &pdev->dev;
->>   	dev_set_drvdata(&pdev->dev, i2s);
->>
->>   	pm_runtime_enable(&pdev->dev);
->> diff --git a/sound/soc/rockchip/rockchip_i2s.h
->> b/sound/soc/rockchip/rockchip_i2s.h index dc6e2c7..9a6aabf 100644
->> --- a/sound/soc/rockchip/rockchip_i2s.h
->> +++ b/sound/soc/rockchip/rockchip_i2s.h
->> @@ -236,4 +236,12 @@ enum {
->>   #define I2S_TXDR	(0x0024)
->>   #define I2S_RXDR	(0x0028)
->>
->> +/* io direction cfg register */
->> +#define I2S_IO_DIRECTION_SHIFT	11
->
-> this setting is sitting in GRF_SOC_CON8 on the rk3399. That is part of the
-> very volatile register set where settings move around a lot for each soc.
->
-> So if we're having the io-offset in per-soc data, we can easily put the
-> shift into it as well.
->
->> +#define I2S_IO_DIRECTION_MASK	(7 << I2S_IO_DIRECTION_SHIFT)
->> +#define I2S_IO_8CH_OUT_2CH_IN	(0 << I2S_IO_DIRECTION_SHIFT)
->> +#define I2S_IO_6CH_OUT_4CH_IN	(1 << I2S_IO_DIRECTION_SHIFT)
->> +#define I2S_IO_4CH_OUT_6CH_IN	(3 << I2S_IO_DIRECTION_SHIFT)
->> +#define I2S_IO_2CH_OUT_8CH_IN	(7 << I2S_IO_DIRECTION_SHIFT)
->
-> Keep the settings without the shift here and do the shift dynamically with
-> the per-soc setting when changing the setting.
->
->
-> Thanks
-> Heiko
->
-> _______________________________________________
-> Linux-rockchip mailing list
-> Linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-> http://lists.infradead.org/mailman/listinfo/linux-rockchip
->
->
->
+Add a specific regex for that form and the default label.
+Use the regex where a case label is tested.
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Improve the missing break/fall-through test by only reporting
+the first case label missing the break not every case label
+where there isn't a preceding break/fall-through.
+
+Show the line above the case label when reporting
+the possible defect.
+
+Signed-off-by: Joe Perches <joe@perches.com>
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+=A0scripts/checkpatch.pl | 18 ++++++++++++------
+=A01 file changed, 12 insertions(+), 6 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index e3d9c34..216e4a1 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -331,6 +331,11 @@ our $Operators	=3D qr{
+=A0		=A0=A0}x;
+=A0
+=A0our $c90_Keywords =3D qr{do|for|while|if|else|return|goto|continue|switc=
+h|default|case|break}x;
++our $case_label =3D qr{
++			(?:case\s+(?:$Ident|$Constant)
++			=A0=A0=A0=A0(?:\s*\.\.\.\s*\s*(?:$Ident|$Constant))? |
++			=A0default)\s*:
++		=A0=A0}x;
+=A0
+=A0our $BasicType;
+=A0our $NonptrType;
+@@ -4417,7 +4422,7 @@ sub process {
+=A0				$herecurr);
+=A0		}
+=A0# case and default should not have general statements after them
+-		if ($line =3D~ /^.\s*(?:case\s*.*|default\s*):/g &&
++		if ($line =3D~ /^.\s*$case_label/g &&
+=A0		=A0=A0=A0=A0$line !~ /\G(?:
+=A0			(?:\s*$;*)(?:\s*{)?(?:\s*$;*)(?:\s*\\)?\s*$|
+=A0			\s*return\s+
+@@ -5648,27 +5653,28 @@ sub process {
+=A0		}
+=A0
+=A0# check for case / default statements not preceded by break/fallthrough/=
+switch
+-		if ($line =3D~ /^.\s*(?:case\s+(?:$Ident|$Constant)\s*|default):/) {
++		if ($line =3D~ /^.\s*$case_label/ &&
++		=A0=A0=A0=A0$prevline !~ /^.\s*$case_label/) {
+=A0			my $has_break =3D 0;
+=A0			my $has_statement =3D 0;
+=A0			my $count =3D 0;
+=A0			my $prevline =3D $linenr;
+-			while ($prevline > 1 && ($file || $count < 3) && !$has_break) {
++			while ($prevline > 1 && ($file || $count < 3) && !$has_break && !$has_s=
+tatement) {
+=A0				$prevline--;
+=A0				my $rline =3D $rawlines[$prevline - 1];
+=A0				my $fline =3D $lines[$prevline - 1];
+=A0				last if ($fline =3D~ /^\@\@/);
+=A0				next if ($fline =3D~ /^\-/);
+-				next if ($fline =3D~ /^.(?:\s*(?:case\s+(?:$Ident|$Constant)[\s$;]*|de=
+fault):[\s$;]*)*$/);
++				next if ($fline =3D~ /^.(?:\s*${case_label}[\s$;]*)*$/);
+=A0				$has_break =3D 1 if ($rline =3D~ /fall[\s_-]*(through|thru)/i);
+=A0				next if ($fline =3D~ /^.[\s$;]*$/);
+-				$has_statement =3D 1;
+=A0				$count++;
+=A0				$has_break =3D 1 if ($fline =3D~ /\bswitch\b|\b(?:break\s*;[\s$;]*$|=
+return\b|goto\b|continue\b)/);
++				$has_statement =3D 1;
+=A0			}
+=A0			if (!$has_break && $has_statement) {
+=A0				WARN("MISSING_BREAK",
+-				=A0=A0=A0=A0=A0"Possible switch case/default not preceeded by break or=
+ fallthrough comment\n" . $herecurr);
++				=A0=A0=A0=A0=A0"Possible switch case/default not preceeded by break or=
+ fallthrough comment\n" . $hereprev);
+=A0			}
+=A0		}
+=A0
