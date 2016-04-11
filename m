@@ -1,97 +1,94 @@
-From: Jose Abreu <Jose.Abreu@synopsys.com>
-Subject: Re: [PATCH 2/5 v4] drm/i2c/adv7511: Add audio support
-Date: Mon, 11 Apr 2016 12:32:41 +0100
-Message-ID: <570B8B59.7000900@synopsys.com>
-References: <cover.1460047238.git.joabreu@synopsys.com>
- <d56087fae14074198f6c1bc749ce4da3cab62324.1460047238.git.joabreu@synopsys.com>
- <5707D249.5040707@metafoo.de> <5707D88A.3010400@synopsys.com>
- <57091999.4010906@metafoo.de> <570B6DF2.1080008@synopsys.com>
- <570B6F7B.2020906@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtprelay.synopsys.com (us01smtprelay-2.synopsys.com
- [198.182.47.9]) by alsa0.perex.cz (Postfix) with ESMTP id 71A4226055E
- for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2016 13:32:55 +0200 (CEST)
-In-Reply-To: <570B6F7B.2020906@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Jose Abreu <Jose.Abreu@synopsys.com>, linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: architt@codeaurora.org, airlied@linux.ie, Vineet.Gupta1@synopsys.com, Alexey.Brodkin@synopsys.com, CARLOS.PALMINHA@synopsys.com, lgirdwood@gmail.com, broonie@kernel.org, tiwai@suse.com
+From: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH v2 1/6] ASoC: davinci-mcbsp: add binding for McBSP
+Date: Mon, 11 Apr 2016 13:45:12 +0200
+Message-ID: <1460375117-4311-2-git-send-email-petr@barix.com>
+References: <1460375117-4311-1-git-send-email-petr@barix.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1460375117-4311-1-git-send-email-petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: nsekhar-l0cyMroinI0@public.gmane.org, khilman-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Lars,
+Add devicetree binding for the TI DA8xx/OMAP-L1x/AM17xx/AM18xx
+MultiChannel Buffered Serial Port (McBSP)
 
+The optional register range "dat" is not implemented at the moment.
+The current driver supports only DMA into RX/TX registers but no FIFO.
+Once the FIFO is implemented in the driver the "dat" range will be used.
 
-On 11-04-2016 10:33, Lars-Peter Clausen wrote:
-> On 04/11/2016 11:27 AM, Jose Abreu wrote:
->> Hi Lars,
->>
->>
->> On 09-04-2016 16:02, Lars-Peter Clausen wrote:
->>> On 04/08/2016 06:12 PM, Jose Abreu wrote:
->>> [...]
->>>>> [...]
->>>>>> +- adi,enable-audio: If set the ADV7511 driver will register a codec interface
->>>>>> +  into ALSA SoC.
->>>>> This is not a description of the hardware.
->>>> Is this okay: "adi,enable-audio: Set this boolean parameter if ADV7511
->>>> transmitter routes audio signals" ?
->>> I don't think we need this property. There is no problem with registering
->>> the audio part unconditionally. As long as there is no connection we wont
->>> create a sound card that is exposed to userspace.
->>>
->> This change was suggested by Laurent Pinchart and was introduced in v3. Quoting
->> Laurent:
->> "The idea is that enabling support for ADV7511 audio in the kernel isn't coupled
->> with whether the system includes audio support. It would be confusing, and would
->> also waste resources, to create a Linux sound device when no sound channel is
->> routed on the board."
-> I wouldn't care too much about this at this point, the extra amount of
-> resources required for registering the CODEC (but not the sound card) is
-> just a few bytes (sizeof(struct snd_soc_codec)).
->
-> Nevertheless what we should do is describe the hardware and from this
-> information infer whether there is a audio connection or not and if there is
-> none we might skip registering the CODEC. In my opinion this hardware
-> description should be modeled using of-graph, having a connection between
-> the SoC side and the adv7511 SPDIF or I2S port.
->
+Signed-off-by: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+---
+v1: initial
+v2: add missing TC channel in dmas properties (for compatibility with the new EDMA3 binding)
+    remove "-audio" postfix from the compatible string
+    remove "channel-combine" property
 
-You mean something like this:
+ .../devicetree/bindings/sound/davinci-mcbsp.txt    | 51 ++++++++++++++++++++++
+ 1 file changed, 51 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
 
-sound_playback: sound_playback {
-    compatible = "simple-audio-card";
-    [...]
-    simple-audio-card,format = "i2s";
-    [...]
-}
+diff --git a/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt b/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
+new file mode 100644
+index 000000000000..de45865c3863
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
+@@ -0,0 +1,51 @@
++Texas Instruments DaVinci McBSP module
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++This binding describes the "Multi-channel Buffered Serial Port" (McBSP)
++audio interface found in some TI DaVinci processors like the OMAP-L138 or AM180x.
++
++
++Required properties:
++~~~~~~~~~~~~~~~~~~~~
++- compatible : "ti,da850-mcbsp"
++
++- reg : physical base address and length of the controller memory mapped
++        region(s).
++- reg-names : Should contain:
++        * "mpu" for the main registers (required). For compatibility with
++          existing software, it is recommended this is the first entry.
++        * "dat" for the data FIFO (optional).
++
++- dmas: three element list of DMA controller phandles, DMA request line and
++	TC channel ordered triplets.
++- dma-names: identifier string for each DMA request line in the dmas property.
++	These strings correspond 1:1 with the ordered pairs in dmas. The dma
++	identifiers must be "rx" and "tx".
++
++Optional properties:
++~~~~~~~~~~~~~~~~~~~~
++- interrupts : Interrupt numbers for McBSP
++- interrupt-names : Known interrupt names are "rx" and "tx"
++
++- pinctrl-0: Should specify pin control group used for this controller.
++- pinctrl-names: Should contain only one value - "default", for more details
++        please refer to pinctrl-bindings.txt
++
++Example (AM1808):
++~~~~~~~~~~~~~~~~~
++
++mcbsp0: mcbsp@1d10000 {
++	compatible = "ti,da850-mcbsp";
++	pinctrl-names = "default";
++	pinctrl-0 = <&mcbsp0_pins>;
++
++	reg = 	<0x00110000 0x1000>,
++		<0x00310000 0x1000>;
++	reg-names = "mpu", "dat";
++	interrupts = <97 98>;
++	interrupts-names = "rx", "tx";
++	dmas = <&edma0 3 1
++		&edma0 2 1>;
++	dma-names = "tx", "rx";
++	status = "okay";
++};
+-- 
+1.9.1
 
-adv7511@xx {
-    compatible = "adi,adv7511";
-    [...]
-
-    ports {
-        [...]
-        /* Audio Output */
-        port@x {
-            reg = <x>;
-            endpoint {
-                remote-endpoint = <&sound_playback>;
-            }
-        }
-    }
-}
-
-?
-
-Best regards,
-Jose Miguel Abreu
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
