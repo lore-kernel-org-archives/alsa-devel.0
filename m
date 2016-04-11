@@ -1,15 +1,21 @@
-From: Sven Eckelmann <sven@narfation.org>
-Subject: [PATCH v2] ALSA: hda/realtek - Enable the ALC292 dock
-	fixup on the Thinkpad T460s
-Date: Mon, 11 Apr 2016 11:21:38 +0200
-Message-ID: <1460366498-14101-1-git-send-email-sven@narfation.org>
+From: Jose Abreu <Jose.Abreu@synopsys.com>
+Subject: Re: [PATCH 5/5 v4] ASoC: dwc: Update DOCUMENTATION for
+ I2S Driver
+Date: Mon, 11 Apr 2016 10:24:54 +0100
+Message-ID: <570B6D66.4080309@synopsys.com>
+References: <cover.1460047238.git.joabreu@synopsys.com>
+ <ce97e6bb7ddb71e532c4066334ceead4d4d3e692.1460047238.git.joabreu@synopsys.com>
+ <20160407175326.GX1924@sirena.org.uk> <570782BF.10402@synopsys.com>
+ <5707D3AD.8030308@metafoo.de> <5707D780.4050406@synopsys.com>
+ <570917E9.8020804@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from v3-1039.vlinux.de (narfation.org [79.140.41.39])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F6A726154C
- for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2016 11:21:47 +0200 (CEST)
+Received: from smtprelay.synopsys.com (smtprelay.synopsys.com [198.182.47.9])
+ by alsa0.perex.cz (Postfix) with ESMTP id B512126154C
+ for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2016 11:25:32 +0200 (CEST)
+In-Reply-To: <570917E9.8020804@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,74 +25,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Sven Eckelmann <sven@narfation.org>, Simon Wunderlich <sw@simonwunderlich.de>
+To: Lars-Peter Clausen <lars@metafoo.de>, Jose Abreu <Jose.Abreu@synopsys.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Vineet.Gupta1@synopsys.com, Alexey.Brodkin@synopsys.com, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, lgirdwood@gmail.com, CARLOS.PALMINHA@synopsys.com, tiwai@suse.com, linux-snps-arc@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The Lenovo Thinkpad T460s requires the alc_fixup_tpt440_dock as well in
-order to get working sound output on the docking stations headphone jack.
+Hi Lars,
 
-Patch tested on a Thinkpad T460s (20F9CT01WW) using a ThinkPad Ultradock
-on kernel 4.4.6.
 
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
-Tested-by: Simon Wunderlich <sw@simonwunderlich.de>
----
-v2:
- - rebased on current master
+On 09-04-2016 15:55, Lars-Peter Clausen wrote:
+> On 04/08/2016 06:08 PM, Jose Abreu wrote:
+>> Hi Lars,
+>>
+>>
+>> On 08-04-2016 16:52, Lars-Peter Clausen wrote:
+>>> On 04/08/2016 12:06 PM, Jose Abreu wrote:
+>>>> Hi Mark,
+>>>>
+>>>>
+>>>> On 07-04-2016 18:53, Mark Brown wrote:
+>>>>> On Thu, Apr 07, 2016 at 05:53:59PM +0100, Jose Abreu wrote:
+>>>>>
+>>>>>> + Optional properties:
+>>>>>> + - snps,use-dmaengine: If set the driver will use ALSA DMA engine. If set
+>>>>>> +   it is required to use the properties 'dmas' and 'dma-names'.
+>>>>> This is not a good interface, it's describing Linux internal APIs.  If
+>>>>> the device needs to operate in PIO mode it should just do that.
+>>>> I added this interface because there is no direct way to check if DMA is
+>>>> available on the I2S controller so it is not possible to automatically change
+>>>> between DMA and PIO mode. As the I2S controller can be built with or without DMA
+>>>> support it is necessary to somehow check if DMA is enabled or not and according
+>>>> to that use either ALSA DMA engine or the custom platform driver sent in these
+>>>> patches. I did not want to remove drivers functionality so I added this property
+>>>> to the DT. This way a user can select between DMA and PIO mode.
+>>> That's OK, but you need to describe the hardware, not the indented behavior
+>>> of the software driver.
+>>>
+>> Is this okay: "snps,use-dmaengine: Set this boolean paramater if I2S controller
+>> has DMA support. If set the properties 'dmas' and 'dma-names' must be also set" ?
+> The description is better. But the name of the property is still imperative
+> rather then descriptive. It tells the software what should be done rather
+> then describing what the hardware looks like.
+>
+> Since there is already the dmas property which is present if a DMA is
+> connected and is absent when no DMA is present it should be enough to just
+> check that property rather than requiring an additional one.
 
- sound/pci/hda/patch_realtek.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+Ok, will then use the DMA property to decide which mode to use: PIO or DMA.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index fefe83f..36d371c 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4760,6 +4760,8 @@ enum {
- 	ALC225_FIXUP_DELL1_MIC_NO_PRESENCE,
- 	ALC280_FIXUP_HP_HEADSET_MIC,
- 	ALC221_FIXUP_HP_FRONT_MIC,
-+	ALC292_FIXUP_TPT460_DOCK,
-+	ALC292_FIXUP_TPT460,
- };
- 
- static const struct hda_fixup alc269_fixups[] = {
-@@ -5409,6 +5411,18 @@ static const struct hda_fixup alc269_fixups[] = {
- 			{ }
- 		},
- 	},
-+	[ALC292_FIXUP_TPT460_DOCK] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_tpt440_dock,
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_THINKPAD_ACPI
-+	},
-+	[ALC292_FIXUP_TPT460] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_disable_aamix,
-+		.chained = true,
-+		.chain_id = ALC292_FIXUP_TPT460_DOCK,
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -5563,7 +5577,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x2218, "Thinkpad X1 Carbon 2nd", ALC292_FIXUP_TPT440_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x2223, "ThinkPad T550", ALC292_FIXUP_TPT440_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x2226, "ThinkPad X250", ALC292_FIXUP_TPT440_DOCK),
--	SND_PCI_QUIRK(0x17aa, 0x2233, "Thinkpad", ALC293_FIXUP_LENOVO_SPK_NOISE),
-+	SND_PCI_QUIRK(0x17aa, 0x2233, "Thinkpad", ALC292_FIXUP_TPT460),
- 	SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
- 	SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
- 	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
-@@ -5658,6 +5672,8 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
- 	{.id = ALC283_FIXUP_SENSE_COMBO_JACK, .name = "alc283-sense-combo"},
- 	{.id = ALC292_FIXUP_TPT440_DOCK, .name = "tpt440-dock"},
- 	{.id = ALC292_FIXUP_TPT440, .name = "tpt440"},
-+	{.id = ALC292_FIXUP_TPT460_DOCK, .name = "tpt460-dock"},
-+	{.id = ALC292_FIXUP_TPT460, .name = "tpt460"},
- 	{}
- };
- #define ALC225_STANDARD_PINS \
--- 
-2.8.0.rc3
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+Best regards,
+Jose Miguel Abreu
