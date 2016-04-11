@@ -1,8 +1,8 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v3 4/4] ASoC: compress: Pass error out of
-	soc_compr_pointer
-Date: Mon, 11 Apr 2016 15:27:35 +0100
-Message-ID: <1460384855-10567-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH v3 1/4] ALSA: compress: Replace complex if
+	statement with switch
+Date: Mon, 11 Apr 2016 15:27:32 +0100
+Message-ID: <1460384855-10567-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1460384855-10567-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 28414261622
- for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2016 16:27:43 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id C90902608CF
+ for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2016 16:27:40 +0200 (CEST)
 In-Reply-To: <1460384855-10567-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,37 +26,33 @@ To: vinod.koul@intel.com, tiwai@suse.com, broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Both soc_compr_pointer and the platform driver pointer callback return
-ints but current soc_compr_pointer always returns 0. Update this so we
-return the actual value from the platform driver callback. This doesn't
-fix any issues simply makes the code more consistent.
+A switch statement looks a bit cleaner than an if statement
+spread over 3 lines, as such update this to a switch.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/soc-compress.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/core/compress_offload.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 875733c..d2df46c 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -530,14 +530,15 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
- {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
- 	struct snd_soc_platform *platform = rtd->platform;
-+	int ret = 0;
- 
- 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
- 
- 	if (platform->driver->compr_ops && platform->driver->compr_ops->pointer)
--		 platform->driver->compr_ops->pointer(cstream, tstamp);
-+		ret = platform->driver->compr_ops->pointer(cstream, tstamp);
- 
- 	mutex_unlock(&rtd->pcm_mutex);
--	return 0;
-+	return ret;
- }
- 
- static int soc_compr_copy(struct snd_compr_stream *cstream,
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index a9933c0..507071d 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -288,9 +288,12 @@ static ssize_t snd_compr_write(struct file *f, const char __user *buf,
+ 	stream = &data->stream;
+ 	mutex_lock(&stream->device->lock);
+ 	/* write is allowed when stream is running or has been steup */
+-	if (stream->runtime->state != SNDRV_PCM_STATE_SETUP &&
+-	    stream->runtime->state != SNDRV_PCM_STATE_PREPARED &&
+-			stream->runtime->state != SNDRV_PCM_STATE_RUNNING) {
++	switch (stream->runtime->state) {
++	case SNDRV_PCM_STATE_SETUP:
++	case SNDRV_PCM_STATE_PREPARED:
++	case SNDRV_PCM_STATE_RUNNING:
++		break;
++	default:
+ 		mutex_unlock(&stream->device->lock);
+ 		return -EBADFD;
+ 	}
 -- 
 2.1.4
