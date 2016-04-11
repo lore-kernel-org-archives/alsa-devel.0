@@ -1,189 +1,151 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH 2/2] amidi: fix timeout handling
-Date: Sun, 10 Apr 2016 21:30:29 +0200
-Message-ID: <570AA9D5.4010708@ladisch.de>
-References: <570AA980.3070802@ladisch.de>
+From: sugar <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Subject: Re: [PATCH] ASoC: rockchip: i2s: configure the sdio pins' iomux mode
+Date: Mon, 11 Apr 2016 09:18:40 +0800
+Message-ID: <570AFB70.8040003@rock-chips.com>
+References: <1459931902-77324-1-git-send-email-sugar.zhang@rock-chips.com>
+ <3304388.ZeDefZvcUO@phil>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id E25F2261469
- for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2016 21:30:52 +0200 (CEST)
-In-Reply-To: <570AA980.3070802@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Martin Tarenskeen <m.tarenskeen@zonnet.nl>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <3304388.ZeDefZvcUO@phil>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
+Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Jianqun Xu <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The timeout is not supposed to expire when ignored messages are
-received.  This cannot be handled with the poll() timeout, so add
-a separate timer.
+Hi Heiko,
 
-Reported-by: Martin Tarenskeen <m.tarenskeen@zonnet.nl>
-Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
----
- amidi/amidi.c |   69 ++++++++++++++++++++++++++++++++++++++++++++-------------
- 1 file changed, 53 insertions(+), 16 deletions(-)
+Got it, thanks for your advice, these will be done in next version.
 
-diff --git a/amidi/amidi.c b/amidi/amidi.c
-index 4978249..a3515b1 100644
---- a/amidi/amidi.c
-+++ b/amidi/amidi.c
-@@ -25,9 +25,11 @@
- #include <stdarg.h>
- #include <string.h>
- #include <ctype.h>
-+#include <math.h>
- #include <getopt.h>
- #include <errno.h>
- #include <signal.h>
-+#include <sys/timerfd.h>
- #include <sys/types.h>
- #include <sys/poll.h>
- #include <sys/stat.h>
-@@ -37,6 +39,8 @@
- #include "aconfig.h"
- #include "version.h"
+On 4/9/2016 01:14, Heiko Stuebner Wrote:
+> Hi,
+>
+> Am Mittwoch, 6. April 2016, 16:38:22 schrieb Sugar Zhang:
+>> There are 3 i2s sdio pins, which iomux mode is as follows:
+>>
+>>   - sdi3_sdo1
+>>   - sdi2_sdo2
+>>   - sdi1_sdo3
+>>
+>> we need to configure these pins' iomux mode via the GRF register
+>> when use multi channel playback/capture.
+>>
+>> Signed-off-by: Sugar Zhang <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+>> ---
+>>
+>>   .../devicetree/bindings/sound/rockchip-i2s.txt     |  5 +++
+>>   sound/soc/rockchip/rockchip_i2s.c                  | 39
+>> +++++++++++++++++++++- sound/soc/rockchip/rockchip_i2s.h
+>> |  8 +++++
+>>   3 files changed, 51 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+>> b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt index
+>> 6e86d8a..ad72a7d 100644
+>> --- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+>> +++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+>> @@ -23,6 +23,11 @@ Required properties:
+>>   - rockchip,playback-channels: max playback channels, if not set, 8
+>> channels default. - rockchip,capture-channels: max capture channels, if
+>> not set, 2 channels default.
+>>
+>> +Required properties for controller which support multi channels
+>> playback/capture: +
+>> +- rockchip,grf: Should be phandle/offset pair. the phandle of the syscon
+>> node for GRF register, +  and the offset of the GRF for control register.
+>
+> I think I'd like it more to use the generic grf-binding we always use
+> everwhere else (just the phandle without any offset) and keep the actual
+> offset in the driver on a per-soc basis.
+>
+> That way rockchip,grf stays consistent over all users.
+>
+> We already have the per-soc compatible values, so it should a easy to add a
+> .data element with the necessary offset-information.
+>
+>> +
+>>   Example for rk3288 I2S controller:
+>>
+>>   i2s@ff890000 {
+>> diff --git a/sound/soc/rockchip/rockchip_i2s.c
+>> b/sound/soc/rockchip/rockchip_i2s.c index 2f8e204..bc72780 100644
+>> --- a/sound/soc/rockchip/rockchip_i2s.c
+>> +++ b/sound/soc/rockchip/rockchip_i2s.c
+>
+> [...]
+>
+>> @@ -478,6 +504,18 @@ static int rockchip_i2s_probe(struct platform_device
+>> *pdev) return -ENOMEM;
+>>   	}
+>>
+>> +	i2s->dev = &pdev->dev;
+>> +
+>> +	i2s->grf = syscon_regmap_lookup_by_phandle(node, "rockchip,grf");
+>> +	if (!IS_ERR(i2s->grf)) {
+>> +		ret = of_property_read_u32_index(node, "rockchip,grf",
+>> +						 1, &i2s->iocfg_reg);
+>> +		if (ret) {
+>> +			dev_err(&pdev->dev, "Can't get iocfg_reg offset\n");
+>> +			return ret;
+>> +		}
+>> +	}
+>> +
+>
+> as said in the binding part, please use the generic grf handling and get the
+> io-offset from per-soc devicetree data in the driver itself.
+>
+>
+>>   	/* try to prepare related clocks */
+>>   	i2s->hclk = devm_clk_get(&pdev->dev, "i2s_hclk");
+>>   	if (IS_ERR(i2s->hclk)) {
+>> @@ -517,7 +555,6 @@ static int rockchip_i2s_probe(struct platform_device
+>> *pdev) i2s->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+>> i2s->capture_dma_data.maxburst = 4;
+>>
+>> -	i2s->dev = &pdev->dev;
+>>   	dev_set_drvdata(&pdev->dev, i2s);
+>>
+>>   	pm_runtime_enable(&pdev->dev);
+>> diff --git a/sound/soc/rockchip/rockchip_i2s.h
+>> b/sound/soc/rockchip/rockchip_i2s.h index dc6e2c7..9a6aabf 100644
+>> --- a/sound/soc/rockchip/rockchip_i2s.h
+>> +++ b/sound/soc/rockchip/rockchip_i2s.h
+>> @@ -236,4 +236,12 @@ enum {
+>>   #define I2S_TXDR	(0x0024)
+>>   #define I2S_RXDR	(0x0028)
+>>
+>> +/* io direction cfg register */
+>> +#define I2S_IO_DIRECTION_SHIFT	11
+>
+> this setting is sitting in GRF_SOC_CON8 on the rk3399. That is part of the
+> very volatile register set where settings move around a lot for each soc.
+>
+> So if we're having the io-offset in per-soc data, we can easily put the
+> shift into it as well.
+>
+>> +#define I2S_IO_DIRECTION_MASK	(7 << I2S_IO_DIRECTION_SHIFT)
+>> +#define I2S_IO_8CH_OUT_2CH_IN	(0 << I2S_IO_DIRECTION_SHIFT)
+>> +#define I2S_IO_6CH_OUT_4CH_IN	(1 << I2S_IO_DIRECTION_SHIFT)
+>> +#define I2S_IO_4CH_OUT_6CH_IN	(3 << I2S_IO_DIRECTION_SHIFT)
+>> +#define I2S_IO_2CH_OUT_8CH_IN	(7 << I2S_IO_DIRECTION_SHIFT)
+>
+> Keep the settings without the shift here and do the shift dynamically with
+> the per-soc setting when changing the setting.
+>
+>
+> Thanks
+> Heiko
+>
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
+>
+>
+>
 
-+#define NSEC_PER_SEC 1000000000L
-+
- static int do_device_list, do_rawmidi_list;
- static char *port_name = "default";
- static char *send_file_name;
-@@ -46,7 +50,7 @@ static char *send_data;
- static int send_data_length;
- static int receive_file;
- static int dump;
--static int timeout;
-+static float timeout;
- static int stop;
- static snd_rawmidi_t *input, **inputp;
- static snd_rawmidi_t *output, **outputp;
-@@ -425,6 +429,7 @@ int main(int argc, char *argv[])
- 	int c, err, ok = 0;
- 	int ignore_system_realtime = 1;
- 	int do_send_hex = 0;
-+	struct itimerspec itimerspec = { .it_interval = { 0, 0 } };
-
- 	while ((c = getopt_long(argc, argv, short_options,
- 		     		long_options, NULL)) != -1) {
-@@ -459,7 +464,7 @@ int main(int argc, char *argv[])
- 			dump = 1;
- 			break;
- 		case 't':
--			timeout = atoi(optarg);
-+			timeout = atof(optarg);
- 			break;
- 		case 'a':
- 			ignore_system_realtime = 0;
-@@ -547,40 +552,64 @@ int main(int argc, char *argv[])
-
- 	if (inputp) {
- 		int read = 0;
--		int npfds, time = 0;
-+		int npfds;
- 		struct pollfd *pfds;
-
--		timeout *= 1000;
--		npfds = snd_rawmidi_poll_descriptors_count(input);
-+		npfds = 1 + snd_rawmidi_poll_descriptors_count(input);
- 		pfds = alloca(npfds * sizeof(struct pollfd));
--		snd_rawmidi_poll_descriptors(input, pfds, npfds);
-+
-+		if (timeout > 0) {
-+			pfds[0].fd = timerfd_create(CLOCK_MONOTONIC, 0);
-+			if (pfds[0].fd == -1) {
-+				error("cannot create timer: %s", strerror(errno));
-+				goto _exit;
-+			}
-+			pfds[0].events = POLLIN;
-+		} else {
-+			pfds[0].fd = -1;
-+		}
-+
-+		snd_rawmidi_poll_descriptors(input, &pfds[1], npfds - 1);
-+
- 		signal(SIGINT, sig_handler);
-+
-+		if (timeout > 0) {
-+			float timeout_int;
-+
-+			itimerspec.it_value.tv_nsec = modff(timeout, &timeout_int) * NSEC_PER_SEC;
-+			itimerspec.it_value.tv_sec = timeout_int;
-+			err = timerfd_settime(pfds[0].fd, 0, &itimerspec, NULL);
-+			if (err < 0) {
-+				error("cannot set timer: %s", strerror(errno));
-+				goto _exit;
-+			}
-+		}
- 		for (;;) {
- 			unsigned char buf[256];
- 			int i, length;
- 			unsigned short revents;
-
--			err = poll(pfds, npfds, 200);
-+			err = poll(pfds, npfds, -1);
- 			if (stop || (err < 0 && errno == EINTR))
- 				break;
- 			if (err < 0) {
- 				error("poll failed: %s", strerror(errno));
- 				break;
- 			}
--			if (err == 0) {
--				time += 200;
--				if (timeout && time >= timeout)
--					break;
--				continue;
--			}
--			if ((err = snd_rawmidi_poll_descriptors_revents(input, pfds, npfds, &revents)) < 0) {
-+
-+			err = snd_rawmidi_poll_descriptors_revents(input, &pfds[1], npfds - 1, &revents);
-+			if (err < 0) {
- 				error("cannot get poll events: %s", snd_strerror(errno));
- 				break;
- 			}
- 			if (revents & (POLLERR | POLLHUP))
- 				break;
--			if (!(revents & POLLIN))
-+			if (!(revents & POLLIN)) {
-+				if (pfds[0].revents & POLLIN)
-+					break;
- 				continue;
-+			}
-+
- 			err = snd_rawmidi_read(input, buf, sizeof(buf));
- 			if (err == -EAGAIN)
- 				continue;
-@@ -595,7 +624,7 @@ int main(int argc, char *argv[])
- 			if (length == 0)
- 				continue;
- 			read += length;
--			time = 0;
-+
- 			if (receive_file != -1)
- 				write(receive_file, buf, length);
- 			if (dump) {
-@@ -603,6 +632,14 @@ int main(int argc, char *argv[])
- 					print_byte(buf[i]);
- 				fflush(stdout);
- 			}
-+
-+			if (timeout > 0) {
-+				err = timerfd_settime(pfds[0].fd, 0, &itimerspec, NULL);
-+				if (err < 0) {
-+					error("cannot set timer: %s", strerror(errno));
-+					break;
-+				}
-+			}
- 		}
- 		if (isatty(fileno(stdout)))
- 			printf("\n%d bytes read\n", read);
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
