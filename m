@@ -1,46 +1,57 @@
-From: Jose Abreu <Jose.Abreu@synopsys.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
 Subject: Re: [alsa-devel] [PATCH 2/5 v4] drm/i2c/adv7511: Add audio support
-Date: Mon, 11 Apr 2016 10:27:14 +0100
-Message-ID: <570B6DF2.1080008@synopsys.com>
+Date: Mon, 11 Apr 2016 11:33:47 +0200
+Message-ID: <570B6F7B.2020906@metafoo.de>
 References: <cover.1460047238.git.joabreu@synopsys.com>
  <d56087fae14074198f6c1bc749ce4da3cab62324.1460047238.git.joabreu@synopsys.com>
  <5707D249.5040707@metafoo.de> <5707D88A.3010400@synopsys.com>
- <57091999.4010906@metafoo.de>
+ <57091999.4010906@metafoo.de> <570B6DF2.1080008@synopsys.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <57091999.4010906@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Jose Abreu <Jose.Abreu@synopsys.com>, linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: architt@codeaurora.org, airlied@linux.ie, Vineet.Gupta1@synopsys.com, Alexey.Brodkin@synopsys.com, lgirdwood@gmail.com, CARLOS.PALMINHA@synopsys.com, broonie@kernel.org, tiwai@suse.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <570B6DF2.1080008@synopsys.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Jose Abreu <Jose.Abreu@synopsys.com>, linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org
+Cc: Vineet.Gupta1@synopsys.com, Alexey.Brodkin@synopsys.com, CARLOS.PALMINHA@synopsys.com, lgirdwood@gmail.com, broonie@kernel.org, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Lars,
-
-
-On 09-04-2016 16:02, Lars-Peter Clausen wrote:
-> On 04/08/2016 06:12 PM, Jose Abreu wrote:
-> [...]
->>> [...]
->>>> +- adi,enable-audio: If set the ADV7511 driver will register a codec interface
->>>> +  into ALSA SoC.
->>> This is not a description of the hardware.
->> Is this okay: "adi,enable-audio: Set this boolean parameter if ADV7511
->> transmitter routes audio signals" ?
-> I don't think we need this property. There is no problem with registering
-> the audio part unconditionally. As long as there is no connection we wont
-> create a sound card that is exposed to userspace.
->
-
-This change was suggested by Laurent Pinchart and was introduced in v3. Quoting
-Laurent:
-"The idea is that enabling support for ADV7511 audio in the kernel isn't coupled
-with whether the system includes audio support. It would be confusing, and would
-also waste resources, to create a Linux sound device when no sound channel is
-routed on the board."
-
-Should I revert this?
-
-Best regards,
-Jose Miguel Abreu
+T24gMDQvMTEvMjAxNiAxMToyNyBBTSwgSm9zZSBBYnJldSB3cm90ZToKPiBIaSBMYXJzLAo+IAo+
+IAo+IE9uIDA5LTA0LTIwMTYgMTY6MDIsIExhcnMtUGV0ZXIgQ2xhdXNlbiB3cm90ZToKPj4gT24g
+MDQvMDgvMjAxNiAwNjoxMiBQTSwgSm9zZSBBYnJldSB3cm90ZToKPj4gWy4uLl0KPj4+PiBbLi4u
+XQo+Pj4+PiArLSBhZGksZW5hYmxlLWF1ZGlvOiBJZiBzZXQgdGhlIEFEVjc1MTEgZHJpdmVyIHdp
+bGwgcmVnaXN0ZXIgYSBjb2RlYyBpbnRlcmZhY2UKPj4+Pj4gKyAgaW50byBBTFNBIFNvQy4KPj4+
+PiBUaGlzIGlzIG5vdCBhIGRlc2NyaXB0aW9uIG9mIHRoZSBoYXJkd2FyZS4KPj4+IElzIHRoaXMg
+b2theTogImFkaSxlbmFibGUtYXVkaW86IFNldCB0aGlzIGJvb2xlYW4gcGFyYW1ldGVyIGlmIEFE
+Vjc1MTEKPj4+IHRyYW5zbWl0dGVyIHJvdXRlcyBhdWRpbyBzaWduYWxzIiA/Cj4+IEkgZG9uJ3Qg
+dGhpbmsgd2UgbmVlZCB0aGlzIHByb3BlcnR5LiBUaGVyZSBpcyBubyBwcm9ibGVtIHdpdGggcmVn
+aXN0ZXJpbmcKPj4gdGhlIGF1ZGlvIHBhcnQgdW5jb25kaXRpb25hbGx5LiBBcyBsb25nIGFzIHRo
+ZXJlIGlzIG5vIGNvbm5lY3Rpb24gd2Ugd29udAo+PiBjcmVhdGUgYSBzb3VuZCBjYXJkIHRoYXQg
+aXMgZXhwb3NlZCB0byB1c2Vyc3BhY2UuCj4+Cj4gCj4gVGhpcyBjaGFuZ2Ugd2FzIHN1Z2dlc3Rl
+ZCBieSBMYXVyZW50IFBpbmNoYXJ0IGFuZCB3YXMgaW50cm9kdWNlZCBpbiB2My4gUXVvdGluZwo+
+IExhdXJlbnQ6Cj4gIlRoZSBpZGVhIGlzIHRoYXQgZW5hYmxpbmcgc3VwcG9ydCBmb3IgQURWNzUx
+MSBhdWRpbyBpbiB0aGUga2VybmVsIGlzbid0IGNvdXBsZWQKPiB3aXRoIHdoZXRoZXIgdGhlIHN5
+c3RlbSBpbmNsdWRlcyBhdWRpbyBzdXBwb3J0LiBJdCB3b3VsZCBiZSBjb25mdXNpbmcsIGFuZCB3
+b3VsZAo+IGFsc28gd2FzdGUgcmVzb3VyY2VzLCB0byBjcmVhdGUgYSBMaW51eCBzb3VuZCBkZXZp
+Y2Ugd2hlbiBubyBzb3VuZCBjaGFubmVsIGlzCj4gcm91dGVkIG9uIHRoZSBib2FyZC4iCgpJIHdv
+dWxkbid0IGNhcmUgdG9vIG11Y2ggYWJvdXQgdGhpcyBhdCB0aGlzIHBvaW50LCB0aGUgZXh0cmEg
+YW1vdW50IG9mCnJlc291cmNlcyByZXF1aXJlZCBmb3IgcmVnaXN0ZXJpbmcgdGhlIENPREVDIChi
+dXQgbm90IHRoZSBzb3VuZCBjYXJkKSBpcwpqdXN0IGEgZmV3IGJ5dGVzIChzaXplb2Yoc3RydWN0
+IHNuZF9zb2NfY29kZWMpKS4KCk5ldmVydGhlbGVzcyB3aGF0IHdlIHNob3VsZCBkbyBpcyBkZXNj
+cmliZSB0aGUgaGFyZHdhcmUgYW5kIGZyb20gdGhpcwppbmZvcm1hdGlvbiBpbmZlciB3aGV0aGVy
+IHRoZXJlIGlzIGEgYXVkaW8gY29ubmVjdGlvbiBvciBub3QgYW5kIGlmIHRoZXJlIGlzCm5vbmUg
+d2UgbWlnaHQgc2tpcCByZWdpc3RlcmluZyB0aGUgQ09ERUMuIEluIG15IG9waW5pb24gdGhpcyBo
+YXJkd2FyZQpkZXNjcmlwdGlvbiBzaG91bGQgYmUgbW9kZWxlZCB1c2luZyBvZi1ncmFwaCwgaGF2
+aW5nIGEgY29ubmVjdGlvbiBiZXR3ZWVuCnRoZSBTb0Mgc2lkZSBhbmQgdGhlIGFkdjc1MTEgU1BE
+SUYgb3IgSTJTIHBvcnQuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3Rv
+cC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmkt
+ZGV2ZWwK
