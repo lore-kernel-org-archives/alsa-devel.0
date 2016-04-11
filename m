@@ -1,17 +1,19 @@
-From: Petr Kulhavy <petr@barix.com>
-Subject: [PATCH v2 0/6] ASoC: davinci-mcbsp: add binding for
-	McBSP
-Date: Mon, 11 Apr 2016 13:45:11 +0200
-Message-ID: <1460375117-4311-1-git-send-email-petr@barix.com>
+From: Martin Tarenskeen <m.tarenskeen@zonnet.nl>
+Subject: Re: [PATCH 1/2] amidi: ignore not only Active Sensing
+ but all System Real-Time messages
+Date: Mon, 11 Apr 2016 13:47:09 +0200 (CEST)
+Message-ID: <alpine.LFD.2.20.1604111345250.5639@localhost.localdomain>
+References: <570AA980.3070802@ladisch.de>
+ <alpine.DEB.2.02.1604110858100.9999@lnxricardw1.se.axis.com>
+ <alpine.LFD.2.20.1604111304310.4695@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f52.google.com (mail-wm0-f52.google.com [74.125.82.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 7660E26055E
- for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2016 13:45:57 +0200 (CEST)
-Received: by mail-wm0-f52.google.com with SMTP id a140so9200219wma.0
- for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2016 04:45:57 -0700 (PDT)
+Received: from cpsmtpb-ews06.kpnxchange.com (cpsmtpb-ews06.kpnxchange.com
+ [213.75.39.9]) by alsa0.perex.cz (Postfix) with ESMTP id C7534261A76
+ for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2016 13:47:12 +0200 (CEST)
+In-Reply-To: <alpine.LFD.2.20.1604111304310.4695@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,17 +23,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: nsekhar@ti.com, khilman@kernel.org, lgirdwood@gmail.com, broonie@kernel.org, devicetree@vger.kernel.org
-Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, Petr Kulhavy <petr@barix.com>, robh+dt@kernel.org, galak@codeaurora.org
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Alsa-devel mailinglist <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-This series of patches adds devicetree support for the davinci McBSP audio
-interface.
 
-Changes in version 2 of the patch:
 
-* add missing TC channel in dmas properties (for compatibility with the new EDMA3 binding)
-* remove "-audio" postfix from the compatible string
-* remove "channel-combine" property
-* of_match_table renamed consistently with the rest of the file (davinci_i2s_match)
-* devicetree DMA configuration in probe simplified
+On Mon, 11 Apr 2016, Martin Tarenskeen wrote:
+
+> I can image keeping the -a (--allow-realtime) option 
+> the way it is
+
+I meant to write -a (--active-sensing
+
+--allow-realtime is what I have now in my home-hacked patched version.
+
+-- 
+
+MT
