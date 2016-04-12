@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH 01/11] ASoC: Intel: Skylake: Fix ibs/obs calc
-	for non-integral sampling rates
-Date: Tue, 12 Apr 2016 10:31:23 +0530
-Message-ID: <1460437293-8509-2-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH 03/11] ASoC: hdac_hdmi: parse eld for channel
+	map capability
+Date: Tue, 12 Apr 2016 10:31:25 +0530
+Message-ID: <1460437293-8509-4-git-send-email-subhransu.s.prusty@intel.com>
 References: <1460437293-8509-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id BFA4B265347
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 07:02:28 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id D5C88265818
+ for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 07:02:34 +0200 (CEST)
 In-Reply-To: <1460437293-8509-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,61 +25,57 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-FW expects sampling rate rounded up to next higher integer value
-when calculating ibs/obs. For example for 44.1k, it should be
-rounded up to 45 to calculate ibs/obs.
+This patch parses ELD speaker allocation data block to find
+sink's chmap capability.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-topology.c | 28 +++++++++++++++++++---------
- 1 file changed, 19 insertions(+), 9 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 5a85f3a..cdb78b7 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -239,6 +239,7 @@ static void skl_tplg_update_buffer_size(struct skl_sst *ctx,
- {
- 	int multiplier = 1;
- 	struct skl_module_fmt *in_fmt, *out_fmt;
-+	int in_rate, out_rate;
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index aaa038f..9d3b33b 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -60,11 +60,17 @@ struct hdac_hdmi_cvt {
+ 	struct hdac_hdmi_cvt_params params;
+ };
  
++/* Currently only spk_alloc, more to be added */
++struct hdac_hdmi_parsed_eld {
++	u8 spk_alloc;
++};
++
+ struct hdac_hdmi_eld {
+ 	bool	monitor_present;
+ 	bool	eld_valid;
+ 	int	eld_size;
+ 	char    eld_buffer[ELD_MAX_SIZE];
++	struct	hdac_hdmi_parsed_eld info;
+ };
  
- 	/* Since fixups is applied to pin 0 only, ibs, obs needs
-@@ -249,15 +250,24 @@ static void skl_tplg_update_buffer_size(struct skl_sst *ctx,
- 
- 	if (mcfg->m_type == SKL_MODULE_TYPE_SRCINT)
- 		multiplier = 5;
--	mcfg->ibs = (in_fmt->s_freq / 1000) *
--				(mcfg->in_fmt->channels) *
--				(mcfg->in_fmt->bit_depth >> 3) *
--				multiplier;
--
--	mcfg->obs = (mcfg->out_fmt->s_freq / 1000) *
--				(mcfg->out_fmt->channels) *
--				(mcfg->out_fmt->bit_depth >> 3) *
--				multiplier;
-+
-+	if (in_fmt->s_freq % 1000)
-+		in_rate = (in_fmt->s_freq / 1000) + 1;
-+	else
-+		in_rate = (in_fmt->s_freq / 1000);
-+
-+	mcfg->ibs = in_rate * (mcfg->in_fmt->channels) *
-+			(mcfg->in_fmt->bit_depth >> 3) *
-+			multiplier;
-+
-+	if (mcfg->out_fmt->s_freq % 1000)
-+		out_rate = (mcfg->out_fmt->s_freq / 1000) + 1;
-+	else
-+		out_rate = (mcfg->out_fmt->s_freq / 1000);
-+
-+	mcfg->obs = out_rate * (mcfg->out_fmt->channels) *
-+			(mcfg->out_fmt->bit_depth >> 3) *
-+			multiplier;
+ struct hdac_hdmi_pin {
+@@ -1008,6 +1014,12 @@ static int hdac_hdmi_add_cvt(struct hdac_ext_device *edev, hda_nid_t nid)
+ 	return hdac_hdmi_query_cvt_params(&edev->hdac, cvt);
  }
  
- static int skl_tplg_update_be_blob(struct snd_soc_dapm_widget *w,
++static void hdac_hdmi_parse_eld(struct hdac_ext_device *edev,
++			struct hdac_hdmi_pin *pin)
++{
++	pin->eld.info.spk_alloc = drm_eld_get_spk_alloc(pin->eld.eld_buffer);
++}
++
+ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin, int repoll)
+ {
+ 	struct hdac_ext_device *edev = pin->edev;
+@@ -1065,6 +1077,7 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin, int repoll)
+ 
+ 				snd_jack_report(pcm->jack, SND_JACK_AVOUT);
+ 			}
++			hdac_hdmi_parse_eld(edev, pin);
+ 
+ 			print_hex_dump_bytes("ELD: ", DUMP_PREFIX_OFFSET,
+ 					pin->eld.eld_buffer, pin->eld.eld_size);
 -- 
 1.9.1
