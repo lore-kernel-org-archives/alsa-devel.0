@@ -1,35 +1,48 @@
-From: Heinrich Schuchardt <xypron.glpk@gmx.de>
-Subject: [PATCH 1/1] ASoC: fsl: imx-pcm-fiq: use correct format specifier
-Date: Tue, 12 Apr 2016 22:51:03 +0200
-Message-ID: <1460494263-14805-1-git-send-email-xypron.glpk@gmx.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, Heinrich Schuchardt <xypron.glpk@gmx.de>
+From: "Li, Steve" <Steve.Li@imaginecommunications.com>
+Subject: Multi-channel playback
+Date: Tue, 12 Apr 2016 21:16:39 +0000
+Message-ID: <3CD7D8096827214EA72BFDC6B95C7CC931B68E10@VEREXCH02.harrisbroadcast.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.bemta8.messagelabs.com (mail1.bemta8.messagelabs.com
+ [216.82.243.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 133C02650CC
+ for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 23:16:46 +0200 (CEST)
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Documentation/printk-formats.txt has
-size_t: use %zu or %zx
+Hi,
 
-runtime->dma_bytes is of type size_t.
+I am trying to playback a multi-channel PCM stream, e.g. 5.1. Is there an API for configuring the channel positions?
 
-Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
----
- sound/soc/fsl/imx-pcm-fiq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I found this API:
+int snd_pcm_set_chmap(snd_pcm_t *pcm, const snd_pcm_chmap_t *map);
 
-diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
-index e63cd5e..dac6688 100644
---- a/sound/soc/fsl/imx-pcm-fiq.c
-+++ b/sound/soc/fsl/imx-pcm-fiq.c
-@@ -220,7 +220,7 @@ static int snd_imx_pcm_mmap(struct snd_pcm_substream *substream,
- 	ret = dma_mmap_wc(substream->pcm->card->dev, vma, runtime->dma_area,
- 			  runtime->dma_addr, runtime->dma_bytes);
- 
--	pr_debug("%s: ret: %d %p %pad 0x%08x\n", __func__, ret,
-+	pr_debug("%s: ret: %d %p %pad 0x%08zx\n", __func__, ret,
- 			runtime->dma_area,
- 			&runtime->dma_addr,
- 			runtime->dma_bytes);
--- 
-2.1.4
+typedef struct snd_pcm_chmap {
+        unsigned int channels;
+        unsigned int pos[0];
+} snd_pcm_chmap_t;
+
+But when I call it, it returns -6. Also, calling snd_pcm_get_chmap() return NULL.
+
+Your help is appreciated.
+
+Thanks
+Steve
+
+______________________________________________________________________
+This email has been scanned by the Symantec Email Security.cloud service.
+For more information please visit http://www.symanteccloud.com
+______________________________________________________________________
