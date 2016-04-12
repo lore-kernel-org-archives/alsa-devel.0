@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v2 3/9] ASoC: hdac_hdmi: Add multichannel
-	support
-Date: Tue, 12 Apr 2016 15:26:11 +0530
-Message-ID: <1460454977-30057-4-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v2 4/9] ASoC: skl_rt286: Fix to support hdmi
+	channel map support
+Date: Tue, 12 Apr 2016 15:26:12 +0530
+Message-ID: <1460454977-30057-5-git-send-email-subhransu.s.prusty@intel.com>
 References: <1460454977-30057-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F44C26520A
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 11:57:19 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9DD24265177
+ for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 11:57:22 +0200 (CEST)
 In-Reply-To: <1460454977-30057-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,170 +25,108 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-To support multichannel hdac hdmi driver registers with HDA
-channel map framework. Channel count and channel slot verbs are
-programmed by using the chmap helpers/ops.  The channel
-allocation is then programmed in the audio infoframe as per CEA
-spec.
+HDMI registers channel map controls per PCM. As PCMs are not
+registered during dai_link init callback, store the pcm ids and
+codec DAIs during this init callback.
+
+Register for late probe and call the jack_init API which also
+registers channel map in the late probe callback handler.
+
+The patch following the machine driver changes adds the channel
+map control in the hdac_hdmi codec driver.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 52 ++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 43 insertions(+), 9 deletions(-)
+ sound/soc/intel/boards/skl_rt286.c | 48 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 47 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 81ac173..63ef7dd 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -29,6 +29,7 @@
- #include <sound/hdaudio_ext.h>
- #include <sound/hda_i915.h>
- #include <sound/pcm_drm_eld.h>
-+#include <sound/hda_chmap.h>
- #include "../../hda/local.h"
- #include "hdac_hdmi.h"
+diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
+index 2016397..06de802 100644
+--- a/sound/soc/intel/boards/skl_rt286.c
++++ b/sound/soc/intel/boards/skl_rt286.c
+@@ -30,6 +30,16 @@
  
-@@ -82,6 +83,10 @@ struct hdac_hdmi_pin {
- 	struct hdac_ext_device *edev;
- 	int repoll_count;
- 	struct delayed_work work;
-+	struct mutex lock;
-+	bool chmap_set;
-+	unsigned char chmap[8]; /* ALSA API channel-map */
-+	int channels; /* current number of channels */
- };
+ static struct snd_soc_jack skylake_headset;
  
- struct hdac_hdmi_pcm {
-@@ -106,6 +111,7 @@ struct hdac_hdmi_priv {
- 	int num_pin;
- 	int num_cvt;
- 	struct mutex pin_mutex;
-+	struct hdac_chmap chmap;
- };
- 
- static inline struct hdac_ext_device *to_hda_ext_device(struct device *dev)
-@@ -284,26 +290,31 @@ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
- 	int i;
- 	const u8 *eld_buf;
- 	u8 conn_type;
--	int channels = 2;
-+	int channels, ca;
- 
- 	list_for_each_entry(pin, &hdmi->pin_list, head) {
- 		if (pin->nid == pin_nid)
- 			break;
- 	}
- 
-+	ca = snd_hdac_channel_allocation(&hdac->hdac, pin->eld.info.spk_alloc,
-+			pin->channels, pin->chmap_set, true, pin->chmap);
++struct skl_hdmi_pcm {
++	struct list_head head;
++	struct snd_soc_dai *codec_dai;
++	int device;
++};
 +
-+	channels = snd_hdac_get_active_channels(ca);
-+	hdmi->chmap.ops.set_channel_count(&hdac->hdac, cvt_nid, channels);
++struct skl_rt286_private {
++	struct list_head hdmi_pcm_list;
++};
 +
-+	snd_hdac_setup_channel_mapping(&hdmi->chmap, pin->nid, false, ca,
-+				pin->channels, pin->chmap, pin->chmap_set);
-+
- 	eld_buf = pin->eld.eld_buffer;
- 	conn_type = drm_eld_get_conn_type(eld_buf);
+ enum {
+ 	SKL_DPCM_AUDIO_PB = 0,
+ 	SKL_DPCM_AUDIO_CP,
+@@ -142,9 +152,20 @@ static int skylake_rt286_codec_init(struct snd_soc_pcm_runtime *rtd)
  
--	/* setup channel count */
--	snd_hdac_codec_write(&hdac->hdac, cvt_nid, 0,
--			    AC_VERB_SET_CVT_CHAN_COUNT, channels - 1);
--
- 	switch (conn_type) {
- 	case DRM_ELD_CONN_TYPE_HDMI:
- 		hdmi_audio_infoframe_init(&frame);
- 
--		/* Default stereo for now */
- 		frame.channels = channels;
-+		frame.channel_allocation = ca;
- 
- 		ret = hdmi_audio_infoframe_pack(&frame, buffer, sizeof(buffer));
- 		if (ret < 0)
-@@ -317,7 +328,7 @@ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
- 		dp_ai.len	= 0x1b;
- 		dp_ai.ver	= 0x11 << 2;
- 		dp_ai.CC02_CT47	= channels - 1;
--		dp_ai.CA	= 0;
-+		dp_ai.CA	= ca;
- 
- 		dip = (u8 *)&dp_ai;
- 		break;
-@@ -376,17 +387,23 @@ static int hdac_hdmi_playback_prepare(struct snd_pcm_substream *substream,
- 	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
- 	struct hdac_hdmi_priv *hdmi = hdac->private_data;
- 	struct hdac_hdmi_dai_pin_map *dai_map;
-+	struct hdac_hdmi_pin *pin;
- 	struct hdac_ext_dma_params *dd;
- 	int ret;
- 
- 	dai_map = &hdmi->dai_map[dai->id];
-+	pin = dai_map->pin;
- 
- 	dd = (struct hdac_ext_dma_params *)snd_soc_dai_get_dma_data(dai, substream);
- 	dev_dbg(&hdac->hdac.dev, "stream tag from cpu dai %d format in cvt 0x%x\n",
- 			dd->stream_tag,	dd->format);
- 
-+	mutex_lock(&pin->lock);
-+	pin->channels = substream->runtime->channels;
-+
- 	ret = hdac_hdmi_setup_audio_infoframe(hdac, dai_map->cvt->nid,
- 						dai_map->pin->nid);
-+	mutex_unlock(&pin->lock);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -646,6 +663,10 @@ static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
- 		snd_hdac_codec_write(&hdac->hdac, dai_map->pin->nid, 0,
- 			AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE);
- 
-+		mutex_lock(&dai_map->pin->lock);
-+		dai_map->pin->channels = 0;
-+		mutex_unlock(&dai_map->pin->lock);
-+
- 		dai_map->pin = NULL;
- 	}
- }
-@@ -653,10 +674,21 @@ static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
- static int
- hdac_hdmi_query_cvt_params(struct hdac_device *hdac, struct hdac_hdmi_cvt *cvt)
+ static int skylake_hdmi_init(struct snd_soc_pcm_runtime *rtd)
  {
-+	unsigned int chans;
-+	struct hdac_ext_device *edev = to_ehdac_device(hdac);
-+	struct hdac_hdmi_priv *hdmi = edev->private_data;
- 	int err;
++	struct skl_rt286_private *ctx = snd_soc_card_get_drvdata(rtd->card);
+ 	struct snd_soc_dai *dai = rtd->codec_dai;
++	struct skl_hdmi_pcm *pcm;
++
++	pcm = devm_kzalloc(rtd->card->dev, sizeof(*pcm), GFP_KERNEL);
++	if (!pcm)
++		return -ENOMEM;
  
--	/* Only stereo supported as of now */
--	cvt->params.channels_min = cvt->params.channels_max = 2;
-+	chans = get_wcaps(hdac, cvt->nid);
-+	chans = get_wcaps_channels(chans);
+-	return hdac_hdmi_jack_init(dai, SKL_DPCM_AUDIO_HDMI1_PB + dai->id);
++	pcm->device = SKL_DPCM_AUDIO_HDMI1_PB + dai->id;
++	pcm->codec_dai = dai;
 +
-+	cvt->params.channels_min = 2;
++	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
 +
-+	if (chans <= 16) {
-+		cvt->params.channels_max = chans;
-+		if (chans > hdmi->chmap.channels_max)
-+			hdmi->chmap.channels_max = chans;
++	return 0;
+ }
+ 
+ static unsigned int rates[] = {
+@@ -438,6 +459,21 @@ static struct snd_soc_dai_link skylake_rt286_dais[] = {
+ 	},
+ };
+ 
++static int skylake_card_late_probe(struct snd_soc_card *card)
++{
++	struct skl_rt286_private *ctx = snd_soc_card_get_drvdata(card);
++	struct skl_hdmi_pcm *pcm;
++	int err;
++
++	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
++		err = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device);
++		if (err < 0)
++			return err;
 +	}
++
++	return 0;
++}
++
+ /* skylake audio machine driver for SPT + RT286S */
+ static struct snd_soc_card skylake_rt286 = {
+ 	.name = "skylake-rt286",
+@@ -451,11 +487,21 @@ static struct snd_soc_card skylake_rt286 = {
+ 	.dapm_routes = skylake_rt286_map,
+ 	.num_dapm_routes = ARRAY_SIZE(skylake_rt286_map),
+ 	.fully_routed = true,
++	.late_probe = skylake_card_late_probe,
+ };
  
- 	err = snd_hdac_query_supported_pcm(hdac, cvt->nid,
- 			&cvt->params.rates,
-@@ -1136,6 +1168,7 @@ static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
- 	hdmi->num_pin++;
+ static int skylake_audio_probe(struct platform_device *pdev)
+ {
++	struct skl_rt286_private *ctx;
++
++	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
++	if (!ctx)
++		return -ENOMEM;
++
++	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
++
+ 	skylake_rt286.dev = &pdev->dev;
++	snd_soc_card_set_drvdata(&skylake_rt286, ctx);
  
- 	pin->edev = edev;
-+	mutex_init(&pin->lock);
- 	INIT_DELAYED_WORK(&pin->work, hdac_hdmi_repoll_eld);
- 
- 	return 0;
-@@ -1501,6 +1534,7 @@ static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
- 		return -ENOMEM;
- 
- 	edev->private_data = hdmi_priv;
-+	snd_hdac_register_chmap_ops(codec, &hdmi_priv->chmap);
- 
- 	dev_set_drvdata(&codec->dev, edev);
- 
+ 	return devm_snd_soc_register_card(&pdev->dev, &skylake_rt286);
+ }
 -- 
 1.9.1
