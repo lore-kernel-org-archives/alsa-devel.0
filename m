@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v2 1/9] ASoC: hdac_hdmi: parse eld for channel
-	map capability
-Date: Tue, 12 Apr 2016 15:26:09 +0530
-Message-ID: <1460454977-30057-2-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v2 2/9] ALSA: hda - add helper to get channels
+	from cap bits
+Date: Tue, 12 Apr 2016 15:26:10 +0530
+Message-ID: <1460454977-30057-3-git-send-email-subhransu.s.prusty@intel.com>
 References: <1460454977-30057-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id EA147265177
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 11:57:11 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 10B4E26512B
+ for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 11:57:18 +0200 (CEST)
 In-Reply-To: <1460454977-30057-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,57 +25,34 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch parses ELD speaker allocation data block to find
-sink's chmap capability.
+This helper is copied from legacy hda driver.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ sound/hda/local.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index aaa038f..81ac173 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -60,11 +60,17 @@ struct hdac_hdmi_cvt {
- 	struct hdac_hdmi_cvt_params params;
- };
- 
-+/* Currently only spk_alloc, more to be added */
-+struct hdac_hdmi_parsed_eld {
-+	u8 spk_alloc;
-+};
-+
- struct hdac_hdmi_eld {
- 	bool	monitor_present;
- 	bool	eld_valid;
- 	int	eld_size;
- 	char    eld_buffer[ELD_MAX_SIZE];
-+	struct	hdac_hdmi_parsed_eld info;
- };
- 
- struct hdac_hdmi_pin {
-@@ -1008,6 +1014,12 @@ static int hdac_hdmi_add_cvt(struct hdac_ext_device *edev, hda_nid_t nid)
- 	return hdac_hdmi_query_cvt_params(&edev->hdac, cvt);
+diff --git a/sound/hda/local.h b/sound/hda/local.h
+index d692f41..57f07d7 100644
+--- a/sound/hda/local.h
++++ b/sound/hda/local.h
+@@ -16,6 +16,16 @@ static inline int get_wcaps_type(unsigned int wcaps)
+ 	return (wcaps & AC_WCAP_TYPE) >> AC_WCAP_TYPE_SHIFT;
  }
  
-+static void hdac_hdmi_parse_eld(struct hdac_ext_device *edev,
-+			struct hdac_hdmi_pin *pin)
++static inline unsigned int get_wcaps_channels(u32 wcaps)
 +{
-+	pin->eld.info.spk_alloc = pin->eld.eld_buffer[DRM_ELD_SPEAKER];
++	unsigned int chans;
++
++	chans = (wcaps & AC_WCAP_CHAN_CNT_EXT) >> 13;
++	chans = ((chans << 1) | 1) + 1;
++
++	return chans;
 +}
 +
- static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin, int repoll)
- {
- 	struct hdac_ext_device *edev = pin->edev;
-@@ -1065,6 +1077,7 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin, int repoll)
- 
- 				snd_jack_report(pcm->jack, SND_JACK_AVOUT);
- 			}
-+			hdac_hdmi_parse_eld(edev, pin);
- 
- 			print_hex_dump_bytes("ELD: ", DUMP_PREFIX_OFFSET,
- 					pin->eld.eld_buffer, pin->eld.eld_size);
+ extern const struct attribute_group *hdac_dev_attr_groups[];
+ int hda_widget_sysfs_init(struct hdac_device *codec);
+ void hda_widget_sysfs_exit(struct hdac_device *codec);
 -- 
 1.9.1
