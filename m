@@ -1,119 +1,71 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix ibs/obs calc for
-	non-integral sampling rates" to the asoc tree
-Date: Tue, 12 Apr 2016 07:30:52 +0100
-Message-ID: <E1aprqe-0008DJ-TZ@debutante>
-References: <1460437293-8509-2-git-send-email-subhransu.s.prusty@intel.com>
+Subject: Re: [PATCH 00/11] ASoC: hdac_hdmi: Add multichannel support
+Date: Tue, 12 Apr 2016 07:31:24 +0100
+Message-ID: <20160412063124.GZ3351@sirena.org.uk>
+References: <1460437293-8509-1-git-send-email-subhransu.s.prusty@intel.com>
+ <s5hd1pvidpc.wl-tiwai@suse.de>
+ <20160412055435.GX3351@sirena.org.uk>
+ <20160412062605.GA8655@subhransu-desktop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id ACE4C2654E6
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 08:31:04 +0200 (CEST)
-In-Reply-To: <1460437293-8509-2-git-send-email-subhransu.s.prusty@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, lgirdwood@gmail.com, patches.audio@intel.com, tiwai@suse.de, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Content-Type: multipart/mixed; boundary="===============0864207496=="
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20160412062605.GA8655@subhransu-desktop>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: alsa-devel@alsa-project.org, Jani Nikula <jani.nikula@intel.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, patches.audio@intel.com, Daniel Vetter <daniel.vetter@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: Intel: Skylake: Fix ibs/obs calc for non-integral sampling rates
+--===============0864207496==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ZljC5FVPx7rxDQQ8"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--ZljC5FVPx7rxDQQ8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Tue, Apr 12, 2016 at 11:56:11AM +0530, Subhransu S. Prusty wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> Shall I repost the series with these changes, which can be reviewed further
+> or wait for more review comments before reposting?
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+I don't mind.  I did already apply the first patch as a fix.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--ZljC5FVPx7rxDQQ8
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
->From f0c8e1d9c4f473dfc771a613b602f1841afe8f8b Mon Sep 17 00:00:00 2001
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Date: Tue, 12 Apr 2016 10:31:23 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix ibs/obs calc for non-integral
- sampling rates
+iQEcBAEBCAAGBQJXDJY7AAoJECTWi3JdVIfQIlYH/i7Y8do8LZMJEF/h068gOdmG
+mjsm8TB2x1/g+0pntKUVRfO+6tHbf0oMlzCxeedgguEJk2GbpQswYD/unCjI6pf9
+DgKSZ9VRqyjrRsDTekW7p11ptl4sg3FYdsLwsgTrrnHBsyK1antq7R0t8LKRpa3C
+Ev0Zpc15T6uyf5UVTDJs/tdW+PA9sTEhx+5kP78noU/odibwxC9Osqk7qvTKhbcO
+QPlb8MmyHb1mOxRV6J/MdOOCHFrvdDz0ictMwQZ0TbBipsEZ6UcROHTsxoOt8ake
+Ua3EKJpk1MQWUSQWazYiYRqF718nRXnE1XECV3Mky1bq3+Bs2fzkKEaWyDk/Udo=
+=sfhd
+-----END PGP SIGNATURE-----
 
-FW expects sampling rate rounded up to next higher integer value
-when calculating ibs/obs. For example for 44.1k, it should be
-rounded up to 45 to calculate ibs/obs.
+--ZljC5FVPx7rxDQQ8--
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl-topology.c | 28 +++++++++++++++++++---------
- 1 file changed, 19 insertions(+), 9 deletions(-)
+--===============0864207496==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 5a85f3a4699b..cdb78b7e5a14 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -239,6 +239,7 @@ static void skl_tplg_update_buffer_size(struct skl_sst *ctx,
- {
- 	int multiplier = 1;
- 	struct skl_module_fmt *in_fmt, *out_fmt;
-+	int in_rate, out_rate;
- 
- 
- 	/* Since fixups is applied to pin 0 only, ibs, obs needs
-@@ -249,15 +250,24 @@ static void skl_tplg_update_buffer_size(struct skl_sst *ctx,
- 
- 	if (mcfg->m_type == SKL_MODULE_TYPE_SRCINT)
- 		multiplier = 5;
--	mcfg->ibs = (in_fmt->s_freq / 1000) *
--				(mcfg->in_fmt->channels) *
--				(mcfg->in_fmt->bit_depth >> 3) *
--				multiplier;
--
--	mcfg->obs = (mcfg->out_fmt->s_freq / 1000) *
--				(mcfg->out_fmt->channels) *
--				(mcfg->out_fmt->bit_depth >> 3) *
--				multiplier;
-+
-+	if (in_fmt->s_freq % 1000)
-+		in_rate = (in_fmt->s_freq / 1000) + 1;
-+	else
-+		in_rate = (in_fmt->s_freq / 1000);
-+
-+	mcfg->ibs = in_rate * (mcfg->in_fmt->channels) *
-+			(mcfg->in_fmt->bit_depth >> 3) *
-+			multiplier;
-+
-+	if (mcfg->out_fmt->s_freq % 1000)
-+		out_rate = (mcfg->out_fmt->s_freq / 1000) + 1;
-+	else
-+		out_rate = (mcfg->out_fmt->s_freq / 1000);
-+
-+	mcfg->obs = out_rate * (mcfg->out_fmt->channels) *
-+			(mcfg->out_fmt->bit_depth >> 3) *
-+			multiplier;
- }
- 
- static int skl_tplg_update_be_blob(struct snd_soc_dapm_widget *w,
--- 
-2.8.0.rc3
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
+IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+
+--===============0864207496==--
