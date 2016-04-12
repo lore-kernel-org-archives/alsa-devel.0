@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH 09/11] ASoC: hdac_hdmi: Register chmap controls
-	and ops
-Date: Tue, 12 Apr 2016 10:31:31 +0530
-Message-ID: <1460437293-8509-10-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH 11/11] ASoC: Intel: Skylake: Update channel map
+	based on runtime params
+Date: Tue, 12 Apr 2016 10:31:33 +0530
+Message-ID: <1460437293-8509-12-git-send-email-subhransu.s.prusty@intel.com>
 References: <1460437293-8509-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 74665265AB2
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 07:02:49 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 85AB2265ADB
+ for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 07:02:54 +0200 (CEST)
 In-Reply-To: <1460437293-8509-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,167 +25,52 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-With this patch, chmap controls are created and user space can
-set the channel map.
+Default channel map is set for 2 channels. Fix the channel map
+based on runtime params to support multichannel.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 100 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 100 insertions(+)
+ sound/soc/intel/skylake/skl-topology.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index a2f949c..b7c1125 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -114,6 +114,19 @@ struct hdac_hdmi_priv {
- 	struct hdac_chmap chmap;
- };
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index cdb78b7..1f4fe0e 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -154,13 +154,32 @@ static void skl_dump_mconfig(struct skl_sst *ctx,
+ 	dev_dbg(ctx->dev, "ch_cfg = %d\n", mcfg->out_fmt[0].ch_cfg);
+ }
  
-+static struct hdac_hdmi_pcm *get_hdmi_pcm_from_id(struct hdac_hdmi_priv *hdmi,
-+						int pcm_idx)
++static void skl_tplg_update_chmap(struct skl_module_fmt *fmt, int chs)
 +{
-+	struct hdac_hdmi_pcm *pcm;
++	int slot_map = 0xFFFFFFFF;
++	int start_slot = 0;
++	int i;
 +
-+	list_for_each_entry(pcm, &hdmi->pcm_list, head) {
-+		if (pcm->pcm_id == pcm_idx)
-+			return pcm;
++	for (i = 0; i < chs; i++) {
++		/*
++		 * For 2 channels with starting slot as 0, slot map will
++		 * look like 0xFFFFFF10.
++		 */
++		slot_map &= (~(0xF << (4 * i)) | (start_slot << (4 * i)));
++		start_slot++;
 +	}
-+
-+	return NULL;
++	fmt->ch_map = slot_map;
 +}
 +
- static inline struct hdac_ext_device *to_hda_ext_device(struct device *dev)
+ static void skl_tplg_update_params(struct skl_module_fmt *fmt,
+ 			struct skl_pipe_params *params, int fixup)
  {
- 	struct hdac_device *hdac = dev_to_hdac_dev(dev);
-@@ -664,6 +677,8 @@ static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
- 			AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE);
- 
- 		mutex_lock(&dai_map->pin->lock);
-+		dai_map->pin->chmap_set = false;
-+		memset(dai_map->pin->chmap, 0, sizeof(dai_map->pin->chmap));
- 		dai_map->pin->channels = 0;
- 		mutex_unlock(&dai_map->pin->lock);
- 
-@@ -1388,6 +1403,19 @@ static struct i915_audio_component_audio_ops aops = {
- 	.pin_eld_notify	= hdac_hdmi_eld_notify_cb,
- };
- 
-+static struct snd_pcm *hdac_hdmi_get_pcm_from_id(struct snd_soc_card *card,
-+						int device)
-+{
-+	struct snd_soc_pcm_runtime *rtd;
-+
-+	list_for_each_entry(rtd, &card->rtd_list, list) {
-+		if (rtd->pcm && (rtd->pcm->device == device))
-+			return rtd->pcm;
+ 	if (fixup & SKL_RATE_FIXUP_MASK)
+ 		fmt->s_freq = params->s_freq;
+-	if (fixup & SKL_CH_FIXUP_MASK)
++	if (fixup & SKL_CH_FIXUP_MASK) {
+ 		fmt->channels = params->ch;
++		skl_tplg_update_chmap(fmt, fmt->channels);
 +	}
-+
-+	return NULL;
-+}
-+
- int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device)
- {
- 	char jack_name[NAME_SIZE];
-@@ -1397,6 +1425,8 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device)
- 		snd_soc_component_get_dapm(&codec->component);
- 	struct hdac_hdmi_priv *hdmi = edev->private_data;
- 	struct hdac_hdmi_pcm *pcm;
-+	struct snd_pcm *snd_pcm;
-+	int err;
- 
- 	/*
- 	 * this is a new PCM device, create new pcm and
-@@ -1408,6 +1438,18 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device)
- 	pcm->pcm_id = device;
- 	pcm->cvt = hdmi->dai_map[dai->id].cvt;
- 
-+	snd_pcm = hdac_hdmi_get_pcm_from_id(dai->component->card, device);
-+	if (snd_pcm) {
-+		err = snd_hdac_add_chmap_ctls(snd_pcm, device, &hdmi->chmap);
-+		if (err < 0) {
-+			dev_err(&edev->hdac.dev,
-+				"chmap control add failed with err: %d for pcm: %d\n",
-+				err, device);
-+			kfree(pcm);
-+			return err;
-+		}
-+	}
-+
- 	list_add_tail(&pcm->head, &hdmi->pcm_list);
- 
- 	sprintf(jack_name, "HDMI/DP, pcm=%d Jack", device);
-@@ -1521,6 +1563,60 @@ static struct snd_soc_codec_driver hdmi_hda_codec = {
- 	.idle_bias_off	= true,
- };
- 
-+static void hdac_hdmi_get_chmap(struct hdac_device *hdac, int pcm_idx,
-+					unsigned char *chmap)
-+{
-+	struct hdac_ext_device *edev = to_ehdac_device(hdac);
-+	struct hdac_hdmi_priv *hdmi = edev->private_data;
-+	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
-+	struct hdac_hdmi_pin *pin = pcm->pin;
-+
-+	/* chmap is already set to 0 in caller */
-+	if (!pin)
-+		return;
-+
-+	memcpy(chmap, pin->chmap, ARRAY_SIZE(pin->chmap));
-+}
-+
-+static void hdac_hdmi_set_chmap(struct hdac_device *hdac, int pcm_idx,
-+				unsigned char *chmap, int prepared)
-+{
-+	struct hdac_ext_device *edev = to_ehdac_device(hdac);
-+	struct hdac_hdmi_priv *hdmi = edev->private_data;
-+	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
-+	struct hdac_hdmi_pin *pin = pcm->pin;
-+
-+	mutex_lock(&pin->lock);
-+	pin->chmap_set = true;
-+	memcpy(pin->chmap, chmap, ARRAY_SIZE(pin->chmap));
-+	if (prepared)
-+		hdac_hdmi_setup_audio_infoframe(edev, pcm->cvt->nid, pin->nid);
-+	mutex_unlock(&pin->lock);
-+}
-+
-+static bool is_hdac_hdmi_pcm_attached(struct hdac_device *hdac, int pcm_idx)
-+{
-+	struct hdac_ext_device *edev = to_ehdac_device(hdac);
-+	struct hdac_hdmi_priv *hdmi = edev->private_data;
-+	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
-+	struct hdac_hdmi_pin *pin = pcm->pin;
-+
-+	return pin ? true:false;
-+}
-+
-+static int hdac_hdmi_get_spk_alloc(struct hdac_device *hdac, int pcm_idx)
-+{
-+	struct hdac_ext_device *edev = to_ehdac_device(hdac);
-+	struct hdac_hdmi_priv *hdmi = edev->private_data;
-+	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
-+	struct hdac_hdmi_pin *pin = pcm->pin;
-+
-+	if (!pin && !pin->eld.eld_valid)
-+		return 0;
-+
-+	return pin->eld.info.spk_alloc;
-+}
-+
- static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
- {
- 	struct hdac_device *codec = &edev->hdac;
-@@ -1535,6 +1631,10 @@ static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
- 
- 	edev->private_data = hdmi_priv;
- 	snd_hdac_register_chmap_ops(codec, &hdmi_priv->chmap);
-+	hdmi_priv->chmap.ops.get_chmap = hdac_hdmi_get_chmap;
-+	hdmi_priv->chmap.ops.set_chmap = hdac_hdmi_set_chmap;
-+	hdmi_priv->chmap.ops.is_pcm_attached = is_hdac_hdmi_pcm_attached;
-+	hdmi_priv->chmap.ops.get_spk_alloc = hdac_hdmi_get_spk_alloc;
- 
- 	dev_set_drvdata(&codec->dev, edev);
+ 	if (fixup & SKL_FMT_FIXUP_MASK) {
+ 		fmt->valid_bit_depth = skl_get_bit_depth(params->s_fmt);
  
 -- 
 1.9.1
