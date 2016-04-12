@@ -1,13 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 Subject: Re: [PATCH 00/11] ASoC: hdac_hdmi: Add multichannel support
-Date: Tue, 12 Apr 2016 06:54:35 +0100
-Message-ID: <20160412055435.GX3351@sirena.org.uk>
+Date: Tue, 12 Apr 2016 11:56:11 +0530
+Message-ID: <20160412062605.GA8655@subhransu-desktop>
 References: <1460437293-8509-1-git-send-email-subhransu.s.prusty@intel.com>
  <s5hd1pvidpc.wl-tiwai@suse.de>
+ <20160412055435.GX3351@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1983948789=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <s5hd1pvidpc.wl-tiwai@suse.de>
+Content-Disposition: inline
+In-Reply-To: <20160412055435.GX3351@sirena.org.uk>
 List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
@@ -17,62 +20,29 @@ List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
 Errors-To: dri-devel-bounces@lists.freedesktop.org
 Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, Jani Nikula <jani.nikula@intel.com>, Daniel Vetter <daniel.vetter@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Jani Nikula <jani.nikula@intel.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, patches.audio@intel.com, Daniel Vetter <daniel.vetter@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============1983948789==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rG8Oha4Ryswg1dZ8"
-Content-Disposition: inline
-
-
---rG8Oha4Ryswg1dZ8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Apr 12, 2016 at 07:43:59AM +0200, Takashi Iwai wrote:
-
-> But the problem is more complicated because you're changing drm stuff,
-> too.  This is usually managed in drm tree.  So this cross over three
-> different trees.
-
-The DRM folks tend to leave this up to us, or at least review on any of
-these crossover patches has been extremely light.
-
-> Do we really need this?  Even the direct reference is pretty much
-> obvious.  e.g. I see no big difference between two lines below:
-> 	spk_alloc = drm_eld_get_spk_alloc(some_eld);
-> 	spk_alloc = some_eld[DRM_ELD_SPAEKER];
-
-That'd make things even easier of course.
-
---rG8Oha4Ryswg1dZ8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXDI2aAAoJECTWi3JdVIfQ4usH/RMIeZUF8mK3K/OC2bxx9STJ
-MoZfjQUslWPZ8jr1QxGbwFRiGI46rBz40c8i8U5bIEkMXlMbadCfxF+tOyxVRYuV
-sWuf27e8Oa41oeY1OycIWF9XXPGoYphy5UKc6QegKX3SM9AkMOaKgksgNG6yEDb2
-ui1DQxOK6vUzLADjGGF2d2UXz9QzoMDcUfulK8p7oZkBz8m5oeAZFJ2xjjAbpmG5
-GzERPG4RRuNWS7RhgGh+K/STWu5WKnExM2hudjp4iNFC2b7UWRnqExX+UGyHzbT9
-L8102tXbi9ybJgNYxdA3RsSw2+lLM7IDnL5sg7FwmuZVSemB/0DTU8Pb8rEYi4g=
-=wcJE
------END PGP SIGNATURE-----
-
---rG8Oha4Ryswg1dZ8--
-
---===============1983948789==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
-
---===============1983948789==--
+T24gVHVlLCBBcHIgMTIsIDIwMTYgYXQgMDY6NTQ6MzVBTSArMDEwMCwgTWFyayBCcm93biB3cm90
+ZToKPiBPbiBUdWUsIEFwciAxMiwgMjAxNiBhdCAwNzo0Mzo1OUFNICswMjAwLCBUYWthc2hpIEl3
+YWkgd3JvdGU6Cj4gCj4gPiBCdXQgdGhlIHByb2JsZW0gaXMgbW9yZSBjb21wbGljYXRlZCBiZWNh
+dXNlIHlvdSdyZSBjaGFuZ2luZyBkcm0gc3R1ZmYsCj4gPiB0b28uICBUaGlzIGlzIHVzdWFsbHkg
+bWFuYWdlZCBpbiBkcm0gdHJlZS4gIFNvIHRoaXMgY3Jvc3Mgb3ZlciB0aHJlZQo+ID4gZGlmZmVy
+ZW50IHRyZWVzLgo+IAo+IFRoZSBEUk0gZm9sa3MgdGVuZCB0byBsZWF2ZSB0aGlzIHVwIHRvIHVz
+LCBvciBhdCBsZWFzdCByZXZpZXcgb24gYW55IG9mCj4gdGhlc2UgY3Jvc3NvdmVyIHBhdGNoZXMg
+aGFzIGJlZW4gZXh0cmVtZWx5IGxpZ2h0Lgo+IAo+ID4gRG8gd2UgcmVhbGx5IG5lZWQgdGhpcz8g
+IEV2ZW4gdGhlIGRpcmVjdCByZWZlcmVuY2UgaXMgcHJldHR5IG11Y2gKPiA+IG9idmlvdXMuICBl
+LmcuIEkgc2VlIG5vIGJpZyBkaWZmZXJlbmNlIGJldHdlZW4gdHdvIGxpbmVzIGJlbG93Ogo+ID4g
+CXNwa19hbGxvYyA9IGRybV9lbGRfZ2V0X3Nwa19hbGxvYyhzb21lX2VsZCk7Cj4gPiAJc3BrX2Fs
+bG9jID0gc29tZV9lbGRbRFJNX0VMRF9TUEFFS0VSXTsKPiAKPiBUaGF0J2QgbWFrZSB0aGluZ3Mg
+ZXZlbiBlYXNpZXIgb2YgY291cnNlLgoKVGFrYXNoaS9NYXJrLCBUaGFua3MgZm9yIHRoZSByZXZp
+ZXcuIEFncmVlLCBhY2NvbW9kYXRpbmcgaW4gdGhlIGRyaXZlciBpcwplYXNpZXIgYW5kIHRoZSBp
+bmxpbmUgZnVuY3Rpb24gZG9lc24ndCBtYWtlIG11Y2ggZGlmZmVyZW5jZS4gSSB3aWxsCmFjY29t
+b2RhdGUgdGhlIGNoYW5nZSBpbiB0aGUgZHJpdmVyIGl0c2VsZi4KClNoYWxsIEkgcmVwb3N0IHRo
+ZSBzZXJpZXMgd2l0aCB0aGVzZSBjaGFuZ2VzLCB3aGljaCBjYW4gYmUgcmV2aWV3ZWQgZnVydGhl
+cgpvciB3YWl0IGZvciBtb3JlIHJldmlldyBjb21tZW50cyBiZWZvcmUgcmVwb3N0aW5nPwoKUmVn
+YXJkcywKU3ViaHJhbnN1CgotLSAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRl
+c2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8v
+ZHJpLWRldmVsCg==
