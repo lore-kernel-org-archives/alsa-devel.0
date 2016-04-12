@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH 07/11] ASoC: Intel: boards: Update
-	skl_nau88l25_max98357a driver to support chmap
-Date: Tue, 12 Apr 2016 10:31:29 +0530
-Message-ID: <1460437293-8509-8-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH 10/11] ASoC: Intel: Skylake: Add multichannel
+	support for HDMI
+Date: Tue, 12 Apr 2016 10:31:32 +0530
+Message-ID: <1460437293-8509-11-git-send-email-subhransu.s.prusty@intel.com>
 References: <1460437293-8509-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C864265A76
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 07:02:44 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id B1DD7265A8B
+ for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 07:02:51 +0200 (CEST)
 In-Reply-To: <1460437293-8509-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,143 +25,81 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-HDMI registers channel map controls per PCM. As PCMs are not
-registered during dai_link init callback, store the pcm ids and
-codec DAIs during this init callback.
-
-Register for late probe and call the jack_init API which also
-registers channel map in the late probe callback handler.
+Channel max is changed to 8 from stereo to support multichannel
+capability for HDMI devices.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/boards/skl_nau88l25_max98357a.c | 74 ++++++++++++++++++++++++-
- 1 file changed, 71 insertions(+), 3 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-index 72176b7..9dd3ac6 100644
---- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-@@ -30,6 +30,16 @@
- static struct snd_soc_jack skylake_headset;
- static struct snd_soc_card skylake_audio_card;
- 
-+struct skl_hdmi_pcm {
-+	struct list_head head;
-+	struct snd_soc_dai *codec_dai;
-+	int device;
-+};
-+
-+struct skl_nau8825_private {
-+	struct list_head hdmi_pcm_list;
-+};
-+
- enum {
- 	SKL_DPCM_AUDIO_PB = 0,
- 	SKL_DPCM_AUDIO_CP,
-@@ -192,23 +202,56 @@ static int skylake_nau8825_codec_init(struct snd_soc_pcm_runtime *rtd)
- 
- static int skylake_hdmi1_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct skl_nau8825_private *ctx = snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_dai *dai = rtd->codec_dai;
-+	struct skl_hdmi_pcm *pcm;
-+
-+	pcm = devm_kzalloc(rtd->card->dev, sizeof(*pcm), GFP_KERNEL);
-+	if (!pcm)
-+		return -ENOMEM;
-+
-+	pcm->device = SKL_DPCM_AUDIO_HDMI1_PB;
-+	pcm->codec_dai = dai;
- 
--	return hdac_hdmi_jack_init(dai, SKL_DPCM_AUDIO_HDMI1_PB);
-+	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
-+
-+	return 0;
- }
- 
- static int skylake_hdmi2_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct skl_nau8825_private *ctx = snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_dai *dai = rtd->codec_dai;
-+	struct skl_hdmi_pcm *pcm;
-+
-+	pcm = devm_kzalloc(rtd->card->dev, sizeof(*pcm), GFP_KERNEL);
-+	if (!pcm)
-+		return -ENOMEM;
- 
--	return hdac_hdmi_jack_init(dai, SKL_DPCM_AUDIO_HDMI2_PB);
-+	pcm->device = SKL_DPCM_AUDIO_HDMI2_PB;
-+	pcm->codec_dai = dai;
-+
-+	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
-+
-+	return 0;
- }
- 
- static int skylake_hdmi3_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct skl_nau8825_private *ctx = snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_dai *dai = rtd->codec_dai;
-+	struct skl_hdmi_pcm *pcm;
- 
--	return hdac_hdmi_jack_init(dai, SKL_DPCM_AUDIO_HDMI3_PB);
-+	pcm = devm_kzalloc(rtd->card->dev, sizeof(*pcm), GFP_KERNEL);
-+	if (!pcm)
-+		return -ENOMEM;
-+
-+	pcm->device = SKL_DPCM_AUDIO_HDMI3_PB;
-+	pcm->codec_dai = dai;
-+
-+	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
-+
-+	return 0;
- }
- 
- static int skylake_nau8825_fe_init(struct snd_soc_pcm_runtime *rtd)
-@@ -534,6 +577,21 @@ static struct snd_soc_dai_link skylake_dais[] = {
- 	},
- };
- 
-+int skylake_card_late_probe(struct snd_soc_card *card)
-+{
-+	struct skl_nau8825_private *ctx = snd_soc_card_get_drvdata(card);
-+	struct skl_hdmi_pcm *pcm;
-+	int err;
-+
-+	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
-+		err = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
- /* skylake audio machine driver for SPT + NAU88L25 */
- static struct snd_soc_card skylake_audio_card = {
- 	.name = "sklnau8825max",
-@@ -547,11 +605,21 @@ static struct snd_soc_card skylake_audio_card = {
- 	.dapm_routes = skylake_map,
- 	.num_dapm_routes = ARRAY_SIZE(skylake_map),
- 	.fully_routed = true,
-+	.late_probe = skylake_card_late_probe,
- };
- 
- static int skylake_audio_probe(struct platform_device *pdev)
- {
-+	struct skl_nau8825_private *ctx;
-+
-+	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
-+	if (!ctx)
-+		return -ENOMEM;
-+
-+	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
-+
- 	skylake_audio_card.dev = &pdev->dev;
-+	snd_soc_card_set_drvdata(&skylake_audio_card, ctx);
- 
- 	return devm_snd_soc_register_card(&pdev->dev, &skylake_audio_card);
- }
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index dab0900..8de9212 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -51,7 +51,7 @@ static struct snd_pcm_hardware azx_pcm_hw = {
+ 	.rate_min =		8000,
+ 	.rate_max =		48000,
+ 	.channels_min =		1,
+-	.channels_max =		HDA_QUAD,
++	.channels_max =		8,
+ 	.buffer_bytes_max =	AZX_MAX_BUF_SIZE,
+ 	.period_bytes_min =	128,
+ 	.period_bytes_max =	AZX_MAX_BUF_SIZE / 2,
+@@ -682,7 +682,7 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
+ 	.playback = {
+ 		.stream_name = "HDMI1 Playback",
+ 		.channels_min = HDA_STEREO,
+-		.channels_max = HDA_STEREO,
++		.channels_max = 8,
+ 		.rates = SNDRV_PCM_RATE_32000 |	SNDRV_PCM_RATE_44100 |
+ 			SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |
+ 			SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 |
+@@ -697,7 +697,7 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
+ 	.playback = {
+ 		.stream_name = "HDMI2 Playback",
+ 		.channels_min = HDA_STEREO,
+-		.channels_max = HDA_STEREO,
++		.channels_max = 8,
+ 		.rates = SNDRV_PCM_RATE_32000 |	SNDRV_PCM_RATE_44100 |
+ 			SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |
+ 			SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 |
+@@ -712,7 +712,7 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
+ 	.playback = {
+ 		.stream_name = "HDMI3 Playback",
+ 		.channels_min = HDA_STEREO,
+-		.channels_max = HDA_STEREO,
++		.channels_max = 8,
+ 		.rates = SNDRV_PCM_RATE_32000 |	SNDRV_PCM_RATE_44100 |
+ 			SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |
+ 			SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 |
+@@ -765,7 +765,7 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
+ 	.playback = {
+ 		.stream_name = "iDisp1 Tx",
+ 		.channels_min = HDA_STEREO,
+-		.channels_max = HDA_STEREO,
++		.channels_max = 8,
+ 		.rates = SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_16000|SNDRV_PCM_RATE_48000,
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE |
+ 			SNDRV_PCM_FMTBIT_S24_LE,
+@@ -777,7 +777,7 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
+ 	.playback = {
+ 		.stream_name = "iDisp2 Tx",
+ 		.channels_min = HDA_STEREO,
+-		.channels_max = HDA_STEREO,
++		.channels_max = 8,
+ 		.rates = SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_16000|
+ 			SNDRV_PCM_RATE_48000,
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE |
+@@ -790,7 +790,7 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
+ 	.playback = {
+ 		.stream_name = "iDisp3 Tx",
+ 		.channels_min = HDA_STEREO,
+-		.channels_max = HDA_STEREO,
++		.channels_max = 8,
+ 		.rates = SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_16000|
+ 			SNDRV_PCM_RATE_48000,
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE |
 -- 
 1.9.1
