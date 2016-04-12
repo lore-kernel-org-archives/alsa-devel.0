@@ -1,75 +1,92 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Alsamixer: missing Speakers entry in analog output
- choice (chipset AV200)
-Date: Tue, 12 Apr 2016 20:49:33 +0800
-Message-ID: <CAN8cciZq5DjwfpOTi33Ts468mxLqHSCE3L7sVhD3-R-5F1jvig@mail.gmail.com>
-References: <570785F9.3020402@gmail.com>
-	<570BA7DA.8010602@ladisch.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f68.google.com (mail-lf0-f68.google.com
- [209.85.215.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 46F32265158
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 14:49:34 +0200 (CEST)
-Received: by mail-lf0-f68.google.com with SMTP id p81so2413859lfb.3
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 05:49:34 -0700 (PDT)
-In-Reply-To: <570BA7DA.8010602@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Germano Massullo <germano.massullo@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+From: Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Subject: [PATCH 0/2 v5] Add I2S/ADV7511 audio support for ARC AXS10x boards
+Date: Tue, 12 Apr 2016 13:56:26 +0100
+Message-ID: <cover.1460384521.git.joabreu@synopsys.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, CARLOS.PALMINHA-HKixBCOQz3hWk0Htik3J/w@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-> > I have a Asus Xonar Essence ST soundboard
-> >
-> > Sometimes the Speakers output disappears from alsamixer.
->
-> From alsamixer, or from PulseAudio?
->
-> > I attach 3 logs taken when the problem was occurring.
->
-> > Simple mixer control 'Analog Output',0
-> >   Capabilities: enum
-> >   Items: 'Speakers' 'Headphones' 'FP Headphones'
->
-> It's there.
->
->
+Hi all,
 
-device.product.name = "CMI8788 [Oxygen HD Audio] (Virtuoso 100 (Xonar ST))"
-device.string = "front:0" device.buffering.buffer_size = "352800"
-device.buffering.fragment_size = "352800"
-device.access_mode = "mmap+timer"
-device.profile.name = "analog-stereo"
-device.profile.description = "Stereo analogico"
-device.description = "CMI8788 [Oxygen HD Audio] (Virtuoso 100 (Xonar ST))
-Stereo analogico"
-alsa.mixer_name = "AV200"
-alsa.components = "PCM1792A CS5381 CS2000 AV200"
-module-udev-detect.discovered = "1"
-device.icon_name = "audio-card-pci"
+This is v5 of these patches. In this version I dropped the ADV7511 audio patch
+because, quoting Lars-Peter Clausen:
+"The reason why this driver is still out of tree, is because there has been no
+conclusion yet on how to go forward with the whole HDMI integration. So this
+is not going to get merged until that issue has been addressed."
 
-Porte: analog-output;output-speaker: Uscita analogica / Altoparlante
-(priority: 9910)
-analog-output;output-headphones-1: Uscita analogica / Cuffie analogiche 1
-(priority: 9909)
-analog-output;output-headphones-2: Uscita analogica / Cuffie analogiche 2
-(priority: 9908)
-Porta attiva: analog-output;output-speaker
+So, until that issue is addressed I will not send any ADV7511 audio related
+patches but if for some reason anyone wants to merge it I can send the
+pathes again. V4, which includes the ADV7511 audio patches is available at:
+	http://mailman.alsa-project.org/pipermail/alsa-devel/2016-April/106650.html
 
-https://cgit.freedesktop.org/pulseaudio/pulseaudio/tree/src/modules/alsa/mixer/paths
+Looking forward to your comments!
 
-https://cgit.freedesktop.org/pulseaudio/pulseaudio/tree/src/modules/alsa/mixer/paths/analog-output.conf.common
+Best regards,
+Jose Miguel Abreu
 
-You need to put [Option Analog Output:xxx] in three corresponding conf files
+-----
 
-https://bugs.freedesktop.org/show_bug.cgi?id=39814
+ARC AXS10x platforms consist of a mainboard with several peripherals.
+One of those peripherals is an HDMI output port controlled by the ADV7511
+transmitter.
+
+This patch set adds I2S audio for the AXS10x platform.
+
+Changes v4 -> v5
+* Resolve undefined references when compiling as module
+* Dropped adv7511 audio patches
+* Use DMA properties in I2S to check which mode to use: PIO or DMA (as suggested by Lars-Peter Clausen)
+
+Changes v3 -> v4:
+* Reintroduced custom PCM driver (see note below)
+* Use DT boolean to switch between ALSA DMA engine PCM or custom PCM
+* Use fifo depth to program I2S FCR
+* Update I2S documentation
+
+Changes v2 -> v3:
+* Removed pll_config functions (as suggested by Alexey Brodkin)
+* Removed HDMI start at adv7511_core (as suggested by Archit Taneja)
+* Use NOP functions for adv7511_audio (as suggested by Archit Taneja)
+* Added adv7511_audio_exit() function (as suggested by Archit Taneja)
+* Moved adv7511 to its own folder (as suggested by Archit Taneja)
+* Separated file rename of adv7511_core (as suggested by Emil Velikov)
+* Compile adv7511 as module if ALSA SoC is compiled as module
+* Load adv7511 audio only if declared in device tree (as suggested by Laurent Pinchart)
+* Dropped custom platform driver, using now ALSA DMA engine
+* Dropped IRQ handler for I2S
+
+Changes v1 -> v2:
+* DT bindings moved to separate patch (as suggested by Alexey Brodkin)
+* Removed defconfigs entries (as suggested by Alexey Brodkin)
+
+
+NOTE:
+Although the mainline I2S driver uses ALSA DMA engine,
+this controller can be built without DMA support so it
+was necessary to add this custom platform driver so that
+HDMI audio works in AXS boards.
+
+Jose Abreu (2):
+  ASoC: dwc: Add custom PCM driver
+  ASoC: dwc: Update DOCUMENTATION for I2S Driver
+
+ .../devicetree/bindings/sound/designware-i2s.txt   |   9 +-
+ sound/soc/dwc/Kconfig                              |   9 +
+ sound/soc/dwc/Makefile                             |   1 +
+ sound/soc/dwc/designware.h                         |  71 +++++++
+ sound/soc/dwc/designware_i2s.c                     |  94 ++++++---
+ sound/soc/dwc/designware_pcm.c                     | 230 +++++++++++++++++++++
+ 6 files changed, 385 insertions(+), 29 deletions(-)
+ create mode 100644 sound/soc/dwc/designware.h
+ create mode 100644 sound/soc/dwc/designware_pcm.c
+
+-- 
+1.9.1
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
