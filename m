@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sti: define tdm type & default tdm hw
-	config" to the asoc tree
-Date: Tue, 12 Apr 2016 03:00:59 +0100
-Message-ID: <E1apndU-0002K3-00@debutante>
-References: <1460021136-27822-4-git-send-email-moise.gergaud@st.com>
+Subject: Applied "ASoC: sti: macro for uniperif tdm regs
+	access" to the asoc tree
+Date: Tue, 12 Apr 2016 03:01:05 +0100
+Message-ID: <E1apnda-0002LM-02@debutante>
+References: <1460021136-27822-2-git-send-email-moise.gergaud@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 49996265347
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 04:01:08 +0200 (CEST)
-In-Reply-To: <1460021136-27822-4-git-send-email-moise.gergaud@st.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B705A26578F
+ for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 04:01:10 +0200 (CEST)
+In-Reply-To: <1460021136-27822-2-git-send-email-moise.gergaud@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sti: define tdm type & default tdm hw config
+   ASoC: sti: macro for uniperif tdm regs access
 
 has been applied to the asoc tree at
 
@@ -53,70 +53,140 @@ to this mail.
 Thanks,
 Mark
 
->From 9a00a3e9fea1ea5affa7bea971299d3a5832daad Mon Sep 17 00:00:00 2001
+>From 38535e8e6962405b7d8a365f2f367f62bca98565 Mon Sep 17 00:00:00 2001
 From: Moise Gergaud <moise.gergaud@st.com>
-Date: Thu, 7 Apr 2016 11:25:32 +0200
-Subject: [PATCH] ASoC: sti: define tdm type & default tdm hw config
+Date: Thu, 7 Apr 2016 11:25:30 +0200
+Subject: [PATCH] ASoC: sti: macro for uniperif tdm regs access
 
 Signed-off-by: Moise Gergaud <moise.gergaud@st.com>
 Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sti/uniperif.h | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
+ sound/soc/sti/uniperif.h | 112 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 112 insertions(+)
 
 diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
-index 75116ab3cbc0..750eb5a07e6c 100644
+index 1f82faafb869..400788bc9190 100644
 --- a/sound/soc/sti/uniperif.h
 +++ b/sound/soc/sti/uniperif.h
-@@ -1228,6 +1228,9 @@
- #define UNIPERIF_TYPE_IS_IEC958(p) \
- 	(UNIPERIF_TYPE_IS_HDMI(p) || \
- 		UNIPERIF_TYPE_IS_SPDIF(p))
-+#define UNIPERIF_TYPE_IS_TDM(p) \
-+	((p)->info->type == SND_ST_UNIPERIF_TYPE_TDM)
-+
+@@ -1101,6 +1101,118 @@
+ 		UNIPERIF_DBG_STANDBY_LEFT_SP_MASK(ip), value)
+ 
  /*
-  * Uniperipheral IP revisions
++ * UNIPERIF_TDM_ENABLE
++ */
++#define UNIPERIF_TDM_ENABLE_OFFSET(ip) 0x0118
++#define GET_UNIPERIF_TDM_ENABLE(ip) \
++	readl_relaxed(ip->base + UNIPERIF_TDM_ENABLE_OFFSET(ip))
++#define SET_UNIPERIF_TDM_ENABLE(ip, value) \
++	writel_relaxed(value, ip->base + UNIPERIF_TDM_ENABLE_OFFSET(ip))
++
++/* TDM_ENABLE */
++#define UNIPERIF_TDM_ENABLE_EN_TDM_SHIFT(ip) 0x0
++#define UNIPERIF_TDM_ENABLE_EN_TDM_MASK(ip) 0x1
++#define GET_UNIPERIF_TDM_ENABLE_EN_TDM(ip) \
++		GET_UNIPERIF_REG(ip, \
++		UNIPERIF_TDM_ENABLE_OFFSET(ip), \
++		UNIPERIF_TDM_ENABLE_EN_TDM_SHIFT(ip), \
++		UNIPERIF_TDM_ENABLE_EN_TDM_MASK(ip))
++#define SET_UNIPERIF_TDM_ENABLE_TDM_ENABLE(ip) \
++		SET_UNIPERIF_REG(ip, \
++		UNIPERIF_TDM_ENABLE_OFFSET(ip), \
++		UNIPERIF_TDM_ENABLE_EN_TDM_SHIFT(ip), \
++		UNIPERIF_TDM_ENABLE_EN_TDM_MASK(ip), 1)
++#define SET_UNIPERIF_TDM_ENABLE_TDM_DISABLE(ip) \
++		SET_UNIPERIF_REG(ip, \
++		UNIPERIF_TDM_ENABLE_OFFSET(ip), \
++		UNIPERIF_TDM_ENABLE_EN_TDM_SHIFT(ip), \
++		UNIPERIF_TDM_ENABLE_EN_TDM_MASK(ip), 0)
++
++/*
++ * UNIPERIF_TDM_FS_REF_FREQ
++ */
++#define UNIPERIF_TDM_FS_REF_FREQ_OFFSET(ip) 0x011c
++#define GET_UNIPERIF_TDM_FS_REF_FREQ(ip) \
++	readl_relaxed(ip->base + UNIPERIF_TDM_FS_REF_FREQ_OFFSET(ip))
++#define SET_UNIPERIF_TDM_FS_REF_FREQ(ip, value) \
++	writel_relaxed(value, ip->base + \
++			UNIPERIF_TDM_FS_REF_FREQ_OFFSET(ip))
++
++/* REF_FREQ */
++#define UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_SHIFT(ip) 0x0
++#define VALUE_UNIPERIF_TDM_FS_REF_FREQ_8KHZ(ip) 0
++#define VALUE_UNIPERIF_TDM_FS_REF_FREQ_16KHZ(ip) 1
++#define VALUE_UNIPERIF_TDM_FS_REF_FREQ_32KHZ(ip) 2
++#define VALUE_UNIPERIF_TDM_FS_REF_FREQ_48KHZ(ip) 3
++#define UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_MASK(ip) 0x3
++#define GET_UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ(ip) \
++		GET_UNIPERIF_REG(ip, \
++		UNIPERIF_TDM_FS_REF_FREQ_OFFSET(ip), \
++		UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_SHIFT(ip), \
++		UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_MASK(ip))
++#define SET_UNIPERIF_TDM_FS_REF_FREQ_8KHZ(ip) \
++		SET_UNIPERIF_REG(ip, \
++		UNIPERIF_TDM_FS_REF_FREQ_OFFSET(ip), \
++		UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_SHIFT(ip), \
++		UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_MASK(ip), \
++		VALUE_UNIPERIF_TDM_FS_REF_FREQ_8KHZ(ip))
++#define SET_UNIPERIF_TDM_FS_REF_FREQ_16KHZ(ip) \
++		SET_UNIPERIF_REG(ip, \
++		UNIPERIF_TDM_FS_REF_FREQ_OFFSET(ip), \
++		UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_SHIFT(ip), \
++		UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_MASK(ip), \
++		VALUE_UNIPERIF_TDM_FS_REF_FREQ_16KHZ(ip))
++#define SET_UNIPERIF_TDM_FS_REF_FREQ_32KHZ(ip) \
++		SET_UNIPERIF_REG(ip, \
++		UNIPERIF_TDM_FS_REF_FREQ_OFFSET(ip), \
++		UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_SHIFT(ip), \
++		UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_MASK(ip), \
++		VALUE_UNIPERIF_TDM_FS_REF_FREQ_32KHZ(ip))
++#define SET_UNIPERIF_TDM_FS_REF_FREQ_48KHZ(ip) \
++		SET_UNIPERIF_REG(ip, \
++		UNIPERIF_TDM_FS_REF_FREQ_OFFSET(ip), \
++		UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_SHIFT(ip), \
++		UNIPERIF_TDM_FS_REF_FREQ_REF_FREQ_MASK(ip), \
++		VALUE_UNIPERIF_TDM_FS_REF_FREQ_48KHZ(ip))
++
++/*
++ * UNIPERIF_TDM_FS_REF_DIV
++ */
++#define UNIPERIF_TDM_FS_REF_DIV_OFFSET(ip) 0x0120
++#define GET_UNIPERIF_TDM_FS_REF_DIV(ip) \
++	readl_relaxed(ip->base + UNIPERIF_TDM_FS_REF_DIV_OFFSET(ip))
++#define SET_UNIPERIF_TDM_FS_REF_DIV(ip, value) \
++		writel_relaxed(value, ip->base + \
++			UNIPERIF_TDM_FS_REF_DIV_OFFSET(ip))
++
++/* NUM_TIMESLOT */
++#define UNIPERIF_TDM_FS_REF_DIV_NUM_TIMESLOT_SHIFT(ip) 0x0
++#define UNIPERIF_TDM_FS_REF_DIV_NUM_TIMESLOT_MASK(ip) 0xff
++#define GET_UNIPERIF_TDM_FS_REF_DIV_NUM_TIMESLOT(ip) \
++		GET_UNIPERIF_REG(ip, \
++		UNIPERIF_TDM_FS_REF_DIV_OFFSET(ip), \
++		UNIPERIF_TDM_FS_REF_DIV_NUM_TIMESLOT_SHIFT(ip), \
++		UNIPERIF_TDM_FS_REF_DIV_NUM_TIMESLOT_MASK(ip))
++#define SET_UNIPERIF_TDM_FS_REF_DIV_NUM_TIMESLOT(ip, value) \
++		SET_UNIPERIF_REG(ip, \
++		UNIPERIF_TDM_FS_REF_DIV_OFFSET(ip), \
++		UNIPERIF_TDM_FS_REF_DIV_NUM_TIMESLOT_SHIFT(ip), \
++		UNIPERIF_TDM_FS_REF_DIV_NUM_TIMESLOT_MASK(ip), value)
++
++/*
++ * UNIPERIF_TDM_WORD_POS_X_Y
++ * 32 bits of UNIPERIF_TDM_WORD_POS_X_Y register shall be set in 1 shot
++ */
++#define UNIPERIF_TDM_WORD_POS_1_2_OFFSET(ip) 0x013c
++#define UNIPERIF_TDM_WORD_POS_3_4_OFFSET(ip) 0x0140
++#define UNIPERIF_TDM_WORD_POS_5_6_OFFSET(ip) 0x0144
++#define UNIPERIF_TDM_WORD_POS_7_8_OFFSET(ip) 0x0148
++#define GET_UNIPERIF_TDM_WORD_POS(ip, words) \
++	readl_relaxed(ip->base + UNIPERIF_TDM_WORD_POS_##words##_OFFSET(ip))
++#define SET_UNIPERIF_TDM_WORD_POS(ip, words, value) \
++		writel_relaxed(value, ip->base + \
++		UNIPERIF_TDM_WORD_POS_##words##_OFFSET(ip))
++/*
+  * uniperipheral IP capabilities
   */
-@@ -1249,7 +1252,8 @@ enum uniperif_type {
- 	SND_ST_UNIPERIF_TYPE_NONE,
- 	SND_ST_UNIPERIF_TYPE_HDMI,
- 	SND_ST_UNIPERIF_TYPE_PCM,
--	SND_ST_UNIPERIF_TYPE_SPDIF
-+	SND_ST_UNIPERIF_TYPE_SPDIF,
-+	SND_ST_UNIPERIF_TYPE_TDM
- };
  
- enum uniperif_state {
-@@ -1330,6 +1334,28 @@ struct sti_uniperiph_data {
- 	struct sti_uniperiph_dai dai_data;
- };
- 
-+static const struct snd_pcm_hardware uni_tdm_hw = {
-+	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_MMAP |
-+		SNDRV_PCM_INFO_MMAP_VALID,
-+
-+	.formats = SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S16_LE,
-+
-+	.rates = SNDRV_PCM_RATE_CONTINUOUS,
-+	.rate_min = 8000,
-+	.rate_max = 48000,
-+
-+	.channels_min = 1,
-+	.channels_max = 32,
-+
-+	.periods_min = 2,
-+	.periods_max = 10,
-+
-+	.period_bytes_min = 128,
-+	.period_bytes_max = 64 * PAGE_SIZE,
-+	.buffer_bytes_max = 256 * PAGE_SIZE
-+};
-+
- /* uniperiph player*/
- int uni_player_init(struct platform_device *pdev,
- 		    struct uniperif *uni_player);
 -- 
 2.8.0.rc3
