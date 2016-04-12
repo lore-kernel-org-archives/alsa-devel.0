@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH 08/11] ASoC: Intel: boards: Update
-	skl_nau88l25_ssm4567 driver to support chmap
-Date: Tue, 12 Apr 2016 10:31:30 +0530
-Message-ID: <1460437293-8509-9-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH 07/11] ASoC: Intel: boards: Update
+	skl_nau88l25_max98357a driver to support chmap
+Date: Tue, 12 Apr 2016 10:31:29 +0530
+Message-ID: <1460437293-8509-8-git-send-email-subhransu.s.prusty@intel.com>
 References: <1460437293-8509-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 24A5F265A86
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 07:02:46 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8C864265A76
+ for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 07:02:44 +0200 (CEST)
 In-Reply-To: <1460437293-8509-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -35,14 +35,14 @@ registers channel map in the late probe callback handler.
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 73 +++++++++++++++++++++++++--
- 1 file changed, 70 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/skl_nau88l25_max98357a.c | 74 ++++++++++++++++++++++++-
+ 1 file changed, 71 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index 5f1ca99..968fc74 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -34,6 +34,15 @@
+diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+index 72176b7..9dd3ac6 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
++++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+@@ -30,6 +30,16 @@
  static struct snd_soc_jack skylake_headset;
  static struct snd_soc_card skylake_audio_card;
  
@@ -52,17 +52,18 @@ index 5f1ca99..968fc74 100644
 +	int device;
 +};
 +
-+struct skl_nau88125_private {
++struct skl_nau8825_private {
 +	struct list_head hdmi_pcm_list;
 +};
++
  enum {
  	SKL_DPCM_AUDIO_PB = 0,
  	SKL_DPCM_AUDIO_CP,
-@@ -222,24 +231,57 @@ static int skylake_nau8825_codec_init(struct snd_soc_pcm_runtime *rtd)
+@@ -192,23 +202,56 @@ static int skylake_nau8825_codec_init(struct snd_soc_pcm_runtime *rtd)
  
  static int skylake_hdmi1_init(struct snd_soc_pcm_runtime *rtd)
  {
-+	struct skl_nau88125_private *ctx = snd_soc_card_get_drvdata(rtd->card);
++	struct skl_nau8825_private *ctx = snd_soc_card_get_drvdata(rtd->card);
  	struct snd_soc_dai *dai = rtd->codec_dai;
 +	struct skl_hdmi_pcm *pcm;
 +
@@ -72,44 +73,43 @@ index 5f1ca99..968fc74 100644
 +
 +	pcm->device = SKL_DPCM_AUDIO_HDMI1_PB;
 +	pcm->codec_dai = dai;
-+
-+	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
  
 -	return hdac_hdmi_jack_init(dai, SKL_DPCM_AUDIO_HDMI1_PB);
++	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
++
 +	return 0;
  }
  
  static int skylake_hdmi2_init(struct snd_soc_pcm_runtime *rtd)
  {
-+	struct skl_nau88125_private *ctx = snd_soc_card_get_drvdata(rtd->card);
++	struct skl_nau8825_private *ctx = snd_soc_card_get_drvdata(rtd->card);
  	struct snd_soc_dai *dai = rtd->codec_dai;
 +	struct skl_hdmi_pcm *pcm;
 +
 +	pcm = devm_kzalloc(rtd->card->dev, sizeof(*pcm), GFP_KERNEL);
 +	if (!pcm)
 +		return -ENOMEM;
-+
-+	pcm->device = SKL_DPCM_AUDIO_HDMI2_PB;
-+	pcm->codec_dai = dai;
  
 -	return hdac_hdmi_jack_init(dai, SKL_DPCM_AUDIO_HDMI2_PB);
++	pcm->device = SKL_DPCM_AUDIO_HDMI2_PB;
++	pcm->codec_dai = dai;
++
 +	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
 +
 +	return 0;
  }
  
- 
  static int skylake_hdmi3_init(struct snd_soc_pcm_runtime *rtd)
  {
-+	struct skl_nau88125_private *ctx = snd_soc_card_get_drvdata(rtd->card);
++	struct skl_nau8825_private *ctx = snd_soc_card_get_drvdata(rtd->card);
  	struct snd_soc_dai *dai = rtd->codec_dai;
 +	struct skl_hdmi_pcm *pcm;
-+
+ 
+-	return hdac_hdmi_jack_init(dai, SKL_DPCM_AUDIO_HDMI3_PB);
 +	pcm = devm_kzalloc(rtd->card->dev, sizeof(*pcm), GFP_KERNEL);
 +	if (!pcm)
 +		return -ENOMEM;
- 
--	return hdac_hdmi_jack_init(dai, SKL_DPCM_AUDIO_HDMI3_PB);
++
 +	pcm->device = SKL_DPCM_AUDIO_HDMI3_PB;
 +	pcm->codec_dai = dai;
 +
@@ -119,13 +119,13 @@ index 5f1ca99..968fc74 100644
  }
  
  static int skylake_nau8825_fe_init(struct snd_soc_pcm_runtime *rtd)
-@@ -585,6 +627,21 @@ static struct snd_soc_dai_link skylake_dais[] = {
+@@ -534,6 +577,21 @@ static struct snd_soc_dai_link skylake_dais[] = {
  	},
  };
  
 +int skylake_card_late_probe(struct snd_soc_card *card)
 +{
-+	struct skl_nau88125_private *ctx = snd_soc_card_get_drvdata(card);
++	struct skl_nau8825_private *ctx = snd_soc_card_get_drvdata(card);
 +	struct skl_hdmi_pcm *pcm;
 +	int err;
 +
@@ -140,17 +140,17 @@ index 5f1ca99..968fc74 100644
 +
  /* skylake audio machine driver for SPT + NAU88L25 */
  static struct snd_soc_card skylake_audio_card = {
- 	.name = "sklnau8825adi",
-@@ -600,11 +657,21 @@ static struct snd_soc_card skylake_audio_card = {
- 	.codec_conf = ssm4567_codec_conf,
- 	.num_configs = ARRAY_SIZE(ssm4567_codec_conf),
+ 	.name = "sklnau8825max",
+@@ -547,11 +605,21 @@ static struct snd_soc_card skylake_audio_card = {
+ 	.dapm_routes = skylake_map,
+ 	.num_dapm_routes = ARRAY_SIZE(skylake_map),
  	.fully_routed = true,
 +	.late_probe = skylake_card_late_probe,
  };
  
  static int skylake_audio_probe(struct platform_device *pdev)
  {
-+	struct skl_nau88125_private *ctx;
++	struct skl_nau8825_private *ctx;
 +
 +	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
 +	if (!ctx)
