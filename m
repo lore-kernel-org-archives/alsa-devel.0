@@ -1,15 +1,17 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v2 0/9] ASoC: hdac_hdmi: Add multichannel
-	support
-Date: Tue, 12 Apr 2016 15:26:08 +0530
-Message-ID: <1460454977-30057-1-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v2 1/9] ASoC: hdac_hdmi: parse eld for channel
+	map capability
+Date: Tue, 12 Apr 2016 15:26:09 +0530
+Message-ID: <1460454977-30057-2-git-send-email-subhransu.s.prusty@intel.com>
+References: <1460454977-30057-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 169A426512B
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 11:57:10 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id EA147265177
+ for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 11:57:11 +0200 (CEST)
+In-Reply-To: <1460454977-30057-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,62 +22,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This series parses ELD to identify multichannel capability of the
-sync, and uses HDA framework to programs codec's channel map
-registers.
+This patch parses ELD speaker allocation data block to find
+sink's chmap capability.
 
-Channel map controls are registered in patch 8, with which user
-can specify a specific channel order. chmap controls are
-registered inside jack_init callback. As PCMs need to be
-registered before registering chmap controls, jack_init call in
-the machine driver is moved to late_probe instead of init
-callback.
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/codecs/hdac_hdmi.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-Skylake driver is modified and buffer size calculation is fixed
-for multichannel support.
-
-Please note, patch 2 adds a small macro to read channel counts
-from cap bits in HDA headers. This needs Takashi's ack, so that
-it can be merged through ASoC.
-
-Patch 7 has dependency on commit#44fde3b ("ALSA: hda - Update
-chmap tlv to report sink's capability) which is merged in
-Takashi's tree.
-
-As Takashi suggested Mark may pull Takashi's for-next branch
-before applying this or may send a pull request, so that Takashi
-pull's Mark's tree before applying these with Mark's ack.
-
-Mark, please check how you want this to be merged.
-
-Changes in v2:
-	* Dropped drm change and accommodate the change in driver
-	* Fix one auto build test error
-
-Subhransu S. Prusty (9):
-  ASoC: hdac_hdmi: parse eld for channel map capability
-  ALSA: hda - add helper to get channels from cap bits
-  ASoC: hdac_hdmi: Add multichannel support
-  ASoC: skl_rt286: Fix to support hdmi channel map support
-  ASoC: Intel: boards: Update skl_nau88l25_max98357a driver to support
-    chmap
-  ASoC: Intel: boards: Update skl_nau88l25_ssm4567 driver to support
-    chmap
-  ASoC: hdac_hdmi: Register chmap controls and ops
-  ASoC: Intel: Skylake: Add multichannel support for HDMI
-  ASoC: Intel: Skylake: Update channel map based on runtime params
-
- sound/hda/local.h                               |  10 ++
- sound/soc/codecs/hdac_hdmi.c                    | 165 ++++++++++++++++++++++--
- sound/soc/intel/boards/skl_nau88l25_max98357a.c |  74 ++++++++++-
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c   |  73 ++++++++++-
- sound/soc/intel/boards/skl_rt286.c              |  48 ++++++-
- sound/soc/intel/skylake/skl-pcm.c               |  14 +-
- sound/soc/intel/skylake/skl-topology.c          |  21 ++-
- 7 files changed, 381 insertions(+), 24 deletions(-)
-
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index aaa038f..81ac173 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -60,11 +60,17 @@ struct hdac_hdmi_cvt {
+ 	struct hdac_hdmi_cvt_params params;
+ };
+ 
++/* Currently only spk_alloc, more to be added */
++struct hdac_hdmi_parsed_eld {
++	u8 spk_alloc;
++};
++
+ struct hdac_hdmi_eld {
+ 	bool	monitor_present;
+ 	bool	eld_valid;
+ 	int	eld_size;
+ 	char    eld_buffer[ELD_MAX_SIZE];
++	struct	hdac_hdmi_parsed_eld info;
+ };
+ 
+ struct hdac_hdmi_pin {
+@@ -1008,6 +1014,12 @@ static int hdac_hdmi_add_cvt(struct hdac_ext_device *edev, hda_nid_t nid)
+ 	return hdac_hdmi_query_cvt_params(&edev->hdac, cvt);
+ }
+ 
++static void hdac_hdmi_parse_eld(struct hdac_ext_device *edev,
++			struct hdac_hdmi_pin *pin)
++{
++	pin->eld.info.spk_alloc = pin->eld.eld_buffer[DRM_ELD_SPEAKER];
++}
++
+ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin, int repoll)
+ {
+ 	struct hdac_ext_device *edev = pin->edev;
+@@ -1065,6 +1077,7 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin, int repoll)
+ 
+ 				snd_jack_report(pcm->jack, SND_JACK_AVOUT);
+ 			}
++			hdac_hdmi_parse_eld(edev, pin);
+ 
+ 			print_hex_dump_bytes("ELD: ", DUMP_PREFIX_OFFSET,
+ 					pin->eld.eld_buffer, pin->eld.eld_size);
 -- 
 1.9.1
