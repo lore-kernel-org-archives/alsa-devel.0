@@ -1,33 +1,17 @@
-From: Andreas x Larsson <andreas.x.larsson@axis.com>
-Subject: [PATCH] alsa-lib:Make snd_atomic_write_* truly atomic
-Date: Wed, 13 Apr 2016 12:42:01 +0200
-Message-ID: <570E2279.7060809@axis.com>
+From: Hsin-Yu Chao <hychao@chromium.org>
+Subject: [PATCH v5] ucm: add cset-tlv
+Date: Wed, 13 Apr 2016 18:53:09 +0800
+Message-ID: <1460544789-29169-1-git-send-email-hychao@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
- by alsa0.perex.cz (Postfix) with ESMTP id 02D5B2604D6
- for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2016 12:42:02 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by bes.se.axis.com (Postfix) with ESMTP id 87F9E2E145
- for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2016 12:42:02 +0200 (CEST)
-Received: from bes.se.axis.com ([IPv6:::ffff:127.0.0.1])
- by localhost (bes.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
- with LMTP id d9pi9HnWEQ7e for <alsa-devel@alsa-project.org>;
- Wed, 13 Apr 2016 12:42:01 +0200 (CEST)
-Received: from boulder.se.axis.com (boulder.se.axis.com [10.0.2.104])
- by bes.se.axis.com (Postfix) with ESMTP id DAB252E13E
- for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2016 12:42:01 +0200 (CEST)
-Received: from boulder.se.axis.com (localhost [127.0.0.1])
- by postfix.imss71 (Postfix) with ESMTP id BF63B1587
- for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2016 12:42:01 +0200 (CEST)
-Received: from thoth.se.axis.com (thoth.se.axis.com [10.0.2.173])
- by boulder.se.axis.com (Postfix) with ESMTP id B49C0FBE
- for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2016 12:42:01 +0200 (CEST)
-Received: from XBOX02.axis.com (xbox02.axis.com [10.0.5.16])
- by thoth.se.axis.com (Postfix) with ESMTP id B288FFB2
- for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2016 12:42:01 +0200 (CEST)
+Received: from mail-pa0-f47.google.com (mail-pa0-f47.google.com
+ [209.85.220.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9890C2608CF
+ for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2016 12:53:16 +0200 (CEST)
+Received: by mail-pa0-f47.google.com with SMTP id er2so3048634pad.3
+ for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2016 03:53:16 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -38,30 +22,194 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: vinod.koul@intel.com, dgreid@chromium.org, Hsin-Yu Chao <hychao@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-VW5kZXIgc29tZSB1c2VjYXNlcyBhIHJhY2UgY29uZGl0aW9uIGFwcGVhcnMgaW5zaWRlCnRoZSBz
-bmRfYXRvbWljX3dyaXRlXyogZnVuY3Rpb25zLiBUaGUgJ2JlZ2luJyBhbmQgJ2VuZCcKdmFyaWFi
-bGVzIGFyZSB1cGRhdGVkIHdpdGggdGhlICsrIG9wZXJhdG9yIHdoaWNoIGlzIG5vdAphdG9taWMg
-YnV0IG5lZWRzIHRvIGJlLiBUaGlzIGNhbiBiZSBhY2hpZXZlZCB3aXRoIHRoZQpnY2MgYXRvbWlj
-XyogYnVpbHQtaW5zLiBDb21iaW5lZCB3aXRoIF9fQVRPTUlDX1NFUV9DU1QKYXMgdGhlIG1lbW9y
-eSBtb2RlbCwgbWVtb3J5IGJhcnJpZXJzIGFyZSBpbnRyb2R1Y2VkIHNvCnRob3NlIGNhbiBhbHNv
-IGJlIHJlbW92ZWQgZnJvbSB0aGUgY29kZS4KClNpZ25lZC1vZmYtYnk6IEFuZHJlYXMgeCBMYXJz
-c29uIDxhbmRyZWxhbkBheGlzLmNvbT4KU2lnbmVkLW9mZi1ieTogQXJ2aWQgTmlobGfDpXJkIExp
-bmRlbGwgPGFydmlkbmxAYXhpcy5jb20+Ci0tLQogIGFsc2EtbGliL2luY2x1ZGUvaWF0b21pYy5o
-IHwgNiArKy0tLS0KICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9u
-cygtKQoKZGlmZiAtLWdpdCBhL2Fsc2EtbGliL2luY2x1ZGUvaWF0b21pYy5oIGIvYWxzYS1saWIv
-aW5jbHVkZS9pYXRvbWljLmgKaW5kZXggYWNkZDNlMi4uN2ZhZmUyMCAxMDA2NDQKLS0tIGEvYWxz
-YS1saWIvaW5jbHVkZS9pYXRvbWljLmgKKysrIGIvYWxzYS1saWIvaW5jbHVkZS9pYXRvbWljLmgK
-QEAgLTE0MCwxNCArMTQwLDEyIEBAIHN0YXRpYyBfX2lubGluZV9fIHZvaWQgCnNuZF9hdG9taWNf
-d3JpdGVfaW5pdChzbmRfYXRvbWljX3dyaXRlX3QgKncpCgogIHN0YXRpYyBfX2lubGluZV9fIHZv
-aWQgc25kX2F0b21pY193cml0ZV9iZWdpbihzbmRfYXRvbWljX3dyaXRlX3QgKncpCiAgewotICAg
-dy0+YmVnaW4rKzsKLSAgIHdtYigpOworICAgX19hdG9taWNfYWRkX2ZldGNoKCZ3LT5iZWdpbiwg
-MSxfX0FUT01JQ19TRVFfQ1NUKTsKICB9CgogIHN0YXRpYyBfX2lubGluZV9fIHZvaWQgc25kX2F0
-b21pY193cml0ZV9lbmQoc25kX2F0b21pY193cml0ZV90ICp3KQogIHsKLSAgIHdtYigpOwotICAg
-dy0+ZW5kKys7CisgICBfX2F0b21pY19hZGRfZmV0Y2goJnctPmVuZCwgMSwgX19BVE9NSUNfU0VR
-X0NTVCk7CiAgfQoKICBzdGF0aWMgX19pbmxpbmVfXyB2b2lkIHNuZF9hdG9taWNfcmVhZF9pbml0
-KHNuZF9hdG9taWNfcmVhZF90ICpyLCAKc25kX2F0b21pY193cml0ZV90ICp3KQotLSAKMi4xLjQK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+This patch enables UCM to set a file in TLV format to kcontrol by:
+cset-tlv "name='<kcontrol-name>' <path-to-file>"
+This new 'cset-tlv' command will be used to write audio DSP to
+specific alsa control, where the driver expectes a file in TLV
+format.
+The TLV file to set to kcontrol will be checked first by file size
+not larger than 16 MB, and then examine if the length field reports
+correct number of bytes in the TLV file.
+
+Signed-off-by: Hsin-Yu Chao <hychao@chromium.org>
+---
+ src/ucm/main.c      | 94 +++++++++++++++++++++++++++++++++++++++++++++--------
+ src/ucm/parser.c    | 10 ++++++
+ src/ucm/ucm_local.h |  1 +
+ 3 files changed, 92 insertions(+), 13 deletions(-)
+
+diff --git a/src/ucm/main.c b/src/ucm/main.c
+index 7e44603..24d9510 100644
+--- a/src/ucm/main.c
++++ b/src/ucm/main.c
+@@ -161,6 +161,57 @@ static int open_ctl(snd_use_case_mgr_t *uc_mgr,
+ 	return 0;
+ }
+ 
++static int read_tlv_file(unsigned int **res,
++			 const char *filepath)
++{
++	int err = 0;
++	int fd;
++	struct stat st;
++	size_t sz;
++	ssize_t sz_read;
++	struct snd_ctl_tlv *tlv;
++
++	fd = open(filepath, O_RDONLY);
++	if (fd < 0) {
++		err = -errno;
++		return err;
++	}
++	if (fstat(fd, &st) == -1) {
++		err = -errno;
++		goto __fail;
++	}
++	sz = st.st_size;
++	if (sz > 16 * 1024 * 1024 || sz < 8 || sz % 4) {
++		uc_error("File size should be less than 16 MB "
++			 "and multiple of 4");
++		err = -EINVAL;
++		goto __fail;
++	}
++	*res = malloc(sz);
++	if (res == NULL) {
++		err = -ENOMEM;
++		goto __fail;
++	}
++	sz_read = read(fd, *res, sz);
++	if (sz_read < 0 || (size_t)sz_read != sz) {
++		err = -EIO;
++		free(*res);
++		*res = NULL;
++	}
++	/* Check if the tlv file specifies valid size. */
++	tlv = (struct snd_ctl_tlv *)(*res);
++	if (tlv->length + 2 * sizeof(unsigned int) != sz) {
++		uc_error("Invalid tlv size: %d", tlv->length);
++		err = -EINVAL;
++		free(*res);
++		*res = NULL;
++	}
++
++__fail:
++	close(fd);
++	return err;
++}
++
+ static int binary_file_parse(snd_ctl_elem_value_t *dst,
+ 			      snd_ctl_elem_info_t *info,
+ 			      const char *filepath)
+@@ -226,6 +277,7 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
+ 	snd_ctl_elem_id_t *id;
+ 	snd_ctl_elem_value_t *value;
+ 	snd_ctl_elem_info_t *info;
++	unsigned int *res = NULL;
+ 
+ 	snd_ctl_elem_id_malloc(&id);
+ 	snd_ctl_elem_value_malloc(&value);
+@@ -241,23 +293,36 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
+ 		err = -EINVAL;
+ 		goto __fail;
+ 	}
+-	snd_ctl_elem_value_set_id(value, id);
+ 	snd_ctl_elem_info_set_id(info, id);
+-	err = snd_ctl_elem_read(ctl, value);
+-	if (err < 0)
+-		goto __fail;
+ 	err = snd_ctl_elem_info(ctl, info);
+ 	if (err < 0)
+ 		goto __fail;
+-	if (type == SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE)
+-		err = binary_file_parse(value, info, pos);
+-	else
+-		err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
+-	if (err < 0)
+-		goto __fail;
+-	err = snd_ctl_elem_write(ctl, value);
+-	if (err < 0)
+-		goto __fail;
++	if (type == SEQUENCE_ELEMENT_TYPE_CSET_TLV) {
++		if (!snd_ctl_elem_info_is_tlv_writable(info)) {
++			err = -EINVAL;
++			goto __fail;
++		}
++		err = read_tlv_file(&res, pos);
++		if (err < 0)
++			goto __fail;
++		err = snd_ctl_elem_tlv_write(ctl, id, res);
++		if (err < 0)
++			goto __fail;
++	} else {
++		snd_ctl_elem_value_set_id(value, id);
++		err = snd_ctl_elem_read(ctl, value);
++		if (err < 0)
++			goto __fail;
++		if (type == SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE)
++			err = binary_file_parse(value, info, pos);
++		else
++			err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
++		if (err < 0)
++			goto __fail;
++		err = snd_ctl_elem_write(ctl, value);
++		if (err < 0)
++			goto __fail;
++	}
+ 	err = 0;
+       __fail:
+ 	if (id != NULL)
+@@ -266,6 +331,8 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
+ 		free(value);
+ 	if (info != NULL)
+ 		free(info);
++	if (res != NULL)
++		free(res);
+ 
+ 	return err;
+ }
+@@ -298,6 +365,7 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
+ 			break;
+ 		case SEQUENCE_ELEMENT_TYPE_CSET:
+ 		case SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE:
++		case SEQUENCE_ELEMENT_TYPE_CSET_TLV:
+ 			if (cdev == NULL) {
+ 				char *playback_ctl = NULL;
+ 				char *capture_ctl = NULL;
+diff --git a/src/ucm/parser.c b/src/ucm/parser.c
+index 9e1cb41..d781e1b 100644
+--- a/src/ucm/parser.c
++++ b/src/ucm/parser.c
+@@ -316,6 +316,16 @@ static int parse_sequence(snd_use_case_mgr_t *uc_mgr ATTRIBUTE_UNUSED,
+ 			continue;
+ 		}
+ 
++		if (strcmp(cmd, "cset-tlv") == 0) {
++			curr->type = SEQUENCE_ELEMENT_TYPE_CSET_TLV;
++			err = parse_string(n, &curr->data.cset);
++			if (err < 0) {
++				uc_error("error: cset-tlv requires a string!");
++				return err;
++			}
++			continue;
++		}
++
+ 		if (strcmp(cmd, "usleep") == 0) {
+ 			curr->type = SEQUENCE_ELEMENT_TYPE_SLEEP;
+ 			err = snd_config_get_integer(n, &curr->data.sleep);
+diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
+index 3a5d2c2..b89de2a 100644
+--- a/src/ucm/ucm_local.h
++++ b/src/ucm/ucm_local.h
+@@ -48,6 +48,7 @@
+ #define SEQUENCE_ELEMENT_TYPE_SLEEP	3
+ #define SEQUENCE_ELEMENT_TYPE_EXEC	4
+ #define SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE	5
++#define SEQUENCE_ELEMENT_TYPE_CSET_TLV	6
+ 
+ struct ucm_value {
+         struct list_head list;
+-- 
+2.1.2
