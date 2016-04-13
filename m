@@ -1,106 +1,72 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 1/6] ASoC: davinci-mcbsp: add binding for McBSP
-Date: Wed, 13 Apr 2016 09:30:14 -0500
-Message-ID: <20160413143014.GA12136@rob-hp-laptop>
-References: <1460375117-4311-1-git-send-email-petr@barix.com>
- <1460375117-4311-2-git-send-email-petr@barix.com>
+From: Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH 0/4] Decouple X86_32 dependency from the
+ ISA Kconfig option
+Date: Wed, 13 Apr 2016 16:38:38 +0200
+Message-ID: <20160413143838.GD5867@gmail.com>
+References: <cover.1460379702.git.vilhelm.gray@gmail.com>
+ <20160413072602.GA7629@gmail.com> <20160413121515.GA23870@sophia>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 67A00264ED5
+ for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2016 16:38:41 +0200 (CEST)
+Received: by mail-wm0-f65.google.com with SMTP id y144so14532811wmd.0
+ for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2016 07:38:41 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <1460375117-4311-2-git-send-email-petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Cc: nsekhar-l0cyMroinI0@public.gmane.org, khilman-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+In-Reply-To: <20160413121515.GA23870@sophia>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-scsi@vger.kernel.org, gregkh@linuxfoundation.org, x86@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com, hpa@zytor.com, tglx@linutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 11, 2016 at 01:45:12PM +0200, Petr Kulhavy wrote:
-> Add devicetree binding for the TI DA8xx/OMAP-L1x/AM17xx/AM18xx
-> MultiChannel Buffered Serial Port (McBSP)
-> 
-> The optional register range "dat" is not implemented at the moment.
-> The current driver supports only DMA into RX/TX registers but no FIFO.
-> Once the FIFO is implemented in the driver the "dat" range will be used.
-> 
-> Signed-off-by: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-> ---
-> v1: initial
-> v2: add missing TC channel in dmas properties (for compatibility with the new EDMA3 binding)
->     remove "-audio" postfix from the compatible string
->     remove "channel-combine" property
-> 
->  .../devicetree/bindings/sound/davinci-mcbsp.txt    | 51 ++++++++++++++++++++++
->  1 file changed, 51 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt b/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
-> new file mode 100644
-> index 000000000000..de45865c3863
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
-> @@ -0,0 +1,51 @@
-> +Texas Instruments DaVinci McBSP module
-> +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> +
-> +This binding describes the "Multi-channel Buffered Serial Port" (McBSP)
-> +audio interface found in some TI DaVinci processors like the OMAP-L138 or AM180x.
-> +
-> +
-> +Required properties:
-> +~~~~~~~~~~~~~~~~~~~~
-> +- compatible : "ti,da850-mcbsp"
 
-You list several SoCs above, but only one compatible string here. A 
-specific compatible string per SoC please.
+* William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
 
-> +
-> +- reg : physical base address and length of the controller memory mapped
-> +        region(s).
-> +- reg-names : Should contain:
-> +        * "mpu" for the main registers (required). For compatibility with
-> +          existing software, it is recommended this is the first entry.
-
-s/recommended/required/
-
-> +        * "dat" for the data FIFO (optional).
-> +
-> +- dmas: three element list of DMA controller phandles, DMA request line and
-> +	TC channel ordered triplets.
-> +- dma-names: identifier string for each DMA request line in the dmas property.
-> +	These strings correspond 1:1 with the ordered pairs in dmas. The dma
-> +	identifiers must be "rx" and "tx".
-> +
-> +Optional properties:
-> +~~~~~~~~~~~~~~~~~~~~
-> +- interrupts : Interrupt numbers for McBSP
-> +- interrupt-names : Known interrupt names are "rx" and "tx"
-> +
-> +- pinctrl-0: Should specify pin control group used for this controller.
-> +- pinctrl-names: Should contain only one value - "default", for more details
-> +        please refer to pinctrl-bindings.txt
-> +
-> +Example (AM1808):
-> +~~~~~~~~~~~~~~~~~
-> +
-> +mcbsp0: mcbsp@1d10000 {
-> +	compatible = "ti,da850-mcbsp";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&mcbsp0_pins>;
-> +
-> +	reg = 	<0x00110000 0x1000>,
-> +		<0x00310000 0x1000>;
-> +	reg-names = "mpu", "dat";
-> +	interrupts = <97 98>;
-> +	interrupts-names = "rx", "tx";
-> +	dmas = <&edma0 3 1
-> +		&edma0 2 1>;
-> +	dma-names = "tx", "rx";
-> +	status = "okay";
-> +};
-> -- 
-> 1.9.1
+> On Wed, Apr 13, 2016 at 09:26:02AM +0200, Ingo Molnar wrote:
+> >What's the practical motivation of this? What exact hardware is this for?
+> >
+> >Thanks,
+> >
+> >	Ingo
 > 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> The PC/104 bus is equivalent to the ISA bus regarding software
+> communication. Many small form factor systems have a PC/104 bus where
+> PC/104 cards may be stacked. Nowadays, these systems are commonly
+> running 64-bit processors such as the Intel Atom.
+> 
+> I would like to utilize the ISA bus driver to support these PC/104
+> devices (see http://lkml.org/lkml/2016/4/7/418), but the ISA
+> configuration option has an arbitrary X86_32 dependency. Decoupling the
+> X86_32 dependency from the ISA configuration option will allow these
+> PC/104 drivers to build for 64-bit architectures.
+> 
+> The existing kernel drivers which I intend to utilize the ISA bus driver
+> in a X86_64 architecture for PC/104 support are the ACCES 104-DIO-48E
+> GPIO driver, the ACCES 104-IDI-48 GPIO driver, the ACCES 104-IDIO-16
+> GPIO driver, and the Apex Embedded Systems STX104 DAC driver. I have
+> several more PC/104 devices for which I wish to write drivers, but I
+> would like to resolve this ISA bus driver situation before submitting
+> new code.
+
+Ah, ok, so it's for enabling real hardware, not just a cleanup, right? You might 
+want to put that info into the boilerplate mail or so.
+
+I'm perfectly fine with all the patches that touch x86 code:
+
+  Acked-by: Ingo Molnar <mingo@kernel.org>
+
+I suppose you'd like to have these in the driver tree, all in one place?
+
+Thanks,
+
+	Ingo
