@@ -1,17 +1,16 @@
-From: Hsin-Yu Chao <hychao@chromium.org>
-Subject: [PATCH v4] ucm: add cset-tlv
-Date: Wed, 13 Apr 2016 14:26:57 +0800
-Message-ID: <1460528817-25598-1-git-send-email-hychao@chromium.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Multi-channel playback
+Date: Wed, 13 Apr 2016 08:51:28 +0200
+Message-ID: <570DEC70.6040004@ladisch.de>
+References: <3CD7D8096827214EA72BFDC6B95C7CC931B68E10@VEREXCH02.harrisbroadcast.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f43.google.com (mail-pa0-f43.google.com
- [209.85.220.43])
- by alsa0.perex.cz (Postfix) with ESMTP id C11B32650DB
- for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2016 08:27:11 +0200 (CEST)
-Received: by mail-pa0-f43.google.com with SMTP id bx7so27789278pad.3
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 23:27:11 -0700 (PDT)
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id C264C2650DB
+ for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2016 08:51:35 +0200 (CEST)
+In-Reply-To: <3CD7D8096827214EA72BFDC6B95C7CC931B68E10@VEREXCH02.harrisbroadcast.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,194 +20,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Hsin-Yu Chao <hychao@chromium.org>
+To: "Li, Steve" <Steve.Li@imaginecommunications.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch enables UCM to set a file in TLV format to kcontrol by:
-cset-tlv "name='<kcontrol-name>' <path-to-file>"
-This new 'cset-tlv' command will be used to write audio DSP to
-specific alsa control, where the driver expectes a file in TLV
-format.
-The TLV file to set to kcontrol will be checked first by file size
-not larger than 16 MB, and then examine if the length field reports
-correct number of bytes in the TLV file.
+Li, Steve wrote:
+> I am trying to playback a multi-channel PCM stream, e.g. 5.1. Is there an API for configuring the channel positions?
 
-Signed-off-by: Hsin-Yu Chao <hychao@chromium.org>
----
- src/ucm/main.c      | 93 +++++++++++++++++++++++++++++++++++++++++++++--------
- src/ucm/parser.c    | 10 ++++++
- src/ucm/ucm_local.h |  1 +
- 3 files changed, 91 insertions(+), 13 deletions(-)
+Yes, but not many devices support it.
 
-diff --git a/src/ucm/main.c b/src/ucm/main.c
-index 7e44603..cf9e825 100644
---- a/src/ucm/main.c
-+++ b/src/ucm/main.c
-@@ -161,6 +161,56 @@ static int open_ctl(snd_use_case_mgr_t *uc_mgr,
- 	return 0;
- }
- 
-+static int read_tlv_file(char **res,
-+			 const char *filepath)
-+{
-+	int err = 0;
-+	int fd;
-+	struct stat st;
-+	size_t sz;
-+	ssize_t sz_read;
-+	unsigned int *tlv;
-+
-+	fd = open(filepath, O_RDONLY);
-+	if (fd < 0) {
-+		err = -errno;
-+		return err;
-+	}
-+	if (fstat(fd, &st) == -1) {
-+		err = -errno;
-+		goto __fail;
-+	}
-+	sz = st.st_size;
-+	if (sz > 16 * 1024 * 1024 || sz < 8) {
-+		uc_error("File size should be less than 16 MB");
-+		err = -EINVAL;
-+		goto __fail;
-+	}
-+	*res = malloc(sz);
-+	if (res == NULL) {
-+		err = -ENOMEM;
-+		goto __fail;
-+	}
-+	sz_read = read(fd, *res, sz);
-+	if (sz_read < 0 || (size_t)sz_read != sz) {
-+		err = -EIO;
-+		free(*res);
-+		*res = NULL;
-+	}
-+	/* Check if the tlv file specifies valid size. */
-+	tlv = (unsigned int *)(*res);
-+	if (tlv[1] + 2 * sizeof(unsigned int) != sz) {
-+		uc_error("Invalid tlv size");
-+		err = -EINVAL;
-+		free(*res);
-+		*res = NULL;
-+	}
-+
-+      __fail:
-+	close(fd);
-+	return err;
-+}
-+
- static int binary_file_parse(snd_ctl_elem_value_t *dst,
- 			      snd_ctl_elem_info_t *info,
- 			      const char *filepath)
-@@ -226,6 +276,7 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
- 	snd_ctl_elem_id_t *id;
- 	snd_ctl_elem_value_t *value;
- 	snd_ctl_elem_info_t *info;
-+	char *res = NULL;
- 
- 	snd_ctl_elem_id_malloc(&id);
- 	snd_ctl_elem_value_malloc(&value);
-@@ -241,23 +292,36 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
- 		err = -EINVAL;
- 		goto __fail;
- 	}
--	snd_ctl_elem_value_set_id(value, id);
- 	snd_ctl_elem_info_set_id(info, id);
--	err = snd_ctl_elem_read(ctl, value);
--	if (err < 0)
--		goto __fail;
- 	err = snd_ctl_elem_info(ctl, info);
- 	if (err < 0)
- 		goto __fail;
--	if (type == SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE)
--		err = binary_file_parse(value, info, pos);
--	else
--		err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
--	if (err < 0)
--		goto __fail;
--	err = snd_ctl_elem_write(ctl, value);
--	if (err < 0)
--		goto __fail;
-+	if (type == SEQUENCE_ELEMENT_TYPE_CSET_TLV) {
-+		if (!snd_ctl_elem_info_is_tlv_writable(info)) {
-+			err = -EINVAL;
-+			goto __fail;
-+		}
-+		err = read_tlv_file(&res, pos);
-+		if (err < 0)
-+			goto __fail;
-+		err = snd_ctl_elem_tlv_write(ctl, id, (unsigned int *)res);
-+		if (err < 0)
-+			goto __fail;
-+	} else {
-+		snd_ctl_elem_value_set_id(value, id);
-+		err = snd_ctl_elem_read(ctl, value);
-+		if (err < 0)
-+			goto __fail;
-+		if (type == SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE)
-+			err = binary_file_parse(value, info, pos);
-+		else
-+			err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
-+		if (err < 0)
-+			goto __fail;
-+		err = snd_ctl_elem_write(ctl, value);
-+		if (err < 0)
-+			goto __fail;
-+	}
- 	err = 0;
-       __fail:
- 	if (id != NULL)
-@@ -266,6 +330,8 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
- 		free(value);
- 	if (info != NULL)
- 		free(info);
-+	if (res != NULL)
-+		free(res);
- 
- 	return err;
- }
-@@ -298,6 +364,7 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
- 			break;
- 		case SEQUENCE_ELEMENT_TYPE_CSET:
- 		case SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE:
-+		case SEQUENCE_ELEMENT_TYPE_CSET_TLV:
- 			if (cdev == NULL) {
- 				char *playback_ctl = NULL;
- 				char *capture_ctl = NULL;
-diff --git a/src/ucm/parser.c b/src/ucm/parser.c
-index 9e1cb41..d781e1b 100644
---- a/src/ucm/parser.c
-+++ b/src/ucm/parser.c
-@@ -316,6 +316,16 @@ static int parse_sequence(snd_use_case_mgr_t *uc_mgr ATTRIBUTE_UNUSED,
- 			continue;
- 		}
- 
-+		if (strcmp(cmd, "cset-tlv") == 0) {
-+			curr->type = SEQUENCE_ELEMENT_TYPE_CSET_TLV;
-+			err = parse_string(n, &curr->data.cset);
-+			if (err < 0) {
-+				uc_error("error: cset-tlv requires a string!");
-+				return err;
-+			}
-+			continue;
-+		}
-+
- 		if (strcmp(cmd, "usleep") == 0) {
- 			curr->type = SEQUENCE_ELEMENT_TYPE_SLEEP;
- 			err = snd_config_get_integer(n, &curr->data.sleep);
-diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
-index 3a5d2c2..b89de2a 100644
---- a/src/ucm/ucm_local.h
-+++ b/src/ucm/ucm_local.h
-@@ -48,6 +48,7 @@
- #define SEQUENCE_ELEMENT_TYPE_SLEEP	3
- #define SEQUENCE_ELEMENT_TYPE_EXEC	4
- #define SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE	5
-+#define SEQUENCE_ELEMENT_TYPE_CSET_TLV	6
- 
- struct ucm_value {
-         struct list_head list;
--- 
-2.1.2
+> calling snd_pcm_get_chmap() return NULL.
+
+Your device (driver), whatever it is, doesn't support reading it either.
+
+
+Regards,
+Clemens
