@@ -1,44 +1,42 @@
-From: William Breathitt Gray <vilhelm.gray@gmail.com>
-Subject: Re: [PATCH 0/4] Decouple X86_32 dependency from the ISA Kconfig
- option
-Date: Wed, 13 Apr 2016 08:15:15 -0400
-Message-ID: <20160413121515.GA23870@sophia>
-References: <cover.1460379702.git.vilhelm.gray@gmail.com>
- <20160413072602.GA7629@gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v5] ucm: add cset-tlv
+Date: Wed, 13 Apr 2016 19:09:41 +0530
+Message-ID: <20160413133941.GN2274@localhost>
+References: <1460544789-29169-1-git-send-email-hychao@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-scsi-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A95C2604D6
+ for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2016 15:35:08 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20160413072602.GA7629@gmail.com>
-Sender: linux-scsi-owner@vger.kernel.org
-To: Ingo Molnar <mingo@kernel.org>
-Cc: tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, gregkh@linuxfoundation.org, x86@kernel.org, linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <1460544789-29169-1-git-send-email-hychao@chromium.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Hsin-Yu Chao <hychao@chromium.org>
+Cc: alsa-devel@alsa-project.org, dgreid@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 13, 2016 at 09:26:02AM +0200, Ingo Molnar wrote:
->What's the practical motivation of this? What exact hardware is this for?
->
->Thanks,
->
->	Ingo
+On Wed, Apr 13, 2016 at 06:53:09PM +0800, Hsin-Yu Chao wrote:
+> This patch enables UCM to set a file in TLV format to kcontrol by:
+> cset-tlv "name='<kcontrol-name>' <path-to-file>"
+> This new 'cset-tlv' command will be used to write audio DSP to
+> specific alsa control, where the driver expectes a file in TLV
+> format.
+> The TLV file to set to kcontrol will be checked first by file size
+> not larger than 16 MB, and then examine if the length field reports
+> correct number of bytes in the TLV file.
 
-The PC/104 bus is equivalent to the ISA bus regarding software
-communication. Many small form factor systems have a PC/104 bus where
-PC/104 cards may be stacked. Nowadays, these systems are commonly
-running 64-bit processors such as the Intel Atom.
+Reviewed-by: Vinod Koul <vinod.koul@intel.com>
 
-I would like to utilize the ISA bus driver to support these PC/104
-devices (see http://lkml.org/lkml/2016/4/7/418), but the ISA
-configuration option has an arbitrary X86_32 dependency. Decoupling the
-X86_32 dependency from the ISA configuration option will allow these
-PC/104 drivers to build for 64-bit architectures.
-
-The existing kernel drivers which I intend to utilize the ISA bus driver
-in a X86_64 architecture for PC/104 support are the ACCES 104-DIO-48E
-GPIO driver, the ACCES 104-IDI-48 GPIO driver, the ACCES 104-IDIO-16
-GPIO driver, and the Apex Embedded Systems STX104 DAC driver. I have
-several more PC/104 devices for which I wish to write drivers, but I
-would like to resolve this ISA bus driver situation before submitting
-new code.
-
-William Breathitt Gray
+Thanks
+-- 
+~Vinod
