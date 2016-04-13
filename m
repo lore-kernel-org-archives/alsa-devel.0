@@ -1,17 +1,10 @@
-From: =?UTF-8?Q?Giedrius_Trainavi=C4=8Dius?= <giedrius.trainavicius@gmail.com>
-Subject: Too fast playback everywhere, except audacity
-Date: Tue, 12 Apr 2016 01:10:41 +0300
-Message-ID: <CABpuRUN-DT=Q=R31RTT=mh9SEaAcS3auZecAxfO0iKHnHc_wcA@mail.gmail.com>
+From: "Simon Wood" <simon@mungewell.org>
+Subject: Tascam US-122L - Corrupt USB descriptor
+Date: Wed, 13 Apr 2016 00:38:18 -0600
+Message-ID: <3d5a5368f3a43ffc0114daf09c306d7e.squirrel__17506.61528572$1460535956$gmane$org@mungewell.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;boundary="----=_20160413003818_48718"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f182.google.com (mail-ig0-f182.google.com
- [209.85.213.182])
- by alsa0.perex.cz (Postfix) with ESMTP id AE0F12608CF
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 00:10:42 +0200 (CEST)
-Received: by mail-ig0-f182.google.com with SMTP id f1so73264959igr.1
- for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2016 15:10:42 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,39 +15,224 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+------=_20160413003818_48718
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I am developing a driver for a DAC on raspberry pi 3 by mostly making use
-of existing PCM5102A, and bcm2708 I2S driver code.
+Hi all,
+I have been struggling for the past few days to get a Tascam US-122L (USB
+sound-card/midi interface) working, despite reading numerous forum
+postings I have only been able to get the midi portion working.
 
-What I've done is just configuring the cpu dai link, and for the sampling
-rate changes, I am setting some gpios which configures the clock of an ADC
-(PCM1804) which is a master. The main CPU and the DAC are slaves to the ADC
-and I have a 24.576MHz oscillator.
+I note that the USB descriptor seems to be corrupt. It declares 2
+interfaces, but then describes 3 separate with the same interface number
+for the last 2... could it be that this is confusing the Linux USB stack?
 
-The sampling rates I want to support are 48000, 96000 and 192000. I am able
-to react just fine to the requested rate in hw_params callback. Trying out
-the different rates in audacity works just fine.
+I have attached a copy of the descriptor and an annotated 'lsusb -vv'.
 
-However, if I try to playback any wav files using mplayer or aplay or
-youtube, all of their playback requests for 48000, but they get played way
-too fast.
 
-Also if I request mplayer to use alsa output, it gets a buffer underrun and
-gets stuck. If I set audacity to use some other output device than alsa
-directly, it plays corrupted audio and hangs on stopping playback.
+>From my experience with the HID subsystem, they have a mechanism for
+patching HID descriptors, is the same possible for the base USB
+descriptor? Trolling through 'drivers/usb' I didn't see anything... any
+suggestions?
 
-How does audacity manage to play the audio at the correct speed? Is it
-doing software resampling to the 'project rate'?
+If this is possible I can try to increase the interface count and renumbe=
+r
+the last one.
 
-I've tried getting resampling to work using 'plug', but completely
-unsuccessfully - I can't get any sound out of it, it says it failed setting
-the requested parameters.
+Cheers,
+Simon.
 
-Any pointers to what I should be investigating? I am new to the linux
-kernel module development, as well as sound drivers.
+PS. For reference the device is:
+Model No: US-122L
+Serial: (21)0120xxx
+Other barcode: 043774021628
+------=_20160413003818_48718
+Content-Type: text/plain; name="us-122l-descriptors.txt"
+Content-Disposition: attachment; filename="us-122l-descriptors.txt"
+Content-Transfer-Encoding: quoted-printable
 
-Thank you in advance,
-Giedrius.
+00000000  12 01 00 02 00 00 00 40  44 06 0e 80 00 01 01 02  |.......@D...=
+....|
+00000010  03 01 09 02 48 00 02 01  00 80 f0 09 04 00 00 00  |....H.......=
+....|
+00000020  ff 00 00 00 09 04 01 00  00 ff 00 00 00 09 04 01  |............=
+....|
+00000030  01 04 ff 00 00 00 09 05  81 05 4e 00 01 00 00 09  |..........N.=
+....|
+00000040  05 02 05 4e 00 01 00 00  09 05 83 02 09 00 04 00  |...N........=
+....|
+00000050  00 09 05 04 02 00 02 04  00 00                    |..........|
+0000005a
+
+
+
+Bus 001 Device 042: ID 0644:800e TEAC Corp. TASCAM US-122L
+--
+00000000  12 01 00 02 00 00 00 40  44 06 0e 80 00 01 01 02  |.......@D...=
+....|
+00000010  03 01 __________________________________________  |....H.......=
+....|
+--
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               2.00
+  bDeviceClass            0 (Defined at Interface level)
+  bDeviceSubClass         0=20
+  bDeviceProtocol         0=20
+  bMaxPacketSize0        64
+  idVendor           0x0644 TEAC Corp.
+  idProduct          0x800e TASCAM US-122L
+  bcdDevice            1.00
+  iManufacturer           1 (error)				<------ Here be Errors!
+  iProduct                2 (error)
+  iSerial                 3 (error)
+  bNumConfigurations      1
+
+  Configuration Descriptor:
+--
+00000010  _____ 09 02 48 00 02 01  00 80 f0 ______________  |....H.......=
+....|
+--
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           72
+    bNumInterfaces          2					<------- 2 interfaces
+    bConfigurationValue     1
+    iConfiguration          0=20
+    bmAttributes         0x80
+      (Bus Powered)
+    MaxPower              480mA
+
+
+    Interface Descriptor:					<------ that's 1
+--
+00000010  _________________________________ 09 04 00 00 00  |....H.......=
+....|
+00000020  ff 00 00 00 ____________________________________  |............=
+....|
+--
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      0=20
+      bInterfaceProtocol      0=20
+      iInterface              0=20
+
+    Interface Descriptor:					<------ that's 2
+--
+00000020  ___________ 09 04 01 00  00 ff 00 00 00 ________  |............=
+....|
+--
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      0=20
+      bInterfaceProtocol      0=20
+      iInterface              0=20
+
+    Interface Descriptor:					<------ that's 3, err wait...
+--
+00000020  _______________________________________ 09 04 01  |............=
+....|
+00000030  01 04 ff 00 00 00 ______________________________  |..........N.=
+....|
+--
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1					<------ interface duplicate!!
+      bAlternateSetting       1
+      bNumEndpoints           4
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      0=20
+      bInterfaceProtocol      0=20
+      iInterface              0=20
+
+      Endpoint Descriptor:
+--
+00000030  _________________ 09 05  81 05 4e 00 01 00 00 __  |..........N.=
+....|
+--
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+          Usage Type               Data
+        wMaxPacketSize     0x004e  1x 78 bytes
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+
+      Endpoint Descriptor:
+--
+00000030  _____________________________________________ 09  |..........N.=
+....|
+00000040  05 02 05 4e 00 01 00 00  _______________________  |...N........=
+....|
+--
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+          Usage Type               Data
+        wMaxPacketSize     0x004e  1x 78 bytes
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+
+      Endpoint Descriptor:
+--
+00000040  _______________________  09 05 83 02 09 00 04 00  |...N........=
+....|
+00000050  00 ___________________________                    |..........|
+--
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x83  EP 3 IN
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0009  1x 9 bytes
+        bInterval               4
+        bRefresh                0
+        bSynchAddress           0
+      Endpoint Descriptor:
+--
+00000050  __ 09 05 04 02 00 02 04  00 00                    |..........|
+--
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x04  EP 4 OUT
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0200  1x 512 bytes
+        bInterval               4
+        bRefresh                0
+        bSynchAddress           0
+Device Status:     0x0001
+  Self Powered
+------=_20160413003818_48718
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+------=_20160413003818_48718--
