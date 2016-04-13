@@ -1,39 +1,85 @@
-From: Heinrich Schuchardt <xypron.glpk@gmx.de>
-Subject: [PATCH 1/1] ASoC: au1x: use correct format specifier
-Date: Wed, 13 Apr 2016 01:54:01 +0200
-Message-ID: <1460505241-12900-1-git-send-email-xypron.glpk@gmx.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Axel Lin <axel.lin@ingics.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Heinrich Schuchardt <xypron.glpk@gmx.de>
+From: Hyungwon Hwang <hyungwon.hwang7@gmail.com>
+Subject: Re: [PATCH] ALSA: hda - Remove temporary buffer for
+	ELD update
+Date: Wed, 13 Apr 2016 09:26:29 +0900
+Message-ID: <570D9235.4080909@gmail.com>
+References: <1460394651-2519-1-git-send-email-hyungwon.hwang7@gmail.com>
+ <s5hk2k318bt.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pf0-f196.google.com (mail-pf0-f196.google.com
+ [209.85.192.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0AE192650DB
+ for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2016 02:26:34 +0200 (CEST)
+Received: by mail-pf0-f196.google.com with SMTP id r187so2573774pfr.2
+ for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2016 17:26:33 -0700 (PDT)
+In-Reply-To: <s5hk2k318bt.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Documentation/printk-formats.txt has
-unsigned long: use %lu or %lx
-size_t:        use %zu or %zx
-
-runtime->dma_bytes is of type size_t.
-runtime->min_align is of type unsigned long.
-
-Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
----
- sound/soc/au1x/dbdma2.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/au1x/dbdma2.c b/sound/soc/au1x/dbdma2.c
-index 5741c0a..b5d1caa 100644
---- a/sound/soc/au1x/dbdma2.c
-+++ b/sound/soc/au1x/dbdma2.c
-@@ -206,8 +206,8 @@ static int au1xpsc_pcm_hw_params(struct snd_pcm_substream *substream,
- 	stype = substream->stream;
- 	pcd = to_dmadata(substream);
- 
--	DBG("runtime->dma_area = 0x%08lx dma_addr_t = 0x%08lx dma_size = %d "
--	    "runtime->min_align %d\n",
-+	DBG("runtime->dma_area = 0x%08lx dma_addr_t = 0x%08lx dma_size = %zu "
-+	    "runtime->min_align %lu\n",
- 		(unsigned long)runtime->dma_area,
- 		(unsigned long)runtime->dma_addr, runtime->dma_bytes,
- 		runtime->min_align);
--- 
-2.1.4
+RGVhciBUYWthc2hpLAoKMjAxNuuFhCAwNOyblCAxMuydvCAxODozMuyXkCBUYWthc2hpIEl3YWkg
+7J20KOqwgCkg7JO0IOq4gDoKPiBPbiBNb24sIDExIEFwciAyMDE2IDE5OjEwOjUxICswMjAwLAo+
+IEh5dW5nd29uIEh3YW5nIHdyb3RlOgo+Pgo+PiBXaXRoIHRoZSBpbnRyb2R1Y2Ugb2YgcGNtX2xv
+Y2sgYW5kIHBlcl9waW4tPmxvY2ssIHRoaXMgdGVtcG9yYXJ5IGJ1ZmZlcgo+PiBpcyBub3QgbmVl
+ZGVkIGFueW1vcmUuCj4gCj4gVGhlIHVzZSBvZiBhIHRlbXBvcmFyeSBidWZmZXIgaXMgbm90IG9u
+bHkgdG8gYXZvaWQgdGhlIHJhY2UuICBJdCdzCj4gYWxzbyBmb3IgYXZvaWRpbmcgdGhlIGNvcnJ1
+cHRpb24gZHVlIHRvIGFuIGVycm9uZW91cyByZWFkLiAgVGhhdCBpcywKPiBwaW5fZ2V0X2VsZCgp
+IG1pZ2h0IG92ZXJ3cml0ZSBzb21lIGJvZ3VzIGRhdGEgd2hpbGUgaXQgcmV0dXJucyBhbgo+IGVy
+cm9yLiAgU2luY2UgdGhlIGRyaXZlciByZXRyaWVzIHVwb24gdGhlIGVycm9yLCB3ZSBuZWVkIHRv
+IGtlZXAgdGhlCj4gb2xkIGdvb2QgZGF0YSBhcyBtdWNoIGFzIHBvc3NpYmxlLgoKSSBtaXNzZWQg
+dGhhdCBwaW5fZ2V0X2VsZCgpIGNhbiBydWluIHRoZSBzdHJ1Y3R1cmUuIEkgYWdyZWUgd2l0aCB5
+b3UuClRoZW4gSSB3aWxsIHNlbmQgYW5vdGhlciBwYXRjaCB3aGljaCBzZXQgZWxkLT5tb25pdG9y
+X3ByZXNlbnQgYnkgdGhlCnZhbHVlIG9mIHBpbl9lbGQtPm1vbml0b3JfcHJlc2VudC4gU28gcHJv
+YyBjYW4gc2hvdyB0aGUgY29ycmVjdCBjdXJyZW50CnN0YXR1cy4KClRoYW5rcywKSHl1bmd3b24g
+SHdhbmcKCj4gCj4gCj4gdGhhbmtzLAo+IAo+IFRha2FzaGkKPiAKPj4KPj4gU2lnbmVkLW9mZi1i
+eTogSHl1bmd3b24gSHdhbmcgPGh5dW5nd29uLmh3YW5nN0BnbWFpbC5jb20+Cj4+IC0tLQo+PiAg
+c291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMgfCAxMSArKysrKy0tLS0tLQo+PiAgMSBmaWxlIGNo
+YW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBh
+L3NvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jIGIvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMK
+Pj4gaW5kZXggNWFmMzcyZC4uYTI0ZDViNCAxMDA2NDQKPj4gLS0tIGEvc291bmQvcGNpL2hkYS9w
+YXRjaF9oZG1pLmMKPj4gKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMKPj4gQEAgLTEz
+OTUsOCArMTM5NSw3IEBAIHN0YXRpYyBib29sIGhkbWlfcHJlc2VudF9zZW5zZV92aWFfdmVyYnMo
+c3RydWN0IGhkbWlfc3BlY19wZXJfcGluICpwZXJfcGluLAo+PiAgCXN0cnVjdCBoZGFfamFja190
+YmwgKmphY2s7Cj4+ICAJc3RydWN0IGhkYV9jb2RlYyAqY29kZWMgPSBwZXJfcGluLT5jb2RlYzsK
+Pj4gIAlzdHJ1Y3QgaGRtaV9zcGVjICpzcGVjID0gY29kZWMtPnNwZWM7Cj4+IC0Jc3RydWN0IGhk
+bWlfZWxkICplbGQgPSAmc3BlYy0+dGVtcF9lbGQ7Cj4+IC0Jc3RydWN0IGhkbWlfZWxkICpwaW5f
+ZWxkID0gJnBlcl9waW4tPnNpbmtfZWxkOwo+PiArCXN0cnVjdCBoZG1pX2VsZCAqZWxkID0gJnBl
+cl9waW4tPnNpbmtfZWxkOwo+PiAgCWhkYV9uaWRfdCBwaW5fbmlkID0gcGVyX3Bpbi0+cGluX25p
+ZDsKPj4gIAkvKgo+PiAgCSAqIEFsd2F5cyBleGVjdXRlIGEgR2V0UGluU2Vuc2UgdmVyYiBoZXJl
+LCBldmVuIHdoZW4gY2FsbGVkIGZyb20KPj4gQEAgLTE0MTMsMTUgKzE0MTIsMTUgQEAgc3RhdGlj
+IGJvb2wgaGRtaV9wcmVzZW50X3NlbnNlX3ZpYV92ZXJicyhzdHJ1Y3QgaGRtaV9zcGVjX3Blcl9w
+aW4gKnBlcl9waW4sCj4+ICAJcHJlc2VudCA9IHNuZF9oZGFfcGluX3NlbnNlKGNvZGVjLCBwaW5f
+bmlkKTsKPj4gIAo+PiAgCW11dGV4X2xvY2soJnBlcl9waW4tPmxvY2spOwo+PiAtCXBpbl9lbGQt
+Pm1vbml0b3JfcHJlc2VudCA9ICEhKHByZXNlbnQgJiBBQ19QSU5TRU5TRV9QUkVTRU5DRSk7Cj4+
+IC0JaWYgKHBpbl9lbGQtPm1vbml0b3JfcHJlc2VudCkKPj4gKwllbGQtPm1vbml0b3JfcHJlc2Vu
+dCA9ICEhKHByZXNlbnQgJiBBQ19QSU5TRU5TRV9QUkVTRU5DRSk7Cj4+ICsJaWYgKGVsZC0+bW9u
+aXRvcl9wcmVzZW50KQo+PiAgCQllbGQtPmVsZF92YWxpZCAgPSAhIShwcmVzZW50ICYgQUNfUElO
+U0VOU0VfRUxEVik7Cj4+ICAJZWxzZQo+PiAgCQllbGQtPmVsZF92YWxpZCA9IGZhbHNlOwo+PiAg
+Cj4+ICAJY29kZWNfZGJnKGNvZGVjLAo+PiAgCQkiSERNSSBzdGF0dXM6IENvZGVjPSVkIFBpbj0l
+ZCBQcmVzZW5jZV9EZXRlY3Q9JWQgRUxEX1ZhbGlkPSVkXG4iLAo+PiAtCQljb2RlYy0+YWRkciwg
+cGluX25pZCwgcGluX2VsZC0+bW9uaXRvcl9wcmVzZW50LCBlbGQtPmVsZF92YWxpZCk7Cj4+ICsJ
+CWNvZGVjLT5hZGRyLCBwaW5fbmlkLCBlbGQtPm1vbml0b3JfcHJlc2VudCwgZWxkLT5lbGRfdmFs
+aWQpOwo+PiAgCj4+ICAJaWYgKGVsZC0+ZWxkX3ZhbGlkKSB7Cj4+ICAJCWlmIChzcGVjLT5vcHMu
+cGluX2dldF9lbGQoY29kZWMsIHBpbl9uaWQsIGVsZC0+ZWxkX2J1ZmZlciwKPj4gQEAgLTE0NDEs
+NyArMTQ0MCw3IEBAIHN0YXRpYyBib29sIGhkbWlfcHJlc2VudF9zZW5zZV92aWFfdmVyYnMoc3Ry
+dWN0IGhkbWlfc3BlY19wZXJfcGluICpwZXJfcGluLAo+PiAgCWVsc2UKPj4gIAkJdXBkYXRlX2Vs
+ZChjb2RlYywgcGVyX3BpbiwgZWxkKTsKPj4gIAo+PiAtCXJldCA9ICFyZXBvbGwgfHwgIXBpbl9l
+bGQtPm1vbml0b3JfcHJlc2VudCB8fCBwaW5fZWxkLT5lbGRfdmFsaWQ7Cj4+ICsJcmV0ID0gIXJl
+cG9sbCB8fCAhZWxkLT5tb25pdG9yX3ByZXNlbnQgfHwgZWxkLT5lbGRfdmFsaWQ7Cj4+ICAKPj4g
+IAlqYWNrID0gc25kX2hkYV9qYWNrX3RibF9nZXQoY29kZWMsIHBpbl9uaWQpOwo+PiAgCWlmIChq
+YWNrKQo+PiAtLSAKPj4gMi41LjAKPj4KPj4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbHNhLWRldmVsCg==
