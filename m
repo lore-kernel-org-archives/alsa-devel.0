@@ -1,117 +1,37 @@
-From: Julian Margetson <runaway@candw.ms>
-Subject: Re: Issues with ALSA:ice1724 sound cards on powerpc
- machines
-Date: Wed, 13 Apr 2016 13:59:35 -0400
-Message-ID: <570E8907.4020907@candw.ms>
-References: <56C4BC13.2010306@candw.ms> <5702C756.1050904@candw.ms>
- <s5hy48k2q26.wl-tiwai@suse.de> <570BB84A.9040400@ivitera.com>
- <570BDFCB.20601@candw.ms> <570C21D5.7000106@candw.ms>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 2/2 v5] ASoC: dwc: Update DOCUMENTATION for I2S Driver
+Date: Wed, 13 Apr 2016 15:17:09 -0500
+Message-ID: <20160413201708.GA24579@rob-hp-laptop>
+References: <cover.1460384521.git.joabreu@synopsys.com>
+ <a922e60747eb00182eba573baf9497fff8772337.1460384521.git.joabreu@synopsys.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp618.redcondor.net (smtp618.redcondor.net [208.80.206.18])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C9DC2651DB
- for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2016 19:59:52 +0200 (CEST)
-In-Reply-To: <570C21D5.7000106@candw.ms>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pavel Hofman <pavel.hofman@ivitera.com>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <a922e60747eb00182eba573baf9497fff8772337.1460384521.git.joabreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Cc: linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, CARLOS.PALMINHA-HKixBCOQz3hWk0Htik3J/w@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 4/11/2016 6:14 PM, Julian Margetson wrote:
-> On 4/11/2016 1:32 PM, Julian Margetson wrote:
->> On 4/11/2016 10:44 AM, Pavel Hofman wrote:
->>> Dne 11.4.2016 v 16:11 Takashi Iwai napsal(a):
->>>> On Mon, 04 Apr 2016 21:58:14 +0200,
->>>> Julian Margetson wrote:
->>>>>
->>>>> On 2/17/2016 2:29 PM, Julian Margetson wrote:
->>>>>> Hi
->>>>>>
->>>>>> Having an issue issue with ice1724 sound cards on powerpc 
->>>>>> motherboards.
->>>>>> Motherboards in question Acube Sam460ex .
->>>>>> The card appears as a valid device but there is no sound output 
->>>>>> on the
->>>>>> majority of boots of the computer.
->>>>>> Logs attached.
->>>>>> On the first set boot audio playback produced sound ok.
->>>>>> On the second set boot no sound was produce with audio playback
->>>>>>
->>>>>>
->>>>>> Regards
->>>>>> Julian Margetson
->>>>>>
->>>>>>
->>>>>>
->>>>> Anyone have any ideas ?
->>>>>
->>>>> Resubmitting again with links to logs instead of included as 
->>>>> attachments.
->>>>> The issue also seen on A-Eon Cyrus P5020 motherboard .
->>>>>
->>>>> https://www.dropbox.com/s/72labcje9z1r1b7/1alsa-info.txt.7CLHMG0Gap?dl=0 
->>>>>
->>>>> https://www.dropbox.com/s/v1pn5kjqrvwu16f/boot_1.log?dl=0
->>>>> https://www.dropbox.com/s/uuaa14rkpmmz1o0/2alsa-info.txt.VKiEVuytiJ?dl=0 
->>>>>
->>>>> https://www.dropbox.com/s/wwu2f5t93l8g26d/boot_2.log?dl=0
->>>>
->>>> I have no concrete idea, but in general, the usual problems on PPC are
->>>> either related with cache coherency or byte endianness.  I don't know
->>>> of any issue with the latter in ice1724 driver, so likely it's the
->>>> former.
->>>>
->>>
->>> Perhaps the ice1724 driver was not even tested properly with the 
->>> AC97 codec. Do we know of any separate PCI ice1724 card with this 
->>> codec?
->>>
->>> Regards,
->>>
->>> Pavel Hofman.
->>>
->>>
->> The second board mentioned , the Aeon Cyrus ,uses a P5020 so is cache 
->> coherent .
->> The problem may be in the initialization of the sound card as on some 
->> boots with my board , an Acube Sam460ex, it works perfectly. I have  
->> tested a CMI8738 pciex1 sound card which works perfectly as do USB 
->> cm108 based external cards .
->>
->> I also have a PCI ice1724 version of the card  (never used in this 
->> machine) as well as 2 different pciex1  ice1724 cards with the codec .
->> The Sam460ex only has 1 pci slot normally used for the SATA card and 
->> 1 shared pcie or SATA II.
->> I could test with  the pci card by booting from USB .
->> So either configure as 1 pciex1 slot or 1 on board SATA II .
->> I am helping to test the onboard sata-dwc but am happy to test any 
->> ideas for a solution to the audio issues as well.
->> Will mean reconfiguring my machine back an forth but worth it for 
->> solutions in both areas .
->>
->> Regards
->> Julian
->>
->>
->>
->>
-> This is the pci model .
->
-> http://www.amazon.com/SIIG-Soundwave-5-1-Pci-lp-LP-000022-S2/dp/B0036VNVWE 
->
+On Tue, Apr 12, 2016 at 01:56:28PM +0100, Jose Abreu wrote:
+> This patch updates documentation for the Designware I2S
+> driver.
+> 
+> Signed-off-by: Jose Abreu <joabreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+> ---
+> 
+> Changes v4 -> v5:
+> * interrupts is now required property
+> * Drop 'snps-use-dmaengine' property
+> 
+> This patch was only introduced in v4.
+> 
+>  Documentation/devicetree/bindings/sound/designware-i2s.txt | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 
-PCI model has IRQ problem with the Sam460ex so that option wont be of 
-any help.
-
-[    6.283945] snd_ice1724 0001:00:04.0: unable to grab IRQ 0
-[    6.283973] snd_ice1724: probe of 0001:00:04.0 failed with error -5
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
