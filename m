@@ -1,17 +1,16 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v4] ucm: add cset-tlv
-Date: Wed, 13 Apr 2016 14:27:40 +0530
-Message-ID: <20160413085740.GK2274@localhost>
-References: <1460528817-25598-1-git-send-email-hychao@chromium.org>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Tascam US-122L - Corrupt USB descriptor
+Date: Wed, 13 Apr 2016 11:02:32 +0200
+Message-ID: <alpine.DEB.2.02.1604131049290.9999@lnxricardw1.se.axis.com>
+References: <3d5a5368f3a43ffc0114daf09c306d7e.squirrel@mungewell.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 73F032604D6
- for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2016 10:53:06 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1460528817-25598-1-git-send-email-hychao@chromium.org>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 55AF82604D6
+ for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2016 11:02:39 +0200 (CEST)
+In-Reply-To: <3d5a5368f3a43ffc0114daf09c306d7e.squirrel@mungewell.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,86 +20,191 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hsin-Yu Chao <hychao@chromium.org>
-Cc: alsa-devel@alsa-project.org
+To: Simon Wood <simon@mungewell.org>
+Cc: alsa-devel@alsa-project.org, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 13, 2016 at 02:26:57PM +0800, Hsin-Yu Chao wrote:
-> +	sz_read = read(fd, *res, sz);
-> +	if (sz_read < 0 || (size_t)sz_read != sz) {
-> +		err = -EIO;
-> +		free(*res);
-> +		*res = NULL;
-> +	}
-> +	/* Check if the tlv file specifies valid size. */
-> +	tlv = (unsigned int *)(*res);
-> +	if (tlv[1] + 2 * sizeof(unsigned int) != sz) {
 
-why not use snd_ctl_tlv(), my assumption is that you are expecting a type,
-length and values in the buffer
+On Wed, 13 Apr 2016, Simon Wood wrote:
 
-> +		uc_error("Invalid tlv size");
+> Hi all,
+> I have been struggling for the past few days to get a Tascam US-122L (USB
+> sound-card/midi interface) working, despite reading numerous forum
+> postings I have only been able to get the midi portion working.
+> =
 
-wouldn't it help to print the size for error
+> I note that the USB descriptor seems to be corrupt. It declares 2
+> interfaces, but then describes 3 separate with the same interface number
+> for the last 2... could it be that this is confusing the Linux USB stack?
+> =
 
-> +		err = -EINVAL;
-> +		free(*res);
-> +		*res = NULL;
-> +	}
-> +
-> +      __fail:
+> I have attached a copy of the descriptor and an annotated 'lsusb -vv'.
+> ...
 
-I dont know about syntax expected in UCM but this label could be left
-justfied :)
+My experience of lsusb is that it can get confused and report errors when =
 
-> +	close(fd);
-> +	return err;
-> +}
-> +
->  static int binary_file_parse(snd_ctl_elem_value_t *dst,
->  			      snd_ctl_elem_info_t *info,
->  			      const char *filepath)
-> @@ -226,6 +276,7 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
->  	snd_ctl_elem_id_t *id;
->  	snd_ctl_elem_value_t *value;
->  	snd_ctl_elem_info_t *info;
-> +	char *res = NULL;
->  
->  	snd_ctl_elem_id_malloc(&id);
->  	snd_ctl_elem_value_malloc(&value);
-> @@ -241,23 +292,36 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
->  		err = -EINVAL;
->  		goto __fail;
->  	}
-> -	snd_ctl_elem_value_set_id(value, id);
->  	snd_ctl_elem_info_set_id(info, id);
-> -	err = snd_ctl_elem_read(ctl, value);
-> -	if (err < 0)
-> -		goto __fail;
->  	err = snd_ctl_elem_info(ctl, info);
->  	if (err < 0)
->  		goto __fail;
-> -	if (type == SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE)
-> -		err = binary_file_parse(value, info, pos);
-> -	else
-> -		err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
-> -	if (err < 0)
-> -		goto __fail;
-> -	err = snd_ctl_elem_write(ctl, value);
-> -	if (err < 0)
-> -		goto __fail;
-> +	if (type == SEQUENCE_ELEMENT_TYPE_CSET_TLV) {
-> +		if (!snd_ctl_elem_info_is_tlv_writable(info)) {
-> +			err = -EINVAL;
-> +			goto __fail;
-> +		}
-> +		err = read_tlv_file(&res, pos);
-> +		if (err < 0)
-> +			goto __fail;
-> +		err = snd_ctl_elem_tlv_write(ctl, id, (unsigned int *)res);
+there in fact aren't any, especially with vendor specific classes which it =
 
-if tlv_write expects unsigned int then wouldn't it be better to use
-read_tlv_file() with unsigned int.
+really can only guess at.
 
--- 
-~Vinod
+> =
+
+>   Configuration Descriptor:
+> --
+> 00000010  _____ 09 02 48 00 02 01  00 80 f0 ______________  |....H.......=
+....|
+> --
+>     bLength                 9
+>     bDescriptorType         2
+>     wTotalLength           72
+>     bNumInterfaces          2					<------- 2 interfaces
+>     bConfigurationValue     1
+>     iConfiguration          0 =
+
+>     bmAttributes         0x80
+>       (Bus Powered)
+>     MaxPower              480mA
+> =
+
+> =
+
+>     Interface Descriptor:					<------ that's 1
+> --
+> 00000010  _________________________________ 09 04 00 00 00  |....H.......=
+....|
+> 00000020  ff 00 00 00 ____________________________________  |............=
+....|
+> --
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        0
+>       bAlternateSetting       0
+>       bNumEndpoints           0
+>       bInterfaceClass       255 Vendor Specific Class
+>       bInterfaceSubClass      0 =
+
+>       bInterfaceProtocol      0 =
+
+>       iInterface              0 =
+
+> =
+
+>     Interface Descriptor:					<------ that's 2
+> --
+> 00000020  ___________ 09 04 01 00  00 ff 00 00 00 ________  |............=
+....|
+> --
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        1
+>       bAlternateSetting       0
+>       bNumEndpoints           0
+>       bInterfaceClass       255 Vendor Specific Class
+>       bInterfaceSubClass      0 =
+
+>       bInterfaceProtocol      0 =
+
+>       iInterface              0 =
+
+> =
+
+>     Interface Descriptor:					<------ that's 3, err wait...
+> --
+> 00000020  _______________________________________ 09 04 01  |............=
+....|
+> 00000030  01 04 ff 00 00 00 ______________________________  |..........N.=
+....|
+> --
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        1					<------ interface duplicate!!
+>       bAlternateSetting       1
+>       bNumEndpoints           4
+
+My knowledge of USB is sketchy since I rarely work with it on this level =
+
+(I was working on some quirks for the Zoom R16 a while ago), but I note =
+
+that bAlternateSetting is 1, which I think means that the device offers =
+
+two specific ways of implementing interface no. 1. Actually, IIRC, =
+
+alternate setting 0 normally means an interface which essentially is =
+
+disabled, and it would certainly seem so here as the two first interface =
+
+descriptors have 0 endpoints, whereas the one here has 4.
+
+My wild guess is that this interface 1 / altsetting 1 represents the =
+
+actual device in normal operation, as has 4 endpoints ...
+
+>       bInterfaceClass       255 Vendor Specific Class
+>       bInterfaceSubClass      0 =
+
+>       bInterfaceProtocol      0 =
+
+>       iInterface              0 =
+
+> =
+
+>       Endpoint Descriptor:
+> ...
+>         bLength                 9
+>         bDescriptorType         5
+>         bEndpointAddress     0x81  EP 1 IN
+>         bmAttributes            5
+>           Transfer Type            Isochronous
+>           Synch Type               Asynchronous
+>           Usage Type               Data
+>         wMaxPacketSize     0x004e  1x 78 bytes
+> ...
+>       Endpoint Descriptor:
+> ...
+>         bDescriptorType         5
+>         bEndpointAddress     0x02  EP 2 OUT
+>         bmAttributes            5
+>           Transfer Type            Isochronous
+>           Synch Type               Asynchronous
+>           Usage Type               Data
+>         wMaxPacketSize     0x004e  1x 78 bytes
+>  ...
+>       Endpoint Descriptor:
+> ...
+>         bDescriptorType         5
+>         bEndpointAddress     0x83  EP 3 IN
+>         bmAttributes            2
+>           Transfer Type            Bulk
+>           Synch Type               None
+>           Usage Type               Data
+>         wMaxPacketSize     0x0009  1x 9 bytes
+> ...
+>       Endpoint Descriptor:
+> ...
+>         bDescriptorType         5
+>         bEndpointAddress     0x04  EP 4 OUT
+>         bmAttributes            2
+>           Transfer Type            Bulk
+>           Synch Type               None
+>           Usage Type               Data
+>         wMaxPacketSize     0x0200  1x 512 bytes
+>         bInterval               4
+>         bRefresh                0
+>         bSynchAddress           0
+
+... the two first of which are the audio interface (which uses isochronous =
+
+data transfers), and the other two are MIDI (bulk).
+
+I think (but could be wrong so don't take my word for it) it's a bit =
+
+unusual that both MIDI and audio are represented by a single interface, =
+
+but it certainly seems to be the case here.
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
