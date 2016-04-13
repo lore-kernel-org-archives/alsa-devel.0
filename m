@@ -1,215 +1,44 @@
-From: Hsin-Yu Chao <hychao@chromium.org>
-Subject: [PATCH v5] ucm: add cset-tlv
-Date: Wed, 13 Apr 2016 18:53:09 +0800
-Message-ID: <1460544789-29169-1-git-send-email-hychao@chromium.org>
+From: William Breathitt Gray <vilhelm.gray@gmail.com>
+Subject: Re: [PATCH 0/4] Decouple X86_32 dependency from the ISA Kconfig
+ option
+Date: Wed, 13 Apr 2016 08:15:15 -0400
+Message-ID: <20160413121515.GA23870@sophia>
+References: <cover.1460379702.git.vilhelm.gray@gmail.com>
+ <20160413072602.GA7629@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f47.google.com (mail-pa0-f47.google.com
- [209.85.220.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 9890C2608CF
- for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2016 12:53:16 +0200 (CEST)
-Received: by mail-pa0-f47.google.com with SMTP id er2so3048634pad.3
- for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2016 03:53:16 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: vinod.koul@intel.com, dgreid@chromium.org, Hsin-Yu Chao <hychao@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Return-path: <linux-scsi-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20160413072602.GA7629@gmail.com>
+Sender: linux-scsi-owner@vger.kernel.org
+To: Ingo Molnar <mingo@kernel.org>
+Cc: tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, gregkh@linuxfoundation.org, x86@kernel.org, linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch enables UCM to set a file in TLV format to kcontrol by:
-cset-tlv "name='<kcontrol-name>' <path-to-file>"
-This new 'cset-tlv' command will be used to write audio DSP to
-specific alsa control, where the driver expectes a file in TLV
-format.
-The TLV file to set to kcontrol will be checked first by file size
-not larger than 16 MB, and then examine if the length field reports
-correct number of bytes in the TLV file.
+On Wed, Apr 13, 2016 at 09:26:02AM +0200, Ingo Molnar wrote:
+>What's the practical motivation of this? What exact hardware is this for?
+>
+>Thanks,
+>
+>	Ingo
 
-Signed-off-by: Hsin-Yu Chao <hychao@chromium.org>
----
- src/ucm/main.c      | 94 +++++++++++++++++++++++++++++++++++++++++++++--------
- src/ucm/parser.c    | 10 ++++++
- src/ucm/ucm_local.h |  1 +
- 3 files changed, 92 insertions(+), 13 deletions(-)
+The PC/104 bus is equivalent to the ISA bus regarding software
+communication. Many small form factor systems have a PC/104 bus where
+PC/104 cards may be stacked. Nowadays, these systems are commonly
+running 64-bit processors such as the Intel Atom.
 
-diff --git a/src/ucm/main.c b/src/ucm/main.c
-index 7e44603..24d9510 100644
---- a/src/ucm/main.c
-+++ b/src/ucm/main.c
-@@ -161,6 +161,57 @@ static int open_ctl(snd_use_case_mgr_t *uc_mgr,
- 	return 0;
- }
- 
-+static int read_tlv_file(unsigned int **res,
-+			 const char *filepath)
-+{
-+	int err = 0;
-+	int fd;
-+	struct stat st;
-+	size_t sz;
-+	ssize_t sz_read;
-+	struct snd_ctl_tlv *tlv;
-+
-+	fd = open(filepath, O_RDONLY);
-+	if (fd < 0) {
-+		err = -errno;
-+		return err;
-+	}
-+	if (fstat(fd, &st) == -1) {
-+		err = -errno;
-+		goto __fail;
-+	}
-+	sz = st.st_size;
-+	if (sz > 16 * 1024 * 1024 || sz < 8 || sz % 4) {
-+		uc_error("File size should be less than 16 MB "
-+			 "and multiple of 4");
-+		err = -EINVAL;
-+		goto __fail;
-+	}
-+	*res = malloc(sz);
-+	if (res == NULL) {
-+		err = -ENOMEM;
-+		goto __fail;
-+	}
-+	sz_read = read(fd, *res, sz);
-+	if (sz_read < 0 || (size_t)sz_read != sz) {
-+		err = -EIO;
-+		free(*res);
-+		*res = NULL;
-+	}
-+	/* Check if the tlv file specifies valid size. */
-+	tlv = (struct snd_ctl_tlv *)(*res);
-+	if (tlv->length + 2 * sizeof(unsigned int) != sz) {
-+		uc_error("Invalid tlv size: %d", tlv->length);
-+		err = -EINVAL;
-+		free(*res);
-+		*res = NULL;
-+	}
-+
-+__fail:
-+	close(fd);
-+	return err;
-+}
-+
- static int binary_file_parse(snd_ctl_elem_value_t *dst,
- 			      snd_ctl_elem_info_t *info,
- 			      const char *filepath)
-@@ -226,6 +277,7 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
- 	snd_ctl_elem_id_t *id;
- 	snd_ctl_elem_value_t *value;
- 	snd_ctl_elem_info_t *info;
-+	unsigned int *res = NULL;
- 
- 	snd_ctl_elem_id_malloc(&id);
- 	snd_ctl_elem_value_malloc(&value);
-@@ -241,23 +293,36 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
- 		err = -EINVAL;
- 		goto __fail;
- 	}
--	snd_ctl_elem_value_set_id(value, id);
- 	snd_ctl_elem_info_set_id(info, id);
--	err = snd_ctl_elem_read(ctl, value);
--	if (err < 0)
--		goto __fail;
- 	err = snd_ctl_elem_info(ctl, info);
- 	if (err < 0)
- 		goto __fail;
--	if (type == SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE)
--		err = binary_file_parse(value, info, pos);
--	else
--		err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
--	if (err < 0)
--		goto __fail;
--	err = snd_ctl_elem_write(ctl, value);
--	if (err < 0)
--		goto __fail;
-+	if (type == SEQUENCE_ELEMENT_TYPE_CSET_TLV) {
-+		if (!snd_ctl_elem_info_is_tlv_writable(info)) {
-+			err = -EINVAL;
-+			goto __fail;
-+		}
-+		err = read_tlv_file(&res, pos);
-+		if (err < 0)
-+			goto __fail;
-+		err = snd_ctl_elem_tlv_write(ctl, id, res);
-+		if (err < 0)
-+			goto __fail;
-+	} else {
-+		snd_ctl_elem_value_set_id(value, id);
-+		err = snd_ctl_elem_read(ctl, value);
-+		if (err < 0)
-+			goto __fail;
-+		if (type == SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE)
-+			err = binary_file_parse(value, info, pos);
-+		else
-+			err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
-+		if (err < 0)
-+			goto __fail;
-+		err = snd_ctl_elem_write(ctl, value);
-+		if (err < 0)
-+			goto __fail;
-+	}
- 	err = 0;
-       __fail:
- 	if (id != NULL)
-@@ -266,6 +331,8 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
- 		free(value);
- 	if (info != NULL)
- 		free(info);
-+	if (res != NULL)
-+		free(res);
- 
- 	return err;
- }
-@@ -298,6 +365,7 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
- 			break;
- 		case SEQUENCE_ELEMENT_TYPE_CSET:
- 		case SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE:
-+		case SEQUENCE_ELEMENT_TYPE_CSET_TLV:
- 			if (cdev == NULL) {
- 				char *playback_ctl = NULL;
- 				char *capture_ctl = NULL;
-diff --git a/src/ucm/parser.c b/src/ucm/parser.c
-index 9e1cb41..d781e1b 100644
---- a/src/ucm/parser.c
-+++ b/src/ucm/parser.c
-@@ -316,6 +316,16 @@ static int parse_sequence(snd_use_case_mgr_t *uc_mgr ATTRIBUTE_UNUSED,
- 			continue;
- 		}
- 
-+		if (strcmp(cmd, "cset-tlv") == 0) {
-+			curr->type = SEQUENCE_ELEMENT_TYPE_CSET_TLV;
-+			err = parse_string(n, &curr->data.cset);
-+			if (err < 0) {
-+				uc_error("error: cset-tlv requires a string!");
-+				return err;
-+			}
-+			continue;
-+		}
-+
- 		if (strcmp(cmd, "usleep") == 0) {
- 			curr->type = SEQUENCE_ELEMENT_TYPE_SLEEP;
- 			err = snd_config_get_integer(n, &curr->data.sleep);
-diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
-index 3a5d2c2..b89de2a 100644
---- a/src/ucm/ucm_local.h
-+++ b/src/ucm/ucm_local.h
-@@ -48,6 +48,7 @@
- #define SEQUENCE_ELEMENT_TYPE_SLEEP	3
- #define SEQUENCE_ELEMENT_TYPE_EXEC	4
- #define SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE	5
-+#define SEQUENCE_ELEMENT_TYPE_CSET_TLV	6
- 
- struct ucm_value {
-         struct list_head list;
--- 
-2.1.2
+I would like to utilize the ISA bus driver to support these PC/104
+devices (see http://lkml.org/lkml/2016/4/7/418), but the ISA
+configuration option has an arbitrary X86_32 dependency. Decoupling the
+X86_32 dependency from the ISA configuration option will allow these
+PC/104 drivers to build for 64-bit architectures.
+
+The existing kernel drivers which I intend to utilize the ISA bus driver
+in a X86_64 architecture for PC/104 support are the ACCES 104-DIO-48E
+GPIO driver, the ACCES 104-IDI-48 GPIO driver, the ACCES 104-IDIO-16
+GPIO driver, and the Apex Embedded Systems STX104 DAC driver. I have
+several more PC/104 devices for which I wish to write drivers, but I
+would like to resolve this ISA bus driver situation before submitting
+new code.
+
+William Breathitt Gray
