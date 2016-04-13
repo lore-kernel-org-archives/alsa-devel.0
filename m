@@ -1,255 +1,228 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [RFC PATCH 4/7] ASoC: pxa: switch to new ac97 bus support
-Date: Sat, 30 Apr 2016 23:15:36 +0200
-Message-ID: <1462050939-27940-5-git-send-email-robert.jarzmik@free.fr>
-References: <1462050939-27940-1-git-send-email-robert.jarzmik@free.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1462050939-27940-1-git-send-email-robert.jarzmik@free.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
-List-Id: alsa-devel@alsa-project.org
+Return-Path: <alsa-devel-bounces@alsa-project.org>
+Message-ID: <3d5a5368f3a43ffc0114daf09c306d7e.squirrel@mungewell.org>
+Date: Wed, 13 Apr 2016 00:38:18 -0600
+From: "Simon Wood" <simon@mungewell.org>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;boundary="----=_20160413003818_48718"
+Subject: [alsa-devel] Tascam US-122L - Corrupt USB descriptor
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: alsa-devel@vger.kernel.org
+List-ID: <alsa-devel@alsa-project.org>
 
-Switch to the new ac97 bus support in sound/ac97 instead of the legacy
-snd_ac97 one.
+------=_20160413003818_48718
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
----
- include/sound/pxa2xx-lib.h  | 14 ++++++++------
- sound/arm/Kconfig           |  1 -
- sound/arm/pxa2xx-ac97-lib.c | 31 +++++++++++++++++++------------
- sound/soc/pxa/Kconfig       |  4 ++--
- sound/soc/pxa/pxa2xx-ac97.c | 12 +++++++-----
- 5 files changed, 36 insertions(+), 26 deletions(-)
+Hi all,
+I have been struggling for the past few days to get a Tascam US-122L (USB
+sound-card/midi interface) working, despite reading numerous forum
+postings I have only been able to get the midi portion working.
 
-diff --git a/include/sound/pxa2xx-lib.h b/include/sound/pxa2xx-lib.h
-index 6ef629bde164..7072353234f9 100644
---- a/include/sound/pxa2xx-lib.h
-+++ b/include/sound/pxa2xx-lib.h
-@@ -2,7 +2,8 @@
- #define PXA2XX_LIB_H
- 
- #include <linux/platform_device.h>
--#include <sound/ac97_codec.h>
-+#include <sound/ac97/codec.h>
-+#include <sound/ac97/compat.h>
- 
- /* PCM */
- 
-@@ -21,12 +22,13 @@ extern void pxa2xx_pcm_free_dma_buffers(struct snd_pcm *pcm);
- 
- /* AC97 */
- 
--extern unsigned short pxa2xx_ac97_read(struct snd_ac97 *ac97, unsigned short reg);
--extern void pxa2xx_ac97_write(struct snd_ac97 *ac97, unsigned short reg, unsigned short val);
-+extern int pxa2xx_ac97_read(struct ac97_codec_device *ac97, unsigned short reg);
-+extern int pxa2xx_ac97_write(struct ac97_codec_device *ac97,
-+			     unsigned short reg, unsigned short val);
- 
--extern bool pxa2xx_ac97_try_warm_reset(struct snd_ac97 *ac97);
--extern bool pxa2xx_ac97_try_cold_reset(struct snd_ac97 *ac97);
--extern void pxa2xx_ac97_finish_reset(struct snd_ac97 *ac97);
-+extern bool pxa2xx_ac97_try_warm_reset(struct ac97_codec_device *ac97);
-+extern bool pxa2xx_ac97_try_cold_reset(struct ac97_codec_device *ac97);
-+extern void pxa2xx_ac97_finish_reset(struct ac97_codec_device *ac97);
- 
- extern int pxa2xx_ac97_hw_suspend(void);
- extern int pxa2xx_ac97_hw_resume(void);
-diff --git a/sound/arm/Kconfig b/sound/arm/Kconfig
-index e0406211716b..94f7539a2c1f 100644
---- a/sound/arm/Kconfig
-+++ b/sound/arm/Kconfig
-@@ -11,7 +11,6 @@ menuconfig SND_ARM
- 
- config SND_PXA2XX_LIB
- 	tristate
--	select SND_AC97_CODEC if SND_PXA2XX_LIB_AC97
- 	select SND_DMAENGINE_PCM
- 
- config SND_PXA2XX_LIB_AC97
-diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
-index 39c3969ac1c7..bc5c6d72510a 100644
---- a/sound/arm/pxa2xx-ac97-lib.c
-+++ b/sound/arm/pxa2xx-ac97-lib.c
-@@ -20,7 +20,7 @@
- #include <linux/io.h>
- #include <linux/gpio.h>
- 
--#include <sound/ac97_codec.h>
-+#include <sound/ac97/controller.h>
- #include <sound/pxa2xx-lib.h>
- 
- #include <mach/irqs.h>
-@@ -46,11 +46,14 @@ extern void pxa27x_configure_ac97reset(int reset_gpio, bool to_gpio);
-  * 1 jiffy timeout if interrupt never comes).
-  */
- 
--unsigned short pxa2xx_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
-+int pxa2xx_ac97_read(struct ac97_codec_device *ac97, unsigned short reg)
- {
--	unsigned short val = -1;
-+	int val = -ENODEV;
- 	volatile u32 *reg_addr;
- 
-+	if (ac97->num > 0)
-+		return -ENODEV;
-+
- 	mutex_lock(&car_mutex);
- 
- 	/* set up primary or secondary codec space */
-@@ -63,21 +66,21 @@ unsigned short pxa2xx_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
- 	/* start read access across the ac97 link */
- 	GSR = GSR_CDONE | GSR_SDONE;
- 	gsr_bits = 0;
--	val = *reg_addr;
-+	val = (*reg_addr & 0xffff);
- 	if (reg == AC97_GPIO_STATUS)
- 		goto out;
- 	if (wait_event_timeout(gsr_wq, (GSR | gsr_bits) & GSR_SDONE, 1) <= 0 &&
- 	    !((GSR | gsr_bits) & GSR_SDONE)) {
- 		printk(KERN_ERR "%s: read error (ac97_reg=%d GSR=%#lx)\n",
- 				__func__, reg, GSR | gsr_bits);
--		val = -1;
-+		val = -ETIMEDOUT;
- 		goto out;
- 	}
- 
- 	/* valid data now */
- 	GSR = GSR_CDONE | GSR_SDONE;
- 	gsr_bits = 0;
--	val = *reg_addr;
-+	val = (*reg_addr & 0xffff);
- 	/* but we've just started another cycle... */
- 	wait_event_timeout(gsr_wq, (GSR | gsr_bits) & GSR_SDONE, 1);
- 
-@@ -86,10 +89,11 @@ out:	mutex_unlock(&car_mutex);
- }
- EXPORT_SYMBOL_GPL(pxa2xx_ac97_read);
- 
--void pxa2xx_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
--			unsigned short val)
-+int pxa2xx_ac97_write(struct ac97_codec_device *ac97, unsigned short reg,
-+		      unsigned short val)
- {
- 	volatile u32 *reg_addr;
-+	int ret = 0;
- 
- 	mutex_lock(&car_mutex);
- 
-@@ -104,11 +108,14 @@ void pxa2xx_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
- 	gsr_bits = 0;
- 	*reg_addr = val;
- 	if (wait_event_timeout(gsr_wq, (GSR | gsr_bits) & GSR_CDONE, 1) <= 0 &&
--	    !((GSR | gsr_bits) & GSR_CDONE))
-+	    !((GSR | gsr_bits) & GSR_CDONE)) {
- 		printk(KERN_ERR "%s: write error (ac97_reg=%d GSR=%#lx)\n",
- 				__func__, reg, GSR | gsr_bits);
-+		ret = -EIO;
-+	}
- 
- 	mutex_unlock(&car_mutex);
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(pxa2xx_ac97_write);
- 
-@@ -188,7 +195,7 @@ static inline void pxa_ac97_cold_pxa3xx(void)
- }
- #endif
- 
--bool pxa2xx_ac97_try_warm_reset(struct snd_ac97 *ac97)
-+bool pxa2xx_ac97_try_warm_reset(struct ac97_codec_device *ac97)
- {
- 	unsigned long gsr;
- 	unsigned int timeout = 100;
-@@ -225,7 +232,7 @@ bool pxa2xx_ac97_try_warm_reset(struct snd_ac97 *ac97)
- }
- EXPORT_SYMBOL_GPL(pxa2xx_ac97_try_warm_reset);
- 
--bool pxa2xx_ac97_try_cold_reset(struct snd_ac97 *ac97)
-+bool pxa2xx_ac97_try_cold_reset(struct ac97_codec_device *ac97)
- {
- 	unsigned long gsr;
- 	unsigned int timeout = 1000;
-@@ -263,7 +270,7 @@ bool pxa2xx_ac97_try_cold_reset(struct snd_ac97 *ac97)
- EXPORT_SYMBOL_GPL(pxa2xx_ac97_try_cold_reset);
- 
- 
--void pxa2xx_ac97_finish_reset(struct snd_ac97 *ac97)
-+void pxa2xx_ac97_finish_reset(struct ac97_codec_device *ac97)
- {
- 	GCR &= ~(GCR_PRIRDY_IEN|GCR_SECRDY_IEN);
- 	GCR |= GCR_SDONE_IE|GCR_CDONE_IE;
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index f2bf8661dd21..784e6dedf5bf 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -23,9 +23,9 @@ config SND_PXA2XX_AC97
- 
- config SND_PXA2XX_SOC_AC97
- 	tristate
--	select AC97_BUS
-+	select AC97_BUS_NEW
- 	select SND_PXA2XX_LIB_AC97
--	select SND_SOC_AC97_BUS
-+	select SND_SOC_AC97_BUS_NEW
- 
- config SND_PXA2XX_SOC_I2S
- 	tristate
-diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
-index f3de615aacd7..eb3ba630994b 100644
---- a/sound/soc/pxa/pxa2xx-ac97.c
-+++ b/sound/soc/pxa/pxa2xx-ac97.c
-@@ -10,6 +10,7 @@
-  * published by the Free Software Foundation.
-  */
- 
-+#include <sound/ac97/controller.h>
- #include <linux/init.h>
- #include <linux/io.h>
- #include <linux/module.h>
-@@ -29,21 +30,21 @@
- 
- #include "pxa2xx-ac97.h"
- 
--static void pxa2xx_ac97_warm_reset(struct snd_ac97 *ac97)
-+static void pxa2xx_ac97_warm_reset(struct ac97_codec_device *ac97)
- {
- 	pxa2xx_ac97_try_warm_reset(ac97);
- 
- 	pxa2xx_ac97_finish_reset(ac97);
- }
- 
--static void pxa2xx_ac97_cold_reset(struct snd_ac97 *ac97)
-+static void pxa2xx_ac97_cold_reset(struct ac97_codec_device *ac97)
- {
- 	pxa2xx_ac97_try_cold_reset(ac97);
- 
- 	pxa2xx_ac97_finish_reset(ac97);
- }
- 
--static struct snd_ac97_bus_ops pxa2xx_ac97_ops = {
-+static struct ac97_controller_ops pxa2xx_ac97_ops = {
- 	.read	= pxa2xx_ac97_read,
- 	.write	= pxa2xx_ac97_write,
- 	.warm_reset	= pxa2xx_ac97_warm_reset,
-@@ -236,7 +237,8 @@ static int pxa2xx_ac97_dev_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	ret = snd_soc_set_ac97_ops(&pxa2xx_ac97_ops);
-+	//RJK: no more ret = snd_soc_set_ac97_ops(&pxa2xx_ac97_ops);
-+	ret = ac97_digital_controller_register(&pxa2xx_ac97_ops, &pdev->dev);
- 	if (ret != 0)
- 		return ret;
- 
-@@ -251,7 +253,7 @@ static int pxa2xx_ac97_dev_probe(struct platform_device *pdev)
- static int pxa2xx_ac97_dev_remove(struct platform_device *pdev)
- {
- 	snd_soc_unregister_component(&pdev->dev);
--	snd_soc_set_ac97_ops(NULL);
-+	ac97_digital_controller_unregister(&pdev->dev);
- 	pxa2xx_ac97_hw_remove(pdev);
- 	return 0;
- }
--- 
-2.1.4
+I note that the USB descriptor seems to be corrupt. It declares 2
+interfaces, but then describes 3 separate with the same interface number
+for the last 2... could it be that this is confusing the Linux USB stack?
+
+I have attached a copy of the descriptor and an annotated 'lsusb -vv'.
+
+
+>From my experience with the HID subsystem, they have a mechanism for
+patching HID descriptors, is the same possible for the base USB
+descriptor? Trolling through 'drivers/usb' I didn't see anything... any
+suggestions?
+
+If this is possible I can try to increase the interface count and renumber
+the last one.
+
+Cheers,
+Simon.
+
+PS. For reference the device is:
+Model No: US-122L
+Serial: (21)0120xxx
+Other barcode: 043774021628
+------=_20160413003818_48718
+Content-Type: text/plain; name="us-122l-descriptors.txt"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment; filename="us-122l-descriptors.txt"
+
+00000000  12 01 00 02 00 00 00 40  44 06 0e 80 00 01 01 02  |.......@D.......|
+00000010  03 01 09 02 48 00 02 01  00 80 f0 09 04 00 00 00  |....H...........|
+00000020  ff 00 00 00 09 04 01 00  00 ff 00 00 00 09 04 01  |................|
+00000030  01 04 ff 00 00 00 09 05  81 05 4e 00 01 00 00 09  |..........N.....|
+00000040  05 02 05 4e 00 01 00 00  09 05 83 02 09 00 04 00  |...N............|
+00000050  00 09 05 04 02 00 02 04  00 00                    |..........|
+0000005a
+
+
+
+Bus 001 Device 042: ID 0644:800e TEAC Corp. TASCAM US-122L
+--
+00000000  12 01 00 02 00 00 00 40  44 06 0e 80 00 01 01 02  |.......@D.......|
+00000010  03 01 __________________________________________  |....H...........|
+--
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               2.00
+  bDeviceClass            0 (Defined at Interface level)
+  bDeviceSubClass         0 
+  bDeviceProtocol         0 
+  bMaxPacketSize0        64
+  idVendor           0x0644 TEAC Corp.
+  idProduct          0x800e TASCAM US-122L
+  bcdDevice            1.00
+  iManufacturer           1 (error)				<------ Here be Errors!
+  iProduct                2 (error)
+  iSerial                 3 (error)
+  bNumConfigurations      1
+
+  Configuration Descriptor:
+--
+00000010  _____ 09 02 48 00 02 01  00 80 f0 ______________  |....H...........|
+--
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           72
+    bNumInterfaces          2					<------- 2 interfaces
+    bConfigurationValue     1
+    iConfiguration          0 
+    bmAttributes         0x80
+      (Bus Powered)
+    MaxPower              480mA
+
+
+    Interface Descriptor:					<------ that's 1
+--
+00000010  _________________________________ 09 04 00 00 00  |....H...........|
+00000020  ff 00 00 00 ____________________________________  |................|
+--
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      0 
+      bInterfaceProtocol      0 
+      iInterface              0 
+
+    Interface Descriptor:					<------ that's 2
+--
+00000020  ___________ 09 04 01 00  00 ff 00 00 00 ________  |................|
+--
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      0 
+      bInterfaceProtocol      0 
+      iInterface              0 
+
+    Interface Descriptor:					<------ that's 3, err wait...
+--
+00000020  _______________________________________ 09 04 01  |................|
+00000030  01 04 ff 00 00 00 ______________________________  |..........N.....|
+--
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1					<------ interface duplicate!!
+      bAlternateSetting       1
+      bNumEndpoints           4
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      0 
+      bInterfaceProtocol      0 
+      iInterface              0 
+
+      Endpoint Descriptor:
+--
+00000030  _________________ 09 05  81 05 4e 00 01 00 00 __  |..........N.....|
+--
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+          Usage Type               Data
+        wMaxPacketSize     0x004e  1x 78 bytes
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+
+      Endpoint Descriptor:
+--
+00000030  _____________________________________________ 09  |..........N.....|
+00000040  05 02 05 4e 00 01 00 00  _______________________  |...N............|
+--
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+          Usage Type               Data
+        wMaxPacketSize     0x004e  1x 78 bytes
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+
+      Endpoint Descriptor:
+--
+00000040  _______________________  09 05 83 02 09 00 04 00  |...N............|
+00000050  00 ___________________________                    |..........|
+--
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x83  EP 3 IN
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0009  1x 9 bytes
+        bInterval               4
+        bRefresh                0
+        bSynchAddress           0
+      Endpoint Descriptor:
+--
+00000050  __ 09 05 04 02 00 02 04  00 00                    |..........|
+--
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x04  EP 4 OUT
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0200  1x 512 bytes
+        bInterval               4
+        bRefresh                0
+        bSynchAddress           0
+Device Status:     0x0001
+  Self Powered
+------=_20160413003818_48718
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+------=_20160413003818_48718--
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
