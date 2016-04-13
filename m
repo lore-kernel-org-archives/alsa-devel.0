@@ -1,82 +1,117 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v9 0/7] Implement generic ASoC HDMI codec and use it in
- tda998x
-Date: Wed, 13 Apr 2016 18:26:00 +0100
-Message-ID: <20160413172600.GD29471@sirena.org.uk>
-References: <cover.1459431292.git.jsarha@ti.com>
- <20160413070219.GN14664@sirena.org.uk> <570DFADD.60608@ti.com>
+From: Julian Margetson <runaway@candw.ms>
+Subject: Re: Issues with ALSA:ice1724 sound cards on powerpc
+ machines
+Date: Wed, 13 Apr 2016 13:59:35 -0400
+Message-ID: <570E8907.4020907@candw.ms>
+References: <56C4BC13.2010306@candw.ms> <5702C756.1050904@candw.ms>
+ <s5hy48k2q26.wl-tiwai@suse.de> <570BB84A.9040400@ivitera.com>
+ <570BDFCB.20601@candw.ms> <570C21D5.7000106@candw.ms>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1680884356=="
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <570DFADD.60608@ti.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jyri Sarha <jsarha@ti.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, arnaud.pouliquen@st.com, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, tomi.valkeinen@ti.com, bcousson@baylibre.com, rmk+kernel@arm.linux.org.uk, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp618.redcondor.net (smtp618.redcondor.net [208.80.206.18])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C9DC2651DB
+ for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2016 19:59:52 +0200 (CEST)
+In-Reply-To: <570C21D5.7000106@candw.ms>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pavel Hofman <pavel.hofman@ivitera.com>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 4/11/2016 6:14 PM, Julian Margetson wrote:
+> On 4/11/2016 1:32 PM, Julian Margetson wrote:
+>> On 4/11/2016 10:44 AM, Pavel Hofman wrote:
+>>> Dne 11.4.2016 v 16:11 Takashi Iwai napsal(a):
+>>>> On Mon, 04 Apr 2016 21:58:14 +0200,
+>>>> Julian Margetson wrote:
+>>>>>
+>>>>> On 2/17/2016 2:29 PM, Julian Margetson wrote:
+>>>>>> Hi
+>>>>>>
+>>>>>> Having an issue issue with ice1724 sound cards on powerpc 
+>>>>>> motherboards.
+>>>>>> Motherboards in question Acube Sam460ex .
+>>>>>> The card appears as a valid device but there is no sound output 
+>>>>>> on the
+>>>>>> majority of boots of the computer.
+>>>>>> Logs attached.
+>>>>>> On the first set boot audio playback produced sound ok.
+>>>>>> On the second set boot no sound was produce with audio playback
+>>>>>>
+>>>>>>
+>>>>>> Regards
+>>>>>> Julian Margetson
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>> Anyone have any ideas ?
+>>>>>
+>>>>> Resubmitting again with links to logs instead of included as 
+>>>>> attachments.
+>>>>> The issue also seen on A-Eon Cyrus P5020 motherboard .
+>>>>>
+>>>>> https://www.dropbox.com/s/72labcje9z1r1b7/1alsa-info.txt.7CLHMG0Gap?dl=0 
+>>>>>
+>>>>> https://www.dropbox.com/s/v1pn5kjqrvwu16f/boot_1.log?dl=0
+>>>>> https://www.dropbox.com/s/uuaa14rkpmmz1o0/2alsa-info.txt.VKiEVuytiJ?dl=0 
+>>>>>
+>>>>> https://www.dropbox.com/s/wwu2f5t93l8g26d/boot_2.log?dl=0
+>>>>
+>>>> I have no concrete idea, but in general, the usual problems on PPC are
+>>>> either related with cache coherency or byte endianness.  I don't know
+>>>> of any issue with the latter in ice1724 driver, so likely it's the
+>>>> former.
+>>>>
+>>>
+>>> Perhaps the ice1724 driver was not even tested properly with the 
+>>> AC97 codec. Do we know of any separate PCI ice1724 card with this 
+>>> codec?
+>>>
+>>> Regards,
+>>>
+>>> Pavel Hofman.
+>>>
+>>>
+>> The second board mentioned , the Aeon Cyrus ,uses a P5020 so is cache 
+>> coherent .
+>> The problem may be in the initialization of the sound card as on some 
+>> boots with my board , an Acube Sam460ex, it works perfectly. I have  
+>> tested a CMI8738 pciex1 sound card which works perfectly as do USB 
+>> cm108 based external cards .
+>>
+>> I also have a PCI ice1724 version of the card  (never used in this 
+>> machine) as well as 2 different pciex1  ice1724 cards with the codec .
+>> The Sam460ex only has 1 pci slot normally used for the SATA card and 
+>> 1 shared pcie or SATA II.
+>> I could test with  the pci card by booting from USB .
+>> So either configure as 1 pciex1 slot or 1 on board SATA II .
+>> I am helping to test the onboard sata-dwc but am happy to test any 
+>> ideas for a solution to the audio issues as well.
+>> Will mean reconfiguring my machine back an forth but worth it for 
+>> solutions in both areas .
+>>
+>> Regards
+>> Julian
+>>
+>>
+>>
+>>
+> This is the pci model .
+>
+> http://www.amazon.com/SIIG-Soundwave-5-1-Pci-lp-LP-000022-S2/dp/B0036VNVWE 
+>
 
---===============1680884356==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="5gxpn/Q6ypwruk0T"
-Content-Disposition: inline
+PCI model has IRQ problem with the Sam460ex so that option wont be of 
+any help.
 
-
---5gxpn/Q6ypwruk0T
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Apr 13, 2016 at 10:53:01AM +0300, Jyri Sarha wrote:
-> On 04/13/16 10:02, Mark Brown wrote:
-
-> > None of the ASoC specific patches here have had any review from other
-> > HDMI users?
-
-> I got ack from Arnaud Pouliquen and tested-by from Philipp Zabel for
-> "ASoC: hdmi-codec: Add hdmi-codec for external HDMI-encoders" in
-> previous version of the series. Since then there is one minimal change,
-> but because I touched the patch I removed the ack and tested-by tags.
-
-Yes, I remember but if you think the change is big enough to warrant
-removing the tags I'm hoping to see some interest in review!
-
-> The change is setting hw_params->msbits to 24 in hw_params() callback if
-> sample width is greater than 24 bits.
-
-That is reasonably small though...
-
---5gxpn/Q6ypwruk0T
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXDoEnAAoJECTWi3JdVIfQKBAH/3nT5ILYMCNU/RBT6s9lDrtl
-asnYbCY2Yx8DgXcQFn0XFnMzS+st0kSi376LOqpi5uDicBZySORXHY4luTNUofm1
-LEOVNOT3eyiCLw+qJM9jndZJn+KAfHJ5NysdLeAW3hfKDHt573MWz6NJ5O7ZpZ9n
-oIL+VgqKlOlf1ooHgnUrvJRL+rhfrQtaKp+4hDrCtKGJevfkmxaZAiTe1Sl8Ao4s
-8ty9CUY1N4DGSzzgg59D5CepH604KsqGayF7s7aTJPurZYtD+mWGFCVzrlQMOa5T
-ACBfqvadAAGof6xG0C+Kk82T8vZ95g8p1TVCCr1vx/lTT4gtBQELnW7VsDYrfIc=
-=qa4K
------END PGP SIGNATURE-----
-
---5gxpn/Q6ypwruk0T--
-
---===============1680884356==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
-
---===============1680884356==--
+[    6.283945] snd_ice1724 0001:00:04.0: unable to grab IRQ 0
+[    6.283973] snd_ice1724: probe of 0001:00:04.0 failed with error -5
