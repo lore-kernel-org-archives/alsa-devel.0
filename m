@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v3 1/9] ASoC: hdac_hdmi: parse eld for channel
-	map capability
-Date: Thu, 14 Apr 2016 10:07:28 +0530
-Message-ID: <1460608656-8860-2-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v3 4/9] ASoC: skl_rt286: Fix to support hdmi
+	channel map support
+Date: Thu, 14 Apr 2016 10:07:31 +0530
+Message-ID: <1460608656-8860-5-git-send-email-subhransu.s.prusty@intel.com>
 References: <1460608656-8860-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 54C7B265AD8
- for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2016 06:38:34 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id B07AD2664BD
+ for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2016 06:38:41 +0200 (CEST)
 In-Reply-To: <1460608656-8860-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,57 +25,108 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch parses ELD speaker allocation data block to find
-sink's chmap capability.
+HDMI registers channel map controls per PCM. As PCMs are not
+registered during dai_link init callback, store the pcm ids and
+codec DAIs during this init callback.
+
+Register for late probe and call the jack_init API which also
+registers channel map in the late probe callback handler.
+
+The patch following the machine driver changes adds the channel
+map control in the hdac_hdmi codec driver.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ sound/soc/intel/boards/skl_rt286.c | 48 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 47 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index aaa038f..81ac173 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -60,11 +60,17 @@ struct hdac_hdmi_cvt {
- 	struct hdac_hdmi_cvt_params params;
- };
+diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
+index 2016397..06de802 100644
+--- a/sound/soc/intel/boards/skl_rt286.c
++++ b/sound/soc/intel/boards/skl_rt286.c
+@@ -30,6 +30,16 @@
  
-+/* Currently only spk_alloc, more to be added */
-+struct hdac_hdmi_parsed_eld {
-+	u8 spk_alloc;
+ static struct snd_soc_jack skylake_headset;
+ 
++struct skl_hdmi_pcm {
++	struct list_head head;
++	struct snd_soc_dai *codec_dai;
++	int device;
 +};
 +
- struct hdac_hdmi_eld {
- 	bool	monitor_present;
- 	bool	eld_valid;
- 	int	eld_size;
- 	char    eld_buffer[ELD_MAX_SIZE];
-+	struct	hdac_hdmi_parsed_eld info;
- };
++struct skl_rt286_private {
++	struct list_head hdmi_pcm_list;
++};
++
+ enum {
+ 	SKL_DPCM_AUDIO_PB = 0,
+ 	SKL_DPCM_AUDIO_CP,
+@@ -142,9 +152,20 @@ static int skylake_rt286_codec_init(struct snd_soc_pcm_runtime *rtd)
  
- struct hdac_hdmi_pin {
-@@ -1008,6 +1014,12 @@ static int hdac_hdmi_add_cvt(struct hdac_ext_device *edev, hda_nid_t nid)
- 	return hdac_hdmi_query_cvt_params(&edev->hdac, cvt);
+ static int skylake_hdmi_init(struct snd_soc_pcm_runtime *rtd)
+ {
++	struct skl_rt286_private *ctx = snd_soc_card_get_drvdata(rtd->card);
+ 	struct snd_soc_dai *dai = rtd->codec_dai;
++	struct skl_hdmi_pcm *pcm;
++
++	pcm = devm_kzalloc(rtd->card->dev, sizeof(*pcm), GFP_KERNEL);
++	if (!pcm)
++		return -ENOMEM;
+ 
+-	return hdac_hdmi_jack_init(dai, SKL_DPCM_AUDIO_HDMI1_PB + dai->id);
++	pcm->device = SKL_DPCM_AUDIO_HDMI1_PB + dai->id;
++	pcm->codec_dai = dai;
++
++	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
++
++	return 0;
  }
  
-+static void hdac_hdmi_parse_eld(struct hdac_ext_device *edev,
-+			struct hdac_hdmi_pin *pin)
+ static unsigned int rates[] = {
+@@ -438,6 +459,21 @@ static struct snd_soc_dai_link skylake_rt286_dais[] = {
+ 	},
+ };
+ 
++static int skylake_card_late_probe(struct snd_soc_card *card)
 +{
-+	pin->eld.info.spk_alloc = pin->eld.eld_buffer[DRM_ELD_SPEAKER];
++	struct skl_rt286_private *ctx = snd_soc_card_get_drvdata(card);
++	struct skl_hdmi_pcm *pcm;
++	int err;
++
++	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
++		err = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device);
++		if (err < 0)
++			return err;
++	}
++
++	return 0;
 +}
 +
- static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin, int repoll)
+ /* skylake audio machine driver for SPT + RT286S */
+ static struct snd_soc_card skylake_rt286 = {
+ 	.name = "skylake-rt286",
+@@ -451,11 +487,21 @@ static struct snd_soc_card skylake_rt286 = {
+ 	.dapm_routes = skylake_rt286_map,
+ 	.num_dapm_routes = ARRAY_SIZE(skylake_rt286_map),
+ 	.fully_routed = true,
++	.late_probe = skylake_card_late_probe,
+ };
+ 
+ static int skylake_audio_probe(struct platform_device *pdev)
  {
- 	struct hdac_ext_device *edev = pin->edev;
-@@ -1065,6 +1077,7 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin, int repoll)
++	struct skl_rt286_private *ctx;
++
++	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
++	if (!ctx)
++		return -ENOMEM;
++
++	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
++
+ 	skylake_rt286.dev = &pdev->dev;
++	snd_soc_card_set_drvdata(&skylake_rt286, ctx);
  
- 				snd_jack_report(pcm->jack, SND_JACK_AVOUT);
- 			}
-+			hdac_hdmi_parse_eld(edev, pin);
- 
- 			print_hex_dump_bytes("ELD: ", DUMP_PREFIX_OFFSET,
- 					pin->eld.eld_buffer, pin->eld.eld_size);
+ 	return devm_snd_soc_register_card(&pdev->dev, &skylake_rt286);
+ }
 -- 
 1.9.1
