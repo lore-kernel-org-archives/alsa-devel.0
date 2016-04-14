@@ -1,40 +1,78 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Tascam US-122L - Corrupt USB descriptor
-Date: Thu, 14 Apr 2016 09:35:14 +0200
-Message-ID: <570F4832.9020302__43559.4580173076$1460619365$gmane$org@ladisch.de>
-References: <3d5a5368f3a43ffc0114daf09c306d7e.squirrel@mungewell.org>
- <570E0AE0.3020507@ladisch.de>
- <32e8a05d90e5cfd79622802c340948ab.squirrel@mungewell.org>
+From: Garlic Tseng <garlic.tseng@mediatek.com>
+Subject: [alsa-devel] [RFC PATCH 0/4] ASoC: Mediatek: Add support for MT2701 SOC
+Date: Thu, 14 Apr 2016 15:37:04 +0800
+Message-ID: <1460619428-48882-1-git-send-email-garlic.tseng@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <32e8a05d90e5cfd79622802c340948ab.squirrel@mungewell.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linux-usb@vger.kernel.org, alsa-devel@vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, tiwai@suse.de
+Cc: garlic.tseng@mediatek.com, srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, koro.chen@mediatek.com, PC.Liao@mediatek.com, ir.lian@mediatek.com
 List-Id: alsa-devel@alsa-project.org
 
-Simon Wood wrote:
-> The card shows up under '/proc/asound/cards', but only as Midi.
+This patch adds basic support for Mediatek AFE for MT2701 SoC.
+The patch is based on broonie tree "for-next" branch.
 
-Apparently, there is no PCM device. This driver creates a special
-hardware-dependent device which is intended to be used with the
-Jack driver "usb_stream".
+The interface to connect with BT chip is not finish yet, but as an upstream
+rookie I really need some comments. Any comments will be greatly appreciated.
 
-It might be possible to use the ALSA "usb_stream" plugin:
-<http://www.alsa-project.org/main/index.php/Matrix:Module-usb-us122l>
+Garlic Tseng (4):
+  ASoC: mediatek: Refine mt8173 driver
+  ASoC: mediatek: add documents for mt2701
+  ASoC: mediatek: add mt2701 platform driver implementation.
+  ASoC: mediatek: Add mt2701-cs42448 driver and config option.
 
+ .../devicetree/bindings/sound/mt2701-cs42448.txt   |   39 +
+ .../devicetree/bindings/sound/mtk2701-afe-pcm.txt  |  150 ++
+ sound/soc/mediatek/Kconfig                         |   21 +
+ sound/soc/mediatek/Makefile                        |   15 +-
+ sound/soc/mediatek/mt2701/Makefile                 |   20 +
+ sound/soc/mediatek/mt2701/mt2701-cs42448.c         |  376 +++++
+ sound/soc/mediatek/mt2701/mtk2701-afe-clock-ctrl.c |  259 +++
+ sound/soc/mediatek/mt2701/mtk2701-afe-clock-ctrl.h |   28 +
+ sound/soc/mediatek/mt2701/mtk2701-afe-common.h     |  217 +++
+ sound/soc/mediatek/mt2701/mtk2701-afe-pcm.c        | 1752 ++++++++++++++++++++
+ sound/soc/mediatek/mt2701/mtk2701-irq.c            |  109 ++
+ sound/soc/mediatek/mt2701/mtk2701-irq.h            |   30 +
+ sound/soc/mediatek/mt2701/mtk2701-reg.h            |  165 ++
+ sound/soc/mediatek/mt8173-max98090.c               |  213 ---
+ sound/soc/mediatek/mt8173-rt5650-rt5514.c          |  258 ---
+ sound/soc/mediatek/mt8173-rt5650-rt5676.c          |  288 ----
+ sound/soc/mediatek/mt8173-rt5650.c                 |  236 ---
+ sound/soc/mediatek/mt8173/Makefile                 |    7 +
+ sound/soc/mediatek/mt8173/mt8173-max98090.c        |  213 +++
+ sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c   |  258 +++
+ sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c   |  288 ++++
+ sound/soc/mediatek/mt8173/mt8173-rt5650.c          |  236 +++
+ sound/soc/mediatek/mt8173/mtk-afe-common.h         |  101 ++
+ sound/soc/mediatek/mt8173/mtk-afe-pcm.c            | 1333 +++++++++++++++
+ sound/soc/mediatek/mtk-afe-common.h                |  101 --
+ sound/soc/mediatek/mtk-afe-pcm.c                   | 1333 ---------------
+ 26 files changed, 5610 insertions(+), 2436 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt2701-cs42448.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/mtk2701-afe-pcm.txt
+ create mode 100644 sound/soc/mediatek/mt2701/Makefile
+ create mode 100644 sound/soc/mediatek/mt2701/mt2701-cs42448.c
+ create mode 100644 sound/soc/mediatek/mt2701/mtk2701-afe-clock-ctrl.c
+ create mode 100644 sound/soc/mediatek/mt2701/mtk2701-afe-clock-ctrl.h
+ create mode 100644 sound/soc/mediatek/mt2701/mtk2701-afe-common.h
+ create mode 100644 sound/soc/mediatek/mt2701/mtk2701-afe-pcm.c
+ create mode 100644 sound/soc/mediatek/mt2701/mtk2701-irq.c
+ create mode 100644 sound/soc/mediatek/mt2701/mtk2701-irq.h
+ create mode 100644 sound/soc/mediatek/mt2701/mtk2701-reg.h
+ delete mode 100644 sound/soc/mediatek/mt8173-max98090.c
+ delete mode 100644 sound/soc/mediatek/mt8173-rt5650-rt5514.c
+ delete mode 100644 sound/soc/mediatek/mt8173-rt5650-rt5676.c
+ delete mode 100644 sound/soc/mediatek/mt8173-rt5650.c
+ create mode 100644 sound/soc/mediatek/mt8173/Makefile
+ create mode 100644 sound/soc/mediatek/mt8173/mt8173-max98090.c
+ create mode 100644 sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
+ create mode 100644 sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
+ create mode 100644 sound/soc/mediatek/mt8173/mt8173-rt5650.c
+ create mode 100644 sound/soc/mediatek/mt8173/mtk-afe-common.h
+ create mode 100644 sound/soc/mediatek/mt8173/mtk-afe-pcm.c
+ delete mode 100644 sound/soc/mediatek/mtk-afe-common.h
+ delete mode 100644 sound/soc/mediatek/mtk-afe-pcm.c
 
-Regards,
-Clemens
---
-To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
+-- 
+1.9.1
