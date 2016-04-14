@@ -1,71 +1,122 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: Multi-channel playback
-Date: Thu, 14 Apr 2016 13:58:01 +0530
-Message-ID: <20160414082739.GE30953@subhransu-desktop>
-References: <3CD7D8096827214EA72BFDC6B95C7CC931B68E10@VEREXCH02.harrisbroadcast.com>
+From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 0/4] ASoC: add graph base connection on
+ simple-card
+Date: Thu, 14 Apr 2016 11:01:28 +0200
+Message-ID: <20160414110128.56a0da97d526cdcb8d5f1ddf@free.fr>
+References: <871t68wxxe.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id C1B1C26641C
- for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2016 10:28:58 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <3CD7D8096827214EA72BFDC6B95C7CC931B68E10@VEREXCH02.harrisbroadcast.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Li, Steve" <Steve.Li@imaginecommunications.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <871t68wxxe.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Laurent <laurent.pinchart-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Linux-Renesas <linux-renesas-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 13, 2016 at 02:46:39AM +0530, Li, Steve wrote:
-> Hi,
-> 
-> I am trying to playback a multi-channel PCM stream, e.g. 5.1. Is there an API for configuring the channel positions?
-> 
-> I found this API:
-> int snd_pcm_set_chmap(snd_pcm_t *pcm, const snd_pcm_chmap_t *map);
-> 
-> typedef struct snd_pcm_chmap {
->         unsigned int channels;
->         unsigned int pos[0];
-> } snd_pcm_chmap_t;
-> 
-> But when I call it, it returns -6. Also, calling snd_pcm_get_chmap() return NULL.
-> 
-> Your help is appreciated.
+On Thu, 14 Apr 2016 05:45:41 +0000
+Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org> wrote:
 
-Hi Steve,
+> Current simple-card is using "sound-dai" base connection on DT,
+> but V4L2 is using graph base connection.
+> For example HDMI case, we would like to use both connection.
+> To above confusable connection method, and to reuse current resource,
+> this patch adds new function, and detect both "sound-dai" and "remote=
+-endpoint"
+> on simple-card. like this
+>=20
+> 	sound {
+> 		compatible =3D "simple-audio-card";
+> 		...
+> 		sndcpu: simple-audio-card,cpu {
+> 			sound-dai =3D <&xxx>;
+> 		};
+> 		sndcodec: simple-audio-card,codec {
+> =3D>			remote-endpoint =3D <&out_hdmi>;
+> 		};
+> 	};
+>=20
+> 	xxx {
+> 		...
+> 		ports {
+> 			...
+> 			port@0 {
+> 				reg =3D <0>;
+> 				out_rgb: endpoint {
+> 				};
+> 			};
+> 			port@1 {
+> 				reg =3D <1>;
+> =3D>				out_hdmi: endpoint {
+> 				};
+> 			};
+> 			...
+> 		};
+> 	};
+	[snip]
 
-You can use the chmap controls, only if the sound device has registerd
-controls for chmap. So you have to check whether the chmap controls are
-supported by the PCM device. I guess query_chmap can be used for this. 
+Hi Kuninori,
 
-Also you can refer test/chmap.c in alsa-lib on how to use those APIs.
-Using a debug version of alsa library will help you as well to narrow down
-what is missing.
+Thanks for this first step towards the graph of ports in audio,
+but I don't see exactly the use of this remote-endpoint.
 
-Regards,
-Subhransu
+According to Documentation/devicetree/bindings/graph.txt section
+"Links between endpoints", the endpoint/remote-endpoint links are
+bi-directional and describe the physical links: the audio port of the
+codec is connected to the audio controller and reverse.
+There is no reverse link from the codec to the 'simple-card'.
 
-> 
-> Thanks
-> Steve
-> 
-> ______________________________________________________________________
-> This email has been scanned by the Symantec Email Security.cloud service.
-> For more information please visit http://www.symanteccloud.com
-> ______________________________________________________________________
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+If the codec has only one DAI, using the remote-port just complexifies
+the access to the codec (remote-port -> endpoint -> parent [->parent]).
 
--- 
+If the codec has more than one audio input, a DT may look like:
+
+	hdmi_transmitter {
+		...
+		port@1 {			/* audio from I2S */
+			reg =3D <1>;
+			...
+			i2s: endpoint {
+				remote-endpoint =3D <&audio_i2s>;
+			};
+		};
+		port@2 {			 /* audio from S/PDIF */
+			reg =3D <2>;
+			...
+			spdif: endpoint {
+				remote-endpoint =3D <&audio_spdif>;
+			};
+		};
+	};
+(the video port is not shown and may be declared before, between or
+after the audio ports)
+
+The codec associated to the HDMI transmitter declares 2 DAIs.
+It may choose to define the DAI numbers either in a fixed order
+(say 0 is always S/PDIF and 1 is always I2S), or dynamically, following
+the declaration of the ports (in the example, 0 is I2S and 1 is S/PDIF)=
+=2E
+
+As the DAI numbers are used by the simple card to get the DAI names,
+their values must be know.
+
+With the standard declaration of the codec DAIs in the simple card
+(phandle to the codec - hdmi -  plus DAI number), either numbering
+scheme works (the documentation of the hdmi transmitter tells which
+scheme is used and the DAI number in the DT is set accordingly).
+
+When using a phandle to the remote-endpoint (without DAI number), the
+simple card has no direct way to find the DAI number:
+- with a fixed order, some more information must be set in the DT
+  (audio port type),
+- with a dynamic order, a loop on all ports must be done, counting the
+  audio ports and skipping the video port(s).
+
+--=20
+Ken ar c'henta=F1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
