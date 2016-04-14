@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v3 8/9] ASoC: Intel: Skylake: Add multichannel
-	support for HDMI
-Date: Thu, 14 Apr 2016 10:07:35 +0530
-Message-ID: <1460608656-8860-9-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v3 9/9] ASoC: Intel: Skylake: Update channel
+	map based on runtime params
+Date: Thu, 14 Apr 2016 10:07:36 +0530
+Message-ID: <1460608656-8860-10-git-send-email-subhransu.s.prusty@intel.com>
 References: <1460608656-8860-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 1EB7E26655A
- for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2016 06:38:50 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A3CD26667C
+ for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2016 06:38:53 +0200 (CEST)
 In-Reply-To: <1460608656-8860-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,81 +25,52 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Channel max is changed to 8 from stereo to support multichannel
-capability for HDMI devices.
+Default channel map is set for 2 channels. Fix the channel map
+based on runtime params to support multichannel.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/intel/skylake/skl-topology.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index dab0900..8de9212 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -51,7 +51,7 @@ static struct snd_pcm_hardware azx_pcm_hw = {
- 	.rate_min =		8000,
- 	.rate_max =		48000,
- 	.channels_min =		1,
--	.channels_max =		HDA_QUAD,
-+	.channels_max =		8,
- 	.buffer_bytes_max =	AZX_MAX_BUF_SIZE,
- 	.period_bytes_min =	128,
- 	.period_bytes_max =	AZX_MAX_BUF_SIZE / 2,
-@@ -682,7 +682,7 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- 	.playback = {
- 		.stream_name = "HDMI1 Playback",
- 		.channels_min = HDA_STEREO,
--		.channels_max = HDA_STEREO,
-+		.channels_max = 8,
- 		.rates = SNDRV_PCM_RATE_32000 |	SNDRV_PCM_RATE_44100 |
- 			SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |
- 			SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 |
-@@ -697,7 +697,7 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- 	.playback = {
- 		.stream_name = "HDMI2 Playback",
- 		.channels_min = HDA_STEREO,
--		.channels_max = HDA_STEREO,
-+		.channels_max = 8,
- 		.rates = SNDRV_PCM_RATE_32000 |	SNDRV_PCM_RATE_44100 |
- 			SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |
- 			SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 |
-@@ -712,7 +712,7 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- 	.playback = {
- 		.stream_name = "HDMI3 Playback",
- 		.channels_min = HDA_STEREO,
--		.channels_max = HDA_STEREO,
-+		.channels_max = 8,
- 		.rates = SNDRV_PCM_RATE_32000 |	SNDRV_PCM_RATE_44100 |
- 			SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |
- 			SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 |
-@@ -765,7 +765,7 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- 	.playback = {
- 		.stream_name = "iDisp1 Tx",
- 		.channels_min = HDA_STEREO,
--		.channels_max = HDA_STEREO,
-+		.channels_max = 8,
- 		.rates = SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_16000|SNDRV_PCM_RATE_48000,
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE |
- 			SNDRV_PCM_FMTBIT_S24_LE,
-@@ -777,7 +777,7 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- 	.playback = {
- 		.stream_name = "iDisp2 Tx",
- 		.channels_min = HDA_STEREO,
--		.channels_max = HDA_STEREO,
-+		.channels_max = 8,
- 		.rates = SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_16000|
- 			SNDRV_PCM_RATE_48000,
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE |
-@@ -790,7 +790,7 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- 	.playback = {
- 		.stream_name = "iDisp3 Tx",
- 		.channels_min = HDA_STEREO,
--		.channels_max = HDA_STEREO,
-+		.channels_max = 8,
- 		.rates = SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_16000|
- 			SNDRV_PCM_RATE_48000,
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE |
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index cdb78b7..1f4fe0e 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -154,13 +154,32 @@ static void skl_dump_mconfig(struct skl_sst *ctx,
+ 	dev_dbg(ctx->dev, "ch_cfg = %d\n", mcfg->out_fmt[0].ch_cfg);
+ }
+ 
++static void skl_tplg_update_chmap(struct skl_module_fmt *fmt, int chs)
++{
++	int slot_map = 0xFFFFFFFF;
++	int start_slot = 0;
++	int i;
++
++	for (i = 0; i < chs; i++) {
++		/*
++		 * For 2 channels with starting slot as 0, slot map will
++		 * look like 0xFFFFFF10.
++		 */
++		slot_map &= (~(0xF << (4 * i)) | (start_slot << (4 * i)));
++		start_slot++;
++	}
++	fmt->ch_map = slot_map;
++}
++
+ static void skl_tplg_update_params(struct skl_module_fmt *fmt,
+ 			struct skl_pipe_params *params, int fixup)
+ {
+ 	if (fixup & SKL_RATE_FIXUP_MASK)
+ 		fmt->s_freq = params->s_freq;
+-	if (fixup & SKL_CH_FIXUP_MASK)
++	if (fixup & SKL_CH_FIXUP_MASK) {
+ 		fmt->channels = params->ch;
++		skl_tplg_update_chmap(fmt, fmt->channels);
++	}
+ 	if (fixup & SKL_FMT_FIXUP_MASK) {
+ 		fmt->valid_bit_depth = skl_get_bit_depth(params->s_fmt);
+ 
 -- 
 1.9.1
