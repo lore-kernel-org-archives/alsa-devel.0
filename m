@@ -1,83 +1,235 @@
-From: Yingjoe Chen <yingjoe.chen@mediatek.com>
-Subject: Re: [alsa-devel] [RFC PATCH v2 1/5] ASoC: Mediatek: Refine mt8173
- driver
-Date: Thu, 14 Apr 2016 20:44:53 +0800
-Message-ID: <1460637893.13240.24.camel@mtksdaap41>
-References: <1460636070-37426-1-git-send-email-garlic.tseng@mediatek.com>
-	 <1460636070-37426-2-git-send-email-garlic.tseng@mediatek.com>
+From: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>
+Subject: [PATCH v2 1/2] ASoC: dapm: support user-defined stop
+	condition in dai_get_connected_widgets
+Date: Thu, 14 Apr 2016 14:03:18 +0100
+Message-ID: <1460638999-30598-1-git-send-email-piotrs@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1460636070-37426-2-git-send-email-garlic.tseng@mediatek.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Garlic Tseng <garlic.tseng@mediatek.com>
-Cc: broonie@kernel.org, tiwai@suse.de, alsa-devel@alsa-project.org, ir.lian@mediatek.com, srv_heupstream@mediatek.com, linux-kernel@vger.kernel.org, koro.chen@mediatek.com, linux-mediatek@lists.infradead.org, PC.Liao@mediatek.com, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 10EC6260870
+ for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2016 15:04:55 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2016-04-14 at 20:14 +0800, Garlic Tseng wrote:
-> Move mt8173 driver to another folder.
-> 
-> The software control sequence of mt2701 is very different from that of mt8173,
-> so this patch moves mt8173 code to another folder.
-> 
-> 
-> Signed-off-by: Garlic Tseng <garlic.tseng@mediatek.com>
-> ---
->  sound/soc/mediatek/Makefile                            | 12 +++++-------
->  sound/soc/mediatek/mt8173/Makefile                     |  7 +++++++
->  sound/soc/mediatek/{ => mt8173}/mt8173-max98090.c      |  2 +-
->  sound/soc/mediatek/{ => mt8173}/mt8173-rt5650-rt5514.c |  2 +-
->  sound/soc/mediatek/{ => mt8173}/mt8173-rt5650-rt5676.c |  4 ++--
->  sound/soc/mediatek/{ => mt8173}/mt8173-rt5650.c        |  2 +-
->  sound/soc/mediatek/{ => mt8173}/mtk-afe-common.h       |  0
->  sound/soc/mediatek/{ => mt8173}/mtk-afe-pcm.c          |  0
->  8 files changed, 17 insertions(+), 12 deletions(-)
->  create mode 100644 sound/soc/mediatek/mt8173/Makefile
->  rename sound/soc/mediatek/{ => mt8173}/mt8173-max98090.c (99%)
->  rename sound/soc/mediatek/{ => mt8173}/mt8173-rt5650-rt5514.c (99%)
->  rename sound/soc/mediatek/{ => mt8173}/mt8173-rt5650-rt5676.c (99%)
->  rename sound/soc/mediatek/{ => mt8173}/mt8173-rt5650.c (99%)
->  rename sound/soc/mediatek/{ => mt8173}/mtk-afe-common.h (100%)
->  rename sound/soc/mediatek/{ => mt8173}/mtk-afe-pcm.c (100%)
-> 
-> diff --git a/sound/soc/mediatek/Makefile b/sound/soc/mediatek/Makefile
-> index d486860..5048165 100644
-> --- a/sound/soc/mediatek/Makefile
-> +++ b/sound/soc/mediatek/Makefile
-> @@ -1,7 +1,5 @@
-> -# MTK Platform Support
-> -obj-$(CONFIG_SND_SOC_MEDIATEK) += mtk-afe-pcm.o
-> -# Machine support
-> -obj-$(CONFIG_SND_SOC_MT8173_MAX98090) += mt8173-max98090.o
-> -obj-$(CONFIG_SND_SOC_MT8173_RT5650) += mt8173-rt5650.o
-> -obj-$(CONFIG_SND_SOC_MT8173_RT5650_RT5514) += mt8173-rt5650-rt5514.o
-> -obj-$(CONFIG_SND_SOC_MT8173_RT5650_RT5676) += mt8173-rt5650-rt5676.o
-> +# 8173 Machine support
-> +obj-$(CONFIG_SND_SOC_MT8173_MAX98090) += mt8173/
-> +obj-$(CONFIG_SND_SOC_MT8173_RT5650_RT5676) += mt8173/
-> +obj-$(CONFIG_SND_SOC_MT8173_RT5650_RT5514) += mt8173/
-> +obj-$(CONFIG_SND_SOC_MT8173_RT5650) += mt8173/
+Certain situations may warrant examining DAPM paths only to a certain
+arbitrary point, as opposed to always following them to the end. For
+instance, when establishing a connection between a front-end DAI link
+and a back-end DAI link in a DPCM path, it does not make sense to walk
+the DAPM graph beyond the first widget associated with a back-end link.
 
-Since all CONFIG_SND_SOC_MT8173_* depends on CONFIG_SND_SOC_MEDIATEK,
-you could just do:
+This patch introduces a mechanism which lets a user of
+dai_get_connected_widgets supply a function which will be called for
+every node during the graph walk. When invoked, this function can
+execute arbitrary logic to decide whether the walk, given a DAPM widget
+and walk direction, should be terminated at that point or continued
+as normal.
 
-obj-$(CONFIG_SND_SOC_MEDIATEK) += mt8173/
+Signed-off-by: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>
+---
+ include/sound/soc-dapm.h |    5 +++-
+ sound/soc/soc-dapm.c     |   68 +++++++++++++++++++++++++++++++++++++---------
+ sound/soc/soc-pcm.c      |    3 +-
+ 3 files changed, 61 insertions(+), 15 deletions(-)
 
-
-This way we don't need to modify 2 makefiles when adding new ASoC
-driver.
-
-
-> diff --git a/sound/soc/mediatek/mt8173/Makefile b/sound/soc/mediatek/mt8173/Makefile
-> new file mode 100644
-> index 0000000..d486860
-> --- /dev/null
-> +++ b/sound/soc/mediatek/mt8173/Makefile
-> @@ -0,0 +1,7 @@
-> +# MTK Platform Support
-> +obj-$(CONFIG_SND_SOC_MEDIATEK) += mtk-afe-pcm.o
-
-Maybe we should also rename this to mt8173-afe-pcm.o?
-
-Joe.C
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 9706946..fe5bc93 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -357,6 +357,7 @@ struct snd_soc_dapm_context;
+ struct regulator;
+ struct snd_soc_dapm_widget_list;
+ struct snd_soc_dapm_update;
++enum snd_soc_dapm_direction;
+ 
+ int dapm_regulator_event(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol, int event);
+@@ -450,7 +451,9 @@ void dapm_mark_endpoints_dirty(struct snd_soc_card *card);
+ 
+ /* dapm path query */
+ int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
+-	struct snd_soc_dapm_widget_list **list);
++	struct snd_soc_dapm_widget_list **list,
++	int (*custom_stop_condition)(struct snd_soc_dapm_widget *,
++				     enum snd_soc_dapm_direction));
+ 
+ struct snd_soc_dapm_context *snd_soc_dapm_kcontrol_dapm(
+ 	struct snd_kcontrol *kcontrol);
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 801ae1a..075f0d7 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1073,7 +1073,11 @@ static int dapm_widget_list_create(struct snd_soc_dapm_widget_list **list,
+  */
+ static __always_inline int is_connected_ep(struct snd_soc_dapm_widget *widget,
+ 	struct list_head *list, enum snd_soc_dapm_direction dir,
+-	int (*fn)(struct snd_soc_dapm_widget *, struct list_head *))
++	int (*fn)(struct snd_soc_dapm_widget *, struct list_head *,
++		  int (*custom_stop_condition)(struct snd_soc_dapm_widget *,
++					       enum snd_soc_dapm_direction)),
++	int (*custom_stop_condition)(struct snd_soc_dapm_widget *,
++				     enum snd_soc_dapm_direction))
+ {
+ 	enum snd_soc_dapm_direction rdir = SND_SOC_DAPM_DIR_REVERSE(dir);
+ 	struct snd_soc_dapm_path *path;
+@@ -1088,6 +1092,13 @@ static __always_inline int is_connected_ep(struct snd_soc_dapm_widget *widget,
+ 	if (list)
+ 		list_add_tail(&widget->work_list, list);
+ 
++	if (custom_stop_condition) {
++		con = custom_stop_condition(widget, dir);
++		if (con >= 0)
++			return con;
++		con = 0;
++	}
++
+ 	if ((widget->is_ep & SND_SOC_DAPM_DIR_TO_EP(dir)) && widget->connected) {
+ 		widget->endpoints[dir] = snd_soc_dapm_suspend_check(widget);
+ 		return widget->endpoints[dir];
+@@ -1106,7 +1117,7 @@ static __always_inline int is_connected_ep(struct snd_soc_dapm_widget *widget,
+ 
+ 		if (path->connect) {
+ 			path->walking = 1;
+-			con += fn(path->node[dir], list);
++			con += fn(path->node[dir], list, custom_stop_condition);
+ 			path->walking = 0;
+ 		}
+ 	}
+@@ -1119,23 +1130,41 @@ static __always_inline int is_connected_ep(struct snd_soc_dapm_widget *widget,
+ /*
+  * Recursively check for a completed path to an active or physically connected
+  * output widget. Returns number of complete paths.
++ *
++ * Optionally, can be supplied with a function acting as a stopping condition.
++ * This function takes the dapm widget currently being examined and the walk
++ * direction as an arguments, and should return an integer, as follows:
++ * - >=0: if the walk is to be stopped (this should indicate the number of
++ *        endpoints the widget has),
++ * - <0 : if the walk is to be continued as normal.
+  */
+ static int is_connected_output_ep(struct snd_soc_dapm_widget *widget,
+-	struct list_head *list)
++	struct list_head *list,
++	int (*custom_stop_condition)(struct snd_soc_dapm_widget *i,
++				     enum snd_soc_dapm_direction))
+ {
+ 	return is_connected_ep(widget, list, SND_SOC_DAPM_DIR_OUT,
+-			is_connected_output_ep);
++			is_connected_output_ep, custom_stop_condition);
+ }
+ 
+ /*
+  * Recursively check for a completed path to an active or physically connected
+  * input widget. Returns number of complete paths.
++ *
++ * Optionally, can be supplied with a function acting as a stopping condition.
++ * This function takes the dapm widget currently being examined and the walk
++ * direction as an arguments, and should return an integer, as follows:
++ * - >=0: if the walk is to be stopped (this should indicate the number of
++ *        endpoints the widget has),
++ * - <0 : if the walk is to be continued as normal.
+  */
+ static int is_connected_input_ep(struct snd_soc_dapm_widget *widget,
+-	struct list_head *list)
++	struct list_head *list,
++	int (*custom_stop_condition)(struct snd_soc_dapm_widget *i,
++				     enum snd_soc_dapm_direction))
+ {
+ 	return is_connected_ep(widget, list, SND_SOC_DAPM_DIR_IN,
+-			is_connected_input_ep);
++			is_connected_input_ep, custom_stop_condition);
+ }
+ 
+ /**
+@@ -1143,15 +1172,26 @@ static int is_connected_input_ep(struct snd_soc_dapm_widget *widget,
+  * @dai: the soc DAI.
+  * @stream: stream direction.
+  * @list: list of active widgets for this stream.
++ * @custom_stop_condition: (optional) a function meant to stop the widget graph
++ *                         walk based on custom logic.
+  *
+  * Queries DAPM graph as to whether an valid audio stream path exists for
+  * the initial stream specified by name. This takes into account
+  * current mixer and mux kcontrol settings. Creates list of valid widgets.
+  *
++ * Optionally, can be supplied with a function acting as a stopping condition.
++ * This function takes the dapm widget currently being examined and the walk
++ * direction as an arguments, and should return an integer, as follows:
++ * - >=0: if the walk is to be stopped (this should indicate the number of
++ *        endpoints the widget has),
++ * - <0 : if the walk is to be continued as normal.
++ *
+  * Returns the number of valid paths or negative error.
+  */
+ int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
+-	struct snd_soc_dapm_widget_list **list)
++	struct snd_soc_dapm_widget_list **list,
++	int (*custom_stop_condition)(struct snd_soc_dapm_widget *,
++				     enum snd_soc_dapm_direction))
+ {
+ 	struct snd_soc_card *card = dai->component->card;
+ 	struct snd_soc_dapm_widget *w;
+@@ -1171,9 +1211,11 @@ int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
+ 	}
+ 
+ 	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		paths = is_connected_output_ep(dai->playback_widget, &widgets);
++		paths = is_connected_output_ep(dai->playback_widget, &widgets,
++				custom_stop_condition);
+ 	else
+-		paths = is_connected_input_ep(dai->capture_widget, &widgets);
++		paths = is_connected_input_ep(dai->capture_widget, &widgets,
++				custom_stop_condition);
+ 
+ 	/* Drop starting point */
+ 	list_del(widgets.next);
+@@ -1268,8 +1310,8 @@ static int dapm_generic_check_power(struct snd_soc_dapm_widget *w)
+ 
+ 	DAPM_UPDATE_STAT(w, power_checks);
+ 
+-	in = is_connected_input_ep(w, NULL);
+-	out = is_connected_output_ep(w, NULL);
++	in = is_connected_input_ep(w, NULL, NULL);
++	out = is_connected_output_ep(w, NULL, NULL);
+ 	return out != 0 && in != 0;
+ }
+ 
+@@ -1928,8 +1970,8 @@ static ssize_t dapm_widget_power_read_file(struct file *file,
+ 		in = 0;
+ 		out = 0;
+ 	} else {
+-		in = is_connected_input_ep(w, NULL);
+-		out = is_connected_output_ep(w, NULL);
++		in = is_connected_input_ep(w, NULL, NULL);
++		out = is_connected_output_ep(w, NULL, NULL);
+ 	}
+ 
+ 	ret = snprintf(buf, PAGE_SIZE, "%s: %s%s  in %d out %d",
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index aa99dac..c2b0aa8 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1294,7 +1294,8 @@ int dpcm_path_get(struct snd_soc_pcm_runtime *fe,
+ 	int paths;
+ 
+ 	/* get number of valid DAI paths and their widgets */
+-	paths = snd_soc_dapm_dai_get_connected_widgets(cpu_dai, stream, list);
++	paths = snd_soc_dapm_dai_get_connected_widgets(cpu_dai, stream, list,
++			NULL);
+ 
+ 	dev_dbg(fe->dev, "ASoC: found %d audio %s paths\n", paths,
+ 			stream ? "capture" : "playback");
+-- 
+1.7.10.4
