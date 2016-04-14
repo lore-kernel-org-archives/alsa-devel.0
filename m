@@ -1,17 +1,16 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: pcm : Call kill_fasync() in stream lock
-Date: Thu, 14 Apr 2016 18:11:36 +0200
-Message-ID: <1460650296-16883-1-git-send-email-tiwai@suse.de>
+From: "Simon Wood" <simon@mungewell.org>
+Subject: Re: Tascam US-122L - Corrupt USB descriptor
+Date: Thu, 14 Apr 2016 10:20:26 -0600
+Message-ID: <a077d6ac9b13495df8e2d049aa5f3e78.squirrel__43551.7699494541$1460650883$gmane$org@mungewell.org>
+References: <3d5a5368f3a43ffc0114daf09c306d7e.squirrel@mungewell.org>
+ <570E0AE0.3020507@ladisch.de>
+ <32e8a05d90e5cfd79622802c340948ab.squirrel@mungewell.org>
+ <570F4832.9020302@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 7158B260870
- for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2016 18:11:39 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 4435BAB08
- for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2016 16:11:36 +0000 (UTC)
+In-Reply-To: <570F4832.9020302@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,43 +21,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: linux-usb@vger.kernel.org, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently kill_fasync() is called outside the stream lock in
-snd_pcm_period_elapsed().  This is potentially racy, since the stream
-may get released even during the irq handler is running.  Although
-snd_pcm_release_substream() calls snd_pcm_drop(), this doesn't
-guarantee that the irq handler finishes, thus the kill_fasync() call
-outside the stream spin lock may be invoked after the substream is
-detached, as recently reported by KASAN.
+On Thu, April 14, 2016 1:35 am, Clemens Ladisch wrote:
+> Simon Wood wrote:
+>
+>> The card shows up under '/proc/asound/cards', but only as Midi.
+>>
+>
+> Apparently, there is no PCM device. This driver creates a special
+> hardware-dependent device which is intended to be used with the Jack driver
+> "usb_stream".
+>
+>
+> It might be possible to use the ALSA "usb_stream" plugin:
+> <http://www.alsa-project.org/main/index.php/Matrix:Module-usb-us122l>
 
-As a quick workaround, move kill_fasync() call inside the stream
-lock.  The fasync is rarely used interface, so this shouldn't have a
-big impact from the performance POV.
+I have this '.asoundrc' file (made before previous postings), but that
+does not seem to make a usable card.
 
-Ideally, we should implement some sync mechanism for the proper finish
-of stream and irq handler.  But this oneliner should suffice for most
-cases, so far.
+I'm expecting that a PCM device should /just/ appear under 'aplay -l', but
+that is not happening. Perhaps there is a step I am missing, or I am just
+confused about what qualifies a 'working' US-122L.
 
-Reported-by: Baozeng Ding <sploving1@gmail.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/pcm_lib.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Do I need to be using a specific version of (userland) Alsa?
 
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 3a9b66c6e09c..0aca39762ed0 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1886,8 +1886,8 @@ void snd_pcm_period_elapsed(struct snd_pcm_substream *substream)
- 		snd_timer_interrupt(substream->timer, 1);
- #endif
-  _end:
--	snd_pcm_stream_unlock_irqrestore(substream, flags);
- 	kill_fasync(&runtime->fasync, SIGIO, POLL_IN);
-+	snd_pcm_stream_unlock_irqrestore(substream, flags);
- }
- 
- EXPORT_SYMBOL(snd_pcm_period_elapsed);
--- 
-2.8.1
+It would be nice to get a 'nod' from a person who has the US-122L workin
+on their system. But I do appreciate Clemens' help and guidance,
+Simon.
+
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
