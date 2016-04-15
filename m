@@ -1,29 +1,14 @@
-From: Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 2/2] ASoC: cs35l33: Add device tree
-	bindings file for cs35l33
-Date: Thu, 14 Apr 2016 19:17:07 -0500
-Message-ID: <CAL_JsqJdNn+5gAs42LsrCkqOA_MY753=opfyPBz_ZctbKrbeUQ@mail.gmail.com>
-References: <1460672524-27855-1-git-send-email-paul.handrigan@cirrus.com>
- <1460672524-27855-2-git-send-email-paul.handrigan@cirrus.com>
+From: Jeremy McDermond <nh6z@nh6z.net>
+Subject: [PATCH] ASoC: tlv320aic32x4: Add SPI support
+Date: Fri, 15 Apr 2016 11:30:59 -0700
+Message-ID: <1460745059-5737-1-git-send-email-nh6z@nh6z.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B3B1260870
- for <alsa-devel@alsa-project.org>; Fri, 15 Apr 2016 02:17:31 +0200 (CEST)
-Received: from mail.kernel.org (localhost [127.0.0.1])
- by mail.kernel.org (Postfix) with ESMTP id 17BA62037F
- for <alsa-devel@alsa-project.org>; Fri, 15 Apr 2016 00:17:29 +0000 (UTC)
-Received: from mail-yw0-f171.google.com (mail-yw0-f171.google.com
- [209.85.161.171])
- (using TLSv1.2 with cipher AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1065F202FF
- for <alsa-devel@alsa-project.org>; Fri, 15 Apr 2016 00:17:27 +0000 (UTC)
-Received: by mail-yw0-f171.google.com with SMTP id d68so121381878ywe.1
- for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2016 17:17:27 -0700 (PDT)
-In-Reply-To: <1460672524-27855-2-git-send-email-paul.handrigan@cirrus.com>
+Received: from mail.xenotropic.com (mail.xenotropic.com [198.178.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 92DBC261A0A
+ for <alsa-devel@alsa-project.org>; Fri, 15 Apr 2016 20:32:30 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,109 +18,284 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: paul.handrigan@cirrus.com
-Cc: Mark Rutland <mark.rutland@arm.com>, brian.austin@cirrus.com, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+To: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
+Cc: Jeremy McDermond <nh6z@nh6z.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 14, 2016 at 5:22 PM,  <paul.handrigan@cirrus.com> wrote:
-> From: Paul Handrigan <Paul.Handrigan@cirrus.com>
+The TLV320AIC32x4 support the control channel over either SPI or I2C.
+Added the proper interfacing with regmap to make the driver able to
+handle either possibility.
 
-Please send to DT list.
+Signed-off-by: Jeremy McDermond <nh6z@nh6z.net>
+---
+ sound/soc/codecs/Kconfig         |   5 +-
+ sound/soc/codecs/tlv320aic32x4.c | 181 +++++++++++++++++++++++++++++++++++----
+ 2 files changed, 165 insertions(+), 21 deletions(-)
 
-> Add device tree bindings file for the cs35l33 8V boosted
-> class D amplifier.
->
-> Signed-off-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
-> ---
->  .../devicetree/bindings/sound/cs35l33.txt          | 69 ++++++++++++++++++++++
->  1 file changed, 69 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/cs35l33.txt
->
-> diff --git a/Documentation/devicetree/bindings/sound/cs35l33.txt b/Documentation/devicetree/bindings/sound/cs35l33.txt
-> new file mode 100644
-> index 0000000..434250c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/cs35l33.txt
-> @@ -0,0 +1,69 @@
-> +CS35L33 Speaker Amplifier
-> +
-> +Required properties:
-> +
-> +  - compatible : "cirrus,cs35l33"
-> +
-> +  - reg : the I2C address of the device for I2C
-> +
-> +  - VA-supply, VP-supply : power supplies for the device,
-> +    as covered in
-> +    Documentation/devicetree/bindings/regulator/regulator.txt.
-> +
-> +Optional properties:
-> +
-> +  - cirrus,reset-gpios : gpio used to reset the amplifier
-
-reset-gpios is common enough you can drop cirrus.
-
-> +  - interrupt-parent : Specifies the phandle of the interrupt controller to
-> +    which the IRQs from CS35L33 are delivered to.
-> + -  interrupts : IRQ line info CS35L33.
-> +    (See Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
-> +    for further information relating to interrupt properties)
-> +
-> +  - cirrus,boost-ctl : Booster voltage use to supply the amp, if this is not
-> +    set then the internal 1.0V LDO will supply the amp.
-
-boolean or ?...
-
-> +  - cirrus,ramp-rate : On power up, it affects the time from when the power
-> +    up sequence begins to the time the audio reaches a full-scale output.
-> +    On power down, it affects the time from when the power-down sequence
-> +    begins to when the amplifier disables the PWM outputs. If this property
-> +    is not set then soft ramping will be disabled and ramp time would be
-> +    20ms. If this property is set to 0,1,2,3 then ramp times would be 40ms,
-> +    60ms,100ms,175ms respectively for 48KHz sample rate.
-> +
-> +  - cirrus,boost-ipk : Booster peak current
-
-Add unit prefix.
-
-> +
-> +  - cirrus,hg-algo : parameters for internal h/g algorithm that controls
-> +    the amplifier supplies
-
-Doesn't match the example.
-
-> +
-> +Example:
-> +
-> +cs35l33: cs35l33@40 {
-> +       compatible = "cirrus,cs35l33";
-> +       reg = <0x40>;
-> +
-> +       VA-supply = <&ldo5_reg>;
-> +       VP-supply = <&ldo5_reg>;
-> +
-> +       interrupt-parent = <&gpio8>;
-> +       interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
-> +
-> +       reset-gpios = <&cs47l91 34 0>;
-> +
-> +       ramp-rate = <0x0>;
-> +       boost-ctl = <0x0>;
-> +       boost-ipk = <0xE0>;
-> +
-> +       hg-algo {
-> +               mem-depth = <0x3>;
-> +               release-rate = <0x3>;
-> +               hd-rm = <0xA>;
-> +               ldo-thld = <0x1>;
-> +               ldo-path-disable = <0x0>;
-> +               ldo-entry-delay=<0x4>;
-> +               vp-hg-auto;
-> +               vp-hg=<0xF>;
-> +               vp-hg-rate=<0x2>;
-> +               vp-hg-va=<0x0>;
-> +       };
-> +};
-> --
-> 1.9.1
->
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 907c804..1ddf7b8 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -129,7 +129,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_TLV320AIC23_SPI if SPI_MASTER
+ 	select SND_SOC_TLV320AIC26 if SPI_MASTER
+ 	select SND_SOC_TLV320AIC31XX if I2C
+-	select SND_SOC_TLV320AIC32X4 if I2C
++	select SND_SOC_TLV320AIC32X4 if SND_SOC_I2C_AND_SPI
+ 	select SND_SOC_TLV320AIC3X if I2C
+ 	select SND_SOC_TPA6130A2 if I2C
+ 	select SND_SOC_TLV320DAC33 if I2C
+@@ -768,7 +768,8 @@ config SND_SOC_TLV320AIC31XX
+ 	select REGMAP_I2C
+ 
+ config SND_SOC_TLV320AIC32X4
+-	tristate
++	tristate "Texas Instruments TLV320AIC32x4 CODECs"
++	depends on SND_SOC_I2C_AND_SPI
+ 
+ config SND_SOC_TLV320AIC3X
+ 	tristate "Texas Instruments TLV320AIC3x CODECs"
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index f2d3191..1c888b7 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -31,6 +31,7 @@
+ #include <linux/gpio.h>
+ #include <linux/of_gpio.h>
+ #include <linux/i2c.h>
++#include <linux/spi/spi.h>
+ #include <linux/cdev.h>
+ #include <linux/slab.h>
+ #include <linux/clk.h>
+@@ -287,15 +288,6 @@ static const struct regmap_range_cfg aic32x4_regmap_pages[] = {
+ 	},
+ };
+ 
+-static const struct regmap_config aic32x4_regmap = {
+-	.reg_bits = 8,
+-	.val_bits = 8,
+-
+-	.max_register = AIC32X4_RMICPGAVOL,
+-	.ranges = aic32x4_regmap_pages,
+-	.num_ranges = ARRAY_SIZE(aic32x4_regmap_pages),
+-};
+-
+ static inline int aic32x4_get_divs(int mclk, int rate)
+ {
+ 	int i;
+@@ -668,7 +660,7 @@ static struct snd_soc_codec_driver soc_codec_dev_aic32x4 = {
+ };
+ 
+ static int aic32x4_parse_dt(struct aic32x4_priv *aic32x4,
+-		struct device_node *np)
++		struct device_node *np, struct device *dev)
+ {
+ 	aic32x4->swapdacs = false;
+ 	aic32x4->micpga_routing = 0;
+@@ -777,6 +769,23 @@ error_ldo:
+ 	return ret;
+ }
+ 
++static const struct of_device_id aic32x4_of_id[] = {
++	{ .compatible = "ti,tlv320aic32x4", },
++	{ /* senitel */ }
++};
++MODULE_DEVICE_TABLE(of, aic32x4_of_id);
++
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++
++static const struct regmap_config aic32x4_i2c_regmap = {
++	.reg_bits = 8,
++	.val_bits = 8,
++
++	.max_register = AIC32X4_RMICPGAVOL,
++	.ranges = aic32x4_regmap_pages,
++	.num_ranges = ARRAY_SIZE(aic32x4_regmap_pages),
++};
++
+ static int aic32x4_i2c_probe(struct i2c_client *i2c,
+ 			     const struct i2c_device_id *id)
+ {
+@@ -790,7 +799,7 @@ static int aic32x4_i2c_probe(struct i2c_client *i2c,
+ 	if (aic32x4 == NULL)
+ 		return -ENOMEM;
+ 
+-	aic32x4->regmap = devm_regmap_init_i2c(i2c, &aic32x4_regmap);
++	aic32x4->regmap = devm_regmap_init_i2c(i2c, &aic32x4_i2c_regmap);
+ 	if (IS_ERR(aic32x4->regmap))
+ 		return PTR_ERR(aic32x4->regmap);
+ 
+@@ -802,7 +811,7 @@ static int aic32x4_i2c_probe(struct i2c_client *i2c,
+ 		aic32x4->micpga_routing = pdata->micpga_routing;
+ 		aic32x4->rstn_gpio = pdata->rstn_gpio;
+ 	} else if (np) {
+-		ret = aic32x4_parse_dt(aic32x4, np);
++		ret = aic32x4_parse_dt(aic32x4, np, &i2c->dev);
+ 		if (ret) {
+ 			dev_err(&i2c->dev, "Failed to parse DT node\n");
+ 			return ret;
+@@ -862,12 +871,6 @@ static const struct i2c_device_id aic32x4_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, aic32x4_i2c_id);
+ 
+-static const struct of_device_id aic32x4_of_id[] = {
+-	{ .compatible = "ti,tlv320aic32x4", },
+-	{ /* senitel */ }
+-};
+-MODULE_DEVICE_TABLE(of, aic32x4_of_id);
+-
+ static struct i2c_driver aic32x4_i2c_driver = {
+ 	.driver = {
+ 		.name = "tlv320aic32x4",
+@@ -877,8 +880,148 @@ static struct i2c_driver aic32x4_i2c_driver = {
+ 	.remove =   aic32x4_i2c_remove,
+ 	.id_table = aic32x4_i2c_id,
+ };
++#endif
+ 
+-module_i2c_driver(aic32x4_i2c_driver);
++#if defined(CONFIG_SPI_MASTER)
++
++static const struct regmap_config aic32x4_spi_regmap = {
++	.reg_bits = 7,
++	.pad_bits = 1,
++	.val_bits = 8,
++	.read_flag_mask = 0x01,
++
++	.max_register = AIC32X4_RMICPGAVOL,
++	.ranges = aic32x4_regmap_pages,
++	.num_ranges = ARRAY_SIZE(aic32x4_regmap_pages),
++};
++
++static int aic32x4_spi_probe(struct spi_device *spi)
++{
++	struct aic32x4_pdata *pdata = spi->dev.platform_data;
++	struct aic32x4_priv *aic32x4;
++	struct device_node *np = spi->dev.of_node;
++	int ret;
++
++	aic32x4 = devm_kzalloc(&spi->dev, sizeof(struct aic32x4_priv),
++			       GFP_KERNEL);
++	if (aic32x4 == NULL)
++		return -ENOMEM;
++
++	aic32x4->regmap = devm_regmap_init_spi(spi, &aic32x4_spi_regmap);
++	if (IS_ERR(aic32x4->regmap))
++		return PTR_ERR(aic32x4->regmap);
++
++	spi_set_drvdata(spi, aic32x4);
++
++	if (pdata) {
++		aic32x4->power_cfg = pdata->power_cfg;
++		aic32x4->swapdacs = pdata->swapdacs;
++		aic32x4->micpga_routing = pdata->micpga_routing;
++		aic32x4->rstn_gpio = pdata->rstn_gpio;
++	} else if (np) {
++		ret = aic32x4_parse_dt(aic32x4, np, &spi->dev);
++		if (ret) {
++			dev_err(&spi->dev, "Failed to parse DT node\n");
++			return ret;
++		}
++	} else {
++		aic32x4->power_cfg = 0;
++		aic32x4->swapdacs = false;
++		aic32x4->micpga_routing = 0;
++		aic32x4->rstn_gpio = -1;
++	}
++
++	aic32x4->mclk = devm_clk_get(&spi->dev, "mclk");
++	if (IS_ERR(aic32x4->mclk)) {
++		dev_err(&spi->dev, "Failed getting the mclk. The current implementation does not support the usage of this codec without mclk\n");
++		return PTR_ERR(aic32x4->mclk);
++	}
++
++	if (gpio_is_valid(aic32x4->rstn_gpio)) {
++		ret = devm_gpio_request_one(&spi->dev, aic32x4->rstn_gpio,
++				GPIOF_OUT_INIT_LOW, "tlv320aic32x4 rstn");
++		if (ret != 0)
++			return ret;
++	}
++
++	ret = aic32x4_setup_regulators(&spi->dev, aic32x4);
++	if (ret) {
++		dev_err(&spi->dev, "Failed to setup regulators\n");
++		return ret;
++	}
++
++	ret = snd_soc_register_codec(&spi->dev,
++			&soc_codec_dev_aic32x4, &aic32x4_dai, 1);
++	if (ret) {
++		dev_err(&spi->dev, "Failed to register codec\n");
++		aic32x4_disable_regulators(aic32x4);
++		return ret;
++	}
++
++	spi_set_drvdata(spi, aic32x4);
++
++	return 0;
++}
++
++static int aic32x4_spi_remove(struct spi_device *dev)
++{
++	struct aic32x4_priv *aic32x4 = spi_get_drvdata(dev);
++
++	aic32x4_disable_regulators(aic32x4);
++
++	snd_soc_unregister_codec(&dev->dev);
++	return 0;
++}
++
++static const struct spi_device_id aic32x4_spi_id[] = {
++	{ "tlv320aic32x4", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(spi, aic32x4_spi_id);
++
++static struct spi_driver aic32x4_spi_driver = {
++	.driver = {
++		.name = "tlv320aic32x4",
++		.owner = THIS_MODULE,
++		.of_match_table = aic32x4_of_id,
++	},
++	.probe =    aic32x4_spi_probe,
++	.remove =   aic32x4_spi_remove,
++	.id_table = aic32x4_spi_id,
++};
++#endif
++
++static int __init aic32x4_modinit(void)
++{
++	int ret = 0;
++
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++	ret = i2c_add_driver(&aic32x4_i2c_driver);
++	if (ret)
++		pr_err("Failed to register tlv320aic32x4 I2C driver: %d\n",
++		       ret);
++#endif
++#if defined(CONFIG_SPI_MASTER)
++	ret = spi_register_driver(&aic32x4_spi_driver);
++	if (ret)
++		pr_err("Failed to register tlv320aic32x4 SPI driver: %d\n",
++		       ret);
++#endif
++
++	return ret;
++}
++module_init(aic32x4_modinit);
++
++static void __exit aic32x4_exit(void)
++{
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++	i2c_del_driver(&aic32x4_i2c_driver);
++#endif
++#if defined(CONFIG_SPI_MASTER)
++	spi_unregister_driver(&aic32x4_spi_driver);
++#endif
++}
++module_exit(aic32x4_exit);
+ 
+ MODULE_DESCRIPTION("ASoC tlv320aic32x4 codec driver");
+ MODULE_AUTHOR("Javier Martin <javier.martin@vista-silicon.com>");
+-- 
+2.5.0
