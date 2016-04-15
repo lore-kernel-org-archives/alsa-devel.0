@@ -1,274 +1,192 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v2 2/6] ASoC: Davinci: McBSP: add device
- tree support for McBSP
-Date: Fri, 15 Apr 2016 12:32:06 +0300
-Message-ID: <5710B516.2000006@ti.com>
-References: <1460375117-4311-1-git-send-email-petr@barix.com>
- <1460375117-4311-3-git-send-email-petr@barix.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [alsa-devel] [PATCH 0/4] ASoC: add graph base connection on
+ simple-card
+Date: Fri, 15 Apr 2016 13:31:58 +0200
+Message-ID: <20160415133158.9c5c0dc7367325606c53ce17@free.fr>
+References: <871t68wxxe.wl%kuninori.morimoto.gx@renesas.com>
+	<20160414110128.56a0da97d526cdcb8d5f1ddf@free.fr>
+	<87h9f3jq3m.wl%kuninori.morimoto.gx@renesas.com>
+	<87fuunjkio.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 44BC5261AAF
- for <alsa-devel@alsa-project.org>; Fri, 15 Apr 2016 11:32:13 +0200 (CEST)
-In-Reply-To: <1460375117-4311-3-git-send-email-petr@barix.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Petr Kulhavy <petr@barix.com>, nsekhar@ti.com, khilman@kernel.org, lgirdwood@gmail.com, broonie@kernel.org, devicetree@vger.kernel.org
-Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, robh+dt@kernel.org, galak@codeaurora.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87fuunjkio.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>, Laurent <laurent.pinchart@ideasonboard.com>, Lars-Peter Clausen <lars@metafoo.de>, Jose Abreu <Jose.Abreu@synopsys.com>, Linux-DT <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/11/16 14:45, Petr Kulhavy wrote:
-> This adds DT support for the TI DA8xx/OMAP-L1x/AM17xx/AM18xx McBSP driver.
-> =
+On Fri, 15 Apr 2016 09:26:03 +0000
+Kuninori Morimoto <kuninori.morimoto.gx@renesas.com> wrote:
 
-> Signed-off-by: Petr Kulhavy <petr@barix.com>
-> ---
-> v1: initial
-> v2: remove "-audio" postfix from the compatible string
->     of_match_table renamed consistently with the rest of the file (davinc=
-i_i2s_match)
->     "channel-combine" property removed
->     devicetree DMA configuration in probe simplified
-> =
+> > > According to Documentation/devicetree/bindings/graph.txt section
+> > > "Links between endpoints", the endpoint/remote-endpoint links are
+> > > bi-directional and describe the physical links: the audio port of=
+ the
+> > > codec is connected to the audio controller and reverse.
+> > > There is no reverse link from the codec to the 'simple-card'.
+> > (snip)
+> > > The codec associated to the HDMI transmitter declares 2 DAIs.
+> > > It may choose to define the DAI numbers either in a fixed order
+> > > (say 0 is always S/PDIF and 1 is always I2S), or dynamically, fol=
+lowing
+> > > the declaration of the ports (in the example, 0 is I2S and 1 is S=
+/PDIF).
+> >=20
+> > My assumption was video/audio are using same port, but indeed
+> > we need to care about more.
+> >=20
+> > But, if we need to describe both "video port" and "audio port" sepa=
+rately
+> > in graph, simple-card side doesn't need graph style IMO.
+> > Because normal phandle style (=3D non graph style) is working alrea=
+dy.
+> >=20
+> > I thought that describing both "video" and "audio" is too much.
+> > -> assume that video/audio can share same port
+> >  -> this patch
+> >   -> but thoughtless :P
+> >=20
+> > I'm not sure, but do you think snd_soc_get_dai_name()::of_xlate_dai=
+_name
+> > can works for us ?
+> >=20
+> > My concern is if audio side need to care/support "formal" graph sty=
+le,
+> > I think all cpu/codec/card driver (and soc-core too ?) need to be u=
+pdated,
+> > but it is too much for me.
+> > if fake graph style (like this patch) is OK, I'm happy to hack it m=
+ore.
+>=20
+> This "fake graph style" means it is supporting both graph's "remote-e=
+ndpoint"
+> and current simple-card's "sound-dai" (=3D not 100% graph style).
 
->  sound/soc/davinci/Kconfig       |   6 ++-
->  sound/soc/davinci/davinci-i2s.c | 116 +++++++++++++++++++++++++++++++---=
-------
->  2 files changed, 95 insertions(+), 27 deletions(-)
-> =
+Hi Kuninori,
 
-> diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
-> index 50ca291cc225..6b732d8e5896 100644
-> --- a/sound/soc/davinci/Kconfig
-> +++ b/sound/soc/davinci/Kconfig
-> @@ -16,7 +16,11 @@ config SND_EDMA_SOC
->  	  - DRA7xx family
->  =
+Maybe I was not clear. Here is more information.
 
->  config SND_DAVINCI_SOC_I2S
-> -	tristate
-> +	tristate "DaVinci Multichannel Buffered Serial Port (McBSP) support"
-> +	depends on SND_EDMA_SOC
-> +	help
-> +	  Say Y or M here if you want to have support for McBSP IP found in
-> +	  Texas Instruments DaVinci DA850 SoCs.
->  =
+The simple-card must know the codec (DAI) device node and the DAI name
+(found from the DAI number thanks to snd_soc_get_dai_name
+()::of_xlate_dai_name()).
 
->  config SND_DAVINCI_SOC_MCASP
->  	tristate "Multichannel Audio Serial Port (McASP) support"
-> diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-=
-i2s.c
-> index ec98548a5fc9..a3f82d1a73dc 100644
-> --- a/sound/soc/davinci/davinci-i2s.c
-> +++ b/sound/soc/davinci/davinci-i2s.c
-> @@ -4,9 +4,15 @@
->   * Author:      Vladimir Barinov, <vbarinov@embeddedalley.com>
->   * Copyright:   (C) 2007 MontaVista Software, Inc., <source@mvista.com>
->   *
-> + * DT support	(c) 2016 Petr Kulhavy, Barix AG <petr@barix.com>
-> + *		based on davinci-mcasp.c DT support
-> + *
->   * This program is free software; you can redistribute it and/or modify
->   * it under the terms of the GNU General Public License version 2 as
->   * published by the Free Software Foundation.
-> + *
-> + * TODO:
-> + * on DA850 implement HW FIFOs instead of DMA into DXR and DRR registers
->   */
->  =
+The actual definition "sound-dai" works directly in any case, with or
+without a graph of ports. Indeed, the DAI of the codec must be known
+(option fixed/dynamic number).
 
->  #include <linux/init.h>
-> @@ -648,15 +654,62 @@ static const struct snd_soc_component_driver davinc=
-i_i2s_component =3D {
->  	.name		=3D "davinci-i2s",
->  };
->  =
+A graph of ports describes the links between the hardware components.
+=46ox example, in the (Dove) Cubox, the HDMI transmitter receives video
+(one port) from the video controller and audio (2 ports) from the audio
+controller. The graph is:
 
-> +static struct snd_platform_data*
-> +davinci_i2s_set_pdata_from_of(struct platform_device *pdev)
+video <-----------------------\
+                              v
+       | i2s <------> CODEC =3D HDMI transmitter
+audio <               ^
+       | s/pdif <-----/
+                       \---> S/PDIF connector
 
-It is a bit misleading function name, would be better to name it as
-davinci_i2s_get_pdata()
+In the DT, the HDMI is described by:
 
-as it will fetch the legacy pdata or craft one when booting with DT.
+	hdmi: hdmi-encoder {
+		...
+		port@0 {
+			port-type =3D "video";
+			port-value =3D <0x230145>;
+			hdmi_0: endpoint {
+				remote-endpoint =3D <&lcd0_0>;
+			};
+		};
+		port@1 {			/* AP1 =3D I2S */
+			port-type =3D "audio-i2s";
+			port-value =3D <0x03>;
+			tda998x_i2s: endpoint {
+				remote-endpoint =3D <&audio1_i2s>;
+			};
+		};
+		port@2 {			 /* AP2 =3D S/PDIF */
+			port-type =3D "audio-spdif";
+			port-value =3D <0x04>;
+			tda998x_spdif: endpoint {
+				remote-endpoint =3D <&audio1_spdif1>;
+			};
+		};
+	};
 
-> +{
-> +	struct snd_platform_data *pdata =3D NULL;
-> +	struct device_node *np;
-> +
-> +	if (!IS_ENABLED(CONFIG_OF) || !pdev->dev.of_node)
-> +		return dev_get_platdata(&pdev->dev);
-> +
-> +	pdata =3D devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
-> +	if (!pdata)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	np =3D pdev->dev.of_node;
+As you may see, there is no port link to any audio card definition as
+the 'simple-card'.
 
-???
+When using the simple-card, my definition was:
+	sound {
+		compatible =3D "simple-audio-card";
+		simple-audio-card,name =3D "Cubox Audio";
 
-> +
-> +	/* parse properties here */
-> +
-> +	/*
-> +	 * pdata->clk_input_pin is deliberately not exported to DT
-> +	 * and the default value of the clk_input_pin is MCBSP_CLKR.
-> +	 * The value MCBSP_CLKS makes no sense as it turns the CPU
-> +	 * to a bit clock master in the SND_SOC_DAIFMT_CBM_CFS mode
-> +	 * where it should be bit clock slave!
-> +	 */
-> +
-> +	return pdata;
-> +}
-> +
->  static int davinci_i2s_probe(struct platform_device *pdev)
->  {
-> +	struct snd_dmaengine_dai_dma_data *dma_data;
-> +	struct snd_platform_data *pdata;
->  	struct davinci_mcbsp_dev *dev;
->  	struct resource *mem, *res;
->  	void __iomem *io_base;
->  	int *dma;
->  	int ret;
->  =
+		simple-audio-card,dai-link@0 {	/* S/PDIF -> HDMI & S/PDIF */
+			format =3D "i2s";
+			cpu {
+				sound-dai =3D <&audio1 1>;
+			};
+			codec {
+				sound-dai =3D <&hdmi 0>, <&spdif_codec>;
+			};
+		};
 
-> -	mem =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	pdata =3D davinci_i2s_set_pdata_from_of(pdev);
-> +	if (IS_ERR(pdata)) {
-> +		dev_err(&pdev->dev, "Error populating platform data, err %ld\n",
-> +			PTR_ERR(pdata));
-> +		return PTR_ERR(pdata);
-> +	}
+		simple-audio-card,dai-link@1 {	/* I2S -> HDMI */
+			format =3D "i2s";
+			cpu {
+				sound-dai =3D <&audio1 0>;
+			};
+			codec {
+				sound-dai =3D <&hdmi 1>;
+			};
+		};
+	};
 
-The current driver does not use the pdata as far as I can see. Kind of
-strange. So now in DT boot you will allocate memory for the pdata, which is
-not used by the driver at all.
-I think we should implement the pdata handling in the driver first for the
-legacy mode, then probably having pdata allocated for DT case might make se=
-nse.
+This worked fine, but I found that the simple-card was redondant with
+the graph of ports, so, now, in my system, the card creation is done
+only from the graph of ports (without any more information in the DT -
+this system was proposed in january 2015
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-January/08683=
+7.html
+but rejected).
 
-> +
-> +	mem =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, "mpu");
-> +	if (!mem) {
-> +		dev_warn(&pdev->dev,
-> +			 "\"mpu\" mem resource not found, using index 0\n");
-> +		mem =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +		if (!mem) {
-> +			dev_err(&pdev->dev, "no mem resource?\n");
-> +			return -ENODEV;
-> +		}
-> +	}
-> +
->  	io_base =3D devm_ioremap_resource(&pdev->dev, mem);
->  	if (IS_ERR(io_base))
->  		return PTR_ERR(io_base);
-> @@ -666,39 +719,43 @@ static int davinci_i2s_probe(struct platform_device=
- *pdev)
->  	if (!dev)
->  		return -ENOMEM;
->  =
+At startup time, the audio driver scans its ports in the graph.
+This permits for it to create its own DAIs.
+Then, it looks at the remote-ports. These ones define the DAI links:
+the CPU side is a local DAI, and the CODEC side is the parent of the
+remote port plus a DAI number.
+The problem is that the DAI number is not in the DT. It must be
+computed. This is simply done scanning the ports of the codec (remote)
+node and skipping the non-audio ports (indeed, this works because the
+hdmi codec uses a dynamic port numbering scheme).
 
-> -	dev->clk =3D clk_get(&pdev->dev, NULL);
-> -	if (IS_ERR(dev->clk))
-> -		return -ENODEV;
-> -	clk_enable(dev->clk);
-> -
->  	dev->base =3D io_base;
->  =
+=46or information here is the DT of the audio controller:
 
-> -	dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK].addr =3D
-> -	    (dma_addr_t)(mem->start + DAVINCI_MCBSP_DXR_REG);
-> -
-> -	dev->dma_data[SNDRV_PCM_STREAM_CAPTURE].addr =3D
-> -	    (dma_addr_t)(mem->start + DAVINCI_MCBSP_DRR_REG);
-> +	/* setup DMA, first TX, then RX */
-> +	dma_data =3D &dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK];
-> +	dma_data->addr =3D (dma_addr_t)(mem->start + DAVINCI_MCBSP_DXR_REG);
->  =
+audio1: audio-controller@b4000 {
+	audio-card,format =3D "i2s";
+	port@0 {
+		port-type =3D "spdif";
+		audio1_spdif0: endpoint@0 {
+			remote-endpoint =3D <&spdif_out>;
+		};
+		audio1_spdif1: endpoint@1 {
+			remote-endpoint =3D <&tda998x_spdif>;
+		};
+	};
+	port@1 {
+		port-type =3D "i2s";
+		audio1_i2s: endpoint {
+			remote-endpoint =3D <&tda998x_i2s>;
+		};
+	};
 
-> -	/* first TX, then RX */
->  	res =3D platform_get_resource(pdev, IORESOURCE_DMA, 0);
-> -	if (!res) {
-> -		dev_err(&pdev->dev, "no DMA resource\n");
-> -		ret =3D -ENXIO;
-> -		goto err_release_clk;
-> +	if (res) {
-> +		dma =3D &dev->dma_request[SNDRV_PCM_STREAM_PLAYBACK];
-> +		*dma =3D res->start;
-> +		dma_data->filter_data =3D dma;
-> +	} else if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node) {
-> +		dma_data->filter_data =3D "tx";
-> +	} else {
-> +		dev_err(&pdev->dev, "Missing DMA tx resource\n");
-> +		return -ENODEV;
->  	}
-> -	dma =3D &dev->dma_request[SNDRV_PCM_STREAM_PLAYBACK];
-> -	*dma =3D res->start;
-> -	dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK].filter_data =3D dma;
-> +
-> +	dma_data =3D &dev->dma_data[SNDRV_PCM_STREAM_CAPTURE];
-> +	dma_data->addr =3D (dma_addr_t)(mem->start + DAVINCI_MCBSP_DRR_REG);
->  =
+So, in brief:
+- the simple-card with only "sound-dai" works fine with or without a
+  graph of ports,
+- for a full use of the graph of ports, forget about the simple-card.
 
->  	res =3D platform_get_resource(pdev, IORESOURCE_DMA, 1);
-> -	if (!res) {
-> -		dev_err(&pdev->dev, "no DMA resource\n");
-> -		ret =3D -ENXIO;
-> -		goto err_release_clk;
-> +	if (res) {
-> +		dma =3D &dev->dma_request[SNDRV_PCM_STREAM_CAPTURE];
-> +		*dma =3D res->start;
-> +		dma_data->filter_data =3D dma;
-> +	} else if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node) {
-> +		dma_data->filter_data =3D "rx";
-> +	} else {
-> +		dev_err(&pdev->dev, "Missing DMA rx resource\n");
-> +		return -ENODEV;
->  	}
-> -	dma =3D &dev->dma_request[SNDRV_PCM_STREAM_CAPTURE];
-> -	*dma =3D res->start;
-> -	dev->dma_data[SNDRV_PCM_STREAM_CAPTURE].filter_data =3D dma;
-> +
-> +	dev->clk =3D clk_get(&pdev->dev, NULL);
-> +	if (IS_ERR(dev->clk))
-> +		return -ENODEV;
-> +	clk_enable(dev->clk);
->  =
-
->  	dev->dev =3D &pdev->dev;
->  	dev_set_drvdata(&pdev->dev, dev);
-> @@ -737,11 +794,18 @@ static int davinci_i2s_remove(struct platform_devic=
-e *pdev)
->  	return 0;
->  }
->  =
-
-> +static const struct of_device_id davinci_i2s_match[] =3D {
-> +	{ .compatible =3D "ti,da850-mcbsp" },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, davinci_i2s_match);
-> +
->  static struct platform_driver davinci_mcbsp_driver =3D {
->  	.probe		=3D davinci_i2s_probe,
->  	.remove		=3D davinci_i2s_remove,
->  	.driver		=3D {
->  		.name	=3D "davinci-mcbsp",
-> +		.of_match_table =3D of_match_ptr(davinci_i2s_match),
->  	},
->  };
-
-The rest looks good to me.
-
--- =
-
-P=E9ter
+--=20
+Ken ar c'henta=F1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
