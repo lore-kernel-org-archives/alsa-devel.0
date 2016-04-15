@@ -1,84 +1,70 @@
-From: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v2 1/6] ASoC: davinci-mcbsp: add binding for McBSP
-Date: Fri, 15 Apr 2016 10:48:15 +0200
-Message-ID: <5710AACF.9070402@barix.com>
+From: Sekhar Nori <nsekhar@ti.com>
+Subject: Re: [PATCH v2 1/6] ASoC: davinci-mcbsp: add binding
+	for McBSP
+Date: Fri, 15 Apr 2016 14:28:40 +0530
+Message-ID: <5710AD40.8000209@ti.com>
 References: <1460375117-4311-1-git-send-email-petr@barix.com>
  <1460375117-4311-2-git-send-email-petr@barix.com>
- <20160413143014.GA12136@rob-hp-laptop>
+ <20160413143014.GA12136@rob-hp-laptop> <5710AACF.9070402@barix.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20160413143014.GA12136@rob-hp-laptop>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: nsekhar-l0cyMroinI0@public.gmane.org, khilman-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A2B7261AAF
+ for <alsa-devel@alsa-project.org>; Fri, 15 Apr 2016 10:58:46 +0200 (CEST)
+In-Reply-To: <5710AACF.9070402@barix.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Petr Kulhavy <petr@barix.com>, Rob Herring <robh@kernel.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, pawel.moll@arm.com, khilman@kernel.org, ijc+devicetree@hellion.org.uk, lgirdwood@gmail.com, broonie@kernel.org, galak@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
+On Friday 15 April 2016 02:18 PM, Petr Kulhavy wrote:
 
-On 13.04.2016 16:30, Rob Herring wrote:
-> On Mon, Apr 11, 2016 at 01:45:12PM +0200, Petr Kulhavy wrote:
->> Add devicetree binding for the TI DA8xx/OMAP-L1x/AM17xx/AM18xx
->> MultiChannel Buffered Serial Port (McBSP)
->>
->> The optional register range "dat" is not implemented at the moment.
->> The current driver supports only DMA into RX/TX registers but no FIFO.
->> Once the FIFO is implemented in the driver the "dat" range will be used.
->>
->> Signed-off-by: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
->> ---
->> v1: initial
->> v2: add missing TC channel in dmas properties (for compatibility with the new EDMA3 binding)
->>      remove "-audio" postfix from the compatible string
->>      remove "channel-combine" property
->>
->>   .../devicetree/bindings/sound/davinci-mcbsp.txt    | 51 ++++++++++++++++++++++
->>   1 file changed, 51 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
->>
->> diff --git a/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt b/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
->> new file mode 100644
->> index 000000000000..de45865c3863
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
->> @@ -0,0 +1,51 @@
->> +Texas Instruments DaVinci McBSP module
->> +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> +
->> +This binding describes the "Multi-channel Buffered Serial Port" (McBSP)
->> +audio interface found in some TI DaVinci processors like the OMAP-L138 or AM180x.
->> +
->> +
->> +Required properties:
->> +~~~~~~~~~~~~~~~~~~~~
->> +- compatible : "ti,da850-mcbsp"
-> You list several SoCs above, but only one compatible string here. A
-> specific compatible string per SoC please.
->
-Hi Rob,
+> On 13.04.2016 16:30, Rob Herring wrote:
 
-thank you for your feedback. I can test only on the AM1808 platform, 
-however as far as I understand the OMAP L138 and AM1808 use the same 
-McBSP hardware. The TI guys can give more insight here... Isn't it then 
-redundant to define more compatible strings? Sorry for my ignorance, I 
-just don't know the policy of defining the compatible strings.
+>> On Mon, Apr 11, 2016 at 01:45:12PM +0200, Petr Kulhavy wrote:
 
->> +
->> +- reg : physical base address and length of the controller memory mapped
->> +        region(s).
->> +- reg-names : Should contain:
->> +        * "mpu" for the main registers (required). For compatibility with
->> +          existing software, it is recommended this is the first entry.
-> s/recommended/required/
-Recommended is correct, but I think it make sense to drop the sentence.
-If the reg-names are provided then the probe() finds the resource 
-regardless of the index.
-If not provided it expects it at index 0.
-But since we declare that the reg-names is mandatory this sentence is 
-just confusing and should be removed.
+>>> a/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
+>>> b/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
+>>> new file mode 100644
+>>> index 000000000000..de45865c3863
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
+>>> @@ -0,0 +1,51 @@
+>>> +Texas Instruments DaVinci McBSP module
+>>> +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>> +
+>>> +This binding describes the "Multi-channel Buffered Serial Port" (McBSP)
+>>> +audio interface found in some TI DaVinci processors like the
+>>> OMAP-L138 or AM180x.
+>>> +
+>>> +
+>>> +Required properties:
+>>> +~~~~~~~~~~~~~~~~~~~~
+>>> +- compatible : "ti,da850-mcbsp"
+>> You list several SoCs above, but only one compatible string here. A
+>> specific compatible string per SoC please.
+>>
+> Hi Rob,
+> 
+> thank you for your feedback. I can test only on the AM1808 platform,
+> however as far as I understand the OMAP L138 and AM1808 use the same
+> McBSP hardware. The TI guys can give more insight here... Isn't it then
+> redundant to define more compatible strings? Sorry for my ignorance, I
+> just don't know the policy of defining the compatible strings.
 
-Petr
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+DA850, OMAP-L138 and AM18x are pin-for-pin compatible devices meant for
+different markets/applications. IP-wise, silicon-integration-wise or
+pin-wise, there is no difference in way McASP behaves between the parts.
+
+Thanks,
+Sekhar
