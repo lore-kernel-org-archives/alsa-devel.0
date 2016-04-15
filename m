@@ -1,192 +1,57 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [alsa-devel] [PATCH 0/4] ASoC: add graph base connection on
- simple-card
-Date: Fri, 15 Apr 2016 13:31:58 +0200
-Message-ID: <20160415133158.9c5c0dc7367325606c53ce17@free.fr>
-References: <871t68wxxe.wl%kuninori.morimoto.gx@renesas.com>
-	<20160414110128.56a0da97d526cdcb8d5f1ddf@free.fr>
-	<87h9f3jq3m.wl%kuninori.morimoto.gx@renesas.com>
-	<87fuunjkio.wl%kuninori.morimoto.gx@renesas.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] ASoC: wm5102: Free compressed IRQ in CODEC
+	remove
+Date: Fri, 15 Apr 2016 13:11:57 +0100
+Message-ID: <1460722317-31486-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1460722317-31486-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87fuunjkio.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>, Laurent <laurent.pinchart@ideasonboard.com>, Lars-Peter Clausen <lars@metafoo.de>, Jose Abreu <Jose.Abreu@synopsys.com>, Linux-DT <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Simon <horms@verge.net.au>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 31D5F264F3A
+ for <alsa-devel@alsa-project.org>; Fri, 15 Apr 2016 14:11:51 +0200 (CEST)
+In-Reply-To: <1460722317-31486-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 15 Apr 2016 09:26:03 +0000
-Kuninori Morimoto <kuninori.morimoto.gx@renesas.com> wrote:
+We request one of the DSP IRQs during CODEC probe, as such we should
+free it during CODEC remove, this patch does so.
 
-> > > According to Documentation/devicetree/bindings/graph.txt section
-> > > "Links between endpoints", the endpoint/remote-endpoint links are
-> > > bi-directional and describe the physical links: the audio port of=
- the
-> > > codec is connected to the audio controller and reverse.
-> > > There is no reverse link from the codec to the 'simple-card'.
-> > (snip)
-> > > The codec associated to the HDMI transmitter declares 2 DAIs.
-> > > It may choose to define the DAI numbers either in a fixed order
-> > > (say 0 is always S/PDIF and 1 is always I2S), or dynamically, fol=
-lowing
-> > > the declaration of the ports (in the example, 0 is I2S and 1 is S=
-/PDIF).
-> >=20
-> > My assumption was video/audio are using same port, but indeed
-> > we need to care about more.
-> >=20
-> > But, if we need to describe both "video port" and "audio port" sepa=
-rately
-> > in graph, simple-card side doesn't need graph style IMO.
-> > Because normal phandle style (=3D non graph style) is working alrea=
-dy.
-> >=20
-> > I thought that describing both "video" and "audio" is too much.
-> > -> assume that video/audio can share same port
-> >  -> this patch
-> >   -> but thoughtless :P
-> >=20
-> > I'm not sure, but do you think snd_soc_get_dai_name()::of_xlate_dai=
-_name
-> > can works for us ?
-> >=20
-> > My concern is if audio side need to care/support "formal" graph sty=
-le,
-> > I think all cpu/codec/card driver (and soc-core too ?) need to be u=
-pdated,
-> > but it is too much for me.
-> > if fake graph style (like this patch) is OK, I'm happy to hack it m=
-ore.
->=20
-> This "fake graph style" means it is supporting both graph's "remote-e=
-ndpoint"
-> and current simple-card's "sound-dai" (=3D not 100% graph style).
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm5102.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Hi Kuninori,
-
-Maybe I was not clear. Here is more information.
-
-The simple-card must know the codec (DAI) device node and the DAI name
-(found from the DAI number thanks to snd_soc_get_dai_name
-()::of_xlate_dai_name()).
-
-The actual definition "sound-dai" works directly in any case, with or
-without a graph of ports. Indeed, the DAI of the codec must be known
-(option fixed/dynamic number).
-
-A graph of ports describes the links between the hardware components.
-=46ox example, in the (Dove) Cubox, the HDMI transmitter receives video
-(one port) from the video controller and audio (2 ports) from the audio
-controller. The graph is:
-
-video <-----------------------\
-                              v
-       | i2s <------> CODEC =3D HDMI transmitter
-audio <               ^
-       | s/pdif <-----/
-                       \---> S/PDIF connector
-
-In the DT, the HDMI is described by:
-
-	hdmi: hdmi-encoder {
-		...
-		port@0 {
-			port-type =3D "video";
-			port-value =3D <0x230145>;
-			hdmi_0: endpoint {
-				remote-endpoint =3D <&lcd0_0>;
-			};
-		};
-		port@1 {			/* AP1 =3D I2S */
-			port-type =3D "audio-i2s";
-			port-value =3D <0x03>;
-			tda998x_i2s: endpoint {
-				remote-endpoint =3D <&audio1_i2s>;
-			};
-		};
-		port@2 {			 /* AP2 =3D S/PDIF */
-			port-type =3D "audio-spdif";
-			port-value =3D <0x04>;
-			tda998x_spdif: endpoint {
-				remote-endpoint =3D <&audio1_spdif1>;
-			};
-		};
-	};
-
-As you may see, there is no port link to any audio card definition as
-the 'simple-card'.
-
-When using the simple-card, my definition was:
-	sound {
-		compatible =3D "simple-audio-card";
-		simple-audio-card,name =3D "Cubox Audio";
-
-		simple-audio-card,dai-link@0 {	/* S/PDIF -> HDMI & S/PDIF */
-			format =3D "i2s";
-			cpu {
-				sound-dai =3D <&audio1 1>;
-			};
-			codec {
-				sound-dai =3D <&hdmi 0>, <&spdif_codec>;
-			};
-		};
-
-		simple-audio-card,dai-link@1 {	/* I2S -> HDMI */
-			format =3D "i2s";
-			cpu {
-				sound-dai =3D <&audio1 0>;
-			};
-			codec {
-				sound-dai =3D <&hdmi 1>;
-			};
-		};
-	};
-
-This worked fine, but I found that the simple-card was redondant with
-the graph of ports, so, now, in my system, the card creation is done
-only from the graph of ports (without any more information in the DT -
-this system was proposed in january 2015
-http://mailman.alsa-project.org/pipermail/alsa-devel/2015-January/08683=
-7.html
-but rejected).
-
-At startup time, the audio driver scans its ports in the graph.
-This permits for it to create its own DAIs.
-Then, it looks at the remote-ports. These ones define the DAI links:
-the CPU side is a local DAI, and the CODEC side is the parent of the
-remote port plus a DAI number.
-The problem is that the DAI number is not in the DT. It must be
-computed. This is simply done scanning the ports of the codec (remote)
-node and skipping the non-audio ports (indeed, this works because the
-hdmi codec uses a dynamic port numbering scheme).
-
-=46or information here is the DT of the audio controller:
-
-audio1: audio-controller@b4000 {
-	audio-card,format =3D "i2s";
-	port@0 {
-		port-type =3D "spdif";
-		audio1_spdif0: endpoint@0 {
-			remote-endpoint =3D <&spdif_out>;
-		};
-		audio1_spdif1: endpoint@1 {
-			remote-endpoint =3D <&tda998x_spdif>;
-		};
-	};
-	port@1 {
-		port-type =3D "i2s";
-		audio1_i2s: endpoint {
-			remote-endpoint =3D <&tda998x_i2s>;
-		};
-	};
-
-So, in brief:
-- the simple-card with only "sound-dai" works fine with or without a
-  graph of ports,
-- for a full use of the graph of ports, forget about the simple-card.
-
---=20
-Ken ar c'henta=F1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index 59fd3e8..1bae17e 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -1955,11 +1955,14 @@ err_adsp2_codec_probe:
+ static int wm5102_codec_remove(struct snd_soc_codec *codec)
+ {
+ 	struct wm5102_priv *priv = snd_soc_codec_get_drvdata(codec);
++	struct arizona *arizona = priv->core.arizona;
+ 
+ 	wm_adsp2_codec_remove(&priv->core.adsp[0], codec);
+ 
+ 	priv->core.arizona->dapm = NULL;
+ 
++	arizona_free_irq(arizona, ARIZONA_IRQ_DSP_IRQ1, priv);
++
+ 	arizona_free_spk(codec);
+ 
+ 	return 0;
+-- 
+2.1.4
