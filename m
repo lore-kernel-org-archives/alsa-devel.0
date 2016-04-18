@@ -1,7 +1,7 @@
 From: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH v3 4/7] ARM: davinci: da8xx-dt: add OF_DEV_AUXDATA entries for mcbsp0 and mcbsp1
-Date: Mon, 18 Apr 2016 14:32:43 +0200
-Message-ID: <1460982766-18632-5-git-send-email-petr@barix.com>
+Subject: [PATCH v3 5/7] ARM: DTS: da850: Fix wrong number of interrupts
+Date: Mon, 18 Apr 2016 14:32:44 +0200
+Message-ID: <1460982766-18632-6-git-send-email-petr@barix.com>
 References: <1460982766-18632-1-git-send-email-petr@barix.com>
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 In-Reply-To: <1460982766-18632-1-git-send-email-petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
@@ -10,35 +10,31 @@ To: nsekhar-l0cyMroinI0@public.gmane.org, khilman-DgEjT+Ai2ygdnm+yROfE0A@public.
 Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add OF_DEV_AUXDATA for mcbsp to be able to use clocks.
+The DA850 supports interrupts 0 to 100. The number of interrupts
+property "ti,intc-size" was wrongly set to 100. Corrected to 101.
 
 Signed-off-by: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
 ---
 v1: initial
-v2: remove "-audio" postfix from the compatible string
+v2: no change
 v3: no change
 
- arch/arm/mach-davinci/da8xx-dt.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/da850.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/mach-davinci/da8xx-dt.c b/arch/arm/mach-davinci/da8xx-dt.c
-index c4b5808ca7c1..d2f5bfbba629 100644
---- a/arch/arm/mach-davinci/da8xx-dt.c
-+++ b/arch/arm/mach-davinci/da8xx-dt.c
-@@ -45,8 +45,11 @@ static struct of_dev_auxdata da850_auxdata_lookup[] __initdata = {
- 	OF_DEV_AUXDATA("ns16550a", 0x01d0d000, "serial8250.2", NULL),
- 	OF_DEV_AUXDATA("ti,davinci_mdio", 0x01e24000, "davinci_mdio.0", NULL),
- 	OF_DEV_AUXDATA("ti,davinci-dm6467-emac", 0x01e20000, "davinci_emac.1",
--		       NULL),
--	OF_DEV_AUXDATA("ti,da830-mcasp-audio", 0x01d00000, "davinci-mcasp.0", NULL),
-+			NULL),
-+	OF_DEV_AUXDATA("ti,da830-mcasp-audio", 0x01d00000, "davinci-mcasp.0",
-+			NULL),
-+	OF_DEV_AUXDATA("ti,da850-mcbsp", 0x01d10000, "davinci-mcbsp.0", NULL),
-+	OF_DEV_AUXDATA("ti,da850-mcbsp", 0x01d11000, "davinci-mcbsp.1", NULL),
- 	{}
- };
- 
+diff --git a/arch/arm/boot/dts/da850.dtsi b/arch/arm/boot/dts/da850.dtsi
+index 226cda76e77c..5996e765e59c 100644
+--- a/arch/arm/boot/dts/da850.dtsi
++++ b/arch/arm/boot/dts/da850.dtsi
+@@ -19,7 +19,7 @@
+ 			compatible = "ti,cp-intc";
+ 			interrupt-controller;
+ 			#interrupt-cells = <1>;
+-			ti,intc-size = <100>;
++			ti,intc-size = <101>;
+ 			reg = <0xfffee000 0x2000>;
+ 		};
+ 	};
 -- 
 1.9.1
 
