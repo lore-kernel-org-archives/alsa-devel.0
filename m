@@ -1,147 +1,137 @@
-From: "Tan, Seng Kai" <seng.kai.tan@intel.com>
-Subject: Question about Conversion to S24_LE from S24_3LE
-Date: Mon, 18 Apr 2016 09:24:52 +0000
-Message-ID: <61B6C8BF61481342973655BC8AB0FF355AE2F4@PGSMSX101.gar.corp.intel.com>
+From: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v2 2/6] ASoC: Davinci: McBSP: add device tree
+ support for McBSP
+Date: Mon, 18 Apr 2016 11:27:00 +0200
+Message-ID: <5714A864.5050505@barix.com>
+References: <1460375117-4311-1-git-send-email-petr@barix.com>
+ <1460375117-4311-3-git-send-email-petr@barix.com> <5710B516.2000006@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 26F2F265019
- for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 11:24:56 +0200 (CEST)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <5710B516.2000006-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>, nsekhar-l0cyMroinI0@public.gmane.org, khilman-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: mark.rutland-5wv7dgnIgG8@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
-Hi Takashi,
 
-I am facing similar problem like this issue, hope to get your advice.
-http://mailman.alsa-project.org/pipermail/alsa-devel/2012-August/054241.html
+On 15.04.2016 11:32, Peter Ujfalusi wrote:
+> On 04/11/16 14:45, Petr Kulhavy wrote:
+>> This adds DT support for the TI DA8xx/OMAP-L1x/AM17xx/AM18xx McBSP driver.
+>>
+>> Signed-off-by: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+>> ---
+>> v1: initial
+>> v2: remove "-audio" postfix from the compatible string
+>>      of_match_table renamed consistently with the rest of the file (davinci_i2s_match)
+>>      "channel-combine" property removed
+>>      devicetree DMA configuration in probe simplified
+>>
+>>   sound/soc/davinci/Kconfig       |   6 ++-
+>>   sound/soc/davinci/davinci-i2s.c | 116 +++++++++++++++++++++++++++++++---------
+>>   2 files changed, 95 insertions(+), 27 deletions(-)
+>>
+>> diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
+>> index 50ca291cc225..6b732d8e5896 100644
+>> --- a/sound/soc/davinci/Kconfig
+>> +++ b/sound/soc/davinci/Kconfig
+>> @@ -16,7 +16,11 @@ config SND_EDMA_SOC
+>>   	  - DRA7xx family
+>>   
+>>   config SND_DAVINCI_SOC_I2S
+>> -	tristate
+>> +	tristate "DaVinci Multichannel Buffered Serial Port (McBSP) support"
+>> +	depends on SND_EDMA_SOC
+>> +	help
+>> +	  Say Y or M here if you want to have support for McBSP IP found in
+>> +	  Texas Instruments DaVinci DA850 SoCs.
+>>   
+>>   config SND_DAVINCI_SOC_MCASP
+>>   	tristate "Multichannel Audio Serial Port (McASP) support"
+>> diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
+>> index ec98548a5fc9..a3f82d1a73dc 100644
+>> --- a/sound/soc/davinci/davinci-i2s.c
+>> +++ b/sound/soc/davinci/davinci-i2s.c
+>> @@ -4,9 +4,15 @@
+>>    * Author:      Vladimir Barinov, <vbarinov-L1vi/lXTdtvkgf6YlCu6wwC/G2K4zDHf@public.gmane.org>
+>>    * Copyright:   (C) 2007 MontaVista Software, Inc., <source-Igf4POYTYCDQT0dZR+AlfA@public.gmane.org>
+>>    *
+>> + * DT support	(c) 2016 Petr Kulhavy, Barix AG <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+>> + *		based on davinci-mcasp.c DT support
+>> + *
+>>    * This program is free software; you can redistribute it and/or modify
+>>    * it under the terms of the GNU General Public License version 2 as
+>>    * published by the Free Software Foundation.
+>> + *
+>> + * TODO:
+>> + * on DA850 implement HW FIFOs instead of DMA into DXR and DRR registers
+>>    */
+>>   
+>>   #include <linux/init.h>
+>> @@ -648,15 +654,62 @@ static const struct snd_soc_component_driver davinci_i2s_component = {
+>>   	.name		= "davinci-i2s",
+>>   };
+>>   
+>> +static struct snd_platform_data*
+>> +davinci_i2s_set_pdata_from_of(struct platform_device *pdev)
+> It is a bit misleading function name, would be better to name it as
+> davinci_i2s_get_pdata()
+>
+> as it will fetch the legacy pdata or craft one when booting with DT.
+Thanks, I will change the name.
+> +
+> +	/* parse properties here */
+> +
+> +	/*
+> +	 * pdata->clk_input_pin is deliberately not exported to DT
+> +	 * and the default value of the clk_input_pin is MCBSP_CLKR.
+> +	 * The value MCBSP_CLKS makes no sense as it turns the CPU
+> +	 * to a bit clock master in the SND_SOC_DAIFMT_CBM_CFS mode
+> +	 * where it should be bit clock slave!
+> +	 */
+> +
+> +	return pdata;
+> +}
+> +
+>   static int davinci_i2s_probe(struct platform_device *pdev)
+>   {
+> +	struct snd_dmaengine_dai_dma_data *dma_data;
+> +	struct snd_platform_data *pdata;
+>   	struct davinci_mcbsp_dev *dev;
+>   	struct resource *mem, *res;
+>   	void __iomem *io_base;
+>   	int *dma;
+>   	int ret;
+>   
+> -	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	pdata = davinci_i2s_set_pdata_from_of(pdev);
+> +	if (IS_ERR(pdata)) {
+> +		dev_err(&pdev->dev, "Error populating platform data, err %ld\n",
+> +			PTR_ERR(pdata));
+> +		return PTR_ERR(pdata);
+> +	}
+> The current driver does not use the pdata as far as I can see. Kind of
+> strange. So now in DT boot you will allocate memory for the pdata, which is
+> not used by the driver at all.
+> I think we should implement the pdata handling in the driver first for the
+> legacy mode, then probably having pdata allocated for DT case might make sense.
+Indeed the current driver does not use pdata. Neither the legacy board 
+drivers in arch/mach-davinci do.
+Well, except for the dm365_evm which sets the asp_chan_q which is later 
+not used:
 
-I try to turn on S24_LE support for HDMI Audio using below patch. When I ap=
-lay S24_LE file it works fine.
-The problem happen when I aplay S24_3LE file, I get and extremely low volum=
-e.
-
-When I aplay S24_LE file, I get an left justified value in I2S, this is an =
-expected result:
-Front end S24_LE=A0 :=A0 0x12345600(in 4bytes, LSB 0 padding)
-Back end=A0 S24_3LE :=A0 0x12345600(in 4bytes, LSB 0 padding)
-
-When I aplay S24_3LE file, I get an extremely low output volume. =
-
-Front end S24_3LE=A0 :=A0 0x123456(in 3bytes, No padding)
-Back end=A0 S24_LE :=A0 0x00123456(in 4bytes, MSB 0 padding)
-
-Can you advice how to tell the alsa plugin to pad in LSB instead of MSB?
-
-Below are the patch I used to turn on S24_LE for HDA .
-
-Regards,
-Seng Kai
+static struct snd_platform_data dm365_evm_snd_data __maybe_unused = {
+         .asp_chan_q = EVENTQ_3,
+};
 
 
+If the pdata is not used at all I would completely drop it.
+Or what do you think the pdata should carry?
 
-
->From 33f182fe1f6d1e49d0618559d1212b619ec902ce Mon Sep 17 00:00:00 2001
-From: "SengKai,Tan" <seng.kai.tan@intel.com>
-Date: Fri, 8 Apr 2016 17:34:51 +0800
-Subject: [PATCH] ALSA: hda: S24_LE format support for HDA Audio
-
-This patch is to add S24_LE support for  HDMI audio
-and HDA codec.
-
-Before this patch, HDMI and HDA codec audio only
-supported S16_LE and S32_LE. Let's say if user would
-like to play S24_LE file, it has to use plugin to
-convert to either S16_LE or S32_LE which will
-increase in processing and less efficient in utilize
-the resources.
-
-On the other side, let's say connected HDMI monitor
-support S16_LE and S24_LE. Before this patch is applied
-audio has to be converted to S16_LE. That will reduce
-the audio quality.
-
-Signed-off-by: Tan, Seng Kai <seng.kai.tan@intel.com>
----
- sound/pci/hda/hda_codec.c  | 6 ++++--
- sound/pci/hda/hda_eld.c    | 6 ++++--
- sound/pci/hda/patch_hdmi.c | 3 ++-
- 3 files changed, 10 insertions(+), 5 deletions(-)
-
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 57197be..9e737bb 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -3501,14 +3501,16 @@ int snd_hda_query_supported_pcm(struct hda_codec *c=
-odec, hda_nid_t nid,
- 				if (val & AC_SUPPCM_BITS_32)
- 					formats |=3D SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE;
- 				if (val & (AC_SUPPCM_BITS_20|AC_SUPPCM_BITS_24))
--					formats |=3D SNDRV_PCM_FMTBIT_S32_LE;
-+					formats |=3D SNDRV_PCM_FMTBIT_S24_LE |
-+						SNDRV_PCM_FMTBIT_S32_LE;
- 				if (val & AC_SUPPCM_BITS_24)
- 					bps =3D 24;
- 				else if (val & AC_SUPPCM_BITS_20)
- 					bps =3D 20;
- 			} else if (val & (AC_SUPPCM_BITS_20|AC_SUPPCM_BITS_24|
- 					  AC_SUPPCM_BITS_32)) {
--				formats |=3D SNDRV_PCM_FMTBIT_S32_LE;
-+				formats |=3D SNDRV_PCM_FMTBIT_S24_LE |
-+					SNDRV_PCM_FMTBIT_S32_LE;
- 				if (val & AC_SUPPCM_BITS_32)
- 					bps =3D 32;
- 				else if (val & AC_SUPPCM_BITS_24)
-diff --git a/sound/pci/hda/hda_eld.c b/sound/pci/hda/hda_eld.c
-index 0e6d753..65bfe10 100644
---- a/sound/pci/hda/hda_eld.c
-+++ b/sound/pci/hda/hda_eld.c
-@@ -613,12 +613,14 @@ void snd_hdmi_eld_update_pcm_info(struct parsed_hdmi_=
-eld *e,
- 			channels_max =3D a->channels;
- 		if (a->format =3D=3D AUDIO_CODING_TYPE_LPCM) {
- 			if (a->sample_bits & AC_SUPPCM_BITS_20) {
--				formats |=3D SNDRV_PCM_FMTBIT_S32_LE;
-+				formats |=3D SNDRV_PCM_FMTBIT_S24_LE |
-+					SNDRV_PCM_FMTBIT_S32_LE;
- 				if (maxbps < 20)
- 					maxbps =3D 20;
- 			}
- 			if (a->sample_bits & AC_SUPPCM_BITS_24) {
--				formats |=3D SNDRV_PCM_FMTBIT_S32_LE;
-+				formats |=3D SNDRV_PCM_FMTBIT_S24_LE |
-+					SNDRV_PCM_FMTBIT_S32_LE;
- 				if (maxbps < 24)
- 					maxbps =3D 24;
- 			}
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index d02eccd..8cbde13 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2489,7 +2489,8 @@ static const struct hda_verb nvhdmi_basic_init_7x_8ch=
-[] =3D {
- 	 SNDRV_PCM_RATE_192000)
- #define SUPPORTED_MAXBPS	24
- #define SUPPORTED_FORMATS \
--	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE)
-+	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |\
-+	SNDRV_PCM_FMTBIT_S32_LE)
- #endif
- =
-
- static int nvhdmi_7x_init_2ch(struct hda_codec *codec)
--- =
-
-1.9.1
+Petr
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
