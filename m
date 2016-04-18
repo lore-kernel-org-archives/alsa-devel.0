@@ -1,18 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH v2 2/2] amidi: fix timeout handling
-Date: Sun, 17 Apr 2016 15:21:43 +0200
-Message-ID: <57138DE7.9040206@ladisch.de>
-References: <570AA980.3070802@ladisch.de>
- <alpine.DEB.2.02.1604110858100.9999@lnxricardw1.se.axis.com>
- <57138DC5.9050200@ladisch.de>
+From: libin.yang@linux.intel.com
+Subject: [PATCH] ALSA - hda: hdmi check NULL pointer in
+	hdmi_set_chmap
+Date: Mon, 18 Apr 2016 09:16:28 +0800
+Message-ID: <1460942188-31274-1-git-send-email-libin.yang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id E5DB2264F23
- for <alsa-devel@alsa-project.org>; Sun, 17 Apr 2016 15:22:14 +0200 (CEST)
-In-Reply-To: <57138DC5.9050200@ladisch.de>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 73021261737
+ for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 03:18:11 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,172 +19,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Ricard Wanderlof <ricard.wanderlof@axis.com>, Martin Tarenskeen <m.tarenskeen@zonnet.nl>
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: libin.yang@intel.com, mengdong.lin@intel.com, Libin Yang <libin.yang@linux.intel.com>, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The timeout is not supposed to expire when ignored messages are
-received.  This cannot be handled with the poll() timeout, so add
-a separate timer.
+From: Libin Yang <libin.yang@linux.intel.com>
 
-Reported-by: Martin Tarenskeen <m.tarenskeen@gmail.com>
-Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+Make sure per_pin is not NULL before using it.
+
+Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
 ---
- amidi/amidi.c |   69 ++++++++++++++++++++++++++++++++++++++++++++-------------
- 1 file changed, 53 insertions(+), 16 deletions(-)
+ sound/pci/hda/patch_hdmi.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-no changes from v1
-
-diff --git a/amidi/amidi.c b/amidi/amidi.c
-index 58ac814..290df48 100644
---- a/amidi/amidi.c
-+++ b/amidi/amidi.c
-@@ -25,9 +25,11 @@
- #include <stdarg.h>
- #include <string.h>
- #include <ctype.h>
-+#include <math.h>
- #include <getopt.h>
- #include <errno.h>
- #include <signal.h>
-+#include <sys/timerfd.h>
- #include <sys/types.h>
- #include <sys/poll.h>
- #include <sys/stat.h>
-@@ -37,6 +39,8 @@
- #include "aconfig.h"
- #include "version.h"
-
-+#define NSEC_PER_SEC 1000000000L
-+
- static int do_device_list, do_rawmidi_list;
- static char *port_name = "default";
- static char *send_file_name;
-@@ -46,7 +50,7 @@ static char *send_data;
- static int send_data_length;
- static int receive_file;
- static int dump;
--static int timeout;
-+static float timeout;
- static int stop;
- static snd_rawmidi_t *input, **inputp;
- static snd_rawmidi_t *output, **outputp;
-@@ -427,6 +431,7 @@ int main(int argc, char *argv[])
- 	int ignore_active_sensing = 1;
- 	int ignore_clock = 1;
- 	int do_send_hex = 0;
-+	struct itimerspec itimerspec = { .it_interval = { 0, 0 } };
-
- 	while ((c = getopt_long(argc, argv, short_options,
- 		     		long_options, NULL)) != -1) {
-@@ -461,7 +466,7 @@ int main(int argc, char *argv[])
- 			dump = 1;
- 			break;
- 		case 't':
--			timeout = atoi(optarg);
-+			timeout = atof(optarg);
- 			break;
- 		case 'a':
- 			ignore_active_sensing = 0;
-@@ -552,40 +557,64 @@ int main(int argc, char *argv[])
-
- 	if (inputp) {
- 		int read = 0;
--		int npfds, time = 0;
-+		int npfds;
- 		struct pollfd *pfds;
-
--		timeout *= 1000;
--		npfds = snd_rawmidi_poll_descriptors_count(input);
-+		npfds = 1 + snd_rawmidi_poll_descriptors_count(input);
- 		pfds = alloca(npfds * sizeof(struct pollfd));
--		snd_rawmidi_poll_descriptors(input, pfds, npfds);
-+
-+		if (timeout > 0) {
-+			pfds[0].fd = timerfd_create(CLOCK_MONOTONIC, 0);
-+			if (pfds[0].fd == -1) {
-+				error("cannot create timer: %s", strerror(errno));
-+				goto _exit;
-+			}
-+			pfds[0].events = POLLIN;
-+		} else {
-+			pfds[0].fd = -1;
-+		}
-+
-+		snd_rawmidi_poll_descriptors(input, &pfds[1], npfds - 1);
-+
- 		signal(SIGINT, sig_handler);
-+
-+		if (timeout > 0) {
-+			float timeout_int;
-+
-+			itimerspec.it_value.tv_nsec = modff(timeout, &timeout_int) * NSEC_PER_SEC;
-+			itimerspec.it_value.tv_sec = timeout_int;
-+			err = timerfd_settime(pfds[0].fd, 0, &itimerspec, NULL);
-+			if (err < 0) {
-+				error("cannot set timer: %s", strerror(errno));
-+				goto _exit;
-+			}
-+		}
- 		for (;;) {
- 			unsigned char buf[256];
- 			int i, length;
- 			unsigned short revents;
-
--			err = poll(pfds, npfds, 200);
-+			err = poll(pfds, npfds, -1);
- 			if (stop || (err < 0 && errno == EINTR))
- 				break;
- 			if (err < 0) {
- 				error("poll failed: %s", strerror(errno));
- 				break;
- 			}
--			if (err == 0) {
--				time += 200;
--				if (timeout && time >= timeout)
--					break;
--				continue;
--			}
--			if ((err = snd_rawmidi_poll_descriptors_revents(input, pfds, npfds, &revents)) < 0) {
-+
-+			err = snd_rawmidi_poll_descriptors_revents(input, &pfds[1], npfds - 1, &revents);
-+			if (err < 0) {
- 				error("cannot get poll events: %s", snd_strerror(errno));
- 				break;
- 			}
- 			if (revents & (POLLERR | POLLHUP))
- 				break;
--			if (!(revents & POLLIN))
-+			if (!(revents & POLLIN)) {
-+				if (pfds[0].revents & POLLIN)
-+					break;
- 				continue;
-+			}
-+
- 			err = snd_rawmidi_read(input, buf, sizeof(buf));
- 			if (err == -EAGAIN)
- 				continue;
-@@ -603,7 +632,7 @@ int main(int argc, char *argv[])
- 			if (length == 0)
- 				continue;
- 			read += length;
--			time = 0;
-+
- 			if (receive_file != -1)
- 				write(receive_file, buf, length);
- 			if (dump) {
-@@ -611,6 +640,14 @@ int main(int argc, char *argv[])
- 					print_byte(buf[i]);
- 				fflush(stdout);
- 			}
-+
-+			if (timeout > 0) {
-+				err = timerfd_settime(pfds[0].fd, 0, &itimerspec, NULL);
-+				if (err < 0) {
-+					error("cannot set timer: %s", strerror(errno));
-+					break;
-+				}
-+			}
- 		}
- 		if (isatty(fileno(stdout)))
- 			printf("\n%d bytes read\n", read);
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 4833c7b..c99289d 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1858,6 +1858,8 @@ static void hdmi_set_chmap(struct hdac_device *hdac, int pcm_idx,
+ 	struct hdmi_spec *spec = codec->spec;
+ 	struct hdmi_spec_per_pin *per_pin = pcm_idx_to_pin(spec, pcm_idx);
+ 
++	if (!per_pin)
++		return;
+ 	mutex_lock(&per_pin->lock);
+ 	per_pin->chmap_set = true;
+ 	memcpy(per_pin->chmap, chmap, ARRAY_SIZE(per_pin->chmap));
+-- 
+1.9.1
