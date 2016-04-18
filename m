@@ -1,39 +1,49 @@
-From: Peter Rosin <peda@axentia.se>
-Subject: Re: [PATCH] ASoC: docs: add clocking examples for DAI formats
-Date: Mon, 18 Apr 2016 12:55:23 +0000
-Message-ID: <AM4PR02MB12998486C09055D610F9077FBC6B0@AM4PR02MB1299.eurprd02.prod.outlook.com>
+From: PC Liao <pc.liao@mediatek.com>
+Subject: Re: [PATCH v3] ASoC: mediatek: Add second I2S on
+ mt8173-rt5650 machine driver
+Date: Mon, 18 Apr 2016 20:59:57 +0800
+Message-ID: <1460984397.4462.4.camel@mtksdaap41>
+References: <1460014517-20359-1-git-send-email-pc.liao@mediatek.com>
+ <1460979380.17045.2.camel@mtksdaap41> <20160418120352.GZ3217@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Language: sv-SE
-Sender: linux-doc-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4412326154C
+ for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 15:00:04 +0200 (CEST)
+In-Reply-To: <20160418120352.GZ3217@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Jonathan Corbet <corbet@lwn.net>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "peda@lysator.liu.se" <peda@lysator.liu.se>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, srv_heupstream <srv_heupstream@mediatek.com>, "tiwai@suse.de" <tiwai@suse.de>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Koro Chen =?UTF-8?Q?=28=E9=99=B3=E6=80=9D=E7=BF=B0=29?= <koro.chen@mediatek.com>, "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> On Mon, Apr 18, 2016 at 11:39:50AM +0200, Peter Rosin wrote:
-> 
-> > +I2S
-> > + .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-.
-> > +-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-
-> 
-> There is an actual spec for I2S which is going to be clearer than ASCII
-> art:
-> 
->    https://www.sparkfun.com/datasheets/BreakoutBoards/I2SBUS.pdf
-> 
-> is the first hit on google (there's a bunch of electrical stuff in there
-> that gets roundly ignord these days but the clocking stuff is in there).
+Hi Mark,
 
-Yes, but where are the equivalent docs for the other formats?
+On Mon, 2016-04-18 at 20:03 +0800, Mark Brown wrote:
+> On Mon, Apr 18, 2016 at 07:36:20PM +0800, PC Liao wrote:
+> 
+> > Could you please give some comments or suggestions?
+> 
+> I don't have these patches.  If you're getting review comments from
+> other people please address them, it's quite possible I saw them and
+> agreed with them.
+> 
+> Please don't send content free pings and please allow a reasonable time
+> for review.  People get busy, go on holiday, attend conferences and so 
+> on so unless there is some reason for urgency (like critical bug fixes)
+> please allow at least a couple of weeks for review.  Sending content
+> free pings just adds to the mail volume (if they are seen at all) and if 
+> something has gone wrong you'll have to resend the patches anyway.
 
-> In general I'd rather have some words rather than just pictures, ASCII
-> art as the only thing is pretty hard to read.
-
-I'll post a v2 with some words about each format. Or will you reject
-anything with ASCII art?
-
-Cheers,
-Peter
+I am so sorry about that..........
+I have sent v4.
+Thanks for your review and help.
