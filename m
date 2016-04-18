@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: tlv320aic32x4: Add SPI support
-Date: Mon, 18 Apr 2016 16:14:58 +0100
-Message-ID: <20160418151458.GF3217@sirena.org.uk>
-References: <1460745059-5737-1-git-send-email-nh6z@nh6z.net>
- <20160418103554.GR3217@sirena.org.uk>
- <35635C45-EDA1-43C3-86DF-9C6DBEA27846@nh6z.net>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: mcasp: stream has more channels (2) than are
+ enabled in mcasp (0)
+Date: Mon, 18 Apr 2016 18:36:05 +0300
+Message-ID: <5714FEE5.5070002@ti.com>
+References: <14D46C39-5FDF-40DD-A16B-2DA7BDE930CB@latencyzero.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0222445547553358963=="
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4743626154C
- for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 17:15:08 +0200 (CEST)
-In-Reply-To: <35635C45-EDA1-43C3-86DF-9C6DBEA27846@nh6z.net>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id C23F8260867
+ for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 17:36:37 +0200 (CEST)
+In-Reply-To: <14D46C39-5FDF-40DD-A16B-2DA7BDE930CB@latencyzero.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,61 +21,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeremy McDermond <nh6z@nh6z.net>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: Rick Mann <rmann@latencyzero.com>, Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 04/04/2016 11:59 AM, Rick Mann wrote:
+> I've got a Beaglebone Green with a custom cape (CODEC and amp and some
+> other stuff).
+> =
 
---===============0222445547553358963==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="aPOcx+xoD6gZZHnz"
-Content-Disposition: inline
+> Kernel 4.4.6-bone-rt-r6. When I load the overlay that should set up my
+> CODEC in the device tree, I get the following in the log.
+> =
 
+> [  367.172337] davinci-mcasp 48038000.mcasp: stream has more channels (2)
+> than are enabled in mcasp (0) [  367.172374] davinci-mcasp 48038000.mcasp:
+> ASoC: can't set 48038000.mcasp hw params: -22
+> =
 
---aPOcx+xoD6gZZHnz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> You can see a little more log context, along with the DTS, here:
+> =
 
-On Mon, Apr 18, 2016 at 07:45:35AM -0700, Jeremy McDermond wrote:
+> http://pastebin.com/UPB1xjPF
+> =
 
-Please fix your mail client to word wrap within paragraphs at something
-substantially less than 80 columns.  Doing this makes your messages much
-easier to read and reply to.
+> Can anyone tell me what this means? Thanks!
 
-> > On Apr 18, 2016, at 3:35 AM, Mark Brown <broonie@kernel.org> wrote:
+The fragment mostly looks OK, but am335x have 4 serializers, not 16 and the
+num-serializer is deprecated at least in upstream kernel.
 
-> > Instead of putting everything in one file please split the driver so it
-> > has separate core and I2C modules and then add a SPI module like we do
-> > for newer drivers.
+Something goes wrong when the McASP is loaded for sure, some parameters did
+not got updated via DT perhaps, or most likely the DT fragment is loaded af=
+ter
+the McASP is loaded.
+Can you print out:
+slots, max_active_serializers, active_serializers and channels in
+mcasp_common_hw_param() function?
+Also just in case, can you put a dev_err() print in davinci_mcasp_probe() to
+see when the driver is loaded compared to the time when the fragment is loa=
+ded?
 
-> No problem.  Thanks Mark.  Would you like the separation of the I2C
-> code to be in a separate patch set, or is one patch set with two
-> separate patches fine?
+If McASP is built in, try to build it as module and load the audio modules
+after the DT fragments are handled.
 
-Separate patch please.
+-- =
 
---aPOcx+xoD6gZZHnz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXFPnyAAoJECTWi3JdVIfQu38H+wQJG09g+GI3Cg103hcyj00D
-HWMhzMy9pPVfhEMNV2WYf5K5FneS8E5PBFyqQtJeGG+/zwL5LQOuA4lQ6K37IOsC
-ukINqn4ZERypXn3Nwpy+RMpKAPeexszZ4HO1rxn4WcXCw6T5VHbvdB5YLZvfYRO1
-bii50gKO2giP/0C9ES5lAf5fqjkdPluVGjRjq8rqZRVFKQqLes55lJAe/zxGoyqC
-IET9pmVmx3AnL2Ygk7+04vMGJCtyEEn56eJA3YPwgNVxuA/4yd9p4AbtBpHw/A+b
-fUHkn5gRWxPq88EkS+dmZP61d70mwLC01tCtDzlzyFZwnt4o0QClnGq9dSjIxTc=
-=XETE
------END PGP SIGNATURE-----
-
---aPOcx+xoD6gZZHnz--
-
---===============0222445547553358963==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0222445547553358963==--
+P=E9ter
