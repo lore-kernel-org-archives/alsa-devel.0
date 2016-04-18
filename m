@@ -1,179 +1,57 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: arizona: Free speaker thermal IRQs in
-	CODEC remove" to the asoc tree
-Date: Mon, 18 Apr 2016 14:10:08 +0100
-Message-ID: <E1as8wK-0001uO-2w@debutante>
-References: <1460722317-31486-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Peter Rosin <peda@axentia.se>
+Subject: SV: [PATCH] ASoC: docs: add clocking examples for DAI formats
+Date: Mon, 18 Apr 2016 13:18:47 +0000
+Message-ID: <AM4PR02MB12995405358C13BA5FC4DE44BC6B0@AM4PR02MB1299.eurprd02.prod.outlook.com>
+References: <AM4PR02MB12998486C09055D610F9077FBC6B0@AM4PR02MB1299.eurprd02.prod.outlook.com>
+ <20160418130313.GD3217@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F0016265112
- for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 15:10:14 +0200 (CEST)
-In-Reply-To: <1460722317-31486-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <20160418130313.GD3217@sirena.org.uk>
+Content-Language: sv-SE
+Sender: linux-doc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Jonathan Corbet <corbet@lwn.net>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "peda@lysator.liu.se" <peda@lysator.liu.se>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Mark Brown wrote:
+> On Mon, Apr 18, 2016 at 12:55:23PM +0000, Peter Rosin wrote:
+> > Mark Brown wrote:
+> 
+> > > There is an actual spec for I2S which is going to be clearer than ASCII
+> > > art:
+> 
+> > >    https://www.sparkfun.com/datasheets/BreakoutBoards/I2SBUS.pdf
+> 
+> > > is the first hit on google (there's a bunch of electrical stuff in there
+> > > that gets roundly ignord these days but the clocking stuff is in there).
+> 
+> > Yes, but where are the equivalent docs for the other formats?
+> 
+> There aren't any (beyond the usual references to the Wolfson datasheets
+> which I'd suggest should be in here) but that doesn't mean we should
+> ignore this spec when we have it.
 
-   ASoC: arizona: Free speaker thermal IRQs in CODEC remove
+This is exactly the problem. For an outsider, it's impossible to know that
+wolfson has the correct definition of the modes. Why should wolfson datasheets
+trumph nxp or ti datasheets (or whatever), if there is an inconsistency?
 
-has been applied to the asoc tree at
+We need to specify somewhere exactly what Linux means with the different
+modes. Because there are bugs in this area, where DAIs claim to support
+the same format but are not actually compatible. Which one is buggy then?
+And this is not about flank timings or such details, it's about what bits go
+where in relation to flanks etc.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> > > In general I'd rather have some words rather than just pictures, ASCII
+> > > art as the only thing is pretty hard to read.
+> 
+> > I'll post a v2 with some words about each format. Or will you reject
+> > anything with ASCII art?
+> 
+> So long as it's comprehensible.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Ok
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 54dca7015a7d6c09d34623c6ec61de30896186dd Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Fri, 15 Apr 2016 13:11:56 +0100
-Subject: [PATCH] ASoC: arizona: Free speaker thermal IRQs in CODEC remove
-
-The thermal warning IRQs for the speaker are requested in CODEC probe
-but never freed. This patch frees them in CODEC remove.
-
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/arizona.c | 12 ++++++++++++
- sound/soc/codecs/arizona.h |  2 ++
- sound/soc/codecs/cs47l24.c |  3 +++
- sound/soc/codecs/wm5102.c  |  2 ++
- sound/soc/codecs/wm5110.c  |  2 ++
- sound/soc/codecs/wm8997.c  |  2 ++
- sound/soc/codecs/wm8998.c  |  2 ++
- 7 files changed, 25 insertions(+)
-
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 92d22a018d68..83959312f7a0 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -249,6 +249,18 @@ int arizona_init_spk(struct snd_soc_codec *codec)
- }
- EXPORT_SYMBOL_GPL(arizona_init_spk);
- 
-+int arizona_free_spk(struct snd_soc_codec *codec)
-+{
-+	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct arizona *arizona = priv->arizona;
-+
-+	arizona_free_irq(arizona, ARIZONA_IRQ_SPK_OVERHEAT_WARN, arizona);
-+	arizona_free_irq(arizona, ARIZONA_IRQ_SPK_OVERHEAT, arizona);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(arizona_free_spk);
-+
- static const struct snd_soc_dapm_route arizona_mono_routes[] = {
- 	{ "OUT1R", NULL, "OUT1L" },
- 	{ "OUT2R", NULL, "OUT2L" },
-diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index 1ea8e4ecf8d4..ce0531b8c632 100644
---- a/sound/soc/codecs/arizona.h
-+++ b/sound/soc/codecs/arizona.h
-@@ -307,6 +307,8 @@ extern int arizona_init_spk(struct snd_soc_codec *codec);
- extern int arizona_init_gpio(struct snd_soc_codec *codec);
- extern int arizona_init_mono(struct snd_soc_codec *codec);
- 
-+extern int arizona_free_spk(struct snd_soc_codec *codec);
-+
- extern int arizona_init_dai(struct arizona_priv *priv, int dai);
- 
- int arizona_set_output_mode(struct snd_soc_codec *codec, int output,
-diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
-index 576087bda330..00e9b6fc1b5c 100644
---- a/sound/soc/codecs/cs47l24.c
-+++ b/sound/soc/codecs/cs47l24.c
-@@ -1108,6 +1108,9 @@ static int cs47l24_codec_remove(struct snd_soc_codec *codec)
- 	priv->core.arizona->dapm = NULL;
- 
- 	arizona_free_irq(arizona, ARIZONA_IRQ_DSP_IRQ1, priv);
-+
-+	arizona_free_spk(codec);
-+
- 	return 0;
- }
- 
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index a8b3e3f701f9..59fd3e8bf899 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -1960,6 +1960,8 @@ static int wm5102_codec_remove(struct snd_soc_codec *codec)
- 
- 	priv->core.arizona->dapm = NULL;
- 
-+	arizona_free_spk(codec);
-+
- 	return 0;
- }
- 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 83ba70fe16e6..2728ac545ffe 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -2298,6 +2298,8 @@ static int wm5110_codec_remove(struct snd_soc_codec *codec)
- 
- 	arizona_free_irq(arizona, ARIZONA_IRQ_DSP_IRQ1, priv);
- 
-+	arizona_free_spk(codec);
-+
- 	return 0;
- }
- 
-diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
-index 52d766efe14f..6b0785b5a5c5 100644
---- a/sound/soc/codecs/wm8997.c
-+++ b/sound/soc/codecs/wm8997.c
-@@ -1072,6 +1072,8 @@ static int wm8997_codec_remove(struct snd_soc_codec *codec)
- 
- 	priv->core.arizona->dapm = NULL;
- 
-+	arizona_free_spk(codec);
-+
- 	return 0;
- }
- 
-diff --git a/sound/soc/codecs/wm8998.c b/sound/soc/codecs/wm8998.c
-index 012396074a8a..449f66636205 100644
---- a/sound/soc/codecs/wm8998.c
-+++ b/sound/soc/codecs/wm8998.c
-@@ -1324,6 +1324,8 @@ static int wm8998_codec_remove(struct snd_soc_codec *codec)
- 
- 	priv->core.arizona->dapm = NULL;
- 
-+	arizona_free_spk(codec);
-+
- 	return 0;
- }
- 
--- 
-2.8.0.rc3
+Cheers,
+Peter
