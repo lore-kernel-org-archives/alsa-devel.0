@@ -1,54 +1,55 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Question about Conversion to S24_LE from S24_3LE
-Date: Mon, 18 Apr 2016 14:01:54 +0200
-Message-ID: <5714CCB2.1050403@ladisch.de>
-References: <61B6C8BF61481342973655BC8AB0FF355AE2F4@PGSMSX101.gar.corp.intel.com>
- <5714A9B0.8060002@ladisch.de>
- <61B6C8BF61481342973655BC8AB0FF355AEE24@PGSMSX101.gar.corp.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3] ASoC: mediatek: Add second I2S on mt8173-rt5650
+ machine driver
+Date: Mon, 18 Apr 2016 13:03:52 +0100
+Message-ID: <20160418120352.GZ3217@sirena.org.uk>
+References: <1460014517-20359-1-git-send-email-pc.liao@mediatek.com>
+ <1460979380.17045.2.camel@mtksdaap41>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 148632650B0
- for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 14:01:56 +0200 (CEST)
-In-Reply-To: <61B6C8BF61481342973655BC8AB0FF355AEE24@PGSMSX101.gar.corp.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Tan, Seng Kai" <seng.kai.tan@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="1ar0NSVY9gjTGNA2"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1460979380.17045.2.camel@mtksdaap41>
+Sender: linux-kernel-owner@vger.kernel.org
+To: PC Liao <pc.liao@mediatek.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, srv_heupstream <srv_heupstream@mediatek.com>, "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Koro Chen =?utf-8?B?KOmZs+aAnee/sCk=?= <koro.chen@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Tan, Seng Kai wrote:
->> Your hardware does not support S24_LE.
->> 24-bit samples use the S32_LE format (unless you have very exotic hardware, but HDA isn't).
->
-> We have another I2S hardware which is able to support S24L_LE and S32_LE format,
 
-The format on the codec's bus has almost nothing to do with the ALSA
-sample format.
+--1ar0NSVY9gjTGNA2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The Sxx_xE format describes how the samples are formatted in memory,
-i.e., how the DMA controller expects to read them.
+On Mon, Apr 18, 2016 at 07:36:20PM +0800, PC Liao wrote:
 
-> S24_LE in wav file
+> Could you please give some comments or suggestions?
 
-.wav files do no use ALSA sample formats.
+I don't have these patches.  If you're getting review comments from
+other people please address them, it's quite possible I saw them and
+agreed with them.
 
-Please describe the values of the header fields in this .wav file.
+Please don't send content free pings and please allow a reasonable time
+for review.  People get busy, go on holiday, attend conferences and so=20
+on so unless there is some reason for urgency (like critical bug fixes)
+please allow at least a couple of weeks for review.  Sending content
+free pings just adds to the mail volume (if they are seen at all) and if=20
+something has gone wrong you'll have to resend the patches anyway.
 
-> Question: is all HDMI support 24 bit must have 32bit support?
+--1ar0NSVY9gjTGNA2
+Content-Type: application/pgp-signature; name="signature.asc"
 
-That depends on the DMA controller.  Most use 32-bit alignment for
-24-bit samples.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
+iQEcBAEBCAAGBQJXFM0nAAoJECTWi3JdVIfQzj8H/jpSQ2Y3epAwuxWfp1x0153h
+SS2wfCfruHkRJ0ZN1guV7a7sGlDN+X9C1k2ep2CtRXt8eg0qInfhvP21YRGoVaBc
+z0CUYvHqBl9E4kmmKiSl9s86Gf0WmcUZbJnQ7hmyWWX6TdT3/XB6zP3drxOgSAeH
+ONPJfLU77kJPJ7jpIsZFSM4C+2CAlZrTW/Yi6oyUfYq+q5vk79pHGe/OVJTWoNXS
+qR6xU9p+8jP7xeTXpMh2bmIBPzg32xeknwY8dy1qcyOFvM0SLp/TALL0urqbwkp0
+W1HbfvgDHkn0iEctmaHtDzSINRxfPxc6fC8tJ9uouQmCxsgiaKCds/Dj2ioneKo=
+=YyUF
+-----END PGP SIGNATURE-----
 
-Regards,
-Clemens
+--1ar0NSVY9gjTGNA2--
