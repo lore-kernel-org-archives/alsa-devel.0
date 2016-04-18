@@ -1,63 +1,74 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: Re: [PATCH 1/3] ASoC: jack: Add a jack detect callback via codec
-Date: Mon, 18 Apr 2016 09:40:50 -0700
-Message-ID: <CAEUnVG6FWM5ud8FH7FyhNTSxOYg8GM_eeyUX7ynrSRC6uhOePg@mail.gmail.com>
-References: <1460967452-24574-1-git-send-email-zhengxing@rock-chips.com>
- <1460967452-24574-2-git-send-email-zhengxing@rock-chips.com>
- <20160418092218.GL3217@sirena.org.uk> <5714AC57.2070901@rock-chips.com>
- <20160418095302.GN3217@sirena.org.uk> <5714B0D4.7080506@rock-chips.com>
- <5714B4D0.90406@rock-chips.com> <20160418114618.GW3217@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Add max98371 codec driver
+Date: Mon, 18 Apr 2016 17:47:27 +0100
+Message-ID: <20160418164727.GI3217@sirena.org.uk>
+References: <1460578847-8712-1-git-send-email-yesanishhere@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160418114618.GW3217@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Xing Zheng <zhengxing@rock-chips.com>, linux-rockchip@lists.infradead.org, =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, Adam.Thomson@diasemi.com, sugar.zhang@rock-chips.com, Xu Jianqun <jay.xu@rock-chips.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============4564064577077314676=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id A316C2650CC
+ for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 18:47:34 +0200 (CEST)
+In-Reply-To: <1460578847-8712-1-git-send-email-yesanishhere@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: anish kumar <yesanishhere@gmail.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 18, 2016 at 4:46 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Mon, Apr 18, 2016 at 06:20:00PM +0800, Xing Zheng wrote:
->> On 2016=E5=B9=B404=E6=9C=8818=E6=97=A5 18:03, Xing Zheng wrote:
->
->> sound {
->>         ......
->>         simple-audio-card,dai-link@0 {
->>             format =3D "i2s";
->>             cpu {
->>                 sound-dai =3D <&i2s0>;
->>             };
->>
->>             codec {
->>                 sound-dai =3D <&codec>;
->>
->>                 simple-audio-card,codec-jack =3D
->>                     "JACK_HEADSET",
->>                     "JACK_BTN_0",
->>                     "JACK_BTN_1",
->>                     "JACK_BTN_2",
->>                     "JACK_BTN_3";
->>             };
->>         };
->
-> This seems like it's only half the job and worryingly close to Linux
-> internals.  In particular the fact that the binding is specific to
-> simple-card and the fact that it's being placed on the CODEC (rather
-> than a separate object that the CODEC references) so that we can't
-> combine multiple devices are both a concern.
->
-> Dylan Reid did have an earlier go at defining a binding for this:
->
->   http://thread.gmane.org/gmane.linux.alsa.devel/138906
->
-> which went through a couple more iterations but the work on that seem=
-ed
-> to die off a bit.
 
-Thanks for forwarding this.  I did intend to get back to that.  But,
-almost a year later, obviously I haven't.
+--===============4564064577077314676==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="2+N3zU4ZlskbnZaJ"
+Content-Disposition: inline
 
-Xing if you want to pick this up it would be great.  Lars had some
-good points on that original discussion, which I think we can
-integrate into a single solution.
+
+--2+N3zU4ZlskbnZaJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Apr 13, 2016 at 01:20:47PM -0700, anish kumar wrote:
+
+> +static const char *const voltage_level_text[] = {
+> +	"9.5dB", "10.5dB", "11.5dB", "11.5dB", "12.5dB",
+> +	"13.5dB", "14.5dB", "15.5dB", "16.5dB", "17.5dB",
+> +	"18.5dB", "19.5dB", "20.5dB"
+> +};
+
+As I said last time I would expect this to be a TLV control.  As far as
+I can tell this is basically functioning as a maximum volume.  Otherwise
+this looks good.
+
+--2+N3zU4ZlskbnZaJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXFQ+eAAoJECTWi3JdVIfQaSQH/0KWRrgwqsNNYAwUw7dUlOw3
+Mvx43S19bYpmNTJ7O/rl6eugl33DFpK+jwOG1Y+E4gs8aiZB9ppMHlFz77RA7fHf
+RuKms/ONu9D0Uc6VcBVKhFKN0PEdYv2PuOrZbpNrjV0Ris7gBEKJ6PTwgse7CvfT
+YTzLbSPVUWuk0QyZXULXRMmkVl9rkaFZ1yZS9P9dm1MSyaYwO7w52IfsVf4xc8d5
+zeAutnI/9O6AF8Kt7WnZRXlLOGl/Yt0oz/fjbOCnkXkee50K2Rtprf/fvWodKWw4
+9yWIVruyqVu2TR8D8qSiF/QEUXw1e/JkIawpVhJo98yJpCYPltKgNO+G0gS5lME=
+=7ZIB
+-----END PGP SIGNATURE-----
+
+--2+N3zU4ZlskbnZaJ--
+
+--===============4564064577077314676==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4564064577077314676==--
