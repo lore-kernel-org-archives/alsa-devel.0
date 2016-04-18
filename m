@@ -1,66 +1,56 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 4/4] ASoC: simple-card: Support for
- selecting system clocks by ID
-Date: Mon, 18 Apr 2016 17:29:10 +0100
-Message-ID: <20160418162910.GG3217@sirena.org.uk>
-References: <1455545495-20292-1-git-send-email-peter.ujfalusi@ti.com>
- <1455545495-20292-5-git-send-email-peter.ujfalusi@ti.com>
- <20160215152635.GN18988@sirena.org.uk>
- <56C2F00C.8080809@ti.com>
- <20160216134233.GN18327@sirena.org.uk>
- <20160216191346.2278.725@quark.deferred.io>
- <56C42BAF.3050900@ti.com>
- <20160217120759.GO7544@sirena.org.uk>
- <56C4CF8B.5010005@ti.com>
- <5715025C.7070108@ti.com>
+From: Timur Karaldin <karaldin@mcsplus.ru>
+Subject: [PATCH V2 2/2] ASoC: TLV320AIC3x: Adding additional
+ functionality for 3106
+Date: Mon, 18 Apr 2016 19:28:50 +0300
+Message-ID: <57150B42.5090809@mcsplus.ru>
+References: <56E69B3F.8090306@mcsplus.ru> <56E6CEE9.5030802@ti.com>
+ <56E7FC3C.1030503@mcsplus.ru> <56E802D9.4040501@ti.com>
+ <56E834B0.5010808@mcsplus.ru> <56E91FEE.4070604@ti.com>
+ <56E934CB.4040209@mcsplus.ru> <56E97A75.7030700@ti.com>
+ <56E98F99.2060100@mcsplus.ru> <56EA7833.7080302@ti.com>
+ <56F2B48B.9030903@mcsplus.ru> <56FD1EF9.2030408@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2eauhx3HRLXw1WRo"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5715025C.7070108@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Kristo, Tero" <t-kristo@ti.com>, linux-clk@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp50.i.mail.ru (smtp50.i.mail.ru [94.100.177.110])
+ by alsa0.perex.cz (Postfix) with ESMTP id 36649265361
+ for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 18:28:54 +0200 (CEST)
+In-Reply-To: <56FD1EF9.2030408@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Here is the result:
+----------------------------------------------------------------------------
+diff --git a/sound/soc/codecs/tlv320aic3x.h b/sound/soc/codecs/tlv320aic3x.h
+index e521ac3..22bd0be 100644
+--- a/sound/soc/codecs/tlv320aic3x.h
++++ b/sound/soc/codecs/tlv320aic3x.h
+@@ -272,8 +272,13 @@ enum {
+  };
 
---2eauhx3HRLXw1WRo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Apr 18, 2016 at 06:50:52PM +0300, Peter Ujfalusi wrote:
-> On 02/17/2016 09:52 PM, Peter Ujfalusi wrote:
-
-> > On the other hand this ABI is backwards compatible since if it is missing it
-> > will default to the configuration we right now have regarding to sysclk_dir
-> > and sysclk_id.
-
-> > I will look at the CCF implementation for McASP first then for aic3x.
-
-> The first issue with converting the McASP to use CCF internally for clock
-> selection, muxing and rate configuration is that the daVinci platform does not
-> use CCF at all. Given that the davinci-mcasp driver is used by daVinci, we
-> need to have non CCF way supported in ASoC...
-
-Well, at least long term we do need daVinci converting to CCF - this is
-going to continue to cause problems, devices not part of the SoC can and
-do contain clocks and are going to end up being supported via the clock
-API.
-
---2eauhx3HRLXw1WRo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXFQtVAAoJECTWi3JdVIfQCP0H/jzMeGZiZHjkX2f73h6IPk11
-x2yU1dk86AlxJRt82amwmGM/BKjbba6k0M+f9AAG358b91j4mVE2Zu6n/Z9eACYM
-KK4oIhb9v6wYe2R4wo1nO2jVLGzWO+tOwd/ppWm2MX+METGLTDLJHQHKdhDP1v3v
-5uYvPNcZ6ZVaYH3qVeT3RSWIIQ9jKMdD4vTYnmmwWfX7HgfXbyhIYlppoG65rp1f
-OwZ3DBG+Su1R7RfdgGtUvhyyteCH13dQUmERosmKyXiq+4oZl65HwYut0QRAalRZ
-3seOfdQrdKIN6H4CPqwZTxD5rK5fusnAelx8VNlXEG+Q8Ofe+0xDADcxvAAYmZE=
-=VVzg
------END PGP SIGNATURE-----
-
---2eauhx3HRLXw1WRo--
+  #define AIC3X_HEADSET_DETECT_ENABLED   0x80
+-#define AIC3X_HEADSET_DETECT_SHIFT     5
+-#define AIC3X_HEADSET_DETECT_MASK      3
++#define AIC3X_HEADSET_DETECT_A_SHIFT   5
++#define AIC3X_HEADSET_DETECT_A_MASK    3
++
++#define AIC3X_BUTTON_DETECT_SHIFT      5
++#define AIC3X_BUTTON_DETECT_MASK       1
++#define AIC3X_HEADSET_DETECT_B_SHIFT   4
++#define AIC3X_HEADSET_DETECT_B_MASK    1
+  #define AIC3X_HEADSET_DEBOUNCE_SHIFT   2
+  #define AIC3X_HEADSET_DEBOUNCE_MASK    7
+  #define AIC3X_BUTTON_DEBOUNCE_SHIFT    0
+----------------------------------------------------------------------------
+Cheers,
+Timur Karaldin
