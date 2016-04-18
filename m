@@ -1,16 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: tlv320aic32x4: Add SPI support
-Date: Mon, 18 Apr 2016 11:35:54 +0100
-Message-ID: <20160418103554.GR3217@sirena.org.uk>
-References: <1460745059-5737-1-git-send-email-nh6z@nh6z.net>
+From: Xing Zheng <zhengxing@rock-chips.com>
+Subject: [PATCH v2 0/3] Add support simple-card parse jack
+	detection via external codec
+Date: Mon, 18 Apr 2016 19:20:00 +0800
+Message-ID: <1460978403-4754-1-git-send-email-zhengxing@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3791133141285495475=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C6252650B0
- for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 12:36:03 +0200 (CEST)
-In-Reply-To: <1460745059-5737-1-git-send-email-nh6z@nh6z.net>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.138])
+ by alsa0.perex.cz (Postfix) with ESMTP id E786B2650B0
+ for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 13:20:17 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,68 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeremy McDermond <nh6z@nh6z.net>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: linux-rockchip@lists.infradead.org
+Cc: Mark Rutland <mark.rutland@arm.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@linux.intel.com>, heiko@sntech.de, Liam Girdwood <lgirdwood@gmail.com>, dianders@chromium.org, Xing Zheng <zhengxing@rock-chips.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Takashi Iwai <tiwai@suse.com>, sugar.zhang@rock-chips.com, jay.xu@rock-chips.com, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Jyri Sarha <jsarha@ti.com>, Rob Herring <robh+dt@kernel.org>, Support Opensource <support.opensource@diasemi.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, linux-kernel@vger.kernel.org, Adam.Thomson@diasemi.com, broonie@kernel.org, Kumar Gala <galak@codeaurora.org>, Jun Nie <jun.nie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3791133141285495475==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="//h4sZKAxcnndsN6"
-Content-Disposition: inline
+Hi,
+    In most cases, many codecs already supports jack detection,
+previouslly, we need to create a customized machine driver every time.
 
+    In my opinion, the codec fill the detect_jack explicitly and tell
+sound framework it supports the jack detection, the simple-card is
+able to parse the dts file and call the export function to initialize
+the jace detection via the codec.
 
---//h4sZKAxcnndsN6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+    I think that it will bring better flexibility.
 
-On Fri, Apr 15, 2016 at 11:30:59AM -0700, Jeremy McDermond wrote:
-> The TLV320AIC32x4 support the control channel over either SPI or I2C.
-> Added the proper interfacing with regmap to make the driver able to
-> handle either possibility.
->=20
-> Signed-off-by: Jeremy McDermond <nh6z@nh6z.net>
-> ---
->  sound/soc/codecs/Kconfig         |   5 +-
->  sound/soc/codecs/tlv320aic32x4.c | 181 +++++++++++++++++++++++++++++++++=
-++----
->  2 files changed, 165 insertions(+), 21 deletions(-)
+    Thanks.
 
-Instead of putting everything in one file please split the driver so it
-has separate core and I2C modules and then add a SPI module like we do
-for newer drivers.
+Changes in v1:
+- clean up the commit message and notes
 
->  config SND_SOC_TLV320AIC32X4
-> -	tristate
-> +	tristate "Texas Instruments TLV320AIC32x4 CODECs"
-> +	depends on SND_SOC_I2C_AND_SPI
+Xing Zheng (3):
+  ASoC: jack: Add an export of a function that calls the codec jack
+    detection
+  ASoC: simple-card: Add support call the codec jack detection after
+    parse dts
+  ASoC: da7219: Add detect_jack callback in the snd_soc_codec_driver
 
-Making the driver directly user selectable is a separate change and
-should be in a separate patch.
+ .../devicetree/bindings/sound/simple-card.txt      |   17 +++
+ include/sound/soc.h                                |    7 ++
+ sound/soc/codecs/da7219.c                          |    2 +
+ sound/soc/generic/simple-card.c                    |  126 +++++++++++++++++++-
+ sound/soc/soc-jack.c                               |   17 +++
+ 5 files changed, 166 insertions(+), 3 deletions(-)
 
---//h4sZKAxcnndsN6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXFLiKAAoJECTWi3JdVIfQGj4H/2JNUtjoRSQmOT9KEZP8LfSB
-qeBw64U1YZR/z93YvKWHwBGt/QP8iIxkK/m/jTdjk/+wylmmT614ADwsAiF1RB6H
-zymHUFJrkcs0W77mYNYhhI4P5fHopFHyfxBi0AFyfONamGz92A8YXG7rnoBi3W8D
-8yaKPyLB13mg865hqKL7BYP7+72P9/ta07VZ4WCS9IN94QmTyXoHB7OF3QmUbRkc
-MumcXMCgXPH5TXlnNnIAFbuhzAu/GOQburb9/Oh5505xu4xMvqUbHVPPYCmGzPjb
-Drc7uaC+8B/q9c9HZ6Xw5VOKEJ1hvxavg+OcxQgpUL3Y4aw/tl4oa7Gqy/g92y8=
-=yU65
------END PGP SIGNATURE-----
-
---//h4sZKAxcnndsN6--
-
---===============3791133141285495475==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3791133141285495475==--
+-- 
+1.7.9.5
