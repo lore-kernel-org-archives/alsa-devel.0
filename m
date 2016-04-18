@@ -1,77 +1,58 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/3] ASoC: jack: Add a jack detect callback via codec
-Date: Mon, 18 Apr 2016 10:53:02 +0100
-Message-ID: <20160418095302.GN3217@sirena.org.uk>
-References: <1460967452-24574-1-git-send-email-zhengxing@rock-chips.com>
- <1460967452-24574-2-git-send-email-zhengxing@rock-chips.com>
- <20160418092218.GL3217@sirena.org.uk>
- <5714AC57.2070901@rock-chips.com>
+From: "Tan, Seng Kai" <seng.kai.tan@intel.com>
+Subject: Re: Question about Conversion to S24_LE from S24_3LE
+Date: Mon, 18 Apr 2016 09:54:25 +0000
+Message-ID: <61B6C8BF61481342973655BC8AB0FF355AEE24@PGSMSX101.gar.corp.intel.com>
+References: <61B6C8BF61481342973655BC8AB0FF355AE2F4@PGSMSX101.gar.corp.intel.com>
+ <5714A9B0.8060002@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3798963268299913748=="
-Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <5714AC57.2070901-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
-List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: Xing Zheng <zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Adam.Thomson-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org, jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 15EAC265357
+ for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 11:54:27 +0200 (CEST)
+In-Reply-To: <5714A9B0.8060002@ladisch.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
+Thanks Clemens
 
---===============3798963268299913748==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="fpolVoprVozDR81Y"
-Content-Disposition: inline
+Tan, Seng Kai wrote:
+>> I am facing similar problem like this issue, hope to get your advice.
+>> http://mailman.alsa-project.org/pipermail/alsa-devel/2012-August/05424
+>> 1.html
 
+>And the answer is the same.
 
---fpolVoprVozDR81Y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+>> I try to turn on S24_LE support for HDMI Audio using below patch.
+>Your hardware does not support S24_LE.
+>24-bit samples use the S32_LE format (unless you have very exotic hardware, but HDA isn't).
+We have another I2S hardware which is able to support S24L_LE and S32_LE format, 
+when I use -Dplughw to play S24_3LE format the same things happen. It pad the 0 in MSB
+the whole data is shift to right and the audio volume is lower. Is this the problem for alsa plugins?
 
-On Mon, Apr 18, 2016 at 05:43:51PM +0800, Xing Zheng wrote:
+>> Back end  S24_LE :  0x00123456(in 4bytes, MSB 0 padding)
+>This is how S24_LE works.
+S24_LE in wav file supposed to be in format  0x00123456 ( 0 pad MSB) or
+0x12345600 ( 0 pad LSB) which one is correct? I am a bit confuse here, because 
+When I open file with 0x12345600 ( 0 pad LSB) using audacity, it is able to view the file
+But not for 0x00123456 ( 0 pad MSB).
 
-> The patch_1/3 add an export of a function that calls the _detect_jack_
-> function
-> when a codec supports jack detection and fill the _detect_jack_ function in
-> the
-> struct snd_soc_codec_driver.
+>> Can you advice how to tell the alsa plugin to pad in LSB instead of MSB?
+>Use S32_LE.
+Question: is all HDMI support 24 bit must have 32bit support? My concern is it don't
+And we want to maximize the quality to 24bit. 
 
-But why would anything ever call this function?  How is this supposed to
-be used?
-
---fpolVoprVozDR81Y
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXFK59AAoJECTWi3JdVIfQoIkH/11rNOsK3IY82eHAhlPRvn4c
-qZPm1puFWdfye0GlLf/hkzuXAj2yX/IDiUoOsKo8tqG3hl01+34dMLrpbwK2yzJV
-OOW//DGzsBAhg4aDWJ9XYs5cF7eHDcici/mwavcUASJ4AaxyxcPAIelGMub52E35
-AAJiseqfVg+tGbkRjfwNA+jJJ3TrzZ+jwbgjGVYDlXM1IIt6dPcaxFjzd+nsoSuf
-Qn3ZqvAf2/YYHIZL30ih0WDQx6fC+kngRdrZe6TB1I06exLAtXwdwQ3X3+NUtejf
-HsX1rHKU4TChVb9X3J0msPlDh09ykK+U1pQqTqlIryW3wUOrk/u8WkdWp02f4Vw=
-=KI4t
------END PGP SIGNATURE-----
-
---fpolVoprVozDR81Y--
-
-
---===============3798963268299913748==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Linux-rockchip mailing list
-Linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-http://lists.infradead.org/mailman/listinfo/linux-rockchip
-
---===============3798963268299913748==--
+Regards,
+Seng Kai
