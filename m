@@ -1,18 +1,20 @@
-From: "Tan, Seng Kai" <seng.kai.tan@intel.com>
-Subject: Re: Question about Conversion to S24_LE from S24_3LE
-Date: Mon, 18 Apr 2016 09:54:25 +0000
-Message-ID: <61B6C8BF61481342973655BC8AB0FF355AEE24@PGSMSX101.gar.corp.intel.com>
-References: <61B6C8BF61481342973655BC8AB0FF355AE2F4@PGSMSX101.gar.corp.intel.com>
- <5714A9B0.8060002@ladisch.de>
+From: Xing Zheng <zhengxing@rock-chips.com>
+Subject: Re: [PATCH 1/3] ASoC: jack: Add a jack detect callback
+	via codec
+Date: Mon, 18 Apr 2016 18:03:00 +0800
+Message-ID: <5714B0D4.7080506@rock-chips.com>
+References: <1460967452-24574-1-git-send-email-zhengxing@rock-chips.com>
+ <1460967452-24574-2-git-send-email-zhengxing@rock-chips.com>
+ <20160418092218.GL3217@sirena.org.uk> <5714AC57.2070901@rock-chips.com>
+ <20160418095302.GN3217@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 15EAC265357
- for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 11:54:27 +0200 (CEST)
-In-Reply-To: <5714A9B0.8060002@ladisch.de>
-Content-Language: en-US
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id C80A32650B0
+ for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 12:03:07 +0200 (CEST)
+In-Reply-To: <20160418095302.GN3217@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,37 +24,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, heiko@sntech.de, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, sugar.zhang@rock-chips.com, linux-rockchip@lists.infradead.org, Adam.Thomson@diasemi.com, jay.xu@rock-chips.com
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Clemens
-
-Tan, Seng Kai wrote:
->> I am facing similar problem like this issue, hope to get your advice.
->> http://mailman.alsa-project.org/pipermail/alsa-devel/2012-August/05424
->> 1.html
-
->And the answer is the same.
-
->> I try to turn on S24_LE support for HDMI Audio using below patch.
->Your hardware does not support S24_LE.
->24-bit samples use the S32_LE format (unless you have very exotic hardware, but HDA isn't).
-We have another I2S hardware which is able to support S24L_LE and S32_LE format, 
-when I use -Dplughw to play S24_3LE format the same things happen. It pad the 0 in MSB
-the whole data is shift to right and the audio volume is lower. Is this the problem for alsa plugins?
-
->> Back end  S24_LE :  0x00123456(in 4bytes, MSB 0 padding)
->This is how S24_LE works.
-S24_LE in wav file supposed to be in format  0x00123456 ( 0 pad MSB) or
-0x12345600 ( 0 pad LSB) which one is correct? I am a bit confuse here, because 
-When I open file with 0x12345600 ( 0 pad LSB) using audacity, it is able to view the file
-But not for 0x00123456 ( 0 pad MSB).
-
->> Can you advice how to tell the alsa plugin to pad in LSB instead of MSB?
->Use S32_LE.
-Question: is all HDMI support 24 bit must have 32bit support? My concern is it don't
-And we want to maximize the quality to 24bit. 
-
-Regards,
-Seng Kai
+SEkgTWFyaywKCk9uIDIwMTblubQwNOaciDE45pelIDE3OjUzLCBNYXJrIEJyb3duIHdyb3RlOgo+
+IE9uIE1vbiwgQXByIDE4LCAyMDE2IGF0IDA1OjQzOjUxUE0gKzA4MDAsIFhpbmcgWmhlbmcgd3Jv
+dGU6Cj4KPj4gVGhlIHBhdGNoXzEvMyBhZGQgYW4gZXhwb3J0IG9mIGEgZnVuY3Rpb24gdGhhdCBj
+YWxscyB0aGUgX2RldGVjdF9qYWNrXwo+PiBmdW5jdGlvbgo+PiB3aGVuIGEgY29kZWMgc3VwcG9y
+dHMgamFjayBkZXRlY3Rpb24gYW5kIGZpbGwgdGhlIF9kZXRlY3RfamFja18gZnVuY3Rpb24gaW4K
+Pj4gdGhlCj4+IHN0cnVjdCBzbmRfc29jX2NvZGVjX2RyaXZlci4KPiBCdXQgd2h5IHdvdWxkIGFu
+eXRoaW5nIGV2ZXIgY2FsbCB0aGlzIGZ1bmN0aW9uPyAgSG93IGlzIHRoaXMgc3VwcG9zZWQgdG8K
+PiBiZSB1c2VkPwpJbiBteSBvcGluaW9uLCB0aGlzIGZ1bmN0aW9uIGlzIG1haW5seSB0byBwcm92
+aWRlIHNpbXBsZS1jYXJkIChwYXRjaF8yLzMpLgoKVGhpcyBmdW5jdGlvbiB3aWxsIGNhbGwgYW5k
+IGluaXRpYWxpemUgamFjayBkZXRlY3Rpb24gaWYgYSBjb2RlYyAKc3VwcG9ydHMgaXQgYW5kIGZp
+bGwgdGhlIGRldGVjdF9qYWNrIGZ1bmN0aW9uIChwYXRjaF8zLzMgdXNlIGl0KSwKYW5kLCB3ZSBk
+b24ndCBuZWVkIHRvIGNyZWF0ZSBhIGN1c3RvbWl6ZWQgbWFjaGluZSBkcml2ZXIgdG8gY2FsbCB0
+aGUgCmNvZGVjIGphY2sgZGV0ZWN0aW9uLCB0aGUgc2ltcGxlLWNhcmQgaXMgYWJsZSB0bwpwYXJz
+ZSB0aGVtLgoKVGhhbmtzLgoKLS0gCi0gWGluZyBaaGVuZwoKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
