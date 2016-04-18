@@ -1,165 +1,49 @@
-From: Peter Rosin <peda@axentia.se>
-Subject: [PATCH] ASoC: docs: add clocking examples for DAI
-	formats
-Date: Mon, 18 Apr 2016 11:39:50 +0200
-Message-ID: <1460972390-30149-1-git-send-email-peda@axentia.se>
+From: Xing Zheng <zhengxing@rock-chips.com>
+Subject: Re: [PATCH 1/3] ASoC: jack: Add a jack detect callback via codec
+Date: Mon, 18 Apr 2016 17:43:51 +0800
+Message-ID: <5714AC57.2070901@rock-chips.com>
+References: <1460967452-24574-1-git-send-email-zhengxing@rock-chips.com> <1460967452-24574-2-git-send-email-zhengxing@rock-chips.com> <20160418092218.GL3217@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from emea01-am1-obe.outbound.protection.outlook.com
- (mail-am1on0121.outbound.protection.outlook.com [157.56.112.121])
- by alsa0.perex.cz (Postfix) with ESMTP id DA5942650B0
- for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 11:40:19 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Jonathan Corbet <corbet@lwn.net>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, peda@lysator.liu.se, Peter Rosin <peda@axentia.se>
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160418092218.GL3217@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-rockchip@lists.infradead.org, heiko@sntech.de, Adam.Thomson@diasemi.com, sugar.zhang@rock-chips.com, jay.xu@rock-chips.com, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Provide *our* view of what the rules are for the different DAI formats,
-so that we do not have to trust external interpretations for this
-crucial bit of interoperability.
+Hi Mark,
 
-Signed-off-by: Peter Rosin <peda@axentia.se>
----
- Documentation/sound/alsa/soc/clocking.txt | 110 +++++++++++++++++++++++++++++-
- 1 file changed, 108 insertions(+), 2 deletions(-)
+On 2016=E5=B9=B404=E6=9C=8818=E6=97=A5 17:22, Mark Brown wrote:
+> On Mon, Apr 18, 2016 at 04:17:30PM +0800, Xing Zheng wrote:
+>> This patch add a callback when a codec have the jack detect feature.
+>> +void snd_soc_jack_codec_detect(struct snd_soc_codec *codec,
+>> +				struct snd_soc_jack *jack)
+>> +{
+>> +	if (codec&&  codec->driver&&  codec->driver->detect_jack)
+>> +		codec->driver->detect_jack(codec, jack);
+>> +}
+>> +EXPORT_SYMBOL_GPL(snd_soc_jack_codec_detect);
+> I've no idea what this is supposed to do sorry, you need a much bette=
+r
+> changelog and probably also a restructuring of the code.  This says i=
+t
+> is adding a callback but it doesn't do that, it adds an export of a
+> function that calls an operation in a driver with no explanation.
+Yes, sorry to forgot to add description for this API.
 
-Now, the reason for me writing this is that I once again had to go hunting
-the internet to find the rules for these things. And like last time, I
-found no definitive source and sometimes strange things as well. So, I don't
-know if the above is 100% good, but it is my understanding of the subject.
+The patch_1/3 add an export of a function that calls the _detect_jack_=20
+function
+when a codec supports jack detection and fill the _detect_jack_ functio=
+n=20
+in the
+struct snd_soc_codec_driver.
 
-Please enlighten me on any errors.
+I will clean up the commit message.
 
-Cheers,
-Peter
+Thanks.
 
-diff --git a/Documentation/sound/alsa/soc/clocking.txt b/Documentation/sound/alsa/soc/clocking.txt
-index b1300162e01c..8b498d610e10 100644
---- a/Documentation/sound/alsa/soc/clocking.txt
-+++ b/Documentation/sound/alsa/soc/clocking.txt
-@@ -47,5 +47,111 @@ rate, number of channels and word size) to save on power.
- It is also desirable to use the codec (if possible) to drive (or master) the
- audio clocks as it usually gives more accurate sample rates than the CPU.
- 
--
--
-+The below diagrams all have BCLK as the first signal, LRC as the second signal
-+and DATA as the third. Below that is an indication about which DATA bits belong
-+in what channel.
-+
-+A "..." marking as DATA indicates that there may be more bits that are not
-+shown. Also, all DATA bits marked X may or may not be present. DAI
-+transmitters must add them should LRC not match the word size exactly and DAI
-+receivers must be prepared to ignore them. DAI transmitters must insert
-+zeros for I2S, Left and Right Justified modes, and preferably not drive DATA
-+for the DSP modes for these extra X bits.
-+
-+
-+I2S
-+ .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-.
-+-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-
-+---.                               .-------------------------------.
-+   '-------------------------------'                               '-----
-+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.-
-+   |   |MSB|   |...|   |LSB| X |...| X |MSB|   |...|   |LSB| X |...| X |
-+---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'-
-+       | Left channel                  | Right channel                 |
-+
-+
-+Left Justified (aka MSB)
-+ .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-.
-+-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-
-+   .-------------------------------.                               .-----
-+---'                               '-------------------------------'
-+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.-
-+   |MSB|   |...|   |LSB| X |...| X |MSB|   |...|   |LSB| X |...| X |   |
-+---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'-
-+   | Left channel                  | Right channel                 |
-+
-+
-+Right Justified (aka LSB)
-+ .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-.
-+-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-
-+   .-------------------------------.                               .-----
-+---'                               '-------------------------------'
-+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.-
-+   | X |...| X |MSB|   |...|   |LSB| X |...| X |MSB|   |...|   |LSB|   |
-+---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'-
-+   | Left channel                  | Right channel                 |
-+
-+
-+DSP mode A
-+ .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-.
-+-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-
-+      -.                                                          -.
-+       '-                                                          '-
-+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.-
-+   |   |MSB|   |...|   |LSB|MSB|   |...|   |LSB| X |   |...|   | X |   |
-+---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'-
-+       | Left channel      | Right channel     |                   |
-+
-+LRC examples for DSP mode A
-+   .---.                                                       .---.
-+---'   '-------------------------------------------------------'   '-----
-+     .-.                                                         .-.
-+-----' '---------------------------------------------------------' '-----
-+-------. .---------------------------------------------------------. .---
-+       '-'                                                         '-'
-+
-+
-+DSP mode B
-+ .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-.
-+-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-
-+   .-                                                          .-
-+  -'                                                          -'
-+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.-
-+   |MSB|   |...|   |LSB|MSB|   |...|   |LSB| X |   |...|   | X |   |   |
-+---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'-
-+   | Left channel      | Right channel     |                   |
-+
-+LRC examples for DSP mode B
-+   .---.                                                       .---.
-+---'   '-------------------------------------------------------'   '-----
-+-. .---------------------------------------------------------. .---------
-+ '-'                                                         '-'
-+
-+
-+The above diagrams show normal BCLK and LRC clocking where DAI transmitters
-+change DATA on the falling edge of BCLK and DAI receivers read DATA on the
-+rising edge. For inverted BCLK it is naturally the other way around. Inverted
-+LRC is just that. Note that DSP mode A is compatible with DSP mode B with
-+inverted LRC, and vice versa.
-+
-+
-+Left Justified, inverted BCLK
-+-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-
-+ '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-'
-+   .-------------------------------.                               .-----
-+---'                               '-------------------------------'
-+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.-
-+   |MSB|   |...|   |LSB| X |...| X |MSB|   |...|   |LSB| X |...| X |   |
-+---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'-
-+   | Left channel                  | Right channel                 |
-+
-+
-+Left Justified, inverted LRC
-+ .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-.
-+-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-
-+---.                               .-------------------------------.
-+   '-------------------------------'                               '-----
-+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.-
-+   |MSB|   |...|   |LSB| X |...| X |MSB|   |...|   |LSB| X |...| X |   |
-+---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'-
-+   | Left channel                  | Right channel                 |
--- 
-2.1.4
+--=20
+- Xing Zheng
