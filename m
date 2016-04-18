@@ -1,24 +1,19 @@
-From: Edison <edison_xu1981@163.com>
-Subject: Community MC13783 driver for Asynchronous DAI mode
-Date: Mon, 18 Apr 2016 02:45:24 +0000 (UTC)
-Message-ID: <loom.20160418T043755-488@post.gmane.org>
+From: David Fries <David@Fries.net>
+Subject: Re: [PATCH] aplay: fix lurking capture file overwrite
+ bug
+Date: Sun, 17 Apr 2016 22:34:46 -0500
+Message-ID: <20160418033446.GC16174@spacedout.fries.net>
+References: <20160414043246.GB16174@spacedout.fries.net>
+ <201604152125.37337.gineera@aspect135.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 962B8261ADB
- for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 04:55:09 +0200 (CEST)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1arzL6-00082w-Vw
- for alsa-devel@alsa-project.org; Mon, 18 Apr 2016 04:55:05 +0200
-Received: from 119.4.94.30 ([119.4.94.30])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 04:55:04 +0200
-Received: from edison_xu1981 by 119.4.94.30 with local (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 04:55:04 +0200
+Received: from SpacedOut.fries.net (spacedout.fries.net [67.64.210.234])
+ by alsa0.perex.cz (Postfix) with ESMTP id E41F2261ADB
+ for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 05:34:51 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <201604152125.37337.gineera@aspect135.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,47 +23,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Alan Horstmann <gineera@aspect135.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-HI Community,
-    I'm working on kernel upgrading from FSL BSP to community BSP for my 
-customized IMX27 based board, everything works fine except problem when porting 
-MC13783 audio device driver. On my board, the hardware schematic for audio part 
-is the same as IMX27 ADS, in which MC13783 audio is connect to IMX27 with two 
-SSI (SSI1/SS2). In the FSL 2.6.22 BSP, the design is the same as the hardware 
-schematic, the ALSA driver use SS1 / SS2 as codec and DAC respectively. In the 
-community BSP (4.X),  I tried to assign two difference SSI port for MC13783 
-codec as below
+On Fri, Apr 15, 2016 at 09:25:37PM +0100, Alan Horstmann wrote:
+> On Thursday 14 April 2016 05:32, David Fries wrote:
+> > If -d was given to arecord while commit
+> > 8aa13eec80eac312e4b99423909387660fb99b8f (now reverted) was in effect,
+> > the last read would be shorter than the chunk size, but pcm_read would
+> > read and return the chunk size, the samples were discarded, and
+> > capture() continued in a loop because count never reached 0.  arecord
+> > opens a new file each loop iteration, if arecord is dynamically naming
+> > files, --use-strftime option or beyond the wave 2GB limit, this will
+> > generate a series of header only wave files. 
+> 
+> <snip>
+> 
+> > Debian has the effectively broken pcm_read,
+> 
+> It is fortunate for me that you mentioned those details as I have just been 
+> bitten by exactly that, using arecord whilst tracking down a Portaudio issue 
+> in Debian Jessie!  I was gearing up to report the bug, assuming it was in the 
+> capture system.
+> 
+> It seems a pity that Debian Jessie stable doesn't have a backport of the 
+> fix/revert.
 
-  /* MC13783 */
+Glad to hear I helped.
 
-    static struct mc13xxx_codec_platform_data mx27_ads_codec = {
+I filed a Debian bug report with the two patches that would avoid it as
+Bug#821048, but it isn't going to be fixed.  Denial of service is
+usually seen as a security issue, and this bug could run the system
+out of inodes, I guess it isn't seen as a high enough priority.  I was
+able to download and compile 1.1.0-2 on Jessie which doesn't have this
+problem.
 
-        .dac_ssi_port = MC13783_SSI2_PORT,
+----------------
+Please update to alsa-utils 1.1.0-2 first. In stable there will be
+only security patches accepted. Bug closed herewith. Backports are
+not maintained from us.
 
-        .adc_ssi_port = MC13783_SSI1_PORT,
+Elimar
+----------------
 
-    };
+> Now back to tracing the original issue...
+> 
+> Regards
+> 
+> Alan
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
- 
-     In the community BSP, mc13783 audio driver will be bind to asynchronous 
-MC13783 DAI for separated routing for AD/DA (mc13783.c), one called mc13783-
-hifi-playback and the other called mc13783-hifi-capture, but DAI bind will be 
-certainly unsuccessful because in mc13783 sound soc driver (imx-mc13783.c),  
-the dai_link name is fixed to "mc13783_hifi", so looks like the bind can only 
-be successfully if we use synchronized mode (AD/DA use the same SSI port rather 
-than different ports). That seems to be a big difference between community BSP 
-and FSL BSP. My question:
-
-1. Has someone used the synchronized DAI in their design with community kernel 
-version? Is it  works? (I cannot find any reference for mc13783-hifi-
-playback/mc13783-hifi-capture in the kernel source code)?
-
-2. Can I use synchronized DAI (force ADC/DAC use same SSI) instead of 
-asynchronous  DAI on the community version to make audio works without hardware 
-change? (Unfortunately I have done some experiments but seems not work).
-
-Regards,
-Edison
- 
+-- 
+David Fries <david@fries.net>
