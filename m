@@ -1,56 +1,63 @@
-From: Timur Karaldin <karaldin@mcsplus.ru>
-Subject: [PATCH V2 2/2] ASoC: TLV320AIC3x: Adding additional
- functionality for 3106
-Date: Mon, 18 Apr 2016 19:28:50 +0300
-Message-ID: <57150B42.5090809@mcsplus.ru>
-References: <56E69B3F.8090306@mcsplus.ru> <56E6CEE9.5030802@ti.com>
- <56E7FC3C.1030503@mcsplus.ru> <56E802D9.4040501@ti.com>
- <56E834B0.5010808@mcsplus.ru> <56E91FEE.4070604@ti.com>
- <56E934CB.4040209@mcsplus.ru> <56E97A75.7030700@ti.com>
- <56E98F99.2060100@mcsplus.ru> <56EA7833.7080302@ti.com>
- <56F2B48B.9030903@mcsplus.ru> <56FD1EF9.2030408@ti.com>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: Re: [PATCH 1/3] ASoC: jack: Add a jack detect callback via codec
+Date: Mon, 18 Apr 2016 09:40:50 -0700
+Message-ID: <CAEUnVG6FWM5ud8FH7FyhNTSxOYg8GM_eeyUX7ynrSRC6uhOePg@mail.gmail.com>
+References: <1460967452-24574-1-git-send-email-zhengxing@rock-chips.com>
+ <1460967452-24574-2-git-send-email-zhengxing@rock-chips.com>
+ <20160418092218.GL3217@sirena.org.uk> <5714AC57.2070901@rock-chips.com>
+ <20160418095302.GN3217@sirena.org.uk> <5714B0D4.7080506@rock-chips.com>
+ <5714B4D0.90406@rock-chips.com> <20160418114618.GW3217@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp50.i.mail.ru (smtp50.i.mail.ru [94.100.177.110])
- by alsa0.perex.cz (Postfix) with ESMTP id 36649265361
- for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 18:28:54 +0200 (CEST)
-In-Reply-To: <56FD1EF9.2030408@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160418114618.GW3217@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Xing Zheng <zhengxing@rock-chips.com>, linux-rockchip@lists.infradead.org, =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, Adam.Thomson@diasemi.com, sugar.zhang@rock-chips.com, Xu Jianqun <jay.xu@rock-chips.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Here is the result:
-----------------------------------------------------------------------------
-diff --git a/sound/soc/codecs/tlv320aic3x.h b/sound/soc/codecs/tlv320aic3x.h
-index e521ac3..22bd0be 100644
---- a/sound/soc/codecs/tlv320aic3x.h
-+++ b/sound/soc/codecs/tlv320aic3x.h
-@@ -272,8 +272,13 @@ enum {
-  };
+On Mon, Apr 18, 2016 at 4:46 AM, Mark Brown <broonie@kernel.org> wrote:
+> On Mon, Apr 18, 2016 at 06:20:00PM +0800, Xing Zheng wrote:
+>> On 2016=E5=B9=B404=E6=9C=8818=E6=97=A5 18:03, Xing Zheng wrote:
+>
+>> sound {
+>>         ......
+>>         simple-audio-card,dai-link@0 {
+>>             format =3D "i2s";
+>>             cpu {
+>>                 sound-dai =3D <&i2s0>;
+>>             };
+>>
+>>             codec {
+>>                 sound-dai =3D <&codec>;
+>>
+>>                 simple-audio-card,codec-jack =3D
+>>                     "JACK_HEADSET",
+>>                     "JACK_BTN_0",
+>>                     "JACK_BTN_1",
+>>                     "JACK_BTN_2",
+>>                     "JACK_BTN_3";
+>>             };
+>>         };
+>
+> This seems like it's only half the job and worryingly close to Linux
+> internals.  In particular the fact that the binding is specific to
+> simple-card and the fact that it's being placed on the CODEC (rather
+> than a separate object that the CODEC references) so that we can't
+> combine multiple devices are both a concern.
+>
+> Dylan Reid did have an earlier go at defining a binding for this:
+>
+>   http://thread.gmane.org/gmane.linux.alsa.devel/138906
+>
+> which went through a couple more iterations but the work on that seem=
+ed
+> to die off a bit.
 
-  #define AIC3X_HEADSET_DETECT_ENABLED   0x80
--#define AIC3X_HEADSET_DETECT_SHIFT     5
--#define AIC3X_HEADSET_DETECT_MASK      3
-+#define AIC3X_HEADSET_DETECT_A_SHIFT   5
-+#define AIC3X_HEADSET_DETECT_A_MASK    3
-+
-+#define AIC3X_BUTTON_DETECT_SHIFT      5
-+#define AIC3X_BUTTON_DETECT_MASK       1
-+#define AIC3X_HEADSET_DETECT_B_SHIFT   4
-+#define AIC3X_HEADSET_DETECT_B_MASK    1
-  #define AIC3X_HEADSET_DEBOUNCE_SHIFT   2
-  #define AIC3X_HEADSET_DEBOUNCE_MASK    7
-  #define AIC3X_BUTTON_DEBOUNCE_SHIFT    0
-----------------------------------------------------------------------------
-Cheers,
-Timur Karaldin
+Thanks for forwarding this.  I did intend to get back to that.  But,
+almost a year later, obviously I haven't.
+
+Xing if you want to pick this up it would be great.  Lars had some
+good points on that original discussion, which I think we can
+integrate into a single solution.
