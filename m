@@ -1,62 +1,46 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: docs: add clocking examples for DAI formats
-Date: Mon, 18 Apr 2016 14:03:13 +0100
-Message-ID: <20160418130313.GD3217@sirena.org.uk>
-References: <AM4PR02MB12998486C09055D610F9077FBC6B0@AM4PR02MB1299.eurprd02.prod.outlook.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v3 0/7] ASoC: davinci-mcbsp: add binding
+ for McBSP
+Date: Mon, 18 Apr 2016 16:06:29 +0300
+Message-ID: <5714DBD5.7060706@ti.com>
+References: <1460982766-18632-1-git-send-email-petr@barix.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Lg8eXa+brxrbjAbR"
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <AM4PR02MB12998486C09055D610F9077FBC6B0@AM4PR02MB1299.eurprd02.prod.outlook.com>
-Sender: linux-doc-owner@vger.kernel.org
-To: Peter Rosin <peda@axentia.se>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Jonathan Corbet <corbet@lwn.net>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "peda@lysator.liu.se" <peda@lysator.liu.se>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4FFBA26154C
+ for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 15:06:36 +0200 (CEST)
+In-Reply-To: <1460982766-18632-1-git-send-email-petr@barix.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Petr Kulhavy <petr@barix.com>, nsekhar@ti.com, khilman@kernel.org, lgirdwood@gmail.com, broonie@kernel.org, devicetree@vger.kernel.org
+Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, robh+dt@kernel.org, galak@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
+On 04/18/16 15:32, Petr Kulhavy wrote:
+> This series of patches adds devicetree support for the davinci McBSP audio
+> interface.
+> =
 
---Lg8eXa+brxrbjAbR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Changes in version 3 of the patch:
+> =
 
-On Mon, Apr 18, 2016 at 12:55:23PM +0000, Peter Rosin wrote:
-> Mark Brown wrote:
+> * remove the index note from the "mpu" property in the binding
+> * describe exactly the supported platforms in compatible string
+> * remove unused platform data from davinci-i2s driver and the related EVK=
+ board drivers
 
-> > There is an actual spec for I2S which is going to be clearer than ASCII
-> > art:
+To all patches:
+Reviewed-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-> >    https://www.sparkfun.com/datasheets/BreakoutBoards/I2SBUS.pdf
+-- =
 
-> > is the first hit on google (there's a bunch of electrical stuff in there
-> > that gets roundly ignord these days but the clocking stuff is in there).
-
-> Yes, but where are the equivalent docs for the other formats?
-
-There aren't any (beyond the usual references to the Wolfson datasheets
-which I'd suggest should be in here) but that doesn't mean we should
-ignore this spec when we have it.
-
-> > In general I'd rather have some words rather than just pictures, ASCII
-> > art as the only thing is pretty hard to read.
-
-> I'll post a v2 with some words about each format. Or will you reject
-> anything with ASCII art?
-
-So long as it's comprehensible.
-
---Lg8eXa+brxrbjAbR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXFNsQAAoJECTWi3JdVIfQtMYH/2pAYR1IvTvdX50ewrdf/8rT
-ORZoFzCXuwDY++w3xmTvS8ilbWkTbSxI6QuWwqz9kOuL9EW9gdkft0Jp0OTQNATz
-3dpjxiS/K8g+0W3DgXBTomI/2hZSc/eoInJvT1SX2cUcYwg5BFPVkU5e7dh98/zv
-u1mO0lUIGkmrom9Mu/oNorKC64Kz19Rl3X8tLG1xcdyLlfLAg4j8kwcyjTENdNsm
-IMaeob55J/q9MpSF7cXE2RizIHttTz167y8nyPZJxJhYOk/dyfDGVJGWuOS0zjBP
-KaP4ro2Sia+abniKuN57L3NOjGKSdkv9sL14KbsLUVNrRzWQkkbgSLlbI7Khps4=
-=uCVJ
------END PGP SIGNATURE-----
-
---Lg8eXa+brxrbjAbR--
+P=E9ter
