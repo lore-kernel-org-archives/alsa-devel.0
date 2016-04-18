@@ -1,19 +1,16 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v2 2/6] ASoC: Davinci: McBSP: add device
- tree support for McBSP
-Date: Mon, 18 Apr 2016 13:35:43 +0300
-Message-ID: <5714B87F.1000408@ti.com>
-References: <1460375117-4311-1-git-send-email-petr@barix.com>
- <1460375117-4311-3-git-send-email-petr@barix.com> <5710B516.2000006@ti.com>
- <5714A864.5050505@barix.com> <5714B469.1040408@ti.com> <5714B5F6.9@barix.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: tlv320aic32x4: Add SPI support
+Date: Mon, 18 Apr 2016 11:35:54 +0100
+Message-ID: <20160418103554.GR3217@sirena.org.uk>
+References: <1460745059-5737-1-git-send-email-nh6z@nh6z.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============3791133141285495475=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id D00A7265132
- for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 12:35:49 +0200 (CEST)
-In-Reply-To: <5714B5F6.9@barix.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C6252650B0
+ for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 12:36:03 +0200 (CEST)
+In-Reply-To: <1460745059-5737-1-git-send-email-nh6z@nh6z.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,47 +20,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Petr Kulhavy <petr@barix.com>, nsekhar@ti.com, khilman@kernel.org, lgirdwood@gmail.com, broonie@kernel.org, devicetree@vger.kernel.org
-Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, robh+dt@kernel.org, galak@codeaurora.org
+To: Jeremy McDermond <nh6z@nh6z.net>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 04/18/16 13:24, Petr Kulhavy wrote:
-> =
 
-> =
+--===============3791133141285495475==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="//h4sZKAxcnndsN6"
+Content-Disposition: inline
 
-> On 18.04.2016 12:18, Peter Ujfalusi wrote:
->> On 04/18/16 12:27, Petr Kulhavy wrote:
->>
->>> Or what do you think the pdata should carry?
->> Good question. Since the driver itself does not care about pdata I would
->> remove it. On the other hand if you implement the FIFO handling you will=
- need
->> pdata for legacy mode to select the FIFO threshold.
->> Currently there is one pdata structure for legacy mode used by the McASP,
->> McBSP and the Voice Codec. It contains mixed options applicable for all =
-and
->> some which applicable only for one of the drivers...
->> I think if we want to make things clean and neat we would aim to have se=
-parate
->> pdata for each of the drivers.
->>
->> I would probably drop the current pdata for McBSP and when I see what da=
-ta I
->> need for the driver later I would create one for the McBSP only.
->>
-> =
 
-> Thanks, Peter. I agree with you.
-> I don't have the time to implement the FIFO now, so it makes sense to dro=
-p the
-> pdata for now and add a dedicated one if needed later.
-> Shall I remove the pdata also from the EVK legacy board drivers?
+--//h4sZKAxcnndsN6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes please. It is not used and not applicable either.
+On Fri, Apr 15, 2016 at 11:30:59AM -0700, Jeremy McDermond wrote:
+> The TLV320AIC32x4 support the control channel over either SPI or I2C.
+> Added the proper interfacing with regmap to make the driver able to
+> handle either possibility.
+>=20
+> Signed-off-by: Jeremy McDermond <nh6z@nh6z.net>
+> ---
+>  sound/soc/codecs/Kconfig         |   5 +-
+>  sound/soc/codecs/tlv320aic32x4.c | 181 +++++++++++++++++++++++++++++++++=
+++----
+>  2 files changed, 165 insertions(+), 21 deletions(-)
 
-> I'm going to prepare another patch set.
+Instead of putting everything in one file please split the driver so it
+has separate core and I2C modules and then add a SPI module like we do
+for newer drivers.
 
--- =
+>  config SND_SOC_TLV320AIC32X4
+> -	tristate
+> +	tristate "Texas Instruments TLV320AIC32x4 CODECs"
+> +	depends on SND_SOC_I2C_AND_SPI
 
-P=E9ter
+Making the driver directly user selectable is a separate change and
+should be in a separate patch.
+
+--//h4sZKAxcnndsN6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXFLiKAAoJECTWi3JdVIfQGj4H/2JNUtjoRSQmOT9KEZP8LfSB
+qeBw64U1YZR/z93YvKWHwBGt/QP8iIxkK/m/jTdjk/+wylmmT614ADwsAiF1RB6H
+zymHUFJrkcs0W77mYNYhhI4P5fHopFHyfxBi0AFyfONamGz92A8YXG7rnoBi3W8D
+8yaKPyLB13mg865hqKL7BYP7+72P9/ta07VZ4WCS9IN94QmTyXoHB7OF3QmUbRkc
+MumcXMCgXPH5TXlnNnIAFbuhzAu/GOQburb9/Oh5505xu4xMvqUbHVPPYCmGzPjb
+Drc7uaC+8B/q9c9HZ6Xw5VOKEJ1hvxavg+OcxQgpUL3Y4aw/tl4oa7Gqy/g92y8=
+=yU65
+-----END PGP SIGNATURE-----
+
+--//h4sZKAxcnndsN6--
+
+--===============3791133141285495475==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3791133141285495475==--
