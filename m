@@ -1,49 +1,77 @@
-From: Xing Zheng <zhengxing@rock-chips.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 Subject: Re: [PATCH 1/3] ASoC: jack: Add a jack detect callback via codec
-Date: Mon, 18 Apr 2016 17:43:51 +0800
-Message-ID: <5714AC57.2070901@rock-chips.com>
-References: <1460967452-24574-1-git-send-email-zhengxing@rock-chips.com> <1460967452-24574-2-git-send-email-zhengxing@rock-chips.com> <20160418092218.GL3217@sirena.org.uk>
+Date: Mon, 18 Apr 2016 10:53:02 +0100
+Message-ID: <20160418095302.GN3217@sirena.org.uk>
+References: <1460967452-24574-1-git-send-email-zhengxing@rock-chips.com>
+ <1460967452-24574-2-git-send-email-zhengxing@rock-chips.com>
+ <20160418092218.GL3217@sirena.org.uk>
+ <5714AC57.2070901@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160418092218.GL3217@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-rockchip@lists.infradead.org, heiko@sntech.de, Adam.Thomson@diasemi.com, sugar.zhang@rock-chips.com, jay.xu@rock-chips.com, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============3798963268299913748=="
+Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <5714AC57.2070901-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
+List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Xing Zheng <zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Adam.Thomson-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org, jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-On 2016=E5=B9=B404=E6=9C=8818=E6=97=A5 17:22, Mark Brown wrote:
-> On Mon, Apr 18, 2016 at 04:17:30PM +0800, Xing Zheng wrote:
->> This patch add a callback when a codec have the jack detect feature.
->> +void snd_soc_jack_codec_detect(struct snd_soc_codec *codec,
->> +				struct snd_soc_jack *jack)
->> +{
->> +	if (codec&&  codec->driver&&  codec->driver->detect_jack)
->> +		codec->driver->detect_jack(codec, jack);
->> +}
->> +EXPORT_SYMBOL_GPL(snd_soc_jack_codec_detect);
-> I've no idea what this is supposed to do sorry, you need a much bette=
-r
-> changelog and probably also a restructuring of the code.  This says i=
-t
-> is adding a callback but it doesn't do that, it adds an export of a
-> function that calls an operation in a driver with no explanation.
-Yes, sorry to forgot to add description for this API.
+--===============3798963268299913748==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="fpolVoprVozDR81Y"
+Content-Disposition: inline
 
-The patch_1/3 add an export of a function that calls the _detect_jack_=20
-function
-when a codec supports jack detection and fill the _detect_jack_ functio=
-n=20
-in the
-struct snd_soc_codec_driver.
 
-I will clean up the commit message.
+--fpolVoprVozDR81Y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks.
+On Mon, Apr 18, 2016 at 05:43:51PM +0800, Xing Zheng wrote:
 
---=20
-- Xing Zheng
+> The patch_1/3 add an export of a function that calls the _detect_jack_
+> function
+> when a codec supports jack detection and fill the _detect_jack_ function in
+> the
+> struct snd_soc_codec_driver.
+
+But why would anything ever call this function?  How is this supposed to
+be used?
+
+--fpolVoprVozDR81Y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXFK59AAoJECTWi3JdVIfQoIkH/11rNOsK3IY82eHAhlPRvn4c
+qZPm1puFWdfye0GlLf/hkzuXAj2yX/IDiUoOsKo8tqG3hl01+34dMLrpbwK2yzJV
+OOW//DGzsBAhg4aDWJ9XYs5cF7eHDcici/mwavcUASJ4AaxyxcPAIelGMub52E35
+AAJiseqfVg+tGbkRjfwNA+jJJ3TrzZ+jwbgjGVYDlXM1IIt6dPcaxFjzd+nsoSuf
+Qn3ZqvAf2/YYHIZL30ih0WDQx6fC+kngRdrZe6TB1I06exLAtXwdwQ3X3+NUtejf
+HsX1rHKU4TChVb9X3J0msPlDh09ykK+U1pQqTqlIryW3wUOrk/u8WkdWp02f4Vw=
+=KI4t
+-----END PGP SIGNATURE-----
+
+--fpolVoprVozDR81Y--
+
+
+--===============3798963268299913748==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Linux-rockchip mailing list
+Linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+http://lists.infradead.org/mailman/listinfo/linux-rockchip
+
+--===============3798963268299913748==--
