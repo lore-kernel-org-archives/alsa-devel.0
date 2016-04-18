@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Add max98371 codec driver
-Date: Mon, 18 Apr 2016 17:47:27 +0100
-Message-ID: <20160418164727.GI3217@sirena.org.uk>
-References: <1460578847-8712-1-git-send-email-yesanishhere@gmail.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 0/4] ASoC: add graph base connection on
+	simple-card
+Date: Mon, 18 Apr 2016 12:12:48 -0500
+Message-ID: <20160418171248.GA18460@rob-hp-laptop>
+References: <871t68wxxe.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4564064577077314676=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A316C2650CC
- for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 18:47:34 +0200 (CEST)
-In-Reply-To: <1460578847-8712-1-git-send-email-yesanishhere@gmail.com>
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3F811264FF9
+ for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 19:12:55 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <871t68wxxe.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: anish kumar <yesanishhere@gmail.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Jose Abreu <Jose.Abreu@synopsys.com>, Linux-DT <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Simon <horms@verge.net.au>, Laurent <laurent.pinchart@ideasonboard.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Apr 14, 2016 at 05:45:41AM +0000, Kuninori Morimoto wrote:
+> Hi Mark
+> 
+> Current simple-card is using "sound-dai" base connection on DT,
+> but V4L2 is using graph base connection.
+> For example HDMI case, we would like to use both connection.
+> To above confusable connection method, and to reuse current resource,
+> this patch adds new function, and detect both "sound-dai" and "remote-endpoint"
+> on simple-card. like this
+> 
+> 	sound {
+> 		compatible = "simple-audio-card";
+> 		...
+> 		sndcpu: simple-audio-card,cpu {
+> 			sound-dai = <&xxx>;
+> 		};
+> 		sndcodec: simple-audio-card,codec {
+> =>			remote-endpoint = <&out_hdmi>;
 
---===============4564064577077314676==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2+N3zU4ZlskbnZaJ"
-Content-Disposition: inline
+This is not valid usage of the graph binding. You are only using half of 
+it.
 
-
---2+N3zU4ZlskbnZaJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Apr 13, 2016 at 01:20:47PM -0700, anish kumar wrote:
-
-> +static const char *const voltage_level_text[] = {
-> +	"9.5dB", "10.5dB", "11.5dB", "11.5dB", "12.5dB",
-> +	"13.5dB", "14.5dB", "15.5dB", "16.5dB", "17.5dB",
-> +	"18.5dB", "19.5dB", "20.5dB"
-> +};
-
-As I said last time I would expect this to be a TLV control.  As far as
-I can tell this is basically functioning as a maximum volume.  Otherwise
-this looks good.
-
---2+N3zU4ZlskbnZaJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXFQ+eAAoJECTWi3JdVIfQaSQH/0KWRrgwqsNNYAwUw7dUlOw3
-Mvx43S19bYpmNTJ7O/rl6eugl33DFpK+jwOG1Y+E4gs8aiZB9ppMHlFz77RA7fHf
-RuKms/ONu9D0Uc6VcBVKhFKN0PEdYv2PuOrZbpNrjV0Ris7gBEKJ6PTwgse7CvfT
-YTzLbSPVUWuk0QyZXULXRMmkVl9rkaFZ1yZS9P9dm1MSyaYwO7w52IfsVf4xc8d5
-zeAutnI/9O6AF8Kt7WnZRXlLOGl/Yt0oz/fjbOCnkXkee50K2Rtprf/fvWodKWw4
-9yWIVruyqVu2TR8D8qSiF/QEUXw1e/JkIawpVhJo98yJpCYPltKgNO+G0gS5lME=
-=7ZIB
------END PGP SIGNATURE-----
-
---2+N3zU4ZlskbnZaJ--
-
---===============4564064577077314676==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4564064577077314676==--
+> 		};
+> 	};
+> 
+> 	xxx {
+> 		...
+> 		ports {
+> 			...
+> 			port@0 {
+> 				reg = <0>;
+> 				out_rgb: endpoint {
+> 				};
+> 			};
+> 			port@1 {
+> 				reg = <1>;
+> =>				out_hdmi: endpoint {
+> 				};
+> 			};
+> 			...
+> 		};
+> 	};
+> 
+> Kuninori Morimoto (4):
+>       of_graph: add of_graph_get_endpoint_count()
+>       ASoC: add of_parse_snd_connection_with_args() for sound-dai/graph connection
+>       ASoC: snd_soc_of_get_dai_name() uses of_parse_snd_soc_connection_with_args()
+>       ASoC: simple-card: probe both sound-dai and remote-endpoint
+> 
+>  Documentation/devicetree/bindings/sound/simple-card.txt | 19 +++++++++++++++++++
+>  include/linux/of_graph.h                                | 11 +++++++++++
+>  include/sound/soc.h                                     |  2 ++
+>  sound/soc/generic/simple-card.c                         |  9 ++++++---
+>  sound/soc/soc-core.c                                    | 45 +++++++++++++++++++++++++++++++++++++++++++--
+>  5 files changed, 81 insertions(+), 5 deletions(-)
+> --
+> To unsubscribe from this list: send the line "unsubscribe devicetree" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
