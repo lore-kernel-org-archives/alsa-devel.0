@@ -1,61 +1,57 @@
-From: Jeremy McDermond <nh6z@nh6z.net>
-Subject: Re: [PATCH] ASoC: tlv320aic32x4: Add SPI support
-Date: Mon, 18 Apr 2016 07:45:35 -0700
-Message-ID: <35635C45-EDA1-43C3-86DF-9C6DBEA27846@nh6z.net>
-References: <1460745059-5737-1-git-send-email-nh6z@nh6z.net>
- <20160418103554.GR3217@sirena.org.uk>
-Mime-Version: 1.0 (Mac OS X Mail 9.2 \(3112\))
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.xenotropic.com (mail.xenotropic.com [198.178.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D99826154C
- for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 16:45:40 +0200 (CEST)
-In-Reply-To: <20160418103554.GR3217@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: SV: [PATCH] ASoC: docs: add clocking examples for DAI formats
+Date: Mon, 18 Apr 2016 16:11:43 +0100
+Message-ID: <20160418151143.GE3217@sirena.org.uk>
+References: <AM4PR02MB12998486C09055D610F9077FBC6B0@AM4PR02MB1299.eurprd02.prod.outlook.com>
+ <20160418130313.GD3217@sirena.org.uk>
+ <AM4PR02MB12995405358C13BA5FC4DE44BC6B0@AM4PR02MB1299.eurprd02.prod.outlook.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="DHdTHwZuIuFUI+Ax"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <AM4PR02MB12995405358C13BA5FC4DE44BC6B0@AM4PR02MB1299.eurprd02.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Rosin <peda@axentia.se>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Jonathan Corbet <corbet@lwn.net>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "peda@lysator.liu.se" <peda@lysator.liu.se>
 List-Id: alsa-devel@alsa-project.org
 
 
-> On Apr 18, 2016, at 3:35 AM, Mark Brown <broonie@kernel.org> wrote:
-> 
-> On Fri, Apr 15, 2016 at 11:30:59AM -0700, Jeremy McDermond wrote:
->> The TLV320AIC32x4 support the control channel over either SPI or I2C.
->> Added the proper interfacing with regmap to make the driver able to
->> handle either possibility.
->> 
->> Signed-off-by: Jeremy McDermond <nh6z@nh6z.net>
->> ---
->> sound/soc/codecs/Kconfig         |   5 +-
->> sound/soc/codecs/tlv320aic32x4.c | 181 +++++++++++++++++++++++++++++++++++----
->> 2 files changed, 165 insertions(+), 21 deletions(-)
-> 
-> Instead of putting everything in one file please split the driver so it
-> has separate core and I2C modules and then add a SPI module like we do
-> for newer drivers.
+--DHdTHwZuIuFUI+Ax
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-No problem.  Thanks Mark.  Would you like the separation of the I2C code to be in a separate patch set, or is one patch set with two separate patches fine?
+On Mon, Apr 18, 2016 at 01:18:47PM +0000, Peter Rosin wrote:
+> Mark Brown wrote:
 
->> config SND_SOC_TLV320AIC32X4
->> -	tristate
->> +	tristate "Texas Instruments TLV320AIC32x4 CODECs"
->> +	depends on SND_SOC_I2C_AND_SPI
-> 
-> Making the driver directly user selectable is a separate change and
-> should be in a separate patch.
+> >=20
+> > There aren't any (beyond the usual references to the Wolfson datasheets
+> > which I'd suggest should be in here) but that doesn't mean we should
+> > ignore this spec when we have it.
 
-I should have reviewed my submission better.  This was for testing only.  Sorry about that.
+> This is exactly the problem. For an outsider, it's impossible to know that
+> wolfson has the correct definition of the modes. Why should wolfson datas=
+heets
+> trumph nxp or ti datasheets (or whatever), if there is an inconsistency?
 
---
-Jeremy McDermond (NH6Z)
-Xenotropic Systems
-mcdermj@xenotropic.com
+I'm not quite sure what your concern is here?  I'm saying that where
+there are specs we should link to them.  I'm not saying we can't add
+to that.
+
+--DHdTHwZuIuFUI+Ax
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXFPkuAAoJECTWi3JdVIfQrJcH/jjqpVbxRjsaz5uSssXGb0nV
+p8RTk6gXqgF/QtZ1zOcuxj2utJ9gxfswJHQTVIKNDPyIVAw01H+r9Fuv+xpjOzc3
+LlIXyDLVoM4Sb6IZxbEJazQun+t+347rQht385NfMtza9T12x8SEmE0thjwM0Saa
+JYfIziiadRqJ9+ZRi568eTqF7ReZv5vKLZWvepxl9qwRowI9jeJn9POw0wOIFQxx
+JyVIJUXKurN+x70Uh0cN4K4EIeJ+W+ubwd+udBZ9GvLfeZRXVgOaKISlUIsksQfH
+P4y5Yj+F7SF2sp2SQvtdNUQGKM53teGO7nZHOuyHazAKweaUU1SkKJujNhPadkE=
+=ZhKE
+-----END PGP SIGNATURE-----
+
+--DHdTHwZuIuFUI+Ax--
