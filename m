@@ -1,57 +1,82 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: SV: [PATCH] ASoC: docs: add clocking examples for DAI formats
-Date: Mon, 18 Apr 2016 16:11:43 +0100
-Message-ID: <20160418151143.GE3217@sirena.org.uk>
-References: <AM4PR02MB12998486C09055D610F9077FBC6B0@AM4PR02MB1299.eurprd02.prod.outlook.com>
- <20160418130313.GD3217@sirena.org.uk>
- <AM4PR02MB12995405358C13BA5FC4DE44BC6B0@AM4PR02MB1299.eurprd02.prod.outlook.com>
+Subject: Re: [PATCH] ASoC: tlv320aic32x4: Add SPI support
+Date: Mon, 18 Apr 2016 16:14:58 +0100
+Message-ID: <20160418151458.GF3217@sirena.org.uk>
+References: <1460745059-5737-1-git-send-email-nh6z@nh6z.net>
+ <20160418103554.GR3217@sirena.org.uk>
+ <35635C45-EDA1-43C3-86DF-9C6DBEA27846@nh6z.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="DHdTHwZuIuFUI+Ax"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <AM4PR02MB12995405358C13BA5FC4DE44BC6B0@AM4PR02MB1299.eurprd02.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Rosin <peda@axentia.se>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Jonathan Corbet <corbet@lwn.net>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "peda@lysator.liu.se" <peda@lysator.liu.se>
+Content-Type: multipart/mixed; boundary="===============0222445547553358963=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4743626154C
+ for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 17:15:08 +0200 (CEST)
+In-Reply-To: <35635C45-EDA1-43C3-86DF-9C6DBEA27846@nh6z.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jeremy McDermond <nh6z@nh6z.net>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---DHdTHwZuIuFUI+Ax
+--===============0222445547553358963==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="aPOcx+xoD6gZZHnz"
+Content-Disposition: inline
+
+
+--aPOcx+xoD6gZZHnz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 18, 2016 at 01:18:47PM +0000, Peter Rosin wrote:
-> Mark Brown wrote:
+On Mon, Apr 18, 2016 at 07:45:35AM -0700, Jeremy McDermond wrote:
 
-> >=20
-> > There aren't any (beyond the usual references to the Wolfson datasheets
-> > which I'd suggest should be in here) but that doesn't mean we should
-> > ignore this spec when we have it.
+Please fix your mail client to word wrap within paragraphs at something
+substantially less than 80 columns.  Doing this makes your messages much
+easier to read and reply to.
 
-> This is exactly the problem. For an outsider, it's impossible to know that
-> wolfson has the correct definition of the modes. Why should wolfson datas=
-heets
-> trumph nxp or ti datasheets (or whatever), if there is an inconsistency?
+> > On Apr 18, 2016, at 3:35 AM, Mark Brown <broonie@kernel.org> wrote:
 
-I'm not quite sure what your concern is here?  I'm saying that where
-there are specs we should link to them.  I'm not saying we can't add
-to that.
+> > Instead of putting everything in one file please split the driver so it
+> > has separate core and I2C modules and then add a SPI module like we do
+> > for newer drivers.
 
---DHdTHwZuIuFUI+Ax
+> No problem.  Thanks Mark.  Would you like the separation of the I2C
+> code to be in a separate patch set, or is one patch set with two
+> separate patches fine?
+
+Separate patch please.
+
+--aPOcx+xoD6gZZHnz
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXFPkuAAoJECTWi3JdVIfQrJcH/jjqpVbxRjsaz5uSssXGb0nV
-p8RTk6gXqgF/QtZ1zOcuxj2utJ9gxfswJHQTVIKNDPyIVAw01H+r9Fuv+xpjOzc3
-LlIXyDLVoM4Sb6IZxbEJazQun+t+347rQht385NfMtza9T12x8SEmE0thjwM0Saa
-JYfIziiadRqJ9+ZRi568eTqF7ReZv5vKLZWvepxl9qwRowI9jeJn9POw0wOIFQxx
-JyVIJUXKurN+x70Uh0cN4K4EIeJ+W+ubwd+udBZ9GvLfeZRXVgOaKISlUIsksQfH
-P4y5Yj+F7SF2sp2SQvtdNUQGKM53teGO7nZHOuyHazAKweaUU1SkKJujNhPadkE=
-=ZhKE
+iQEcBAEBCAAGBQJXFPnyAAoJECTWi3JdVIfQu38H+wQJG09g+GI3Cg103hcyj00D
+HWMhzMy9pPVfhEMNV2WYf5K5FneS8E5PBFyqQtJeGG+/zwL5LQOuA4lQ6K37IOsC
+ukINqn4ZERypXn3Nwpy+RMpKAPeexszZ4HO1rxn4WcXCw6T5VHbvdB5YLZvfYRO1
+bii50gKO2giP/0C9ES5lAf5fqjkdPluVGjRjq8rqZRVFKQqLes55lJAe/zxGoyqC
+IET9pmVmx3AnL2Ygk7+04vMGJCtyEEn56eJA3YPwgNVxuA/4yd9p4AbtBpHw/A+b
+fUHkn5gRWxPq88EkS+dmZP61d70mwLC01tCtDzlzyFZwnt4o0QClnGq9dSjIxTc=
+=XETE
 -----END PGP SIGNATURE-----
 
---DHdTHwZuIuFUI+Ax--
+--aPOcx+xoD6gZZHnz--
+
+--===============0222445547553358963==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0222445547553358963==--
