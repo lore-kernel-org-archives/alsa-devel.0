@@ -1,49 +1,53 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4] ASoC: mediatek: Add second I2S on mt8173-rt5650
- machine driver
-Date: Mon, 18 Apr 2016 18:22:03 +0100
-Message-ID: <20160418172203.GL3217@sirena.org.uk>
-References: <1460983419-7705-1-git-send-email-pc.liao@mediatek.com>
+Subject: Re: Can we re-use dw-hdmi-ahb-audio ?
+Date: Mon, 18 Apr 2016 20:01:00 +0100
+Message-ID: <20160418190100.GM3217@sirena.org.uk>
+References: <87inzkv9z4.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="M9YpAf2t6OxtMGzg"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="tuifNR376H9qoyoc"
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1460983419-7705-1-git-send-email-pc.liao@mediatek.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: PC Liao <pc.liao@mediatek.com>
-Cc: tiwai@suse.de, srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, koro.chen@mediatek.com
+In-Reply-To: <87inzkv9z4.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---M9YpAf2t6OxtMGzg
+--tuifNR376H9qoyoc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Apr 18, 2016 at 08:43:39PM +0800, PC Liao wrote:
+On Thu, Apr 14, 2016 at 09:08:24AM +0000, Kuninori Morimoto wrote:
 
-> +Optional properties:
-> +- sound-dai: audio codec dai on capture path
-> +  <&rt5650 0> : Default setting. Connect rt5650 I2S1 for capture. (dai_name = rt5645-aif1)
-> +  <&rt5650 1> : Connect rt5650 I2S2 for capture. (dai_name = rt5645-aif2)
+> I know we already have dw-hdmi-ahb-audio.c which is based on
+> normal ALSA style, but I would like to use it as ASoC.
+> I'm thinking that we can separate this existing dw-hdmi-ahb-audio driver
+> into "common parts" and ahb "specific parts", and share common parts with ASoC,
+> like below, but what do you think ?
 
-Code-wise this seems fine but it seems like it'd be clearer to call this
-capture-dai - this isn't used to select whatr's used for playback, only
-for capture.
+> dw-hdmi-audio.c		: dw-hdmi audio common function set
+> dw-hdmi-ahb-audio.c	: dw-hdmi audio for ahb,  using dw-hdmi-audio.c
+> dw-hdmi-soc-audio.c	: dw-hdmi audio for ASoC, using dw-hdmi-audio.c
 
---M9YpAf2t6OxtMGzg
+Something similar has been done for other things like the PXA drivers in
+the past.  It might get tricky to work out how to instantiate things
+though.
+
+--tuifNR376H9qoyoc
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXFRe6AAoJECTWi3JdVIfQYDAH/3Rr8ayrnOah6lOydZET4rJg
-Bb60VuNadIHr/ImPs8pifCWfR7Mt9WTyVTbYaKy2DnE4So43W1DZMOaomEvPnlAJ
-kzd6F6q64u+lQ9eEqUXnYPLoad1t7yrfNqqAZmlhkpg8q6sntPgLPFwkCgy8O6e3
-SSh5mjhwy6Uz3uBA25EyNs0ib7vajNKtRPqF2bbsAKVh6D4bN+BIp56X1ltP3eU2
-zM+5cwplK+JbUX1TM9h70fTMNFzZWilmW1eMlrS0ejmKGOCU/VcFCIBjF2zGQ43o
-04NwzIZ8Xv4k2B0AMnd4OdCE/PIosVtUVBeeOukBGgCrtwH+OZxu3rFK+GL/C+4=
-=LyK0
+iQEcBAEBCAAGBQJXFS7rAAoJECTWi3JdVIfQ1qkH/i/DALbvB0WBgI81/yu//tgz
+VBIiNkqM5EBvmNDHw7rx6I3JQIy1FHO4ZUKCSMslXu4wUE/l6cgWN4AVqC3V6//F
+auF/T6vscyIvQQiqdEskAgmOBkHxtDGcRq5qwqbSo2pdOvQIPYC3dGAoZtI91fnL
+YvW/99jxQhMYtpgQwXrdRgW0n9oA0xQoYvroEUdp1jqwzMm74qyJUzBBfdtPSqPS
+8ScYFeAISRC49h8X28AEK8FJBh3+LHrEiyJ4l4bozalEbIbOf9kCjbjGKbY4Y/vk
+8fTbb2bZHbUOyPloEMIM9zzD4oSMYHKib5KFMbRnw8dRv5IXpq3TnAmDki0ZmSo=
+=1+ZL
 -----END PGP SIGNATURE-----
 
---M9YpAf2t6OxtMGzg--
+--tuifNR376H9qoyoc--
