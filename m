@@ -1,44 +1,131 @@
-From: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH v3 5/7] ARM: DTS: da850: Fix wrong number of interrupts
-Date: Mon, 18 Apr 2016 14:32:44 +0200
-Message-ID: <1460982766-18632-6-git-send-email-petr@barix.com>
-References: <1460982766-18632-1-git-send-email-petr@barix.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1460982766-18632-1-git-send-email-petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: nsekhar-l0cyMroinI0@public.gmane.org, khilman-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+From: PC Liao <pc.liao@mediatek.com>
+Subject: [PATCH v4] ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver
+Date: Mon, 18 Apr 2016 20:43:39 +0800
+Message-ID: <1460983419-7705-1-git-send-email-pc.liao@mediatek.com>
+Mime-Version: 1.0
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, tiwai@suse.de
+Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, koro.chen@mediatek.com, PC Liao <pc.liao@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-The DA850 supports interrupts 0 to 100. The number of interrupts
-property "ti,intc-size" was wrongly set to 100. Corrected to 101.
+This patch adds second I2S connection to rt5650 codec for capture path on
+mt8173-rt5650 machine driver.
 
-Signed-off-by: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+Signed-off-by: PC Liao <pc.liao@mediatek.com>
 ---
-v1: initial
-v2: no change
-v3: no change
+Changes since v2,v3:
+Fix unclear code and use sound-dai to determine the capture path
+---
+ .../devicetree/bindings/sound/mt8173-rt5650.txt    |    6 +++
+ sound/soc/mediatek/mt8173-rt5650.c                 |   40 ++++++++++++++++++--
+ 2 files changed, 43 insertions(+), 3 deletions(-)
 
- arch/arm/boot/dts/da850.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm/boot/dts/da850.dtsi b/arch/arm/boot/dts/da850.dtsi
-index 226cda76e77c..5996e765e59c 100644
---- a/arch/arm/boot/dts/da850.dtsi
-+++ b/arch/arm/boot/dts/da850.dtsi
-@@ -19,7 +19,7 @@
- 			compatible = "ti,cp-intc";
- 			interrupt-controller;
- 			#interrupt-cells = <1>;
--			ti,intc-size = <100>;
-+			ti,intc-size = <101>;
- 			reg = <0xfffee000 0x2000>;
- 		};
+diff --git a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
+index fe5a5ef..4ed768e 100644
+--- a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
++++ b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
+@@ -5,11 +5,17 @@ Required properties:
+ - mediatek,audio-codec: the phandles of rt5650 codecs
+ - mediatek,platform: the phandle of MT8173 ASoC platform
+ 
++Optional properties:
++- sound-dai: audio codec dai on capture path
++  <&rt5650 0> : Default setting. Connect rt5650 I2S1 for capture. (dai_name = rt5645-aif1)
++  <&rt5650 1> : Connect rt5650 I2S2 for capture. (dai_name = rt5645-aif2)
++
+ Example:
+ 
+ 	sound {
+ 		compatible = "mediatek,mt8173-rt5650";
+ 		mediatek,audio-codec = <&rt5650>;
+ 		mediatek,platform = <&afe>;
++		sound-dai = <&rt5650 1>;
  	};
+ 
+diff --git a/sound/soc/mediatek/mt8173-rt5650.c b/sound/soc/mediatek/mt8173-rt5650.c
+index bb09bb1..f2af2dd 100644
+--- a/sound/soc/mediatek/mt8173-rt5650.c
++++ b/sound/soc/mediatek/mt8173-rt5650.c
+@@ -85,12 +85,26 @@ static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
+ {
+ 	struct snd_soc_card *card = runtime->card;
+ 	struct snd_soc_codec *codec = runtime->codec_dais[0]->codec;
++	const char *codec_dai_capture = runtime->codec_dais[1]->name;
+ 	int ret;
+ 
+ 	rt5645_sel_asrc_clk_src(codec,
+-				RT5645_DA_STEREO_FILTER |
+-				RT5645_AD_STEREO_FILTER,
++				RT5645_DA_STEREO_FILTER,
+ 				RT5645_CLK_SEL_I2S1_ASRC);
++
++	if (!strcmp(codec_dai_capture, "rt5645-aif1")) {
++		rt5645_sel_asrc_clk_src(codec,
++					RT5645_AD_STEREO_FILTER,
++					RT5645_CLK_SEL_I2S1_ASRC);
++	} else if (!strcmp(codec_dai_capture, "rt5645-aif2")) {
++		rt5645_sel_asrc_clk_src(codec,
++					RT5645_AD_STEREO_FILTER,
++					RT5645_CLK_SEL_I2S2_ASRC);
++	} else {
++		dev_err(card->dev, "Can't get the right codec dai\n");
++		return -EINVAL;
++	}
++
+ 	/* enable jack detection */
+ 	ret = snd_soc_card_jack_new(card, "Headset Jack",
+ 				    SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
+@@ -110,6 +124,11 @@ static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
+ 
+ static struct snd_soc_dai_link_component mt8173_rt5650_codecs[] = {
+ 	{
++		/* Playback */
++		.dai_name = "rt5645-aif1",
++	},
++	{
++		/* Capture */
+ 		.dai_name = "rt5645-aif1",
+ 	},
+ };
+@@ -149,7 +168,7 @@ static struct snd_soc_dai_link mt8173_rt5650_dais[] = {
+ 		.cpu_dai_name = "I2S",
+ 		.no_pcm = 1,
+ 		.codecs = mt8173_rt5650_codecs,
+-		.num_codecs = 1,
++		.num_codecs = 2,
+ 		.init = mt8173_rt5650_init,
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 			   SND_SOC_DAIFMT_CBS_CFS,
+@@ -177,6 +196,7 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = &mt8173_rt5650_card;
+ 	struct device_node *platform_node;
++	const char *codec_dai_capture;
+ 	int i, ret;
+ 
+ 	platform_node = of_parse_phandle(pdev->dev.of_node,
+@@ -199,6 +219,20 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
+ 			"Property 'audio-codec' missing or invalid\n");
+ 		return -EINVAL;
+ 	}
++	mt8173_rt5650_codecs[1].of_node = mt8173_rt5650_codecs[0].of_node;
++
++	if (device_property_present(&pdev->dev, "sound-dai")) {
++		ret = snd_soc_of_get_dai_name(pdev->dev.of_node,
++					      &codec_dai_capture);
++		if (ret < 0) {
++			dev_err(&pdev->dev,
++				"%s snd_soc_of_get_dai_name fail %d\n",
++				__func__, ret);
++			return ret;
++		}
++		mt8173_rt5650_codecs[1].dai_name = codec_dai_capture;
++	}
++
+ 	card->dev = &pdev->dev;
+ 	platform_set_drvdata(pdev, card);
+ 
 -- 
-1.9.1
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+1.7.9.5
