@@ -1,80 +1,147 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/3] ASoC: jack: Add a jack detect callback via codec
-Date: Mon, 18 Apr 2016 10:22:18 +0100
-Message-ID: <20160418092218.GL3217@sirena.org.uk>
-References: <1460967452-24574-1-git-send-email-zhengxing@rock-chips.com>
- <1460967452-24574-2-git-send-email-zhengxing@rock-chips.com>
+From: "Tan, Seng Kai" <seng.kai.tan@intel.com>
+Subject: Question about Conversion to S24_LE from S24_3LE
+Date: Mon, 18 Apr 2016 09:24:52 +0000
+Message-ID: <61B6C8BF61481342973655BC8AB0FF355AE2F4@PGSMSX101.gar.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3141822313800025064=="
-Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <1460967452-24574-2-git-send-email-zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
-List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: Xing Zheng <zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Adam.Thomson-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org, jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 26F2F265019
+ for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 11:24:56 +0200 (CEST)
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3141822313800025064==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="4e5ZDkbgLEOfWmLx"
-Content-Disposition: inline
+Hi Takashi,
+
+I am facing similar problem like this issue, hope to get your advice.
+http://mailman.alsa-project.org/pipermail/alsa-devel/2012-August/054241.html
+
+I try to turn on S24_LE support for HDMI Audio using below patch. When I ap=
+lay S24_LE file it works fine.
+The problem happen when I aplay S24_3LE file, I get and extremely low volum=
+e.
+
+When I aplay S24_LE file, I get an left justified value in I2S, this is an =
+expected result:
+Front end S24_LE=A0 :=A0 0x12345600(in 4bytes, LSB 0 padding)
+Back end=A0 S24_3LE :=A0 0x12345600(in 4bytes, LSB 0 padding)
+
+When I aplay S24_3LE file, I get an extremely low output volume. =
+
+Front end S24_3LE=A0 :=A0 0x123456(in 3bytes, No padding)
+Back end=A0 S24_LE :=A0 0x00123456(in 4bytes, MSB 0 padding)
+
+Can you advice how to tell the alsa plugin to pad in LSB instead of MSB?
+
+Below are the patch I used to turn on S24_LE for HDA .
+
+Regards,
+Seng Kai
 
 
---4e5ZDkbgLEOfWmLx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Apr 18, 2016 at 04:17:30PM +0800, Xing Zheng wrote:
-> This patch add a callback when a codec have the jack detect feature.
-
-> +void snd_soc_jack_codec_detect(struct snd_soc_codec *codec,
-> +				struct snd_soc_jack *jack)
-> +{
-> +	if (codec && codec->driver && codec->driver->detect_jack)
-> +		codec->driver->detect_jack(codec, jack);
-> +}
-> +EXPORT_SYMBOL_GPL(snd_soc_jack_codec_detect);
-
-I've no idea what this is supposed to do sorry, you need a much better
-changelog and probably also a restructuring of the code.  This says it
-is adding a callback but it doesn't do that, it adds an export of a
-function that calls an operation in a driver with no explanation.
-
---4e5ZDkbgLEOfWmLx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXFKdJAAoJECTWi3JdVIfQfFsH/0cTD0fCjL8ulsJuFqWvTD47
-UCIed86ZfZG+ueP537JrwiNxfWeZhmqpLrfrn2yqazBx0CG236El/OBzIVDQ7RZS
-i0NberfYQTE2SwXe6KYoouG9i8ygfwJczZwFRSk5+U7l0vVwb+KQaIf66au49SHO
-Z7EmPZsYidIEpE0RCMtXqS/MrXkK3n4cc6bv0ePH6nNoyoe3A4cS8wxTFUVYENJ2
-PMkjR0VNgKPnv+LVIL57RvwoAUIqhIjwsRZrXng6eDY5zpY+I23hgC9laB3bPVzd
-JFOkHJlZ9eh9NldP120ks4nWIOBdG+pQDIV63TqusRV+fW64bq2nyn0KFaSv+ls=
-=ALD6
------END PGP SIGNATURE-----
-
---4e5ZDkbgLEOfWmLx--
 
 
---===============3141822313800025064==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+>From 33f182fe1f6d1e49d0618559d1212b619ec902ce Mon Sep 17 00:00:00 2001
+From: "SengKai,Tan" <seng.kai.tan@intel.com>
+Date: Fri, 8 Apr 2016 17:34:51 +0800
+Subject: [PATCH] ALSA: hda: S24_LE format support for HDA Audio
 
-_______________________________________________
-Linux-rockchip mailing list
-Linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-http://lists.infradead.org/mailman/listinfo/linux-rockchip
+This patch is to add S24_LE support for  HDMI audio
+and HDA codec.
 
---===============3141822313800025064==--
+Before this patch, HDMI and HDA codec audio only
+supported S16_LE and S32_LE. Let's say if user would
+like to play S24_LE file, it has to use plugin to
+convert to either S16_LE or S32_LE which will
+increase in processing and less efficient in utilize
+the resources.
+
+On the other side, let's say connected HDMI monitor
+support S16_LE and S24_LE. Before this patch is applied
+audio has to be converted to S16_LE. That will reduce
+the audio quality.
+
+Signed-off-by: Tan, Seng Kai <seng.kai.tan@intel.com>
+---
+ sound/pci/hda/hda_codec.c  | 6 ++++--
+ sound/pci/hda/hda_eld.c    | 6 ++++--
+ sound/pci/hda/patch_hdmi.c | 3 ++-
+ 3 files changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 57197be..9e737bb 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -3501,14 +3501,16 @@ int snd_hda_query_supported_pcm(struct hda_codec *c=
+odec, hda_nid_t nid,
+ 				if (val & AC_SUPPCM_BITS_32)
+ 					formats |=3D SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE;
+ 				if (val & (AC_SUPPCM_BITS_20|AC_SUPPCM_BITS_24))
+-					formats |=3D SNDRV_PCM_FMTBIT_S32_LE;
++					formats |=3D SNDRV_PCM_FMTBIT_S24_LE |
++						SNDRV_PCM_FMTBIT_S32_LE;
+ 				if (val & AC_SUPPCM_BITS_24)
+ 					bps =3D 24;
+ 				else if (val & AC_SUPPCM_BITS_20)
+ 					bps =3D 20;
+ 			} else if (val & (AC_SUPPCM_BITS_20|AC_SUPPCM_BITS_24|
+ 					  AC_SUPPCM_BITS_32)) {
+-				formats |=3D SNDRV_PCM_FMTBIT_S32_LE;
++				formats |=3D SNDRV_PCM_FMTBIT_S24_LE |
++					SNDRV_PCM_FMTBIT_S32_LE;
+ 				if (val & AC_SUPPCM_BITS_32)
+ 					bps =3D 32;
+ 				else if (val & AC_SUPPCM_BITS_24)
+diff --git a/sound/pci/hda/hda_eld.c b/sound/pci/hda/hda_eld.c
+index 0e6d753..65bfe10 100644
+--- a/sound/pci/hda/hda_eld.c
++++ b/sound/pci/hda/hda_eld.c
+@@ -613,12 +613,14 @@ void snd_hdmi_eld_update_pcm_info(struct parsed_hdmi_=
+eld *e,
+ 			channels_max =3D a->channels;
+ 		if (a->format =3D=3D AUDIO_CODING_TYPE_LPCM) {
+ 			if (a->sample_bits & AC_SUPPCM_BITS_20) {
+-				formats |=3D SNDRV_PCM_FMTBIT_S32_LE;
++				formats |=3D SNDRV_PCM_FMTBIT_S24_LE |
++					SNDRV_PCM_FMTBIT_S32_LE;
+ 				if (maxbps < 20)
+ 					maxbps =3D 20;
+ 			}
+ 			if (a->sample_bits & AC_SUPPCM_BITS_24) {
+-				formats |=3D SNDRV_PCM_FMTBIT_S32_LE;
++				formats |=3D SNDRV_PCM_FMTBIT_S24_LE |
++					SNDRV_PCM_FMTBIT_S32_LE;
+ 				if (maxbps < 24)
+ 					maxbps =3D 24;
+ 			}
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index d02eccd..8cbde13 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2489,7 +2489,8 @@ static const struct hda_verb nvhdmi_basic_init_7x_8ch=
+[] =3D {
+ 	 SNDRV_PCM_RATE_192000)
+ #define SUPPORTED_MAXBPS	24
+ #define SUPPORTED_FORMATS \
+-	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE)
++	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |\
++	SNDRV_PCM_FMTBIT_S32_LE)
+ #endif
+ =
+
+ static int nvhdmi_7x_init_2ch(struct hda_codec *codec)
+-- =
+
+1.9.1
