@@ -1,22 +1,20 @@
-From: Rick Mann <rmann@latencyzero.com>
-Subject: Re: mcasp: stream has more channels (2) than are
-	enabled in mcasp (0)
-Date: Mon, 18 Apr 2016 17:48:45 -0700
-Message-ID: <DD2BBA0B-9461-47EF-AF60-79E361CD2C1F@latencyzero.com>
-References: <14D46C39-5FDF-40DD-A16B-2DA7BDE930CB@latencyzero.com>
- <5714FEE5.5070002@ti.com>
- <5D6815AB-B3DF-4F4F-BC0D-33612A202975@latencyzero.com>
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+From: "Tan, Seng Kai" <seng.kai.tan@intel.com>
+Subject: Re: Question about Conversion to S24_LE from S24_3LE
+Date: Tue, 19 Apr 2016 00:57:54 +0000
+Message-ID: <61B6C8BF61481342973655BC8AB0FF355AEFE5@PGSMSX101.gar.corp.intel.com>
+References: <61B6C8BF61481342973655BC8AB0FF355AE2F4@PGSMSX101.gar.corp.intel.com>
+ <5714A9B0.8060002@ladisch.de>
+ <61B6C8BF61481342973655BC8AB0FF355AEE24@PGSMSX101.gar.corp.intel.com>
+ <5714CCB2.1050403@ladisch.de>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
- [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id A856B265173
- for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2016 02:48:47 +0200 (CEST)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailout.nyi.internal (Postfix) with ESMTP id F04EF2096C
- for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 20:48:46 -0400 (EDT)
-In-Reply-To: <5D6815AB-B3DF-4F4F-BC0D-33612A202975@latencyzero.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C914265173
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2016 02:58:06 +0200 (CEST)
+In-Reply-To: <5714CCB2.1050403@ladisch.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,134 +24,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Roderick Mann <rmann@latencyzero.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Alsa-devel <alsa-devel@alsa-project.org>
+To: Clemens Ladisch <clemens@ladisch.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-I forgot to add: I also added the dev_err() call to output "davinci_mcasp_probe: enter". This happens twice, you can find it in the full log at the pastebin (http://pastebin.com/HGhu9CPk).
 
-[    8.220175] davinci-mcasp 48038000.mcasp: davinci_mcasp_probe: enter
-[    8.268496] davinci-mcasp 48038000.mcasp: invalid tdm slots: 0
-[    8.323405] davinci-mcasp 4803c000.mcasp: davinci_mcasp_probe: enter
-[    8.339936] davinci-mcasp 4803c000.mcasp: invalid tdm slots: 0
+Tan, Seng Kai wrote:
+>>> Your hardware does not support S24_LE.
+>>> 24-bit samples use the S32_LE format (unless you have very exotic hardware, but HDA isn't).
+>>
+>> We have another I2S hardware which is able to support S24L_LE and 
+>> S32_LE format,
 
-> On Apr 18, 2016, at 08:36 , Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
-> 
-> Something goes wrong when the McASP is loaded for sure, some parameters did
-> not got updated via DT perhaps, or most likely the DT fragment is loaded after
-> the McASP is loaded.
+>The format on the codec's bus has almost nothing to do with the ALSA sample format.
 
-The DT fragment that sets up clk_mcasp0 happens early during boot (http://pastebin.com/5vVEdAKt). The fragment that sets up the tlv320aic3104, and the serializer, and the sound card happens when I load the overlay (https://github.com/RobertCNelson/bb.org-overlays/blob/master/src/arm/BB-BONE-AUDI-02-00A0.dts) after logging in. That's at around 33 seconds:
+>The Sxx_xE format describes how the samples are formatted in memory, i.e., how the DMA controller expects to read them.
 
-[   33.432680] bone_capemgr bone_capemgr: part_number 'BB-BONE-AUDI-02', version 'N/A'
-[   33.432719] bone_capemgr bone_capemgr: slot #4: override
-[   33.432736] bone_capemgr bone_capemgr: Using override eeprom data at slot 4
-[   33.432752] bone_capemgr bone_capemgr: slot #4: 'Override Board Name,00A0,Override Manuf,BB-BONE-AUDI-02'
-[   33.451729] bone_capemgr bone_capemgr: slot #4: dtbo 'BB-BONE-AUDI-02-00A0.dtbo' loaded; overlay id #0
-[   33.462646] 2-0018 supply IOVDD not found, using dummy regulator
-[   33.462722] 2-0018 supply DVDD not found, using dummy regulator
-[   33.462779] 2-0018 supply AVDD not found, using dummy regulator
-[   33.462822] 2-0018 supply DRVDD not found, using dummy regulator
-[   33.484174] asoc-simple-card sound: tlv320aic3x-hifi <-> 48038000.mcasp mapping ok
+I think I get what you mean. 
+The input to the driver should be 0x123456 (3 byte, no padding)
+And the driver supposed to arrange it to 0x12345600 (4 byte, LSB padding for left justified)
+That is because the driver do not support and the value get truncate
 
-> If McASP is built in, try to build it as module and load the audio modules
-> after the DT fragments are handled.
+>> S24_LE in wav file
 
-I'm not sure how to do this. I do believe it's a module (when I modified the code and rebuilt, it rebuilt snd-soc-davinci-mcasp.ko, and I copied that over. It seems to load by default; not sure how to prevent that. If I move the clk_mcasp0 DT fragment out of the base DTB, things don't work correctly (I'm not sure why, but this is something I was told by Robert Nelson). I don't know if it's that initial fragment that causes the snd-soc-davinci-mcasp  module to load, or something else.
+>.wav files do no use ALSA sample formats.
 
-Thanks. Original reply follows:
+>Please describe the values of the header fields in this .wav file.
 
-----------------------------------
+qwavheaderdump -F ~/Public/workspace/aud_file/Tones/2ch_48sine_S24_LE.wav
+/home/ilab/Public/workspace/aud_file/Tones/2ch_48sine_S24_LE.wav (11520044 bytes):
+        riff: 'RIFF'
+        riff length: 11520036
+        wave: 'WAVE'
+        fmt: 'fmt '
+        fmt length: 16
+        format: 1
+        channels: 2
+        sample rate: 48000
+        bytes/second: 384000
+        bytes/sample: 8
+                 bytes/sample field should be 1, 2 or 4
+                don't know which value must be set...
 
-> On Apr 18, 2016, at 17:25 , Rick Mann <rmann@latencyzero.com> wrote:
-> 
-> 
->> On Apr 18, 2016, at 08:36 , Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
->> 
->> On 04/04/2016 11:59 AM, Rick Mann wrote:
->>> I've got a Beaglebone Green with a custom cape (CODEC and amp and some
->>> other stuff).
->>> 
->>> Kernel 4.4.6-bone-rt-r6. When I load the overlay that should set up my
->>> CODEC in the device tree, I get the following in the log.
->>> 
->>> [  367.172337] davinci-mcasp 48038000.mcasp: stream has more channels (2)
->>> than are enabled in mcasp (0) [  367.172374] davinci-mcasp 48038000.mcasp:
->>> ASoC: can't set 48038000.mcasp hw params: -22
->>> 
->>> You can see a little more log context, along with the DTS, here:
->>> 
->>> http://pastebin.com/UPB1xjPF
->>> 
->>> Can anyone tell me what this means? Thanks!
->> 
->> The fragment mostly looks OK, but am335x have 4 serializers, not 16 and the
->> num-serializer is deprecated at least in upstream kernel.
->> 
->> Something goes wrong when the McASP is loaded for sure, some parameters did
->> not got updated via DT perhaps, or most likely the DT fragment is loaded after
->> the McASP is loaded.
->> Can you print out:
->> slots, max_active_serializers, active_serializers and channels in
->> mcasp_common_hw_param() function?
->> Also just in case, can you put a dev_err() print in davinci_mcasp_probe() to
->> see when the driver is loaded compared to the time when the fragment is loaded?
->> 
->> If McASP is built in, try to build it as module and load the audio modules
->> after the DT fragments are handled.
-> 
-> Thanks for the suggestions, Peter, I really appreciate the help. Here's what I get:
-> 
-> [  256.743991] davinci-mcasp 48038000.mcasp: Slots: 2, max_active_serializers: 1, active_serializers: 0, channels: 2
-> 
-> I rebuilt the 4.4.7-bone-rt-r9 kernel using Robert C Nelson's bb-kernel repo scripts. I modified sound/soc/davinci/davinci-mcasp.c to print some diagnostics. Rebooted, then executed the following. Note that BB-BONE-AUDI-02.dts is <https://github.com/RobertCNelson/bb.org-overlays/blob/master/src/arm/BB-BONE-AUDI-02-00A0.dts>, and the base DTB is <http://pastebin.com/5vVEdAKt>:
-> 
-> $ sudo su
-> # echo BB-BONE-AUDI-02 > $SLOTS
-> # aplay -l
-> **** List of PLAYBACK Hardware Devices ****
-> card 0: B [AudioCape Rev B], device 0: davinci-mcasp.0-tlv320aic3x-hifi tlv320aic3x-hifi-0 []
->  Subdevices: 1/1
->  Subdevice #0: subdevice #0
-> # speaker-test 
-> 
-> speaker-test 1.0.28
-> 
-> Playback device is default
-> Stream parameters are 48000Hz, S16_LE, 1 channels
-> Using 16 octaves of pink noise
-> Rate set to 48000Hz (requested 48000Hz)
-> Buffer size range from 16 to 32768
-> Period size range from 8 to 16384
-> Using max buffer size 32768
-> Periods = 4
-> Unable to set hw params for playback: Invalid argument
-> Setting of hwparams failed: Invalid argument
-> 
-> speaker-test caused the following to be logged:
-> 
-> [  256.743991] davinci-mcasp 48038000.mcasp: Slots: 2, max_active_serializers: 1, active_serializers: 0, channels: 2
-> [  256.754343] davinci-mcasp 48038000.mcasp: ASoC: can't set 48038000.mcasp hw params: -22
-> 
-> 
-> Full logs:
-> 
-> 	http://pastebin.com/HGhu9CPk
-> 
-> 
-> 
-> 
-> -- 
-> Rick Mann
-> rmann@latencyzero.com
-> 
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+        bits/sample: 24
+        data: 'data'
+        data length: 11520000
 
-
--- 
-Rick Mann
-rmann@latencyzero.com
+Regards,
+Clemens
