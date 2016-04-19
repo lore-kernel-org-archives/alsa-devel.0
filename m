@@ -1,55 +1,57 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Applied "ASoC: mediatek: Add second I2S on mt8173-rt5650 machine
- driver" to the asoc tree
-Date: Tue, 19 Apr 2016 11:53:57 +0100
-Message-ID: <20160419105357.GR3217@sirena.org.uk>
-References: <E1asSQc-0004NY-44@debutante>
- <1461061984.28704.8.camel@mtksdaap41>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v9 3/7] ASoC: hdmi-codec: Add hdmi-codec for external
+ HDMI-encoders
+Date: Tue, 19 Apr 2016 11:54:29 +0100
+Message-ID: <20160419105429.GS3217@sirena.org.uk>
+References: <cover.1459431292.git.jsarha@ti.com>
+ <636486b25db48fa13ae640516cdebe7bcfea0d23.1459431292.git.jsarha@ti.com>
+ <57160B9F.9090907@ti.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="GvlH2BAVfmx8aXCn"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="WkmTq0Xj5pNQBic9"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1461061984.28704.8.camel@mtksdaap41>
-Sender: linux-kernel-owner@vger.kernel.org
-To: PC Liao <pc.liao@mediatek.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, srv_heupstream <srv_heupstream@mediatek.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Koro Chen =?utf-8?B?KOmZs+aAnee/sCk=?= <koro.chen@mediatek.com>, "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <57160B9F.9090907-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+Cc: dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, airlied-cv59FeDIM0c@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, tomi.valkeinen-l0cyMroinI0@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---GvlH2BAVfmx8aXCn
+--WkmTq0Xj5pNQBic9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Apr 19, 2016 at 06:33:04PM +0800, PC Liao wrote:
+On Tue, Apr 19, 2016 at 01:42:39PM +0300, Jyri Sarha wrote:
 
-> Thanks for your approval.
-> But this patch depends on [1].
-> I think it also needs to apply [1], otherwise this patch will build
-> fail.
-> Or, do I need to upload new version again?
+> There is now two acks (and a tested-by?) to this patch and reviewed-by
+> to an earlier version (with very small change this this one). I think it
+> would make sense to apply this one now, even if there are no users to
+> the driver just yet. Then all the video side users could (at least in
+> theory) implement the HW specific hdmi audio support with video side
+> patches only.
 
-> [1] https://patchwork.kernel.org/patch/5671961/ ("ASoC: core: export
-> snd_soc_get_dai_name")
+> What do you think?
 
-Ugh, dropped.  Please put administritive stuff like this after the ---
-as covered in SubmittingPatches, that helps it get noticed.  What it
-looks like you should be doing here is putting this in a subnode for
-capture.
+I applied it yesterday.
 
---GvlH2BAVfmx8aXCn
+--WkmTq0Xj5pNQBic9
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXFg5EAAoJECTWi3JdVIfQRgsH/iizQgEHCFxRTNu1X2BzdFai
-y87U+Ay+CyqvNSJUbu7LRqBANKF2FgGmO/UnHZbHFwjKUnLKBjwkLMOxgay2/jDw
-EaaHV2Ks1zxBTwtaHnK78AwFrzaMUOJOPBNxO9yJnmuKzZFEQmvu2hYsO4W1gVkq
-QjGl62mbj3vnsrKIJgvZBqZNg4rQZDo6kLmHY6l0yU/utBH2X8Enfig5eCB3cPQc
-s0ChMC0taDg5aeZueDMLUbYE+W3bkwWcR8qdWa5O2hibA1I/PsyacV+sFbsDl63P
-Kx1JzOtR2970l0VfvWXS/49rLEf4O5x0FoZAWcqvWoiwWy52l4CLBpF2Bc3SZpI=
-=5qXk
+iQEcBAEBCAAGBQJXFg5jAAoJECTWi3JdVIfQg9IH/jEA7d1UFAO/vxk0CzmRR541
+recG/2lb7Hm8rLTQE7YsZGAD4NqiY+3pCJqJ28t16sh3583ZhxXgj1/9dt8sREqP
+mFfxOV/Lp1t9MUm2UFbryW9zpAGr7vxwwuifQnpL2isXFI68hOwEPyM6sbg4wjDv
+p9IRNMlY4SGLlTSOl8bob5AsqVb3oQ+OIvPLlv3+A7QHHOml63IXeR4TwCOAES14
+Fg/DLafvzusqdJ3CfJNh+eBrQ66g8GUSTv4KqmwQdb0hBqOal4malqbguU5dCkXH
+TSEW1UYjwGE1V9tKOv19wFaTe0iKsvsAeBghNJ3NFt9aHxBic8+RTwO4NAS6HSY=
+=/Fe+
 -----END PGP SIGNATURE-----
 
---GvlH2BAVfmx8aXCn--
+--WkmTq0Xj5pNQBic9--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
