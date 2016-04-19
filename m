@@ -1,83 +1,45 @@
-From: Peter Rosin <peda@axentia.se>
-Subject: Re: [PATCH] ASoC: docs: add clocking examples for DAI formats
-Date: Mon, 18 Apr 2016 20:49:32 +0000
-Message-ID: <AM4PR02MB1299226084B681EE68C93958BC6B0@AM4PR02MB1299.eurprd02.prod.outlook.com>
+From: Jeremy McDermond <nh6z@nh6z.net>
+Subject: [PATCH v2 0/3] ASoC: tlv320aic32x4: Add SPI Support
+Date: Mon, 18 Apr 2016 17:24:03 -0700
+Message-ID: <1461025446-7693-1-git-send-email-nh6z@nh6z.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Language: sv-SE
-Sender: linux-doc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Jonathan Corbet <corbet@lwn.net>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "peda@lysator.liu.se" <peda@lysator.liu.se>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.xenotropic.com (mail.xenotropic.com [198.178.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4518F265307
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2016 02:24:17 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org
+Cc: Jeremy McDermond <nh6z@nh6z.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 2016-04-18 17:11, Mark Brown wrote:
-> On Mon, Apr 18, 2016 at 01:18:47PM +0000, Peter Rosin wrote:
->> Mark Brown wrote:
-> 
->>>
->>> There aren't any (beyond the usual references to the Wolfson datasheets
->>> which I'd suggest should be in here) but that doesn't mean we should
->>> ignore this spec when we have it.
-> 
->> This is exactly the problem. For an outsider, it's impossible to know that
->> wolfson has the correct definition of the modes. Why should wolfson datasheets
->> trumph nxp or ti datasheets (or whatever), if there is an inconsistency?
-> 
-> I'm not quite sure what your concern is here?  I'm saying that where
-> there are specs we should link to them.  I'm not saying we can't add
-> to that.
+The TLV320AIC32x4 support the control channel over either SPI or I2C.
+Added the proper interfacing with regmap to make the driver able to
+handle either possibility.
 
-I'm just saying that I don't know which specs to trust.
+Jeremy McDermond (3):
+  ASoC: tlv320aic32x4: Change name of probe function
+  ASoC: tlv320aic32x4:  Break out I2C support into separate module
+  ASoC: tlv320aic32x4:  Add SPI support.
 
-E.g. a random wolfson datasheet (wm8778) says that DSP mode B will have BCLK and
-LRC like this when it is clk master
+ sound/soc/codecs/Kconfig             | 13 +++++-
+ sound/soc/codecs/Makefile            |  4 ++
+ sound/soc/codecs/tlv320aic32x4-i2c.c | 74 +++++++++++++++++++++++++++++++++
+ sound/soc/codecs/tlv320aic32x4-spi.c | 76 ++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/tlv320aic32x4.c     | 80 ++++++++++++------------------------
+ sound/soc/codecs/tlv320aic32x4.h     |  7 ++++
+ 6 files changed, 199 insertions(+), 55 deletions(-)
+ create mode 100644 sound/soc/codecs/tlv320aic32x4-i2c.c
+ create mode 100644 sound/soc/codecs/tlv320aic32x4-spi.c
 
- .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-.
--' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-
-       .---.                                                       .---.
--------'   '-------------------------------------------------------'   '-----
-
-and that it will accept the negative LRC flank later when it is clk slave,
-with a figure showing this as the extreme:
-
- .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-.
--' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-
----.   .-------------------------------------------------------.   .-----
-   '---'                                                       '---'
-
-Then we have the tfa9879 datasheet from nxp which has this for its long sync
-format:
-
--. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-
- '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-'
------. .---------------------------------------------------------. .-----
-     '-'                                                         '-'
-
-This is all very difficult to match up for someone who doesn't work with this
-on a day-to-day basis and know it by heart. Why should I go to some random
-wolfson datasheet for info?
-
-I don't know if the nxp long sync format is compatible with DSP mode B with
-inverted BCLK, but it certainly looks like it might be. The LRC is low for
-only half a cycle and that is not acceptable according to the wolfson
-datasheet, but is that a limitation in wm8778 or is the tfa9879 problematic?
-How would you suppose I figure out if the tfa9879 driver should declare
-compatibility with DSP mode B with inverted BCLK if there is no documentation
-of what *ASoC* thinks that DSP mode B really is?
-
-This info is desperately missing, that is all that I'm saying.
-
-With this background, I'm a bit reluctant to add links to some datasheet,
-because they tend to describe how the chip in question behaves, and not the
-protocol as such. But sure, the I2S spec is something else as it's independent
-from any particular chip.
-
-BTW, I found out that I had misunderstood DSP mode A in v1/v2 of the patch, so
-a v3 is coming up where I'll also add a link to the I2S spec. If there is any
-particular link that you think I should add for any other format spec, please
-holler.
-
-Cheers,
-Peter
+-- 
+2.5.0
