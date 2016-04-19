@@ -1,57 +1,68 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v9 3/7] ASoC: hdmi-codec: Add hdmi-codec for external
- HDMI-encoders
-Date: Tue, 19 Apr 2016 11:54:29 +0100
-Message-ID: <20160419105429.GS3217@sirena.org.uk>
-References: <cover.1459431292.git.jsarha@ti.com>
- <636486b25db48fa13ae640516cdebe7bcfea0d23.1459431292.git.jsarha@ti.com>
- <57160B9F.9090907@ti.com>
+From: PC Liao <pc.liao@mediatek.com>
+Subject: [PATCH] ASoC: core: export snd_soc_get_dai_name
+Date: Tue, 19 Apr 2016 19:36:41 +0800
+Message-ID: <1461065801-19535-1-git-send-email-pc.liao@mediatek.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="WkmTq0Xj5pNQBic9"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <57160B9F.9090907-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Cc: dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, airlied-cv59FeDIM0c@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, tomi.valkeinen-l0cyMroinI0@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, tiwai@suse.de
+Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, koro.chen@mediatek.com, Jean-Francois Moine <moinejf@free.fr>, PC Liao <pc.liao@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Jean-Francois Moine <moinejf@free.fr>
 
---WkmTq0Xj5pNQBic9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+snd_soc_get_dai_name() may be used to define a sound card with
+a different syntax from the one of the simple-card.
 
-On Tue, Apr 19, 2016 at 01:42:39PM +0300, Jyri Sarha wrote:
+Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
+Signed-off-by: PC Liao <pc.liao@mediatek.com>
+---
+[1] is applied and needs this patch.
+Otherwise, [1] will build fail.
 
-> There is now two acks (and a tested-by?) to this patch and reviewed-by
-> to an earlier version (with very small change this this one). I think it
-> would make sense to apply this one now, even if there are no users to
-> the driver just yet. Then all the video side users could (at least in
-> theory) implement the HW specific hdmi audio support with video side
-> patches only.
+[1] https://patchwork.kernel.org/patch/8878491/
+("ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver")
+---
+ include/sound/soc.h  |    2 ++
+ sound/soc/soc-core.c |    5 +++--
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
-> What do you think?
-
-I applied it yesterday.
-
---WkmTq0Xj5pNQBic9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXFg5jAAoJECTWi3JdVIfQg9IH/jEA7d1UFAO/vxk0CzmRR541
-recG/2lb7Hm8rLTQE7YsZGAD4NqiY+3pCJqJ28t16sh3583ZhxXgj1/9dt8sREqP
-mFfxOV/Lp1t9MUm2UFbryW9zpAGr7vxwwuifQnpL2isXFI68hOwEPyM6sbg4wjDv
-p9IRNMlY4SGLlTSOl8bob5AsqVb3oQ+OIvPLlv3+A7QHHOml63IXeR4TwCOAES14
-Fg/DLafvzusqdJ3CfJNh+eBrQ66g8GUSTv4KqmwQdb0hBqOal4malqbguU5dCkXH
-TSEW1UYjwGE1V9tKOv19wFaTe0iKsvsAeBghNJ3NFt9aHxBic8+RTwO4NAS6HSY=
-=/Fe+
------END PGP SIGNATURE-----
-
---WkmTq0Xj5pNQBic9--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 02b4a21..03b2d19 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1669,6 +1669,8 @@ unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
+ 				     const char *prefix,
+ 				     struct device_node **bitclkmaster,
+ 				     struct device_node **framemaster);
++int snd_soc_get_dai_name(struct of_phandle_args *args,
++			 const char **dai_name);
+ int snd_soc_of_get_dai_name(struct device_node *of_node,
+ 			    const char **dai_name);
+ int snd_soc_of_get_dai_link_codecs(struct device *dev,
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index d2e62b15..69cbbb0 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3786,8 +3786,8 @@ unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_of_parse_daifmt);
+ 
+-static int snd_soc_get_dai_name(struct of_phandle_args *args,
+-				const char **dai_name)
++int snd_soc_get_dai_name(struct of_phandle_args *args,
++			 const char **dai_name)
+ {
+ 	struct snd_soc_component *pos;
+ 	struct device_node *component_of_node;
+@@ -3838,6 +3838,7 @@ static int snd_soc_get_dai_name(struct of_phandle_args *args,
+ 	mutex_unlock(&client_mutex);
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(snd_soc_get_dai_name);
+ 
+ int snd_soc_of_get_dai_name(struct device_node *of_node,
+ 			    const char **dai_name)
+-- 
+1.7.9.5
