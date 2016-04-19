@@ -1,36 +1,67 @@
-From: PC Liao <pc.liao@mediatek.com>
-Subject: [PATCH v5] ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver
-Date: Tue, 19 Apr 2016 17:46:12 +0800
-Message-ID: <1461059172-47460-1-git-send-email-pc.liao@mediatek.com>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver" to the asoc tree
+Date: Tue, 19 Apr 2016 10:55:40 +0100
+Message-ID: <E1asSNg-0003qx-20@debutante>
+References: <1461059172-47460-1-git-send-email-pc.liao@mediatek.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1461059172-47460-1-git-send-email-pc.liao@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, tiwai@suse.de
-Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, koro.chen@mediatek.com, PC Liao <pc.liao@mediatek.com>
+To: PC Liao <pc.liao@mediatek.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, tiwai@suse.de, alsa-devel@alsa-project.org, srv_heupstream@mediatek.com, s.hauer@pengutronix.de, linux-kernel@vger.kernel.org, koro.chen@mediatek.com, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
+
+The patch
+
+   ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 0beeb8d0b434b8b007ac8058fb2cac5997fff6df Mon Sep 17 00:00:00 2001
+From: PC Liao <pc.liao@mediatek.com>
+Date: Tue, 19 Apr 2016 17:46:12 +0800
+Subject: [PATCH] ASoC: mediatek: Add second I2S on mt8173-rt5650 machine
+ driver
 
 This patch adds second I2S connection to rt5650 codec for capture path on
 mt8173-rt5650 machine driver.
 
-This patch depends on [1], because snd_soc_of_get_dai_name() fix the property 
+This patch depends on [1], because snd_soc_of_get_dai_name() fix the property
 name "sound-dai". This patch needs to change name to use, so export
-snd_soc_get_dai_name() which is included in snd_soc_of_get_dai_name(). 
+snd_soc_get_dai_name() which is included in snd_soc_of_get_dai_name().
 
 [1] https://patchwork.kernel.org/patch/5671961/ ("ASoC: core: export
 snd_soc_get_dai_name")
 
 Signed-off-by: PC Liao <pc.liao@mediatek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
-Changes since v4:
-Change name from "sound-dai" to "capture-dai" to determine the capture path
----
- .../devicetree/bindings/sound/mt8173-rt5650.txt    |    6 +++
- sound/soc/mediatek/mt8173-rt5650.c                 |   44 ++++++++++++++++++--
+ .../devicetree/bindings/sound/mt8173-rt5650.txt    |  6 +++
+ sound/soc/mediatek/mt8173-rt5650.c                 | 44 ++++++++++++++++++++--
  2 files changed, 47 insertions(+), 3 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
-index fe5a5ef..802dd1b 100644
+index fe5a5ef1714d..802dd1bf0fc6 100644
 --- a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
 +++ b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
 @@ -5,11 +5,17 @@ Required properties:
@@ -52,7 +83,7 @@ index fe5a5ef..802dd1b 100644
  	};
  
 diff --git a/sound/soc/mediatek/mt8173-rt5650.c b/sound/soc/mediatek/mt8173-rt5650.c
-index bb09bb1..45dea22 100644
+index bb09bb1b7f1c..45dea226e4c8 100644
 --- a/sound/soc/mediatek/mt8173-rt5650.c
 +++ b/sound/soc/mediatek/mt8173-rt5650.c
 @@ -85,12 +85,26 @@ static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
@@ -139,4 +170,4 @@ index bb09bb1..45dea22 100644
  	platform_set_drvdata(pdev, card);
  
 -- 
-1.7.9.5
+2.8.0.rc3
