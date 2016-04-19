@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7219: Update PLL ranges and dividers to improve locking" to the asoc tree
-Date: Tue, 19 Apr 2016 17:41:37 +0100
-Message-ID: <E1asYiX-0001g8-Fg@debutante>
-References: <c4a7a64be81c12da79bc47a9ca5fa798611a12fc.1461071847.git.Adam.Thomson.Opensource@diasemi.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <c4a7a64be81c12da79bc47a9ca5fa798611a12fc.1461071847.git.Adam.Thomson.Opensource@diasemi.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>
+Subject: Applied "ASoC: tlv320aix31xx: Add ACPI match for
+	Lenovo 100S" to the asoc tree
+Date: Tue, 19 Apr 2016 17:41:31 +0100
+Message-ID: <E1asYiR-0001eq-Hx@debutante>
+References: <1461081620-23378-1-git-send-email-hadess@hadess.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id A7FFA265E05
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2016 18:41:41 +0200 (CEST)
+In-Reply-To: <1461081620-23378-1-git-send-email-hadess@hadess.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bastien Nocera <hadess@hadess.net>
+Cc: Mark Brown <broonie@kernel.org>, Jan Schmidt <jan@centricular.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7219: Update PLL ranges and dividers to improve locking
+   ASoC: tlv320aix31xx: Add ACPI match for Lenovo 100S
 
 has been applied to the asoc tree at
 
@@ -37,100 +53,61 @@ to this mail.
 Thanks,
 Mark
 
->From 63a450aa4d08ccf4f53e9fa59144e746e2288319 Mon Sep 17 00:00:00 2001
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Tue, 19 Apr 2016 15:19:02 +0100
-Subject: [PATCH] ASoC: da7219: Update PLL ranges and dividers to improve
- locking
+>From f5cc17720b61af382a053d49a4a14c3d14857a5b Mon Sep 17 00:00:00 2001
+From: Bastien Nocera <hadess@hadess.net>
+Date: Tue, 19 Apr 2016 18:00:20 +0200
+Subject: [PATCH] ASoC: tlv320aix31xx: Add ACPI match for Lenovo 100S
 
-The expected MCLK frequency ranges and the associated dividers
-are updated to improve PLL locking in a corner scenario, with low
-MCLK frequency near an input divider change boundary.
+The Lenovo 100S netbook has a codec controller for which there is a
+driver, but doesn't know how to access the device. This adds the
+necessary ACPI table for the driver to find the device.
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Device (TTLV)
+{
+    Name (_ADR, Zero)  // _ADR: Address
+    Name (_HID, "10TI3100")  // _HID: Hardware ID
+    Name (_CID, "10TI3100")  // _CID: Compatible ID
+    Name (_DDN, "TI TLV320AIC3100 Codec Controller ")  // _DDN: DOS Device Name
+    Name (_UID, One)  // _UID: Unique ID
+
+Signed-off-by: Bastien Nocera <hadess@hadess.net>
+Tested-by: Jan Schmidt <jan@centricular.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7219.c | 28 ++++++++++++++--------------
- sound/soc/codecs/da7219.h | 20 ++++++++++----------
- 2 files changed, 24 insertions(+), 24 deletions(-)
+ sound/soc/codecs/tlv320aic31xx.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index 81c0708b85c1..3b1d65badbda 100644
---- a/sound/soc/codecs/da7219.c
-+++ b/sound/soc/codecs/da7219.c
-@@ -1079,21 +1079,21 @@ static int da7219_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
- 		dev_err(codec->dev, "PLL input clock %d below valid range\n",
- 			da7219->mclk_rate);
- 		return -EINVAL;
--	} else if (da7219->mclk_rate <= 5000000) {
--		indiv_bits = DA7219_PLL_INDIV_2_5_MHZ;
--		indiv = DA7219_PLL_INDIV_2_5_MHZ_VAL;
--	} else if (da7219->mclk_rate <= 10000000) {
--		indiv_bits = DA7219_PLL_INDIV_5_10_MHZ;
--		indiv = DA7219_PLL_INDIV_5_10_MHZ_VAL;
--	} else if (da7219->mclk_rate <= 20000000) {
--		indiv_bits = DA7219_PLL_INDIV_10_20_MHZ;
--		indiv = DA7219_PLL_INDIV_10_20_MHZ_VAL;
--	} else if (da7219->mclk_rate <= 40000000) {
--		indiv_bits = DA7219_PLL_INDIV_20_40_MHZ;
--		indiv = DA7219_PLL_INDIV_20_40_MHZ_VAL;
-+	} else if (da7219->mclk_rate <= 4500000) {
-+		indiv_bits = DA7219_PLL_INDIV_2_TO_4_5_MHZ;
-+		indiv = DA7219_PLL_INDIV_2_TO_4_5_MHZ_VAL;
-+	} else if (da7219->mclk_rate <= 9000000) {
-+		indiv_bits = DA7219_PLL_INDIV_4_5_TO_9_MHZ;
-+		indiv = DA7219_PLL_INDIV_4_5_TO_9_MHZ_VAL;
-+	} else if (da7219->mclk_rate <= 18000000) {
-+		indiv_bits = DA7219_PLL_INDIV_9_TO_18_MHZ;
-+		indiv = DA7219_PLL_INDIV_9_TO_18_MHZ_VAL;
-+	} else if (da7219->mclk_rate <= 36000000) {
-+		indiv_bits = DA7219_PLL_INDIV_18_TO_36_MHZ;
-+		indiv = DA7219_PLL_INDIV_18_TO_36_MHZ_VAL;
- 	} else if (da7219->mclk_rate <= 54000000) {
--		indiv_bits = DA7219_PLL_INDIV_40_54_MHZ;
--		indiv = DA7219_PLL_INDIV_40_54_MHZ_VAL;
-+		indiv_bits = DA7219_PLL_INDIV_36_TO_54_MHZ;
-+		indiv = DA7219_PLL_INDIV_36_TO_54_MHZ_VAL;
- 	} else {
- 		dev_err(codec->dev, "PLL input clock %d above valid range\n",
- 			da7219->mclk_rate);
-diff --git a/sound/soc/codecs/da7219.h b/sound/soc/codecs/da7219.h
-index 5a787e738084..ff2a2f02ce40 100644
---- a/sound/soc/codecs/da7219.h
-+++ b/sound/soc/codecs/da7219.h
-@@ -194,11 +194,11 @@
- /* DA7219_PLL_CTRL = 0x20 */
- #define DA7219_PLL_INDIV_SHIFT		2
- #define DA7219_PLL_INDIV_MASK		(0x7 << 2)
--#define DA7219_PLL_INDIV_2_5_MHZ	(0x0 << 2)
--#define DA7219_PLL_INDIV_5_10_MHZ	(0x1 << 2)
--#define DA7219_PLL_INDIV_10_20_MHZ	(0x2 << 2)
--#define DA7219_PLL_INDIV_20_40_MHZ	(0x3 << 2)
--#define DA7219_PLL_INDIV_40_54_MHZ	(0x4 << 2)
-+#define DA7219_PLL_INDIV_2_TO_4_5_MHZ	(0x0 << 2)
-+#define DA7219_PLL_INDIV_4_5_TO_9_MHZ	(0x1 << 2)
-+#define DA7219_PLL_INDIV_9_TO_18_MHZ	(0x2 << 2)
-+#define DA7219_PLL_INDIV_18_TO_36_MHZ	(0x3 << 2)
-+#define DA7219_PLL_INDIV_36_TO_54_MHZ	(0x4 << 2)
- #define DA7219_PLL_MCLK_SQR_EN_SHIFT	5
- #define DA7219_PLL_MCLK_SQR_EN_MASK	(0x1 << 5)
- #define DA7219_PLL_MODE_SHIFT		6
-@@ -761,11 +761,11 @@
- #define DA7219_PLL_FREQ_OUT_98304	98304000
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index ee4def4f819f..3c5e1df01c19 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -28,6 +28,7 @@
+ #include <linux/i2c.h>
+ #include <linux/gpio.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/acpi.h>
+ #include <linux/of.h>
+ #include <linux/of_gpio.h>
+ #include <linux/slab.h>
+@@ -1280,10 +1281,19 @@ static const struct i2c_device_id aic31xx_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, aic31xx_i2c_id);
  
- /* PLL Frequency Dividers */
--#define DA7219_PLL_INDIV_2_5_MHZ_VAL	1
--#define DA7219_PLL_INDIV_5_10_MHZ_VAL	2
--#define DA7219_PLL_INDIV_10_20_MHZ_VAL	4
--#define DA7219_PLL_INDIV_20_40_MHZ_VAL	8
--#define DA7219_PLL_INDIV_40_54_MHZ_VAL	16
-+#define DA7219_PLL_INDIV_2_TO_4_5_MHZ_VAL	1
-+#define DA7219_PLL_INDIV_4_5_TO_9_MHZ_VAL	2
-+#define DA7219_PLL_INDIV_9_TO_18_MHZ_VAL	4
-+#define DA7219_PLL_INDIV_18_TO_36_MHZ_VAL	8
-+#define DA7219_PLL_INDIV_36_TO_54_MHZ_VAL	16
- 
- /* SRM */
- #define DA7219_SRM_CHECK_RETRIES	8
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id aic31xx_acpi_match[] = {
++	{ "10TI3100", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(acpi, aic31xx_acpi_match);
++#endif
++
+ static struct i2c_driver aic31xx_i2c_driver = {
+ 	.driver = {
+ 		.name	= "tlv320aic31xx-codec",
+ 		.of_match_table = of_match_ptr(tlv320aic31xx_of_match),
++		.acpi_match_table = ACPI_PTR(aic31xx_acpi_match),
+ 	},
+ 	.probe		= aic31xx_i2c_probe,
+ 	.remove		= aic31xx_i2c_remove,
 -- 
 2.8.0.rc3
