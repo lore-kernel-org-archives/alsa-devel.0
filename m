@@ -1,17 +1,16 @@
-From: David Binderman <dcb314@hotmail.com>
-Subject: linux-4.6-rc4/sound/pci/ens1370.c:1551: possible bad
-	expression ?
-Date: Mon, 18 Apr 2016 16:17:58 +0000
-Message-ID: <DUB128-W43C83AA6E3851834E8340F9C6B0@phx.gbl>
-References: <DUB128-W44E71E14CBE4AC54396DFA9C6B0@phx.gbl>
+From: Edison  <13880996366@163.com>
+Subject: Re: MC13783 ALSA driver with asynchronous DAI support
+Date: Tue, 19 Apr 2016 11:04:13 +0800 (CST)
+Message-ID: <28914850.52b1.1542c79b0af.Coremail.13880996366@163.com>
+References: <37682f95.6053.1542766c8bd.Coremail.13880996366@163.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from DUB004-OMC1S20.hotmail.com (dub004-omc1s20.hotmail.com
- [157.55.0.219]) by alsa0.perex.cz (Postfix) with ESMTP id 8401526154C
- for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 18:17:59 +0200 (CEST)
-In-Reply-To: <DUB128-W44E71E14CBE4AC54396DFA9C6B0@phx.gbl>
+Received: from m13-20.163.com (m13-20.163.com [220.181.13.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id B2306265173
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2016 05:04:17 +0200 (CEST)
+In-Reply-To: <37682f95.6053.1542766c8bd.Coremail.13880996366@163.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,22 +20,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
+Cc: philippe.retornaz@epfl.ch, s.hauer@pengutronix.de, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-Hello there,
-
-[linux-4.6-rc4/sound/pci/ens1370.c:1551]: (style) Expression '(X & 0xf0000)=
->=3D 0x4' is always false.
-
-Source code is
-
-=A0=A0=A0 if ((ensoniq->ctrl & ES_1371_GPIO_OUTM)>=3D 4)
-=A0=A0=A0=A0=A0=A0=A0 val =3D 1;
-
-
-Regards
-
-David Binderman
-
- 		 	   		  =
+CkhJwqBTYXNjaGEsCsKgIMKgIEkgZ29vZ2xlIGEgcG9zdCBmcm9tIHlvdS4KwqAgwqDCoMKgwqDC
+oMKgaHR0cDovL2NvbW1lbnRzLmdtYW5lLm9yZy9nbWFuZS5saW51eC5hbHNhLmRldmVsLzY4OTc5
+IArCoCDCoFlvdSBzYWlkIHlvdSB1c2VkIGFzeW5jaHJvbm91cyBtb2RlIG9uwqBNQzEzNzgzwqAo
+d2l0aCB0d28gU1NJIHBvcnRzLCBvbmUgZm9yIGNhcHR1cmUsIG9uZSBmb3IgcGxheSBiYWNrKS4g
+SSB0aGluayBpdCBpcyBleGFjdGx5IHRoZSBjYXNlIEkgbWV0LCBjb3VsZCB5b3UgcGxlYXNlIHNo
+b3cgbWUgdGhlIGluZm9ybWF0aW9uIHRvIG1ha2UgaXQgd29ya3M/IFRoYW5rcyB2ZXJ5IG11Y2gu
+CgoKCgoKCgoKQXQgMjAxNi0wNC0xOCAxMToyNToyOCwgIkVkaXNvbiIgPDEzODgwOTk2MzY2QDE2
+My5jb20+IHdyb3RlOgo+SEkgQ29tbXVuaXR5LAo+Cj4gICBJJ20gd29ya2luZyBvbiBrZXJuZWwg
+dXBncmFkaW5nIGZvciAyLjYuMjIgQlNQIHRvIG5ldyBjb21tdW5pdHkgdmVyc2lvbiA0LlggKGRv
+d25sb2FkIGZyb20ga2VybmVsLm9yZyB3aXRob3V0IGFueSB2ZW5kb3IgcGF0Y2hlcykgZm9yIG91
+ciBjdXN0b21pemVkIElNWDI3IGJvYXJkLCBidXQgbWV0IHNvbWUgcHJvYmxlbSB3aGVuIHBvcnRp
+bmcgdGhlIE1DMTM3ODMgYXVkaW8gZGV2aWNlIGRyaXZlci4gT24gb3VyIGJvYXJkLCB0aGUgaGFy
+ZHdhcmUgZGVzaWduIGZvciBhdWRpbyBwYXJ0IGlzIHRoZSBzYW1lIGFzIElNWDI3IEFEUyBib2Fy
+ZCwgaW4gd2hpY2ggTUMxMzc4MyBhdWRpbyBpcyBjb25uZWN0IHRvIElNWDI3IHdpdGggdHdvIFNT
+SSBpbnRlcmZhY2UgKFNTSTEvU1MyKS4gSW4gdGhlIEZTTCAyLjYuMjIgQlNQLCAgZHJpdmVyIGRl
+c2lnbiBpcyB0aGUgc2FtZSBhcyB0aGUgaGFyZHdhcmUgc2NoZW1hdGljIC0gYWxzYSBkcml2ZXIg
+dXNlIFNTSTEgLyBTU0kyIGFzIGNvZGVjIGFuZCBEQUMgcmVzcGVjdGl2ZWx5LiBJbiB0aGUgY29t
+bXVuaXR5IEJTUCAoNC5YKSwgIEkgdHJpZWQgdG8gYXNzaWduIHR3byBkaWZmZXJlbmNlIFNTSSBw
+b3J0IGZvciBNQzEzNzgzIGNvZGVjIGFzIGJlbG93Cj4gIC8qIE1DMTM3ODMgKi8KPiAgICBzdGF0
+aWMgc3RydWN0IG1jMTN4eHhfY29kZWNfcGxhdGZvcm1fZGF0YSBteDI3X2Fkc19jb2RlYyA9IHsK
+PiAgICAgICAgLmRhY19zc2lfcG9ydCA9IE1DMTM3ODNfU1NJMl9QT1JULAo+ICAgICAgICAuYWRj
+X3NzaV9wb3J0ID0gTUMxMzc4M19TU0kxX1BPUlQsCj4gICAgfTsKPiAKPiAgICAgSW4gbWMxMzc4
+MyBjb2RlYyBkcml2ZXIgaXQgd2lsbCBiZSBiaW5kIHRvIGFzeW5jaHJvbm91cyBEQUkgZm9yIHNl
+cGFyYXRlZCByb3V0aW5nIGZvciBBRC9EQSAobWMxMzc4My5jKSwgb25lIGNhbGxlZCBtYzEzNzgz
+LWhpZmktcGxheWJhY2sgYW5kIHRoZSBvdGhlciBjYWxsZWQgbWMxMzc4My1oaWZpLWNhcHR1cmUs
+IGJ1dCB0aGUgREFJIGJpbmQgd2lsbCBiZSBjZXJ0YWlubHkgdW5zdWNjZXNzZnVsIGJlY2F1c2Ug
+aW4gdGhlIG1jMTM3ODMgc291bmQgc29jIGRyaXZlciAoaW14LW1jMTM3ODMuYyksICB0aGUgZGFp
+X2xpbmsgbmFtZSBzZWVtcyBmaXhlZCB0byBiZSAibWMxMzc4M19oaWZpIiwgc28gbG9va3MgbGlr
+ZSBEQUkgYmluZCBjYW4gb25seSBiZSBzdWNjZXNzZnVsbHkgaWYgd2UgdXNlIHN5bmNocm9ub3Vz
+IG1vZGUgKEFEL0RBIHVzZSB0aGUgc2FtZSBTU0kgcG9ydCByYXRoZXIgdGhhbiBkaWZmZXJlbnQg
+cG9ydHMpLiBUaGF0IHNlZW1zIHRvIGJlIGEgYmlnIGRpZmZlcmVuY2UgYmV0d2VlbiBjb21tdW5p
+dHkgQlNQIGFuZCBGU0wgQlNQLiBNeSBxdWVzdGlvbjoKPjEuIEhhcyBzb21lb25lIHVzZWQgdGhl
+IGFzeW5jaHJvbm91cyBEQUkgaW4gdGhlaXIgZGVzaWduIHdpdGggY29tbXVuaXR5IEJTUCAoSSBj
+YW5ub3QgZmluZCBhbnkgcmVmZXJlbmNlIGZvciBtYzEzNzgzLWhpZmktcGxheWJhY2svbWMxMzc4
+My1oaWZpLWNhcHR1cmUgaW4gdGhlIGtlcm5lbCBzb3VyY2UgY29kZSk/Cj4yLiBDYW4gSSB1c2Ug
+c3luY2hyb25vdXMgREFJIChmb3JjZSBBREMvREFDIHVzZSBzYW1lIFNTSSkgaW5zdGVhZCBvZiBh
+c3luY2hyb25vdXMgREFJIG1ha2UgYXVkaW8gd29ya3Mgd2l0aG91dCBoYXJkd2FyZSBjaGFuZ2U/
+IChVbmZvcnR1bmF0ZWx5IEkgaGF2ZSBkb25lIHNvbWUgZXhwZXJpbWVudHMgYnV0IHNlZW1zIG5v
+dCB3b3JrLCBJIGNhbm5vdCBnZXQgdGhlIHByb3BlciB2b2ljZSBvbiB0aGUgaGVhZHBob25lIHdo
+ZW4gSSBzYXkgc29tZXRpbWUgb24gTWljIHdpdGggbXkgc2VsZiBsb29wIHByb2dyYW0pLgo+ICAg
+ICBCVFcsIEkgbWV0IGFub3RoZXIgcHJvYmxlbSBldmVuIHVzaW5nIHN5bmNocm9ub3VzIERBSSwg
+dGhlIGRyaXZlciBhbHdheXMgcmV0dXJuICJjb2hlcmVudCBETUEgbWFzayBpcyB1bnNldCIsIG5v
+dyBJIGhhdmUgdG8gcGF0Y2ggaXQgd2l0aCBkZWZhdWx0IERNQSBtYXNrLgo+IApfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
