@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7219: Disallow unsupported 32KHz clock setting in set_dai_sysclk()" to the asoc tree
-Date: Tue, 19 Apr 2016 17:41:34 +0100
-Message-ID: <E1asYiU-0001fU-GT@debutante>
-References: <2f0a44c076880b6e39aa8440f9a021f9627f34a3.1461071847.git.Adam.Thomson.Opensource@diasemi.com>
+Subject: Applied "ASoC: da7219: Update PLL ranges and dividers to improve locking" to the asoc tree
+Date: Tue, 19 Apr 2016 17:41:37 +0100
+Message-ID: <E1asYiX-0001g8-Fg@debutante>
+References: <c4a7a64be81c12da79bc47a9ca5fa798611a12fc.1461071847.git.Adam.Thomson.Opensource@diasemi.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <2f0a44c076880b6e39aa8440f9a021f9627f34a3.1461071847.git.Adam.Thomson.Opensource@diasemi.com>
+In-Reply-To: <c4a7a64be81c12da79bc47a9ca5fa798611a12fc.1461071847.git.Adam.Thomson.Opensource@diasemi.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7219: Disallow unsupported 32KHz clock setting in set_dai_sysclk()
+   ASoC: da7219: Update PLL ranges and dividers to improve locking
 
 has been applied to the asoc tree at
 
@@ -37,35 +37,100 @@ to this mail.
 Thanks,
 Mark
 
->From fb137ba64a6415ddf231495f6d1a82de1cd69ed0 Mon Sep 17 00:00:00 2001
+>From 63a450aa4d08ccf4f53e9fa59144e746e2288319 Mon Sep 17 00:00:00 2001
 From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Tue, 19 Apr 2016 15:19:03 +0100
-Subject: [PATCH] ASoC: da7219: Disallow unsupported 32KHz clock setting in
- set_dai_sysclk()
+Date: Tue, 19 Apr 2016 15:19:02 +0100
+Subject: [PATCH] ASoC: da7219: Update PLL ranges and dividers to improve
+ locking
 
-The PLL function was updated to disallow 32KHz in
-commit 501f72e9c520 ("ASoC: da7219: Remove support for 32KHz PLL mode"),
-but set_dai_sysclk() was missed and still permits it. This patch resolves
-that discrepancy.
+The expected MCLK frequency ranges and the associated dividers
+are updated to improve PLL locking in a corner scenario, with low
+MCLK frequency near an input divider change boundary.
 
 Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7219.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/da7219.c | 28 ++++++++++++++--------------
+ sound/soc/codecs/da7219.h | 20 ++++++++++----------
+ 2 files changed, 24 insertions(+), 24 deletions(-)
 
 diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index 3b1d65badbda..caea2ee19d9a 100644
+index 81c0708b85c1..3b1d65badbda 100644
 --- a/sound/soc/codecs/da7219.c
 +++ b/sound/soc/codecs/da7219.c
-@@ -1025,7 +1025,7 @@ static int da7219_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 	if ((da7219->clk_src == clk_id) && (da7219->mclk_rate == freq))
- 		return 0;
- 
--	if (((freq < 2000000) && (freq != 32768)) || (freq > 54000000)) {
-+	if ((freq < 2000000) || (freq > 54000000)) {
- 		dev_err(codec_dai->dev, "Unsupported MCLK value %d\n",
- 			freq);
+@@ -1079,21 +1079,21 @@ static int da7219_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
+ 		dev_err(codec->dev, "PLL input clock %d below valid range\n",
+ 			da7219->mclk_rate);
  		return -EINVAL;
+-	} else if (da7219->mclk_rate <= 5000000) {
+-		indiv_bits = DA7219_PLL_INDIV_2_5_MHZ;
+-		indiv = DA7219_PLL_INDIV_2_5_MHZ_VAL;
+-	} else if (da7219->mclk_rate <= 10000000) {
+-		indiv_bits = DA7219_PLL_INDIV_5_10_MHZ;
+-		indiv = DA7219_PLL_INDIV_5_10_MHZ_VAL;
+-	} else if (da7219->mclk_rate <= 20000000) {
+-		indiv_bits = DA7219_PLL_INDIV_10_20_MHZ;
+-		indiv = DA7219_PLL_INDIV_10_20_MHZ_VAL;
+-	} else if (da7219->mclk_rate <= 40000000) {
+-		indiv_bits = DA7219_PLL_INDIV_20_40_MHZ;
+-		indiv = DA7219_PLL_INDIV_20_40_MHZ_VAL;
++	} else if (da7219->mclk_rate <= 4500000) {
++		indiv_bits = DA7219_PLL_INDIV_2_TO_4_5_MHZ;
++		indiv = DA7219_PLL_INDIV_2_TO_4_5_MHZ_VAL;
++	} else if (da7219->mclk_rate <= 9000000) {
++		indiv_bits = DA7219_PLL_INDIV_4_5_TO_9_MHZ;
++		indiv = DA7219_PLL_INDIV_4_5_TO_9_MHZ_VAL;
++	} else if (da7219->mclk_rate <= 18000000) {
++		indiv_bits = DA7219_PLL_INDIV_9_TO_18_MHZ;
++		indiv = DA7219_PLL_INDIV_9_TO_18_MHZ_VAL;
++	} else if (da7219->mclk_rate <= 36000000) {
++		indiv_bits = DA7219_PLL_INDIV_18_TO_36_MHZ;
++		indiv = DA7219_PLL_INDIV_18_TO_36_MHZ_VAL;
+ 	} else if (da7219->mclk_rate <= 54000000) {
+-		indiv_bits = DA7219_PLL_INDIV_40_54_MHZ;
+-		indiv = DA7219_PLL_INDIV_40_54_MHZ_VAL;
++		indiv_bits = DA7219_PLL_INDIV_36_TO_54_MHZ;
++		indiv = DA7219_PLL_INDIV_36_TO_54_MHZ_VAL;
+ 	} else {
+ 		dev_err(codec->dev, "PLL input clock %d above valid range\n",
+ 			da7219->mclk_rate);
+diff --git a/sound/soc/codecs/da7219.h b/sound/soc/codecs/da7219.h
+index 5a787e738084..ff2a2f02ce40 100644
+--- a/sound/soc/codecs/da7219.h
++++ b/sound/soc/codecs/da7219.h
+@@ -194,11 +194,11 @@
+ /* DA7219_PLL_CTRL = 0x20 */
+ #define DA7219_PLL_INDIV_SHIFT		2
+ #define DA7219_PLL_INDIV_MASK		(0x7 << 2)
+-#define DA7219_PLL_INDIV_2_5_MHZ	(0x0 << 2)
+-#define DA7219_PLL_INDIV_5_10_MHZ	(0x1 << 2)
+-#define DA7219_PLL_INDIV_10_20_MHZ	(0x2 << 2)
+-#define DA7219_PLL_INDIV_20_40_MHZ	(0x3 << 2)
+-#define DA7219_PLL_INDIV_40_54_MHZ	(0x4 << 2)
++#define DA7219_PLL_INDIV_2_TO_4_5_MHZ	(0x0 << 2)
++#define DA7219_PLL_INDIV_4_5_TO_9_MHZ	(0x1 << 2)
++#define DA7219_PLL_INDIV_9_TO_18_MHZ	(0x2 << 2)
++#define DA7219_PLL_INDIV_18_TO_36_MHZ	(0x3 << 2)
++#define DA7219_PLL_INDIV_36_TO_54_MHZ	(0x4 << 2)
+ #define DA7219_PLL_MCLK_SQR_EN_SHIFT	5
+ #define DA7219_PLL_MCLK_SQR_EN_MASK	(0x1 << 5)
+ #define DA7219_PLL_MODE_SHIFT		6
+@@ -761,11 +761,11 @@
+ #define DA7219_PLL_FREQ_OUT_98304	98304000
+ 
+ /* PLL Frequency Dividers */
+-#define DA7219_PLL_INDIV_2_5_MHZ_VAL	1
+-#define DA7219_PLL_INDIV_5_10_MHZ_VAL	2
+-#define DA7219_PLL_INDIV_10_20_MHZ_VAL	4
+-#define DA7219_PLL_INDIV_20_40_MHZ_VAL	8
+-#define DA7219_PLL_INDIV_40_54_MHZ_VAL	16
++#define DA7219_PLL_INDIV_2_TO_4_5_MHZ_VAL	1
++#define DA7219_PLL_INDIV_4_5_TO_9_MHZ_VAL	2
++#define DA7219_PLL_INDIV_9_TO_18_MHZ_VAL	4
++#define DA7219_PLL_INDIV_18_TO_36_MHZ_VAL	8
++#define DA7219_PLL_INDIV_36_TO_54_MHZ_VAL	16
+ 
+ /* SRM */
+ #define DA7219_SRM_CHECK_RETRIES	8
 -- 
 2.8.0.rc3
