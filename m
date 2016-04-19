@@ -1,16 +1,21 @@
-From: Jeremy McDermond <nh6z@nh6z.net>
-Subject: [PATCH v2 3/3] ASoC: tlv320aic32x4: Add SPI support.
-Date: Mon, 18 Apr 2016 17:24:06 -0700
-Message-ID: <1461025446-7693-4-git-send-email-nh6z@nh6z.net>
-References: <1461025446-7693-1-git-send-email-nh6z@nh6z.net>
-Mime-Version: 1.0
+From: Rick Mann <rmann@latencyzero.com>
+Subject: Re: mcasp: stream has more channels (2) than are
+	enabled in mcasp (0)
+Date: Mon, 18 Apr 2016 17:25:16 -0700
+Message-ID: <5D6815AB-B3DF-4F4F-BC0D-33612A202975@latencyzero.com>
+References: <14D46C39-5FDF-40DD-A16B-2DA7BDE930CB@latencyzero.com>
+ <5714FEE5.5070002@ti.com>
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.xenotropic.com (mail.xenotropic.com [198.178.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 94B1026581B
- for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2016 02:24:24 +0200 (CEST)
-In-Reply-To: <1461025446-7693-1-git-send-email-nh6z@nh6z.net>
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 60E80265ADB
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2016 02:25:18 +0200 (CEST)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+ by mailout.nyi.internal (Postfix) with ESMTP id 9920720A23
+ for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2016 20:25:17 -0400 (EDT)
+In-Reply-To: <5714FEE5.5070002@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,145 +25,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org
-Cc: Jeremy McDermond <nh6z@nh6z.net>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add support for running the tlv32x4 control channel over SPI rather than I2C.
 
-Signed-off-by: Jeremy McDermond <nh6z@nh6z.net>
----
- sound/soc/codecs/Kconfig             |  6 +++
- sound/soc/codecs/Makefile            |  2 +
- sound/soc/codecs/tlv320aic32x4-spi.c | 76 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 84 insertions(+)
- create mode 100644 sound/soc/codecs/tlv320aic32x4-spi.c
+> On Apr 18, 2016, at 08:36 , Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
+> 
+> On 04/04/2016 11:59 AM, Rick Mann wrote:
+>> I've got a Beaglebone Green with a custom cape (CODEC and amp and some
+>> other stuff).
+>> 
+>> Kernel 4.4.6-bone-rt-r6. When I load the overlay that should set up my
+>> CODEC in the device tree, I get the following in the log.
+>> 
+>> [  367.172337] davinci-mcasp 48038000.mcasp: stream has more channels (2)
+>> than are enabled in mcasp (0) [  367.172374] davinci-mcasp 48038000.mcasp:
+>> ASoC: can't set 48038000.mcasp hw params: -22
+>> 
+>> You can see a little more log context, along with the DTS, here:
+>> 
+>> http://pastebin.com/UPB1xjPF
+>> 
+>> Can anyone tell me what this means? Thanks!
+> 
+> The fragment mostly looks OK, but am335x have 4 serializers, not 16 and the
+> num-serializer is deprecated at least in upstream kernel.
+> 
+> Something goes wrong when the McASP is loaded for sure, some parameters did
+> not got updated via DT perhaps, or most likely the DT fragment is loaded after
+> the McASP is loaded.
+> Can you print out:
+> slots, max_active_serializers, active_serializers and channels in
+> mcasp_common_hw_param() function?
+> Also just in case, can you put a dev_err() print in davinci_mcasp_probe() to
+> see when the driver is loaded compared to the time when the fragment is loaded?
+> 
+> If McASP is built in, try to build it as module and load the audio modules
+> after the DT fragments are handled.
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index e313fdd..2e32ef0 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -121,6 +121,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_TLV320AIC26 if SPI_MASTER
- 	select SND_SOC_TLV320AIC31XX if I2C
- 	select SND_SOC_TLV320AIC32X4_I2C if I2C
-+	select SND_SOC_TLV320AIC32X4_SPI if SPI_MASTER
- 	select SND_SOC_TLV320AIC3X if I2C
- 	select SND_SOC_TPA6130A2 if I2C
- 	select SND_SOC_TLV320DAC33 if I2C
-@@ -708,6 +709,11 @@ config SND_SOC_TLV320AIC32X4_I2C
- 	depends on I2C
- 	select SND_SOC_TLV320AIC32X4
- 
-+config SND_SOC_TLV320AIC32X4_SPI
-+	tristate
-+	depends on SPI_MASTER
-+	select SND_SOC_TLV320AIC32X4
-+
- config SND_SOC_TLV320AIC3X
- 	tristate "Texas Instruments TLV320AIC3x CODECs"
- 	depends on I2C
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 2f7c4c1..926acc5 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -126,6 +126,7 @@ snd-soc-tlv320aic26-objs := tlv320aic26.o
- snd-soc-tlv320aic31xx-objs := tlv320aic31xx.o
- snd-soc-tlv320aic32x4-objs := tlv320aic32x4.o
- snd-soc-tlv320aic32x4-i2c-objs := tlv320aic32x4-i2c.o
-+snd-soc-tlv320aic32x4-spi-objs := tlv320aic32x4-spi.o
- snd-soc-tlv320aic3x-objs := tlv320aic3x.o
- snd-soc-tlv320dac33-objs := tlv320dac33.o
- snd-soc-ts3a227e-objs := ts3a227e.o
-@@ -322,6 +323,7 @@ obj-$(CONFIG_SND_SOC_TLV320AIC26)	+= snd-soc-tlv320aic26.o
- obj-$(CONFIG_SND_SOC_TLV320AIC31XX)     += snd-soc-tlv320aic31xx.o
- obj-$(CONFIG_SND_SOC_TLV320AIC32X4)     += snd-soc-tlv320aic32x4.o
- obj-$(CONFIG_SND_SOC_TLV320AIC32X4_I2C)	+= snd-soc-tlv320aic32x4-i2c.o
-+obj-$(CONFIG_SND_SOC_TLV320AIC32X4_SPI)	+= snd-soc-tlv320aic32x4-spi.o
- obj-$(CONFIG_SND_SOC_TLV320AIC3X)	+= snd-soc-tlv320aic3x.o
- obj-$(CONFIG_SND_SOC_TLV320DAC33)	+= snd-soc-tlv320dac33.o
- obj-$(CONFIG_SND_SOC_TS3A227E)	+= snd-soc-ts3a227e.o
-diff --git a/sound/soc/codecs/tlv320aic32x4-spi.c b/sound/soc/codecs/tlv320aic32x4-spi.c
-new file mode 100644
-index 0000000..724fcdd
---- /dev/null
-+++ b/sound/soc/codecs/tlv320aic32x4-spi.c
-@@ -0,0 +1,76 @@
-+/*
-+ * linux/sound/soc/codecs/tlv320aic32x4-spi.c
-+ *
-+ * Copyright 2011 NW Digital Radio
-+ *
-+ * Author: Jeremy McDermond <nh6z@nh6z.net>
-+ *
-+ * Based on sound/soc/codecs/wm8974 and TI driver for kernel 2.6.27.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ */
-+
-+#include <linux/spi/spi.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/regmap.h>
-+#include <sound/soc.h>
-+
-+#include "tlv320aic32x4.h"
-+
-+static int aic32x4_spi_probe(struct spi_device *spi)
-+{
-+	struct regmap *regmap;
-+	struct regmap_config config;
-+
-+	config = aic32x4_regmap_config;
-+	config.reg_bits = 7;
-+	config.pad_bits = 1;
-+	config.val_bits = 8;
-+	config.read_flag_mask = 0x01;
-+
-+	regmap = devm_regmap_init_spi(spi, &config);
-+	return aic32x4_probe(&spi->dev, regmap);
-+}
-+
-+static int aic32x4_spi_remove(struct spi_device *spi)
-+{
-+	return aic32x4_remove(&spi->dev);
-+}
-+
-+static const struct spi_device_id aic32x4_spi_id[] = {
-+	{ "tlv320aic32x4", 0 },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(spi, aic32x4_spi_id);
-+
-+static const struct of_device_id aic32x4_of_id[] = {
-+	{ .compatible = "ti,tlv320aic32x4", },
-+	{ /* senitel */ }
-+};
-+MODULE_DEVICE_TABLE(of, aic32x4_of_id);
-+
-+static struct spi_driver aic32x4_spi_driver = {
-+	.driver = {
-+		.name = "tlv320aic32x4",
-+		.owner = THIS_MODULE,
-+		.of_match_table = aic32x4_of_id,
-+	},
-+	.probe =    aic32x4_spi_probe,
-+	.remove =   aic32x4_spi_remove,
-+	.id_table = aic32x4_spi_id,
-+};
-+
-+module_spi_driver(aic32x4_spi_driver);
-+
-+MODULE_DESCRIPTION("ASoC TLV320AIC32x4 codec driver SPI");
-+MODULE_AUTHOR("Jeremy McDermond <nh6z@nh6z.net>");
-+MODULE_LICENSE("GPL");
+Thanks for the suggestions, Peter, I really appreciate the help. Here's what I get:
+
+[  256.743991] davinci-mcasp 48038000.mcasp: Slots: 2, max_active_serializers: 1, active_serializers: 0, channels: 2
+
+I rebuilt the 4.4.7-bone-rt-r9 kernel using Robert C Nelson's bb-kernel repo scripts. I modified sound/soc/davinci/davinci-mcasp.c to print some diagnostics. Rebooted, then executed the following. Note that BB-BONE-AUDI-02.dts is <https://github.com/RobertCNelson/bb.org-overlays/blob/master/src/arm/BB-BONE-AUDI-02-00A0.dts>, and the base DTB is <http://pastebin.com/5vVEdAKt>:
+
+$ sudo su
+# echo BB-BONE-AUDI-02 > $SLOTS
+# aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: B [AudioCape Rev B], device 0: davinci-mcasp.0-tlv320aic3x-hifi tlv320aic3x-hifi-0 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+# speaker-test 
+
+speaker-test 1.0.28
+
+Playback device is default
+Stream parameters are 48000Hz, S16_LE, 1 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 16 to 32768
+Period size range from 8 to 16384
+Using max buffer size 32768
+Periods = 4
+Unable to set hw params for playback: Invalid argument
+Setting of hwparams failed: Invalid argument
+
+speaker-test caused the following to be logged:
+
+[  256.743991] davinci-mcasp 48038000.mcasp: Slots: 2, max_active_serializers: 1, active_serializers: 0, channels: 2
+[  256.754343] davinci-mcasp 48038000.mcasp: ASoC: can't set 48038000.mcasp hw params: -22
+
+
+Full logs:
+
+	http://pastebin.com/HGhu9CPk
+
+
+
+
 -- 
-2.5.0
+Rick Mann
+rmann@latencyzero.com
