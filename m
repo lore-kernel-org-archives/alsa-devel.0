@@ -1,71 +1,71 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: tlv320aix31xx: Add ACPI match for
-	Lenovo 100S
-Date: Tue, 19 Apr 2016 17:41:07 +0100
-Message-ID: <20160419164107.GY3217@sirena.org.uk>
-References: <1461081620-23378-1-git-send-email-hadess@hadess.net>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0396597309042781577=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 42956261AFF
- for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2016 18:41:14 +0200 (CEST)
-In-Reply-To: <1461081620-23378-1-git-send-email-hadess@hadess.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bastien Nocera <hadess@hadess.net>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Subject: Applied "ASoC: da7219: Disallow unsupported 32KHz clock setting in set_dai_sysclk()" to the asoc tree
+Date: Tue, 19 Apr 2016 17:41:34 +0100
+Message-ID: <E1asYiU-0001fU-GT@debutante>
+References: <2f0a44c076880b6e39aa8440f9a021f9627f34a3.1461071847.git.Adam.Thomson.Opensource@diasemi.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <2f0a44c076880b6e39aa8440f9a021f9627f34a3.1461071847.git.Adam.Thomson.Opensource@diasemi.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============0396597309042781577==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="uMD30mxrM/iO8yI3"
-Content-Disposition: inline
+   ASoC: da7219: Disallow unsupported 32KHz clock setting in set_dai_sysclk()
 
+has been applied to the asoc tree at
 
---uMD30mxrM/iO8yI3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Apr 19, 2016 at 06:00:20PM +0200, Bastien Nocera wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +static const struct acpi_device_id aic31xx_acpi_match[] = {
-> +	{ "10TI3100", 0 },
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-An ACPI identifier that actually bears some resemblance to the name of
-the part, will wonders never cease!  :)
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---uMD30mxrM/iO8yI3
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Thanks,
+Mark
 
-iQEcBAEBCAAGBQJXFl+hAAoJECTWi3JdVIfQl8AH/jRBpKmM0DYDcu32ogsJxeHS
-lI+T635X4ZA5zicLv/zpc7mKXgqSpUTICstLt3j5eaLch//c+KfXC8r2Kj3drptA
-cjokJElDP2V1wWdH0Gg+5/NUjoCfxjn34N2ONlbPnJTQsZAxeTlNY3nJ91djfJo3
-9vIwS/cnhnYBpEDXOof2Q8ZEsqR03MpWhaB8MLcq27rSlMS6/LU29zXw2HKnqCol
-08venGLYehx3XUXAVpaCs4URJ2539UakAQOrkXIyAahh6nqSzG+eCvCJL6KzjfFh
-Dv3Pwspd5aJYci0b9QmoATFtdPjdtE+6lBTOhknUPYPt+4z9K26bn1TUvIx5kKQ=
-=pCjE
------END PGP SIGNATURE-----
+>From fb137ba64a6415ddf231495f6d1a82de1cd69ed0 Mon Sep 17 00:00:00 2001
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Date: Tue, 19 Apr 2016 15:19:03 +0100
+Subject: [PATCH] ASoC: da7219: Disallow unsupported 32KHz clock setting in
+ set_dai_sysclk()
 
---uMD30mxrM/iO8yI3--
+The PLL function was updated to disallow 32KHz in
+commit 501f72e9c520 ("ASoC: da7219: Remove support for 32KHz PLL mode"),
+but set_dai_sysclk() was missed and still permits it. This patch resolves
+that discrepancy.
 
---===============0396597309042781577==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/da7219.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
---===============0396597309042781577==--
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 3b1d65badbda..caea2ee19d9a 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1025,7 +1025,7 @@ static int da7219_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 	if ((da7219->clk_src == clk_id) && (da7219->mclk_rate == freq))
+ 		return 0;
+ 
+-	if (((freq < 2000000) && (freq != 32768)) || (freq > 54000000)) {
++	if ((freq < 2000000) || (freq > 54000000)) {
+ 		dev_err(codec_dai->dev, "Unsupported MCLK value %d\n",
+ 			freq);
+ 		return -EINVAL;
+-- 
+2.8.0.rc3
