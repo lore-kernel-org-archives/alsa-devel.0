@@ -1,7 +1,7 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver" to the asoc tree
-Date: Tue, 19 Apr 2016 10:55:40 +0100
-Message-ID: <E1asSNg-0003qx-20@debutante>
+Date: Tue, 19 Apr 2016 10:58:42 +0100
+Message-ID: <E1asSQc-0004NY-44@debutante>
 References: <1461059172-47460-1-git-send-email-pc.liao@mediatek.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1461059172-47460-1-git-send-email-pc.liao@mediatek.com>
