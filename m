@@ -1,74 +1,102 @@
-From: PC Liao <pc.liao@mediatek.com>
-Subject: Re: Applied "ASoC: mediatek: Add second I2S on mt8173-rt5650
- machine driver" to the asoc tree
-Date: Tue, 19 Apr 2016 18:33:04 +0800
-Message-ID: <1461061984.28704.8.camel@mtksdaap41>
-References: <E1asSQc-0004NY-44@debutante>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3] ASoC: docs: add clocking examples for DAI formats
+Date: Tue, 19 Apr 2016 11:38:59 +0100
+Message-ID: <20160419103859.GQ3217@sirena.org.uk>
+References: <1461060688-19410-1-git-send-email-peda@axentia.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <E1asSQc-0004NY-44@debutante>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, srv_heupstream <srv_heupstream@mediatek.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Koro Chen =?UTF-8?Q?=28=E9=99=B3=E6=80=9D=E7=BF=B0=29?= <koro.chen@mediatek.com>, "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="J19t2I20ndwispKK"
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1461060688-19410-1-git-send-email-peda@axentia.se>
+Sender: linux-doc-owner@vger.kernel.org
+To: Peter Rosin <peda@axentia.se>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, peda@lysator.liu.se
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-On Tue, 2016-04-19 at 17:58 +0800, Mark Brown wrote:
-> The patch
-> 
->    ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver
-> 
-> has been applied to the asoc tree at
-> 
->    git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-> 
-> All being well this means that it will be integrated into the linux-next
-> tree (usually sometime in the next 24 hours) and sent to Linus during
-> the next merge window (or sooner if it is a bug fix), however if
-> problems are discovered then the patch may be dropped or reverted.  
-> 
-> You may get further e-mails resulting from automated or manual testing
-> and review of the tree, please engage with people reporting problems and
-> send followup patches addressing any issues that are reported if needed.
-> 
-> If any updates are required or you are submitting further changes they
-> should be sent as incremental updates against current git, existing
-> patches will not be replaced.
-> 
-> Please add any relevant lists and maintainers to the CCs when replying
-> to this mail.
-> 
-> Thanks,
-> Mark
-> 
-> From 0beeb8d0b434b8b007ac8058fb2cac5997fff6df Mon Sep 17 00:00:00 2001
-> From: PC Liao <pc.liao@mediatek.com>
-> Date: Tue, 19 Apr 2016 17:46:12 +0800
-> Subject: [PATCH] ASoC: mediatek: Add second I2S on mt8173-rt5650 machine
->  driver
-> 
-> This patch adds second I2S connection to rt5650 codec for capture path on
-> mt8173-rt5650 machine driver.
-> 
-> This patch depends on [1], because snd_soc_of_get_dai_name() fix the property
-> name "sound-dai". This patch needs to change name to use, so export
-> snd_soc_get_dai_name() which is included in snd_soc_of_get_dai_name().
-> 
-> [1] https://patchwork.kernel.org/patch/5671961/ ("ASoC: core: export
-> snd_soc_get_dai_name")
-> 
-> Signed-off-by: PC Liao <pc.liao@mediatek.com>
-> Signed-off-by: Mark Brown <broonie@kernel.org>
+--J19t2I20ndwispKK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks for your approval.
-But this patch depends on [1].
-I think it also needs to apply [1], otherwise this patch will build
-fail.
-Or, do I need to upload new version again?
-Thanks!  
+On Tue, Apr 19, 2016 at 12:11:28PM +0200, Peter Rosin wrote:
 
-[1] https://patchwork.kernel.org/patch/5671961/ ("ASoC: core: export
-snd_soc_get_dai_name")
+> +I2S
+> +
+> +LRC should have its flanks synchronized with a negative flank of BCLK.
+> +The left channel word starts one BCLK cycle after a negative flank of LRC, and
+
+Clock edges are normally referred to as such and have rising and falling
+edges, please don't invent new terminology.  In general this is using
+really strange language which makes it hard to follow.  Note also that
+except for modes where clocks need to be exactly synchronized like left
+justified the important thing is usually when the data can be sampled.
+It takes time for changes to propagate so there's a distinction between
+setting a state and when the state is looked at.
+
+> +if LRC is not matching the word size. Also, see
+> +https://www.sparkfun.com/datasheets/BreakoutBoards/I2SBUS.pdf
+
+Please make it clear that this is the official spec (there must be a
+better link for it, this was literally the first hit on Google).
+
+> +Left Justified (aka MSB)
+> +
+> +LRC should have its flanks synchronized with a negative flank of BCLK.
+> +The left channel word starts directly after a positive flank of LRC, and the
+> +right channel word starts directly after a negative flank of LRC. The words
+
+This is unclear - what does "directly after" mean?  Is it the clock
+after or do you mean that the data signal needs to change at the same
+time as the falling edge of the LRCLK?  It should be the latter.
+
+> +start with the MSB. Receivers must truncate words if more bits per word are
+> +transmitted than they can use, and transmitters must pad words with zeros if
+> +LRC is not matching the word size.
+
+Neither of these is really true, both things are undefined behaviour
+(this is how TDM works).  Transmitters can send anything or tristate and
+it doesn't make much practical difference what happens on the recieve
+side unless there's TDM.
+
+> +Right Justified (aka LSB)
+> +
+> +LRC should have its flanks synchronized with a negative flank of BCLK.
+> +The left channel word end right before a negative flank of LRC, and the right
+
+Again, this is unclear - what is "right before"?  The final bit needs to
+be sent on the BCLK edge preceeding the LRCLK transition.
+
+> +DSP mode A
+
+> +LRC should have positive flanks synchronized with a negative flank of BCLK.
+
+LRCLK needs to rise before BCLK, it's good to do it on the preceeding
+falling edge such that the timing is as relaxed as possible for the
+reciever but not 100% a requirement.
+
+> +The left channel word starts one BCLK after a positive flank of LRC, and the
+
+It can be sampled...
+
+> +right channel word starts directly after the left channel word. The words
+> +start with MSB.
+
+This isn't a stereo format, there can be any number of channels.
+
+--J19t2I20ndwispKK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXFgrCAAoJECTWi3JdVIfQWF4IAIAaLL684M4mp6XpzbxnDkKm
+a72Krs+kPURUuyVL37bDb5NZoWz0eVGwV61gmuKjndQQD8PXoyJrMu4pyqCBZO7q
+uMblb+UqqOn1UU1jdXoWKLNDzZiPPM5gWDgTt5ZPSmjM53W9idZZQ5if9ZbYGlEK
+q63VltjZ8ms+S+lmNn9J4ok9nmbeRCUKKzA/yNF5cCH6+f2P+bNMKDHqjuO9mZnm
+X80r+mN0PJgyksnPo4romR9UBNlmybNci+9cUujV5pOslJRJVd8ZkSm8ycg0Frrc
+TrhxThRyITbcnXP1rn+AC93qAaj2vEbI0FsMt0LwTJdWnoaKPJ5Ej4dN7yckKTY=
+=nEG/
+-----END PGP SIGNATURE-----
+
+--J19t2I20ndwispKK--
