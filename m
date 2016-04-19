@@ -1,184 +1,74 @@
-From: Peter Rosin <peda@axentia.se>
-Subject: [PATCH v3] ASoC: docs: add clocking examples for DAI formats
-Date: Tue, 19 Apr 2016 12:11:28 +0200
-Message-ID: <1461060688-19410-1-git-send-email-peda@axentia.se>
+From: PC Liao <pc.liao@mediatek.com>
+Subject: Re: Applied "ASoC: mediatek: Add second I2S on mt8173-rt5650
+ machine driver" to the asoc tree
+Date: Tue, 19 Apr 2016 18:33:04 +0800
+Message-ID: <1461061984.28704.8.camel@mtksdaap41>
+References: <E1asSQc-0004NY-44@debutante>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-doc-owner@vger.kernel.org>
-Sender: linux-doc-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Peter Rosin <peda@axentia.se>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, peda@lysator.liu.se
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <E1asSQc-0004NY-44@debutante>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, srv_heupstream <srv_heupstream@mediatek.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Koro Chen =?UTF-8?Q?=28=E9=99=B3=E6=80=9D=E7=BF=B0=29?= <koro.chen@mediatek.com>, "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Provide *our* view of what the rules are for the different DAI formats,
-so that we do not have to trust external interpretations for this
-crucial bit of interoperability.
+Hi Mark,
 
-Signed-off-by: Peter Rosin <peda@axentia.se>
----
- Documentation/sound/alsa/soc/clocking.txt | 146 +++++++++++++++++++++++++++++-
- 1 file changed, 144 insertions(+), 2 deletions(-)
+On Tue, 2016-04-19 at 17:58 +0800, Mark Brown wrote:
+> The patch
+> 
+>    ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver
+> 
+> has been applied to the asoc tree at
+> 
+>    git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> 
+> All being well this means that it will be integrated into the linux-next
+> tree (usually sometime in the next 24 hours) and sent to Linus during
+> the next merge window (or sooner if it is a bug fix), however if
+> problems are discovered then the patch may be dropped or reverted.  
+> 
+> You may get further e-mails resulting from automated or manual testing
+> and review of the tree, please engage with people reporting problems and
+> send followup patches addressing any issues that are reported if needed.
+> 
+> If any updates are required or you are submitting further changes they
+> should be sent as incremental updates against current git, existing
+> patches will not be replaced.
+> 
+> Please add any relevant lists and maintainers to the CCs when replying
+> to this mail.
+> 
+> Thanks,
+> Mark
+> 
+> From 0beeb8d0b434b8b007ac8058fb2cac5997fff6df Mon Sep 17 00:00:00 2001
+> From: PC Liao <pc.liao@mediatek.com>
+> Date: Tue, 19 Apr 2016 17:46:12 +0800
+> Subject: [PATCH] ASoC: mediatek: Add second I2S on mt8173-rt5650 machine
+>  driver
+> 
+> This patch adds second I2S connection to rt5650 codec for capture path on
+> mt8173-rt5650 machine driver.
+> 
+> This patch depends on [1], because snd_soc_of_get_dai_name() fix the property
+> name "sound-dai". This patch needs to change name to use, so export
+> snd_soc_get_dai_name() which is included in snd_soc_of_get_dai_name().
+> 
+> [1] https://patchwork.kernel.org/patch/5671961/ ("ASoC: core: export
+> snd_soc_get_dai_name")
+> 
+> Signed-off-by: PC Liao <pc.liao@mediatek.com>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
 
-Changed PCM mode A to start left word one BCLK after positive LRC edge.
-Added link to I2S spec as indicated by Mark Brown.
+Thanks for your approval.
+But this patch depends on [1].
+I think it also needs to apply [1], otherwise this patch will build
+fail.
+Or, do I need to upload new version again?
+Thanks!  
 
-Cheers,
-Peter
-
-diff --git a/Documentation/sound/alsa/soc/clocking.txt b/Documentation/sound/alsa/soc/clocking.txt
-index b1300162e01c..7eb02f0758e7 100644
---- a/Documentation/sound/alsa/soc/clocking.txt
-+++ b/Documentation/sound/alsa/soc/clocking.txt
-@@ -47,5 +47,147 @@ rate, number of channels and word size) to save on power.
- It is also desirable to use the codec (if possible) to drive (or master) the
- audio clocks as it usually gives more accurate sample rates than the CPU.
- 
--
--
-+The below diagrams all have BCLK as the first signal, LRC as the second signal
-+and DATA as the third. Below that is an indication about which DATA bits belong
-+in what channel.
-+
-+A "..." marking as DATA indicates that there may be more bits that are not
-+shown. Also, all DATA bits marked X may or may not be present. DAI
-+transmitters must add them should LRC not match the word size exactly and DAI
-+receivers must be prepared to ignore them. DAI transmitters must insert zeros
-+for I2S and Left Justified modes, and preferably not drive DATA for the DSP
-+modes for these extra X bits.
-+
-+
-+I2S
-+
-+LRC should have its flanks synchronized with a negative flank of BCLK.
-+The left channel word starts one BCLK cycle after a negative flank of LRC, and
-+the right channel word starts one BCLK cycle after a positive flank of LRC. The
-+words start with the MSB. Receivers must truncate words if more bits per word
-+are transmitted than they can use, and transmitters must pad words with zeros
-+if LRC is not matching the word size. Also, see
-+https://www.sparkfun.com/datasheets/BreakoutBoards/I2SBUS.pdf
-+
-+ .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-.
-+-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-
-+---.                               .-------------------------------.
-+   '-------------------------------'                               '-----
-+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.-
-+   |   |MSB|   |...|   |LSB| X |...| X |MSB|   |...|   |LSB| X |...| X |
-+---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'-
-+       | Left channel                  | Right channel                 |
-+
-+
-+Left Justified (aka MSB)
-+
-+LRC should have its flanks synchronized with a negative flank of BCLK.
-+The left channel word starts directly after a positive flank of LRC, and the
-+right channel word starts directly after a negative flank of LRC. The words
-+start with the MSB. Receivers must truncate words if more bits per word are
-+transmitted than they can use, and transmitters must pad words with zeros if
-+LRC is not matching the word size.
-+
-+ .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-.
-+-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-
-+   .-------------------------------.                               .-----
-+---'                               '-------------------------------'
-+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.-
-+   |MSB|   |...|   |LSB| X |...| X |MSB|   |...|   |LSB| X |...| X |   |
-+---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'-
-+   | Left channel                  | Right channel                 |
-+
-+
-+Right Justified (aka LSB)
-+
-+LRC should have its flanks synchronized with a negative flank of BCLK.
-+The left channel word end right before a negative flank of LRC, and the right
-+channel word ends right before a positive flank of LRC. The words end with LSB.
-+Transmitters must pad words if LRC is not matching the word size and the
-+transmitter and the receiver have to agree on the word leghth.
-+
-+ .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-.
-+-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-
-+   .-------------------------------.                               .-----
-+---'                               '-------------------------------'
-+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.-
-+   | X |...| X |MSB|   |...|   |LSB| X |...| X |MSB|   |...|   |LSB|   |
-+---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'-
-+   | Left channel                  | Right channel                 |
-+
-+
-+DSP mode A
-+
-+LRC should have positive flanks synchronized with a negative flank of BCLK.
-+The left channel word starts one BCLK after a positive flank of LRC, and the
-+right channel word starts directly after the left channel word. The words
-+start with MSB.
-+
-+ .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-.
-+-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-
-+   .-                                                          .-
-+  -'                                                          -'
-+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.-
-+   |   |MSB|   |...|   |LSB|MSB|   |...|   |LSB| X |   |...|   | X |   |
-+---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'-
-+       | Left channel      | Right channel     |                   |
-+
-+LRC examples for DSP mode A
-+   .---.                                                       .---.
-+---'   '-------------------------------------------------------'   '-----
-+   .-.                                                         .-.
-+---' '---------------------------------------------------------' '-------
-+-. .---------------------------------------------------------. .---------
-+ '-'                                                         '-'
-+
-+
-+DSP mode B
-+
-+LRC should have positive flanks synchronized with a negative flank of BCLK.
-+The left channel word starts directly after a positive flank of LRC, and the
-+right channel word starts directly after the left channel word. The words
-+start with MSB.
-+
-+ .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-.
-+-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-
-+   .-                                                          .-
-+  -'                                                          -'
-+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.-
-+   |MSB|   |...|   |LSB|MSB|   |...|   |LSB| X |   |...|   | X |   |   |
-+---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'-
-+   | Left channel      | Right channel     |                   |
-+
-+LRC examples for DSP mode B
-+   .---.                                                       .---.
-+---'   '-------------------------------------------------------'   '-----
-+-. .---------------------------------------------------------. .---------
-+ '-'                                                         '-'
-+
-+
-+The above diagrams show normal BCLK and LRC clocking where DAI transmitters
-+change DATA on the falling edge of BCLK and DAI receivers read DATA on the
-+rising edge. For inverted BCLK it is naturally the other way around. Inverted
-+LRC is just that. Note that DSP mode A is compatible with DSP mode B with
-+inverted LRC, and vice versa.
-+
-+
-+Left Justified, inverted BCLK
-+-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-
-+ '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-'
-+   .-------------------------------.                               .-----
-+---'                               '-------------------------------'
-+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.-
-+   |MSB|   |...|   |LSB| X |...| X |MSB|   |...|   |LSB| X |...| X |   |
-+---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'-
-+   | Left channel                  | Right channel                 |
-+
-+
-+Left Justified, inverted LRC
-+ .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-.
-+-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-
-+---.                               .-------------------------------.
-+   '-------------------------------'                               '-----
-+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.-
-+   |MSB|   |...|   |LSB| X |...| X |MSB|   |...|   |LSB| X |...| X |   |
-+---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'-
-+   | Left channel                  | Right channel                 |
--- 
-2.1.4
-
+[1] https://patchwork.kernel.org/patch/5671961/ ("ASoC: core: export
+snd_soc_get_dai_name")
