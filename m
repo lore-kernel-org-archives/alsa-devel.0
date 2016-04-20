@@ -1,8 +1,7 @@
 From: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v7 5/9] ASoC: hdmi-codec: Use HDMI notifications to add jack
- support
-Date: Wed, 20 Apr 2016 11:00:00 +0200
-Message-ID: <1461142804-26728-6-git-send-email-p.zabel@pengutronix.de>
+Subject: [PATCH v7 8/9] drm/mediatek: hdmi: issue notifications
+Date: Wed, 20 Apr 2016 11:00:03 +0200
+Message-ID: <1461142804-26728-9-git-send-email-p.zabel@pengutronix.de>
 References: <1461142804-26728-1-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,213 +21,74 @@ To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, PC Liao <pc.liao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Use HDMI connection / disconnection notifications to update an ALSA
-jack object. Also make a copy of the ELD block after every change.
+Issue hot-plug detection, EDID update, and ELD update notifications
+from the CEC and HDMI drivers.
 
 Signed-off-by: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 ---
-Changes since v6:
- - Also issue a jack connection report on HDMI_NEW_ELD, in case
-   the preceding HDMI_CONNECTED was missed, for example because
-   it was issued before hdmi-codec registered the notifier.
----
- include/sound/hdmi-codec.h    |  6 +++
- sound/soc/codecs/Kconfig      |  1 +
- sound/soc/codecs/hdmi-codec.c | 86 +++++++++++++++++++++++++++++++++++++++----
- 3 files changed, 85 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_cec.c  | 11 +++++++++++
+ drivers/gpu/drm/mediatek/mtk_hdmi.c |  3 +++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
-index fc3a481..9265a90 100644
---- a/include/sound/hdmi-codec.h
-+++ b/include/sound/hdmi-codec.h
-@@ -95,6 +95,12 @@ struct hdmi_codec_pdata {
- 	int max_i2s_channels;
- };
- 
-+struct snd_soc_codec;
-+struct snd_soc_jack;
-+
-+int hdmi_codec_set_jack_detect(struct snd_soc_codec *codec,
-+			       struct snd_soc_jack *jack);
-+
- #define HDMI_CODEC_DRV_NAME "hdmi-audio-codec"
- 
- #endif /* __HDMI_CODEC_H__ */
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 06d0e05..b45eaaf 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -480,6 +480,7 @@ config SND_SOC_DMIC
- 
- config SND_SOC_HDMI_CODEC
-        tristate
-+       select HDMI_NOTIFIERS
-        select SND_PCM_ELD
-        select SND_PCM_IEC958
- 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index c78333b..8337389 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -12,9 +12,12 @@
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
-  * General Public License for more details.
+diff --git a/drivers/gpu/drm/mediatek/mtk_cec.c b/drivers/gpu/drm/mediatek/mtk_cec.c
+index 7a3eb8c..f78a73c 100644
+--- a/drivers/gpu/drm/mediatek/mtk_cec.c
++++ b/drivers/gpu/drm/mediatek/mtk_cec.c
+@@ -13,6 +13,7 @@
   */
+ #include <linux/clk.h>
+ #include <linux/delay.h>
 +#include <linux/hdmi-notifier.h>
- #include <linux/module.h>
-+#include <linux/notifier.h>
- #include <linux/string.h>
- #include <sound/core.h>
-+#include <sound/jack.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -27,11 +30,16 @@
- struct hdmi_codec_priv {
- 	struct hdmi_codec_pdata hcd;
- 	struct snd_soc_dai_driver *daidrv;
-+	struct snd_soc_jack *jack;
- 	struct hdmi_codec_daifmt daifmt[2];
- 	struct mutex current_stream_lock;
- 	struct snd_pcm_substream *current_stream;
- 	struct snd_pcm_hw_constraint_list ratec;
-+	struct mutex eld_lock;
- 	uint8_t eld[MAX_ELD_BYTES];
-+	struct device *dev;
-+	struct notifier_block nb;
-+	unsigned int jack_status;
- };
- 
- static const struct snd_soc_dapm_widget hdmi_widgets[] = {
-@@ -105,7 +113,7 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
- 			      struct snd_soc_dai *dai)
- {
- 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
--	int ret = 0;
-+	int ret;
- 
- 	dev_dbg(dai->dev, "%s()\n", __func__);
- 
-@@ -124,17 +132,15 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
- 	}
- 
- 	if (hcp->hcd.ops->get_eld) {
-+		mutex_lock(&hcp->eld_lock);
- 		ret = hcp->hcd.ops->get_eld(dai->dev->parent, hcp->eld,
- 					    sizeof(hcp->eld));
--
--		if (!ret) {
-+		if (!ret)
- 			ret = snd_pcm_hw_constraint_eld(substream->runtime,
- 							hcp->eld);
--			if (ret)
--				return ret;
--		}
-+		mutex_unlock(&hcp->eld_lock);
- 	}
--	return 0;
-+	return ret;
+ #include <linux/io.h>
+ #include <linux/interrupt.h>
+ #include <linux/platform_device.h>
+@@ -105,6 +106,12 @@ void mtk_cec_set_hpd_event(struct device *dev,
+ 	cec->hdmi_dev = hdmi_dev;
+ 	cec->hpd_event = hpd_event;
+ 	spin_unlock_irqrestore(&cec->lock, flags);
++
++	/* Initial notification event to set jack state */
++	if (mtk_cec_hpd_high(dev))
++		hdmi_event_connect(hdmi_dev);
++	else
++		hdmi_event_disconnect(hdmi_dev);
  }
  
- static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
-@@ -356,6 +362,63 @@ static struct snd_soc_codec_driver hdmi_codec = {
- 	.num_dapm_routes = ARRAY_SIZE(hdmi_routes),
- };
- 
-+static void hdmi_codec_jack_report(struct hdmi_codec_priv *hcp,
-+				   unsigned int jack_status)
-+{
-+	if (!hcp->jack)
-+		return;
-+
-+	if (jack_status != hcp->jack_status) {
-+		snd_soc_jack_report(hcp->jack, jack_status, SND_JACK_LINEOUT);
-+		hcp->jack_status = jack_status;
-+	}
-+}
-+
-+static int hdmi_codec_notify(struct notifier_block *nb, unsigned long event,
-+			     void *data)
-+{
-+	struct hdmi_codec_priv *hcp = container_of(nb, struct hdmi_codec_priv,
-+						   nb);
-+	union hdmi_event *event_block = data;
-+
-+	if (hcp->dev->parent != event_block->base.source)
-+		return NOTIFY_OK;
-+
-+	if (!hcp->jack)
-+		return NOTIFY_OK;
-+
-+	switch (event) {
-+	case HDMI_CONNECTED:
-+		hdmi_codec_jack_report(hcp, SND_JACK_LINEOUT);
-+		break;
-+	case HDMI_DISCONNECTED:
-+		hdmi_codec_jack_report(hcp, 0);
-+		break;
-+	case HDMI_NEW_ELD:
-+		hdmi_codec_jack_report(hcp, SND_JACK_LINEOUT);
-+		mutex_lock(&hcp->eld_lock);
-+		memcpy(hcp->eld, event_block->eld.eld, sizeof(hcp->eld));
-+		mutex_unlock(&hcp->eld_lock);
-+		break;
-+	}
-+
-+	return NOTIFY_OK;
-+}
-+
-+int hdmi_codec_set_jack_detect(struct snd_soc_codec *codec,
-+			       struct snd_soc_jack *jack)
-+{
-+	struct hdmi_codec_priv *hcp = snd_soc_codec_get_drvdata(codec);
-+
-+	hcp->jack = jack;
-+	hcp->nb.notifier_call = hdmi_codec_notify;
-+
-+	hdmi_register_notifier(&hcp->nb);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(hdmi_codec_set_jack_detect);
-+
- static int hdmi_codec_probe(struct platform_device *pdev)
- {
- 	struct hdmi_codec_pdata *hcd = pdev->dev.platform_data;
-@@ -384,6 +447,7 @@ static int hdmi_codec_probe(struct platform_device *pdev)
- 
- 	hcp->hcd = *hcd;
- 	mutex_init(&hcp->current_stream_lock);
-+	mutex_init(&hcp->eld_lock);
- 
- 	hcp->daidrv = devm_kzalloc(dev, dai_count * sizeof(*hcp->daidrv),
- 				   GFP_KERNEL);
-@@ -400,6 +464,8 @@ static int hdmi_codec_probe(struct platform_device *pdev)
- 	if (hcd->spdif)
- 		hcp->daidrv[i] = hdmi_spdif_dai;
- 
-+	dev_set_drvdata(dev, hcp);
-+
- 	ret = snd_soc_register_codec(dev, &hdmi_codec, hcp->daidrv,
- 				     dai_count);
- 	if (ret) {
-@@ -408,12 +474,16 @@ static int hdmi_codec_probe(struct platform_device *pdev)
- 		return ret;
+ bool mtk_cec_hpd_high(struct device *dev)
+@@ -179,6 +186,10 @@ static irqreturn_t mtk_cec_htplg_isr_thread(int irq, void *arg)
+ 	if (cec->hpd != hpd) {
+ 		dev_dbg(dev, "hotplug event! cur hpd = %d, hpd = %d\n",
+ 			cec->hpd, hpd);
++		if (hpd)
++			hdmi_event_connect(cec->hdmi_dev);
++		else
++			hdmi_event_disconnect(cec->hdmi_dev);
+ 		cec->hpd = hpd;
+ 		mtk_cec_hpd_event(cec, hpd);
  	}
+diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediatek/mtk_hdmi.c
+index 21ea430..06e3811 100644
+--- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
++++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
+@@ -20,6 +20,7 @@
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/hdmi.h>
++#include <linux/hdmi-notifier.h>
+ #include <linux/i2c.h>
+ #include <linux/io.h>
+ #include <linux/kernel.h>
+@@ -1226,9 +1227,11 @@ static int mtk_hdmi_conn_get_modes(struct drm_connector *conn)
+ 	hdmi->dvi_mode = !drm_detect_monitor_audio(edid);
  
--	dev_set_drvdata(dev, hcp);
-+	hcp->dev = dev;
-+
- 	return 0;
- }
+ 	drm_mode_connector_update_edid_property(conn, edid);
++	hdmi_event_new_edid(hdmi->dev, edid, sizeof(*edid));
  
- static int hdmi_codec_remove(struct platform_device *pdev)
- {
-+	struct hdmi_codec_priv *hcp = platform_get_drvdata(pdev);
-+
-+	hdmi_unregister_notifier(&hcp->nb);
- 	snd_soc_unregister_codec(&pdev->dev);
- 	return 0;
+ 	ret = drm_add_edid_modes(conn, edid);
+ 	drm_edid_to_eld(conn, edid);
++	hdmi_event_new_eld(hdmi->dev, conn->eld);
+ 	kfree(edid);
+ 	return ret;
  }
 -- 
 2.8.0.rc3
