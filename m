@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Set the link ID when creating
-	a FE DAI link" to the asoc tree
-Date: Wed, 20 Apr 2016 17:19:47 +0100
-Message-ID: <E1asuqx-0006xW-0N@debutante>
-References: <363cac6fe4cb2e8c5f839ace62f1641927ac1e0f.1461042239.git.mengdong.lin@linux.intel.com>
+Subject: Applied "ASoC: Export snd_soc_find_dai()" to the asoc
+	tree
+Date: Wed, 20 Apr 2016 17:19:44 +0100
+Message-ID: <E1asuqu-0006ws-19@debutante>
+References: <5e7147f76b2c54d2d23eb1f6a1146a3716bd5172.1461042239.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6CBD02666DF
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2016 18:19:52 +0200 (CEST)
-In-Reply-To: <363cac6fe4cb2e8c5f839ace62f1641927ac1e0f.1461042239.git.mengdong.lin@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 29D64266558
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2016 18:19:54 +0200 (CEST)
+In-Reply-To: <5e7147f76b2c54d2d23eb1f6a1146a3716bd5172.1461042239.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: Set the link ID when creating a FE DAI link
+   ASoC: Export snd_soc_find_dai()
 
 has been applied to the asoc tree at
 
@@ -53,45 +53,57 @@ to this mail.
 Thanks,
 Mark
 
->From b84fff5afb16627a8973256992f3951ac3e90d84 Mon Sep 17 00:00:00 2001
+>From 305e9020f09d28560373c0112682e6fd11e909f6 Mon Sep 17 00:00:00 2001
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Date: Tue, 19 Apr 2016 13:12:43 +0800
-Subject: [PATCH] ASoC: topology: Set the link ID when creating a FE DAI link
+Date: Tue, 19 Apr 2016 13:12:25 +0800
+Subject: [PATCH] ASoC: Export snd_soc_find_dai()
 
-Topology will set the link's generic id when creating a FE link.
-Device drivers can check the id for link specific initialization.
+This API can be used by topology to find an existing BE dai by name
+and further configure it.
+
+Topology will also check DAI ID to avoid wrong match.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/uapi/sound/asoc.h | 2 +-
- sound/soc/soc-topology.c  | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ include/sound/soc.h  | 3 +++
+ sound/soc/soc-core.c | 3 ++-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index db86b447b515..e4701a3c6331 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -423,7 +423,7 @@ struct snd_soc_tplg_pcm {
- 	__le32 size;		/* in bytes of this structure */
- 	char pcm_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 	char dai_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
--	__le32 pcm_id;		/* unique ID - used to match */
-+	__le32 pcm_id;		/* unique ID - used to match with DAI link */
- 	__le32 dai_id;		/* unique ID - used to match */
- 	__le32 playback;	/* supports playback mode */
- 	__le32 capture;		/* supports capture mode */
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 1cf94d7fb9f4..bdbfcef4c319 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1598,6 +1598,7 @@ static int soc_tplg_link_create(struct soc_tplg *tplg,
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 02b4a215fd75..7687e2d4b0e4 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1683,6 +1683,9 @@ void snd_soc_remove_dai_link(struct snd_soc_card *card,
+ int snd_soc_register_dai(struct snd_soc_component *component,
+ 	struct snd_soc_dai_driver *dai_drv);
  
- 	link->name = pcm->pcm_name;
- 	link->stream_name = pcm->pcm_name;
-+	link->id = pcm->pcm_id;
++struct snd_soc_dai *snd_soc_find_dai(
++	const struct snd_soc_dai_link_component *dlc);
++
+ #include <sound/soc-dai.h>
  
- 	/* pass control to component driver for optional further init */
- 	ret = soc_tplg_dai_link_load(tplg, link);
+ #ifdef CONFIG_DEBUG_FS
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index d2e62b159610..07663def2db6 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -930,7 +930,7 @@ static struct snd_soc_component *soc_find_component(
+ 	return NULL;
+ }
+ 
+-static struct snd_soc_dai *snd_soc_find_dai(
++struct snd_soc_dai *snd_soc_find_dai(
+ 	const struct snd_soc_dai_link_component *dlc)
+ {
+ 	struct snd_soc_component *component;
+@@ -959,6 +959,7 @@ static struct snd_soc_dai *snd_soc_find_dai(
+ 
+ 	return NULL;
+ }
++EXPORT_SYMBOL_GPL(snd_soc_find_dai);
+ 
+ static bool soc_is_dai_link_bound(struct snd_soc_card *card,
+ 		struct snd_soc_dai_link *dai_link)
 -- 
 2.8.0.rc3
