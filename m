@@ -1,42 +1,47 @@
-From: PC Liao <pc.liao@mediatek.com>
-Subject: Re: [PATCH 2/2 v6] ASoC: mediatek: Add second I2S on mt8173-rt5650
- machine driver
-Date: Wed, 20 Apr 2016 17:39:50 +0800
-Message-ID: <1461145190.3774.5.camel@mtksdaap41>
-References: <1461134447-42001-1-git-send-email-pc.liao@mediatek.com>
-	 <1461134447-42001-3-git-send-email-pc.liao@mediatek.com>
-	 <20160420082917.GH3217@sirena.org.uk>
+From: Petr Kulhavy <petr@barix.com>
+Subject: Re: GPIO control from ALSA
+Date: Wed, 20 Apr 2016 11:47:38 +0200
+Message-ID: <5717503A.9050000@barix.com>
+References: <571737E4.5030908@barix.com> <57173EEB.5040403@metafoo.de>
+ <5717430B.1030109@barix.com> <57174681.2050908@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160420082917.GH3217@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, srv_heupstream <srv_heupstream@mediatek.com>, "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Koro Chen =?UTF-8?Q?=28=E9=99=B3=E6=80=9D=E7=BF=B0=29?= <koro.chen@mediatek.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f50.google.com (mail-wm0-f50.google.com [74.125.82.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id D754C261B0A
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2016 11:47:40 +0200 (CEST)
+Received: by mail-wm0-f50.google.com with SMTP id v188so195793235wme.1
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2016 02:47:40 -0700 (PDT)
+In-Reply-To: <57174681.2050908@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-On Wed, 2016-04-20 at 16:29 +0800, Mark Brown wrote:
-> On Wed, Apr 20, 2016 at 02:40:47PM +0800, PC Liao wrote:
-> 
-> > +Optional properties:
-> > +- capture-dai: audio codec dai on capture path
-> > +  <&rt5650 0> : Default setting. Connect rt5650 I2S1 for capture. (dai_name = rt5645-aif1)
-> > +  <&rt5650 1> : Connect rt5650 I2S2 for capture. (dai_name = rt5645-aif2)
-> 
-> I sugggested changing this to use a subnode but you've ignored my
-> suggestion...
 
-Sorry.... It's my mistake.
+On 20.04.2016 11:06, Lars-Peter Clausen wrote:
+> On 04/20/2016 10:51 AM, Petr Kulhavy wrote:
+>>
+>> Thanks, Lars, for the good pointers! I will check that out.
+>>
+>> Is there also a way to map GPIO to a control which then appears e.g. in
+>> alsamixer? That would be useful for the mic/line selection.
+> Rather than exposing the GPIO itself you'd expose the logical function of
+> the GPIO. E.g. in your case a ENUM control that allows to switch between
+> microphone and capture and in the background this sets the GPIO according to
+> the selection.
 
-You mean that using a subnode.
-This is my example:
+I understand that, my question was more how to hook the enum to a 
+function rather to a codec register?
 
-  codec-capture {
-	  sound-dai = <&rt5650 1>;
-  };
-
-Does this is your suggestion?
-Thanks!
+Thanks
+Petr
