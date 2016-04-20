@@ -1,44 +1,144 @@
 From: PC Liao <pc.liao@mediatek.com>
-Subject: Re: [PATCH 2/2 v6] ASoC: mediatek: Add second I2S on
- mt8173-rt5650 machine driver
-Date: Thu, 21 Apr 2016 00:27:44 +0800
-Message-ID: <1461169664.8479.1.camel@mtksdaap41>
-References: <1461134447-42001-1-git-send-email-pc.liao@mediatek.com>
- <1461134447-42001-3-git-send-email-pc.liao@mediatek.com>
- <57178482.9090705@gmail.com>
+Subject: [PATCH v7] ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver
+Date: Thu, 21 Apr 2016 00:40:34 +0800
+Message-ID: <1461170434-39584-1-git-send-email-pc.liao@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- by alsa0.perex.cz (Postfix) with ESMTP id E2C0A2665CD
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2016 18:27:48 +0200 (CEST)
-In-Reply-To: <57178482.9090705@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, srv_heupstream <srv_heupstream@mediatek.com>, "tiwai@suse.de" <tiwai@suse.de>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Koro Chen =?UTF-8?Q?=28=E9=99=B3=E6=80=9D=E7=BF=B0=29?= <koro.chen@mediatek.com>, "broonie@kernel.org" <broonie@kernel.org>, "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, tiwai@suse.de
+Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, koro.chen@mediatek.com, PC Liao <pc.liao@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Matthias,
+This patch adds second I2S connection to rt5650 codec for capture path on
+mt8173-rt5650 machine driver.
 
-On Wed, 2016-04-20 at 21:30 +0800, Matthias Brugger wrote:
-> 
-> For compatibility you should change this to something like:
-> 
->     dev_warn(card->dev, "Only one dai codec found in DTS, enabled rt5645
->                          AD filter\n");
->     rt5645_sel_asrc_clk_src(codec, RT5645_AD_STEREO_FILTER,
->                                    RT5645_CLK_SEL_I2S1_ASRC);
-> }
-> 
+Signed-off-by: PC Liao <pc.liao@mediatek.com>
+---
+Changes since v6:
+Use subnode to determine the capture path
+---
+ .../devicetree/bindings/sound/mt8173-rt5650.txt    |   10 ++++
+ sound/soc/mediatek/mt8173-rt5650.c                 |   49 ++++++++++++++++++--
+ 2 files changed, 56 insertions(+), 3 deletions(-)
 
-I will use this in next version.
-Thanks!
+diff --git a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
+index fe5a5ef..5bfa6b6 100644
+--- a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
++++ b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
+@@ -5,11 +5,21 @@ Required properties:
+ - mediatek,audio-codec: the phandles of rt5650 codecs
+ - mediatek,platform: the phandle of MT8173 ASoC platform
+ 
++Optional subnodes:
++- codec-capture : the subnode of rt5650 codec capture
++Required codec-capture subnode properties:
++- sound-dai: audio codec dai name on capture path
++  <&rt5650 0> : Default setting. Connect rt5650 I2S1 for capture. (dai_name = rt5645-aif1)
++  <&rt5650 1> : Connect rt5650 I2S2 for capture. (dai_name = rt5645-aif2)
++
+ Example:
+ 
+ 	sound {
+ 		compatible = "mediatek,mt8173-rt5650";
+ 		mediatek,audio-codec = <&rt5650>;
+ 		mediatek,platform = <&afe>;
++		codec-capture {
++			sound-dai = <&rt5650 1>;
++		};
+ 	};
+ 
+diff --git a/sound/soc/mediatek/mt8173-rt5650.c b/sound/soc/mediatek/mt8173-rt5650.c
+index bb09bb1..b8ed965 100644
+--- a/sound/soc/mediatek/mt8173-rt5650.c
++++ b/sound/soc/mediatek/mt8173-rt5650.c
+@@ -85,12 +85,28 @@ static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
+ {
+ 	struct snd_soc_card *card = runtime->card;
+ 	struct snd_soc_codec *codec = runtime->codec_dais[0]->codec;
++	const char *codec_capture_dai = runtime->codec_dais[1]->name;
+ 	int ret;
+ 
+ 	rt5645_sel_asrc_clk_src(codec,
+-				RT5645_DA_STEREO_FILTER |
+-				RT5645_AD_STEREO_FILTER,
++				RT5645_DA_STEREO_FILTER,
+ 				RT5645_CLK_SEL_I2S1_ASRC);
++
++	if (!strcmp(codec_capture_dai, "rt5645-aif1")) {
++		dev_warn(card->dev,
++			 "Only one dai codec found in DTS, enabled AD filter\n");
++		rt5645_sel_asrc_clk_src(codec,
++					RT5645_AD_STEREO_FILTER,
++					RT5645_CLK_SEL_I2S1_ASRC);
++	} else if (!strcmp(codec_capture_dai, "rt5645-aif2")) {
++		rt5645_sel_asrc_clk_src(codec,
++					RT5645_AD_STEREO_FILTER,
++					RT5645_CLK_SEL_I2S2_ASRC);
++	} else {
++		dev_err(card->dev, "Can't get the right codec dai\n");
++		return -EINVAL;
++	}
++
+ 	/* enable jack detection */
+ 	ret = snd_soc_card_jack_new(card, "Headset Jack",
+ 				    SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
+@@ -110,6 +126,11 @@ static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
+ 
+ static struct snd_soc_dai_link_component mt8173_rt5650_codecs[] = {
+ 	{
++		/* Playback */
++		.dai_name = "rt5645-aif1",
++	},
++	{
++		/* Capture */
+ 		.dai_name = "rt5645-aif1",
+ 	},
+ };
+@@ -149,7 +170,7 @@ static struct snd_soc_dai_link mt8173_rt5650_dais[] = {
+ 		.cpu_dai_name = "I2S",
+ 		.no_pcm = 1,
+ 		.codecs = mt8173_rt5650_codecs,
+-		.num_codecs = 1,
++		.num_codecs = 2,
+ 		.init = mt8173_rt5650_init,
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 			   SND_SOC_DAIFMT_CBS_CFS,
+@@ -177,6 +198,8 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = &mt8173_rt5650_card;
+ 	struct device_node *platform_node;
++	struct device_node *np;
++	const char *codec_capture_dai;
+ 	int i, ret;
+ 
+ 	platform_node = of_parse_phandle(pdev->dev.of_node,
+@@ -199,6 +222,26 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
+ 			"Property 'audio-codec' missing or invalid\n");
+ 		return -EINVAL;
+ 	}
++	mt8173_rt5650_codecs[1].of_node = mt8173_rt5650_codecs[0].of_node;
++
++	if (of_find_node_by_name(platform_node, "codec-capture")) {
++		np = of_get_child_by_name(pdev->dev.of_node, "codec-capture");
++		if (!np) {
++			dev_err(&pdev->dev,
++				"%s: Can't find codec-capture DT node\n",
++				__func__);
++			return -EINVAL;
++		}
++		ret = snd_soc_of_get_dai_name(np, &codec_capture_dai);
++		if (ret < 0) {
++			dev_err(&pdev->dev,
++				"%s codec_capture_dai name fail %d\n",
++				__func__, ret);
++			return ret;
++		}
++		mt8173_rt5650_codecs[1].dai_name = codec_capture_dai;
++	}
++
+ 	card->dev = &pdev->dev;
+ 	platform_set_drvdata(pdev, card);
+ 
+-- 
+1.7.9.5
