@@ -1,16 +1,19 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v5 0/4] Propagate errors out from compressed
-	streams
-Date: Wed, 20 Apr 2016 13:39:59 +0100
-Message-ID: <1461156003-24422-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v5 2/4] ALSA: compress: Add function to
+ indicate the stream has gone bad
+Date: Wed, 20 Apr 2016 18:38:51 +0530
+Message-ID: <20160420130851.GY2274@localhost>
+References: <1461156003-24422-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1461156003-24422-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 6533D2625FE
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2016 14:40:23 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 40371261B0A
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2016 15:04:12 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1461156003-24422-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,49 +23,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: vinod.koul@intel.com, tiwai@suse.com, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-If the DSP suffers an unrecoverable error, the driver likely
-knows about this, however the framework may not get informed
-because errors returned from pointer requests are ignored within
-the framework.
+On Wed, Apr 20, 2016 at 01:40:01PM +0100, Charles Keepax wrote:
+> Currently, the avail IOCTL doesn't pass any error status, which
+> means typically on error it simply shows no data available. This
+> can lead to situations where user-space is waiting indefinitely
+> for data that will never come as the DSP has suffered an
+> unrecoverable error.
+> 
+> Add snd_compr_stop_error which end drivers can call to indicate
+> the stream has suffered an unrecoverable error and stop it. The
+> avail and poll IOCTLs are then updated to report if the stream is
+> in an error state to user-space. Allowing the error to propagate
+> out. Processing of the actual snd_compr_stop needs to be deferred
+> to a worker thread as the end driver may detect the errors during
+> an existing operation callback.
 
-Things work out fine if user-space is doing a read as reads
-return error status back to user-space so the user can find out
-that things have gone bad. However, if user-space is doing an
-avail request there is no path for the error to come back up to
-user-space. The pointer request returns zero available data, so a
-read never happens and we basically just end up sitting waiting
-for data on a stream that we know full well has died.
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 
-This patch set attempts to address this and ensure that errors
-are fully propagated to user-space and we don't ever end up wait
-for data that will never come.
+Btw are you patching tinycompress as well to handle EPIPE?
 
-Changes since v4:
- - Fix issue noticed by Vinod whereby the error state was being
-   overwritten when snd_compr_stop was called
-
-It might be easiest to put the ASoC changes through Mark's tree
-as there are some merge conflicts otherwise, as such I have based
-this series on Mark's tree.
-
-Thanks,
-Charles
-
-Charles Keepax (4):
-  ALSA: compress: Replace complex if statement with switch
-  ALSA: compress: Add function to indicate the stream has gone bad
-  ASoC: wm_adsp: Use new snd_compr_stop_error to signal stream failure
-  ASoC: compress: Pass error out of soc_compr_pointer
-
- include/sound/compress_driver.h |  5 +++
- sound/core/compress_offload.c   | 79 ++++++++++++++++++++++++++++++++++++++---
- sound/soc/codecs/wm_adsp.c      | 11 ++++--
- sound/soc/soc-compress.c        |  5 +--
- 4 files changed, 91 insertions(+), 9 deletions(-)
-
+Thanks
 -- 
-2.1.4
+~Vinod
