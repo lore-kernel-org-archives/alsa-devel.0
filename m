@@ -1,18 +1,19 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: GPIO control from ALSA
-Date: Wed, 20 Apr 2016 12:39:39 +0200
-Message-ID: <57175C6B.6080604@metafoo.de>
-References: <571737E4.5030908@barix.com> <57173EEB.5040403@metafoo.de>
- <5717430B.1030109@barix.com> <57174681.2050908@metafoo.de>
- <5717503A.9050000@barix.com>
+From: Julian Margetson <runaway@candw.ms>
+Subject: Re: Issues with ALSA:ice1724 sound cards on powerpc
+ machines
+Date: Wed, 20 Apr 2016 07:44:02 -0400
+Message-ID: <57176B82.7080403@candw.ms>
+References: <56C4BC13.2010306@candw.ms> <5702C756.1050904@candw.ms>
+ <s5hy48k2q26.wl-tiwai@suse.de> <570BB84A.9040400@ivitera.com>
+ <570BDFCB.20601@candw.ms> <570C21D5.7000106@candw.ms>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D45C261B0A
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2016 12:39:41 +0200 (CEST)
-In-Reply-To: <5717503A.9050000@barix.com>
+Received: from smtp754.redcondor.net (smtp754.redcondor.net [208.80.206.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 49060261B0A
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2016 13:44:15 +0200 (CEST)
+In-Reply-To: <570C21D5.7000106@candw.ms>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,27 +23,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Petr Kulhavy <petr@barix.com>, alsa-devel@alsa-project.org
+To: Pavel Hofman <pavel.hofman@ivitera.com>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/20/2016 11:47 AM, Petr Kulhavy wrote:
-> 
-> 
-> On 20.04.2016 11:06, Lars-Peter Clausen wrote:
->> On 04/20/2016 10:51 AM, Petr Kulhavy wrote:
+On 4/11/2016 6:14 PM, Julian Margetson wrote:
+> On 4/11/2016 1:32 PM, Julian Margetson wrote:
+>> On 4/11/2016 10:44 AM, Pavel Hofman wrote:
+>>> Dne 11.4.2016 v 16:11 Takashi Iwai napsal(a):
+>>>> On Mon, 04 Apr 2016 21:58:14 +0200,
+>>>> Julian Margetson wrote:
+>>>>>
+>>>>> On 2/17/2016 2:29 PM, Julian Margetson wrote:
+>>>>>> Hi
+>>>>>>
+>>>>>> Having an issue issue with ice1724 sound cards on powerpc 
+>>>>>> motherboards.
+>>>>>> Motherboards in question Acube Sam460ex .
+>>>>>> The card appears as a valid device but there is no sound output 
+>>>>>> on the
+>>>>>> majority of boots of the computer.
+>>>>>> Logs attached.
+>>>>>> On the first set boot audio playback produced sound ok.
+>>>>>> On the second set boot no sound was produce with audio playback
+>>>>>>
+>>>>>>
+>>>>>> Regards
+>>>>>> Julian Margetson
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>> Anyone have any ideas ?
+>>>>>
+>>>>> Resubmitting again with links to logs instead of included as 
+>>>>> attachments.
+>>>>> The issue also seen on A-Eon Cyrus P5020 motherboard .
+>>>>>
+>>>>> https://www.dropbox.com/s/72labcje9z1r1b7/1alsa-info.txt.7CLHMG0Gap?dl=0 
+>>>>>
+>>>>> https://www.dropbox.com/s/v1pn5kjqrvwu16f/boot_1.log?dl=0
+>>>>> https://www.dropbox.com/s/uuaa14rkpmmz1o0/2alsa-info.txt.VKiEVuytiJ?dl=0 
+>>>>>
+>>>>> https://www.dropbox.com/s/wwu2f5t93l8g26d/boot_2.log?dl=0
+>>>>
+>>>> I have no concrete idea, but in general, the usual problems on PPC are
+>>>> either related with cache coherency or byte endianness.  I don't know
+>>>> of any issue with the latter in ice1724 driver, so likely it's the
+>>>> former.
+>>>>
 >>>
->>> Thanks, Lars, for the good pointers! I will check that out.
+>>> Perhaps the ice1724 driver was not even tested properly with the 
+>>> AC97 codec. Do we know of any separate PCI ice1724 card with this 
+>>> codec?
 >>>
->>> Is there also a way to map GPIO to a control which then appears e.g. in
->>> alsamixer? That would be useful for the mic/line selection.
->> Rather than exposing the GPIO itself you'd expose the logical function of
->> the GPIO. E.g. in your case a ENUM control that allows to switch between
->> microphone and capture and in the background this sets the GPIO according to
->> the selection.
-> 
-> I understand that, my question was more how to hook the enum to a function
-> rather to a codec register?
+>>> Regards,
+>>>
+>>> Pavel Hofman.
+>>>
+>>>
+>> The second board mentioned , the Aeon Cyrus ,uses a P5020 so is cache 
+>> coherent .
+>> The problem may be in the initialization of the sound card as on some 
+>> boots with my board , an Acube Sam460ex, it works perfectly. I have  
+>> tested a CMI8738 pciex1 sound card which works perfectly as do USB 
+>> cm108 based external cards .
+>>
+>> I also have a PCI ice1724 version of the card  (never used in this 
+>> machine) as well as 2 different pciex1  ice1724 cards with the codec .
+>> The Sam460ex only has 1 pci slot normally used for the SATA card and 
+>> 1 shared pcie or SATA II.
+>> I could test with  the pci card by booting from USB .
+>> So either configure as 1 pciex1 slot or 1 on board SATA II .
+>> I am helping to test the onboard sata-dwc but am happy to test any 
+>> ideas for a solution to the audio issues as well.
+>> Will mean reconfiguring my machine back an forth but worth it for 
+>> solutions in both areas .
+>>
+>> Regards
+>> Julian
+>>
+>>
+>>
+>>
+> This is the pci model .
+>
+> http://www.amazon.com/SIIG-Soundwave-5-1-Pci-lp-LP-000022-S2/dp/B0036VNVWE 
+>
 
-You can use SOC_ENUM_EXT() to create the control. This macro takes a get and
-a put callback where you can manipulate the state of the GPIO. And then just
-register the control with the card.
+I tried one of my pciex1 cards in an x86 machine and am seeing the same 
+issue. so
+looks like it is not only powerpc related.
+
+This is the model in the x86 machine.
+http://www.auto-gadget.com/index.php?route=product/product&product_id=48531
+
+This is the model in my powerpc machine
+http://www.nextwarehouse.com/item/?1166624_g10e
