@@ -1,16 +1,21 @@
-From: Allan Klinbail <aklinbail@gmail.com>
-Subject: A&H Zed R16 not completely working (DICE Jr)
-Date: Wed, 20 Apr 2016 14:31:43 +0000
-Message-ID: <CA+aoAJc6JQvy_yk-5HJZpqv5GW6DygdmLB5=HGyW9q3yn12mKA@mail.gmail.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v5 2/4] ALSA: compress: Add function to
+ indicate the stream has gone bad
+Date: Wed, 20 Apr 2016 15:54:46 +0100
+Message-ID: <20160420145446.GC1581@localhost.localdomain>
+References: <1461156003-24422-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1461156003-24422-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20160420130851.GY2274@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f52.google.com (mail-wm0-f52.google.com [74.125.82.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F129266558
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2016 16:31:54 +0200 (CEST)
-Received: by mail-wm0-f52.google.com with SMTP id e201so52995353wme.0
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2016 07:31:54 -0700 (PDT)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 09534261B0A
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2016 16:54:44 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20160420130851.GY2274@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,32 +25,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Wed, Apr 20, 2016 at 06:38:51PM +0530, Vinod Koul wrote:
+> On Wed, Apr 20, 2016 at 01:40:01PM +0100, Charles Keepax wrote:
+> > Currently, the avail IOCTL doesn't pass any error status, which
+> > means typically on error it simply shows no data available. This
+> > can lead to situations where user-space is waiting indefinitely
+> > for data that will never come as the DSP has suffered an
+> > unrecoverable error.
+> > 
+> > Add snd_compr_stop_error which end drivers can call to indicate
+> > the stream has suffered an unrecoverable error and stop it. The
+> > avail and poll IOCTLs are then updated to report if the stream is
+> > in an error state to user-space. Allowing the error to propagate
+> > out. Processing of the actual snd_compr_stop needs to be deferred
+> > to a worker thread as the end driver may detect the errors during
+> > an existing operation callback.
+> 
+> Acked-by: Vinod Koul <vinod.koul@intel.com>
+> 
+> Btw are you patching tinycompress as well to handle EPIPE?
 
-I thought I would try the DICE chipset driver from ALSA, as it appears that
-this will eventually take over from ffado..
+I hadn't planned on it but I am happy to do so. The current
+behaviour was sufficient for our needs in that it reports the
+error and shuts the stream.
 
-It appears that it doesn't work very well for my Allen & Heath Zed -R16
-which works very well under FFADO
+Are you thinking of just printing that a over/under run occurred
+or do you want to try and add some recovery code as well?
 
-Using kernel 4.4.0 from Ubuntu
-
-The ALSA driver limited the device to only 16 inputs and outputs, however
-it has a total capability of 26
-This is comprises of 16 inputs and outputs on the desk channels, a stereo
-main pair of outputs and inputs for the master bus
-8 additional ins and outs to support the ADAT ports on the back (availoable
-in 44.1 and 48 khz modes, but not 88.2 or 96 Khz
-
-Similiarly I was not able to set the device to run at a latency lower than
-256 frames in jack, however in FFADO I could go as low as 64 frames.
-
-Please let me know if I can help with any further testing to get this to
-the same level as the FFADO driver.
-
-Regards
-
-Allan
+Thanks,
+Charles
