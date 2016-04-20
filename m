@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: Remove CLK_IS_ROOT" to the asoc tree
-Date: Wed, 20 Apr 2016 17:19:53 +0100
-Message-ID: <E1asur3-0006yv-7K@debutante>
-References: <1461114480-12695-1-git-send-email-sboyd@codeaurora.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1461114480-12695-1-git-send-email-sboyd@codeaurora.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Stephen Boyd <sboyd@codeaurora.org>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgKuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: topology: Set the link ID when creating
+	a FE DAI link" to the asoc tree
+Date: Wed, 20 Apr 2016 17:19:47 +0100
+Message-ID: <E1asuqx-0006xW-0N@debutante>
+References: <363cac6fe4cb2e8c5f839ace62f1641927ac1e0f.1461042239.git.mengdong.lin@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6CBD02666DF
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2016 18:19:52 +0200 (CEST)
+In-Reply-To: <363cac6fe4cb2e8c5f839ace62f1641927ac1e0f.1461042239.git.mengdong.lin@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mengdong Lin <mengdong.lin@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: Remove CLK_IS_ROOT
+   ASoC: topology: Set the link ID when creating a FE DAI link
 
 has been applied to the asoc tree at
 
@@ -37,46 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From 2ebdf684082fa9ad924df1b2f80653920c7ca097 Mon Sep 17 00:00:00 2001
-From: Stephen Boyd <sboyd@codeaurora.org>
-Date: Tue, 19 Apr 2016 18:08:00 -0700
-Subject: [PATCH] ASoC: rsnd: Remove CLK_IS_ROOT
+>From b84fff5afb16627a8973256992f3951ac3e90d84 Mon Sep 17 00:00:00 2001
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Date: Tue, 19 Apr 2016 13:12:43 +0800
+Subject: [PATCH] ASoC: topology: Set the link ID when creating a FE DAI link
 
-This flag is a no-op now (see commit 47b0eeb3dc8a "clk: Deprecate
-CLK_IS_ROOT", 2016-02-02) so remove it.
+Topology will set the link's generic id when creating a FE link.
+Device drivers can check the id for link specific initialization.
 
-Signed-off-by: Stephen Boyd <sboyd@codeaurora.org>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/adg.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ include/uapi/sound/asoc.h | 2 +-
+ sound/soc/soc-topology.c  | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
-index 606399de684d..49354d17ea55 100644
---- a/sound/soc/sh/rcar/adg.c
-+++ b/sound/soc/sh/rcar/adg.c
-@@ -492,9 +492,7 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
- 	 */
- 	if (!count) {
- 		clk = clk_register_fixed_rate(dev, clkout_name[CLKOUT],
--					      parent_clk_name,
--					      (parent_clk_name) ?
--					      0 : CLK_IS_ROOT, req_rate);
-+					      parent_clk_name, 0, req_rate);
- 		if (!IS_ERR(clk)) {
- 			adg->clkout[CLKOUT] = clk;
- 			of_clk_add_provider(np, of_clk_src_simple_get, clk);
-@@ -506,9 +504,7 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
- 	else {
- 		for (i = 0; i < CLKOUTMAX; i++) {
- 			clk = clk_register_fixed_rate(dev, clkout_name[i],
--						      parent_clk_name,
--						      (parent_clk_name) ?
--						      0 : CLK_IS_ROOT,
-+						      parent_clk_name, 0,
- 						      req_rate);
- 			if (!IS_ERR(clk)) {
- 				adg->onecell.clks	= adg->clkout;
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index db86b447b515..e4701a3c6331 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -423,7 +423,7 @@ struct snd_soc_tplg_pcm {
+ 	__le32 size;		/* in bytes of this structure */
+ 	char pcm_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+ 	char dai_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+-	__le32 pcm_id;		/* unique ID - used to match */
++	__le32 pcm_id;		/* unique ID - used to match with DAI link */
+ 	__le32 dai_id;		/* unique ID - used to match */
+ 	__le32 playback;	/* supports playback mode */
+ 	__le32 capture;		/* supports capture mode */
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 1cf94d7fb9f4..bdbfcef4c319 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1598,6 +1598,7 @@ static int soc_tplg_link_create(struct soc_tplg *tplg,
+ 
+ 	link->name = pcm->pcm_name;
+ 	link->stream_name = pcm->pcm_name;
++	link->id = pcm->pcm_id;
+ 
+ 	/* pass control to component driver for optional further init */
+ 	ret = soc_tplg_dai_link_load(tplg, link);
 -- 
 2.8.0.rc3
