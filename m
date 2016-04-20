@@ -1,56 +1,71 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [alsa-devel] [PATCH 0/4] ASoC: add graph base connection on
- simple-card
-Date: Wed, 20 Apr 2016 18:18:55 +0200
-Message-ID: <20160420181855.38a9dc6dfb4eaeb538a7d5ee@free.fr>
-References: <871t68wxxe.wl%kuninori.morimoto.gx@renesas.com>
-	<20160414110128.56a0da97d526cdcb8d5f1ddf@free.fr>
-	<87h9f3jq3m.wl%kuninori.morimoto.gx@renesas.com>
-	<87fuunjkio.wl%kuninori.morimoto.gx@renesas.com>
-	<20160415133158.9c5c0dc7367325606c53ce17@free.fr>
-	<87r3e3ej5t.wl%kuninori.morimoto.gx@renesas.com>
-	<20160418093827.65b9f8a5bd2ec17cde2e7b5b@free.fr>
-	<87shyhngdd.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87shyhngdd.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>, Laurent <laurent.pinchart@ideasonboard.com>, Lars-Peter Clausen <lars@metafoo.de>, Jose Abreu <Jose.Abreu@synopsys.com>, Linux-DT <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Simon <horms@verge.net.au>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: ak4642: Remove CLK_IS_ROOT" to the asoc tree
+Date: Wed, 20 Apr 2016 17:19:56 +0100
+Message-ID: <E1asur6-0006ze-I5@debutante>
+References: <1461114304-10495-1-git-send-email-sboyd@codeaurora.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1461114304-10495-1-git-send-email-sboyd@codeaurora.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Stephen Boyd <sboyd@codeaurora.org>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgKuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 20 Apr 2016 02:55:39 +0000
-Kuninori Morimoto <kuninori.morimoto.gx@renesas.com> wrote:
+The patch
 
-> I could understand your idea,
-> and had read previous some discussions.
-> I would like to have it on upstream too.
-> Can you show me about your plan for next step ?
+   ASoC: ak4642: Remove CLK_IS_ROOT
 
-Hi Kuninori,
+has been applied to the asoc tree at
 
-I have no plan.
-My Cubox machine has too many specific code and it is used in an organ
-as the sound synthesizer. I will not do any more development in its
-kernel.
-In my new machine, an Orange PI 2, while audio on HDMI is working for
-me, there is still a lot of job to do aside (YUV video, analog
-audio, embedded wifi...) and I am blocked by the HDMI driver which has
-no free license nor documentation about the hardware. So, I have not
-submitted yet a patch series about audio for this machine.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Otherwise, if you read the previous discussions, I think the most
-important is Mark's remark (Sat, 7 Feb 2015 16:33:55 +0800 in the
-alsa-devel mailing-list):
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> We already have simple-card to provide a binding for trivial
-> systems and don't want to end up with a never ending series of slight=
-ly
-> more complicated bindings which each cover slightly different sets of
-> systems in ways that users struggle to differentiate between.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---=20
-Ken ar c'henta=F1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From b6bf3289bc3c1d8df9f37c2f4f8450cc677fb286 Mon Sep 17 00:00:00 2001
+From: Stephen Boyd <sboyd@codeaurora.org>
+Date: Tue, 19 Apr 2016 18:05:04 -0700
+Subject: [PATCH] ASoC: ak4642: Remove CLK_IS_ROOT
+
+This flag is a no-op now (see commit 47b0eeb3dc8a "clk: Deprecate
+CLK_IS_ROOT", 2016-02-02) so remove it.
+
+Signed-off-by: Stephen Boyd <sboyd@codeaurora.org>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/ak4642.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
+index cda27c22812a..1ee8506c06c7 100644
+--- a/sound/soc/codecs/ak4642.c
++++ b/sound/soc/codecs/ak4642.c
+@@ -608,9 +608,7 @@ static struct clk *ak4642_of_parse_mcko(struct device *dev)
+ 
+ 	of_property_read_string(np, "clock-output-names", &clk_name);
+ 
+-	clk = clk_register_fixed_rate(dev, clk_name, parent_clk_name,
+-				      (parent_clk_name) ? 0 : CLK_IS_ROOT,
+-				      rate);
++	clk = clk_register_fixed_rate(dev, clk_name, parent_clk_name, 0, rate);
+ 	if (!IS_ERR(clk))
+ 		of_clk_add_provider(np, of_clk_src_simple_get, clk);
+ 
+-- 
+2.8.0.rc3
