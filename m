@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Set CPU DAI name and enable
-	DPCM by default for FE link" to the asoc tree
-Date: Wed, 20 Apr 2016 17:21:59 +0100
-Message-ID: <E1asut5-0007IJ-Km@debutante>
-References: <c80352fa0ae3d1f881ea8ea15f474314ad63e3ae.1461042239.git.mengdong.lin@linux.intel.com>
+From: PC Liao <pc.liao@mediatek.com>
+Subject: Re: [PATCH 2/2 v6] ASoC: mediatek: Add second I2S on
+ mt8173-rt5650 machine driver
+Date: Thu, 21 Apr 2016 00:27:44 +0800
+Message-ID: <1461169664.8479.1.camel@mtksdaap41>
+References: <1461134447-42001-1-git-send-email-pc.liao@mediatek.com>
+ <1461134447-42001-3-git-send-email-pc.liao@mediatek.com>
+ <57178482.9090705@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EAA922667E2
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2016 18:22:07 +0200 (CEST)
-In-Reply-To: <c80352fa0ae3d1f881ea8ea15f474314ad63e3ae.1461042239.git.mengdong.lin@linux.intel.com>
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id E2C0A2665CD
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2016 18:27:48 +0200 (CEST)
+In-Reply-To: <57178482.9090705@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,78 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@linux.intel.com>, vinod.koul@intel.com, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
+To: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, srv_heupstream <srv_heupstream@mediatek.com>, "tiwai@suse.de" <tiwai@suse.de>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Koro Chen =?UTF-8?Q?=28=E9=99=B3=E6=80=9D=E7=BF=B0=29?= <koro.chen@mediatek.com>, "broonie@kernel.org" <broonie@kernel.org>, "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi Matthias,
 
-   ASoC: topology: Set CPU DAI name and enable DPCM by default for FE link
+On Wed, 2016-04-20 at 21:30 +0800, Matthias Brugger wrote:
+> 
+> For compatibility you should change this to something like:
+> 
+>     dev_warn(card->dev, "Only one dai codec found in DTS, enabled rt5645
+>                          AD filter\n");
+>     rt5645_sel_asrc_clk_src(codec, RT5645_AD_STEREO_FILTER,
+>                                    RT5645_CLK_SEL_I2S1_ASRC);
+> }
+> 
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 67d1c21e37301ca3cea3705951950ce21f2723e1 Mon Sep 17 00:00:00 2001
-From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Date: Tue, 19 Apr 2016 13:12:50 +0800
-Subject: [PATCH] ASoC: topology: Set CPU DAI name and enable DPCM by default
- for FE link
-
-When creating a FE link, the cpu_dai_name will come from topology and
-dpcm will be enabled by default.
-
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-topology.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index bdbfcef4c319..ca5f82885031 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1586,6 +1586,7 @@ static int soc_tplg_dai_create(struct soc_tplg *tplg,
- 	return snd_soc_register_dai(tplg->comp, dai_drv);
- }
- 
-+/* create the FE DAI link */
- static int soc_tplg_link_create(struct soc_tplg *tplg,
- 	struct snd_soc_tplg_pcm *pcm)
- {
-@@ -1600,6 +1601,15 @@ static int soc_tplg_link_create(struct soc_tplg *tplg,
- 	link->stream_name = pcm->pcm_name;
- 	link->id = pcm->pcm_id;
- 
-+	link->cpu_dai_name = pcm->dai_name;
-+	link->codec_name = "snd-soc-dummy";
-+	link->codec_dai_name = "snd-soc-dummy-dai";
-+
-+	/* enable DPCM */
-+	link->dynamic = 1;
-+	link->dpcm_playback = pcm->playback;
-+	link->dpcm_capture = pcm->capture;
-+
- 	/* pass control to component driver for optional further init */
- 	ret = soc_tplg_dai_link_load(tplg, link);
- 	if (ret < 0) {
--- 
-2.8.0.rc3
+I will use this in next version.
+Thanks!
