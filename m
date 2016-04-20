@@ -1,8 +1,8 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v5 3/4] ASoC: wm_adsp: Use new
-	snd_compr_stop_error to signal stream failure
-Date: Wed, 20 Apr 2016 13:40:02 +0100
-Message-ID: <1461156003-24422-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH v5 4/4] ASoC: compress: Pass error out of
+	soc_compr_pointer
+Date: Wed, 20 Apr 2016 13:40:03 +0100
+Message-ID: <1461156003-24422-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1461156003-24422-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 79859266558
+ by alsa0.perex.cz (Postfix) with ESMTP id C8DBE266591
  for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2016 14:40:23 +0200 (CEST)
 In-Reply-To: <1461156003-24422-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,52 +26,38 @@ To: vinod.koul@intel.com, tiwai@suse.com, broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-If we encounter a fatal error on the compressed stream call the new
-snd_compr_stop_error to shutdown the stream and allow the core to
-inform user-space that the stream is no longer valid.
+Both soc_compr_pointer and the platform driver pointer callback return
+ints but current soc_compr_pointer always returns 0. Update this so we
+return the actual value from the platform driver callback. This doesn't
+fix any issues simply makes the code more consistent.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/codecs/wm_adsp.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ sound/soc/soc-compress.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 3ac2e1f..d221ac9 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -2913,6 +2913,7 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
- 	}
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 875733c..d2df46c 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -530,14 +530,15 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+ 	struct snd_soc_platform *platform = rtd->platform;
++	int ret = 0;
  
- 	if (compr->buf->error) {
-+		snd_compr_stop_error(stream, SNDRV_PCM_STATE_XRUN);
- 		ret = -EIO;
- 		goto out;
- 	}
-@@ -2930,8 +2931,12 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
- 		 */
- 		if (buf->avail < wm_adsp_compr_frag_words(compr)) {
- 			ret = wm_adsp_buffer_get_error(buf);
--			if (ret < 0)
-+			if (ret < 0) {
-+				if (compr->buf->error)
-+					snd_compr_stop_error(stream,
-+							SNDRV_PCM_STATE_XRUN);
- 				goto out;
-+			}
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
  
- 			ret = wm_adsp_buffer_reenable_irq(buf);
- 			if (ret < 0) {
-@@ -3029,8 +3034,10 @@ static int wm_adsp_compr_read(struct wm_adsp_compr *compr,
- 	if (!compr->buf)
- 		return -ENXIO;
+ 	if (platform->driver->compr_ops && platform->driver->compr_ops->pointer)
+-		 platform->driver->compr_ops->pointer(cstream, tstamp);
++		ret = platform->driver->compr_ops->pointer(cstream, tstamp);
  
--	if (compr->buf->error)
-+	if (compr->buf->error) {
-+		snd_compr_stop_error(compr->stream, SNDRV_PCM_STATE_XRUN);
- 		return -EIO;
-+	}
+ 	mutex_unlock(&rtd->pcm_mutex);
+-	return 0;
++	return ret;
+ }
  
- 	count /= WM_ADSP_DATA_WORD_SIZE;
- 
+ static int soc_compr_copy(struct snd_compr_stream *cstream,
 -- 
 2.1.4
