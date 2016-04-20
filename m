@@ -1,83 +1,56 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/4] ASoC: Export snd_soc_find_dai()
-Date: Wed, 20 Apr 2016 17:12:26 +0100
-Message-ID: <20160420161226.GN3217@sirena.org.uk>
-References: <cover.1461042239.git.mengdong.lin@linux.intel.com>
- <5e7147f76b2c54d2d23eb1f6a1146a3716bd5172.1461042239.git.mengdong.lin@linux.intel.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [alsa-devel] [PATCH 0/4] ASoC: add graph base connection on
+ simple-card
+Date: Wed, 20 Apr 2016 18:18:55 +0200
+Message-ID: <20160420181855.38a9dc6dfb4eaeb538a7d5ee@free.fr>
+References: <871t68wxxe.wl%kuninori.morimoto.gx@renesas.com>
+	<20160414110128.56a0da97d526cdcb8d5f1ddf@free.fr>
+	<87h9f3jq3m.wl%kuninori.morimoto.gx@renesas.com>
+	<87fuunjkio.wl%kuninori.morimoto.gx@renesas.com>
+	<20160415133158.9c5c0dc7367325606c53ce17@free.fr>
+	<87r3e3ej5t.wl%kuninori.morimoto.gx@renesas.com>
+	<20160418093827.65b9f8a5bd2ec17cde2e7b5b@free.fr>
+	<87shyhngdd.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2236603874094080166=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CDA462666D2
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2016 18:12:32 +0200 (CEST)
-In-Reply-To: <5e7147f76b2c54d2d23eb1f6a1146a3716bd5172.1461042239.git.mengdong.lin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@linux.intel.com
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87shyhngdd.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>, Laurent <laurent.pinchart@ideasonboard.com>, Lars-Peter Clausen <lars@metafoo.de>, Jose Abreu <Jose.Abreu@synopsys.com>, Linux-DT <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 20 Apr 2016 02:55:39 +0000
+Kuninori Morimoto <kuninori.morimoto.gx@renesas.com> wrote:
 
---===============2236603874094080166==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="3sP1+uScbtwzRm4f"
-Content-Disposition: inline
+> I could understand your idea,
+> and had read previous some discussions.
+> I would like to have it on upstream too.
+> Can you show me about your plan for next step ?
 
+Hi Kuninori,
 
---3sP1+uScbtwzRm4f
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I have no plan.
+My Cubox machine has too many specific code and it is used in an organ
+as the sound synthesizer. I will not do any more development in its
+kernel.
+In my new machine, an Orange PI 2, while audio on HDMI is working for
+me, there is still a lot of job to do aside (YUV video, analog
+audio, embedded wifi...) and I am blocked by the HDMI driver which has
+no free license nor documentation about the hardware. So, I have not
+submitted yet a patch series about audio for this machine.
 
-On Tue, Apr 19, 2016 at 01:12:25PM +0800, mengdong.lin@linux.intel.com wrot=
-e:
+Otherwise, if you read the previous discussions, I think the most
+important is Mark's remark (Sat, 7 Feb 2015 16:33:55 +0800 in the
+alsa-devel mailing-list):
 
->  }
-> =20
-> -static struct snd_soc_dai *snd_soc_find_dai(
-> +struct snd_soc_dai *snd_soc_find_dai(
->  	const struct snd_soc_dai_link_component *dlc)
->  {
->  	struct snd_soc_component *component;
-> @@ -959,6 +959,7 @@ static struct snd_soc_dai *snd_soc_find_dai(
-> =20
->  	return NULL;
->  }
-> +EXPORT_SYMBOL_GPL(snd_soc_find_dai);
+> We already have simple-card to provide a binding for trivial
+> systems and don't want to end up with a never ending series of slight=
+ly
+> more complicated bindings which each cover slightly different sets of
+> systems in ways that users struggle to differentiate between.
 
-Can you please add a kerneldoc comment as well since this is getting
-exported?
-
---3sP1+uScbtwzRm4f
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXF6poAAoJECTWi3JdVIfQdzcH/0UkezcFh9IboYqkoPHP4h/0
-RL9OxTN2MRuGmrRTBVQ/pVLi6Z+y1r4EJmYGqmBWvdx46XLoFJozuqoLVWQpFnwu
-piArIFQJevvXrg9Wt7PHQVVLgW9FkkW2GimYl2pWd5ViGbUIUfQW0aUd7i9naVK7
-pgtWhJKJpqOEvUsNlvM2EV+YoJIKNYPwUQt3UAnU0+psy1+zw7xjcKjFN1ewVeHI
-QeQQgHHt64iGFNuRxH+2R2pCLIGaIeBkxYv+LmxoBfXDFocxkwexfsqtdiGaguHZ
-d4ftv0W24xe+lmEiH4DgxeC/OmLTAcxlm3ziEX6BTb9O47yIZlgpg982HwB7kxo=
-=bQIQ
------END PGP SIGNATURE-----
-
---3sP1+uScbtwzRm4f--
-
---===============2236603874094080166==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2236603874094080166==--
+--=20
+Ken ar c'henta=F1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
