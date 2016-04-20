@@ -1,19 +1,19 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v5 2/4] ALSA: compress: Add function to
- indicate the stream has gone bad
-Date: Wed, 20 Apr 2016 18:38:51 +0530
-Message-ID: <20160420130851.GY2274@localhost>
+Subject: Re: [PATCH v5 3/4] ASoC: wm_adsp: Use new
+ snd_compr_stop_error to signal stream failure
+Date: Wed, 20 Apr 2016 18:39:38 +0530
+Message-ID: <20160420130938.GZ2274@localhost>
 References: <1461156003-24422-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1461156003-24422-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1461156003-24422-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 40371261B0A
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2016 15:04:12 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id F102F266591
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2016 15:05:19 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1461156003-24422-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+In-Reply-To: <1461156003-24422-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,25 +27,13 @@ To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 20, 2016 at 01:40:01PM +0100, Charles Keepax wrote:
-> Currently, the avail IOCTL doesn't pass any error status, which
-> means typically on error it simply shows no data available. This
-> can lead to situations where user-space is waiting indefinitely
-> for data that will never come as the DSP has suffered an
-> unrecoverable error.
-> 
-> Add snd_compr_stop_error which end drivers can call to indicate
-> the stream has suffered an unrecoverable error and stop it. The
-> avail and poll IOCTLs are then updated to report if the stream is
-> in an error state to user-space. Allowing the error to propagate
-> out. Processing of the actual snd_compr_stop needs to be deferred
-> to a worker thread as the end driver may detect the errors during
-> an existing operation callback.
+On Wed, Apr 20, 2016 at 01:40:02PM +0100, Charles Keepax wrote:
+> If we encounter a fatal error on the compressed stream call the new
+> snd_compr_stop_error to shutdown the stream and allow the core to
+> inform user-space that the stream is no longer valid.
 
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+Reviewed-by: Vinod Koul <vinod.koul@intel.com>
 
-Btw are you patching tinycompress as well to handle EPIPE?
 
-Thanks
 -- 
 ~Vinod
