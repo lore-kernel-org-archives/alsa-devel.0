@@ -1,50 +1,76 @@
-From: PC Liao <pc.liao@mediatek.com>
-Subject: Re: [PATCH 2/2 v6] ASoC: mediatek: Add second I2S on mt8173-rt5650
- machine driver
-Date: Thu, 21 Apr 2016 17:38:58 +0800
-Message-ID: <1461231538.2707.1.camel@mtksdaap41>
-References: <1461134447-42001-1-git-send-email-pc.liao@mediatek.com>
-	 <1461134447-42001-3-git-send-email-pc.liao@mediatek.com>
-	 <57178482.9090705@gmail.com> <1461169664.8479.1.camel@mtksdaap41>
-	 <57189BD1.40109@gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: A&H Zed R16 not completely working (DICE Jr)
+Date: Thu, 21 Apr 2016 18:49:42 +0900
+Message-ID: <5718A236.3070104@sakamocchi.jp>
+References: <CA+aoAJc6JQvy_yk-5HJZpqv5GW6DygdmLB5=HGyW9q3yn12mKA@mail.gmail.com>
+ <57179E91.1070202@sakamocchi.jp>
+ <CA+aoAJcCYpaXhX4+w9ViHN9J0Uz+QgUWwCb_-U4WzkoOVZR3+g@mail.gmail.com>
+ <57181862.6060501@sakamocchi.jp>
+ <CA+aoAJeOKtxGQXVKPLRYLO5KHMY7fDUZ4YKYHUUVyki_Sh3PBA@mail.gmail.com>
+ <571836C0.40605@sakamocchi.jp>
+ <CA+aoAJeU=y=mP0=_xeQXDfcG5uWg8azpuddQG6MxJ=NEZkA31A@mail.gmail.com>
+ <57185E39.5090401@sakamocchi.jp>
+ <CA+aoAJdVcu0C6KiLEDTf38awUAjtk2xddumicFNRw-QXx2Ww2w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <57189BD1.40109@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: "broonie@kernel.org" <broonie@kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, srv_heupstream <srv_heupstream@mediatek.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Koro Chen =?UTF-8?Q?=28=E9=99=B3=E6=80=9D=E7=BF=B0=29?= <koro.chen@mediatek.com>, "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FD70260711
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2016 11:49:45 +0200 (CEST)
+In-Reply-To: <CA+aoAJdVcu0C6KiLEDTf38awUAjtk2xddumicFNRw-QXx2Ww2w@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Allan Klinbail <aklinbail@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Matthias,
+Hi,
 
-On Thu, 2016-04-21 at 17:22 +0800, Matthias Brugger wrote:
-> 
-> On 20/04/16 18:27, PC Liao wrote:
-> > Hi Matthias,
-> >
-> > On Wed, 2016-04-20 at 21:30 +0800, Matthias Brugger wrote:
-> >>
-> >> For compatibility you should change this to something like:
-> >>
-> >>      dev_warn(card->dev, "Only one dai codec found in DTS, enabled rt5645
-> >>                           AD filter\n");
-> >>      rt5645_sel_asrc_clk_src(codec, RT5645_AD_STEREO_FILTER,
-> >>                                     RT5645_CLK_SEL_I2S1_ASRC);
-> >> }
-> >>
-> >
-> > I will use this in next version.
-> > Thanks!
-> >
-> 
-> I think you forgot to add this to v7 of the patches.
-> 
-> Cheers,
-> Matthias
+First, I have no hostility to you.
 
-Oh, sorry.
-I misunderstand your suggestion.
-I will upload.
-Thanks!
+Since I extended snd-dice in the late of 2014, I have been exposed to 
+the similar insistences many times, in public or private, from users who 
+own Dice-based models. Their insistences tends to include unreasonbable 
+judgements about something related, ignorance of developers' intension 
+and the state of development for ALSA firewire stack. So I feel to have 
+a waste of time to receive such intensions, because they're not 
+productive at all.
+
+
+On Apr 21 2016 14:38, Allan Klinbail wrote:
+> As I admitted, my understanding is basic and limited. Clearly I have got it
+> wrong.
+>
+> However, (snip)
+
+Well, you still repeat the same insistences again, after our discussion. 
+It means that I fail to refresh your knowledge about PCM frame handling 
+in this operating systems. That's a pretty sad to me.
+
+
+One of my motivation to work for ALSA firewire stack is to use sound and 
+music units on IEEE 1394 bus for the purpose as you described, via ALSA 
+kernel/userspace interface, according to ways reasonable to many system 
+requirements.
+
+The shape of ALSA firewire stack represents the requrements from design 
+of actual operating system, actual sound subsystem in Linux, actual 
+audio and music units on IEEE 1394 bus, actual packet streaming protocol 
+and actual quirks of the units. If you need my technical explaination 
+about them, I'm willing to describe them. You won't accept it even if I 
+did, because I've already introduced a part of them and you won't 
+refresh your brain.
+
+This is the end of such an unproductive discussion, sorry.
+
+
+Regards
+
+Takashi Sakamoto
