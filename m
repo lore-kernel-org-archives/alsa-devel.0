@@ -1,122 +1,74 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic32x4: Implement resistors on
-	input pins" to the asoc tree
-Date: Thu, 21 Apr 2016 17:11:37 +0100
-Message-ID: <E1atHCb-0002zo-Kv@debutante>
-References: <1461177552-31809-2-git-send-email-nh6z@nh6z.net>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v7 2/9] ASoC: mediatek: Add HDMI dai-links to the
+ mt8173-rt5650 machine driver
+Date: Thu, 21 Apr 2016 17:15:52 +0100
+Message-ID: <20160421161552.GW3217@sirena.org.uk>
+References: <1461142804-26728-1-git-send-email-p.zabel@pengutronix.de>
+ <1461142804-26728-3-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CE27B2666BD
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2016 18:11:42 +0200 (CEST)
-In-Reply-To: <1461177552-31809-2-git-send-email-nh6z@nh6z.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jeremy McDermond <nh6z@nh6z.net>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+Content-Type: multipart/mixed; boundary="===============6613354497779619757=="
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <1461142804-26728-3-git-send-email-p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, PC Liao <pc.liao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: tlv320aic32x4: Implement resistors on input pins
+--===============6613354497779619757==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="OVdRMxb7LIguqeaK"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--OVdRMxb7LIguqeaK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Wed, Apr 20, 2016 at 10:59:57AM +0200, Philipp Zabel wrote:
+> From: PC Liao <pc.liao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+>=20
+> This patch adds HDMI audio output support to the MT8173 RT5650 machine
+> driver.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+This doesn't apply against current code, please check and resend.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--OVdRMxb7LIguqeaK
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Thanks,
-Mark
+iQEcBAEBCAAGBQJXGPy3AAoJECTWi3JdVIfQ8ukH/Ax6tfSoU4HZTrwPYMSfzYQu
+urj7SNg9x5siT6vVEz93rLVRBk7lN1DJ+Yu7/t43FGnIicI6cFjbE/2X2tYF5m8J
+aAIlW4cGSurZa0X87mn0JAhYE3iz/f4WOv9tAJicFkQK5LKWxfihkQe7wubrqNpF
+91tShkLK4/Q6QTnRQSW3+MKLixHe9YIiiSTv8oYD3jqsTU8Sebn6wONUnfHBbxx7
+BXiKVT43qJFGuu7Wu/Fuy9Qg5+HseVdDQxe3Hp9sHACe1diu72nmOvaAjTM87G48
+bXF2C1WvmCeRCVtDJAbCPgRXub1KayyaKNU0zPgwATXm6h/C5MfeoXJLJWQLl/g=
+=lLnG
+-----END PGP SIGNATURE-----
 
->From 20d2cecbb7b9c35235c97f0dfa520525c28f8841 Mon Sep 17 00:00:00 2001
-From: Jeremy McDermond <nh6z@nh6z.net>
-Date: Wed, 20 Apr 2016 11:39:11 -0700
-Subject: [PATCH] ASoC: tlv320aic32x4: Implement resistors on input pins
+--OVdRMxb7LIguqeaK--
 
-The input pins of the aic3204 have resistors inline with them.  The
-current code assumes that you want a 10k resistor inline with your
-inputs and implements it as a simple switch.  This patch creates an enum
-for each pin and allows you to switch between not connected, 10k, 20k
-and 40k ohm values.  This more closely models the acutal aic3204 part.
 
-These pin settings are documented in TI's SLAA557 pages 135 and 136
-(http://www.ti.com/lit/ml/slaa557/slaa557.pdf).
+--===============6613354497779619757==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Signed-off-by: Jeremy McDermond <nh6z@nh6z.net>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/tlv320aic32x4.c | 30 ++++++++++++++++++++++++------
- 1 file changed, 24 insertions(+), 6 deletions(-)
+_______________________________________________
+Linux-mediatek mailing list
+Linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+http://lists.infradead.org/mailman/listinfo/linux-mediatek
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 2f8480c93b3c..621f4210cd27 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -183,16 +183,34 @@ static const struct snd_kcontrol_new lor_output_mixer_controls[] = {
- 	SOC_DAPM_SINGLE("R_DAC Switch", AIC32X4_LORROUTE, 3, 1, 0),
- };
- 
-+static const char * const resistor_text[] = {
-+	"Off", "10 kOhm", "20 kOhm", "40 kOhm",
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(in1l_lpga_p_enum, AIC32X4_LMICPGAPIN, 6,
-+		resistor_text);
-+static SOC_ENUM_SINGLE_DECL(in2l_lpga_p_enum, AIC32X4_LMICPGAPIN, 4,
-+		resistor_text);
-+static SOC_ENUM_SINGLE_DECL(in3l_lpga_p_enum, AIC32X4_LMICPGAPIN, 2,
-+		resistor_text);
-+
- static const struct snd_kcontrol_new left_input_mixer_controls[] = {
--	SOC_DAPM_SINGLE("IN1_L P Switch", AIC32X4_LMICPGAPIN, 6, 1, 0),
--	SOC_DAPM_SINGLE("IN2_L P Switch", AIC32X4_LMICPGAPIN, 4, 1, 0),
--	SOC_DAPM_SINGLE("IN3_L P Switch", AIC32X4_LMICPGAPIN, 2, 1, 0),
-+	SOC_DAPM_ENUM("IN1_L P Switch", in1l_lpga_p_enum),
-+	SOC_DAPM_ENUM("IN2_L P Switch", in2l_lpga_p_enum),
-+	SOC_DAPM_ENUM("IN3_L P Switch", in3l_lpga_p_enum),
- };
- 
-+static SOC_ENUM_SINGLE_DECL(in1r_rpga_p_enum, AIC32X4_RMICPGAPIN, 6,
-+		resistor_text);
-+static SOC_ENUM_SINGLE_DECL(in2r_rpga_p_enum, AIC32X4_RMICPGAPIN, 4,
-+		resistor_text);
-+static SOC_ENUM_SINGLE_DECL(in3r_rpga_p_enum, AIC32X4_RMICPGAPIN, 2,
-+		resistor_text);
-+
- static const struct snd_kcontrol_new right_input_mixer_controls[] = {
--	SOC_DAPM_SINGLE("IN1_R P Switch", AIC32X4_RMICPGAPIN, 6, 1, 0),
--	SOC_DAPM_SINGLE("IN2_R P Switch", AIC32X4_RMICPGAPIN, 4, 1, 0),
--	SOC_DAPM_SINGLE("IN3_R P Switch", AIC32X4_RMICPGAPIN, 2, 1, 0),
-+	SOC_DAPM_ENUM("IN1_R P Switch", in1r_rpga_p_enum),
-+	SOC_DAPM_ENUM("IN2_R P Switch", in2r_rpga_p_enum),
-+	SOC_DAPM_ENUM("IN3_R P Switch", in3r_rpga_p_enum),
- };
- 
- static const struct snd_soc_dapm_widget aic32x4_dapm_widgets[] = {
--- 
-2.8.0.rc3
+--===============6613354497779619757==--
