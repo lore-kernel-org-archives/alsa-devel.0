@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: arizona: Prefer lower FRATIO in pseudo-fractional mode" to the asoc tree
-Date: Thu, 21 Apr 2016 17:11:31 +0100
-Message-ID: <E1atHCV-0002yI-MD@debutante>
-References: <1461243854-31765-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver" to the asoc tree
+Date: Thu, 21 Apr 2016 17:11:28 +0100
+Message-ID: <E1atHCS-0002xe-NX@debutante>
+References: <1461238694-46035-1-git-send-email-pc.liao@mediatek.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1461243854-31765-1-git-send-email-rf@opensource.wolfsonmicro.com>
+In-Reply-To: <1461238694-46035-1-git-send-email-pc.liao@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
+To: PC Liao <pc.liao@mediatek.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, tiwai@suse.de, alsa-devel@alsa-project.org, srv_heupstream@mediatek.com, s.hauer@pengutronix.de, linux-kernel@vger.kernel.org, koro.chen@mediatek.com, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: arizona: Prefer lower FRATIO in pseudo-fractional mode
+   ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver
 
 has been applied to the asoc tree at
 
@@ -37,68 +37,140 @@ to this mail.
 Thanks,
 Mark
 
->From 8e42db1eaab6c2558dbc2e6c1428730df0a295f4 Mon Sep 17 00:00:00 2001
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Date: Thu, 21 Apr 2016 14:04:14 +0100
-Subject: [PATCH] ASoC: arizona: Prefer lower FRATIO in pseudo-fractional mode
+>From d349caeb05104ef01392abc6c7cfc8ab516c7be4 Mon Sep 17 00:00:00 2001
+From: PC Liao <pc.liao@mediatek.com>
+Date: Thu, 21 Apr 2016 19:38:14 +0800
+Subject: [PATCH] ASoC: mediatek: Add second I2S on mt8173-rt5650 machine
+ driver
 
-When setting up an FLL in pseudo-fractional mode it is preferred
-to use a lower FRATIO if possible to give a higher reference clock
-frequency. This patch swaps the two loops in arizona_calc_fratio()
-so that lower FRATIOs are tried first. The decrementing loop is also
-changed to start from init_ratio because the original settings might
-already give a fractional value for N.K
+This patch adds second I2S connection to rt5650 codec for capture path on
+mt8173-rt5650 machine driver.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Signed-off-by: PC Liao <pc.liao@mediatek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/arizona.c | 27 +++++++++++++++------------
- 1 file changed, 15 insertions(+), 12 deletions(-)
+ .../devicetree/bindings/sound/mt8173-rt5650.txt    | 10 +++++
+ sound/soc/mediatek/mt8173-rt5650.c                 | 50 ++++++++++++++++++++--
+ 2 files changed, 57 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index d8a682302580..0caecc6f78df 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -2037,7 +2037,21 @@ static int arizona_calc_fratio(struct arizona_fll *fll,
- 			init_ratio, Fref, refdiv);
+diff --git a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
+index fe5a5ef1714d..5bfa6b60530b 100644
+--- a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
++++ b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
+@@ -5,11 +5,21 @@ Required properties:
+ - mediatek,audio-codec: the phandles of rt5650 codecs
+ - mediatek,platform: the phandle of MT8173 ASoC platform
  
- 	while (div <= ARIZONA_FLL_MAX_REFDIV) {
--		for (ratio = init_ratio; ratio <= ARIZONA_FLL_MAX_FRATIO;
-+		/* start from init_ratio because this may already give a
-+		 * fractional N.K
-+		 */
-+		for (ratio = init_ratio; ratio > 0; ratio--) {
-+			if (target % (ratio * Fref)) {
-+				cfg->refdiv = refdiv;
-+				cfg->fratio = ratio - 1;
-+				arizona_fll_dbg(fll,
-+					"pseudo: found fref=%u refdiv=%d(%d) ratio=%d\n",
-+					Fref, refdiv, div, ratio);
-+				return ratio;
-+			}
-+		}
++Optional subnodes:
++- codec-capture : the subnode of rt5650 codec capture
++Required codec-capture subnode properties:
++- sound-dai: audio codec dai name on capture path
++  <&rt5650 0> : Default setting. Connect rt5650 I2S1 for capture. (dai_name = rt5645-aif1)
++  <&rt5650 1> : Connect rt5650 I2S2 for capture. (dai_name = rt5645-aif2)
 +
-+		for (ratio = init_ratio + 1; ratio <= ARIZONA_FLL_MAX_FRATIO;
- 		     ratio++) {
- 			if ((ARIZONA_FLL_VCO_CORNER / 2) /
- 			    (fll->vco_mult * ratio) < Fref) {
-@@ -2063,17 +2077,6 @@ static int arizona_calc_fratio(struct arizona_fll *fll,
- 			}
- 		}
+ Example:
  
--		for (ratio = init_ratio - 1; ratio > 0; ratio--) {
--			if (target % (ratio * Fref)) {
--				cfg->refdiv = refdiv;
--				cfg->fratio = ratio - 1;
--				arizona_fll_dbg(fll,
--					"pseudo: found fref=%u refdiv=%d(%d) ratio=%d\n",
--					Fref, refdiv, div, ratio);
--				return ratio;
--			}
--		}
--
- 		div *= 2;
- 		Fref /= 2;
- 		refdiv++;
+ 	sound {
+ 		compatible = "mediatek,mt8173-rt5650";
+ 		mediatek,audio-codec = <&rt5650>;
+ 		mediatek,platform = <&afe>;
++		codec-capture {
++			sound-dai = <&rt5650 1>;
++		};
+ 	};
+ 
+diff --git a/sound/soc/mediatek/mt8173-rt5650.c b/sound/soc/mediatek/mt8173-rt5650.c
+index bb09bb1b7f1c..a27a6673dbe3 100644
+--- a/sound/soc/mediatek/mt8173-rt5650.c
++++ b/sound/soc/mediatek/mt8173-rt5650.c
+@@ -85,12 +85,29 @@ static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
+ {
+ 	struct snd_soc_card *card = runtime->card;
+ 	struct snd_soc_codec *codec = runtime->codec_dais[0]->codec;
++	const char *codec_capture_dai = runtime->codec_dais[1]->name;
+ 	int ret;
+ 
+ 	rt5645_sel_asrc_clk_src(codec,
+-				RT5645_DA_STEREO_FILTER |
+-				RT5645_AD_STEREO_FILTER,
++				RT5645_DA_STEREO_FILTER,
+ 				RT5645_CLK_SEL_I2S1_ASRC);
++
++	if (!strcmp(codec_capture_dai, "rt5645-aif1")) {
++		rt5645_sel_asrc_clk_src(codec,
++					RT5645_AD_STEREO_FILTER,
++					RT5645_CLK_SEL_I2S1_ASRC);
++	} else if (!strcmp(codec_capture_dai, "rt5645-aif2")) {
++		rt5645_sel_asrc_clk_src(codec,
++					RT5645_AD_STEREO_FILTER,
++					RT5645_CLK_SEL_I2S2_ASRC);
++	} else {
++		dev_warn(card->dev,
++			 "Only one dai codec found in DTS, enabled rt5645 AD filter\n");
++		rt5645_sel_asrc_clk_src(codec,
++					RT5645_AD_STEREO_FILTER,
++					RT5645_CLK_SEL_I2S1_ASRC);
++	}
++
+ 	/* enable jack detection */
+ 	ret = snd_soc_card_jack_new(card, "Headset Jack",
+ 				    SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
+@@ -110,6 +127,11 @@ static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
+ 
+ static struct snd_soc_dai_link_component mt8173_rt5650_codecs[] = {
+ 	{
++		/* Playback */
++		.dai_name = "rt5645-aif1",
++	},
++	{
++		/* Capture */
+ 		.dai_name = "rt5645-aif1",
+ 	},
+ };
+@@ -149,7 +171,7 @@ static struct snd_soc_dai_link mt8173_rt5650_dais[] = {
+ 		.cpu_dai_name = "I2S",
+ 		.no_pcm = 1,
+ 		.codecs = mt8173_rt5650_codecs,
+-		.num_codecs = 1,
++		.num_codecs = 2,
+ 		.init = mt8173_rt5650_init,
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 			   SND_SOC_DAIFMT_CBS_CFS,
+@@ -177,6 +199,8 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = &mt8173_rt5650_card;
+ 	struct device_node *platform_node;
++	struct device_node *np;
++	const char *codec_capture_dai;
+ 	int i, ret;
+ 
+ 	platform_node = of_parse_phandle(pdev->dev.of_node,
+@@ -199,6 +223,26 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
+ 			"Property 'audio-codec' missing or invalid\n");
+ 		return -EINVAL;
+ 	}
++	mt8173_rt5650_codecs[1].of_node = mt8173_rt5650_codecs[0].of_node;
++
++	if (of_find_node_by_name(platform_node, "codec-capture")) {
++		np = of_get_child_by_name(pdev->dev.of_node, "codec-capture");
++		if (!np) {
++			dev_err(&pdev->dev,
++				"%s: Can't find codec-capture DT node\n",
++				__func__);
++			return -EINVAL;
++		}
++		ret = snd_soc_of_get_dai_name(np, &codec_capture_dai);
++		if (ret < 0) {
++			dev_err(&pdev->dev,
++				"%s codec_capture_dai name fail %d\n",
++				__func__, ret);
++			return ret;
++		}
++		mt8173_rt5650_codecs[1].dai_name = codec_capture_dai;
++	}
++
+ 	card->dev = &pdev->dev;
+ 	platform_set_drvdata(pdev, card);
+ 
 -- 
 2.8.0.rc3
