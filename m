@@ -1,23 +1,21 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: sound: use-after-free in snd_timer_interrupt
-Date: Thu, 21 Apr 2016 10:14:10 +0200
-Message-ID: <CACT4Y+YAK9OJA2C36LC9TnkMoW3k5GmZKk_N9_SgeDLiKzJzWw@mail.gmail.com>
-References: <CACT4Y+a5Mv+7ucYvQZ4-Di0d42GNX_OR+9NBg8n1-Luc+ti9tg@mail.gmail.com>
- <s5hbn5s2ctd.wl-tiwai@suse.de>
- <CACT4Y+b2jCpng=_J44WUhtOqUCWoCakNu_kHOU4MBHt59+4a7g@mail.gmail.com>
- <s5h1t6n2oca.wl-tiwai@suse.de>
- <CACT4Y+Z5gh01up0jeFw7B239CGGb=a-KcjQqOvMdTYoOjL14Pg@mail.gmail.com>
- <s5hd1pkzoq0.wl-tiwai@suse.de> <s5h37qg372z.wl-tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v5 2/4] ALSA: compress: Add function to
+ indicate the stream has gone bad
+Date: Thu, 21 Apr 2016 09:26:57 +0100
+Message-ID: <20160421082657.GD1581@localhost.localdomain>
+References: <1461156003-24422-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1461156003-24422-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <5717A9ED.50706@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f43.google.com (mail-wm0-f43.google.com [74.125.82.43])
- by alsa0.perex.cz (Postfix) with ESMTP id D7C632606C7
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2016 10:14:30 +0200 (CEST)
-Received: by mail-wm0-f43.google.com with SMTP id u206so118874863wme.1
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2016 01:14:30 -0700 (PDT)
-In-Reply-To: <s5h37qg372z.wl-tiwai@suse.de>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A3A82604DF
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2016 10:27:13 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <5717A9ED.50706@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,70 +25,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Peter Zijlstra <peterz@infradead.org>, LKML <linux-kernel@vger.kernel.org>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>, Alexander Potapenko <glider@google.com>, Sasha Levin <sasha.levin@oracle.com>, Thomas Gleixner <tglx@linutronix.de>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 20, 2016 at 12:31 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Wed, 20 Apr 2016 10:08:55 +0200,
-> Takashi Iwai wrote:
->>
->> On Wed, 20 Apr 2016 09:56:04 +0200,
->> Dmitry Vyukov wrote:
->> >
->> > On Sun, Apr 3, 2016 at 8:33 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> > >> >> It is not easily reproducible. I've hit several times while running
->> > >> >> fuzzer for a week. Here is one of the logs for the record:
->> > >> >> https://gist.githubusercontent.com/dvyukov/c84798ee55721563ecb537c4d51dc9f5/raw/f00b865a85877656f13b41917f7321730f140d35/gistfile1.txt
->> > >> >
->> > >> > There are a few more fixes in sound/core/timer.c since 4.5, and they
->> > >> > possibly already cover this.
->> > >> >
->> > >> > Please let me know if this is still seen on the upcoming 4.6-rc2.
->> > >>
->> > >> Hi Takashi,
->> > >>
->> > >> I've updated fuzzer to 05cf8077e54b20dddb756eaa26f3aeb5c38dd3cf (Apr
->> > >> 1) yesterday. Let's see if it still happens.
->> > >>
->> > >> Out of curiosity, how was the bug found?
->> > >
->> > > Well, I'm not entirely sure whether they really cover.  It's just a
->> > > hope, as these are patches to close some possible races :)
->> > >
->> > > 9984d1b5835ca29fc7025186a891ee7398d21cc7
->> > >     ALSA: timer: Protect the whole snd_timer_close() with open race
->> > > f65e0d299807d8a11812845c972493c3f9a18e10
->> > >     ALSA: timer: Call notifier in the same spinlock
->> > > 4a07083ed613644c96c34a7dd2853dc5d7c70902
->> > >     ALSA: timer: Use mod_timer() for rearming the system timer
->> >
->> >
->> > Hi Takashi,
->> >
->> > I've hit it again on 806fdcce017dc98c4dbf8ed001750a0d7d2bb0af (Apr
->> > 14), all 3 commits are already in my tree.
->> >
->> > [  343.222218] ------------[ cut here ]------------
->> > [  343.222218] WARNING: CPU: 3 PID: 7040 at kernel/time/hrtimer.c:837
->> > hrtimer_forward+0x26a/0x3e0
->>
->> This is a different warning.  The previous was use-after-free, and
->> this is a warning about re-arming the queued hrtimer.
->> Maybe there is a slightly remaining race about hrtimer_start() and the
->> interrupt handler in snd-hrtimer.
->
-> Could you check whether two patches below help anything?
-> This should harden against the race between hrtimer callback and
-> another start/stop calls.
+On Wed, Apr 20, 2016 at 11:10:21AM -0500, Pierre-Louis Bossart wrote:
+> 
+> >+ * snd_compr_stop_error: Report a fatal error on a stream
+> >+ * @stream: pointer to stream
+> >+ * @state: state to transition the stream to
+> >+ *
+> >+ * Stop the stream and set its state.
+> >+ *
+> >+ * Should be called with compressed device lock held.
+> >+ */
+> >+int snd_compr_stop_error(struct snd_compr_stream *stream,
+> >+			 snd_pcm_state_t state)
+> >+{
+> >+	if (stream->runtime->state == state)
+> >+		return 0;
+> >+
+> >+	stream->runtime->state = state;
+> 
+> Minor nit-pick: should there be a consistency check to make sure the new
+> state makes sense - or maybe just a log to help debug? e.g. XRUN should only
+> come if the state in run or draining stages, applying the new state
+> unconditionally could lead to issues.
 
-I don't have a reliable way to reproduce it. I've tried to replay the
-logs for hours, but no success. And I've hit it only three times:
+I think given the function can now report more than just a XRUN
+it probably makes sense to set it unconditionally. As you might
+be reporting some error that doesn't require the stream to be
+running.
 
--rw-r----- 1 346004 Apr 19 02:36 crash-qemu-23-1461026201572599961
--rw-r----- 1 393438 Mar 27 08:24 crash-qemu-8-1459059850150353721
--rw-r----- 1 393439 Mar 10 19:44 crash-qemu-16-1457635446972474955
+It probably would make sense to only call trigger with
+TRIGGER_STOP if the stream is already running through. How about
+I add a check for the state in the delayed work? And I can
+certainly add a print to say the state was set, that probably
+makes sense anyway as it is an error being reported.
 
-I will merge the patches and restart the fuzzer. It will be difficult
-to conclude whether it fixes the bug or not, but at least it will test
-the patches.
+> And question for my education since I see no lock/mutex: is the state always
+> consistent or is there a risk of this state being changed while some other
+> thread or interrupt handling modifies it was well?
+
+As the comment says it is expected the lock should be held when
+calling the function. I could put a lockdep assert in, if we want
+to be cautious on this front?
+
+Thanks,
+Charles
