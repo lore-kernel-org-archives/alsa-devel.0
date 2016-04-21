@@ -1,16 +1,16 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v4 1/2] video: hdmi: add helper functions for N
-	and CTS
-Date: Thu, 21 Apr 2016 17:29:13 +0200
-Message-ID: <1461252554-16522-2-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH v4 2/2] drm: sti: Add ASoC generic hdmi codec
+	support.
+Date: Thu, 21 Apr 2016 17:29:14 +0200
+Message-ID: <1461252554-16522-3-git-send-email-arnaud.pouliquen@st.com>
 References: <1461252554-16522-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 8BA052666BD
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2016 17:29:36 +0200 (CEST)
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 3511C26683D
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2016 17:29:37 +0200 (CEST)
 In-Reply-To: <1461252554-16522-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,265 +25,424 @@ To: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org
 Cc: Jean-Francois Moine <moinejf@free.fr>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@linux.ie>, arnaud.pouliquen@st.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Benjamin Gaignard <benjamin.gaignard@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add helper functions to compute HDMI CTS and N parameters.
-Implementation is based on HDMI 1.4b specification.
+Add the interface needed by audio hdmi-codec driver.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 Acked-by: Benjamin Gaignard <benjamin.gaignard@linaro.org>
 Acked-by: Vincent ABRIOU <vincent.abriou@st.com>
 ---
- drivers/video/hdmi.c | 208 +++++++++++++++++++++++++++++++++++++++++++++++++++
- include/linux/hdmi.h |  24 ++++++
- 2 files changed, 232 insertions(+)
+ drivers/gpu/drm/sti/Kconfig    |   1 +
+ drivers/gpu/drm/sti/sti_hdmi.c | 248 ++++++++++++++++++++++++++++++++++++++---
+ drivers/gpu/drm/sti/sti_hdmi.h |  13 +++
+ 3 files changed, 245 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/video/hdmi.c b/drivers/video/hdmi.c
-index 1626892..5d124ef 100644
---- a/drivers/video/hdmi.c
-+++ b/drivers/video/hdmi.c
-@@ -1242,3 +1242,211 @@ int hdmi_infoframe_unpack(union hdmi_infoframe *frame, void *buffer)
- 	return ret;
+diff --git a/drivers/gpu/drm/sti/Kconfig b/drivers/gpu/drm/sti/Kconfig
+index 5ad43a1..494ab25 100644
+--- a/drivers/gpu/drm/sti/Kconfig
++++ b/drivers/gpu/drm/sti/Kconfig
+@@ -7,5 +7,6 @@ config DRM_STI
+ 	select DRM_KMS_CMA_HELPER
+ 	select DRM_PANEL
+ 	select FW_LOADER
++	select SND_SOC_HDMI_CODEC if SND_SOC
+ 	help
+ 	  Choose this option to enable DRM on STM stiH41x chipset
+diff --git a/drivers/gpu/drm/sti/sti_hdmi.c b/drivers/gpu/drm/sti/sti_hdmi.c
+index 6ef0715..3a8bd47 100644
+--- a/drivers/gpu/drm/sti/sti_hdmi.c
++++ b/drivers/gpu/drm/sti/sti_hdmi.c
+@@ -18,6 +18,8 @@
+ #include <drm/drm_crtc_helper.h>
+ #include <drm/drm_edid.h>
+ 
++#include <sound/hdmi-codec.h>
++
+ #include "sti_hdmi.h"
+ #include "sti_hdmi_tx3g4c28phy.h"
+ #include "sti_hdmi_tx3g0c55phy.h"
+@@ -35,6 +37,8 @@
+ #define HDMI_DFLT_CHL0_DAT              0x0110
+ #define HDMI_DFLT_CHL1_DAT              0x0114
+ #define HDMI_DFLT_CHL2_DAT              0x0118
++#define HDMI_AUDIO_CFG                  0x0200
++#define HDMI_SPDIF_FIFO_STATUS          0x0204
+ #define HDMI_SW_DI_1_HEAD_WORD          0x0210
+ #define HDMI_SW_DI_1_PKT_WORD0          0x0214
+ #define HDMI_SW_DI_1_PKT_WORD1          0x0218
+@@ -44,6 +48,9 @@
+ #define HDMI_SW_DI_1_PKT_WORD5          0x0228
+ #define HDMI_SW_DI_1_PKT_WORD6          0x022C
+ #define HDMI_SW_DI_CFG                  0x0230
++#define HDMI_SAMPLE_FLAT_MASK           0x0244
++#define HDMI_AUDN                       0x0400
++#define HDMI_AUD_CTS                    0x0404
+ #define HDMI_SW_DI_2_HEAD_WORD          0x0600
+ #define HDMI_SW_DI_2_PKT_WORD0          0x0604
+ #define HDMI_SW_DI_2_PKT_WORD1          0x0608
+@@ -103,6 +110,7 @@
+ #define HDMI_INT_DLL_LCK                BIT(5)
+ #define HDMI_INT_NEW_FRAME              BIT(6)
+ #define HDMI_INT_GENCTRL_PKT            BIT(7)
++#define HDMI_INT_AUDIO_FIFO_XRUN        BIT(8)
+ #define HDMI_INT_SINK_TERM_PRESENT      BIT(11)
+ 
+ #define HDMI_DEFAULT_INT (HDMI_INT_SINK_TERM_PRESENT \
+@@ -111,6 +119,7 @@
+ 			| HDMI_INT_GLOBAL)
+ 
+ #define HDMI_WORKING_INT (HDMI_INT_SINK_TERM_PRESENT \
++			| HDMI_INT_AUDIO_FIFO_XRUN \
+ 			| HDMI_INT_GENCTRL_PKT \
+ 			| HDMI_INT_NEW_FRAME \
+ 			| HDMI_INT_DLL_LCK \
+@@ -121,6 +130,27 @@
+ 
+ #define HDMI_STA_SW_RST                 BIT(1)
+ 
++#define HDMI_AUD_CFG_8CH		BIT(0)
++#define HDMI_AUD_CFG_SPDIF_DIV_2	BIT(1)
++#define HDMI_AUD_CFG_SPDIF_DIV_3	BIT(2)
++#define HDMI_AUD_CFG_SPDIF_CLK_DIV_4	(BIT(1) | BIT(2))
++#define HDMI_AUD_CFG_CTS_CLK_256FS	BIT(12)
++#define HDMI_AUD_CFG_DTS_INVALID	BIT(16)
++#define HDMI_AUD_CFG_ONE_BIT_INVALID	(BIT(18) | BIT(19) | BIT(20) |  BIT(21))
++#define HDMI_AUD_CFG_CH12_VALID	BIT(28)
++#define HDMI_AUD_CFG_CH34_VALID	BIT(29)
++#define HDMI_AUD_CFG_CH56_VALID	BIT(30)
++#define HDMI_AUD_CFG_CH78_VALID	BIT(31)
++
++/* sample flat mask */
++#define HDMI_SAMPLE_FLAT_NO	 0
++#define HDMI_SAMPLE_FLAT_SP0 BIT(0)
++#define HDMI_SAMPLE_FLAT_SP1 BIT(1)
++#define HDMI_SAMPLE_FLAT_SP2 BIT(2)
++#define HDMI_SAMPLE_FLAT_SP3 BIT(3)
++#define HDMI_SAMPLE_FLAT_ALL (HDMI_SAMPLE_FLAT_SP0 | HDMI_SAMPLE_FLAT_SP1 |\
++			      HDMI_SAMPLE_FLAT_SP2 | HDMI_SAMPLE_FLAT_SP3)
++
+ #define HDMI_INFOFRAME_HEADER_TYPE(x)    (((x) & 0xff) <<  0)
+ #define HDMI_INFOFRAME_HEADER_VERSION(x) (((x) & 0xff) <<  8)
+ #define HDMI_INFOFRAME_HEADER_LEN(x)     (((x) & 0x0f) << 16)
+@@ -171,6 +201,10 @@ static irqreturn_t hdmi_irq_thread(int irq, void *arg)
+ 		wake_up_interruptible(&hdmi->wait_event);
+ 	}
+ 
++	/* Audio FIFO underrun IRQ */
++	if (hdmi->irq_status & HDMI_INT_AUDIO_FIFO_XRUN)
++		DRM_INFO("Warning: audio FIFO underrun occurs!");
++
+ 	return IRQ_HANDLED;
  }
- EXPORT_SYMBOL(hdmi_infoframe_unpack);
+ 
+@@ -441,26 +475,29 @@ static int hdmi_avi_infoframe_config(struct sti_hdmi *hdmi)
+  */
+ static int hdmi_audio_infoframe_config(struct sti_hdmi *hdmi)
+ {
+-	struct hdmi_audio_infoframe infofame;
++	struct hdmi_audio_params *audio = &hdmi->audio;
+ 	u8 buffer[HDMI_INFOFRAME_SIZE(AUDIO)];
+-	int ret;
+-
+-	ret = hdmi_audio_infoframe_init(&infofame);
+-	if (ret < 0) {
+-		DRM_ERROR("failed to setup audio infoframe: %d\n", ret);
+-		return ret;
+-	}
+-
+-	infofame.channels = 2;
+-
+-	ret = hdmi_audio_infoframe_pack(&infofame, buffer, sizeof(buffer));
+-	if (ret < 0) {
+-		DRM_ERROR("failed to pack audio infoframe: %d\n", ret);
+-		return ret;
++	int ret, val;
 +
-+/*
-+ * audio clock regeneration (acr) parameters
-+ * N and CTS computation are based on HDMI specification 1.4b
-+ */
-+enum hdmi_audio_rate {
-+	HDMI_AUDIO_N_CTS_32KHZ,
-+	HDMI_AUDIO_N_CTS_44_1KHZ,
-+	HDMI_AUDIO_N_CTS_48KHZ,
-+};
++	DRM_DEBUG_DRIVER("enter %s, AIF %s\n", __func__,
++			 audio->enabled ? "enable" : "disable");
++	if (audio->enabled) {
++		/* set audio parameters stored*/
++		ret = hdmi_audio_infoframe_pack(&audio->cea, buffer,
++						sizeof(buffer));
++		if (ret < 0) {
++			DRM_ERROR("failed to pack audio infoframe: %d\n", ret);
++			return ret;
++		}
++		hdmi_infoframe_write_infopack(hdmi, buffer, ret);
++	} else {
++		/*disable audio info frame transmission */
++		val = hdmi_read(hdmi, HDMI_SW_DI_CFG);
++		val &= ~HDMI_IFRAME_CFG_DI_N(HDMI_IFRAME_MASK,
++					     HDMI_IFRAME_SLOT_AUDIO);
++		hdmi_write(hdmi, val, HDMI_SW_DI_CFG);
+ 	}
+ 
+-	hdmi_infoframe_write_infopack(hdmi, buffer, ret);
+-
+ 	return 0;
+ }
+ 
+@@ -656,6 +693,10 @@ static int hdmi_dbg_show(struct seq_file *s, void *data)
+ 	DBGFS_DUMP("", HDMI_SW_DI_CFG);
+ 	hdmi_dbg_sw_di_cfg(s, hdmi_read(hdmi, HDMI_SW_DI_CFG));
+ 
++	DBGFS_DUMP("\n", HDMI_AUDIO_CFG);
++	DBGFS_DUMP("\n", HDMI_SPDIF_FIFO_STATUS);
++	DBGFS_DUMP("\n", HDMI_AUDN);
 +
-+struct hdmi_audio_acr {
-+	unsigned int tmds_clk;
-+	struct hdmi_audio_n_cts n_cts;
-+};
-+
-+static const struct hdmi_audio_acr hdmi_audio_standard_acr[3][13] = {
-+	[HDMI_AUDIO_N_CTS_32KHZ] = {
-+		/* N and CTS values for 32 kHz rate*/
-+		{  25174825, {  4576,  28125, 0 } }, /* 25.20/1.001  MHz */
-+		{  25200000, {  4096,  25200, 0 } }, /* 25.20        MHz */
-+		{  27000000, {  4096,  27000, 0 } }, /* 27.00        MHz */
-+		{  27027000, {  4096,  27027, 0 } }, /* 27.00*1.001  MHz */
-+		{  54000000, {  4096,  54000, 0 } }, /* 54.00        MHz */
-+		{  54054000, {  4096,  54054, 0 } }, /* 54.00*1.001  MHz */
-+		{  74175824, { 11648, 210937, 50 } }, /* 74.25/1.001 MHz */
-+		{  74250000, {  4096,  74250, 0 } }, /* 74.25        MHz */
-+		{ 148351648, { 11648, 421875, 0 } }, /* 148.50/1.001 MHz */
-+		{ 148500000, {  4096, 148500, 0 } }, /* 148.50       MHz */
-+		{ 296703296, {  5824, 421875, 0 } }, /* 297/1.001 MHz (truncated)*/
-+		{ 296703297, {  5824, 421875, 0 } }, /* 297/1.001 MHz (rounded)*/
-+		{ 297000000, {  3072, 222750, 0 } }, /* 297          MHz */
-+	},
-+	[HDMI_AUDIO_N_CTS_44_1KHZ] = {
-+		/* N and CTS values for 44.1 kHz, 88.2 kHz and 176.4 kHz rates*/
-+		{  25174825, {  7007,  31250, 0 } }, /* 25.20/1.001  MHz */
-+		{  25200000, {  6272,  28000, 0 } }, /* 25.20        MHz */
-+		{  27000000, {  6272,  30000, 0 } }, /* 27.00        MHz */
-+		{  27027000, {  6272,  30030, 0 } }, /* 27.00*1.001  MHz */
-+		{  54000000, {  6272,  60000, 0 } }, /* 54.00        MHz */
-+		{  54054000, {  6272,  60060, 0 } }, /* 54.00*1.001  MHz */
-+		{  74175824, { 17836, 234375, 0 } }, /* 74.25/1.001  MHz */
-+		{  74250000, {  6272,  82500, 0 } }, /* 74.25        MHz */
-+		{ 148351648, {  8918, 234375, 0 } }, /* 148.50/1.001 MHz */
-+		{ 148500000, {  6272, 165000, 0 } }, /* 148.50       MHz */
-+		{ 296703296, {  4459, 234375, 0 } }, /* 297/1.001 MHz (truncated) */
-+		{ 296703297, {  4459, 234375, 0 } }, /* 297/1.001 MHz (rounded) */
-+		{ 297000000, {  4704, 247500, 0 } }, /* 297          MHz */
-+	},
-+	[HDMI_AUDIO_N_CTS_48KHZ] = {
-+		/* N and CTS values for 48 kHz, 96 kHz and 192 kHz rates*/
-+		{  25174825, {  6864,  28125, 0 } }, /* 25.20/1.001  MHz */
-+		{  25200000, {  6144,  25200, 0 } }, /* 25.20        MHz */
-+		{  27000000, {  6144,  27000, 0 } }, /* 27.00        MHz */
-+		{  27027000, {  6144,  27027, 0 } }, /* 27.00*1.001  MHz */
-+		{  54000000, {  6144,  54000, 0 } }, /* 54.00        MHz */
-+		{  54054000, {  6144,  54054, 0 } }, /* 54.00*1.001  MHz */
-+		{  74175824, { 11648, 140625, 0 } }, /* 74.25/1.001  MHz */
-+		{  74250000, {  6144,  74250, 0 } }, /* 74.25        MHz */
-+		{ 148351648, {  5824, 140625, 0 } }, /* 148.50/1.001 MHz */
-+		{ 148500000, {  6144, 148500, 0 } }, /* 148.50       MHz */
-+		{ 296703296, {  5824, 281250, 0 } }, /* 297/1.001 MHz (truncated) */
-+		{ 296703297, {  5824, 281250, 0 } }, /* 297/1.001 MHz (rounded) */
-+		{ 297000000, {  5120, 247500, 0 } }, /* 297          MHz */
-+	}
-+};
-+
-+/**
-+ * hdmi_audio_get_coherent_n_cts() - compute N and CTS parameters for coherent
-+ * clocks. Coherent clock means that audio and TMDS clocks have the same
-+ * source (no drifts between clocks).
-+ *
-+ * @audio_fs: audio frame clock frequency in Hz
-+ * @tmds_clk: HDMI TMDS clock frequency in Hz
-+ * @n_cts: N and CTS parameter returned to user
-+ *
-+ * Values computed are based on table described in HDMI specification 1.4b
-+ *
-+ * Returns 0 on success or a negative error code on failure.
-+ */
-+int hdmi_audio_get_coherent_n_cts(unsigned int audio_fs,
-+				  unsigned int tmds_clk,
-+				  struct hdmi_audio_n_cts *n_cts)
+ 	seq_printf(s, "\n AVI Infoframe (Data Island slot N=%d):",
+ 		   HDMI_IFRAME_SLOT_AVI);
+ 	DBGFS_DUMP_DI(HDMI_SW_DI_N_HEAD_WORD, HDMI_IFRAME_SLOT_AVI);
+@@ -861,6 +902,7 @@ static int sti_hdmi_connector_get_modes(struct drm_connector *connector)
+ 
+ 	count = drm_add_edid_modes(connector, edid);
+ 	drm_mode_connector_update_edid_property(connector, edid);
++	drm_edid_to_eld(connector, edid);
+ 
+ 	kfree(edid);
+ 	return count;
+@@ -1049,6 +1091,160 @@ static struct drm_encoder *sti_hdmi_find_encoder(struct drm_device *dev)
+ 	return NULL;
+ }
+ 
++static int hdmi_audio_configure(struct sti_hdmi *hdmi,
++				struct hdmi_audio_params *params)
 +{
-+	int audio_freq_id, i;
-+	int rate_coeff = 1;
-+	u64 val, min;
-+	const struct hdmi_audio_acr  *acr_table;
-+	const struct hdmi_audio_n_cts *predef_n_cts = NULL;
++	int audio_cfg, n;
++	struct hdmi_audio_infoframe *info = &params->cea;
 +
-+	switch (audio_fs) {
-+	case 32000:
-+		audio_freq_id = HDMI_AUDIO_N_CTS_32KHZ;
-+		n_cts->n = 4096;
-+		break;
-+	case 44100:
-+		audio_freq_id = HDMI_AUDIO_N_CTS_44_1KHZ;
-+		n_cts->n = 6272;
-+		break;
-+	case 48000:
-+		audio_freq_id = HDMI_AUDIO_N_CTS_48KHZ;
-+		n_cts->n = 6144;
-+		break;
-+	case 88200:
-+		audio_freq_id = HDMI_AUDIO_N_CTS_44_1KHZ;
-+		rate_coeff = 2;
-+		n_cts->n = 6272 * 2;
-+		break;
-+	case 96000:
-+		audio_freq_id = HDMI_AUDIO_N_CTS_48KHZ;
-+		rate_coeff = 2;
-+		n_cts->n = 6144 * 2;
-+		break;
-+	case 176400:
-+		audio_freq_id = HDMI_AUDIO_N_CTS_44_1KHZ;
-+		rate_coeff = 4;
-+		n_cts->n = 6272 * 4;
-+		break;
-+	case 192000:
-+		audio_freq_id = HDMI_AUDIO_N_CTS_48KHZ;
-+		rate_coeff = 4;
-+		n_cts->n = 6144 * 4;
++	DRM_DEBUG_DRIVER("\n");
++
++	if (!hdmi->enabled)
++		return 0;
++
++	/* update N parameter */
++	n = hdmi_audio_get_non_coherent_n(params->sample_rate);
++
++	DRM_DEBUG_DRIVER("Audio rate = %d Hz, TMDS clock = %d Hz, n = %d\n",
++			 params->sample_rate, hdmi->mode.clock * 1000, n);
++	hdmi_write(hdmi, n, HDMI_AUDN);
++
++	/* update HDMI registers according to configuration */
++	audio_cfg = HDMI_AUD_CFG_SPDIF_DIV_2 | HDMI_AUD_CFG_DTS_INVALID |
++		    HDMI_AUD_CFG_ONE_BIT_INVALID;
++
++	switch (info->channels) {
++	case 8:
++		audio_cfg |= HDMI_AUD_CFG_CH78_VALID;
++	case 6:
++		audio_cfg |= HDMI_AUD_CFG_CH56_VALID;
++	case 4:
++		audio_cfg |= HDMI_AUD_CFG_CH34_VALID | HDMI_AUD_CFG_8CH;
++	case 2:
++		audio_cfg |= HDMI_AUD_CFG_CH12_VALID;
 +		break;
 +	default:
++		DRM_ERROR("ERROR: Unsupported number of channels (%d)!\n",
++			  info->channels);
 +		return -EINVAL;
 +	}
 +
-+	acr_table = hdmi_audio_standard_acr[audio_freq_id];
-+	for (i = 0; i < ARRAY_SIZE(hdmi_audio_standard_acr[0]); i++) {
-+		if (tmds_clk == acr_table[i].tmds_clk) {
-+			predef_n_cts = &acr_table[i].n_cts;
-+			n_cts->n = predef_n_cts->n * rate_coeff;
-+			n_cts->cts = predef_n_cts->cts;
-+			n_cts->cts_1_ratio = predef_n_cts->cts_1_ratio;
-+			return 0;
-+		}
++	hdmi_write(hdmi, audio_cfg, HDMI_AUDIO_CFG);
++
++	hdmi->audio = *params;
++
++	return hdmi_audio_infoframe_config(hdmi);
++}
++
++static void hdmi_audio_shutdown(struct device *dev)
++{
++	struct sti_hdmi *hdmi = dev_get_drvdata(dev);
++	int audio_cfg;
++
++	DRM_DEBUG_DRIVER("\n");
++
++	/* disable audio */
++	audio_cfg = HDMI_AUD_CFG_SPDIF_DIV_2 | HDMI_AUD_CFG_DTS_INVALID |
++		    HDMI_AUD_CFG_ONE_BIT_INVALID;
++	hdmi_write(hdmi, audio_cfg, HDMI_AUDIO_CFG);
++
++	hdmi->audio.enabled = 0;
++	hdmi_audio_infoframe_config(hdmi);
++}
++
++static int hdmi_audio_hw_params(struct device *dev,
++				struct hdmi_codec_daifmt *daifmt,
++				struct hdmi_codec_params *params)
++{
++	struct sti_hdmi *hdmi = dev_get_drvdata(dev);
++	int ret;
++	struct hdmi_audio_params audio = {
++		.sample_width = params->sample_width,
++		.sample_rate = params->sample_rate,
++		.cea = params->cea,
++	};
++
++	DRM_DEBUG_DRIVER("\n");
++
++	if (!hdmi->enabled)
++		return 0;
++
++	if ((daifmt->fmt != HDMI_I2S) || daifmt->bit_clk_inv ||
++	    daifmt->frame_clk_inv || daifmt->bit_clk_master ||
++	    daifmt->frame_clk_master) {
++		dev_err(dev, "%s: Bad flags %d %d %d %d\n", __func__,
++			daifmt->bit_clk_inv, daifmt->frame_clk_inv,
++			daifmt->bit_clk_master,
++			daifmt->frame_clk_master);
++		return -EINVAL;
 +	}
 +
-+	/*
-+	 * Pre-defined frequency not found. Compute CTS using formula:
-+	 * CTS = (Ftdms_clk * N) / (128 * audio_fs)
-+	 */
-+	val = (u64)tmds_clk * n_cts->n;
-+	n_cts->cts = div64_u64(val, 128UL * audio_fs);
++	audio.enabled = 1;
 +
-+	n_cts->cts_1_ratio = 0;
-+	min = (u64)n_cts->cts * 128UL * audio_fs;
-+	if (min < val) {
-+		/*
-+		 * Non-accurate value for CTS
-+		 * compute ratio, needed by user to alternate in ACR
-+		 * between CTS and CTS + 1 value.
-+		 */
-+		n_cts->cts_1_ratio = ((u32)(val - min)) * 100 /
-+				     (128 * audio_fs);
-+	}
++	ret = hdmi_audio_configure(hdmi, &audio);
++	if (ret < 0)
++		return ret;
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL(hdmi_audio_get_coherent_n_cts);
 +
-+/**
-+ * hdmi_audio_get_non_coherent_n() - get N parameter for non-coherent
-+ * clocks. None-coherent clocks means that audio and TMDS clocks have not the
-+ * same source (drifts between clocks). In this case assumption is that CTS is
-+ * automatically calculated by hardware.
-+ *
-+ * @audio_fs: audio frame clock frequency in Hz
-+ *
-+ * Values computed are based on table described in HDMI specification 1.4b
-+ *
-+ * Returns n value.
-+ */
-+int hdmi_audio_get_non_coherent_n(unsigned int audio_fs)
++static int hdmi_audio_digital_mute(struct device *dev, bool enable)
 +{
-+	unsigned int n;
++	struct sti_hdmi *hdmi = dev_get_drvdata(dev);
 +
-+	switch (audio_fs) {
-+	case 32000:
-+		n = 4096;
-+		break;
-+	case 44100:
-+		n = 6272;
-+		break;
-+	case 48000:
-+		n = 6144;
-+		break;
-+	case 88200:
-+		n = 6272 * 2;
-+		break;
-+	case 96000:
-+		n = 6144 * 2;
-+		break;
-+	case 176400:
-+		n = 6272 * 4;
-+		break;
-+	case 192000:
-+		n = 6144 * 4;
-+		break;
-+	default:
-+		/* Not pre-defined, recommended value: 128 * fs / 1000 */
-+		n = (audio_fs * 128) / 1000;
-+	}
++	DRM_DEBUG_DRIVER("%s\n", enable ? "enable" : "disable");
 +
-+	return n;
++	if (enable)
++		hdmi_write(hdmi, HDMI_SAMPLE_FLAT_ALL, HDMI_SAMPLE_FLAT_MASK);
++	else
++		hdmi_write(hdmi, HDMI_SAMPLE_FLAT_NO, HDMI_SAMPLE_FLAT_MASK);
++
++	return 0;
 +}
-+EXPORT_SYMBOL(hdmi_audio_get_non_coherent_n);
 +
-diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
-index e974420..088d09f8 100644
---- a/include/linux/hdmi.h
-+++ b/include/linux/hdmi.h
-@@ -333,4 +333,28 @@ int hdmi_infoframe_unpack(union hdmi_infoframe *frame, void *buffer);
- void hdmi_infoframe_log(const char *level, struct device *dev,
- 			union hdmi_infoframe *frame);
- 
-+/**
-+ * struct hdmi_audio_n_cts - n and cts parameter for ACR packets
-+ * @n: N parameter
-+ * @cts: CTS parameter
-+ * @cts_1_ratio: ratio from 0 to 99 to alternate "CTS" and "CTS + 1" values
-+ *  ratio = 0: CTS parameter is accurate, no need to alternate with "CTS + 1"
-+ *             value
-+ *  ratio = x: Need to alternate with ACR "CTS + 1" value x percent of the time
-+ *             to generate accurate audio clock
-+ *  as exemple: if cts_1_ratio = 30: to have an accurate value, user
-+ *  should transfer CTS value 70% of the time and (CTS+1) value 30% of the time
-+ */
-+struct hdmi_audio_n_cts {
-+	unsigned int n;
-+	unsigned int cts;
-+	unsigned int cts_1_ratio;
++static int hdmi_audio_get_eld(struct device *dev, uint8_t *buf, size_t len)
++{
++	struct sti_hdmi *hdmi = dev_get_drvdata(dev);
++	struct drm_connector *connector = hdmi->drm_connector;
++
++	DRM_DEBUG_DRIVER("\n");
++	memcpy(buf, connector->eld, min(sizeof(connector->eld), len));
++
++	return 0;
++}
++
++static const struct hdmi_codec_ops audio_codec_ops = {
++	.hw_params = hdmi_audio_hw_params,
++	.audio_shutdown = hdmi_audio_shutdown,
++	.digital_mute = hdmi_audio_digital_mute,
++	.get_eld = hdmi_audio_get_eld,
 +};
 +
-+int hdmi_audio_get_coherent_n_cts(unsigned int audio_fs,
-+				  unsigned int tmds_clk,
-+				  struct hdmi_audio_n_cts *n_cts);
++static int sti_hdmi_register_audio_driver(struct device *dev,
++					  struct sti_hdmi *hdmi)
++{
++	struct hdmi_codec_pdata codec_data = {
++		.ops = &audio_codec_ops,
++		.max_i2s_channels = 8,
++		.i2s = 1,
++	};
 +
-+int hdmi_audio_get_non_coherent_n(unsigned int audio_fs);
++	DRM_DEBUG_DRIVER("\n");
 +
- #endif /* _DRM_HDMI_H */
++	hdmi->audio.enabled = 0;
++
++	hdmi->audio_pdev = platform_device_register_data(
++		dev, HDMI_CODEC_DRV_NAME, PLATFORM_DEVID_AUTO,
++		&codec_data, sizeof(codec_data));
++
++	if (IS_ERR(hdmi->audio_pdev))
++		return PTR_ERR(hdmi->audio_pdev);
++
++	DRM_INFO("%s Driver bound %s\n", HDMI_CODEC_DRV_NAME, dev_name(dev));
++
++	return 0;
++}
++
+ static int sti_hdmi_bind(struct device *dev, struct device *master, void *data)
+ {
+ 	struct sti_hdmi *hdmi = dev_get_drvdata(dev);
+@@ -1099,12 +1295,27 @@ static int sti_hdmi_bind(struct device *dev, struct device *master, void *data)
+ 	if (err)
+ 		goto err_connector;
+ 
++	hdmi->drm_connector = drm_connector;
++
+ 	err = drm_mode_connector_attach_encoder(drm_connector, encoder);
+ 	if (err) {
+ 		DRM_ERROR("Failed to attach a connector to a encoder\n");
+ 		goto err_sysfs;
+ 	}
+ 
++	err = sti_hdmi_register_audio_driver(dev, hdmi);
++	if (err) {
++		DRM_ERROR("Failed to attach an audio codec\n");
++		goto err_sysfs;
++	}
++
++	/* Initialize audio infoframe */
++	err = hdmi_audio_infoframe_init(&hdmi->audio.cea);
++	if (err) {
++		DRM_ERROR("Failed to init audio infoframe\n");
++		goto err_sysfs;
++	}
++
+ 	/* Enable default interrupts */
+ 	hdmi_write(hdmi, HDMI_DEFAULT_INT, HDMI_INT_EN);
+ 
+@@ -1115,6 +1326,7 @@ static int sti_hdmi_bind(struct device *dev, struct device *master, void *data)
+ 
+ err_sysfs:
+ 	drm_connector_unregister(drm_connector);
++	hdmi->drm_connector = NULL;
+ err_connector:
+ 	drm_connector_cleanup(drm_connector);
+ 
+@@ -1267,6 +1479,8 @@ static int sti_hdmi_remove(struct platform_device *pdev)
+ 	struct sti_hdmi *hdmi = dev_get_drvdata(&pdev->dev);
+ 
+ 	i2c_put_adapter(hdmi->ddc_adapt);
++	if (hdmi->audio_pdev)
++		platform_device_unregister(hdmi->audio_pdev);
+ 	component_del(&pdev->dev, &sti_hdmi_ops);
+ 
+ 	return 0;
+diff --git a/drivers/gpu/drm/sti/sti_hdmi.h b/drivers/gpu/drm/sti/sti_hdmi.h
+index ef3a945..119bc35 100644
+--- a/drivers/gpu/drm/sti/sti_hdmi.h
++++ b/drivers/gpu/drm/sti/sti_hdmi.h
+@@ -23,6 +23,13 @@ struct hdmi_phy_ops {
+ 	void (*stop)(struct sti_hdmi *hdmi);
+ };
+ 
++struct hdmi_audio_params {
++	bool enabled;
++	unsigned int sample_width;
++	unsigned int sample_rate;
++	struct hdmi_audio_infoframe cea;
++};
++
+ /* values for the framing mode property */
+ enum sti_hdmi_modes {
+ 	HDMI_MODE_HDMI,
+@@ -67,6 +74,9 @@ static const struct drm_prop_enum_list colorspace_mode_names[] = {
+  * @ddc_adapt: i2c ddc adapter
+  * @colorspace: current colorspace selected
+  * @hdmi_mode: select framing for HDMI or DVI
++ * @audio_pdev: ASoC hdmi-codec platform device
++ * @audio: hdmi audio parameters.
++ * @drm_connector: hdmi connector
+  */
+ struct sti_hdmi {
+ 	struct device dev;
+@@ -89,6 +99,9 @@ struct sti_hdmi {
+ 	struct i2c_adapter *ddc_adapt;
+ 	enum hdmi_colorspace colorspace;
+ 	enum sti_hdmi_modes hdmi_mode;
++	struct platform_device *audio_pdev;
++	struct hdmi_audio_params audio;
++	struct drm_connector *drm_connector;
+ };
+ 
+ u32 hdmi_read(struct sti_hdmi *hdmi, int offset);
 -- 
 1.9.1
