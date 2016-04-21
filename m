@@ -1,236 +1,142 @@
-From: Peter Rosin <peda@axentia.se>
-Subject: [PATCH v4] ASoC: docs: add clocking examples for DAI formats
-Date: Thu, 21 Apr 2016 22:58:55 +0200
-Message-ID: <1461272335-12428-1-git-send-email-peda@axentia.se>
+From: Allan Klinbail <aklinbail@gmail.com>
+Subject: Re: A&H Zed R16 not completely working (DICE Jr)
+Date: Thu, 21 Apr 2016 21:16:33 +0000
+Message-ID: <CA+aoAJdDzP4F-Woru+tzcWvYY05BuKBR31pWabGzh5hn3Fhniw@mail.gmail.com>
+References: <CA+aoAJc6JQvy_yk-5HJZpqv5GW6DygdmLB5=HGyW9q3yn12mKA@mail.gmail.com>
+ <57179E91.1070202@sakamocchi.jp>
+ <CA+aoAJcCYpaXhX4+w9ViHN9J0Uz+QgUWwCb_-U4WzkoOVZR3+g@mail.gmail.com>
+ <57181862.6060501@sakamocchi.jp>
+ <CA+aoAJeOKtxGQXVKPLRYLO5KHMY7fDUZ4YKYHUUVyki_Sh3PBA@mail.gmail.com>
+ <571836C0.40605@sakamocchi.jp>
+ <CA+aoAJeU=y=mP0=_xeQXDfcG5uWg8azpuddQG6MxJ=NEZkA31A@mail.gmail.com>
+ <57185E39.5090401@sakamocchi.jp>
+ <CA+aoAJdVcu0C6KiLEDTf38awUAjtk2xddumicFNRw-QXx2Ww2w@mail.gmail.com>
+ <5718A236.3070104@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Peter Rosin <peda@axentia.se>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, peda@lysator.liu.se
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f48.google.com (mail-wm0-f48.google.com [74.125.82.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9980926683D
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2016 23:16:43 +0200 (CEST)
+Received: by mail-wm0-f48.google.com with SMTP id u206so151970594wme.1
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2016 14:16:43 -0700 (PDT)
+In-Reply-To: <5718A236.3070104@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Provide *our* view of what the rules are for the different DAI formats,
-so that we do not have to trust external interpretations for this
-crucial bit of interoperability.
+Hi Takashi,
 
-Signed-off-by: Peter Rosin <peda@axentia.se>
----
- Documentation/sound/alsa/soc/clocking.txt | 195 ++++++++++++++++++++++++++++++
- 1 file changed, 195 insertions(+)
+I'm sorry I've made you so upset.
+I'm only taking the perspective of how these devices are used. Which you
+may feel unproductive,  however many of us feel is important.
 
-Use rising edge and falling edge (instead of flanks). Also differentiate how
-transmitters and receivers behave and explain at what edges transmitters change
-data and at what edges receivers read data. Don't speak about left and right
-channels for the DSP formats where there are just a number of channels.
+I do work in system design for corporate IT,  and while we sometimes come
+up with a perfect system, they might not fit the use case.  It upsets and
+frustrates us, but if the design does not fit the use case it is not going
+to be used and our project will not get funding.
 
-Cheers,
-Peter
+I really do understand where you are coming from,  not from a technical
+perspective but how this might be frustrating.
 
-diff --git a/Documentation/sound/alsa/soc/clocking.txt b/Documentation/sound/alsa/soc/clocking.txt
-index b1300162e01c..7c2bea8124b0 100644
---- a/Documentation/sound/alsa/soc/clocking.txt
-+++ b/Documentation/sound/alsa/soc/clocking.txt
-@@ -47,5 +47,200 @@ rate, number of channels and word size) to save on power.
- It is also desirable to use the codec (if possible) to drive (or master) the
- audio clocks as it usually gives more accurate sample rates than the CPU.
- 
-+The below diagrams all have BCLK as the first signal, LRC as the second signal
-+and DATA as the third. Below that is an indication about which DATA bits belong
-+in what channel.
-+
-+A "..." marking as DATA indicates that there may be more bits that are not
-+shown. Also, all DATA bits marked X may or may not be present. DAI
-+transmitters must add them should LRC not match the word size exactly and DAI
-+receivers must be prepared to ignore them. DAI transmitters must insert zeros
-+for I2S and Left Justified modes, and preferably not drive DATA for the DSP
-+modes for these extra X bits.
-+
-+
-+I2S
-+---
-+
-+The LRC master should put the edges of LRC so that the LRC slaves can reliably
-+sample LRC at the rising edges of BCLK, preferably by changing LRC in response
-+to falling edges of BCLK.
-+
-+Transmitters wait for a falling edge of LRC, then skip a rising edge of BCLK,
-+and start the left word (output MSB) at the following falling edge of BCLK.
-+Transmitters continue with the rest of the word by changing DATA at the falling
-+edges to BCLK. Transmitters must pad words with zeros if LRC is not matching
-+the word size, so that receivers expecting wider words do not get noise.
-+Transmission of the right word works the same, but is initiated by a rising
-+edge of LRC instead.
-+
-+Receivers wait for a falling edge of LRC, then skip a rising edge of BCLK and
-+read the MSB of the left word at the following rising edge of BCLK. Receivers
-+then continue with the rest of the word at the following rising edges of BCLK.
-+Receivers must ignore the tail if more bits per word are transmitted than they
-+can use. Reception of the right word works the same, but is initiated by a
-+rising edge of LRC instead.
-+
-+See the official I2S specification
-+https://www.sparkfun.com/datasheets/BreakoutBoards/I2SBUS.pdf
-+
-+ .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-.
-+-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-
-+---.                               .-------------------------------.
-+   '-------------------------------'                               '-----
-+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.-
-+   |   |MSB|   |...|   |LSB| X |...| X |MSB|   |...|   |LSB| X |...| X |
-+---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'-
-+       | Left channel                  | Right channel                 |
-+
-+
-+Left Justified (aka MSB)
-+------------------------
-+
-+The LRC master should synchronize the LRC clock edges with the falling edges of
-+BCLK.
-+
-+Transmitters start the left word (output MSB) at the rising edge of LRC and
-+hold MSB over the first rising edge of BCLK. The transmitters then change DATA
-+at the falling edges of BCLK. Transmitters must pad words with zeros if LRC is
-+not matching the word size, so that receivers expecting wider words do not get
-+noise. Transmission of the right word works the same, but is initiated by a
-+falling edge of LRC instead.
-+
-+Receivers wait for a rising edge of LRC and reads the MSB of the left word at
-+the first rising edge of BCLK after that. Receivers then continue with the rest
-+of the word at the following rising edges of BCLK. Receivers must ignore the
-+tail if more bits per word are transmitted than they can use. Reception of the
-+right word works the same, but is initiated by a falling edge of LRC instead.
-+
-+ .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-.
-+-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-
-+   .-------------------------------.                               .-----
-+---'                               '-------------------------------'
-+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.-
-+   |MSB|   |...|   |LSB| X |...| X |MSB|   |...|   |LSB| X |...| X |   |
-+---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'-
-+   | Left channel                  | Right channel                 |
-+
-+
-+Right Justified (aka LSB)
-+-------------------------
-+
-+The LRC master should synchronize the LRC clock edges with the falling edges of
-+BCLK.
-+
-+Transmitters wait for a rising edge of LRC, and then skip the correct number of
-+rising edges of BCLK. If zero rising edges are skipped, transmitters start the
-+left word (output MSB) immediately at the rising edge of LRC. If at least one
-+rising edge of BCLK is skipped, they start the left word at the following
-+falling edge of BCLK. The correct number of rising edges of BCLK to skip after
-+the initial rising edge of LRC is such that the LSB is ending at the following
-+edge of LRC. After the MSB, transmitters continue with the rest of the word at
-+the falling edges of BCLK. Transmission of the right word works the same, but
-+is initiated by a falling edge of LRC instead.
-+
-+Receivers wait for a rising edge of LRC, and then skip the same number of rising
-+edges of BCLK as the transmitters, and read the MSB of the left word on the
-+first rising edge of BCLK after that. Receivers then continue with the rest of
-+the word at the following rising edges of BCLK. Reception of the right word
-+works the same, but is initiated by a falling edge of LRC instead.
-+
-+ .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-.
-+-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-
-+   .-------------------------------.                               .-----
-+---'                               '-------------------------------'
-+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.-
-+   | X |...| X |MSB|   |...|   |LSB| X |...| X |MSB|   |...|   |LSB|   |
-+---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'-
-+   | Left channel                  | Right channel                 |
-+
-+
-+DSP mode A
-+----------
- 
-+Transmitters wait for a rising edge of LRC, then skip one rising edge of BCLK
-+and start the first word (output MSB) at the following falling edge of BCLK.
-+They then change DATA at the falling edges of BCLK. When the first word is
-+finished, transmitters follow up immediately with further words.
-+
-+Receivers wait for a rising edge of LRC, then skip one rising edge of BCLK and
-+read the MSB of the first word at the following rising edge of BCLK. Receivers
-+then continue with the rest of the word at the rising edges of BCLK. Further
-+words are following immediately.
-+
-+ .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-.
-+-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-
-+   .-                                                          .-
-+  -'                                                          -'
-+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.-
-+   |   |MSB|   |...|   |LSB|MSB|   |...|   |LSB| X |   |...|   | X |   |
-+---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'-
-+       | 1st channel       | 2nd channel       |                   |
-+
-+LRC examples for DSP mode A
-+   .---.                                                       .---.
-+---'   '-------------------------------------------------------'   '-----
-+-. .---------------------------------------------------------. .---------
-+ '-'                                                         '-'
-+
-+
-+DSP mode B
-+----------
- 
-+Transmitters start the first word (output MSB) at the rising edge of LRC, hold
-+MSB over the first rising edge of BCLK, and continue with the rest of the word
-+at the following falling edges of BCLK. When the first word is finished,
-+transmitters follow up immediately with further words.
-+
-+Receivers wait for a rising edge of LRC, then read the MSB of the first word at
-+the following rising edge of BCLK. Receivers then continue with the rest of the
-+word at the rising edges of BCLK. Further words are following immediately.
-+
-+ .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-.
-+-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-
-+   .-                                                          .-
-+  -'                                                          -'
-+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.-
-+   |MSB|   |...|   |LSB|MSB|   |...|   |LSB| X |   |...|   | X |   |   |
-+---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'-
-+   | 1st channel       | 2nd channel       |                   |
-+
-+LRC examples for DSP mode B
-+   .---.                                                       .---.
-+---'   '-------------------------------------------------------'   '-----
-+-. .---------------------------------------------------------. .---------
-+ '-'                                                         '-'
-+
-+
-+Inverted Clocks
-+---------------
-+
-+The above diagrams show normal BCLK and LRC clocking where DAI transmitters
-+change DATA on the falling edge of BCLK and DAI receivers read DATA on the
-+rising edge. For inverted BCLK it is naturally the other way around. Inverted
-+LRC is just that.
-+
-+Left Justified, inverted BCLK
-+-----------------------------
-+
-+-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-
-+ '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-'
-+   .-------------------------------.                               .-----
-+---'                               '-------------------------------'
-+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.-
-+   |MSB|   |...|   |LSB| X |...| X |MSB|   |...|   |LSB| X |...| X |   |
-+---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'-
-+   | Left channel                  | Right channel                 |
-+
-+
-+Left Justified, inverted LRC
-+----------------------------
-+
-+ .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-. .-.
-+-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-' '-
-+---.                               .-------------------------------.
-+   '-------------------------------'                               '-----
-+---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.---.-
-+   |MSB|   |...|   |LSB| X |...| X |MSB|   |...|   |LSB| X |...| X |   |
-+---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'---'-
-+   | Left channel                  | Right channel                 |
--- 
-2.1.4
+The point of the last email wasn't to ask you to change focus on how you
+address the issue of latency but explaining the reality that until the
+software changes,  that a new approach is not going to be utilised.  This
+covers both open and closed (commercial)  software.
+
+That doesn't make it a bad endeavour it is always good to work for better
+solutions,  but you are likely to come up against people like me who would
+like the driver to fit the existing use cases.
+
+I did request one change, which was to make an abstraction  so that a user
+does not have trouble addressing these devices as one device, without
+having to perform complex configuration tasks..  I do understand that
+technically that isn't how the device works,  but it is not useful to for
+the user to treat it as separate devices.
+
+While you may consider this an unproductive conversation from a technical
+standpoint,  as you have stated,  I am not the only person/owner of a
+device to raise this issue.  That would indicate that the current
+implementation doesn't fit the real world use cases for the devices.
+
+Whether that means someone else has to write a simple abstraction to make
+the device seen as one device,  or something else has to happen,  I don't
+know...
+
+As Jonathan Woithe has pointed out on FFADO lists,  the long term  goal IS
+for ALSA to take over the streaming function. With FFADO to remain in
+userspace to potentially provide mixer tools or other functions.
+
+For those off us that have bought these devices many have spent a lot of
+money for particular use cases and performance , and in the case of this
+specific device spending in the order of 3,000 USD.  Many of us using the
+devices with commercial software for professional or semi-professional
+uses.
+
+That makes this particular conversation quite scary and very important.
+
+BTW,  telling me my brain can't be fixed is pretty hostile.. However,  I'll
+assume that this is a language issue rather than deliberately intending to
+offend me.
+
+
+
+
+
+On Thu, 21 Apr 2016 7:49 pm Takashi Sakamoto <o-takashi@sakamocchi.jp>
+wrote:
+
+> Hi,
+>
+> First, I have no hostility to you.
+>
+> Since I extended snd-dice in the late of 2014, I have been exposed to
+> the similar insistences many times, in public or private, from users who
+> own Dice-based models. Their insistences tends to include unreasonbable
+> judgements about something related, ignorance of developers' intension
+> and the state of development for ALSA firewire stack. So I feel to have
+> a waste of time to receive such intensions, because they're not
+> productive at all.
+>
+>
+> On Apr 21 2016 14:38, Allan Klinbail wrote:
+> > As I admitted, my understanding is basic and limited. Clearly I have got
+> it
+> > wrong.
+> >
+> > However, (snip)
+>
+> Well, you still repeat the same insistences again, after our discussion.
+> It means that I fail to refresh your knowledge about PCM frame handling
+> in this operating systems. That's a pretty sad to me.
+>
+>
+> One of my motivation to work for ALSA firewire stack is to use sound and
+> music units on IEEE 1394 bus for the purpose as you described, via ALSA
+> kernel/userspace interface, according to ways reasonable to many system
+> requirements.
+>
+> The shape of ALSA firewire stack represents the requrements from design
+> of actual operating system, actual sound subsystem in Linux, actual
+> audio and music units on IEEE 1394 bus, actual packet streaming protocol
+> and actual quirks of the units. If you need my technical explaination
+> about them, I'm willing to describe them. You won't accept it even if I
+> did, because I've already introduced a part of them and you won't
+> refresh your brain.
+>
+> This is the end of such an unproductive discussion, sorry.
+>
+>
+> Regards
+>
+> Takashi Sakamoto
+>
