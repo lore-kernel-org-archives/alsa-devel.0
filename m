@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver" to the asoc tree
-Date: Thu, 21 Apr 2016 17:11:28 +0100
-Message-ID: <E1atHCS-0002xe-NX@debutante>
-References: <1461238694-46035-1-git-send-email-pc.liao@mediatek.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1461238694-46035-1-git-send-email-pc.liao@mediatek.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: PC Liao <pc.liao@mediatek.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, tiwai@suse.de, alsa-devel@alsa-project.org, srv_heupstream@mediatek.com, s.hauer@pengutronix.de, linux-kernel@vger.kernel.org, koro.chen@mediatek.com, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Subject: Applied "ASoC: tlv320aic32x4: Add additional input
+	pins" to the asoc tree
+Date: Thu, 21 Apr 2016 17:11:34 +0100
+Message-ID: <E1atHCY-0002z6-L1@debutante>
+References: <1461177552-31809-3-git-send-email-nh6z@nh6z.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5CA52266927
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2016 18:11:39 +0200 (CEST)
+In-Reply-To: <1461177552-31809-3-git-send-email-nh6z@nh6z.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jeremy McDermond <nh6z@nh6z.net>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: Add second I2S on mt8173-rt5650 machine driver
+   ASoC: tlv320aic32x4: Add additional input pins
 
 has been applied to the asoc tree at
 
@@ -37,140 +53,69 @@ to this mail.
 Thanks,
 Mark
 
->From d349caeb05104ef01392abc6c7cfc8ab516c7be4 Mon Sep 17 00:00:00 2001
-From: PC Liao <pc.liao@mediatek.com>
-Date: Thu, 21 Apr 2016 19:38:14 +0800
-Subject: [PATCH] ASoC: mediatek: Add second I2S on mt8173-rt5650 machine
- driver
+>From 13a06ed55dba0ae3f983ef3c4ea70fc42066e1b5 Mon Sep 17 00:00:00 2001
+From: Jeremy McDermond <nh6z@nh6z.net>
+Date: Wed, 20 Apr 2016 11:39:12 -0700
+Subject: [PATCH] ASoC: tlv320aic32x4: Add additional input pins
 
-This patch adds second I2S connection to rt5650 codec for capture path on
-mt8173-rt5650 machine driver.
+The input mixers support routing the IN1_R pin to the Left PGA and the
+IN2_L pin to the Right PGA.  This patch allows for those routings.
 
-Signed-off-by: PC Liao <pc.liao@mediatek.com>
+Signed-off-by: Jeremy McDermond <nh6z@nh6z.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/mt8173-rt5650.txt    | 10 +++++
- sound/soc/mediatek/mt8173-rt5650.c                 | 50 ++++++++++++++++++++--
- 2 files changed, 57 insertions(+), 3 deletions(-)
+ sound/soc/codecs/tlv320aic32x4.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
-index fe5a5ef1714d..5bfa6b60530b 100644
---- a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
-+++ b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
-@@ -5,11 +5,21 @@ Required properties:
- - mediatek,audio-codec: the phandles of rt5650 codecs
- - mediatek,platform: the phandle of MT8173 ASoC platform
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index 621f4210cd27..0eb8acc8cd66 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -193,11 +193,14 @@ static SOC_ENUM_SINGLE_DECL(in2l_lpga_p_enum, AIC32X4_LMICPGAPIN, 4,
+ 		resistor_text);
+ static SOC_ENUM_SINGLE_DECL(in3l_lpga_p_enum, AIC32X4_LMICPGAPIN, 2,
+ 		resistor_text);
++static SOC_ENUM_SINGLE_DECL(in1r_lpga_p_enum, AIC32X4_LMICPGAPIN, 0,
++		resistor_text);
  
-+Optional subnodes:
-+- codec-capture : the subnode of rt5650 codec capture
-+Required codec-capture subnode properties:
-+- sound-dai: audio codec dai name on capture path
-+  <&rt5650 0> : Default setting. Connect rt5650 I2S1 for capture. (dai_name = rt5645-aif1)
-+  <&rt5650 1> : Connect rt5650 I2S2 for capture. (dai_name = rt5645-aif2)
-+
- Example:
- 
- 	sound {
- 		compatible = "mediatek,mt8173-rt5650";
- 		mediatek,audio-codec = <&rt5650>;
- 		mediatek,platform = <&afe>;
-+		codec-capture {
-+			sound-dai = <&rt5650 1>;
-+		};
- 	};
- 
-diff --git a/sound/soc/mediatek/mt8173-rt5650.c b/sound/soc/mediatek/mt8173-rt5650.c
-index bb09bb1b7f1c..a27a6673dbe3 100644
---- a/sound/soc/mediatek/mt8173-rt5650.c
-+++ b/sound/soc/mediatek/mt8173-rt5650.c
-@@ -85,12 +85,29 @@ static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
- {
- 	struct snd_soc_card *card = runtime->card;
- 	struct snd_soc_codec *codec = runtime->codec_dais[0]->codec;
-+	const char *codec_capture_dai = runtime->codec_dais[1]->name;
- 	int ret;
- 
- 	rt5645_sel_asrc_clk_src(codec,
--				RT5645_DA_STEREO_FILTER |
--				RT5645_AD_STEREO_FILTER,
-+				RT5645_DA_STEREO_FILTER,
- 				RT5645_CLK_SEL_I2S1_ASRC);
-+
-+	if (!strcmp(codec_capture_dai, "rt5645-aif1")) {
-+		rt5645_sel_asrc_clk_src(codec,
-+					RT5645_AD_STEREO_FILTER,
-+					RT5645_CLK_SEL_I2S1_ASRC);
-+	} else if (!strcmp(codec_capture_dai, "rt5645-aif2")) {
-+		rt5645_sel_asrc_clk_src(codec,
-+					RT5645_AD_STEREO_FILTER,
-+					RT5645_CLK_SEL_I2S2_ASRC);
-+	} else {
-+		dev_warn(card->dev,
-+			 "Only one dai codec found in DTS, enabled rt5645 AD filter\n");
-+		rt5645_sel_asrc_clk_src(codec,
-+					RT5645_AD_STEREO_FILTER,
-+					RT5645_CLK_SEL_I2S1_ASRC);
-+	}
-+
- 	/* enable jack detection */
- 	ret = snd_soc_card_jack_new(card, "Headset Jack",
- 				    SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
-@@ -110,6 +127,11 @@ static int mt8173_rt5650_init(struct snd_soc_pcm_runtime *runtime)
- 
- static struct snd_soc_dai_link_component mt8173_rt5650_codecs[] = {
- 	{
-+		/* Playback */
-+		.dai_name = "rt5645-aif1",
-+	},
-+	{
-+		/* Capture */
- 		.dai_name = "rt5645-aif1",
- 	},
+ static const struct snd_kcontrol_new left_input_mixer_controls[] = {
+ 	SOC_DAPM_ENUM("IN1_L P Switch", in1l_lpga_p_enum),
+ 	SOC_DAPM_ENUM("IN2_L P Switch", in2l_lpga_p_enum),
+ 	SOC_DAPM_ENUM("IN3_L P Switch", in3l_lpga_p_enum),
++	SOC_DAPM_ENUM("IN1_R P Switch", in1r_lpga_p_enum),
  };
-@@ -149,7 +171,7 @@ static struct snd_soc_dai_link mt8173_rt5650_dais[] = {
- 		.cpu_dai_name = "I2S",
- 		.no_pcm = 1,
- 		.codecs = mt8173_rt5650_codecs,
--		.num_codecs = 1,
-+		.num_codecs = 2,
- 		.init = mt8173_rt5650_init,
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			   SND_SOC_DAIFMT_CBS_CFS,
-@@ -177,6 +199,8 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card = &mt8173_rt5650_card;
- 	struct device_node *platform_node;
-+	struct device_node *np;
-+	const char *codec_capture_dai;
- 	int i, ret;
  
- 	platform_node = of_parse_phandle(pdev->dev.of_node,
-@@ -199,6 +223,26 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
- 			"Property 'audio-codec' missing or invalid\n");
- 		return -EINVAL;
- 	}
-+	mt8173_rt5650_codecs[1].of_node = mt8173_rt5650_codecs[0].of_node;
-+
-+	if (of_find_node_by_name(platform_node, "codec-capture")) {
-+		np = of_get_child_by_name(pdev->dev.of_node, "codec-capture");
-+		if (!np) {
-+			dev_err(&pdev->dev,
-+				"%s: Can't find codec-capture DT node\n",
-+				__func__);
-+			return -EINVAL;
-+		}
-+		ret = snd_soc_of_get_dai_name(np, &codec_capture_dai);
-+		if (ret < 0) {
-+			dev_err(&pdev->dev,
-+				"%s codec_capture_dai name fail %d\n",
-+				__func__, ret);
-+			return ret;
-+		}
-+		mt8173_rt5650_codecs[1].dai_name = codec_capture_dai;
-+	}
-+
- 	card->dev = &pdev->dev;
- 	platform_set_drvdata(pdev, card);
+ static SOC_ENUM_SINGLE_DECL(in1r_rpga_p_enum, AIC32X4_RMICPGAPIN, 6,
+@@ -206,11 +209,14 @@ static SOC_ENUM_SINGLE_DECL(in2r_rpga_p_enum, AIC32X4_RMICPGAPIN, 4,
+ 		resistor_text);
+ static SOC_ENUM_SINGLE_DECL(in3r_rpga_p_enum, AIC32X4_RMICPGAPIN, 2,
+ 		resistor_text);
++static SOC_ENUM_SINGLE_DECL(in2l_rpga_p_enum, AIC32X4_RMICPGAPIN, 0,
++		resistor_text);
  
+ static const struct snd_kcontrol_new right_input_mixer_controls[] = {
+ 	SOC_DAPM_ENUM("IN1_R P Switch", in1r_rpga_p_enum),
+ 	SOC_DAPM_ENUM("IN2_R P Switch", in2r_rpga_p_enum),
+ 	SOC_DAPM_ENUM("IN3_R P Switch", in3r_rpga_p_enum),
++	SOC_DAPM_ENUM("IN2_L P Switch", in2l_rpga_p_enum),
+ };
+ 
+ static const struct snd_soc_dapm_widget aic32x4_dapm_widgets[] = {
+@@ -285,6 +291,7 @@ static const struct snd_soc_dapm_route aic32x4_dapm_routes[] = {
+ 	{"Left Input Mixer", "IN1_L P Switch", "IN1_L"},
+ 	{"Left Input Mixer", "IN2_L P Switch", "IN2_L"},
+ 	{"Left Input Mixer", "IN3_L P Switch", "IN3_L"},
++	{"Left Input Mixer", "IN1_R P Switch", "IN1_R"},
+ 
+ 	{"Left ADC", NULL, "Left Input Mixer"},
+ 
+@@ -292,6 +299,7 @@ static const struct snd_soc_dapm_route aic32x4_dapm_routes[] = {
+ 	{"Right Input Mixer", "IN1_R P Switch", "IN1_R"},
+ 	{"Right Input Mixer", "IN2_R P Switch", "IN2_R"},
+ 	{"Right Input Mixer", "IN3_R P Switch", "IN3_R"},
++	{"Right Input Mixer", "IN2_L P Switch", "IN2_L"},
+ 
+ 	{"Right ADC", NULL, "Right Input Mixer"},
+ };
 -- 
 2.8.0.rc3
