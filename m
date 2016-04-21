@@ -1,74 +1,135 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v7 2/9] ASoC: mediatek: Add HDMI dai-links to the
- mt8173-rt5650 machine driver
-Date: Thu, 21 Apr 2016 17:15:52 +0100
-Message-ID: <20160421161552.GW3217@sirena.org.uk>
-References: <1461142804-26728-1-git-send-email-p.zabel@pengutronix.de>
- <1461142804-26728-3-git-send-email-p.zabel@pengutronix.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: hdmi-codec: Add ELD control" to the
+	asoc tree
+Date: Thu, 21 Apr 2016 17:18:23 +0100
+Message-ID: <E1atHJ9-0003ey-9b@debutante>
+References: <1461142804-26728-4-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6613354497779619757=="
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <1461142804-26728-3-git-send-email-p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, PC Liao <pc.liao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9FA802666BD
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2016 18:18:30 +0200 (CEST)
+In-Reply-To: <1461142804-26728-4-git-send-email-p.zabel@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Koro Chen <koro.chen@mediatek.com>, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, Daniel Kurtz <djkurtz@chromium.org>, kernel@pengutronix.de, PC Liao <pc.liao@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>, Cawa Cheng <cawa.cheng@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============6613354497779619757==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="OVdRMxb7LIguqeaK"
-Content-Disposition: inline
+   ASoC: hdmi-codec: Add ELD control
 
+has been applied to the asoc tree at
 
---OVdRMxb7LIguqeaK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Apr 20, 2016 at 10:59:57AM +0200, Philipp Zabel wrote:
-> From: PC Liao <pc.liao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
->=20
-> This patch adds HDMI audio output support to the MT8173 RT5650 machine
-> driver.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-This doesn't apply against current code, please check and resend.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---OVdRMxb7LIguqeaK
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEcBAEBCAAGBQJXGPy3AAoJECTWi3JdVIfQ8ukH/Ax6tfSoU4HZTrwPYMSfzYQu
-urj7SNg9x5siT6vVEz93rLVRBk7lN1DJ+Yu7/t43FGnIicI6cFjbE/2X2tYF5m8J
-aAIlW4cGSurZa0X87mn0JAhYE3iz/f4WOv9tAJicFkQK5LKWxfihkQe7wubrqNpF
-91tShkLK4/Q6QTnRQSW3+MKLixHe9YIiiSTv8oYD3jqsTU8Sebn6wONUnfHBbxx7
-BXiKVT43qJFGuu7Wu/Fuy9Qg5+HseVdDQxe3Hp9sHACe1diu72nmOvaAjTM87G48
-bXF2C1WvmCeRCVtDJAbCPgRXub1KayyaKNU0zPgwATXm6h/C5MfeoXJLJWQLl/g=
-=lLnG
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---OVdRMxb7LIguqeaK--
+>From 81151cfb6bfe69f1c5a52b795eb005226a322c9e Mon Sep 17 00:00:00 2001
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Date: Wed, 20 Apr 2016 10:59:58 +0200
+Subject: [PATCH] ASoC: hdmi-codec: Add ELD control
 
+ALSA doesn't know about all the different compressed audio formats,
+so there is no interface to let userspace enumerate the formats that
+are supported by the connected sink. Exporting the raw ELD bytes to
+userspace allows an application to select the appropriate audio format
+depending on the current capabilities of the connected HDMI sink device.
+Usually userspace then just pretends to ALSA that the data is in one of
+the raw 16-bit PCM audio formats and relies on the IEC controls to tell
+the sink how to interpret the data.
 
---===============6613354497779619757==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Reviewed-by: Jyri Sarha <jsarha@ti.com>
+Tested-by: Jyri Sarha <jsarha@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/hdmi-codec.c | 38 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
-_______________________________________________
-Linux-mediatek mailing list
-Linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-http://lists.infradead.org/mailman/listinfo/linux-mediatek
-
---===============6613354497779619757==--
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index b46b8edb9319..c78333b4311d 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -47,6 +47,42 @@ enum {
+ 	DAI_ID_SPDIF,
+ };
+ 
++static int hdmi_eld_ctl_info(struct snd_kcontrol *kcontrol,
++			     struct snd_ctl_elem_info *uinfo)
++{
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
++	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
++
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
++	uinfo->count = sizeof(hcp->eld);
++
++	return 0;
++}
++
++static int hdmi_eld_ctl_get(struct snd_kcontrol *kcontrol,
++			    struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
++	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
++
++	mutex_lock(&hcp->eld_lock);
++	memcpy(ucontrol->value.bytes.data, hcp->eld, sizeof(hcp->eld));
++	mutex_unlock(&hcp->eld_lock);
++
++	return 0;
++}
++
++static const struct snd_kcontrol_new hdmi_controls[] = {
++	{
++		.access = SNDRV_CTL_ELEM_ACCESS_READ |
++			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
++		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
++		.name = "ELD",
++		.info = hdmi_eld_ctl_info,
++		.get = hdmi_eld_ctl_get,
++	},
++};
++
+ static int hdmi_codec_new_stream(struct snd_pcm_substream *substream,
+ 				 struct snd_soc_dai *dai)
+ {
+@@ -312,6 +348,8 @@ static const struct snd_soc_dai_driver hdmi_spdif_dai = {
+ };
+ 
+ static struct snd_soc_codec_driver hdmi_codec = {
++	.controls = hdmi_controls,
++	.num_controls = ARRAY_SIZE(hdmi_controls),
+ 	.dapm_widgets = hdmi_widgets,
+ 	.num_dapm_widgets = ARRAY_SIZE(hdmi_widgets),
+ 	.dapm_routes = hdmi_routes,
+-- 
+2.8.0.rc3
