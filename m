@@ -1,20 +1,20 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: A&H Zed R16 not completely working (DICE Jr)
-Date: Thu, 21 Apr 2016 11:11:12 +0900
-Message-ID: <571836C0.40605@sakamocchi.jp>
-References: <CA+aoAJc6JQvy_yk-5HJZpqv5GW6DygdmLB5=HGyW9q3yn12mKA@mail.gmail.com>
- <57179E91.1070202@sakamocchi.jp>
- <CA+aoAJcCYpaXhX4+w9ViHN9J0Uz+QgUWwCb_-U4WzkoOVZR3+g@mail.gmail.com>
- <57181862.6060501@sakamocchi.jp>
- <CA+aoAJeOKtxGQXVKPLRYLO5KHMY7fDUZ4YKYHUUVyki_Sh3PBA@mail.gmail.com>
+From: Baozeng Ding <sploving1@gmail.com>
+Subject: Re: Sound: BUG: KASAN: use-after-free in kill_fasync
+Date: Thu, 21 Apr 2016 10:13:13 +0800
+Message-ID: <57183739.2070708@gmail.com>
+References: <5703C2E2.306@gmail.com> <s5hlh4sm94t.wl-tiwai@suse.de>
+ <5704F4E4.50705@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 04B562608B3
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2016 04:11:15 +0200 (CEST)
-In-Reply-To: <CA+aoAJeOKtxGQXVKPLRYLO5KHMY7fDUZ4YKYHUUVyki_Sh3PBA@mail.gmail.com>
+Received: from mail-pa0-f65.google.com (mail-pa0-f65.google.com
+ [209.85.220.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C7AF2608B3
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2016 04:14:22 +0200 (CEST)
+Received: by mail-pa0-f65.google.com with SMTP id i5so5153268pag.3
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2016 19:14:22 -0700 (PDT)
+In-Reply-To: <5704F4E4.50705@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,61 +24,224 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Allan Klinbail <aklinbail@gmail.com>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: koro.chen@mediatek.com, lars@metafoo.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On Apr 21 2016 09:14, Allan Klinbail wrote:
-> Thanks Takashi ,
+
+On 2016/4/6 19:37, Baozeng Ding wrote:
 >
-> It was my understanding that FFADO would eventually be deprecated,  so am
-> trying to provide test feedback for my device.  I thought comparable
-> performance would be a goal.
-
-Your misunderstanding.
-
-ALSA firewire stack is not an alternative of FFADO implementation. 
-Against understanding of most of FFADO users, the implementation of this 
-stack doesn't come from FFADO implementation, therefore they're based on 
-quite different designs and code bases.
-
-(It's your misfortune that FFADO project has already lost 
-well-established developers who can explain about it.)
-
-And you should realize that the decrease of size of PCM buffer is an 
-ancient technique to reduce communication latency in a past decade. JACK 
-developers still adhere on it, against their aim, unfortunately.  To 
-understand this aspect, please read Alexander Patrakov's paper proposed 
-in LAC 2015.
-http://lac.linuxaudio.org/2015/papers/10.pdf
-
-It's a bit difficult to you. But when thinking about the 'latency' 
-severely, at least, users and developers should understand what in the 
-article, at least. About the communication latency, I'm willing to use 
-my time for this direction, but not for the others.
-
-> Using ALSA is desirable as I have a large number of MIDI devices (2*AMT 8)
-> and 3 other control devices..  Using ALSA provides better connectivity than
-> a2jmidi..
-
-What's the 'AMT'?
-
-> I will try alsa in,  plug.. I am concerned though this is not an ideal
-> solution due to trying to sync multiple devices which in reality share a
-> clock..  Adding even more latency..
-
-Even if using FFADO implementation, you can't achieve it. It pretends as 
-what you say. Of cource, the size of PCM buffer is accumulated to the 
-communication latency.
-
-> I will continue using FFADO for production work,  but am happy to keep
-> testing if you believe improvements can be made.
-
-I haven no plan of my development for the direction about which you 
-mentioned, sorry. There're more crutial issues than them.
-
-
-Regards
-
-Takashi Sakamoto
+>
+> On 2016/4/5 22:18, Takashi Iwai wrote:
+>> On Tue, 05 Apr 2016 15:51:30 +0200,
+>> Baozeng Ding wrote:
+>>> Hi all,
+>>> I've got the following report (use-after-free in kill_fasync) while
+>>> running syzkaller.
+>>> Unfortunately no reproducer.The kernel version is 4.5 (on Mar 16 commit
+>>> 09fd671ccb2475436bd5f597f751ca4a7d177aea).
+>>>
+>>> ==================================================================
+>>> BUG: KASAN: use-after-free in kill_fasync+0x3fb/0x420 at addr
+>>> ffff880067691d88
+>>> Read of size 8 by task swapper/2/0
+>>> ============================================================================= 
+>>>
+>>> BUG kmalloc-2048 (Not tainted): kasan: bad access detected
+>>> ----------------------------------------------------------------------------- 
+>>>
+>>>
+>>> Disabling lock debugging due to kernel taint
+>>> INFO: Allocated in 0xbbbbbbbbbbbbbbbb age=18446678412249576073
+>>> cpu=2245704320 pid=-1
+>>> [<     inline     >] kmalloc /kernel/include/linux/slab.h:472
+>>> [<     inline     >] kzalloc /kernel/include/linux/slab.h:616
+>>> [<      none      >] snd_pcm_attach_substream+0x3b4/0xb10
+>>> /kernel/sound/core/pcm.c:966
+>>> [<      none      >] ___slab_alloc+0x4c7/0x500 /kernel/mm/slub.c:2446
+>>> [<      none      >] __slab_alloc+0x4c/0x90 /kernel/mm/slub.c:2475
+>>> [<     inline     >] slab_alloc_node /kernel/mm/slub.c:2538
+>>> [<     inline     >] slab_alloc /kernel/mm/slub.c:2580
+>>> [<      none      >] kmem_cache_alloc_trace+0x262/0x300
+>>> /kernel/mm/slub.c:2597
+>>> [<     inline     >] kmalloc /kernel/include/linux/slab.h:472
+>>> [<     inline     >] kzalloc /kernel/include/linux/slab.h:616
+>>> [<      none      >] snd_pcm_attach_substream+0x3b4/0xb10
+>>> /kernel/sound/core/pcm.c:966
+>>> [<      none      >] snd_pcm_open_substream+0x84/0x450
+>>> /kernel/sound/core/pcm_native.c:2262
+>>> [<     inline     >] snd_pcm_oss_open_file
+>>> /kernel/sound/core/oss/pcm_oss.c:2346
+>>> [<      none      >] snd_pcm_oss_open.part.17+0x5a4/0x1100
+>>> /kernel/sound/core/oss/pcm_oss.c:2428
+>>> [<      none      >] snd_pcm_oss_open+0x35/0x50
+>>> /kernel/sound/core/oss/pcm_oss.c:2392
+>>> [<      none      >] soundcore_open+0x30f/0x640
+>>> /kernel/sound/sound_core.c:639
+>>> [<      none      >] chrdev_open+0x22a/0x4c0 /kernel/fs/char_dev.c:388
+>>> [<      none      >] do_dentry_open+0x6a2/0xcb0 /kernel/fs/open.c:736
+>>> [<      none      >] vfs_open+0x17b/0x1f0 /kernel/fs/open.c:853
+>>> [<     inline     >] do_last /kernel/fs/namei.c:3258
+>>> [<      none      >] path_openat+0x4837/0x5830 /kernel/fs/namei.c:3394
+>>> [<      none      >] do_filp_open+0x18e/0x250 /kernel/fs/namei.c:3429
+>>> [<      none      >] do_sys_open+0x201/0x420 /kernel/fs/open.c:1022
+>>> [<     inline     >] SYSC_open /kernel/fs/open.c:1040
+>>> [<      none      >] SyS_open+0x2d/0x40 /kernel/fs/open.c:1035
+>>> INFO: Freed in 0x10000b076 age=18446678416544543380 cpu=0 pid=0
+>>> [<      none      >] snd_pcm_detach_substream+0x134/0x280
+>>> /kernel/sound/core/pcm.c:1017
+>>> [<      none      >] __slab_free+0x1e8/0x300 /kernel/mm/slub.c:2657
+>>> [<     inline     >] slab_free /kernel/mm/slub.c:2810
+>>> [<      none      >] kfree+0x24e/0x2d0 /kernel/mm/slub.c:3661
+>>> [<      none      >] snd_pcm_detach_substream+0x134/0x280
+>>> /kernel/sound/core/pcm.c:1017
+>>> [<      none      >] snd_pcm_release_substream.part.38+0x219/0x2f0
+>>> /kernel/sound/core/pcm_native.c:2250
+>>> [<      none      >] snd_pcm_release_substream+0x59/0x70
+>>> /kernel/sound/core/pcm_native.c:2251
+>>> [<      none      >] snd_pcm_oss_release_file+0x45/0xb0
+>>> /kernel/sound/core/oss/pcm_oss.c:2305
+>>> [<      none      >] snd_pcm_oss_release+0xfa/0x250
+>>> /kernel/sound/core/oss/pcm_oss.c:2485
+>>> [<      none      >] __fput+0x236/0x780 /kernel/fs/file_table.c:208
+>>> [<      none      >] ____fput+0x15/0x20 /kernel/fs/file_table.c:244
+>>> [<      none      >] task_work_run+0x16b/0x200
+>>> /kernel/kernel/task_work.c:115
+>>> [<     inline     >] exit_task_work 
+>>> /kernel/include/linux/task_work.h:21
+>>> [<      none      >] do_exit+0x87f/0x2c90 /kernel/kernel/exit.c:748
+>>> [<      none      >] do_group_exit+0x108/0x330 
+>>> /kernel/kernel/exit.c:878
+>>> [<     inline     >] SYSC_exit_group /kernel/kernel/exit.c:889
+>>> [<      none      >] SyS_exit_group+0x1d/0x20 /kernel/kernel/exit.c:887
+>>> [<      none      >] entry_SYSCALL_64_fastpath+0x23/0xc1
+>>> /kernel/arch/x86/entry/entry_64.S:207
+>>> INFO: Slab 0xffffea00019da400 objects=13 used=8 fp=0xffff880067691be0
+>>> flags=0x5fffc0000004080
+>>> INFO: Object 0xffff880067691bd8 @offset=7128 fp=0xbbbbbbbbbbbbbbbb
+>>> Call Trace:
+>>>    <IRQ>  [<     inline     >] __dump_stack /kernel/lib/dump_stack.c:15
+>>>    <IRQ>  [<ffffffff82945051>] dump_stack+0xb3/0x112
+>>> /kernel/lib/dump_stack.c:51
+>>>    [<ffffffff817009ad>] print_trailer+0x10d/0x190 /kernel/mm/slub.c:668
+>>>    [<ffffffff817074af>] object_err+0x2f/0x40 /kernel/mm/slub.c:675
+>>>    [<     inline     >] print_address_description
+>>> /kernel/mm/kasan/report.c:138
+>>>    [<ffffffff81709ca5>] kasan_report_error+0x215/0x530
+>>> /kernel/mm/kasan/report.c:236
+>>>    [<     inline     >] ? spin_lock 
+>>> /kernel/include/linux/spinlock.h:302
+>>>    [<ffffffff84a1c550>] ? snd_pcm_stream_lock+0x80/0xd0
+>>> /kernel/sound/core/pcm_native.c:104
+>>>    [<     inline     >] kasan_report /kernel/mm/kasan/report.c:259
+>>>    [<ffffffff8170a0be>] __asan_report_load8_noabort+0x3e/0x40
+>>> /kernel/mm/kasan/report.c:280
+>>>    [<ffffffff81792a0b>] ? kill_fasync+0x3fb/0x420 
+>>> /kernel/fs/fcntl.c:729
+>>>    [<ffffffff81792a0b>] kill_fasync+0x3fb/0x420 /kernel/fs/fcntl.c:729
+>>>    [<ffffffff84a36e08>] snd_pcm_period_elapsed+0x1c8/0x230
+>>> /kernel/sound/core/pcm_lib.c:1890
+>>>    [<ffffffff84b6e2e0>] ? get_bound_vga.isra.21.part.22+0x140/0x140
+>>> /kernel/sound/pci/hda/hda_intel.c:1327
+>>>    [<ffffffff84b0637d>] stream_update+0xad/0xe0
+>>> /kernel/sound/pci/hda/hda_controller.c:923
+>>>    [<ffffffff84c1583e>] snd_hdac_bus_handle_stream_irq+0x24e/0x350
+>>> /kernel/sound/hda/hdac_controller.c:449
+>>>    [<ffffffff84b062d0>] ? azx_init_chip+0x100/0x100
+>>> /kernel/sound/pci/hda/hda_controller.c:890
+>>>    [<ffffffff84b04d24>] ? azx_interrupt+0x14/0x4d0
+>>> /kernel/sound/pci/hda/hda_controller.c:929
+>>>    [<ffffffff84b04eee>] azx_interrupt+0x1de/0x4d0
+>>> /kernel/sound/pci/hda/hda_controller.c:954
+>>>    [<ffffffff84b04d10>] ? azx_stop_chip+0x20/0x20
+>>> /kernel/sound/pci/hda/hda_controller.c:908
+>>>    [<ffffffff8143d9e3>] handle_irq_event_percpu+0xf3/0x790
+>>> /kernel/kernel/irq/handle.c:145
+>>>    [<ffffffff8143e127>] handle_irq_event+0xa7/0x140
+>>> /kernel/kernel/irq/handle.c:192
+>>>    [<ffffffff81447f81>] handle_edge_irq+0x1e1/0x8d0
+>>> /kernel/kernel/irq/chip.c:623
+>>>    [<     inline     >] generic_handle_irq_desc
+>>> /kernel/include/linux/irqdesc.h:146
+>>>    [<ffffffff811ad739>] handle_irq+0x109/0x2a0
+>>> /kernel/arch/x86/kernel/irq_64.c:78
+>>>    [<     inline     >] ? rcu_lock_release
+>>> /kernel/include/linux/rcupdate.h:491
+>>>    [<     inline     >] ? rcu_read_unlock
+>>> /kernel/include/linux/rcupdate.h:926
+>>>    [<     inline     >] ? __atomic_notifier_call_chain
+>>> /kernel/kernel/notifier.c:184
+>>>    [<ffffffff81369c4f>] ? atomic_notifier_call_chain+0xbf/0x140
+>>> /kernel/kernel/notifier.c:193
+>>>    [<ffffffff81369b90>] ? __atomic_notifier_call_chain+0x150/0x150
+>>> /kernel/include/linux/rcupdate.h:922
+>>>    [<ffffffff811ac36d>] do_IRQ+0x7d/0x1a0 
+>>> /kernel/arch/x86/kernel/irq.c:240
+>>>    [<ffffffff85dac40c>] common_interrupt+0x8c/0x8c
+>>> /kernel/arch/x86/entry/entry_64.S:454
+>>>    <EOI>  [<ffffffff812245c6>] ? native_safe_halt+0x6/0x10
+>>> /kernel/./arch/x86/include/asm/irqflags.h:49
+>>>    [<ffffffff81405ced>] ? trace_hardirqs_on+0xd/0x10
+>>> /kernel/kernel/locking/lockdep.c:2635
+>>>    [<     inline     >] arch_safe_halt
+>>> /kernel/./arch/x86/include/asm/paravirt.h:117
+>>>    [<ffffffff811bf152>] default_idle+0x22/0x2d0
+>>> /kernel/arch/x86/kernel/process.c:307
+>>>    [<ffffffff811c053a>] arch_cpu_idle+0xa/0x10
+>>> /kernel/arch/x86/kernel/process.c:298
+>>>    [<ffffffff813eb618>] default_idle_call+0x48/0x70
+>>> /kernel/kernel/sched/idle.c:93
+>>>    [<     inline     >] cpuidle_idle_call 
+>>> /kernel/kernel/sched/idle.c:151
+>>>    [<     inline     >] cpu_idle_loop /kernel/kernel/sched/idle.c:242
+>>>    [<ffffffff813ebaa7>] cpu_startup_entry+0x467/0x600
+>>> /kernel/kernel/sched/idle.c:291
+>>>    [<ffffffff81201432>] start_secondary+0x2b2/0x380
+>>> /kernel/arch/x86/kernel/smpboot.c:259
+>>>    [<ffffffff81201180>] ? set_cpu_sibling_map+0x18a0/0x18a0
+>>> /kernel/include/linux/topology.h:80
+>>> Memory state around the buggy address:
+>>>    ffff880067691c80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>>>    ffff880067691d00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>>>   >ffff880067691d80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>>>                         ^
+>>>    ffff880067691e00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>>>    ffff880067691e80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>>> ==================================================================
+>>>
+>>> It seems that in function snd_pcm_detach_substream, when freeing 
+>>> runtime
+>>> structure, it did not handle its fasync
+>>> data pointer. Any ideas? Thanks.
+>> Well, fasync doesn't need a cleanup usually.  Do you have a proper
+>> reproducer code?
+> Sorry, I cannot reproduce it. I will apply your patch and test it. I 
+> will tell you the result whether it is okay a few days later.
+> Thanks.
+>
+>> In anyway, try the patch below.  I'm not sure whether this would help,
+>> but if the path is via kill_fasync(), it'd be good to put in the
+>> protected context.
+>>
+During the  last few weeks,  I have not seen the bug any more after 
+applying your patch. Thanks.
+>>
+>> Takashi
+>>
+>> ---
+>> diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+>> index 3a9b66c6e09c..0aca39762ed0 100644
+>> --- a/sound/core/pcm_lib.c
+>> +++ b/sound/core/pcm_lib.c
+>> @@ -1886,8 +1886,8 @@ void snd_pcm_period_elapsed(struct 
+>> snd_pcm_substream *substream)
+>>           snd_timer_interrupt(substream->timer, 1);
+>>   #endif
+>>    _end:
+>> -    snd_pcm_stream_unlock_irqrestore(substream, flags);
+>>       kill_fasync(&runtime->fasync, SIGIO, POLL_IN);
+>> +    snd_pcm_stream_unlock_irqrestore(substream, flags);
+>>   }
+>>     EXPORT_SYMBOL(snd_pcm_period_elapsed);
+>
