@@ -1,24 +1,19 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: A&H Zed R16 not completely working (DICE Jr)
-Date: Thu, 21 Apr 2016 18:49:42 +0900
-Message-ID: <5718A236.3070104@sakamocchi.jp>
-References: <CA+aoAJc6JQvy_yk-5HJZpqv5GW6DygdmLB5=HGyW9q3yn12mKA@mail.gmail.com>
- <57179E91.1070202@sakamocchi.jp>
- <CA+aoAJcCYpaXhX4+w9ViHN9J0Uz+QgUWwCb_-U4WzkoOVZR3+g@mail.gmail.com>
- <57181862.6060501@sakamocchi.jp>
- <CA+aoAJeOKtxGQXVKPLRYLO5KHMY7fDUZ4YKYHUUVyki_Sh3PBA@mail.gmail.com>
- <571836C0.40605@sakamocchi.jp>
- <CA+aoAJeU=y=mP0=_xeQXDfcG5uWg8azpuddQG6MxJ=NEZkA31A@mail.gmail.com>
- <57185E39.5090401@sakamocchi.jp>
- <CA+aoAJdVcu0C6KiLEDTf38awUAjtk2xddumicFNRw-QXx2Ww2w@mail.gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v3 0/3] conf: topology: Add the conf for
+	SKL-rt286
+Date: Thu, 21 Apr 2016 16:23:04 +0530
+Message-ID: <20160421105304.GN2274@localhost>
+References: <1461220058-1378-1-git-send-email-vinod.koul@intel.com>
+ <s5hy487xwbn.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 1FD70260711
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2016 11:49:45 +0200 (CEST)
-In-Reply-To: <CA+aoAJdVcu0C6KiLEDTf38awUAjtk2xddumicFNRw-QXx2Ww2w@mail.gmail.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE2D9260711
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2016 12:48:27 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hy487xwbn.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,49 +23,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Allan Klinbail <aklinbail@gmail.com>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Thu, Apr 21, 2016 at 09:19:56AM +0200, Takashi Iwai wrote:
+> On Thu, 21 Apr 2016 08:27:35 +0200,
+> Vinod Koul wrote:
+> > 
+> > This series adds SKL-i2c conf for simple PCM  topology graph
+> > 
+> > Changes in v3:
+> > 
+> >  - remove bin blobs, now they are generated in install step
+> 
+> This isn't good in general.  Usually all installed files are generated
+> in the normal make step, and make-install only copies them.  There are
+> a few reasons:
+> - Invoking a random program as root is a security risk.
+> - This may create a file by root in the working directory, and either
+>   it's not always possible (e.g. on NFS) or it may be left undeletable
+>   after make install.
 
-First, I have no hostility to you.
+Right, that is good point indeed.
 
-Since I extended snd-dice in the late of 2014, I have been exposed to 
-the similar insistences many times, in public or private, from users who 
-own Dice-based models. Their insistences tends to include unreasonbable 
-judgements about something related, ignorance of developers' intension 
-and the state of development for ALSA firewire stack. So I feel to have 
-a waste of time to receive such intensions, because they're not 
-productive at all.
+So what is your suggestion then?
 
-
-On Apr 21 2016 14:38, Allan Klinbail wrote:
-> As I admitted, my understanding is basic and limited. Clearly I have got it
-> wrong.
->
-> However, (snip)
-
-Well, you still repeat the same insistences again, after our discussion. 
-It means that I fail to refresh your knowledge about PCM frame handling 
-in this operating systems. That's a pretty sad to me.
-
-
-One of my motivation to work for ALSA firewire stack is to use sound and 
-music units on IEEE 1394 bus for the purpose as you described, via ALSA 
-kernel/userspace interface, according to ways reasonable to many system 
-requirements.
-
-The shape of ALSA firewire stack represents the requrements from design 
-of actual operating system, actual sound subsystem in Linux, actual 
-audio and music units on IEEE 1394 bus, actual packet streaming protocol 
-and actual quirks of the units. If you need my technical explaination 
-about them, I'm willing to describe them. You won't accept it even if I 
-did, because I've already introduced a part of them and you won't 
-refresh your brain.
-
-This is the end of such an unproductive discussion, sorry.
-
-
-Regards
-
-Takashi Sakamoto
+Thanks
+-- 
+~Vinod
