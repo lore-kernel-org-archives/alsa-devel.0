@@ -1,15 +1,21 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH] ASoC: Add kerneldoc comments for
-	snd_soc_find_dai
-Date: Fri, 22 Apr 2016 12:25:33 +0800
-Message-ID: <1461299133-1535-1-git-send-email-mengdong.lin@linux.intel.com>
+From: Petr Kulhavy <petr@barix.com>
+Subject: Re: [PATCH v3 1/7] ASoC: davinci-mcbsp: add binding
+	for McBSP
+Date: Fri, 22 Apr 2016 10:33:31 +0200
+Message-ID: <5719E1DB.5040703@barix.com>
+References: <1460982766-18632-1-git-send-email-petr@barix.com>
+ <1460982766-18632-2-git-send-email-petr@barix.com>
+ <CAMuHMdVCW0zAxAZRTazVhXz72fkp_escQM2JTSX2J4Ertru==Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id A8C622625EE
- for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2016 06:22:46 +0200 (CEST)
+Received: from mail-wm0-f47.google.com (mail-wm0-f47.google.com [74.125.82.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id BB06D261A76
+ for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2016 10:33:34 +0200 (CEST)
+Received: by mail-wm0-f47.google.com with SMTP id n3so15207028wmn.0
+ for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2016 01:33:34 -0700 (PDT)
+In-Reply-To: <CAMuHMdVCW0zAxAZRTazVhXz72fkp_escQM2JTSX2J4Ertru==Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,38 +25,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: mengdong.lin@intel.com, Mengdong Lin <mengdong.lin@linux.intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Pawel Moll <pawel.moll@arm.com>, Kevin Hilman <khilman@kernel.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Sekhar Nori <nsekhar@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, Kumar Gala <galak@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-snd_soc_find_dai() has been exported and so add the kerneldoc comments
-for it.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+On 20.04.2016 08:49, Geert Uytterhoeven wrote:
+> On Mon, Apr 18, 2016 at 2:32 PM, Petr Kulhavy <petr@barix.com> wrote:
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
+>> @@ -0,0 +1,51 @@
+>> +Optional properties:
+>> +~~~~~~~~~~~~~~~~~~~~
+>> +- interrupts : Interrupt numbers for McBSP
+>> +- interrupt-names : Known interrupt names are "rx" and "tx"
+>> +
+>> +- pinctrl-0: Should specify pin control group used for this controller.
+>> +- pinctrl-names: Should contain only one value - "default", for more details
+>> +        please refer to pinctrl-bindings.txt
+>> +
+>> +Example (AM1808):
+>> +~~~~~~~~~~~~~~~~~
+>> +
+>> +mcbsp0: mcbsp@1d10000 {
+>> +       compatible = "ti,da850-mcbsp";
+>> +       pinctrl-names = "default";
+>> +       pinctrl-0 = <&mcbsp0_pins>;
+>> +
+>> +       reg =   <0x00110000 0x1000>,
+>> +               <0x00310000 0x1000>;
+>> +       reg-names = "mpu", "dat";
+>> +       interrupts = <97 98>;
+>> +       interrupts-names = "rx", "tx";
+> interrupt-names
+Good catch, thanks!
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 07663de..16369ca 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -930,6 +930,17 @@ static struct snd_soc_component *soc_find_component(
- 	return NULL;
- }
- 
-+/**
-+ * snd_soc_find_dai - Find a registered DAI
-+ *
-+ * @dlc: name of the DAI and optional component info to match
-+ *
-+ * This function will search all regsitered components and their DAIs to
-+ * find the DAI of the same name. The component's of_node and name
-+ * should also match if being specified.
-+ *
-+ * Return: pointer of DAI, or NULL if not found.
-+ */
- struct snd_soc_dai *snd_soc_find_dai(
- 	const struct snd_soc_dai_link_component *dlc)
- {
--- 
-2.5.0
+Petr
