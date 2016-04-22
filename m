@@ -1,8 +1,8 @@
-From: Jeremy McDermond <mcdermj-MdGE8NL7F62ukZHgTAicrQ@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: simple-card: Add support jack
- detection via codec
-Date: Fri, 22 Apr 2016 09:37:39 -0700
-Message-ID: <3C927D46-BC52-4B5C-B5B4-CCBA3AAE6F87@xenotropic.com>
+From: Jeremy McDermond <nh6z@nh6z.net>
+Subject: Re: [PATCH 2/3] ASoC: simple-card: Add support jack
+	detection via codec
+Date: Fri, 22 Apr 2016 09:40:09 -0700
+Message-ID: <3EB722B2-2818-459C-8640-A3C2FC713F05@nh6z.net>
 References: <1460967452-24574-1-git-send-email-zhengxing@rock-chips.com>
  <1460967452-24574-3-git-send-email-zhengxing@rock-chips.com>
  <20160421141921.GA25900@rob-hp-laptop> <57197BBA.50304@rock-chips.com>
@@ -10,19 +10,22 @@ References: <1460967452-24574-1-git-send-email-zhengxing@rock-chips.com>
 Mime-Version: 1.0 (Mac OS X Mail 9.1 \(3096.5\))
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <20160422092250.GA3217-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
-List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Mengdong Lin <mengdong.lin-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Xing Zheng <zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Aaro Koskinen <aaro.koskinen-X3B1VOXEql0@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Adam.Thomson-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Jun Nie <jun.nie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.xenotropic.com (mail.xenotropic.com [198.178.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DFF32604BE
+ for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2016 18:40:16 +0200 (CEST)
+In-Reply-To: <20160422092250.GA3217@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@linux.intel.com>, heiko@sntech.de, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh@kernel.org>, Xing Zheng <zhengxing@rock-chips.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Takashi Iwai <tiwai@suse.com>, sugar.zhang@rock-chips.com, linux-rockchip@lists.infradead.org, jay.xu@rock-chips.com, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Jyri Sarha <jsarha@ti.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, linux-kernel@vger.kernel.org, Adam.Thomson@diasemi.com, Kumar Gala <galak@codeaurora.org>, Jun Nie <jun.nie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 Cj4gT24gQXByIDIyLCAyMDE2LCBhdCAyOjIyIEFNLCBNYXJrIEJyb3duIDxicm9vbmllQGtlcm5l
@@ -57,7 +60,7 @@ YXQgSSBjYW4gZmluZC4KCknigJltIGhhcHB5IHRvIHdvcmsgdGhyb3VnaCB0aGlzIHdpdGggdGhl
 IGFpYzMyeDQgZHJpdmVyLiAgSSBqdXN0Cm5lZWQgc29tZSBndWlkYW5jZSBvbiBob3cgdG8gZG8g
 aXQgc28gaXQgZml0cyBpbiB3ZWxsIHdpdGgKZXZlcnl0aGluZyBlbHNlIHN1cnJvdW5kaW5nIGl0
 LgoKLS0KSmVyZW15IE1jRGVybW9uZCAoTkg2WikKWGVub3Ryb3BpYyBTeXN0ZW1zCm1jZGVybWpA
-eGVub3Ryb3BpYy5jb20KCgoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpMaW51eC1yb2NrY2hpcCBtYWlsaW5nIGxpc3QKTGludXgtcm9ja2NoaXBAbGlz
-dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LXJvY2tjaGlwCg==
+eGVub3Ryb3BpYy5jb20KCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
+YS1kZXZlbAo=
