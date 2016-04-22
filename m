@@ -1,99 +1,62 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Atom: fix boot warning" to the
-	asoc tree
-Date: Fri, 22 Apr 2016 11:49:26 +0100
-Message-ID: <E1atYeM-0002bK-Qf@debutante>
-References: <1461296033-6762-1-git-send-email-vinod.koul@intel.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [alsa-devel] [PATCH 4/4] ASoC: simple-card: Support for selecting
+ system clocks by ID
+Date: Fri, 22 Apr 2016 14:52:11 +0300
+Message-ID: <571A106B.8040301@ti.com>
+References: <1455545495-20292-5-git-send-email-peter.ujfalusi@ti.com>
+ <20160215152635.GN18988@sirena.org.uk> <56C2F00C.8080809@ti.com>
+ <20160216134233.GN18327@sirena.org.uk>
+ <20160216191346.2278.725@quark.deferred.io> <56C42BAF.3050900@ti.com>
+ <20160217120759.GO7544@sirena.org.uk> <56C4CF8B.5010005@ti.com>
+ <5715025C.7070108@ti.com> <20160418162910.GG3217@sirena.org.uk>
+ <20160421222911.GE13149@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CB45D264FFF
- for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2016 12:49:31 +0200 (CEST)
-In-Reply-To: <1461296033-6762-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Sandeep Tayal <sandeepx.tayal@intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160421222911.GE13149@codeaurora.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Stephen Boyd <sboyd@codeaurora.org>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Michael Turquette <mturquette@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Kristo, Tero" <t-kristo@ti.com>, linux-clk@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 04/22/16 01:29, Stephen Boyd wrote:
+>>> The first issue with converting the McASP to use CCF internally for=
+ clock
+>>> selection, muxing and rate configuration is that the daVinci platfo=
+rm does not
+>>> use CCF at all. Given that the davinci-mcasp driver is used by daVi=
+nci, we
+>>> need to have non CCF way supported in ASoC...
+>>
+>> Well, at least long term we do need daVinci converting to CCF - this=
+ is
+>> going to continue to cause problems, devices not part of the SoC can=
+ and
+>> do contain clocks and are going to end up being supported via the cl=
+ock
+>> API.
+>=20
+> Does anyone here know what's involved in converting daVinci to
+> CCF? It doesn't look too far off from what is in the CCF today,
+> so I'm not sure what's blocking the transition.
 
-   ASoC: Intel: Atom: fix boot warning
+Not entirely sure, but most likely new clk driver(s) for daVinci under
+drivers/clk/ti/ new set of structures to describe the clocks if the ti_=
+clk* is
+not applicable I guess for starter. Support for DT, non DT boots as mos=
+t of
+daVinci is not booting with DT and most likely never will.
+It might help to have different daVinci boards for testing the transiti=
+on. I
+only have OMAP-L138-evm. I don't think it is enough for testing an enti=
+re
+architecture for this big change...
 
-has been applied to the asoc tree at
+Tero might have better estimates on what is involved when switching an
+architecture to CCF from custom, but at least synchronized API - so we =
+don't
+need to convert drivers at least.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From fba0d7066524ab7b8ccf60e7e95981d10ed008b0 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Fri, 22 Apr 2016 09:03:53 +0530
-Subject: [PATCH] ASoC: Intel: Atom: fix boot warning
-
-Users have reported seeing this false warning on atom driver
-
-[    5.647469] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 0 doesn't have DAPM widget!!!
-[    5.661612] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 1 doesn't have DAPM widget!!!
-[    5.661646] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 2 doesn't have DAPM widget!!!
-[    5.661681] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 3 doesn't have DAPM widget!!!
-[    5.661708] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in0_0 doesn't have DAPM widget!!!
-[    5.661738] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in0_1 doesn't have DAPM widget!!!
-[    5.661771] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in1_0 doesn't have DAPM widget!!!
-[    5.661807] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in1_1 doesn't have DAPM widget!!!
-
-This is caused when check for control is not being associated
-with a dapm widget, but the check is wrong as the else case
-maybe triggered when widget is not powered up, so we should
-check if widget is associated before printing this message.
-
-Tested-by: Sandeep Tayal <sandeepx.tayal@intel.com>
-Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/atom/sst-atom-controls.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
-index b97e6adcf1b2..98720a93de8a 100644
---- a/sound/soc/intel/atom/sst-atom-controls.c
-+++ b/sound/soc/intel/atom/sst-atom-controls.c
-@@ -195,7 +195,7 @@ static int sst_check_and_send_slot_map(struct sst_data *drv, struct snd_kcontrol
- 
- 	if (e->w && e->w->power)
- 		ret = sst_send_slot_map(drv);
--	else
-+	else if (!e->w)
- 		dev_err(&drv->pdev->dev, "Slot control: %s doesn't have DAPM widget!!!\n",
- 				kcontrol->id.name);
- 	return ret;
--- 
-2.8.0.rc3
+--=20
+P=E9ter
