@@ -1,8 +1,8 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v6 3/4] ASoC: wm_adsp: Use new
-	snd_compr_stop_error to signal stream failure
-Date: Fri, 22 Apr 2016 16:15:25 +0100
-Message-ID: <1461338126-25998-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH v6 1/4] ALSA: compress: Replace complex if
+	statement with switch
+Date: Fri, 22 Apr 2016 16:15:23 +0100
+Message-ID: <1461338126-25998-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1461338126-25998-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 82D5D2650DA
- for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2016 17:15:21 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 09C1D264F3A
+ for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2016 17:15:20 +0200 (CEST)
 In-Reply-To: <1461338126-25998-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,53 +26,34 @@ To: vinod.koul@intel.com, tiwai@suse.com, broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-If we encounter a fatal error on the compressed stream call the new
-snd_compr_stop_error to shutdown the stream and allow the core to
-inform user-space that the stream is no longer valid.
+A switch statement looks a bit cleaner than an if statement
+spread over 3 lines, as such update this to a switch.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Reviewed-by: Vinod Koul <vinod.koul@intel.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/codecs/wm_adsp.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ sound/core/compress_offload.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 3ac2e1f..d221ac9 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -2913,6 +2913,7 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index a9933c0..507071d 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -288,9 +288,12 @@ static ssize_t snd_compr_write(struct file *f, const char __user *buf,
+ 	stream = &data->stream;
+ 	mutex_lock(&stream->device->lock);
+ 	/* write is allowed when stream is running or has been steup */
+-	if (stream->runtime->state != SNDRV_PCM_STATE_SETUP &&
+-	    stream->runtime->state != SNDRV_PCM_STATE_PREPARED &&
+-			stream->runtime->state != SNDRV_PCM_STATE_RUNNING) {
++	switch (stream->runtime->state) {
++	case SNDRV_PCM_STATE_SETUP:
++	case SNDRV_PCM_STATE_PREPARED:
++	case SNDRV_PCM_STATE_RUNNING:
++		break;
++	default:
+ 		mutex_unlock(&stream->device->lock);
+ 		return -EBADFD;
  	}
- 
- 	if (compr->buf->error) {
-+		snd_compr_stop_error(stream, SNDRV_PCM_STATE_XRUN);
- 		ret = -EIO;
- 		goto out;
- 	}
-@@ -2930,8 +2931,12 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
- 		 */
- 		if (buf->avail < wm_adsp_compr_frag_words(compr)) {
- 			ret = wm_adsp_buffer_get_error(buf);
--			if (ret < 0)
-+			if (ret < 0) {
-+				if (compr->buf->error)
-+					snd_compr_stop_error(stream,
-+							SNDRV_PCM_STATE_XRUN);
- 				goto out;
-+			}
- 
- 			ret = wm_adsp_buffer_reenable_irq(buf);
- 			if (ret < 0) {
-@@ -3029,8 +3034,10 @@ static int wm_adsp_compr_read(struct wm_adsp_compr *compr,
- 	if (!compr->buf)
- 		return -ENXIO;
- 
--	if (compr->buf->error)
-+	if (compr->buf->error) {
-+		snd_compr_stop_error(compr->stream, SNDRV_PCM_STATE_XRUN);
- 		return -EIO;
-+	}
- 
- 	count /= WM_ADSP_DATA_WORD_SIZE;
- 
 -- 
 2.1.4
