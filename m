@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Add kerneldoc comments for
-	snd_soc_find_dai" to the asoc tree
-Date: Fri, 22 Apr 2016 11:49:20 +0100
-Message-ID: <E1atYeG-0002a0-Th@debutante>
-References: <1461299133-1535-1-git-send-email-mengdong.lin@linux.intel.com>
+Subject: Applied "ASoC: Intel: Atom: fix boot warning" to the
+	asoc tree
+Date: Fri, 22 Apr 2016 11:49:26 +0100
+Message-ID: <E1atYeM-0002bK-Qf@debutante>
+References: <1461296033-6762-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 797F0264F02
- for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2016 12:49:28 +0200 (CEST)
-In-Reply-To: <1461299133-1535-1-git-send-email-mengdong.lin@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CB45D264FFF
+ for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2016 12:49:31 +0200 (CEST)
+In-Reply-To: <1461296033-6762-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mengdong Lin <mengdong.lin@linux.intel.com>
-Cc: mengdong.lin@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Sandeep Tayal <sandeepx.tayal@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Add kerneldoc comments for snd_soc_find_dai
+   ASoC: Intel: Atom: fix boot warning
 
 has been applied to the asoc tree at
 
@@ -53,41 +53,47 @@ to this mail.
 Thanks,
 Mark
 
->From fbb88b5ca1dc84416fc1fec34773948b6780492c Mon Sep 17 00:00:00 2001
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Date: Fri, 22 Apr 2016 12:25:33 +0800
-Subject: [PATCH] ASoC: Add kerneldoc comments for snd_soc_find_dai
+>From fba0d7066524ab7b8ccf60e7e95981d10ed008b0 Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Fri, 22 Apr 2016 09:03:53 +0530
+Subject: [PATCH] ASoC: Intel: Atom: fix boot warning
 
-snd_soc_find_dai() has been exported and so add the kerneldoc comments
-for it.
+Users have reported seeing this false warning on atom driver
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+[    5.647469] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 0 doesn't have DAPM widget!!!
+[    5.661612] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 1 doesn't have DAPM widget!!!
+[    5.661646] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 2 doesn't have DAPM widget!!!
+[    5.661681] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 3 doesn't have DAPM widget!!!
+[    5.661708] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in0_0 doesn't have DAPM widget!!!
+[    5.661738] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in0_1 doesn't have DAPM widget!!!
+[    5.661771] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in1_0 doesn't have DAPM widget!!!
+[    5.661807] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in1_1 doesn't have DAPM widget!!!
+
+This is caused when check for control is not being associated
+with a dapm widget, but the check is wrong as the else case
+maybe triggered when widget is not powered up, so we should
+check if widget is associated before printing this message.
+
+Tested-by: Sandeep Tayal <sandeepx.tayal@intel.com>
+Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/intel/atom/sst-atom-controls.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 07663def2db6..16369cad4803 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -930,6 +930,17 @@ static struct snd_soc_component *soc_find_component(
- 	return NULL;
- }
+diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
+index b97e6adcf1b2..98720a93de8a 100644
+--- a/sound/soc/intel/atom/sst-atom-controls.c
++++ b/sound/soc/intel/atom/sst-atom-controls.c
+@@ -195,7 +195,7 @@ static int sst_check_and_send_slot_map(struct sst_data *drv, struct snd_kcontrol
  
-+/**
-+ * snd_soc_find_dai - Find a registered DAI
-+ *
-+ * @dlc: name of the DAI and optional component info to match
-+ *
-+ * This function will search all regsitered components and their DAIs to
-+ * find the DAI of the same name. The component's of_node and name
-+ * should also match if being specified.
-+ *
-+ * Return: pointer of DAI, or NULL if not found.
-+ */
- struct snd_soc_dai *snd_soc_find_dai(
- 	const struct snd_soc_dai_link_component *dlc)
- {
+ 	if (e->w && e->w->power)
+ 		ret = sst_send_slot_map(drv);
+-	else
++	else if (!e->w)
+ 		dev_err(&drv->pdev->dev, "Slot control: %s doesn't have DAPM widget!!!\n",
+ 				kcontrol->id.name);
+ 	return ret;
 -- 
 2.8.0.rc3
