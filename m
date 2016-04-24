@@ -1,15 +1,11 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
-References: <3d5a5368f3a43ffc0114daf09c306d7e.squirrel@mungewell.org>
- <570E0AE0.3020507@ladisch.de>
- <32e8a05d90e5cfd79622802c340948ab.squirrel@mungewell.org>
- <570F4832.9020302@ladisch.de>
- <a077d6ac9b13495df8e2d049aa5f3e78.squirrel@mungewell.org>
-From: Clemens Ladisch <clemens@ladisch.de>
-Message-ID: <570FCEEC.7090100@ladisch.de>
-Date: Thu, 14 Apr 2016 19:10:04 +0200
-MIME-Version: 1.0
-In-Reply-To: <a077d6ac9b13495df8e2d049aa5f3e78.squirrel@mungewell.org>
-Subject: Re: [alsa-devel] Tascam US-122L - Corrupt USB descriptor
+From: "Conrad Kostecki" <ck@conrad-kostecki.de>
+Date: Sun, 24 Apr 2016 01:48:21 +0000
+Message-Id: <em7d1d6a23-64ae-4940-a3db-c26ad0f13c6b@valkyrie>
+Mime-Version: 1.0
+Subject: [alsa-devel] [PATCH] ALSA: intel_hda - Add dock support for
+	ThinkPad X260
+Reply-To: Conrad Kostecki <ck@conrad-kostecki.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -17,38 +13,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: linux-usb@vger.kernel.org, alsa-devel@vger.kernel.org
+Cc: alsa-devel@vger.kernel.org
 List-ID: <alsa-devel@alsa-project.org>
 
-Simon Wood wrote:
-> On Thu, April 14, 2016 1:35 am, Clemens Ladisch wrote:
->> Simon Wood wrote:
->>> The card shows up under '/proc/asound/cards', but only as Midi.
->>
->> Apparently, there is no PCM device. This driver creates a special
->> hardware-dependent device which is intended to be used with the Jack driver
->> "usb_stream".
->>
->> It might be possible to use the ALSA "usb_stream" plugin:
->> <http://www.alsa-project.org/main/index.php/Matrix:Module-usb-us122l>
->
-> I have this '.asoundrc' file (made before previous postings), but that
-> does not seem to make a usable card.
+Hi!
+My shiny new ThinkPad X260 is the same way affected, as older ThinkPad 
+(X*40, X*50) generations.
+That means, I am unable to get sound output, when I am using the Lenovo 
+CES 2013 docking station series (basic, pro, ultra).
 
-What error message do you get when you try to use aplay with that device?
+It can be fixed the same way, as it was already done for X240 and X250, 
+as the X260 uses the same docking connector.
+I am attaching my patch, which works for me.
 
-> I'm expecting that a PCM device should /just/ appear under 'aplay -l'
+Cheers
+Conrad
 
-The driver does not implement such a PCM device.
+------------------------------
 
+Fixes audio output on a ThinkPad X260, when using Lenovo CES 2013 
+docking station series (basic, pro, ultra).
 
-Regards,
-Clemens
+Signed-off-by: Conrad Kostecki <ck+linuxkernel@bl4ckb0x.de>
+
+diff -uprN -X linux-4.6-rc4-vanilla/Documentation/dontdiff 
+linux-4.6-rc4-vanilla/sound/pci/hda/patch_realtek.c 
+linux-4.6-rc4/sound/pci/hda/patch_realtek.c
+--- linux-4.6-rc4-vanilla/sound/pci/hda/patch_realtek.c 2016-04-24 
+03:26:36.330983586 +0200
++++ linux-4.6-rc4/sound/pci/hda/patch_realtek.c 2016-04-24 
+03:27:13.737981843 +0200
+@@ -5570,6 +5570,7 @@ static const struct snd_pci_quirk alc269
+         SND_PCI_QUIRK(0x17aa, 0x2218, "Thinkpad X1 Carbon 2nd", 
+ALC292_FIXUP_TPT440_DOCK),
+         SND_PCI_QUIRK(0x17aa, 0x2223, "ThinkPad T550", 
+ALC292_FIXUP_TPT440_DOCK),
+         SND_PCI_QUIRK(0x17aa, 0x2226, "ThinkPad X250", 
+ALC292_FIXUP_TPT440_DOCK),
++       SND_PCI_QUIRK(0x17aa, 0x504a, "ThinkPad X260", 
+ALC292_FIXUP_TPT440_DOCK),
+         SND_PCI_QUIRK(0x17aa, 0x2233, "Thinkpad", ALC292_FIXUP_TPT460),
+         SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", 
+ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
+         SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO", 
+ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
+------------------------------
+
 --
 To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
 
