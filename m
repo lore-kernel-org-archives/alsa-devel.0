@@ -1,18 +1,13 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [PATCH v3 0/9] ASoC: hdac_hdmi: Add multichannel
-	support
-Date: Tue, 26 Apr 2016 10:19:18 +0530
-Message-ID: <20160426044917.GB10261@subhransu-desktop>
-References: <1460608656-8860-1-git-send-email-subhransu.s.prusty@intel.com>
+From: "Conrad Kostecki" <ck@conrad-kostecki.de>
+Subject: [PATCH] ALSA: intel_hda - Add dock support for
+	ThinkPad X260
+Date: Sun, 24 Apr 2016 01:48:21 +0000
+Message-ID: <em7d1d6a23-64ae-4940-a3db-c26ad0f13c6b__33514.8888094865$1461651457$gmane$org@valkyrie>
+Reply-To: Conrad Kostecki <ck@conrad-kostecki.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id ABAD5262607
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2016 06:50:37 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1460608656-8860-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,76 +18,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 14, 2016 at 10:07:27AM +0530, Subhransu S. Prusty wrote:
-> This series parses ELD to identify multichannel capability of the
-> sync, and uses HDA framework to programs codec's channel map
-> registers.
-> 
-> Channel map controls are registered in patch 8, with which user
-> can specify a specific channel order. chmap controls are
-> registered inside jack_init callback. As PCMs need to be
-> registered before registering chmap controls, jack_init call in
-> the machine driver is moved to late_probe instead of init
-> callback.
-> 
-> Skylake driver is modified and buffer size calculation is fixed
-> for multichannel support.
-> 
-> Please note, patch 2 adds a small macro to read channel counts
-> from cap bits in HDA headers. This needs Takashi's ack, so that
-> it can be merged through ASoC.
-> 
-> Patch 7 has dependency on commit#44fde3b ("ALSA: hda - Update
-> chmap tlv to report sink's capability) which is merged in
-> Takashi's tree.
-> 
-> As Takashi suggested Mark may pull Takashi's for-next branch
-> before applying this or may send a pull request, so that Takashi
-> pull's Mark's tree before applying these with Mark's ack.
-> 
-> Mark, please check how you want this to be merged.
+Hi!
+My shiny new ThinkPad X260 is the same way affected, as older ThinkPad 
+(X*40, X*50) generations.
+That means, I am unable to get sound output, when I am using the Lenovo 
+CES 2013 docking station series (basic, pro, ultra).
 
-Hi Mark,
+It can be fixed the same way, as it was already done for X240 and X250, 
+as the X260 uses the same docking connector.
+I am attaching my patch, which works for me.
 
-How are you planning to merge this, will you merge takashi tree or you
-want this to be merged thru his tree? We prefer former as that would
-reduce conflicts for upcoming patches.
+Cheers
+Conrad
 
-Regards,
-Subhransu
-> 
-> Changes in v3:
-> 	* As suggested, simplified channel calculation expression
-> 	  in get channel helper
-> 	* Removed condition in max channel assignment expression
-> 
-> Subhransu S. Prusty (9):
->   ASoC: hdac_hdmi: parse eld for channel map capability
->   ALSA: hda - add helper to get channels from cap bits
->   ASoC: hdac_hdmi: Add multichannel support
->   ASoC: skl_rt286: Fix to support hdmi channel map support
->   ASoC: Intel: boards: Update skl_nau88l25_max98357a driver to support
->     chmap
->   ASoC: Intel: boards: Update skl_nau88l25_ssm4567 driver to support
->     chmap
->   ASoC: hdac_hdmi: Register chmap controls and ops
->   ASoC: Intel: Skylake: Add multichannel support for HDMI
->   ASoC: Intel: Skylake: Update channel map based on runtime params
-> 
->  sound/hda/local.h                               |  10 ++
->  sound/soc/codecs/hdac_hdmi.c                    | 163 ++++++++++++++++++++++--
->  sound/soc/intel/boards/skl_nau88l25_max98357a.c |  74 ++++++++++-
->  sound/soc/intel/boards/skl_nau88l25_ssm4567.c   |  73 ++++++++++-
->  sound/soc/intel/boards/skl_rt286.c              |  48 ++++++-
->  sound/soc/intel/skylake/skl-pcm.c               |  14 +-
->  sound/soc/intel/skylake/skl-topology.c          |  21 ++-
->  7 files changed, 379 insertions(+), 24 deletions(-)
-> 
-> -- 
-> 1.9.1
-> 
+------------------------------
 
--- 
+Fixes audio output on a ThinkPad X260, when using Lenovo CES 2013 
+docking station series (basic, pro, ultra).
+
+Signed-off-by: Conrad Kostecki <ck+linuxkernel@bl4ckb0x.de>
+
+diff -uprN -X linux-4.6-rc4-vanilla/Documentation/dontdiff 
+linux-4.6-rc4-vanilla/sound/pci/hda/patch_realtek.c 
+linux-4.6-rc4/sound/pci/hda/patch_realtek.c
+--- linux-4.6-rc4-vanilla/sound/pci/hda/patch_realtek.c 2016-04-24 
+03:26:36.330983586 +0200
++++ linux-4.6-rc4/sound/pci/hda/patch_realtek.c 2016-04-24 
+03:27:13.737981843 +0200
+@@ -5570,6 +5570,7 @@ static const struct snd_pci_quirk alc269
+         SND_PCI_QUIRK(0x17aa, 0x2218, "Thinkpad X1 Carbon 2nd", 
+ALC292_FIXUP_TPT440_DOCK),
+         SND_PCI_QUIRK(0x17aa, 0x2223, "ThinkPad T550", 
+ALC292_FIXUP_TPT440_DOCK),
+         SND_PCI_QUIRK(0x17aa, 0x2226, "ThinkPad X250", 
+ALC292_FIXUP_TPT440_DOCK),
++       SND_PCI_QUIRK(0x17aa, 0x504a, "ThinkPad X260", 
+ALC292_FIXUP_TPT440_DOCK),
+         SND_PCI_QUIRK(0x17aa, 0x2233, "Thinkpad", ALC292_FIXUP_TPT460),
+         SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", 
+ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
+         SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO", 
+ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
+------------------------------
+
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
