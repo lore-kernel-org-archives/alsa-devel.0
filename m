@@ -1,16 +1,15 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: Broken IRQs on BayTrail devices
-Date: Mon, 25 Apr 2016 08:15:15 -0500
-Message-ID: <571E1863.9090202@linux.intel.com>
-References: <571D8633.9050707@airwebreathe.org.uk>
+From: kernel@martin.sperl.org
+Subject: [PATCH 1/3] ASoC: bcm2835: add 24bit support
+Date: Mon, 25 Apr 2016 13:39:38 +0000
+Message-ID: <1461591580-7565-1-git-send-email-kernel@martin.sperl.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 96E72264F39
- for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2016 15:15:28 +0200 (CEST)
-In-Reply-To: <571D8633.9050707@airwebreathe.org.uk>
+Received: from cgate.sperl.org (212-186-180-163.dynamic.surfer.at
+ [212.186.180.163])
+ by alsa0.perex.cz (Postfix) with ESMTP id B2C18265068
+ for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2016 15:39:48 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,23 +19,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Joel Holdsworth <joel@airwebreathe.org.uk>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, alsa-devel@alsa-project.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, Matthias Reichl <hias@horus.com>, Florian Meier <florian.meier@koalo.de>
+Cc: Martin Sperl <kernel@martin.sperl.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 4/24/16 9:51 PM, Joel Holdsworth wrote:
-> Dear All,
->
-> I've been working on a kernel patch for a firmware IRQ quirk issue that
-> affects multiple Intel Atom Bay-Trail boards:
->
-> https://bugzilla.kernel.org/show_bug.cgi?id=117141
->
-> If you have a Bay Trail device with non-functioning sound, can you
-> attach the DSDT and dmidecode output to the bug so I can investigate
-> whether the quirk affect your device.
+From: Matthias Reichl <hias@horus.com>
 
-The IRQ fix is not enough to get sound on Baytrail-CR devices. You need 
-to also swap SSP2 with SSP0 due to a package change, which is not 
-supported with the 'older' byt-rt5640 driver so that's a dead-end - 
-sorry. There are Intel patching coming for the bytcr-rt5640 to model all 
-the possible routing and quirks, stay tuned.
+This adds 24 bit support to the I2S driver of the BCM2835
+
+Code ported from bcm2708-i2s driver in Raspberry Pi tree.
+
+Signed-off-by: Florian Meier <florian.meier@koalo.de>
+Signed-off-by: Matthias Reichl <hias@horus.com>
+Signed-off-by: Martin Sperl <kernel@martin.sperl.org>
+---
+ sound/soc/bcm/bcm2835-i2s.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+index 1c1f221..d2663e7 100644
+--- a/sound/soc/bcm/bcm2835-i2s.c
++++ b/sound/soc/bcm/bcm2835-i2s.c
+@@ -259,6 +259,9 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_FORMAT_S16_LE:
+ 		data_length = 16;
+ 		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		data_length = 24;
++		break;
+ 	case SNDRV_PCM_FORMAT_S32_LE:
+ 		data_length = 32;
+ 		break;
+@@ -279,7 +282,7 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	/* Setup the frame format */
+ 	format = BCM2835_I2S_CHEN;
+
+-	if (data_length > 24)
++	if (data_length >= 24)
+ 		format |= BCM2835_I2S_CHWEX;
+
+ 	format |= BCM2835_I2S_CHWID((data_length-8)&0xf);
+@@ -570,6 +573,7 @@ static struct snd_soc_dai_driver bcm2835_i2s_dai = {
+ 		.channels_max = 2,
+ 		.rates =	SNDRV_PCM_RATE_8000_192000,
+ 		.formats =	SNDRV_PCM_FMTBIT_S16_LE
++				| SNDRV_PCM_FMTBIT_S24_LE
+ 				| SNDRV_PCM_FMTBIT_S32_LE
+ 		},
+ 	.capture = {
+@@ -577,6 +581,7 @@ static struct snd_soc_dai_driver bcm2835_i2s_dai = {
+ 		.channels_max = 2,
+ 		.rates =	SNDRV_PCM_RATE_8000_192000,
+ 		.formats =	SNDRV_PCM_FMTBIT_S16_LE
++				| SNDRV_PCM_FMTBIT_S24_LE
+ 				| SNDRV_PCM_FMTBIT_S32_LE
+ 		},
+ 	.ops = &bcm2835_i2s_dai_ops,
+--
+2.1.4
