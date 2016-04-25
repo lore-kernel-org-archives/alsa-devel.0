@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/6] ALSA: fireworks: drop reusing incoming
-	packet parameter for ougoing packet parameter
-Date: Mon, 25 Apr 2016 21:45:59 +0900
-Message-ID: <1461588363-21157-3-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 5/6] ALSA: firewire-lib: code cleanup for
+	incoming packet handling
+Date: Mon, 25 Apr 2016 21:46:02 +0900
+Message-ID: <1461588363-21157-6-git-send-email-o-takashi@sakamocchi.jp>
 References: <1461588363-21157-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B43E265068
- for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2016 14:46:06 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id B5C60265139
+ for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2016 14:46:07 +0200 (CEST)
 In-Reply-To: <1461588363-21157-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,203 +25,145 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fireworks board module of Echo Audio, TSB43Cx43A (IceLynx Micro, iCEM)
-is used to process payload of isochronous packets. There's an public
-document of this chip[1]. This document is for firmware programmers to
-transfer/receive AMDTP with IEC60958 data format, however in clause 2.5,
-2.6 and 2.7, we can see system design to utilize the sequence of value in
-SYT field of CIP header. In clause 2.3, we can see the specification of
-Audio Master Clock (MCLK) from iCEM.
-
-Well, this clock is actually not used for sampling clock. This can be
-confirmed when corresponding driver transfer random value as the sequence
-of SYT field. Even if in this case, the unit generates proper sound.
-
-Additionally, in unique command set for this board module, the format
-of CIP is changed; for IEC 61883-6 mode which we use, and for Windows
-Operating System. In the latter mode, the whole 32 bit field in second CIP
-header from Windows driver is used to represent counter of packets (NO-DATA
-code is still used for packets without data blocks). If the master clock
-was physically used by DSP on the board module, the Windows driver must
-have transferred correct sequence of SYT field.
-
-Furthermore, as long as seeing capacities of AudioFire2, AudioFire4,
-AudioFire8, AudioFirePre8 and AudioFire12, these models don't support
-SYT-Match clock source.
-
-Summary, we have no need to relate incoming/outgoing packets. This commit
-drops reusing SYT sequence of incoming packets for outgoing packets.
-
-[1] Using TSB43Cx43A: S/PDIF over 1394 (2003, Texus Instruments
-Incorporated)
-http://www.ti.com/analog/docs/litabsmultiplefilelist.tsp?literatureNumber=slla148&docCategoryId=1&familyId=361
+In previous commit, this module has no need to re-use parameters in
+incoming packets for outgoing packets anymore. This commit arranges some
+needless codes for incoming packet processing.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireworks/fireworks.h        |  1 -
- sound/firewire/fireworks/fireworks_stream.c | 84 ++++++-----------------------
- 2 files changed, 17 insertions(+), 68 deletions(-)
+ sound/firewire/amdtp-stream.c | 38 ++++++++++++++++++--------------------
+ 1 file changed, 18 insertions(+), 20 deletions(-)
 
-diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-index 471c772..03ed352 100644
---- a/sound/firewire/fireworks/fireworks.h
-+++ b/sound/firewire/fireworks/fireworks.h
-@@ -84,7 +84,6 @@ struct snd_efw {
- 	unsigned int pcm_capture_channels[SND_EFW_MULTIPLIER_MODES];
- 	unsigned int pcm_playback_channels[SND_EFW_MULTIPLIER_MODES];
- 
--	struct amdtp_stream *master;
- 	struct amdtp_stream tx_stream;
- 	struct amdtp_stream rx_stream;
- 	struct cmp_connection out_conn;
-diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
-index 425db8d..ee47924 100644
---- a/sound/firewire/fireworks/fireworks_stream.c
-+++ b/sound/firewire/fireworks/fireworks_stream.c
-@@ -121,23 +121,6 @@ destroy_stream(struct snd_efw *efw, struct amdtp_stream *stream)
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index d377dbe..a49459d 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -447,17 +447,18 @@ static int handle_out_packet(struct amdtp_stream *s, unsigned int data_blocks,
  }
  
- static int
--get_sync_mode(struct snd_efw *efw, enum cip_flags *sync_mode)
--{
--	enum snd_efw_clock_source clock_source;
--	int err;
--
--	err = snd_efw_command_get_clock_source(efw, &clock_source);
--	if (err < 0)
--		return err;
--
--	if (clock_source == SND_EFW_CLOCK_SOURCE_SYTMATCH)
--		return -ENOSYS;
--
--	*sync_mode = CIP_SYNC_TO_DEVICE;
--	return 0;
--}
--
--static int
- check_connection_used_by_others(struct snd_efw *efw, struct amdtp_stream *s)
+ static int handle_in_packet(struct amdtp_stream *s,
+-			    unsigned int payload_quadlets, __be32 *buffer,
+-			    unsigned int *data_blocks, unsigned int cycle,
+-			    unsigned int syt)
++			    unsigned int payload_quadlets, unsigned int cycle)
  {
- 	struct cmp_connection *conn;
-@@ -208,9 +191,6 @@ end:
++	__be32 *buffer;
+ 	u32 cip_header[2];
+-	unsigned int fmt, fdf;
++	unsigned int fmt, fdf, syt;
+ 	unsigned int data_block_quadlets, data_block_counter, dbc_interval;
++	unsigned int data_blocks;
+ 	struct snd_pcm_substream *pcm;
+ 	unsigned int pcm_frames;
+ 	bool lost;
  
- int snd_efw_stream_start_duplex(struct snd_efw *efw, unsigned int rate)
- {
--	struct amdtp_stream *master, *slave;
--	unsigned int slave_substreams;
--	enum cip_flags sync_mode;
- 	unsigned int curr_rate;
- 	int err = 0;
++	buffer = s->buffer.packets[s->packet_index].buffer;
+ 	cip_header[0] = be32_to_cpu(buffer[0]);
+ 	cip_header[1] = be32_to_cpu(buffer[1]);
  
-@@ -218,32 +198,19 @@ int snd_efw_stream_start_duplex(struct snd_efw *efw, unsigned int rate)
- 	if (efw->playback_substreams == 0 && efw->capture_substreams  == 0)
+@@ -472,7 +473,7 @@ static int handle_in_packet(struct amdtp_stream *s,
+ 		dev_info_ratelimited(&s->unit->device,
+ 				"Invalid CIP header for AMDTP: %08X:%08X\n",
+ 				cip_header[0], cip_header[1]);
+-		*data_blocks = 0;
++		data_blocks = 0;
+ 		pcm_frames = 0;
  		goto end;
- 
--	err = get_sync_mode(efw, &sync_mode);
--	if (err < 0)
--		goto end;
--	if (sync_mode == CIP_SYNC_TO_DEVICE) {
--		master = &efw->tx_stream;
--		slave  = &efw->rx_stream;
--		slave_substreams  = efw->playback_substreams;
--	} else {
--		master = &efw->rx_stream;
--		slave  = &efw->tx_stream;
--		slave_substreams = efw->capture_substreams;
--	}
--
- 	/*
- 	 * Considering JACK/FFADO streaming:
- 	 * TODO: This can be removed hwdep functionality becomes popular.
- 	 */
--	err = check_connection_used_by_others(efw, master);
-+	err = check_connection_used_by_others(efw, &efw->rx_stream);
- 	if (err < 0)
+ 	}
+@@ -483,7 +484,7 @@ static int handle_in_packet(struct amdtp_stream *s,
+ 		dev_info_ratelimited(&s->unit->device,
+ 				     "Detect unexpected protocol: %08x %08x\n",
+ 				     cip_header[0], cip_header[1]);
+-		*data_blocks = 0;
++		data_blocks = 0;
+ 		pcm_frames = 0;
  		goto end;
+ 	}
+@@ -492,7 +493,7 @@ static int handle_in_packet(struct amdtp_stream *s,
+ 	fdf = (cip_header[1] & CIP_FDF_MASK) >> CIP_FDF_SHIFT;
+ 	if (payload_quadlets < 3 ||
+ 	    (fmt == CIP_FMT_AM && fdf == AMDTP_FDF_NO_DATA)) {
+-		*data_blocks = 0;
++		data_blocks = 0;
+ 	} else {
+ 		data_block_quadlets =
+ 			(cip_header[0] & CIP_DBS_MASK) >> CIP_DBS_SHIFT;
+@@ -506,12 +507,12 @@ static int handle_in_packet(struct amdtp_stream *s,
+ 		if (s->flags & CIP_WRONG_DBS)
+ 			data_block_quadlets = s->data_block_quadlets;
  
- 	/* packet queueing error */
--	if (amdtp_streaming_error(slave))
--		stop_stream(efw, slave);
--	if (amdtp_streaming_error(master))
--		stop_stream(efw, master);
-+	if (amdtp_streaming_error(&efw->tx_stream))
-+		stop_stream(efw, &efw->tx_stream);
-+	if (amdtp_streaming_error(&efw->rx_stream))
-+		stop_stream(efw, &efw->rx_stream);
- 
- 	/* stop streams if rate is different */
- 	err = snd_efw_command_get_sampling_rate(efw, &curr_rate);
-@@ -252,20 +219,17 @@ int snd_efw_stream_start_duplex(struct snd_efw *efw, unsigned int rate)
- 	if (rate == 0)
- 		rate = curr_rate;
- 	if (rate != curr_rate) {
--		stop_stream(efw, slave);
--		stop_stream(efw, master);
-+		stop_stream(efw, &efw->tx_stream);
-+		stop_stream(efw, &efw->rx_stream);
+-		*data_blocks = (payload_quadlets - 2) / data_block_quadlets;
++		data_blocks = (payload_quadlets - 2) / data_block_quadlets;
  	}
  
- 	/* master should be always running */
--	if (!amdtp_stream_running(master)) {
--		amdtp_stream_set_sync(sync_mode, master, slave);
--		efw->master = master;
--
-+	if (!amdtp_stream_running(&efw->rx_stream)) {
- 		err = snd_efw_command_set_sampling_rate(efw, rate);
- 		if (err < 0)
- 			goto end;
+ 	/* Check data block counter continuity */
+ 	data_block_counter = cip_header[0] & CIP_DBC_MASK;
+-	if (*data_blocks == 0 && (s->flags & CIP_EMPTY_HAS_WRONG_DBC) &&
++	if (data_blocks == 0 && (s->flags & CIP_EMPTY_HAS_WRONG_DBC) &&
+ 	    s->data_block_counter != UINT_MAX)
+ 		data_block_counter = s->data_block_counter;
  
--		err = start_stream(efw, master, rate);
-+		err = start_stream(efw, &efw->rx_stream, rate);
- 		if (err < 0) {
- 			dev_err(&efw->unit->device,
- 				"fail to start AMDTP master stream:%d\n", err);
-@@ -274,12 +238,13 @@ int snd_efw_stream_start_duplex(struct snd_efw *efw, unsigned int rate)
+@@ -522,10 +523,10 @@ static int handle_in_packet(struct amdtp_stream *s,
+ 	} else if (!(s->flags & CIP_DBC_IS_END_EVENT)) {
+ 		lost = data_block_counter != s->data_block_counter;
+ 	} else {
+-		if ((*data_blocks > 0) && (s->tx_dbc_interval > 0))
++		if (data_blocks > 0 && s->tx_dbc_interval > 0)
+ 			dbc_interval = s->tx_dbc_interval;
+ 		else
+-			dbc_interval = *data_blocks;
++			dbc_interval = data_blocks;
+ 
+ 		lost = data_block_counter !=
+ 		       ((s->data_block_counter + dbc_interval) & 0xff);
+@@ -538,13 +539,14 @@ static int handle_in_packet(struct amdtp_stream *s,
+ 		return -EIO;
  	}
  
- 	/* start slave if needed */
--	if (slave_substreams > 0 && !amdtp_stream_running(slave)) {
--		err = start_stream(efw, slave, rate);
-+	if (efw->capture_substreams > 0 &&
-+	    !amdtp_stream_running(&efw->tx_stream)) {
-+		err = start_stream(efw, &efw->tx_stream, rate);
- 		if (err < 0) {
- 			dev_err(&efw->unit->device,
- 				"fail to start AMDTP slave stream:%d\n", err);
--			stop_stream(efw, master);
-+			stop_stream(efw, &efw->rx_stream);
- 		}
- 	}
+-	pcm_frames = s->process_data_blocks(s, buffer + 2, *data_blocks, &syt);
++	syt = be32_to_cpu(buffer[1]) & CIP_SYT_MASK;
++	pcm_frames = s->process_data_blocks(s, buffer + 2, data_blocks, &syt);
+ 
+ 	if (s->flags & CIP_DBC_IS_END_EVENT)
+ 		s->data_block_counter = data_block_counter;
+ 	else
+ 		s->data_block_counter =
+-				(data_block_counter + *data_blocks) & 0xff;
++				(data_block_counter + data_blocks) & 0xff;
  end:
-@@ -288,26 +253,11 @@ end:
- 
- void snd_efw_stream_stop_duplex(struct snd_efw *efw)
+ 	if (queue_in_packet(s) < 0)
+ 		return -EIO;
+@@ -618,10 +620,9 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 			       void *private_data)
  {
--	struct amdtp_stream *master, *slave;
--	unsigned int master_substreams, slave_substreams;
--
--	if (efw->master == &efw->rx_stream) {
--		slave  = &efw->tx_stream;
--		master = &efw->rx_stream;
--		slave_substreams  = efw->capture_substreams;
--		master_substreams = efw->playback_substreams;
--	} else {
--		slave  = &efw->rx_stream;
--		master = &efw->tx_stream;
--		slave_substreams  = efw->playback_substreams;
--		master_substreams = efw->capture_substreams;
--	}
--
--	if (slave_substreams == 0) {
--		stop_stream(efw, slave);
-+	if (efw->capture_substreams == 0) {
-+		stop_stream(efw, &efw->tx_stream);
+ 	struct amdtp_stream *s = private_data;
+-	unsigned int p, syt, packets;
++	unsigned int p, packets;
+ 	unsigned int payload_quadlets, max_payload_quadlets;
+-	unsigned int data_blocks;
+-	__be32 *buffer, *headers = header;
++	__be32 *headers = header;
+ 	u32 cycle;
  
--		if (master_substreams == 0)
--			stop_stream(efw, master);
-+		if (efw->playback_substreams == 0)
-+			stop_stream(efw, &efw->rx_stream);
- 	}
- }
+ 	if (s->packet_index < 0)
+@@ -640,7 +641,6 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
  
+ 	for (p = 0; p < packets; p++) {
+ 		cycle = increment_cycle_count(cycle, 1);
+-		buffer = s->buffer.packets[s->packet_index].buffer;
+ 
+ 		/* The number of quadlets in this packet */
+ 		payload_quadlets =
+@@ -653,9 +653,7 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 			break;
+ 		}
+ 
+-		syt = be32_to_cpu(buffer[1]) & CIP_SYT_MASK;
+-		if (handle_in_packet(s, payload_quadlets, buffer,
+-						&data_blocks, cycle, syt) < 0) {
++		if (handle_in_packet(s, payload_quadlets, cycle) < 0) {
+ 			s->packet_index = -1;
+ 			break;
+ 		}
 -- 
 2.7.4
