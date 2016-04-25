@@ -1,109 +1,75 @@
-From: Matthias Reichl <hias@horus.com>
-Subject: Re: [PATCH 3/3] ASoC: bcm2835: Register also as PCM device
-Date: Mon, 25 Apr 2016 19:15:15 +0200
-Message-ID: <20160425171515.GA10952@camel2.lan>
-References: <1461591580-7565-1-git-send-email-kernel@martin.sperl.org>
- <1461591580-7565-3-git-send-email-kernel@martin.sperl.org>
- <571E218A.7050508@metafoo.de>
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: [PATCH v3 1/6] ASoC: fsl_ssi: Real hardware
+ channels max number is 32
+Date: Mon, 25 Apr 2016 10:20:56 -0700
+Message-ID: <CAG5mAdwfKTF9Rhz0w622TXPcQ8NtAQ-z=VKiuh=ozu4kNScVuA@mail.gmail.com>
+References: <1453130771-24419-1-git-send-email-arnaud.mouiche@invoxia.com>
+ <1453130771-24419-2-git-send-email-arnaud.mouiche@invoxia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <571E218A.7050508@metafoo.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Eric Anholt <eric@anholt.net>, Mark Brown <broonie@kernel.org>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, kernel@martin.sperl.org, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f49.google.com (mail-oi0-f49.google.com
+ [209.85.218.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F743265068
+ for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2016 19:21:17 +0200 (CEST)
+Received: by mail-oi0-f49.google.com with SMTP id r78so183814129oie.0
+ for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2016 10:21:17 -0700 (PDT)
+In-Reply-To: <1453130771-24419-2-git-send-email-arnaud.mouiche@invoxia.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 25, 2016 at 03:54:18PM +0200, Lars-Peter Clausen wrote:
-> On 04/25/2016 03:39 PM, kernel@martin.sperl.org wrote:
-> > From: Matthias Reichl <hias@horus.com>
-> > 
-> > Register i2s also as pcm device.
-> 
-> This is not really what this patch does.
+On Mon, Jan 18, 2016 at 7:26 AM, Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+wrote:
+>
+> The max number of slots in TDM mode is 32:
+> - Frame Rate Divider Control is a 5bit value
+> - Time slot mask registers control 32 slots.
+>
+> Signed-off-by: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+> ---
+>  sound/soc/fsl/fsl_ssi.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> index 40dfd8a..cfc78b8 100644
+> --- a/sound/soc/fsl/fsl_ssi.c
+> +++ b/sound/soc/fsl/fsl_ssi.c
+> @@ -1167,14 +1167,14 @@ static struct snd_soc_dai_driver
+fsl_ssi_dai_template = {
+>         .playback = {
+>                 .stream_name = "CPU-Playback",
+>                 .channels_min = 1,
+> -               .channels_max = 2,
+> +               .channels_max = 32,
+>                 .rates = FSLSSI_I2S_RATES,
+>                 .formats = FSLSSI_I2S_FORMATS,
+>         },
+>         .capture = {
+>                 .stream_name = "CPU-Capture",
+>                 .channels_min = 1,
+> -               .channels_max = 2,
+> +               .channels_max = 32,
+>                 .rates = FSLSSI_I2S_RATES,
+>                 .formats = FSLSSI_I2S_FORMATS,
+>         },
+> --
+> 1.9.1
+>
 
-Agreed, we need a better description.
+I haven't seen any movement on this patch for some time.  I just wanted to
+add my Tested&Reviewed.  These patches work for me on the fsl_ssi.
 
-> > Code ported from bcm2708-i2s driver in Raspberry Pi tree.
-> >
-> > Signed-off-by: Florian Meier <florian.meier@koalo.de>
-> > Signed-off-by: Matthias Reichl <hias@horus.com>
-> > Signed-off-by: Martin Sperl <kernel@martin.sperl.org>
-> > ---
-> >  sound/soc/bcm/bcm2835-i2s.c | 25 ++++++++++++++++++++++++-
-> >  1 file changed, 24 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
-> > index a0026e2..8e93295 100644
-> > --- a/sound/soc/bcm/bcm2835-i2s.c
-> > +++ b/sound/soc/bcm/bcm2835-i2s.c
-> > @@ -632,6 +632,27 @@ static const struct snd_soc_component_driver bcm2835_i2s_component = {
-> >  	.name		= "bcm2835-i2s-comp",
-> >  };
-> >  
-> > +static const struct snd_pcm_hardware bcm2835_pcm_hardware = {
-> > +	.info			= SNDRV_PCM_INFO_INTERLEAVED |
-> > +				  SNDRV_PCM_INFO_JOINT_DUPLEX |
-> > +				  SNDRV_PCM_INFO_MMAP |
-> > +				  SNDRV_PCM_INFO_MMAP_VALID,
-> > +	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
-> > +				  SNDRV_PCM_FMTBIT_S24_LE |
-> > +				  SNDRV_PCM_FMTBIT_S32_LE,
-> > +	.period_bytes_min	= 32,
-> > +	.period_bytes_max	= 64 * PAGE_SIZE,
 
-I think it'd be better to use SZ constants instead of x * PAGE_SIZE.
-
-> > +	.periods_min		= 2,
-> > +	.periods_max		= 255,
-> > +	.buffer_bytes_max	= 128 * PAGE_SIZE,
-> > +};
-> > +
-> > +static const struct snd_dmaengine_pcm_config bcm2835_dmaengine_pcm_config = {
-> > +	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
-> > +	.pcm_hardware = &bcm2835_pcm_hardware,
-> > +	.prealloc_buffer_size = 256 * PAGE_SIZE,
-> > +};
-> 
-> The generic dmaengine PCM driver auto-discovers these things, no need to
-> provide them. The code is OK as it is.
-
-With the auto-discover code we loose the S16_LE format.
-
-If I understood the code in dmaengine_pcm_set_runtime_hwparams
-correctly, this is because the DMA controller doesn't support
-16bit transfers (only multiples of 32bit are allowed).
-
-But since the I2S driver needs exactly 2 channels S16_LE actually
-works fine (one 32bit transfer per frame).
-
-Do you know of a better way to get S16_LE support? It could well
-be that I missed something important...
-
-> > +
-> >  static int bcm2835_i2s_probe(struct platform_device *pdev)
-> >  {
-> >  	struct bcm2835_i2s_dev *dev;
-> > @@ -704,7 +725,9 @@ static int bcm2835_i2s_probe(struct platform_device *pdev)
-> >  		return ret;
-> >  	}
-> >  
-> > -	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
-> > +	ret = devm_snd_dmaengine_pcm_register(
-> > +		&pdev->dev, &bcm2835_dmaengine_pcm_config,
-> > +		SND_DMAENGINE_PCM_FLAG_COMPAT);
-> >  	if (ret) {
-> >  		dev_err(&pdev->dev, "Could not register PCM: %d\n", ret);
-> >  		return ret;
-> > 
-> 
+Tested-By: Caleb Crome <caleb@crome.org>
+Reviewed-"By: Caleb Crome <caleb@crome.org>
