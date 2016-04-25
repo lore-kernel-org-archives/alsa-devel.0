@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 5/6] ALSA: firewire-lib: code cleanup for
-	incoming packet handling
-Date: Mon, 25 Apr 2016 21:46:02 +0900
-Message-ID: <1461588363-21157-6-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/6] ALSA: firewire-lib: handle IT/IR contexts
+	in each software context
+Date: Mon, 25 Apr 2016 21:46:01 +0900
+Message-ID: <1461588363-21157-5-git-send-email-o-takashi@sakamocchi.jp>
 References: <1461588363-21157-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id B5C60265139
- for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2016 14:46:07 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2FE0C264F8D
+ for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2016 14:46:06 +0200 (CEST)
 In-Reply-To: <1461588363-21157-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,145 +25,169 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In previous commit, this module has no need to re-use parameters in
-incoming packets for outgoing packets anymore. This commit arranges some
-needless codes for incoming packet processing.
+In clause 6.3 of IEC 61883-6:2000, there's an explanation about processing
+of presentation timestamp. In the clause, we can see "If a function block
+receives a CIP, processes it and subsequently re-transmits it, then the
+SYT of the outgoing CIP shall be the sum of the incoming SYT and the
+processing delay." ALSA firewire stack has an implementation to partly
+satisfy this specification. Developers assumed the stack to perform as an
+Audio function block[1].
+
+According to the assumption, current implementation of ALSA firewire stack
+use one software interrupt context to handle both of in/out packets. In
+most case, this is processed in 1394 OHCI IR context independently of the
+opposite context. Thus, this implementation uses longer CPU time in the
+software interrupt context. This is not better for whole system.
+
+Against the assumption, I confirmed that each ASIC for IEC 61883-1/6
+doesn't necessarily expect it to the stack. Thus, current implementation
+of ALSA firewire stack includes over-engineering.
+
+This commit purges the implementation. As a result, packets of one
+direction are handled in one software interrupt context and spends
+minimum CPU time.
+
+[1] [alsa-devel] [PATCH 0/8] [RFC] new driver for Echo Audio's Fireworks based devices
+http://mailman.alsa-project.org/pipermail/alsa-devel/2013-June/062660.html
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-stream.c | 38 ++++++++++++++++++--------------------
- 1 file changed, 18 insertions(+), 20 deletions(-)
+ sound/firewire/amdtp-stream.c | 30 ------------------------------
+ sound/firewire/amdtp-stream.h | 35 +++++++----------------------------
+ 2 files changed, 7 insertions(+), 58 deletions(-)
 
 diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index d377dbe..a49459d 100644
+index a84a9ff..d377dbe 100644
 --- a/sound/firewire/amdtp-stream.c
 +++ b/sound/firewire/amdtp-stream.c
-@@ -447,17 +447,18 @@ static int handle_out_packet(struct amdtp_stream *s, unsigned int data_blocks,
- }
+@@ -91,7 +91,6 @@ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
  
- static int handle_in_packet(struct amdtp_stream *s,
--			    unsigned int payload_quadlets, __be32 *buffer,
--			    unsigned int *data_blocks, unsigned int cycle,
--			    unsigned int syt)
-+			    unsigned int payload_quadlets, unsigned int cycle)
- {
-+	__be32 *buffer;
- 	u32 cip_header[2];
--	unsigned int fmt, fdf;
-+	unsigned int fmt, fdf, syt;
- 	unsigned int data_block_quadlets, data_block_counter, dbc_interval;
-+	unsigned int data_blocks;
- 	struct snd_pcm_substream *pcm;
- 	unsigned int pcm_frames;
- 	bool lost;
+ 	init_waitqueue_head(&s->callback_wait);
+ 	s->callbacked = false;
+-	s->sync_slave = NULL;
  
-+	buffer = s->buffer.packets[s->packet_index].buffer;
- 	cip_header[0] = be32_to_cpu(buffer[0]);
- 	cip_header[1] = be32_to_cpu(buffer[1]);
- 
-@@ -472,7 +473,7 @@ static int handle_in_packet(struct amdtp_stream *s,
- 		dev_info_ratelimited(&s->unit->device,
- 				"Invalid CIP header for AMDTP: %08X:%08X\n",
- 				cip_header[0], cip_header[1]);
--		*data_blocks = 0;
-+		data_blocks = 0;
- 		pcm_frames = 0;
- 		goto end;
- 	}
-@@ -483,7 +484,7 @@ static int handle_in_packet(struct amdtp_stream *s,
- 		dev_info_ratelimited(&s->unit->device,
- 				     "Detect unexpected protocol: %08x %08x\n",
- 				     cip_header[0], cip_header[1]);
--		*data_blocks = 0;
-+		data_blocks = 0;
- 		pcm_frames = 0;
- 		goto end;
- 	}
-@@ -492,7 +493,7 @@ static int handle_in_packet(struct amdtp_stream *s,
- 	fdf = (cip_header[1] & CIP_FDF_MASK) >> CIP_FDF_SHIFT;
- 	if (payload_quadlets < 3 ||
- 	    (fmt == CIP_FMT_AM && fdf == AMDTP_FDF_NO_DATA)) {
--		*data_blocks = 0;
-+		data_blocks = 0;
- 	} else {
- 		data_block_quadlets =
- 			(cip_header[0] & CIP_DBS_MASK) >> CIP_DBS_SHIFT;
-@@ -506,12 +507,12 @@ static int handle_in_packet(struct amdtp_stream *s,
- 		if (s->flags & CIP_WRONG_DBS)
- 			data_block_quadlets = s->data_block_quadlets;
- 
--		*data_blocks = (payload_quadlets - 2) / data_block_quadlets;
-+		data_blocks = (payload_quadlets - 2) / data_block_quadlets;
- 	}
- 
- 	/* Check data block counter continuity */
- 	data_block_counter = cip_header[0] & CIP_DBC_MASK;
--	if (*data_blocks == 0 && (s->flags & CIP_EMPTY_HAS_WRONG_DBC) &&
-+	if (data_blocks == 0 && (s->flags & CIP_EMPTY_HAS_WRONG_DBC) &&
- 	    s->data_block_counter != UINT_MAX)
- 		data_block_counter = s->data_block_counter;
- 
-@@ -522,10 +523,10 @@ static int handle_in_packet(struct amdtp_stream *s,
- 	} else if (!(s->flags & CIP_DBC_IS_END_EVENT)) {
- 		lost = data_block_counter != s->data_block_counter;
- 	} else {
--		if ((*data_blocks > 0) && (s->tx_dbc_interval > 0))
-+		if (data_blocks > 0 && s->tx_dbc_interval > 0)
- 			dbc_interval = s->tx_dbc_interval;
- 		else
--			dbc_interval = *data_blocks;
-+			dbc_interval = data_blocks;
- 
- 		lost = data_block_counter !=
- 		       ((s->data_block_counter + dbc_interval) & 0xff);
-@@ -538,13 +539,14 @@ static int handle_in_packet(struct amdtp_stream *s,
- 		return -EIO;
- 	}
- 
--	pcm_frames = s->process_data_blocks(s, buffer + 2, *data_blocks, &syt);
-+	syt = be32_to_cpu(buffer[1]) & CIP_SYT_MASK;
-+	pcm_frames = s->process_data_blocks(s, buffer + 2, data_blocks, &syt);
- 
- 	if (s->flags & CIP_DBC_IS_END_EVENT)
- 		s->data_block_counter = data_block_counter;
- 	else
- 		s->data_block_counter =
--				(data_block_counter + *data_blocks) & 0xff;
-+				(data_block_counter + data_blocks) & 0xff;
- end:
- 	if (queue_in_packet(s) < 0)
- 		return -EIO;
-@@ -618,10 +620,9 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
- 			       void *private_data)
- {
- 	struct amdtp_stream *s = private_data;
--	unsigned int p, syt, packets;
-+	unsigned int p, packets;
- 	unsigned int payload_quadlets, max_payload_quadlets;
--	unsigned int data_blocks;
--	__be32 *buffer, *headers = header;
-+	__be32 *headers = header;
- 	u32 cycle;
- 
- 	if (s->packet_index < 0)
-@@ -640,7 +641,6 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
- 
- 	for (p = 0; p < packets; p++) {
- 		cycle = increment_cycle_count(cycle, 1);
--		buffer = s->buffer.packets[s->packet_index].buffer;
- 
- 		/* The number of quadlets in this packet */
- 		payload_quadlets =
-@@ -653,9 +653,7 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
- 			break;
- 		}
- 
--		syt = be32_to_cpu(buffer[1]) & CIP_SYT_MASK;
--		if (handle_in_packet(s, payload_quadlets, buffer,
--						&data_blocks, cycle, syt) < 0) {
-+		if (handle_in_packet(s, payload_quadlets, cycle) < 0) {
+ 	s->fmt = fmt;
+ 	s->process_data_blocks = process_data_blocks;
+@@ -660,44 +659,17 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
  			s->packet_index = -1;
  			break;
  		}
+-
+-		/* Process sync slave stream */
+-		if (s->sync_slave && s->sync_slave->callbacked) {
+-			if (handle_out_packet(s->sync_slave,
+-					      data_blocks, cycle, syt) < 0) {
+-				s->packet_index = -1;
+-				break;
+-			}
+-		}
+ 	}
+ 
+ 	/* Queueing error or detecting discontinuity */
+ 	if (s->packet_index < 0) {
+ 		amdtp_stream_pcm_abort(s);
+-
+-		/* Abort sync slave. */
+-		if (s->sync_slave) {
+-			s->sync_slave->packet_index = -1;
+-			amdtp_stream_pcm_abort(s->sync_slave);
+-		}
+ 		return;
+ 	}
+ 
+-	/* when sync to device, flush the packets for slave stream */
+-	if (s->sync_slave && s->sync_slave->callbacked)
+-		fw_iso_context_queue_flush(s->sync_slave->context);
+-
+ 	fw_iso_context_queue_flush(s->context);
+ }
+ 
+-/* processing is done by master callback */
+-static void slave_stream_callback(struct fw_iso_context *context, u32 tstamp,
+-				  size_t header_length, void *header,
+-				  void *private_data)
+-{
+-	return;
+-}
+-
+ /* this is executed one time */
+ static void amdtp_stream_first_callback(struct fw_iso_context *context,
+ 					u32 tstamp, size_t header_length,
+@@ -714,8 +686,6 @@ static void amdtp_stream_first_callback(struct fw_iso_context *context,
+ 
+ 	if (s->direction == AMDTP_IN_STREAM)
+ 		context->callback.sc = in_stream_callback;
+-	else if (s->flags & CIP_SYNC_TO_DEVICE)
+-		context->callback.sc = slave_stream_callback;
+ 	else
+ 		context->callback.sc = out_stream_callback;
+ 
+diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
+index 8775704..da028b0 100644
+--- a/sound/firewire/amdtp-stream.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -17,8 +17,6 @@
+  * @CIP_BLOCKING: In blocking mode, each packet contains either zero or
+  *	SYT_INTERVAL samples, with these two types alternating so that
+  *	the overall sample rate comes out right.
+- * @CIP_SYNC_TO_DEVICE: In sync to device mode, time stamp in out packets is
+- *	generated by in packets. Defaultly this driver generates timestamp.
+  * @CIP_EMPTY_WITH_TAG0: Only for in-stream. Empty in-packets have TAG0.
+  * @CIP_DBC_IS_END_EVENT: Only for in-stream. The value of dbc in an in-packet
+  *	corresponds to the end of event in the packet. Out of IEC 61883.
+@@ -37,14 +35,13 @@
+ enum cip_flags {
+ 	CIP_NONBLOCKING		= 0x00,
+ 	CIP_BLOCKING		= 0x01,
+-	CIP_SYNC_TO_DEVICE	= 0x02,
+-	CIP_EMPTY_WITH_TAG0	= 0x04,
+-	CIP_DBC_IS_END_EVENT	= 0x08,
+-	CIP_WRONG_DBS		= 0x10,
+-	CIP_SKIP_DBC_ZERO_CHECK	= 0x20,
+-	CIP_SKIP_INIT_DBC_CHECK	= 0x40,
+-	CIP_EMPTY_HAS_WRONG_DBC	= 0x80,
+-	CIP_JUMBO_PAYLOAD	= 0x100,
++	CIP_EMPTY_WITH_TAG0	= 0x02,
++	CIP_DBC_IS_END_EVENT	= 0x04,
++	CIP_WRONG_DBS		= 0x08,
++	CIP_SKIP_DBC_ZERO_CHECK	= 0x10,
++	CIP_SKIP_INIT_DBC_CHECK	= 0x20,
++	CIP_EMPTY_HAS_WRONG_DBC	= 0x40,
++	CIP_JUMBO_PAYLOAD	= 0x80,
+ };
+ 
+ /**
+@@ -137,7 +134,6 @@ struct amdtp_stream {
+ 	/* To wait for first packet. */
+ 	bool callbacked;
+ 	wait_queue_head_t callback_wait;
+-	struct amdtp_stream *sync_slave;
+ 
+ 	/* For backends to process data blocks. */
+ 	void *protocol;
+@@ -223,23 +219,6 @@ static inline bool cip_sfc_is_base_44100(enum cip_sfc sfc)
+ 	return sfc & 1;
+ }
+ 
+-static inline void amdtp_stream_set_sync(enum cip_flags sync_mode,
+-					 struct amdtp_stream *master,
+-					 struct amdtp_stream *slave)
+-{
+-	if (sync_mode == CIP_SYNC_TO_DEVICE) {
+-		master->flags |= CIP_SYNC_TO_DEVICE;
+-		slave->flags |= CIP_SYNC_TO_DEVICE;
+-		master->sync_slave = slave;
+-	} else {
+-		master->flags &= ~CIP_SYNC_TO_DEVICE;
+-		slave->flags &= ~CIP_SYNC_TO_DEVICE;
+-		master->sync_slave = NULL;
+-	}
+-
+-	slave->sync_slave = NULL;
+-}
+-
+ /**
+  * amdtp_stream_wait_callback - sleep till callbacked or timeout
+  * @s: the AMDTP stream
 -- 
 2.7.4
