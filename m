@@ -1,71 +1,46 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/1] ASoC: fsl_ssi: add CCSR_SSI_SOR to
- volatile register list
-Date: Mon, 25 Apr 2016 19:06:13 +0100
-Message-ID: <20160425180613.GR3217@sirena.org.uk>
-References: <1461606624-130216-1-git-send-email-caleb@crome.org>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8172644862670372784=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A44A0265068
- for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2016 20:06:26 +0200 (CEST)
-In-Reply-To: <1461606624-130216-1-git-send-email-caleb@crome.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Nicolin Chen <nicoleotsuka@gmail.com>, linuxppc-dev@lists.ozlabs.org
+From: Jeremy McDermond <nh6z-fFIq/eER6g8@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: simple-card: Add support jack detection via codec
+Date: Mon, 25 Apr 2016 11:17:21 -0700
+Message-ID: <9CA36836-11FE-4A7B-8DBC-5A4842D004C6@nh6z.net>
+References: <1460967452-24574-1-git-send-email-zhengxing@rock-chips.com> <1460967452-24574-3-git-send-email-zhengxing@rock-chips.com> <20160421141921.GA25900@rob-hp-laptop> <57197BBA.50304@rock-chips.com> <20160422092250.GA3217@sirena.org.uk> <3C927D46-BC52-4B5C-B5B4-CCBA3AAE6F87@xenotropic.com> <20160425125504.GL3217@sirena.org.uk>
+Mime-Version: 1.0 (Mac OS X Mail 9.1 \(3096.5\))
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20160425125504.GL3217-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Xing Zheng <zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Mengdong Lin <mengdong.lin-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Aaro Koskinen <aaro.koskinen-X3B1VOXEql0@public.gmane.org>, sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Adam.Thomson-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Jun Nie <jun.nie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8172644862670372784==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="RCQbRqFVGRR2abej"
-Content-Disposition: inline
+> On Apr 25, 2016, at 5:55 AM, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+>=20
+> If the clock code is worth splitting off into a separate driver that'=
+s
+> what drivers/mfd is for.
+
+I have my doubts that it=E2=80=99s worth splitting off into a separate
+driver.  There=E2=80=99s not a lot of use for it outside of the interna=
+ls of
+the tlv320aic3204.  There is a provision for putting the PLL output
+on a GPIO pin of the chip, but I=E2=80=99m not sure that=E2=80=99s a ju=
+stification
+for breaking out the clock stuff into its own driver.  Nobody=E2=80=99s=
+ going
+to put a tlv320aic3204 chip on their boards because of the clocking;
+they=E2=80=99re going to put it there to be a codec.
+
+--
+Jeremy McDermond (NH6Z)
+Xenotropic Systems
+mcdermj-MdGE8NL7F62ukZHgTAicrQ@public.gmane.org
 
 
---RCQbRqFVGRR2abej
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Apr 25, 2016 at 10:50:24AM -0700, Caleb Crome wrote:
-
-> Due to caching, SOR wasn't written when it should have been.  This
-> patch simply adds SOR to the volatile list.
-
-Could you expand on when it wasn't written and why it needed to be
-please?
-
---RCQbRqFVGRR2abej
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXHlyUAAoJECTWi3JdVIfQH7QH/iiFtjnWj6/tyzk4VnfXeKLj
-t6mfUR7Gd2cL1OhVsDg9HJJ2hhuxw/FuOK20MRE2UZbdhMGQwZq0zfpNs1bp+JIR
-MhzF1GFfJrRvY6HbsKtk/mRvUysPKjnWuV8UwA2Ec0W0Kn7AKfib6TO10HSNag3I
-UEfH66jQZmOle4mSmARzlHDyZvplDp9W+ABqQrgKNObUjJVEfZJRm2C5xOaAaABB
-RxGVnEJjcBK4yaCSITI51Lqs12V7zgDDg2fndkqQjA1zQG3du3N0CcTCIYCsxt7K
-n2HHvnG/oDYQs3wrz9w0d+DwQX/GD0AQvg6BSvWQz2CIRM7O3bEDFoACTi7o7Y0=
-=ew4i
------END PGP SIGNATURE-----
-
---RCQbRqFVGRR2abej--
-
---===============8172644862670372784==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 
---===============8172644862670372784==--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
