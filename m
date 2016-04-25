@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 4/6] ALSA: firewire-lib: handle IT/IR contexts
-	in each software context
-Date: Mon, 25 Apr 2016 21:46:01 +0900
-Message-ID: <1461588363-21157-5-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 3/6] ALSA: firewire-tascam: drop reusing
+	incoming packet parameter for outgoing packet parameter
+Date: Mon, 25 Apr 2016 21:46:00 +0900
+Message-ID: <1461588363-21157-4-git-send-email-o-takashi@sakamocchi.jp>
 References: <1461588363-21157-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 2FE0C264F8D
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E525264F39
  for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2016 14:46:06 +0200 (CEST)
 In-Reply-To: <1461588363-21157-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,169 +25,96 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In clause 6.3 of IEC 61883-6:2000, there's an explanation about processing
-of presentation timestamp. In the clause, we can see "If a function block
-receives a CIP, processes it and subsequently re-transmits it, then the
-SYT of the outgoing CIP shall be the sum of the incoming SYT and the
-processing delay." ALSA firewire stack has an implementation to partly
-satisfy this specification. Developers assumed the stack to perform as an
-Audio function block[1].
+In packet streaming protocol applied to TASCAM FireWire series, the value
+of SYT field in CIP header is always zero, therefore it has no meaning.
+There's no need to synchronize packets in both direction for the series.
 
-According to the assumption, current implementation of ALSA firewire stack
-use one software interrupt context to handle both of in/out packets. In
-most case, this is processed in 1394 OHCI IR context independently of the
-opposite context. Thus, this implementation uses longer CPU time in the
-software interrupt context. This is not better for whole system.
+In current implementation of ALSA firewire stack, driver for the series
+uses incoming packet parameter for outgoing packet parameter to calculate
+the number of data blocks. This can be simplified because the task of
+corresponding driver is to transfer data blocks enough to sampling transfer
+frequency.
 
-Against the assumption, I confirmed that each ASIC for IEC 61883-1/6
-doesn't necessarily expect it to the stack. Thus, current implementation
-of ALSA firewire stack includes over-engineering.
-
-This commit purges the implementation. As a result, packets of one
-direction are handled in one software interrupt context and spends
-minimum CPU time.
-
-[1] [alsa-devel] [PATCH 0/8] [RFC] new driver for Echo Audio's Fireworks based devices
-http://mailman.alsa-project.org/pipermail/alsa-devel/2013-June/062660.html
+This commit purges support of full duplex synchronization to prevent
+over-engineering implementation.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-stream.c | 30 ------------------------------
- sound/firewire/amdtp-stream.h | 35 +++++++----------------------------
- 2 files changed, 7 insertions(+), 58 deletions(-)
+ sound/firewire/tascam/tascam-stream.c | 26 ++++++++++++--------------
+ 1 file changed, 12 insertions(+), 14 deletions(-)
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index a84a9ff..d377dbe 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -91,7 +91,6 @@ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
+diff --git a/sound/firewire/tascam/tascam-stream.c b/sound/firewire/tascam/tascam-stream.c
+index 0e6dd5c6..4ad3bd7 100644
+--- a/sound/firewire/tascam/tascam-stream.c
++++ b/sound/firewire/tascam/tascam-stream.c
+@@ -381,19 +381,17 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
+ 	if (err < 0)
+ 		return err;
+ 	if (curr_rate != rate ||
+-	    amdtp_streaming_error(&tscm->tx_stream) ||
+-	    amdtp_streaming_error(&tscm->rx_stream)) {
++	    amdtp_streaming_error(&tscm->rx_stream) ||
++	    amdtp_streaming_error(&tscm->tx_stream)) {
+ 		finish_session(tscm);
  
- 	init_waitqueue_head(&s->callback_wait);
- 	s->callbacked = false;
--	s->sync_slave = NULL;
+-		amdtp_stream_stop(&tscm->tx_stream);
+ 		amdtp_stream_stop(&tscm->rx_stream);
++		amdtp_stream_stop(&tscm->tx_stream);
  
- 	s->fmt = fmt;
- 	s->process_data_blocks = process_data_blocks;
-@@ -660,44 +659,17 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
- 			s->packet_index = -1;
- 			break;
+ 		release_resources(tscm);
+ 	}
+ 
+-	if (!amdtp_stream_running(&tscm->tx_stream)) {
+-		amdtp_stream_set_sync(CIP_SYNC_TO_DEVICE,
+-				      &tscm->tx_stream, &tscm->rx_stream);
++	if (!amdtp_stream_running(&tscm->rx_stream)) {
+ 		err = keep_resources(tscm, rate);
+ 		if (err < 0)
+ 			goto error;
+@@ -406,27 +404,27 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
+ 		if (err < 0)
+ 			goto error;
+ 
+-		err = amdtp_stream_start(&tscm->tx_stream,
+-				tscm->tx_resources.channel,
++		err = amdtp_stream_start(&tscm->rx_stream,
++				tscm->rx_resources.channel,
+ 				fw_parent_device(tscm->unit)->max_speed);
+ 		if (err < 0)
+ 			goto error;
+ 
+-		if (!amdtp_stream_wait_callback(&tscm->tx_stream,
++		if (!amdtp_stream_wait_callback(&tscm->rx_stream,
+ 						CALLBACK_TIMEOUT)) {
+ 			err = -ETIMEDOUT;
+ 			goto error;
  		}
--
--		/* Process sync slave stream */
--		if (s->sync_slave && s->sync_slave->callbacked) {
--			if (handle_out_packet(s->sync_slave,
--					      data_blocks, cycle, syt) < 0) {
--				s->packet_index = -1;
--				break;
--			}
--		}
  	}
  
- 	/* Queueing error or detecting discontinuity */
- 	if (s->packet_index < 0) {
- 		amdtp_stream_pcm_abort(s);
--
--		/* Abort sync slave. */
--		if (s->sync_slave) {
--			s->sync_slave->packet_index = -1;
--			amdtp_stream_pcm_abort(s->sync_slave);
--		}
- 		return;
- 	}
+-	if (!amdtp_stream_running(&tscm->rx_stream)) {
+-		err = amdtp_stream_start(&tscm->rx_stream,
+-				tscm->rx_resources.channel,
++	if (!amdtp_stream_running(&tscm->tx_stream)) {
++		err = amdtp_stream_start(&tscm->tx_stream,
++				tscm->tx_resources.channel,
+ 				fw_parent_device(tscm->unit)->max_speed);
+ 		if (err < 0)
+ 			goto error;
  
--	/* when sync to device, flush the packets for slave stream */
--	if (s->sync_slave && s->sync_slave->callbacked)
--		fw_iso_context_queue_flush(s->sync_slave->context);
--
- 	fw_iso_context_queue_flush(s->context);
- }
+-		if (!amdtp_stream_wait_callback(&tscm->rx_stream,
++		if (!amdtp_stream_wait_callback(&tscm->tx_stream,
+ 						CALLBACK_TIMEOUT)) {
+ 			err = -ETIMEDOUT;
+ 			goto error;
+@@ -435,8 +433,8 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
  
--/* processing is done by master callback */
--static void slave_stream_callback(struct fw_iso_context *context, u32 tstamp,
--				  size_t header_length, void *header,
--				  void *private_data)
--{
--	return;
--}
--
- /* this is executed one time */
- static void amdtp_stream_first_callback(struct fw_iso_context *context,
- 					u32 tstamp, size_t header_length,
-@@ -714,8 +686,6 @@ static void amdtp_stream_first_callback(struct fw_iso_context *context,
+ 	return 0;
+ error:
+-	amdtp_stream_stop(&tscm->tx_stream);
+ 	amdtp_stream_stop(&tscm->rx_stream);
++	amdtp_stream_stop(&tscm->tx_stream);
  
- 	if (s->direction == AMDTP_IN_STREAM)
- 		context->callback.sc = in_stream_callback;
--	else if (s->flags & CIP_SYNC_TO_DEVICE)
--		context->callback.sc = slave_stream_callback;
- 	else
- 		context->callback.sc = out_stream_callback;
- 
-diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index 8775704..da028b0 100644
---- a/sound/firewire/amdtp-stream.h
-+++ b/sound/firewire/amdtp-stream.h
-@@ -17,8 +17,6 @@
-  * @CIP_BLOCKING: In blocking mode, each packet contains either zero or
-  *	SYT_INTERVAL samples, with these two types alternating so that
-  *	the overall sample rate comes out right.
-- * @CIP_SYNC_TO_DEVICE: In sync to device mode, time stamp in out packets is
-- *	generated by in packets. Defaultly this driver generates timestamp.
-  * @CIP_EMPTY_WITH_TAG0: Only for in-stream. Empty in-packets have TAG0.
-  * @CIP_DBC_IS_END_EVENT: Only for in-stream. The value of dbc in an in-packet
-  *	corresponds to the end of event in the packet. Out of IEC 61883.
-@@ -37,14 +35,13 @@
- enum cip_flags {
- 	CIP_NONBLOCKING		= 0x00,
- 	CIP_BLOCKING		= 0x01,
--	CIP_SYNC_TO_DEVICE	= 0x02,
--	CIP_EMPTY_WITH_TAG0	= 0x04,
--	CIP_DBC_IS_END_EVENT	= 0x08,
--	CIP_WRONG_DBS		= 0x10,
--	CIP_SKIP_DBC_ZERO_CHECK	= 0x20,
--	CIP_SKIP_INIT_DBC_CHECK	= 0x40,
--	CIP_EMPTY_HAS_WRONG_DBC	= 0x80,
--	CIP_JUMBO_PAYLOAD	= 0x100,
-+	CIP_EMPTY_WITH_TAG0	= 0x02,
-+	CIP_DBC_IS_END_EVENT	= 0x04,
-+	CIP_WRONG_DBS		= 0x08,
-+	CIP_SKIP_DBC_ZERO_CHECK	= 0x10,
-+	CIP_SKIP_INIT_DBC_CHECK	= 0x20,
-+	CIP_EMPTY_HAS_WRONG_DBC	= 0x40,
-+	CIP_JUMBO_PAYLOAD	= 0x80,
- };
- 
- /**
-@@ -137,7 +134,6 @@ struct amdtp_stream {
- 	/* To wait for first packet. */
- 	bool callbacked;
- 	wait_queue_head_t callback_wait;
--	struct amdtp_stream *sync_slave;
- 
- 	/* For backends to process data blocks. */
- 	void *protocol;
-@@ -223,23 +219,6 @@ static inline bool cip_sfc_is_base_44100(enum cip_sfc sfc)
- 	return sfc & 1;
- }
- 
--static inline void amdtp_stream_set_sync(enum cip_flags sync_mode,
--					 struct amdtp_stream *master,
--					 struct amdtp_stream *slave)
--{
--	if (sync_mode == CIP_SYNC_TO_DEVICE) {
--		master->flags |= CIP_SYNC_TO_DEVICE;
--		slave->flags |= CIP_SYNC_TO_DEVICE;
--		master->sync_slave = slave;
--	} else {
--		master->flags &= ~CIP_SYNC_TO_DEVICE;
--		slave->flags &= ~CIP_SYNC_TO_DEVICE;
--		master->sync_slave = NULL;
--	}
--
--	slave->sync_slave = NULL;
--}
--
- /**
-  * amdtp_stream_wait_callback - sleep till callbacked or timeout
-  * @s: the AMDTP stream
+ 	finish_session(tscm);
+ 	release_resources(tscm);
 -- 
 2.7.4
