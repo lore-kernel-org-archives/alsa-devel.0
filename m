@@ -1,79 +1,60 @@
 From: kernel@martin.sperl.org
-Subject: [PATCH 1/3] ASoC: bcm2835: add 24bit support
-Date: Mon, 25 Apr 2016 13:39:38 +0000
-Message-ID: <1461591580-7565-1-git-send-email-kernel@martin.sperl.org>
+Subject: [PATCH 2/3] ASoC: bcm2835: setup clock only if CPU is clock master
+Date: Mon, 25 Apr 2016 13:39:39 +0000
+Message-ID: <1461591580-7565-2-git-send-email-kernel@martin.sperl.org>
+References: <1461591580-7565-1-git-send-email-kernel@martin.sperl.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cgate.sperl.org (212-186-180-163.dynamic.surfer.at
- [212.186.180.163])
- by alsa0.perex.cz (Postfix) with ESMTP id B2C18265068
- for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2016 15:39:48 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1461591580-7565-1-git-send-email-kernel@martin.sperl.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, alsa-devel@alsa-project.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, Matthias Reichl <hias@horus.com>, Florian Meier <florian.meier@koalo.de>
 Cc: Martin Sperl <kernel@martin.sperl.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Matthias Reichl <hias@horus.com>
 
-This adds 24 bit support to the I2S driver of the BCM2835
+We only need to enable the clock if we are a clock master.
 
 Code ported from bcm2708-i2s driver in Raspberry Pi tree.
+Original work by Zoltan Szenczi.
 
-Signed-off-by: Florian Meier <florian.meier@koalo.de>
 Signed-off-by: Matthias Reichl <hias@horus.com>
 Signed-off-by: Martin Sperl <kernel@martin.sperl.org>
 ---
- sound/soc/bcm/bcm2835-i2s.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ sound/soc/bcm/bcm2835-i2s.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
-index 1c1f221..d2663e7 100644
+index d2663e7..a0026e2 100644
 --- a/sound/soc/bcm/bcm2835-i2s.c
 +++ b/sound/soc/bcm/bcm2835-i2s.c
-@@ -259,6 +259,9 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
- 	case SNDRV_PCM_FORMAT_S16_LE:
- 		data_length = 16;
- 		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		data_length = 24;
+@@ -276,8 +276,15 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		/* otherwise calculate a fitting block ratio */
+ 		bclk_ratio = 2 * data_length;
+
+-	/* set target clock rate*/
+-	clk_set_rate(dev->clk, sampling_rate * bclk_ratio);
++	/* Clock should only be set up here if CPU is clock master */
++	switch (dev->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBS_CFS:
++	case SND_SOC_DAIFMT_CBS_CFM:
++		clk_set_rate(dev->clk, sampling_rate * bclk_ratio);
 +		break;
- 	case SNDRV_PCM_FORMAT_S32_LE:
- 		data_length = 32;
- 		break;
-@@ -279,7 +282,7 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
++	default:
++		break;
++	}
+
  	/* Setup the frame format */
  	format = BCM2835_I2S_CHEN;
-
--	if (data_length > 24)
-+	if (data_length >= 24)
- 		format |= BCM2835_I2S_CHWEX;
-
- 	format |= BCM2835_I2S_CHWID((data_length-8)&0xf);
-@@ -570,6 +573,7 @@ static struct snd_soc_dai_driver bcm2835_i2s_dai = {
- 		.channels_max = 2,
- 		.rates =	SNDRV_PCM_RATE_8000_192000,
- 		.formats =	SNDRV_PCM_FMTBIT_S16_LE
-+				| SNDRV_PCM_FMTBIT_S24_LE
- 				| SNDRV_PCM_FMTBIT_S32_LE
- 		},
- 	.capture = {
-@@ -577,6 +581,7 @@ static struct snd_soc_dai_driver bcm2835_i2s_dai = {
- 		.channels_max = 2,
- 		.rates =	SNDRV_PCM_RATE_8000_192000,
- 		.formats =	SNDRV_PCM_FMTBIT_S16_LE
-+				| SNDRV_PCM_FMTBIT_S24_LE
- 				| SNDRV_PCM_FMTBIT_S32_LE
- 		},
- 	.ops = &bcm2835_i2s_dai_ops,
 --
 2.1.4
