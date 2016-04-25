@@ -1,61 +1,94 @@
-From: Eric Engestrom <eric@engestrom.ch>
-Subject: [PATCH 36/41] Documentation: sound: fix spelling mistakes
-Date: Mon, 25 Apr 2016 07:37:02 +0100
-Message-ID: <1461566229-4717-10-git-send-email-eric@engestrom.ch>
-References: <1461543878-3639-1-git-send-email-eric@engestrom.ch>
- <1461566229-4717-1-git-send-email-eric@engestrom.ch>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1461566229-4717-1-git-send-email-eric@engestrom.ch>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Eric Engestrom <eric@engestrom.ch>, Vinod Koul <vinod.koul@intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jonathan Corbet <corbet@lwn.net>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-doc@vger.kernel.org
+From: Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: sound: deadlock involving snd_hrtimer_callback
+Date: Mon, 25 Apr 2016 10:03:34 +0200
+Message-ID: <CACT4Y+Y1FgSV0aY+-W-uabKfpaL99WubTOner69q5t0xLDFKfg@mail.gmail.com>
+References: <CACT4Y+YsEOFvJVk_AafL+OvOC9_njym7xr-KLQKK3pKRyo8oKQ@mail.gmail.com>
+ <s5hpotgqbs5.wl-tiwai@suse.de>
+ <CACT4Y+Y4m5=KGRQLa8qwT5DT52a99ODFk3auPEW+cUheY6OJ4w@mail.gmail.com>
+ <s5heg9vq8xf.wl-tiwai@suse.de>
+ <CACT4Y+ZZP2iNKruWUPmCTWetzH9meuorR7Eh7dOYngtwbCYZhg@mail.gmail.com>
+ <s5hbn4yr8wg.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f47.google.com (mail-wm0-f47.google.com [74.125.82.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BCFB261AFF
+ for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2016 10:03:54 +0200 (CEST)
+Received: by mail-wm0-f47.google.com with SMTP id u206so113542799wme.1
+ for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2016 01:03:54 -0700 (PDT)
+In-Reply-To: <s5hbn4yr8wg.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>, Alexander Potapenko <glider@google.com>, Sasha Levin <sasha.levin@oracle.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Eric Engestrom <eric@engestrom.ch>
----
- Documentation/sound/alsa/compress_offload.txt | 2 +-
- Documentation/sound/alsa/soc/dapm.txt         | 2 +-
- Documentation/sound/alsa/soc/overview.txt     | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+On Sun, Apr 24, 2016 at 11:31 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Sun, 24 Apr 2016 19:09:48 +0200,
+> Dmitry Vyukov wrote:
+>>
+>> On Sun, Apr 24, 2016 at 6:16 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > On Sun, 24 Apr 2016 17:16:32 +0200,
+>> > Dmitry Vyukov wrote:
+>> >>
+>> >> On Sat, Apr 23, 2016 at 11:02 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>> >> > On Sat, 23 Apr 2016 15:40:21 +0200,
+>> >> > Dmitry Vyukov wrote:
+>> >> >>
+>> >> >> Hi Takashi,
+>> >> >>
+>> >> >> I've incorporated your hrtimer fixes (but also updated to
+>> >> >> ddce192106e4f984123884f8e878f66ace94b573) and now I am seeing lots of
+>> >> >> the following deadlock messages:
+>> >> >>
+>> >> >>
+>> >> >> [ INFO: possible circular locking dependency detected ]
+>> >> >> 4.6.0-rc4+ #351 Not tainted
+>> >> >> -------------------------------------------------------
+>> >> >> swapper/0/0 is trying to acquire lock:
+>> >> >>  (&(&timer->lock)->rlock){-.-...}, at: [<ffffffff8537a749>]
+>> >> >> snd_timer_interrupt+0xa9/0xd30 sound/core/timer.c:701
+>> >> >>
+>> >> >> but task is already holding lock:
+>> >> >>  (&(&stime->lock)->rlock){-.....}, at: [<ffffffff85383d3f>]
+>> >> >> snd_hrtimer_callback+0x4f/0x2b0 sound/core/hrtimer.c:54
+>> >> >>
+>> >> >> which lock already depends on the new lock.
+>> >> >
+>> >> > Oh crap, my second patch is buggy, it leads to ABBA lock, indeed.
+>> >> > The first patch is still OK, as it just adds a new behavior mode.
+>> >> >
+>> >> > Could you replace the second patch with the below one?
+>> >>
+>> >>
+>> >> I've replaced the second path with this one. The deadlocks has gone,
+>> >> but I've hit these two hangs that look related:
+>> >>
+>> >> https://gist.githubusercontent.com/dvyukov/805718ea249c49d17ae759d1b0160684/raw/20891f7e87fe9af3967565559d465d296469244b/gistfile1.txt
+>> >> https://gist.githubusercontent.com/dvyukov/7f397ea4aeb9e35596e0c8053cf35a11/raw/3fc22f24f7bab5941e47bab604f96487b5f1944d/gistfile1.txt
+>> >
+>> > Hmm, so it wasn't a good idea to call hrtimer_cancel() in the
+>> > spinlock, in anyway.  Scratch the previous one.
+>> >
+>> > OK, below is the yet revised two patches.  One is the simplified
+>> > version of the patch, and another is to call hrtimer_cancel() in a new
+>> > timer op without spinlock.  Apply these after the first patch
+>> > "ALSA: timer: Allow backend disabling start/stop from handler".
+>>
+>> Done. I will let you know if I see any failures.
+>
+> After reconsideration, I rewrote the whole patchset again.
+> Could you scratch all the previous three patches and replace with the
+> single patch below?  Sorry for inconvenience!
 
-diff --git a/Documentation/sound/alsa/compress_offload.txt b/Documentation/sound/alsa/compress_offload.txt
-index 630c492..81476b4 100644
---- a/Documentation/sound/alsa/compress_offload.txt
-+++ b/Documentation/sound/alsa/compress_offload.txt
-@@ -149,7 +149,7 @@ Gapless Playback
- ================
- When playing thru an album, the decoders have the ability to skip the encoder
- delay and padding and directly move from one track content to another. The end
--user can perceive this as gapless playback as we dont have silence while
-+user can perceive this as gapless playback as we don't have silence while
- switching from one track to another
- 
- Also, there might be low-intensity noises due to encoding. Perfect gapless is
-diff --git a/Documentation/sound/alsa/soc/dapm.txt b/Documentation/sound/alsa/soc/dapm.txt
-index 6faab48..c45bd79 100644
---- a/Documentation/sound/alsa/soc/dapm.txt
-+++ b/Documentation/sound/alsa/soc/dapm.txt
-@@ -132,7 +132,7 @@ SOC_DAPM_SINGLE("HiFi Playback Switch", WM8731_APANA, 4, 1, 0),
- SND_SOC_DAPM_MIXER("Output Mixer", WM8731_PWR, 4, 1, wm8731_output_mixer_controls,
- 	ARRAY_SIZE(wm8731_output_mixer_controls)),
- 
--If you dont want the mixer elements prefixed with the name of the mixer widget,
-+If you don't want the mixer elements prefixed with the name of the mixer widget,
- you can use SND_SOC_DAPM_MIXER_NAMED_CTL instead. the parameters are the same
- as for SND_SOC_DAPM_MIXER.
- 
-diff --git a/Documentation/sound/alsa/soc/overview.txt b/Documentation/sound/alsa/soc/overview.txt
-index ff88f52..f3f28b7 100644
---- a/Documentation/sound/alsa/soc/overview.txt
-+++ b/Documentation/sound/alsa/soc/overview.txt
-@@ -63,7 +63,7 @@ multiple re-usable component drivers :-
-     and any audio DSP drivers for that platform.
- 
-   * Machine class driver: The machine driver class acts as the glue that
--    decribes and binds the other component drivers together to form an ALSA
-+    describes and binds the other component drivers together to form an ALSA
-     "sound card device". It handles any machine specific controls and
-     machine level audio events (e.g. turning on an amp at start of playback).
- 
--- 
-2.8.0
+
+I did not yet reapply the patch, but I hit this with over night:
+https://gist.githubusercontent.com/dvyukov/85531fe7923ebc9be4376e009d6c960a/raw/9ea4c9dda31aea9bf20538585089083d66687f74/gistfile1.txt
