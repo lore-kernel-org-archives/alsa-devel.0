@@ -1,55 +1,109 @@
-From: Bharath Ghanta <gbh@mail.bharath-g.in>
-Subject: Intel SST baytrail audio on PIPO W6
-Date: Mon, 25 Apr 2016 22:08:02 +0530
-Message-ID: <1461602282.1738.19.camel@mail.bharath-g.in>
+From: Matthias Reichl <hias@horus.com>
+Subject: Re: [PATCH 3/3] ASoC: bcm2835: Register also as PCM device
+Date: Mon, 25 Apr 2016 19:15:15 +0200
+Message-ID: <20160425171515.GA10952@camel2.lan>
+References: <1461591580-7565-1-git-send-email-kernel@martin.sperl.org>
+ <1461591580-7565-3-git-send-email-kernel@martin.sperl.org>
+ <571E218A.7050508@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bharath-g.in (mail.bharath-g.in [63.142.249.221])
- by alsa0.perex.cz (Postfix) with ESMTP id 8346C264F8D
- for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2016 18:38:34 +0200 (CEST)
-Received: from bharath-desktop (unknown [49.204.222.232])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.bharath-g.in (Postfix) with ESMTPSA id 500BB4B300003
- for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2016 16:38:32 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <571E218A.7050508@metafoo.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Eric Anholt <eric@anholt.net>, Mark Brown <broonie@kernel.org>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, kernel@martin.sperl.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgrCoCBJIGFtIHRyeWluZyB0byBnZXQgYXVkaW8gd29ya2luZyBvbiBQSVBPIFc2IHRhYmxl
-dC4gSSB3YXMgZm9sbG93aW5nCnRoaXMgdGhyZWFkIFsxXSBpbiBteSBlZmZvcnRzIHRvIGdldCBh
-dWRpbyB3b3JraW5nLiBJbml0aWFsbHkgaSB3YXMgbm90CmdldHRpbmcgYW55IGludGVycnVwdHMu
-IEkgY2hhbmdlZCB0aGUgaW50ZXJydXB0IG9yZGVyIGFzIGRlc2NyaWJlZCBpbgp0aGUgdGhyZWFk
-IGFuZCB3YXMgYWJsZSB0byBnZXQgaW50ZXJydXB0cyBhbmQgc3VjY2Vzc2Z1bGx5IGxvYWQgdGhl
-CmZpcm13YXJlLiBJIGFsc28gcmFuIHRoZSBhbWl4ZXIgY29tbWFuZHMgZGVzY3JpYmVkIGluIFsy
-XS4gTm93IEkgYW0KanVzdCBnZXR0aW5nIGEgY2xpY2tpbmcgc291bmQgd2hlbmV2ZXIgc29tZXRo
-aW5nIHBsYXlzLgoKUGllcnJlLUxvdWlzIHNhaWQgc29tZXRoaW5nIGFib3V0IHBsYXlpbmcgd2l0
-aCB0aGUgREFJIGxpbmtzIGFuZApzd2FwcGluZyB0aGUgY29kZWMgY29ubmVjdGlvbnMgaGVyZSBb
-M10uIENhbiBhbnlib2R5IGV4cGxhaW4gdG8gbWUgaG93Cml0cyBkb25lID8gSSB0cmllZCB0byBl
-bmFibGUgb3RoZXIgc3dpdGNoZXMgaW4gYWxzYW1peGVyIHVzaW5nIHRoZQpiZWxvdyBjb21tYW5k
-cyBidXQgbm90aGluZyB3b3JrZWQuCgphbWl4ZXIgLWMwIHNzZXQgJ2NvZGVjX291dDEgbWl4IDAg
-cGNtMF9pbicgb24KCgpJIG1haWxlZCB0aGUgbWFudWZhY3R1cmVyIGFza2luZyBmb3IgdGhlIHNj
-aGVtYXRpY3Mgb2YgdGhlIGF1ZGlvIGNoaXAKYW5kIHRoZSBhbmRyb2lkIHNvdXJjZSBjb2RlIGZv
-ciB0aGlzIGRldmljZSBidXQgZ290IG5vIHJlc3BvbnNlLsKgCgpJIGFsc28gdHJpZWQgdGhlIHNz
-cDAgZmlybXdhcmUgYnV0IGkgZ290IG5vIHNvdW5kIGluc3RlYWQgb2YgdGhlCmNsaWNraW5nIHNv
-dW5kIGkgd2FzIGdldHRpbmcgd2l0aCB0aGUgZGVmYXVsdCBmaXJtd2FyZS4KCkkgaGF2ZSB0aGUg
-ZXhhY3QgcHJvYmxlbSBhcyB0aGUgZ3V5IGluIHRoaXMgdGhyZWFkLiBbNF0KClRoYW5rcywKQmhh
-cmF0aAoKWzFdwqBodHRwOi8vdGhyZWFkLmdtYW5lLm9yZy9nbWFuZS5saW51eC5hbHNhLmRldmVs
-LzEzNDU1NApbMl3CoGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlwZXJtYWlsL2Fs
-c2EtZGV2ZWwvMjAxNS1KdW5lLzA5NDAKODAuaHRtbApbM13CoGh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxNi1NYXJjaC8xMDYKMjYyLmh0bWwK
-WzRdwqBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVs
-LzIwMTYtTWFyY2gvMTA2CjE3OC5odG1sCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYWxzYS1kZXZlbAo=
+On Mon, Apr 25, 2016 at 03:54:18PM +0200, Lars-Peter Clausen wrote:
+> On 04/25/2016 03:39 PM, kernel@martin.sperl.org wrote:
+> > From: Matthias Reichl <hias@horus.com>
+> > 
+> > Register i2s also as pcm device.
+> 
+> This is not really what this patch does.
+
+Agreed, we need a better description.
+
+> > Code ported from bcm2708-i2s driver in Raspberry Pi tree.
+> >
+> > Signed-off-by: Florian Meier <florian.meier@koalo.de>
+> > Signed-off-by: Matthias Reichl <hias@horus.com>
+> > Signed-off-by: Martin Sperl <kernel@martin.sperl.org>
+> > ---
+> >  sound/soc/bcm/bcm2835-i2s.c | 25 ++++++++++++++++++++++++-
+> >  1 file changed, 24 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+> > index a0026e2..8e93295 100644
+> > --- a/sound/soc/bcm/bcm2835-i2s.c
+> > +++ b/sound/soc/bcm/bcm2835-i2s.c
+> > @@ -632,6 +632,27 @@ static const struct snd_soc_component_driver bcm2835_i2s_component = {
+> >  	.name		= "bcm2835-i2s-comp",
+> >  };
+> >  
+> > +static const struct snd_pcm_hardware bcm2835_pcm_hardware = {
+> > +	.info			= SNDRV_PCM_INFO_INTERLEAVED |
+> > +				  SNDRV_PCM_INFO_JOINT_DUPLEX |
+> > +				  SNDRV_PCM_INFO_MMAP |
+> > +				  SNDRV_PCM_INFO_MMAP_VALID,
+> > +	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
+> > +				  SNDRV_PCM_FMTBIT_S24_LE |
+> > +				  SNDRV_PCM_FMTBIT_S32_LE,
+> > +	.period_bytes_min	= 32,
+> > +	.period_bytes_max	= 64 * PAGE_SIZE,
+
+I think it'd be better to use SZ constants instead of x * PAGE_SIZE.
+
+> > +	.periods_min		= 2,
+> > +	.periods_max		= 255,
+> > +	.buffer_bytes_max	= 128 * PAGE_SIZE,
+> > +};
+> > +
+> > +static const struct snd_dmaengine_pcm_config bcm2835_dmaengine_pcm_config = {
+> > +	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
+> > +	.pcm_hardware = &bcm2835_pcm_hardware,
+> > +	.prealloc_buffer_size = 256 * PAGE_SIZE,
+> > +};
+> 
+> The generic dmaengine PCM driver auto-discovers these things, no need to
+> provide them. The code is OK as it is.
+
+With the auto-discover code we loose the S16_LE format.
+
+If I understood the code in dmaengine_pcm_set_runtime_hwparams
+correctly, this is because the DMA controller doesn't support
+16bit transfers (only multiples of 32bit are allowed).
+
+But since the I2S driver needs exactly 2 channels S16_LE actually
+works fine (one 32bit transfer per frame).
+
+Do you know of a better way to get S16_LE support? It could well
+be that I missed something important...
+
+> > +
+> >  static int bcm2835_i2s_probe(struct platform_device *pdev)
+> >  {
+> >  	struct bcm2835_i2s_dev *dev;
+> > @@ -704,7 +725,9 @@ static int bcm2835_i2s_probe(struct platform_device *pdev)
+> >  		return ret;
+> >  	}
+> >  
+> > -	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+> > +	ret = devm_snd_dmaengine_pcm_register(
+> > +		&pdev->dev, &bcm2835_dmaengine_pcm_config,
+> > +		SND_DMAENGINE_PCM_FLAG_COMPAT);
+> >  	if (ret) {
+> >  		dev_err(&pdev->dev, "Could not register PCM: %d\n", ret);
+> >  		return ret;
+> > 
+> 
