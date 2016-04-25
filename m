@@ -1,62 +1,43 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 8/8] ALSA: firewire-tascam: deleyed
- registration of sound card
-Date: Mon, 25 Apr 2016 19:54:49 +0900
-Message-ID: <571DF779.1050908@sakamocchi.jp>
-References: <1459381629-24189-1-git-send-email-o-takashi@sakamocchi.jp>
- <1459381629-24189-9-git-send-email-o-takashi@sakamocchi.jp>
- <571CC12C.7090006@sakamocchi.jp> <s5hshyaqdvo.wl-tiwai@suse.de>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v4 1/7] ASoC: davinci-mcbsp: add binding for McBSP
+Date: Mon, 25 Apr 2016 07:42:34 -0500
+Message-ID: <20160425124234.GA30766@rob-hp-laptop>
+References: <1461327617-11435-1-git-send-email-petr@barix.com>
+ <1461327617-11435-2-git-send-email-petr@barix.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 43757264F39
- for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2016 12:54:50 +0200 (CEST)
-In-Reply-To: <s5hshyaqdvo.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1461327617-11435-2-git-send-email-petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+Cc: nsekhar-l0cyMroinI0@public.gmane.org, khilman-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Apr 25 2016 17:41, Takashi Iwai wrote:
-> On Sun, 24 Apr 2016 14:50:52 +0200,
-> Takashi Sakamoto wrote:
->>
->> Iwai-san,
->>
->> On Mar 31 2016 08:47, Takashi Sakamoto wrote:
->>> When some tascam units are connected sequentially, userspace
->>> applications are involved at bus-reset state on IEEE 1394 bus. In the
->>> state, any communications can be canceled. Therefore, sound card
->>> registration should be delayed till the bus gets calm.
->>>
->>> This commit achieves it.
->>>
->>> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
->>> ---
->>>  sound/firewire/tascam/tascam.c | 118 ++++++++++++++++++++++++++++-------------
->>>  sound/firewire/tascam/tascam.h |   2 +
->>>  2 files changed, 84 insertions(+), 36 deletions(-)
->>
->> As of today, this patch is missing in 'for-next' branch of sound.git
->> reporitory[1], Would you please take it again?
+On Fri, Apr 22, 2016 at 02:20:11PM +0200, Petr Kulhavy wrote:
+> Add devicetree binding for the TI DA850/OMAP-L138/AM18xx
+> MultiChannel Buffered Serial Port (McBSP)
 > 
-> OK, applied now.  It was missing since your cover letter mentioned
-> only 7 patches.  Thanks for noticing it.
+> The optional register range "dat" is not implemented at the moment.
+> The current driver supports only DMA into RX/TX registers but no FIFO.
+> Once the FIFO is implemented in the driver the "dat" range will be used.
+> 
+> Signed-off-by: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+> ---
+> v1: initial
+> v2: add missing TC channel in dmas properties (for compatibility with the new EDMA3 binding)
+>     remove "-audio" postfix from the compatible string
+>     remove "channel-combine" property
+> v3: remove the index note from the "mpu" property.
+>     specify exactly the supported platforms in compatible string
+> v4: minor correction in the example ("interrupt names"), re-added index note to the "mpu" property.
+> 
+>  .../devicetree/bindings/sound/davinci-mcbsp.txt    | 52 ++++++++++++++++++++++
+>  1 file changed, 52 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
 
-Oops, indeed. I might have added handy changes to the subject line and
-written wrong number...
-
-
-Thanks
-
-Takashi Sakamoto
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
