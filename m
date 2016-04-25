@@ -1,43 +1,76 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v4 1/7] ASoC: davinci-mcbsp: add binding for McBSP
-Date: Mon, 25 Apr 2016 07:42:34 -0500
-Message-ID: <20160425124234.GA30766@rob-hp-laptop>
-References: <1461327617-11435-1-git-send-email-petr@barix.com>
- <1461327617-11435-2-git-send-email-petr@barix.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [RFC][PATCH 0/6] ALSA: firewire: drop reusing incoming
+	packet parameters for outgoing packet parameters
+Date: Mon, 25 Apr 2016 21:45:57 +0900
+Message-ID: <1461588363-21157-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1461327617-11435-2-git-send-email-petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Cc: nsekhar-l0cyMroinI0@public.gmane.org, khilman-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EFF5265086
+ for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2016 14:46:06 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 22, 2016 at 02:20:11PM +0200, Petr Kulhavy wrote:
-> Add devicetree binding for the TI DA850/OMAP-L138/AM18xx
-> MultiChannel Buffered Serial Port (McBSP)
-> 
-> The optional register range "dat" is not implemented at the moment.
-> The current driver supports only DMA into RX/TX registers but no FIFO.
-> Once the FIFO is implemented in the driver the "dat" range will be used.
-> 
-> Signed-off-by: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-> ---
-> v1: initial
-> v2: add missing TC channel in dmas properties (for compatibility with the new EDMA3 binding)
->     remove "-audio" postfix from the compatible string
->     remove "channel-combine" property
-> v3: remove the index note from the "mpu" property.
->     specify exactly the supported platforms in compatible string
-> v4: minor correction in the example ("interrupt names"), re-added index note to the "mpu" property.
-> 
->  .../devicetree/bindings/sound/davinci-mcbsp.txt    | 52 ++++++++++++++++++++++
->  1 file changed, 52 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
+Hi,
 
-Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+The purpose of this patchset is to remove a feature of firewire-lib module.
+I call it as 'full duplex streaming with timestamp synchronization'.
+
+This patchset should accumulated into my previous RFC patchset below:
+[alsa-devel] [RFC][PATCH 0/3 v2] firewire-lib: support Linux tracing framework
+to dump a part of packet data
+http://mailman.alsa-project.org/pipermail/alsa-devel/2016-April/106950.html
+
+The feature is based on a specification of IEC 61883-6. In the specification,
+an audio function block should reuse some parameters of incoming packets for
+outgoing packets. Current ALSA firewire stack partly implement it. However,
+actual audio and music units on IEEE 1394 bus don't expect drivers to perform
+the specification.
+
+Additionally to the fact, the feature brings inconveniences to handle payloads
+of isochronous packet in software interrupts.
+
+For these reasons, this patchset removes the feature from ALSA firewire stack.
+This decision may be a help for future improvement about dynamic interrupt
+interval of isochronous context, about which Clemens have mentioned[1].
+
+
+[1][alsa-devel] For firewire drivers, reduce period time down to 2msec?
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-April/075696.html
+
+Regards
+
+Takashi Sakamoto (6):
+  ALSA: bebob: drop reusing incoming packet parameter for outgoing
+    packet parameter
+  ALSA: fireworks: drop reusing incoming packet parameter for ougoing
+    packet parameter
+  ALSA: firewire-tascam: drop reusing incoming packet parameter for
+    outgoing packet parameter
+  ALSA: firewire-lib: handle IT/IR contexts in each software context
+  ALSA: firewire-lib: code cleanup for incoming packet handling
+  ALSA: firewire-lib: code cleanup for outgoing packet handling
+
+ sound/firewire/amdtp-stream.c               | 84 ++++++++----------------
+ sound/firewire/amdtp-stream.h               | 35 ++--------
+ sound/firewire/bebob/bebob.h                |  1 -
+ sound/firewire/bebob/bebob_stream.c         | 99 ++++++++---------------------
+ sound/firewire/fireworks/fireworks.h        |  1 -
+ sound/firewire/fireworks/fireworks_stream.c | 84 +++++-------------------
+ sound/firewire/tascam/tascam-stream.c       | 26 ++++----
+ 7 files changed, 87 insertions(+), 243 deletions(-)
+
+-- 
+2.7.4
