@@ -1,18 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] Asoc: Intel: common: Removed unused
- sst_acpi_mach fields
-Date: Mon, 25 Apr 2016 22:17:07 -0500
-Message-ID: <571EDDB3.9050907@linux.intel.com>
-References: <1461638643-1886-1-git-send-email-joel@airwebreathe.org.uk>
- <571EDD22.1050909@linux.intel.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: Re: [PATCH v3 0/9] ASoC: hdac_hdmi: Add multichannel
+	support
+Date: Tue, 26 Apr 2016 10:19:18 +0530
+Message-ID: <20160426044917.GB10261@subhransu-desktop>
+References: <1460608656-8860-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 9EEAC262607
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2016 05:17:09 +0200 (CEST)
-In-Reply-To: <571EDD22.1050909@linux.intel.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id ABAD5262607
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2016 06:50:37 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1460608656-8860-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,97 +22,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Joel Holdsworth <joel@airwebreathe.org.uk>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 4/25/16 10:14 PM, Pierre-Louis Bossart wrote:
-> On 4/25/16 9:44 PM, Joel Holdsworth wrote:
->> The fields in question are currently unused, and are unlikely to be
->> useful in the future:
->>
->>    - "board" is a very vague name not related to a concrete matching
->>      criteria such as a DMI match or ACPI OEM IDs.
->>
->>    - "machine_quirk" lacks the pointer arguments to be able to
->>      manipulate any sst-acpi structures. For it to be useful these
->>      would need to be added. Furthermore, a quirk function is much
->>      more likely to be relevant to a whole chipset, rather than a
->>      single board.
->>
->>    - Without "machine_quirk", "pdata" serves no purpose and should
->>      be removed.
->
-> please don't touch this. I just used pdata for baytrail-CR work.
+On Thu, Apr 14, 2016 at 10:07:27AM +0530, Subhransu S. Prusty wrote:
+> This series parses ELD to identify multichannel capability of the
+> sync, and uses HDA framework to programs codec's channel map
+> registers.
+> 
+> Channel map controls are registered in patch 8, with which user
+> can specify a specific channel order. chmap controls are
+> registered inside jack_init callback. As PCMs need to be
+> registered before registering chmap controls, jack_init call in
+> the machine driver is moved to late_probe instead of init
+> callback.
+> 
+> Skylake driver is modified and buffer size calculation is fixed
+> for multichannel support.
+> 
+> Please note, patch 2 adds a small macro to read channel counts
+> from cap bits in HDA headers. This needs Takashi's ack, so that
+> it can be merged through ASoC.
+> 
+> Patch 7 has dependency on commit#44fde3b ("ALSA: hda - Update
+> chmap tlv to report sink's capability) which is merged in
+> Takashi's tree.
+> 
+> As Takashi suggested Mark may pull Takashi's for-next branch
+> before applying this or may send a pull request, so that Takashi
+> pull's Mark's tree before applying these with Mark's ack.
+> 
+> Mark, please check how you want this to be merged.
 
-And you missed the code in soc/intel/atom/sst/sst_acpi.c so your patches 
-won't work in the first place.
+Hi Mark,
 
->
->> ---
->>   sound/soc/intel/common/sst-acpi.c | 8 ++++----
->>   sound/soc/intel/common/sst-acpi.h | 5 -----
->>   2 files changed, 4 insertions(+), 9 deletions(-)
->>
->> diff --git a/sound/soc/intel/common/sst-acpi.c
->> b/sound/soc/intel/common/sst-acpi.c
->> index 2c5eda1..aba6575 100644
->> --- a/sound/soc/intel/common/sst-acpi.c
->> +++ b/sound/soc/intel/common/sst-acpi.c
->> @@ -180,7 +180,7 @@ static int sst_acpi_remove(struct platform_device
->> *pdev)
->>   }
->>
->>   static struct sst_acpi_mach haswell_machines[] = {
->> -    { "INT33CA", "haswell-audio", "intel/IntcSST1.bin", NULL, NULL,
->> NULL },
->> +    { "INT33CA", "haswell-audio", "intel/IntcSST1.bin" },
->>       {}
->>   };
->>
->> @@ -198,7 +198,7 @@ static struct sst_acpi_desc sst_acpi_haswell_desc = {
->>   };
->>
->>   static struct sst_acpi_mach broadwell_machines[] = {
->> -    { "INT343A", "broadwell-audio", "intel/IntcSST2.bin", NULL, NULL,
->> NULL },
->> +    { "INT343A", "broadwell-audio", "intel/IntcSST2.bin" },
->>       {}
->>   };
->>
->> @@ -217,8 +217,8 @@ static struct sst_acpi_desc
->> sst_acpi_broadwell_desc = {
->>
->>   #if !IS_ENABLED(CONFIG_SND_SST_IPC_ACPI)
->>   static struct sst_acpi_mach baytrail_machines[] = {
->> -    { "10EC5640", "byt-rt5640",
->> "intel/fw_sst_0f28.bin-48kHz_i2s_master", NULL, NULL, NULL },
->> -    { "193C9890", "byt-max98090",
->> "intel/fw_sst_0f28.bin-48kHz_i2s_master", NULL, NULL, NULL },
->> +    { "10EC5640", "byt-rt5640",
->> "intel/fw_sst_0f28.bin-48kHz_i2s_master" },
->> +    { "193C9890", "byt-max98090",
->> "intel/fw_sst_0f28.bin-48kHz_i2s_master" },
->>       {}
->>   };
->>
->> diff --git a/sound/soc/intel/common/sst-acpi.h
->> b/sound/soc/intel/common/sst-acpi.h
->> index 4dcfb7e..9eb8ade 100644
->> --- a/sound/soc/intel/common/sst-acpi.h
->> +++ b/sound/soc/intel/common/sst-acpi.h
->> @@ -28,9 +28,4 @@ struct sst_acpi_mach {
->>       const char *drv_name;
->>       /* firmware file name */
->>       const char *fw_filename;
->> -
->> -    /* board name */
->> -    const char *board;
->> -    void (*machine_quirk)(void);
->> -    void *pdata;
->>   };
->>
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+How are you planning to merge this, will you merge takashi tree or you
+want this to be merged thru his tree? We prefer former as that would
+reduce conflicts for upcoming patches.
+
+Regards,
+Subhransu
+> 
+> Changes in v3:
+> 	* As suggested, simplified channel calculation expression
+> 	  in get channel helper
+> 	* Removed condition in max channel assignment expression
+> 
+> Subhransu S. Prusty (9):
+>   ASoC: hdac_hdmi: parse eld for channel map capability
+>   ALSA: hda - add helper to get channels from cap bits
+>   ASoC: hdac_hdmi: Add multichannel support
+>   ASoC: skl_rt286: Fix to support hdmi channel map support
+>   ASoC: Intel: boards: Update skl_nau88l25_max98357a driver to support
+>     chmap
+>   ASoC: Intel: boards: Update skl_nau88l25_ssm4567 driver to support
+>     chmap
+>   ASoC: hdac_hdmi: Register chmap controls and ops
+>   ASoC: Intel: Skylake: Add multichannel support for HDMI
+>   ASoC: Intel: Skylake: Update channel map based on runtime params
+> 
+>  sound/hda/local.h                               |  10 ++
+>  sound/soc/codecs/hdac_hdmi.c                    | 163 ++++++++++++++++++++++--
+>  sound/soc/intel/boards/skl_nau88l25_max98357a.c |  74 ++++++++++-
+>  sound/soc/intel/boards/skl_nau88l25_ssm4567.c   |  73 ++++++++++-
+>  sound/soc/intel/boards/skl_rt286.c              |  48 ++++++-
+>  sound/soc/intel/skylake/skl-pcm.c               |  14 +-
+>  sound/soc/intel/skylake/skl-topology.c          |  21 ++-
+>  7 files changed, 379 insertions(+), 24 deletions(-)
+> 
+> -- 
+> 1.9.1
+> 
+
+-- 
