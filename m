@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: HDMI audio LR channel swapped" to the asoc tree
-Date: Tue, 26 Apr 2016 11:26:29 +0100
-Message-ID: <E1av0CL-0006yr-Sf@debutante>
-References: <1461652218-52215-1-git-send-email-pc.liao@mediatek.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1461652218-52215-1-git-send-email-pc.liao@mediatek.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: PC Liao <pc.liao@mediatek.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, tiwai@suse.de, alsa-devel@alsa-project.org, srv_heupstream@mediatek.com, s.hauer@pengutronix.de, linux-kernel@vger.kernel.org, koro.chen@mediatek.com, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Subject: Applied "ASoC: rt298: reset AD dilter is there is no
+	MCLK" to the asoc tree
+Date: Tue, 26 Apr 2016 11:26:35 +0100
+Message-ID: <E1av0CR-00070B-Pb@debutante>
+References: <1461665231-14070-1-git-send-email-bardliao@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B80652608B3
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2016 12:26:43 +0200 (CEST)
+In-Reply-To: <1461665231-14070-1-git-send-email-bardliao@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, ramesh.babu@intel.com, john.lin@realtek.com, broonie@kernel.org, senthilnathanx.veppur@intel.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: HDMI audio LR channel swapped
+   ASoC: rt298: reset AD dilter is there is no MCLK
 
 has been applied to the asoc tree at
 
@@ -37,39 +53,70 @@ to this mail.
 Thanks,
 Mark
 
->From 27becea06e73c96b825ecddd8b3a59642364514a Mon Sep 17 00:00:00 2001
-From: PC Liao <pc.liao@mediatek.com>
-Date: Tue, 26 Apr 2016 14:30:18 +0800
-Subject: [PATCH] ASoC: mediatek: HDMI audio LR channel swapped
+>From 3c9e014c442caefa14c71494ca4473121007f60f Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Tue, 26 Apr 2016 18:07:10 +0800
+Subject: [PATCH] ASoC: rt298: reset AD dilter is there is no MCLK
 
-Because LRCK of TDM use High to Low as default setting, this patch
-changes the TDM setting to inverse LRCK.
+rt298 need to reset AD filter and the ADC settings will take effort.
 
-Signed-off-by: PC Liao <pc.liao@mediatek.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/mtk-afe-pcm.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/rt298.c | 20 ++++++++++++++++++++
+ sound/soc/codecs/rt298.h |  2 ++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/sound/soc/mediatek/mtk-afe-pcm.c b/sound/soc/mediatek/mtk-afe-pcm.c
-index f1c58a2c12fb..2b5df2ef51a3 100644
---- a/sound/soc/mediatek/mtk-afe-pcm.c
-+++ b/sound/soc/mediatek/mtk-afe-pcm.c
-@@ -123,6 +123,7 @@
- #define AFE_TDM_CON1_WLEN_32BIT		(0x2 << 8)
- #define AFE_TDM_CON1_MSB_ALIGNED	(0x1 << 4)
- #define AFE_TDM_CON1_1_BCK_DELAY	(0x1 << 3)
-+#define AFE_TDM_CON1_LRCK_INV		(0x1 << 2)
- #define AFE_TDM_CON1_BCK_INV		(0x1 << 1)
- #define AFE_TDM_CON1_EN			(0x1 << 0)
- 
-@@ -449,6 +450,7 @@ static int mtk_afe_hdmi_prepare(struct snd_pcm_substream *substream,
- 			      runtime->rate * runtime->channels * 32);
- 
- 	val = AFE_TDM_CON1_BCK_INV |
-+	      AFE_TDM_CON1_LRCK_INV |
- 	      AFE_TDM_CON1_1_BCK_DELAY |
- 	      AFE_TDM_CON1_MSB_ALIGNED | /* I2S mode */
- 	      AFE_TDM_CON1_WLEN_32BIT |
+diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
+index f0e6c06e89ac..178b1cc22e05 100644
+--- a/sound/soc/codecs/rt298.c
++++ b/sound/soc/codecs/rt298.c
+@@ -481,6 +481,26 @@ static int rt298_adc_event(struct snd_soc_dapm_widget *w,
+ 		snd_soc_update_bits(codec,
+ 			VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, nid, 0),
+ 			0x7080, 0x7000);
++		 /* If MCLK doesn't exist, reset AD filter */
++		if (!(snd_soc_read(codec, RT298_VAD_CTRL) & 0x200)) {
++			pr_info("NO MCLK\n");
++			switch (nid) {
++			case RT298_ADC_IN1:
++				snd_soc_update_bits(codec,
++					RT298_D_FILTER_CTRL, 0x2, 0x2);
++				mdelay(10);
++				snd_soc_update_bits(codec,
++					RT298_D_FILTER_CTRL, 0x2, 0x0);
++				break;
++			case RT298_ADC_IN2:
++				snd_soc_update_bits(codec,
++					RT298_D_FILTER_CTRL, 0x4, 0x4);
++				mdelay(10);
++				snd_soc_update_bits(codec,
++					RT298_D_FILTER_CTRL, 0x4, 0x0);
++				break;
++			}
++		}
+ 		break;
+ 	case SND_SOC_DAPM_PRE_PMD:
+ 		snd_soc_update_bits(codec,
+diff --git a/sound/soc/codecs/rt298.h b/sound/soc/codecs/rt298.h
+index d66f8847b676..3638f3d61209 100644
+--- a/sound/soc/codecs/rt298.h
++++ b/sound/soc/codecs/rt298.h
+@@ -137,6 +137,7 @@
+ #define RT298_A_BIAS_CTRL2	0x02
+ #define RT298_POWER_CTRL1	0x03
+ #define RT298_A_BIAS_CTRL3	0x04
++#define RT298_D_FILTER_CTRL	0x05
+ #define RT298_POWER_CTRL2	0x08
+ #define RT298_I2S_CTRL1		0x09
+ #define RT298_I2S_CTRL2		0x0a
+@@ -148,6 +149,7 @@
+ #define RT298_IRQ_CTRL		0x33
+ #define RT298_WIND_FILTER_CTRL	0x46
+ #define RT298_PLL_CTRL1		0x49
++#define RT298_VAD_CTRL		0x4e
+ #define RT298_CBJ_CTRL1		0x4f
+ #define RT298_CBJ_CTRL2		0x50
+ #define RT298_PLL_CTRL		0x63
 -- 
 2.8.0.rc3
