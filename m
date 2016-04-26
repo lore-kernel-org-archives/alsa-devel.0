@@ -1,11 +1,10 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
-From: "Conrad Kostecki" <ck@conrad-kostecki.de>
-Date: Sun, 24 Apr 2016 01:48:21 +0000
-Message-Id: <em7d1d6a23-64ae-4940-a3db-c26ad0f13c6b@valkyrie>
-Mime-Version: 1.0
+Date: Tue, 26 Apr 2016 12:10:22 +0200 (CEST)
+From: Conrad Kostecki <ck@conrad-kostecki.de>
+Message-ID: <1726340993.4634.1461665422210@office.mailbox.org>
+MIME-Version: 1.0
 Subject: [alsa-devel] [PATCH] ALSA: intel_hda - Add dock support for
-	ThinkPad X260
-Reply-To: Conrad Kostecki <ck@conrad-kostecki.de>
+	ThinkPad T460s
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -13,8 +12,8 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
@@ -22,48 +21,37 @@ Cc: alsa-devel@vger.kernel.org
 List-ID: <alsa-devel@alsa-project.org>
 
 Hi!
-My shiny new ThinkPad X260 is the same way affected, as older ThinkPad 
-(X*40, X*50) generations.
-That means, I am unable to get sound output, when I am using the Lenovo 
+The new ThinkPad T460s is the same way affected, as other current ThinkPads (e.G. X260) generations.
+That means, you won't be able to get sound output, when using the Lenovo
 CES 2013 docking station series (basic, pro, ultra).
 
-It can be fixed the same way, as it was already done for X240 and X250, 
-as the X260 uses the same docking connector.
-I am attaching my patch, which works for me.
+It can be fixed the same way, as it was already done for X260,
+as the T460s uses the same docking connector.
+I am attaching a patch, which works for me.
 
 Cheers
 Conrad
 
 ------------------------------
 
-Fixes audio output on a ThinkPad X260, when using Lenovo CES 2013 
+Fixes audio output on a ThinkPad T460s, when using Lenovo CES 2013
 docking station series (basic, pro, ultra).
 
 Signed-off-by: Conrad Kostecki <ck+linuxkernel@bl4ckb0x.de>
 
-diff -uprN -X linux-4.6-rc4-vanilla/Documentation/dontdiff 
-linux-4.6-rc4-vanilla/sound/pci/hda/patch_realtek.c 
-linux-4.6-rc4/sound/pci/hda/patch_realtek.c
---- linux-4.6-rc4-vanilla/sound/pci/hda/patch_realtek.c 2016-04-24 
-03:26:36.330983586 +0200
-+++ linux-4.6-rc4/sound/pci/hda/patch_realtek.c 2016-04-24 
-03:27:13.737981843 +0200
-@@ -5570,6 +5570,7 @@ static const struct snd_pci_quirk alc269
-         SND_PCI_QUIRK(0x17aa, 0x2218, "Thinkpad X1 Carbon 2nd", 
-ALC292_FIXUP_TPT440_DOCK),
-         SND_PCI_QUIRK(0x17aa, 0x2223, "ThinkPad T550", 
-ALC292_FIXUP_TPT440_DOCK),
-         SND_PCI_QUIRK(0x17aa, 0x2226, "ThinkPad X250", 
-ALC292_FIXUP_TPT440_DOCK),
-+       SND_PCI_QUIRK(0x17aa, 0x504a, "ThinkPad X260", 
-ALC292_FIXUP_TPT440_DOCK),
-         SND_PCI_QUIRK(0x17aa, 0x2233, "Thinkpad", ALC292_FIXUP_TPT460),
-         SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", 
-ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
-         SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO", 
-ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
-------------------------------
+--- linux-4.6-rc5-vanilla/sound/pci/hda/patch_realtek.c 2016-04-26 11:32:09.124832372 +0200
++++ linux-4.6-rc5/sound/pci/hda/patch_realtek.c 2016-04-26 11:32:52.123834807 +0200
+@@ -5585,6 +5585,7 @@ static const struct snd_pci_quirk alc269
+        SND_PCI_QUIRK(0x17aa, 0x5036, "Thinkpad T450s", ALC292_FIXUP_TPT440_DOCK),
+        SND_PCI_QUIRK(0x17aa, 0x503c, "Thinkpad L450", ALC292_FIXUP_TPT440_DOCK),
+        SND_PCI_QUIRK(0x17aa, 0x504b, "Thinkpad", ALC293_FIXUP_LENOVO_SPK_NOISE),
++       SND_PCI_QUIRK(0x17aa, 0x5050, "Thinkpad T460p", ALC292_FIXUP_TPT440_DOCK),
+        SND_PCI_QUIRK(0x17aa, 0x5109, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+        SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
+        SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
 
+
+------------------------------
 --
 To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
 
