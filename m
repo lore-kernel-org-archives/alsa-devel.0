@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: arizona: No need to update_bits when
-	writing AEC clock control" to the asoc tree
-Date: Tue, 26 Apr 2016 19:24:50 +0100
-Message-ID: <E1av7fG-0007v4-Bu@debutante>
-References: <1461686780-22885-3-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: omap-pcm: Initialize DMA configuration"
+	to the asoc tree
+Date: Tue, 26 Apr 2016 19:24:53 +0100
+Message-ID: <E1av7fJ-0007w8-AQ@debutante>
+References: <1461600607-19582-1-git-send-email-Linux.HWI@garmin.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3ABDA26589A
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2016 20:25:02 +0200 (CEST)
-In-Reply-To: <1461686780-22885-3-git-send-email-rf@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D38E026154F
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2016 20:25:09 +0200 (CEST)
+In-Reply-To: <1461600607-19582-1-git-send-email-Linux.HWI@garmin.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lee.jones@linaro.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
+To: Jim Lodes <jim.lodes@garmin.com>
+Cc: "J.D. Schroeder" <jay.schroeder@garmin.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, peter.ujfalusi@ti.com, broonie@kernel.org, jarkko.nikula@bitmer.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: arizona: No need to update_bits when writing AEC clock control
+   ASoC: omap-pcm: Initialize DMA configuration
 
 has been applied to the asoc tree at
 
@@ -53,42 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From 2ab8e744a437d39619b323d7303fa2e6513274b2 Mon Sep 17 00:00:00 2001
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Date: Tue, 26 Apr 2016 17:06:20 +0100
-Subject: [PATCH] ASoC: arizona: No need to update_bits when writing AEC clock
- control
+>From 989ff7754a27a1fcc0c3b2794c985b31811871a0 Mon Sep 17 00:00:00 2001
+From: Jim Lodes <jim.lodes@garmin.com>
+Date: Mon, 25 Apr 2016 11:10:07 -0500
+Subject: [PATCH] ASoC: omap-pcm: Initialize DMA configuration
 
-The bits in the ARIZONA_CLOCK_CONTROL register only respond to writes of
-a '1', a write of '0' is ignored. So there's no need to use update_bits.
-We can do a simple write to set bits.
+Initialize the dma_slave_config for PCM DMA transfers,
+instead of leaving it uninitialized. Keeps previous data on
+the stack from giving us invalid values in uninitialized
+members of the config structure.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Signed-off-by: Jim Lodes <jim.lodes@garmin.com>
+Signed-off-by: J.D. Schroeder <jay.schroeder@garmin.com>
+Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Reviewed-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/arizona.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/omap/omap-pcm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 0caecc6f78df..0239639823b1 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -1124,7 +1124,6 @@ int arizona_anc_ev(struct snd_soc_dapm_widget *w,
- 		   int event)
- {
- 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
--	unsigned int mask = 0x3 << w->shift;
- 	unsigned int val;
+diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
+index 6bb623a2a4df..eb81b9a2293a 100644
+--- a/sound/soc/omap/omap-pcm.c
++++ b/sound/soc/omap/omap-pcm.c
+@@ -82,6 +82,8 @@ static int omap_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	struct dma_chan *chan;
+ 	int err = 0;
  
- 	switch (event) {
-@@ -1138,7 +1137,7 @@ int arizona_anc_ev(struct snd_soc_dapm_widget *w,
- 		return 0;
- 	}
++	memset(&config, 0x00, sizeof(config));
++
+ 	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
  
--	snd_soc_update_bits(codec, ARIZONA_CLOCK_CONTROL, mask, val);
-+	snd_soc_write(codec, ARIZONA_CLOCK_CONTROL, val);
- 
- 	return 0;
- }
+ 	/* return if this is a bufferless transfer e.g.
 -- 
 2.8.0.rc3
