@@ -1,16 +1,16 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: ADAU1761 default register value problem
-Date: Tue, 26 Apr 2016 10:21:39 +0200
-Message-ID: <571F2513.1020005@metafoo.de>
-References: <alpine.DEB.2.02.1604211547540.31333@lnxricardw1.se.axis.com>
+From: kernel@martin.sperl.org
+Subject: [PATCH V2] ASoC: bcm2835: Register as custom PCM
+	device to enable 16bit pcm
+Date: Tue, 26 Apr 2016 08:35:23 +0000
+Message-ID: <1461659723-5382-1-git-send-email-kernel@martin.sperl.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 7FC002604BE
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2016 10:21:41 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.02.1604211547540.31333@lnxricardw1.se.axis.com>
+Received: from cgate.sperl.org (212-186-180-163.dynamic.surfer.at
+ [212.186.180.163])
+ by alsa0.perex.cz (Postfix) with ESMTP id D1DEA2604BE
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2016 10:35:28 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,61 +20,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Matthias Reichl <hias@horus.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, alsa-devel@alsa-project.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: Martin Sperl <kernel@martin.sperl.org>, Florian Meier <florian.meier@koalo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/21/2016 04:01 PM, Ricard Wanderlof wrote:
-> 
-> Hi Lars,
-> 
-> A while ago I posted a question to the list regarding the default values 
-> set up for the ADAU1761 (and similar CODECs), but I didn't get a response. 
-> I really need to try and figure out a way forward here though so I'll 
-> bring this up again.
-> 
-> The problem I have is that the driver assumes that the CODEC has been 
-> initialized with the default register settings when the system boots. 
-> However, if the system has not been power cycled but just rebooted, this 
-> is not necessarily the case, as the CODEC has no external reset pin but 
-> derives its reset signal internally from the power level.
-> 
-> Furthermore, if the system upon reboot tries to set a register value to 
-> one of the default settings (for example as the result of a hw_params() 
-> call), then the regcache mechanism will disregard the write as it assumes 
-> the default value is already set, which is not necessarily the case.
-> 
-> As I see it the solution to this problem is simply not to assume anything 
-> about the register settings, so that the first write to a given register 
-> always takes effect.
-> 
-> I can work on a patch to accomplish this, however, since so much work 
-> apparently has been laid down in getting the default values into the 
-> driver in the first place, I'm assuming there's something more to the 
-> story that I'm missing, so I'd like to get a better grip on this before I 
-> dive in.
+From: Matthias Reichl <hias@horus.com>
 
-Hi,
+Register as a custom pcm device with the correct settings supporting
+also 16 bit.
 
-I've been thinking about this for the last few days trying to come up with a
-good solution, but it is really difficult.
+The automatic pcm discovery does not enable 16 bit modes because
+of a percived mismatch between the dma controller only
+supporting 32 bit transfers and the requirement by the HW to only
+support exactly 2 channels, which effectively results in a minimum
+size of 32 bits, which matches the dma controller transfer width.
 
-The issue you are describing is simply an oversight from my side.
+Code ported from bcm2708-i2s driver in Raspberry Pi tree.
 
-One solution would be do drop the register default values and let regmap
-fill the register cache on demand when a read is done the first time for a
-register. The problem with this approach is that we leave the device in an
-unknown state when we probe the driver, but we really want to have it in a
-known state of lowest power.
+Signed-off-by: Florian Meier <florian.meier@koalo.de>
+Signed-off-by: Matthias Reichl <hias@horus.com>
+Signed-off-by: Martin Sperl <kernel@martin.sperl.org>
 
-The alternative is to write out the register defaults when the device is
-probed, sort of a poor mans software reset, this brings us into a known
-state. This approach has the downside that there is the overhead of having
-to write all registers.
+Changelog:
+  V1 -> V2: use of SZ_* defines instead of multiple of page size
+            better description of commit message
+---
+ sound/soc/bcm/bcm2835-i2s.c | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
 
-I don't like either, but given the limitations of the hardware we'll have to
-choose one and in that case I'd slightly lean towards the later solution has
-it gives us consistent and predictable behavior and the overhead of writing
-the registers should be manageable.
-
-- Lars
+diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+index a0026e2..66680f1 100644
+--- a/sound/soc/bcm/bcm2835-i2s.c
++++ b/sound/soc/bcm/bcm2835-i2s.c
+@@ -632,6 +632,27 @@ static const struct snd_soc_component_driver bcm2835_i2s_component = {
+ 	.name		= "bcm2835-i2s-comp",
+ };
+ 
++static const struct snd_pcm_hardware bcm2835_pcm_hardware = {
++	.info			= SNDRV_PCM_INFO_INTERLEAVED |
++				  SNDRV_PCM_INFO_JOINT_DUPLEX |
++				  SNDRV_PCM_INFO_MMAP |
++				  SNDRV_PCM_INFO_MMAP_VALID,
++	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
++				  SNDRV_PCM_FMTBIT_S24_LE |
++				  SNDRV_PCM_FMTBIT_S32_LE,
++	.period_bytes_min	= 32,
++	.period_bytes_max	= SZ_256K,
++	.periods_min		= 2,
++	.periods_max		= 255,
++	.buffer_bytes_max	= SZ_512K,
++};
++
++static const struct snd_dmaengine_pcm_config bcm2835_dmaengine_pcm_config = {
++	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
++	.pcm_hardware = &bcm2835_pcm_hardware,
++	.prealloc_buffer_size = SZ_1M,
++};
++
+ static int bcm2835_i2s_probe(struct platform_device *pdev)
+ {
+ 	struct bcm2835_i2s_dev *dev;
+@@ -704,7 +725,9 @@ static int bcm2835_i2s_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
++	ret = devm_snd_dmaengine_pcm_register(
++		&pdev->dev, &bcm2835_dmaengine_pcm_config,
++		SND_DMAENGINE_PCM_FLAG_COMPAT);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register PCM: %d\n", ret);
+ 		return ret;
+-- 
+2.1.4
