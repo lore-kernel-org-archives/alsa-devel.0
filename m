@@ -1,15 +1,12 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH 1/2] ASoC: rt298: reset AD dilter is there is
-	no MCLK
-Date: Tue, 26 Apr 2016 18:07:10 +0800
-Message-ID: <1461665231-14070-1-git-send-email-bardliao@realtek.com>
+From: Conrad Kostecki <ck@conrad-kostecki.de>
+Subject: [PATCH] ALSA: intel_hda - Add dock support for
+	ThinkPad T460s
+Date: Tue, 26 Apr 2016 12:10:22 +0200 (CEST)
+Message-ID: <1726340993.4634.1461665422210__31069.7827874266$1461665467$gmane$org@office.mailbox.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id DC80F2608B3
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2016 12:07:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,68 +16,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, john.lin@realtek.com, ramesh.babu@intel.com, Bard Liao <bardliao@realtek.com>, senthilnathanx.veppur@intel.com, flove@realtek.com
+To: alsa-devel@alsa-project.org
+Cc: alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-rt298 need to reset AD filter and the ADC settings will take effort.
+Hi!
+The new ThinkPad T460s is the same way affected, as other current ThinkPads (e.G. X260) generations.
+That means, you won't be able to get sound output, when using the Lenovo
+CES 2013 docking station series (basic, pro, ultra).
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt298.c | 20 ++++++++++++++++++++
- sound/soc/codecs/rt298.h |  2 ++
- 2 files changed, 22 insertions(+)
+It can be fixed the same way, as it was already done for X260,
+as the T460s uses the same docking connector.
+I am attaching a patch, which works for me.
 
-diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
-index f0e6c06..178b1cc 100644
---- a/sound/soc/codecs/rt298.c
-+++ b/sound/soc/codecs/rt298.c
-@@ -481,6 +481,26 @@ static int rt298_adc_event(struct snd_soc_dapm_widget *w,
- 		snd_soc_update_bits(codec,
- 			VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, nid, 0),
- 			0x7080, 0x7000);
-+		 /* If MCLK doesn't exist, reset AD filter */
-+		if (!(snd_soc_read(codec, RT298_VAD_CTRL) & 0x200)) {
-+			pr_info("NO MCLK\n");
-+			switch (nid) {
-+			case RT298_ADC_IN1:
-+				snd_soc_update_bits(codec,
-+					RT298_D_FILTER_CTRL, 0x2, 0x2);
-+				mdelay(10);
-+				snd_soc_update_bits(codec,
-+					RT298_D_FILTER_CTRL, 0x2, 0x0);
-+				break;
-+			case RT298_ADC_IN2:
-+				snd_soc_update_bits(codec,
-+					RT298_D_FILTER_CTRL, 0x4, 0x4);
-+				mdelay(10);
-+				snd_soc_update_bits(codec,
-+					RT298_D_FILTER_CTRL, 0x4, 0x0);
-+				break;
-+			}
-+		}
- 		break;
- 	case SND_SOC_DAPM_PRE_PMD:
- 		snd_soc_update_bits(codec,
-diff --git a/sound/soc/codecs/rt298.h b/sound/soc/codecs/rt298.h
-index d66f884..3638f3d 100644
---- a/sound/soc/codecs/rt298.h
-+++ b/sound/soc/codecs/rt298.h
-@@ -137,6 +137,7 @@
- #define RT298_A_BIAS_CTRL2	0x02
- #define RT298_POWER_CTRL1	0x03
- #define RT298_A_BIAS_CTRL3	0x04
-+#define RT298_D_FILTER_CTRL	0x05
- #define RT298_POWER_CTRL2	0x08
- #define RT298_I2S_CTRL1		0x09
- #define RT298_I2S_CTRL2		0x0a
-@@ -148,6 +149,7 @@
- #define RT298_IRQ_CTRL		0x33
- #define RT298_WIND_FILTER_CTRL	0x46
- #define RT298_PLL_CTRL1		0x49
-+#define RT298_VAD_CTRL		0x4e
- #define RT298_CBJ_CTRL1		0x4f
- #define RT298_CBJ_CTRL2		0x50
- #define RT298_PLL_CTRL		0x63
--- 
-1.8.1.1.439.g50a6b54
+Cheers
+Conrad
+
+------------------------------
+
+Fixes audio output on a ThinkPad T460s, when using Lenovo CES 2013
+docking station series (basic, pro, ultra).
+
+Signed-off-by: Conrad Kostecki <ck+linuxkernel@bl4ckb0x.de>
+
+--- linux-4.6-rc5-vanilla/sound/pci/hda/patch_realtek.c 2016-04-26 11:32:09.124832372 +0200
++++ linux-4.6-rc5/sound/pci/hda/patch_realtek.c 2016-04-26 11:32:52.123834807 +0200
+@@ -5585,6 +5585,7 @@ static const struct snd_pci_quirk alc269
+        SND_PCI_QUIRK(0x17aa, 0x5036, "Thinkpad T450s", ALC292_FIXUP_TPT440_DOCK),
+        SND_PCI_QUIRK(0x17aa, 0x503c, "Thinkpad L450", ALC292_FIXUP_TPT440_DOCK),
+        SND_PCI_QUIRK(0x17aa, 0x504b, "Thinkpad", ALC293_FIXUP_LENOVO_SPK_NOISE),
++       SND_PCI_QUIRK(0x17aa, 0x5050, "Thinkpad T460p", ALC292_FIXUP_TPT440_DOCK),
+        SND_PCI_QUIRK(0x17aa, 0x5109, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+        SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
+        SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
+
+
+------------------------------
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
