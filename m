@@ -1,20 +1,22 @@
 From: Andreas Dannenberg <dannenberg@ti.com>
 Subject: Re: [PATCH v3 2/2] ASoC: codecs: add support for
  TAS5720 digital amplifier
-Date: Tue, 26 Apr 2016 12:37:43 -0500
-Message-ID: <20160426173743.GE2885@borg.dal.design.ti.com>
+Date: Tue, 26 Apr 2016 13:01:05 -0500
+Message-ID: <20160426180105.GF2885@borg.dal.design.ti.com>
 References: <1461615456-19510-1-git-send-email-dannenberg@ti.com>
  <1461615456-19510-3-git-send-email-dannenberg@ti.com>
- <571FA309.7080809@ti.com>
+ <20160426154313.GA3217@sirena.org.uk>
+ <20160426162240.GB2885@borg.dal.design.ti.com>
+ <20160426172936.GE3217@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 4894926589A
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2016 19:37:47 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id B27CC26154F
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2016 20:01:08 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <571FA309.7080809@ti.com>
+In-Reply-To: <20160426172936.GE3217@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,69 +26,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Andrew F. Davis" <afd@ti.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Kumar Gala <galak@codeaurora.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 26, 2016 at 12:19:05PM -0500, Andrew F. Davis wrote:
-> On 04/25/2016 03:17 PM, Andreas Dannenberg wrote:
-> > The Texas Instruments TAS5720L/M device is a high-efficiency mono
-> > Class-D audio power amplifier optimized for high transient power
-> > capability to use the dynamic power headroom of small loudspeakers.
-> > Its digital time division multiplexed (TDM) interface enables up to
-> > 16 devices to share the same bus.
-> > 
-> > Signed-off-by: Andreas Dannenberg <dannenberg@ti.com>
-> > ---
-> >  sound/soc/codecs/Kconfig   |  10 +
-> >  sound/soc/codecs/Makefile  |   2 +
-> >  sound/soc/codecs/tas5720.c | 638 +++++++++++++++++++++++++++++++++++++++++++++
-> >  sound/soc/codecs/tas5720.h |  90 +++++++
-> >  4 files changed, 740 insertions(+)
-> >  create mode 100644 sound/soc/codecs/tas5720.c
-> >  create mode 100644 sound/soc/codecs/tas5720.h
-> > 
-> > diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-> > index 290f921..3949dae 100644
-> > --- a/sound/soc/codecs/Kconfig
-> > +++ b/sound/soc/codecs/Kconfig
-> > @@ -125,6 +125,7 @@ config SND_SOC_ALL_CODECS
-> >  	select SND_SOC_TAS2552 if I2C
-> >  	select SND_SOC_TAS5086 if I2C
-> >  	select SND_SOC_TAS571X if I2C
-> > +	select SND_SOC_TAS5720 if I2C
-> >  	select SND_SOC_TFA9879 if I2C
-> >  	select SND_SOC_TLV320AIC23_I2C if I2C
-> >  	select SND_SOC_TLV320AIC23_SPI if SPI_MASTER
-> > @@ -748,6 +749,15 @@ config SND_SOC_TAS571X
-> >  	tristate "Texas Instruments TAS5711/TAS5717/TAS5719/TAS5721 power amplifiers"
-> >  	depends on I2C
-> >  
-> > +config SND_SOC_TAS5720
-> > +	tristate "Texas Instruments TAS5720 Mono Audio amplifier"
-> > +	depends on I2C
-> > +	help
-> > +	  Enable support for Texas Instruments TAS5720L/M high-efficiency mono
-> > +	  Class-D audio power amplifiers. The devices use an I2C interface for
-> > +	  setup/control and support an optional GPIO interrupt signal for fault
-> > +	  reporting.
+On Tue, Apr 26, 2016 at 06:29:36PM +0100, Mark Brown wrote:
+> On Tue, Apr 26, 2016 at 11:22:40AM -0500, Andreas Dannenberg wrote:
+> > On Tue, Apr 26, 2016 at 04:43:13PM +0100, Mark Brown wrote:
 > 
-> If fault reporting is no longer interrupt based could this be re-worded?
+> > > If the driver doesn't do anything just remove the code.
+> 
+> > Well it's doing something which is making sure the nobody passes in a
+> > sample size that's not supported. Wouldn't we want to catch this?
+> 
+> Is the device actually going to mess up if someone sends it something
+> else or is it just going to ignore the extra bits (given that it's doing
+> autodetection anyway).
 
-Good catch! Thanks Andrew.
+Hi Mark,
+well in any of the left-justified modes (which are the only ones the
+driver supports) the device takes and processes as many bits as it can
+given the clock and divider settings. Any extra bits provided will get
+ignored, and the next sync happens on the frame sync signal and not by
+counting bits so there is no downside also as confirmed by some bench
+testing I did feeding in 32-bit long frames for one channel. This seems
+like a case of preferring tolerance over strictly enforcing
+datasheet-advertised bit-widths. Will take out the check code.
 
 > 
-> [...]
+> > > > +	if ((curr_fault & TAS5720_OCE) && !(tas5720->last_fault & TAS5720_OCE))
+> > > > +		dev_warn(dev, "The Class-D output stage has experienced an over current event\n");
 > 
-> > +
-> > +static struct i2c_driver tas5720_i2c_driver = {
-> > +	.driver = {
-> > +		.name = "tas5720",
-> > +		.owner = THIS_MODULE,
+> > > "Class D over current".  The verbosity is making the line over long and
+> > > the phrasing is a bit unclear (and makes it seem less critical than it
+> > > really is).  These should probably be dev_crit() or somthing too, over
+> > > current and similar events on a speaker output are generally extremely
+> > > serious.
 > 
-> This shouldn't be needed.
+> > The overlong line goes through checkpatch --strict and looks like an
+> > accepted practice to prevent breaking "grep" for example. The text is
+> > more or less from the datasheet to give people something they can
+> > cross-associate. But I can try to short this a bit.
+> 
+> It's not just the fact that it's wrapping round to the next line, it's
+> also the fact that it's very weakly phrased for something which might
+> reasonably indicate an actual fire risk.  I'm pretty sure people will
+> not struggle excessively to find the reference to over current in the
+> datasheet.
 
-Yes. I recall your recent mass-optimizations. Will remove.
+Ok will tweak it.
+
+> > conditions.  For the "over temp" error condition (which is actually
+> > really hard to create on the bench, I've to get the EVM up to like 150C
+> > and things start smelling a bit) this should probably be dev_crit() as
+> 
+> If the silicon is flagging an over temperature condition that tends to
+> indicate a catastrophic physical failure in the system, it is likely
+> that the speaker itself has failed or there's otherwise a short in the
+> speaker output path and potentially other physical damage especially in
+> smaller systems where you might find that for example there's thermal
+> damage to the case (and possibly even the user).
+
+Yes make sense. As suggested promoting this to dev_crit() and making sure
+its adequately phrased will help.
+
+> 
+> > well. And then, maybe leave the "DC error" as a warning, since it's less
+> > critical than the other two conditions. Thoughts?
+> 
+> If you're pushing DC through a speaker that will generally mean that you
+> will shortly see one or both of the over current and over temperature
+> errors, it's really not something they're designed for.
+
+I had to actually craft my own DC "audio" file to play with aplay to
+trigger this error during testing. So when this happens I'd think it is
+likely something userspace is "doing wrong" (of course there could be
+other reasons too such a broken-off SAIF DIN/DOUT trace) but let's make
+this also for the sake of consistency a dev_crit() too.
+
+Along these lines, earlier as I was rummaging through the existing
+drivers looking for a solution I could model after I noticed that
+most(?) ASoC codec drivers don't have any type of HW fault checking, at
+at least whatever drivers I looked at. Not sure why this is but given
+this discussion this seems like a general opportunity to make
+improvements.
 
 Regards,
 Andreas
