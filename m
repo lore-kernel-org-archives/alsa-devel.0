@@ -1,35 +1,93 @@
-From: Javier Martinez Canillas <javier@osg.samsung.com>
-Subject: [PATCH] ASoC: cs42l56: Use IS_ENABLED() instead of checking for built-in or module
-Date: Mon, 25 Apr 2016 19:30:39 -0400
-Message-ID: <1461627039-28547-1-git-send-email-javier@osg.samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Javier Martinez Canillas <javier@osg.samsung.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+From: Joel Holdsworth <joel@airwebreathe.org.uk>
+Subject: [PATCH] Asoc: Intel: common: Removed unused
+	sst_acpi_mach fields
+Date: Mon, 25 Apr 2016 20:44:03 -0600
+Message-ID: <1461638643-1886-1-git-send-email-joel@airwebreathe.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from auth.a.painless.aa.net.uk (auth.a.painless.aa.net.uk
+ [90.155.4.51]) by alsa0.perex.cz (Postfix) with ESMTP id F27E7265068
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2016 03:35:39 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Joel Holdsworth <joel@airwebreathe.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The IS_ENABLED() macro checks if a Kconfig symbol has been enabled either
-built-in or as a module, use that macro instead of open coding the same.
+The fields in question are currently unused, and are unlikely to be
+useful in the future:
 
-Signed-off-by: Javier Martinez Canillas <javier@osg.samsung.com>
+  - "board" is a very vague name not related to a concrete matching
+    criteria such as a DMI match or ACPI OEM IDs.
 
+  - "machine_quirk" lacks the pointer arguments to be able to
+    manipulate any sst-acpi structures. For it to be useful these
+    would need to be added. Furthermore, a quirk function is much
+    more likely to be relevant to a whole chipset, rather than a
+    single board.
+
+  - Without "machine_quirk", "pdata" serves no purpose and should
+    be removed.
 ---
+ sound/soc/intel/common/sst-acpi.c | 8 ++++----
+ sound/soc/intel/common/sst-acpi.h | 5 -----
+ 2 files changed, 4 insertions(+), 9 deletions(-)
 
- sound/soc/codecs/cs42l56.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
-index 7cd5f769bb61..eec1ff853b98 100644
---- a/sound/soc/codecs/cs42l56.c
-+++ b/sound/soc/codecs/cs42l56.c
-@@ -56,7 +56,7 @@ struct  cs42l56_private {
- 	u8 iface;
- 	u8 iface_fmt;
- 	u8 iface_inv;
--#if defined(CONFIG_INPUT) || defined(CONFIG_INPUT_MODULE)
-+#if IS_ENABLED(CONFIG_INPUT)
- 	struct input_dev *beep;
- 	struct work_struct beep_work;
- 	int beep_rate;
+diff --git a/sound/soc/intel/common/sst-acpi.c b/sound/soc/intel/common/sst-acpi.c
+index 2c5eda1..aba6575 100644
+--- a/sound/soc/intel/common/sst-acpi.c
++++ b/sound/soc/intel/common/sst-acpi.c
+@@ -180,7 +180,7 @@ static int sst_acpi_remove(struct platform_device *pdev)
+ }
+ 
+ static struct sst_acpi_mach haswell_machines[] = {
+-	{ "INT33CA", "haswell-audio", "intel/IntcSST1.bin", NULL, NULL, NULL },
++	{ "INT33CA", "haswell-audio", "intel/IntcSST1.bin" },
+ 	{}
+ };
+ 
+@@ -198,7 +198,7 @@ static struct sst_acpi_desc sst_acpi_haswell_desc = {
+ };
+ 
+ static struct sst_acpi_mach broadwell_machines[] = {
+-	{ "INT343A", "broadwell-audio", "intel/IntcSST2.bin", NULL, NULL, NULL },
++	{ "INT343A", "broadwell-audio", "intel/IntcSST2.bin" },
+ 	{}
+ };
+ 
+@@ -217,8 +217,8 @@ static struct sst_acpi_desc sst_acpi_broadwell_desc = {
+ 
+ #if !IS_ENABLED(CONFIG_SND_SST_IPC_ACPI)
+ static struct sst_acpi_mach baytrail_machines[] = {
+-	{ "10EC5640", "byt-rt5640", "intel/fw_sst_0f28.bin-48kHz_i2s_master", NULL, NULL, NULL },
+-	{ "193C9890", "byt-max98090", "intel/fw_sst_0f28.bin-48kHz_i2s_master", NULL, NULL, NULL },
++	{ "10EC5640", "byt-rt5640", "intel/fw_sst_0f28.bin-48kHz_i2s_master" },
++	{ "193C9890", "byt-max98090", "intel/fw_sst_0f28.bin-48kHz_i2s_master" },
+ 	{}
+ };
+ 
+diff --git a/sound/soc/intel/common/sst-acpi.h b/sound/soc/intel/common/sst-acpi.h
+index 4dcfb7e..9eb8ade 100644
+--- a/sound/soc/intel/common/sst-acpi.h
++++ b/sound/soc/intel/common/sst-acpi.h
+@@ -28,9 +28,4 @@ struct sst_acpi_mach {
+ 	const char *drv_name;
+ 	/* firmware file name */
+ 	const char *fw_filename;
+-
+-	/* board name */
+-	const char *board;
+-	void (*machine_quirk)(void);
+-	void *pdata;
+ };
 -- 
-2.5.5
+2.7.3
