@@ -1,69 +1,73 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs42l56: Use IS_ENABLED() instead of checking for built-in or module" to the asoc tree
-Date: Tue, 26 Apr 2016 12:07:59 +0100
-Message-ID: <E1av0qV-0000UA-RS@debutante>
-References: <1461627039-28547-1-git-send-email-javier@osg.samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1461627039-28547-1-git-send-email-javier@osg.samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Javier Martinez Canillas <javier@osg.samsung.com>
-Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 0/9] ASoC: hdac_hdmi: Add multichannel
+	support
+Date: Tue, 26 Apr 2016 12:09:54 +0100
+Message-ID: <20160426110954.GV3217@sirena.org.uk>
+References: <1460608656-8860-1-git-send-email-subhransu.s.prusty@intel.com>
+ <20160426044917.GB10261@subhransu-desktop>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============7436739519050339668=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA9832608B3
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2016 13:09:59 +0200 (CEST)
+In-Reply-To: <20160426044917.GB10261@subhransu-desktop>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: cs42l56: Use IS_ENABLED() instead of checking for built-in or module
+--===============7436739519050339668==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="HuEObLHMEeaOEcQY"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--HuEObLHMEeaOEcQY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Tue, Apr 26, 2016 at 10:19:18AM +0530, Subhransu S. Prusty wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> How are you planning to merge this, will you merge takashi tree or you
+> want this to be merged thru his tree? We prefer former as that would
+> reduce conflicts for upcoming patches.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+I've not even looked at this since patch 2 is a generic HDA change and
+hasn't been reviewed yet.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--HuEObLHMEeaOEcQY
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
->From de06f22f717b30641229036439b804ae79a7ad4d Mon Sep 17 00:00:00 2001
-From: Javier Martinez Canillas <javier@osg.samsung.com>
-Date: Mon, 25 Apr 2016 19:30:39 -0400
-Subject: [PATCH] ASoC: cs42l56: Use IS_ENABLED() instead of checking for
- built-in or module
+iQEcBAEBCAAGBQJXH0yBAAoJECTWi3JdVIfQim4H/1YP2c18Fz6vJgeQDWC0gGCQ
+TZ96xTOsY/6a3t967Rh+4l0726rTJiKIhuRG3grly76Av1f29q3GPhyjCCdydo9B
+w6Zbg32vY70fPvc4is/OZXaN5ZKu+m/usVhfq8uUtON0nc2eyD5IGy+lul1OxiaT
+Qr+f+z3fa3QvmVfs1dhZEnZzbiSz2PEWe5yFVQ1qAanlOHXL0zfJOMBvJ7Y3hjo0
+WOgL+4weSPN3BTyxyADckLHWHACwnAQHdF2Oifh2k0o6D6Tjlm7yIS6L4nD1HrkA
+6L6abfe60FA52H1tSL+buHQrGxoKPFB0uvF6in5FZe5iS+WNGuOaG6z5nqCpcaE=
+=CN+m
+-----END PGP SIGNATURE-----
 
-The IS_ENABLED() macro checks if a Kconfig symbol has been enabled either
-built-in or as a module, use that macro instead of open coding the same.
+--HuEObLHMEeaOEcQY--
 
-Signed-off-by: Javier Martinez Canillas <javier@osg.samsung.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/cs42l56.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--===============7436739519050339668==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
-index 7cd5f769bb61..eec1ff853b98 100644
---- a/sound/soc/codecs/cs42l56.c
-+++ b/sound/soc/codecs/cs42l56.c
-@@ -56,7 +56,7 @@ struct  cs42l56_private {
- 	u8 iface;
- 	u8 iface_fmt;
- 	u8 iface_inv;
--#if defined(CONFIG_INPUT) || defined(CONFIG_INPUT_MODULE)
-+#if IS_ENABLED(CONFIG_INPUT)
- 	struct input_dev *beep;
- 	struct work_struct beep_work;
- 	int beep_rate;
--- 
-2.8.0.rc3
+
+--===============7436739519050339668==--
