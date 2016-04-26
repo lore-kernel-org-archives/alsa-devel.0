@@ -1,72 +1,65 @@
 From: Andreas Dannenberg <dannenberg@ti.com>
-Subject: [PATCH v4 1/2] ASoC: codecs: add TA5720 digital
-	amplifier DT bindings
-Date: Tue, 26 Apr 2016 17:15:56 -0500
-Message-ID: <1461708957-7616-2-git-send-email-dannenberg@ti.com>
-References: <1461708957-7616-1-git-send-email-dannenberg@ti.com>
+Subject: [PATCH v4 0/2] ASoC: codecs: add support for TAS5720 digital amplifier
+Date: Tue, 26 Apr 2016 17:15:55 -0500
+Message-ID: <1461708957-7616-1-git-send-email-dannenberg@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E00E261584
- for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2016 00:16:04 +0200 (CEST)
-In-Reply-To: <1461708957-7616-1-git-send-email-dannenberg@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org
-Cc: Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, Kumar Gala <galak@codeaurora.org>, Andreas Dannenberg <dannenberg@ti.com>
+Cc: Andreas Dannenberg <dannenberg@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The Texas Instruments TAS5720L/M device is a high-efficiency mono
-Class-D audio power amplifier optimized for high transient power
-capability to use the dynamic power headroom of small loudspeakers.
-Its digital time division multiplexed (TDM) interface enables up to
-16 devices to share the same bus.
+Minor update to driver for TI's TAS5720L/M digital audio amplifiers
+incorporating previous feedback (thanks Mark Brown and Andrew F Davis),
+see below change log for details. Also re-tested different aspects of
+the driver to make sure it still builds/works.
 
-Signed-off-by: Andreas Dannenberg <dannenberg@ti.com>
----
- .../devicetree/bindings/sound/tas5720.txt          | 25 ++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+--
+
+Andreas Dannenberg
+Texas Instruments Inc
+
+
+Changes since v3:
+- Rework fault condition reporting to use dev_crit() to pay justice to
+  the severity of the issues, also shorten the error string for more
+  clarity/brevity
+- Fix Kconfig help entry to no longer mention the interrupt signal that
+  was used previously
+- Simplify hw_params checks as the driver in its current form only
+  supports left-justified audio formats and the codec is tolerant
+  regarding the number of bits that are actually received.
+- Clarify DT bindings to make the power supply properties required
+- Remove .owner assignment from I2C driver struct as it is no longer
+  needed (taken care off by the Kernel)
+
+Changes since v2:
+- Switched fault handling from using interrupts to polling mode
+- Remove interrupt related description from DT bindings doc
+- Remove unlikely() to simplify an expression
+- Remove unnesseary tas5720_set_dai_sysclk() function stub
+
+Changes since v1:
+- Simplified DT interrupt documentation (Thanks Rob Herring)
+- Fixed potential race condition during codec probe where deferred work
+  that's used by the threaded IRQ handler was setup after the IRQ was
+  initialized (would lead to an issue when the TAS5720 was already throwing
+  interrupts at the time of probe)
+
+Andreas Dannenberg (2):
+  ASoC: codecs: add TA5720 digital amplifier DT bindings
+  ASoC: codecs: add support for TAS5720 digital amplifier
+
+ .../devicetree/bindings/sound/tas5720.txt          |  25 +
+ sound/soc/codecs/Kconfig                           |   8 +
+ sound/soc/codecs/Makefile                          |   2 +
+ sound/soc/codecs/tas5720.c                         | 620 +++++++++++++++++++++
+ sound/soc/codecs/tas5720.h                         |  90 +++
+ 5 files changed, 745 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/tas5720.txt
+ create mode 100644 sound/soc/codecs/tas5720.c
+ create mode 100644 sound/soc/codecs/tas5720.h
 
-diff --git a/Documentation/devicetree/bindings/sound/tas5720.txt b/Documentation/devicetree/bindings/sound/tas5720.txt
-new file mode 100644
-index 0000000..806ea73
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/tas5720.txt
-@@ -0,0 +1,25 @@
-+Texas Instruments TAS5720 Mono Audio amplifier
-+
-+The TAS5720 serial control bus communicates through the I2C protocol only. The
-+serial bus is also used for periodic codec fault checking/reporting during
-+audio playback. For more product information please see the links below:
-+
-+http://www.ti.com/product/TAS5720L
-+http://www.ti.com/product/TAS5720M
-+
-+Required properties:
-+
-+- compatible : "ti,tas5720"
-+- reg : I2C slave address
-+- dvdd-supply : phandle to a 3.3-V supply for the digital circuitry
-+- pvdd-supply : phandle to a supply used for the Class-D amp and the analog
-+
-+Example:
-+
-+tas5720: tas5720@6c {
-+	status = "okay";
-+	compatible = "ti,tas5720";
-+	reg = <0x6c>;
-+	dvdd-supply = <&vdd_3v3_reg>;
-+	pvdd-supply = <&amp_supply_reg>;
-+};
 -- 
 2.6.4
