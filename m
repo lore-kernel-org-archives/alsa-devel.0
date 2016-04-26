@@ -1,16 +1,19 @@
-From: kernel@martin.sperl.org
-Subject: [PATCH V2] ASoC: bcm2835: Register as custom PCM
-	device to enable 16bit pcm
-Date: Tue, 26 Apr 2016 08:35:23 +0000
-Message-ID: <1461659723-5382-1-git-send-email-kernel@martin.sperl.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 3/3] ASoC: bcm2835: Register also as PCM
+ device
+Date: Tue, 26 Apr 2016 10:47:05 +0200
+Message-ID: <571F2B09.1000107@metafoo.de>
+References: <1461591580-7565-1-git-send-email-kernel@martin.sperl.org>
+ <1461591580-7565-3-git-send-email-kernel@martin.sperl.org>
+ <571E218A.7050508@metafoo.de> <20160425171515.GA10952@camel2.lan>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cgate.sperl.org (212-186-180-163.dynamic.surfer.at
- [212.186.180.163])
- by alsa0.perex.cz (Postfix) with ESMTP id D1DEA2604BE
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2016 10:35:28 +0200 (CEST)
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB2232606C7
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2016 10:47:08 +0200 (CEST)
+In-Reply-To: <20160425171515.GA10952@camel2.lan>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,76 +23,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matthias Reichl <hias@horus.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, alsa-devel@alsa-project.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
-Cc: Martin Sperl <kernel@martin.sperl.org>, Florian Meier <florian.meier@koalo.de>
+To: Matthias Reichl <hias@horus.com>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Takashi Iwai <tiwai@suse.com>, Eric Anholt <eric@anholt.net>, Mark Brown <broonie@kernel.org>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, kernel@martin.sperl.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Matthias Reichl <hias@horus.com>
+>>> +	.periods_min		= 2,
+>>> +	.periods_max		= 255,
+>>> +	.buffer_bytes_max	= 128 * PAGE_SIZE,
+>>> +};
+>>> +
+>>> +static const struct snd_dmaengine_pcm_config bcm2835_dmaengine_pcm_config = {
+>>> +	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
+>>> +	.pcm_hardware = &bcm2835_pcm_hardware,
+>>> +	.prealloc_buffer_size = 256 * PAGE_SIZE,
+>>> +};
+>>
+>> The generic dmaengine PCM driver auto-discovers these things, no need to
+>> provide them. The code is OK as it is.
+> 
+> With the auto-discover code we loose the S16_LE format.
+> 
+> If I understood the code in dmaengine_pcm_set_runtime_hwparams
+> correctly, this is because the DMA controller doesn't support
+> 16bit transfers (only multiples of 32bit are allowed).
+> 
+> But since the I2S driver needs exactly 2 channels S16_LE actually
+> works fine (one 32bit transfer per frame).
+> 
+> Do you know of a better way to get S16_LE support? It could well
+> be that I missed something important...
 
-Register as a custom pcm device with the correct settings supporting
-also 16 bit.
+With your patch we should just get an error when trying to configure a
+stream with 16-bit samples since when setting up the DMA controller the
+generic code will still choose a 16-bit device port size and this will be
+rejected by the DMA controller.
 
-The automatic pcm discovery does not enable 16 bit modes because
-of a percived mismatch between the dma controller only
-supporting 32 bit transfers and the requirement by the HW to only
-support exactly 2 channels, which effectively results in a minimum
-size of 32 bits, which matches the dma controller transfer width.
+When you look at peripherals that have DMA support there are basically two
+types.
 
-Code ported from bcm2708-i2s driver in Raspberry Pi tree.
+Type A expect that each write (same applies for read) to the memory mapped
+FIFO corresponds to exactly one sample. So if the sample width is 16-bit a
+16-bit write is done, if the sample width is 32-bit a 32-bit write is done.
+In this case it is up to the DMA controller to fragment the byte stream into
+individual samples.
 
-Signed-off-by: Florian Meier <florian.meier@koalo.de>
-Signed-off-by: Matthias Reichl <hias@horus.com>
-Signed-off-by: Martin Sperl <kernel@martin.sperl.org>
+Type B on the other hand has a fixed port width (usually the bus size) and
+expects that each write to the memory mapped FIFO uses the port width. It
+then internally unpacks the data into the sample data. E.g. if the FIFO is
+32-bit wide and the sample width is 16-bit it will unpack the 32-bit entry
+into two samples.
 
-Changelog:
-  V1 -> V2: use of SZ_* defines instead of multiple of page size
-            better description of commit message
----
- sound/soc/bcm/bcm2835-i2s.c | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+Currently the generic code only supports type A. It would be great if you
+could add support for type B to support the BCM2835 I2S controller properly.
 
-diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
-index a0026e2..66680f1 100644
---- a/sound/soc/bcm/bcm2835-i2s.c
-+++ b/sound/soc/bcm/bcm2835-i2s.c
-@@ -632,6 +632,27 @@ static const struct snd_soc_component_driver bcm2835_i2s_component = {
- 	.name		= "bcm2835-i2s-comp",
- };
- 
-+static const struct snd_pcm_hardware bcm2835_pcm_hardware = {
-+	.info			= SNDRV_PCM_INFO_INTERLEAVED |
-+				  SNDRV_PCM_INFO_JOINT_DUPLEX |
-+				  SNDRV_PCM_INFO_MMAP |
-+				  SNDRV_PCM_INFO_MMAP_VALID,
-+	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
-+				  SNDRV_PCM_FMTBIT_S24_LE |
-+				  SNDRV_PCM_FMTBIT_S32_LE,
-+	.period_bytes_min	= 32,
-+	.period_bytes_max	= SZ_256K,
-+	.periods_min		= 2,
-+	.periods_max		= 255,
-+	.buffer_bytes_max	= SZ_512K,
-+};
-+
-+static const struct snd_dmaengine_pcm_config bcm2835_dmaengine_pcm_config = {
-+	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
-+	.pcm_hardware = &bcm2835_pcm_hardware,
-+	.prealloc_buffer_size = SZ_1M,
-+};
-+
- static int bcm2835_i2s_probe(struct platform_device *pdev)
- {
- 	struct bcm2835_i2s_dev *dev;
-@@ -704,7 +725,9 @@ static int bcm2835_i2s_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
-+	ret = devm_snd_dmaengine_pcm_register(
-+		&pdev->dev, &bcm2835_dmaengine_pcm_config,
-+		SND_DMAENGINE_PCM_FLAG_COMPAT);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Could not register PCM: %d\n", ret);
- 		return ret;
--- 
-2.1.4
+- Lars
