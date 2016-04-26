@@ -1,16 +1,18 @@
 From: vedang.patel@intel.com
-Subject: [PATCH v2 0/3] ASoC: Reduce audio related kernel spew.
-Date: Tue, 26 Apr 2016 16:03:07 -0700
-Message-ID: <1461711790-7277-1-git-send-email-vedang.patel@intel.com>
+Subject: [PATCH v2 1/3] ASoC: hdac_hdmi: Increase loglevel of
+	hex dump printed
+Date: Tue, 26 Apr 2016 16:03:08 -0700
+Message-ID: <1461711790-7277-2-git-send-email-vedang.patel@intel.com>
 References: <1460498902-30454-4-git-send-email-vedang.patel@intel.com>
+ <1461711790-7277-1-git-send-email-vedang.patel@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 74DF6261A0D
- for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2016 01:03:22 +0200 (CEST)
-In-Reply-To: <1460498902-30454-4-git-send-email-vedang.patel@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F796264F22
+ for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2016 01:03:23 +0200 (CEST)
+In-Reply-To: <1461711790-7277-1-git-send-email-vedang.patel@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,25 +28,36 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Vedang Patel <vedang.patel@intel.com>
 
-There have been complaints regarding audio related kernel messages flooding
-dmesg. This series tries to address those complaints.
+The hdac_hdmi codec driver prints the ELD information everytime an
+external monitor is connected. Make it so that the information is only
+printed when someone trying to debug the driver explicitly enables it.
 
-Also, I have created 3 different patches for this because they touch different
-drivers. But, I can combine those to reduce the number of patches.
+print_hex_dump_bytes (which just calls print_hex_dump) uses
+printk(KERN_DEBUG,... which is different from dev_dbg used elsewhere in
+the driver: it's always enabled at compile-time. Change it to
+print_hex_dump_debug for logging consistency.
 
-v2 Changes:
-- use print_hex_dump_debug instead of #ifdef DEBUG
+Change-Id: I6a7ac1d40a73369ea5dc58b7afde0288b8e86558
+Signed-off-by: Vedang Patel <vedang.patel@intel.com>
+---
+ sound/soc/codecs/hdac_hdmi.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Vedang Patel (3):
-  ASoC: hdac_hdmi: Increase loglevel of hex dump printed
-  ASoC: Intel: common: increase the loglevel of "FW Poll Status".
-  ASoC: Intel: Skylake: Increase loglevel of debug messages.
-
- sound/soc/codecs/hdac_hdmi.c           | 5 +++--
- sound/soc/intel/common/sst-dsp.c       | 2 +-
- sound/soc/intel/skylake/skl-messages.c | 2 +-
- sound/soc/intel/skylake/skl-sst-ipc.c  | 4 ++--
- 4 files changed, 7 insertions(+), 6 deletions(-)
-
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index aaa038f..def565d 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -1066,8 +1066,9 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin, int repoll)
+ 				snd_jack_report(pcm->jack, SND_JACK_AVOUT);
+ 			}
+ 
+-			print_hex_dump_bytes("ELD: ", DUMP_PREFIX_OFFSET,
+-					pin->eld.eld_buffer, pin->eld.eld_size);
++			print_hex_dump_debug("ELD: ",
++					DUMP_PREFIX_OFFSET, 16, 1,
++					pin->eld.eld_buffer, pin->eld.eld_size, true);
+ 		} else {
+ 			pin->eld.monitor_present = false;
+ 			pin->eld.eld_valid = false;
 -- 
 2.1.2
