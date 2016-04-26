@@ -1,21 +1,20 @@
-From: Matthias Reichl <hias@horus.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
 Subject: Re: [PATCH 3/3] ASoC: bcm2835: Register also as PCM
  device
-Date: Tue, 26 Apr 2016 15:09:14 +0200
-Message-ID: <20160426130914.GA2015@delle.lan>
+Date: Tue, 26 Apr 2016 15:22:29 +0200
+Message-ID: <571F6B95.1000709@metafoo.de>
 References: <1461591580-7565-1-git-send-email-kernel@martin.sperl.org>
  <1461591580-7565-3-git-send-email-kernel@martin.sperl.org>
  <571E218A.7050508@metafoo.de> <20160425171515.GA10952@camel2.lan>
- <571F2B09.1000107@metafoo.de>
+ <571F2B09.1000107@metafoo.de> <20160426130914.GA2015@delle.lan>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.horus.com (mail.horus.com [78.46.148.228])
- by alsa0.perex.cz (Postfix) with ESMTP id 27D6326154F
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2016 15:09:00 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <571F2B09.1000107@metafoo.de>
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 30A3F2608B3
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2016 15:22:35 +0200 (CEST)
+In-Reply-To: <20160426130914.GA2015@delle.lan>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,89 +24,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
+To: Matthias Reichl <hias@horus.com>
 Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Takashi Iwai <tiwai@suse.com>, Eric Anholt <eric@anholt.net>, Mark Brown <broonie@kernel.org>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, kernel@martin.sperl.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Lars,
-
-first of all thanks a lot for your detailled feedback!
-
-On Tue, Apr 26, 2016 at 10:47:05AM +0200, Lars-Peter Clausen wrote:
-> >>> +	.periods_min		= 2,
-> >>> +	.periods_max		= 255,
-> >>> +	.buffer_bytes_max	= 128 * PAGE_SIZE,
-> >>> +};
-> >>> +
-> >>> +static const struct snd_dmaengine_pcm_config bcm2835_dmaengine_pcm_config = {
-> >>> +	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
-> >>> +	.pcm_hardware = &bcm2835_pcm_hardware,
-> >>> +	.prealloc_buffer_size = 256 * PAGE_SIZE,
-> >>> +};
-> >>
-> >> The generic dmaengine PCM driver auto-discovers these things, no need to
-> >> provide them. The code is OK as it is.
-> > 
-> > With the auto-discover code we loose the S16_LE format.
-> > 
-> > If I understood the code in dmaengine_pcm_set_runtime_hwparams
-> > correctly, this is because the DMA controller doesn't support
-> > 16bit transfers (only multiples of 32bit are allowed).
-> > 
-> > But since the I2S driver needs exactly 2 channels S16_LE actually
-> > works fine (one 32bit transfer per frame).
-> > 
-> > Do you know of a better way to get S16_LE support? It could well
-> > be that I missed something important...
+On 04/26/2016 03:09 PM, Matthias Reichl wrote:
+> Hi Lars,
 > 
-> With your patch we should just get an error when trying to configure a
-> stream with 16-bit samples since when setting up the DMA controller the
-> generic code will still choose a 16-bit device port size and this will be
-> rejected by the DMA controller.
-
-We had that code in downstream RPi kernel for ages (IIRC since
-3.10) and so far it worked fine.
-
-I traced the code for the S16_LE case to find out why:
-
-snd_hwparams_to_dma_slave_config() sets src/dst_addr_width to 16bit.
-
-But immediately afterwards snd_dmaengine_pcm_set_config_from_dai_data()
-overrides addr_width to 32bit.
-
-bcm2835-i2s only supports 32bit access to the FIFO/data register
-and dma_data.addr_width is set to 32bit in the I2S driver - that
-code is also in mainline since the initial bcm2835-i2s commit.
-
-Of course all this only works because the number of channels
-is always 2.
-
-> When you look at peripherals that have DMA support there are basically two
-> types.
+> first of all thanks a lot for your detailled feedback!
 > 
-> Type A expect that each write (same applies for read) to the memory mapped
-> FIFO corresponds to exactly one sample. So if the sample width is 16-bit a
-> 16-bit write is done, if the sample width is 32-bit a 32-bit write is done.
-> In this case it is up to the DMA controller to fragment the byte stream into
-> individual samples.
+> On Tue, Apr 26, 2016 at 10:47:05AM +0200, Lars-Peter Clausen wrote:
+>>>>> +	.periods_min		= 2,
+>>>>> +	.periods_max		= 255,
+>>>>> +	.buffer_bytes_max	= 128 * PAGE_SIZE,
+>>>>> +};
+>>>>> +
+>>>>> +static const struct snd_dmaengine_pcm_config bcm2835_dmaengine_pcm_config = {
+>>>>> +	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
+>>>>> +	.pcm_hardware = &bcm2835_pcm_hardware,
+>>>>> +	.prealloc_buffer_size = 256 * PAGE_SIZE,
+>>>>> +};
+>>>>
+>>>> The generic dmaengine PCM driver auto-discovers these things, no need to
+>>>> provide them. The code is OK as it is.
+>>>
+>>> With the auto-discover code we loose the S16_LE format.
+>>>
+>>> If I understood the code in dmaengine_pcm_set_runtime_hwparams
+>>> correctly, this is because the DMA controller doesn't support
+>>> 16bit transfers (only multiples of 32bit are allowed).
+>>>
+>>> But since the I2S driver needs exactly 2 channels S16_LE actually
+>>> works fine (one 32bit transfer per frame).
+>>>
+>>> Do you know of a better way to get S16_LE support? It could well
+>>> be that I missed something important...
+>>
+>> With your patch we should just get an error when trying to configure a
+>> stream with 16-bit samples since when setting up the DMA controller the
+>> generic code will still choose a 16-bit device port size and this will be
+>> rejected by the DMA controller.
 > 
-> Type B on the other hand has a fixed port width (usually the bus size) and
-> expects that each write to the memory mapped FIFO uses the port width. It
-> then internally unpacks the data into the sample data. E.g. if the FIFO is
-> 32-bit wide and the sample width is 16-bit it will unpack the 32-bit entry
-> into two samples.
+> We had that code in downstream RPi kernel for ages (IIRC since
+> 3.10) and so far it worked fine.
 > 
-> Currently the generic code only supports type A. It would be great if you
-> could add support for type B to support the BCM2835 I2S controller properly.
+> I traced the code for the S16_LE case to find out why:
+> 
+> snd_hwparams_to_dma_slave_config() sets src/dst_addr_width to 16bit.
+> 
+> But immediately afterwards snd_dmaengine_pcm_set_config_from_dai_data()
+> overrides addr_width to 32bit.
+> 
 
-Do you have a particular solution in mind?
+Ok, makes sense.
 
-Introducing a flag to just auto-add some packed formats would be
-easy, but a generic, robust solution might be tricky. We'd have
-to make sure that unsupported configurations (like an odd number
-of 16bit channels on 32bit-only setups) get rejected or we might
-be in trouble.
+> bcm2835-i2s only supports 32bit access to the FIFO/data register
+> and dma_data.addr_width is set to 32bit in the I2S driver - that
+> code is also in mainline since the initial bcm2835-i2s commit.
+> 
+> Of course all this only works because the number of channels
+> is always 2.
+> 
+>> When you look at peripherals that have DMA support there are basically two
+>> types.
+>>
+>> Type A expect that each write (same applies for read) to the memory mapped
+>> FIFO corresponds to exactly one sample. So if the sample width is 16-bit a
+>> 16-bit write is done, if the sample width is 32-bit a 32-bit write is done.
+>> In this case it is up to the DMA controller to fragment the byte stream into
+>> individual samples.
+>>
+>> Type B on the other hand has a fixed port width (usually the bus size) and
+>> expects that each write to the memory mapped FIFO uses the port width. It
+>> then internally unpacks the data into the sample data. E.g. if the FIFO is
+>> 32-bit wide and the sample width is 16-bit it will unpack the 32-bit entry
+>> into two samples.
+>>
+>> Currently the generic code only supports type A. It would be great if you
+>> could add support for type B to support the BCM2835 I2S controller properly.
+> 
+> Do you have a particular solution in mind?
+> 
+> Introducing a flag to just auto-add some packed formats would be
+> easy, but a generic, robust solution might be tricky. We'd have
+> to make sure that unsupported configurations (like an odd number
+> of 16bit channels on 32bit-only setups) get rejected or we might
+> be in trouble.
 
-so long,
+I think in this case the DMA shouldn't limit the supported sample types.
+Since the unpacking is done by the peripheral the peripheral is the one
+component that limits what is supported and what is not and the DMA itself
+has no influence on this. In the peripheral driver you have all the
+information available there to specify the proper constraints and can handle
+all the corner cases. The overall constraints are the intersection of the
+DMA and peripheral constraints, so by having no DMA constraints the
+peripheral is the one providing all the constraints.
 
-Hias
+We could either say that we assume that when the addr_width is fixed the DMA
+shouldn't supply any constraints, or we could introduce a new flag in
+snd_dmaengine_dai_dma_data that the peripheral has unpack support and the
+DMA constraints don't matter.
+
+- Lars
