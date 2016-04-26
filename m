@@ -1,42 +1,75 @@
-From: Conrad Kostecki <ck@conrad-kostecki.de>
-Subject: Re: [PATCH] ALSA: intel_hda - Add dock support for
-	ThinkPad T460s
-Date: Tue, 26 Apr 2016 12:15:31 +0200 (CEST)
-Message-ID: <937600352.4913.1461665731113__46501.649861648$1461665771$gmane$org@office.mailbox.org>
-References: <1726340993.4634.1461665422210@office.mailbox.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1726340993.4634.1461665422210@office.mailbox.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: alsa-devel@vger.kernel.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: mediatek: HDMI audio LR channel swapped" to the asoc tree
+Date: Tue, 26 Apr 2016 11:26:29 +0100
+Message-ID: <E1av0CL-0006yr-Sf@debutante>
+References: <1461652218-52215-1-git-send-email-pc.liao@mediatek.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1461652218-52215-1-git-send-email-pc.liao@mediatek.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: PC Liao <pc.liao@mediatek.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, tiwai@suse.de, alsa-devel@alsa-project.org, srv_heupstream@mediatek.com, s.hauer@pengutronix.de, linux-kernel@vger.kernel.org, koro.chen@mediatek.com, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-> Conrad Kostecki <ck@conrad-kostecki.de> hat am 26. April 2016 um 12:10 geschrieben:
+The patch
 
-> Hi!
-> The new ThinkPad T460s is the same way affected, as other current ThinkPads (e.G. X260) generations.
-> That means, you won't be able to get sound output, when using the Lenovo
-> CES 2013 docking station series (basic, pro, ultra).
-> 
-> It can be fixed the same way, as it was already done for X260,
-> as the T460s uses the same docking connector.
-> I am attaching a patch, which works for me.
-> 
-> Cheers
-> Conrad
+   ASoC: mediatek: HDMI audio LR channel swapped
 
-Sorry, not enough coffee today :(
-The Patch is for T460p, NOT T460s.
---
-To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 27becea06e73c96b825ecddd8b3a59642364514a Mon Sep 17 00:00:00 2001
+From: PC Liao <pc.liao@mediatek.com>
+Date: Tue, 26 Apr 2016 14:30:18 +0800
+Subject: [PATCH] ASoC: mediatek: HDMI audio LR channel swapped
+
+Because LRCK of TDM use High to Low as default setting, this patch
+changes the TDM setting to inverse LRCK.
+
+Signed-off-by: PC Liao <pc.liao@mediatek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/mediatek/mtk-afe-pcm.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/soc/mediatek/mtk-afe-pcm.c b/sound/soc/mediatek/mtk-afe-pcm.c
+index f1c58a2c12fb..2b5df2ef51a3 100644
+--- a/sound/soc/mediatek/mtk-afe-pcm.c
++++ b/sound/soc/mediatek/mtk-afe-pcm.c
+@@ -123,6 +123,7 @@
+ #define AFE_TDM_CON1_WLEN_32BIT		(0x2 << 8)
+ #define AFE_TDM_CON1_MSB_ALIGNED	(0x1 << 4)
+ #define AFE_TDM_CON1_1_BCK_DELAY	(0x1 << 3)
++#define AFE_TDM_CON1_LRCK_INV		(0x1 << 2)
+ #define AFE_TDM_CON1_BCK_INV		(0x1 << 1)
+ #define AFE_TDM_CON1_EN			(0x1 << 0)
+ 
+@@ -449,6 +450,7 @@ static int mtk_afe_hdmi_prepare(struct snd_pcm_substream *substream,
+ 			      runtime->rate * runtime->channels * 32);
+ 
+ 	val = AFE_TDM_CON1_BCK_INV |
++	      AFE_TDM_CON1_LRCK_INV |
+ 	      AFE_TDM_CON1_1_BCK_DELAY |
+ 	      AFE_TDM_CON1_MSB_ALIGNED | /* I2S mode */
+ 	      AFE_TDM_CON1_WLEN_32BIT |
+-- 
+2.8.0.rc3
