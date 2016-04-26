@@ -1,19 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 3/3] ASoC: bcm2835: Register also as PCM
- device
-Date: Tue, 26 Apr 2016 10:47:05 +0200
-Message-ID: <571F2B09.1000107@metafoo.de>
-References: <1461591580-7565-1-git-send-email-kernel@martin.sperl.org>
- <1461591580-7565-3-git-send-email-kernel@martin.sperl.org>
- <571E218A.7050508@metafoo.de> <20160425171515.GA10952@camel2.lan>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH 2/2] ASoC: rt298: fix capture doesn't work at
+	some cases
+Date: Tue, 26 Apr 2016 18:07:11 +0800
+Message-ID: <1461665231-14070-2-git-send-email-bardliao@realtek.com>
+References: <1461665231-14070-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id EB2232606C7
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2016 10:47:08 +0200 (CEST)
-In-Reply-To: <20160425171515.GA10952@camel2.lan>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id D935F2606D2
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2016 12:07:24 +0200 (CEST)
+In-Reply-To: <1461665231-14070-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,57 +21,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matthias Reichl <hias@horus.com>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Takashi Iwai <tiwai@suse.com>, Eric Anholt <eric@anholt.net>, Mark Brown <broonie@kernel.org>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, kernel@martin.sperl.org, linux-arm-kernel@lists.infradead.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, john.lin@realtek.com, ramesh.babu@intel.com, Bard Liao <bardliao@realtek.com>, senthilnathanx.veppur@intel.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
->>> +	.periods_min		= 2,
->>> +	.periods_max		= 255,
->>> +	.buffer_bytes_max	= 128 * PAGE_SIZE,
->>> +};
->>> +
->>> +static const struct snd_dmaengine_pcm_config bcm2835_dmaengine_pcm_config = {
->>> +	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
->>> +	.pcm_hardware = &bcm2835_pcm_hardware,
->>> +	.prealloc_buffer_size = 256 * PAGE_SIZE,
->>> +};
->>
->> The generic dmaengine PCM driver auto-discovers these things, no need to
->> provide them. The code is OK as it is.
-> 
-> With the auto-discover code we loose the S16_LE format.
-> 
-> If I understood the code in dmaengine_pcm_set_runtime_hwparams
-> correctly, this is because the DMA controller doesn't support
-> 16bit transfers (only multiples of 32bit are allowed).
-> 
-> But since the I2S driver needs exactly 2 channels S16_LE actually
-> works fine (one 32bit transfer per frame).
-> 
-> Do you know of a better way to get S16_LE support? It could well
-> be that I missed something important...
+RT298_CBJ_CTRL1(0x4f) bit 10 is needed for headset capture. It
+will be turned off when "VREF" widget is on and be turned on when
+bias level is ON. It is odd. And if "VREF" is turned on in bias
+level is ON, RT298_CBJ_CTRL1(0x4f) bit 10 will be turned off.
+This patch move the bit control from rt298_set_bias_level and
+rt298_vref_event to rt298_jack_detect. So it will be turned on
+once a jack is plugged in.
 
-With your patch we should just get an error when trying to configure a
-stream with 16-bit samples since when setting up the DMA controller the
-generic code will still choose a 16-bit device port size and this will be
-rejected by the DMA controller.
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt298.c | 31 +++----------------------------
+ 1 file changed, 3 insertions(+), 28 deletions(-)
 
-When you look at peripherals that have DMA support there are basically two
-types.
-
-Type A expect that each write (same applies for read) to the memory mapped
-FIFO corresponds to exactly one sample. So if the sample width is 16-bit a
-16-bit write is done, if the sample width is 32-bit a 32-bit write is done.
-In this case it is up to the DMA controller to fragment the byte stream into
-individual samples.
-
-Type B on the other hand has a fixed port width (usually the bus size) and
-expects that each write to the memory mapped FIFO uses the port width. It
-then internally unpacks the data into the sample data. E.g. if the FIFO is
-32-bit wide and the sample width is 16-bit it will unpack the 32-bit entry
-into two samples.
-
-Currently the generic code only supports type A. It would be great if you
-could add support for type B to support the BCM2835 I2S controller properly.
-
-- Lars
+diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
+index 178b1cc..68cf8d5 100644
+--- a/sound/soc/codecs/rt298.c
++++ b/sound/soc/codecs/rt298.c
+@@ -275,6 +275,8 @@ static int rt298_jack_detect(struct rt298_priv *rt298, bool *hp, bool *mic)
+ 		} else {
+ 			*mic = false;
+ 			regmap_write(rt298->regmap, RT298_SET_MIC1, 0x20);
++			regmap_update_bits(rt298->regmap,
++				RT298_CBJ_CTRL1, 0x0400, 0x0000);
+ 		}
+ 	} else {
+ 		regmap_read(rt298->regmap, RT298_GET_HP_SENSE, &buf);
+@@ -539,30 +541,12 @@ static int rt298_mic1_event(struct snd_soc_dapm_widget *w,
+ 	return 0;
+ }
+ 
+-static int rt298_vref_event(struct snd_soc_dapm_widget *w,
+-			     struct snd_kcontrol *kcontrol, int event)
+-{
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+-
+-	switch (event) {
+-	case SND_SOC_DAPM_PRE_PMU:
+-		snd_soc_update_bits(codec,
+-			RT298_CBJ_CTRL1, 0x0400, 0x0000);
+-		mdelay(50);
+-		break;
+-	default:
+-		return 0;
+-	}
+-
+-	return 0;
+-}
+-
+ static const struct snd_soc_dapm_widget rt298_dapm_widgets[] = {
+ 
+ 	SND_SOC_DAPM_SUPPLY_S("HV", 1, RT298_POWER_CTRL1,
+ 		12, 1, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("VREF", RT298_POWER_CTRL1,
+-		0, 1, rt298_vref_event, SND_SOC_DAPM_PRE_PMU),
++		0, 1, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY_S("BG_MBIAS", 1, RT298_POWER_CTRL2,
+ 		1, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY_S("LDO1", 1, RT298_POWER_CTRL2,
+@@ -953,18 +937,9 @@ static int rt298_set_bias_level(struct snd_soc_codec *codec,
+ 		}
+ 		break;
+ 
+-	case SND_SOC_BIAS_ON:
+-		mdelay(30);
+-		snd_soc_update_bits(codec,
+-			RT298_CBJ_CTRL1, 0x0400, 0x0400);
+-
+-		break;
+-
+ 	case SND_SOC_BIAS_STANDBY:
+ 		snd_soc_write(codec,
+ 			RT298_SET_AUDIO_POWER, AC_PWRST_D3);
+-		snd_soc_update_bits(codec,
+-			RT298_CBJ_CTRL1, 0x0400, 0x0000);
+ 		break;
+ 
+ 	default:
+-- 
+1.8.1.1.439.g50a6b54
