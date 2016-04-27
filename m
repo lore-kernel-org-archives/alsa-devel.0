@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: factor out freeing of alg regions" to the asoc tree
-Date: Wed, 27 Apr 2016 17:34:54 +0100
-Message-ID: <E1avSQQ-0004NV-HT@debutante>
-References: <1461765509-9431-3-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: add TA5720 digital amplifier DT bindings" to the asoc tree
+Date: Wed, 27 Apr 2016 17:34:51 +0100
+Message-ID: <E1avSQN-0004Mh-Ip@debutante>
+References: <1461708957-7616-2-git-send-email-dannenberg@ti.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1461765509-9431-3-git-send-email-rf@opensource.wolfsonmicro.com>
+In-Reply-To: <1461708957-7616-2-git-send-email-dannenberg@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
+To: Andreas Dannenberg <dannenberg@ti.com>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>Mark Brown <broonie@kernel.org>, Kumar Gala <galak@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: factor out freeing of alg regions
+   ASoC: add TA5720 digital amplifier DT bindings
 
 has been applied to the asoc tree at
 
@@ -37,89 +37,54 @@ to this mail.
 Thanks,
 Mark
 
->From 56574d541f93cf8c9449f9ecadc83d97323cfcec Mon Sep 17 00:00:00 2001
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Date: Wed, 27 Apr 2016 14:58:29 +0100
-Subject: [PATCH] ASoC: wm_adsp: factor out freeing of alg regions
+>From 4e2f17be8f63a6ad9ebd4cdfce627e3dd25d80bb Mon Sep 17 00:00:00 2001
+From: Andreas Dannenberg <dannenberg@ti.com>
+Date: Tue, 26 Apr 2016 17:15:56 -0500
+Subject: [PATCH] ASoC: add TA5720 digital amplifier DT bindings
 
-Add a function to delete and free the contents of the alg_regions list.
+The Texas Instruments TAS5720L/M device is a high-efficiency mono
+Class-D audio power amplifier optimized for high transient power
+capability to use the dynamic power headroom of small loudspeakers.
+Its digital time division multiplexed (TDM) interface enables up to
+16 devices to share the same bus.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Signed-off-by: Andreas Dannenberg <dannenberg@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ .../devicetree/bindings/sound/tas5720.txt          | 25 ++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/tas5720.txt
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 5f8727af912b..8cde7bb4c52b 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1571,6 +1571,19 @@ static struct wm_adsp_alg_region *wm_adsp_create_region(struct wm_adsp *dsp,
- 	return alg_region;
- }
- 
-+static void wm_adsp_free_alg_regions(struct wm_adsp *dsp)
-+{
-+	struct wm_adsp_alg_region *alg_region;
+diff --git a/Documentation/devicetree/bindings/sound/tas5720.txt b/Documentation/devicetree/bindings/sound/tas5720.txt
+new file mode 100644
+index 000000000000..806ea7381483
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/tas5720.txt
+@@ -0,0 +1,25 @@
++Texas Instruments TAS5720 Mono Audio amplifier
 +
-+	while (!list_empty(&dsp->alg_regions)) {
-+		alg_region = list_first_entry(&dsp->alg_regions,
-+					      struct wm_adsp_alg_region,
-+					      list);
-+		list_del(&alg_region->list);
-+		kfree(alg_region);
-+	}
-+}
++The TAS5720 serial control bus communicates through the I2C protocol only. The
++serial bus is also used for periodic codec fault checking/reporting during
++audio playback. For more product information please see the links below:
 +
- static int wm_adsp1_setup_algs(struct wm_adsp *dsp)
- {
- 	struct wmfw_adsp1_id_hdr adsp1_id;
-@@ -2001,7 +2014,6 @@ int wm_adsp1_event(struct snd_soc_dapm_widget *w,
- 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct wm_adsp *dsps = snd_soc_codec_get_drvdata(codec);
- 	struct wm_adsp *dsp = &dsps[w->shift];
--	struct wm_adsp_alg_region *alg_region;
- 	struct wm_coeff_ctl *ctl;
- 	int ret;
- 	unsigned int val;
-@@ -2081,13 +2093,8 @@ int wm_adsp1_event(struct snd_soc_dapm_widget *w,
- 		list_for_each_entry(ctl, &dsp->ctl_list, list)
- 			ctl->enabled = 0;
- 
--		while (!list_empty(&dsp->alg_regions)) {
--			alg_region = list_first_entry(&dsp->alg_regions,
--						      struct wm_adsp_alg_region,
--						      list);
--			list_del(&alg_region->list);
--			kfree(alg_region);
--		}
++http://www.ti.com/product/TAS5720L
++http://www.ti.com/product/TAS5720M
 +
-+		wm_adsp_free_alg_regions(dsp);
- 		break;
- 
- 	default:
-@@ -2229,7 +2236,6 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct wm_adsp *dsps = snd_soc_codec_get_drvdata(codec);
- 	struct wm_adsp *dsp = &dsps[w->shift];
--	struct wm_adsp_alg_region *alg_region;
- 	struct wm_coeff_ctl *ctl;
- 	int ret;
- 
-@@ -2276,13 +2282,7 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 		list_for_each_entry(ctl, &dsp->ctl_list, list)
- 			ctl->enabled = 0;
- 
--		while (!list_empty(&dsp->alg_regions)) {
--			alg_region = list_first_entry(&dsp->alg_regions,
--						      struct wm_adsp_alg_region,
--						      list);
--			list_del(&alg_region->list);
--			kfree(alg_region);
--		}
-+		wm_adsp_free_alg_regions(dsp);
- 
- 		if (wm_adsp_fw[dsp->fw].num_caps != 0)
- 			wm_adsp_buffer_free(dsp);
++Required properties:
++
++- compatible : "ti,tas5720"
++- reg : I2C slave address
++- dvdd-supply : phandle to a 3.3-V supply for the digital circuitry
++- pvdd-supply : phandle to a supply used for the Class-D amp and the analog
++
++Example:
++
++tas5720: tas5720@6c {
++	status = "okay";
++	compatible = "ti,tas5720";
++	reg = <0x6c>;
++	dvdd-supply = <&vdd_3v3_reg>;
++	pvdd-supply = <&amp_supply_reg>;
++};
 -- 
 2.8.0.rc3
