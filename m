@@ -1,53 +1,46 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 2/2 v6] ASoC: dwc: Update DOCUMENTATION for I2S Driver
-Date: Wed, 27 Apr 2016 18:35:39 +0100
-Message-ID: <20160427173539.GI3217@sirena.org.uk>
-References: <cover.1461749984.git.joabreu@synopsys.com>
- <30ee79f0744cdf3561d43654f1ecf3d486bf7a08.1461749984.git.joabreu@synopsys.com>
- <5720F7BA.9030500@synopsys.com>
+From: Eric Anholt <eric@anholt.net>
+Subject: Re: [PATCH 2/2] ASoC: bcm2835: Add S16_LE support via packed DMA transfers
+Date: Wed, 27 Apr 2016 11:54:04 -0700
+Message-ID: <878tzyublf.fsf@eliezer.anholt.net>
+References: <1461763613-28714-1-git-send-email-hias@horus.com> <1461763613-28714-2-git-send-email-hias@horus.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="PtXxvafiK05cffxj"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <5720F7BA.9030500-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Carlos Palminha <CARLOS.PALMINHA-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, Alexey Brodkin <Alexey.Brodkin-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha512; protocol="application/pgp-signature"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1461763613-28714-2-git-send-email-hias@horus.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Matthias Reichl <hias@horus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Martin Sperl <kernel@martin.sperl.org>, Luis de Bethencourt <luis@debethencourt.com>, alsa-devel@alsa-project.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+--=-=-=
+Content-Type: text/plain
 
---PtXxvafiK05cffxj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Matthias Reichl <hias@horus.com> writes:
 
-On Wed, Apr 27, 2016 at 06:32:42PM +0100, Jose Abreu wrote:
-> Hi Mark,
->=20
-> Sorry. Follows bellow.
->=20
-> On 27-04-2016 11:05, Jose Abreu wrote:
+> The bcm2835-i2s driver already has support for the S16_LE format but
+> that format hasn't been made available because dmaengine_pcm didn't
+> support packed data transfers.
 
-I can't apply a quote of a patch, please resend.
+Acked-by: Eric Anholt <eric@anholt.net>
 
---PtXxvafiK05cffxj
+--=-=-=
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Version: GnuPG v1
 
-iQEcBAEBCAAGBQJXIPhqAAoJECTWi3JdVIfQb/wH/3fadsfuq/wWquWESwLM9xxx
-w99KHOt2obGwOEoYmOH1AZyVxSwucHWlHWEooR2n5lvDgIkgDU5W2tMhcHtJ+0k2
-0M3A9cAdbMEDoyA1Gty+Jh8vWwrSkXmv8szpVHgPIpe9lhiao5s8rfOZnxV4NOUU
-ajR88qTwIwaRm5b3T1ewb1INVKrjoU6L6pgO1ep6p11e5qmQe1qy3Eam3OFHMIc5
-G4cNADh+uJN0V4PfM7wsu0uJw2m8PIw+3jCurwnLUsK/SsrfBOldrqY+zHnql/AK
-t5K5fEPa8oshwQvjDFmGIbDybxiRW2tPk7IWK4NjadgPZ9dbTv4B56qd7A1kOEI=
-=fCmX
+iQIcBAEBCgAGBQJXIQrMAAoJELXWKTbR/J7ozMkP/3Puj2xYb0FDVqPrt95uTThl
+h+zixSPJjgc/qVh4gm2wf+61jEusPx6pESmlxjJemdgtw/zdBUky7tR5FkNyaOwR
+rpdjtbrw8oS+4rlNhlA1BszaVXnAMfV5kuKHXjCgUTHJ2khuVg3of1gCyi8/JQAU
+HRfmpBcfsBWpSJe6fS6cC8f7w3VmK7LMSKmfLdGw9JjUZsvIo5rqsFOOpq9FQ3SD
+CfSRkD0wFIA6z3oMqalCXh4FWjuyOUHp52F37mO9tIEF23D8eg63weuP8ffmtYy5
+OfN9Mf1z4FMDzY8YIN1Tx7qUq82RuflPRry+PxFVCoUk0kiYXzQJt/a1FHuOP6qT
+LVWXegKH6Fhr3vDsNvNimRMynb7AQvwrvoYSXyF8GwD4qlzaJaLmOVFvTinyS0r9
+6xTwWOCOJb923yxl8x4mylISJ4sD3C68n6vf2UZoNGNV9VtS21+/Fn8q89YMnMs8
+jtbNhoqmPnETV8Ne3PUwwqc0rp8PCwHpMs2xJ5GTknMjxZ5S1OwuNixV6G8kEqBa
+xL9K3mHhxOwq4wOlngbQ6CIo9czglJuT+9gb1lusWFbbe3wIuJLaT89IiKGXN6xl
+c2epp6Gs/eLvYDQ3Th43WcFLhskkI61jaJywPVJMtyTS2BD4AYvQEBypGP/jbl5x
+5VW9Cl/a2Au9h/yX6aTd
+=zVJO
 -----END PGP SIGNATURE-----
-
---PtXxvafiK05cffxj--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--=-=-=--
