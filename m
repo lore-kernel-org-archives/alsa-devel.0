@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: bcm2835: Add S16_LE support via packed DMA transfers" to the asoc tree
-Date: Wed, 27 Apr 2016 17:36:13 +0100
-Message-ID: <E1avSRh-0004md-40@debutante>
-References: <1461763613-28714-2-git-send-email-hias@horus.com>
+Subject: Applied "ASoC: wm_adsp: free memory when unloaded or closed" to the asoc tree
+Date: Wed, 27 Apr 2016 17:35:00 +0100
+Message-ID: <E1avSQW-0004P7-Dg@debutante>
+References: <1461765509-9431-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1461763613-28714-2-git-send-email-hias@horus.com>
+In-Reply-To: <1461765509-9431-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Matthias Reichl <hias@horus.com>
-Cc: Martin Sperl <kernel@martin.sperl.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>Martin Sperl <kernel@martin.sperl.org>, Luis de Bethencourt <luis@debethencourt.com>, alsa-devel@alsa-project.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: bcm2835: Add S16_LE support via packed DMA transfers
+   ASoC: wm_adsp: free memory when unloaded or closed
 
 has been applied to the asoc tree at
 
@@ -37,58 +37,70 @@ to this mail.
 Thanks,
 Mark
 
->From beff053c0ef6983897e3481169292e6435ef0a2d Mon Sep 17 00:00:00 2001
-From: Matthias Reichl <hias@horus.com>
-Date: Wed, 27 Apr 2016 15:26:52 +0200
-Subject: [PATCH] ASoC: bcm2835: Add S16_LE support via packed DMA transfers
+>From 66225e98b985047ef214632413cc404a6341c960 Mon Sep 17 00:00:00 2001
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Date: Wed, 27 Apr 2016 14:58:27 +0100
+Subject: [PATCH] ASoC: wm_adsp: free memory when unloaded or closed
 
-The bcm2835-i2s driver already has support for the S16_LE format but
-that format hasn't been made available because dmaengine_pcm didn't
-support packed data transfers.
+The patch adds a wm_adsp2_remove() function to ensure that memory
+is freed when the driver is unloaded or shut down.
 
-bcm2835-i2s needs 16-bit left+right channel data to be packed into
-a 32-bit word, the FIFO register is 32-bit only and doesn't support
-16-bit access.
-
-Now that dmaengine_pcm supports packed transfers the format can
-be made available by setting the SND_DMAENGINE_PCM_DAI_FLAG_PACK flag.
-
-No further configuration is necessary:
-- snd_dmaengine_dai_dma_data.addr_width is already set to
-  DMA_SLAVE_BUSWIDTH_4_BYTES to force 32-bit DMA transfers
-- dmaengine_pcm will pick up the S16_LE format from the DAI
-  configuration and make it available since it's no longer
-  masked out due to the PACK flag.
-- there are no further corner cases to catch in hw_params,
-  since the channel count is fixed at 2 we always have two
-  16-bit stereo samples that can be transferred via 32-bit DMA
-
-Signed-off-by: Matthias Reichl <hias@horus.com>
-Tested-by: Martin Sperl <kernel@martin.sperl.org>
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/bcm/bcm2835-i2s.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/codecs/wm_adsp.c | 20 ++++++++++++++++++++
+ sound/soc/codecs/wm_adsp.h |  1 +
+ 2 files changed, 21 insertions(+)
 
-diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
-index a0026e2d2f0a..6ba20498202e 100644
---- a/sound/soc/bcm/bcm2835-i2s.c
-+++ b/sound/soc/bcm/bcm2835-i2s.c
-@@ -690,6 +690,15 @@ static int bcm2835_i2s_probe(struct platform_device *pdev)
- 	dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK].maxburst = 2;
- 	dev->dma_data[SNDRV_PCM_STREAM_CAPTURE].maxburst = 2;
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index d3b1cb15e7f0..5f8727af912b 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -944,6 +944,13 @@ static void wm_adsp_ctl_work(struct work_struct *work)
+ 	kfree(ctl_work);
+ }
  
-+	/*
-+	 * Set the PACK flag to enable S16_LE support (2 S16_LE values
-+	 * packed into 32-bit transfers).
-+	 */
-+	dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK].flags =
-+		SND_DMAENGINE_PCM_DAI_FLAG_PACK;
-+	dev->dma_data[SNDRV_PCM_STREAM_CAPTURE].flags =
-+		SND_DMAENGINE_PCM_DAI_FLAG_PACK;
++static void wm_adsp_free_ctl_blk(struct wm_coeff_ctl *ctl)
++{
++	kfree(ctl->cache);
++	kfree(ctl->name);
++	kfree(ctl);
++}
 +
- 	/* BCLK ratio - use default */
- 	dev->bclk_ratio = 0;
+ static int wm_adsp_create_control(struct wm_adsp *dsp,
+ 				  const struct wm_adsp_alg_region *alg_region,
+ 				  unsigned int offset, unsigned int len,
+@@ -2340,6 +2347,19 @@ int wm_adsp2_init(struct wm_adsp *dsp)
+ }
+ EXPORT_SYMBOL_GPL(wm_adsp2_init);
  
++void wm_adsp2_remove(struct wm_adsp *dsp)
++{
++	struct wm_coeff_ctl *ctl;
++
++	while (!list_empty(&dsp->ctl_list)) {
++		ctl = list_first_entry(&dsp->ctl_list, struct wm_coeff_ctl,
++					list);
++		list_del(&ctl->list);
++		wm_adsp_free_ctl_blk(ctl);
++	}
++}
++EXPORT_SYMBOL_GPL(wm_adsp2_remove);
++
+ int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream)
+ {
+ 	struct wm_adsp_compr *compr;
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index b61cb57e600f..feb61e2c4bb4 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -92,6 +92,7 @@ extern const struct snd_kcontrol_new wm_adsp_fw_controls[];
+ 
+ int wm_adsp1_init(struct wm_adsp *dsp);
+ int wm_adsp2_init(struct wm_adsp *dsp);
++void wm_adsp2_remove(struct wm_adsp *dsp);
+ int wm_adsp2_codec_probe(struct wm_adsp *dsp, struct snd_soc_codec *codec);
+ int wm_adsp2_codec_remove(struct wm_adsp *dsp, struct snd_soc_codec *codec);
+ int wm_adsp1_event(struct snd_soc_dapm_widget *w,
 -- 
 2.8.0.rc3
