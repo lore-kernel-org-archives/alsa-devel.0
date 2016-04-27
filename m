@@ -1,19 +1,21 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
+From: Martin Sperl <kernel@martin.sperl.org>
 Subject: Re: [PATCH 1/2] ASoC: dmaengine_pcm: Add support for packed transfers
-Date: Wed, 27 Apr 2016 16:14:24 +0200
-Message-ID: <5720C940.5010809@metafoo.de>
+Date: Wed, 27 Apr 2016 16:33:12 +0200
+Message-ID: <61FCB16D-76ED-4862-8D39-A4ACCDBA0038@martin.sperl.org>
 References: <1461763613-28714-1-git-send-email-hias@horus.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1461763613-28714-1-git-send-email-hias@horus.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Matthias Reichl <hias@horus.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: kernel@martin.sperl.org
+To: Matthias Reichl <hias@horus.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/27/2016 03:26 PM, Matthias Reichl wrote:
+
+> On 27.04.2016, at 15:26, Matthias Reichl <hias@horus.com> wrote:
+> 
 > dmaengine_pcm currently only supports setups where FIFO reads/writes
 > correspond to exactly one sample, eg 16-bit sample data is transferred
 > via 16-bit FIFO accesses, 32-bit data via 32-bit accesses.
@@ -37,6 +39,4 @@ On 04/27/2016 03:26 PM, Matthias Reichl wrote:
 > 
 > Signed-off-by: Matthias Reichl <hias@horus.com>
 
-Looks good, thanks.
-
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+Tested-by: Martin Sperl <kernel@martin.sperl.org>
