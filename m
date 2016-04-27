@@ -1,42 +1,149 @@
-From: Martin Sperl <kernel@martin.sperl.org>
-Subject: Re: [PATCH 2/2] ASoC: bcm2835: Add S16_LE support via packed DMA transfers
-Date: Wed, 27 Apr 2016 16:33:14 +0200
-Message-ID: <46CBACB0-97C6-4C41-A8A2-85176794FC91@martin.sperl.org>
-References: <1461763613-28714-1-git-send-email-hias@horus.com> <1461763613-28714-2-git-send-email-hias@horus.com>
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1461763613-28714-2-git-send-email-hias@horus.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Matthias Reichl <hias@horus.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Luis de Bethencourt <luis@debethencourt.com>, alsa-devel@alsa-project.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+From: Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] ASoC fixes for v4.6
+Date: Wed, 27 Apr 2016 16:13:15 +0100
+Message-ID: <20160427151315.GW3217@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============6457411027533347967=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F7C0264FFF
+ for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2016 17:13:24 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-> On 27.04.2016, at 15:26, Matthias Reichl <hias@horus.com> wrote:
-> 
-> The bcm2835-i2s driver already has support for the S16_LE format but
-> that format hasn't been made available because dmaengine_pcm didn't
-> support packed data transfers.
-> 
-> bcm2835-i2s needs 16-bit left+right channel data to be packed into
-> a 32-bit word, the FIFO register is 32-bit only and doesn't support
-> 16-bit access.
-> 
-> Now that dmaengine_pcm supports packed transfers the format can
-> be made available by setting the SND_DMAENGINE_PCM_DAI_FLAG_PACK flag.
-> 
-> No further configuration is necessary:
-> - snd_dmaengine_dai_dma_data.addr_width is already set to
->  DMA_SLAVE_BUSWIDTH_4_BYTES to force 32-bit DMA transfers
-> - dmaengine_pcm will pick up the S16_LE format from the DAI
->  configuration and make it available since it's no longer
->  masked out due to the PACK flag.
-> - there are no further corner cases to catch in hw_params,
->  since the channel count is fixed at 2 we always have two
->  16-bit stereo samples that can be transferred via 32-bit DMA
-> 
-> Signed-off-by: Matthias Reichl <hias@horus.com>
+--===============6457411027533347967==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="93injpeb+bZ++8ip"
+Content-Disposition: inline
 
-Tested-by: Martin Sperl <kernel@martin.sperl.org>
+
+--93injpeb+bZ++8ip
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+The following changes since commit 02da2d72174c61988eb4456b53f405e3ebdebce4:
+
+  Linux 4.6-rc5 (2016-04-24 16:17:05 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v4.6-rc5
+
+for you to fetch changes up to 8c0f55100478649e3c0133684aa4aebab77ce10f:
+
+  Merge remote-tracking branches 'asoc/fix/rt5640' and 'asoc/fix/wm8962' into asoc-linus (2016-04-26 19:25:18 +0100)
+
+----------------------------------------------------------------
+ASoC: Fixes for v4.6
+
+This is a fairly large collection of fixes but almost all driver
+specific ones, especially to the new Intel drivers which have had a lot
+of recent development.  The one core fix is a change to the debugfs code
+to avoid crashes in some relatively unusual configurations.
+
+----------------------------------------------------------------
+Arnd Bergmann (2):
+      ASoC: cs35l32: avoid uninitialized variable access
+      ASoC: rt5616: add I2C dependency
+
+Ben Zhang (1):
+      ASoC: nau8825: Fix jack detection across suspend
+
+Charles Keepax (3):
+      ASoC: wm8962: Correct typo when setting DSPCLK rate
+      ASoC: arizona: Free speaker thermal IRQs in CODEC remove
+      ASoC: wm5102: Free compressed IRQ in CODEC remove
+
+Dan Carpenter (1):
+      ASoC: Intel: sst: fix a loop timeout in sst_hsw_stream_reset()
+
+Jeeja KP (2):
+      ASoC: Intel: Skylake: Fix for unloading module only when it is loaded
+      ASoC: Intel: Skylake: Fix DSP resource de-allocation
+
+Mark Brown (5):
+      ASoC: dapm: Make sure we have a card when displaying component widgets
+      Merge remote-tracking branch 'asoc/fix/dapm' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/intel' into asoc-linus
+      Merge remote-tracking branches 'asoc/fix/arizona', 'asoc/fix/cs35l32', 'asoc/fix/hdac', 'asoc/fix/nau8825' and 'asoc/fix/rt5616' into asoc-linus
+      Merge remote-tracking branches 'asoc/fix/rt5640' and 'asoc/fix/wm8962' into asoc-linus
+
+Subhransu S. Prusty (4):
+      ASoC: hdac_hdmi: Fix to use dev_pm ops instead soc pm
+      ASoC: hdac_hdmi: Fix codec power state in S3 during playback
+      ASoC: Intel: Skylake: Fix to turn OFF codec power when entering S3
+      ASoC: Intel: Skylake: Fix ibs/obs calc for non-integral sampling rates
+
+Sugar Zhang (1):
+      ASoC: rt5640: Correct the digital interface data select
+
+Vinod Koul (7):
+      ALSA: hda: use list macro for parsing on cleanup
+      ASoC: Intel: Skylake: free codec objects on removal
+      ASoC: Intel: Skylake: Freeup properly on skl_dsp_free
+      ASoC: Intel: Skylake: Unmap the address last
+      ASoC: Intel: Skylake: Call i915 exit last
+      ASoC: Intel: Skylake: remove call to pci_dev_put
+      ASoC: Intel: Skylake: Fix kbuild dependency
+
+ sound/hda/ext/hdac_ext_stream.c           |   5 +-
+ sound/soc/codecs/Kconfig                  |   1 +
+ sound/soc/codecs/arizona.c                |  12 +++
+ sound/soc/codecs/arizona.h                |   2 +
+ sound/soc/codecs/cs35l32.c                |  17 +++-
+ sound/soc/codecs/cs47l24.c                |   3 +
+ sound/soc/codecs/hdac_hdmi.c              |  94 ++++++++++------------
+ sound/soc/codecs/nau8825.c                | 126 +++++++++++++++++-------------
+ sound/soc/codecs/rt5640.c                 |   2 +-
+ sound/soc/codecs/rt5640.h                 |  36 ++++-----
+ sound/soc/codecs/wm5102.c                 |   5 ++
+ sound/soc/codecs/wm5110.c                 |   2 +
+ sound/soc/codecs/wm8962.c                 |   2 +-
+ sound/soc/codecs/wm8997.c                 |   2 +
+ sound/soc/codecs/wm8998.c                 |   2 +
+ sound/soc/intel/Kconfig                   |   1 -
+ sound/soc/intel/haswell/sst-haswell-ipc.c |   2 +-
+ sound/soc/intel/skylake/skl-sst-dsp.c     |   5 ++
+ sound/soc/intel/skylake/skl-topology.c    |  42 ++++++----
+ sound/soc/intel/skylake/skl-topology.h    |   8 +-
+ sound/soc/intel/skylake/skl.c             |  32 +++++---
+ sound/soc/soc-dapm.c                      |   7 ++
+ 22 files changed, 245 insertions(+), 163 deletions(-)
+
+--93injpeb+bZ++8ip
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEbBAEBCAAGBQJXINcKAAoJECTWi3JdVIfQX+kH91rbVd+T2Y3iSQoufYKsvk0d
+ouvvVTNJtFNeyF+ecxkPHsLqmDatzOSZSelT98DuB2DcTK80dCuIY6cVAsWxIukK
+9uRuv2c9DcDXW/fvqeQXPE3SfGnf5INYBM0eMFkOGkFDXM4A6YUltg3F2HeyWywx
+PaLBxvOMoGcOH2hkNcqI01XDSVLBX2usP19BDyiC4iB2xmNb3amJF1+9bjr+GvVb
+hXAKlxr6OOhaegjhx5juB/hE/Z8Jy1wxMQvvkkdvBAythI+P2ilUGkXDTIg6nysm
+winF5vtleZ3XS9FodI6MNBAu9CiXTP52vfKgTYYxKnSNawMFh4gPe4+V7X2kew==
+=OKiy
+-----END PGP SIGNATURE-----
+
+--93injpeb+bZ++8ip--
+
+--===============6457411027533347967==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6457411027533347967==--
