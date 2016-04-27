@@ -1,70 +1,196 @@
 From: Matthias Reichl <hias@horus.com>
-Subject: [PATCH 2/2] ASoC: bcm2835: Add S16_LE support via packed DMA transfers
-Date: Wed, 27 Apr 2016 15:26:52 +0200
-Message-ID: <1461763613-28714-2-git-send-email-hias@horus.com>
-References: <1461763613-28714-1-git-send-email-hias@horus.com>
+Subject: [PATCH 1/2] ASoC: dmaengine_pcm: Add support for
+	packed transfers
+Date: Wed, 27 Apr 2016 15:26:51 +0200
+Message-ID: <1461763613-28714-1-git-send-email-hias@horus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1461763613-28714-1-git-send-email-hias@horus.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Martin Sperl <kernel@martin.sperl.org>, Luis de Bethencourt <luis@debethencourt.com>, alsa-devel@alsa-project.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.horus.com (mail.horus.com [78.46.148.228])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8955D264FFF
+ for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2016 15:26:54 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: kernel@martin.sperl.org
 List-Id: alsa-devel@alsa-project.org
 
-The bcm2835-i2s driver already has support for the S16_LE format but
-that format hasn't been made available because dmaengine_pcm didn't
-support packed data transfers.
+dmaengine_pcm currently only supports setups where FIFO reads/writes
+correspond to exactly one sample, eg 16-bit sample data is transferred
+via 16-bit FIFO accesses, 32-bit data via 32-bit accesses.
 
-bcm2835-i2s needs 16-bit left+right channel data to be packed into
-a 32-bit word, the FIFO register is 32-bit only and doesn't support
-16-bit access.
+This patch adds support for setups with fixed width FIFOs where
+multiple samples are packed into a larger word.
 
-Now that dmaengine_pcm supports packed transfers the format can
-be made available by setting the SND_DMAENGINE_PCM_DAI_FLAG_PACK flag.
+For example setups with a 32-bit wide FIFO register that expect
+16-bit sample transfers to be done with the left+right sample data
+packed into a 32-bit word.
 
-No further configuration is necessary:
-- snd_dmaengine_dai_dma_data.addr_width is already set to
-  DMA_SLAVE_BUSWIDTH_4_BYTES to force 32-bit DMA transfers
-- dmaengine_pcm will pick up the S16_LE format from the DAI
-  configuration and make it available since it's no longer
-  masked out due to the PACK flag.
-- there are no further corner cases to catch in hw_params,
-  since the channel count is fixed at 2 we always have two
-  16-bit stereo samples that can be transferred via 32-bit DMA
+Support for packed transfers is controlled via the
+SND_DMAENGINE_PCM_DAI_FLAG_PACK flag in snd_dmaengine_dai_dma_data.flags
+
+If this flag is set dmaengine_pcm doesn't put any restriction on the
+supported formats and sets the DMA transfer width to undefined.
+
+This means control over the constraints is now transferred to the DAI
+driver and it's responsible to provide proper configuration and
+check for possible corner cases that aren't handled by the ALSA core.
 
 Signed-off-by: Matthias Reichl <hias@horus.com>
 ---
- sound/soc/bcm/bcm2835-i2s.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ include/sound/dmaengine_pcm.h         | 12 ++++++++
+ sound/core/pcm_dmaengine.c            | 11 +++++--
+ sound/soc/soc-generic-dmaengine-pcm.c | 57 +++++++++++++++++++++--------------
+ 3 files changed, 55 insertions(+), 25 deletions(-)
 
-diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
-index 1c1f221..40ba01d 100644
---- a/sound/soc/bcm/bcm2835-i2s.c
-+++ b/sound/soc/bcm/bcm2835-i2s.c
-@@ -678,6 +678,15 @@ static int bcm2835_i2s_probe(struct platform_device *pdev)
- 	dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK].maxburst = 2;
- 	dev->dma_data[SNDRV_PCM_STREAM_CAPTURE].maxburst = 2;
+diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
+index f86ef5e..67be244 100644
+--- a/include/sound/dmaengine_pcm.h
++++ b/include/sound/dmaengine_pcm.h
+@@ -51,6 +51,16 @@ struct dma_chan *snd_dmaengine_pcm_request_channel(dma_filter_fn filter_fn,
+ 	void *filter_data);
+ struct dma_chan *snd_dmaengine_pcm_get_chan(struct snd_pcm_substream *substream);
  
-+	/*
-+	 * Set the PACK flag to enable S16_LE support (2 S16_LE values
-+	 * packed into 32-bit transfers).
-+	 */
-+	dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK].flags =
-+		SND_DMAENGINE_PCM_DAI_FLAG_PACK;
-+	dev->dma_data[SNDRV_PCM_STREAM_CAPTURE].flags =
-+		SND_DMAENGINE_PCM_DAI_FLAG_PACK;
++/*
++ * The DAI supports packed transfers, eg 2 16-bit samples in a 32-bit word.
++ * If this flag is set the dmaengine driver won't put any restriction on
++ * the supported sample formats and set the DMA transfer size to undefined.
++ * The DAI driver is responsible to disable any unsupported formats in it's
++ * configuration and catch corner cases that are not already handled in
++ * the ALSA core.
++ */
++#define SND_DMAENGINE_PCM_DAI_FLAG_PACK BIT(0)
 +
- 	/* BCLK ratio - use default */
- 	dev->bclk_ratio = 0;
+ /**
+  * struct snd_dmaengine_dai_dma_data - DAI DMA configuration data
+  * @addr: Address of the DAI data source or destination register.
+@@ -63,6 +73,7 @@ struct dma_chan *snd_dmaengine_pcm_get_chan(struct snd_pcm_substream *substream)
+  * requesting the DMA channel.
+  * @chan_name: Custom channel name to use when requesting DMA channel.
+  * @fifo_size: FIFO size of the DAI controller in bytes
++ * @flags: PCM_DAI flags, only SND_DMAENGINE_PCM_DAI_FLAG_PACK for now
+  */
+ struct snd_dmaengine_dai_dma_data {
+ 	dma_addr_t addr;
+@@ -72,6 +83,7 @@ struct snd_dmaengine_dai_dma_data {
+ 	void *filter_data;
+ 	const char *chan_name;
+ 	unsigned int fifo_size;
++	unsigned int flags;
+ };
  
+ void snd_dmaengine_pcm_set_config_from_dai_data(
+diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
+index 697c166..8eb58c7 100644
+--- a/sound/core/pcm_dmaengine.c
++++ b/sound/core/pcm_dmaengine.c
+@@ -106,8 +106,9 @@ EXPORT_SYMBOL_GPL(snd_hwparams_to_dma_slave_config);
+  * direction of the substream. If the substream is a playback stream the dst
+  * fields will be initialized, if it is a capture stream the src fields will be
+  * initialized. The {dst,src}_addr_width field will only be initialized if the
+- * addr_width field of the DAI DMA data struct is not equal to
+- * DMA_SLAVE_BUSWIDTH_UNDEFINED.
++ * SND_DMAENGINE_PCM_DAI_FLAG_PACK flag is set or if the addr_width field of
++ * the DAI DMA data struct is not equal to DMA_SLAVE_BUSWIDTH_UNDEFINED. If
++ * both conditions are met the latter takes priority.
+  */
+ void snd_dmaengine_pcm_set_config_from_dai_data(
+ 	const struct snd_pcm_substream *substream,
+@@ -117,11 +118,17 @@ void snd_dmaengine_pcm_set_config_from_dai_data(
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		slave_config->dst_addr = dma_data->addr;
+ 		slave_config->dst_maxburst = dma_data->maxburst;
++		if (dma_data->flags & SND_DMAENGINE_PCM_DAI_FLAG_PACK)
++			slave_config->dst_addr_width =
++				DMA_SLAVE_BUSWIDTH_UNDEFINED;
+ 		if (dma_data->addr_width != DMA_SLAVE_BUSWIDTH_UNDEFINED)
+ 			slave_config->dst_addr_width = dma_data->addr_width;
+ 	} else {
+ 		slave_config->src_addr = dma_data->addr;
+ 		slave_config->src_maxburst = dma_data->maxburst;
++		if (dma_data->flags & SND_DMAENGINE_PCM_DAI_FLAG_PACK)
++			slave_config->src_addr_width =
++				DMA_SLAVE_BUSWIDTH_UNDEFINED;
+ 		if (dma_data->addr_width != DMA_SLAVE_BUSWIDTH_UNDEFINED)
+ 			slave_config->src_addr_width = dma_data->addr_width;
+ 	}
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index 6fd1906..6cef397 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -163,31 +163,42 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
+ 	}
+ 
+ 	/*
+-	 * Prepare formats mask for valid/allowed sample types. If the dma does
+-	 * not have support for the given physical word size, it needs to be
+-	 * masked out so user space can not use the format which produces
+-	 * corrupted audio.
+-	 * In case the dma driver does not implement the slave_caps the default
+-	 * assumption is that it supports 1, 2 and 4 bytes widths.
++	 * If SND_DMAENGINE_PCM_DAI_FLAG_PACK is set keep
++	 * hw.formats set to 0, meaning no restrictions are in place.
++	 * In this case it's the responsibility of the DAI driver to
++	 * provide the supported format information.
+ 	 */
+-	for (i = 0; i <= SNDRV_PCM_FORMAT_LAST; i++) {
+-		int bits = snd_pcm_format_physical_width(i);
+-
+-		/* Enable only samples with DMA supported physical widths */
+-		switch (bits) {
+-		case 8:
+-		case 16:
+-		case 24:
+-		case 32:
+-		case 64:
+-			if (addr_widths & (1 << (bits / 8)))
+-				hw.formats |= (1LL << i);
+-			break;
+-		default:
+-			/* Unsupported types */
+-			break;
++	if (!(dma_data->flags & SND_DMAENGINE_PCM_DAI_FLAG_PACK))
++		/*
++		 * Prepare formats mask for valid/allowed sample types. If the
++		 * dma does not have support for the given physical word size,
++		 * it needs to be masked out so user space can not use the
++		 * format which produces corrupted audio.
++		 * In case the dma driver does not implement the slave_caps the
++		 * default assumption is that it supports 1, 2 and 4 bytes
++		 * widths.
++		 */
++		for (i = 0; i <= SNDRV_PCM_FORMAT_LAST; i++) {
++			int bits = snd_pcm_format_physical_width(i);
++
++			/*
++			 * Enable only samples with DMA supported physical
++			 * widths
++			 */
++			switch (bits) {
++			case 8:
++			case 16:
++			case 24:
++			case 32:
++			case 64:
++				if (addr_widths & (1 << (bits / 8)))
++					hw.formats |= (1LL << i);
++				break;
++			default:
++				/* Unsupported types */
++				break;
++			}
+ 		}
+-	}
+ 
+ 	return snd_soc_set_runtime_hwparams(substream, &hw);
+ }
 -- 
 2.1.4
