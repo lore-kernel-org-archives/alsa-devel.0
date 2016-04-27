@@ -1,118 +1,72 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: arizona: call wm_adsp2_remove when codec driver is removed" to the asoc tree
-Date: Wed, 27 Apr 2016 17:34:57 +0100
-Message-ID: <E1avSQT-0004OJ-FA@debutante>
-References: <1461765509-9431-2-git-send-email-rf@opensource.wolfsonmicro.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1461765509-9431-2-git-send-email-rf@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2 v6] Add I2S audio support for ARC AXS10x boards
+Date: Wed, 27 Apr 2016 17:54:45 +0100
+Message-ID: <20160427165445.GG3217@sirena.org.uk>
+References: <cover.1461749984.git.joabreu@synopsys.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============3440786355351607202=="
+Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
+In-Reply-To: <cover.1461749984.git.joabreu@synopsys.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
+List-Post: <mailto:linux-snps-arc@lists.infradead.org>
+List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-snps-arc" <linux-snps-arc-bounces@lists.infradead.org>
+Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
+To: Jose Abreu <Jose.Abreu@synopsys.com>
+Cc: Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Alexey Brodkin <Alexey.Brodkin@synopsys.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org, Carlos Palminha <CARLOS.PALMINHA@synopsys.com>, linux-snps-arc@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: arizona: call wm_adsp2_remove when codec driver is removed
+--===============3440786355351607202==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="77juosrL+unDT9wJ"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--77juosrL+unDT9wJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Wed, Apr 27, 2016 at 11:05:18AM +0100, Jose Abreu wrote:
+> ARC AXS10x platforms consist of a mainboard with several peripherals.
+> One of those peripherals is an HDMI output port controlled by the ADV7511
+> transmitter.
+>=20
+> This patch set adds I2S audio for the AXS10x platform.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+I don't seem to have the second patch here.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--77juosrL+unDT9wJ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Thanks,
-Mark
+iQEcBAEBCAAGBQJXIO7UAAoJECTWi3JdVIfQ2aMH+QF9Ros/E1uRxnR7uOVUX5Zc
+OOUKNlzY3ks2RB0Vv1ApGp6+SDeM5rZJzId2oYlZhBxtP0M7IYGBBDrNyH9uK5dW
+XbseEpLgiQ+KwEnZCND/vZpnz6r7X6vu80zPiRhmO7Krha9vtLCpvyIMzu9jshGF
+MpAxslfwCRdvKYuwlX6QuTOsowqRJ+7xwH/dOstl1POxQCP0288/6PbOS+dpx3qX
+tEm++3OM67JAAjXpaNywYbNdAd3azl8a8/4D/8TvtBcPLSMW6i0LGt9OlKiDp6oT
+MfQjzDpqzM9NBe7VmiqewERcPEl6kCm+mW+TEpqKboZSGuvmygKA/yrfDRznH1c=
+=Tags
+-----END PGP SIGNATURE-----
 
->From 401cf1466a59139ec1805e2171d43a32be92f89c Mon Sep 17 00:00:00 2001
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Date: Wed, 27 Apr 2016 14:58:28 +0100
-Subject: [PATCH] ASoC: arizona: call wm_adsp2_remove when codec driver is
- removed
+--77juosrL+unDT9wJ--
 
-Ensure that the wm_adsp driver cleans up when the codec driver
-is removed.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/cs47l24.c | 5 +++++
- sound/soc/codecs/wm5102.c  | 4 ++++
- sound/soc/codecs/wm5110.c  | 6 ++++++
- 3 files changed, 15 insertions(+)
+--===============3440786355351607202==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
-index 576087bda330..29313780a38a 100644
---- a/sound/soc/codecs/cs47l24.c
-+++ b/sound/soc/codecs/cs47l24.c
-@@ -1238,10 +1238,15 @@ static int cs47l24_probe(struct platform_device *pdev)
- 
- static int cs47l24_remove(struct platform_device *pdev)
- {
-+	struct cs47l24_priv *cs47l24 = platform_get_drvdata(pdev);
-+
- 	snd_soc_unregister_platform(&pdev->dev);
- 	snd_soc_unregister_codec(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 
-+	wm_adsp2_remove(&cs47l24->core.adsp[1]);
-+	wm_adsp2_remove(&cs47l24->core.adsp[2]);
-+
- 	return 0;
- }
- 
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index a8b3e3f701f9..7a539e0529c0 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -2093,10 +2093,14 @@ static int wm5102_probe(struct platform_device *pdev)
- 
- static int wm5102_remove(struct platform_device *pdev)
- {
-+	struct wm5102_priv *wm5102 = platform_get_drvdata(pdev);
-+
- 	snd_soc_unregister_platform(&pdev->dev);
- 	snd_soc_unregister_codec(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 
-+	wm_adsp2_remove(&wm5102->core.adsp[0]);
-+
- 	return 0;
- }
- 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 83ba70fe16e6..dd87af1ffa23 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -2435,10 +2435,16 @@ static int wm5110_probe(struct platform_device *pdev)
- 
- static int wm5110_remove(struct platform_device *pdev)
- {
-+	struct wm5110_priv *wm5110 = platform_get_drvdata(pdev);
-+	int i;
-+
- 	snd_soc_unregister_platform(&pdev->dev);
- 	snd_soc_unregister_codec(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 
-+	for (i = 0; i < WM5110_NUM_ADSP; i++)
-+		wm_adsp2_remove(&wm5110->core.adsp[i]);
-+
- 	return 0;
- }
- 
--- 
-2.8.0.rc3
+_______________________________________________
+linux-snps-arc mailing list
+linux-snps-arc@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-snps-arc
+--===============3440786355351607202==--
