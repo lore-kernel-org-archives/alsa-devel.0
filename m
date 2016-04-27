@@ -1,97 +1,51 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: pcm: allow changing the
- playback/capture rates for symmetric links
-Date: Wed, 27 Apr 2016 17:15:04 +0100
-Message-ID: <20160427161504.GZ3217@sirena.org.uk>
-References: <1461746959-11443-1-git-send-email-peda@axentia.se>
+Subject: Re: [PATCH] ASoC: atmel_ssc_dai: note buggy I2S support when the
+ codec masters LRCLK
+Date: Wed, 27 Apr 2016 17:23:44 +0100
+Message-ID: <20160427162344.GA3217@sirena.org.uk>
+References: <1461747993-11516-1-git-send-email-peda@axentia.se>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0462689004275584028=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E6FD261703
- for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2016 18:15:12 +0200 (CEST)
-In-Reply-To: <1461746959-11443-1-git-send-email-peda@axentia.se>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="exZFuA0xp9ffbpTM"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1461747993-11516-1-git-send-email-peda@axentia.se>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Peter Rosin <peda@axentia.se>
-Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0462689004275584028==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="iwOtj70Sz1+p37c3"
-Content-Disposition: inline
-
-
---iwOtj70Sz1+p37c3
+--exZFuA0xp9ffbpTM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Apr 27, 2016 at 10:49:19AM +0200, Peter Rosin wrote:
+On Wed, Apr 27, 2016 at 11:06:33AM +0200, Peter Rosin wrote:
 
-> The below program fails on a dai link with symmetric rates without this
-> patch. The patch makes it work.
+> While the start condition is correct for the left channel word in the I2S
+> case, it is not correct that the right channel word follows immediately
+> after the left channel word. The start of the right channel word should
+> be triggered by a rising edge on LRCLK in the I2S case, something which
+> simply does not happen.
 
-You've not articulated the problem you're trying to fix here, what in
-concrete terms is the program trying to accomplish and why should it
-succeed?
+Almost every programmable serial port does this, it's a very common
+issue which is why we always try to go for exact clocking where we can -
+it greatly improves the interoperability for I2S if there are no dead
+clocks.
 
->     if ((fd = open("/dev/dsp", O_WRONLY, 0)) == -1) {
->             perror("open");
->             return 1;
->     }
-
-This is using the OSS interfaces which really haven't ever been
-especially supported for ASoC.
-
-> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-> +		if (!cpu_dai->capture_active)
-> +			return 0;
-> +	} else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-> +		if (!cpu_dai->playback_active)
-> +			return 0;
-> +	}
-> +
->  	rate = params_rate(params);
->  	channels = params_channels(params);
->  	sample_bits = snd_pcm_format_physical_width(params_format(params));
-
-This means we've opened up a race where the stream is configured but not
-started where the opposite direction can configure a different setup.
-Since starting both directions very close together is a common operation
-it seems likely to cause issues.
-
---iwOtj70Sz1+p37c3
+--exZFuA0xp9ffbpTM
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXIOWHAAoJECTWi3JdVIfQU2kH/R921cVN0sx1JZWj0x1Y0++d
-7dvtSh2Tg0mQ4UharOjjvjarALgIoaxT9S48W5ECNaAY/XV8qSDnkS4bmJyEl8eR
-f0ekxEfx3KVgAGlV7Um4jNDZKJa31bjfsXUueEJ4ezeyKHK5IRY0kYv093fVMp+w
-meDdX4gZ01zmogUD+QbpKskTmTro00ctcOSo8mtgAhXzYZPX7CPyKSXRU9GeAkSB
-k+DCCqU+3yPTK3LRKYe08OO4rQocYyQXMzjjXvB4cCQOrj3Z54mlZMW2j/9JsPSc
-8Jd+dRnRM78npg/DEp2jNS0OIp6R4U85BbZL7lC253Wy7SVciXCHcPb+U5ovtsY=
-=dM+p
+iQEcBAEBCAAGBQJXIOePAAoJECTWi3JdVIfQroEH/iNCF4oV5LeTXOuSvnSQC2gp
+UPmE3Nslut1u/L7R3k6DPPWqkrLhxE9K9imVIqBvEFB+vOPEwhodm/E+1dLXS8Vf
+zsh1nmmtiVBK7tOpVaPteyt6cKeKJsCkVbwj9RKx2SYTmZGJsNl5uIhqnemKeI71
+7AncjhbT3V7QCb57JbCXSd/gPi2v76Otr+zcx+YL5zFIxJjel86ebxImxlB9dwLG
+H1EQEoe7YvchM3rByeel8tcth/enD1MI6JFlWhbGX/sI1wbyK8jA6F+x2MsBBKwH
+TgtTBqa87Sfajw/TvGUwN/pjNyFQzCgaMq0CDwRrnV+QB/T9iv4/DlYzR+CcbZ8=
+=J6Bw
 -----END PGP SIGNATURE-----
 
---iwOtj70Sz1+p37c3--
-
---===============0462689004275584028==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0462689004275584028==--
+--exZFuA0xp9ffbpTM--
