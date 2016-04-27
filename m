@@ -1,74 +1,70 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Applied "ASoC: hdmi-codec: Add ELD control" to the
-	asoc tree
-Date: Wed, 27 Apr 2016 11:14:42 +0100
-Message-ID: <20160427101442.GH3217@sirena.org.uk>
-References: <1461142804-26728-4-git-send-email-p.zabel@pengutronix.de>
- <E1atHJ9-0003ey-9b@debutante>
- <20160427094219.GL19428@n2100.arm.linux.org.uk>
+From: Matthias Reichl <hias@horus.com>
+Subject: [PATCH 2/2] ASoC: bcm2835: Add S16_LE support via packed DMA transfers
+Date: Wed, 27 Apr 2016 15:26:52 +0200
+Message-ID: <1461763613-28714-2-git-send-email-hias@horus.com>
+References: <1461763613-28714-1-git-send-email-hias@horus.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0905494736294692479=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 21726265080
- for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2016 12:15:01 +0200 (CEST)
-In-Reply-To: <20160427094219.GL19428@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, kernel@pengutronix.de, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Koro Chen <koro.chen@mediatek.com>, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-mediatek@lists.infradead.org, Daniel Kurtz <djkurtz@chromium.org>, Philipp Zabel <p.zabel@pengutronix.de>, PC Liao <pc.liao@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>, Cawa Cheng <cawa.cheng@mediatek.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1461763613-28714-1-git-send-email-hias@horus.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Martin Sperl <kernel@martin.sperl.org>, Luis de Bethencourt <luis@debethencourt.com>, alsa-devel@alsa-project.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+The bcm2835-i2s driver already has support for the S16_LE format but
+that format hasn't been made available because dmaengine_pcm didn't
+support packed data transfers.
 
---===============0905494736294692479==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="30y3C67tAc+6DFNM"
-Content-Disposition: inline
+bcm2835-i2s needs 16-bit left+right channel data to be packed into
+a 32-bit word, the FIFO register is 32-bit only and doesn't support
+16-bit access.
 
+Now that dmaengine_pcm supports packed transfers the format can
+be made available by setting the SND_DMAENGINE_PCM_DAI_FLAG_PACK flag.
 
---30y3C67tAc+6DFNM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+No further configuration is necessary:
+- snd_dmaengine_dai_dma_data.addr_width is already set to
+  DMA_SLAVE_BUSWIDTH_4_BYTES to force 32-bit DMA transfers
+- dmaengine_pcm will pick up the S16_LE format from the DAI
+  configuration and make it available since it's no longer
+  masked out due to the PACK flag.
+- there are no further corner cases to catch in hw_params,
+  since the channel count is fixed at 2 we always have two
+  16-bit stereo samples that can be transferred via 32-bit DMA
 
-On Wed, Apr 27, 2016 at 10:42:19AM +0100, Russell King - ARM Linux wrote:
+Signed-off-by: Matthias Reichl <hias@horus.com>
+---
+ sound/soc/bcm/bcm2835-i2s.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-> It would have been good to have this as a generic ALSA control rather than
-> an ASoC control.  The dw-hdmi driver is an ALSA driver, and now we have to
-> re-invent this for ALSA...
-
-We can always just incrementally move the code to the ALSA top level,
-though it's so thin that I'm not sure it's really buying much.
-
---30y3C67tAc+6DFNM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXIJERAAoJECTWi3JdVIfQNKQH/3R+eJoWI5tGu0G54tU0Ledz
-MIpky8D3ma9+Hu4zN7Yd/8Wz+Y+vexkUfcrG8K05BQSef3D35wTWPD3eWemUdl3U
-1aFycxaO12njUssiDTCSCQkNN5WkGOe2rVXrOWDQBWooLQQwvejZL6fMWGW4ucBl
-2+lESi1hduLEoPSf6qoC9U3a86KA6Mab8FFPqQxuBWoccCUKD3t3Bz7qGI4U+ZEJ
-xxMeyuL4yK1zi4l7rXzQREcZYLm4plcXVixJvYq4eTzG24TD0D1pLnyROYwrOkj1
-Wqm4h2saj2FT5LyL9w2wvGFA5reDuAx2IdnLB+9sG0+LEnGAjNxyJZpZUZnTwAs=
-=zbnS
------END PGP SIGNATURE-----
-
---30y3C67tAc+6DFNM--
-
---===============0905494736294692479==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0905494736294692479==--
+diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+index 1c1f221..40ba01d 100644
+--- a/sound/soc/bcm/bcm2835-i2s.c
++++ b/sound/soc/bcm/bcm2835-i2s.c
+@@ -678,6 +678,15 @@ static int bcm2835_i2s_probe(struct platform_device *pdev)
+ 	dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK].maxburst = 2;
+ 	dev->dma_data[SNDRV_PCM_STREAM_CAPTURE].maxburst = 2;
+ 
++	/*
++	 * Set the PACK flag to enable S16_LE support (2 S16_LE values
++	 * packed into 32-bit transfers).
++	 */
++	dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK].flags =
++		SND_DMAENGINE_PCM_DAI_FLAG_PACK;
++	dev->dma_data[SNDRV_PCM_STREAM_CAPTURE].flags =
++		SND_DMAENGINE_PCM_DAI_FLAG_PACK;
++
+ 	/* BCLK ratio - use default */
+ 	dev->bclk_ratio = 0;
+ 
+-- 
+2.1.4
