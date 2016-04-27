@@ -1,41 +1,41 @@
 From: Martin Sperl <kernel@martin.sperl.org>
-Subject: Re: [PATCH 1/2] ASoC: dmaengine_pcm: Add support for packed transfers
-Date: Wed, 27 Apr 2016 16:33:12 +0200
-Message-ID: <61FCB16D-76ED-4862-8D39-A4ACCDBA0038@martin.sperl.org>
-References: <1461763613-28714-1-git-send-email-hias@horus.com>
+Subject: Re: [PATCH 2/2] ASoC: bcm2835: Add S16_LE support via packed DMA transfers
+Date: Wed, 27 Apr 2016 16:33:14 +0200
+Message-ID: <46CBACB0-97C6-4C41-A8A2-85176794FC91@martin.sperl.org>
+References: <1461763613-28714-1-git-send-email-hias@horus.com> <1461763613-28714-2-git-send-email-hias@horus.com>
 Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1461763613-28714-1-git-send-email-hias@horus.com>
+In-Reply-To: <1461763613-28714-2-git-send-email-hias@horus.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Matthias Reichl <hias@horus.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Luis de Bethencourt <luis@debethencourt.com>, alsa-devel@alsa-project.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
 > On 27.04.2016, at 15:26, Matthias Reichl <hias@horus.com> wrote:
 > 
-> dmaengine_pcm currently only supports setups where FIFO reads/writes
-> correspond to exactly one sample, eg 16-bit sample data is transferred
-> via 16-bit FIFO accesses, 32-bit data via 32-bit accesses.
+> The bcm2835-i2s driver already has support for the S16_LE format but
+> that format hasn't been made available because dmaengine_pcm didn't
+> support packed data transfers.
 > 
-> This patch adds support for setups with fixed width FIFOs where
-> multiple samples are packed into a larger word.
+> bcm2835-i2s needs 16-bit left+right channel data to be packed into
+> a 32-bit word, the FIFO register is 32-bit only and doesn't support
+> 16-bit access.
 > 
-> For example setups with a 32-bit wide FIFO register that expect
-> 16-bit sample transfers to be done with the left+right sample data
-> packed into a 32-bit word.
+> Now that dmaengine_pcm supports packed transfers the format can
+> be made available by setting the SND_DMAENGINE_PCM_DAI_FLAG_PACK flag.
 > 
-> Support for packed transfers is controlled via the
-> SND_DMAENGINE_PCM_DAI_FLAG_PACK flag in snd_dmaengine_dai_dma_data.flags
-> 
-> If this flag is set dmaengine_pcm doesn't put any restriction on the
-> supported formats and sets the DMA transfer width to undefined.
-> 
-> This means control over the constraints is now transferred to the DAI
-> driver and it's responsible to provide proper configuration and
-> check for possible corner cases that aren't handled by the ALSA core.
+> No further configuration is necessary:
+> - snd_dmaengine_dai_dma_data.addr_width is already set to
+>  DMA_SLAVE_BUSWIDTH_4_BYTES to force 32-bit DMA transfers
+> - dmaengine_pcm will pick up the S16_LE format from the DAI
+>  configuration and make it available since it's no longer
+>  masked out due to the PACK flag.
+> - there are no further corner cases to catch in hw_params,
+>  since the channel count is fixed at 2 we always have two
+>  16-bit stereo samples that can be transferred via 32-bit DMA
 > 
 > Signed-off-by: Matthias Reichl <hias@horus.com>
 
