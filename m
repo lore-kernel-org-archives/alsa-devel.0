@@ -1,79 +1,53 @@
-From: Jose Abreu <Jose.Abreu@synopsys.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 Subject: Re: [PATCH 2/2 v6] ASoC: dwc: Update DOCUMENTATION for I2S Driver
-Date: Wed, 27 Apr 2016 18:32:42 +0100
-Message-ID: <5720F7BA.9030500@synopsys.com>
+Date: Wed, 27 Apr 2016 18:35:39 +0100
+Message-ID: <20160427173539.GI3217@sirena.org.uk>
 References: <cover.1461749984.git.joabreu@synopsys.com>
  <30ee79f0744cdf3561d43654f1ecf3d486bf7a08.1461749984.git.joabreu@synopsys.com>
+ <5720F7BA.9030500@synopsys.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <30ee79f0744cdf3561d43654f1ecf3d486bf7a08.1461749984.git.joabreu@synopsys.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: Rob Herring <robh@kernel.org>, Carlos Palminha <CARLOS.PALMINHA@synopsys.com>, Alexey Brodkin <Alexey.Brodkin@synopsys.com>, devicetree@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="PtXxvafiK05cffxj"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <5720F7BA.9030500-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Carlos Palminha <CARLOS.PALMINHA-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, Alexey Brodkin <Alexey.Brodkin-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-Sorry. Follows bellow.
+--PtXxvafiK05cffxj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 27-04-2016 11:05, Jose Abreu wrote:
-> This patch updates documentation for the Designware I2S
-> driver.
->
-> Signed-off-by: Jose Abreu <joabreu@synopsys.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: Carlos Palminha <palminha@synopsys.com>
-> Cc: Alexey Brodkin <abrodkin@synopsys.com>
-> Cc: devicetree@vger.kernel.org
-> Cc: linux-snps-arc@lists.infradead.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->
-> No changes v5 -> v6.
->
-> Changes v4 -> v5:
-> * interrupts is now required property
-> * Drop 'snps-use-dmaengine' property
->
-> This patch was only introduced in v4.
->
->  Documentation/devicetree/bindings/sound/designware-i2s.txt | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/sound/designware-i2s.txt b/Documentation/devicetree/bindings/sound/designware-i2s.txt
-> index 7bb5424..27a728f 100644
-> --- a/Documentation/devicetree/bindings/sound/designware-i2s.txt
-> +++ b/Documentation/devicetree/bindings/sound/designware-i2s.txt
-> @@ -3,14 +3,18 @@ DesignWare I2S controller
->  Required properties:
->   - compatible : Must be "snps,designware-i2s"
->   - reg : Must contain the I2S core's registers location and length
-> + - interrupts: <IRQ> where IRQ is the interrupt number.
->   - clocks : Pairs of phandle and specifier referencing the controller's
->     clocks. The controller expects one clock: the clock used as the sampling
->     rate reference clock sample.
->   - clock-names : "i2sclk" for the sample rate reference clock.
-> +
-> +Optional properties:
->   - dmas: Pairs of phandle and specifier for the DMA channels that are used by
->     the core. The core expects one or two dma channels: one for transmit and
-> -   one for receive.
-> - - dma-names : "tx" for the transmit channel, "rx" for the receive channel.
-> +   one for receive. Set this parameter if the I2S DMA block is enabled.
-> + - dma-names : "tx" for the transmit channel, "rx" for the receive channel. Set
-> +   this parameter if the I2S DMA block is enabled.
->  
->  For more details on the 'dma', 'dma-names', 'clock' and 'clock-names'
->  properties please check:
-> @@ -23,6 +27,7 @@ Example:
->  	soc_i2s: i2s@7ff90000 {
->  		compatible = "snps,designware-i2s";
->  		reg = <0x0 0x7ff90000 0x0 0x1000>;
-> +		interrupts = <15>;
->  		clocks = <&scpi_i2sclk 0>;
->  		clock-names = "i2sclk";
->  		#sound-dai-cells = <0>;
+On Wed, Apr 27, 2016 at 06:32:42PM +0100, Jose Abreu wrote:
+> Hi Mark,
+>=20
+> Sorry. Follows bellow.
+>=20
+> On 27-04-2016 11:05, Jose Abreu wrote:
+
+I can't apply a quote of a patch, please resend.
+
+--PtXxvafiK05cffxj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXIPhqAAoJECTWi3JdVIfQb/wH/3fadsfuq/wWquWESwLM9xxx
+w99KHOt2obGwOEoYmOH1AZyVxSwucHWlHWEooR2n5lvDgIkgDU5W2tMhcHtJ+0k2
+0M3A9cAdbMEDoyA1Gty+Jh8vWwrSkXmv8szpVHgPIpe9lhiao5s8rfOZnxV4NOUU
+ajR88qTwIwaRm5b3T1ewb1INVKrjoU6L6pgO1ep6p11e5qmQe1qy3Eam3OFHMIc5
+G4cNADh+uJN0V4PfM7wsu0uJw2m8PIw+3jCurwnLUsK/SsrfBOldrqY+zHnql/AK
+t5K5fEPa8oshwQvjDFmGIbDybxiRW2tPk7IWK4NjadgPZ9dbTv4B56qd7A1kOEI=
+=fCmX
+-----END PGP SIGNATURE-----
+
+--PtXxvafiK05cffxj--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
