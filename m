@@ -1,73 +1,86 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/3] ASoC: wm_adsp: free memory when unloaded or closed
-Date: Wed, 27 Apr 2016 14:58:27 +0100
-Message-ID: <1461765509-9431-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/3] ASoC: arizona: call wm_adsp2_remove when codec driver is removed
+Date: Wed, 27 Apr 2016 14:58:28 +0100
+Message-ID: <1461765509-9431-2-git-send-email-rf@opensource.wolfsonmicro.com>
+References: <1461765509-9431-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1461765509-9431-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org
 Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch adds a wm_adsp2_remove() function to ensure that memory
-is freed when the driver is unloaded or shut down.
+Ensure that the wm_adsp driver cleans up when the codec driver
+is removed.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm_adsp.c | 20 ++++++++++++++++++++
- sound/soc/codecs/wm_adsp.h |  1 +
- 2 files changed, 21 insertions(+)
+ sound/soc/codecs/cs47l24.c | 5 +++++
+ sound/soc/codecs/wm5102.c  | 4 ++++
+ sound/soc/codecs/wm5110.c  | 6 ++++++
+ 3 files changed, 15 insertions(+)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index b6470de..c350a52 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1039,6 +1039,13 @@ static void wm_adsp_ctl_work(struct work_struct *work)
- 	kfree(ctl_work);
- }
+diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
+index e7c25d4..e34e9a6 100644
+--- a/sound/soc/codecs/cs47l24.c
++++ b/sound/soc/codecs/cs47l24.c
+@@ -1274,10 +1274,15 @@ static int cs47l24_probe(struct platform_device *pdev)
  
-+static void wm_adsp_free_ctl_blk(struct wm_coeff_ctl *ctl)
-+{
-+	kfree(ctl->cache);
-+	kfree(ctl->name);
-+	kfree(ctl);
-+}
-+
- static int wm_adsp_create_control(struct wm_adsp *dsp,
- 				  const struct wm_adsp_alg_region *alg_region,
- 				  unsigned int offset, unsigned int len,
-@@ -2434,6 +2441,19 @@ int wm_adsp2_init(struct wm_adsp *dsp)
- }
- EXPORT_SYMBOL_GPL(wm_adsp2_init);
- 
-+void wm_adsp2_remove(struct wm_adsp *dsp)
-+{
-+	struct wm_coeff_ctl *ctl;
-+
-+	while (!list_empty(&dsp->ctl_list)) {
-+		ctl = list_first_entry(&dsp->ctl_list, struct wm_coeff_ctl,
-+					list);
-+		list_del(&ctl->list);
-+		wm_adsp_free_ctl_blk(ctl);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(wm_adsp2_remove);
-+
- int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream)
+ static int cs47l24_remove(struct platform_device *pdev)
  {
- 	struct wm_adsp_compr *compr;
-diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index b61cb57..feb61e2 100644
---- a/sound/soc/codecs/wm_adsp.h
-+++ b/sound/soc/codecs/wm_adsp.h
-@@ -92,6 +92,7 @@ extern const struct snd_kcontrol_new wm_adsp_fw_controls[];
++	struct cs47l24_priv *cs47l24 = platform_get_drvdata(pdev);
++
+ 	snd_soc_unregister_platform(&pdev->dev);
+ 	snd_soc_unregister_codec(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
  
- int wm_adsp1_init(struct wm_adsp *dsp);
- int wm_adsp2_init(struct wm_adsp *dsp);
-+void wm_adsp2_remove(struct wm_adsp *dsp);
- int wm_adsp2_codec_probe(struct wm_adsp *dsp, struct snd_soc_codec *codec);
- int wm_adsp2_codec_remove(struct wm_adsp *dsp, struct snd_soc_codec *codec);
- int wm_adsp1_event(struct snd_soc_dapm_widget *w,
++	wm_adsp2_remove(&cs47l24->core.adsp[1]);
++	wm_adsp2_remove(&cs47l24->core.adsp[2]);
++
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index fcc460f..5891c34 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -2098,10 +2098,14 @@ static int wm5102_probe(struct platform_device *pdev)
+ 
+ static int wm5102_remove(struct platform_device *pdev)
+ {
++	struct wm5102_priv *wm5102 = platform_get_drvdata(pdev);
++
+ 	snd_soc_unregister_platform(&pdev->dev);
+ 	snd_soc_unregister_codec(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 
++	wm_adsp2_remove(&wm5102->core.adsp[0]);
++
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index ca42cfd..88fc924 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -2437,10 +2437,16 @@ static int wm5110_probe(struct platform_device *pdev)
+ 
+ static int wm5110_remove(struct platform_device *pdev)
+ {
++	struct wm5110_priv *wm5110 = platform_get_drvdata(pdev);
++	int i;
++
+ 	snd_soc_unregister_platform(&pdev->dev);
+ 	snd_soc_unregister_codec(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 
++	for (i = 0; i < WM5110_NUM_ADSP; i++)
++		wm_adsp2_remove(&wm5110->core.adsp[i]);
++
+ 	return 0;
+ }
+ 
 -- 
 1.9.1
