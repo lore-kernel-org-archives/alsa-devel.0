@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel_ssc_dai: read DSP mode A data on rising edges of bclk" to the asoc tree
-Date: Wed, 27 Apr 2016 17:35:03 +0100
-Message-ID: <E1avSQZ-0004Q5-Ck@debutante>
-References: <1461740809-10101-1-git-send-email-peda@axentia.se>
+Subject: Applied "ASoC: bcm2835: Add S16_LE support via packed DMA transfers" to the asoc tree
+Date: Wed, 27 Apr 2016 17:36:13 +0100
+Message-ID: <E1avSRh-0004md-40@debutante>
+References: <1461763613-28714-2-git-send-email-hias@horus.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1461740809-10101-1-git-send-email-peda@axentia.se>
+In-Reply-To: <1461763613-28714-2-git-send-email-hias@horus.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Rosin <peda@axentia.se>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>
+To: Matthias Reichl <hias@horus.com>
+Cc: Martin Sperl <kernel@martin.sperl.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>Martin Sperl <kernel@martin.sperl.org>, Luis de Bethencourt <luis@debethencourt.com>, alsa-devel@alsa-project.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel_ssc_dai: read DSP mode A data on rising edges of bclk
+   ASoC: bcm2835: Add S16_LE support via packed DMA transfers
 
 has been applied to the asoc tree at
 
@@ -37,39 +37,58 @@ to this mail.
 Thanks,
 Mark
 
->From 80833ff0eea693d8e0c3305a869159a64141fdad Mon Sep 17 00:00:00 2001
-From: Peter Rosin <peda@axentia.se>
-Date: Wed, 27 Apr 2016 09:06:49 +0200
-Subject: [PATCH] ASoC: atmel_ssc_dai: read DSP mode A data on rising edges of
- bclk
+>From beff053c0ef6983897e3481169292e6435ef0a2d Mon Sep 17 00:00:00 2001
+From: Matthias Reichl <hias@horus.com>
+Date: Wed, 27 Apr 2016 15:26:52 +0200
+Subject: [PATCH] ASoC: bcm2835: Add S16_LE support via packed DMA transfers
 
-Signed-off-by: Peter Rosin <peda@axentia.se>
+The bcm2835-i2s driver already has support for the S16_LE format but
+that format hasn't been made available because dmaengine_pcm didn't
+support packed data transfers.
+
+bcm2835-i2s needs 16-bit left+right channel data to be packed into
+a 32-bit word, the FIFO register is 32-bit only and doesn't support
+16-bit access.
+
+Now that dmaengine_pcm supports packed transfers the format can
+be made available by setting the SND_DMAENGINE_PCM_DAI_FLAG_PACK flag.
+
+No further configuration is necessary:
+- snd_dmaengine_dai_dma_data.addr_width is already set to
+  DMA_SLAVE_BUSWIDTH_4_BYTES to force 32-bit DMA transfers
+- dmaengine_pcm will pick up the S16_LE format from the DAI
+  configuration and make it available since it's no longer
+  masked out due to the PACK flag.
+- there are no further corner cases to catch in hw_params,
+  since the channel count is fixed at 2 we always have two
+  16-bit stereo samples that can be transferred via 32-bit DMA
+
+Signed-off-by: Matthias Reichl <hias@horus.com>
+Tested-by: Martin Sperl <kernel@martin.sperl.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/atmel_ssc_dai.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/bcm/bcm2835-i2s.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index 276897033639..1267e1af0fae 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -652,7 +652,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 		rcmr =	  SSC_BF(RCMR_PERIOD, ssc_p->rcmr_period)
- 			| SSC_BF(RCMR_STTDLY, 1)
- 			| SSC_BF(RCMR_START, SSC_START_RISING_RF)
--			| SSC_BF(RCMR_CKI, SSC_CKI_FALLING)
-+			| SSC_BF(RCMR_CKI, SSC_CKI_RISING)
- 			| SSC_BF(RCMR_CKO, SSC_CKO_NONE)
- 			| SSC_BF(RCMR_CKS, SSC_CKS_DIV);
+diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+index a0026e2d2f0a..6ba20498202e 100644
+--- a/sound/soc/bcm/bcm2835-i2s.c
++++ b/sound/soc/bcm/bcm2835-i2s.c
+@@ -690,6 +690,15 @@ static int bcm2835_i2s_probe(struct platform_device *pdev)
+ 	dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK].maxburst = 2;
+ 	dev->dma_data[SNDRV_PCM_STREAM_CAPTURE].maxburst = 2;
  
-@@ -692,7 +692,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 		rcmr =	  SSC_BF(RCMR_PERIOD, 0)
- 			| SSC_BF(RCMR_STTDLY, START_DELAY)
- 			| SSC_BF(RCMR_START, SSC_START_RISING_RF)
--			| SSC_BF(RCMR_CKI, SSC_CKI_FALLING)
-+			| SSC_BF(RCMR_CKI, SSC_CKI_RISING)
- 			| SSC_BF(RCMR_CKO, SSC_CKO_NONE)
- 			| SSC_BF(RCMR_CKS, ssc->clk_from_rk_pin ?
- 					   SSC_CKS_PIN : SSC_CKS_CLOCK);
++	/*
++	 * Set the PACK flag to enable S16_LE support (2 S16_LE values
++	 * packed into 32-bit transfers).
++	 */
++	dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK].flags =
++		SND_DMAENGINE_PCM_DAI_FLAG_PACK;
++	dev->dma_data[SNDRV_PCM_STREAM_CAPTURE].flags =
++		SND_DMAENGINE_PCM_DAI_FLAG_PACK;
++
+ 	/* BCLK ratio - use default */
+ 	dev->bclk_ratio = 0;
+ 
 -- 
 2.8.0.rc3
