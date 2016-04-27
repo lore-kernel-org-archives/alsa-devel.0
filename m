@@ -1,86 +1,68 @@
 From: Peter Rosin <peda@axentia.se>
-Subject: Re: [PATCH] ASoC: pcm: allow changing the
- playback/capture rates for symmetric links
-Date: Wed, 27 Apr 2016 22:45:48 +0200
-Message-ID: <122ca84a-230e-654e-425f-3adb0ca00ec7@axentia.se>
-References: <1461746959-11443-1-git-send-email-peda@axentia.se>
- <20160427161504.GZ3217@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: atmel_ssc_dai: note buggy I2S support when the
+ codec masters LRCLK
+Date: Wed, 27 Apr 2016 23:29:53 +0200
+Message-ID: <29d9da68-789d-d3ea-cb9a-0230596e3069@axentia.se>
+References: <1461747993-11516-1-git-send-email-peda@axentia.se>
+ <20160427162344.GA3217@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from emea01-db3-obe.outbound.protection.outlook.com
- (mail-db3on0125.outbound.protection.outlook.com [157.55.234.125])
- by alsa0.perex.cz (Postfix) with ESMTP id EB9C1264FFF
- for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2016 22:45:57 +0200 (CEST)
-In-Reply-To: <20160427161504.GZ3217@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160427162344.GA3217@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2016-04-27 18:15, Mark Brown wrote:
-> On Wed, Apr 27, 2016 at 10:49:19AM +0200, Peter Rosin wrote:
+On 2016-04-27 18:23, Mark Brown wrote:
+> On Wed, Apr 27, 2016 at 11:06:33AM +0200, Peter Rosin wrote:
 >
->> The below program fails on a dai link with symmetric rates without this
->> patch. The patch makes it work.
+>> While the start condition is correct for the left channel word in the I2S
+>> case, it is not correct that the right channel word follows immediately
+>> after the left channel word. The start of the right channel word should
+>> be triggered by a rising edge on LRCLK in the I2S case, something which
+>> simply does not happen.
 >
-> You've not articulated the problem you're trying to fix here, what in
-> concrete terms is the program trying to accomplish and why should it
-> succeed?
+> Almost every programmable serial port does this, it's a very common
+> issue which is why we always try to go for exact clocking where we can -
+> it greatly improves the interoperability for I2S if there are no dead
+> clocks.
 
-It is opening an OSS fd, and setting some parameters, but changing
-the speed fails (in this case, since the codec dai has .symmetric_rates).
-As far as I know this is how you specify a specific speed when using
-OSS and it is simply not possibly when one of the involved dais is
-symmetric in any way. Which is silly since there is only one stream,
-so symmetry should not be an issue.
+Someone said: be conservative in what you send, be liberal in what you
+accept. This is not that at all. This is more like: be conservative in
+what you send, and accept only a subset of valid input.
 
->>     if ((fd = open("/dev/dsp", O_WRONLY, 0)) == -1) {
->>             perror("open");
->>             return 1;
->>     }
->
-> This is using the OSS interfaces which really haven't ever been
-> especially supported for ASoC.
+It absolutely kills interoperability if you claim I2S and then don't
+do I2S. If you are not looking at both edges of LRCLK it simply isn't I2S.
+It's something else. Like "packed I2S" or "DSP moda A with inverted
+symmetric LRCLK" or something, so why not invent a way to say that?
 
-Apparently, how should I know?
+Dais could be taught that an I2S LRCLK slave is compatible with this
+new mode as LRCLK master, but not the other way around. But since most
+people are not making dai link decisions, that will probably be a lot
+of work for questionable gain. What is needed is documenatation about
+quirks such as this, hence my patch.
 
->> +    if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
->> +        if (!cpu_dai->capture_active)
->> +            return 0;
->> +    } else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
->> +        if (!cpu_dai->playback_active)
->> +            return 0;
->> +    }
->> +
->>      rate = params_rate(params);
->>      channels = params_channels(params);
->>      sample_bits = snd_pcm_format_physical_width(params_format(params));
->
-> This means we've opened up a race where the stream is configured but not
-> started where the opposite direction can configure a different setup.
-> Since starting both directions very close together is a common operation
-> it seems likely to cause issues.
+I have this codec which does I2S but there is no way to get rid of dead
+clocks when it masters the clocks. It can divide MCLK with 1,2,4,8 or 16
+to get a BCLK, or it can generate BCLK as 48x or 64x LRCLK. But it only
+sports 16 bits per sample.
 
-Ouch, that's no good. Scrap the patch.
+So, if it divides MCLK, and MCLK is not matched to the needed LRCLK (there
+is no need, we currently use a 16MHz MCLK) there will almost certainly
+be some dead BCLKs, and if LRCLK is used as base for BCLK, there will be
+either 8 or 16 dead cycles per channel. In other words, it is difficult
+or next to impossible to not get dead cycles with this codec. But it
+does I2S correctly.
 
-I haven't looked really closely at the userspace side of this, but the
-big picture is that we're using a (closed source) library that in its
-documentation has an example where they open /dev/dsp like this and
-feeds the fd to the lib. We are simply replicating that in our code.
-I don't know if the library does anything OSSy with the fd, or if it
-would be equally happy with an ALSA fd.
-
-I'll investigate that...
+When you don't know beforehand that the clock slave (Atmel SSC) is lying
+and isn't supporting I2S even though it claims so, it turned out to be a
+huge time sink for me when I tried to bring up this new codec (max9860).
+I naturally thought that the problem was with my new code and not the
+old (assumed mature and mostly free of silly bugs) code. Especially for
+something as well understood as I2S. I was baffled when I realized what
+the problem was, it wasn't even on my map. I'm probably naive...
 
 Cheers,
 Peter
