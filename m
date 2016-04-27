@@ -1,86 +1,42 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/3] ASoC: arizona: call wm_adsp2_remove when codec driver is removed
-Date: Wed, 27 Apr 2016 14:58:28 +0100
-Message-ID: <1461765509-9431-2-git-send-email-rf@opensource.wolfsonmicro.com>
-References: <1461765509-9431-1-git-send-email-rf@opensource.wolfsonmicro.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 1/2] ASoC: dmaengine_pcm: Add support for packed transfers
+Date: Wed, 27 Apr 2016 16:14:24 +0200
+Message-ID: <5720C940.5010809@metafoo.de>
+References: <1461763613-28714-1-git-send-email-hias@horus.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1461765509-9431-1-git-send-email-rf@opensource.wolfsonmicro.com>
+In-Reply-To: <1461763613-28714-1-git-send-email-hias@horus.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Matthias Reichl <hias@horus.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: kernel@martin.sperl.org
 List-Id: alsa-devel@alsa-project.org
 
-Ensure that the wm_adsp driver cleans up when the codec driver
-is removed.
+On 04/27/2016 03:26 PM, Matthias Reichl wrote:
+> dmaengine_pcm currently only supports setups where FIFO reads/writes
+> correspond to exactly one sample, eg 16-bit sample data is transferred
+> via 16-bit FIFO accesses, 32-bit data via 32-bit accesses.
+> 
+> This patch adds support for setups with fixed width FIFOs where
+> multiple samples are packed into a larger word.
+> 
+> For example setups with a 32-bit wide FIFO register that expect
+> 16-bit sample transfers to be done with the left+right sample data
+> packed into a 32-bit word.
+> 
+> Support for packed transfers is controlled via the
+> SND_DMAENGINE_PCM_DAI_FLAG_PACK flag in snd_dmaengine_dai_dma_data.flags
+> 
+> If this flag is set dmaengine_pcm doesn't put any restriction on the
+> supported formats and sets the DMA transfer width to undefined.
+> 
+> This means control over the constraints is now transferred to the DAI
+> driver and it's responsible to provide proper configuration and
+> check for possible corner cases that aren't handled by the ALSA core.
+> 
+> Signed-off-by: Matthias Reichl <hias@horus.com>
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/cs47l24.c | 5 +++++
- sound/soc/codecs/wm5102.c  | 4 ++++
- sound/soc/codecs/wm5110.c  | 6 ++++++
- 3 files changed, 15 insertions(+)
+Looks good, thanks.
 
-diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
-index e7c25d4..e34e9a6 100644
---- a/sound/soc/codecs/cs47l24.c
-+++ b/sound/soc/codecs/cs47l24.c
-@@ -1274,10 +1274,15 @@ static int cs47l24_probe(struct platform_device *pdev)
- 
- static int cs47l24_remove(struct platform_device *pdev)
- {
-+	struct cs47l24_priv *cs47l24 = platform_get_drvdata(pdev);
-+
- 	snd_soc_unregister_platform(&pdev->dev);
- 	snd_soc_unregister_codec(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 
-+	wm_adsp2_remove(&cs47l24->core.adsp[1]);
-+	wm_adsp2_remove(&cs47l24->core.adsp[2]);
-+
- 	return 0;
- }
- 
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index fcc460f..5891c34 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -2098,10 +2098,14 @@ static int wm5102_probe(struct platform_device *pdev)
- 
- static int wm5102_remove(struct platform_device *pdev)
- {
-+	struct wm5102_priv *wm5102 = platform_get_drvdata(pdev);
-+
- 	snd_soc_unregister_platform(&pdev->dev);
- 	snd_soc_unregister_codec(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 
-+	wm_adsp2_remove(&wm5102->core.adsp[0]);
-+
- 	return 0;
- }
- 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index ca42cfd..88fc924 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -2437,10 +2437,16 @@ static int wm5110_probe(struct platform_device *pdev)
- 
- static int wm5110_remove(struct platform_device *pdev)
- {
-+	struct wm5110_priv *wm5110 = platform_get_drvdata(pdev);
-+	int i;
-+
- 	snd_soc_unregister_platform(&pdev->dev);
- 	snd_soc_unregister_codec(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 
-+	for (i = 0; i < WM5110_NUM_ADSP; i++)
-+		wm_adsp2_remove(&wm5110->core.adsp[i]);
-+
- 	return 0;
- }
- 
--- 
-1.9.1
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
