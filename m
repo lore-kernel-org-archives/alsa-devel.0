@@ -1,15 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 4/6] topology: Fix pcm ID & name parsing
-Date: Thu, 28 Apr 2016 16:41:57 +0800
-Message-ID: <63bce94aad5decd02a00ddf1422b03bf4228ad4e.1461831763.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 5/6] topology: Parse front-end DAI name and ID
+	for the PCM
+Date: Thu, 28 Apr 2016 16:42:05 +0800
+Message-ID: <59bc3e7eaadbeff724d599b204e90f7f057e253c.1461831763.git.mengdong.lin@linux.intel.com>
 References: <cover.1461831763.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 650172665AE
- for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2016 10:39:00 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id A8E472665DF
+ for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2016 10:39:32 +0200 (CEST)
 In-Reply-To: <cover.1461831763.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,48 +27,96 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-The name and ID of SectionPCM should be set to pcm_name and pcm_id,
-for a front-end DAI link in the kernel, not for the front-end DAI
-of the link.
+These two fields are necessary to create the front-end DAIs
+in kernel but the support is missing in text conf previously.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/include/sound/asoc.h b/include/sound/asoc.h
-index 920c9e0..abe49c5 100644
---- a/include/sound/asoc.h
-+++ b/include/sound/asoc.h
-@@ -414,7 +414,7 @@ struct snd_soc_tplg_pcm {
- 	__le32 size;		/* in bytes of this structure */
- 	char pcm_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 	char dai_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
--	__le32 pcm_id;		/* unique ID - used to match */
-+	__le32 pcm_id;		/* unique ID - used to match with DAI link */
- 	__le32 dai_id;		/* unique ID - used to match */
- 	__le32 playback;	/* supports playback mode */
- 	__le32 capture;		/* supports capture mode */
+diff --git a/include/topology.h b/include/topology.h
+index b47f422..9d57ce3 100644
+--- a/include/topology.h
++++ b/include/topology.h
+@@ -533,6 +533,10 @@ extern "C" {
+  *
+  *	id "0"				# used for binding to the PCM
+  *
++ *	dai."name of front-end DAI" {
++ *		id "0"		# used for binding to the front-end DAI
++ *	}
++ *
+  *	pcm."playback" {
+  *		capabilities "capabilities1"	# capabilities for playback
+  *
 diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index 1df4f54..1661821 100644
+index 1661821..efee58b 100644
 --- a/src/topology/pcm.c
 +++ b/src/topology/pcm.c
-@@ -337,7 +337,7 @@ int tplg_parse_pcm(snd_tplg_t *tplg,
+@@ -320,6 +320,51 @@ static int tplg_parse_streams(snd_tplg_t *tplg, snd_config_t *cfg,
+ 	return 0;
+ }
  
- 	pcm = elem->pcm;
- 	pcm->size = elem->size;
--	elem_copy_text(pcm->dai_name, elem->id, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
-+	elem_copy_text(pcm->pcm_name, elem->id, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
- 
- 	tplg_dbg(" PCM: %s\n", elem->id);
- 
-@@ -366,8 +366,8 @@ int tplg_parse_pcm(snd_tplg_t *tplg,
- 			if (snd_config_get_string(n, &val) < 0)
- 				return -EINVAL;
- 
--			pcm->dai_id = atoi(val);
--			tplg_dbg("\t%s: %d\n", id, pcm->dai_id);
-+			pcm->pcm_id = atoi(val);
-+			tplg_dbg("\t%s: %d\n", id, pcm->pcm_id);
++/* Parse name and id of a front-end DAI (ie. cpu dai of a FE DAI link) */
++static int tplg_parse_fe_dai(snd_tplg_t *tplg, snd_config_t *cfg,
++	void *private)
++{
++	struct tplg_elem *elem = private;
++	struct snd_soc_tplg_pcm *pcm = elem->pcm;
++	snd_config_iterator_t i, next;
++	snd_config_t *n;
++	const char *id, *value = NULL;
++	unsigned long int id_val;
++	int err;
++
++	snd_config_get_id(cfg, &id);
++	tplg_dbg("\t\tFE DAI %s:\n", id);
++	elem_copy_text(pcm->dai_name, id, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
++
++	snd_config_for_each(i, next, cfg) {
++
++		n = snd_config_iterator_entry(i);
++
++		/* get id */
++		if (snd_config_get_id(n, &id) < 0)
++			continue;
++
++		if (strcmp(id, "id") == 0) {
++			if (snd_config_get_string(n, &value) < 0)
++				continue;
++			errno = 0;
++			/* no support for negative value */
++			id_val = strtoul(value, NULL, 0);
++			if ((errno == ERANGE && id_val == ULONG_MAX)
++				|| (errno != 0 && id_val == 0)
++				|| id_val > UINT_MAX) {
++				SNDERR("error: invalid fe dai ID\n");
++				return -EINVAL;
++			}
++
++			pcm->dai_id = (int) id_val;
++			tplg_dbg("\t\t\tindex: %d\n", pcm->dai_id);
++		}
++	}
++
++	return 0;
++}
++
+ /* Parse pcm (for front end DAI & DAI link) */
+ int tplg_parse_pcm(snd_tplg_t *tplg,
+ 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED)
+@@ -378,6 +423,14 @@ int tplg_parse_pcm(snd_tplg_t *tplg,
+ 				return err;
  			continue;
  		}
++
++		if (strcmp(id, "dai") == 0) {
++			err = tplg_parse_compound(tplg, n,
++				tplg_parse_fe_dai, elem);
++			if (err < 0)
++				return err;
++			continue;
++		}
+ 	}
  
+ 	return 0;
 -- 
 2.5.0
