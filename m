@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 5/6] topology: Parse front-end DAI name and ID
-	for the PCM
-Date: Thu, 28 Apr 2016 16:42:05 +0800
-Message-ID: <59bc3e7eaadbeff724d599b204e90f7f057e253c.1461831763.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 6/6] topology: Update PCM configurations in
+	Broadwell text conf file
+Date: Thu, 28 Apr 2016 16:42:13 +0800
+Message-ID: <0864218d49edafe7b721cfe07b8bfa610bdb0a54.1461831763.git.mengdong.lin@linux.intel.com>
 References: <cover.1461831763.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id A8E472665DF
- for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2016 10:39:32 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5575B2665D9
+ for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2016 10:39:36 +0200 (CEST)
 In-Reply-To: <cover.1461831763.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,96 +27,98 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-These two fields are necessary to create the front-end DAIs
-in kernel but the support is missing in text conf previously.
+To make this conf file a better example, update the name & ID of PCMs
+(front-end DAI link) and their cpu DAI (front-end DAI), same as those
+defined by Broadwell upstream driver.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/include/topology.h b/include/topology.h
-index b47f422..9d57ce3 100644
---- a/include/topology.h
-+++ b/include/topology.h
-@@ -533,6 +533,10 @@ extern "C" {
-  *
-  *	id "0"				# used for binding to the PCM
-  *
-+ *	dai."name of front-end DAI" {
-+ *		id "0"		# used for binding to the front-end DAI
-+ *	}
-+ *
-  *	pcm."playback" {
-  *		capabilities "capabilities1"	# capabilities for playback
-  *
-diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index 1661821..efee58b 100644
---- a/src/topology/pcm.c
-+++ b/src/topology/pcm.c
-@@ -320,6 +320,51 @@ static int tplg_parse_streams(snd_tplg_t *tplg, snd_config_t *cfg,
- 	return 0;
+diff --git a/src/conf/topology/broadwell/broadwell.conf b/src/conf/topology/broadwell/broadwell.conf
+index 05b3889..eb89377 100644
+--- a/src/conf/topology/broadwell/broadwell.conf
++++ b/src/conf/topology/broadwell/broadwell.conf
+@@ -272,18 +272,22 @@ SectionPCMCapabilities."Offload0 Playback" {
+ SectionPCMCapabilities."Offload1 Playback" {
+ 	formats "S24_LE,S16_LE"
+ 	rate_min "8000"
+-	rate_max "48000"
++	rate_max "192000"
+ 	channels_min "2"
+ 	channels_max "2"
  }
  
-+/* Parse name and id of a front-end DAI (ie. cpu dai of a FE DAI link) */
-+static int tplg_parse_fe_dai(snd_tplg_t *tplg, snd_config_t *cfg,
-+	void *private)
-+{
-+	struct tplg_elem *elem = private;
-+	struct snd_soc_tplg_pcm *pcm = elem->pcm;
-+	snd_config_iterator_t i, next;
-+	snd_config_t *n;
-+	const char *id, *value = NULL;
-+	unsigned long int id_val;
-+	int err;
-+
-+	snd_config_get_id(cfg, &id);
-+	tplg_dbg("\t\tFE DAI %s:\n", id);
-+	elem_copy_text(pcm->dai_name, id, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
-+
-+	snd_config_for_each(i, next, cfg) {
-+
-+		n = snd_config_iterator_entry(i);
-+
-+		/* get id */
-+		if (snd_config_get_id(n, &id) < 0)
-+			continue;
-+
-+		if (strcmp(id, "id") == 0) {
-+			if (snd_config_get_string(n, &value) < 0)
-+				continue;
-+			errno = 0;
-+			/* no support for negative value */
-+			id_val = strtoul(value, NULL, 0);
-+			if ((errno == ERANGE && id_val == ULONG_MAX)
-+				|| (errno != 0 && id_val == 0)
-+				|| id_val > UINT_MAX) {
-+				SNDERR("error: invalid fe dai ID\n");
-+				return -EINVAL;
-+			}
-+
-+			pcm->dai_id = (int) id_val;
-+			tplg_dbg("\t\t\tindex: %d\n", pcm->dai_id);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- /* Parse pcm (for front end DAI & DAI link) */
- int tplg_parse_pcm(snd_tplg_t *tplg,
- 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED)
-@@ -378,6 +423,14 @@ int tplg_parse_pcm(snd_tplg_t *tplg,
- 				return err;
- 			continue;
- 		}
-+
-+		if (strcmp(id, "dai") == 0) {
-+			err = tplg_parse_compound(tplg, n,
-+				tplg_parse_fe_dai, elem);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
- 	}
+ # PCM devices exported by Firmware
+-SectionPCM."System Pin" {
++SectionPCM."System Playback/Capture" {
  
- 	return 0;
+ 	index "1"
+ 
+ 	# used for binding to the PCM
+-	ID "0"
++	id "0"
++
++	dai."System Pin" {
++		id "0"
++	}
+ 
+ 	pcm."playback" {
+ 
+@@ -307,12 +311,16 @@ SectionPCM."System Pin" {
+ 	}
+ }
+ 
+-SectionPCM."Offload0 Pin" {
++SectionPCM."Offload0 Playback" {
+ 
+ 	index "1"
+ 
+ 	# used for binding to the PCM
+-	ID "1"
++	id "1"
++
++	dai."Offload0 Pin" {
++		id "1"
++	}
+ 
+ 	pcm."playback" {
+ 
+@@ -325,12 +333,16 @@ SectionPCM."Offload0 Pin" {
+ 	}
+ }
+ 
+-SectionPCM."Offload1 Pin" {
++SectionPCM."Offload1 Playback" {
+ 
+ 	index "1"
+ 
+ 	# used for binding to the PCM
+-	ID "2"
++	id "2"
++
++	dai."Offload1 Pin" {
++		id "2"
++	}
+ 
+ 	pcm."playback" {
+ 
+@@ -343,12 +355,16 @@ SectionPCM."Offload1 Pin" {
+ 	}
+ }
+ 
+-SectionPCM."Loopback Pin" {
++SectionPCM."Loopback PCM" {
+ 
+ 	index "1"
+ 
+ 	# used for binding to the PCM
+-	ID "3"
++	id "3"
++
++	dai."Loopback Pin" {
++		id "3"
++	}
+ 
+ 	pcm."capture" {
+ 
 -- 
 2.5.0
