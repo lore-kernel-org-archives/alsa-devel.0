@@ -1,16 +1,15 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 3/6] topology: Use generic pointer to realloc
-	buffer for private data
-Date: Thu, 28 Apr 2016 16:41:49 +0800
-Message-ID: <1dd0f08c152af476e3a5af48ce7de97cd759616a.1461831763.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 4/6] topology: Fix pcm ID & name parsing
+Date: Thu, 28 Apr 2016 16:41:57 +0800
+Message-ID: <63bce94aad5decd02a00ddf1422b03bf4228ad4e.1461831763.git.mengdong.lin@linux.intel.com>
 References: <cover.1461831763.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 436B326656B
- for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2016 10:38:52 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 650172665AE
+ for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2016 10:39:00 +0200 (CEST)
 In-Reply-To: <cover.1461831763.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,64 +26,48 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Many element types have private data. So use the generic obj pointer
-instead of the type-specific pointer when reallocating the object to
-accommodate the private data.
-
-Empty private data will be overlooked.
+The name and ID of SectionPCM should be set to pcm_name and pcm_id,
+for a front-end DAI link in the kernel, not for the front-end DAI
+of the link.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/src/topology/data.c b/src/topology/data.c
-index 19c31bf..6606ca9 100644
---- a/src/topology/data.c
-+++ b/src/topology/data.c
-@@ -827,39 +827,29 @@ int tplg_copy_data(struct tplg_elem *elem, struct tplg_elem *ref)
- 		return -EINVAL;
+diff --git a/include/sound/asoc.h b/include/sound/asoc.h
+index 920c9e0..abe49c5 100644
+--- a/include/sound/asoc.h
++++ b/include/sound/asoc.h
+@@ -414,7 +414,7 @@ struct snd_soc_tplg_pcm {
+ 	__le32 size;		/* in bytes of this structure */
+ 	char pcm_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+ 	char dai_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+-	__le32 pcm_id;		/* unique ID - used to match */
++	__le32 pcm_id;		/* unique ID - used to match with DAI link */
+ 	__le32 dai_id;		/* unique ID - used to match */
+ 	__le32 playback;	/* supports playback mode */
+ 	__le32 capture;		/* supports capture mode */
+diff --git a/src/topology/pcm.c b/src/topology/pcm.c
+index 1df4f54..1661821 100644
+--- a/src/topology/pcm.c
++++ b/src/topology/pcm.c
+@@ -337,7 +337,7 @@ int tplg_parse_pcm(snd_tplg_t *tplg,
  
- 	tplg_dbg("Data '%s' used by '%s'\n", ref->id, elem->id);
-+	if (!ref->data || !ref->data->size) /* overlook empty private data */
-+		return 0;
-+
- 	priv_data_size = ref->data->size;
-+	elem->obj = realloc(elem->obj,
-+			elem->size + priv_data_size);
-+	if (!elem->obj)
-+		return -ENOMEM;
+ 	pcm = elem->pcm;
+ 	pcm->size = elem->size;
+-	elem_copy_text(pcm->dai_name, elem->id, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
++	elem_copy_text(pcm->pcm_name, elem->id, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
  
- 	switch (elem->type) {
- 	case SND_TPLG_TYPE_MIXER:
--		elem->mixer_ctrl = realloc(elem->mixer_ctrl,
--			elem->size + priv_data_size);
--		if (!elem->mixer_ctrl)
--			return -ENOMEM;
- 		priv = &elem->mixer_ctrl->priv;
- 		break;
+ 	tplg_dbg(" PCM: %s\n", elem->id);
  
- 	case SND_TPLG_TYPE_ENUM:
--		elem->enum_ctrl = realloc(elem->enum_ctrl,
--			elem->size + priv_data_size);
--		if (!elem->enum_ctrl)
--			return -ENOMEM;
- 		priv = &elem->enum_ctrl->priv;
- 		break;
+@@ -366,8 +366,8 @@ int tplg_parse_pcm(snd_tplg_t *tplg,
+ 			if (snd_config_get_string(n, &val) < 0)
+ 				return -EINVAL;
  
- 	case SND_TPLG_TYPE_BYTES:
--		elem->bytes_ext = realloc(elem->bytes_ext,
--			elem->size + priv_data_size);
--		if (!elem->bytes_ext)
--			return -ENOMEM;
- 		priv = &elem->bytes_ext->priv;
- 		break;
- 
--
- 	case SND_TPLG_TYPE_DAPM_WIDGET:
--		elem->widget = realloc(elem->widget,
--			elem->size + priv_data_size);
--		if (!elem->widget)
--			return -ENOMEM;
- 		priv = &elem->widget->priv;
- 		break;
+-			pcm->dai_id = atoi(val);
+-			tplg_dbg("\t%s: %d\n", id, pcm->dai_id);
++			pcm->pcm_id = atoi(val);
++			tplg_dbg("\t%s: %d\n", id, pcm->pcm_id);
+ 			continue;
+ 		}
  
 -- 
 2.5.0
