@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ALSA: hda - add helper to get channels from
-	cap bits" to the asoc tree
-Date: Thu, 28 Apr 2016 18:48:51 +0100
-Message-ID: <E1avq3X-0002cC-Gt@debutante>
-References: <1460608656-8860-3-git-send-email-subhransu.s.prusty@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Update channel map
+	based on runtime params" to the asoc tree
+Date: Thu, 28 Apr 2016 18:55:09 +0100
+Message-ID: <E1avq9d-0002vu-0i@debutante>
+References: <1460437293-8509-12-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E66112666BF
- for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2016 19:48:56 +0200 (CEST)
-In-Reply-To: <1460608656-8860-3-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id ACD4326518B
+ for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2016 19:55:17 +0200 (CEST)
+In-Reply-To: <1460437293-8509-12-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ALSA: hda - add helper to get channels from cap bits
+   ASoC: Intel: Skylake: Update channel map based on runtime params
 
 has been applied to the asoc tree at
 
@@ -52,41 +52,59 @@ to this mail.
 Thanks,
 Mark
 
->From 9fc7c862e78ba8bec142935673227f2463aa05a5 Mon Sep 17 00:00:00 2001
+>From ea5a137d0fe263854ae6267a0fa208c544d83452 Mon Sep 17 00:00:00 2001
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Date: Thu, 14 Apr 2016 10:07:29 +0530
-Subject: [PATCH] ALSA: hda - add helper to get channels from cap bits
+Date: Thu, 14 Apr 2016 10:07:36 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Update channel map based on runtime
+ params
 
-This helper is copied from legacy hda driver.
+Default channel map is set for 2 channels. Fix the channel map
+based on runtime params to support multichannel.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Acked-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/hda/local.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/intel/skylake/skl-topology.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/sound/hda/local.h b/sound/hda/local.h
-index d692f417ddc0..0d5bb159d538 100644
---- a/sound/hda/local.h
-+++ b/sound/hda/local.h
-@@ -16,6 +16,16 @@ static inline int get_wcaps_type(unsigned int wcaps)
- 	return (wcaps & AC_WCAP_TYPE) >> AC_WCAP_TYPE_SHIFT;
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 545b4e77b8aa..8fceb7a04147 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -154,13 +154,32 @@ static void skl_dump_mconfig(struct skl_sst *ctx,
+ 	dev_dbg(ctx->dev, "ch_cfg = %d\n", mcfg->out_fmt[0].ch_cfg);
  }
  
-+static inline unsigned int get_wcaps_channels(u32 wcaps)
++static void skl_tplg_update_chmap(struct skl_module_fmt *fmt, int chs)
 +{
-+	unsigned int chans;
++	int slot_map = 0xFFFFFFFF;
++	int start_slot = 0;
++	int i;
 +
-+	chans = (wcaps & AC_WCAP_CHAN_CNT_EXT) >> 13;
-+	chans = (chans + 1) * 2;
-+
-+	return chans;
++	for (i = 0; i < chs; i++) {
++		/*
++		 * For 2 channels with starting slot as 0, slot map will
++		 * look like 0xFFFFFF10.
++		 */
++		slot_map &= (~(0xF << (4 * i)) | (start_slot << (4 * i)));
++		start_slot++;
++	}
++	fmt->ch_map = slot_map;
 +}
 +
- extern const struct attribute_group *hdac_dev_attr_groups[];
- int hda_widget_sysfs_init(struct hdac_device *codec);
- void hda_widget_sysfs_exit(struct hdac_device *codec);
+ static void skl_tplg_update_params(struct skl_module_fmt *fmt,
+ 			struct skl_pipe_params *params, int fixup)
+ {
+ 	if (fixup & SKL_RATE_FIXUP_MASK)
+ 		fmt->s_freq = params->s_freq;
+-	if (fixup & SKL_CH_FIXUP_MASK)
++	if (fixup & SKL_CH_FIXUP_MASK) {
+ 		fmt->channels = params->ch;
++		skl_tplg_update_chmap(fmt, fmt->channels);
++	}
+ 	if (fixup & SKL_FMT_FIXUP_MASK) {
+ 		fmt->valid_bit_depth = skl_get_bit_depth(params->s_fmt);
+ 
 -- 
 2.8.0.rc3
