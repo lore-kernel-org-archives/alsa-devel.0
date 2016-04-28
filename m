@@ -1,18 +1,18 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 3/6] topology: Use generic pointer to
- realloc buffer for private data
-Date: Thu, 28 Apr 2016 10:48:36 +0200
-Message-ID: <5721CE64.4060803@perex.cz>
-References: <cover.1461831763.git.mengdong.lin@linux.intel.com>
- <1dd0f08c152af476e3a5af48ce7de97cd759616a.1461831763.git.mengdong.lin@linux.intel.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5651: remove unexisting widget
+Date: Thu, 28 Apr 2016 09:08:13 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D70114F8BE@RTITMBSV03.realtek.com.tw>
+References: <1461809581-7863-1-git-send-email-bardliao@realtek.com>
+ <5721C67F.2080007@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 752B92660D1
- for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2016 10:48:37 +0200 (CEST)
-In-Reply-To: <1dd0f08c152af476e3a5af48ce7de97cd759616a.1461831763.git.mengdong.lin@linux.intel.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E6942661B9
+ for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2016 11:08:23 +0200 (CEST)
+In-Reply-To: <5721C67F.2080007@metafoo.de>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,22 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: tiwai@suse.de, mengdong.lin@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@intel.com, hardik.t.shah@intel.com
+To: Lars-Peter Clausen <lars@metafoo.de>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, John Lin <john.lin@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 28.4.2016 v 10:41 mengdong.lin@linux.intel.com napsal(a):
->  	priv_data_size = ref->data->size;
-> +	elem->obj = realloc(elem->obj,
-> +			elem->size + priv_data_size);
-> +	if (!elem->obj)
-> +		return -ENOMEM;
+> > -	/* IN Mux */
+> > -	SND_SOC_DAPM_MUX("INL1 Mux", SND_SOC_NOPM, 0, 0,
+> &rt5651_inl1_mux),
+> > -	SND_SOC_DAPM_MUX("INR1 Mux", SND_SOC_NOPM, 0, 0,
+> &rt5651_inr1_mux),
+> > -	SND_SOC_DAPM_MUX("INL2 Mux", SND_SOC_NOPM, 0, 0,
+> &rt5651_inl2_mux),
+> > -	SND_SOC_DAPM_MUX("INR2 Mux", SND_SOC_NOPM, 0, 0,
+> &rt5651_inr2_mux),
+> 
+> What is with the rt5651_in*_mux controls, those are unused now and
+> can be removed as well, aren't they?
 
-This causes a memory leak when realloc fails. You should free the
-original pointer when realloc() fails.
+Thanks for the reminder. I will send v2 soon.
 
-					Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+> 
+> 
+> ------Please consider the environment before printing this e-mail.
