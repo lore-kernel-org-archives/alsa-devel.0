@@ -1,22 +1,17 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH v3 0/6] ASoC: fsl_ssi: Fixing various
- channel slips and bad samples insertions
-Date: Thu, 28 Apr 2016 20:54:02 -0700
-Message-ID: <20160429035402.GB1944@Asurada>
-References: <1453130771-24419-1-git-send-email-arnaud.mouiche@invoxia.com>
- <CAOMZO5A0FRZ52UGeqLJaVF8BiWhzmpNSgQm4B0U1gc2wGU6KhA@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: strange link on alsa-project.org,
+	possibly a spam link
+Date: Fri, 29 Apr 2016 13:29:11 +0900
+Message-ID: <5722E317.8070807@sakamocchi.jp>
+References: <199972611.250114901.1461899863026.JavaMail.root@zimbra61-e11.priv.proxad.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f49.google.com (mail-pa0-f49.google.com
- [209.85.220.49])
- by alsa0.perex.cz (Postfix) with ESMTP id A22BE265132
- for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2016 05:54:06 +0200 (CEST)
-Received: by mail-pa0-f49.google.com with SMTP id bt5so40207531pac.3
- for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2016 20:54:06 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <CAOMZO5A0FRZ52UGeqLJaVF8BiWhzmpNSgQm4B0U1gc2wGU6KhA@mail.gmail.com>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C11B265132
+ for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2016 06:29:14 +0200 (CEST)
+In-Reply-To: <199972611.250114901.1461899863026.JavaMail.root@zimbra61-e11.priv.proxad.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,22 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Caleb Crome <caleb@crome.org>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+To: humbert.olivier.1@free.fr, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 29, 2016 at 12:44:16AM -0300, Fabio Estevam wrote:
-> Hi Nicolin and Timur,
+On Apr 29 2016 12:17, humbert.olivier.1@free.fr wrote:
+> just to let you know that there is a strange link in 
+> http://www.alsa-project.org/main/index.php/Main_Page
 > 
-> On Mon, Jan 18, 2016 at 1:26 PM, Arnaud Mouiche
-> <arnaud.mouiche@invoxia.com> wrote:
-> >
-> > This series of patch is an attempt to fix the fsl_ssi driver to use it in TDM mode (DSP A or B) with a large number of channels/slots.
+> See this screenshot : http://pix.toile-libre.org/upload/original/1461883624.png
+> This "strange link" is under the white pointing-down arrow on the blue background circle
 > 
-> Any feedback about this series?
-> 
-> It addresses important fixes for the fsl_ssi driver.
+> It is linking to a "cheap holiday" booking webpage and someone on alsa@freenode suggested
+> it looks to be one of those 'domain not used' redirects which I do agree.
 
-Patches look fine to me. I thought there was going to be another version.
+I can confirm it.
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> This link has been introduced back in August 2007 the 10th following this change :
+> http://www.alsa-project.org/main/index.php?title=Main_Page&diff=698&oldid=697
+
+This modification was done by Tjones, 17:13, 24 December 2014:
+http://www.alsa-project.org/main/index.php?title=Template%3AALSA_download&diff=6748&oldid=6624
+
+It should be removed, and the account should be banned.
+
+
+Regards
+
+Takashi Sakamoto
