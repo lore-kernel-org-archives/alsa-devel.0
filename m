@@ -1,18 +1,18 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: usb-audio: Limit retrying sample rate
-	reads
-Date: Fri, 29 Apr 2016 11:54:37 +0200
-Message-ID: <1461923677-26662-1-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2 v6] ASoC: dwc: Add custom PCM driver
+Date: Fri, 29 Apr 2016 11:42:56 +0100
+Message-ID: <20160429104256.GV3217@sirena.org.uk>
+References: <cover.1461749984.git.joabreu@synopsys.com>
+ <1467b43ff009213277fe8f092da40f0bb7609af4.1461749984.git.joabreu@synopsys.com>
+ <57232343.40107@synopsys.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8288749971588807587=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 60B6626518B
- for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2016 11:54:38 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 20688AD6E
- for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2016 09:54:38 +0000 (UTC)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4DCBA2651A5
+ for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2016 12:43:13 +0200 (CEST)
+In-Reply-To: <57232343.40107@synopsys.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,59 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jose Abreu <Jose.Abreu@synopsys.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Alexey Brodkin <Alexey.Brodkin@synopsys.com>, Takashi Iwai <tiwai@suse.com>, Carlos Palminha <CARLOS.PALMINHA@synopsys.com>, linux-snps-arc@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-There are many USB audio devices with buggy firmware that don't react
-with the sample rate reading properly.  This often results in the
-flood of error messages and slowing down the operation.
 
-The sample rate read back is basically only for confirming the sample
-rate setup, and it's not critically important.  As a compromise, in
-this patch, we stop the sample rate read back once when the device
-gives errors more than tolerance (twice, as of now).  This should
-improve most of error cases while we still can catch the firmware
-bugginess.
+--===============8288749971588807587==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="r5/WsXYN9YBUybws"
+Content-Disposition: inline
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/clock.c    | 4 ++++
- sound/usb/usbaudio.h | 1 +
- 2 files changed, 5 insertions(+)
 
-diff --git a/sound/usb/clock.c b/sound/usb/clock.c
-index 7ccbcaf6a147..26dd5f20f149 100644
---- a/sound/usb/clock.c
-+++ b/sound/usb/clock.c
-@@ -309,6 +309,9 @@ static int set_sample_rate_v1(struct snd_usb_audio *chip, int iface,
- 	 * support reading */
- 	if (snd_usb_get_sample_rate_quirk(chip))
- 		return 0;
-+	/* the firmware is likely buggy, don't repeat to fail too many times */
-+	if (chip->sample_rate_read_error > 2)
-+		return 0;
- 
- 	if ((err = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), UAC_GET_CUR,
- 				   USB_TYPE_CLASS | USB_RECIP_ENDPOINT | USB_DIR_IN,
-@@ -316,6 +319,7 @@ static int set_sample_rate_v1(struct snd_usb_audio *chip, int iface,
- 				   data, sizeof(data))) < 0) {
- 		dev_err(&dev->dev, "%d:%d: cannot get freq at ep %#x\n",
- 			iface, fmt->altsetting, ep);
-+		chip->sample_rate_read_error++;
- 		return 0; /* some devices don't support reading */
- 	}
- 
-diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
-index a161c7c1b126..89b6853030de 100644
---- a/sound/usb/usbaudio.h
-+++ b/sound/usb/usbaudio.h
-@@ -50,6 +50,7 @@ struct snd_usb_audio {
- 	
- 	int num_interfaces;
- 	int num_suspended_intf;
-+	int sample_rate_read_error;
- 
- 	struct list_head pcm_list;	/* list of pcm streams */
- 	struct list_head ep_list;	/* list of audio-related endpoints */
--- 
-2.8.1
+--r5/WsXYN9YBUybws
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Apr 29, 2016 at 10:02:59AM +0100, Jose Abreu wrote:
+> Hi Mark,
+>=20
+> Can you give me some comments regarding this patch? Am I following the ri=
+ght
+> track? This is the first time that I am using ALSA SoC so pardon me if I =
+am
+> making some mistake. I would appreciate some kind of input. I tested this=
+ only
+> on a ARC SDP and it is working.
+>=20
+> On 27-04-2016 11:05, Jose Abreu wrote:
+
+Please don't send content free pings and please allow a reasonable time
+for review.  People get busy, go on holiday, attend conferences and so=20
+on so unless there is some reason for urgency (like critical bug fixes)
+please allow at least a couple of weeks for review.  Sending content
+free pings just adds to the mail volume (if they are seen at all) and if=20
+something has gone wrong you'll have to resend the patches anyway.
+
+--r5/WsXYN9YBUybws
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXIzqvAAoJECTWi3JdVIfQSbQH/0gjwsU3J3bpzFgqzIt7iVVO
+9c+gVciUSJhAmuzlWDRPnNA9cafnuhbyDRhn9tRgGRjCILGFAxE4cduZ3yKqpMKM
+FvVvFerjGKlpQPeTWcB6+6vCwBcvSbnyNLahEumJ5aUXVyBWCPVhNVfmtq77lYx/
+EZSY2Jl0HffrHIIO7UQ6Xvy/z8E2a58kY5MJtOZUgHCUm2o0uZLGD+BuFV/3xN6n
+OoegKvNsh9cDY+jlDZ2Ev8LFTwSe28/whb/ym7ngOhBevEaf3uBpfO2C6Bp1fe5k
+IE4QchcxNRVKIsjDF7nwfeVDWI8krW9B6LA66E5331coMxvYXYGm8L3pVayw25E=
+=m+wT
+-----END PGP SIGNATURE-----
+
+--r5/WsXYN9YBUybws--
+
+--===============8288749971588807587==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8288749971588807587==--
