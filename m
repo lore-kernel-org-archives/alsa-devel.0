@@ -1,34 +1,57 @@
-From: Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH v3 1/7] ARM: OMAP3: hwmod data: Fix McBSP2/3 sidetone data
-Date: Fri, 29 Apr 2016 08:34:30 -0700
-Message-ID: <20160429153430.GK5995@atomide.com>
-References: <1461927202-17677-1-git-send-email-peter.ujfalusi@ti.com>
- <1461927202-17677-2-git-send-email-peter.ujfalusi@ti.com>
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: [PATCH v3 0/6] ASoC: fsl_ssi: Fixing various
+ channel slips and bad samples insertions
+Date: Fri, 29 Apr 2016 09:49:44 -0700
+Message-ID: <CAG5mAdwFd3avEv6Tup9F0YcmtTQAFgHa2oF6FzjeLaZnonpomA@mail.gmail.com>
+References: <1453130771-24419-1-git-send-email-arnaud.mouiche@invoxia.com>
+ <CAOMZO5A0FRZ52UGeqLJaVF8BiWhzmpNSgQm4B0U1gc2wGU6KhA@mail.gmail.com>
+ <20160429035402.GB1944@Asurada>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1461927202-17677-2-git-send-email-peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-Cc: jarkko.nikula-FVTvWyuFUl3QT0dZR+AlfA@public.gmane.org, paul-DWxLp4Yu+b8AvxtiuMwx3w@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, t-kristo-l0cyMroinI0@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f50.google.com (mail-oi0-f50.google.com
+ [209.85.218.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4C73261483
+ for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2016 18:50:05 +0200 (CEST)
+Received: by mail-oi0-f50.google.com with SMTP id k142so125035904oib.1
+ for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2016 09:50:05 -0700 (PDT)
+In-Reply-To: <20160429035402.GB1944@Asurada>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, Arnaud Mouiche <arnaud.mouiche@invoxia.com>, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-* Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org> [160429 03:55]:
-> The McBSPLP's sidetone main clock is the McBSPLP's ICLK, not FCLK as the
-> sidetone only receives the ICLK from the main McBSP module.
-> Since the McBSP and sidetone is using the very same clock from PRCM level
-> the sidetone must not have the prcm section to check the clock status since
-> the sidetone is only used when McBSP is already configured.
-> If two separate hwmods looking at the same bit and they would use
-> pm_runtime in nested way (as it must happen with McBSP and it's ST module)
-> the hwmod would warn, because the idlest will not match what it is expected
-> after enable/disable of the clocks.
+On Thu, Apr 28, 2016 at 8:54 PM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+> On Fri, Apr 29, 2016 at 12:44:16AM -0300, Fabio Estevam wrote:
+>> Hi Nicolin and Timur,
+>>
+>> On Mon, Jan 18, 2016 at 1:26 PM, Arnaud Mouiche
+>> <arnaud.mouiche@invoxia.com> wrote:
+>> >
+>> > This series of patch is an attempt to fix the fsl_ssi driver to use it in TDM mode (DSP A or B) with a large number of channels/slots.
+>>
+>> Any feedback about this series?
+>>
+>> It addresses important fixes for the fsl_ssi driver.
+>
+> Patches look fine to me. I thought there was going to be another version.
 
-Thanks for looking into it, this looks right to me.
+There is another patch that comes after these, but that's relating the
+the watermark issues we talked about before.  The watermark issues can
+stand independently of this patch series, so I think it's best to keep
+the complexity with watermarks separate this series.    Arnaud never
+mentioned to me that there was a version after v3.
 
-Tony
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-Caleb
+
+>
+> Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
