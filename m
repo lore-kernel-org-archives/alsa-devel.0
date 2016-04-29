@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2 v6] ASoC: dwc: Add custom PCM driver
-Date: Fri, 29 Apr 2016 11:42:56 +0100
-Message-ID: <20160429104256.GV3217@sirena.org.uk>
-References: <cover.1461749984.git.joabreu@synopsys.com>
- <1467b43ff009213277fe8f092da40f0bb7609af4.1461749984.git.joabreu@synopsys.com>
- <57232343.40107@synopsys.com>
+Subject: Applied "ASoC: fsl_ssi: add CCSR_SSI_SOR to volatile
+	register list" to the asoc tree
+Date: Fri, 29 Apr 2016 11:46:03 +0100
+Message-ID: <E1aw5vv-0001Iy-KV@debutante>
+References: <1461606624-130216-1-git-send-email-caleb@crome.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8288749971588807587=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4DCBA2651A5
- for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2016 12:43:13 +0200 (CEST)
-In-Reply-To: <57232343.40107@synopsys.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 744CC2614BB
+ for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2016 12:46:22 +0200 (CEST)
+In-Reply-To: <1461606624-130216-1-git-send-email-caleb@crome.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,64 +22,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jose Abreu <Jose.Abreu@synopsys.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Alexey Brodkin <Alexey.Brodkin@synopsys.com>, Takashi Iwai <tiwai@suse.com>, Carlos Palminha <CARLOS.PALMINHA@synopsys.com>, linux-snps-arc@lists.infradead.org
+To: Caleb Crome <caleb@crome.org>
+Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============8288749971588807587==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="r5/WsXYN9YBUybws"
-Content-Disposition: inline
+   ASoC: fsl_ssi: add CCSR_SSI_SOR to volatile register list
 
+has been applied to the asoc tree at
 
---r5/WsXYN9YBUybws
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Fri, Apr 29, 2016 at 10:02:59AM +0100, Jose Abreu wrote:
-> Hi Mark,
->=20
-> Can you give me some comments regarding this patch? Am I following the ri=
-ght
-> track? This is the first time that I am using ALSA SoC so pardon me if I =
-am
-> making some mistake. I would appreciate some kind of input. I tested this=
- only
-> on a ARC SDP and it is working.
->=20
-> On 27-04-2016 11:05, Jose Abreu wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Please don't send content free pings and please allow a reasonable time
-for review.  People get busy, go on holiday, attend conferences and so=20
-on so unless there is some reason for urgency (like critical bug fixes)
-please allow at least a couple of weeks for review.  Sending content
-free pings just adds to the mail volume (if they are seen at all) and if=20
-something has gone wrong you'll have to resend the patches anyway.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---r5/WsXYN9YBUybws
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEcBAEBCAAGBQJXIzqvAAoJECTWi3JdVIfQSbQH/0gjwsU3J3bpzFgqzIt7iVVO
-9c+gVciUSJhAmuzlWDRPnNA9cafnuhbyDRhn9tRgGRjCILGFAxE4cduZ3yKqpMKM
-FvVvFerjGKlpQPeTWcB6+6vCwBcvSbnyNLahEumJ5aUXVyBWCPVhNVfmtq77lYx/
-EZSY2Jl0HffrHIIO7UQ6Xvy/z8E2a58kY5MJtOZUgHCUm2o0uZLGD+BuFV/3xN6n
-OoegKvNsh9cDY+jlDZ2Ev8LFTwSe28/whb/ym7ngOhBevEaf3uBpfO2C6Bp1fe5k
-IE4QchcxNRVKIsjDF7nwfeVDWI8krW9B6LA66E5331coMxvYXYGm8L3pVayw25E=
-=m+wT
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---r5/WsXYN9YBUybws--
+>From 3cc6185bcccff32df41faa97d592a99d258db185 Mon Sep 17 00:00:00 2001
+From: Caleb Crome <caleb@crome.org>
+Date: Mon, 25 Apr 2016 11:36:18 -0700
+Subject: [PATCH] ASoC: fsl_ssi: add CCSR_SSI_SOR to volatile register list
 
---===============8288749971588807587==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+The CCSR_SSI_SOR is a register that clears the TX and/or the RX fifo
+on the i.MX SSI port.  The fsl_ssi_trigger writes this register in
+order to clear the fifo at trigger time.
 
+However, since the CCSR_SSI_SOR register is not in the volatile list,
+the caching mechanism prevented the register write in the trigger
+function.  This caused the fifo to not be cleared (because the value
+was unchanged from the last time the register was written), and thus
+causes the channels in both TDM or simple I2S mode to slip and be in
+the wrong time slots on SSI restart.
 
---===============8288749971588807587==--
+This has gone unnoticed for so long because with simple stereo mode,
+the consequence is that left and right are swapped, which isn't that
+noticeable.  However, it's catestrophic in some systems that
+require the channels to be in the right slots.
+
+Signed-off-by: Caleb Crome <caleb@crome.org>
+Suggested-by: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+Reviewed-by: Fabio Estevam <fabio.estevam@nxp.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/fsl/fsl_ssi.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index ed8de1035cda..08dcbbf60adb 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -137,6 +137,7 @@ static bool fsl_ssi_volatile_reg(struct device *dev, unsigned int reg)
+ 	case CCSR_SSI_SACDAT:
+ 	case CCSR_SSI_SATAG:
+ 	case CCSR_SSI_SACCST:
++	case CCSR_SSI_SOR:
+ 		return true;
+ 	default:
+ 		return false;
+-- 
+2.8.0.rc3
