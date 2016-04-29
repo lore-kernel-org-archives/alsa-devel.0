@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: add CCSR_SSI_SOR to volatile
-	register list" to the asoc tree
-Date: Fri, 29 Apr 2016 11:46:03 +0100
-Message-ID: <E1aw5vv-0001Iy-KV@debutante>
-References: <1461606624-130216-1-git-send-email-caleb@crome.org>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v3 1/7] ARM: OMAP3: hwmod data: Fix McBSP2/3
+	sidetone data
+Date: Fri, 29 Apr 2016 13:53:16 +0300
+Message-ID: <1461927202-17677-2-git-send-email-peter.ujfalusi@ti.com>
+References: <1461927202-17677-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 744CC2614BB
- for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2016 12:46:22 +0200 (CEST)
-In-Reply-To: <1461606624-130216-1-git-send-email-caleb@crome.org>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C1972661B9
+ for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2016 12:53:33 +0200 (CEST)
+In-Reply-To: <1461927202-17677-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,78 +21,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org
+To: tony@atomide.com, jarkko.nikula@bitmer.com, paul@pwsan.com, lgirdwood@gmail.com, broonie@kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, t-kristo@ti.com, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+The McBSPLP's sidetone main clock is the McBSPLP's ICLK, not FCLK as the
+sidetone only receives the ICLK from the main McBSP module.
+Since the McBSP and sidetone is using the very same clock from PRCM level
+the sidetone must not have the prcm section to check the clock status since
+the sidetone is only used when McBSP is already configured.
+If two separate hwmods looking at the same bit and they would use
+pm_runtime in nested way (as it must happen with McBSP and it's ST module)
+the hwmod would warn, because the idlest will not match what it is expected
+after enable/disable of the clocks.
 
-   ASoC: fsl_ssi: add CCSR_SSI_SOR to volatile register list
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 3cc6185bcccff32df41faa97d592a99d258db185 Mon Sep 17 00:00:00 2001
-From: Caleb Crome <caleb@crome.org>
-Date: Mon, 25 Apr 2016 11:36:18 -0700
-Subject: [PATCH] ASoC: fsl_ssi: add CCSR_SSI_SOR to volatile register list
-
-The CCSR_SSI_SOR is a register that clears the TX and/or the RX fifo
-on the i.MX SSI port.  The fsl_ssi_trigger writes this register in
-order to clear the fifo at trigger time.
-
-However, since the CCSR_SSI_SOR register is not in the volatile list,
-the caching mechanism prevented the register write in the trigger
-function.  This caused the fifo to not be cleared (because the value
-was unchanged from the last time the register was written), and thus
-causes the channels in both TDM or simple I2S mode to slip and be in
-the wrong time slots on SSI restart.
-
-This has gone unnoticed for so long because with simple stereo mode,
-the consequence is that left and right are swapped, which isn't that
-noticeable.  However, it's catestrophic in some systems that
-require the channels to be in the right slots.
-
-Signed-off-by: Caleb Crome <caleb@crome.org>
-Suggested-by: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
-Reviewed-by: Fabio Estevam <fabio.estevam@nxp.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/fsl/fsl_ssi.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/mach-omap2/omap_hwmod_3xxx_data.c | 24 ++++--------------------
+ 1 file changed, 4 insertions(+), 20 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index ed8de1035cda..08dcbbf60adb 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -137,6 +137,7 @@ static bool fsl_ssi_volatile_reg(struct device *dev, unsigned int reg)
- 	case CCSR_SSI_SACDAT:
- 	case CCSR_SSI_SATAG:
- 	case CCSR_SSI_SACCST:
-+	case CCSR_SSI_SOR:
- 		return true;
- 	default:
- 		return false;
+diff --git a/arch/arm/mach-omap2/omap_hwmod_3xxx_data.c b/arch/arm/mach-omap2/omap_hwmod_3xxx_data.c
+index 9869a75c5d96..d72ee6185d5e 100644
+--- a/arch/arm/mach-omap2/omap_hwmod_3xxx_data.c
++++ b/arch/arm/mach-omap2/omap_hwmod_3xxx_data.c
+@@ -1322,16 +1322,8 @@ static struct omap_hwmod omap3xxx_mcbsp2_sidetone_hwmod = {
+ 	.name		= "mcbsp2_sidetone",
+ 	.class		= &omap3xxx_mcbsp_sidetone_hwmod_class,
+ 	.mpu_irqs	= omap3xxx_mcbsp2_sidetone_irqs,
+-	.main_clk	= "mcbsp2_fck",
+-	.prcm		= {
+-		.omap2 = {
+-			.prcm_reg_id = 1,
+-			 .module_bit = OMAP3430_EN_MCBSP2_SHIFT,
+-			.module_offs = OMAP3430_PER_MOD,
+-			.idlest_reg_id = 1,
+-			.idlest_idle_bit = OMAP3430_ST_MCBSP2_SHIFT,
+-		},
+-	},
++	.main_clk	= "mcbsp2_ick",
++	.flags		= HWMOD_NO_IDLEST,
+ };
+ 
+ /* mcbsp3_sidetone */
+@@ -1344,16 +1336,8 @@ static struct omap_hwmod omap3xxx_mcbsp3_sidetone_hwmod = {
+ 	.name		= "mcbsp3_sidetone",
+ 	.class		= &omap3xxx_mcbsp_sidetone_hwmod_class,
+ 	.mpu_irqs	= omap3xxx_mcbsp3_sidetone_irqs,
+-	.main_clk	= "mcbsp3_fck",
+-	.prcm		= {
+-		.omap2 = {
+-			.prcm_reg_id = 1,
+-			.module_bit = OMAP3430_EN_MCBSP3_SHIFT,
+-			.module_offs = OMAP3430_PER_MOD,
+-			.idlest_reg_id = 1,
+-			.idlest_idle_bit = OMAP3430_ST_MCBSP3_SHIFT,
+-		},
+-	},
++	.main_clk	= "mcbsp3_ick",
++	.flags		= HWMOD_NO_IDLEST,
+ };
+ 
+ /* SR common */
 -- 
-2.8.0.rc3
+2.8.1
