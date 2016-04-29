@@ -1,15 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH v2 0/6] topology: complete PCM parsing and code
-	refactoring
-Date: Fri, 29 Apr 2016 11:02:50 +0800
-Message-ID: <cover.1461898635.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH v2 1/6] topology: Set manifest size for ABI
+Date: Fri, 29 Apr 2016 11:02:57 +0800
+Message-ID: <2181ca1b572ebfe66f3ed5be006989245f0fe05b.1461898635.git.mengdong.lin@linux.intel.com>
+References: <cover.1461898635.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id CC1B1265141
- for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2016 04:59:54 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 448B42651A5
+ for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2016 05:00:00 +0200 (CEST)
+In-Reply-To: <cover.1461898635.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,34 +26,23 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-There is no ABI change in this series.
+The topology kernel driver will check the size of manifest struct, and
+will stop loading topology info if size mismatch is detected.
 
-This series fixes bugs and missing info of PCM (Front-end DAI & DAI link)
-defined by the text conf file.
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-There is also some code refactoring, as a preparation for Back-end DAI
-support and ABI update which is under internal test and review atm.
-
-History:
-v2: Fix memory leak on realloc failure. The original obj pointer is reserved
-    and so it can be freed at last by tplg_elem_free().
-
-Mengdong Lin (6):
-  topology: Set manifest size for ABI
-  topology: Refactor functions to parse and build streams
-  topology: Use generic pointer to realloc buffer for private data
-  topology: Fix pcm ID & name parsing
-  topology: Parse front-end DAI name and ID for the PCM
-  topology: Update PCM configurations in Broadwell text conf file
-
- include/sound/asoc.h                       |   2 +-
- include/topology.h                         |   4 +
- src/conf/topology/broadwell/broadwell.conf |  34 ++++++---
- src/topology/data.c                        |  26 +++----
- src/topology/parser.c                      |   4 +-
- src/topology/pcm.c                         | 119 ++++++++++++++++++++++-------
- src/topology/tplg_local.h                  |   2 +-
- 7 files changed, 133 insertions(+), 58 deletions(-)
-
+diff --git a/src/topology/parser.c b/src/topology/parser.c
+index 30d91f9..84117c3 100644
+--- a/src/topology/parser.c
++++ b/src/topology/parser.c
+@@ -414,6 +414,8 @@ snd_tplg_t *snd_tplg_new(void)
+ 	if (!tplg)
+ 		return NULL;
+ 
++	tplg->manifest.size = sizeof(struct snd_soc_tplg_manifest);
++
+ 	INIT_LIST_HEAD(&tplg->tlv_list);
+ 	INIT_LIST_HEAD(&tplg->widget_list);
+ 	INIT_LIST_HEAD(&tplg->pcm_list);
 -- 
 2.5.0
