@@ -1,22 +1,20 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: [PATCH v3 0/6] ASoC: fsl_ssi: Fixing various
- channel slips and bad samples insertions
-Date: Fri, 29 Apr 2016 09:49:44 -0700
-Message-ID: <CAG5mAdwFd3avEv6Tup9F0YcmtTQAFgHa2oF6FzjeLaZnonpomA@mail.gmail.com>
-References: <1453130771-24419-1-git-send-email-arnaud.mouiche@invoxia.com>
- <CAOMZO5A0FRZ52UGeqLJaVF8BiWhzmpNSgQm4B0U1gc2wGU6KhA@mail.gmail.com>
- <20160429035402.GB1944@Asurada>
+From: humbert.olivier.1@free.fr
+Subject: [solved] Re: strange link on alsa-project.org,
+	possibly a spam link
+Date: Sat, 30 Apr 2016 03:39:45 +0200 (CEST)
+Message-ID: <1538177229.254857997.1461980385311.JavaMail.root@zimbra61-e11.priv.proxad.net>
+References: <5722E317.8070807@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f50.google.com (mail-oi0-f50.google.com
- [209.85.218.50])
- by alsa0.perex.cz (Postfix) with ESMTP id A4C73261483
- for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2016 18:50:05 +0200 (CEST)
-Received: by mail-oi0-f50.google.com with SMTP id k142so125035904oib.1
- for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2016 09:50:05 -0700 (PDT)
-In-Reply-To: <20160429035402.GB1944@Asurada>
+Received: from smtp4-g21.free.fr (smtp4-g21.free.fr [212.27.42.4])
+ by alsa0.perex.cz (Postfix) with ESMTP id A7D13261600
+ for <alsa-devel@alsa-project.org>; Sat, 30 Apr 2016 03:39:46 +0200 (CEST)
+Received: from zimbra61-e11.priv.proxad.net (unknown [172.20.243.211])
+ by smtp4-g21.free.fr (Postfix) with ESMTP id 2932A19F3F4
+ for <alsa-devel@alsa-project.org>; Sat, 30 Apr 2016 01:46:24 +0200 (CEST)
+In-Reply-To: <5722E317.8070807@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,32 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, Arnaud Mouiche <arnaud.mouiche@invoxia.com>, Fabio Estevam <festevam@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 28, 2016 at 8:54 PM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
-> On Fri, Apr 29, 2016 at 12:44:16AM -0300, Fabio Estevam wrote:
->> Hi Nicolin and Timur,
->>
->> On Mon, Jan 18, 2016 at 1:26 PM, Arnaud Mouiche
->> <arnaud.mouiche@invoxia.com> wrote:
->> >
->> > This series of patch is an attempt to fix the fsl_ssi driver to use it in TDM mode (DSP A or B) with a large number of channels/slots.
->>
->> Any feedback about this series?
->>
->> It addresses important fixes for the fsl_ssi driver.
+De: "Takashi Sakamoto" <o-takashi@sakamocchi.jp>
+> On Apr 29 2016 12:17, humbert.olivier.1@free.fr wrote:
+>> just to let you know that there is a strange link in 
+>> http://www.alsa-project.org/main/index.php/Main_Page
+>> 
+>> See this screenshot : http://pix.toile-libre.org/upload/original/1461883624.png
+>> This "strange link" is under the white pointing-down arrow on the blue background circle
+>> 
+>> It is linking to a "cheap holiday" booking webpage and someone on alsa@freenode suggested
+>> it looks to be one of those 'domain not used' redirects which I do agree.
 >
-> Patches look fine to me. I thought there was going to be another version.
-
-There is another patch that comes after these, but that's relating the
-the watermark issues we talked about before.  The watermark issues can
-stand independently of this patch series, so I think it's best to keep
-the complexity with watermarks separate this series.    Arnaud never
-mentioned to me that there was a version after v3.
-
--Caleb
-
+>I can confirm it.
 >
-> Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+>> This link has been introduced back in August 2007 the 10th following this change :
+>> http://www.alsa-project.org/main/index.php?title=Main_Page&diff=698&oldid=697
+>
+>This modification was done by Tjones, 17:13, 24 December 2014:
+>http://www.alsa-project.org/main/index.php?title=Template%3AALSA_download&diff=6748&oldid=6624
+>
+>It should be removed, and the account should be banned.
+
+Thanks for confirming it Takashi and precising where it came from.
+
+And thanks to Clemens who did revert the bad change :
+http://www.alsa-project.org/main/index.php?title=Template%3AALSA_download&diff=6823&oldid=6801
+
+All good now.
+Olivier
