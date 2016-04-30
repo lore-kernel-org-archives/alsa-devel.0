@@ -1,19 +1,15 @@
-From: Petr Kulhavy <brain@jikos.cz>
-Subject: iMX6UL EVK with kernel 4.6
-Date: Sat, 30 Apr 2016 13:18:55 +0200
-Message-ID: <50f27095-3304-03fa-7209-3f05baccb346@jikos.cz>
-Reply-To: brain@jikos.cz
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: dice: add support for M-Audio Profire
+	610 and perhaps 2626
+Date: Sat, 30 Apr 2016 22:06:46 +0900
+Message-ID: <1462021606-13683-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fep27.mx.upcmail.net (fep27.mx.upcmail.net [62.179.121.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 498AA264ED5
- for <alsa-devel@alsa-project.org>; Sat, 30 Apr 2016 13:19:56 +0200 (CEST)
-Received: from edge01.upcmail.net ([192.168.13.236]) by viefep27-int.chello.at
- (InterMail vM.8.01.05.21 201-2260-151-156-20141103) with ESMTP
- id <20160430111956.OAUZ20729.viefep27-int.chello.at@edge01.upcmail.net>
- for <alsa-devel@alsa-project.org>; Sat, 30 Apr 2016 13:19:56 +0200
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id F0253264F45
+ for <alsa-devel@alsa-project.org>; Sat, 30 Apr 2016 15:06:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,23 +19,118 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: nicoleotsuka@gmail.com, timur@tabi.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+M-Audio Profire 610 has an unexpected value in version field of its config
+ROM, thus ALSA dice driver is not assigned to the model due to a mismatch
+of modalias.
 
-I'm trying to run the latest mainline kernel 4.6 on the iMX6UL EVK. The 
-board mostly works and the only problem is audio.
-Even though the sound card is detected and the ALSA mixer can be 
-controlled there is no MCLK coming out of the SAI2 interface.
-All the related peripherals in the DTS (pinmux, SAI2, sound card, codec) 
-seem to be set-up correctly, I also tried out various things like 
-disabling the ASRC, but without success and I'm slowly running out of ideas.
+This commit adds an entry to support the model. I expect the entry is
+also for Profire 2626.
 
-Could somebody give me a hint please, what is different to the Freescale 
-kernel branch where the MCLK works?
-By the way, why aren't the Freescale patches merged to the mainline kernel?
+I note that Profire 610 uses TCD2220 (so-called Dice Jr.), and supports a
+part of Extended Application Protocol (EAP).
 
-Thanks
-Petr
+$ cd linux-firewire-utils/src
+$ ./crpp < /sys/bus/firewire/devices/fw1/config_rom
+               ROM header and bus information block
+               ------------------------------------------------------------
+400  04047689  bus_info_length 4, crc_length 4, crc 30345
+404  31333934  bus_name "1394"
+408  e0ff8112  irmc 1, cmc 1, isc 1, bmc 0, pmc 0, cyc_clk_acc 255,
+               max_rec 8 (512), max_rom 1, gen 1, spd 2 (S400)
+40c  000d6c04  company_id 000d6c     |
+410  04400002  device_id 0404400002  | EUI-64 000d6c0404400002
+
+               root directory
+               ------------------------------------------------------------
+414  000695fe  directory_length 6, crc 38398
+418  03000d6c  vendor
+41c  8100000a  --> descriptor leaf at 444
+420  17000011  model
+424  8100000d  --> descriptor leaf at 458
+428  0c0087c0  node capabilities per IEEE 1394
+42c  d1000001  --> unit directory at 430
+
+               unit directory at 430
+               ------------------------------------------------------------
+430  0004fb14  directory_length 4, crc 64276
+434  12000d6c  specifier id
+438  130100d1  version
+43c  17000011  model
+440  8100000c  --> descriptor leaf at 470
+
+               descriptor leaf at 444
+               ------------------------------------------------------------
+444  0004b8e4  leaf_length 4, crc 47332
+448  00000000  textual descriptor
+44c  00000000  minimal ASCII
+450  4d2d4175  "M-Au"
+454  64696f00  "dio"
+
+               descriptor leaf at 458
+               ------------------------------------------------------------
+458  00053128  leaf_length 5, crc 12584
+45c  00000000  textual descriptor
+460  00000000  minimal ASCII
+464  50726f46  "ProF"
+468  69726520  "ire "
+46c  36313000  "610"
+
+               descriptor leaf at 470
+               ------------------------------------------------------------
+470  00053128  leaf_length 5, crc 12584
+474  00000000  textual descriptor
+478  00000000  minimal ASCII
+47c  50726f46  "ProF"
+480  69726520  "ire "
+484  36313000  "610"
+
+$ cat /proc/asound/card1/dice
+sections:
+  global: offset 10, size 90
+  tx: offset 100, size 142
+  rx: offset 242, size 282
+  ext_sync: offset 524, size 4
+  unused2: offset 0, size 0
+global:
+  owner: ffc0:000100000000
+  notification: 00000040
+  nick name: FW610
+  clock select: internal 48000
+  enable: 1
+  status: locked 48000
+  ext status: 00000040
+  sample rate: 48000
+  version: 1.0.4.0
+  clock caps: 32000 44100 48000 88200 96000 176400 192000 aes1 aes4 aes adat tdif wc arx1 arx2 internal
+  clock source names: SPDIF\AES34\AES56\TOS\AES_ANY\ADAT\ADAT_AUX\Word Clock\Unused\Unused\Unused\Unused\Internal\\
+  ...
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/dice/dice.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
+index 96fe68f4..25e9f77 100644
+--- a/sound/firewire/dice/dice.c
++++ b/sound/firewire/dice/dice.c
+@@ -317,6 +317,13 @@ static const struct ieee1394_device_id dice_id_table[] = {
+ 		.match_flags = IEEE1394_MATCH_VERSION,
+ 		.version     = DICE_INTERFACE,
+ 	},
++	/* M-Audio Profire 610/2626 has a different value in version field. */
++	{
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
++				  IEEE1394_MATCH_SPECIFIER_ID,
++		.vendor_id	= 0x000d6c,
++		.specifier_id	= 0x000d6c,
++	},
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(ieee1394, dice_id_table);
+-- 
+2.7.4
