@@ -1,7 +1,7 @@
 From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [RFC PATCH 5/7] ARM: pxa: mioa701 remove wm9713 from platform devices
-Date: Sat, 30 Apr 2016 23:15:37 +0200
-Message-ID: <1462050939-27940-6-git-send-email-robert.jarzmik@free.fr>
+Subject: [RFC PATCH 6/7] ASoC: mioa701_wm9713: convert to new ac97 bus
+Date: Sat, 30 Apr 2016 23:15:38 +0200
+Message-ID: <1462050939-27940-7-git-send-email-robert.jarzmik@free.fr>
 References: <1462050939-27940-1-git-send-email-robert.jarzmik@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,25 +21,34 @@ To: Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>, Ha
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-As the ac97 autoprobing is introduced, remove the manually added wm9713
-device.
+Convert to the new auto-probing ac97 bus, which changes the device name.
 
 Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 ---
- arch/arm/mach-pxa/mioa701.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/pxa/mioa701_wm9713.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/mach-pxa/mioa701.c b/arch/arm/mach-pxa/mioa701.c
-index 38a96a193dc4..e69e20febf83 100644
---- a/arch/arm/mach-pxa/mioa701.c
-+++ b/arch/arm/mach-pxa/mioa701.c
-@@ -690,7 +690,6 @@ static struct platform_device *devices[] __initdata = {
- 	&mioa701_gpio_keys,
- 	&mioa701_backlight,
- 	&mioa701_led,
--	&wm9713_acodec,
- 	&pxa2xx_pcm,
- 	&mioa701_sound,
- 	&power_dev,
+diff --git a/sound/soc/pxa/mioa701_wm9713.c b/sound/soc/pxa/mioa701_wm9713.c
+index 5c8f9db50a47..4ed10e6ff5d1 100644
+--- a/sound/soc/pxa/mioa701_wm9713.c
++++ b/sound/soc/pxa/mioa701_wm9713.c
+@@ -149,7 +149,7 @@ static struct snd_soc_dai_link mioa701_dai[] = {
+ 		.stream_name = "AC97 HiFi",
+ 		.cpu_dai_name = "pxa2xx-ac97",
+ 		.codec_dai_name = "wm9713-hifi",
+-		.codec_name = "wm9713-codec",
++		.codec_name = "pxa2xx-ac97:0",
+ 		.init = mioa701_wm9713_init,
+ 		.platform_name = "pxa-pcm-audio",
+ 		.ops = &mioa701_ops,
+@@ -159,7 +159,7 @@ static struct snd_soc_dai_link mioa701_dai[] = {
+ 		.stream_name = "AC97 Aux",
+ 		.cpu_dai_name = "pxa2xx-ac97-aux",
+ 		.codec_dai_name ="wm9713-aux",
+-		.codec_name = "wm9713-codec",
++		.codec_name = "pxa2xx-ac97:0",
+ 		.platform_name = "pxa-pcm-audio",
+ 		.ops = &mioa701_ops,
+ 	},
 -- 
 2.1.4
