@@ -1,136 +1,105 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: dice: add support for M-Audio Profire
-	610 and perhaps 2626
-Date: Sat, 30 Apr 2016 22:06:46 +0900
-Message-ID: <1462021606-13683-1-git-send-email-o-takashi@sakamocchi.jp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id F0253264F45
- for <alsa-devel@alsa-project.org>; Sat, 30 Apr 2016 15:06:56 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: [RFC PATCH 0/7] AC97 device/driver model revamp
+Date: Sat, 30 Apr 2016 23:15:32 +0200
+Message-ID: <1462050939-27940-1-git-send-email-robert.jarzmik@free.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-M-Audio Profire 610 has an unexpected value in version field of its config
-ROM, thus ALSA dice driver is not assigned to the model due to a mismatch
-of modalias.
+It all started in the pxa device-tree submission here :
+   https://lkml.org/lkml/2016/2/25/965
+It will be maintained in :
+   git fetch https://github.com/rjarzmik/linux.git work/ac97
 
-This commit adds an entry to support the model. I expect the entry is
-also for Profire 2626.
+And now it transformed into this RFC, which would bring a ground for AC'97
+devices closer to the linux device/driver model.
 
-I note that Profire 610 uses TCD2220 (so-called Dice Jr.), and supports a
-part of Extended Application Protocol (EAP).
+This is just an RFC to see if we understand each other Mark.
 
-$ cd linux-firewire-utils/src
-$ ./crpp < /sys/bus/firewire/devices/fw1/config_rom
-               ROM header and bus information block
-               ------------------------------------------------------------
-400  04047689  bus_info_length 4, crc_length 4, crc 30345
-404  31333934  bus_name "1394"
-408  e0ff8112  irmc 1, cmc 1, isc 1, bmc 0, pmc 0, cyc_clk_acc 255,
-               max_rec 8 (512), max_rom 1, gen 1, spd 2 (S400)
-40c  000d6c04  company_id 000d6c     |
-410  04400002  device_id 0404400002  | EUI-64 000d6c0404400002
+Amongst the driving ideas behind this RFC :
+ - use device/driver model for AC'97
+   device/driver binding is based on vendor_id{1,2}
+ - use auto-probe of the AC'97 bus to enumerate codecs and create devices
+ - be compatible with previous platform_data model for codecs
+   => this enables a smooth transition, where a codec (here wm9713) can
+      be used either through platform_device or automatic discovery
+ - struct snd_ac97 is not used
+   This structure is really heavy, and doesn't represent an AC97 device, but
+   rather an AC'97 codec internals IIUC.
+   I think it's right place would be in include/sound/ac97/codec.h.
+   This is also a problem for regmap adherence, hence the
+   include/sound/ac97/compat.h.
+ - a new AC'97 bus Kconfig is created
+   This was done for a smooth transition ... let's see if it's a good idea.
+ - split the AC'97 into :
+   - the codec
+   - the digital controller
+   - the bus
 
-               root directory
-               ------------------------------------------------------------
-414  000695fe  directory_length 6, crc 38398
-418  03000d6c  vendor
-41c  8100000a  --> descriptor leaf at 444
-420  17000011  model
-424  8100000d  --> descriptor leaf at 458
-428  0c0087c0  node capabilities per IEEE 1394
-42c  d1000001  --> unit directory at 430
+Amongst the things that are not all touched yet :
+ - ac97_codec.c
+   The generic AC'97 codec in sound/pci/ac97/ac97_codec.c has really a lot
+   features, which are not at all PCI related. They could be transfered to
+   sound/ac97, without the pci specific field.
+   => this deserves a deep ahead thinking, which I'll do if the current approach
+   is accepted by the communauty.
 
-               unit directory at 430
-               ------------------------------------------------------------
-430  0004fb14  directory_length 4, crc 64276
-434  12000d6c  specifier id
-438  130100d1  version
-43c  17000011  model
-440  8100000c  --> descriptor leaf at 470
+The most important patch is 2/7 "ALSA: ac97: add an ac97 bus". This is the main
+evaluation point for the serie, the others are here so that I can test it all.
 
-               descriptor leaf at 444
-               ------------------------------------------------------------
-444  0004b8e4  leaf_length 4, crc 47332
-448  00000000  textual descriptor
-44c  00000000  minimal ASCII
-450  4d2d4175  "M-Au"
-454  64696f00  "dio"
+Well, this is a long term effort, which might need a complete rewrite according
+to the comments it'll get. Let's expose it for comments and see how I can
+progress with it.
 
-               descriptor leaf at 458
-               ------------------------------------------------------------
-458  00053128  leaf_length 5, crc 12584
-45c  00000000  textual descriptor
-460  00000000  minimal ASCII
-464  50726f46  "ProF"
-468  69726520  "ire "
-46c  36313000  "610"
+Cheers.
 
-               descriptor leaf at 470
-               ------------------------------------------------------------
-470  00053128  leaf_length 5, crc 12584
-474  00000000  textual descriptor
-478  00000000  minimal ASCII
-47c  50726f46  "ProF"
-480  69726520  "ire "
-484  36313000  "610"
+--
+Robert
 
-$ cat /proc/asound/card1/dice
-sections:
-  global: offset 10, size 90
-  tx: offset 100, size 142
-  rx: offset 242, size 282
-  ext_sync: offset 524, size 4
-  unused2: offset 0, size 0
-global:
-  owner: ffc0:000100000000
-  notification: 00000040
-  nick name: FW610
-  clock select: internal 48000
-  enable: 1
-  status: locked 48000
-  ext status: 00000040
-  sample rate: 48000
-  version: 1.0.4.0
-  clock caps: 32000 44100 48000 88200 96000 176400 192000 aes1 aes4 aes adat tdif wc arx1 arx2 internal
-  clock source names: SPDIF\AES34\AES56\TOS\AES_ANY\ADAT\ADAT_AUX\Word Clock\Unused\Unused\Unused\Unused\Internal\\
-  ...
+Robert Jarzmik (7):
+  ALSA: ac97: split out the generic ac97 registers
+  ALSA: ac97: add an ac97 bus
+  ASoC: wm9713: add ac97 new bus support
+  ASoC: pxa: switch to new ac97 bus support
+  ARM: pxa: mioa701 remove wm9713 from platform devices
+  ASoC: mioa701_wm9713: convert to new ac97 bus
+  ASoC: add new ac97 bus support
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/dice/dice.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm/mach-pxa/mioa701.c     |   1 -
+ include/sound/ac97/codec.h      |  98 ++++++++++++
+ include/sound/ac97/compat.h     |  21 +++
+ include/sound/ac97/controller.h |  39 +++++
+ include/sound/ac97/regs.h       | 262 +++++++++++++++++++++++++++++++
+ include/sound/ac97_codec.h      | 239 +----------------------------
+ include/sound/pxa2xx-lib.h      |  14 +-
+ sound/Kconfig                   |   7 +
+ sound/Makefile                  |   1 +
+ sound/ac97/Kconfig              |   9 ++
+ sound/ac97/Makefile             |   5 +
+ sound/ac97/ac97_core.h          |  10 ++
+ sound/ac97/bus.c                | 330 ++++++++++++++++++++++++++++++++++++++++
+ sound/ac97/codec.c              |  15 ++
+ sound/ac97/snd_ac97_compat.c    | 104 +++++++++++++
+ sound/arm/Kconfig               |   1 -
+ sound/arm/pxa2xx-ac97-lib.c     |  31 ++--
+ sound/soc/Kconfig               |   4 +
+ sound/soc/codecs/wm9713.c       |  62 +++++++-
+ sound/soc/pxa/Kconfig           |   4 +-
+ sound/soc/pxa/mioa701_wm9713.c  |   4 +-
+ sound/soc/pxa/pxa2xx-ac97.c     |  12 +-
+ 22 files changed, 1000 insertions(+), 273 deletions(-)
+ create mode 100644 include/sound/ac97/codec.h
+ create mode 100644 include/sound/ac97/compat.h
+ create mode 100644 include/sound/ac97/controller.h
+ create mode 100644 include/sound/ac97/regs.h
+ create mode 100644 sound/ac97/Kconfig
+ create mode 100644 sound/ac97/Makefile
+ create mode 100644 sound/ac97/ac97_core.h
+ create mode 100644 sound/ac97/bus.c
+ create mode 100644 sound/ac97/codec.c
+ create mode 100644 sound/ac97/snd_ac97_compat.c
 
-diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
-index 96fe68f4..25e9f77 100644
---- a/sound/firewire/dice/dice.c
-+++ b/sound/firewire/dice/dice.c
-@@ -317,6 +317,13 @@ static const struct ieee1394_device_id dice_id_table[] = {
- 		.match_flags = IEEE1394_MATCH_VERSION,
- 		.version     = DICE_INTERFACE,
- 	},
-+	/* M-Audio Profire 610/2626 has a different value in version field. */
-+	{
-+		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
-+				  IEEE1394_MATCH_SPECIFIER_ID,
-+		.vendor_id	= 0x000d6c,
-+		.specifier_id	= 0x000d6c,
-+	},
- 	{ }
- };
- MODULE_DEVICE_TABLE(ieee1394, dice_id_table);
 -- 
-2.7.4
+2.1.4
