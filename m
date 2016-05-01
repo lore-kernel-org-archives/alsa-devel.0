@@ -1,40 +1,40 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: iMX6UL EVK with kernel 4.6
-Date: Sun, 1 May 2016 11:49:06 -0300
-Message-ID: <CAOMZO5BU2--_CV8FUsvkkesKGLW9NcnDPNvxC7UnK5vWwgDqVQ@mail.gmail.com>
-References: <50f27095-3304-03fa-7209-3f05baccb346@jikos.cz>
+From: William Breathitt Gray <vilhelm.gray@gmail.com>
+Subject: Re: [PATCH 1/4] pnp: pnpbios: Add explicit X86_32 dependency to
+ PNPBIOS
+Date: Sun, 1 May 2016 11:52:39 -0400
+Message-ID: <20160501155239.GA19900@sophia>
+References: <cover.1460379702.git.vilhelm.gray@gmail.com>
+ <bbb2f28f39cbda8923eedca61bb5d9c55520f674.1460379702.git.vilhelm.gray@gmail.com>
+ <571AB8F6.50802@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f177.google.com (mail-io0-f177.google.com
- [209.85.223.177])
- by alsa0.perex.cz (Postfix) with ESMTP id E55CE2604DF
- for <alsa-devel@alsa-project.org>; Sun,  1 May 2016 16:49:07 +0200 (CEST)
-Received: by mail-io0-f177.google.com with SMTP id 190so142879687iow.1
- for <alsa-devel@alsa-project.org>; Sun, 01 May 2016 07:49:07 -0700 (PDT)
-In-Reply-To: <50f27095-3304-03fa-7209-3f05baccb346@jikos.cz>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: brain@jikos.cz
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>
+Content-Type: text/plain; charset=utf-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <571AB8F6.50802@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc: tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, gregkh@linuxfoundation.org, x86@kernel.org, linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Apr 30, 2016 at 8:18 AM, Petr Kulhavy <brain@jikos.cz> wrote:
-> Hi,
+On Sat, Apr 23, 2016 at 01:51:19AM +0200, Rafael J. Wysocki wrote:
+>On 4/11/2016 3:25 PM, William Breathitt Gray wrote:
+>> The PNPBIOS driver requires preprocessor defines (located in
+>> include/asm/segment.h) only declared if the architecture is set to
+>> X86_32. If the architecture is set to X86_64, the PNPBIOS driver will
+>> not build properly. The X86 dependecy for the PNPBIOS configuration
+>> option is changed to an explicit X86_32	dependency in order to prevent
+>> an attempt to build for an unsupported architecture.
+>>
+>> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
 >
-> I'm trying to run the latest mainline kernel 4.6 on the iMX6UL EVK. The
-> board mostly works and the only problem is audio.
-> Even though the sound card is detected and the ALSA mixer can be controlled
-> there is no MCLK coming out of the SAI2 interface.
+>Has anyone taken care of this already?
+>
+>If not, can you possibly resend this patch with a CC to 
+>linux-acpi@vger.kernel.org so I can pick it up via Patchwork more easily?
 
-Also, have you tried setting bit 20 (SAI2_MCLK_DIR) of register IOMUXC_GPR_GPR1?
+I'm not sure when this patchset will appear in driver-core, so I have
+resent this particular patch with a CC to linux-acpi@vger.kernel.org so
+that Rafael J. Wysocki can pick it up more easily.
 
-You can set this bit in the bootloader for a quick test.
+William Breathitt Gray
