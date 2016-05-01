@@ -1,7 +1,7 @@
-From: Petr Kulhavy <brain@jikos.cz>
+From: Fabio Estevam <festevam@gmail.com>
 Subject: Re: iMX6UL EVK with kernel 4.6
-Date: Sun, 1 May 2016 21:24:50 +0200
-Message-ID: <3bede708-4c7c-dfae-fb26-c20a42289836@jikos.cz>
+Date: Sun, 1 May 2016 17:19:41 -0300
+Message-ID: <CAOMZO5CbtgcencL7UTk8HUmJwEd7HuLDSNNGuLA0UUn5Grxdig@mail.gmail.com>
 References: <50f27095-3304-03fa-7209-3f05baccb346@jikos.cz>
  <CAOMZO5BU2--_CV8FUsvkkesKGLW9NcnDPNvxC7UnK5vWwgDqVQ@mail.gmail.com>
  <CAOMZO5BGDnECdRFU6XFws9poNyF-yGJbv=io43mQgcqO4L-fbw@mail.gmail.com>
@@ -9,19 +9,18 @@ References: <50f27095-3304-03fa-7209-3f05baccb346@jikos.cz>
  <CAOMZO5BM-EM0s5zWUmbRMkzV11Az9D+KLmQJ7dgv_RvKX9mihg@mail.gmail.com>
  <e163b954-0c4b-b859-0e15-ea113d2f5ddd@jikos.cz>
  <CAOMZO5Am7xQS556TpX5Xjk5s19CjMzH=+roY7jPhmRD25fiEvQ@mail.gmail.com>
-Reply-To: brain@jikos.cz
+ <3bede708-4c7c-dfae-fb26-c20a42289836@jikos.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fep28.mx.upcmail.net (fep28.mx.upcmail.net [62.179.121.48])
- by alsa0.perex.cz (Postfix) with ESMTP id D6DF52604DF
- for <alsa-devel@alsa-project.org>; Sun,  1 May 2016 21:24:51 +0200 (CEST)
-Received: from edge02.upcmail.net ([192.168.13.237]) by viefep28-int.chello.at
- (InterMail vM.8.01.05.21 201-2260-151-156-20141103) with ESMTP
- id <20160501192451.KRLA15868.viefep28-int.chello.at@edge02.upcmail.net>
- for <alsa-devel@alsa-project.org>; Sun, 1 May 2016 21:24:51 +0200
-In-Reply-To: <CAOMZO5Am7xQS556TpX5Xjk5s19CjMzH=+roY7jPhmRD25fiEvQ@mail.gmail.com>
+Received: from mail-io0-f181.google.com (mail-io0-f181.google.com
+ [209.85.223.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9DCE12604DF
+ for <alsa-devel@alsa-project.org>; Sun,  1 May 2016 22:19:42 +0200 (CEST)
+Received: by mail-io0-f181.google.com with SMTP id d62so152440825iof.2
+ for <alsa-devel@alsa-project.org>; Sun, 01 May 2016 13:19:42 -0700 (PDT)
+In-Reply-To: <3bede708-4c7c-dfae-fb26-c20a42289836@jikos.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,40 +30,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
+To: Petr Kulhavy <brain@jikos.cz>
 Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, May 1, 2016 at 4:24 PM, Petr Kulhavy <brain@jikos.cz> wrote:
 
-
-On 01/05/16 21:22, Fabio Estevam wrote:
-> On Sun, May 1, 2016 at 3:59 PM, Petr Kulhavy <brain@jikos.cz> wrote:
+> The controls to unmute are:
 >
->> I have not tried setting the bit 20 of the GPR1 register. How would that be
->> set?
-> If you have memtool installed in your rootfs:
->
-> ./memtool -32 20E4004=0F560005
->
-> You can do this via bootloader prompt or via devmem2 in the Linux prompt.
->
-> Without this MCLK will not be out.
-Thanks, I'll check that out.
+> Left Output Mixer PCM [Off]
+> Right Output Mixer PCM [Off]
 
->> Both the 3.x and 4.1 work for me. However you need to set the headphone
->> volume to non-zero and especially the pcm output mixer (unmute),
->> otherwise the audio path is not routed through and the codec is switched off
->> due to power saving (and generates no bclk and lrclk).
->> This confused me as well, but after setting the mixer playback stasrts
->> working with the Freescale kernel.
-> I was putting the volume to a suitable value, but didn't touch PCM output mixer.
->
-> I see in alsamixer: "PCM Playback -6dB [Off]", but it does not allow
-> me to change this setting though.
-
-The controls to unmute are:
-
-Left Output Mixer PCM [Off]
-Right Output Mixer PCM [Off]
-
-Petr
+I don't know why, but alsamixer does not allow me to unmute thes options.
