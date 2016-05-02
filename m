@@ -1,19 +1,20 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v4 0/3]: conf: topology: Add the conf for
-	SKL-rt286
-Date: Mon, 2 May 2016 14:07:13 +0530
-Message-ID: <20160502083713.GZ2274@localhost>
-References: <1461821878-26953-1-git-send-email-vinod.koul@intel.com>
- <s5hy47xstpf.wl-tiwai@suse.de>
+Subject: Re: [PATCH 1/2] ALSA: hdac: add link pm and ref
+	counting
+Date: Mon, 2 May 2016 14:32:00 +0530
+Message-ID: <20160502090200.GA2274@localhost>
+References: <1461852059-20518-1-git-send-email-vinod.koul@intel.com>
+ <1461852059-20518-2-git-send-email-vinod.koul@intel.com>
+ <s5hfuu4ss28.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 422DC26054D
- for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 10:31:19 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7691F26040E
+ for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 10:56:19 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hy47xstpf.wl-tiwai@suse.de>
+In-Reply-To: <s5hfuu4ss28.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,34 +25,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 28, 2016 at 04:18:04PM +0200, Takashi Iwai wrote:
-> On Thu, 28 Apr 2016 07:37:55 +0200,
-> Vinod Koul wrote:
-> > 
-> > This series adds SKL-i2c conf for simple PCM  topology graph
-> > 
-> > Changes in v4:
-> >  - add back the pre-compiled binary blobs
-> >  - remove running the binary on intsall step
-> > 
-> > Changes in v3:
-> > 
-> >  - remove bin blobs, now they are generated in install step
-> >  - hook the tool compilation to alsa-lib and run it on install
-> >  - add u8 in alsa type_compat.h
-> > 
-> > Shreyas NC (3):
-> >   conf: topology: Add Skylake i2s conf
-> >   Add u8 in type_compat.h
-> >   conf: topology: Generate Private data binary blobs
+On Fri, Apr 29, 2016 at 11:05:51AM +0200, Takashi Iwai wrote:
+> > +int snd_hdac_ext_bus_link_get(struct hdac_ext_bus *ebus,
+> > +				struct hdac_ext_link *link)
+> > +{
+> > +	int ret = 0;
+> > +
+> > +	spin_lock(&ebus->lock);
+> > +
+> > +	/*
+> > +	 * if we move from 0 to 1, count will be 1 so power up this link
+> > +	 * as well, also check the dma status and trigger that
+> > +	 */
+> > +	if (++link->ref_count == 1) {
+> > +		if (!ebus->cmd_io) {
+> > +			snd_hdac_bus_init_cmd_io(&ebus->bus);
 > 
-> Applied now (with a slight fix for git bisection and adding the
-> missing .gitignore).
+> Calling this function inside a spinlock is wrong.
+> It should be mutex instead.
 
-Thanks a bunch :)
+Yes I looked at it's usage, we should do a mutex here, will send an update
 
 -- 
 ~Vinod
