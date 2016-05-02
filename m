@@ -1,28 +1,23 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: iMX6UL EVK with kernel 4.6
-Date: Mon, 2 May 2016 10:17:08 -0300
-Message-ID: <CAOMZO5DKeAN2bBOHz+yc0JtLpDeQdh+fhz2_SR-3FsDkgJR-Bw@mail.gmail.com>
-References: <50f27095-3304-03fa-7209-3f05baccb346@jikos.cz>
- <CAOMZO5BU2--_CV8FUsvkkesKGLW9NcnDPNvxC7UnK5vWwgDqVQ@mail.gmail.com>
- <CAOMZO5BGDnECdRFU6XFws9poNyF-yGJbv=io43mQgcqO4L-fbw@mail.gmail.com>
- <0721dbbe-a122-6be3-743f-669672b2c83f@jikos.cz>
- <CAOMZO5BM-EM0s5zWUmbRMkzV11Az9D+KLmQJ7dgv_RvKX9mihg@mail.gmail.com>
- <e163b954-0c4b-b859-0e15-ea113d2f5ddd@jikos.cz>
- <CAOMZO5Am7xQS556TpX5Xjk5s19CjMzH=+roY7jPhmRD25fiEvQ@mail.gmail.com>
- <3bede708-4c7c-dfae-fb26-c20a42289836@jikos.cz>
- <CAOMZO5CbtgcencL7UTk8HUmJwEd7HuLDSNNGuLA0UUn5Grxdig@mail.gmail.com>
- <CAOMZO5Bjg6b4prxMDsJPceYGMv3kL+0fQ4Acm8bjAa=Ey728+g@mail.gmail.com>
+From: Peter Rosin <peda@lysator.liu.se>
+Subject: Volume control with mute in the wrong end
+Date: Mon, 2 May 2016 15:34:51 +0200
+Message-ID: <5cd62e92-8905-1fea-5794-5b211d1d903d@lysator.liu.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f171.google.com (mail-io0-f171.google.com
- [209.85.223.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 83ADC260421
- for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 15:17:09 +0200 (CEST)
-Received: by mail-io0-f171.google.com with SMTP id u185so195279599iod.3
- for <alsa-devel@alsa-project.org>; Mon, 02 May 2016 06:17:09 -0700 (PDT)
-In-Reply-To: <CAOMZO5Bjg6b4prxMDsJPceYGMv3kL+0fQ4Acm8bjAa=Ey728+g@mail.gmail.com>
+Received: from mail.lysator.liu.se (mail.lysator.liu.se [130.236.254.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 75056260421
+ for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 15:34:53 +0200 (CEST)
+Received: from mail.lysator.liu.se (localhost [127.0.0.1])
+ by mail.lysator.liu.se (Postfix) with ESMTP id C407940012
+ for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 15:34:52 +0200 (CEST)
+Received: from [192.168.0.125] (217-210-101-82-no95.business.telia.com
+ [217.210.101.82])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail.lysator.liu.se (Postfix) with ESMTPSA id 886D840009
+ for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 15:34:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,43 +27,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Petr Kulhavy <brain@jikos.cz>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Petr,
+Hi!
 
-On Mon, May 2, 2016 at 9:43 AM, Fabio Estevam <festevam@gmail.com> wrote:
+I'm writing a driver for the max9860 codec
 
-> Ok, managed to unmute these options in alsamixer and now I get audio
-> with NXP 3.14 kernel.
->
-> Will try with mainline now.
+https://datasheets.maximintegrated.com/en/ds/MAX9860.pdf
 
-I can get audio with mainline now, but it plays with an incorrect pitch.
+and it has a digital sidetone control where it can mix in
+the left channel ADC into the (mono) DAC output.
 
-Here is a quick hack to allow MCLK to be driven:
+The register that controls the sidetone level makes me wonder
+how I should wire up DAPM for it. You set the gain for the
+sidetone in the same register field as you enable it. I have
+a problem though, since the mute value is at the wrong and of
+the scale, i.e. you turn the volume up and up and up, and when
+you reach "max" it is off. I did try to declare a TLV range
+like so:
 
---- a/arch/arm/mach-imx/mach-imx6ul.c
-+++ b/arch/arm/mach-imx/mach-imx6ul.c
-@@ -22,9 +22,12 @@ static void __init imx6ul_enet_clk_init(void)
-        struct regmap *gpr;
+/* The dvst field has its mute in the wrong end. Sigh. */
+static const DECLARE_TLV_DB_RANGE(dvst_tlv,
+	 0, 30, TLV_DB_SCALE_ITEM(-6000, 200, 0),
+	31, 31, TLV_DB_SCALE_ITEM(0, 0, 1));
 
-        gpr = syscon_regmap_lookup_by_compatible("fsl,imx6ul-iomuxc-gpr");
--       if (!IS_ERR(gpr))
-+       if (!IS_ERR(gpr)) {
-                regmap_update_bits(gpr, IOMUXC_GPR1, IMX6UL_GPR1_ENET_CLK_DIR,
-                                   IMX6UL_GPR1_ENET_CLK_OUTPUT);
-+               regmap_update_bits(gpr, IOMUXC_GPR1, (1 << 20), (1 << 20));
-+
-+       }
-        else
-                pr_err("failed to find fsl,imx6ul-iomux-gpr regmap\n");
+and then hook it that up with a dapm mixer:
 
-As next steps we need:
+static const struct snd_kcontrol_new max9860_mixer_controls[] = {
+	SOC_DAPM_SINGLE_TLV("Sidetone Volume", MAX9860_DACGAIN,
+		MAX9860_DVST_SHIFT, 31, 1, dvst_tlv),
+};
 
-1. Fix the sound pitch
+static const struct snd_soc_dapm_widget max9860_dapm_widgets[] = {
+SND_SOC_DAPM_INPUT("MICL"),
+SND_SOC_DAPM_INPUT("MICR"),
 
-2. Find a proper way to enable MCLK.
+SND_SOC_DAPM_ADC("ADCL", NULL, MAX9860_PWRMAN, MAX9860_ADCLEN_SHIFT, 0),
+SND_SOC_DAPM_ADC("ADCR", NULL, MAX9860_PWRMAN, MAX9860_ADCREN_SHIFT, 0),
 
-Let me know if you get any progress so that we can upstream audio on this board.
+SND_SOC_DAPM_AIF_OUT("AIFOUTL", "Capture", 0, SND_SOC_NOPM, 0, 0),
+SND_SOC_DAPM_AIF_OUT("AIFOUTR", "Capture", 1, SND_SOC_NOPM, 0, 0),
+
+SND_SOC_DAPM_MIXER("Mixer", SND_SOC_NOPM, 0, 0,
+	max9860_mixer_controls,
+	ARRAY_SIZE(max9860_mixer_controls)),
+
+SND_SOC_DAPM_AIF_IN("AIFINL", "Playback", 0, SND_SOC_NOPM, 0, 0),
+SND_SOC_DAPM_AIF_IN("AIFINR", "Playback", 1, SND_SOC_NOPM, 0, 0),
+
+SND_SOC_DAPM_DAC("DAC", NULL, MAX9860_PWRMAN, MAX9860_DACEN_SHIFT, 0),
+
+SND_SOC_DAPM_OUTPUT("OUT"),
+};
+
+static const struct snd_soc_dapm_route max9860_dapm_routes[] = {
+	{ "ADCL", NULL, "MICL" },
+	{ "ADCR", NULL, "MICR" },
+	{ "AIFOUTL", NULL, "ADCL" },
+	{ "AIFOUTR", NULL, "ADCR" },
+
+	{ "OUT", NULL, "DAC" },
+
+	{ "DAC", NULL, "Mixer" },
+	{ "Mixer", "Sidetone Volume", "ADCL" },
+	{ "Mixer", NULL, "AIFINL" },
+	{ "Mixer", NULL, "AIFINR" },
+};
+
+
+But DAPM and some tools (e.g. alsamixer) do not properly recognize the
+mute value at the wrong end on the scale for the sidetone. So, the
+sidetone path is never off (in the dapm sense).
+
+I can use amixer to set the special mute value, and it states
+-99999.99dB, so I think the tlv declaration is correct, at least in
+theory. But as I said alsamixer is thoroughly confused by the control
+and behaves rather strange...
+
+If I change the tlv declaration so that DAPM thinks the mute is in
+the natural end of the scale, the paths are off in the dapm sense
+when the sidetone is muted (but the sidetone is not in fact muted,
+of course).
+
+Is there anything I can do to make DAPM handle this insane register
+field better?
+
+Cheers,
+Peter
