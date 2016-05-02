@@ -1,7 +1,7 @@
 From: Fabio Estevam <festevam@gmail.com>
 Subject: Re: iMX6UL EVK with kernel 4.6
-Date: Mon, 2 May 2016 09:15:06 -0300
-Message-ID: <CAOMZO5BKV5YrW0aUoNwzAhM8JRZfLu=W518y3kDhD+JsTrJB8w@mail.gmail.com>
+Date: Mon, 2 May 2016 09:43:26 -0300
+Message-ID: <CAOMZO5Bjg6b4prxMDsJPceYGMv3kL+0fQ4Acm8bjAa=Ey728+g@mail.gmail.com>
 References: <50f27095-3304-03fa-7209-3f05baccb346@jikos.cz>
  <CAOMZO5BU2--_CV8FUsvkkesKGLW9NcnDPNvxC7UnK5vWwgDqVQ@mail.gmail.com>
  <CAOMZO5BGDnECdRFU6XFws9poNyF-yGJbv=io43mQgcqO4L-fbw@mail.gmail.com>
@@ -15,12 +15,12 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f177.google.com (mail-io0-f177.google.com
- [209.85.223.177])
- by alsa0.perex.cz (Postfix) with ESMTP id C0FC4260421
- for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 14:15:07 +0200 (CEST)
-Received: by mail-io0-f177.google.com with SMTP id u185so193518650iod.3
- for <alsa-devel@alsa-project.org>; Mon, 02 May 2016 05:15:07 -0700 (PDT)
+Received: from mail-ig0-f179.google.com (mail-ig0-f179.google.com
+ [209.85.213.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B3BB260421
+ for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 14:43:28 +0200 (CEST)
+Received: by mail-ig0-f179.google.com with SMTP id bi2so82554125igb.0
+ for <alsa-devel@alsa-project.org>; Mon, 02 May 2016 05:43:28 -0700 (PDT)
 In-Reply-To: <CAOMZO5CbtgcencL7UTk8HUmJwEd7HuLDSNNGuLA0UUn5Grxdig@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -35,8 +35,6 @@ To: Petr Kulhavy <brain@jikos.cz>
 Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Petr,
-
 On Sun, May 1, 2016 at 5:19 PM, Fabio Estevam <festevam@gmail.com> wrote:
 > On Sun, May 1, 2016 at 4:24 PM, Petr Kulhavy <brain@jikos.cz> wrote:
 >
@@ -47,5 +45,9 @@ On Sun, May 1, 2016 at 5:19 PM, Fabio Estevam <festevam@gmail.com> wrote:
 >
 > I don't know why, but alsamixer does not allow me to unmute thes options.
 
-Should sound/soc/codecs/wm8960.c be changed so that thes options are
-turned on by default?
+Ok, managed to unmute these options in alsamixer and now I get audio
+with NXP 3.14 kernel.
+
+Will try with mainline now.
+
+Thanks for your hint!
