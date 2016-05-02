@@ -1,21 +1,14 @@
-From: Peter Rosin <peda@axentia.se>
-Subject: Re: [PATCH] ASoC: pcm: allow changing the
- playback/capture rates for symmetric links
-Date: Mon, 2 May 2016 09:43:53 +0200
-Message-ID: <c7193097-f216-df7d-2f94-bd5f6684c28b@axentia.se>
-References: <1461746959-11443-1-git-send-email-peda@axentia.se>
- <20160427161504.GZ3217@sirena.org.uk>
- <122ca84a-230e-654e-425f-3adb0ca00ec7@axentia.se>
- <20160428103822.GJ3217@sirena.org.uk>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH] ALSA: compress: fix some typo
+Date: Mon,  2 May 2016 14:06:28 +0530
+Message-ID: <1462178188-30509-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from emea01-am1-obe.outbound.protection.outlook.com
- (mail-am1on0137.outbound.protection.outlook.com [157.56.112.137])
- by alsa0.perex.cz (Postfix) with ESMTP id 4DD9826040E
- for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 09:44:00 +0200 (CEST)
-In-Reply-To: <20160428103822.GJ3217@sirena.org.uk>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 866D126040E
+ for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 10:30:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,58 +18,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2016-04-28 12:38, Mark Brown wrote:
-> On Wed, Apr 27, 2016 at 10:45:48PM +0200, Peter Rosin wrote:
->> I haven't looked really closely at the userspace side of this, but the
->> big picture is that we're using a (closed source) library that in its
->> documentation has an example where they open /dev/dsp like this and
->> feeds the fd to the lib. We are simply replicating that in our code.
->> I don't know if the library does anything OSSy with the fd, or if it
->> would be equally happy with an ALSA fd.
-> 
-> If it's using OSS it's unlikely to work with ALSA, the two ABIs are
-> completely different.  You need to talk to your proprietary software
-> vendor about updating their software.  There are also some userspace
-> utilities that try to do the remapping by wrapping things there but I
-> can't remember the names off the top of my head, it's been a long time.
+Noticed two typos in Documentation, so fix them up
 
-Ok, I managed to hook it up with ALSA instead but am now bitten by
-a completely different problem.
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ Documentation/sound/alsa/compress_offload.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The code now does this (error checks elided, there are no errors
-reported in the real code which does check for errors):
-
-snd_pcm_open(&pcm, "default", SND_PCM_STREAM_PLAYBACK, 0);
-snd_pcm_set_params(pcm,
-	SND_PCM_FORMAT_S16_LE,
-	SND_PCM_ACCESS_RW_INTERLEAVED,
-	2, 22050, 0, 1000000);
-while (!end) {
-	/* code filling in stereo_buf elided */
-	snd_pcm_writei(pcm, stereo_buf, sample_count);
-}
-snd_pcm_drain(pcm);
-snd_pcm_close(pcm);
-
-There is no rate control in this, the code relies on snd_pcm_writei
-to block if there is no room. This part appears to work as expected.
-sample_count is not constant, but it is mostly 4096 and never bigger
-than that.
-
-The problem is in the drain/close part. If I leave out snd_pcm_drain
-I naturally lose the tail of the output, but if I have it I get what
-I guess is a repeat of the content in some circular buffer. I.e. the
-very last part of the played sound is played twice(ice).
-
-If I instead write the generated samples to a file and play them
-with aplay, all is fine, so I appear to be misunderstanding the
-alsa api?
-
-Anything obviously wrong in the above code?
-
-Cheers,
-Peter
+diff --git a/Documentation/sound/alsa/compress_offload.txt b/Documentation/sound/alsa/compress_offload.txt
+index 630c492c3dc2..8ba556a131c3 100644
+--- a/Documentation/sound/alsa/compress_offload.txt
++++ b/Documentation/sound/alsa/compress_offload.txt
+@@ -149,7 +149,7 @@ Gapless Playback
+ ================
+ When playing thru an album, the decoders have the ability to skip the encoder
+ delay and padding and directly move from one track content to another. The end
+-user can perceive this as gapless playback as we dont have silence while
++user can perceive this as gapless playback as we don't have silence while
+ switching from one track to another
+ 
+ Also, there might be low-intensity noises due to encoding. Perfect gapless is
+@@ -184,7 +184,7 @@ Sequence flow for gapless would be:
+ - Fill data of the first track
+ - Trigger start
+ - User-space finished sending all,
+-- Indicaite next track data by sending set_next_track
++- Indicate next track data by sending set_next_track
+ - Set metadata of the next track
+ - then call partial_drain to flush most of buffer in DSP
+ - Fill data of the next track
+-- 
+1.9.1
