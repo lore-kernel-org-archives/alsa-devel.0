@@ -1,23 +1,27 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: sound: deadlock involving snd_hrtimer_callback
-Date: Mon, 2 May 2016 13:54:37 +0200
-Message-ID: <CACT4Y+bwTcczigFai4e0fdL8wGWsJUv4gye6tM9-qUqjMGAiCQ@mail.gmail.com>
-References: <CACT4Y+YsEOFvJVk_AafL+OvOC9_njym7xr-KLQKK3pKRyo8oKQ@mail.gmail.com>
- <s5hpotgqbs5.wl-tiwai@suse.de>
- <CACT4Y+Y4m5=KGRQLa8qwT5DT52a99ODFk3auPEW+cUheY6OJ4w@mail.gmail.com>
- <s5heg9vq8xf.wl-tiwai@suse.de>
- <CACT4Y+ZZP2iNKruWUPmCTWetzH9meuorR7Eh7dOYngtwbCYZhg@mail.gmail.com>
- <s5hbn4yr8wg.wl-tiwai@suse.de>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: iMX6UL EVK with kernel 4.6
+Date: Mon, 2 May 2016 09:15:06 -0300
+Message-ID: <CAOMZO5BKV5YrW0aUoNwzAhM8JRZfLu=W518y3kDhD+JsTrJB8w@mail.gmail.com>
+References: <50f27095-3304-03fa-7209-3f05baccb346@jikos.cz>
+ <CAOMZO5BU2--_CV8FUsvkkesKGLW9NcnDPNvxC7UnK5vWwgDqVQ@mail.gmail.com>
+ <CAOMZO5BGDnECdRFU6XFws9poNyF-yGJbv=io43mQgcqO4L-fbw@mail.gmail.com>
+ <0721dbbe-a122-6be3-743f-669672b2c83f@jikos.cz>
+ <CAOMZO5BM-EM0s5zWUmbRMkzV11Az9D+KLmQJ7dgv_RvKX9mihg@mail.gmail.com>
+ <e163b954-0c4b-b859-0e15-ea113d2f5ddd@jikos.cz>
+ <CAOMZO5Am7xQS556TpX5Xjk5s19CjMzH=+roY7jPhmRD25fiEvQ@mail.gmail.com>
+ <3bede708-4c7c-dfae-fb26-c20a42289836@jikos.cz>
+ <CAOMZO5CbtgcencL7UTk8HUmJwEd7HuLDSNNGuLA0UUn5Grxdig@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f42.google.com (mail-wm0-f42.google.com [74.125.82.42])
- by alsa0.perex.cz (Postfix) with ESMTP id BA768260421
- for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 13:55:00 +0200 (CEST)
-Received: by mail-wm0-f42.google.com with SMTP id n129so104237648wmn.1
- for <alsa-devel@alsa-project.org>; Mon, 02 May 2016 04:55:00 -0700 (PDT)
-In-Reply-To: <s5hbn4yr8wg.wl-tiwai@suse.de>
+Received: from mail-io0-f177.google.com (mail-io0-f177.google.com
+ [209.85.223.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id C0FC4260421
+ for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 14:15:07 +0200 (CEST)
+Received: by mail-io0-f177.google.com with SMTP id u185so193518650iod.3
+ for <alsa-devel@alsa-project.org>; Mon, 02 May 2016 05:15:07 -0700 (PDT)
+In-Reply-To: <CAOMZO5CbtgcencL7UTk8HUmJwEd7HuLDSNNGuLA0UUn5Grxdig@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,222 +31,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>, Alexander Potapenko <glider@google.com>, Sasha Levin <sasha.levin@oracle.com>
+To: Petr Kulhavy <brain@jikos.cz>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Apr 24, 2016 at 11:31 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Sun, 24 Apr 2016 19:09:48 +0200,
-> Dmitry Vyukov wrote:
->>
->> On Sun, Apr 24, 2016 at 6:16 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> > On Sun, 24 Apr 2016 17:16:32 +0200,
->> > Dmitry Vyukov wrote:
->> >>
->> >> On Sat, Apr 23, 2016 at 11:02 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> >> > On Sat, 23 Apr 2016 15:40:21 +0200,
->> >> > Dmitry Vyukov wrote:
->> >> >>
->> >> >> Hi Takashi,
->> >> >>
->> >> >> I've incorporated your hrtimer fixes (but also updated to
->> >> >> ddce192106e4f984123884f8e878f66ace94b573) and now I am seeing lots of
->> >> >> the following deadlock messages:
->> >> >>
->> >> >>
->> >> >> [ INFO: possible circular locking dependency detected ]
->> >> >> 4.6.0-rc4+ #351 Not tainted
->> >> >> -------------------------------------------------------
->> >> >> swapper/0/0 is trying to acquire lock:
->> >> >>  (&(&timer->lock)->rlock){-.-...}, at: [<ffffffff8537a749>]
->> >> >> snd_timer_interrupt+0xa9/0xd30 sound/core/timer.c:701
->> >> >>
->> >> >> but task is already holding lock:
->> >> >>  (&(&stime->lock)->rlock){-.....}, at: [<ffffffff85383d3f>]
->> >> >> snd_hrtimer_callback+0x4f/0x2b0 sound/core/hrtimer.c:54
->> >> >>
->> >> >> which lock already depends on the new lock.
->> >> >
->> >> > Oh crap, my second patch is buggy, it leads to ABBA lock, indeed.
->> >> > The first patch is still OK, as it just adds a new behavior mode.
->> >> >
->> >> > Could you replace the second patch with the below one?
->> >>
->> >>
->> >> I've replaced the second path with this one. The deadlocks has gone,
->> >> but I've hit these two hangs that look related:
->> >>
->> >> https://gist.githubusercontent.com/dvyukov/805718ea249c49d17ae759d1b0160684/raw/20891f7e87fe9af3967565559d465d296469244b/gistfile1.txt
->> >> https://gist.githubusercontent.com/dvyukov/7f397ea4aeb9e35596e0c8053cf35a11/raw/3fc22f24f7bab5941e47bab604f96487b5f1944d/gistfile1.txt
->> >
->> > Hmm, so it wasn't a good idea to call hrtimer_cancel() in the
->> > spinlock, in anyway.  Scratch the previous one.
->> >
->> > OK, below is the yet revised two patches.  One is the simplified
->> > version of the patch, and another is to call hrtimer_cancel() in a new
->> > timer op without spinlock.  Apply these after the first patch
->> > "ALSA: timer: Allow backend disabling start/stop from handler".
->>
->> Done. I will let you know if I see any failures.
->
-> After reconsideration, I rewrote the whole patchset again.
-> Could you scratch all the previous three patches and replace with the
-> single patch below?  Sorry for inconvenience!
+Hi Petr,
 
-Reapplied.
-I will let you know if I see any crashes in sound.
+On Sun, May 1, 2016 at 5:19 PM, Fabio Estevam <festevam@gmail.com> wrote:
+> On Sun, May 1, 2016 at 4:24 PM, Petr Kulhavy <brain@jikos.cz> wrote:
+>
+>> The controls to unmute are:
+>>
+>> Left Output Mixer PCM [Off]
+>> Right Output Mixer PCM [Off]
+>
+> I don't know why, but alsamixer does not allow me to unmute thes options.
 
-> -- 8< --
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: hrtimer: Handle start/stop more properly
->
-> This patch tries to address the still remaining issues in ALSA hrtimer
-> driver:
-> - Spurious use-after-free was detected in hrtimer callback
-> - Incorrect rescheduling due to delayed start
-> - WARN_ON() is triggered in hrtimer_forward() invoked in hrtimer
->   callback
->
-> The first issue happens only when the new timer is scheduled even
-> while hrtimer is being closed.  It's related with the second and third
-> items; since ALSA timer core invokes hw.start callback during hrtimer
-> interrupt, this may result in the explicit call of hrtimer_start().
->
-> Also, the similar problem is seen for the stop; ALSA timer core
-> invokes hw.stop callback even in the hrtimer handler, too.  Since we
-> must not call the synced hrtimer_cancel() in such a context, it's just
-> a hrtimer_try_to_cancel() call that doesn't properly work.
->
-> Another culprit of the second and third items is the call of
-> hrtimer_forward_now() before snd_timer_interrupt().  The timer->stick
-> value may change during snd_timer_interrupt() call, but this
-> possibility is ignored completely.
->
-> For covering these subtle and messy issues, the following changes have
-> been done in this patch:
-> - A new flag, in_callback, is introduced in the private data to
->   indicate that the hrtimer handler is being processed.
-> - Both start and stop callbacks skip when called from (during)
->   in_callback flag.
-> - The hrtimer handler returns properly HRTIMER_RESTART and NORESTART
->   depending on the running state now.
-> - The hrtimer handler reprograms the expiry properly after
->   snd_timer_interrupt() call, instead of before.
-> - The close callback clears running flag and sets in_callback flag
->   to block any further start/stop calls.
->
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/core/hrtimer.c | 56 ++++++++++++++++++++++++++++++++++++----------------
->  1 file changed, 39 insertions(+), 17 deletions(-)
->
-> diff --git a/sound/core/hrtimer.c b/sound/core/hrtimer.c
-> index 656d9a9032dc..e2f27022b363 100644
-> --- a/sound/core/hrtimer.c
-> +++ b/sound/core/hrtimer.c
-> @@ -38,37 +38,53 @@ static unsigned int resolution;
->  struct snd_hrtimer {
->         struct snd_timer *timer;
->         struct hrtimer hrt;
-> -       atomic_t running;
-> +       bool in_callback;
->  };
->
->  static enum hrtimer_restart snd_hrtimer_callback(struct hrtimer *hrt)
->  {
->         struct snd_hrtimer *stime = container_of(hrt, struct snd_hrtimer, hrt);
->         struct snd_timer *t = stime->timer;
-> -       unsigned long oruns;
-> -
-> -       if (!atomic_read(&stime->running))
-> -               return HRTIMER_NORESTART;
-> -
-> -       oruns = hrtimer_forward_now(hrt, ns_to_ktime(t->sticks * resolution));
-> -       snd_timer_interrupt(stime->timer, t->sticks * oruns);
-> +       ktime_t delta;
-> +       unsigned long ticks;
-> +       enum hrtimer_restart ret = HRTIMER_NORESTART;
-> +
-> +       spin_lock(&t->lock);
-> +       if (!t->running)
-> +               goto out; /* fast path */
-> +       stime->in_callback = true;
-> +       ticks = t->sticks;
-> +       spin_unlock(&t->lock);
-> +
-> +       /* calculate the drift */
-> +       delta = ktime_sub(hrt->base->get_time(), hrtimer_get_expires(hrt));
-> +       if (delta.tv64 > 0)
-> +               ticks += ktime_divns(delta, ticks * resolution);
-> +
-> +       snd_timer_interrupt(stime->timer, ticks);
-> +
-> +       spin_lock(&t->lock);
-> +       if (t->running) {
-> +               hrtimer_add_expires_ns(hrt, t->sticks * resolution);
-> +               ret = HRTIMER_RESTART;
-> +       }
->
-> -       if (!atomic_read(&stime->running))
-> -               return HRTIMER_NORESTART;
-> -       return HRTIMER_RESTART;
-> +       stime->in_callback = false;
-> + out:
-> +       spin_unlock(&t->lock);
-> +       return ret;
->  }
->
->  static int snd_hrtimer_open(struct snd_timer *t)
->  {
->         struct snd_hrtimer *stime;
->
-> -       stime = kmalloc(sizeof(*stime), GFP_KERNEL);
-> +       stime = kzalloc(sizeof(*stime), GFP_KERNEL);
->         if (!stime)
->                 return -ENOMEM;
->         hrtimer_init(&stime->hrt, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
->         stime->timer = t;
->         stime->hrt.function = snd_hrtimer_callback;
-> -       atomic_set(&stime->running, 0);
->         t->private_data = stime;
->         return 0;
->  }
-> @@ -78,6 +94,11 @@ static int snd_hrtimer_close(struct snd_timer *t)
->         struct snd_hrtimer *stime = t->private_data;
->
->         if (stime) {
-> +               spin_lock_irq(&t->lock);
-> +               t->running = 0; /* just to be sure */
-> +               stime->in_callback = 1; /* skip start/stop */
-> +               spin_unlock_irq(&t->lock);
-> +
->                 hrtimer_cancel(&stime->hrt);
->                 kfree(stime);
->                 t->private_data = NULL;
-> @@ -89,18 +110,19 @@ static int snd_hrtimer_start(struct snd_timer *t)
->  {
->         struct snd_hrtimer *stime = t->private_data;
->
-> -       atomic_set(&stime->running, 0);
-> -       hrtimer_try_to_cancel(&stime->hrt);
-> +       if (stime->in_callback)
-> +               return 0;
->         hrtimer_start(&stime->hrt, ns_to_ktime(t->sticks * resolution),
->                       HRTIMER_MODE_REL);
-> -       atomic_set(&stime->running, 1);
->         return 0;
->  }
->
->  static int snd_hrtimer_stop(struct snd_timer *t)
->  {
->         struct snd_hrtimer *stime = t->private_data;
-> -       atomic_set(&stime->running, 0);
-> +
-> +       if (stime->in_callback)
-> +               return 0;
->         hrtimer_try_to_cancel(&stime->hrt);
->         return 0;
->  }
-> --
-> 2.8.1
->
+Should sound/soc/codecs/wm8960.c be changed so that thes options are
+turned on by default?
