@@ -1,37 +1,48 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: ASoC: fsl_sai: Has anybody attempted to run the
- i.MX6UL in TDM mode with channels > 2?
-Date: Mon, 2 May 2016 10:52:39 -0700
-Message-ID: <CAG5mAdy8BbeKdh+yM8vqNEU1RpzfqD20+SxQj-2iLihXxF7Mww@mail.gmail.com>
+From: Masanari Iida <standby24x7@gmail.com>
+Subject: Re: bytcr_rt5640.c:(.text+0x1593b4): undefined reference to `sst_acpi_find_name_from_hid'
+Date: Tue, 3 May 2016 04:11:07 +0900
+Message-ID: <CALLJCT2-XRx20BUjy6WZkdWK4AmXfX0RMD9sJ5hL0fvZmYxa_g@mail.gmail.com>
+References: <20160329142112.GE3705@pd.tnic>
+	<56FAAF7F.4050209@infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f41.google.com (mail-oi0-f41.google.com
- [209.85.218.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 4D26A260438
- for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 19:53:00 +0200 (CEST)
-Received: by mail-oi0-f41.google.com with SMTP id v145so166493806oie.0
- for <alsa-devel@alsa-project.org>; Mon, 02 May 2016 10:53:00 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Fabio Estevam <festevam@gmail.com>, Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <56FAAF7F.4050209@infradead.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Borislav Petkov <bp@alien8.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, lkml <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-   Now that the MX6 fsl_ssi seems to be getting stable for TDM with
-channels > 2 (thanks all!), the MX6 UL and MX7 have only the SAI port.
+As of v4.6-rc6,  I hit this error during randconfig.
 
-Does anybody have experience with running the SAI with more than 2 channels?
+  LD      init/built-in.o
+sound/built-in.o: In function `snd_byt_rt5640_mc_probe':
+/home/iida/Repo/linux-2.6/sound/soc/intel/boards/bytcr_rt5640.c:361:
+undefined reference to `sst_acpi_find_name_from_hid'
+make: *** [vmlinux] Error 1
 
-Any thoughts or comments would be welcome!
+Masanari
 
-Thanks,
- -Caleb
+On Wed, Mar 30, 2016 at 1:38 AM, Randy Dunlap <rdunlap@infradead.org> wrote:
+> On 03/29/16 07:21, Borislav Petkov wrote:
+>> Hi guys,
+>>
+>> I'm seeing a bunch of those errors today on randconfig builds:
+>>
+>> sound/built-in.o: In function `snd_byt_rt5640_mc_probe':
+>> bytcr_rt5640.c:(.text+0x1593b4): undefined reference to `sst_acpi_find_name_from_hid'
+>> make: *** [vmlinux] Error 1
+>>
+>> ERROR: "sst_acpi_find_name_from_hid" [sound/soc/intel/boards/snd-soc-sst-bytcr-rt5640.ko] undefined!
+>> make[1]: *** [__modpost] Error 1
+>> make: *** [modules] Error 2
+>> make: *** Waiting for unfinished jobs....
+>>
+>> Some of the failing configs attached.
+>>
+>
+> I have 2 patches for this. I'll send them right away.
+>
+>
+> --
+> ~Randy
