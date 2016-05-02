@@ -1,30 +1,22 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: iMX6UL EVK with kernel 4.6
-Date: Mon, 2 May 2016 16:53:53 -0300
-Message-ID: <CAOMZO5DY9BVJXXemW7-jdTDXeiEN6WukmkLJ8uWjSke3shf=BA@mail.gmail.com>
-References: <50f27095-3304-03fa-7209-3f05baccb346@jikos.cz>
- <CAOMZO5BU2--_CV8FUsvkkesKGLW9NcnDPNvxC7UnK5vWwgDqVQ@mail.gmail.com>
- <CAOMZO5BGDnECdRFU6XFws9poNyF-yGJbv=io43mQgcqO4L-fbw@mail.gmail.com>
- <0721dbbe-a122-6be3-743f-669672b2c83f@jikos.cz>
- <CAOMZO5BM-EM0s5zWUmbRMkzV11Az9D+KLmQJ7dgv_RvKX9mihg@mail.gmail.com>
- <e163b954-0c4b-b859-0e15-ea113d2f5ddd@jikos.cz>
- <CAOMZO5Am7xQS556TpX5Xjk5s19CjMzH=+roY7jPhmRD25fiEvQ@mail.gmail.com>
- <3bede708-4c7c-dfae-fb26-c20a42289836@jikos.cz>
- <CAOMZO5CbtgcencL7UTk8HUmJwEd7HuLDSNNGuLA0UUn5Grxdig@mail.gmail.com>
- <CAOMZO5Bjg6b4prxMDsJPceYGMv3kL+0fQ4Acm8bjAa=Ey728+g@mail.gmail.com>
- <CAOMZO5DKeAN2bBOHz+yc0JtLpDeQdh+fhz2_SR-3FsDkgJR-Bw@mail.gmail.com>
- <4cc213b7-8e4e-c47c-1ac9-57a3bf1b91b7@jikos.cz>
+From: "arnaud.mouiche@invoxia.com" <arnaud.mouiche@invoxia.com>
+Subject: Re: [PATCH v3 0/6] ASoC: fsl_ssi: Fixing various
+ channel slips and bad samples insertions
+Date: Tue, 3 May 2016 00:29:52 +0200
+Message-ID: <5727D4E0.8010001@invoxia.com>
+References: <1453130771-24419-1-git-send-email-arnaud.mouiche@invoxia.com>
+ <CAOMZO5A0FRZ52UGeqLJaVF8BiWhzmpNSgQm4B0U1gc2wGU6KhA@mail.gmail.com>
+ <20160429035402.GB1944@Asurada>
+ <CAG5mAdwFd3avEv6Tup9F0YcmtTQAFgHa2oF6FzjeLaZnonpomA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f172.google.com (mail-io0-f172.google.com
- [209.85.223.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 19C9B260438
- for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 21:53:55 +0200 (CEST)
-Received: by mail-io0-f172.google.com with SMTP id d62so2483453iof.2
- for <alsa-devel@alsa-project.org>; Mon, 02 May 2016 12:53:55 -0700 (PDT)
-In-Reply-To: <4cc213b7-8e4e-c47c-1ac9-57a3bf1b91b7@jikos.cz>
+Received: from mail-wm0-f52.google.com (mail-wm0-f52.google.com [74.125.82.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E7F2260438
+ for <alsa-devel@alsa-project.org>; Tue,  3 May 2016 00:29:55 +0200 (CEST)
+Received: by mail-wm0-f52.google.com with SMTP id e201so124241973wme.0
+ for <alsa-devel@alsa-project.org>; Mon, 02 May 2016 15:29:55 -0700 (PDT)
+In-Reply-To: <CAG5mAdwFd3avEv6Tup9F0YcmtTQAFgHa2oF6FzjeLaZnonpomA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,40 +26,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Petr Kulhavy <brain@jikos.cz>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>
+To: Caleb Crome <caleb@crome.org>, Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 2, 2016 at 4:30 PM, Petr Kulhavy <brain@jikos.cz> wrote:
-
-> Mine plays at the correct speed. For the correct speed the clock assignment
-> from the Freescale DTS needs to be copied, so that the SAI2 clock generates
-> 12.288MHz.
-> Below are the relevant nodes from my DTS:
->
-> &clks {
->         assigned-clocks = <&clks IMX6UL_CLK_PLL4_AUDIO_DIV>;
->         assigned-clock-rates = <786432000>;
-> };
-
-That was the part I was missing, thanks!
-
-It plays correctly now, but I get this error message from the wm8960 driver:
-
-$ aplay /home/clarinet.wav
-[   55.007221] wm8960 1-001a: failed to configure clock
-[   55.012583] wm8960 1-001a: ASoC: Failed to prepare bias: -22
-
-Do you see this too?
-
->> 2. Find a proper way to enable MCLK.
->>
->
-> I would tend to put the control of the SAIx_MCLK_DIR into the SAI driver and
-> if needed add an extra boolean property like "enable-mclk-output".
-
-Yes, I think this makes sense.
-
-I will propose some patches today or tomorrow and will keep you on Cc.
-
-Thanks for the cooperation :-)
+SGkgYWxsCgpMZSAyOS8wNC8yMDE2IDE4OjQ5LCBDYWxlYiBDcm9tZSBhIMOpY3JpdCA6Cj4gT24g
+VGh1LCBBcHIgMjgsIDIwMTYgYXQgODo1NCBQTSwgTmljb2xpbiBDaGVuIDxuaWNvbGVvdHN1a2FA
+Z21haWwuY29tPiB3cm90ZToKPj4gT24gRnJpLCBBcHIgMjksIDIwMTYgYXQgMTI6NDQ6MTZBTSAt
+MDMwMCwgRmFiaW8gRXN0ZXZhbSB3cm90ZToKPj4+IEhpIE5pY29saW4gYW5kIFRpbXVyLAo+Pj4K
+Pj4+IE9uIE1vbiwgSmFuIDE4LCAyMDE2IGF0IDE6MjYgUE0sIEFybmF1ZCBNb3VpY2hlCj4+PiA8
+YXJuYXVkLm1vdWljaGVAaW52b3hpYS5jb20+IHdyb3RlOgo+Pj4+IFRoaXMgc2VyaWVzIG9mIHBh
+dGNoIGlzIGFuIGF0dGVtcHQgdG8gZml4IHRoZSBmc2xfc3NpIGRyaXZlciB0byB1c2UgaXQgaW4g
+VERNIG1vZGUgKERTUCBBIG9yIEIpIHdpdGggYSBsYXJnZSBudW1iZXIgb2YgY2hhbm5lbHMvc2xv
+dHMuCj4+PiBBbnkgZmVlZGJhY2sgYWJvdXQgdGhpcyBzZXJpZXM/Cj4+Pgo+Pj4gSXQgYWRkcmVz
+c2VzIGltcG9ydGFudCBmaXhlcyBmb3IgdGhlIGZzbF9zc2kgZHJpdmVyLgo+PiBQYXRjaGVzIGxv
+b2sgZmluZSB0byBtZS4gSSB0aG91Z2h0IHRoZXJlIHdhcyBnb2luZyB0byBiZSBhbm90aGVyIHZl
+cnNpb24uCj4gVGhlcmUgaXMgYW5vdGhlciBwYXRjaCB0aGF0IGNvbWVzIGFmdGVyIHRoZXNlLCBi
+dXQgdGhhdCdzIHJlbGF0aW5nIHRoZQo+IHRoZSB3YXRlcm1hcmsgaXNzdWVzIHdlIHRhbGtlZCBh
+Ym91dCBiZWZvcmUuICBUaGUgd2F0ZXJtYXJrIGlzc3VlcyBjYW4KPiBzdGFuZCBpbmRlcGVuZGVu
+dGx5IG9mIHRoaXMgcGF0Y2ggc2VyaWVzLCBzbyBJIHRoaW5rIGl0J3MgYmVzdCB0byBrZWVwCj4g
+dGhlIGNvbXBsZXhpdHkgd2l0aCB3YXRlcm1hcmtzIHNlcGFyYXRlIHRoaXMgc2VyaWVzLiAgICBB
+cm5hdWQgbmV2ZXIKPiBtZW50aW9uZWQgdG8gbWUgdGhhdCB0aGVyZSB3YXMgYSB2ZXJzaW9uIGFm
+dGVyIHYzLgpObywgbm8gbmV3IHZlcnNpb24gYWZ0ZXIgdGhpcyBvbmUuCgpSZWdhcmRzLApBcm5h
+dWQKPgo+IC1DYWxlYgo+Cj4+IEFja2VkLWJ5OiBOaWNvbGluIENoZW4gPG5pY29sZW90c3VrYUBn
+bWFpbC5jb20+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
+cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
