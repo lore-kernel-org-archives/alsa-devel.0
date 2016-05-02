@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix the NULL pointer
-	exception in dsp_clean up" to the asoc tree
-Date: Mon, 02 May 2016 12:03:42 +0100
-Message-ID: <E1axBde-0001Yp-NN@debutante>
-References: <1461849329-20364-2-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: davinci-mcasp: Fix overwriting of
+	ahclkx" to the asoc tree
+Date: Mon, 02 May 2016 12:03:45 +0100
+Message-ID: <E1axBdh-0001Zr-M2@debutante>
+References: <1461600490-19504-1-git-send-email-Linux.HWI@garmin.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C4B72605F1
- for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 13:03:47 +0200 (CEST)
-In-Reply-To: <1461849329-20364-2-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E2A9A26047C
+ for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 13:03:58 +0200 (CEST)
+In-Reply-To: <1461600490-19504-1-git-send-email-Linux.HWI@garmin.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, "Dharageswari.R" <dharageswari.r@intel.com>, Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
+To: Jim Lodes <jim.lodes@garmin.com>
+Cc: "J.D. Schroeder" <jay.schroeder@garmin.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.com, linux-kernel@vger.kernel.org, jsarha@ti.com, peter.ujfalusi@ti.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix the NULL pointer exception in dsp_clean up
+   ASoC: davinci-mcasp: Fix overwriting of ahclkx
 
 has been applied to the asoc tree at
 
@@ -52,52 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From 95536d8c29985167e745ff0d8c7cd7dcf4318e6b Mon Sep 17 00:00:00 2001
-From: "Dharageswari.R" <dharageswari.r@intel.com>
-Date: Thu, 28 Apr 2016 18:45:25 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix the NULL pointer exception in
- dsp_clean up
+>From 823ecdd684e28d4e71686fc8787b6d31b1223382 Mon Sep 17 00:00:00 2001
+From: Jim Lodes <jim.lodes@garmin.com>
+Date: Mon, 25 Apr 2016 11:08:10 -0500
+Subject: [PATCH] ASoC: davinci-mcasp: Fix overwriting of ahclkx
 
-If request firmware fails at init, the code loader DMA allocation
-can be NULL, so check for boot complete before freeing up these
-resources
+The mcasp davinci_mcasp_set_dai_fmt function was overriding ahclkx
+input/output status that had already been set by the
+davinci_mcasp_set_sysclk function. This commit removes clearing
+of the ahclkx input/output status from davinci_mcasp_set_dai_fmt.
 
-Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Jim Lodes <jim.lodes@garmin.com>
+Signed-off-by: J.D. Schroeder <jay.schroeder@garmin.com>
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-sst-dsp.c | 2 --
- sound/soc/intel/skylake/skl-sst.c     | 4 ++++
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.c b/sound/soc/intel/skylake/skl-sst-dsp.c
-index 2962ef22fc84..13c19855ee1a 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.c
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.c
-@@ -336,8 +336,6 @@ void skl_dsp_free(struct sst_dsp *dsp)
- 	skl_ipc_int_disable(dsp);
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index e1324989bd6b..a1197ad023f6 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -489,7 +489,7 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		mcasp_clr_bits(mcasp, DAVINCI_MCASP_RXFMCTL_REG, AFSRE);
  
- 	free_irq(dsp->irq, dsp);
--	dsp->cl_dev.ops.cl_cleanup_controller(dsp);
--	skl_cldma_int_disable(dsp);
- 	skl_ipc_op_int_disable(dsp);
- 	skl_ipc_int_disable(dsp);
- 
-diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
-index bec4a7c486fd..13ec8d53b526 100644
---- a/sound/soc/intel/skylake/skl-sst.c
-+++ b/sound/soc/intel/skylake/skl-sst.c
-@@ -454,6 +454,10 @@ void skl_sst_dsp_cleanup(struct device *dev, struct skl_sst *ctx)
- 	skl_clear_module_table(ctx->dsp);
- 	skl_ipc_free(&ctx->ipc);
- 	ctx->dsp->ops->free(ctx->dsp);
-+	if (ctx->boot_complete) {
-+		ctx->dsp->cl_dev.ops.cl_cleanup_controller(ctx->dsp);
-+		skl_cldma_int_disable(ctx->dsp);
-+	}
- }
- EXPORT_SYMBOL_GPL(skl_sst_dsp_cleanup);
- 
+ 		mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDIR_REG,
+-			       ACLKX | AHCLKX | AFSX | ACLKR | AHCLKR | AFSR);
++			       ACLKX | AFSX | ACLKR | AHCLKR | AFSR);
+ 		mcasp->bclk_master = 0;
+ 		break;
+ 	default:
 -- 
 2.8.1
