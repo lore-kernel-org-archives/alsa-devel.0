@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Boards: remove ignore_suspend
-	for WoV streams" to the asoc tree
-Date: Mon, 02 May 2016 12:03:30 +0100
-Message-ID: <E1axBdS-0001V2-Qw@debutante>
-References: <1461849329-20364-6-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Suspend PCMs when
+	marked as active suspend" to the asoc tree
+Date: Mon, 02 May 2016 12:03:33 +0100
+Message-ID: <E1axBdV-0001Vw-Q6@debutante>
+References: <1461849329-20364-5-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6ACD2260421
- for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 13:03:37 +0200 (CEST)
-In-Reply-To: <1461849329-20364-6-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 378EA260438
+ for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 13:03:38 +0200 (CEST)
+In-Reply-To: <1461849329-20364-5-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Boards: remove ignore_suspend for WoV streams
+   ASoC: Intel: Skylake: Suspend PCMs when marked as active suspend
 
 has been applied to the asoc tree at
 
@@ -53,61 +53,82 @@ to this mail.
 Thanks,
 Mark
 
->From 551f4bc86807637098786c78afb78418ada4aa1f Mon Sep 17 00:00:00 2001
+>From 9a655db0201ef523683d700cb3f4508c08bc9d8c Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Thu, 28 Apr 2016 18:45:29 +0530
-Subject: [PATCH] ASoC: Intel: Boards: remove ignore_suspend for WoV streams
+Date: Thu, 28 Apr 2016 18:45:28 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Suspend PCMs when marked as active
+ suspend
 
-On WoV we can suspend the DMA and keep the DSP pipelines only On,
-so remove the ignore_suspend for WoV streams but keep them for
-WoV endpoints.
+For 'ignore_suspend' cases we need to keep DSP and pipes On, but
+can suspend the stream and pause the DMA as we are not rendering
+data during the suspended time.
 
-This helps in achieving better power by suspending DMAs
+For this we can check the dai widget ignore_suspend flag in
+trigger suspend/resume, and start and stop the host DMA and host
+copier pipelines.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/skl_nau88l25_max98357a.c | 1 -
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c   | 1 -
- sound/soc/intel/boards/skl_rt286.c              | 1 -
- 3 files changed, 3 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c | 30 ++++++++++++++++++++----------
+ 1 file changed, 20 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-index 72176b79a18d..ca8063d9da55 100644
---- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-@@ -391,7 +391,6 @@ static struct snd_soc_dai_link skylake_dais[] = {
- 		.platform_name = "0000:00:1f.3",
- 		.init = NULL,
- 		.dpcm_capture = 1,
--		.ignore_suspend = 1,
- 		.nonatomic = 1,
- 		.dynamic = 1,
- 		.ops = &skylaye_refcap_ops,
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index 5f1ca99ae9b0..a0e3a3f85658 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -440,7 +440,6 @@ static struct snd_soc_dai_link skylake_dais[] = {
- 		.platform_name = "0000:00:1f.3",
- 		.init = NULL,
- 		.dpcm_capture = 1,
--		.ignore_suspend = 1,
- 		.nonatomic = 1,
- 		.dynamic = 1,
- 		.ops = &skylaye_refcap_ops,
-diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
-index 2016397a8e75..ef5b17fbd751 100644
---- a/sound/soc/intel/boards/skl_rt286.c
-+++ b/sound/soc/intel/boards/skl_rt286.c
-@@ -317,7 +317,6 @@ static struct snd_soc_dai_link skylake_rt286_dais[] = {
- 		.platform_name = "0000:00:1f.3",
- 		.init = NULL,
- 		.dpcm_capture = 1,
--		.ignore_suspend = 1,
- 		.nonatomic = 1,
- 		.dynamic = 1,
- 	},
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 4fcf5f830a8c..b0e7797f2259 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -402,23 +402,33 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	struct skl_module_cfg *mconfig;
+ 	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
+ 	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
++	struct snd_soc_dapm_widget *w;
+ 	int ret;
+ 
+ 	mconfig = skl_tplg_fe_get_cpr_module(dai, substream->stream);
+ 	if (!mconfig)
+ 		return -EIO;
+ 
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		w = dai->playback_widget;
++	else
++		w = dai->capture_widget;
++
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+-		skl_pcm_prepare(substream, dai);
+-		/*
+-		 * enable DMA Resume enable bit for the stream, set the dpib
+-		 * & lpib position to resune before starting the DMA
+-		 */
+-		snd_hdac_ext_stream_drsm_enable(ebus, true,
+-					hdac_stream(stream)->index);
+-		snd_hdac_ext_stream_set_dpibr(ebus, stream, stream->dpib);
+-		snd_hdac_ext_stream_set_lpib(stream, stream->lpib);
++		if (!w->ignore_suspend) {
++			skl_pcm_prepare(substream, dai);
++			/*
++			 * enable DMA Resume enable bit for the stream, set the
++			 * dpib & lpib position to resume before starting the
++			 * DMA
++			 */
++			snd_hdac_ext_stream_drsm_enable(ebus, true,
++						hdac_stream(stream)->index);
++			snd_hdac_ext_stream_set_dpibr(ebus, stream,
++							stream->dpib);
++			snd_hdac_ext_stream_set_lpib(stream, stream->lpib);
++		}
+ 
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+@@ -448,7 +458,7 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			return ret;
+ 
+ 		ret = skl_decoupled_trigger(substream, cmd);
+-		if (cmd == SNDRV_PCM_TRIGGER_SUSPEND) {
++		if ((cmd == SNDRV_PCM_TRIGGER_SUSPEND) && !w->ignore_suspend) {
+ 			/* save the dpib and lpib positions */
+ 			stream->dpib = readl(ebus->bus.remap_addr +
+ 					AZX_REG_VS_SDXDPIB_XBASE +
 -- 
 2.8.1
