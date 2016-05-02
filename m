@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Prevent sending Set DMA
-	Control IPC if the widget is "On"" to the asoc tree
-Date: Mon, 02 May 2016 12:03:36 +0100
-Message-ID: <E1axBdY-0001Wv-OB@debutante>
-References: <1461849329-20364-4-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix memory leak during
+	init instance" to the asoc tree
+Date: Mon, 02 May 2016 12:03:39 +0100
+Message-ID: <E1axBdb-0001Xn-Me@debutante>
+References: <1461849329-20364-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C00026043C
- for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 13:03:41 +0200 (CEST)
-In-Reply-To: <1461849329-20364-4-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C372260421
+ for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 13:03:44 +0200 (CEST)
+In-Reply-To: <1461849329-20364-3-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, "Dharageswari.R" <dharageswari.r@intel.com>, Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
+To: Mousumi Jana <mousumix.jana@intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Prevent sending Set DMA Control IPC if the widget is "On"
+   ASoC: Intel: Skylake: Fix memory leak during init instance
 
 has been applied to the asoc tree at
 
@@ -52,35 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From 1a13b1fafffd41c12a7068c4aa74f5a1d2210a07 Mon Sep 17 00:00:00 2001
-From: "Dharageswari.R" <dharageswari.r@intel.com>
-Date: Thu, 28 Apr 2016 18:45:27 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Prevent sending Set DMA Control IPC if
- the widget is "On"
+>From 76222d6dd2e64c895735ab271ecc8b0df568981d Mon Sep 17 00:00:00 2001
+From: Mousumi Jana <mousumix.jana@intel.com>
+Date: Thu, 28 Apr 2016 18:45:26 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix memory leak during init instance
 
-If widget of a playback or capture DAI is already On, then no
-need not send the Set DMA Control IPC message to firmware.
+param_data variable is allocated during set module format of init
+instance is not getting freed and hence can cause a memory leak.
+So free it up.
 
-Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Mousumi Jana <mousumix.jana@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 2 +-
+ sound/soc/intel/skylake/skl-messages.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index dab0900eef26..4fcf5f830a8c 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -213,7 +213,7 @@ static int skl_be_prepare(struct snd_pcm_substream *substream,
- 	struct skl_sst *ctx = skl->skl_sst;
- 	struct skl_module_cfg *mconfig;
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index e3d149c68bbf..226db84ba20f 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -864,7 +864,7 @@ int skl_init_module(struct skl_sst *ctx,
+ 		return ret;
+ 	}
+ 	mconfig->m_state = SKL_MODULE_INIT_DONE;
+-
++	kfree(param_data);
+ 	return ret;
+ }
  
--	if ((dai->playback_active > 1) || (dai->capture_active > 1))
-+	if (dai->playback_widget->power || dai->capture_widget->power)
- 		return 0;
- 
- 	mconfig = skl_tplg_be_get_cpr_module(dai, substream->stream);
 -- 
 2.8.1
