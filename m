@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Add support for TLV based
-	binary controls" to the asoc tree
-Date: Mon, 02 May 2016 16:47:09 +0100
-Message-ID: <E1axG3x-0005FL-3V@debutante>
-References: <1462193856-4360-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: nau8825: non-clock jack
+ detection for power saving at standby
+Date: Mon, 2 May 2016 17:27:15 +0100
+Message-ID: <20160502162715.GK6292@sirena.org.uk>
+References: <1461917718-25211-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5913706692503946668=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 34FDB260421
- for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 17:47:18 +0200 (CEST)
-In-Reply-To: <1462193856-4360-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 99347260438
+ for <alsa-devel@alsa-project.org>; Mon,  2 May 2016 18:27:24 +0200 (CEST)
+In-Reply-To: <1461917718-25211-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,256 +21,119 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: wm_adsp: Add support for TLV based binary controls
+--===============5913706692503946668==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="lildS9pRFgpM/xzO"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--lildS9pRFgpM/xzO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Fri, Apr 29, 2016 at 04:15:17PM +0800, John Hsu wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> @@ -614,8 +623,10 @@ int nau8825_enable_jack_detect(struct snd_soc_codec =
+*codec,
+>  		NAU8825_HSD_AUTO_MODE | NAU8825_SPKR_DWN1R | NAU8825_SPKR_DWN1L,
+>  		NAU8825_HSD_AUTO_MODE | NAU8825_SPKR_DWN1R | NAU8825_SPKR_DWN1L);
+> =20
+> -	regmap_update_bits(regmap, NAU8825_REG_INTERRUPT_MASK,
+> -		NAU8825_IRQ_HEADSET_COMPLETE_EN | NAU8825_IRQ_EJECT_EN, 0);
+> +	/* Change jack type detection interruption to non-clock architecture
+> +	 * for power saving less 1mW. Move these configuration about inter-
+> +	 * ruption at auto mode to auto irq setup function.
+> +	 */
+> =20
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+This comment is about the change you're making to the code rather than
+something that should be in the code.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> +	/* Clear all interruption status */
+> +	nau8825_int_status_clear_all(regmap);
+> +
+> +	/* Mask all interruptions except jack insertion interruption */
+> +	regmap_write(regmap, NAU8825_REG_INTERRUPT_DIS_CTRL, 0xfffe);
 
-Thanks,
-Mark
+So if any other interrupts occur then things will break...
 
->From 9ee78757d5dae51decc881b293a39a605c9a6df2 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Mon, 2 May 2016 13:57:36 +0100
-Subject: [PATCH] ASoC: wm_adsp: Add support for TLV based binary controls
+> -	regmap_read(regmap, NAU8825_REG_IRQ_STATUS, &active_irq);
+> +	if (regmap_read(regmap, NAU8825_REG_IRQ_STATUS, &active_irq)) {
+> +		dev_err(nau8825->dev, "failed to clear interruption\n");
+> +		return IRQ_NONE;
+> +	}
 
-This patch adds support for the arbitrary length TLV based binary
-controls. This allows users to properly access controls that are
-more than 512 bytes in length.
+This is a read, not a write, and it's better to report the error code if
+the read failed.  This should probably be a separate patch.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/wm_adsp.c | 128 ++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 108 insertions(+), 20 deletions(-)
+>  static const struct regmap_config nau8825_regmap_config =3D {
+> -	.val_bits =3D 16,
+> -	.reg_bits =3D 16,
+> +	.val_bits =3D NAU8825_REG_DATA_LEN,
+> +	.reg_bits =3D NAU8825_REG_ADDR_LEN,
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 3ac2e1f06ad3..f835277901d4 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -160,6 +160,8 @@
- #define ADSP2_RAM_RDY_SHIFT                    0
- #define ADSP2_RAM_RDY_WIDTH                    1
- 
-+#define ADSP_MAX_STD_CTRL_SIZE               512
-+
- struct wm_adsp_buf {
- 	struct list_head list;
- 	void *buf;
-@@ -435,6 +437,7 @@ struct wm_coeff_ctl {
- 	size_t len;
- 	unsigned int set:1;
- 	struct snd_kcontrol *kcontrol;
-+	struct soc_bytes_ext bytes_ext;
- 	unsigned int flags;
- };
- 
-@@ -711,10 +714,17 @@ static void wm_adsp2_show_fw_status(struct wm_adsp *dsp)
- 		 be16_to_cpu(scratch[3]));
- }
- 
-+static inline struct wm_coeff_ctl *bytes_ext_to_ctl(struct soc_bytes_ext *ext)
-+{
-+	return container_of(ext, struct wm_coeff_ctl, bytes_ext);
-+}
-+
- static int wm_coeff_info(struct snd_kcontrol *kctl,
- 			 struct snd_ctl_elem_info *uinfo)
- {
--	struct wm_coeff_ctl *ctl = (struct wm_coeff_ctl *)kctl->private_value;
-+	struct soc_bytes_ext *bytes_ext =
-+		(struct soc_bytes_ext *)kctl->private_value;
-+	struct wm_coeff_ctl *ctl = bytes_ext_to_ctl(bytes_ext);
- 
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
- 	uinfo->count = ctl->len;
-@@ -763,7 +773,9 @@ static int wm_coeff_write_control(struct wm_coeff_ctl *ctl,
- static int wm_coeff_put(struct snd_kcontrol *kctl,
- 			struct snd_ctl_elem_value *ucontrol)
- {
--	struct wm_coeff_ctl *ctl = (struct wm_coeff_ctl *)kctl->private_value;
-+	struct soc_bytes_ext *bytes_ext =
-+		(struct soc_bytes_ext *)kctl->private_value;
-+	struct wm_coeff_ctl *ctl = bytes_ext_to_ctl(bytes_ext);
- 	char *p = ucontrol->value.bytes.data;
- 	int ret = 0;
- 
-@@ -780,6 +792,29 @@ static int wm_coeff_put(struct snd_kcontrol *kctl,
- 	return ret;
- }
- 
-+static int wm_coeff_tlv_put(struct snd_kcontrol *kctl,
-+			    const unsigned int __user *bytes, unsigned int size)
-+{
-+	struct soc_bytes_ext *bytes_ext =
-+		(struct soc_bytes_ext *)kctl->private_value;
-+	struct wm_coeff_ctl *ctl = bytes_ext_to_ctl(bytes_ext);
-+	int ret = 0;
-+
-+	mutex_lock(&ctl->dsp->pwr_lock);
-+
-+	if (copy_from_user(ctl->cache, bytes, size)) {
-+		ret = -EFAULT;
-+	} else {
-+		ctl->set = 1;
-+		if (ctl->enabled)
-+			ret = wm_coeff_write_control(ctl, ctl->cache, size);
-+	}
-+
-+	mutex_unlock(&ctl->dsp->pwr_lock);
-+
-+	return ret;
-+}
-+
- static int wm_coeff_read_control(struct wm_coeff_ctl *ctl,
- 				 void *buf, size_t len)
- {
-@@ -822,7 +857,9 @@ static int wm_coeff_read_control(struct wm_coeff_ctl *ctl,
- static int wm_coeff_get(struct snd_kcontrol *kctl,
- 			struct snd_ctl_elem_value *ucontrol)
- {
--	struct wm_coeff_ctl *ctl = (struct wm_coeff_ctl *)kctl->private_value;
-+	struct soc_bytes_ext *bytes_ext =
-+		(struct soc_bytes_ext *)kctl->private_value;
-+	struct wm_coeff_ctl *ctl = bytes_ext_to_ctl(bytes_ext);
- 	char *p = ucontrol->value.bytes.data;
- 	int ret = 0;
- 
-@@ -845,12 +882,72 @@ static int wm_coeff_get(struct snd_kcontrol *kctl,
- 	return ret;
- }
- 
-+static int wm_coeff_tlv_get(struct snd_kcontrol *kctl,
-+			    unsigned int __user *bytes, unsigned int size)
-+{
-+	struct soc_bytes_ext *bytes_ext =
-+		(struct soc_bytes_ext *)kctl->private_value;
-+	struct wm_coeff_ctl *ctl = bytes_ext_to_ctl(bytes_ext);
-+	int ret = 0;
-+
-+	mutex_lock(&ctl->dsp->pwr_lock);
-+
-+	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE) {
-+		if (ctl->enabled)
-+			ret = wm_coeff_read_control(ctl, ctl->cache, size);
-+		else
-+			ret = -EPERM;
-+	} else {
-+		if (!ctl->flags && ctl->enabled)
-+			ret = wm_coeff_read_control(ctl, ctl->cache, size);
-+	}
-+
-+	if (!ret && copy_to_user(bytes, ctl->cache, size))
-+		ret = -EFAULT;
-+
-+	mutex_unlock(&ctl->dsp->pwr_lock);
-+
-+	return ret;
-+}
-+
- struct wmfw_ctl_work {
- 	struct wm_adsp *dsp;
- 	struct wm_coeff_ctl *ctl;
- 	struct work_struct work;
- };
- 
-+static unsigned int wmfw_convert_flags(unsigned int in, unsigned int len)
-+{
-+	unsigned int out, rd, wr, vol;
-+
-+	if (len > ADSP_MAX_STD_CTRL_SIZE) {
-+		rd = SNDRV_CTL_ELEM_ACCESS_TLV_READ;
-+		wr = SNDRV_CTL_ELEM_ACCESS_TLV_WRITE;
-+		vol = SNDRV_CTL_ELEM_ACCESS_VOLATILE;
-+
-+		out = SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK;
-+	} else {
-+		rd = SNDRV_CTL_ELEM_ACCESS_READ;
-+		wr = SNDRV_CTL_ELEM_ACCESS_WRITE;
-+		vol = SNDRV_CTL_ELEM_ACCESS_VOLATILE;
-+
-+		out = 0;
-+	}
-+
-+	if (in) {
-+		if (in & WMFW_CTL_FLAG_READABLE)
-+			out |= rd;
-+		if (in & WMFW_CTL_FLAG_WRITEABLE)
-+			out |= wr;
-+		if (in & WMFW_CTL_FLAG_VOLATILE)
-+			out |= vol;
-+	} else {
-+		out |= rd | wr | vol;
-+	}
-+
-+	return out;
-+}
-+
- static int wmfw_add_ctl(struct wm_adsp *dsp, struct wm_coeff_ctl *ctl)
- {
- 	struct snd_kcontrol_new *kcontrol;
-@@ -868,19 +965,15 @@ static int wmfw_add_ctl(struct wm_adsp *dsp, struct wm_coeff_ctl *ctl)
- 	kcontrol->info = wm_coeff_info;
- 	kcontrol->get = wm_coeff_get;
- 	kcontrol->put = wm_coeff_put;
--	kcontrol->private_value = (unsigned long)ctl;
-+	kcontrol->iface = SNDRV_CTL_ELEM_IFACE_MIXER;
-+	kcontrol->tlv.c = snd_soc_bytes_tlv_callback;
-+	kcontrol->private_value = (unsigned long)&ctl->bytes_ext;
- 
--	if (ctl->flags) {
--		if (ctl->flags & WMFW_CTL_FLAG_WRITEABLE)
--			kcontrol->access |= SNDRV_CTL_ELEM_ACCESS_WRITE;
--		if (ctl->flags & WMFW_CTL_FLAG_READABLE)
--			kcontrol->access |= SNDRV_CTL_ELEM_ACCESS_READ;
--		if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
--			kcontrol->access |= SNDRV_CTL_ELEM_ACCESS_VOLATILE;
--	} else {
--		kcontrol->access = SNDRV_CTL_ELEM_ACCESS_READWRITE;
--		kcontrol->access |= SNDRV_CTL_ELEM_ACCESS_VOLATILE;
--	}
-+	ctl->bytes_ext.max = ctl->len;
-+	ctl->bytes_ext.get = wm_coeff_tlv_get;
-+	ctl->bytes_ext.put = wm_coeff_tlv_put;
-+
-+	kcontrol->access = wmfw_convert_flags(ctl->flags, ctl->len);
- 
- 	ret = snd_soc_add_card_controls(dsp->card, kcontrol, 1);
- 	if (ret < 0)
-@@ -1032,11 +1125,6 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
- 
- 	ctl->flags = flags;
- 	ctl->offset = offset;
--	if (len > 512) {
--		adsp_warn(dsp, "Truncating control %s from %d\n",
--			  ctl->name, len);
--		len = 512;
--	}
- 	ctl->len = len;
- 	ctl->cache = kzalloc(ctl->len, GFP_KERNEL);
- 	if (!ctl->cache) {
--- 
-2.8.1
+This appears to be an unrelated change which it's not clear helps the
+reader, these defines only seem to be used in htis one place.
+
+> @@ -1134,7 +1244,26 @@ static int nau8825_configure_sysclk(struct nau8825=
+ *nau8825, int clk_id,
+>  	struct regmap *regmap =3D nau8825->regmap;
+>  	int ret;
+> =20
+> +	if (!nau8825_is_jack_inserted(nau8825->regmap) &&
+> +		clk_id !=3D NAU8825_CLK_DIS) {
+> +		/* For power saving less 1mW, the jack type detection inter-
+> +		 * ruption changes to non-clock architecture. Therefore, the
+> +		 * clock should be disabled and not allowed to config any clock
+> +		 * when no headset connected.
+> +		 */
+> +		dev_warn(nau8825->dev, "Souldn't enable any clock when no headset conn=
+ected\n");
+> +		return 0;
+> +	}
+
+This is ignoring the attempt to set up a clock but returning success
+which is going to break things, printing the warning is dubious (a
+system could be built without detection for example, or a speaker driver
+connected) but probably OK in itself but the fact that we don't tell the
+caller may make things worse.
+
+> +		nau8825_eject_jack(nau8825);
+> +		snd_soc_jack_report(nau8825->jack, 0, SND_JACK_HEADSET);
+> +	}
+> +	enable_irq(nau8825->irq);
+
+The interrupt is optional (that bug appears to be already present in the
+driver but should be fixed).
+
+--lildS9pRFgpM/xzO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXJ3/iAAoJECTWi3JdVIfQzFYH/2z/8Cx/eSCCmRGvWgVRewgM
+7/P3vmfeOiyOB8PhU97ORdn/Kkz5dQjgQ8VfQmW6tTa3SHmMLHS3Kk4i/hHQs2Q4
+RlWTHkTglFnMu4yU04Lx9RShXZ28/UPZMUtQVkd6oATgOZ7PEMhaHwM6CAPKCzP4
+BEd0fVRvGO/eMV0CUwrI5htIDkLwWoGCifxaN6isfKxx+71mzN8fjFFo8tuBcF8A
+QGGCImil5WbyzckTYtr3culiOkpY625uCl3mBR7/kBGGdlqoDDdgAGTbvlrhFvbE
+A/7eUvqVBq8omeKt1ZKO4FxiAlPXQmWIKV9pbg5dZWjihXzDP54qNNUZcPOq0EY=
+=BTJH
+-----END PGP SIGNATURE-----
+
+--lildS9pRFgpM/xzO--
+
+--===============5913706692503946668==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5913706692503946668==--
