@@ -1,61 +1,83 @@
 From: Sekhar Nori <nsekhar-l0cyMroinI0@public.gmane.org>
-Subject: Re: [PATCH v4 3/7] ARM: davinci: da850: add clocks for mcbsp0 and 1
-Date: Tue, 3 May 2016 18:43:45 +0530
-Message-ID: <5728A409.40506@ti.com>
+Subject: Re: [PATCH v4 6/7] ARM: DTS: da850: Add McBSP0 and McBSP1
+Date: Tue, 3 May 2016 18:54:09 +0530
+Message-ID: <5728A679.7050304@ti.com>
 References: <1461327617-11435-1-git-send-email-petr@barix.com>
- <1461327617-11435-4-git-send-email-petr@barix.com>
+ <1461327617-11435-7-git-send-email-petr@barix.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1461327617-11435-4-git-send-email-petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+In-Reply-To: <1461327617-11435-7-git-send-email-petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>, khilman-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 On Friday 22 April 2016 05:50 PM, Petr Kulhavy wrote:
-> Add clock definitions "davinci-mcbsp.0" and "davinci-mcbsp.1" in order
-> to make McBSP driver work on the DA850 platform.
-> 
-> The McBSP 0 and 1 interfaces were not defined for the DA850 platform.
-> Neither were the related clocks. In order to make the use of McBSP via
-> devicetree the clocks need to be defined.
+> Add SoC nodes for McBSP0 and McBSP1 as well as the corresponding pinmux
+> configurations.
 > 
 > Signed-off-by: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
 > ---
 > v1: initial
-> v2: no change
+> v2: add missing TC channel in dmas properties (for compatibility with the new EDMA3 binding)
+>     remove "-audio" postfix from the compatible string
 > v3: no change
 > v4: no change
 > 
->  arch/arm/mach-davinci/da850.c | 16 ++++++++++++++++
->  arch/arm/mach-davinci/psc.h   |  2 ++
->  2 files changed, 18 insertions(+)
+>  arch/arm/boot/dts/da850.dtsi | 45 +++++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 44 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/arm/mach-davinci/da850.c b/arch/arm/mach-davinci/da850.c
-> index 97d8779a9a65..2b9d972e30ac 100644
-> --- a/arch/arm/mach-davinci/da850.c
-> +++ b/arch/arm/mach-davinci/da850.c
-> @@ -306,6 +306,20 @@ static struct clk mcasp_clk = {
->  	.flags		= DA850_CLK_ASYNC3,
->  };
->  
-> +static struct clk mcbsp0_clk = {
-> +	.name		= "mcbsp0",
-> +	.parent		= &pll1_sysclk2,
-> +	.lpsc		= DA850_LPSC1_McBSP0,
-> +	.gpsc		= 1,
-> +};
+> diff --git a/arch/arm/boot/dts/da850.dtsi b/arch/arm/boot/dts/da850.dtsi
+> index 5996e765e59c..708d48e1b6d1 100644
+> --- a/arch/arm/boot/dts/da850.dtsi
+> +++ b/arch/arm/boot/dts/da850.dtsi
+> @@ -148,7 +148,24 @@
+>  					0xc 0x88888888 0xffffffff
+>  				>;
+>  			};
+> -
+> +			mcbsp0_pins: pinmux_mcbsp0_pins {
+> +				pinctrl-single,bits = <
+> +					/* PINMUX2:
+> +					* CLKS0, DX0, DR0, FSX0
+> +					* FSR0, CLKX0, CLKR0
+> +					*/
+> +					0x8 0x02222220 0xfffffff0
+> +				>;
+> +			};
+> +			mcbsp1_pins: pinmux_mcbsp1_pins {
+> +				pinctrl-single,bits = <
+> +					/* PINMUX1:
+> +					* CLKS1, DX1, DR1, FSX1,
+> +					* FSR1, CLKX1, CLKR1
+> +					*/
+> +					0x4 0x22222220 0xfffffff0
+> +				>;
+> +			};
+>  		};
+>  		edma0: edma@01c00000 {
+>  			compatible = "ti,edma3-tpcc";
+> @@ -335,6 +352,32 @@
+>  				<&edma0 0 1>;
+>  			dma-names = "tx", "rx";
+>  		};
+> +
+> +		mcbsp0: mcbsp@1d10000 {
+> +			compatible = "ti,da850-mcbsp";
+> +			reg =	<0x00110000 0x1000>,
+> +				<0x00310000 0x1000>;
 
-Can you please rebase this to the master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/nsekhar/linux-davinci.git?
+The node name should be sound@110000
 
-We now have a clock called async3 which is to be used for all clocks in
-async3 domain.
+sound because use of generic names is preferred (I know the mcasp has
+got this wrong). And the unit address after the @ should match the reg
+property. I would also lose the unnecessary 0s in the reg address.
 
 Thanks,
 Sekhar
+
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
