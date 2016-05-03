@@ -1,54 +1,54 @@
 From: Sekhar Nori <nsekhar-l0cyMroinI0@public.gmane.org>
-Subject: Re: [PATCH v4 5/7] ARM: DTS: da850: Fix wrong number of interrupts
-Date: Tue, 3 May 2016 18:12:01 +0530
-Message-ID: <57289C99.2070208@ti.com>
+Subject: Re: [PATCH v4 0/7] ASoC: davinci-mcbsp: add binding for McBSP
+Date: Tue, 3 May 2016 18:27:20 +0530
+Message-ID: <5728A030.1050802@ti.com>
 References: <1461327617-11435-1-git-send-email-petr@barix.com>
- <1461327617-11435-6-git-send-email-petr@barix.com>
+ <57289832.9050904@barix.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="iso-8859-2"
 Content-Transfer-Encoding: 7bit
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1461327617-11435-6-git-send-email-petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+In-Reply-To: <57289832.9050904-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>, khilman-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Petr Kulhavy <brain-wDf7oJUeT2I@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 22 April 2016 05:50 PM, Petr Kulhavy wrote:
-> The DA850 supports interrupts 0 to 100. The number of interrupts
-> property "ti,intc-size" was wrongly set to 100. Corrected to 101.
+On Tuesday 03 May 2016 05:53 PM, Petr Kulhavy wrote:
 > 
-> Signed-off-by: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+> On 22.04.2016 14:20, Petr Kulhavy wrote:
+>> This series of patches adds devicetree support for the davinci McBSP
+>> audio
+>> interface.
+>>
+>> Changes in version 4 of the patch:
+>>
+>> * minor correction in the binding example ("interrupt names")
+>> * re-added index note to the "mpu" property.
+> 
+> Hi,
+> 
+> I'm just wondering if anybody is picking up on this.
+> Peter has reviewed the patch set (v3 where the code is identical to v4)
+> and Rob has acked the DT part.
 
-This patch is already in my tree and sent for inclusion in v4.7.
+For the mach-davinci portions, I was actually waiting on the driver
+changes to be accepted first. I have already sent my pull request for
+v4.7. I am afraid these have to wait for v4.8.
+
+Also, I just noticed that linux-arm-kernel-xBCQruHUn5ppWr+L1FloEB2eb7JE58TQ@public.gmane.org was not
+copied on the submission. That list must be copied on all mach-davinci
+submissions.
+
+And looks like not all patches in the series depend on the driver
+changes (3/7 and even 7/7?). In such cases, it always helps to send them
+separately so they can be queued independently.
+
+Even now, can you please separate out such patches and resend them with
+linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org copied.
 
 Regards,
 Sekhar
-
-> ---
-> v1: initial
-> v2: no change
-> v3: no change
-> v4: no change
-> 
->  arch/arm/boot/dts/da850.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/boot/dts/da850.dtsi b/arch/arm/boot/dts/da850.dtsi
-> index 226cda76e77c..5996e765e59c 100644
-> --- a/arch/arm/boot/dts/da850.dtsi
-> +++ b/arch/arm/boot/dts/da850.dtsi
-> @@ -19,7 +19,7 @@
->  			compatible = "ti,cp-intc";
->  			interrupt-controller;
->  			#interrupt-cells = <1>;
-> -			ti,intc-size = <100>;
-> +			ti,intc-size = <101>;
->  			reg = <0xfffee000 0x2000>;
->  		};
->  	};
-> 
-
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
