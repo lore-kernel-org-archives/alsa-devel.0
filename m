@@ -1,242 +1,45 @@
-From: John Keeping <john@metanate.com>
-Subject: Re: [PATCH 1/2] ASoC: rockchip: i2s: separate capture
- and playback
-Date: Tue, 3 May 2016 11:32:06 +0100
-Message-ID: <20160503113206.0d7e3215.john@metanate.com>
-References: <1449657147-26959-1-git-send-email-john@metanate.com>
- <CAFqH_52C4JKno4uyt54UdWKAJKM4FPGRiQaQQ9_H-Mz1Cr+Hqg@mail.gmail.com>
- <20160430070049.GF14612@serenity.lan>
- <57282532.7000402@rock-chips.com>
- <CAFqH_50D5PQOkpCDefds3Nyktvitoe2Wx=YcXM2POox1ooO=0g@mail.gmail.com>
- <20160503104318.62739a91.john@metanate.com>
- <CAFqH_518WDfBATtxYSbtPTdrV1MH=Y2UDBQNeCa2xZTiMp54zw@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC PATCH 1/7] ALSA: ac97: split out the generic ac97 registers
+Date: Tue, 3 May 2016 12:51:59 +0100
+Message-ID: <20160503115159.GP6292@sirena.org.uk>
+References: <1462050939-27940-1-git-send-email-robert.jarzmik@free.fr>
+ <1462050939-27940-2-git-send-email-robert.jarzmik@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metanate.com (dougal.metanate.com [90.155.101.14])
- by alsa0.perex.cz (Postfix) with ESMTP id 67DDC265134
- for <alsa-devel@alsa-project.org>; Tue,  3 May 2016 12:32:20 +0200 (CEST)
-In-Reply-To: <CAFqH_518WDfBATtxYSbtPTdrV1MH=Y2UDBQNeCa2xZTiMp54zw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Enric Balletbo Serra <eballetbo@gmail.com>
-Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, John Keeping <john@keeping.me.uk>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, sugar <sugar.zhang@rock-chips.com>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ftQmbtOmUf2cr8rB"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1462050939-27940-2-git-send-email-robert.jarzmik@free.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Enric,
 
-On Tue, 3 May 2016 12:21:25 +0200, Enric Balletbo Serra wrote:
-> 2016-05-03 11:43 GMT+02:00 John Keeping <john@metanate.com>:
-> > On Tue, 3 May 2016 11:16:58 +0200, Enric Balletbo Serra wrote:  
-> >> 2016-05-03 6:12 GMT+02:00 sugar <sugar.zhang@rock-chips.com>:  
-> >> > On 4/30/2016 15:00, John Keeping Wrote:  
-> >> >> On Fri, Apr 29, 2016 at 04:59:27PM +0200, Enric Balletbo Serra wrote:  
-> >> >>>
-> >> >>> 2015-12-09 11:32 GMT+01:00 John Keeping <john@metanate.com>:  
-> >> >>>>
-> >> >>>> If we only clear the tx/rx state when both are disabled it is not
-> >> >>>> possible to start/stop one multiple times while the other is running.
-> >> >>>> Since the two are independently controlled, treat them as such and
-> >> >>>> remove the false dependency between capture and playback.
-> >> >>>>
-> >> >>>> Signed-off-by: John Keeping <john@metanate.com>
-> >> >>>> ---
-> >> >>>>   sound/soc/rockchip/rockchip_i2s.c | 72
-> >> >>>> +++++++++++++++++----------------------
-> >> >>>>   1 file changed, 32 insertions(+), 40 deletions(-)
-> >> >>>>
-> >> >>>> diff --git a/sound/soc/rockchip/rockchip_i2s.c
-> >> >>>> b/sound/soc/rockchip/rockchip_i2s.c
-> >> >>>> index 83b1b9c..acc6225 100644
-> >> >>>> --- a/sound/soc/rockchip/rockchip_i2s.c
-> >> >>>> +++ b/sound/soc/rockchip/rockchip_i2s.c
-> >> >>>> @@ -82,8 +82,8 @@ static void rockchip_snd_txctrl(struct rk_i2s_dev
-> >> >>>> *i2s, int on)
-> >> >>>>                                     I2S_DMACR_TDE_ENABLE,
-> >> >>>> I2S_DMACR_TDE_ENABLE);
-> >> >>>>
-> >> >>>>                  regmap_update_bits(i2s->regmap, I2S_XFER,
-> >> >>>> -                                  I2S_XFER_TXS_START |
-> >> >>>> I2S_XFER_RXS_START,
-> >> >>>> -                                  I2S_XFER_TXS_START |
-> >> >>>> I2S_XFER_RXS_START);
-> >> >>>> +                                  I2S_XFER_TXS_START,
-> >> >>>> +                                  I2S_XFER_TXS_START);
-> >> >>>>
-> >> >>>>                  i2s->tx_start = true;
-> >> >>>>          } else {
-> >> >>>> @@ -92,27 +92,23 @@ static void rockchip_snd_txctrl(struct rk_i2s_dev
-> >> >>>> *i2s, int on)
-> >> >>>>                  regmap_update_bits(i2s->regmap, I2S_DMACR,
-> >> >>>>                                     I2S_DMACR_TDE_ENABLE,
-> >> >>>> I2S_DMACR_TDE_DISABLE);
-> >> >>>>
-> >> >>>> -               if (!i2s->rx_start) {
-> >> >>>> -                       regmap_update_bits(i2s->regmap, I2S_XFER,
-> >> >>>> -                                          I2S_XFER_TXS_START |
-> >> >>>> -                                          I2S_XFER_RXS_START,
-> >> >>>> -                                          I2S_XFER_TXS_STOP |
-> >> >>>> -                                          I2S_XFER_RXS_STOP);
-> >> >>>> +               regmap_update_bits(i2s->regmap, I2S_XFER,
-> >> >>>> +                                  I2S_XFER_TXS_START,
-> >> >>>> +                                  I2S_XFER_TXS_STOP);
-> >> >>>>
-> >> >>>> -                       regmap_update_bits(i2s->regmap, I2S_CLR,
-> >> >>>> -                                          I2S_CLR_TXC | I2S_CLR_RXC,
-> >> >>>> -                                          I2S_CLR_TXC | I2S_CLR_RXC);
-> >> >>>> +               regmap_update_bits(i2s->regmap, I2S_CLR,
-> >> >>>> +                                  I2S_CLR_TXC,
-> >> >>>> +                                  I2S_CLR_TXC);
-> >> >>>>
-> >> >>>> -                       regmap_read(i2s->regmap, I2S_CLR, &val);
-> >> >>>> +               regmap_read(i2s->regmap, I2S_CLR, &val);
-> >> >>>>
-> >> >>>> -                       /* Should wait for clear operation to finish */
-> >> >>>> -                       while (val) {
-> >> >>>> -                               regmap_read(i2s->regmap, I2S_CLR, &val);
-> >> >>>> -                               retry--;
-> >> >>>> -                               if (!retry) {
-> >> >>>> -                                       dev_warn(i2s->dev, "fail to
-> >> >>>> clear\n");
-> >> >>>> -                                       break;
-> >> >>>> -                               }
-> >> >>>> +               /* Should wait for clear operation to finish */
-> >> >>>> +               while (val & I2S_CLR_TXC) {
-> >> >>>> +                       regmap_read(i2s->regmap, I2S_CLR, &val);
-> >> >>>> +                       retry--;
-> >> >>>> +                       if (!retry) {
-> >> >>>> +                               dev_warn(i2s->dev, "fail to clear\n");
-> >> >>>> +                               break;
-> >> >>>>                          }
-> >> >>>>                  }
-> >> >>>>          }
-> >> >>>> @@ -128,8 +124,8 @@ static void rockchip_snd_rxctrl(struct rk_i2s_dev
-> >> >>>> *i2s, int on)
-> >> >>>>                                     I2S_DMACR_RDE_ENABLE,
-> >> >>>> I2S_DMACR_RDE_ENABLE);
-> >> >>>>
-> >> >>>>                  regmap_update_bits(i2s->regmap, I2S_XFER,
-> >> >>>> -                                  I2S_XFER_TXS_START |
-> >> >>>> I2S_XFER_RXS_START,
-> >> >>>> -                                  I2S_XFER_TXS_START |
-> >> >>>> I2S_XFER_RXS_START);
-> >> >>>> +                                  I2S_XFER_RXS_START,
-> >> >>>> +                                  I2S_XFER_RXS_START);
-> >> >>>>
-> >> >>>>                  i2s->rx_start = true;
-> >> >>>>          } else {
-> >> >>>> @@ -138,27 +134,23 @@ static void rockchip_snd_rxctrl(struct rk_i2s_dev
-> >> >>>> *i2s, int on)
-> >> >>>>                  regmap_update_bits(i2s->regmap, I2S_DMACR,
-> >> >>>>                                     I2S_DMACR_RDE_ENABLE,
-> >> >>>> I2S_DMACR_RDE_DISABLE);
-> >> >>>>
-> >> >>>> -               if (!i2s->tx_start) {
-> >> >>>> -                       regmap_update_bits(i2s->regmap, I2S_XFER,
-> >> >>>> -                                          I2S_XFER_TXS_START |
-> >> >>>> -                                          I2S_XFER_RXS_START,
-> >> >>>> -                                          I2S_XFER_TXS_STOP |
-> >> >>>> -                                          I2S_XFER_RXS_STOP);
-> >> >>>> +               regmap_update_bits(i2s->regmap, I2S_XFER,
-> >> >>>> +                                  I2S_XFER_RXS_START,
-> >> >>>> +                                  I2S_XFER_RXS_STOP);
-> >> >>>>
-> >> >>>> -                       regmap_update_bits(i2s->regmap, I2S_CLR,
-> >> >>>> -                                          I2S_CLR_TXC | I2S_CLR_RXC,
-> >> >>>> -                                          I2S_CLR_TXC | I2S_CLR_RXC);
-> >> >>>> +               regmap_update_bits(i2s->regmap, I2S_CLR,
-> >> >>>> +                                  I2S_CLR_RXC,
-> >> >>>> +                                  I2S_CLR_RXC);
-> >> >>>>
-> >> >>>> -                       regmap_read(i2s->regmap, I2S_CLR, &val);
-> >> >>>> +               regmap_read(i2s->regmap, I2S_CLR, &val);
-> >> >>>>
-> >> >>>> -                       /* Should wait for clear operation to finish */
-> >> >>>> -                       while (val) {
-> >> >>>> -                               regmap_read(i2s->regmap, I2S_CLR, &val);
-> >> >>>> -                               retry--;
-> >> >>>> -                               if (!retry) {
-> >> >>>> -                                       dev_warn(i2s->dev, "fail to
-> >> >>>> clear\n");
-> >> >>>> -                                       break;
-> >> >>>> -                               }
-> >> >>>> +               /* Should wait for clear operation to finish */
-> >> >>>> +               while (val & I2S_CLR_RXC) {
-> >> >>>> +                       regmap_read(i2s->regmap, I2S_CLR, &val);
-> >> >>>> +                       retry--;
-> >> >>>> +                       if (!retry) {
-> >> >>>> +                               dev_warn(i2s->dev, "fail to clear\n");
-> >> >>>> +                               break;
-> >> >>>>                          }
-> >> >>>>                  }
-> >> >>>>          }
-> >> >>>> --
-> >> >>>> 2.6.3.462.gbe2c914  
-> >> >>>
-> >> >>>
-> >> >>> Using my Veyron Jerry Chromebook wiht latest kernel I found that the
-> >> >>> speakers doesn't work. Bisect points to this patch as the offending
-> >> >>> commit. However your changes looks reasonable the fact is that
-> >> >>> reverting the patch makes the audio work again on my device. I need to
-> >> >>> dig a bit more into the issue, but meanwhile, any idea on what is
-> >> >>> happening ? Can I ask which device did you test?  
-> >> >>
-> >> >>
-> >> >> I tested this on a Radxa Rock2 square.  This change fixed an issue I
-> >> >> found when running separate processes for playback and recording (I was
-> >> >> testing with arecord and speaker-test IIRC) but I don't think that
-> >> >> should be relevant.  I just read through the patch again and I can't see
-> >> >> anything obviously wrong so I'm afraid I don't have any idea what's
-> >> >> causing the problem you're seeing.
-> >> >>  
-> >> > Do you have test playback/capture at the same time? I think you may
-> >> > reproduce this issue if you do as follows:
-> >> >
-> >> > step 1: tinyplay test.wav -D 0 -d 0 -p 1024 -n 4 &
-> >> > step 2: tinycap r.wav -D 0 -d 0 -p 1024 -n 4 &
-> >> >
-> >> > you will find that there is no music now.
-> >> >
-> >> > because of this problem, we enable tx/rx at the same time to WA this issue.
-> >> >  
-> >>
-> >> I can confirm that reverting John's patch audio playback/capture at
-> >> the same time works on my Veyron Jerry Chromebook.  
-> >
-> > Have you tried stopping one of the processes and then starting it again
-> > (without touching the other process)?  That's the case that was broken
-> > for me without this patch.
-> >  
-> 
-> I  just tried that and it works on my platform. Meanwhile I reproduced
-> a song I recorded two wavs.
-> 
-> > I have had a quick look through the code I'm using and I noticed that I
-> > have another change that hasn't been sent upstream, which marks the
-> > I2S_FIFOLR register as volatile in rockchip_i2s_volatile_reg():
-> >  
-> 
-> Unfortunately that didn't help, I hear nothing from the speakers :(
+--ftQmbtOmUf2cr8rB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Yeah, I looked a bit more after sending the previous mail and that
-register is never referenced by the driver!
+On Sat, Apr 30, 2016 at 11:15:33PM +0200, Robert Jarzmik wrote:
+> Split out from the ac97_codec.h the ac97 generic registers, which can be
+> used by a codec, typically a generic ac97 codec, and by the ac97 bus, to
+> scan an ac97 AC-Link.
 
-> I have a Radxa Rock2 Square board, by chance, do you have a git tree
-> containing the patches to enable the i2s sound for radxa so I can
-> reproduce both here? At least the codec is not upstreamed, I guess.
+I don't entirely see the value in this one but equally it does no harm.
 
-I've just pushed a branch to Github:
+--ftQmbtOmUf2cr8rB
+Content-Type: application/pgp-signature; name="signature.asc"
 
-    https://github.com/johnkeeping/linux/tree/topic/audio
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
+iQEcBAEBCAAGBQJXKJDeAAoJECTWi3JdVIfQsWsH/2pFLFCEUao4jTVreft9FDAt
+KzjNeP4n6ygYKx3JFB+7QLfLRQxqUCEriLoexsknwvtf1JgxEDBDKyVTk7NAPFq9
+QQJBMzsVPG4lC9NsbYoc3EBsnQYE6dEPxbqZjPFdoZUjXOy/srUm+i8HZZlvWaxG
+/1FFQ+Hx6QIRkqFiikYVXoIknfg8KeGt9TcxVeQwIbd8wEHJKeRFFb+GAVSLYGBE
+Ivo1iyRTAW9vrzlFiETCEAwuORaVUkLEv5RDZv62f/FxaavV3fMsO3FrYz831vHl
+M3TMYRocCnDAO1whQd1UHuTQ5iZCVG07rqUQGDwq4Q+R2lWSV6MG1pv061yZ6dU=
+=1gJ9
+-----END PGP SIGNATURE-----
 
-Regards,
-John
+--ftQmbtOmUf2cr8rB--
