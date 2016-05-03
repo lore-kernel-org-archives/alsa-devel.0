@@ -1,60 +1,73 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH 2/7] ALSA: ac97: add an ac97 bus
-Date: Tue, 3 May 2016 17:29:38 +0100
-Message-ID: <20160503162938.GT6292@sirena.org.uk>
-References: <1462050939-27940-1-git-send-email-robert.jarzmik@free.fr>
- <1462050939-27940-3-git-send-email-robert.jarzmik@free.fr>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ZXzThk3vFZecBD04"
+Subject: Applied "ASoC: hdac_hdmi: Potential NULL deref in hdac_hdmi_get_spk_alloc()" to the asoc tree
+Date: Tue, 03 May 2016 17:31:04 +0100
+Message-ID: <E1axdE0-0007md-6S@debutante>
+References: <20160503074258.GA9722@mwanda>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1462050939-27940-3-git-send-email-robert.jarzmik@free.fr>
+In-Reply-To: <20160503074258.GA9722@mwanda>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, Sachin Mokashi <sachinx.mokashi@intel.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>, Jeeja KP <jeeja.kp@intel.com>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---ZXzThk3vFZecBD04
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   ASoC: hdac_hdmi: Potential NULL deref in hdac_hdmi_get_spk_alloc()
 
-On Sat, Apr 30, 2016 at 11:15:34PM +0200, Robert Jarzmik wrote:
-> AC97 is a bus for sound usage. It enables for a AC97 AC-Link to link one
-> controller to 0 to 4 AC97 codecs.
+has been applied to the asoc tree at
 
-> The goal of this new implementation is to implement a device/driver
-> model for AC97, with an automatic scan of the bus and automatic
-> discovery of AC97 codec devices.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-I think this is basically what I was thinking of, yes.  One thing we'll
-need to do is work out how to handle systems that need some explicit
-action to start clocks for the bus clock, though they were never very
-common and it's entirely possible nobody cares any more so perhaps we
-just punt and see if anyone notices for now.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +int ac97_digital_controller_register(const struct ac97_controller_ops *o=
-ps,
-> +				     struct device *dev);
-> +int ac97_digital_controller_unregister(const struct device *dev);
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Why "digital"?=20
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---ZXzThk3vFZecBD04
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Thanks,
+Mark
 
-iQEcBAEBCAAGBQJXKNHxAAoJECTWi3JdVIfQ5PEH/ic82+0x5N/Dj0/dhz4pSb+Z
-hVIL961FHhY0zM/ppK1DNFz8QLZPF47V5NJpD0hvtGPBRqCK41DFEH8f7xAa/wg1
-VSQ2HqD7c5Gm52MvwkVl8A6SfrmqGlEVEOM7T/nRND6S8kUYBK4YleRea5aIKjJf
-RV8AzS9VAZD9+9ghklCAcuX4/lL9CJhXoCxBWnsiRxZTIzg9d0nfJ5szHI6VEh5e
-4NQ+yOycn3539nOSq8KAGRH2zQ+kkaJ7ssMLp3+ftv/qwTX6PVIeLxzQrMcTieZv
-LGhRSEdApYJL7e0H/FN1bdoid2qvthFTX2TM+P/Pfjz9oGB2rPkAih6BJFxi10U=
-=VEHO
------END PGP SIGNATURE-----
+>From 8f658815da156a9239b98b34e5ba1d3db71a2f6e Mon Sep 17 00:00:00 2001
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Tue, 3 May 2016 10:42:58 +0300
+Subject: [PATCH] ASoC: hdac_hdmi: Potential NULL deref in
+ hdac_hdmi_get_spk_alloc()
 
---ZXzThk3vFZecBD04--
+We intended || here instead of &&.  The original code potentially leads
+to a NULL dereference.
+
+Fixes: 2889099eb8cd ('ASoC: hdac_hdmi: Register chmap controls and ops')
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewd-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+Tested-by: Sachin Mokashi <sachinx.mokashi@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/hdac_hdmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 0ed39753c871..f1170e060230 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -1614,7 +1614,7 @@ static int hdac_hdmi_get_spk_alloc(struct hdac_device *hdac, int pcm_idx)
+ 	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
+ 	struct hdac_hdmi_pin *pin = pcm->pin;
+ 
+-	if (!pin && !pin->eld.eld_valid)
++	if (!pin || !pin->eld.eld_valid)
+ 		return 0;
+ 
+ 	return pin->eld.info.spk_alloc;
+-- 
+2.8.1
