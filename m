@@ -1,23 +1,18 @@
-From: Enric Balletbo Serra <eballetbo@gmail.com>
-Subject: Re: [PATCH 1/2] ASoC: rockchip: i2s: separate capture
- and playback
-Date: Tue, 3 May 2016 11:16:58 +0200
-Message-ID: <CAFqH_50D5PQOkpCDefds3Nyktvitoe2Wx=YcXM2POox1ooO=0g@mail.gmail.com>
-References: <1449657147-26959-1-git-send-email-john@metanate.com>
- <CAFqH_52C4JKno4uyt54UdWKAJKM4FPGRiQaQQ9_H-Mz1Cr+Hqg@mail.gmail.com>
- <20160430070049.GF14612@serenity.lan>
- <57282532.7000402@rock-chips.com>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: Re: [PATCH 1/2] ASoC: nau8825: non-clock jack
+ detection for power saving at standby
+Date: Tue, 3 May 2016 17:20:00 +0800
+Message-ID: <57286D40.6030002@nuvoton.com>
+References: <1461917718-25211-1-git-send-email-KCHSU0@nuvoton.com>
+ <20160502162715.GK6292@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f194.google.com (mail-io0-f194.google.com
- [209.85.223.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 12492264F23
- for <alsa-devel@alsa-project.org>; Tue,  3 May 2016 11:17:01 +0200 (CEST)
-Received: by mail-io0-f194.google.com with SMTP id d62so1519880iof.1
- for <alsa-devel@alsa-project.org>; Tue, 03 May 2016 02:17:01 -0700 (PDT)
-In-Reply-To: <57282532.7000402@rock-chips.com>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3FB3E26510C
+ for <alsa-devel@alsa-project.org>; Tue,  3 May 2016 11:20:05 +0200 (CEST)
+In-Reply-To: <20160502162715.GK6292@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,207 +22,113 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: sugar <sugar.zhang@rock-chips.com>
-Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, John Keeping <john@keeping.me.uk>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, "anatol.pomozov@gmail.com" <anatol.pomozov@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "benzh@chromium.org" <benzh@chromium.org>, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <MHKuo@nuvoton.com>, "yong.zhi@intel.com" <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Hi
 
-2016-05-03 6:12 GMT+02:00 sugar <sugar.zhang@rock-chips.com>:
-> Hi John,
+On 5/3/2016 12:27 AM, Mark Brown wrote:
+> On Fri, Apr 29, 2016 at 04:15:17PM +0800, John Hsu wrote:
 >
+>   
+>> @@ -614,8 +623,10 @@ int nau8825_enable_jack_detect(struct snd_soc_codec *codec,
+>>  		NAU8825_HSD_AUTO_MODE | NAU8825_SPKR_DWN1R | NAU8825_SPKR_DWN1L,
+>>  		NAU8825_HSD_AUTO_MODE | NAU8825_SPKR_DWN1R | NAU8825_SPKR_DWN1L);
+>>  
+>> -	regmap_update_bits(regmap, NAU8825_REG_INTERRUPT_MASK,
+>> -		NAU8825_IRQ_HEADSET_COMPLETE_EN | NAU8825_IRQ_EJECT_EN, 0);
+>> +	/* Change jack type detection interruption to non-clock architecture
+>> +	 * for power saving less 1mW. Move these configuration about inter-
+>> +	 * ruption at auto mode to auto irq setup function.
+>> +	 */
+>>  
+>>     
 >
-> On 4/30/2016 15:00, John Keeping Wrote:
->>
->> Hi Enric,
->>
->> On Fri, Apr 29, 2016 at 04:59:27PM +0200, Enric Balletbo Serra wrote:
->>>
->>> 2015-12-09 11:32 GMT+01:00 John Keeping <john@metanate.com>:
->>>>
->>>> If we only clear the tx/rx state when both are disabled it is not
->>>> possible to start/stop one multiple times while the other is running.
->>>> Since the two are independently controlled, treat them as such and
->>>> remove the false dependency between capture and playback.
->>>>
->>>> Signed-off-by: John Keeping <john@metanate.com>
->>>> ---
->>>>   sound/soc/rockchip/rockchip_i2s.c | 72
->>>> +++++++++++++++++----------------------
->>>>   1 file changed, 32 insertions(+), 40 deletions(-)
->>>>
->>>> diff --git a/sound/soc/rockchip/rockchip_i2s.c
->>>> b/sound/soc/rockchip/rockchip_i2s.c
->>>> index 83b1b9c..acc6225 100644
->>>> --- a/sound/soc/rockchip/rockchip_i2s.c
->>>> +++ b/sound/soc/rockchip/rockchip_i2s.c
->>>> @@ -82,8 +82,8 @@ static void rockchip_snd_txctrl(struct rk_i2s_dev
->>>> *i2s, int on)
->>>>                                     I2S_DMACR_TDE_ENABLE,
->>>> I2S_DMACR_TDE_ENABLE);
->>>>
->>>>                  regmap_update_bits(i2s->regmap, I2S_XFER,
->>>> -                                  I2S_XFER_TXS_START |
->>>> I2S_XFER_RXS_START,
->>>> -                                  I2S_XFER_TXS_START |
->>>> I2S_XFER_RXS_START);
->>>> +                                  I2S_XFER_TXS_START,
->>>> +                                  I2S_XFER_TXS_START);
->>>>
->>>>                  i2s->tx_start = true;
->>>>          } else {
->>>> @@ -92,27 +92,23 @@ static void rockchip_snd_txctrl(struct rk_i2s_dev
->>>> *i2s, int on)
->>>>                  regmap_update_bits(i2s->regmap, I2S_DMACR,
->>>>                                     I2S_DMACR_TDE_ENABLE,
->>>> I2S_DMACR_TDE_DISABLE);
->>>>
->>>> -               if (!i2s->rx_start) {
->>>> -                       regmap_update_bits(i2s->regmap, I2S_XFER,
->>>> -                                          I2S_XFER_TXS_START |
->>>> -                                          I2S_XFER_RXS_START,
->>>> -                                          I2S_XFER_TXS_STOP |
->>>> -                                          I2S_XFER_RXS_STOP);
->>>> +               regmap_update_bits(i2s->regmap, I2S_XFER,
->>>> +                                  I2S_XFER_TXS_START,
->>>> +                                  I2S_XFER_TXS_STOP);
->>>>
->>>> -                       regmap_update_bits(i2s->regmap, I2S_CLR,
->>>> -                                          I2S_CLR_TXC | I2S_CLR_RXC,
->>>> -                                          I2S_CLR_TXC | I2S_CLR_RXC);
->>>> +               regmap_update_bits(i2s->regmap, I2S_CLR,
->>>> +                                  I2S_CLR_TXC,
->>>> +                                  I2S_CLR_TXC);
->>>>
->>>> -                       regmap_read(i2s->regmap, I2S_CLR, &val);
->>>> +               regmap_read(i2s->regmap, I2S_CLR, &val);
->>>>
->>>> -                       /* Should wait for clear operation to finish */
->>>> -                       while (val) {
->>>> -                               regmap_read(i2s->regmap, I2S_CLR, &val);
->>>> -                               retry--;
->>>> -                               if (!retry) {
->>>> -                                       dev_warn(i2s->dev, "fail to
->>>> clear\n");
->>>> -                                       break;
->>>> -                               }
->>>> +               /* Should wait for clear operation to finish */
->>>> +               while (val & I2S_CLR_TXC) {
->>>> +                       regmap_read(i2s->regmap, I2S_CLR, &val);
->>>> +                       retry--;
->>>> +                       if (!retry) {
->>>> +                               dev_warn(i2s->dev, "fail to clear\n");
->>>> +                               break;
->>>>                          }
->>>>                  }
->>>>          }
->>>> @@ -128,8 +124,8 @@ static void rockchip_snd_rxctrl(struct rk_i2s_dev
->>>> *i2s, int on)
->>>>                                     I2S_DMACR_RDE_ENABLE,
->>>> I2S_DMACR_RDE_ENABLE);
->>>>
->>>>                  regmap_update_bits(i2s->regmap, I2S_XFER,
->>>> -                                  I2S_XFER_TXS_START |
->>>> I2S_XFER_RXS_START,
->>>> -                                  I2S_XFER_TXS_START |
->>>> I2S_XFER_RXS_START);
->>>> +                                  I2S_XFER_RXS_START,
->>>> +                                  I2S_XFER_RXS_START);
->>>>
->>>>                  i2s->rx_start = true;
->>>>          } else {
->>>> @@ -138,27 +134,23 @@ static void rockchip_snd_rxctrl(struct rk_i2s_dev
->>>> *i2s, int on)
->>>>                  regmap_update_bits(i2s->regmap, I2S_DMACR,
->>>>                                     I2S_DMACR_RDE_ENABLE,
->>>> I2S_DMACR_RDE_DISABLE);
->>>>
->>>> -               if (!i2s->tx_start) {
->>>> -                       regmap_update_bits(i2s->regmap, I2S_XFER,
->>>> -                                          I2S_XFER_TXS_START |
->>>> -                                          I2S_XFER_RXS_START,
->>>> -                                          I2S_XFER_TXS_STOP |
->>>> -                                          I2S_XFER_RXS_STOP);
->>>> +               regmap_update_bits(i2s->regmap, I2S_XFER,
->>>> +                                  I2S_XFER_RXS_START,
->>>> +                                  I2S_XFER_RXS_STOP);
->>>>
->>>> -                       regmap_update_bits(i2s->regmap, I2S_CLR,
->>>> -                                          I2S_CLR_TXC | I2S_CLR_RXC,
->>>> -                                          I2S_CLR_TXC | I2S_CLR_RXC);
->>>> +               regmap_update_bits(i2s->regmap, I2S_CLR,
->>>> +                                  I2S_CLR_RXC,
->>>> +                                  I2S_CLR_RXC);
->>>>
->>>> -                       regmap_read(i2s->regmap, I2S_CLR, &val);
->>>> +               regmap_read(i2s->regmap, I2S_CLR, &val);
->>>>
->>>> -                       /* Should wait for clear operation to finish */
->>>> -                       while (val) {
->>>> -                               regmap_read(i2s->regmap, I2S_CLR, &val);
->>>> -                               retry--;
->>>> -                               if (!retry) {
->>>> -                                       dev_warn(i2s->dev, "fail to
->>>> clear\n");
->>>> -                                       break;
->>>> -                               }
->>>> +               /* Should wait for clear operation to finish */
->>>> +               while (val & I2S_CLR_RXC) {
->>>> +                       regmap_read(i2s->regmap, I2S_CLR, &val);
->>>> +                       retry--;
->>>> +                       if (!retry) {
->>>> +                               dev_warn(i2s->dev, "fail to clear\n");
->>>> +                               break;
->>>>                          }
->>>>                  }
->>>>          }
->>>> --
->>>> 2.6.3.462.gbe2c914
->>>
->>>
->>> Using my Veyron Jerry Chromebook wiht latest kernel I found that the
->>> speakers doesn't work. Bisect points to this patch as the offending
->>> commit. However your changes looks reasonable the fact is that
->>> reverting the patch makes the audio work again on my device. I need to
->>> dig a bit more into the issue, but meanwhile, any idea on what is
->>> happening ? Can I ask which device did you test?
->>
->>
->> I tested this on a Radxa Rock2 square.  This change fixed an issue I
->> found when running separate processes for playback and recording (I was
->> testing with arecord and speaker-test IIRC) but I don't think that
->> should be relevant.  I just read through the patch again and I can't see
->> anything obviously wrong so I'm afraid I don't have any idea what's
->> causing the problem you're seeing.
->>
-> Do you have test playback/capture at the same time? I think you may
-> reproduce this issue if you do as follows:
+> This comment is about the change you're making to the code rather than
+> something that should be in the code.
 >
-> step 1: tinyplay test.wav -D 0 -d 0 -p 1024 -n 4 &
-> step 2: tinycap r.wav -D 0 -d 0 -p 1024 -n 4 &
+>   
+I see and remove it.
+>> +	/* Clear all interruption status */
+>> +	nau8825_int_status_clear_all(regmap);
+>> +
+>> +	/* Mask all interruptions except jack insertion interruption */
+>> +	regmap_write(regmap, NAU8825_REG_INTERRUPT_DIS_CTRL, 0xfffe);
+>>     
 >
-> you will find that there is no music now.
+> So if any other interrupts occur then things will break...
 >
-> because of this problem, we enable tx/rx at the same time to WA this issue.
+>   
+The codec only has headset output and its function works when headset is
+connected. When headset is not connected, the driver only permit insertion
+interruption to happen. After insertion, the internal clock of codec turns
+on and all other interruptions just will be enabled. Without clock, the
+codec can detect jack insertion only.
+>> -	regmap_read(regmap, NAU8825_REG_IRQ_STATUS, &active_irq);
+>> +	if (regmap_read(regmap, NAU8825_REG_IRQ_STATUS, &active_irq)) {
+>> +		dev_err(nau8825->dev, "failed to clear interruption\n");
+>> +		return IRQ_NONE;
+>> +	}
+>>     
 >
+> This is a read, not a write, and it's better to report the error code if
+> the read failed.  This should probably be a separate patch.
+>
+>   
+OK, that will be separated to other patch.
+>>  static const struct regmap_config nau8825_regmap_config = {
+>> -	.val_bits = 16,
+>> -	.reg_bits = 16,
+>> +	.val_bits = NAU8825_REG_DATA_LEN,
+>> +	.reg_bits = NAU8825_REG_ADDR_LEN,
+>>     
+>
+> This appears to be an unrelated change which it's not clear helps the
+> reader, these defines only seem to be used in htis one place.
+>
+>   
+We have to check every bits of irq status register value in funciton
+nau8825_int_status_clear_all. The definition NAU8825_REG_DATA_LEN is used
+in the function to setup the boundary of for loop. There is also register
+value width here. Thus, I use the definition in it.
 
-I can confirm that reverting John's patch audio playback/capture at
-the same time works on my Veyron Jerry Chromebook.
-
-> May I know what's the issue that you met before?
->>
->>
->> John
->>
->> _______________________________________________
->> Linux-rockchip mailing list
->> Linux-rockchip@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-rockchip
->>
->>
->>
+>> @@ -1134,7 +1244,26 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
+>>  	struct regmap *regmap = nau8825->regmap;
+>>  	int ret;
+>>  
+>> +	if (!nau8825_is_jack_inserted(nau8825->regmap) &&
+>> +		clk_id != NAU8825_CLK_DIS) {
+>> +		/* For power saving less 1mW, the jack type detection inter-
+>> +		 * ruption changes to non-clock architecture. Therefore, the
+>> +		 * clock should be disabled and not allowed to config any clock
+>> +		 * when no headset connected.
+>> +		 */
+>> +		dev_warn(nau8825->dev, "Souldn't enable any clock when no headset connected\n");
+>> +		return 0;
+>> +	}
+>>     
 >
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> This is ignoring the attempt to set up a clock but returning success
+> which is going to break things, printing the warning is dubious (a
+> system could be built without detection for example, or a speaker driver
+> connected) but probably OK in itself but the fact that we don't tell the
+> caller may make things worse.
+>
+>   
+For clear expression, we should print error message and return error to
+caller. Is it right?
+>> +		nau8825_eject_jack(nau8825);
+>> +		snd_soc_jack_report(nau8825->jack, 0, SND_JACK_HEADSET);
+>> +	}
+>> +	enable_irq(nau8825->irq);
+>>     
+>
+> The interrupt is optional (that bug appears to be already present in the
+> driver but should be fixed).
+>   
+If headset ejection happened when system suspend. After resume, the codec
+won't detect the change and no report to the kernel. The application does
+not aware the device change and still outputs stream to the headset device.
+For the issue, the driver has to notice the application of ejection ever
+happened in suspend. Let the application to change its device correctly.
