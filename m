@@ -1,73 +1,41 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdac_hdmi: Potential NULL deref in hdac_hdmi_get_spk_alloc()" to the asoc tree
-Date: Tue, 03 May 2016 17:31:04 +0100
-Message-ID: <E1axdE0-0007md-6S@debutante>
-References: <20160503074258.GA9722@mwanda>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160503074258.GA9722@mwanda>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, Sachin Mokashi <sachinx.mokashi@intel.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>, Jeeja KP <jeeja.kp@intel.com>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [RFC PATCH 1/7] ALSA: ac97: split out the generic ac97 registers
+Date: Tue, 03 May 2016 21:22:05 +0200
+Message-ID: <87y47roski.fsf@belgarion.home>
+References: <1462050939-27940-1-git-send-email-robert.jarzmik@free.fr>
+ <1462050939-27940-2-git-send-email-robert.jarzmik@free.fr>
+ <20160503115159.GP6292@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20160503115159.GP6292@sirena.org.uk> (Mark Brown's message of
+ "Tue, 3 May 2016 12:51:59 +0100")
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Mark Brown <broonie@kernel.org> writes:
 
-   ASoC: hdac_hdmi: Potential NULL deref in hdac_hdmi_get_spk_alloc()
+> On Sat, Apr 30, 2016 at 11:15:33PM +0200, Robert Jarzmik wrote:
+>> Split out from the ac97_codec.h the ac97 generic registers, which can be
+>> used by a codec, typically a generic ac97 codec, and by the ac97 bus, to
+>> scan an ac97 AC-Link.
+>
+> I don't entirely see the value in this one but equally it does no harm.
+Oh that's to have the defines AC97_VENDOR_ID1 and AC97_VENDOR_ID2, but without
+including ac97_codec.h in sound/ac97/bus.c.
 
-has been applied to the asoc tree at
+Cheers.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 8f658815da156a9239b98b34e5ba1d3db71a2f6e Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Tue, 3 May 2016 10:42:58 +0300
-Subject: [PATCH] ASoC: hdac_hdmi: Potential NULL deref in
- hdac_hdmi_get_spk_alloc()
-
-We intended || here instead of &&.  The original code potentially leads
-to a NULL dereference.
-
-Fixes: 2889099eb8cd ('ASoC: hdac_hdmi: Register chmap controls and ops')
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewd-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-Tested-by: Sachin Mokashi <sachinx.mokashi@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/hdac_hdmi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 0ed39753c871..f1170e060230 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -1614,7 +1614,7 @@ static int hdac_hdmi_get_spk_alloc(struct hdac_device *hdac, int pcm_idx)
- 	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
- 	struct hdac_hdmi_pin *pin = pcm->pin;
- 
--	if (!pin && !pin->eld.eld_valid)
-+	if (!pin || !pin->eld.eld_valid)
- 		return 0;
- 
- 	return pin->eld.info.spk_alloc;
 -- 
-2.8.1
+Robert
