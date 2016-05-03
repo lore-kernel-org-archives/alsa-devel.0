@@ -1,7 +1,7 @@
 From: Kangjie Lu <kangjielu@gmail.com>
-Subject: [PATCH] infoleak fix2 in timer
-Date: Tue,  3 May 2016 16:44:20 -0400
-Message-ID: <1462308260-6219-1-git-send-email-kjlu@gatech.edu>
+Subject: [PATCH] infoleak fix3 in timer
+Date: Tue,  3 May 2016 16:44:32 -0400
+Message-ID: <1462308272-6260-1-git-send-email-kjlu@gatech.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
@@ -23,17 +23,17 @@ Signed-off-by: Kangjie Lu <kjlu@gatech.edu>
  1 file changed, 1 insertion(+)
 
 diff --git a/sound/core/timer.c b/sound/core/timer.c
-index 964f5eb..e98fa5f 100644
+index e98fa5f..c69a271 100644
 --- a/sound/core/timer.c
 +++ b/sound/core/timer.c
-@@ -1225,6 +1225,7 @@ static void snd_timer_user_ccallback(struct snd_t=
-imer_instance *timeri,
- 		tu->tstamp =3D *tstamp;
- 	if ((tu->filter & (1 << event)) =3D=3D 0 || !tu->tread)
- 		return;
-+	memset(&r1, 0, sizeof(r1));
- 	r1.event =3D event;
- 	r1.tstamp =3D *tstamp;
- 	r1.val =3D resolution;
+@@ -1268,6 +1268,7 @@ static void snd_timer_user_tinterrupt(struct snd_=
+timer_instance *timeri,
+ 	}
+ 	if ((tu->filter & (1 << SNDRV_TIMER_EVENT_RESOLUTION)) &&
+ 	    tu->last_resolution !=3D resolution) {
++		memset(&r1, 0, sizeof(r1));
+ 		r1.event =3D SNDRV_TIMER_EVENT_RESOLUTION;
+ 		r1.tstamp =3D tstamp;
+ 		r1.val =3D resolution;
 --=20
 1.9.1
