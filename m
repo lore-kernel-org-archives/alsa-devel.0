@@ -1,15 +1,17 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 0/5] Fix poll error returns
-Date: Wed, 4 May 2016 14:59:06 +0100
-Message-ID: <1462370351-15388-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/5] ALSA: pcm: Fix poll error return codes
+Date: Wed, 4 May 2016 14:59:07 +0100
+Message-ID: <1462370351-15388-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1462370351-15388-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id F0A5F2659AA
- for <alsa-devel@alsa-project.org>; Wed,  4 May 2016 16:12:54 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id F068826599E
+ for <alsa-devel@alsa-project.org>; Wed,  4 May 2016 16:12:53 +0200 (CEST)
+In-Reply-To: <1462370351-15388-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,33 +25,36 @@ To: tiwai@suse.com
 Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-We return negative values from the file_operations poll callback
-in a few places, this callback returns an unsigned int and is
-expected to only return the poll specific flags. This series
-fixes up these issues and makes a couple of small tidy ups to the
-code around the edges of those functions.
+We can't return a negative error code from the poll callback the return
+type is unsigned and is checked against the poll specific flags we need
+to return POLLERR if we encounter an error.
 
-I noticed this issue whilst doing some additional testing on my
-propagation of compressed stream error series, but I decided to
-push these up separately as it is worth getting the fixes in
-now and not tying them up with that patch chain which is taking
-longer to get merged.  Also I included the first patch of that
-chain (Replace complex if statement with switch) because it is a
-trivial tidy up and might as well get merged now as well.
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/core/pcm_native.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks,
-Charles
-
-Charles Keepax (5):
-  ALSA: pcm: Fix poll error return codes
-  ALSA: compress: Use snd_compr_get_poll on error path
-  ALSA: compress: Remove pointless NULL check
-  ALSA: compress: Fix poll error return codes
-  ALSA: compress: Replace complex if statement with switch
-
- sound/core/compress_offload.c | 25 ++++++++++++-------------
- sound/core/pcm_native.c       |  4 ++--
- 2 files changed, 14 insertions(+), 15 deletions(-)
-
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 9106d8e..c61fd50 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -3161,7 +3161,7 @@ static unsigned int snd_pcm_playback_poll(struct file *file, poll_table * wait)
+ 
+ 	substream = pcm_file->substream;
+ 	if (PCM_RUNTIME_CHECK(substream))
+-		return -ENXIO;
++		return POLLOUT | POLLWRNORM | POLLERR;
+ 	runtime = substream->runtime;
+ 
+ 	poll_wait(file, &runtime->sleep, wait);
+@@ -3200,7 +3200,7 @@ static unsigned int snd_pcm_capture_poll(struct file *file, poll_table * wait)
+ 
+ 	substream = pcm_file->substream;
+ 	if (PCM_RUNTIME_CHECK(substream))
+-		return -ENXIO;
++		return POLLIN | POLLRDNORM | POLLERR;
+ 	runtime = substream->runtime;
+ 
+ 	poll_wait(file, &runtime->sleep, wait);
 -- 
 2.1.4
