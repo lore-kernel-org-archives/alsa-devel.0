@@ -1,66 +1,150 @@
 From: John Keeping <john@metanate.com>
-Subject: [PATCH v2 1/2] ASoC: rockchip: Revert "ASoC: rockchip: i2s: remove unused variables"
-Date: Wed,  4 May 2016 17:21:56 +0100
-Message-ID: <1462378917-24135-1-git-send-email-john@metanate.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH v2 2/2] ASoC: rockchip: Revert "ASoC: rockchip: i2s: separate
+ capture and playback"
+Date: Wed,  4 May 2016 17:21:57 +0100
+Message-ID: <1462378917-24135-2-git-send-email-john@metanate.com>
+References: <1462378917-24135-1-git-send-email-john@metanate.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1462378917-24135-1-git-send-email-john@metanate.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, Enric Balletbo Serra <eballetbo@gmail.com>, John Keeping <john@metanate.com>
+Cc: Heiko Stuebner <heiko@sntech.de>, Enric Balletbo Serra <eballetbo@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, John Keeping <john@metanate.com>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This reverts commit 5938448b99275cba95167c3f9d39ca9225fdad38.
+This reverts commit eba65d179c1149cf79e68608d452631f33d7f017.
 
-It turns out that the commit that made these variables unused is wrong
-so we're about to revert it.  Bring back the variables in prepration.
+This broke audio on Veyron Jerry Chromebooks and I now cannot reproduce
+the problem I was trying to fix even with this commit reverted, so it
+seems that this was completely the wrong thing to do.
 
+Reported-by: Enric Balletbo Serra <eballetbo@gmail.com>
 Signed-off-by: John Keeping <john@metanate.com>
 ---
 v2: Add "ASoC: rockchip: " prefix to subject
 
- sound/soc/rockchip/rockchip_i2s.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ sound/soc/rockchip/rockchip_i2s.c | 72 ++++++++++++++++++++++-----------------
+ 1 file changed, 40 insertions(+), 32 deletions(-)
 
 diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 2f8e20416bd3..34743ec61c49 100644
+index 34743ec61c49..574c6af28c06 100644
 --- a/sound/soc/rockchip/rockchip_i2s.c
 +++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -34,6 +34,13 @@ struct rk_i2s_dev {
+@@ -82,8 +82,8 @@ static void rockchip_snd_txctrl(struct rk_i2s_dev *i2s, int on)
+ 				   I2S_DMACR_TDE_ENABLE, I2S_DMACR_TDE_ENABLE);
  
- 	struct regmap *regmap;
- 
-+/*
-+ * Used to indicate the tx/rx status.
-+ * I2S controller hopes to start the tx and rx together,
-+ * also to stop them when they are both try to stop.
-+*/
-+	bool tx_start;
-+	bool rx_start;
- 	bool is_master_mode;
- };
- 
-@@ -77,7 +84,11 @@ static void rockchip_snd_txctrl(struct rk_i2s_dev *i2s, int on)
  		regmap_update_bits(i2s->regmap, I2S_XFER,
- 				   I2S_XFER_TXS_START,
- 				   I2S_XFER_TXS_START);
-+
-+		i2s->tx_start = true;
+-				   I2S_XFER_TXS_START,
+-				   I2S_XFER_TXS_START);
++				   I2S_XFER_TXS_START | I2S_XFER_RXS_START,
++				   I2S_XFER_TXS_START | I2S_XFER_RXS_START);
+ 
+ 		i2s->tx_start = true;
  	} else {
-+		i2s->tx_start = false;
-+
+@@ -92,23 +92,27 @@ static void rockchip_snd_txctrl(struct rk_i2s_dev *i2s, int on)
  		regmap_update_bits(i2s->regmap, I2S_DMACR,
  				   I2S_DMACR_TDE_ENABLE, I2S_DMACR_TDE_DISABLE);
  
-@@ -115,7 +126,11 @@ static void rockchip_snd_rxctrl(struct rk_i2s_dev *i2s, int on)
+-		regmap_update_bits(i2s->regmap, I2S_XFER,
+-				   I2S_XFER_TXS_START,
+-				   I2S_XFER_TXS_STOP);
+-
+-		regmap_update_bits(i2s->regmap, I2S_CLR,
+-				   I2S_CLR_TXC,
+-				   I2S_CLR_TXC);
++		if (!i2s->rx_start) {
++			regmap_update_bits(i2s->regmap, I2S_XFER,
++					   I2S_XFER_TXS_START |
++					   I2S_XFER_RXS_START,
++					   I2S_XFER_TXS_STOP |
++					   I2S_XFER_RXS_STOP);
+ 
+-		regmap_read(i2s->regmap, I2S_CLR, &val);
++			regmap_update_bits(i2s->regmap, I2S_CLR,
++					   I2S_CLR_TXC | I2S_CLR_RXC,
++					   I2S_CLR_TXC | I2S_CLR_RXC);
+ 
+-		/* Should wait for clear operation to finish */
+-		while (val & I2S_CLR_TXC) {
+ 			regmap_read(i2s->regmap, I2S_CLR, &val);
+-			retry--;
+-			if (!retry) {
+-				dev_warn(i2s->dev, "fail to clear\n");
+-				break;
++
++			/* Should wait for clear operation to finish */
++			while (val) {
++				regmap_read(i2s->regmap, I2S_CLR, &val);
++				retry--;
++				if (!retry) {
++					dev_warn(i2s->dev, "fail to clear\n");
++					break;
++				}
+ 			}
+ 		}
+ 	}
+@@ -124,8 +128,8 @@ static void rockchip_snd_rxctrl(struct rk_i2s_dev *i2s, int on)
+ 				   I2S_DMACR_RDE_ENABLE, I2S_DMACR_RDE_ENABLE);
+ 
  		regmap_update_bits(i2s->regmap, I2S_XFER,
- 				   I2S_XFER_RXS_START,
- 				   I2S_XFER_RXS_START);
-+
-+		i2s->rx_start = true;
+-				   I2S_XFER_RXS_START,
+-				   I2S_XFER_RXS_START);
++				   I2S_XFER_TXS_START | I2S_XFER_RXS_START,
++				   I2S_XFER_TXS_START | I2S_XFER_RXS_START);
+ 
+ 		i2s->rx_start = true;
  	} else {
-+		i2s->rx_start = false;
-+
+@@ -134,23 +138,27 @@ static void rockchip_snd_rxctrl(struct rk_i2s_dev *i2s, int on)
  		regmap_update_bits(i2s->regmap, I2S_DMACR,
  				   I2S_DMACR_RDE_ENABLE, I2S_DMACR_RDE_DISABLE);
  
+-		regmap_update_bits(i2s->regmap, I2S_XFER,
+-				   I2S_XFER_RXS_START,
+-				   I2S_XFER_RXS_STOP);
+-
+-		regmap_update_bits(i2s->regmap, I2S_CLR,
+-				   I2S_CLR_RXC,
+-				   I2S_CLR_RXC);
++		if (!i2s->tx_start) {
++			regmap_update_bits(i2s->regmap, I2S_XFER,
++					   I2S_XFER_TXS_START |
++					   I2S_XFER_RXS_START,
++					   I2S_XFER_TXS_STOP |
++					   I2S_XFER_RXS_STOP);
+ 
+-		regmap_read(i2s->regmap, I2S_CLR, &val);
++			regmap_update_bits(i2s->regmap, I2S_CLR,
++					   I2S_CLR_TXC | I2S_CLR_RXC,
++					   I2S_CLR_TXC | I2S_CLR_RXC);
+ 
+-		/* Should wait for clear operation to finish */
+-		while (val & I2S_CLR_RXC) {
+ 			regmap_read(i2s->regmap, I2S_CLR, &val);
+-			retry--;
+-			if (!retry) {
+-				dev_warn(i2s->dev, "fail to clear\n");
+-				break;
++
++			/* Should wait for clear operation to finish */
++			while (val) {
++				regmap_read(i2s->regmap, I2S_CLR, &val);
++				retry--;
++				if (!retry) {
++					dev_warn(i2s->dev, "fail to clear\n");
++					break;
++				}
+ 			}
+ 		}
+ 	}
 -- 
 2.8.0.rc4.238.g874082a
