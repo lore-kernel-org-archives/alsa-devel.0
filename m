@@ -1,18 +1,15 @@
-From: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>
-Subject: [PATCH v2 2/2] ASoC: dpcm: play nice with
-	CODEC<->CODEC links
-Date: Wed, 4 May 2016 13:28:24 +0100
-Message-ID: <1462364904-11939-2-git-send-email-piotrs@opensource.wolfsonmicro.com>
-References: <1462364904-11939-1-git-send-email-piotrs@opensource.wolfsonmicro.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 0/5] Fix poll error returns
+Date: Wed, 4 May 2016 14:59:06 +0100
+Message-ID: <1462370351-15388-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id BFEF7265A3E
- for <alsa-devel@alsa-project.org>; Wed,  4 May 2016 14:28:43 +0200 (CEST)
-In-Reply-To: <1462364904-11939-1-git-send-email-piotrs@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F0A5F2659AA
+ for <alsa-devel@alsa-project.org>; Wed,  4 May 2016 16:12:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,88 +19,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: tiwai@suse.com
+Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently in situations where a normal CODEC to CODEC link follows a
-DPCM DAI, an error in the following form will be logged:
+We return negative values from the file_operations poll callback
+in a few places, this callback returns an unsigned int and is
+expected to only return the poll specific flags. This series
+fixes up these issues and makes a couple of small tidy ups to the
+code around the edges of those functions.
 
-ASoC: can't get [playback|capture] BE for <widget name>
-ASoC: no BE found for <widget name>
+I noticed this issue whilst doing some additional testing on my
+propagation of compressed stream error series, but I decided to
+push these up separately as it is worth getting the fixes in
+now and not tying them up with that patch chain which is taking
+longer to get merged.  Also I included the first patch of that
+chain (Replace complex if statement with switch) because it is a
+trivial tidy up and might as well get merged now as well.
 
-This happens because all widgets in a path containing a DPCM DAI will
-be passed to dpcm_add_paths, which will try to interpret the CODEC<->CODEC
-as if it were a DPCM DAI, in turn causing the error.
+Thanks,
+Charles
 
-This patch aims to resolve the described issue by stopping the DPCM graph
-walk, initiated from dpcm_path_get, at the first widget associated with
-a DPCM BE.
+Charles Keepax (5):
+  ALSA: pcm: Fix poll error return codes
+  ALSA: compress: Use snd_compr_get_poll on error path
+  ALSA: compress: Remove pointless NULL check
+  ALSA: compress: Fix poll error return codes
+  ALSA: compress: Replace complex if statement with switch
 
-Signed-off-by: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>
----
- sound/soc/soc-pcm.c |   42 +++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 41 insertions(+), 1 deletion(-)
+ sound/core/compress_offload.c | 25 ++++++++++++-------------
+ sound/core/pcm_native.c       |  4 ++--
+ 2 files changed, 14 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index c2b0aa8..f29e518 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1287,6 +1287,46 @@ static int widget_in_list(struct snd_soc_dapm_widget_list *list,
- 	return 0;
- }
- 
-+static int dpcm_end_walk_at_be(struct snd_soc_dapm_widget *widget,
-+		enum snd_soc_dapm_direction dir)
-+{
-+	struct snd_soc_card *card = widget->dapm->card;
-+	struct snd_soc_pcm_runtime *rtd;
-+	int i;
-+
-+	if (dir == SND_SOC_DAPM_DIR_OUT) {
-+		list_for_each_entry(rtd, &card->rtd_list, list) {
-+			if (!rtd->dai_link->no_pcm)
-+				continue;
-+
-+			if (rtd->cpu_dai->playback_widget == widget)
-+				return 0;
-+
-+			for (i = 0; i < rtd->num_codecs; ++i) {
-+				struct snd_soc_dai *dai = rtd->codec_dais[i];
-+				if (dai->playback_widget == widget)
-+					return 0;
-+			}
-+		}
-+	} else { /* SND_SOC_DAPM_DIR_IN */
-+		list_for_each_entry(rtd, &card->rtd_list, list) {
-+			if (!rtd->dai_link->no_pcm)
-+				continue;
-+
-+			if (rtd->cpu_dai->capture_widget == widget)
-+				return 0;
-+
-+			for (i = 0; i < rtd->num_codecs; ++i) {
-+				struct snd_soc_dai *dai = rtd->codec_dais[i];
-+				if (dai->capture_widget == widget)
-+					return 0;
-+			}
-+		}
-+	}
-+
-+	return -1;
-+}
-+
- int dpcm_path_get(struct snd_soc_pcm_runtime *fe,
- 	int stream, struct snd_soc_dapm_widget_list **list)
- {
-@@ -1295,7 +1335,7 @@ int dpcm_path_get(struct snd_soc_pcm_runtime *fe,
- 
- 	/* get number of valid DAI paths and their widgets */
- 	paths = snd_soc_dapm_dai_get_connected_widgets(cpu_dai, stream, list,
--			NULL);
-+			dpcm_end_walk_at_be);
- 
- 	dev_dbg(fe->dev, "ASoC: found %d audio %s paths\n", paths,
- 			stream ? "capture" : "playback");
 -- 
-1.7.10.4
+2.1.4
