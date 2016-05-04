@@ -1,18 +1,16 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] ASoC: wm_adsp: Detach compressed stream on
-	free
-Date: Wed, 4 May 2016 17:11:56 +0100
-Message-ID: <1462378316-8615-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1462378316-8615-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] ASoC: wm_adsp: Move compr_attach/attached
+	functions
+Date: Wed, 4 May 2016 17:11:55 +0100
+Message-ID: <1462378316-8615-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DFE5267560
- for <alsa-devel@alsa-project.org>; Wed,  4 May 2016 18:19:02 +0200 (CEST)
-In-Reply-To: <1462378316-8615-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6113E267561
+ for <alsa-devel@alsa-project.org>; Wed,  4 May 2016 18:19:04 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,78 +24,70 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-If someone powers down the DSP core (through routing changes
-say) whilst a compressed record is in progress we can end up
-using a freed pointer to the buffer object. When a compressed
-audio stream is triggered we attach it to a buffer on a physical
-DSP. This patch adds a detach of the buffer from the stream when
-the stream is freed or when the DSP is powered down which avoids
-the situation where we use a buffer when it is no longer valid.
+Move wm_adsp_compr_attach and wm_adsp_compr_attached functions so they
+will stay logically grouped with similar functions after some additional
+changes.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm_adsp.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ sound/soc/codecs/wm_adsp.c | 38 +++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 42fc469..a07bd7c 100644
+index 630ebcd..42fc469 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -273,8 +273,11 @@ struct wm_adsp_buffer {
- 	__be32 words_written[2];	/* total words written (64 bit) */
- };
- 
-+struct wm_adsp_compr;
-+
- struct wm_adsp_compr_buf {
- 	struct wm_adsp *dsp;
-+	struct wm_adsp_compr *compr;
- 
- 	struct wm_adsp_buffer_region *regions;
- 	u32 host_buf_ptr;
-@@ -2467,10 +2470,26 @@ static int wm_adsp_compr_attach(struct wm_adsp_compr *compr)
- 		return -EINVAL;
- 
- 	compr->buf = compr->dsp->buffer;
-+	compr->buf->compr = compr;
- 
- 	return 0;
+@@ -2452,6 +2452,25 @@ void wm_adsp2_remove(struct wm_adsp *dsp)
  }
+ EXPORT_SYMBOL_GPL(wm_adsp2_remove);
  
-+static void wm_adsp_compr_detach(struct wm_adsp_compr *compr)
++static inline int wm_adsp_compr_attached(struct wm_adsp_compr *compr)
 +{
-+	if (!compr)
-+		return;
++	return compr->buf != NULL;
++}
 +
-+	/* Wake the poll so it can see buffer is no longer attached */
-+	if (compr->stream)
-+		snd_compr_fragment_elapsed(compr->stream);
++static int wm_adsp_compr_attach(struct wm_adsp_compr *compr)
++{
++	/*
++	 * Note this will be more complex once each DSP can support multiple
++	 * streams
++	 */
++	if (!compr->dsp->buffer)
++		return -EINVAL;
 +
-+	if (wm_adsp_compr_attached(compr)) {
-+		compr->buf->compr = NULL;
-+		compr->buf = NULL;
-+	}
++	compr->buf = compr->dsp->buffer;
++
++	return 0;
 +}
 +
  int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream)
  {
  	struct wm_adsp_compr *compr;
-@@ -2524,6 +2543,7 @@ int wm_adsp_compr_free(struct snd_compr_stream *stream)
+@@ -2810,25 +2829,6 @@ static int wm_adsp_buffer_free(struct wm_adsp *dsp)
+ 	return 0;
+ }
  
- 	mutex_lock(&dsp->pwr_lock);
- 
-+	wm_adsp_compr_detach(compr);
- 	dsp->compr = NULL;
- 
- 	kfree(compr->raw_buf);
-@@ -2820,6 +2840,8 @@ err_buffer:
- static int wm_adsp_buffer_free(struct wm_adsp *dsp)
+-static inline int wm_adsp_compr_attached(struct wm_adsp_compr *compr)
+-{
+-	return compr->buf != NULL;
+-}
+-
+-static int wm_adsp_compr_attach(struct wm_adsp_compr *compr)
+-{
+-	/*
+-	 * Note this will be more complex once each DSP can support multiple
+-	 * streams
+-	 */
+-	if (!compr->dsp->buffer)
+-		return -EINVAL;
+-
+-	compr->buf = compr->dsp->buffer;
+-
+-	return 0;
+-}
+-
+ int wm_adsp_compr_trigger(struct snd_compr_stream *stream, int cmd)
  {
- 	if (dsp->buffer) {
-+		wm_adsp_compr_detach(dsp->buffer->compr);
-+
- 		kfree(dsp->buffer->regions);
- 		kfree(dsp->buffer);
- 
+ 	struct wm_adsp_compr *compr = stream->runtime->private_data;
 -- 
 2.1.4
