@@ -1,23 +1,16 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_sai: Allow the SAI driver to
-	turn on SAI_MCLK
-Date: Wed, 4 May 2016 09:17:11 -0300
-Message-ID: <CAOMZO5CX5t4H5qVpB+e6tbEGgPR+nStArKuEtk+D0QapyzfOGA@mail.gmail.com>
-References: <1462324173-10976-1-git-send-email-festevam@gmail.com>
- <20160504014432.GA30210@Asurada-Nvidia>
- <CAOMZO5AkctauuaR1DTKexBo4wL=aZL_JLi4nudeZXHTRRo0QMQ@mail.gmail.com>
- <20160504070700.GA12216@Asurada>
+From: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>
+Subject: [PATCH v2 1/2] ASoC: dapm: support user-defined stop
+	condition in dai_get_connected_widgets
+Date: Wed, 4 May 2016 13:28:23 +0100
+Message-ID: <1462364904-11939-1-git-send-email-piotrs@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f169.google.com (mail-io0-f169.google.com
- [209.85.223.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 2C154262607
- for <alsa-devel@alsa-project.org>; Wed,  4 May 2016 14:17:12 +0200 (CEST)
-Received: by mail-io0-f169.google.com with SMTP id d62so51642027iof.2
- for <alsa-devel@alsa-project.org>; Wed, 04 May 2016 05:17:12 -0700 (PDT)
-In-Reply-To: <20160504070700.GA12216@Asurada>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 065C4265A30
+ for <alsa-devel@alsa-project.org>; Wed,  4 May 2016 14:28:37 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,58 +20,216 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Petr Kulhavy <brain@jikos.cz>
+To: broonie@kernel.org
+Cc: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Nicolin,
+Certain situations may warrant examining DAPM paths only to a certain
+arbitrary point, as opposed to always following them to the end. For
+instance, when establishing a connection between a front-end DAI link
+and a back-end DAI link in a DPCM path, it does not make sense to walk
+the DAPM graph beyond the first widget associated with a back-end link.
 
-On Wed, May 4, 2016 at 4:07 AM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+This patch introduces a mechanism which lets a user of
+dai_get_connected_widgets supply a function which will be called for
+every node during the graph walk. When invoked, this function can
+execute arbitrary logic to decide whether the walk, given a DAPM widget
+and walk direction, should be terminated at that point or continued
+as normal.
 
-> I found out the mail from Zidan regarding the same GPR bit:
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2015-August/096401.html
->
-> According to his reply, this bit also controls the clock source of MCLK2
-> for the SAI. Each SAI has 3 MCLKs, but first disregarding MCLK3:
->
-> When this bit gets set, the MCLK1 and MCLK2 of the corresponding SAI are
-> both getting clock from CCM, and in the meantime outputting the clock via
-> the PAD to external Codec chips. In this case, MCLK1 and MCLK2 have same
-> clock rate, nothing special for bit clock dividing.
->
-> When this bit gets clear, MCLK1 of the corresponding is still getting its
-> clock from CCM while MCLK2 switches its source from CCM to the PAD. In this
-> case, MCLK1 and MCLK2 can have different clock rates so as to support two
-> sample rate groups: 44.1KHz and 48Khz.
->
-> So, beside gating the clock output, it's more likely a clock MUX for MCLK2
-> of each SAI to switch between CCM and external input.
+Signed-off-by: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>
+---
+ include/sound/soc-dapm.h |    5 +++-
+ sound/soc/soc-dapm.c     |   68 +++++++++++++++++++++++++++++++++++++---------
+ sound/soc/soc-pcm.c      |    3 +-
+ 3 files changed, 61 insertions(+), 15 deletions(-)
 
-At imx6ul.dtsi the mclk2 and mclk3 are just dummy clocks.
-
-> Because DT property will be hard to change once we define it. I think it
-> would be better to confirm this first before patching it (with Zidan or
-> i.MX IC team). But the driver part, whether putting it to probe() or to
-> set_dai_sysclk(), doesn't matter to me since we can change/improve it
-> later as long as it follows the correct binding.
-
-Also tried Zidan's NXP email and it also bounced, so not able to contact him.
-
-Also don't have any contact with the audio folks in the i.MX IC team.
-
-This binding is all about setting IMX6UL_GPR1_SAIx_MCLK_DIR or not.
-
-So this is a very simple case:
-
-IMX6UL_GPR1_SAIx_MCLK_DIR = 0 (this is the current behaviour)
-
-IMX6UL_GPR1_SAIx_MCLK_DIR = 1 (this is what this patch allows)
-
-I cannot see why this proposed binding would possibly break things or
-would need a change in the future.
-
-It's only purpose is to simply set IMX6UL_GPR1_SAIx_MCLK_DIR.
-
-Regards,
-
-Fabio Estevam
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 9706946..fe5bc93 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -357,6 +357,7 @@ struct snd_soc_dapm_context;
+ struct regulator;
+ struct snd_soc_dapm_widget_list;
+ struct snd_soc_dapm_update;
++enum snd_soc_dapm_direction;
+ 
+ int dapm_regulator_event(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol, int event);
+@@ -450,7 +451,9 @@ void dapm_mark_endpoints_dirty(struct snd_soc_card *card);
+ 
+ /* dapm path query */
+ int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
+-	struct snd_soc_dapm_widget_list **list);
++	struct snd_soc_dapm_widget_list **list,
++	int (*custom_stop_condition)(struct snd_soc_dapm_widget *,
++				     enum snd_soc_dapm_direction));
+ 
+ struct snd_soc_dapm_context *snd_soc_dapm_kcontrol_dapm(
+ 	struct snd_kcontrol *kcontrol);
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 801ae1a..075f0d7 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1073,7 +1073,11 @@ static int dapm_widget_list_create(struct snd_soc_dapm_widget_list **list,
+  */
+ static __always_inline int is_connected_ep(struct snd_soc_dapm_widget *widget,
+ 	struct list_head *list, enum snd_soc_dapm_direction dir,
+-	int (*fn)(struct snd_soc_dapm_widget *, struct list_head *))
++	int (*fn)(struct snd_soc_dapm_widget *, struct list_head *,
++		  int (*custom_stop_condition)(struct snd_soc_dapm_widget *,
++					       enum snd_soc_dapm_direction)),
++	int (*custom_stop_condition)(struct snd_soc_dapm_widget *,
++				     enum snd_soc_dapm_direction))
+ {
+ 	enum snd_soc_dapm_direction rdir = SND_SOC_DAPM_DIR_REVERSE(dir);
+ 	struct snd_soc_dapm_path *path;
+@@ -1088,6 +1092,13 @@ static __always_inline int is_connected_ep(struct snd_soc_dapm_widget *widget,
+ 	if (list)
+ 		list_add_tail(&widget->work_list, list);
+ 
++	if (custom_stop_condition) {
++		con = custom_stop_condition(widget, dir);
++		if (con >= 0)
++			return con;
++		con = 0;
++	}
++
+ 	if ((widget->is_ep & SND_SOC_DAPM_DIR_TO_EP(dir)) && widget->connected) {
+ 		widget->endpoints[dir] = snd_soc_dapm_suspend_check(widget);
+ 		return widget->endpoints[dir];
+@@ -1106,7 +1117,7 @@ static __always_inline int is_connected_ep(struct snd_soc_dapm_widget *widget,
+ 
+ 		if (path->connect) {
+ 			path->walking = 1;
+-			con += fn(path->node[dir], list);
++			con += fn(path->node[dir], list, custom_stop_condition);
+ 			path->walking = 0;
+ 		}
+ 	}
+@@ -1119,23 +1130,41 @@ static __always_inline int is_connected_ep(struct snd_soc_dapm_widget *widget,
+ /*
+  * Recursively check for a completed path to an active or physically connected
+  * output widget. Returns number of complete paths.
++ *
++ * Optionally, can be supplied with a function acting as a stopping condition.
++ * This function takes the dapm widget currently being examined and the walk
++ * direction as an arguments, and should return an integer, as follows:
++ * - >=0: if the walk is to be stopped (this should indicate the number of
++ *        endpoints the widget has),
++ * - <0 : if the walk is to be continued as normal.
+  */
+ static int is_connected_output_ep(struct snd_soc_dapm_widget *widget,
+-	struct list_head *list)
++	struct list_head *list,
++	int (*custom_stop_condition)(struct snd_soc_dapm_widget *i,
++				     enum snd_soc_dapm_direction))
+ {
+ 	return is_connected_ep(widget, list, SND_SOC_DAPM_DIR_OUT,
+-			is_connected_output_ep);
++			is_connected_output_ep, custom_stop_condition);
+ }
+ 
+ /*
+  * Recursively check for a completed path to an active or physically connected
+  * input widget. Returns number of complete paths.
++ *
++ * Optionally, can be supplied with a function acting as a stopping condition.
++ * This function takes the dapm widget currently being examined and the walk
++ * direction as an arguments, and should return an integer, as follows:
++ * - >=0: if the walk is to be stopped (this should indicate the number of
++ *        endpoints the widget has),
++ * - <0 : if the walk is to be continued as normal.
+  */
+ static int is_connected_input_ep(struct snd_soc_dapm_widget *widget,
+-	struct list_head *list)
++	struct list_head *list,
++	int (*custom_stop_condition)(struct snd_soc_dapm_widget *i,
++				     enum snd_soc_dapm_direction))
+ {
+ 	return is_connected_ep(widget, list, SND_SOC_DAPM_DIR_IN,
+-			is_connected_input_ep);
++			is_connected_input_ep, custom_stop_condition);
+ }
+ 
+ /**
+@@ -1143,15 +1172,26 @@ static int is_connected_input_ep(struct snd_soc_dapm_widget *widget,
+  * @dai: the soc DAI.
+  * @stream: stream direction.
+  * @list: list of active widgets for this stream.
++ * @custom_stop_condition: (optional) a function meant to stop the widget graph
++ *                         walk based on custom logic.
+  *
+  * Queries DAPM graph as to whether an valid audio stream path exists for
+  * the initial stream specified by name. This takes into account
+  * current mixer and mux kcontrol settings. Creates list of valid widgets.
+  *
++ * Optionally, can be supplied with a function acting as a stopping condition.
++ * This function takes the dapm widget currently being examined and the walk
++ * direction as an arguments, and should return an integer, as follows:
++ * - >=0: if the walk is to be stopped (this should indicate the number of
++ *        endpoints the widget has),
++ * - <0 : if the walk is to be continued as normal.
++ *
+  * Returns the number of valid paths or negative error.
+  */
+ int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
+-	struct snd_soc_dapm_widget_list **list)
++	struct snd_soc_dapm_widget_list **list,
++	int (*custom_stop_condition)(struct snd_soc_dapm_widget *,
++				     enum snd_soc_dapm_direction))
+ {
+ 	struct snd_soc_card *card = dai->component->card;
+ 	struct snd_soc_dapm_widget *w;
+@@ -1171,9 +1211,11 @@ int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
+ 	}
+ 
+ 	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		paths = is_connected_output_ep(dai->playback_widget, &widgets);
++		paths = is_connected_output_ep(dai->playback_widget, &widgets,
++				custom_stop_condition);
+ 	else
+-		paths = is_connected_input_ep(dai->capture_widget, &widgets);
++		paths = is_connected_input_ep(dai->capture_widget, &widgets,
++				custom_stop_condition);
+ 
+ 	/* Drop starting point */
+ 	list_del(widgets.next);
+@@ -1268,8 +1310,8 @@ static int dapm_generic_check_power(struct snd_soc_dapm_widget *w)
+ 
+ 	DAPM_UPDATE_STAT(w, power_checks);
+ 
+-	in = is_connected_input_ep(w, NULL);
+-	out = is_connected_output_ep(w, NULL);
++	in = is_connected_input_ep(w, NULL, NULL);
++	out = is_connected_output_ep(w, NULL, NULL);
+ 	return out != 0 && in != 0;
+ }
+ 
+@@ -1928,8 +1970,8 @@ static ssize_t dapm_widget_power_read_file(struct file *file,
+ 		in = 0;
+ 		out = 0;
+ 	} else {
+-		in = is_connected_input_ep(w, NULL);
+-		out = is_connected_output_ep(w, NULL);
++		in = is_connected_input_ep(w, NULL, NULL);
++		out = is_connected_output_ep(w, NULL, NULL);
+ 	}
+ 
+ 	ret = snprintf(buf, PAGE_SIZE, "%s: %s%s  in %d out %d",
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index aa99dac..c2b0aa8 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1294,7 +1294,8 @@ int dpcm_path_get(struct snd_soc_pcm_runtime *fe,
+ 	int paths;
+ 
+ 	/* get number of valid DAI paths and their widgets */
+-	paths = snd_soc_dapm_dai_get_connected_widgets(cpu_dai, stream, list);
++	paths = snd_soc_dapm_dai_get_connected_widgets(cpu_dai, stream, list,
++			NULL);
+ 
+ 	dev_dbg(fe->dev, "ASoC: found %d audio %s paths\n", paths,
+ 			stream ? "capture" : "playback");
+-- 
+1.7.10.4
