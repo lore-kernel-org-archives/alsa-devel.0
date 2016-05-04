@@ -1,7 +1,8 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/5] ALSA: compress: Remove pointless NULL check
-Date: Wed, 4 May 2016 14:59:09 +0100
-Message-ID: <1462370351-15388-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/5] ALSA: compress: Use snd_compr_get_poll on
+	error path
+Date: Wed, 4 May 2016 14:59:08 +0100
+Message-ID: <1462370351-15388-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1462370351-15388-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id D7D0C265A2B
- for <alsa-devel@alsa-project.org>; Wed,  4 May 2016 16:12:56 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id F0598265134
+ for <alsa-devel@alsa-project.org>; Wed,  4 May 2016 16:12:53 +0200 (CEST)
 In-Reply-To: <1462370351-15388-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,40 +26,29 @@ To: tiwai@suse.com
 Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-stream can't be NULL here as we have just taken the address of it, so no
-need for the check.
+We have a function that returns the appropriate flags for the stream
+direction, so we should use it.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/core/compress_offload.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ sound/core/compress_offload.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index 5268546..5215df2 100644
+index a9933c07..5268546 100644
 --- a/sound/core/compress_offload.c
 +++ b/sound/core/compress_offload.c
-@@ -392,9 +392,8 @@ static unsigned int snd_compr_poll(struct file *f, poll_table *wait)
- 
- 	if (snd_BUG_ON(!data))
- 		return -EFAULT;
-+
- 	stream = &data->stream;
--	if (snd_BUG_ON(!stream))
--		return -EFAULT;
- 
- 	mutex_lock(&stream->device->lock);
- 	if (stream->runtime->state == SNDRV_PCM_STATE_OPEN) {
-@@ -799,9 +798,9 @@ static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
- 
- 	if (snd_BUG_ON(!data))
- 		return -EFAULT;
-+
- 	stream = &data->stream;
--	if (snd_BUG_ON(!stream))
--		return -EFAULT;
-+
- 	mutex_lock(&stream->device->lock);
- 	switch (_IOC_NR(cmd)) {
- 	case _IOC_NR(SNDRV_COMPRESS_IOCTL_VERSION):
+@@ -421,10 +421,7 @@ static unsigned int snd_compr_poll(struct file *f, poll_table *wait)
+ 			retval = snd_compr_get_poll(stream);
+ 		break;
+ 	default:
+-		if (stream->direction == SND_COMPRESS_PLAYBACK)
+-			retval = POLLOUT | POLLWRNORM | POLLERR;
+-		else
+-			retval = POLLIN | POLLRDNORM | POLLERR;
++		retval = snd_compr_get_poll(stream) | POLLERR;
+ 		break;
+ 	}
+ out:
 -- 
 2.1.4
