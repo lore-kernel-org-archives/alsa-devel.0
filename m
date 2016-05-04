@@ -1,59 +1,50 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: pcm: allow changing the playback/capture rates for
- symmetric links
-Date: Wed, 4 May 2016 17:49:22 +0100
-Message-ID: <20160504164922.GB6292@sirena.org.uk>
-References: <1461746959-11443-1-git-send-email-peda@axentia.se>
- <20160427161504.GZ3217@sirena.org.uk>
- <122ca84a-230e-654e-425f-3adb0ca00ec7@axentia.se>
- <20160428103822.GJ3217@sirena.org.uk>
- <c7193097-f216-df7d-2f94-bd5f6684c28b@axentia.se>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 2/2 v6] ASoC: dwc: Update DOCUMENTATION for I2S Driver
+Date: Wed, 4 May 2016 17:56:45 +0100
+Message-ID: <20160504165645.GC6292@sirena.org.uk>
+References: <cover.1461749984.git.joabreu@synopsys.com>
+ <30ee79f0744cdf3561d43654f1ecf3d486bf7a08.1461749984.git.joabreu@synopsys.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="zKD0QXBepZ0ysD7Q"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="jcjv6D8puUawUjle"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <c7193097-f216-df7d-2f94-bd5f6684c28b@axentia.se>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Rosin <peda@axentia.se>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
+In-Reply-To: <30ee79f0744cdf3561d43654f1ecf3d486bf7a08.1461749984.git.joabreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Carlos Palminha <CARLOS.PALMINHA-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, Alexey Brodkin <Alexey.Brodkin-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---zKD0QXBepZ0ysD7Q
+--jcjv6D8puUawUjle
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, May 02, 2016 at 09:43:53AM +0200, Peter Rosin wrote:
+On Wed, Apr 27, 2016 at 06:37:47PM +0100, Jose Abreu wrote:
+> This patch updates documentation for the Designware I2S
+> driver.
 
-> The problem is in the drain/close part. If I leave out snd_pcm_drain
-> I naturally lose the tail of the output, but if I have it I get what
-> I guess is a repeat of the content in some circular buffer. I.e. the
-> very last part of the played sound is played twice(ice).
+Why is the DOCUMENTATION being updated and why are we shouting about it?
+You need to describe what the change does so that it's possible to
+review if the change is doing what it's supposed to be doing.
 
-> If I instead write the generated samples to a file and play them
-> with aplay, all is fine, so I appear to be misunderstanding the
-> alsa api?
-
-> Anything obviously wrong in the above code?
-
-Look at how aplay handles this...  it's a natural consequence of the
-hardware being free running.  You need to either make the teardown
-non-blocking or play some silence at the end.
-
---zKD0QXBepZ0ysD7Q
+--jcjv6D8puUawUjle
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXKigRAAoJECTWi3JdVIfQzhQIAIQvWx3Sop7mLUHDXpuYAI5n
-/FKDyGJGI/TegfvF1s/KbIRsnekt2SoLqcm89vAdJZscKpUwSNT7tiUThOiSU2NR
-VBVporNq9t4ksemrR27jMsRfJZ3OzwqFcG1Fn24Ynh7AEiHEmBeD0lXW7ovodrnu
-jzIHXmEWsno3mt+lq87Komdcboz4q+AGSDoDicyCeEIHSmtRL4rMkc9k57G6COi9
-P61tuDVWe43hiSd667nBx7xYMr0WyOBlU2XlCQhvtxFaFGxNdYbtRzpgLnMcVLS7
-o3EqrpxewEFmOslLv+eHj3yo6L0soMwZB5+gKzGtKaCsWG1+pZD7vEJ+CSBWTdQ=
-=2/ia
+iQEcBAEBCAAGBQJXKinMAAoJECTWi3JdVIfQJtcH/23Y7F5pLJ7/RbFDV8n+yo3C
+3e8eUeV6IXCozk+9id3TBqdIu3tZHZDPs3XslmfQQLhb9aHmrQONkUuQ0vPfn0nw
+fbJJ7OSfBhZXVeSR9QrdJuUiJ6fBxIWCT2v77SZbOirnQEHjpOAnDhHhDTuQCMHP
+hmNALNWG2Uy5uliUfSIkXM22eMccJbJUrgWC3bGeenWSd6PKN73d0uPkyRUuY6xa
+NQ0+1e7eIcmECrqM3W/ksxCOiw/3yJ8PW8RceeXtNEmruIPGS2RDMBeEl4E5rtoO
+3xMxikXv9v5Re/ggGWjE0gseTRwuFZ81pmnsbYb5oGyCz18rAHs89142FPN9S38=
+=ffaI
 -----END PGP SIGNATURE-----
 
---zKD0QXBepZ0ysD7Q--
+--jcjv6D8puUawUjle--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
