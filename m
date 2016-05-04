@@ -1,150 +1,50 @@
-From: John Keeping <john@metanate.com>
-Subject: [PATCH v2 2/2] ASoC: rockchip: Revert "ASoC: rockchip: i2s: separate
- capture and playback"
-Date: Wed,  4 May 2016 17:21:57 +0100
-Message-ID: <1462378917-24135-2-git-send-email-john@metanate.com>
-References: <1462378917-24135-1-git-send-email-john@metanate.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH 1/7] ASoC: mediatek: Refine mt8173 driver
+ and change config option
+Date: Wed, 4 May 2016 17:43:06 +0100
+Message-ID: <20160504164306.GA6292@sirena.org.uk>
+References: <1461934848-60011-1-git-send-email-garlic.tseng@mediatek.com>
+ <1461934848-60011-2-git-send-email-garlic.tseng@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1462378917-24135-1-git-send-email-john@metanate.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: alsa-devel@alsa-project.org
-Cc: Heiko Stuebner <heiko@sntech.de>, Enric Balletbo Serra <eballetbo@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, John Keeping <john@metanate.com>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="utUizcr4eQAkV3Ky"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1461934848-60011-2-git-send-email-garlic.tseng@mediatek.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Garlic Tseng <garlic.tseng@mediatek.com>
+Cc: tiwai@suse.de, srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, koro.chen@mediatek.com, PC.Liao@mediatek.com, ir.lian@mediatek.com
 List-Id: alsa-devel@alsa-project.org
 
-This reverts commit eba65d179c1149cf79e68608d452631f33d7f017.
 
-This broke audio on Veyron Jerry Chromebooks and I now cannot reproduce
-the problem I was trying to fix even with this commit reverted, so it
-seems that this was completely the wrong thing to do.
+--utUizcr4eQAkV3Ky
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Reported-by: Enric Balletbo Serra <eballetbo@gmail.com>
-Signed-off-by: John Keeping <john@metanate.com>
----
-v2: Add "ASoC: rockchip: " prefix to subject
+On Fri, Apr 29, 2016 at 09:00:42PM +0800, Garlic Tseng wrote:
 
- sound/soc/rockchip/rockchip_i2s.c | 72 ++++++++++++++++++++++-----------------
- 1 file changed, 40 insertions(+), 32 deletions(-)
+>  .../{mtk-afe-pcm.c => mt8173/mt8173-afe-pcm.c}     | 488 ++++++++++-----------
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 34743ec61c49..574c6af28c06 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -82,8 +82,8 @@ static void rockchip_snd_txctrl(struct rk_i2s_dev *i2s, int on)
- 				   I2S_DMACR_TDE_ENABLE, I2S_DMACR_TDE_ENABLE);
- 
- 		regmap_update_bits(i2s->regmap, I2S_XFER,
--				   I2S_XFER_TXS_START,
--				   I2S_XFER_TXS_START);
-+				   I2S_XFER_TXS_START | I2S_XFER_RXS_START,
-+				   I2S_XFER_TXS_START | I2S_XFER_RXS_START);
- 
- 		i2s->tx_start = true;
- 	} else {
-@@ -92,23 +92,27 @@ static void rockchip_snd_txctrl(struct rk_i2s_dev *i2s, int on)
- 		regmap_update_bits(i2s->regmap, I2S_DMACR,
- 				   I2S_DMACR_TDE_ENABLE, I2S_DMACR_TDE_DISABLE);
- 
--		regmap_update_bits(i2s->regmap, I2S_XFER,
--				   I2S_XFER_TXS_START,
--				   I2S_XFER_TXS_STOP);
--
--		regmap_update_bits(i2s->regmap, I2S_CLR,
--				   I2S_CLR_TXC,
--				   I2S_CLR_TXC);
-+		if (!i2s->rx_start) {
-+			regmap_update_bits(i2s->regmap, I2S_XFER,
-+					   I2S_XFER_TXS_START |
-+					   I2S_XFER_RXS_START,
-+					   I2S_XFER_TXS_STOP |
-+					   I2S_XFER_RXS_STOP);
- 
--		regmap_read(i2s->regmap, I2S_CLR, &val);
-+			regmap_update_bits(i2s->regmap, I2S_CLR,
-+					   I2S_CLR_TXC | I2S_CLR_RXC,
-+					   I2S_CLR_TXC | I2S_CLR_RXC);
- 
--		/* Should wait for clear operation to finish */
--		while (val & I2S_CLR_TXC) {
- 			regmap_read(i2s->regmap, I2S_CLR, &val);
--			retry--;
--			if (!retry) {
--				dev_warn(i2s->dev, "fail to clear\n");
--				break;
-+
-+			/* Should wait for clear operation to finish */
-+			while (val) {
-+				regmap_read(i2s->regmap, I2S_CLR, &val);
-+				retry--;
-+				if (!retry) {
-+					dev_warn(i2s->dev, "fail to clear\n");
-+					break;
-+				}
- 			}
- 		}
- 	}
-@@ -124,8 +128,8 @@ static void rockchip_snd_rxctrl(struct rk_i2s_dev *i2s, int on)
- 				   I2S_DMACR_RDE_ENABLE, I2S_DMACR_RDE_ENABLE);
- 
- 		regmap_update_bits(i2s->regmap, I2S_XFER,
--				   I2S_XFER_RXS_START,
--				   I2S_XFER_RXS_START);
-+				   I2S_XFER_TXS_START | I2S_XFER_RXS_START,
-+				   I2S_XFER_TXS_START | I2S_XFER_RXS_START);
- 
- 		i2s->rx_start = true;
- 	} else {
-@@ -134,23 +138,27 @@ static void rockchip_snd_rxctrl(struct rk_i2s_dev *i2s, int on)
- 		regmap_update_bits(i2s->regmap, I2S_DMACR,
- 				   I2S_DMACR_RDE_ENABLE, I2S_DMACR_RDE_DISABLE);
- 
--		regmap_update_bits(i2s->regmap, I2S_XFER,
--				   I2S_XFER_RXS_START,
--				   I2S_XFER_RXS_STOP);
--
--		regmap_update_bits(i2s->regmap, I2S_CLR,
--				   I2S_CLR_RXC,
--				   I2S_CLR_RXC);
-+		if (!i2s->tx_start) {
-+			regmap_update_bits(i2s->regmap, I2S_XFER,
-+					   I2S_XFER_TXS_START |
-+					   I2S_XFER_RXS_START,
-+					   I2S_XFER_TXS_STOP |
-+					   I2S_XFER_RXS_STOP);
- 
--		regmap_read(i2s->regmap, I2S_CLR, &val);
-+			regmap_update_bits(i2s->regmap, I2S_CLR,
-+					   I2S_CLR_TXC | I2S_CLR_RXC,
-+					   I2S_CLR_TXC | I2S_CLR_RXC);
- 
--		/* Should wait for clear operation to finish */
--		while (val & I2S_CLR_RXC) {
- 			regmap_read(i2s->regmap, I2S_CLR, &val);
--			retry--;
--			if (!retry) {
--				dev_warn(i2s->dev, "fail to clear\n");
--				break;
-+
-+			/* Should wait for clear operation to finish */
-+			while (val) {
-+				regmap_read(i2s->regmap, I2S_CLR, &val);
-+				retry--;
-+				if (!retry) {
-+					dev_warn(i2s->dev, "fail to clear\n");
-+					break;
-+				}
- 			}
- 		}
- 	}
--- 
-2.8.0.rc4.238.g874082a
+So there's going to be no code sharing at all between this and any other
+Mediatek chips?  That seems very surprising, it'd suggest that the
+hardware designers were creating a new design completely from scratch
+each time which doesn't seem all that likely.  This is an unusual way of
+organizing things and we need a much clearer explanation of what's going
+on here.
+
+--utUizcr4eQAkV3Ky
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXKiaaAAoJECTWi3JdVIfQlmsIAIBywmMZ2EhbIi3Rgo+HaHOJ
+IZRiAOvXMTafJdw7ToZu0qzGL+yq+ofNqEB1bommSYCYe0sIzm8WMPI8grkz+r3X
+77E4ylGx3ikCY9wMSFK+xLZjLq5qT8rcL1KRzm1QCvcWx1mp/9k1qCHI8MMrc/sf
+IDRZMrdH5pYrThAkQcBJ7ALerL4tIy53QaL5KMa4v2jyfjdqWXhIOuSRl4sYRMUi
+dqiJ5F6adYmu5gs+vv2o1VLgIxRFfLPorMOOz03puMmpXyY0CrSr7TbL4HsqEv4A
+9zJRpnGGLXaSJIQcBuX0i5M/H+qX3AT1F2eGeaJEfAqOlXy/rprp/IlTcgKWIq4=
+=7N8B
+-----END PGP SIGNATURE-----
+
+--utUizcr4eQAkV3Ky--
