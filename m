@@ -1,18 +1,18 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: WM5102 - Help to make baytrail machine driver work
-Date: Thu, 5 May 2016 10:11:22 +0100
-Message-ID: <20160505091122.GE1646@localhost.localdomain>
-References: <CAJcYhpZU-6_AO_Gye1VttuvOP0Z2=wLuWGCOP7tBWc6DsuLU1g@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 1/5] ALSA: pcm: Fix poll error return codes
+Date: Thu, 5 May 2016 11:39:34 +0200
+Message-ID: <cb0c26e2-d594-844d-62b3-36e6f2f830f6@ladisch.de>
+References: <1462370351-15388-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1462370351-15388-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <572A8534.4020207@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 048A1265D05
- for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 11:11:16 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <CAJcYhpZU-6_AO_Gye1VttuvOP0Z2=wLuWGCOP7tBWc6DsuLU1g@mail.gmail.com>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 34909261AFF
+ for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 11:40:28 +0200 (CEST)
+In-Reply-To: <572A8534.4020207@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Paulo Sergio <pstglia@gmail.com>
-Cc: alsa-devel@alsa-project.org, Christian Hartmann <cornogle@googlemail.com>, vinod.koul@intel.com, broonie@opensource.wolfsonmicro.com, pierre-louis.bossart@linux.intel.com, mika.westerberg@linux.intel.com
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, tiwai@suse.com
+Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 04, 2016 at 10:21:21PM -0300, Paulo Sergio wrote:
-> Hi list,
-> 
-> I've been trying to make Lenovo Yoga 2 (Model 1051F) sound work on
-> Android-x86/ Linux. [1]
-> 
-> Based on already discussed info from Christian Hartmann with members (see
-> [2] and [3] ) of this list and some efforts (basically patch pxa2xx with
-> Mika Westerberg changes, set the correct gpio int values {246 for reset /
-> 405 for ldoena and 342 for irq_gpio} and set LDO1 vcc suppliers) we could
-> have wm5102 initialized through spi / regmap (arizona code on drivers/mfd)
-> and register the DAI's.
-> 
-> I also ported a machine driver code from a kernel Lenovo made available for
-> a similar hardware (Lenovo yoga 2 1050 - uses the same baytrail Z3745 and
-> wolfson wm5102 audio) [4]
-> 
-> Although machine driver is registered, we still don't have sound. Tried
-> some mixer settings / routes used on raspberry pi, but none help.
-> Application (in this case alsa / Android players) returns a "Device or
-> resource busy" when trying to ioctl pcm device:
+Takashi Sakamoto wrote:
+> On May 4 2016 22:59, Charles Keepax wrote:
+>>  	if (PCM_RUNTIME_CHECK(substream))
+>> -		return -ENXIO;
+>> +		return POLLIN | POLLRDNORM | POLLERR;
+>
+> [...]
+> On the other hand, I think POLLOUT, POLLIN, POLLWRNORM and POLLRDNORM
+> should not be included in the value. PCM_RUNTIME_CHECK() ensures PCM
+> substream or PCM runtime is NULL. This means that subsequent I/O
+> operations are failed, at least for handling PCM frames.
+>
+> I think it better to return 'POLLERR | POLLHUP'.
 
-A quick look through your machine driver looks like the parts
-relating the CODEC look ok.
+To expand on this: POLLIN/POLLOUT imply that it is possible to read/
+write data without blocking.  Sockets and pipes combine POLLHUP with
+POLLIN because the read() (or recv()) returns 0 bytes without blocking
+to indicate the end of the stream.
 
-I am not so sure about the AP side routing but for the CODEC,
+But in this situation, snd_pcm_read*/write* will always fail, so it is,
+strictly speaking, indeed not appropriate to set POLLIN/OUT.
 
-'HPOUT1L Input 1' AIF1RX1
-'HPOUT1R Input 1' AIF1RX2
-'HPOUT1 Digital Switch' 1
+On the other hand, PCM devices do include the POLLIN/OUT bits when they
+are in a wrong state.  (This is probably to catch programs that do not
+check the error bits; with POLLIN/OUT set, these programs will try to
+read/write, and will then get the error code.)
 
-Should be enough to route some audio out the headphones, assuming
-AIF1 is connected to the AP and HPOUT1L is the headphones (it is
-very rare for people to not wire things up that way so its quite
-a good bet, and your machine driver suggests this is how it is
-connected).
+So for consistency, the bits should be included.  (Or the other error
+case fixed to remove these bits.)
 
-If you provide some kernel logs with the LOG_DEVICE in
-drivers/base/regmap/regmap.c set to the CODEC spi device, I am
-happy to sanity check what is going to the CODEC. Although at the
-moment I think your issue looks mostly like getting through the
-AP side.
 
-Thanks,
-Charles
+Regards,
+Clemens
