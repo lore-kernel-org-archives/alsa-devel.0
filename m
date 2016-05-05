@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: polling jd status in all
-	conditions" to the asoc tree
-Date: Thu, 05 May 2016 16:56:17 +0100
-Message-ID: <E1ayLdR-0004iH-Lr@debutante>
-References: <1462418011-20974-1-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: wm_adsp: Move compr_attach/attached
+	functions" to the asoc tree
+Date: Thu, 05 May 2016 16:56:29 +0100
+Message-ID: <E1ayLdd-0004lz-HI@debutante>
+References: <1462378316-8615-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 076112668C9
- for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 17:56:30 +0200 (CEST)
-In-Reply-To: <1462418011-20974-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C8322668CF
+ for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 17:56:34 +0200 (CEST)
+In-Reply-To: <1462378316-8615-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, john.lin@realtek.com, broonie@kernel.org, flove@realtek.com
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: polling jd status in all conditions
+   ASoC: wm_adsp: Move compr_attach/attached functions
 
 has been applied to the asoc tree at
 
@@ -53,50 +53,76 @@ to this mail.
 Thanks,
 Mark
 
->From 381437dd0bd590902320b97e6512792b075becd4 Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Thu, 5 May 2016 11:13:31 +0800
-Subject: [PATCH] ASoC: rt5645: polling jd status in all conditions
+>From edd713509ae46ffcf178e3b1431af1ca202be8ba Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Wed, 4 May 2016 17:11:55 +0100
+Subject: [PATCH] ASoC: wm_adsp: Move compr_attach/attached functions
 
-We only polling jd status when rt5645->pdata.jd_invert is true.
-However, it should be done at all time since there will be no
-interrupt for jd if we press a headset button and remove the
-headset at the same time.
+Move wm_adsp_compr_attach and wm_adsp_compr_attached functions so they
+will stay logically grouped with similar functions after some additional
+changes.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 38 +++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index dff706ac7895..3c6594da6c9c 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3286,10 +3286,8 @@ static void rt5645_jack_detect_work(struct work_struct *work)
- 		if (btn_type == 0)/* button release */
- 			report =  rt5645->jack_type;
- 		else {
--			if (rt5645->pdata.jd_invert) {
--				mod_timer(&rt5645->btn_check_timer,
--					msecs_to_jiffies(100));
--			}
-+			mod_timer(&rt5645->btn_check_timer,
-+				msecs_to_jiffies(100));
- 		}
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 630ebcdaf46e..42fc46900400 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -2452,6 +2452,25 @@ void wm_adsp2_remove(struct wm_adsp *dsp)
+ }
+ EXPORT_SYMBOL_GPL(wm_adsp2_remove);
  
- 		break;
-@@ -3816,9 +3814,9 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 	if (rt5645->pdata.jd_invert) {
- 		regmap_update_bits(rt5645->regmap, RT5645_IRQ_CTRL2,
- 			RT5645_JD_1_1_MASK, RT5645_JD_1_1_INV);
--		setup_timer(&rt5645->btn_check_timer,
--			rt5645_btn_check_callback, (unsigned long)rt5645);
- 	}
-+	setup_timer(&rt5645->btn_check_timer,
-+		rt5645_btn_check_callback, (unsigned long)rt5645);
++static inline int wm_adsp_compr_attached(struct wm_adsp_compr *compr)
++{
++	return compr->buf != NULL;
++}
++
++static int wm_adsp_compr_attach(struct wm_adsp_compr *compr)
++{
++	/*
++	 * Note this will be more complex once each DSP can support multiple
++	 * streams
++	 */
++	if (!compr->dsp->buffer)
++		return -EINVAL;
++
++	compr->buf = compr->dsp->buffer;
++
++	return 0;
++}
++
+ int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream)
+ {
+ 	struct wm_adsp_compr *compr;
+@@ -2810,25 +2829,6 @@ static int wm_adsp_buffer_free(struct wm_adsp *dsp)
+ 	return 0;
+ }
  
- 	INIT_DELAYED_WORK(&rt5645->jack_detect_work, rt5645_jack_detect_work);
- 	INIT_DELAYED_WORK(&rt5645->rcclock_work, rt5645_rcclock_work);
+-static inline int wm_adsp_compr_attached(struct wm_adsp_compr *compr)
+-{
+-	return compr->buf != NULL;
+-}
+-
+-static int wm_adsp_compr_attach(struct wm_adsp_compr *compr)
+-{
+-	/*
+-	 * Note this will be more complex once each DSP can support multiple
+-	 * streams
+-	 */
+-	if (!compr->dsp->buffer)
+-		return -EINVAL;
+-
+-	compr->buf = compr->dsp->buffer;
+-
+-	return 0;
+-}
+-
+ int wm_adsp_compr_trigger(struct snd_compr_stream *stream, int cmd)
+ {
+ 	struct wm_adsp_compr *compr = stream->runtime->private_data;
 -- 
 2.8.1
