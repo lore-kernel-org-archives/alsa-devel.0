@@ -1,15 +1,13 @@
-From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: [PATCH alsa-lib] conf/ucm: ROCKCHIP-I2S: add Rockchip
-	I2S UCM config.
-Date: Thu,  5 May 2016 08:32:06 +0200
-Message-ID: <1462429926-9464-1-git-send-email-enric.balletbo@collabora.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [GIT PULL]: Update sst audio firmware for Skylake
+Date: Thu, 5 May 2016 12:23:52 +0530
+Message-ID: <20160505065352.GV2274@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2622313728615592475=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
- by alsa0.perex.cz (Postfix) with ESMTP id E05A3261600
- for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 08:32:17 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0CFE8261AFF
+ for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 08:48:08 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,139 +17,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: linux-firmware@kernel.org
+Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Taken from the ChromeOS sources, this configuration was tested on Veyron
-Jerry based Chromebook from Google.
 
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
----
- src/conf/ucm/Makefile.am                    |  2 +-
- src/conf/ucm/ROCKCHIP-I2S/HiFi.conf         | 94 +++++++++++++++++++++++++++++
- src/conf/ucm/ROCKCHIP-I2S/ROCKCHIP-I2S.conf |  6 ++
- 3 files changed, 101 insertions(+), 1 deletion(-)
- create mode 100644 src/conf/ucm/ROCKCHIP-I2S/HiFi.conf
- create mode 100644 src/conf/ucm/ROCKCHIP-I2S/ROCKCHIP-I2S.conf
+--===============2622313728615592475==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7gQyIpR7q4QSXYu+"
+Content-Disposition: inline
 
-diff --git a/src/conf/ucm/Makefile.am b/src/conf/ucm/Makefile.am
-index e6a6325..d1d51e5 100644
---- a/src/conf/ucm/Makefile.am
-+++ b/src/conf/ucm/Makefile.am
-@@ -1 +1 @@
--SUBDIRS=DAISY-I2S PandaBoard PandaBoardES SDP4430 tegraalc5632 PAZ00 GoogleNyan broadwell-rt286
-+SUBDIRS=DAISY-I2S PandaBoard PandaBoardES SDP4430 tegraalc5632 PAZ00 GoogleNyan broadwell-rt286 ROCKCHIP-I2S
-diff --git a/src/conf/ucm/ROCKCHIP-I2S/HiFi.conf b/src/conf/ucm/ROCKCHIP-I2S/HiFi.conf
-new file mode 100644
-index 0000000..7bfe995
---- /dev/null
-+++ b/src/conf/ucm/ROCKCHIP-I2S/HiFi.conf
-@@ -0,0 +1,94 @@
-+SectionVerb {
-+	Value {
-+		OutputDspName "speaker_eq"
-+		MinBufferLevel "512"
-+	}
-+
-+	EnableSequence [
-+		cdev "hw:ROCKCHIPI2S"
-+
-+		cset "name='Left Speaker Mixer Left DAC Switch' on"
-+		cset "name='Right Speaker Mixer Right DAC Switch' on"
-+		cset "name='Headphone Left Switch' off"
-+		cset "name='Headphone Right Switch' off"
-+		cset "name='Digital EQ 3 Band Switch' off"
-+		cset "name='Digital EQ 5 Band Switch' off"
-+		cset "name='Digital EQ 7 Band Switch' off"
-+		cset "name='Biquad Switch' off"
-+		cset "name='Filter Mode' Music"
-+		cset "name='ADC Oversampling Rate' 0"
-+
-+		cset "name='DMIC Mux' DMIC"
-+		cset "name='MIC2 Mux' IN34"
-+		cset "name='Right ADC Mixer MIC2 Switch' on"
-+		cset "name='Left ADC Mixer MIC2 Switch' on"
-+		cset "name='MIC2 Volume' 20"
-+		cset "name='Headset Mic Switch' off"
-+		cset "name='Int Mic Switch' on"
-+
-+		cset "name='ADCR Boost Volume' 4"
-+		cset "name='ADCL Boost Volume' 4"
-+		cset "name='ADCR Volume' 11"
-+		cset "name='ADCL Volume' 11"
-+
-+		cset "name='Left Speaker Mixer Left DAC Switch' on"
-+		cset "name='Right Speaker Mixer Right DAC Switch' on"
-+		cset "name='Speaker Left Mixer Volume' 2"
-+		cset "name='Speaker Right Mixer Volume' 2"
-+		cset "name='Record Path DC Blocking' on"
-+		cset "name='Playback Path DC Blocking' on"
-+
-+		cset "name='Speaker Left Switch' on"
-+		cset "name='Speaker Right Switch' on"
-+		cset "name='Speaker Switch' on"
-+	]
-+
-+	DisableSequence [
-+	]
-+}
-+
-+SectionDevice."Headphone".0 {
-+	Value {
-+		JackName "ROCKCHIP-I2S Headset Jack"
-+		OutputDspName ""
-+	}
-+
-+	EnableSequence [
-+		cdev "hw:ROCKCHIPI2S"
-+
-+		cset "name='Speaker Switch' off"
-+		cset "name='Headphone Left Switch' on"
-+		cset "name='Headphone Right Switch' on"
-+	]
-+	DisableSequence [
-+		cdev "hw:ROCKCHIPI2S"
-+
-+		cset "name='Headphone Left Switch' off"
-+		cset "name='Headphone Right Switch' off"
-+		cset "name='Speaker Switch' on"
-+	]
-+}
-+
-+SectionDevice."Mic".0 {
-+	Value {
-+		JackName "ROCKCHIP-I2S Headset Jack"
-+	}
-+
-+	EnableSequence [
-+		cdev "hw:ROCKCHIPI2S"
-+
-+		cset "name='Int Mic Switch' off"
-+		cset "name='DMIC Mux' ADC"
-+		cset "name='Headset Mic Switch' on"
-+		cset "name='Record Path DC Blocking' on"
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:ROCKCHIPI2S"
-+
-+		cset "name='Headset Mic Switch' off"
-+		cset "name='DMIC Mux' DMIC"
-+		cset "name='Int Mic Switch' on"
-+		cset "name='Record Path DC Blocking' off"
-+	]
-+}
-diff --git a/src/conf/ucm/ROCKCHIP-I2S/ROCKCHIP-I2S.conf b/src/conf/ucm/ROCKCHIP-I2S/ROCKCHIP-I2S.conf
-new file mode 100644
-index 0000000..0c399b0
---- /dev/null
-+++ b/src/conf/ucm/ROCKCHIP-I2S/ROCKCHIP-I2S.conf
-@@ -0,0 +1,6 @@
-+Comment "Rockchip card"
-+
-+SectionUseCase."HiFi" {
-+	File "HiFi.conf"
-+	Comment "Default"
-+}
--- 
-2.1.0
+
+--7gQyIpR7q4QSXYu+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello Linux firmware maintainers,
+
+Please PULL to receive the updated version of Skylake audio
+firmware version 927. This contains off fixes for system wake and
+wov module handler.
+
+The following changes since commit 8afadbe553017bec1e442b5a9fba859b54fd33fb:
+
+  ath10k: QCA9377 hw1.0: add firmware and board files (2016-05-03 13:15:57 =
+-0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git skl
+
+for you to fetch changes up to 40d7ffa911fe52d63a12a4cc51231580f81a5fcf:
+
+  linux-firmware: intel: Update Skylake audio firmware (2016-05-05 12:06:56=
+ +0530)
+
+----------------------------------------------------------------
+Vinod Koul (1):
+      linux-firmware: intel: Update Skylake audio firmware
+
+ WHENCE                        |   4 ++--
+ intel/dsp_fw_release.bin      |   2 +-
+ intel/dsp_fw_release_v927.bin | Bin 0 -> 233472 bytes
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+ create mode 100644 intel/dsp_fw_release_v927.bin
+
+--=20
+~Vinod
+
+--7gQyIpR7q4QSXYu+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJXKu4AAAoJEHwUBw8lI4NHssUQAJp/FbwR66WIkcAC6dGHy5jq
+3hGsjbOkJPkSRlt0m8aIiJ5TZmRs60PMTQQHh8FttWtpRCSxlVklx7oIIo6SGnzb
+52EI1EUi4j6kw4Duh2NSpqjANu8oR4Peb6KoQO1yIMl2jbkMrzxd7DCoUOhU4x5H
+hnqR8uRYHvH+ulP0y9l8FiCa6kDDLwxTUMhxlKs7iTBqpPUaVZZ0c6jmuXyIXlyZ
+UoRAA5SR5+1Wv4w3kZUnMGIlqVGKff6y4jyaGTvMnjHWb/MVYfG9FEEeLtPwCtgl
+N+m/Liw1Sv/uGveM7A9Km1rTMhWRhgnCxLVn2DbwfYelPshx9t+OuL4t4AAxwSiY
+PQ3Zo0EN7u7ystjQXbTT2PtTz4Gl9TlqWK1MdtMefFWcTIvT6spPLpdjBqGTc742
+/sB67Fuw9NcQRwMklhCOkc7zF6aVSVdOHZRCQKbM02/Y+cbS5f0R1vdTtSBnfMjZ
+xmcCAi1OcuPrhp1XBmHLF8s8JpEyrS+/kpXw22Msifh1qcqW+kwCd+gL16ADpxwn
+NlyyaVMbYMsAksyqGo/wNS+nxjTI4pgEiwHEVNTm4T0VQyBHP27eqoZW8DwCQwre
+G576Z88d0su8tAF5RiVAdD0qXbTubWIf17r9T6rC0QtfVsgYIleKlwmQegKkFF4N
+utpi9HNlIp1ebCTkHt2v
+=w+3a
+-----END PGP SIGNATURE-----
+
+--7gQyIpR7q4QSXYu+--
+
+--===============2622313728615592475==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2622313728615592475==--
