@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix memory leak in nhlt
-	init" to the asoc tree
-Date: Thu, 05 May 2016 16:56:03 +0100
-Message-ID: <E1ayLdD-0004ds-PZ@debutante>
-References: <1462427359-30402-3-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: fsl_sai: Allow setting the SAI MCLK
+	direction" to the asoc tree
+Date: Thu, 05 May 2016 16:56:09 +0100
+Message-ID: <E1ayLdJ-0004fh-MY@debutante>
+References: <1462401239-995-2-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 349ED266646
- for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 17:56:15 +0200 (CEST)
-In-Reply-To: <1462427359-30402-3-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 787B72668C6
+ for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 17:56:18 +0200 (CEST)
+In-Reply-To: <1462401239-995-2-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, patches.audio@intel.com
+To: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org, shawnguo@kernel.org, brain@jikos.cz
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix memory leak in nhlt init
+   ASoC: fsl_sai: Allow setting the SAI MCLK direction
 
 has been applied to the asoc tree at
 
@@ -53,131 +53,109 @@ to this mail.
 Thanks,
 Mark
 
->From c286b3f9600b2ddc573208792d947e1a251c6b15 Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Thu, 5 May 2016 11:19:19 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix memory leak in nhlt init
+>From 4d2458507d0b465c62ae80f3e81b8c008ec96b05 Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Date: Wed, 4 May 2016 19:33:59 -0300
+Subject: [PATCH] ASoC: fsl_sai: Allow setting the SAI MCLK direction
 
-During skl_nhlt_init(), acpi obj pointer is allocated and never
-freed and remap address is not unmapped.
+On mx6ul the General Purpose Register 1 (GPR1) contains the following
+bits for configuring the direction of the SAI MCLKs:
+SAI1_MCLK_DIR, SAI2_MCLK_DIR, SAI3_MCLK_DIR
 
-To fix this we should release the ACPI obj and also unmap the
-nhlt address during cleanup of driver.
+Introduce  the "fsl,sai-mclk-direction-output" optional property to allow
+configuring the SAI_MCLK outputs.
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Tested on a imx6ul-evk board.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-nhlt.c | 15 +++++++++------
- sound/soc/intel/skylake/skl.c      |  5 ++++-
- sound/soc/intel/skylake/skl.h      |  6 +++---
- 3 files changed, 16 insertions(+), 10 deletions(-)
+ Documentation/devicetree/bindings/sound/fsl-sai.txt |  5 +++++
+ include/linux/mfd/syscon/imx6q-iomuxc-gpr.h         |  6 ++++++
+ sound/soc/fsl/fsl_sai.c                             | 20 ++++++++++++++++++++
+ 3 files changed, 31 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
-index 14d1916ea9f8..7d73648e5f9a 100644
---- a/sound/soc/intel/skylake/skl-nhlt.c
-+++ b/sound/soc/intel/skylake/skl-nhlt.c
-@@ -25,11 +25,12 @@ static u8 OSC_UUID[16] = {0x6E, 0x88, 0x9F, 0xA6, 0xEB, 0x6C, 0x94, 0x45,
+diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+index 777b941d6cbe..740b467adf7d 100644
+--- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
++++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+@@ -48,6 +48,11 @@ Required properties:
+ 			  receive data by following their own bit clocks and
+ 			  frame sync clocks separately.
  
- #define DSDT_NHLT_PATH "\\_SB.PCI0.HDAS"
++Optional properties (for mx6ul):
++
++  - fsl,sai-mclk-direction-output: This is a boolean property. If present,
++			 indicates that SAI will output the SAI MCLK clock.
++
+ Note:
+ - If both fsl,sai-asynchronous and fsl,sai-synchronous-rx are absent, the
+   default synchronous mode (sync Rx with Tx) will be used, which means both
+diff --git a/include/linux/mfd/syscon/imx6q-iomuxc-gpr.h b/include/linux/mfd/syscon/imx6q-iomuxc-gpr.h
+index 238c8db953eb..68353822afce 100644
+--- a/include/linux/mfd/syscon/imx6q-iomuxc-gpr.h
++++ b/include/linux/mfd/syscon/imx6q-iomuxc-gpr.h
+@@ -447,5 +447,11 @@
+ #define IMX6UL_GPR1_ENET2_CLK_OUTPUT		(0x1 << 18)
+ #define IMX6UL_GPR1_ENET_CLK_DIR		(0x3 << 17)
+ #define IMX6UL_GPR1_ENET_CLK_OUTPUT		(0x3 << 17)
++#define IMX6UL_GPR1_SAI1_MCLK_DIR		(0x1 << 19)
++#define IMX6UL_GPR1_SAI2_MCLK_DIR		(0x1 << 20)
++#define IMX6UL_GPR1_SAI3_MCLK_DIR		(0x1 << 21)
++#define IMX6UL_GPR1_SAI_MCLK_MASK		(0x7 << 19)
++#define MCLK_DIR(x) (x == 1 ? IMX6UL_GPR1_SAI1_MCLK_DIR : x == 2 ? \
++		     IMX6UL_GPR1_SAI2_MCLK_DIR : IMX6UL_GPR1_SAI3_MCLK_DIR)
  
--void *skl_nhlt_init(struct device *dev)
-+struct nhlt_acpi_table *skl_nhlt_init(struct device *dev)
+ #endif /* __LINUX_IMX6Q_IOMUXC_GPR_H */
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index d8b673f7c577..2147994ab46f 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -21,6 +21,8 @@
+ #include <sound/core.h>
+ #include <sound/dmaengine_pcm.h>
+ #include <sound/pcm_params.h>
++#include <linux/mfd/syscon.h>
++#include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
+ 
+ #include "fsl_sai.h"
+ #include "imx-pcm.h"
+@@ -786,10 +788,12 @@ static int fsl_sai_probe(struct platform_device *pdev)
  {
- 	acpi_handle handle;
- 	union acpi_object *obj;
- 	struct nhlt_resource_desc  *nhlt_ptr = NULL;
-+	struct nhlt_acpi_table *nhlt_table = NULL;
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct fsl_sai *sai;
++	struct regmap *gpr;
+ 	struct resource *res;
+ 	void __iomem *base;
+ 	char tmp[8];
+ 	int irq, ret, i;
++	int index;
  
- 	if (ACPI_FAILURE(acpi_get_handle(NULL, DSDT_NHLT_PATH, &handle))) {
- 		dev_err(dev, "Requested NHLT device not found\n");
-@@ -39,18 +40,20 @@ void *skl_nhlt_init(struct device *dev)
- 	obj = acpi_evaluate_dsm(handle, OSC_UUID, 1, 1, NULL);
- 	if (obj && obj->type == ACPI_TYPE_BUFFER) {
- 		nhlt_ptr = (struct nhlt_resource_desc  *)obj->buffer.pointer;
--
--		return memremap(nhlt_ptr->min_addr, nhlt_ptr->length,
-+		nhlt_table = (struct nhlt_acpi_table *)
-+				memremap(nhlt_ptr->min_addr, nhlt_ptr->length,
- 				MEMREMAP_WB);
-+		ACPI_FREE(obj);
-+		return nhlt_table;
+ 	sai = devm_kzalloc(&pdev->dev, sizeof(*sai), GFP_KERNEL);
+ 	if (!sai)
+@@ -878,6 +882,22 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 		fsl_sai_dai.symmetric_samplebits = 0;
  	}
  
- 	dev_err(dev, "device specific method to extract NHLT blob failed\n");
- 	return NULL;
- }
- 
--void skl_nhlt_free(void *addr)
-+void skl_nhlt_free(struct nhlt_acpi_table *nhlt)
- {
--	memunmap(addr);
-+	memunmap((void *) nhlt);
- }
- 
- static struct nhlt_specific_cfg *skl_get_specific_cfg(
-@@ -120,7 +123,7 @@ struct nhlt_specific_cfg
- 	struct hdac_bus *bus = ebus_to_hbus(&skl->ebus);
- 	struct device *dev = bus->dev;
- 	struct nhlt_specific_cfg *sp_config;
--	struct nhlt_acpi_table *nhlt = (struct nhlt_acpi_table *)skl->nhlt;
-+	struct nhlt_acpi_table *nhlt = skl->nhlt;
- 	u16 bps = (s_fmt == 16) ? 16 : 32;
- 	u8 j;
- 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 3982f5536f2d..83e985c0c0c9 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -643,7 +643,7 @@ static int skl_probe(struct pci_dev *pci,
- 		err = skl_machine_device_register(skl,
- 				  (void *)pci_id->driver_data);
- 		if (err < 0)
--			goto out_free;
-+			goto out_nhlt_free;
- 
- 		err = skl_init_dsp(skl);
- 		if (err < 0) {
-@@ -693,6 +693,8 @@ out_dsp_free:
- 	skl_free_dsp(skl);
- out_mach_free:
- 	skl_machine_device_unregister(skl);
-+out_nhlt_free:
-+	skl_nhlt_free(skl->nhlt);
- out_free:
- 	skl->init_failed = 1;
- 	skl_free(ebus);
-@@ -743,6 +745,7 @@ static void skl_remove(struct pci_dev *pci)
- 	skl_free_dsp(skl);
- 	skl_machine_device_unregister(skl);
- 	skl_dmic_device_unregister(skl);
-+	skl_nhlt_free(skl->nhlt);
- 	skl_free(ebus);
- 	dev_set_drvdata(&pci->dev, NULL);
- }
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 39e16fa7a92b..4b4b3876aea9 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -66,7 +66,7 @@ struct skl {
- 	struct platform_device *dmic_dev;
- 	struct platform_device *i2s_dev;
- 
--	void *nhlt; /* nhlt ptr */
-+	struct nhlt_acpi_table *nhlt; /* nhlt ptr */
- 	struct skl_sst *skl_sst; /* sst skl ctx */
- 
- 	struct skl_dsp_resource resource;
-@@ -103,8 +103,8 @@ struct skl_dsp_ops {
- int skl_platform_unregister(struct device *dev);
- int skl_platform_register(struct device *dev);
- 
--void *skl_nhlt_init(struct device *dev);
--void skl_nhlt_free(void *addr);
-+struct nhlt_acpi_table *skl_nhlt_init(struct device *dev);
-+void skl_nhlt_free(struct nhlt_acpi_table *addr);
- struct nhlt_specific_cfg *skl_get_ep_blob(struct skl *skl, u32 instance,
- 			u8 link_type, u8 s_fmt, u8 no_ch, u32 s_rate, u8 dirn);
- 
++	if (of_find_property(np, "fsl,sai-mclk-direction-output", NULL) &&
++	    of_device_is_compatible(pdev->dev.of_node, "fsl,imx6ul-sai")) {
++		gpr = syscon_regmap_lookup_by_compatible("fsl,imx6ul-iomuxc-gpr");
++		if (IS_ERR(gpr)) {
++			dev_err(&pdev->dev, "cannot find iomuxc registers\n");
++			return PTR_ERR(gpr);
++		}
++
++		index = of_alias_get_id(np, "sai");
++		if (index < 0)
++			return index;
++
++		regmap_update_bits(gpr, IOMUXC_GPR1, MCLK_DIR(index),
++				   MCLK_DIR(index));
++	}
++
+ 	sai->dma_params_rx.addr = res->start + FSL_SAI_RDR;
+ 	sai->dma_params_tx.addr = res->start + FSL_SAI_TDR;
+ 	sai->dma_params_rx.maxburst = FSL_SAI_MAXBURST_RX;
 -- 
 2.8.1
