@@ -1,51 +1,67 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [RFC PATCH 2/7] ALSA: ac97: add an ac97 bus
-Date: Thu, 05 May 2016 21:14:40 +0200
-Message-ID: <87lh3opba7.fsf@belgarion.home>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC PATCH 1/7] ALSA: ac97: split out the generic ac97 registers
+Date: Thu, 5 May 2016 20:17:28 +0100
+Message-ID: <20160505191728.GK6292@sirena.org.uk>
 References: <1462050939-27940-1-git-send-email-robert.jarzmik@free.fr>
-	<1462050939-27940-3-git-send-email-robert.jarzmik@free.fr>
-	<20160503162938.GT6292@sirena.org.uk> <87twiforl3.fsf@belgarion.home>
-	<20160504162200.GX6292@sirena.org.uk>
+ <1462050939-27940-2-git-send-email-robert.jarzmik@free.fr>
+ <20160503115159.GP6292@sirena.org.uk>
+ <87y47roski.fsf@belgarion.home>
+ <20160504090702.GV6292@sirena.org.uk>
+ <87pot0pbnf.fsf@belgarion.home>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="wSq95SjGPZBE6hCW"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160504162200.GX6292@sirena.org.uk> (Mark Brown's message of
-	"Wed, 4 May 2016 17:22:00 +0100")
+Content-Disposition: inline
+In-Reply-To: <87pot0pbnf.fsf@belgarion.home>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
 Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown <broonie@kernel.org> writes:
 
-> On Tue, May 03, 2016 at 09:43:20PM +0200, Robert Jarzmik wrote:
->
->> You probably mean the BITCLK clock.
->
->> What is a bit pesky about this clock is that it can either be mastered by
->> digital controller and the codec is a slave, or the other way around.
->
-> That's a bit surprising - I've never encountered a system that
-> impelemnts this, it may be permitted by the spec but it's always the
-> CODEC.  The master clock from the CODEC is often provided by the SoC but
-> I've not seen systems where anything other than the CODEC drives the
-> actual AC'97 bus.
+--wSq95SjGPZBE6hCW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Ok, so let's assume a one direction. I'll have a look how I could add this clock
-to the probe() exactly as amba_probe() does.
+On Thu, May 05, 2016 at 09:06:44PM +0200, Robert Jarzmik wrote:
+> Mark Brown <broonie@kernel.org> writes:
 
-> It's not really adding anything though, it's just clumsy wording on
-> their part - it's not like we need to distinguish this from analogue
-> or any other type of AC'97 controllers.
->
->> Now if you prefer "ac97_controller" or something like that, that's as you wish,
->> the name does not matter that much to me ;)
->
-> Yes.
-Okay, let me add this to my todo list for v2.
-I already have suspend/resume/pm_suspend/pm_resume.
+> > I see that, I just don't know why that helps.
 
-Cheers.
+> Ok, so let me explain.
 
--- 
-Robert
+> As you already understood, AC97_VENDOR* is needed in bus.c for the
+> autoscanning. The remaining is the reason why I don't want to include
+> ac97_codec.h in bus.c, which follows.
+
+> In order to have a clean split between former ac97 bus implementation and this
+> new one, I didn't want to include any former ac97 includes, excepting in
+> sound/ac97/compat.c.
+
+It's probably a good idea to articulate some of this in the commit log
+then!
+
+> This transition will be easier if the new ac97 code is isolated as much as
+> possible from the former code while providing backward compatibility ... hence
+> this patch.
+
+It'd probably have been clearer to me if it were splitting out all the
+register definitions rather than just some of them.
+
+--wSq95SjGPZBE6hCW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXK5xHAAoJECTWi3JdVIfQwn4H+QF563nk3RYAJh6ml4TeDEew
+XPKGXeJvOi0goDwBIK97UhioEAwcJTA8rdrzuVSorgGyIkvHtqssrMSvciWucYXV
+DOw7E9SVKzBjvFhDVpUXI7vPGgXeCkotuvDRmjPoTIjId+nOTGJzJwQ9d7OCeBWX
+B5i8dAKBT/W724ewHUEJhbKyJEgnztxGmh8bYLu5gzMA97djK3HtaOSQckolcbi3
+s1AcNMH+tUhUuKLxTeOEJWBOXxot9aP6PKgLyNKcIC1m+sXLuDiSPP9O+trfCXf1
+7ONN9W1Hh4tJGQq0uK1L7jIPe6i6BetgM2pzdxidEnhGrmlhzjFlFyTLWKR8olE=
+=znYF
+-----END PGP SIGNATURE-----
+
+--wSq95SjGPZBE6hCW--
