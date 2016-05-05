@@ -1,17 +1,17 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 2/2] ASoC: Intel: Skylake: Fix memory leak in
-	nhlt init
-Date: Thu,  5 May 2016 11:19:19 +0530
-Message-ID: <1462427359-30402-3-git-send-email-vinod.koul@intel.com>
-References: <1462427359-30402-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 2/2] ALSA: hda: fix to wait for RIRB & CORB
+	DMA to set
+Date: Thu,  5 May 2016 11:24:43 +0530
+Message-ID: <1462427683-3646-2-git-send-email-vinod.koul@intel.com>
+References: <1462427683-3646-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C3682652EE
- for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 07:43:23 +0200 (CEST)
-In-Reply-To: <1462427359-30402-1-git-send-email-vinod.koul@intel.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 06AFB2652EE
+ for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 07:48:47 +0200 (CEST)
+In-Reply-To: <1462427683-3646-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,130 +22,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-During skl_nhlt_init(), acpi obj pointer is allocated and never
-freed and remap address is not unmapped.
+If the DMAs are not being quiesced properly, it may lead to
+stability issues, so the recommendation is to wait till DMAs are
+stopped.
 
-To fix this we should release the ACPI obj and also unmap the
-nhlt address during cleanup of driver.
+After setting the stop bit of RIRB/CORB DMA, we should wait for
+stop bit to be set.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-nhlt.c | 15 +++++++++------
- sound/soc/intel/skylake/skl.c      |  5 ++++-
- sound/soc/intel/skylake/skl.h      |  6 +++---
- 3 files changed, 16 insertions(+), 10 deletions(-)
+changes in v2:
+ - use common wait routine as suggested by Takashi
 
-diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
-index 14d1916ea9f8..7d73648e5f9a 100644
---- a/sound/soc/intel/skylake/skl-nhlt.c
-+++ b/sound/soc/intel/skylake/skl-nhlt.c
-@@ -25,11 +25,12 @@ static u8 OSC_UUID[16] = {0x6E, 0x88, 0x9F, 0xA6, 0xEB, 0x6C, 0x94, 0x45,
- 
- #define DSDT_NHLT_PATH "\\_SB.PCI0.HDAS"
- 
--void *skl_nhlt_init(struct device *dev)
-+struct nhlt_acpi_table *skl_nhlt_init(struct device *dev)
- {
- 	acpi_handle handle;
- 	union acpi_object *obj;
- 	struct nhlt_resource_desc  *nhlt_ptr = NULL;
-+	struct nhlt_acpi_table *nhlt_table = NULL;
- 
- 	if (ACPI_FAILURE(acpi_get_handle(NULL, DSDT_NHLT_PATH, &handle))) {
- 		dev_err(dev, "Requested NHLT device not found\n");
-@@ -39,18 +40,20 @@ void *skl_nhlt_init(struct device *dev)
- 	obj = acpi_evaluate_dsm(handle, OSC_UUID, 1, 1, NULL);
- 	if (obj && obj->type == ACPI_TYPE_BUFFER) {
- 		nhlt_ptr = (struct nhlt_resource_desc  *)obj->buffer.pointer;
--
--		return memremap(nhlt_ptr->min_addr, nhlt_ptr->length,
-+		nhlt_table = (struct nhlt_acpi_table *)
-+				memremap(nhlt_ptr->min_addr, nhlt_ptr->length,
- 				MEMREMAP_WB);
-+		ACPI_FREE(obj);
-+		return nhlt_table;
- 	}
- 
- 	dev_err(dev, "device specific method to extract NHLT blob failed\n");
- 	return NULL;
+ sound/hda/hdac_controller.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
+index 8c486235c905..9fee464e5d49 100644
+--- a/sound/hda/hdac_controller.c
++++ b/sound/hda/hdac_controller.c
+@@ -80,6 +80,22 @@ void snd_hdac_bus_init_cmd_io(struct hdac_bus *bus)
  }
+ EXPORT_SYMBOL_GPL(snd_hdac_bus_init_cmd_io);
  
--void skl_nhlt_free(void *addr)
-+void skl_nhlt_free(struct nhlt_acpi_table *nhlt)
- {
--	memunmap(addr);
-+	memunmap((void *) nhlt);
- }
- 
- static struct nhlt_specific_cfg *skl_get_specific_cfg(
-@@ -120,7 +123,7 @@ struct nhlt_specific_cfg
- 	struct hdac_bus *bus = ebus_to_hbus(&skl->ebus);
- 	struct device *dev = bus->dev;
- 	struct nhlt_specific_cfg *sp_config;
--	struct nhlt_acpi_table *nhlt = (struct nhlt_acpi_table *)skl->nhlt;
-+	struct nhlt_acpi_table *nhlt = skl->nhlt;
- 	u16 bps = (s_fmt == 16) ? 16 : 32;
- 	u8 j;
- 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 3982f5536f2d..83e985c0c0c9 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -643,7 +643,7 @@ static int skl_probe(struct pci_dev *pci,
- 		err = skl_machine_device_register(skl,
- 				  (void *)pci_id->driver_data);
- 		if (err < 0)
--			goto out_free;
-+			goto out_nhlt_free;
- 
- 		err = skl_init_dsp(skl);
- 		if (err < 0) {
-@@ -693,6 +693,8 @@ out_dsp_free:
- 	skl_free_dsp(skl);
- out_mach_free:
- 	skl_machine_device_unregister(skl);
-+out_nhlt_free:
-+	skl_nhlt_free(skl->nhlt);
- out_free:
- 	skl->init_failed = 1;
- 	skl_free(ebus);
-@@ -743,6 +745,7 @@ static void skl_remove(struct pci_dev *pci)
- 	skl_free_dsp(skl);
- 	skl_machine_device_unregister(skl);
- 	skl_dmic_device_unregister(skl);
-+	skl_nhlt_free(skl->nhlt);
- 	skl_free(ebus);
- 	dev_set_drvdata(&pci->dev, NULL);
- }
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 39e16fa7a92b..4b4b3876aea9 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -66,7 +66,7 @@ struct skl {
- 	struct platform_device *dmic_dev;
- 	struct platform_device *i2s_dev;
- 
--	void *nhlt; /* nhlt ptr */
-+	struct nhlt_acpi_table *nhlt; /* nhlt ptr */
- 	struct skl_sst *skl_sst; /* sst skl ctx */
- 
- 	struct skl_dsp_resource resource;
-@@ -103,8 +103,8 @@ struct skl_dsp_ops {
- int skl_platform_unregister(struct device *dev);
- int skl_platform_register(struct device *dev);
- 
--void *skl_nhlt_init(struct device *dev);
--void skl_nhlt_free(void *addr);
-+struct nhlt_acpi_table *skl_nhlt_init(struct device *dev);
-+void skl_nhlt_free(struct nhlt_acpi_table *addr);
- struct nhlt_specific_cfg *skl_get_ep_blob(struct skl *skl, u32 instance,
- 			u8 link_type, u8 s_fmt, u8 no_ch, u32 s_rate, u8 dirn);
- 
++/* wait for cmd dmas till they are stopped */
++static void hdac_wait_for_cmd_dmas(struct hdac_bus *bus)
++{
++	unsigned long timeout;
++
++	timeout = jiffies + msecs_to_jiffies(100);
++	while ((snd_hdac_chip_readb(bus, RIRBCTL) & AZX_RBCTL_DMA_EN)
++		&& time_before(jiffies, timeout))
++		udelay(10);
++
++	timeout = jiffies + msecs_to_jiffies(100);
++	while ((snd_hdac_chip_readb(bus, CORBCTL) & AZX_CORBCTL_RUN)
++		&& time_before(jiffies, timeout))
++		udelay(10);
++}
++
+ /**
+  * snd_hdac_bus_stop_cmd_io - clean up CORB/RIRB buffers
+  * @bus: HD-audio core bus
+@@ -90,6 +106,7 @@ void snd_hdac_bus_stop_cmd_io(struct hdac_bus *bus)
+ 	/* disable ringbuffer DMAs */
+ 	snd_hdac_chip_writeb(bus, RIRBCTL, 0);
+ 	snd_hdac_chip_writeb(bus, CORBCTL, 0);
++	hdac_wait_for_cmd_dmas(bus);
+ 	/* disable unsolicited responses */
+ 	snd_hdac_chip_updatel(bus, GCTL, AZX_GCTL_UNSOL, 0);
+ 	spin_unlock_irq(&bus->reg_lock);
 -- 
 1.9.1
