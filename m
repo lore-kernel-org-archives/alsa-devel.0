@@ -1,47 +1,35 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [RFC PATCH 1/7] ALSA: ac97: split out the generic ac97 registers
-Date: Thu, 05 May 2016 21:46:10 +0200
-Message-ID: <87h9ecp9tp.fsf@belgarion.home>
-References: <1462050939-27940-1-git-send-email-robert.jarzmik@free.fr>
-	<1462050939-27940-2-git-send-email-robert.jarzmik@free.fr>
-	<20160503115159.GP6292@sirena.org.uk> <87y47roski.fsf@belgarion.home>
-	<20160504090702.GV6292@sirena.org.uk> <87pot0pbnf.fsf@belgarion.home>
-	<20160505191728.GK6292@sirena.org.uk>
+From: nick83ola <nick83ola@gmail.com>
+Subject: Imx6 i2s master driver without i2c
+Date: Thu, 5 May 2016 21:56:26 +0200
+Message-ID: <CABPh3UPLR20WbV0NuYLA4RZ7XB-0+RdFrB-SpDLa0T+wOxqQ+g@mail.gmail.com>
+References: <CABPh3UNhKMGUoiDvHn9paXVNvtpwzbzkbCwBhtSCm72jxkh3CA@mail.gmail.com>
+ <CABPh3UMMvVKvHL0g52NqP-E8dpxoZHfwgR_t1WY08OFMSYt9tg@mail.gmail.com>
+ <CABPh3UMJ4gOtNN3FJg0fF7Mm+Lpw0=jXGk_+ejsHaGLG9UvWAQ@mail.gmail.com>
+ <CABPh3UNi79pMZPgJBisaq9Qo847MV-6riCEQ=Akt_RoLdqeVpw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160505191728.GK6292@sirena.org.uk> (Mark Brown's message of
-	"Thu, 5 May 2016 20:17:28 +0100")
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lf0-f44.google.com (mail-lf0-f44.google.com
+ [209.85.215.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id D56BF26522E
+ for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 21:56:27 +0200 (CEST)
+Received: by mail-lf0-f44.google.com with SMTP id u64so108766827lff.3
+ for <alsa-devel@alsa-project.org>; Thu, 05 May 2016 12:56:27 -0700 (PDT)
+In-Reply-To: <CABPh3UNi79pMZPgJBisaq9Qo847MV-6riCEQ=Akt_RoLdqeVpw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown <broonie@kernel.org> writes:
+Hello Alsa dev!
 
-> On Thu, May 05, 2016 at 09:06:44PM +0200, Robert Jarzmik wrote:
->> Mark Brown <broonie@kernel.org> writes:
->
->> > I see that, I just don't know why that helps.
->> In order to have a clean split between former ac97 bus implementation and this
->> new one, I didn't want to include any former ac97 includes, excepting in
->> sound/ac97/compat.c.
->
-> It's probably a good idea to articulate some of this in the commit log
-> then!
-Fair point, I'll improve that.
-
->> This transition will be easier if the new ac97 code is isolated as much as
->> possible from the former code while providing backward compatibility ... hence
->> this patch.
->
-> It'd probably have been clearer to me if it were splitting out all the
-> register definitions rather than just some of them.
-Euh unless I'm missing something I have splitted out all the ac97 generic
-registers AFAIK. The only remaining ones are chip specific which I didn't take
-as they should be in codec specific code and not ac97 generic one.
-
-Cheers.
-
--- 
-Robert
+Anyone have an example of an i2s only driver for imx6 solo? I need a driver
+without i2c....
