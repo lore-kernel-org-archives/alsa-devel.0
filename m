@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_sai: Introduce a compatible string
-	for MX6UL" to the asoc tree
-Date: Thu, 05 May 2016 16:56:12 +0100
-Message-ID: <E1ayLdM-0004gc-LB@debutante>
-References: <1462401239-995-1-git-send-email-festevam@gmail.com>
+Subject: Applied "ASoC: rt5645: polling jd status in all
+	conditions" to the asoc tree
+Date: Thu, 05 May 2016 16:56:17 +0100
+Message-ID: <E1ayLdR-0004iH-Lr@debutante>
+References: <1462418011-20974-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B10412668C7
- for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 17:56:18 +0200 (CEST)
-In-Reply-To: <1462401239-995-1-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 076112668C9
+ for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 17:56:30 +0200 (CEST)
+In-Reply-To: <1462418011-20974-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@nxp.com>
-Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org, shawnguo@kernel.org, brain@jikos.cz
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, john.lin@realtek.com, broonie@kernel.org, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_sai: Introduce a compatible string for MX6UL
+   ASoC: rt5645: polling jd status in all conditions
 
 has been applied to the asoc tree at
 
@@ -53,58 +53,50 @@ to this mail.
 Thanks,
 Mark
 
->From 1593af62b694b3638edf577e3b763fa1a4ca3d76 Mon Sep 17 00:00:00 2001
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Wed, 4 May 2016 19:33:58 -0300
-Subject: [PATCH] ASoC: fsl_sai: Introduce a compatible string for MX6UL
+>From 381437dd0bd590902320b97e6512792b075becd4 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Thu, 5 May 2016 11:13:31 +0800
+Subject: [PATCH] ASoC: rt5645: polling jd status in all conditions
 
-MX6UL may need to configure the General Purpose Register 1 (GPR1), so
-it is better to add a new compatible string to differentiate.
+We only polling jd status when rt5645->pdata.jd_invert is true.
+However, it should be done at all time since there will be no
+interrupt for jd if we press a headset button and remove the
+headset at the same time.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/fsl-sai.txt | 4 ++--
- sound/soc/fsl/fsl_sai.c                             | 4 +++-
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ sound/soc/codecs/rt5645.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-index 044e5d76e2dd..777b941d6cbe 100644
---- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-@@ -7,8 +7,8 @@ codec/DSP interfaces.
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index dff706ac7895..3c6594da6c9c 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3286,10 +3286,8 @@ static void rt5645_jack_detect_work(struct work_struct *work)
+ 		if (btn_type == 0)/* button release */
+ 			report =  rt5645->jack_type;
+ 		else {
+-			if (rt5645->pdata.jd_invert) {
+-				mod_timer(&rt5645->btn_check_timer,
+-					msecs_to_jiffies(100));
+-			}
++			mod_timer(&rt5645->btn_check_timer,
++				msecs_to_jiffies(100));
+ 		}
  
- Required properties:
+ 		break;
+@@ -3816,9 +3814,9 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 	if (rt5645->pdata.jd_invert) {
+ 		regmap_update_bits(rt5645->regmap, RT5645_IRQ_CTRL2,
+ 			RT5645_JD_1_1_MASK, RT5645_JD_1_1_INV);
+-		setup_timer(&rt5645->btn_check_timer,
+-			rt5645_btn_check_callback, (unsigned long)rt5645);
+ 	}
++	setup_timer(&rt5645->btn_check_timer,
++		rt5645_btn_check_callback, (unsigned long)rt5645);
  
--  - compatible		: Compatible list, contains "fsl,vf610-sai" or
--			  "fsl,imx6sx-sai".
-+  - compatible		: Compatible list, contains "fsl,vf610-sai",
-+			  "fsl,imx6sx-sai" or "fsl,imx6ul-sai"
- 
-   - reg			: Offset and length of the register set for the device.
- 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 0754df771e3b..d8b673f7c577 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -797,7 +797,8 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 
- 	sai->pdev = pdev;
- 
--	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx6sx-sai"))
-+	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx6sx-sai") ||
-+	    of_device_is_compatible(pdev->dev.of_node, "fsl,imx6ul-sai"))
- 		sai->sai_on_imx = true;
- 
- 	sai->is_lsb_first = of_property_read_bool(np, "lsb-first");
-@@ -898,6 +899,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
- static const struct of_device_id fsl_sai_ids[] = {
- 	{ .compatible = "fsl,vf610-sai", },
- 	{ .compatible = "fsl,imx6sx-sai", },
-+	{ .compatible = "fsl,imx6ul-sai", },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, fsl_sai_ids);
+ 	INIT_DELAYED_WORK(&rt5645->jack_detect_work, rt5645_jack_detect_work);
+ 	INIT_DELAYED_WORK(&rt5645->rcclock_work, rt5645_rcclock_work);
 -- 
 2.8.1
