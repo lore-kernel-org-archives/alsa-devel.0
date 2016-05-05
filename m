@@ -1,52 +1,47 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/7] ASoC: rockchip-max98090: Fix DAPM unknown pin for
- Headset Jack
-Date: Thu, 5 May 2016 20:20:10 +0100
-Message-ID: <20160505192010.GM6292@sirena.org.uk>
-References: <1462435421-21205-1-git-send-email-enric.balletbo@collabora.com>
- <1462435421-21205-6-git-send-email-enric.balletbo@collabora.com>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [RFC PATCH 1/7] ALSA: ac97: split out the generic ac97 registers
+Date: Thu, 05 May 2016 21:46:10 +0200
+Message-ID: <87h9ecp9tp.fsf@belgarion.home>
+References: <1462050939-27940-1-git-send-email-robert.jarzmik@free.fr>
+	<1462050939-27940-2-git-send-email-robert.jarzmik@free.fr>
+	<20160503115159.GP6292@sirena.org.uk> <87y47roski.fsf@belgarion.home>
+	<20160504090702.GV6292@sirena.org.uk> <87pot0pbnf.fsf@belgarion.home>
+	<20160505191728.GK6292@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="mzDsWmoYTs+XRn5Z"
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1462435421-21205-6-git-send-email-enric.balletbo@collabora.com>
+In-Reply-To: <20160505191728.GK6292@sirena.org.uk> (Mark Brown's message of
+	"Thu, 5 May 2016 20:17:28 +0100")
 Sender: linux-kernel-owner@vger.kernel.org
-To: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc: linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+Mark Brown <broonie@kernel.org> writes:
 
---mzDsWmoYTs+XRn5Z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Thu, May 05, 2016 at 09:06:44PM +0200, Robert Jarzmik wrote:
+>> Mark Brown <broonie@kernel.org> writes:
+>
+>> > I see that, I just don't know why that helps.
+>> In order to have a clean split between former ac97 bus implementation and this
+>> new one, I didn't want to include any former ac97 includes, excepting in
+>> sound/ac97/compat.c.
+>
+> It's probably a good idea to articulate some of this in the commit log
+> then!
+Fair point, I'll improve that.
 
-On Thu, May 05, 2016 at 10:03:39AM +0200, Enric Balletbo i Serra wrote:
-> The patch fixes the following error message.
->=20
->  rockchip-snd-max98090 sound: ASoC: DAPM unknown pin Headset Jack
+>> This transition will be easier if the new ac97 code is isolated as much as
+>> possible from the former code while providing backward compatibility ... hence
+>> this patch.
+>
+> It'd probably have been clearer to me if it were splitting out all the
+> register definitions rather than just some of them.
+Euh unless I'm missing something I have splitted out all the ac97 generic
+registers AFAIK. The only remaining ones are chip specific which I didn't take
+as they should be in codec specific code and not ac97 generic one.
 
->  	{
-> -		.pin =3D "Headset Jack",
-> +		.pin =3D "Headphone",
+Cheers.
 
-=2E..and makes automatic DAPM management of the headphone jack work.
-Again, it's not just shutting up warnings it's fixing an actual bug.
-
---mzDsWmoYTs+XRn5Z
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXK5zqAAoJECTWi3JdVIfQQKQH/2QX36gfetQptFU+4DxpsIVw
-12l4LukW48qDBO5Bxxp1MMSofYFu4Fl0iLmHY/3cWZ4kG/8YFImdRT7I8901A5mX
-UdBJuU5bKQJke0/bAa2o8oxDjyLSXBv9QcPB0i1KK2f4ia7KdJRkkIBL666DV6mP
-TbPcw8MUYxfj6CMKQ5yjpbiTvyci6sViag1I87aWSPCaae3o4Sm2p8qC/QGwkhCD
-/lbRhNNKtQ83wfoAxAaSDzvykpVc1VCAnffzGSrroBIdazTYbgg68VHrETLt/xMo
-25G1AlWumyI9PE25ZeJmknUOceRJLgeCTXqPpLRPVGc+esKaiex6+iGBmtIFnpU=
-=5DoX
------END PGP SIGNATURE-----
-
---mzDsWmoYTs+XRn5Z--
+-- 
+Robert
