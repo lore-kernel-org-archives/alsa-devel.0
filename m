@@ -1,7 +1,8 @@
 From: Enric Balletbo i Serra <enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Subject: [PATCH 4/7] ASoC: rockchip-max98090: Fix the Headset Mic route.
-Date: Thu,  5 May 2016 10:03:38 +0200
-Message-ID: <1462435421-21205-5-git-send-email-enric.balletbo@collabora.com>
+Subject: [PATCH 3/7] ASoC: rockchip-max98090: Fix NULL pointer de reference
+ while accessing to jack
+Date: Thu,  5 May 2016 10:03:37 +0200
+Message-ID: <1462435421-21205-4-git-send-email-enric.balletbo@collabora.com>
 References: <1462435421-21205-1-git-send-email-enric.balletbo@collabora.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,34 +22,105 @@ To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rockchip-IAPFreC
 Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Since commit e409dfbfccf9a49 ("ASoC: dapm: Add a few supply widget
-sanity checks") the following error is seen:
+Since commit f2ed6b07645e ("ASoC: Make aux_dev more like a generic
+component") a kernel Oops is seen. What causes the crash is the chain
 
- rockchip-snd-max98090 sound: HiFi <-> ff890000.i2s mapping ok
- rockchip-snd-max98090 sound: Connecting non-supply widget to supply widget is not supported (Headset Mic -> MICBIAS)
- rockchip-snd-max98090 sound: ASoC: no dapm match for Headset Mic --> (null) --> MICBIAS
- rockchip-snd-max98090 sound: ASoC: Failed to add route Headset Mic -> direct -> MICBIAS
- input: ROCKCHIP-I2S Headset Jack as /devices/platform/sound/sound/card0/input3
+ rk_98090_headset_init
+   -> ts3a227e_enable_jack_detect
+      -> snd_jack_set_key
+ rk_init
+   -> snd_soc_card_jack_new
 
-Invert the route between the Headset Mic and the bias in order to fix it.
+The above commit moves the new jack object creation from rk_init to
+rk_98090_headset_init function making sure jack is accessed after it's
+created.
 
 Signed-off-by: Enric Balletbo i Serra <enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
 ---
- sound/soc/rockchip/rockchip_max98090.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/rockchip/rockchip_max98090.c | 50 ++++++++++++++++++----------------
+ 1 file changed, 27 insertions(+), 23 deletions(-)
 
 diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
-index abb64a5..3da7891 100644
+index 5436102..abb64a5 100644
 --- a/sound/soc/rockchip/rockchip_max98090.c
 +++ b/sound/soc/rockchip/rockchip_max98090.c
-@@ -53,7 +53,7 @@ static const struct snd_soc_dapm_widget rk_dapm_widgets[] = {
- static const struct snd_soc_dapm_route rk_audio_map[] = {
- 	{"IN34", NULL, "Headset Mic"},
- 	{"IN34", NULL, "MICBIAS"},
--	{"MICBIAS", NULL, "Headset Mic"},
-+	{"Headset Mic", NULL, "MICBIAS"},
- 	{"DMICL", NULL, "Int Mic"},
- 	{"Headphone", NULL, "HPL"},
- 	{"Headphone", NULL, "HPR"},
+@@ -114,43 +114,27 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
+-static int rk_init(struct snd_soc_pcm_runtime *runtime)
+-{
+-	/* Enable Headset and 4 Buttons Jack detection */
+-	return snd_soc_card_jack_new(runtime->card, "Headset Jack",
+-			       SND_JACK_HEADSET |
+-			       SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+-			       SND_JACK_BTN_2 | SND_JACK_BTN_3,
+-			       &headset_jack,
+-			       headset_jack_pins,
+-			       ARRAY_SIZE(headset_jack_pins));
+-}
+-
+-static int rk_98090_headset_init(struct snd_soc_component *component)
+-{
+-	return ts3a227e_enable_jack_detect(component, &headset_jack);
+-}
+-
+ static struct snd_soc_ops rk_aif1_ops = {
+ 	.hw_params = rk_aif1_hw_params,
+ };
+ 
+-static struct snd_soc_aux_dev rk_98090_headset_dev = {
+-	.name = "Headset Chip",
+-	.init = rk_98090_headset_init,
+-};
+-
+ static struct snd_soc_dai_link rk_dailink = {
+ 	.name = "max98090",
+ 	.stream_name = "Audio",
+ 	.codec_dai_name = "HiFi",
+-	.init = rk_init,
+ 	.ops = &rk_aif1_ops,
+ 	/* set max98090 as slave */
+ 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 		SND_SOC_DAIFMT_CBS_CFS,
+ };
+ 
++static int rk_98090_headset_init(struct snd_soc_component *component);
++
++static struct snd_soc_aux_dev rk_98090_headset_dev = {
++	.name = "Headset Chip",
++	.init = rk_98090_headset_init,
++};
++
+ static struct snd_soc_card snd_soc_card_rk = {
+ 	.name = "ROCKCHIP-I2S",
+ 	.owner = THIS_MODULE,
+@@ -166,6 +150,26 @@ static struct snd_soc_card snd_soc_card_rk = {
+ 	.num_controls = ARRAY_SIZE(rk_mc_controls),
+ };
+ 
++static int rk_98090_headset_init(struct snd_soc_component *component)
++{
++	int ret;
++
++	/* Enable Headset and 4 Buttons Jack detection */
++	ret = snd_soc_card_jack_new(&snd_soc_card_rk, "Headset Jack",
++				    SND_JACK_HEADSET |
++				    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++				    SND_JACK_BTN_2 | SND_JACK_BTN_3,
++				    &headset_jack,
++				    headset_jack_pins,
++				    ARRAY_SIZE(headset_jack_pins));
++	if (ret)
++		return ret;
++
++	ret = ts3a227e_enable_jack_detect(component, &headset_jack);
++
++	return ret;
++}
++
+ static int snd_rk_mc_probe(struct platform_device *pdev)
+ {
+ 	int ret = 0;
 -- 
 2.1.0
