@@ -1,75 +1,100 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/5] ALSA: pcm: Fix poll error return codes
-Date: Thu, 5 May 2016 12:46:02 +0100
-Message-ID: <20160505114602.GF1646@localhost.localdomain>
-References: <1462370351-15388-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1462370351-15388-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <572A8534.4020207@sakamocchi.jp>
- <cb0c26e2-d594-844d-62b3-36e6f2f830f6@ladisch.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 5CA7126524F
- for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 13:46:26 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <cb0c26e2-d594-844d-62b3-36e6f2f830f6@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, tiwai@suse.com, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rockchip: Revert "ASoC: rockchip: i2s: remove unused variables"" to the asoc tree
+Date: Thu, 05 May 2016 16:56:23 +0100
+Message-ID: <E1ayLdX-0004kH-IJ@debutante>
+References: <1462373686-21794-1-git-send-email-john@metanate.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1462373686-21794-1-git-send-email-john@metanate.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: John Keeping <john@metanate.com>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Enric Balletbo Serra <eballetbo@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.orgMark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 05, 2016 at 11:39:34AM +0200, Clemens Ladisch wrote:
-> Takashi Sakamoto wrote:
-> > On May 4 2016 22:59, Charles Keepax wrote:
-> >>  	if (PCM_RUNTIME_CHECK(substream))
-> >> -		return -ENXIO;
-> >> +		return POLLIN | POLLRDNORM | POLLERR;
-> >
-> > [...]
-> > On the other hand, I think POLLOUT, POLLIN, POLLWRNORM and POLLRDNORM
-> > should not be included in the value. PCM_RUNTIME_CHECK() ensures PCM
-> > substream or PCM runtime is NULL. This means that subsequent I/O
-> > operations are failed, at least for handling PCM frames.
-> >
-> > I think it better to return 'POLLERR | POLLHUP'.
-> 
-> To expand on this: POLLIN/POLLOUT imply that it is possible to read/
-> write data without blocking.  Sockets and pipes combine POLLHUP with
-> POLLIN because the read() (or recv()) returns 0 bytes without blocking
-> to indicate the end of the stream.
-> 
-> But in this situation, snd_pcm_read*/write* will always fail, so it is,
-> strictly speaking, indeed not appropriate to set POLLIN/OUT.
-> 
-> On the other hand, PCM devices do include the POLLIN/OUT bits when they
-> are in a wrong state.  (This is probably to catch programs that do not
-> check the error bits; with POLLIN/OUT set, these programs will try to
-> read/write, and will then get the error code.)
-> 
-> So for consistency, the bits should be included.  (Or the other error
-> case fixed to remove these bits.)
+The patch
 
-Thanks for the explaination guys. I definitely agree that all
-the return values should be consistent. I am happy to change the
-values if people prefer but I guess the decision really rests
-with Takashi and if he is happy to change the returns to
-POLLERR | POLLHUP, as I guess there is the potential for some
-user-space fall out. Perhaps I should do this as a seperate patch
-on top of this chain, so we can review explicitly.
+   ASoC: rockchip: Revert "ASoC: rockchip: i2s: remove unused variables"
 
-I have had a look and both tinyalsa and alsalib look like they
-would handle the change correctly.
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-Charles
+Mark
+
+>From a6e806c49e3265494ac6fe6ec88ed5c010652e0d Mon Sep 17 00:00:00 2001
+From: John Keeping <john@metanate.com>
+Date: Wed, 4 May 2016 17:21:56 +0100
+Subject: [PATCH] ASoC: rockchip: Revert "ASoC: rockchip: i2s: remove unused
+ variables"
+
+This reverts commit 5938448b99275cba95167c3f9d39ca9225fdad38.
+
+It turns out that the commit that made these variables unused is wrong
+so we're about to revert it.  Bring back the variables in prepration.
+
+Signed-off-by: John Keeping <john@metanate.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/rockchip/rockchip_i2s.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 2f8e20416bd3..34743ec61c49 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -34,6 +34,13 @@ struct rk_i2s_dev {
+ 
+ 	struct regmap *regmap;
+ 
++/*
++ * Used to indicate the tx/rx status.
++ * I2S controller hopes to start the tx and rx together,
++ * also to stop them when they are both try to stop.
++*/
++	bool tx_start;
++	bool rx_start;
+ 	bool is_master_mode;
+ };
+ 
+@@ -77,7 +84,11 @@ static void rockchip_snd_txctrl(struct rk_i2s_dev *i2s, int on)
+ 		regmap_update_bits(i2s->regmap, I2S_XFER,
+ 				   I2S_XFER_TXS_START,
+ 				   I2S_XFER_TXS_START);
++
++		i2s->tx_start = true;
+ 	} else {
++		i2s->tx_start = false;
++
+ 		regmap_update_bits(i2s->regmap, I2S_DMACR,
+ 				   I2S_DMACR_TDE_ENABLE, I2S_DMACR_TDE_DISABLE);
+ 
+@@ -115,7 +126,11 @@ static void rockchip_snd_rxctrl(struct rk_i2s_dev *i2s, int on)
+ 		regmap_update_bits(i2s->regmap, I2S_XFER,
+ 				   I2S_XFER_RXS_START,
+ 				   I2S_XFER_RXS_START);
++
++		i2s->rx_start = true;
+ 	} else {
++		i2s->rx_start = false;
++
+ 		regmap_update_bits(i2s->regmap, I2S_DMACR,
+ 				   I2S_DMACR_RDE_ENABLE, I2S_DMACR_RDE_DISABLE);
+ 
+-- 
+2.8.1
