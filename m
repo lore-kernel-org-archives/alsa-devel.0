@@ -1,8 +1,7 @@
 From: Enric Balletbo i Serra <enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Subject: [PATCH 5/7] ASoC: rockchip-max98090: Fix DAPM unknown pin for Headset
- Jack
-Date: Thu,  5 May 2016 10:03:39 +0200
-Message-ID: <1462435421-21205-6-git-send-email-enric.balletbo@collabora.com>
+Subject: [PATCH 7/7] ARM: dts: rockchip: veyron: Add analog audio codecs.
+Date: Thu,  5 May 2016 10:03:41 +0200
+Message-ID: <1462435421-21205-8-git-send-email-enric.balletbo@collabora.com>
 References: <1462435421-21205-1-git-send-email-enric.balletbo@collabora.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,27 +21,24 @@ To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rockchip-IAPFreC
 Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch fixes the following error message.
-
- rockchip-snd-max98090 sound: ASoC: DAPM unknown pin Headset Jack
+Add analog-audio functionality for Veyron devices.
 
 Signed-off-by: Enric Balletbo i Serra <enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
 ---
- sound/soc/rockchip/rockchip_max98090.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
-index 3da7891..40d2ec9 100644
---- a/sound/soc/rockchip/rockchip_max98090.c
-+++ b/sound/soc/rockchip/rockchip_max98090.c
-@@ -36,7 +36,7 @@
- static struct snd_soc_jack headset_jack;
- static struct snd_soc_jack_pin headset_jack_pins[] = {
- 	{
--		.pin = "Headset Jack",
-+		.pin = "Headphone",
- 		.mask = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
- 			SND_JACK_BTN_0 | SND_JACK_BTN_1 |
- 			SND_JACK_BTN_2 | SND_JACK_BTN_3,
+diff --git a/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi b/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi
+index 610769d..e25bb1a 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi
++++ b/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi
+@@ -46,6 +46,7 @@
+ #include <dt-bindings/clock/rockchip,rk808.h>
+ #include <dt-bindings/input/input.h>
+ #include "rk3288-veyron.dtsi"
++#include "rk3288-veyron-analog-audio.dtsi"
+ #include "rk3288-veyron-sdmmc.dtsi"
+ 
+ / {
 -- 
 2.1.0
