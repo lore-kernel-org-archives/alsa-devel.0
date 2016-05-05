@@ -1,8 +1,8 @@
 From: Enric Balletbo i Serra <enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Subject: [PATCH 3/7] ASoC: rockchip-max98090: Fix NULL pointer de reference
- while accessing to jack
-Date: Thu,  5 May 2016 10:03:37 +0200
-Message-ID: <1462435421-21205-4-git-send-email-enric.balletbo@collabora.com>
+Subject: [PATCH 1/7] ASoC: rockchip: Revert "ASoC: rockchip: i2s: remove
+ unused variables"
+Date: Thu,  5 May 2016 10:03:35 +0200
+Message-ID: <1462435421-21205-2-git-send-email-enric.balletbo@collabora.com>
 References: <1462435421-21205-1-git-send-email-enric.balletbo@collabora.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -19,108 +19,63 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
 Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, John Keeping <john-HooS5bfzL4hWk0Htik3J/w@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Since commit f2ed6b07645e ("ASoC: Make aux_dev more like a generic
-component") a kernel Oops is seen. What causes the crash is the chain
+From: John Keeping <john-HooS5bfzL4hWk0Htik3J/w@public.gmane.org>
 
- rk_98090_headset_init
-   -> ts3a227e_enable_jack_detect
-      -> snd_jack_set_key
- rk_init
-   -> snd_soc_card_jack_new
+This reverts commit 5938448b99275cba95167c3f9d39ca9225fdad38.
 
-The above commit moves the new jack object creation from rk_init to
-rk_98090_headset_init function making sure jack is accessed after it's
-created.
+It turns out that the commit that made these variables unused is wrong
+so we're about to revert it.  Bring back the variables in prepration.
 
+Signed-off-by: John Keeping <john-HooS5bfzL4hWk0Htik3J/w@public.gmane.org>
 Signed-off-by: Enric Balletbo i Serra <enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
 ---
- sound/soc/rockchip/rockchip_max98090.c | 50 ++++++++++++++++++----------------
- 1 file changed, 27 insertions(+), 23 deletions(-)
+ sound/soc/rockchip/rockchip_i2s.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
-index 5436102..abb64a5 100644
---- a/sound/soc/rockchip/rockchip_max98090.c
-+++ b/sound/soc/rockchip/rockchip_max98090.c
-@@ -114,43 +114,27 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
- }
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 2f8e204..34743ec 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -34,6 +34,13 @@ struct rk_i2s_dev {
  
--static int rk_init(struct snd_soc_pcm_runtime *runtime)
--{
--	/* Enable Headset and 4 Buttons Jack detection */
--	return snd_soc_card_jack_new(runtime->card, "Headset Jack",
--			       SND_JACK_HEADSET |
--			       SND_JACK_BTN_0 | SND_JACK_BTN_1 |
--			       SND_JACK_BTN_2 | SND_JACK_BTN_3,
--			       &headset_jack,
--			       headset_jack_pins,
--			       ARRAY_SIZE(headset_jack_pins));
--}
--
--static int rk_98090_headset_init(struct snd_soc_component *component)
--{
--	return ts3a227e_enable_jack_detect(component, &headset_jack);
--}
--
- static struct snd_soc_ops rk_aif1_ops = {
- 	.hw_params = rk_aif1_hw_params,
+ 	struct regmap *regmap;
+ 
++/*
++ * Used to indicate the tx/rx status.
++ * I2S controller hopes to start the tx and rx together,
++ * also to stop them when they are both try to stop.
++*/
++	bool tx_start;
++	bool rx_start;
+ 	bool is_master_mode;
  };
  
--static struct snd_soc_aux_dev rk_98090_headset_dev = {
--	.name = "Headset Chip",
--	.init = rk_98090_headset_init,
--};
--
- static struct snd_soc_dai_link rk_dailink = {
- 	.name = "max98090",
- 	.stream_name = "Audio",
- 	.codec_dai_name = "HiFi",
--	.init = rk_init,
- 	.ops = &rk_aif1_ops,
- 	/* set max98090 as slave */
- 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 		SND_SOC_DAIFMT_CBS_CFS,
- };
+@@ -77,7 +84,11 @@ static void rockchip_snd_txctrl(struct rk_i2s_dev *i2s, int on)
+ 		regmap_update_bits(i2s->regmap, I2S_XFER,
+ 				   I2S_XFER_TXS_START,
+ 				   I2S_XFER_TXS_START);
++
++		i2s->tx_start = true;
+ 	} else {
++		i2s->tx_start = false;
++
+ 		regmap_update_bits(i2s->regmap, I2S_DMACR,
+ 				   I2S_DMACR_TDE_ENABLE, I2S_DMACR_TDE_DISABLE);
  
-+static int rk_98090_headset_init(struct snd_soc_component *component);
+@@ -115,7 +126,11 @@ static void rockchip_snd_rxctrl(struct rk_i2s_dev *i2s, int on)
+ 		regmap_update_bits(i2s->regmap, I2S_XFER,
+ 				   I2S_XFER_RXS_START,
+ 				   I2S_XFER_RXS_START);
 +
-+static struct snd_soc_aux_dev rk_98090_headset_dev = {
-+	.name = "Headset Chip",
-+	.init = rk_98090_headset_init,
-+};
++		i2s->rx_start = true;
+ 	} else {
++		i2s->rx_start = false;
 +
- static struct snd_soc_card snd_soc_card_rk = {
- 	.name = "ROCKCHIP-I2S",
- 	.owner = THIS_MODULE,
-@@ -166,6 +150,26 @@ static struct snd_soc_card snd_soc_card_rk = {
- 	.num_controls = ARRAY_SIZE(rk_mc_controls),
- };
+ 		regmap_update_bits(i2s->regmap, I2S_DMACR,
+ 				   I2S_DMACR_RDE_ENABLE, I2S_DMACR_RDE_DISABLE);
  
-+static int rk_98090_headset_init(struct snd_soc_component *component)
-+{
-+	int ret;
-+
-+	/* Enable Headset and 4 Buttons Jack detection */
-+	ret = snd_soc_card_jack_new(&snd_soc_card_rk, "Headset Jack",
-+				    SND_JACK_HEADSET |
-+				    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+				    SND_JACK_BTN_2 | SND_JACK_BTN_3,
-+				    &headset_jack,
-+				    headset_jack_pins,
-+				    ARRAY_SIZE(headset_jack_pins));
-+	if (ret)
-+		return ret;
-+
-+	ret = ts3a227e_enable_jack_detect(component, &headset_jack);
-+
-+	return ret;
-+}
-+
- static int snd_rk_mc_probe(struct platform_device *pdev)
- {
- 	int ret = 0;
 -- 
 2.1.0
