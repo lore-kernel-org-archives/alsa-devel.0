@@ -1,17 +1,19 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 1/5] ALSA: pcm: Fix poll error return codes
-Date: Thu, 5 May 2016 08:26:44 +0900
-Message-ID: <572A8534.4020207@sakamocchi.jp>
-References: <1462370351-15388-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1462370351-15388-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Garlic Tseng <garlic.tseng@mediatek.com>
+Subject: Re: [PATCH 1/7] ASoC: mediatek: Refine mt8173 driver
+ and change config option
+Date: Thu, 5 May 2016 10:45:42 +0800
+Message-ID: <1462416342.25179.36.camel@mtksdaap41>
+References: <1461934848-60011-1-git-send-email-garlic.tseng@mediatek.com>
+ <1461934848-60011-2-git-send-email-garlic.tseng@mediatek.com>
+ <20160504164306.GA6292@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id D9D7A2651CB
- for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 01:26:54 +0200 (CEST)
-In-Reply-To: <1462370351-15388-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E2E82651FC
+ for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 04:45:48 +0200 (CEST)
+In-Reply-To: <20160504164306.GA6292@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +23,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, tiwai@suse.com
-Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, ir.lian@mediatek.com, srv_heupstream@mediatek.com, tiwai@suse.de, linux-kernel@vger.kernel.org, koro.chen@mediatek.com, linux-mediatek@lists.infradead.org, PC.Liao@mediatek.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On May 4 2016 22:59, Charles Keepax wrote:
-> We can't return a negative error code from the poll callback the return
-> type is unsigned and is checked against the poll specific flags we need
-> to return POLLERR if we encounter an error.
+On Wed, 2016-05-04 at 17:43 +0100, Mark Brown wrote:
+> On Fri, Apr 29, 2016 at 09:00:42PM +0800, Garlic Tseng wrote:
 > 
-> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-> ---
->  sound/core/pcm_native.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> >  .../{mtk-afe-pcm.c => mt8173/mt8173-afe-pcm.c}     | 488 ++++++++++-----------
 > 
-> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-> index 9106d8e..c61fd50 100644
-> --- a/sound/core/pcm_native.c
-> +++ b/sound/core/pcm_native.c
-> @@ -3161,7 +3161,7 @@ static unsigned int snd_pcm_playback_poll(struct file *file, poll_table * wait)
->  
->  	substream = pcm_file->substream;
->  	if (PCM_RUNTIME_CHECK(substream))
-> -		return -ENXIO;
-> +		return POLLOUT | POLLWRNORM | POLLERR;
->  	runtime = substream->runtime;
->  
->  	poll_wait(file, &runtime->sleep, wait);
-> @@ -3200,7 +3200,7 @@ static unsigned int snd_pcm_capture_poll(struct file *file, poll_table * wait)
->  
->  	substream = pcm_file->substream;
->  	if (PCM_RUNTIME_CHECK(substream))
-> -		return -ENXIO;
-> +		return POLLIN | POLLRDNORM | POLLERR;
->  	runtime = substream->runtime;
->  
->  	poll_wait(file, &runtime->sleep, wait);
+> So there's going to be no code sharing at all between this and any other
+> Mediatek chips?  That seems very surprising, it'd suggest that the
+> hardware designers were creating a new design completely from scratch
+> each time which doesn't seem all that likely.  This is an unusual way of
+> organizing things and we need a much clearer explanation of what's going
+> on here.
 
-I agree with the concept of your patch to fix the return value of ALSA
-PCM core. It should return a value which consists of POLLxxx masks.
-
-On the other hand, I think POLLOUT, POLLIN, POLLWRNORM and POLLRDNORM
-should not be included in the value. PCM_RUNTIME_CHECK() ensures PCM
-substream or PCM runtime is NULL. This means that subsequent I/O
-operations are failed, at least for handling PCM frames.
-
-I think it better to return 'POLLERR | POLLHUP'.
+MT8173 and MT2701 are from different product lines so the register
+control sequences are very different. If another driver for 8173-like
+(or 2701-like) chip go upstream it shall share some common code with the
+relatively driver indeed. However I think MT8173 and MT2701 can't share
+the platform driver or a lot of "if MT8173 else MT2701" will mess up the
+code.
 
 
-Regards
-
-Takashi Sakamoto
+However, several (maybe 2 or 3) tiny functions for the two driver code
+are very similar indeed. For example, pointer callback functions of
+platform driver are very similar. It reads the cursor and return. But
+I'm not sure if it is better to share the function. It is too trivial
+for me.
