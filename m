@@ -1,16 +1,17 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: WM5102 - Help to make baytrail machine driver work
-Date: Wed, 4 May 2016 22:15:44 -0500
-Message-ID: <cd77211c-ec34-ef93-5601-f7adeb3e1fc3@linux.intel.com>
-References: <CAJcYhpZU-6_AO_Gye1VttuvOP0Z2=wLuWGCOP7tBWc6DsuLU1g@mail.gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH 1/2] ASoC: topology: Fix memory leak in widget
+	creation
+Date: Thu,  5 May 2016 11:19:18 +0530
+Message-ID: <1462427359-30402-2-git-send-email-vinod.koul@intel.com>
+References: <1462427359-30402-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id AA4602651FC
- for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 05:15:47 +0200 (CEST)
-In-Reply-To: <CAJcYhpZU-6_AO_Gye1VttuvOP0Z2=wLuWGCOP7tBWc6DsuLU1g@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id AE7372652D7
+ for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 07:43:21 +0200 (CEST)
+In-Reply-To: <1462427359-30402-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,66 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Paulo Sergio <pstglia@gmail.com>, alsa-devel@alsa-project.org
-Cc: vinod.koul@intel.com, ckeepax@opensource.wolfsonmicro.com, broonie@opensource.wolfsonmicro.com, mika.westerberg@linux.intel.com, Christian Hartmann <cornogle@googlemail.com>
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gNS80LzE2IDg6MjEgUE0sIFBhdWxvIFNlcmdpbyB3cm90ZToKPiBIaSBsaXN0LAo+Cj4gSSd2
-ZSBiZWVuIHRyeWluZyB0byBtYWtlIExlbm92byBZb2dhIDIgKE1vZGVsIDEwNTFGKSBzb3VuZCB3
-b3JrIG9uCj4gQW5kcm9pZC14ODYvIExpbnV4LiBbMV0KPgo+IEJhc2VkIG9uIGFscmVhZHkgZGlz
-Y3Vzc2VkIGluZm8gZnJvbSBDaHJpc3RpYW4gSGFydG1hbm4gd2l0aCBtZW1iZXJzCj4gKHNlZSBb
-Ml0gYW5kIFszXSApIG9mIHRoaXMgbGlzdCBhbmQgc29tZSBlZmZvcnRzIChiYXNpY2FsbHkgcGF0
-Y2ggcHhhMnh4Cj4gd2l0aCBNaWthIFdlc3RlcmJlcmcgY2hhbmdlcywgc2V0IHRoZSBjb3JyZWN0
-IGdwaW8gaW50IHZhbHVlcyB7MjQ2IGZvcgo+IHJlc2V0IC8gNDA1IGZvciBsZG9lbmEgYW5kIDM0
-MiBmb3IgaXJxX2dwaW99IGFuZCBzZXQgTERPMSB2Y2Mgc3VwcGxpZXJzKQo+IHdlIGNvdWxkIGhh
-dmUgd201MTAyIGluaXRpYWxpemVkIHRocm91Z2ggc3BpIC8gcmVnbWFwIChhcml6b25hIGNvZGUg
-b24KPiBkcml2ZXJzL21mZCkgYW5kIHJlZ2lzdGVyIHRoZSBEQUkncy4KPgo+IEkgYWxzbyBwb3J0
-ZWQgYSBtYWNoaW5lIGRyaXZlciBjb2RlIGZyb20gYSBrZXJuZWwgTGVub3ZvIG1hZGUgYXZhaWxh
-YmxlCj4gZm9yIGEgc2ltaWxhciBoYXJkd2FyZSAoTGVub3ZvIHlvZ2EgMiAxMDUwIC0gdXNlcyB0
-aGUgc2FtZSBiYXl0cmFpbAo+IFozNzQ1IGFuZCB3b2xmc29uIHdtNTEwMiBhdWRpbykgWzRdCgpU
-aGVyZSBhcmUgcXVpdGUgYSBmZXcgcmVmZXJlbmNlcyBpbiB0aGUgbWFjaGluZSBkcml2ZXIgdG8g
-Y29uY2VwdHMgCnJlbGF0ZWQgdG8gQ2xvdmVydHJhaWwrIGFuZCBlYXJseSB2ZXJzaW9ucyBvZiBC
-YXl0cmFpbC4gSSBhbSBmYWlybHkgCmNvbnZpbmNlZCB0aGUgbWVudGlvbnMgb2YgJ0JZVF9DT01N
-U19CVCcgb3IgJ21vZGVtIG1peGluZycgYXJlIG5vIGxvbmdlciAKc3VwcG9ydGVkIHdpdGggdGhl
-IERQQ00gcGxhdGZvcm0gZHJpdmVyL2Zpcm13YXJlIHlvdSB1c2VkLgoKVG8gZW5hYmxlIHRoaXMg
-Y29kZWMgaXQgd291bGQgYmUgc2ltcGxlciB0byBzdGFydCB3aXRoIGEgbmV3ZXIgbWFjaGluZSAK
-ZHJpdmVyIGRlcml2ZWQgZnJvbSB0aGUgYnl0Y3JfcnQ1NjQwIG9uZSwgd2l0aCBqdXN0IGEgYmFz
-aWMgU1NQMC1haWYxIApsaW5rIGZvciBzdGFydGVycyAoKyBNQ0xLKS4gQmV0dGVyIHlldCwgZG8g
-dGhpcyB3b3JrIHdpdGggYSBNaW5ub3dCb2FyZCAKYW5kIGFuIFdNNTEwMiBldmFsIGJvYXJkIGFu
-ZCB0ZXN0IGFsbCB0aGlzIHdpdGggbW9yZSBjb250cm9sIG9uIGhvdyB0aGUgCmhhcmR3YXJlIGlz
-IHNldHVwLgoKSWYgeW91IHN0aWNrIHRvIHdvcmtpbmcgZGlyZWN0bHkgb24gdGhlIExlbm92byBk
-ZXZpY2UsIG1ha2Ugc3VyZSB5b3UgdXNlIAphbGwgdGhlIERTUCBjb250cm9scyBzZXQgaW4gdGhl
-IFVDTSBmaWxlcyB1c2VkIGZvciBiYXl0cmFpbC9iYXl0cmFpbC1DUiAKKHNlZSBnaXRodWIuY29t
-L3BsYm9zc2FydC9VQ00pLgoKPgo+IEFsdGhvdWdoIG1hY2hpbmUgZHJpdmVyIGlzIHJlZ2lzdGVy
-ZWQsIHdlIHN0aWxsIGRvbid0IGhhdmUgc291bmQuIFRyaWVkCj4gc29tZSBtaXhlciBzZXR0aW5n
-cyAvIHJvdXRlcyB1c2VkIG9uIHJhc3BiZXJyeSBwaSwgYnV0IG5vbmUgaGVscC4KPiBBcHBsaWNh
-dGlvbiAoaW4gdGhpcyBjYXNlIGFsc2EgLyBBbmRyb2lkIHBsYXllcnMpIHJldHVybnMgYSAiRGV2
-aWNlIG9yCj4gcmVzb3VyY2UgYnVzeSIgd2hlbiB0cnlpbmcgdG8gaW9jdGwgcGNtIGRldmljZToK
-Pgo+IDA0LTMwIDEzOjA1OjA3Ljg3NyAgMTc4NCAgMjA3OCBFIGF1ZGlvX2h3X3ByaW1hcnk6IG91
-dF93cml0ZTogZXJyb3IgLTEgLSBjYW5ub3QgcHJlcGFyZSBjaGFubmVsOiBEZXZpY2Ugb3IgcmVz
-b3VyY2UgYnVzeQo+Cj4gIyBUaGlzIGlzIHJhaXNlZCBoZXJlIChleHRlcm5hbC90aW55YWxzYS9w
-Y20uYyk6Cj4KPiBpZiAoaW9jdGwocGNtLT5mZCwgU05EUlZfUENNX0lPQ1RMX1BSRVBBUkUpIDwg
-MCkKPgo+IHJldHVybiBvb3BzKHBjbSwgZXJybm8sICJjYW5ub3QgcHJlcGFyZSBjaGFubmVsIik7
-Cj4KPgo+IE5vdGU6IEFzIHBvaW50ZWQgaGVyZSBbNV0gaGFkIHRvIGNoYW5nZSB0aGUgYWNwaV9p
-cGNfaXJxX2luZGV4IHRvIDAgb24KPiBzb3VuZC9zb2MvaW50ZWwvYXRvbS9zc3Qvc3N0X2FjcGku
-YyBiZWNhdXNlIHRoaXMgaXMgdGhlIDFzdCBBQ1BJIGVudHJ5Cj4gbGlzdGVkIG9uIERTRFQKPiBJ
-J20gYWxzbyB0cnlpbmcgdG8gdXNlIGEgZncgdmVyc2lvbiB0aGF0IHVzZXMgU1NQMCBbNl0gaW5z
-dGVhZCBvZiBTU1AyCj4gdXNlZCBhcyBkZWZhdWx0IC0gYnV0IG5vIHNvdW5kIHdpdGggYm90aAo+
-Cj4KPiBJJ2QgbGlrZSBzb21lIGhlbHAgZnJvbSB5b3UgaW4gb3JkZXIgdG8gbWFrZSB0aGlzIHdv
-cmsuIEkndmUgY29sbGVjdAo+IHNldmVyYWwgaW5mbyB3aGljaCBjYW4gYmUgZm91bmQgaGVyZSBb
-N10KPiAgLSAvcHJvYy9hc291bmQvY2FyZHMKPiAgLSAvcHJvYy9pbnRlcnJ1cHRzCj4gIC0gYW1p
-eGVyIGNvbnRyb2xzIGxpc3QKPiAgLSBkbWVzZwo+ICAtIERTRFQgZmlsZSAoZGVjb2RlZCB3aXRo
-IGlhc2wpCj4KPgo+IFNvdXJjZSBjb2RlIHdpdGggY2hhbmdlcyBtYWRlIHNvIGZhciBpcyBhdmFp
-bGFibGUgb24gZ2l0aHViIFs4XQo+Cj4gQW55IGhpbnQgaXMgYXBwcmVjaWF0ZWQKPgo+IFRoYW5r
-cywKPiBQYXVsbyBTw6lyZ2lvIFRyYXZhZ2xpYSAocHN0Z2xpYSkKPgo+Cj4gWzFdIC0gaHR0cHM6
-Ly9ncm91cHMuZ29vZ2xlLmNvbS9mb3J1bS8jIWZvcnVtL2FuZHJvaWQteDg2Cj4gWzJdIC0gaHR0
-cDovL3d3dy5zcGluaWNzLm5ldC9saXN0cy9saW51eC1hY3BpL21zZzU4NjgwLmh0bWwKPiBbM10g
-LSBodHRwczovL2dvby5nbC92QktPZUkKPiBbNF0gLSBodHRwOi8vZ29vLmdsL3pyaXdidwo+IFs1
-XSAtIGh0dHBzOi8vYnVnemlsbGEua2VybmVsLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9ODY1ODEKPiBb
-Nl0gLSBodHRwOi8vdGhyZWFkLmdtYW5lLm9yZy9nbWFuZS5saW51eC5hbHNhLmRldmVsLzEzNDU1
-NC9mb2N1cz0xNDA2MzQKPiBbN10KPiAtIGh0dHBzOi8vZHJpdmUuZ29vZ2xlLmNvbS9mb2xkZXJ2
-aWV3P2lkPTBCeE82VEh0Qjg2NWZXalZITFRGZlYyNU9SalEmdXNwPXNoYXJpbmcKPiBbOF0gLSBo
-dHRwczovL2dpdGh1Yi5jb20vcHN0Z2xpYS9saW51eAoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+From: Jeeja KP <jeeja.kp@intel.com>
+
+name and sname allocated in widget create are not freed when
+creation is successful, so free them.
+
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/soc-topology.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 1cf94d7fb9f4..ff95c3a7b8a3 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1476,6 +1476,8 @@ widget:
+ 	widget->dobj.type = SND_SOC_DOBJ_WIDGET;
+ 	widget->dobj.ops = tplg->ops;
+ 	widget->dobj.index = tplg->index;
++	kfree(template.sname);
++	kfree(template.name);
+ 	list_add(&widget->dobj.list, &tplg->comp->dobj_list);
+ 	return 0;
+ 
+-- 
+1.9.1
