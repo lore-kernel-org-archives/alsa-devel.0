@@ -1,15 +1,16 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt5645: polling jd status in all
-	conditions
-Date: Thu, 5 May 2016 11:13:31 +0800
-Message-ID: <1462418011-20974-1-git-send-email-bardliao@realtek.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: WM5102 - Help to make baytrail machine driver work
+Date: Wed, 4 May 2016 22:15:44 -0500
+Message-ID: <cd77211c-ec34-ef93-5601-f7adeb3e1fc3@linux.intel.com>
+References: <CAJcYhpZU-6_AO_Gye1VttuvOP0Z2=wLuWGCOP7tBWc6DsuLU1g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 09B432651FD
- for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 05:13:47 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA4602651FC
+ for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 05:15:47 +0200 (CEST)
+In-Reply-To: <CAJcYhpZU-6_AO_Gye1VttuvOP0Z2=wLuWGCOP7tBWc6DsuLU1g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,48 +20,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, john.lin@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+To: Paulo Sergio <pstglia@gmail.com>, alsa-devel@alsa-project.org
+Cc: vinod.koul@intel.com, ckeepax@opensource.wolfsonmicro.com, broonie@opensource.wolfsonmicro.com, mika.westerberg@linux.intel.com, Christian Hartmann <cornogle@googlemail.com>
 List-Id: alsa-devel@alsa-project.org
 
-We only polling jd status when rt5645->pdata.jd_invert is true.
-However, it should be done at all time since there will be no
-interrupt for jd if we press a headset button and remove the
-headset at the same time.
-
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt5645.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index dff706a..3c6594d 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3286,10 +3286,8 @@ static void rt5645_jack_detect_work(struct work_struct *work)
- 		if (btn_type == 0)/* button release */
- 			report =  rt5645->jack_type;
- 		else {
--			if (rt5645->pdata.jd_invert) {
--				mod_timer(&rt5645->btn_check_timer,
--					msecs_to_jiffies(100));
--			}
-+			mod_timer(&rt5645->btn_check_timer,
-+				msecs_to_jiffies(100));
- 		}
- 
- 		break;
-@@ -3816,9 +3814,9 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 	if (rt5645->pdata.jd_invert) {
- 		regmap_update_bits(rt5645->regmap, RT5645_IRQ_CTRL2,
- 			RT5645_JD_1_1_MASK, RT5645_JD_1_1_INV);
--		setup_timer(&rt5645->btn_check_timer,
--			rt5645_btn_check_callback, (unsigned long)rt5645);
- 	}
-+	setup_timer(&rt5645->btn_check_timer,
-+		rt5645_btn_check_callback, (unsigned long)rt5645);
- 
- 	INIT_DELAYED_WORK(&rt5645->jack_detect_work, rt5645_jack_detect_work);
- 	INIT_DELAYED_WORK(&rt5645->rcclock_work, rt5645_rcclock_work);
--- 
-1.8.1.1.439.g50a6b54
+T24gNS80LzE2IDg6MjEgUE0sIFBhdWxvIFNlcmdpbyB3cm90ZToKPiBIaSBsaXN0LAo+Cj4gSSd2
+ZSBiZWVuIHRyeWluZyB0byBtYWtlIExlbm92byBZb2dhIDIgKE1vZGVsIDEwNTFGKSBzb3VuZCB3
+b3JrIG9uCj4gQW5kcm9pZC14ODYvIExpbnV4LiBbMV0KPgo+IEJhc2VkIG9uIGFscmVhZHkgZGlz
+Y3Vzc2VkIGluZm8gZnJvbSBDaHJpc3RpYW4gSGFydG1hbm4gd2l0aCBtZW1iZXJzCj4gKHNlZSBb
+Ml0gYW5kIFszXSApIG9mIHRoaXMgbGlzdCBhbmQgc29tZSBlZmZvcnRzIChiYXNpY2FsbHkgcGF0
+Y2ggcHhhMnh4Cj4gd2l0aCBNaWthIFdlc3RlcmJlcmcgY2hhbmdlcywgc2V0IHRoZSBjb3JyZWN0
+IGdwaW8gaW50IHZhbHVlcyB7MjQ2IGZvcgo+IHJlc2V0IC8gNDA1IGZvciBsZG9lbmEgYW5kIDM0
+MiBmb3IgaXJxX2dwaW99IGFuZCBzZXQgTERPMSB2Y2Mgc3VwcGxpZXJzKQo+IHdlIGNvdWxkIGhh
+dmUgd201MTAyIGluaXRpYWxpemVkIHRocm91Z2ggc3BpIC8gcmVnbWFwIChhcml6b25hIGNvZGUg
+b24KPiBkcml2ZXJzL21mZCkgYW5kIHJlZ2lzdGVyIHRoZSBEQUkncy4KPgo+IEkgYWxzbyBwb3J0
+ZWQgYSBtYWNoaW5lIGRyaXZlciBjb2RlIGZyb20gYSBrZXJuZWwgTGVub3ZvIG1hZGUgYXZhaWxh
+YmxlCj4gZm9yIGEgc2ltaWxhciBoYXJkd2FyZSAoTGVub3ZvIHlvZ2EgMiAxMDUwIC0gdXNlcyB0
+aGUgc2FtZSBiYXl0cmFpbAo+IFozNzQ1IGFuZCB3b2xmc29uIHdtNTEwMiBhdWRpbykgWzRdCgpU
+aGVyZSBhcmUgcXVpdGUgYSBmZXcgcmVmZXJlbmNlcyBpbiB0aGUgbWFjaGluZSBkcml2ZXIgdG8g
+Y29uY2VwdHMgCnJlbGF0ZWQgdG8gQ2xvdmVydHJhaWwrIGFuZCBlYXJseSB2ZXJzaW9ucyBvZiBC
+YXl0cmFpbC4gSSBhbSBmYWlybHkgCmNvbnZpbmNlZCB0aGUgbWVudGlvbnMgb2YgJ0JZVF9DT01N
+U19CVCcgb3IgJ21vZGVtIG1peGluZycgYXJlIG5vIGxvbmdlciAKc3VwcG9ydGVkIHdpdGggdGhl
+IERQQ00gcGxhdGZvcm0gZHJpdmVyL2Zpcm13YXJlIHlvdSB1c2VkLgoKVG8gZW5hYmxlIHRoaXMg
+Y29kZWMgaXQgd291bGQgYmUgc2ltcGxlciB0byBzdGFydCB3aXRoIGEgbmV3ZXIgbWFjaGluZSAK
+ZHJpdmVyIGRlcml2ZWQgZnJvbSB0aGUgYnl0Y3JfcnQ1NjQwIG9uZSwgd2l0aCBqdXN0IGEgYmFz
+aWMgU1NQMC1haWYxIApsaW5rIGZvciBzdGFydGVycyAoKyBNQ0xLKS4gQmV0dGVyIHlldCwgZG8g
+dGhpcyB3b3JrIHdpdGggYSBNaW5ub3dCb2FyZCAKYW5kIGFuIFdNNTEwMiBldmFsIGJvYXJkIGFu
+ZCB0ZXN0IGFsbCB0aGlzIHdpdGggbW9yZSBjb250cm9sIG9uIGhvdyB0aGUgCmhhcmR3YXJlIGlz
+IHNldHVwLgoKSWYgeW91IHN0aWNrIHRvIHdvcmtpbmcgZGlyZWN0bHkgb24gdGhlIExlbm92byBk
+ZXZpY2UsIG1ha2Ugc3VyZSB5b3UgdXNlIAphbGwgdGhlIERTUCBjb250cm9scyBzZXQgaW4gdGhl
+IFVDTSBmaWxlcyB1c2VkIGZvciBiYXl0cmFpbC9iYXl0cmFpbC1DUiAKKHNlZSBnaXRodWIuY29t
+L3BsYm9zc2FydC9VQ00pLgoKPgo+IEFsdGhvdWdoIG1hY2hpbmUgZHJpdmVyIGlzIHJlZ2lzdGVy
+ZWQsIHdlIHN0aWxsIGRvbid0IGhhdmUgc291bmQuIFRyaWVkCj4gc29tZSBtaXhlciBzZXR0aW5n
+cyAvIHJvdXRlcyB1c2VkIG9uIHJhc3BiZXJyeSBwaSwgYnV0IG5vbmUgaGVscC4KPiBBcHBsaWNh
+dGlvbiAoaW4gdGhpcyBjYXNlIGFsc2EgLyBBbmRyb2lkIHBsYXllcnMpIHJldHVybnMgYSAiRGV2
+aWNlIG9yCj4gcmVzb3VyY2UgYnVzeSIgd2hlbiB0cnlpbmcgdG8gaW9jdGwgcGNtIGRldmljZToK
+Pgo+IDA0LTMwIDEzOjA1OjA3Ljg3NyAgMTc4NCAgMjA3OCBFIGF1ZGlvX2h3X3ByaW1hcnk6IG91
+dF93cml0ZTogZXJyb3IgLTEgLSBjYW5ub3QgcHJlcGFyZSBjaGFubmVsOiBEZXZpY2Ugb3IgcmVz
+b3VyY2UgYnVzeQo+Cj4gIyBUaGlzIGlzIHJhaXNlZCBoZXJlIChleHRlcm5hbC90aW55YWxzYS9w
+Y20uYyk6Cj4KPiBpZiAoaW9jdGwocGNtLT5mZCwgU05EUlZfUENNX0lPQ1RMX1BSRVBBUkUpIDwg
+MCkKPgo+IHJldHVybiBvb3BzKHBjbSwgZXJybm8sICJjYW5ub3QgcHJlcGFyZSBjaGFubmVsIik7
+Cj4KPgo+IE5vdGU6IEFzIHBvaW50ZWQgaGVyZSBbNV0gaGFkIHRvIGNoYW5nZSB0aGUgYWNwaV9p
+cGNfaXJxX2luZGV4IHRvIDAgb24KPiBzb3VuZC9zb2MvaW50ZWwvYXRvbS9zc3Qvc3N0X2FjcGku
+YyBiZWNhdXNlIHRoaXMgaXMgdGhlIDFzdCBBQ1BJIGVudHJ5Cj4gbGlzdGVkIG9uIERTRFQKPiBJ
+J20gYWxzbyB0cnlpbmcgdG8gdXNlIGEgZncgdmVyc2lvbiB0aGF0IHVzZXMgU1NQMCBbNl0gaW5z
+dGVhZCBvZiBTU1AyCj4gdXNlZCBhcyBkZWZhdWx0IC0gYnV0IG5vIHNvdW5kIHdpdGggYm90aAo+
+Cj4KPiBJJ2QgbGlrZSBzb21lIGhlbHAgZnJvbSB5b3UgaW4gb3JkZXIgdG8gbWFrZSB0aGlzIHdv
+cmsuIEkndmUgY29sbGVjdAo+IHNldmVyYWwgaW5mbyB3aGljaCBjYW4gYmUgZm91bmQgaGVyZSBb
+N10KPiAgLSAvcHJvYy9hc291bmQvY2FyZHMKPiAgLSAvcHJvYy9pbnRlcnJ1cHRzCj4gIC0gYW1p
+eGVyIGNvbnRyb2xzIGxpc3QKPiAgLSBkbWVzZwo+ICAtIERTRFQgZmlsZSAoZGVjb2RlZCB3aXRo
+IGlhc2wpCj4KPgo+IFNvdXJjZSBjb2RlIHdpdGggY2hhbmdlcyBtYWRlIHNvIGZhciBpcyBhdmFp
+bGFibGUgb24gZ2l0aHViIFs4XQo+Cj4gQW55IGhpbnQgaXMgYXBwcmVjaWF0ZWQKPgo+IFRoYW5r
+cywKPiBQYXVsbyBTw6lyZ2lvIFRyYXZhZ2xpYSAocHN0Z2xpYSkKPgo+Cj4gWzFdIC0gaHR0cHM6
+Ly9ncm91cHMuZ29vZ2xlLmNvbS9mb3J1bS8jIWZvcnVtL2FuZHJvaWQteDg2Cj4gWzJdIC0gaHR0
+cDovL3d3dy5zcGluaWNzLm5ldC9saXN0cy9saW51eC1hY3BpL21zZzU4NjgwLmh0bWwKPiBbM10g
+LSBodHRwczovL2dvby5nbC92QktPZUkKPiBbNF0gLSBodHRwOi8vZ29vLmdsL3pyaXdidwo+IFs1
+XSAtIGh0dHBzOi8vYnVnemlsbGEua2VybmVsLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9ODY1ODEKPiBb
+Nl0gLSBodHRwOi8vdGhyZWFkLmdtYW5lLm9yZy9nbWFuZS5saW51eC5hbHNhLmRldmVsLzEzNDU1
+NC9mb2N1cz0xNDA2MzQKPiBbN10KPiAtIGh0dHBzOi8vZHJpdmUuZ29vZ2xlLmNvbS9mb2xkZXJ2
+aWV3P2lkPTBCeE82VEh0Qjg2NWZXalZITFRGZlYyNU9SalEmdXNwPXNoYXJpbmcKPiBbOF0gLSBo
+dHRwczovL2dpdGh1Yi5jb20vcHN0Z2xpYS9saW51eAoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
