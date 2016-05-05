@@ -1,15 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 3/3] ASoC: hdac_hdmi: add link management
-Date: Thu,  5 May 2016 11:31:11 +0530
-Message-ID: <1462428071-30248-4-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 2/3] ASoC: Intel: Skylake: add link
+	management
+Date: Thu,  5 May 2016 11:31:10 +0530
+Message-ID: <1462428071-30248-3-git-send-email-vinod.koul@intel.com>
 References: <1462428071-30248-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A2EC265B69
- for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 07:55:22 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id F3D5B2652EE
+ for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 07:55:21 +0200 (CEST)
 In-Reply-To: <1462428071-30248-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,107 +25,108 @@ To: alsa-devel@alsa-project.org
 Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Manage the hda idisp link using shiny new link APIs.  We need to
-keep link On while we probe and also hold the reference in runtime
-resume and drop in suspend
+Use shiny new link APIs to manage the links. Also remove old link
+configuration logic from driver.
+
+We need to keep link and cmd dma to off during active suspend
+to allow system to enter low power state and turn it on if
+the link and cmd dma was on before active suspend in active
+resume.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 32 ++++++++++++++++++++++++++++++--
- 1 file changed, 30 insertions(+), 2 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c |  1 -
+ sound/soc/intel/skylake/skl.c     | 34 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 34 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 7e7ff1b708f4..37332976ccbb 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -1464,10 +1464,18 @@ static int hdmi_codec_probe(struct snd_soc_codec *codec)
- 	struct snd_soc_dapm_context *dapm =
- 		snd_soc_component_get_dapm(&codec->component);
- 	struct hdac_hdmi_pin *pin;
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index c726937321ef..6e71bf34ea2b 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -533,7 +533,6 @@ static int skl_link_pcm_prepare(struct snd_pcm_substream *substream,
+ 	if (!link)
+ 		return -EINVAL;
+ 
+-	snd_hdac_ext_bus_link_power_up(link);
+ 	snd_hdac_ext_link_stream_reset(link_dev);
+ 
+ 	snd_hdac_ext_link_stream_setup(link_dev, format_val);
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 83e985c0c0c9..c1235ce4ea10 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -229,7 +229,12 @@ static int skl_suspend(struct device *dev)
+ 	 * running, we need to save the state for these and continue
+ 	 */
+ 	if (skl->supend_active) {
++		/* turn off the links and stop the CORB/RIRB DMA if it is On */
+ 		snd_hdac_ext_bus_link_power_down_all(ebus);
++
++		if (ebus->cmd_io)
++			snd_hdac_bus_stop_cmd_io(&ebus->bus);
++
+ 		enable_irq_wake(bus->irq);
+ 		pci_save_state(pci);
+ 		pci_disable_device(pci);
+@@ -255,6 +260,7 @@ static int skl_resume(struct device *dev)
+ 	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
+ 	struct skl *skl  = ebus_to_skl(ebus);
+ 	struct hdac_bus *bus = ebus_to_hbus(ebus);
 +	struct hdac_ext_link *hlink = NULL;
  	int ret;
  
- 	edev->scodec = codec;
+ 	/* Turned OFF in HDMI codec driver after codec reconfiguration */
+@@ -276,8 +282,29 @@ static int skl_resume(struct device *dev)
+ 		ret = pci_enable_device(pci);
+ 		snd_hdac_ext_bus_link_power_up_all(ebus);
+ 		disable_irq_wake(bus->irq);
++		/*
++		 * turn On the links which are On before active suspend
++		 * and start the CORB/RIRB DMA if On before
++		 * active suspend.
++		 */
++		list_for_each_entry(hlink, &ebus->hlink_list, list) {
++			if (hlink->ref_count)
++				snd_hdac_ext_bus_link_power_up(hlink);
++		}
++
++		if (ebus->cmd_io)
++			snd_hdac_bus_init_cmd_io(&ebus->bus);
+ 	} else {
+ 		ret = _skl_resume(ebus);
++
++		/* turn off the links which are off before suspend */
++		list_for_each_entry(hlink, &ebus->hlink_list, list) {
++			if (!hlink->ref_count)
++				snd_hdac_ext_bus_link_power_down(hlink);
++		}
++
++		if (!ebus->cmd_io)
++			snd_hdac_bus_stop_cmd_io(&ebus->bus);
+ 	}
+ 
+ 	return ret;
+@@ -613,6 +640,7 @@ static int skl_probe(struct pci_dev *pci,
+ 	struct skl *skl;
+ 	struct hdac_ext_bus *ebus = NULL;
+ 	struct hdac_bus *bus = NULL;
++	struct hdac_ext_link *hlink = NULL;
+ 	int err;
+ 
+ 	/* we use ext core ops, so provide NULL for ops here */
+@@ -679,6 +707,12 @@ static int skl_probe(struct pci_dev *pci,
+ 		}
+ 	}
  
 +	/*
-+	 * hold the ref while we probe, also no need to drop the ref on
-+	 * exit, we call pm_runtime_suspend() so that will do for us
++	 * we are done probling so decrement link counts
 +	 */
-+	hlink = snd_hdac_ext_bus_get_link(edev->ebus, dev_name(&edev->hdac.dev));
-+	snd_hdac_ext_bus_link_get(edev->ebus, hlink);
++	list_for_each_entry(hlink, &ebus->hlink_list, list)
++		snd_hdac_ext_bus_link_put(ebus, hlink);
 +
- 	ret = create_fill_widget_route_map(dapm);
- 	if (ret < 0)
- 		return ret;
-@@ -1620,9 +1628,14 @@ static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
- 	struct hdac_device *codec = &edev->hdac;
- 	struct hdac_hdmi_priv *hdmi_priv;
- 	struct snd_soc_dai_driver *hdmi_dais = NULL;
-+	struct hdac_ext_link *hlink = NULL;
- 	int num_dais = 0;
- 	int ret = 0;
- 
-+	/* hold the ref while we probe */
-+	hlink = snd_hdac_ext_bus_get_link(edev->ebus, dev_name(&edev->hdac.dev));
-+	snd_hdac_ext_bus_link_get(edev->ebus, hlink);
-+
- 	hdmi_priv = devm_kzalloc(&codec->dev, sizeof(*hdmi_priv), GFP_KERNEL);
- 	if (hdmi_priv == NULL)
- 		return -ENOMEM;
-@@ -1661,8 +1674,12 @@ static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
- 	}
- 
- 	/* ASoC specific initialization */
--	return snd_soc_register_codec(&codec->dev, &hdmi_hda_codec,
--			hdmi_dais, num_dais);
-+	ret = snd_soc_register_codec(&codec->dev, &hdmi_hda_codec,
-+					hdmi_dais, num_dais);
-+
-+	snd_hdac_ext_bus_link_put(edev->ebus, hlink);
-+
-+	return ret;
- }
- 
- static int hdac_hdmi_dev_remove(struct hdac_ext_device *edev)
-@@ -1701,6 +1718,9 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
- 	struct hdac_ext_device *edev = to_hda_ext_device(dev);
- 	struct hdac_device *hdac = &edev->hdac;
- 	struct hdac_bus *bus = hdac->bus;
-+	unsigned long timeout;
-+	struct hdac_ext_bus *ebus = hbus_to_ebus(bus);
-+	struct hdac_ext_link *hlink = NULL;
- 	int err;
- 
- 	dev_dbg(dev, "Enter: %s\n", __func__);
-@@ -1724,6 +1744,9 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
- 		return err;
- 	}
- 
-+	hlink = snd_hdac_ext_bus_get_link(ebus, dev_name(dev));
-+	snd_hdac_ext_bus_link_put(ebus, hlink);
-+
- 	return 0;
- }
- 
-@@ -1732,6 +1755,8 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
- 	struct hdac_ext_device *edev = to_hda_ext_device(dev);
- 	struct hdac_device *hdac = &edev->hdac;
- 	struct hdac_bus *bus = hdac->bus;
-+	struct hdac_ext_bus *ebus = hbus_to_ebus(bus);
-+	struct hdac_ext_link *hlink = NULL;
- 	int err;
- 
- 	dev_dbg(dev, "Enter: %s\n", __func__);
-@@ -1740,6 +1765,9 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
- 	if (!bus)
- 		return 0;
- 
-+	hlink = snd_hdac_ext_bus_get_link(ebus, dev_name(dev));
-+	snd_hdac_ext_bus_link_get(ebus, hlink);
-+
- 	err = snd_hdac_display_power(bus, true);
- 	if (err < 0) {
- 		dev_err(bus->dev, "Cannot turn on display power on i915\n");
+ 	/*configure PM */
+ 	pm_runtime_put_noidle(bus->dev);
+ 	pm_runtime_allow(bus->dev);
 -- 
 1.9.1
