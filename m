@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_sai: Allow setting the SAI MCLK
-	direction" to the asoc tree
-Date: Thu, 05 May 2016 16:56:09 +0100
-Message-ID: <E1ayLdJ-0004fh-MY@debutante>
-References: <1462401239-995-2-git-send-email-festevam@gmail.com>
+Subject: Applied "ASoC: fsl_sai: Introduce a compatible string
+	for MX6UL" to the asoc tree
+Date: Thu, 05 May 2016 16:56:12 +0100
+Message-ID: <E1ayLdM-0004gc-LB@debutante>
+References: <1462401239-995-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 787B72668C6
+ by alsa0.perex.cz (Postfix) with ESMTP id B10412668C7
  for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 17:56:18 +0200 (CEST)
-In-Reply-To: <1462401239-995-2-git-send-email-festevam@gmail.com>
+In-Reply-To: <1462401239-995-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_sai: Allow setting the SAI MCLK direction
+   ASoC: fsl_sai: Introduce a compatible string for MX6UL
 
 has been applied to the asoc tree at
 
@@ -53,109 +53,58 @@ to this mail.
 Thanks,
 Mark
 
->From 4d2458507d0b465c62ae80f3e81b8c008ec96b05 Mon Sep 17 00:00:00 2001
+>From 1593af62b694b3638edf577e3b763fa1a4ca3d76 Mon Sep 17 00:00:00 2001
 From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Wed, 4 May 2016 19:33:59 -0300
-Subject: [PATCH] ASoC: fsl_sai: Allow setting the SAI MCLK direction
+Date: Wed, 4 May 2016 19:33:58 -0300
+Subject: [PATCH] ASoC: fsl_sai: Introduce a compatible string for MX6UL
 
-On mx6ul the General Purpose Register 1 (GPR1) contains the following
-bits for configuring the direction of the SAI MCLKs:
-SAI1_MCLK_DIR, SAI2_MCLK_DIR, SAI3_MCLK_DIR
-
-Introduce  the "fsl,sai-mclk-direction-output" optional property to allow
-configuring the SAI_MCLK outputs.
-
-Tested on a imx6ul-evk board.
+MX6UL may need to configure the General Purpose Register 1 (GPR1), so
+it is better to add a new compatible string to differentiate.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/fsl-sai.txt |  5 +++++
- include/linux/mfd/syscon/imx6q-iomuxc-gpr.h         |  6 ++++++
- sound/soc/fsl/fsl_sai.c                             | 20 ++++++++++++++++++++
- 3 files changed, 31 insertions(+)
+ Documentation/devicetree/bindings/sound/fsl-sai.txt | 4 ++--
+ sound/soc/fsl/fsl_sai.c                             | 4 +++-
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-index 777b941d6cbe..740b467adf7d 100644
+index 044e5d76e2dd..777b941d6cbe 100644
 --- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
 +++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-@@ -48,6 +48,11 @@ Required properties:
- 			  receive data by following their own bit clocks and
- 			  frame sync clocks separately.
+@@ -7,8 +7,8 @@ codec/DSP interfaces.
  
-+Optional properties (for mx6ul):
-+
-+  - fsl,sai-mclk-direction-output: This is a boolean property. If present,
-+			 indicates that SAI will output the SAI MCLK clock.
-+
- Note:
- - If both fsl,sai-asynchronous and fsl,sai-synchronous-rx are absent, the
-   default synchronous mode (sync Rx with Tx) will be used, which means both
-diff --git a/include/linux/mfd/syscon/imx6q-iomuxc-gpr.h b/include/linux/mfd/syscon/imx6q-iomuxc-gpr.h
-index 238c8db953eb..68353822afce 100644
---- a/include/linux/mfd/syscon/imx6q-iomuxc-gpr.h
-+++ b/include/linux/mfd/syscon/imx6q-iomuxc-gpr.h
-@@ -447,5 +447,11 @@
- #define IMX6UL_GPR1_ENET2_CLK_OUTPUT		(0x1 << 18)
- #define IMX6UL_GPR1_ENET_CLK_DIR		(0x3 << 17)
- #define IMX6UL_GPR1_ENET_CLK_OUTPUT		(0x3 << 17)
-+#define IMX6UL_GPR1_SAI1_MCLK_DIR		(0x1 << 19)
-+#define IMX6UL_GPR1_SAI2_MCLK_DIR		(0x1 << 20)
-+#define IMX6UL_GPR1_SAI3_MCLK_DIR		(0x1 << 21)
-+#define IMX6UL_GPR1_SAI_MCLK_MASK		(0x7 << 19)
-+#define MCLK_DIR(x) (x == 1 ? IMX6UL_GPR1_SAI1_MCLK_DIR : x == 2 ? \
-+		     IMX6UL_GPR1_SAI2_MCLK_DIR : IMX6UL_GPR1_SAI3_MCLK_DIR)
+ Required properties:
  
- #endif /* __LINUX_IMX6Q_IOMUXC_GPR_H */
+-  - compatible		: Compatible list, contains "fsl,vf610-sai" or
+-			  "fsl,imx6sx-sai".
++  - compatible		: Compatible list, contains "fsl,vf610-sai",
++			  "fsl,imx6sx-sai" or "fsl,imx6ul-sai"
+ 
+   - reg			: Offset and length of the register set for the device.
+ 
 diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index d8b673f7c577..2147994ab46f 100644
+index 0754df771e3b..d8b673f7c577 100644
 --- a/sound/soc/fsl/fsl_sai.c
 +++ b/sound/soc/fsl/fsl_sai.c
-@@ -21,6 +21,8 @@
- #include <sound/core.h>
- #include <sound/dmaengine_pcm.h>
- #include <sound/pcm_params.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
+@@ -797,7 +797,8 @@ static int fsl_sai_probe(struct platform_device *pdev)
  
- #include "fsl_sai.h"
- #include "imx-pcm.h"
-@@ -786,10 +788,12 @@ static int fsl_sai_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
- 	struct fsl_sai *sai;
-+	struct regmap *gpr;
- 	struct resource *res;
- 	void __iomem *base;
- 	char tmp[8];
- 	int irq, ret, i;
-+	int index;
+ 	sai->pdev = pdev;
  
- 	sai = devm_kzalloc(&pdev->dev, sizeof(*sai), GFP_KERNEL);
- 	if (!sai)
-@@ -878,6 +882,22 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 		fsl_sai_dai.symmetric_samplebits = 0;
- 	}
+-	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx6sx-sai"))
++	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx6sx-sai") ||
++	    of_device_is_compatible(pdev->dev.of_node, "fsl,imx6ul-sai"))
+ 		sai->sai_on_imx = true;
  
-+	if (of_find_property(np, "fsl,sai-mclk-direction-output", NULL) &&
-+	    of_device_is_compatible(pdev->dev.of_node, "fsl,imx6ul-sai")) {
-+		gpr = syscon_regmap_lookup_by_compatible("fsl,imx6ul-iomuxc-gpr");
-+		if (IS_ERR(gpr)) {
-+			dev_err(&pdev->dev, "cannot find iomuxc registers\n");
-+			return PTR_ERR(gpr);
-+		}
-+
-+		index = of_alias_get_id(np, "sai");
-+		if (index < 0)
-+			return index;
-+
-+		regmap_update_bits(gpr, IOMUXC_GPR1, MCLK_DIR(index),
-+				   MCLK_DIR(index));
-+	}
-+
- 	sai->dma_params_rx.addr = res->start + FSL_SAI_RDR;
- 	sai->dma_params_tx.addr = res->start + FSL_SAI_TDR;
- 	sai->dma_params_rx.maxburst = FSL_SAI_MAXBURST_RX;
+ 	sai->is_lsb_first = of_property_read_bool(np, "lsb-first");
+@@ -898,6 +899,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ static const struct of_device_id fsl_sai_ids[] = {
+ 	{ .compatible = "fsl,vf610-sai", },
+ 	{ .compatible = "fsl,imx6sx-sai", },
++	{ .compatible = "fsl,imx6ul-sai", },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, fsl_sai_ids);
 -- 
 2.8.1
