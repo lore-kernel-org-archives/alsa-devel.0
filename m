@@ -1,18 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Detach compressed stream on
-	free" to the asoc tree
-Date: Thu, 05 May 2016 16:56:26 +0100
-Message-ID: <E1ayLda-0004lB-Hx@debutante>
-References: <1462378316-8615-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [RFC PATCH 1/7] ALSA: ac97: split out the generic
+	ac97 registers
+Date: Thu, 05 May 2016 21:06:44 +0200
+Message-ID: <87pot0pbnf.fsf@belgarion.home>
+References: <1462050939-27940-1-git-send-email-robert.jarzmik@free.fr>
+ <1462050939-27940-2-git-send-email-robert.jarzmik@free.fr>
+ <20160503115159.GP6292@sirena.org.uk> <87y47roski.fsf@belgarion.home>
+ <20160504090702.GV6292@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B87B2668CE
- for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 17:56:33 +0200 (CEST)
-In-Reply-To: <1462378316-8615-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from smtp.smtpout.orange.fr (smtp03.smtpout.orange.fr
+ [80.12.242.125])
+ by alsa0.perex.cz (Postfix) with ESMTP id 50110265176
+ for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 21:06:50 +0200 (CEST)
+In-Reply-To: <20160504090702.GV6292@sirena.org.uk> (Mark Brown's message of
+ "Wed, 4 May 2016 10:07:02 +0100")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,115 +26,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Mark Brown <broonie@kernel.org> writes:
 
-   ASoC: wm_adsp: Detach compressed stream on free
+> On Tue, May 03, 2016 at 09:22:05PM +0200, Robert Jarzmik wrote:
+>> Mark Brown <broonie@kernel.org> writes:
+>
+>> > On Sat, Apr 30, 2016 at 11:15:33PM +0200, Robert Jarzmik wrote:
+>
+>> >> Split out from the ac97_codec.h the ac97 generic registers, which can be
+>> >> used by a codec, typically a generic ac97 codec, and by the ac97 bus, to
+>> >> scan an ac97 AC-Link.
+>
+>> > I don't entirely see the value in this one but equally it does no harm.
+>
+>> Oh that's to have the defines AC97_VENDOR_ID1 and AC97_VENDOR_ID2, but without
+>> including ac97_codec.h in sound/ac97/bus.c.
+>
+> I see that, I just don't know why that helps.
+Ok, so let me explain.
 
-has been applied to the asoc tree at
+As you already understood, AC97_VENDOR* is needed in bus.c for the
+autoscanning. The remaining is the reason why I don't want to include
+ac97_codec.h in bus.c, which follows.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+In order to have a clean split between former ac97 bus implementation and this
+new one, I didn't want to include any former ac97 includes, excepting in
+sound/ac97/compat.c.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Amongst the thing I wanted to isolate :
+ - didn't want the struct snd_ac97 in sound/ac97/* (except compat.c) to see not
+   be "fooled" by a definition which would come with ac97_codec.h by "chance".
+ - didn't want to have snd_a97_*() functions, as they rely on struct snd_ac97.
+ - didn't want the struct snd_ac97_bus_ops, there is a new one
+   => the main grudge I have is the void (*write)() and unsigned short (*read)()
+   prototype which prevent from returning error codes such as -EIO, etc ...
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Moreover, to have a smooth transition, my plan is :
+ - have this new ac97 bus
+ - provide any needed function in compat.c so that previous codecs, regmap,
+   ... continue to work
+ - port the ac97 "pci" codec to have a generic ac97 codec so that codecs can be
+   shrinked from common ac97 code.
+ - port the codecs ... several monthes of work, etc ...
+ - once the port is done, remove compat.c
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+This transition will be easier if the new ac97 code is isolated as much as
+possible from the former code while providing backward compatibility ... hence
+this patch.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Cheers.
 
-Thanks,
-Mark
-
->From 721be3be2f75c69cf0f2d7826007a6eefee7dac3 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Wed, 4 May 2016 17:11:56 +0100
-Subject: [PATCH] ASoC: wm_adsp: Detach compressed stream on free
-
-If someone powers down the DSP core (through routing changes
-say) whilst a compressed record is in progress we can end up
-using a freed pointer to the buffer object. When a compressed
-audio stream is triggered we attach it to a buffer on a physical
-DSP. This patch adds a detach of the buffer from the stream when
-the stream is freed or when the DSP is powered down which avoids
-the situation where we use a buffer when it is no longer valid.
-
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/wm_adsp.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
-
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 42fc46900400..a07bd7c2c587 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -273,8 +273,11 @@ struct wm_adsp_buffer {
- 	__be32 words_written[2];	/* total words written (64 bit) */
- };
- 
-+struct wm_adsp_compr;
-+
- struct wm_adsp_compr_buf {
- 	struct wm_adsp *dsp;
-+	struct wm_adsp_compr *compr;
- 
- 	struct wm_adsp_buffer_region *regions;
- 	u32 host_buf_ptr;
-@@ -2467,10 +2470,26 @@ static int wm_adsp_compr_attach(struct wm_adsp_compr *compr)
- 		return -EINVAL;
- 
- 	compr->buf = compr->dsp->buffer;
-+	compr->buf->compr = compr;
- 
- 	return 0;
- }
- 
-+static void wm_adsp_compr_detach(struct wm_adsp_compr *compr)
-+{
-+	if (!compr)
-+		return;
-+
-+	/* Wake the poll so it can see buffer is no longer attached */
-+	if (compr->stream)
-+		snd_compr_fragment_elapsed(compr->stream);
-+
-+	if (wm_adsp_compr_attached(compr)) {
-+		compr->buf->compr = NULL;
-+		compr->buf = NULL;
-+	}
-+}
-+
- int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream)
- {
- 	struct wm_adsp_compr *compr;
-@@ -2524,6 +2543,7 @@ int wm_adsp_compr_free(struct snd_compr_stream *stream)
- 
- 	mutex_lock(&dsp->pwr_lock);
- 
-+	wm_adsp_compr_detach(compr);
- 	dsp->compr = NULL;
- 
- 	kfree(compr->raw_buf);
-@@ -2820,6 +2840,8 @@ err_buffer:
- static int wm_adsp_buffer_free(struct wm_adsp *dsp)
- {
- 	if (dsp->buffer) {
-+		wm_adsp_compr_detach(dsp->buffer->compr);
-+
- 		kfree(dsp->buffer->regions);
- 		kfree(dsp->buffer);
- 
 -- 
-2.8.1
+Robert
