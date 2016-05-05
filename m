@@ -1,67 +1,53 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH 1/7] ALSA: ac97: split out the generic ac97 registers
-Date: Thu, 5 May 2016 20:17:28 +0100
-Message-ID: <20160505191728.GK6292@sirena.org.uk>
-References: <1462050939-27940-1-git-send-email-robert.jarzmik@free.fr>
- <1462050939-27940-2-git-send-email-robert.jarzmik@free.fr>
- <20160503115159.GP6292@sirena.org.uk>
- <87y47roski.fsf@belgarion.home>
- <20160504090702.GV6292@sirena.org.uk>
- <87pot0pbnf.fsf@belgarion.home>
+Subject: Re: [PATCH 4/7] ASoC: rockchip-max98090: Fix the Headset Mic route.
+Date: Thu, 5 May 2016 20:18:44 +0100
+Message-ID: <20160505191844.GL6292@sirena.org.uk>
+References: <1462435421-21205-1-git-send-email-enric.balletbo@collabora.com>
+ <1462435421-21205-5-git-send-email-enric.balletbo@collabora.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="wSq95SjGPZBE6hCW"
+	protocol="application/pgp-signature"; boundary="FC52J0nKTzya17Ed"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <87pot0pbnf.fsf@belgarion.home>
+In-Reply-To: <1462435421-21205-5-git-send-email-enric.balletbo@collabora.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc: linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---wSq95SjGPZBE6hCW
+--FC52J0nKTzya17Ed
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, May 05, 2016 at 09:06:44PM +0200, Robert Jarzmik wrote:
-> Mark Brown <broonie@kernel.org> writes:
+On Thu, May 05, 2016 at 10:03:38AM +0200, Enric Balletbo i Serra wrote:
+> Since commit e409dfbfccf9a49 ("ASoC: dapm: Add a few supply widget
+> sanity checks") the following error is seen:
 
-> > I see that, I just don't know why that helps.
 
-> Ok, so let me explain.
+>  rockchip-snd-max98090 sound: Connecting non-supply widget to supply widget is not supported (Headset Mic -> MICBIAS)
+>  rockchip-snd-max98090 sound: ASoC: no dapm match for Headset Mic --> (null) --> MICBIAS
+>  rockchip-snd-max98090 sound: ASoC: Failed to add route Headset Mic -> direct -> MICBIAS
+>  input: ROCKCHIP-I2S Headset Jack as /devices/platform/sound/sound/card0/input3
 
-> As you already understood, AC97_VENDOR* is needed in bus.c for the
-> autoscanning. The remaining is the reason why I don't want to include
-> ac97_codec.h in bus.c, which follows.
+> Invert the route between the Headset Mic and the bias in order to fix it.
 
-> In order to have a clean split between former ac97 bus implementation and this
-> new one, I didn't want to include any former ac97 includes, excepting in
-> sound/ac97/compat.c.
+This isn't just noise, this is telling you that the route has always
+been broken...
 
-It's probably a good idea to articulate some of this in the commit log
-then!
-
-> This transition will be easier if the new ac97 code is isolated as much as
-> possible from the former code while providing backward compatibility ... hence
-> this patch.
-
-It'd probably have been clearer to me if it were splitting out all the
-register definitions rather than just some of them.
-
---wSq95SjGPZBE6hCW
+--FC52J0nKTzya17Ed
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXK5xHAAoJECTWi3JdVIfQwn4H+QF563nk3RYAJh6ml4TeDEew
-XPKGXeJvOi0goDwBIK97UhioEAwcJTA8rdrzuVSorgGyIkvHtqssrMSvciWucYXV
-DOw7E9SVKzBjvFhDVpUXI7vPGgXeCkotuvDRmjPoTIjId+nOTGJzJwQ9d7OCeBWX
-B5i8dAKBT/W724ewHUEJhbKyJEgnztxGmh8bYLu5gzMA97djK3HtaOSQckolcbi3
-s1AcNMH+tUhUuKLxTeOEJWBOXxot9aP6PKgLyNKcIC1m+sXLuDiSPP9O+trfCXf1
-7ONN9W1Hh4tJGQq0uK1L7jIPe6i6BetgM2pzdxidEnhGrmlhzjFlFyTLWKR8olE=
-=znYF
+iQEcBAEBCAAGBQJXK5yUAAoJECTWi3JdVIfQ1CkH/0c+++cCuT13A+zKyKlrwUKH
+zxAqk1bXr2zmWlY90zYFcPCQRFH4kD1KCi485BSDaxM6sPOMF2LUst1m+XqGFobq
+2Shd7Ro/XQCZZ+QpDXvdJ/VD22MTSSn7EuwwWw9WXSjCkt9lhRJp8mmOY2VAvDba
+3xCBkPMjim6Y3l+uxLJVceKxPEt6QkhzVqYt3LAf+wHl9z5oJhDPB8PPbrqUIIC5
+2z2Ac0MpBuHo9yXKJC6Iw2VdRpakoq95gLKlx9LokqA8ynO7JeuI/ZsveBCuKyG+
+qygPKJlpzr11PIrw+Bj21LlC3ygxfS1neosUr99DRX6m3Im+gW53p1rdIlG+AYw=
+=6ivC
 -----END PGP SIGNATURE-----
 
---wSq95SjGPZBE6hCW--
+--FC52J0nKTzya17Ed--
