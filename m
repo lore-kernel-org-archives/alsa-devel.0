@@ -1,17 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 2/3] ASoC: Intel: Skylake: add link
-	management
-Date: Thu,  5 May 2016 11:31:10 +0530
-Message-ID: <1462428071-30248-3-git-send-email-vinod.koul@intel.com>
-References: <1462428071-30248-1-git-send-email-vinod.koul@intel.com>
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Subject: [PATCH alsa-lib] conf/ucm: ROCKCHIP-I2S: add Rockchip
+	I2S UCM config.
+Date: Thu,  5 May 2016 08:32:06 +0200
+Message-ID: <1462429926-9464-1-git-send-email-enric.balletbo@collabora.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id F3D5B2652EE
- for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 07:55:21 +0200 (CEST)
-In-Reply-To: <1462428071-30248-1-git-send-email-vinod.koul@intel.com>
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+ by alsa0.perex.cz (Postfix) with ESMTP id E05A3261600
+ for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 08:32:17 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,111 +20,138 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use shiny new link APIs to manage the links. Also remove old link
-configuration logic from driver.
+Taken from the ChromeOS sources, this configuration was tested on Veyron
+Jerry based Chromebook from Google.
 
-We need to keep link and cmd dma to off during active suspend
-to allow system to enter low power state and turn it on if
-the link and cmd dma was on before active suspend in active
-resume.
-
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c |  1 -
- sound/soc/intel/skylake/skl.c     | 34 ++++++++++++++++++++++++++++++++++
- 2 files changed, 34 insertions(+), 1 deletion(-)
+ src/conf/ucm/Makefile.am                    |  2 +-
+ src/conf/ucm/ROCKCHIP-I2S/HiFi.conf         | 94 +++++++++++++++++++++++++++++
+ src/conf/ucm/ROCKCHIP-I2S/ROCKCHIP-I2S.conf |  6 ++
+ 3 files changed, 101 insertions(+), 1 deletion(-)
+ create mode 100644 src/conf/ucm/ROCKCHIP-I2S/HiFi.conf
+ create mode 100644 src/conf/ucm/ROCKCHIP-I2S/ROCKCHIP-I2S.conf
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index c726937321ef..6e71bf34ea2b 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -533,7 +533,6 @@ static int skl_link_pcm_prepare(struct snd_pcm_substream *substream,
- 	if (!link)
- 		return -EINVAL;
- 
--	snd_hdac_ext_bus_link_power_up(link);
- 	snd_hdac_ext_link_stream_reset(link_dev);
- 
- 	snd_hdac_ext_link_stream_setup(link_dev, format_val);
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 83e985c0c0c9..c1235ce4ea10 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -229,7 +229,12 @@ static int skl_suspend(struct device *dev)
- 	 * running, we need to save the state for these and continue
- 	 */
- 	if (skl->supend_active) {
-+		/* turn off the links and stop the CORB/RIRB DMA if it is On */
- 		snd_hdac_ext_bus_link_power_down_all(ebus);
+diff --git a/src/conf/ucm/Makefile.am b/src/conf/ucm/Makefile.am
+index e6a6325..d1d51e5 100644
+--- a/src/conf/ucm/Makefile.am
++++ b/src/conf/ucm/Makefile.am
+@@ -1 +1 @@
+-SUBDIRS=DAISY-I2S PandaBoard PandaBoardES SDP4430 tegraalc5632 PAZ00 GoogleNyan broadwell-rt286
++SUBDIRS=DAISY-I2S PandaBoard PandaBoardES SDP4430 tegraalc5632 PAZ00 GoogleNyan broadwell-rt286 ROCKCHIP-I2S
+diff --git a/src/conf/ucm/ROCKCHIP-I2S/HiFi.conf b/src/conf/ucm/ROCKCHIP-I2S/HiFi.conf
+new file mode 100644
+index 0000000..7bfe995
+--- /dev/null
++++ b/src/conf/ucm/ROCKCHIP-I2S/HiFi.conf
+@@ -0,0 +1,94 @@
++SectionVerb {
++	Value {
++		OutputDspName "speaker_eq"
++		MinBufferLevel "512"
++	}
 +
-+		if (ebus->cmd_io)
-+			snd_hdac_bus_stop_cmd_io(&ebus->bus);
++	EnableSequence [
++		cdev "hw:ROCKCHIPI2S"
 +
- 		enable_irq_wake(bus->irq);
- 		pci_save_state(pci);
- 		pci_disable_device(pci);
-@@ -255,6 +260,7 @@ static int skl_resume(struct device *dev)
- 	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
- 	struct skl *skl  = ebus_to_skl(ebus);
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+	struct hdac_ext_link *hlink = NULL;
- 	int ret;
- 
- 	/* Turned OFF in HDMI codec driver after codec reconfiguration */
-@@ -276,8 +282,29 @@ static int skl_resume(struct device *dev)
- 		ret = pci_enable_device(pci);
- 		snd_hdac_ext_bus_link_power_up_all(ebus);
- 		disable_irq_wake(bus->irq);
-+		/*
-+		 * turn On the links which are On before active suspend
-+		 * and start the CORB/RIRB DMA if On before
-+		 * active suspend.
-+		 */
-+		list_for_each_entry(hlink, &ebus->hlink_list, list) {
-+			if (hlink->ref_count)
-+				snd_hdac_ext_bus_link_power_up(hlink);
-+		}
++		cset "name='Left Speaker Mixer Left DAC Switch' on"
++		cset "name='Right Speaker Mixer Right DAC Switch' on"
++		cset "name='Headphone Left Switch' off"
++		cset "name='Headphone Right Switch' off"
++		cset "name='Digital EQ 3 Band Switch' off"
++		cset "name='Digital EQ 5 Band Switch' off"
++		cset "name='Digital EQ 7 Band Switch' off"
++		cset "name='Biquad Switch' off"
++		cset "name='Filter Mode' Music"
++		cset "name='ADC Oversampling Rate' 0"
 +
-+		if (ebus->cmd_io)
-+			snd_hdac_bus_init_cmd_io(&ebus->bus);
- 	} else {
- 		ret = _skl_resume(ebus);
++		cset "name='DMIC Mux' DMIC"
++		cset "name='MIC2 Mux' IN34"
++		cset "name='Right ADC Mixer MIC2 Switch' on"
++		cset "name='Left ADC Mixer MIC2 Switch' on"
++		cset "name='MIC2 Volume' 20"
++		cset "name='Headset Mic Switch' off"
++		cset "name='Int Mic Switch' on"
 +
-+		/* turn off the links which are off before suspend */
-+		list_for_each_entry(hlink, &ebus->hlink_list, list) {
-+			if (!hlink->ref_count)
-+				snd_hdac_ext_bus_link_power_down(hlink);
-+		}
++		cset "name='ADCR Boost Volume' 4"
++		cset "name='ADCL Boost Volume' 4"
++		cset "name='ADCR Volume' 11"
++		cset "name='ADCL Volume' 11"
 +
-+		if (!ebus->cmd_io)
-+			snd_hdac_bus_stop_cmd_io(&ebus->bus);
- 	}
- 
- 	return ret;
-@@ -613,6 +640,7 @@ static int skl_probe(struct pci_dev *pci,
- 	struct skl *skl;
- 	struct hdac_ext_bus *ebus = NULL;
- 	struct hdac_bus *bus = NULL;
-+	struct hdac_ext_link *hlink = NULL;
- 	int err;
- 
- 	/* we use ext core ops, so provide NULL for ops here */
-@@ -679,6 +707,12 @@ static int skl_probe(struct pci_dev *pci,
- 		}
- 	}
- 
-+	/*
-+	 * we are done probling so decrement link counts
-+	 */
-+	list_for_each_entry(hlink, &ebus->hlink_list, list)
-+		snd_hdac_ext_bus_link_put(ebus, hlink);
++		cset "name='Left Speaker Mixer Left DAC Switch' on"
++		cset "name='Right Speaker Mixer Right DAC Switch' on"
++		cset "name='Speaker Left Mixer Volume' 2"
++		cset "name='Speaker Right Mixer Volume' 2"
++		cset "name='Record Path DC Blocking' on"
++		cset "name='Playback Path DC Blocking' on"
 +
- 	/*configure PM */
- 	pm_runtime_put_noidle(bus->dev);
- 	pm_runtime_allow(bus->dev);
++		cset "name='Speaker Left Switch' on"
++		cset "name='Speaker Right Switch' on"
++		cset "name='Speaker Switch' on"
++	]
++
++	DisableSequence [
++	]
++}
++
++SectionDevice."Headphone".0 {
++	Value {
++		JackName "ROCKCHIP-I2S Headset Jack"
++		OutputDspName ""
++	}
++
++	EnableSequence [
++		cdev "hw:ROCKCHIPI2S"
++
++		cset "name='Speaker Switch' off"
++		cset "name='Headphone Left Switch' on"
++		cset "name='Headphone Right Switch' on"
++	]
++	DisableSequence [
++		cdev "hw:ROCKCHIPI2S"
++
++		cset "name='Headphone Left Switch' off"
++		cset "name='Headphone Right Switch' off"
++		cset "name='Speaker Switch' on"
++	]
++}
++
++SectionDevice."Mic".0 {
++	Value {
++		JackName "ROCKCHIP-I2S Headset Jack"
++	}
++
++	EnableSequence [
++		cdev "hw:ROCKCHIPI2S"
++
++		cset "name='Int Mic Switch' off"
++		cset "name='DMIC Mux' ADC"
++		cset "name='Headset Mic Switch' on"
++		cset "name='Record Path DC Blocking' on"
++	]
++
++	DisableSequence [
++		cdev "hw:ROCKCHIPI2S"
++
++		cset "name='Headset Mic Switch' off"
++		cset "name='DMIC Mux' DMIC"
++		cset "name='Int Mic Switch' on"
++		cset "name='Record Path DC Blocking' off"
++	]
++}
+diff --git a/src/conf/ucm/ROCKCHIP-I2S/ROCKCHIP-I2S.conf b/src/conf/ucm/ROCKCHIP-I2S/ROCKCHIP-I2S.conf
+new file mode 100644
+index 0000000..0c399b0
+--- /dev/null
++++ b/src/conf/ucm/ROCKCHIP-I2S/ROCKCHIP-I2S.conf
+@@ -0,0 +1,6 @@
++Comment "Rockchip card"
++
++SectionUseCase."HiFi" {
++	File "HiFi.conf"
++	Comment "Default"
++}
 -- 
-1.9.1
+2.1.0
