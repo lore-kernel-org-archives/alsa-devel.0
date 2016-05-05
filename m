@@ -1,138 +1,54 @@
-From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: [PATCH 2/7] ASoC: rockchip: Revert "ASoC: rockchip: i2s: separate capture and playback"
-Date: Thu,  5 May 2016 10:03:36 +0200
-Message-ID: <1462435421-21205-3-git-send-email-enric.balletbo@collabora.com>
+From: Enric Balletbo i Serra <enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Subject: [PATCH 4/7] ASoC: rockchip-max98090: Fix the Headset Mic route.
+Date: Thu,  5 May 2016 10:03:38 +0200
+Message-ID: <1462435421-21205-5-git-send-email-enric.balletbo@collabora.com>
 References: <1462435421-21205-1-git-send-email-enric.balletbo@collabora.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1462435421-21205-1-git-send-email-enric.balletbo@collabora.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Heiko Stuebner <heiko@sntech.de>, John Keeping <john@metanate.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <1462435421-21205-1-git-send-email-enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
+List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: John Keeping <john@metanate.com>
+Since commit e409dfbfccf9a49 ("ASoC: dapm: Add a few supply widget
+sanity checks") the following error is seen:
 
-This reverts commit eba65d179c1149cf79e68608d452631f33d7f017.
+ rockchip-snd-max98090 sound: HiFi <-> ff890000.i2s mapping ok
+ rockchip-snd-max98090 sound: Connecting non-supply widget to supply widget is not supported (Headset Mic -> MICBIAS)
+ rockchip-snd-max98090 sound: ASoC: no dapm match for Headset Mic --> (null) --> MICBIAS
+ rockchip-snd-max98090 sound: ASoC: Failed to add route Headset Mic -> direct -> MICBIAS
+ input: ROCKCHIP-I2S Headset Jack as /devices/platform/sound/sound/card0/input3
 
-This broke audio on Veyron Jerry Chromebooks and I now cannot reproduce
-the problem I was trying to fix even with this commit reverted, so it
-seems that this was completely the wrong thing to do.
+Invert the route between the Headset Mic and the bias in order to fix it.
 
-Reported-by: Enric Balletbo Serra <eballetbo@gmail.com>
-Signed-off-by: John Keeping <john@metanate.com>
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
 ---
- sound/soc/rockchip/rockchip_i2s.c | 72 ++++++++++++++++++++++-----------------
- 1 file changed, 40 insertions(+), 32 deletions(-)
+ sound/soc/rockchip/rockchip_max98090.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 34743ec..574c6af 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -82,8 +82,8 @@ static void rockchip_snd_txctrl(struct rk_i2s_dev *i2s, int on)
- 				   I2S_DMACR_TDE_ENABLE, I2S_DMACR_TDE_ENABLE);
- 
- 		regmap_update_bits(i2s->regmap, I2S_XFER,
--				   I2S_XFER_TXS_START,
--				   I2S_XFER_TXS_START);
-+				   I2S_XFER_TXS_START | I2S_XFER_RXS_START,
-+				   I2S_XFER_TXS_START | I2S_XFER_RXS_START);
- 
- 		i2s->tx_start = true;
- 	} else {
-@@ -92,23 +92,27 @@ static void rockchip_snd_txctrl(struct rk_i2s_dev *i2s, int on)
- 		regmap_update_bits(i2s->regmap, I2S_DMACR,
- 				   I2S_DMACR_TDE_ENABLE, I2S_DMACR_TDE_DISABLE);
- 
--		regmap_update_bits(i2s->regmap, I2S_XFER,
--				   I2S_XFER_TXS_START,
--				   I2S_XFER_TXS_STOP);
--
--		regmap_update_bits(i2s->regmap, I2S_CLR,
--				   I2S_CLR_TXC,
--				   I2S_CLR_TXC);
-+		if (!i2s->rx_start) {
-+			regmap_update_bits(i2s->regmap, I2S_XFER,
-+					   I2S_XFER_TXS_START |
-+					   I2S_XFER_RXS_START,
-+					   I2S_XFER_TXS_STOP |
-+					   I2S_XFER_RXS_STOP);
- 
--		regmap_read(i2s->regmap, I2S_CLR, &val);
-+			regmap_update_bits(i2s->regmap, I2S_CLR,
-+					   I2S_CLR_TXC | I2S_CLR_RXC,
-+					   I2S_CLR_TXC | I2S_CLR_RXC);
- 
--		/* Should wait for clear operation to finish */
--		while (val & I2S_CLR_TXC) {
- 			regmap_read(i2s->regmap, I2S_CLR, &val);
--			retry--;
--			if (!retry) {
--				dev_warn(i2s->dev, "fail to clear\n");
--				break;
-+
-+			/* Should wait for clear operation to finish */
-+			while (val) {
-+				regmap_read(i2s->regmap, I2S_CLR, &val);
-+				retry--;
-+				if (!retry) {
-+					dev_warn(i2s->dev, "fail to clear\n");
-+					break;
-+				}
- 			}
- 		}
- 	}
-@@ -124,8 +128,8 @@ static void rockchip_snd_rxctrl(struct rk_i2s_dev *i2s, int on)
- 				   I2S_DMACR_RDE_ENABLE, I2S_DMACR_RDE_ENABLE);
- 
- 		regmap_update_bits(i2s->regmap, I2S_XFER,
--				   I2S_XFER_RXS_START,
--				   I2S_XFER_RXS_START);
-+				   I2S_XFER_TXS_START | I2S_XFER_RXS_START,
-+				   I2S_XFER_TXS_START | I2S_XFER_RXS_START);
- 
- 		i2s->rx_start = true;
- 	} else {
-@@ -134,23 +138,27 @@ static void rockchip_snd_rxctrl(struct rk_i2s_dev *i2s, int on)
- 		regmap_update_bits(i2s->regmap, I2S_DMACR,
- 				   I2S_DMACR_RDE_ENABLE, I2S_DMACR_RDE_DISABLE);
- 
--		regmap_update_bits(i2s->regmap, I2S_XFER,
--				   I2S_XFER_RXS_START,
--				   I2S_XFER_RXS_STOP);
--
--		regmap_update_bits(i2s->regmap, I2S_CLR,
--				   I2S_CLR_RXC,
--				   I2S_CLR_RXC);
-+		if (!i2s->tx_start) {
-+			regmap_update_bits(i2s->regmap, I2S_XFER,
-+					   I2S_XFER_TXS_START |
-+					   I2S_XFER_RXS_START,
-+					   I2S_XFER_TXS_STOP |
-+					   I2S_XFER_RXS_STOP);
- 
--		regmap_read(i2s->regmap, I2S_CLR, &val);
-+			regmap_update_bits(i2s->regmap, I2S_CLR,
-+					   I2S_CLR_TXC | I2S_CLR_RXC,
-+					   I2S_CLR_TXC | I2S_CLR_RXC);
- 
--		/* Should wait for clear operation to finish */
--		while (val & I2S_CLR_RXC) {
- 			regmap_read(i2s->regmap, I2S_CLR, &val);
--			retry--;
--			if (!retry) {
--				dev_warn(i2s->dev, "fail to clear\n");
--				break;
-+
-+			/* Should wait for clear operation to finish */
-+			while (val) {
-+				regmap_read(i2s->regmap, I2S_CLR, &val);
-+				retry--;
-+				if (!retry) {
-+					dev_warn(i2s->dev, "fail to clear\n");
-+					break;
-+				}
- 			}
- 		}
- 	}
+diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
+index abb64a5..3da7891 100644
+--- a/sound/soc/rockchip/rockchip_max98090.c
++++ b/sound/soc/rockchip/rockchip_max98090.c
+@@ -53,7 +53,7 @@ static const struct snd_soc_dapm_widget rk_dapm_widgets[] = {
+ static const struct snd_soc_dapm_route rk_audio_map[] = {
+ 	{"IN34", NULL, "Headset Mic"},
+ 	{"IN34", NULL, "MICBIAS"},
+-	{"MICBIAS", NULL, "Headset Mic"},
++	{"Headset Mic", NULL, "MICBIAS"},
+ 	{"DMICL", NULL, "Int Mic"},
+ 	{"Headphone", NULL, "HPL"},
+ 	{"Headphone", NULL, "HPR"},
 -- 
 2.1.0
