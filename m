@@ -1,42 +1,47 @@
 From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [PATCH 0/3] ASoC: da7219: Add ACPI initialisation
-	support to driver
-Date: Thu, 5 May 2016 11:53:03 +0100
-Message-ID: <cover.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
+Subject: [PATCH 3/3] ASoC: da7219: Add initial ACPI id for device
+Date: Thu, 5 May 2016 11:53:06 +0100
+Message-ID: <7ddf6d5b47424ca3777d33a9f91d30ea7c7c439a.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
+References: <cover.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta14.messagelabs.com (mail1.bemta14.messagelabs.com
- [193.109.254.117])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C88E265DC4
- for <alsa-devel@alsa-project.org>; Thu,  5 May 2016 12:53:05 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch set updates the driver to use generic device property & fwnode
-related functions to read in either DT and ACPI data for driver initialisation.
+This adds "DLGS7219" ACPI id for the codec.
 
-Changes are based on v4.6-rc6 Linux Kernel.
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Tested-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+---
+ sound/soc/codecs/da7219.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Adam Thomson (3):
-  ASoC: da7219: Convert driver to use generic device/fwnode functions
-  ASoC: da7219: Add ACPI parsing support
-  ASoC: da7219: Add initial ACPI id for device
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index bc32322..da268b8 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1428,6 +1428,12 @@ static const struct of_device_id da7219_of_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, da7219_of_match);
 
- sound/soc/codecs/da7219-aad.c | 96 +++++++++++++++++++++++++++++++------------
- sound/soc/codecs/da7219.c     | 35 ++++++++++------
- 2 files changed, 91 insertions(+), 40 deletions(-)
-
---
-1.9.3
++static const struct acpi_device_id da7219_acpi_match[] = {
++	{ .id = "DLGS7219", },
++	{ }
++};
++MODULE_DEVICE_TABLE(acpi, da7219_acpi_match);
++
+ static enum da7219_micbias_voltage
+ 	da7219_of_micbias_lvl(struct device *dev, u32 val)
+ {
+@@ -1957,6 +1963,7 @@ static struct i2c_driver da7219_i2c_driver = {
+ 	.driver = {
+ 		.name = "da7219",
+ 		.of_match_table = of_match_ptr(da7219_of_match),
++		.acpi_match_table = ACPI_PTR(da7219_acpi_match),
+ 	},
+ 	.probe		= da7219_i2c_probe,
+ 	.remove		= da7219_i2c_remove,
