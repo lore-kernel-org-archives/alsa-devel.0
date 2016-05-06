@@ -1,93 +1,99 @@
-From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Subject: Re: [PATCH 2/3] ASoC: da7219: Add ACPI parsing support
-Date: Fri, 6 May 2016 14:45:00 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A0337D463C303@SW-EX-MBX01.diasemi.com>
-References: <cover.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
- <bb23ba754ed1f51c9b20ccd4a2b87520ce7c1893.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
- <20160506123909.GT6292@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta14.messagelabs.com (mail1.bemta14.messagelabs.com
- [193.109.254.119])
- by alsa0.perex.cz (Postfix) with ESMTP id E8D5D2606F5
- for <alsa-devel@alsa-project.org>; Fri,  6 May 2016 16:45:03 +0200 (CEST)
-In-Reply-To: <20160506123909.GT6292@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Support Opensource <Support.Opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+From: Andrea Adami <andrea.adami@gmail.com>
+Subject: [PATCH 1/1] ASoC: pxa: Fix module autoload for platform drivers
+Date: Fri,  6 May 2016 17:27:34 +0200
+Message-ID: <1462548454-28597-1-git-send-email-andrea.adami@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On May 06, 2016, 13:39, Mark Brown wrote:
+These platform drivers are lacking MODULE_ALIAS so module autoloading
+doesn't work. Tested on corgi and poodle with kernel 4.4.
 
-> > @@ -27,7 +28,6 @@
-> >  #include "da7219.h"
-> >  #include "da7219-aad.h"
-> >
-> > -
-> >  /*
-> >   * Detection control
-> >   */
-> 
-> Random whitespace change.
+Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
+---
+ sound/soc/pxa/brownstone.c     | 1 +
+ sound/soc/pxa/mioa701_wm9713.c | 1 +
+ sound/soc/pxa/mmp-pcm.c        | 1 +
+ sound/soc/pxa/mmp-sspa.c       | 1 +
+ sound/soc/pxa/palm27x.c        | 1 +
+ sound/soc/pxa/pxa-ssp.c        | 1 +
+ sound/soc/pxa/pxa2xx-ac97.c    | 1 +
+ sound/soc/pxa/pxa2xx-pcm.c     | 1 +
+ 8 files changed, 8 insertions(+)
 
-Fair point. Will sort it.
-
-> 
-> >  static struct fwnode_handle *da7219_aad_of_named_fwhandle(struct device
-> *dev,
-> >  							  const char *name)
-> >  {
-> > @@ -551,6 +571,9 @@ static struct fwnode_handle
-> *da7219_aad_of_named_fwhandle(struct device *dev,
-> >  			of_node = to_of_node(child);
-> >  			if (of_node_cmp(of_node->name, name) == 0)
-> >  				return child;
-> > +		} else if (is_acpi_data_node(child)) {
-> > +			if (da7219_aad_of_acpi_node_matched(child, name))
-> > +				return child;
-> >  		}
-> >  	}
-> >
-> 
-> This seems messy.  It is a function with a DT specific name that's
-> matching ACPI stuff and the fwnode API isn't hiding anything for us
-> which suggests this isn't something that's expected to work
-> transparently.  At least the naming needs to be corrected, and if this
-> *is* supposed to be something we do in ACPI I'd expect the handling to
-> be pushed into the fwnode API rather than open coded in a driver - at
-> the minute I'm unsure if this is messy because it's a bad idea to do
-> this at all or if it's just the naming and so on.
-
-ACPI allows for data only child nodes, like DT, so I do believe this is a valid
-case. Also, this kind of functionality is already used in a similar-ish manner in 
-the leds-gpio code. I agree that maybe the name should be changed though as it's
-misleading. Will also look at the fwnode API and see if it makes sense to move
-this there.
-
-> 
-> > -	/* Handle any DT/platform data */
-> > -	if ((codec->dev->of_node) && (da7219->pdata))
-> > +	/* Handle any DT/ACPI/platform data */
-> > +	if (((codec->dev->of_node) || is_acpi_node(codec->dev->fwnode)) &&
-> > +	    (da7219->pdata))
-> >  		da7219->pdata->aad_pdata = da7219_aad_of_to_pdata(codec);
-> >
-> >  	da7219_aad_handle_pdata(codec);
-> 
-> Surely we should be able to check if there's firmware data without
-> enumerating every possible firmware type?
-
-There doesn't seem to be a unified check for this. Also, Given these are the
-only two types the driver expects and supports right now, I don't see a problem
-being explicit here in the checking.
+diff --git a/sound/soc/pxa/brownstone.c b/sound/soc/pxa/brownstone.c
+index ec522e9..b6cb995 100644
+--- a/sound/soc/pxa/brownstone.c
++++ b/sound/soc/pxa/brownstone.c
+@@ -133,3 +133,4 @@ module_platform_driver(mmp_driver);
+ MODULE_AUTHOR("Leo Yan <leoy@marvell.com>");
+ MODULE_DESCRIPTION("ALSA SoC Brownstone");
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:brownstone-audio");
+diff --git a/sound/soc/pxa/mioa701_wm9713.c b/sound/soc/pxa/mioa701_wm9713.c
+index 5c8f9db..d1661fa 100644
+--- a/sound/soc/pxa/mioa701_wm9713.c
++++ b/sound/soc/pxa/mioa701_wm9713.c
+@@ -207,3 +207,4 @@ module_platform_driver(mioa701_wm9713_driver);
+ MODULE_AUTHOR("Robert Jarzmik (rjarzmik@free.fr)");
+ MODULE_DESCRIPTION("ALSA SoC WM9713 MIO A701");
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:mioa701-wm9713");
+diff --git a/sound/soc/pxa/mmp-pcm.c b/sound/soc/pxa/mmp-pcm.c
+index 51e790d..96df9b2 100644
+--- a/sound/soc/pxa/mmp-pcm.c
++++ b/sound/soc/pxa/mmp-pcm.c
+@@ -248,3 +248,4 @@ module_platform_driver(mmp_pcm_driver);
+ MODULE_AUTHOR("Leo Yan <leoy@marvell.com>");
+ MODULE_DESCRIPTION("MMP Soc Audio DMA module");
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:mmp-pcm-audio");
+diff --git a/sound/soc/pxa/mmp-sspa.c b/sound/soc/pxa/mmp-sspa.c
+index eca60c2..ca8b23f 100644
+--- a/sound/soc/pxa/mmp-sspa.c
++++ b/sound/soc/pxa/mmp-sspa.c
+@@ -482,3 +482,4 @@ module_platform_driver(asoc_mmp_sspa_driver);
+ MODULE_AUTHOR("Leo Yan <leoy@marvell.com>");
+ MODULE_DESCRIPTION("MMP SSPA SoC Interface");
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:mmp-sspa-dai");
+diff --git a/sound/soc/pxa/palm27x.c b/sound/soc/pxa/palm27x.c
+index 4e74d95..bcc81e9 100644
+--- a/sound/soc/pxa/palm27x.c
++++ b/sound/soc/pxa/palm27x.c
+@@ -161,3 +161,4 @@ module_platform_driver(palm27x_wm9712_driver);
+ MODULE_AUTHOR("Marek Vasut <marek.vasut@gmail.com>");
+ MODULE_DESCRIPTION("ALSA SoC Palm T|X, T5 and LifeDrive");
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:palm27x-asoc");
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index da03fad..3cad990 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -833,3 +833,4 @@ module_platform_driver(asoc_ssp_driver);
+ MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
+ MODULE_DESCRIPTION("PXA SSP/PCM SoC Interface");
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:pxa-ssp-dai");
+diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
+index f3de615..9615e6d 100644
+--- a/sound/soc/pxa/pxa2xx-ac97.c
++++ b/sound/soc/pxa/pxa2xx-ac97.c
+@@ -287,3 +287,4 @@ module_platform_driver(pxa2xx_ac97_driver);
+ MODULE_AUTHOR("Nicolas Pitre");
+ MODULE_DESCRIPTION("AC97 driver for the Intel PXA2xx chip");
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:pxa2xx-ac97");
+diff --git a/sound/soc/pxa/pxa2xx-pcm.c b/sound/soc/pxa/pxa2xx-pcm.c
+index 9f39039..410d48b 100644
+--- a/sound/soc/pxa/pxa2xx-pcm.c
++++ b/sound/soc/pxa/pxa2xx-pcm.c
+@@ -117,3 +117,4 @@ module_platform_driver(pxa_pcm_driver);
+ MODULE_AUTHOR("Nicolas Pitre");
+ MODULE_DESCRIPTION("Intel PXA2xx PCM DMA module");
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:pxa-pcm-audio");
+-- 
+1.9.1
