@@ -1,64 +1,89 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: da7219: Convert driver to use generic
- device/fwnode functions
-Date: Fri, 6 May 2016 17:05:36 +0100
-Message-ID: <20160506160536.GU6292@sirena.org.uk>
+Subject: Re: [PATCH 2/3] ASoC: da7219: Add ACPI parsing support
+Date: Fri, 6 May 2016 17:42:08 +0100
+Message-ID: <20160506164208.GV6292@sirena.org.uk>
 References: <cover.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
- <4783487c3caa1d66f0a1d5b25c9b341aee1118e4.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
- <20160506122643.GS6292@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A0337D463C2EF@SW-EX-MBX01.diasemi.com>
+ <bb23ba754ed1f51c9b20ccd4a2b87520ce7c1893.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
+ <20160506123909.GT6292@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A0337D463C303@SW-EX-MBX01.diasemi.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="i6eMXvFBn1dR7Tww"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <2E89032DDAA8B9408CB92943514A0337D463C2EF@SW-EX-MBX01.diasemi.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============3759786874344876931=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id DE4C5260867
+ for <alsa-devel@alsa-project.org>; Fri,  6 May 2016 18:42:21 +0200 (CEST)
+In-Reply-To: <2E89032DDAA8B9408CB92943514A0337D463C303@SW-EX-MBX01.diasemi.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Support Opensource <Support.Opensource@diasemi.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Support Opensource <Support.Opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---i6eMXvFBn1dR7Tww
+--===============3759786874344876931==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="S+p9DbwVuimCDe+R"
+Content-Disposition: inline
+
+
+--S+p9DbwVuimCDe+R
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, May 06, 2016 at 02:33:04PM +0000, Opensource [Adam Thomson] wrote:
-> On May 06, 2016, 13:27, Mark Brown wrote:
+On Fri, May 06, 2016 at 02:45:00PM +0000, Opensource [Adam Thomson] wrote:
+> On May 06, 2016, 13:39, Mark Brown wrote:
 
-> > Is this *really* sensible?  DT idioms don't always match up with ACPI
-> > idioms well and this isn't a trivial DT binding.
+> > > -	/* Handle any DT/platform data */
+> > > -	if ((codec->dev->of_node) && (da7219->pdata))
+> > > +	/* Handle any DT/ACPI/platform data */
+> > > +	if (((codec->dev->of_node) || is_acpi_node(codec->dev->fwnode)) &&
+> > > +	    (da7219->pdata))
+> > >  		da7219->pdata->aad_pdata = da7219_aad_of_to_pdata(codec);
 
-> For what we're doing here, both DT and ACPI match up well, and so what I've
-> implemented works on both sides. There are other examples of this already in the
-> Linux kernel, so I don't think it's anything particularly new.
+> > >  	da7219_aad_handle_pdata(codec);
 
-No, not really - your DT is fairly unusual in how it's done and the lack
-of ACPI helpers is not a good sign on that side.  The _DSD things are
-really only supposed to work for simple properties on devices.
+> > Surely we should be able to check if there's firmware data without
+> > enumerating every possible firmware type?
 
-> > There's nothing device specific about this, it should go in generic
-> > code.
+> There doesn't seem to be a unified check for this. Also, Given these are the
+> only two types the driver expects and supports right now, I don't see a problem
+> being explicit here in the checking.
 
-> The intention was to just match against DT or ACPI and nothing else, so that
-> didn't feel generic enough to be pushed into the fwnode framework. However
-> I will take another look.
+Again it's pointing out something that looks like it's missing from the
+fwnode API - if people are supposed to be able to write firmware neutral
+drivers they should be able to do everything they need at the fwnode
+level.
 
-That's currently the entire set of things that fwnode supports so...
-
---i6eMXvFBn1dR7Tww
+--S+p9DbwVuimCDe+R
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXLMDPAAoJECTWi3JdVIfQ2bsH/0fD6vBQ1XFjMsgR90ldaynI
-32DVrcvTUVpjw40kavpPv0C2liG6X4BSuPG8l9n4RSxtSdPPztXUx3cXrAmAIGG7
-Cw9uBdUBD32lUkK0+s9YJ8+ImoYwLOL0likaIWCuNpzUd+tRLPB6FaPB2dnbWq8d
-gGvV2d/GN9YSXwgnex6Xtj/sXq/GfACqMcpSgB5BBAIV1bXsuu+B3JHiIZ61hxUm
-IXt2PlBvERqVv+ua1hVGwdR3JJo54t3paKSwTKezBW5sShqKxveaDA4ODFnLQ1/3
-+tl0iLVDoXR+vohit8EsgRnZrBKVJXwbCYvwI+ODSoMYS64lWhXDMkBQCiD6s3Y=
-=vIwo
+iQEcBAEBCAAGBQJXLMlfAAoJECTWi3JdVIfQXOgH/34y5Cdv00qQtzfpM/JSaw1n
+ZY7acdExkDDgSMmGK/QT/caLRPx1a2wO1mA67XlCI8DoPtENeRCvatBtnmK6hnDr
+6JZh6sW9pvEPMKUWsXMc7edhgqpMlkO3gamU7Ie82w9KE0CCJuvGD8vcxLEuqd+e
+rgAkb4wLOnvwpEOVwggcnYowhss6VHeOVUpv5nRtp8ft08r/lXvtB3KTyRLnU7MZ
+0gKUsIGrt25JGFh4Hf7qOgy+Yp9vBiNbKWU2ClhEm231Vv5DPYc9vOh35wkM+cjD
+fRDhNBu9v6kk1H5yAtMjZc6XobQELR/ZYvm6DqllvBF67LFTujk8WNXxEjpF7XQ=
+=T58q
 -----END PGP SIGNATURE-----
 
---i6eMXvFBn1dR7Tww--
+--S+p9DbwVuimCDe+R--
+
+--===============3759786874344876931==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3759786874344876931==--
