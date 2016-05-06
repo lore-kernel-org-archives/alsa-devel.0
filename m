@@ -1,64 +1,96 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH 1/7] ALSA: ac97: split out the generic ac97 registers
-Date: Fri, 6 May 2016 18:17:04 +0100
-Message-ID: <20160506171704.GY6292@sirena.org.uk>
-References: <1462050939-27940-1-git-send-email-robert.jarzmik@free.fr>
- <1462050939-27940-2-git-send-email-robert.jarzmik@free.fr>
- <20160503115159.GP6292@sirena.org.uk>
- <87y47roski.fsf@belgarion.home>
- <20160504090702.GV6292@sirena.org.uk>
- <87pot0pbnf.fsf@belgarion.home>
- <20160505191728.GK6292@sirena.org.uk>
- <87h9ecp9tp.fsf@belgarion.home>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 1/5] ALSA: pcm: Fix poll error return codes
+Date: Sat, 7 May 2016 03:11:35 +0900
+Message-ID: <572CDE57.6050604@sakamocchi.jp>
+References: <1462370351-15388-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1462370351-15388-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <572A8534.4020207@sakamocchi.jp>
+ <cb0c26e2-d594-844d-62b3-36e6f2f830f6@ladisch.de>
+ <20160505114602.GF1646@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="nRkE97iIlkj7lnZ0"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87h9ecp9tp.fsf@belgarion.home>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7103E264F2D
+ for <alsa-devel@alsa-project.org>; Fri,  6 May 2016 20:11:38 +0200 (CEST)
+In-Reply-To: <20160505114602.GF1646@localhost.localdomain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Clemens Ladisch <clemens@ladisch.de>
+Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
+Hi Charles and Clemens,
 
---nRkE97iIlkj7lnZ0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Sorry to be late.
 
-On Thu, May 05, 2016 at 09:46:10PM +0200, Robert Jarzmik wrote:
-> Mark Brown <broonie@kernel.org> writes:
-> > On Thu, May 05, 2016 at 09:06:44PM +0200, Robert Jarzmik wrote:
-> >> Mark Brown <broonie@kernel.org> writes:
+On May 5 2016 20:46, Charles Keepax wrote:
+> On Thu, May 05, 2016 at 11:39:34AM +0200, Clemens Ladisch wrote:
+>> Takashi Sakamoto wrote:
+>>> On May 4 2016 22:59, Charles Keepax wrote:
+>>>>  	if (PCM_RUNTIME_CHECK(substream))
+>>>> -		return -ENXIO;
+>>>> +		return POLLIN | POLLRDNORM | POLLERR;
+>>>
+>>> [...]
+>>> On the other hand, I think POLLOUT, POLLIN, POLLWRNORM and POLLRDNORM
+>>> should not be included in the value. PCM_RUNTIME_CHECK() ensures PCM
+>>> substream or PCM runtime is NULL. This means that subsequent I/O
+>>> operations are failed, at least for handling PCM frames.
+>>>
+>>> I think it better to return 'POLLERR | POLLHUP'.
+>>
+>> To expand on this: POLLIN/POLLOUT imply that it is possible to read/
+>> write data without blocking.  Sockets and pipes combine POLLHUP with
+>> POLLIN because the read() (or recv()) returns 0 bytes without blocking
+>> to indicate the end of the stream.
+>>
+>> But in this situation, snd_pcm_read*/write* will always fail, so it is,
+>> strictly speaking, indeed not appropriate to set POLLIN/OUT.
+>>
+>> On the other hand, PCM devices do include the POLLIN/OUT bits when they
+>> are in a wrong state.  (This is probably to catch programs that do not
+>> check the error bits; with POLLIN/OUT set, these programs will try to
+>> read/write, and will then get the error code.)
+>>
+>> So for consistency, the bits should be included.  (Or the other error
+>> case fixed to remove these bits.)
 
-> >> This transition will be easier if the new ac97 code is isolated as much as
-> >> possible from the former code while providing backward compatibility ... hence
-> >> this patch.
+I agree with the Clemens's view. So this patch is OK to me.
 
-> > It'd probably have been clearer to me if it were splitting out all the
-> > register definitions rather than just some of them.
+Reviewd-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-> Euh unless I'm missing something I have splitted out all the ac97 generic
-> registers AFAIK. The only remaining ones are chip specific which I didn't take
-> as they should be in codec specific code and not ac97 generic one.
+But if we have the intention for including POLLIN/OUT, it's better to
+add some comments about it.
 
-The changelog read like it was trying to split things used by the
-controller vs things used by CODEC drivers, I didn't get as far as
-checking all the registers TBH.
+> Thanks for the explaination guys. I definitely agree that all
+> the return values should be consistent. I am happy to change the
+> values if people prefer but I guess the decision really rests
+> with Takashi and if he is happy to change the returns to
+> POLLERR | POLLHUP, as I guess there is the potential for some
+> user-space fall out. Perhaps I should do this as a seperate patch
+> on top of this chain, so we can review explicitly.
 
---nRkE97iIlkj7lnZ0
-Content-Type: application/pgp-signature; name="signature.asc"
+I guess that this patch can be applied to ALSA PCM core separately from
+the others for ALSA Compress core. So it's better to post two series;
+one includes this patch, another includes the rest.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+> I have had a look and both tinyalsa and alsalib look like they
+> would handle the change correctly.
 
-iQEcBAEBCAAGBQJXLNGPAAoJECTWi3JdVIfQxWgH/3sJ1J4JI3kBqku4OHfoc2jm
-uXlCYfzb/brOfmZFoP2x6eis4K5ut1xvMN5OecypKWLFpS4dZApd7Kt/Yg7M+Fk7
-NAcotCFJ3MV/BJ2v3L6NzFBXGrZGtKD0KN/1I16Oda7O9CzbJyO8O7vhTi2+hOfL
-vVad8MksGIsBzPgqr3W6yuS42YvUsd+AqeRuHt1UZBcb1CRWbzFbGnmn53ec0awy
-FRyVW2DpygRKY3tIvAtVIF7KE1VnIeMCH7ZfMp1pYMWpECKJoiL2iuhtTAbQBwUr
-AfWR4s8vfuS4VDpbK+AdAiXzeLUjdl1jSU0UcNp6FE+kVSKzMFYWSBq2azTI23Q=
-=B8s+
------END PGP SIGNATURE-----
+In the same time, it's better for us to consider that
+userspace applications can be programmed directly to use
+kernel/userspace interface without these I/O libraries.
 
---nRkE97iIlkj7lnZ0--
+
+Regards
+
+Takashi (not-maintainer) Sakamoto
