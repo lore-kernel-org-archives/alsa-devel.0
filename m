@@ -1,20 +1,21 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 1/5] ALSA: pcm: Fix poll error return codes
-Date: Sat, 7 May 2016 03:11:35 +0900
-Message-ID: <572CDE57.6050604@sakamocchi.jp>
-References: <1462370351-15388-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1462370351-15388-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <572A8534.4020207@sakamocchi.jp>
- <cb0c26e2-d594-844d-62b3-36e6f2f830f6@ladisch.de>
- <20160505114602.GF1646@localhost.localdomain>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: nau8825: non-clock jack
+ detection for power saving at standby
+Date: Fri, 6 May 2016 19:18:55 +0100
+Message-ID: <20160506181855.GZ6292@sirena.org.uk>
+References: <1461917718-25211-1-git-send-email-KCHSU0@nuvoton.com>
+ <20160502162715.GK6292@sirena.org.uk>
+ <57286D40.6030002@nuvoton.com>
+ <20160504163943.GZ6292@sirena.org.uk>
+ <572C4AB6.9030106@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0871722466917506591=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 7103E264F2D
- for <alsa-devel@alsa-project.org>; Fri,  6 May 2016 20:11:38 +0200 (CEST)
-In-Reply-To: <20160505114602.GF1646@localhost.localdomain>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 709D8264F28
+ for <alsa-devel@alsa-project.org>; Fri,  6 May 2016 20:19:03 +0200 (CEST)
+In-Reply-To: <572C4AB6.9030106@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,73 +25,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Clemens Ladisch <clemens@ladisch.de>
-Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, tiwai@suse.com
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, "anatol.pomozov@gmail.com" <anatol.pomozov@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "benzh@chromium.org" <benzh@chromium.org>, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <MHKuo@nuvoton.com>, "yong.zhi@intel.com" <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Charles and Clemens,
 
-Sorry to be late.
-
-On May 5 2016 20:46, Charles Keepax wrote:
-> On Thu, May 05, 2016 at 11:39:34AM +0200, Clemens Ladisch wrote:
->> Takashi Sakamoto wrote:
->>> On May 4 2016 22:59, Charles Keepax wrote:
->>>>  	if (PCM_RUNTIME_CHECK(substream))
->>>> -		return -ENXIO;
->>>> +		return POLLIN | POLLRDNORM | POLLERR;
->>>
->>> [...]
->>> On the other hand, I think POLLOUT, POLLIN, POLLWRNORM and POLLRDNORM
->>> should not be included in the value. PCM_RUNTIME_CHECK() ensures PCM
->>> substream or PCM runtime is NULL. This means that subsequent I/O
->>> operations are failed, at least for handling PCM frames.
->>>
->>> I think it better to return 'POLLERR | POLLHUP'.
->>
->> To expand on this: POLLIN/POLLOUT imply that it is possible to read/
->> write data without blocking.  Sockets and pipes combine POLLHUP with
->> POLLIN because the read() (or recv()) returns 0 bytes without blocking
->> to indicate the end of the stream.
->>
->> But in this situation, snd_pcm_read*/write* will always fail, so it is,
->> strictly speaking, indeed not appropriate to set POLLIN/OUT.
->>
->> On the other hand, PCM devices do include the POLLIN/OUT bits when they
->> are in a wrong state.  (This is probably to catch programs that do not
->> check the error bits; with POLLIN/OUT set, these programs will try to
->> read/write, and will then get the error code.)
->>
->> So for consistency, the bits should be included.  (Or the other error
->> case fixed to remove these bits.)
-
-I agree with the Clemens's view. So this patch is OK to me.
-
-Reviewd-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-
-But if we have the intention for including POLLIN/OUT, it's better to
-add some comments about it.
-
-> Thanks for the explaination guys. I definitely agree that all
-> the return values should be consistent. I am happy to change the
-> values if people prefer but I guess the decision really rests
-> with Takashi and if he is happy to change the returns to
-> POLLERR | POLLHUP, as I guess there is the potential for some
-> user-space fall out. Perhaps I should do this as a seperate patch
-> on top of this chain, so we can review explicitly.
-
-I guess that this patch can be applied to ALSA PCM core separately from
-the others for ALSA Compress core. So it's better to post two series;
-one includes this patch, another includes the rest.
-
-> I have had a look and both tinyalsa and alsalib look like they
-> would handle the change correctly.
-
-In the same time, it's better for us to consider that
-userspace applications can be programmed directly to use
-kernel/userspace interface without these I/O libraries.
+--===============0871722466917506591==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="xp5T+jWXk9cMuWlh"
+Content-Disposition: inline
 
 
-Regards
+--xp5T+jWXk9cMuWlh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Takashi (not-maintainer) Sakamoto
+On Fri, May 06, 2016 at 03:41:42PM +0800, John Hsu wrote:
+> On 5/5/2016 12:39 AM, Mark Brown wrote:
+> > On Tue, May 03, 2016 at 05:20:00PM +0800, John Hsu wrote:
+
+> > > For clear expression, we should print error message and return error to
+> > > caller. Is it right?
+
+> > It'd be better to just accept the configuration but what you suggest is
+> > less bad than just completely ignoring the problem.
+
+> The codec needs internal clock for interruption at auto mode. Therefor, the
+> system clock will go back to internal clock after playback to end. But we
+> don't want this happened when jack is ejected already. We expected no in-
+> ternal clock when no headset connected; but the system will turn on it when
+> playback finish. For the reason, the driver adds error check to avoid this
+> situation happened.
+
+I'm not sure I fully follow the above explanation.  I appreciate that
+power consumption is not going to be optimal when the clock is provided
+and the chip is idle but does it actually stop anything working?
+
+> > This does not address the issue at all.  The interrupt is optional, it
+> > may not have been wired up and the probe function handles that case
+> > gracefully.
+
+> The ejection interruption will turn on when resume for the issue. Let the
+> probe function to handle it.
+
+I don't see how the probe function can handle the fact that the resume
+function is unconditionally calling enable_irq()?
+
+--xp5T+jWXk9cMuWlh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXLOANAAoJECTWi3JdVIfQymUH/2l7RCMsoijImGJvWsL2BWqH
+JAvEA6RTvxk7cSAEdfP175xJkcQqVb8QF/NCR4aqzWkQAx/FULP9eJSnYOZ+ahHn
+ZoNm78WhOWfeFyLKFoUOeIXKRmjWBGi2NvlYZuHtN+2PTDruPxV9C/70P5kapWa/
+Rf002wC7rgaHXdtHSCcnz7LzncbRhOkeGBPsmQIONKbniAbiNX2mUKnqJ92BN17v
+S/MO6922eSh+k9J0J+vuh72dQsqTOb4viZc3kWJ0FwWChPkJ8XdJROQbzjbnPGqu
+NUeGk14+zPLEIqcArm3UAXBf3Jgj01hcfqnQ+oV85DF3TMaw6yopkZjIuTR7ov0=
+=+3Ql
+-----END PGP SIGNATURE-----
+
+--xp5T+jWXk9cMuWlh--
+
+--===============0871722466917506591==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0871722466917506591==--
