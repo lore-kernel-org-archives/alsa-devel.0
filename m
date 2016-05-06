@@ -1,44 +1,93 @@
 From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Subject: RE: [PATCH 1/3] ASoC: da7219: Convert driver to use generic
- device/fwnode functions
-Date: Fri, 6 May 2016 14:33:04 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A0337D463C2EF@SW-EX-MBX01.diasemi.com>
+Subject: Re: [PATCH 2/3] ASoC: da7219: Add ACPI parsing support
+Date: Fri, 6 May 2016 14:45:00 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A0337D463C303@SW-EX-MBX01.diasemi.com>
 References: <cover.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
- <4783487c3caa1d66f0a1d5b25c9b341aee1118e4.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
- <20160506122643.GS6292@sirena.org.uk>
+ <bb23ba754ed1f51c9b20ccd4a2b87520ce7c1893.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
+ <20160506123909.GT6292@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160506122643.GS6292@sirena.org.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.bemta14.messagelabs.com (mail1.bemta14.messagelabs.com
+ [193.109.254.119])
+ by alsa0.perex.cz (Postfix) with ESMTP id E8D5D2606F5
+ for <alsa-devel@alsa-project.org>; Fri,  6 May 2016 16:45:03 +0200 (CEST)
+In-Reply-To: <20160506123909.GT6292@sirena.org.uk>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Support Opensource <Support.Opensource@diasemi.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Support Opensource <Support.Opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTWF5IDA2LCAyMDE2LCAxMzoyNywgTWFyayBCcm93biB3cm90ZToNCg0KPiA+IFRoaXMgY2hh
-bmdlIGNvbnZlcnRzIHRoZSBkcml2ZXIgZnJvbSB1c2luZyB0aGUgb2ZfKiBmdW5jdGlvbnMgdG8g
-dXNpbmcNCj4gPiB0aGUgZGV2aWNlXyogYW5kIGZ3bm9kZV8qIGZ1bmN0aW9ucyBmb3IgYWNjc3Np
-bmcgRFQgcmVsYXRlZCBkYXRhLg0KPiA+IFRoaXMgaXMgaW4gcHJlcGFyYXRpb24gZm9yIHVwZGF0
-ZXMgdG8gc3VwcG9ydCBBQ1BJIGJhc2VkIGluaXRpYWxpc2F0aW9uLg0KPiANCj4gSXMgdGhpcyAq
-cmVhbGx5KiBzZW5zaWJsZT8gIERUIGlkaW9tcyBkb24ndCBhbHdheXMgbWF0Y2ggdXAgd2l0aCBB
-Q1BJDQo+IGlkaW9tcyB3ZWxsIGFuZCB0aGlzIGlzbid0IGEgdHJpdmlhbCBEVCBiaW5kaW5nLg0K
-DQpGb3Igd2hhdCB3ZSdyZSBkb2luZyBoZXJlLCBib3RoIERUIGFuZCBBQ1BJIG1hdGNoIHVwIHdl
-bGwsIGFuZCBzbyB3aGF0IEkndmUNCmltcGxlbWVudGVkIHdvcmtzIG9uIGJvdGggc2lkZXMuIFRo
-ZXJlIGFyZSBvdGhlciBleGFtcGxlcyBvZiB0aGlzIGFscmVhZHkgaW4gdGhlDQpMaW51eCBrZXJu
-ZWwsIHNvIEkgZG9uJ3QgdGhpbmsgaXQncyBhbnl0aGluZyBwYXJ0aWN1bGFybHkgbmV3Lg0KDQo+
-IA0KPiA+ICtzdGF0aWMgc3RydWN0IGZ3bm9kZV9oYW5kbGUgKmRhNzIxOV9hYWRfb2ZfbmFtZWRf
-ZndoYW5kbGUoc3RydWN0IGRldmljZQ0KPiAqZGV2LA0KPiA+ICsJCQkJCQkJICBjb25zdCBjaGFy
-ICpuYW1lKQ0KPiA+ICt7DQo+ID4gKwlzdHJ1Y3QgZndub2RlX2hhbmRsZSAqY2hpbGQ7DQo+ID4g
-KwlzdHJ1Y3QgZGV2aWNlX25vZGUgKm9mX25vZGU7DQo+ID4gKw0KPiA+ICsJLyogRmluZCBmaXJz
-dCBtYXRjaGluZyBjaGlsZCBub2RlICovDQo+ID4gKwlkZXZpY2VfZm9yX2VhY2hfY2hpbGRfbm9k
-ZShkZXYsIGNoaWxkKSB7DQo+ID4gKwkJaWYgKGlzX29mX25vZGUoY2hpbGQpKSB7DQo+ID4gKwkJ
-CW9mX25vZGUgPSB0b19vZl9ub2RlKGNoaWxkKTsNCj4gPiArCQkJaWYgKG9mX25vZGVfY21wKG9m
-X25vZGUtPm5hbWUsIG5hbWUpID09IDApDQo+ID4gKwkJCQlyZXR1cm4gY2hpbGQ7DQo+ID4gKwkJ
-fQ0KPiA+ICsJfQ0KPiA+ICsNCj4gPiArCXJldHVybiBOVUxMOw0KPiA+ICt9DQo+IA0KPiBUaGVy
-ZSdzIG5vdGhpbmcgZGV2aWNlIHNwZWNpZmljIGFib3V0IHRoaXMsIGl0IHNob3VsZCBnbyBpbiBn
-ZW5lcmljDQo+IGNvZGUuDQoNClRoZSBpbnRlbnRpb24gd2FzIHRvIGp1c3QgbWF0Y2ggYWdhaW5z
-dCBEVCBvciBBQ1BJIGFuZCBub3RoaW5nIGVsc2UsIHNvIHRoYXQNCmRpZG4ndCBmZWVsIGdlbmVy
-aWMgZW5vdWdoIHRvIGJlIHB1c2hlZCBpbnRvIHRoZSBmd25vZGUgZnJhbWV3b3JrLiBIb3dldmVy
-DQpJIHdpbGwgdGFrZSBhbm90aGVyIGxvb2suDQoNCg==
+On May 06, 2016, 13:39, Mark Brown wrote:
+
+> > @@ -27,7 +28,6 @@
+> >  #include "da7219.h"
+> >  #include "da7219-aad.h"
+> >
+> > -
+> >  /*
+> >   * Detection control
+> >   */
+> 
+> Random whitespace change.
+
+Fair point. Will sort it.
+
+> 
+> >  static struct fwnode_handle *da7219_aad_of_named_fwhandle(struct device
+> *dev,
+> >  							  const char *name)
+> >  {
+> > @@ -551,6 +571,9 @@ static struct fwnode_handle
+> *da7219_aad_of_named_fwhandle(struct device *dev,
+> >  			of_node = to_of_node(child);
+> >  			if (of_node_cmp(of_node->name, name) == 0)
+> >  				return child;
+> > +		} else if (is_acpi_data_node(child)) {
+> > +			if (da7219_aad_of_acpi_node_matched(child, name))
+> > +				return child;
+> >  		}
+> >  	}
+> >
+> 
+> This seems messy.  It is a function with a DT specific name that's
+> matching ACPI stuff and the fwnode API isn't hiding anything for us
+> which suggests this isn't something that's expected to work
+> transparently.  At least the naming needs to be corrected, and if this
+> *is* supposed to be something we do in ACPI I'd expect the handling to
+> be pushed into the fwnode API rather than open coded in a driver - at
+> the minute I'm unsure if this is messy because it's a bad idea to do
+> this at all or if it's just the naming and so on.
+
+ACPI allows for data only child nodes, like DT, so I do believe this is a valid
+case. Also, this kind of functionality is already used in a similar-ish manner in 
+the leds-gpio code. I agree that maybe the name should be changed though as it's
+misleading. Will also look at the fwnode API and see if it makes sense to move
+this there.
+
+> 
+> > -	/* Handle any DT/platform data */
+> > -	if ((codec->dev->of_node) && (da7219->pdata))
+> > +	/* Handle any DT/ACPI/platform data */
+> > +	if (((codec->dev->of_node) || is_acpi_node(codec->dev->fwnode)) &&
+> > +	    (da7219->pdata))
+> >  		da7219->pdata->aad_pdata = da7219_aad_of_to_pdata(codec);
+> >
+> >  	da7219_aad_handle_pdata(codec);
+> 
+> Surely we should be able to check if there's firmware data without
+> enumerating every possible firmware type?
+
+There doesn't seem to be a unified check for this. Also, Given these are the
+only two types the driver expects and supports right now, I don't see a problem
+being explicit here in the checking.
