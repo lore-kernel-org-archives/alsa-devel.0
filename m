@@ -1,98 +1,32 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: nau8825: non-clock jack
- detection for power saving at standby
-Date: Fri, 6 May 2016 19:18:55 +0100
-Message-ID: <20160506181855.GZ6292@sirena.org.uk>
-References: <1461917718-25211-1-git-send-email-KCHSU0@nuvoton.com>
- <20160502162715.GK6292@sirena.org.uk>
- <57286D40.6030002@nuvoton.com>
- <20160504163943.GZ6292@sirena.org.uk>
- <572C4AB6.9030106@nuvoton.com>
+From: Garlic Tseng <garlic.tseng@mediatek.com>
+Subject: Re: [alsa-devel] [PATCH 1/7] ASoC: mediatek: Refine mt8173 driver
+ and change config option
+Date: Sat, 7 May 2016 02:33:56 +0800
+Message-ID: <1462559636.11805.6.camel@mtksdaap41>
+References: <1461934848-60011-1-git-send-email-garlic.tseng@mediatek.com>
+	 <1461934848-60011-2-git-send-email-garlic.tseng@mediatek.com>
+	 <20160504164306.GA6292@sirena.org.uk>
+	 <1462416342.25179.36.camel@mtksdaap41> <572B0511.80701@gmail.com>
+	 <1462444772.2873.70.camel@mtksdaap41> <20160506122046.GR6292@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0871722466917506591=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 709D8264F28
- for <alsa-devel@alsa-project.org>; Fri,  6 May 2016 20:19:03 +0200 (CEST)
-In-Reply-To: <572C4AB6.9030106@nuvoton.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, "anatol.pomozov@gmail.com" <anatol.pomozov@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "benzh@chromium.org" <benzh@chromium.org>, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <MHKuo@nuvoton.com>, "yong.zhi@intel.com" <yong.zhi@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160506122046.GR6292@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>, alsa-devel@alsa-project.org, ir.lian@mediatek.com, srv_heupstream@mediatek.com, tiwai@suse.de, linux-kernel@vger.kernel.org, koro.chen@mediatek.com, linux-mediatek@lists.infradead.org, PC.Liao@mediatek.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2016-05-06 at 13:20 +0100, Mark Brown wrote:
+> On Thu, May 05, 2016 at 06:39:32PM +0800, Garlic Tseng wrote:
+> 
+> > As mentioned above, the difference of the ASoCs between the two chips
+> > are too large that we have a hard time sharing the driver code.
+> 
+> The things you're describing all sound like scaling differences rather
+> than fundamental changes.  I'd expect to see at least some shared code
+> here, we don't want to be just duplicating the entire driver every time
+> there's a new hardware revision.
 
---===============0871722466917506591==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="xp5T+jWXk9cMuWlh"
-Content-Disposition: inline
-
-
---xp5T+jWXk9cMuWlh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, May 06, 2016 at 03:41:42PM +0800, John Hsu wrote:
-> On 5/5/2016 12:39 AM, Mark Brown wrote:
-> > On Tue, May 03, 2016 at 05:20:00PM +0800, John Hsu wrote:
-
-> > > For clear expression, we should print error message and return error to
-> > > caller. Is it right?
-
-> > It'd be better to just accept the configuration but what you suggest is
-> > less bad than just completely ignoring the problem.
-
-> The codec needs internal clock for interruption at auto mode. Therefor, the
-> system clock will go back to internal clock after playback to end. But we
-> don't want this happened when jack is ejected already. We expected no in-
-> ternal clock when no headset connected; but the system will turn on it when
-> playback finish. For the reason, the driver adds error check to avoid this
-> situation happened.
-
-I'm not sure I fully follow the above explanation.  I appreciate that
-power consumption is not going to be optimal when the clock is provided
-and the chip is idle but does it actually stop anything working?
-
-> > This does not address the issue at all.  The interrupt is optional, it
-> > may not have been wired up and the probe function handles that case
-> > gracefully.
-
-> The ejection interruption will turn on when resume for the issue. Let the
-> probe function to handle it.
-
-I don't see how the probe function can handle the fact that the resume
-function is unconditionally calling enable_irq()?
-
---xp5T+jWXk9cMuWlh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXLOANAAoJECTWi3JdVIfQymUH/2l7RCMsoijImGJvWsL2BWqH
-JAvEA6RTvxk7cSAEdfP175xJkcQqVb8QF/NCR4aqzWkQAx/FULP9eJSnYOZ+ahHn
-ZoNm78WhOWfeFyLKFoUOeIXKRmjWBGi2NvlYZuHtN+2PTDruPxV9C/70P5kapWa/
-Rf002wC7rgaHXdtHSCcnz7LzncbRhOkeGBPsmQIONKbniAbiNX2mUKnqJ92BN17v
-S/MO6922eSh+k9J0J+vuh72dQsqTOb4viZc3kWJ0FwWChPkJ8XdJROQbzjbnPGqu
-NUeGk14+zPLEIqcArm3UAXBf3Jgj01hcfqnQ+oV85DF3TMaw6yopkZjIuTR7ov0=
-=+3Ql
------END PGP SIGNATURE-----
-
---xp5T+jWXk9cMuWlh--
-
---===============0871722466917506591==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0871722466917506591==--
+Oh ok, I'll do it in the next version. Thanks for comment.
