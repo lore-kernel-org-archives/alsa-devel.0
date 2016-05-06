@@ -1,32 +1,76 @@
-From: Garlic Tseng <garlic.tseng@mediatek.com>
-Subject: Re: [alsa-devel] [PATCH 1/7] ASoC: mediatek: Refine mt8173 driver
- and change config option
-Date: Sat, 7 May 2016 02:33:56 +0800
-Message-ID: <1462559636.11805.6.camel@mtksdaap41>
-References: <1461934848-60011-1-git-send-email-garlic.tseng@mediatek.com>
-	 <1461934848-60011-2-git-send-email-garlic.tseng@mediatek.com>
-	 <20160504164306.GA6292@sirena.org.uk>
-	 <1462416342.25179.36.camel@mtksdaap41> <572B0511.80701@gmail.com>
-	 <1462444772.2873.70.camel@mtksdaap41> <20160506122046.GR6292@sirena.org.uk>
+From: =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>
+Subject: [PATCH] pcm: softvol: fix signedness of tlv data type
+Date: Fri,  6 May 2016 23:08:40 +0200
+Message-ID: <1462568920-19891-1-git-send-email-joerg.krause@embedded.rocks>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160506122046.GR6292@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>, alsa-devel@alsa-project.org, ir.lian@mediatek.com, srv_heupstream@mediatek.com, tiwai@suse.de, linux-kernel@vger.kernel.org, koro.chen@mediatek.com, linux-mediatek@lists.infradead.org, PC.Liao@mediatek.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 14FE82606C7
+ for <alsa-devel@alsa-project.org>; Fri,  6 May 2016 23:08:54 +0200 (CEST)
+Received: from dovecot03.posteo.de (dovecot03.posteo.de [172.16.0.13])
+ by mout01.posteo.de (Postfix) with ESMTPS id E6711209DD
+ for <alsa-devel@alsa-project.org>; Fri,  6 May 2016 23:08:49 +0200 (CEST)
+Received: from mail.posteo.de (localhost [127.0.0.1])
+ by dovecot03.posteo.de (Postfix) with ESMTPSA id 3r1ksX2mCPz5vNF
+ for <alsa-devel@alsa-project.org>; Fri,  6 May 2016 23:08:47 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2016-05-06 at 13:20 +0100, Mark Brown wrote:
-> On Thu, May 05, 2016 at 06:39:32PM +0800, Garlic Tseng wrote:
-> 
-> > As mentioned above, the difference of the ASoCs between the two chips
-> > are too large that we have a hard time sharing the driver code.
-> 
-> The things you're describing all sound like scaling differences rather
-> than fundamental changes.  I'd expect to see at least some shared code
-> here, we don't want to be just duplicating the entire driver every time
-> there's a new hardware revision.
-
-Oh ok, I'll do it in the next version. Thanks for comment.
+Rm9yIHRoZSBzb2Z0dm9sIHBsdWdpbiB0aGUgVExWIGRhdGEgYXJlIHdyaXR0ZW4gd3JvbmcsIGUu
+Zy4gZm9yIHRoZSBkZWZhdWx0IHZhbHVlcwpvZiBtaW5fZEIgPSAtNTEgZEIgYW5kIG1heF9kQiA9
+IDAgZEIsIGFsc2FjdGwgZ2VuZXJhdGVzIHRoZSBmb2xsb3dpbmcgc3RhdGU6CgoJY29udHJvbC4x
+IHsKICAgICAgICAgICAgICAgIGlmYWNlIE1JWEVSCiAgICAgICAgICAgICAgICBuYW1lIE1hc3Rl
+cgogICAgICAgICAgICAgICAgdmFsdWUuMCAyNTUKICAgICAgICAgICAgICAgIHZhbHVlLjEgMjU1
+CiAgICAgICAgICAgICAgICBjb21tZW50IHsKICAgICAgICAgICAgICAgICAgICAgICAgYWNjZXNz
+ICdyZWFkIHdyaXRlIHVzZXInCiAgICAgICAgICAgICAgICAgICAgICAgIHR5cGUgSU5URUdFUgog
+ICAgICAgICAgICAgICAgICAgICAgICBjb3VudCAyCiAgICAgICAgICAgICAgICAgICAgICAgIHJh
+bmdlICcwIC0gMjU1JwogICAgICAgICAgICAgICAgICAgICAgICB0bHYgJzAwMDAwMDAxMDAwMDAw
+MDgwMDAwMDAwMDAwMDAwMDE0JwogICAgICAgICAgICAgICAgICAgICAgICBkYm1pbiAwCiAgICAg
+ICAgICAgICAgICAgICAgICAgIGRibWF4IDUxMDAKICAgICAgICAgICAgICAgICAgICAgICAgZGJ2
+YWx1ZS4wIDUxMDAKICAgICAgICAgICAgICAgICAgICAgICAgZGJ2YWx1ZS4xIDUxMDAKICAgICAg
+ICAgICAgICAgIH0KICAgICAgICB9CgpBcyBib3RoIG1pbl9kQiBhbmQgbWF4X2RCIGNhbiBiZSBu
+ZWdhdGl2ZSBudW1iZXJzLCB0aGUgdGx2IHR5cGUgbXVzdCBub3QgYmUKdW5zaWduZWQuIFRoaXMg
+Zml4ZXMgdGhlIFRMViBhbmQgdGhlIGNvcnJlY3Qgc3RhdGUgaXMgZ2VuZXJhdGVkOgoKCWNvbnRy
+b2wuMSB7CiAgICAgICAgICAgICAgICBpZmFjZSBNSVhFUgogICAgICAgICAgICAgICAgbmFtZSBN
+YXN0ZXIKICAgICAgICAgICAgICAgIHZhbHVlLjAgMjU1CiAgICAgICAgICAgICAgICB2YWx1ZS4x
+IDI1NQogICAgICAgICAgICAgICAgY29tbWVudCB7CiAgICAgICAgICAgICAgICAgICAgICAgIGFj
+Y2VzcyAncmVhZCB3cml0ZSB1c2VyJwogICAgICAgICAgICAgICAgICAgICAgICB0eXBlIElOVEVH
+RVIKICAgICAgICAgICAgICAgICAgICAgICAgY291bnQgMgogICAgICAgICAgICAgICAgICAgICAg
+ICByYW5nZSAnMCAtIDI1NScKICAgICAgICAgICAgICAgICAgICAgICAgdGx2ICcwMDAwMDAwMTAw
+MDAwMDA4ZmZmZmVjMTQwMDAwMDAxNCcKICAgICAgICAgICAgICAgICAgICAgICAgZGJtaW4gLTUx
+MDAKICAgICAgICAgICAgICAgICAgICAgICAgZGJtYXggMAogICAgICAgICAgICAgICAgICAgICAg
+ICBkYnZhbHVlLjAgMAogICAgICAgICAgICAgICAgICAgICAgICBkYnZhbHVlLjEgMAogICAgICAg
+ICAgICAgICAgfQogICAgICAgIH0KCkFsc28gdGVzdGVkIGZvciBkaWZmZXJlbnQgY29tYmluYXRp
+b25zIG9mIG1pbl9kQiBhbmQgbWF4X2RCIG90aGVyIHRoYW4gdGhlCmRlZmF1bHQgdmFsdWVzLgoK
+U2lnbmVkLW9mZi1ieTogSsO2cmcgS3JhdXNlIDxqb2VyZy5rcmF1c2VAZW1iZWRkZWQucm9ja3M+
+Ci0tLQogc3JjL3BjbS9wY21fc29mdHZvbC5jIHwgNCArKy0tCiAxIGZpbGUgY2hhbmdlZCwgMiBp
+bnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NyYy9wY20vcGNtX3Nv
+ZnR2b2wuYyBiL3NyYy9wY20vcGNtX3NvZnR2b2wuYwppbmRleCA4MDJhYTRiLi4xNzQ4NjY3IDEw
+MDY0NAotLS0gYS9zcmMvcGNtL3BjbV9zb2Z0dm9sLmMKKysrIGIvc3JjL3BjbS9wY21fc29mdHZv
+bC5jCkBAIC02NTUsNyArNjU1LDcgQEAgc3RhdGljIHZvaWQgc25kX3BjbV9zb2Z0dm9sX2R1bXAo
+c25kX3BjbV90ICpwY20sIHNuZF9vdXRwdXRfdCAqb3V0KQogCiBzdGF0aWMgaW50IGFkZF90bHZf
+aW5mbyhzbmRfcGNtX3NvZnR2b2xfdCAqc3ZvbCwgc25kX2N0bF9lbGVtX2luZm9fdCAqY2luZm8p
+CiB7Ci0JdW5zaWduZWQgaW50IHRsdls0XTsKKwlpbnQgdGx2WzRdOwogCXRsdlswXSA9IFNORF9D
+VExfVExWVF9EQl9TQ0FMRTsKIAl0bHZbMV0gPSAyICogc2l6ZW9mKGludCk7CiAJdGx2WzJdID0g
+c3ZvbC0+bWluX2RCICogMTAwOwpAQCAtNzY4LDcgKzc2OCw3IEBAIHN0YXRpYyBpbnQgc29mdHZv
+bF9sb2FkX2NvbnRyb2woc25kX3BjbV90ICpwY20sIHNuZF9wY21fc29mdHZvbF90ICpzdm9sLAog
+CQkJfQogCQl9IGVsc2UgaWYgKHN2b2wtPm1heF92YWwgPiAxKSB7CiAJCQkvKiBjaGVjayBUTFYg
+YXZhaWxhYmlsaXR5ICovCi0JCQl1bnNpZ25lZCBpbnQgdGx2WzRdOworCQkJaW50IHRsdls0XTsK
+IAkJCWVyciA9IHNuZF9jdGxfZWxlbV90bHZfcmVhZChzdm9sLT5jdGwsICZjaW5mby0+aWQsIHRs
+diwgc2l6ZW9mKHRsdikpOwogCQkJaWYgKGVyciA8IDApCiAJCQkJYWRkX3Rsdl9pbmZvKHN2b2ws
+IGNpbmZvKTsKLS0gCjIuOC4yCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
