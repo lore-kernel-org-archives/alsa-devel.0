@@ -1,99 +1,56 @@
-From: Andrea Adami <andrea.adami@gmail.com>
-Subject: [PATCH 1/1] ASoC: pxa: Fix module autoload for platform drivers
-Date: Fri,  6 May 2016 17:27:34 +0200
-Message-ID: <1462548454-28597-1-git-send-email-andrea.adami@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: Imx6 i2s master driver without i2c
+Date: Fri, 6 May 2016 08:38:03 -0700
+Message-ID: <CAG5mAdzJyTdsBTnz8FZ8Ay278j1bYJHHqkOTGY+_Ck9sSPhQoQ@mail.gmail.com>
+References: <CABPh3UNhKMGUoiDvHn9paXVNvtpwzbzkbCwBhtSCm72jxkh3CA@mail.gmail.com>
+ <CABPh3UMMvVKvHL0g52NqP-E8dpxoZHfwgR_t1WY08OFMSYt9tg@mail.gmail.com>
+ <CABPh3UMJ4gOtNN3FJg0fF7Mm+Lpw0=jXGk_+ejsHaGLG9UvWAQ@mail.gmail.com>
+ <CABPh3UNi79pMZPgJBisaq9Qo847MV-6riCEQ=Akt_RoLdqeVpw@mail.gmail.com>
+ <CABPh3UPLR20WbV0NuYLA4RZ7XB-0+RdFrB-SpDLa0T+wOxqQ+g@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f44.google.com (mail-oi0-f44.google.com
+ [209.85.218.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 428F526154C
+ for <alsa-devel@alsa-project.org>; Fri,  6 May 2016 17:39:28 +0200 (CEST)
+Received: by mail-oi0-f44.google.com with SMTP id x201so143143705oif.3
+ for <alsa-devel@alsa-project.org>; Fri, 06 May 2016 08:39:28 -0700 (PDT)
+In-Reply-To: <CABPh3UPLR20WbV0NuYLA4RZ7XB-0+RdFrB-SpDLa0T+wOxqQ+g@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: nick83ola <nick83ola@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-These platform drivers are lacking MODULE_ALIAS so module autoloading
-doesn't work. Tested on corgi and poodle with kernel 4.4.
+Hi there,
+   Arnaud had a neat patch here that lets you set up a dummy sound
+card from the DTS.
 
-Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
----
- sound/soc/pxa/brownstone.c     | 1 +
- sound/soc/pxa/mioa701_wm9713.c | 1 +
- sound/soc/pxa/mmp-pcm.c        | 1 +
- sound/soc/pxa/mmp-sspa.c       | 1 +
- sound/soc/pxa/palm27x.c        | 1 +
- sound/soc/pxa/pxa-ssp.c        | 1 +
- sound/soc/pxa/pxa2xx-ac97.c    | 1 +
- sound/soc/pxa/pxa2xx-pcm.c     | 1 +
- 8 files changed, 8 insertions(+)
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-November/100896.html
 
-diff --git a/sound/soc/pxa/brownstone.c b/sound/soc/pxa/brownstone.c
-index ec522e9..b6cb995 100644
---- a/sound/soc/pxa/brownstone.c
-+++ b/sound/soc/pxa/brownstone.c
-@@ -133,3 +133,4 @@ module_platform_driver(mmp_driver);
- MODULE_AUTHOR("Leo Yan <leoy@marvell.com>");
- MODULE_DESCRIPTION("ALSA SoC Brownstone");
- MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:brownstone-audio");
-diff --git a/sound/soc/pxa/mioa701_wm9713.c b/sound/soc/pxa/mioa701_wm9713.c
-index 5c8f9db..d1661fa 100644
---- a/sound/soc/pxa/mioa701_wm9713.c
-+++ b/sound/soc/pxa/mioa701_wm9713.c
-@@ -207,3 +207,4 @@ module_platform_driver(mioa701_wm9713_driver);
- MODULE_AUTHOR("Robert Jarzmik (rjarzmik@free.fr)");
- MODULE_DESCRIPTION("ALSA SoC WM9713 MIO A701");
- MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:mioa701-wm9713");
-diff --git a/sound/soc/pxa/mmp-pcm.c b/sound/soc/pxa/mmp-pcm.c
-index 51e790d..96df9b2 100644
---- a/sound/soc/pxa/mmp-pcm.c
-+++ b/sound/soc/pxa/mmp-pcm.c
-@@ -248,3 +248,4 @@ module_platform_driver(mmp_pcm_driver);
- MODULE_AUTHOR("Leo Yan <leoy@marvell.com>");
- MODULE_DESCRIPTION("MMP Soc Audio DMA module");
- MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:mmp-pcm-audio");
-diff --git a/sound/soc/pxa/mmp-sspa.c b/sound/soc/pxa/mmp-sspa.c
-index eca60c2..ca8b23f 100644
---- a/sound/soc/pxa/mmp-sspa.c
-+++ b/sound/soc/pxa/mmp-sspa.c
-@@ -482,3 +482,4 @@ module_platform_driver(asoc_mmp_sspa_driver);
- MODULE_AUTHOR("Leo Yan <leoy@marvell.com>");
- MODULE_DESCRIPTION("MMP SSPA SoC Interface");
- MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:mmp-sspa-dai");
-diff --git a/sound/soc/pxa/palm27x.c b/sound/soc/pxa/palm27x.c
-index 4e74d95..bcc81e9 100644
---- a/sound/soc/pxa/palm27x.c
-+++ b/sound/soc/pxa/palm27x.c
-@@ -161,3 +161,4 @@ module_platform_driver(palm27x_wm9712_driver);
- MODULE_AUTHOR("Marek Vasut <marek.vasut@gmail.com>");
- MODULE_DESCRIPTION("ALSA SoC Palm T|X, T5 and LifeDrive");
- MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:palm27x-asoc");
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index da03fad..3cad990 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -833,3 +833,4 @@ module_platform_driver(asoc_ssp_driver);
- MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
- MODULE_DESCRIPTION("PXA SSP/PCM SoC Interface");
- MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:pxa-ssp-dai");
-diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
-index f3de615..9615e6d 100644
---- a/sound/soc/pxa/pxa2xx-ac97.c
-+++ b/sound/soc/pxa/pxa2xx-ac97.c
-@@ -287,3 +287,4 @@ module_platform_driver(pxa2xx_ac97_driver);
- MODULE_AUTHOR("Nicolas Pitre");
- MODULE_DESCRIPTION("AC97 driver for the Intel PXA2xx chip");
- MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:pxa2xx-ac97");
-diff --git a/sound/soc/pxa/pxa2xx-pcm.c b/sound/soc/pxa/pxa2xx-pcm.c
-index 9f39039..410d48b 100644
---- a/sound/soc/pxa/pxa2xx-pcm.c
-+++ b/sound/soc/pxa/pxa2xx-pcm.c
-@@ -117,3 +117,4 @@ module_platform_driver(pxa_pcm_driver);
- MODULE_AUTHOR("Nicolas Pitre");
- MODULE_DESCRIPTION("Intel PXA2xx PCM DMA module");
- MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:pxa-pcm-audio");
--- 
-1.9.1
+With that patch, you can set up your DTS to simply start streaming, no
+codec or anything required, which should work for a codec with no I2C.
+
+
+Hope that helps,
+  -Caleb
+
+
+On Thu, May 5, 2016 at 12:56 PM, nick83ola <nick83ola@gmail.com> wrote:
+> Hello Alsa dev!
+>
+> Anyone have an example of an i2s only driver for imx6 solo? I need a driver
+> without i2c....
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
