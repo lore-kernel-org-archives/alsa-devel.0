@@ -1,89 +1,44 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: da7219: Add ACPI parsing support
-Date: Fri, 6 May 2016 13:39:09 +0100
-Message-ID: <20160506123909.GT6292@sirena.org.uk>
+From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Subject: RE: [PATCH 1/3] ASoC: da7219: Convert driver to use generic
+ device/fwnode functions
+Date: Fri, 6 May 2016 14:33:04 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A0337D463C2EF@SW-EX-MBX01.diasemi.com>
 References: <cover.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
- <bb23ba754ed1f51c9b20ccd4a2b87520ce7c1893.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
+ <4783487c3caa1d66f0a1d5b25c9b341aee1118e4.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
+ <20160506122643.GS6292@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="5fM1MC9alg+yIaL4"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <bb23ba754ed1f51c9b20ccd4a2b87520ce7c1893.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
+In-Reply-To: <20160506122643.GS6292@sirena.org.uk>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+To: Mark Brown <broonie@kernel.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Support Opensource <Support.Opensource@diasemi.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---5fM1MC9alg+yIaL4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, May 05, 2016 at 11:53:05AM +0100, Adam Thomson wrote:
-
-> @@ -27,7 +28,6 @@
->  #include "da7219.h"
->  #include "da7219-aad.h"
->=20
-> -
->  /*
->   * Detection control
->   */
-
-Random whitespace change.
-
->  static struct fwnode_handle *da7219_aad_of_named_fwhandle(struct device =
-*dev,
->  							  const char *name)
->  {
-> @@ -551,6 +571,9 @@ static struct fwnode_handle *da7219_aad_of_named_fwha=
-ndle(struct device *dev,
->  			of_node =3D to_of_node(child);
->  			if (of_node_cmp(of_node->name, name) =3D=3D 0)
->  				return child;
-> +		} else if (is_acpi_data_node(child)) {
-> +			if (da7219_aad_of_acpi_node_matched(child, name))
-> +				return child;
->  		}
->  	}
->=20
-
-This seems messy.  It is a function with a DT specific name that's
-matching ACPI stuff and the fwnode API isn't hiding anything for us
-which suggests this isn't something that's expected to work
-transparently.  At least the naming needs to be corrected, and if this
-*is* supposed to be something we do in ACPI I'd expect the handling to
-be pushed into the fwnode API rather than open coded in a driver - at
-the minute I'm unsure if this is messy because it's a bad idea to do
-this at all or if it's just the naming and so on.
-
-> -	/* Handle any DT/platform data */
-> -	if ((codec->dev->of_node) && (da7219->pdata))
-> +	/* Handle any DT/ACPI/platform data */
-> +	if (((codec->dev->of_node) || is_acpi_node(codec->dev->fwnode)) &&
-> +	    (da7219->pdata))
->  		da7219->pdata->aad_pdata =3D da7219_aad_of_to_pdata(codec);
->=20
->  	da7219_aad_handle_pdata(codec);
-
-Surely we should be able to check if there's firmware data without
-enumerating every possible firmware type?
-
---5fM1MC9alg+yIaL4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXLJBrAAoJECTWi3JdVIfQ2TcH/jr/36ilwqR3DojT6VS5jgbI
-j92b1A7zwSWjwhDJCvTol0mbWzwiphuUDwUmyyjBcBDibFhNTzN4YjMoyowLEuvl
-NONjisMzEZ1Mpp/mGle5o6tbAringfSEK/OrgadnpvLK6yZTGXSYLLYPN73iiKUV
-JvBRbl2DbYSOXzwRp7A82osoc1wSsRi0ugBf3NC1voE6s4Uc3kNST2aM40UK0T6w
-K3qJThSDwu1rxMM3ljv8ff4vc3yT0HQma5T3SioSfvYqMnZmW9HV5TuO2bUWX33E
-H8lflbCQB0Ag7dVRXl9HvKVqHEsVz4po5QLw96rJlQSEQEoQCLd4BHw2+uzDWCU=
-=mIDR
------END PGP SIGNATURE-----
-
---5fM1MC9alg+yIaL4--
+T24gTWF5IDA2LCAyMDE2LCAxMzoyNywgTWFyayBCcm93biB3cm90ZToNCg0KPiA+IFRoaXMgY2hh
+bmdlIGNvbnZlcnRzIHRoZSBkcml2ZXIgZnJvbSB1c2luZyB0aGUgb2ZfKiBmdW5jdGlvbnMgdG8g
+dXNpbmcNCj4gPiB0aGUgZGV2aWNlXyogYW5kIGZ3bm9kZV8qIGZ1bmN0aW9ucyBmb3IgYWNjc3Np
+bmcgRFQgcmVsYXRlZCBkYXRhLg0KPiA+IFRoaXMgaXMgaW4gcHJlcGFyYXRpb24gZm9yIHVwZGF0
+ZXMgdG8gc3VwcG9ydCBBQ1BJIGJhc2VkIGluaXRpYWxpc2F0aW9uLg0KPiANCj4gSXMgdGhpcyAq
+cmVhbGx5KiBzZW5zaWJsZT8gIERUIGlkaW9tcyBkb24ndCBhbHdheXMgbWF0Y2ggdXAgd2l0aCBB
+Q1BJDQo+IGlkaW9tcyB3ZWxsIGFuZCB0aGlzIGlzbid0IGEgdHJpdmlhbCBEVCBiaW5kaW5nLg0K
+DQpGb3Igd2hhdCB3ZSdyZSBkb2luZyBoZXJlLCBib3RoIERUIGFuZCBBQ1BJIG1hdGNoIHVwIHdl
+bGwsIGFuZCBzbyB3aGF0IEkndmUNCmltcGxlbWVudGVkIHdvcmtzIG9uIGJvdGggc2lkZXMuIFRo
+ZXJlIGFyZSBvdGhlciBleGFtcGxlcyBvZiB0aGlzIGFscmVhZHkgaW4gdGhlDQpMaW51eCBrZXJu
+ZWwsIHNvIEkgZG9uJ3QgdGhpbmsgaXQncyBhbnl0aGluZyBwYXJ0aWN1bGFybHkgbmV3Lg0KDQo+
+IA0KPiA+ICtzdGF0aWMgc3RydWN0IGZ3bm9kZV9oYW5kbGUgKmRhNzIxOV9hYWRfb2ZfbmFtZWRf
+ZndoYW5kbGUoc3RydWN0IGRldmljZQ0KPiAqZGV2LA0KPiA+ICsJCQkJCQkJICBjb25zdCBjaGFy
+ICpuYW1lKQ0KPiA+ICt7DQo+ID4gKwlzdHJ1Y3QgZndub2RlX2hhbmRsZSAqY2hpbGQ7DQo+ID4g
+KwlzdHJ1Y3QgZGV2aWNlX25vZGUgKm9mX25vZGU7DQo+ID4gKw0KPiA+ICsJLyogRmluZCBmaXJz
+dCBtYXRjaGluZyBjaGlsZCBub2RlICovDQo+ID4gKwlkZXZpY2VfZm9yX2VhY2hfY2hpbGRfbm9k
+ZShkZXYsIGNoaWxkKSB7DQo+ID4gKwkJaWYgKGlzX29mX25vZGUoY2hpbGQpKSB7DQo+ID4gKwkJ
+CW9mX25vZGUgPSB0b19vZl9ub2RlKGNoaWxkKTsNCj4gPiArCQkJaWYgKG9mX25vZGVfY21wKG9m
+X25vZGUtPm5hbWUsIG5hbWUpID09IDApDQo+ID4gKwkJCQlyZXR1cm4gY2hpbGQ7DQo+ID4gKwkJ
+fQ0KPiA+ICsJfQ0KPiA+ICsNCj4gPiArCXJldHVybiBOVUxMOw0KPiA+ICt9DQo+IA0KPiBUaGVy
+ZSdzIG5vdGhpbmcgZGV2aWNlIHNwZWNpZmljIGFib3V0IHRoaXMsIGl0IHNob3VsZCBnbyBpbiBn
+ZW5lcmljDQo+IGNvZGUuDQoNClRoZSBpbnRlbnRpb24gd2FzIHRvIGp1c3QgbWF0Y2ggYWdhaW5z
+dCBEVCBvciBBQ1BJIGFuZCBub3RoaW5nIGVsc2UsIHNvIHRoYXQNCmRpZG4ndCBmZWVsIGdlbmVy
+aWMgZW5vdWdoIHRvIGJlIHB1c2hlZCBpbnRvIHRoZSBmd25vZGUgZnJhbWV3b3JrLiBIb3dldmVy
+DQpJIHdpbGwgdGFrZSBhbm90aGVyIGxvb2suDQoNCg==
