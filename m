@@ -1,20 +1,18 @@
-From: =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>
-Subject: [PATCH] pcm: softvol: fix signedness of tlv data type
-Date: Fri,  6 May 2016 23:08:40 +0200
-Message-ID: <1462568920-19891-1-git-send-email-joerg.krause@embedded.rocks>
+From: Trent Reed <treed0803@gmail.com>
+Subject: Errors iterating over PCM stream hints and opening
+	based on NAME/IOID
+Date: Fri, 6 May 2016 20:19:45 -0700
+Message-ID: <CAL6pMWrVwYd7nw46006LeRs=qyBAgeZYTV2K_0pLoMtZYfcfsQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 14FE82606C7
- for <alsa-devel@alsa-project.org>; Fri,  6 May 2016 23:08:54 +0200 (CEST)
-Received: from dovecot03.posteo.de (dovecot03.posteo.de [172.16.0.13])
- by mout01.posteo.de (Postfix) with ESMTPS id E6711209DD
- for <alsa-devel@alsa-project.org>; Fri,  6 May 2016 23:08:49 +0200 (CEST)
-Received: from mail.posteo.de (localhost [127.0.0.1])
- by dovecot03.posteo.de (Postfix) with ESMTPSA id 3r1ksX2mCPz5vNF
- for <alsa-devel@alsa-project.org>; Fri,  6 May 2016 23:08:47 +0200 (CEST)
+Received: from mail-oi0-f48.google.com (mail-oi0-f48.google.com
+ [209.85.218.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0EB3F2612CC
+ for <alsa-devel@alsa-project.org>; Sat,  7 May 2016 05:19:47 +0200 (CEST)
+Received: by mail-oi0-f48.google.com with SMTP id k142so159472720oib.1
+ for <alsa-devel@alsa-project.org>; Fri, 06 May 2016 20:19:46 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,52 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>
 List-Id: alsa-devel@alsa-project.org
 
-Rm9yIHRoZSBzb2Z0dm9sIHBsdWdpbiB0aGUgVExWIGRhdGEgYXJlIHdyaXR0ZW4gd3JvbmcsIGUu
-Zy4gZm9yIHRoZSBkZWZhdWx0IHZhbHVlcwpvZiBtaW5fZEIgPSAtNTEgZEIgYW5kIG1heF9kQiA9
-IDAgZEIsIGFsc2FjdGwgZ2VuZXJhdGVzIHRoZSBmb2xsb3dpbmcgc3RhdGU6CgoJY29udHJvbC4x
-IHsKICAgICAgICAgICAgICAgIGlmYWNlIE1JWEVSCiAgICAgICAgICAgICAgICBuYW1lIE1hc3Rl
-cgogICAgICAgICAgICAgICAgdmFsdWUuMCAyNTUKICAgICAgICAgICAgICAgIHZhbHVlLjEgMjU1
-CiAgICAgICAgICAgICAgICBjb21tZW50IHsKICAgICAgICAgICAgICAgICAgICAgICAgYWNjZXNz
-ICdyZWFkIHdyaXRlIHVzZXInCiAgICAgICAgICAgICAgICAgICAgICAgIHR5cGUgSU5URUdFUgog
-ICAgICAgICAgICAgICAgICAgICAgICBjb3VudCAyCiAgICAgICAgICAgICAgICAgICAgICAgIHJh
-bmdlICcwIC0gMjU1JwogICAgICAgICAgICAgICAgICAgICAgICB0bHYgJzAwMDAwMDAxMDAwMDAw
-MDgwMDAwMDAwMDAwMDAwMDE0JwogICAgICAgICAgICAgICAgICAgICAgICBkYm1pbiAwCiAgICAg
-ICAgICAgICAgICAgICAgICAgIGRibWF4IDUxMDAKICAgICAgICAgICAgICAgICAgICAgICAgZGJ2
-YWx1ZS4wIDUxMDAKICAgICAgICAgICAgICAgICAgICAgICAgZGJ2YWx1ZS4xIDUxMDAKICAgICAg
-ICAgICAgICAgIH0KICAgICAgICB9CgpBcyBib3RoIG1pbl9kQiBhbmQgbWF4X2RCIGNhbiBiZSBu
-ZWdhdGl2ZSBudW1iZXJzLCB0aGUgdGx2IHR5cGUgbXVzdCBub3QgYmUKdW5zaWduZWQuIFRoaXMg
-Zml4ZXMgdGhlIFRMViBhbmQgdGhlIGNvcnJlY3Qgc3RhdGUgaXMgZ2VuZXJhdGVkOgoKCWNvbnRy
-b2wuMSB7CiAgICAgICAgICAgICAgICBpZmFjZSBNSVhFUgogICAgICAgICAgICAgICAgbmFtZSBN
-YXN0ZXIKICAgICAgICAgICAgICAgIHZhbHVlLjAgMjU1CiAgICAgICAgICAgICAgICB2YWx1ZS4x
-IDI1NQogICAgICAgICAgICAgICAgY29tbWVudCB7CiAgICAgICAgICAgICAgICAgICAgICAgIGFj
-Y2VzcyAncmVhZCB3cml0ZSB1c2VyJwogICAgICAgICAgICAgICAgICAgICAgICB0eXBlIElOVEVH
-RVIKICAgICAgICAgICAgICAgICAgICAgICAgY291bnQgMgogICAgICAgICAgICAgICAgICAgICAg
-ICByYW5nZSAnMCAtIDI1NScKICAgICAgICAgICAgICAgICAgICAgICAgdGx2ICcwMDAwMDAwMTAw
-MDAwMDA4ZmZmZmVjMTQwMDAwMDAxNCcKICAgICAgICAgICAgICAgICAgICAgICAgZGJtaW4gLTUx
-MDAKICAgICAgICAgICAgICAgICAgICAgICAgZGJtYXggMAogICAgICAgICAgICAgICAgICAgICAg
-ICBkYnZhbHVlLjAgMAogICAgICAgICAgICAgICAgICAgICAgICBkYnZhbHVlLjEgMAogICAgICAg
-ICAgICAgICAgfQogICAgICAgIH0KCkFsc28gdGVzdGVkIGZvciBkaWZmZXJlbnQgY29tYmluYXRp
-b25zIG9mIG1pbl9kQiBhbmQgbWF4X2RCIG90aGVyIHRoYW4gdGhlCmRlZmF1bHQgdmFsdWVzLgoK
-U2lnbmVkLW9mZi1ieTogSsO2cmcgS3JhdXNlIDxqb2VyZy5rcmF1c2VAZW1iZWRkZWQucm9ja3M+
-Ci0tLQogc3JjL3BjbS9wY21fc29mdHZvbC5jIHwgNCArKy0tCiAxIGZpbGUgY2hhbmdlZCwgMiBp
-bnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NyYy9wY20vcGNtX3Nv
-ZnR2b2wuYyBiL3NyYy9wY20vcGNtX3NvZnR2b2wuYwppbmRleCA4MDJhYTRiLi4xNzQ4NjY3IDEw
-MDY0NAotLS0gYS9zcmMvcGNtL3BjbV9zb2Z0dm9sLmMKKysrIGIvc3JjL3BjbS9wY21fc29mdHZv
-bC5jCkBAIC02NTUsNyArNjU1LDcgQEAgc3RhdGljIHZvaWQgc25kX3BjbV9zb2Z0dm9sX2R1bXAo
-c25kX3BjbV90ICpwY20sIHNuZF9vdXRwdXRfdCAqb3V0KQogCiBzdGF0aWMgaW50IGFkZF90bHZf
-aW5mbyhzbmRfcGNtX3NvZnR2b2xfdCAqc3ZvbCwgc25kX2N0bF9lbGVtX2luZm9fdCAqY2luZm8p
-CiB7Ci0JdW5zaWduZWQgaW50IHRsdls0XTsKKwlpbnQgdGx2WzRdOwogCXRsdlswXSA9IFNORF9D
-VExfVExWVF9EQl9TQ0FMRTsKIAl0bHZbMV0gPSAyICogc2l6ZW9mKGludCk7CiAJdGx2WzJdID0g
-c3ZvbC0+bWluX2RCICogMTAwOwpAQCAtNzY4LDcgKzc2OCw3IEBAIHN0YXRpYyBpbnQgc29mdHZv
-bF9sb2FkX2NvbnRyb2woc25kX3BjbV90ICpwY20sIHNuZF9wY21fc29mdHZvbF90ICpzdm9sLAog
-CQkJfQogCQl9IGVsc2UgaWYgKHN2b2wtPm1heF92YWwgPiAxKSB7CiAJCQkvKiBjaGVjayBUTFYg
-YXZhaWxhYmlsaXR5ICovCi0JCQl1bnNpZ25lZCBpbnQgdGx2WzRdOworCQkJaW50IHRsdls0XTsK
-IAkJCWVyciA9IHNuZF9jdGxfZWxlbV90bHZfcmVhZChzdm9sLT5jdGwsICZjaW5mby0+aWQsIHRs
-diwgc2l6ZW9mKHRsdikpOwogCQkJaWYgKGVyciA8IDApCiAJCQkJYWRkX3Rsdl9pbmZvKHN2b2ws
-IGNpbmZvKTsKLS0gCjIuOC4yCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+Hey All,
+
+(Tried to send an email earlier, it didn't seem to send?)
+
+I'm trying to understand ALSA, having a little trouble with some
+errors that I can't ration over.
+Gist Repro: https://gist.github.com/TReed0803/353ce27d37bc1ebe965854ea88c8b97b
+
+Whenever I run the above simple code (iterate over PCM stream hints,
+open for Playback/Capture depending on IOID; output also provided at
+link above) I notice that I sometimes hit errors. I'm having trouble
+understanding these errors, because as I understand I'm using the ALSA
+library correctly. For example, dmix is telling me that it "Only
+supports playback streams", well then, why does the hint IOID return
+that it supports capture as well? (same for dsnoop). More confusing
+are the "ALSA lib pcm_route.c:867:(find_matching_chmap) Found no
+matching channel map" errors.
+
+Can someone help me understand these issues, and perhaps what I'm
+doing wrong here? Would this point to something wrong with an
+installed package which perhaps configures these hints incorrectly?
+(Assuming that is probably the case, but I'd like to know for sure).
+I'm on a fairly new install of Ubuntu 16.04 LTS.
+
+Thanks,
+- Trent Reed
