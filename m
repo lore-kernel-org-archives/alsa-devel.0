@@ -1,22 +1,20 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH v4 3/6] ASoC: fsl_ssi: Save a dev reference
- for dev_err() purpose.
-Date: Sat, 7 May 2016 19:54:42 -0300
-Message-ID: <CAOMZO5DDn26G2z0bg3Qz7vqgsR5Z-3BOHS1-Z+TU3mG0-GMBkQ@mail.gmail.com>
+Subject: Re: [PATCH v4 0/6] ASoC: fsl_ssi: Fixing various
+ channel slips and bad samples insertions
+Date: Sat, 7 May 2016 19:56:41 -0300
+Message-ID: <CAOMZO5A7bD7kAc1vz2eZqgqcV1WAEV+-D=UFw3ptQf43C7kROw@mail.gmail.com>
 References: <1462277640-20052-1-git-send-email-arnaud.mouiche@invoxia.com>
- <1462277640-20052-4-git-send-email-arnaud.mouiche@invoxia.com>
- <572896DC.6080008@tabi.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f169.google.com (mail-ig0-f169.google.com
- [209.85.213.169])
- by alsa0.perex.cz (Postfix) with ESMTP id EE957260438
- for <alsa-devel@alsa-project.org>; Sun,  8 May 2016 00:54:43 +0200 (CEST)
-Received: by mail-ig0-f169.google.com with SMTP id s8so67255365ign.0
- for <alsa-devel@alsa-project.org>; Sat, 07 May 2016 15:54:43 -0700 (PDT)
-In-Reply-To: <572896DC.6080008@tabi.org>
+Received: from mail-ig0-f176.google.com (mail-ig0-f176.google.com
+ [209.85.213.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id BF91C260438
+ for <alsa-devel@alsa-project.org>; Sun,  8 May 2016 00:56:41 +0200 (CEST)
+Received: by mail-ig0-f176.google.com with SMTP id m9so67278856ige.1
+ for <alsa-devel@alsa-project.org>; Sat, 07 May 2016 15:56:41 -0700 (PDT)
+In-Reply-To: <1462277640-20052-1-git-send-email-arnaud.mouiche@invoxia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,25 +24,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Caleb Crome <caleb@crome.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+To: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Caleb Crome <caleb@crome.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 3, 2016 at 9:17 AM, Timur Tabi <timur@tabi.org> wrote:
-> Arnaud Mouiche wrote:
->>
->> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
->> index 1a9d0ad..695f041 100644
->> --- a/sound/soc/fsl/fsl_ssi.c
->> +++ b/sound/soc/fsl/fsl_ssi.c
->> @@ -262,6 +262,7 @@ struct fsl_ssi_private {
->>         struct fsl_ssi_dbg dbg_stats;
->>
->>         const struct fsl_ssi_soc_data *soc;
->> +       struct device *dev;
->>   };
->
->
-> I don't see where this pointer is used.
+Hi Nicolin,
 
-It is used in patch 5/6.
+On Tue, May 3, 2016 at 9:13 AM, Arnaud Mouiche
+<arnaud.mouiche@invoxia.com> wrote:
+
+> Arnaud Mouiche (6):
+>   ASoC: fsl_ssi: Real hardware channels max number is 32
+>   ASoC: fsl_ssi: The IPG/5 limitation concerns the bitclk, not the
+>     sysclk.
+>   ASoC: fsl_ssi: Save a dev reference for dev_err() purpose.
+>   ASoC: fsl_ssi: Fix samples being dropped at Playback startup
+>   ASoC: fsl_ssi: Fix channel slipping in Playback at startup
+>   ASoC: fsl_ssi: Fix channel slipping on capture (or playback) restart
+>     in full duplex.
+
+Are you happy with this version?
