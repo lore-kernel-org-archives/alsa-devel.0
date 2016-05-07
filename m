@@ -1,18 +1,20 @@
-From: Trent Reed <treed0803@gmail.com>
-Subject: Errors iterating over PCM stream hints and opening
-	based on NAME/IOID
-Date: Fri, 6 May 2016 00:31:19 -0700
-Message-ID: <CAL6pMWrtKCLcSQBu-YU9P6k292jXM9xDys8_joN5Jg3b2ce87g@mail.gmail.com>
+From: Paulo Sergio <pstglia@gmail.com>
+Subject: Re: WM5102 - Help to make baytrail machine driver work
+Date: Sat, 7 May 2016 00:19:01 -0300
+Message-ID: <CAJcYhpbdr-3qBSdaLX-=MCSGX7VC0XGz6tKbzJ3K3RHeGMhs7g@mail.gmail.com>
+References: <CAJcYhpZU-6_AO_Gye1VttuvOP0Z2=wLuWGCOP7tBWc6DsuLU1g@mail.gmail.com>
+ <20160505091122.GE1646@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f175.google.com (mail-ob0-f175.google.com
- [209.85.214.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 6837A265325
- for <alsa-devel@alsa-project.org>; Fri,  6 May 2016 09:31:20 +0200 (CEST)
-Received: by mail-ob0-f175.google.com with SMTP id x1so47906966obt.0
- for <alsa-devel@alsa-project.org>; Fri, 06 May 2016 00:31:20 -0700 (PDT)
+Received: from mail-ig0-f179.google.com (mail-ig0-f179.google.com
+ [209.85.213.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id E17DA2606D2
+ for <alsa-devel@alsa-project.org>; Sat,  7 May 2016 05:19:02 +0200 (CEST)
+Received: by mail-ig0-f179.google.com with SMTP id bi2so62569940igb.0
+ for <alsa-devel@alsa-project.org>; Fri, 06 May 2016 20:19:02 -0700 (PDT)
+In-Reply-To: <20160505091122.GE1646@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,30 +24,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Christian Hartmann <cornogle@googlemail.com>, vinod.koul@intel.com, broonie@opensource.wolfsonmicro.com, pierre-louis.bossart@linux.intel.com, mika.westerberg@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hey All,
+Hi Charles, how are you?
 
-I'm trying to understand ALSA, having a little trouble with some
-errors that I can't ration over.
-Gist Repro: https://gist.github.com/TReed0803/353ce27d37bc1ebe965854ea88c8b97b
+> A quick look through your machine driver looks like the parts
+> relating the CODEC look ok.
+>
+> I am not so sure about the AP side routing but for the CODEC,
+>
+> 'HPOUT1L Input 1' AIF1RX1
+> 'HPOUT1R Input 1' AIF1RX2
+> 'HPOUT1 Digital Switch' 1
+>
+> Should be enough to route some audio out the headphones, assuming
+> AIF1 is connected to the AP and HPOUT1L is the headphones (it is
+> very rare for people to not wire things up that way so its quite
+> a good bet, and your machine driver suggests this is how it is
+> connected).
 
-Whenever I run the above simple code (iterate over PCM stream hints,
-open for Playback/Capture depending on IOID; output also provided at
-link above) I notice that I sometimes hit errors. I'm having trouble
-understanding these errors, because as I understand I'm using the ALSA
-library correctly. For example, dmix is telling me that it "Only
-supports playback streams", well then, why does the hint IOID return
-that it supports capture as well? (same for dsnoop). More confusing
-are the "ALSA lib pcm_route.c:867:(find_matching_chmap) Found no
-matching channel map" errors.
+Tried these cmds/routes to enable headphones (got from Raspberry PI
+wolfson card), but we got no output (except static noise and some
+"clicks")
 
-Can someone help me understand these issues, and perhaps what I'm
-doing wrong here? Would this point to something wrong with an
-installed package which perhaps configures these hints incorrectly?
-(Assuming that is probably the case, but I'd like to know for sure).
-I'm on a fairly new install of Ubuntu 16.04 LTS.
+alsa_amixer -Dhw:0 cset name='HPOUT1 Digital Switch' on
+# Set path gain to -6dB for safety. ie mav 0.5Vrms output level.
+alsa_amixer -Dhw:0 cset name='HPOUT1 Digital Volume' 116
+# do we want to clear the HPOUT mixers inputs?
+alsa_amixer -Dhw:0 cset name='HPOUT1L Input 1' None
+alsa_amixer -Dhw:0 cset name='HPOUT1R Input 1' None
+alsa_amixer -Dhw:0 cset name='HPOUT1L Input 2' None
+alsa_amixer -Dhw:0 cset name='HPOUT1R Input 2' None
+alsa_amixer -Dhw:0 cset name='HPOUT1L Input 1' AIF1RX1
+alsa_amixer -Dhw:0 cset name='HPOUT1L Input 1 Volume' 32
+alsa_amixer -Dhw:0 cset name='HPOUT1R Input 1' AIF1RX2
+alsa_amixer -Dhw:0 cset name='HPOUT1R Input 1 Volume' 32
+alsa_amixer -Dhw:0 cset name='Headset Mic Switch' on
 
-Thanks,
-- Trent Reed
+Tried also some other controls for speakers, but no audio output
+
+>
+> If you provide some kernel logs with the LOG_DEVICE in
+> drivers/base/regmap/regmap.c set to the CODEC spi device, I am
+> happy to sanity check what is going to the CODEC. Although at the
+> moment I think your issue looks mostly like getting through the
+> AP side.
+
+Appreciate your help. Thanks in advance
+
+Here's dmesg with LOG_DEVICE set (in this case to "spi-WM510204:00") [1]
+
+[1] - https://drive.google.com/file/d/0BxO6THtB865fS2NxUkdOa18zUlE/view?usp=sharing
+
+Regards
+Pstglia
