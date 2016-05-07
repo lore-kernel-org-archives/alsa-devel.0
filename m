@@ -1,20 +1,18 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH v4 0/6] ASoC: fsl_ssi: Fixing various
- channel slips and bad samples insertions
-Date: Sat, 7 May 2016 19:56:41 -0300
-Message-ID: <CAOMZO5A7bD7kAc1vz2eZqgqcV1WAEV+-D=UFw3ptQf43C7kROw@mail.gmail.com>
-References: <1462277640-20052-1-git-send-email-arnaud.mouiche@invoxia.com>
+Subject: [PATCH] MAINTAINERS: Add myself as reviewer of FSL/NXP
+	SoC sound drivers
+Date: Sat,  7 May 2016 20:04:52 -0300
+Message-ID: <1462662292-7957-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f176.google.com (mail-ig0-f176.google.com
- [209.85.213.176])
- by alsa0.perex.cz (Postfix) with ESMTP id BF91C260438
- for <alsa-devel@alsa-project.org>; Sun,  8 May 2016 00:56:41 +0200 (CEST)
-Received: by mail-ig0-f176.google.com with SMTP id m9so67278856ige.1
- for <alsa-devel@alsa-project.org>; Sat, 07 May 2016 15:56:41 -0700 (PDT)
-In-Reply-To: <1462277640-20052-1-git-send-email-arnaud.mouiche@invoxia.com>
+Received: from mail-qg0-f41.google.com (mail-qg0-f41.google.com
+ [209.85.192.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7ED1E260439
+ for <alsa-devel@alsa-project.org>; Sun,  8 May 2016 01:06:05 +0200 (CEST)
+Received: by mail-qg0-f41.google.com with SMTP id f74so73096239qge.2
+ for <alsa-devel@alsa-project.org>; Sat, 07 May 2016 16:06:05 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,23 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Caleb Crome <caleb@crome.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
+To: broonie@kernel.org
+Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Nicolin,
+From: Fabio Estevam <fabio.estevam@nxp.com>
 
-On Tue, May 3, 2016 at 9:13 AM, Arnaud Mouiche
-<arnaud.mouiche@invoxia.com> wrote:
+I would like to help reviewing FSL/NXP SoC sound drivers. 
 
-> Arnaud Mouiche (6):
->   ASoC: fsl_ssi: Real hardware channels max number is 32
->   ASoC: fsl_ssi: The IPG/5 limitation concerns the bitclk, not the
->     sysclk.
->   ASoC: fsl_ssi: Save a dev reference for dev_err() purpose.
->   ASoC: fsl_ssi: Fix samples being dropped at Playback startup
->   ASoC: fsl_ssi: Fix channel slipping in Playback at startup
->   ASoC: fsl_ssi: Fix channel slipping on capture (or playback) restart
->     in full duplex.
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-Are you happy with this version?
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 43b85c1..f896605 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4846,6 +4846,7 @@ FREESCALE SOC SOUND DRIVERS
+ M:	Timur Tabi <timur@tabi.org>
+ M:	Nicolin Chen <nicoleotsuka@gmail.com>
+ M:	Xiubo Li <Xiubo.Lee@gmail.com>
++R:	Fabio Estevam <fabio.estevam@nxp.com>
+ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+ L:	linuxppc-dev@lists.ozlabs.org
+ S:	Maintained
+-- 
+1.9.1
