@@ -1,17 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 1/4] ASoC: davinci-mcasp: Use defines for
-	clkdiv IDs
-Date: Mon, 9 May 2016 13:42:29 +0300
-Message-ID: <1462790552-6438-2-git-send-email-peter.ujfalusi@ti.com>
-References: <1462790552-6438-1-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3] ASoC: Intel: Skylake: Add DSP firmware
+ manifest parsing
+Date: Mon, 9 May 2016 11:41:56 +0100
+Message-ID: <20160509104156.GC6292@sirena.org.uk>
+References: <1461334101-9437-1-git-send-email-vinod.koul@intel.com>
+ <20160509060208.GA2274@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1980557726211756370=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 69725265770
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2016 12:42:38 +0200 (CEST)
-In-Reply-To: <1462790552-6438-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id EEAA226062E
+ for <alsa-devel@alsa-project.org>; Mon,  9 May 2016 12:42:03 +0200 (CEST)
+In-Reply-To: <20160509060208.GA2274@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,62 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, jsarha@ti.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Shreyas NC <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Instead of hardwired IDs add defines for the available dividers.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/davinci/davinci-mcasp.c | 7 ++++---
- sound/soc/davinci/davinci-mcasp.h | 5 +++++
- 2 files changed, 9 insertions(+), 3 deletions(-)
+--===============1980557726211756370==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="xhQBShgGdvjvx42z"
+Content-Disposition: inline
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index a4e7af7efb00..836f694e4b9d 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -547,14 +547,14 @@ static int __davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
- 
- 	pm_runtime_get_sync(mcasp->dev);
- 	switch (div_id) {
--	case 0:		/* MCLK divider */
-+	case MCASP_CLKDIV_AUXCLK:			/* MCLK divider */
- 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG,
- 			       AHCLKXDIV(div - 1), AHCLKXDIV_MASK);
- 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_AHCLKRCTL_REG,
- 			       AHCLKRDIV(div - 1), AHCLKRDIV_MASK);
- 		break;
- 
--	case 1:		/* BCLK divider */
-+	case MCASP_CLKDIV_BCLK:			/* BCLK divider */
- 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_ACLKXCTL_REG,
- 			       ACLKXDIV(div - 1), ACLKXDIV_MASK);
- 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_ACLKRCTL_REG,
-@@ -563,7 +563,8 @@ static int __davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
- 			mcasp->bclk_div = div;
- 		break;
- 
--	case 2:	/*
-+	case MCASP_CLKDIV_BCLK_FS_RATIO:
-+		/*
- 		 * BCLK/LRCLK ratio descries how many bit-clock cycles
- 		 * fit into one frame. The clock ratio is given for a
- 		 * full period of data (for I2S format both left and
-diff --git a/sound/soc/davinci/davinci-mcasp.h b/sound/soc/davinci/davinci-mcasp.h
-index a3be108a8c17..1e8787fb3fb7 100644
---- a/sound/soc/davinci/davinci-mcasp.h
-+++ b/sound/soc/davinci/davinci-mcasp.h
-@@ -306,4 +306,9 @@
- #define NUMEVT(x)	(((x) & 0xFF) << 8)
- #define NUMDMA_MASK	(0xFF)
- 
-+/* clock divider IDs */
-+#define MCASP_CLKDIV_AUXCLK		0 /* HCLK divider from AUXCLK */
-+#define MCASP_CLKDIV_BCLK		1 /* BCLK divider from HCLK */
-+#define MCASP_CLKDIV_BCLK_FS_RATIO	2 /* to set BCLK FS ration */
-+
- #endif	/* DAVINCI_MCASP_H */
--- 
-2.8.2
+
+--xhQBShgGdvjvx42z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, May 09, 2016 at 11:32:08AM +0530, Vinod Koul wrote:
+
+> Is this patch still in your review queue or you need us to address someth=
+ing
+> here
+
+Please don't send content free pings and please allow a reasonable time
+for review.  People get busy, go on holiday, attend conferences and so=20
+on so unless there is some reason for urgency (like critical bug fixes)
+please allow at least a couple of weeks for review.  If there have been
+review comments then people may be waiting for those to be addressed.
+Sending content free pings just adds to the mail volume (if they are
+seen at all) and if something has gone wrong you'll have to resend the
+patches anyway.
+
+--xhQBShgGdvjvx42z
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXMGlzAAoJECTWi3JdVIfQ69MH/RNIQXuqgvGRlvbx/qGWsisX
+mPBu4RAWINjD/6XDI9TAcqLw28eWIEbS97FJw67f4Pcvoo8XIAOxUW9RP7zrcokc
+4Kp7v6TadBO5N5qh8Lw0N3aXy4nbHjFbcLO1ydwbdjH+GSZXZPNvMYNqJUad1YHa
+mQTBC74FZHsP+3jfmvTDjlgVRtrFl3PVZfB/UN3xV4J5Zssj5WoVtA2ffGqswwgY
+bcUljQKq7OTXDSSsk9LrLAam1ICCmVNTVh6ZFUurbfDIsQ7Wb7hlLmjArJkLtzwF
+3mSnbdt8jHsk7L3sdhWS+sg7fZXsGEFp9kwr/fC1uRRpBmiEKHVuXzAcU7fjbqM=
+=b4gZ
+-----END PGP SIGNATURE-----
+
+--xhQBShgGdvjvx42z--
+
+--===============1980557726211756370==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1980557726211756370==--
