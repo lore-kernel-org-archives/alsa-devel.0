@@ -1,17 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 6/7] ALSA: firewire-lib: code cleanup for
-	outgoing packet handling
-Date: Mon,  9 May 2016 23:15:55 +0900
-Message-ID: <1462803356-6229-7-git-send-email-o-takashi@sakamocchi.jp>
-References: <1462803356-6229-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/7] ALSA: drop reuse of incoming packet
+	parameter for outgoing packet parameter
+Date: Mon,  9 May 2016 23:15:49 +0900
+Message-ID: <1462803356-6229-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B22A2657B1
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2016 16:16:03 +0200 (CEST)
-In-Reply-To: <1462803356-6229-1-git-send-email-o-takashi@sakamocchi.jp>
+ by alsa0.perex.cz (Postfix) with ESMTP id F16C3265593
+ for <alsa-devel@alsa-project.org>; Mon,  9 May 2016 16:16:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,61 +23,60 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In previous commit, this module has no need to reuse parameters of
-incoming packets for outgoing packets anymore. This commit arranges some
-needless codes for outgoing packet processing.
+Hi,
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/amdtp-stream.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+This patchset updates my former RFC, and go for merging to Linux 4.7.
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index f1ebb7b..6db2a73 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -411,15 +411,18 @@ static inline int queue_in_packet(struct amdtp_stream *s)
- 			    amdtp_stream_get_max_payload(s), false);
- }
- 
--static int handle_out_packet(struct amdtp_stream *s, unsigned int data_blocks,
--			     unsigned int cycle, unsigned int syt)
-+static int handle_out_packet(struct amdtp_stream *s, unsigned int cycle)
- {
- 	__be32 *buffer;
-+	unsigned int syt;
-+	unsigned int data_blocks;
- 	unsigned int payload_length;
- 	unsigned int pcm_frames;
- 	struct snd_pcm_substream *pcm;
- 
- 	buffer = s->buffer.packets[s->packet_index].buffer;
-+	syt = calculate_syt(s, cycle);
-+	data_blocks = calculate_data_blocks(s, syt);
- 	pcm_frames = s->process_data_blocks(s, buffer + 2, data_blocks, &syt);
- 
- 	buffer[0] = cpu_to_be32(ACCESS_ONCE(s->source_node_id_field) |
-@@ -588,8 +591,7 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
- 				void *private_data)
- {
- 	struct amdtp_stream *s = private_data;
--	unsigned int i, syt, packets = header_length / 4;
--	unsigned int data_blocks;
-+	unsigned int i, packets = header_length / 4;
- 	u32 cycle;
- 
- 	if (s->packet_index < 0)
-@@ -602,10 +604,7 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
- 
- 	for (i = 0; i < packets; ++i) {
- 		cycle = increment_cycle_count(cycle, 1);
--		syt = calculate_syt(s, cycle);
--		data_blocks = calculate_data_blocks(s, syt);
--
--		if (handle_out_packet(s, data_blocks, cycle, syt) < 0) {
-+		if (handle_out_packet(s, cycle) < 0) {
- 			s->packet_index = -1;
- 			amdtp_stream_pcm_abort(s);
- 			return;
+[alsa-devel] [RFC][PATCH 0/6] ALSA: firewire: drop reusing incoming packet
+parameters for outgoing packet parameters
+http://mailman.alsa-project.org/pipermail/alsa-devel/2016-April/107290.html
+
+The aim of this patchset is to remove a feature from firewire-lib module.
+I call it as 'full duplex streaming with timestamp synchronization'.
+
+The feature is based on our understanding of IEC 61883-6. In the specification,
+a function block should reuse some parameters of incoming packets for
+outgoing packets. Current ALSA firewire stack partly implement it. However,
+actual audio and music units on IEEE 1394 bus don't expect corresponding drivers
+to satisfy the feature.
+
+On the other hand, the feature brings inconveniences to this module. When this
+feature is enabled, a software IRQ context processes packets for both of IR/IT
+contexts. This consumes more time over local CPUs than handling one context.
+Furthermore, cycle count for outgoing packets becomes improper because they're
+for incoming packets.
+
+For these reasons, this patchset removes the feature from ALSA firewire stack.
+
+Changes:
+ - The last patch is newly added.
+
+Regards
+
+Takashi Sakamoto (7):
+  ALSA: bebob: drop reuse of incoming packet parameter for outgoing
+    packet parameter
+  ALSA: fireworks: drop reuse of incoming packet parameter for ougoing
+    packet parameter
+  ALSA: firewire-tascam: drop reuse of incoming packet parameter for
+    outgoing packet parameter
+  ALSA: firewire-lib: handle IT/IR contexts in each software interrupt
+    context
+  ALSA: firewire-lib: code cleanup for incoming packet handling
+  ALSA: firewire-lib: code cleanup for outgoing packet handling
+  ALSA: firewire-lib: enable the same feature as CIP_SKIP_INIT_DBC_CHECK
+    flag
+
+ sound/firewire/amdtp-stream.c               |  98 +++++++++------------------
+ sound/firewire/amdtp-stream.h               |  36 ++--------
+ sound/firewire/bebob/bebob.h                |   1 -
+ sound/firewire/bebob/bebob_stream.c         | 101 +++++++---------------------
+ sound/firewire/digi00x/amdtp-dot.c          |   2 +-
+ sound/firewire/fireworks/fireworks.h        |   1 -
+ sound/firewire/fireworks/fireworks_stream.c |  84 +++++------------------
+ sound/firewire/oxfw/oxfw-stream.c           |   3 +-
+ sound/firewire/tascam/tascam-stream.c       |  26 ++++---
+ 9 files changed, 94 insertions(+), 258 deletions(-)
+
 -- 
 2.7.4
