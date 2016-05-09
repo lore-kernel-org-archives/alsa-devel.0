@@ -1,18 +1,19 @@
-From: =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>
-Subject: [PATCH] pcm: softvol: fix conversion of TLVs min_db
-	and max_dB value
-Date: Sun,  8 May 2016 20:48:42 +0200
-Message-ID: <1462733322-17470-1-git-send-email-joerg.krause@embedded.rocks>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: dice: add support for M-Audio
+ Profire 610 and perhaps 2626
+Date: Mon, 9 May 2016 10:35:30 +0900
+Message-ID: <572FE962.3040705@sakamocchi.jp>
+References: <1462021606-13683-1-git-send-email-o-takashi@sakamocchi.jp>
+ <s5hk2j4syb8.wl-tiwai@suse.de> <572F3D45.70104@sakamocchi.jp>
+ <s5hzis0r1d2.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 7086C260601
- for <alsa-devel@alsa-project.org>; Sun,  8 May 2016 20:49:02 +0200 (CEST)
-Received: from dovecot03.posteo.de (dovecot03.posteo.de [172.16.0.13])
- by mout01.posteo.de (Postfix) with ESMTPS id 5260420873
- for <alsa-devel@alsa-project.org>; Sun,  8 May 2016 20:48:59 +0200 (CEST)
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F85326148F
+ for <alsa-devel@alsa-project.org>; Mon,  9 May 2016 03:35:33 +0200 (CEST)
+In-Reply-To: <s5hzis0r1d2.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +23,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>, Clemens Ladisch <clemens@ladisch.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Qm90aCwgbWluX2RCIGFuZCBtYXhfZEIsIGFyZSBmbG9hdGluZyB0eXBlIHdoZXJlYXMgdGhlIFRM
-ViBpcyAoYWx3YXlzKQp1bnNpZ25lZC4KClRoZSBwcm9ibGVtIHdpdGggdGhlIGNvbnZlcnNpb24g
-b2YgYSBuZWdhdGl2ZSBmbG9hdGluZy1wb2ludCBudW1iZXIgaW50byBhbgp1bnNpZ25lZCBpbnRl
-Z2VyIGlzLCB0aGF0IHRoZSBiZWhhdmlvciBpcyB1bmRlZmluZWQuIFRoaXMgbWF5LCBkZXBlbmRp
-bmcgb24KdGhlIHBsYXRmb3JtLCByZXN1bHQgaW4gYSB3cm9uZyBUTFYsIGkuZS4gZm9yIHRoZSBk
-ZWZhdWx0IHZhbHVlcyBvZiBtaW5fZEIKKC01MWRCKSBhbmQgbWF4X2RCICgwZEIpLCBhbHNhY3Rs
-IGdlbmVyYXRlcyB0aGUgZm9sbG93aW5nIHN0YXRlIG9uIGFuIEFSTQpjcHUgYnVpbGQgd2l0aCBH
-Q0M6CgoJY29udHJvbC4xIHsKICAgICAgICAgICAgICAgIGlmYWNlIE1JWEVSCiAgICAgICAgICAg
-ICAgICBuYW1lIE1hc3RlcgogICAgICAgICAgICAgICAgdmFsdWUuMCAyNTUKICAgICAgICAgICAg
-ICAgIHZhbHVlLjEgMjU1CiAgICAgICAgICAgICAgICBjb21tZW50IHsKICAgICAgICAgICAgICAg
-ICAgICAgICAgYWNjZXNzICdyZWFkIHdyaXRlIHVzZXInCiAgICAgICAgICAgICAgICAgICAgICAg
-IHR5cGUgSU5URUdFUgogICAgICAgICAgICAgICAgICAgICAgICBjb3VudCAyCiAgICAgICAgICAg
-ICAgICAgICAgICAgIHJhbmdlICcwIC0gMjU1JwogICAgICAgICAgICAgICAgICAgICAgICB0bHYg
-JzAwMDAwMDAxMDAwMDAwMDgwMDAwMDAwMDAwMDAwMDE0JwogICAgICAgICAgICAgICAgICAgICAg
-ICBkYm1pbiAwCiAgICAgICAgICAgICAgICAgICAgICAgIGRibWF4IDUxMDAKICAgICAgICAgICAg
-ICAgICAgICAgICAgZGJ2YWx1ZS4wIDUxMDAKICAgICAgICAgICAgICAgICAgICAgICAgZGJ2YWx1
-ZS4xIDUxMDAKICAgICAgICAgICAgICAgIH0KICAgICAgICB9CgpXaXRoIHRoZSBmaXggYXBwbGll
-ZCwgYWxzYWN0bCBzdG9yZXMgdGhlIGNvcnJlY3QgVExWOgoKCWNvbnRyb2wuMSB7CiAgICAgICAg
-ICAgICAgICBpZmFjZSBNSVhFUgogICAgICAgICAgICAgICAgbmFtZSBNYXN0ZXIKICAgICAgICAg
-ICAgICAgIHZhbHVlLjAgMjU1CiAgICAgICAgICAgICAgICB2YWx1ZS4xIDI1NQogICAgICAgICAg
-ICAgICAgY29tbWVudCB7CiAgICAgICAgICAgICAgICAgICAgICAgIGFjY2VzcyAncmVhZCB3cml0
-ZSB1c2VyJwogICAgICAgICAgICAgICAgICAgICAgICB0eXBlIElOVEVHRVIKICAgICAgICAgICAg
-ICAgICAgICAgICAgY291bnQgMgogICAgICAgICAgICAgICAgICAgICAgICByYW5nZSAnMCAtIDI1
-NScKICAgICAgICAgICAgICAgICAgICAgICAgdGx2ICcwMDAwMDAwMTAwMDAwMDA4ZmZmZmVjMTQw
-MDAwMDAxNCcKICAgICAgICAgICAgICAgICAgICAgICAgZGJtaW4gLTUxMDAKICAgICAgICAgICAg
-ICAgICAgICAgICAgZGJtYXggMAogICAgICAgICAgICAgICAgICAgICAgICBkYnZhbHVlLjAgMAog
-ICAgICAgICAgICAgICAgICAgICAgICBkYnZhbHVlLjEgMAogICAgICAgICAgICAgICAgfQogICAg
-ICAgIH0KCkFsc28gdGVzdGVkIGZvciBkaWZmZXJlbnQgY29tYmluYXRpb25zIG9mIG1pbl9kQiBh
-bmQgbWF4X2RCIG90aGVyIHRoYW4gdGhlCmRlZmF1bHQgdmFsdWVzLgoKUmVwbGFjZXM6Cmh0dHA6
-Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxNi1NYXkv
-MTA3NzMzLmh0bWwKCkZpeGVzOgpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVy
-bWFpbC9hbHNhLWRldmVsLzIwMTYtTWF5LzEwNzYyOC5odG1sCgpDYzogQ2xlbWVucyBMYWRpc2No
-IDxjbGVtZW5zQGxhZGlzY2guZGU+ClNpZ25lZC1vZmYtYnk6IErDtnJnIEtyYXVzZSA8am9lcmcu
-a3JhdXNlQGVtYmVkZGVkLnJvY2tzPgotLS0KIHNyYy9wY20vcGNtX3NvZnR2b2wuYyB8IDQgKyst
-LQogMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYg
-LS1naXQgYS9zcmMvcGNtL3BjbV9zb2Z0dm9sLmMgYi9zcmMvcGNtL3BjbV9zb2Z0dm9sLmMKaW5k
-ZXggODAyYWE0Yi4uMDYxMDgwZCAxMDA2NDQKLS0tIGEvc3JjL3BjbS9wY21fc29mdHZvbC5jCisr
-KyBiL3NyYy9wY20vcGNtX3NvZnR2b2wuYwpAQCAtNjU4LDggKzY1OCw4IEBAIHN0YXRpYyBpbnQg
-YWRkX3Rsdl9pbmZvKHNuZF9wY21fc29mdHZvbF90ICpzdm9sLCBzbmRfY3RsX2VsZW1faW5mb190
-ICpjaW5mbykKIAl1bnNpZ25lZCBpbnQgdGx2WzRdOwogCXRsdlswXSA9IFNORF9DVExfVExWVF9E
-Ql9TQ0FMRTsKIAl0bHZbMV0gPSAyICogc2l6ZW9mKGludCk7Ci0JdGx2WzJdID0gc3ZvbC0+bWlu
-X2RCICogMTAwOwotCXRsdlszXSA9IChzdm9sLT5tYXhfZEIgLSBzdm9sLT5taW5fZEIpICogMTAw
-IC8gc3ZvbC0+bWF4X3ZhbDsKKwl0bHZbMl0gPSAoaW50KShzdm9sLT5taW5fZEIgKiAxMDApOwor
-CXRsdlszXSA9IChpbnQpKChzdm9sLT5tYXhfZEIgLSBzdm9sLT5taW5fZEIpICogMTAwIC8gc3Zv
-bC0+bWF4X3ZhbCk7CiAJcmV0dXJuIHNuZF9jdGxfZWxlbV90bHZfd3JpdGUoc3ZvbC0+Y3RsLCAm
-Y2luZm8tPmlkLCB0bHYpOwogfQogCi0tIAoyLjguMgoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On May 9 2016 00:55, Takashi Iwai wrote:
+> On Sun, 08 May 2016 15:21:09 +0200,
+> Takashi Sakamoto wrote:
+>>
+>> Iwai-san,
+>>
+>> Welcome back, and thanks for applying this patch.
+>>
+>> I have more patches for 4.7. I already posted RFCs for them ([1], [2],
+>> and a few), but postpone till your back. If Linus doesn't open next
+>> merge window tomorrow, I'd like to post them, as long as you don't mind.
+>> Is it OK?
+>
+> Sure, no problem, feel free to send more patches now.
+
+OK. Now the 4.6-rc7 was released and we have more one week for 
+development of Linux 4.7. I'll start to post my patches in this night 
+(approx. 10 hours later, when I'm back to home).
+
+>> Of cource, I realize that you will avoid to add changes just before
+>> merge window. However, these newly introduced changes are for
+>> tracepoints and simplification of packet streaming engine. The former
+>> helps our work and the latter may reduce maintaining effort and improve
+>> performance of the engine. I think they're worth to be considered for
+>> merging.
+>>
+>> And I'd like to report the status of ALSA Dice driver. As I
+>> described[3], it has been including bugs. The bugs exist since the
+>> driver was merged. I go for investigating but have never found solutions
+>> for it. The driver in Linux 4.6 will be shipped with the bugs.
+>
+> OK, if you find the culprit (and hopefully the fix), don't forget to
+> tag with Cc to stable and Fixes tag.
+
+If the patchset were enough small, it would be a nice for stable. 
+However, in my opinion, it will include much changes to isochronous 
+packet stream engine (sound/firewire/amdtp-stream.{c,h}), similarily of 
+changes between 4.3 and 4.4. I think it very likely to cause merge 
+conflict and impossible to port backward.
+
+
+Regards
+
+Takashi Sakamoto
