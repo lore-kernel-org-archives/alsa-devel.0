@@ -1,108 +1,127 @@
 From: John Keeping <john@metanate.com>
-Subject: [PATCH 1/9] ASoC: es8328: Move clock setup to hw_params
-Date: Mon,  9 May 2016 12:24:29 +0100
-Message-ID: <20160509112437.8924-2-john@metanate.com>
+Subject: [PATCH 7/9] ASoC: es8328: Support more sample formats
+Date: Mon,  9 May 2016 12:24:35 +0100
+Message-ID: <20160509112437.8924-8-john@metanate.com>
 References: <20160509112437.8924-1-john@metanate.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metanate.com (dougal.metanate.com [90.155.101.14])
- by alsa0.perex.cz (Postfix) with ESMTP id B232A2606F5
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2016 13:24:48 +0200 (CEST)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20160509112437.8924-1-john@metanate.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, John Keeping <john@metanate.com>
+Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, John Keeping <john@metanate.com>
 List-Id: alsa-devel@alsa-project.org
 
-This ensures that the clock is setup after its frequency has been set;
-the existing code in set_dai_fmt may be called before the clock rate has
-been set resulting in an incorrect configuration.
+The values are the same for the DAC and ADC so remove the specific
+values and use values with shifts.
 
 Signed-off-by: John Keeping <john@metanate.com>
 ---
- sound/soc/codecs/es8328.c | 31 ++++++++++++++++---------------
- 1 file changed, 16 insertions(+), 15 deletions(-)
+ sound/soc/codecs/es8328.c | 35 +++++++++++++++++++++++++++++------
+ sound/soc/codecs/es8328.h | 12 ++----------
+ 2 files changed, 31 insertions(+), 16 deletions(-)
 
 diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
-index afa6c5db9dcc..3ca89ae32889 100644
+index 31c90ef9abf2..636177641173 100644
 --- a/sound/soc/codecs/es8328.c
 +++ b/sound/soc/codecs/es8328.c
-@@ -445,9 +445,10 @@ static int es8328_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
--	int clk_rate;
-+	int clk_rate = clk_get_rate(es8328->clk);
+@@ -60,7 +60,11 @@ static const char * const supply_names[ES8328_SUPPLY_NUM] = {
+ #define ES8328_RATES (SNDRV_PCM_RATE_44100 | \
+ 		SNDRV_PCM_RATE_22050 | \
+ 		SNDRV_PCM_RATE_11025)
+-#define ES8328_FORMATS (SNDRV_PCM_FMTBIT_S16_LE)
++#define ES8328_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
++		SNDRV_PCM_FMTBIT_S18_3LE | \
++		SNDRV_PCM_FMTBIT_S20_3LE | \
++		SNDRV_PCM_FMTBIT_S24_LE | \
++		SNDRV_PCM_FMTBIT_S32_LE)
+ 
+ struct es8328_priv {
+ 	struct regmap *regmap;
+@@ -449,6 +453,7 @@ static int es8328_hw_params(struct snd_pcm_substream *substream,
  	int i;
  	int reg;
-+	int val;
+ 	int val;
++	int wl;
  	u8 ratio;
  
  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-@@ -455,16 +456,24 @@ static int es8328_hw_params(struct snd_pcm_substream *substream,
- 	else
- 		reg = ES8328_ADCCONTROL5;
- 
--	clk_rate = clk_get_rate(es8328->clk);
--
--	if ((clk_rate != ES8328_SYSCLK_RATE_1X) &&
--		(clk_rate != ES8328_SYSCLK_RATE_2X)) {
-+	switch (clk_rate) {
-+	case ES8328_SYSCLK_RATE_1X:
-+		val = 0;
-+		break;
-+	case ES8328_SYSCLK_RATE_2X:
-+		val = ES8328_MASTERMODE_MCLKDIV2;
-+		break;
-+	default:
- 		dev_err(codec->dev,
- 			"%s: clock is running at %d Hz, not %d or %d Hz\n",
- 			 __func__, clk_rate,
+@@ -470,10 +475,28 @@ static int es8328_hw_params(struct snd_pcm_substream *substream,
  			 ES8328_SYSCLK_RATE_1X, ES8328_SYSCLK_RATE_2X);
  		return -EINVAL;
  	}
-+	ret = snd_soc_update_bits(codec, ES8328_MASTERMODE,
-+			ES8328_MASTERMODE_MCLKDIV2, val);
-+	if (ret < 0)
-+		return ret;
+-	ret = snd_soc_update_bits(codec, ES8328_MASTERMODE,
++	snd_soc_update_bits(codec, ES8328_MASTERMODE,
+ 			ES8328_MASTERMODE_MCLKDIV2, val);
+-	if (ret < 0)
+-		return ret;
++
++	switch (params_width(params)) {
++	case 16:
++		wl = 3;
++		break;
++	case 18:
++		wl = 2;
++		break;
++	case 20:
++		wl = 1;
++		break;
++	case 24:
++		wl = 0;
++		break;
++	case 32:
++		wl = 4;
++		break;
++	default:
++		return -EINVAL;
++	}
  
  	/* find master mode MCLK to sampling frequency ratio */
  	ratio = mclk_ratios[0].rate;
-@@ -484,8 +493,6 @@ static int es8328_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		unsigned int fmt)
- {
- 	struct snd_soc_codec *codec = codec_dai->codec;
--	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
--	int clk_rate;
- 	u8 mode = ES8328_DACCONTROL1_DACWL_16;
+@@ -484,14 +507,14 @@ static int es8328_hw_params(struct snd_pcm_substream *substream,
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		snd_soc_update_bits(codec, ES8328_DACCONTROL1,
+ 				ES8328_DACCONTROL1_DACWL_MASK,
+-				ES8328_DACCONTROL1_DACWL_16);
++				wl << ES8328_DACCONTROL1_DACWL_SHIFT);
  
- 	/* set master/slave audio interface */
-@@ -515,14 +522,8 @@ static int es8328_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	snd_soc_write(codec, ES8328_ADCCONTROL4, mode);
+ 		es8328->playback_fs = params_rate(params);
+ 		es8328_set_deemph(codec);
+ 	} else
+ 		snd_soc_update_bits(codec, ES8328_ADCCONTROL4,
+ 				ES8328_ADCCONTROL4_ADCWL_MASK,
+-				ES8328_ADCCONTROL4_ADCWL_16);
++				wl << ES8328_ADCCONTROL4_ADCWL_SHIFT);
  
- 	/* Master serial port mode, with BCLK generated automatically */
--	clk_rate = clk_get_rate(es8328->clk);
--	if (clk_rate == ES8328_SYSCLK_RATE_1X)
--		snd_soc_write(codec, ES8328_MASTERMODE,
--				ES8328_MASTERMODE_MSC);
--	else
--		snd_soc_write(codec, ES8328_MASTERMODE,
--				ES8328_MASTERMODE_MCLKDIV2 |
--				ES8328_MASTERMODE_MSC);
-+	snd_soc_update_bits(codec, ES8328_MASTERMODE,
-+			ES8328_MASTERMODE_MSC, ES8328_MASTERMODE_MSC);
- 
- 	return 0;
+ 	return snd_soc_update_bits(codec, reg, ES8328_RATEMASK, ratio);
  }
+diff --git a/sound/soc/codecs/es8328.h b/sound/soc/codecs/es8328.h
+index 9c33d8bda859..1a736e72a929 100644
+--- a/sound/soc/codecs/es8328.h
++++ b/sound/soc/codecs/es8328.h
+@@ -91,11 +91,7 @@ int es8328_probe(struct device *dev, struct regmap *regmap);
+ #define ES8328_ADCCONTROL4_ADCFORMAT_LJUST (1 << 0)
+ #define ES8328_ADCCONTROL4_ADCFORMAT_RJUST (2 << 0)
+ #define ES8328_ADCCONTROL4_ADCFORMAT_PCM (3 << 0)
+-#define ES8328_ADCCONTROL4_ADCWL_24 (0 << 2)
+-#define ES8328_ADCCONTROL4_ADCWL_20 (1 << 2)
+-#define ES8328_ADCCONTROL4_ADCWL_18 (2 << 2)
+-#define ES8328_ADCCONTROL4_ADCWL_16 (3 << 2)
+-#define ES8328_ADCCONTROL4_ADCWL_32 (4 << 2)
++#define ES8328_ADCCONTROL4_ADCWL_SHIFT 2
+ #define ES8328_ADCCONTROL4_ADCWL_MASK (7 << 2)
+ #define ES8328_ADCCONTROL4_ADCLRP_I2S_POL_NORMAL (0 << 5)
+ #define ES8328_ADCCONTROL4_ADCLRP_I2S_POL_INV (1 << 5)
+@@ -131,11 +127,7 @@ int es8328_probe(struct device *dev, struct regmap *regmap);
+ #define ES8328_DACCONTROL1_DACFORMAT_LJUST (1 << 1)
+ #define ES8328_DACCONTROL1_DACFORMAT_RJUST (2 << 1)
+ #define ES8328_DACCONTROL1_DACFORMAT_PCM (3 << 1)
+-#define ES8328_DACCONTROL1_DACWL_24 (0 << 3)
+-#define ES8328_DACCONTROL1_DACWL_20 (1 << 3)
+-#define ES8328_DACCONTROL1_DACWL_18 (2 << 3)
+-#define ES8328_DACCONTROL1_DACWL_16 (3 << 3)
+-#define ES8328_DACCONTROL1_DACWL_32 (4 << 3)
++#define ES8328_DACCONTROL1_DACWL_SHIFT 3
+ #define ES8328_DACCONTROL1_DACWL_MASK (7 << 3)
+ #define ES8328_DACCONTROL1_DACLRP_I2S_POL_NORMAL (0 << 6)
+ #define ES8328_DACCONTROL1_DACLRP_I2S_POL_INV (1 << 6)
 -- 
 2.8.0.rc4.238.g874082a
