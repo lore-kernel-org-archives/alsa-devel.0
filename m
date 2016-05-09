@@ -1,207 +1,188 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 4/7] ALSA: firewire-lib: handle IT/IR contexts
-	in each software interrupt context
-Date: Mon,  9 May 2016 23:15:53 +0900
-Message-ID: <1462803356-6229-5-git-send-email-o-takashi@sakamocchi.jp>
-References: <1462803356-6229-1-git-send-email-o-takashi@sakamocchi.jp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id EE4A92607C8
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2016 16:16:01 +0200 (CEST)
-In-Reply-To: <1462803356-6229-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+From: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH v5 2/4] ASoC: Davinci: McBSP: add device tree support for McBSP
+Date: Mon,  9 May 2016 16:35:20 +0200
+Message-ID: <1462804522-29544-3-git-send-email-petr@barix.com>
+References: <1462804522-29544-1-git-send-email-petr@barix.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1462804522-29544-1-git-send-email-petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: nsekhar-l0cyMroinI0@public.gmane.org, khilman-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, brain-wDf7oJUeT2I@public.gmane.org, Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-In clause 6.3 of IEC 61883-6:2000, there's an explanation about processing
-of presentation timestamp. In the clause, we can see "If a function block
-receives a CIP, processes it and subsequently re-transmits it, then the
-SYT of the outgoing CIP shall be the sum of the incoming SYT and the
-processing delay." ALSA firewire stack has an implementation to partly
-satisfy this specification. Developers assumed the stack to perform as an
-Audio function block[1].
+This adds DT support for the TI DA8xx/OMAP-L1x/AM17xx/AM18xx McBSP driver.
 
-Following to the assumption, current implementation of ALSA firewire stack
-use one software interrupt context to handle both of in/out packets. In
-most case, this is processed in 1394 OHCI IR context independently of the
-opposite context. Thus, this implementation uses longer CPU time in the
-software interrupt context. This is not better for whole system.
-
-Against the assumption, I confirmed that each ASIC for IEC 61883-1/6
-doesn't necessarily expect it to the stack. Thus, current implementation
-of ALSA firewire stack includes over-engineering.
-
-This commit purges the implementation. As a result, packets of one
-direction are handled in one software interrupt context and spends
-minimum CPU time.
-
-[1] [alsa-devel] [PATCH 0/8] [RFC] new driver for Echo Audio's Fireworks based devices
-http://mailman.alsa-project.org/pipermail/alsa-devel/2013-June/062660.html
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+Reviewed-by: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
 ---
- sound/firewire/amdtp-stream.c | 40 ++++------------------------------------
- sound/firewire/amdtp-stream.h | 35 +++++++----------------------------
- 2 files changed, 11 insertions(+), 64 deletions(-)
+v1: initial
+v2: remove "-audio" postfix from the compatible string
+    of_match_table renamed consistently with the rest of the file (davinci_i2s_match)
+    "channel-combine" property removed
+    devicetree DMA configuration in probe simplified
+v3: remove the unused platform data
+v4: no change
+v5: no change
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index a22e559..3468419 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -91,7 +91,6 @@ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
+ sound/soc/davinci/Kconfig       |  6 +++-
+ sound/soc/davinci/davinci-i2s.c | 80 +++++++++++++++++++++++++++--------------
+ 2 files changed, 59 insertions(+), 27 deletions(-)
+
+diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
+index 50ca291cc225..6b732d8e5896 100644
+--- a/sound/soc/davinci/Kconfig
++++ b/sound/soc/davinci/Kconfig
+@@ -16,7 +16,11 @@ config SND_EDMA_SOC
+ 	  - DRA7xx family
  
- 	init_waitqueue_head(&s->callback_wait);
- 	s->callbacked = false;
--	s->sync_slave = NULL;
+ config SND_DAVINCI_SOC_I2S
+-	tristate
++	tristate "DaVinci Multichannel Buffered Serial Port (McBSP) support"
++	depends on SND_EDMA_SOC
++	help
++	  Say Y or M here if you want to have support for McBSP IP found in
++	  Texas Instruments DaVinci DA850 SoCs.
  
- 	s->fmt = fmt;
- 	s->process_data_blocks = process_data_blocks;
-@@ -650,54 +649,25 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
- 			dev_err(&s->unit->device,
- 				"Detect jumbo payload: %02x %02x\n",
- 				payload_quadlets, max_payload_quadlets);
--			s->packet_index = -1;
- 			break;
- 		}
+ config SND_DAVINCI_SOC_MCASP
+ 	tristate "Multichannel Audio Serial Port (McASP) support"
+diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
+index ec98548a5fc9..384961651904 100644
+--- a/sound/soc/davinci/davinci-i2s.c
++++ b/sound/soc/davinci/davinci-i2s.c
+@@ -4,9 +4,15 @@
+  * Author:      Vladimir Barinov, <vbarinov-L1vi/lXTdtvkgf6YlCu6wwC/G2K4zDHf@public.gmane.org>
+  * Copyright:   (C) 2007 MontaVista Software, Inc., <source-Igf4POYTYCDQT0dZR+AlfA@public.gmane.org>
+  *
++ * DT support	(c) 2016 Petr Kulhavy, Barix AG <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
++ *		based on davinci-mcasp.c DT support
++ *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+  * published by the Free Software Foundation.
++ *
++ * TODO:
++ * on DA850 implement HW FIFOs instead of DMA into DXR and DRR registers
+  */
  
- 		syt = be32_to_cpu(buffer[1]) & CIP_SYT_MASK;
- 		if (handle_in_packet(s, payload_quadlets, buffer,
--						&data_blocks, cycle, syt) < 0) {
--			s->packet_index = -1;
-+						&data_blocks, cycle, syt) < 0)
- 			break;
--		}
+ #include <linux/init.h>
+@@ -650,13 +656,24 @@ static const struct snd_soc_component_driver davinci_i2s_component = {
+ 
+ static int davinci_i2s_probe(struct platform_device *pdev)
+ {
++	struct snd_dmaengine_dai_dma_data *dma_data;
+ 	struct davinci_mcbsp_dev *dev;
+ 	struct resource *mem, *res;
+ 	void __iomem *io_base;
+ 	int *dma;
+ 	int ret;
+ 
+-	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	mem = platform_get_resource_byname(pdev, IORESOURCE_MEM, "mpu");
++	if (!mem) {
++		dev_warn(&pdev->dev,
++			 "\"mpu\" mem resource not found, using index 0\n");
++		mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++		if (!mem) {
++			dev_err(&pdev->dev, "no mem resource?\n");
++			return -ENODEV;
++		}
++	}
++
+ 	io_base = devm_ioremap_resource(&pdev->dev, mem);
+ 	if (IS_ERR(io_base))
+ 		return PTR_ERR(io_base);
+@@ -666,39 +683,43 @@ static int davinci_i2s_probe(struct platform_device *pdev)
+ 	if (!dev)
+ 		return -ENOMEM;
+ 
+-	dev->clk = clk_get(&pdev->dev, NULL);
+-	if (IS_ERR(dev->clk))
+-		return -ENODEV;
+-	clk_enable(dev->clk);
 -
--		/* Process sync slave stream */
--		if (s->sync_slave && s->sync_slave->callbacked) {
--			if (handle_out_packet(s->sync_slave,
--					      data_blocks, cycle, syt) < 0) {
--				s->packet_index = -1;
--				break;
--			}
--		}
+ 	dev->base = io_base;
+ 
+-	dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK].addr =
+-	    (dma_addr_t)(mem->start + DAVINCI_MCBSP_DXR_REG);
++	/* setup DMA, first TX, then RX */
++	dma_data = &dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK];
++	dma_data->addr = (dma_addr_t)(mem->start + DAVINCI_MCBSP_DXR_REG);
+ 
+-	dev->dma_data[SNDRV_PCM_STREAM_CAPTURE].addr =
+-	    (dma_addr_t)(mem->start + DAVINCI_MCBSP_DRR_REG);
+-
+-	/* first TX, then RX */
+ 	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+-	if (!res) {
+-		dev_err(&pdev->dev, "no DMA resource\n");
+-		ret = -ENXIO;
+-		goto err_release_clk;
++	if (res) {
++		dma = &dev->dma_request[SNDRV_PCM_STREAM_PLAYBACK];
++		*dma = res->start;
++		dma_data->filter_data = dma;
++	} else if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node) {
++		dma_data->filter_data = "tx";
++	} else {
++		dev_err(&pdev->dev, "Missing DMA tx resource\n");
++		return -ENODEV;
  	}
+-	dma = &dev->dma_request[SNDRV_PCM_STREAM_PLAYBACK];
+-	*dma = res->start;
+-	dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK].filter_data = dma;
++
++	dma_data = &dev->dma_data[SNDRV_PCM_STREAM_CAPTURE];
++	dma_data->addr = (dma_addr_t)(mem->start + DAVINCI_MCBSP_DRR_REG);
  
--	/* Queueing error or detecting discontinuity */
--	if (s->packet_index < 0) {
-+	/* Queueing error or detecting invalid payload. */
-+	if (p < packets) {
-+		s->packet_index = -1;
- 		amdtp_stream_pcm_abort(s);
--
--		/* Abort sync slave. */
--		if (s->sync_slave) {
--			s->sync_slave->packet_index = -1;
--			amdtp_stream_pcm_abort(s->sync_slave);
--		}
- 		return;
+ 	res = platform_get_resource(pdev, IORESOURCE_DMA, 1);
+-	if (!res) {
+-		dev_err(&pdev->dev, "no DMA resource\n");
+-		ret = -ENXIO;
+-		goto err_release_clk;
++	if (res) {
++		dma = &dev->dma_request[SNDRV_PCM_STREAM_CAPTURE];
++		*dma = res->start;
++		dma_data->filter_data = dma;
++	} else if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node) {
++		dma_data->filter_data = "rx";
++	} else {
++		dev_err(&pdev->dev, "Missing DMA rx resource\n");
++		return -ENODEV;
  	}
+-	dma = &dev->dma_request[SNDRV_PCM_STREAM_CAPTURE];
+-	*dma = res->start;
+-	dev->dma_data[SNDRV_PCM_STREAM_CAPTURE].filter_data = dma;
++
++	dev->clk = clk_get(&pdev->dev, NULL);
++	if (IS_ERR(dev->clk))
++		return -ENODEV;
++	clk_enable(dev->clk);
  
--	/* when sync to device, flush the packets for slave stream */
--	if (s->sync_slave && s->sync_slave->callbacked)
--		fw_iso_context_queue_flush(s->sync_slave->context);
--
- 	fw_iso_context_queue_flush(s->context);
+ 	dev->dev = &pdev->dev;
+ 	dev_set_drvdata(&pdev->dev, dev);
+@@ -737,11 +758,18 @@ static int davinci_i2s_remove(struct platform_device *pdev)
+ 	return 0;
  }
  
--/* processing is done by master callback */
--static void slave_stream_callback(struct fw_iso_context *context, u32 tstamp,
--				  size_t header_length, void *header,
--				  void *private_data)
--{
--	return;
--}
--
- /* this is executed one time */
- static void amdtp_stream_first_callback(struct fw_iso_context *context,
- 					u32 tstamp, size_t header_length,
-@@ -714,8 +684,6 @@ static void amdtp_stream_first_callback(struct fw_iso_context *context,
- 
- 	if (s->direction == AMDTP_IN_STREAM)
- 		context->callback.sc = in_stream_callback;
--	else if (s->flags & CIP_SYNC_TO_DEVICE)
--		context->callback.sc = slave_stream_callback;
- 	else
- 		context->callback.sc = out_stream_callback;
- 
-diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index 8775704..da028b0 100644
---- a/sound/firewire/amdtp-stream.h
-+++ b/sound/firewire/amdtp-stream.h
-@@ -17,8 +17,6 @@
-  * @CIP_BLOCKING: In blocking mode, each packet contains either zero or
-  *	SYT_INTERVAL samples, with these two types alternating so that
-  *	the overall sample rate comes out right.
-- * @CIP_SYNC_TO_DEVICE: In sync to device mode, time stamp in out packets is
-- *	generated by in packets. Defaultly this driver generates timestamp.
-  * @CIP_EMPTY_WITH_TAG0: Only for in-stream. Empty in-packets have TAG0.
-  * @CIP_DBC_IS_END_EVENT: Only for in-stream. The value of dbc in an in-packet
-  *	corresponds to the end of event in the packet. Out of IEC 61883.
-@@ -37,14 +35,13 @@
- enum cip_flags {
- 	CIP_NONBLOCKING		= 0x00,
- 	CIP_BLOCKING		= 0x01,
--	CIP_SYNC_TO_DEVICE	= 0x02,
--	CIP_EMPTY_WITH_TAG0	= 0x04,
--	CIP_DBC_IS_END_EVENT	= 0x08,
--	CIP_WRONG_DBS		= 0x10,
--	CIP_SKIP_DBC_ZERO_CHECK	= 0x20,
--	CIP_SKIP_INIT_DBC_CHECK	= 0x40,
--	CIP_EMPTY_HAS_WRONG_DBC	= 0x80,
--	CIP_JUMBO_PAYLOAD	= 0x100,
-+	CIP_EMPTY_WITH_TAG0	= 0x02,
-+	CIP_DBC_IS_END_EVENT	= 0x04,
-+	CIP_WRONG_DBS		= 0x08,
-+	CIP_SKIP_DBC_ZERO_CHECK	= 0x10,
-+	CIP_SKIP_INIT_DBC_CHECK	= 0x20,
-+	CIP_EMPTY_HAS_WRONG_DBC	= 0x40,
-+	CIP_JUMBO_PAYLOAD	= 0x80,
++static const struct of_device_id davinci_i2s_match[] = {
++	{ .compatible = "ti,da850-mcbsp" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, davinci_i2s_match);
++
+ static struct platform_driver davinci_mcbsp_driver = {
+ 	.probe		= davinci_i2s_probe,
+ 	.remove		= davinci_i2s_remove,
+ 	.driver		= {
+ 		.name	= "davinci-mcbsp",
++		.of_match_table = of_match_ptr(davinci_i2s_match),
+ 	},
  };
  
- /**
-@@ -137,7 +134,6 @@ struct amdtp_stream {
- 	/* To wait for first packet. */
- 	bool callbacked;
- 	wait_queue_head_t callback_wait;
--	struct amdtp_stream *sync_slave;
- 
- 	/* For backends to process data blocks. */
- 	void *protocol;
-@@ -223,23 +219,6 @@ static inline bool cip_sfc_is_base_44100(enum cip_sfc sfc)
- 	return sfc & 1;
- }
- 
--static inline void amdtp_stream_set_sync(enum cip_flags sync_mode,
--					 struct amdtp_stream *master,
--					 struct amdtp_stream *slave)
--{
--	if (sync_mode == CIP_SYNC_TO_DEVICE) {
--		master->flags |= CIP_SYNC_TO_DEVICE;
--		slave->flags |= CIP_SYNC_TO_DEVICE;
--		master->sync_slave = slave;
--	} else {
--		master->flags &= ~CIP_SYNC_TO_DEVICE;
--		slave->flags &= ~CIP_SYNC_TO_DEVICE;
--		master->sync_slave = NULL;
--	}
--
--	slave->sync_slave = NULL;
--}
--
- /**
-  * amdtp_stream_wait_callback - sleep till callbacked or timeout
-  * @s: the AMDTP stream
 -- 
-2.7.4
+1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
