@@ -1,7 +1,7 @@
 From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: [PATCH v2 3/5] ASoC: rockchip-max98090: Fix jack detection and event reporting.
-Date: Mon,  9 May 2016 12:46:33 +0200
-Message-ID: <1462790795-25345-4-git-send-email-enric.balletbo@collabora.com>
+Subject: [PATCH v2 5/5] ARM: dts: rockchip: veyron: Add analog audio codecs.
+Date: Mon,  9 May 2016 12:46:35 +0200
+Message-ID: <1462790795-25345-6-git-send-email-enric.balletbo@collabora.com>
 References: <1462790795-25345-1-git-send-email-enric.balletbo@collabora.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1462790795-25345-1-git-send-email-enric.balletbo@collabora.com>
@@ -10,50 +10,27 @@ To: linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, alsa-devel
 Cc: Mark Brown <broonie@kernel.org>, Heiko Stuebner <heiko@sntech.de>
 List-Id: alsa-devel@alsa-project.org
 
-Physically there is a jackset which includes a Headphone and a Jackset
-Mic pin. The patch add thw two pins with the correct pin name so the
-DAPM management can find the pin and make the jack detection and event
-reporting work again.
-
-The patch also shut up the following error:
-
- rockchip-snd-max98090 sound: ASoC: DAPM unknown pin Headset Jack
+Add analog-audio functionality for Veyron devices.
 
 Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 ---
 Changes since v1:
- - Improve log message.
- - Include Headphone and Jackset Mic pins.
+ - None
 
- sound/soc/rockchip/rockchip_max98090.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
-index 3da7891..e70ffad 100644
---- a/sound/soc/rockchip/rockchip_max98090.c
-+++ b/sound/soc/rockchip/rockchip_max98090.c
-@@ -34,13 +34,18 @@
- #define DRV_NAME "rockchip-snd-max98090"
+diff --git a/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi b/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi
+index 610769d..e25bb1a 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi
++++ b/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi
+@@ -46,6 +46,7 @@
+ #include <dt-bindings/clock/rockchip,rk808.h>
+ #include <dt-bindings/input/input.h>
+ #include "rk3288-veyron.dtsi"
++#include "rk3288-veyron-analog-audio.dtsi"
+ #include "rk3288-veyron-sdmmc.dtsi"
  
- static struct snd_soc_jack headset_jack;
-+
-+/* Headset jack detection DAPM pins */
- static struct snd_soc_jack_pin headset_jack_pins[] = {
- 	{
--		.pin = "Headset Jack",
--		.mask = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
--			SND_JACK_BTN_0 | SND_JACK_BTN_1 |
--			SND_JACK_BTN_2 | SND_JACK_BTN_3,
-+		.pin = "Headphone",
-+		.mask = SND_JACK_HEADPHONE,
-+	},
-+	{
-+		.pin = "Headset Mic",
-+		.mask = SND_JACK_MICROPHONE,
- 	},
-+
- };
- 
- static const struct snd_soc_dapm_widget rk_dapm_widgets[] = {
+ / {
 -- 
 2.1.0
