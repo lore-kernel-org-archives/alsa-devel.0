@@ -1,23 +1,15 @@
-From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Subject: Re: [PATCH 1/3] ASoC: da7219: Convert driver to use
- generic device/fwnode functions
-Date: Mon, 9 May 2016 12:05:56 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A0337D463C6A3@SW-EX-MBX01.diasemi.com>
-References: <cover.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
- <4783487c3caa1d66f0a1d5b25c9b341aee1118e4.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
- <20160506122643.GS6292@sirena.org.uk>
- <2E89032DDAA8B9408CB92943514A0337D463C2EF@SW-EX-MBX01.diasemi.com>
- <20160506160536.GU6292@sirena.org.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/3 v3] firewire-lib: support tracepoints to
+	dump a part of packet data
+Date: Mon,  9 May 2016 21:12:43 +0900
+Message-ID: <1462795966-13445-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
- [195.245.231.147])
- by alsa0.perex.cz (Postfix) with ESMTP id C4E0C2607C8
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2016 14:05:58 +0200 (CEST)
-In-Reply-To: <20160506160536.GU6292@sirena.org.uk>
-Content-Language: en-US
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F8002654D4
+ for <alsa-devel@alsa-project.org>; Mon,  9 May 2016 14:12:50 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,28 +19,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Support Opensource <Support.Opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On May 06, 2016, 17:06, Mark Brown wrote:
+Hi,
 
-> No, not really - your DT is fairly unusual in how it's done and the lack
-> of ACPI helpers is not a good sign on that side.  The _DSD things are
-> really only supposed to work for simple properties on devices.
+This patchset updates my RFCv2, and go for merging.
 
-It's unusual in that there's a child node ("da7219_aad") of the device node, to
-encapsulate AAD specific information. The properties inside though are data only
-and simple. Actually, as I read it this is exactly the kind of thing that the
-'Hierarchical Data Extension UUID For _DSD' is for.
+[alsa-devel] [RFC][PATCH 0/3 v2] firewire-lib: support Linux tracing framework
+to dump a part of packet data
+http://mailman.alsa-project.org/pipermail/alsa-devel/2016-April/106950.html
 
-> > The intention was to just match against DT or ACPI and nothing else, so that
-> > didn't feel generic enough to be pushed into the fwnode framework. However
-> > I will take another look.
-> 
-> That's currently the entire set of things that fwnode supports so...
+The motivation of this patchset is to check the sequence of packet from/to
+audio and music units on IEEE 1394 bus. When the units have some quirks or
+ALSA firewire stack includes some bugs, we can work to seek them with Linux
+tracing framework.
 
-I believe there's the FWNODE_PDATA type as well so 3 things, although I assume
-that this is to be used longer term instead of the old fashioned platform
-data mechanism, for built-in properties. Right now though I don't see much
-actual usage of this.
+Changes:
+ - Improve commit comments.
+ - Improve Python3 script in commit comment for NODATA/NOINFO packets.
+ - Move the position of trace_out_acket() so that the index of packet starts 0.
+
+Takashi Sakamoto (3):
+  ALSA: firewire-lib: compute the value of second field in cycle count
+    for IT context
+  ALSA: firewire-lib: compute the value of second field in cycle count
+    for IR context
+  ALSA: firewire-lib: add tracepoints to dump a part of isochronous
+    packet data
+
+ sound/firewire/Makefile             |  3 ++
+ sound/firewire/amdtp-stream-trace.h | 98 +++++++++++++++++++++++++++++++++++++
+ sound/firewire/amdtp-stream.c       | 77 ++++++++++++++++++++++-------
+ 3 files changed, 160 insertions(+), 18 deletions(-)
+ create mode 100644 sound/firewire/amdtp-stream-trace.h
+
+-- 
+2.7.4
