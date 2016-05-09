@@ -1,17 +1,21 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 3/4] ASoC: davinci-mcasp: Restructure the
-	davinci_mcasp_calc_clk_div()
-Date: Mon, 9 May 2016 13:42:31 +0300
-Message-ID: <1462790552-6438-4-git-send-email-peter.ujfalusi@ti.com>
-References: <1462790552-6438-1-git-send-email-peter.ujfalusi@ti.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 1/2] mfd: wm5110: ARIZONA_CLOCK_CONTROL
+	should be volatile
+Date: Mon, 9 May 2016 12:16:47 +0100
+Message-ID: <20160509111647.GH8324@dell>
+References: <1461686780-22885-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <1461686780-22885-2-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FC922606F5
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2016 12:42:42 +0200 (CEST)
-In-Reply-To: <1462790552-6438-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from mail-wm0-f43.google.com (mail-wm0-f43.google.com [74.125.82.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 561C82606F5
+ for <alsa-devel@alsa-project.org>; Mon,  9 May 2016 13:16:36 +0200 (CEST)
+Received: by mail-wm0-f43.google.com with SMTP id e201so132560515wme.0
+ for <alsa-devel@alsa-project.org>; Mon, 09 May 2016 04:16:36 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1461686780-22885-2-git-send-email-rf@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,101 +25,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, jsarha@ti.com
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Change the return value to error_pmm instead of the BCLK div and handle the
-divider configuration to McASP within the function when the set flag is
-true.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/davinci/davinci-mcasp.c | 38 +++++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 19 deletions(-)
-
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 47be74d74384..3df9565c1645 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -1000,9 +1000,9 @@ static int mcasp_dit_hw_param(struct davinci_mcasp *mcasp,
- }
- 
- static int davinci_mcasp_calc_clk_div(struct davinci_mcasp *mcasp,
--				      unsigned int bclk_freq,
--				      int *error_ppm)
-+				      unsigned int bclk_freq, bool set)
- {
-+	int error_ppm;
- 	int div = mcasp->sysclk_freq / bclk_freq;
- 	int rem = mcasp->sysclk_freq % bclk_freq;
- 
-@@ -1014,13 +1014,18 @@ static int davinci_mcasp_calc_clk_div(struct davinci_mcasp *mcasp,
- 			rem = rem - bclk_freq;
- 		}
- 	}
--	if (error_ppm)
--		*error_ppm =
--			(div*1000000 + (int)div64_long(1000000LL*rem,
--						       (int)bclk_freq))
--			/div - 1000000;
-+	error_ppm = (div*1000000 + (int)div64_long(1000000LL*rem,
-+		     (int)bclk_freq)) / div - 1000000;
- 
--	return div;
-+	if (set) {
-+		if (error_ppm)
-+			dev_info(mcasp->dev, "Sample-rate is off by %d PPM\n",
-+				 error_ppm);
-+
-+		__davinci_mcasp_set_clkdiv(mcasp, MCASP_CLKDIV_BCLK, div, 0);
-+	}
-+
-+	return error_ppm;
- }
- 
- static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
-@@ -1045,18 +1050,11 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
- 		int slots = mcasp->tdm_slots;
- 		int rate = params_rate(params);
- 		int sbits = params_width(params);
--		int ppm, div;
- 
- 		if (mcasp->slot_width)
- 			sbits = mcasp->slot_width;
- 
--		div = davinci_mcasp_calc_clk_div(mcasp, rate*sbits*slots,
--						 &ppm);
--		if (ppm)
--			dev_info(mcasp->dev, "Sample-rate is off by %d PPM\n",
--				 ppm);
--
--		__davinci_mcasp_set_clkdiv(mcasp, 1, div, 0);
-+		davinci_mcasp_calc_clk_div(mcasp, rate * sbits * slots, true);
- 	}
- 
- 	ret = mcasp_common_hw_param(mcasp, substream->stream,
-@@ -1167,7 +1165,8 @@ static int davinci_mcasp_hw_rule_rate(struct snd_pcm_hw_params *params,
- 				davinci_mcasp_dai_rates[i];
- 			int ppm;
- 
--			davinci_mcasp_calc_clk_div(rd->mcasp, bclk_freq, &ppm);
-+			ppm = davinci_mcasp_calc_clk_div(rd->mcasp, bclk_freq,
-+							 false);
- 			if (abs(ppm) < DAVINCI_MAX_RATE_ERROR_PPM) {
- 				if (range.empty) {
- 					range.min = davinci_mcasp_dai_rates[i];
-@@ -1206,8 +1205,9 @@ static int davinci_mcasp_hw_rule_format(struct snd_pcm_hw_params *params,
- 			if (rd->mcasp->slot_width)
- 				sbits = rd->mcasp->slot_width;
- 
--			davinci_mcasp_calc_clk_div(rd->mcasp, sbits*slots*rate,
--						   &ppm);
-+			ppm = davinci_mcasp_calc_clk_div(rd->mcasp,
-+							 sbits * slots * rate,
-+							 false);
- 			if (abs(ppm) < DAVINCI_MAX_RATE_ERROR_PPM) {
- 				snd_mask_set(&nfmt, i);
- 				count++;
--- 
-2.8.2
+T24gVHVlLCAyNiBBcHIgMjAxNiwgUmljaGFyZCBGaXR6Z2VyYWxkIHdyb3RlOgoKPiBTb21lIG9m
+IHRoZSBiaXRzIGluIHRoaXMgcmVnaXN0ZXIgY2FuIGJlIGNoYW5nZWQgYnkgdGhlIGNvZGVjCj4g
+c28gd2UgbXVzdCBtYXJrIGl0IHZvbGF0aWxlLgo+IAo+IFNpZ25lZC1vZmYtYnk6IFJpY2hhcmQg
+Rml0emdlcmFsZCA8cmZAb3BlbnNvdXJjZS53b2xmc29ubWljcm8uY29tPgo+IC0tLQo+ICBkcml2
+ZXJzL21mZC93bTUxMTAtdGFibGVzLmMgfCAxICsKPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0
+aW9uKCspCgpBcHBsaWVkLCB0aGFua3MuCgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21mZC93bTUx
+MTAtdGFibGVzLmMgYi9kcml2ZXJzL21mZC93bTUxMTAtdGFibGVzLmMKPiBpbmRleCA4ZTc0ZTcx
+Li4xZWU2OGJkIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbWZkL3dtNTExMC10YWJsZXMuYwo+ICsr
+KyBiL2RyaXZlcnMvbWZkL3dtNTExMC10YWJsZXMuYwo+IEBAIC0zMDY2LDYgKzMwNjYsNyBAQCBz
+dGF0aWMgYm9vbCB3bTUxMTBfdm9sYXRpbGVfcmVnaXN0ZXIoc3RydWN0IGRldmljZSAqZGV2LCB1
+bnNpZ25lZCBpbnQgcmVnKQo+ICAJY2FzZSBBUklaT05BX0FPRF9JUlFfUkFXX1NUQVRVUzoKPiAg
+CWNhc2UgQVJJWk9OQV9GWF9DVFJMMjoKPiAgCWNhc2UgQVJJWk9OQV9BU1JDX1NUQVRVUzoKPiAr
+CWNhc2UgQVJJWk9OQV9DTE9DS19DT05UUk9MOgo+ICAJY2FzZSBBUklaT05BX0RTUF9TVEFUVVM6
+Cj4gIAljYXNlIEFSSVpPTkFfRFNQMV9TVEFUVVNfMToKPiAgCWNhc2UgQVJJWk9OQV9EU1AxX1NU
+QVRVU18yOgoKLS0gCkxlZSBKb25lcwpMaW5hcm8gU1RNaWNyb2VsZWN0cm9uaWNzIExhbmRpbmcg
+VGVhbSBMZWFkCkxpbmFyby5vcmcg4pSCIE9wZW4gc291cmNlIHNvZnR3YXJlIGZvciBBUk0gU29D
+cwpGb2xsb3cgTGluYXJvOiBGYWNlYm9vayB8IFR3aXR0ZXIgfCBCbG9nCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
