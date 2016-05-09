@@ -1,21 +1,17 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: WM5102 - Help to make baytrail machine driver work
-Date: Mon, 9 May 2016 15:22:10 +0100
-Message-ID: <20160509142210.GH1646@localhost.localdomain>
-References: <CAJcYhpZU-6_AO_Gye1VttuvOP0Z2=wLuWGCOP7tBWc6DsuLU1g@mail.gmail.com>
- <20160505091122.GE1646@localhost.localdomain>
- <CAJcYhpbdr-3qBSdaLX-=MCSGX7VC0XGz6tKbzJ3K3RHeGMhs7g@mail.gmail.com>
- <CAJcYhpZ1NRUa_7nu5kT6yJ_NTbDxRtK5Uy0H1fxMBEHhvA1fxw@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 7/7] ALSA: firewire-lib: enable the same
+	feature as CIP_SKIP_INIT_DBC_CHECK flag
+Date: Mon,  9 May 2016 23:15:56 +0900
+Message-ID: <1462803356-6229-8-git-send-email-o-takashi@sakamocchi.jp>
+References: <1462803356-6229-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E171265AF6
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2016 16:22:03 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <CAJcYhpZ1NRUa_7nu5kT6yJ_NTbDxRtK5Uy0H1fxMBEHhvA1fxw@mail.gmail.com>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id A5A5326583F
+ for <alsa-devel@alsa-project.org>; Mon,  9 May 2016 16:16:03 +0200 (CEST)
+In-Reply-To: <1462803356-6229-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,112 +21,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Paulo Sergio <pstglia@gmail.com>
-Cc: alsa-devel@alsa-project.org, Christian Hartmann <cornogle@googlemail.com>, vinod.koul@intel.com, broonie@opensource.wolfsonmicro.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, mika.westerberg@linux.intel.com
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, May 08, 2016 at 08:44:09AM -0300, Paulo Sergio wrote:
-> Hi Charles, how are you?
+In former commit, drivers in ALSA firewire stack always starts IT context
+before IR context. If IR context starts after packets are transmitted by
+peer unit, packet discontinuity may be detected because the context starts
+in the middle of packet streaming. This situation is rare because IT
+context usually starts immediately. However, it's better to solve this
+issue. This is suppressed with CIP_SKIP_INIT_DBC_CHECK flag.
 
-Good thanks.
+This commit enables the same feature as CIP_SKIP_INIT_DBC_CHECK.
 
-> 
-> > A quick look through your machine driver looks like the parts
-> > relating the CODEC look ok.
-> >
-> > I am not so sure about the AP side routing but for the CODEC,
-> >
-> > 'HPOUT1L Input 1' AIF1RX1
-> > 'HPOUT1R Input 1' AIF1RX2
-> > 'HPOUT1 Digital Switch' 1
-> >
-> > Should be enough to route some audio out the headphones, assuming
-> > AIF1 is connected to the AP and HPOUT1L is the headphones (it is
-> > very rare for people to not wire things up that way so its quite
-> > a good bet, and your machine driver suggests this is how it is
-> > connected).
-> 
-> Tried these cmds/routes to enable headphones (got from Raspberry PI
-> wolfson card), but we got no output (except static noise and some
-> "clicks")
-> 
-> alsa_amixer -Dhw:0 cset name='HPOUT1 Digital Switch' on
-> # Set path gain to -6dB for safety. ie mav 0.5Vrms output level.
-> alsa_amixer -Dhw:0 cset name='HPOUT1 Digital Volume' 116
-> # do we want to clear the HPOUT mixers inputs?
-> alsa_amixer -Dhw:0 cset name='HPOUT1L Input 1' None
-> alsa_amixer -Dhw:0 cset name='HPOUT1R Input 1' None
-> alsa_amixer -Dhw:0 cset name='HPOUT1L Input 2' None
-> alsa_amixer -Dhw:0 cset name='HPOUT1R Input 2' None
-> alsa_amixer -Dhw:0 cset name='HPOUT1L Input 1' AIF1RX1
-> alsa_amixer -Dhw:0 cset name='HPOUT1L Input 1 Volume' 32
-> alsa_amixer -Dhw:0 cset name='HPOUT1R Input 1' AIF1RX2
-> alsa_amixer -Dhw:0 cset name='HPOUT1R Input 1 Volume' 32
-> alsa_amixer -Dhw:0 cset name='Headset Mic Switch' on
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/amdtp-stream.c       | 3 +--
+ sound/firewire/amdtp-stream.h       | 7 ++-----
+ sound/firewire/bebob/bebob_stream.c | 2 --
+ sound/firewire/digi00x/amdtp-dot.c  | 2 +-
+ sound/firewire/oxfw/oxfw-stream.c   | 3 +--
+ 5 files changed, 5 insertions(+), 12 deletions(-)
 
->From your machine driver I would have expected this last control
-to be "Headphone Switch", although I do appear to see things
-turning on in your log so I guess that switch is already on?
-
-> 
-> Tried also some other controls for speakers, but no audio output
-> 
-> >
-> > If you provide some kernel logs with the LOG_DEVICE in
-> > drivers/base/regmap/regmap.c set to the CODEC spi device, I am
-> > happy to sanity check what is going to the CODEC. Although at the
-> > moment I think your issue looks mostly like getting through the
-> > AP side.
-> 
-> Appreciate your help. Thanks in advance
-> 
-> Here's dmesg with LOG_DEVICE set (in this case to "spi-WM510204:00") [1]
-> 
-> [1] - https://drive.google.com/file/d/0BxO6THtB865fS2NxUkdOa18zUlE/view?usp=sharing
-
-[   52.859420] arizona spi-WM510204:00: 173 <= a8d
-[   52.859451] arizona spi-WM510204:00: 174 <= c35
-[   52.859458] arizona spi-WM510204:00: 176 <= 40
-[   52.859466] arizona spi-WM510204:00: 179 <= 10
-[   52.871213] arizona spi-WM510204:00: 172 <= 8007
-[   52.871245] arizona spi-WM510204:00: 171 <= 1
-
-Your FLL setting here look right, assuming a 25MHz MCLK1 and a
-48k playback and no sign that the FLL failed to lock, so we very
-likely have a clock.
-
-[   52.873069] arizona spi-WM510204:00: 500 <= b
-[   52.873082] arizona spi-WM510204:00: 505 <= 20
-[   52.873089] arizona spi-WM510204:00: 506 <= 20
-[   52.873096] arizona spi-WM510204:00: 507 <= 1010
-[   52.873104] arizona spi-WM510204:00: 508 <= 1010
-
-The audio interface looks like it is setup for 16bit 48k I2S.
-
-Looks like both the HPOUTs are being unmuted:
-
-[  157.115973] arizona spi-WM510204:00: 411 <= 280
-[  157.126963] arizona spi-WM510204:00: 415 <= 280
-
-The left headphone output appears to be powering up:
-
-[  280.668563] arizona spi-WM510204:00: 400 <= 2
-
-The mixer source appears to be applying (HPOUT1L <= AIF1RX1)
-
-[  280.686634] arizona spi-WM510204:00: 680 <= 20
-
-Overall, I would say it looks good. One thing I would perhaps
-try, connect up this path as you have been doing, but whilst the
-audio is playing (or attempting to at least) connect the route:
-
-'HPOUT1R Input 1' 'Tone Generator 1'
-
-This will hook the right headphone channel up to the chips
-internal 1k tone generator. Careful it will be loud, but its
-a good check to make sure the clocks are all happy inside the
-chip. If you hear that tone, I would say the CODEC side looks
-happy, but let me know how you get on.
-
-Thanks,
-Charles
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index 6db2a73..830a95c 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -723,8 +723,7 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 		goto err_unlock;
+ 	}
+ 
+-	if (s->direction == AMDTP_IN_STREAM &&
+-	    s->flags & CIP_SKIP_INIT_DBC_CHECK)
++	if (s->direction == AMDTP_IN_STREAM)
+ 		s->data_block_counter = UINT_MAX;
+ 	else
+ 		s->data_block_counter = 0;
+diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
+index da028b0..349c405 100644
+--- a/sound/firewire/amdtp-stream.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -24,8 +24,6 @@
+  *	The value of data_block_quadlets is used instead of reported value.
+  * @CIP_SKIP_DBC_ZERO_CHECK: Only for in-stream.  Packets with zero in dbc is
+  *	skipped for detecting discontinuity.
+- * @CIP_SKIP_INIT_DBC_CHECK: Only for in-stream. The value of dbc in first
+- *	packet is not continuous from an initial value.
+  * @CIP_EMPTY_HAS_WRONG_DBC: Only for in-stream. The value of dbc in empty
+  *	packet is wrong but the others are correct.
+  * @CIP_JUMBO_PAYLOAD: Only for in-stream. The number of data blocks in an
+@@ -39,9 +37,8 @@ enum cip_flags {
+ 	CIP_DBC_IS_END_EVENT	= 0x04,
+ 	CIP_WRONG_DBS		= 0x08,
+ 	CIP_SKIP_DBC_ZERO_CHECK	= 0x10,
+-	CIP_SKIP_INIT_DBC_CHECK	= 0x20,
+-	CIP_EMPTY_HAS_WRONG_DBC	= 0x40,
+-	CIP_JUMBO_PAYLOAD	= 0x80,
++	CIP_EMPTY_HAS_WRONG_DBC	= 0x20,
++	CIP_JUMBO_PAYLOAD	= 0x40,
+ };
+ 
+ /**
+diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+index 0141813..4d3034a 100644
+--- a/sound/firewire/bebob/bebob_stream.c
++++ b/sound/firewire/bebob/bebob_stream.c
+@@ -526,8 +526,6 @@ int snd_bebob_stream_init_duplex(struct snd_bebob *bebob)
+ 		goto end;
+ 	}
+ 
+-	bebob->tx_stream.flags |= CIP_SKIP_INIT_DBC_CHECK;
+-
+ 	/*
+ 	 * BeBoB v3 transfers packets with these qurks:
+ 	 *  - In the beginning of streaming, the value of dbc is incremented
+diff --git a/sound/firewire/digi00x/amdtp-dot.c b/sound/firewire/digi00x/amdtp-dot.c
+index 0ac92ab..b3cffd0 100644
+--- a/sound/firewire/digi00x/amdtp-dot.c
++++ b/sound/firewire/digi00x/amdtp-dot.c
+@@ -421,7 +421,7 @@ int amdtp_dot_init(struct amdtp_stream *s, struct fw_unit *unit,
+ 
+ 	/* Use different mode between incoming/outgoing. */
+ 	if (dir == AMDTP_IN_STREAM) {
+-		flags = CIP_NONBLOCKING | CIP_SKIP_INIT_DBC_CHECK;
++		flags = CIP_NONBLOCKING;
+ 		process_data_blocks = process_tx_data_blocks;
+ 	} else {
+ 		flags = CIP_BLOCKING;
+diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
+index 7cb5743..d9361f3 100644
+--- a/sound/firewire/oxfw/oxfw-stream.c
++++ b/sound/firewire/oxfw/oxfw-stream.c
+@@ -242,8 +242,7 @@ int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw,
+ 	 * blocks than IEC 61883-6 defines.
+ 	 */
+ 	if (stream == &oxfw->tx_stream) {
+-		oxfw->tx_stream.flags |= CIP_SKIP_INIT_DBC_CHECK |
+-					 CIP_JUMBO_PAYLOAD;
++		oxfw->tx_stream.flags |= CIP_JUMBO_PAYLOAD;
+ 		if (oxfw->wrong_dbs)
+ 			oxfw->tx_stream.flags |= CIP_WRONG_DBS;
+ 	}
+-- 
+2.7.4
