@@ -1,126 +1,58 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 7/7] ALSA: firewire-lib: enable the same
-	feature as CIP_SKIP_INIT_DBC_CHECK flag
-Date: Mon,  9 May 2016 23:15:56 +0900
-Message-ID: <1462803356-6229-8-git-send-email-o-takashi@sakamocchi.jp>
-References: <1462803356-6229-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Petr Kulhavy <petr@barix.com>
+Subject: [PATCH v5 3/4] ARM: davinci: da8xx-dt: add OF_DEV_AUXDATA entries for
+ mcbsp0 and mcbsp1
+Date: Mon,  9 May 2016 16:35:21 +0200
+Message-ID: <1462804522-29544-4-git-send-email-petr@barix.com>
+References: <1462804522-29544-1-git-send-email-petr@barix.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id A5A5326583F
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2016 16:16:03 +0200 (CEST)
-In-Reply-To: <1462803356-6229-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1462804522-29544-1-git-send-email-petr@barix.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: nsekhar@ti.com, khilman@kernel.org, lgirdwood@gmail.com, broonie@kernel.org, devicetree@vger.kernel.org
+Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, brain@jikos.cz, Petr Kulhavy <petr@barix.com>, robh+dt@kernel.org, galak@codeaurora.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-In former commit, drivers in ALSA firewire stack always starts IT context
-before IR context. If IR context starts after packets are transmitted by
-peer unit, packet discontinuity may be detected because the context starts
-in the middle of packet streaming. This situation is rare because IT
-context usually starts immediately. However, it's better to solve this
-issue. This is suppressed with CIP_SKIP_INIT_DBC_CHECK flag.
+Add OF_DEV_AUXDATA for mcbsp to be able to use clocks.
 
-This commit enables the same feature as CIP_SKIP_INIT_DBC_CHECK.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Petr Kulhavy <petr@barix.com>
+Reviewed-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/firewire/amdtp-stream.c       | 3 +--
- sound/firewire/amdtp-stream.h       | 7 ++-----
- sound/firewire/bebob/bebob_stream.c | 2 --
- sound/firewire/digi00x/amdtp-dot.c  | 2 +-
- sound/firewire/oxfw/oxfw-stream.c   | 3 +--
- 5 files changed, 5 insertions(+), 12 deletions(-)
+v1: initial
+v2: remove "-audio" postfix from the compatible string
+v3: no change
+v4: no change
+v5: rebased to the current master of git://git.kernel.org/pub/scm/linux/kernel/git/nsekhar/linux-davinci.git
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 6db2a73..830a95c 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -723,8 +723,7 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 		goto err_unlock;
- 	}
- 
--	if (s->direction == AMDTP_IN_STREAM &&
--	    s->flags & CIP_SKIP_INIT_DBC_CHECK)
-+	if (s->direction == AMDTP_IN_STREAM)
- 		s->data_block_counter = UINT_MAX;
- 	else
- 		s->data_block_counter = 0;
-diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index da028b0..349c405 100644
---- a/sound/firewire/amdtp-stream.h
-+++ b/sound/firewire/amdtp-stream.h
-@@ -24,8 +24,6 @@
-  *	The value of data_block_quadlets is used instead of reported value.
-  * @CIP_SKIP_DBC_ZERO_CHECK: Only for in-stream.  Packets with zero in dbc is
-  *	skipped for detecting discontinuity.
-- * @CIP_SKIP_INIT_DBC_CHECK: Only for in-stream. The value of dbc in first
-- *	packet is not continuous from an initial value.
-  * @CIP_EMPTY_HAS_WRONG_DBC: Only for in-stream. The value of dbc in empty
-  *	packet is wrong but the others are correct.
-  * @CIP_JUMBO_PAYLOAD: Only for in-stream. The number of data blocks in an
-@@ -39,9 +37,8 @@ enum cip_flags {
- 	CIP_DBC_IS_END_EVENT	= 0x04,
- 	CIP_WRONG_DBS		= 0x08,
- 	CIP_SKIP_DBC_ZERO_CHECK	= 0x10,
--	CIP_SKIP_INIT_DBC_CHECK	= 0x20,
--	CIP_EMPTY_HAS_WRONG_DBC	= 0x40,
--	CIP_JUMBO_PAYLOAD	= 0x80,
-+	CIP_EMPTY_HAS_WRONG_DBC	= 0x20,
-+	CIP_JUMBO_PAYLOAD	= 0x40,
+ arch/arm/mach-davinci/da8xx-dt.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-davinci/da8xx-dt.c b/arch/arm/mach-davinci/da8xx-dt.c
+index 754f478110b4..ae2bf237e374 100644
+--- a/arch/arm/mach-davinci/da8xx-dt.c
++++ b/arch/arm/mach-davinci/da8xx-dt.c
+@@ -35,8 +35,11 @@ static struct of_dev_auxdata da850_auxdata_lookup[] __initdata = {
+ 	OF_DEV_AUXDATA("ns16550a", 0x01d0d000, "serial8250.2", NULL),
+ 	OF_DEV_AUXDATA("ti,davinci_mdio", 0x01e24000, "davinci_mdio.0", NULL),
+ 	OF_DEV_AUXDATA("ti,davinci-dm6467-emac", 0x01e20000, "davinci_emac.1",
+-		       NULL),
+-	OF_DEV_AUXDATA("ti,da830-mcasp-audio", 0x01d00000, "davinci-mcasp.0", NULL),
++			NULL),
++	OF_DEV_AUXDATA("ti,da830-mcasp-audio", 0x01d00000, "davinci-mcasp.0",
++			NULL),
++	OF_DEV_AUXDATA("ti,da850-mcbsp", 0x01d10000, "davinci-mcbsp.0", NULL),
++	OF_DEV_AUXDATA("ti,da850-mcbsp", 0x01d11000, "davinci-mcbsp.1", NULL),
+ 	{}
  };
  
- /**
-diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
-index 0141813..4d3034a 100644
---- a/sound/firewire/bebob/bebob_stream.c
-+++ b/sound/firewire/bebob/bebob_stream.c
-@@ -526,8 +526,6 @@ int snd_bebob_stream_init_duplex(struct snd_bebob *bebob)
- 		goto end;
- 	}
- 
--	bebob->tx_stream.flags |= CIP_SKIP_INIT_DBC_CHECK;
--
- 	/*
- 	 * BeBoB v3 transfers packets with these qurks:
- 	 *  - In the beginning of streaming, the value of dbc is incremented
-diff --git a/sound/firewire/digi00x/amdtp-dot.c b/sound/firewire/digi00x/amdtp-dot.c
-index 0ac92ab..b3cffd0 100644
---- a/sound/firewire/digi00x/amdtp-dot.c
-+++ b/sound/firewire/digi00x/amdtp-dot.c
-@@ -421,7 +421,7 @@ int amdtp_dot_init(struct amdtp_stream *s, struct fw_unit *unit,
- 
- 	/* Use different mode between incoming/outgoing. */
- 	if (dir == AMDTP_IN_STREAM) {
--		flags = CIP_NONBLOCKING | CIP_SKIP_INIT_DBC_CHECK;
-+		flags = CIP_NONBLOCKING;
- 		process_data_blocks = process_tx_data_blocks;
- 	} else {
- 		flags = CIP_BLOCKING;
-diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
-index 7cb5743..d9361f3 100644
---- a/sound/firewire/oxfw/oxfw-stream.c
-+++ b/sound/firewire/oxfw/oxfw-stream.c
-@@ -242,8 +242,7 @@ int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw,
- 	 * blocks than IEC 61883-6 defines.
- 	 */
- 	if (stream == &oxfw->tx_stream) {
--		oxfw->tx_stream.flags |= CIP_SKIP_INIT_DBC_CHECK |
--					 CIP_JUMBO_PAYLOAD;
-+		oxfw->tx_stream.flags |= CIP_JUMBO_PAYLOAD;
- 		if (oxfw->wrong_dbs)
- 			oxfw->tx_stream.flags |= CIP_WRONG_DBS;
- 	}
 -- 
-2.7.4
+1.9.1
