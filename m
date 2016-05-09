@@ -1,135 +1,75 @@
-From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: [PATCH v2 4/5] ARM: dts: rockchip: Add shared file for audio related nodes for veyron boards
-Date: Mon,  9 May 2016 12:46:34 +0200
-Message-ID: <1462790795-25345-5-git-send-email-enric.balletbo@collabora.com>
-References: <1462790795-25345-1-git-send-email-enric.balletbo@collabora.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1462790795-25345-1-git-send-email-enric.balletbo@collabora.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Heiko Stuebner <heiko@sntech.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 2/4] ASoC: davinci-mcasp: Change
+	__davinci_mcasp_set_clkdiv() first parameter
+Date: Mon, 9 May 2016 13:42:30 +0300
+Message-ID: <1462790552-6438-3-git-send-email-peter.ujfalusi@ti.com>
+References: <1462790552-6438-1-git-send-email-peter.ujfalusi@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52F6126578F
+ for <alsa-devel@alsa-project.org>; Mon,  9 May 2016 12:42:40 +0200 (CEST)
+In-Reply-To: <1462790552-6438-1-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, jsarha@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Set i2s block to "okay", add sound node for max98090 with gpios for
-HP and Mic detect and pinctrl, and add a max98090 device and ts3a227e to
-the correct i2c bus.
+Change the first parameter to struct davinci_mcasp* from
+struct snd_soc_dai*
+The function internally does not use or need the DAI information.
 
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
-Changes since v1:
- - None
+ sound/soc/davinci/davinci-mcasp.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
- arch/arm/boot/dts/rk3288-veyron-analog-audio.dtsi | 102 ++++++++++++++++++++++
- 1 file changed, 102 insertions(+)
- create mode 100644 arch/arm/boot/dts/rk3288-veyron-analog-audio.dtsi
-
-diff --git a/arch/arm/boot/dts/rk3288-veyron-analog-audio.dtsi b/arch/arm/boot/dts/rk3288-veyron-analog-audio.dtsi
-new file mode 100644
-index 0000000..f045e1a
---- /dev/null
-+++ b/arch/arm/boot/dts/rk3288-veyron-analog-audio.dtsi
-@@ -0,0 +1,102 @@
-+/*
-+ * Google Veyron (and derivatives) fragment for the  max98090 audio
-+ * codec and analog headphone jack.
-+ *
-+ * Copyright 2016 Google, Inc
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 836f694e4b9d..47be74d74384 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -540,11 +540,9 @@ out:
+ 	return ret;
+ }
+ 
+-static int __davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
++static int __davinci_mcasp_set_clkdiv(struct davinci_mcasp *mcasp, int div_id,
+ 				      int div, bool explicit)
+ {
+-	struct davinci_mcasp *mcasp = snd_soc_dai_get_drvdata(dai);
+-
+ 	pm_runtime_get_sync(mcasp->dev);
+ 	switch (div_id) {
+ 	case MCASP_CLKDIV_AUXCLK:			/* MCLK divider */
+@@ -592,7 +590,9 @@ static int __davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
+ static int davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
+ 				    int div)
+ {
+-	return __davinci_mcasp_set_clkdiv(dai, div_id, div, 1);
++	struct davinci_mcasp *mcasp = snd_soc_dai_get_drvdata(dai);
 +
-+/ {
-+
-+	sound {
-+		compatible = "rockchip,rockchip-audio-max98090";
-+		rockchip,model = "ROCKCHIP-I2S";
-+		rockchip,i2s-controller = <&i2s>;
-+		rockchip,audio-codec = <&max98090>;
-+		rockchip,hp-det-gpios = <&gpio6 5 GPIO_ACTIVE_HIGH>;
-+		rockchip,mic-det-gpios = <&gpio6 11 GPIO_ACTIVE_LOW>;
-+		rockchip,headset-codec = <&headsetcodec>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&mic_det>, <&hp_det>;
-+	};
-+
-+	io-domains {
-+		audio-supply = <&vcc18_codec>;
-+	};
-+};
-+
-+&rk808 {
-+	vcc10-supply = <&vcc33_sys>;
-+
-+	regulators {
-+		vcc18_codec: LDO_REG6 {
-+			regulator-always-on;
-+			regulator-boot-on;
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-name = "vcc18_codec";
-+			regulator-suspend-mem-disabled;
-+		};
-+	};
-+};
-+
-+&i2c2 {
-+	max98090: max98090@10 {
-+		compatible = "maxim,max98090";
-+		reg = <0x10>;
-+		clock-names = "mclk";
-+		clocks = <&cru SCLK_I2S0_OUT>;
-+		interrupt-parent = <&gpio6>;
-+		interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&int_codec>;
-+	};
-+};
-+
-+&i2c4 {
-+	headsetcodec: ts3a227e@3b {
-+		compatible = "ti,ts3a227e";
-+		reg = <0x3b>;
-+		interrupt-parent = <&gpio0>;
-+		interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&ts3a227e_int_l>;
-+		ti,micbias = <7>;		/* MICBIAS = 2.8V */
-+	};
-+};
-+
-+&i2s {
-+	status = "okay";
-+	clock-names = "i2s_hclk", "i2s_clk";
-+	clocks = <&cru HCLK_I2S0>, <&cru SCLK_I2S0>;
-+};
-+
-+&pinctrl {
-+	codec {
-+		hp_det: hp-det {
-+			rockchip,pins = <6 5 RK_FUNC_GPIO &pcfg_pull_up>;
-+		};
-+
-+		/*
-+		 * HACK: We're going to _pull down_ this _active low_ interrupt
-+		 * so that it never fires.  We don't need this interrupt because
-+		 * we've got a ts3a227e chip but the driver requires it.
-+		 */
-+		int_codec: int-codec {
-+			rockchip,pins = <6 7 RK_FUNC_GPIO &pcfg_pull_down>;
-+		};
-+
-+		mic_det: mic-det {
-+			rockchip,pins = <6 11 RK_FUNC_GPIO &pcfg_pull_up>;
-+		};
-+	};
-+
-+	headset {
-+		ts3a227e_int_l: ts3a227e-int-l {
-+			rockchip,pins = <0 3 RK_FUNC_GPIO &pcfg_pull_up>;
-+		};
-+	};
-+};
++	return __davinci_mcasp_set_clkdiv(mcasp, div_id, div, 1);
+ }
+ 
+ static int davinci_mcasp_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+@@ -1056,7 +1056,7 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
+ 			dev_info(mcasp->dev, "Sample-rate is off by %d PPM\n",
+ 				 ppm);
+ 
+-		__davinci_mcasp_set_clkdiv(cpu_dai, 1, div, 0);
++		__davinci_mcasp_set_clkdiv(mcasp, 1, div, 0);
+ 	}
+ 
+ 	ret = mcasp_common_hw_param(mcasp, substream->stream,
 -- 
-2.1.0
+2.8.2
