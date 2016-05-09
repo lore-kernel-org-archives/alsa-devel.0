@@ -1,54 +1,59 @@
-From: Enric Balletbo i Serra <enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Subject: [PATCH v2 0/5] ASoC: rockchip: Fix audio on Veyron.
-Date: Mon,  9 May 2016 12:46:30 +0200
-Message-ID: <1462790795-25345-1-git-send-email-enric.balletbo@collabora.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
-List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Subject: [PATCH v2 3/5] ASoC: rockchip-max98090: Fix jack detection and event reporting.
+Date: Mon,  9 May 2016 12:46:33 +0200
+Message-ID: <1462790795-25345-4-git-send-email-enric.balletbo@collabora.com>
+References: <1462790795-25345-1-git-send-email-enric.balletbo@collabora.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1462790795-25345-1-git-send-email-enric.balletbo@collabora.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Heiko Stuebner <heiko@sntech.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Physically there is a jackset which includes a Headphone and a Jackset
+Mic pin. The patch add thw two pins with the correct pin name so the
+DAPM management can find the pin and make the jack detection and event
+reporting work again.
 
-This patch series adds support and fixes the audio support for Veyron
-devices. With these patches I'm able to playback from speakers and
-headphones, and record from the microphone on a Veyron Jerry Chromebook.
+The patch also shut up the following error:
 
-Patches from 1/5 to 3/5 should go through the Mark Brown ASoC tree.
+ rockchip-snd-max98090 sound: ASoC: DAPM unknown pin Headset Jack
 
-Patches 4/5 and 5/5 should go through the Heiko Stuebner rockchip tree.
-
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+---
 Changes since v1:
- - Improve log messages trying to explain better the issues (suggested by Mark Brown)
- - Remove patches from John Keeping as are already cherry-picked.
-   - https://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/commit/?h=for-next&id=a6e806c49e3265494ac6fe6ec88ed5c010652e0d
-   - https://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/commit/?h=for-next&id=7e885d211f023dfd201fad8246bbf3c3bd126c61
+ - Improve log message.
+ - Include Headphone and Jackset Mic pins.
 
-Enric Balletbo i Serra (5):
-  ASoC: rockchip-max98090: Fix NULL pointer dereference while accessing
-    to jack.
-  ASoC: rockchip-max98090: Fix the Headset Mic route.
-  ASoC: rockchip-max98090: Fix jack detection and event reporting.
-  ARM: dts: rockchip: Add shared file for audio related nodes for veyron
-    boards
-  ARM: dts: rockchip: veyron: Add analog audio codecs.
+ sound/soc/rockchip/rockchip_max98090.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
- arch/arm/boot/dts/rk3288-veyron-analog-audio.dtsi | 102 ++++++++++++++++++++++
- arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi   |   1 +
- sound/soc/rockchip/rockchip_max98090.c            |  65 ++++++++------
- 3 files changed, 140 insertions(+), 28 deletions(-)
- create mode 100644 arch/arm/boot/dts/rk3288-veyron-analog-audio.dtsi
-
+diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
+index 3da7891..e70ffad 100644
+--- a/sound/soc/rockchip/rockchip_max98090.c
++++ b/sound/soc/rockchip/rockchip_max98090.c
+@@ -34,13 +34,18 @@
+ #define DRV_NAME "rockchip-snd-max98090"
+ 
+ static struct snd_soc_jack headset_jack;
++
++/* Headset jack detection DAPM pins */
+ static struct snd_soc_jack_pin headset_jack_pins[] = {
+ 	{
+-		.pin = "Headset Jack",
+-		.mask = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
+-			SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+-			SND_JACK_BTN_2 | SND_JACK_BTN_3,
++		.pin = "Headphone",
++		.mask = SND_JACK_HEADPHONE,
++	},
++	{
++		.pin = "Headset Mic",
++		.mask = SND_JACK_MICROPHONE,
+ 	},
++
+ };
+ 
+ static const struct snd_soc_dapm_widget rk_dapm_widgets[] = {
 -- 
 2.1.0
