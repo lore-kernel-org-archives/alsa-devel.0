@@ -1,57 +1,127 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: davinci-mcasp: Do not allow multiple
-	streams in one direction
-Date: Mon, 9 May 2016 13:39:14 +0300
-Message-ID: <1462790354-5627-1-git-send-email-peter.ujfalusi@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id F19842606C7
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2016 12:39:18 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, jsarha@ti.com
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Subject: [PATCH v2 1/5] ASoC: rockchip-max98090: Fix NULL pointer dereference while accessing to jack.
+Date: Mon,  9 May 2016 12:46:31 +0200
+Message-ID: <1462790795-25345-2-git-send-email-enric.balletbo@collabora.com>
+References: <1462790795-25345-1-git-send-email-enric.balletbo@collabora.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1462790795-25345-1-git-send-email-enric.balletbo@collabora.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Heiko Stuebner <heiko@sntech.de>
 List-Id: alsa-devel@alsa-project.org
 
-Make sure that the user can not start multiple streams with the same
-direction.
+Commit f2ed6b07645e ("ASoC: Make aux_dev more like a generic
+component") caused a regression on this driver, since now a
+kernel oops is seen when rockchip-mac98090 driver is loaded.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+That commit changed the probing of aux_devs before checking
+new DAI links, so for this driver rk_98090_headset_init is
+called before rk_init and then the kernel oops due a NULL
+pointer dereference inside rk_98090_headset_init function
+since there is a call that tries to access the jack pointer
+which has not been allocated yet.
+
+This is the call chain that causes the crash:
+
+ rk_98090_headset_init
+   -> ts3a227e_enable_jack_detect
+      -> snd_jack_set_key
+ rk_init
+   -> snd_soc_card_jack_new
+
+This patch moves the new jack object creation from rk_init
+to rk_98090_headset_init function making sure the jack is
+created before is accessed.
+
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 ---
- sound/soc/davinci/davinci-mcasp.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Changes since v1:
+ - Improve log message.
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index c4cd8e4fff9a..50523e744483 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -1252,11 +1252,15 @@ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
- 	int i, dir;
- 	int tdm_slots = mcasp->tdm_slots;
+ sound/soc/rockchip/rockchip_max98090.c | 50 ++++++++++++++++++----------------
+ 1 file changed, 27 insertions(+), 23 deletions(-)
+
+diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
+index 5436102..abb64a5 100644
+--- a/sound/soc/rockchip/rockchip_max98090.c
++++ b/sound/soc/rockchip/rockchip_max98090.c
+@@ -114,43 +114,27 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
  
--	if (mcasp->tdm_mask[substream->stream])
--		tdm_slots = hweight32(mcasp->tdm_mask[substream->stream]);
-+	/* Do not allow more then one stream per direction */
-+	if (mcasp->substreams[substream->stream])
-+		return -EBUSY;
+-static int rk_init(struct snd_soc_pcm_runtime *runtime)
+-{
+-	/* Enable Headset and 4 Buttons Jack detection */
+-	return snd_soc_card_jack_new(runtime->card, "Headset Jack",
+-			       SND_JACK_HEADSET |
+-			       SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+-			       SND_JACK_BTN_2 | SND_JACK_BTN_3,
+-			       &headset_jack,
+-			       headset_jack_pins,
+-			       ARRAY_SIZE(headset_jack_pins));
+-}
+-
+-static int rk_98090_headset_init(struct snd_soc_component *component)
+-{
+-	return ts3a227e_enable_jack_detect(component, &headset_jack);
+-}
+-
+ static struct snd_soc_ops rk_aif1_ops = {
+ 	.hw_params = rk_aif1_hw_params,
+ };
  
- 	mcasp->substreams[substream->stream] = substream;
+-static struct snd_soc_aux_dev rk_98090_headset_dev = {
+-	.name = "Headset Chip",
+-	.init = rk_98090_headset_init,
+-};
+-
+ static struct snd_soc_dai_link rk_dailink = {
+ 	.name = "max98090",
+ 	.stream_name = "Audio",
+ 	.codec_dai_name = "HiFi",
+-	.init = rk_init,
+ 	.ops = &rk_aif1_ops,
+ 	/* set max98090 as slave */
+ 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 		SND_SOC_DAIFMT_CBS_CFS,
+ };
  
-+	if (mcasp->tdm_mask[substream->stream])
-+		tdm_slots = hweight32(mcasp->tdm_mask[substream->stream]);
++static int rk_98090_headset_init(struct snd_soc_component *component);
 +
- 	if (mcasp->op_mode == DAVINCI_MCASP_DIT_MODE)
- 		return 0;
++static struct snd_soc_aux_dev rk_98090_headset_dev = {
++	.name = "Headset Chip",
++	.init = rk_98090_headset_init,
++};
++
+ static struct snd_soc_card snd_soc_card_rk = {
+ 	.name = "ROCKCHIP-I2S",
+ 	.owner = THIS_MODULE,
+@@ -166,6 +150,26 @@ static struct snd_soc_card snd_soc_card_rk = {
+ 	.num_controls = ARRAY_SIZE(rk_mc_controls),
+ };
  
++static int rk_98090_headset_init(struct snd_soc_component *component)
++{
++	int ret;
++
++	/* Enable Headset and 4 Buttons Jack detection */
++	ret = snd_soc_card_jack_new(&snd_soc_card_rk, "Headset Jack",
++				    SND_JACK_HEADSET |
++				    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++				    SND_JACK_BTN_2 | SND_JACK_BTN_3,
++				    &headset_jack,
++				    headset_jack_pins,
++				    ARRAY_SIZE(headset_jack_pins));
++	if (ret)
++		return ret;
++
++	ret = ts3a227e_enable_jack_detect(component, &headset_jack);
++
++	return ret;
++}
++
+ static int snd_rk_mc_probe(struct platform_device *pdev)
+ {
+ 	int ret = 0;
 -- 
-2.8.1
+2.1.0
