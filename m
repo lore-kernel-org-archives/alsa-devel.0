@@ -1,120 +1,229 @@
 From: John Keeping <john@metanate.com>
-Subject: [PATCH 6/9] ASoC: es8328: Move sample size setup to
-	hw_params
-Date: Mon,  9 May 2016 12:24:34 +0100
-Message-ID: <20160509112437.8924-7-john@metanate.com>
+Subject: [PATCH 8/9] ASoC: es8328: Support more sample rates
+Date: Mon,  9 May 2016 12:24:36 +0100
+Message-ID: <20160509112437.8924-9-john@metanate.com>
 References: <20160509112437.8924-1-john@metanate.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metanate.com (dougal.metanate.com [90.155.101.14])
- by alsa0.perex.cz (Postfix) with ESMTP id B94622655A6
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2016 13:24:48 +0200 (CEST)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20160509112437.8924-1-john@metanate.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, John Keeping <john@metanate.com>
+Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, John Keeping <john@metanate.com>
 List-Id: alsa-devel@alsa-project.org
-
-This is a refactor in preparation for supporting more sample sizes which
-has no functional change.
 
 Signed-off-by: John Keeping <john@metanate.com>
 ---
- sound/soc/codecs/es8328.c | 19 ++++++++++++++-----
- sound/soc/codecs/es8328.h |  4 ++++
- 2 files changed, 18 insertions(+), 5 deletions(-)
+ sound/soc/codecs/es8328.c | 135 ++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 100 insertions(+), 35 deletions(-)
 
 diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
-index 8661d1837422..31c90ef9abf2 100644
+index 636177641173..6ec15c8822d3 100644
 --- a/sound/soc/codecs/es8328.c
 +++ b/sound/soc/codecs/es8328.c
-@@ -482,9 +482,16 @@ static int es8328_hw_params(struct snd_pcm_substream *substream,
- 			ratio = mclk_ratios[i].ratio;
+@@ -26,18 +26,30 @@
+ #include <sound/tlv.h>
+ #include "es8328.h"
  
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		snd_soc_update_bits(codec, ES8328_DACCONTROL1,
-+				ES8328_DACCONTROL1_DACWL_MASK,
-+				ES8328_DACCONTROL1_DACWL_16);
+-#define ES8328_SYSCLK_RATE_1X 11289600
+-#define ES8328_SYSCLK_RATE_2X 22579200
++static const unsigned int rates_12288[] = {
++	8000, 12000, 16000, 24000, 32000, 48000, 96000,
++};
+ 
+-/* Run the codec at 22.5792 or 11.2896 MHz to support these rates */
+-static struct {
+-	int rate;
+-	u8 ratio;
+-} mclk_ratios[] = {
+-	{ 8000, 9 },
+-	{11025, 7 },
+-	{22050, 4 },
+-	{44100, 2 },
++static const int ratios_12288[] = {
++	10, 7, 6, 4, 3, 2, 0,
++};
 +
- 		es8328->playback_fs = params_rate(params);
- 		es8328_set_deemph(codec);
--	}
-+	} else
-+		snd_soc_update_bits(codec, ES8328_ADCCONTROL4,
-+				ES8328_ADCCONTROL4_ADCWL_MASK,
-+				ES8328_ADCCONTROL4_ADCWL_16);
++static const struct snd_pcm_hw_constraint_list constraints_12288 = {
++	.count	= ARRAY_SIZE(rates_12288),
++	.list	= rates_12288,
++};
++
++static const unsigned int rates_11289[] = {
++	8018, 11025, 22050, 44100, 88200,
++};
++
++static const int ratios_11289[] = {
++	9, 7, 4, 2, 0,
++};
++
++static const struct snd_pcm_hw_constraint_list constraints_11289 = {
++	.count	= ARRAY_SIZE(rates_11289),
++	.list	= rates_11289,
+ };
  
+ /* regulator supplies for sgtl5000, VDDD is an optional external supply */
+@@ -57,9 +69,14 @@ static const char * const supply_names[ES8328_SUPPLY_NUM] = {
+ 	"HPVDD",
+ };
+ 
+-#define ES8328_RATES (SNDRV_PCM_RATE_44100 | \
++#define ES8328_RATES (SNDRV_PCM_RATE_96000 | \
++		SNDRV_PCM_RATE_48000 | \
++		SNDRV_PCM_RATE_44100 | \
++		SNDRV_PCM_RATE_32000 | \
+ 		SNDRV_PCM_RATE_22050 | \
+-		SNDRV_PCM_RATE_11025)
++		SNDRV_PCM_RATE_16000 | \
++		SNDRV_PCM_RATE_11025 | \
++		SNDRV_PCM_RATE_8000)
+ #define ES8328_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
+ 		SNDRV_PCM_FMTBIT_S18_3LE | \
+ 		SNDRV_PCM_FMTBIT_S20_3LE | \
+@@ -71,6 +88,9 @@ struct es8328_priv {
+ 	struct clk *clk;
+ 	int playback_fs;
+ 	bool deemph;
++	int mclkdiv2;
++	const struct snd_pcm_hw_constraint_list *sysclk_constraints;
++	const int *mclk_ratios;
+ 	struct regulator_bulk_data supplies[ES8328_SUPPLY_NUM];
+ };
+ 
+@@ -443,40 +463,55 @@ static int es8328_mute(struct snd_soc_dai *dai, int mute)
+ 			mute ? ES8328_DACCONTROL3_DACMUTE : 0);
+ }
+ 
++static int es8328_startup(struct snd_pcm_substream *substream,
++			  struct snd_soc_dai *dai)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
++
++	if (es8328->sysclk_constraints)
++		snd_pcm_hw_constraint_list(substream->runtime, 0,
++				SNDRV_PCM_HW_PARAM_RATE,
++				es8328->sysclk_constraints);
++
++	return 0;
++}
++
+ static int es8328_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params,
+ 	struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
+-	int clk_rate = clk_get_rate(es8328->clk);
+ 	int i;
+ 	int reg;
+-	int val;
+ 	int wl;
+-	u8 ratio;
++	int ratio;
++
++	if (!es8328->sysclk_constraints) {
++		dev_err(codec->dev, "No MCLK configured\n");
++		return -EINVAL;
++	}
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		reg = ES8328_DACCONTROL2;
+ 	else
+ 		reg = ES8328_ADCCONTROL5;
+ 
+-	switch (clk_rate) {
+-	case ES8328_SYSCLK_RATE_1X:
+-		val = 0;
+-		break;
+-	case ES8328_SYSCLK_RATE_2X:
+-		val = ES8328_MASTERMODE_MCLKDIV2;
+-		break;
+-	default:
+-		dev_err(codec->dev,
+-			"%s: clock is running at %d Hz, not %d or %d Hz\n",
+-			 __func__, clk_rate,
+-			 ES8328_SYSCLK_RATE_1X, ES8328_SYSCLK_RATE_2X);
++	for (i = 0; i < es8328->sysclk_constraints->count; i++)
++		if (es8328->sysclk_constraints->list[i] == params_rate(params))
++			break;
++
++	if (i == es8328->sysclk_constraints->count) {
++		dev_err(codec->dev, "LRCLK %d unsupported with current clock\n",
++			params_rate(params));
+ 		return -EINVAL;
+ 	}
++
++	ratio = es8328->mclk_ratios[i];
+ 	snd_soc_update_bits(codec, ES8328_MASTERMODE,
+-			ES8328_MASTERMODE_MCLKDIV2, val);
++			ES8328_MASTERMODE_MCLKDIV2,
++			es8328->mclkdiv2 ? ES8328_MASTERMODE_MCLKDIV2 : 0);
+ 
+ 	switch (params_width(params)) {
+ 	case 16:
+@@ -498,12 +533,6 @@ static int es8328_hw_params(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
+ 	}
+ 
+-	/* find master mode MCLK to sampling frequency ratio */
+-	ratio = mclk_ratios[0].rate;
+-	for (i = 1; i < ARRAY_SIZE(mclk_ratios); i++)
+-		if (params_rate(params) <= mclk_ratios[i].rate)
+-			ratio = mclk_ratios[i].ratio;
+-
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		snd_soc_update_bits(codec, ES8328_DACCONTROL1,
+ 				ES8328_DACCONTROL1_DACWL_MASK,
+@@ -519,6 +548,40 @@ static int es8328_hw_params(struct snd_pcm_substream *substream,
  	return snd_soc_update_bits(codec, reg, ES8328_RATEMASK, ratio);
  }
-@@ -493,8 +500,8 @@ static int es8328_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 
++static int es8328_set_sysclk(struct snd_soc_dai *codec_dai,
++		int clk_id, unsigned int freq, int dir)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
++	int mclkdiv2 = 0;
++
++	switch (freq) {
++	case 0:
++		es8328->sysclk_constraints = NULL;
++		es8328->mclk_ratios = NULL;
++		break;
++	case 22579200:
++		mclkdiv2 = 1;
++		/* fallthru */
++	case 11289600:
++		es8328->sysclk_constraints = &constraints_11289;
++		es8328->mclk_ratios = ratios_11289;
++		break;
++	case 24576000:
++		mclkdiv2 = 1;
++		/* fallthru */
++	case 12288000:
++		es8328->sysclk_constraints = &constraints_12288;
++		es8328->mclk_ratios = ratios_12288;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	es8328->mclkdiv2 = mclkdiv2;
++	return 0;
++}
++
+ static int es8328_set_dai_fmt(struct snd_soc_dai *codec_dai,
  		unsigned int fmt)
  {
- 	struct snd_soc_codec *codec = codec_dai->codec;
--	u8 dac_mode = ES8328_DACCONTROL1_DACWL_16;
--	u8 adc_mode = ES8328_ADCCONTROL4_ADCWL_16;
-+	u8 dac_mode = 0;
-+	u8 adc_mode = 0;
+@@ -616,8 +679,10 @@ static int es8328_set_bias_level(struct snd_soc_codec *codec,
+ }
  
- 	/* set master/slave audio interface */
- 	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBM_CFM)
-@@ -522,8 +529,10 @@ static int es8328_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	if ((fmt & SND_SOC_DAIFMT_INV_MASK) != SND_SOC_DAIFMT_NB_NF)
- 		return -EINVAL;
+ static const struct snd_soc_dai_ops es8328_dai_ops = {
++	.startup	= es8328_startup,
+ 	.hw_params	= es8328_hw_params,
+ 	.digital_mute	= es8328_mute,
++	.set_sysclk	= es8328_set_sysclk,
+ 	.set_fmt	= es8328_set_dai_fmt,
+ };
  
--	snd_soc_write(codec, ES8328_DACCONTROL1, dac_mode);
--	snd_soc_write(codec, ES8328_ADCCONTROL4, adc_mode);
-+	snd_soc_update_bits(codec, ES8328_DACCONTROL1,
-+			ES8328_DACCONTROL1_DACFORMAT_MASK, dac_mode);
-+	snd_soc_update_bits(codec, ES8328_ADCCONTROL4,
-+			ES8328_ADCCONTROL4_ADCFORMAT_MASK, adc_mode);
- 
- 	/* Master serial port mode, with BCLK generated automatically */
- 	snd_soc_update_bits(codec, ES8328_MASTERMODE,
-diff --git a/sound/soc/codecs/es8328.h b/sound/soc/codecs/es8328.h
-index 8bc79fff0218..9c33d8bda859 100644
---- a/sound/soc/codecs/es8328.h
-+++ b/sound/soc/codecs/es8328.h
-@@ -86,6 +86,7 @@ int es8328_probe(struct device *dev, struct regmap *regmap);
- #define ES8328_ADCCONTROL3	0x0b
- 
- #define ES8328_ADCCONTROL4	0x0c
-+#define ES8328_ADCCONTROL4_ADCFORMAT_MASK (3 << 0)
- #define ES8328_ADCCONTROL4_ADCFORMAT_I2S (0 << 0)
- #define ES8328_ADCCONTROL4_ADCFORMAT_LJUST (1 << 0)
- #define ES8328_ADCCONTROL4_ADCFORMAT_RJUST (2 << 0)
-@@ -95,6 +96,7 @@ int es8328_probe(struct device *dev, struct regmap *regmap);
- #define ES8328_ADCCONTROL4_ADCWL_18 (2 << 2)
- #define ES8328_ADCCONTROL4_ADCWL_16 (3 << 2)
- #define ES8328_ADCCONTROL4_ADCWL_32 (4 << 2)
-+#define ES8328_ADCCONTROL4_ADCWL_MASK (7 << 2)
- #define ES8328_ADCCONTROL4_ADCLRP_I2S_POL_NORMAL (0 << 5)
- #define ES8328_ADCCONTROL4_ADCLRP_I2S_POL_INV (1 << 5)
- #define ES8328_ADCCONTROL4_ADCLRP_PCM_MSB_CLK2 (0 << 5)
-@@ -124,6 +126,7 @@ int es8328_probe(struct device *dev, struct regmap *regmap);
- #define ES8328_ADCCONTROL14	0x16
- 
- #define ES8328_DACCONTROL1	0x17
-+#define ES8328_DACCONTROL1_DACFORMAT_MASK (3 << 1)
- #define ES8328_DACCONTROL1_DACFORMAT_I2S (0 << 1)
- #define ES8328_DACCONTROL1_DACFORMAT_LJUST (1 << 1)
- #define ES8328_DACCONTROL1_DACFORMAT_RJUST (2 << 1)
-@@ -133,6 +136,7 @@ int es8328_probe(struct device *dev, struct regmap *regmap);
- #define ES8328_DACCONTROL1_DACWL_18 (2 << 3)
- #define ES8328_DACCONTROL1_DACWL_16 (3 << 3)
- #define ES8328_DACCONTROL1_DACWL_32 (4 << 3)
-+#define ES8328_DACCONTROL1_DACWL_MASK (7 << 3)
- #define ES8328_DACCONTROL1_DACLRP_I2S_POL_NORMAL (0 << 6)
- #define ES8328_DACCONTROL1_DACLRP_I2S_POL_INV (1 << 6)
- #define ES8328_DACCONTROL1_DACLRP_PCM_MSB_CLK2 (0 << 6)
 -- 
 2.8.0.rc4.238.g874082a
