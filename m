@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: davinci-mcasp: Do not allow multiple
-	streams in one direction" to the asoc tree
-Date: Tue, 10 May 2016 19:50:05 +0100
-Message-ID: <E1b0CjN-0000Dr-F4@debutante>
-References: <1462790354-5627-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Applied "ASoC: simple-card: Add pm callbacks to
+	platform driver" to the asoc tree
+Date: Tue, 10 May 2016 19:50:08 +0100
+Message-ID: <E1b0CjQ-0000JW-GA@debutante>
+References: <1462790290-5346-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F2939267520
- for <alsa-devel@alsa-project.org>; Tue, 10 May 2016 20:50:11 +0200 (CEST)
-In-Reply-To: <1462790354-5627-1-git-send-email-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7E7D8267525
+ for <alsa-devel@alsa-project.org>; Tue, 10 May 2016 20:50:14 +0200 (CEST)
+In-Reply-To: <1462790290-5346-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: davinci-mcasp: Do not allow multiple streams in one direction
+   ASoC: simple-card: Add pm callbacks to platform driver
 
 has been applied to the asoc tree at
 
@@ -53,42 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From 19357366633cfc53532b587180af3655f0e453f3 Mon Sep 17 00:00:00 2001
+>From 7c3767115a04bc7aa87bdbd3352d1801d4bbeea4 Mon Sep 17 00:00:00 2001
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Mon, 9 May 2016 13:39:14 +0300
-Subject: [PATCH] ASoC: davinci-mcasp: Do not allow multiple streams in one
- direction
+Date: Mon, 9 May 2016 13:38:10 +0300
+Subject: [PATCH] ASoC: simple-card: Add pm callbacks to platform driver
 
-Make sure that the user can not start multiple streams with the same
-direction.
+Set snd_soc_pm_ops for the pm ops to make sure that the ASoC level of PM
+operations are going to happen. This is needed to get suspend/resume
+working correctly when the audio is using simple-card.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/davinci/davinci-mcasp.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/generic/simple-card.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index e1324989bd6b..020d8660e4e5 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -1230,11 +1230,15 @@ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
- 	int i, dir;
- 	int tdm_slots = mcasp->tdm_slots;
- 
--	if (mcasp->tdm_mask[substream->stream])
--		tdm_slots = hweight32(mcasp->tdm_mask[substream->stream]);
-+	/* Do not allow more then one stream per direction */
-+	if (mcasp->substreams[substream->stream])
-+		return -EBUSY;
- 
- 	mcasp->substreams[substream->stream] = substream;
- 
-+	if (mcasp->tdm_mask[substream->stream])
-+		tdm_slots = hweight32(mcasp->tdm_mask[substream->stream]);
-+
- 	if (mcasp->op_mode == DAVINCI_MCASP_DIT_MODE)
- 		return 0;
- 
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 2389ab47e25f..466492b7d4f5 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -643,6 +643,7 @@ MODULE_DEVICE_TABLE(of, asoc_simple_of_match);
+ static struct platform_driver asoc_simple_card = {
+ 	.driver = {
+ 		.name = "asoc-simple-card",
++		.pm = &snd_soc_pm_ops,
+ 		.of_match_table = asoc_simple_of_match,
+ 	},
+ 	.probe = asoc_simple_card_probe,
 -- 
 2.8.1
