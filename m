@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7213: Add DAI DAPM event to control DAI clocks" to the asoc tree
-Date: Tue, 10 May 2016 19:49:05 +0100
-Message-ID: <E1b0CiP-0006yB-GT@debutante>
-References: <83d4df941ac77554f8d84ce5883bb782b5632000.1462892732.git.Adam.Thomson.Opensource@diasemi.com>
+Subject: Applied "ASoC: es8328: Fix mask for VMIDSEL" to the asoc tree
+Date: Tue, 10 May 2016 19:49:35 +0100
+Message-ID: <E1b0Cit-0007n7-3W@debutante>
+References: <20160509112437.8924-4-john@metanate.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <83d4df941ac77554f8d84ce5883bb782b5632000.1462892732.git.Adam.Thomson.Opensource@diasemi.com>
+In-Reply-To: <20160509112437.8924-4-john@metanate.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>
+To: John Keeping <john@metanate.com>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7213: Add DAI DAPM event to control DAI clocks
+   ASoC: es8328: Fix mask for VMIDSEL
 
 has been applied to the asoc tree at
 
@@ -37,98 +37,32 @@ to this mail.
 Thanks,
 Mark
 
->From a0d5caeaebfd00853efa0080afc850e10be7b39a Mon Sep 17 00:00:00 2001
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Tue, 10 May 2016 16:11:04 +0100
-Subject: [PATCH] ASoC: da7213: Add DAI DAPM event to control DAI clocks
+>From 2da1ab667a506cc6a7dea88b70e6df3d281458f8 Mon Sep 17 00:00:00 2001
+From: John Keeping <john@metanate.com>
+Date: Mon, 9 May 2016 12:24:31 +0100
+Subject: [PATCH] ASoC: es8328: Fix mask for VMIDSEL
 
-Currently, when Codec is I2S master DAI clocks are continuously
-generated even if all audio streams have stopped. To improve
-efficiency, control of the DAI clocks for master mode have been
-moved to a DAPM widget event so they're only enabled as required.
+This is always used along with ES8328_CONTROL1_ENREF so there is no
+change in the generated code as a result of this fix.
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Signed-off-by: John Keeping <john@metanate.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7213.c | 35 ++++++++++++++++++++++++++++++++---
- sound/soc/codecs/da7213.h |  2 --
- 2 files changed, 32 insertions(+), 5 deletions(-)
+ sound/soc/codecs/es8328.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
-index 7278f93460c1..701bd6204747 100644
---- a/sound/soc/codecs/da7213.c
-+++ b/sound/soc/codecs/da7213.c
-@@ -726,6 +726,36 @@ static const struct snd_kcontrol_new da7213_dapm_mixoutr_controls[] = {
- 
- 
- /*
-+ * DAPM Events
-+ */
-+
-+static int da7213_dai_event(struct snd_soc_dapm_widget *w,
-+			    struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct da7213_priv *da7213 = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		/* Enable DAI clks for master mode */
-+		if (da7213->master)
-+			snd_soc_update_bits(codec, DA7213_DAI_CLK_MODE,
-+					    DA7213_DAI_CLK_EN_MASK,
-+					    DA7213_DAI_CLK_EN_MASK);
-+		return 0;
-+	case SND_SOC_DAPM_POST_PMD:
-+		/* Disable DAI clks if in master mode */
-+		if (da7213->master)
-+			snd_soc_update_bits(codec, DA7213_DAI_CLK_MODE,
-+					    DA7213_DAI_CLK_EN_MASK, 0);
-+		return 0;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+
-+/*
-  * DAPM widgets
-  */
- 
-@@ -736,7 +766,8 @@ static const struct snd_soc_dapm_widget da7213_dapm_widgets[] = {
- 
- 	/* Use a supply here as this controls both input & output DAIs */
- 	SND_SOC_DAPM_SUPPLY("DAI", DA7213_DAI_CTRL, DA7213_DAI_EN_SHIFT,
--			    DA7213_NO_INVERT, NULL, 0),
-+			    DA7213_NO_INVERT, da7213_dai_event,
-+			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- 
- 	/*
- 	 * Input
-@@ -1143,11 +1174,9 @@ static int da7213_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	/* Set master/slave mode */
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBM_CFM:
--		dai_clk_mode |= DA7213_DAI_CLK_EN_MASTER_MODE;
- 		da7213->master = true;
- 		break;
- 	case SND_SOC_DAIFMT_CBS_CFS:
--		dai_clk_mode |= DA7213_DAI_CLK_EN_SLAVE_MODE;
- 		da7213->master = false;
- 		break;
- 	default:
-diff --git a/sound/soc/codecs/da7213.h b/sound/soc/codecs/da7213.h
-index 030fd691b076..5de5c2997e0c 100644
---- a/sound/soc/codecs/da7213.h
-+++ b/sound/soc/codecs/da7213.h
-@@ -178,8 +178,6 @@
- #define DA7213_DAI_BCLKS_PER_WCLK_MASK				(0x3 << 0)
- #define DA7213_DAI_CLK_POL_INV					(0x1 << 2)
- #define DA7213_DAI_WCLK_POL_INV					(0x1 << 3)
--#define DA7213_DAI_CLK_EN_SLAVE_MODE				(0x0 << 7)
--#define DA7213_DAI_CLK_EN_MASTER_MODE				(0x1 << 7)
- #define DA7213_DAI_CLK_EN_MASK					(0x1 << 7)
- 
- /* DA7213_DAI_CTRL = 0x29 */
+diff --git a/sound/soc/codecs/es8328.h b/sound/soc/codecs/es8328.h
+index 5a4af014e516..8bc79fff0218 100644
+--- a/sound/soc/codecs/es8328.h
++++ b/sound/soc/codecs/es8328.h
+@@ -22,7 +22,7 @@ int es8328_probe(struct device *dev, struct regmap *regmap);
+ #define ES8328_CONTROL1_VMIDSEL_50k (1 << 0)
+ #define ES8328_CONTROL1_VMIDSEL_500k (2 << 0)
+ #define ES8328_CONTROL1_VMIDSEL_5k (3 << 0)
+-#define ES8328_CONTROL1_VMIDSEL_MASK (7 << 0)
++#define ES8328_CONTROL1_VMIDSEL_MASK (3 << 0)
+ #define ES8328_CONTROL1_ENREF (1 << 2)
+ #define ES8328_CONTROL1_SEQEN (1 << 3)
+ #define ES8328_CONTROL1_SAMEFS (1 << 4)
 -- 
 2.8.1
