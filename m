@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: davinci-mcasp: Restructure the
-	davinci_mcasp_calc_clk_div()" to the asoc tree
-Date: Tue, 10 May 2016 19:49:47 +0100
-Message-ID: <E1b0Cj5-00087m-BY@debutante>
-References: <1462790552-6438-4-git-send-email-peter.ujfalusi@ti.com>
+Subject: Applied "ASoC: davinci-mcasp: Change
+	__davinci_mcasp_set_clkdiv() first parameter" to the asoc tree
+Date: Tue, 10 May 2016 19:49:50 +0100
+Message-ID: <E1b0Cj8-0008D7-D2@debutante>
+References: <1462790552-6438-3-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C2E052674F6
- for <alsa-devel@alsa-project.org>; Tue, 10 May 2016 20:49:53 +0200 (CEST)
-In-Reply-To: <1462790552-6438-4-git-send-email-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 563872674FE
+ for <alsa-devel@alsa-project.org>; Tue, 10 May 2016 20:49:57 +0200 (CEST)
+In-Reply-To: <1462790552-6438-3-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: davinci-mcasp: Restructure the davinci_mcasp_calc_clk_div()
+   ASoC: davinci-mcasp: Change __davinci_mcasp_set_clkdiv() first parameter
 
 has been applied to the asoc tree at
 
@@ -53,104 +53,58 @@ to this mail.
 Thanks,
 Mark
 
->From 3e9bee11d83190b852d428b3e35a942c6e2293cd Mon Sep 17 00:00:00 2001
+>From 226e73e23b6b7f7d6df47562a7555ddb121163cf Mon Sep 17 00:00:00 2001
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Mon, 9 May 2016 13:42:31 +0300
-Subject: [PATCH] ASoC: davinci-mcasp: Restructure the
- davinci_mcasp_calc_clk_div()
+Date: Mon, 9 May 2016 13:42:30 +0300
+Subject: [PATCH] ASoC: davinci-mcasp: Change __davinci_mcasp_set_clkdiv()
+ first parameter
 
-Change the return value to error_pmm instead of the BCLK div and handle the
-divider configuration to McASP within the function when the set flag is
-true.
+Change the first parameter to struct davinci_mcasp* from
+struct snd_soc_dai*
+The function internally does not use or need the DAI information.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/davinci/davinci-mcasp.c | 38 +++++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 19 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 99061c4f3257..58fe112c5335 100644
+index adf1c3941f23..99061c4f3257 100644
 --- a/sound/soc/davinci/davinci-mcasp.c
 +++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -1000,9 +1000,9 @@ static int mcasp_dit_hw_param(struct davinci_mcasp *mcasp,
+@@ -540,11 +540,9 @@ out:
+ 	return ret;
  }
  
- static int davinci_mcasp_calc_clk_div(struct davinci_mcasp *mcasp,
--				      unsigned int bclk_freq,
--				      int *error_ppm)
-+				      unsigned int bclk_freq, bool set)
+-static int __davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
++static int __davinci_mcasp_set_clkdiv(struct davinci_mcasp *mcasp, int div_id,
+ 				      int div, bool explicit)
  {
-+	int error_ppm;
- 	int div = mcasp->sysclk_freq / bclk_freq;
- 	int rem = mcasp->sysclk_freq % bclk_freq;
- 
-@@ -1014,13 +1014,18 @@ static int davinci_mcasp_calc_clk_div(struct davinci_mcasp *mcasp,
- 			rem = rem - bclk_freq;
- 		}
- 	}
--	if (error_ppm)
--		*error_ppm =
--			(div*1000000 + (int)div64_long(1000000LL*rem,
--						       (int)bclk_freq))
--			/div - 1000000;
-+	error_ppm = (div*1000000 + (int)div64_long(1000000LL*rem,
-+		     (int)bclk_freq)) / div - 1000000;
- 
--	return div;
-+	if (set) {
-+		if (error_ppm)
-+			dev_info(mcasp->dev, "Sample-rate is off by %d PPM\n",
-+				 error_ppm);
+-	struct davinci_mcasp *mcasp = snd_soc_dai_get_drvdata(dai);
+-
+ 	pm_runtime_get_sync(mcasp->dev);
+ 	switch (div_id) {
+ 	case MCASP_CLKDIV_AUXCLK:			/* MCLK divider */
+@@ -592,7 +590,9 @@ static int __davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
+ static int davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
+ 				    int div)
+ {
+-	return __davinci_mcasp_set_clkdiv(dai, div_id, div, 1);
++	struct davinci_mcasp *mcasp = snd_soc_dai_get_drvdata(dai);
 +
-+		__davinci_mcasp_set_clkdiv(mcasp, MCASP_CLKDIV_BCLK, div, 0);
-+	}
-+
-+	return error_ppm;
++	return __davinci_mcasp_set_clkdiv(mcasp, div_id, div, 1);
  }
  
- static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
-@@ -1045,18 +1050,11 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
- 		int slots = mcasp->tdm_slots;
- 		int rate = params_rate(params);
- 		int sbits = params_width(params);
--		int ppm, div;
+ static int davinci_mcasp_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+@@ -1056,7 +1056,7 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
+ 			dev_info(mcasp->dev, "Sample-rate is off by %d PPM\n",
+ 				 ppm);
  
- 		if (mcasp->slot_width)
- 			sbits = mcasp->slot_width;
- 
--		div = davinci_mcasp_calc_clk_div(mcasp, rate*sbits*slots,
--						 &ppm);
--		if (ppm)
--			dev_info(mcasp->dev, "Sample-rate is off by %d PPM\n",
--				 ppm);
--
--		__davinci_mcasp_set_clkdiv(mcasp, 1, div, 0);
-+		davinci_mcasp_calc_clk_div(mcasp, rate * sbits * slots, true);
+-		__davinci_mcasp_set_clkdiv(cpu_dai, 1, div, 0);
++		__davinci_mcasp_set_clkdiv(mcasp, 1, div, 0);
  	}
  
  	ret = mcasp_common_hw_param(mcasp, substream->stream,
-@@ -1167,7 +1165,8 @@ static int davinci_mcasp_hw_rule_rate(struct snd_pcm_hw_params *params,
- 				davinci_mcasp_dai_rates[i];
- 			int ppm;
- 
--			davinci_mcasp_calc_clk_div(rd->mcasp, bclk_freq, &ppm);
-+			ppm = davinci_mcasp_calc_clk_div(rd->mcasp, bclk_freq,
-+							 false);
- 			if (abs(ppm) < DAVINCI_MAX_RATE_ERROR_PPM) {
- 				if (range.empty) {
- 					range.min = davinci_mcasp_dai_rates[i];
-@@ -1206,8 +1205,9 @@ static int davinci_mcasp_hw_rule_format(struct snd_pcm_hw_params *params,
- 			if (rd->mcasp->slot_width)
- 				sbits = rd->mcasp->slot_width;
- 
--			davinci_mcasp_calc_clk_div(rd->mcasp, sbits*slots*rate,
--						   &ppm);
-+			ppm = davinci_mcasp_calc_clk_div(rd->mcasp,
-+							 sbits * slots * rate,
-+							 false);
- 			if (abs(ppm) < DAVINCI_MAX_RATE_ERROR_PPM) {
- 				snd_mask_set(&nfmt, i);
- 				count++;
 -- 
 2.8.1
