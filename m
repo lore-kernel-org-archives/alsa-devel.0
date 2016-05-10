@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7213: Default PC counter to free-running when DAI disabled" to the asoc tree
-Date: Tue, 10 May 2016 19:48:59 +0100
-Message-ID: <E1b0CiJ-0006ol-4V@debutante>
-References: <167258fc9e46971ab2da1fc934e17976cc47678f.1462892732.git.Adam.Thomson.Opensource@diasemi.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <167258fc9e46971ab2da1fc934e17976cc47678f.1462892732.git.Adam.Thomson.Opensource@diasemi.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>
+Subject: Applied "ASoC: Intel: Skylake: Add more SSP DAIs" to
+	the asoc tree
+Date: Tue, 10 May 2016 19:49:13 +0100
+Message-ID: <E1b0CiX-0007Ay-Tw@debutante>
+References: <1462897926-20271-2-git-send-email-vinod.koul@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8132C2674B3
+ for <alsa-devel@alsa-project.org>; Tue, 10 May 2016 20:49:18 +0200 (CEST)
+In-Reply-To: <1462897926-20271-2-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Ramesh Babu <ramesh.babu@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7213: Default PC counter to free-running when DAI disabled
+   ASoC: Intel: Skylake: Add more SSP DAIs
 
 has been applied to the asoc tree at
 
@@ -37,75 +53,104 @@ to this mail.
 Thanks,
 Mark
 
->From 7e28fd469624fc41ec326a31abbc63a7afdd10f5 Mon Sep 17 00:00:00 2001
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Tue, 10 May 2016 16:11:06 +0100
-Subject: [PATCH] ASoC: da7213: Default PC counter to free-running when DAI
- disabled
+>From fcc494af3cfaefc9f8a51c3c7e7f208a0553b28f Mon Sep 17 00:00:00 2001
+From: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+Date: Tue, 10 May 2016 22:02:05 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add more SSP DAIs
 
-Currently PC counter is always synchronised to DAI which means that
-when the DAI is disabled, features such as ALC calibration cannot
-be executed successfully. This patch makes sure that when the DAI
-is disabled, PC counter is set to free-running.
+The Broxton-P platform has 6 SSPs so we need to add ssp2 thru
+ssp5 to DAI list for the driver.
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Signed-off-by: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7213.c | 13 +++++++++++++
- sound/soc/codecs/da7213.h |  3 +++
- 2 files changed, 16 insertions(+)
+ sound/soc/intel/skylake/skl-pcm.c | 72 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 72 insertions(+)
 
-diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
-index 680d11116ccf..657b7eba9954 100644
---- a/sound/soc/codecs/da7213.c
-+++ b/sound/soc/codecs/da7213.c
-@@ -746,6 +746,10 @@ static int da7213_dai_event(struct snd_soc_dapm_widget *w,
- 					    DA7213_DAI_CLK_EN_MASK,
- 					    DA7213_DAI_CLK_EN_MASK);
- 
-+		/* PC synchronised to DAI */
-+		snd_soc_update_bits(codec, DA7213_PC_COUNT,
-+				    DA7213_PC_FREERUN_MASK, 0);
-+
- 		/* Slave mode, if SRM not enabled no need for status checks */
- 		pll_ctrl = snd_soc_read(codec, DA7213_PLL_CTRL);
- 		if (!(pll_ctrl & DA7213_PLL_SRM_EN))
-@@ -767,6 +771,11 @@ static int da7213_dai_event(struct snd_soc_dapm_widget *w,
- 
- 		return 0;
- 	case SND_SOC_DAPM_POST_PMD:
-+		/* PC free-running */
-+		snd_soc_update_bits(codec, DA7213_PC_COUNT,
-+				    DA7213_PC_FREERUN_MASK,
-+				    DA7213_PC_FREERUN_MASK);
-+
- 		/* Disable DAI clks if in master mode */
- 		if (da7213->master)
- 			snd_soc_update_bits(codec, DA7213_DAI_CLK_MODE,
-@@ -1599,6 +1608,10 @@ static int da7213_probe(struct snd_soc_codec *codec)
- 	/* Default to using SRM for slave mode */
- 	da7213->srm_en = true;
- 
-+	/* Default PC counter to free-running */
-+	snd_soc_update_bits(codec, DA7213_PC_COUNT, DA7213_PC_FREERUN_MASK,
-+			    DA7213_PC_FREERUN_MASK);
-+
- 	/* Enable all Gain Ramps */
- 	snd_soc_update_bits(codec, DA7213_AUX_L_CTRL,
- 			    DA7213_GAIN_RAMP_EN, DA7213_GAIN_RAMP_EN);
-diff --git a/sound/soc/codecs/da7213.h b/sound/soc/codecs/da7213.h
-index af75340dea63..26b87e3c3088 100644
---- a/sound/soc/codecs/da7213.h
-+++ b/sound/soc/codecs/da7213.h
-@@ -413,6 +413,9 @@
- #define DA7213_DMIC_CLK_RATE_SHIFT				2
- #define DA7213_DMIC_CLK_RATE_MASK				(0x1 << 2)
- 
-+/* DA7213_PC_COUNT = 0x94 */
-+#define DA7213_PC_FREERUN_MASK					(0x1 << 0)
-+
- /* DA7213_DIG_CTRL = 0x99 */
- #define DA7213_DAC_L_INV_SHIFT					3
- #define DA7213_DAC_R_INV_SHIFT					7
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index b0e7797f2259..4494db6a05f5 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -770,6 +770,78 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
+ 	},
+ },
+ {
++	.name = "SSP2 Pin",
++	.ops = &skl_be_ssp_dai_ops,
++	.playback = {
++		.stream_name = "ssp2 Tx",
++		.channels_min = HDA_STEREO,
++		.channels_max = HDA_STEREO,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.capture = {
++		.stream_name = "ssp2 Rx",
++		.channels_min = HDA_STEREO,
++		.channels_max = HDA_STEREO,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++},
++{
++	.name = "SSP3 Pin",
++	.ops = &skl_be_ssp_dai_ops,
++	.playback = {
++		.stream_name = "ssp3 Tx",
++		.channels_min = HDA_STEREO,
++		.channels_max = HDA_STEREO,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.capture = {
++		.stream_name = "ssp3 Rx",
++		.channels_min = HDA_STEREO,
++		.channels_max = HDA_STEREO,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++},
++{
++	.name = "SSP4 Pin",
++	.ops = &skl_be_ssp_dai_ops,
++	.playback = {
++		.stream_name = "ssp4 Tx",
++		.channels_min = HDA_STEREO,
++		.channels_max = HDA_STEREO,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.capture = {
++		.stream_name = "ssp4 Rx",
++		.channels_min = HDA_STEREO,
++		.channels_max = HDA_STEREO,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++},
++{
++	.name = "SSP5 Pin",
++	.ops = &skl_be_ssp_dai_ops,
++	.playback = {
++		.stream_name = "ssp5 Tx",
++		.channels_min = HDA_STEREO,
++		.channels_max = HDA_STEREO,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.capture = {
++		.stream_name = "ssp5 Rx",
++		.channels_min = HDA_STEREO,
++		.channels_max = HDA_STEREO,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++},
++{
+ 	.name = "iDisp1 Pin",
+ 	.ops = &skl_link_dai_ops,
+ 	.playback = {
 -- 
 2.8.1
