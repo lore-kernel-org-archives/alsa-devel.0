@@ -1,30 +1,18 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: rockchip-max98090: Fix NULL pointer dereference while
- accessing to jack." to the asoc tree
-Date: Tue, 10 May 2016 19:50:02 +0100
-Message-ID: <E1b0CjK-00007p-Fj@debutante>
-References: <1462435421-21205-4-git-send-email-enric.balletbo@collabora.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <1462435421-21205-4-git-send-email-enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
-List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: Enric Balletbo i Serra <enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Cc: linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: es8328: Fix ADC format setup" to the asoc tree
+Date: Tue, 10 May 2016 19:49:38 +0100
+Message-ID: <E1b0Ciw-0007s1-5a@debutante>
+References: <20160509112437.8924-3-john@metanate.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160509112437.8924-3-john@metanate.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: John Keeping <john@metanate.com>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip-max98090: Fix NULL pointer dereference while accessing to jack.
+   ASoC: es8328: Fix ADC format setup
 
 has been applied to the asoc tree at
 
@@ -49,122 +37,96 @@ to this mail.
 Thanks,
 Mark
 
->From af637e3adaf538288cbb3e6a2d9a4059853fc15a Mon Sep 17 00:00:00 2001
-From: Enric Balletbo i Serra <enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Date: Mon, 9 May 2016 12:46:31 +0200
-Subject: [PATCH] ASoC: rockchip-max98090: Fix NULL pointer dereference while
- accessing to jack.
+>From 57e41f3fb32a359753a3b2679c2502b2750bf6af Mon Sep 17 00:00:00 2001
+From: John Keeping <john@metanate.com>
+Date: Mon, 9 May 2016 12:24:30 +0100
+Subject: [PATCH] ASoC: es8328: Fix ADC format setup
 
-Commit f2ed6b07645e ("ASoC: Make aux_dev more like a generic
-component") caused a regression on this driver, since now a
-kernel oops is seen when rockchip-mac98090 driver is loaded.
+The ADCCONTROL4 and DACCONTROL1 registers are similar but not identical,
+with the DACCONTROL1 having each field starting one bit higher than
+ADCCONTROL4.
 
-That commit changed the probing of aux_devs before checking
-new DAI links, so for this driver rk_98090_headset_init is
-called before rk_init and then the kernel oops due a NULL
-pointer dereference inside rk_98090_headset_init function
-since there is a call that tries to access the jack pointer
-which has not been allocated yet.
+Instead of introducing a magic shift, add new constants for the values
+in ADCCONTROL4 and use a second variable to setup the ADC.
 
-This is the call chain that causes the crash:
-
- rk_98090_headset_init
-   -> ts3a227e_enable_jack_detect
-      -> snd_jack_set_key
- rk_init
-   -> snd_soc_card_jack_new
-
-This patch moves the new jack object creation from rk_init
-to rk_98090_headset_init function making sure the jack is
-created before is accessed.
-
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: John Keeping <john@metanate.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_max98090.c | 50 ++++++++++++++++++----------------
- 1 file changed, 27 insertions(+), 23 deletions(-)
+ sound/soc/codecs/es8328.c | 16 ++++++++++------
+ sound/soc/codecs/es8328.h | 15 +++++++++++++++
+ 2 files changed, 25 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
-index 543610282cdb..abb64a553967 100644
---- a/sound/soc/rockchip/rockchip_max98090.c
-+++ b/sound/soc/rockchip/rockchip_max98090.c
-@@ -114,43 +114,27 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
- }
- 
--static int rk_init(struct snd_soc_pcm_runtime *runtime)
--{
--	/* Enable Headset and 4 Buttons Jack detection */
--	return snd_soc_card_jack_new(runtime->card, "Headset Jack",
--			       SND_JACK_HEADSET |
--			       SND_JACK_BTN_0 | SND_JACK_BTN_1 |
--			       SND_JACK_BTN_2 | SND_JACK_BTN_3,
--			       &headset_jack,
--			       headset_jack_pins,
--			       ARRAY_SIZE(headset_jack_pins));
--}
--
--static int rk_98090_headset_init(struct snd_soc_component *component)
--{
--	return ts3a227e_enable_jack_detect(component, &headset_jack);
--}
--
- static struct snd_soc_ops rk_aif1_ops = {
- 	.hw_params = rk_aif1_hw_params,
- };
- 
--static struct snd_soc_aux_dev rk_98090_headset_dev = {
--	.name = "Headset Chip",
--	.init = rk_98090_headset_init,
--};
--
- static struct snd_soc_dai_link rk_dailink = {
- 	.name = "max98090",
- 	.stream_name = "Audio",
- 	.codec_dai_name = "HiFi",
--	.init = rk_init,
- 	.ops = &rk_aif1_ops,
- 	/* set max98090 as slave */
- 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 		SND_SOC_DAIFMT_CBS_CFS,
- };
- 
-+static int rk_98090_headset_init(struct snd_soc_component *component);
-+
-+static struct snd_soc_aux_dev rk_98090_headset_dev = {
-+	.name = "Headset Chip",
-+	.init = rk_98090_headset_init,
-+};
-+
- static struct snd_soc_card snd_soc_card_rk = {
- 	.name = "ROCKCHIP-I2S",
- 	.owner = THIS_MODULE,
-@@ -166,6 +150,26 @@ static struct snd_soc_card snd_soc_card_rk = {
- 	.num_controls = ARRAY_SIZE(rk_mc_controls),
- };
- 
-+static int rk_98090_headset_init(struct snd_soc_component *component)
-+{
-+	int ret;
-+
-+	/* Enable Headset and 4 Buttons Jack detection */
-+	ret = snd_soc_card_jack_new(&snd_soc_card_rk, "Headset Jack",
-+				    SND_JACK_HEADSET |
-+				    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+				    SND_JACK_BTN_2 | SND_JACK_BTN_3,
-+				    &headset_jack,
-+				    headset_jack_pins,
-+				    ARRAY_SIZE(headset_jack_pins));
-+	if (ret)
-+		return ret;
-+
-+	ret = ts3a227e_enable_jack_detect(component, &headset_jack);
-+
-+	return ret;
-+}
-+
- static int snd_rk_mc_probe(struct platform_device *pdev)
+diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
+index 3ca89ae32889..63e82628222c 100644
+--- a/sound/soc/codecs/es8328.c
++++ b/sound/soc/codecs/es8328.c
+@@ -493,7 +493,8 @@ static int es8328_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		unsigned int fmt)
  {
- 	int ret = 0;
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+-	u8 mode = ES8328_DACCONTROL1_DACWL_16;
++	u8 dac_mode = ES8328_DACCONTROL1_DACWL_16;
++	u8 adc_mode = ES8328_ADCCONTROL4_ADCWL_16;
+ 
+ 	/* set master/slave audio interface */
+ 	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBM_CFM)
+@@ -502,13 +503,16 @@ static int es8328_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	/* interface format */
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+-		mode |= ES8328_DACCONTROL1_DACFORMAT_I2S;
++		dac_mode |= ES8328_DACCONTROL1_DACFORMAT_I2S;
++		adc_mode |= ES8328_ADCCONTROL4_ADCFORMAT_I2S;
+ 		break;
+ 	case SND_SOC_DAIFMT_RIGHT_J:
+-		mode |= ES8328_DACCONTROL1_DACFORMAT_RJUST;
++		dac_mode |= ES8328_DACCONTROL1_DACFORMAT_RJUST;
++		adc_mode |= ES8328_ADCCONTROL4_ADCFORMAT_RJUST;
+ 		break;
+ 	case SND_SOC_DAIFMT_LEFT_J:
+-		mode |= ES8328_DACCONTROL1_DACFORMAT_LJUST;
++		dac_mode |= ES8328_DACCONTROL1_DACFORMAT_LJUST;
++		adc_mode |= ES8328_ADCCONTROL4_ADCFORMAT_LJUST;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -518,8 +522,8 @@ static int es8328_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	if ((fmt & SND_SOC_DAIFMT_INV_MASK) != SND_SOC_DAIFMT_NB_NF)
+ 		return -EINVAL;
+ 
+-	snd_soc_write(codec, ES8328_DACCONTROL1, mode);
+-	snd_soc_write(codec, ES8328_ADCCONTROL4, mode);
++	snd_soc_write(codec, ES8328_DACCONTROL1, dac_mode);
++	snd_soc_write(codec, ES8328_ADCCONTROL4, adc_mode);
+ 
+ 	/* Master serial port mode, with BCLK generated automatically */
+ 	snd_soc_update_bits(codec, ES8328_MASTERMODE,
+diff --git a/sound/soc/codecs/es8328.h b/sound/soc/codecs/es8328.h
+index 156c748c89c7..5a4af014e516 100644
+--- a/sound/soc/codecs/es8328.h
++++ b/sound/soc/codecs/es8328.h
+@@ -84,7 +84,22 @@ int es8328_probe(struct device *dev, struct regmap *regmap);
+ #define ES8328_ADCCONTROL1	0x09
+ #define ES8328_ADCCONTROL2	0x0a
+ #define ES8328_ADCCONTROL3	0x0b
++
+ #define ES8328_ADCCONTROL4	0x0c
++#define ES8328_ADCCONTROL4_ADCFORMAT_I2S (0 << 0)
++#define ES8328_ADCCONTROL4_ADCFORMAT_LJUST (1 << 0)
++#define ES8328_ADCCONTROL4_ADCFORMAT_RJUST (2 << 0)
++#define ES8328_ADCCONTROL4_ADCFORMAT_PCM (3 << 0)
++#define ES8328_ADCCONTROL4_ADCWL_24 (0 << 2)
++#define ES8328_ADCCONTROL4_ADCWL_20 (1 << 2)
++#define ES8328_ADCCONTROL4_ADCWL_18 (2 << 2)
++#define ES8328_ADCCONTROL4_ADCWL_16 (3 << 2)
++#define ES8328_ADCCONTROL4_ADCWL_32 (4 << 2)
++#define ES8328_ADCCONTROL4_ADCLRP_I2S_POL_NORMAL (0 << 5)
++#define ES8328_ADCCONTROL4_ADCLRP_I2S_POL_INV (1 << 5)
++#define ES8328_ADCCONTROL4_ADCLRP_PCM_MSB_CLK2 (0 << 5)
++#define ES8328_ADCCONTROL4_ADCLRP_PCM_MSB_CLK1 (1 << 5)
++
+ #define ES8328_ADCCONTROL5	0x0d
+ #define ES8328_ADCCONTROL5_RATEMASK (0x1f << 0)
+ 
 -- 
 2.8.1
