@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: don't use prohibited number to PDMACHCRn.SRS" to the asoc tree
-Date: Tue, 10 May 2016 19:49:16 +0100
-Message-ID: <E1b0Cia-0007Gr-Tb@debutante>
-References: <87d1oumzcr.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87d1oumzcr.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Nguyen Viet Dung <nv-dung@jinso.co.jp>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Simon <horms@verge.net.au>Nguyen Viet Dung <nv-dung@jinso.co.jp>
+Subject: Applied "ASoC: da7213: Add DAI DAPM event to control DAI clocks" to the asoc tree
+Date: Tue, 10 May 2016 19:49:05 +0100
+Message-ID: <E1b0CiP-0006yB-GT@debutante>
+References: <83d4df941ac77554f8d84ce5883bb782b5632000.1462892732.git.Adam.Thomson.Opensource@diasemi.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <83d4df941ac77554f8d84ce5883bb782b5632000.1462892732.git.Adam.Thomson.Opensource@diasemi.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: don't use prohibited number to PDMACHCRn.SRS
+   ASoC: da7213: Add DAI DAPM event to control DAI clocks
 
 has been applied to the asoc tree at
 
@@ -37,48 +37,98 @@ to this mail.
 Thanks,
 Mark
 
->From ee057d2ee73259f455cfbb7a4db808fc6b6405dd Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 10 May 2016 02:22:37 +0000
-Subject: [PATCH] ASoC: rsnd: don't use prohibited number to PDMACHCRn.SRS
+>From a0d5caeaebfd00853efa0080afc850e10be7b39a Mon Sep 17 00:00:00 2001
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Date: Tue, 10 May 2016 16:11:04 +0100
+Subject: [PATCH] ASoC: da7213: Add DAI DAPM event to control DAI clocks
 
-Current rsnd_dmapp_get_id() returns 0xFF as error code if system used
-strange connection. It will be used as PDMACHCRn.SRS, but 0xFF is
-prohibited number.
-In order not to use prohibited number, this patch indicates error message
-and returns 0x00 (same as SSI00) in error case.
-Special thanks to Dung-san.
+Currently, when Codec is I2S master DAI clocks are continuously
+generated even if all audio streams have stopped. To improve
+efficiency, control of the DAI clocks for master mode have been
+moved to a DAPM widget event so they're only enabled as required.
 
-Reported-by: Nguyen Viet Dung <nv-dung@jinso.co.jp>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/dma.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ sound/soc/codecs/da7213.c | 35 ++++++++++++++++++++++++++++++++---
+ sound/soc/codecs/da7213.h |  2 --
+ 2 files changed, 32 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index 7658e8fd7bdc..6bc93cbb3049 100644
---- a/sound/soc/sh/rcar/dma.c
-+++ b/sound/soc/sh/rcar/dma.c
-@@ -316,11 +316,15 @@ static u32 rsnd_dmapp_get_id(struct rsnd_dai_stream *io,
- 		size = ARRAY_SIZE(gen2_id_table_cmd);
- 	}
+diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
+index 7278f93460c1..701bd6204747 100644
+--- a/sound/soc/codecs/da7213.c
++++ b/sound/soc/codecs/da7213.c
+@@ -726,6 +726,36 @@ static const struct snd_kcontrol_new da7213_dapm_mixoutr_controls[] = {
  
--	if (!entry)
--		return 0xFF;
-+	if ((!entry) || (size <= id)) {
-+		struct device *dev = rsnd_priv_to_dev(rsnd_io_to_priv(io));
  
--	if (size <= id)
--		return 0xFF;
-+		dev_err(dev, "unknown connection (%s[%d])\n",
-+			rsnd_mod_name(mod), rsnd_mod_id(mod));
+ /*
++ * DAPM Events
++ */
 +
-+		/* use non-prohibited SRS number as error */
-+		return 0x00; /* SSI00 */
++static int da7213_dai_event(struct snd_soc_dapm_widget *w,
++			    struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct da7213_priv *da7213 = snd_soc_codec_get_drvdata(codec);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		/* Enable DAI clks for master mode */
++		if (da7213->master)
++			snd_soc_update_bits(codec, DA7213_DAI_CLK_MODE,
++					    DA7213_DAI_CLK_EN_MASK,
++					    DA7213_DAI_CLK_EN_MASK);
++		return 0;
++	case SND_SOC_DAPM_POST_PMD:
++		/* Disable DAI clks if in master mode */
++		if (da7213->master)
++			snd_soc_update_bits(codec, DA7213_DAI_CLK_MODE,
++					    DA7213_DAI_CLK_EN_MASK, 0);
++		return 0;
++	default:
++		return -EINVAL;
 +	}
++}
++
++
++/*
+  * DAPM widgets
+  */
  
- 	return entry[id];
- }
+@@ -736,7 +766,8 @@ static const struct snd_soc_dapm_widget da7213_dapm_widgets[] = {
+ 
+ 	/* Use a supply here as this controls both input & output DAIs */
+ 	SND_SOC_DAPM_SUPPLY("DAI", DA7213_DAI_CTRL, DA7213_DAI_EN_SHIFT,
+-			    DA7213_NO_INVERT, NULL, 0),
++			    DA7213_NO_INVERT, da7213_dai_event,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+ 
+ 	/*
+ 	 * Input
+@@ -1143,11 +1174,9 @@ static int da7213_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	/* Set master/slave mode */
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+-		dai_clk_mode |= DA7213_DAI_CLK_EN_MASTER_MODE;
+ 		da7213->master = true;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+-		dai_clk_mode |= DA7213_DAI_CLK_EN_SLAVE_MODE;
+ 		da7213->master = false;
+ 		break;
+ 	default:
+diff --git a/sound/soc/codecs/da7213.h b/sound/soc/codecs/da7213.h
+index 030fd691b076..5de5c2997e0c 100644
+--- a/sound/soc/codecs/da7213.h
++++ b/sound/soc/codecs/da7213.h
+@@ -178,8 +178,6 @@
+ #define DA7213_DAI_BCLKS_PER_WCLK_MASK				(0x3 << 0)
+ #define DA7213_DAI_CLK_POL_INV					(0x1 << 2)
+ #define DA7213_DAI_WCLK_POL_INV					(0x1 << 3)
+-#define DA7213_DAI_CLK_EN_SLAVE_MODE				(0x0 << 7)
+-#define DA7213_DAI_CLK_EN_MASTER_MODE				(0x1 << 7)
+ #define DA7213_DAI_CLK_EN_MASK					(0x1 << 7)
+ 
+ /* DA7213_DAI_CTRL = 0x29 */
 -- 
 2.8.1
