@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7213: Update PLL ranges to improve locking at frequency boundary" to the asoc tree
-Date: Tue, 10 May 2016 19:48:56 +0100
-Message-ID: <E1b0CiG-0006ji-1x@debutante>
-References: <99d22ab107c104cba002706c0aa88ce5c5e08ad5.1462892732.git.Adam.Thomson.Opensource@diasemi.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <99d22ab107c104cba002706c0aa88ce5c5e08ad5.1462892732.git.Adam.Thomson.Opensource@diasemi.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>
+Subject: Applied "ASoC: rsnd: don't use prohibited number to PDMACHCRn.SRS" to the asoc tree
+Date: Tue, 10 May 2016 19:49:16 +0100
+Message-ID: <E1b0Cia-0007Gr-Tb@debutante>
+References: <87d1oumzcr.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87d1oumzcr.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Nguyen Viet Dung <nv-dung@jinso.co.jp>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Simon <horms@verge.net.au>Nguyen Viet Dung <nv-dung@jinso.co.jp>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7213: Update PLL ranges to improve locking at frequency boundary
+   ASoC: rsnd: don't use prohibited number to PDMACHCRn.SRS
 
 has been applied to the asoc tree at
 
@@ -37,112 +37,48 @@ to this mail.
 Thanks,
 Mark
 
->From 1e62c52ddc2d23a02ac2308cc1bb6ff18f0cf3cd Mon Sep 17 00:00:00 2001
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Tue, 10 May 2016 16:11:07 +0100
-Subject: [PATCH] ASoC: da7213: Update PLL ranges to improve locking at
- frequency boundary
+>From ee057d2ee73259f455cfbb7a4db808fc6b6405dd Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 10 May 2016 02:22:37 +0000
+Subject: [PATCH] ASoC: rsnd: don't use prohibited number to PDMACHCRn.SRS
 
-This update changes the dividers used for ranges of input MCLK
-frequencies, to improve PLL locking for a corner case when at edge
-of MCLK frequency input divider range.
+Current rsnd_dmapp_get_id() returns 0xFF as error code if system used
+strange connection. It will be used as PDMACHCRn.SRS, but 0xFF is
+prohibited number.
+In order not to use prohibited number, this patch indicates error message
+and returns 0x00 (same as SSI00) in error case.
+Special thanks to Dung-san.
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Reported-by: Nguyen Viet Dung <nv-dung@jinso.co.jp>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7213.c | 26 +++++++++++++-------------
- sound/soc/codecs/da7213.h | 28 ++++++++++++++--------------
- 2 files changed, 27 insertions(+), 27 deletions(-)
+ sound/soc/sh/rcar/dma.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
-index 657b7eba9954..a233fe7f12eb 100644
---- a/sound/soc/codecs/da7213.c
-+++ b/sound/soc/codecs/da7213.c
-@@ -1344,26 +1344,26 @@ static int da7213_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
- 	/* Workout input divider based on MCLK rate */
- 	if ((da7213->mclk_rate == 32768) && (source == DA7213_SYSCLK_PLL)) {
- 		/* 32KHz PLL Mode */
--		indiv_bits = DA7213_PLL_INDIV_10_20_MHZ;
--		indiv = DA7213_PLL_INDIV_10_20_MHZ_VAL;
-+		indiv_bits = DA7213_PLL_INDIV_9_TO_18_MHZ;
-+		indiv = DA7213_PLL_INDIV_9_TO_18_MHZ_VAL;
- 		freq_ref = 3750000;
- 		pll_ctrl |= DA7213_PLL_32K_MODE;
- 	} else {
- 		/* 5 - 54MHz MCLK */
- 		if (da7213->mclk_rate < 5000000) {
- 			goto pll_err;
--		} else if (da7213->mclk_rate <= 10000000) {
--			indiv_bits = DA7213_PLL_INDIV_5_10_MHZ;
--			indiv = DA7213_PLL_INDIV_5_10_MHZ_VAL;
--		} else if (da7213->mclk_rate <= 20000000) {
--			indiv_bits = DA7213_PLL_INDIV_10_20_MHZ;
--			indiv = DA7213_PLL_INDIV_10_20_MHZ_VAL;
--		} else if (da7213->mclk_rate <= 40000000) {
--			indiv_bits = DA7213_PLL_INDIV_20_40_MHZ;
--			indiv = DA7213_PLL_INDIV_20_40_MHZ_VAL;
-+		} else if (da7213->mclk_rate <= 9000000) {
-+			indiv_bits = DA7213_PLL_INDIV_5_TO_9_MHZ;
-+			indiv = DA7213_PLL_INDIV_5_TO_9_MHZ_VAL;
-+		} else if (da7213->mclk_rate <= 18000000) {
-+			indiv_bits = DA7213_PLL_INDIV_9_TO_18_MHZ;
-+			indiv = DA7213_PLL_INDIV_9_TO_18_MHZ_VAL;
-+		} else if (da7213->mclk_rate <= 36000000) {
-+			indiv_bits = DA7213_PLL_INDIV_18_TO_36_MHZ;
-+			indiv = DA7213_PLL_INDIV_18_TO_36_MHZ_VAL;
- 		} else if (da7213->mclk_rate <= 54000000) {
--			indiv_bits = DA7213_PLL_INDIV_40_54_MHZ;
--			indiv = DA7213_PLL_INDIV_40_54_MHZ_VAL;
-+			indiv_bits = DA7213_PLL_INDIV_36_TO_54_MHZ;
-+			indiv = DA7213_PLL_INDIV_36_TO_54_MHZ_VAL;
- 		} else {
- 			goto pll_err;
- 		}
-diff --git a/sound/soc/codecs/da7213.h b/sound/soc/codecs/da7213.h
-index 26b87e3c3088..fbb7a356a501 100644
---- a/sound/soc/codecs/da7213.h
-+++ b/sound/soc/codecs/da7213.h
-@@ -163,10 +163,10 @@
- #define DA7213_VMID_EN						(0x1 << 7)
+diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
+index 7658e8fd7bdc..6bc93cbb3049 100644
+--- a/sound/soc/sh/rcar/dma.c
++++ b/sound/soc/sh/rcar/dma.c
+@@ -316,11 +316,15 @@ static u32 rsnd_dmapp_get_id(struct rsnd_dai_stream *io,
+ 		size = ARRAY_SIZE(gen2_id_table_cmd);
+ 	}
  
- /* DA7213_PLL_CTRL = 0x27 */
--#define DA7213_PLL_INDIV_5_10_MHZ				(0x0 << 2)
--#define DA7213_PLL_INDIV_10_20_MHZ				(0x1 << 2)
--#define DA7213_PLL_INDIV_20_40_MHZ				(0x2 << 2)
--#define DA7213_PLL_INDIV_40_54_MHZ				(0x3 << 2)
-+#define DA7213_PLL_INDIV_5_TO_9_MHZ				(0x0 << 2)
-+#define DA7213_PLL_INDIV_9_TO_18_MHZ				(0x1 << 2)
-+#define DA7213_PLL_INDIV_18_TO_36_MHZ				(0x2 << 2)
-+#define DA7213_PLL_INDIV_36_TO_54_MHZ				(0x3 << 2)
- #define DA7213_PLL_INDIV_MASK					(0x3 << 2)
- #define DA7213_PLL_MCLK_SQR_EN					(0x1 << 4)
- #define DA7213_PLL_32K_MODE					(0x1 << 5)
-@@ -499,16 +499,16 @@
- #define DA7213_ALC_AVG_ITERATIONS	5
+-	if (!entry)
+-		return 0xFF;
++	if ((!entry) || (size <= id)) {
++		struct device *dev = rsnd_priv_to_dev(rsnd_io_to_priv(io));
  
- /* PLL related */
--#define DA7213_SYSCLK_MCLK		0
--#define DA7213_SYSCLK_PLL		1
--#define DA7213_PLL_FREQ_OUT_90316800	90316800
--#define DA7213_PLL_FREQ_OUT_98304000	98304000
--#define DA7213_PLL_FREQ_OUT_94310400	94310400
--#define DA7213_PLL_INDIV_5_10_MHZ_VAL	2
--#define DA7213_PLL_INDIV_10_20_MHZ_VAL	4
--#define DA7213_PLL_INDIV_20_40_MHZ_VAL	8
--#define DA7213_PLL_INDIV_40_54_MHZ_VAL	16
--#define DA7213_SRM_CHECK_RETRIES	8
-+#define DA7213_SYSCLK_MCLK			0
-+#define DA7213_SYSCLK_PLL			1
-+#define DA7213_PLL_FREQ_OUT_90316800		90316800
-+#define DA7213_PLL_FREQ_OUT_98304000		98304000
-+#define DA7213_PLL_FREQ_OUT_94310400		94310400
-+#define DA7213_PLL_INDIV_5_TO_9_MHZ_VAL		2
-+#define DA7213_PLL_INDIV_9_TO_18_MHZ_VAL	4
-+#define DA7213_PLL_INDIV_18_TO_36_MHZ_VAL	8
-+#define DA7213_PLL_INDIV_36_TO_54_MHZ_VAL	16
-+#define DA7213_SRM_CHECK_RETRIES		8
+-	if (size <= id)
+-		return 0xFF;
++		dev_err(dev, "unknown connection (%s[%d])\n",
++			rsnd_mod_name(mod), rsnd_mod_id(mod));
++
++		/* use non-prohibited SRS number as error */
++		return 0x00; /* SSI00 */
++	}
  
- enum da7213_clk_src {
- 	DA7213_CLKSRC_MCLK = 0,
+ 	return entry[id];
+ }
 -- 
 2.8.1
