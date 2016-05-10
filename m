@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip-max98090: Fix jack detection and event reporting." to the asoc tree
-Date: Tue, 10 May 2016 19:49:56 +0100
-Message-ID: <E1b0CjE-0008Nv-EN@debutante>
-References: <1462790795-25345-4-git-send-email-enric.balletbo@collabora.com>
+Subject: Applied "ASoC: rockchip-max98090: Fix the Headset Mic route." to the asoc tree
+Date: Tue, 10 May 2016 19:49:59 +0100
+Message-ID: <E1b0CjH-0008Tj-FE@debutante>
+References: <1462435421-21205-5-git-send-email-enric.balletbo@collabora.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1462790795-25345-4-git-send-email-enric.balletbo@collabora.com>
+In-Reply-To: <1462435421-21205-5-git-send-email-enric.balletbo@collabora.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.orgMark Brown <broonie@kernel.org>, Heiko Stuebner <heiko@sntech.de>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip-max98090: Fix jack detection and event reporting.
+   ASoC: rockchip-max98090: Fix the Headset Mic route.
 
 has been applied to the asoc tree at
 
@@ -37,53 +37,41 @@ to this mail.
 Thanks,
 Mark
 
->From 525aba92762666aa6fa56e1b92e7d4959bda426a Mon Sep 17 00:00:00 2001
+>From 570204232a9578e5d098e7ad0c0cde0b59d30089 Mon Sep 17 00:00:00 2001
 From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Date: Mon, 9 May 2016 12:46:33 +0200
-Subject: [PATCH] ASoC: rockchip-max98090: Fix jack detection and event
- reporting.
+Date: Mon, 9 May 2016 12:46:32 +0200
+Subject: [PATCH] ASoC: rockchip-max98090: Fix the Headset Mic route.
 
-Physically there is a jackset which includes a Headphone and a Jackset
-Mic pin. The patch add thw two pins with the correct pin name so the
-DAPM management can find the pin and make the jack detection and event
-reporting work again.
+The path Headset Mic --> MICBIAS is wrong because connects a non-supply
+widget as a source with a supply widget as a sink. It's the other way
+around:
 
-The patch also shut up the following error:
+  MICBIAS (source) --> Headset Mic (sink).
 
- rockchip-snd-max98090 sound: ASoC: DAPM unknown pin Headset Jack
+This patch also shut up the following error message:
+
+ rockchip-snd-max98090 sound: Connecting non-supply widget to supply widget is not supported (Headset Mic -> MICBIAS)
+ rockchip-snd-max98090 sound: ASoC: no dapm match for Headset Mic --> (null) --> MICBIAS
+ rockchip-snd-max98090 sound: ASoC: Failed to add route Headset Mic -> direct -> MICBIAS
 
 Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_max98090.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ sound/soc/rockchip/rockchip_max98090.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
-index 3da7891b7dfb..e70ffad07184 100644
+index abb64a553967..3da7891b7dfb 100644
 --- a/sound/soc/rockchip/rockchip_max98090.c
 +++ b/sound/soc/rockchip/rockchip_max98090.c
-@@ -34,13 +34,18 @@
- #define DRV_NAME "rockchip-snd-max98090"
- 
- static struct snd_soc_jack headset_jack;
-+
-+/* Headset jack detection DAPM pins */
- static struct snd_soc_jack_pin headset_jack_pins[] = {
- 	{
--		.pin = "Headset Jack",
--		.mask = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
--			SND_JACK_BTN_0 | SND_JACK_BTN_1 |
--			SND_JACK_BTN_2 | SND_JACK_BTN_3,
-+		.pin = "Headphone",
-+		.mask = SND_JACK_HEADPHONE,
-+	},
-+	{
-+		.pin = "Headset Mic",
-+		.mask = SND_JACK_MICROPHONE,
- 	},
-+
- };
- 
- static const struct snd_soc_dapm_widget rk_dapm_widgets[] = {
+@@ -53,7 +53,7 @@ static const struct snd_soc_dapm_widget rk_dapm_widgets[] = {
+ static const struct snd_soc_dapm_route rk_audio_map[] = {
+ 	{"IN34", NULL, "Headset Mic"},
+ 	{"IN34", NULL, "MICBIAS"},
+-	{"MICBIAS", NULL, "Headset Mic"},
++	{"Headset Mic", NULL, "MICBIAS"},
+ 	{"DMICL", NULL, "Int Mic"},
+ 	{"Headphone", NULL, "HPL"},
+ 	{"Headphone", NULL, "HPR"},
 -- 
 2.8.1
