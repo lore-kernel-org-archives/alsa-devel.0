@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: davinci-mcasp: Calculate AUXCLK divider
-	when setting up master clocks" to the asoc tree
-Date: Tue, 10 May 2016 19:49:44 +0100
-Message-ID: <E1b0Cj2-000827-CE@debutante>
-References: <1462790552-6438-5-git-send-email-peter.ujfalusi@ti.com>
+Subject: Applied "ASoC: davinci-mcasp: Restructure the
+	davinci_mcasp_calc_clk_div()" to the asoc tree
+Date: Tue, 10 May 2016 19:49:47 +0100
+Message-ID: <E1b0Cj5-00087m-BY@debutante>
+References: <1462790552-6438-4-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 077812674F4
- for <alsa-devel@alsa-project.org>; Tue, 10 May 2016 20:49:52 +0200 (CEST)
-In-Reply-To: <1462790552-6438-5-git-send-email-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C2E052674F6
+ for <alsa-devel@alsa-project.org>; Tue, 10 May 2016 20:49:53 +0200 (CEST)
+In-Reply-To: <1462790552-6438-4-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: davinci-mcasp: Calculate AUXCLK divider when setting up master clocks
+   ASoC: davinci-mcasp: Restructure the davinci_mcasp_calc_clk_div()
 
 has been applied to the asoc tree at
 
@@ -53,72 +53,104 @@ to this mail.
 Thanks,
 Mark
 
->From ddecd1492de476488a92493510fb86c6ffe9acbd Mon Sep 17 00:00:00 2001
+>From 3e9bee11d83190b852d428b3e35a942c6e2293cd Mon Sep 17 00:00:00 2001
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Mon, 9 May 2016 13:42:32 +0300
-Subject: [PATCH] ASoC: davinci-mcasp: Calculate AUXCLK divider when setting up
- master clocks
+Date: Mon, 9 May 2016 13:42:31 +0300
+Subject: [PATCH] ASoC: davinci-mcasp: Restructure the
+ davinci_mcasp_calc_clk_div()
 
-If the McASP is used as clock master and the reference clock is AUXCLK we
-can have additional level of divider. The BCLK divider is limited to
-maximum 32, if the desired bclk can not be reached with this, the AUXCLK
-divider also needs to be used.
+Change the return value to error_pmm instead of the BCLK div and handle the
+divider configuration to McASP within the function when the set flag is
+true.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/davinci/davinci-mcasp.c | 29 +++++++++++++++++++++++++----
- 1 file changed, 25 insertions(+), 4 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 38 +++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
 diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 58fe112c5335..f390bb449c48 100644
+index 99061c4f3257..58fe112c5335 100644
 --- a/sound/soc/davinci/davinci-mcasp.c
 +++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -1003,13 +1003,31 @@ static int davinci_mcasp_calc_clk_div(struct davinci_mcasp *mcasp,
- 				      unsigned int bclk_freq, bool set)
- {
- 	int error_ppm;
--	int div = mcasp->sysclk_freq / bclk_freq;
--	int rem = mcasp->sysclk_freq % bclk_freq;
-+	unsigned int sysclk_freq = mcasp->sysclk_freq;
-+	u32 reg = mcasp_get_reg(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG);
-+	int div = sysclk_freq / bclk_freq;
-+	int rem = sysclk_freq % bclk_freq;
-+	int aux_div = 1;
-+
-+	if (div > (ACLKXDIV_MASK + 1)) {
-+		if (reg & AHCLKXE) {
-+			aux_div = div / (ACLKXDIV_MASK + 1);
-+			if (div % (ACLKXDIV_MASK + 1))
-+				aux_div++;
-+
-+			sysclk_freq /= aux_div;
-+			div = sysclk_freq / bclk_freq;
-+			rem = sysclk_freq % bclk_freq;
-+		} else if (set) {
-+			dev_warn(mcasp->dev, "Too fast reference clock (%u)\n",
-+				 sysclk_freq);
-+		}
-+	}
+@@ -1000,9 +1000,9 @@ static int mcasp_dit_hw_param(struct davinci_mcasp *mcasp,
+ }
  
- 	if (rem != 0) {
- 		if (div == 0 ||
--		    ((mcasp->sysclk_freq / div) - bclk_freq) >
--		    (bclk_freq - (mcasp->sysclk_freq / (div+1)))) {
-+		    ((sysclk_freq / div) - bclk_freq) >
-+		    (bclk_freq - (sysclk_freq / (div+1)))) {
- 			div++;
+ static int davinci_mcasp_calc_clk_div(struct davinci_mcasp *mcasp,
+-				      unsigned int bclk_freq,
+-				      int *error_ppm)
++				      unsigned int bclk_freq, bool set)
+ {
++	int error_ppm;
+ 	int div = mcasp->sysclk_freq / bclk_freq;
+ 	int rem = mcasp->sysclk_freq % bclk_freq;
+ 
+@@ -1014,13 +1014,18 @@ static int davinci_mcasp_calc_clk_div(struct davinci_mcasp *mcasp,
  			rem = rem - bclk_freq;
  		}
-@@ -1023,6 +1041,9 @@ static int davinci_mcasp_calc_clk_div(struct davinci_mcasp *mcasp,
- 				 error_ppm);
+ 	}
+-	if (error_ppm)
+-		*error_ppm =
+-			(div*1000000 + (int)div64_long(1000000LL*rem,
+-						       (int)bclk_freq))
+-			/div - 1000000;
++	error_ppm = (div*1000000 + (int)div64_long(1000000LL*rem,
++		     (int)bclk_freq)) / div - 1000000;
  
- 		__davinci_mcasp_set_clkdiv(mcasp, MCASP_CLKDIV_BCLK, div, 0);
-+		if (reg & AHCLKXE)
-+			__davinci_mcasp_set_clkdiv(mcasp, MCASP_CLKDIV_AUXCLK,
-+						   aux_div, 0);
+-	return div;
++	if (set) {
++		if (error_ppm)
++			dev_info(mcasp->dev, "Sample-rate is off by %d PPM\n",
++				 error_ppm);
++
++		__davinci_mcasp_set_clkdiv(mcasp, MCASP_CLKDIV_BCLK, div, 0);
++	}
++
++	return error_ppm;
+ }
+ 
+ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
+@@ -1045,18 +1050,11 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
+ 		int slots = mcasp->tdm_slots;
+ 		int rate = params_rate(params);
+ 		int sbits = params_width(params);
+-		int ppm, div;
+ 
+ 		if (mcasp->slot_width)
+ 			sbits = mcasp->slot_width;
+ 
+-		div = davinci_mcasp_calc_clk_div(mcasp, rate*sbits*slots,
+-						 &ppm);
+-		if (ppm)
+-			dev_info(mcasp->dev, "Sample-rate is off by %d PPM\n",
+-				 ppm);
+-
+-		__davinci_mcasp_set_clkdiv(mcasp, 1, div, 0);
++		davinci_mcasp_calc_clk_div(mcasp, rate * sbits * slots, true);
  	}
  
- 	return error_ppm;
+ 	ret = mcasp_common_hw_param(mcasp, substream->stream,
+@@ -1167,7 +1165,8 @@ static int davinci_mcasp_hw_rule_rate(struct snd_pcm_hw_params *params,
+ 				davinci_mcasp_dai_rates[i];
+ 			int ppm;
+ 
+-			davinci_mcasp_calc_clk_div(rd->mcasp, bclk_freq, &ppm);
++			ppm = davinci_mcasp_calc_clk_div(rd->mcasp, bclk_freq,
++							 false);
+ 			if (abs(ppm) < DAVINCI_MAX_RATE_ERROR_PPM) {
+ 				if (range.empty) {
+ 					range.min = davinci_mcasp_dai_rates[i];
+@@ -1206,8 +1205,9 @@ static int davinci_mcasp_hw_rule_format(struct snd_pcm_hw_params *params,
+ 			if (rd->mcasp->slot_width)
+ 				sbits = rd->mcasp->slot_width;
+ 
+-			davinci_mcasp_calc_clk_div(rd->mcasp, sbits*slots*rate,
+-						   &ppm);
++			ppm = davinci_mcasp_calc_clk_div(rd->mcasp,
++							 sbits * slots * rate,
++							 false);
+ 			if (abs(ppm) < DAVINCI_MAX_RATE_ERROR_PPM) {
+ 				snd_mask_set(&nfmt, i);
+ 				count++;
 -- 
 2.8.1
