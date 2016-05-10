@@ -1,15 +1,17 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 3/4] ASoC: ab8500-codec: remove platform data
-	based probe
-Date: Tue, 10 May 2016 16:02:05 +0200
-Message-ID: <1462888941-2810783-1-git-send-email-arnd@arndb.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [RFC][PATCH] ALSA: firewire-lib: permit process
+ context only to flush queued packets for better PCM period granularity
+Date: Tue, 10 May 2016 23:07:50 +0900
+Message-ID: <5731EB36.3070706@sakamocchi.jp>
+References: <1462625196-3640-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.75])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A2C1261600
- for <alsa-devel@alsa-project.org>; Tue, 10 May 2016 16:03:41 +0200 (CEST)
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 416E8261600
+ for <alsa-devel@alsa-project.org>; Tue, 10 May 2016 16:07:56 +0200 (CEST)
+In-Reply-To: <1462625196-3640-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,73 +21,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Xiubo Li <lixiubo@cmss.chinamobile.com>, Lars-Peter Clausen <lars@metafoo.de>, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: clemens@ladisch.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-The ux500 platform hasn't used board files for a long time, and
-nothing defines a ab8500_codec_platform_data, so we can just
-remove the probing based on that and always use device tree
-properties directly.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/soc/codecs/ab8500-codec.c | 33 ++++-----------------------------
- 1 file changed, 4 insertions(+), 29 deletions(-)
-
-diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
-index 8b1d0c1a7839..2fc89155f14a 100644
---- a/sound/soc/codecs/ab8500-codec.c
-+++ b/sound/soc/codecs/ab8500-codec.c
-@@ -2464,45 +2464,20 @@ static int ab8500_codec_probe(struct snd_soc_codec *codec)
- 	struct device *dev = codec->dev;
- 	struct device_node *np = dev->of_node;
- 	struct ab8500_codec_drvdata *drvdata = dev_get_drvdata(dev);
--	struct ab8500_platform_data *pdata;
-+	struct ab8500_codec_platform_data codec_pdata;
- 	struct filter_control *fc;
- 	int status;
- 
- 	dev_dbg(dev, "%s: Enter.\n", __func__);
- 
--	/* Setup AB8500 according to board-settings */
--	pdata = dev_get_platdata(dev->parent);
-+	ab8500_codec_of_probe(dev, np, &codec_pdata);
- 
--	if (np) {
--		if (!pdata)
--			pdata = devm_kzalloc(dev,
--					sizeof(struct ab8500_platform_data),
--					GFP_KERNEL);
--
--		if (pdata && !pdata->codec)
--			pdata->codec
--				= devm_kzalloc(dev,
--					sizeof(struct ab8500_codec_platform_data),
--					GFP_KERNEL);
--
--		if (!(pdata && pdata->codec))
--			return -ENOMEM;
--
--		ab8500_codec_of_probe(dev, np, pdata->codec);
--
--	} else {
--		if (!(pdata && pdata->codec)) {
--			dev_err(dev, "No codec platform data or DT found\n");
--			return -EINVAL;
--		}
--	}
--
--	status = ab8500_audio_setup_mics(codec, &pdata->codec->amics);
-+	status = ab8500_audio_setup_mics(codec, &codec_pdata.amics);
- 	if (status < 0) {
- 		pr_err("%s: Failed to setup mics (%d)!\n", __func__, status);
- 		return status;
- 	}
--	status = ab8500_audio_set_ear_cmv(codec, pdata->codec->ear_cmv);
-+	status = ab8500_audio_set_ear_cmv(codec, codec_pdata.ear_cmv);
- 	if (status < 0) {
- 		pr_err("%s: Failed to set earpiece CM-voltage (%d)!\n",
- 			__func__, status);
--- 
-2.7.0
+SGkgQ2xlbWVucywKCk9uIDIwMTblubQwNeaciDA35pelIDIxOjQ2LCBUYWthc2hpIFNha2Ftb3Rv
+IHdyb3RlOgo+IENvdWxkIEkgcmVxdWVzdCB5b3VyIGNvbW1lbnQgdG8gdGhpcyBwYXRjaD8gSXQg
+aXMgdG8gc29sdmUgYSByYWNlIGNvbmRpdGlvbiwKPiBidXQgdGhlIGNvbmRpdGlvbiBpcyBxdWl0
+ZSByYXJlLiBQcmFjdGljYWxseSwgaXQgbWlnaHQgaGF2ZSBhIGxlc3MgbWVhbmluZ3MsCj4gZXhj
+ZXB0IGZvciBiZXR0ZXIgcHJvZ3JhbS4KPiAKPiBBbmQgSSB0aGluayB0aGVyZSdzIGFub3RoZXIg
+cmFjZSBjb25kaXRpb24gYWdhaW5zdCBwcm9jZXNzaW5nIGVhY2ggcGFja2V0cwo+IGJ5IGNhbGxp
+bmcgb3V0L2luX3N0cmVhbV9jYWxsYmFjaygpLCBidXQgSSBjYW5ub3Qgb2JzZXJ2ZSB0aGUgcmFj
+ZS4gU29mdHdhcmUKPiBJUlEgY29udGV4dHMgb2YgSVIvSVQgY29udGV4dHMgYW5kIHByb2Nlc3Mg
+Y29udGV4dHMgYXJlIHVuZGVyIHRoZSByYWNlCj4gY29uZGl0aW9uLCBob3dldmVyIEkgY2FuIHNl
+ZSBubyBwcm9ibGVtcyByZWxhdGVkIHRvIGl0IGluIG15IHNldmVyYWwgdHJpYWxzCj4gaW4gbXVs
+dGktY29yZSBtYWNoaW5lLiBJIGhhdmUgbm8gaWRlYSBhYm91dCB0aGUgcmVhc29uIHRoYXQgcGFj
+a2V0IHNlcXVlbmNlCj4gaXMgcHJvY2Vzc2VkIGNvcnJlY3RseSBiZXR3ZWVuIHRoZSBzb2Z0d2Fy
+ZSBJUlEgY29udGV4dHMgYW5kIHRoZSBwcm9jZXNzCj4gY29udGV4dHMgd2l0aG91dCBhbnkgbG9j
+ayBwcmltaXRpdmVzLiBEbyB5b3UgaGF2ZSBzb21lIGlkZWFzIGFib3V0IGl0PwoKSSB3cm90ZSBh
+biBhZGRpdGlvbmFsIHBhdGNoIGZvciB0aGlzIHJhY2UgaXNzdWUuIFdvdWxkIHlvdSBwbGVhc2Ug
+cmVhZAp0aGlzLCB0b28/CgoKUmVnYXJkcwoKLS0tLS0gODwgLS0tLS0KCkZyb20gZDIwOTBjYWM4
+NjhlNzE4MjI3NTk2ZGJkYTMxZWE2MzMzYjcyMDA5YyBNb24gU2VwIDE3IDAwOjAwOjAwIDIwMDEK
+RnJvbTogVGFrYXNoaSBTYWthbW90byA8by10YWthc2hpQHNha2Ftb2NjaGkuanA+CkRhdGU6IFR1
+ZSwgMTAgTWF5IDIwMTYgMjI6MDI6MDUgKzA5MDAKU3ViamVjdDogW1BBVENIXSBmaXJld2lyZS1s
+aWI6IGFkZCBsb2NraW5nIGZvciBwYWNrZXQgcHJvY2Vzc2luZwoKV2hlbiBwYWNrZXQgc3RyZWFt
+aW5nIHN0YXJ0cywgcGFja2V0IHByb2Nlc3NpbmcgaXMgZG9uZSBpbiBzb2Z0d2FyZSBJUlEKY29u
+dGV4dCBvZiAxMzk0IE9IQ0kgSVIvSVQgY29udGV4dHMuIFRoaXMgaXMgYSB0eXBpY2FsIHdheS4g
+T24gdGhlIG90aGVyCmhhbmQsIHByb2Nlc3MgY29udGV4dCBvZiBQQ00gYXBwbGljYXRpb24gY2Fu
+IGFsc28gcHJvY2VzcyBwYWNrZXRzIGluIGEKcGF0aCB0byBoYW5kbGUgUENNIGZyYW1lcy4gVGhp
+cyBpcyBmb3IgYmV0dGVyIFBDTSBwb2ludGVyIGdyYW51bGFyaXR5LgpUaGUgdHdvIGV4ZWN1dGlv
+biBjb250ZXh0IGNhdXNlcyByYWNlIGNvbmRpdGlvbiBhZ2FpbnN0IHBhY2tldCBwcm9jZXNzaW5n
+LgoKV2hlbiB0aGUgcmFjZSBvY2N1cnMsIGl0J3MgZW5vdWdoIHRoYXQganVzdCBvbmUgb2YgdGhl
+c2UgdHdvIGNvbnRleHRzCmhhbmRsZXMgcGFja2V0IHByb2Nlc3NpbmcsIGJlY2F1c2UgYWN0dWFs
+IHRpbWUgZG9taW5hdGVzIHBhY2tldCBxdWV1ZWluZy4KClRoaXMgY29tbWl0IGFkZHMgc3BpbiBs
+b2NrIHRvIG1hbmFnZSB0aGUgcmFjZSBjb25kaXRpb24uIFdoZW4gdGhlIHJhY2UKb2NjdXJzLCBz
+ZWNvbmQgY29udGV4dCByZXR1cm5zIGltbWVkaWF0ZWx5IGZyb20gY3JpdGljYWwgc2VjdGlvbi4g
+VGh1cywKaXQgaGFzIGxpdHRsZSBvdmVyaGVhZC4KLS0tCiBzb3VuZC9maXJld2lyZS9hbWR0cC1z
+dHJlYW0uYyB8IDM5ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLQogc291
+bmQvZmlyZXdpcmUvYW1kdHAtc3RyZWFtLmggfCAgMyArKysKIDIgZmlsZXMgY2hhbmdlZCwgMzMg
+aW5zZXJ0aW9ucygrKSwgOSBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9maXJld2ly
+ZS9hbWR0cC1zdHJlYW0uYyBiL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLXN0cmVhbS5jCmluZGV4IDky
+ZDVhMTYuLjgwZDU4ODcgMTAwNjQ0Ci0tLSBhL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLXN0cmVhbS5j
+CisrKyBiL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLXN0cmVhbS5jCkBAIC02MDEsNiArNjAxLDE0IEBA
+IHN0YXRpYyB2b2lkIG91dF9zdHJlYW1fY2FsbGJhY2soc3RydWN0CmZ3X2lzb19jb250ZXh0ICpj
+b250ZXh0LCB1MzIgdHN0YW1wLAogCWlmIChzLT5wYWNrZXRfaW5kZXggPCAwKQogCQlyZXR1cm47
+CgorCS8qCisJICogSXQncyBlbm91Z2ggZm9yIHF1ZXVlZCBwYWNrZXRzIHRvIGJlIGhhbmRsZWQg
+YnkgcHJvY2VzcyBjb250ZXh0IG9mCisJICogUENNIGFwcGxpY2F0aW9uIG9yIHNvZnR3YXJlIElS
+USBjb250ZXh0IG9mIDEzOTQgT0hDSSBJVCBjb250ZXh0IGluIGEKKwkgKiB0aW1lLgorCSAqLwor
+CWlmICghc3Bpbl90cnlsb2NrKCZzLT5sb2NrX3BhY2tldGl6YXRpb24pKQorCQlyZXR1cm47CisK
+IAljeWNsZSA9IGNvbXB1dGVfY3ljbGVfY291bnQodHN0YW1wKTsKCiAJLyogQWxpZ24gdG8gYWN0
+dWFsIGN5Y2xlIGNvdW50IGZvciB0aGUgbGFzdCBwYWNrZXQuICovCkBAIC02MDgsMTQgKzYxNiwx
+OCBAQCBzdGF0aWMgdm9pZCBvdXRfc3RyZWFtX2NhbGxiYWNrKHN0cnVjdApmd19pc29fY29udGV4
+dCAqY29udGV4dCwgdTMyIHRzdGFtcCwKCiAJZm9yIChpID0gMDsgaSA8IHBhY2tldHM7ICsraSkg
+ewogCQljeWNsZSA9IGluY3JlbWVudF9jeWNsZV9jb3VudChjeWNsZSwgMSk7Ci0JCWlmIChoYW5k
+bGVfb3V0X3BhY2tldChzLCBjeWNsZSwgaSkgPCAwKSB7Ci0JCQlzLT5wYWNrZXRfaW5kZXggPSAt
+MTsKLQkJCWFtZHRwX3N0cmVhbV9wY21fYWJvcnQocyk7Ci0JCQlyZXR1cm47Ci0JCX0KKwkJaWYg
+KGhhbmRsZV9vdXRfcGFja2V0KHMsIGN5Y2xlLCBpKSA8IDApCisJCQlicmVhazsKIAl9CgotCWZ3
+X2lzb19jb250ZXh0X3F1ZXVlX2ZsdXNoKHMtPmNvbnRleHQpOworCWlmIChpID09IHBhY2tldHMp
+IHsKKwkJZndfaXNvX2NvbnRleHRfcXVldWVfZmx1c2gocy0+Y29udGV4dCk7CisJfSBlbHNlIHsK
+KwkJcy0+cGFja2V0X2luZGV4ID0gLTE7CisJCWFtZHRwX3N0cmVhbV9wY21fYWJvcnQocyk7CisJ
+fQorCisJc3Bpbl91bmxvY2soJnMtPmxvY2tfcGFja2V0aXphdGlvbik7CiB9Cgogc3RhdGljIHZv
+aWQgaW5fc3RyZWFtX2NhbGxiYWNrKHN0cnVjdCBmd19pc29fY29udGV4dCAqY29udGV4dCwgdTMy
+IHRzdGFtcCwKQEAgLTYzMSw2ICs2NDMsMTQgQEAgc3RhdGljIHZvaWQgaW5fc3RyZWFtX2NhbGxi
+YWNrKHN0cnVjdApmd19pc29fY29udGV4dCAqY29udGV4dCwgdTMyIHRzdGFtcCwKIAlpZiAocy0+
+cGFja2V0X2luZGV4IDwgMCkKIAkJcmV0dXJuOwoKKwkvKgorCSAqIEl0J3MgZW5vdWdoIGZvciBx
+dWV1ZWQgcGFja2V0cyB0byBiZSBoYW5kbGVkIGJ5IHByb2Nlc3MgY29udGV4dCBvZgorCSAqIFBD
+TSBhcHBsaWNhdGlvbiBvciBzb2Z0d2FyZSBJUlEgY29udGV4dCBvZiAxMzk0IE9IQ0kgSVIgY29u
+dGV4dCBpbiBhCisJICogdGltZS4KKwkgKi8KKwlpZiAoIXNwaW5fdHJ5bG9jaygmcy0+bG9ja19w
+YWNrZXRpemF0aW9uKSkKKwkJcmV0dXJuOworCiAJLyogVGhlIG51bWJlciBvZiBwYWNrZXRzIGlu
+IGJ1ZmZlciAqLwogCXBhY2tldHMgPSBoZWFkZXJfbGVuZ3RoIC8gSU5fUEFDS0VUX0hFQURFUl9T
+SVpFOwoKQEAgLTY2MCwxMyArNjgwLDE0IEBAIHN0YXRpYyB2b2lkIGluX3N0cmVhbV9jYWxsYmFj
+ayhzdHJ1Y3QKZndfaXNvX2NvbnRleHQgKmNvbnRleHQsIHUzMiB0c3RhbXAsCiAJfQoKIAkvKiBR
+dWV1ZWluZyBlcnJvciBvciBkZXRlY3RpbmcgaW52YWxpZCBwYXlsb2FkLiAqLwotCWlmIChpIDwg
+cGFja2V0cykgeworCWlmIChpID09IHBhY2tldHMpIHsKKwkJZndfaXNvX2NvbnRleHRfcXVldWVf
+Zmx1c2gocy0+Y29udGV4dCk7CisJfSBlbHNlIHsKIAkJcy0+cGFja2V0X2luZGV4ID0gLTE7CiAJ
+CWFtZHRwX3N0cmVhbV9wY21fYWJvcnQocyk7Ci0JCXJldHVybjsKIAl9CgotCWZ3X2lzb19jb250
+ZXh0X3F1ZXVlX2ZsdXNoKHMtPmNvbnRleHQpOworCXNwaW5fdW5sb2NrKCZzLT5sb2NrX3BhY2tl
+dGl6YXRpb24pOwogfQoKIC8qIHRoaXMgaXMgZXhlY3V0ZWQgb25lIHRpbWUgKi8KZGlmZiAtLWdp
+dCBhL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLXN0cmVhbS5oIGIvc291bmQvZmlyZXdpcmUvYW1kdHAt
+c3RyZWFtLmgKaW5kZXggYzFiYzdmYS4uNmJlNWZlYiAxMDA2NDQKLS0tIGEvc291bmQvZmlyZXdp
+cmUvYW1kdHAtc3RyZWFtLmgKKysrIGIvc291bmQvZmlyZXdpcmUvYW1kdHAtc3RyZWFtLmgKQEAg
+LTEwMiw2ICsxMDIsOSBAQCBzdHJ1Y3QgYW1kdHBfc3RyZWFtIHsKIAlzdHJ1Y3QgaXNvX3BhY2tl
+dHNfYnVmZmVyIGJ1ZmZlcjsKIAlpbnQgcGFja2V0X2luZGV4OwoKKwkvKiBQYWNrZXQgcHJvY2Vz
+c2luZyBjYW4gcnVuIGluIG9uZSBjb250ZXh0IGF0IGEgdGltZS4gKi8KKwlzcGlubG9ja190IGxv
+Y2tfcGFja2V0aXphdGlvbjsKKwogCS8qIEZvciBDSVAgaGVhZGVycy4gKi8KIAl1bnNpZ25lZCBp
+bnQgc291cmNlX25vZGVfaWRfZmllbGQ7CiAJdW5zaWduZWQgaW50IGRhdGFfYmxvY2tfcXVhZGxl
+dHM7Ci0tIAoyLjcuNApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
