@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: es8328: Move clock setup to hw_params" to the asoc tree
-Date: Tue, 10 May 2016 19:49:41 +0100
-Message-ID: <E1b0Ciz-0007wt-Af@debutante>
-References: <20160509112437.8924-2-john@metanate.com>
+Subject: Applied "ASoC: rockchip-max98090: Fix jack detection and event reporting." to the asoc tree
+Date: Tue, 10 May 2016 19:49:56 +0100
+Message-ID: <E1b0CjE-0008Nv-EN@debutante>
+References: <1462790795-25345-4-git-send-email-enric.balletbo@collabora.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160509112437.8924-2-john@metanate.com>
+In-Reply-To: <1462790795-25345-4-git-send-email-enric.balletbo@collabora.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: John Keeping <john@metanate.com>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>
+To: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.orgMark Brown <broonie@kernel.org>, Heiko Stuebner <heiko@sntech.de>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: es8328: Move clock setup to hw_params
+   ASoC: rockchip-max98090: Fix jack detection and event reporting.
 
 has been applied to the asoc tree at
 
@@ -37,91 +37,53 @@ to this mail.
 Thanks,
 Mark
 
->From 420c470d6b5c2924a3182edf5b002870ff770331 Mon Sep 17 00:00:00 2001
-From: John Keeping <john@metanate.com>
-Date: Mon, 9 May 2016 12:24:29 +0100
-Subject: [PATCH] ASoC: es8328: Move clock setup to hw_params
+>From 525aba92762666aa6fa56e1b92e7d4959bda426a Mon Sep 17 00:00:00 2001
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Date: Mon, 9 May 2016 12:46:33 +0200
+Subject: [PATCH] ASoC: rockchip-max98090: Fix jack detection and event
+ reporting.
 
-This ensures that the clock is setup after its frequency has been set;
-the existing code in set_dai_fmt may be called before the clock rate has
-been set resulting in an incorrect configuration.
+Physically there is a jackset which includes a Headphone and a Jackset
+Mic pin. The patch add thw two pins with the correct pin name so the
+DAPM management can find the pin and make the jack detection and event
+reporting work again.
 
-Signed-off-by: John Keeping <john@metanate.com>
+The patch also shut up the following error:
+
+ rockchip-snd-max98090 sound: ASoC: DAPM unknown pin Headset Jack
+
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/es8328.c | 31 ++++++++++++++++---------------
- 1 file changed, 16 insertions(+), 15 deletions(-)
+ sound/soc/rockchip/rockchip_max98090.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
-index afa6c5db9dcc..3ca89ae32889 100644
---- a/sound/soc/codecs/es8328.c
-+++ b/sound/soc/codecs/es8328.c
-@@ -445,9 +445,10 @@ static int es8328_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
--	int clk_rate;
-+	int clk_rate = clk_get_rate(es8328->clk);
- 	int i;
- 	int reg;
-+	int val;
- 	u8 ratio;
+diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
+index 3da7891b7dfb..e70ffad07184 100644
+--- a/sound/soc/rockchip/rockchip_max98090.c
++++ b/sound/soc/rockchip/rockchip_max98090.c
+@@ -34,13 +34,18 @@
+ #define DRV_NAME "rockchip-snd-max98090"
  
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-@@ -455,16 +456,24 @@ static int es8328_hw_params(struct snd_pcm_substream *substream,
- 	else
- 		reg = ES8328_ADCCONTROL5;
+ static struct snd_soc_jack headset_jack;
++
++/* Headset jack detection DAPM pins */
+ static struct snd_soc_jack_pin headset_jack_pins[] = {
+ 	{
+-		.pin = "Headset Jack",
+-		.mask = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
+-			SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+-			SND_JACK_BTN_2 | SND_JACK_BTN_3,
++		.pin = "Headphone",
++		.mask = SND_JACK_HEADPHONE,
++	},
++	{
++		.pin = "Headset Mic",
++		.mask = SND_JACK_MICROPHONE,
+ 	},
++
+ };
  
--	clk_rate = clk_get_rate(es8328->clk);
--
--	if ((clk_rate != ES8328_SYSCLK_RATE_1X) &&
--		(clk_rate != ES8328_SYSCLK_RATE_2X)) {
-+	switch (clk_rate) {
-+	case ES8328_SYSCLK_RATE_1X:
-+		val = 0;
-+		break;
-+	case ES8328_SYSCLK_RATE_2X:
-+		val = ES8328_MASTERMODE_MCLKDIV2;
-+		break;
-+	default:
- 		dev_err(codec->dev,
- 			"%s: clock is running at %d Hz, not %d or %d Hz\n",
- 			 __func__, clk_rate,
- 			 ES8328_SYSCLK_RATE_1X, ES8328_SYSCLK_RATE_2X);
- 		return -EINVAL;
- 	}
-+	ret = snd_soc_update_bits(codec, ES8328_MASTERMODE,
-+			ES8328_MASTERMODE_MCLKDIV2, val);
-+	if (ret < 0)
-+		return ret;
- 
- 	/* find master mode MCLK to sampling frequency ratio */
- 	ratio = mclk_ratios[0].rate;
-@@ -484,8 +493,6 @@ static int es8328_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		unsigned int fmt)
- {
- 	struct snd_soc_codec *codec = codec_dai->codec;
--	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
--	int clk_rate;
- 	u8 mode = ES8328_DACCONTROL1_DACWL_16;
- 
- 	/* set master/slave audio interface */
-@@ -515,14 +522,8 @@ static int es8328_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	snd_soc_write(codec, ES8328_ADCCONTROL4, mode);
- 
- 	/* Master serial port mode, with BCLK generated automatically */
--	clk_rate = clk_get_rate(es8328->clk);
--	if (clk_rate == ES8328_SYSCLK_RATE_1X)
--		snd_soc_write(codec, ES8328_MASTERMODE,
--				ES8328_MASTERMODE_MSC);
--	else
--		snd_soc_write(codec, ES8328_MASTERMODE,
--				ES8328_MASTERMODE_MCLKDIV2 |
--				ES8328_MASTERMODE_MSC);
-+	snd_soc_update_bits(codec, ES8328_MASTERMODE,
-+			ES8328_MASTERMODE_MSC, ES8328_MASTERMODE_MSC);
- 
- 	return 0;
- }
+ static const struct snd_soc_dapm_widget rk_dapm_widgets[] = {
 -- 
 2.8.1
