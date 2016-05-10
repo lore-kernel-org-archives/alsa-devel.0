@@ -1,17 +1,14 @@
-From: TheKit <nekit1000@gmail.com>
-Subject: Intel Cherry Trail and NAU8824 codec
-Date: Mon, 9 May 2016 22:41:29 +0800
-Message-ID: <CAOhsuUd1sFuQvwXAumhHrqe4+uTDeWWMC+YmtdT_0eNDwh3NSQ@mail.gmail.com>
+From: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Subject: [PATCH] ASoC: Intel: Fix printk formatting
+Date: Tue, 10 May 2016 09:08:57 +0300
+Message-ID: <1462860537-5667-1-git-send-email-joonas.lahtinen@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f47.google.com (mail-vk0-f47.google.com
- [209.85.213.47])
- by alsa0.perex.cz (Postfix) with ESMTP id E5191265ADE
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2016 16:41:30 +0200 (CEST)
-Received: by mail-vk0-f47.google.com with SMTP id o133so68266835vka.0
- for <alsa-devel@alsa-project.org>; Mon, 09 May 2016 07:41:30 -0700 (PDT)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 68A092651D3
+ for <alsa-devel@alsa-project.org>; Tue, 10 May 2016 08:07:21 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,72 +18,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Alsa-devel mailing list for ALSA developers <alsa-devel@alsa-project.org>
+Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Format number after 0x in hex.
 
-I'm trying to get sound working in Linux on Cube iWork8 Ultimate
-tablet. It has Windows/Android dualboot, but no kernel sources for
-Android, unfortunately. From dmesg I see that NAU8824 codec is used,
-which I can't find any drivers for, except proposed patch that wasn't
-merged: https://lkml.org/lkml/2015/3/4/765
+Cc: Jie Yang <yang.jie@linux.intel.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Signed-off-by: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+---
+ sound/soc/intel/haswell/sst-haswell-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-But, as I understand, additional code (like
-https://github.com/kirananto/ZENFONE2/blob/master/sound/soc/intel/board/cht_bl_dpcm_rt5672.c)
-is needed to bridge it with Cherry Trail SoC. Any suggestions how to
-go about this?
-
-Relevant lines of dmesg from stock Android kernel (where sound works):
-<6>[    8.665477] nau8824_i2c_probe enter
-<3>[    8.666609] snd_intel_sst: sst_platform_get_resources_edk
-<3>[    8.672489] snd_intel_sst: LPE base: 0x91600000
-size:0x200000snd_intel_sst: IRAM base: 0x916c0000
-<3>[    8.682557] snd_intel_sst: DRAM base: 0x91700000snd_intel_sst:
-SHIM base: 0x91740000
-<3>[    8.691298] snd_intel_sst: Mailbox base:
-0x91744000snd_intel_sst: DDR base: 0x20000000
-<6>[    8.700428] snd_intel_sst: Enter: sst_audio_platform_init
-<6>[    8.700646] snd_intel_sst: audio:set_cht_platform_config
-<6>[    8.700900] snd_soc_sst_platform: sst_platform_probe is deferred
-<6>[    8.700918] platform sst-platform: Driver sst-platform requests
-probe deferral
-<3>[    8.700927] snd_intel_sst: board_name:Cherry Trail CR
-<6>[    8.706611] snd_intel_sst: Registering machine device cht_nau88l24
-<3>[    8.707127] snd_intel_sst: Requesting FW fw_sst_22a8.bin now...
-<4>[    8.713815] intel_sst_acpi 808622A8:00: Direct firmware load
-failed with error -2
-<4>[    8.724734] intel_sst_acpi 808622A8:00: Falling back to user helper
-<6>[    8.789741] platform cht_nau88l24: Driver cht_nau88l24 requests
-probe deferral
-<6>[    8.789967] cht_cr_nau88l24: Cherrytrail Machine Driver
-cht_nau8824 registerd
-<6>[    9.077571] snd_soc_sst_platform: sst_platform_probe is deferred
-<3>[   10.856689] sst-platform sst-platform: ASoC: no sink widget
-found for Audio Capture
-<3>[   10.856693] sst-platform sst-platform: ASoC: Failed to add route
-media3_out -> direct -> Audio Capture
-<6>[   10.873799] nau8824_codec_probe enter
-<6>[   11.062658] cht_nau88l24 cht_nau88l24: snd-soc-dummy-dai <->
-Headset-cpu-dai mapping ok
-<6>[   11.062754] cht_nau88l24 cht_nau88l24: snd-soc-dummy-dai <->
-Deepbuffer-cpu-dai mapping ok
-<6>[   11.062902] cht_nau88l24 cht_nau88l24: snd-soc-dummy-dai <->
-Voip-cpu-dai mapping ok
-<6>[   11.063035] cht_cr_nau88l24: cht_hs_detection:Check hs insertion
- after 500 msec
-<6>[   11.063035] cht_nau88l24 cht_nau88l24: snd-soc-dummy-dai <->
-Lowlatency-cpu-dai mapping ok
-<6>[   11.063383] cht_nau88l24 cht_nau88l24: snd-soc-dummy-dai <->
-Probe-cpu-dai mapping ok
-<6>[   11.063596] cht_nau88l24 cht_nau88l24: nau8824-aif1 <->
-ssp2-port mapping ok
-<6>[   11.063638] cht_nau88l24 cht_nau88l24: snd-soc-dummy-dai <->
-snd-soc-dummy-dai mapping ok
-<6>[   11.063674] cht_nau88l24 cht_nau88l24: snd-soc-dummy-dai <->
-snd-soc-dummy-dai mapping ok
-<3>[   11.063742] cht_nau88l24 cht_nau88l24: ASoC: Failed to add
-Headset Mic Switch: -16
-<6>[   11.095628] input: cherrytrailaud Headset Jack as
-/devices/platform/cht_nau88l24/sound/card1/input9
-<6>[   11.096265] cht_cr_nau88l24: snd_cht_mc_probe successful
+diff --git a/sound/soc/intel/haswell/sst-haswell-pcm.c b/sound/soc/intel/haswell/sst-haswell-pcm.c
+index 1aa819c..994256b 100644
+--- a/sound/soc/intel/haswell/sst-haswell-pcm.c
++++ b/sound/soc/intel/haswell/sst-haswell-pcm.c
+@@ -445,7 +445,7 @@ static int create_adsp_page_table(struct snd_pcm_substream *substream,
+ 
+ 	pages = snd_sgbuf_aligned_pages(size);
+ 
+-	dev_dbg(rtd->dev, "generating page table for %p size 0x%zu pages %d\n",
++	dev_dbg(rtd->dev, "generating page table for %p size 0x%zx pages %d\n",
+ 		dma_area, size, pages);
+ 
+ 	for (i = 0; i < pages; i++) {
+-- 
+2.5.5
