@@ -1,22 +1,29 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: [PATCH v4 6/6] ASoC: fsl_ssi: Fix channel slipping
- on capture (or playback) restart in full duplex.
-Date: Tue, 10 May 2016 09:34:42 -0700
-Message-ID: <CAG5mAdxMb0QiP6dbt4K_m=D19-FHnnLZY0JwZK2pnfTZYMpv6g@mail.gmail.com>
-References: <1462277640-20052-1-git-send-email-arnaud.mouiche@invoxia.com>
- <1462277640-20052-7-git-send-email-arnaud.mouiche@invoxia.com>
- <CAOMZO5BkQvUA3EJJzgqWeiLRMm_=7=Q0xcqKnip0vGUrKLg5uw@mail.gmail.com>
+From: nick83ola <nick83ola@gmail.com>
+Subject: Re: Imx6 i2s master driver without i2c
+Date: Tue, 10 May 2016 19:00:00 +0200
+Message-ID: <CABPh3UPzP1iFYsy_Ni1fcfimnoVDUWfdn8ht5On_mx0xN1w8Mg@mail.gmail.com>
+References: <CABPh3UNhKMGUoiDvHn9paXVNvtpwzbzkbCwBhtSCm72jxkh3CA@mail.gmail.com>
+ <CABPh3UMMvVKvHL0g52NqP-E8dpxoZHfwgR_t1WY08OFMSYt9tg@mail.gmail.com>
+ <CABPh3UMJ4gOtNN3FJg0fF7Mm+Lpw0=jXGk_+ejsHaGLG9UvWAQ@mail.gmail.com>
+ <CABPh3UNi79pMZPgJBisaq9Qo847MV-6riCEQ=Akt_RoLdqeVpw@mail.gmail.com>
+ <CABPh3UPLR20WbV0NuYLA4RZ7XB-0+RdFrB-SpDLa0T+wOxqQ+g@mail.gmail.com>
+ <CAG5mAdzJyTdsBTnz8FZ8Ay278j1bYJHHqkOTGY+_Ck9sSPhQoQ@mail.gmail.com>
+ <CABPh3UN1ZoGAVF1y_5vi_DbkARfopbe5tc5SSy0HQbiYe8MERA@mail.gmail.com>
+ <CAG5mAdw1erm=4RjMfP-hf1Vkw73KCWSaLbU3DtditMfsFQNRdQ@mail.gmail.com>
+ <CABPh3UN2157eMxwr6i8-vPfdyr3L0DOrpVt7ChTUrPTCbCzCBA@mail.gmail.com>
+ <CABPh3UNk9xa=K7QiVV3pZba7o287AyOrjufUGd1QWUxnHNHLOg@mail.gmail.com>
+ <CAG5mAdyCAgtFBCbAyLVtqtLgOtCgkB9=yV+YEY8a3oeL2yJDHA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f51.google.com (mail-oi0-f51.google.com
- [209.85.218.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 963D82652EE
- for <alsa-devel@alsa-project.org>; Tue, 10 May 2016 18:35:02 +0200 (CEST)
-Received: by mail-oi0-f51.google.com with SMTP id v145so24595483oie.0
- for <alsa-devel@alsa-project.org>; Tue, 10 May 2016 09:35:02 -0700 (PDT)
-In-Reply-To: <CAOMZO5BkQvUA3EJJzgqWeiLRMm_=7=Q0xcqKnip0vGUrKLg5uw@mail.gmail.com>
+Received: from mail-lf0-f65.google.com (mail-lf0-f65.google.com
+ [209.85.215.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id F274E265A35
+ for <alsa-devel@alsa-project.org>; Tue, 10 May 2016 19:00:00 +0200 (CEST)
+Received: by mail-lf0-f65.google.com with SMTP id y84so1905224lfc.3
+ for <alsa-devel@alsa-project.org>; Tue, 10 May 2016 10:00:00 -0700 (PDT)
+In-Reply-To: <CAG5mAdyCAgtFBCbAyLVtqtLgOtCgkB9=yV+YEY8a3oeL2yJDHA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,25 +33,8 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 3, 2016 at 5:24 AM, Fabio Estevam <festevam@gmail.com> wrote:
-> On Tue, May 3, 2016 at 9:14 AM, Arnaud Mouiche
-> <arnaud.mouiche@invoxia.com> wrote:
->> Happened when the Playback (or Capture) is running continuously
->> and Capture (or Playback) is restarted (xrun, manual stop/start...)
->>
->> Since the RX (or TX) FIFO are only reset when the whole SSI is disabled,
->> pending samples from previous capture (or playback) session may still
->> be present. They must be erased to not introduce channel slipping.
->>
->> FIFO Clear register fields are documented in IMX51, IMX35 reference manual.
->> They are not documented in IMX50 or IMX6 RM, despite they are
->> working as expected on IMX6SL and IMX6solo.
->>
->> Signed-off-by: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
->
-> Reviewed-by: Fabio Estevam <fabio.estevam@nxp.com>
-Tested-by: Caleb Crome <caleb@crome.org>
+Ok I tested the output pin and the bclk pin is set as an input not output!
+And i have obviusly no clock
