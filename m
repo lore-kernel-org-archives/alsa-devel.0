@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: es8328: Fix mask for VMIDSEL" to the asoc tree
-Date: Tue, 10 May 2016 19:49:35 +0100
-Message-ID: <E1b0Cit-0007n7-3W@debutante>
-References: <20160509112437.8924-4-john@metanate.com>
+Subject: Applied "ASoC: es8328: Set symmetric rates" to the asoc tree
+Date: Tue, 10 May 2016 19:49:19 +0100
+Message-ID: <E1b0Cid-0007MI-Tn@debutante>
+References: <20160509112437.8924-10-john@metanate.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160509112437.8924-4-john@metanate.com>
+In-Reply-To: <20160509112437.8924-10-john@metanate.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: John Keeping <john@metanate.com>
 Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: es8328: Fix mask for VMIDSEL
+   ASoC: es8328: Set symmetric rates
 
 has been applied to the asoc tree at
 
@@ -37,32 +37,35 @@ to this mail.
 Thanks,
 Mark
 
->From 2da1ab667a506cc6a7dea88b70e6df3d281458f8 Mon Sep 17 00:00:00 2001
+>From ca0d8797397c5daa6260a6c67b845d79f65140f5 Mon Sep 17 00:00:00 2001
 From: John Keeping <john@metanate.com>
-Date: Mon, 9 May 2016 12:24:31 +0100
-Subject: [PATCH] ASoC: es8328: Fix mask for VMIDSEL
+Date: Mon, 9 May 2016 12:24:37 +0100
+Subject: [PATCH] ASoC: es8328: Set symmetric rates
 
-This is always used along with ES8328_CONTROL1_ENREF so there is no
-change in the generated code as a result of this fix.
+Although the ES8328 does support different rates for capture and
+playback, only very limited combinations are supported (8kHz and 48kHz
+or 8.0182kHz and 44.1kHz) with most rates required to be symmetric.
+
+Instead of adding a lot of complexity for little gain, let's enforce
+symmetric rates.
 
 Signed-off-by: John Keeping <john@metanate.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/es8328.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/es8328.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/es8328.h b/sound/soc/codecs/es8328.h
-index 5a4af014e516..8bc79fff0218 100644
---- a/sound/soc/codecs/es8328.h
-+++ b/sound/soc/codecs/es8328.h
-@@ -22,7 +22,7 @@ int es8328_probe(struct device *dev, struct regmap *regmap);
- #define ES8328_CONTROL1_VMIDSEL_50k (1 << 0)
- #define ES8328_CONTROL1_VMIDSEL_500k (2 << 0)
- #define ES8328_CONTROL1_VMIDSEL_5k (3 << 0)
--#define ES8328_CONTROL1_VMIDSEL_MASK (7 << 0)
-+#define ES8328_CONTROL1_VMIDSEL_MASK (3 << 0)
- #define ES8328_CONTROL1_ENREF (1 << 2)
- #define ES8328_CONTROL1_SEQEN (1 << 3)
- #define ES8328_CONTROL1_SAMEFS (1 << 4)
+diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
+index b8ca214a5332..2086d7107622 100644
+--- a/sound/soc/codecs/es8328.c
++++ b/sound/soc/codecs/es8328.c
+@@ -703,6 +703,7 @@ static struct snd_soc_dai_driver es8328_dai = {
+ 		.formats = ES8328_FORMATS,
+ 	},
+ 	.ops = &es8328_dai_ops,
++	.symmetric_rates = 1,
+ };
+ 
+ static int es8328_suspend(struct snd_soc_codec *codec)
 -- 
 2.8.1
