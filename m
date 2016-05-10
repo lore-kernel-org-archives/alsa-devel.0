@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: davinci-mcasp: Change
-	__davinci_mcasp_set_clkdiv() first parameter" to the asoc tree
-Date: Tue, 10 May 2016 19:49:50 +0100
-Message-ID: <E1b0Cj8-0008D7-D2@debutante>
-References: <1462790552-6438-3-git-send-email-peter.ujfalusi@ti.com>
+Subject: Applied "ASoC: davinci-mcasp: Use defines for clkdiv
+	IDs" to the asoc tree
+Date: Tue, 10 May 2016 19:49:53 +0100
+Message-ID: <E1b0CjB-0008IJ-Cs@debutante>
+References: <1462790552-6438-2-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 563872674FE
- for <alsa-devel@alsa-project.org>; Tue, 10 May 2016 20:49:57 +0200 (CEST)
-In-Reply-To: <1462790552-6438-3-git-send-email-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B2DF267502
+ for <alsa-devel@alsa-project.org>; Tue, 10 May 2016 20:49:59 +0200 (CEST)
+In-Reply-To: <1462790552-6438-2-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: davinci-mcasp: Change __davinci_mcasp_set_clkdiv() first parameter
+   ASoC: davinci-mcasp: Use defines for clkdiv IDs
 
 has been applied to the asoc tree at
 
@@ -53,58 +53,64 @@ to this mail.
 Thanks,
 Mark
 
->From 226e73e23b6b7f7d6df47562a7555ddb121163cf Mon Sep 17 00:00:00 2001
+>From 20d4b10730183a02851580f072bd9b0122873dc5 Mon Sep 17 00:00:00 2001
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Mon, 9 May 2016 13:42:30 +0300
-Subject: [PATCH] ASoC: davinci-mcasp: Change __davinci_mcasp_set_clkdiv()
- first parameter
+Date: Mon, 9 May 2016 13:42:29 +0300
+Subject: [PATCH] ASoC: davinci-mcasp: Use defines for clkdiv IDs
 
-Change the first parameter to struct davinci_mcasp* from
-struct snd_soc_dai*
-The function internally does not use or need the DAI information.
+Instead of hardwired IDs add defines for the available dividers.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/davinci/davinci-mcasp.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 7 ++++---
+ sound/soc/davinci/davinci-mcasp.h | 5 +++++
+ 2 files changed, 9 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index adf1c3941f23..99061c4f3257 100644
+index 020d8660e4e5..adf1c3941f23 100644
 --- a/sound/soc/davinci/davinci-mcasp.c
 +++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -540,11 +540,9 @@ out:
- 	return ret;
- }
+@@ -547,14 +547,14 @@ static int __davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
  
--static int __davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
-+static int __davinci_mcasp_set_clkdiv(struct davinci_mcasp *mcasp, int div_id,
- 				      int div, bool explicit)
- {
--	struct davinci_mcasp *mcasp = snd_soc_dai_get_drvdata(dai);
--
  	pm_runtime_get_sync(mcasp->dev);
  	switch (div_id) {
- 	case MCASP_CLKDIV_AUXCLK:			/* MCLK divider */
-@@ -592,7 +590,9 @@ static int __davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
- static int davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
- 				    int div)
- {
--	return __davinci_mcasp_set_clkdiv(dai, div_id, div, 1);
-+	struct davinci_mcasp *mcasp = snd_soc_dai_get_drvdata(dai);
+-	case 0:		/* MCLK divider */
++	case MCASP_CLKDIV_AUXCLK:			/* MCLK divider */
+ 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG,
+ 			       AHCLKXDIV(div - 1), AHCLKXDIV_MASK);
+ 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_AHCLKRCTL_REG,
+ 			       AHCLKRDIV(div - 1), AHCLKRDIV_MASK);
+ 		break;
+ 
+-	case 1:		/* BCLK divider */
++	case MCASP_CLKDIV_BCLK:			/* BCLK divider */
+ 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_ACLKXCTL_REG,
+ 			       ACLKXDIV(div - 1), ACLKXDIV_MASK);
+ 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_ACLKRCTL_REG,
+@@ -563,7 +563,8 @@ static int __davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
+ 			mcasp->bclk_div = div;
+ 		break;
+ 
+-	case 2:	/*
++	case MCASP_CLKDIV_BCLK_FS_RATIO:
++		/*
+ 		 * BCLK/LRCLK ratio descries how many bit-clock cycles
+ 		 * fit into one frame. The clock ratio is given for a
+ 		 * full period of data (for I2S format both left and
+diff --git a/sound/soc/davinci/davinci-mcasp.h b/sound/soc/davinci/davinci-mcasp.h
+index a3be108a8c17..1e8787fb3fb7 100644
+--- a/sound/soc/davinci/davinci-mcasp.h
++++ b/sound/soc/davinci/davinci-mcasp.h
+@@ -306,4 +306,9 @@
+ #define NUMEVT(x)	(((x) & 0xFF) << 8)
+ #define NUMDMA_MASK	(0xFF)
+ 
++/* clock divider IDs */
++#define MCASP_CLKDIV_AUXCLK		0 /* HCLK divider from AUXCLK */
++#define MCASP_CLKDIV_BCLK		1 /* BCLK divider from HCLK */
++#define MCASP_CLKDIV_BCLK_FS_RATIO	2 /* to set BCLK FS ration */
 +
-+	return __davinci_mcasp_set_clkdiv(mcasp, div_id, div, 1);
- }
- 
- static int davinci_mcasp_set_sysclk(struct snd_soc_dai *dai, int clk_id,
-@@ -1056,7 +1056,7 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
- 			dev_info(mcasp->dev, "Sample-rate is off by %d PPM\n",
- 				 ppm);
- 
--		__davinci_mcasp_set_clkdiv(cpu_dai, 1, div, 0);
-+		__davinci_mcasp_set_clkdiv(mcasp, 1, div, 0);
- 	}
- 
- 	ret = mcasp_common_hw_param(mcasp, substream->stream,
+ #endif	/* DAVINCI_MCASP_H */
 -- 
 2.8.1
