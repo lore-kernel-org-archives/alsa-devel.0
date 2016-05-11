@@ -1,19 +1,22 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC][PATCH] ALSA: firewire-lib: permit process
- context only to flush queued packets for better PCM period granularity
-Date: Wed, 11 May 2016 15:05:07 +0900
-Message-ID: <5732CB93.40004@sakamocchi.jp>
-References: <1462625196-3640-1-git-send-email-o-takashi@sakamocchi.jp>
- <5731EB36.3070706@sakamocchi.jp> <s5hmvnyx8el.wl-tiwai@suse.de>
- <57326727.3020309@sakamocchi.jp> <s5hy47h9mxw.wl-tiwai@suse.de>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] pcm: Don't store the state for
+	SND_PCM_STATE_SUSPENDED
+Date: Wed, 11 May 2016 06:24:55 +0000
+Message-ID: <HE1PR04MB212240A8E6692FCFF12DF797E3720@HE1PR04MB2122.eurprd04.prod.outlook.com>
+References: <1462866346-11878-1-git-send-email-shengjiu.wang@freescale.com>
+ <s5h7ff2b9vx.wl-tiwai@suse.de>
+ <HE1PR04MB21229D4BBCC605559F98D3FFE3720@HE1PR04MB2122.eurprd04.prod.outlook.com>
+ <s5hzirx9nv4.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 38E002619BE
- for <alsa-devel@alsa-project.org>; Wed, 11 May 2016 08:05:11 +0200 (CEST)
-In-Reply-To: <s5hy47h9mxw.wl-tiwai@suse.de>
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com
+ (mail-ve1eur01on0087.outbound.protection.outlook.com [104.47.1.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id 810062619BE
+ for <alsa-devel@alsa-project.org>; Wed, 11 May 2016 08:25:01 +0200 (CEST)
+In-Reply-To: <s5hzirx9nv4.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,143 +27,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTWF5IDExIDIwMTYgMTQ6MzUsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBPbiBXZWQsIDExIE1h
-eSAyMDE2IDAwOjU2OjM5ICswMjAwLAo+IFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4+Cj4+IEhp
-LAo+Pgo+PiBPbiBNYXkgMTEgMjAxNiAwMDowMywgVGFrYXNoaSBJd2FpIHdyb3RlOgo+Pj4gT24g
-VHVlLCAxMCBNYXkgMjAxNiAxNjowNzo1MCArMDIwMCwKPj4+IFRha2FzaGkgU2FrYW1vdG8gd3Jv
-dGU6Cj4+Pj4KPj4+PiBIaSBDbGVtZW5zLAo+Pj4+Cj4+Pj4gT24gMjAxNuW5tDA15pyIMDfml6Ug
-MjE6NDYsIFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4+Pj4+IENvdWxkIEkgcmVxdWVzdCB5b3Vy
-IGNvbW1lbnQgdG8gdGhpcyBwYXRjaD8gSXQgaXMgdG8gc29sdmUgYSByYWNlIGNvbmRpdGlvbiwK
-Pj4+Pj4gYnV0IHRoZSBjb25kaXRpb24gaXMgcXVpdGUgcmFyZS4gUHJhY3RpY2FsbHksIGl0IG1p
-Z2h0IGhhdmUgYSBsZXNzIG1lYW5pbmdzLAo+Pj4+PiBleGNlcHQgZm9yIGJldHRlciBwcm9ncmFt
-Lgo+Pj4+Pgo+Pj4+PiBBbmQgSSB0aGluayB0aGVyZSdzIGFub3RoZXIgcmFjZSBjb25kaXRpb24g
-YWdhaW5zdCBwcm9jZXNzaW5nIGVhY2ggcGFja2V0cwo+Pj4+PiBieSBjYWxsaW5nIG91dC9pbl9z
-dHJlYW1fY2FsbGJhY2soKSwgYnV0IEkgY2Fubm90IG9ic2VydmUgdGhlIHJhY2UuIFNvZnR3YXJl
-Cj4+Pj4+IElSUSBjb250ZXh0cyBvZiBJUi9JVCBjb250ZXh0cyBhbmQgcHJvY2VzcyBjb250ZXh0
-cyBhcmUgdW5kZXIgdGhlIHJhY2UKPj4+Pj4gY29uZGl0aW9uLCBob3dldmVyIEkgY2FuIHNlZSBu
-byBwcm9ibGVtcyByZWxhdGVkIHRvIGl0IGluIG15IHNldmVyYWwgdHJpYWxzCj4+Pj4+IGluIG11
-bHRpLWNvcmUgbWFjaGluZS4gSSBoYXZlIG5vIGlkZWEgYWJvdXQgdGhlIHJlYXNvbiB0aGF0IHBh
-Y2tldCBzZXF1ZW5jZQo+Pj4+PiBpcyBwcm9jZXNzZWQgY29ycmVjdGx5IGJldHdlZW4gdGhlIHNv
-ZnR3YXJlIElSUSBjb250ZXh0cyBhbmQgdGhlIHByb2Nlc3MKPj4+Pj4gY29udGV4dHMgd2l0aG91
-dCBhbnkgbG9jayBwcmltaXRpdmVzLiBEbyB5b3UgaGF2ZSBzb21lIGlkZWFzIGFib3V0IGl0Pwo+
-Pj4+Cj4+Pj4gSSB3cm90ZSBhbiBhZGRpdGlvbmFsIHBhdGNoIGZvciB0aGlzIHJhY2UgaXNzdWUu
-IFdvdWxkIHlvdSBwbGVhc2UgcmVhZAo+Pj4+IHRoaXMsIHRvbz8KPj4+Cj4+PiBJdCdzIGp1c3Qg
-YSBmbGFnIGluZGljYXRpbmcgb2YgYSBidXN5IHRhc2ssIHJpZ2h0Pwo+Pj4gSWYgc28sIGl0IGRv
-ZXNuJ3QgaGF2ZSB0byBiZSBhIHNwaW5sb2NrLCBidXQgYSBzaW1wbGUgYXRvbWljX3QuCj4+Cj4+
-IFRoaXMgZnVuY3Rpb24gaXMgY2FsbGVkIGluIGJvdGggb2Ygc29mdHdhcmUgSVJRIGNvbnRleHQg
-YW5kIHByb2Nlc3MKPj4gY29udGV4dC4gVGh1cywgYXRvbWljX3QgY2F1c2VzIGtlcm5lbCBodW5n
-cyBpbiBzb2Z0d2FyZSBJUlEgY29udGV4dCwKPj4gYmVjYXVzZSBXZSBjYW5ub3QgY2FsbCBrZXJu
-ZWwgQVBJcyB3aGljaCBjYWxsIHByb2Nlc3Mgc2NoZWR1bGVyIGluIHRoZQo+PiBjb250ZXh0Lgo+
-Cj4gSSBndWVzcyB5b3UgYXJlIGNvbmZ1c2VkLiAgYXRvbWljIG9wcyBjYW4gYmUgc2FmZWx5IHVz
-ZWQgaW4gYW55Cj4gY29udGV4dHMuICAoSSBzdWdnZXN0ZWQgYXRvbWljX3QgaW4gdGhlIHByZXZp
-b3VzIG1haWwsIGJ1dCBhY3R1YWxseSBhCj4gbGlnaHRlciBwcmltaXRpdmUgZm9yIHN1Y2ggYSBj
-YXNlIGlzIGNtcHhjaGcoKSBhbmQgaXRzIHZhcmlhbnRzLiAgSW4KPiBhbnl3YXksIGFsbCBhcmUg
-Zm91bmQgaW4gYXRvbWljLmguKQoKWWVzLiBJbiB0aGlzIG1vcm5pbmcsIEkgc3R1cGlkbHkgY29u
-ZnVzZWQgJ2F0b21pY190JyBhbmQgJ3N0cnVjdCBtdXRleCcsIApzb3JyeS4gKE15IGJyYWluIG1p
-Z2h0IGJlIHN0aWxsIGhhbGYgYXdha2UuLi4pCgo+IEluIHlvdXIgY29kZSwgeW91IG5ldmVyIGNh
-bGwgc3Bpbl9sb2NrKCkgYnV0IG9ubHkgc3Bpbl90cnlsb2NrKCkuCj4gVGhhdCBpcywgdGhlcmUg
-aXMgbm8gcGFydCByZWFsbHkgc3Bpbm5pbmcsIGJ1dCBpdCdzIHVzZWQgb25seSBhcyBhCj4gZmxh
-Zy4gIFNvLCBpdCBpcyBlcXVpdmFsZW50IHdpdGggZG9pbmcgc29tZXRoaW5nIGxpa2U6Cj4KPiAJ
-aWYgKGNtcHhjaGcoZmxhZywgMSkpIC8qIGNvbmN1cnJlbnRseSBydW5uaW5nPyAqLwo+IAkJcmV0
-dXJuOwo+IAlkb19zb21ldGhpbmc7Cj4gCWNtcHhjaGcoZmxhZywgMCk7Cj4KPiBpbiBib3RoIGNh
-bGxiYWNrcy4KClllcC4gSXQncyBzdWl0YWJsZSBpbiBteSBjYXNlIHRvIHVzZSBhdG9taWNfdC4K
-CgpXZWxsLCBJIHJlYWxpemUgdGhhdCB0aGlzIHNlY29uZCBwYXRjaCBpcyBtZWFuaW5nbGVzcyBm
-b3IgaXRzIGFpbS4gSSAKb3Zlcmxvb2tlZCB0aGF0ICd0YXNrbGV0X2Rpc2FibGUoKScgaXMgY2Fs
-bGVkIGluIAonb2hjaV9mbHVzaF9pc29fY29tcGxldGlvbnMoKScgYWdhaW5zdCBzb2Z0d2FyZSBJ
-UlEgb2YgSVIvSVQgY29udGV4dC4KCmh0dHA6Ly9naXQua2VybmVsLm9yZy9jZ2l0L2xpbnV4L2tl
-cm5lbC9naXQvdGl3YWkvc291bmQuZ2l0L3RyZWUvZHJpdmVycy9maXJld2lyZS9vaGNpLmMjbjM0
-NzcKClRoZSByYWNlIGNvbmRpdGlvbiBiZXR3ZWVuIHRoZSBzb2Z0d2FyZSBpcnEgY29udGV4dCBh
-bmQgdGhlIHByb2Nlc3MgCmNvbnRleHQgKGNhbGxpbmcgJ2Z3X2lzb19jb250ZXh0X2ZsdXNoX2Nv
-bXBsZXRpb25zKCknKSBpcyBhbHJlYWR5IAppbnRlcnZlbmVkLiBTbyB0aGUgcGFja2V0IHByb2Nl
-c3NpbmcgaXMgbmV2ZXIgZXhlY3V0ZWQgaW4gc2V2ZXJhbCAKY29udGV4dHMgaW4gYSB0aW1lLgoK
-Tm93IEknbSBiYWNrIHRvIHRoZSBmaXJzdCBwYXRjaC4KCgpUaGFua3MKClRha2FzaGkgU2FrYW1v
-dG8KCj4+IEZvciBzdXBwbGVtZW50YWwgaW5mb3JtYXRpb24sIHBsZWFzZSByZWZlciB0byBhIHBh
-dGNoIHdoaWNoIEkgcG9zdGVkCj4+IGp1c3Qgbm93LiBVbmZvcnR1bmF0ZWx5LCBhbHNhLXByb2pl
-Y3Qub3JnIGRvZXNuJ3QgYmxhc3QgdGhlIG1lc3NhZ2UgYXMKPj4gb2Ygbm93Li4uIFlvdSBjYW4g
-YWxzbyBzZWUgdGhlIG1lc3NhZ2UgaW4gYW4gYXJjaGl2ZSBvZiBmZmFkby1kZXZlbC4KPj4gaHR0
-cHM6Ly9zb3VyY2Vmb3JnZS5uZXQvcC9mZmFkby9tYWlsbWFuL21lc3NhZ2UvMzUwNzgzNDEvCj4+
-Cj4+Cj4+IFRoYW5rcwo+Pgo+PiBUYWthc2hpIFNha2Ftb3RvCj4+Cj4+PiB0aGFua3MsCj4+Pgo+
-Pj4gVGFrYXNoaQo+Pj4KPj4+Pgo+Pj4+Cj4+Pj4gUmVnYXJkcwo+Pj4+Cj4+Pj4gLS0tLS0gODwg
-LS0tLS0KPj4+Pgo+Pj4+ICBGcm9tIGQyMDkwY2FjODY4ZTcxODIyNzU5NmRiZGEzMWVhNjMzM2I3
-MjAwOWMgTW9uIFNlcCAxNyAwMDowMDowMCAyMDAxCj4+Pj4gRnJvbTogVGFrYXNoaSBTYWthbW90
-byA8by10YWthc2hpQHNha2Ftb2NjaGkuanA+Cj4+Pj4gRGF0ZTogVHVlLCAxMCBNYXkgMjAxNiAy
-MjowMjowNSArMDkwMAo+Pj4+IFN1YmplY3Q6IFtQQVRDSF0gZmlyZXdpcmUtbGliOiBhZGQgbG9j
-a2luZyBmb3IgcGFja2V0IHByb2Nlc3NpbmcKPj4+Pgo+Pj4+IFdoZW4gcGFja2V0IHN0cmVhbWlu
-ZyBzdGFydHMsIHBhY2tldCBwcm9jZXNzaW5nIGlzIGRvbmUgaW4gc29mdHdhcmUgSVJRCj4+Pj4g
-Y29udGV4dCBvZiAxMzk0IE9IQ0kgSVIvSVQgY29udGV4dHMuIFRoaXMgaXMgYSB0eXBpY2FsIHdh
-eS4gT24gdGhlIG90aGVyCj4+Pj4gaGFuZCwgcHJvY2VzcyBjb250ZXh0IG9mIFBDTSBhcHBsaWNh
-dGlvbiBjYW4gYWxzbyBwcm9jZXNzIHBhY2tldHMgaW4gYQo+Pj4+IHBhdGggdG8gaGFuZGxlIFBD
-TSBmcmFtZXMuIFRoaXMgaXMgZm9yIGJldHRlciBQQ00gcG9pbnRlciBncmFudWxhcml0eS4KPj4+
-PiBUaGUgdHdvIGV4ZWN1dGlvbiBjb250ZXh0IGNhdXNlcyByYWNlIGNvbmRpdGlvbiBhZ2FpbnN0
-IHBhY2tldCBwcm9jZXNzaW5nLgo+Pj4+Cj4+Pj4gV2hlbiB0aGUgcmFjZSBvY2N1cnMsIGl0J3Mg
-ZW5vdWdoIHRoYXQganVzdCBvbmUgb2YgdGhlc2UgdHdvIGNvbnRleHRzCj4+Pj4gaGFuZGxlcyBw
-YWNrZXQgcHJvY2Vzc2luZywgYmVjYXVzZSBhY3R1YWwgdGltZSBkb21pbmF0ZXMgcGFja2V0IHF1
-ZXVlaW5nLgo+Pj4+Cj4+Pj4gVGhpcyBjb21taXQgYWRkcyBzcGluIGxvY2sgdG8gbWFuYWdlIHRo
-ZSByYWNlIGNvbmRpdGlvbi4gV2hlbiB0aGUgcmFjZQo+Pj4+IG9jY3Vycywgc2Vjb25kIGNvbnRl
-eHQgcmV0dXJucyBpbW1lZGlhdGVseSBmcm9tIGNyaXRpY2FsIHNlY3Rpb24uIFRodXMsCj4+Pj4g
-aXQgaGFzIGxpdHRsZSBvdmVyaGVhZC4KPj4+PiAtLS0KPj4+PiAgIHNvdW5kL2ZpcmV3aXJlL2Ft
-ZHRwLXN0cmVhbS5jIHwgMzkgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0t
-Cj4+Pj4gICBzb3VuZC9maXJld2lyZS9hbWR0cC1zdHJlYW0uaCB8ICAzICsrKwo+Pj4+ICAgMiBm
-aWxlcyBjaGFuZ2VkLCAzMyBpbnNlcnRpb25zKCspLCA5IGRlbGV0aW9ucygtKQo+Pj4+Cj4+Pj4g
-ZGlmZiAtLWdpdCBhL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLXN0cmVhbS5jIGIvc291bmQvZmlyZXdp
-cmUvYW1kdHAtc3RyZWFtLmMKPj4+PiBpbmRleCA5MmQ1YTE2Li44MGQ1ODg3IDEwMDY0NAo+Pj4+
-IC0tLSBhL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLXN0cmVhbS5jCj4+Pj4gKysrIGIvc291bmQvZmly
-ZXdpcmUvYW1kdHAtc3RyZWFtLmMKPj4+PiBAQCAtNjAxLDYgKzYwMSwxNCBAQCBzdGF0aWMgdm9p
-ZCBvdXRfc3RyZWFtX2NhbGxiYWNrKHN0cnVjdAo+Pj4+IGZ3X2lzb19jb250ZXh0ICpjb250ZXh0
-LCB1MzIgdHN0YW1wLAo+Pj4+ICAgCWlmIChzLT5wYWNrZXRfaW5kZXggPCAwKQo+Pj4+ICAgCQly
-ZXR1cm47Cj4+Pj4KPj4+PiArCS8qCj4+Pj4gKwkgKiBJdCdzIGVub3VnaCBmb3IgcXVldWVkIHBh
-Y2tldHMgdG8gYmUgaGFuZGxlZCBieSBwcm9jZXNzIGNvbnRleHQgb2YKPj4+PiArCSAqIFBDTSBh
-cHBsaWNhdGlvbiBvciBzb2Z0d2FyZSBJUlEgY29udGV4dCBvZiAxMzk0IE9IQ0kgSVQgY29udGV4
-dCBpbiBhCj4+Pj4gKwkgKiB0aW1lLgo+Pj4+ICsJICovCj4+Pj4gKwlpZiAoIXNwaW5fdHJ5bG9j
-aygmcy0+bG9ja19wYWNrZXRpemF0aW9uKSkKPj4+PiArCQlyZXR1cm47Cj4+Pj4gKwo+Pj4+ICAg
-CWN5Y2xlID0gY29tcHV0ZV9jeWNsZV9jb3VudCh0c3RhbXApOwo+Pj4+Cj4+Pj4gICAJLyogQWxp
-Z24gdG8gYWN0dWFsIGN5Y2xlIGNvdW50IGZvciB0aGUgbGFzdCBwYWNrZXQuICovCj4+Pj4gQEAg
-LTYwOCwxNCArNjE2LDE4IEBAIHN0YXRpYyB2b2lkIG91dF9zdHJlYW1fY2FsbGJhY2soc3RydWN0
-Cj4+Pj4gZndfaXNvX2NvbnRleHQgKmNvbnRleHQsIHUzMiB0c3RhbXAsCj4+Pj4KPj4+PiAgIAlm
-b3IgKGkgPSAwOyBpIDwgcGFja2V0czsgKytpKSB7Cj4+Pj4gICAJCWN5Y2xlID0gaW5jcmVtZW50
-X2N5Y2xlX2NvdW50KGN5Y2xlLCAxKTsKPj4+PiAtCQlpZiAoaGFuZGxlX291dF9wYWNrZXQocywg
-Y3ljbGUsIGkpIDwgMCkgewo+Pj4+IC0JCQlzLT5wYWNrZXRfaW5kZXggPSAtMTsKPj4+PiAtCQkJ
-YW1kdHBfc3RyZWFtX3BjbV9hYm9ydChzKTsKPj4+PiAtCQkJcmV0dXJuOwo+Pj4+IC0JCX0KPj4+
-PiArCQlpZiAoaGFuZGxlX291dF9wYWNrZXQocywgY3ljbGUsIGkpIDwgMCkKPj4+PiArCQkJYnJl
-YWs7Cj4+Pj4gICAJfQo+Pj4+Cj4+Pj4gLQlmd19pc29fY29udGV4dF9xdWV1ZV9mbHVzaChzLT5j
-b250ZXh0KTsKPj4+PiArCWlmIChpID09IHBhY2tldHMpIHsKPj4+PiArCQlmd19pc29fY29udGV4
-dF9xdWV1ZV9mbHVzaChzLT5jb250ZXh0KTsKPj4+PiArCX0gZWxzZSB7Cj4+Pj4gKwkJcy0+cGFj
-a2V0X2luZGV4ID0gLTE7Cj4+Pj4gKwkJYW1kdHBfc3RyZWFtX3BjbV9hYm9ydChzKTsKPj4+PiAr
-CX0KPj4+PiArCj4+Pj4gKwlzcGluX3VubG9jaygmcy0+bG9ja19wYWNrZXRpemF0aW9uKTsKPj4+
-PiAgIH0KPj4+Pgo+Pj4+ICAgc3RhdGljIHZvaWQgaW5fc3RyZWFtX2NhbGxiYWNrKHN0cnVjdCBm
-d19pc29fY29udGV4dCAqY29udGV4dCwgdTMyIHRzdGFtcCwKPj4+PiBAQCAtNjMxLDYgKzY0Mywx
-NCBAQCBzdGF0aWMgdm9pZCBpbl9zdHJlYW1fY2FsbGJhY2soc3RydWN0Cj4+Pj4gZndfaXNvX2Nv
-bnRleHQgKmNvbnRleHQsIHUzMiB0c3RhbXAsCj4+Pj4gICAJaWYgKHMtPnBhY2tldF9pbmRleCA8
-IDApCj4+Pj4gICAJCXJldHVybjsKPj4+Pgo+Pj4+ICsJLyoKPj4+PiArCSAqIEl0J3MgZW5vdWdo
-IGZvciBxdWV1ZWQgcGFja2V0cyB0byBiZSBoYW5kbGVkIGJ5IHByb2Nlc3MgY29udGV4dCBvZgo+
-Pj4+ICsJICogUENNIGFwcGxpY2F0aW9uIG9yIHNvZnR3YXJlIElSUSBjb250ZXh0IG9mIDEzOTQg
-T0hDSSBJUiBjb250ZXh0IGluIGEKPj4+PiArCSAqIHRpbWUuCj4+Pj4gKwkgKi8KPj4+PiArCWlm
-ICghc3Bpbl90cnlsb2NrKCZzLT5sb2NrX3BhY2tldGl6YXRpb24pKQo+Pj4+ICsJCXJldHVybjsK
-Pj4+PiArCj4+Pj4gICAJLyogVGhlIG51bWJlciBvZiBwYWNrZXRzIGluIGJ1ZmZlciAqLwo+Pj4+
-ICAgCXBhY2tldHMgPSBoZWFkZXJfbGVuZ3RoIC8gSU5fUEFDS0VUX0hFQURFUl9TSVpFOwo+Pj4+
-Cj4+Pj4gQEAgLTY2MCwxMyArNjgwLDE0IEBAIHN0YXRpYyB2b2lkIGluX3N0cmVhbV9jYWxsYmFj
-ayhzdHJ1Y3QKPj4+PiBmd19pc29fY29udGV4dCAqY29udGV4dCwgdTMyIHRzdGFtcCwKPj4+PiAg
-IAl9Cj4+Pj4KPj4+PiAgIAkvKiBRdWV1ZWluZyBlcnJvciBvciBkZXRlY3RpbmcgaW52YWxpZCBw
-YXlsb2FkLiAqLwo+Pj4+IC0JaWYgKGkgPCBwYWNrZXRzKSB7Cj4+Pj4gKwlpZiAoaSA9PSBwYWNr
-ZXRzKSB7Cj4+Pj4gKwkJZndfaXNvX2NvbnRleHRfcXVldWVfZmx1c2gocy0+Y29udGV4dCk7Cj4+
-Pj4gKwl9IGVsc2Ugewo+Pj4+ICAgCQlzLT5wYWNrZXRfaW5kZXggPSAtMTsKPj4+PiAgIAkJYW1k
-dHBfc3RyZWFtX3BjbV9hYm9ydChzKTsKPj4+PiAtCQlyZXR1cm47Cj4+Pj4gICAJfQo+Pj4+Cj4+
-Pj4gLQlmd19pc29fY29udGV4dF9xdWV1ZV9mbHVzaChzLT5jb250ZXh0KTsKPj4+PiArCXNwaW5f
-dW5sb2NrKCZzLT5sb2NrX3BhY2tldGl6YXRpb24pOwo+Pj4+ICAgfQo+Pj4+Cj4+Pj4gICAvKiB0
-aGlzIGlzIGV4ZWN1dGVkIG9uZSB0aW1lICovCj4+Pj4gZGlmZiAtLWdpdCBhL3NvdW5kL2ZpcmV3
-aXJlL2FtZHRwLXN0cmVhbS5oIGIvc291bmQvZmlyZXdpcmUvYW1kdHAtc3RyZWFtLmgKPj4+PiBp
-bmRleCBjMWJjN2ZhLi42YmU1ZmViIDEwMDY0NAo+Pj4+IC0tLSBhL3NvdW5kL2ZpcmV3aXJlL2Ft
-ZHRwLXN0cmVhbS5oCj4+Pj4gKysrIGIvc291bmQvZmlyZXdpcmUvYW1kdHAtc3RyZWFtLmgKPj4+
-PiBAQCAtMTAyLDYgKzEwMiw5IEBAIHN0cnVjdCBhbWR0cF9zdHJlYW0gewo+Pj4+ICAgCXN0cnVj
-dCBpc29fcGFja2V0c19idWZmZXIgYnVmZmVyOwo+Pj4+ICAgCWludCBwYWNrZXRfaW5kZXg7Cj4+
-Pj4KPj4+PiArCS8qIFBhY2tldCBwcm9jZXNzaW5nIGNhbiBydW4gaW4gb25lIGNvbnRleHQgYXQg
-YSB0aW1lLiAqLwo+Pj4+ICsJc3BpbmxvY2tfdCBsb2NrX3BhY2tldGl6YXRpb247Cj4+Pj4gKwo+
-Pj4+ICAgCS8qIEZvciBDSVAgaGVhZGVycy4gKi8KPj4+PiAgIAl1bnNpZ25lZCBpbnQgc291cmNl
-X25vZGVfaWRfZmllbGQ7Cj4+Pj4gICAJdW5zaWduZWQgaW50IGRhdGFfYmxvY2tfcXVhZGxldHM7
-Cj4+Pj4gLS0KPj4+PiAyLjcuNApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+Hi
+
+> On Wed, 11 May 2016 04:28:41 +0200,
+> Shengjiu Wang wrote:
+> >
+> > Hi
+> >
+> > > -----Original Message-----
+> > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > Sent: Tuesday, May 10, 2016 4:22 PM
+> > > To: Shengjiu Wang
+> > > Cc: perex@perex.cz; alsa-devel@alsa-project.org
+> > > Subject: Re: [PATCH] pcm: Don't store the state for
+> > > SND_PCM_STATE_SUSPENDED
+> > >
+> > > On Tue, 10 May 2016 09:45:46 +0200,
+> > > Shengjiu Wang wrote:
+> > > >
+> > > > The resume function don't update the dmix->state, if store
+> SUSPENDED
+> > > > state in snd_pcm_dmix_state, the write function after resume will
+> > > > return error -ESTRPIPE, because the snd_pcm_write_areas() will
+> check
+> > > > the state of the pcm device.
+> > > > This patch remove the store SND_PCM_STATE_SUSPENDED state
+> operation
+> > > > for dmix,dshare,dsnoop.
+> > > >
+> > > > Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
+> > >
+> > > What's the exact problem you're seeing on surface?  Could
+> illustrate
+> > > how the bug is triggered and how to reproduce easily?  It'll make
+> > > easier to understand what you're trying to fix.
+> > >
+> > >
+> > > thanks,
+> > >
+> > > Takashi
+> >
+> > The aplay endlessly print " Suspended. Trying resume. Done." if
+> suspend
+> > and resume in the middle of playback. Which is caused by this patch.
+> >
+> > commit 8985742d91dbdd74b2f605374207473393454fff
+> > Author: Takashi Iwai <tiwai@suse.de>
+> > Date:   Fri Oct 30 17:13:50 2015 +0100
+> >
+> >     pcm: dmix: Handle slave PCM xrun and unexpected states properly
+> >
+> > This patch store the SUSPENDED state to dmix->state, but after resume
+> > the dmix->state still is SUSPENDED, next write function will check
+> the
+> > state, if state is SUSPENDED, it will return -ESTRPIPE, then the
+> aplay
+> > will print another " Suspended. Trying resume. Done."  Then repeat
+> this
+> > behavior again and again.
+> 
+> Thanks, this is exactly what I wanted to see in the changelog!
+> It's rather a regression, and it should be clearly mentioned.
+> 
+> Now about your fix: the problem is not about setting the correct
+> state at suspending.  It is suspended, so setting the right state
+> there is the correct behavior.  However, the counterpart, the resume,
+> is the culprit of this bug.  It misses the restore of the shadow
+> state.
+> 
+> Does the patch below work instead?
+> 
+Yes, it is workable.
+
+Best regards
+Wang Shengjiu
+
+> 
+> Takashi
+> 
+> ---
+> diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
+> index 14de734d98eb..e28738b0de96 100644
+> --- a/src/pcm/pcm_direct.c
+> +++ b/src/pcm/pcm_direct.c
+> @@ -848,6 +848,7 @@ int snd_pcm_direct_resume(snd_pcm_t *pcm)
+>  		snd_pcm_start(dmix->spcm);
+>  		err = 0;
+>  	}
+> +	dmix->state = snd_pcm_state(dmix->spcm);
+>  	snd_pcm_direct_semaphore_up(dmix, DIRECT_IPC_SEM_CLIENT);
+>  	return err;
+>  }
