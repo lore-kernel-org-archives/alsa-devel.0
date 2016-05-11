@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: twl6040: Select LPPLL during standby"
-	to the asoc tree
-Date: Wed, 11 May 2016 17:13:56 +0100
-Message-ID: <E1b0Wlo-0006bT-RX@debutante>
-References: <1462965245-7111-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Applied "ASoC: Intel: Fix printk formatting" to the
+	asoc tree
+Date: Wed, 11 May 2016 17:13:53 +0100
+Message-ID: <E1b0Wll-0006W2-Rf@debutante>
+References: <1462860537-5667-1-git-send-email-joonas.lahtinen@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8E5332667EF
- for <alsa-devel@alsa-project.org>; Wed, 11 May 2016 18:16:12 +0200 (CEST)
-In-Reply-To: <1462965245-7111-1-git-send-email-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9EF662667EA
+ for <alsa-devel@alsa-project.org>; Wed, 11 May 2016 18:16:08 +0200 (CEST)
+In-Reply-To: <1462860537-5667-1-git-send-email-joonas.lahtinen@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc: Alsa-devel mailing list for ALSA developers <alsa-devel@alsa-project.org>, Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: twl6040: Select LPPLL during standby
+   ASoC: Intel: Fix printk formatting
 
 has been applied to the asoc tree at
 
@@ -53,59 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From 1135ef1139b3ebd5dc762b6b02384f8a7a84f8d4 Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Wed, 11 May 2016 14:14:05 +0300
-Subject: [PATCH] ASoC: twl6040: Select LPPLL during standby
+>From 396cbebeeb9734aee8efe39431d3b96655bf1e94 Mon Sep 17 00:00:00 2001
+From: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Date: Tue, 10 May 2016 09:08:57 +0300
+Subject: [PATCH] ASoC: Intel: Fix printk formatting
 
-When the codec is in standby we do not need to keep the HPPLL active.
+Format number after 0x in hex.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Jie Yang <yang.jie@linux.intel.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Signed-off-by: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/twl6040.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ sound/soc/intel/haswell/sst-haswell-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index bc3de2e844e6..7a744b581cc1 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -824,7 +824,7 @@ static int twl6040_set_bias_level(struct snd_soc_codec *codec,
- {
- 	struct twl6040 *twl6040 = codec->control_data;
- 	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
--	int ret;
-+	int ret = 0;
+diff --git a/sound/soc/intel/haswell/sst-haswell-pcm.c b/sound/soc/intel/haswell/sst-haswell-pcm.c
+index 1aa819c7e09b..994256b39b9c 100644
+--- a/sound/soc/intel/haswell/sst-haswell-pcm.c
++++ b/sound/soc/intel/haswell/sst-haswell-pcm.c
+@@ -445,7 +445,7 @@ static int create_adsp_page_table(struct snd_pcm_substream *substream,
  
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
-@@ -832,12 +832,16 @@ static int twl6040_set_bias_level(struct snd_soc_codec *codec,
- 	case SND_SOC_BIAS_PREPARE:
- 		break;
- 	case SND_SOC_BIAS_STANDBY:
--		if (priv->codec_powered)
-+		if (priv->codec_powered) {
-+			/* Select low power PLL in standby */
-+			ret = twl6040_set_pll(twl6040, TWL6040_SYSCLK_SEL_LPPLL,
-+					      32768, 19200000);
- 			break;
-+		}
+ 	pages = snd_sgbuf_aligned_pages(size);
  
- 		ret = twl6040_power(twl6040, 1);
- 		if (ret)
--			return ret;
-+			break;
+-	dev_dbg(rtd->dev, "generating page table for %p size 0x%zu pages %d\n",
++	dev_dbg(rtd->dev, "generating page table for %p size 0x%zx pages %d\n",
+ 		dma_area, size, pages);
  
- 		priv->codec_powered = 1;
- 
-@@ -853,7 +857,7 @@ static int twl6040_set_bias_level(struct snd_soc_codec *codec,
- 		break;
- 	}
- 
--	return 0;
-+	return ret;
- }
- 
- static int twl6040_startup(struct snd_pcm_substream *substream,
+ 	for (i = 0; i < pages; i++) {
 -- 
 2.8.1
