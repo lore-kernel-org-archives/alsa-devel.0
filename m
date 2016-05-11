@@ -1,18 +1,32 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC][PATCH] ALSA: firewire-lib: permit process
- context only to flush queued packets for better PCM period granularity
-Date: Thu, 12 May 2016 02:21:43 +0900
-Message-ID: <57336A27.2010301@sakamocchi.jp>
-References: <1462625196-3640-1-git-send-email-o-takashi@sakamocchi.jp>
- <5732DFDD.6000208@ladisch.de>
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: Imx6 i2s master driver without i2c
+Date: Wed, 11 May 2016 10:34:53 -0700
+Message-ID: <CAG5mAdw8oWy38SBzYTKi9DeCS5UzcMNjY5VsFCARp6yDb76cFg@mail.gmail.com>
+References: <CABPh3UNhKMGUoiDvHn9paXVNvtpwzbzkbCwBhtSCm72jxkh3CA@mail.gmail.com>
+ <CABPh3UMMvVKvHL0g52NqP-E8dpxoZHfwgR_t1WY08OFMSYt9tg@mail.gmail.com>
+ <CABPh3UMJ4gOtNN3FJg0fF7Mm+Lpw0=jXGk_+ejsHaGLG9UvWAQ@mail.gmail.com>
+ <CABPh3UNi79pMZPgJBisaq9Qo847MV-6riCEQ=Akt_RoLdqeVpw@mail.gmail.com>
+ <CABPh3UPLR20WbV0NuYLA4RZ7XB-0+RdFrB-SpDLa0T+wOxqQ+g@mail.gmail.com>
+ <CAG5mAdzJyTdsBTnz8FZ8Ay278j1bYJHHqkOTGY+_Ck9sSPhQoQ@mail.gmail.com>
+ <CABPh3UN1ZoGAVF1y_5vi_DbkARfopbe5tc5SSy0HQbiYe8MERA@mail.gmail.com>
+ <CAG5mAdw1erm=4RjMfP-hf1Vkw73KCWSaLbU3DtditMfsFQNRdQ@mail.gmail.com>
+ <CABPh3UN2157eMxwr6i8-vPfdyr3L0DOrpVt7ChTUrPTCbCzCBA@mail.gmail.com>
+ <CABPh3UNk9xa=K7QiVV3pZba7o287AyOrjufUGd1QWUxnHNHLOg@mail.gmail.com>
+ <CAG5mAdyCAgtFBCbAyLVtqtLgOtCgkB9=yV+YEY8a3oeL2yJDHA@mail.gmail.com>
+ <CABPh3UPzP1iFYsy_Ni1fcfimnoVDUWfdn8ht5On_mx0xN1w8Mg@mail.gmail.com>
+ <CAG5mAdyceKw_H7zNfx-KTSUUMc81UiLu3feLBcB+vjjjpuhetQ@mail.gmail.com>
+ <CABPh3UNPDS+4H60eeL79etF70O0-Xp2T_oNBkYL2m4g6jpeSWA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id DEF892607C8
- for <alsa-devel@alsa-project.org>; Wed, 11 May 2016 19:21:47 +0200 (CEST)
-In-Reply-To: <5732DFDD.6000208@ladisch.de>
+Received: from mail-oi0-f66.google.com (mail-oi0-f66.google.com
+ [209.85.218.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A30B2607C8
+ for <alsa-devel@alsa-project.org>; Wed, 11 May 2016 19:35:13 +0200 (CEST)
+Received: by mail-oi0-f66.google.com with SMTP id w198so8290148oiw.2
+ for <alsa-devel@alsa-project.org>; Wed, 11 May 2016 10:35:13 -0700 (PDT)
+In-Reply-To: <CABPh3UNPDS+4H60eeL79etF70O0-Xp2T_oNBkYL2m4g6jpeSWA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,78 +36,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: nick83ola <nick83ola@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
+On Tue, May 10, 2016 at 11:25 PM, nick83ola <nick83ola@gmail.com> wrote:
+> What I don't understand is the sequence of init.
+> of the driver.
+> I think that I need to :
+> init dma to transfer from ssi1 (what file???)
+> init ssi1 with a clock and a mode (i2s master) (i think fsl_ssi or imx-ssi
+> file?? )
+> init audmux to put ssi1 (port 1) to port 4 (is a clock needed?) (imx-audmux
+> module??)
+> init iomux to put port4 output on output pin (I need to set pin direction
+> also or is automatic???) (only in dts? what function set that?)
+>
+> and where those init are? and what file/function does the actual memory
+> transfer?
+> and ... last how I can check separately all those things??
+> I can init ssi for example without audio as a "serial port" and test it???
+> or I can Init the output port as gpio and set pins to test if its
+> initializated??
 
-On May 11 2016 16:31, Clemens Ladisch wrote:
-> Sorry for the delay.
-> 
-> Takashi Sakamoto wrote:
->> These three commits were merged to improve PCM pointer granularity.
->> commit 76fb87894828 ("ALSA: firewire-lib: taskletize the snd_pcm_period_elapsed() call")
->> commit e9148dddc3c7 ("ALSA: firewire-lib: flush completed packets when reading PCM position")
->> commit 92b862c7d685 ("ALSA: firewire-lib: optimize packet flushing")
->>
->> The point of them is to handle queued packets not only in software IRQ
->> context of IR/IT contexts, but also in process context. This idea
->> introduced a cyclic call of 'struct snd_pcm_ops.pointer()'.
-> 
-> There is no recursion because of the tasklet.  The only problem is that
-> the tasklet could be scheduled repeatedly because new packets continue
-> to arrive.  But even when this happens, it's harmless.
-> 
->> The last commit adds 'pointer_flush' member to 'struct amdtp_stream'
->> to avoid the situation. On the other hand, This solution is weak at
->> race condition between the process context and the software IRQ
->> context of IR/IT contexts.
->>
->> Practically, this race is not so critical because it influences process
->> context to skip flushing queued packets and to get worse granularity of
->> PCM pointer.
-> 
-> When a race causes pointer_flush to be read as true although it should
-> be false, there is simply a superfluous call to flush_completions.
-> 
-> When pointer_flush is read as false although it should be true, then the
-> buffer_pointer value _might_ not be the most current one (due to the
-> missing flush), but this is unlikely to happen because the buffer_pointer
-> was just updated by update_pcm_pointers().  In any case, the just-
-> scheduled tasklet will inform the application about the new pointer.
-> 
->> The similar solution can be achieved by 'in_interrupt()' macro. This
->> commit applies the macro to solve the race condition against
->> 'pointer_flush'.
-> 
->>  unsigned long amdtp_stream_pcm_pointer(struct amdtp_stream *s)
->>  {
->> -	/* this optimization is allowed to be racy */
->> -	if (s->pointer_flush && amdtp_stream_running(s))
->> ...
->> +	if (!in_interrupt() && amdtp_stream_running(s))
->>  		fw_iso_context_flush_completions(s->context);
->> -	else
->> -		s->pointer_flush = true;
->>
->>  	return ACCESS_ONCE(s->pcm_buffer_pointer);
->>  }
-> 
-> Looks good.
-> 
-> Acked-by: Clemens Ladisch <clemens@ladisch.de>
+In pricipal, but you don't want to mess with the structure that's in place.
 
-OK. Thanks for reviewing. I've posted a patch with updated comments and
-the tag.
+>
+> How I can read the cpu register back from linux to check that are correctly
+> initializated (for example I can read iomux registers????)
 
->> And I think there's another race condition against processing each packets
->> by calling out/in_stream_callback(), but I cannot observe the race.
-> 
-> As you already found out, fw_iso_context_flush_completions() is thread
-> safe.
+Yes, use printk from fsl_ssi.c
+For example:
 
+   u32 stcr_val;
+   regmap_read(regs, CCSR_SSI_STCR, &stcr_val);
+   printk(KERN_INFO "This is the STCR register: 0x%08x\n", strc_val);
 
-Regards
+There is also a regmap entry in /sys that has your ssi values there,
+which can be great for reading all the register values at once.
+However, these are really only useful when the port is open.
+Generally, I want to see the values are they are written into the
+registers so I can see exampley what's going on..
 
-Takashi Sakamoto
+> The documentation/tutorial on alsa driver are very scarse, and freescale
+> community is not of help
+>
+> Thanks for your help
+>
+> Nicola
+>
+
+Yeah, it's all a bit complicated, and I don't understand most of it.
+But, the good news is that you shouldn't really have to deal with much
+of it.  The SSI is already connected to the DMA and the DMA is
+connected to user space, so that's not something you need to worry
+about.
+The things you need to make sure of is that the pins & audmux & SSI
+are configured properly via the device tree, and you shouldn't really
+need to do much more than that.
+
+It sounds like you're not getting your TX clock into master mode,
+right?  It should start generating a master clock when you start
+recording and playing back from your sound card.
+
+For example, looking at the IMX6DQRM.pdf (section 61.8.1.4 among
+others), you'll want SSI.TXDIR set to 1 (generate bit clock) and TFDIR
+set to 1 (generated frame sync).
+
+The way these bits are set is a bit round-about.  But here goes:
+
+For master mode, (for simple-audio-card anyway), in your DTB you set:
+
+   simple-audio-card,frame-master = <&sound2_ssi>;
+   simple-audio-card,bitclock-master = <&sound2_ssi>;
+
+(see here https://github.com/ccrome/linux-caleb-dev/blob/b9bf92b9d9f2121bab38d5e927faa4bc2f80c18c/arch/arm/boot/dts/imx6qdl-wandboard.dtsi).
+
+This tells the simple-audio-card driver (here:
+http://lxr.free-electrons.com/source/sound/soc/generic/simple-card.c#L278)
+to set the DAI format so that the SSI is master.  This will in turn
+call fsl_set_dai_fmt here:
+http://lxr.free-electrons.com/source/sound/soc/fsl/fsl_ssi.c#L1044,
+which should set the TDDIR and TXDIR bits appropriately.
+
+So, I'd put prink's in fsl_ssi_set_dai_fmt and to see what's actually
+getting set, just to check.
+
+Are you successfully getting it set to master mode?
+
+Are you getting a clock?  This is trickier for me since I totally
+don't understand how the clock tree stuff works.  But, if you use SSI3
+instead of SSI1, my config should work.  Is there any reason you're
+using the other SSI?
+
+For me, once I got the audmux directions right, the bits started
+flying out of the port (but only when the alsa device is open).
+
+-Caleb
