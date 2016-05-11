@@ -1,17 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] ALSA: firewire-lib: drop skip argument
-	from	helper functions to queue a packet
-Date: Wed, 11 May 2016 09:48:23 +0200
-Message-ID: <5732E3C7.2030604@ladisch.de>
-References: <1462919709-8692-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v3 0/7] ARM/ASoC: OMAP3: Fix McBSP2/3
+	sidetone support
+Date: Wed, 11 May 2016 11:44:33 +0300
+Message-ID: <69ff65ee-e5d1-09fb-fd91-8d7b4d8fdda4@ti.com>
+References: <1461927202-17677-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id D380E2607C8
- for <alsa-devel@alsa-project.org>; Wed, 11 May 2016 09:48:24 +0200 (CEST)
-In-Reply-To: <1462919709-8692-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 30C492607C8
+ for <alsa-devel@alsa-project.org>; Wed, 11 May 2016 10:44:41 +0200 (CEST)
+In-Reply-To: <1461927202-17677-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,35 +21,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: tony@atomide.com, jarkko.nikula@bitmer.com, paul@pwsan.com, lgirdwood@gmail.com, broonie@kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, t-kristo@ti.com, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto wrote:
-> On most of audio and music units on IEEE 1394 bus which ALSA firewire stack
-> supports (or plans to support), CIP with two quadlets header is used.
-> Thus, there's no cases to queue packets with blank payload. If such packets
-> are going to be queued, it means that they're for skips of the cycle.
->
-> This commit simplifies helper functions to queue a packet.
+Tony, Paul,
 
-> @@ -383,8 +382,10 @@ static int queue_packet(struct amdtp_stream *s,
->  	p.tag = TAG_CIP;
->  	p.header_length = header_length;
-> -	p.payload_length = (!skip) ? payload_length : 0;
-> -	p.skip = skip;
-> +	if (payload_length > 0)
-> +		p.payload_length = payload_length;
-> +	else
-> +		p.skip = true;
+On 04/29/16 13:53, Peter Ujfalusi wrote:
+> Hi,
+> =
 
-This can be simplified to:
-	p.payload_length = payload_length;
-	p.skip = payload_length == 0;
+> Based on the ongoing discussion on v2 (ARM: OMAP3: Fix McBSP2/3 hwmod set=
+up for
+> sidetone) I have dropped the removal of the sidetone hwmod and only corre=
+cted
+> it. The series now includes all related changes needed to have correct si=
+detone
+> support whenever we boot in legacy or in DT mode.
+> =
 
+> This time the ASoC part have dependency on earlier patches so they can no=
+t be
+> applied separately.
 
-Acked-by: Clemens Ladisch <clemens@ladisch.de>
+How should we proceed from here? I don't want to start designing the ST
+separation infrastructure which would be based on this series, but if there
+are outstanding issues found on this, I would need to go back to the drawing
+board.
+The separation will be mostly new code and code shuffle in ASoC, but for
+legacy I will need to build up something in arch as well, so I would need at
+least one release cycle to start with things.
 
+-- =
 
-Regards,
-Clemens
+P=E9ter
+
+> Regards,
+> Peter
+> ---
+> Peter Ujfalusi (7):
+>   ARM: OMAP3: hwmod data: Fix McBSP2/3 sidetone data
+>   ARM: dts: omap3: Add clocks to McBSP nodes
+>   ARM: OMAP3: McBSP: New callback for McBSP2/3 ICLK idle configuration
+>   ARM: OMAP3: pdata-quirks: Add support for McBSP2/3 sidetone handling
+>   ASoc: omap-mcbsp: Rename omap_mcbsp_sysfs_remove() to
+>     omap_mcbsp_cleanup()
+>   ASoC: omap-mcbsp: sidetone: Use the new callback for iclk handling
+>   ARM: OMAP2+: McBSP: Remove the old iclk allow/deny idle code
+> =
+
+>  arch/arm/boot/dts/omap3.dtsi                | 10 ++++++++++
+>  arch/arm/mach-omap2/mcbsp.c                 | 31 ++++++++++++++++-------=
+------
+>  arch/arm/mach-omap2/omap_hwmod_3xxx_data.c  | 24 ++++------------------
+>  arch/arm/mach-omap2/pdata-quirks.c          | 18 +++++++++++++++++
+>  include/linux/platform_data/asoc-ti-mcbsp.h |  4 +++-
+>  sound/soc/omap/mcbsp.c                      | 21 +++++++++++++------
+>  sound/soc/omap/mcbsp.h                      |  3 ++-
+>  sound/soc/omap/omap-mcbsp.c                 |  5 ++++-
+>  8 files changed, 73 insertions(+), 43 deletions(-)
+> =
