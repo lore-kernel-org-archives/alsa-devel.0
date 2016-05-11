@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98371 Remove duplicate entry in
-	max98371_reg" to the asoc tree
-Date: Wed, 11 May 2016 17:13:50 +0100
-Message-ID: <E1b0Wli-0006QE-RK@debutante>
-References: <1462938491.444.0.camel@ingics.com>
+Subject: Applied "ASoC: twl6040: Select LPPLL during standby"
+	to the asoc tree
+Date: Wed, 11 May 2016 17:13:56 +0100
+Message-ID: <E1b0Wlo-0006bT-RX@debutante>
+References: <1462965245-7111-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 57DCC2667E7
- for <alsa-devel@alsa-project.org>; Wed, 11 May 2016 18:16:08 +0200 (CEST)
-In-Reply-To: <1462938491.444.0.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E5332667EF
+ for <alsa-devel@alsa-project.org>; Wed, 11 May 2016 18:16:12 +0200 (CEST)
+In-Reply-To: <1462965245-7111-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, anish kumar <yesanishhere@gmail.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98371 Remove duplicate entry in max98371_reg
+   ASoC: twl6040: Select LPPLL during standby
 
 has been applied to the asoc tree at
 
@@ -53,28 +53,59 @@ to this mail.
 Thanks,
 Mark
 
->From af37d21a3245c4a54d608c1d85588203ebfe1ef9 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Wed, 11 May 2016 11:48:11 +0800
-Subject: [PATCH] ASoC: max98371 Remove duplicate entry in max98371_reg
+>From 1135ef1139b3ebd5dc762b6b02384f8a7a84f8d4 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Wed, 11 May 2016 14:14:05 +0300
+Subject: [PATCH] ASoC: twl6040: Select LPPLL during standby
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+When the codec is in standby we do not need to keep the HPPLL active.
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98371.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/codecs/twl6040.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/max98371.c b/sound/soc/codecs/max98371.c
-index 21fae0932137..cf0a39bb631a 100644
---- a/sound/soc/codecs/max98371.c
-+++ b/sound/soc/codecs/max98371.c
-@@ -107,7 +107,6 @@ static const struct reg_default max98371_reg[] = {
- 	{ 0x39, 0x00 },
- 	{ 0x3A, 0x00 },
- 	{ 0x3B, 0x00 },
--	{ 0x3B, 0x00 },
- 	{ 0x3C, 0x00 },
- 	{ 0x3D, 0x00 },
- 	{ 0x3E, 0x00 },
+diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+index bc3de2e844e6..7a744b581cc1 100644
+--- a/sound/soc/codecs/twl6040.c
++++ b/sound/soc/codecs/twl6040.c
+@@ -824,7 +824,7 @@ static int twl6040_set_bias_level(struct snd_soc_codec *codec,
+ {
+ 	struct twl6040 *twl6040 = codec->control_data;
+ 	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
+-	int ret;
++	int ret = 0;
+ 
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+@@ -832,12 +832,16 @@ static int twl6040_set_bias_level(struct snd_soc_codec *codec,
+ 	case SND_SOC_BIAS_PREPARE:
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
+-		if (priv->codec_powered)
++		if (priv->codec_powered) {
++			/* Select low power PLL in standby */
++			ret = twl6040_set_pll(twl6040, TWL6040_SYSCLK_SEL_LPPLL,
++					      32768, 19200000);
+ 			break;
++		}
+ 
+ 		ret = twl6040_power(twl6040, 1);
+ 		if (ret)
+-			return ret;
++			break;
+ 
+ 		priv->codec_powered = 1;
+ 
+@@ -853,7 +857,7 @@ static int twl6040_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static int twl6040_startup(struct snd_pcm_substream *substream,
 -- 
 2.8.1
