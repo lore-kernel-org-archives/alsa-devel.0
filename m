@@ -1,15 +1,16 @@
-From: Jeremy McDermond <nh6z@nh6z.net>
-Subject: [PATCH] ASoC: tlv320aic32x4: Properly implement the
-	positive and negative pins into the mixers
-Date: Wed, 11 May 2016 12:09:53 -0700
-Message-ID: <1462993793-22952-1-git-send-email-nh6z@nh6z.net>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: Intel Cherry Trail and NAU8824 codec
+Date: Wed, 11 May 2016 16:10:35 -0500
+Message-ID: <51832191-85a3-13b8-4f93-107c770d7f5b@linux.intel.com>
+References: <CAOhsuUd1sFuQvwXAumhHrqe4+uTDeWWMC+YmtdT_0eNDwh3NSQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.xenotropic.com (mail.xenotropic.com [198.178.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B8BD26774D
- for <alsa-devel@alsa-project.org>; Wed, 11 May 2016 21:10:02 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 98175266CD3
+ for <alsa-devel@alsa-project.org>; Wed, 11 May 2016 23:10:47 +0200 (CEST)
+In-Reply-To: <CAOhsuUd1sFuQvwXAumhHrqe4+uTDeWWMC+YmtdT_0eNDwh3NSQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,269 +20,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
-Cc: Jeremy McDermond <nh6z@nh6z.net>
+To: TheKit <nekit1000@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The TLV320AIC32x4 has a very flexible mixer on the inputs to the ADCs.  Each
-mixer has an available set of available pins that can be connected to the
-ADC positive and negative pins via three different resistor values.  This
-allows for configuration of differential inputs as well as doing level
-manipulation between sources going into the mixers.
+On 5/9/16 9:41 AM, TheKit wrote:
+> Hello,
+>
+> I'm trying to get sound working in Linux on Cube iWork8 Ultimate
+> tablet. It has Windows/Android dualboot, but no kernel sources for
+> Android, unfortunately. From dmesg I see that NAU8824 codec is used,
+> which I can't find any drivers for, except proposed patch that wasn't
+> merged: https://lkml.org/lkml/2015/3/4/765
+>
+> But, as I understand, additional code (like
+> https://github.com/kirananto/ZENFONE2/blob/master/sound/soc/intel/board/cht_bl_dpcm_rt5672.c)
+> is needed to bridge it with Cherry Trail SoC. Any suggestions how to
+> go about this?
 
-The current code only provides positive pins and I implemented the resistors
-in an earlier patch.  It turns out that it appears to more accurately model
-what's happening to implement each of the pins as a MUX rather than on/off
-switches and a mixer.  This way each pin can be set to its desired resistor
-value.  Since there are no switches, the mixer is no longer necessary in the
-DAPM path.  I set the DAPM paths such that the "off" position of any of the
-MUXes turns the path off.
+It's usually the same process:
+1. find the codec driver sources, port them to the last kernel version
+2. add ACPI support to the codec driver based on the contents of the 
+DSDT table (same HID needed to probe)
+3. add a machine driver based on existing examples and reference it from 
+sst_acpi
+4. add an asound.state or UCM file that provides the relevant register 
+values
 
-This should allow for any input confiuration available on the codec.
-
-Signed-off-by: Jeremy McDermond <nh6z@nh6z.net>
----
- sound/soc/codecs/tlv320aic32x4.c | 210 ++++++++++++++++++++++++++++++---------
- 1 file changed, 161 insertions(+), 49 deletions(-)
-
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 0eb8acc..85d4978 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -187,36 +187,67 @@ static const char * const resistor_text[] = {
- 	"Off", "10 kOhm", "20 kOhm", "40 kOhm",
- };
- 
--static SOC_ENUM_SINGLE_DECL(in1l_lpga_p_enum, AIC32X4_LMICPGAPIN, 6,
--		resistor_text);
--static SOC_ENUM_SINGLE_DECL(in2l_lpga_p_enum, AIC32X4_LMICPGAPIN, 4,
--		resistor_text);
--static SOC_ENUM_SINGLE_DECL(in3l_lpga_p_enum, AIC32X4_LMICPGAPIN, 2,
--		resistor_text);
--static SOC_ENUM_SINGLE_DECL(in1r_lpga_p_enum, AIC32X4_LMICPGAPIN, 0,
--		resistor_text);
--
--static const struct snd_kcontrol_new left_input_mixer_controls[] = {
--	SOC_DAPM_ENUM("IN1_L P Switch", in1l_lpga_p_enum),
--	SOC_DAPM_ENUM("IN2_L P Switch", in2l_lpga_p_enum),
--	SOC_DAPM_ENUM("IN3_L P Switch", in3l_lpga_p_enum),
--	SOC_DAPM_ENUM("IN1_R P Switch", in1r_lpga_p_enum),
-+/* Left mixer pins */
-+static SOC_ENUM_SINGLE_DECL(in1l_lpga_p_enum, AIC32X4_LMICPGAPIN, 6, resistor_text);
-+static SOC_ENUM_SINGLE_DECL(in2l_lpga_p_enum, AIC32X4_LMICPGAPIN, 4, resistor_text);
-+static SOC_ENUM_SINGLE_DECL(in3l_lpga_p_enum, AIC32X4_LMICPGAPIN, 2, resistor_text);
-+static SOC_ENUM_SINGLE_DECL(in1r_lpga_p_enum, AIC32X4_LMICPGAPIN, 0, resistor_text);
-+
-+static SOC_ENUM_SINGLE_DECL(cml_lpga_n_enum, AIC32X4_LMICPGANIN, 6, resistor_text);
-+static SOC_ENUM_SINGLE_DECL(in2r_lpga_n_enum, AIC32X4_LMICPGANIN, 4, resistor_text);
-+static SOC_ENUM_SINGLE_DECL(in3r_lpga_n_enum, AIC32X4_LMICPGANIN, 2, resistor_text);
-+
-+static const struct snd_kcontrol_new in1l_to_lmixer_controls[] = {
-+	SOC_DAPM_ENUM("IN1_L L+ Switch", in1l_lpga_p_enum),
-+};
-+static const struct snd_kcontrol_new in2l_to_lmixer_controls[] = {
-+	SOC_DAPM_ENUM("IN2_L L+ Switch", in2l_lpga_p_enum),
-+};
-+static const struct snd_kcontrol_new in3l_to_lmixer_controls[] = {
-+	SOC_DAPM_ENUM("IN3_L L+ Switch", in3l_lpga_p_enum),
-+};
-+static const struct snd_kcontrol_new in1r_to_lmixer_controls[] = {
-+	SOC_DAPM_ENUM("IN1_R L+ Switch", in1r_lpga_p_enum),
-+};
-+static const struct snd_kcontrol_new cml_to_lmixer_controls[] = {
-+	SOC_DAPM_ENUM("CM_L L- Switch", cml_lpga_n_enum),
-+};
-+static const struct snd_kcontrol_new in2r_to_lmixer_controls[] = {
-+	SOC_DAPM_ENUM("IN2_R L- Switch", in2r_lpga_n_enum),
-+};
-+static const struct snd_kcontrol_new in3r_to_lmixer_controls[] = {
-+	SOC_DAPM_ENUM("IN3_R L- Switch", in3r_lpga_n_enum),
- };
- 
--static SOC_ENUM_SINGLE_DECL(in1r_rpga_p_enum, AIC32X4_RMICPGAPIN, 6,
--		resistor_text);
--static SOC_ENUM_SINGLE_DECL(in2r_rpga_p_enum, AIC32X4_RMICPGAPIN, 4,
--		resistor_text);
--static SOC_ENUM_SINGLE_DECL(in3r_rpga_p_enum, AIC32X4_RMICPGAPIN, 2,
--		resistor_text);
--static SOC_ENUM_SINGLE_DECL(in2l_rpga_p_enum, AIC32X4_RMICPGAPIN, 0,
--		resistor_text);
--
--static const struct snd_kcontrol_new right_input_mixer_controls[] = {
--	SOC_DAPM_ENUM("IN1_R P Switch", in1r_rpga_p_enum),
--	SOC_DAPM_ENUM("IN2_R P Switch", in2r_rpga_p_enum),
--	SOC_DAPM_ENUM("IN3_R P Switch", in3r_rpga_p_enum),
--	SOC_DAPM_ENUM("IN2_L P Switch", in2l_rpga_p_enum),
-+/*  Right mixer pins */
-+static SOC_ENUM_SINGLE_DECL(in1r_rpga_p_enum, AIC32X4_RMICPGAPIN, 6, resistor_text);
-+static SOC_ENUM_SINGLE_DECL(in2r_rpga_p_enum, AIC32X4_RMICPGAPIN, 4, resistor_text);
-+static SOC_ENUM_SINGLE_DECL(in3r_rpga_p_enum, AIC32X4_RMICPGAPIN, 2, resistor_text);
-+static SOC_ENUM_SINGLE_DECL(in2l_rpga_p_enum, AIC32X4_RMICPGAPIN, 0, resistor_text);
-+static SOC_ENUM_SINGLE_DECL(cmr_rpga_n_enum, AIC32X4_RMICPGANIN, 6, resistor_text);
-+static SOC_ENUM_SINGLE_DECL(in1l_rpga_n_enum, AIC32X4_RMICPGANIN, 4, resistor_text);
-+static SOC_ENUM_SINGLE_DECL(in3l_rpga_n_enum, AIC32X4_RMICPGANIN, 2, resistor_text);
-+
-+static const struct snd_kcontrol_new in1r_to_rmixer_controls[] = {
-+	SOC_DAPM_ENUM("IN1_R R+ Switch", in1r_rpga_p_enum),
-+};
-+static const struct snd_kcontrol_new in2r_to_rmixer_controls[] = {
-+	SOC_DAPM_ENUM("IN2_R R+ Switch", in2r_rpga_p_enum),
-+};
-+static const struct snd_kcontrol_new in3r_to_rmixer_controls[] = {
-+	SOC_DAPM_ENUM("IN3_R R+ Switch", in3r_rpga_p_enum),
-+};
-+static const struct snd_kcontrol_new in2l_to_rmixer_controls[] = {
-+	SOC_DAPM_ENUM("IN2_L R+ Switch", in2l_rpga_p_enum),
-+};
-+static const struct snd_kcontrol_new cmr_to_rmixer_controls[] = {
-+	SOC_DAPM_ENUM("CM_R R- Switch", cmr_rpga_n_enum),
-+};
-+static const struct snd_kcontrol_new in1l_to_rmixer_controls[] = {
-+	SOC_DAPM_ENUM("IN1_L R- Switch", in1l_rpga_n_enum),
-+};
-+static const struct snd_kcontrol_new in3l_to_rmixer_controls[] = {
-+	SOC_DAPM_ENUM("IN3_L R- Switch", in3l_rpga_n_enum),
- };
- 
- static const struct snd_soc_dapm_widget aic32x4_dapm_widgets[] = {
-@@ -240,14 +271,39 @@ static const struct snd_soc_dapm_widget aic32x4_dapm_widgets[] = {
- 			   &lor_output_mixer_controls[0],
- 			   ARRAY_SIZE(lor_output_mixer_controls)),
- 	SND_SOC_DAPM_PGA("LOR Power", AIC32X4_OUTPWRCTL, 2, 0, NULL, 0),
--	SND_SOC_DAPM_MIXER("Left Input Mixer", SND_SOC_NOPM, 0, 0,
--			   &left_input_mixer_controls[0],
--			   ARRAY_SIZE(left_input_mixer_controls)),
--	SND_SOC_DAPM_MIXER("Right Input Mixer", SND_SOC_NOPM, 0, 0,
--			   &right_input_mixer_controls[0],
--			   ARRAY_SIZE(right_input_mixer_controls)),
--	SND_SOC_DAPM_ADC("Left ADC", "Left Capture", AIC32X4_ADCSETUP, 7, 0),
-+
- 	SND_SOC_DAPM_ADC("Right ADC", "Right Capture", AIC32X4_ADCSETUP, 6, 0),
-+	SND_SOC_DAPM_MUX("IN1_R to Right Mixer Positive Resistor", SND_SOC_NOPM, 0, 0,
-+			in1r_to_rmixer_controls),
-+	SND_SOC_DAPM_MUX("IN2_R to Right Mixer Positive Resistor", SND_SOC_NOPM, 0, 0,
-+			in2r_to_rmixer_controls),
-+	SND_SOC_DAPM_MUX("IN3_R to Right Mixer Positive Resistor", SND_SOC_NOPM, 0, 0,
-+			in3r_to_rmixer_controls),
-+	SND_SOC_DAPM_MUX("IN2_L to Right Mixer Positive Resistor", SND_SOC_NOPM, 0, 0,
-+			in2l_to_rmixer_controls),
-+	SND_SOC_DAPM_MUX("CM_R to Right Mixer Negative Resistor", SND_SOC_NOPM, 0, 0,
-+			cmr_to_rmixer_controls),
-+	SND_SOC_DAPM_MUX("IN1_L to Right Mixer Negative Resistor", SND_SOC_NOPM, 0, 0,
-+			in1l_to_rmixer_controls),
-+	SND_SOC_DAPM_MUX("IN3_L to Right Mixer Negative Resistor", SND_SOC_NOPM, 0, 0,
-+			in3l_to_rmixer_controls),
-+
-+	SND_SOC_DAPM_ADC("Left ADC", "Left Capture", AIC32X4_ADCSETUP, 7, 0),
-+	SND_SOC_DAPM_MUX("IN1_L to Left Mixer Positive Resistor", SND_SOC_NOPM, 0, 0,
-+			in1l_to_lmixer_controls),
-+	SND_SOC_DAPM_MUX("IN2_L to Left Mixer Positive Resistor", SND_SOC_NOPM, 0, 0,
-+			in2l_to_lmixer_controls),
-+	SND_SOC_DAPM_MUX("IN3_L to Left Mixer Positive Resistor", SND_SOC_NOPM, 0, 0,
-+			in3l_to_lmixer_controls),
-+	SND_SOC_DAPM_MUX("IN1_R to Left Mixer Positive Resistor", SND_SOC_NOPM, 0, 0,
-+			in1r_to_lmixer_controls),
-+	SND_SOC_DAPM_MUX("CM_L to Left Mixer Negative Resistor", SND_SOC_NOPM, 0, 0,
-+			cml_to_lmixer_controls),
-+	SND_SOC_DAPM_MUX("IN2_R to Left Mixer Negative Resistor", SND_SOC_NOPM, 0, 0,
-+			in2r_to_lmixer_controls),
-+	SND_SOC_DAPM_MUX("IN3_R to Left Mixer Negative Resistor", SND_SOC_NOPM, 0, 0,
-+			in3r_to_lmixer_controls),
-+
- 	SND_SOC_DAPM_MICBIAS("Mic Bias", AIC32X4_MICBIAS, 6, 0),
- 
- 	SND_SOC_DAPM_OUTPUT("HPL"),
-@@ -287,21 +343,77 @@ static const struct snd_soc_dapm_route aic32x4_dapm_routes[] = {
- 	{"LOR Power", NULL, "LOR Output Mixer"},
- 	{"LOR", NULL, "LOR Power"},
- 
--	/* Left input */
--	{"Left Input Mixer", "IN1_L P Switch", "IN1_L"},
--	{"Left Input Mixer", "IN2_L P Switch", "IN2_L"},
--	{"Left Input Mixer", "IN3_L P Switch", "IN3_L"},
--	{"Left Input Mixer", "IN1_R P Switch", "IN1_R"},
--
--	{"Left ADC", NULL, "Left Input Mixer"},
--
- 	/* Right Input */
--	{"Right Input Mixer", "IN1_R P Switch", "IN1_R"},
--	{"Right Input Mixer", "IN2_R P Switch", "IN2_R"},
--	{"Right Input Mixer", "IN3_R P Switch", "IN3_R"},
--	{"Right Input Mixer", "IN2_L P Switch", "IN2_L"},
--
--	{"Right ADC", NULL, "Right Input Mixer"},
-+	{"Right ADC", NULL, "IN1_R to Right Mixer Positive Resistor"},
-+	{"IN1_R to Right Mixer Positive Resistor", "10 kOhm", "IN1_R"},
-+	{"IN1_R to Right Mixer Positive Resistor", "20 kOhm", "IN1_R"},
-+	{"IN1_R to Right Mixer Positive Resistor", "40 kOhm", "IN1_R"},
-+
-+	{"Right ADC", NULL, "IN2_R to Right Mixer Positive Resistor"},
-+	{"IN2_R to Right Mixer Positive Resistor", "10 kOhm", "IN2_R"},
-+	{"IN2_R to Right Mixer Positive Resistor", "20 kOhm", "IN2_R"},
-+	{"IN2_R to Right Mixer Positive Resistor", "40 kOhm", "IN2_R"},
-+
-+	{"Right ADC", NULL, "IN3_R to Right Mixer Positive Resistor"},
-+	{"IN3_R to Right Mixer Positive Resistor", "10 kOhm", "IN3_R"},
-+	{"IN3_R to Right Mixer Positive Resistor", "20 kOhm", "IN3_R"},
-+	{"IN3_R to Right Mixer Positive Resistor", "40 kOhm", "IN3_R"},
-+
-+	{"Right ADC", NULL, "IN2_L to Right Mixer Positive Resistor"},
-+	{"IN2_L to Right Mixer Positive Resistor", "10 kOhm", "IN2_L"},
-+	{"IN2_L to Right Mixer Positive Resistor", "20 kOhm", "IN2_L"},
-+	{"IN2_L to Right Mixer Positive Resistor", "40 kOhm", "IN2_L"},
-+
-+	{"Right ADC", NULL, "CM_R to Right Mixer Negative Resistor"},
-+	{"CM_R to Right Mixer Negative Resistor", "10 kOhm", "CM_R"},
-+	{"CM_R to Right Mixer Negative Resistor", "20 kOhm", "CM_R"},
-+	{"CM_R to Right Mixer Negative Resistor", "40 kOhm", "CM_R"},
-+
-+	{"Right ADC", NULL, "IN1_L to Right Mixer Negative Resistor"},
-+	{"IN1_L to Right Mixer Negative Resistor", "10 kOhm", "IN1_L"},
-+	{"IN1_L to Right Mixer Negative Resistor", "20 kOhm", "IN1_L"},
-+	{"IN1_L to Right Mixer Negative Resistor", "40 kOhm", "IN1_L"},
-+
-+	{"Right ADC", NULL, "IN3_L to Right Mixer Negative Resistor"},
-+	{"IN3_L to Right Mixer Negative Resistor", "10 kOhm", "IN3_L"},
-+	{"IN3_L to Right Mixer Negative Resistor", "20 kOhm", "IN3_L"},
-+	{"IN3_L to Right Mixer Negative Resistor", "40 kOhm", "IN3_L"},
-+
-+	/* Left Input */
-+	{"Left ADC", NULL, "IN1_L to Left Mixer Positive Resistor"},
-+	{"IN1_L to Left Mixer Positive Resistor", "10 kOhm", "IN1_L"},
-+	{"IN1_L to Left Mixer Positive Resistor", "20 kOhm", "IN1_L"},
-+	{"IN1_L to Left Mixer Positive Resistor", "40 kOhm", "IN1_L"},
-+
-+	{"Left ADC", NULL, "IN2_L to Left Mixer Positive Resistor"},
-+	{"IN2_L to Left Mixer Positive Resistor", "10 kOhm", "IN2_L"},
-+	{"IN2_L to Left Mixer Positive Resistor", "20 kOhm", "IN2_L"},
-+	{"IN2_L to Left Mixer Positive Resistor", "40 kOhm", "IN2_L"},
-+
-+	{"Left ADC", NULL, "IN3_L to Left Mixer Positive Resistor"},
-+	{"IN3_L to Left Mixer Positive Resistor", "10 kOhm", "IN3_L"},
-+	{"IN3_L to Left Mixer Positive Resistor", "20 kOhm", "IN3_L"},
-+	{"IN3_L to Left Mixer Positive Resistor", "40 kOhm", "IN3_L"},
-+
-+	{"Left ADC", NULL, "IN1_R to Left Mixer Positive Resistor"},
-+	{"IN1_R to Left Mixer Positive Resistor", "10 kOhm", "IN1_R"},
-+	{"IN1_R to Left Mixer Positive Resistor", "20 kOhm", "IN1_R"},
-+	{"IN1_R to Left Mixer Positive Resistor", "40 kOhm", "IN1_R"},
-+
-+	{"Left ADC", NULL, "CM_L to Left Mixer Negative Resistor"},
-+	{"CM_L to Left Mixer Negative Resistor", "10 kOhm", "CM_L"},
-+	{"CM_L to Left Mixer Negative Resistor", "20 kOhm", "CM_L"},
-+	{"CM_L to Left Mixer Negative Resistor", "40 kOhm", "CM_L"},
-+
-+	{"Left ADC", NULL, "IN2_R to Left Mixer Negative Resistor"},
-+	{"IN2_R to Left Mixer Negative Resistor", "10 kOhm", "IN2_R"},
-+	{"IN2_R to Left Mixer Negative Resistor", "20 kOhm", "IN2_R"},
-+	{"IN2_R to Left Mixer Negative Resistor", "40 kOhm", "IN2_R"},
-+
-+	{"Left ADC", NULL, "IN3_R to Left Mixer Negative Resistor"},
-+	{"IN3_R to Left Mixer Negative Resistor", "10 kOhm", "IN3_R"},
-+	{"IN3_R to Left Mixer Negative Resistor", "20 kOhm", "IN3_R"},
-+	{"IN3_R to Left Mixer Negative Resistor", "40 kOhm", "IN3_R"},
- };
- 
- static const struct regmap_range_cfg aic32x4_regmap_pages[] = {
--- 
-2.5.0
+The kernel sources should be available from the manufacturer if they 
+understand what GPL means.
+>
+> Relevant lines of dmesg from stock Android kernel (where sound works):
+> <6>[    8.665477] nau8824_i2c_probe enter
+> <3>[    8.666609] snd_intel_sst: sst_platform_get_resources_edk
+> <3>[    8.672489] snd_intel_sst: LPE base: 0x91600000
+> size:0x200000snd_intel_sst: IRAM base: 0x916c0000
+> <3>[    8.682557] snd_intel_sst: DRAM base: 0x91700000snd_intel_sst:
+> SHIM base: 0x91740000
+> <3>[    8.691298] snd_intel_sst: Mailbox base:
+> 0x91744000snd_intel_sst: DDR base: 0x20000000
+> <6>[    8.700428] snd_intel_sst: Enter: sst_audio_platform_init
+> <6>[    8.700646] snd_intel_sst: audio:set_cht_platform_config
+> <6>[    8.700900] snd_soc_sst_platform: sst_platform_probe is deferred
+> <6>[    8.700918] platform sst-platform: Driver sst-platform requests
+> probe deferral
+> <3>[    8.700927] snd_intel_sst: board_name:Cherry Trail CR
+> <6>[    8.706611] snd_intel_sst: Registering machine device cht_nau88l24
+> <3>[    8.707127] snd_intel_sst: Requesting FW fw_sst_22a8.bin now...
+> <4>[    8.713815] intel_sst_acpi 808622A8:00: Direct firmware load
+> failed with error -2
+> <4>[    8.724734] intel_sst_acpi 808622A8:00: Falling back to user helper
+> <6>[    8.789741] platform cht_nau88l24: Driver cht_nau88l24 requests
+> probe deferral
+> <6>[    8.789967] cht_cr_nau88l24: Cherrytrail Machine Driver
+> cht_nau8824 registerd
+> <6>[    9.077571] snd_soc_sst_platform: sst_platform_probe is deferred
+> <3>[   10.856689] sst-platform sst-platform: ASoC: no sink widget
+> found for Audio Capture
+> <3>[   10.856693] sst-platform sst-platform: ASoC: Failed to add route
+> media3_out -> direct -> Audio Capture
+> <6>[   10.873799] nau8824_codec_probe enter
+> <6>[   11.062658] cht_nau88l24 cht_nau88l24: snd-soc-dummy-dai <->
+> Headset-cpu-dai mapping ok
+> <6>[   11.062754] cht_nau88l24 cht_nau88l24: snd-soc-dummy-dai <->
+> Deepbuffer-cpu-dai mapping ok
+> <6>[   11.062902] cht_nau88l24 cht_nau88l24: snd-soc-dummy-dai <->
+> Voip-cpu-dai mapping ok
+> <6>[   11.063035] cht_cr_nau88l24: cht_hs_detection:Check hs insertion
+>  after 500 msec
+> <6>[   11.063035] cht_nau88l24 cht_nau88l24: snd-soc-dummy-dai <->
+> Lowlatency-cpu-dai mapping ok
+> <6>[   11.063383] cht_nau88l24 cht_nau88l24: snd-soc-dummy-dai <->
+> Probe-cpu-dai mapping ok
+> <6>[   11.063596] cht_nau88l24 cht_nau88l24: nau8824-aif1 <->
+> ssp2-port mapping ok
+> <6>[   11.063638] cht_nau88l24 cht_nau88l24: snd-soc-dummy-dai <->
+> snd-soc-dummy-dai mapping ok
+> <6>[   11.063674] cht_nau88l24 cht_nau88l24: snd-soc-dummy-dai <->
+> snd-soc-dummy-dai mapping ok
+> <3>[   11.063742] cht_nau88l24 cht_nau88l24: ASoC: Failed to add
+> Headset Mic Switch: -16
+> <6>[   11.095628] input: cherrytrailaud Headset Jack as
+> /devices/platform/cht_nau88l24/sound/card1/input9
+> <6>[   11.096265] cht_cr_nau88l24: snd_cht_mc_probe successful
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
