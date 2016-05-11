@@ -1,25 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: nau8825: non-clock jack
- detection for power saving at standby
-Date: Wed, 11 May 2016 18:15:06 +0100
-Message-ID: <20160511171506.GQ6261@sirena.org.uk>
-References: <1461917718-25211-1-git-send-email-KCHSU0@nuvoton.com>
- <20160502162715.GK6292@sirena.org.uk>
- <57286D40.6030002@nuvoton.com>
- <20160504163943.GZ6292@sirena.org.uk>
- <572C4AB6.9030106@nuvoton.com>
- <20160506181855.GZ6292@sirena.org.uk>
- <572FFCA7.8030604@nuvoton.com>
- <20160509163528.GD3458@sirena.org.uk>
- <573152EB.5090906@nuvoton.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: firewire-lib: permit to flush queued
+	packets only in process context for better PCM period granularity
+Date: Thu, 12 May 2016 02:17:39 +0900
+Message-ID: <1462987059-10020-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3509510322264903342=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 645362607C8
- for <alsa-devel@alsa-project.org>; Wed, 11 May 2016 19:15:14 +0200 (CEST)
-In-Reply-To: <573152EB.5090906@nuvoton.com>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id BF4A72607C8
+ for <alsa-devel@alsa-project.org>; Wed, 11 May 2016 19:17:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,65 +19,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, "anatol.pomozov@gmail.com" <anatol.pomozov@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "benzh@chromium.org" <benzh@chromium.org>, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <MHKuo@nuvoton.com>, "yong.zhi@intel.com" <yong.zhi@intel.com>
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+These three commits were merged to improve PCM pointer granularity.
+commit 76fb87894828 ("ALSA: firewire-lib: taskletize the snd_pcm_period_elapsed() call")
+commit e9148dddc3c7 ("ALSA: firewire-lib: flush completed packets when reading PCM position")
+commit 92b862c7d685 ("ALSA: firewire-lib: optimize packet flushing")
 
---===============3509510322264903342==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="aNvCJ41Feu8IgPyB"
-Content-Disposition: inline
+The point of them is to handle queued packets not only in software IRQ
+context of IR/IT contexts, but also in process context. As a result of
+handling packets, period tasklet is scheduled when acrossing PCM period
+boundary. This is to prevent recursive call of
+'struct snd_pcm_ops.pointer()' in the same context.
 
+When the pointer callback is executed in the process context, it's
+better to avoid the second callback in the software IRQ context. The
+software IRQ context runs immediately after scheduled in the process
+context because few packets are queued yet.
 
---aNvCJ41Feu8IgPyB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+For the aim, 'pointer_flush' is used, however it causes a race condition
+between the process context and software IRQ context of IR/IT contexts.
 
-On Tue, May 10, 2016 at 11:18:03AM +0800, John Hsu wrote:
-> On 5/10/2016 12:35 AM, Mark Brown wrote:
+Practically, this race is not so critical because it influences process
+context to skip flushing queued packet and to get worse granularity of
+PCM pointer. The race condition is quite rare but it should be improved
+for stable service.
 
-> > Well, the machine driver has to cope anyway.  What's not clear to me is
-> > if the device *has* to use the internal clock when doing accessory
-> > detection or if it's just lower power.
+The similar effect can be achieved by using 'in_interrupt()' macro. This
+commit obsoletes 'pointer_flush' with it.
 
-> If the codec only does accessory insertion detection, the driver can setup
-> it and doesn't need any clock. That can make lower power. But if the codec
-> wants to do advanced jack detection like mic or impedance, the driver needs
-> the internal clock to setup auto detection. Thus, when no headset connected
-> yet, we use the solution without internal clock for power saving. When we
-> want to do advanced detection, we use the solution with internal clock.
+Acked-by: Clemens Ladisch <clemens@ladisch.de>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/amdtp-stream.c | 23 +++++++++++++++++------
+ sound/firewire/amdtp-stream.h |  1 -
+ 2 files changed, 17 insertions(+), 7 deletions(-)
 
-I'm afraid this still leaves me none the wiser, sorry.  If this
-switching to the internal clock is essential to the device operation
-then I'd expect it to be made transparent to callers so it should
-happen transparently rather than appearing via set_sysclk().  If it's
-not and it's just a performance optimisation then erroring out is
-definitely excessive but if the optimisation can be implemented
-transparently then it might be nice to do that.
-
---aNvCJ41Feu8IgPyB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXM2iAAAoJECTWi3JdVIfQLZ4H/0SH9kKZFewLoenp392A48sI
-bivXsge/GOI13T2TncYv2U5PK5lMId/Qlamejx3IaAn0OX3tZgPBc5fPU/Mgcuqb
-K2TdYhbEQvclty8qm5KPmhxwU/jPZMRuABUuDZck7NUluDVjLafJ/g3Eu49pNUJa
-U5ylE16Y6NdAaFHEhtHsj3qY+aojcsfXGmdK3wasWd2GAJVNRNVvnUcJT2rrcDlM
-oIs5SGdTw4XaGdFu6+V6JYeF0uXDAcjuVnRqBCTqXr2CEKWm8brz+D8N84xD25kJ
-9XjY7bLbOG3UD4/l2v1+ypKYFuPLMedYGyqQjmJoHULGTU9M5LJxom4y8ij0VIs=
-=4h+y
------END PGP SIGNATURE-----
-
---aNvCJ41Feu8IgPyB--
-
---===============3509510322264903342==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3509510322264903342==--
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index 830a95c..024ab7f 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -251,7 +251,6 @@ void amdtp_stream_pcm_prepare(struct amdtp_stream *s)
+ 	tasklet_kill(&s->period_tasklet);
+ 	s->pcm_buffer_pointer = 0;
+ 	s->pcm_period_pointer = 0;
+-	s->pointer_flush = true;
+ }
+ EXPORT_SYMBOL(amdtp_stream_pcm_prepare);
+ 
+@@ -356,7 +355,6 @@ static void update_pcm_pointers(struct amdtp_stream *s,
+ 	s->pcm_period_pointer += frames;
+ 	if (s->pcm_period_pointer >= pcm->runtime->period_size) {
+ 		s->pcm_period_pointer -= pcm->runtime->period_size;
+-		s->pointer_flush = false;
+ 		tasklet_hi_schedule(&s->period_tasklet);
+ 	}
+ }
+@@ -803,11 +801,24 @@ EXPORT_SYMBOL(amdtp_stream_start);
+  */
+ unsigned long amdtp_stream_pcm_pointer(struct amdtp_stream *s)
+ {
+-	/* this optimization is allowed to be racy */
+-	if (s->pointer_flush && amdtp_stream_running(s))
++	/*
++	 * This function is called in software IRQ context of period_tasklet or
++	 * process context.
++	 *
++	 * When the software IRQ context was scheduled by software IRQ context
++	 * of IR/IT contexts, queued packets were already handled. Therefore,
++	 * no need to flush the queue in buffer anymore.
++	 *
++	 * When the process context reach here, some packets will be already
++	 * queued in the buffer. These packets should be handled immediately
++	 * to keep better granularity of PCM pointer.
++	 *
++	 * Later, the process context will sometimes schedules software IRQ
++	 * context of the period_tasklet. Then, no need to flush the queue by
++	 * the same reason as described for IR/IT contexts.
++	 */
++	if (!in_interrupt() && amdtp_stream_running(s))
+ 		fw_iso_context_flush_completions(s->context);
+-	else
+-		s->pointer_flush = true;
+ 
+ 	return ACCESS_ONCE(s->pcm_buffer_pointer);
+ }
+diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
+index 349c405..c1bc7fa 100644
+--- a/sound/firewire/amdtp-stream.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -126,7 +126,6 @@ struct amdtp_stream {
+ 	struct tasklet_struct period_tasklet;
+ 	unsigned int pcm_buffer_pointer;
+ 	unsigned int pcm_period_pointer;
+-	bool pointer_flush;
+ 
+ 	/* To wait for first packet. */
+ 	bool callbacked;
+-- 
+2.7.4
