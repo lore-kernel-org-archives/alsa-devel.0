@@ -1,18 +1,25 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Fix printk formatting" to the
-	asoc tree
-Date: Wed, 11 May 2016 17:13:53 +0100
-Message-ID: <E1b0Wll-0006W2-Rf@debutante>
-References: <1462860537-5667-1-git-send-email-joonas.lahtinen@linux.intel.com>
+Subject: Re: [PATCH 1/2] ASoC: nau8825: non-clock jack
+ detection for power saving at standby
+Date: Wed, 11 May 2016 18:15:06 +0100
+Message-ID: <20160511171506.GQ6261@sirena.org.uk>
+References: <1461917718-25211-1-git-send-email-KCHSU0@nuvoton.com>
+ <20160502162715.GK6292@sirena.org.uk>
+ <57286D40.6030002@nuvoton.com>
+ <20160504163943.GZ6292@sirena.org.uk>
+ <572C4AB6.9030106@nuvoton.com>
+ <20160506181855.GZ6292@sirena.org.uk>
+ <572FFCA7.8030604@nuvoton.com>
+ <20160509163528.GD3458@sirena.org.uk>
+ <573152EB.5090906@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3509510322264903342=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9EF662667EA
- for <alsa-devel@alsa-project.org>; Wed, 11 May 2016 18:16:08 +0200 (CEST)
-In-Reply-To: <1462860537-5667-1-git-send-email-joonas.lahtinen@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 645362607C8
+ for <alsa-devel@alsa-project.org>; Wed, 11 May 2016 19:15:14 +0200 (CEST)
+In-Reply-To: <573152EB.5090906@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,67 +29,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc: Alsa-devel mailing list for ALSA developers <alsa-devel@alsa-project.org>, Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, "anatol.pomozov@gmail.com" <anatol.pomozov@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "benzh@chromium.org" <benzh@chromium.org>, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <MHKuo@nuvoton.com>, "yong.zhi@intel.com" <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: Intel: Fix printk formatting
+--===============3509510322264903342==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="aNvCJ41Feu8IgPyB"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--aNvCJ41Feu8IgPyB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Tue, May 10, 2016 at 11:18:03AM +0800, John Hsu wrote:
+> On 5/10/2016 12:35 AM, Mark Brown wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> > Well, the machine driver has to cope anyway.  What's not clear to me is
+> > if the device *has* to use the internal clock when doing accessory
+> > detection or if it's just lower power.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> If the codec only does accessory insertion detection, the driver can setup
+> it and doesn't need any clock. That can make lower power. But if the codec
+> wants to do advanced jack detection like mic or impedance, the driver needs
+> the internal clock to setup auto detection. Thus, when no headset connected
+> yet, we use the solution without internal clock for power saving. When we
+> want to do advanced detection, we use the solution with internal clock.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+I'm afraid this still leaves me none the wiser, sorry.  If this
+switching to the internal clock is essential to the device operation
+then I'd expect it to be made transparent to callers so it should
+happen transparently rather than appearing via set_sysclk().  If it's
+not and it's just a performance optimisation then erroring out is
+definitely excessive but if the optimisation can be implemented
+transparently then it might be nice to do that.
 
-Thanks,
-Mark
+--aNvCJ41Feu8IgPyB
+Content-Type: application/pgp-signature; name="signature.asc"
 
->From 396cbebeeb9734aee8efe39431d3b96655bf1e94 Mon Sep 17 00:00:00 2001
-From: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Date: Tue, 10 May 2016 09:08:57 +0300
-Subject: [PATCH] ASoC: Intel: Fix printk formatting
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Format number after 0x in hex.
+iQEcBAEBCAAGBQJXM2iAAAoJECTWi3JdVIfQLZ4H/0SH9kKZFewLoenp392A48sI
+bivXsge/GOI13T2TncYv2U5PK5lMId/Qlamejx3IaAn0OX3tZgPBc5fPU/Mgcuqb
+K2TdYhbEQvclty8qm5KPmhxwU/jPZMRuABUuDZck7NUluDVjLafJ/g3Eu49pNUJa
+U5ylE16Y6NdAaFHEhtHsj3qY+aojcsfXGmdK3wasWd2GAJVNRNVvnUcJT2rrcDlM
+oIs5SGdTw4XaGdFu6+V6JYeF0uXDAcjuVnRqBCTqXr2CEKWm8brz+D8N84xD25kJ
+9XjY7bLbOG3UD4/l2v1+ypKYFuPLMedYGyqQjmJoHULGTU9M5LJxom4y8ij0VIs=
+=4h+y
+-----END PGP SIGNATURE-----
 
-Cc: Jie Yang <yang.jie@linux.intel.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Signed-off-by: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/haswell/sst-haswell-pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--aNvCJ41Feu8IgPyB--
 
-diff --git a/sound/soc/intel/haswell/sst-haswell-pcm.c b/sound/soc/intel/haswell/sst-haswell-pcm.c
-index 1aa819c7e09b..994256b39b9c 100644
---- a/sound/soc/intel/haswell/sst-haswell-pcm.c
-+++ b/sound/soc/intel/haswell/sst-haswell-pcm.c
-@@ -445,7 +445,7 @@ static int create_adsp_page_table(struct snd_pcm_substream *substream,
- 
- 	pages = snd_sgbuf_aligned_pages(size);
- 
--	dev_dbg(rtd->dev, "generating page table for %p size 0x%zu pages %d\n",
-+	dev_dbg(rtd->dev, "generating page table for %p size 0x%zx pages %d\n",
- 		dma_area, size, pages);
- 
- 	for (i = 0; i < pages; i++) {
--- 
-2.8.1
+--===============3509510322264903342==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3509510322264903342==--
