@@ -1,18 +1,17 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: usb-audio: Yet another Phoneix Audio
+From: Jeremy McDermond <nh6z@nh6z.net>
+Subject: Re: [PATCH] ALSA: usb-audio: Yet another Phoneix Audio
 	device quirk
-Date: Wed, 11 May 2016 17:55:12 +0200
-Message-ID: <1462982112-7276-1-git-send-email-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Date: Wed, 11 May 2016 09:10:11 -0700
+Message-ID: <7FF5B1C7-4545-4A9B-AFB7-7D23DD191A3D@nh6z.net>
+References: <1462982112-7276-1-git-send-email-tiwai@suse.de>
+Mime-Version: 1.0 (Mac OS X Mail 9.1 \(3096.5\))
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 67DC82665A0
- for <alsa-devel@alsa-project.org>; Wed, 11 May 2016 17:55:13 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 13CCDAAB6
- for <alsa-devel@alsa-project.org>; Wed, 11 May 2016 15:55:13 +0000 (UTC)
+Received: from mail.xenotropic.com (mail.xenotropic.com [198.178.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F48D2666B9
+ for <alsa-devel@alsa-project.org>; Wed, 11 May 2016 18:10:15 +0200 (CEST)
+In-Reply-To: <1462982112-7276-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,31 +21,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Phoenix Audio has yet another device with another id (even a different
-vendor id, 0556:0014) that requires the same quirk for the sample
-rate.
-
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=110221
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/quirks.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 7b6dca2d7488..220764cd60bd 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1137,6 +1137,7 @@ bool snd_usb_get_sample_rate_quirk(struct snd_usb_audio *chip)
- 	case USB_ID(0x047F, 0x0415): /* Plantronics BT-300 */
- 	case USB_ID(0x047F, 0xAA05): /* Plantronics DA45 */
- 	case USB_ID(0x04D8, 0xFEEA): /* Benchmark DAC1 Pre */
-+	case uSB_ID(0x0556, 0x0014): /* Phoenix Audio TMX320VC */
- 	case USB_ID(0x074D, 0x3553): /* Outlaw RR2150 (Micronas UAC3553B) */
- 	case USB_ID(0x1de7, 0x0013): /* Phoenix Audio MT202exe */
- 	case USB_ID(0x1de7, 0x0014): /* Phoenix Audio TMX320 */
--- 
-2.8.2
+Cj4gT24gTWF5IDExLCAyMDE2LCBhdCA4OjU1IEFNLCBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2Uu
+ZGU+IHdyb3RlOgo+IAo+IFBob2VuaXggQXVkaW8gaGFzIHlldCBhbm90aGVyIGRldmljZSB3aXRo
+IGFub3RoZXIgaWQgKGV2ZW4gYSBkaWZmZXJlbnQKPiB2ZW5kb3IgaWQsIDA1NTY6MDAxNCkgdGhh
+dCByZXF1aXJlcyB0aGUgc2FtZSBxdWlyayBmb3IgdGhlIHNhbXBsZQo+IHJhdGUuCj4gCj4gQnVn
+emlsbGE6IGh0dHBzOi8vYnVnemlsbGEua2VybmVsLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9MTEwMjIx
+Cj4gQ2M6IDxzdGFibGVAdmdlci5rZXJuZWwub3JnPgo+IFNpZ25lZC1vZmYtYnk6IFRha2FzaGkg
+SXdhaSA8dGl3YWlAc3VzZS5kZT4KPiAtLS0KPiBzb3VuZC91c2IvcXVpcmtzLmMgfCAxICsKPiAx
+IGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykKPiAKPiBkaWZmIC0tZ2l0IGEvc291bmQvdXNi
+L3F1aXJrcy5jIGIvc291bmQvdXNiL3F1aXJrcy5jCj4gaW5kZXggN2I2ZGNhMmQ3NDg4Li4yMjA3
+NjRjZDYwYmQgMTAwNjQ0Cj4gLS0tIGEvc291bmQvdXNiL3F1aXJrcy5jCj4gKysrIGIvc291bmQv
+dXNiL3F1aXJrcy5jCj4gQEAgLTExMzcsNiArMTEzNyw3IEBAIGJvb2wgc25kX3VzYl9nZXRfc2Ft
+cGxlX3JhdGVfcXVpcmsoc3RydWN0IHNuZF91c2JfYXVkaW8gKmNoaXApCj4gCWNhc2UgVVNCX0lE
+KDB4MDQ3RiwgMHgwNDE1KTogLyogUGxhbnRyb25pY3MgQlQtMzAwICovCj4gCWNhc2UgVVNCX0lE
+KDB4MDQ3RiwgMHhBQTA1KTogLyogUGxhbnRyb25pY3MgREE0NSAqLwo+IAljYXNlIFVTQl9JRCgw
+eDA0RDgsIDB4RkVFQSk6IC8qIEJlbmNobWFyayBEQUMxIFByZSAqLwo+ICsJY2FzZSB1U0JfSUQo
+MHgwNTU2LCAweDAwMTQpOiAvKiBQaG9lbml4IEF1ZGlvIFRNWDMyMFZDICovCj4gCWNhc2UgVVNC
+X0lEKDB4MDc0RCwgMHgzNTUzKTogLyogT3V0bGF3IFJSMjE1MCAoTWljcm9uYXMgVUFDMzU1M0Ip
+ICovCgpTaG91bGRu4oCZdCB0aGlzIGJlIGFuIHVwcGVyY2FzZSBVIGluIFVTQl9JRCwgVGFrYXNo
+aT8KCj4gCWNhc2UgVVNCX0lEKDB4MWRlNywgMHgwMDEzKTogLyogUGhvZW5peCBBdWRpbyBNVDIw
+MmV4ZSAqLwo+IAljYXNlIFVTQl9JRCgweDFkZTcsIDB4MDAxNCk6IC8qIFBob2VuaXggQXVkaW8g
+VE1YMzIwICovCj4gLS0gCj4gMi44LjIKCi0tCkplcmVteSBNY0Rlcm1vbmQgKE5INlopClhlbm90
+cm9waWMgU3lzdGVtcwptY2Rlcm1qQHhlbm90cm9waWMuY29tCgoKCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
+bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
