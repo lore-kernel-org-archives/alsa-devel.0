@@ -1,54 +1,59 @@
-From: Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH v3 0/7] ARM/ASoC: OMAP3: Fix McBSP2/3 sidetone support
-Date: Thu, 12 May 2016 09:42:01 -0700
-Message-ID: <20160512164201.GQ5995@atomide.com>
-References: <1461927202-17677-1-git-send-email-peter.ujfalusi@ti.com>
- <69ff65ee-e5d1-09fb-fd91-8d7b4d8fdda4@ti.com>
+From: Ross Wille <audio@cornerbrick.com>
+Subject: i.MX6 SGTL5000 hangs with EIO error
+Date: Thu, 12 May 2016 11:54:48 -0600
+Message-ID: <201605121154.48951.audio@cornerbrick.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.willeweb.com (willeweb.com [166.70.233.13])
+ by alsa0.perex.cz (Postfix) with ESMTP id D6DA126047C
+ for <alsa-devel@alsa-project.org>; Thu, 12 May 2016 19:54:50 +0200 (CEST)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+ by mail.willeweb.com (Postfix) with ESMTP id 470331214031
+ for <alsa-devel@alsa-project.org>; Thu, 12 May 2016 11:54:49 -0600 (MDT)
 Content-Disposition: inline
-In-Reply-To: <69ff65ee-e5d1-09fb-fd91-8d7b4d8fdda4-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-Cc: jarkko.nikula-FVTvWyuFUl3QT0dZR+AlfA@public.gmane.org, paul-DWxLp4Yu+b8AvxtiuMwx3w@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, t-kristo-l0cyMroinI0@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-* Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org> [160511 01:46]:
-> Tony, Paul,
-> 
-> On 04/29/16 13:53, Peter Ujfalusi wrote:
-> > Hi,
-> > 
-> > Based on the ongoing discussion on v2 (ARM: OMAP3: Fix McBSP2/3 hwmod setup for
-> > sidetone) I have dropped the removal of the sidetone hwmod and only corrected
-> > it. The series now includes all related changes needed to have correct sidetone
-> > support whenever we boot in legacy or in DT mode.
-> > 
-> > This time the ASoC part have dependency on earlier patches so they can not be
-> > applied separately.
-> 
-> How should we proceed from here? I don't want to start designing the ST
-> separation infrastructure which would be based on this series, but if there
-> are outstanding issues found on this, I would need to go back to the drawing
-> board.
-> The separation will be mostly new code and code shuffle in ASoC, but for
-> legacy I will need to build up something in arch as well, so I would need at
-> least one release cycle to start with things.
+Hello all,
 
-Well looks like we have all the acks, so I can apply these. We have
-not heard from Paul on this for a while, so let's wait few days for
-that.
+I am doing an ALSA capture on a Wandboard Quad (i.MX6 quad core with 
+SGTL5000 codec chip) from the LINEIN1 jack.  I'm using a 4.6.0-rc3-armv7-x0 
+kernel.
 
-Meanwhile, Mark wanted to fix the subject for one of the patches, care
-to repost that at least? Or the whole series with acks, could be a
-pull request too against v4.6-rc1 :)
+Sometimes when the audio glitches (for example, when I plug/unplug the audio 
+cable or adjust my signal generator) the snd_pcm_readi() function will 
+start returning -5 (EIO).
 
-Regards,
+Once this happens, the only way I've been able to recover is to reboot the 
+computer.  Calling snd_pcm_close(), snd_pcm_prepare(), snd_pcm_start(), 
+etc. doesn't help.  When in this state, running arecord returns IO errors 
+as well.
 
-Tony
+It's interesting that, on rare occasions, I must do a power cycle in order 
+to recover.  When a reboot is not effective I've noticed that the capture 
+device doesn't appear in /proc/asound/devices.
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I don't believe my specific ALSA settings are important, but I'm calling 
+snd_pcm_readi() with ALSA set to a sample rate of 48000, format of S16_LE, 
+channels=1, frames per period of 960 (20 mS periods), and 4 periods per 
+buffer.
+
+This same problem happens on two different Wandboards, so I don't think it's 
+a defective board or chip.  It has happened on older kernels as well.
+
+Any ideas?
+
+Thank you!
+
+Ross Wille
