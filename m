@@ -1,120 +1,124 @@
-From: nick83ola <nick83ola@gmail.com>
-Subject: Re: Imx6 i2s master driver without i2c
-Date: Thu, 12 May 2016 09:55:25 +0200
-Message-ID: <CABPh3UOUf=wsw5uRKP3pJO+Z5CCMcdJCOyQmExCucYrK-4-84w@mail.gmail.com>
-References: <CABPh3UNhKMGUoiDvHn9paXVNvtpwzbzkbCwBhtSCm72jxkh3CA@mail.gmail.com>
- <CABPh3UMMvVKvHL0g52NqP-E8dpxoZHfwgR_t1WY08OFMSYt9tg@mail.gmail.com>
- <CABPh3UMJ4gOtNN3FJg0fF7Mm+Lpw0=jXGk_+ejsHaGLG9UvWAQ@mail.gmail.com>
- <CABPh3UNi79pMZPgJBisaq9Qo847MV-6riCEQ=Akt_RoLdqeVpw@mail.gmail.com>
- <CABPh3UPLR20WbV0NuYLA4RZ7XB-0+RdFrB-SpDLa0T+wOxqQ+g@mail.gmail.com>
- <CAG5mAdzJyTdsBTnz8FZ8Ay278j1bYJHHqkOTGY+_Ck9sSPhQoQ@mail.gmail.com>
- <CABPh3UN1ZoGAVF1y_5vi_DbkARfopbe5tc5SSy0HQbiYe8MERA@mail.gmail.com>
- <CAG5mAdw1erm=4RjMfP-hf1Vkw73KCWSaLbU3DtditMfsFQNRdQ@mail.gmail.com>
- <CABPh3UN2157eMxwr6i8-vPfdyr3L0DOrpVt7ChTUrPTCbCzCBA@mail.gmail.com>
- <CABPh3UNk9xa=K7QiVV3pZba7o287AyOrjufUGd1QWUxnHNHLOg@mail.gmail.com>
- <CAG5mAdyCAgtFBCbAyLVtqtLgOtCgkB9=yV+YEY8a3oeL2yJDHA@mail.gmail.com>
- <CABPh3UPzP1iFYsy_Ni1fcfimnoVDUWfdn8ht5On_mx0xN1w8Mg@mail.gmail.com>
- <CAG5mAdyceKw_H7zNfx-KTSUUMc81UiLu3feLBcB+vjjjpuhetQ@mail.gmail.com>
- <CABPh3UNPDS+4H60eeL79etF70O0-Xp2T_oNBkYL2m4g6jpeSWA@mail.gmail.com>
- <CAG5mAdw8oWy38SBzYTKi9DeCS5UzcMNjY5VsFCARp6yDb76cFg@mail.gmail.com>
+From: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
+Subject: Re: [PATCH] ASoC: MAX9860: new driver
+Date: Thu, 12 May 2016 10:24:11 +0200
+Message-ID: <6fc2f0ed-6193-c99f-bcf7-7898029dab73@axentia.se>
+References: <1462892797-1147-1-git-send-email-peda@axentia.se>
+ <20160511152950.GL6261@sirena.org.uk>
+ <be1f0f5c-5dbe-65f8-d55c-df07a92a558e@axentia.se>
+ <20160511205353.GV6261@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f65.google.com (mail-lf0-f65.google.com
- [209.85.215.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 37603265300
- for <alsa-devel@alsa-project.org>; Thu, 12 May 2016 09:55:45 +0200 (CEST)
-Received: by mail-lf0-f65.google.com with SMTP id m101so7178217lfi.1
- for <alsa-devel@alsa-project.org>; Thu, 12 May 2016 00:55:45 -0700 (PDT)
-In-Reply-To: <CAG5mAdw8oWy38SBzYTKi9DeCS5UzcMNjY5VsFCARp6yDb76cFg@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20160511205353.GV6261-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-I am using ssi1 because I have an example of setting master mode on sabre
-board dts
+On 2016-05-11 22:53, Mark Brown wrote:
+> On Wed, May 11, 2016 at 10:28:12PM +0200, Peter Rosin wrote:
+>> On 2016-05-11 17:29, Mark Brown wrote:
+>>> On Tue, May 10, 2016 at 05:06:37PM +0200, Peter Rosin wrote:
+> 
+>>>> +		if (master) {
+>>>> +			switch (max9860->pclk_rate) {
+>>>> +			case 12000000:
+>>>> +				sysclk = MAX9860_FREQ_12MHZ;
+>>>> +				break;
+>>>> +			case 13000000:
+>>>> +				sysclk = MAX9860_FREQ_13MHZ;
+>>>> +				break;
+>>>> +			case 19200000:
+>>>> +				sysclk = MAX9860_FREQ_19_2MHZ;
+>>>> +				break;
+>>>> +			}
+> 
+>>> What if we have another PCLK rate?
+> 
+>> In that case the sysclk variable will remain cleared (0) and the
+>> code that follows will trigger the PLL section with the N divider
+>> for clock master mode (that mode is always used in clock slave mode).
+> 
+> The code needs to make it clear that this is an intentional fallthrough,
+> an explicit default case would help a lot.
 
-I have a problem with iomux/pinctrl  I think because
+There was this comment above the two if statements leading into the switch
+statement:
 
-root@icorem6solo:/sys/kernel/debug/pinctrl/20e0000.iomuxc# cat pinmux-pins
-|grep audmux
-pin 57 (MX6DL_PAD_DISP0_DAT20): 2028000.ssi (GPIO UNCLAIMED) function
-audmux group audmux-4
-pin 58 (MX6DL_PAD_DISP0_DAT21): 2028000.ssi (GPIO UNCLAIMED) function
-audmux group audmux-4
-pin 59 (MX6DL_PAD_DISP0_DAT22): 2028000.ssi (GPIO UNCLAIMED) function
-audmux group audmux-4
-pin 60 (MX6DL_PAD_DISP0_DAT23): 2028000.ssi (GPIO UNCLAIMED) function
-audmux group audmux-4
++	/*
++	 * Check if Integer Clock Mode is possible, but avoid it in slave mode
++	 * since we then do not know if lrclk is derived from pclk and the
++	 * datasheet mentions that the frequencies have to match exactly in
++	 * order for this to work.
++	 */
++	if (params_rate(params) == 8000 || params_rate(params) == 16000) {
++		if (master) {
++			switch (max9860->pclk_rate) {
 
-says: GPIO_UNCLAIMED? it is correct??
+Maybe it wasn't clear that this comment applied to the whole if-if-switch
+block? Will it be good enough to extend that comment like this:
 
-/sys/kernel/debug/pinctrl/20e0000.iomuxc# cat pinconf-groups |grep -A 1
-audmux
-1 (audmux-1):
-MX6DL_PAD_SD2_DAT0: 0x17070MX6DL_PAD_SD2_DAT3: 0x17070MX6DL_PAD_SD2_DAT2:
-0x17070MX6DL_PAD_SD2_DAT1: 0x17070
-2 (audmux-2):
-MX6DL_PAD_CSI0_DAT7: 0x1b0b0MX6DL_PAD_CSI0_DAT4:
-0x1b0b0MX6DL_PAD_CSI0_DAT5: 0x1b0b0MX6DL_PAD_CSI0_DAT6: 0x1b0b0
-3 (audmux-3):
-MX6DL_PAD_DISP0_DAT16: 0x10MX6DL_PAD_DISP0_DAT18:
-0x1b0b0MX6DL_PAD_DISP0_DAT19: 0x1b0b0
-4 (audmux-4):
-MX6DL_PAD_DISP0_DAT20: 0x130b0MX6DL_PAD_DISP0_DAT21:
-0x110b0MX6DL_PAD_DISP0_DAT22: 0x130b0MX6DL_PAD_DISP0_DAT23: 0x130b0
+	/*
+	 * Check if Integer Clock Mode is possible, but avoid it in slave mode
+	 * since we then do not know if lrclk is derived from pclk and the
+	 * datasheet mentions that the frequencies have to match exactly in
+	 * order for this to work.
+	 * If Integer Clock Mode is not possible, fall through to the code
+	 * below utilizing PLL mode (using sysclk == 0 as trigger).
+	 */
 
-0x130b0?
+>>> We didn't go into cache only mode on suspend?  I'd also expect to see
+>>> the regulators disabled over suspend and some system PM ops.
+> 
+>> Ooops, that is a leftover, and I think it can be removed. However, your
+>> comment suggests that I have misunderstood the workings of
+>> SND_SOC_DAPM_REGULATOR_SUPPLY. I thought dapm would take care of the
+>> regulators (and the clocks for SND_SOC_DAPM_CLOCK_SUPPLY) so that
+>> disabling regulators over suspend was handled by the asoc core?
+> 
+> It will disable the regulators but that's not going to end well if
+> you're including core supplies required to maintain the register map,
+> it'll disable before runtime suspend and enable after runtime resume.
+> The regulator supply widget is intended for supplies that power
+> particular components on the CODEC.
 
-audmux# cat ssi0
-    PDCR: 0000a000
-    PTCR: ad400800
-    TxFS output from SSI6, TxClk output from SSI6
-    Port is symmetric
-    Data received from SSI6
-root@icorem6solo:/sys/kernel/debug/audmux# cat ssi1
-    PDCR: 00008000
-    PTCR: 00000800
-    TxFS input, TxClk input
-    Port is symmetric
-    Data received from SSI5
-root@icorem6solo:/sys/kernel/debug/audmux# cat ssi2
-    PDCR: 00006000
-    PTCR: 9cc00800
-    TxFS output from SSI4, TxClk output from SSI4
-    Port is symmetric
-    Data received from SSI4
-root@icorem6solo:/sys/kernel/debug/audmux# cat ssi3
-    PDCR: 00004000
-    PTCR: 00000800
-    TxFS input, TxClk input
-    Port is symmetric
-    Data received from SSI3
-root@icorem6solo:/sys/kernel/debug/audmux# cat ssi4
-    PDCR: 00002000
-    PTCR: 8c400800
-    TxFS output from imx-ssi.1, TxClk output from imx-ssi.1
-    Port is symmetric
-    Data received from imx-ssi.1
-root@icorem6solo:/sys/kernel/debug/audmux# cat ssi5
-    PDCR: 00000000
-    PTCR: 00000800
-    TxFS input, TxClk input
-    Port is symmetric
-    Data received from imx-ssi.0
-root@icorem6solo:/sys/kernel/debug/audmux# cat ssi6
-    PDCR: 0000c000
-    PTCR: 00000800
-    TxFS input, TxClk input
-    Port is symmetric
-    Data received from UNKNOWN
+It is the DVDDIO supply that kills register content. I carefully left
+that one out, and only added widgets for the AVDD and DVDD supplies.
+If/when someone adds DVDDIO it indeed needs to be handled like you
+suggest. Is DVDDIO support required to have an acceptable driver?
+
+>>>> +	ret = clk_prepare_enable(mclk);
+>>>> +	if (ret) {
+>>>> +		dev_err(dev, "Failed to enable MCLK: %d\n", ret);
+>>>> +		clk_put(mclk);
+>>>> +		return ret;
+>>>> +	}
+> 
+>>>> +	*mclk_rate = clk_get_rate(mclk);
+> 
+>>>> +	clk_disable_unprepare(mclk);
+> 
+>>> This is definitely confused too.  Enabling the clock to read the
+>>> programmed frequency is at best odd, and obviously if we do get the rate
+>>> this will ensure that MCLK is disabled which probably isn't ideal.
+> 
+>> This is the same situation as for the regulators, I thought dapm
+>> handled it and would prep/enable clocks when they were needed?
+> 
+> That still doesn't explain the bouncing on and off here.
+
+I just read the comment for clk_get_rate() in include/linux/clk.h
+
+ * clk_get_rate - obtain the current clock rate (in Hz) for a clock source.
+ *                This is only valid once the clock source has been enabled.
+
+The driver needs to know the mclk rate, and it only needs the clock to
+be running when the codec is in use, so do you suggest instead?
+
+Cheers,
+Peter
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
