@@ -1,82 +1,54 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: [PATCH] alsa-lib:Make snd_atomic_write_* truly
- atomic
-Date: Thu, 12 May 2016 18:09:22 +0200
-Message-ID: <alpine.DEB.2.02.1605121800510.31333@lnxricardw1.se.axis.com>
-References: <570E2279.7060809@axis.com> <s5hwpo14o0n.wl-tiwai@suse.de>
- <alpine.DEB.2.02.1605121446220.31333@lnxricardw1.se.axis.com>
- <s5h37pnctrf.wl-tiwai@suse.de>
- <alpine.DEB.2.02.1605121556390.31333@lnxricardw1.se.axis.com>
- <s5hmvnvbafu.wl-tiwai@suse.de>
+From: Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: [PATCH v3 0/7] ARM/ASoC: OMAP3: Fix McBSP2/3 sidetone support
+Date: Thu, 12 May 2016 09:42:01 -0700
+Message-ID: <20160512164201.GQ5995@atomide.com>
+References: <1461927202-17677-1-git-send-email-peter.ujfalusi@ti.com>
+ <69ff65ee-e5d1-09fb-fd91-8d7b4d8fdda4@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
- by alsa0.perex.cz (Postfix) with ESMTP id 182C126686E
- for <alsa-devel@alsa-project.org>; Thu, 12 May 2016 18:09:30 +0200 (CEST)
-In-Reply-To: <s5hmvnvbafu.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: =?ISO-8859-15?Q?Arvid_Nihlg=E5rd_Lindell?= <arvidnl@axis.com>, Andreas x Larsson <andrelan@axis.com>, alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <69ff65ee-e5d1-09fb-fd91-8d7b4d8fdda4-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
+Cc: jarkko.nikula-FVTvWyuFUl3QT0dZR+AlfA@public.gmane.org, paul-DWxLp4Yu+b8AvxtiuMwx3w@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, t-kristo-l0cyMroinI0@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIFRodSwgMTIgTWF5IDIwMTYsIFRha2FzaGkgSXdhaSB3cm90ZToKCj4gPiBUaGUgY29kZSBh
-cyBpdCBjdXJyZW50bHkgc3RhbmRzIGhhcyBtYWNyb3MgbGlrZQo+ID4gCj4gPiAjZGVmaW5lIG1i
-KCkgICAgX19hc21fXyBfX3ZvbGF0aWxlX18gKCJsb2NrOyBhZGRsICQwLDAoJSVlc3ApIjogOiA6
-Im1lbW9yeSIpCj4gPiAjZGVmaW5lIHJtYigpICAgbWIoKQo+ID4gI2RlZmluZSB3bWIoKSAgIF9f
-YXNtX18gX192b2xhdGlsZV9fICgiIjogOiA6Im1lbW9yeSIpCj4gPiAKPiA+IHdoaWNoIHN1cmVs
-eSBhcmUgZ2NjIHNwZWNpZmljLiBTbyBzdXJlbHkgaXQgY2FuJ3QgYmUgYSByZXF1aXJlbWVudCB0
-aGF0IAo+ID4gdGhlIHBhdGNoIHdvcmsgb24gb3RoZXIgY29tcGlsZXJzIGFzIHdlbGw/Cj4gCj4g
-V2VsbCwgaXQncyBub3QgdGhlIHJlcXVpcmVtZW50LiAgSXQncyBqdXN0IGEgcXVlc3Rpb24uCgpP
-ay4KCj4gPiBJdCBpcyByZWxldmFudCB0byB2ZXJpZnkgd2hpY2ggZ2NjIHZlcnNpb25zIHN1cHBv
-cnQgdGhlIGJ1aWx0aW5zIHVzZWQgaW4gCj4gPiB0aGUgcGF0Y2ggaG93ZXZlci4gSSBiZWxpZXZl
-IHRoZSBrZXJuZWwgaGFzIHJlcXVpcmVtZW50cyBvbiB3aGljaCBnY2MgCj4gPiB2ZXJzaW9ucyBp
-dCBjYW4gYmUgY29tcGlsZWQgd2l0aCwgYnV0IHBlcmhhcHMgd2UgbmVlZCB0byBiZSBtb3JlIGxl
-bmllbnQgCj4gPiB3aXRoIHVzZXJzcGFjZT8KPiAKPiBZZXMuICBBbmQgSSBiZXQgdGhhdCB0aGUg
-a2VybmVsIGNhbiBiZSBzdGlsbCBidWlsdCB3aXRoIGEgZ2NjIHZlcnNpb24KPiB0aGF0IGRvZXNu
-J3Qgc3VwcG9ydCB0aGUgbmV3IGF0b21pYyBwcmltaXRpdmUsIHRvby4KClllcywgdGhhdCB3b3Vs
-ZCBuZWVkIHRvIGJlIGxvb2tlZCBpbiB0byBvZiBjb3Vyc2UuCgo+ID4gSW4gdG90YWwsIHRoZSB2
-YXJpb3VzIHNuZF9hdG9taWNfKiBtYWNyb3MgYXJlIHVzZWQgfjIwIHRpbWVzIGluIHBjbV9yYXRl
-LmMgCj4gPiBhbmQgfjMwIHRpbWVzIGluIHBjbV9wbHVnaW4uYyAuIElmIHRoZSBhdG9taWMgZnVu
-Y3Rpb25hbGl0eSBpcyBpbmRlZWQgCj4gPiBuZWNlc3NhcnkgKGFuZCBpdCBhcHBlYXJzIHRvIGJl
-KSwgaXQgd291bGQgc2VlbSB3b3J0aCB3aGlsZSBhYnN0cmFjdGluZyAKPiA+IHRoZSBuaXR0eSBn
-cml0dHkgdXNpbmcgbWFjcm9zIEkgdGhpbmssIHJhdGhlciB0aGFuIGNsdXR0ZXJpbmcgdXAgdGhl
-IGNvZGUuCj4gCj4gSW4gb3RoZXIgd29yZHMsIGl0J3MgdXNlZCBvbmx5IHRoZXJlLiAgTW9zdCBv
-ZiBvdGhlciBjb2RlcyBkb24ndCBjYXJlCj4gYWJvdXQgaXQuICBTbywgdGhlIHVzZWZ1bG5lc3Mg
-b2YgdGhlIGF0b21pYyBvcGVyYXRpb24gdGhlcmUgaXMgcmVhbGx5Cj4gZG91YnRmdWwuCj4KPiBb
-Li4uXQo+Cj4gPiBPbmUgd291bGQgZXhwZWN0IG90aGVyd2lzZSB0aGF0IHRoaXMgaXNzdWUgd291
-bGQgaGF2ZSBjb21lIHVwIG11Y2ggCj4gPiBzb29uZXIuCj4gCj4gWWVhaCwgdGhhdCdzIHdoeSBJ
-IHN0YXRlZCB0aGUgcHJpbWFyeSBxdWVzdGlvbi4gIFRoZSBhdG9taWMgb3BlcmF0aW9uCj4gdGhl
-cmUgaXMgbW9zdGx5IGNvc21ldGljLCBub3QgcmVhbGx5IGhlbHBmdWwuICBJbiB0aGUgd2hvbGUg
-b3RoZXIKPiBvcGVyYXRpb24sIHdlIGRvbid0IGd1YXJhbnRlZSB0aGUgdGhyZWFkIHNhZmV0eSBh
-dCBhbGwuICBTbywKPiBpbXBsZW1lbnRpbmcgdGhlIGF0b21pYyBvcCBvbmx5IGluIGEgdmVyeSBz
-bWFsbCBwYXJ0IG9mIHRoZSB3aG9sZSBjb2RlCj4gYXBwZWFycyBsaWtlIGEgc3VwZXJmbHVvdXMg
-b3B0aW1pemF0aW9uIHRvIG1lLgo+IAo+IFRoYXQgc2FpZDogbXkgcHJlZmVycmVkIG9wdGlvbiBp
-cyB0byBzY3JhdGNoIHRoZSB3aG9sZSBhdG9taWMgdGhpbmcuCgpUaGF0J3MgYSB2YWxpZCBwb2lu
-dCwgc3RpbGwgaXQgd2FzIG9uY2UgYWRkZWQgaW4gYSBzcGVjaWZpYyBjb21taXQgCihhMDJlNzQy
-NjA5YmIwZWQ5NjEwODA5ZmM2MmI1ZjkyN2RkMDg2ZTYyKSwgc28gb25lIHdvdWxkIHRoaW5rIGl0
-IHdhcyAKYWRkZWQgZm9yIGEgcmVhc29uLiBJdCB3YXMgYSBsb25nIHRpbWUgYWdvIG5vdywgMTUg
-eWVhcnMgaXQgc2VlbXMsIHNvIG9mIApjb3Vyc2UgaXQgY291bGQgaGF2ZSBiZWVuIHBhcnQgb2Yg
-bGFyZ2VyIHRocmVhZCBzYWZldHkgb3BlcmF0aW9uIHRoYXQgd2FzIApuZXZlciBjb21wbGV0ZWQg
-b3IgaW4gdGhlIGVuZCBkZWVtZWQgdW5uZWNlc3NhcnkgLSB0aGUgY29tbWl0IG1lc3NhZ2UgCml0
-c2VsZiBkb2Vzbid0IHByb3ZpZGUgbWFueSBoZWxwZnVsIGhpbnRzLgoKVGhlIGZhY3QgdGhhdCB3
-ZSBoYXZlIHNlZW4gYSByYWNlIGNvbmRpdGlvbiB3aGljaCBpcyBmaXhlZCBieSB0aGUgcGF0Y2gg
-CnVuZGVyIGRpc2N1c3Npb24gaW5kaWNhdGVzIHRoYXQgaXQgaXMgaW4gZmFjdCByZXF1cmVkLCBh
-bHRob3VnaCBpdCBjb3VsZCAKYWxzbyBiZSB0aGF0IHRoZSBwYXRjaCBzaW1wbHkgc2hpZnRzIHRo
-ZSB0aW1pbmcgYXJvdW5kIHNvIHRoYXQgdGhlIApwb3RlbnRpYWwgcmVhbCBwcm9ibGVtIGlzIG5v
-dCB2aXNpYmxlLgoKL1JpY2FyZAotLSAKUmljYXJkIFdvbGYgV2FuZGVybMO2ZiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIHJpY2FyZHcoYXQpYXhpcy5jb20KQXhpcyBDb21tdW5pY2F0aW9ucyBB
-QiwgTHVuZCwgU3dlZGVuICAgICAgICAgICAgd3d3LmF4aXMuY29tClBob25lICs0NiA0NiAyNzIg
-MjAxNiAgICAgICAgICAgICAgICAgICAgICAgICAgIEZheCArNDYgNDYgMTMgNjEgMzAKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+* Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org> [160511 01:46]:
+> Tony, Paul,
+> 
+> On 04/29/16 13:53, Peter Ujfalusi wrote:
+> > Hi,
+> > 
+> > Based on the ongoing discussion on v2 (ARM: OMAP3: Fix McBSP2/3 hwmod setup for
+> > sidetone) I have dropped the removal of the sidetone hwmod and only corrected
+> > it. The series now includes all related changes needed to have correct sidetone
+> > support whenever we boot in legacy or in DT mode.
+> > 
+> > This time the ASoC part have dependency on earlier patches so they can not be
+> > applied separately.
+> 
+> How should we proceed from here? I don't want to start designing the ST
+> separation infrastructure which would be based on this series, but if there
+> are outstanding issues found on this, I would need to go back to the drawing
+> board.
+> The separation will be mostly new code and code shuffle in ASoC, but for
+> legacy I will need to build up something in arch as well, so I would need at
+> least one release cycle to start with things.
+
+Well looks like we have all the acks, so I can apply these. We have
+not heard from Paul on this for a while, so let's wait few days for
+that.
+
+Meanwhile, Mark wanted to fix the subject for one of the patches, care
+to repost that at least? Or the whole series with acks, could be a
+pull request too against v4.6-rc1 :)
+
+Regards,
+
+Tony
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
