@@ -1,17 +1,16 @@
-From: Nguyen Viet Dung <nv-dung@jinso.co.jp>
-Subject: Re: Applied "ASoC: rsnd: count .probe/.remove for
- rsnd_mod_call()" to the asoc tree
-Date: Thu, 12 May 2016 12:05:35 +0900
-Message-ID: <5733F2FF.7010004@jinso.co.jp>
-References: <E1avq2M-00025X-7a@debutante>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH v3 1/3] ALSA: hdac: add link pm and ref counting
+Date: Thu, 12 May 2016 08:58:53 +0530
+Message-ID: <1463023735-16981-2-git-send-email-vinod.koul@intel.com>
+References: <1463023735-16981-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www1246.sakura.ne.jp (www1246.sakura.ne.jp [219.94.162.56])
- by alsa0.perex.cz (Postfix) with ESMTP id 578AD2607C8
- for <alsa-devel@alsa-project.org>; Thu, 12 May 2016 05:05:55 +0200 (CEST)
-In-Reply-To: <E1avq2M-00025X-7a@debutante>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id DBC8C264FF9
+ for <alsa-devel@alsa-project.org>; Thu, 12 May 2016 05:22:53 +0200 (CEST)
+In-Reply-To: <1463023735-16981-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,78 +20,168 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, NAOYA SHIIBA <naoya.shiiba.nx@renesas.com>, Hiep Cao Minh <cm-hiep@jinso.co.jp>, Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, Ryusuke Sakato <ryusuke.sakato.bx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Yusuke Goda <yusuke.goda.sx@renesas.com>, Simon <horms@verge.net.au>, "osd2@lm.renesas.com" <osd2@lm.renesas.com>, h-inayoshi@jinso.co.jp, "M.Miura" <m-miura@jinso.co.jp>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTXIgTWFyayBCcm93biwgIE1yIE1vcmltb3RvCgpJIGhhdmUgdXNlZCB0aGlzIHBhdGNoIGZv
-ciB0ZXN0dGluZyBSY2FyLXNvdW5kIHVuYmluZC9yZWJpbmQgb24gdGhlIApSY2FySDMgYm9hcmQu
-CnJlc3VsdCBpcyBnb29kKFJjYXItc291bmQgY2FuIHVuYmluZC9yZWJpbmQgd2l0aG91dCBlcnJv
-ciB3YXJuaW5nICkKClRlc3R0ZWQtYnk6IE5ndXllbiBWaWV0IGR1bmcgPG52LWR1bmdAamluc28u
-Y28uanA+CgpCZXN0IHJlZ2FyZHMsCgpPbiAyMDE25bm0MDTmnIgyOeaXpSAwMjo0NywgTWFyayBC
-cm93biB3cm90ZToKPiBUaGUgcGF0Y2gKPgo+ICAgICBBU29DOiByc25kOiBjb3VudCAucHJvYmUv
-LnJlbW92ZSBmb3IgcnNuZF9tb2RfY2FsbCgpCj4KPiBoYXMgYmVlbiBhcHBsaWVkIHRvIHRoZSBh
-c29jIHRyZWUgYXQKPgo+ICAgICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tl
-cm5lbC9naXQvYnJvb25pZS9zb3VuZC5naXQKPgo+IEFsbCBiZWluZyB3ZWxsIHRoaXMgbWVhbnMg
-dGhhdCBpdCB3aWxsIGJlIGludGVncmF0ZWQgaW50byB0aGUgbGludXgtbmV4dAo+IHRyZWUgKHVz
-dWFsbHkgc29tZXRpbWUgaW4gdGhlIG5leHQgMjQgaG91cnMpIGFuZCBzZW50IHRvIExpbnVzIGR1
-cmluZwo+IHRoZSBuZXh0IG1lcmdlIHdpbmRvdyAob3Igc29vbmVyIGlmIGl0IGlzIGEgYnVnIGZp
-eCksIGhvd2V2ZXIgaWYKPiBwcm9ibGVtcyBhcmUgZGlzY292ZXJlZCB0aGVuIHRoZSBwYXRjaCBt
-YXkgYmUgZHJvcHBlZCBvciByZXZlcnRlZC4KPgo+IFlvdSBtYXkgZ2V0IGZ1cnRoZXIgZS1tYWls
-cyByZXN1bHRpbmcgZnJvbSBhdXRvbWF0ZWQgb3IgbWFudWFsIHRlc3RpbmcKPiBhbmQgcmV2aWV3
-IG9mIHRoZSB0cmVlLCBwbGVhc2UgZW5nYWdlIHdpdGggcGVvcGxlIHJlcG9ydGluZyBwcm9ibGVt
-cyBhbmQKPiBzZW5kIGZvbGxvd3VwIHBhdGNoZXMgYWRkcmVzc2luZyBhbnkgaXNzdWVzIHRoYXQg
-YXJlIHJlcG9ydGVkIGlmIG5lZWRlZC4KPgo+IElmIGFueSB1cGRhdGVzIGFyZSByZXF1aXJlZCBv
-ciB5b3UgYXJlIHN1Ym1pdHRpbmcgZnVydGhlciBjaGFuZ2VzIHRoZXkKPiBzaG91bGQgYmUgc2Vu
-dCBhcyBpbmNyZW1lbnRhbCB1cGRhdGVzIGFnYWluc3QgY3VycmVudCBnaXQsIGV4aXN0aW5nCj4g
-cGF0Y2hlcyB3aWxsIG5vdCBiZSByZXBsYWNlZC4KPgo+IFBsZWFzZSBhZGQgYW55IHJlbGV2YW50
-IGxpc3RzIGFuZCBtYWludGFpbmVycyB0byB0aGUgQ0NzIHdoZW4gcmVwbHlpbmcKPiB0byB0aGlz
-IG1haWwuCj4KPiBUaGFua3MsCj4gTWFyawo+Cj4gPkZyb20gMWE1NjU4YzIxMzExNmQ1NmExYTM4
-ZTgzNTg4ZjY2MzZhNTdkNjM3NCBNb24gU2VwIDE3IDAwOjAwOjAwIDIwMDEKPiBGcm9tOiBLdW5p
-bm9yaSBNb3JpbW90byA8a3VuaW5vcmkubW9yaW1vdG8uZ3hAcmVuZXNhcy5jb20+Cj4gRGF0ZTog
-VGh1LCAyOCBBcHIgMjAxNiAwMTo0OTo0OCArMDAwMAo+IFN1YmplY3Q6IFtQQVRDSF0gQVNvQzog
-cnNuZDogY291bnQgLnByb2JlLy5yZW1vdmUgZm9yIHJzbmRfbW9kX2NhbGwoKQo+Cj4gQ3VycmVu
-dCByc25kX21vZF9jYWxsIGlzIGNvdW50aW5nIGl0cyBjYWxsaW5nIGNvdW50IHRvIGF2b2lkIHVu
-YmFsYW5jZWQKPiBmdW5jdGlvbiBwYWlyIGNhbGxpbmcgZm9yIGVycm9yIGNhc2VzIChleCBpbml0
-IDwtPiBxdWl0KS4KPiBTU0kgcGFyZW50IGlzIG5vdyBjb250cm9sbGVkIGFzICJtb2QiIG9uIGN1
-cnJlbnQgcnNuZCBkcml2ZXIuIEJlY2F1c2Ugb2YKPiB0aGlzIHJlYXNvbiwgU1NJIC5yZW1vdmUg
-ZnVuY3Rpb24gd2lsbCBiZSBjYWxsZWQgdHdpY2UgaWYgaXQgd2FzIHVzZWQgYXMKPiBTU0kgcGFy
-ZW50IHdoZW4gdXNlciB0cmllZCB1bmJpbmQuIEJ1dCBwcm9iZS9yZW1vdmUgcGFpciB3ZXJlIG5v
-dAo+IGNvdW50ZWQuIFRoaXMgcGF0Y2ggY291bnRzIHByb2JlL3JlbW92ZSBmdW5jdGlvbnMgdG8g
-YXZvaWQgaXQuCj4gU3BlY2lhbCB0aGFucyBIaWVwCj4KPiBSZXBvcnRlZC1ieTogSGllcCBDYW8g
-TWluaCA8Y20taGllcEBqaW5zby5jby5qcD4KPiBTaWduZWQtb2ZmLWJ5OiBLdW5pbm9yaSBNb3Jp
-bW90byA8a3VuaW5vcmkubW9yaW1vdG8uZ3hAcmVuZXNhcy5jb20+Cj4gU2lnbmVkLW9mZi1ieTog
-TWFyayBCcm93biA8YnJvb25pZUBrZXJuZWwub3JnPgo+IC0tLQo+ICAgc291bmQvc29jL3NoL3Jj
-YXIvcnNuZC5oIHwgMTMgKysrKysrKy0tLS0tLQo+ICAgMSBmaWxlIGNoYW5nZWQsIDcgaW5zZXJ0
-aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2Mvc2gvcmNh
-ci9yc25kLmggYi9zb3VuZC9zb2Mvc2gvcmNhci9yc25kLmgKPiBpbmRleCBmYzg5YTY3MjU4Y2Eu
-LmE4ZjYxZDc5MzMzYiAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2Mvc2gvcmNhci9yc25kLmgKPiAr
-KysgYi9zb3VuZC9zb2Mvc2gvcmNhci9yc25kLmgKPiBAQCAtMjc2LDggKzI3Niw5IEBAIHN0cnVj
-dCByc25kX21vZCB7Cj4gICAvKgo+ICAgICogc3RhdHVzCj4gICAgKgo+IC0gKiAweEgwMDAwQ0Iw
-Cj4gKyAqIDB4SDAwMDBDQkEKPiAgICAqCj4gKyAqIEEJMDogcHJvYmUJMTogcmVtb3ZlCj4gICAg
-KiBCCTA6IGluaXQJCTE6IHF1aXQKPiAgICAqIEMJMDogc3RhcnQJMTogc3RvcAo+ICAgICoKPiBA
-QCAtMjg3LDE5ICsyODgsMTkgQEAgc3RydWN0IHJzbmRfbW9kIHsKPiAgICAqIEgJMDogZmFsbGJh
-Y2sKPiAgICAqIEgJMDogaHdfcGFyYW1zCj4gICAgKi8KPiArI2RlZmluZSBfX3JzbmRfbW9kX3No
-aWZ0X3Byb2JlCQkwCj4gKyNkZWZpbmUgX19yc25kX21vZF9zaGlmdF9yZW1vdmUJCTAKPiAgICNk
-ZWZpbmUgX19yc25kX21vZF9zaGlmdF9pbml0CQk0Cj4gICAjZGVmaW5lIF9fcnNuZF9tb2Rfc2hp
-ZnRfcXVpdAkJNAo+ICAgI2RlZmluZSBfX3JzbmRfbW9kX3NoaWZ0X3N0YXJ0CQk4Cj4gICAjZGVm
-aW5lIF9fcnNuZF9tb2Rfc2hpZnRfc3RvcAkJOAo+IC0jZGVmaW5lIF9fcnNuZF9tb2Rfc2hpZnRf
-cHJvYmUJCTI4IC8qIGFsd2F5cyBjYWxsZWQgKi8KPiAtI2RlZmluZSBfX3JzbmRfbW9kX3NoaWZ0
-X3JlbW92ZQkJMjggLyogYWx3YXlzIGNhbGxlZCAqLwo+ICAgI2RlZmluZSBfX3JzbmRfbW9kX3No
-aWZ0X2lycQkJMjggLyogYWx3YXlzIGNhbGxlZCAqLwo+ICAgI2RlZmluZSBfX3JzbmRfbW9kX3No
-aWZ0X3BjbV9uZXcJMjggLyogYWx3YXlzIGNhbGxlZCAqLwo+ICAgI2RlZmluZSBfX3JzbmRfbW9k
-X3NoaWZ0X2ZhbGxiYWNrCTI4IC8qIGFsd2F5cyBjYWxsZWQgKi8KPiAgICNkZWZpbmUgX19yc25k
-X21vZF9zaGlmdF9od19wYXJhbXMJMjggLyogYWx3YXlzIGNhbGxlZCAqLwo+ICAgCj4gLSNkZWZp
-bmUgX19yc25kX21vZF9hZGRfcHJvYmUJCTAKPiAtI2RlZmluZSBfX3JzbmRfbW9kX2FkZF9yZW1v
-dmUJCTAKPiArI2RlZmluZSBfX3JzbmRfbW9kX2FkZF9wcm9iZQkJIDEKPiArI2RlZmluZSBfX3Jz
-bmRfbW9kX2FkZF9yZW1vdmUJCS0xCj4gICAjZGVmaW5lIF9fcnNuZF9tb2RfYWRkX2luaXQJCSAx
-Cj4gICAjZGVmaW5lIF9fcnNuZF9tb2RfYWRkX3F1aXQJCS0xCj4gICAjZGVmaW5lIF9fcnNuZF9t
-b2RfYWRkX3N0YXJ0CQkgMQo+IEBAIC0zMTAsNyArMzExLDcgQEAgc3RydWN0IHJzbmRfbW9kIHsK
-PiAgICNkZWZpbmUgX19yc25kX21vZF9hZGRfaHdfcGFyYW1zCTAKPiAgIAo+ICAgI2RlZmluZSBf
-X3JzbmRfbW9kX2NhbGxfcHJvYmUJCTAKPiAtI2RlZmluZSBfX3JzbmRfbW9kX2NhbGxfcmVtb3Zl
-CQkwCj4gKyNkZWZpbmUgX19yc25kX21vZF9jYWxsX3JlbW92ZQkJMQo+ICAgI2RlZmluZSBfX3Jz
-bmRfbW9kX2NhbGxfaW5pdAkJMAo+ICAgI2RlZmluZSBfX3JzbmRfbW9kX2NhbGxfcXVpdAkJMQo+
-ICAgI2RlZmluZSBfX3JzbmRfbW9kX2NhbGxfc3RhcnQJCTAKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+The HDA links can be switched off when not is use, similarly
+command DMA can be stopped as well. This calls for a reference
+counting mechanism on the link by it's users to manage the link
+power. The DMA can be turned off when all links are off
+
+For this we add two APIs
+	snd_hdac_ext_bus_link_get
+	snd_hdac_ext_bus_link_put
+
+They help users to turn up/down link and manage the DMA as well
+
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ include/sound/hdaudio_ext.h         | 13 ++++++++
+ sound/hda/ext/hdac_ext_bus.c        |  3 ++
+ sound/hda/ext/hdac_ext_controller.c | 66 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 82 insertions(+)
+
+diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
+index 07fa59237feb..b9593b201599 100644
+--- a/include/sound/hdaudio_ext.h
++++ b/include/sound/hdaudio_ext.h
+@@ -14,6 +14,8 @@
+  * @gtscap: gts capabilities pointer
+  * @drsmcap: dma resume capabilities pointer
+  * @hlink_list: link list of HDA links
++ * @lock: lock for link mgmt
++ * @cmd_dma_state: state of cmd DMAs: CORB and RIRB
+  */
+ struct hdac_ext_bus {
+ 	struct hdac_bus bus;
+@@ -27,6 +29,9 @@ struct hdac_ext_bus {
+ 	void __iomem *drsmcap;
+ 
+ 	struct list_head hlink_list;
++
++	struct mutex lock;
++	bool cmd_dma_state;
+ };
+ 
+ int snd_hdac_ext_bus_init(struct hdac_ext_bus *sbus, struct device *dev,
+@@ -142,6 +147,9 @@ struct hdac_ext_link {
+ 	void __iomem *ml_addr; /* link output stream reg pointer */
+ 	u32 lcaps;   /* link capablities */
+ 	u16 lsdiid;  /* link sdi identifier */
++
++	int ref_count;
++
+ 	struct list_head list;
+ };
+ 
+@@ -154,6 +162,11 @@ void snd_hdac_ext_link_set_stream_id(struct hdac_ext_link *link,
+ void snd_hdac_ext_link_clear_stream_id(struct hdac_ext_link *link,
+ 				 int stream);
+ 
++int snd_hdac_ext_bus_link_get(struct hdac_ext_bus *ebus,
++				struct hdac_ext_link *link);
++int snd_hdac_ext_bus_link_put(struct hdac_ext_bus *ebus,
++				struct hdac_ext_link *link);
++
+ /* update register macro */
+ #define snd_hdac_updatel(addr, reg, mask, val)		\
+ 	writel(((readl(addr + reg) & ~(mask)) | (val)), \
+diff --git a/sound/hda/ext/hdac_ext_bus.c b/sound/hda/ext/hdac_ext_bus.c
+index 2433f7c81472..3b7ae24900fd 100644
+--- a/sound/hda/ext/hdac_ext_bus.c
++++ b/sound/hda/ext/hdac_ext_bus.c
+@@ -105,6 +105,9 @@ int snd_hdac_ext_bus_init(struct hdac_ext_bus *ebus, struct device *dev,
+ 	INIT_LIST_HEAD(&ebus->hlink_list);
+ 	ebus->idx = idx++;
+ 
++	mutex_init(&ebus->lock);
++	ebus->cmd_dma_state = true;
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_init);
+diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
+index 548cc1e4114b..860f8cad6602 100644
+--- a/sound/hda/ext/hdac_ext_controller.c
++++ b/sound/hda/ext/hdac_ext_controller.c
+@@ -186,6 +186,9 @@ int snd_hdac_ext_bus_get_ml_capabilities(struct hdac_ext_bus *ebus)
+ 		hlink->lcaps  = readl(hlink->ml_addr + AZX_REG_ML_LCAP);
+ 		hlink->lsdiid = readw(hlink->ml_addr + AZX_REG_ML_LSDIID);
+ 
++		/* since link in On, update the ref */
++		hlink->ref_count = 1;
++
+ 		list_add_tail(&hlink->list, &ebus->hlink_list);
+ 	}
+ 
+@@ -327,3 +330,66 @@ int snd_hdac_ext_bus_link_power_down_all(struct hdac_ext_bus *ebus)
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_power_down_all);
++
++int snd_hdac_ext_bus_link_get(struct hdac_ext_bus *ebus,
++				struct hdac_ext_link *link)
++{
++	int ret = 0;
++
++	mutex_lock(&ebus->lock);
++
++	/*
++	 * if we move from 0 to 1, count will be 1 so power up this link
++	 * as well, also check the dma status and trigger that
++	 */
++	if (++link->ref_count == 1) {
++		if (!ebus->cmd_dma_state) {
++			snd_hdac_bus_init_cmd_io(&ebus->bus);
++			ebus->cmd_dma_state = true;
++		}
++
++		ret = snd_hdac_ext_bus_link_power_up(link);
++	}
++
++	mutex_unlock(&ebus->lock);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_get);
++
++int snd_hdac_ext_bus_link_put(struct hdac_ext_bus *ebus,
++				struct hdac_ext_link *link)
++{
++	int ret = 0;
++	struct hdac_ext_link *hlink;
++	bool link_up = false;
++
++	mutex_lock(&ebus->lock);
++
++	/*
++	 * if we move from 1 to 0, count will be 0
++	 * so power down this link as well
++	 */
++	if (--link->ref_count == 0) {
++		ret = snd_hdac_ext_bus_link_power_down(link);
++
++		/*
++		 * now check if all links are off, if so turn off
++		 * cmd dma as well
++		 */
++		list_for_each_entry(hlink, &ebus->hlink_list, list) {
++			if (hlink->ref_count) {
++				link_up = true;
++				break;
++			}
++		}
++
++		if (!link_up) {
++			snd_hdac_bus_stop_cmd_io(&ebus->bus);
++			ebus->cmd_dma_state = false;
++		}
++	}
++
++	mutex_unlock(&ebus->lock);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_put);
+-- 
+1.9.1
