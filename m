@@ -1,60 +1,89 @@
-From: John Keeping <john@metanate.com>
-Subject: Re: [PATCH 5/9] ASoC: es8328: Use more suitable definition for mic
- bias
-Date: Thu, 12 May 2016 12:01:31 +0100
-Message-ID: <20160512120131.30a91984.john@metanate.com>
-References: <20160509112437.8924-1-john@metanate.com>
-	<20160509112437.8924-6-john@metanate.com>
-	<20160510175335.GC6261@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: MAX9860: new driver
+Date: Thu, 12 May 2016 12:04:06 +0100
+Message-ID: <20160512110406.GC6261@sirena.org.uk>
+References: <1462892797-1147-1-git-send-email-peda@axentia.se>
+ <20160511150937.GK6261@sirena.org.uk>
+ <65bdbaea-fe4e-bbd5-335d-a8d594936cbe@axentia.se>
+ <20160511205052.GU6261@sirena.org.uk>
+ <5e9b7d83-95ac-256a-a1e6-ca69da141c3a@axentia.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Dy3pjCZLf6+6NySR"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160510175335.GC6261@sirena.org.uk>
+Content-Disposition: inline
+In-Reply-To: <5e9b7d83-95ac-256a-a1e6-ca69da141c3a@axentia.se>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+To: Peter Rosin <peda@axentia.se>
+Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 10 May 2016 18:53:35 +0100, Mark Brown wrote:
 
-> On Mon, May 09, 2016 at 12:24:33PM +0100, John Keeping wrote:
-> 
-> > -	SND_SOC_DAPM_SUPPLY("Mic Bias", ES8328_ADCPOWER,
-> > -			ES8328_ADCPOWER_MIC_BIAS_OFF, 1, NULL, 0),
-> > +	SND_SOC_DAPM_MICBIAS("Mic Bias", ES8328_ADCPOWER,
-> > +			ES8328_ADCPOWER_MIC_BIAS_OFF, 1),  
-> 
-> No, this is broken.  The specialist MICBIAS widget is legacy and should
-> not be used.
+--Dy3pjCZLf6+6NySR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-OK, this can be dropped.  Would you consider doing something like the
-patch below?
+On Thu, May 12, 2016 at 09:54:18AM +0200, Peter Rosin wrote:
+> On 2016-05-11 22:50, Mark Brown wrote:
 
-The only reference I can find to MICBIAS being legacy is in commit
-086d7f804e26 ("ASoC: Convert WM8962 MICBIAS to a supply widget",
-2011-09-23) and some following commits, there don't seem to be any
-comments in the documentation indicating that it's not to be used.
+> >> http://www.spinics.net/lists/alsa-devel/msg49675.html
 
--- >8 --
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 97069466c38d..3101d53468aa 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -100,6 +100,7 @@ struct device;
- {       .id = snd_soc_dapm_mixer_named_ctl, .name = wname, \
- 	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
- 	.kcontrol_news = wcontrols, .num_kcontrols = wncontrols}
-+/* DEPRECATED: use SND_SOC_DAPM_SUPPLY */
- #define SND_SOC_DAPM_MICBIAS(wname, wreg, wshift, winvert) \
- {	.id = snd_soc_dapm_micbias, .name = wname, \
- 	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
-@@ -473,7 +474,7 @@ enum snd_soc_dapm_type {
- 	snd_soc_dapm_out_drv,			/* output driver */
- 	snd_soc_dapm_adc,			/* analog to digital converter */
- 	snd_soc_dapm_dac,			/* digital to analog converter */
--	snd_soc_dapm_micbias,		/* microphone bias (power) */
-+	snd_soc_dapm_micbias,		/* microphone bias (power) - DEPRECATED: use snd_soc_dapm_supply */
- 	snd_soc_dapm_mic,			/* microphone */
- 	snd_soc_dapm_hp,			/* headphones */
- 	snd_soc_dapm_spk,			/* speaker */
+> > If you don't CC maintainers the chances are your mails just won't get
+> > seen...
+
+> To me, it feels rude to single out people when asking general questions.
+
+It's not a general question, it's a question about the ASoC APIs.
+
+> I my world, these kind of questions are exactly what mailing lists are
+> for. But ok, lesson learned, noone actually reads alsa-devel...
+
+People do read the lists but it's very easy for things to get missed and
+they won't always check them so often as their inbox, if you're looking
+for a quick reply you're likely to be disappointed.
+
+> > You should change DAPM so that it understands what your control is
+> > doing, possibly by using custom accessors though it seems like something
+> > in the vein of the invert flag ought to do the trick.  You don't want to
+> > actually use the invert flag since increasing values do mean increasing
+> > volume but something along those lines.  Possibly doing it by parsing
+> > the TLV for a mute value at probe time might make sense?
+
+> It seems nicest to do the runtime scan of the TLV for the mute value when
+> the control is attached (or thereabouts), i.e. your last suggestion, and
+> then in snd_soc_dapm_put_volsw() change the line
+
+That's definitely the nicest if it isn't too horrible to implemenent,
+yes.
+
+> However, I don't see where to add the runtime scan of the TLV, and I don't
+> see what "something" in the above should be, i.e. where I should store the
+> result of the TLV scan?
+
+In the mixer control data where the invert and so on are at the minute.
+
+> Also, fixing DAPM to understand this problematic field will probably not
+> make any difference for the confusion seen in alsamixer. This, coupled with
+> the fact that the sidetone is not a function that I need makes me less than
+> eager to take this on...
+
+If alsamixer is failing to parse the TLV properly that needs fixing
+anyway.  You could just leave that bit for someone else who cares if
+it's mostly cosmetic though.
+
+--Dy3pjCZLf6+6NySR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXNGMlAAoJECTWi3JdVIfQ+9kH/j6YF+bVB8bYcojC06GixRm8
+NUm2XihYo0l/1i01M9/ZFYVk9lCX4Wc7FyWcZgx9q+vD/9rTXJnl6HuhmU90xmlP
+PJBf8fRkunBWHlGGao+J169IpudxLeaXlcrXH6b/DMN2dXklhPLcXZ/SB6CQ5RM9
+VQOhVcSxUxxxxTPXOQFHUJZKnVpOrA/TvvBP0425kmx0HQms7RjT8vevQEsTz9ha
+QEH+aouFcSXO5elXGufWD8VQgZ+pnHHLSPO1Z7PaIFD5XgSzvX14N76QNfUgOgWq
+uERII1uCDi9Bt3FvWNOG/KFM38Ld98ObqDQnX7V93GNqQreUmwaySwKBSF9UB78=
+=XU2H
+-----END PGP SIGNATURE-----
+
+--Dy3pjCZLf6+6NySR--
