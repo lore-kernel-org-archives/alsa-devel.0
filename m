@@ -1,15 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v3 0/3] ASoC: Intel: Skylake: Add HDA link
-	management
-Date: Thu, 12 May 2016 08:58:52 +0530
-Message-ID: <1463023735-16981-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v3 3/3] ASoC: hdac_hdmi: add link management
+Date: Thu, 12 May 2016 08:58:55 +0530
+Message-ID: <1463023735-16981-4-git-send-email-vinod.koul@intel.com>
+References: <1463023735-16981-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id E91892607C8
- for <alsa-devel@alsa-project.org>; Thu, 12 May 2016 05:22:52 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B5CB2650B4
+ for <alsa-devel@alsa-project.org>; Thu, 12 May 2016 05:22:58 +0200 (CEST)
+In-Reply-To: <1463023735-16981-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,45 +21,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
+Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-HDA links are always kept On, this patch adds link management
-routines in hdac extended core and it's use in Skylake driver and
-hdmi codec (runs on HDA link)
+Manage the hda idisp link using shiny new link APIs.  We need to
+keep link On while we probe and also hold the reference in runtime
+resume and drop in suspend
 
-The aim of serial is to shut down the links when not in use and
-keep them active when a user is active. The user can activate
-link by taking reference to the link when required.
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/codecs/hdac_hdmi.c | 32 ++++++++++++++++++++++++++++++--
+ 1 file changed, 30 insertions(+), 2 deletions(-)
 
-When all links are closed, the command DMAs are turned off as
-well. On first link power up, the command DMAs are turned on
-first.
-
-First patch touches HDA core, and rest two are dependent on it
-so Takashi if you are okay, pls ACK it and we can merge thru ASoC
-tree
-
-Changes in v3:
- - rename the varaible for dmas and make it bool
- - change the logic of checking links for powering off dmas as suggested by
-   takashi
-
-Changes in v2:
- - use mutex instead of spinlock
-
-Vinod Koul (3):
-  ALSA: hdac: add link pm and ref counting
-  ASoC: Intel: Skylake: add link mangement
-  ASoC: hdac_hdmi: add link management
-
- include/sound/hdaudio_ext.h         | 13 ++++++++
- sound/hda/ext/hdac_ext_bus.c        |  3 ++
- sound/hda/ext/hdac_ext_controller.c | 66 +++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/hdac_hdmi.c        | 32 ++++++++++++++++--
- sound/soc/intel/skylake/skl-pcm.c   |  1 -
- sound/soc/intel/skylake/skl.c       | 34 +++++++++++++++++++
- 6 files changed, 146 insertions(+), 3 deletions(-)
-
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index aaa038ffc8a5..13002f33384e 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -1378,10 +1378,18 @@ static int hdmi_codec_probe(struct snd_soc_codec *codec)
+ 	struct snd_soc_dapm_context *dapm =
+ 		snd_soc_component_get_dapm(&codec->component);
+ 	struct hdac_hdmi_pin *pin;
++	struct hdac_ext_link *hlink = NULL;
+ 	int ret;
+ 
+ 	edev->scodec = codec;
+ 
++	/*
++	 * hold the ref while we probe, also no need to drop the ref on
++	 * exit, we call pm_runtime_suspend() so that will do for us
++	 */
++	hlink = snd_hdac_ext_bus_get_link(edev->ebus, dev_name(&edev->hdac.dev));
++	snd_hdac_ext_bus_link_get(edev->ebus, hlink);
++
+ 	ret = create_fill_widget_route_map(dapm);
+ 	if (ret < 0)
+ 		return ret;
+@@ -1480,9 +1488,14 @@ static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
+ 	struct hdac_device *codec = &edev->hdac;
+ 	struct hdac_hdmi_priv *hdmi_priv;
+ 	struct snd_soc_dai_driver *hdmi_dais = NULL;
++	struct hdac_ext_link *hlink = NULL;
+ 	int num_dais = 0;
+ 	int ret = 0;
+ 
++	/* hold the ref while we probe */
++	hlink = snd_hdac_ext_bus_get_link(edev->ebus, dev_name(&edev->hdac.dev));
++	snd_hdac_ext_bus_link_get(edev->ebus, hlink);
++
+ 	hdmi_priv = devm_kzalloc(&codec->dev, sizeof(*hdmi_priv), GFP_KERNEL);
+ 	if (hdmi_priv == NULL)
+ 		return -ENOMEM;
+@@ -1516,8 +1529,12 @@ static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
+ 	}
+ 
+ 	/* ASoC specific initialization */
+-	return snd_soc_register_codec(&codec->dev, &hdmi_hda_codec,
+-			hdmi_dais, num_dais);
++	ret = snd_soc_register_codec(&codec->dev, &hdmi_hda_codec,
++					hdmi_dais, num_dais);
++
++	snd_hdac_ext_bus_link_put(edev->ebus, hlink);
++
++	return ret;
+ }
+ 
+ static int hdac_hdmi_dev_remove(struct hdac_ext_device *edev)
+@@ -1556,6 +1573,9 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
+ 	struct hdac_ext_device *edev = to_hda_ext_device(dev);
+ 	struct hdac_device *hdac = &edev->hdac;
+ 	struct hdac_bus *bus = hdac->bus;
++	unsigned long timeout;
++	struct hdac_ext_bus *ebus = hbus_to_ebus(bus);
++	struct hdac_ext_link *hlink = NULL;
+ 	int err;
+ 
+ 	dev_dbg(dev, "Enter: %s\n", __func__);
+@@ -1579,6 +1599,9 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
+ 		return err;
+ 	}
+ 
++	hlink = snd_hdac_ext_bus_get_link(ebus, dev_name(dev));
++	snd_hdac_ext_bus_link_put(ebus, hlink);
++
+ 	return 0;
+ }
+ 
+@@ -1587,6 +1610,8 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
+ 	struct hdac_ext_device *edev = to_hda_ext_device(dev);
+ 	struct hdac_device *hdac = &edev->hdac;
+ 	struct hdac_bus *bus = hdac->bus;
++	struct hdac_ext_bus *ebus = hbus_to_ebus(bus);
++	struct hdac_ext_link *hlink = NULL;
+ 	int err;
+ 
+ 	dev_dbg(dev, "Enter: %s\n", __func__);
+@@ -1595,6 +1620,9 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
+ 	if (!bus)
+ 		return 0;
+ 
++	hlink = snd_hdac_ext_bus_get_link(ebus, dev_name(dev));
++	snd_hdac_ext_bus_link_get(ebus, hlink);
++
+ 	err = snd_hdac_display_power(bus, true);
+ 	if (err < 0) {
+ 		dev_err(bus->dev, "Cannot turn on display power on i915\n");
 -- 
 1.9.1
