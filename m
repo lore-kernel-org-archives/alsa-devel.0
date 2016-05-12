@@ -1,48 +1,51 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/9] ASoC: es8328: Use more suitable definition for mic
- bias
-Date: Thu, 12 May 2016 12:12:16 +0100
-Message-ID: <20160512111216.GD6261@sirena.org.uk>
-References: <20160509112437.8924-1-john@metanate.com>
- <20160509112437.8924-6-john@metanate.com>
- <20160510175335.GC6261@sirena.org.uk>
- <20160512120131.30a91984.john@metanate.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="EcSFpNr6Vcxykj4g"
+From: John Keeping <john@metanate.com>
+Subject: [PATCH] ASoC: dapm: deprecate MICBIAS widget type
+Date: Thu, 12 May 2016 13:55:53 +0100
+Message-ID: <20160512125553.8523-1-john@metanate.com>
+References: <20160512111216.GD6261@sirena.org.uk>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20160512120131.30a91984.john@metanate.com>
+In-Reply-To: <20160512111216.GD6261@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: John Keeping <john@metanate.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: John Keeping <john@metanate.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
+Commit 086d7f804e26 ("ASoC: Convert WM8962 MICBIAS to a supply widget",
+2011-09-23) says:
 
---EcSFpNr6Vcxykj4g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+	A supply widget is generally clearer than a MICBIAS widget and a
+	mic bias is just a type of supply so use a supply widget for the
+	MICBIAS. This also avoids confusion with the routing when
+	connected to multiple inputs.
 
-On Thu, May 12, 2016 at 12:01:31PM +0100, John Keeping wrote:
+but this has never been documented as a policy.  Add some comments to
+make it clear.
 
-> OK, this can be dropped.  Would you consider doing something like the
-> patch below?
+Signed-off-by: John Keeping <john@metanate.com>
+---
+ include/sound/soc-dapm.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Documentation/SubmittingPatches.
-
---EcSFpNr6Vcxykj4g
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXNGUOAAoJECTWi3JdVIfQYxsH/jGAw389JQAq9gD7axsVQyty
-xlOXcB1ykmBjG7lsPYWdqyQngNh2nazuU0vpL1QxqrG32FFzMETD4R8yWyQwQM64
-S1GXO9OkpAuPziSn2S2TR1nU0IGJeKAgKk+8Z4SyWjgEHtf1i5NirZEtPDEN8yvH
-8htnr4Gh8PLrgmUJN7zIhpch5C8oXlVlAlbE2uIJFo3glhAlvO5Swtdeg8Ym56AN
-0EA0EM5vjPQu5teuf/bN1PB7cRPqjeaDrep0b72g+MOYm1ISTWq79S21vSFVJ69n
-kIHr4Lau6FB/JZrMrS6Hy/Hk5ioebPoJUQUYgWB3ThuAHgjj+l3p8TKmHFqpgxY=
-=USfY
------END PGP SIGNATURE-----
-
---EcSFpNr6Vcxykj4g--
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 97069466c38d..3101d53468aa 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -100,6 +100,7 @@ struct device;
+ {       .id = snd_soc_dapm_mixer_named_ctl, .name = wname, \
+ 	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+ 	.kcontrol_news = wcontrols, .num_kcontrols = wncontrols}
++/* DEPRECATED: use SND_SOC_DAPM_SUPPLY */
+ #define SND_SOC_DAPM_MICBIAS(wname, wreg, wshift, winvert) \
+ {	.id = snd_soc_dapm_micbias, .name = wname, \
+ 	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+@@ -473,7 +474,7 @@ enum snd_soc_dapm_type {
+ 	snd_soc_dapm_out_drv,			/* output driver */
+ 	snd_soc_dapm_adc,			/* analog to digital converter */
+ 	snd_soc_dapm_dac,			/* digital to analog converter */
+-	snd_soc_dapm_micbias,		/* microphone bias (power) */
++	snd_soc_dapm_micbias,		/* microphone bias (power) - DEPRECATED: use snd_soc_dapm_supply */
+ 	snd_soc_dapm_mic,			/* microphone */
+ 	snd_soc_dapm_hp,			/* headphones */
+ 	snd_soc_dapm_spk,			/* speaker */
+-- 
+2.8.2.565.gdb84f68.dirty
