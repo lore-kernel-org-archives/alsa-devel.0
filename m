@@ -1,18 +1,21 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: au88x0: Fix zero clear of
-	stream->resources
-Date: Thu, 12 May 2016 18:08:05 +0200
-Message-ID: <1463069285-1382-1-git-send-email-tiwai@suse.de>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: [PATCH] alsa-lib:Make snd_atomic_write_* truly
+ atomic
+Date: Thu, 12 May 2016 18:09:22 +0200
+Message-ID: <alpine.DEB.2.02.1605121800510.31333@lnxricardw1.se.axis.com>
+References: <570E2279.7060809@axis.com> <s5hwpo14o0n.wl-tiwai@suse.de>
+ <alpine.DEB.2.02.1605121446220.31333@lnxricardw1.se.axis.com>
+ <s5h37pnctrf.wl-tiwai@suse.de>
+ <alpine.DEB.2.02.1605121556390.31333@lnxricardw1.se.axis.com>
+ <s5hmvnvbafu.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 4242226670B
- for <alsa-devel@alsa-project.org>; Thu, 12 May 2016 18:08:06 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 0A3E8AC95
- for <alsa-devel@alsa-project.org>; Thu, 12 May 2016 16:08:06 +0000 (UTC)
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 182C126686E
+ for <alsa-devel@alsa-project.org>; Thu, 12 May 2016 18:09:30 +0200 (CEST)
+In-Reply-To: <s5hmvnvbafu.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,75 +25,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: =?ISO-8859-15?Q?Arvid_Nihlg=E5rd_Lindell?= <arvidnl@axis.com>, Andreas x Larsson <andrelan@axis.com>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-There are a few calls of memset() to stream->resources, but they all
-are called in a wrong size, sizeof(unsigned char) * VORTEX_RESOURCE_LAST,
-while this field is a u32 array.  This may leave the memories not
-zero-cleared.
-
-Fix it by replacing them with a simpler sizeof(stream->resources)
-instead.
-
-Reported-by: David Binderman <dcb314@hotmail.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/au88x0/au88x0_core.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
-
-diff --git a/sound/pci/au88x0/au88x0_core.c b/sound/pci/au88x0/au88x0_core.c
-index 4667c3232b7f..4a054d720112 100644
---- a/sound/pci/au88x0/au88x0_core.c
-+++ b/sound/pci/au88x0/au88x0_core.c
-@@ -2151,8 +2151,7 @@ vortex_adb_allocroute(vortex_t *vortex, int dma, int nr_ch, int dir,
- 							   stream->resources, en,
- 							   VORTEX_RESOURCE_SRC)) < 0) {
- 					memset(stream->resources, 0,
--					       sizeof(unsigned char) *
--					       VORTEX_RESOURCE_LAST);
-+					       sizeof(stream->resources));
- 					return -EBUSY;
- 				}
- 				if (stream->type != VORTEX_PCM_A3D) {
-@@ -2162,7 +2161,7 @@ vortex_adb_allocroute(vortex_t *vortex, int dma, int nr_ch, int dir,
- 								   VORTEX_RESOURCE_MIXIN)) < 0) {
- 						memset(stream->resources,
- 						       0,
--						       sizeof(unsigned char) * VORTEX_RESOURCE_LAST);
-+						       sizeof(stream->resources));
- 						return -EBUSY;
- 					}
- 				}
-@@ -2175,8 +2174,7 @@ vortex_adb_allocroute(vortex_t *vortex, int dma, int nr_ch, int dir,
- 						   stream->resources, en,
- 						   VORTEX_RESOURCE_A3D)) < 0) {
- 				memset(stream->resources, 0,
--				       sizeof(unsigned char) *
--				       VORTEX_RESOURCE_LAST);
-+				       sizeof(stream->resources));
- 				dev_err(vortex->card->dev,
- 					"out of A3D sources. Sorry\n");
- 				return -EBUSY;
-@@ -2290,8 +2288,7 @@ vortex_adb_allocroute(vortex_t *vortex, int dma, int nr_ch, int dir,
- 						   VORTEX_RESOURCE_MIXOUT))
- 			    < 0) {
- 				memset(stream->resources, 0,
--				       sizeof(unsigned char) *
--				       VORTEX_RESOURCE_LAST);
-+				       sizeof(stream->resources));
- 				return -EBUSY;
- 			}
- 			if ((src[i] =
-@@ -2299,8 +2296,7 @@ vortex_adb_allocroute(vortex_t *vortex, int dma, int nr_ch, int dir,
- 						   stream->resources, en,
- 						   VORTEX_RESOURCE_SRC)) < 0) {
- 				memset(stream->resources, 0,
--				       sizeof(unsigned char) *
--				       VORTEX_RESOURCE_LAST);
-+				       sizeof(stream->resources));
- 				return -EBUSY;
- 			}
- 		}
--- 
-2.8.2
+Ck9uIFRodSwgMTIgTWF5IDIwMTYsIFRha2FzaGkgSXdhaSB3cm90ZToKCj4gPiBUaGUgY29kZSBh
+cyBpdCBjdXJyZW50bHkgc3RhbmRzIGhhcyBtYWNyb3MgbGlrZQo+ID4gCj4gPiAjZGVmaW5lIG1i
+KCkgICAgX19hc21fXyBfX3ZvbGF0aWxlX18gKCJsb2NrOyBhZGRsICQwLDAoJSVlc3ApIjogOiA6
+Im1lbW9yeSIpCj4gPiAjZGVmaW5lIHJtYigpICAgbWIoKQo+ID4gI2RlZmluZSB3bWIoKSAgIF9f
+YXNtX18gX192b2xhdGlsZV9fICgiIjogOiA6Im1lbW9yeSIpCj4gPiAKPiA+IHdoaWNoIHN1cmVs
+eSBhcmUgZ2NjIHNwZWNpZmljLiBTbyBzdXJlbHkgaXQgY2FuJ3QgYmUgYSByZXF1aXJlbWVudCB0
+aGF0IAo+ID4gdGhlIHBhdGNoIHdvcmsgb24gb3RoZXIgY29tcGlsZXJzIGFzIHdlbGw/Cj4gCj4g
+V2VsbCwgaXQncyBub3QgdGhlIHJlcXVpcmVtZW50LiAgSXQncyBqdXN0IGEgcXVlc3Rpb24uCgpP
+ay4KCj4gPiBJdCBpcyByZWxldmFudCB0byB2ZXJpZnkgd2hpY2ggZ2NjIHZlcnNpb25zIHN1cHBv
+cnQgdGhlIGJ1aWx0aW5zIHVzZWQgaW4gCj4gPiB0aGUgcGF0Y2ggaG93ZXZlci4gSSBiZWxpZXZl
+IHRoZSBrZXJuZWwgaGFzIHJlcXVpcmVtZW50cyBvbiB3aGljaCBnY2MgCj4gPiB2ZXJzaW9ucyBp
+dCBjYW4gYmUgY29tcGlsZWQgd2l0aCwgYnV0IHBlcmhhcHMgd2UgbmVlZCB0byBiZSBtb3JlIGxl
+bmllbnQgCj4gPiB3aXRoIHVzZXJzcGFjZT8KPiAKPiBZZXMuICBBbmQgSSBiZXQgdGhhdCB0aGUg
+a2VybmVsIGNhbiBiZSBzdGlsbCBidWlsdCB3aXRoIGEgZ2NjIHZlcnNpb24KPiB0aGF0IGRvZXNu
+J3Qgc3VwcG9ydCB0aGUgbmV3IGF0b21pYyBwcmltaXRpdmUsIHRvby4KClllcywgdGhhdCB3b3Vs
+ZCBuZWVkIHRvIGJlIGxvb2tlZCBpbiB0byBvZiBjb3Vyc2UuCgo+ID4gSW4gdG90YWwsIHRoZSB2
+YXJpb3VzIHNuZF9hdG9taWNfKiBtYWNyb3MgYXJlIHVzZWQgfjIwIHRpbWVzIGluIHBjbV9yYXRl
+LmMgCj4gPiBhbmQgfjMwIHRpbWVzIGluIHBjbV9wbHVnaW4uYyAuIElmIHRoZSBhdG9taWMgZnVu
+Y3Rpb25hbGl0eSBpcyBpbmRlZWQgCj4gPiBuZWNlc3NhcnkgKGFuZCBpdCBhcHBlYXJzIHRvIGJl
+KSwgaXQgd291bGQgc2VlbSB3b3J0aCB3aGlsZSBhYnN0cmFjdGluZyAKPiA+IHRoZSBuaXR0eSBn
+cml0dHkgdXNpbmcgbWFjcm9zIEkgdGhpbmssIHJhdGhlciB0aGFuIGNsdXR0ZXJpbmcgdXAgdGhl
+IGNvZGUuCj4gCj4gSW4gb3RoZXIgd29yZHMsIGl0J3MgdXNlZCBvbmx5IHRoZXJlLiAgTW9zdCBv
+ZiBvdGhlciBjb2RlcyBkb24ndCBjYXJlCj4gYWJvdXQgaXQuICBTbywgdGhlIHVzZWZ1bG5lc3Mg
+b2YgdGhlIGF0b21pYyBvcGVyYXRpb24gdGhlcmUgaXMgcmVhbGx5Cj4gZG91YnRmdWwuCj4KPiBb
+Li4uXQo+Cj4gPiBPbmUgd291bGQgZXhwZWN0IG90aGVyd2lzZSB0aGF0IHRoaXMgaXNzdWUgd291
+bGQgaGF2ZSBjb21lIHVwIG11Y2ggCj4gPiBzb29uZXIuCj4gCj4gWWVhaCwgdGhhdCdzIHdoeSBJ
+IHN0YXRlZCB0aGUgcHJpbWFyeSBxdWVzdGlvbi4gIFRoZSBhdG9taWMgb3BlcmF0aW9uCj4gdGhl
+cmUgaXMgbW9zdGx5IGNvc21ldGljLCBub3QgcmVhbGx5IGhlbHBmdWwuICBJbiB0aGUgd2hvbGUg
+b3RoZXIKPiBvcGVyYXRpb24sIHdlIGRvbid0IGd1YXJhbnRlZSB0aGUgdGhyZWFkIHNhZmV0eSBh
+dCBhbGwuICBTbywKPiBpbXBsZW1lbnRpbmcgdGhlIGF0b21pYyBvcCBvbmx5IGluIGEgdmVyeSBz
+bWFsbCBwYXJ0IG9mIHRoZSB3aG9sZSBjb2RlCj4gYXBwZWFycyBsaWtlIGEgc3VwZXJmbHVvdXMg
+b3B0aW1pemF0aW9uIHRvIG1lLgo+IAo+IFRoYXQgc2FpZDogbXkgcHJlZmVycmVkIG9wdGlvbiBp
+cyB0byBzY3JhdGNoIHRoZSB3aG9sZSBhdG9taWMgdGhpbmcuCgpUaGF0J3MgYSB2YWxpZCBwb2lu
+dCwgc3RpbGwgaXQgd2FzIG9uY2UgYWRkZWQgaW4gYSBzcGVjaWZpYyBjb21taXQgCihhMDJlNzQy
+NjA5YmIwZWQ5NjEwODA5ZmM2MmI1ZjkyN2RkMDg2ZTYyKSwgc28gb25lIHdvdWxkIHRoaW5rIGl0
+IHdhcyAKYWRkZWQgZm9yIGEgcmVhc29uLiBJdCB3YXMgYSBsb25nIHRpbWUgYWdvIG5vdywgMTUg
+eWVhcnMgaXQgc2VlbXMsIHNvIG9mIApjb3Vyc2UgaXQgY291bGQgaGF2ZSBiZWVuIHBhcnQgb2Yg
+bGFyZ2VyIHRocmVhZCBzYWZldHkgb3BlcmF0aW9uIHRoYXQgd2FzIApuZXZlciBjb21wbGV0ZWQg
+b3IgaW4gdGhlIGVuZCBkZWVtZWQgdW5uZWNlc3NhcnkgLSB0aGUgY29tbWl0IG1lc3NhZ2UgCml0
+c2VsZiBkb2Vzbid0IHByb3ZpZGUgbWFueSBoZWxwZnVsIGhpbnRzLgoKVGhlIGZhY3QgdGhhdCB3
+ZSBoYXZlIHNlZW4gYSByYWNlIGNvbmRpdGlvbiB3aGljaCBpcyBmaXhlZCBieSB0aGUgcGF0Y2gg
+CnVuZGVyIGRpc2N1c3Npb24gaW5kaWNhdGVzIHRoYXQgaXQgaXMgaW4gZmFjdCByZXF1cmVkLCBh
+bHRob3VnaCBpdCBjb3VsZCAKYWxzbyBiZSB0aGF0IHRoZSBwYXRjaCBzaW1wbHkgc2hpZnRzIHRo
+ZSB0aW1pbmcgYXJvdW5kIHNvIHRoYXQgdGhlIApwb3RlbnRpYWwgcmVhbCBwcm9ibGVtIGlzIG5v
+dCB2aXNpYmxlLgoKL1JpY2FyZAotLSAKUmljYXJkIFdvbGYgV2FuZGVybMO2ZiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIHJpY2FyZHcoYXQpYXhpcy5jb20KQXhpcyBDb21tdW5pY2F0aW9ucyBB
+QiwgTHVuZCwgU3dlZGVuICAgICAgICAgICAgd3d3LmF4aXMuY29tClBob25lICs0NiA0NiAyNzIg
+MjAxNiAgICAgICAgICAgICAgICAgICAgICAgICAgIEZheCArNDYgNDYgMTMgNjEgMzAKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
