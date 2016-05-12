@@ -1,17 +1,22 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v3 2/3] ASoC: Intel: Skylake: add link
-	management
-Date: Thu, 12 May 2016 08:58:54 +0530
-Message-ID: <1463023735-16981-3-git-send-email-vinod.koul@intel.com>
-References: <1463023735-16981-1-git-send-email-vinod.koul@intel.com>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: Re: [PATCH 1/2] ASoC: nau8825: non-clock jack
+ detection for power saving at standby
+Date: Thu, 12 May 2016 11:54:54 +0800
+Message-ID: <5733FE8E.1040104@nuvoton.com>
+References: <1461917718-25211-1-git-send-email-KCHSU0@nuvoton.com>
+ <20160502162715.GK6292@sirena.org.uk> <57286D40.6030002@nuvoton.com>
+ <20160504163943.GZ6292@sirena.org.uk> <572C4AB6.9030106@nuvoton.com>
+ <20160506181855.GZ6292@sirena.org.uk> <572FFCA7.8030604@nuvoton.com>
+ <20160509163528.GD3458@sirena.org.uk> <573152EB.5090906@nuvoton.com>
+ <20160511171506.GQ6261@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id A30F8265068
- for <alsa-devel@alsa-project.org>; Thu, 12 May 2016 05:22:56 +0200 (CEST)
-In-Reply-To: <1463023735-16981-1-git-send-email-vinod.koul@intel.com>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18E6B2607C8
+ for <alsa-devel@alsa-project.org>; Thu, 12 May 2016 05:54:58 +0200 (CEST)
+In-Reply-To: <20160511171506.GQ6261@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,112 +26,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, "anatol.pomozov@gmail.com" <anatol.pomozov@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "benzh@chromium.org" <benzh@chromium.org>, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <MHKuo@nuvoton.com>, "yong.zhi@intel.com" <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use shiny new link APIs to manage the links. Also remove old link
-configuration logic from driver.
+On 5/12/2016 1:15 AM, Mark Brown wrote:
+> On Tue, May 10, 2016 at 11:18:03AM +0800, John Hsu wrote:
+>   
+>> On 5/10/2016 12:35 AM, Mark Brown wrote:
+>>     
+>
+>   
+>>> Well, the machine driver has to cope anyway.  What's not clear to me is
+>>> if the device *has* to use the internal clock when doing accessory
+>>> detection or if it's just lower power.
+>>>       
+>
+>   
+>> If the codec only does accessory insertion detection, the driver can setup
+>> it and doesn't need any clock. That can make lower power. But if the codec
+>> wants to do advanced jack detection like mic or impedance, the driver needs
+>> the internal clock to setup auto detection. Thus, when no headset connected
+>> yet, we use the solution without internal clock for power saving. When we
+>> want to do advanced detection, we use the solution with internal clock.
+>>     
+>
+> I'm afraid this still leaves me none the wiser, sorry.  If this
+> switching to the internal clock is essential to the device operation
+> then I'd expect it to be made transparent to callers so it should
+> happen transparently rather than appearing via set_sysclk().  If it's
+> not and it's just a performance optimisation then erroring out is
+> definitely excessive but if the optimisation can be implemented
+> transparently then it might be nice to do that.
+>   
 
-We need to keep link and cmd dma to off during active suspend
-to allow system to enter low power state and turn it on if
-the link and cmd dma was on before active suspend in active
-resume.
-
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/skylake/skl-pcm.c |  1 -
- sound/soc/intel/skylake/skl.c     | 34 ++++++++++++++++++++++++++++++++++
- 2 files changed, 34 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 4494db6a05f5..15480234b20b 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -533,7 +533,6 @@ static int skl_link_pcm_prepare(struct snd_pcm_substream *substream,
- 	if (!link)
- 		return -EINVAL;
- 
--	snd_hdac_ext_bus_link_power_up(link);
- 	snd_hdac_ext_link_stream_reset(link_dev);
- 
- 	snd_hdac_ext_link_stream_setup(link_dev, format_val);
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 83e985c0c0c9..06d8c263c68f 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -229,7 +229,12 @@ static int skl_suspend(struct device *dev)
- 	 * running, we need to save the state for these and continue
- 	 */
- 	if (skl->supend_active) {
-+		/* turn off the links and stop the CORB/RIRB DMA if it is On */
- 		snd_hdac_ext_bus_link_power_down_all(ebus);
-+
-+		if (ebus->cmd_dma_state)
-+			snd_hdac_bus_stop_cmd_io(&ebus->bus);
-+
- 		enable_irq_wake(bus->irq);
- 		pci_save_state(pci);
- 		pci_disable_device(pci);
-@@ -255,6 +260,7 @@ static int skl_resume(struct device *dev)
- 	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
- 	struct skl *skl  = ebus_to_skl(ebus);
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+	struct hdac_ext_link *hlink = NULL;
- 	int ret;
- 
- 	/* Turned OFF in HDMI codec driver after codec reconfiguration */
-@@ -276,8 +282,29 @@ static int skl_resume(struct device *dev)
- 		ret = pci_enable_device(pci);
- 		snd_hdac_ext_bus_link_power_up_all(ebus);
- 		disable_irq_wake(bus->irq);
-+		/*
-+		 * turn On the links which are On before active suspend
-+		 * and start the CORB/RIRB DMA if On before
-+		 * active suspend.
-+		 */
-+		list_for_each_entry(hlink, &ebus->hlink_list, list) {
-+			if (hlink->ref_count)
-+				snd_hdac_ext_bus_link_power_up(hlink);
-+		}
-+
-+		if (ebus->cmd_dma_state)
-+			snd_hdac_bus_init_cmd_io(&ebus->bus);
- 	} else {
- 		ret = _skl_resume(ebus);
-+
-+		/* turn off the links which are off before suspend */
-+		list_for_each_entry(hlink, &ebus->hlink_list, list) {
-+			if (!hlink->ref_count)
-+				snd_hdac_ext_bus_link_power_down(hlink);
-+		}
-+
-+		if (!ebus->cmd_dma_state)
-+			snd_hdac_bus_stop_cmd_io(&ebus->bus);
- 	}
- 
- 	return ret;
-@@ -613,6 +640,7 @@ static int skl_probe(struct pci_dev *pci,
- 	struct skl *skl;
- 	struct hdac_ext_bus *ebus = NULL;
- 	struct hdac_bus *bus = NULL;
-+	struct hdac_ext_link *hlink = NULL;
- 	int err;
- 
- 	/* we use ext core ops, so provide NULL for ops here */
-@@ -679,6 +707,12 @@ static int skl_probe(struct pci_dev *pci,
- 		}
- 	}
- 
-+	/*
-+	 * we are done probling so decrement link counts
-+	 */
-+	list_for_each_entry(hlink, &ebus->hlink_list, list)
-+		snd_hdac_ext_bus_link_put(ebus, hlink);
-+
- 	/*configure PM */
- 	pm_runtime_put_noidle(bus->dev);
- 	pm_runtime_allow(bus->dev);
--- 
-1.9.1
+In the driver patch, the internal clock switching is transparently
+done by driver when the codec runs advanced jack detection. Our
+purpose is to prevent the machine turns on the internal clock by
+itself when no headset connected. That will not affect function
+work but make more power consumption. Maybe we can change to clock
+disabled quietly when the machine turns on the internal clock when
+no headset connected. Is it the right way?
