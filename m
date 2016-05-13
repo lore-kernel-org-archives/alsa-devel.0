@@ -1,7 +1,7 @@
 From: kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org
-Subject: [PATCH 1/2] ASoC: pcm5102a: Add support for PCM5102A codec
-Date: Fri, 13 May 2016 09:14:12 +0000
-Message-ID: <1463130853-25096-2-git-send-email-kernel@martin.sperl.org>
+Subject: [PATCH 2/2] ASoC: Add support for HifiBerry DAC
+Date: Fri, 13 May 2016 09:14:13 +0000
+Message-ID: <1463130853-25096-3-git-send-email-kernel@martin.sperl.org>
 References: <1463130853-25096-1-git-send-email-kernel@martin.sperl.org>
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 In-Reply-To: <1463130853-25096-1-git-send-email-kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
@@ -12,95 +12,84 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
 
-Some definitions to support the PCM5102A codec
-by Texas Instruments.
+This adds a machine driver for the HifiBerry DAC.
+It is a sound card that can be stacked onto the Raspberry Pi.
 
 Signed-off-by: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
 
 Changes to original patch by Florian Meier:
-* rebased (Makefile and Kconfig
-* fixed checkpath errors (spaces, newlines)
+* added .owner to struct snd_rpi_hifiberry_dac (ref-count)
+
+Signed-off-by: Matthias Reichl <hias-vtPv7MOkFPkAvxtiuMwx3w@public.gmane.org>
+
+Changes to original patch by Florian Meier:
+* change to use BCM2835 in config keys instead of bcm2708
+* fixed checkpath errors (spaces, indentation)
 * added dt-binding documentation
 
 Signed-off-by: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
 ---
- .../devicetree/bindings/sound/pcm5102a.txt         | 13 ++++
- sound/soc/codecs/Kconfig                           |  4 ++
- sound/soc/codecs/Makefile                          |  2 +
- sound/soc/codecs/pcm5102a.c                        | 69 ++++++++++++++++++++++
- 4 files changed, 88 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/pcm5102a.txt
- create mode 100644 sound/soc/codecs/pcm5102a.c
+ .../bindings/sound/hifiberry,hifiberry-dac.txt     |  12 ++
+ sound/soc/bcm/Kconfig                              |   7 ++
+ sound/soc/bcm/Makefile                             |   3 +-
+ sound/soc/bcm/hifiberry_dac.c                      | 126 +++++++++++++++++++++
+ 4 files changed, 147 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/hifiberry,hifiberry-dac.txt
+ create mode 100644 sound/soc/bcm/hifiberry_dac.c
 
-diff --git a/Documentation/devicetree/bindings/sound/pcm5102a.txt b/Documentation/devicetree/bindings/sound/pcm5102a.txt
+diff --git a/Documentation/devicetree/bindings/sound/hifiberry,hifiberry-dac.txt b/Documentation/devicetree/bindings/sound/hifiberry,hifiberry-dac.txt
 new file mode 100644
-index 0000000..c63ab0b6
+index 0000000..88ba248
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/pcm5102a.txt
-@@ -0,0 +1,13 @@
-+PCM5102a audio CODECs
-+
-+These devices does not use I2C or SPI.
++++ b/Documentation/devicetree/bindings/sound/hifiberry,hifiberry-dac.txt
+@@ -0,0 +1,12 @@
++* Hifiberry-dac soundcard-hat for raspberry-pi
 +
 +Required properties:
++- compatible: "hifiberry,hifiberry-dac"
++- i2s-controller: phandle of the bcm2835 i2s controller
 +
-+  - compatible : set as "ti,pcm5102a"
++Example:
 +
-+Examples:
++sound {
++      compatible = "hifiberry,hifiberry-dac";
++      i2s-controller = <&i2s>;
++};
+diff --git a/sound/soc/bcm/Kconfig b/sound/soc/bcm/Kconfig
+index 6a834e1..e912774 100644
+--- a/sound/soc/bcm/Kconfig
++++ b/sound/soc/bcm/Kconfig
+@@ -7,3 +7,10 @@ config SND_BCM2835_SOC_I2S
+ 	  Say Y or M if you want to add support for codecs attached to
+ 	  the BCM2835 I2S interface. You will also need
+ 	  to select the audio interfaces to support below.
 +
-+	pcm5102a: pcm5102a {
-+		compatible = "ti,pcm5102a";
-+	};
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 7ef3a0c..26ae0b5 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -94,6 +94,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_PCM3008
- 	select SND_SOC_PCM3168A_I2C if I2C
- 	select SND_SOC_PCM3168A_SPI if SPI_MASTER
-+	select SND_SOC_PCM5102A
- 	select SND_SOC_PCM512x_I2C if I2C
- 	select SND_SOC_PCM512x_SPI if SPI_MASTER
- 	select SND_SOC_RT286 if I2C
-@@ -575,6 +576,9 @@ config SND_SOC_PCM3168A_SPI
- 	select SND_SOC_PCM3168A
- 	select REGMAP_SPI
- 
-+config SND_SOC_PCM5102A
-+	tristate
-+
- config SND_SOC_PCM512x
- 	tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 185a712..4532a74 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -89,6 +89,7 @@ snd-soc-pcm3008-objs := pcm3008.o
- snd-soc-pcm3168a-objs := pcm3168a.o
- snd-soc-pcm3168a-i2c-objs := pcm3168a-i2c.o
- snd-soc-pcm3168a-spi-objs := pcm3168a-spi.o
-+snd-soc-pcm5102a-objs := pcm5102a.o
- snd-soc-pcm512x-objs := pcm512x.o
- snd-soc-pcm512x-i2c-objs := pcm512x-i2c.o
- snd-soc-pcm512x-spi-objs := pcm512x-spi.o
-@@ -298,6 +299,7 @@ obj-$(CONFIG_SND_SOC_PCM3008)	+= snd-soc-pcm3008.o
- obj-$(CONFIG_SND_SOC_PCM3168A)	+= snd-soc-pcm3168a.o
- obj-$(CONFIG_SND_SOC_PCM3168A_I2C)	+= snd-soc-pcm3168a-i2c.o
- obj-$(CONFIG_SND_SOC_PCM3168A_SPI)	+= snd-soc-pcm3168a-spi.o
-+obj-$(CONFIG_SND_SOC_PCM5102A)	+= snd-soc-pcm5102a.o
- obj-$(CONFIG_SND_SOC_PCM512x)	+= snd-soc-pcm512x.o
- obj-$(CONFIG_SND_SOC_PCM512x_I2C)	+= snd-soc-pcm512x-i2c.o
- obj-$(CONFIG_SND_SOC_PCM512x_SPI)	+= snd-soc-pcm512x-spi.o
-diff --git a/sound/soc/codecs/pcm5102a.c b/sound/soc/codecs/pcm5102a.c
++config SND_BCM2835_SOC_HIFIBERRY_DAC
++        tristate "Support for HifiBerry DAC"
++        depends on SND_BCM2835_SOC_I2S
++        select SND_SOC_PCM5102A
++        help
++         Say Y or M if you want to add support for HifiBerry DAC.
+diff --git a/sound/soc/bcm/Makefile b/sound/soc/bcm/Makefile
+index bc816b7..bc6e249 100644
+--- a/sound/soc/bcm/Makefile
++++ b/sound/soc/bcm/Makefile
+@@ -1,5 +1,6 @@
+ # BCM2835 Platform Support
+ snd-soc-bcm2835-i2s-objs := bcm2835-i2s.o
++snd-soc-hifiberry-dac-objs := hifiberry_dac.o
+
+ obj-$(CONFIG_SND_BCM2835_SOC_I2S) += snd-soc-bcm2835-i2s.o
+-
++obj-$(CONFIG_SND_BCM2835_SOC_HIFIBERRY_DAC) += snd-soc-hifiberry-dac.o
+diff --git a/sound/soc/bcm/hifiberry_dac.c b/sound/soc/bcm/hifiberry_dac.c
 new file mode 100644
-index 0000000..ed51567
+index 0000000..9e79bbf
 --- /dev/null
-+++ b/sound/soc/codecs/pcm5102a.c
-@@ -0,0 +1,69 @@
++++ b/sound/soc/bcm/hifiberry_dac.c
+@@ -0,0 +1,126 @@
 +/*
-+ * Driver for the PCM5102A codec
++ * ASoC Driver for HifiBerry DAC
 + *
 + * Author:	Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
 + *		Copyright 2013
@@ -115,62 +104,118 @@ index 0000000..ed51567
 + * General Public License for more details.
 + */
 +
-+#include <linux/init.h>
 +#include <linux/module.h>
 +#include <linux/platform_device.h>
 +
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
 +#include <sound/soc.h>
++#include <sound/jack.h>
 +
-+static struct snd_soc_dai_driver pcm5102a_dai = {
-+	.name = "pcm5102a-hifi",
-+	.playback = {
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_8000_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+			   SNDRV_PCM_FMTBIT_S24_LE |
-+			   SNDRV_PCM_FMTBIT_S32_LE
-+	},
-+};
-+
-+static struct snd_soc_codec_driver soc_codec_dev_pcm5102a;
-+
-+static int pcm5102a_probe(struct platform_device *pdev)
++static int snd_rpi_hifiberry_dac_init(struct snd_soc_pcm_runtime *rtd)
 +{
-+	return snd_soc_register_codec(&pdev->dev, &soc_codec_dev_pcm5102a,
-+			&pcm5102a_dai, 1);
-+}
-+
-+static int pcm5102a_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_codec(&pdev->dev);
 +	return 0;
 +}
 +
-+static const struct of_device_id pcm5102a_of_match[] = {
-+	{ .compatible = "ti,pcm5102a", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, pcm5102a_of_match);
++static int snd_rpi_hifiberry_dac_hw_params(
++	struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
 +
-+static struct platform_driver pcm5102a_codec_driver = {
-+	.probe		= pcm5102a_probe,
-+	.remove		= pcm5102a_remove,
-+	.driver		= {
-+		.name	= "pcm5102a-codec",
-+		.owner	= THIS_MODULE,
-+		.of_match_table = pcm5102a_of_match,
++	unsigned int sample_bits =
++		snd_pcm_format_physical_width(params_format(params));
++
++	return snd_soc_dai_set_bclk_ratio(cpu_dai, sample_bits * 2);
++}
++
++/* machine stream operations */
++static struct snd_soc_ops snd_rpi_hifiberry_dac_ops = {
++	.hw_params = snd_rpi_hifiberry_dac_hw_params,
++};
++
++static struct snd_soc_dai_link snd_rpi_hifiberry_dac_dai[] = {
++{
++	.name		= "HifiBerry DAC",
++	.stream_name	= "HifiBerry DAC HiFi",
++	.cpu_dai_name	= "bcm2708-i2s.0",
++	.codec_dai_name	= "pcm5102a-hifi",
++	.platform_name	= "bcm2708-i2s.0",
++	.codec_name	= "pcm5102a-codec",
++	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++				SND_SOC_DAIFMT_CBS_CFS,
++	.ops		= &snd_rpi_hifiberry_dac_ops,
++	.init		= snd_rpi_hifiberry_dac_init,
++},
++};
++
++/* audio machine driver */
++static struct snd_soc_card snd_rpi_hifiberry_dac = {
++	.name         = "snd_rpi_hifiberry_dac",
++	.owner        = THIS_MODULE,
++	.dai_link     = snd_rpi_hifiberry_dac_dai,
++	.num_links    = ARRAY_SIZE(snd_rpi_hifiberry_dac_dai),
++};
++
++static int snd_rpi_hifiberry_dac_probe(struct platform_device *pdev)
++{
++	struct device_node *i2s_node;
++	struct snd_soc_dai_link *dai;
++	int ret = 0;
++
++	snd_rpi_hifiberry_dac.dev = &pdev->dev;
++
++	if (pdev->dev.of_node) {
++		dai = &snd_rpi_hifiberry_dac_dai[0];
++		i2s_node = of_parse_phandle(pdev->dev.of_node,
++					    "i2s-controller", 0);
++
++		if (i2s_node) {
++			dai->cpu_dai_name = NULL;
++			dai->cpu_of_node = i2s_node;
++			dai->platform_name = NULL;
++			dai->platform_of_node = i2s_node;
++		}
++	}
++
++	ret = snd_soc_register_card(&snd_rpi_hifiberry_dac);
++	if (ret)
++		dev_err(&pdev->dev,
++			"snd_soc_register_card() failed: %d\n", ret);
++
++	return ret;
++}
++
++static int snd_rpi_hifiberry_dac_remove(struct platform_device *pdev)
++{
++	return snd_soc_unregister_card(&snd_rpi_hifiberry_dac);
++}
++
++static const struct of_device_id snd_rpi_hifiberry_dac_of_match[] = {
++	{ .compatible = "hifiberry,hifiberry-dac", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, snd_rpi_hifiberry_dac_of_match);
++
++static struct platform_driver snd_rpi_hifiberry_dac_driver = {
++	.driver = {
++		.name   = "snd-hifiberry-dac",
++		.owner  = THIS_MODULE,
++		.of_match_table = snd_rpi_hifiberry_dac_of_match,
 +	},
++	.probe	= snd_rpi_hifiberry_dac_probe,
++	.remove	= snd_rpi_hifiberry_dac_remove,
 +};
 +
-+module_platform_driver(pcm5102a_codec_driver);
++module_platform_driver(snd_rpi_hifiberry_dac_driver);
 +
-+MODULE_DESCRIPTION("ASoC PCM5102A codec driver");
 +MODULE_AUTHOR("Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>");
++MODULE_DESCRIPTION("ASoC Driver for HifiBerry DAC");
 +MODULE_LICENSE("GPL v2");
--- 
+--
 2.1.4
-
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
