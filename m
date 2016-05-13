@@ -1,79 +1,76 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: atmel_ssc_dai: note buggy I2S support when the
- codec masters LRCLK
-Date: Fri, 13 May 2016 12:42:32 +0100
-Message-ID: <20160513114232.GH22038@sirena.org.uk>
-References: <1461747993-11516-1-git-send-email-peda@axentia.se>
- <20160427162344.GA3217@sirena.org.uk>
- <29d9da68-789d-d3ea-cb9a-0230596e3069@axentia.se>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v3 0/7] ARM/ASoC: OMAP3: Fix McBSP2/3
+	sidetone support
+Date: Fri, 13 May 2016 14:45:34 +0300
+Message-ID: <f7af7b30-563a-0048-9696-6ad0125d8f68@ti.com>
+References: <1461927202-17677-1-git-send-email-peter.ujfalusi@ti.com>
+ <69ff65ee-e5d1-09fb-fd91-8d7b4d8fdda4@ti.com>
+ <20160512164201.GQ5995@atomide.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="l06SQqiZYCi8rTKz"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <29d9da68-789d-d3ea-cb9a-0230596e3069@axentia.se>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Rosin <peda@axentia.se>
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [198.47.19.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 01033260564
+ for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 13:45:41 +0200 (CEST)
+In-Reply-To: <20160512164201.GQ5995@atomide.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tony Lindgren <tony@atomide.com>
+Cc: devicetree@vger.kernel.org, paul@pwsan.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, t-kristo@ti.com, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, jarkko.nikula@bitmer.com
 List-Id: alsa-devel@alsa-project.org
 
+On 05/12/16 19:42, Tony Lindgren wrote:
+> * Peter Ujfalusi <peter.ujfalusi@ti.com> [160511 01:46]:
+>> Tony, Paul,
+>>
+>> On 04/29/16 13:53, Peter Ujfalusi wrote:
+>>> Hi,
+>>>
+>>> Based on the ongoing discussion on v2 (ARM: OMAP3: Fix McBSP2/3 hwmod s=
+etup for
+>>> sidetone) I have dropped the removal of the sidetone hwmod and only cor=
+rected
+>>> it. The series now includes all related changes needed to have correct =
+sidetone
+>>> support whenever we boot in legacy or in DT mode.
+>>>
+>>> This time the ASoC part have dependency on earlier patches so they can =
+not be
+>>> applied separately.
+>>
+>> How should we proceed from here? I don't want to start designing the ST
+>> separation infrastructure which would be based on this series, but if th=
+ere
+>> are outstanding issues found on this, I would need to go back to the dra=
+wing
+>> board.
+>> The separation will be mostly new code and code shuffle in ASoC, but for
+>> legacy I will need to build up something in arch as well, so I would nee=
+d at
+>> least one release cycle to start with things.
+> =
 
---l06SQqiZYCi8rTKz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Well looks like we have all the acks, so I can apply these. We have
+> not heard from Paul on this for a while, so let's wait few days for
+> that.
+> =
 
-On Wed, Apr 27, 2016 at 11:29:53PM +0200, Peter Rosin wrote:
-> On 2016-04-27 18:23, Mark Brown wrote:
+> Meanwhile, Mark wanted to fix the subject for one of the patches, care
+> to repost that at least? Or the whole series with acks, could be a
+> pull request too against v4.6-rc1 :)
 
-> > Almost every programmable serial port does this, it's a very common
-> > issue which is why we always try to go for exact clocking where we can -
-> > it greatly improves the interoperability for I2S if there are no dead
-> > clocks.
+Thanks, I'll wait for couple of days for Paul to review and I will prepare =
+v4
+and a pull request.
 
-> Someone said: be conservative in what you send, be liberal in what you
-> accept. This is not that at all. This is more like: be conservative in
-> what you send, and accept only a subset of valid input.
+-- =
 
-> It absolutely kills interoperability if you claim I2S and then don't
-> do I2S. If you are not looking at both edges of LRCLK it simply isn't I2S.
-> It's something else. Like "packed I2S" or "DSP moda A with inverted
-> symmetric LRCLK" or something, so why not invent a way to say that?
-
-The reason people do this is so that they can interface I2S only CODECs
-(which are reasonably common, especially simpler CODECs with no register
-map) with SoCs that have programmable serial ports.  If you want to
-spend the time to represent this explicitly through the system that
-would be useful but note that the main reason the format configuration
-is currently done manually is that especially with older devices it is
-common for there to be gotchas in this, either in terms of things like
-this or in terms of performance.  Determining what should master the bus
-is an especially thorny issue, there are frequently tradeoffs between
-the quality of the clocks and other restrictions.
-
-> I have this codec which does I2S but there is no way to get rid of dead
-> clocks when it masters the clocks. It can divide MCLK with 1,2,4,8 or 16
-> to get a BCLK, or it can generate BCLK as 48x or 64x LRCLK. But it only
-> sports 16 bits per sample.
-
-In order to make that interoperate you should declare support for 24 and
-32 bit formats in the DAI formats and set sig_bits to 16.  The
-representation of memory formats in the DAIs that don't interface with
-memory was a really unfortunate choice which sadly nobody has ever had
-the time and/or enthusiasm to address.
-
---l06SQqiZYCi8rTKz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXNb2nAAoJECTWi3JdVIfQNXYH/2FyhGMybHO9GHENYtdbDvX8
-6CE87WggzK4HNl3AQB6vN1Snb8K7PqfGQsRnVMLO/Zl/PLXMxOCg30gLYeoGJgPR
-LNxNsYqFg+vIGjjttICdvMSCZaepkK8dntE9MsgcZFQSUmktcTBgxoJ01JdMXjVX
-ug492pX5c8ZvBjqYXCnVzVmXBrVQIxdGq0K20fLw3FiJQe7w7LTtiMSIGpetRRW7
-w0TUDm9urEZruKeoJZLUOcPIbdq2d430W1DICvqmV7EGWrZsr6KYRFN77Tnv7dkR
-hVXKIK+egeerIbj0g6VTenAV1XjJ4i0CZMTjLR1MLL5BSu7vnIZhBt0SHYhi+sg=
-=5s8F
------END PGP SIGNATURE-----
-
---l06SQqiZYCi8rTKz--
+P=E9ter
