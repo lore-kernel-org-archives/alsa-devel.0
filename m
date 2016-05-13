@@ -1,83 +1,599 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 2/2] ASoC: Add support for HifiBerry DAC
-Date: Fri, 13 May 2016 14:21:13 +0100
-Message-ID: <20160513132113.GP22038@sirena.org.uk>
-References: <1463130853-25096-1-git-send-email-kernel@martin.sperl.org>
- <1463130853-25096-3-git-send-email-kernel@martin.sperl.org>
- <20160513105409.GB22038@sirena.org.uk>
- <C139252A-23AC-4C37-A5E5-E0D7AF1DCC89@martin.sperl.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: nau8825: non-clock jack detection for
+	power saving at standby" to the asoc tree
+Date: Fri, 13 May 2016 14:26:08 +0100
+Message-ID: <E1b1D6W-00018S-LM@finisterre>
+References: <1463131037-19220-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="THYEXwetZJOK3OLY"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <C139252A-23AC-4C37-A5E5-E0D7AF1DCC89-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Matthias Reichl <hias-vtPv7MOkFPkAvxtiuMwx3w@public.gmane.org>, Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id BFF98260564
+ for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 15:26:27 +0200 (CEST)
+In-Reply-To: <1463131037-19220-1-git-send-email-KCHSU0@nuvoton.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, lgirdwood@gmail.com, benzh@chromium.org, broonie@kernel.org, CTLIN0@nuvoton.com, yong.zhi@intel.com, mhkuo@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---THYEXwetZJOK3OLY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   ASoC: nau8825: non-clock jack detection for power saving at standby
 
-On Fri, May 13, 2016 at 02:20:57PM +0200, Martin Sperl wrote:
-> > On 13.05.2016, at 12:54, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+has been applied to the asoc tree at
 
-> > You could almost use simple-card here but the BCLK ratio requirement is
-> > probably a bit much, I'm not immediately seeing a nice way to specify
-> > the ratio there since it depends on the sample width.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> Actually it is just: <sample-width> * <number of channels>
-> where number of channels is fixed to 2 for bcm2835-i2s.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> So maybe that already happens automatically in the framework?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-No, it's not handled.  Lots of devices don't care or have different
-requirements (eg, 256fs).  The tricky bit with specifying it is that the
-ratio depends on the sample width here but it might depend on something
-else with another device, or the number of channels might vary.  That
-should be doable with DT but it feels like more trouble than it's
-reasonable to ask you to take here.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> Something like this could get added to the core?
-> Is there interest in getting something like this?
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> Could look like this:
-> bclk-ratios =3D=20
->   /* for 96kHz at 16bit/channel use bclk-ratio 40 */
->   <96000 16 40>,=20
->   /* for 48kHz at 32bit/channel use bclk-ratio 80 */
->   <48000 16 80>,
->   /* for any (other) sample frequency at 16 bit use bclk-ratio 32 */
->   <0 16 32>,
->   /* for any (other) sample frequency at 32 bit use bclk-ratio 64 */
->   <0 32 64>;
+Thanks,
+Mark
 
-> but there could also be other approaches as well,
-> how this could get described in the device tree.
+>From 1d4c7a0129ea5b8c99002dfbeafcf7a50eaf1631 Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Fri, 13 May 2016 17:17:17 +0800
+Subject: [PATCH] ASoC: nau8825: non-clock jack detection for power saving at
+ standby
 
-You may well end up with something like that, yeah.
+The driver changes jack type detection interruption to non-clock archi-
+tecture for less 1mW power saving. The architecture is called manual mode
+jack detection. It has no hardware debounce, no jack type detection, but
+only detecting jack insertion. After jack insertion, the driver will
+switch to auto mode jack detection with internal clock which can detect
+microphone, jack type and do hardware debounce.
 
---THYEXwetZJOK3OLY
-Content-Type: application/pgp-signature; name="signature.asc"
+The manual architecture has these main changes including codec initiation,
+interruption, clock control, and power management. When codec initiation
+or system resume, the clock is closed as jack insertion detection at man-
+ual mode, and bypass debounce circuit. These configurations move to resume
+setup function when setup bias level after resume.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+When jack insertion detection happens, the manual mode turns off and make
+configuration about jack type detection interruption at auto mode in auto
+irq setup function which can detect microphone and jack type. The inter-
+ruption will switch to manual mode again with clock free until jack ejec-
+tion happens.
 
-iQEcBAEBCAAGBQJXNdTEAAoJECTWi3JdVIfQE/sH/3jsZxxvx8WOkOFvT8Vz+g+M
-o2hmUku704qdOQFfU3kDoGbYnBzqY5MZoeHWvz7s9jb4DTev0EjxG8+z0fwVMf2y
-XmlOH3RngXcZKRf7u050MLhaV3xJrJF9D0ImRBjhfmUjxdde47Ue4inpG5VJub77
-RU9A0QszN/g1wch0ZFeFvzgC7+TulfDcIKzZVtpN8mud+okNX+V2Pted8xzK/UMr
-waUxmUmf95AXW9amyy/sMCD/N3uPQzMzXYI2Sjq4E/Y86zDMrz/hOlkT0Rkn/f29
-BBZEaWJ7uyQ7AUXdZ7jiuZav2M1bd7eIBEcf12yPE+Yp6j+iOLyL7QUKZO61hEQ=
-=tr3C
------END PGP SIGNATURE-----
+The system clock configuration adds clock disable option which can disable
+internal VCO clock. Before the system clock change, there is an restric-
+tion added to make sure clock disabled and not config any clock when no
+headset connected.
 
---THYEXwetZJOK3OLY--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+In power management, we involve the solution about races and jack detec-
+tion in resume from Ben Zhang in the following patch and list his comment.
+[PATCH] ASoC: nau8825: Fix jack detection across suspend
+"Jack plug status is rechecked at resume to handle plug/unplug
+in S3 when the chip has no power."
+"Suspend/resume callbacks are moved from the i2c dev_pm_ops to
+snd_soc_codec_driver. soc_resume_deferred is a delayed work
+which may trigger nau8825_set_bias_level. The bias change races
+against dev_pm_ops, causing jack detection issues.
+soc_resume_deferred ensures bias change and snd_soc_codec_driver
+suspend/resume are sequenced correctly."
+
+Change SAR widget to supply type which can prevent the codec keeping at
+SND_SOC_BIAS_ON during suspend. The codec suspend function can just invoke
+normally.
+
+Before the system suspends, the driver turns off all interruptions. Keep
+the interruption quiet before resume setup completes. The ADC channel will
+be disabled which is needed for interruptions at audo mode.
+
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Signed-off-by: Ben Zhang <benzh@chromium.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/nau8825.c | 295 ++++++++++++++++++++++++++++++++-------------
+ sound/soc/codecs/nau8825.h |   9 +-
+ 2 files changed, 222 insertions(+), 82 deletions(-)
+
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index f35019a0db1d..e7382345bae5 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -30,10 +30,16 @@
+ 
+ #include "nau8825.h"
+ 
++
++#define NUVOTON_CODEC_DAI "nau8825-hifi"
++
+ #define NAU_FREF_MAX 13500000
+ #define NAU_FVCO_MAX 124000000
+ #define NAU_FVCO_MIN 90000000
+ 
++static int nau8825_configure_sysclk(struct nau8825 *nau8825,
++		int clk_id, unsigned int freq);
++
+ struct nau8825_fll {
+ 	int mclk_src;
+ 	int ratio;
+@@ -368,9 +374,12 @@ static const struct snd_soc_dapm_widget nau8825_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SUPPLY("ADC Power", NAU8825_REG_ANALOG_ADC_2, 6, 0, NULL,
+ 		0),
+ 
+-	/* ADC for button press detection */
+-	SND_SOC_DAPM_ADC("SAR", NULL, NAU8825_REG_SAR_CTRL,
+-		NAU8825_SAR_ADC_EN_SFT, 0),
++	/* ADC for button press detection. A dapm supply widget is used to
++	 * prevent dapm_power_widgets keeping the codec at SND_SOC_BIAS_ON
++	 * during suspend.
++	 */
++	SND_SOC_DAPM_SUPPLY("SAR", NAU8825_REG_SAR_CTRL,
++		NAU8825_SAR_ADC_EN_SFT, 0, NULL, 0),
+ 
+ 	SND_SOC_DAPM_PGA_S("ADACL", 2, NAU8825_REG_RDAC, 12, 0, NULL, 0),
+ 	SND_SOC_DAPM_PGA_S("ADACR", 2, NAU8825_REG_RDAC, 13, 0, NULL, 0),
+@@ -614,9 +623,6 @@ int nau8825_enable_jack_detect(struct snd_soc_codec *codec,
+ 		NAU8825_HSD_AUTO_MODE | NAU8825_SPKR_DWN1R | NAU8825_SPKR_DWN1L,
+ 		NAU8825_HSD_AUTO_MODE | NAU8825_SPKR_DWN1R | NAU8825_SPKR_DWN1L);
+ 
+-	regmap_update_bits(regmap, NAU8825_REG_INTERRUPT_MASK,
+-		NAU8825_IRQ_HEADSET_COMPLETE_EN | NAU8825_IRQ_EJECT_EN, 0);
+-
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(nau8825_enable_jack_detect);
+@@ -642,6 +648,22 @@ static void nau8825_restart_jack_detection(struct regmap *regmap)
+ 		NAU8825_JACK_DET_RESTART, 0);
+ }
+ 
++static void nau8825_int_status_clear_all(struct regmap *regmap)
++{
++	int active_irq, clear_irq, i;
++
++	/* Reset the intrruption status from rightmost bit if the corres-
++	 * ponding irq event occurs.
++	 */
++	regmap_read(regmap, NAU8825_REG_IRQ_STATUS, &active_irq);
++	for (i = 0; i < NAU8825_REG_DATA_LEN; i++) {
++		clear_irq = (0x1 << i);
++		if (active_irq & clear_irq)
++			regmap_write(regmap,
++				NAU8825_REG_INT_CLR_KEY_STATUS, clear_irq);
++	}
++}
++
+ static void nau8825_eject_jack(struct nau8825 *nau8825)
+ {
+ 	struct snd_soc_dapm_context *dapm = nau8825->dapm;
+@@ -656,6 +678,69 @@ static void nau8825_eject_jack(struct nau8825 *nau8825)
+ 	regmap_update_bits(regmap, NAU8825_REG_HSD_CTRL, 0xf, 0xf);
+ 
+ 	snd_soc_dapm_sync(dapm);
++
++	/* Clear all interruption status */
++	nau8825_int_status_clear_all(regmap);
++
++	/* Enable the insertion interruption, disable the ejection inter-
++	 * ruption, and then bypass de-bounce circuit.
++	 */
++	regmap_update_bits(regmap, NAU8825_REG_INTERRUPT_DIS_CTRL,
++		NAU8825_IRQ_EJECT_DIS | NAU8825_IRQ_INSERT_DIS,
++		NAU8825_IRQ_EJECT_DIS);
++	regmap_update_bits(regmap, NAU8825_REG_INTERRUPT_MASK,
++		NAU8825_IRQ_OUTPUT_EN | NAU8825_IRQ_EJECT_EN |
++		NAU8825_IRQ_HEADSET_COMPLETE_EN | NAU8825_IRQ_INSERT_EN,
++		NAU8825_IRQ_OUTPUT_EN | NAU8825_IRQ_EJECT_EN |
++		NAU8825_IRQ_HEADSET_COMPLETE_EN);
++	regmap_update_bits(regmap, NAU8825_REG_JACK_DET_CTRL,
++		NAU8825_JACK_DET_DB_BYPASS, NAU8825_JACK_DET_DB_BYPASS);
++
++	/* Disable ADC needed for interruptions at audo mode */
++	regmap_update_bits(regmap, NAU8825_REG_ENA_CTRL,
++		NAU8825_ENABLE_ADC, 0);
++
++	/* Close clock for jack type detection at manual mode */
++	nau8825_configure_sysclk(nau8825, NAU8825_CLK_DIS, 0);
++}
++
++/* Enable audo mode interruptions with internal clock. */
++static void nau8825_setup_auto_irq(struct nau8825 *nau8825)
++{
++	struct regmap *regmap = nau8825->regmap;
++
++	/* Enable headset jack type detection complete interruption and
++	 * jack ejection interruption.
++	 */
++	regmap_update_bits(regmap, NAU8825_REG_INTERRUPT_MASK,
++		NAU8825_IRQ_HEADSET_COMPLETE_EN | NAU8825_IRQ_EJECT_EN, 0);
++
++	/* Enable internal VCO needed for interruptions */
++	nau8825_configure_sysclk(nau8825, NAU8825_CLK_INTERNAL, 0);
++
++	/* Enable ADC needed for interruptions */
++	regmap_update_bits(regmap, NAU8825_REG_ENA_CTRL,
++		NAU8825_ENABLE_ADC, NAU8825_ENABLE_ADC);
++
++	/* Chip needs one FSCLK cycle in order to generate interruptions,
++	 * as we cannot guarantee one will be provided by the system. Turning
++	 * master mode on then off enables us to generate that FSCLK cycle
++	 * with a minimum of contention on the clock bus.
++	 */
++	regmap_update_bits(regmap, NAU8825_REG_I2S_PCM_CTRL2,
++		NAU8825_I2S_MS_MASK, NAU8825_I2S_MS_MASTER);
++	regmap_update_bits(regmap, NAU8825_REG_I2S_PCM_CTRL2,
++		NAU8825_I2S_MS_MASK, NAU8825_I2S_MS_SLAVE);
++
++	/* Not bypass de-bounce circuit */
++	regmap_update_bits(regmap, NAU8825_REG_JACK_DET_CTRL,
++		NAU8825_JACK_DET_DB_BYPASS, 0);
++
++	/* Unmask all interruptions */
++	regmap_write(regmap, NAU8825_REG_INTERRUPT_DIS_CTRL, 0);
++
++	/* Restart the jack detection process at auto mode */
++	nau8825_restart_jack_detection(regmap);
+ }
+ 
+ static int nau8825_button_decode(int value)
+@@ -789,6 +874,26 @@ static irqreturn_t nau8825_interrupt(int irq, void *data)
+ 
+ 		event_mask |= SND_JACK_HEADSET;
+ 		clear_irq = NAU8825_HEADSET_COMPLETION_IRQ;
++	} else if ((active_irq & NAU8825_JACK_INSERTION_IRQ_MASK) ==
++		NAU8825_JACK_INSERTION_DETECTED) {
++		/* One more step to check GPIO status directly. Thus, the
++		 * driver can confirm the real insertion interruption because
++		 * the intrruption at manual mode has bypassed debounce
++		 * circuit which can get rid of unstable status.
++		 */
++		if (nau8825_is_jack_inserted(regmap)) {
++			/* Turn off insertion interruption at manual mode */
++			regmap_update_bits(regmap,
++				NAU8825_REG_INTERRUPT_DIS_CTRL,
++				NAU8825_IRQ_INSERT_DIS,
++				NAU8825_IRQ_INSERT_DIS);
++			regmap_update_bits(regmap, NAU8825_REG_INTERRUPT_MASK,
++				NAU8825_IRQ_INSERT_EN, NAU8825_IRQ_INSERT_EN);
++			/* Enable interruption for jack type detection at audo
++			 * mode which can detect microphone and jack type.
++			 */
++			nau8825_setup_auto_irq(nau8825);
++		}
+ 	}
+ 
+ 	if (!clear_irq)
+@@ -938,8 +1043,8 @@ static void nau8825_init_regs(struct nau8825 *nau8825)
+ }
+ 
+ static const struct regmap_config nau8825_regmap_config = {
+-	.val_bits = 16,
+-	.reg_bits = 16,
++	.val_bits = NAU8825_REG_DATA_LEN,
++	.reg_bits = NAU8825_REG_ADDR_LEN,
+ 
+ 	.max_register = NAU8825_REG_MAX,
+ 	.readable_reg = nau8825_readable_reg,
+@@ -958,12 +1063,6 @@ static int nau8825_codec_probe(struct snd_soc_codec *codec)
+ 
+ 	nau8825->dapm = dapm;
+ 
+-	/* Unmask interruptions. Handler uses dapm object so we can enable
+-	 * interruptions only after dapm is fully initialized.
+-	 */
+-	regmap_write(nau8825->regmap, NAU8825_REG_INTERRUPT_DIS_CTRL, 0);
+-	nau8825_restart_jack_detection(nau8825->regmap);
+-
+ 	return 0;
+ }
+ 
+@@ -1128,6 +1227,14 @@ static int nau8825_mclk_prepare(struct nau8825 *nau8825, unsigned int freq)
+ 	return 0;
+ }
+ 
++static void nau8825_configure_mclk_as_sysclk(struct regmap *regmap)
++{
++	regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
++		NAU8825_CLK_SRC_MASK, NAU8825_CLK_SRC_MCLK);
++	regmap_update_bits(regmap, NAU8825_REG_FLL6,
++		NAU8825_DCO_EN, 0);
++}
++
+ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
+ 	unsigned int freq)
+ {
+@@ -1135,10 +1242,17 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
+ 	int ret;
+ 
+ 	switch (clk_id) {
++	case NAU8825_CLK_DIS:
++		/* Clock provided externally and disable internal VCO clock */
++		nau8825_configure_mclk_as_sysclk(regmap);
++		if (nau8825->mclk_freq) {
++			clk_disable_unprepare(nau8825->mclk);
++			nau8825->mclk_freq = 0;
++		}
++
++		break;
+ 	case NAU8825_CLK_MCLK:
+-		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
+-			NAU8825_CLK_SRC_MASK, NAU8825_CLK_SRC_MCLK);
+-		regmap_update_bits(regmap, NAU8825_REG_FLL6, NAU8825_DCO_EN, 0);
++		nau8825_configure_mclk_as_sysclk(regmap);
+ 		/* MCLK not changed by clock tree */
+ 		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
+ 			NAU8825_CLK_MCLK_SRC_MASK, 0);
+@@ -1148,17 +1262,25 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
+ 
+ 		break;
+ 	case NAU8825_CLK_INTERNAL:
+-		regmap_update_bits(regmap, NAU8825_REG_FLL6, NAU8825_DCO_EN,
+-			NAU8825_DCO_EN);
+-		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
+-			NAU8825_CLK_SRC_MASK, NAU8825_CLK_SRC_VCO);
+-		/* Decrease the VCO frequency for power saving */
+-		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
+-			NAU8825_CLK_MCLK_SRC_MASK, 0xf);
+-		regmap_update_bits(regmap, NAU8825_REG_FLL1,
+-			NAU8825_FLL_RATIO_MASK, 0x10);
+-		regmap_update_bits(regmap, NAU8825_REG_FLL6,
+-			NAU8825_SDM_EN, NAU8825_SDM_EN);
++		if (nau8825_is_jack_inserted(nau8825->regmap)) {
++			regmap_update_bits(regmap, NAU8825_REG_FLL6,
++				NAU8825_DCO_EN, NAU8825_DCO_EN);
++			regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
++				NAU8825_CLK_SRC_MASK, NAU8825_CLK_SRC_VCO);
++			/* Decrease the VCO frequency for power saving */
++			regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
++				NAU8825_CLK_MCLK_SRC_MASK, 0xf);
++			regmap_update_bits(regmap, NAU8825_REG_FLL1,
++				NAU8825_FLL_RATIO_MASK, 0x10);
++			regmap_update_bits(regmap, NAU8825_REG_FLL6,
++				NAU8825_SDM_EN, NAU8825_SDM_EN);
++		} else {
++			/* The clock turns off intentionally for power saving
++			 * when no headset connected.
++			 */
++			nau8825_configure_mclk_as_sysclk(regmap);
++			dev_warn(nau8825->dev, "Disable clock for power saving when no headset connected\n");
++		}
+ 		if (nau8825->mclk_freq) {
+ 			clk_disable_unprepare(nau8825->mclk);
+ 			nau8825->mclk_freq = 0;
+@@ -1209,6 +1331,31 @@ static int nau8825_set_sysclk(struct snd_soc_codec *codec, int clk_id,
+ 	return nau8825_configure_sysclk(nau8825, clk_id, freq);
+ }
+ 
++static int nau8825_resume_setup(struct nau8825 *nau8825)
++{
++	struct regmap *regmap = nau8825->regmap;
++
++	/* Close clock when jack type detection at manual mode */
++	nau8825_configure_sysclk(nau8825, NAU8825_CLK_DIS, 0);
++
++	/* Clear all interruption status */
++	nau8825_int_status_clear_all(regmap);
++
++	/* Enable both insertion and ejection interruptions, and then
++	 * bypass de-bounce circuit.
++	 */
++	regmap_update_bits(regmap, NAU8825_REG_INTERRUPT_MASK,
++		NAU8825_IRQ_OUTPUT_EN | NAU8825_IRQ_HEADSET_COMPLETE_EN |
++		NAU8825_IRQ_EJECT_EN | NAU8825_IRQ_INSERT_EN,
++		NAU8825_IRQ_OUTPUT_EN | NAU8825_IRQ_HEADSET_COMPLETE_EN);
++	regmap_update_bits(regmap, NAU8825_REG_JACK_DET_CTRL,
++		NAU8825_JACK_DET_DB_BYPASS, NAU8825_JACK_DET_DB_BYPASS);
++	regmap_update_bits(regmap, NAU8825_REG_INTERRUPT_DIS_CTRL,
++		NAU8825_IRQ_INSERT_DIS | NAU8825_IRQ_EJECT_DIS, 0);
++
++	return 0;
++}
++
+ static int nau8825_set_bias_level(struct snd_soc_codec *codec,
+ 				   enum snd_soc_bias_level level)
+ {
+@@ -1238,11 +1385,22 @@ static int nau8825_set_bias_level(struct snd_soc_codec *codec,
+ 					"Failed to sync cache: %d\n", ret);
+ 				return ret;
+ 			}
++
++			/* Setup codec configuration after resume */
++			nau8825_resume_setup(nau8825);
+ 		}
+ 
+ 		break;
+ 
+ 	case SND_SOC_BIAS_OFF:
++		/* Turn off all interruptions before system shutdown. Keep the
++		 * interruption quiet before resume setup completes.
++		 */
++		regmap_write(nau8825->regmap,
++			NAU8825_REG_INTERRUPT_DIS_CTRL, 0xffff);
++		/* Disable ADC needed for interruptions at audo mode */
++		regmap_update_bits(nau8825->regmap, NAU8825_REG_ENA_CTRL,
++			NAU8825_ENABLE_ADC, 0);
+ 		if (nau8825->mclk_freq)
+ 			clk_disable_unprepare(nau8825->mclk);
+ 
+@@ -1252,12 +1410,40 @@ static int nau8825_set_bias_level(struct snd_soc_codec *codec,
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PM_SLEEP
++static int nau8825_codec_suspend(struct snd_soc_codec *codec)
++{
++	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
++
++	disable_irq(nau8825->irq);
++	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_OFF);
++	regcache_cache_only(nau8825->regmap, true);
++
++	return 0;
++}
++
++static int nau8825_codec_resume(struct snd_soc_codec *codec)
++{
++	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
++
++	regcache_cache_only(nau8825->regmap, false);
++	enable_irq(nau8825->irq);
++
++	return 0;
++}
++#else
++#define nau8825_codec_suspend NULL
++#define nau8825_codec_resume NULL
++#endif
++
+ static struct snd_soc_codec_driver nau8825_codec_driver = {
+ 	.probe = nau8825_codec_probe,
+ 	.set_sysclk = nau8825_set_sysclk,
+ 	.set_pll = nau8825_set_pll,
+ 	.set_bias_level = nau8825_set_bias_level,
+ 	.suspend_bias_off = true,
++	.suspend = nau8825_codec_suspend,
++	.resume = nau8825_codec_resume,
+ 
+ 	.controls = nau8825_controls,
+ 	.num_controls = ARRAY_SIZE(nau8825_controls),
+@@ -1351,30 +1537,8 @@ static int nau8825_read_device_properties(struct device *dev,
+ 
+ static int nau8825_setup_irq(struct nau8825 *nau8825)
+ {
+-	struct regmap *regmap = nau8825->regmap;
+ 	int ret;
+ 
+-	/* IRQ Output Enable */
+-	regmap_update_bits(regmap, NAU8825_REG_INTERRUPT_MASK,
+-		NAU8825_IRQ_OUTPUT_EN, NAU8825_IRQ_OUTPUT_EN);
+-
+-	/* Enable internal VCO needed for interruptions */
+-	nau8825_configure_sysclk(nau8825, NAU8825_CLK_INTERNAL, 0);
+-
+-	/* Enable ADC needed for interrupts */
+-	regmap_update_bits(regmap, NAU8825_REG_ENA_CTRL,
+-		NAU8825_ENABLE_ADC, NAU8825_ENABLE_ADC);
+-
+-	/* Chip needs one FSCLK cycle in order to generate interrupts,
+-	 * as we cannot guarantee one will be provided by the system. Turning
+-	 * master mode on then off enables us to generate that FSCLK cycle
+-	 * with a minimum of contention on the clock bus.
+-	 */
+-	regmap_update_bits(regmap, NAU8825_REG_I2S_PCM_CTRL2,
+-		NAU8825_I2S_MS_MASK, NAU8825_I2S_MS_MASTER);
+-	regmap_update_bits(regmap, NAU8825_REG_I2S_PCM_CTRL2,
+-		NAU8825_I2S_MS_MASK, NAU8825_I2S_MS_SLAVE);
+-
+ 	ret = devm_request_threaded_irq(nau8825->dev, nau8825->irq, NULL,
+ 		nau8825_interrupt, IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+ 		"nau8825", nau8825);
+@@ -1442,36 +1606,6 @@ static int nau8825_i2c_remove(struct i2c_client *client)
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_PM_SLEEP
+-static int nau8825_suspend(struct device *dev)
+-{
+-	struct i2c_client *client = to_i2c_client(dev);
+-	struct nau8825 *nau8825 = dev_get_drvdata(dev);
+-
+-	disable_irq(client->irq);
+-	regcache_cache_only(nau8825->regmap, true);
+-	regcache_mark_dirty(nau8825->regmap);
+-
+-	return 0;
+-}
+-
+-static int nau8825_resume(struct device *dev)
+-{
+-	struct i2c_client *client = to_i2c_client(dev);
+-	struct nau8825 *nau8825 = dev_get_drvdata(dev);
+-
+-	regcache_cache_only(nau8825->regmap, false);
+-	regcache_sync(nau8825->regmap);
+-	enable_irq(client->irq);
+-
+-	return 0;
+-}
+-#endif
+-
+-static const struct dev_pm_ops nau8825_pm = {
+-	SET_SYSTEM_SLEEP_PM_OPS(nau8825_suspend, nau8825_resume)
+-};
+-
+ static const struct i2c_device_id nau8825_i2c_ids[] = {
+ 	{ "nau8825", 0 },
+ 	{ }
+@@ -1498,7 +1632,6 @@ static struct i2c_driver nau8825_driver = {
+ 		.name = "nau8825",
+ 		.of_match_table = of_match_ptr(nau8825_of_ids),
+ 		.acpi_match_table = ACPI_PTR(nau8825_acpi_match),
+-		.pm = &nau8825_pm,
+ 	},
+ 	.probe = nau8825_i2c_probe,
+ 	.remove = nau8825_i2c_remove,
+diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
+index 9e6cb6262bf2..1100385221a2 100644
+--- a/sound/soc/codecs/nau8825.h
++++ b/sound/soc/codecs/nau8825.h
+@@ -93,6 +93,9 @@
+ #define NAU8825_REG_CHARGE_PUMP_INPUT_READ		0x81
+ #define NAU8825_REG_GENERAL_STATUS		0x82
+ #define NAU8825_REG_MAX		NAU8825_REG_GENERAL_STATUS
++/* 16-bit control register address, and 16-bits control register data */
++#define NAU8825_REG_ADDR_LEN		16
++#define NAU8825_REG_DATA_LEN		16
+ 
+ /* ENA_CTRL (0x1) */
+ #define NAU8825_ENABLE_DACR_SFT	10
+@@ -145,6 +148,7 @@
+ 
+ /* JACK_DET_CTRL (0xd) */
+ #define NAU8825_JACK_DET_RESTART	(1 << 9)
++#define NAU8825_JACK_DET_DB_BYPASS	(1 << 8)
+ #define NAU8825_JACK_INSERT_DEBOUNCE_SFT	5
+ #define NAU8825_JACK_INSERT_DEBOUNCE_MASK	(0x7 << NAU8825_JACK_INSERT_DEBOUNCE_SFT)
+ #define NAU8825_JACK_EJECT_DEBOUNCE_SFT		2
+@@ -157,6 +161,7 @@
+ #define NAU8825_IRQ_KEY_RELEASE_EN (1 << 7)
+ #define NAU8825_IRQ_KEY_SHORT_PRESS_EN (1 << 5)
+ #define NAU8825_IRQ_EJECT_EN (1 << 2)
++#define NAU8825_IRQ_INSERT_EN (1 << 0)
+ 
+ /* IRQ_STATUS (0x10) */
+ #define NAU8825_HEADSET_COMPLETION_IRQ	(1 << 10)
+@@ -177,6 +182,7 @@
+ #define NAU8825_IRQ_KEY_RELEASE_DIS (1 << 7)
+ #define NAU8825_IRQ_KEY_SHORT_PRESS_DIS (1 << 5)
+ #define NAU8825_IRQ_EJECT_DIS (1 << 2)
++#define NAU8825_IRQ_INSERT_DIS (1 << 0)
+ 
+ /* SAR_CTRL (0x13) */
+ #define NAU8825_SAR_ADC_EN_SFT	12
+@@ -333,7 +339,8 @@
+ 
+ /* System Clock Source */
+ enum {
+-	NAU8825_CLK_MCLK = 0,
++	NAU8825_CLK_DIS = 0,
++	NAU8825_CLK_MCLK,
+ 	NAU8825_CLK_INTERNAL,
+ 	NAU8825_CLK_FLL_MCLK,
+ 	NAU8825_CLK_FLL_BLK,
+-- 
+2.8.1
