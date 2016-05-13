@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/2] ASoC: dapm: support user-defined
- stop condition in dai_get_connected_widgets
-Date: Fri, 13 May 2016 13:09:05 +0100
-Message-ID: <20160513120905.GK22038@sirena.org.uk>
-References: <1460638999-30598-1-git-send-email-piotrs@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v4] ASoC: Intel: Skylake: Add DSP firmware
+ manifest parsing
+Date: Fri, 13 May 2016 13:14:17 +0100
+Message-ID: <20160513121417.GL22038@sirena.org.uk>
+References: <1463140547-20895-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8325707798309944415=="
+Content-Type: multipart/mixed; boundary="===============8917393954366364932=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 80197260526
- for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 14:09:22 +0200 (CEST)
-In-Reply-To: <1460638999-30598-1-git-send-email-piotrs@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5548C260564
+ for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 14:14:33 +0200 (CEST)
+In-Reply-To: <1463140547-20895-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +21,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Shreyas NC <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8325707798309944415==
+--===============8917393954366364932==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="5dNcufZ4prhark0F"
+	protocol="application/pgp-signature"; boundary="m+jEI8cDoTn6Mu9E"
 Content-Disposition: inline
 
 
---5dNcufZ4prhark0F
+--m+jEI8cDoTn6Mu9E
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Apr 14, 2016 at 02:03:18PM +0100, Piotr Stankiewicz wrote:
+On Fri, May 13, 2016 at 05:25:47PM +0530, Vinod Koul wrote:
 
-> + * Optionally, can be supplied with a function acting as a stopping condition.
-> + * This function takes the dapm widget currently being examined and the walk
-> + * direction as an arguments, and should return an integer, as follows:
-> + * - >=0: if the walk is to be stopped (this should indicate the number of
-> + *        endpoints the widget has),
-> + * - <0 : if the walk is to be continued as normal.
+> +	/* Get the FW pointer to derive ADSP header */
+> +	buf = ctx->fw->data;
 
-This seems really weird and uncomfortable.  From the naming I would
-expect it to be a boolean function and I'm struggling to understand when
-it would be useful to report multiple endpoints on a widget (edge
-widgets normally being single objects).  The whole counting thing is
-mainly a combination of debugging and an artefact of the implementation.
-What's the motivation here?
+> +	adsp_hdr = (struct adsp_fw_hdr *)(buf + SKL_ADSP_FW_BIN_HDR_OFFSET);
 
---5dNcufZ4prhark0F
+> +	mod_entry = (struct adsp_module_entry *)
+> +		(buf + SKL_ADSP_FW_BIN_HDR_OFFSET + adsp_hdr->header_len);
+
+What if we somehow managed to end up with a zero length firmware (or
+something smaller than these headers)?
+
+> +		/*
+> +		 * we check if current pointer is larger than file size from
+> +		 * base value to check excceding the file while parsing
+> +		 */
+> +		if ((const char *)mod_entry >= buf + ctx->fw->size) {
+> +			dev_err(ctx->dev,
+> +				"Exceeds file bound: Entry %d Ptr %p\n",
+> +				i, mod_entry);
+> +
+> +			return -EIO;
+> +		}
+
+This checks the start of the entry but it still lets us read beyond the
+end of the file.
+
+--m+jEI8cDoTn6Mu9E
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXNcPfAAoJECTWi3JdVIfQubAH/Ap40KM4Qd26bnvCYOcKhYSV
-nUmTPbPAEJCWxmBfRgWnwDop5OXhZAPKfQ3PnCUSs2qvsVGFvvu0McAmkLg9QPVE
-x8NzUmY3IssnzTwygRmvbnNaUQ/OBaDNTXx788/C1zxqitnnWij2dBj+ZBmRfue8
-WktgmJeW1neHK4ZV44a0v6NsZHqy2yhb9ernNd/QpEn8XV3yKcTOUreaR3sp7aRJ
-JdqCAJFjueFYjv5jKmeuD24EyAagiJtoH9NLjRUFpiVPqPmvKxbORkOIWiom4LP7
-XG6nxlDUilAU052Z9gVIqSiHbxxw37Gm8De9yyRimsaGa0qlXWohX2Ypq+4UzkQ=
-=RfjD
+iQEcBAEBCAAGBQJXNcUYAAoJECTWi3JdVIfQq2wH/0hqGyr/j31oe+urPDZagO98
+bTlaOOgEZl3xc8953ln6wURjX30/vpVSjm7BU3/kua+qp2yoOcN5bIe9agsy0TGA
+kWPkPCIGaCHciC1TJeiHje+0ozUtB46MySO4PomAq5NkjJZP8FbvwAtqto5pyP37
+0ZLoGHsuqVfcbFndd0W6NVBJNsxey3XN3dWPFJD9zanbI15eP5bfNm0m+ZomkkRx
+BoaqRSe5CA+f9ySe7XDpj1TA5F0I3QaAFndWLxC+EMGEHhrCbXbXjE3OLvU+/2Gh
+Lho16ZdkNilEeH7S0dsb0+WMxWu24BUVN8KDzzeMLxycqNob2utWtDuGaDRBDSg=
+=nKAl
 -----END PGP SIGNATURE-----
 
---5dNcufZ4prhark0F--
+--m+jEI8cDoTn6Mu9E--
 
---===============8325707798309944415==
+--===============8917393954366364932==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8325707798309944415==--
+--===============8917393954366364932==--
