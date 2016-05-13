@@ -1,60 +1,79 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: MAX9860: new driver
-Date: Fri, 13 May 2016 11:58:52 +0100
-Message-ID: <20160513105852.GC22038@sirena.org.uk>
-References: <1463124333-9489-1-git-send-email-peda@axentia.se>
+Subject: Re: [PATCH 2/2] ASoC: wm8985: add support for WM8758
+Date: Fri, 13 May 2016 12:26:19 +0100
+Message-ID: <20160513112619.GF22038@sirena.org.uk>
+References: <1463068477-18421-1-git-send-email-petr@barix.com>
+ <1463068477-18421-3-git-send-email-petr@barix.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="xo44VMWPx7vlQ2+2"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1463124333-9489-1-git-send-email-peda@axentia.se>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Rosin <peda@axentia.se>
-Cc: linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Misbah Ullah Khan <Misbahk@danlawinc.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============1519439750906034261=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC739260447
+ for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 13:26:44 +0200 (CEST)
+In-Reply-To: <1463068477-18421-3-git-send-email-petr@barix.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Petr Kulhavy <petr@barix.com>
+Cc: plamen@barix.com, ckeepax@opensource.wolfsonmicro.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---xo44VMWPx7vlQ2+2
+--===============1519439750906034261==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="juZjCTNxrMaZdGZC"
+Content-Disposition: inline
+
+
+--juZjCTNxrMaZdGZC
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, May 13, 2016 at 09:25:33AM +0200, Peter Rosin wrote:
+On Thu, May 12, 2016 at 05:54:37PM +0200, Petr Kulhavy wrote:
 
-> +static int max9860_dai_startup(struct snd_pcm_substream *substream,
-> +			       struct snd_soc_dai *dai)
-> +{
-> +	struct snd_soc_codec *codec = dai->codec;
-> +	struct max9860_priv *max9860 = snd_soc_codec_get_drvdata(codec);
-> +
-> +	switch (max9860->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-> +	case SND_SOC_DAIFMT_CBM_CFM:
-> +	case SND_SOC_DAIFMT_CBS_CFS:
-> +		return 0;
-> +
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
+> +static const struct snd_kcontrol_new wm8758_snd_controls[] = {
+> +	SOC_SINGLE("Digital Loopback Switch", WM8985_COMPANDING_CONTROL,
+> +		0, 1, 0),
 
-This isn't the place to enforce restrictions on DAI format, do it in
-set_dai_fmt().
+>  static const struct snd_kcontrol_new wm8985_snd_controls[] = {
+>  	SOC_SINGLE("Digital Loopback Switch", WM8985_COMPANDING_CONTROL,
+>  		0, 1, 0),
 
-Otherwise this looks good.
+Rather than completely duplicating the set of controls it is better to
+have one table with all the shared controls and then extra tables for
+those that are device specific that are registered in probe, that way
+we only define things once.  The wm8904 driver provides an example of
+doing this sort of thing.
 
---xo44VMWPx7vlQ2+2
+--juZjCTNxrMaZdGZC
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXNbNqAAoJECTWi3JdVIfQUksH/iRwuGnoUek3FCic4AgeNTZw
-FvcpVNAav8wSi0k9eCAesSHaUS7EHJGe195Ts0O29kkFclFVFFagShuRv4YQK9L4
-BeHp4dtYvytwXFhcPJvtskS3ATVhmLAc3CP6ETkCK9tRDaKcufEU2RjIdVJVdEIp
-x3R6Ykxw21aiBYItHk4sq4vuO5cUvGjx5/WQPGrPIfejjHwEBTL/QDKvPbSnaMvn
-wtPmJd3nBM5nQ9WwWMlNVdPx5saU0CuVc4ZumwUBpTOIVE5gGgYbo/7WjPaPb19d
-gBbOdNjOQcLd5rncz3/3RExOOzAWzByIiXQbHCw5ajCCgCv6VBazF71t3LsYklU=
-=4uVn
+iQEcBAEBCAAGBQJXNbnaAAoJECTWi3JdVIfQpTIH/iH9AMeWJtH+jsULkHFUwuCA
+CW/fkVH0N6hLcG6O7HRjotPR2Kmy1WQNf9RIkXoLSYzVqCHUCR51Dha+M1x9Ytfr
+7kz6Fkll+LwjT7DIEvLZtrAfVVIXtqCxAPhN6lL3lDpnn7//zL5B8M9ql1xGFfvm
+ncelQnWlWko8g6RlI4apfY7K+ruINkJdzO8FSLsRRtC3AJWf0Pj12l31kZOZ8Yxt
+xA+HJiYm/24n/ayugh7QUgcfbYbefI86Ob05StMtQHK6prJ1vZtXjYsZbajLDYWo
+kaDgSkEzFnzeY5d9/ZVcWoy/O8Ptxf+MfVx1bh2kV0BM80ycruDH9OO22kxj50E=
+=lIvA
 -----END PGP SIGNATURE-----
 
---xo44VMWPx7vlQ2+2--
+--juZjCTNxrMaZdGZC--
+
+--===============1519439750906034261==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1519439750906034261==--
