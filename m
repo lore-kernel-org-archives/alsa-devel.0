@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: deprecate MICBIAS widget type" to the asoc tree
-Date: Fri, 13 May 2016 08:59:12 +0100
-Message-ID: <E1b1808-00051m-GF@debutante>
-References: <20160512120131.30a91984.john@metanate.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160512120131.30a91984.john@metanate.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: John Keeping <john@metanate.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
+Subject: Applied "ASoC: rt298: fix null deref on acpi driver
+	data" to the asoc tree
+Date: Fri, 13 May 2016 08:59:09 +0100
+Message-ID: <E1b1805-0004vZ-HL@debutante>
+References: <1463026130-18651-1-git-send-email-vinod.koul@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D69026043A
+ for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 09:59:14 +0200 (CEST)
+In-Reply-To: <1463026130-18651-1-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org, Bard Liao <bardliao@realtek.com>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: deprecate MICBIAS widget type
+   ASoC: rt298: fix null deref on acpi driver data
 
 has been applied to the asoc tree at
 
@@ -37,48 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From 32902177f7f6ae70e1d5e71d935aa1bfcae7f01c Mon Sep 17 00:00:00 2001
-From: John Keeping <john@metanate.com>
-Date: Thu, 12 May 2016 13:55:53 +0100
-Subject: [PATCH] ASoC: dapm: deprecate MICBIAS widget type
+>From bb7cb54b388d8d0fbb3af27f14b121ee9c92e867 Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Thu, 12 May 2016 09:38:49 +0530
+Subject: [PATCH] ASoC: rt298: fix null deref on acpi driver data
 
-Commit 086d7f804e26 ("ASoC: Convert WM8962 MICBIAS to a supply widget",
-2011-09-23) says:
+ACPI driver data can be NULL so we need to check that before
+dereference the driver data.
 
-	A supply widget is generally clearer than a MICBIAS widget and a
-	mic bias is just a type of supply so use a supply widget for the
-	MICBIAS. This also avoids confusion with the routing when
-	connected to multiple inputs.
-
-but this has never been documented as a policy.  Add some comments to
-make it clear.
-
-Signed-off-by: John Keeping <john@metanate.com>
+Signed-off-by: Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Acked-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-dapm.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt298.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 97069466c38d..3101d53468aa 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -100,6 +100,7 @@ struct device;
- {       .id = snd_soc_dapm_mixer_named_ctl, .name = wname, \
- 	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
- 	.kcontrol_news = wcontrols, .num_kcontrols = wncontrols}
-+/* DEPRECATED: use SND_SOC_DAPM_SUPPLY */
- #define SND_SOC_DAPM_MICBIAS(wname, wreg, wshift, winvert) \
- {	.id = snd_soc_dapm_micbias, .name = wname, \
- 	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
-@@ -473,7 +474,7 @@ enum snd_soc_dapm_type {
- 	snd_soc_dapm_out_drv,			/* output driver */
- 	snd_soc_dapm_adc,			/* analog to digital converter */
- 	snd_soc_dapm_dac,			/* digital to analog converter */
--	snd_soc_dapm_micbias,		/* microphone bias (power) */
-+	snd_soc_dapm_micbias,		/* microphone bias (power) - DEPRECATED: use snd_soc_dapm_supply */
- 	snd_soc_dapm_mic,			/* microphone */
- 	snd_soc_dapm_hp,			/* headphones */
- 	snd_soc_dapm_spk,			/* speaker */
+diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
+index f0e6c06e89ac..52aacb1d5e4c 100644
+--- a/sound/soc/codecs/rt298.c
++++ b/sound/soc/codecs/rt298.c
+@@ -1184,7 +1184,7 @@ static int rt298_i2c_probe(struct i2c_client *i2c,
+ 
+ 	/* enable jack combo mode on supported devices */
+ 	acpiid = acpi_match_device(dev->driver->acpi_match_table, dev);
+-	if (acpiid) {
++	if (acpiid && acpiid->driver_data) {
+ 		rt298->pdata = *(struct rt298_platform_data *)
+ 				acpiid->driver_data;
+ 	}
 -- 
 2.8.1
