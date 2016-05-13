@@ -1,67 +1,60 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 2/2] ASoC: Add support for HifiBerry DAC
-Date: Fri, 13 May 2016 11:54:09 +0100
-Message-ID: <20160513105409.GB22038@sirena.org.uk>
-References: <1463130853-25096-1-git-send-email-kernel@martin.sperl.org>
- <1463130853-25096-3-git-send-email-kernel@martin.sperl.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3] ASoC: MAX9860: new driver
+Date: Fri, 13 May 2016 11:58:52 +0100
+Message-ID: <20160513105852.GC22038@sirena.org.uk>
+References: <1463124333-9489-1-git-send-email-peda@axentia.se>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ZoaI/ZTpAVc4A5k6"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="xo44VMWPx7vlQ2+2"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1463130853-25096-3-git-send-email-kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Matthias Reichl <hias-vtPv7MOkFPkAvxtiuMwx3w@public.gmane.org>, Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+In-Reply-To: <1463124333-9489-1-git-send-email-peda@axentia.se>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Rosin <peda@axentia.se>
+Cc: linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Misbah Ullah Khan <Misbahk@danlawinc.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---ZoaI/ZTpAVc4A5k6
+--xo44VMWPx7vlQ2+2
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, May 13, 2016 at 09:14:13AM +0000, kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org wrote:
+On Fri, May 13, 2016 at 09:25:33AM +0200, Peter Rosin wrote:
 
-> +static int snd_rpi_hifiberry_dac_init(struct snd_soc_pcm_runtime *rtd)
+> +static int max9860_dai_startup(struct snd_pcm_substream *substream,
+> +			       struct snd_soc_dai *dai)
 > +{
-> +	return 0;
+> +	struct snd_soc_codec *codec = dai->codec;
+> +	struct max9860_priv *max9860 = snd_soc_codec_get_drvdata(codec);
+> +
+> +	switch (max9860->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+> +	case SND_SOC_DAIFMT_CBM_CFM:
+> +	case SND_SOC_DAIFMT_CBS_CFS:
+> +		return 0;
+> +
+> +	default:
+> +		return -EINVAL;
+> +	}
 > +}
 
-Remove empty functions.  Either they are redundant or you really need to
-do something in them.
+This isn't the place to enforce restrictions on DAI format, do it in
+set_dai_fmt().
 
-> +static struct snd_soc_dai_link snd_rpi_hifiberry_dac_dai[] = {
-> +{
-> +	.name		= "HifiBerry DAC",
-> +	.stream_name	= "HifiBerry DAC HiFi",
-> +	.cpu_dai_name	= "bcm2708-i2s.0",
-> +	.codec_dai_name	= "pcm5102a-hifi",
-> +	.platform_name	= "bcm2708-i2s.0",
-> +	.codec_name	= "pcm5102a-codec",
+Otherwise this looks good.
 
-I would expect all this to be done with DT references in a DT driver
-rather than hard coding static names - look at how simple-card does this.
-You could almost use simple-card here but the BCLK ratio requirement is
-probably a bit much, I'm not immediately seeing a nice way to specify
-the ratio there since it depends on the sample width.
-
---ZoaI/ZTpAVc4A5k6
+--xo44VMWPx7vlQ2+2
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXNbJQAAoJECTWi3JdVIfQhDoH/RpCW7sj6R/+V0JWdsDGc/Da
-K6AqQFCfmIxNXeAxzGme96oD2PMY1GcwsQICPtW+OpIx+2basIlMvwLucfJyE4Nr
-u3p/3mhyLJsrSsAD6Kz2h9DsOaG3JDZYlN22SrI0hWrFCYTesjyoKDx3jdwEmOCj
-4QooioiEEUPLsAtX+3jlKHRdRzc68cs7h294gJRIfCct7G2B7ra7kpBWmKgwevlR
-JtM2w8jw9tcJDplU0QGDMMxsiTsHaEqbQPQNphOhTPHLKIfhS9ZRN9z7SothDewG
-9wEeRv9g8OOOJjPf5fk1viXBWzgmBnqYIoSVQBI0j1pkwT8lL4IvZrhzMRq3MvI=
-=Vx1F
+iQEcBAEBCAAGBQJXNbNqAAoJECTWi3JdVIfQUksH/iRwuGnoUek3FCic4AgeNTZw
+FvcpVNAav8wSi0k9eCAesSHaUS7EHJGe195Ts0O29kkFclFVFFagShuRv4YQK9L4
+BeHp4dtYvytwXFhcPJvtskS3ATVhmLAc3CP6ETkCK9tRDaKcufEU2RjIdVJVdEIp
+x3R6Ykxw21aiBYItHk4sq4vuO5cUvGjx5/WQPGrPIfejjHwEBTL/QDKvPbSnaMvn
+wtPmJd3nBM5nQ9WwWMlNVdPx5saU0CuVc4ZumwUBpTOIVE5gGgYbo/7WjPaPb19d
+gBbOdNjOQcLd5rncz3/3RExOOzAWzByIiXQbHCw5ajCCgCv6VBazF71t3LsYklU=
+=4uVn
 -----END PGP SIGNATURE-----
 
---ZoaI/ZTpAVc4A5k6--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--xo44VMWPx7vlQ2+2--
