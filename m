@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "rcar: src: skip disabled-SRC nodes" to the asoc tree
-Date: Fri, 13 May 2016 08:59:03 +0100
-Message-ID: <E1b17zz-0004io-IY@debutante>
-References: <2350728.BUGJNqvVzR@wasted.cogentembedded.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <2350728.BUGJNqvVzR@wasted.cogentembedded.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-renesas-soc@vger.kernel.org
+Subject: Applied "ASoC: dapm: deprecate MICBIAS widget type" to the asoc tree
+Date: Fri, 13 May 2016 08:59:12 +0100
+Message-ID: <E1b1808-00051m-GF@debutante>
+References: <20160512120131.30a91984.john@metanate.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160512120131.30a91984.john@metanate.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: John Keeping <john@metanate.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   rcar: src: skip disabled-SRC nodes
+   ASoC: dapm: deprecate MICBIAS widget type
 
 has been applied to the asoc tree at
 
@@ -37,45 +37,48 @@ to this mail.
 Thanks,
 Mark
 
->From de1965159a34951a86267d13db4f2a67234139d3 Mon Sep 17 00:00:00 2001
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Date: Thu, 12 May 2016 01:36:40 +0300
-Subject: [PATCH] rcar: src: skip disabled-SRC nodes
+>From 32902177f7f6ae70e1d5e71d935aa1bfcae7f01c Mon Sep 17 00:00:00 2001
+From: John Keeping <john@metanate.com>
+Date: Thu, 12 May 2016 13:55:53 +0100
+Subject: [PATCH] ASoC: dapm: deprecate MICBIAS widget type
 
-The current device tree representation of the R-Car Sample Rate Converters
-(SRC) assumes that they are numbered consecutively, starting from 0. Alas,
-this  is not  the case with the R8A7794 SoC where SRC0 isn't present.  In
-order to keep the existing  device trees working, I'm suggesting to use a
-disabled node for SRC0.  Teach the SRC probe  to just skip disabled nodes.
+Commit 086d7f804e26 ("ASoC: Convert WM8962 MICBIAS to a supply widget",
+2011-09-23) says:
 
-Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+	A supply widget is generally clearer than a MICBIAS widget and a
+	mic bias is just a type of supply so use a supply widget for the
+	MICBIAS. This also avoids confusion with the routing when
+	connected to multiple inputs.
+
+but this has never been documented as a policy.  Add some comments to
+make it clear.
+
+Signed-off-by: John Keeping <john@metanate.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/src.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ include/sound/soc-dapm.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index 15d6ffe8be74..e39f916d0f2f 100644
---- a/sound/soc/sh/rcar/src.c
-+++ b/sound/soc/sh/rcar/src.c
-@@ -572,6 +572,9 @@ int rsnd_src_probe(struct rsnd_priv *priv)
- 
- 	i = 0;
- 	for_each_child_of_node(node, np) {
-+		if (!of_device_is_available(np))
-+			goto skip;
-+
- 		src = rsnd_src_get(priv, i);
- 
- 		snprintf(name, RSND_SRC_NAME_SIZE, "%s.%d",
-@@ -595,6 +598,7 @@ int rsnd_src_probe(struct rsnd_priv *priv)
- 		if (ret)
- 			goto rsnd_src_probe_done;
- 
-+skip:
- 		i++;
- 	}
- 
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 97069466c38d..3101d53468aa 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -100,6 +100,7 @@ struct device;
+ {       .id = snd_soc_dapm_mixer_named_ctl, .name = wname, \
+ 	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+ 	.kcontrol_news = wcontrols, .num_kcontrols = wncontrols}
++/* DEPRECATED: use SND_SOC_DAPM_SUPPLY */
+ #define SND_SOC_DAPM_MICBIAS(wname, wreg, wshift, winvert) \
+ {	.id = snd_soc_dapm_micbias, .name = wname, \
+ 	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+@@ -473,7 +474,7 @@ enum snd_soc_dapm_type {
+ 	snd_soc_dapm_out_drv,			/* output driver */
+ 	snd_soc_dapm_adc,			/* analog to digital converter */
+ 	snd_soc_dapm_dac,			/* digital to analog converter */
+-	snd_soc_dapm_micbias,		/* microphone bias (power) */
++	snd_soc_dapm_micbias,		/* microphone bias (power) - DEPRECATED: use snd_soc_dapm_supply */
+ 	snd_soc_dapm_mic,			/* microphone */
+ 	snd_soc_dapm_hp,			/* headphones */
+ 	snd_soc_dapm_spk,			/* speaker */
 -- 
 2.8.1
