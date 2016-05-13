@@ -1,69 +1,67 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2 v2] ASoC: nau8825: non-clock jack
- detection for power saving at standby
-Date: Fri, 13 May 2016 11:48:41 +0100
-Message-ID: <20160513104841.GA22038@sirena.org.uk>
-References: <1463131037-19220-1-git-send-email-KCHSU0@nuvoton.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 2/2] ASoC: Add support for HifiBerry DAC
+Date: Fri, 13 May 2016 11:54:09 +0100
+Message-ID: <20160513105409.GB22038@sirena.org.uk>
+References: <1463130853-25096-1-git-send-email-kernel@martin.sperl.org>
+ <1463130853-25096-3-git-send-email-kernel@martin.sperl.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7646027548889001996=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B14AC260447
- for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 12:48:54 +0200 (CEST)
-In-Reply-To: <1463131037-19220-1-git-send-email-KCHSU0@nuvoton.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ZoaI/ZTpAVc4A5k6"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1463130853-25096-3-git-send-email-kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org
+Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Matthias Reichl <hias-vtPv7MOkFPkAvxtiuMwx3w@public.gmane.org>, Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7646027548889001996==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="jI8keyz6grp/JLjh"
-Content-Disposition: inline
-
-
---jI8keyz6grp/JLjh
+--ZoaI/ZTpAVc4A5k6
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, May 13, 2016 at 05:17:17PM +0800, John Hsu wrote:
-> The driver changes jack type detection interruption to non-clock archi-
-> tecture for less 1mW power saving. The architecture is called manual mode
+On Fri, May 13, 2016 at 09:14:13AM +0000, kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org wrote:
 
-I'm missing patch 2/2 here?
+> +static int snd_rpi_hifiberry_dac_init(struct snd_soc_pcm_runtime *rtd)
+> +{
+> +	return 0;
+> +}
 
---jI8keyz6grp/JLjh
+Remove empty functions.  Either they are redundant or you really need to
+do something in them.
+
+> +static struct snd_soc_dai_link snd_rpi_hifiberry_dac_dai[] = {
+> +{
+> +	.name		= "HifiBerry DAC",
+> +	.stream_name	= "HifiBerry DAC HiFi",
+> +	.cpu_dai_name	= "bcm2708-i2s.0",
+> +	.codec_dai_name	= "pcm5102a-hifi",
+> +	.platform_name	= "bcm2708-i2s.0",
+> +	.codec_name	= "pcm5102a-codec",
+
+I would expect all this to be done with DT references in a DT driver
+rather than hard coding static names - look at how simple-card does this.
+You could almost use simple-card here but the BCLK ratio requirement is
+probably a bit much, I'm not immediately seeing a nice way to specify
+the ratio there since it depends on the sample width.
+
+--ZoaI/ZTpAVc4A5k6
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXNbEDAAoJECTWi3JdVIfQaRgH/2BMhrtVWPWOBcld7UEVyNie
-zYjgv7A1YuOMfe305757+JgzYDrQURME2vdoWnM+qdHbukWXulJLXkPEaXqtQECY
-RUleI3lo9wfjYILEg8m62Db78JGE2Gaxg8inJ6K1fpHvWolrSUWL6CWzBkPiYzLn
-++bVZYZswIqgcMLYLFZbE5P/GT2ANP+diE3TWxSgqS4PgBPXomMTEUVPGPwu/WKD
-IVy/QyCztGwyEfa4hpznoF6mH/f8Obar2VyzGuGvntx1jcPKgA+ykJ4FBDZxVGMR
-QxrLPMzWnC5VsA6dpq0TFL65OmuPDVujOs+d24KOcJUYU+fUfCZFjibX57fV2ZU=
-=AY4E
+iQEcBAEBCAAGBQJXNbJQAAoJECTWi3JdVIfQhDoH/RpCW7sj6R/+V0JWdsDGc/Da
+K6AqQFCfmIxNXeAxzGme96oD2PMY1GcwsQICPtW+OpIx+2basIlMvwLucfJyE4Nr
+u3p/3mhyLJsrSsAD6Kz2h9DsOaG3JDZYlN22SrI0hWrFCYTesjyoKDx3jdwEmOCj
+4QooioiEEUPLsAtX+3jlKHRdRzc68cs7h294gJRIfCct7G2B7ra7kpBWmKgwevlR
+JtM2w8jw9tcJDplU0QGDMMxsiTsHaEqbQPQNphOhTPHLKIfhS9ZRN9z7SothDewG
+9wEeRv9g8OOOJjPf5fk1viXBWzgmBnqYIoSVQBI0j1pkwT8lL4IvZrhzMRq3MvI=
+=Vx1F
 -----END PGP SIGNATURE-----
 
---jI8keyz6grp/JLjh--
-
---===============7646027548889001996==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7646027548889001996==--
+--ZoaI/ZTpAVc4A5k6--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
