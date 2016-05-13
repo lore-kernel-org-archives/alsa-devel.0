@@ -1,91 +1,83 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4] ASoC: Intel: Skylake: Add DSP firmware
- manifest parsing
-Date: Fri, 13 May 2016 13:14:17 +0100
-Message-ID: <20160513121417.GL22038@sirena.org.uk>
-References: <1463140547-20895-1-git-send-email-vinod.koul@intel.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8917393954366364932=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5548C260564
- for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 14:14:33 +0200 (CEST)
-In-Reply-To: <1463140547-20895-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Shreyas NC <shreyas.nc@intel.com>
+From: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
+Subject: Re: [PATCH 2/2] ASoC: Add support for HifiBerry DAC
+Date: Fri, 13 May 2016 14:20:57 +0200
+Message-ID: <C139252A-23AC-4C37-A5E5-E0D7AF1DCC89@martin.sperl.org>
+References: <1463130853-25096-1-git-send-email-kernel@martin.sperl.org> <1463130853-25096-3-git-send-email-kernel@martin.sperl.org> <20160513105409.GB22038@sirena.org.uk>
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20160513105409.GB22038-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Matthias Reichl <hias-vtPv7MOkFPkAvxtiuMwx3w@public.gmane.org>, Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8917393954366364932==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="m+jEI8cDoTn6Mu9E"
-Content-Disposition: inline
+> On 13.05.2016, at 12:54, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+> 
+> On Fri, May 13, 2016 at 09:14:13AM +0000, kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org wrote:
+> 
+>> +static int snd_rpi_hifiberry_dac_init(struct snd_soc_pcm_runtime *rtd)
+>> +{
+>> +	return 0;
+>> +}
+> 
+> Remove empty functions.  Either they are redundant or you really need to
+> do something in them.
+> 
+Sure this can get removed.
 
+As said - it is just pushing the patches upstream,
+so I did not even touch it. 
 
---m+jEI8cDoTn6Mu9E
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+>> +static struct snd_soc_dai_link snd_rpi_hifiberry_dac_dai[] = {
+>> +{
+>> +	.name		= "HifiBerry DAC",
+>> +	.stream_name	= "HifiBerry DAC HiFi",
+>> +	.cpu_dai_name	= "bcm2708-i2s.0",
+>> +	.codec_dai_name	= "pcm5102a-hifi",
+>> +	.platform_name	= "bcm2708-i2s.0",
+>> +	.codec_name	= "pcm5102a-codec",
+> 
+> I would expect all this to be done with DT references in a DT driver
+> rather than hard coding static names - look at how simple-card does this.
+> You could almost use simple-card here but the BCLK ratio requirement is
+> probably a bit much, I'm not immediately seeing a nice way to specify
+> the ratio there since it depends on the sample width.
 
-On Fri, May 13, 2016 at 05:25:47PM +0530, Vinod Koul wrote:
+Actually it is just: <sample-width> * <number of channels>
+where number of channels is fixed to 2 for bcm2835-i2s.
 
-> +	/* Get the FW pointer to derive ADSP header */
-> +	buf = ctx->fw->data;
+So maybe that already happens automatically in the framework?
 
-> +	adsp_hdr = (struct adsp_fw_hdr *)(buf + SKL_ADSP_FW_BIN_HDR_OFFSET);
+I will need to test it...
 
-> +	mod_entry = (struct adsp_module_entry *)
-> +		(buf + SKL_ADSP_FW_BIN_HDR_OFFSET + adsp_hdr->header_len);
+I also know that some of the audio guys working on the rpi
+would like to be able to configure BCLK ratios based on both:
+sample frequency and sample_width.
 
-What if we somehow managed to end up with a zero length firmware (or
-something smaller than these headers)?
+Basically they want to control the clock divider/clock parent
+trying to avoid fractional dividers.
 
-> +		/*
-> +		 * we check if current pointer is larger than file size from
-> +		 * base value to check excceding the file while parsing
-> +		 */
-> +		if ((const char *)mod_entry >= buf + ctx->fw->size) {
-> +			dev_err(ctx->dev,
-> +				"Exceeds file bound: Entry %d Ptr %p\n",
-> +				i, mod_entry);
-> +
-> +			return -EIO;
-> +		}
+Something like this could get added to the core?
+Is there interest in getting something like this?
 
-This checks the start of the entry but it still lets us read beyond the
-end of the file.
+Could look like this:
+bclk-ratios = 
+  /* for 96kHz at 16bit/channel use bclk-ratio 40 */
+  <96000 16 40>, 
+  /* for 48kHz at 32bit/channel use bclk-ratio 80 */
+  <48000 16 80>,
+  /* for any (other) sample frequency at 16 bit use bclk-ratio 32 */
+  <0 16 32>,
+  /* for any (other) sample frequency at 32 bit use bclk-ratio 64 */
+  <0 32 64>;
 
---m+jEI8cDoTn6Mu9E
-Content-Type: application/pgp-signature; name="signature.asc"
+but there could also be other approaches as well,
+how this could get described in the device tree.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXNcUYAAoJECTWi3JdVIfQq2wH/0hqGyr/j31oe+urPDZagO98
-bTlaOOgEZl3xc8953ln6wURjX30/vpVSjm7BU3/kua+qp2yoOcN5bIe9agsy0TGA
-kWPkPCIGaCHciC1TJeiHje+0ozUtB46MySO4PomAq5NkjJZP8FbvwAtqto5pyP37
-0ZLoGHsuqVfcbFndd0W6NVBJNsxey3XN3dWPFJD9zanbI15eP5bfNm0m+ZomkkRx
-BoaqRSe5CA+f9ySe7XDpj1TA5F0I3QaAFndWLxC+EMGEHhrCbXbXjE3OLvU+/2Gh
-Lho16ZdkNilEeH7S0dsb0+WMxWu24BUVN8KDzzeMLxycqNob2utWtDuGaDRBDSg=
-=nKAl
------END PGP SIGNATURE-----
-
---m+jEI8cDoTn6Mu9E--
-
---===============8917393954366364932==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8917393954366364932==--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
