@@ -1,35 +1,19 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: Imx6 i2s master driver without i2c
-Date: Fri, 13 May 2016 12:30:57 -0700
-Message-ID: <CAG5mAdwv0dwVgdnPoAmet9b9goQKPD31T34Owo33ES0A5KBruQ@mail.gmail.com>
-References: <CABPh3UNhKMGUoiDvHn9paXVNvtpwzbzkbCwBhtSCm72jxkh3CA@mail.gmail.com>
- <CABPh3UMMvVKvHL0g52NqP-E8dpxoZHfwgR_t1WY08OFMSYt9tg@mail.gmail.com>
- <CABPh3UMJ4gOtNN3FJg0fF7Mm+Lpw0=jXGk_+ejsHaGLG9UvWAQ@mail.gmail.com>
- <CABPh3UNi79pMZPgJBisaq9Qo847MV-6riCEQ=Akt_RoLdqeVpw@mail.gmail.com>
- <CABPh3UPLR20WbV0NuYLA4RZ7XB-0+RdFrB-SpDLa0T+wOxqQ+g@mail.gmail.com>
- <CAG5mAdzJyTdsBTnz8FZ8Ay278j1bYJHHqkOTGY+_Ck9sSPhQoQ@mail.gmail.com>
- <CABPh3UN1ZoGAVF1y_5vi_DbkARfopbe5tc5SSy0HQbiYe8MERA@mail.gmail.com>
- <CAG5mAdw1erm=4RjMfP-hf1Vkw73KCWSaLbU3DtditMfsFQNRdQ@mail.gmail.com>
- <CABPh3UN2157eMxwr6i8-vPfdyr3L0DOrpVt7ChTUrPTCbCzCBA@mail.gmail.com>
- <CABPh3UNk9xa=K7QiVV3pZba7o287AyOrjufUGd1QWUxnHNHLOg@mail.gmail.com>
- <CAG5mAdyCAgtFBCbAyLVtqtLgOtCgkB9=yV+YEY8a3oeL2yJDHA@mail.gmail.com>
- <CABPh3UPzP1iFYsy_Ni1fcfimnoVDUWfdn8ht5On_mx0xN1w8Mg@mail.gmail.com>
- <CAG5mAdyceKw_H7zNfx-KTSUUMc81UiLu3feLBcB+vjjjpuhetQ@mail.gmail.com>
- <CABPh3UNPDS+4H60eeL79etF70O0-Xp2T_oNBkYL2m4g6jpeSWA@mail.gmail.com>
- <CAG5mAdw8oWy38SBzYTKi9DeCS5UzcMNjY5VsFCARp6yDb76cFg@mail.gmail.com>
- <CABPh3UOUf=wsw5uRKP3pJO+Z5CCMcdJCOyQmExCucYrK-4-84w@mail.gmail.com>
- <CABPh3UOnt9ZWYn4dA6xf0DzFdRvNY7QsSv5mzD2Z5UufU3gVhg@mail.gmail.com>
+From: Ross Wille <audio@cornerbrick.com>
+Subject: Re: i.MX6 SGTL5000 hangs with EIO error
+Date: Fri, 13 May 2016 14:45:12 -0600
+Message-ID: <201605131445.12110.audio@cornerbrick.com>
+References: <201605121154.48951.audio@cornerbrick.com>
+ <201605131056.41115.audio@cornerbrick.com>
+ <CAG5mAdyCTE=MGWGVEpUD_tZknd-Tr0=oznJHkQkz_2zziR9Z4g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f45.google.com (mail-oi0-f45.google.com
- [209.85.218.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 169A8260601
- for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 21:31:18 +0200 (CEST)
-Received: by mail-oi0-f45.google.com with SMTP id x201so186389139oif.3
- for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 12:31:17 -0700 (PDT)
-In-Reply-To: <CABPh3UOnt9ZWYn4dA6xf0DzFdRvNY7QsSv5mzD2Z5UufU3gVhg@mail.gmail.com>
+Received: from mail.willeweb.com (willeweb.com [166.70.233.13])
+ by alsa0.perex.cz (Postfix) with ESMTP id B24C62651A3
+ for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 22:45:13 +0200 (CEST)
+In-Reply-To: <CAG5mAdyCTE=MGWGVEpUD_tZknd-Tr0=oznJHkQkz_2zziR9Z4g@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -39,468 +23,292 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: nick83ola <nick83ola@gmail.com>
+To: Caleb Crome <caleb@crome.org>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 13, 2016 at 12:59 AM, nick83ola <nick83ola@gmail.com> wrote:
+Caleb,
 
-> Caleb thanks for your help!!!! the documentation is really orrible!!!!
->
-> but now I'm getting something out of TXD!!!!
->
+Yes, it's a Jensen JT-11P-1HPC (10k 1:1) line transformer.
 
-Wooo!
+I have a custom isolation PC board, which includes the XLR jack, isolation 
+transformer, variable attenuator, and transient protection.  The board has 
+separate "shield" and analog grounds.  The output of this board feeds into 
+a standard, unmodified Wandboard via the 3.5mm LINEIN1 jack.
 
+I'm not plugging/unplugging the Wandboard connector (well, I started out 
+that way, but the results were terrible).  With the transformer and the TVS 
+diode the problem is MUCH better than it was initially.  When I was driving 
+the LINEIN1 jack directly from the signal generator plugging/unplugging the 
+audio connector had a significant chance of making this happen.
 
->
-> only no clock and very fast (I think that I need to configure the
-> oscillator/pll and iomux???)
->
+Now, the isolation board is always connected to the Wandboard.  And 
+plugging/unplugging the XLR connector is pretty reliable.  The easiest way 
+I've found to make the problem happen is by keeping everything connected 
+and toggling the power switch on my signal generator repeatedly.
 
-Right, I wish I understood how to do that.  I don't.  It's got something to
-do with some function called 'clock' I bet :-)  Or maybe 'clk'.  Or maybe
-in the DTS and not a function call...
+I don't think I'm getting any ESD during my tests, although when this device 
+gets put into service I'd expect to get some ESD when they plug into the 
+XLR jack while the device is powered.  (Maybe I'll tell them not to do 
+that, but they're talking heads, not geeks.)
 
+Most of the time a reboot fixes the problem, but I've seen rare occasions 
+when it does require a power cycle.
 
->
-> In my kernel (3.14.28-1.0.0_ga+g91cf351) some of the statement in you dts
-> are not supported in simple driver so I stripped down the imx-si476 driver
-> and use with your dummy codec driver
->
+The SGTL5000 doesn't have an external reset.  It has an internal reset 
+circuit which waits 8 clock cycles after power-on before it comes out of 
+reset.  So, a hardware reset of this chip requires a power cycle.
 
-Yeah, that's the problem with old kernels.  I try to just look towards the
-future :-)
+There may be a way to force a software reset if I can still talk to the 
+chip, but if the chip is latched up only a power cycle is going to fix 
+that.
 
-I'm glad things are working, and thanks for posting your working DTS.
-Having your DTS here may help the next guy with an old kernel.
+The LINEIN1 is capacitively coupled to the SGTL5000 (I assume that's because 
+the SGTL5000 input has a DC bias on it).  I'm clamping +/-1V relative to 
+the Wandboard's signal ground, but that's on the AC-coupled side of the 
+signal.  It'd be better to clamp it going into the codec as you've shown in 
+your sketch.
 
-Cheers
--Caleb
+You asked where the TVS diode is located.  It's a ESDARF01-1BM2 on the 
+custom isolation PCB and it's connected between signal and ground just 
+before it goes out the cable (which is only 6 inches long) and into the 
+Wandboard's LINEIN1 connector.  It would definitely be better if the 
+protection was on the Wandboard itself, especially after the coupling 
+capacitor.
 
+No, breathing on it doesn't affect it. :-)  I can run all night with a 
+nearly full-swing sine wave at 1kHz and it never fails.  It used to fail 
+regularly when I messed with the audio connections, but now it's much 
+harder to reproduce it.
 
->
-> &audmux {
->     pinctrl-names = "default";
->     pinctrl-0 = <&pinctrl_audmux_4>;
->     status = "okay";
-> };
->
-> &ssi2 {
->     assigned-clocks = <&clks IMX6QDL_CLK_SSI2_SEL>;
->     assigned-clock-parents = <&clks IMX6QDL_CLK_PLL4_AUDIO_DIV>;
->     assigned-clock-rates = <0>;
->     fsl,mode = "i2s-master";
->     status = "okay";
-> };
->
->
-> / {
->     model = "Engicam i.CoreM6 DualLite/Solo starterkit";
->     compatible = "fsl,imx6-icore", "fsl,imx6dl";
->
->     codec_test: codec_test {
->         compatible = "linux,snd-soc-dummy";
->         status = "okay";
->     };
->
->     sound {
->         compatible = "fsl,imx-audio-itel";
->         model = "imx-itel";
->         ssi-controller = <&ssi2>;
->         audio-codec = <&codec_test>;
->         mux-int-port = <4>;
->         mux-ext-port = <2>;
->         status = "okay";
->     };
->
->     sound-hdmi {
->         status = "disabled";
->     };
-> };
->
->
-> &iomuxc {
->     audmux {
->         pinctrl_audmux_4: audmux-4 {
->             fsl,pins = <
->                 MX6QDL_PAD_DISP0_DAT20__AUD4_TXC  0x130b0
->                 MX6QDL_PAD_DISP0_DAT21__AUD4_TXD 0x110b0
->                 MX6QDL_PAD_DISP0_DAT22__AUD4_TXFS  0x130b0
->                 MX6QDL_PAD_DISP0_DAT23__AUD4_RXD  0x130b0
->             >;
->         };
->     };
-> };
->
->
-> ======================================================================================================================
-> imx-itel.c
->
-> ======================================================================================================================
->
->
-> /*
->  * Copyright (C) 2013 Freescale Semiconductor, Inc.
->  *
->  * The code contained herein is licensed under the GNU General Public
->  * License. You may obtain a copy of the GNU General Public License
->  * Version 2 or later at the following locations:
->  *
->  * http://www.opensource.org/licenses/gpl-license.html
->  * http://www.gnu.org/copyleft/gpl.html
->  */
->
-> #define DEBUG 1
->
-> #include <linux/module.h>
-> #include <linux/of.h>
-> #include <linux/of_platform.h>
-> #include <linux/device.h>
-> #include <linux/clk.h>
-> #include <sound/core.h>
-> #include <sound/pcm.h>
-> #include <sound/soc.h>
-> #include <sound/initval.h>
-> #include <sound/pcm_params.h>
->
-> #include "imx-audmux.h"
->
-> struct imx_itel_data {
->     struct snd_soc_dai_link dai;
->     struct snd_soc_card card;
-> };
->
->
-> static int imx_audmux_config(int slave, int master)
-> {
->     unsigned int ptcr, pdcr;
->     slave = slave - 1;
->     master = master - 1;
->
->     ptcr = IMX_AUDMUX_V2_PTCR_SYN |
->         IMX_AUDMUX_V2_PTCR_TFSDIR |
->         IMX_AUDMUX_V2_PTCR_TFSEL(slave) |
->         IMX_AUDMUX_V2_PTCR_TCLKDIR |
->         IMX_AUDMUX_V2_PTCR_TCSEL(slave);
->     pdcr = IMX_AUDMUX_V2_PDCR_RXDSEL(slave);
->
->     imx_audmux_v2_configure_port(master, ptcr, pdcr);
->
->     /*
->      * According to RM, RCLKDIR and SYN should not be changed at same time.
->      * So separate to two step for configuring this port.
->      */
->     ptcr |= IMX_AUDMUX_V2_PTCR_RFSDIR |
->         IMX_AUDMUX_V2_PTCR_RFSEL(slave) |
->         IMX_AUDMUX_V2_PTCR_RCLKDIR |
->         IMX_AUDMUX_V2_PTCR_RCSEL(slave);
->     imx_audmux_v2_configure_port(master, ptcr, pdcr);
->
->     printk(KERN_ERR "--> ITEL imx-audmux-confic ext-port port=%#010x
-> ptcr=%#010x pdcr=%#010x\n", master, ptcr, pdcr);
->
->     ptcr = IMX_AUDMUX_V2_PTCR_SYN;
->     pdcr = IMX_AUDMUX_V2_PDCR_RXDSEL(master);
->
->     printk(KERN_ERR "--> ITEL imx-audmux-config int-port port=%#010x
-> ptcr=%#010x pdcr=%#010x\n", master, ptcr, pdcr);
->     imx_audmux_v2_configure_port(slave, ptcr, pdcr);
->
->     return 0;
-> }
->
->
-> static int imx_itel_hw_params(struct snd_pcm_substream *substream,
->                               struct snd_pcm_hw_params *params)
-> {
->     struct snd_soc_pcm_runtime *rtd = substream->private_data;
->     struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
->     u32 channels = params_channels(params);
->     u32 rate = params_rate(params);
->     u32 bclk = rate * channels * 32;
->     int ret = 0;
->
->     printk(KERN_ERR "--> ITEL imx-itel-hw-params NAME=%s  \n VALUE=%#010x
-> "
->                         "SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-> SND_SOC_DAIFMT_CBS_CFS\n",
->                         cpu_dai->name,
->                         (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-> SND_SOC_DAIFMT_CBS_CFS));
->
->     /* set cpu DAI configuration */
->     ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S
->             | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
->     if (ret) {
->         dev_err(cpu_dai->dev, "failed to set dai fmt\n");
->         return ret;
->     }
->     printk(KERN_ERR "--> ITEL imx-itel-hw-params set tdm slots
-> channels=%d", channels);
->
->     ret = snd_soc_dai_set_tdm_slot(cpu_dai,
->             channels == 1 ? 0xfffffffe : 0xfffffffc,
->             channels == 1 ? 0xfffffffe : 0xfffffffc,
->             2, 32);
->     if (ret) {
->         dev_err(cpu_dai->dev, "failed to set dai tdm slot\n");
->         return ret;
->     }
->
->     printk(KERN_ERR "--> ITEL imx-audmux-config set sysclk NAME=%s
-> \n",cpu_dai->name);
->
->     ret = snd_soc_dai_set_sysclk(cpu_dai, 0, bclk, SND_SOC_CLOCK_OUT);
->     if (ret)
->         dev_err(cpu_dai->dev, "failed to set sysclk\n");
->
->     return ret;
-> }
->
->
-> static struct snd_soc_ops imx_itel_ops = {
->     .hw_params = imx_itel_hw_params,
-> };
->
->
-> static struct snd_soc_dai_link imx_itel_dai[] = {
->     {
->         .name            = "Hifi",
->         .stream_name     = "Hifi",
->         .codec_dai_name     = "snd-soc-dummy-dai",
->         //.codec_name         = "snd-soc-dummy",
->         .ops             = &imx_itel_ops,
->         // .symmetric_rates = 1,
->     },
-> };
->
-> static struct snd_soc_card snd_soc_card_imx_itel = {
->     .name       = "imx-audio-itel",
->     .dai_link   = imx_itel_dai,
->     .num_links    = ARRAY_SIZE(imx_itel_dai),
->     .owner      = THIS_MODULE,
-> };
->
->
-> static int imx_itel_probe(struct platform_device *pdev)
-> {
->     struct snd_soc_card *card = &snd_soc_card_imx_itel;
->     struct device_node *ssi_np;
->     struct platform_device *ssi_pdev;
->     struct device_node *codec_np;
->     // struct imx_itel_data *data = NULL;
->     int int_port, ext_port, ret;
->
->     printk(KERN_ERR "--> ITEL imx_itel_probe");
->
->     ret = of_property_read_u32(pdev->dev.of_node, "mux-int-port",
-> &int_port);
->     if (ret) {
->         dev_err(&pdev->dev, "mux-int-port missing or invalid\n");
->         return ret;
->     }
->
->
->     ret = of_property_read_u32(pdev->dev.of_node, "mux-ext-port",
-> &ext_port);
->     if (ret) {
->         dev_err(&pdev->dev, "mux-ext-port missing or invalid\n");
->         return ret;
->     }
->
->     printk(KERN_ERR "--> ITEL Configuro audmux\n");
->     imx_audmux_config(int_port, ext_port);
->
->     /* find value in devicetree for ssi controller */
->     ssi_np = of_parse_phandle(pdev->dev.of_node, "ssi-controller", 0);
->     if (!ssi_np) {
->         dev_err(&pdev->dev, "ssi-controller missing or invalid\n");
->         ret = -EINVAL;
->         goto fail;
->     }
->
->     /* find SSI platform driver */
->     ssi_pdev = of_find_device_by_node(ssi_np);
->     if (!ssi_pdev) {
->         dev_err(&pdev->dev, "failed to find SSI platform device\n");
->         ret = -EPROBE_DEFER;
->         goto fail;
->     }
->
->     codec_np = of_parse_phandle(pdev->dev.of_node, "audio-codec", 0);
->     if (!codec_np) {
->         dev_err(&pdev->dev, "codec missing or invalid\n");
->         ret = -EINVAL;
->         goto fail;
->     }
->
->     // codec_dev = NULL;
->
->     card->dev = &pdev->dev;
->     card->dai_link->cpu_dai_name = dev_name(&ssi_pdev->dev);
->     card->dai_link->platform_of_node = ssi_np;
->     card->dai_link->codec_of_node = codec_np;
->
->     platform_set_drvdata(pdev, card);
->     snd_soc_card_set_drvdata(card, &snd_soc_card_imx_itel);
->
->     printk(KERN_ERR "--> ITEL imx-probe registro card\n");
->
->     ret = snd_soc_register_card(card);
->     if (ret) {
->         dev_err(&pdev->dev, "Failed to register card: %d\n", ret);
->         goto fail;
->     }
->
->     printk(KERN_ERR "--> ITEL imx-probe of ssi\n");
->     of_node_put(ssi_np);
->     printk(KERN_ERR "--> ITEL imx-probe of codec\n");
->     of_node_put(codec_np);
->
->     return 0;
->
-> fail:
->     if (ssi_np)
->         of_node_put(ssi_np);
->     if (codec_np)
->         of_node_put(codec_np);
->
->     return ret;
-> }
->
-> static int imx_itel_remove(struct platform_device *pdev)
-> {
->     struct snd_soc_card *card = &snd_soc_card_imx_itel;
->
->     snd_soc_unregister_card(card);
->
->     return 0;
-> }
->
-> static const struct of_device_id imx_itel_dt_ids[] = {
->     { .compatible = "fsl,imx-audio-itel", },
->     { /* sentinel */ }
-> };
-> MODULE_DEVICE_TABLE(of, imx_itel_dt_ids);
->
-> static struct platform_driver imx_itel_driver = {
->     .driver = {
->         .name = "imx-itel",
->         .owner = THIS_MODULE,
->         .pm = &snd_soc_pm_ops,
->         .of_match_table = imx_itel_dt_ids,
->     },
->     .probe = imx_itel_probe,
->     .remove = imx_itel_remove,
-> };
->
-> module_platform_driver(imx_itel_driver);
->
-> MODULE_AUTHOR("Nicola Lunghi");
-> MODULE_DESCRIPTION("ITEL I2S Platform Driver");
-> MODULE_LICENSE("GPL v2");
-> MODULE_ALIAS("platform:imx-itel");
->
-> 2016-05-12 9:55 GMT+02:00 nick83ola <nick83ola@gmail.com>:
->
->> I am using ssi1 because I have an example of setting master mode on sabre
->> board dts
->>
->> I have a problem with iomux/pinctrl  I think because
->>
->> root@icorem6solo:/sys/kernel/debug/pinctrl/20e0000.iomuxc# cat
->> pinmux-pins |grep audmux
->> pin 57 (MX6DL_PAD_DISP0_DAT20): 2028000.ssi (GPIO UNCLAIMED) function
->> audmux group audmux-4
->> pin 58 (MX6DL_PAD_DISP0_DAT21): 2028000.ssi (GPIO UNCLAIMED) function
->> audmux group audmux-4
->> pin 59 (MX6DL_PAD_DISP0_DAT22): 2028000.ssi (GPIO UNCLAIMED) function
->> audmux group audmux-4
->> pin 60 (MX6DL_PAD_DISP0_DAT23): 2028000.ssi (GPIO UNCLAIMED) function
->> audmux group audmux-4
->>
->> says: GPIO_UNCLAIMED? it is correct??
->>
->> /sys/kernel/debug/pinctrl/20e0000.iomuxc# cat pinconf-groups |grep -A 1
->> audmux
->> 1 (audmux-1):
->> MX6DL_PAD_SD2_DAT0: 0x17070MX6DL_PAD_SD2_DAT3: 0x17070MX6DL_PAD_SD2_DAT2:
->> 0x17070MX6DL_PAD_SD2_DAT1: 0x17070
->> 2 (audmux-2):
->> MX6DL_PAD_CSI0_DAT7: 0x1b0b0MX6DL_PAD_CSI0_DAT4:
->> 0x1b0b0MX6DL_PAD_CSI0_DAT5: 0x1b0b0MX6DL_PAD_CSI0_DAT6: 0x1b0b0
->> 3 (audmux-3):
->> MX6DL_PAD_DISP0_DAT16: 0x10MX6DL_PAD_DISP0_DAT18:
->> 0x1b0b0MX6DL_PAD_DISP0_DAT19: 0x1b0b0
->> 4 (audmux-4):
->> MX6DL_PAD_DISP0_DAT20: 0x130b0MX6DL_PAD_DISP0_DAT21:
->> 0x110b0MX6DL_PAD_DISP0_DAT22: 0x130b0MX6DL_PAD_DISP0_DAT23: 0x130b0
->>
->> 0x130b0?
->>
->> audmux# cat ssi0
->>     PDCR: 0000a000
->>     PTCR: ad400800
->>     TxFS output from SSI6, TxClk output from SSI6
->>     Port is symmetric
->>     Data received from SSI6
->> root@icorem6solo:/sys/kernel/debug/audmux# cat ssi1
->>     PDCR: 00008000
->>     PTCR: 00000800
->>     TxFS input, TxClk input
->>     Port is symmetric
->>     Data received from SSI5
->> root@icorem6solo:/sys/kernel/debug/audmux# cat ssi2
->>     PDCR: 00006000
->>     PTCR: 9cc00800
->>     TxFS output from SSI4, TxClk output from SSI4
->>     Port is symmetric
->>     Data received from SSI4
->> root@icorem6solo:/sys/kernel/debug/audmux# cat ssi3
->>     PDCR: 00004000
->>     PTCR: 00000800
->>     TxFS input, TxClk input
->>     Port is symmetric
->>     Data received from SSI3
->> root@icorem6solo:/sys/kernel/debug/audmux# cat ssi4
->>     PDCR: 00002000
->>     PTCR: 8c400800
->>     TxFS output from imx-ssi.1, TxClk output from imx-ssi.1
->>     Port is symmetric
->>     Data received from imx-ssi.1
->> root@icorem6solo:/sys/kernel/debug/audmux# cat ssi5
->>     PDCR: 00000000
->>     PTCR: 00000800
->>     TxFS input, TxClk input
->>     Port is symmetric
->>     Data received from imx-ssi.0
->> root@icorem6solo:/sys/kernel/debug/audmux# cat ssi6
->>     PDCR: 0000c000
->>     PTCR: 00000800
->>     TxFS input, TxClk input
->>     Port is symmetric
->>     Data received from UNKNOWN
->>
->>
->>
->
->
-> --
->
-> P.S. Le informazioni trasmesse attraverso la presente comunicazione sono
-> di esclusiva
-> spettanza dell'effettivo destinatario. Nel caso in cui le stesse
-> raggiungessero, per
-> qualunque motivo, soggetti non interessati, questi ultimi vorranno darne
-> immediata
-> notizia al mittente. In ogni caso, eventuali soggetti diversi dai
-> legittimi destinatari
-> della presente comunicazione e dei dati contenuti negli allegati, possono
-> essere
-> sanzionati ai sensi del T.U. sul trattamento dei dati personali d.lgs.
-> 196/2003, sia ai
-> sensi dell'art. 616 del Codice Penale che disciplina la violazione del
-> segreto sulla
-> corrispondenza.
->
+Thanks again for all your thoughts and ideas.  It's close to being good 
+enough, but it's not very professional for a piece of gear to stop working 
+just because someone plugged in an XLR cable.
+
+-Ross
+
+On Friday 13 May 2016 13:23, Caleb Crome wrote:
+> On Fri, May 13, 2016 at 9:56 AM, Ross Wille <audio@cornerbrick.com> wrote:
+> 
+> > Hi Caleb,
+> >
+> > Thank you for your response!
+> >
+> > The LINEIN1 protection on the Wandboard kicks in at around 5 to 5.5 
+Volts
+> > and, as you pointed out, doesn't include a current-limiting resistor.  
+The
+> > max-voltage range for the SGTL5000 audio input is spec'd at GND-0.3 to
+> > Vdda+0.3.  I believe the Wandboard Vdda is 2.5V, so the on-board 
+protection
+> > is likely insufficient to limit the input voltage to the datasheet 
+specs.
+> >
+> > To mitigate this I have done the following:
+> >
+> > 1. I've isolated the audio between the signal generator and the codec 
+chip
+> > using a professional-grade audio transformer having a breakdown voltage 
+of
+> > 250 V RMS, so ground loops should not be an issue, but it might not
+> > eliminate ESD completely.
+> >
+> 
+> Ah, a Jensen Transformer I assume?  Those things are great.  And the guy
+> (Bill Whitlock) really knows about dealing with hum issues.  His license
+> plate reads MR CMRR.  The DMV initially wouldn't give him that plate.
+> Until he explained that CMRR stands for 'common-mode rejection ratio' :-)
+> The stuff you learn at AES conventions...
+> 
+> 
+> >
+> > 2. For transient protection, I have a bidirectional TVS diode with a
+> > breakdown voltage of 1.0V(typ) between the transformer output and 
+ground.
+> > The TVS diode meets IEC 61000-4-2 for contact discharge of 8 kV and air
+> > discharge of 15 kV and I don't believe its an ESD problem (see #3).  The
+> > circuit impedance at the TVS diode is about 10 kohms.
+> >
+> 
+> 
+> 
+> >
+> > 3. I'm working on a static mat and I'm grounded.
+> >
+> > In spite of doing all this, I still get the error.  If latch-up is the
+> > culprit (which is possible) I am running out of things to try.  I may 
+need
+> > to add an active buffer stage to ensure the audio voltage never exceeds 
+the
+> > voltage rails (but that'll require a new PCB design--sigh).
+> >
+> 
+> Is this your custom board + wandboard, or is it the standard wandboard?
+> 
+> Is it possible that the GND of the audio connector (which is what should
+> get hit first if you're plugging into the jack at the board side) isn't a
+> very good ground, and is letting ESD couple to some other lines?  ESD is
+> icky that way.    But, if you're ESD grounded, then this shouldn't be the
+> issue anyway.
+> 
+> 
+> >
+> > I was hoping to find a software recovery solution because rebooting and
+> > power-cycling the board are a rather drastic measures.
+> >
+> 
+> I doubt that's possible if a reset doesn't recover it -- it seems to be
+> really broken if you need a power cycle.  That's also a hint that it's
+> latchup causing the problem.
+> 
+> 
+> 
+> > Thanks!
+> >
+> > -Ross
+> >
+> >
+> Looks like you've got most of it covered :-)
+> 
+> Can you do some protection like this?
+> 
+https://drive.google.com/file/d/0B0FeiEiLS9DzMVpTWm9QcDY5UHM/view?usp=sharing
+> 
+> using something like a BAT54S?  That should do a very good job of limiting
+> the voltage to the codec.  but, a 1V TVS should do the job too I think if
+> it's placed on the wandboard.  Where is your TVS diode placed?  Soldered 
+in
+> close on the connector of the wandboard, or floating out in space.  But...
+> ESD just shouldn't be the problem if you're properly grounded.
+> 
+> What else could be the culprit I wonder?  This happens as soon as you plug
+> in, right?  Does the problem ever happen when nobody is near by and
+> breathing on it?  Or is always in response to some body coming close and
+> touching things?
+> 
+> I'm kind of out of ideas without actually getting in close to it and 
+seeing
+> what happens and when.
+> 
+> Let me know if you can figure out any more details of when the problem
+> happens.  I just think it's got to be a hardware problem, but I've seen
+> stranger things end up being software problems.  :-)
+> 
+> Cheers,
+>   -Caleb
+> 
+> 
+> 
+> > On Thursday 12 May 2016 14:13, Caleb Crome wrote:
+> > > On Thu, May 12, 2016 at 10:54 AM, Ross Wille <audio@cornerbrick.com>
+> > wrote:
+> > >
+> > > > Hello all,
+> > > >
+> > > > I am doing an ALSA capture on a Wandboard Quad (i.MX6 quad core with
+> > > > SGTL5000 codec chip) from the LINEIN1 jack.  I'm using a
+> > 4.6.0-rc3-armv7-x0
+> > > > kernel.
+> > > >
+> > > > Sometimes when the audio glitches (for example, when I plug/unplug 
+the
+> > > > audio
+> > > > cable or adjust my signal generator) the snd_pcm_readi() function 
+will
+> > > > start returning -5 (EIO).
+> > > >
+> > >
+> > > This sounds like an ESD strike. (when you plug in the cable the ESD on
+> > the
+> > > cable wacks some electronics internally).
+> > >
+> > > See if you can ground yourself, the signal generator, the wand board, 
+and
+> > > anything else with some ESD straps, and see if you can reproduce the
+> > error.
+> > >
+> > >
+> > > Looking at the wandboard baseboard, the linein1 jack *does* have ESD
+> > > protection diodes on it.
+> > >
+> > > Interestingly, the mic1 jack does not have ESD diodes.  not sure why.
+> > >
+> > > This shouldn't be a software issue, because there's no microphone
+> > detection
+> > > going on in hardware -- the software doesn't know you've inserted
+> > anything.
+> > >
+> > >
+> > > Another possibility is a different type of electrical over stress.  
+There
+> > > might be a large voltage between your wandboard GND and generator GND.
+> > > This is common, and is a result of the inter-widing capacitance on the
+> > > respective 'isolated' power supplies.  If that capacitance is large
+> > enough,
+> > > it might be able to drive enough current into the pins to wreck up the
+> > > SGTL5000 until re-power.   But... the wandboard's transient 
+suppression
+> > > should be enough to deal with that.
+> > >
+> > > Oh, looking at the schematic again, there are TVS, diodes D36/D37, but
+> > > there is *no* series resistance between the connector and the codec!
+> > That
+> > > could easily be the problem -- an external signal can drive lots of 
+(ac)
+> > > current in through those lines and cause latch-up.  That's why you
+> > require
+> > > a power off/on to reset it.   Even a hard reset won't fix latchup.
+> > >
+> > > See if your codec starts to get warm when in this state :-/  
+Definitely
+> > > damaging to the codec though.
+> > >
+> > > -Caleb
+> > >
+> > >
+> > >
+> > >
+> > >
+> > > >
+> > > > Once this happens, the only way I've been able to recover is to 
+reboot
+> > the
+> > > > computer.  Calling snd_pcm_close(), snd_pcm_prepare(), 
+snd_pcm_start(),
+> > > > etc. doesn't help.  When in this state, running arecord returns IO
+> > errors
+> > > > as well.
+> > > >
+> > > > It's interesting that, on rare occasions, I must do a power cycle in
+> > order
+> > > > to recover.  When a reboot is not effective I've noticed that the
+> > capture
+> > > > device doesn't appear in /proc/asound/devices.
+> > > >
+> > > > I don't believe my specific ALSA settings are important, but I'm
+> > calling
+> > > > snd_pcm_readi() with ALSA set to a sample rate of 48000, format of
+> > S16_LE,
+> > > > channels=1, frames per period of 960 (20 mS periods), and 4 periods 
+per
+> > > > buffer.
+> > > >
+> > > > This same problem happens on two different Wandboards, so I don't 
+think
+> > > > it's
+> > > > a defective board or chip.  It has happened on older kernels as 
+well.
+> > > >
+> > > > Any ideas?
+> > > >
+> > > > Thank you!
+> > > >
+> > > > Ross Wille
+> > > > _______________________________________________
+> > > > Alsa-devel mailing list
+> > > > Alsa-devel@alsa-project.org
+> > > > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > > >
+> > >
+> >
+> 
