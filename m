@@ -1,79 +1,50 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: wm8985: add support for WM8758
-Date: Fri, 13 May 2016 12:26:19 +0100
-Message-ID: <20160513112619.GF22038@sirena.org.uk>
-References: <1463068477-18421-1-git-send-email-petr@barix.com>
- <1463068477-18421-3-git-send-email-petr@barix.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 2/2] ASoC: wm8985: add device-tree support
+Date: Fri, 13 May 2016 12:27:14 +0100
+Message-ID: <20160513112714.GG22038@sirena.org.uk>
+References: <1463068730-18817-1-git-send-email-petr@barix.com>
+ <1463068730-18817-2-git-send-email-petr@barix.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1519439750906034261=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DC739260447
- for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 13:26:44 +0200 (CEST)
-In-Reply-To: <1463068477-18421-3-git-send-email-petr@barix.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Petr Kulhavy <petr@barix.com>
-Cc: plamen@barix.com, ckeepax@opensource.wolfsonmicro.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="DWg365Y4B18r8evw"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1463068730-18817-2-git-send-email-petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, plamen-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1519439750906034261==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="juZjCTNxrMaZdGZC"
-Content-Disposition: inline
-
-
---juZjCTNxrMaZdGZC
+--DWg365Y4B18r8evw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, May 12, 2016 at 05:54:37PM +0200, Petr Kulhavy wrote:
+On Thu, May 12, 2016 at 05:58:50PM +0200, Petr Kulhavy wrote:
 
-> +static const struct snd_kcontrol_new wm8758_snd_controls[] = {
-> +	SOC_SINGLE("Digital Loopback Switch", WM8985_COMPANDING_CONTROL,
-> +		0, 1, 0),
+>  	.driver = {
+>  		.name = "wm8985",
+> +		.of_match_table = wm8985_of_match,
 
->  static const struct snd_kcontrol_new wm8985_snd_controls[] = {
->  	SOC_SINGLE("Digital Loopback Switch", WM8985_COMPANDING_CONTROL,
->  		0, 1, 0),
+of_match_ptr()
 
-Rather than completely duplicating the set of controls it is better to
-have one table with all the shared controls and then extra tables for
-those that are device specific that are registered in probe, that way
-we only define things once.  The wm8904 driver provides an example of
-doing this sort of thing.
-
---juZjCTNxrMaZdGZC
+--DWg365Y4B18r8evw
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXNbnaAAoJECTWi3JdVIfQpTIH/iH9AMeWJtH+jsULkHFUwuCA
-CW/fkVH0N6hLcG6O7HRjotPR2Kmy1WQNf9RIkXoLSYzVqCHUCR51Dha+M1x9Ytfr
-7kz6Fkll+LwjT7DIEvLZtrAfVVIXtqCxAPhN6lL3lDpnn7//zL5B8M9ql1xGFfvm
-ncelQnWlWko8g6RlI4apfY7K+ruINkJdzO8FSLsRRtC3AJWf0Pj12l31kZOZ8Yxt
-xA+HJiYm/24n/ayugh7QUgcfbYbefI86Ob05StMtQHK6prJ1vZtXjYsZbajLDYWo
-kaDgSkEzFnzeY5d9/ZVcWoy/O8Ptxf+MfVx1bh2kV0BM80ycruDH9OO22kxj50E=
-=lIvA
+iQEcBAEBCAAGBQJXNboOAAoJECTWi3JdVIfQ9ckH/iq4e/Eypl818sPrNeBhNsuu
+TINVdOSJAsosDnOt5iLPSveFMhLB/UDGe9EHUcD05owRIpAbA318qbYjjePH1bED
+H2jM6oTCiYm9vB45Gja4uTWxC2pUaa+TDCVTD8bomQjOFXXCWlygzADC/kRfk8NA
+rsD1Xr1wyEBrp0yRm0gJXiyjVCRJlOHxZQOYKvI/a37M6SHxpswPF/9Id7LXjbpG
+Sst1Jv7Tm1KoLbHtI21OFtmJGBVeJikcPNvmWA7VZ87tCSkIKC/9kMZ5yZNy/JTT
+bxX0jpL2mlyKPtdyK8tnxwkyou9jzoRlngcsC1lsRcRoJi4rgIiyePsnn9yHwFo=
+=drmN
 -----END PGP SIGNATURE-----
 
---juZjCTNxrMaZdGZC--
-
---===============1519439750906034261==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1519439750906034261==--
+--DWg365Y4B18r8evw--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
