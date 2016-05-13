@@ -1,18 +1,34 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt298: Add DMI match for Broxton-P
-	reference platform" to the asoc tree
-Date: Fri, 13 May 2016 08:59:06 +0100
-Message-ID: <E1b1802-0004pE-HZ@debutante>
-References: <1463026130-18651-2-git-send-email-vinod.koul@intel.com>
+From: nick83ola <nick83ola@gmail.com>
+Subject: Re: Imx6 i2s master driver without i2c
+Date: Fri, 13 May 2016 09:59:30 +0200
+Message-ID: <CABPh3UOnt9ZWYn4dA6xf0DzFdRvNY7QsSv5mzD2Z5UufU3gVhg@mail.gmail.com>
+References: <CABPh3UNhKMGUoiDvHn9paXVNvtpwzbzkbCwBhtSCm72jxkh3CA@mail.gmail.com>
+ <CABPh3UMMvVKvHL0g52NqP-E8dpxoZHfwgR_t1WY08OFMSYt9tg@mail.gmail.com>
+ <CABPh3UMJ4gOtNN3FJg0fF7Mm+Lpw0=jXGk_+ejsHaGLG9UvWAQ@mail.gmail.com>
+ <CABPh3UNi79pMZPgJBisaq9Qo847MV-6riCEQ=Akt_RoLdqeVpw@mail.gmail.com>
+ <CABPh3UPLR20WbV0NuYLA4RZ7XB-0+RdFrB-SpDLa0T+wOxqQ+g@mail.gmail.com>
+ <CAG5mAdzJyTdsBTnz8FZ8Ay278j1bYJHHqkOTGY+_Ck9sSPhQoQ@mail.gmail.com>
+ <CABPh3UN1ZoGAVF1y_5vi_DbkARfopbe5tc5SSy0HQbiYe8MERA@mail.gmail.com>
+ <CAG5mAdw1erm=4RjMfP-hf1Vkw73KCWSaLbU3DtditMfsFQNRdQ@mail.gmail.com>
+ <CABPh3UN2157eMxwr6i8-vPfdyr3L0DOrpVt7ChTUrPTCbCzCBA@mail.gmail.com>
+ <CABPh3UNk9xa=K7QiVV3pZba7o287AyOrjufUGd1QWUxnHNHLOg@mail.gmail.com>
+ <CAG5mAdyCAgtFBCbAyLVtqtLgOtCgkB9=yV+YEY8a3oeL2yJDHA@mail.gmail.com>
+ <CABPh3UPzP1iFYsy_Ni1fcfimnoVDUWfdn8ht5On_mx0xN1w8Mg@mail.gmail.com>
+ <CAG5mAdyceKw_H7zNfx-KTSUUMc81UiLu3feLBcB+vjjjpuhetQ@mail.gmail.com>
+ <CABPh3UNPDS+4H60eeL79etF70O0-Xp2T_oNBkYL2m4g6jpeSWA@mail.gmail.com>
+ <CAG5mAdw8oWy38SBzYTKi9DeCS5UzcMNjY5VsFCARp6yDb76cFg@mail.gmail.com>
+ <CABPh3UOUf=wsw5uRKP3pJO+Z5CCMcdJCOyQmExCucYrK-4-84w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2BFEE260438
- for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 09:59:14 +0200 (CEST)
-In-Reply-To: <1463026130-18651-2-git-send-email-vinod.koul@intel.com>
+Received: from mail-lf0-f45.google.com (mail-lf0-f45.google.com
+ [209.85.215.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E82C26047C
+ for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 09:59:50 +0200 (CEST)
+Received: by mail-lf0-f45.google.com with SMTP id u64so84525340lff.3
+ for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 00:59:50 -0700 (PDT)
+In-Reply-To: <CABPh3UOUf=wsw5uRKP3pJO+Z5CCMcdJCOyQmExCucYrK-4-84w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,96 +38,438 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, Ramesh Babu <ramesh.babu@intel.com>, liam.r.girdwood@linux.intel.com, broonie@kernel.org, Bard Liao <bardliao@realtek.com>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
+To: Caleb Crome <caleb@crome.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Caleb thanks for your help!!!! the documentation is really orrible!!!!
 
-   ASoC: rt298: Add DMI match for Broxton-P reference platform
+but now I'm getting something out of TXD!!!!
 
-has been applied to the asoc tree at
+only no clock and very fast (I think that I need to configure the
+oscillator/pll and iomux???)
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+In my kernel (3.14.28-1.0.0_ga+g91cf351) some of the statement in you dts
+are not supported in simple driver so I stripped down the imx-si476 driver
+and use with your dummy codec driver
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+&audmux {
+    pinctrl-names = "default";
+    pinctrl-0 = <&pinctrl_audmux_4>;
+    status = "okay";
+};
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+&ssi2 {
+    assigned-clocks = <&clks IMX6QDL_CLK_SSI2_SEL>;
+    assigned-clock-parents = <&clks IMX6QDL_CLK_PLL4_AUDIO_DIV>;
+    assigned-clock-rates = <0>;
+    fsl,mode = "i2s-master";
+    status = "okay";
+};
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+/ {
+    model = "Engicam i.CoreM6 DualLite/Solo starterkit";
+    compatible = "fsl,imx6-icore", "fsl,imx6dl";
 
-Thanks,
-Mark
+    codec_test: codec_test {
+        compatible = "linux,snd-soc-dummy";
+        status = "okay";
+    };
 
->From b9c17f13ba484d8492278c67cd95b7207def776f Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Thu, 12 May 2016 09:38:50 +0530
-Subject: [PATCH] ASoC: rt298: Add DMI match for Broxton-P reference platform
+    sound {
+        compatible = "fsl,imx-audio-itel";
+        model = "imx-itel";
+        ssi-controller = <&ssi2>;
+        audio-codec = <&codec_test>;
+        mux-int-port = <4>;
+        mux-ext-port = <2>;
+        status = "okay";
+    };
 
-Broxton-P reference platform also uses combo jack for audio
-connector so we need to set codec pdata to use this based on DMI
-match for this board.
+    sound-hdmi {
+        status = "disabled";
+    };
+};
 
-Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
-Signed-off-by: Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Acked-by: Bard Liao <bardliao@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt298.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
 
-diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
-index 52aacb1d5e4c..a1aaffc20862 100644
---- a/sound/soc/codecs/rt298.c
-+++ b/sound/soc/codecs/rt298.c
-@@ -17,6 +17,7 @@
- #include <linux/i2c.h>
- #include <linux/platform_device.h>
- #include <linux/spi/spi.h>
-+#include <linux/dmi.h>
- #include <linux/acpi.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -1132,6 +1133,17 @@ static const struct acpi_device_id rt298_acpi_match[] = {
- };
- MODULE_DEVICE_TABLE(acpi, rt298_acpi_match);
- 
-+static const struct dmi_system_id force_combo_jack_table[] = {
-+	{
-+		.ident = "Intel Broxton P",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Intel Corp"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Broxton P")
-+		}
-+	},
-+	{ }
-+};
-+
- static int rt298_i2c_probe(struct i2c_client *i2c,
- 			   const struct i2c_device_id *id)
- {
-@@ -1189,6 +1201,11 @@ static int rt298_i2c_probe(struct i2c_client *i2c,
- 				acpiid->driver_data;
- 	}
- 
-+	if (dmi_check_system(force_combo_jack_table)) {
-+		rt298->pdata.cbj_en = true;
-+		rt298->pdata.gpio2_en = false;
-+	}
-+
- 	/* VREF Charging */
- 	regmap_update_bits(rt298->regmap, 0x04, 0x80, 0x80);
- 	regmap_update_bits(rt298->regmap, 0x1b, 0x860, 0x860);
+&iomuxc {
+    audmux {
+        pinctrl_audmux_4: audmux-4 {
+            fsl,pins = <
+                MX6QDL_PAD_DISP0_DAT20__AUD4_TXC  0x130b0
+                MX6QDL_PAD_DISP0_DAT21__AUD4_TXD 0x110b0
+                MX6QDL_PAD_DISP0_DAT22__AUD4_TXFS  0x130b0
+                MX6QDL_PAD_DISP0_DAT23__AUD4_RXD  0x130b0
+            >;
+        };
+    };
+};
+
+======================================================================================================================
+imx-itel.c
+======================================================================================================================
+
+
+/*
+ * Copyright (C) 2013 Freescale Semiconductor, Inc.
+ *
+ * The code contained herein is licensed under the GNU General Public
+ * License. You may obtain a copy of the GNU General Public License
+ * Version 2 or later at the following locations:
+ *
+ * http://www.opensource.org/licenses/gpl-license.html
+ * http://www.gnu.org/copyleft/gpl.html
+ */
+
+#define DEBUG 1
+
+#include <linux/module.h>
+#include <linux/of.h>
+#include <linux/of_platform.h>
+#include <linux/device.h>
+#include <linux/clk.h>
+#include <sound/core.h>
+#include <sound/pcm.h>
+#include <sound/soc.h>
+#include <sound/initval.h>
+#include <sound/pcm_params.h>
+
+#include "imx-audmux.h"
+
+struct imx_itel_data {
+    struct snd_soc_dai_link dai;
+    struct snd_soc_card card;
+};
+
+
+static int imx_audmux_config(int slave, int master)
+{
+    unsigned int ptcr, pdcr;
+    slave = slave - 1;
+    master = master - 1;
+
+    ptcr = IMX_AUDMUX_V2_PTCR_SYN |
+        IMX_AUDMUX_V2_PTCR_TFSDIR |
+        IMX_AUDMUX_V2_PTCR_TFSEL(slave) |
+        IMX_AUDMUX_V2_PTCR_TCLKDIR |
+        IMX_AUDMUX_V2_PTCR_TCSEL(slave);
+    pdcr = IMX_AUDMUX_V2_PDCR_RXDSEL(slave);
+
+    imx_audmux_v2_configure_port(master, ptcr, pdcr);
+
+    /*
+     * According to RM, RCLKDIR and SYN should not be changed at same time.
+     * So separate to two step for configuring this port.
+     */
+    ptcr |= IMX_AUDMUX_V2_PTCR_RFSDIR |
+        IMX_AUDMUX_V2_PTCR_RFSEL(slave) |
+        IMX_AUDMUX_V2_PTCR_RCLKDIR |
+        IMX_AUDMUX_V2_PTCR_RCSEL(slave);
+    imx_audmux_v2_configure_port(master, ptcr, pdcr);
+
+    printk(KERN_ERR "--> ITEL imx-audmux-confic ext-port port=%#010x
+ptcr=%#010x pdcr=%#010x\n", master, ptcr, pdcr);
+
+    ptcr = IMX_AUDMUX_V2_PTCR_SYN;
+    pdcr = IMX_AUDMUX_V2_PDCR_RXDSEL(master);
+
+    printk(KERN_ERR "--> ITEL imx-audmux-config int-port port=%#010x
+ptcr=%#010x pdcr=%#010x\n", master, ptcr, pdcr);
+    imx_audmux_v2_configure_port(slave, ptcr, pdcr);
+
+    return 0;
+}
+
+
+static int imx_itel_hw_params(struct snd_pcm_substream *substream,
+                              struct snd_pcm_hw_params *params)
+{
+    struct snd_soc_pcm_runtime *rtd = substream->private_data;
+    struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+    u32 channels = params_channels(params);
+    u32 rate = params_rate(params);
+    u32 bclk = rate * channels * 32;
+    int ret = 0;
+
+    printk(KERN_ERR "--> ITEL imx-itel-hw-params NAME=%s  \n VALUE=%#010x  "
+                        "SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+SND_SOC_DAIFMT_CBS_CFS\n",
+                        cpu_dai->name,
+                        (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+SND_SOC_DAIFMT_CBS_CFS));
+
+    /* set cpu DAI configuration */
+    ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S
+            | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+    if (ret) {
+        dev_err(cpu_dai->dev, "failed to set dai fmt\n");
+        return ret;
+    }
+    printk(KERN_ERR "--> ITEL imx-itel-hw-params set tdm slots
+channels=%d", channels);
+
+    ret = snd_soc_dai_set_tdm_slot(cpu_dai,
+            channels == 1 ? 0xfffffffe : 0xfffffffc,
+            channels == 1 ? 0xfffffffe : 0xfffffffc,
+            2, 32);
+    if (ret) {
+        dev_err(cpu_dai->dev, "failed to set dai tdm slot\n");
+        return ret;
+    }
+
+    printk(KERN_ERR "--> ITEL imx-audmux-config set sysclk NAME=%s
+\n",cpu_dai->name);
+
+    ret = snd_soc_dai_set_sysclk(cpu_dai, 0, bclk, SND_SOC_CLOCK_OUT);
+    if (ret)
+        dev_err(cpu_dai->dev, "failed to set sysclk\n");
+
+    return ret;
+}
+
+
+static struct snd_soc_ops imx_itel_ops = {
+    .hw_params = imx_itel_hw_params,
+};
+
+
+static struct snd_soc_dai_link imx_itel_dai[] = {
+    {
+        .name            = "Hifi",
+        .stream_name     = "Hifi",
+        .codec_dai_name     = "snd-soc-dummy-dai",
+        //.codec_name         = "snd-soc-dummy",
+        .ops             = &imx_itel_ops,
+        // .symmetric_rates = 1,
+    },
+};
+
+static struct snd_soc_card snd_soc_card_imx_itel = {
+    .name       = "imx-audio-itel",
+    .dai_link   = imx_itel_dai,
+    .num_links    = ARRAY_SIZE(imx_itel_dai),
+    .owner      = THIS_MODULE,
+};
+
+
+static int imx_itel_probe(struct platform_device *pdev)
+{
+    struct snd_soc_card *card = &snd_soc_card_imx_itel;
+    struct device_node *ssi_np;
+    struct platform_device *ssi_pdev;
+    struct device_node *codec_np;
+    // struct imx_itel_data *data = NULL;
+    int int_port, ext_port, ret;
+
+    printk(KERN_ERR "--> ITEL imx_itel_probe");
+
+    ret = of_property_read_u32(pdev->dev.of_node, "mux-int-port",
+&int_port);
+    if (ret) {
+        dev_err(&pdev->dev, "mux-int-port missing or invalid\n");
+        return ret;
+    }
+
+
+    ret = of_property_read_u32(pdev->dev.of_node, "mux-ext-port",
+&ext_port);
+    if (ret) {
+        dev_err(&pdev->dev, "mux-ext-port missing or invalid\n");
+        return ret;
+    }
+
+    printk(KERN_ERR "--> ITEL Configuro audmux\n");
+    imx_audmux_config(int_port, ext_port);
+
+    /* find value in devicetree for ssi controller */
+    ssi_np = of_parse_phandle(pdev->dev.of_node, "ssi-controller", 0);
+    if (!ssi_np) {
+        dev_err(&pdev->dev, "ssi-controller missing or invalid\n");
+        ret = -EINVAL;
+        goto fail;
+    }
+
+    /* find SSI platform driver */
+    ssi_pdev = of_find_device_by_node(ssi_np);
+    if (!ssi_pdev) {
+        dev_err(&pdev->dev, "failed to find SSI platform device\n");
+        ret = -EPROBE_DEFER;
+        goto fail;
+    }
+
+    codec_np = of_parse_phandle(pdev->dev.of_node, "audio-codec", 0);
+    if (!codec_np) {
+        dev_err(&pdev->dev, "codec missing or invalid\n");
+        ret = -EINVAL;
+        goto fail;
+    }
+
+    // codec_dev = NULL;
+
+    card->dev = &pdev->dev;
+    card->dai_link->cpu_dai_name = dev_name(&ssi_pdev->dev);
+    card->dai_link->platform_of_node = ssi_np;
+    card->dai_link->codec_of_node = codec_np;
+
+    platform_set_drvdata(pdev, card);
+    snd_soc_card_set_drvdata(card, &snd_soc_card_imx_itel);
+
+    printk(KERN_ERR "--> ITEL imx-probe registro card\n");
+
+    ret = snd_soc_register_card(card);
+    if (ret) {
+        dev_err(&pdev->dev, "Failed to register card: %d\n", ret);
+        goto fail;
+    }
+
+    printk(KERN_ERR "--> ITEL imx-probe of ssi\n");
+    of_node_put(ssi_np);
+    printk(KERN_ERR "--> ITEL imx-probe of codec\n");
+    of_node_put(codec_np);
+
+    return 0;
+
+fail:
+    if (ssi_np)
+        of_node_put(ssi_np);
+    if (codec_np)
+        of_node_put(codec_np);
+
+    return ret;
+}
+
+static int imx_itel_remove(struct platform_device *pdev)
+{
+    struct snd_soc_card *card = &snd_soc_card_imx_itel;
+
+    snd_soc_unregister_card(card);
+
+    return 0;
+}
+
+static const struct of_device_id imx_itel_dt_ids[] = {
+    { .compatible = "fsl,imx-audio-itel", },
+    { /* sentinel */ }
+};
+MODULE_DEVICE_TABLE(of, imx_itel_dt_ids);
+
+static struct platform_driver imx_itel_driver = {
+    .driver = {
+        .name = "imx-itel",
+        .owner = THIS_MODULE,
+        .pm = &snd_soc_pm_ops,
+        .of_match_table = imx_itel_dt_ids,
+    },
+    .probe = imx_itel_probe,
+    .remove = imx_itel_remove,
+};
+
+module_platform_driver(imx_itel_driver);
+
+MODULE_AUTHOR("Nicola Lunghi");
+MODULE_DESCRIPTION("ITEL I2S Platform Driver");
+MODULE_LICENSE("GPL v2");
+MODULE_ALIAS("platform:imx-itel");
+
+2016-05-12 9:55 GMT+02:00 nick83ola <nick83ola@gmail.com>:
+
+> I am using ssi1 because I have an example of setting master mode on sabre
+> board dts
+>
+> I have a problem with iomux/pinctrl  I think because
+>
+> root@icorem6solo:/sys/kernel/debug/pinctrl/20e0000.iomuxc# cat
+> pinmux-pins |grep audmux
+> pin 57 (MX6DL_PAD_DISP0_DAT20): 2028000.ssi (GPIO UNCLAIMED) function
+> audmux group audmux-4
+> pin 58 (MX6DL_PAD_DISP0_DAT21): 2028000.ssi (GPIO UNCLAIMED) function
+> audmux group audmux-4
+> pin 59 (MX6DL_PAD_DISP0_DAT22): 2028000.ssi (GPIO UNCLAIMED) function
+> audmux group audmux-4
+> pin 60 (MX6DL_PAD_DISP0_DAT23): 2028000.ssi (GPIO UNCLAIMED) function
+> audmux group audmux-4
+>
+> says: GPIO_UNCLAIMED? it is correct??
+>
+> /sys/kernel/debug/pinctrl/20e0000.iomuxc# cat pinconf-groups |grep -A 1
+> audmux
+> 1 (audmux-1):
+> MX6DL_PAD_SD2_DAT0: 0x17070MX6DL_PAD_SD2_DAT3: 0x17070MX6DL_PAD_SD2_DAT2:
+> 0x17070MX6DL_PAD_SD2_DAT1: 0x17070
+> 2 (audmux-2):
+> MX6DL_PAD_CSI0_DAT7: 0x1b0b0MX6DL_PAD_CSI0_DAT4:
+> 0x1b0b0MX6DL_PAD_CSI0_DAT5: 0x1b0b0MX6DL_PAD_CSI0_DAT6: 0x1b0b0
+> 3 (audmux-3):
+> MX6DL_PAD_DISP0_DAT16: 0x10MX6DL_PAD_DISP0_DAT18:
+> 0x1b0b0MX6DL_PAD_DISP0_DAT19: 0x1b0b0
+> 4 (audmux-4):
+> MX6DL_PAD_DISP0_DAT20: 0x130b0MX6DL_PAD_DISP0_DAT21:
+> 0x110b0MX6DL_PAD_DISP0_DAT22: 0x130b0MX6DL_PAD_DISP0_DAT23: 0x130b0
+>
+> 0x130b0?
+>
+> audmux# cat ssi0
+>     PDCR: 0000a000
+>     PTCR: ad400800
+>     TxFS output from SSI6, TxClk output from SSI6
+>     Port is symmetric
+>     Data received from SSI6
+> root@icorem6solo:/sys/kernel/debug/audmux# cat ssi1
+>     PDCR: 00008000
+>     PTCR: 00000800
+>     TxFS input, TxClk input
+>     Port is symmetric
+>     Data received from SSI5
+> root@icorem6solo:/sys/kernel/debug/audmux# cat ssi2
+>     PDCR: 00006000
+>     PTCR: 9cc00800
+>     TxFS output from SSI4, TxClk output from SSI4
+>     Port is symmetric
+>     Data received from SSI4
+> root@icorem6solo:/sys/kernel/debug/audmux# cat ssi3
+>     PDCR: 00004000
+>     PTCR: 00000800
+>     TxFS input, TxClk input
+>     Port is symmetric
+>     Data received from SSI3
+> root@icorem6solo:/sys/kernel/debug/audmux# cat ssi4
+>     PDCR: 00002000
+>     PTCR: 8c400800
+>     TxFS output from imx-ssi.1, TxClk output from imx-ssi.1
+>     Port is symmetric
+>     Data received from imx-ssi.1
+> root@icorem6solo:/sys/kernel/debug/audmux# cat ssi5
+>     PDCR: 00000000
+>     PTCR: 00000800
+>     TxFS input, TxClk input
+>     Port is symmetric
+>     Data received from imx-ssi.0
+> root@icorem6solo:/sys/kernel/debug/audmux# cat ssi6
+>     PDCR: 0000c000
+>     PTCR: 00000800
+>     TxFS input, TxClk input
+>     Port is symmetric
+>     Data received from UNKNOWN
+>
+>
+>
+
+
 -- 
-2.8.1
+
+P.S. Le informazioni trasmesse attraverso la presente comunicazione sono di
+esclusiva
+spettanza dell'effettivo destinatario. Nel caso in cui le stesse
+raggiungessero, per
+qualunque motivo, soggetti non interessati, questi ultimi vorranno darne
+immediata
+notizia al mittente. In ogni caso, eventuali soggetti diversi dai legittimi
+destinatari
+della presente comunicazione e dei dati contenuti negli allegati, possono
+essere
+sanzionati ai sensi del T.U. sul trattamento dei dati personali d.lgs.
+196/2003, sia ai
+sensi dell'art. 616 del Codice Penale che disciplina la violazione del
+segreto sulla
+corrispondenza.
