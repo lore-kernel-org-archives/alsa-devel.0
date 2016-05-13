@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: Fix samples being dropped at
-	Playback startup" to the asoc tree
-Date: Fri, 13 May 2016 13:26:06 +0100
-Message-ID: <E1b1CAQ-0007MI-7n@finisterre>
-References: <1448546842-4584-4-git-send-email-arnaud.mouiche@invoxia.com>
+Subject: Re: [PATCH v3] ASoC: rt5514: add rt5514 SPI driver
+Date: Fri, 13 May 2016 13:19:32 +0100
+Message-ID: <20160513121932.GN22038@sirena.org.uk>
+References: <1462789855-23485-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5346746792841978801=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0427B26058D
- for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 14:26:26 +0200 (CEST)
-In-Reply-To: <1448546842-4584-4-git-send-email-arnaud.mouiche@invoxia.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id EF553260526
+ for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 14:19:50 +0200 (CEST)
+In-Reply-To: <1462789855-23485-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,74 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Caleb Crome <caleb@crome.org>, Markus Pargmann <mpa@pengutronix.de>, broonie@kernel.org, Roberto Fichera <kernel@tekno-soft.it>, "shawn.guo@linaro.org" <shawn.guo@linaro.org>
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, john.lin@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: fsl_ssi: Fix samples being dropped at Playback startup
+--===============5346746792841978801==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="NJSRbAqOy4NeGDns"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--NJSRbAqOy4NeGDns
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon, May 09, 2016 at 06:30:55PM +0800, Oder Chiou wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> +static void rt5514_spi_copy_work(struct work_struct *work)
+> +{
+> +	struct rt5514_dsp *rt5514_dsp =
+> +		container_of(work, struct rt5514_dsp, copy_work.work);
+> +	struct snd_pcm_runtime *runtime = rt5514_dsp->substream->runtime;
+> +	size_t period_bytes, truncated_bytes = 0;
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+I can't see anything that cancels this work when the PCM stream to
+userspace is stopped or if things power off otherwise?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--NJSRbAqOy4NeGDns
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
->From d9f2a202877c15818d98268f47d6b4bcfcb84437 Mon Sep 17 00:00:00 2001
-From: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
-Date: Tue, 3 May 2016 14:13:58 +0200
-Subject: [PATCH] ASoC: fsl_ssi: Fix samples being dropped at Playback startup
+iQEcBAEBCAAGBQJXNcZTAAoJECTWi3JdVIfQHwwH/1w4A2lWd50vUagr0YhgbdER
+UE/7tZuyknqBDPSNtMHJRZ3beBzUIp/MSYsODgbO8ASILkk0xqsEC63uzGOWIG1u
+ldIw26lCbjEmiDxCGoge1U3Ew5qM3EeSsMlnvxOZfyde1z0PGcEsys+vZZZTNu5z
+i6I5BGW1rre5alWftX1vtMQRcIEggbdFYU7wdGnmr+aYYXF1kev4COYwZ8SA+VZs
+HHVolGfd1IahjRX5g+K9moMPKH7cDKHfTcy6kRzuCS4kz/SY/04R5ATQucXK5PYo
+mbsSByx5xYoxIWvY70uyBQ7Tc3oCUGNo+HPRoGYxymLTl+a4FOMjw+k9YyOzKsU=
+=DZfK
+-----END PGP SIGNATURE-----
 
-If the capture is already running while playback is started, it is highly
-probable (>80% in a 8 channels scenario) that samples are lost between
-the DMA and TX fifo.
+--NJSRbAqOy4NeGDns--
 
-The reason is that SIER.TDMAE is set before STCR.TFEN0, leaving a time
-window where the FIFO doesn't receive the samples written by the DMA.
+--===============5346746792841978801==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-This particular case happened only if capture is already enabled as
-SCR.SSIEN is already set at the playback startup instant.
 
-Signed-off-by: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
-Reviewed-by: Fabio Estevam <fabio.estevam@nxp.com>
-Tested-by: Caleb Crome <caleb@crome.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/fsl/fsl_ssi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 149df3ca4f5e..47ebb835f3f5 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -475,9 +475,9 @@ static void fsl_ssi_config(struct fsl_ssi_private *ssi_private, bool enable,
- 	 * (online configuration)
- 	 */
- 	if (enable) {
--		regmap_update_bits(regs, CCSR_SSI_SIER, vals->sier, vals->sier);
- 		regmap_update_bits(regs, CCSR_SSI_SRCR, vals->srcr, vals->srcr);
- 		regmap_update_bits(regs, CCSR_SSI_STCR, vals->stcr, vals->stcr);
-+		regmap_update_bits(regs, CCSR_SSI_SIER, vals->sier, vals->sier);
- 	} else {
- 		u32 sier;
- 		u32 srcr;
--- 
-2.8.1
+--===============5346746792841978801==--
