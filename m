@@ -1,52 +1,83 @@
-From: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 1/2] ASoC: dapm: support user-defined
- stop condition in dai_get_connected_widgets
-Date: Fri, 13 May 2016 14:01:43 +0100
-Message-ID: <20160513130143.GA27465@localhost.localdomain>
-References: <1460638999-30598-1-git-send-email-piotrs@opensource.wolfsonmicro.com>
- <20160513120905.GK22038@sirena.org.uk>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 2/2] ASoC: Add support for HifiBerry DAC
+Date: Fri, 13 May 2016 14:21:13 +0100
+Message-ID: <20160513132113.GP22038@sirena.org.uk>
+References: <1463130853-25096-1-git-send-email-kernel@martin.sperl.org>
+ <1463130853-25096-3-git-send-email-kernel@martin.sperl.org>
+ <20160513105409.GB22038@sirena.org.uk>
+ <C139252A-23AC-4C37-A5E5-E0D7AF1DCC89@martin.sperl.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id BA932260564
- for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 15:02:39 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="THYEXwetZJOK3OLY"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <20160513120905.GK22038@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+In-Reply-To: <C139252A-23AC-4C37-A5E5-E0D7AF1DCC89-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
+Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Matthias Reichl <hias-vtPv7MOkFPkAvxtiuMwx3w@public.gmane.org>, Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 13, 2016 at 01:09:05PM +0100, Mark Brown wrote:
-> On Thu, Apr 14, 2016 at 02:03:18PM +0100, Piotr Stankiewicz wrote:
-> 
-> > + * Optionally, can be supplied with a function acting as a stopping condition.
-> > + * This function takes the dapm widget currently being examined and the walk
-> > + * direction as an arguments, and should return an integer, as follows:
-> > + * - >=0: if the walk is to be stopped (this should indicate the number of
-> > + *        endpoints the widget has),
-> > + * - <0 : if the walk is to be continued as normal.
-> 
-> This seems really weird and uncomfortable.  From the naming I would
-> expect it to be a boolean function and I'm struggling to understand when
-> it would be useful to report multiple endpoints on a widget (edge
-> widgets normally being single objects).  The whole counting thing is
-> mainly a combination of debugging and an artefact of the implementation.
-> What's the motivation here?
 
-I don't have a strong reason for this. My motivation here was - since I
-am adding support for stopping an arbitrary point, it could be that
-someone would find a use in stopping the graph walk part-way through, and
-still reporting the number of endpoints as normal. But, if that's
-unlikely to be of use, I'm happy to make it a boolean function.
+--THYEXwetZJOK3OLY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, May 13, 2016 at 02:20:57PM +0200, Martin Sperl wrote:
+> > On 13.05.2016, at 12:54, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+
+> > You could almost use simple-card here but the BCLK ratio requirement is
+> > probably a bit much, I'm not immediately seeing a nice way to specify
+> > the ratio there since it depends on the sample width.
+
+> Actually it is just: <sample-width> * <number of channels>
+> where number of channels is fixed to 2 for bcm2835-i2s.
+
+> So maybe that already happens automatically in the framework?
+
+No, it's not handled.  Lots of devices don't care or have different
+requirements (eg, 256fs).  The tricky bit with specifying it is that the
+ratio depends on the sample width here but it might depend on something
+else with another device, or the number of channels might vary.  That
+should be doable with DT but it feels like more trouble than it's
+reasonable to ask you to take here.
+
+> Something like this could get added to the core?
+> Is there interest in getting something like this?
+
+> Could look like this:
+> bclk-ratios =3D=20
+>   /* for 96kHz at 16bit/channel use bclk-ratio 40 */
+>   <96000 16 40>,=20
+>   /* for 48kHz at 32bit/channel use bclk-ratio 80 */
+>   <48000 16 80>,
+>   /* for any (other) sample frequency at 16 bit use bclk-ratio 32 */
+>   <0 16 32>,
+>   /* for any (other) sample frequency at 32 bit use bclk-ratio 64 */
+>   <0 32 64>;
+
+> but there could also be other approaches as well,
+> how this could get described in the device tree.
+
+You may well end up with something like that, yeah.
+
+--THYEXwetZJOK3OLY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXNdTEAAoJECTWi3JdVIfQE/sH/3jsZxxvx8WOkOFvT8Vz+g+M
+o2hmUku704qdOQFfU3kDoGbYnBzqY5MZoeHWvz7s9jb4DTev0EjxG8+z0fwVMf2y
+XmlOH3RngXcZKRf7u050MLhaV3xJrJF9D0ImRBjhfmUjxdde47Ue4inpG5VJub77
+RU9A0QszN/g1wch0ZFeFvzgC7+TulfDcIKzZVtpN8mud+okNX+V2Pted8xzK/UMr
+waUxmUmf95AXW9amyy/sMCD/N3uPQzMzXYI2Sjq4E/Y86zDMrz/hOlkT0Rkn/f29
+BBZEaWJ7uyQ7AUXdZ7jiuZav2M1bd7eIBEcf12yPE+Yp6j+iOLyL7QUKZO61hEQ=
+=tr3C
+-----END PGP SIGNATURE-----
+
+--THYEXwetZJOK3OLY--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
