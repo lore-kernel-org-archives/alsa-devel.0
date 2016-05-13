@@ -1,18 +1,35 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: ADAU1761 default register value problem
-Date: Fri, 13 May 2016 10:20:33 +0200
-Message-ID: <57358E51.7020000@metafoo.de>
-References: <alpine.DEB.2.02.1604211547540.31333@lnxricardw1.se.axis.com>
- <571F2513.1020005@metafoo.de>
- <alpine.DEB.2.02.1605111440510.31333@lnxricardw1.se.axis.com>
+From: nick83ola <nick83ola@gmail.com>
+Subject: Re: Imx6 i2s master driver without i2c
+Date: Fri, 13 May 2016 10:21:08 +0200
+Message-ID: <CABPh3UPJ6fRoVSo8cvfKkmBMopVsB9Gu03bBhaegg14+PLD1OQ@mail.gmail.com>
+References: <CABPh3UNhKMGUoiDvHn9paXVNvtpwzbzkbCwBhtSCm72jxkh3CA@mail.gmail.com>
+ <CABPh3UMMvVKvHL0g52NqP-E8dpxoZHfwgR_t1WY08OFMSYt9tg@mail.gmail.com>
+ <CABPh3UMJ4gOtNN3FJg0fF7Mm+Lpw0=jXGk_+ejsHaGLG9UvWAQ@mail.gmail.com>
+ <CABPh3UNi79pMZPgJBisaq9Qo847MV-6riCEQ=Akt_RoLdqeVpw@mail.gmail.com>
+ <CABPh3UPLR20WbV0NuYLA4RZ7XB-0+RdFrB-SpDLa0T+wOxqQ+g@mail.gmail.com>
+ <CAG5mAdzJyTdsBTnz8FZ8Ay278j1bYJHHqkOTGY+_Ck9sSPhQoQ@mail.gmail.com>
+ <CABPh3UN1ZoGAVF1y_5vi_DbkARfopbe5tc5SSy0HQbiYe8MERA@mail.gmail.com>
+ <CAG5mAdw1erm=4RjMfP-hf1Vkw73KCWSaLbU3DtditMfsFQNRdQ@mail.gmail.com>
+ <CABPh3UN2157eMxwr6i8-vPfdyr3L0DOrpVt7ChTUrPTCbCzCBA@mail.gmail.com>
+ <CABPh3UNk9xa=K7QiVV3pZba7o287AyOrjufUGd1QWUxnHNHLOg@mail.gmail.com>
+ <CAG5mAdyCAgtFBCbAyLVtqtLgOtCgkB9=yV+YEY8a3oeL2yJDHA@mail.gmail.com>
+ <CABPh3UPzP1iFYsy_Ni1fcfimnoVDUWfdn8ht5On_mx0xN1w8Mg@mail.gmail.com>
+ <CAG5mAdyceKw_H7zNfx-KTSUUMc81UiLu3feLBcB+vjjjpuhetQ@mail.gmail.com>
+ <CABPh3UNPDS+4H60eeL79etF70O0-Xp2T_oNBkYL2m4g6jpeSWA@mail.gmail.com>
+ <CAG5mAdw8oWy38SBzYTKi9DeCS5UzcMNjY5VsFCARp6yDb76cFg@mail.gmail.com>
+ <CABPh3UOUf=wsw5uRKP3pJO+Z5CCMcdJCOyQmExCucYrK-4-84w@mail.gmail.com>
+ <CABPh3UOnt9ZWYn4dA6xf0DzFdRvNY7QsSv5mzD2Z5UufU3gVhg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id BE940260438
- for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 10:20:37 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.02.1605111440510.31333@lnxricardw1.se.axis.com>
+Received: from mail-lb0-f178.google.com (mail-lb0-f178.google.com
+ [209.85.217.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 91115260438
+ for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 10:21:28 +0200 (CEST)
+Received: by mail-lb0-f178.google.com with SMTP id h1so21978473lbj.3
+ for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 01:21:28 -0700 (PDT)
+In-Reply-To: <CABPh3UOnt9ZWYn4dA6xf0DzFdRvNY7QsSv5mzD2Z5UufU3gVhg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,41 +39,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Caleb Crome <caleb@crome.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/11/2016 05:16 PM, Ricard Wanderlof wrote:
-> 
-> Hi Lars,
-> 
-> On Tue, 26 Apr 2016, Lars-Peter Clausen wrote:
-> 
->>> A while ago I posted a question to the list regarding the default values 
->>> set up for the ADAU1761 (and similar CODECs), 
->>> ...
-> 
-> Having researched this further, it appears that commit
-> 
-> 27d6e7d1c96c9f51379e0feb972fec26029098bc
-> 
-> ASoC: adau17x1: Cache writes when core clock is disabled
+also you have a typo in your dts I think that the define is
 
-I think it is also related to commit 1c79771a7270 ("regmap: Use
-regcache_mark_dirty() to indicate power loss or reset"). This changes the
-regmap code to sync all registers under certain conditions.
+#define AUDMUX_EXT_PORT_NAME port5
 
-> 
-> actually fixes this problem, at least for the ADAU1361 and ADAU1761. I'm 
-> no expert at the regcache mechanism, but it looks as if when the regcache 
-> is synced when the bias level goes from OFF to STANDBY, it actually writes 
-> out all the values including the default ones (verified by adding trace 
-> printouts, and also by verifying that my original problem of the codec 
-> misbehaving after reconfiguration after reboot is no longer there).
+not
 
+#define AUDMUX_INT_PORT_NAME port5
 
-We still have the issue though that the CODEC is in an undefined state until
-the first OFF to STANDBY transitions happens. Usually this will happen early
-on when the CODEC is bound to the sound card, but if it is not bound
-immediately it might stay there for a bit longer. So depending on the setup
-this may or may not be a problem.
+and -> correct the other
+
+(i found that imx-audmux support audmux port-config...)
