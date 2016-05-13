@@ -1,34 +1,18 @@
-From: nick83ola <nick83ola@gmail.com>
-Subject: Re: Imx6 i2s master driver without i2c
-Date: Fri, 13 May 2016 09:59:30 +0200
-Message-ID: <CABPh3UOnt9ZWYn4dA6xf0DzFdRvNY7QsSv5mzD2Z5UufU3gVhg@mail.gmail.com>
-References: <CABPh3UNhKMGUoiDvHn9paXVNvtpwzbzkbCwBhtSCm72jxkh3CA@mail.gmail.com>
- <CABPh3UMMvVKvHL0g52NqP-E8dpxoZHfwgR_t1WY08OFMSYt9tg@mail.gmail.com>
- <CABPh3UMJ4gOtNN3FJg0fF7Mm+Lpw0=jXGk_+ejsHaGLG9UvWAQ@mail.gmail.com>
- <CABPh3UNi79pMZPgJBisaq9Qo847MV-6riCEQ=Akt_RoLdqeVpw@mail.gmail.com>
- <CABPh3UPLR20WbV0NuYLA4RZ7XB-0+RdFrB-SpDLa0T+wOxqQ+g@mail.gmail.com>
- <CAG5mAdzJyTdsBTnz8FZ8Ay278j1bYJHHqkOTGY+_Ck9sSPhQoQ@mail.gmail.com>
- <CABPh3UN1ZoGAVF1y_5vi_DbkARfopbe5tc5SSy0HQbiYe8MERA@mail.gmail.com>
- <CAG5mAdw1erm=4RjMfP-hf1Vkw73KCWSaLbU3DtditMfsFQNRdQ@mail.gmail.com>
- <CABPh3UN2157eMxwr6i8-vPfdyr3L0DOrpVt7ChTUrPTCbCzCBA@mail.gmail.com>
- <CABPh3UNk9xa=K7QiVV3pZba7o287AyOrjufUGd1QWUxnHNHLOg@mail.gmail.com>
- <CAG5mAdyCAgtFBCbAyLVtqtLgOtCgkB9=yV+YEY8a3oeL2yJDHA@mail.gmail.com>
- <CABPh3UPzP1iFYsy_Ni1fcfimnoVDUWfdn8ht5On_mx0xN1w8Mg@mail.gmail.com>
- <CAG5mAdyceKw_H7zNfx-KTSUUMc81UiLu3feLBcB+vjjjpuhetQ@mail.gmail.com>
- <CABPh3UNPDS+4H60eeL79etF70O0-Xp2T_oNBkYL2m4g6jpeSWA@mail.gmail.com>
- <CAG5mAdw8oWy38SBzYTKi9DeCS5UzcMNjY5VsFCARp6yDb76cFg@mail.gmail.com>
- <CABPh3UOUf=wsw5uRKP3pJO+Z5CCMcdJCOyQmExCucYrK-4-84w@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: ADAU1761 default register value problem
+Date: Fri, 13 May 2016 10:20:33 +0200
+Message-ID: <57358E51.7020000@metafoo.de>
+References: <alpine.DEB.2.02.1604211547540.31333@lnxricardw1.se.axis.com>
+ <571F2513.1020005@metafoo.de>
+ <alpine.DEB.2.02.1605111440510.31333@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f45.google.com (mail-lf0-f45.google.com
- [209.85.215.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E82C26047C
- for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 09:59:50 +0200 (CEST)
-Received: by mail-lf0-f45.google.com with SMTP id u64so84525340lff.3
- for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 00:59:50 -0700 (PDT)
-In-Reply-To: <CABPh3UOUf=wsw5uRKP3pJO+Z5CCMcdJCOyQmExCucYrK-4-84w@mail.gmail.com>
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id BE940260438
+ for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 10:20:37 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.02.1605111440510.31333@lnxricardw1.se.axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -38,438 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Caleb thanks for your help!!!! the documentation is really orrible!!!!
-
-but now I'm getting something out of TXD!!!!
-
-only no clock and very fast (I think that I need to configure the
-oscillator/pll and iomux???)
-
-In my kernel (3.14.28-1.0.0_ga+g91cf351) some of the statement in you dts
-are not supported in simple driver so I stripped down the imx-si476 driver
-and use with your dummy codec driver
-
-&audmux {
-    pinctrl-names = "default";
-    pinctrl-0 = <&pinctrl_audmux_4>;
-    status = "okay";
-};
-
-&ssi2 {
-    assigned-clocks = <&clks IMX6QDL_CLK_SSI2_SEL>;
-    assigned-clock-parents = <&clks IMX6QDL_CLK_PLL4_AUDIO_DIV>;
-    assigned-clock-rates = <0>;
-    fsl,mode = "i2s-master";
-    status = "okay";
-};
-
-
-/ {
-    model = "Engicam i.CoreM6 DualLite/Solo starterkit";
-    compatible = "fsl,imx6-icore", "fsl,imx6dl";
-
-    codec_test: codec_test {
-        compatible = "linux,snd-soc-dummy";
-        status = "okay";
-    };
-
-    sound {
-        compatible = "fsl,imx-audio-itel";
-        model = "imx-itel";
-        ssi-controller = <&ssi2>;
-        audio-codec = <&codec_test>;
-        mux-int-port = <4>;
-        mux-ext-port = <2>;
-        status = "okay";
-    };
-
-    sound-hdmi {
-        status = "disabled";
-    };
-};
-
-
-&iomuxc {
-    audmux {
-        pinctrl_audmux_4: audmux-4 {
-            fsl,pins = <
-                MX6QDL_PAD_DISP0_DAT20__AUD4_TXC  0x130b0
-                MX6QDL_PAD_DISP0_DAT21__AUD4_TXD 0x110b0
-                MX6QDL_PAD_DISP0_DAT22__AUD4_TXFS  0x130b0
-                MX6QDL_PAD_DISP0_DAT23__AUD4_RXD  0x130b0
-            >;
-        };
-    };
-};
-
-======================================================================================================================
-imx-itel.c
-======================================================================================================================
-
-
-/*
- * Copyright (C) 2013 Freescale Semiconductor, Inc.
- *
- * The code contained herein is licensed under the GNU General Public
- * License. You may obtain a copy of the GNU General Public License
- * Version 2 or later at the following locations:
- *
- * http://www.opensource.org/licenses/gpl-license.html
- * http://www.gnu.org/copyleft/gpl.html
- */
-
-#define DEBUG 1
-
-#include <linux/module.h>
-#include <linux/of.h>
-#include <linux/of_platform.h>
-#include <linux/device.h>
-#include <linux/clk.h>
-#include <sound/core.h>
-#include <sound/pcm.h>
-#include <sound/soc.h>
-#include <sound/initval.h>
-#include <sound/pcm_params.h>
-
-#include "imx-audmux.h"
-
-struct imx_itel_data {
-    struct snd_soc_dai_link dai;
-    struct snd_soc_card card;
-};
-
-
-static int imx_audmux_config(int slave, int master)
-{
-    unsigned int ptcr, pdcr;
-    slave = slave - 1;
-    master = master - 1;
-
-    ptcr = IMX_AUDMUX_V2_PTCR_SYN |
-        IMX_AUDMUX_V2_PTCR_TFSDIR |
-        IMX_AUDMUX_V2_PTCR_TFSEL(slave) |
-        IMX_AUDMUX_V2_PTCR_TCLKDIR |
-        IMX_AUDMUX_V2_PTCR_TCSEL(slave);
-    pdcr = IMX_AUDMUX_V2_PDCR_RXDSEL(slave);
-
-    imx_audmux_v2_configure_port(master, ptcr, pdcr);
-
-    /*
-     * According to RM, RCLKDIR and SYN should not be changed at same time.
-     * So separate to two step for configuring this port.
-     */
-    ptcr |= IMX_AUDMUX_V2_PTCR_RFSDIR |
-        IMX_AUDMUX_V2_PTCR_RFSEL(slave) |
-        IMX_AUDMUX_V2_PTCR_RCLKDIR |
-        IMX_AUDMUX_V2_PTCR_RCSEL(slave);
-    imx_audmux_v2_configure_port(master, ptcr, pdcr);
-
-    printk(KERN_ERR "--> ITEL imx-audmux-confic ext-port port=%#010x
-ptcr=%#010x pdcr=%#010x\n", master, ptcr, pdcr);
-
-    ptcr = IMX_AUDMUX_V2_PTCR_SYN;
-    pdcr = IMX_AUDMUX_V2_PDCR_RXDSEL(master);
-
-    printk(KERN_ERR "--> ITEL imx-audmux-config int-port port=%#010x
-ptcr=%#010x pdcr=%#010x\n", master, ptcr, pdcr);
-    imx_audmux_v2_configure_port(slave, ptcr, pdcr);
-
-    return 0;
-}
-
-
-static int imx_itel_hw_params(struct snd_pcm_substream *substream,
-                              struct snd_pcm_hw_params *params)
-{
-    struct snd_soc_pcm_runtime *rtd = substream->private_data;
-    struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-    u32 channels = params_channels(params);
-    u32 rate = params_rate(params);
-    u32 bclk = rate * channels * 32;
-    int ret = 0;
-
-    printk(KERN_ERR "--> ITEL imx-itel-hw-params NAME=%s  \n VALUE=%#010x  "
-                        "SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-SND_SOC_DAIFMT_CBS_CFS\n",
-                        cpu_dai->name,
-                        (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-SND_SOC_DAIFMT_CBS_CFS));
-
-    /* set cpu DAI configuration */
-    ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S
-            | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
-    if (ret) {
-        dev_err(cpu_dai->dev, "failed to set dai fmt\n");
-        return ret;
-    }
-    printk(KERN_ERR "--> ITEL imx-itel-hw-params set tdm slots
-channels=%d", channels);
-
-    ret = snd_soc_dai_set_tdm_slot(cpu_dai,
-            channels == 1 ? 0xfffffffe : 0xfffffffc,
-            channels == 1 ? 0xfffffffe : 0xfffffffc,
-            2, 32);
-    if (ret) {
-        dev_err(cpu_dai->dev, "failed to set dai tdm slot\n");
-        return ret;
-    }
-
-    printk(KERN_ERR "--> ITEL imx-audmux-config set sysclk NAME=%s
-\n",cpu_dai->name);
-
-    ret = snd_soc_dai_set_sysclk(cpu_dai, 0, bclk, SND_SOC_CLOCK_OUT);
-    if (ret)
-        dev_err(cpu_dai->dev, "failed to set sysclk\n");
-
-    return ret;
-}
-
-
-static struct snd_soc_ops imx_itel_ops = {
-    .hw_params = imx_itel_hw_params,
-};
-
-
-static struct snd_soc_dai_link imx_itel_dai[] = {
-    {
-        .name            = "Hifi",
-        .stream_name     = "Hifi",
-        .codec_dai_name     = "snd-soc-dummy-dai",
-        //.codec_name         = "snd-soc-dummy",
-        .ops             = &imx_itel_ops,
-        // .symmetric_rates = 1,
-    },
-};
-
-static struct snd_soc_card snd_soc_card_imx_itel = {
-    .name       = "imx-audio-itel",
-    .dai_link   = imx_itel_dai,
-    .num_links    = ARRAY_SIZE(imx_itel_dai),
-    .owner      = THIS_MODULE,
-};
-
-
-static int imx_itel_probe(struct platform_device *pdev)
-{
-    struct snd_soc_card *card = &snd_soc_card_imx_itel;
-    struct device_node *ssi_np;
-    struct platform_device *ssi_pdev;
-    struct device_node *codec_np;
-    // struct imx_itel_data *data = NULL;
-    int int_port, ext_port, ret;
-
-    printk(KERN_ERR "--> ITEL imx_itel_probe");
-
-    ret = of_property_read_u32(pdev->dev.of_node, "mux-int-port",
-&int_port);
-    if (ret) {
-        dev_err(&pdev->dev, "mux-int-port missing or invalid\n");
-        return ret;
-    }
-
-
-    ret = of_property_read_u32(pdev->dev.of_node, "mux-ext-port",
-&ext_port);
-    if (ret) {
-        dev_err(&pdev->dev, "mux-ext-port missing or invalid\n");
-        return ret;
-    }
-
-    printk(KERN_ERR "--> ITEL Configuro audmux\n");
-    imx_audmux_config(int_port, ext_port);
-
-    /* find value in devicetree for ssi controller */
-    ssi_np = of_parse_phandle(pdev->dev.of_node, "ssi-controller", 0);
-    if (!ssi_np) {
-        dev_err(&pdev->dev, "ssi-controller missing or invalid\n");
-        ret = -EINVAL;
-        goto fail;
-    }
-
-    /* find SSI platform driver */
-    ssi_pdev = of_find_device_by_node(ssi_np);
-    if (!ssi_pdev) {
-        dev_err(&pdev->dev, "failed to find SSI platform device\n");
-        ret = -EPROBE_DEFER;
-        goto fail;
-    }
-
-    codec_np = of_parse_phandle(pdev->dev.of_node, "audio-codec", 0);
-    if (!codec_np) {
-        dev_err(&pdev->dev, "codec missing or invalid\n");
-        ret = -EINVAL;
-        goto fail;
-    }
-
-    // codec_dev = NULL;
-
-    card->dev = &pdev->dev;
-    card->dai_link->cpu_dai_name = dev_name(&ssi_pdev->dev);
-    card->dai_link->platform_of_node = ssi_np;
-    card->dai_link->codec_of_node = codec_np;
-
-    platform_set_drvdata(pdev, card);
-    snd_soc_card_set_drvdata(card, &snd_soc_card_imx_itel);
-
-    printk(KERN_ERR "--> ITEL imx-probe registro card\n");
-
-    ret = snd_soc_register_card(card);
-    if (ret) {
-        dev_err(&pdev->dev, "Failed to register card: %d\n", ret);
-        goto fail;
-    }
-
-    printk(KERN_ERR "--> ITEL imx-probe of ssi\n");
-    of_node_put(ssi_np);
-    printk(KERN_ERR "--> ITEL imx-probe of codec\n");
-    of_node_put(codec_np);
-
-    return 0;
-
-fail:
-    if (ssi_np)
-        of_node_put(ssi_np);
-    if (codec_np)
-        of_node_put(codec_np);
-
-    return ret;
-}
-
-static int imx_itel_remove(struct platform_device *pdev)
-{
-    struct snd_soc_card *card = &snd_soc_card_imx_itel;
-
-    snd_soc_unregister_card(card);
-
-    return 0;
-}
-
-static const struct of_device_id imx_itel_dt_ids[] = {
-    { .compatible = "fsl,imx-audio-itel", },
-    { /* sentinel */ }
-};
-MODULE_DEVICE_TABLE(of, imx_itel_dt_ids);
-
-static struct platform_driver imx_itel_driver = {
-    .driver = {
-        .name = "imx-itel",
-        .owner = THIS_MODULE,
-        .pm = &snd_soc_pm_ops,
-        .of_match_table = imx_itel_dt_ids,
-    },
-    .probe = imx_itel_probe,
-    .remove = imx_itel_remove,
-};
-
-module_platform_driver(imx_itel_driver);
-
-MODULE_AUTHOR("Nicola Lunghi");
-MODULE_DESCRIPTION("ITEL I2S Platform Driver");
-MODULE_LICENSE("GPL v2");
-MODULE_ALIAS("platform:imx-itel");
-
-2016-05-12 9:55 GMT+02:00 nick83ola <nick83ola@gmail.com>:
-
-> I am using ssi1 because I have an example of setting master mode on sabre
-> board dts
->
-> I have a problem with iomux/pinctrl  I think because
->
-> root@icorem6solo:/sys/kernel/debug/pinctrl/20e0000.iomuxc# cat
-> pinmux-pins |grep audmux
-> pin 57 (MX6DL_PAD_DISP0_DAT20): 2028000.ssi (GPIO UNCLAIMED) function
-> audmux group audmux-4
-> pin 58 (MX6DL_PAD_DISP0_DAT21): 2028000.ssi (GPIO UNCLAIMED) function
-> audmux group audmux-4
-> pin 59 (MX6DL_PAD_DISP0_DAT22): 2028000.ssi (GPIO UNCLAIMED) function
-> audmux group audmux-4
-> pin 60 (MX6DL_PAD_DISP0_DAT23): 2028000.ssi (GPIO UNCLAIMED) function
-> audmux group audmux-4
->
-> says: GPIO_UNCLAIMED? it is correct??
->
-> /sys/kernel/debug/pinctrl/20e0000.iomuxc# cat pinconf-groups |grep -A 1
-> audmux
-> 1 (audmux-1):
-> MX6DL_PAD_SD2_DAT0: 0x17070MX6DL_PAD_SD2_DAT3: 0x17070MX6DL_PAD_SD2_DAT2:
-> 0x17070MX6DL_PAD_SD2_DAT1: 0x17070
-> 2 (audmux-2):
-> MX6DL_PAD_CSI0_DAT7: 0x1b0b0MX6DL_PAD_CSI0_DAT4:
-> 0x1b0b0MX6DL_PAD_CSI0_DAT5: 0x1b0b0MX6DL_PAD_CSI0_DAT6: 0x1b0b0
-> 3 (audmux-3):
-> MX6DL_PAD_DISP0_DAT16: 0x10MX6DL_PAD_DISP0_DAT18:
-> 0x1b0b0MX6DL_PAD_DISP0_DAT19: 0x1b0b0
-> 4 (audmux-4):
-> MX6DL_PAD_DISP0_DAT20: 0x130b0MX6DL_PAD_DISP0_DAT21:
-> 0x110b0MX6DL_PAD_DISP0_DAT22: 0x130b0MX6DL_PAD_DISP0_DAT23: 0x130b0
->
-> 0x130b0?
->
-> audmux# cat ssi0
->     PDCR: 0000a000
->     PTCR: ad400800
->     TxFS output from SSI6, TxClk output from SSI6
->     Port is symmetric
->     Data received from SSI6
-> root@icorem6solo:/sys/kernel/debug/audmux# cat ssi1
->     PDCR: 00008000
->     PTCR: 00000800
->     TxFS input, TxClk input
->     Port is symmetric
->     Data received from SSI5
-> root@icorem6solo:/sys/kernel/debug/audmux# cat ssi2
->     PDCR: 00006000
->     PTCR: 9cc00800
->     TxFS output from SSI4, TxClk output from SSI4
->     Port is symmetric
->     Data received from SSI4
-> root@icorem6solo:/sys/kernel/debug/audmux# cat ssi3
->     PDCR: 00004000
->     PTCR: 00000800
->     TxFS input, TxClk input
->     Port is symmetric
->     Data received from SSI3
-> root@icorem6solo:/sys/kernel/debug/audmux# cat ssi4
->     PDCR: 00002000
->     PTCR: 8c400800
->     TxFS output from imx-ssi.1, TxClk output from imx-ssi.1
->     Port is symmetric
->     Data received from imx-ssi.1
-> root@icorem6solo:/sys/kernel/debug/audmux# cat ssi5
->     PDCR: 00000000
->     PTCR: 00000800
->     TxFS input, TxClk input
->     Port is symmetric
->     Data received from imx-ssi.0
-> root@icorem6solo:/sys/kernel/debug/audmux# cat ssi6
->     PDCR: 0000c000
->     PTCR: 00000800
->     TxFS input, TxClk input
->     Port is symmetric
->     Data received from UNKNOWN
->
->
->
-
-
--- 
-
-P.S. Le informazioni trasmesse attraverso la presente comunicazione sono di
-esclusiva
-spettanza dell'effettivo destinatario. Nel caso in cui le stesse
-raggiungessero, per
-qualunque motivo, soggetti non interessati, questi ultimi vorranno darne
-immediata
-notizia al mittente. In ogni caso, eventuali soggetti diversi dai legittimi
-destinatari
-della presente comunicazione e dei dati contenuti negli allegati, possono
-essere
-sanzionati ai sensi del T.U. sul trattamento dei dati personali d.lgs.
-196/2003, sia ai
-sensi dell'art. 616 del Codice Penale che disciplina la violazione del
-segreto sulla
-corrispondenza.
+On 05/11/2016 05:16 PM, Ricard Wanderlof wrote:
+> 
+> Hi Lars,
+> 
+> On Tue, 26 Apr 2016, Lars-Peter Clausen wrote:
+> 
+>>> A while ago I posted a question to the list regarding the default values 
+>>> set up for the ADAU1761 (and similar CODECs), 
+>>> ...
+> 
+> Having researched this further, it appears that commit
+> 
+> 27d6e7d1c96c9f51379e0feb972fec26029098bc
+> 
+> ASoC: adau17x1: Cache writes when core clock is disabled
+
+I think it is also related to commit 1c79771a7270 ("regmap: Use
+regcache_mark_dirty() to indicate power loss or reset"). This changes the
+regmap code to sync all registers under certain conditions.
+
+> 
+> actually fixes this problem, at least for the ADAU1361 and ADAU1761. I'm 
+> no expert at the regcache mechanism, but it looks as if when the regcache 
+> is synced when the bias level goes from OFF to STANDBY, it actually writes 
+> out all the values including the default ones (verified by adding trace 
+> printouts, and also by verifying that my original problem of the codec 
+> misbehaving after reconfiguration after reboot is no longer there).
+
+
+We still have the issue though that the CODEC is in an undefined state until
+the first OFF to STANDBY transitions happens. Usually this will happen early
+on when the CODEC is bound to the sound card, but if it is not bound
+immediately it might stay there for a bit longer. So depending on the setup
+this may or may not be a problem.
