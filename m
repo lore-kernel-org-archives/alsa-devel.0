@@ -1,56 +1,51 @@
-From: nick83ola <nick83ola@gmail.com>
-Subject: Re: Imx6 i2s master driver without i2c
-Date: Fri, 13 May 2016 10:21:08 +0200
-Message-ID: <CABPh3UPJ6fRoVSo8cvfKkmBMopVsB9Gu03bBhaegg14+PLD1OQ@mail.gmail.com>
-References: <CABPh3UNhKMGUoiDvHn9paXVNvtpwzbzkbCwBhtSCm72jxkh3CA@mail.gmail.com>
- <CABPh3UMMvVKvHL0g52NqP-E8dpxoZHfwgR_t1WY08OFMSYt9tg@mail.gmail.com>
- <CABPh3UMJ4gOtNN3FJg0fF7Mm+Lpw0=jXGk_+ejsHaGLG9UvWAQ@mail.gmail.com>
- <CABPh3UNi79pMZPgJBisaq9Qo847MV-6riCEQ=Akt_RoLdqeVpw@mail.gmail.com>
- <CABPh3UPLR20WbV0NuYLA4RZ7XB-0+RdFrB-SpDLa0T+wOxqQ+g@mail.gmail.com>
- <CAG5mAdzJyTdsBTnz8FZ8Ay278j1bYJHHqkOTGY+_Ck9sSPhQoQ@mail.gmail.com>
- <CABPh3UN1ZoGAVF1y_5vi_DbkARfopbe5tc5SSy0HQbiYe8MERA@mail.gmail.com>
- <CAG5mAdw1erm=4RjMfP-hf1Vkw73KCWSaLbU3DtditMfsFQNRdQ@mail.gmail.com>
- <CABPh3UN2157eMxwr6i8-vPfdyr3L0DOrpVt7ChTUrPTCbCzCBA@mail.gmail.com>
- <CABPh3UNk9xa=K7QiVV3pZba7o287AyOrjufUGd1QWUxnHNHLOg@mail.gmail.com>
- <CAG5mAdyCAgtFBCbAyLVtqtLgOtCgkB9=yV+YEY8a3oeL2yJDHA@mail.gmail.com>
- <CABPh3UPzP1iFYsy_Ni1fcfimnoVDUWfdn8ht5On_mx0xN1w8Mg@mail.gmail.com>
- <CAG5mAdyceKw_H7zNfx-KTSUUMc81UiLu3feLBcB+vjjjpuhetQ@mail.gmail.com>
- <CABPh3UNPDS+4H60eeL79etF70O0-Xp2T_oNBkYL2m4g6jpeSWA@mail.gmail.com>
- <CAG5mAdw8oWy38SBzYTKi9DeCS5UzcMNjY5VsFCARp6yDb76cFg@mail.gmail.com>
- <CABPh3UOUf=wsw5uRKP3pJO+Z5CCMcdJCOyQmExCucYrK-4-84w@mail.gmail.com>
- <CABPh3UOnt9ZWYn4dA6xf0DzFdRvNY7QsSv5mzD2Z5UufU3gVhg@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f178.google.com (mail-lb0-f178.google.com
- [209.85.217.178])
- by alsa0.perex.cz (Postfix) with ESMTP id 91115260438
- for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 10:21:28 +0200 (CEST)
-Received: by mail-lb0-f178.google.com with SMTP id h1so21978473lbj.3
- for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 01:21:28 -0700 (PDT)
-In-Reply-To: <CABPh3UOnt9ZWYn4dA6xf0DzFdRvNY7QsSv5mzD2Z5UufU3gVhg@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org
+Subject: [PATCH 0/2] ASoC: bcm2835: add support for hifiberry-dac
+Date: Fri, 13 May 2016 09:14:11 +0000
+Message-ID: <1463130853-25096-1-git-send-email-kernel@martin.sperl.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Matthias Reichl <hias-vtPv7MOkFPkAvxtiuMwx3w@public.gmane.org>, Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+Cc: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-also you have a typo in your dts I think that the define is
+From: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
 
-#define AUDMUX_EXT_PORT_NAME port5
+Add support for the hifiberry-dac hat that can get attached
+to a raspberry pi.
 
-not
+This hat also the ti-pcm5102a DAC, so
+support for this DAC has been added to codecs.
 
-#define AUDMUX_INT_PORT_NAME port5
+This is a backport of the drivers in the rpi-downstream
+kernel.
 
-and -> correct the other
+Changelog:
+* Drivers written by: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+* ref-count patch by Matthias Reichl <hias-vtPv7MOkFPkAvxtiuMwx3w@public.gmane.org>
+* rebased, checkpath fixed and dt-binding documentation added 
+  by Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
 
-(i found that imx-audmux support audmux port-config...)
+Florian Meier (2):
+  ASoC: pcm5102a: Add support for PCM5102A codec
+  ASoC: Add support for HifiBerry DAC
+
+ .../bindings/sound/hifiberry,hifiberry-dac.txt     |  12 ++
+ .../devicetree/bindings/sound/pcm5102a.txt         |  13 +++
+ sound/soc/bcm/Kconfig                              |   7 ++
+ sound/soc/bcm/Makefile                             |   3 +-
+ sound/soc/bcm/hifiberry_dac.c                      | 126 +++++++++++++++++++++
+ sound/soc/codecs/Kconfig                           |   4 +
+ sound/soc/codecs/Makefile                          |   2 +
+ sound/soc/codecs/pcm5102a.c                        |  69 +++++++++++
+ 8 files changed, 235 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/hifiberry,hifiberry-dac.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/pcm5102a.txt
+ create mode 100644 sound/soc/bcm/hifiberry_dac.c
+ create mode 100644 sound/soc/codecs/pcm5102a.c
+
+--
+2.1.4
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
