@@ -1,83 +1,122 @@
-From: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
-Subject: Re: [PATCH 2/2] ASoC: Add support for HifiBerry DAC
-Date: Fri, 13 May 2016 14:20:57 +0200
-Message-ID: <C139252A-23AC-4C37-A5E5-E0D7AF1DCC89@martin.sperl.org>
-References: <1463130853-25096-1-git-send-email-kernel@martin.sperl.org> <1463130853-25096-3-git-send-email-kernel@martin.sperl.org> <20160513105409.GB22038@sirena.org.uk>
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
-Content-Type: text/plain; charset=us-ascii
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: fsl_ssi: Fix channel slipping on
+	capture (or playback) restart in full duplex." to the asoc tree
+Date: Fri, 13 May 2016 13:25:27 +0100
+Message-ID: <E1b1C9n-0007L0-AW@finisterre>
+References: <1462277640-20052-7-git-send-email-arnaud.mouiche@invoxia.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20160513105409.GB22038-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Matthias Reichl <hias-vtPv7MOkFPkAvxtiuMwx3w@public.gmane.org>, Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D8BF26058D
+ for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 14:26:18 +0200 (CEST)
+In-Reply-To: <1462277640-20052-7-git-send-email-arnaud.mouiche@invoxia.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, caleb@crome.org, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, festevam@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
-> On 13.05.2016, at 12:54, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
-> 
-> On Fri, May 13, 2016 at 09:14:13AM +0000, kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org wrote:
-> 
->> +static int snd_rpi_hifiberry_dac_init(struct snd_soc_pcm_runtime *rtd)
->> +{
->> +	return 0;
->> +}
-> 
-> Remove empty functions.  Either they are redundant or you really need to
-> do something in them.
-> 
-Sure this can get removed.
+   ASoC: fsl_ssi: Fix channel slipping on capture (or playback) restart in full duplex.
 
-As said - it is just pushing the patches upstream,
-so I did not even touch it. 
+has been applied to the asoc tree at
 
->> +static struct snd_soc_dai_link snd_rpi_hifiberry_dac_dai[] = {
->> +{
->> +	.name		= "HifiBerry DAC",
->> +	.stream_name	= "HifiBerry DAC HiFi",
->> +	.cpu_dai_name	= "bcm2708-i2s.0",
->> +	.codec_dai_name	= "pcm5102a-hifi",
->> +	.platform_name	= "bcm2708-i2s.0",
->> +	.codec_name	= "pcm5102a-codec",
-> 
-> I would expect all this to be done with DT references in a DT driver
-> rather than hard coding static names - look at how simple-card does this.
-> You could almost use simple-card here but the BCLK ratio requirement is
-> probably a bit much, I'm not immediately seeing a nice way to specify
-> the ratio there since it depends on the sample width.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Actually it is just: <sample-width> * <number of channels>
-where number of channels is fixed to 2 for bcm2835-i2s.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-So maybe that already happens automatically in the framework?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-I will need to test it...
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-I also know that some of the audio guys working on the rpi
-would like to be able to configure BCLK ratios based on both:
-sample frequency and sample_width.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Basically they want to control the clock divider/clock parent
-trying to avoid fractional dividers.
+Thanks,
+Mark
 
-Something like this could get added to the core?
-Is there interest in getting something like this?
+>From 027db2e122db81b055a2b569d72f2f1d29c4d007 Mon Sep 17 00:00:00 2001
+From: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+Date: Tue, 3 May 2016 14:14:00 +0200
+Subject: [PATCH] ASoC: fsl_ssi: Fix channel slipping on capture (or playback)
+ restart in full duplex.
 
-Could look like this:
-bclk-ratios = 
-  /* for 96kHz at 16bit/channel use bclk-ratio 40 */
-  <96000 16 40>, 
-  /* for 48kHz at 32bit/channel use bclk-ratio 80 */
-  <48000 16 80>,
-  /* for any (other) sample frequency at 16 bit use bclk-ratio 32 */
-  <0 16 32>,
-  /* for any (other) sample frequency at 32 bit use bclk-ratio 64 */
-  <0 32 64>;
+Happened when the Playback (or Capture) is running continuously
+and Capture (or Playback) is restarted (xrun, manual stop/start...)
 
-but there could also be other approaches as well,
-how this could get described in the device tree.
+Since the RX (or TX) FIFO are only reset when the whole SSI is disabled,
+pending samples from previous capture (or playback) session may still
+be present. They must be erased to not introduce channel slipping.
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+FIFO Clear register fields are documented in IMX51, IMX35 reference manual.
+They are not documented in IMX50 or IMX6 RM, despite they are
+working as expected on IMX6SL and IMX6solo.
+
+Signed-off-by: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+Reviewed-by: Fabio Estevam <fabio.estevam@nxp.com>
+Tested-by: Caleb Crome <caleb@crome.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/fsl/fsl_ssi.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 8944af542b4f..d2dd47d2d500 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -401,6 +401,26 @@ static void fsl_ssi_rxtx_config(struct fsl_ssi_private *ssi_private,
+ }
+ 
+ /*
++ * Clear RX or TX FIFO to remove samples from the previous
++ * stream session which may be still present in the FIFO and
++ * may introduce bad samples and/or channel slipping.
++ *
++ * Note: The SOR is not documented in recent IMX datasheet, but
++ * is described in IMX51 reference manual at section 56.3.3.15.
++ */
++static void fsl_ssi_fifo_clear(struct fsl_ssi_private *ssi_private,
++		bool is_rx)
++{
++	if (is_rx) {
++		regmap_update_bits(ssi_private->regs, CCSR_SSI_SOR,
++			CCSR_SSI_SOR_RX_CLR, CCSR_SSI_SOR_RX_CLR);
++	} else {
++		regmap_update_bits(ssi_private->regs, CCSR_SSI_SOR,
++			CCSR_SSI_SOR_TX_CLR, CCSR_SSI_SOR_TX_CLR);
++	}
++}
++
++/*
+  * Calculate the bits that have to be disabled for the current stream that is
+  * getting disabled. This keeps the bits enabled that are necessary for the
+  * second stream to work if 'stream_active' is true.
+@@ -475,6 +495,8 @@ static void fsl_ssi_config(struct fsl_ssi_private *ssi_private, bool enable,
+ 	 * (online configuration)
+ 	 */
+ 	if (enable) {
++		fsl_ssi_fifo_clear(ssi_private, vals->scr & CCSR_SSI_SCR_RE);
++
+ 		regmap_update_bits(regs, CCSR_SSI_SRCR, vals->srcr, vals->srcr);
+ 		regmap_update_bits(regs, CCSR_SSI_STCR, vals->stcr, vals->stcr);
+ 		regmap_update_bits(regs, CCSR_SSI_SIER, vals->sier, vals->sier);
+-- 
+2.8.1
