@@ -1,18 +1,16 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/5] ASoC: arizona: Add voice trigger output
-	widget
-Date: Fri, 13 May 2016 16:45:16 +0100
-Message-ID: <1463154319-10070-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1463154319-10070-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 0/5] Add support for trigger only voice
+	recognition
+Date: Fri, 13 May 2016 16:45:14 +0100
+Message-ID: <1463154319-10070-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id B012126691E
- for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 17:45:21 +0200 (CEST)
-In-Reply-To: <1463154319-10070-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6214F265370
+ for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 17:45:17 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,107 +24,40 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lee.jones@linaro.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-In some situations the voice control firmware will by used
-to only provide a trigger notification event. In this case a
-compressed stream will not be opened by user-space, as such we
-need to provide a virtual output to power on the DSP in this
-use-case. This patch adds a virtual output 'DSP Voice Trigger'
-that can be used for this, and a switch that lets it be connected
-to the core when required.
+In some systems our voice trigger firmwares will be used only to
+provide an event that indicates the trigger phrase was spoken,
+this patch chain adds support for this use-case. There are two
+parts to adding this support firstly, a mechanism is required
+to get the DSP to power on without the compressed stream being
+opened, this is done by means of a virtual output for the voice
+trigger in the DAPM graph. Secondly, the trigger event needs to
+be handled. Typically this will be used to generate a key press
+event, but there are numerous options what could be done here,
+and vendors often have their own rather strong opinions.  Rather
+than dictate the usage at the driver level we we simply provide a
+notifier that can be caught in the machine driver and appropriate
+action can be taken there.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/arizona.c | 8 ++++++++
- sound/soc/codecs/arizona.h | 2 ++
- sound/soc/codecs/cs47l24.c | 9 +++++++++
- sound/soc/codecs/wm5110.c  | 9 +++++++++
- 4 files changed, 28 insertions(+)
+Thanks,
+Charles
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 664a8c0..a6e3881 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -810,6 +810,14 @@ const struct soc_enum arizona_output_anc_src[] = {
- };
- EXPORT_SYMBOL_GPL(arizona_output_anc_src);
- 
-+const struct snd_kcontrol_new arizona_voice_trigger_switch[] = {
-+	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0),
-+	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 1, 1, 0),
-+	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 2, 1, 0),
-+	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 3, 1, 0),
-+};
-+EXPORT_SYMBOL_GPL(arizona_voice_trigger_switch);
-+
- static void arizona_in_set_vu(struct snd_soc_codec *codec, int ena)
- {
- 	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
-diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index ce0531b..02d836c 100644
---- a/sound/soc/codecs/arizona.h
-+++ b/sound/soc/codecs/arizona.h
-@@ -248,6 +248,8 @@ extern const struct soc_enum arizona_anc_input_src[];
- extern const struct soc_enum arizona_anc_ng_enum;
- extern const struct soc_enum arizona_output_anc_src[];
- 
-+extern const struct snd_kcontrol_new arizona_voice_trigger_switch[];
-+
- extern int arizona_in_ev(struct snd_soc_dapm_widget *w,
- 			 struct snd_kcontrol *kcontrol,
- 			 int event);
-diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
-index 23a14be..af681f8 100644
---- a/sound/soc/codecs/cs47l24.c
-+++ b/sound/soc/codecs/cs47l24.c
-@@ -359,6 +359,11 @@ SND_SOC_DAPM_INPUT("IN2R"),
- SND_SOC_DAPM_OUTPUT("DRC1 Signal Activity"),
- SND_SOC_DAPM_OUTPUT("DRC2 Signal Activity"),
- 
-+SND_SOC_DAPM_OUTPUT("DSP Voice Trigger"),
-+
-+SND_SOC_DAPM_SWITCH("DSP3 Voice Trigger", SND_SOC_NOPM, 2, 0,
-+		    &arizona_voice_trigger_switch[2]),
-+
- SND_SOC_DAPM_PGA_E("IN1L PGA", ARIZONA_INPUT_ENABLES, ARIZONA_IN1L_ENA_SHIFT,
- 		   0, NULL, 0, arizona_in_ev,
- 		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD |
-@@ -905,6 +910,10 @@ static const struct snd_soc_dapm_route cs47l24_dapm_routes[] = {
- 	{ "DRC1 Signal Activity", NULL, "DRC1R" },
- 	{ "DRC2 Signal Activity", NULL, "DRC2L" },
- 	{ "DRC2 Signal Activity", NULL, "DRC2R" },
-+
-+	{ "DSP Voice Trigger", NULL, "SYSCLK" },
-+	{ "DSP Voice Trigger", NULL, "DSP3 Voice Trigger" },
-+	{ "DSP3 Voice Trigger", "Switch", "DSP3" },
- };
- 
- static int cs47l24_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index c2a9edc..1638b09 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -1104,6 +1104,11 @@ SND_SOC_DAPM_INPUT("IN4R"),
- SND_SOC_DAPM_OUTPUT("DRC1 Signal Activity"),
- SND_SOC_DAPM_OUTPUT("DRC2 Signal Activity"),
- 
-+SND_SOC_DAPM_OUTPUT("DSP Voice Trigger"),
-+
-+SND_SOC_DAPM_SWITCH("DSP3 Voice Trigger", SND_SOC_NOPM, 2, 0,
-+		    &arizona_voice_trigger_switch[2]),
-+
- SND_SOC_DAPM_PGA_E("IN1L PGA", ARIZONA_INPUT_ENABLES, ARIZONA_IN1L_ENA_SHIFT,
- 		   0, NULL, 0, wm5110_in_ev,
- 		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD |
-@@ -2003,6 +2008,10 @@ static const struct snd_soc_dapm_route wm5110_dapm_routes[] = {
- 	{ "DRC1 Signal Activity", NULL, "DRC1R" },
- 	{ "DRC2 Signal Activity", NULL, "DRC2L" },
- 	{ "DRC2 Signal Activity", NULL, "DRC2R" },
-+
-+	{ "DSP Voice Trigger", NULL, "SYSCLK" },
-+	{ "DSP Voice Trigger", NULL, "DSP3 Voice Trigger" },
-+	{ "DSP3 Voice Trigger", "Switch", "DSP3" },
- };
- 
- static int wm5110_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
+Charles Keepax (5):
+  ASoC: arizona: Tie SYSCLK to DRC signal activity widgets
+  ASoC: arizona: Add voice trigger output widget
+  ASoC: wm_adsp: Specifically propagate voice trigger event to caller
+  ASoC: arizona: Add a notifier chain for CODEC events
+  ASoC: arizona: Add event notification on voice trigger events
+
+ include/linux/mfd/arizona/core.h | 10 ++++++++++
+ sound/soc/codecs/arizona.c       | 43 ++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/arizona.h       | 15 ++++++++++++++
+ sound/soc/codecs/cs47l24.c       | 16 +++++++++++++++
+ sound/soc/codecs/wm5102.c        |  1 +
+ sound/soc/codecs/wm5110.c        | 16 +++++++++++++++
+ sound/soc/codecs/wm8998.c        |  1 +
+ sound/soc/codecs/wm_adsp.c       |  5 +++++
+ sound/soc/codecs/wm_adsp.h       |  4 ++++
+ 9 files changed, 111 insertions(+)
+
 -- 
 2.1.4
