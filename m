@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: Save a dev reference for
-	dev_err() purpose." to the asoc tree
-Date: Fri, 13 May 2016 13:26:12 +0100
-Message-ID: <E1b1CAW-0007Mu-CH@finisterre>
-References: <1448546842-4584-3-git-send-email-arnaud.mouiche@invoxia.com>
+Subject: Applied "ASoC: fsl_ssi: Real hardware channels max
+	number is 32" to the asoc tree
+Date: Fri, 13 May 2016 13:26:25 +0100
+Message-ID: <E1b1CAj-0007OB-3W@finisterre>
+References: <1448550341-11765-2-git-send-email-arnaud.mouiche@invoxia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B048C2668F7
- for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 14:26:35 +0200 (CEST)
-In-Reply-To: <1448546842-4584-3-git-send-email-arnaud.mouiche@invoxia.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 067462668F6
+ for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 14:26:43 +0200 (CEST)
+In-Reply-To: <1448550341-11765-2-git-send-email-arnaud.mouiche@invoxia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_ssi: Save a dev reference for dev_err() purpose.
+   ASoC: fsl_ssi: Real hardware channels max number is 32
 
 has been applied to the asoc tree at
 
@@ -53,40 +53,43 @@ to this mail.
 Thanks,
 Mark
 
->From 0096b693962d3abde4f41b13cf03c765f33e9d8d Mon Sep 17 00:00:00 2001
+>From 48a260eec301fd7a112d1737ca2755d91558a349 Mon Sep 17 00:00:00 2001
 From: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
-Date: Tue, 3 May 2016 14:13:57 +0200
-Subject: [PATCH] ASoC: fsl_ssi: Save a dev reference for dev_err() purpose.
+Date: Tue, 3 May 2016 14:13:55 +0200
+Subject: [PATCH] ASoC: fsl_ssi: Real hardware channels max number is 32
 
-Most of functions only receive the ssi_private reference and don't have
-a knowledge of 'dev' pointer, even for debug purpose.
+The max number of slots in TDM mode is 32:
+- Frame Rate Divider Control is a 5bit value
+- Time slot mask registers control 32 slots.
 
 Signed-off-by: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+Reviewed-by: Fabio Estevam <fabio.estevam@nxp.com>
 Tested-by: Caleb Crome <caleb@crome.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/fsl/fsl_ssi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 86229c8902d2..149df3ca4f5e 100644
+index ed8de1035cda..8d5f3c192de2 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -261,6 +261,7 @@ struct fsl_ssi_private {
- 	struct fsl_ssi_dbg dbg_stats;
- 
- 	const struct fsl_ssi_soc_data *soc;
-+	struct device *dev;
- };
- 
- /*
-@@ -1404,6 +1405,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	}
- 
- 	ssi_private->soc = of_id->data;
-+	ssi_private->dev = &pdev->dev;
- 
- 	sprop = of_get_property(np, "fsl,mode", NULL);
- 	if (sprop) {
+@@ -1158,14 +1158,14 @@ static struct snd_soc_dai_driver fsl_ssi_dai_template = {
+ 	.playback = {
+ 		.stream_name = "CPU-Playback",
+ 		.channels_min = 1,
+-		.channels_max = 2,
++		.channels_max = 32,
+ 		.rates = FSLSSI_I2S_RATES,
+ 		.formats = FSLSSI_I2S_FORMATS,
+ 	},
+ 	.capture = {
+ 		.stream_name = "CPU-Capture",
+ 		.channels_min = 1,
+-		.channels_max = 2,
++		.channels_max = 32,
+ 		.rates = FSLSSI_I2S_RATES,
+ 		.formats = FSLSSI_I2S_FORMATS,
+ 	},
 -- 
 2.8.1
