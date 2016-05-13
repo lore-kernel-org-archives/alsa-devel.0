@@ -1,59 +1,81 @@
-From: Ross Wille <audio@cornerbrick.com>
-Subject: i.MX6 SGTL5000 hangs with EIO error
-Date: Wed, 11 May 2016 16:14:29 -0600
-Message-ID: <201605111614.29985.audio@cornerbrick.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.willeweb.com (willeweb.com [166.70.233.13])
- by alsa0.perex.cz (Postfix) with ESMTP id EE28E2665C9
- for <alsa-devel@alsa-project.org>; Thu, 12 May 2016 00:14:31 +0200 (CEST)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
- by mail.willeweb.com (Postfix) with ESMTP id 5522D1214031
- for <alsa-devel@alsa-project.org>; Wed, 11 May 2016 16:14:30 -0600 (MDT)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "rcar: src: skip disabled-SRC nodes" to the asoc tree
+Date: Fri, 13 May 2016 08:59:03 +0100
+Message-ID: <E1b17zz-0004io-IY@debutante>
+References: <2350728.BUGJNqvVzR@wasted.cogentembedded.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <2350728.BUGJNqvVzR@wasted.cogentembedded.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-renesas-soc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+The patch
 
-I am doing an ALSA capture on a Wandboard Quad (i.MX6 quad core with 
-SGTL5000 codec chip) from the LINEIN1 jack.  I'm using a 4.6.0-rc3-armv7-x0 
-kernel.
+   rcar: src: skip disabled-SRC nodes
 
-Sometimes when the audio glitches (for example, when I plug/unplug the audio 
-cable or adjust my signal generator) the snd_pcm_readi() function will 
-start returning -5 (EIO).
+has been applied to the asoc tree at
 
-Once this happens, the only way I've been able to recover is to reboot the 
-computer.  Calling snd_pcm_close(), snd_pcm_prepare(), snd_pcm_start(), 
-etc. doesn't help.  When in this state, running arecord returns IO errors 
-as well.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-It's interesting that, on rare occasions, I must do a power cycle in order 
-to recover.  When a reboot is not effective I've noticed that the capture 
-device doesn't appear in /proc/asound/devices.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-I don't believe my specific ALSA settings are important, but I'm calling 
-snd_pcm_readi() with ALSA set to a sample rate of 48000, format of S16_LE, 
-channels=1, frames per period of 960 (20 mS periods), and 4 periods per 
-buffer.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-This same problem happens on two different Wandboards, so I don't think it's 
-a defective board or chip.  It has happened on older kernels as well.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Any ideas?
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Thank you!
+Thanks,
+Mark
 
-Wille
+>From de1965159a34951a86267d13db4f2a67234139d3 Mon Sep 17 00:00:00 2001
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Date: Thu, 12 May 2016 01:36:40 +0300
+Subject: [PATCH] rcar: src: skip disabled-SRC nodes
+
+The current device tree representation of the R-Car Sample Rate Converters
+(SRC) assumes that they are numbered consecutively, starting from 0. Alas,
+this  is not  the case with the R8A7794 SoC where SRC0 isn't present.  In
+order to keep the existing  device trees working, I'm suggesting to use a
+disabled node for SRC0.  Teach the SRC probe  to just skip disabled nodes.
+
+Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/src.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index 15d6ffe8be74..e39f916d0f2f 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -572,6 +572,9 @@ int rsnd_src_probe(struct rsnd_priv *priv)
+ 
+ 	i = 0;
+ 	for_each_child_of_node(node, np) {
++		if (!of_device_is_available(np))
++			goto skip;
++
+ 		src = rsnd_src_get(priv, i);
+ 
+ 		snprintf(name, RSND_SRC_NAME_SIZE, "%s.%d",
+@@ -595,6 +598,7 @@ int rsnd_src_probe(struct rsnd_priv *priv)
+ 		if (ret)
+ 			goto rsnd_src_probe_done;
+ 
++skip:
+ 		i++;
+ 	}
+ 
+-- 
+2.8.1
