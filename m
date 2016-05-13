@@ -1,18 +1,21 @@
-From: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>
-Subject: [PATCH v3 2/2] ASoC: dpcm: play nice with
-	CODEC<->CODEC links
-Date: Fri, 13 May 2016 17:03:56 +0100
-Message-ID: <1463155436-12128-2-git-send-email-piotrs@opensource.wolfsonmicro.com>
-References: <1463155436-12128-1-git-send-email-piotrs@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Martin Sperl <kernel@martin.sperl.org>
+Subject: Re: [PATCH 2/2] ASoC: Add support for HifiBerry DAC
+Date: Fri, 13 May 2016 18:21:36 +0200
+Message-ID: <594EDBBD-1DCC-48D5-8872-A8FAB0E26D34@martin.sperl.org>
+References: <1463130853-25096-1-git-send-email-kernel@martin.sperl.org>
+ <1463130853-25096-3-git-send-email-kernel@martin.sperl.org>
+ <20160513105409.GB22038@sirena.org.uk>
+ <C139252A-23AC-4C37-A5E5-E0D7AF1DCC89@martin.sperl.org>
+ <20160513132113.GP22038@sirena.org.uk>
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id F3CEE266A28
- for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 18:05:06 +0200 (CEST)
-In-Reply-To: <1463155436-12128-1-git-send-email-piotrs@opensource.wolfsonmicro.com>
+Received: from cgate.sperl.org (212-186-180-163.dynamic.surfer.at
+ [212.186.180.163])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18E4A260564
+ for <alsa-devel@alsa-project.org>; Fri, 13 May 2016 18:21:37 +0200 (CEST)
+In-Reply-To: <20160513132113.GP22038@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,88 +25,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Mark Brown <broonie@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Takashi Iwai <tiwai@suse.com>, Matthias Reichl <hias@horus.com>, Rob Herring <robh+dt@kernel.org>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently in situations where a normal CODEC to CODEC link follows a
-DPCM DAI, an error in the following form will be logged:
-
-ASoC: can't get [playback|capture] BE for <widget name>
-ASoC: no BE found for <widget name>
-
-This happens because all widgets in a path containing a DPCM DAI will
-be passed to dpcm_add_paths, which will try to interpret the CODEC<->CODEC
-as if it were a DPCM DAI, in turn causing the error.
-
-This patch aims to resolve the described issue by stopping the DPCM graph
-walk, initiated from dpcm_path_get, at the first widget associated with
-a DPCM BE.
-
-Signed-off-by: Piotr Stankiewicz <piotrs@opensource.wolfsonmicro.com>
----
- sound/soc/soc-pcm.c |   42 +++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 41 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index c2b0aa8..60d702f 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1287,6 +1287,46 @@ static int widget_in_list(struct snd_soc_dapm_widget_list *list,
- 	return 0;
- }
- 
-+static bool dpcm_end_walk_at_be(struct snd_soc_dapm_widget *widget,
-+		enum snd_soc_dapm_direction dir)
-+{
-+	struct snd_soc_card *card = widget->dapm->card;
-+	struct snd_soc_pcm_runtime *rtd;
-+	int i;
-+
-+	if (dir == SND_SOC_DAPM_DIR_OUT) {
-+		list_for_each_entry(rtd, &card->rtd_list, list) {
-+			if (!rtd->dai_link->no_pcm)
-+				continue;
-+
-+			if (rtd->cpu_dai->playback_widget == widget)
-+				return true;
-+
-+			for (i = 0; i < rtd->num_codecs; ++i) {
-+				struct snd_soc_dai *dai = rtd->codec_dais[i];
-+				if (dai->playback_widget == widget)
-+					return true;
-+			}
-+		}
-+	} else { /* SND_SOC_DAPM_DIR_IN */
-+		list_for_each_entry(rtd, &card->rtd_list, list) {
-+			if (!rtd->dai_link->no_pcm)
-+				continue;
-+
-+			if (rtd->cpu_dai->capture_widget == widget)
-+				return true;
-+
-+			for (i = 0; i < rtd->num_codecs; ++i) {
-+				struct snd_soc_dai *dai = rtd->codec_dais[i];
-+				if (dai->capture_widget == widget)
-+					return true;
-+			}
-+		}
-+	}
-+
-+	return false;
-+}
-+
- int dpcm_path_get(struct snd_soc_pcm_runtime *fe,
- 	int stream, struct snd_soc_dapm_widget_list **list)
- {
-@@ -1295,7 +1335,7 @@ int dpcm_path_get(struct snd_soc_pcm_runtime *fe,
- 
- 	/* get number of valid DAI paths and their widgets */
- 	paths = snd_soc_dapm_dai_get_connected_widgets(cpu_dai, stream, list,
--			NULL);
-+			dpcm_end_walk_at_be);
- 
- 	dev_dbg(fe->dev, "ASoC: found %d audio %s paths\n", paths,
- 			stream ? "capture" : "playback");
--- 
-1.7.10.4
+Cj4gT24gMTMuMDUuMjAxNiwgYXQgMTU6MjEsIE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9y
+Zz4gd3JvdGU6Cj4gCj4gT24gRnJpLCBNYXkgMTMsIDIwMTYgYXQgMDI6MjA6NTdQTSArMDIwMCwg
+TWFydGluIFNwZXJsIHdyb3RlOgo+Pj4gT24gMTMuMDUuMjAxNiwgYXQgMTI6NTQsIE1hcmsgQnJv
+d24gPGJyb29uaWVAa2VybmVsLm9yZz4gd3JvdGU6Cj4gCj4+PiBZb3UgY291bGQgYWxtb3N0IHVz
+ZSBzaW1wbGUtY2FyZCBoZXJlIGJ1dCB0aGUgQkNMSyByYXRpbyByZXF1aXJlbWVudCBpcwo+Pj4g
+cHJvYmFibHkgYSBiaXQgbXVjaCwgSSdtIG5vdCBpbW1lZGlhdGVseSBzZWVpbmcgYSBuaWNlIHdh
+eSB0byBzcGVjaWZ5Cj4+PiB0aGUgcmF0aW8gdGhlcmUgc2luY2UgaXQgZGVwZW5kcyBvbiB0aGUg
+c2FtcGxlIHdpZHRoLgo+IAo+PiBBY3R1YWxseSBpdCBpcyBqdXN0OiA8c2FtcGxlLXdpZHRoPiAq
+IDxudW1iZXIgb2YgY2hhbm5lbHM+Cj4+IHdoZXJlIG51bWJlciBvZiBjaGFubmVscyBpcyBmaXhl
+ZCB0byAyIGZvciBiY20yODM1LWkycy4KPiAKPj4gU28gbWF5YmUgdGhhdCBhbHJlYWR5IGhhcHBl
+bnMgYXV0b21hdGljYWxseSBpbiB0aGUgZnJhbWV3b3JrPwo+IAo+IE5vLCBpdCdzIG5vdCBoYW5k
+bGVkLiAgTG90cyBvZiBkZXZpY2VzIGRvbid0IGNhcmUgb3IgaGF2ZSBkaWZmZXJlbnQKPiByZXF1
+aXJlbWVudHMgKGVnLCAyNTZmcykuICBUaGUgdHJpY2t5IGJpdCB3aXRoIHNwZWNpZnlpbmcgaXQg
+aXMgdGhhdCB0aGUKPiByYXRpbyBkZXBlbmRzIG9uIHRoZSBzYW1wbGUgd2lkdGggaGVyZSBidXQg
+aXQgbWlnaHQgZGVwZW5kIG9uIHNvbWV0aGluZwo+IGVsc2Ugd2l0aCBhbm90aGVyIGRldmljZSwg
+b3IgdGhlIG51bWJlciBvZiBjaGFubmVscyBtaWdodCB2YXJ5LiAgVGhhdAo+IHNob3VsZCBiZSBk
+b2FibGUgd2l0aCBEVCBidXQgaXQgZmVlbHMgbGlrZSBtb3JlIHRyb3VibGUgdGhhbiBpdCdzCj4g
+cmVhc29uYWJsZSB0byBhc2sgeW91IHRvIHRha2UgaGVyZS4KPiAKPj4gU29tZXRoaW5nIGxpa2Ug
+dGhpcyBjb3VsZCBnZXQgYWRkZWQgdG8gdGhlIGNvcmU/Cj4+IElzIHRoZXJlIGludGVyZXN0IGlu
+IGdldHRpbmcgc29tZXRoaW5nIGxpa2UgdGhpcz8KPiAKPj4gQ291bGQgbG9vayBsaWtlIHRoaXM6
+Cj4+IGJjbGstcmF0aW9zID0gCj4+ICAvKiBmb3IgOTZrSHogYXQgMTZiaXQvY2hhbm5lbCB1c2Ug
+YmNsay1yYXRpbyA0MCAqLwo+PiAgPDk2MDAwIDE2IDQwPiwgCj4+ICAvKiBmb3IgNDhrSHogYXQg
+MzJiaXQvY2hhbm5lbCB1c2UgYmNsay1yYXRpbyA4MCAqLwo+PiAgPDQ4MDAwIDE2IDgwPiwKPj4g
+IC8qIGZvciBhbnkgKG90aGVyKSBzYW1wbGUgZnJlcXVlbmN5IGF0IDE2IGJpdCB1c2UgYmNsay1y
+YXRpbyAzMiAqLwo+PiAgPDAgMTYgMzI+LAo+PiAgLyogZm9yIGFueSAob3RoZXIpIHNhbXBsZSBm
+cmVxdWVuY3kgYXQgMzIgYml0IHVzZSBiY2xrLXJhdGlvIDY0ICovCj4+ICA8MCAzMiA2ND47Cj4g
+Cj4+IGJ1dCB0aGVyZSBjb3VsZCBhbHNvIGJlIG90aGVyIGFwcHJvYWNoZXMgYXMgd2VsbCwKPj4g
+aG93IHRoaXMgY291bGQgZ2V0IGRlc2NyaWJlZCBpbiB0aGUgZGV2aWNlIHRyZWUuCj4gCj4gWW91
+IG1heSB3ZWxsIGVuZCB1cCB3aXRoIHNvbWV0aGluZyBsaWtlIHRoYXQsIHllYWguCndvdWxkIHNv
+bWV0aGluZyBsaWtlIHRoaXMgYmUgYSBwb3NzaWJpbGl0eToKCnNvdW5kIHsKICBjb21wYXRpYmxl
+ID0gInNpbXBsZS1hdWRpby1jYXJkIjsKICBzaW1wbGUtYXVkaW8tY2FyZCxuYW1lID0gIkhpZmlC
+ZXJyeSBEQUMiOwouLi4KICAvKiBmb3IgMzJiaXRANDhrIHNldCBiY2xrIHNpemUgdG8gNDBiaXQv
+Y2hhbm5lbCA9IDgwYml0cyBlZmZlY3RpdmVseSAqLwogIGh3LXBhcmFtcy1maWx0ZXJAMCB7CiAg
+ICBtYXRjaC1yYXRlID0gPDQ4MDAwPjsKICAgIG1hdGNoLXNhbXBsZS1iaXRzID0gPDMyPjsKICAg
+IG1hdGNoLWNoYW5uZWxzID0gPDI+OwogICAgYWN0aW9uID0gInNldC1maXhlZC1iY2xrLXJhdGlv
+IjsKICAgIGFjdGlvbi12YWx1ZSA9IDw0MD47CiAgfTsKCiAgLyogZm9yIDE2Yml0QDk2ayBzZXQg
+YmNsayBzaXplIHRvIDIwYml0L2NoYW5uZWwgPSA0MGJpdHMgZWZmZWN0aXZlbHkgKi8KICBody1w
+YXJhbXMtZmlsdGVyQDEgewogICAgbWF0Y2gtcmF0ZSA9IDw5NjAwMD47CiAgICBtYXRjaC1zYW1w
+bGUtYml0cyA9IDwxNj47CiAgICBtYXRjaC1jaGFubmVscyA9IDwyPjsKICAgIGFjdGlvbiA9ICJz
+ZXQtZml4ZWQtYmNsay1yYXRpbyI7CiAgICBhY3Rpb24tdmFsdWUgPSA8NDA+OwogIH07CiAgLyog
+Zm9yIGFsbCBvdGhlcnMgdGFrZSBzYW1wbGVfYml0cyAqIGNoYW5uZWwgKi8KICBody1wYXJhbXMt
+ZmlsdGVyQDk5OSB7CiAgICBhY3Rpb24gPSAic2V0LWJjbGstcmF0aW8tbXVsdGlwbGUtc2FtcGxl
+LWJpdHMtY2hhbm5lbHMiOwogIH07Cn07CgpUaGUgdGl0bGUgb2Ygbm9kZXMgYW5kIHByb3BlcnRp
+ZXMgY2FuIGVhc2lseSBnZXQgY2hhbmdlZC4KQWRkaXRpb25hbCAibWF0Y2gtKuKAnSBwcm9wZXJ0
+aWVzIGNhbiBhbHNvIGdldCBhZGRlZCBlYXNpbHkuCgpUaGUgYmlnZ2VzdCBxdWVzdGlvbiBpcyBh
+Ym91dCAiYWN0aW9uIiBvciBtYXliZSDigJxhY3Rpb25z4oCdIAooaW4gdGhlIHNlbnNlIG9mIGFu
+IGFycmF5LCBzbyB0aGF0IHRoZXJlIGNhbiBiZSBtdWx0aXBsZSBhY3Rpb25zKT8KVGhlbiBpZiB0
+aGlzIHNob3VsZCByZW1haW4gYSBzdHJpbmcgb3Igc2hvdWxkIGl0IGJlIGFuIGlkCih0aGF0IHdl
+IHdvdWxkIG5lZWQgdG8gZGVmaW5lIGluIGFuIGluY2x1ZGUp4oCmCgpNb3JlIGFjdGlvbnMgY291
+bGQgZ2V0IGFkZGVkIGVhc2lseSAtIHRoZXJlIGNvdWxkIGV2ZW4gYmUgYQpmcmFtZXdvcmsgdGhh
+dCB3b3VsZCBhbGxvdyBkcml2ZXJzIHRvIHNwZWNpZnkgbW9yZSBhY3Rpb25zCmluc2lkZSBkaWZm
+ZXJlbnQgZHJpdmVycyB0aGF0IGFyZSBhc3NpZ25lZCBoZXJlLgoKSSB3b3VsZCB0aGluayB0aGF0
+IHRoZSDigJxmaXJzdOKAnSBvbmUgbWF0Y2hlcyAtIG9yZGVyIHdvdWxkIGJlCmVuZm9yY2VkIGJh
+c2VkIG9uIG5vZGUgbmFtZS4KClRoaXMgd291bGQganVzdCBnZXQgYWRkZWQgdG8gYXNvY19zaW1w
+bGVfY2FyZF9od19wYXJhbXMuCgpUaGlzIGRvZXMgbm90IHNlZW0gdG9vIGNvbXBsaWNhdGVkIHRv
+IGNyZWF0ZS4KClRoYW5rcywKCU1hcnRpbgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwK
