@@ -1,18 +1,23 @@
-From: Peter Rosin <peda@axentia.se>
-Subject: [PATCH v4 3/4] ASoC: dapm: support mixer controls with
-	mute at non-zero value
-Date: Sat, 14 May 2016 23:09:40 +0200
-Message-ID: <1463260181-21344-4-git-send-email-peda@axentia.se>
-References: <1463260181-21344-1-git-send-email-peda@axentia.se>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Clark Dunson <cdunson@gmail.com>
+Subject: Wolfson 5102 on Beaglebone Black using ALSA
+Date: Sat, 14 May 2016 15:16:18 -0700
+Message-ID: <4BEB79E8-7315-48DF-BBB6-E944114621BF@gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 9.2 \(3112\))
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur01on0101.outbound.protection.outlook.com [104.47.0.101])
- by alsa0.perex.cz (Postfix) with ESMTP id 484202650CC
- for <alsa-devel@alsa-project.org>; Sat, 14 May 2016 23:14:49 +0200 (CEST)
-In-Reply-To: <1463260181-21344-1-git-send-email-peda@axentia.se>
+Received: from mail-io0-f171.google.com (mail-io0-f171.google.com
+ [209.85.223.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B48D2614BB
+ for <alsa-devel@alsa-project.org>; Sun, 15 May 2016 00:16:22 +0200 (CEST)
+Received: by mail-io0-f171.google.com with SMTP id i75so166555093ioa.3
+ for <alsa-devel@alsa-project.org>; Sat, 14 May 2016 15:16:21 -0700 (PDT)
+Received: from ?IPv6:2601:646:8c00:1eb3:88e0:ce7e:4320:5847?
+ ([2601:646:8c00:1eb3:88e0:ce7e:4320:5847])
+ by smtp.gmail.com with ESMTPSA id f194sm3132196ite.1.2016.05.14.15.16.19
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+ Sat, 14 May 2016 15:16:19 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,108 +27,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Misbah Ullah Khan <Misbahk@danlawinc.com>, Kumar Gala <galak@codeaurora.org>, Peter Rosin <peda@axentia.se>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The max9860 codec has a mixer control field that has its mute/disable at
-the wrong end of the scale. I.e. you turn the volume up and up, and then
-as the final step the volume is off. This does not sit well with DAPM,
-which assumes the mute/off is at the minimum value.
-
-Add support for such backwards controls with code that searches TLV ranges
-for the mute value and use that as trigger for DAPM off.
-
-Signed-off-by: Peter Rosin <peda@axentia.se>
----
- sound/soc/soc-dapm.c | 38 +++++++++++++++++++++++++++++++++++---
- 1 file changed, 35 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index c4464858bf01..8a1131781339 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -42,6 +42,7 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <sound/initval.h>
-+#include <sound/tlv.h>
- 
- #include <trace/events/asoc.h>
- 
-@@ -722,16 +723,46 @@ static int dapm_connect_mux(struct snd_soc_dapm_context *dapm,
- 	return -ENODEV;
- }
- 
-+static int dapm_find_tlv_mute(const unsigned int *tlv)
-+{
-+	int cnt;
-+	const unsigned int *range;
-+
-+	if (!tlv || tlv[0] != SNDRV_CTL_TLVT_DB_RANGE)
-+		return 0;
-+
-+	cnt = tlv[1] / sizeof(unsigned int);
-+
-+	/*
-+	 * Each group of six values should be
-+	 * { start end type len min step/mute }
-+	 */
-+	for (range = &tlv[2]; cnt >= 6; cnt -= 6, range += 6) {
-+		if (range[2] != SNDRV_CTL_TLVT_DB_SCALE)
-+			return 0; /* wrong type, terminate */
-+		if (range[3] != 2 * sizeof(unsigned int))
-+			return 0; /* wrong len, terminate */
-+		if (!(range[5] & TLV_DB_SCALE_MUTE))
-+			continue; /* no mute in this range */
-+		return range[0]; /* start of this range is the mute value */
-+	}
-+
-+	return 0;
-+}
-+
- /* set up initial codec paths */
- static void dapm_set_mixer_path_status(struct snd_soc_dapm_path *p, int i)
- {
-+	const struct snd_kcontrol_new *kcontrol_new
-+		= &p->sink->kcontrol_news[i];
- 	struct soc_mixer_control *mc = (struct soc_mixer_control *)
--		p->sink->kcontrol_news[i].private_value;
-+		kcontrol_new->private_value;
- 	unsigned int reg = mc->reg;
- 	unsigned int shift = mc->shift;
- 	unsigned int max = mc->max;
- 	unsigned int mask = (1 << fls(max)) - 1;
- 	unsigned int invert = mc->invert;
-+	int mute_value = dapm_find_tlv_mute(kcontrol_new->tlv.p);
- 	unsigned int val;
- 
- 	if (reg != SND_SOC_NOPM) {
-@@ -739,7 +770,7 @@ static void dapm_set_mixer_path_status(struct snd_soc_dapm_path *p, int i)
- 		val = (val >> shift) & mask;
- 		if (invert)
- 			val = max - val;
--		p->connect = !!val;
-+		p->connect = val != mute_value;
- 	} else {
- 		p->connect = 0;
- 	}
-@@ -3045,6 +3076,7 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
- 	int max = mc->max;
- 	unsigned int mask = (1 << fls(max)) - 1;
- 	unsigned int invert = mc->invert;
-+	int mute_value = dapm_find_tlv_mute(kcontrol->tlv.p);
- 	unsigned int val;
- 	int connect, change, reg_change = 0;
- 	struct snd_soc_dapm_update update;
-@@ -3056,7 +3088,7 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
- 			 kcontrol->id.name);
- 
- 	val = (ucontrol->value.integer.value[0] & mask);
--	connect = !!val;
-+	connect = val != mute_value;
- 
- 	if (invert)
- 		val = max - val;
--- 
-2.1.4
+SGV5IGV2ZXJ5Ym9keSEKCldlIGhhdmUgYmVlbiB3b3JraW5nIG9uIGludGVncmF0aW5nIHRoZSBX
+b2xmc29uIDUxMDIgY29kZWMgd2l0aCB0aGUgQmVhZ2xlYm9uZSBCbGFjay4gIFdl4oCZdmUgbWFk
+ZSBwcmV0dHkgZGVjZW50IHByb2dyZXNzLCBnb3QgdGhlIGFyaXpvbmEgY29kZSBpbiBrZXJuZWwg
+NC40IHJlZ2lzdGVyaW5nIHRoZSB3bTUxMDIgYXMgQUxTQSBzb3VuZCBjYXJkIChib3RoIHBsYXll
+ciBhbmQgcmVjb3JkZXIpLCBoYXZlIE1jQXNwMCBhcyAyNC41NzYgTUh6IGNsb2NrIHNvdXJjZSwg
+YW5kIGhhdmUgMTIgSVJRcyBzaG93aW5nIHVwIGluIC9wcm9jL2ludGVycnVwdHMuCgpXZSBoYXZl
+IGJlZW4gd29ya2luZyB3aXRoIHNvdW5ke2NvbXBhdGlibGUgPSAic2ltcGxlLWF1ZGlvLWNhcmTi
+gJ19LCBidXQgbm93IGhhdmUgaGl0IG91ciBmaXJzdCByZWFsIHF1ZXN0aW9uLiAgc3lzY2xrIGlz
+IGhhcmQgY29kZWQgdG8g4oCYMOKAmSB1bmRlciBzaW1wbGUtYXVkaW8tY2FyZCwgYW5kIHdlIGhh
+ZCB0byBoYWNrIHRoZSBrZXJuZWwgYW5kIGNoYW5nZSB0aGF0IHRvIOKAmDHigJkgdG8gYWNoaWV2
+ZSBBTFNBIHNvdW5kIGNhcmQgcmVnaXN0cmF0aW9uLiAgV2XigJlkIGFsbCBsaWtlIGZvciB0aGlz
+IHdvcmsgdG8gcHJvY2VlZCB3aXRob3V0IGhhdmluZyB0byBoYWNrIHRoZSBrZXJuZWwsIGFuZCB3
+b25kZXJlZCBpZiBvbmUgb2YgeW91IG1pZ2h0IHJlY29tbWVuZCBhbm90aGVyIGFwcHJvYWNoIG9y
+IHNlbGVjdGlvbiBmb3IgZGV2aWNlIHRyZWUgc291bmR7Y29tcGF0aWJsZX0gdGhhdCBtaWdodCB3
+b3JrIG91dCBiZXR0ZXI/CiAgICAKVGhhbmtzIQoKQ2xhcmsKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
