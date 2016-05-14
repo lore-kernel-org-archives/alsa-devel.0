@@ -1,73 +1,65 @@
-From: Peter Rosin <peda@axentia.se>
-Subject: [PATCH v4 0/4] ASoC: MAX9860: new driver
-Date: Sat, 14 May 2016 23:09:37 +0200
-Message-ID: <1463260181-21344-1-git-send-email-peda@axentia.se>
+From: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
+Subject: [PATCH v4 1/4] dt-bindings: sound: add bindings for the max9860 codec
+Date: Sat, 14 May 2016 23:09:38 +0200
+Message-ID: <1463260181-21344-2-git-send-email-peda@axentia.se>
+References: <1463260181-21344-1-git-send-email-peda@axentia.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur01on0090.outbound.protection.outlook.com [104.47.0.90])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B8D92614BB
- for <alsa-devel@alsa-project.org>; Sat, 14 May 2016 23:14:17 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Misbah Ullah Khan <Misbahk@danlawinc.com>, Kumar Gala <galak@codeaurora.org>, Peter Rosin <peda@axentia.se>
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1463260181-21344-1-git-send-email-peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Misbah Ullah Khan <Misbahk-RbfqNLLv1bh8UrSeD/g0lQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+This adds the device tree binding documentation for the Maxim Integrated
+MAX9860 mono audio voice codec.
 
-I kept the sidetone changes in separate patches since I don't know
-if I solved the DAPM-off issue cleanly enough. Also, a new driver may
-still have a chance to make 4.7, but maybe it's too late for the DAPM
-changes?
-
-Finally, I wonder if the device tree crowd prefers seeing the whole of
-a series such as this, or only the bindings patch?
-
-Cheers,
-Peter
-
-New in v4:
-- Split out the device tree bindings in its own patch.
-- Move format check from ->startup to ->set_fmt.
-- Don't spam the log on probe defer.
-- Follow-up patches for the backwards sidetone control.
-
-New in v3:
-- The updated bindings file went missing in v2. Sorry for the confusion.
-
-New in v2:
-- Add comment about fall through when Integer Clock Mode is not possible.
-- Drop export of max9860_probe.
-- Ignore clk docs and read the mclk rate w/o enabling the clock.
-- Manage the DVDDIO supply.
-
-Peter Rosin (4):
-  dt-bindings: sound: add bindings for the max9860 codec
-  ASoC: MAX9860: new driver
-  ASoC: dapm: support mixer controls with mute at non-zero value
-  ASoC: MAX9860: add sidetone mixer control
-
- .../devicetree/bindings/sound/max9860.txt          |  28 +
- MAINTAINERS                                        |   7 +
- sound/soc/codecs/Kconfig                           |   6 +
- sound/soc/codecs/Makefile                          |   2 +
- sound/soc/codecs/max9860.c                         | 765 +++++++++++++++++++++
- sound/soc/codecs/max9860.h                         | 162 +++++
- sound/soc/soc-dapm.c                               |  38 +-
- 7 files changed, 1005 insertions(+), 3 deletions(-)
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
+---
+ .../devicetree/bindings/sound/max9860.txt          | 28 ++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/max9860.txt
- create mode 100644 sound/soc/codecs/max9860.c
- create mode 100644 sound/soc/codecs/max9860.h
 
+diff --git a/Documentation/devicetree/bindings/sound/max9860.txt b/Documentation/devicetree/bindings/sound/max9860.txt
+new file mode 100644
+index 000000000000..e0d4e95e31b3
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/max9860.txt
+@@ -0,0 +1,28 @@
++MAX9860 Mono Audio Voice Codec
++
++Required properties:
++
++  - compatible : "maxim,max9860"
++
++  - reg : the I2C address of the device
++
++  - AVDD-supply, DVDD-supply and DVDDIO-supply : power supplies for
++    the device, as covered in bindings/regulator/regulator.txt
++
++  - clock-names : Required element: "mclk".
++
++  - clocks : A clock specifier for the clock connected as MCLK.
++
++Examples:
++
++	max9860: max9860@10 {
++		compatible = "maxim,max9860";
++		reg = <0x10>;
++
++		AVDD-supply = <&reg_1v8>;
++		DVDD-supply = <&reg_1v8>;
++		DVDDIO-supply = <&reg_3v0>;
++
++		clock-names = "mclk";
++		clocks = <&pck2>;
++	};
 -- 
 2.1.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
