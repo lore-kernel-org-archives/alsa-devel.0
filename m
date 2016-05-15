@@ -1,60 +1,47 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: Wolfson 5102 on Beaglebone Black using ALSA
-Date: Sun, 15 May 2016 11:29:31 +0100
-Message-ID: <20160515102931.GO1646@localhost.localdomain>
-References: <4BEB79E8-7315-48DF-BBB6-E944114621BF@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A0E92606B4
- for <alsa-devel@alsa-project.org>; Sun, 15 May 2016 12:29:23 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4BEB79E8-7315-48DF-BBB6-E944114621BF@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clark Dunson <cdunson@gmail.com>
-Cc: alsa-devel@alsa-project.org
+From: Muhammad Falak R Wani <falakreyaz@gmail.com>
+Subject: [PATCH] sound: oss: Use setup_timer and mod_timer.
+Date: Sun, 15 May 2016 16:26:51 +0530
+Message-ID: <1463309821-10911-1-git-send-email-falakreyaz@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, "GitAuthor: Muhammad Falak R Wani" <falakreyaz@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBNYXkgMTQsIDIwMTYgYXQgMDM6MTY6MThQTSAtMDcwMCwgQ2xhcmsgRHVuc29uIHdy
-b3RlOgo+IEhleSBldmVyeWJvZHkhCj4gCj4gV2UgaGF2ZSBiZWVuIHdvcmtpbmcgb24gaW50ZWdy
-YXRpbmcgdGhlIFdvbGZzb24gNTEwMiBjb2RlYyB3aXRoCj4gdGhlIEJlYWdsZWJvbmUgQmxhY2su
-ICBXZeKAmXZlIG1hZGUgcHJldHR5IGRlY2VudCBwcm9ncmVzcywKPiBnb3QgdGhlIGFyaXpvbmEg
-Y29kZSBpbiBrZXJuZWwgNC40IHJlZ2lzdGVyaW5nIHRoZSB3bTUxMDIKPiBhcyBBTFNBIHNvdW5k
-IGNhcmQgKGJvdGggcGxheWVyIGFuZCByZWNvcmRlciksIGhhdmUgTWNBc3AwCj4gYXMgMjQuNTc2
-IE1IeiBjbG9jayBzb3VyY2UsIGFuZCBoYXZlIDEyIElSUXMgc2hvd2luZyB1cCBpbgo+IC9wcm9j
-L2ludGVycnVwdHMuCj4KPiBXZSBoYXZlIGJlZW4gd29ya2luZyB3aXRoIHNvdW5ke2NvbXBhdGli
-bGUgPQo+ICJzaW1wbGUtYXVkaW8tY2FyZOKAnX0sIGJ1dCBub3cgaGF2ZSBoaXQgb3VyIGZpcnN0
-Cj4gcmVhbCBxdWVzdGlvbi4gc3lzY2xrIGlzIGhhcmQgY29kZWQgdG8g4oCYMOKAmSB1bmRlcgo+
-IHNpbXBsZS1hdWRpby1jYXJkLCBhbmQgd2UgaGFkIHRvIGhhY2sgdGhlIGtlcm5lbCBhbmQgY2hh
-bmdlCj4gdGhhdCB0byDigJgx4oCZIHRvIGFjaGlldmUgQUxTQSBzb3VuZCBjYXJkIHJlZ2lzdHJh
-dGlvbi4KPiBXZeKAmWQgYWxsIGxpa2UgZm9yIHRoaXMgd29yayB0byBwcm9jZWVkIHdpdGhvdXQg
-aGF2aW5nIHRvIGhhY2sKPiB0aGUga2VybmVsLCBhbmQgd29uZGVyZWQgaWYgb25lIG9mIHlvdSBt
-aWdodCByZWNvbW1lbmQgYW5vdGhlcgo+IGFwcHJvYWNoIG9yIHNlbGVjdGlvbiBmb3IgZGV2aWNl
-IHRyZWUgc291bmR7Y29tcGF0aWJsZX0gdGhhdAo+IG1pZ2h0IHdvcmsgb3V0IGJldHRlcj8KClll
-cyB1bmZvcnR1bmF0ZWx5IHRoaXMgcGFydCBkb2Vzbid0IG1hcCB0aGF0IHdlbGwgb250byBzaW1w
-bGUKY2FyZCBhdCB0aGUgbW9tZW50LiBBcGFydCBmcm9tIHRoZSBjbG9jayBvcHRpb25zIHlvdSBt
-ZW50aW9uLApzaW1wbGUgY2FyZCBjdXJyZW50bHkgb25seSBjYWxscyBkYWlfc2V0X3N5c2Nsaywg
-d2hpY2ggd2lsbCB0aWUKYXVkaW8gaW50ZXJmYWNlcyB0byBhIGNsb2NrIGRvbWFpbiBvbiB3bTUx
-MDIgYnV0IHlvdSBhbHNvIHdpbGwKbmVlZCB0byBjYWxsIGNvZGVjX3NldF9zeXNjbGsgdG8gY29u
-ZmlndXJlIHRoZSBjbG9ja2luZyBkb21haW5zCnRoZW1zZWx2ZXMuIFBvc3NpYmx5IGV2ZW4gc2V0
-X3BsbCBhcyB3ZWxsIGlmIHlvdSBuZWVkIHRvCmNvbmZpZ3VyZSB0aGUgUExMLgoKVGhlcmUgYXJl
-IGJhc2ljYWxseSB0d28gb3B0aW9ucyBoZXJlLCB5b3UgY291bGQgaW1wcm92ZSBzaW1wbGUKY2Fy
-ZCB0byBhZGQgc3VwcG9ydCBuZWVkZWQgZm9yIHdtNTEwMiwgYWx0aG91Z2ggSSBhbSBub3QKZW50
-aXJlbHkgY2xlYXIgYXQgd2hhdCBwb2ludCBvbmUgd291bGQgY29uc2lkZXIgYSBwYXJ0IHRvbwpj
-b21wbGV4IGZvciBzaW1wbGUgY2FyZC4gT3Igd3JpdGUgYSBtYWNoaW5lIGRyaXZlciBmb3Igd201
-MTAyIG9uCkJlYWdsZWJvbmUgQmxhY2ssIGEgZ29vZCBleGFtcGxlIHRvIHN0YXJ0IGZyb20gZm9y
-IHRoaXMgd291bGQgYmUKc291bmQvc29jL3NhbXN1bmcvYmVsbHMuYy4KClRoYW5rcywKQ2hhcmxl
-cwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+The function setup_timer combines the initialization of a timer with the
+initialization of the timer's function and data fields. The mulitiline
+code for timer initialization is now replaced with function setup_timer.
+
+Also, quoting the mod_timer() function comment:
+-> mod_timer() is a more efficient way to update the expire field of an
+   active timer (if the timer is inactive it will be activated).
+
+Use setup_timer() and mod_timer() to setup and arm a timer, making the
+code compact and aid readablity.
+
+Signed-off-by: Muhammad Falak R Wani <falakreyaz@gmail.com>
+---
+ sound/oss/waveartist.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/sound/oss/waveartist.c b/sound/oss/waveartist.c
+index b36ea47..0b8d0de 100644
+--- a/sound/oss/waveartist.c
++++ b/sound/oss/waveartist.c
+@@ -1414,11 +1414,9 @@ attach_waveartist(struct address_info *hw, const struct waveartist_mixer_info *m
+ 	else {
+ #ifdef CONFIG_ARCH_NETWINDER
+ 		if (machine_is_netwinder()) {
+-			init_timer(&vnc_timer);
+-			vnc_timer.function = vnc_slider_tick;
+-			vnc_timer.expires  = jiffies;
+-			vnc_timer.data     = nr_waveartist_devs;
+-			add_timer(&vnc_timer);
++			setup_timer(&vnc_timer, vnc_slider_tick,
++				    nr_waveartist_devs);
++			mod_timer(&vnc_timer, jiffies);
+ 
+ 			vnc_configure_mixer(devc, 0);
+ 
+-- 
+1.9.1
