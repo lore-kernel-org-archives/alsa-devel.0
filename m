@@ -1,24 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4] ASoC: Intel: Skylake: Add DSP firmware
- manifest parsing
-Date: Mon, 16 May 2016 11:33:05 +0100
-Message-ID: <20160516103305.GF2953@sirena.org.uk>
-References: <1463140547-20895-1-git-send-email-vinod.koul@intel.com>
- <20160513121417.GL22038@sirena.org.uk>
- <20160516101626.GO23734@localhost>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: ADAU1761 default register value problem
+Date: Mon, 16 May 2016 13:07:09 +0200
+Message-ID: <alpine.DEB.2.02.1605161150530.31333@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1604211547540.31333@lnxricardw1.se.axis.com>
+ <571F2513.1020005@metafoo.de>
+ <alpine.DEB.2.02.1605111440510.31333@lnxricardw1.se.axis.com>
+ <57358E51.7020000@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6134800997327258782=="
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 13C5A2619BE
- for <alsa-devel@alsa-project.org>; Mon, 16 May 2016 12:33:24 +0200 (CEST)
-Received: from 94.197.120.181.threembb.co.uk ([94.197.120.181] helo=finisterre)
- by mezzanine.sirena.org.uk with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.84_2)
- (envelope-from <broonie@sirena.org.uk>) id 1b2Fpw-0007ki-FB
- for alsa-devel@alsa-project.org; Mon, 16 May 2016 10:33:21 +0000
-In-Reply-To: <20160516101626.GO23734@localhost>
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 609742619BE
+ for <alsa-devel@alsa-project.org>; Mon, 16 May 2016 13:07:17 +0200 (CEST)
+In-Reply-To: <57358E51.7020000@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,50 +23,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Shreyas NC <shreyas.nc@intel.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6134800997327258782==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="so9zsI5B81VjUb/o"
-Content-Disposition: inline
+On Fri, 13 May 2016, Lars-Peter Clausen wrote:
 
+> > Having researched this further, it appears that commit
+> > =
 
---so9zsI5B81VjUb/o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> > 27d6e7d1c96c9f51379e0feb972fec26029098bc
+> > =
 
-On Mon, May 16, 2016 at 03:46:27PM +0530, Vinod Koul wrote:
+> > ASoC: adau17x1: Cache writes when core clock is disabled
+> =
 
-> Btw wanted to ask you on the update for this. Do you prefer that is sent
-> after merge window or anytime is fine by you :)
+> I think it is also related to commit 1c79771a7270 ("regmap: Use
+> regcache_mark_dirty() to indicate power loss or reset"). This changes the
+> regmap code to sync all registers under certain conditions.
 
-Whenever.
+Yes, that commit seems to be the key, although I must admit that I can't =
 
---so9zsI5B81VjUb/o
-Content-Type: application/pgp-signature; name="signature.asc"
+get my head around the logic of that commit. The commit message says: "HW =
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+was not reset (maybe it was just clock-gated), so if we cached any writes, =
 
-iQEcBAEBCAAGBQJXOaHIAAoJECTWi3JdVIfQB4cH/2FMNSM9haNscgJ375TwZ3fl
-JBF7QkKRcszAn8/eJunHoqyP1KV0HEugJq351cHvMm/16z+E9EaHjgd8AlLxfzsj
-2rRYUhcnZddXUiBMTONHzXk+shdF52XpSDju1CCESxbzSDWNjVtWzYBRCDTzI3j3
-p4q7zzSxvhMDQUrB9jh1q9YKFrHpUdLBpaC7FRLJpF1X95kVttHSlPZ1BI/TrWkU
-lsSsNFRJpIJTOsSDJFR/vKX/DVjIBKOIXeAkUnMcvDsxCrVuTyyUNZ6KWYdt9dgh
-cb0I69vmuv1IgiTyVb9+iJJl6lPDPdRussKrSdrCdiWFvkXBcTbnqMMBC0a3zDo=
-=+3qi
------END PGP SIGNATURE-----
+they should be sent to the hardware regardless of whether they match the =
 
---so9zsI5B81VjUb/o--
+HW default.". But if the device was indeed gated off, rather than reset, =
 
---===============6134800997327258782==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+why should this make a difference when writing out the cache after gating =
 
+the chip on again? If it were gated off and then on, doesn't this imply =
 
---===============6134800997327258782==--
+that the register settings won't change? Or is the idea that the chip =
+
+might loose all its state while gated off and hence essentially needs to =
+
+be reinitialized?
+
+Regardless of the commit message, the code indeed does cause all the =
+
+cached data to be written out when regcache_sync() is called in this case.
+
+> We still have the issue though that the CODEC is in an undefined state un=
+til
+> the first OFF to STANDBY transitions happens. Usually this will happen ea=
+rly
+> on when the CODEC is bound to the sound card, but if it is not bound
+> immediately it might stay there for a bit longer. So depending on the set=
+up
+> this may or may not be a problem.
+
+So that means that in the probe function we should really write out the =
+
+default values, by enabling SYSCLK_EN in the ADAU clock control register, =
+
+and then calling regcache_sync() before disabling SYSCLK_EN again, and =
+
+going to regcache_cache_only(..,true) ?
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
