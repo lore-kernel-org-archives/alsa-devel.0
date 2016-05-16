@@ -1,86 +1,29 @@
-From: Paul Handrigan <paul.handrigan@cirrus.com>
-Subject: Re: [PATCH v3 1/2] ASoC: cs35l33: Initial commit of
- the cs35l33 CODEC driver.
-Date: Mon, 16 May 2016 10:20:24 -0500
-Message-ID: <alpine.DEB.2.10.1605161013100.5521@phandrigan>
-References: <1463172629-559-1-git-send-email-Paul.Handrigan@cirrus.com>
- <20160513222848.GW22038@sirena.org.uk>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 1/2] ASoC: wm8985: add device tree binding for WM8985
+Date: Mon, 16 May 2016 11:07:52 -0500
+Message-ID: <20160516160752.GA7268@rob-hp-laptop>
+References: <1463068730-18817-1-git-send-email-petr@barix.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id EE64A265AE7
- for <alsa-devel@alsa-project.org>; Mon, 16 May 2016 17:19:56 +0200 (CEST)
-In-Reply-To: <20160513222848.GW22038@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1463068730-18817-1-git-send-email-petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, plamen-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, May 12, 2016 at 05:58:49PM +0200, Petr Kulhavy wrote:
+> Add device tree binding for the WM8985 codec driver.
+> 
+> Signed-off-by: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+> ---
+>  Documentation/devicetree/bindings/sound/wm8985.txt | 36 ++++++++++++++++++++++
+>  1 file changed, 36 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/wm8985.txt
 
-
-On Fri, 13 May 2016, Mark Brown wrote:
-
-> On Fri, May 13, 2016 at 03:50:28PM -0500, Paul.Handrigan@cirrus.com wrote:
-> 
-> > +static struct regmap *cs35l33_get_regmap(struct device *dev)
-> > +{
-> > +	struct cs35l33_private *cs35l33 = dev_get_drvdata(dev);
-> > +
-> > +	return cs35l33->regmap;
-> > +}
-> 
-> Doesn't the default work for you?
-> 
-I can remove this function.
-
-
-> > +	for (i = 0; i < CS35L33_INT_ATTEMPTS; i++) {
-> > +		/* ack the irq by reading both status registers */
-> 
-> Why do we need this...?
-
-The we need to keep handling the unmasked interrupts until they are
-all cleared.  We could get another interrupt while handling the first
-triggered interrupt, but the interrupt line could be de-asserted due to
-the read-to-clear nature of the interrupt status registers.
-> 
-> > +		if (sticky_val1 & CS35L33_AMP_SHORT) {
-> > +			dev_err(codec->dev, "Amp short error\n");
-> > +
->			if (!(current_val & CS35L33_AMP_SHORT)) {
-> 
-> dev_crit()
-
-OK.
-
-> 
-> > +		if (sticky_val1 & CS35L33_OTE) {
-> > +			dev_err(codec->dev, "Over temperature error\n");
-> 
-> 
-> Same here - these are extremely serious and probably indicate very
-> serious physical problems.
-
-OK.
-
-> 
-> > +	} else if (IS_ERR(cs35l33->reset_gpio)) {
-> > +	dev_err(&i2c_client->dev, "%s ERROR: Can't get reset GPIO\n",
-> > +			__func__);
-> > +		return PTR_ERR(cs35l33->reset_gpio);
-> 
-> Indentation is messed up here.
-
-OK.  Thanks!
-> 
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
