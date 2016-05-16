@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] ASoC updates for v4.7
-Date: Mon, 16 May 2016 14:39:12 +0100
-Message-ID: <20160516133912.GN2953@sirena.org.uk>
-References: <20160516111142.GG2953@sirena.org.uk>
- <s5hzirq5f66.wl-tiwai@suse.de> <s5hwpmu5eji.wl-tiwai@suse.de>
- <20160516132429.GM2953@sirena.org.uk>
- <s5hshxi5dx2.wl-tiwai@suse.de>
+From: Paul Handrigan <paul.handrigan@cirrus.com>
+Subject: Re: [PATCH v3 1/2] ASoC: cs35l33: Initial commit of
+ the cs35l33 CODEC driver.
+Date: Mon, 16 May 2016 10:20:24 -0500
+Message-ID: <alpine.DEB.2.10.1605161013100.5521@phandrigan>
+References: <1463172629-559-1-git-send-email-Paul.Handrigan@cirrus.com>
+ <20160513222848.GW22038@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8992547068686682262=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E70AE2659B2
- for <alsa-devel@alsa-project.org>; Mon, 16 May 2016 15:39:31 +0200 (CEST)
-In-Reply-To: <s5hshxi5dx2.wl-tiwai@suse.de>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id EE64A265AE7
+ for <alsa-devel@alsa-project.org>; Mon, 16 May 2016 17:19:56 +0200 (CEST)
+In-Reply-To: <20160513222848.GW22038@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,56 +23,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8992547068686682262==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="yQDbd2FCF2Yhw41T"
-Content-Disposition: inline
+
+On Fri, 13 May 2016, Mark Brown wrote:
+
+> On Fri, May 13, 2016 at 03:50:28PM -0500, Paul.Handrigan@cirrus.com wrote:
+> 
+> > +static struct regmap *cs35l33_get_regmap(struct device *dev)
+> > +{
+> > +	struct cs35l33_private *cs35l33 = dev_get_drvdata(dev);
+> > +
+> > +	return cs35l33->regmap;
+> > +}
+> 
+> Doesn't the default work for you?
+> 
+I can remove this function.
 
 
---yQDbd2FCF2Yhw41T
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> > +	for (i = 0; i < CS35L33_INT_ATTEMPTS; i++) {
+> > +		/* ack the irq by reading both status registers */
+> 
+> Why do we need this...?
 
-On Mon, May 16, 2016 at 03:29:45PM +0200, Takashi Iwai wrote:
-> Mark Brown wrote:
+The we need to keep handling the unmasked interrupts until they are
+all cleared.  We could get another interrupt while handling the first
+triggered interrupt, but the interrupt line could be de-asserted due to
+the read-to-clear nature of the interrupt status registers.
+> 
+> > +		if (sticky_val1 & CS35L33_AMP_SHORT) {
+> > +			dev_err(codec->dev, "Amp short error\n");
+> > +
+>			if (!(current_val & CS35L33_AMP_SHORT)) {
+> 
+> dev_crit()
 
-> > > Introduced in the commit b2047e996cd8
-> > >     ASoC: hdac_hdmi: add link management
+OK.
 
-> > I've got a patch for that in my inbox.
+> 
+> > +		if (sticky_val1 & CS35L33_OTE) {
+> > +			dev_err(codec->dev, "Over temperature error\n");
+> 
+> 
+> Same here - these are extremely serious and probably indicate very
+> serious physical problems.
 
-> OK, could you send a pull request early in this week including that
-> fix?  Then I'll send the whole to Linus.
+OK.
 
-Should do.
+> 
+> > +	} else if (IS_ERR(cs35l33->reset_gpio)) {
+> > +	dev_err(&i2c_client->dev, "%s ERROR: Can't get reset GPIO\n",
+> > +			__func__);
+> > +		return PTR_ERR(cs35l33->reset_gpio);
+> 
+> Indentation is messed up here.
 
---yQDbd2FCF2Yhw41T
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXOc1/AAoJECTWi3JdVIfQluUH/j98/waX99HSxyRYouq1z1Zr
-BlGkNOR4RgAo2efTZAi6FWL8cZqUM1MB6AKi0bYImZHgqK/XFrAFBBdtp7EshqO6
-P07lDiYY8DrMs8Ge1UBM6CA+B7DPkV5KtQeDTLEfRJD7QcWAoUhqNPi6YTBMRXbi
-CggorxngOd1cHJbwEIezHrj5z3Hic5LNkHCxLhm3yohNzoAkSubAxAiyy3BN0xBO
-bhKRRtvZin2/fJT8+r3ezF1FqjsFK2xQaZa0bTDkz2JXPi+PFIMJ7Oh+bKU25vp2
-SZZa+59PdDXAp26+DRbrpiFFkUeYFqGiHT3O+LZumBHMymnrSSh4uqMZwd49TXY=
-=s1a/
------END PGP SIGNATURE-----
-
---yQDbd2FCF2Yhw41T--
-
---===============8992547068686682262==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8992547068686682262==--
+OK.  Thanks!
+> 
