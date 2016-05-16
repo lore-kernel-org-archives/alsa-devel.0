@@ -1,18 +1,17 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: firewire-lib: permit to flush queued
- packets only in process context for better PCM period granularity
-Date: Mon, 16 May 2016 18:55:40 +0900
-Message-ID: <5739991C.9020607@sakamocchi.jp>
-References: <1462987059-10020-1-git-send-email-o-takashi@sakamocchi.jp>
- <s5ha8jwa19g.wl-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v4] ASoC: Intel: Skylake: Add DSP firmware
+ manifest parsing
+Date: Mon, 16 May 2016 15:46:27 +0530
+Message-ID: <20160516101626.GO23734@localhost>
+References: <1463140547-20895-1-git-send-email-vinod.koul@intel.com>
+ <20160513121417.GL22038@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8040427868965670274=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D1372619BE
- for <alsa-devel@alsa-project.org>; Mon, 16 May 2016 11:55:44 +0200 (CEST)
-In-Reply-To: <s5ha8jwa19g.wl-tiwai@suse.de>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CDEE2619BE
+ for <alsa-devel@alsa-project.org>; Mon, 16 May 2016 12:10:14 +0200 (CEST)
+In-Reply-To: <20160513121417.GL22038@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,99 +21,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
+To: Mark Brown <broonie@kernel.org>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Shreyas NC <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-Thanks for applying this. And this is my last patches for Linux 4.7.
-
-In this development period, for ALSA firewire stack, I did:
-  * Apply delayed registration of sound card instance for all of drivers.
-   * When registering it during bus-reset state of IEEE 1394 bus and
-     userspace applications immediately start PCM substreams,
-     corresponding packet streams are easily stopped. Additionally, some
-     of audio and music units on IEEE 1394 bus are easily hung-up. This
-     change is to avoid this situation, by postpone sound card
-     registration 2 seconds after recorded bus-reset time.
-  * Add tracepoints to dump a part of isochronous packet data.
-   * This is to detect quirks of incoming packets from peer units, or
-     for future development.
-  * Cancel reuse of incoming packet parameter for outgoing packet
-    parameter.
-   * In some behaviours of peer units, we can see that the units don't
-     expect drivers to perform as audio function block in IEC 61883-6.
-     The reuse is over-engineering, and should be dropped for better
-     usage of system resources.
-  * Add support for M-Audio profire series.
-  * Fix minor issues.
-
-Past 8 months, since a development period for Linux 4.4, 152 patches
-have been merged, and I got tired. In next development cycle for 4.8,
-I'd like to have a rest from ALSA firewire stack.
-
-I plan to do for 4.8:
-  * Add APIs of control element set for ALSA userspace library.
-  * Handle EPIPE error in ALSA Rawmidi core to stop substream in driver
-    side.
-  * Add tracepoints for refine processing of hardware parameter in ALSA
-    PCM core, and obsolete DEBUG macro.
-
-Pending issues (not yet scheduled):
-  * Driver module to communicate between two Linux systems via
-    PCM/Rawmidi interfaces.
-  * Mmap implementation for hwdep character devices of firewire-tascam
-    to share status and control messages transferred from units.
-  * Driver module for a part of units in RME FireFace series.
-  * Driver module for a part of units in Mark of the unicorn firewire
-    series.
-  * Propose in systemd project about udev rules for supported units.
-  * Implement unique timestamping for Dice quirks.
-  * Dynamic interval for software IRQ of IR/IT context.
-  * Support 'No period wakeup', and work to enable 'timer scheduling' of
-    PulseAudio.
+--===============8040427868965670274==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="oyUTqETQ0mS9luUI"
+Content-Disposition: inline
 
 
-Regards
+--oyUTqETQ0mS9luUI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Takashi Sakamoto
+On Fri, May 13, 2016 at 01:14:17PM +0100, Mark Brown wrote:
+> On Fri, May 13, 2016 at 05:25:47PM +0530, Vinod Koul wrote:
+>=20
+> > +	/* Get the FW pointer to derive ADSP header */
+> > +	buf =3D ctx->fw->data;
+>=20
+> > +	adsp_hdr =3D (struct adsp_fw_hdr *)(buf + SKL_ADSP_FW_BIN_HDR_OFFSET);
+>=20
+> > +	mod_entry =3D (struct adsp_module_entry *)
+> > +		(buf + SKL_ADSP_FW_BIN_HDR_OFFSET + adsp_hdr->header_len);
+>=20
+> What if we somehow managed to end up with a zero length firmware (or
+> something smaller than these headers)?
 
-On May 12 2016 03:38, Takashi Iwai wrote:
-> On Wed, 11 May 2016 19:17:39 +0200,
-> Takashi Sakamoto wrote:
->>
->> These three commits were merged to improve PCM pointer granularity.
->> commit 76fb87894828 ("ALSA: firewire-lib: taskletize the snd_pcm_period_elapsed() call")
->> commit e9148dddc3c7 ("ALSA: firewire-lib: flush completed packets when reading PCM position")
->> commit 92b862c7d685 ("ALSA: firewire-lib: optimize packet flushing")
->>
->> The point of them is to handle queued packets not only in software IRQ
->> context of IR/IT contexts, but also in process context. As a result of
->> handling packets, period tasklet is scheduled when acrossing PCM period
->> boundary. This is to prevent recursive call of
->> 'struct snd_pcm_ops.pointer()' in the same context.
->>
->> When the pointer callback is executed in the process context, it's
->> better to avoid the second callback in the software IRQ context. The
->> software IRQ context runs immediately after scheduled in the process
->> context because few packets are queued yet.
->>
->> For the aim, 'pointer_flush' is used, however it causes a race condition
->> between the process context and software IRQ context of IR/IT contexts.
->>
->> Practically, this race is not so critical because it influences process
->> context to skip flushing queued packet and to get worse granularity of
->> PCM pointer. The race condition is quite rare but it should be improved
->> for stable service.
->>
->> The similar effect can be achieved by using 'in_interrupt()' macro. This
->> commit obsoletes 'pointer_flush' with it.
->>
->> Acked-by: Clemens Ladisch <clemens@ladisch.de>
->> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
->
-> Applied, thanks.
->
->
-> Takashi
+I recall that firmware core checks if file is zero sized. But then it won't
+help us here if the size is less than SKL_ADSP_FW_BIN_HDR_OFFSET, so will
+add proper checks in this case as well
+
+>=20
+> > +		/*
+> > +		 * we check if current pointer is larger than file size from
+> > +		 * base value to check excceding the file while parsing
+> > +		 */
+> > +		if ((const char *)mod_entry >=3D buf + ctx->fw->size) {
+> > +			dev_err(ctx->dev,
+> > +				"Exceeds file bound: Entry %d Ptr %p\n",
+> > +				i, mod_entry);
+> > +
+> > +			return -EIO;
+> > +		}
+>=20
+> This checks the start of the entry but it still lets us read beyond the
+> end of the file.
+
+Yup we need to check before incrementing, will fix that
+
+Btw wanted to ask you on the update for this. Do you prefer that is sent
+after merge window or anytime is fine by you :)
+
+Thanks
+--=20
+~Vinod
+
+--oyUTqETQ0mS9luUI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJXOZ36AAoJEHwUBw8lI4NHuPcQALZ49/yYEPegiluPS5y6hMN4
+qEwGh6enA6clfvNfCGS1KHlvb9KLVTdsfy45lJiSxYG1cnh/RcLttu11fcYTn2Gh
+xiSurxlb2Dei4/uOrbO0h6uczHlK7gRDhyC/0YSsvBsLlaKsBde84B9XRIAlLIkn
+v/N2bo/8nLqRhzRbaLiGJekyys6N4pJECKbdZtdCiUlb8vrd2+Xh4CcXl9xEbaka
+egDQarwPOGHunWNHIcOv925OJp5P20vPRE1E9vl0El4EEWnQg7CfjiHy7K0U3O8g
+6lV48jGzYF9bOx3YREMOkxbk77qqCvYZVSlxqSDafHJQmN/Ujs/ewde9MMlz/s84
+ux0qzSinIl2AX0D3aG2TMbjSJUV8M7/MBpdzwEwCmrGzeFlbOpkt9Z/N4HrOzk6N
+/LLZ1OCe9nVHVSfQaPkbVBYQ27CLL+n3id6GjnwfO2PuHBvqyjnBJd/g9Ug+hJDi
+2gke9W5RXA6x+nCIYcb8UV6O8UfTzVB6mEF9fYb4X3yaNoCdqfeK/SOFltGBeqB3
+p2K6fvb3DRXv8Sf0gqOYBWmIhhUOVA8R392PgRzogF/NNrzffLXe+f4tHaeF0xqt
+ax6o3COkO+Al7bptR/3mBItvlWMD4pYVBKFJ0o3N6Mf7OdX+nkzQiWPEW+D6477f
+zv2CiaPfAxC0evgzWscl
+=JRd4
+-----END PGP SIGNATURE-----
+
+--oyUTqETQ0mS9luUI--
+
+--===============8040427868965670274==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8040427868965670274==--
