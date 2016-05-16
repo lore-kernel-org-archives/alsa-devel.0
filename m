@@ -1,20 +1,19 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: ADAU1761 default register value problem
-Date: Mon, 16 May 2016 19:02:27 +0200
-Message-ID: <5739FD23.4060506@metafoo.de>
-References: <alpine.DEB.2.02.1604211547540.31333@lnxricardw1.se.axis.com>
- <571F2513.1020005@metafoo.de>
- <alpine.DEB.2.02.1605111440510.31333@lnxricardw1.se.axis.com>
- <57358E51.7020000@metafoo.de>
- <alpine.DEB.2.02.1605161150530.31333@lnxricardw1.se.axis.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 1/2] ASoC: cs35l33: Initial commit of
+ the cs35l33 CODEC driver.
+Date: Mon, 16 May 2016 18:06:14 +0100
+Message-ID: <20160516170614.GA8104@sirena.org.uk>
+References: <1463172629-559-1-git-send-email-Paul.Handrigan@cirrus.com>
+ <20160513222848.GW22038@sirena.org.uk>
+ <alpine.DEB.2.10.1605161013100.5521@phandrigan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4633784476572764922=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id A9FDA2658F5
- for <alsa-devel@alsa-project.org>; Mon, 16 May 2016 19:02:33 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.02.1605161150530.31333@lnxricardw1.se.axis.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C786C2657B4
+ for <alsa-devel@alsa-project.org>; Mon, 16 May 2016 19:06:21 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.10.1605161013100.5521@phandrigan>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,53 +23,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Paul Handrigan <paul.handrigan@cirrus.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 05/16/2016 01:07 PM, Ricard Wanderlof wrote:
-> 
-> On Fri, 13 May 2016, Lars-Peter Clausen wrote:
-> 
->>> Having researched this further, it appears that commit
->>>
->>> 27d6e7d1c96c9f51379e0feb972fec26029098bc
->>>
->>> ASoC: adau17x1: Cache writes when core clock is disabled
->>
->> I think it is also related to commit 1c79771a7270 ("regmap: Use
->> regcache_mark_dirty() to indicate power loss or reset"). This changes the
->> regmap code to sync all registers under certain conditions.
-> 
-> Yes, that commit seems to be the key, although I must admit that I can't 
-> get my head around the logic of that commit. The commit message says: "HW 
-> was not reset (maybe it was just clock-gated), so if we cached any writes, 
-> they should be sent to the hardware regardless of whether they match the 
-> HW default.". But if the device was indeed gated off, rather than reset, 
-> why should this make a difference when writing out the cache after gating 
-> the chip on again? If it were gated off and then on, doesn't this imply 
-> that the register settings won't change? Or is the idea that the chip 
-> might loose all its state while gated off and hence essentially needs to 
-> be reinitialized?
 
-The register settings in the device will stay constant, but the cached
-register settings might have changed. E.g. application changes the volume of
-a control while the device is powered down. Since regmap does not (yet)
-track which registers have changed it has to write out all of them.
+--===============4633784476572764922==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="MGYHOYXEY6WxJCY8"
+Content-Disposition: inline
 
-> 
-> Regardless of the commit message, the code indeed does cause all the 
-> cached data to be written out when regcache_sync() is called in this case.
-> 
->> We still have the issue though that the CODEC is in an undefined state until
->> the first OFF to STANDBY transitions happens. Usually this will happen early
->> on when the CODEC is bound to the sound card, but if it is not bound
->> immediately it might stay there for a bit longer. So depending on the setup
->> this may or may not be a problem.
-> 
-> So that means that in the probe function we should really write out the 
-> default values, by enabling SYSCLK_EN in the ADAU clock control register, 
-> and then calling regcache_sync() before disabling SYSCLK_EN again, and 
-> going to regcache_cache_only(..,true) ?
 
-Sounds reasonable.
+--MGYHOYXEY6WxJCY8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, May 16, 2016 at 10:20:24AM -0500, Paul Handrigan wrote:
+> On Fri, 13 May 2016, Mark Brown wrote:
+> > On Fri, May 13, 2016 at 03:50:28PM -0500, Paul.Handrigan@cirrus.com wrote:
+
+> > > +	for (i = 0; i < CS35L33_INT_ATTEMPTS; i++) {
+> > > +		/* ack the irq by reading both status registers */
+
+> > Why do we need this...?
+
+> The we need to keep handling the unmasked interrupts until they are
+> all cleared.  We could get another interrupt while handling the first
+> triggered interrupt, but the interrupt line could be de-asserted due to
+> the read-to-clear nature of the interrupt status registers.
+
+This doesn't follow?  Clear to read shouldn't be affected by reading
+repeatedly, or at least I don't see that helps any problems in a
+non-racy fashion, and the interrupt subsystem will happily call the
+handler again if the interrupt reasserts during handling so new
+interrupts shouldn't be an issue either.  New interrupts are an issue
+for most devices so we really ought to have handling for that in the
+interrupt subsystem if it's needed, or possibly the usage of the
+subsystem needs to change to take advantage of preexisting handling...
+
+--MGYHOYXEY6WxJCY8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXOf4AAAoJECTWi3JdVIfQCucH/ir4P8S7QBGVHVk1aKzfKQr9
+lOT9e46drCmFQFPQCNyxjhZIXTNnqzYDoisAGLO9O51jZ1Ikphl+kvMdZuoWre75
++WIwxtDueM6d4S8NaVRSGp3fsirByWogkWsP3UMzX6p+6jUV84Bwba+9bez+VG/r
+5uiDiWuDt5pM1IBiaLWb6Vjif6YXKsz47ZeOJPqDy/6g1Co1mrSs0/XOgW8bIfGk
+jL6f6MDcMMr/CtUiBvTC+mTYnjY3Fk2NqwNeYiV0Saz4Y2TZHhmTAj+cL6usSBYB
+2AgWQyHyEF8t18U/v8tBSk+YVIV8ok9R/+YLyBmPk5O3vRqJ3xqt98EytdV+ioM=
+=3/Ac
+-----END PGP SIGNATURE-----
+
+--MGYHOYXEY6WxJCY8--
+
+--===============4633784476572764922==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4633784476572764922==--
