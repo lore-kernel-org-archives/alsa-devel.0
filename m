@@ -1,68 +1,76 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/2] ASoC: pcm5102a: Add support for PCM5102A codec
-Date: Mon, 16 May 2016 11:26:30 -0500
-Message-ID: <20160516162630.GA15914@rob-hp-laptop>
-References: <1463130853-25096-1-git-send-email-kernel@martin.sperl.org>
- <1463130853-25096-2-git-send-email-kernel@martin.sperl.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: ADAU1761 default register value problem
+Date: Mon, 16 May 2016 19:02:27 +0200
+Message-ID: <5739FD23.4060506@metafoo.de>
+References: <alpine.DEB.2.02.1604211547540.31333@lnxricardw1.se.axis.com>
+ <571F2513.1020005@metafoo.de>
+ <alpine.DEB.2.02.1605111440510.31333@lnxricardw1.se.axis.com>
+ <57358E51.7020000@metafoo.de>
+ <alpine.DEB.2.02.1605161150530.31333@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1463130853-25096-2-git-send-email-kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org
-Cc: Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Matthias Reichl <hias-vtPv7MOkFPkAvxtiuMwx3w@public.gmane.org>, Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id A9FDA2658F5
+ for <alsa-devel@alsa-project.org>; Mon, 16 May 2016 19:02:33 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.02.1605161150530.31333@lnxricardw1.se.axis.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 13, 2016 at 09:14:12AM +0000, kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org wrote:
-> From: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+On 05/16/2016 01:07 PM, Ricard Wanderlof wrote:
 > 
-> Some definitions to support the PCM5102A codec
-> by Texas Instruments.
+> On Fri, 13 May 2016, Lars-Peter Clausen wrote:
 > 
-> Signed-off-by: Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
+>>> Having researched this further, it appears that commit
+>>>
+>>> 27d6e7d1c96c9f51379e0feb972fec26029098bc
+>>>
+>>> ASoC: adau17x1: Cache writes when core clock is disabled
+>>
+>> I think it is also related to commit 1c79771a7270 ("regmap: Use
+>> regcache_mark_dirty() to indicate power loss or reset"). This changes the
+>> regmap code to sync all registers under certain conditions.
 > 
-> Changes to original patch by Florian Meier:
-> * rebased (Makefile and Kconfig
-> * fixed checkpath errors (spaces, newlines)
-> * added dt-binding documentation
-> 
-> Signed-off-by: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
-> ---
->  .../devicetree/bindings/sound/pcm5102a.txt         | 13 ++++
->  sound/soc/codecs/Kconfig                           |  4 ++
->  sound/soc/codecs/Makefile                          |  2 +
->  sound/soc/codecs/pcm5102a.c                        | 69 ++++++++++++++++++++++
->  4 files changed, 88 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/pcm5102a.txt
->  create mode 100644 sound/soc/codecs/pcm5102a.c
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/pcm5102a.txt b/Documentation/devicetree/bindings/sound/pcm5102a.txt
-> new file mode 100644
-> index 0000000..c63ab0b6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/pcm5102a.txt
-> @@ -0,0 +1,13 @@
-> +PCM5102a audio CODECs
-> +
-> +These devices does not use I2C or SPI.
+> Yes, that commit seems to be the key, although I must admit that I can't 
+> get my head around the logic of that commit. The commit message says: "HW 
+> was not reset (maybe it was just clock-gated), so if we cached any writes, 
+> they should be sent to the hardware regardless of whether they match the 
+> HW default.". But if the device was indeed gated off, rather than reset, 
+> why should this make a difference when writing out the cache after gating 
+> the chip on again? If it were gated off and then on, doesn't this imply 
+> that the register settings won't change? Or is the idea that the chip 
+> might loose all its state while gated off and hence essentially needs to 
+> be reinitialized?
 
-s/does/do/ or singular device.
+The register settings in the device will stay constant, but the cached
+register settings might have changed. E.g. application changes the volume of
+a control while the device is powered down. Since regmap does not (yet)
+track which registers have changed it has to write out all of them.
 
-What do they use? Describe the interface (or lack of), not 2 possible 
-interfaces that it doesn't have.
+> 
+> Regardless of the commit message, the code indeed does cause all the 
+> cached data to be written out when regcache_sync() is called in this case.
+> 
+>> We still have the issue though that the CODEC is in an undefined state until
+>> the first OFF to STANDBY transitions happens. Usually this will happen early
+>> on when the CODEC is bound to the sound card, but if it is not bound
+>> immediately it might stay there for a bit longer. So depending on the setup
+>> this may or may not be a problem.
+> 
+> So that means that in the probe function we should really write out the 
+> default values, by enabling SYSCLK_EN in the ADAU clock control register, 
+> and then calling regcache_sync() before disabling SYSCLK_EN again, and 
+> going to regcache_cache_only(..,true) ?
 
-> +
-> +Required properties:
-> +
-> +  - compatible : set as "ti,pcm5102a"
-> +
-> +Examples:
-> +
-> +	pcm5102a: pcm5102a {
-> +		compatible = "ti,pcm5102a";
-> +	};
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Sounds reasonable.
