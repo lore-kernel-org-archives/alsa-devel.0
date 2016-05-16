@@ -1,16 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: Wolfson 5102 on Beaglebone Black using ALSA
-Date: Mon, 16 May 2016 15:33:55 +0300
-Message-ID: <47b8f68c-12be-adb5-1e29-7ca19feac581@ti.com>
-References: <4BEB79E8-7315-48DF-BBB6-E944114621BF@gmail.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: hdac_hdmi: Remove the unused 'timeout'
+	variable
+Date: Mon, 16 May 2016 09:50:07 -0300
+Message-ID: <1463403007-7719-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [198.47.19.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D7E9266B4A
- for <alsa-devel@alsa-project.org>; Mon, 16 May 2016 14:33:59 +0200 (CEST)
-In-Reply-To: <4BEB79E8-7315-48DF-BBB6-E944114621BF@gmail.com>
+Received: from mail-qg0-f65.google.com (mail-qg0-f65.google.com
+ [209.85.192.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8518B265D9E
+ for <alsa-devel@alsa-project.org>; Mon, 16 May 2016 14:50:35 +0200 (CEST)
+Received: by mail-qg0-f65.google.com with SMTP id 90so13525033qgz.0
+ for <alsa-devel@alsa-project.org>; Mon, 16 May 2016 05:50:35 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,49 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clark Dunson <cdunson@gmail.com>, alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: vinod.koul@intel.com, Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05/15/16 01:16, Clark Dunson wrote:
-> Hey everybody!
-> =
+From: Fabio Estevam <fabio.estevam@nxp.com>
 
-> We have been working on integrating the Wolfson 5102 codec with the
-> Beaglebone Black.  We=92ve made pretty decent progress, got the arizona c=
-ode
-> in kernel 4.4 registering the wm5102 as ALSA sound card (both player and
-> recorder), have McAsp0 as 24.576 MHz clock source, and have 12 IRQs showi=
-ng
-> up in /proc/interrupts.
-> =
+Commit b2047e996cd88d3 ("ASoC: hdac_hdmi: add link management")
+introuduced the following build warning:
 
-> We have been working with sound{compatible =3D "simple-audio-card=94}, bu=
-t now
-> have hit our first real question.  sysclk is hard coded to =910=92 under
-> simple-audio-card, and we had to hack the kernel and change that to =911=
-=92 to
-> achieve ALSA sound card registration.  We=92d all like for this work to
-> proceed without having to hack the kernel, and wondered if one of you mig=
-ht
-> recommend another approach or selection for device tree sound{compatible}
-> that might work out better?
+sound/soc/codecs/hdac_hdmi.c:1721:16: warning: unused variable 'timeout' [-Wunused-variable]
 
-For simple card you would need:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2016-February/104316.h=
-tml
-to be able to select the McASP clocks.
+Remove the unused 'timeout' variable.
 
-It is not going to apply on linux-next becasue of:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2016-May/107783.html
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+---
+ sound/soc/codecs/hdac_hdmi.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-but it is not should not be a big issue to resolve (one patch to move the
-clkid to binding header).
-
-The davinci-mcasp driver will remain broken in this sense for a foreseen
-future as we need to convert the daVinci architecture to CCF first to be ab=
-le
-to progress with the clock selection.
-
--- =
-
-P=E9ter
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 3733297..181cd3b 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -1718,7 +1718,6 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
+ 	struct hdac_ext_device *edev = to_hda_ext_device(dev);
+ 	struct hdac_device *hdac = &edev->hdac;
+ 	struct hdac_bus *bus = hdac->bus;
+-	unsigned long timeout;
+ 	struct hdac_ext_bus *ebus = hbus_to_ebus(bus);
+ 	struct hdac_ext_link *hlink = NULL;
+ 	int err;
+-- 
+1.9.1
