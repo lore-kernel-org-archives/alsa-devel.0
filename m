@@ -1,17 +1,18 @@
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [GIT PULL]: Update sst audio firmware for Skylake
-Date: Mon, 16 May 2016 15:22:04 -0400
-Message-ID: <20160516192204.GF9173@merlin.infradead.org>
-References: <20160505065352.GV2274@localhost>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: Re: [PATCH v3] ASoC: rt5514: add rt5514 SPI driver
+Date: Tue, 17 May 2016 02:33:16 +0000
+Message-ID: <7EB0DE829A537248AF2ED30C97D12694FDDF5C@RTITMBSV03.realtek.com.tw>
+References: <1462789855-23485-1-git-send-email-oder_chiou@realtek.com>
+ <20160513121932.GN22038@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
- by alsa0.perex.cz (Postfix) with ESMTP id E564E26507F
- for <alsa-devel@alsa-project.org>; Mon, 16 May 2016 21:22:14 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20160505065352.GV2274@localhost>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id D6FBF264F74
+ for <alsa-devel@alsa-project.org>; Tue, 17 May 2016 04:33:23 +0200 (CEST)
+In-Reply-To: <20160513121932.GN22038@sirena.org.uk>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,27 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org, linux-firmware@kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 05, 2016 at 12:23:52PM +0530, Vinod Koul wrote:
-> Hello Linux firmware maintainers,
+> > +static void rt5514_spi_copy_work(struct work_struct *work)
+> > +{
+> > +	struct rt5514_dsp *rt5514_dsp =
+> > +		container_of(work, struct rt5514_dsp, copy_work.work);
+> > +	struct snd_pcm_runtime *runtime = rt5514_dsp->substream->runtime;
+> > +	size_t period_bytes, truncated_bytes = 0;
 > 
-> Please PULL to receive the updated version of Skylake audio
-> firmware version 927. This contains off fixes for system wake and
-> wov module handler.
+> I can't see anything that cancels this work when the PCM stream to
+> userspace is stopped or if things power off otherwise?
 > 
-> The following changes since commit 8afadbe553017bec1e442b5a9fba859b54fd33fb:
-> 
->   ath10k: QCA9377 hw1.0: add firmware and board files (2016-05-03 13:15:57 -0700)
-> 
-> are available in the git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git skl
-> 
-> for you to fetch changes up to 40d7ffa911fe52d63a12a4cc51231580f81a5fcf:
-
-pulled, thanks.
-
---kyle
+In the beginning of the function "rt5514_spi_copy_work", there is a if
+condition to check the variable "rt5514_dsp->substream", and the function
+"rt5514_spi_hw_free" will set the variable "rt5514_dsp->substream" to NULL.
+It also will make the delayed work stop and won't schedule again.
