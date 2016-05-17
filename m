@@ -1,15 +1,17 @@
 From: Yong Zhi <yong.zhi@intel.com>
-Subject: [PATCH 1/2] ASoC: Intel: Skylake: Add channel
-	constraints for refcap
-Date: Tue, 17 May 2016 09:43:04 -0700
-Message-ID: <1463503385-4535-1-git-send-email-yong.zhi@intel.com>
+Subject: [PATCH 2/2] ASoC: Intel: Skylake: Use refcap device
+	for mono recording
+Date: Tue, 17 May 2016 09:43:05 -0700
+Message-ID: <1463503385-4535-2-git-send-email-yong.zhi@intel.com>
+References: <1463503385-4535-1-git-send-email-yong.zhi@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B34C265344
- for <alsa-devel@alsa-project.org>; Tue, 17 May 2016 18:40:24 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id F1FF92654F1
+ for <alsa-devel@alsa-project.org>; Tue, 17 May 2016 18:40:25 +0200 (CEST)
+In-Reply-To: <1463503385-4535-1-git-send-email-yong.zhi@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,19 +25,18 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, benzh@chromium.org, vinod.koul@intel.com, marc.herbert@intel.com, yang.a.fang@intel.com, sathya.prakash.m.r@intel.com, jeeja.kp@intel.com, vedang.patel@intel.com, Yong Zhi <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add constraint for ref DMIC to match with the
-topology firmware config.
+Only mono channel is allowed for refcap device.
 
 Signed-off-by: Yong Zhi <yong.zhi@intel.com>
 ---
- sound/soc/intel/boards/skl_nau88l25_max98357a.c | 14 ++++++++++++++
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 14 ++++++++++++++
  1 file changed, 14 insertions(+)
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-index 7cc7251..463f0e5 100644
---- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-@@ -339,8 +339,22 @@ static struct snd_pcm_hw_constraint_list constraints_16000 = {
+diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+index 73cbddb..65002bd 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
++++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+@@ -388,8 +388,22 @@ static struct snd_pcm_hw_constraint_list constraints_16000 = {
  	.list  = rates_16000,
  };
  
@@ -56,7 +57,7 @@ index 7cc7251..463f0e5 100644
 +					&constraints_refcap);
 +
  	return snd_pcm_hw_constraint_list(substream->runtime, 0,
- 				SNDRV_PCM_HW_PARAM_RATE,
- 				&constraints_16000);
+ 			SNDRV_PCM_HW_PARAM_RATE,
+ 			&constraints_16000);
 -- 
 1.9.1
