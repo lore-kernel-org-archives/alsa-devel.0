@@ -1,134 +1,114 @@
-From: Petr Kulhavy <petr@barix.com>
-Subject: [PATCH v2 1/2] ASoC: wm8985: add register definitions
-	for WM8758
-Date: Tue, 17 May 2016 14:48:53 +0200
-Message-ID: <1463489334-17549-2-git-send-email-petr@barix.com>
-References: <1463489334-17549-1-git-send-email-petr@barix.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f52.google.com (mail-wm0-f52.google.com [74.125.82.52])
- by alsa0.perex.cz (Postfix) with ESMTP id CCC8D26148F
- for <alsa-devel@alsa-project.org>; Tue, 17 May 2016 14:49:07 +0200 (CEST)
-Received: by mail-wm0-f52.google.com with SMTP id e201so138486690wme.0
- for <alsa-devel@alsa-project.org>; Tue, 17 May 2016 05:49:07 -0700 (PDT)
-In-Reply-To: <1463489334-17549-1-git-send-email-petr@barix.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, ckeepax@opensource.wolfsonmicro.com
-Cc: Petr Kulhavy <petr@barix.com>, alsa-devel@alsa-project.org, plamen@barix.com
+From: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH v2 2/2] ASoC: wm8985: add device-tree support
+Date: Tue, 17 May 2016 14:49:49 +0200
+Message-ID: <1463489389-17719-2-git-send-email-petr@barix.com>
+References: <1463489389-17719-1-git-send-email-petr@barix.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1463489389-17719-1-git-send-email-petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, plamen-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The WM8758 chip is almost identical to WM8985 with the difference that it
-doesn't feature the AUX input. This patch adds the register definitions
-for WM8758 specific bit fields to the header file.
+Add device-tree support to the WM8985 driver.
 
-Signed-off-by: Petr Kulhavy <petr@barix.com>
+Signed-off-by: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
 ---
 v1: initial
-v2: no change
+v2: add missing of_match_ptr()
+    use chip type enum instead of chip structure
 
- sound/soc/codecs/wm8985.h | 38 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ sound/soc/codecs/wm8985.c | 27 +++++++++++++++++++++++++--
+ 1 file changed, 25 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8985.h b/sound/soc/codecs/wm8985.h
-index 2e71ff507638..41b1048e3c97 100644
---- a/sound/soc/codecs/wm8985.h
-+++ b/sound/soc/codecs/wm8985.h
-@@ -290,6 +290,9 @@
- #define WM8985_GPIO1GPD_MASK                    0x0040  /* GPIO1GPD */
- #define WM8985_GPIO1GPD_SHIFT                        6  /* GPIO1GPD */
- #define WM8985_GPIO1GPD_WIDTH                        1  /* GPIO1GPD */
-+#define WM8758_OPCLKDIV_MASK                    0x0030  /* OPCLKDIV - [1:0] */
-+#define WM8758_OPCLKDIV_SHIFT                        4  /* OPCLKDIV - [1:0] */
-+#define WM8758_OPCLKDIV_WIDTH                        2  /* OPCLKDIV - [1:0] */
- #define WM8985_GPIO1POL                         0x0008  /* GPIO1POL */
- #define WM8985_GPIO1POL_MASK                    0x0008  /* GPIO1POL */
- #define WM8985_GPIO1POL_SHIFT                        3  /* GPIO1POL */
-@@ -301,6 +304,12 @@
- /*
-  * R9 (0x09) - Jack Detect Control 1
-  */
-+#define WM8758_JD_VMID1_MASK                    0x0100  /* JD_VMID1 */
-+#define WM8758_JD_VMID1_SHIFT                        8  /* JD_VMID1 */
-+#define WM8758_JD_VMID1_WIDTH                        1  /* JD_VMID1 */
-+#define WM8758_JD_VMID0_MASK                    0x0080  /* JD_VMID0 */
-+#define WM8758_JD_VMID0_SHIFT                        7  /* JD_VMID0 */
-+#define WM8758_JD_VMID0_WIDTH                        1  /* JD_VMID0 */
- #define WM8985_JD_EN                            0x0040  /* JD_EN */
- #define WM8985_JD_EN_MASK                       0x0040  /* JD_EN */
- #define WM8985_JD_EN_SHIFT                           6  /* JD_EN */
-@@ -649,6 +658,12 @@
- #define WM8985_OUT4_2LNR_MASK                   0x0020  /* OUT4_2LNR */
- #define WM8985_OUT4_2LNR_SHIFT                       5  /* OUT4_2LNR */
- #define WM8985_OUT4_2LNR_WIDTH                       1  /* OUT4_2LNR */
-+#define WM8758_VMIDTOG_MASK                     0x0010  /* VMIDTOG */
-+#define WM8758_VMIDTOG_SHIFT                         4  /* VMIDTOG */
-+#define WM8758_VMIDTOG_WIDTH                         1  /* VMIDTOG */
-+#define WM8758_OUT2DEL_MASK                     0x0008  /* OUT2DEL */
-+#define WM8758_OUT2DEL_SHIFT                         3  /* OUT2DEL */
-+#define WM8758_OUT2DEL_WIDTH                         1  /* OUT2DEL */
- #define WM8985_POBCTRL                          0x0004  /* POBCTRL */
- #define WM8985_POBCTRL_MASK                     0x0004  /* POBCTRL */
- #define WM8985_POBCTRL_SHIFT                         2  /* POBCTRL */
-@@ -684,6 +699,9 @@
- #define WM8985_BEEPVOL_MASK                     0x000E  /* BEEPVOL - [3:1] */
- #define WM8985_BEEPVOL_SHIFT                         1  /* BEEPVOL - [3:1] */
- #define WM8985_BEEPVOL_WIDTH                         3  /* BEEPVOL - [3:1] */
-+#define WM8758_DELEN2_MASK                      0x0004  /* DELEN2 */
-+#define WM8758_DELEN2_SHIFT                          2  /* DELEN2 */
-+#define WM8758_DELEN2_WIDTH                          1  /* DELEN2 */
- #define WM8985_BEEPEN                           0x0001  /* BEEPEN */
- #define WM8985_BEEPEN_MASK                      0x0001  /* BEEPEN */
- #define WM8985_BEEPEN_SHIFT                          0  /* BEEPEN */
-@@ -790,6 +808,14 @@
- /*
-  * R49 (0x31) - Output ctrl
-  */
-+#define WM8758_HP_COM                           0x0100  /* HP_COM */
-+#define WM8758_HP_COM_MASK                      0x0100  /* HP_COM */
-+#define WM8758_HP_COM_SHIFT                          8  /* HP_COM */
-+#define WM8758_HP_COM_WIDTH                          1  /* HP_COM */
-+#define WM8758_LINE_COM                         0x0080  /* LINE_COM */
-+#define WM8758_LINE_COM_MASK                    0x0080  /* LINE_COM */
-+#define WM8758_LINE_COM_SHIFT                        7  /* LINE_COM */
-+#define WM8758_LINE_COM_WIDTH                        1  /* LINE_COM */
- #define WM8985_DACL2RMIX                        0x0040  /* DACL2RMIX */
- #define WM8985_DACL2RMIX_MASK                   0x0040  /* DACL2RMIX */
- #define WM8985_DACL2RMIX_SHIFT                       6  /* DACL2RMIX */
-@@ -806,6 +832,14 @@
- #define WM8985_OUT3BOOST_MASK                   0x0008  /* OUT3BOOST */
- #define WM8985_OUT3BOOST_SHIFT                       3  /* OUT3BOOST */
- #define WM8985_OUT3BOOST_WIDTH                       1  /* OUT3BOOST */
-+#define WM8758_OUT4ENDEL                        0x0010  /* OUT4ENDEL */
-+#define WM8758_OUT4ENDEL_MASK                   0x0010  /* OUT4ENDEL */
-+#define WM8758_OUT4ENDEL_SHIFT                       4  /* OUT4ENDEL */
-+#define WM8758_OUT4ENDEL_WIDTH                       1  /* OUT4ENDEL */
-+#define WM8758_OUT3ENDEL                        0x0008  /* OUT3ENDEL */
-+#define WM8758_OUT3ENDEL_MASK                   0x0008  /* OUT3ENDEL */
-+#define WM8758_OUT3ENDEL_SHIFT                       3  /* OUT3ENDEL */
-+#define WM8758_OUT3ENDEL_WIDTH                       1  /* OUT3ENDEL */
- #define WM8985_TSOPCTRL                         0x0004  /* TSOPCTRL */
- #define WM8985_TSOPCTRL_MASK                    0x0004  /* TSOPCTRL */
- #define WM8985_TSOPCTRL_SHIFT                        2  /* TSOPCTRL */
-@@ -1021,6 +1055,10 @@
- #define WM8985_HALFIPBIAS_MASK                  0x0080  /* HALFIPBIAS */
- #define WM8985_HALFIPBIAS_SHIFT                      7  /* HALFIPBIAS */
- #define WM8985_HALFIPBIAS_WIDTH                      1  /* HALFIPBIAS */
-+#define WM8758_HALFIPBIAS                       0x0040  /* HALFI_IPGA */
-+#define WM8758_HALFI_IPGA_MASK                  0x0040  /* HALFI_IPGA */
-+#define WM8758_HALFI_IPGA_SHIFT                      6  /* HALFI_IPGA */
-+#define WM8758_HALFI_IPGA_WIDTH                      1  /* HALFI_IPGA */
- #define WM8985_VBBIASTST_MASK                   0x0060  /* VBBIASTST - [6:5] */
- #define WM8985_VBBIASTST_SHIFT                       5  /* VBBIASTST - [6:5] */
- #define WM8985_VBBIASTST_WIDTH                       2  /* VBBIASTST - [6:5] */
+diff --git a/sound/soc/codecs/wm8985.c b/sound/soc/codecs/wm8985.c
+index 436c7e2c5a0b..0b2dd2bc6fff 100644
+--- a/sound/soc/codecs/wm8985.c
++++ b/sound/soc/codecs/wm8985.c
+@@ -32,6 +32,7 @@
+ #include <sound/soc.h>
+ #include <sound/initval.h>
+ #include <sound/tlv.h>
++#include <linux/of_device.h>
+ 
+ #include "wm8985.h"
+ 
+@@ -1174,10 +1175,21 @@ static const struct regmap_config wm8985_regmap = {
+ 	.num_reg_defaults = ARRAY_SIZE(wm8985_reg_defaults),
+ };
+ 
++static enum wm8985_type wm8985_data = WM8985;
++static enum wm8985_type wm8758_data = WM8758;
++
++static const struct of_device_id wm8985_of_match[] = {
++	{ .compatible = "wlf,wm8985", .data = &wm8985_data},
++	{ .compatible = "wlf,wm8758", .data = &wm8758_data},
++	{ }
++};
++MODULE_DEVICE_TABLE(of, wm8985_of_match);
++
+ #if defined(CONFIG_SPI_MASTER)
+ static int wm8985_spi_probe(struct spi_device *spi)
+ {
+ 	struct wm8985_priv *wm8985;
++	const struct of_device_id *of_id;
+ 	int ret;
+ 
+ 	wm8985 = devm_kzalloc(&spi->dev, sizeof *wm8985, GFP_KERNEL);
+@@ -1186,7 +1198,11 @@ static int wm8985_spi_probe(struct spi_device *spi)
+ 
+ 	spi_set_drvdata(spi, wm8985);
+ 
+-	wm8985->dev_type = WM8985;
++	of_id = of_match_device(wm8985_of_match, &spi->dev);
++	if (of_id)
++		wm8985->dev_type = *((enum wm8985_type *)of_id->data);
++	else
++		wm8985->dev_type = WM8985;
+ 
+ 	wm8985->regmap = devm_regmap_init_spi(spi, &wm8985_regmap);
+ 	if (IS_ERR(wm8985->regmap)) {
+@@ -1210,6 +1226,7 @@ static int wm8985_spi_remove(struct spi_device *spi)
+ static struct spi_driver wm8985_spi_driver = {
+ 	.driver = {
+ 		.name = "wm8985",
++		.of_match_table = of_match_ptr(wm8985_of_match),
+ 	},
+ 	.probe = wm8985_spi_probe,
+ 	.remove = wm8985_spi_remove
+@@ -1221,6 +1238,7 @@ static int wm8985_i2c_probe(struct i2c_client *i2c,
+ 			    const struct i2c_device_id *id)
+ {
+ 	struct wm8985_priv *wm8985;
++	const struct of_device_id *of_id;
+ 	int ret;
+ 
+ 	wm8985 = devm_kzalloc(&i2c->dev, sizeof *wm8985, GFP_KERNEL);
+@@ -1229,7 +1247,11 @@ static int wm8985_i2c_probe(struct i2c_client *i2c,
+ 
+ 	i2c_set_clientdata(i2c, wm8985);
+ 
+-	wm8985->dev_type = id->driver_data;
++	of_id = of_match_device(wm8985_of_match, &i2c->dev);
++	if (of_id)
++		wm8985->dev_type = *((enum wm8985_type *)of_id->data);
++	else
++		wm8985->dev_type = id->driver_data;
+ 
+ 	wm8985->regmap = devm_regmap_init_i2c(i2c, &wm8985_regmap);
+ 	if (IS_ERR(wm8985->regmap)) {
+@@ -1260,6 +1282,7 @@ MODULE_DEVICE_TABLE(i2c, wm8985_i2c_id);
+ static struct i2c_driver wm8985_i2c_driver = {
+ 	.driver = {
+ 		.name = "wm8985",
++		.of_match_table = of_match_ptr(wm8985_of_match),
+ 	},
+ 	.probe = wm8985_i2c_probe,
+ 	.remove = wm8985_i2c_remove,
 -- 
 1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
