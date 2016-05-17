@@ -1,58 +1,103 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: BUG since "ASoC: simple-card: Add pm callbacks to platform
- driver"
-Date: Tue, 17 May 2016 14:40:00 +0300
-Message-ID: <159493cd-eec2-d84c-2cd0-f9a90c301a45@ti.com>
-References: <CAMuHMdX6veYCvRdJjui3J0oPUKLhZB1Y8_AROnqhtZS9=HyNTg@mail.gmail.com>
- <CAMuHMdWfHiaJzvSE5XARcgUPWiJR4ZJ82TdCA53vZ=rQ5wD7EQ@mail.gmail.com>
- <9ff733b5-6a17-9c1b-c47f-bd6cd2acb877@ti.com>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: [PATCH] alsa-lib:Make snd_atomic_write_* truly
+ atomic
+Date: Tue, 17 May 2016 14:11:43 +0200
+Message-ID: <alpine.DEB.2.02.1605171053010.31333@lnxricardw1.se.axis.com>
+References: <570E2279.7060809@axis.com> <s5hwpo14o0n.wl-tiwai@suse.de>
+ <alpine.DEB.2.02.1605121446220.31333@lnxricardw1.se.axis.com>
+ <s5h37pnctrf.wl-tiwai@suse.de>
+ <alpine.DEB.2.02.1605121556390.31333@lnxricardw1.se.axis.com>
+ <s5hmvnvbafu.wl-tiwai@suse.de>
+ <alpine.DEB.2.02.1605131426000.31333@lnxricardw1.se.axis.com>
+ <s5hposq9lsi.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <9ff733b5-6a17-9c1b-c47f-bd6cd2acb877@ti.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, linux-renesas-soc@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id A1FCA2665FF
+ for <alsa-devel@alsa-project.org>; Tue, 17 May 2016 14:11:50 +0200 (CEST)
+In-Reply-To: <s5hposq9lsi.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: =?ISO-8859-15?Q?Arvid_Nihlg=E5rd_Lindell?= <arvidnl@axis.com>, Andreas x Larsson <andrelan@axis.com>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/17/16 14:08, Peter Ujfalusi wrote:
-> On 05/17/16 14:02, Geert Uytterhoeven wrote:
->> On Tue, May 17, 2016 at 12:55 PM, Geert Uytterhoeven
->> <geert@linux-m68k.org> wrote:
->>> With today's sound-asoc/for-next, I'm seeing on r8a7791/koelsch and
->>> sh73a0/kzm9g:
->>>
->>>     kernel BUG at drivers/base/regmap/regcache.c:347!
->>>     Internal error: Oops - BUG: 0 [#1] SMP ARM
->>>     Modules linked in:
->>>     CPU: 0 PID: 20 Comm: kworker/0:1 Not tainted
->>> 4.6.0-koelsch-07135-g1481dd77fa7d01cb #2621
->>>     Hardware name: Generic R8A7791 (Flattened Device Tree)
->>>     Workqueue: events soc_resume_deferred
->>>     task: ef512100 ti: ef5a6000 task.ti: ef5a6000
->>>     PC is at regcache_sync+0xc/0x118
->>>     LR is at ak4642_resume+0x20/0x28
->>
->> This is during resume from s2ram.
->=20
-> if you revert the patch does the ak4642_resume() is called at all, I =
-think not.
-> But in the driver does not implement the .suspend callback, probably =
-this
-> never worked correctly in ak4642?
 
-The reason is different, the bug is caused by:
-	BUG_ON(!map->cache_ops);
-in regcache.c
+On Fri, 13 May 2016, Takashi Iwai wrote:
 
-None of the regmap_config have set the .cache_type, so they do not have=
- cache,
-so sync is not available for them -> regmap_sync() BUGs out.
+> > > Yeah, that's why I stated the primary question.  The atomic operation
+> > > there is mostly cosmetic, not really helpful.  In the whole other
+> > > operation, we don't guarantee the thread safety at all.  So,
+> > > implementing the atomic op only in a very small part of the whole code
+> > > appears like a superfluous optimization to me.
+> > =
 
-It can be fixed by either setting .cache_type for the regmap_config str=
-uctures
-or by removing the resume callback, as it is broken.
+> > The question is, if we decide to remove this atomic stuff, how do we =
 
---=20
-P=C3=A9ter
+> > verify that it actually causes no problems, on all architectures, etc?
+> =
+
+> It's not what one can show in 100%, as you know.  And, it's the reason
+> why the code is still left over years...
+
+We have come up upon this problem in conjunction with GStreamer. It =
+
+appears that GStreamer uses one thread for the streaming and a separate =
+
+one for the device management (open/close) on the same device handle, =
+
+which triggers the problem. So it appears that GStreamer falsly is =
+
+assuming some form of thread safety here.
+
+The atomic stuff is so specific to a couple of files, it seems as if it =
+
+was added for a specific purpose, such as this particular case. In the =
+
+other hand, looking at the git history of include/iatomic.h, it's gone =
+
+through a number of cleanups over the years, lately mostly to remove =
+
+originally buggy code, and what is remaining I guess like you say is just =
+
+what nobody dared remove.
+
+On the other hand, as the code stands, I can't really understand how it =
+
+enforces atomicity. The read and write memory barriers just guarantee =
+
+ordering, but there's nothing to stop a context switch from occurring in =
+
+the middle of a ++ operation. wmb() and rmb() might influence timing =
+
+though so that code at least might behave differently with those =
+
+operations in place.
+
+> IMO, we just need to make a clear statement about the thread safety of
+> alsa-lib.  For a single threaded op, it can't give any regression, of
+> course.
+
+Just removing the memory barriers should have absolutely no effect in the =
+
+single threaded case I would have thought, especially since there are no =
+
+I/O or other hardware related things (such as DMA descriptors) being poked =
+
+at.
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
