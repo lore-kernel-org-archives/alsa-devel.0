@@ -1,15 +1,15 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: [PATCH 1/1] ASoC: core: Do not print an actual error
-	when deferring probe
-Date: Wed, 18 May 2016 15:41:29 +0200
-Message-ID: <1463578889-13709-1-git-send-email-alexander.stein@systec-electronic.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 00/14] clk/mfd/ASoC/ARM: OMAP4/5: McPDM/twl6040
+	pdmclk support
+Date: Wed, 18 May 2016 16:46:22 +0300
+Message-ID: <1463579196-5484-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webbox1416.server-home.net (webbox1416.server-home.net
- [77.236.96.61]) by alsa0.perex.cz (Postfix) with ESMTP id AC2762604BE
- for <alsa-devel@alsa-project.org>; Wed, 18 May 2016 15:41:37 +0200 (CEST)
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [198.47.19.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FDEE2604BE
+ for <alsa-devel@alsa-project.org>; Wed, 18 May 2016 15:46:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,48 +19,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, Alexander Stein <alexander.stein@systec-electronic.com>
+To: mturquette@baylibre.com, sboyd@codeaurora.org, tony@atomide.com, lee.jones@linaro.org, robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, t-kristo@ti.com, linux-omap@vger.kernel.org, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-In case there is no DAI (yet), do not print an error, this might happen
-a lot of times. Print a notice instead.
+Hi,
 
-Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+this is something I wanted to do for a long time...
+
+First of all: sorry for the cross domain series. I did tested alone all the
+domain patches and they are not causing any regression. When they come together
+we will have ability to control the pdmclk needed by McPDM.
+
+CLK patches:
+The driver was w/o DT support and needed some cleanup so we can use the driver.
+I have also renamed it to twl6040-pdmclk from twl6040-clk to be precise.
+
+MFD patches:
+The regmap_sync() was not working since the twl6040 does not support bulk access
+and now we are going to create the needed child for the pdmclk.
+
+ARM patches:
+Updatding the board DTS files and add the needed lines for the pdmclk.
+
+ASoC patches:
+The machine driver needs to select the twl6040-clk driver as it will be used
+by the omap-mcpdm.
+I needed to do some cleanup and add also suspend/resume support before adding
+the code for pdmclk handling since I don't want to keep the twl6040 powered on
+when the board is suspended. At the moment it is not possible to do true
+dynamic twl6040 power up/down due to pop noises, but I will be looking at that
+later.
+The driver in the future will fail if it is not able to get the pdmclk to avoid
+kernel crash (McPDM registers are not accessible when pdmclk is not available).
+
+I have tested the patches by domain and also in all (I hope) permutation they
+could be. I have not experienced any regression.
+
+Regards,
+Peter
 ---
- sound/soc/soc-core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Peter Ujfalusi (14):
+  clk: twl6040: Correct clk_ops
+  clk: twl6040: Register the clock as of_clk_provider
+  clk: twl6040: Rename the driver and use consistent names in the code
+  mfd: twl6040: The chip does not support bulk access
+  mfd: twl6040: Register child device for twl6040-pdmclk
+  ARM: dts: omap5-board-common: Add pdmclk binding for audio
+  ARM: dts: omap4-panda-common: Add pdmclk binding for audio
+  ARM: dts: omap4-sdp: Add pdmclk binding for audio
+  ARM: dts: omap4-var-som-om44: Add pdmclk binding for audio
+  ARM: dts: omap4-duovero: Add pdmclk binding for audio
+  ASoC: omap: Kconfig: SND_OMAP_SOC_OMAP_ABE_TWL6040 to select
+    CLK_TWL6040
+  ASoC: omap-mcpdm: Move the WD enable write inside
+    omap_mcpdm_open_streams()
+  ASoC: omap-mcpdm: Support for suspend resume
+  ASoC: omap-mcpdm: Add support for pdmclk clock handling
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index d2e62b15..352f7c6 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1001,7 +1001,7 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
- 	cpu_dai_component.dai_name = dai_link->cpu_dai_name;
- 	rtd->cpu_dai = snd_soc_find_dai(&cpu_dai_component);
- 	if (!rtd->cpu_dai) {
--		dev_err(card->dev, "ASoC: CPU DAI %s not registered\n",
-+		dev_notice(card->dev, "ASoC: CPU DAI %s not registered\n",
- 			dai_link->cpu_dai_name);
- 		goto _err_defer;
- 	}
-@@ -1013,7 +1013,7 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
- 	for (i = 0; i < rtd->num_codecs; i++) {
- 		codec_dais[i] = snd_soc_find_dai(&codecs[i]);
- 		if (!codec_dais[i]) {
--			dev_err(card->dev, "ASoC: CODEC DAI %s not registered\n",
-+			dev_notice(card->dev, "ASoC: CODEC DAI %s not registered\n",
- 				codecs[i].dai_name);
- 			goto _err_defer;
- 		}
-@@ -1042,7 +1042,7 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
- 		rtd->platform = platform;
- 	}
- 	if (!rtd->platform) {
--		dev_err(card->dev, "ASoC: platform %s not registered\n",
-+		dev_notice(card->dev, "ASoC: platform %s not registered\n",
- 			dai_link->platform_name);
- 		return -EPROBE_DEFER;
- 	}
+ Documentation/devicetree/bindings/mfd/twl6040.txt  |  1 +
+ .../devicetree/bindings/sound/omap-mcpdm.txt       | 10 +++
+ arch/arm/boot/dts/omap4-duovero.dtsi               |  5 ++
+ arch/arm/boot/dts/omap4-panda-common.dtsi          |  5 ++
+ arch/arm/boot/dts/omap4-sdp.dts                    |  5 ++
+ arch/arm/boot/dts/omap4-var-som-om44.dtsi          |  5 ++
+ arch/arm/boot/dts/omap5-board-common.dtsi          |  5 ++
+ drivers/clk/clk-twl6040.c                          | 80 +++++++++++++---------
+ drivers/mfd/twl6040.c                              |  6 ++
+ include/linux/mfd/twl6040.h                        |  2 +-
+ sound/soc/omap/Kconfig                             |  1 +
+ sound/soc/omap/omap-mcpdm.c                        | 74 ++++++++++++++++++--
+ 12 files changed, 160 insertions(+), 39 deletions(-)
+
 -- 
-2.7.3
+2.8.2
