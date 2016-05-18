@@ -1,15 +1,18 @@
-From: Yong Zhi <yong.zhi@intel.com>
-Subject: [PATCH] ASoC: add api to retrieve dmic array info from
-	coreboot nhlt
-Date: Wed, 18 May 2016 08:33:08 -0700
-Message-ID: <1463585588-8789-1-git-send-email-yong.zhi@intel.com>
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: Re: [PATCH 1/1] ASoC: core: Do not print an actual
+	error when deferring probe
+Date: Wed, 18 May 2016 17:50:50 +0200
+Message-ID: <1574831.WL8kGhHEjA@ws-stein>
+References: <1463578889-13709-1-git-send-email-alexander.stein@systec-electronic.com>
+ <209086304.1BTKYSBN0B@ws-stein> <20160518152820.GN8104@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 742C9260647
- for <alsa-devel@alsa-project.org>; Wed, 18 May 2016 17:30:33 +0200 (CEST)
+Received: from webbox1416.server-home.net (webbox1416.server-home.net
+ [77.236.96.61]) by alsa0.perex.cz (Postfix) with ESMTP id 6E91E260647
+ for <alsa-devel@alsa-project.org>; Wed, 18 May 2016 17:51:55 +0200 (CEST)
+In-Reply-To: <20160518152820.GN8104@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,166 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, marc.herbert@intel.com, yang.a.fang@intel.com, sathya.prakash.m.r@intel.com, jeeja.kp@intel.com, vedang.patel@intel.com, Yong Zhi <yong.zhi@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-skylake can be configured with either both 2 and 4 channel DMIC
-array, or 2 channel DMIC array only, this patch provides an API to
-retrieve the DMIC info from nhlt.
+On Wednesday 18 May 2016 16:28:20, Mark Brown wrote:
+> On Wed, May 18, 2016 at 05:18:41PM +0200, Alexander Stein wrote:
+> > Well, it's debatable if using dev_err() and then returning EPROBE_DEFER is
+> > correct either. IMHO if there is an actual error, an error code has to be
+> > returned and not "well, can't continue now, probe me again later".
+> > At first glance those EPROBE_DEFER are correct as other dependent drivers
+> > may be probed later, so printing an error in that case seems wrong to me.
+> Half the point with probe deferral is that it's transparent to anything
+> that isn't actually resolving a resource - if we have to add custom code
+> in to everywhere were we need to print an error in a probe path that's
+> not great either.  We also don't want to silently ignore probe deferral
+> all the time since then it becomes very hard to diagnose why something
+> is not instantiating.
 
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
----
- sound/soc/intel/skylake/skl-nhlt.c | 37 +++++++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-nhlt.h | 22 ++++++++++++++++++++++
- sound/soc/intel/skylake/skl.c      | 10 +++++++++-
- sound/soc/intel/skylake/skl.h      |  6 ++++++
- 4 files changed, 74 insertions(+), 1 deletion(-)
+I came up with this because on one of our boards there are lots of probe 
+deferals, mainly caused by i2c gpio expanders and audio. Anyway, in order to 
+reduce boot time I silence the boot console using 'quiet' on command line. 
+Nevertheless It's quite useless to have several error (!) messages during boot 
+just caused by probe deferral. Here is one bootup. It's from an old vendor 
+kernel, but you get the idea.
 
-diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
-index 7d73648..5448a48 100644
---- a/sound/soc/intel/skylake/skl-nhlt.c
-+++ b/sound/soc/intel/skylake/skl-nhlt.c
-@@ -149,6 +149,43 @@ struct nhlt_specific_cfg
- 	return NULL;
- }
- 
-+int skl_get_ep_dmic(struct skl *skl)
-+{
-+	struct nhlt_acpi_table *nhlt = (struct nhlt_acpi_table *)skl->nhlt;
-+	struct nhlt_endpoint *epnt;
-+	struct nhlt_dmic_array_config *cfg;
-+	struct hdac_bus *bus = ebus_to_hbus(&skl->ebus);
-+	struct device *dev = bus->dev;
-+	unsigned int dmic_geo = 0;
-+	u8 j;
-+
-+	epnt = (struct nhlt_endpoint *)nhlt->desc;
-+
-+	for (j = 0; j < nhlt->endpoint_count; j++) {
-+		if (epnt->linktype == NHLT_LINK_DMIC) {
-+			cfg = (struct nhlt_dmic_array_config  *)
-+					(epnt->config.caps);
-+			switch (cfg->array_type) {
-+			case NHLT_MIC_ARRAY_2CH_SMALL:
-+			case NHLT_MIC_ARRAY_2CH_BIG:
-+				dmic_geo |= MIC_ARRAY_2CH;
-+				break;
-+			case NHLT_MIC_ARRAY_4CH_1ST_GEOM:
-+			case NHLT_MIC_ARRAY_4CH_L_SHAPED:
-+			case NHLT_MIC_ARRAY_4CH_2ND_GEOM:
-+				dmic_geo |= MIC_ARRAY_4CH;
-+				break;
-+			default:
-+				dev_warn(dev, "undefined DMIC array_type 0x%0x\n",
-+						cfg->array_type);
-+			}
-+		}
-+		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
-+	}
-+
-+	return dmic_geo;
-+}
-+
- static void skl_nhlt_trim_space(struct skl *skl)
- {
- 	char *s = skl->tplg_name;
-diff --git a/sound/soc/intel/skylake/skl-nhlt.h b/sound/soc/intel/skylake/skl-nhlt.h
-index 3769f9f..8da502b 100644
---- a/sound/soc/intel/skylake/skl-nhlt.h
-+++ b/sound/soc/intel/skylake/skl-nhlt.h
-@@ -103,4 +103,26 @@ struct nhlt_resource_desc  {
- 	u64 length;
- } __packed;
- 
-+#define MIC_ARRAY_2CH 2
-+#define MIC_ARRAY_4CH 4
-+
-+struct nhlt_tdm_config {
-+	uint8_t virtual_slot;
-+	uint8_t config_type;
-+} __packed;
-+
-+struct nhlt_dmic_array_config {
-+	struct nhlt_tdm_config tdm_config;
-+	uint8_t array_type;
-+} __packed;
-+
-+enum {
-+	NHLT_MIC_ARRAY_2CH_SMALL = 0xa,
-+	NHLT_MIC_ARRAY_2CH_BIG = 0xb,
-+	NHLT_MIC_ARRAY_4CH_1ST_GEOM = 0xc,
-+	NHLT_MIC_ARRAY_4CH_L_SHAPED = 0xd,
-+	NHLT_MIC_ARRAY_4CH_2ND_GEOM = 0xe,
-+	NHLT_MIC_ARRAY_VENDOR_DEFINED = 0xf,
-+};
-+
- #endif
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 06d8c26..a75b05f 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -35,6 +35,8 @@
- #include "skl-sst-dsp.h"
- #include "skl-sst-ipc.h"
- 
-+static struct skl_dmic_info skl_dmic_data;
-+
- /*
-  * initialize the PCI registers
-  */
-@@ -397,6 +399,10 @@ static int skl_machine_device_register(struct skl *skl, void *driver_data)
- 		platform_device_put(pdev);
- 		return -EIO;
- 	}
-+
-+	if (mach->pdata)
-+		dev_set_drvdata(&pdev->dev, mach->pdata);
-+
- 	skl->i2s_dev = pdev;
- 
- 	return 0;
-@@ -666,6 +672,8 @@ static int skl_probe(struct pci_dev *pci,
- 
- 	pci_set_drvdata(skl->pci, ebus);
- 
-+	skl_dmic_data.dmic_num = skl_get_ep_dmic(skl);
-+
- 	/* check if dsp is there */
- 	if (ebus->ppcap) {
- 		err = skl_machine_device_register(skl,
-@@ -789,7 +797,7 @@ static struct sst_acpi_mach sst_skl_devdata[] = {
- 	{ "INT343B", "skl_nau88l25_ssm4567_i2s", "intel/dsp_fw_release.bin",
- 				NULL, NULL, NULL },
- 	{ "MX98357A", "skl_nau88l25_max98357a_i2s", "intel/dsp_fw_release.bin",
--				NULL, NULL, NULL },
-+				NULL, NULL, &skl_dmic_data},
- 	{}
- };
- 
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 4b4b387..889ec30 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -90,6 +90,11 @@ struct skl_dma_params {
- 	u8 stream_tag;
- };
- 
-+/* to pass dmic data */
-+struct skl_dmic_info {
-+	u32 dmic_num;
-+};
-+
- struct skl_dsp_ops {
- 	int id;
- 	struct skl_dsp_loader_ops (*loader_ops)(void);
-@@ -108,6 +113,7 @@ void skl_nhlt_free(struct nhlt_acpi_table *addr);
- struct nhlt_specific_cfg *skl_get_ep_blob(struct skl *skl, u32 instance,
- 			u8 link_type, u8 s_fmt, u8 no_ch, u32 s_rate, u8 dirn);
- 
-+int skl_get_ep_dmic(struct skl *skl);
- int skl_nhlt_update_topology_bin(struct skl *skl);
- int skl_init_dsp(struct skl *skl);
- int skl_free_dsp(struct skl *skl);
--- 
-1.9.1
+> Starting kernel ...
+>
+> [    5.490931] i2c i2c-0: of_i2c: modalias failure on
+> /soc/i2c@2180000/cyusb3314@60 init started: BusyBox v1.22.0 (2015-10-13
+> 14:03:10 CEST)
+> starting pid 122, tty '/dev/console': '/etc/init.d/rcS'
+> [    6.533391] vf610-sgtl5000 sound.9: ASoC: CPU DAI (null) not registered
+> [    6.571234] vf610-sgtl5000 sound.9: ASoC: CPU DAI (null) not registered
+> [    6.586243] vf610-sgtl5000 sound.9: ASoC: CPU DAI (null) not registered
+> [    6.598094] vf610-sgtl5000 sound.9: ASoC: CPU DAI (null) not registered
+> starting pid 238, tty '/dev/console': '/sbin/getty -L 115200 ttyS0 vt102'
+> 
+> ecucore login:
+
+My first idea was to use dev_dbg() but that actualy remove that message at 
+all, unless dynamic debug is used, so I went with dev_notice. It's still 
+there, but does not clobber quiet boot log, nor some sophisticated kernel log 
+parser as journalctl which prints errors in red color.
+
+Best regards,
+Alexander
