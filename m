@@ -1,15 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: twl6040: Disconnect AUX output pads on
-	digital mute
-Date: Wed, 18 May 2016 16:19:01 +0300
-Message-ID: <1463577541-32295-1-git-send-email-peter.ujfalusi@ti.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: firewire-lib: change a member of event
+	structure to suppress sparse wanings to bool type
+Date: Wed, 18 May 2016 22:27:43 +0900
+Message-ID: <1463578063-16685-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [198.47.19.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F9022604BE
- for <alsa-devel@alsa-project.org>; Wed, 18 May 2016 15:19:08 +0200 (CEST)
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id EE8F52604BE
+ for <alsa-devel@alsa-project.org>; Wed, 18 May 2016 15:27:49 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,46 +19,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Disconnect also the path to AUXL from the HF path during digital_mute to
-avoid pop noise leakage to Line-out pads.
+Commit a9c4284bf5a9 ("ALSA: firewire-lib: add context information to
+tracepoints") adds new members to tracepoint events of this module, to
+represent context information. One of the members is bool type and
+this causes sparse warnings.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+16:1: warning: expression using sizeof bool
+60:1: warning: expression using sizeof bool
+16:1: warning: odd constant _Bool cast (ffffffffffffffff becomes 1)
+60:1: warning: odd constant _Bool cast (ffffffffffffffff becomes 1)
+
+This commit suppresses the warnings, by changing type of the member
+to 'unsigned int'. Additionally, this commit applies '!!' idiom to
+get 0/1 from 'in_interrupt()'.
+
+Fixes: a9c4284bf5a9 ("ALSA: firewire-lib: add context information to tracepoints")
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/linux/mfd/twl6040.h | 1 +
- sound/soc/codecs/twl6040.c  | 4 ++--
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ sound/firewire/amdtp-stream-trace.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/mfd/twl6040.h b/include/linux/mfd/twl6040.h
-index a7c50e54f3e0..8015db974157 100644
---- a/include/linux/mfd/twl6040.h
-+++ b/include/linux/mfd/twl6040.h
-@@ -134,6 +134,7 @@
- #define TWL6040_HFDACENA		(1 << 0)
- #define TWL6040_HFPGAENA		(1 << 1)
- #define TWL6040_HFDRVENA		(1 << 4)
-+#define TWL6040_HFSWENA			(1 << 6)
- 
- /* VIBCTLL/R (0x18/0x1A) fields */
- 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 7a744b581cc1..1f7081043566 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -987,9 +987,9 @@ static void twl6040_mute_path(struct snd_soc_codec *codec, enum twl6040_dai_id i
- 		if (mute) {
- 			/* Power down drivers and DACs */
- 			hflctl &= ~(TWL6040_HFDACENA | TWL6040_HFPGAENA |
--				    TWL6040_HFDRVENA);
-+				    TWL6040_HFDRVENA | TWL6040_HFSWENA);
- 			hfrctl &= ~(TWL6040_HFDACENA | TWL6040_HFPGAENA |
--				    TWL6040_HFDRVENA);
-+				    TWL6040_HFDRVENA | TWL6040_HFSWENA);
- 		}
- 
- 		twl6040_reg_write(twl6040, TWL6040_REG_HFLCTL, hflctl);
+diff --git a/sound/firewire/amdtp-stream-trace.h b/sound/firewire/amdtp-stream-trace.h
+index 1622579..9c04faf 100644
+--- a/sound/firewire/amdtp-stream-trace.h
++++ b/sound/firewire/amdtp-stream-trace.h
+@@ -26,7 +26,7 @@ TRACE_EVENT(in_packet,
+ 		__field(u32, cip_header1)
+ 		__field(unsigned int, payload_quadlets)
+ 		__field(unsigned int, packet_index)
+-		__field(bool, irq)
++		__field(unsigned int, irq)
+ 		__field(unsigned int, index)
+ 	),
+ 	TP_fast_assign(
+@@ -39,7 +39,7 @@ TRACE_EVENT(in_packet,
+ 		__entry->cip_header1 = cip_header[1];
+ 		__entry->payload_quadlets = payload_quadlets;
+ 		__entry->packet_index = s->packet_index;
+-		__entry->irq = in_interrupt();
++		__entry->irq = !!in_interrupt();
+ 		__entry->index = index;
+ 	),
+ 	TP_printk(
+@@ -70,7 +70,7 @@ TRACE_EVENT(out_packet,
+ 		__field(u32, cip_header1)
+ 		__field(unsigned int, payload_quadlets)
+ 		__field(unsigned int, packet_index)
+-		__field(bool, irq)
++		__field(unsigned int, irq)
+ 		__field(unsigned int, index)
+ 	),
+ 	TP_fast_assign(
+@@ -83,7 +83,7 @@ TRACE_EVENT(out_packet,
+ 		__entry->cip_header1 = be32_to_cpu(cip_header[1]);
+ 		__entry->payload_quadlets = payload_length / 4;
+ 		__entry->packet_index = s->packet_index;
+-		__entry->irq = in_interrupt();
++		__entry->irq = !!in_interrupt();
+ 		__entry->index = index;
+ 	),
+ 	TP_printk(
 -- 
-2.8.2
+2.7.4
