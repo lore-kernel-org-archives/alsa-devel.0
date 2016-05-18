@@ -1,54 +1,46 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: ak4642: Enable cache usage to fix crashes on resume
-Date: Wed, 18 May 2016 18:49:22 +0100
-Message-ID: <1463593762-31871-1-git-send-email-broonie@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] ASoC: ak4642: Enable cache usage to fix crashes on resume
+Date: Wed, 18 May 2016 20:05:42 +0200
+Message-ID: <CAMuHMdXcsrwDrA_XvS2X23gHH-8i_amQBLcHyWCF0YvN9op-og@mail.gmail.com>
+References: <1463593762-31871-1-git-send-email-broonie@kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1463593762-31871-1-git-send-email-broonie@kernel.org>
 Sender: stable-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, stable <stable@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The ak4642 driver is using a regmap cache sync to restore the
-configuration of the chip on resume but (as Peter observed) does not
-actually define a register cache which means that the resume is never
-going to work and we trigger asserts in regmap.  Fix this by enabling
-caching.
+Hi Mark,
 
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reported-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
----
- sound/soc/codecs/ak4642.c | 3 +++
- 1 file changed, 3 insertions(+)
+On Wed, May 18, 2016 at 7:49 PM, Mark Brown <broonie@kernel.org> wrote:
+> The ak4642 driver is using a regmap cache sync to restore the
+> configuration of the chip on resume but (as Peter observed) does not
+> actually define a register cache which means that the resume is never
+> going to work and we trigger asserts in regmap.  Fix this by enabling
+> caching.
+>
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Reported-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> Cc: stable@vger.kernel.org
 
-diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
-index 1ee8506c06c7..4d8b9e49e8d6 100644
---- a/sound/soc/codecs/ak4642.c
-+++ b/sound/soc/codecs/ak4642.c
-@@ -560,6 +560,7 @@ static const struct regmap_config ak4642_regmap = {
- 	.max_register		= FIL1_3,
- 	.reg_defaults		= ak4642_reg,
- 	.num_reg_defaults	= NUM_AK4642_REG_DEFAULTS,
-+	.cache_type		= REGCACHE_RBTREE,
- };
- 
- static const struct regmap_config ak4643_regmap = {
-@@ -568,6 +569,7 @@ static const struct regmap_config ak4643_regmap = {
- 	.max_register		= SPK_MS,
- 	.reg_defaults		= ak4643_reg,
- 	.num_reg_defaults	= ARRAY_SIZE(ak4643_reg),
-+	.cache_type		= REGCACHE_RBTREE,
- };
- 
- static const struct regmap_config ak4648_regmap = {
-@@ -576,6 +578,7 @@ static const struct regmap_config ak4648_regmap = {
- 	.max_register		= EQ_FBEQE,
- 	.reg_defaults		= ak4648_reg,
- 	.num_reg_defaults	= ARRAY_SIZE(ak4648_reg),
-+	.cache_type		= REGCACHE_RBTREE,
- };
- 
- static const struct ak4642_drvdata ak4642_drvdata = {
--- 
-2.8.1
+Thanks, this gets rid of the
+
+        kernel BUG at drivers/base/regmap/regcache.c:347!
+
+I was seeing.
+
+Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
