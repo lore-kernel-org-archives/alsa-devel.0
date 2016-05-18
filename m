@@ -1,21 +1,18 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH v5] ASoC: cs53l30: Add support for Cirrus
- Logic CS53L30
-Date: Tue, 17 May 2016 16:43:33 -0700
-Message-ID: <20160517234333.GB29471@Asurada-Nvidia>
-References: <1458082066-2859-1-git-send-email-tim.howe@cirrus.com>
+From: Simran Rai <simran.rai@broadcom.com>
+Subject: [PATCH v7 0/3] ASoC: cygnus: Add audio support for
+	Broadcom Cygnus SoC
+Date: Tue, 17 May 2016 17:01:06 -0700
+Message-ID: <1463529669-25022-1-git-send-email-simran.rai@broadcom.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f196.google.com (mail-pf0-f196.google.com
- [209.85.192.196])
- by alsa0.perex.cz (Postfix) with ESMTP id A87A62651D3
- for <alsa-devel@alsa-project.org>; Wed, 18 May 2016 01:43:12 +0200 (CEST)
-Received: by mail-pf0-f196.google.com with SMTP id 145so3236923pfz.1
- for <alsa-devel@alsa-project.org>; Tue, 17 May 2016 16:43:12 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1458082066-2859-1-git-send-email-tim.howe@cirrus.com>
+Received: from mail-pf0-f172.google.com (mail-pf0-f172.google.com
+ [209.85.192.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1548B2604A9
+ for <alsa-devel@alsa-project.org>; Wed, 18 May 2016 02:01:40 +0200 (CEST)
+Received: by mail-pf0-f172.google.com with SMTP id c189so12106847pfb.3
+ for <alsa-devel@alsa-project.org>; Tue, 17 May 2016 17:01:39 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,95 +22,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, paul.handrigan@cirrus.com, tim.howe@cirrus.com
+To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lori Hikichi <lhikichi@broadcom.com>, Simran Rai <simran.rai@broadcom.com>, linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, Arun Parameswaran <arunp@broadcom.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Hi,
 
-   I have two quick questions regarding the DAI and its TDM support.
+This patchset contains audio support for Broadcom's Cygnus SoC.
+It contains DT bindings and core audio driver. The audio driver supports
+both capture and playback of Audio PCM samples over I2S/TDM interface and
+provides playback support over SPDIF interface.
 
-On Tue, Mar 15, 2016 at 05:47:46PM -0500, tim.howe@cirrus.com wrote:
+This patchset is derived from a previously submitted patchset:
+http://lkml.iu.edu/hypermail/linux/kernel/1503.3/05434.html
 
-> +static const struct snd_soc_dapm_route cs53l30_audio_map[] = {
-> +
-> +	/* ADC Input Paths */
-> +	{"ADC1A", NULL, "IN1_DMIC1"},
-> +	{"Input Mux 1", "ADC1_SEL", "ADC1A"},
-> +	{"ADC1B", NULL, "IN2"},
-> +
-> +	{"ADC2A", NULL, "IN3_DMIC2"},
-> +	{"Input Mux 2", "ADC2_SEL", "ADC2A"},
-> +	{"ADC2B", NULL, "IN4"},
-> +
-> +	/* MIC Bias Paths */
-> +	{"ADC1A", NULL, "MIC1 Bias"},
-> +	{"ADC1B", NULL, "MIC2 Bias"},
-> +	{"ADC2A", NULL, "MIC3 Bias"},
-> +	{"ADC2B", NULL, "MIC4 Bias"},
-> +
-> +	/* DMIC Paths */
-> +	{"DMIC1", NULL, "IN1_DMIC1"},
-> +	{"Input Mux 1", "DMIC1_SEL", "DMIC1"},
-> +
-> +	{"DMIC2", NULL, "IN3_DMIC2"},
-> +	{"Input Mux 2", "DMIC2_SEL", "DMIC2"},
-> +
-> +	/* Output Paths */
-> +	{"ASP_SDOUT1", NULL, "ADC1A" },
-> +	{"ASP_SDOUT1", NULL, "Input Mux 1"},
-> +	{"ASP_SDOUT1", NULL, "ADC1B"},
-> +
-> +	{"ASP_SDOUT2", NULL, "ADC2A"},
-> +	{"ASP_SDOUT2", NULL, "Input Mux 2"},
-> +	{"ASP_SDOUT2", NULL, "ADC2B"},
-> +
-> +	{"ASP1 Capture", NULL, "ASP_SDOUT1"},
-> +	{"ASP2 Capture", NULL, "ASP_SDOUT2"},
-> +};
+This patchset has been tested on Cygnus wireless audio bcm958305K board.
+It is based on v4.6-rc1 and is available from github:
 
-This codec chip has two SDOUT (Serial Data Output) pins while sharing
-one serial port -- there's only one pair of bit clock and fsync clock.
+repo: https://github.com/Broadcom/cygnus-linux/tree/cygnus-sound-v7
 
-> +static struct snd_soc_dai_driver cs53l30_dai[] = {
-> +	{
-> +		.name = "cs53l30-asp1",
-> +		.id = CS53L30_ASP1,
-> +		.capture = {
-> +			.stream_name = "ASP1 Capture",
-> +			.channels_min = 1,
-> +			.channels_max = 2,
-> +			.rates = CS53L30_RATES,
-> +			.formats = CS53L30_FORMATS,
-> +		},
-> +		.ops = &cs53l30_ops,
-> +		.symmetric_rates = 1,
-> +	 },
-> +	{
-> +		.name = "cs53l30-asp2",
-> +		.id = CS53L30_ASP2,
-> +		.capture = {
-> +			.stream_name = "ASP2 Capture",
-> +			.channels_min = 1,
-> +			.channels_max = 2,
-> +			.rates = CS53L30_RATES,
-> +			.formats = CS53L30_FORMATS,
-> +		},
-> +		.ops = &cs53l30_ops,
-> +		.symmetric_rates = 1,
-> +	 }
-> +};
+Changes from v6:
+- DT bindings acknowledged by Rob Herring
+Changes from v5:
+- Fix code style, e.g. change "if" statements to "switch" statements
+- Fix SPDIF output enable register field
+- Set BUFFER_PAIR_ENABLE for both mono, stereo and TDM modes
+- Reflect PCM bit formats for SPDIF, SSP and TDM as supported by
+hardware
+Changes from v4:
+- Fix power suspend function and add power resume function
+- Move clock initialization code from audio driver to clock framework
+Changes from v3:
+- Fix the subject lines to match the style for the subsystem
+Changes from v2:
+- Split patchset 2/2 from v2 into patchsets 2/3 and 3/3.
+- Remove SND_SOC_CYGNUS_DIAG. Diagnostics can be performed using
+standard kernel trace infrastructure.
+- Fix interrupt handler. Acknowledge only those interrupts that are
+handledby ISR.
+- Modify configure_vco() and the pll_macro_entry() struct to make it
+better readable. The functionality did not change.
+- Remove casts on macros
+- Remove surround sound channel grouping from the driver.
+Changes from v1:
+- Address code review comments. Fix print format of type size_t and
+pointer.
 
-In this case, would it be more appropriate to create one single DAI
-with channels_max = 4 over here?
+Simran Rai (3):
+  ASoC: cygnus: Add DT bindings for Broadcom Cygnus audio
+  ASoC: cygnus: Add Cygnus audio DAI driver
+  ASoC: cygnus: Add Cygnus audio DMA driver
 
-Another question is for its TDM support. This chip outputs 4-channel
-data on two data output pins (SDOUT1 and SDOUT2) as normal mode; it
-outputs 4-channel data on one data output pin (SDOUT1) as TDM mode.
-However, the mode selection for a 4-channel recording should depend
-on the hardware design: whether the SDOUT2 is connected or not. So
-I am wondering if there is a common way or existing way to indicate
-this hardware design. Or just by simply defining a new DT property?
+ .../bindings/sound/brcm,cygnus-audio.txt           |   67 +
+ sound/soc/bcm/Kconfig                              |    9 +
+ sound/soc/bcm/Makefile                             |    5 +
+ sound/soc/bcm/cygnus-pcm.c                         |  861 +++++++++++
+ sound/soc/bcm/cygnus-ssp.c                         | 1529 ++++++++++++++++++++
+ sound/soc/bcm/cygnus-ssp.h                         |  139 ++
+ 6 files changed, 2610 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
+ create mode 100644 sound/soc/bcm/cygnus-pcm.c
+ create mode 100644 sound/soc/bcm/cygnus-ssp.c
+ create mode 100644 sound/soc/bcm/cygnus-ssp.h
 
-Thank you
-Nicolin
+-- 
+1.9.1
