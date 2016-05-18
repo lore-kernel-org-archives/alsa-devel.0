@@ -1,17 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/1] ASoC: core: Do not print an actual
+Subject: Re: [PATCH 1/1] ASoC: core: Do not print an actual
  error when deferring probe
-Date: Wed, 18 May 2016 16:20:28 +0100
-Message-ID: <20160518152028.GM8104@sirena.org.uk>
-References: <1463584020-6085-1-git-send-email-alexander.stein@systec-electronic.com>
+Date: Wed, 18 May 2016 16:28:20 +0100
+Message-ID: <20160518152820.GN8104@sirena.org.uk>
+References: <1463578889-13709-1-git-send-email-alexander.stein@systec-electronic.com>
+ <20160518150812.GK8104@sirena.org.uk>
+ <209086304.1BTKYSBN0B@ws-stein>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6324847755602396137=="
+Content-Type: multipart/mixed; boundary="===============0868938036878023469=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 830E826052B
- for <alsa-devel@alsa-project.org>; Wed, 18 May 2016 17:20:39 +0200 (CEST)
-In-Reply-To: <1463584020-6085-1-git-send-email-alexander.stein@systec-electronic.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F62F260647
+ for <alsa-devel@alsa-project.org>; Wed, 18 May 2016 17:28:32 +0200 (CEST)
+In-Reply-To: <209086304.1BTKYSBN0B@ws-stein>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +24,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Alexander Stein <alexander.stein@systec-electronic.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Ricard Wanderlof <ricard.wanderlof@axis.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6324847755602396137==
+--===============0868938036878023469==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="9Jdw4pA1x1k2W7MG"
+	protocol="application/pgp-signature"; boundary="VnOTrGv5LmZxna7m"
 Content-Disposition: inline
 
 
---9Jdw4pA1x1k2W7MG
+--VnOTrGv5LmZxna7m
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 18, 2016 at 05:07:00PM +0200, Alexander Stein wrote:
-> In case there is no DAI (yet), do not print an error, this might happen
-> a lot of times. Print a notice instead.
+On Wed, May 18, 2016 at 05:18:41PM +0200, Alexander Stein wrote:
 
-Oh, and the other thing about this which I should have mentioned is that
-it applies to every single resource acquisition in the kernel - this
-needs addressing at a global error rather than piecemeal.  Raphael was
-intending to work on avoiding probe deferral in the first place by
-sorting probe and there were also some proposals to have a helper for
-printing error messages which would suppress the display of probe
-deferral errors before the final run at late initcall.  Obviously the
-second mechanism is substantially simpler to implement.
+> Well, it's debatable if using dev_err() and then returning EPROBE_DEFER i=
+s=20
+> correct either. IMHO if there is an actual error, an error code has to be=
+=20
+> returned and not "well, can't continue now, probe me again later".
+> At first glance those EPROBE_DEFER are correct as other dependent drivers=
+ may=20
+> be probed later, so printing an error in that case seems wrong to me.
 
---9Jdw4pA1x1k2W7MG
+Half the point with probe deferral is that it's transparent to anything
+that isn't actually resolving a resource - if we have to add custom code
+in to everywhere were we need to print an error in a probe path that's
+not great either.  We also don't want to silently ignore probe deferral
+all the time since then it becomes very hard to diagnose why something
+is not instantiating.
+
+--VnOTrGv5LmZxna7m
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXPIg7AAoJECTWi3JdVIfQSCUH+wbLiCj3YA4igx/4H9L9vfiP
-uwGFg9ARUv6OqQLJSL13XX+U9mPeOpgbSXwipXSO0CyrsgoRRj7zbW2e/1RiV9O6
-JfFi5bBL7nRRGtRuP5QOzn7hufbXJUGQGuyTPXyvOwTvgyorVjmHK2Icu6zdE4Ky
-MSZqGNwVOiMqyQBRZm4NVDbdFFmV4+u66nclElZYE5CBSFrI71LFqOfWw1Dyl36S
-EUJVimsjb0yQZL78Akgpx9HBFH9CzGrEyN+laNSVG/bKMKln2xZcUpoNuIQagzVH
-4XnbKsFbwE53lFvXnn5O2WWZcK6MFGGTQeiN7+oZYxRkQBBK2TYSLLF+nopicNk=
-=n6Ln
+iQEcBAEBCAAGBQJXPIoTAAoJECTWi3JdVIfQ3MwH/icMlQwTAMH/H6MQc4w47BHt
+1oWia2AQgWIqmk3m8DtBVGEIWQL/50PQRJkdWmc0P8Xj2pE6Omog/NNgP6iIL3x6
+tqB6KL3nOE+82xxvJ98JERkeBufba74x+aT5XMeWLoCUKFQU9I/Qh3ugq7+tyT0M
+juKJrcqFRJyUyzuCmJh47s1GhhzUira5/wmkLkBm1XAmtuxqm2H62wTOrRfsSs9z
+s7gMvpPCI/bax97nEOuG3NH+KTq34+um6G77qQsgxLuXDI8sjYbt8BgavJ7Pqa4D
+JwezD7zQJjSqlJbxZJSjpWwcqkh1cTo1+pO9Nbskpd+6jDzgS8AwI0ZZlaHXOnQ=
+=KBJH
 -----END PGP SIGNATURE-----
 
---9Jdw4pA1x1k2W7MG--
+--VnOTrGv5LmZxna7m--
 
---===============6324847755602396137==
+--===============0868938036878023469==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6324847755602396137==--
+--===============0868938036878023469==--
