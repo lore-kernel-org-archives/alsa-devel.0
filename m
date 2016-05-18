@@ -1,15 +1,15 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: firewire-lib: change a member of event
-	structure to suppress sparse wanings to bool type
-Date: Wed, 18 May 2016 22:27:43 +0900
-Message-ID: <1463578063-16685-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: [PATCH 1/1] ASoC: core: Do not print an actual error
+	when deferring probe
+Date: Wed, 18 May 2016 15:41:29 +0200
+Message-ID: <1463578889-13709-1-git-send-email-alexander.stein@systec-electronic.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id EE8F52604BE
- for <alsa-devel@alsa-project.org>; Wed, 18 May 2016 15:27:49 +0200 (CEST)
+Received: from webbox1416.server-home.net (webbox1416.server-home.net
+ [77.236.96.61]) by alsa0.perex.cz (Postfix) with ESMTP id AC2762604BE
+ for <alsa-devel@alsa-project.org>; Wed, 18 May 2016 15:41:37 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,69 +19,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, Alexander Stein <alexander.stein@systec-electronic.com>
 List-Id: alsa-devel@alsa-project.org
 
-Commit a9c4284bf5a9 ("ALSA: firewire-lib: add context information to
-tracepoints") adds new members to tracepoint events of this module, to
-represent context information. One of the members is bool type and
-this causes sparse warnings.
+In case there is no DAI (yet), do not print an error, this might happen
+a lot of times. Print a notice instead.
 
-16:1: warning: expression using sizeof bool
-60:1: warning: expression using sizeof bool
-16:1: warning: odd constant _Bool cast (ffffffffffffffff becomes 1)
-60:1: warning: odd constant _Bool cast (ffffffffffffffff becomes 1)
-
-This commit suppresses the warnings, by changing type of the member
-to 'unsigned int'. Additionally, this commit applies '!!' idiom to
-get 0/1 from 'in_interrupt()'.
-
-Fixes: a9c4284bf5a9 ("ALSA: firewire-lib: add context information to tracepoints")
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
 ---
- sound/firewire/amdtp-stream-trace.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/soc-core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/firewire/amdtp-stream-trace.h b/sound/firewire/amdtp-stream-trace.h
-index 1622579..9c04faf 100644
---- a/sound/firewire/amdtp-stream-trace.h
-+++ b/sound/firewire/amdtp-stream-trace.h
-@@ -26,7 +26,7 @@ TRACE_EVENT(in_packet,
- 		__field(u32, cip_header1)
- 		__field(unsigned int, payload_quadlets)
- 		__field(unsigned int, packet_index)
--		__field(bool, irq)
-+		__field(unsigned int, irq)
- 		__field(unsigned int, index)
- 	),
- 	TP_fast_assign(
-@@ -39,7 +39,7 @@ TRACE_EVENT(in_packet,
- 		__entry->cip_header1 = cip_header[1];
- 		__entry->payload_quadlets = payload_quadlets;
- 		__entry->packet_index = s->packet_index;
--		__entry->irq = in_interrupt();
-+		__entry->irq = !!in_interrupt();
- 		__entry->index = index;
- 	),
- 	TP_printk(
-@@ -70,7 +70,7 @@ TRACE_EVENT(out_packet,
- 		__field(u32, cip_header1)
- 		__field(unsigned int, payload_quadlets)
- 		__field(unsigned int, packet_index)
--		__field(bool, irq)
-+		__field(unsigned int, irq)
- 		__field(unsigned int, index)
- 	),
- 	TP_fast_assign(
-@@ -83,7 +83,7 @@ TRACE_EVENT(out_packet,
- 		__entry->cip_header1 = be32_to_cpu(cip_header[1]);
- 		__entry->payload_quadlets = payload_length / 4;
- 		__entry->packet_index = s->packet_index;
--		__entry->irq = in_interrupt();
-+		__entry->irq = !!in_interrupt();
- 		__entry->index = index;
- 	),
- 	TP_printk(
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index d2e62b15..352f7c6 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1001,7 +1001,7 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
+ 	cpu_dai_component.dai_name = dai_link->cpu_dai_name;
+ 	rtd->cpu_dai = snd_soc_find_dai(&cpu_dai_component);
+ 	if (!rtd->cpu_dai) {
+-		dev_err(card->dev, "ASoC: CPU DAI %s not registered\n",
++		dev_notice(card->dev, "ASoC: CPU DAI %s not registered\n",
+ 			dai_link->cpu_dai_name);
+ 		goto _err_defer;
+ 	}
+@@ -1013,7 +1013,7 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
+ 	for (i = 0; i < rtd->num_codecs; i++) {
+ 		codec_dais[i] = snd_soc_find_dai(&codecs[i]);
+ 		if (!codec_dais[i]) {
+-			dev_err(card->dev, "ASoC: CODEC DAI %s not registered\n",
++			dev_notice(card->dev, "ASoC: CODEC DAI %s not registered\n",
+ 				codecs[i].dai_name);
+ 			goto _err_defer;
+ 		}
+@@ -1042,7 +1042,7 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
+ 		rtd->platform = platform;
+ 	}
+ 	if (!rtd->platform) {
+-		dev_err(card->dev, "ASoC: platform %s not registered\n",
++		dev_notice(card->dev, "ASoC: platform %s not registered\n",
+ 			dai_link->platform_name);
+ 		return -EPROBE_DEFER;
+ 	}
 -- 
-2.7.4
+2.7.3
