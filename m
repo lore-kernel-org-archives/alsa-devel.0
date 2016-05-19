@@ -1,18 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 1/2] ASoC: Intel: Skylake: Add channel
- constraints for refcap
-Date: Thu, 19 May 2016 09:09:49 +0530
-Message-ID: <20160519033948.GV23734@localhost>
-References: <1463503385-4535-1-git-send-email-yong.zhi@intel.com>
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: Re: [PATCH 1/1] ASoC: core: Do not print an actual
+	error when deferring probe
+Date: Thu, 19 May 2016 08:28:02 +0200
+Message-ID: <2608815.76PS7RUNga@ws-stein>
+References: <1463578889-13709-1-git-send-email-alexander.stein@systec-electronic.com>
+ <20160518172019.GS8104@sirena.org.uk> <s5hr3czyxea.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 52247260647
- for <alsa-devel@alsa-project.org>; Thu, 19 May 2016 05:33:42 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1463503385-4535-1-git-send-email-yong.zhi@intel.com>
+Received: from webbox1416.server-home.net (webbox1416.server-home.net
+ [77.236.96.61]) by alsa0.perex.cz (Postfix) with ESMTP id 976DA260647
+ for <alsa-devel@alsa-project.org>; Thu, 19 May 2016 08:28:04 +0200 (CEST)
+In-Reply-To: <s5hr3czyxea.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,54 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Yong Zhi <yong.zhi@intel.com>
-Cc: alsa-devel@alsa-project.org, yang.a.fang@intel.com, marc.herbert@intel.com, benzh@chromium.org, broonie@kernel.org, sathya.prakash.m.r@intel.com, jeeja.kp@intel.com, vedang.patel@intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 17, 2016 at 09:43:04AM -0700, Yong Zhi wrote:
-> Add constraint for ref DMIC to match with the
-> topology firmware config.
+On Wednesday 18 May 2016 21:33:01, Takashi Iwai wrote:
+> On Wed, 18 May 2016 19:20:19 +0200,
 > 
-> Signed-off-by: Yong Zhi <yong.zhi@intel.com>
-
-Both:
-
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-
-> ---
->  sound/soc/intel/boards/skl_nau88l25_max98357a.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+> Mark Brown wrote:
+> > On Wed, May 18, 2016 at 06:57:50PM +0200, Takashi Iwai wrote:
+> > > Mark Brown wrote:
+> > > > It's just shifting the problem around...  it sounds like for your use
+> > > > case suppressing the messages until we finish kernel boot would deal
+> > > > with most of the issue in a far more general fashion.
+> > > 
+> > > It comes to the question whether this message must be shown verbosely
+> > > as an error at all.  EPROBE_DEFER is usually a mechanism for the
+> > > delayed probe, and it doesn't indicate an error per se.  dev_err() is,
+> > > OTOH, for real errors that have to be notified to user inevitably.
+> > > That's why "quiet" boot option still shows it.
+> > 
+> > We can't tell the difference between something that's delayed and will
+> > come up later and something that's just never going to work - missing
+> > or misidentified components has always been a common source of errors
+> > in ASoC device bringup.
 > 
-> diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-> index 7cc7251..463f0e5 100644
-> --- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-> +++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-> @@ -339,8 +339,22 @@ static struct snd_pcm_hw_constraint_list constraints_16000 = {
->  	.list  = rates_16000,
->  };
->  
-> +static const unsigned int ch_mono[] = {
-> +	1,
-> +};
-> +
-> +static const struct snd_pcm_hw_constraint_list constraints_refcap = {
-> +	.count = ARRAY_SIZE(ch_mono),
-> +	.list  = ch_mono,
-> +};
-> +
->  static int skylake_refcap_startup(struct snd_pcm_substream *substream)
->  {
-> +	substream->runtime->hw.channels_max = 1;
-> +	snd_pcm_hw_constraint_list(substream->runtime, 0,
-> +					SNDRV_PCM_HW_PARAM_CHANNELS,
-> +					&constraints_refcap);
-> +
->  	return snd_pcm_hw_constraint_list(substream->runtime, 0,
->  				SNDRV_PCM_HW_PARAM_RATE,
->  				&constraints_16000);
-> -- 
-> 1.9.1
-> 
+> Yes, but it still means that most of cases are false-positive to show
+> as "error" message.
 
--- 
-~Vinod
+I think the same way. Of course it is an error if probing never finishes due 
+to some missing configuration/dt entry, but that needs to be checked in dmesg 
+anyway. dev_notice still allows that.
+
+> > There's also just the fact that the noise from
+> > deferred probe is not an ASoC specific thing, we need to tackle this at
+> > a system level rather than hacking individual cases.
+> 
+> Such other noises are usually now shown as errors with dev_err() but
+> with dev_*() with a lower level.
+> 
+> I guess the patch subject and description are misleading.  This
+> doesn't suppress the messages to be printed.  In usual boots without
+> quiet boot option, there will be no visible change with this patch,
+> the messages are still shown.  It's not shown, however, when booted
+> with quiet boot option.  That's the whole point.
+> 
+> dev_notice() lowers the log level to somewhat between info and
+> warning, and it looks like a sensible choice to me.
+
+You want me to change the subject to be more clear?
+
+Regards,
+Alexander
