@@ -1,20 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/1] ASoC: core: Do not print an actual
- error when deferring probe
-Date: Thu, 19 May 2016 11:34:53 +0100
-Message-ID: <20160519103453.GC8206@sirena.org.uk>
-References: <1463578889-13709-1-git-send-email-alexander.stein@systec-electronic.com>
- <20160518172019.GS8104@sirena.org.uk>
- <s5hr3czyxea.wl-tiwai@suse.de> <2608815.76PS7RUNga@ws-stein>
- <s5hinyazggk.wl-tiwai@suse.de>
+From: Yong Zhi <yong.zhi@intel.com>
+Subject: [PATCH] ASoC: add api to retrieve dmic array info from
+	coreboot nhlt
+Date: Thu, 19 May 2016 08:58:59 -0700
+Message-ID: <ac23a9ba3795ed50bea2d88dc90b419238ef1542.1463673471.git.yong.zhi@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4530767131254297581=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8401C2674A0
- for <alsa-devel@alsa-project.org>; Thu, 19 May 2016 12:35:08 +0200 (CEST)
-In-Reply-To: <s5hinyazggk.wl-tiwai@suse.de>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A604260647
+ for <alsa-devel@alsa-project.org>; Thu, 19 May 2016 17:56:16 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,63 +19,176 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Alexander Stein <alexander.stein@systec-electronic.com>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, marc.herbert@intel.com, yang.a.fang@intel.com, sathya.prakash.m.r@intel.com, jeeja.kp@intel.com, vedang.patel@intel.com, Yong Zhi <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+skylake can be configured with either both 2 and 4 channel DMIC
+array, or 2 channel DMIC array only, this patch provides an API to
+retrieve the DMIC info from nhlt.
 
---===============4530767131254297581==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="1ccMZA6j1vT5UqiK"
-Content-Disposition: inline
+Signed-off-by: Yong Zhi <yong.zhi@intel.com>
+---
+ sound/soc/intel/skylake/skl-nhlt.c | 37 +++++++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-nhlt.h | 22 ++++++++++++++++++++++
+ sound/soc/intel/skylake/skl.c      | 12 ++++++++++--
+ sound/soc/intel/skylake/skl.h      |  6 ++++++
+ 4 files changed, 75 insertions(+), 2 deletions(-)
 
-
---1ccMZA6j1vT5UqiK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, May 19, 2016 at 08:53:31AM +0200, Takashi Iwai wrote:
-> Alexander Stein wrote:
-> > On Wednesday 18 May 2016 21:33:01, Takashi Iwai wrote:
-
-> > > dev_notice() lowers the log level to somewhat between info and
-> > > warning, and it looks like a sensible choice to me.
-
-> > You want me to change the subject to be more clear?
-
-> If the patch can go in, yes.  The changelog text should be also
-> clearer why it's needed and what it gives, too.
-
-There's also the problem with it just squashing all errors, not just
-probe deferral.  I really would prefer to see at least some attempt to
-push this into a central helper rather than just open coding hacks in
-every single user though, that's the thing here.  We want a simple and
-consistent way of handling this, going round and doing something custom
-at every single caller is going to result in inconsistent behaviour and
-means that it's harder to deploy and new and better solutions.
-
---1ccMZA6j1vT5UqiK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXPZbLAAoJECTWi3JdVIfQiMAH/iBfhycB9CfVngCmTEBxEFYf
-2bCDIqQRhcnuVgbGM2QLwoib9jYll4u/+WsUpInm5gOkbAZFEuc52uszq3MKBvEP
-KefHTQIuXkgkNMZVfysLX/e1yXjkeaUJNwaUGJctYHKHX2pVTI3kOfxZ2e7Mt/8F
-TYoxvbL6IzrYvvdGoWNM/JX6D1EbEKfvKwYqv2SqrmSxghhdA3wttlaMr0JYmxgY
-429/m4XNNj2hiK/t3GVE3qp79UqUVGYC/pg0bddvN35axlR/yxK92Kr9xLvUvd4F
-LDNIyRhk9ym8TMI+i5uo7v6q7f/OT5nk0g3A2rsHOqQS9pi4fzdTbY63FRhXBp0=
-=IC1B
------END PGP SIGNATURE-----
-
---1ccMZA6j1vT5UqiK--
-
---===============4530767131254297581==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4530767131254297581==--
+diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
+index 7d73648..be4c4a3 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.c
++++ b/sound/soc/intel/skylake/skl-nhlt.c
+@@ -18,6 +18,7 @@
+  *
+  */
+ #include "skl.h"
++#include <linux/pci.h>
+ 
+ /* Unique identification for getting NHLT blobs */
+ static u8 OSC_UUID[16] = {0x6E, 0x88, 0x9F, 0xA6, 0xEB, 0x6C, 0x94, 0x45,
+@@ -149,6 +150,42 @@ struct nhlt_specific_cfg
+ 	return NULL;
+ }
+ 
++int skl_get_dmic_geo(struct skl *skl)
++{
++	struct nhlt_acpi_table *nhlt = (struct nhlt_acpi_table *)skl->nhlt;
++	struct nhlt_endpoint *epnt;
++	struct nhlt_dmic_array_config *cfg;
++	struct device *dev = &(skl->pci->dev);
++	unsigned int dmic_geo = 0;
++	u8 j;
++
++	epnt = (struct nhlt_endpoint *)nhlt->desc;
++
++	for (j = 0; j < nhlt->endpoint_count; j++) {
++		if (epnt->linktype == NHLT_LINK_DMIC) {
++			cfg = (struct nhlt_dmic_array_config  *)
++					(epnt->config.caps);
++			switch (cfg->array_type) {
++			case NHLT_MIC_ARRAY_2CH_SMALL:
++			case NHLT_MIC_ARRAY_2CH_BIG:
++				dmic_geo |= MIC_ARRAY_2CH;
++				break;
++			case NHLT_MIC_ARRAY_4CH_1ST_GEOM:
++			case NHLT_MIC_ARRAY_4CH_L_SHAPED:
++			case NHLT_MIC_ARRAY_4CH_2ND_GEOM:
++				dmic_geo |= MIC_ARRAY_4CH;
++				break;
++			default:
++				dev_warn(dev, "undefined DMIC array_type 0x%0x\n",
++						cfg->array_type);
++			}
++		}
++		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
++	}
++
++	return dmic_geo;
++}
++
+ static void skl_nhlt_trim_space(struct skl *skl)
+ {
+ 	char *s = skl->tplg_name;
+diff --git a/sound/soc/intel/skylake/skl-nhlt.h b/sound/soc/intel/skylake/skl-nhlt.h
+index 3769f9f..116534e7 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.h
++++ b/sound/soc/intel/skylake/skl-nhlt.h
+@@ -103,4 +103,26 @@ struct nhlt_resource_desc  {
+ 	u64 length;
+ } __packed;
+ 
++#define MIC_ARRAY_2CH 2
++#define MIC_ARRAY_4CH 4
++
++struct nhlt_tdm_config {
++	u8 virtual_slot;
++	u8 config_type;
++} __packed;
++
++struct nhlt_dmic_array_config {
++	struct nhlt_tdm_config tdm_config;
++	u8 array_type;
++} __packed;
++
++enum {
++	NHLT_MIC_ARRAY_2CH_SMALL = 0xa,
++	NHLT_MIC_ARRAY_2CH_BIG = 0xb,
++	NHLT_MIC_ARRAY_4CH_1ST_GEOM = 0xc,
++	NHLT_MIC_ARRAY_4CH_L_SHAPED = 0xd,
++	NHLT_MIC_ARRAY_4CH_2ND_GEOM = 0xe,
++	NHLT_MIC_ARRAY_VENDOR_DEFINED = 0xf,
++};
++
+ #endif
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 06d8c26..b0f7226 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -35,6 +35,8 @@
+ #include "skl-sst-dsp.h"
+ #include "skl-sst-ipc.h"
+ 
++static struct skl_machine_pdata skl_dmic_data;
++
+ /*
+  * initialize the PCI registers
+  */
+@@ -397,6 +399,10 @@ static int skl_machine_device_register(struct skl *skl, void *driver_data)
+ 		platform_device_put(pdev);
+ 		return -EIO;
+ 	}
++
++	if (mach->pdata)
++		dev_set_drvdata(&pdev->dev, mach->pdata);
++
+ 	skl->i2s_dev = pdev;
+ 
+ 	return 0;
+@@ -666,6 +672,8 @@ static int skl_probe(struct pci_dev *pci,
+ 
+ 	pci_set_drvdata(skl->pci, ebus);
+ 
++	skl_dmic_data.dmic_num = skl_get_dmic_geo(skl);
++
+ 	/* check if dsp is there */
+ 	if (ebus->ppcap) {
+ 		err = skl_machine_device_register(skl,
+@@ -787,9 +795,9 @@ static void skl_remove(struct pci_dev *pci)
+ static struct sst_acpi_mach sst_skl_devdata[] = {
+ 	{ "INT343A", "skl_alc286s_i2s", "intel/dsp_fw_release.bin", NULL, NULL, NULL },
+ 	{ "INT343B", "skl_nau88l25_ssm4567_i2s", "intel/dsp_fw_release.bin",
+-				NULL, NULL, NULL },
++				NULL, NULL, &skl_dmic_data },
+ 	{ "MX98357A", "skl_nau88l25_max98357a_i2s", "intel/dsp_fw_release.bin",
+-				NULL, NULL, NULL },
++				NULL, NULL, &skl_dmic_data },
+ 	{}
+ };
+ 
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index 4b4b387..f66be17 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -90,6 +90,11 @@ struct skl_dma_params {
+ 	u8 stream_tag;
+ };
+ 
++/* to pass dmic data */
++struct skl_machine_pdata {
++	u32 dmic_num;
++};
++
+ struct skl_dsp_ops {
+ 	int id;
+ 	struct skl_dsp_loader_ops (*loader_ops)(void);
+@@ -108,6 +113,7 @@ void skl_nhlt_free(struct nhlt_acpi_table *addr);
+ struct nhlt_specific_cfg *skl_get_ep_blob(struct skl *skl, u32 instance,
+ 			u8 link_type, u8 s_fmt, u8 no_ch, u32 s_rate, u8 dirn);
+ 
++int skl_get_dmic_geo(struct skl *skl);
+ int skl_nhlt_update_topology_bin(struct skl *skl);
+ int skl_init_dsp(struct skl *skl);
+ int skl_free_dsp(struct skl *skl);
+-- 
+1.9.1
