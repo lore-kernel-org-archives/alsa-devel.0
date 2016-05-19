@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
+From: "Zhi, Yong" <yong.zhi@intel.com>
 Subject: Re: [PATCH] ASoC: add api to retrieve dmic array info
  from coreboot nhlt
-Date: Thu, 19 May 2016 17:01:36 +0100
-Message-ID: <20160519160136.GE8206@sirena.org.uk>
+Date: Thu, 19 May 2016 16:17:41 +0000
+Message-ID: <C193D76D23A22742993887E6D207B54D03535BCA@ORSMSX106.amr.corp.intel.com>
 References: <ac23a9ba3795ed50bea2d88dc90b419238ef1542.1463673471.git.yong.zhi@intel.com>
+ <20160519160136.GE8206@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0589043057622750628=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CDB4D260647
- for <alsa-devel@alsa-project.org>; Thu, 19 May 2016 18:01:44 +0200 (CEST)
-In-Reply-To: <ac23a9ba3795ed50bea2d88dc90b419238ef1542.1463673471.git.yong.zhi@intel.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id E8D0E26528D
+ for <alsa-devel@alsa-project.org>; Thu, 19 May 2016 18:17:43 +0200 (CEST)
+In-Reply-To: <20160519160136.GE8206@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +23,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Yong Zhi <yong.zhi@intel.com>
-Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, marc.herbert@intel.com, yang.a.fang@intel.com, sathya.prakash.m.r@intel.com, jeeja.kp@intel.com, vedang.patel@intel.com
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Sripathi,
+ Srinivas" <srinivas.sripathi@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, "Fang, Yang A" <yang.a.fang@intel.com>, "M R,
+ Sathya Prakash" <sathya.prakash.m.r@intel.com>, "Kp,
+ Jeeja" <jeeja.kp@intel.com>, "Patel, Vedang" <vedang.patel@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============0589043057622750628==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="DqhR8hV3EnoxUkKN"
-Content-Disposition: inline
-
-
---DqhR8hV3EnoxUkKN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+-----Original Message-----
+From: Mark Brown [mailto:broonie@kernel.org] 
+Sent: Thursday, May 19, 2016 9:02 AM
+To: Zhi, Yong <yong.zhi@intel.com>
+Cc: alsa-devel@alsa-project.org; Koul, Vinod <vinod.koul@intel.com>; Kp, Jeeja <jeeja.kp@intel.com>; Patel, Vedang <vedang.patel@intel.com>; Fang, Yang A <yang.a.fang@intel.com>; M R, Sathya Prakash <sathya.prakash.m.r@intel.com>; Herbert, Marc <marc.herbert@intel.com>; Sripathi, Srinivas <srinivas.sripathi@intel.com>
+Subject: Re: [PATCH] ASoC: add api to retrieve dmic array info from coreboot nhlt
 
 On Thu, May 19, 2016 at 08:58:59AM -0700, Yong Zhi wrote:
-> skylake can be configured with either both 2 and 4 channel DMIC
-> array, or 2 channel DMIC array only, this patch provides an API to
-> retrieve the DMIC info from nhlt.
+> skylake can be configured with either both 2 and 4 channel DMIC array, 
+> or 2 channel DMIC array only, this patch provides an API to retrieve 
+> the DMIC info from nhlt.
 
-What's the difference between this and the similarly titled patch you
-sent yesterday?
+What's the difference between this and the similarly titled patch you sent yesterday?
 
---DqhR8hV3EnoxUkKN
-Content-Type: application/pgp-signature; name="signature.asc"
+[YZ], Hi, Mark, the only function change is at line 143 below, found another product that also needs to get DMIC config info yesterday.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXPeNfAAoJECTWi3JdVIfQu7UH/2B54LP2TKD4mJWHihLysH7S
-L4hJl80LKQPKjXAb/0IztwdAVtQ6MWEkVdD1yETVwEN13d3k5qIm25INRMzjyjLZ
-wZPAPFOAoOzV1qqf+aot0r1FdsGVQae0Y4t5RhZwNOEsgaJMRKaFSufvORNuaeor
-ffn/CfObTCzs3BhcwcDjxaq2J8jnggaciTQKGrCHnRt/RtE47NRMfYCEekqey/Ch
-e9RSuAwJ5OOn/5ZJ2Dej7z9Z0u2JsCizwvMgygHFdhfuQPmbllASFef0A8JcA2TT
-s89aPiNWIKkprFlsAwqsBcgaTZhvBRv0HPKylQDVQ7yG1dGk5evD+3+Fj0HDlZg=
-=KeZ4
------END PGP SIGNATURE-----
-
---DqhR8hV3EnoxUkKN--
-
---===============0589043057622750628==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0589043057622750628==--
+        { "INT343B", "skl_nau88l25_ssm4567_i2s", "intel/dsp_fw_release.bin",
+-                               NULL, NULL, NULL },
++                               NULL, NULL, &skl_dmic_data },
