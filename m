@@ -1,76 +1,93 @@
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-Subject: Re: [PATCH 1/1] ASoC: core: Do not print an actual
-	error when deferring probe
-Date: Thu, 19 May 2016 08:28:02 +0200
-Message-ID: <2608815.76PS7RUNga@ws-stein>
-References: <1463578889-13709-1-git-send-email-alexander.stein@systec-electronic.com>
- <20160518172019.GS8104@sirena.org.uk> <s5hr3czyxea.wl-tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: ak4642: Enable cache usage to fix crashes on resume
+Date: Thu, 19 May 2016 09:33:15 +0300
+Message-ID: <52f206d4-ea9d-0cfc-613a-c625298cb9b2@ti.com>
+References: <1463593762-31871-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webbox1416.server-home.net (webbox1416.server-home.net
- [77.236.96.61]) by alsa0.perex.cz (Postfix) with ESMTP id 976DA260647
- for <alsa-devel@alsa-project.org>; Thu, 19 May 2016 08:28:04 +0200 (CEST)
-In-Reply-To: <s5hr3czyxea.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1463593762-31871-1-git-send-email-broonie@kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 18 May 2016 21:33:01, Takashi Iwai wrote:
-> On Wed, 18 May 2016 19:20:19 +0200,
-> 
-> Mark Brown wrote:
-> > On Wed, May 18, 2016 at 06:57:50PM +0200, Takashi Iwai wrote:
-> > > Mark Brown wrote:
-> > > > It's just shifting the problem around...  it sounds like for your use
-> > > > case suppressing the messages until we finish kernel boot would deal
-> > > > with most of the issue in a far more general fashion.
-> > > 
-> > > It comes to the question whether this message must be shown verbosely
-> > > as an error at all.  EPROBE_DEFER is usually a mechanism for the
-> > > delayed probe, and it doesn't indicate an error per se.  dev_err() is,
-> > > OTOH, for real errors that have to be notified to user inevitably.
-> > > That's why "quiet" boot option still shows it.
-> > 
-> > We can't tell the difference between something that's delayed and will
-> > come up later and something that's just never going to work - missing
-> > or misidentified components has always been a common source of errors
-> > in ASoC device bringup.
-> 
-> Yes, but it still means that most of cases are false-positive to show
-> as "error" message.
+On 05/18/16 20:49, Mark Brown wrote:
+> The ak4642 driver is using a regmap cache sync to restore the
+> configuration of the chip on resume but (as Peter observed) does not
+> actually define a register cache which means that the resume is never
+> going to work and we trigger asserts in regmap.  Fix this by enabling
+> caching.
 
-I think the same way. Of course it is an error if probing never finishes due 
-to some missing configuration/dt entry, but that needs to be checked in dmesg 
-anyway. dev_notice still allows that.
+Should the ak4642 implement the suspend callback and:
 
-> > There's also just the fact that the noise from
-> > deferred probe is not an ASoC specific thing, we need to tackle this at
-> > a system level rather than hacking individual cases.
-> 
-> Such other noises are usually now shown as errors with dev_err() but
-> with dev_*() with a lower level.
-> 
-> I guess the patch subject and description are misleading.  This
-> doesn't suppress the messages to be printed.  In usual boots without
-> quiet boot option, there will be no visible change with this patch,
-> the messages are still shown.  It's not shown, however, when booted
-> with quiet boot option.  That's the whole point.
-> 
-> dev_notice() lowers the log level to somewhat between info and
-> warning, and it looks like a sensible choice to me.
+static int ak4642_suspend(struct snd_soc_codec *codec)
+{
+	struct regmap *regmap =3D dev_get_regmap(codec->dev, NULL);
 
-You want me to change the subject to be more clear?
+	regcache_cache_only(regmap, true);
+	regcache_mark_dirty(regmap);
+	return 0;
+}
 
-Regards,
-Alexander
+static int ak4642_resume(struct snd_soc_codec *codec)
+{
+	struct regmap *regmap =3D dev_get_regmap(codec->dev, NULL);
+
+	regcache_cache_only(regmap, false);
+	regcache_sync(regmap);
+	return 0;
+}
+
+I know it is highly unlikely that anything is going to be written to th=
+e chip
+while the board is suspended. Probably the suspend and changing the cac=
+he only
+is not needed, but in this way things look a bit more complete?
+
+>=20
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Reported-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> Cc: stable@vger.kernel.org
+> ---
+>  sound/soc/codecs/ak4642.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>=20
+> diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
+> index 1ee8506c06c7..4d8b9e49e8d6 100644
+> --- a/sound/soc/codecs/ak4642.c
+> +++ b/sound/soc/codecs/ak4642.c
+> @@ -560,6 +560,7 @@ static const struct regmap_config ak4642_regmap =3D=
+ {
+>  	.max_register		=3D FIL1_3,
+>  	.reg_defaults		=3D ak4642_reg,
+>  	.num_reg_defaults	=3D NUM_AK4642_REG_DEFAULTS,
+> +	.cache_type		=3D REGCACHE_RBTREE,
+>  };
+> =20
+>  static const struct regmap_config ak4643_regmap =3D {
+> @@ -568,6 +569,7 @@ static const struct regmap_config ak4643_regmap =3D=
+ {
+>  	.max_register		=3D SPK_MS,
+>  	.reg_defaults		=3D ak4643_reg,
+>  	.num_reg_defaults	=3D ARRAY_SIZE(ak4643_reg),
+> +	.cache_type		=3D REGCACHE_RBTREE,
+>  };
+> =20
+>  static const struct regmap_config ak4648_regmap =3D {
+> @@ -576,6 +578,7 @@ static const struct regmap_config ak4648_regmap =3D=
+ {
+>  	.max_register		=3D EQ_FBEQE,
+>  	.reg_defaults		=3D ak4648_reg,
+>  	.num_reg_defaults	=3D ARRAY_SIZE(ak4648_reg),
+> +	.cache_type		=3D REGCACHE_RBTREE,
+>  };
+> =20
+>  static const struct ak4642_drvdata ak4642_drvdata =3D {
+>=20
+
+
+--=20
+P=E9ter
