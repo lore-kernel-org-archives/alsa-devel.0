@@ -1,58 +1,80 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: ak4642: Enable cache usage to fix crashes on resume
-Date: Thu, 19 May 2016 11:10:01 +0100
-Message-ID: <20160519101001.GB8206@sirena.org.uk>
-References: <1463593762-31871-1-git-send-email-broonie@kernel.org>
- <52f206d4-ea9d-0cfc-613a-c625298cb9b2@ti.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v2 2/2] ASoC: da7219: Convert driver to use generic
+ device/fwnode functions
+Date: Thu, 19 May 2016 16:27:31 +0300
+Message-ID: <1463664451.31269.3.camel@linux.intel.com>
+References: <cover.1463477116.git.Adam.Thomson.Opensource@diasemi.com>
+	 <eea79e2c26dafa785451931387cfce716bd150d4.1463477116.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="dc+cDN39EJAMEtIO"
-Return-path: <stable-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <52f206d4-ea9d-0cfc-613a-c625298cb9b2@ti.com>
-Sender: stable-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, alsa-devel@alsa-project.org, stable@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-acpi-owner@vger.kernel.org>
+In-Reply-To: <eea79e2c26dafa785451931387cfce716bd150d4.1463477116.git.Adam.Thomson.Opensource@diasemi.com>
+Sender: linux-acpi-owner@vger.kernel.org
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Robert Moore <robert.moore@intel.com>, Lv Zheng <lv.zheng@intel.com>, "Rafael J.Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org, devel@acpica.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Suthikulpanit@diasemi.com, Suravee <Suravee.Suthikulpanit@amd.com>, Bjorn Helgaas <bhelgaas@google.com>, Hanjun Guo <hanjun.guo@linaro.org>, Mika Westerberg <mika.westerberg@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>, Heikki Krogerus <heikki.krogerus@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---dc+cDN39EJAMEtIO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, May 19, 2016 at 09:33:15AM +0300, Peter Ujfalusi wrote:
-
-> Should the ak4642 implement the suspend callback and:
-
-> static int ak4642_suspend(struct snd_soc_codec *codec)
-> {
-> 	struct regmap *regmap =3D dev_get_regmap(codec->dev, NULL);
+On Tue, 2016-05-17 at 11:28 +0100, Adam Thomson wrote:
+> This change converts the driver from using the of_* functions to usin=
+g
+> the device_* and fwnode_* functions for accssing FW related data.
 >=20
-> 	regcache_cache_only(regmap, true);
+> Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+> Tested-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
 
-> I know it is highly unlikely that anything is going to be written to the =
-chip
-> while the board is suspended. Probably the suspend and changing the cache=
- only
-> is not needed, but in this way things look a bit more complete?
+@@ -538,97 +538,96 @@ static enum da7219_aad_adc_1bit_rpt
+> =C2=A0	}
+> =C2=A0}
+>=20
+> -static struct da7219_aad_pdata *da7219_aad_of_to_pdata(struct
+> snd_soc_codec *codec)
+> +static struct da7219_aad_pdata *da7219_aad_fw_to_pdata(struct
+> snd_soc_codec *codec)
+> =C2=A0{
+> -	struct device_node *np =3D codec->dev->of_node;
+> -	struct device_node *aad_np =3D of_find_node_by_name(np,
+> "da7219_aad");
+> +	struct device *dev =3D codec->dev;
+> +	struct i2c_client *i2c =3D to_i2c_client(dev);
+> +	struct fwnode_handle *aad_np =3D
+> +		device_get_named_child_node(dev, "da7219_aad");
 
-Yes, that's more idiomatic - it also allows better sharing with runtime
-PM.
+I would suggest to do an assignment below...
 
---dc+cDN39EJAMEtIO
-Content-Type: application/pgp-signature; name="signature.asc"
+> =C2=A0	struct da7219_aad_pdata *aad_pdata;
+> -	const char *of_str;
+> -	u32 of_val32;
+> +	const char *fw_str;
+> +	u32 fw_val32;
+>=20
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXPZD4AAoJECTWi3JdVIfQK8IH/RPgm94N8B1xOpQEgSvOkn7S
-/xR1+4H9ntTd5wmSwk9fBSt3Wse+i32lIcPX6sQi/sFQYS3uvT5zoXw4yqg5hGw6
-1Z/xtx4GoZPY1E0IorIR9IpOshih/6015uBHyg1HbvOwMzZGgN/imzyz/GbZXOr7
-n0891/n/u8P1frqbOhntO48cAH3TksNwIZBA3HT1ttL3lIGQJ0UATQcwpKU//q7u
-ZOMtNm4hv5qNxN1Uld6ar+wOCTzi8ckyxCBR827ak6lZxQV/K9dRw4rQswIMUlxW
-ajRkjSmtBAkL6UzTQfXgPYFTwkXdg5gxfX2zEPn8hGrV8x0GavsdNFRwHpE42Ys=
-=FiHw
------END PGP SIGNATURE-----
+=2E..right here.
+Same amount of LOC, but less difficult to see from where aad_np comes.
 
---dc+cDN39EJAMEtIO--
+> =C2=A0	if (!aad_np)
+> =C2=A0		return NULL;
+>=20
+
+> @@ -769,9 +768,9 @@ int da7219_aad_init(struct snd_soc_codec *codec)
+> =C2=A0	da7219->aad =3D da7219_aad;
+> =C2=A0	da7219_aad->codec =3D codec;
+>=20
+> -	/* Handle any DT/platform data */
+> -	if ((codec->dev->of_node) && (da7219->pdata))
+> -		da7219->pdata->aad_pdata =3D
+> da7219_aad_of_to_pdata(codec);
+> +	/* Handle any DT/ACPI/platform data */
+> + =C2=A0 =C2=A0 if ((da7219->pdata) && (!da7219->pdata->aad_pdata))
+
+Redundant parens, twice.
+
+--=20
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Intel Finland Oy
+--
+To unsubscribe from this list: send the line "unsubscribe linux-acpi" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
