@@ -1,162 +1,40 @@
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] pcm: Don't store the state for
-	SND_PCM_STATE_SUSPENDED
-Date: Fri, 20 May 2016 09:41:25 +0000
-Message-ID: <HE1PR04MB212271FEAAEFBBE21A2E358FE34B0@HE1PR04MB2122.eurprd04.prod.outlook.com>
-References: <1462866346-11878-1-git-send-email-shengjiu.wang@freescale.com>
- <s5h7ff2b9vx.wl-tiwai@suse.de>
- <HE1PR04MB21229D4BBCC605559F98D3FFE3720@HE1PR04MB2122.eurprd04.prod.outlook.com>
- <s5hzirx9nv4.wl-tiwai@suse.de>
- <HE1PR04MB212240A8E6692FCFF12DF797E3720@HE1PR04MB2122.eurprd04.prod.outlook.com>
- <s5hoa8d9iey.wl-tiwai@suse.de>
- <HE1PR04MB2122FD4500AC192F85542DA2E3490@HE1PR04MB2122.eurprd04.prod.outlook.com>
- <s5h60ubn42y.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+From: kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org
+Subject: Re: [PATCH 2/2] ASoC: Add support for HifiBerry DAC
+Date: Fri, 20 May 2016 14:28:31 +0200
+Message-ID: <16CFA3C9-5C40-4771-B73E-540F2A7FABE1@martin.sperl.org>
+References: <1463130853-25096-1-git-send-email-kernel@martin.sperl.org> <1463130853-25096-3-git-send-email-kernel@martin.sperl.org> <20160513105409.GB22038@sirena.org.uk> <C139252A-23AC-4C37-A5E5-E0D7AF1DCC89@martin.sperl.org> <20160513132113.GP22038@sirena.org.uk>
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com
- (mail-db5eur01on0054.outbound.protection.outlook.com [104.47.2.54])
- by alsa0.perex.cz (Postfix) with ESMTP id E3AB9266646
- for <alsa-devel@alsa-project.org>; Fri, 20 May 2016 11:41:30 +0200 (CEST)
-In-Reply-To: <s5h60ubn42y.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20160513132113.GP22038-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Matthias Reichl <hias-vtPv7MOkFPkAvxtiuMwx3w@public.gmane.org>, Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi
 
-   I tested your patch, after suspend and resume, the playback is stopped.
-It is caused by the DMA. DMA is not started after resume.
+> On 13.05.2016, at 15:21, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+> 
+> On Fri, May 13, 2016 at 02:20:57PM +0200, Martin Sperl wrote:
+>> Could look like this:
+>> bclk-ratios = 
+>>  /* for 96kHz at 16bit/channel use bclk-ratio 40 */
+>>  <96000 16 40>, 
+>>  /* for 48kHz at 32bit/channel use bclk-ratio 80 */
+>>  <48000 16 80>,
+>>  /* for any (other) sample frequency at 16 bit use bclk-ratio 32 */
+>>  <0 16 32>,
+>>  /* for any (other) sample frequency at 32 bit use bclk-ratio 64 */
+>>  <0 32 64>;
+> 
+>> but there could also be other approaches as well,
+>> how this could get described in the device tree.
+> 
+> You may well end up with something like that, yeah.
 
-With your patch, DMA is not terminated but then is re-started. The driver don't
-support this behavior. 
-
-Best regards
-Wang shengjiu
-
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Wednesday, May 18, 2016 4:49 PM
-> To: Shengjiu Wang
-> Cc: perex@perex.cz; alsa-devel@alsa-project.org
-> Subject: Re: [PATCH] pcm: Don't store the state for
-> SND_PCM_STATE_SUSPENDED
-> 
-> On Wed, 18 May 2016 07:48:15 +0200,
-> Shengjiu Wang wrote:
-> >
-> > Hi Takashi
-> >
-> >   After adding your patch, I find another regression issue.
-> >
-> >   The alsa-lib may stop at
-> >
-> >   snd_pcm_write_areas()
-> > 		snd_pcm_wait_nocheck()
-> >
-> >   with suspend and resume test.
-> >
-> >   The reason is that:
-> >
-> >   In the beginning of playback, before the snd_pcm_dmix_start() is
-> > called, the system enter suspend. After resume,
-> snd_pcm_direct_resume()
-> > update the dmix->state, and dmix->state is 3 (RUNNING, because
-> > the dmix->spcm is in RUNNING from snd_pcm_dmix_open()).
-> >
-> >   So in snd_pcm_write_areas() the state is RUNNING, then
-> > snd_pcm_start() will never be called, after a while,
-> > alsa-lib will stop at the snd_pcm_wait_nocheck() for the kernel
-> > will not wake up the timer.
-> 
-> A good point.  Actually the culprit is that we declare dmix as if it's
-> supporting the resume properly.  Even if the resume works in the
-> slave, dmix itself can't guarantee the proper resume.  So, we should
-> rather drop the whole resume stuff from dmix & co.
-> 
-> Below is the patch against to the current git tree.  Give it a try.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> ---
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] pcm: Remove resume support from dmix & co
-> 
-> PCM dmix and other plugins inherit the resume behavior from the slave
-> PCM.  However, the resume on dmix can't work reliably even if the
-> slave PCM may do resume.  The running state of each dmix stream is
-> individual and may be PREPARED or RUN_PENDING while the slave PCM is
-> already in RUNNING.  And, when the slave PCM is resumed, the whole
-> samples that have been already mapped are also played back, even if
-> the corresponding dmix stream is still in SUSPENDED.  Such
-> inconsistencies can't be avoided as long as we manage each stream
-> individually.
-> 
-> That said, dmix & co can't provide the proper resume support "by
-> design".  For aligning with it, we should drop the whole resume code
-> and clear the PCM SND_PCM_INFO_RESUME flag.
-> 
-> Reported-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  src/pcm/pcm_direct.c | 24 ++----------------------
->  1 file changed, 2 insertions(+), 22 deletions(-)
-> 
-> diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
-> index ac082f1a73b2..53c49929cb1f 100644
-> --- a/src/pcm/pcm_direct.c
-> +++ b/src/pcm/pcm_direct.c
-> @@ -837,27 +837,7 @@ int snd_pcm_direct_prepare(snd_pcm_t *pcm)
-> 
->  int snd_pcm_direct_resume(snd_pcm_t *pcm)
->  {
-> -	snd_pcm_direct_t *dmix = pcm->private_data;
-> -	int err;
-> -
-> -	snd_pcm_direct_semaphore_down(dmix, DIRECT_IPC_SEM_CLIENT);
-> -	/* resume only when the slave PCM is still in suspended state */
-> -	if (snd_pcm_state(dmix->spcm) != SND_PCM_STATE_SUSPENDED) {
-> -		err = 0;
-> -		goto out;
-> -	}
-> -
-> -	err = snd_pcm_resume(dmix->spcm);
-> -	if (err == -ENOSYS) {
-> -		/* FIXME: error handling? */
-> -		snd_pcm_prepare(dmix->spcm);
-> -		snd_pcm_start(dmix->spcm);
-> -		err = 0;
-> -	}
-> - out:
-> -	dmix->state = snd_pcm_state(dmix->spcm);
-> -	snd_pcm_direct_semaphore_up(dmix, DIRECT_IPC_SEM_CLIENT);
-> -	return err;
-> +	return -ENOSYS;
->  }
-> 
->  #define COPY_SLAVE(field) (dmix->shmptr->s.field = spcm->field)
-> @@ -865,7 +845,7 @@ int snd_pcm_direct_resume(snd_pcm_t *pcm)
->  /* copy the slave setting */
->  static void save_slave_setting(snd_pcm_direct_t *dmix, snd_pcm_t *spcm)
->  {
-> -	spcm->info &= ~SND_PCM_INFO_PAUSE;
-> +	spcm->info &= ~(SND_PCM_INFO_PAUSE | SND_PCM_INFO_RESUME);
-> 
->  	COPY_SLAVE(access);
->  	COPY_SLAVE(format);
-> --
-> 2.8.2
+I am submitting a patch for this now...
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
