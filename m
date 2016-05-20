@@ -1,87 +1,62 @@
-From: Scott Branden <scott.branden-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
-Subject: Re: [PATCH v7 0/3] ASoC: cygnus: Add audio support for Broadcom
- Cygnus SoC
-Date: Thu, 19 May 2016 13:35:46 -0700
-Message-ID: <573E23A2.4020907@broadcom.com>
-References: <1463514382-20930-1-git-send-email-simran.rai@broadcom.com>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: Re: [PATCH 1/2 v2] ASoC: nau8825: non-clock jack
+ detection for power saving at standby
+Date: Fri, 20 May 2016 11:12:39 +0800
+Message-ID: <573E80A7.50602@nuvoton.com>
+References: <1463131037-19220-1-git-send-email-KCHSU0@nuvoton.com>
+ <20160513104841.GA22038@sirena.org.uk> <573926C5.70704@nuvoton.com>
+ <20160518170549.GR8104@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1463514382-20930-1-git-send-email-simran.rai-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Simran Rai <simran.rai-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Ray Jui <rjui-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Scott Branden <sbranden-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
-Cc: Lori Hikichi <lhikichi-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, bcm-kernel-feedback-list-dY08KVG/lbpWk0Htik3J/w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Arun Parameswaran <arunp-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Simran <ssimran-9dxIMqZteN92k8UYLPwMnjbeG0kAcb9qIF+bQRCngqMxpvK4C0GaPQ@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id C93B6260647
+ for <alsa-devel@alsa-project.org>; Fri, 20 May 2016 05:12:43 +0200 (CEST)
+In-Reply-To: <20160518170549.GR8104@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, "anatol.pomozov@gmail.com" <anatol.pomozov@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "benzh@chromium.org" <benzh@chromium.org>, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <MHKuo@nuvoton.com>, "yong.zhi@intel.com" <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Looks good Simran.
+On 5/19/2016 1:05 AM, Mark Brown wrote:
+> On Mon, May 16, 2016 at 09:47:49AM +0800, John Hsu wrote:
+>
+>   
+>> There is another patch is made by this patch.
+>> [PATCH 2/2] ASoC: nau8825: cross talk suppression measurement function
+>>     
+>
+> I'm confused about what's going on here...  if you're sending multiple
+> patches that need to be grouped together you should always send them all
+> together.  If you're not sending a group of patches then you shouldn't
+> use numbering in the subject line.
+>
+>   
 
-Mark, anything else for us to do before this driver can be accepted 
-upstream?
+I understand. Thank you very much.
 
-On 16-05-17 12:46 PM, Simran Rai wrote:
-> From: Simran <ssimran-9dxIMqZteN92k8UYLPwMnjbeG0kAcb9qIF+bQRCngqMxpvK4C0GaPQ@public.gmane.org>
+>> Besides, please help to review the following patch for the DC offset
+>> issue. Thank you very much.
+>> [PATCH] ASoC: nau8825: apply BIQ to reduce recording signal DC offset
+>>     
 >
-> Hi,
->
-> This patchset contains audio support for Broadcom's Cygnus SoC.
-> It contains DT bindings and core audio driver. The audio driver supports
-> both capture and playback of Audio PCM samples over I2S/TDM interface and
-> provides playback support over SPDIF interface.
->
-> This patchset is derived from a previously submitted patchset:
-> http://lkml.iu.edu/hypermail/linux/kernel/1503.3/05434.html
->
-> This patchset has been tested on Cygnus wireless audio bcm958305K board.
-> It is based on v4.6-rc1 and is available from github:
->
-> repo: https://github.com/Broadcom/cygnus-linux/tree/cygnus-sound-v7
->
-> Changes from v6:
-> - DT bindings acknowledged by Rob Herring
-> Changes from v5:
-> - Fix code style, e.g. change "if" statements to "switch" statements
-> - Fix SPDIF output enable register field
-> - Set BUFFER_PAIR_ENABLE for both mono, stereo and TDM modes
-> - Reflect PCM bit formats for SPDIF, SSP and TDM as supported by
-> hardware
-> Changes from v4:
-> - Fix power suspend function and add power resume function
-> - Move clock initialization code from audio driver to clock framework
-> Changes from v3:
-> - Fix the subject lines to match the style for the subsystem
-> Changes from v2:
-> - Split patchset 2/2 from v2 into patchsets 2/3 and 3/3.
-> - Remove SND_SOC_CYGNUS_DIAG. Diagnostics can be performed using
-> standard kernel trace infrastructure.
-> - Fix interrupt handler. Acknowledge only those interrupts that are
-> handledby ISR.
-> - Modify configure_vco() and the pll_macro_entry() struct to make it
-> better readable. The functionality did not change.
-> - Remove casts on macros
-> - Remove surround sound channel grouping from the driver.
-> Changes from v1:
-> - Address code review comments. Fix print format of type size_t and
-> pointer.
->
-> Simran Rai (3):
->    ASoC: cygnus: Add DT bindings for Broadcom Cygnus audio
->    ASoC: cygnus: Add Cygnus audio DAI driver
->    ASoC: cygnus: Add Cygnus audio DMA driver
->
->   .../bindings/sound/brcm,cygnus-audio.txt           |   67 +
->   sound/soc/bcm/Kconfig                              |    9 +
->   sound/soc/bcm/Makefile                             |    5 +
->   sound/soc/bcm/cygnus-pcm.c                         |  861 +++++++++++
->   sound/soc/bcm/cygnus-ssp.c                         | 1529 ++++++++++++++++++++
->   sound/soc/bcm/cygnus-ssp.h                         |  139 ++
->   6 files changed, 2610 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
->   create mode 100644 sound/soc/bcm/cygnus-pcm.c
->   create mode 100644 sound/soc/bcm/cygnus-ssp.c
->   create mode 100644 sound/soc/bcm/cygnus-ssp.h
->
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> This is hard to review since it's quite complex and doing things that
+> look like they might be using general purpose parts of the chip for
+> specialist purposes.
+>   
+
+We find there is a DC offset issue when recording. For the issue, it
+needs a HPF in ADC to reduce the offset, but no such hardware circuit.
+Thus, the driver configures the biquard filter as HPF when headset
+connected. It is a must setup for the codec. This patch sets the
+coefficients A1, A2, B0, B1, and B3 in the biquad filter to make the
+HPF funciton.
