@@ -1,63 +1,162 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v7 0/3] ASoC: cygnus: Add audio support for Broadcom
- Cygnus SoC
-Date: Fri, 20 May 2016 11:41:54 +0100
-Message-ID: <20160520104154.GI8206@sirena.org.uk>
-References: <1463514382-20930-1-git-send-email-simran.rai@broadcom.com>
- <573E23A2.4020907@broadcom.com>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] pcm: Don't store the state for
+	SND_PCM_STATE_SUSPENDED
+Date: Fri, 20 May 2016 09:41:25 +0000
+Message-ID: <HE1PR04MB212271FEAAEFBBE21A2E358FE34B0@HE1PR04MB2122.eurprd04.prod.outlook.com>
+References: <1462866346-11878-1-git-send-email-shengjiu.wang@freescale.com>
+ <s5h7ff2b9vx.wl-tiwai@suse.de>
+ <HE1PR04MB21229D4BBCC605559F98D3FFE3720@HE1PR04MB2122.eurprd04.prod.outlook.com>
+ <s5hzirx9nv4.wl-tiwai@suse.de>
+ <HE1PR04MB212240A8E6692FCFF12DF797E3720@HE1PR04MB2122.eurprd04.prod.outlook.com>
+ <s5hoa8d9iey.wl-tiwai@suse.de>
+ <HE1PR04MB2122FD4500AC192F85542DA2E3490@HE1PR04MB2122.eurprd04.prod.outlook.com>
+ <s5h60ubn42y.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="zgY/UHCnsaNnNXRx"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <573E23A2.4020907@broadcom.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Scott Branden <scott.branden@broadcom.com>
-Cc: Simran Rai <simran.rai@broadcom.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Lori Hikichi <lhikichi@broadcom.com>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org, Arun Parameswaran <arunp@broadcom.com>, alsa-devel@alsa-project.org, Simran <ssimran@lbrmn-ssimran-lnxub64.ric.broadcom.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com
+ (mail-db5eur01on0054.outbound.protection.outlook.com [104.47.2.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id E3AB9266646
+ for <alsa-devel@alsa-project.org>; Fri, 20 May 2016 11:41:30 +0200 (CEST)
+In-Reply-To: <s5h60ubn42y.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Takashi
 
---zgY/UHCnsaNnNXRx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   I tested your patch, after suspend and resume, the playback is stopped.
+It is caused by the DMA. DMA is not started after resume.
 
-On Thu, May 19, 2016 at 01:35:46PM -0700, Scott Branden wrote:
-> Looks good Simran.
->=20
-> Mark, anything else for us to do before this driver can be accepted
-> upstream?
+With your patch, DMA is not terminated but then is re-started. The driver don't
+support this behavior. 
 
-It's a new driver submitted in the first week of the merge window, I've
-not looked at it yet.
+Best regards
+Wang shengjiu
 
-Please don't top post, reply in line with needed context.  This allows
-readers to readily follow the flow of conversation and understand what
-you are talking about and also helps ensure that everything in the
-discussion is being addressed.
-
-Please don't send content free pings and please allow a reasonable time
-for review.  People get busy, go on holiday, attend conferences and so=20
-on so unless there is some reason for urgency (like critical bug fixes)
-please allow at least a couple of weeks for review.  If there have been
-review comments then people may be waiting for those to be addressed.
-Sending content free pings just adds to the mail volume (if they are
-seen at all) and if something has gone wrong you'll have to resend the
-patches anyway.
-
---zgY/UHCnsaNnNXRx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXPunxAAoJECTWi3JdVIfQDEkH/jW9qLUgVW3yV8FIVQEHTldD
-xgh6lFEywiSCEKkH3ZbhxrV670jYRD4HE9nw+0wxOr+naQ0PJ9y7/6VuzUskwHtl
-1LWOYvavbjUMisNF4EEDVJCyMBoZgNoY+4xY1sfCEcyv0kc6DeScAB61j72/ozRA
-ihbINaKaOKn2pmriGmHxoTetDDVIe0y+ffZAFnHFqJL6iR7lUrBg99pc31kD60uh
-YK7NCY2fUJRP7vLoSbJ4eFzDFx5ibG+j+x3qrFvvdvvX2w8+8NQ5h3pzsuBVDZMc
-UuphmnHB+rFoADOf23dNPWyKPbjfAa69ubG9sCOIpZ/iJUOvgw7q34pmlsaCsRY=
-=ofj0
------END PGP SIGNATURE-----
-
---zgY/UHCnsaNnNXRx--
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Wednesday, May 18, 2016 4:49 PM
+> To: Shengjiu Wang
+> Cc: perex@perex.cz; alsa-devel@alsa-project.org
+> Subject: Re: [PATCH] pcm: Don't store the state for
+> SND_PCM_STATE_SUSPENDED
+> 
+> On Wed, 18 May 2016 07:48:15 +0200,
+> Shengjiu Wang wrote:
+> >
+> > Hi Takashi
+> >
+> >   After adding your patch, I find another regression issue.
+> >
+> >   The alsa-lib may stop at
+> >
+> >   snd_pcm_write_areas()
+> > 		snd_pcm_wait_nocheck()
+> >
+> >   with suspend and resume test.
+> >
+> >   The reason is that:
+> >
+> >   In the beginning of playback, before the snd_pcm_dmix_start() is
+> > called, the system enter suspend. After resume,
+> snd_pcm_direct_resume()
+> > update the dmix->state, and dmix->state is 3 (RUNNING, because
+> > the dmix->spcm is in RUNNING from snd_pcm_dmix_open()).
+> >
+> >   So in snd_pcm_write_areas() the state is RUNNING, then
+> > snd_pcm_start() will never be called, after a while,
+> > alsa-lib will stop at the snd_pcm_wait_nocheck() for the kernel
+> > will not wake up the timer.
+> 
+> A good point.  Actually the culprit is that we declare dmix as if it's
+> supporting the resume properly.  Even if the resume works in the
+> slave, dmix itself can't guarantee the proper resume.  So, we should
+> rather drop the whole resume stuff from dmix & co.
+> 
+> Below is the patch against to the current git tree.  Give it a try.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> ---
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] pcm: Remove resume support from dmix & co
+> 
+> PCM dmix and other plugins inherit the resume behavior from the slave
+> PCM.  However, the resume on dmix can't work reliably even if the
+> slave PCM may do resume.  The running state of each dmix stream is
+> individual and may be PREPARED or RUN_PENDING while the slave PCM is
+> already in RUNNING.  And, when the slave PCM is resumed, the whole
+> samples that have been already mapped are also played back, even if
+> the corresponding dmix stream is still in SUSPENDED.  Such
+> inconsistencies can't be avoided as long as we manage each stream
+> individually.
+> 
+> That said, dmix & co can't provide the proper resume support "by
+> design".  For aligning with it, we should drop the whole resume code
+> and clear the PCM SND_PCM_INFO_RESUME flag.
+> 
+> Reported-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  src/pcm/pcm_direct.c | 24 ++----------------------
+>  1 file changed, 2 insertions(+), 22 deletions(-)
+> 
+> diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
+> index ac082f1a73b2..53c49929cb1f 100644
+> --- a/src/pcm/pcm_direct.c
+> +++ b/src/pcm/pcm_direct.c
+> @@ -837,27 +837,7 @@ int snd_pcm_direct_prepare(snd_pcm_t *pcm)
+> 
+>  int snd_pcm_direct_resume(snd_pcm_t *pcm)
+>  {
+> -	snd_pcm_direct_t *dmix = pcm->private_data;
+> -	int err;
+> -
+> -	snd_pcm_direct_semaphore_down(dmix, DIRECT_IPC_SEM_CLIENT);
+> -	/* resume only when the slave PCM is still in suspended state */
+> -	if (snd_pcm_state(dmix->spcm) != SND_PCM_STATE_SUSPENDED) {
+> -		err = 0;
+> -		goto out;
+> -	}
+> -
+> -	err = snd_pcm_resume(dmix->spcm);
+> -	if (err == -ENOSYS) {
+> -		/* FIXME: error handling? */
+> -		snd_pcm_prepare(dmix->spcm);
+> -		snd_pcm_start(dmix->spcm);
+> -		err = 0;
+> -	}
+> - out:
+> -	dmix->state = snd_pcm_state(dmix->spcm);
+> -	snd_pcm_direct_semaphore_up(dmix, DIRECT_IPC_SEM_CLIENT);
+> -	return err;
+> +	return -ENOSYS;
+>  }
+> 
+>  #define COPY_SLAVE(field) (dmix->shmptr->s.field = spcm->field)
+> @@ -865,7 +845,7 @@ int snd_pcm_direct_resume(snd_pcm_t *pcm)
+>  /* copy the slave setting */
+>  static void save_slave_setting(snd_pcm_direct_t *dmix, snd_pcm_t *spcm)
+>  {
+> -	spcm->info &= ~SND_PCM_INFO_PAUSE;
+> +	spcm->info &= ~(SND_PCM_INFO_PAUSE | SND_PCM_INFO_RESUME);
+> 
+>  	COPY_SLAVE(access);
+>  	COPY_SLAVE(format);
+> --
+> 2.8.2
