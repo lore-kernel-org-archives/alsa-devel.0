@@ -1,19 +1,17 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH 1/1] ASoC: pxa: Fix module autoload for
-	platform drivers
-Date: Sat, 21 May 2016 10:37:14 +0200
-Message-ID: <8760u7iz7p.fsf@belgarion.home>
-References: <1462548454-28597-1-git-send-email-andrea.adami@gmail.com>
+From: "P.W. Pulto" <pwpulto@studiopulto.org>
+Subject: journalctl suggests I report Bug to ALSA developers
+Date: Sat, 21 May 2016 10:45:47 +0200
+Message-ID: <5740203B.70701@studiopulto.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp01.smtpout.orange.fr
- [80.12.242.123])
- by alsa0.perex.cz (Postfix) with ESMTP id E82772606E3
- for <alsa-devel@alsa-project.org>; Sat, 21 May 2016 10:37:17 +0200 (CEST)
-In-Reply-To: <1462548454-28597-1-git-send-email-andrea.adami@gmail.com>
- (Andrea Adami's message of "Fri, 6 May 2016 17:27:34 +0200")
+Received: from relay-b01.edpnet.be (relay-b01.edpnet.be [212.71.1.221])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7FD012606E3
+ for <alsa-devel@alsa-project.org>; Sat, 21 May 2016 10:45:55 +0200 (CEST)
+Received: from [192.168.1.5] (212.71.9.81.dyn.edpnet.net [212.71.9.81]) by
+ relay-b01.edpnet.be with ESMTP id px2hXNh9VW0ORNSt for
+ <alsa-devel@alsa-project.org>; Sat, 21 May 2016 10:45:51 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,21 +21,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andrea Adami <andrea.adami@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Daniel Mack <daniel@zonque.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Andrea Adami <andrea.adami@gmail.com> writes:
-
-> These platform drivers are lacking MODULE_ALIAS so module autoloading
-> doesn't work. Tested on corgi and poodle with kernel 4.4.
->
-> Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
-Yes, why not.
-
-Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
-
-Cheers.
-
---
-Robert
+RGVhciBBTFNBIGRldmVsb3BlcnMsCgpIYXZpbmcgYSBwcm9ibGVtIHdpdGggbXkgU2VubmhlaXNl
+ciBEVyBQcm8gMiBEZWN0IEhlYWRzZXQsIEkgbG9va2VkIGluIAp0aGUgam91cm5hbGN0bC4gSXQg
+c3VnZ2VzdGVkIEkgcmVwb3J0IGEgYnVnIHRvIHRoZSBBTFNBIGRldmVsb3BlcnMuCkkgaGF2ZSBu
+byBpZGVhIGlmIHRoaXMgd291bGQgYmUgYSAia2VybmVsIGRyaXZlciBidWciIG9yIGFuICJvdGhl
+ciBBTFNBIApidWciLiBIb3BlZnVsbHkgSSdtIGF0IHRoZSByaWdodCBhZGRyZXNzLgoKVGhlIHBy
+b2JsZW0gb2NjdXJzIHdoZW4gSSB0YWtlIHRoZSBoZWFkc2V0IG9mZiB0aGUgYmFzZSBzdGF0aW9u
+IGFuZCBhIApjb25uZWN0aW9uIGJldHdlZW4gYmFzZSBzdGF0aW9uIGFuZCBoZWFkc2V0IGlzIGVz
+dGFibGlzaGVkLgoKTXkgQUxTQS1pbmZvOgotLS0tLS0tLS0tLS0tLS0tLS0tCmh0dHA6Ly93d3cu
+YWxzYS1wcm9qZWN0Lm9yZy9kYi8/Zj0yZWFlZWEwNDBmZWY3Y2MyNDc2YzIzOWUxZmVjOTBkZDJi
+ZjRlZWE4CgpUaGUgam91cm5hbGN0bCBvdXRwdXQ6Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tCmpvdXJuYWxjdGwgIC0tbm8tcGFnZXIgLS1zaW5jZSAiMjUgbWluIGFnbyIKCk1heSAyMCAw
+OTowNTozNCBzdHVkaW9wdWx0by11YnVudHUtMSBwdWxzZWF1ZGlvWzIwOThdOiBbYWxzYS1zaW5r
+LVVTQiAKQXVkaW9dIGFsc2Etc2luay5jOiBBTFNBIHdva2UgdXMgdXAgdG8gd3JpdGUgbmV3IGRh
+dGEgdG8gdGhlIGRldmljZSwgYnV0IAp0aGVyZSB3YXMgYWN0dWFsbHkgbm90aGluZyB0byB3cml0
+ZSEKTWF5IDIwIDA5OjA1OjM0IHN0dWRpb3B1bHRvLXVidW50dS0xIHB1bHNlYXVkaW9bMjA5OF06
+IFthbHNhLXNpbmstVVNCIApBdWRpb10gYWxzYS1zaW5rLmM6IE1vc3QgbGlrZWx5IHRoaXMgaXMg
+YSBidWcgaW4gdGhlIEFMU0EgZHJpdmVyIAonc25kX3VzYl9hdWRpbycuIFBsZWFzZSByZXBvcnQg
+dGhpcyBpc3N1ZSB0byB0aGUgQUxTQSBkZXZlbG9wZXJzLgpNYXkgMjAgMDk6MDU6MzQgc3R1ZGlv
+cHVsdG8tdWJ1bnR1LTEgcHVsc2VhdWRpb1syMDk4XTogW2Fsc2Etc2luay1VU0IgCkF1ZGlvXSBh
+bHNhLXNpbmsuYzogV2Ugd2VyZSB3b2tlbiB1cCB3aXRoIFBPTExPVVQgc2V0IC0tIGhvd2V2ZXIg
+YSAKc3Vic2VxdWVudCBzbmRfcGNtX2F2YWlsKCkgcmV0dXJuZWQgMCBvciBhbm90aGVyIHZhbHVl
+IDwgbWluX2F2YWlsLgoKSG9wZWZ1bGx5IHRoaXMgaXMgc3VmZmljaWVudCBpbmZvcm1hdGlvbi4g
+T2J2aW91c2x5IHlvdSB3ZWxjb21lIHRvIGFzayAKZm9yIG1pc3NpbmcgaW5mbyEKS2luZCByZWdh
+cmRzLAoKUC5XLiBQdWx0bwoKCgotLSAKCkxpa2UgdXMgb24gRmFjZWJvb2sgPGh0dHBzOi8vd3d3
+LmZhY2Vib29rLmNvbS9zdHVkaW9wdWx0bz4KCmRoci4gUC5XLiBQdWx0bwoKU3R1ZGlvIFB1bHRv
+IHZ6dwpKZWYgVmFuZGVybWV1bGVuc3RyYWF0IDM3CjkwNTAgR2VudGJydWdnZQpCw6lsZ2ljYQoK
+dGVsOiAwMDMyIDkgMjIwIDczIDQwCmUtbWFpbDogcHdwdWx0b0BzdHVkaW9wdWx0by5vcmcKaHR0
+cDovL3d3dy5zdHVkaW9wdWx0by5vcmcKCklCQU4uOiBCRTAzIDQ0ODcgNjU3NiA1MTg0CkJJQzog
+S1JFREJFQkIKb25kZXJuIG5yLjogQkUgMDQ3MCA0MjcgODI4Cl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
