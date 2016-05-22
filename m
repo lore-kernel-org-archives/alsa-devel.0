@@ -1,17 +1,20 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 43/54] MAINTAINERS: Add file patterns for sound
-	device tree bindings
-Date: Sun, 22 May 2016 11:06:20 +0200
-Message-ID: <1463907991-7916-44-git-send-email-geert@linux-m68k.org>
-References: <1463907991-7916-1-git-send-email-geert@linux-m68k.org>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: Wolfson 5102 on Beaglebone Black using ALSA
+Date: Sun, 22 May 2016 14:18:54 +0100
+Message-ID: <20160522131854.GT1646@localhost.localdomain>
+References: <4BEB79E8-7315-48DF-BBB6-E944114621BF@gmail.com>
+ <47b8f68c-12be-adb5-1e29-7ca19feac581@ti.com>
+ <F5EE3526-E76D-485C-BB9C-B3A7B0DBA1F1@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [195.130.137.88])
- by alsa0.perex.cz (Postfix) with ESMTP id B670926070F
- for <alsa-devel@alsa-project.org>; Sun, 22 May 2016 11:06:46 +0200 (CEST)
-In-Reply-To: <1463907991-7916-1-git-send-email-geert@linux-m68k.org>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 68E3C26070F
+ for <alsa-devel@alsa-project.org>; Sun, 22 May 2016 15:18:47 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <F5EE3526-E76D-485C-BB9C-B3A7B0DBA1F1@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,35 +24,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Clark Dunson <cdunson@gmail.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Submitters of device tree binding documentation may forget to CC
-the subsystem maintainer if this is missing.
-
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
----
-Please apply this patch directly if you want to be involved in device
-tree binding documentation for your subsystem.
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 139824579fa97c2c..9d81eff6577ff886 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10728,6 +10728,7 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
- W:	http://alsa-project.org/main/index.php/ASoC
- S:	Supported
-+F:	Documentation/devicetree/bindings/sound/
- F:	Documentation/sound/alsa/soc/
- F:	sound/soc/
- F:	include/sound/soc*
--- 
-1.9.1
+T24gVHVlLCBNYXkgMTcsIDIwMTYgYXQgMDg6MTI6MzJBTSAtMDcwMCwgQ2xhcmsgRHVuc29uIHdy
+b3RlOgo+IFRoYW5rcyBndXlzLAo+IAo+IENhbm5vdCB0aGFuayB5b3UgZW5vdWdoLiAgV2XigJls
+bCBwcm9iYWJseSBnbyBhdCBpdCBmcm9tIGJvdGgKPiBhbmdsZXMsIHNjaGVkdWxlIGlzIHZlcnkg
+dGlnaHQuICBXZeKAmXZlIHdvcmtlZCB3aXRoIGJvdGggdGhlCj4gMy4xOCBjaXJydXMgYnJhbmNo
+LCBhbmQgNC40IG1haW4gbGluZSwgd291bGQgYmUgc28gYXdlc29tZSBpZgo+IHdlIGNvdWxkIGZp
+Z3VyZSBhIHdheSB0byB3cml0ZSB0byB0aGUgd201MTAyIHJlZ21hcCBmcm9tIHVzZXIKPiBsYW5k
+LiAgKEJ1c3lib3ggaTJjc2V0IGlzIGZyb20gdGhlIHN0b25lIGFnZXMpLgoKWW91IGNvdWxkIHVz
+ZSBkZWJ1Z2ZzLCBpZiB5b3UgbG9va2luZyBpbgpkcml2ZXJzL2Jhc2UvcmVnbWFwL3JlZ21hcC1k
+ZWJ1Z2ZzLmMgYW5kIGNoYW5nZSB0aGUgdW5kZWYgdG8KYSBkZWZpbmUgZm9yIFJFR01BUF9BTExP
+V19XUklURV9ERUJVR0ZTLiBUaGVuIHlvdSBjYW4gd3JpdGUKcmVnaXN0ZXJzIGJ5IGVjaG9pbmcg
+cmVnaXN0ZXIgdmFsdWUgcGFpcnMgdG8gdGhlIHRoZSByZWdpc3RlcnMKZmlsZSBpbiBkZWJ1Z2Zz
+LiBCZSBjYXJlZnVsIHRob3VnaCB0aGlzIGlzIG9ubHkgaW50ZW5kZWQgZm9yCnRlc3RpbmcgYW5k
+IGFzIHRoZSBkZWZpbmUgbWFrZXMgYWxsIHJlZ21hcHMgd3JpdGFibGUgZnJvbQp1c2VyLXNwYWNl
+IGRlcGVuZGluZyBvbiB5b3VyIHN5c3RlbSB0aGF0IG1heSBsZXQgeW91IGRvIHRoaW5ncwp0aGF0
+IGRhbWFnZSBoYXJkd2FyZS4KClRoYW5rcywKQ2hhcmxlcwpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
