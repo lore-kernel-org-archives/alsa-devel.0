@@ -1,63 +1,95 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 2/2] ASoC: wm8985: add device-tree
-	support
-Date: Mon, 23 May 2016 09:31:40 +0100
-Message-ID: <20160523083140.GB20422@localhost.localdomain>
-References: <1463489389-17719-1-git-send-email-petr@barix.com>
- <1463489389-17719-2-git-send-email-petr@barix.com>
- <20160520162128.GS1646@localhost.localdomain>
- <CAEP=dzB2527G27ym5pP2C1AxMKKeU7HMiYZ8_=48VBZdv6jxbw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 7197226070F
- for <alsa-devel@alsa-project.org>; Mon, 23 May 2016 10:31:35 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <CAEP=dzB2527G27ym5pP2C1AxMKKeU7HMiYZ8_=48VBZdv6jxbw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Petr Kulhavy <petr@barix.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, Kumar Gala <galak@codeaurora.org>, Plamen Prodanov <plamen@barix.com>
+From: Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Subject: [PATCH 0/4 v7] Add I2S audio support for ARC AXS10x boards
+Date: Mon, 23 May 2016 11:02:21 +0100
+Message-ID: <cover.1463996627.git.joabreu@synopsys.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, Carlos Palminha <CARLOS.PALMINHA-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Alexey Brodkin <Alexey.Brodkin-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 23, 2016 at 09:23:05AM +0200, Petr Kulhavy wrote:
-> On 20 May 2016 at 18:21, Charles Keepax
-> <ckeepax@opensource.wolfsonmicro.com> wrote:
-> > On Tue, May 17, 2016 at 02:49:49PM +0200, Petr Kulhavy wrote:
-> >> +static enum wm8985_type wm8985_data = WM8985;
-> >> +static enum wm8985_type wm8758_data = WM8758;
-> >> +
-> >> +static const struct of_device_id wm8985_of_match[] = {
-> >> +     { .compatible = "wlf,wm8985", .data = &wm8985_data},
-> >> +     { .compatible = "wlf,wm8758", .data = &wm8758_data},
-> >
-> > You can probably just use (void *)WM8985 instead here.
-> 
-> I know this pretty safe with integers but can you do this with enums?
-> Doesn't it lead to undefined behaviour?
+ARC AXS10x platforms consist of a mainboard with several peripherals.
+One of those peripherals is an HDMI output port controlled by the ADV7511
+transmitter.
 
-Hmm... its not uncommon that it is done in the kernel, but
-that is rarely an indicator of if something is actually
-technically valid or not. Casting from an integer to a pointer
-is technically implementation defined, but we clearly rely on
-gcc's implementation in the kernel. However, without actually
-reading the spec in more detail I am unclear on if an enum counts
-as an integer here, my suspicion is that it would since it
-generally always implicitly casts to an int.
+This patch set adds I2S audio for the AXS10x platform.
 
-I guess the correct fix is that .data should probably be a
-kernel_ulong_t in of_device_id. But if no one else objects I am
-happy for you to leave your current code as is.
+NOTE:
+Although the mainline I2S driver uses ALSA DMA engine, this controller
+can be built without DMA support so it was necessary to add this
+custom platform driver so that HDMI audio works in AXS boards.
 
-Thanks,
-Charles
+Changes v6 -> v7:
+* Discard the use of memcpy
+* Report IRQ_HANDLED only when there is an IRQ
+* Use interrupts to check if PIO mode is in use
+* Unmask interrupts only when in PIO mode
+* Remove empty functions
+
+Changes v5 -> v6:
+* Use SNDRV_DMA_TYPE_CONTINUOUS
+
+Changes v4 -> v5:
+* Resolve undefined references when compiling as module
+* Dropped adv7511 audio patches
+* Use DMA properties in I2S to check which mode to use: PIO or DMA (as suggested by Lars-Peter Clausen)
+
+Changes v3 -> v4:
+* Reintroduced custom PCM driver (see note below)
+* Use DT boolean to switch between ALSA DMA engine PCM or custom PCM
+* Use fifo depth to program I2S FCR
+* Update I2S documentation
+
+Changes v2 -> v3:
+* Removed pll_config functions (as suggested by Alexey Brodkin)
+* Removed HDMI start at adv7511_core (as suggested by Archit Taneja)
+* Use NOP functions for adv7511_audio (as suggested by Archit Taneja)
+* Added adv7511_audio_exit() function (as suggested by Archit Taneja)
+* Moved adv7511 to its own folder (as suggested by Archit Taneja)
+* Separated file rename of adv7511_core (as suggested by Emil Velikov)
+* Compile adv7511 as module if ALSA SoC is compiled as module
+* Load adv7511 audio only if declared in device tree (as suggested by Laurent Pinchart)
+* Dropped custom platform driver, using now ALSA DMA engine
+* Dropped IRQ handler for I2S
+
+Changes v1 -> v2:
+* DT bindings moved to separate patch (as suggested by Alexey Brodkin)
+* Removed defconfigs entries (as suggested by Alexey Brodkin)
+
+
+Cc: Carlos Palminha <palminha-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
+Cc: Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
+Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Alexey Brodkin <abrodkin-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Cc: linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+
+Jose Abreu (4):
+  ASoC: dwc: Add helper functions to disable/enable irqs
+  ASoC: dwc: Do not use devm_clk_get() if using platform data
+  ASoC: dwc: Add PIO PCM extension
+  ASoC: dwc: Add irq parameter to DOCUMENTATION
+
+ .../devicetree/bindings/sound/designware-i2s.txt   |   4 +
+ sound/soc/dwc/Kconfig                              |   9 +
+ sound/soc/dwc/Makefile                             |   5 +-
+ sound/soc/dwc/designware_i2s.c                     | 229 ++++++++++-----------
+ sound/soc/dwc/designware_pcm.c                     | 220 ++++++++++++++++++++
+ sound/soc/dwc/local.h                              | 122 +++++++++++
+ 6 files changed, 467 insertions(+), 122 deletions(-)
+ create mode 100644 sound/soc/dwc/designware_pcm.c
+ create mode 100644 sound/soc/dwc/local.h
+
+-- 
+1.9.1
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
