@@ -1,95 +1,69 @@
-From: Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
-Subject: [PATCH 0/4 v7] Add I2S audio support for ARC AXS10x boards
-Date: Mon, 23 May 2016 11:02:21 +0100
-Message-ID: <cover.1463996627.git.joabreu@synopsys.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, Carlos Palminha <CARLOS.PALMINHA-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Alexey Brodkin <Alexey.Brodkin-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+From: Jose Abreu <Jose.Abreu@synopsys.com>
+Subject: [PATCH 2/4 v7] ASoC: dwc: Do not use devm_clk_get() if using platform data
+Date: Mon, 23 May 2016 11:02:23 +0100
+Message-ID: <d288d87fc0f1c07f4d301dc08d32b1bf9915446c.1463996627.git.joabreu@synopsys.com>
+References: <cover.1463996627.git.joabreu@synopsys.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1463996627.git.joabreu@synopsys.com>
+In-Reply-To: <cover.1463996627.git.joabreu@synopsys.com>
+References: <cover.1463996627.git.joabreu@synopsys.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Jose Abreu <Jose.Abreu@synopsys.com>, Carlos Palminha <CARLOS.PALMINHA@synopsys.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh@kernel.org>, Alexey Brodkin <Alexey.Brodkin@synopsys.com>, linux-snps-arc@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-ARC AXS10x platforms consist of a mainboard with several peripherals.
-One of those peripherals is an HDMI output port controlled by the ADV7511
-transmitter.
+When using platform data the devm_clk_get() function is
+called causing a probe failure if the clock is not
+declared. As we can pass the clock handler by platform
+data call only devm_clk_get() when platform data is not
+used.
 
-This patch set adds I2S audio for the AXS10x platform.
+Signed-off-by: Jose Abreu <joabreu@synopsys.com>
+Cc: Carlos Palminha <palminha@synopsys.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Rob Herring <robh@kernel.org>
+Cc: Alexey Brodkin <abrodkin@synopsys.com>
+Cc: linux-snps-arc@lists.infradead.org
+Cc: alsa-devel@alsa-project.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
 
-NOTE:
-Although the mainline I2S driver uses ALSA DMA engine, this controller
-can be built without DMA support so it was necessary to add this
-custom platform driver so that HDMI audio works in AXS boards.
+This patch was only introduced in v7.
 
-Changes v6 -> v7:
-* Discard the use of memcpy
-* Report IRQ_HANDLED only when there is an IRQ
-* Use interrupts to check if PIO mode is in use
-* Unmask interrupts only when in PIO mode
-* Remove empty functions
+ sound/soc/dwc/designware_i2s.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-Changes v5 -> v6:
-* Use SNDRV_DMA_TYPE_CONTINUOUS
-
-Changes v4 -> v5:
-* Resolve undefined references when compiling as module
-* Dropped adv7511 audio patches
-* Use DMA properties in I2S to check which mode to use: PIO or DMA (as suggested by Lars-Peter Clausen)
-
-Changes v3 -> v4:
-* Reintroduced custom PCM driver (see note below)
-* Use DT boolean to switch between ALSA DMA engine PCM or custom PCM
-* Use fifo depth to program I2S FCR
-* Update I2S documentation
-
-Changes v2 -> v3:
-* Removed pll_config functions (as suggested by Alexey Brodkin)
-* Removed HDMI start at adv7511_core (as suggested by Archit Taneja)
-* Use NOP functions for adv7511_audio (as suggested by Archit Taneja)
-* Added adv7511_audio_exit() function (as suggested by Archit Taneja)
-* Moved adv7511 to its own folder (as suggested by Archit Taneja)
-* Separated file rename of adv7511_core (as suggested by Emil Velikov)
-* Compile adv7511 as module if ALSA SoC is compiled as module
-* Load adv7511 audio only if declared in device tree (as suggested by Laurent Pinchart)
-* Dropped custom platform driver, using now ALSA DMA engine
-* Dropped IRQ handler for I2S
-
-Changes v1 -> v2:
-* DT bindings moved to separate patch (as suggested by Alexey Brodkin)
-* Removed defconfigs entries (as suggested by Alexey Brodkin)
-
-
-Cc: Carlos Palminha <palminha-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
-Cc: Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
-Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Alexey Brodkin <abrodkin-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
-Cc: linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-
-Jose Abreu (4):
-  ASoC: dwc: Add helper functions to disable/enable irqs
-  ASoC: dwc: Do not use devm_clk_get() if using platform data
-  ASoC: dwc: Add PIO PCM extension
-  ASoC: dwc: Add irq parameter to DOCUMENTATION
-
- .../devicetree/bindings/sound/designware-i2s.txt   |   4 +
- sound/soc/dwc/Kconfig                              |   9 +
- sound/soc/dwc/Makefile                             |   5 +-
- sound/soc/dwc/designware_i2s.c                     | 229 ++++++++++-----------
- sound/soc/dwc/designware_pcm.c                     | 220 ++++++++++++++++++++
- sound/soc/dwc/local.h                              | 122 +++++++++++
- 6 files changed, 467 insertions(+), 122 deletions(-)
- create mode 100644 sound/soc/dwc/designware_pcm.c
- create mode 100644 sound/soc/dwc/local.h
-
+diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
+index 4c4f0dc..a97be8e 100644
+--- a/sound/soc/dwc/designware_i2s.c
++++ b/sound/soc/dwc/designware_i2s.c
+@@ -690,15 +690,16 @@ static int dw_i2s_probe(struct platform_device *pdev)
+ 				dev_err(&pdev->dev, "no clock configure method\n");
+ 				return -ENODEV;
+ 			}
+-		}
+-		dev->clk = devm_clk_get(&pdev->dev, clk_id);
++		} else {
++			dev->clk = devm_clk_get(&pdev->dev, clk_id);
+ 
+-		if (IS_ERR(dev->clk))
+-			return PTR_ERR(dev->clk);
++			if (IS_ERR(dev->clk))
++				return PTR_ERR(dev->clk);
+ 
+-		ret = clk_prepare_enable(dev->clk);
+-		if (ret < 0)
+-			return ret;
++			ret = clk_prepare_enable(dev->clk);
++			if (ret < 0)
++				return ret;
++		}
+ 	}
+ 
+ 	dev_set_drvdata(&pdev->dev, dev);
 -- 
 1.9.1
-
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
