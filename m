@@ -1,78 +1,52 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/4 v7] ASoC: dwc: Do not use
- devm_clk_get() if using platform data
-Date: Mon, 23 May 2016 17:57:13 +0100
-Message-ID: <20160523165713.GX8206@sirena.org.uk>
-References: <cover.1463996627.git.joabreu@synopsys.com>
- <d288d87fc0f1c07f4d301dc08d32b1bf9915446c.1463996627.git.joabreu@synopsys.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] [RFC-PATCH 0/2] ASoC: simple_card: support for
+ hw-params rules
+Date: Mon, 23 May 2016 17:59:31 +0100
+Message-ID: <20160523165931.GY8206@sirena.org.uk>
+References: <1463747445-14167-1-git-send-email-kernel@martin.sperl.org>
+ <573F6279.8040008@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1919943140707011726=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 04E4626043A
- for <alsa-devel@alsa-project.org>; Mon, 23 May 2016 18:57:30 +0200 (CEST)
-In-Reply-To: <d288d87fc0f1c07f4d301dc08d32b1bf9915446c.1463996627.git.joabreu@synopsys.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jose Abreu <Jose.Abreu@synopsys.com>
-Cc: Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Alexey Brodkin <Alexey.Brodkin@synopsys.com>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, Carlos Palminha <CARLOS.PALMINHA@synopsys.com>, linux-snps-arc@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ELMKpCVvjiB+uwRu"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <573F6279.8040008-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Cc: kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1919943140707011726==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="4PR/+zdSfVlxyWed"
-Content-Disposition: inline
-
-
---4PR/+zdSfVlxyWed
+--ELMKpCVvjiB+uwRu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, May 23, 2016 at 11:02:23AM +0100, Jose Abreu wrote:
+On Fri, May 20, 2016 at 09:16:09PM +0200, Lars-Peter Clausen wrote:
 
-> When using platform data the devm_clk_get() function is
-> called causing a probe failure if the clock is not
-> declared. As we can pass the clock handler by platform
-> data call only devm_clk_get() when platform data is not
-> used.
+> How about allowing to embed eBPF bytecode in the DT that can be installed as
+> a constraint set? This would allow maximum for flexibility and also make the
+> implementation a lot easier.
 
-No, this is broken - if the device needs a clock the device needs a
-clock and clock names should be static rather than passed in via
-platform data (indeed NULL is a perfectly valid clock name).  The system
-integation should map in a clock as needed, if it's just a fixed crystal
-or something then just register a fixed clock and connect it up.
+That seems somewhat Linux specific, I'd like to see some DT maintainer
+buy in on that one as well as Takashi's thoughts.
 
---4PR/+zdSfVlxyWed
+--ELMKpCVvjiB+uwRu
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXQzZoAAoJECTWi3JdVIfQR8kH/06w5PKPgXydQmaUoZe827Zr
-TZxCfzV3r2AffBSDGIK5rXscDBzd6obkbc8+FHgC7MqZpEjtHBLRCiy+ukFdrsZ2
-Ue+c5dLvVpx46OfXqmBfRMhOxBqSY5JfE9rYBkrZo5M3Q+cwe4BLJU9ErubfU34s
-vG6JlFXH9vQmsUahC4F6kL+Sffhazmzt4dBsWzasgcohBbuyQ4dGCLNdwG8BTobz
-qkRVx2K1YaaKz0zoKK0X3MrW6ETvtnUuuNeVz5vdhGahOG/eZHvFqv4GaLycTvVd
-9mDQV8pZzvConI0GWOBvNjzF2hQgXBgM1Gj10P9xeBAH7fpY1aJOCoZGlj9diX4=
-=1xV8
+iQEcBAEBCAAGBQJXQzbyAAoJECTWi3JdVIfQs88H/3IgsBaXk7YLTH2r/SkMnmVO
+9Fs9+x0HMcyGkL0RRVJUOqI4sISa1d7cnmGvzgv0CnONGST/7I8tfQSVGZ6JKrMK
+CACCMxw9QfyGzpCD/3w+xtsxnkNr4cEvGCmHeA2JdxEIShIlACVcym5e4uH+Sh9t
+ApTvXuuihoqmmJG+qovkuW8wJBDJNnnegjUP5r2V47xd3n5t4lBOcK0Br3XCYsru
+SMAIYxdaGwUI3qRVNhd8e3l2dq4m1ko9aUGdiw/8J83gZu5QqdWh6yjdIm3AHKMt
+er3mfVDfOq7ywqePYMVSjKMfUYRFenhTicctcmlmIFvjkWvcEkJ7IDbTUuaRFGY=
+=NCt9
 -----END PGP SIGNATURE-----
 
---4PR/+zdSfVlxyWed--
-
---===============1919943140707011726==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1919943140707011726==--
+--ELMKpCVvjiB+uwRu--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
