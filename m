@@ -1,23 +1,22 @@
-From: Petr Kulhavy <petr@barix.com>
-Subject: Re: [PATCH v2 2/2] ASoC: wm8985: add support for WM8758
-Date: Mon, 23 May 2016 10:17:50 +0200
-Message-ID: <CAEP=dzD_AzNu2cEJ2k8OwXt0F1ZB4aKPvL_T+eUJvQEs92ZWpQ@mail.gmail.com>
-References: <1463489334-17549-1-git-send-email-petr@barix.com>
- <1463489334-17549-3-git-send-email-petr@barix.com>
- <20160520161143.GQ1646@localhost.localdomain>
- <CAEP=dzAarh55OFtFvnK0amreBaip3oFxq=bih-bwAXPu4O7hjQ@mail.gmail.com>
- <20160523075353.GA20422@localhost.localdomain>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 2/2] ASoC: wm8985: add device-tree
+	support
+Date: Mon, 23 May 2016 09:31:40 +0100
+Message-ID: <20160523083140.GB20422@localhost.localdomain>
+References: <1463489389-17719-1-git-send-email-petr@barix.com>
+ <1463489389-17719-2-git-send-email-petr@barix.com>
+ <20160520162128.GS1646@localhost.localdomain>
+ <CAEP=dzB2527G27ym5pP2C1AxMKKeU7HMiYZ8_=48VBZdv6jxbw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f179.google.com (mail-yw0-f179.google.com
- [209.85.161.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 73584265274
- for <alsa-devel@alsa-project.org>; Mon, 23 May 2016 10:18:11 +0200 (CEST)
-Received: by mail-yw0-f179.google.com with SMTP id c127so46787603ywb.1
- for <alsa-devel@alsa-project.org>; Mon, 23 May 2016 01:18:11 -0700 (PDT)
-In-Reply-To: <20160523075353.GA20422@localhost.localdomain>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7197226070F
+ for <alsa-devel@alsa-project.org>; Mon, 23 May 2016 10:31:35 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <CAEP=dzB2527G27ym5pP2C1AxMKKeU7HMiYZ8_=48VBZdv6jxbw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,91 +26,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Plamen Prodanov <plamen@barix.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Petr Kulhavy <petr@barix.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, Kumar Gala <galak@codeaurora.org>, Plamen Prodanov <plamen@barix.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 23 May 2016 at 09:53, Charles Keepax
-<ckeepax@opensource.wolfsonmicro.com> wrote:
-> On Mon, May 23, 2016 at 09:34:26AM +0200, Petr Kulhavy wrote:
->> On 20 May 2016 at 18:11, Charles Keepax
->> <ckeepax@opensource.wolfsonmicro.com> wrote:
->> > On Tue, May 17, 2016 at 02:48:54PM +0200, Petr Kulhavy wrote:
->> >> The WM8758 chip is almost identical to WM8985 with the difference that it
->> >> doesn't feature the AUX input. This patch adds the WM8758 support into the
->> >> WM8985 driver.
->> >>
->> >> The chip selection is done by the I2C name. The SPI probe supports only
->> >> the WM8985.
->> >>
->> >> Signed-off-by: Petr Kulhavy <petr@barix.com>
->> >> ---
->> >> +
->> >> +static int wm8985_add_widgets(struct snd_soc_codec *codec)
->> >> +{
->> >> +     struct wm8985_priv *wm8985 = snd_soc_codec_get_drvdata(codec);
->> >> +     struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
->> >> +
->> >> +     snd_soc_dapm_new_controls(dapm, wm8985_common_dapm_widgets,
->> >> +             ARRAY_SIZE(wm8985_common_dapm_widgets));
->> >> +     snd_soc_dapm_add_routes(dapm, wm8985_common_dapm_routes,
->> >> +             ARRAY_SIZE(wm8985_common_dapm_routes));
->> >> +
->> >> +     switch (wm8985->dev_type) {
->> >> +     case WM8758:
->> >> +             snd_soc_add_codec_controls(codec, wm8985_alc_snd_controls,
->> >> +                     ARRAY_SIZE(wm8985_alc_snd_controls));
->> >> +             snd_soc_add_codec_controls(codec, wm8985_adc_snd_controls,
->> >> +                     ARRAY_SIZE(wm8985_adc_snd_controls));
->> >> +             snd_soc_add_codec_controls(codec, wm8985_dac_snd_controls,
->> >> +                     ARRAY_SIZE(wm8985_dac_snd_controls));
->> >> +             snd_soc_add_codec_controls(codec, wm8985_eq_snd_controls,
->> >> +                     ARRAY_SIZE(wm8985_eq_snd_controls));
->> >> +             snd_soc_add_codec_controls(codec, wm8985_3d_snd_controls,
->> >> +                     ARRAY_SIZE(wm8985_3d_snd_controls));
->> >
->> > Why not just put all these in a common controls array? They seem
->> > to all be used on 8985 as well.
->>
->> In general I agree with you. But doesn't the order in which
->> snd_soc_add_codec_controls() is called affect the order in which the
->> controls appear in the mixer?
->> I have split the controls in order to preserve the original order of
->> the controls.
->
-> Personally I would preference keeping the code clean rather than
-> preserving the order of the controls. I don't think the absolute
-> numerical position of the controls is normally considered an
-> important ABI to preserve, aside from anything else it could be
-> affected by things like probe order between cards.
+On Mon, May 23, 2016 at 09:23:05AM +0200, Petr Kulhavy wrote:
+> On 20 May 2016 at 18:21, Charles Keepax
+> <ckeepax@opensource.wolfsonmicro.com> wrote:
+> > On Tue, May 17, 2016 at 02:49:49PM +0200, Petr Kulhavy wrote:
+> >> +static enum wm8985_type wm8985_data = WM8985;
+> >> +static enum wm8985_type wm8758_data = WM8758;
+> >> +
+> >> +static const struct of_device_id wm8985_of_match[] = {
+> >> +     { .compatible = "wlf,wm8985", .data = &wm8985_data},
+> >> +     { .compatible = "wlf,wm8758", .data = &wm8758_data},
+> >
+> > You can probably just use (void *)WM8985 instead here.
+> 
+> I know this pretty safe with integers but can you do this with enums?
+> Doesn't it lead to undefined behaviour?
 
-That makes sense. I will do that.
+Hmm... its not uncommon that it is done in the kernel, but
+that is rarely an indicator of if something is actually
+technically valid or not. Casting from an integer to a pointer
+is technically implementation defined, but we clearly rely on
+gcc's implementation in the kernel. However, without actually
+reading the spec in more detail I am unclear on if an enum counts
+as an integer here, my suspicion is that it would since it
+generally always implicitly casts to an int.
 
->> >>  err_reg_enable:
->> >> @@ -1047,13 +1164,6 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8985 = {
->> >>       .probe = wm8985_probe,
->> >>       .set_bias_level = wm8985_set_bias_level,
->> >>       .suspend_bias_off = true,
->> >> -
->> >> -     .controls = wm8985_snd_controls,
->> >> -     .num_controls = ARRAY_SIZE(wm8985_snd_controls),
->> >> -     .dapm_widgets = wm8985_dapm_widgets,
->> >> -     .num_dapm_widgets = ARRAY_SIZE(wm8985_dapm_widgets),
->> >> -     .dapm_routes = wm8985_dapm_routes,
->> >> -     .num_dapm_routes = ARRAY_SIZE(wm8985_dapm_routes),
->> >
->> > I think you should still be able to use these for the common
->> > functionality.
->>
->> All these are set by wm8985_add_widgets() now.
->> Or maybe I didn't quite get what you mean?
->
-> My point was just that you can still use these helpers for the
-> common stuff and then wm8985_add_widgets needs to only add the
-> codec specific stuff.
+I guess the correct fix is that .data should probably be a
+kernel_ulong_t in of_device_id. But if no one else objects I am
+happy for you to leave your current code as is.
 
-Ah, now I see what you mean! I didn't know it can be combined like that.
-Makes absolutely sense, I will change that.
-
-Thanks
-Petr
+Thanks,
+Charles
