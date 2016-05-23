@@ -1,19 +1,21 @@
-From: Petr Kulhavy <brain@jikos.cz>
-Subject: [PATCH] ASoC: tas571x: add input channel mixer for
-	TAS5717/19
-Date: Mon, 23 May 2016 23:12:47 +0200
-Message-ID: <1464037967-24671-1-git-send-email-brain@jikos.cz>
+From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
+Subject: Re: [PATCH v2 2/2] ASoC: da7219: Convert driver to use
+ generic device/fwnode functions
+Date: Mon, 23 May 2016 22:53:07 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A0337D463EEB5@SW-EX-MBX01.diasemi.com>
+References: <cover.1463477116.git.Adam.Thomson.Opensource@diasemi.com>
+ <eea79e2c26dafa785451931387cfce716bd150d4.1463477116.git.Adam.Thomson.Opensource@diasemi.com>
+ <1463664451.31269.3.camel@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fep18.mx.upcmail.net (fep18.mx.upcmail.net [62.179.121.38])
- by alsa0.perex.cz (Postfix) with ESMTP id 951F1266C27
- for <alsa-devel@alsa-project.org>; Mon, 23 May 2016 23:13:52 +0200 (CEST)
-Received: from edge03.upcmail.net ([192.168.13.238]) by viefep18-int.chello.at
- (InterMail vM.8.01.05.18 201-2260-151-151-20140610) with ESMTP
- id <20160523211352.HRRC24796.viefep18-int.chello.at@edge03.upcmail.net>
- for <alsa-devel@alsa-project.org>; Mon, 23 May 2016 23:13:52 +0200
+Received: from mail1.bemta3.messagelabs.com (mail1.bemta3.messagelabs.com
+ [195.245.230.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 110B926043A
+ for <alsa-devel@alsa-project.org>; Tue, 24 May 2016 00:53:11 +0200 (CEST)
+In-Reply-To: <1463664451.31269.3.camel@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,81 +25,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, Petr Kulhavy <brain@jikos.cz>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "Opensource [Adam
+ Thomson]" <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Robert Moore <robert.moore@intel.com>, Lv Zheng <lv.zheng@intel.com>, "Rafael J.Wysocki" <rafael.j.wysocki@intel.com>, Len
+ Brown <lenb@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Support Opensource <Support.Opensource@diasemi.com>, Hanjun Guo <hanjun.guo@linaro.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Suravee <Suravee.Suthikulpanit@amd.com>, Bjorn Helgaas <bhelgaas@google.com>, Andrew Morton <akpm@linux-foundation.org>, Mika Westerberg <mika.westerberg@linux.intel.com>, "devel@acpica.org" <devel@acpica.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add channel 1 and 2 input mixer registers and the related ALSA mixer
-controls for TAS5717/19 chips.
+On May 19, 2015 14:28, Andy Shevchenko wrote:
 
-The mixer control coefficients on the chip are linear in the range
--3.99999 to +3.99999, encoded in 3.23 number format.
-In this patch the mixer controls are limited to 128 values
-from 0.0 to 1.0 in 1/64 steps.
+> > -static struct da7219_aad_pdata *da7219_aad_of_to_pdata(struct
+> > snd_soc_codec *codec)
+> > +static struct da7219_aad_pdata *da7219_aad_fw_to_pdata(struct
+> > snd_soc_codec *codec)
+> >  {
+> > -	struct device_node *np = codec->dev->of_node;
+> > -	struct device_node *aad_np = of_find_node_by_name(np,
+> > "da7219_aad");
+> > +	struct device *dev = codec->dev;
+> > +	struct i2c_client *i2c = to_i2c_client(dev);
+> > +	struct fwnode_handle *aad_np =
+> > +		device_get_named_child_node(dev, "da7219_aad");
+> 
+> I would suggest to do an assignment below...
+> 
+> >  	struct da7219_aad_pdata *aad_pdata;
+> > -	const char *of_str;
+> > -	u32 of_val32;
+> > +	const char *fw_str;
+> > +	u32 fw_val32;
+> >
+> 
+> 
+> ...right here.
+> Same amount of LOC, but less difficult to see from where aad_np comes.
+> 
+> >  	if (!aad_np)
+> >  		return NULL;
+> >
 
-Signed-off-by: Petr Kulhavy <brain@jikos.cz>
----
- sound/soc/codecs/tas571x.c | 19 +++++++++++++++++++
- sound/soc/codecs/tas571x.h |  5 +++++
- 2 files changed, 24 insertions(+)
+To be fair the allocation of 'aad_np' is only a few lines above so this really
+doesn't seem to make much difference in my opinion. It really shouldn't be hard
+for someone to spot where it's allocated.
 
-diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
-index 39307ad..bca0e84 100644
---- a/sound/soc/codecs/tas571x.c
-+++ b/sound/soc/codecs/tas571x.c
-@@ -57,6 +57,11 @@ static int tas571x_register_size(struct tas571x_private *priv, unsigned int reg)
- 	case TAS571X_CH1_VOL_REG:
- 	case TAS571X_CH2_VOL_REG:
- 		return priv->chip->vol_reg_size;
-+	case TAS5717_CH1_RIGHT_CH_MIX_REG:
-+	case TAS5717_CH1_LEFT_CH_MIX_REG:
-+	case TAS5717_CH2_LEFT_CH_MIX_REG:
-+	case TAS5717_CH2_RIGHT_CH_MIX_REG:
-+		return 4;
- 	default:
- 		return 1;
- 	}
-@@ -293,6 +298,16 @@ static const struct snd_kcontrol_new tas5717_controls[] = {
- 		   TAS571X_SOFT_MUTE_REG,
- 		   TAS571X_SOFT_MUTE_CH1_SHIFT, TAS571X_SOFT_MUTE_CH2_SHIFT,
- 		   1, 1),
-+
-+	SOC_DOUBLE_R_RANGE("CH1 Mixer Volume",
-+			   TAS5717_CH1_LEFT_CH_MIX_REG,
-+			   TAS5717_CH1_RIGHT_CH_MIX_REG,
-+			   16, 0, 0x80, 0),
-+
-+	SOC_DOUBLE_R_RANGE("CH2 Mixer Volume",
-+			   TAS5717_CH2_LEFT_CH_MIX_REG,
-+			   TAS5717_CH2_RIGHT_CH_MIX_REG,
-+			   16, 0, 0x80, 0),
- };
- 
- static const struct reg_default tas5717_reg_defaults[] = {
-@@ -303,6 +318,10 @@ static const struct reg_default tas5717_reg_defaults[] = {
- 	{ 0x08, 0x00c0 },
- 	{ 0x09, 0x00c0 },
- 	{ 0x1b, 0x82 },
-+	{ TAS5717_CH1_RIGHT_CH_MIX_REG, 0x0 },
-+	{ TAS5717_CH1_LEFT_CH_MIX_REG, 0x800000},
-+	{ TAS5717_CH2_LEFT_CH_MIX_REG, 0x0 },
-+	{ TAS5717_CH2_RIGHT_CH_MIX_REG, 0x800000},
- };
- 
- static const struct regmap_config tas5717_regmap_config = {
-diff --git a/sound/soc/codecs/tas571x.h b/sound/soc/codecs/tas571x.h
-index 0aee471..b4175d6 100644
---- a/sound/soc/codecs/tas571x.h
-+++ b/sound/soc/codecs/tas571x.h
-@@ -30,4 +30,9 @@
- 
- #define TAS571X_OSC_TRIM_REG		0x1b
- 
-+#define TAS5717_CH1_RIGHT_CH_MIX_REG	0x72
-+#define TAS5717_CH1_LEFT_CH_MIX_REG	0x73
-+#define TAS5717_CH2_LEFT_CH_MIX_REG	0x76
-+#define TAS5717_CH2_RIGHT_CH_MIX_REG	0x77
-+
- #endif /* _TAS571X_H */
--- 
-2.5.0
+> > @@ -769,9 +768,9 @@ int da7219_aad_init(struct snd_soc_codec *codec)
+> >  	da7219->aad = da7219_aad;
+> >  	da7219_aad->codec = codec;
+> >
+> > -	/* Handle any DT/platform data */
+> > -	if ((codec->dev->of_node) && (da7219->pdata))
+> > -		da7219->pdata->aad_pdata =
+> > da7219_aad_of_to_pdata(codec);
+> > +	/* Handle any DT/ACPI/platform data */
+> > +     if ((da7219->pdata) && (!da7219->pdata->aad_pdata))
+> 
+> Redundant parens, twice.
+
+Not essential, but looks cleaner to me. Unless there's a real demand to change,
+I'd like to leave this as is.
