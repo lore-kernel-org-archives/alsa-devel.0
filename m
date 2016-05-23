@@ -1,50 +1,49 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 00/49] ASoC: add simple-card-core and standardize
- "simple" card
-Date: Mon, 23 May 2016 11:58:36 +0100
-Message-ID: <20160523105836.GM8206@sirena.org.uk>
-References: <87lh35rs8w.wl%kuninori.morimoto.gx@renesas.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 43/54] MAINTAINERS: Add file patterns for sound device
+ tree bindings
+Date: Mon, 23 May 2016 12:09:34 +0100
+Message-ID: <20160523110934.GO8206@sirena.org.uk>
+References: <1463907991-7916-1-git-send-email-geert@linux-m68k.org>
+ <1463907991-7916-44-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Z/kiM2A+9acXa48/"
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="5PFZVUeDPxlnBcQp"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <87lh35rs8w.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org
+In-Reply-To: <1463907991-7916-44-git-send-email-geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Z/kiM2A+9acXa48/
+--5PFZVUeDPxlnBcQp
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, May 20, 2016 at 09:36:53AM +0000, Kuninori Morimoto wrote:
+On Sun, May 22, 2016 at 11:06:20AM +0200, Geert Uytterhoeven wrote:
 
-> These are very big patch-set, but basically just cleanup for
-> simple-card driver.
-> Now, we have simple-card driver, but it is not simple today.
-> I would like to cleanup this.
+> +F:	Documentation/devicetree/bindings/sound/
 
-This really is far too big.  Don't worry about it this time but in
-future please try to keep patch serieses to a reasonable size, split
-them up and send them separately (and not at the same time either).  A
-huge stack of patches really does not look good as a reviewer.
+Note that this isn't specifically ASoC, though most things there are.
 
---Z/kiM2A+9acXa48/
+--5PFZVUeDPxlnBcQp
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXQuJbAAoJECTWi3JdVIfQuBUH/R9gw8MadjDNuIXsQhzC4Veq
-QfvJiXnf3qQ8NYOwtcPh6X1TyukERe3ngHvaQJhK2kxW9Iq6jDRO/x0FITOSrlDS
-OxFJnHRgHzKHdYkSZHXFgGzQ6VuyIgZl/yR32XphQc9z+zTs0Wnwsx5DTufWN2yq
-4vDyVywmejY+y6x1OYma9AI9Ie6l/F/kEoL1OCvc3hJX3qVXlzh0bsj4A+CQY+UZ
-zG1OBjSsus7wEBrDKh/nqh5sa/FemLZuxbaj0aAAGp/sdnLAm0q3GmUpE1uiK1dK
-ff5JerEPUrxEW0PpW57lOIC/K/HcB+fL27jj4rWGHOpQIhxhJVppSnxhAckEJWc=
-=dh1R
+iQEcBAEBCAAGBQJXQuTsAAoJECTWi3JdVIfQTXMH/3Js5VZHmPdffyLZRvAwV6pu
+v9IM4WSfj73gT4MTgUIMvuTrQ6ekH+zeEktR8K7oiPWsOI2DTL0Vf78sJfUT9oj3
+n8SwgDBRmUhpVqow6PK5aKE/Z6vIzEDk5qYX3qSaxvMuV7SbOaak2VhYgVwPqeJy
+xeG9a1UcXbigaLPjYcJAY7+El8xtuv3pVuXL54HNhXx+5GrOw6LKhL8RCE/Y5AhH
+h4NYLVU6M+oQR2JEV0oU9tYFImRdoCJV/2sgu/wkvqQmXcf4YI+3LKp8Ve5TTkl/
+/ZcPBYyllnGX3efyqWFvAafp1iXnBs7nZBeiHVIckOA3StC6aBuDnKtYdeqBuqg=
+=4psW
 -----END PGP SIGNATURE-----
 
---Z/kiM2A+9acXa48/--
+--5PFZVUeDPxlnBcQp--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
