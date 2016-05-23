@@ -1,18 +1,32 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: kirkwood: fix build failure" to the asoc tree
-Date: Mon, 23 May 2016 18:50:23 +0100
-Message-ID: <E1b4tzj-0006bK-Lh@debutante>
-References: <1463999454-21964-1-git-send-email-sudipm.mukherjee@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1463999454-21964-1-git-send-email-sudipm.mukherjee@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Applied "ASoC: dt: Fix typo" to the asoc tree
+Date: Mon, 23 May 2016 18:50:26 +0100
+Message-ID: <E1b4tzm-0006cL-OV@debutante>
+References: <20160521114421.1953-1-andrea.gelmini@gelma.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 498EB261585
+ for <alsa-devel@alsa-project.org>; Mon, 23 May 2016 19:50:33 +0200 (CEST)
+In-Reply-To: <20160521114421.1953-1-andrea.gelmini@gelma.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: alsa-devel@alsa-project.org, trivial@kernel.org, linux-doc@vger.kernel.org, corbet@lwn.net, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, andrea.gelmini@gelma.net
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: kirkwood: fix build failure
+   ASoC: dt: Fix typo
 
 has been applied to the asoc tree at
 
@@ -37,34 +51,29 @@ to this mail.
 Thanks,
 Mark
 
->From b01518ca88410195ace38ce755c1206588e5c167 Mon Sep 17 00:00:00 2001
-From: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-Date: Mon, 23 May 2016 16:00:54 +0530
-Subject: [PATCH] ASoC: kirkwood: fix build failure
+>From c317fe585ca8244ac1768c7c8d29f14697995f8d Mon Sep 17 00:00:00 2001
+From: Andrea Gelmini <andrea.gelmini@gelma.net>
+Date: Sat, 21 May 2016 13:44:21 +0200
+Subject: [PATCH] ASoC: dt: Fix typo
 
-While building m32r allmodconfig the build failed with:
-ERROR: "bad_dma_ops" [sound/soc/kirkwood/snd-soc-kirkwood.ko] undefined!
-
-To satisfy the dependency CONFIG_SND_KIRKWOOD_SOC should depend on
-HAS_DMA.
-
-Signed-off-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+Signed-off-by: Andrea Gelmini <andrea.gelmini@gelma.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/kirkwood/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/sound/alsa/soc/machine.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/kirkwood/Kconfig b/sound/soc/kirkwood/Kconfig
-index 132bb83f8e99..bc3c7b5ac752 100644
---- a/sound/soc/kirkwood/Kconfig
-+++ b/sound/soc/kirkwood/Kconfig
-@@ -1,6 +1,7 @@
- config SND_KIRKWOOD_SOC
- 	tristate "SoC Audio for the Marvell Kirkwood and Dove chips"
- 	depends on ARCH_DOVE || ARCH_MVEBU || COMPILE_TEST
-+	depends on HAS_DMA
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
- 	  the Kirkwood I2S interface. You will also need to select the
+diff --git a/Documentation/sound/alsa/soc/machine.txt b/Documentation/sound/alsa/soc/machine.txt
+index 74056dba52be..6bf2d2063b52 100644
+--- a/Documentation/sound/alsa/soc/machine.txt
++++ b/Documentation/sound/alsa/soc/machine.txt
+@@ -3,7 +3,7 @@ ASoC Machine Driver
+ 
+ The ASoC machine (or board) driver is the code that glues together all the
+ component drivers (e.g. codecs, platforms and DAIs). It also describes the
+-relationships between each componnent which include audio paths, GPIOs,
++relationships between each component which include audio paths, GPIOs,
+ interrupts, clocking, jacks and voltage regulators.
+ 
+ The machine driver can contain codec and platform specific code. It registers
 -- 
 2.8.1
