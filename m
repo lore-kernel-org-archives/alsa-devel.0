@@ -1,20 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: add api to retrieve dmic array info
- from coreboot nhlt
-Date: Mon, 23 May 2016 18:01:05 +0100
-Message-ID: <20160523170105.GZ8206@sirena.org.uk>
-References: <ac23a9ba3795ed50bea2d88dc90b419238ef1542.1463673471.git.yong.zhi@intel.com>
- <20160519160136.GE8206@sirena.org.uk>
- <C193D76D23A22742993887E6D207B54D03535BCA@ORSMSX106.amr.corp.intel.com>
- <20160523054733.GI2735@localhost>
+Subject: Re: [PATCH 1/2 v2] ASoC: nau8825: non-clock jack
+ detection for power saving at standby
+Date: Mon, 23 May 2016 18:04:32 +0100
+Message-ID: <20160523170432.GA8206@sirena.org.uk>
+References: <1463131037-19220-1-git-send-email-KCHSU0@nuvoton.com>
+ <20160513104841.GA22038@sirena.org.uk> <573926C5.70704@nuvoton.com>
+ <20160518170549.GR8104@sirena.org.uk> <573E80A7.50602@nuvoton.com>
+ <20160520110137.GJ8206@sirena.org.uk>
+ <5742641A.9070409@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0184004525022321109=="
+Content-Type: multipart/mixed; boundary="===============3329540382259843429=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FDCF26043A
- for <alsa-devel@alsa-project.org>; Mon, 23 May 2016 19:01:11 +0200 (CEST)
-In-Reply-To: <20160523054733.GI2735@localhost>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F0B826043A
+ for <alsa-devel@alsa-project.org>; Mon, 23 May 2016 19:04:38 +0200 (CEST)
+In-Reply-To: <5742641A.9070409@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,62 +25,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Sripathi,
- Srinivas" <srinivas.sripathi@intel.com>, "Fang,
- Yang A" <yang.a.fang@intel.com>, "M R,
- Sathya Prakash" <sathya.prakash.m.r@intel.com>, "Kp,
- Jeeja" <jeeja.kp@intel.com>, "Patel, Vedang" <vedang.patel@intel.com>, "Zhi,
- Yong" <yong.zhi@intel.com>
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, "anatol.pomozov@gmail.com" <anatol.pomozov@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "benzh@chromium.org" <benzh@chromium.org>, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <MHKuo@nuvoton.com>, "yong.zhi@intel.com" <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0184004525022321109==
+--===============3329540382259843429==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="mu4zWe6QekgCAJVd"
+	protocol="application/pgp-signature"; boundary="Hch1Uz/zGPcHFdv8"
 Content-Disposition: inline
 
 
---mu4zWe6QekgCAJVd
+--Hch1Uz/zGPcHFdv8
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, May 23, 2016 at 11:17:33AM +0530, Vinod Koul wrote:
+On Mon, May 23, 2016 at 09:59:54AM +0800, John Hsu wrote:
+> On 5/20/2016 7:01 PM, Mark Brown wrote:
 
-> > [YZ], Hi, Mark, the only function change is at line 143 below, found another product that also needs to get DMIC config info yesterday.
+> > I understand what it's doing but obviously a biquad filter isn't
+> > specialized for this function...
 
-> The patches are doing two different things, so they should have different
-> titles mentioning the work the patch is doing.
+> Yes, the biquad filter is general purpose feature. Could you give us
+> suggestion about how to implement the biquad filter for common fea-
+> ture and to fix DC offset as well?
 
-> Also you should consider posting them as a series.
+The trouble is you'd have to do the configuration in userspace or do
+something like only do the DC offset correction if no other filter is
+configured.  TBH it's not unreasonable to suggest people should just
+configured a high pass filter if they're having issues, though it's a
+bit more work :(
 
-> Please update this and post the updated v2.
-
-Definitely, please - I misunderstood the above reply and discarded the
-original patch.
-
---mu4zWe6QekgCAJVd
+--Hch1Uz/zGPcHFdv8
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXQzdQAAoJECTWi3JdVIfQEFsH/0ui3j3L7DTSd2W117xtSsJO
-mL6w8Nilskc+9jaTT/NIE64KDamYWqtFA++m0CNQI2ci57xIAO7E7c0jIpN5nZKl
-M8xmyjRCUp+sO1PhuMIN+B84sqETgxoYmySzvtTFPDHAfv9K6GAHqXC6PBAxE/KE
-24dB6ZWY+Gb+EwD1SA7G0x1h8v/ipg6kHCPQL3KtknI0skbVo8j8VnEShL8+f97H
-iDzVbpol/QydmaJSu7CzzDnUGzM1RuuBtgy0iwks7R4hvX5Hvnn1l6W56zPjcur6
-+uP8chDDDio5Hy3n7bYauNDItvfs/hwEcDIuPbGEpGKcn71wmHlngmXZDg+tYNI=
-=JBKR
+iQEcBAEBCAAGBQJXQzgfAAoJECTWi3JdVIfQMnoH/1WJ4SrCrl+QFNRr7SCCW53P
+IaAxw0H4BzrjbrO4/gRfKhhAMSYdBwdi6r1x4rvuUrxpGU4gBGJllvyak5piNVlE
+0TiS3kl6nm5iOrJUzRNrbLPo8F502tjtlJCVguxTngJiMXb4hoectdKVNXCnHp3+
+kcA+9GVMjJN6ZXO+UwZY0ZayybJGkDrNCuipIuI+IM3aI27zNzsiD3/WFQlNgP9O
+V1B6DhZovTlnRCFzOH2yepjW+afN9RfgssXcNRFZwPNl0vNA1PmE4SQgAI8VFq7i
+xTSbs1422YTKTpSwLmzu28x4GgN7iZii7BKctbqXmR2frssDlSq2ilsFASW61Jg=
+=bi6v
 -----END PGP SIGNATURE-----
 
---mu4zWe6QekgCAJVd--
+--Hch1Uz/zGPcHFdv8--
 
---===============0184004525022321109==
+--===============3329540382259843429==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0184004525022321109==--
+--===============3329540382259843429==--
