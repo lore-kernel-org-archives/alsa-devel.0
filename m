@@ -1,96 +1,94 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: make function stub static" to
-	the asoc tree
-Date: Tue, 24 May 2016 17:25:51 +0100
-Message-ID: <E1b5F9T-0003Y7-Je@debutante>
-References: <573F2F8E.5020704@infradead.org>
+From: Jose Abreu <Jose.Abreu@synopsys.com>
+Subject: Re: [PATCH 3/4 v7] ASoC: dwc: Add PIO PCM extension
+Date: Tue, 24 May 2016 18:07:14 +0100
+Message-ID: <57448A42.9050606@synopsys.com>
+References: <cover.1463996627.git.joabreu@synopsys.com>
+ <d81055d826825874c9d76922d2275688b2586fa6.1463996627.git.joabreu@synopsys.com>
+ <20160524164151.GM8206@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CC35265DD2
- for <alsa-devel@alsa-project.org>; Tue, 24 May 2016 18:26:23 +0200 (CEST)
-In-Reply-To: <573F2F8E.5020704@infradead.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Borislav Petkov <bp@alien8.de>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160524164151.GM8206@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Jose Abreu <Jose.Abreu@synopsys.com>
+Cc: alsa-devel@alsa-project.org, Carlos Palminha <CARLOS.PALMINHA@synopsys.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh@kernel.org>, Alexey Brodkin <Alexey.Brodkin@synopsys.com>, linux-snps-arc@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi Mark,
 
-   ASoC: intel: make function stub static
+Thanks for your comments.
 
-has been applied to the asoc tree at
+On 24-05-2016 17:41, Mark Brown wrote:
+> On Mon, May 23, 2016 at 11:02:24AM +0100, Jose Abreu wrote:
+>
+>> +config SND_DESIGNWARE_PCM
+>> +	bool "PCM PIO extension for I2S driver"
+> Why can't this be built as a module?
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+I can change but my intention was to make this PCM a kind of extension to the
+driver instead of adding a new module to the system.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+>
+>> +
+>> +	return irq_valid ? IRQ_HANDLED : IRQ_NONE;
+> Please write a normal if statement, the ternery operator doesn't help
+> legibility.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Ok.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+>
+>>  static void i2s_start(struct dw_i2s_dev *dev,
+>>  		      struct snd_pcm_substream *substream)
+>>  {
+>>  	struct i2s_clk_config_data *config = &dev->config;
+>>  
+>>  	i2s_write_reg(dev->i2s_base, IER, 1);
+>> -	i2s_enable_irqs(dev, substream->stream, config->chan_nr);
+>> +
+>> +	if (dev->use_pio)
+>> +		i2s_enable_irqs(dev, substream->stream, config->chan_nr);
+>>  
+>>  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+>>  		i2s_write_reg(dev->i2s_base, ITER, 1);
+> That seems wrong, or at least something that should be separate?
+> Previously we needed interrupts for DMA operation but now we enable
+> interrupts only if we don't use DMA.  It feels like we want to make the
+> change for DMA separately if only to make it clear for bisection, are we
+> 100% sure that masking the interrupt won't also mask the DMA request
+> signals?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Indeed I thought about this and the interrupts must also be enabled when in DMA
+mode. Although there is no interrupt handler in the original driver (without
+this patches) in some setups the interrupt line may be connected to the DMA
+controller. I will drop this change and always enable interrupts. Please note
+that I don't have a setup with DMA support so I can only test using the PIO mode.
 
-Thanks,
-Mark
+>> +	irq = platform_get_irq(pdev, 0);
+>> +	if (irq >= 0) {
+>> +		dev_dbg(&pdev->dev, "using PIO mode\n");
+>> +		dev->use_pio = true;
+>> +
+>> +		ret = devm_request_irq(&pdev->dev, irq, i2s_irq_handler, 0,
+>> +				pdev->name, dev);
+>> +		if (ret < 0) {
+>> +			dev_err(&pdev->dev, "failed to request irq\n");
+>> +			return ret;
+>> +		}
+>> +	}
+> This also seems wrong.  We're forcing PIO if an interrupt is provided
+> rather than based on DMA being configured which means that if the
+> interrupt is wired up and happens to be described in DT we'll get worse
+> performance.  People should be able to just describe the system without
+> worrying about this, and we might find some other use for the interrupts
+> in future.  Indeed right now it would probably be reasonable to use the
+> error interrupts all the time if they're available.
 
->From 284f6829aedfa77e0135066b75d0c81464bbe904 Mon Sep 17 00:00:00 2001
-From: Randy Dunlap <rdunlap@infradead.org>
-Date: Fri, 20 May 2016 08:38:54 -0700
-Subject: [PATCH] ASoC: intel: make function stub static
+How should I then determine which mode to use?
+    - Check if DMA parameters are declared in DT, or
+    - Check if snd_dmaengine_pcm_register() fails, or
+    - Assume PIO mode will be used when compiling with PIO PCM, or
+    - Something else ?
 
-This function stub should have been 'static' in the original patch
-so that multiple uses of the header file (in different drivers)
-will not cause multiple function definitions.
-
-sound/soc/intel/boards/built-in.o: In function `sst_acpi_find_name_from_hid':
-(.text+0x560): multiple definition of `sst_acpi_find_name_from_hid'
-sound/soc/intel/atom/built-in.o:(.text+0x10610): first defined here
-../scripts/Makefile.build:369: recipe for target 'sound/soc/intel/built-in.o' failed
-
-Fixes: f17131a93f43: add function stub when ACPI is not enabled
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Cc: Jie Yang <yang.jie@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/common/sst-acpi.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/common/sst-acpi.h b/sound/soc/intel/common/sst-acpi.h
-index 8398cb227ba9..b02f12900b93 100644
---- a/sound/soc/intel/common/sst-acpi.h
-+++ b/sound/soc/intel/common/sst-acpi.h
-@@ -20,7 +20,7 @@
- #if IS_ENABLED(CONFIG_ACPI)
- const char *sst_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN]);
- #else
--inline const char *sst_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN])
-+static inline const char *sst_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN])
- {
- 	return NULL;
- }
--- 
-2.8.1
+Best regards,
+Jose Miguel Abreu
