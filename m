@@ -1,82 +1,85 @@
-From: Ricard Wanderlof <ricard.wanderlof-VrBV9hrLPhE@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: pcm5102a: Add support for PCM5102A
- codec
-Date: Tue, 24 May 2016 16:44:20 +0200
-Message-ID: <alpine.DEB.2.02.1605241640250.19416@lnxricardw1.se.axis.com>
-References: <1463130853-25096-1-git-send-email-kernel@martin.sperl.org> <1463130853-25096-2-git-send-email-kernel@martin.sperl.org> <34ab107e-10dc-fbd3-28d1-203c6411851c@laposte.net> <20160523170853.GB8206@sirena.org.uk>
- <312f8476-a437-04d9-3d16-38d7c7c233ad@laposte.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <312f8476-a437-04d9-3d16-38d7c7c233ad-QFKgK+z4sOrR7s880joybQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: =?ISO-8859-15?Q?Emmanuel_Fust=E9?= <emmanuel.fuste-QFKgK+z4sOrR7s880joybQ@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Matthias Reichl <hias-vtPv7MOkFPkAvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Florian Meier <florian.meier-oZ8rN/sblLk@public.gmane.org>, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "MAINTAINERS: ASoC: samsung: Add Sylwester Nawrocki and Krzysztof Kozlowski" to the asoc tree
+Date: Tue, 24 May 2016 17:25:54 +0100
+Message-ID: <E1b5F9W-0003ZA-B8@debutante>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: 
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Krzysztof Kozlowski <k.kozlowski@samsung.com>
+Cc: Kukjin Kim <kgene@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.orgMark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
-On Mon, 23 May 2016, Emmanuel Fust=E9 wrote:
+   MAINTAINERS: ASoC: samsung: Add Sylwester Nawrocki and Krzysztof Kozlowski
 
-> /* pcm5102a in HW mode with external SCK (4wire mode)
->  * at 128fs, 192fs or 256fs
->  */
-> 	pcm5102a-4w: pcm5102a {
-> 		compatible =3D "simple-i2s-codec";
-> 		rate =3D <SNDRV_PCM_RATE_8000_192000>;
-> 		format =3D < SNDRV_PCM_FMTBIT_S16_LE
-> 			|SNDRV_PCM_FMTBIT_S24_LE
-> 			|SNDRV_PCM_FMTBIT_S32_LE>;
-> 	};
-> or
-> /* pcm5102a in HW mode with PLL on BCK (3wire mode)
->  * 16to384khz but only with bck rate of 64fs
->  */
-> 	pcm5102a-4w: pcm5102a {
-> 		compatible =3D "simple-i2s-codec";
-> 		rate =3D <SNDRV_PCM_RATE_8000_192000
-> 			^ SNDRV_PCM_RATE_8000>;
-> 		format =3D <SNDRV_PCM_FMTBIT_S32_LE>;
-> 	};
-> Or
-> /* ES9023 in asynchronous mode mclk > 37Mhz
->  * I did not try bck rate <64fs as the sabre family did not generally
->  * support it.
->  */
-> 	es9023: es9023 {
-> 		compatible =3D "simple-i2s-codec";
-> 		rate =3D <SNDRV_PCM_RATE_8000_192000>;
-> 		format =3D <SNDRV_PCM_FMTBIT_S32_LE>;
-> 	};
->=20
-> We could use I2S friendly property instead of "format" :
-> 		bckrates =3D <48, 64>;
->=20
->=20
-> With two or tree more property (gpio for mute, de-emphasis and filter
-> selection), you could cover 98% of I2S DAC with hardware only interfa=
-ces. It
-> cover too startup mode of most hifi I2C or SPI controllable DAC. Whic=
-h is a
-> good starting point for chip for which a driver is not already writte=
-n.
+has been applied to the asoc tree at
 
-It seems to me that this only covers the cases where the is codec runni=
-ng=20
-in slave mode with MCLK derived from the BCLK, but not cases where the=20
-codec is master and needs to have its MCLK configured appropriately (in=
-=20
-terms of device-specifc clock source and PLL settings), or am I missing=
-=20
-something?
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From eea5495bab0d365f4dca04869b21e557a9df48d5 Mon Sep 17 00:00:00 2001
+From: Krzysztof Kozlowski <k.kozlowski@samsung.com>
+Date: Tue, 24 May 2016 15:35:42 +0200
+Subject: [PATCH] MAINTAINERS: ASoC: samsung: Add Sylwester Nawrocki and
+ Krzysztof Kozlowski
+
+Extend maintainer entry for Samsung SoC sound drivers with Krzysztof
+Kozlowski and Sylwester Nawrocki. The file pattern is duplicated in main
+Exynos ARM section so remove it from there.
+
+Cc: Kukjin Kim <kgene@kernel.org>
+Cc: Sangbeom Kim <sbkim73@samsung.com>
+Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-samsung-soc@vger.kernel.org
+Signed-off-by: Krzysztof Kozlowski <k.kozlowski@samsung.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ MAINTAINERS | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 03e00c7c88eb..45dd1db87cff 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1542,7 +1542,6 @@ F:	drivers/*/*s3c2410*
+ F:	drivers/*/*/*s3c2410*
+ F:	drivers/soc/samsung/*
+ F:	drivers/spi/spi-s3c*
+-F:	sound/soc/samsung/*
+ F:	Documentation/arm/Samsung/
+ F:	Documentation/devicetree/bindings/arm/samsung/
+ F:	Documentation/devicetree/bindings/sram/samsung-sram.txt
+@@ -9601,7 +9600,9 @@ S:	Maintained
+ F:	drivers/platform/x86/samsung-laptop.c
+ 
+ SAMSUNG AUDIO (ASoC) DRIVERS
++M:	Krzysztof Kozlowski <k.kozlowski@samsung.com>
+ M:	Sangbeom Kim <sbkim73@samsung.com>
++M:	Sylwester Nawrocki <s.nawrocki@samsung.com>
+ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+ S:	Supported
+ F:	sound/soc/samsung/
+-- 
+2.8.1
