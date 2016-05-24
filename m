@@ -1,59 +1,59 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: Re: [PATCH 1/2 v2] ASoC: nau8825: non-clock jack
- detection for power saving at standby
-Date: Tue, 24 May 2016 11:41:02 +0800
-Message-ID: <5743CD4E.6020805@nuvoton.com>
-References: <1463131037-19220-1-git-send-email-KCHSU0@nuvoton.com>
- <20160513104841.GA22038@sirena.org.uk> <573926C5.70704@nuvoton.com>
- <20160518170549.GR8104@sirena.org.uk> <573E80A7.50602@nuvoton.com>
- <20160520110137.GJ8206@sirena.org.uk> <5742641A.9070409@nuvoton.com>
- <20160523170432.GA8206@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F182260568
- for <alsa-devel@alsa-project.org>; Tue, 24 May 2016 05:41:06 +0200 (CEST)
-In-Reply-To: <20160523170432.GA8206@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, "anatol.pomozov@gmail.com" <anatol.pomozov@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "benzh@chromium.org" <benzh@chromium.org>, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <MHKuo@nuvoton.com>, "yong.zhi@intel.com" <yong.zhi@intel.com>
+From: Xing Zheng <zhengxing@rock-chips.com>
+Subject: [PATCH] ASoC: rockchip: i2s: rename I2S_CKR_TRCM_TX/RXSHARE to I2S_CKR_TRCM_TX/RXONLY
+Date: Tue, 24 May 2016 11:47:46 +0800
+Message-ID: <1464061667-16477-1-git-send-email-zhengxing@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-rockchip@lists.infradead.org
+Cc: heiko@sntech.de, Sugar Zhang <sugar.zhang@rock-chips.com>, Xing Zheng <zhengxing@rock-chips.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+From: Sugar Zhang <sugar.zhang@rock-chips.com>
 
-On 5/24/2016 1:04 AM, Mark Brown wrote:
-> On Mon, May 23, 2016 at 09:59:54AM +0800, John Hsu wrote:
->   
->> On 5/20/2016 7:01 PM, Mark Brown wrote:
->>     
->
->   
->>> I understand what it's doing but obviously a biquad filter isn't
->>> specialized for this function...
->>>       
->
->   
->> Yes, the biquad filter is general purpose feature. Could you give us
->> suggestion about how to implement the biquad filter for common fea-
->> ture and to fix DC offset as well?
->>     
->
-> The trouble is you'd have to do the configuration in userspace or do
-> something like only do the DC offset correction if no other filter is
-> configured.  TBH it's not unreasonable to suggest people should just
-> configured a high pass filter if they're having issues, though it's a
-> bit more work :(
->   
+this patch make it more reasonable and readable, because when we chose
+I2S_CKR_TRCM_TXONLY, we only output clk_lrck_tx, and hardware need to
+confirm this signal is wired to external codec lrck_tx/rx at the same time.
 
-Is it acceptable if we change our patch to do the DC offset correction
-instead of general BIQ filter for the issue?
+for convenience, we just handle lrck_txonly if we enable symmetric_rates
+in driver and dai_link. otherwise, we use the separate lrck_tx/rx.
+
+Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+Signed-off-by: Xing Zheng <zhengxing@rock-chips.com>
+---
+
+ sound/soc/rockchip/rockchip_i2s.c |    4 ++--
+ sound/soc/rockchip/rockchip_i2s.h |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 574c6af..92a405f 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -306,8 +306,8 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
+ 			   I2S_DMACR_RDL(16));
+ 
+ 	val = I2S_CKR_TRCM_TXRX;
+-	if (dai->driver->symmetric_rates || rtd->dai_link->symmetric_rates)
+-		val = I2S_CKR_TRCM_TXSHARE;
++	if (dai->driver->symmetric_rates && rtd->dai_link->symmetric_rates)
++		val = I2S_CKR_TRCM_TXONLY;
+ 
+ 	regmap_update_bits(i2s->regmap, I2S_CKR,
+ 			   I2S_CKR_TRCM_MASK,
+diff --git a/sound/soc/rockchip/rockchip_i2s.h b/sound/soc/rockchip/rockchip_i2s.h
+index dc6e2c7..13b1d44 100644
+--- a/sound/soc/rockchip/rockchip_i2s.h
++++ b/sound/soc/rockchip/rockchip_i2s.h
+@@ -81,8 +81,8 @@
+ #define I2S_CKR_TRCM_SHIFT	28
+ #define I2S_CKR_TRCM(x)	(x << I2S_CKR_TRCM_SHIFT)
+ #define I2S_CKR_TRCM_TXRX	(0 << I2S_CKR_TRCM_SHIFT)
+-#define I2S_CKR_TRCM_TXSHARE	(1 << I2S_CKR_TRCM_SHIFT)
+-#define I2S_CKR_TRCM_RXSHARE	(2 << I2S_CKR_TRCM_SHIFT)
++#define I2S_CKR_TRCM_TXONLY	(1 << I2S_CKR_TRCM_SHIFT)
++#define I2S_CKR_TRCM_RXONLY	(2 << I2S_CKR_TRCM_SHIFT)
+ #define I2S_CKR_TRCM_MASK	(3 << I2S_CKR_TRCM_SHIFT)
+ #define I2S_CKR_MSS_SHIFT	27
+ #define I2S_CKR_MSS_MASTER	(0 << I2S_CKR_MSS_SHIFT)
+-- 
+1.7.9.5
