@@ -1,15 +1,21 @@
-From: Chuang Eric <kaichiehc1325@hotmail.com>
-Subject: DPCM: skip DAPM_STREAM_STOP event to BE,
-	if still used by other FE
-Date: Tue, 24 May 2016 13:13:34 +0800
-Message-ID: <BLU183-W842E2F428B98747ADED16CA54F0@phx.gbl>
+From: Petr Kulhavy <petr@barix.com>
+Subject: Re: [PATCH v3 2/2] ASoC: wm8985: add support for WM8758
+Date: Tue, 24 May 2016 09:24:05 +0200
+Message-ID: <CAEP=dzCNe8pB1O_Pqv+46TL81zpUMN52R45_eNga1CCAm_zkhQ@mail.gmail.com>
+References: <1464012685-1142-1-git-send-email-petr@barix.com>
+ <1464012685-1142-3-git-send-email-petr@barix.com>
+ <20160523145539.GD20422@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from BLU004-OMC3S17.hotmail.com (blu004-omc3s17.hotmail.com
- [65.55.116.92]) by alsa0.perex.cz (Postfix) with ESMTP id EC4DC2605EF
- for <alsa-devel@alsa-project.org>; Tue, 24 May 2016 07:13:35 +0200 (CEST)
+Received: from mail-yw0-f170.google.com (mail-yw0-f170.google.com
+ [209.85.161.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72A0E260631
+ for <alsa-devel@alsa-project.org>; Tue, 24 May 2016 09:24:26 +0200 (CEST)
+Received: by mail-yw0-f170.google.com with SMTP id h19so7890291ywc.0
+ for <alsa-devel@alsa-project.org>; Tue, 24 May 2016 00:24:26 -0700 (PDT)
+In-Reply-To: <20160523145539.GD20422@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,89 +25,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "kaichieh.chuang@mediatek.com" <kaichieh.chuang@mediatek.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Plamen Prodanov <plamen@barix.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi Charles,
 
-      Let me
-illustrate the system first.
+thanks a lot for your comments.
 
-FE1 -----+----> BE
+On 23 May 2016 at 16:55, Charles Keepax
+<ckeepax@opensource.wolfsonmicro.com> wrote:
+> On Mon, May 23, 2016 at 04:11:25PM +0200, Petr Kulhavy wrote:
+>> @@ -317,6 +326,10 @@ static const struct snd_kcontrol_new wm8985_snd_controls[] = {
+>>       SOC_DOUBLE("ADC Inversion Switch", WM8985_ADC_CONTROL, 0, 1, 1, 0),
+>>       SOC_SINGLE("ADC 128x Oversampling Switch", WM8985_ADC_CONTROL, 8, 1, 0),
+>>
+>> +     SOC_SINGLE("High Pass Filter Switch", WM8985_ADC_CONTROL, 8, 1, 0),
+>> +     SOC_ENUM("High Pass Filter Mode", filter_mode),
+>> +     SOC_SINGLE("High Pass Filter Cutoff", WM8985_ADC_CONTROL, 4, 7, 0),
+>> +
+>
+> Why are these moving? Eases review to keep unrelated changes out
+> of the patch.
 
-         |
+I couldn't resist to sort them in and it was too tempting to keep it
+in one patch ;-)
+These ADC controls were originally among the DAC controls, so this
+place is in my view more suitable.
 
-FE2 -----+
+>>       SOC_DOUBLE_R_TLV("Playback Volume", WM8985_LEFT_DAC_DIGITAL_VOL,
+>>               WM8985_RIGHT_DAC_DIGITAL_VOL, 0, 255, 0, dac_tlv),
+>>
+>> @@ -344,15 +357,6 @@ static const struct snd_kcontrol_new wm8985_snd_controls[] = {
+>>               WM8985_ROUT2_SPK_VOLUME_CTRL, 7, 1, 0),
+>>       SOC_DOUBLE_R("Speaker Switch", WM8985_LOUT2_SPK_VOLUME_CTRL,
+>>               WM8985_ROUT2_SPK_VOLUME_CTRL, 6, 1, 1),
+>> -
+>> -     SOC_SINGLE("High Pass Filter Switch", WM8985_ADC_CONTROL, 8, 1, 0),
+>> -     SOC_ENUM("High Pass Filter Mode", filter_mode),
+>> -     SOC_SINGLE("High Pass Filter Cutoff", WM8985_ADC_CONTROL, 4, 7, 0),
+>> -
+>> -     SOC_DOUBLE_R_TLV("Aux Bypass Volume",
+>> -             WM8985_LEFT_MIXER_CTRL, WM8985_RIGHT_MIXER_CTRL, 6, 7, 0,
+>> -             aux_tlv),
+>> -
+>>       SOC_DOUBLE_R_TLV("Input PGA Bypass Volume",
+>>               WM8985_LEFT_MIXER_CTRL, WM8985_RIGHT_MIXER_CTRL, 2, 7, 0,
+>>               bypass_tlv),
+>> @@ -373,6 +377,12 @@ static const struct snd_kcontrol_new wm8985_snd_controls[] = {
+>>       SOC_SINGLE_TLV("EQ5 Volume", WM8985_EQ5_HIGH_SHELF, 0, 24, 1, eq_tlv),
+>>
+>>       SOC_ENUM("3D Depth", depth_3d),
+>> +};
+>> +
+>> +static const struct snd_kcontrol_new wm8985_specific_snd_controls[] = {
+>> +     SOC_DOUBLE_R_TLV("Aux Bypass Volume",
+>> +             WM8985_LEFT_MIXER_CTRL, WM8985_RIGHT_MIXER_CTRL, 6, 7, 0,
+>> +             aux_tlv),
+>>
+>>       SOC_ENUM("Speaker Mode", speaker_mode)
+>>  };
+>> @@ -389,6 +399,16 @@ static const struct snd_kcontrol_new right_out_mixer[] = {
+>>       SOC_DAPM_SINGLE("PCM Switch", WM8985_RIGHT_MIXER_CTRL, 0, 1, 0),
+>>  };
+>>
+>> +static const struct snd_kcontrol_new wm8758_left_out_mixer[] = {
+>> +     SOC_DAPM_SINGLE("Line Switch", WM8985_LEFT_MIXER_CTRL, 1, 1, 0),
+>> +     SOC_DAPM_SINGLE("PCM Switch", WM8985_LEFT_MIXER_CTRL, 0, 1, 0),
+>> +};
+>> +
+>> +static const struct snd_kcontrol_new wm8758_right_out_mixer[] = {
+>> +     SOC_DAPM_SINGLE("Line Switch", WM8985_RIGHT_MIXER_CTRL, 1, 1, 0),
+>> +     SOC_DAPM_SINGLE("PCM Switch", WM8985_RIGHT_MIXER_CTRL, 0, 1, 0),
+>> +};
+>> +
+>
+> I would be tempted to put the "Aux Switch" at the end of the
+> existing array and then just specifying different sizes for each
+> part in the SND_SOC_DAPM_MIXER macro, saves the need to duplicate
+> these.
 
- 
+That's a good idea indeed!
 
-      When there is
-multi-FE stream to a single BE, the BE will receive SND_SOC_DAPM_STREAM_STOP if
-one of the FE shutdown.
+I'm going to send another round.
 
-However, the BE is stilled used by another, this will let
-BE cpu_dai and codec_dai think they are inactive. The later power check will go
-wrong.
-
- 
-
-I have check the latest linux version, and didn't find
-any related change.
-
-The following is my change to address this, and will
-re-send a formal patch if it's ok.
-
- 
-
- 
-
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 70e8088..9c2d159 100644
-
---- a/sound/soc/soc-pcm.c
-
-+++ b/sound/soc/soc-pcm.c
-
-@@ -163,6 +163,13 @@ int dpcm_dapm_stream_event(struct
-snd_soc_pcm_runtime *fe, int dir,
-
-            dev_dbg(be->dev, "ASoC: BE %s
-event %d dir %d\n",
-
-                        be->dai_link->name,
-event, dir);
-
- 
-
-+           /* don't
-sent stop event if this BE is used by other FE */
-
-+           if
-(event == SND_SOC_DAPM_STREAM_STOP &&
-
-+               be->dpcm[dir].users >= 1) {
-
-+                 pr_warn("kc,
-%s(), be->dai_link->name %s skip stop event\n",
-
-__func__, be->dai_link->name);
-
-+                 continue;
-
-+           }
-
-+
-
-            snd_soc_dapm_stream_event(be, dir,
-event);
-
-      }
-
- 
-
- 
-
-Sincerely,
-
-Kai Chieh 		 	   		  
+Regards
+Petr
