@@ -1,60 +1,80 @@
-From: Petr Kulhavy <petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v2 2/2] ASoC: wm8985: add device-tree support
-Date: Tue, 24 May 2016 10:00:52 +0200
-Message-ID: <CAEP=dzDm3a+NZoxD-qi_U5q=HxUvv8LDK5KJDXqgj_jMqCpn-w@mail.gmail.com>
-References: <1463489389-17719-1-git-send-email-petr@barix.com>
- <1463489389-17719-2-git-send-email-petr@barix.com> <20160520162128.GS1646@localhost.localdomain>
- <CAEP=dzB2527G27ym5pP2C1AxMKKeU7HMiYZ8_=48VBZdv6jxbw@mail.gmail.com> <20160523083140.GB20422@localhost.localdomain>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] pcm: Don't store the state for
+	SND_PCM_STATE_SUSPENDED
+Date: Tue, 24 May 2016 10:12:49 +0000
+Message-ID: <DB5PR04MB212063DBF8904F58516C3137E34F0@DB5PR04MB2120.eurprd04.prod.outlook.com>
+References: <1462866346-11878-1-git-send-email-shengjiu.wang@freescale.com>
+ <s5h7ff2b9vx.wl-tiwai@suse.de>
+ <HE1PR04MB21229D4BBCC605559F98D3FFE3720@HE1PR04MB2122.eurprd04.prod.outlook.com>
+ <s5hzirx9nv4.wl-tiwai@suse.de>
+ <HE1PR04MB212240A8E6692FCFF12DF797E3720@HE1PR04MB2122.eurprd04.prod.outlook.com>
+ <s5hoa8d9iey.wl-tiwai@suse.de>
+ <HE1PR04MB2122FD4500AC192F85542DA2E3490@HE1PR04MB2122.eurprd04.prod.outlook.com>
+ <s5h60ubn42y.wl-tiwai@suse.de>
+ <HE1PR04MB212271FEAAEFBBE21A2E358FE34B0@HE1PR04MB2122.eurprd04.prod.outlook.com>
+ <s5hk2ipknw2.wl-tiwai@suse.de> <s5hr3cwkdh6.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20160523083140.GB20422-bi+AKbBUZKY6gyzm1THtWbp2dZbC/Bob@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, ALSA Development Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Plamen Prodanov <plamen-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org>, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com
+ (mail-db5eur01on0044.outbound.protection.outlook.com [104.47.2.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 151D426070F
+ for <alsa-devel@alsa-project.org>; Tue, 24 May 2016 12:13:01 +0200 (CEST)
+In-Reply-To: <s5hr3cwkdh6.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 23 May 2016 at 10:31, Charles Keepax
-<ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org> wrote:
-> On Mon, May 23, 2016 at 09:23:05AM +0200, Petr Kulhavy wrote:
->> On 20 May 2016 at 18:21, Charles Keepax
->> <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org> wrote:
->> > On Tue, May 17, 2016 at 02:49:49PM +0200, Petr Kulhavy wrote:
->> >> +static enum wm8985_type wm8985_data = WM8985;
->> >> +static enum wm8985_type wm8758_data = WM8758;
->> >> +
->> >> +static const struct of_device_id wm8985_of_match[] = {
->> >> +     { .compatible = "wlf,wm8985", .data = &wm8985_data},
->> >> +     { .compatible = "wlf,wm8758", .data = &wm8758_data},
->> >
->> > You can probably just use (void *)WM8985 instead here.
->>
->> I know this pretty safe with integers but can you do this with enums?
->> Doesn't it lead to undefined behaviour?
->
-> Hmm... its not uncommon that it is done in the kernel, but
-> that is rarely an indicator of if something is actually
-> technically valid or not. Casting from an integer to a pointer
-> is technically implementation defined, but we clearly rely on
-> gcc's implementation in the kernel. However, without actually
-> reading the spec in more detail I am unclear on if an enum counts
-> as an integer here, my suspicion is that it would since it
-> generally always implicitly casts to an int.
->
-> I guess the correct fix is that .data should probably be a
-> kernel_ulong_t in of_device_id. But if no one else objects I am
-> happy for you to leave your current code as is.
+Hi
 
-If I understand this Stack Overflow answer right:
-http://stackoverflow.com/a/2331327
-The enum should be casted to an integer of size <= size of a pointer
-for the architecture.
-So this should be more or less ok?
-.data = (void*)(int)WM8985
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Friday, May 20, 2016 10:32 PM
+> To: Shengjiu Wang
+> Cc: perex@perex.cz; alsa-devel@alsa-project.org
+> Subject: Re: [PATCH] pcm: Don't store the state for
+> SND_PCM_STATE_SUSPENDED
+> 
+> On Fri, 20 May 2016 12:46:37 +0200,
+> Takashi Iwai wrote:
+> >
+> > On Fri, 20 May 2016 11:41:25 +0200,
+> > Shengjiu Wang wrote:
+> > >
+> > > Hi Takashi
+> > >
+> > >    I tested your patch, after suspend and resume, the playback is
+> stopped.
+> > > It is caused by the DMA. DMA is not started after resume.
+> > >
+> > > With your patch, DMA is not terminated but then is re-started. The
+> driver don't
+> > > support this behavior.
+> >
+> > If so, it's simply a driver bug.  Blame the kernel driver instead.
+> 
+> Which driver did you see the problem?  We should fix it.
 
-Thanks
-Petr
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+But my thought is when suspended, the dmaengine_pause() is called, then
+dmaengine_resume() should be called in resume(). If there is no resume()
+Just call the prepare() and start(), it seems not reasonable. What do
+you think?
+
+Best regards
+Wang shengjiu
+> 
+> 
+> thanks,
+> 
+> Takashi
