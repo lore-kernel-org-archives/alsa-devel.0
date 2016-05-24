@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "MAINTAINERS: ASoC: samsung: Add Sylwester Nawrocki and Krzysztof Kozlowski" to the asoc tree
-Date: Tue, 24 May 2016 17:25:54 +0100
-Message-ID: <E1b5F9W-0003ZA-B8@debutante>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: 
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-Cc: Kukjin Kim <kgene@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.orgMark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rockchip: i2s: rename I2S_CKR_TRCM_TX/RXSHARE to I2S_CKR_TRCM_TX/RXONLY" to the asoc tree
+Date: Tue, 24 May 2016 17:25:59 +0100
+Message-ID: <E1b5F9b-0003ax-0p@debutante>
+References: <1464061667-16477-1-git-send-email-zhengxing@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1464061667-16477-1-git-send-email-zhengxing@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sugar Zhang <sugar.zhang@rock-chips.com>
+Cc: Xing Zheng <zhengxing@rock-chips.com>, Mark Brown <broonie@kernel.org>, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, heiko@sntech.deXing Zheng <zhengxing@rock-chips.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   MAINTAINERS: ASoC: samsung: Add Sylwester Nawrocki and Krzysztof Kozlowski
+   ASoC: rockchip: i2s: rename I2S_CKR_TRCM_TX/RXSHARE to I2S_CKR_TRCM_TX/RXONLY
 
 has been applied to the asoc tree at
 
@@ -36,50 +37,56 @@ to this mail.
 Thanks,
 Mark
 
->From eea5495bab0d365f4dca04869b21e557a9df48d5 Mon Sep 17 00:00:00 2001
-From: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-Date: Tue, 24 May 2016 15:35:42 +0200
-Subject: [PATCH] MAINTAINERS: ASoC: samsung: Add Sylwester Nawrocki and
- Krzysztof Kozlowski
+>From 7ec4a1c34a190297540626dfa240dc033beca196 Mon Sep 17 00:00:00 2001
+From: Sugar Zhang <sugar.zhang@rock-chips.com>
+Date: Tue, 24 May 2016 11:47:46 +0800
+Subject: [PATCH] ASoC: rockchip: i2s: rename I2S_CKR_TRCM_TX/RXSHARE to
+ I2S_CKR_TRCM_TX/RXONLY
 
-Extend maintainer entry for Samsung SoC sound drivers with Krzysztof
-Kozlowski and Sylwester Nawrocki. The file pattern is duplicated in main
-Exynos ARM section so remove it from there.
+this patch make it more reasonable and readable, because when we chose
+I2S_CKR_TRCM_TXONLY, we only output clk_lrck_tx, and hardware need to
+confirm this signal is wired to external codec lrck_tx/rx at the same time.
 
-Cc: Kukjin Kim <kgene@kernel.org>
-Cc: Sangbeom Kim <sbkim73@samsung.com>
-Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
-Cc: linux-samsung-soc@vger.kernel.org
-Signed-off-by: Krzysztof Kozlowski <k.kozlowski@samsung.com>
+for convenience, we just handle lrck_txonly if we enable symmetric_rates
+in driver and dai_link. otherwise, we use the separate lrck_tx/rx.
+
+Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+Signed-off-by: Xing Zheng <zhengxing@rock-chips.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- MAINTAINERS | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/rockchip/rockchip_i2s.c | 4 ++--
+ sound/soc/rockchip/rockchip_i2s.h | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 03e00c7c88eb..45dd1db87cff 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1542,7 +1542,6 @@ F:	drivers/*/*s3c2410*
- F:	drivers/*/*/*s3c2410*
- F:	drivers/soc/samsung/*
- F:	drivers/spi/spi-s3c*
--F:	sound/soc/samsung/*
- F:	Documentation/arm/Samsung/
- F:	Documentation/devicetree/bindings/arm/samsung/
- F:	Documentation/devicetree/bindings/sram/samsung-sram.txt
-@@ -9601,7 +9600,9 @@ S:	Maintained
- F:	drivers/platform/x86/samsung-laptop.c
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index d4f7eac5cfd4..ca1cf3b085a4 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -316,8 +316,8 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
+ 			   I2S_DMACR_RDL(16));
  
- SAMSUNG AUDIO (ASoC) DRIVERS
-+M:	Krzysztof Kozlowski <k.kozlowski@samsung.com>
- M:	Sangbeom Kim <sbkim73@samsung.com>
-+M:	Sylwester Nawrocki <s.nawrocki@samsung.com>
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
- S:	Supported
- F:	sound/soc/samsung/
+ 	val = I2S_CKR_TRCM_TXRX;
+-	if (dai->driver->symmetric_rates || rtd->dai_link->symmetric_rates)
+-		val = I2S_CKR_TRCM_TXSHARE;
++	if (dai->driver->symmetric_rates && rtd->dai_link->symmetric_rates)
++		val = I2S_CKR_TRCM_TXONLY;
+ 
+ 	regmap_update_bits(i2s->regmap, I2S_CKR,
+ 			   I2S_CKR_TRCM_MASK,
+diff --git a/sound/soc/rockchip/rockchip_i2s.h b/sound/soc/rockchip/rockchip_i2s.h
+index 8e239d301bc7..31f11fd25393 100644
+--- a/sound/soc/rockchip/rockchip_i2s.h
++++ b/sound/soc/rockchip/rockchip_i2s.h
+@@ -81,8 +81,8 @@
+ #define I2S_CKR_TRCM_SHIFT	28
+ #define I2S_CKR_TRCM(x)	(x << I2S_CKR_TRCM_SHIFT)
+ #define I2S_CKR_TRCM_TXRX	(0 << I2S_CKR_TRCM_SHIFT)
+-#define I2S_CKR_TRCM_TXSHARE	(1 << I2S_CKR_TRCM_SHIFT)
+-#define I2S_CKR_TRCM_RXSHARE	(2 << I2S_CKR_TRCM_SHIFT)
++#define I2S_CKR_TRCM_TXONLY	(1 << I2S_CKR_TRCM_SHIFT)
++#define I2S_CKR_TRCM_RXONLY	(2 << I2S_CKR_TRCM_SHIFT)
+ #define I2S_CKR_TRCM_MASK	(3 << I2S_CKR_TRCM_SHIFT)
+ #define I2S_CKR_MSS_SHIFT	27
+ #define I2S_CKR_MSS_MASTER	(0 << I2S_CKR_MSS_SHIFT)
 -- 
 2.8.1
