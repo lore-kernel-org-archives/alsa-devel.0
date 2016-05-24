@@ -1,59 +1,65 @@
-From: Xing Zheng <zhengxing@rock-chips.com>
-Subject: [PATCH] ASoC: rockchip: i2s: rename I2S_CKR_TRCM_TX/RXSHARE to I2S_CKR_TRCM_TX/RXONLY
-Date: Tue, 24 May 2016 11:47:46 +0800
-Message-ID: <1464061667-16477-1-git-send-email-zhengxing@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-rockchip@lists.infradead.org
-Cc: heiko@sntech.de, Sugar Zhang <sugar.zhang@rock-chips.com>, Xing Zheng <zhengxing@rock-chips.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+From: srv_kaichieh.chaung <srv_kaichieh.chuang@mediatek.com>
+Subject: DPCM: skip DAPM_STREAM_STOP event to BE,
+	if still used by other FE
+Date: Tue, 24 May 2016 13:06:30 +0800
+Message-ID: <1464066390.30335.1.camel@mtkswgap22>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
+ by alsa0.perex.cz (Postfix) with ESMTP id 93C05260568
+ for <alsa-devel@alsa-project.org>; Tue, 24 May 2016 07:06:50 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: kaichieh.chuang@mediatek.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Sugar Zhang <sugar.zhang@rock-chips.com>
+Hi,
+      Let me illustrate the system first.
+FE1 -----+----> BE
+         |
+FE2 -----+
 
-this patch make it more reasonable and readable, because when we chose
-I2S_CKR_TRCM_TXONLY, we only output clk_lrck_tx, and hardware need to
-confirm this signal is wired to external codec lrck_tx/rx at the same time.
+      When there is multi-FE stream to a single BE, the BE will receive
+SND_SOC_DAPM_STREAM_STOP if one of the FE shutdown.
+However, the BE is stilled used by another, this will let BE cpu_dai and
+codec_dai think they are inactive. The later power check will go wrong.
 
-for convenience, we just handle lrck_txonly if we enable symmetric_rates
-in driver and dai_link. otherwise, we use the separate lrck_tx/rx.
+I have check the latest linux version, and didn't find any related
+change.
+The following is my change to address this, and will re-send a formal
+patch if it's ok.
 
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
-Signed-off-by: Xing Zheng <zhengxing@rock-chips.com>
----
 
- sound/soc/rockchip/rockchip_i2s.c |    4 ++--
- sound/soc/rockchip/rockchip_i2s.h |    4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 70e8088..9c2d159 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -163,6 +163,13 @@ int dpcm_dapm_stream_event(struct
+snd_soc_pcm_runtime *fe, int dir,
+ 		dev_dbg(be->dev, "ASoC: BE %s event %d dir %d\n",
+ 				be->dai_link->name, event, dir);
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 574c6af..92a405f 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -306,8 +306,8 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
- 			   I2S_DMACR_RDL(16));
++		/* don't sent stop event if this BE is used by other FE */
++		if (event == SND_SOC_DAPM_STREAM_STOP &&
++		    be->dpcm[dir].users >= 1) {
++			pr_warn("kc, %s(), be->dai_link->name %s skip stop event\n",
+__func__, be->dai_link->name);
++			continue;
++		}
++
+ 		snd_soc_dapm_stream_event(be, dir, event);
+ 	}
  
- 	val = I2S_CKR_TRCM_TXRX;
--	if (dai->driver->symmetric_rates || rtd->dai_link->symmetric_rates)
--		val = I2S_CKR_TRCM_TXSHARE;
-+	if (dai->driver->symmetric_rates && rtd->dai_link->symmetric_rates)
-+		val = I2S_CKR_TRCM_TXONLY;
- 
- 	regmap_update_bits(i2s->regmap, I2S_CKR,
- 			   I2S_CKR_TRCM_MASK,
-diff --git a/sound/soc/rockchip/rockchip_i2s.h b/sound/soc/rockchip/rockchip_i2s.h
-index dc6e2c7..13b1d44 100644
---- a/sound/soc/rockchip/rockchip_i2s.h
-+++ b/sound/soc/rockchip/rockchip_i2s.h
-@@ -81,8 +81,8 @@
- #define I2S_CKR_TRCM_SHIFT	28
- #define I2S_CKR_TRCM(x)	(x << I2S_CKR_TRCM_SHIFT)
- #define I2S_CKR_TRCM_TXRX	(0 << I2S_CKR_TRCM_SHIFT)
--#define I2S_CKR_TRCM_TXSHARE	(1 << I2S_CKR_TRCM_SHIFT)
--#define I2S_CKR_TRCM_RXSHARE	(2 << I2S_CKR_TRCM_SHIFT)
-+#define I2S_CKR_TRCM_TXONLY	(1 << I2S_CKR_TRCM_SHIFT)
-+#define I2S_CKR_TRCM_RXONLY	(2 << I2S_CKR_TRCM_SHIFT)
- #define I2S_CKR_TRCM_MASK	(3 << I2S_CKR_TRCM_SHIFT)
- #define I2S_CKR_MSS_SHIFT	27
- #define I2S_CKR_MSS_MASTER	(0 << I2S_CKR_MSS_SHIFT)
--- 
-1.7.9.5
+
+Sincerely,
+Kai Chieh
