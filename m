@@ -1,18 +1,21 @@
-From: Xing Zheng <zhengxing@rock-chips.com>
-Subject: Re: [PATCH v2] ASoC: rockchip: Add machine driver for
- MAX98357A/RT5514/DA7219
-Date: Tue, 24 May 2016 09:38:24 +0800
-Message-ID: <5743B090.50401@rock-chips.com>
-References: <1464014612-14396-1-git-send-email-zhengxing@rock-chips.com>
- <6209835.s95gRr0Nsp@phil>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: Re: [PATCH 1/2 v2] ASoC: nau8825: non-clock jack
+ detection for power saving at standby
+Date: Tue, 24 May 2016 11:41:02 +0800
+Message-ID: <5743CD4E.6020805@nuvoton.com>
+References: <1463131037-19220-1-git-send-email-KCHSU0@nuvoton.com>
+ <20160513104841.GA22038@sirena.org.uk> <573926C5.70704@nuvoton.com>
+ <20160518170549.GR8104@sirena.org.uk> <573E80A7.50602@nuvoton.com>
+ <20160520110137.GJ8206@sirena.org.uk> <5742641A.9070409@nuvoton.com>
+ <20160523170432.GA8206@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.136])
- by alsa0.perex.cz (Postfix) with ESMTP id D8062260568
- for <alsa-devel@alsa-project.org>; Tue, 24 May 2016 03:38:29 +0200 (CEST)
-In-Reply-To: <6209835.s95gRr0Nsp@phil>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F182260568
+ for <alsa-devel@alsa-project.org>; Tue, 24 May 2016 05:41:06 +0200 (CEST)
+In-Reply-To: <20160523170432.GA8206@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,22 +25,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Heiko Stuebner <heiko@sntech.de>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, dianders@chromium.org, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, "anatol.pomozov@gmail.com" <anatol.pomozov@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "benzh@chromium.org" <benzh@chromium.org>, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <MHKuo@nuvoton.com>, "yong.zhi@intel.com" <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgSGVpa28sCgpPbiAyMDE25bm0MDXmnIgyM+aXpSAyMjo1MSwgSGVpa28gU3R1ZWJuZXIgd3Jv
-dGU6Cj4gSGkgWGluZywKPgo+IEFtIE1vbnRhZywgMjMuIE1haSAyMDE2LCAyMjo0MzozMiBzY2hy
-aWViIFhpbmcgWmhlbmc6Cj4+IFRoZXJlIGFyZSBtdWx0aSBjb2RlYyBkZXZpY2VzIG9uIHRoZSBS
-SzMzOTkgcGxhdGZvcm0sIHdlIGNhbiB1c2UKPj4gdGhpcyBwYXRjaCBzdXBwb3J0IGFuZCBjb250
-cm9sIHRoZXNlIGNvZGVjcy4KPj4KPj4gLS0tCj4+Cj4+IENoYW5nZXMgaW4gdjI6Cj4+IFNpZ25l
-ZC1vZmYtYnk6IFhpbmcgWmhlbmcgPHpoZW5neGluZ0Byb2NrLWNoaXBzLmNvbT4KPiBzb21ldGhp
-bmcgc2VlbXMgdG8gaGF2ZSBnb25lIHdyb25nIGhlcmUuCj4KPiBUaGUgU2lnbmVkLW9mZiBuZWVk
-cyB0byBiZSBhYm92ZSB0aGUgIi0tLSIgYW5kIHRoZSBjaGFuZ2Vsb2cgaXRzZWxmIHNlZW1zCj4g
-ZW1wdHkgd2hpbGUgYXQgbGVhc3QgdGhlIG51bWJlciBvZiBsaW5lcyBpbiB5b3VyCj4gcm9ja2No
-aXBfbWF4OTgzNTdhX3J0NTUxNF9kYTcyMTkuYyBzZWVtcyB0byBoYXZlIGNoYW5nZWQuCj4KU29y
-cnkgdG8gZm9yZ290IHRvIGFkZCB0aGUgY2hhbmdlbG9nLiBJIHJlc2VudCB0aGlzIHBhdGNoX3Yy
-LgoKVGhhbmsgeW91IGZvciB5b3VyIHJlbWluZGluZy4KCi0tIAotIFhpbmcgWmhlbmcKCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
-aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
-YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi,
+
+On 5/24/2016 1:04 AM, Mark Brown wrote:
+> On Mon, May 23, 2016 at 09:59:54AM +0800, John Hsu wrote:
+>   
+>> On 5/20/2016 7:01 PM, Mark Brown wrote:
+>>     
+>
+>   
+>>> I understand what it's doing but obviously a biquad filter isn't
+>>> specialized for this function...
+>>>       
+>
+>   
+>> Yes, the biquad filter is general purpose feature. Could you give us
+>> suggestion about how to implement the biquad filter for common fea-
+>> ture and to fix DC offset as well?
+>>     
+>
+> The trouble is you'd have to do the configuration in userspace or do
+> something like only do the DC offset correction if no other filter is
+> configured.  TBH it's not unreasonable to suggest people should just
+> configured a high pass filter if they're having issues, though it's a
+> bit more work :(
+>   
+
+Is it acceptable if we change our patch to do the DC offset correction
+instead of general BIQ filter for the issue?
