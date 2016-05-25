@@ -1,8 +1,8 @@
 From: Rob Herring <robh@kernel.org>
 Subject: Re: [PATCH v6] ASoC: cs53l30: Add codec driver support for Cirrus
  CS53L30
-Date: Wed, 25 May 2016 12:26:05 -0500
-Message-ID: <20160525172605.GA3056@rob-hp-laptop>
+Date: Wed, 25 May 2016 12:28:00 -0500
+Message-ID: <20160525172800.GB3056@rob-hp-laptop>
 References: <1464045237-4074-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -64,6 +64,11 @@ On Mon, May 23, 2016 at 04:13:57PM -0700, Nicolin Chen wrote:
 > +
 > +  - VA-supply, VP-supply : power supplies for the device,
 > +    as covered in Documentation/devicetree/bindings/regulator/regulator.txt.
+
+Also, these are missing from the example yet are required. I'd argue 
+they should be optional as you could have designs with no regulator 
+control.
+
 > +
 > +Optional properties:
 > +
@@ -73,14 +78,8 @@ On Mon, May 23, 2016 at 04:13:57PM -0700, Nicolin Chen wrote:
 > +		  0 = Hi-Z
 > +		  1 = 1.80 V
 > +		  2 = 2.75 V
-
-Needs a vendor prefix.
-
 > +
 > +  - use-sdout2 : This is a boolean property. If present, it indicates
-
-Needs a vendor prefix.
-
 > +		 the hardware design connects both SDOUT1 and SDOUT2
 > +		 pins to output data. Otherwise, it indicates that
 > +		 only SDOUT1 is connected for data output.
