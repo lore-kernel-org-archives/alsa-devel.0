@@ -1,99 +1,67 @@
 From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v6] ASoC: cs53l30: Add codec driver support for Cirrus
- CS53L30
-Date: Wed, 25 May 2016 12:28:00 -0500
-Message-ID: <20160525172800.GB3056@rob-hp-laptop>
-References: <1464045237-4074-1-git-send-email-nicoleotsuka@gmail.com>
+Subject: Re: [RESEND PATCH v2] ASoC: rockchip: Add machine driver for
+ MAX98357A/RT5514/DA7219
+Date: Wed, 25 May 2016 12:32:46 -0500
+Message-ID: <20160525173246.GA5125@rob-hp-laptop>
+References: <1464053774-15914-1-git-send-email-zhengxing@rock-chips.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1464045237-4074-1-git-send-email-nicoleotsuka@gmail.com>
+In-Reply-To: <1464053774-15914-1-git-send-email-zhengxing@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: broonie@kernel.org, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, lgirdwood@gmail.com, Tim.Howe@cirrus.com, somduttar@nvidia.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: Xing Zheng <zhengxing@rock-chips.com>
+Cc: linux-rockchip@lists.infradead.org, dianders@chromium.org, heiko@sntech.de, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 23, 2016 at 04:13:57PM -0700, Nicolin Chen wrote:
-> CS53L30 is a Quad-Channel ADC from Cirrus Logic with an I2S/TDM DAI.
-> So this patch adds support for CS53L30 that supports 24-bit recording
-> feature.
+On Tue, May 24, 2016 at 09:36:14AM +0800, Xing Zheng wrote:
+> There are multi codec devices on the RK3399 platform, we can use
+> this patch support and control these codecs.
 > 
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> Signed-off-by: Xing Zheng <zhengxing@rock-chips.com>
 > ---
-> Changelog:
-> v5->v6
->  * Added clock controls
->  * Reconstructed bitfield macros and improved coding style
->  * Fixed some misuses of regmap_update_bits()
->  * Added TLV volume controls to replace enums for preamplifier
->  * Added micbias level in DT instead of exposing to user-space
->  * Simplified SDOUTx controls by removing cs53l30_asp_sdout_event()
->    (Still be able to use set_tristate() instead)
->  * Removed useless header files and sort the rest alphabetically
->  * Registered runtime pm functions to the driver
->  * Added regulator controls (VA and VP)
->  * Added writeable register function for regmap
->  * Merged two ASP dais
->  * Added TDM support
->  * Added a simple introduction in commit log
 > 
->  .../devicetree/bindings/sound/cs53l30.txt          |   38 +
->  sound/soc/codecs/Kconfig                           |    6 +
->  sound/soc/codecs/Makefile                          |    2 +
->  sound/soc/codecs/cs53l30.c                         | 1097 ++++++++++++++++++++
->  sound/soc/codecs/cs53l30.h                         |  458 ++++++++
->  5 files changed, 1601 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/cs53l30.txt
->  create mode 100644 sound/soc/codecs/cs53l30.c
->  create mode 100644 sound/soc/codecs/cs53l30.h
+> Changes in v2:
+> - use the FS 256 to set mclks of the max98357a and rt5514 danamically
+> - add more sample rate for da7219
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/cs53l30.txt b/Documentation/devicetree/bindings/sound/cs53l30.txt
+>  .../sound/rockchip-max98357a-rt5514-da7219.txt     |   15 +
+>  sound/soc/rockchip/Kconfig                         |   11 +
+>  sound/soc/rockchip/Makefile                        |    2 +
+>  .../rockchip/rockchip_max98357a_rt5514_da7219.c    |  333 ++++++++++++++++++++
+>  4 files changed, 361 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/rockchip-max98357a-rt5514-da7219.txt
+>  create mode 100644 sound/soc/rockchip/rockchip_max98357a_rt5514_da7219.c
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/rockchip-max98357a-rt5514-da7219.txt b/Documentation/devicetree/bindings/sound/rockchip-max98357a-rt5514-da7219.txt
 > new file mode 100644
-> index 0000000..ace7ffe
+> index 0000000..5928384
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/cs53l30.txt
-> @@ -0,0 +1,38 @@
-> +CS53L30 audio CODEC
+> +++ b/Documentation/devicetree/bindings/sound/rockchip-max98357a-rt5514-da7219.txt
+> @@ -0,0 +1,15 @@
+> +ROCKCHIP with MAX98357A/RT5514/DA7219 codecs
 > +
 > +Required properties:
-> +
-> +  - compatible : "cirrus,cs53l30"
-> +
-> +  - reg : the I2C address of the device
-> +
-> +  - VA-supply, VP-supply : power supplies for the device,
-> +    as covered in Documentation/devicetree/bindings/regulator/regulator.txt.
+> +- compatible: "rockchip,rockchip-sound"
 
-Also, these are missing from the example yet are required. I'd argue 
-they should be optional as you could have designs with no regulator 
-control.
+This is generic, but the binding seems to be very specific to only 3 
+specific codecs. Listing all 3 codecs seems a bit strange. Perhaps a 
+name related to the board name would be better.
 
-> +
-> +Optional properties:
-> +
-> +  - reset-gpios : a GPIO spec for the reset pin.
-> +
-> +  - micbias-lvl : Set the output voltage level on the MICBIAS Pin.
-> +		  0 = Hi-Z
-> +		  1 = 1.80 V
-> +		  2 = 2.75 V
-> +
-> +  - use-sdout2 : This is a boolean property. If present, it indicates
-> +		 the hardware design connects both SDOUT1 and SDOUT2
-> +		 pins to output data. Otherwise, it indicates that
-> +		 only SDOUT1 is connected for data output.
-> +		 * CS53l30 supports 4-channel data output in the same
-> +		 * frame using two different ways:
-> +		 * 1) Normal I2S mode on two data pins -- each SDOUT
-> +		 *    carries 2-channel data in the same time.
-> +		 * 2) TDM mode on one signle data pin -- SDOUT1 carries
-> +		 *    4-channel data per frame.
+> +- rockchip,cpu: The phandle of the Rockchip I2S controller that's
+> +  connected to the codecs
+
+What's the size? always 3?
+
+> +- rockchip,codec: The phandle of the MAX98357A/RT5514/DA7219 codecs
+
+Please make the size and ordering clear.
+
 > +
 > +Example:
 > +
-> +codec: cs53l30@48 {
-> +        compatible = "cirrus,cs53l30";
-> +        reg = <0x48>;
-> +        reset-gpios = <&gpio 54 0>;
+> +sound {
+> +	compatible = "rockchip,rockchip-sound";
+> +	rockchip,cpu = <&i2s0 &i2s0 &i2s1>;
+> +	rockchip,codec = <&max98357a &headsetcodec &codec>;
 > +};
