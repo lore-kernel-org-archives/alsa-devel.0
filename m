@@ -1,97 +1,105 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v4 0/7] ARM/ASoC: OMAP3: Fix McBSP2/3 sidetone support
-Date: Wed, 25 May 2016 17:37:36 +0300
-Message-ID: <a709475e-03b5-69ef-01d4-ef3919d2b4e3@ti.com>
-References: <1464185756-28401-1-git-send-email-peter.ujfalusi@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1464185756-28401-1-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: tony@atomide.com, jarkko.nikula@bitmer.com, paul@pwsan.com, lgirdwood@gmail.com, broonie@kernel.org
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, t-kristo@ti.com, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+From: kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org
+Subject: Re: [RFC-PATCH 0/2] ASoC: simple_card: support for hw-params rules
+Date: Wed, 25 May 2016 17:44:25 +0200
+Message-ID: <6F927660-767F-4675-9D61-553B8C6CDD94@martin.sperl.org>
+References: <1463747445-14167-1-git-send-email-kernel@martin.sperl.org> <20160523171854.GJ4976@leverpostej>
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20160523171854.GJ4976@leverpostej>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
+Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-my git send-email got interrupted by my ISP :o
-The complete series should be up by now.
+> On 23.05.2016, at 19:18, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org> wrote:
+> 
+> On Fri, May 20, 2016 at 12:30:43PM +0000, kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org wrote:
+>> From: Martin Sperl <kernel-TqfNSX0MhmxHKSADF0wUEw@public.gmane.org>
+>> 
+>> Simple_card does require under some circumstances the ability
+>> to configure certain hw_parameters based on clocks, bits, channels.
+>> 
+>> This patchset adds a generic way to configure these kind of things
+>> via the device tree easily. This patchset implements this
+>> for simple_card, but other drivers can just as easily make use of
+>> this.
+> 
+> I'm not familiar with the class of hardware here.
+> 
+> What exactly needs to be configured, under which situations?
 
-Sorry about it.
+Well one example - here specifically is to set up bclk rates that
+the I2S hw itself is transferring for specific combinations.
 
--- =
+Some of these rules depend on:
+* the i2s driver hw itself - the i2s bcm2835 can only handle 32 bit
+  transfers - so the block size needs to be set as a multiple of 2.
+  in this case: sample-bits * channels.
+* HW limits - e.g 24 bit/sample need to get transferred as 32 bit
+  for the rpi-pcm5102a combination
+* Clock selection dependent - the choice of the block size
+  may be also 40 or 80 bit so that a integer divider clock
+  can get selected as a preference.
+  E.g 32 bit/sample * 2 channels * 48kHz gives a divider of 25/4
+  using the main oscillator at 19.2MHz, which introduces some
+  (possibly) audible  noise due to jitter.
+  while 40bit/sample * 2 channels * 48kHz gives an integer divider
+  of 20.
 
-P=E9ter
+So controlling those helps using the hw setup properly.
 
-On 05/25/2016 05:15 PM, Peter Ujfalusi wrote:
-> Hi,
-> =
+> 
+> How varied is this in practice?
+I heard about some other devices besides the HifiBerry DAC that
+also would like to control the blockrate the same way.
 
-> Changes since v3:
-> - Rebased on next-20160525 [1] to apply cleanly
-> - Fixed subject line for patch5
-> - Added Mark's acked-by to the ASoC patches
-> =
+I remember having seen some other possible things we want to
+control on the driver side during hw-params invocation, but
+I can not remember what these were on top of my head (GPIO,
+external clock selection if I remember correctly)
 
-> [1] "ASoC: omap-mcbsp: Enable/disable sidetone block auto clock
-> gating for omap3" is gone missing from linux-next - it was in next-201605=
-17 and
-> I'm not sure when it got dropped.
-> =
+> 
+> Why does this make more sense than having individual drivers?
+Because then the driver would have to know a lot more
+about the combination of board and codec.
 
-> Tony: since Paul did not replied to the series, I'm sending the v4 now, I=
- hope
-> he will have time to look at this.
-> =
+Also the idea proposed by Mark was to use simple-card
+instead of a dedicated driver which does not allow for
+these kind of controls.
 
-> Commit message from v3:
-> =
+The idea was also to make it generic enough that it could
+get even become part of the framework.
 
-> Based on the ongoing discussion on v2 (ARM: OMAP3: Fix McBSP2/3 hwmod set=
-up for
-> sidetone) I have dropped the removal of the sidetone hwmod and only corre=
-cted
-> it. The series now includes all related changes needed to have correct si=
-detone
-> support whenever we boot in legacy or in DT mode.
-> =
+> 
+>> For now we have the following matchers and actions:
+>> * matchers:
+>>  * match_sample_bits
+>>  * match_rate
+>>  * match_channels
+>> * actions:
+>>  * set_fixed_bclk_size
+>> 
+>> As a note: the available matching rules and action rules right now
+>> are hard-coded, but this could in principle get extended to be more
+>> dynamic via kallsyms_lookup_name that would lookup the requested
+>> symbol and assume it is a struct asoc_generic_hw_params_method,
+>> on which it could apply several sanity-checks before using
+>> the pointers for real.
+> 
+> I'm hoping that's a joke. ;)
+Just food for thought, because otherwise there would be dependencies
+on compiled codecs (or a long #ifdef list)
 
-> This time the ASoC part have dependency on earlier patches so they can no=
-t be
-> applied separately.
-> =
+As an alternative we could also add a method tables to the codec
+structure, so that codecs could expose additional methods, that could
+then get used.
 
-> Regards,
-> Peter
-> ---
-> Peter Ujfalusi (7):
->   ARM: OMAP3: hwmod data: Fix McBSP2/3 sidetone data
->   ARM: dts: omap3: Add clocks to McBSP nodes
->   ARM: OMAP3: McBSP: New callback for McBSP2/3 ICLK idle configuration
->   ARM: OMAP3: pdata-quirks: Add support for McBSP2/3 sidetone handling
->   ASoC: omap-mcbsp: Rename omap_mcbsp_sysfs_remove() to
->     omap_mcbsp_cleanup()
->   ASoC: omap-mcbsp: sidetone: Use the new callback for iclk handling
->   ARM: OMAP2+: McBSP: Remove the old iclk allow/deny idle code
-> =
+Martin
 
->  arch/arm/boot/dts/omap3.dtsi                | 10 ++++++++++
->  arch/arm/mach-omap2/mcbsp.c                 | 31 ++++++++++++++++-------=
-------
->  arch/arm/mach-omap2/omap_hwmod_3xxx_data.c  | 24 ++++------------------
->  arch/arm/mach-omap2/pdata-quirks.c          | 18 +++++++++++++++++
->  include/linux/platform_data/asoc-ti-mcbsp.h |  4 +++-
->  sound/soc/omap/mcbsp.c                      | 21 +++++++++++++------
->  sound/soc/omap/mcbsp.h                      |  3 ++-
->  sound/soc/omap/omap-mcbsp.c                 |  5 ++++-
->  8 files changed, 73 insertions(+), 43 deletions(-)
-> =
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
