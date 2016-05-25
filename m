@@ -1,57 +1,73 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 3/4 v7] ASoC: dwc: Add PIO PCM extension
-Date: Wed, 25 May 2016 14:41:04 +0100
-Message-ID: <20160525134104.GZ8206@sirena.org.uk>
-References: <cover.1463996627.git.joabreu@synopsys.com>
- <d81055d826825874c9d76922d2275688b2586fa6.1463996627.git.joabreu@synopsys.com>
- <20160524164151.GM8206@sirena.org.uk>
- <57448A42.9050606@synopsys.com>
- <20160524175144.GO8206@sirena.org.uk>
- <57457A63.5060702@synopsys.com>
- <20160525101801.GT8206@sirena.org.uk>
- <57458328.8080900@synopsys.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v4 1/7] ARM: OMAP3: hwmod data: Fix McBSP2/3 sidetone data
+Date: Wed, 25 May 2016 17:15:50 +0300
+Message-ID: <1464185756-28401-2-git-send-email-peter.ujfalusi@ti.com>
+References: <1464185756-28401-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="q3mG+ZLxscYP/cqM"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <57458328.8080900-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jose Abreu <Jose.Abreu-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Carlos Palminha <CARLOS.PALMINHA-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Alexey Brodkin <Alexey.Brodkin-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>, linux-snps-arc-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1464185756-28401-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: tony@atomide.com, jarkko.nikula@bitmer.com, paul@pwsan.com, lgirdwood@gmail.com, broonie@kernel.org
+Cc: t-kristo@ti.com, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The McBSPLP's sidetone main clock is the McBSPLP's ICLK, not FCLK as the
+sidetone only receives the ICLK from the main McBSP module.
+Since the McBSP and sidetone is using the very same clock from PRCM level
+the sidetone must not have the prcm section to check the clock status since
+the sidetone is only used when McBSP is already configured.
+If two separate hwmods looking at the same bit and they would use
+pm_runtime in nested way (as it must happen with McBSP and it's ST module)
+the hwmod would warn, because the idlest will not match what it is expected
+after enable/disable of the clocks.
 
---q3mG+ZLxscYP/cqM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ arch/arm/mach-omap2/omap_hwmod_3xxx_data.c | 24 ++++--------------------
+ 1 file changed, 4 insertions(+), 20 deletions(-)
 
-On Wed, May 25, 2016 at 11:49:12AM +0100, Jose Abreu wrote:
-
-> Ok, will do that. I noticed the last I2S patch that you merged
-> ("ASoC: dwc: Add helper functions to disable/enable irqs") is not
-> in for-next yet. Should I base my work on 'topic/dwc' branch?
-
-We are in the merge window.  No new non-bugfix patches will be merged
-until the merge window ends, most likely sometime this weekend.
-
---q3mG+ZLxscYP/cqM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXRasvAAoJECTWi3JdVIfQ28gH/R9gg9hUr17m4k4gZTcCYtog
-ydy9ZwYE1XnT1EyS4+2QlFAiyovHdcBkyrHs9z3+e/deaElvH6myhGsCMACR/6N8
-F4uw6mA4+5vfGrzSYYMzititjYHaSZeuXgDp5Vzk2jtr89MUaGWkKu1BW2ijT/B3
-quVdbU75l/4h+hn8diVj0xY34xpDugK6tqEhbtBWHFFHUf+4Y32pMl2Y4q3gho7P
-B+D1hHiO9yJ4nIEa7kssMUDkMPlCOrjTk31nlsvxIfZqPAnZZ+PdaUVgGuYhxjqc
-L+hy3h5Z+CJrb7k0U5bW9agFko+U4tF4TeXNAF+c9v647v1254gJxlZ4tnf30fE=
-=Qnqs
------END PGP SIGNATURE-----
-
---q3mG+ZLxscYP/cqM--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/arch/arm/mach-omap2/omap_hwmod_3xxx_data.c b/arch/arm/mach-omap2/omap_hwmod_3xxx_data.c
+index 9869a75c5d96..d72ee6185d5e 100644
+--- a/arch/arm/mach-omap2/omap_hwmod_3xxx_data.c
++++ b/arch/arm/mach-omap2/omap_hwmod_3xxx_data.c
+@@ -1322,16 +1322,8 @@ static struct omap_hwmod omap3xxx_mcbsp2_sidetone_hwmod = {
+ 	.name		= "mcbsp2_sidetone",
+ 	.class		= &omap3xxx_mcbsp_sidetone_hwmod_class,
+ 	.mpu_irqs	= omap3xxx_mcbsp2_sidetone_irqs,
+-	.main_clk	= "mcbsp2_fck",
+-	.prcm		= {
+-		.omap2 = {
+-			.prcm_reg_id = 1,
+-			 .module_bit = OMAP3430_EN_MCBSP2_SHIFT,
+-			.module_offs = OMAP3430_PER_MOD,
+-			.idlest_reg_id = 1,
+-			.idlest_idle_bit = OMAP3430_ST_MCBSP2_SHIFT,
+-		},
+-	},
++	.main_clk	= "mcbsp2_ick",
++	.flags		= HWMOD_NO_IDLEST,
+ };
+ 
+ /* mcbsp3_sidetone */
+@@ -1344,16 +1336,8 @@ static struct omap_hwmod omap3xxx_mcbsp3_sidetone_hwmod = {
+ 	.name		= "mcbsp3_sidetone",
+ 	.class		= &omap3xxx_mcbsp_sidetone_hwmod_class,
+ 	.mpu_irqs	= omap3xxx_mcbsp3_sidetone_irqs,
+-	.main_clk	= "mcbsp3_fck",
+-	.prcm		= {
+-		.omap2 = {
+-			.prcm_reg_id = 1,
+-			.module_bit = OMAP3430_EN_MCBSP3_SHIFT,
+-			.module_offs = OMAP3430_PER_MOD,
+-			.idlest_reg_id = 1,
+-			.idlest_idle_bit = OMAP3430_ST_MCBSP3_SHIFT,
+-		},
+-	},
++	.main_clk	= "mcbsp3_ick",
++	.flags		= HWMOD_NO_IDLEST,
+ };
+ 
+ /* SR common */
+-- 
+2.8.2
