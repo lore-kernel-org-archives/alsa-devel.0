@@ -1,16 +1,16 @@
 From: Yong Zhi <yong.zhi@intel.com>
-Subject: [PATCH v2 2/3] ASoC: Intel: boards: configure DMIC for
-	machine sklnau8825max
-Date: Wed, 25 May 2016 06:19:38 -0700
-Message-ID: <1464182378-1370-1-git-send-email-yong.zhi@intel.com>
+Subject: [PATCH v2 3/3] ASoC: Intel: boards: configure DMIC for
+	machine sklnau8825adi
+Date: Wed, 25 May 2016 06:19:49 -0700
+Message-ID: <1464182389-1419-1-git-send-email-yong.zhi@intel.com>
 References: <ac23a9ba3795ed50bea2d88dc90b419238ef1542.1463673471.git.yong.zhi@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 8DAA1267787
- for <alsa-devel@alsa-project.org>; Wed, 25 May 2016 15:17:11 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D10D2669D7
+ for <alsa-devel@alsa-project.org>; Wed, 25 May 2016 15:17:30 +0200 (CEST)
 In-Reply-To: <ac23a9ba3795ed50bea2d88dc90b419238ef1542.1463673471.git.yong.zhi@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,21 +30,21 @@ apply the ch constraint according to driver pdata.
 
 Signed-off-by: Yong Zhi <yong.zhi@intel.com>
 ---
- sound/soc/intel/boards/skl_nau88l25_max98357a.c | 25 ++++++++++++++++++++++---
- 1 file changed, 22 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-index 7cc7251..43fab12 100644
---- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-@@ -23,12 +23,15 @@
- #include <sound/soc.h>
+diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+index 73cbddb..d4e174f 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
++++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+@@ -27,12 +27,15 @@
+ #include <sound/pcm_params.h>
  #include "../../codecs/nau8825.h"
  #include "../../codecs/hdac_hdmi.h"
 +#include "../skylake/skl.h"
  
  #define SKL_NUVOTON_CODEC_DAI	"nau8825-hifi"
- #define SKL_MAXIM_CODEC_DAI "HiFi"
+ #define SKL_SSM_CODEC_DAI	"ssm4567-hifi"
 +#define DMIC_CH(p)     p->list[p->count-1]
  
  static struct snd_soc_jack skylake_headset;
@@ -53,16 +53,16 @@ index 7cc7251..43fab12 100644
  
  enum {
  	SKL_DPCM_AUDIO_PB = 0,
-@@ -296,7 +299,7 @@ static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+@@ -325,7 +328,7 @@ static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ {
  	struct snd_interval *channels = hw_param_interval(params,
- 				SNDRV_PCM_HW_PARAM_CHANNELS);
- 
+ 						SNDRV_PCM_HW_PARAM_CHANNELS);
 -	if (params_channels(params) == 2)
 +	if (params_channels(params) == 2 || DMIC_CH(dmic_constraints) == 2)
  		channels->min = channels->max = 2;
  	else
  		channels->min = channels->max = 4;
-@@ -314,13 +317,23 @@ static struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
+@@ -363,11 +366,21 @@ static struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
  	.mask = 0,
  };
  
@@ -83,12 +83,9 @@ index 7cc7251..43fab12 100644
 -	runtime->hw.channels_max = 4;
 +	runtime->hw.channels_max = DMIC_CH(dmic_constraints);
  	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
--			&constraints_dmic_channels);
-+			dmic_constraints);
+ 			&constraints_dmic_channels);
  
- 	return snd_pcm_hw_constraint_list(substream->runtime, 0,
- 			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
-@@ -550,8 +563,14 @@ static struct snd_soc_card skylake_audio_card = {
+@@ -603,8 +616,14 @@ static struct snd_soc_card skylake_audio_card = {
  
  static int skylake_audio_probe(struct platform_device *pdev)
  {
