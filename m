@@ -1,41 +1,196 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH v6] ASoC: cs53l30: Add codec driver support for Cirrus
- CS53L30
-Date: Wed, 25 May 2016 10:37:24 -0700
-Message-ID: <20160525173724.GA20293@Asurada-Nvidia>
-References: <1464045237-4074-1-git-send-email-nicoleotsuka@gmail.com>
- <20160525172800.GB3056@rob-hp-laptop>
+From: Yong Zhi <yong.zhi@intel.com>
+Subject: [PATCH v2 1/3] ASoC: Intel: Skylake: Add api to
+	retrieve dmic array info from nhlt
+Date: Wed, 25 May 2016 06:19:17 -0700
+Message-ID: <1464182357-1305-1-git-send-email-yong.zhi@intel.com>
+References: <ac23a9ba3795ed50bea2d88dc90b419238ef1542.1463673471.git.yong.zhi@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20160525172800.GB3056@rob-hp-laptop>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rob Herring <robh@kernel.org>
-Cc: broonie@kernel.org, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, lgirdwood@gmail.com, Tim.Howe@cirrus.com, somduttar@nvidia.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 382C1267719
+ for <alsa-devel@alsa-project.org>; Wed, 25 May 2016 15:16:39 +0200 (CEST)
+In-Reply-To: <ac23a9ba3795ed50bea2d88dc90b419238ef1542.1463673471.git.yong.zhi@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, yang.a.fang@intel.com, sathya.prakash.m.r@intel.com, jeeja.kp@intel.com, vedang.patel@intel.com, Yong Zhi <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 25, 2016 at 12:28:00PM -0500, Rob Herring wrote:
+skylake can be configured with either both 2 and 4 channel DMIC
+array, or 2 channel DMIC array only, this patch provides an API to
+retrieve the DMIC info from nhlt.
 
-> > diff --git a/Documentation/devicetree/bindings/sound/cs53l30.txt b/Documentation/devicetree/bindings/sound/cs53l30.txt
-> > new file mode 100644
-> > index 0000000..ace7ffe
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/sound/cs53l30.txt
-> > @@ -0,0 +1,38 @@
-> > +CS53L30 audio CODEC
-> > +
-> > +Required properties:
-> > +
-> > +  - compatible : "cirrus,cs53l30"
-> > +
-> > +  - reg : the I2C address of the device
-> > +
-> > +  - VA-supply, VP-supply : power supplies for the device,
-> > +    as covered in Documentation/devicetree/bindings/regulator/regulator.txt.
+Signed-off-by: Yong Zhi <yong.zhi@intel.com>
+---
+ sound/soc/intel/skylake/skl-nhlt.c | 37 +++++++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-nhlt.h | 22 ++++++++++++++++++++++
+ sound/soc/intel/skylake/skl.c      | 12 ++++++++++--
+ sound/soc/intel/skylake/skl.h      |  6 ++++++
+ 4 files changed, 75 insertions(+), 2 deletions(-)
 
-> Also, these are missing from the example yet are required. I'd argue 
-> they should be optional as you could have designs with no regulator 
-> control.
-
-Will refine both in next ver. Thanks
+diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
+index 7d73648..be4c4a3 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.c
++++ b/sound/soc/intel/skylake/skl-nhlt.c
+@@ -18,6 +18,7 @@
+  *
+  */
+ #include "skl.h"
++#include <linux/pci.h>
+ 
+ /* Unique identification for getting NHLT blobs */
+ static u8 OSC_UUID[16] = {0x6E, 0x88, 0x9F, 0xA6, 0xEB, 0x6C, 0x94, 0x45,
+@@ -149,6 +150,42 @@ struct nhlt_specific_cfg
+ 	return NULL;
+ }
+ 
++int skl_get_dmic_geo(struct skl *skl)
++{
++	struct nhlt_acpi_table *nhlt = (struct nhlt_acpi_table *)skl->nhlt;
++	struct nhlt_endpoint *epnt;
++	struct nhlt_dmic_array_config *cfg;
++	struct device *dev = &(skl->pci->dev);
++	unsigned int dmic_geo = 0;
++	u8 j;
++
++	epnt = (struct nhlt_endpoint *)nhlt->desc;
++
++	for (j = 0; j < nhlt->endpoint_count; j++) {
++		if (epnt->linktype == NHLT_LINK_DMIC) {
++			cfg = (struct nhlt_dmic_array_config  *)
++					(epnt->config.caps);
++			switch (cfg->array_type) {
++			case NHLT_MIC_ARRAY_2CH_SMALL:
++			case NHLT_MIC_ARRAY_2CH_BIG:
++				dmic_geo |= MIC_ARRAY_2CH;
++				break;
++			case NHLT_MIC_ARRAY_4CH_1ST_GEOM:
++			case NHLT_MIC_ARRAY_4CH_L_SHAPED:
++			case NHLT_MIC_ARRAY_4CH_2ND_GEOM:
++				dmic_geo |= MIC_ARRAY_4CH;
++				break;
++			default:
++				dev_warn(dev, "undefined DMIC array_type 0x%0x\n",
++						cfg->array_type);
++			}
++		}
++		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
++	}
++
++	return dmic_geo;
++}
++
+ static void skl_nhlt_trim_space(struct skl *skl)
+ {
+ 	char *s = skl->tplg_name;
+diff --git a/sound/soc/intel/skylake/skl-nhlt.h b/sound/soc/intel/skylake/skl-nhlt.h
+index 3769f9f..116534e7 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.h
++++ b/sound/soc/intel/skylake/skl-nhlt.h
+@@ -103,4 +103,26 @@ struct nhlt_resource_desc  {
+ 	u64 length;
+ } __packed;
+ 
++#define MIC_ARRAY_2CH 2
++#define MIC_ARRAY_4CH 4
++
++struct nhlt_tdm_config {
++	u8 virtual_slot;
++	u8 config_type;
++} __packed;
++
++struct nhlt_dmic_array_config {
++	struct nhlt_tdm_config tdm_config;
++	u8 array_type;
++} __packed;
++
++enum {
++	NHLT_MIC_ARRAY_2CH_SMALL = 0xa,
++	NHLT_MIC_ARRAY_2CH_BIG = 0xb,
++	NHLT_MIC_ARRAY_4CH_1ST_GEOM = 0xc,
++	NHLT_MIC_ARRAY_4CH_L_SHAPED = 0xd,
++	NHLT_MIC_ARRAY_4CH_2ND_GEOM = 0xe,
++	NHLT_MIC_ARRAY_VENDOR_DEFINED = 0xf,
++};
++
+ #endif
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 06d8c26..b0f7226 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -35,6 +35,8 @@
+ #include "skl-sst-dsp.h"
+ #include "skl-sst-ipc.h"
+ 
++static struct skl_machine_pdata skl_dmic_data;
++
+ /*
+  * initialize the PCI registers
+  */
+@@ -397,6 +399,10 @@ static int skl_machine_device_register(struct skl *skl, void *driver_data)
+ 		platform_device_put(pdev);
+ 		return -EIO;
+ 	}
++
++	if (mach->pdata)
++		dev_set_drvdata(&pdev->dev, mach->pdata);
++
+ 	skl->i2s_dev = pdev;
+ 
+ 	return 0;
+@@ -666,6 +672,8 @@ static int skl_probe(struct pci_dev *pci,
+ 
+ 	pci_set_drvdata(skl->pci, ebus);
+ 
++	skl_dmic_data.dmic_num = skl_get_dmic_geo(skl);
++
+ 	/* check if dsp is there */
+ 	if (ebus->ppcap) {
+ 		err = skl_machine_device_register(skl,
+@@ -787,9 +795,9 @@ static void skl_remove(struct pci_dev *pci)
+ static struct sst_acpi_mach sst_skl_devdata[] = {
+ 	{ "INT343A", "skl_alc286s_i2s", "intel/dsp_fw_release.bin", NULL, NULL, NULL },
+ 	{ "INT343B", "skl_nau88l25_ssm4567_i2s", "intel/dsp_fw_release.bin",
+-				NULL, NULL, NULL },
++				NULL, NULL, &skl_dmic_data },
+ 	{ "MX98357A", "skl_nau88l25_max98357a_i2s", "intel/dsp_fw_release.bin",
+-				NULL, NULL, NULL },
++				NULL, NULL, &skl_dmic_data },
+ 	{}
+ };
+ 
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index 4b4b387..f66be17 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -90,6 +90,11 @@ struct skl_dma_params {
+ 	u8 stream_tag;
+ };
+ 
++/* to pass dmic data */
++struct skl_machine_pdata {
++	u32 dmic_num;
++};
++
+ struct skl_dsp_ops {
+ 	int id;
+ 	struct skl_dsp_loader_ops (*loader_ops)(void);
+@@ -108,6 +113,7 @@ void skl_nhlt_free(struct nhlt_acpi_table *addr);
+ struct nhlt_specific_cfg *skl_get_ep_blob(struct skl *skl, u32 instance,
+ 			u8 link_type, u8 s_fmt, u8 no_ch, u32 s_rate, u8 dirn);
+ 
++int skl_get_dmic_geo(struct skl *skl);
+ int skl_nhlt_update_topology_bin(struct skl *skl);
+ int skl_init_dsp(struct skl *skl);
+ int skl_free_dsp(struct skl *skl);
+-- 
+1.9.1
