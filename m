@@ -1,104 +1,61 @@
-From: Yong Zhi <yong.zhi@intel.com>
-Subject: [PATCH v2 3/3] ASoC: Intel: boards: configure DMIC for
-	machine sklnau8825adi
-Date: Wed, 25 May 2016 06:19:49 -0700
-Message-ID: <1464182389-1419-1-git-send-email-yong.zhi@intel.com>
-References: <ac23a9ba3795ed50bea2d88dc90b419238ef1542.1463673471.git.yong.zhi@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v6] ASoC: cs53l30: Add codec driver support for Cirrus
+ CS53L30
+Date: Wed, 25 May 2016 19:16:03 +0100
+Message-ID: <20160525181603.GD8206@sirena.org.uk>
+References: <1464045237-4074-1-git-send-email-nicoleotsuka@gmail.com>
+ <20160525172800.GB3056@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D10D2669D7
- for <alsa-devel@alsa-project.org>; Wed, 25 May 2016 15:17:30 +0200 (CEST)
-In-Reply-To: <ac23a9ba3795ed50bea2d88dc90b419238ef1542.1463673471.git.yong.zhi@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, yang.a.fang@intel.com, sathya.prakash.m.r@intel.com, jeeja.kp@intel.com, vedang.patel@intel.com, Yong Zhi <yong.zhi@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="1iEpPD5yDbvq0asf"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20160525172800.GB3056@rob-hp-laptop>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rob Herring <robh@kernel.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, lgirdwood@gmail.com, Tim.Howe@cirrus.com, somduttar@nvidia.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This machine driver can support 2 or 4 DMIC configuration, so
-apply the ch constraint according to driver pdata.
 
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
----
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+--1iEpPD5yDbvq0asf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index 73cbddb..d4e174f 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -27,12 +27,15 @@
- #include <sound/pcm_params.h>
- #include "../../codecs/nau8825.h"
- #include "../../codecs/hdac_hdmi.h"
-+#include "../skylake/skl.h"
- 
- #define SKL_NUVOTON_CODEC_DAI	"nau8825-hifi"
- #define SKL_SSM_CODEC_DAI	"ssm4567-hifi"
-+#define DMIC_CH(p)     p->list[p->count-1]
- 
- static struct snd_soc_jack skylake_headset;
- static struct snd_soc_card skylake_audio_card;
-+static const struct snd_pcm_hw_constraint_list *dmic_constraints;
- 
- enum {
- 	SKL_DPCM_AUDIO_PB = 0,
-@@ -325,7 +328,7 @@ static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
- {
- 	struct snd_interval *channels = hw_param_interval(params,
- 						SNDRV_PCM_HW_PARAM_CHANNELS);
--	if (params_channels(params) == 2)
-+	if (params_channels(params) == 2 || DMIC_CH(dmic_constraints) == 2)
- 		channels->min = channels->max = 2;
- 	else
- 		channels->min = channels->max = 4;
-@@ -363,11 +366,21 @@ static struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
- 	.mask = 0,
- };
- 
-+static const unsigned int dmic_2ch[] = {
-+	2,
-+};
-+
-+static const struct snd_pcm_hw_constraint_list constraints_dmic_2ch = {
-+	.count = ARRAY_SIZE(dmic_2ch),
-+	.list = dmic_2ch,
-+	.mask = 0,
-+};
-+
- static int skylake_dmic_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 
--	runtime->hw.channels_max = 4;
-+	runtime->hw.channels_max = DMIC_CH(dmic_constraints);
- 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
- 			&constraints_dmic_channels);
- 
-@@ -603,8 +616,14 @@ static struct snd_soc_card skylake_audio_card = {
- 
- static int skylake_audio_probe(struct platform_device *pdev)
- {
-+	struct skl_machine_pdata *pdata;
- 	skylake_audio_card.dev = &pdev->dev;
- 
-+	pdata = dev_get_drvdata(&pdev->dev);
-+	if (pdata)
-+		dmic_constraints = pdata->dmic_num == 2 ?
-+			&constraints_dmic_2ch : &constraints_dmic_channels;
-+
- 	return devm_snd_soc_register_card(&pdev->dev, &skylake_audio_card);
- }
- 
--- 
-1.9.1
+On Wed, May 25, 2016 at 12:28:00PM -0500, Rob Herring wrote:
+> On Mon, May 23, 2016 at 04:13:57PM -0700, Nicolin Chen wrote:
+
+> > +  - VA-supply, VP-supply : power supplies for the device,
+> > +    as covered in Documentation/devicetree/bindings/regulator/regulato=
+r.txt.
+
+> Also, these are missing from the example yet are required. I'd argue=20
+> they should be optional as you could have designs with no regulator=20
+> control.
+
+The general rule is that regulators should only be omitted if they are
+physically absent, we can describe simple fixed supplies with no control
+so we should do so (though in practice Linux is much more forgiving and
+will provide one if the supply is just plain missing from the DT).  This
+is a simpler rule for people to follow than making them officially
+optional and is more robust in the face of things like implementation
+changes that allow supplies to become controlable or drivers that
+suddenly form a desire to look at their supply voltages, as well as
+allowing other OSs to have simpler implementations if it's followed.
+
+--1iEpPD5yDbvq0asf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXRevhAAoJECTWi3JdVIfQMSMIAIGqGM0uxZ6U4J4rOgEChwTI
+HdwfDIMSCWxaM15j4HAAaW9G1H3VINciYveHSBe8NU+skRwW1M0CGu5A593yZ1cZ
+E2NW+8QeYCs9dPOISLmjWyIxrAV6TBu3x4v2zjiRpkLd0WcNS6HOcSActrb7Ky2C
+WFfuXrfj/SCOBMexcBmesg7E65gsjdDkB4UVtv69glWsvcb2nf5KeTGNPEVki9qW
+WVj9/blu3y8K0pW5vXSNjbS31dJe0iKCa7qGL665Vj4AgqXyOX7+ksZ6B4OPdjD7
+1vi+OMQjmD3x9jf4CgJ3UoKZOjtzZ6zAPlP/NIpxvwc11FxqVb3r6ar7utn8SXI=
+=PpaN
+-----END PGP SIGNATURE-----
+
+--1iEpPD5yDbvq0asf--
