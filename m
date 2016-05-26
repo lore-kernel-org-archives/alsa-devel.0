@@ -1,68 +1,77 @@
-From: Xing Zheng <zhengxing@rock-chips.com>
-Subject: Re: [RESEND PATCH v2] ASoC: rockchip: Add machine
- driver for MAX98357A/RT5514/DA7219
-Date: Thu, 26 May 2016 17:04:39 +0800
-Message-ID: <5746BC27.1030008@rock-chips.com>
-References: <1464053774-15914-1-git-send-email-zhengxing@rock-chips.com>
- <20160525173246.GA5125@rob-hp-laptop>
+From: PC Liao <pc.liao@mediatek.com>
+Subject: [PATCH] ASoC: mediatek: Change the order of MCLK clock configuration
+Date: Thu, 26 May 2016 20:50:50 +0800
+Message-ID: <1464267050-57287-1-git-send-email-pc.liao@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.140])
- by alsa0.perex.cz (Postfix) with ESMTP id 3276E2651D1
- for <alsa-devel@alsa-project.org>; Thu, 26 May 2016 11:04:46 +0200 (CEST)
-In-Reply-To: <20160525173246.GA5125@rob-hp-laptop>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, dianders@chromium.org, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Kumar Gala <galak@codeaurora.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, tiwai@suse.de
+Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, koro.chen@mediatek.com, garlic.tseng@mediatek.com, PC Liao <pc.liao@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgUm9iLAoKT24gMjAxNuW5tDA15pyIMjbml6UgMDE6MzIsIFJvYiBIZXJyaW5nIHdyb3RlOgo+
-IE9uIFR1ZSwgTWF5IDI0LCAyMDE2IGF0IDA5OjM2OjE0QU0gKzA4MDAsIFhpbmcgWmhlbmcgd3Jv
-dGU6Cj4+IFRoZXJlIGFyZSBtdWx0aSBjb2RlYyBkZXZpY2VzIG9uIHRoZSBSSzMzOTkgcGxhdGZv
-cm0sIHdlIGNhbiB1c2UKPj4gdGhpcyBwYXRjaCBzdXBwb3J0IGFuZCBjb250cm9sIHRoZXNlIGNv
-ZGVjcy4KPj4KPj4gU2lnbmVkLW9mZi1ieTogWGluZyBaaGVuZyA8emhlbmd4aW5nQHJvY2stY2hp
-cHMuY29tPgo+PiAtLS0KPj4KPj4gQ2hhbmdlcyBpbiB2MjoKPj4gLSB1c2UgdGhlIEZTIDI1NiB0
-byBzZXQgbWNsa3Mgb2YgdGhlIG1heDk4MzU3YSBhbmQgcnQ1NTE0IGRhbmFtaWNhbGx5Cj4+IC0g
-YWRkIG1vcmUgc2FtcGxlIHJhdGUgZm9yIGRhNzIxOQo+Pgo+PiAgIC4uLi9zb3VuZC9yb2NrY2hp
-cC1tYXg5ODM1N2EtcnQ1NTE0LWRhNzIxOS50eHQgICAgIHwgICAxNSArCj4+ICAgc291bmQvc29j
-L3JvY2tjaGlwL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDExICsKPj4gICBz
-b3VuZC9zb2Mvcm9ja2NoaXAvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDIg
-Kwo+PiAgIC4uLi9yb2NrY2hpcC9yb2NrY2hpcF9tYXg5ODM1N2FfcnQ1NTE0X2RhNzIxOS5jICAg
-IHwgIDMzMyArKysrKysrKysrKysrKysrKysrKwo+PiAgIDQgZmlsZXMgY2hhbmdlZCwgMzYxIGlu
-c2VydGlvbnMoKykKPj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0
-cmVlL2JpbmRpbmdzL3NvdW5kL3JvY2tjaGlwLW1heDk4MzU3YS1ydDU1MTQtZGE3MjE5LnR4dAo+
-PiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9zb2Mvcm9ja2NoaXAvcm9ja2NoaXBfbWF4OTgz
-NTdhX3J0NTUxNF9kYTcyMTkuYwo+Pgo+PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZp
-Y2V0cmVlL2JpbmRpbmdzL3NvdW5kL3JvY2tjaGlwLW1heDk4MzU3YS1ydDU1MTQtZGE3MjE5LnR4
-dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9yb2NrY2hpcC1tYXg5
-ODM1N2EtcnQ1NTE0LWRhNzIxOS50eHQKPj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPj4gaW5kZXgg
-MDAwMDAwMC4uNTkyODM4NAo+PiAtLS0gL2Rldi9udWxsCj4+ICsrKyBiL0RvY3VtZW50YXRpb24v
-ZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9yb2NrY2hpcC1tYXg5ODM1N2EtcnQ1NTE0LWRhNzIx
-OS50eHQKPj4gQEAgLTAsMCArMSwxNSBAQAo+PiArUk9DS0NISVAgd2l0aCBNQVg5ODM1N0EvUlQ1
-NTE0L0RBNzIxOSBjb2RlY3MKPj4gKwo+PiArUmVxdWlyZWQgcHJvcGVydGllczoKPj4gKy0gY29t
-cGF0aWJsZTogInJvY2tjaGlwLHJvY2tjaGlwLXNvdW5kIgo+IFRoaXMgaXMgZ2VuZXJpYywgYnV0
-IHRoZSBiaW5kaW5nIHNlZW1zIHRvIGJlIHZlcnkgc3BlY2lmaWMgdG8gb25seSAzCj4gc3BlY2lm
-aWMgY29kZWNzLiBMaXN0aW5nIGFsbCAzIGNvZGVjcyBzZWVtcyBhIGJpdCBzdHJhbmdlLiBQZXJo
-YXBzIGEKPiBuYW1lIHJlbGF0ZWQgdG8gdGhlIGJvYXJkIG5hbWUgd291bGQgYmUgYmV0dGVyLgpZ
-ZXMsIEkgdGhpbmsgdGhhdCBJIHNob3VsZCByZW5hbWUgdG8gcmszMzk5X21heDk4MzU3YV9ydDU1
-MTRfZGE3MjE5LmMsIAppdCBpcyByZWxhdGVkIHRvIHRoZSByazMzOTkgYm9hcmRzLgo+PiArLSBy
-b2NrY2hpcCxjcHU6IFRoZSBwaGFuZGxlIG9mIHRoZSBSb2NrY2hpcCBJMlMgY29udHJvbGxlciB0
-aGF0J3MKPj4gKyAgY29ubmVjdGVkIHRvIHRoZSBjb2RlY3MKPiBXaGF0J3MgdGhlIHNpemU/IGFs
-d2F5cyAzPwpOb3QgYWx3YXlzIDMsIHRoZSBzaXplIGlzIGxpbWl0ZWQgYnkgbWFjaGluZSBkcml2
-ZXIsIFRoZSBzaW1pbGFyIAphcHByb2FjaCB3aXRoIG10ODE3My1ydDU2NTAtcnQ1Njc2LnR4dC4K
-Pj4gKy0gcm9ja2NoaXAsY29kZWM6IFRoZSBwaGFuZGxlIG9mIHRoZSBNQVg5ODM1N0EvUlQ1NTE0
-L0RBNzIxOSBjb2RlY3MKPiBQbGVhc2UgbWFrZSB0aGUgc2l6ZSBhbmQgb3JkZXJpbmcgY2xlYXIu
-CkRpdHRvLgoKVGhhbmtzLgoKLS0gCi0gWGluZyBaaGVuZwoKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Because MCLK opens later and closes earlier than codec, this patch
+changes the order of MCLK clock configuration.
+
+Signed-off-by: PC Liao <pc.liao@mediatek.com>
+---
+ sound/soc/mediatek/mtk-afe-pcm.c |   16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/mediatek/mtk-afe-pcm.c b/sound/soc/mediatek/mtk-afe-pcm.c
+index f1c58a2..440ae06 100644
+--- a/sound/soc/mediatek/mtk-afe-pcm.c
++++ b/sound/soc/mediatek/mtk-afe-pcm.c
+@@ -360,8 +360,6 @@ static int mtk_afe_i2s_startup(struct snd_pcm_substream *substream,
+ 	if (dai->active)
+ 		return 0;
+ 
+-	mtk_afe_dais_enable_clks(afe, afe->clocks[MTK_CLK_I2S1_M], NULL);
+-	mtk_afe_dais_enable_clks(afe, afe->clocks[MTK_CLK_I2S2_M], NULL);
+ 	regmap_update_bits(afe->regmap, AUDIO_TOP_CON0,
+ 			   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M, 0);
+ 	return 0;
+@@ -380,8 +378,6 @@ static void mtk_afe_i2s_shutdown(struct snd_pcm_substream *substream,
+ 	regmap_update_bits(afe->regmap, AUDIO_TOP_CON0,
+ 			   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M,
+ 			   AUD_TCON0_PDN_22M | AUD_TCON0_PDN_24M);
+-	mtk_afe_dais_disable_clks(afe, afe->clocks[MTK_CLK_I2S1_M], NULL);
+-	mtk_afe_dais_disable_clks(afe, afe->clocks[MTK_CLK_I2S2_M], NULL);
+ }
+ 
+ static int mtk_afe_i2s_prepare(struct snd_pcm_substream *substream,
+@@ -1132,6 +1128,8 @@ static int mtk_afe_runtime_suspend(struct device *dev)
+ 	regmap_update_bits(afe->regmap, AUDIO_TOP_CON0,
+ 			   AUD_TCON0_PDN_AFE, AUD_TCON0_PDN_AFE);
+ 
++	clk_disable_unprepare(afe->clocks[MTK_CLK_I2S1_M]);
++	clk_disable_unprepare(afe->clocks[MTK_CLK_I2S2_M]);
+ 	clk_disable_unprepare(afe->clocks[MTK_CLK_BCK0]);
+ 	clk_disable_unprepare(afe->clocks[MTK_CLK_BCK1]);
+ 	clk_disable_unprepare(afe->clocks[MTK_CLK_TOP_PDN_AUD]);
+@@ -1164,6 +1162,12 @@ static int mtk_afe_runtime_resume(struct device *dev)
+ 	ret = clk_prepare_enable(afe->clocks[MTK_CLK_BCK1]);
+ 	if (ret)
+ 		goto err_bck0;
++	ret = clk_prepare_enable(afe->clocks[MTK_CLK_I2S1_M]);
++	if (ret)
++		goto err_i2s1_m;
++	ret = clk_prepare_enable(afe->clocks[MTK_CLK_I2S2_M]);
++	if (ret)
++		goto err_i2s2_m;
+ 
+ 	/* enable AFE clk */
+ 	regmap_update_bits(afe->regmap, AUDIO_TOP_CON0, AUD_TCON0_PDN_AFE, 0);
+@@ -1179,6 +1183,10 @@ static int mtk_afe_runtime_resume(struct device *dev)
+ 	regmap_update_bits(afe->regmap, AFE_DAC_CON0, 0x1, 0x1);
+ 	return 0;
+ 
++err_i2s1_m:
++	clk_disable_unprepare(afe->clocks[MTK_CLK_I2S1_M]);
++err_i2s2_m:
++	clk_disable_unprepare(afe->clocks[MTK_CLK_I2S2_M]);
+ err_bck0:
+ 	clk_disable_unprepare(afe->clocks[MTK_CLK_BCK0]);
+ err_top_aud:
+-- 
+1.7.9.5
