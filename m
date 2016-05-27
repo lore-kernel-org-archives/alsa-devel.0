@@ -1,63 +1,86 @@
-From: Yong Zhi <yong.zhi@intel.com>
-Subject: [PATCH v3 5/5] ASoC: Intel: Skylake: Use refcap device
-	for mono recording
-Date: Thu, 26 May 2016 21:31:16 -0700
-Message-ID: <1464323476-28957-1-git-send-email-yong.zhi@intel.com>
-References: <1464182357-1305-1-git-send-email-yong.zhi@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 36164265568
- for <alsa-devel@alsa-project.org>; Fri, 27 May 2016 06:28:27 +0200 (CEST)
-In-Reply-To: <1464182357-1305-1-git-send-email-yong.zhi@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, yang.a.fang@intel.com, sathya.prakash.m.r@intel.com, jeeja.kp@intel.com, vedang.patel@intel.com, Yong Zhi <yong.zhi@intel.com>
+From: Chris Zhong <zyw@rock-chips.com>
+Subject: [PATCH 0/6] Rockchip Type-C and DispplayPort driver
+Date: Fri, 27 May 2016 14:02:13 +0800
+Message-ID: <1464328939-8073-1-git-send-email-zyw@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: dianders@chromium.org, tfiga@chromium.org, heiko@sntech.de, yzq@rock-chips.com
+Cc: linux-rockchip@lists.infradead.org, Chris Zhong <zyw@rock-chips.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Kumar Gala <galak@codeaurora.org>, dri-devel@lists.freedesktop.org, Ian Campbell <ijc+devicetree@hellion.org.uk>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Rob Herring <robh+dt@kernel.org>, David Airlie <airlied@linux.ie>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Jacob Siverskog <jacob@teenage.engineering>, Oder Chiou <oder_chiou@realtek.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Pawel Moll <pawel.moll@arm.com>, Johan Hovold <johan@kernel.org>, "Damien.Horsley" <Damien.Horsley@imgtec.com>, devicetree@vger.kernel.org, Michael Trimarchi <michael@amarulasolutions.com>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, anish
 List-Id: alsa-devel@alsa-project.org
 
-Only mono channel is allowed for refcap device.
+Hi all
 
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
----
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+This series patch is for rockchip Type-C phy and DisplayPort controller
+driver.
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index d4e174f..d151f1f 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -401,8 +401,22 @@ static struct snd_pcm_hw_constraint_list constraints_16000 = {
- 	.list  = rates_16000,
- };
- 
-+static const unsigned int ch_mono[] = {
-+	1,
-+};
-+
-+static const struct snd_pcm_hw_constraint_list constraints_refcap = {
-+	.count = ARRAY_SIZE(ch_mono),
-+	.list  = ch_mono,
-+};
-+
- static int skylake_refcap_startup(struct snd_pcm_substream *substream)
- {
-+	substream->runtime->hw.channels_max = 1;
-+	snd_pcm_hw_constraint_list(substream->runtime, 0,
-+					SNDRV_PCM_HW_PARAM_CHANNELS,
-+					&constraints_refcap);
-+
- 	return snd_pcm_hw_constraint_list(substream->runtime, 0,
- 			SNDRV_PCM_HW_PARAM_RATE,
- 			&constraints_16000);
+The USB Type-C PHY is designed to support the USB3 and DP applications.
+The PHY basically has two main components: USB3 and DisplyPort. USB3
+operates in SuperSpeed mode and the DP can operate at RBR, HBR and HBR2
+data rates. The Type-C cable orientation detection and Power Delivery
+(PD) is accomplished using a PD PHY or a exernal PD chip.
+
+The DP controller is compliant with DisplayPort Specification,
+Version 1.3, This IP is compatible with the rockchip type-c PHY IP.
+There is a uCPU in DP controller, it need a firmware to work, please
+put the firmware file to /lib/firmware/cdn/dptx.bin. The uCPU in charge
+of aux communication and link training, the host use mailbox to
+communicate with the ucpu.
+
+The PHY driver has register a notification, to get the alt mode from PD,
+the PD driver need call the tcphy_notifier_call_chain to notify PHY and
+DP controller.
+
+This series is based on Mark Yao's branch:
+https://github.com/markyzq/kernel-drm-rockchip/tree/drm-rockchip-next-2016-05-23
+
+I test this patches on the rk3399-evb board, with a fusb302 driver,
+this branch has no rk3399.dtsi, so the patch about dts is not included
+in this series.
+
+
+
+Chris Zhong (6):
+  phy: Add USB Type-C PHY driver for rk3399
+  Documentation: bindings: add dt doc for Rockchip USB Type-C PHY
+  drm/rockchip: vop: add cdn DP support for rk3399
+  Documentation: bindings: add dt documentation for cdn DP controller
+  ASoC: cdn-dp: Add cdn DP codec driver
+  ASoC: rockchip: Add machine driver for cdn dp codec
+
+ .../bindings/display/rockchip/cdn-dp-rockchip.txt  |  57 ++
+ .../devicetree/bindings/phy/phy-rockchip-typec.txt |  55 ++
+ .../bindings/sound/rockchip-cdn-dp-audio.txt       |  12 +
+ drivers/gpu/drm/rockchip/Kconfig                   |   9 +
+ drivers/gpu/drm/rockchip/Makefile                  |   1 +
+ drivers/gpu/drm/rockchip/cdn-dp-core.c             | 620 ++++++++++++++++
+ drivers/gpu/drm/rockchip/cdn-dp-core.h             |  95 +++
+ drivers/gpu/drm/rockchip/cdn-dp-reg.c              | 730 ++++++++++++++++++
+ drivers/gpu/drm/rockchip/cdn-dp-reg.h              | 404 ++++++++++
+ drivers/gpu/drm/rockchip/rockchip_drm_vop.c        |   9 +-
+ drivers/gpu/drm/rockchip/rockchip_drm_vop.h        |   2 +
+ drivers/gpu/drm/rockchip/rockchip_vop_reg.c        |   2 +
+ drivers/phy/Kconfig                                |   7 +
+ drivers/phy/Makefile                               |   1 +
+ drivers/phy/phy-rockchip-typec.c                   | 823 +++++++++++++++++++++
+ include/sound/cdn-dp-audio.h                       |  51 ++
+ sound/soc/codecs/Kconfig                           |   3 +
+ sound/soc/codecs/Makefile                          |   2 +
+ sound/soc/codecs/cdn-dp-audio.c                    | 246 ++++++
+ sound/soc/rockchip/Kconfig                         |   9 +
+ sound/soc/rockchip/Makefile                        |   2 +
+ sound/soc/rockchip/rockchip-cdn-dp-audio.c         | 167 +++++
+ 22 files changed, 3306 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/display/rockchip/cdn-dp-rockchip.txt
+ create mode 100644 Documentation/devicetree/bindings/phy/phy-rockchip-typec.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/rockchip-cdn-dp-audio.txt
+ create mode 100644 drivers/gpu/drm/rockchip/cdn-dp-core.c
+ create mode 100644 drivers/gpu/drm/rockchip/cdn-dp-core.h
+ create mode 100644 drivers/gpu/drm/rockchip/cdn-dp-reg.c
+ create mode 100644 drivers/gpu/drm/rockchip/cdn-dp-reg.h
+ create mode 100644 drivers/phy/phy-rockchip-typec.c
+ create mode 100644 include/sound/cdn-dp-audio.h
+ create mode 100644 sound/soc/codecs/cdn-dp-audio.c
+ create mode 100644 sound/soc/rockchip/rockchip-cdn-dp-audio.c
+
 -- 
-1.9.1
+2.6.3
