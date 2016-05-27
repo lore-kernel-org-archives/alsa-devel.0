@@ -1,51 +1,70 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v4 1/4] dt-bindings: sound: add bindings for the max9860
- codec
-Date: Fri, 27 May 2016 21:24:36 +0100
-Message-ID: <20160527202436.GC29837@sirena.org.uk>
-References: <1463260181-21344-1-git-send-email-peda@axentia.se>
- <1463260181-21344-2-git-send-email-peda@axentia.se>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="bKyqfOwhbdpXa4YI"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1463260181-21344-2-git-send-email-peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
-Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Misbah Ullah Khan <Misbahk-RbfqNLLv1bh8UrSeD/g0lQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: [RFC PATCH v2 3/7] ASoC: add new ac97 bus support
+Date: Fri, 27 May 2016 22:26:55 +0200
+Message-ID: <1464380819-19075-4-git-send-email-robert.jarzmik@free.fr>
+References: <1464380819-19075-1-git-send-email-robert.jarzmik@free.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1464380819-19075-1-git-send-email-robert.jarzmik@free.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+Add the new ac97 bus support, with ac97 bus automatic probing.
 
---bKyqfOwhbdpXa4YI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+---
+ sound/Kconfig     | 2 ++
+ sound/Makefile    | 1 +
+ sound/soc/Kconfig | 4 ++++
+ 3 files changed, 7 insertions(+)
 
-On Sat, May 14, 2016 at 11:09:38PM +0200, Peter Rosin wrote:
-> This adds the device tree binding documentation for the Maxim Integrated
-> MAX9860 mono audio voice codec.
-
-Please submit patches using subject lines reflecting the style for the
-subsystem.  This makes it easier for people to identify relevant
-patches.
-
---bKyqfOwhbdpXa4YI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXSK0CAAoJECTWi3JdVIfQETAH/RKb8p3QMq/8uhkGxKxLmq9B
-AN3wSFEZ/Ws3Az4G4O5FpHDw6v5xxI8iBpaojH/sClmUSBjhf33sBtGJhtdMtQC0
-+7+A3gSRsMMQD0jtTL/vCc5vqQnGcGXXuRnufIyHSafubvzVslIL8AnVCKZNLHOJ
-WtDHl2VjlsDvWZr0aHnYswR/hreYAbitXGlnhw1nG511aqMV5ChJ902hwZKMlw9J
-Way2RqOeyO7Puomq8jKFaGdMla6VX0t10+r1Xwd7KRJTErIm7KIZGOThs5m7tWXp
-AeMxIolG0uPwlrQmXS9So8EcyiyM/lh4Cwt7xdHOqR27vz5fo6ZzEpiYRBIPgjI=
-=ALlF
------END PGP SIGNATURE-----
-
---bKyqfOwhbdpXa4YI--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/Kconfig b/sound/Kconfig
+index 5a240e050ae6..c7e1cbe84951 100644
+--- a/sound/Kconfig
++++ b/sound/Kconfig
+@@ -80,6 +80,8 @@ source "sound/hda/Kconfig"
+ 
+ source "sound/ppc/Kconfig"
+ 
++source "sound/ac97/Kconfig"
++
+ source "sound/aoa/Kconfig"
+ 
+ source "sound/arm/Kconfig"
+diff --git a/sound/Makefile b/sound/Makefile
+index 77320709fd26..74728aee25d5 100644
+--- a/sound/Makefile
++++ b/sound/Makefile
+@@ -11,6 +11,7 @@ obj-$(CONFIG_SND_AOA) += aoa/
+ 
+ # This one must be compilable even if sound is configured out
+ obj-$(CONFIG_AC97_BUS) += ac97_bus.o
++obj-$(CONFIG_AC97_BUS_NEW) += ac97/
+ 
+ ifeq ($(CONFIG_SND),y)
+   obj-y += last.o
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 182d92efc7c8..5ad0a0422054 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -6,6 +6,7 @@ menuconfig SND_SOC
+ 	tristate "ALSA for SoC audio support"
+ 	select SND_PCM
+ 	select AC97_BUS if SND_SOC_AC97_BUS
++	select AC97_BUS_NEW if SND_SOC_AC97_BUS_NEW
+ 	select SND_JACK
+ 	select REGMAP_I2C if I2C
+ 	select REGMAP_SPI if SPI_MASTER
+@@ -25,6 +26,9 @@ if SND_SOC
+ config SND_SOC_AC97_BUS
+ 	bool
+ 
++config SND_SOC_AC97_BUS_NEW
++	bool
++
+ config SND_SOC_GENERIC_DMAENGINE_PCM
+ 	bool
+ 	select SND_DMAENGINE_PCM
+-- 
+2.1.4
