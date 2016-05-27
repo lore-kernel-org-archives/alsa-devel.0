@@ -1,16 +1,16 @@
 From: Yong Zhi <yong.zhi@intel.com>
-Subject: [PATCH v3 1/5] ASoC: Intel: Skylake: Add api to
-	retrieve dmic array info from nhlt
-Date: Thu, 26 May 2016 21:30:15 -0700
-Message-ID: <1464323415-28753-1-git-send-email-yong.zhi@intel.com>
+Subject: [PATCH v3 2/5] ASoC: Intel: boards: configure DMIC for
+	machine sklnau8825max
+Date: Thu, 26 May 2016 21:30:26 -0700
+Message-ID: <1464323426-28802-1-git-send-email-yong.zhi@intel.com>
 References: <1464182357-1305-1-git-send-email-yong.zhi@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 395A726520A
- for <alsa-devel@alsa-project.org>; Fri, 27 May 2016 06:27:26 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id B6CBF2652E2
+ for <alsa-devel@alsa-project.org>; Fri, 27 May 2016 06:27:37 +0200 (CEST)
 In-Reply-To: <1464182357-1305-1-git-send-email-yong.zhi@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,175 +25,83 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, yang.a.fang@intel.com, sathya.prakash.m.r@intel.com, jeeja.kp@intel.com, vedang.patel@intel.com, Yong Zhi <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Skylake can be configured with either both 2 and 4 channel DMIC
-array, or 2 channel DMIC array only, this patch provides an API to
-retrieve the DMIC info from nhlt.
+This machine driver can support 2 or 4 DMIC configuration, so
+apply the ch constraint according to driver pdata.
 
 Signed-off-by: Yong Zhi <yong.zhi@intel.com>
 ---
- sound/soc/intel/skylake/skl-nhlt.c | 40 ++++++++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-nhlt.h | 22 +++++++++++++++++++++
- sound/soc/intel/skylake/skl.c      | 12 ++++++++++--
- sound/soc/intel/skylake/skl.h      |  6 ++++++
- 4 files changed, 78 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/skl_nau88l25_max98357a.c | 25 ++++++++++++++++++++++---
+ 1 file changed, 22 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
-index 7d73648..3f8e6f0 100644
---- a/sound/soc/intel/skylake/skl-nhlt.c
-+++ b/sound/soc/intel/skylake/skl-nhlt.c
-@@ -17,6 +17,7 @@
-  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  *
-  */
-+#include <linux/pci.h>
- #include "skl.h"
+diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+index 7cc7251..43fab12 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
++++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+@@ -23,12 +23,15 @@
+ #include <sound/soc.h>
+ #include "../../codecs/nau8825.h"
+ #include "../../codecs/hdac_hdmi.h"
++#include "../skylake/skl.h"
  
- /* Unique identification for getting NHLT blobs */
-@@ -149,6 +150,45 @@ struct nhlt_specific_cfg
- 	return NULL;
+ #define SKL_NUVOTON_CODEC_DAI	"nau8825-hifi"
+ #define SKL_MAXIM_CODEC_DAI "HiFi"
++#define DMIC_CH(p)     p->list[p->count-1]
+ 
+ static struct snd_soc_jack skylake_headset;
+ static struct snd_soc_card skylake_audio_card;
++static const struct snd_pcm_hw_constraint_list *dmic_constraints;
+ 
+ enum {
+ 	SKL_DPCM_AUDIO_PB = 0,
+@@ -296,7 +299,7 @@ static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	struct snd_interval *channels = hw_param_interval(params,
+ 				SNDRV_PCM_HW_PARAM_CHANNELS);
+ 
+-	if (params_channels(params) == 2)
++	if (params_channels(params) == 2 || DMIC_CH(dmic_constraints) == 2)
+ 		channels->min = channels->max = 2;
+ 	else
+ 		channels->min = channels->max = 4;
+@@ -314,13 +317,23 @@ static struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
+ 	.mask = 0,
+ };
+ 
++static const unsigned int dmic_2ch[] = {
++	2,
++};
++
++static const struct snd_pcm_hw_constraint_list constraints_dmic_2ch = {
++	.count = ARRAY_SIZE(dmic_2ch),
++	.list = dmic_2ch,
++	.mask = 0,
++};
++
+ static int skylake_dmic_startup(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 
+-	runtime->hw.channels_max = 4;
++	runtime->hw.channels_max = DMIC_CH(dmic_constraints);
+ 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+-			&constraints_dmic_channels);
++			dmic_constraints);
+ 
+ 	return snd_pcm_hw_constraint_list(substream->runtime, 0,
+ 			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
+@@ -550,8 +563,14 @@ static struct snd_soc_card skylake_audio_card = {
+ 
+ static int skylake_audio_probe(struct platform_device *pdev)
+ {
++	struct skl_machine_pdata *pdata;
+ 	skylake_audio_card.dev = &pdev->dev;
+ 
++	pdata = dev_get_drvdata(&pdev->dev);
++	if (pdata)
++		dmic_constraints = pdata->dmic_num == 2 ?
++			&constraints_dmic_2ch : &constraints_dmic_channels;
++
+ 	return devm_snd_soc_register_card(&pdev->dev, &skylake_audio_card);
  }
  
-+int skl_get_dmic_geo(struct skl *skl)
-+{
-+	struct nhlt_acpi_table *nhlt = (struct nhlt_acpi_table *)skl->nhlt;
-+	struct nhlt_endpoint *epnt;
-+	struct nhlt_dmic_array_config *cfg;
-+	struct device *dev = &skl->pci->dev;
-+	unsigned int dmic_geo = 0;
-+	u8 j;
-+
-+	epnt = (struct nhlt_endpoint *)nhlt->desc;
-+
-+	for (j = 0; j < nhlt->endpoint_count; j++) {
-+		if (epnt->linktype == NHLT_LINK_DMIC) {
-+			cfg = (struct nhlt_dmic_array_config  *)
-+					(epnt->config.caps);
-+			switch (cfg->array_type) {
-+			case NHLT_MIC_ARRAY_2CH_SMALL:
-+			case NHLT_MIC_ARRAY_2CH_BIG:
-+				dmic_geo |= MIC_ARRAY_2CH;
-+				break;
-+
-+			case NHLT_MIC_ARRAY_4CH_1ST_GEOM:
-+			case NHLT_MIC_ARRAY_4CH_L_SHAPED:
-+			case NHLT_MIC_ARRAY_4CH_2ND_GEOM:
-+				dmic_geo |= MIC_ARRAY_4CH;
-+				break;
-+
-+			default:
-+				dev_warn(dev, "undefined DMIC array_type 0x%0x\n",
-+						cfg->array_type);
-+
-+			}
-+		}
-+		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
-+	}
-+
-+	return dmic_geo;
-+}
-+
- static void skl_nhlt_trim_space(struct skl *skl)
- {
- 	char *s = skl->tplg_name;
-diff --git a/sound/soc/intel/skylake/skl-nhlt.h b/sound/soc/intel/skylake/skl-nhlt.h
-index 3769f9f..116534e7 100644
---- a/sound/soc/intel/skylake/skl-nhlt.h
-+++ b/sound/soc/intel/skylake/skl-nhlt.h
-@@ -103,4 +103,26 @@ struct nhlt_resource_desc  {
- 	u64 length;
- } __packed;
- 
-+#define MIC_ARRAY_2CH 2
-+#define MIC_ARRAY_4CH 4
-+
-+struct nhlt_tdm_config {
-+	u8 virtual_slot;
-+	u8 config_type;
-+} __packed;
-+
-+struct nhlt_dmic_array_config {
-+	struct nhlt_tdm_config tdm_config;
-+	u8 array_type;
-+} __packed;
-+
-+enum {
-+	NHLT_MIC_ARRAY_2CH_SMALL = 0xa,
-+	NHLT_MIC_ARRAY_2CH_BIG = 0xb,
-+	NHLT_MIC_ARRAY_4CH_1ST_GEOM = 0xc,
-+	NHLT_MIC_ARRAY_4CH_L_SHAPED = 0xd,
-+	NHLT_MIC_ARRAY_4CH_2ND_GEOM = 0xe,
-+	NHLT_MIC_ARRAY_VENDOR_DEFINED = 0xf,
-+};
-+
- #endif
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 06d8c26..b0f7226 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -35,6 +35,8 @@
- #include "skl-sst-dsp.h"
- #include "skl-sst-ipc.h"
- 
-+static struct skl_machine_pdata skl_dmic_data;
-+
- /*
-  * initialize the PCI registers
-  */
-@@ -397,6 +399,10 @@ static int skl_machine_device_register(struct skl *skl, void *driver_data)
- 		platform_device_put(pdev);
- 		return -EIO;
- 	}
-+
-+	if (mach->pdata)
-+		dev_set_drvdata(&pdev->dev, mach->pdata);
-+
- 	skl->i2s_dev = pdev;
- 
- 	return 0;
-@@ -666,6 +672,8 @@ static int skl_probe(struct pci_dev *pci,
- 
- 	pci_set_drvdata(skl->pci, ebus);
- 
-+	skl_dmic_data.dmic_num = skl_get_dmic_geo(skl);
-+
- 	/* check if dsp is there */
- 	if (ebus->ppcap) {
- 		err = skl_machine_device_register(skl,
-@@ -787,9 +795,9 @@ static void skl_remove(struct pci_dev *pci)
- static struct sst_acpi_mach sst_skl_devdata[] = {
- 	{ "INT343A", "skl_alc286s_i2s", "intel/dsp_fw_release.bin", NULL, NULL, NULL },
- 	{ "INT343B", "skl_nau88l25_ssm4567_i2s", "intel/dsp_fw_release.bin",
--				NULL, NULL, NULL },
-+				NULL, NULL, &skl_dmic_data },
- 	{ "MX98357A", "skl_nau88l25_max98357a_i2s", "intel/dsp_fw_release.bin",
--				NULL, NULL, NULL },
-+				NULL, NULL, &skl_dmic_data },
- 	{}
- };
- 
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 4b4b387..f66be17 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -90,6 +90,11 @@ struct skl_dma_params {
- 	u8 stream_tag;
- };
- 
-+/* to pass dmic data */
-+struct skl_machine_pdata {
-+	u32 dmic_num;
-+};
-+
- struct skl_dsp_ops {
- 	int id;
- 	struct skl_dsp_loader_ops (*loader_ops)(void);
-@@ -108,6 +113,7 @@ void skl_nhlt_free(struct nhlt_acpi_table *addr);
- struct nhlt_specific_cfg *skl_get_ep_blob(struct skl *skl, u32 instance,
- 			u8 link_type, u8 s_fmt, u8 no_ch, u32 s_rate, u8 dirn);
- 
-+int skl_get_dmic_geo(struct skl *skl);
- int skl_nhlt_update_topology_bin(struct skl *skl);
- int skl_init_dsp(struct skl *skl);
- int skl_free_dsp(struct skl *skl);
 -- 
 1.9.1
