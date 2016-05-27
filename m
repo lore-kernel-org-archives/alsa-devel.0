@@ -1,72 +1,51 @@
 From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [RESEND PATCH 5/6] ASoC: cdn-dp: Add cdn DP codec driver
-Date: Fri, 27 May 2016 21:23:12 +0100
-Message-ID: <20160527202312.GB29837@sirena.org.uk>
-References: <1464345942-4795-1-git-send-email-zyw@rock-chips.com>
- <1464345942-4795-6-git-send-email-zyw@rock-chips.com>
+Subject: Re: [PATCH v4 1/4] dt-bindings: sound: add bindings for the max9860
+ codec
+Date: Fri, 27 May 2016 21:24:36 +0100
+Message-ID: <20160527202436.GC29837@sirena.org.uk>
+References: <1463260181-21344-1-git-send-email-peda@axentia.se>
+ <1463260181-21344-2-git-send-email-peda@axentia.se>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6083020064919794152=="
-Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <1464345942-4795-6-git-send-email-zyw-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
-List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: Chris Zhong <zyw-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jacob Siverskog <jacob-EZCvousvhKUZux3j3Bed6dkegs52MxvZ@public.gmane.org>, Bard Liao <bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Adam Thomson <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>, Michael Trimarchi <michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>, Caesar Wang <wxt-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, anish kumar <yesanishhere-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, yzq-TNX95d0MmH7DzftRWevZcw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, "Damien.Horsley" <Damien.Horsley-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>, Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Oder Chiou <oder_chiou-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, tfiga-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="bKyqfOwhbdpXa4YI"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1463260181-21344-2-git-send-email-peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Misbah Ullah Khan <Misbahk-RbfqNLLv1bh8UrSeD/g0lQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6083020064919794152==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="DKU6Jbt7q3WqK7+M"
-Content-Disposition: inline
-
-
---DKU6Jbt7q3WqK7+M
+--bKyqfOwhbdpXa4YI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, May 27, 2016 at 06:45:41PM +0800, Chris Zhong wrote:
-> codec driver get some interfaces from cdn-dp driver, than using those
-> to set DP audio formats, corresponding to alsa formats.
+On Sat, May 14, 2016 at 11:09:38PM +0200, Peter Rosin wrote:
+> This adds the device tree binding documentation for the Maxim Integrated
+> MAX9860 mono audio voice codec.
 
-I'm not seeing anything Rockchip specific in here...  DisplayPort is
-backwards compatible with HDMI, shouldn't this be using the existing
-hdmi-codec code?
+Please submit patches using subject lines reflecting the style for the
+subsystem.  This makes it easier for people to identify relevant
+patches.
 
---DKU6Jbt7q3WqK7+M
+--bKyqfOwhbdpXa4YI
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXSKyvAAoJECTWi3JdVIfQPFUH/279S+euRZtxQ99ytiWz2/Ey
-fFE2/gBYPwGIeGad3t5emZroeNevh9acOKTaPuLdvj2LcRZTSzm1YI6gHG7cP+dz
-qvKWnULhscpAsO4OztpqFXlD9OUP/dUPB21J5SUH0x0zFO8CwIwqaJS6btm7gEP0
-UpoAojHFDNbZbt5S0jUwOIyL2EUWeAL2WURQ7tlq7JhLvxZHxP5KldDrKu4m0+1U
-RuW6A7zivghh6F30oUMbmI1mxDQZeIzbYU+/Dqysk8BcEhe2j+1lOx2PaQxjl1np
-yVMWv714uVUEwSSsBzitqaYtIzOyZf8sEW9A+Ktw0UwKcJBDOYanDPFmXh6IuRk=
-=cUMZ
+iQEcBAEBCAAGBQJXSK0CAAoJECTWi3JdVIfQETAH/RKb8p3QMq/8uhkGxKxLmq9B
+AN3wSFEZ/Ws3Az4G4O5FpHDw6v5xxI8iBpaojH/sClmUSBjhf33sBtGJhtdMtQC0
++7+A3gSRsMMQD0jtTL/vCc5vqQnGcGXXuRnufIyHSafubvzVslIL8AnVCKZNLHOJ
+WtDHl2VjlsDvWZr0aHnYswR/hreYAbitXGlnhw1nG511aqMV5ChJ902hwZKMlw9J
+Way2RqOeyO7Puomq8jKFaGdMla6VX0t10+r1Xwd7KRJTErIm7KIZGOThs5m7tWXp
+AeMxIolG0uPwlrQmXS9So8EcyiyM/lh4Cwt7xdHOqR27vz5fo6ZzEpiYRBIPgjI=
+=ALlF
 -----END PGP SIGNATURE-----
 
---DKU6Jbt7q3WqK7+M--
-
-
---===============6083020064919794152==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Linux-rockchip mailing list
-Linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-http://lists.infradead.org/mailman/listinfo/linux-rockchip
-
---===============6083020064919794152==--
+--bKyqfOwhbdpXa4YI--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
