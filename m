@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [RFC v2 1/3] ASoC: msm8916: Add codec Device Tree bindings.
-Date: Fri, 27 May 2016 14:45:44 +0100
-Message-ID: <1464356746-29610-2-git-send-email-srinivas.kandagatla@linaro.org>
+Subject: [RFC v2 2/3] ASoC: Introduce SOC_SINGLE_S8_TLV() macro
+Date: Fri, 27 May 2016 14:45:45 +0100
+Message-ID: <1464356746-29610-3-git-send-email-srinivas.kandagatla@linaro.org>
 References: <1464356746-29610-1-git-send-email-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1464356746-29610-1-git-send-email-srinivas.kandagatla@linaro.org>
@@ -10,127 +10,43 @@ To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
 Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kwestfie@codeaurora.org, plai@codeaurora.org, linux-arm-msm@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds DT bindings required for msm8916 codec which is
-integrated in msm8916 and apq8016 SOCs.
+This patch introduces SOC_SINGLE_S8_TLV() macro for volume control
+on chips which supports both negative and positive gains with sign
+bit on a 8 bit register, Gain ranges from -128 to +127 with a
+predefined step size.
+Currently we only have support to DOUBLE_S8_TLV() which does not fit
+for cases where we just have separate gain control register for each
+channel.
 
-Codec IP is divided into two parts, first analog which is integrated
-in pmic pm8916 and secondly digital part which is integrated into
-application processor. Codec register controls are also split across
-pmic an lpass. Analog part is controlled via spmi bus to pmic, registers
-on the Application processor are memory mapped.
+One of the Qualcomm SOC msm8916 has such gain control register whose gain
+range is from -38.4dB to +38.4dB with step size of 0.3dB.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../devicetree/bindings/sound/qcom,msm8916-wcd.txt | 101 +++++++++++++++++++++
- 1 file changed, 101 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,msm8916-wcd.txt
+ include/sound/soc.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd.txt b/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd.txt
-new file mode 100644
-index 0000000..4e3826d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd.txt
-@@ -0,0 +1,101 @@
-+msm8916 audio CODEC aka Tombak audio CODEC
-+
-+Codec IP is divided into two parts, first analog which is integrated in pmic pm8916
-+and secondly digital part which is integrated into application processor. Codec register
-+controls are also split across pmic an lpass. Analog part is controlled via spmi bus to pmic.
-+
-+## Bindings for codec core on pmic:
-+
-+Required properties
-+ - compatible = "qcom,msm8916-wcd-codec";
-+ - reg: represents the slave base address provided to the peripheral.
-+ - interrupt-parent : The parent interrupt controller.
-+ - interrupts: List of interrupts in given SPMI peripheral.
-+ - interrupt-names: Names specified to above list of interrupts in same
-+		    order. List of supported interrupt names are:
-+  "spk_cnp_int" - Speaker click and pop interrupt
-+  "spk_clip_int" - Speaker clip interrupt
-+  "spk_ocp_int" - Speaker over current protect interrupt.
-+  "ins_rem_det1" - jack insert removal detect interrupt 1.
-+  "but_rel_det" - button release interrupt
-+  "but_press_det" - button press event
-+  "ins_rem_det" - jack insert removal detect interrup
-+  "mbhc_int"	- multi button headset interrupt.
-+  "ear_ocp_int" - Earphone over current protect interrupt.
-+  "hphr_ocp_int" - Headphone R over current protect interrupt.
-+  "hphl_ocp_det" - Headphone L over current protect interrupt
-+  "ear_cnp_int" - earphone cnp interrupt.
-+  "hphr_cnp_int" - hphr click and pop interrupt.
-+  "hphl_cnp_int" - hphl click and pop interrupt
-+
-+ - vddio-supply: phandle to VDD_CDC_IO regulator device tree node.
-+ - vdd-tx-rx-supply: phandle to VDD_CDC_TX/RX/CX regulator device tree node.
-+ - vdd-micbias-supply: phandle of VDD_MICBIAS supply's regulator device tree
-+			    node.
-+- qcom,lpass-codec-core: phandle to syscon node of lpass code core.
-+
-+Optional Properties:
-+- qcom,micbias1-ext-cap: present if micbias1 has external capacitor connected.
-+- qcom,micbias2-ext-cap: present if micbias2 has external capacitor connected.
-+
-+## Bindings codec core on lpass:
-+
-+Required properties
-+ - compatible: should be "qcom,msm8916-lpass-codec" followed by "syscon".
-+ - reg: represents the lpass codec core register map.
-+
-+Example:
-+
-+spmi_bus {
-+	...
-+	msm8916_wcd_codec@f000{
-+		compatible = "qcom,msm8916-wcd-codec";
-+		reg = <0xf000 0x200>;
-+		reg-names = "pmic-codec-core";
-+		clocks = <&gcc GCC_CODEC_DIGCODEC_CLK>;
-+		clock-names = "mclk";
-+		interrupt-parent = <&spmi_bus>;
-+		interrupts = <0x1 0xf0 0x0 IRQ_TYPE_NONE>,
-+			     <0x1 0xf0 0x1 IRQ_TYPE_NONE>,
-+			     <0x1 0xf0 0x2 IRQ_TYPE_NONE>,
-+			     <0x1 0xf0 0x3 IRQ_TYPE_NONE>,
-+			     <0x1 0xf0 0x4 IRQ_TYPE_NONE>,
-+			     <0x1 0xf0 0x5 IRQ_TYPE_NONE>,
-+			     <0x1 0xf0 0x6 IRQ_TYPE_NONE>,
-+			     <0x1 0xf0 0x7 IRQ_TYPE_NONE>,
-+			     <0x1 0xf1 0x0 IRQ_TYPE_NONE>,
-+			     <0x1 0xf1 0x1 IRQ_TYPE_NONE>,
-+			     <0x1 0xf1 0x2 IRQ_TYPE_NONE>,
-+			     <0x1 0xf1 0x3 IRQ_TYPE_NONE>,
-+			     <0x1 0xf1 0x4 IRQ_TYPE_NONE>,
-+			     <0x1 0xf1 0x5 IRQ_TYPE_NONE>;
-+		interrupt-names = "spk_cnp_int",
-+				  "spk_clip_int",
-+				  "spk_ocp_int",
-+				  "ins_rem_det1",
-+				  "but_rel_det",
-+				  "but_press_det",
-+				  "ins_rem_det",
-+				  "mbhc_int",
-+				  "ear_ocp_int",
-+				  "hphr_ocp_int",
-+				  "hphl_ocp_det",
-+				  "ear_cnp_int",
-+				  "hphr_cnp_int",
-+				  "hphl_cnp_int";
-+		vddio-supply = <&pm8916_l5>;
-+		vdd-tx-rx-supply = <&pm8916_l5>;
-+		vdd-micbias-supply = <&pm8916_l13>;
-+		qcom,lpass-codec-core = <&lpass_codec_core>;
-+		#sound-dai-cells = <1>;
-+	};
-+};
-+
-+soc {
-+	...
-+	lpass_codec_core: lpass-codec{
-+		compatible = "qcom,msm8916-lpass-codec", "syscon";
-+		reg = <0x0771c000 0x400>;
-+	};
-+
-+};
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 02b4a21..b23fc50 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -179,6 +179,17 @@
+ 	.get = snd_soc_get_volsw, .put = snd_soc_put_volsw, \
+ 	.private_value = SOC_DOUBLE_R_S_VALUE(reg_left, reg_right, xshift, \
+ 					    xmin, xmax, xsign_bit, xinvert) }
++#define SOC_SINGLE_S8_TLV(xname, xreg, xmin, xmax, tlv_array) \
++{	.iface  = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
++	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
++		  SNDRV_CTL_ELEM_ACCESS_READWRITE, \
++	.tlv.p  = (tlv_array), \
++	.info = snd_soc_info_volsw, .get = snd_soc_get_volsw,\
++	.put = snd_soc_put_volsw, \
++	.private_value = (unsigned long)&(struct soc_mixer_control) \
++	{.reg = xreg, .rreg = xreg,  \
++	 .min = xmin, .max = xmax, .platform_max = xmax, \
++	.sign_bit = 7,} }
+ #define SOC_DOUBLE_S8_TLV(xname, xreg, xmin, xmax, tlv_array) \
+ {	.iface  = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
+ 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
 -- 
 2.8.2
