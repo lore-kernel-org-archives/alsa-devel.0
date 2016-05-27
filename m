@@ -1,69 +1,92 @@
 From: Chris Zhong <zyw@rock-chips.com>
-Subject: [PATCH 5/6] ASoC: cdn-dp: Add cdn DP codec driver
-Date: Fri, 27 May 2016 14:02:18 +0800
-Message-ID: <1464328939-8073-6-git-send-email-zyw@rock-chips.com>
+Subject: [PATCH 6/6] ASoC: rockchip: Add machine driver for cdn dp codec
+Date: Fri, 27 May 2016 14:02:19 +0800
+Message-ID: <1464328939-8073-7-git-send-email-zyw@rock-chips.com>
 References: <1464328939-8073-1-git-send-email-zyw@rock-chips.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1464328939-8073-1-git-send-email-zyw@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: dianders@chromium.org, tfiga@chromium.org, heiko@sntech.de, yzq@rock-chips.com
-Cc: linux-rockchip@lists.infradead.org, Chris Zhong <zyw@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Mans Rullgard <mans@mansr.com>, Michael Trimarchi <michael@amarulasolutions.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Jacob Siverskog <jacob@teenage.engineering>, Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, anish kumar <yesanishhere@gmail.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Johan Hovold <johan@kernel.org>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Bard Liao <bardliao@realtek.com>, "Damien.Horsley" <Damien.Horsley@imgtec.com>, Jyri Sarha <jsarha@ti.com>
+Cc: linux-rockchip@lists.infradead.org, Chris Zhong <zyw@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Kumar Gala <galak@codeaurora.org>, linux-kernel@vger.kernel.org, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-codec driver get some interfaces from cdn-dp driver, than using those
-to set DP audio formats, corresponding to alsa formats.
+The driver is used for cdn dp codec embedded in rk3399
 
 Signed-off-by: Chris Zhong <zyw@rock-chips.com>
+
 ---
 
- sound/soc/codecs/Kconfig        |   3 +
- sound/soc/codecs/Makefile       |   2 +
- sound/soc/codecs/cdn-dp-audio.c | 246 ++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 251 insertions(+)
- create mode 100644 sound/soc/codecs/cdn-dp-audio.c
+ .../bindings/sound/rockchip-cdn-dp-audio.txt       |  12 ++
+ sound/soc/rockchip/Kconfig                         |   9 ++
+ sound/soc/rockchip/Makefile                        |   2 +
+ sound/soc/rockchip/rockchip-cdn-dp-audio.c         | 167 +++++++++++++++++++++
+ 4 files changed, 190 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/rockchip-cdn-dp-audio.txt
+ create mode 100644 sound/soc/rockchip/rockchip-cdn-dp-audio.c
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 7ef3a0c..7ddae65 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -365,6 +365,9 @@ config SND_SOC_ALC5623
- config SND_SOC_ALC5632
- 	tristate
- 
-+config SND_SOC_CDN_DP_AUDIO
-+	tristate
-+
- config SND_SOC_CQ0093VC
- 	tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 185a712..7a703a7 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -32,6 +32,7 @@ snd-soc-ak4642-objs := ak4642.o
- snd-soc-ak4671-objs := ak4671.o
- snd-soc-ak5386-objs := ak5386.o
- snd-soc-arizona-objs := arizona.o
-+snd-soc-cdn-dp-audio-objs := cdn-dp-audio.o
- snd-soc-cq93vc-objs := cq93vc.o
- snd-soc-cs35l32-objs := cs35l32.o
- snd-soc-cs42l51-objs := cs42l51.o
-@@ -241,6 +242,7 @@ obj-$(CONFIG_SND_SOC_AK5386)	+= snd-soc-ak5386.o
- obj-$(CONFIG_SND_SOC_ALC5623)    += snd-soc-alc5623.o
- obj-$(CONFIG_SND_SOC_ALC5632)	+= snd-soc-alc5632.o
- obj-$(CONFIG_SND_SOC_ARIZONA)	+= snd-soc-arizona.o
-+obj-$(CONFIG_SND_SOC_CDN_DP_AUDIO) += snd-soc-cdn-dp-audio.o
- obj-$(CONFIG_SND_SOC_CQ0093VC) += snd-soc-cq93vc.o
- obj-$(CONFIG_SND_SOC_CS35L32)	+= snd-soc-cs35l32.o
- obj-$(CONFIG_SND_SOC_CS42L51)	+= snd-soc-cs42l51.o
-diff --git a/sound/soc/codecs/cdn-dp-audio.c b/sound/soc/codecs/cdn-dp-audio.c
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-cdn-dp-audio.txt b/Documentation/devicetree/bindings/sound/rockchip-cdn-dp-audio.txt
 new file mode 100644
-index 0000000..a68570f
+index 0000000..b7b0898
 --- /dev/null
-+++ b/sound/soc/codecs/cdn-dp-audio.c
-@@ -0,0 +1,246 @@
++++ b/Documentation/devicetree/bindings/sound/rockchip-cdn-dp-audio.txt
+@@ -0,0 +1,12 @@
++Rockchip cdn dp audio bindings
++
++Required properties:
++- compatible: platform specific, must be "rockchip,cdn-dp-audio"
++- i2s-controller: the device of i2s controller
++
++Example:
++
++	cdn_dp_audio: cdn-dp_audio {
++		compatible = "rockchip,cdn-dp-audio";
++		i2s-controller = <&i2s2>;
++	};
+diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
+index f1e0c70..7e7d905 100644
+--- a/sound/soc/rockchip/Kconfig
++++ b/sound/soc/rockchip/Kconfig
+@@ -15,6 +15,15 @@ config SND_SOC_ROCKCHIP_I2S
+ 	  Rockchip I2S device. The device supports upto maximum of
+ 	  8 channels each for play and record.
+ 
++config SND_SOC_ROCKCHIP_CDN_DP_AUDIO
++	tristate "cdn DP audio support"
++	depends on ROCKCHIP_CDN_DP
++	select SND_SOC_ROCKCHIP_I2S
++	select SND_SOC_CDN_DP_AUDIO
++	help
++	  Say Y or M here if you want to add support for SoC audio on Rockchip
++	  boards using the cdn dp codec, such as RK3399.
++
+ config SND_SOC_ROCKCHIP_SPDIF
+ 	tristate "Rockchip SPDIF Device Driver"
+ 	depends on CLKDEV_LOOKUP && SND_SOC_ROCKCHIP
+diff --git a/sound/soc/rockchip/Makefile b/sound/soc/rockchip/Makefile
+index c0bf560..9367f55 100644
+--- a/sound/soc/rockchip/Makefile
++++ b/sound/soc/rockchip/Makefile
+@@ -5,8 +5,10 @@ snd-soc-rockchip-spdif-objs := rockchip_spdif.o
+ obj-$(CONFIG_SND_SOC_ROCKCHIP_I2S) += snd-soc-rockchip-i2s.o
+ obj-$(CONFIG_SND_SOC_ROCKCHIP_SPDIF) += snd-soc-rockchip-spdif.o
+ 
++snd-soc-rockchip-cdn-dp-objs := rockchip-cdn-dp-audio.o
+ snd-soc-rockchip-max98090-objs := rockchip_max98090.o
+ snd-soc-rockchip-rt5645-objs := rockchip_rt5645.o
+ 
++obj-$(CONFIG_SND_SOC_ROCKCHIP_CDN_DP_AUDIO) += snd-soc-rockchip-cdn-dp.o
+ obj-$(CONFIG_SND_SOC_ROCKCHIP_MAX98090) += snd-soc-rockchip-max98090.o
+ obj-$(CONFIG_SND_SOC_ROCKCHIP_RT5645) += snd-soc-rockchip-rt5645.o
+diff --git a/sound/soc/rockchip/rockchip-cdn-dp-audio.c b/sound/soc/rockchip/rockchip-cdn-dp-audio.c
+new file mode 100644
+index 0000000..2bf6649
+--- /dev/null
++++ b/sound/soc/rockchip/rockchip-cdn-dp-audio.c
+@@ -0,0 +1,167 @@
 +/*
-+ * cdn dp audio support library
++ * rockchip-cdn-dp-card.c
++ *
++ * ROCKCHIP ALSA SoC DAI driver for cdn dp audio on rockchip processors.
 + *
 + * Copyright (C) 2016 Chris Zhong <zyw@rock-chips.com>
 + * Copyright (C) 2016 ROCKCHIP, Inc.
@@ -78,225 +101,144 @@ index 0000000..a68570f
 + * GNU General Public License for more details.
 + */
 +
-+#include <linux/init.h>
-+#include <linux/kernel.h>
 +#include <linux/module.h>
-+#include <linux/device.h>
-+#include <linux/moduleparam.h>
++#include <linux/platform_device.h>
 +
-+#include <sound/pcm.h>
 +#include <sound/soc.h>
++#include <sound/pcm.h>
 +#include <sound/core.h>
-+#include <sound/initval.h>
 +#include <sound/pcm_params.h>
 +
-+#include <sound/cdn-dp-audio.h>
++#include "rockchip_i2s.h"
 +
-+#define DRV_NAME "cdn-dp-audio"
++#define DRV_NAME "rockchip-cdn-dp-audio"
 +
-+struct snd_cdn_dp_audio {
-+	struct device *dev;
-+	const struct cdn_dp_audio_ops *ops;
-+	void *data;
-+	bool is_playback_status;
-+};
-+
-+static int snd_cdn_dp_audio_dai_startup(struct snd_pcm_substream *substream,
-+					struct snd_soc_dai *codec_dai)
++static int cdn_dp_audio_hw_params(struct snd_pcm_substream *substream,
++				  struct snd_pcm_hw_params *params)
 +{
-+	struct snd_cdn_dp_audio *ad = snd_soc_dai_get_drvdata(codec_dai);
-+	struct audio_info audio;
-+
-+	ad->is_playback_status = true;
-+	ad->ops->audio_startup(ad->data, &audio);
-+
-+	return 0;
-+}
-+
-+static int snd_cdn_dp_audio_dai_hw_params(struct snd_pcm_substream *substream,
-+					  struct snd_pcm_hw_params *params,
-+					  struct snd_soc_dai *codec_dai)
-+{
-+	struct snd_cdn_dp_audio *ad = snd_soc_dai_get_drvdata(codec_dai);
 +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct audio_info audio;
-+	unsigned int fmt, rate, chan, width;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	unsigned int dai_fmt = rtd->dai_link->dai_fmt;
++	int mclk, ret;
 +
-+	fmt = rtd->dai_link->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK;
-+	if (fmt == SND_SOC_DAIFMT_I2S) {
-+		audio.type = AUDIO_TYPE_I2S;
-+	} else {
-+		dev_err(codec_dai->dev, "DAI format unsupported");
-+		return -EINVAL;
-+	}
-+
-+	width = params_width(params);
-+	if ((width == 16) || (width == 24)) {
-+		audio.word_length = width;
-+	} else {
-+		dev_err(codec_dai->dev, "width[%d] not support!\n", width);
-+		return -EINVAL;
-+	}
-+
-+	chan = params_channels(params);
-+	switch (chan) {
-+	case 2:
-+	case 4:
-+	case 6:
-+	case 8:
-+		audio.channels = chan;
-+		break;
-+	default:
-+		dev_err(codec_dai->dev, "channel[%d] not support!\n", chan);
-+		return -EINVAL;
-+	}
-+
-+	rate = params_rate(params);
-+	switch (rate) {
++	switch (params_rate(params)) {
++	case 8000:
++	case 16000:
++	case 24000:
 +	case 32000:
-+	case 44100:
 +	case 48000:
-+	case 88200:
++	case 64000:
 +	case 96000:
-+	case 176400:
-+	case 192000:
-+		audio.freq = rate;
++		mclk = 12288000;
 +		break;
-+	default:
-+		dev_err(codec_dai->dev, "rate[%d] not support!\n", rate);
-+		return -EINVAL;
-+	}
-+
-+	ad->ops->audio_config(ad->data, &audio);
-+
-+	return 0;
-+}
-+
-+static int snd_cdn_dp_audio_dai_trigger(struct snd_pcm_substream *substream,
-+					int cmd, struct snd_soc_dai *codec_dai)
-+{
-+	struct snd_cdn_dp_audio *ad = snd_soc_dai_get_drvdata(codec_dai);
-+	struct audio_info audio;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		ad->ops->audio_start(ad->data, &audio);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		ad->ops->audio_stop(ad->data, &audio);
++	case 11025:
++	case 22050:
++	case 44100:
++	case 88200:
++		mclk = 11289600;
 +		break;
 +	default:
 +		return -EINVAL;
 +	}
 +
-+	return 0;
-+}
++	ret = snd_soc_dai_set_fmt(cpu_dai, dai_fmt);
++	if (ret < 0) {
++		dev_err(cpu_dai->dev, "failed to set cpu_dai fmt.\n");
++		return ret;
++	}
 +
-+static void snd_cdn_dp_audio_dai_shutdown(struct snd_pcm_substream *substream,
-+					  struct snd_soc_dai *codec_dai)
-+{
-+	struct snd_cdn_dp_audio *ad = snd_soc_dai_get_drvdata(codec_dai);
-+	struct audio_info audio;
-+
-+	ad->is_playback_status = false;
-+	ad->ops->audio_shutdown(ad->data, &audio);
-+}
-+
-+static const struct snd_soc_dapm_widget snd_cdn_dp_audio_widgets[] = {
-+	SND_SOC_DAPM_OUTPUT("TX"),
-+};
-+
-+static const struct snd_soc_dapm_route snd_cdn_dp_audio_routes[] = {
-+	{ "TX", NULL, "Playback" },
-+};
-+
-+static const struct snd_soc_dai_ops cdn_dp_audio_dai_ops = {
-+	.startup = snd_cdn_dp_audio_dai_startup,
-+	.hw_params = snd_cdn_dp_audio_dai_hw_params,
-+	.trigger = snd_cdn_dp_audio_dai_trigger,
-+	.shutdown = snd_cdn_dp_audio_dai_shutdown,
-+};
-+
-+static struct snd_soc_dai_driver cdn_dp_audio_dai = {
-+	.name = "cdn-dp-hifi",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 2,
-+		.channels_max = 8,
-+		.rates = SNDRV_PCM_RATE_32000 |
-+			 SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
-+			 SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
-+			 SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
-+	},
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 2,
-+		.channels_max = 8,
-+		.rates = SNDRV_PCM_RATE_32000 |
-+			 SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
-+			 SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
-+			 SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
-+	},
-+
-+	.ops = &cdn_dp_audio_dai_ops,
-+};
-+
-+static const struct snd_soc_codec_driver cdn_dp_audio = {
-+	.dapm_widgets = snd_cdn_dp_audio_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(snd_cdn_dp_audio_widgets),
-+	.dapm_routes = snd_cdn_dp_audio_routes,
-+	.num_dapm_routes = ARRAY_SIZE(snd_cdn_dp_audio_routes),
-+};
-+
-+static int cdn_dp_audio_probe(struct platform_device *pdev)
-+{
-+	struct cdn_dp_audio_pdata *pdata = pdev->dev.platform_data;
-+	struct snd_cdn_dp_audio *ad;
-+	int ret;
-+
-+	ad = devm_kzalloc(&pdev->dev, sizeof(*ad), GFP_KERNEL);
-+	if (!ad)
-+		return -ENOMEM;
-+
-+	ad->dev = pdata->dev;
-+	ad->ops = pdata->ops;
-+	ad->data = pdata->data;
-+
-+	platform_set_drvdata(pdev, ad);
-+
-+	ret = snd_soc_register_codec(&pdev->dev, &cdn_dp_audio,
-+				     &cdn_dp_audio_dai, 1);
-+	if (ret) {
-+		dev_err(&pdev->dev, "register codec failed (%d)\n", ret);
++	ret = snd_soc_dai_set_sysclk(cpu_dai, 0, mclk, SND_SOC_CLOCK_OUT);
++	if (ret < 0) {
++		dev_err(cpu_dai->dev, "failed to set cpu_dai sysclk.\n");
 +		return ret;
 +	}
 +
 +	return 0;
 +}
 +
++static struct snd_soc_ops cdn_dp_dai_ops = {
++	.hw_params = cdn_dp_audio_hw_params,
++};
++
++static struct snd_soc_dai_link cdn_dp_dai = {
++	.name = "cdn_dp",
++	.stream_name = "cdn_dp",
++	.codec_name = "cdn-dp-audio",
++	.codec_dai_name = "cdn-dp-hifi",
++	.ops = &cdn_dp_dai_ops,
++	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++		   SND_SOC_DAIFMT_CBS_CFS,
++};
++
++static struct snd_soc_card cdn_dp_audio_card = {
++	.name = "cdn_dp",
++	.owner = THIS_MODULE,
++	.dai_link = &cdn_dp_dai,
++	.num_links = 1,
++};
++
++static int cdn_dp_audio_probe(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = &cdn_dp_audio_card;
++	struct device_node *np = pdev->dev.of_node;
++	int ret;
++
++	card->dev = &pdev->dev;
++	platform_set_drvdata(pdev, card);
++
++	cdn_dp_dai.cpu_of_node = of_parse_phandle(np, "i2s-controller", 0);
++	if (!cdn_dp_dai.cpu_of_node) {
++		dev_err(&pdev->dev, "Property 'i2s-controller' missing !\n");
++		goto free_priv_data;
++	}
++
++	cdn_dp_dai.platform_of_node = cdn_dp_dai.cpu_of_node;
++
++	ret = snd_soc_register_card(card);
++	if (ret) {
++		dev_err(&pdev->dev, "register card failed (%d)\n", ret);
++		card->dev = NULL;
++		goto free_cpu_of_node;
++	}
++
++	dev_info(&pdev->dev, "rockchip cdn dp audio init success.\n");
++
++	return 0;
++
++free_cpu_of_node:
++	cdn_dp_dai.cpu_of_node = NULL;
++	cdn_dp_dai.platform_of_node = NULL;
++free_priv_data:
++	snd_soc_card_set_drvdata(card, NULL);
++	platform_set_drvdata(pdev, NULL);
++	card->dev = NULL;
++
++	return ret;
++}
++
 +static int cdn_dp_audio_remove(struct platform_device *pdev)
 +{
-+	snd_soc_unregister_codec(&pdev->dev);
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++
++	snd_soc_unregister_card(card);
++	snd_soc_card_set_drvdata(card, NULL);
++	platform_set_drvdata(pdev, NULL);
++	card->dev = NULL;
 +
 +	return 0;
 +}
 +
-+static const struct of_device_id cdn_dp_audio_ids[] = {
-+	{ .compatible = "cdn-dp-audio", },
-+	{ }
++static const struct of_device_id cdn_dp_audio_of_match[] = {
++	{ .compatible = "rockchip,cdn-dp-audio", },
++	{},
 +};
 +
 +static struct platform_driver cdn_dp_audio_driver = {
 +	.driver = {
-+		.name = "cdn-dp-audio",
++		.name = DRV_NAME,
 +		.owner = THIS_MODULE,
-+		.of_match_table = of_match_ptr(cdn_dp_audio_ids),
++		.pm = &snd_soc_pm_ops,
++		.of_match_table = cdn_dp_audio_of_match,
 +	},
 +	.probe = cdn_dp_audio_probe,
 +	.remove = cdn_dp_audio_remove,
@@ -306,7 +248,7 @@ index 0000000..a68570f
 +MODULE_AUTHOR("Chris Zhong <zyw@rock-chips.com>");
 +MODULE_DESCRIPTION("CDN DP Audio ASoC Interface");
 +MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform: cdn-dp-audio");
-+MODULE_DEVICE_TABLE(of, cdn_dp_audio_ids);
++MODULE_ALIAS("platform:" DRV_NAME);
++MODULE_DEVICE_TABLE(of, cdn_dp_audio_of_match);
 -- 
 2.6.3
