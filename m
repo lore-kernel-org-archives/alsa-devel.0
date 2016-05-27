@@ -1,61 +1,34 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v7] ASoC: cs53l30: Add codec driver support for Cirrus
- CS53L30
-Date: Fri, 27 May 2016 21:38:39 +0100
-Message-ID: <20160527203839.GE29837@sirena.org.uk>
-References: <1464205114-17202-1-git-send-email-nicoleotsuka@gmail.com>
+From: Peter Rosin <peda@axentia.se>
+Subject: Re: [PATCH v4 1/4] dt-bindings: sound: add bindings for the max9860
+ codec
+Date: Fri, 27 May 2016 22:40:07 +0200
+Message-ID: <a7d38dce-fdee-b485-13e4-33db8c80660a@axentia.se>
+References: <1463260181-21344-1-git-send-email-peda@axentia.se>
+ <1463260181-21344-2-git-send-email-peda@axentia.se>
+ <20160527202436.GC29837@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="pY3vCvL1qV+PayAL"
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1464205114-17202-1-git-send-email-nicoleotsuka@gmail.com>
+In-Reply-To: <20160527202436.GC29837@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: robh+dt@kernel.org, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, lgirdwood@gmail.com, Tim.Howe@cirrus.com, somduttar@nvidia.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Misbah Ullah Khan <Misbahk@danlawinc.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On 2016-05-27 22:24, Mark Brown wrote:
+> On Sat, May 14, 2016 at 11:09:38PM +0200, Peter Rosin wrote:
+>> This adds the device tree binding documentation for the Maxim Integrated
+>> MAX9860 mono audio voice codec.
+> 
+> Please submit patches using subject lines reflecting the style for the
+> subsystem.  This makes it easier for people to identify relevant
+> patches.
 
---pY3vCvL1qV+PayAL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Ok, but to me it was obviously not obvious if I submitted this patch to
+ASoC or if I submitted it to devicetree.
 
-On Wed, May 25, 2016 at 12:38:34PM -0700, Nicolin Chen wrote:
+Should I resend over this detail or will you fix it up?
 
-A few minor issues but this is mostly OK so I'll apply - please send
-followup patches.
-
-> +	SOC_DOUBLE_R_TLV("ADC1 Pre Amp Gain", CS53L30_ADC1A_AFE_CTL,
-> +			 CS53L30_ADC1B_AFE_CTL, CS53L30_ADCxy_PREAMP_SHIFT,
-> +			 2, 0, pga_preamp_tlv),
-> +	SOC_DOUBLE_R_TLV("ADC2 Pre Amp Gain", CS53L30_ADC2A_AFE_CTL,
-> +			 CS53L30_ADC2B_AFE_CTL, CS53L30_ADCxy_PREAMP_SHIFT,
-> +			 2, 0, pga_preamp_tlv),
-
-Volume controls should end Volume.
-
-> +	regcache_cache_only(cs53l30->regmap, false);
-> +	regcache_sync(cs53l30->regmap);
-
-Should really check the return value here.
-
-> +MODULE_AUTHOR("Paul Handrigan, Cirrus Logic Inc, <Paul.Handrigan@cirrus.com>");
-
-I'd have much preferred to have seen Paul's signoff on the patch.
-
---pY3vCvL1qV+PayAL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXSLBNAAoJECTWi3JdVIfQLSUH/junjyaLyyfuGLTobR16nNS0
-1Nd0++dm+mC8+oM9LWdPpu5fRBgGXav9wQfG+gECY7eEnZSUgGgIPKKMmt2nr+rz
-SJ+Gv9mfd/3xuk0vZCI7q61+FRSXSW6Y0vZ7gxYkX14EIJpFJ0ZplT9bv9Gfbvuu
-jdAp5CNkuqEfQihRcN8J9n2pyf4bq4NgXvqlLYw8M70LHVmGmlaLBaGjgQJKY6qO
-l+/OhTJsRaSRyAkvpyj9ZnX//c2UPQYuEZmOMwk0UUdkEZfQ1CL0ORzmrXSW7CgN
-H1yMWVg6JF8COhc7gcZJK+fkMFgPO2qBp7FP1Uv8gAMtcopbAU6PmDtyr/rQ/Nk=
-=zhI3
------END PGP SIGNATURE-----
-
---pY3vCvL1qV+PayAL--
+Cheers,
+Peter
