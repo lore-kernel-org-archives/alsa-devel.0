@@ -1,22 +1,17 @@
-From: Clark Dunson <cdunson@gmail.com>
-Subject: Re: Wolfson 5102 on Beaglebone Black using ALSA
-Date: Fri, 27 May 2016 18:58:39 -0700
-Message-ID: <685DDADE-5203-4557-9AD3-54856B718938@gmail.com>
-References: <4BEB79E8-7315-48DF-BBB6-E944114621BF@gmail.com>
- <47b8f68c-12be-adb5-1e29-7ca19feac581@ti.com>
- <F5EE3526-E76D-485C-BB9C-B3A7B0DBA1F1@gmail.com>
- <20160522131854.GT1646@localhost.localdomain>
-Mime-Version: 1.0 (Mac OS X Mail 9.2 \(3112\))
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] pcm: Fix secondary retry in dsnoop and dshare
+Date: Sat, 28 May 2016 10:43:07 +0200
+Message-ID: <20160528084307.12668-1-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f65.google.com (mail-pa0-f65.google.com
- [209.85.220.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 8530D261622
- for <alsa-devel@alsa-project.org>; Sat, 28 May 2016 03:58:44 +0200 (CEST)
-Received: by mail-pa0-f65.google.com with SMTP id f8so14550159pag.0
- for <alsa-devel@alsa-project.org>; Fri, 27 May 2016 18:58:44 -0700 (PDT)
-In-Reply-To: <20160522131854.GT1646@localhost.localdomain>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23E952604A9
+ for <alsa-devel@alsa-project.org>; Sat, 28 May 2016 10:43:12 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id A2D24AB1A
+ for <alsa-devel@alsa-project.org>; Sat, 28 May 2016 08:43:10 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,52 +21,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-V2UgaGF2ZSBtb3ZlZCBmcm9tIGJyZWFkYm9hcmQgdG8gcHJvdG9ib2FyZCwgYW5kIHdpdGggbWFu
-eSBvcmRlcnMgYm9va2VkLCBJIGRhcmVzYXkgdGhhdCB3ZSBoYXZlIG1vdmVkIGZyb20gZXhwZXJp
-bWVudGluZyB0byBjb21taXR0ZWQuICBPdXIgYXBwbGljYXRpb24gc2FtcGxlcyBtb3N0bHkgY2hh
-bm5lbHMgb2Ygc2NpZW50aWZpYyBkYXRhLCBidXQgb25lIG9mIGF1ZGlvLiAgRXJnbyB3ZSB3aWxs
-IGhhdmUgYW4gb25nb2luZyBpbnRlcmVzdCBpbiB0aGUgd201MTAyIGFuZCBpdHMgRFNQIGNhcGFi
-aWxpdGllcy4gIFRoZSBtb3JlIHByb2Nlc3NpbmcgdGhhdCB3ZSBjYW4gZG8gb24gdGhlIGNvZGVj
-LCB0aGUgYmV0dGVyLgoKV2UgYXJlIHB1cnN1aW5nIE1hc3RlciBtb2RlIGF0IHRoZSBtb21lbnQs
-IHdoZXJlIHRoZSBNY0FzcCBvbiB0aGUgQkJCIHN1cHBsaWVzIDI0LjU3NiBNSHogdG8gd201MTAy
-IG9uIE1DTEsxLCBhbmQgdGhlbiBCQ0xLIGFuZCBXQ0xLIGFyZSBnZW5lcmF0ZWQgYnkgd201MTAy
-LiAgV2Ugc2FtcGxlIGF0IDh4NDhrLCBhbmQgYXJlIGRyaXZpbmcgQUlGMSB3aXRoIGRzcEIgZm9y
-bWF0LiAgQWxzbywgd2UgaGF2ZSBuZWVkIHRvIHNlbmQgb3V0IGEgY2FsaWJyYXRpb24gc2lnbmFs
-IH5kYWlseSwgdmlhIFNQS09VVEwuCgpTbyBmYXIgd2UgaGF2ZSBzaW1wbHkgYWRkZWQgb3VyIHN0
-dWZmIGF0IHRoZSBlbmQgb2YgdGhlIGFyaXpvbmEtY29yZS5jIHByb2JlLCBidXQgd291bGQgbGlr
-ZSB0byBkbyBpdCBpbiBhIG1vcmUgdXAtc3RyZWFtYWJsZSB3YXkuICBJbiBsb29raW5nIGF0IHRo
-ZSBzYW1zdW5nL2JlbGxzLmMgZHJpdmVyICh0aGFuayB5b3UgYWdhaW4gQ2hhcmxlcyksIHdlIHJl
-YWxpemVkIHRoYXQgYW55dGhpbmcgcGFzdCBiYXNpYyBjb25maWd1cmF0aW9ucyB3aWxsIGJlIGRp
-ZmZpY3VsdCB3aXRoIHRoZSBkZXZpY2UgdHJlZSBhbG9uZS4gIFRoZSByZWdtYXAgc3R1ZmYgaXMg
-YSBuaWNlIGZvcm0gb2YgQVBJLCBlYXN5IHRvIGRlYWwgd2l0aC4gIAoKV2UgaGFkIHRvIHNpbXBs
-eSBkaXNpbnZpdGUgZXh0Y29uLWFyaXpvbmEgZnJvbSB0aGUgcGFydHkgdGhvdWdoLiAgT24gYm90
-aCB0aGUgV001MTAyLTYyNzEtQ1MxMzctTS1TQ0gtUkVWMi4wMyBhbmQgb3VyIHByb3RvYm9hcmQs
-IEpBQ0tERVQgaXMgYW4gSVJRIGdvbmUgd2lsZC4gIE9uIHRoZSBXb2xmc29uIGJvYXJkLCBpbnNl
-cnRpbmcgbXkgaGVhZHBob25lcyBpbnRvIHRoZSBqYWNrIHNodXQgaXQgdXAuICBCdXQgb24gb3Vy
-IHByb3RvYm9hcmQsIHdoZXJlIHdlIGxlZnQgdGhhdCBwaW4gdW5jb25uZWN0ZWQsIHdlIGZvdW5k
-IHRoYXQgdGhlIHByb2JlIG9mIGV4dGNvbi1hcml6b25hIGhhcmQgZW5hYmxlcyBKQUNLREVULgoK
-U28gdGhhdCdzIHRoZSB1cGRhdGUsIGFuZCB0aGFua3MgYWdhaW4gZm9yIGFsbCB0aGUgaGVscCBz
-byBmYXIuCgpDbGFyawoKCj4gT24gTWF5IDIyLCAyMDE2LCBhdCA2OjE4IEFNLCBDaGFybGVzIEtl
-ZXBheCA8Y2tlZXBheEBvcGVuc291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IAo+IE9u
-IFR1ZSwgTWF5IDE3LCAyMDE2IGF0IDA4OjEyOjMyQU0gLTA3MDAsIENsYXJrIER1bnNvbiB3cm90
-ZToKPj4gVGhhbmtzIGd1eXMsCj4+IAo+PiBDYW5ub3QgdGhhbmsgeW91IGVub3VnaC4gIFdl4oCZ
-bGwgcHJvYmFibHkgZ28gYXQgaXQgZnJvbSBib3RoCj4+IGFuZ2xlcywgc2NoZWR1bGUgaXMgdmVy
-eSB0aWdodC4gIFdl4oCZdmUgd29ya2VkIHdpdGggYm90aCB0aGUKPj4gMy4xOCBjaXJydXMgYnJh
-bmNoLCBhbmQgNC40IG1haW4gbGluZSwgd291bGQgYmUgc28gYXdlc29tZSBpZgo+PiB3ZSBjb3Vs
-ZCBmaWd1cmUgYSB3YXkgdG8gd3JpdGUgdG8gdGhlIHdtNTEwMiByZWdtYXAgZnJvbSB1c2VyCj4+
-IGxhbmQuICAoQnVzeWJveCBpMmNzZXQgaXMgZnJvbSB0aGUgc3RvbmUgYWdlcykuCj4gCj4gWW91
-IGNvdWxkIHVzZSBkZWJ1Z2ZzLCBpZiB5b3UgbG9va2luZyBpbgo+IGRyaXZlcnMvYmFzZS9yZWdt
-YXAvcmVnbWFwLWRlYnVnZnMuYyBhbmQgY2hhbmdlIHRoZSB1bmRlZiB0bwo+IGEgZGVmaW5lIGZv
-ciBSRUdNQVBfQUxMT1dfV1JJVEVfREVCVUdGUy4gVGhlbiB5b3UgY2FuIHdyaXRlCj4gcmVnaXN0
-ZXJzIGJ5IGVjaG9pbmcgcmVnaXN0ZXIgdmFsdWUgcGFpcnMgdG8gdGhlIHRoZSByZWdpc3RlcnMK
-PiBmaWxlIGluIGRlYnVnZnMuIEJlIGNhcmVmdWwgdGhvdWdoIHRoaXMgaXMgb25seSBpbnRlbmRl
-ZCBmb3IKPiB0ZXN0aW5nIGFuZCBhcyB0aGUgZGVmaW5lIG1ha2VzIGFsbCByZWdtYXBzIHdyaXRh
-YmxlIGZyb20KPiB1c2VyLXNwYWNlIGRlcGVuZGluZyBvbiB5b3VyIHN5c3RlbSB0aGF0IG1heSBs
-ZXQgeW91IGRvIHRoaW5ncwo+IHRoYXQgZGFtYWdlIGhhcmR3YXJlLgo+IAo+IFRoYW5rcywKPiBD
-aGFybGVzCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+The commit [fdba9e1bad8f: pcm: Fallback open as the first instance for
+dmix & co] introduced a mechanism to retry the open of slave PCM for
+the secondary streams, but this also introduced a regression in dsnoop
+and dshare plugins: since the retry goto-tag was placed at a wrong
+position, it retries to re-fetch the shm unnecessarily and eventually
+leads to the fatal error.
+
+The bug can be easily reproduced by starting arecord and killing it
+via SIGKILL, then starting arecord again.  The second arecord fails.
+
+The fix is obviously to move the wrong retry goto-tags to the right
+positions.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ src/pcm/pcm_dshare.c | 2 +-
+ src/pcm/pcm_dsnoop.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
+index adb3587a2869..05854dedf259 100644
+--- a/src/pcm/pcm_dshare.c
++++ b/src/pcm/pcm_dshare.c
+@@ -690,7 +690,6 @@ int snd_pcm_dshare_open(snd_pcm_t **pcmp, const char *name,
+ 		break;
+ 	}
+ 
+- retry:
+ 	first_instance = ret = snd_pcm_direct_shm_create_or_connect(dshare);
+ 	if (ret < 0) {
+ 		SNDERR("unable to create IPC shm instance");
+@@ -705,6 +704,7 @@ int snd_pcm_dshare_open(snd_pcm_t **pcmp, const char *name,
+ 	dshare->max_periods = opts->max_periods;
+ 	dshare->sync_ptr = snd_pcm_dshare_sync_ptr;
+ 
++ retry:
+ 	if (first_instance) {
+ 		/* recursion is already checked in
+ 		   snd_pcm_direct_get_slave_ipc_offset() */
+diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
+index 8ff0ba57cb14..2d45171dda01 100644
+--- a/src/pcm/pcm_dsnoop.c
++++ b/src/pcm/pcm_dsnoop.c
+@@ -583,7 +583,6 @@ int snd_pcm_dsnoop_open(snd_pcm_t **pcmp, const char *name,
+ 		break;
+ 	}
+ 		
+- retry:
+ 	first_instance = ret = snd_pcm_direct_shm_create_or_connect(dsnoop);
+ 	if (ret < 0) {
+ 		SNDERR("unable to create IPC shm instance");
+@@ -598,6 +597,7 @@ int snd_pcm_dsnoop_open(snd_pcm_t **pcmp, const char *name,
+ 	dsnoop->max_periods = opts->max_periods;
+ 	dsnoop->sync_ptr = snd_pcm_dsnoop_sync_ptr;
+ 
++ retry:
+ 	if (first_instance) {
+ 		/* recursion is already checked in
+ 		   snd_pcm_direct_get_slave_ipc_offset() */
+-- 
+2.8.3
