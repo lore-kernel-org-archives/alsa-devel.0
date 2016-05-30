@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: platform also uses asoc_simple_card_sub_parse_of()" to the asoc tree
-Date: Mon, 30 May 2016 18:39:25 +0100
-Message-ID: <E1b7R9x-0000qH-ET@debutante>
-References: <87futdrs2g.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87futdrs2g.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+Subject: Applied "ASoC: Intel: Skylake: Find uuids for Skylake"
+	to the asoc tree
+Date: Mon, 30 May 2016 18:39:03 +0100
+Message-ID: <E1b7R9b-0000hb-Pr@debutante>
+References: <1464610381-19416-7-git-send-email-vinod.koul@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id AECF0265AEC
+ for <alsa-devel@alsa-project.org>; Mon, 30 May 2016 19:39:08 +0200 (CEST)
+In-Reply-To: <1464610381-19416-7-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card: platform also uses asoc_simple_card_sub_parse_of()
+   ASoC: Intel: Skylake: Find uuids for Skylake
 
 has been applied to the asoc tree at
 
@@ -37,83 +53,66 @@ to this mail.
 Thanks,
 Mark
 
->From 5fb9cb165130cdb67fb3ac42b4510ed7677a077d Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 20 May 2016 09:40:41 +0000
-Subject: [PATCH] ASoC: simple-card: platform also uses
- asoc_simple_card_sub_parse_of()
+>From 06711051d2e02f54a3ba4c2c0f4ce096f45437b1 Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Mon, 30 May 2016 17:43:00 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Find uuids for Skylake
 
-In current simple-card, platform is handled as special case,
-but, the code is not readable.
-This patch makes platform to use asoc_simple_card_sub_parse_of()
+SKylake uses different offset in manifest for parsing module
+table. So invoke common parsing utility from skylake using
+skylake offset.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-card.c | 31 +++++++++++++++++++------------
- 1 file changed, 19 insertions(+), 12 deletions(-)
+ sound/soc/intel/skylake/skl-sst.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 466492b7d4f5..4e39c0fa78c9 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -223,6 +223,9 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
- 	u32 val;
- 	int ret;
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index be2c42b815b7..6021fa6ed80d 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -68,6 +68,8 @@ static int skl_transfer_firmware(struct sst_dsp *ctx,
+ 	return ret;
+ }
  
-+	if (!np)
-+		return 0;
++#define SKL_ADSP_FW_BIN_HDR_OFFSET 0x284
 +
- 	/*
- 	 * Get node via "sound-dai = <&phandle port>"
- 	 * it will be used as xxx_of_node on soc_bind_dai_link()
-@@ -238,9 +241,14 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
- 		*args_count = args.args_count;
- 
- 	/* Get dai->name */
--	ret = snd_soc_of_get_dai_name(np, name);
--	if (ret < 0)
--		return ret;
-+	if (name) {
-+		ret = snd_soc_of_get_dai_name(np, name);
-+		if (ret < 0)
-+			return ret;
+ static int skl_load_base_firmware(struct sst_dsp *ctx)
+ {
+ 	int ret = 0, i;
+@@ -85,6 +87,16 @@ static int skl_load_base_firmware(struct sst_dsp *ctx)
+ 			skl_dsp_disable_core(ctx);
+ 			return -EIO;
+ 		}
++
 +	}
 +
-+	if (!dai)
-+		return 0;
- 
- 	/* Parse TDM slot */
- 	ret = snd_soc_of_parse_tdm_slot(np, &dai->tx_slot_mask,
-@@ -374,21 +382,20 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
- 	if (ret < 0)
- 		goto dai_link_of_err;
- 
-+	ret = asoc_simple_card_sub_parse_of(plat, NULL,
-+					    &dai_link->platform_of_node,
-+					    NULL, NULL);
-+	if (ret < 0)
-+		goto dai_link_of_err;
-+
- 	if (!dai_link->cpu_dai_name || !dai_link->codec_dai_name) {
- 		ret = -EINVAL;
- 		goto dai_link_of_err;
++	ret = snd_skl_parse_uuids(ctx, SKL_ADSP_FW_BIN_HDR_OFFSET);
++	if (ret < 0) {
++		dev_err(ctx->dev,
++				"UUID parsing err: %d\n", ret);
++		release_firmware(ctx->fw);
++		skl_dsp_disable_core(ctx);
++		return ret;
  	}
  
--	if (plat) {
--		struct of_phandle_args args;
--
--		ret = of_parse_phandle_with_args(plat, "sound-dai",
--						 "#sound-dai-cells", 0, &args);
--		dai_link->platform_of_node = args.np;
--	} else {
--		/* Assumes platform == cpu */
-+	/* Assumes platform == cpu */
-+	if (!dai_link->platform_of_node)
- 		dai_link->platform_of_node = dai_link->cpu_of_node;
--	}
+ 	/* check for extended manifest */
+@@ -416,6 +428,7 @@ int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
  
- 	/* DAI link name is created from CPU/CODEC dai name */
- 	name = devm_kzalloc(dev,
+ 	skl->dev = dev;
+ 	skl_dev.thread_context = skl;
++	INIT_LIST_HEAD(&skl->uuid_list);
+ 
+ 	skl->dsp = skl_dsp_ctx_init(dev, &skl_dev, irq);
+ 	if (!skl->dsp) {
+@@ -459,6 +472,7 @@ EXPORT_SYMBOL_GPL(skl_sst_dsp_init);
+ void skl_sst_dsp_cleanup(struct device *dev, struct skl_sst *ctx)
+ {
+ 	skl_clear_module_table(ctx->dsp);
++	skl_freeup_uuid_list(ctx);
+ 	skl_ipc_free(&ctx->ipc);
+ 	ctx->dsp->ops->free(ctx->dsp);
+ 	if (ctx->boot_complete) {
 -- 
 2.8.1
