@@ -1,235 +1,164 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Add api to retrieve
-	dmic array info from nhlt" to the asoc tree
-Date: Mon, 30 May 2016 18:39:22 +0100
-Message-ID: <E1b7R9u-0000pM-Av@debutante>
-References: <1464323415-28753-1-git-send-email-yong.zhi@intel.com>
+From: Kenneth Westfield <kwestfie@codeaurora.org>
+Subject: Re: [RFC v2 1/3] ASoC: msm8916: Add codec Device Tree bindings.
+Date: Mon, 30 May 2016 16:01:23 -0700
+Message-ID: <20160530230123.GA4004@kwestfie-linux.qualcomm.com>
+References: <1464356746-29610-1-git-send-email-srinivas.kandagatla@linaro.org>
+ <1464356746-29610-2-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7FFFF265CCB
- for <alsa-devel@alsa-project.org>; Mon, 30 May 2016 19:39:27 +0200 (CEST)
-In-Reply-To: <1464323415-28753-1-git-send-email-yong.zhi@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Yong Zhi <yong.zhi@intel.com>
-Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, yang.a.fang@intel.com, broonie@kernel.org, sathya.prakash.m.r@intel.com, jeeja.kp@intel.com, vedang.patel@intel.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1464356746-29610-2-git-send-email-srinivas.kandagatla@linaro.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kwestfie@codeaurora.org, plai@codeaurora.org, linux-arm-msm@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Fri, May 27, 2016 at 02:45:44PM +0100, Srinivas Kandagatla wrote:
+> This patch adds DT bindings required for msm8916 codec which is
+> integrated in msm8916 and apq8016 SOCs.
+> 
+> Codec IP is divided into two parts, first analog which is integrated
+> in pmic pm8916 and secondly digital part which is integrated into
+> application processor. Codec register controls are also split across
+> pmic an lpass. Analog part is controlled via spmi bus to pmic, registers
+> on the Application processor are memory mapped.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  .../devicetree/bindings/sound/qcom,msm8916-wcd.txt | 101 +++++++++++++++++++++
+>  1 file changed, 101 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/qcom,msm8916-wcd.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd.txt b/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd.txt
+> new file mode 100644
+> index 0000000..4e3826d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd.txt
+> @@ -0,0 +1,101 @@
+> +msm8916 audio CODEC aka Tombak audio CODEC
 
-   ASoC: Intel: Skylake: Add api to retrieve dmic array info from nhlt
+Please remove all mentions of "Tombak" from the patch submissions.
 
-has been applied to the asoc tree at
+> +
+> +Codec IP is divided into two parts, first analog which is integrated in pmic pm8916
+> +and secondly digital part which is integrated into application processor. Codec register
+> +controls are also split across pmic an lpass. Analog part is controlled via spmi bus to pmic.
+> +
+> +## Bindings for codec core on pmic:
+> +
+> +Required properties
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Need to document the clocks and clock-names properties as well.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+> + - compatible = "qcom,msm8916-wcd-codec";
+> + - reg: represents the slave base address provided to the peripheral.
+> + - interrupt-parent : The parent interrupt controller.
+> + - interrupts: List of interrupts in given SPMI peripheral.
+> + - interrupt-names: Names specified to above list of interrupts in same
+> +		    order. List of supported interrupt names are:
+> +  "spk_cnp_int" - Speaker click and pop interrupt
+> +  "spk_clip_int" - Speaker clip interrupt
+> +  "spk_ocp_int" - Speaker over current protect interrupt.
+> +  "ins_rem_det1" - jack insert removal detect interrupt 1.
+> +  "but_rel_det" - button release interrupt
+> +  "but_press_det" - button press event
+> +  "ins_rem_det" - jack insert removal detect interrup
+> +  "mbhc_int"	- multi button headset interrupt.
+> +  "ear_ocp_int" - Earphone over current protect interrupt.
+> +  "hphr_ocp_int" - Headphone R over current protect interrupt.
+> +  "hphl_ocp_det" - Headphone L over current protect interrupt
+> +  "ear_cnp_int" - earphone cnp interrupt.
+> +  "hphr_cnp_int" - hphr click and pop interrupt.
+> +  "hphl_cnp_int" - hphl click and pop interrupt
+> +
+> + - vddio-supply: phandle to VDD_CDC_IO regulator device tree node.
+> + - vdd-tx-rx-supply: phandle to VDD_CDC_TX/RX/CX regulator device tree node.
+> + - vdd-micbias-supply: phandle of VDD_MICBIAS supply's regulator device tree
+> +			    node.
+> +- qcom,lpass-codec-core: phandle to syscon node of lpass code core.
+> +
+> +Optional Properties:
+> +- qcom,micbias1-ext-cap: present if micbias1 has external capacitor connected.
+> +- qcom,micbias2-ext-cap: present if micbias2 has external capacitor connected.
+> +
+> +## Bindings codec core on lpass:
+> +
+> +Required properties
+> + - compatible: should be "qcom,msm8916-lpass-codec" followed by "syscon".
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+IMO, the driver names are somewhat confusing.  Perhaps,
+qcom,msm8916-pmic-codec - for the codec blocks in the PMIC
+qcom,msm8916-soc-codec - for the codec blocks in the SoC
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> + - reg: represents the lpass codec core register map.
+> +
+> +Example:
+> +
+> +spmi_bus {
+> +	...
+> +	msm8916_wcd_codec@f000{
+> +		compatible = "qcom,msm8916-wcd-codec";
+> +		reg = <0xf000 0x200>;
+> +		reg-names = "pmic-codec-core";
+> +		clocks = <&gcc GCC_CODEC_DIGCODEC_CLK>;
+> +		clock-names = "mclk";
+> +		interrupt-parent = <&spmi_bus>;
+> +		interrupts = <0x1 0xf0 0x0 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf0 0x1 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf0 0x2 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf0 0x3 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf0 0x4 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf0 0x5 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf0 0x6 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf0 0x7 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf1 0x0 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf1 0x1 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf1 0x2 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf1 0x3 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf1 0x4 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf1 0x5 IRQ_TYPE_NONE>;
+> +		interrupt-names = "spk_cnp_int",
+> +				  "spk_clip_int",
+> +				  "spk_ocp_int",
+> +				  "ins_rem_det1",
+> +				  "but_rel_det",
+> +				  "but_press_det",
+> +				  "ins_rem_det",
+> +				  "mbhc_int",
+> +				  "ear_ocp_int",
+> +				  "hphr_ocp_int",
+> +				  "hphl_ocp_det",
+> +				  "ear_cnp_int",
+> +				  "hphr_cnp_int",
+> +				  "hphl_cnp_int";
+> +		vddio-supply = <&pm8916_l5>;
+> +		vdd-tx-rx-supply = <&pm8916_l5>;
+> +		vdd-micbias-supply = <&pm8916_l13>;
+> +		qcom,lpass-codec-core = <&lpass_codec_core>;
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Is there a reason the PMIC codec holds a phandle reference to the SoC
+codec node?  Rather than having the SoC codec hold a ref to the PMIC
+codec?
 
-Thanks,
-Mark
+> +		#sound-dai-cells = <1>;
+> +	};
+> +};
+> +
+> +soc {
+> +	...
+> +	lpass_codec_core: lpass-codec{
+> +		compatible = "qcom,msm8916-lpass-codec", "syscon";
+> +		reg = <0x0771c000 0x400>;
+> +	};
+> +
+> +};
+> -- 
+> 2.8.2
+> 
 
->From f65cf7d666371562ef83b487a31e73642f3a3564 Mon Sep 17 00:00:00 2001
-From: Yong Zhi <yong.zhi@intel.com>
-Date: Thu, 26 May 2016 21:30:15 -0700
-Subject: [PATCH] ASoC: Intel: Skylake: Add api to retrieve dmic array info
- from nhlt
-
-Skylake can be configured with either both 2 and 4 channel DMIC
-array, or 2 channel DMIC array only, this patch provides an API to
-retrieve the DMIC info from nhlt.
-
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl-nhlt.c | 40 ++++++++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-nhlt.h | 22 +++++++++++++++++++++
- sound/soc/intel/skylake/skl.c      | 12 ++++++++++--
- sound/soc/intel/skylake/skl.h      |  6 ++++++
- 4 files changed, 78 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
-index 7d73648e5f9a..3f8e6f0b7eb5 100644
---- a/sound/soc/intel/skylake/skl-nhlt.c
-+++ b/sound/soc/intel/skylake/skl-nhlt.c
-@@ -17,6 +17,7 @@
-  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  *
-  */
-+#include <linux/pci.h>
- #include "skl.h"
- 
- /* Unique identification for getting NHLT blobs */
-@@ -149,6 +150,45 @@ struct nhlt_specific_cfg
- 	return NULL;
- }
- 
-+int skl_get_dmic_geo(struct skl *skl)
-+{
-+	struct nhlt_acpi_table *nhlt = (struct nhlt_acpi_table *)skl->nhlt;
-+	struct nhlt_endpoint *epnt;
-+	struct nhlt_dmic_array_config *cfg;
-+	struct device *dev = &skl->pci->dev;
-+	unsigned int dmic_geo = 0;
-+	u8 j;
-+
-+	epnt = (struct nhlt_endpoint *)nhlt->desc;
-+
-+	for (j = 0; j < nhlt->endpoint_count; j++) {
-+		if (epnt->linktype == NHLT_LINK_DMIC) {
-+			cfg = (struct nhlt_dmic_array_config  *)
-+					(epnt->config.caps);
-+			switch (cfg->array_type) {
-+			case NHLT_MIC_ARRAY_2CH_SMALL:
-+			case NHLT_MIC_ARRAY_2CH_BIG:
-+				dmic_geo |= MIC_ARRAY_2CH;
-+				break;
-+
-+			case NHLT_MIC_ARRAY_4CH_1ST_GEOM:
-+			case NHLT_MIC_ARRAY_4CH_L_SHAPED:
-+			case NHLT_MIC_ARRAY_4CH_2ND_GEOM:
-+				dmic_geo |= MIC_ARRAY_4CH;
-+				break;
-+
-+			default:
-+				dev_warn(dev, "undefined DMIC array_type 0x%0x\n",
-+						cfg->array_type);
-+
-+			}
-+		}
-+		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
-+	}
-+
-+	return dmic_geo;
-+}
-+
- static void skl_nhlt_trim_space(struct skl *skl)
- {
- 	char *s = skl->tplg_name;
-diff --git a/sound/soc/intel/skylake/skl-nhlt.h b/sound/soc/intel/skylake/skl-nhlt.h
-index 3769f9fefe2b..116534e7b3c5 100644
---- a/sound/soc/intel/skylake/skl-nhlt.h
-+++ b/sound/soc/intel/skylake/skl-nhlt.h
-@@ -103,4 +103,26 @@ struct nhlt_resource_desc  {
- 	u64 length;
- } __packed;
- 
-+#define MIC_ARRAY_2CH 2
-+#define MIC_ARRAY_4CH 4
-+
-+struct nhlt_tdm_config {
-+	u8 virtual_slot;
-+	u8 config_type;
-+} __packed;
-+
-+struct nhlt_dmic_array_config {
-+	struct nhlt_tdm_config tdm_config;
-+	u8 array_type;
-+} __packed;
-+
-+enum {
-+	NHLT_MIC_ARRAY_2CH_SMALL = 0xa,
-+	NHLT_MIC_ARRAY_2CH_BIG = 0xb,
-+	NHLT_MIC_ARRAY_4CH_1ST_GEOM = 0xc,
-+	NHLT_MIC_ARRAY_4CH_L_SHAPED = 0xd,
-+	NHLT_MIC_ARRAY_4CH_2ND_GEOM = 0xe,
-+	NHLT_MIC_ARRAY_VENDOR_DEFINED = 0xf,
-+};
-+
- #endif
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 06d8c263c68f..b0f7226b878f 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -35,6 +35,8 @@
- #include "skl-sst-dsp.h"
- #include "skl-sst-ipc.h"
- 
-+static struct skl_machine_pdata skl_dmic_data;
-+
- /*
-  * initialize the PCI registers
-  */
-@@ -397,6 +399,10 @@ static int skl_machine_device_register(struct skl *skl, void *driver_data)
- 		platform_device_put(pdev);
- 		return -EIO;
- 	}
-+
-+	if (mach->pdata)
-+		dev_set_drvdata(&pdev->dev, mach->pdata);
-+
- 	skl->i2s_dev = pdev;
- 
- 	return 0;
-@@ -666,6 +672,8 @@ static int skl_probe(struct pci_dev *pci,
- 
- 	pci_set_drvdata(skl->pci, ebus);
- 
-+	skl_dmic_data.dmic_num = skl_get_dmic_geo(skl);
-+
- 	/* check if dsp is there */
- 	if (ebus->ppcap) {
- 		err = skl_machine_device_register(skl,
-@@ -787,9 +795,9 @@ static void skl_remove(struct pci_dev *pci)
- static struct sst_acpi_mach sst_skl_devdata[] = {
- 	{ "INT343A", "skl_alc286s_i2s", "intel/dsp_fw_release.bin", NULL, NULL, NULL },
- 	{ "INT343B", "skl_nau88l25_ssm4567_i2s", "intel/dsp_fw_release.bin",
--				NULL, NULL, NULL },
-+				NULL, NULL, &skl_dmic_data },
- 	{ "MX98357A", "skl_nau88l25_max98357a_i2s", "intel/dsp_fw_release.bin",
--				NULL, NULL, NULL },
-+				NULL, NULL, &skl_dmic_data },
- 	{}
- };
- 
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 4b4b3876aea9..f66be173f86b 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -90,6 +90,11 @@ struct skl_dma_params {
- 	u8 stream_tag;
- };
- 
-+/* to pass dmic data */
-+struct skl_machine_pdata {
-+	u32 dmic_num;
-+};
-+
- struct skl_dsp_ops {
- 	int id;
- 	struct skl_dsp_loader_ops (*loader_ops)(void);
-@@ -108,6 +113,7 @@ void skl_nhlt_free(struct nhlt_acpi_table *addr);
- struct nhlt_specific_cfg *skl_get_ep_blob(struct skl *skl, u32 instance,
- 			u8 link_type, u8 s_fmt, u8 no_ch, u32 s_rate, u8 dirn);
- 
-+int skl_get_dmic_geo(struct skl *skl);
- int skl_nhlt_update_topology_bin(struct skl *skl);
- int skl_init_dsp(struct skl *skl);
- int skl_free_dsp(struct skl *skl);
 -- 
-2.8.1
+Kenneth Westfield
+Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
+a Linux Foundation Collaborative Project
