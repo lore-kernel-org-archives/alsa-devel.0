@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Find uuids for Broxton"
-	to the asoc tree
-Date: Mon, 30 May 2016 18:39:00 +0100
-Message-ID: <E1b7R9Y-0000gg-LZ@debutante>
-References: <1464610381-19416-8-git-send-email-vinod.koul@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F6CC2607F7
- for <alsa-devel@alsa-project.org>; Mon, 30 May 2016 19:39:08 +0200 (CEST)
-In-Reply-To: <1464610381-19416-8-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
+Subject: Applied "ASoC: simple-card: platform also uses asoc_simple_card_sub_parse_of()" to the asoc tree
+Date: Mon, 30 May 2016 18:39:25 +0100
+Message-ID: <E1b7R9x-0000qH-ET@debutante>
+References: <87futdrs2g.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87futdrs2g.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Find uuids for Broxton
+   ASoC: simple-card: platform also uses asoc_simple_card_sub_parse_of()
 
 has been applied to the asoc tree at
 
@@ -53,59 +37,83 @@ to this mail.
 Thanks,
 Mark
 
->From 3467a64dded3bcdbff8c3c9db2b1f1af20a9e295 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Mon, 30 May 2016 17:43:01 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Find uuids for Broxton
+>From 5fb9cb165130cdb67fb3ac42b4510ed7677a077d Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 20 May 2016 09:40:41 +0000
+Subject: [PATCH] ASoC: simple-card: platform also uses
+ asoc_simple_card_sub_parse_of()
 
-Broxton uses different offset in manifest for parsing module
-table. So invoke common parsing utility from broxton using
-broxton offset.
+In current simple-card, platform is handled as special case,
+but, the code is not readable.
+This patch makes platform to use asoc_simple_card_sub_parse_of()
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/bxt-sst.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/generic/simple-card.c | 31 +++++++++++++++++++------------
+ 1 file changed, 19 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index 0dd921349663..46235b93e4f8 100644
---- a/sound/soc/intel/skylake/bxt-sst.c
-+++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -130,6 +130,8 @@ static int sst_transfer_fw_host_dma(struct sst_dsp *ctx)
- 	return ret;
- }
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 466492b7d4f5..4e39c0fa78c9 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -223,6 +223,9 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
+ 	u32 val;
+ 	int ret;
  
-+#define BXT_ADSP_FW_BIN_HDR_OFFSET 0x2000
++	if (!np)
++		return 0;
 +
- static int bxt_load_base_firmware(struct sst_dsp *ctx)
- {
- 	struct firmware stripped_fw;
-@@ -146,6 +148,9 @@ static int bxt_load_base_firmware(struct sst_dsp *ctx)
- 	if (ctx->fw == NULL)
- 		goto sst_load_base_firmware_failed;
+ 	/*
+ 	 * Get node via "sound-dai = <&phandle port>"
+ 	 * it will be used as xxx_of_node on soc_bind_dai_link()
+@@ -238,9 +241,14 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
+ 		*args_count = args.args_count;
  
-+	ret = snd_skl_parse_uuids(ctx, BXT_ADSP_FW_BIN_HDR_OFFSET);
+ 	/* Get dai->name */
+-	ret = snd_soc_of_get_dai_name(np, name);
+-	if (ret < 0)
+-		return ret;
++	if (name) {
++		ret = snd_soc_of_get_dai_name(np, name);
++		if (ret < 0)
++			return ret;
++	}
++
++	if (!dai)
++		return 0;
+ 
+ 	/* Parse TDM slot */
+ 	ret = snd_soc_of_parse_tdm_slot(np, &dai->tx_slot_mask,
+@@ -374,21 +382,20 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+ 
++	ret = asoc_simple_card_sub_parse_of(plat, NULL,
++					    &dai_link->platform_of_node,
++					    NULL, NULL);
 +	if (ret < 0)
-+		goto sst_load_base_firmware_failed;
++		goto dai_link_of_err;
++
+ 	if (!dai_link->cpu_dai_name || !dai_link->codec_dai_name) {
+ 		ret = -EINVAL;
+ 		goto dai_link_of_err;
+ 	}
  
- 	stripped_fw.data = ctx->fw->data;
- 	stripped_fw.size = ctx->fw->size;
-@@ -283,6 +288,7 @@ int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+-	if (plat) {
+-		struct of_phandle_args args;
+-
+-		ret = of_parse_phandle_with_args(plat, "sound-dai",
+-						 "#sound-dai-cells", 0, &args);
+-		dai_link->platform_of_node = args.np;
+-	} else {
+-		/* Assumes platform == cpu */
++	/* Assumes platform == cpu */
++	if (!dai_link->platform_of_node)
+ 		dai_link->platform_of_node = dai_link->cpu_of_node;
+-	}
  
- 	skl->dev = dev;
- 	skl_dev.thread_context = skl;
-+	INIT_LIST_HEAD(&skl->uuid_list);
- 
- 	skl->dsp = skl_dsp_ctx_init(dev, &skl_dev, irq);
- 	if (!skl->dsp) {
-@@ -323,6 +329,7 @@ EXPORT_SYMBOL_GPL(bxt_sst_dsp_init);
- 
- void bxt_sst_dsp_cleanup(struct device *dev, struct skl_sst *ctx)
- {
-+	skl_freeup_uuid_list(ctx);
- 	skl_ipc_free(&ctx->ipc);
- 	ctx->dsp->cl_dev.ops.cl_cleanup_controller(ctx->dsp);
- 
+ 	/* DAI link name is created from CPU/CODEC dai name */
+ 	name = devm_kzalloc(dev,
 -- 
 2.8.1
