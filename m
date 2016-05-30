@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: Intel: Skylake: Strip manifest for
-	Skylake platform" to the asoc tree
-Date: Mon, 30 May 2016 18:39:13 +0100
-Message-ID: <E1b7R9l-0000mX-2S@debutante>
-References: <1464610381-19416-4-git-send-email-vinod.koul@intel.com>
+	Broxton platform" to the asoc tree
+Date: Mon, 30 May 2016 18:39:09 +0100
+Message-ID: <E1b7R9h-0000lO-VO@debutante>
+References: <1464610381-19416-5-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8CB832607F7
- for <alsa-devel@alsa-project.org>; Mon, 30 May 2016 19:39:17 +0200 (CEST)
-In-Reply-To: <1464610381-19416-4-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5BAEA265CB5
+ for <alsa-devel@alsa-project.org>; Mon, 30 May 2016 19:39:15 +0200 (CEST)
+In-Reply-To: <1464610381-19416-5-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Shreyas NC <shreyas.nc@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Ramesh Babu <ramesh.babu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Strip manifest for Skylake platform
+   ASoC: Intel: Skylake: Strip manifest for Broxton platform
 
 has been applied to the asoc tree at
 
@@ -53,54 +53,54 @@ to this mail.
 Thanks,
 Mark
 
->From cd63655e8025eb9839b8aaf503e14f89da9d4f9e Mon Sep 17 00:00:00 2001
+>From bf242d19d5549d52374f5026ad11ddd793fbd8fb Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Mon, 30 May 2016 17:42:57 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Strip manifest for Skylake platform
+Date: Mon, 30 May 2016 17:42:58 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Strip manifest for Broxton platform
 
-Future firmware updates may comes with extended manifest so invoke
+Broxton firmrware comes with extended manifest so invoke
 skl_dsp_strip_extended_manifest() to check and strip
 
-Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
+Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-sst.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/bxt-sst.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
-index 13ec8d53b526..be2c42b815b7 100644
---- a/sound/soc/intel/skylake/skl-sst.c
-+++ b/sound/soc/intel/skylake/skl-sst.c
-@@ -72,6 +72,7 @@ static int skl_load_base_firmware(struct sst_dsp *ctx)
- {
- 	int ret = 0, i;
- 	struct skl_sst *skl = ctx->thread_context;
-+	struct firmware stripped_fw;
- 	u32 reg;
+diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
+index dd86232eea05..0dd921349663 100644
+--- a/sound/soc/intel/skylake/bxt-sst.c
++++ b/sound/soc/intel/skylake/bxt-sst.c
+@@ -132,6 +132,7 @@ static int sst_transfer_fw_host_dma(struct sst_dsp *ctx)
  
- 	skl->boot_complete = false;
-@@ -86,6 +87,12 @@ static int skl_load_base_firmware(struct sst_dsp *ctx)
- 		}
+ static int bxt_load_base_firmware(struct sst_dsp *ctx)
+ {
++	struct firmware stripped_fw;
+ 	struct skl_sst *skl = ctx->thread_context;
+ 	int ret;
+ 
+@@ -141,10 +142,19 @@ static int bxt_load_base_firmware(struct sst_dsp *ctx)
+ 		goto sst_load_base_firmware_failed;
  	}
  
+-	ret = sst_bxt_prepare_fw(ctx, ctx->fw->data, ctx->fw->size);
 +	/* check for extended manifest */
++	if (ctx->fw == NULL)
++		goto sst_load_base_firmware_failed;
++
++
 +	stripped_fw.data = ctx->fw->data;
 +	stripped_fw.size = ctx->fw->size;
-+
 +	skl_dsp_strip_extended_manifest(&stripped_fw);
 +
- 	ret = skl_dsp_boot(ctx);
++	ret = sst_bxt_prepare_fw(ctx, stripped_fw.data, stripped_fw.size);
+ 	/* Retry Enabling core and ROM load. Retry seemed to help */
  	if (ret < 0) {
- 		dev_err(ctx->dev, "Boot dsp core failed ret: %d", ret);
-@@ -119,7 +126,7 @@ static int skl_load_base_firmware(struct sst_dsp *ctx)
- 		goto transfer_firmware_failed;
- 	}
- 
--	ret = skl_transfer_firmware(ctx, ctx->fw->data, ctx->fw->size);
-+	ret = skl_transfer_firmware(ctx, stripped_fw.data, stripped_fw.size);
- 	if (ret < 0) {
- 		dev_err(ctx->dev, "Transfer firmware failed%d\n", ret);
- 		goto transfer_firmware_failed;
+-		ret = sst_bxt_prepare_fw(ctx, ctx->fw->data, ctx->fw->size);
++		ret = sst_bxt_prepare_fw(ctx, stripped_fw.data, stripped_fw.size);
+ 		if (ret < 0) {
+ 			dev_err(ctx->dev, "Core En/ROM load fail:%d\n", ret);
+ 			goto sst_load_base_firmware_failed;
 -- 
 2.8.1
