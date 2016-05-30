@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Strip manifest for
-	Broxton platform" to the asoc tree
-Date: Mon, 30 May 2016 18:39:09 +0100
-Message-ID: <E1b7R9h-0000lO-VO@debutante>
-References: <1464610381-19416-5-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Don't use local pointer
+	for firmware" to the asoc tree
+Date: Mon, 30 May 2016 18:39:16 +0100
+Message-ID: <E1b7R9o-0000nO-6N@debutante>
+References: <1464610381-19416-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5BAEA265CB5
- for <alsa-devel@alsa-project.org>; Mon, 30 May 2016 19:39:15 +0200 (CEST)
-In-Reply-To: <1464610381-19416-5-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D892D265FFA
+ for <alsa-devel@alsa-project.org>; Mon, 30 May 2016 19:39:20 +0200 (CEST)
+In-Reply-To: <1464610381-19416-3-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Ramesh Babu <ramesh.babu@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Strip manifest for Broxton platform
+   ASoC: Intel: Skylake: Don't use local pointer for firmware
 
 has been applied to the asoc tree at
 
@@ -53,54 +53,56 @@ to this mail.
 Thanks,
 Mark
 
->From bf242d19d5549d52374f5026ad11ddd793fbd8fb Mon Sep 17 00:00:00 2001
+>From fdfa82ee1435dc8ff6b4c82640bd142f2d15edb1 Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Mon, 30 May 2016 17:42:58 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Strip manifest for Broxton platform
+Date: Mon, 30 May 2016 17:42:56 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Don't use local pointer for firmware
 
-Broxton firmrware comes with extended manifest so invoke
-skl_dsp_strip_extended_manifest() to check and strip
+We have firmware pointer is driver context, so use that instead
+of local pointer.
 
-Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/bxt-sst.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ sound/soc/intel/skylake/bxt-sst.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index dd86232eea05..0dd921349663 100644
+index 965ce40ce752..dd86232eea05 100644
 --- a/sound/soc/intel/skylake/bxt-sst.c
 +++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -132,6 +132,7 @@ static int sst_transfer_fw_host_dma(struct sst_dsp *ctx)
+@@ -132,20 +132,19 @@ static int sst_transfer_fw_host_dma(struct sst_dsp *ctx)
  
  static int bxt_load_base_firmware(struct sst_dsp *ctx)
  {
-+	struct firmware stripped_fw;
+-	const struct firmware *fw = NULL;
  	struct skl_sst *skl = ctx->thread_context;
  	int ret;
  
-@@ -141,10 +142,19 @@ static int bxt_load_base_firmware(struct sst_dsp *ctx)
+-	ret = request_firmware(&fw, ctx->fw_name, ctx->dev);
++	ret = request_firmware(&ctx->fw, ctx->fw_name, ctx->dev);
+ 	if (ret < 0) {
+ 		dev_err(ctx->dev, "Request firmware failed %d\n", ret);
  		goto sst_load_base_firmware_failed;
  	}
  
--	ret = sst_bxt_prepare_fw(ctx, ctx->fw->data, ctx->fw->size);
-+	/* check for extended manifest */
-+	if (ctx->fw == NULL)
-+		goto sst_load_base_firmware_failed;
-+
-+
-+	stripped_fw.data = ctx->fw->data;
-+	stripped_fw.size = ctx->fw->size;
-+	skl_dsp_strip_extended_manifest(&stripped_fw);
-+
-+	ret = sst_bxt_prepare_fw(ctx, stripped_fw.data, stripped_fw.size);
+-	ret = sst_bxt_prepare_fw(ctx, fw->data, fw->size);
++	ret = sst_bxt_prepare_fw(ctx, ctx->fw->data, ctx->fw->size);
  	/* Retry Enabling core and ROM load. Retry seemed to help */
  	if (ret < 0) {
--		ret = sst_bxt_prepare_fw(ctx, ctx->fw->data, ctx->fw->size);
-+		ret = sst_bxt_prepare_fw(ctx, stripped_fw.data, stripped_fw.size);
+-		ret = sst_bxt_prepare_fw(ctx, fw->data, fw->size);
++		ret = sst_bxt_prepare_fw(ctx, ctx->fw->data, ctx->fw->size);
  		if (ret < 0) {
  			dev_err(ctx->dev, "Core En/ROM load fail:%d\n", ret);
  			goto sst_load_base_firmware_failed;
+@@ -175,7 +174,7 @@ static int bxt_load_base_firmware(struct sst_dsp *ctx)
+ 	}
+ 
+ sst_load_base_firmware_failed:
+-	release_firmware(fw);
++	release_firmware(ctx->fw);
+ 	return ret;
+ }
+ 
 -- 
 2.8.1
