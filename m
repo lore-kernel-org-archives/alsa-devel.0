@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Add strip extended
-	manifest utility" to the asoc tree
-Date: Mon, 30 May 2016 18:39:19 +0100
-Message-ID: <E1b7R9r-0000oG-9g@debutante>
-References: <1464610381-19416-2-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Add api to retrieve
+	dmic array info from nhlt" to the asoc tree
+Date: Mon, 30 May 2016 18:39:22 +0100
+Message-ID: <E1b7R9u-0000pM-Av@debutante>
+References: <1464323415-28753-1-git-send-email-yong.zhi@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B6D02265DF5
- for <alsa-devel@alsa-project.org>; Mon, 30 May 2016 19:39:23 +0200 (CEST)
-In-Reply-To: <1464610381-19416-2-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7FFFF265CCB
+ for <alsa-devel@alsa-project.org>; Mon, 30 May 2016 19:39:27 +0200 (CEST)
+In-Reply-To: <1464323415-28753-1-git-send-email-yong.zhi@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ramesh Babu <ramesh.babu@intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, patches.audio@intel.com
+To: Yong Zhi <yong.zhi@intel.com>
+Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, yang.a.fang@intel.com, broonie@kernel.org, sathya.prakash.m.r@intel.com, jeeja.kp@intel.com, vedang.patel@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Add strip extended manifest utility
+   ASoC: Intel: Skylake: Add api to retrieve dmic array info from nhlt
 
 has been applied to the asoc tree at
 
@@ -53,110 +53,183 @@ to this mail.
 Thanks,
 Mark
 
->From 6eee87261f69e366bfe9b908ae3b441efb8e28ea Mon Sep 17 00:00:00 2001
-From: Ramesh Babu <ramesh.babu@intel.com>
-Date: Mon, 30 May 2016 17:42:55 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Add strip extended manifest utility
+>From f65cf7d666371562ef83b487a31e73642f3a3564 Mon Sep 17 00:00:00 2001
+From: Yong Zhi <yong.zhi@intel.com>
+Date: Thu, 26 May 2016 21:30:15 -0700
+Subject: [PATCH] ASoC: Intel: Skylake: Add api to retrieve dmic array info
+ from nhlt
 
-Some upcoming platforms like broxton etc have extended manifest
-in firmware binary. This is not required to be downloaded to DSP.
-So driver needs to strip this before downloading.
+Skylake can be configured with either both 2 and 4 channel DMIC
+array, or 2 channel DMIC array only, this patch provides an API to
+retrieve the DMIC info from nhlt.
 
-Add a utility function to check if a header exists, and remove it
-in that case
-
-Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Yong Zhi <yong.zhi@intel.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/Makefile        |  2 +-
- sound/soc/intel/skylake/skl-sst-dsp.h   |  2 ++
- sound/soc/intel/skylake/skl-sst-utils.c | 54 +++++++++++++++++++++++++++++++++
- 3 files changed, 57 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/intel/skylake/skl-sst-utils.c
+ sound/soc/intel/skylake/skl-nhlt.c | 40 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-nhlt.h | 22 +++++++++++++++++++++
+ sound/soc/intel/skylake/skl.c      | 12 ++++++++++--
+ sound/soc/intel/skylake/skl.h      |  6 ++++++
+ 4 files changed, 78 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/Makefile b/sound/soc/intel/skylake/Makefile
-index c28f5d0e1d99..60fbc9bbe473 100644
---- a/sound/soc/intel/skylake/Makefile
-+++ b/sound/soc/intel/skylake/Makefile
-@@ -5,6 +5,6 @@ obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += snd-soc-skl.o
+diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
+index 7d73648e5f9a..3f8e6f0b7eb5 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.c
++++ b/sound/soc/intel/skylake/skl-nhlt.c
+@@ -17,6 +17,7 @@
+  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  *
+  */
++#include <linux/pci.h>
+ #include "skl.h"
  
- # Skylake IPC Support
- snd-soc-skl-ipc-objs := skl-sst-ipc.o skl-sst-dsp.o skl-sst-cldma.o \
--		skl-sst.o bxt-sst.o
-+		skl-sst.o bxt-sst.o skl-sst-utils.o
+ /* Unique identification for getting NHLT blobs */
+@@ -149,6 +150,45 @@ struct nhlt_specific_cfg
+ 	return NULL;
+ }
  
- obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += snd-soc-skl-ipc.o
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
-index deabe7308d3b..94878fac2269 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.h
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.h
-@@ -175,4 +175,6 @@ int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
- void skl_sst_dsp_cleanup(struct device *dev, struct skl_sst *ctx);
- void bxt_sst_dsp_cleanup(struct device *dev, struct skl_sst *ctx);
++int skl_get_dmic_geo(struct skl *skl)
++{
++	struct nhlt_acpi_table *nhlt = (struct nhlt_acpi_table *)skl->nhlt;
++	struct nhlt_endpoint *epnt;
++	struct nhlt_dmic_array_config *cfg;
++	struct device *dev = &skl->pci->dev;
++	unsigned int dmic_geo = 0;
++	u8 j;
++
++	epnt = (struct nhlt_endpoint *)nhlt->desc;
++
++	for (j = 0; j < nhlt->endpoint_count; j++) {
++		if (epnt->linktype == NHLT_LINK_DMIC) {
++			cfg = (struct nhlt_dmic_array_config  *)
++					(epnt->config.caps);
++			switch (cfg->array_type) {
++			case NHLT_MIC_ARRAY_2CH_SMALL:
++			case NHLT_MIC_ARRAY_2CH_BIG:
++				dmic_geo |= MIC_ARRAY_2CH;
++				break;
++
++			case NHLT_MIC_ARRAY_4CH_1ST_GEOM:
++			case NHLT_MIC_ARRAY_4CH_L_SHAPED:
++			case NHLT_MIC_ARRAY_4CH_2ND_GEOM:
++				dmic_geo |= MIC_ARRAY_4CH;
++				break;
++
++			default:
++				dev_warn(dev, "undefined DMIC array_type 0x%0x\n",
++						cfg->array_type);
++
++			}
++		}
++		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
++	}
++
++	return dmic_geo;
++}
++
+ static void skl_nhlt_trim_space(struct skl *skl)
+ {
+ 	char *s = skl->tplg_name;
+diff --git a/sound/soc/intel/skylake/skl-nhlt.h b/sound/soc/intel/skylake/skl-nhlt.h
+index 3769f9fefe2b..116534e7b3c5 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.h
++++ b/sound/soc/intel/skylake/skl-nhlt.h
+@@ -103,4 +103,26 @@ struct nhlt_resource_desc  {
+ 	u64 length;
+ } __packed;
  
-+int skl_dsp_strip_extended_manifest(struct firmware *fw);
++#define MIC_ARRAY_2CH 2
++#define MIC_ARRAY_4CH 4
 +
- #endif /*__SKL_SST_DSP_H__*/
-diff --git a/sound/soc/intel/skylake/skl-sst-utils.c b/sound/soc/intel/skylake/skl-sst-utils.c
-new file mode 100644
-index 000000000000..c00567dad989
---- /dev/null
-+++ b/sound/soc/intel/skylake/skl-sst-utils.c
-@@ -0,0 +1,54 @@
-+/*
-+ *  skl-sst-utils.c - SKL sst utils functions
-+ *
-+ *  Copyright (C) 2016 Intel Corp
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as version 2, as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ */
++struct nhlt_tdm_config {
++	u8 virtual_slot;
++	u8 config_type;
++} __packed;
 +
-+#include <linux/firmware.h>
-+#include "skl-sst-dsp.h"
++struct nhlt_dmic_array_config {
++	struct nhlt_tdm_config tdm_config;
++	u8 array_type;
++} __packed;
 +
-+/* FW Extended Manifest Header id = $AE1 */
-+#define SKL_EXT_MANIFEST_HEADER_MAGIC   0x31454124
-+
-+struct skl_ext_manifest_hdr {
-+	u32 id;
-+	u32 len;
-+	u16 version_major;
-+	u16 version_minor;
-+	u32 entries;
++enum {
++	NHLT_MIC_ARRAY_2CH_SMALL = 0xa,
++	NHLT_MIC_ARRAY_2CH_BIG = 0xb,
++	NHLT_MIC_ARRAY_4CH_1ST_GEOM = 0xc,
++	NHLT_MIC_ARRAY_4CH_L_SHAPED = 0xd,
++	NHLT_MIC_ARRAY_4CH_2ND_GEOM = 0xe,
++	NHLT_MIC_ARRAY_VENDOR_DEFINED = 0xf,
 +};
 +
-+/*
-+ * some firmware binary contains some extended manifest. This needs
-+ * to be stripped in that case before we load and use that image.
-+ *
-+ * So check for magic header, if found strip the header
-+ */
-+int skl_dsp_strip_extended_manifest(struct firmware *fw)
-+{
-+	struct skl_ext_manifest_hdr *hdr;
+ #endif
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 06d8c263c68f..b0f7226b878f 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -35,6 +35,8 @@
+ #include "skl-sst-dsp.h"
+ #include "skl-sst-ipc.h"
+ 
++static struct skl_machine_pdata skl_dmic_data;
 +
-+	/* check if fw file is greater than header we are looking */
-+	if (fw->size < sizeof(hdr)) {
-+		pr_err("%s: Firmware file small, no hdr\n", __func__);
-+		return -EINVAL;
-+	}
+ /*
+  * initialize the PCI registers
+  */
+@@ -397,6 +399,10 @@ static int skl_machine_device_register(struct skl *skl, void *driver_data)
+ 		platform_device_put(pdev);
+ 		return -EIO;
+ 	}
 +
-+	hdr = (struct skl_ext_manifest_hdr *)fw->data;
++	if (mach->pdata)
++		dev_set_drvdata(&pdev->dev, mach->pdata);
 +
-+	if (hdr->id == SKL_EXT_MANIFEST_HEADER_MAGIC) {
-+		fw->size -= hdr->len;
-+		fw->data += hdr->len;
-+	}
+ 	skl->i2s_dev = pdev;
+ 
+ 	return 0;
+@@ -666,6 +672,8 @@ static int skl_probe(struct pci_dev *pci,
+ 
+ 	pci_set_drvdata(skl->pci, ebus);
+ 
++	skl_dmic_data.dmic_num = skl_get_dmic_geo(skl);
 +
-+	return 0;
-+}
+ 	/* check if dsp is there */
+ 	if (ebus->ppcap) {
+ 		err = skl_machine_device_register(skl,
+@@ -787,9 +795,9 @@ static void skl_remove(struct pci_dev *pci)
+ static struct sst_acpi_mach sst_skl_devdata[] = {
+ 	{ "INT343A", "skl_alc286s_i2s", "intel/dsp_fw_release.bin", NULL, NULL, NULL },
+ 	{ "INT343B", "skl_nau88l25_ssm4567_i2s", "intel/dsp_fw_release.bin",
+-				NULL, NULL, NULL },
++				NULL, NULL, &skl_dmic_data },
+ 	{ "MX98357A", "skl_nau88l25_max98357a_i2s", "intel/dsp_fw_release.bin",
+-				NULL, NULL, NULL },
++				NULL, NULL, &skl_dmic_data },
+ 	{}
+ };
+ 
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index 4b4b3876aea9..f66be173f86b 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -90,6 +90,11 @@ struct skl_dma_params {
+ 	u8 stream_tag;
+ };
+ 
++/* to pass dmic data */
++struct skl_machine_pdata {
++	u32 dmic_num;
++};
++
+ struct skl_dsp_ops {
+ 	int id;
+ 	struct skl_dsp_loader_ops (*loader_ops)(void);
+@@ -108,6 +113,7 @@ void skl_nhlt_free(struct nhlt_acpi_table *addr);
+ struct nhlt_specific_cfg *skl_get_ep_blob(struct skl *skl, u32 instance,
+ 			u8 link_type, u8 s_fmt, u8 no_ch, u32 s_rate, u8 dirn);
+ 
++int skl_get_dmic_geo(struct skl *skl);
+ int skl_nhlt_update_topology_bin(struct skl *skl);
+ int skl_init_dsp(struct skl *skl);
+ int skl_free_dsp(struct skl *skl);
 -- 
 2.8.1
