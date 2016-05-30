@@ -1,17 +1,22 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v5 3/7] ARM: OMAP3: McBSP: New callback for
-	McBSP2/3 ICLK idle configuration
-Date: Mon, 30 May 2016 11:23:46 +0300
-Message-ID: <20160530082350.24285-4-peter.ujfalusi@ti.com>
-References: <20160530082350.24285-1-peter.ujfalusi@ti.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: Wolfson 5102 on Beaglebone Black using ALSA
+Date: Mon, 30 May 2016 09:35:44 +0100
+Message-ID: <20160530083544.GG20422@localhost.localdomain>
+References: <4BEB79E8-7315-48DF-BBB6-E944114621BF@gmail.com>
+ <47b8f68c-12be-adb5-1e29-7ca19feac581@ti.com>
+ <F5EE3526-E76D-485C-BB9C-B3A7B0DBA1F1@gmail.com>
+ <20160522131854.GT1646@localhost.localdomain>
+ <685DDADE-5203-4557-9AD3-54856B718938@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [198.47.19.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 427BD260701
- for <alsa-devel@alsa-project.org>; Mon, 30 May 2016 10:24:09 +0200 (CEST)
-In-Reply-To: <20160530082350.24285-1-peter.ujfalusi@ti.com>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C9742606B7
+ for <alsa-devel@alsa-project.org>; Mon, 30 May 2016 10:35:39 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <685DDADE-5203-4557-9AD3-54856B718938@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,63 +26,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tony@atomide.com, jarkko.nikula@bitmer.com, paul@pwsan.com, lgirdwood@gmail.com, broonie@kernel.org
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, t-kristo@ti.com, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Clark Dunson <cdunson@gmail.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-McBSP2/3 module's sidetone module operates using the module's ICLK clock.
-When the Sidetone is in use the interface clock of the module must not
-idle. The new callback expects to receive the *clk of the module's ick and
-not the id number of the McBSP. This will allow us more cleanups and going
-to simplify the ICLK handling.
+On Fri, May 27, 2016 at 06:58:39PM -0700, Clark Dunson wrote:
+> We have moved from breadboard to protoboard, and with many
+> orders booked, I daresay that we have moved from experimenting
+> to committed.  Our application samples mostly channels of
+> scientific data, but one of audio.  Ergo we will have an
+> ongoing interest in the wm5102 and its DSP capabilities.  The
+> more processing that we can do on the codec, the better.
+>
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- arch/arm/mach-omap2/mcbsp.c                 | 12 ++++++++++++
- include/linux/platform_data/asoc-ti-mcbsp.h |  1 +
- 2 files changed, 13 insertions(+)
+There are some hoops to jump through to get access to the
+necessary compilers etc. for the DSP, although again Joao who I
+CCed on your other email would be a good place to start the
+process of getting access to that.
 
-diff --git a/arch/arm/mach-omap2/mcbsp.c b/arch/arm/mach-omap2/mcbsp.c
-index b4ac3af1160c..959cb4cb1062 100644
---- a/arch/arm/mach-omap2/mcbsp.c
-+++ b/arch/arm/mach-omap2/mcbsp.c
-@@ -48,6 +48,17 @@ static int omap3_enable_st_clock(unsigned int id, bool enable)
- 		return omap2_clk_allow_idle(mcbsp_iclks[id]);
- }
- 
-+static int omap3_mcbsp_force_ick_on(struct clk *clk, bool force_on)
-+{
-+	if (!clk)
-+		return 0;
-+
-+	if (force_on)
-+		return omap2_clk_deny_idle(clk);
-+	else
-+		return omap2_clk_allow_idle(clk);
-+}
-+
- static int __init omap_init_mcbsp(struct omap_hwmod *oh, void *unused)
- {
- 	int id, count = 1;
-@@ -97,6 +108,7 @@ static int __init omap_init_mcbsp(struct omap_hwmod *oh, void *unused)
- 		oh_device[1] = omap_hwmod_lookup((
- 		(struct omap_mcbsp_dev_attr *)(oh->dev_attr))->sidetone);
- 		pdata->enable_st_clock = omap3_enable_st_clock;
-+		pdata->force_ick_on = omap3_mcbsp_force_ick_on;
- 		sprintf(clk_name, "mcbsp%d_ick", id);
- 		mcbsp_iclks[id] = clk_get(NULL, clk_name);
- 		count++;
-diff --git a/include/linux/platform_data/asoc-ti-mcbsp.h b/include/linux/platform_data/asoc-ti-mcbsp.h
-index 3c73c045f8da..73e5e832fa23 100644
---- a/include/linux/platform_data/asoc-ti-mcbsp.h
-+++ b/include/linux/platform_data/asoc-ti-mcbsp.h
-@@ -45,6 +45,7 @@ struct omap_mcbsp_platform_data {
- 	bool has_wakeup; /* Wakeup capability */
- 	bool has_ccr; /* Transceiver has configuration control registers */
- 	int (*enable_st_clock)(unsigned int, bool);
-+	int (*force_ick_on)(struct clk *clk, bool force_on);
- };
- 
- /**
--- 
-2.8.3
+> We are pursuing Master mode at the moment, where the McAsp on
+> the BBB supplies 24.576 MHz to wm5102 on MCLK1, and then BCLK
+> and WCLK are generated by wm5102.  We sample at 8x48k, and are
+> driving AIF1 with dspB format.  Also, we have need to send out
+> a calibration signal ~daily, via SPKOUTL.
+>
+
+All sounds fine.
+
+> So far we have simply added our stuff at the end of the
+> arizona-core.c probe, but would like to do it in a more
+> up-streamable way.  In looking at the samsung/bells.c driver
+> (thank you again Charles), we realized that anything past basic
+> configurations will be difficult with the device tree alone.
+> The regmap stuff is a nice form of API, easy to deal with.
+>
+
+Yeah please avoid doing this, the driver should support all the
+features you require from the sound of things. There should be no
+need to hard code register writes.
+
+What sort of things are you setting up with these register
+writes? Lets see if I can point you in the direction of the
+correct place to put some of those.
+
+> We had to simply disinvite extcon-arizona from the party
+> though.  On both the WM5102-6271-CS137-M-SCH-REV2.03 and our
+> protoboard, JACKDET is an IRQ gone wild.  On the Wolfson board,
+> inserting my headphones into the jack shut it up.  But on our
+> protoboard, where we left that pin unconnected, we found that
+> the probe of extcon-arizona hard enables JACKDET.
+>
+
+I am surprised you are seeing issues on one of our boards, they
+are all fairly well tested here. I would quite like to see a
+kernel log on that one if I can?
+
+Apart from that, this all seems reasonable, the extcon driver
+exists to control the jack detection. If that is not wired up on
+your system then not building in this part of the system seems
+the correct response.
+
+Thanks,
+Charles
