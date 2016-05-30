@@ -1,254 +1,91 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH] alsabat: add buffer size and period size
-	setup support
-Date: Mon, 30 May 2016 10:23:16 +0100
-Message-ID: <1464600196.12724.23.camel@loki>
-References: <1464599242-8145-1-git-send-email-vivian.zhang@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id C82152606B7
- for <alsa-devel@alsa-project.org>; Mon, 30 May 2016 11:23:31 +0200 (CEST)
-In-Reply-To: <1464599242-8145-1-git-send-email-vivian.zhang@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: vivian.zhang@intel.com
-Cc: tiwai@suse.de, han.lu@intel.com, alsa-devel@alsa-project.org
+From: Jose Abreu <Jose.Abreu@synopsys.com>
+Subject: [PATCH 0/2 v8] Add I2S audio support for ARC AXS10x boards
+Date: Mon, 30 May 2016 10:53:14 +0100
+Message-ID: <cover.1464601439.git.joabreu@synopsys.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Jose Abreu <Jose.Abreu@synopsys.com>, Carlos Palminha <CARLOS.PALMINHA@synopsys.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh@kernel.org>, Alexey Brodkin <Alexey.Brodkin@synopsys.com>, linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2016-05-30 at 17:07 +0800, vivian.zhang@intel.com wrote:
-> From: "vivian,zhang" <vivian.zhang@intel.com>
-> 
+ARC AXS10x platforms consist of a mainboard with several peripherals.
+One of those peripherals is an HDMI output port controlled by the ADV7511
+transmitter.
 
-Commit message ?
+This patch set adds I2S audio for the AXS10x platform.
 
-> Signed-off-by: Zhang Vivian <vivian.zhang@intel.com>
-> ---
->  bat/alsa.c     |   95 +++++++++++++++++++++++++++++++++++++++-----------------
->  bat/bat.c      |   16 ++++++++--
->  bat/common.h   |    2 ++
->  bat/tinyalsa.c |    5 ++-
->  4 files changed, 86 insertions(+), 32 deletions(-)
-> 
-> diff --git a/bat/alsa.c b/bat/alsa.c
-> index 75158cb..167dbad 100644
-> --- a/bat/alsa.c
-> +++ b/bat/alsa.c
-> @@ -74,6 +74,8 @@ static int set_snd_pcm_params(struct bat *bat, struct pcm_container *sndpcm)
->  	snd_pcm_format_t format;
->  	unsigned int buffer_time = 0;
->  	unsigned int period_time = 0;
-> +	snd_pcm_uframes_t buffer_size = 0;
-> +	snd_pcm_uframes_t period_size = 0;
->  	unsigned int rate;
->  	int err;
->  	const char *device_name = snd_pcm_name(sndpcm->handle);
-> @@ -145,39 +147,71 @@ static int set_snd_pcm_params(struct bat *bat, struct pcm_container *sndpcm)
->  		return -EINVAL;
->  	}
->  
-> -	if (snd_pcm_hw_params_get_buffer_time_max(params,
-> -			&buffer_time, 0) < 0) {
-> -		fprintf(bat->err, _("Get parameter from device error: "));
-> -		fprintf(bat->err, _("buffer time: %d %s: %s(%d)\n"),
-> -				buffer_time,
-> -				device_name, snd_strerror(err), err);
-> -		return -EINVAL;
-> -	}
-> +	if (bat->buffer_size > 0) {
-> +		if (bat->period_size == 0)
+NOTE:
+Although the mainline I2S driver uses ALSA DMA engine, this controller
+can be built without DMA support so it was necessary to add this
+custom platform driver so that HDMI audio works in AXS boards.
 
-It might be possible to if (a > 0 && b == 0) to save a level of
-indentation here.
+Changes v7 -> v8:
+* Build PIO PCM as module
+* Always unmask interrupts even when in DMA mode
+* Fallback to PIO mode only if ALSA DMA engine probe fails
 
-> +			bat->period_size = bat->buffer_size / DIV_BUFFERTIME;
->  
-> -	if (buffer_time > MAX_BUFFERTIME)
-> -		buffer_time = MAX_BUFFERTIME;
-> +		buffer_size = bat->buffer_size;
-> +		period_size = bat->period_size;
->  
-> -	period_time = buffer_time / DIV_BUFFERTIME;
-> +		fprintf(bat->log, _("Set period size: %d  buffer size: %d\n"),
-> +				(int) period_size, (int) buffer_size);
->  
-> -	/* Set buffer time and period time */
-> -	err = snd_pcm_hw_params_set_buffer_time_near(sndpcm->handle, params,
-> -			&buffer_time, 0);
-> -	if (err < 0) {
-> -		fprintf(bat->err, _("Set parameter to device error: "));
-> -		fprintf(bat->err, _("buffer time: %d %s: %s(%d)\n"),
-> -				buffer_time,
-> -				device_name, snd_strerror(err), err);
-> -		return err;
-> -	}
-> +		err = snd_pcm_hw_params_set_buffer_size_near(sndpcm->handle,
-> +				params, &buffer_size);
-> +		if (err < 0) {
-> +			fprintf(bat->err, _("Set parameter to device error: "));
-> +			fprintf(bat->err, _("buffer size: %d %s: %s(%d)\n"),
-> +					(int) buffer_size,
-> +					device_name, snd_strerror(err), err);
-> +			return err;
-> +		}
->  
-> -	err = snd_pcm_hw_params_set_period_time_near(sndpcm->handle, params,
-> -			&period_time, 0);
-> -	if (err < 0) {
-> -		fprintf(bat->err, _("Set parameter to device error: "));
-> -		fprintf(bat->err, _("period time: %d %s: %s(%d)\n"),
-> -				period_time,
-> -				device_name, snd_strerror(err), err);
-> -		return err;
-> +		err = snd_pcm_hw_params_set_period_size_near(sndpcm->handle,
-> +				params, &period_size, 0);
-> +		if (err < 0) {
-> +			fprintf(bat->err, _("Set parameter to device error: "));
-> +			fprintf(bat->err, _("period size: %d %s: %s(%d)\n"),
-> +					(int) period_size,
-> +					device_name, snd_strerror(err), err);
-> +			return err;
-> +		}
-> +	} else {
-> +		if (snd_pcm_hw_params_get_buffer_time_max(params,
-> +				&buffer_time, 0) < 0) {
-> +			fprintf(bat->err,
-> +					_("Get parameter from device error: "));
-> +			fprintf(bat->err, _("buffer time: %d %s: %s(%d)\n"),
-> +					buffer_time,
-> +					device_name, snd_strerror(err), err);
-> +			return -EINVAL;
-> +		}
-> +
-> +		if (buffer_time > MAX_BUFFERTIME)
-> +			buffer_time = MAX_BUFFERTIME;
-> +
-> +		period_time = buffer_time / DIV_BUFFERTIME;
-> +
-> +		/* Set buffer time and period time */
-> +		err = snd_pcm_hw_params_set_buffer_time_near(sndpcm->handle,
-> +				params, &buffer_time, 0);
-> +		if (err < 0) {
-> +			fprintf(bat->err, _("Set parameter to device error: "));
-> +			fprintf(bat->err, _("buffer time: %d %s: %s(%d)\n"),
-> +					buffer_time,
-> +					device_name, snd_strerror(err), err);
-> +			return err;
-> +		}
-> +
-> +		err = snd_pcm_hw_params_set_period_time_near(sndpcm->handle,
-> +				params, &period_time, 0);
-> +		if (err < 0) {
-> +			fprintf(bat->err, _("Set parameter to device error: "));
-> +			fprintf(bat->err, _("period time: %d %s: %s(%d)\n"),
-> +					period_time,
-> +					device_name, snd_strerror(err), err);
-> +			return err;
-> +		}
->  	}
->  
->  	/* Write the parameters to the driver */
-> @@ -214,6 +248,9 @@ static int set_snd_pcm_params(struct bat *bat, struct pcm_container *sndpcm)
->  		return -EINVAL;
->  	}
->  
-> +	fprintf(bat->log, _("Get period size: %d  buffer size: %d\n"),
-> +			(int) sndpcm->period_size, (int) sndpcm->buffer_size);
-> +
->  	err = snd_pcm_format_physical_width(format);
->  	if (err < 0) {
->  		fprintf(bat->err, _("Invalid parameters: "));
-> diff --git a/bat/bat.c b/bat/bat.c
-> index 1afdcb4..0d5aaa5 100644
-> --- a/bat/bat.c
-> +++ b/bat/bat.c
-> @@ -292,6 +292,8 @@ _("Usage: alsabat [-options]...\n"
->  "  -k                     parameter for frequency detecting threshold\n"
->  "  -F                     target frequency\n"
->  "  -p                     total number of periods to play/capture\n"
-> +"  -B                     buffer size in frames\n"
-> +"  -E                     period size in frames\n"
->  "      --log=#            file that both stdout and strerr redirecting to\n"
->  "      --file=#           file for playback\n"
->  "      --saveplay=#       file that storing playback content, for debug\n"
-> @@ -324,6 +326,8 @@ static void set_defaults(struct bat *bat)
->  	bat->capture.device = NULL;
->  	bat->buf = NULL;
->  	bat->local = false;
-> +	bat->buffer_size = 0;
-> +	bat->period_size = 0;
->  #ifdef HAVE_LIBTINYALSA
->  	bat->channels = 2;
->  	bat->playback.fct = &playback_tinyalsa;
-> @@ -342,8 +346,8 @@ static void set_defaults(struct bat *bat)
->  
->  static void parse_arguments(struct bat *bat, int argc, char *argv[])
->  {
-> -	int c, option_index;
-> -	static const char short_options[] = "D:P:C:f:n:F:c:r:s:k:p:lth";
-> +	int c, option_index, err;
-> +	static const char short_options[] = "D:P:C:f:n:F:c:r:s:k:p:B:E:lth";
->  	static const struct option long_options[] = {
->  		{"help",     0, 0, 'h'},
->  		{"log",      1, 0, OPT_LOG},
-> @@ -414,6 +418,14 @@ static void parse_arguments(struct bat *bat, int argc, char *argv[])
->  			bat->periods_total = atoi(optarg);
->  			bat->period_is_limited = true;
->  			break;
-> +		case 'B':
-> +			err = atoi(optarg);
-> +			bat->buffer_size = err >= 32 && err < 200000 ? err : 0;
+Changes v6 -> v7:
+* Discard the use of memcpy
+* Report IRQ_HANDLED only when there is an IRQ
+* Use interrupts to check if PIO mode is in use
+* Unmask interrupts only when in PIO mode
+* Remove empty functions
 
-Probably best to have a macro for min and max values here and below.
+Changes v5 -> v6:
+* Use SNDRV_DMA_TYPE_CONTINUOUS
 
-> +			break;
-> +		case 'E':
-> +			err = atoi(optarg);
-> +			bat->period_size = err >= 32 && err < 200000 ? err : 0;
-> +			break;
->  		case 'h':
->  		default:
->  			usage(bat);
-> diff --git a/bat/common.h b/bat/common.h
-> index b789af5..52c8cb1 100644
-> --- a/bat/common.h
-> +++ b/bat/common.h
-> @@ -152,6 +152,8 @@ struct bat {
->  	int frame_size;			/* size of frame */
->  	int sample_size;		/* size of sample */
->  	enum _bat_pcm_format format;	/* PCM format */
-> +	int buffer_size;		/* buffer size in frames */
-> +	int period_size;		/* period size in frames */
->  
->  	float sigma_k;			/* threshold for peak detection */
->  	float target_freq[MAX_CHANNELS];
-> diff --git a/bat/tinyalsa.c b/bat/tinyalsa.c
-> index ea5f848..faa1ad0 100644
-> --- a/bat/tinyalsa.c
-> +++ b/bat/tinyalsa.c
-> @@ -57,7 +57,10 @@ static int init_config(struct bat *bat, struct pcm_config *config)
->  {
->  	config->channels = bat->channels;
->  	config->rate = bat->rate;
-> -	config->period_size = 1024;
-> +	if (bat->period_size > 0)
-> +		config->period_size = bat->period_size;
-> +	else
-> +		config->period_size = 1024;
+Changes v4 -> v5:
+* Resolve undefined references when compiling as module
+* Dropped adv7511 audio patches
+* Use DMA properties in I2S to check which mode to use: PIO or DMA (as suggested by Lars-Peter Clausen)
 
-Probably best to also have a macro for default period size too.
+Changes v3 -> v4:
+* Reintroduced custom PCM driver (see note below)
+* Use DT boolean to switch between ALSA DMA engine PCM or custom PCM
+* Use fifo depth to program I2S FCR
+* Update I2S documentation
 
->  	config->period_count = 4;
->  	config->start_threshold = 0;
->  	config->stop_threshold = 0;
+Changes v2 -> v3:
+* Removed pll_config functions (as suggested by Alexey Brodkin)
+* Removed HDMI start at adv7511_core (as suggested by Archit Taneja)
+* Use NOP functions for adv7511_audio (as suggested by Archit Taneja)
+* Added adv7511_audio_exit() function (as suggested by Archit Taneja)
+* Moved adv7511 to its own folder (as suggested by Archit Taneja)
+* Separated file rename of adv7511_core (as suggested by Emil Velikov)
+* Compile adv7511 as module if ALSA SoC is compiled as module
+* Load adv7511 audio only if declared in device tree (as suggested by Laurent Pinchart)
+* Dropped custom platform driver, using now ALSA DMA engine
+* Dropped IRQ handler for I2S
 
-Liam
+Changes v1 -> v2:
+* DT bindings moved to separate patch (as suggested by Alexey Brodkin)
+* Removed defconfigs entries (as suggested by Alexey Brodkin)
+
+
+Cc: Carlos Palminha <palminha@synopsys.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Rob Herring <robh@kernel.org>
+Cc: Alexey Brodkin <abrodkin@synopsys.com>
+Cc: linux-snps-arc@lists.infradead.org
+Cc: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
+
+Jose Abreu (2):
+  ASoC: dwc: Add PIO PCM extension
+  ASoC: dwc: Add irq parameter to DOCUMENTATION
+
+ .../devicetree/bindings/sound/designware-i2s.txt   |   4 +
+ sound/soc/dwc/Kconfig                              |   9 +
+ sound/soc/dwc/Makefile                             |   1 +
+ sound/soc/dwc/designware_i2s.c                     | 152 ++++++--------
+ sound/soc/dwc/designware_pcm.c                     | 222 +++++++++++++++++++++
+ sound/soc/dwc/local.h                              | 122 +++++++++++
+ 6 files changed, 422 insertions(+), 88 deletions(-)
+ create mode 100644 sound/soc/dwc/designware_pcm.c
+ create mode 100644 sound/soc/dwc/local.h
+
+-- 
+1.9.1
