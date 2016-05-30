@@ -1,72 +1,62 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsrc-card: remove unused dai_num" to the asoc tree
-Date: Mon, 30 May 2016 17:01:48 +0100
-Message-ID: <E1b7PdU-0003yF-Am@debutante>
-References: <87h9dtrs3s.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87h9dtrs3s.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3] ASoC: rockchip: Add machine driver for
+ MAX98357A/RT5514/DA7219
+Date: Mon, 30 May 2016 17:03:57 +0100
+Message-ID: <20160530160357.GQ29837@sirena.org.uk>
+References: <1464267742-15312-1-git-send-email-zhengxing@rock-chips.com>
+ <574BEC9D.50007@rock-chips.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="4T94Hejb80K+e1gX"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <574BEC9D.50007-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Xing Zheng <zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Cc: linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: rsrc-card: remove unused dai_num
+--4T94Hejb80K+e1gX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-has been applied to the asoc tree at
+On Mon, May 30, 2016 at 03:32:45PM +0800, Xing Zheng wrote:
+> Hi,
+> Could any guys help me to review this patch?
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Please don't send content free pings and please allow a reasonable time
+for review.  People get busy, go on holiday, attend conferences and so=20
+on so unless there is some reason for urgency (like critical bug fixes)
+please allow at least a couple of weeks for review.  If there have been
+review comments then people may be waiting for those to be addressed.
+Sending content free pings just adds to the mail volume (if they are
+seen at all) and if something has gone wrong you'll have to resend the
+patches anyway.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Please don't top post, reply in line with needed context.  This allows
+readers to readily follow the flow of conversation and understand what
+you are talking about and also helps ensure that everything in the
+discussion is being addressed.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+--4T94Hejb80K+e1gX
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+iQEcBAEBCAAGBQJXTGRsAAoJECTWi3JdVIfQcQEH/iGNKiR1qqrhtazM8FmtZ36m
+HTse1ltlUcHkAo8VrHvp92rt6tGNjFm6oK/YI8DA0F1Ei8NIJ9yybQKSzzhp1uhG
+EoXeGSx42UZ85QIJstJCjbt8/MGYBlDELSAl4YS3AeKf5FYWYvObexIPWuZYklJe
+8wkO/wmljEJDFmBj0wiI78c+zNpFLQuCOYN2fBxnlXkgk0jNSirYibZ23HwwPyJq
+Nr9sTObnEhglEv7fZwVUnImcYI8vsw+bsMh9Y0aAYBYMipOuls15qmsNx/o2uePH
+/dDpn2Epr364u/xmPjcP3NMe+SappLdz2o46gdnWFYiTpJZfDDTIAV3bust2lOA=
+=DWvB
+-----END PGP SIGNATURE-----
 
-Thanks,
-Mark
-
->From 52fd98bcaf22052fc8946d36b13d5e646b7b41b0 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 20 May 2016 09:39:55 +0000
-Subject: [PATCH] ASoC: rsrc-card: remove unused dai_num
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sh/rcar/rsrc-card.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/sound/soc/sh/rcar/rsrc-card.c b/sound/soc/sh/rcar/rsrc-card.c
-index 1bc7ecfc42a9..b85b5ee5fad4 100644
---- a/sound/soc/sh/rcar/rsrc-card.c
-+++ b/sound/soc/sh/rcar/rsrc-card.c
-@@ -64,7 +64,6 @@ struct rsrc_card_priv {
- 	struct snd_soc_codec_conf codec_conf;
- 	struct rsrc_card_dai *dai_props;
- 	struct snd_soc_dai_link *dai_link;
--	int dai_num;
- 	u32 convert_rate;
- 	u32 convert_channels;
- };
-@@ -418,7 +417,6 @@ static int rsrc_card_parse_of(struct device_node *node,
- 
- 	priv->dai_props	= props;
- 	priv->dai_link	= links;
--	priv->dai_num	= num;
- 
- 	/* Init snd_soc_card */
- 	priv->snd_card.owner			= THIS_MODULE;
--- 
-2.8.1
+--4T94Hejb80K+e1gX--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
