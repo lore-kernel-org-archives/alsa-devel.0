@@ -1,52 +1,51 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 14/49] ASoC: simple-card-core: add
- asoc_simple_card_parse_dpcm()
-Date: Mon, 30 May 2016 17:47:15 +0100
-Message-ID: <20160530164715.GW29837@sirena.org.uk>
+Subject: Re: [PATCH 15/49] ASoC: simple-card-core: add
+ asoc_simple_card_init_jack()
+Date: Mon, 30 May 2016 18:14:02 +0100
+Message-ID: <20160530171402.GX29837@sirena.org.uk>
 References: <87lh35rs8w.wl%kuninori.morimoto.gx@renesas.com>
- <871t4xrrq4.wl%kuninori.morimoto.gx@renesas.com>
+ <87zirlqd4t.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="kjzasy1UhXmRStS5"
+	protocol="application/pgp-signature"; boundary="e9ndEBTQFD7P4kUb"
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <871t4xrrq4.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87zirlqd4t.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---kjzasy1UhXmRStS5
+--e9ndEBTQFD7P4kUb
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 20, 2016 at 09:48:07AM +0000, Kuninori Morimoto wrote:
+On Fri, May 20, 2016 at 09:48:38AM +0000, Kuninori Morimoto wrote:
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 >=20
-> simple-card like driver is supporting DPCM FE/BE.
+> simple-card is supporting jack/gpio.
 > This patch makes this method simple style standard.
 
-DPCM is very much an implementation detail of the current stack,
-providing helpers that promote its use doesn't seem like the best idea -
-we want to change it for in kernel use going forwards and that's going
-to be harder with DPCM.  We should be encouraging bindings that make
-DSPs look more like CODECs.
+There was some recent discussion about a more complete core binding
+for this based on the work that Dylan Reid had been pushing a while ago
+- it's not clear that the simple-card binding is great for
+generalization here.
 
---kjzasy1UhXmRStS5
+--e9ndEBTQFD7P4kUb
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXTG6SAAoJECTWi3JdVIfQxyIH/iEBerA7cmRJkGh/YbyGSlV/
-7EEMUbV314xHQR0x6yqOQqzaTp9YDxEGCdU8BZJ964iO5XJKiNfM+4IaQTKFprHf
-xa9ri0rmLCPSCVU6DXLx6y8l49YAvTXxAwqfHCpmZJutkleC/bu8R0iFDGEqR8eT
-3Wx8TVLsfR2t2yl2W2PxBQmZ/yrOdN/ua8DpAhvTozH5EuXZSJoGFpNxw73KX3vK
-dSc0mYkS56jS6eNZfYfteeG/JG4Q3p7mlEd6zsG7/Yo6bmtoseV5LhmXBctc+ht1
-5t1EwxxW0OPQpY5vBvYkDQ1X2za/TRtji18YqWbrCoAlQhE2Iia3WyvJEMG8Log=
-=1fLv
+iQEcBAEBCAAGBQJXTHTZAAoJECTWi3JdVIfQIqwH/A+T75vynzQlFMCaxrdu1osq
+iZzb8O1rXgGpCApawAvGEZJasu7F11ZhE12uf57fCbmWjXWU0loBwllezNtnkbwG
+IiujNaAe35xcRdZi5lGmBFshTRWdmvxqEuzrTl128bhV2jnmEn8+eCu5TbaG7yLS
+t4cFus+oelBhw2XOKCa7uvNSUCESuwCJpIqx6Kd2U9tzr3QE2GTs7Gj5vLRsoTgn
+RvnWYi/5A3BximKqOnNNNgFuQLfcnKa7dtYnUl6pAhoimThshNQhr1udRMgK+GTo
+mk9c6CAayiPsA+N+ZLNiYEOiSMSkLU6hzgbeXNMzZLY/JpdoIhjNsRrO5yZRaTQ=
+=9mL8
 -----END PGP SIGNATURE-----
 
---kjzasy1UhXmRStS5--
+--e9ndEBTQFD7P4kUb--
