@@ -1,16 +1,16 @@
 From: Yong Zhi <yong.zhi@intel.com>
-Subject: [PATCH v4 1/2] ASoC: Intel: boards: configure DMIC for
-	machine sklnau8825adi
-Date: Tue, 31 May 2016 10:22:48 -0500
-Message-ID: <1464708168-6349-1-git-send-email-yong.zhi@intel.com>
+Subject: [PATCH v4 2/2] ASoC: Intel: boards: configure DMIC for
+	machine sklnau8825max
+Date: Tue, 31 May 2016 10:24:03 -0500
+Message-ID: <1464708243-6407-1-git-send-email-yong.zhi@intel.com>
 References: <1464182357-1305-1-git-send-email-yong.zhi@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D79F2607C8
- for <alsa-devel@alsa-project.org>; Tue, 31 May 2016 17:22:54 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 603F726671C
+ for <alsa-devel@alsa-project.org>; Tue, 31 May 2016 17:24:09 +0200 (CEST)
 In-Reply-To: <1464182357-1305-1-git-send-email-yong.zhi@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,21 +30,21 @@ apply the ch constraint according to driver pdata.
 
 Signed-off-by: Yong Zhi <yong.zhi@intel.com>
 ---
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 25 ++++++++++++++++++++++---
+ sound/soc/intel/boards/skl_nau88l25_max98357a.c | 25 ++++++++++++++++++++++---
  1 file changed, 22 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index 2647d88..22f2e9d 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -27,12 +27,15 @@
- #include <sound/pcm_params.h>
+diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+index fc3f475..afc6f74 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
++++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+@@ -23,12 +23,15 @@
+ #include <sound/soc.h>
  #include "../../codecs/nau8825.h"
  #include "../../codecs/hdac_hdmi.h"
 +#include "../skylake/skl.h"
  
  #define SKL_NUVOTON_CODEC_DAI	"nau8825-hifi"
- #define SKL_SSM_CODEC_DAI	"ssm4567-hifi"
+ #define SKL_MAXIM_CODEC_DAI "HiFi"
 +#define DMIC_CH(p)     p->list[p->count-1]
  
  static struct snd_soc_jack skylake_headset;
@@ -53,16 +53,16 @@ index 2647d88..22f2e9d 100644
  
  struct skl_hdmi_pcm {
  	struct list_head head;
-@@ -367,7 +370,7 @@ static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
- {
+@@ -339,7 +342,7 @@ static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
  	struct snd_interval *channels = hw_param_interval(params,
- 						SNDRV_PCM_HW_PARAM_CHANNELS);
+ 				SNDRV_PCM_HW_PARAM_CHANNELS);
+ 
 -	if (params_channels(params) == 2)
 +	if (params_channels(params) == 2 || DMIC_CH(dmic_constraints) == 2)
  		channels->min = channels->max = 2;
  	else
  		channels->min = channels->max = 4;
-@@ -405,13 +408,23 @@ static struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
+@@ -357,13 +360,23 @@ static struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
  	.mask = 0,
  };
  
@@ -88,15 +88,15 @@ index 2647d88..22f2e9d 100644
  
  	return snd_pcm_hw_constraint_list(substream->runtime, 0,
  			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
-@@ -676,6 +689,7 @@ static struct snd_soc_card skylake_audio_card = {
+@@ -624,6 +637,7 @@ static struct snd_soc_card skylake_audio_card = {
  static int skylake_audio_probe(struct platform_device *pdev)
  {
- 	struct skl_nau88125_private *ctx;
+ 	struct skl_nau8825_private *ctx;
 +	struct skl_machine_pdata *pdata;
  
  	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
  	if (!ctx)
-@@ -686,6 +700,11 @@ static int skylake_audio_probe(struct platform_device *pdev)
+@@ -634,6 +648,11 @@ static int skylake_audio_probe(struct platform_device *pdev)
  	skylake_audio_card.dev = &pdev->dev;
  	snd_soc_card_set_drvdata(&skylake_audio_card, ctx);
  
