@@ -1,13 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [GIT PULL]: Add audio firmware for Broxton
-Date: Tue, 31 May 2016 09:28:11 +0530
-Message-ID: <20160531035811.GL16910@localhost>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: [PATCH] ASoC: nau8825: add programmable biquad filter
+	control
+Date: Tue, 31 May 2016 11:57:41 +0800
+Message-ID: <1464667061-32646-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3136883572749917608=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 94179265D29
- for <alsa-devel@alsa-project.org>; Tue, 31 May 2016 05:51:51 +0200 (CEST)
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6ADA8265DA7
+ for <alsa-devel@alsa-project.org>; Tue, 31 May 2016 05:56:38 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -17,86 +19,116 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-firmware@kernel.org
-Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+Add programmable biquad filter configuration control for user space.
+The filter is configurable for low pass filters, high pass filters,
+Notch filter, etc in the ADC and DAC path.
 
---===============3136883572749917608==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IrhDeMKUP4DT/M7F"
-Content-Disposition: inline
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+---
+ sound/soc/codecs/nau8825.c | 53 ++++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/nau8825.h |  8 +++++++
+ 2 files changed, 61 insertions(+)
 
-
---IrhDeMKUP4DT/M7F
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello Linux firmware maintainers,
-
-Please PULL to receive the Intel audio firmware for audio DSP in Broxton
-platforms. This firmware comes with same license as audio firmware for
-Skylake and is fully redistributable.
-
-
-The following changes since commit 7db6ab934fc0196c41f40ea07218de2cab27abb5:
-
-  qed: Add FW 8.10.5.0 (2016-05-29 10:16:35 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git apl
-
-for you to fetch changes up to f5598347032b1e4dd49e15401a1a9b867062625c:
-
-  linux-firmware: intel: Add Broxton audio firmware (2016-05-31 09:20:44 +0=
-530)
-
-----------------------------------------------------------------
-Vinod Koul (1):
-      linux-firmware: intel: Add Broxton audio firmware
-
- WHENCE                     |   6 ++++++
- intel/dsp_fw_bxtn.bin      |   1 +
- intel/dsp_fw_bxtn_v430.bin | Bin 0 -> 505608 bytes
- 3 files changed, 7 insertions(+)
- create mode 120000 intel/dsp_fw_bxtn.bin
- create mode 100644 intel/dsp_fw_bxtn_v430.bin
-
-Thanks
---=20
-~Vinod
-
---IrhDeMKUP4DT/M7F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJXTQvTAAoJEHwUBw8lI4NHACoP/1foOXWzSE7WDJaUXNvtgCoy
-4CDLlRPvZ+0OqK7/6A2kOiWmf6Ljb7TZgHW39nL/JiGNInlMVoGiNy4C0upofAm4
-vUJAndP83fLQvYXOSlz5qgK6+HuwI44WQPLmJuxlYGV5NHEDbGq8q6c0iecdwMZ0
-b/IoE0xnP75GYQo82Be4gQlVGKh1on7d1IixjMblTw17TrDUGtrFiwmUoD0GerzF
-ozbHeq2wHdFcT/Ry7kORd/pkc+obRSHCTe6zXiOnoQub2T5fAar8WLhieDKqFK24
-L15NSl7c0H6fi6yLLWu1uRCB4FjvyxF/Zbg3mFGFtypCtPW/l1GRe8nGWGX74Rqy
-JH19xAW18vX30uqmB5yiJjG3HIBMZAJXCiIWU0m+TzauOtzwGLP4OfjxBgXlddkd
-r8gkogw9XR/0bHvIJ8B0tG5kVOyJOVOnoYFTikeXmhxbxEhm3t5tCDpI3jY14FVE
-l4d9OKhrJUcku6lQsJYnaiibZphtXVOo1TRqcxE6y/pw2cuUVyuTE5GiaPvVdh7B
-BAdZXHrLZBMIGNG8WU/Ja6OHHUTrYMXokikDPwah1cHZb1wNEmIGDprN6NwIIra5
-xuMpI8iVIABzlA7tQTuXlQAk2oL7ZVG+s6Db2KOAAUCFdsJ3w4hN91H3EkQsqQdB
-+N+sBSRBuHgSJCbbEwl+
-=YAd9
------END PGP SIGNATURE-----
-
---IrhDeMKUP4DT/M7F--
-
---===============3136883572749917608==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3136883572749917608==--
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index e988f89..88e01f9 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -217,6 +217,7 @@ static bool nau8825_volatile_reg(struct device *dev, unsigned int reg)
+ 	case NAU8825_REG_SARDOUT_RAM_STATUS:
+ 	case NAU8825_REG_CHARGE_PUMP_INPUT_READ:
+ 	case NAU8825_REG_GENERAL_STATUS:
++	case NAU8825_REG_BIQ_CTRL ... NAU8825_REG_BIQ_COF10:
+ 		return true;
+ 	default:
+ 		return false;
+@@ -293,6 +294,54 @@ static int nau8825_output_dac_event(struct snd_soc_dapm_widget *w,
+ 	return 0;
+ }
+ 
++static int nau8825_biq_coeff_get(struct snd_kcontrol *kcontrol,
++				     struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
++	struct soc_bytes_ext *params = (void *)kcontrol->private_value;
++
++	if (!component->regmap)
++		return -EINVAL;
++
++	regmap_raw_read(component->regmap, NAU8825_REG_BIQ_COF1,
++		ucontrol->value.bytes.data, params->max);
++	return 0;
++}
++
++static int nau8825_biq_coeff_put(struct snd_kcontrol *kcontrol,
++				     struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
++	struct soc_bytes_ext *params = (void *)kcontrol->private_value;
++	void *data;
++
++	if (!component->regmap)
++		return -EINVAL;
++
++	data = kmemdup(ucontrol->value.bytes.data,
++		params->max, GFP_KERNEL | GFP_DMA);
++	if (!data)
++		return -ENOMEM;
++
++	regmap_update_bits(component->regmap, NAU8825_REG_BIQ_CTRL,
++		NAU8825_BIQ_WRT_EN, 0);
++	regmap_raw_write(component->regmap, NAU8825_REG_BIQ_COF1,
++		data, params->max);
++	regmap_update_bits(component->regmap, NAU8825_REG_BIQ_CTRL,
++		NAU8825_BIQ_WRT_EN, NAU8825_BIQ_WRT_EN);
++
++	kfree(data);
++	return 0;
++}
++
++static const char * const nau8825_biq_path[] = {
++	"ADC", "DAC"
++};
++
++static const struct soc_enum nau8825_biq_path_enum =
++	SOC_ENUM_SINGLE(NAU8825_REG_BIQ_CTRL, NAU8825_BIQ_PATH_SFT,
++		ARRAY_SIZE(nau8825_biq_path), nau8825_biq_path);
++
+ static const char * const nau8825_adc_decimation[] = {
+ 	"32", "64", "128", "256"
+ };
+@@ -329,6 +378,10 @@ static const struct snd_kcontrol_new nau8825_controls[] = {
+ 
+ 	SOC_ENUM("ADC Decimation Rate", nau8825_adc_decimation_enum),
+ 	SOC_ENUM("DAC Oversampling Rate", nau8825_dac_oversampl_enum),
++	/* programmable biquad filter */
++	SOC_ENUM("BIQ Path Select", nau8825_biq_path_enum),
++	SND_SOC_BYTES_EXT("BIQ Coefficeints", 20,
++		  nau8825_biq_coeff_get, nau8825_biq_coeff_put),
+ };
+ 
+ /* DAC Mux 0x33[9] and 0x34[9] */
+diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
+index 9e6cb62..1293d1b 100644
+--- a/sound/soc/codecs/nau8825.h
++++ b/sound/soc/codecs/nau8825.h
+@@ -231,6 +231,14 @@
+ #define NAU8825_I2S_MS_MASTER	(1 << NAU8825_I2S_MS_SFT)
+ #define NAU8825_I2S_MS_SLAVE	(0 << NAU8825_I2S_MS_SFT)
+ 
++/* BIQ_CTRL (0x20) */
++#define NAU8825_BIQ_WRT_SFT   4
++#define NAU8825_BIQ_WRT_EN     (1 << NAU8825_BIQ_WRT_SFT)
++#define NAU8825_BIQ_PATH_SFT   0
++#define NAU8825_BIQ_PATH_MASK  (1 << NAU8825_BIQ_PATH_SFT)
++#define NAU8825_BIQ_PATH_ADC   (0 << NAU8825_BIQ_PATH_SFT)
++#define NAU8825_BIQ_PATH_DAC   (1 << NAU8825_BIQ_PATH_SFT)
++
+ /* ADC_RATE (0x2b) */
+ #define NAU8825_ADC_SYNC_DOWN_SFT	0
+ #define NAU8825_ADC_SYNC_DOWN_MASK	0x3
+-- 
+2.6.4
