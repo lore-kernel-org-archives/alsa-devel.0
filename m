@@ -1,56 +1,112 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 15/49] ASoC: simple-card-core: add
- asoc_simple_card_init_jack()
-Date: Tue, 31 May 2016 15:51:13 +0100
-Message-ID: <20160531145113.GD29837@sirena.org.uk>
-References: <87lh35rs8w.wl%kuninori.morimoto.gx@renesas.com>
- <87zirlqd4t.wl%kuninori.morimoto.gx@renesas.com>
- <20160530171402.GX29837@sirena.org.uk>
- <87lh2rrnmr.wl%kuninori.morimoto.gx@renesas.com>
+From: Yong Zhi <yong.zhi@intel.com>
+Subject: [PATCH v4 1/2] ASoC: Intel: boards: configure DMIC for
+	machine sklnau8825adi
+Date: Tue, 31 May 2016 10:22:48 -0500
+Message-ID: <1464708168-6349-1-git-send-email-yong.zhi@intel.com>
+References: <1464182357-1305-1-git-send-email-yong.zhi@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="iig7nzZQzi/oiJm2"
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87lh2rrnmr.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D79F2607C8
+ for <alsa-devel@alsa-project.org>; Tue, 31 May 2016 17:22:54 +0200 (CEST)
+In-Reply-To: <1464182357-1305-1-git-send-email-yong.zhi@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, yang.a.fang@intel.com, sathya.prakash.m.r@intel.com, jeeja.kp@intel.com, vedang.patel@intel.com, Yong Zhi <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+This machine driver can support 2 or 4 DMIC configuration, so
+apply the ch constraint according to driver pdata.
 
---iig7nzZQzi/oiJm2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Yong Zhi <yong.zhi@intel.com>
+---
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 25 ++++++++++++++++++++++---
+ 1 file changed, 22 insertions(+), 3 deletions(-)
 
-On Tue, May 31, 2016 at 02:08:31AM +0000, Kuninori Morimoto wrote:
-
-> > There was some recent discussion about a more complete core binding
-> > for this based on the work that Dylan Reid had been pushing a while ago
-> > - it's not clear that the simple-card binding is great for
-> > generalization here.
-
-> Can you show me where can I see it ?
-> Anyway, I will keep this related function as static in simple-card,
-> not simple-card-utils in v2.
-
-This is the proposal from Dylan I was thinking of:
-
-   http://thread.gmane.org/gmane.linux.alsa.devel/138906
-
---iig7nzZQzi/oiJm2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXTaTYAAoJECTWi3JdVIfQP4gIAIGgZzJgSINSkwywDUjXkEw8
-1EMOouoewlZ/nEpCKFORBdZ5xKrwXfg13whCfYM3uTSA5pw8pdnZjkqb6A/BN6d5
-oVocdFjCyI6TLcGwEq5CQo/xm9+u17+5RPJ9F/zoTpcAplYAvxv30A4gm2qjuwOI
-RkSqiMc7Xw+hlD0MPONdmC9oC25yWq0CqbCjpSS16qIxDtamaRbVPkx+FNH7Bzdr
-1FdFxnw7W15WnfyCqEqf0v+qifcl5Q2aEM9NLqYlg9rflTm/MmfowVRZisemZ/vB
-W0xS0gFcO5H0i381sgrUDJhC5v/9qxrzg97fXE+yAb7ydwRv0+0XFVRfFvqtBVs=
-=JISJ
------END PGP SIGNATURE-----
-
---iig7nzZQzi/oiJm2--
+diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+index 2647d88..22f2e9d 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
++++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+@@ -27,12 +27,15 @@
+ #include <sound/pcm_params.h>
+ #include "../../codecs/nau8825.h"
+ #include "../../codecs/hdac_hdmi.h"
++#include "../skylake/skl.h"
+ 
+ #define SKL_NUVOTON_CODEC_DAI	"nau8825-hifi"
+ #define SKL_SSM_CODEC_DAI	"ssm4567-hifi"
++#define DMIC_CH(p)     p->list[p->count-1]
+ 
+ static struct snd_soc_jack skylake_headset;
+ static struct snd_soc_card skylake_audio_card;
++static const struct snd_pcm_hw_constraint_list *dmic_constraints;
+ 
+ struct skl_hdmi_pcm {
+ 	struct list_head head;
+@@ -367,7 +370,7 @@ static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ {
+ 	struct snd_interval *channels = hw_param_interval(params,
+ 						SNDRV_PCM_HW_PARAM_CHANNELS);
+-	if (params_channels(params) == 2)
++	if (params_channels(params) == 2 || DMIC_CH(dmic_constraints) == 2)
+ 		channels->min = channels->max = 2;
+ 	else
+ 		channels->min = channels->max = 4;
+@@ -405,13 +408,23 @@ static struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
+ 	.mask = 0,
+ };
+ 
++static const unsigned int dmic_2ch[] = {
++	2,
++};
++
++static const struct snd_pcm_hw_constraint_list constraints_dmic_2ch = {
++	.count = ARRAY_SIZE(dmic_2ch),
++	.list = dmic_2ch,
++	.mask = 0,
++};
++
+ static int skylake_dmic_startup(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 
+-	runtime->hw.channels_max = 4;
++	runtime->hw.channels_max = DMIC_CH(dmic_constraints);
+ 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+-			&constraints_dmic_channels);
++			dmic_constraints);
+ 
+ 	return snd_pcm_hw_constraint_list(substream->runtime, 0,
+ 			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
+@@ -676,6 +689,7 @@ static struct snd_soc_card skylake_audio_card = {
+ static int skylake_audio_probe(struct platform_device *pdev)
+ {
+ 	struct skl_nau88125_private *ctx;
++	struct skl_machine_pdata *pdata;
+ 
+ 	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
+ 	if (!ctx)
+@@ -686,6 +700,11 @@ static int skylake_audio_probe(struct platform_device *pdev)
+ 	skylake_audio_card.dev = &pdev->dev;
+ 	snd_soc_card_set_drvdata(&skylake_audio_card, ctx);
+ 
++	pdata = dev_get_drvdata(&pdev->dev);
++	if (pdata)
++		dmic_constraints = pdata->dmic_num == 2 ?
++			&constraints_dmic_2ch : &constraints_dmic_channels;
++
+ 	return devm_snd_soc_register_card(&pdev->dev, &skylake_audio_card);
+ }
+ 
+-- 
+2.7.4
