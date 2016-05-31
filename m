@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak4642: Implement suspend callback" to
-	the asoc tree
-Date: Tue, 31 May 2016 18:46:02 +0100
-Message-ID: <E1b7nju-00064Q-LH@debutante>
-References: <20160531103459.18569-1-peter.ujfalusi@ti.com>
+Subject: Applied "ASoC: hdac_hdmi: Fix potential NULL
+	dereference" to the asoc tree
+Date: Tue, 31 May 2016 18:46:05 +0100
+Message-ID: <E1b7njx-00065F-P3@debutante>
+References: <1464701995-23452-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9678D2669A3
+ by alsa0.perex.cz (Postfix) with ESMTP id 08B302666C0
  for <alsa-devel@alsa-project.org>; Tue, 31 May 2016 19:46:10 +0200 (CEST)
-In-Reply-To: <20160531103459.18569-1-peter.ujfalusi@ti.com>
+In-Reply-To: <1464701995-23452-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ak4642: Implement suspend callback
+   ASoC: hdac_hdmi: Fix potential NULL dereference
 
 has been applied to the asoc tree at
 
@@ -53,58 +53,75 @@ to this mail.
 Thanks,
 Mark
 
->From a2ebd58627e9aa486fccbbdda6338675bdf3e267 Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Tue, 31 May 2016 13:34:59 +0300
-Subject: [PATCH] ASoC: ak4642: Implement suspend callback
+>From 500e06b9a3f50d3db992eb3b8dc309f695d33f63 Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Tue, 31 May 2016 19:09:55 +0530
+Subject: [PATCH] ASoC: hdac_hdmi: Fix potential NULL dereference
 
-Add the suspend callback to accompany the existing resume operation.
-With the suspend/resume callbacks the regmap (regcache) state handling can
-follow the recommended sequence.
+Static checker warns:
+Pointer 'hlink' returned from call to function 'snd_hdac_ext_bus_get_link'
+at line may be NULL and will be dereferenced"
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+So we should always check the return of snd_hdac_ext_bus_get_link() before
+referencing the link pointer
+
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak4642.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
-index 4d8b9e49e8d6..cc941d66ec3d 100644
---- a/sound/soc/codecs/ak4642.c
-+++ b/sound/soc/codecs/ak4642.c
-@@ -523,15 +523,23 @@ static struct snd_soc_dai_driver ak4642_dai = {
- 	.symmetric_rates = 1,
- };
- 
--static int ak4642_resume(struct snd_soc_codec *codec)
-+static int ak4642_suspend(struct snd_soc_codec *codec)
- {
- 	struct regmap *regmap = dev_get_regmap(codec->dev, NULL);
- 
-+	regcache_cache_only(regmap, true);
- 	regcache_mark_dirty(regmap);
--	regcache_sync(regmap);
- 	return 0;
- }
- 
-+static int ak4642_resume(struct snd_soc_codec *codec)
-+{
-+	struct regmap *regmap = dev_get_regmap(codec->dev, NULL);
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 181cd3bf0b92..2abb742fc47b 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -1474,6 +1474,11 @@ static int hdmi_codec_probe(struct snd_soc_codec *codec)
+ 	 * exit, we call pm_runtime_suspend() so that will do for us
+ 	 */
+ 	hlink = snd_hdac_ext_bus_get_link(edev->ebus, dev_name(&edev->hdac.dev));
++	if (!hlink) {
++		dev_err(&edev->hdac.dev, "hdac link not found\n");
++		return -EIO;
++	}
 +
-+	regcache_cache_only(regmap, false);
-+	regcache_sync(regmap);
-+	return 0;
-+}
- static int ak4642_probe(struct snd_soc_codec *codec)
- {
- 	struct ak4642_priv *priv = snd_soc_codec_get_drvdata(codec);
-@@ -544,6 +552,7 @@ static int ak4642_probe(struct snd_soc_codec *codec)
+ 	snd_hdac_ext_bus_link_get(edev->ebus, hlink);
  
- static struct snd_soc_codec_driver soc_codec_dev_ak4642 = {
- 	.probe			= ak4642_probe,
-+	.suspend		= ak4642_suspend,
- 	.resume			= ak4642_resume,
- 	.set_bias_level		= ak4642_set_bias_level,
- 	.controls		= ak4642_snd_controls,
+ 	ret = create_fill_widget_route_map(dapm);
+@@ -1634,6 +1639,11 @@ static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
+ 
+ 	/* hold the ref while we probe */
+ 	hlink = snd_hdac_ext_bus_get_link(edev->ebus, dev_name(&edev->hdac.dev));
++	if (!hlink) {
++		dev_err(&edev->hdac.dev, "hdac link not found\n");
++		return -EIO;
++	}
++
+ 	snd_hdac_ext_bus_link_get(edev->ebus, hlink);
+ 
+ 	hdmi_priv = devm_kzalloc(&codec->dev, sizeof(*hdmi_priv), GFP_KERNEL);
+@@ -1744,6 +1754,11 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
+ 	}
+ 
+ 	hlink = snd_hdac_ext_bus_get_link(ebus, dev_name(dev));
++	if (!hlink) {
++		dev_err(dev, "hdac link not found\n");
++		return -EIO;
++	}
++
+ 	snd_hdac_ext_bus_link_put(ebus, hlink);
+ 
+ 	return 0;
+@@ -1765,6 +1780,11 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
+ 		return 0;
+ 
+ 	hlink = snd_hdac_ext_bus_get_link(ebus, dev_name(dev));
++	if (!hlink) {
++		dev_err(dev, "hdac link not found\n");
++		return -EIO;
++	}
++
+ 	snd_hdac_ext_bus_link_get(ebus, hlink);
+ 
+ 	err = snd_hdac_display_power(bus, true);
 -- 
 2.8.1
