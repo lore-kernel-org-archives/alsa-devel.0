@@ -1,34 +1,30 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: boards: configure DMIC for
-	machine sklnau8825adi" to the asoc tree
-Date: Tue, 31 May 2016 18:45:48 +0100
-Message-ID: <E1b7njg-0005zU-Di@debutante>
-References: <1464708168-6349-1-git-send-email-yong.zhi@intel.com>
+Subject: Applied "ASoC: cygnus: Add DT bindings for Broadcom Cygnus audio" to
+ the asoc tree
+Date: Tue, 31 May 2016 18:45:58 +0100
+Message-ID: <E1b7njq-00063a-OB@debutante>
+References: <1459277192-10942-2-git-send-email-simran.rai@broadcom.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 32B86266267
- for <alsa-devel@alsa-project.org>; Tue, 31 May 2016 19:45:53 +0200 (CEST)
-In-Reply-To: <1464708168-6349-1-git-send-email-yong.zhi@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Yong Zhi <yong.zhi@intel.com>
-Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, yang.a.fang@intel.com, broonie@kernel.org, sathya.prakash.m.r@intel.com, jeeja.kp@intel.com, vedang.patel@intel.com
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1459277192-10942-2-git-send-email-simran.rai@broadcom.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Simran Rai <ssimran@broadcom.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Simran Rai <simran.rai@broadcom.com>, Lori Hikichi <lhikichi@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Ray Jui <rjui@broadcom.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>, bcm-kernel-feedback-list@broadcom.com, linux-arm-kernel@lists.infradead.org, Kumar Gala <galak@codeaurora.org>, Arun Parameswaran <arunp@broadcom.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: boards: configure DMIC for machine sklnau8825adi
+   ASoC: cygnus: Add DT bindings for Broadcom Cygnus audio
 
 has been applied to the asoc tree at
 
@@ -53,94 +49,96 @@ to this mail.
 Thanks,
 Mark
 
->From cfa12367f8e032e515853a3ae12545dee18b9806 Mon Sep 17 00:00:00 2001
-From: Yong Zhi <yong.zhi@intel.com>
-Date: Tue, 31 May 2016 10:22:48 -0500
-Subject: [PATCH] ASoC: Intel: boards: configure DMIC for machine sklnau8825adi
+>From 36e5ecc2986f4712d8fdfc05ed1e5d39dda7096d Mon Sep 17 00:00:00 2001
+From: Simran Rai <ssimran@broadcom.com>
+Date: Tue, 17 May 2016 17:01:07 -0700
+Subject: [PATCH] ASoC: cygnus: Add DT bindings for Broadcom Cygnus audio
 
-This machine driver can support 2 or 4 DMIC configuration, so
-apply the ch constraint according to driver pdata.
+Add bindings for audio driver in Broadcom Cygnus.
 
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
+Signed-off-by: Lori Hikichi <lhikichi@broadcom.com>
+Signed-off-by: Simran Rai <ssimran@broadcom.com>
+Reviewed-by: Ray Jui <rjui@broadcom.com>
+Reviewed-by: Scott Branden <sbranden@broadcom.com>
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 25 ++++++++++++++++++++++---
- 1 file changed, 22 insertions(+), 3 deletions(-)
+ .../bindings/sound/brcm,cygnus-audio.txt           | 67 ++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index 2647d885ee00..22f2e9d84e72 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -27,12 +27,15 @@
- #include <sound/pcm_params.h>
- #include "../../codecs/nau8825.h"
- #include "../../codecs/hdac_hdmi.h"
-+#include "../skylake/skl.h"
- 
- #define SKL_NUVOTON_CODEC_DAI	"nau8825-hifi"
- #define SKL_SSM_CODEC_DAI	"ssm4567-hifi"
-+#define DMIC_CH(p)     p->list[p->count-1]
- 
- static struct snd_soc_jack skylake_headset;
- static struct snd_soc_card skylake_audio_card;
-+static const struct snd_pcm_hw_constraint_list *dmic_constraints;
- 
- struct skl_hdmi_pcm {
- 	struct list_head head;
-@@ -367,7 +370,7 @@ static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
- {
- 	struct snd_interval *channels = hw_param_interval(params,
- 						SNDRV_PCM_HW_PARAM_CHANNELS);
--	if (params_channels(params) == 2)
-+	if (params_channels(params) == 2 || DMIC_CH(dmic_constraints) == 2)
- 		channels->min = channels->max = 2;
- 	else
- 		channels->min = channels->max = 4;
-@@ -405,13 +408,23 @@ static struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
- 	.mask = 0,
- };
- 
-+static const unsigned int dmic_2ch[] = {
-+	2,
-+};
+diff --git a/Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt b/Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
+new file mode 100644
+index 000000000000..b139e66d2a11
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
+@@ -0,0 +1,67 @@
++BROADCOM Cygnus Audio I2S/TDM/SPDIF controller
 +
-+static const struct snd_pcm_hw_constraint_list constraints_dmic_2ch = {
-+	.count = ARRAY_SIZE(dmic_2ch),
-+	.list = dmic_2ch,
-+	.mask = 0,
-+};
++Required properties:
++	- compatible : "brcm,cygnus-audio"
++	- #address-cells: 32bit valued, 1 cell.
++	- #size-cells:  32bit valued, 0 cell.
++	- reg : Should contain audio registers location and length
++	- reg-names: names of the registers listed in "reg" property
++		Valid names are "aud" and "i2s_in". "aud" contains a
++		set of DMA, I2S_OUT and SPDIF registers. "i2s_in" contains
++		a set of I2S_IN registers.
++	- clocks: PLL and leaf clocks used by audio ports
++	- assigned-clocks: PLL and leaf clocks
++	- assigned-clock-parents: parent clocks of the assigned clocks
++		(usually the PLL)
++	- assigned-clock-rates: List of clock frequencies of the
++		assigned clocks
++	- clock-names: names of 3 leaf clocks used by audio ports
++		Valid names are "ch0_audio", "ch1_audio", "ch2_audio"
++	- interrupts: audio DMA interrupt number
 +
- static int skylake_dmic_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 
--	runtime->hw.channels_max = 4;
-+	runtime->hw.channels_max = DMIC_CH(dmic_constraints);
- 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
--			&constraints_dmic_channels);
-+			dmic_constraints);
- 
- 	return snd_pcm_hw_constraint_list(substream->runtime, 0,
- 			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
-@@ -676,6 +689,7 @@ static struct snd_soc_card skylake_audio_card = {
- static int skylake_audio_probe(struct platform_device *pdev)
- {
- 	struct skl_nau88125_private *ctx;
-+	struct skl_machine_pdata *pdata;
- 
- 	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
- 	if (!ctx)
-@@ -686,6 +700,11 @@ static int skylake_audio_probe(struct platform_device *pdev)
- 	skylake_audio_card.dev = &pdev->dev;
- 	snd_soc_card_set_drvdata(&skylake_audio_card, ctx);
- 
-+	pdata = dev_get_drvdata(&pdev->dev);
-+	if (pdata)
-+		dmic_constraints = pdata->dmic_num == 2 ?
-+			&constraints_dmic_2ch : &constraints_dmic_channels;
++SSP Subnode properties:
++- reg: The index of ssp port interface to use
++	Valid value are 0, 1, 2, or 3 (for spdif)
 +
- 	return devm_snd_soc_register_card(&pdev->dev, &skylake_audio_card);
- }
- 
++Example:
++	cygnus_audio: audio@180ae000 {
++		compatible = "brcm,cygnus-audio";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0x180ae000 0xafd>, <0x180aec00 0x1f8>;
++		reg-names = "aud", "i2s_in";
++		clocks = <&audiopll BCM_CYGNUS_AUDIOPLL_CH0>,
++				<&audiopll BCM_CYGNUS_AUDIOPLL_CH1>,
++				<&audiopll BCM_CYGNUS_AUDIOPLL_CH2>;
++		assigned-clocks = <&audiopll BCM_CYGNUS_AUDIOPLL>,
++							<&audiopll BCM_CYGNUS_AUDIOPLL_CH0>,
++							<&audiopll BCM_CYGNUS_AUDIOPLL_CH1>,
++							<&audiopll BCM_CYGNUS_AUDIOPLL_CH2>;
++		assigned-clock-parents = <&audiopll BCM_CYGNUS_AUDIOPLL>;
++		assigned-clock-rates = <1769470191>,
++								<0>,
++								<0>,
++								<0>;
++		clock-names = "ch0_audio", "ch1_audio", "ch2_audio";
++		interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>;
++
++		ssp0: ssp_port@0 {
++			reg = <0>;
++			status = "okay";
++		};
++
++		ssp1: ssp_port@1 {
++			reg = <1>;
++			status = "disabled";
++		};
++
++		ssp2: ssp_port@2 {
++			reg = <2>;
++			status = "disabled";
++		};
++
++		spdif: spdif_port@3 {
++			reg = <3>;
++			status = "disabled";
++		};
++	};
 -- 
 2.8.1
