@@ -1,90 +1,56 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH] ASoC: hdac_hdmi: Fix potential NULL dereference
-Date: Tue, 31 May 2016 19:09:55 +0530
-Message-ID: <1464701995-23452-1-git-send-email-vinod.koul@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 15/49] ASoC: simple-card-core: add
+ asoc_simple_card_init_jack()
+Date: Tue, 31 May 2016 15:51:13 +0100
+Message-ID: <20160531145113.GD29837@sirena.org.uk>
+References: <87lh35rs8w.wl%kuninori.morimoto.gx@renesas.com>
+ <87zirlqd4t.wl%kuninori.morimoto.gx@renesas.com>
+ <20160530171402.GX29837@sirena.org.uk>
+ <87lh2rrnmr.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 553D026058E
- for <alsa-devel@alsa-project.org>; Tue, 31 May 2016 15:33:37 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="iig7nzZQzi/oiJm2"
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <87lh2rrnmr.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Static checker warns:
-Pointer 'hlink' returned from call to function 'snd_hdac_ext_bus_get_link'
-at line may be NULL and will be dereferenced"
 
-So we should always check the return of snd_hdac_ext_bus_get_link() before
-referencing the link pointer
+--iig7nzZQzi/oiJm2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/codecs/hdac_hdmi.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+On Tue, May 31, 2016 at 02:08:31AM +0000, Kuninori Morimoto wrote:
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 13002f33384e..cc7bb77a28f1 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -1388,6 +1388,11 @@ static int hdmi_codec_probe(struct snd_soc_codec *codec)
- 	 * exit, we call pm_runtime_suspend() so that will do for us
- 	 */
- 	hlink = snd_hdac_ext_bus_get_link(edev->ebus, dev_name(&edev->hdac.dev));
-+	if (!hlink) {
-+		dev_err(&edev->hdac.dev, "hdac link not found\n");
-+		return -EIO;
-+	}
-+
- 	snd_hdac_ext_bus_link_get(edev->ebus, hlink);
- 
- 	ret = create_fill_widget_route_map(dapm);
-@@ -1494,6 +1499,11 @@ static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
- 
- 	/* hold the ref while we probe */
- 	hlink = snd_hdac_ext_bus_get_link(edev->ebus, dev_name(&edev->hdac.dev));
-+	if (!hlink) {
-+		dev_err(&edev->hdac.dev, "hdac link not found\n");
-+		return -EIO;
-+	}
-+
- 	snd_hdac_ext_bus_link_get(edev->ebus, hlink);
- 
- 	hdmi_priv = devm_kzalloc(&codec->dev, sizeof(*hdmi_priv), GFP_KERNEL);
-@@ -1600,6 +1610,11 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
- 	}
- 
- 	hlink = snd_hdac_ext_bus_get_link(ebus, dev_name(dev));
-+	if (!hlink) {
-+		dev_err(dev, "hdac link not found\n");
-+		return -EIO;
-+	}
-+
- 	snd_hdac_ext_bus_link_put(ebus, hlink);
- 
- 	return 0;
-@@ -1621,6 +1636,11 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
- 		return 0;
- 
- 	hlink = snd_hdac_ext_bus_get_link(ebus, dev_name(dev));
-+	if (!hlink) {
-+		dev_err(dev, "hdac link not found\n");
-+		return -EIO;
-+	}
-+
- 	snd_hdac_ext_bus_link_get(ebus, hlink);
- 
- 	err = snd_hdac_display_power(bus, true);
--- 
-1.9.1
+> > There was some recent discussion about a more complete core binding
+> > for this based on the work that Dylan Reid had been pushing a while ago
+> > - it's not clear that the simple-card binding is great for
+> > generalization here.
+
+> Can you show me where can I see it ?
+> Anyway, I will keep this related function as static in simple-card,
+> not simple-card-utils in v2.
+
+This is the proposal from Dylan I was thinking of:
+
+   http://thread.gmane.org/gmane.linux.alsa.devel/138906
+
+--iig7nzZQzi/oiJm2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXTaTYAAoJECTWi3JdVIfQP4gIAIGgZzJgSINSkwywDUjXkEw8
+1EMOouoewlZ/nEpCKFORBdZ5xKrwXfg13whCfYM3uTSA5pw8pdnZjkqb6A/BN6d5
+oVocdFjCyI6TLcGwEq5CQo/xm9+u17+5RPJ9F/zoTpcAplYAvxv30A4gm2qjuwOI
+RkSqiMc7Xw+hlD0MPONdmC9oC25yWq0CqbCjpSS16qIxDtamaRbVPkx+FNH7Bzdr
+1FdFxnw7W15WnfyCqEqf0v+qifcl5Q2aEM9NLqYlg9rflTm/MmfowVRZisemZ/vB
+W0xS0gFcO5H0i381sgrUDJhC5v/9qxrzg97fXE+yAb7ydwRv0+0XFVRfFvqtBVs=
+=JISJ
+-----END PGP SIGNATURE-----
+
+--iig7nzZQzi/oiJm2--
