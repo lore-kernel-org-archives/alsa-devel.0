@@ -1,30 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cygnus: Add DT bindings for Broadcom Cygnus audio" to
- the asoc tree
-Date: Tue, 31 May 2016 18:45:58 +0100
-Message-ID: <E1b7njq-00063a-OB@debutante>
-References: <1459277192-10942-2-git-send-email-simran.rai@broadcom.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1459277192-10942-2-git-send-email-simran.rai@broadcom.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Simran Rai <ssimran@broadcom.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Simran Rai <simran.rai@broadcom.com>, Lori Hikichi <lhikichi@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Ray Jui <rjui@broadcom.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>, bcm-kernel-feedback-list@broadcom.com, linux-arm-kernel@lists.infradead.org, Kumar Gala <galak@codeaurora.org>, Arun Parameswaran <arunp@broadcom.com>, linux-kernel@vger.kernel.org
+Subject: Applied "ASoC: arizona: Add data structure for voice trigger notifier" to the asoc tree
+Date: Tue, 31 May 2016 18:46:10 +0100
+Message-ID: <E1b7nk2-000669-Eq@debutante>
+References: <1464695057-11723-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <1464695057-11723-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Sender: linux-next-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>broonie@kernel.org, sfr@canb.auug.org.au, alsa-devel@alsa-project.org, linux-next@vger.kernel.org, lgirdwood@gmail.comarnd@arndb.de
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cygnus: Add DT bindings for Broadcom Cygnus audio
+   ASoC: arizona: Add data structure for voice trigger notifier
 
 has been applied to the asoc tree at
 
@@ -49,96 +37,100 @@ to this mail.
 Thanks,
 Mark
 
->From 36e5ecc2986f4712d8fdfc05ed1e5d39dda7096d Mon Sep 17 00:00:00 2001
-From: Simran Rai <ssimran@broadcom.com>
-Date: Tue, 17 May 2016 17:01:07 -0700
-Subject: [PATCH] ASoC: cygnus: Add DT bindings for Broadcom Cygnus audio
+>From 546ad3d024fd47e5042d80ae1dc4c7d1b00912a7 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Tue, 31 May 2016 12:44:17 +0100
+Subject: [PATCH] ASoC: arizona: Add data structure for voice trigger notifier
 
-Add bindings for audio driver in Broadcom Cygnus.
+64-bit builds would generate a warning when we passed the core number as
+a pointer through the notifier data:
 
-Signed-off-by: Lori Hikichi <lhikichi@broadcom.com>
-Signed-off-by: Simran Rai <ssimran@broadcom.com>
-Reviewed-by: Ray Jui <rjui@broadcom.com>
-Reviewed-by: Scott Branden <sbranden@broadcom.com>
-Acked-by: Rob Herring <robh@kernel.org>
+sound/soc/codecs/cs47l24.c:1091:13: warning: cast to pointer from
+integer of different size [-Wint-to-pointer-cast]
+             (void *)i);
+
+Rather than just fix this up with more casting add a data structure that
+holds information for the notifier chain. This will make it easier to
+add additional information in the future as well.
+
+Fixes: 7baa7e2490e1 ("ASoC: arizona: Add event notification on voice trigger events")
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../bindings/sound/brcm,cygnus-audio.txt           | 67 ++++++++++++++++++++++
- 1 file changed, 67 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
+ sound/soc/codecs/arizona.h | 4 ++++
+ sound/soc/codecs/cs47l24.c | 7 +++++--
+ sound/soc/codecs/wm5110.c  | 7 +++++--
+ 3 files changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt b/Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
-new file mode 100644
-index 000000000000..b139e66d2a11
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
-@@ -0,0 +1,67 @@
-+BROADCOM Cygnus Audio I2S/TDM/SPDIF controller
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index 18d347f3bfbe..46862af7665e 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -98,6 +98,10 @@ struct arizona_priv {
+ 	bool dvfs_cached;
+ };
+ 
++struct arizona_voice_trigger_info {
++	int core;
++};
 +
-+Required properties:
-+	- compatible : "brcm,cygnus-audio"
-+	- #address-cells: 32bit valued, 1 cell.
-+	- #size-cells:  32bit valued, 0 cell.
-+	- reg : Should contain audio registers location and length
-+	- reg-names: names of the registers listed in "reg" property
-+		Valid names are "aud" and "i2s_in". "aud" contains a
-+		set of DMA, I2S_OUT and SPDIF registers. "i2s_in" contains
-+		a set of I2S_IN registers.
-+	- clocks: PLL and leaf clocks used by audio ports
-+	- assigned-clocks: PLL and leaf clocks
-+	- assigned-clock-parents: parent clocks of the assigned clocks
-+		(usually the PLL)
-+	- assigned-clock-rates: List of clock frequencies of the
-+		assigned clocks
-+	- clock-names: names of 3 leaf clocks used by audio ports
-+		Valid names are "ch0_audio", "ch1_audio", "ch2_audio"
-+	- interrupts: audio DMA interrupt number
-+
-+SSP Subnode properties:
-+- reg: The index of ssp port interface to use
-+	Valid value are 0, 1, 2, or 3 (for spdif)
-+
-+Example:
-+	cygnus_audio: audio@180ae000 {
-+		compatible = "brcm,cygnus-audio";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		reg = <0x180ae000 0xafd>, <0x180aec00 0x1f8>;
-+		reg-names = "aud", "i2s_in";
-+		clocks = <&audiopll BCM_CYGNUS_AUDIOPLL_CH0>,
-+				<&audiopll BCM_CYGNUS_AUDIOPLL_CH1>,
-+				<&audiopll BCM_CYGNUS_AUDIOPLL_CH2>;
-+		assigned-clocks = <&audiopll BCM_CYGNUS_AUDIOPLL>,
-+							<&audiopll BCM_CYGNUS_AUDIOPLL_CH0>,
-+							<&audiopll BCM_CYGNUS_AUDIOPLL_CH1>,
-+							<&audiopll BCM_CYGNUS_AUDIOPLL_CH2>;
-+		assigned-clock-parents = <&audiopll BCM_CYGNUS_AUDIOPLL>;
-+		assigned-clock-rates = <1769470191>,
-+								<0>,
-+								<0>,
-+								<0>;
-+		clock-names = "ch0_audio", "ch1_audio", "ch2_audio";
-+		interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>;
-+
-+		ssp0: ssp_port@0 {
-+			reg = <0>;
-+			status = "okay";
-+		};
-+
-+		ssp1: ssp_port@1 {
-+			reg = <1>;
-+			status = "disabled";
-+		};
-+
-+		ssp2: ssp_port@2 {
-+			reg = <2>;
-+			status = "disabled";
-+		};
-+
-+		spdif: spdif_port@3 {
-+			reg = <3>;
-+			status = "disabled";
-+		};
-+	};
+ #define ARIZONA_NUM_MIXER_INPUTS 104
+ 
+ extern const unsigned int arizona_mixer_tlv[];
+diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
+index 7e3d138d077b..bbc8cf18ded0 100644
+--- a/sound/soc/codecs/cs47l24.c
++++ b/sound/soc/codecs/cs47l24.c
+@@ -1067,6 +1067,7 @@ static irqreturn_t cs47l24_adsp2_irq(int irq, void *data)
+ {
+ 	struct cs47l24_priv *priv = data;
+ 	struct arizona *arizona = priv->core.arizona;
++	struct arizona_voice_trigger_info info;
+ 	int serviced = 0;
+ 	int i, ret;
+ 
+@@ -1074,10 +1075,12 @@ static irqreturn_t cs47l24_adsp2_irq(int irq, void *data)
+ 		ret = wm_adsp_compr_handle_irq(&priv->core.adsp[i]);
+ 		if (ret != -ENODEV)
+ 			serviced++;
+-		if (ret == WM_ADSP_COMPR_VOICE_TRIGGER)
++		if (ret == WM_ADSP_COMPR_VOICE_TRIGGER) {
++			info.core = i;
+ 			arizona_call_notifiers(arizona,
+ 					       ARIZONA_NOTIFY_VOICE_TRIGGER,
+-					       (void *)i);
++					       &info);
++		}
+ 	}
+ 
+ 	if (!serviced) {
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index dbc9b4df38a0..83c48eca56f5 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -2222,6 +2222,7 @@ static irqreturn_t wm5110_adsp2_irq(int irq, void *data)
+ {
+ 	struct wm5110_priv *priv = data;
+ 	struct arizona *arizona = priv->core.arizona;
++	struct arizona_voice_trigger_info info;
+ 	int serviced = 0;
+ 	int i, ret;
+ 
+@@ -2229,10 +2230,12 @@ static irqreturn_t wm5110_adsp2_irq(int irq, void *data)
+ 		ret = wm_adsp_compr_handle_irq(&priv->core.adsp[i]);
+ 		if (ret != -ENODEV)
+ 			serviced++;
+-		if (ret == WM_ADSP_COMPR_VOICE_TRIGGER)
++		if (ret == WM_ADSP_COMPR_VOICE_TRIGGER) {
++			info.core = i;
+ 			arizona_call_notifiers(arizona,
+ 					       ARIZONA_NOTIFY_VOICE_TRIGGER,
+-					       (void *)i);
++					       &info);
++		}
+ 	}
+ 
+ 	if (!serviced) {
 -- 
 2.8.1
