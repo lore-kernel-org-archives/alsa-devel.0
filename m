@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: Intel: boards: configure DMIC for
-	machine sklnau8825max" to the asoc tree
-Date: Tue, 31 May 2016 18:45:45 +0100
-Message-ID: <E1b7njd-0005yQ-AM@debutante>
-References: <1464708243-6407-1-git-send-email-yong.zhi@intel.com>
+	machine sklnau8825adi" to the asoc tree
+Date: Tue, 31 May 2016 18:45:48 +0100
+Message-ID: <E1b7njg-0005zU-Di@debutante>
+References: <1464708168-6349-1-git-send-email-yong.zhi@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4CB74265EB0
- for <alsa-devel@alsa-project.org>; Tue, 31 May 2016 19:45:50 +0200 (CEST)
-In-Reply-To: <1464708243-6407-1-git-send-email-yong.zhi@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 32B86266267
+ for <alsa-devel@alsa-project.org>; Tue, 31 May 2016 19:45:53 +0200 (CEST)
+In-Reply-To: <1464708168-6349-1-git-send-email-yong.zhi@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: boards: configure DMIC for machine sklnau8825max
+   ASoC: Intel: boards: configure DMIC for machine sklnau8825adi
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 05282c7751e865df69301927e9b311b28f2fe416 Mon Sep 17 00:00:00 2001
+>From cfa12367f8e032e515853a3ae12545dee18b9806 Mon Sep 17 00:00:00 2001
 From: Yong Zhi <yong.zhi@intel.com>
-Date: Tue, 31 May 2016 10:24:03 -0500
-Subject: [PATCH] ASoC: Intel: boards: configure DMIC for machine sklnau8825max
+Date: Tue, 31 May 2016 10:22:48 -0500
+Subject: [PATCH] ASoC: Intel: boards: configure DMIC for machine sklnau8825adi
 
 This machine driver can support 2 or 4 DMIC configuration, so
 apply the ch constraint according to driver pdata.
@@ -64,21 +64,21 @@ apply the ch constraint according to driver pdata.
 Signed-off-by: Yong Zhi <yong.zhi@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/skl_nau88l25_max98357a.c | 25 ++++++++++++++++++++++---
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 25 ++++++++++++++++++++++---
  1 file changed, 22 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-index fc3f4750c432..afc6f744dff1 100644
---- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-@@ -23,12 +23,15 @@
- #include <sound/soc.h>
+diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+index 2647d885ee00..22f2e9d84e72 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
++++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+@@ -27,12 +27,15 @@
+ #include <sound/pcm_params.h>
  #include "../../codecs/nau8825.h"
  #include "../../codecs/hdac_hdmi.h"
 +#include "../skylake/skl.h"
  
  #define SKL_NUVOTON_CODEC_DAI	"nau8825-hifi"
- #define SKL_MAXIM_CODEC_DAI "HiFi"
+ #define SKL_SSM_CODEC_DAI	"ssm4567-hifi"
 +#define DMIC_CH(p)     p->list[p->count-1]
  
  static struct snd_soc_jack skylake_headset;
@@ -87,16 +87,16 @@ index fc3f4750c432..afc6f744dff1 100644
  
  struct skl_hdmi_pcm {
  	struct list_head head;
-@@ -339,7 +342,7 @@ static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+@@ -367,7 +370,7 @@ static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ {
  	struct snd_interval *channels = hw_param_interval(params,
- 				SNDRV_PCM_HW_PARAM_CHANNELS);
- 
+ 						SNDRV_PCM_HW_PARAM_CHANNELS);
 -	if (params_channels(params) == 2)
 +	if (params_channels(params) == 2 || DMIC_CH(dmic_constraints) == 2)
  		channels->min = channels->max = 2;
  	else
  		channels->min = channels->max = 4;
-@@ -357,13 +360,23 @@ static struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
+@@ -405,13 +408,23 @@ static struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
  	.mask = 0,
  };
  
@@ -122,15 +122,15 @@ index fc3f4750c432..afc6f744dff1 100644
  
  	return snd_pcm_hw_constraint_list(substream->runtime, 0,
  			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
-@@ -624,6 +637,7 @@ static struct snd_soc_card skylake_audio_card = {
+@@ -676,6 +689,7 @@ static struct snd_soc_card skylake_audio_card = {
  static int skylake_audio_probe(struct platform_device *pdev)
  {
- 	struct skl_nau8825_private *ctx;
+ 	struct skl_nau88125_private *ctx;
 +	struct skl_machine_pdata *pdata;
  
  	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
  	if (!ctx)
-@@ -634,6 +648,11 @@ static int skylake_audio_probe(struct platform_device *pdev)
+@@ -686,6 +700,11 @@ static int skylake_audio_probe(struct platform_device *pdev)
  	skylake_audio_card.dev = &pdev->dev;
  	snd_soc_card_set_drvdata(&skylake_audio_card, ctx);
  
