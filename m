@@ -1,17 +1,17 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: Baytrail audio port problem
-Date: Tue, 31 May 2016 07:13:55 -0500
-Message-ID: <a27ebee9-fa18-6e60-a689-97e5b52926f1@linux.intel.com>
-References: <1811335311.1201572.1464521090270.JavaMail.yahoo.ref@mail.yahoo.com>
- <1811335311.1201572.1464521090270.JavaMail.yahoo@mail.yahoo.com>
+Subject: Re: Applied "ASoC: Intel: add bytct-rt5651 machine
+ driver" to the asoc tree
+Date: Tue, 31 May 2016 07:29:19 -0500
+Message-ID: <bd2f5937-39bf-5892-959e-ec11cf2c5dba@linux.intel.com>
+References: <1851514.XmzcdsvJt0@wks-pdc-gentoo>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 0114C2607C8
- for <alsa-devel@alsa-project.org>; Tue, 31 May 2016 14:13:57 +0200 (CEST)
-In-Reply-To: <1811335311.1201572.1464521090270.JavaMail.yahoo@mail.yahoo.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 644B326057F
+ for <alsa-devel@alsa-project.org>; Tue, 31 May 2016 14:29:22 +0200 (CEST)
+In-Reply-To: <1851514.XmzcdsvJt0@wks-pdc-gentoo>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,18 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alan Paris <alan90000@yahoo.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Pietro <pxpert@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 5/29/16 6:24 AM, alan Paris wrote:
-> Hi everybody,
-> well I send this message because I've got a problem with Baytrail audio port (rt5640). I followed the discussion about writing an alsa driver (see it : http://mailman.alsa-project.org/pipermail/alsa-devel/2015-June/094114.html) and  I tried many solutions (as like that :  https://groups.google.com/forum/#!topic/android-x86/GKBFxCZyxQg ).
+On 5/31/16 3:43 AM, Pietro wrote:
+> Hi,
 >
-> Now the system see the Baytrail card audio for speakers but as Michele Curti when I start the system I've got a minute freeze and I haven't got still sound. When I launch dmesg command, I see only those messages :
+> I'm an owner of a 2 in 1 Netbook with an Atom X5 Z8300 SoC with rt5651 codec (Cube iWork 11).
 >
-> Baytrail Audio Port: sst: error code = -22
-> bytt100_rt5640 bytt100_rt5640: BUG: , pos = -22, buffer size = 3840, period size = 480
-> Do you know how I can solve this problem and it is possible to operate baytrail audio device with alsa or pulseaudio ?
+> To get audio working I Added these lines of code to the ./soc/intel/atom/sst/sst_acpi.c file:
+>
+> --- ./soc/intel/atom/sst/sst_acpi.c.old 2016-05-31 09:05:40.045682194 +0200
+> +++ ./soc/intel/atom/sst/sst_acpi.c     2016-05-31 09:07:26.829324148 +0200
+> @@ -342,9 +342,12 @@
+>                                                 &chv_platform_data },
+>         {"193C9890", "cht-bsw-max98090", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
+>                                                 &chv_platform_data },
+> +       {"10EC5651", "bytcr_rt5651", "intel/fw_sst_0f28.bin", "bytcr_rt5651", NULL,
+> +                                               &byt_rvp_platform_data },
+>         {},
+>  };
 
-it looks like you are using an old kernel, the t100 name was removed 
-quite a while ago. also without details about your codec we can't help you.
+use the same as for rt5640 on cht:
+
+/* some CHT-T platforms rely on RT5640, use Baytrail machine driver */
+{"10EC5640", "bytcr_rt5640", "intel/fw_sst_22a8.bin", "bytcr_rt5640", 
+NULL, &chv_platform_data },
+
+>
+> +
+>  static const struct acpi_device_id sst_acpi_ids[] = {
+>         { "80860F28", (unsigned long)&sst_acpi_bytcr},
+>         { "808622A8", (unsigned long) &sst_acpi_chv},
+>
+>
+>
+>
+> Then i added the UCM files linked in these archive:
+> https://github.com/plbossart/UCM/tree/master/bytcr-rt5651
+>
+>
+>
+> With this configuration, audio seems to work, but is 'slow': Playback speed is at slow motion, and seconds move slowly (Tried with aplay and audacious with many sound files, using directly Alsa and Pulseaudio with no differencies).
+>
+> This seems to be a DSP Clock problem. Have you got any suggestions to solve this problem?
+
+we've had this report before with rt5640 but it's unclear what might 
+cause this. the codec is configured as slave and uses the bit clock as 
+source for its PLL.
+the easiest fix in this case would be to use the 19.2 MCLK which is 
+enabled by default on CHT, see examples in cht-bsw-rt5645 (look at 
+platform clock control and everything with set_sys_clk, but keep the 2 
+slots). We will add this on baytrail as well at some point when we have 
+a clock framework driver for the MCLK control.
