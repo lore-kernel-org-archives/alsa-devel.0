@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: arizona: Add data structure for voice trigger notifier" to the asoc tree
-Date: Tue, 31 May 2016 18:46:10 +0100
-Message-ID: <E1b7nk2-000669-Eq@debutante>
-References: <1464695057-11723-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <1464695057-11723-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Sender: linux-next-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>broonie@kernel.org, sfr@canb.auug.org.au, alsa-devel@alsa-project.org, linux-next@vger.kernel.org, lgirdwood@gmail.comarnd@arndb.de
+Subject: Applied "ASoC: ak4642: Implement suspend callback" to
+	the asoc tree
+Date: Tue, 31 May 2016 18:46:02 +0100
+Message-ID: <E1b7nju-00064Q-LH@debutante>
+References: <20160531103459.18569-1-peter.ujfalusi@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9678D2669A3
+ for <alsa-devel@alsa-project.org>; Tue, 31 May 2016 19:46:10 +0200 (CEST)
+In-Reply-To: <20160531103459.18569-1-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: arizona: Add data structure for voice trigger notifier
+   ASoC: ak4642: Implement suspend callback
 
 has been applied to the asoc tree at
 
@@ -37,100 +53,58 @@ to this mail.
 Thanks,
 Mark
 
->From 546ad3d024fd47e5042d80ae1dc4c7d1b00912a7 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Tue, 31 May 2016 12:44:17 +0100
-Subject: [PATCH] ASoC: arizona: Add data structure for voice trigger notifier
+>From a2ebd58627e9aa486fccbbdda6338675bdf3e267 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Tue, 31 May 2016 13:34:59 +0300
+Subject: [PATCH] ASoC: ak4642: Implement suspend callback
 
-64-bit builds would generate a warning when we passed the core number as
-a pointer through the notifier data:
+Add the suspend callback to accompany the existing resume operation.
+With the suspend/resume callbacks the regmap (regcache) state handling can
+follow the recommended sequence.
 
-sound/soc/codecs/cs47l24.c:1091:13: warning: cast to pointer from
-integer of different size [-Wint-to-pointer-cast]
-             (void *)i);
-
-Rather than just fix this up with more casting add a data structure that
-holds information for the notifier chain. This will make it easier to
-add additional information in the future as well.
-
-Fixes: 7baa7e2490e1 ("ASoC: arizona: Add event notification on voice trigger events")
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/arizona.h | 4 ++++
- sound/soc/codecs/cs47l24.c | 7 +++++--
- sound/soc/codecs/wm5110.c  | 7 +++++--
- 3 files changed, 14 insertions(+), 4 deletions(-)
+ sound/soc/codecs/ak4642.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index 18d347f3bfbe..46862af7665e 100644
---- a/sound/soc/codecs/arizona.h
-+++ b/sound/soc/codecs/arizona.h
-@@ -98,6 +98,10 @@ struct arizona_priv {
- 	bool dvfs_cached;
+diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
+index 4d8b9e49e8d6..cc941d66ec3d 100644
+--- a/sound/soc/codecs/ak4642.c
++++ b/sound/soc/codecs/ak4642.c
+@@ -523,15 +523,23 @@ static struct snd_soc_dai_driver ak4642_dai = {
+ 	.symmetric_rates = 1,
  };
  
-+struct arizona_voice_trigger_info {
-+	int core;
-+};
+-static int ak4642_resume(struct snd_soc_codec *codec)
++static int ak4642_suspend(struct snd_soc_codec *codec)
+ {
+ 	struct regmap *regmap = dev_get_regmap(codec->dev, NULL);
+ 
++	regcache_cache_only(regmap, true);
+ 	regcache_mark_dirty(regmap);
+-	regcache_sync(regmap);
+ 	return 0;
+ }
+ 
++static int ak4642_resume(struct snd_soc_codec *codec)
++{
++	struct regmap *regmap = dev_get_regmap(codec->dev, NULL);
 +
- #define ARIZONA_NUM_MIXER_INPUTS 104
- 
- extern const unsigned int arizona_mixer_tlv[];
-diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
-index 7e3d138d077b..bbc8cf18ded0 100644
---- a/sound/soc/codecs/cs47l24.c
-+++ b/sound/soc/codecs/cs47l24.c
-@@ -1067,6 +1067,7 @@ static irqreturn_t cs47l24_adsp2_irq(int irq, void *data)
++	regcache_cache_only(regmap, false);
++	regcache_sync(regmap);
++	return 0;
++}
+ static int ak4642_probe(struct snd_soc_codec *codec)
  {
- 	struct cs47l24_priv *priv = data;
- 	struct arizona *arizona = priv->core.arizona;
-+	struct arizona_voice_trigger_info info;
- 	int serviced = 0;
- 	int i, ret;
+ 	struct ak4642_priv *priv = snd_soc_codec_get_drvdata(codec);
+@@ -544,6 +552,7 @@ static int ak4642_probe(struct snd_soc_codec *codec)
  
-@@ -1074,10 +1075,12 @@ static irqreturn_t cs47l24_adsp2_irq(int irq, void *data)
- 		ret = wm_adsp_compr_handle_irq(&priv->core.adsp[i]);
- 		if (ret != -ENODEV)
- 			serviced++;
--		if (ret == WM_ADSP_COMPR_VOICE_TRIGGER)
-+		if (ret == WM_ADSP_COMPR_VOICE_TRIGGER) {
-+			info.core = i;
- 			arizona_call_notifiers(arizona,
- 					       ARIZONA_NOTIFY_VOICE_TRIGGER,
--					       (void *)i);
-+					       &info);
-+		}
- 	}
- 
- 	if (!serviced) {
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index dbc9b4df38a0..83c48eca56f5 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -2222,6 +2222,7 @@ static irqreturn_t wm5110_adsp2_irq(int irq, void *data)
- {
- 	struct wm5110_priv *priv = data;
- 	struct arizona *arizona = priv->core.arizona;
-+	struct arizona_voice_trigger_info info;
- 	int serviced = 0;
- 	int i, ret;
- 
-@@ -2229,10 +2230,12 @@ static irqreturn_t wm5110_adsp2_irq(int irq, void *data)
- 		ret = wm_adsp_compr_handle_irq(&priv->core.adsp[i]);
- 		if (ret != -ENODEV)
- 			serviced++;
--		if (ret == WM_ADSP_COMPR_VOICE_TRIGGER)
-+		if (ret == WM_ADSP_COMPR_VOICE_TRIGGER) {
-+			info.core = i;
- 			arizona_call_notifiers(arizona,
- 					       ARIZONA_NOTIFY_VOICE_TRIGGER,
--					       (void *)i);
-+					       &info);
-+		}
- 	}
- 
- 	if (!serviced) {
+ static struct snd_soc_codec_driver soc_codec_dev_ak4642 = {
+ 	.probe			= ak4642_probe,
++	.suspend		= ak4642_suspend,
+ 	.resume			= ak4642_resume,
+ 	.set_bias_level		= ak4642_set_bias_level,
+ 	.controls		= ak4642_snd_controls,
 -- 
 2.8.1
