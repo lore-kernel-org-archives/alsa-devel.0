@@ -1,62 +1,50 @@
-From: Clemens Gruber <clemens.gruber@pqgruber.com>
-Subject: [PATCH] ASoC: sgtl5000: only check VDDD-supply, not revision
-Date: Tue, 31 May 2016 21:11:33 +0200
-Message-ID: <20160531191133.8518-1-clemens.gruber@pqgruber.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Clemens Gruber <clemens.gruber@pqgruber.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: Applied "ASoC: Intel: add bytct-rt5651 machine
+ driver" to the asoc tree
+Date: Tue, 31 May 2016 15:27:45 -0500
+Message-ID: <b0014ea7-1f78-1a6c-0202-fde9c35ba356@linux.intel.com>
+References: <1851514.XmzcdsvJt0@wks-pdc-gentoo>
+ <bd2f5937-39bf-5892-959e-ec11cf2c5dba@linux.intel.com>
+ <1680237.irs5HCh7f7@wks-pdc-gentoo>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 041232651D1
+ for <alsa-devel@alsa-project.org>; Tue, 31 May 2016 22:27:48 +0200 (CEST)
+In-Reply-To: <1680237.irs5HCh7f7@wks-pdc-gentoo>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pietro <pxpert@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Instead of checking the SGTL5000 chip revision, we should only check if
-the VDDD regulator exists and only call sgtl5000_replace_vddd_with_ldo
-if the regulator is missing.
-Otherwise, the user reads in the kernel log that the internal LDO is
-used, even though he did follow the NXP recommendation to use external
-VDDD and also specified VDDD-supply in the devicetree.
+the changes look ok
+>
+> But I still have the same problem: Audio plays slowly.
+>
+>
+>
+> It seems the DSP is clocked at 19.2, but the system is still clocked for
+> 25, and these changes doesn't seem to have effects...
 
-Also remove the comment, which incorrectly states that external VDDD is
-only supported for SGTL5000 chip revisions < 0x11.
-Official NXP documentation recommends using external VDDD and not the
-internal LDO due to the SGTL5000 erratum ER1. This also applies to
-revisions >= 0x11.
+no, CHT doesn't have a 25 MHz clock at all so that's just not physically 
+possible.
 
-Tested on an i.MX6Q board with SGTL5000 rev 0x11 and external VDDD.
-
-Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
----
- sound/soc/codecs/sgtl5000.c | 19 ++++++++-----------
- 1 file changed, 8 insertions(+), 11 deletions(-)
-
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 08b4046..fbad4fb 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -1286,17 +1286,14 @@ static int sgtl5000_enable_regulators(struct snd_soc_codec *codec)
- 	for (i = 0; i < ARRAY_SIZE(sgtl5000->supplies); i++)
- 		sgtl5000->supplies[i].supply = supply_names[i];
- 
--	/* External VDDD only works before revision 0x11 */
--	if (sgtl5000->revision < 0x11) {
--		vddd = regulator_get_optional(codec->dev, "VDDD");
--		if (IS_ERR(vddd)) {
--			/* See if it's just not registered yet */
--			if (PTR_ERR(vddd) == -EPROBE_DEFER)
--				return -EPROBE_DEFER;
--		} else {
--			external_vddd = 1;
--			regulator_put(vddd);
--		}
-+	vddd = regulator_get_optional(codec->dev, "VDDD");
-+	if (IS_ERR(vddd)) {
-+		/* See if it's just not registered yet */
-+		if (PTR_ERR(vddd) == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+	} else {
-+		external_vddd = 1;
-+		regulator_put(vddd);
- 	}
- 
- 	if (!external_vddd) {
--- 
-2.8.3
+Can you try:
+- tracing to make sure you are actually on a CHT device
+- pastebin dmesg somewhere
+- sudo cat /sys/bus/acpi/devices/10EC5651:01/status
+- enabling DSP loopbacks to see if the DSP consumes data at the right 
+rate. look at the UCM file and change
+cset "name='pcm1_out mix 0 pcm0_in Switch' off" to on
+if you record and loopback on USB output this should play at the right 
+speed.
