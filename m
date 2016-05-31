@@ -1,17 +1,20 @@
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [GIT PULL]: Add audio firmware for Broxton
-Date: Tue, 31 May 2016 18:07:57 -0400
-Message-ID: <20160531220757.GJ9173@merlin.infradead.org>
-References: <20160531035811.GL16910@localhost>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: Applied "ASoC: Intel: add bytct-rt5651 machine
+ driver" to the asoc tree
+Date: Tue, 31 May 2016 17:26:30 -0500
+Message-ID: <cba64f0e-9ca2-e4a6-5436-ea68cc1e9fcc@linux.intel.com>
+References: <1851514.XmzcdsvJt0@wks-pdc-gentoo>
+ <1680237.irs5HCh7f7@wks-pdc-gentoo>
+ <b0014ea7-1f78-1a6c-0202-fde9c35ba356@linux.intel.com>
+ <2387755.MGqpljUrLg@wks-pdc-gentoo>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
- by alsa0.perex.cz (Postfix) with ESMTP id AC4442651D1
- for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2016 00:08:03 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20160531035811.GL16910@localhost>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DCB826595B
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2016 00:26:32 +0200 (CEST)
+In-Reply-To: <2387755.MGqpljUrLg@wks-pdc-gentoo>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,46 +24,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org, linux-firmware@kernel.org
+To: Pietro <pxpert@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 31, 2016 at 09:28:11AM +0530, Vinod Koul wrote:
-> Hello Linux firmware maintainers,
-> 
-> Please PULL to receive the Intel audio firmware for audio DSP in Broxton
-> platforms. This firmware comes with same license as audio firmware for
-> Skylake and is fully redistributable.
-> 
-> 
-> The following changes since commit 7db6ab934fc0196c41f40ea07218de2cab27abb5:
-> 
->   qed: Add FW 8.10.5.0 (2016-05-29 10:16:35 -0700)
-> 
-> are available in the git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git apl
-> 
+On 5/31/16 3:56 PM, Pietro wrote:
+> Hi,
+> Here are the answers:
+>
+> - tracing to make sure you are actually on a CHT device
+>   The device should be CHT (The processor is an Atom X3-Z8300). Can it be that the processor is an X3 series, but the platform is BT and not a CHT? I know many manifacturers simply upgraded their notebooks series from BT to CHT by changing the CPU and mantaining all the other components the same (For example the Audio codec).
+>   How can I trace this?
 
-Pulled, thanks Vinod.
+you see a lot of references to cherrytrail-cr and 22A8, the right ID.
+>
+> - pastebin dmesg somewhere
+>   Here is it: http://pastebin.com/FnpAD1kg
 
-regards, --Kyle
+You have lots of errors or warnings in there. Not sure why, i have 
+machines that don't behave as badly.
 
-> for you to fetch changes up to f5598347032b1e4dd49e15401a1a9b867062625c:
-> 
->   linux-firmware: intel: Add Broxton audio firmware (2016-05-31 09:20:44 +0530)
-> 
-> ----------------------------------------------------------------
-> Vinod Koul (1):
->       linux-firmware: intel: Add Broxton audio firmware
-> 
->  WHENCE                     |   6 ++++++
->  intel/dsp_fw_bxtn.bin      |   1 +
->  intel/dsp_fw_bxtn_v430.bin | Bin 0 -> 505608 bytes
->  3 files changed, 7 insertions(+)
->  create mode 120000 intel/dsp_fw_bxtn.bin
->  create mode 100644 intel/dsp_fw_bxtn_v430.bin
-> 
-> Thanks
-> -- 
-> ~Vinod
+I am not sure why using the CHT firmware leads to an error, somehow you 
+probably have a combination of issues. I would really start there, if 
+the regular firmware doesn't work for you something is very wrong.
+
+> - sudo cat /sys/bus/acpi/devices/10EC5651:01/status
+>   Here are the results:
+>   /sys/bus/acpi/devices/10EC5651:00/status
+>     Returns 15
+
+this matches what the machine driver expects so that's good.
+>
+>   /sys/bus/acpi/devices/10EC5651:01/status
+>     Returns 0
+>
+> - enabling DSP loopbacks to see if the DSP consumes data at the right  rate. look at the UCM file and change cset "name='pcm1_out mix 0 pcm0_in Switch' off" to on if you record and loopback on USB output this should play at the right speed.
+>   I've changed the value in the HiFi file, but no changes.
+>   How can i enable DSP loopbacks? I'm not an alsa developer so I need some help here :)
+
+you need to record to enable the loopback while you play...
+>
+> Please let me know if you need other informations.
+
+can you extract the DSDT and pastebin it as well?
+
+>
+> On Tuesday 31 May 2016 15:27:45 Pierre-Louis Bossart wrote:
+>> the changes look ok
+>>>
+>>> But I still have the same problem: Audio plays slowly.
+>>>
+>>>
+>>>
+>>> It seems the DSP is clocked at 19.2, but the system is still clocked for
+>>> 25, and these changes doesn't seem to have effects...
+>>
+>> no, CHT doesn't have a 25 MHz clock at all so that's just not physically
+>> possible.
+>>
+>> Can you try:
+>> - tracing to make sure you are actually on a CHT device
+>> - pastebin dmesg somewhere
+>> - sudo cat /sys/bus/acpi/devices/10EC5651:01/status
+>> - enabling DSP loopbacks to see if the DSP consumes data at the right
+>> rate. look at the UCM file and change
+>> cset "name='pcm1_out mix 0 pcm0_in Switch' off" to on
+>> if you record and loopback on USB output this should play at the right
+>> speed.
+>>
+>>
+>>
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
