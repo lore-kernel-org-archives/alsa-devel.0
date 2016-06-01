@@ -1,62 +1,60 @@
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: [PATCH 1/4] dt-bindings: Add A10 I2S controller binding documentation
-Date: Wed,  1 Jun 2016 19:54:27 +0200
-Message-ID: <20160601175430.11625-2-maxime.ripard@free-electrons.com>
-References: <20160601175430.11625-1-maxime.ripard@free-electrons.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160601175430.11625-1-maxime.ripard@free-electrons.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Andrea Venturi <ennesimamail.av@gmail.com>, Code Kipper <codekipper@gmail.com>, gianfranco@moddevices.com, Maxime Ripard <maxime.ripard@free-electrons.com>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: [PATCH v2 0/2] ASoC: da7219: Convert driver to use
+	generic FW functions
+Date: Wed, 1 Jun 2016 19:06:24 +0100
+Message-ID: <cover.1464802265.git.Adam.Thomson.Opensource@diasemi.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.bemta3.messagelabs.com (mail1.bemta3.messagelabs.com
+ [195.245.230.163])
+ by alsa0.perex.cz (Postfix) with ESMTP id 044332652AC
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2016 20:06:27 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Robert Moore <robert.moore@intel.com>, Lv Zheng <lv.zheng@intel.com>, "Rafael J.Wysocki" <rafael.j.wysocki@intel.com>, Mika Westerberg <mika.westerberg@linux.intel.com>, Len Brown <lenb@kernel.org>
+Cc: alsa-devel@alsa-project.org, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Support Opensource <support.opensource@diasemi.com>, Hanjun Guo <hanjun.guo@linaro.org>, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Suravee Suthikulpanit <Suravee.Suthikulpanit@amd.com>, Bjorn Helgaas <bhelgaas@google.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, devel@acpica.org
 List-Id: alsa-devel@alsa-project.org
 
-Introduce the device tree binding for the I2S controller found in the
-Allwinner A10 and later SoCs.
+This patch set converts the da7219 codec driver to use device/fwnode functions
+to access properties, instead of the DT only of_* functions, allowing ACPI
+to be used as well.
 
-Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
----
- .../devicetree/bindings/sound/sun4i-i2s.txt        | 33 ++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+The DT bindings for da7219 have a device node for the main codec properties,
+and a named child node (da7219_aad), which contains all of the accessory
+detection related properties for the device. ACPI also supports this kind of
+FW hierarchy (data only sub-nodes), but some support in the kernel needs to be
+added to take make use of this in driver code.
 
-diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-new file mode 100644
-index 000000000000..365ca4eede5f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-@@ -0,0 +1,33 @@
-+* Allwinner A10 I2S controller
-+
-+The I2S bus (Inter-IC sound bus) is a serial link for digital
-+audio data transfer between devices in the system.
-+
-+Required properties:
-+
-+- compatible: should be one of the followings
-+   - "allwinner,sun4i-a10-i2s"
-+- reg: physical base address of the controller and length of memory mapped
-+  region.
-+- interrupts: should contain the I2S interrupt.
-+- dmas: DMA specifiers for tx and rx dma. See the DMA client binding,
-+	Documentation/devicetree/bindings/dma/dma.txt
-+- dma-names: should include "tx" and "rx".
-+- clocks: a list of phandle + clock-specifer pairs, one for each entry in clock-names.
-+- clock-names: should contain followings:
-+   - "apb" : clock for the I2S bus interface
-+   - "mod" : module clock for the I2S controller
-+
-+Example:
-+
-+i2s0: i2s@01c22400 {
-+	#sound-dai-cells = <0>;
-+	compatible = "allwinner,sun4i-a10-i2s";
-+	reg = <0x01c22400 0x400>;
-+	interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
-+	clocks = <&apb0_gates 3>, <&i2s0_clk>;
-+	clock-names = "apb", "mod";
-+	dmas = <&dma SUN4I_DMA_NORMAL 3>,
-+	       <&dma SUN4I_DMA_NORMAL 3>;
-+	dma-names = "rx", "tx";
-+};
--- 
-2.8.3
+The first patch adds functions to allow searching for a named child node of a
+device, for both DT and ACPI, and the second patch updates the codec driver to
+use the standard device/fwnode calls, including this new function.
+
+These changes are based on the v4.7-rc1 kernel.
+
+Changes in v2:
+ - Rebase to v4.7-rc1
+ - Small updates to codec patch based on previous reviewer comments
+
+Adam Thomson (2):
+  device property: Add function to search for named child of device
+  ASoC: da7219: Convert driver to use generic device/fwnode functions
+
+ drivers/base/property.c       |  28 ++++++++++++
+ include/acpi/acpi_bus.h       |   7 +++
+ include/linux/acpi.h          |   6 +++
+ include/linux/property.h      |   3 ++
+ sound/soc/codecs/da7219-aad.c | 103 +++++++++++++++++++++---------------------
+ sound/soc/codecs/da7219.c     |  34 +++++++-------
+ 6 files changed, 112 insertions(+), 69 deletions(-)
+
+--
+1.9.3
