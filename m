@@ -1,19 +1,21 @@
-From: Petr Kulhavy <brain@jikos.cz>
-Subject: [PATCH v2] ASoC: tas571x: add input channel mixer for
-	TAS5717/19
-Date: Wed,  1 Jun 2016 09:30:00 +0200
-Message-ID: <1464766200-21707-1-git-send-email-brain@jikos.cz>
+From: Pietro <pxpert@gmail.com>
+Subject: Re: Applied "ASoC: Intel: add bytct-rt5651 machine
+	driver" to the asoc tree
+Date: Wed, 01 Jun 2016 10:38:58 +0200
+Message-ID: <4617455.AlsP6hqDsl@wks-pdc-gentoo>
+References: <1851514.XmzcdsvJt0@wks-pdc-gentoo>
+ <2387755.MGqpljUrLg@wks-pdc-gentoo>
+ <cba64f0e-9ca2-e4a6-5436-ea68cc1e9fcc@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fep27.mx.upcmail.net (fep27.mx.upcmail.net [62.179.121.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 162A62652D7
- for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2016 09:30:07 +0200 (CEST)
-Received: from edge04.upcmail.net ([192.168.13.239]) by viefep27-int.chello.at
- (InterMail vM.8.01.05.21 201-2260-151-156-20141103) with ESMTP
- id <20160601073006.BRCP3922.viefep27-int.chello.at@edge04.upcmail.net>
- for <alsa-devel@alsa-project.org>; Wed, 1 Jun 2016 09:30:06 +0200
+Received: from mail-wm0-f49.google.com (mail-wm0-f49.google.com [74.125.82.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id DBE232652D7
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2016 10:39:00 +0200 (CEST)
+Received: by mail-wm0-f49.google.com with SMTP id a20so16656095wma.1
+ for <alsa-devel@alsa-project.org>; Wed, 01 Jun 2016 01:39:00 -0700 (PDT)
+In-Reply-To: <cba64f0e-9ca2-e4a6-5436-ea68cc1e9fcc@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,83 +25,118 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, cernekee@chromium.org, Petr Kulhavy <brain@jikos.cz>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add channel 1 and 2 input mixer registers and the related ALSA mixer
-controls for TAS5717/19 chips.
+Hi,
 
-The mixer control coefficients on the chip are linear in the range
--3.99999 to +3.99999, encoded in 3.23 number format.
-In this patch the mixer controls are limited to 128 values
-from 0.0 to 1.0 in 1/64 steps.
+The Kernel error messages should be related to the Intel DRM graphics, so I don't care about them (at least for now).
 
-Signed-off-by: Petr Kulhavy <brain@jikos.cz>
----
-v1: initial
-v2: re-apply on topics/tas571x
+Anyway I don't know if tese warning can in some way be related to my problem:
 
- sound/soc/codecs/tas571x.c | 18 ++++++++++++++++++
- sound/soc/codecs/tas571x.h |  5 +++++
- 2 files changed, 23 insertions(+)
+[    9.565990] rt5651 i2c-10EC5651:00: ASoC: mux INL1 Mux has no paths
+[    9.586586] rt5651 i2c-10EC5651:00: ASoC: mux INR1 Mux has no paths
+[    9.586596] rt5651 i2c-10EC5651:00: ASoC: mux INL2 Mux has no paths
+[    9.586601] rt5651 i2c-10EC5651:00: ASoC: mux INR2 Mux has no paths
+[   12.646035] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 0 doesn't have DAPM widget!!!
+[   12.649356] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 1 doesn't have DAPM widget!!!
+[   12.652673] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 2 doesn't have DAPM widget!!!
+[   12.656323] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 3 doesn't have DAPM widget!!!
+[   12.659868] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in0_0 doesn't have DAPM widget!!!
+[   12.663456] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in0_1 doesn't have DAPM widget!!!
 
-diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
-index bc1fbaf..d8baca3 100644
---- a/sound/soc/codecs/tas571x.c
-+++ b/sound/soc/codecs/tas571x.c
-@@ -64,6 +64,10 @@ static int tas571x_register_size(struct tas571x_private *priv, unsigned int reg)
- 	case TAS571X_INPUT_MUX_REG:
- 	case TAS571X_CH4_SRC_SELECT_REG:
- 	case TAS571X_PWM_MUX_REG:
-+	case TAS5717_CH1_RIGHT_CH_MIX_REG:
-+	case TAS5717_CH1_LEFT_CH_MIX_REG:
-+	case TAS5717_CH2_LEFT_CH_MIX_REG:
-+	case TAS5717_CH2_RIGHT_CH_MIX_REG:
- 		return 4;
- 	default:
- 		return 1;
-@@ -397,6 +401,16 @@ static const struct snd_kcontrol_new tas5711_controls[] = {
- 		   TAS571X_SOFT_MUTE_REG,
- 		   TAS571X_SOFT_MUTE_CH1_SHIFT, TAS571X_SOFT_MUTE_CH2_SHIFT,
- 		   1, 1),
-+
-+	SOC_DOUBLE_R_RANGE("CH1 Mixer Volume",
-+			   TAS5717_CH1_LEFT_CH_MIX_REG,
-+			   TAS5717_CH1_RIGHT_CH_MIX_REG,
-+			   16, 0, 0x80, 0),
-+
-+	SOC_DOUBLE_R_RANGE("CH2 Mixer Volume",
-+			   TAS5717_CH2_LEFT_CH_MIX_REG,
-+			   TAS5717_CH2_RIGHT_CH_MIX_REG,
-+			   16, 0, 0x80, 0),
- };
- 
- static const struct regmap_range tas571x_readonly_regs_range[] = {
-@@ -520,6 +534,10 @@ static const struct reg_default tas5717_reg_defaults[] = {
- 	{ 0x08, 0x00c0 },
- 	{ 0x09, 0x00c0 },
- 	{ 0x1b, 0x82 },
-+	{ TAS5717_CH1_RIGHT_CH_MIX_REG, 0x0 },
-+	{ TAS5717_CH1_LEFT_CH_MIX_REG, 0x800000},
-+	{ TAS5717_CH2_LEFT_CH_MIX_REG, 0x0 },
-+	{ TAS5717_CH2_RIGHT_CH_MIX_REG, 0x800000},
- };
- 
- static const struct regmap_config tas5717_regmap_config = {
-diff --git a/sound/soc/codecs/tas571x.h b/sound/soc/codecs/tas571x.h
-index bf4d436..c45677b 100644
---- a/sound/soc/codecs/tas571x.h
-+++ b/sound/soc/codecs/tas571x.h
-@@ -87,4 +87,9 @@
- #define TAS5717_CH3_BQ0_REG		0x5e
- #define TAS5717_CH3_BQ1_REG		0x5f
- 
-+#define TAS5717_CH1_RIGHT_CH_MIX_REG	0x72
-+#define TAS5717_CH1_LEFT_CH_MIX_REG	0x73
-+#define TAS5717_CH2_LEFT_CH_MIX_REG	0x76
-+#define TAS5717_CH2_RIGHT_CH_MIX_REG	0x77
-+
- #endif /* _TAS571X_H */
--- 
-2.5.0
+-------------
+
+
+For your convenience I've extracted the DSDT from Android and Linux, because they seem to differ. Here they are:
+
+DSDT Linux: http://paste.ubuntu.com/16885538/
+DSDT Android: http://paste.ubuntu.com/16885557/
+
+And this is the dmesg from android: http://pastebin.com/nY5mtW76
+
+
+Here are the Firmware Blobs I'm currently using:
+	http://pastebin.com/UKN0c0as (Fw listing)
+	https://drive.google.com/file/d/0By5f76WVVa0Eb3RacGZRbzNGeFU/view?usp=sharing (Fw blobs)
+
+When I'll return home I'll try to record and play and let you know.
+
+Thanks,
+Pietro
+
+On Tuesday 31 May 2016 17:26:30 Pierre-Louis Bossart wrote:
+> On 5/31/16 3:56 PM, Pietro wrote:
+> > Hi,
+> > Here are the answers:
+> >
+> > - tracing to make sure you are actually on a CHT device
+> >   The device should be CHT (The processor is an Atom X3-Z8300). Can it be that the processor is an X3 series, but the platform is BT and not a CHT? I know many manifacturers simply upgraded their notebooks series from BT to CHT by changing the CPU and mantaining all the other components the same (For example the Audio codec).
+> >   How can I trace this?
+> 
+> you see a lot of references to cherrytrail-cr and 22A8, the right ID.
+> >
+> > - pastebin dmesg somewhere
+> >   Here is it: http://pastebin.com/FnpAD1kg
+> 
+> You have lots of errors or warnings in there. Not sure why, i have 
+> machines that don't behave as badly.
+> 
+> I am not sure why using the CHT firmware leads to an error, somehow you 
+> probably have a combination of issues. I would really start there, if 
+> the regular firmware doesn't work for you something is very wrong.
+> 
+> > - sudo cat /sys/bus/acpi/devices/10EC5651:01/status
+> >   Here are the results:
+> >   /sys/bus/acpi/devices/10EC5651:00/status
+> >     Returns 15
+> 
+> this matches what the machine driver expects so that's good.
+> >
+> >   /sys/bus/acpi/devices/10EC5651:01/status
+> >     Returns 0
+> >
+> > - enabling DSP loopbacks to see if the DSP consumes data at the right  rate. look at the UCM file and change cset "name='pcm1_out mix 0 pcm0_in Switch' off" to on if you record and loopback on USB output this should play at the right speed.
+> >   I've changed the value in the HiFi file, but no changes.
+> >   How can i enable DSP loopbacks? I'm not an alsa developer so I need some help here :)
+> 
+> you need to record to enable the loopback while you play...
+> >
+> > Please let me know if you need other informations.
+> 
+> can you extract the DSDT and pastebin it as well?
+> 
+> >
+> > On Tuesday 31 May 2016 15:27:45 Pierre-Louis Bossart wrote:
+> >> the changes look ok
+> >>>
+> >>> But I still have the same problem: Audio plays slowly.
+> >>>
+> >>>
+> >>>
+> >>> It seems the DSP is clocked at 19.2, but the system is still clocked for
+> >>> 25, and these changes doesn't seem to have effects...
+> >>
+> >> no, CHT doesn't have a 25 MHz clock at all so that's just not physically
+> >> possible.
+> >>
+> >> Can you try:
+> >> - tracing to make sure you are actually on a CHT device
+> >> - pastebin dmesg somewhere
+> >> - sudo cat /sys/bus/acpi/devices/10EC5651:01/status
+> >> - enabling DSP loopbacks to see if the DSP consumes data at the right
+> >> rate. look at the UCM file and change
+> >> cset "name='pcm1_out mix 0 pcm0_in Switch' off" to on
+> >> if you record and loopback on USB output this should play at the right
+> >> speed.
+> >>
+> >>
+> >>
+> >
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >
+> 
