@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tas571x: add input channel mixer for
-	TAS5717/19" to the asoc tree
-Date: Wed, 01 Jun 2016 17:16:28 +0100
-Message-ID: <E1b88om-0004Tm-Jv@finisterre>
-References: <1464766200-21707-1-git-send-email-brain@jikos.cz>
+Subject: Applied "ASoC: tlv320aix31xx: Add ACPI match for
+	Lenovo 100S" to the asoc tree
+Date: Wed, 01 Jun 2016 17:16:34 +0100
+Message-ID: <E1b88os-0004Ud-6a@finisterre>
+References: <1461081620-23378-1-git-send-email-hadess@hadess.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2FB8926655A
- for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2016 18:16:47 +0200 (CEST)
-In-Reply-To: <1464766200-21707-1-git-send-email-brain@jikos.cz>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6906F266009
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2016 18:16:48 +0200 (CEST)
+In-Reply-To: <1461081620-23378-1-git-send-email-hadess@hadess.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Petr Kulhavy <brain@jikos.cz>
-Cc: cernekee@chromium.org, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: Bastien Nocera <hadess@hadess.net>
+Cc: Mark Brown <broonie@kernel.org>, Jan Schmidt <jan@centricular.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tas571x: add input channel mixer for TAS5717/19
+   ASoC: tlv320aix31xx: Add ACPI match for Lenovo 100S
 
 has been applied to the asoc tree at
 
@@ -53,82 +53,61 @@ to this mail.
 Thanks,
 Mark
 
->From f7d3d2d8e8891433dc76f2427441b2584729e200 Mon Sep 17 00:00:00 2001
-From: Petr Kulhavy <brain@jikos.cz>
-Date: Wed, 1 Jun 2016 09:30:00 +0200
-Subject: [PATCH] ASoC: tas571x: add input channel mixer for TAS5717/19
+>From 11f9192cc16cd26f16fb0fa2b18ce4440a7a1623 Mon Sep 17 00:00:00 2001
+From: Bastien Nocera <hadess@hadess.net>
+Date: Tue, 19 Apr 2016 18:00:20 +0200
+Subject: [PATCH] ASoC: tlv320aix31xx: Add ACPI match for Lenovo 100S
 
-Add channel 1 and 2 input mixer registers and the related ALSA mixer
-controls for TAS5717/19 chips.
+The Lenovo 100S netbook has a codec controller for which there is a
+driver, but doesn't know how to access the device. This adds the
+necessary ACPI table for the driver to find the device.
 
-The mixer control coefficients on the chip are linear in the range
--3.99999 to +3.99999, encoded in 3.23 number format.
-In this patch the mixer controls are limited to 128 values
-from 0.0 to 1.0 in 1/64 steps.
+Device (TTLV)
+{
+    Name (_ADR, Zero)  // _ADR: Address
+    Name (_HID, "10TI3100")  // _HID: Hardware ID
+    Name (_CID, "10TI3100")  // _CID: Compatible ID
+    Name (_DDN, "TI TLV320AIC3100 Codec Controller ")  // _DDN: DOS Device Name
+    Name (_UID, One)  // _UID: Unique ID
 
-Signed-off-by: Petr Kulhavy <brain@jikos.cz>
+Signed-off-by: Bastien Nocera <hadess@hadess.net>
+Tested-by: Jan Schmidt <jan@centricular.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tas571x.c | 18 ++++++++++++++++++
- sound/soc/codecs/tas571x.h |  5 +++++
- 2 files changed, 23 insertions(+)
+ sound/soc/codecs/tlv320aic31xx.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
-index bc1fbafb8ea4..d8baca3f8413 100644
---- a/sound/soc/codecs/tas571x.c
-+++ b/sound/soc/codecs/tas571x.c
-@@ -64,6 +64,10 @@ static int tas571x_register_size(struct tas571x_private *priv, unsigned int reg)
- 	case TAS571X_INPUT_MUX_REG:
- 	case TAS571X_CH4_SRC_SELECT_REG:
- 	case TAS571X_PWM_MUX_REG:
-+	case TAS5717_CH1_RIGHT_CH_MIX_REG:
-+	case TAS5717_CH1_LEFT_CH_MIX_REG:
-+	case TAS5717_CH2_LEFT_CH_MIX_REG:
-+	case TAS5717_CH2_RIGHT_CH_MIX_REG:
- 		return 4;
- 	default:
- 		return 1;
-@@ -397,6 +401,16 @@ static const struct snd_kcontrol_new tas5711_controls[] = {
- 		   TAS571X_SOFT_MUTE_REG,
- 		   TAS571X_SOFT_MUTE_CH1_SHIFT, TAS571X_SOFT_MUTE_CH2_SHIFT,
- 		   1, 1),
-+
-+	SOC_DOUBLE_R_RANGE("CH1 Mixer Volume",
-+			   TAS5717_CH1_LEFT_CH_MIX_REG,
-+			   TAS5717_CH1_RIGHT_CH_MIX_REG,
-+			   16, 0, 0x80, 0),
-+
-+	SOC_DOUBLE_R_RANGE("CH2 Mixer Volume",
-+			   TAS5717_CH2_LEFT_CH_MIX_REG,
-+			   TAS5717_CH2_RIGHT_CH_MIX_REG,
-+			   16, 0, 0x80, 0),
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index ee4def4f819f..3c5e1df01c19 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -28,6 +28,7 @@
+ #include <linux/i2c.h>
+ #include <linux/gpio.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/acpi.h>
+ #include <linux/of.h>
+ #include <linux/of_gpio.h>
+ #include <linux/slab.h>
+@@ -1280,10 +1281,19 @@ static const struct i2c_device_id aic31xx_i2c_id[] = {
  };
+ MODULE_DEVICE_TABLE(i2c, aic31xx_i2c_id);
  
- static const struct regmap_range tas571x_readonly_regs_range[] = {
-@@ -520,6 +534,10 @@ static const struct reg_default tas5717_reg_defaults[] = {
- 	{ 0x08, 0x00c0 },
- 	{ 0x09, 0x00c0 },
- 	{ 0x1b, 0x82 },
-+	{ TAS5717_CH1_RIGHT_CH_MIX_REG, 0x0 },
-+	{ TAS5717_CH1_LEFT_CH_MIX_REG, 0x800000},
-+	{ TAS5717_CH2_LEFT_CH_MIX_REG, 0x0 },
-+	{ TAS5717_CH2_RIGHT_CH_MIX_REG, 0x800000},
- };
- 
- static const struct regmap_config tas5717_regmap_config = {
-diff --git a/sound/soc/codecs/tas571x.h b/sound/soc/codecs/tas571x.h
-index bf4d4362c784..c45677bc26ad 100644
---- a/sound/soc/codecs/tas571x.h
-+++ b/sound/soc/codecs/tas571x.h
-@@ -87,4 +87,9 @@
- #define TAS5717_CH3_BQ0_REG		0x5e
- #define TAS5717_CH3_BQ1_REG		0x5f
- 
-+#define TAS5717_CH1_RIGHT_CH_MIX_REG	0x72
-+#define TAS5717_CH1_LEFT_CH_MIX_REG	0x73
-+#define TAS5717_CH2_LEFT_CH_MIX_REG	0x76
-+#define TAS5717_CH2_RIGHT_CH_MIX_REG	0x77
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id aic31xx_acpi_match[] = {
++	{ "10TI3100", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(acpi, aic31xx_acpi_match);
++#endif
 +
- #endif /* _TAS571X_H */
+ static struct i2c_driver aic31xx_i2c_driver = {
+ 	.driver = {
+ 		.name	= "tlv320aic31xx-codec",
+ 		.of_match_table = of_match_ptr(tlv320aic31xx_of_match),
++		.acpi_match_table = ACPI_PTR(aic31xx_acpi_match),
+ 	},
+ 	.probe		= aic31xx_i2c_probe,
+ 	.remove		= aic31xx_i2c_remove,
 -- 
 2.8.1
