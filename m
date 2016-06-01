@@ -1,93 +1,104 @@
 From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: [PATCH 4/4] ARM: sun7i: Add DAI nodes
-Date: Wed,  1 Jun 2016 19:54:30 +0200
-Message-ID: <20160601175430.11625-5-maxime.ripard@free-electrons.com>
+Subject: [PATCH 3/4] ARM: sun7i: Add mod1 clock nodes
+Date: Wed,  1 Jun 2016 19:54:29 +0200
+Message-ID: <20160601175430.11625-4-maxime.ripard@free-electrons.com>
 References: <20160601175430.11625-1-maxime.ripard@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (down.free-electrons.com
- [37.187.137.238])
- by alsa0.perex.cz (Postfix) with ESMTP id 9DA792656F6
- for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2016 19:54:36 +0200 (CEST)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20160601175430.11625-1-maxime.ripard@free-electrons.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, gianfranco@moddevices.com, linux-kernel@vger.kernel.org, Code Kipper <codekipper@gmail.com>, Andrea Venturi <ennesimamail.av@gmail.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, linux-arm-kernel@lists.infradead.org
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Andrea Venturi <ennesimamail.av@gmail.com>, Code Kipper <codekipper@gmail.com>, gianfranco@moddevices.com, =?UTF-8?q?Emilio=20L=C3=B3pez?= <emilio@elopez.com.ar>, Maxime Ripard <maxime.ripard@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add the new DAI blocks to the device tree.
+=46rom: Emilio L=C3=B3pez <emilio@elopez.com.ar>
 
+This commit adds all the mod1 clocks available on A20 to its device
+tree. This list was created by looking at the A20 user manual.
+
+Signed-off-by: Emilio L=C3=B3pez <emilio@elopez.com.ar>
 Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 ---
- arch/arm/boot/dts/sun7i-a20.dtsi | 39 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+ arch/arm/boot/dts/sun7i-a20.dtsi | 48 ++++++++++++++++++++++++++++++++=
+++++++--
+ 1 file changed, 46 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/sun7i-a20.dtsi b/arch/arm/boot/dts/sun7i-a20.dtsi
-index 603fda5b7f94..b656bc20ce59 100644
+diff --git a/arch/arm/boot/dts/sun7i-a20.dtsi b/arch/arm/boot/dts/sun7i=
+-a20.dtsi
+index febdf4c72fb0..603fda5b7f94 100644
 --- a/arch/arm/boot/dts/sun7i-a20.dtsi
 +++ b/arch/arm/boot/dts/sun7i-a20.dtsi
-@@ -1361,6 +1361,32 @@
- 			status = "disabled";
+@@ -366,9 +366,9 @@
+ 					<5>, <6>, <7>,
+ 					<8>, <10>;
+ 			clock-output-names =3D "apb0_codec", "apb0_spdif",
+-				"apb0_ac97", "apb0_iis0", "apb0_iis1",
++				"apb0_ac97", "apb0_i2s0", "apb0_i2s1",
+ 				"apb0_pio", "apb0_ir0", "apb0_ir1",
+-				"apb0_iis2", "apb0_keypad";
++				"apb0_i2s2", "apb0_keypad";
  		};
- 
-+		i2s1: i2s@01c22000 {
-+			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun4i-a10-i2s";
-+			reg = <0x01c22000 0x400>;
-+			interrupts = <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&apb0_gates 4>, <&i2s1_clk>;
-+			clock-names = "apb", "mod";
-+			dmas = <&dma SUN4I_DMA_NORMAL 4>,
-+			       <&dma SUN4I_DMA_NORMAL 4>;
-+			dma-names = "rx", "tx";
-+			status = "disabled";
-+		};
-+
-+		i2s0: i2s@01c22400 {
-+			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun4i-a10-i2s";
-+			reg = <0x01c22400 0x400>;
-+			interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&apb0_gates 3>, <&i2s0_clk>;
-+			clock-names = "apb", "mod";
-+			dmas = <&dma SUN4I_DMA_NORMAL 3>,
-+			       <&dma SUN4I_DMA_NORMAL 3>;
-+			dma-names = "rx", "tx";
-+			status = "disabled";
-+		};
-+
- 		lradc: lradc@01c22800 {
- 			compatible = "allwinner,sun4i-a10-lradc-keys";
- 			reg = <0x01c22800 0x100>;
-@@ -1386,6 +1412,19 @@
- 			reg = <0x01c23800 0x200>;
+=20
+ 		apb1: clk@01c20058 {
+@@ -518,6 +518,28 @@
+ 			clock-output-names =3D "ir1";
  		};
- 
-+		i2s2: i2s@01c24400 {
-+			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun4i-a10-i2s";
-+			reg = <0x01c24400 0x400>;
-+			interrupts = <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&apb0_gates 8>, <&i2s2_clk>;
-+			clock-names = "apb", "mod";
-+			dmas = <&dma SUN4I_DMA_NORMAL 6>,
-+			       <&dma SUN4I_DMA_NORMAL 6>;
-+			dma-names = "rx", "tx";
-+			status = "disabled";
+=20
++		i2s0_clk: clk@01c200b8 {
++			#clock-cells =3D <0>;
++			compatible =3D "allwinner,sun4i-a10-mod1-clk";
++			reg =3D <0x01c200b8 0x4>;
++			clocks =3D <&pll2 SUN4I_A10_PLL2_8X>,
++				 <&pll2 SUN4I_A10_PLL2_4X>,
++				 <&pll2 SUN4I_A10_PLL2_2X>,
++				 <&pll2 SUN4I_A10_PLL2_1X>;
++			clock-output-names =3D "i2s0";
 +		};
 +
- 		rtp: rtp@01c25000 {
- 			compatible = "allwinner,sun5i-a13-ts";
- 			reg = <0x01c25000 0x100>;
--- 
++		ac97_clk: clk@01c200bc {
++			#clock-cells =3D <0>;
++			compatible =3D "allwinner,sun4i-a10-mod1-clk";
++			reg =3D <0x01c200bc 0x4>;
++			clocks =3D <&pll2 SUN4I_A10_PLL2_8X>,
++				 <&pll2 SUN4I_A10_PLL2_4X>,
++				 <&pll2 SUN4I_A10_PLL2_2X>,
++				 <&pll2 SUN4I_A10_PLL2_1X>;
++			clock-output-names =3D "ac97";
++		};
++
+ 		spdif_clk: clk@01c200c0 {
+ 			#clock-cells =3D <0>;
+ 			compatible =3D "allwinner,sun4i-a10-mod1-clk";
+@@ -555,6 +577,28 @@
+ 			clock-output-names =3D "spi3";
+ 		};
+=20
++		i2s1_clk: clk@01c200d8 {
++			#clock-cells =3D <0>;
++			compatible =3D "allwinner,sun4i-a10-mod1-clk";
++			reg =3D <0x01c200d8 0x4>;
++			clocks =3D <&pll2 SUN4I_A10_PLL2_8X>,
++				 <&pll2 SUN4I_A10_PLL2_4X>,
++				 <&pll2 SUN4I_A10_PLL2_2X>,
++				 <&pll2 SUN4I_A10_PLL2_1X>;
++			clock-output-names =3D "i2s1";
++		};
++
++		i2s2_clk: clk@01c200dc {
++			#clock-cells =3D <0>;
++			compatible =3D "allwinner,sun4i-a10-mod1-clk";
++			reg =3D <0x01c200dc 0x4>;
++			clocks =3D <&pll2 SUN4I_A10_PLL2_8X>,
++				 <&pll2 SUN4I_A10_PLL2_4X>,
++				 <&pll2 SUN4I_A10_PLL2_2X>,
++				 <&pll2 SUN4I_A10_PLL2_1X>;
++			clock-output-names =3D "i2s2";
++		};
++
+ 		dram_gates: clk@01c20100 {
+ 			#clock-cells =3D <1>;
+ 			compatible =3D "allwinner,sun4i-a10-dram-gates-clk";
+--=20
 2.8.3
