@@ -1,34 +1,90 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [RESEND PATCH 6/6] ASoC: rockchip: Add machine driver for cdn dp
- codec
-Date: Wed, 1 Jun 2016 09:57:49 -0500
-Message-ID: <20160601145749.GA12362@rob-hp-laptop>
-References: <1464345942-4795-1-git-send-email-zyw@rock-chips.com>
- <1464345942-4795-7-git-send-email-zyw@rock-chips.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: Applied "ASoC: Intel: add bytct-rt5651 machine
+ driver" to the asoc tree
+Date: Wed, 1 Jun 2016 10:13:17 -0500
+Message-ID: <c524cc06-caa7-6080-412b-041c9b1af386@linux.intel.com>
+References: <1851514.XmzcdsvJt0@wks-pdc-gentoo>
+ <2387755.MGqpljUrLg@wks-pdc-gentoo>
+ <cba64f0e-9ca2-e4a6-5436-ea68cc1e9fcc@linux.intel.com>
+ <4617455.AlsP6hqDsl@wks-pdc-gentoo>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1464345942-4795-7-git-send-email-zyw@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Chris Zhong <zyw@rock-chips.com>
-Cc: dianders@chromium.org, tfiga@chromium.org, heiko@sntech.de, yzq@rock-chips.com, linux-rockchip@lists.infradead.org, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4350326573C
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2016 17:13:19 +0200 (CEST)
+In-Reply-To: <4617455.AlsP6hqDsl@wks-pdc-gentoo>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pietro <pxpert@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 27, 2016 at 06:45:42PM +0800, Chris Zhong wrote:
-> The driver is used for cdn dp codec embedded in rk3399
-> 
-> Signed-off-by: Chris Zhong <zyw@rock-chips.com>
-> 
-> ---
-> 
->  .../bindings/sound/rockchip-cdn-dp-audio.txt       |  12 ++
+On 6/1/16 3:38 AM, Pietro wrote:
+> Hi,
+>
+>
+>
+> The Kernel error messages should be related to the Intel DRM graphics,
+> so I don't care about them (at least for now).
+>
+>
+>
+> Anyway I don't know if tese warning can in some way be related to my
+> problem:
+>
+>
+>
+> [ 9.565990] rt5651 i2c-10EC5651:00: ASoC: mux INL1 Mux has no paths
+>
+> [ 9.586586] rt5651 i2c-10EC5651:00: ASoC: mux INR1 Mux has no paths
+>
+> [ 9.586596] rt5651 i2c-10EC5651:00: ASoC: mux INL2 Mux has no paths
+>
+> [ 9.586601] rt5651 i2c-10EC5651:00: ASoC: mux INR2 Mux has no paths
 
-Acked-by: Rob Herring <robh@kernel.org>
+probably the config is incorrect, I didn't enable capture in the UCM file
 
->  sound/soc/rockchip/Kconfig                         |   9 ++
->  sound/soc/rockchip/Makefile                        |   2 +
->  sound/soc/rockchip/rockchip-cdn-dp-audio.c         | 167 +++++++++++++++++++++
->  4 files changed, 190 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/rockchip-cdn-dp-audio.txt
->  create mode 100644 sound/soc/rockchip/rockchip-cdn-dp-audio.c
+>
+> [ 12.646035] sst-mfld-platform sst-mfld-platform: Slot control:
+> codec_out tx interleaver slot 0 doesn't have DAPM widget!!!
+>
+> [ 12.649356] sst-mfld-platform sst-mfld-platform: Slot control:
+> codec_out tx interleaver slot 1 doesn't have DAPM widget!!!
+>
+> [ 12.652673] sst-mfld-platform sst-mfld-platform: Slot control:
+> codec_out tx interleaver slot 2 doesn't have DAPM widget!!!
+>
+> [ 12.656323] sst-mfld-platform sst-mfld-platform: Slot control:
+> codec_out tx interleaver slot 3 doesn't have DAPM widget!!!
+>
+> [ 12.659868] sst-mfld-platform sst-mfld-platform: Slot control: codec_in
+> rx deinterleaver codec_in0_0 doesn't have DAPM widget!!!
+>
+> [ 12.663456] sst-mfld-platform sst-mfld-platform: Slot control: codec_in
+> rx deinterleaver codec_in0_1 doesn't have DAPM widget!!!
+
+this last warning is fixed upstream.
+
+> For your convenience I've extracted the DSDT from Android and Linux,
+> because they seem to differ. Here they are:
+>
+>
+>
+> DSDT Linux: http://paste.ubuntu.com/16885538/
+>
+> DSDT Android: http://paste.ubuntu.com/16885557/
+
+DSDT is OS independent so that doesn't make sense.
+Just to be clear, is this an Android tablet on which you are installing 
+ubuntu?
+And did you try to use the firmware from upstream or from the Android 
+distribution?
