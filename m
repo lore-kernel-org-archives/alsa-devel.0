@@ -1,37 +1,53 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH 1/2] ASoC: cs53l30: Rename the volume controls for preamplifier
-Date: Tue, 31 May 2016 16:06:38 -0700
-Message-ID: <1464735999-10384-1-git-send-email-nicoleotsuka@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: lgirdwood@gmail.com, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+From: vedang.patel@intel.com
+Subject: [PATCH v3 0/3] ASoC: Reduce audio related kernel spew.
+Date: Tue, 31 May 2016 18:14:58 -0700
+Message-ID: <1464743701-14931-1-git-send-email-vedang.patel@intel.com>
+References: <1461711790-7277-4-git-send-email-vedang.patel@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24D742650D4
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2016 03:15:05 +0200 (CEST)
+In-Reply-To: <1461711790-7277-4-git-send-email-vedang.patel@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: vinod.koul@intel.com, marc.herbert@intel.com, liam.r.girdwood@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com, Vedang Patel <vedang.patel@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Volume controls should end with 'Volume', so this patch renames them for
-ADC preamplifier.
+From: Vedang Patel <vedang.patel@intel.com>
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- sound/soc/codecs/cs53l30.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+There have been complaints regarding audio related kernel messages flooding
+dmesg. This series tries to address those complaints.
 
-diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
-index 714e579..9aff449 100644
---- a/sound/soc/codecs/cs53l30.c
-+++ b/sound/soc/codecs/cs53l30.c
-@@ -331,10 +331,10 @@ static const struct snd_kcontrol_new cs53l30_snd_controls[] = {
- 	SOC_SINGLE_TLV("ADC2 NG Boost Volume", CS53L30_ADC2_NG_CTL,
- 		       CS53L30_ADCx_NG_BOOST_SHIFT, 1, 0, adc_ng_boost_tlv),
- 
--	SOC_DOUBLE_R_TLV("ADC1 Pre Amp Gain", CS53L30_ADC1A_AFE_CTL,
-+	SOC_DOUBLE_R_TLV("ADC1 Preamplifier Volume", CS53L30_ADC1A_AFE_CTL,
- 			 CS53L30_ADC1B_AFE_CTL, CS53L30_ADCxy_PREAMP_SHIFT,
- 			 2, 0, pga_preamp_tlv),
--	SOC_DOUBLE_R_TLV("ADC2 Pre Amp Gain", CS53L30_ADC2A_AFE_CTL,
-+	SOC_DOUBLE_R_TLV("ADC2 Preamplifier Volume", CS53L30_ADC2A_AFE_CTL,
- 			 CS53L30_ADC2B_AFE_CTL, CS53L30_ADCxy_PREAMP_SHIFT,
- 			 2, 0, pga_preamp_tlv),
- 
+Also, I have created 3 different patches for this because they touch different
+drivers. But, I can combine those to reduce the number of patches.
+
+v2 Changes:
+- Use print_hex_dump_debug instead of #ifdef DEBUG
+
+v3 Changes:
+- Remove Change-Id from all the patches.
+
+Vedang Patel (3):
+  ASoC: hdac_hdmi: Increase loglevel of hex dump printed
+  ASoC: Intel: common: increase the loglevel of "FW Poll Status".
+  ASoC: Intel: Skylake: Increase loglevel of debug messages.
+
+ sound/soc/codecs/hdac_hdmi.c           |    6 ++++--
+ sound/soc/intel/common/sst-dsp.c       |    2 +-
+ sound/soc/intel/skylake/skl-messages.c |    2 +-
+ sound/soc/intel/skylake/skl-sst-ipc.c  |    4 ++--
+ 4 files changed, 8 insertions(+), 6 deletions(-)
+
 -- 
-2.1.4
+1.7.9.5
