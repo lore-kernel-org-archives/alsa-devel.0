@@ -1,20 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: Applied "ASoC: Intel: add bytct-rt5651 machine
- driver" to the asoc tree
-Date: Wed, 1 Jun 2016 10:13:17 -0500
-Message-ID: <c524cc06-caa7-6080-412b-041c9b1af386@linux.intel.com>
-References: <1851514.XmzcdsvJt0@wks-pdc-gentoo>
- <2387755.MGqpljUrLg@wks-pdc-gentoo>
- <cba64f0e-9ca2-e4a6-5436-ea68cc1e9fcc@linux.intel.com>
- <4617455.AlsP6hqDsl@wks-pdc-gentoo>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: Add Broxton-P Dialog+Maxim
+	machine driver entry" to the asoc tree
+Date: Wed, 01 Jun 2016 17:16:08 +0100
+Message-ID: <E1b88oS-0004SW-M2@finisterre>
+References: <20160601063316.30042-3-sathyanarayana.nujella@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 4350326573C
- for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2016 17:13:19 +0200 (CEST)
-In-Reply-To: <4617455.AlsP6hqDsl@wks-pdc-gentoo>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D4D3266009
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2016 18:16:30 +0200 (CEST)
+In-Reply-To: <20160601063316.30042-3-sathyanarayana.nujella@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,67 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pietro <pxpert@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, yang.a.fang@intel.com, broonie@kernel.org, harshapriya.n@intel.com, vedang.patel@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 6/1/16 3:38 AM, Pietro wrote:
-> Hi,
->
->
->
-> The Kernel error messages should be related to the Intel DRM graphics,
-> so I don't care about them (at least for now).
->
->
->
-> Anyway I don't know if tese warning can in some way be related to my
-> problem:
->
->
->
-> [ 9.565990] rt5651 i2c-10EC5651:00: ASoC: mux INL1 Mux has no paths
->
-> [ 9.586586] rt5651 i2c-10EC5651:00: ASoC: mux INR1 Mux has no paths
->
-> [ 9.586596] rt5651 i2c-10EC5651:00: ASoC: mux INL2 Mux has no paths
->
-> [ 9.586601] rt5651 i2c-10EC5651:00: ASoC: mux INR2 Mux has no paths
+The patch
 
-probably the config is incorrect, I didn't enable capture in the UCM file
+   ASoC: Intel: Add Broxton-P Dialog+Maxim machine driver entry
 
->
-> [ 12.646035] sst-mfld-platform sst-mfld-platform: Slot control:
-> codec_out tx interleaver slot 0 doesn't have DAPM widget!!!
->
-> [ 12.649356] sst-mfld-platform sst-mfld-platform: Slot control:
-> codec_out tx interleaver slot 1 doesn't have DAPM widget!!!
->
-> [ 12.652673] sst-mfld-platform sst-mfld-platform: Slot control:
-> codec_out tx interleaver slot 2 doesn't have DAPM widget!!!
->
-> [ 12.656323] sst-mfld-platform sst-mfld-platform: Slot control:
-> codec_out tx interleaver slot 3 doesn't have DAPM widget!!!
->
-> [ 12.659868] sst-mfld-platform sst-mfld-platform: Slot control: codec_in
-> rx deinterleaver codec_in0_0 doesn't have DAPM widget!!!
->
-> [ 12.663456] sst-mfld-platform sst-mfld-platform: Slot control: codec_in
-> rx deinterleaver codec_in0_1 doesn't have DAPM widget!!!
+has been applied to the asoc tree at
 
-this last warning is fixed upstream.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> For your convenience I've extracted the DSDT from Android and Linux,
-> because they seem to differ. Here they are:
->
->
->
-> DSDT Linux: http://paste.ubuntu.com/16885538/
->
-> DSDT Android: http://paste.ubuntu.com/16885557/
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-DSDT is OS independent so that doesn't make sense.
-Just to be clear, is this an Android tablet on which you are installing 
-ubuntu?
-And did you try to use the firmware from upstream or from the Android 
-distribution?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From de15996eab99b352926fb956d472d24d46c60309 Mon Sep 17 00:00:00 2001
+From: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Date: Tue, 31 May 2016 23:33:16 -0700
+Subject: [PATCH] ASoC: Intel: Add Broxton-P Dialog+Maxim machine driver entry
+
+This patch adds bxt_da7219_max98357a_i2s machine driver
+entry into machine table
+
+Signed-off-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/skylake/skl.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index b0f7226b878f..55c301bf786b 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -803,6 +803,7 @@ static struct sst_acpi_mach sst_skl_devdata[] = {
+ 
+ static struct sst_acpi_mach sst_bxtp_devdata[] = {
+ 	{ "INT343A", "bxt_alc298s_i2s", "intel/dsp_fw_bxtn.bin", NULL, NULL, NULL },
++	{ "DLGS7219", "bxt_da7219_max98357a_i2s", "intel/dsp_fw_bxtn.bin", NULL, NULL, NULL },
+ };
+ 
+ /* PCI IDs */
+-- 
+2.8.1
