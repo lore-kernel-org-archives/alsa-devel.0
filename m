@@ -1,59 +1,55 @@
 From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v7] ASoC: cs53l30: Add codec driver support for Cirrus
- CS53L30
-Date: Wed, 1 Jun 2016 09:34:47 -0500
-Message-ID: <20160601143447.GA25924@rob-hp-laptop>
-References: <1464205114-17202-1-git-send-email-nicoleotsuka@gmail.com>
+Subject: Re: [PATCH v3] ASoC: rockchip: Add machine driver for
+ MAX98357A/RT5514/DA7219
+Date: Wed, 1 Jun 2016 09:45:42 -0500
+Message-ID: <20160601144542.GA3835@rob-hp-laptop>
+References: <1464267742-15312-1-git-send-email-zhengxing@rock-chips.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1464205114-17202-1-git-send-email-nicoleotsuka@gmail.com>
+In-Reply-To: <1464267742-15312-1-git-send-email-zhengxing@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: broonie@kernel.org, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, lgirdwood@gmail.com, Tim.Howe@cirrus.com, somduttar@nvidia.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: Xing Zheng <zhengxing@rock-chips.com>
+Cc: linux-rockchip@lists.infradead.org, dianders@chromium.org, heiko@sntech.de, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 25, 2016 at 12:38:34PM -0700, Nicolin Chen wrote:
-> CS53L30 is a Quad-Channel ADC from Cirrus Logic with an I2S/TDM DAI.
-> So this patch adds a codec driver for CS53L30 that includes 4-channel
-> 24-bit recording and TDM mode supports.
+On Thu, May 26, 2016 at 09:02:22PM +0800, Xing Zheng wrote:
+> There are multi codec devices on the RK3399 platform, we can use
+> this patch support and control these codecs.
 > 
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> Signed-off-by: Xing Zheng <zhengxing@rock-chips.com>
 > ---
-> Changelog:
-> v6->v7
->  * Added vendor prefixes to properties in DT binding doc
->  * Updated the property names in the driver accordingly
->  * Added two required power supplies in the example
->  * Refined two dev_err messages
->  * Re-ordered the header files
->  * Revised the commit log
-> v5->v6
->  * Added clock controls
->  * Reconstructed bitfield macros and improved coding style
->  * Fixed some misuses of regmap_update_bits()
->  * Added TLV volume controls to replace enums for preamplifier
->  * Added micbias level in DT instead of exposing to user-space
->  * Simplified SDOUTx controls by removing cs53l30_asp_sdout_event()
->    (Still be able to use set_tristate() instead)
->  * Removed useless header files and sort the rest alphabetically
->  * Registered runtime pm functions to the driver
->  * Added regulator controls (VA and VP)
->  * Added writeable register function for regmap
->  * Merged two ASP dais
->  * Added TDM support
->  * Added a simple introduction in commit log
 > 
->  .../devicetree/bindings/sound/cs53l30.txt          |   40 +
+> Changes in v3:
+> - rename DOC to rockchip,rk3399-max98357a-rt5514-da7219.txt
+> - rename compatible to rockchip,rk3399-max98357a-rt5514-da7219
+> - rename source code to rk3399_max98357a_rt5514_da7219.c
+> 
+> Changes in v2:
+> - use the FS 256 to set mclks of the max98357a and rt5514 danamically
+> - add more sample rate for da7219
+> 
+>  .../rockchip,rk3399-max98357a-rt5514-da7219.txt    |   15 +
+>  sound/soc/rockchip/Kconfig                         |   11 +
+>  sound/soc/rockchip/Makefile                        |    2 +
+>  .../soc/rockchip/rk3399_max98357a_rt5514_da7219.c  |  333 ++++++++++++++++++++
+>  4 files changed, 361 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/rockchip,rk3399-max98357a-rt5514-da7219.txt
+>  create mode 100644 sound/soc/rockchip/rk3399_max98357a_rt5514_da7219.c
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk3399-max98357a-rt5514-da7219.txt b/Documentation/devicetree/bindings/sound/rockchip,rk3399-max98357a-rt5514-da7219.txt
+> new file mode 100644
+> index 0000000..3ae603e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/rockchip,rk3399-max98357a-rt5514-da7219.txt
+> @@ -0,0 +1,15 @@
+> +ROCKCHIP with MAX98357A/RT5514/DA7219 codecs
+> +
+> +Required properties:
+> +- compatible: "rockchip,rk3399-max98357a-rt5514-da7219"
 
-Acked-by: Rob Herring <robh@kernel.org>
+I'm still not very clear on the naming convention thoughout this. This 
+doesn't seem like a pattern we want to repeat (<chip>-<codec>-<codec>).
 
->  sound/soc/codecs/Kconfig                           |    6 +
->  sound/soc/codecs/Makefile                          |    2 +
->  sound/soc/codecs/cs53l30.c                         | 1097 ++++++++++++++++++++
->  sound/soc/codecs/cs53l30.h                         |  458 ++++++++
->  5 files changed, 1603 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/cs53l30.txt
->  create mode 100644 sound/soc/codecs/cs53l30.c
->  create mode 100644 sound/soc/codecs/cs53l30.h
+Rob
