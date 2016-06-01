@@ -1,16 +1,18 @@
 From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [PATCH v2 0/2] ASoC: da7219: Convert driver to use
-	generic FW functions
-Date: Wed, 1 Jun 2016 19:06:24 +0100
-Message-ID: <cover.1464802265.git.Adam.Thomson.Opensource@diasemi.com>
+Subject: [PATCH v2 1/2] device property: Add function to search
+ for named child of device
+Date: Wed, 1 Jun 2016 19:06:26 +0100
+Message-ID: <7105258db927c65dfa41a8abeef4b9735871d023.1464802265.git.Adam.Thomson.Opensource@diasemi.com>
+References: <cover.1464802265.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.bemta3.messagelabs.com (mail1.bemta3.messagelabs.com
- [195.245.230.163])
- by alsa0.perex.cz (Postfix) with ESMTP id 044332652AC
- for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2016 20:06:27 +0200 (CEST)
+ [195.245.230.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4DA3265317
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2016 20:06:30 +0200 (CEST)
+In-Reply-To: <cover.1464802265.git.Adam.Thomson.Opensource@diasemi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,37 +26,117 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jarosl
 Cc: alsa-devel@alsa-project.org, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Support Opensource <support.opensource@diasemi.com>, Hanjun Guo <hanjun.guo@linaro.org>, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Suravee Suthikulpanit <Suravee.Suthikulpanit@amd.com>, Bjorn Helgaas <bhelgaas@google.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, devel@acpica.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch set converts the da7219 codec driver to use device/fwnode functions
-to access properties, instead of the DT only of_* functions, allowing ACPI
-to be used as well.
+For device nodes in both DT and ACPI, it possible to have named
+child nodes which contain properties (an existing example being
+gpio-leds). This adds a function to find a named child node for
+a device which can be used by drivers for property retrieval.
 
-The DT bindings for da7219 have a device node for the main codec properties,
-and a named child node (da7219_aad), which contains all of the accessory
-detection related properties for the device. ACPI also supports this kind of
-FW hierarchy (data only sub-nodes), but some support in the kernel needs to be
-added to take make use of this in driver code.
+For ACPI data node name matching, a helper function is also added
+which returns false if CONFIG_ACPI is not set, otherwise it
+performs a string comparison on the data node name. This avoids
+using the acpi_data_node struct for non CONFIG_ACPI builds,
+which would otherwise cause a build failure.
 
-The first patch adds functions to allow searching for a named child node of a
-device, for both DT and ACPI, and the second patch updates the codec driver to
-use the standard device/fwnode calls, including this new function.
-
-These changes are based on the v4.7-rc1 kernel.
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Tested-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+---
 
 Changes in v2:
  - Rebase to v4.7-rc1
- - Small updates to codec patch based on previous reviewer comments
 
-Adam Thomson (2):
-  device property: Add function to search for named child of device
-  ASoC: da7219: Convert driver to use generic device/fwnode functions
+ drivers/base/property.c  | 28 ++++++++++++++++++++++++++++
+ include/acpi/acpi_bus.h  |  7 +++++++
+ include/linux/acpi.h     |  6 ++++++
+ include/linux/property.h |  3 +++
+ 4 files changed, 44 insertions(+)
 
- drivers/base/property.c       |  28 ++++++++++++
- include/acpi/acpi_bus.h       |   7 +++
- include/linux/acpi.h          |   6 +++
- include/linux/property.h      |   3 ++
- sound/soc/codecs/da7219-aad.c | 103 +++++++++++++++++++++---------------------
- sound/soc/codecs/da7219.c     |  34 +++++++-------
- 6 files changed, 112 insertions(+), 69 deletions(-)
+diff --git a/drivers/base/property.c b/drivers/base/property.c
+index f38c21d..573b361 100644
+--- a/drivers/base/property.c
++++ b/drivers/base/property.c
+@@ -888,6 +888,34 @@ struct fwnode_handle *device_get_next_child_node(struct device *dev,
+ EXPORT_SYMBOL_GPL(device_get_next_child_node);
 
+ /**
++ * device_get_named_child_node - Return first matching named child node handle
++ * @dev: Device to find the named child node for.
++ * @childname: String to match child node name against.
++ */
++struct fwnode_handle *device_get_named_child_node(struct device *dev,
++						  const char *childname)
++{
++	struct fwnode_handle *child;
++
++	/*
++	 * Find first matching named child node of this device.
++	 * For ACPI this will be a data only sub-node.
++	 */
++	device_for_each_child_node(dev, child) {
++		if (is_of_node(child)) {
++			if (!strcasecmp(to_of_node(child)->name, childname))
++				return child;
++		} else if (is_acpi_data_node(child)) {
++			if (acpi_data_node_match(child, childname))
++				return child;
++		}
++	}
++
++	return NULL;
++}
++EXPORT_SYMBOL_GPL(device_get_named_child_node);
++
++/**
+  * fwnode_handle_put - Drop reference to a device node
+  * @fwnode: Pointer to the device node to drop the reference to.
+  *
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index 788c6c3..993bdd0 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -420,6 +420,13 @@ static inline struct acpi_data_node *to_acpi_data_node(struct fwnode_handle *fwn
+ 		container_of(fwnode, struct acpi_data_node, fwnode) : NULL;
+ }
+
++static inline bool acpi_data_node_match(struct fwnode_handle *fwnode,
++					const char *name)
++{
++	return is_acpi_data_node(fwnode) ?
++		(!strcasecmp(to_acpi_data_node(fwnode)->name, name)) : false;
++}
++
+ static inline struct fwnode_handle *acpi_fwnode_handle(struct acpi_device *adev)
+ {
+ 	return &adev->fwnode;
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 288fac5..03039c4 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -568,6 +568,12 @@ static inline struct acpi_data_node *to_acpi_data_node(struct fwnode_handle *fwn
+ 	return NULL;
+ }
+
++static inline bool acpi_data_node_match(struct fwnode_handle *fwnode,
++					const char *name)
++{
++	return false;
++}
++
+ static inline struct fwnode_handle *acpi_fwnode_handle(struct acpi_device *adev)
+ {
+ 	return NULL;
+diff --git a/include/linux/property.h b/include/linux/property.h
+index ecab11e..3a2f9ae 100644
+--- a/include/linux/property.h
++++ b/include/linux/property.h
+@@ -77,6 +77,9 @@ struct fwnode_handle *device_get_next_child_node(struct device *dev,
+ 	for (child = device_get_next_child_node(dev, NULL); child;	\
+ 	     child = device_get_next_child_node(dev, child))
+
++struct fwnode_handle *device_get_named_child_node(struct device *dev,
++						  const char *childname);
++
+ void fwnode_handle_put(struct fwnode_handle *fwnode);
+
+ unsigned int device_get_child_node_count(struct device *dev);
 --
 1.9.3
