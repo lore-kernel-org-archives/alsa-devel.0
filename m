@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sgtl5000: Place optional properties in
-	the correct section" to the asoc tree
-Date: Thu, 02 Jun 2016 11:18:35 +0100
-Message-ID: <E1b8Phz-0001bb-Fy@finisterre>
-References: <1464727310-10034-1-git-send-email-festevam@gmail.com>
+Subject: Applied "ASoC: davinci-mcasp: Use a copy of pdata per
+	instance during DT boot" to the asoc tree
+Date: Thu, 02 Jun 2016 11:18:51 +0100
+Message-ID: <E1b8PiF-0001cM-6d@finisterre>
+References: <20160602095524.6967-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 318302666BE
- for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2016 12:18:49 +0200 (CEST)
-In-Reply-To: <1464727310-10034-1-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E63B9266803
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2016 12:19:03 +0200 (CEST)
+In-Reply-To: <20160602095524.6967-1-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@nxp.com>
-Cc: jean-michel.hautbois@vodalys.com, alsa-devel@alsa-project.org, broonie@kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: misael.lopez@ti.com, broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sgtl5000: Place optional properties in the correct section
+   ASoC: davinci-mcasp: Use a copy of pdata per instance during DT boot
 
 has been applied to the asoc tree at
 
@@ -53,60 +53,43 @@ to this mail.
 Thanks,
 Mark
 
->From 10ff08029d9880e4bf70de0535f34ce239af7a9a Mon Sep 17 00:00:00 2001
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Tue, 31 May 2016 17:41:50 -0300
-Subject: [PATCH] ASoC: sgtl5000: Place optional properties in the correct
- section
+>From 272ee030ebc9da58a5796e6e26f78b77ecce7c21 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Thu, 2 Jun 2016 12:55:24 +0300
+Subject: [PATCH] ASoC: davinci-mcasp: Use a copy of pdata per instance during
+ DT boot
 
-'micbias-resistor-k-ohms' and 'micbias-voltage-m-volts' are optional
-properties, so move them below the 'Optional properties' line.
+Instead of modifying the static pdata struct per McASP instance we need to
+allocate pdata for each McASP.
+This way we can avoid configuration leakage from prior McASP to McASP
+drivers probed at later time.
 
-While at it, fix a typo in 'mentioned'.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Reported-by: Misael Lopez Cruz <misael.lopez@ti.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/sgtl5000.txt | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/sgtl5000.txt b/Documentation/devicetree/bindings/sound/sgtl5000.txt
-index 0e5e4eb3ef1b..5666da7b8605 100644
---- a/Documentation/devicetree/bindings/sound/sgtl5000.txt
-+++ b/Documentation/devicetree/bindings/sound/sgtl5000.txt
-@@ -7,6 +7,14 @@ Required properties:
- 
- - clocks : the clock provider of SYS_MCLK
- 
-+- VDDA-supply : the regulator provider of VDDA
-+
-+- VDDIO-supply: the regulator provider of VDDIO
-+
-+Optional properties:
-+
-+- VDDD-supply : the regulator provider of VDDD
-+
- - micbias-resistor-k-ohms : the bias resistor to be used in kOmhs
- 	The resistor can take values of 2k, 4k or 8k.
- 	If set to 0 it will be off.
-@@ -15,17 +23,9 @@ Required properties:
- 
- - micbias-voltage-m-volts : the bias voltage to be used in mVolts
- 	The voltage can take values from 1.25V to 3V by 250mV steps
--	If this node is not mentionned or the value is unknown, then
-+	If this node is not mentioned or the value is unknown, then
- 	the value is set to 1.25V.
- 
--- VDDA-supply : the regulator provider of VDDA
--
--- VDDIO-supply: the regulator provider of VDDIO
--
--Optional properties:
--
--- VDDD-supply : the regulator provider of VDDD
--
- Example:
- 
- codec: sgtl5000@0a {
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 237dc67002ef..05c2d33aa74d 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -1599,7 +1599,14 @@ static struct davinci_mcasp_pdata *davinci_mcasp_set_pdata_from_of(
+ 		pdata = pdev->dev.platform_data;
+ 		return pdata;
+ 	} else if (match) {
+-		pdata = (struct davinci_mcasp_pdata*) match->data;
++		pdata = devm_kmemdup(&pdev->dev, match->data, sizeof(*pdata),
++				     GFP_KERNEL);
++		if (!pdata) {
++			dev_err(&pdev->dev,
++				"Failed to allocate memory for pdata\n");
++			ret = -ENOMEM;
++			return pdata;
++		}
+ 	} else {
+ 		/* control shouldn't reach here. something is wrong */
+ 		ret = -EINVAL;
 -- 
 2.8.1
