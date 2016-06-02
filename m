@@ -1,108 +1,153 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5] ASoC: cs53l30: Add support for Cirrus
- Logic CS53L30
-Date: Thu, 2 Jun 2016 18:17:53 +0100
-Message-ID: <20160602171753.GQ2282@sirena.org.uk>
-References: <1458082066-2859-1-git-send-email-tim.howe@cirrus.com>
- <20160517234333.GB29471@Asurada-Nvidia>
- <20160531165358.GH29837@sirena.org.uk>
- <CAG5mAdw-gh2_ZQ17h3HS=pMZaW-bGhoKgNDz_hbwzw2rBKs8ig@mail.gmail.com>
- <20160531173505.GI29837@sirena.org.uk>
- <CAG5mAdwB-YCiFV0L+KgULKcmRVEhHK68mBrf9UHe0s-1UBotJQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2480803483326264117=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B126626047C
- for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2016 19:18:13 +0200 (CEST)
-In-Reply-To: <CAG5mAdwB-YCiFV0L+KgULKcmRVEhHK68mBrf9UHe0s-1UBotJQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, paul.handrigan@cirrus.com, "Howe,
- Tim" <tim.howe@cirrus.com>
+Subject: Applied "ASoC: mediatek: add MCLK source selection" to the asoc tree
+Date: Thu, 02 Jun 2016 18:21:28 +0100
+Message-ID: <E1b8WJE-0006KH-Sl@finisterre>
+References: <1464782412-632-1-git-send-email-pc.liao@mediatek.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1464782412-632-1-git-send-email-pc.liao@mediatek.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: PC Liao <pc.liao@mediatek.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, tiwai@suse.de, alsa-devel@alsa-project.org, srv_heupstream@mediatek.com, s.hauer@pengutronix.de, garlic.tseng@mediatek.com, linux-kernel@vger.kernel.org, koro.chen@mediatek.com, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============2480803483326264117==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="X35wERi4JU/f1kly"
-Content-Disposition: inline
+   ASoC: mediatek: add MCLK source selection
 
+has been applied to the asoc tree at
 
---X35wERi4JU/f1kly
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, May 31, 2016 at 03:32:05PM -0700, Caleb Crome wrote:
-> On Tue, May 31, 2016 at 10:35 AM, Mark Brown <broonie@kernel.org> wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > I'm not sure why mic arrays would drive that, it's not like they're
-> > particularly new or innovative technology here and multi channel output
-> > has been even more widely available for a long time?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Good point.  I guess I'm coming from the SoC/mobile world where most SoCs
-> support stereo only, and a couple microphones at most.  Now phones have 3-4
-> or more microphones.   Amazon echo has 7 mics.  We're working on arrays of
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-That's fairly rare, I'd say more of the vendors are doing programmable
-serial ports and those that aren't have a different model...  see below.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> We must be looking at different sorts of chips :-)  Even on new parts like
-> the Snapdragon 410, they have a super inflexible I2S only port. (up to 3
-> parallel I2S for up to 6 channels, but no TDM).
+Thanks,
+Mark
 
-Qualcomm have never really wanted anyone to use I2S in their mobile
-products for quite some time now - they've always wanted to do a system
-sale based on either their integrated CODECs or (in the current
-production designs) their own external CODECs which normally use Slimbus
-to connect to the CPU (they are working off and on on upstreaming
-Slimbus, nobody else ever adopted it so there's relatively little
-pressure).
+>From 0c198ed2ba68b6cc728c5aa3c5486d9e5c328ecd Mon Sep 17 00:00:00 2001
+From: PC Liao <pc.liao@mediatek.com>
+Date: Wed, 1 Jun 2016 20:00:12 +0800
+Subject: [PATCH] ASoC: mediatek: add MCLK source selection
 
-> and a few other chips that I'm not familiar with.  So  there does not seem
-> to be overwhelming support for TDM in Alsa ASoC.  To what extent this is a
-> software vs. hardware issue could use a little investigation.
+The new machine's MCLK source is from mt8173 which is dynamic from
+sampling rate*256. This patch provides the selection for device tree.
 
-It's software and legacy hardware.
+Signed-off-by: PC Liao <pc.liao@mediatek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ .../devicetree/bindings/sound/mt8173-rt5650.txt    |  5 +++
+ sound/soc/mediatek/mt8173-rt5650.c                 | 45 +++++++++++++++++++++-
+ 2 files changed, 48 insertions(+), 2 deletions(-)
 
-> So... if anybody knows of a Cortex A53 or A57 with good TDM support in
-> linux (at least 16 channels in and out), I'd love to know about it :-)
-
-Well, if you specifically mean TDM as opposed to multi-channel our
-general support for that isn't good (mainly due to lack of demand).  It
-sounds like you're more interested in multi channel here though.
-
---X35wERi4JU/f1kly
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXUGpAAAoJECTWi3JdVIfQZhQH/0KxgTtlmmnk+F5rGY8XtYRg
-2u/QPz6D4ItOGutpSfAkgAhLq0wTyBY8j7VnjewqHhleDaErBhZtK9AomZFaBV5A
-00c0aDamRzZDjKUpCNPw05xcibjxhgYWYbypOqzASDroPistodUgKHwi5CcJ0R/5
-/oCHzfp+RPgAYfb/aPSf//A2741wPl955YQP06IpcposKv8dfCjzZrMwR22fdYPP
-aFkT5uITpFOyeFOQUauG+tM2KeQWU+pA2KFMrIPvYp4NHN2PdlFo2/SQulUKAZuY
-zOCbOabFxtxgBBADj9rj7NeT3E18t7EKtub70AfXmHJS23nfE8daBN6s14DTI70=
-=BEf7
------END PGP SIGNATURE-----
-
---X35wERi4JU/f1kly--
-
---===============2480803483326264117==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2480803483326264117==--
+diff --git a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
+index 5bfa6b60530b..f250fc7c7acc 100644
+--- a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
++++ b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
+@@ -12,12 +12,17 @@ Required codec-capture subnode properties:
+   <&rt5650 0> : Default setting. Connect rt5650 I2S1 for capture. (dai_name = rt5645-aif1)
+   <&rt5650 1> : Connect rt5650 I2S2 for capture. (dai_name = rt5645-aif2)
+ 
++- mediatek,mclk: the MCLK source
++  0 : external oscillator, MCLK = 12.288M
++  1 : internal source from mt8173, MCLK = sampling rate*256
++
+ Example:
+ 
+ 	sound {
+ 		compatible = "mediatek,mt8173-rt5650";
+ 		mediatek,audio-codec = <&rt5650>;
+ 		mediatek,platform = <&afe>;
++		mediatek,mclk = <0>;
+ 		codec-capture {
+ 			sound-dai = <&rt5650 1>;
+ 		};
+diff --git a/sound/soc/mediatek/mt8173-rt5650.c b/sound/soc/mediatek/mt8173-rt5650.c
+index a27a6673dbe3..072934b470a8 100644
+--- a/sound/soc/mediatek/mt8173-rt5650.c
++++ b/sound/soc/mediatek/mt8173-rt5650.c
+@@ -23,6 +23,20 @@
+ 
+ #define MCLK_FOR_CODECS		12288000
+ 
++enum mt8173_rt5650_mclk {
++	MT8173_RT5650_MCLK_EXTERNAL = 0,
++	MT8173_RT5650_MCLK_INTERNAL,
++};
++
++struct mt8173_rt5650_platform_data {
++	enum mt8173_rt5650_mclk pll_from;
++	/* 0 = external oscillator; 1 = internal source from mt8173 */
++};
++
++static struct mt8173_rt5650_platform_data mt8173_rt5650_priv = {
++	.pll_from = MT8173_RT5650_MCLK_EXTERNAL,
++};
++
+ static const struct snd_soc_dapm_widget mt8173_rt5650_widgets[] = {
+ 	SND_SOC_DAPM_SPK("Speaker", NULL),
+ 	SND_SOC_DAPM_MIC("Int Mic", NULL),
+@@ -54,13 +68,29 @@ static int mt8173_rt5650_hw_params(struct snd_pcm_substream *substream,
+ 				   struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	unsigned int mclk_clock;
+ 	int i, ret;
+ 
++	switch (mt8173_rt5650_priv.pll_from) {
++	case MT8173_RT5650_MCLK_EXTERNAL:
++		/* mclk = 12.288M */
++		mclk_clock = MCLK_FOR_CODECS;
++		break;
++	case MT8173_RT5650_MCLK_INTERNAL:
++		/* mclk = sampling rate*256 */
++		mclk_clock = params_rate(params) * 256;
++		break;
++	default:
++		/* mclk = 12.288M */
++		mclk_clock = MCLK_FOR_CODECS;
++		break;
++	}
++
+ 	for (i = 0; i < rtd->num_codecs; i++) {
+ 		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
+ 
+-		/* pll from mclk 12.288M */
+-		ret = snd_soc_dai_set_pll(codec_dai, 0, 0, MCLK_FOR_CODECS,
++		/* pll from mclk */
++		ret = snd_soc_dai_set_pll(codec_dai, 0, 0, mclk_clock,
+ 					  params_rate(params) * 512);
+ 		if (ret)
+ 			return ret;
+@@ -243,6 +273,17 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
+ 		mt8173_rt5650_codecs[1].dai_name = codec_capture_dai;
+ 	}
+ 
++	if (device_property_present(&pdev->dev, "mediatek,mclk")) {
++		ret = device_property_read_u32(&pdev->dev,
++					       "mediatek,mclk",
++					       &mt8173_rt5650_priv.pll_from);
++		if (ret) {
++			dev_err(&pdev->dev,
++				"%s snd_soc_register_card fail %d\n",
++				__func__, ret);
++		}
++	}
++
+ 	card->dev = &pdev->dev;
+ 	platform_set_drvdata(pdev, card);
+ 
+-- 
+2.8.1
