@@ -1,21 +1,15 @@
-From: Pietro <pxpert@gmail.com>
-Subject: Re: Applied "ASoC: Intel: add bytct-rt5651 machine
-	driver" to the asoc tree
-Date: Thu, 02 Jun 2016 10:58:26 +0200
-Message-ID: <3005504.Rf3z8kOYgB@wks-pdc-gentoo>
-References: <1851514.XmzcdsvJt0@wks-pdc-gentoo>
- <8428317.tXclBn20Ko@wks-pdc-gentoo>
- <ba871166-376e-bea0-07b2-f347d7ab296f@linux.intel.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: davinci-mcasp: Fix dra7 DMA offset when
+	using CFG port
+Date: Thu, 2 Jun 2016 12:55:05 +0300
+Message-ID: <20160602095505.6867-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
- by alsa0.perex.cz (Postfix) with ESMTP id B534026047C
- for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2016 10:58:29 +0200 (CEST)
-Received: by mail-wm0-f67.google.com with SMTP id a20so2302905wma.3
- for <alsa-devel@alsa-project.org>; Thu, 02 Jun 2016 01:58:29 -0700 (PDT)
-In-Reply-To: <ba871166-376e-bea0-07b2-f347d7ab296f@linux.intel.com>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CB0C26047C
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2016 11:55:12 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,123 +19,126 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, misael.lopez@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi, 
-You can find the full patch here:
-http://pastebin.com/uFYq4UAL[1] 
+The TX and RX offset is different for each serializers when using the CFG
+port for DMA access.
+When using the CFG port only one serializer can be used per direction so
+print error message and only configure the first serializer's offset.
 
-I've patched it against the 4.7RC1 tree. I have tested it only on 4.5.2, but I don't think there will be significant differences between 4.5.2 and 4.7RC1 trunks (I only noticed the add of RT5640 support for cherryview). Anyway I'll let you know if I'll find some problems.
+Reported-by: Misael Lopez Cruz <misael.lopez@ti.com>
+Suggested-by: Misael Lopez Cruz <misael.lopez@ti.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ sound/soc/davinci/davinci-mcasp.c | 56 ++++++++++++++++++++++++++++++++++++---
+ sound/soc/davinci/davinci-mcasp.h |  4 +--
+ 2 files changed, 54 insertions(+), 6 deletions(-)
 
-
-Pietro
-
-On Wednesday 01 June 2016 16:58:35 Pierre-Louis Bossart wrote:
-> On 6/1/16 4:43 PM, Pietro wrote:
-> > Hi,
-> >
-> > Sorry for the wrong information:
-> > the 2 DSDTs were decompiled using different iasl versions (20140828 for Android vs 20150717 for Linux), giving apparently different results (the functions were decoded differently, but the keys were the same).
-> >
-> > The tablet is a dual boot Windows+Android (Surely based on AndroidIA, with a Patched gmin kernel... Obviously the sources were not provided by the manifacturer).
-> >
-> > I've made some tests using both the firmware included in Android, and the upstream ones, with no apparent results (Always slow Audio).
-> >
-> > But when you suggested me to use the fw_sst_22a8.bin I was trying to load the Android one, giving me load errors. Now I've tried the upstream one and it works with correct timing settings (!!)
-> >
-> > Then I've tried to restore the 4.5.2 stock bytcr_rt5651.c, but this gave me inconsistent playback: The speed was right, but there were continue audio artifacts (like the ones given by a bad resampler, to give you an idea).
-> > Using the patched driver, following your suggestion (patching it exatcly as I've wrote in the past E-Mails), solved this issue, so now the Audio is correctly played.
-> >
-> > In the following days I'll make some tests (For example audio recording, switch between Headset and Speakers Etc.) and let you know if I'll find other issues.
-> >
-> > Thanks for your continuous support, I've really appreciated it.
-> 
-> Good to hear!
-> Yes as a general rule mixing upstream drivers with Android firmware and 
-> vice-versa is not a good idea, and using the MCLK is the only way to 
-> solve audio quality issues, it's however not enabled on every board 
-> unfortunately. When we have the clock driver I will make this the 
-> default and use quirks to go back to bit-clock based PLL configs.
-> If you want to send me a patch I can merge it with the rest of Baytrail 
-> cleanups still being worked on.
-> 
-> >
-> > Pietro
-> >
-> >
-> > On Wednesday 01 June 2016 10:13:17 Pierre-Louis Bossart wrote:
-> >> On 6/1/16 3:38 AM, Pietro wrote:
-> >>> Hi,
-> >>>
-> >>>
-> >>>
-> >>> The Kernel error messages should be related to the Intel DRM graphics,
-> >>> so I don't care about them (at least for now).
-> >>>
-> >>>
-> >>>
-> >>> Anyway I don't know if tese warning can in some way be related to my
-> >>> problem:
-> >>>
-> >>>
-> >>>
-> >>> [ 9.565990] rt5651 i2c-10EC5651:00: ASoC: mux INL1 Mux has no paths
-> >>>
-> >>> [ 9.586586] rt5651 i2c-10EC5651:00: ASoC: mux INR1 Mux has no paths
-> >>>
-> >>> [ 9.586596] rt5651 i2c-10EC5651:00: ASoC: mux INL2 Mux has no paths
-> >>>
-> >>> [ 9.586601] rt5651 i2c-10EC5651:00: ASoC: mux INR2 Mux has no paths
-> >>
-> >> probably the config is incorrect, I didn't enable capture in the UCM file
-> >>
-> >>>
-> >>> [ 12.646035] sst-mfld-platform sst-mfld-platform: Slot control:
-> >>> codec_out tx interleaver slot 0 doesn't have DAPM widget!!!
-> >>>
-> >>> [ 12.649356] sst-mfld-platform sst-mfld-platform: Slot control:
-> >>> codec_out tx interleaver slot 1 doesn't have DAPM widget!!!
-> >>>
-> >>> [ 12.652673] sst-mfld-platform sst-mfld-platform: Slot control:
-> >>> codec_out tx interleaver slot 2 doesn't have DAPM widget!!!
-> >>>
-> >>> [ 12.656323] sst-mfld-platform sst-mfld-platform: Slot control:
-> >>> codec_out tx interleaver slot 3 doesn't have DAPM widget!!!
-> >>>
-> >>> [ 12.659868] sst-mfld-platform sst-mfld-platform: Slot control: codec_in
-> >>> rx deinterleaver codec_in0_0 doesn't have DAPM widget!!!
-> >>>
-> >>> [ 12.663456] sst-mfld-platform sst-mfld-platform: Slot control: codec_in
-> >>> rx deinterleaver codec_in0_1 doesn't have DAPM widget!!!
-> >>
-> >> this last warning is fixed upstream.
-> >>
-> >>> For your convenience I've extracted the DSDT from Android and Linux,
-> >>> because they seem to differ. Here they are:
-> >>>
-> >>>
-> >>>
-> >>> DSDT Linux: http://paste.ubuntu.com/16885538/
-> >>>
-> >>> DSDT Android: http://paste.ubuntu.com/16885557/
-> >>
-> >> DSDT is OS independent so that doesn't make sense.
-> >> Just to be clear, is this an Android tablet on which you are installing
-> >> ubuntu?
-> >> And did you try to use the firmware from upstream or from the Android
-> >> distribution?
-> >>
-> >>
-> >
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >
-> 
-
-
---------
-[1] http://pastebin.com/uFYq4UAL
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index e060798d94cb..f8cb3c7d3c45 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -1534,8 +1534,9 @@ static struct davinci_mcasp_pdata am33xx_mcasp_pdata = {
+ };
+ 
+ static struct davinci_mcasp_pdata dra7_mcasp_pdata = {
+-	.tx_dma_offset = 0x200,
+-	.rx_dma_offset = 0x284,
++	/* The CFG port offset will be calculated if it is needed */
++	.tx_dma_offset = 0,
++	.rx_dma_offset = 0,
+ 	.version = MCASP_VERSION_4,
+ };
+ 
+@@ -1755,6 +1756,52 @@ static int davinci_mcasp_get_dma_type(struct davinci_mcasp *mcasp)
+ 	return PCM_EDMA;
+ }
+ 
++static u32 davinci_mcasp_txdma_offset(struct davinci_mcasp_pdata *pdata)
++{
++	int i;
++	u32 offset = 0;
++
++	if (pdata->version != MCASP_VERSION_4)
++		return pdata->tx_dma_offset;
++
++	for (i = 0; i < pdata->num_serializer; i++) {
++		if (pdata->serial_dir[i] == TX_MODE) {
++			if (!offset) {
++				offset = DAVINCI_MCASP_TXBUF_REG(i);
++			} else {
++				pr_err("%s: Only one serializer allowed!\n",
++				       __func__);
++				break;
++			}
++		}
++	}
++
++	return offset;
++}
++
++static u32 davinci_mcasp_rxdma_offset(struct davinci_mcasp_pdata *pdata)
++{
++	int i;
++	u32 offset = 0;
++
++	if (pdata->version != MCASP_VERSION_4)
++		return pdata->rx_dma_offset;
++
++	for (i = 0; i < pdata->num_serializer; i++) {
++		if (pdata->serial_dir[i] == RX_MODE) {
++			if (!offset) {
++				offset = DAVINCI_MCASP_RXBUF_REG(i);
++			} else {
++				pr_err("%s: Only one serializer allowed!\n",
++				       __func__);
++				break;
++			}
++		}
++	}
++
++	return offset;
++}
++
+ static int davinci_mcasp_probe(struct platform_device *pdev)
+ {
+ 	struct snd_dmaengine_dai_dma_data *dma_data;
+@@ -1883,7 +1930,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	if (dat)
+ 		dma_data->addr = dat->start;
+ 	else
+-		dma_data->addr = mem->start + pdata->tx_dma_offset;
++		dma_data->addr = mem->start + davinci_mcasp_txdma_offset(pdata);
+ 
+ 	dma = &mcasp->dma_request[SNDRV_PCM_STREAM_PLAYBACK];
+ 	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+@@ -1904,7 +1951,8 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 		if (dat)
+ 			dma_data->addr = dat->start;
+ 		else
+-			dma_data->addr = mem->start + pdata->rx_dma_offset;
++			dma_data->addr =
++				mem->start + davinci_mcasp_rxdma_offset(pdata);
+ 
+ 		dma = &mcasp->dma_request[SNDRV_PCM_STREAM_CAPTURE];
+ 		res = platform_get_resource(pdev, IORESOURCE_DMA, 1);
+diff --git a/sound/soc/davinci/davinci-mcasp.h b/sound/soc/davinci/davinci-mcasp.h
+index a3be108a8c17..10b52d6bdeca 100644
+--- a/sound/soc/davinci/davinci-mcasp.h
++++ b/sound/soc/davinci/davinci-mcasp.h
+@@ -85,9 +85,9 @@
+ 						(n << 2))
+ 
+ /* Transmit Buffer for Serializer n */
+-#define DAVINCI_MCASP_TXBUF_REG		0x200
++#define DAVINCI_MCASP_TXBUF_REG(n)	(0x200 + (n << 2))
+ /* Receive Buffer for Serializer n */
+-#define DAVINCI_MCASP_RXBUF_REG		0x280
++#define DAVINCI_MCASP_RXBUF_REG(n)	(0x280 + (n << 2))
+ 
+ /* McASP FIFO Registers */
+ #define DAVINCI_MCASP_V2_AFIFO_BASE	(0x1010)
+-- 
+2.8.3
