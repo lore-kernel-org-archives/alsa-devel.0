@@ -1,82 +1,70 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt298: remove idle_bias_off = true
-Date: Fri, 3 Jun 2016 00:40:19 +0100
-Message-ID: <20160602234019.GV2282@sirena.org.uk>
-References: <1464850312-18069-1-git-send-email-bardliao@realtek.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6789426429833446452=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2CFB5266BF6
- for <alsa-devel@alsa-project.org>; Fri,  3 Jun 2016 01:40:39 +0200 (CEST)
-In-Reply-To: <1464850312-18069-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, ramesh.babu@intel.com, senthilnathanx.veppur@intel.com, flove@realtek.com
+Subject: Applied "ASoC: fsl: fix build failure" to the asoc tree
+Date: Fri, 03 Jun 2016 00:47:12 +0100
+Message-ID: <E1b8cKW-00028q-4g@finisterre>
+References: <1464872364-3232-1-git-send-email-sudipm.mukherjee@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1464872364-3232-1-git-send-email-sudipm.mukherjee@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============6789426429833446452==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="U8v/hV883cEE9JJG"
-Content-Disposition: inline
+   ASoC: fsl: fix build failure
 
+has been applied to the asoc tree at
 
---U8v/hV883cEE9JJG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Jun 02, 2016 at 02:51:52PM +0800, Bard Liao wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> Codec will not go into suspend if there is any widget forced on with
-> idle_bias_off true. We want codec go into suspend when the system is
-> suspend. Also, we don't do anything in bias level OFF case. So it is
-> actually no different in bias level STANDBY or OFF case.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Hrm.  This feels like something that the framework might be doing wrong
-here.  We should either suspend the CODEC all the time even if there are
-widgets enabled or we should never suspend the CODEC even if there are
-widgets enabled but having it depend on idle_bias_off seems like the
-wrong thing here.  My expectation would be that we would not suspend
-with widgets on since the widgets being on implies the CODEC being on
-and we'd expect suspend to do things like cutting the device level
-power. =20
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Could you talk through the use case in more detail - what's the widget
-and why is it still OK for suspend to run even with widgets on?
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---U8v/hV883cEE9JJG
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+>From 121a01521b1ef7440ea285aa3aae02bf005e5635 Mon Sep 17 00:00:00 2001
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date: Thu, 2 Jun 2016 18:29:24 +0530
+Subject: [PATCH] ASoC: fsl: fix build failure
 
-iQEcBAEBCAAGBQJXUMPiAAoJECTWi3JdVIfQOJYH/As5FPNXrN0C7bvwDg0/5tOc
-51Yvmtma2i7SJN2F7JgYnDkYp4IDp4x+JTd7zxwIACIcCbFGjm4a5yQXHNfpcEXi
-hU17u+N5I/6Y2/uXXdzKgu/kmrIE4nncSJGc9cfsRCobSur+IfRpWB4B8peVg8Ql
-KehFQTkyQmgE2BOkDBSTN4T65IMK8rt2UmU8okuDbv3oXh4EWB7w4TFWez9uBwb1
-NtCnvstgz3fQBSS3JjNDWVn+kCU0cj7vQ3GNpbNk1UqIQ+T1omV/L5gHnqpJZ3f7
-+7RUh2DHveq6y4Zn/Q/7e2liEDHPp8Fgu/n3M/MhUsATT3DvXRmtmT7BPojwALQ=
-=cZQp
------END PGP SIGNATURE-----
+m32r allmodconfig build is failing with the error:
+ERROR: "bad_dma_ops" [sound/soc/fsl/snd-soc-fsl-asrc.ko] undefined!
 
---U8v/hV883cEE9JJG--
+The code is using DMA but the related dependency is not mentioned in the
+Kconfig.
 
---===============6789426429833446452==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/fsl/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-
---===============6789426429833446452==--
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 35aabf9dc503..19bdcac71775 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -4,6 +4,7 @@ comment "Common SoC Audio options for Freescale CPUs:"
+ 
+ config SND_SOC_FSL_ASRC
+ 	tristate "Asynchronous Sample Rate Converter (ASRC) module support"
++	depends on HAS_DMA
+ 	select REGMAP_MMIO
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 	help
+-- 
+2.8.1
