@@ -1,20 +1,21 @@
 From: Pietro <pxpert@gmail.com>
 Subject: Re: Applied "ASoC: Intel: add bytct-rt5651 machine
 	driver" to the asoc tree
-Date: Tue, 31 May 2016 22:11:15 +0200
-Message-ID: <1680237.irs5HCh7f7@wks-pdc-gentoo>
+Date: Thu, 02 Jun 2016 10:58:26 +0200
+Message-ID: <3005504.Rf3z8kOYgB@wks-pdc-gentoo>
 References: <1851514.XmzcdsvJt0@wks-pdc-gentoo>
- <bd2f5937-39bf-5892-959e-ec11cf2c5dba@linux.intel.com>
+ <8428317.tXclBn20Ko@wks-pdc-gentoo>
+ <ba871166-376e-bea0-07b2-f347d7ab296f@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id E46782657B8
- for <alsa-devel@alsa-project.org>; Tue, 31 May 2016 22:11:18 +0200 (CEST)
-Received: by mail-wm0-f68.google.com with SMTP id n129so549900wmn.1
- for <alsa-devel@alsa-project.org>; Tue, 31 May 2016 13:11:18 -0700 (PDT)
-In-Reply-To: <bd2f5937-39bf-5892-959e-ec11cf2c5dba@linux.intel.com>
+Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id B534026047C
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2016 10:58:29 +0200 (CEST)
+Received: by mail-wm0-f67.google.com with SMTP id a20so2302905wma.3
+ for <alsa-devel@alsa-project.org>; Thu, 02 Jun 2016 01:58:29 -0700 (PDT)
+In-Reply-To: <ba871166-376e-bea0-07b2-f347d7ab296f@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,324 +29,119 @@ To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi, 
+You can find the full patch here:
+http://pastebin.com/uFYq4UAL[1] 
 
-Thanks for your reply.
-
-I've tried to change the fw from fw_sst_0f28 to fw_sst_22a8, but I got an error -16 (obviously the firmware is present :) )
-
-Anyway I followed your suggestions and patched bytcr_rt5651.c this way:
-
---- bytcr_rt5651.c.old  2016-05-31 22:00:46.424790660 +0200
-+++ bytcr_rt5651.c      2016-05-31 21:56:25.908502708 +0200
-@@ -31,11 +31,76 @@
- #include "../../codecs/rt5651.h"
- #include "../atom/sst-atom-controls.h"
- 
-+#define CHT_PLAT_CLK_3_HZ       19200000
-+#define CHT_CODEC_DAI_5651   "rt5651-aif1"
-+
-+struct cht_acpi_card {
-+        char *codec_id;
-+        int codec_type;
-+        struct snd_soc_card *soc_card;
-+};
-+
-+struct cht_mc_private {
-+        struct snd_soc_jack jack;
-+        struct cht_acpi_card *acpi_card;
-+};
-+--- bytcr_rt5651.c.old  2016-05-31 22:00:46.424790660 +0200
-+++ bytcr_rt5651.c      2016-05-31 21:56:25.908502708 +0200
-@@ -31,11 +31,76 @@
- #include "../../codecs/rt5651.h"
- #include "../atom/sst-atom-controls.h"
- 
-+#define CHT_PLAT_CLK_3_HZ       19200000
-+#define CHT_CODEC_DAI_5651   "rt5651-aif1"
-+
-+struct cht_acpi_card {
-+        char *codec_id;
-+        int codec_type;
-+        struct snd_soc_card *soc_card;
-+};
-+
-+struct cht_mc_private {
-+        struct snd_soc_jack jack;
-+        struct cht_acpi_card *acpi_card;
-+};
-+
-+
-+static inline struct snd_soc_dai *cht_get_codec_dai(struct snd_soc_card *card)
-+{
-+        struct snd_soc_pcm_runtime *rtd;
-+
-+        list_for_each_entry(rtd, &card->rtd_list, list) {
-+                if (!strncmp(rtd->codec_dai->name, CHT_CODEC_DAI_5651,
-+                             strlen(CHT_CODEC_DAI_5651)))
-+                        return rtd->codec_dai;
-+        }
-+        return NULL;
-+}
-+
-+static int platform_clock_control(struct snd_soc_dapm_widget *w,
-+                struct snd_kcontrol *k, int  event)
-+{
-+        struct snd_soc_dapm_context *dapm = w->dapm;
-+        struct snd_soc_card *card = dapm->card;
-+        struct snd_soc_dai *codec_dai;
-+        int ret;
-+
-+        codec_dai = cht_get_codec_dai(card);
-+        if (!codec_dai) {
-+                dev_err(card->dev, "Codec dai not found; Unable to set platform clock\n");
-+                return -EIO;
-+        }
-+
-+        if (!SND_SOC_DAPM_EVENT_OFF(event))
-+                return 0;
-+
-+        /* Set codec sysclk source to its internal clock because codec PLL will
-+         * be off when idle and MCLK will also be off by ACPI when codec is
-+         * runtime suspended. Codec needs clock for jack detection and button
-+         * press.
-+         */
-+        ret = snd_soc_dai_set_sysclk(codec_dai, RT5651_SCLK_S_RCCLK,
-+                        0, SND_SOC_CLOCK_IN);
-+        if (ret < 0) {
-+                dev_err(card->dev, "can't set codec sysclk: %d\n", ret);
-+                return ret;
-+        }
-+
-+        return 0;
-+}
-+
-+
-+
-+
- static const struct snd_soc_dapm_widget byt_rt5651_widgets[] = {
-        SND_SOC_DAPM_HP("Headphone", NULL),
-        SND_SOC_DAPM_MIC("Headset Mic", NULL),
-        SND_SOC_DAPM_MIC("Internal Mic", NULL),
-        SND_SOC_DAPM_SPK("Speaker", NULL),
-+        SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
-+                        platform_clock_control, SND_SOC_DAPM_POST_PMD),
-+
- };
- 
- static const struct snd_soc_dapm_route byt_rt5651_audio_map[] = {
-@@ -52,6 +117,9 @@
-        {"Headphone", NULL, "HPOR"},
-        {"Speaker", NULL, "LOUTL"},
-        {"Speaker", NULL, "LOUTR"},
-+        {"Headphone", NULL, "Platform Clock"},
-+       {"Speaker", NULL, "Platform Clock"},
-+
- };
- 
- static const struct snd_soc_dapm_route byt_rt5651_intmic_dmic1_map[] = {
-@@ -93,7 +161,15 @@
-        struct snd_soc_dai *codec_dai = rtd->codec_dai;
-        int ret;
- 
--       snd_soc_dai_set_bclk_ratio(codec_dai, 50);
-+        /* set codec PLL source to the 19.2MHz platform clock (MCLK) */
-+        ret = snd_soc_dai_set_pll(codec_dai, 0, RT5651_PLL1_S_MCLK,
-+                                  CHT_PLAT_CLK_3_HZ, params_rate(params) * 512);
-+        if (ret < 0) {
-+                dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
-+                return ret;
-+        }
-+
-+//     snd_soc_dai_set_bclk_ratio(codec_dai, 50);
- 
-        ret = snd_soc_dai_set_sysclk(codec_dai, RT5651_SCLK_S_PLL1,
-                                     params_rate(params) * 512,
-@@ -103,13 +179,13 @@
-                return ret;
-        }
- 
--       ret = snd_soc_dai_set_pll(codec_dai, 0, RT5651_PLL1_S_BCLK1,
--                                 params_rate(params) * 50,
--                                 params_rate(params) * 512);
--       if (ret < 0) {
--               dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
--               return ret;
--       }
-+//     ret = snd_soc_dai_set_pll(codec_dai, 0, RT5651_PLL1_S_BCLK1,
-+//                               params_rate(params) * 50,
-+//                               params_rate(params) * 512);
-+//     if (ret < 0) {
-+//             dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
-+//             return ret;
-+//     }
- 
-        return 0;
- }
-
-+
-+static inline struct snd_soc_dai *cht_get_codec_dai(struct snd_soc_card *card)
-+{
-+        struct snd_soc_pcm_runtime *rtd;
-+
-+        list_for_each_entry(rtd, &card->rtd_list, list) {
-+                if (!strncmp(rtd->codec_dai->name, CHT_CODEC_DAI_5651,
-+                             strlen(CHT_CODEC_DAI_5651)))
-+                        return rtd->codec_dai;
-+        }
-+        return NULL;
-+}
-+
-+static int platform_clock_control(struct snd_soc_dapm_widget *w,
-+                struct snd_kcontrol *k, int  event)
-+{
-+        struct snd_soc_dapm_context *dapm = w->dapm;
-+        struct snd_soc_card *card = dapm->card;
-+        struct snd_soc_dai *codec_dai;
-+        int ret;
-+
-+        codec_dai = cht_get_codec_dai(card);
-+        if (!codec_dai) {
-+                dev_err(card->dev, "Codec dai not found; Unable to set platform clock\n");
-+                return -EIO;
-+        }
-+
-+        if (!SND_SOC_DAPM_EVENT_OFF(event))
-+                return 0;
-+
-+        /* Set codec sysclk source to its internal clock because codec PLL will
-+         * be off when idle and MCLK will also be off by ACPI when codec is
-+         * runtime suspended. Codec needs clock for jack detection and button
-+         * press.
-+         */
-+        ret = snd_soc_dai_set_sysclk(codec_dai, RT5651_SCLK_S_RCCLK,
-+                        0, SND_SOC_CLOCK_IN);
-+        if (ret < 0) {
-+                dev_err(card->dev, "can't set codec sysclk: %d\n", ret);
-+                return ret;
-+        }
-+
-+        return 0;
-+}
-+
-+
-+
-+
- static const struct snd_soc_dapm_widget byt_rt5651_widgets[] = {
-        SND_SOC_DAPM_HP("Headphone", NULL),
-        SND_SOC_DAPM_MIC("Headset Mic", NULL),
-        SND_SOC_DAPM_MIC("Internal Mic", NULL),
-        SND_SOC_DAPM_SPK("Speaker", NULL),
-+        SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
-+                        platform_clock_control, SND_SOC_DAPM_POST_PMD),
-+
- };
- 
- static const struct snd_soc_dapm_route byt_rt5651_audio_map[] = {
-@@ -52,6 +117,9 @@
-        {"Headphone", NULL, "HPOR"},
-        {"Speaker", NULL, "LOUTL"},
-        {"Speaker", NULL, "LOUTR"},
-+        {"Headphone", NULL, "Platform Clock"},
-+       {"Speaker", NULL, "Platform Clock"},
-+
- };
- 
- static const struct snd_soc_dapm_route byt_rt5651_intmic_dmic1_map[] = {
-@@ -93,7 +161,15 @@
-        struct snd_soc_dai *codec_dai = rtd->codec_dai;
-        int ret;
- 
--       snd_soc_dai_set_bclk_ratio(codec_dai, 50);
-+        /* set codec PLL source to the 19.2MHz platform clock (MCLK) */
-+        ret = snd_soc_dai_set_pll(codec_dai, 0, RT5651_PLL1_S_MCLK,
-+                                  CHT_PLAT_CLK_3_HZ, params_rate(params) * 512);
-+        if (ret < 0) {
-+                dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
-+                return ret;
-+        }
-+
-+//     snd_soc_dai_set_bclk_ratio(codec_dai, 50);
- 
-        ret = snd_soc_dai_set_sysclk(codec_dai, RT5651_SCLK_S_PLL1,
-                                     params_rate(params) * 512,
-@@ -103,13 +179,13 @@
-                return ret;
-        }
- 
--       ret = snd_soc_dai_set_pll(codec_dai, 0, RT5651_PLL1_S_BCLK1,
--                                 params_rate(params) * 50,
--                                 params_rate(params) * 512);
--       if (ret < 0) {
--               dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
--               return ret;
--       }
-+//     ret = snd_soc_dai_set_pll(codec_dai, 0, RT5651_PLL1_S_BCLK1,
-+//                               params_rate(params) * 50,
-+//                               params_rate(params) * 512);
-+//     if (ret < 0) {
-+//             dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
-+//             return ret;
-+//     }
- 
-        return 0;
- }
+I've patched it against the 4.7RC1 tree. I have tested it only on 4.5.2, but I don't think there will be significant differences between 4.5.2 and 4.7RC1 trunks (I only noticed the add of RT5640 support for cherryview). Anyway I'll let you know if I'll find some problems.
 
 
-But I still have the same problem: Audio plays slowly.
+Pietro
 
-It seems the DSP is clocked at 19.2, but the system is still clocked for 25, and these changes doesn't seem to have effects...
-
-
-On Tuesday 31 May 2016 07:29:19 Pierre-Louis Bossart wrote:
-> On 5/31/16 3:43 AM, Pietro wrote:
+On Wednesday 01 June 2016 16:58:35 Pierre-Louis Bossart wrote:
+> On 6/1/16 4:43 PM, Pietro wrote:
 > > Hi,
 > >
-> > I'm an owner of a 2 in 1 Netbook with an Atom X5 Z8300 SoC with rt5651 codec (Cube iWork 11).
+> > Sorry for the wrong information:
+> > the 2 DSDTs were decompiled using different iasl versions (20140828 for Android vs 20150717 for Linux), giving apparently different results (the functions were decoded differently, but the keys were the same).
 > >
-> > To get audio working I Added these lines of code to the ./soc/intel/atom/sst/sst_acpi.c file:
+> > The tablet is a dual boot Windows+Android (Surely based on AndroidIA, with a Patched gmin kernel... Obviously the sources were not provided by the manifacturer).
 > >
-> > --- ./soc/intel/atom/sst/sst_acpi.c.old 2016-05-31 09:05:40.045682194 +0200
-> > +++ ./soc/intel/atom/sst/sst_acpi.c     2016-05-31 09:07:26.829324148 +0200
-> > @@ -342,9 +342,12 @@
-> >                                                 &chv_platform_data },
-> >         {"193C9890", "cht-bsw-max98090", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
-> >                                                 &chv_platform_data },
-> > +       {"10EC5651", "bytcr_rt5651", "intel/fw_sst_0f28.bin", "bytcr_rt5651", NULL,
-> > +                                               &byt_rvp_platform_data },
-> >         {},
-> >  };
+> > I've made some tests using both the firmware included in Android, and the upstream ones, with no apparent results (Always slow Audio).
+> >
+> > But when you suggested me to use the fw_sst_22a8.bin I was trying to load the Android one, giving me load errors. Now I've tried the upstream one and it works with correct timing settings (!!)
+> >
+> > Then I've tried to restore the 4.5.2 stock bytcr_rt5651.c, but this gave me inconsistent playback: The speed was right, but there were continue audio artifacts (like the ones given by a bad resampler, to give you an idea).
+> > Using the patched driver, following your suggestion (patching it exatcly as I've wrote in the past E-Mails), solved this issue, so now the Audio is correctly played.
+> >
+> > In the following days I'll make some tests (For example audio recording, switch between Headset and Speakers Etc.) and let you know if I'll find other issues.
+> >
+> > Thanks for your continuous support, I've really appreciated it.
 > 
-> use the same as for rt5640 on cht:
+> Good to hear!
+> Yes as a general rule mixing upstream drivers with Android firmware and 
+> vice-versa is not a good idea, and using the MCLK is the only way to 
+> solve audio quality issues, it's however not enabled on every board 
+> unfortunately. When we have the clock driver I will make this the 
+> default and use quirks to go back to bit-clock based PLL configs.
+> If you want to send me a patch I can merge it with the rest of Baytrail 
+> cleanups still being worked on.
 > 
-> /* some CHT-T platforms rely on RT5640, use Baytrail machine driver */
-> {"10EC5640", "bytcr_rt5640", "intel/fw_sst_22a8.bin", "bytcr_rt5640", 
-> NULL, &chv_platform_data },
+> >
+> > Pietro
+> >
+> >
+> > On Wednesday 01 June 2016 10:13:17 Pierre-Louis Bossart wrote:
+> >> On 6/1/16 3:38 AM, Pietro wrote:
+> >>> Hi,
+> >>>
+> >>>
+> >>>
+> >>> The Kernel error messages should be related to the Intel DRM graphics,
+> >>> so I don't care about them (at least for now).
+> >>>
+> >>>
+> >>>
+> >>> Anyway I don't know if tese warning can in some way be related to my
+> >>> problem:
+> >>>
+> >>>
+> >>>
+> >>> [ 9.565990] rt5651 i2c-10EC5651:00: ASoC: mux INL1 Mux has no paths
+> >>>
+> >>> [ 9.586586] rt5651 i2c-10EC5651:00: ASoC: mux INR1 Mux has no paths
+> >>>
+> >>> [ 9.586596] rt5651 i2c-10EC5651:00: ASoC: mux INL2 Mux has no paths
+> >>>
+> >>> [ 9.586601] rt5651 i2c-10EC5651:00: ASoC: mux INR2 Mux has no paths
+> >>
+> >> probably the config is incorrect, I didn't enable capture in the UCM file
+> >>
+> >>>
+> >>> [ 12.646035] sst-mfld-platform sst-mfld-platform: Slot control:
+> >>> codec_out tx interleaver slot 0 doesn't have DAPM widget!!!
+> >>>
+> >>> [ 12.649356] sst-mfld-platform sst-mfld-platform: Slot control:
+> >>> codec_out tx interleaver slot 1 doesn't have DAPM widget!!!
+> >>>
+> >>> [ 12.652673] sst-mfld-platform sst-mfld-platform: Slot control:
+> >>> codec_out tx interleaver slot 2 doesn't have DAPM widget!!!
+> >>>
+> >>> [ 12.656323] sst-mfld-platform sst-mfld-platform: Slot control:
+> >>> codec_out tx interleaver slot 3 doesn't have DAPM widget!!!
+> >>>
+> >>> [ 12.659868] sst-mfld-platform sst-mfld-platform: Slot control: codec_in
+> >>> rx deinterleaver codec_in0_0 doesn't have DAPM widget!!!
+> >>>
+> >>> [ 12.663456] sst-mfld-platform sst-mfld-platform: Slot control: codec_in
+> >>> rx deinterleaver codec_in0_1 doesn't have DAPM widget!!!
+> >>
+> >> this last warning is fixed upstream.
+> >>
+> >>> For your convenience I've extracted the DSDT from Android and Linux,
+> >>> because they seem to differ. Here they are:
+> >>>
+> >>>
+> >>>
+> >>> DSDT Linux: http://paste.ubuntu.com/16885538/
+> >>>
+> >>> DSDT Android: http://paste.ubuntu.com/16885557/
+> >>
+> >> DSDT is OS independent so that doesn't make sense.
+> >> Just to be clear, is this an Android tablet on which you are installing
+> >> ubuntu?
+> >> And did you try to use the firmware from upstream or from the Android
+> >> distribution?
+> >>
+> >>
+> >
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >
 > 
-> >
-> > +
-> >  static const struct acpi_device_id sst_acpi_ids[] = {
-> >         { "80860F28", (unsigned long)&sst_acpi_bytcr},
-> >         { "808622A8", (unsigned long) &sst_acpi_chv},
-> >
-> >
-> >
-> >
-> > Then i added the UCM files linked in these archive:
-> > https://github.com/plbossart/UCM/tree/master/bytcr-rt5651
-> >
-> >
-> >
-> > With this configuration, audio seems to work, but is 'slow': Playback speed is at slow motion, and seconds move slowly (Tried with aplay and audacious with many sound files, using directly Alsa and Pulseaudio with no differencies).
-> >
-> > This seems to be a DSP Clock problem. Have you got any suggestions to solve this problem?
-> 
-> we've had this report before with rt5640 but it's unclear what might 
-> cause this. the codec is configured as slave and uses the bit clock as 
-> source for its PLL.
-> the easiest fix in this case would be to use the 19.2 MCLK which is 
-> enabled by default on CHT, see examples in cht-bsw-rt5645 (look at 
-> platform clock control and everything with set_sys_clk, but keep the 2 
-> slots). We will add this on baytrail as well at some point when we have 
-> a clock framework driver for the MCLK control.
-> 
+
+
+--------
+[1] http://pastebin.com/uFYq4UAL
