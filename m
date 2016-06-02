@@ -1,24 +1,25 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5] ASoC: cs53l30: Add support for Cirrus
- Logic CS53L30
-Date: Thu, 2 Jun 2016 19:40:14 +0100
-Message-ID: <20160602184014.GR2282@sirena.org.uk>
-References: <1458082066-2859-1-git-send-email-tim.howe@cirrus.com>
- <20160517234333.GB29471@Asurada-Nvidia>
- <20160531165358.GH29837@sirena.org.uk>
- <CAG5mAdw-gh2_ZQ17h3HS=pMZaW-bGhoKgNDz_hbwzw2rBKs8ig@mail.gmail.com>
- <20160531173505.GI29837@sirena.org.uk>
- <CAG5mAdwB-YCiFV0L+KgULKcmRVEhHK68mBrf9UHe0s-1UBotJQ@mail.gmail.com>
- <20160602171753.GQ2282@sirena.org.uk>
- <CAG5mAdwp2DEeFk6pwe6n65iQHHzzyiNPx1QTz3u2rUsQRUpNEA@mail.gmail.com>
+From: Laura Abbott <labbott@redhat.com>
+Subject: Re: [REGRESSION] Headphones no longer working on
+	MacPro6, 1 with 4.4
+Date: Thu, 2 Jun 2016 14:20:24 -0700
+Message-ID: <7223d50d-9c89-3510-085c-6757feece8a1@redhat.com>
+References: <56E8611D.8090005@redhat.com> <s5h8u1jwmym.wl-tiwai@suse.de>
+ <s5h60wnwmgt.wl-tiwai@suse.de>
+ <f64ce31c-4465-0f4a-b7f4-4546fe3bc66a@redhat.com>
+ <s5hwpmn3obr.wl-tiwai@suse.de> <s5hshxb3li2.wl-tiwai@suse.de>
+ <dcfd89b1-fdae-d88a-8fb6-76857afe6d8d@redhat.com>
+ <s5hr3cr1gw0.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8411991214077973583=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AAE8726519F
- for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2016 20:40:27 +0200 (CEST)
-In-Reply-To: <CAG5mAdwp2DEeFk6pwe6n65iQHHzzyiNPx1QTz3u2rUsQRUpNEA@mail.gmail.com>
+Received: from mail-qk0-f170.google.com (mail-qk0-f170.google.com
+ [209.85.220.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 79CCE26684F
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2016 23:20:29 +0200 (CEST)
+Received: by mail-qk0-f170.google.com with SMTP id c140so39601283qke.2
+ for <alsa-devel@alsa-project.org>; Thu, 02 Jun 2016 14:20:29 -0700 (PDT)
+In-Reply-To: <s5hr3cr1gw0.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,79 +29,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, paul.handrigan@cirrus.com, "Howe,
- Tim" <tim.howe@cirrus.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, "linux-kernel@vger.kernel.org >> Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 05/24/2016 10:54 AM, Takashi Iwai wrote:
+> On Tue, 24 May 2016 18:41:06 +0200,
+> Laura Abbott wrote:
+>>
+>> Node 0x10 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+>>   Control: name="Headphone Playback Switch", index=0, device=0
+>>     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+>>   Amp-Out caps: ofs=0x42, nsteps=0x42, stepsize=0x03, mute=1
+>>   Amp-Out vals:  [0x42 0x42]
+>>   Pincap 0x0000001c: OUT HP Detect
+>>   Pin Default 0x002b4020: [Jack] HP Out at Ext N/A
+>>     Conn = Comb, Color = Green
+>>     DefAssociation = 0x2, Sequence = 0x0
+>>   Pin-ctls: 0xc0: OUT HP
+>>   Unsolicited: tag=01, enabled=1
+>>   Power states:  D0 D3 EPSS
+>>   Power: setting=D3, actual=D3
+>
+> This pin is powered off, because...
+>
+>> 	control.18 {
+>> 		iface CARD
+>> 		name 'Mic Jack'
+>> 		value false
+>> 		comment {
+>> 			access read
+>> 			type BOOLEAN
+>> 			count 1
+>> 		}
+>> 	}
+>> 	control.19 {
+>> 		iface CARD
+>> 		name 'Line Out Phantom Jack'
+>> 		value true
+>> 		comment {
+>> 			access read
+>> 			type BOOLEAN
+>> 			count 1
+>> 		}
+>> 	}
+>> 	control.20 {
+>> 		iface CARD
+>> 		name 'Headphone Jack'
+>> 		value false
+>
+> The headphone jack isn't detected.
+> Meanwhile,
+>
+>> 	control.22 {
+>> 		iface CARD
+>> 		name 'SPDIF Jack'
+>> 		value true
+>
+> SPDIF jack is detected.  This might confuse PA.
+>
+> In anyway, the alsa-info.sh output you gave doesn't help for analyzing
+> the issue while the headphone is plugged.  It is off when unplugged.
+> It's the designed behavior.
+>
+> So, please give the information during the headphone is plugged (but
+> still doesn't produce the sound from the headphone).
+>
+>
+> Takashi
+>
 
---===============8411991214077973583==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="fqIB0bRxfTYxTb/F"
-Content-Disposition: inline
+According to the reporter:
 
+"Actually, that information was when the headphones were plugged in,
+but the detection is incorrect.  (Linux thinks the headphones are
+unplugged, when they are actually plugged in."
 
---fqIB0bRxfTYxTb/F
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Jun 02, 2016 at 10:40:58AM -0700, Caleb Crome wrote:
-> On Thu, Jun 2, 2016 at 10:17 AM, Mark Brown <broonie@kernel.org> wrote:
-
-> > Well, if you specifically mean TDM as opposed to multi-channel our
-> > general support for that isn't good (mainly due to lack of demand).  It
-> > sounds like you're more interested in multi channel here though.
-
-> I must be missing something.  To me, TDM is synonymous with
-> multi-channel on a single wire. The datasheets of codecs and SoCs
-
-TDM, at least in the sense Linux is using it, is multiple *unrelated*
-audio streams on a single wire.  Any multi-channel audio stream is TDM
-in some sense but the trivial extension to add two or more channels
-isn't really a big deal.  This is for things more complex than just
-stuffing more bytes of data onto a wire where there are going to be some
-timeslots that the device should ignore as they're going to/from other
-devices (or at least other streams even if the same chip is handling
-them).
-
-> (I recall there is also a specific TDM format with something like 384
-> slots per frame, which is a well defined thing, but that's not what
-> I'm talking about.  That's used just for telephony I beleive).
-
-You're thinking of H.1x0 CTBus which is genuine TDM, used for routing
-single channel audio streams between multiple PCI (H.100) or cPCI
-(H.110) cards in a system.  It does way more than 384 slots, 4096
-8kHz 8 bit timeslots IIRC.
-
-> What's the linuxy name for what the datasheets call TDM format with
-> slots > 2?  Do we just call that 'multi-channel', or specifically say,
-> 'channels_max > 2'?  I was always under the assumption that's what TDM
-> meant.
-
-We don't particularly call it anything, it's such a trivial extension.
-
---fqIB0bRxfTYxTb/F
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXUH2GAAoJECTWi3JdVIfQe5MIAIDREiQ3X0kvGPz++JcJpEqt
-/Ng6JWwxBjaPW0nXIXoXWLxnP7TmHYkul6H1Terw14zYfiZjZIv60vi/kXqsdcU3
-Yb8albZpi+Pj5wG4HJq2HHtSTYb1lFs28ZF6dun1bZRkEnq/moxhMp5slywudCX/
-NeXSZe+IhhemlzZBusLlhueNzTwTTCdmUtfmKMsnb1YW0IJpYM+Q3jexc6NKRsET
-cfUj/3HpYVY4kE64oehS31R973AnDPlJLTzpwI8PVf8G2+N6J5V7hnIewoA+4dWQ
-5hRYdve2de9HMwJ6nkeQsu/crHWuzKc8Dw/tkC2/gtJwIKhrDRQH9HO8ESlfz5I=
-=P24w
------END PGP SIGNATURE-----
-
---fqIB0bRxfTYxTb/F--
-
---===============8411991214077973583==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8411991214077973583==--
+Thanks,
+Laura
