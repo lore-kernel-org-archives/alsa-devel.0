@@ -1,40 +1,81 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] ASoC: sgtl5000: only check VDDD-supply, not revision
-Date: Thu, 2 Jun 2016 12:48:15 -0300
-Message-ID: <CAOMZO5B20n7Tu3r+BsU2R5BbYj41tf7qBsMLRWxChdWMkHxLNQ@mail.gmail.com>
-References: <20160602124724.7725-1-clemens.gruber@pqgruber.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: hdmi-codec: select CONFIG_HDMI" to the asoc tree
+Date: Thu, 02 Jun 2016 16:50:33 +0100
+Message-ID: <E1b8UtF-0004wQ-3V@finisterre>
+References: <1464729159-587126-1-git-send-email-arnd@arndb.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160602124724.7725-1-clemens.gruber@pqgruber.com>
+In-Reply-To: <1464729159-587126-1-git-send-email-arnd@arndb.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Eric Nelson <eric@nelint.com>, linux-kernel <linux-kernel@vger.kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>Jyri Sarha <jsarha@ti.com>, linux-kernel@vger.kernel.org, PC Liao <pc.liao@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
+The patch
 
-On Thu, Jun 2, 2016 at 9:47 AM, Clemens Gruber
-<clemens.gruber@pqgruber.com> wrote:
-> Instead of checking the SGTL5000 chip revision, we should only check if
-> the VDDD regulator exists and only call sgtl5000_replace_vddd_with_ldo
-> if the regulator is missing.
-> Otherwise, the user reads in the kernel log that the internal LDO is
-> used, even though he did follow the NXP recommendation to use external
-> VDDD and also specified VDDD-supply in the devicetree.
->
-> Also remove the comment, which incorrectly states that external VDDD is
-> only supported for SGTL5000 chip revisions < 0x11.
-> Official NXP documentation recommends using external VDDD and not the
-> internal LDO due to the SGTL5000 erratum ER1. This also applies to
-> revisions >= 0x11.
->
-> Tested on an i.MX6Q board with SGTL5000 rev 0x11 and external VDDD.
+   ASoC: hdmi-codec: select CONFIG_HDMI
 
-Patch looks good to me.
+has been applied to the asoc tree at
 
-Eric,
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Sometime ago you were looking at this. What do you think about this patch?
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Thanks
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 6de7df8d1b1a45a07d6ecc6b4f94179e1e68f5ec Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 31 May 2016 23:12:00 +0200
+Subject: [PATCH] ASoC: hdmi-codec: select CONFIG_HDMI
+
+SND_SOC_HDMI_CODEC can be enabled without HDMI support, leading
+to a link error:
+
+In function `hdmi_codec_hw_params':
+sound/soc/codecs/hdmi-codec.c:188: undefined reference to `hdmi_audio_infoframe_init'
+sound/built-in.o:(.debug_addr+0x1a5c0): undefined reference to `hdmi_audio_infoframe_init'
+
+This changes the Kconfig file to select HDMI, as the other codec using
+hdmi_audio_infoframe_init already does.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Jyri Sarha <jsarha@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/Kconfig | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 4d82a58ff6b0..f3fb98f0a995 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -483,9 +483,10 @@ config SND_SOC_DMIC
+ 	tristate
+ 
+ config SND_SOC_HDMI_CODEC
+-       tristate
+-       select SND_PCM_ELD
+-       select SND_PCM_IEC958
++	tristate
++	select SND_PCM_ELD
++	select SND_PCM_IEC958
++	select HDMI
+ 
+ config SND_SOC_ES8328
+ 	tristate "Everest Semi ES8328 CODEC"
+-- 
+2.8.1
