@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs53l30: Check return value of regcache_sync()" to the asoc tree
-Date: Thu, 02 Jun 2016 11:18:19 +0100
-Message-ID: <E1b8Phj-0001aJ-Kx@finisterre>
-References: <1464735999-10384-2-git-send-email-nicoleotsuka@gmail.com>
+Subject: Applied "ASoC: cs53l30: Rename the volume controls for preamplifier" to the asoc tree
+Date: Thu, 02 Jun 2016 11:18:24 +0100
+Message-ID: <E1b8Pho-0001aw-Bc@finisterre>
+References: <1464735999-10384-1-git-send-email-nicoleotsuka@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1464735999-10384-2-git-send-email-nicoleotsuka@gmail.com>
+In-Reply-To: <1464735999-10384-1-git-send-email-nicoleotsuka@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Nicolin Chen <nicoleotsuka@gmail.com>
 Cc: Paul Handrigan <Paul.Handrigan@cirrus.com>, Mark Brown <broonie@kernel.org>broonie@kernel.org, brian.austin@cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.comPaul.Handrigan@cirrus.com, linux-kernel@vger.kernel.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs53l30: Check return value of regcache_sync()
+   ASoC: cs53l30: Rename the volume controls for preamplifier
 
 has been applied to the asoc tree at
 
@@ -37,36 +37,37 @@ to this mail.
 Thanks,
 Mark
 
->From 87a4bb11355f8b59c0d865a96044b5853f6c222e Mon Sep 17 00:00:00 2001
+>From b97c4446817a88a3e5c85d6eed3e65693588c088 Mon Sep 17 00:00:00 2001
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Date: Tue, 31 May 2016 16:06:39 -0700
-Subject: [PATCH] ASoC: cs53l30: Check return value of regcache_sync()
+Date: Tue, 31 May 2016 16:06:38 -0700
+Subject: [PATCH] ASoC: cs53l30: Rename the volume controls for preamplifier
 
-Regcache_sync() might fail. So this patch adds a return value Check for it.
+Volume controls should end with 'Volume', so this patch renames them for
+ADC preamplifier.
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Acked-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs53l30.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/codecs/cs53l30.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
-index 9aff449e57af..ac90dd79857e 100644
+index 714e5799284f..9aff449e57af 100644
 --- a/sound/soc/codecs/cs53l30.c
 +++ b/sound/soc/codecs/cs53l30.c
-@@ -1055,7 +1055,11 @@ static int cs53l30_runtime_resume(struct device *dev)
- 		gpiod_set_value_cansleep(cs53l30->reset_gpio, 1);
+@@ -331,10 +331,10 @@ static const struct snd_kcontrol_new cs53l30_snd_controls[] = {
+ 	SOC_SINGLE_TLV("ADC2 NG Boost Volume", CS53L30_ADC2_NG_CTL,
+ 		       CS53L30_ADCx_NG_BOOST_SHIFT, 1, 0, adc_ng_boost_tlv),
  
- 	regcache_cache_only(cs53l30->regmap, false);
--	regcache_sync(cs53l30->regmap);
-+	ret = regcache_sync(cs53l30->regmap);
-+	if (ret) {
-+		dev_err(dev, "failed to synchronize regcache: %d\n", ret);
-+		return ret;
-+	}
+-	SOC_DOUBLE_R_TLV("ADC1 Pre Amp Gain", CS53L30_ADC1A_AFE_CTL,
++	SOC_DOUBLE_R_TLV("ADC1 Preamplifier Volume", CS53L30_ADC1A_AFE_CTL,
+ 			 CS53L30_ADC1B_AFE_CTL, CS53L30_ADCxy_PREAMP_SHIFT,
+ 			 2, 0, pga_preamp_tlv),
+-	SOC_DOUBLE_R_TLV("ADC2 Pre Amp Gain", CS53L30_ADC2A_AFE_CTL,
++	SOC_DOUBLE_R_TLV("ADC2 Preamplifier Volume", CS53L30_ADC2A_AFE_CTL,
+ 			 CS53L30_ADC2B_AFE_CTL, CS53L30_ADCxy_PREAMP_SHIFT,
+ 			 2, 0, pga_preamp_tlv),
  
- 	return 0;
- }
 -- 
 2.8.1
