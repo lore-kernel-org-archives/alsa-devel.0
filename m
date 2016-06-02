@@ -1,180 +1,113 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: davinci-mcasp: Fix dra7 DMA offset when
-	using CFG port" to the asoc tree
-Date: Thu, 02 Jun 2016 11:19:21 +0100
-Message-ID: <E1b8Pik-0001dn-02@finisterre>
-References: <20160602095505.6867-1-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 2/4] ASoC: sunxi: Add Allwinner A10 Digital Audio driver
+Date: Thu, 2 Jun 2016 11:26:51 +0100
+Message-ID: <20160602102651.GF2282@sirena.org.uk>
+References: <20160601175430.11625-1-maxime.ripard@free-electrons.com>
+ <20160601175430.11625-3-maxime.ripard@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 45D9F2668B8
- for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2016 12:19:33 +0200 (CEST)
-In-Reply-To: <20160602095505.6867-1-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: misael.lopez@ti.com, broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="NGIwU0kFl1Z1A3An"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20160601175430.11625-3-maxime.ripard@free-electrons.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Maxime Ripard <maxime.ripard@free-electrons.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Liam Girdwood <lgirdwood@gmail.com>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Andrea Venturi <ennesimamail.av@gmail.com>, Code Kipper <codekipper@gmail.com>, gianfranco@moddevices.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: davinci-mcasp: Fix dra7 DMA offset when using CFG port
+--NGIwU0kFl1Z1A3An
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+On Wed, Jun 01, 2016 at 07:54:28PM +0200, Maxime Ripard wrote:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> @@ -16,4 +25,5 @@ config SND_SUN4I_SPDIF
+>  	help
+>  	  Say Y or M to add support for the S/PDIF audio block in the Allwinner
+>  	  A10 and affiliated SoCs.
+> +
+>  endmenu
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Unrelated whitespace change.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> +static int sun4i_i2s_params_to_sr(struct snd_pcm_hw_params *params)
+> +{
+> +	switch (params_width(params)) {
+> +	case 16:
+> +		return 0;
+> +	}
+> +
+> +	return -EINVAL;
+> +}
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+The switch statement here and in the _wss() function look weird because
+they don't have default cases.  Since there's only one user of both
+functions it seems better to have the switch statements inline anyway.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> +	for (i = 0; sun4i_i2s_mclk_div[i].div; i++) {
+> +		const struct sun4i_i2s_clk_div *mdiv = sun4i_i2s_mclk_div + i;
 
-Thanks,
-Mark
+Why not just write these as normal array lookups?
 
->From 9ac0013ce6744fb49d961e592e1339ab1453b914 Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Thu, 2 Jun 2016 12:55:05 +0300
-Subject: [PATCH] ASoC: davinci-mcasp: Fix dra7 DMA offset when using CFG port
+> +	switch (rate) {
+> +        case 176400:
+> +        case 88200:
 
-The TX and RX offset is different for each serializers when using the CFG
-port for DMA access.
-When using the CFG port only one serializer can be used per direction so
-print error message and only configure the first serializer's offset.
+Weird indentation here...  it also seems spaces not tabs are being
+used for the case labels.
 
-Reported-by: Misael Lopez Cruz <misael.lopez@ti.com>
-Suggested-by: Misael Lopez Cruz <misael.lopez@ti.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/davinci/davinci-mcasp.c | 56 ++++++++++++++++++++++++++++++++++++---
- sound/soc/davinci/davinci-mcasp.h |  4 +--
- 2 files changed, 54 insertions(+), 6 deletions(-)
+> +	clk_set_rate(i2s->mod_clk, clk_rate);
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 0f66fda2c772..237dc67002ef 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -1513,8 +1513,9 @@ static struct davinci_mcasp_pdata am33xx_mcasp_pdata = {
- };
- 
- static struct davinci_mcasp_pdata dra7_mcasp_pdata = {
--	.tx_dma_offset = 0x200,
--	.rx_dma_offset = 0x284,
-+	/* The CFG port offset will be calculated if it is needed */
-+	.tx_dma_offset = 0,
-+	.rx_dma_offset = 0,
- 	.version = MCASP_VERSION_4,
- };
- 
-@@ -1734,6 +1735,52 @@ static int davinci_mcasp_get_dma_type(struct davinci_mcasp *mcasp)
- 	return PCM_EDMA;
- }
- 
-+static u32 davinci_mcasp_txdma_offset(struct davinci_mcasp_pdata *pdata)
-+{
-+	int i;
-+	u32 offset = 0;
-+
-+	if (pdata->version != MCASP_VERSION_4)
-+		return pdata->tx_dma_offset;
-+
-+	for (i = 0; i < pdata->num_serializer; i++) {
-+		if (pdata->serial_dir[i] == TX_MODE) {
-+			if (!offset) {
-+				offset = DAVINCI_MCASP_TXBUF_REG(i);
-+			} else {
-+				pr_err("%s: Only one serializer allowed!\n",
-+				       __func__);
-+				break;
-+			}
-+		}
-+	}
-+
-+	return offset;
-+}
-+
-+static u32 davinci_mcasp_rxdma_offset(struct davinci_mcasp_pdata *pdata)
-+{
-+	int i;
-+	u32 offset = 0;
-+
-+	if (pdata->version != MCASP_VERSION_4)
-+		return pdata->rx_dma_offset;
-+
-+	for (i = 0; i < pdata->num_serializer; i++) {
-+		if (pdata->serial_dir[i] == RX_MODE) {
-+			if (!offset) {
-+				offset = DAVINCI_MCASP_RXBUF_REG(i);
-+			} else {
-+				pr_err("%s: Only one serializer allowed!\n",
-+				       __func__);
-+				break;
-+			}
-+		}
-+	}
-+
-+	return offset;
-+}
-+
- static int davinci_mcasp_probe(struct platform_device *pdev)
- {
- 	struct snd_dmaengine_dai_dma_data *dma_data;
-@@ -1862,7 +1909,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 	if (dat)
- 		dma_data->addr = dat->start;
- 	else
--		dma_data->addr = mem->start + pdata->tx_dma_offset;
-+		dma_data->addr = mem->start + davinci_mcasp_txdma_offset(pdata);
- 
- 	dma = &mcasp->dma_request[SNDRV_PCM_STREAM_PLAYBACK];
- 	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-@@ -1883,7 +1930,8 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 		if (dat)
- 			dma_data->addr = dat->start;
- 		else
--			dma_data->addr = mem->start + pdata->rx_dma_offset;
-+			dma_data->addr =
-+				mem->start + davinci_mcasp_rxdma_offset(pdata);
- 
- 		dma = &mcasp->dma_request[SNDRV_PCM_STREAM_CAPTURE];
- 		res = platform_get_resource(pdev, IORESOURCE_DMA, 1);
-diff --git a/sound/soc/davinci/davinci-mcasp.h b/sound/soc/davinci/davinci-mcasp.h
-index 1e8787fb3fb7..afddc8010c54 100644
---- a/sound/soc/davinci/davinci-mcasp.h
-+++ b/sound/soc/davinci/davinci-mcasp.h
-@@ -85,9 +85,9 @@
- 						(n << 2))
- 
- /* Transmit Buffer for Serializer n */
--#define DAVINCI_MCASP_TXBUF_REG		0x200
-+#define DAVINCI_MCASP_TXBUF_REG(n)	(0x200 + (n << 2))
- /* Receive Buffer for Serializer n */
--#define DAVINCI_MCASP_RXBUF_REG		0x280
-+#define DAVINCI_MCASP_RXBUF_REG(n)	(0x280 + (n << 2))
- 
- /* McASP FIFO Registers */
- #define DAVINCI_MCASP_V2_AFIFO_BASE	(0x1010)
--- 
-2.8.1
+Should really check the return value.
+
+> +	/* Enable the first output line */
+> +	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+> +			   SUN4I_I2S_CTRL_SDO_EN_MASK,
+> +			   SUN4I_I2S_CTRL_SDO_EN(0));
+> +
+> +	/* Enable the first two channels */
+> +	regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_SEL_REG,
+> +		     SUN4I_I2S_TX_CHAN_SEL(2));
+> +
+> +	/* Map them to the two first samples coming in */
+> +	regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_MAP_REG,
+> +		     SUN4I_I2S_TX_CHAN_MAP(0, 0) | SUN4I_I2S_TX_CHAN_MAP(1, 1));
+
+We don't undo these if setup fails...  do them once on probe?
+
+> +static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+> +{
+> +        struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+> +	u32 val;
+
+More tab/space damage, there seems to be quite a bit in the rest of the
+driver.
+
+> +static int sun4i_i2s_dai_probe(struct snd_soc_dai *dai)
+> +{
+> +	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+> +
+> +	/* Enable the whole hardware block */
+> +	regmap_write(i2s->regmap, SUN4I_I2S_CTRL_REG,
+> +		     SUN4I_I2S_CTRL_GL_EN);
+
+Runtime PM?  It also seems like this is something that ought to be
+covered in the suspend and resume callbacks.
+
+--NGIwU0kFl1Z1A3An
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXUAnqAAoJECTWi3JdVIfQphMH+gPFB0QmNtTw+Fy7H7YHKQ7O
+sMv9NLTWtzUFO4kaz93s9vjWq9Y4Mw+FxhUxdMLpYA7xbRNzIsXEg/SkwUA7jRE3
+6l9+qI4j7HDVdt+cVthuxTD8rbwr3Zxe53vUgyFzz7zr/5vrROi9OhcVCbFZ8JNi
+ilX+DWXZyxaYJvZ62dv65mt1PPAtjQ9rkwsogQ56raYrpTZnmFjmhd/p24ctdoYX
+BL5aYLhEAj8P/HdILlTvBrilzk2F2nQy5E6QVk1hhLv/56gDOhMF+4yJXrbAU3Ft
+k3kFmI9ToFOWa0A6+F8JVqJuy0+vXJS3tNZhFw+7fAIlskD9L0WI8+U/hOIRrv0=
+=uEv0
+-----END PGP SIGNATURE-----
+
+--NGIwU0kFl1Z1A3An--
