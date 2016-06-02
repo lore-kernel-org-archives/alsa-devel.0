@@ -1,153 +1,39 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: add MCLK source selection" to the asoc tree
-Date: Thu, 02 Jun 2016 18:21:28 +0100
-Message-ID: <E1b8WJE-0006KH-Sl@finisterre>
-References: <1464782412-632-1-git-send-email-pc.liao@mediatek.com>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH] ASoC: fsl: fix build failure
+Date: Thu,  2 Jun 2016 18:29:24 +0530
+Message-ID: <1464872364-3232-1-git-send-email-sudipm.mukherjee@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1464782412-632-1-git-send-email-pc.liao@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: PC Liao <pc.liao@mediatek.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, tiwai@suse.de, alsa-devel@alsa-project.org, srv_heupstream@mediatek.com, s.hauer@pengutronix.de, garlic.tseng@mediatek.com, linux-kernel@vger.kernel.org, koro.chen@mediatek.com, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+m32r allmodconfig build is failing with the error:
+ERROR: "bad_dma_ops" [sound/soc/fsl/snd-soc-fsl-asrc.ko] undefined!
 
-   ASoC: mediatek: add MCLK source selection
+The code is using DMA but the related dependency is not mentioned in the
+Kconfig.
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 0c198ed2ba68b6cc728c5aa3c5486d9e5c328ecd Mon Sep 17 00:00:00 2001
-From: PC Liao <pc.liao@mediatek.com>
-Date: Wed, 1 Jun 2016 20:00:12 +0800
-Subject: [PATCH] ASoC: mediatek: add MCLK source selection
-
-The new machine's MCLK source is from mt8173 which is dynamic from
-sampling rate*256. This patch provides the selection for device tree.
-
-Signed-off-by: PC Liao <pc.liao@mediatek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 ---
- .../devicetree/bindings/sound/mt8173-rt5650.txt    |  5 +++
- sound/soc/mediatek/mt8173-rt5650.c                 | 45 +++++++++++++++++++++-
- 2 files changed, 48 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
-index 5bfa6b60530b..f250fc7c7acc 100644
---- a/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
-+++ b/Documentation/devicetree/bindings/sound/mt8173-rt5650.txt
-@@ -12,12 +12,17 @@ Required codec-capture subnode properties:
-   <&rt5650 0> : Default setting. Connect rt5650 I2S1 for capture. (dai_name = rt5645-aif1)
-   <&rt5650 1> : Connect rt5650 I2S2 for capture. (dai_name = rt5645-aif2)
+build log is at:
+https://travis-ci.org/sudipm-mukherjee/parport/jobs/134651165
+
+ sound/soc/fsl/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 35aabf9..19bdcac 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -4,6 +4,7 @@ comment "Common SoC Audio options for Freescale CPUs:"
  
-+- mediatek,mclk: the MCLK source
-+  0 : external oscillator, MCLK = 12.288M
-+  1 : internal source from mt8173, MCLK = sampling rate*256
-+
- Example:
- 
- 	sound {
- 		compatible = "mediatek,mt8173-rt5650";
- 		mediatek,audio-codec = <&rt5650>;
- 		mediatek,platform = <&afe>;
-+		mediatek,mclk = <0>;
- 		codec-capture {
- 			sound-dai = <&rt5650 1>;
- 		};
-diff --git a/sound/soc/mediatek/mt8173-rt5650.c b/sound/soc/mediatek/mt8173-rt5650.c
-index a27a6673dbe3..072934b470a8 100644
---- a/sound/soc/mediatek/mt8173-rt5650.c
-+++ b/sound/soc/mediatek/mt8173-rt5650.c
-@@ -23,6 +23,20 @@
- 
- #define MCLK_FOR_CODECS		12288000
- 
-+enum mt8173_rt5650_mclk {
-+	MT8173_RT5650_MCLK_EXTERNAL = 0,
-+	MT8173_RT5650_MCLK_INTERNAL,
-+};
-+
-+struct mt8173_rt5650_platform_data {
-+	enum mt8173_rt5650_mclk pll_from;
-+	/* 0 = external oscillator; 1 = internal source from mt8173 */
-+};
-+
-+static struct mt8173_rt5650_platform_data mt8173_rt5650_priv = {
-+	.pll_from = MT8173_RT5650_MCLK_EXTERNAL,
-+};
-+
- static const struct snd_soc_dapm_widget mt8173_rt5650_widgets[] = {
- 	SND_SOC_DAPM_SPK("Speaker", NULL),
- 	SND_SOC_DAPM_MIC("Int Mic", NULL),
-@@ -54,13 +68,29 @@ static int mt8173_rt5650_hw_params(struct snd_pcm_substream *substream,
- 				   struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	unsigned int mclk_clock;
- 	int i, ret;
- 
-+	switch (mt8173_rt5650_priv.pll_from) {
-+	case MT8173_RT5650_MCLK_EXTERNAL:
-+		/* mclk = 12.288M */
-+		mclk_clock = MCLK_FOR_CODECS;
-+		break;
-+	case MT8173_RT5650_MCLK_INTERNAL:
-+		/* mclk = sampling rate*256 */
-+		mclk_clock = params_rate(params) * 256;
-+		break;
-+	default:
-+		/* mclk = 12.288M */
-+		mclk_clock = MCLK_FOR_CODECS;
-+		break;
-+	}
-+
- 	for (i = 0; i < rtd->num_codecs; i++) {
- 		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
- 
--		/* pll from mclk 12.288M */
--		ret = snd_soc_dai_set_pll(codec_dai, 0, 0, MCLK_FOR_CODECS,
-+		/* pll from mclk */
-+		ret = snd_soc_dai_set_pll(codec_dai, 0, 0, mclk_clock,
- 					  params_rate(params) * 512);
- 		if (ret)
- 			return ret;
-@@ -243,6 +273,17 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
- 		mt8173_rt5650_codecs[1].dai_name = codec_capture_dai;
- 	}
- 
-+	if (device_property_present(&pdev->dev, "mediatek,mclk")) {
-+		ret = device_property_read_u32(&pdev->dev,
-+					       "mediatek,mclk",
-+					       &mt8173_rt5650_priv.pll_from);
-+		if (ret) {
-+			dev_err(&pdev->dev,
-+				"%s snd_soc_register_card fail %d\n",
-+				__func__, ret);
-+		}
-+	}
-+
- 	card->dev = &pdev->dev;
- 	platform_set_drvdata(pdev, card);
- 
+ config SND_SOC_FSL_ASRC
+ 	tristate "Asynchronous Sample Rate Converter (ASRC) module support"
++	depends on HAS_DMA
+ 	select REGMAP_MMIO
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 	help
 -- 
-2.8.1
+1.9.1
