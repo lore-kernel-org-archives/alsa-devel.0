@@ -1,8 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: davinci-mcasp: Fix dra7 DMA offset when
 	using CFG port" to the asoc tree
-Date: Thu, 02 Jun 2016 11:19:06 +0100
-Message-ID: <E1b8PiU-0001d4-W7@finisterre>
+Date: Thu, 02 Jun 2016 11:19:21 +0100
+Message-ID: <E1b8Pik-0001dn-02@finisterre>
 References: <20160602095505.6867-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1EBC2265375
- for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2016 12:19:18 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 45D9F2668B8
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2016 12:19:33 +0200 (CEST)
 In-Reply-To: <20160602095505.6867-1-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -53,7 +53,7 @@ to this mail.
 Thanks,
 Mark
 
->From 8e1cc0e4bab7b44a55ea59d26683b618b34950bc Mon Sep 17 00:00:00 2001
+>From 9ac0013ce6744fb49d961e592e1339ab1453b914 Mon Sep 17 00:00:00 2001
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Date: Thu, 2 Jun 2016 12:55:05 +0300
 Subject: [PATCH] ASoC: davinci-mcasp: Fix dra7 DMA offset when using CFG port
