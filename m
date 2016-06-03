@@ -1,70 +1,81 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl: fix build failure" to the asoc tree
-Date: Fri, 03 Jun 2016 00:47:12 +0100
-Message-ID: <E1b8cKW-00028q-4g@finisterre>
-References: <1464872364-3232-1-git-send-email-sudipm.mukherjee@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1464872364-3232-1-git-send-email-sudipm.mukherjee@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: DPCM: skip DAPM_STREAM_STOP event to BE,
+ if still used by other FE
+Date: Fri, 3 Jun 2016 01:18:42 +0100
+Message-ID: <20160603001842.GY2282@sirena.org.uk>
+References: <1464673532.31906.2.camel@mtkswgap22>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============7639140675728423483=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id AD89D266BF6
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jun 2016 02:18:53 +0200 (CEST)
+In-Reply-To: <1464673532.31906.2.camel@mtkswgap22>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kai Chieh Chuang <kaichieh.chuang@mediatek.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: fsl: fix build failure
+--===============7639140675728423483==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="KQ2iXOoQ638mtNze"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--KQ2iXOoQ638mtNze
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Tue, May 31, 2016 at 01:45:32PM +0800, Kai Chieh Chuang wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> +		/* don't sent stop event if this BE is used by other FE */
+> +		if (event == SND_SOC_DAPM_STREAM_STOP &&
+> +		    be->dpcm[dir].users >= 1) {
+> +			pr_warn("kc, %s(), be->dai_link->name %s skip stop event\n",
+> __func__, be->dai_link->name);
+> +			continue;
+> +		}
+> +
+>  		snd_soc_dapm_stream_event(be, dir, event);
+>  	}
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+If this isn't happening that seems like a bug, I'm a bit surprised
+nobody else ran into it?  Shouldn't the counts of stream events that
+happen be symmetric (ie, we get as many stops as starts), or are we
+possibly missing some from things being switched in and out or something?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--KQ2iXOoQ638mtNze
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
->From 121a01521b1ef7440ea285aa3aae02bf005e5635 Mon Sep 17 00:00:00 2001
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date: Thu, 2 Jun 2016 18:29:24 +0530
-Subject: [PATCH] ASoC: fsl: fix build failure
+iQEcBAEBCAAGBQJXUMzgAAoJECTWi3JdVIfQpRoH+gPY+irDmO9IXcpMkIG2+TA2
+Zr5BniBUumtSXhReCqkP1AqB/U+aetsdvNkaGlfDKVWORsamxHZ+lsUu68tDVzAQ
+kTS2Ti6CF4Azsus8aiSg1SXmvoaRvQFtDWNC82vcEwUQmqK8e5Pmy+80Ooc2nfQ1
+Ux677+XXKcEj1CT115xuqYDRsjSR///+GXJTLXJ2EiMXAVMosk6nVJlzkQdhQpW6
+hi77N78pCVopGjK3fzT1j9bvOWHfgqXxSDpzsV/WnNaxt7nbotSlq4tIVV6JjRaf
+6Y+5bGFBsvEsNixlweJ//7QJaQB7eBCfOLaPGcIwdAI4/+7x7DjTbXUq1Ea+jZU=
+=0SVP
+-----END PGP SIGNATURE-----
 
-m32r allmodconfig build is failing with the error:
-ERROR: "bad_dma_ops" [sound/soc/fsl/snd-soc-fsl-asrc.ko] undefined!
+--KQ2iXOoQ638mtNze--
 
-The code is using DMA but the related dependency is not mentioned in the
-Kconfig.
+--===============7639140675728423483==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Signed-off-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/fsl/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 35aabf9dc503..19bdcac71775 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -4,6 +4,7 @@ comment "Common SoC Audio options for Freescale CPUs:"
- 
- config SND_SOC_FSL_ASRC
- 	tristate "Asynchronous Sample Rate Converter (ASRC) module support"
-+	depends on HAS_DMA
- 	select REGMAP_MMIO
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	help
--- 
-2.8.1
+--===============7639140675728423483==--
