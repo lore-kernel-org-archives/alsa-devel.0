@@ -1,225 +1,70 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [RFC PATCH] drm: msm: Add ASoC generic hdmi audio codec support.
-Date: Fri,  3 Jun 2016 14:56:01 +0100
-Message-ID: <1464962161-17337-1-git-send-email-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, broonie@kernel.org, jsarha@ti.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Xing Zheng <zhengxing@rock-chips.com>
+Subject: Re: [PATCH v3] ASoC: rockchip: Add machine driver for
+	MAX98357A/RT5514/DA7219
+Date: Fri, 03 Jun 2016 22:16:12 +0800
+Message-ID: <5751912C.6080904@rock-chips.com>
+References: <1464267742-15312-1-git-send-email-zhengxing@rock-chips.com>
+ <20160601144542.GA3835@rob-hp-laptop>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.130])
+ by alsa0.perex.cz (Postfix) with ESMTP id 272C22614A9
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jun 2016 16:16:28 +0200 (CEST)
+In-Reply-To: <20160601144542.GA3835@rob-hp-laptop>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Rob Herring <robh@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, dianders@chromium.org, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Kumar Gala <galak@codeaurora.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds support to generic audio codec via
-ASoC hdmi-codec infrastucture which is merged recently.
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/gpu/drm/msm/Kconfig     |   1 +
- drivers/gpu/drm/msm/hdmi/hdmi.c | 120 +++++++++++++++++++++++++++++++++++++++-
- drivers/gpu/drm/msm/hdmi/hdmi.h |  14 +++++
- 3 files changed, 134 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
-index 167a497..7c7a031 100644
---- a/drivers/gpu/drm/msm/Kconfig
-+++ b/drivers/gpu/drm/msm/Kconfig
-@@ -10,6 +10,7 @@ config DRM_MSM
- 	select SHMEM
- 	select TMPFS
- 	select QCOM_SCM
-+	select SND_SOC_HDMI_CODEC if SND_SOC
- 	default y
- 	help
- 	  DRM/KMS driver for MSM/snapdragon.
-diff --git a/drivers/gpu/drm/msm/hdmi/hdmi.c b/drivers/gpu/drm/msm/hdmi/hdmi.c
-index 51b9ea5..3281496 100644
---- a/drivers/gpu/drm/msm/hdmi/hdmi.c
-+++ b/drivers/gpu/drm/msm/hdmi/hdmi.c
-@@ -19,6 +19,7 @@
- #include <linux/of_irq.h>
- #include <linux/of_gpio.h>
- 
-+#include <sound/hdmi-codec.h>
- #include "hdmi.h"
- 
- void msm_hdmi_set_mode(struct hdmi *hdmi, bool power_on)
-@@ -434,6 +435,114 @@ static int msm_hdmi_get_gpio(struct device_node *of_node, const char *name)
- 	return gpio;
- }
- 
-+/*
-+ * HDMI audio codec callbacks
-+ */
-+static int msm_hdmi_audio_hw_params(struct device *dev,
-+				    struct hdmi_codec_daifmt *daifmt,
-+				    struct hdmi_codec_params *params)
-+{
-+	struct hdmi *hdmi = dev_get_drvdata(dev);
-+	unsigned int chan;
-+	unsigned int channel_allocation = 0;
-+	unsigned int rate;
-+	unsigned int level_shift  = 0; /* 0dB */
-+	bool down_mix = false;
-+
-+	dev_dbg(dev, "%u Hz, %d bit, %d channels\n", params->sample_rate,
-+		 params->sample_width, params->cea.channels);
-+
-+	switch (params->cea.channels) {
-+	case 2:
-+		/* FR and FL speakers */
-+		channel_allocation  = 0;
-+		chan = MSM_HDMI_AUDIO_CHANNEL_2;
-+		break;
-+	case 4:
-+		/* FC, LFE, FR and FL speakers */
-+		channel_allocation  = 0x3;
-+		chan = MSM_HDMI_AUDIO_CHANNEL_4;
-+		break;
-+	case 6:
-+		/* RR, RL, FC, LFE, FR and FL speakers */
-+		channel_allocation  = 0x0B;
-+		chan = MSM_HDMI_AUDIO_CHANNEL_6;
-+		break;
-+	case 8:
-+		/* FRC, FLC, RR, RL, FC, LFE, FR and FL speakers */
-+		channel_allocation  = 0x1F;
-+		chan = MSM_HDMI_AUDIO_CHANNEL_8;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (params->sample_rate) {
-+	case 32000:
-+		rate = HDMI_SAMPLE_RATE_32KHZ;
-+		break;
-+	case 44100:
-+		rate = HDMI_SAMPLE_RATE_48KHZ;
-+		break;
-+	case 48000:
-+		rate = HDMI_SAMPLE_RATE_48KHZ;
-+		break;
-+	case 88200:
-+		rate = HDMI_SAMPLE_RATE_88_2KHZ;
-+		break;
-+	case 96000:
-+		rate = HDMI_SAMPLE_RATE_96KHZ;
-+		break;
-+	case 176400:
-+		rate = HDMI_SAMPLE_RATE_176_4KHZ;
-+		break;
-+	case 192000:
-+		rate = HDMI_SAMPLE_RATE_192KHZ;
-+		break;
-+	default:
-+		dev_err(dev, "rate[%d] not supported!\n",
-+			params->sample_rate);
-+		return -EINVAL;
-+	}
-+
-+	msm_hdmi_audio_set_sample_rate(hdmi, rate);
-+	msm_hdmi_audio_info_setup(hdmi, 1, chan, channel_allocation,
-+			      level_shift, down_mix);
-+
-+	return 0;
-+}
-+
-+static void msm_hdmi_audio_shutdown(struct device *dev)
-+{
-+	struct hdmi *hdmi = dev_get_drvdata(dev);
-+
-+	msm_hdmi_audio_info_setup(hdmi, 0, 0, 0, 0, 0);
-+}
-+
-+static const struct hdmi_codec_ops msm_hdmi_audio_codec_ops = {
-+	.hw_params = msm_hdmi_audio_hw_params,
-+	.audio_shutdown = msm_hdmi_audio_shutdown,
-+};
-+
-+static struct hdmi_codec_pdata codec_data = {
-+	.ops = &msm_hdmi_audio_codec_ops,
-+	.max_i2s_channels = 8,
-+	.i2s = 1,
-+};
-+
-+static int msm_hdmi_register_audio_driver(struct hdmi *hdmi, struct device *dev)
-+{
-+	hdmi->audio_pdev = platform_device_register_data(dev,
-+							 HDMI_CODEC_DRV_NAME,
-+							 PLATFORM_DEVID_AUTO,
-+							 &codec_data,
-+							 sizeof(codec_data));
-+	if (IS_ERR(hdmi->audio_pdev))
-+		return PTR_ERR(hdmi->audio_pdev);
-+
-+	return 0;
-+}
-+
- static int msm_hdmi_bind(struct device *dev, struct device *master, void *data)
- {
- 	struct drm_device *drm = dev_get_drvdata(master);
-@@ -441,7 +550,7 @@ static int msm_hdmi_bind(struct device *dev, struct device *master, void *data)
- 	static struct hdmi_platform_config *hdmi_cfg;
- 	struct hdmi *hdmi;
- 	struct device_node *of_node = dev->of_node;
--	int i;
-+	int i, err;
- 
- 	hdmi_cfg = (struct hdmi_platform_config *)
- 			of_device_get_match_data(dev);
-@@ -468,6 +577,12 @@ static int msm_hdmi_bind(struct device *dev, struct device *master, void *data)
- 		return PTR_ERR(hdmi);
- 	priv->hdmi = hdmi;
- 
-+	err = msm_hdmi_register_audio_driver(hdmi, dev);
-+	if (err) {
-+		DRM_ERROR("Failed to attach an audio codec %d\n", err);
-+		hdmi->audio_pdev = NULL;
-+	}
-+
- 	return 0;
- }
- 
-@@ -477,6 +592,9 @@ static void msm_hdmi_unbind(struct device *dev, struct device *master,
- 	struct drm_device *drm = dev_get_drvdata(master);
- 	struct msm_drm_private *priv = drm->dev_private;
- 	if (priv->hdmi) {
-+		if (priv->hdmi->audio_pdev)
-+			platform_device_unregister(priv->hdmi->audio_pdev);
-+
- 		msm_hdmi_destroy(priv->hdmi);
- 		priv->hdmi = NULL;
- 	}
-diff --git a/drivers/gpu/drm/msm/hdmi/hdmi.h b/drivers/gpu/drm/msm/hdmi/hdmi.h
-index bc7ba0b..accc9a6 100644
---- a/drivers/gpu/drm/msm/hdmi/hdmi.h
-+++ b/drivers/gpu/drm/msm/hdmi/hdmi.h
-@@ -50,6 +50,7 @@ struct hdmi_hdcp_ctrl;
- struct hdmi {
- 	struct drm_device *dev;
- 	struct platform_device *pdev;
-+	struct platform_device *audio_pdev;
- 
- 	const struct hdmi_platform_config *config;
- 
-@@ -210,6 +211,19 @@ static inline int msm_hdmi_pll_8996_init(struct platform_device *pdev)
- /*
-  * audio:
-  */
-+/* Supported HDMI Audio channels and rates */
-+#define	MSM_HDMI_AUDIO_CHANNEL_2	0
-+#define	MSM_HDMI_AUDIO_CHANNEL_4	1
-+#define	MSM_HDMI_AUDIO_CHANNEL_6	2
-+#define	MSM_HDMI_AUDIO_CHANNEL_8	3
-+
-+#define	HDMI_SAMPLE_RATE_32KHZ		0
-+#define	HDMI_SAMPLE_RATE_44_1KHZ	1
-+#define	HDMI_SAMPLE_RATE_48KHZ		2
-+#define	HDMI_SAMPLE_RATE_88_2KHZ	3
-+#define	HDMI_SAMPLE_RATE_96KHZ		4
-+#define	HDMI_SAMPLE_RATE_176_4KHZ	5
-+#define	HDMI_SAMPLE_RATE_192KHZ		6
- 
- int msm_hdmi_audio_update(struct hdmi *hdmi);
- int msm_hdmi_audio_info_setup(struct hdmi *hdmi, bool enabled,
--- 
-2.8.2
+SGkgUm9iLAoKT24gMjAxNuW5tDA25pyIMDHml6UgMjI6NDUsIFJvYiBIZXJyaW5nIHdyb3RlOgo+
+IE9uIFRodSwgTWF5IDI2LCAyMDE2IGF0IDA5OjAyOjIyUE0gKzA4MDAsIFhpbmcgWmhlbmcgd3Jv
+dGU6Cj4+IFRoZXJlIGFyZSBtdWx0aSBjb2RlYyBkZXZpY2VzIG9uIHRoZSBSSzMzOTkgcGxhdGZv
+cm0sIHdlIGNhbiB1c2UKPj4gdGhpcyBwYXRjaCBzdXBwb3J0IGFuZCBjb250cm9sIHRoZXNlIGNv
+ZGVjcy4KPj4KPj4gU2lnbmVkLW9mZi1ieTogWGluZyBaaGVuZzx6aGVuZ3hpbmdAcm9jay1jaGlw
+cy5jb20+Cj4+IC0tLQo+Pgo+PiBDaGFuZ2VzIGluIHYzOgo+PiAtIHJlbmFtZSBET0MgdG8gcm9j
+a2NoaXAscmszMzk5LW1heDk4MzU3YS1ydDU1MTQtZGE3MjE5LnR4dAo+PiAtIHJlbmFtZSBjb21w
+YXRpYmxlIHRvIHJvY2tjaGlwLHJrMzM5OS1tYXg5ODM1N2EtcnQ1NTE0LWRhNzIxOQo+PiAtIHJl
+bmFtZSBzb3VyY2UgY29kZSB0byByazMzOTlfbWF4OTgzNTdhX3J0NTUxNF9kYTcyMTkuYwo+Pgo+
+PiBDaGFuZ2VzIGluIHYyOgo+PiAtIHVzZSB0aGUgRlMgMjU2IHRvIHNldCBtY2xrcyBvZiB0aGUg
+bWF4OTgzNTdhIGFuZCBydDU1MTQgZGFuYW1pY2FsbHkKPj4gLSBhZGQgbW9yZSBzYW1wbGUgcmF0
+ZSBmb3IgZGE3MjE5Cj4+Cj4+ICAgLi4uL3JvY2tjaGlwLHJrMzM5OS1tYXg5ODM1N2EtcnQ1NTE0
+LWRhNzIxOS50eHQgICAgfCAgIDE1ICsKPj4gICBzb3VuZC9zb2Mvcm9ja2NoaXAvS2NvbmZpZyAg
+ICAgICAgICAgICAgICAgICAgICAgICB8ICAgMTEgKwo+PiAgIHNvdW5kL3NvYy9yb2NrY2hpcC9N
+YWtlZmlsZSAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgMiArCj4+ICAgLi4uL3NvYy9yb2Nr
+Y2hpcC9yazMzOTlfbWF4OTgzNTdhX3J0NTUxNF9kYTcyMTkuYyAgfCAgMzMzICsrKysrKysrKysr
+KysrKysrKysrCj4+ICAgNCBmaWxlcyBjaGFuZ2VkLCAzNjEgaW5zZXJ0aW9ucygrKQo+PiAgIGNy
+ZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQv
+cm9ja2NoaXAscmszMzk5LW1heDk4MzU3YS1ydDU1MTQtZGE3MjE5LnR4dAo+PiAgIGNyZWF0ZSBt
+b2RlIDEwMDY0NCBzb3VuZC9zb2Mvcm9ja2NoaXAvcmszMzk5X21heDk4MzU3YV9ydDU1MTRfZGE3
+MjE5LmMKPj4KPj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
+cy9zb3VuZC9yb2NrY2hpcCxyazMzOTktbWF4OTgzNTdhLXJ0NTUxNC1kYTcyMTkudHh0IGIvRG9j
+dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3JvY2tjaGlwLHJrMzM5OS1tYXg5
+ODM1N2EtcnQ1NTE0LWRhNzIxOS50eHQKPj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPj4gaW5kZXgg
+MDAwMDAwMC4uM2FlNjAzZQo+PiAtLS0gL2Rldi9udWxsCj4+ICsrKyBiL0RvY3VtZW50YXRpb24v
+ZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9yb2NrY2hpcCxyazMzOTktbWF4OTgzNTdhLXJ0NTUx
+NC1kYTcyMTkudHh0Cj4+IEBAIC0wLDAgKzEsMTUgQEAKPj4gK1JPQ0tDSElQIHdpdGggTUFYOTgz
+NTdBL1JUNTUxNC9EQTcyMTkgY29kZWNzCj4+ICsKPj4gK1JlcXVpcmVkIHByb3BlcnRpZXM6Cj4+
+ICstIGNvbXBhdGlibGU6ICJyb2NrY2hpcCxyazMzOTktbWF4OTgzNTdhLXJ0NTUxNC1kYTcyMTki
+Cj4gSSdtIHN0aWxsIG5vdCB2ZXJ5IGNsZWFyIG9uIHRoZSBuYW1pbmcgY29udmVudGlvbiB0aG91
+Z2hvdXQgdGhpcy4gVGhpcwo+IGRvZXNuJ3Qgc2VlbSBsaWtlIGEgcGF0dGVybiB3ZSB3YW50IHRv
+IHJlcGVhdCAoPGNoaXA+LTxjb2RlYz4tPGNvZGVjPikuCj4KVGhhbmsgeW91IGZvciB5b3VyIHJl
+cGx5LiA6LSkKCkkgcmVmZXJlZCB0byBNVEsncyBtdDgxNzMtcnQ1NjUwLXJ0NTUxNC50eHQgb24g
+dXBzdHJlYW0sIHRoYXQgY29tcGF0aWJsZSAKbmFtZSBpcyAibWVkaWF0ZWssbXQ4MTczLXJ0NTY1
+MC1ydDU1MTQiLgpCZWNhdXNlIG91ciBwbGF0Zm9ybSBuZWVkIHRvIHN1cHBvcnQgMyBjb2RlY3Mg
+KG1heDk4MzU3YSAvIGRhNzIxOSAvIApydDU1MTQpLiBQZXJoYXBzLCB5b3UgbWF5YmUgZmVlbCB0
+aGF0IG5hbWUgaXMgdG9vIGxvbmc/IEFuZCwgY291bGQgeW91IApwbGVhc2UgdGVsbCBtZSB3aGF0
+IG5hbWVzIHdvdWxkIGJlIGJldHRlcj8KCkZvciBleGFtcGxlOiAicmszMzk5LWNvbXBvc2l0ZS1j
+b2RlY3MiID8KClRoYW5rcy4KCgotLSAKLSBYaW5nIFpoZW5nCgoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
