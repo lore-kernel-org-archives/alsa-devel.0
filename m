@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8825: correct typo in biquad filter
-	coefficients" to the asoc tree
-Date: Fri, 03 Jun 2016 11:45:03 +0100
-Message-ID: <E1b8mb9-0003Gh-0J@finisterre>
-References: <1464926536-2685-1-git-send-email-KCHSU0@nuvoton.com>
+Subject: Re: [PATCH v3] ASoC: rt5514: add rt5514 SPI driver
+Date: Fri, 3 Jun 2016 12:01:05 +0100
+Message-ID: <20160603110105.GA2282@sirena.org.uk>
+References: <1462789855-23485-1-git-send-email-oder_chiou@realtek.com>
+ <20160513121932.GN22038@sirena.org.uk>
+ <7EB0DE829A537248AF2ED30C97D12694FDDF5C@RTITMBSV03.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2516003980977649656=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D3839265238
- for <alsa-devel@alsa-project.org>; Fri,  3 Jun 2016 12:45:17 +0200 (CEST)
-In-Reply-To: <1464926536-2685-1-git-send-email-KCHSU0@nuvoton.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D96C26523B
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jun 2016 13:01:17 +0200 (CEST)
+In-Reply-To: <7EB0DE829A537248AF2ED30C97D12694FDDF5C@RTITMBSV03.realtek.com.tw>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, benzh@chromium.org, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com, yong.zhi@intel.com, mhkuo@nuvoton.com
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: nau8825: correct typo in biquad filter coefficients
+--===============2516003980977649656==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="NgLNC/STdjXvE6Rt"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--NgLNC/STdjXvE6Rt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Tue, May 17, 2016 at 02:33:16AM +0000, Oder Chiou wrote:
+> > > +static void rt5514_spi_copy_work(struct work_struct *work)
+> > > +{
+> > > +	struct rt5514_dsp *rt5514_dsp =
+> > > +		container_of(work, struct rt5514_dsp, copy_work.work);
+> > > +	struct snd_pcm_runtime *runtime = rt5514_dsp->substream->runtime;
+> > > +	size_t period_bytes, truncated_bytes = 0;
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> > I can't see anything that cancels this work when the PCM stream to
+> > userspace is stopped or if things power off otherwise?
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> In the beginning of the function "rt5514_spi_copy_work", there is a if
+> condition to check the variable "rt5514_dsp->substream", and the function
+> "rt5514_spi_hw_free" will set the variable "rt5514_dsp->substream" to NULL.
+> It also will make the delayed work stop and won't schedule again.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+No, that won't stop the currently running work which means that on
+driver removal we could for example try to free the driver data while
+the work is still running.  The driver needs to explicitly ensure that
+there is no work running when it shouldn't be, not just stop any new
+work being added.
 
-Thanks,
-Mark
+--NgLNC/STdjXvE6Rt
+Content-Type: application/pgp-signature; name="signature.asc"
 
->From 0cbeccdfb159110f5158c0daf52acf6b2288eaf7 Mon Sep 17 00:00:00 2001
-From: John Hsu <KCHSU0@nuvoton.com>
-Date: Fri, 3 Jun 2016 12:02:16 +0800
-Subject: [PATCH] ASoC: nau8825: correct typo in biquad filter coefficients
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-There is typo in the name of biquad filter coefficients control.
-The patch is to fix the typo.
+iQEcBAEBCAAGBQJXUWNwAAoJECTWi3JdVIfQwYkH/2Ss1h+zykoiLSUYW1V/TIxt
+E7aDsS1ytJDueDTj3NJaRfNatD3lPqu6Rr1t8u5kA/R83wdxA26KkPf55DFMLnRB
+Gcj5zZLIDWiiQh8BkbsmMOgYwXLefVIskt4uaFtqIYa3opodKI3c/g8KaeePGvrm
+WwPQL4eizq9kSUDKPbEs7WuBfPav7VdGqp+hi7bsinTnpS3qoQ1vGqH05Fzy/sDb
++nqbKIgAV6sp9CFWrxTcHPnw/Yup/y6YBjH9bd9oSbrRYEEo6buj+GsucJhbUoQ5
+7uRlhmf/AQdzhifl/EUskuI64WT0NImxGodSMPTPelXVPP5DkmbGVzA4RfPildU=
+=kxYg
+-----END PGP SIGNATURE-----
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/nau8825.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--NgLNC/STdjXvE6Rt--
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index dbb91aae9905..43cb677d3db2 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -386,7 +386,7 @@ static const struct snd_kcontrol_new nau8825_controls[] = {
- 	SOC_ENUM("DAC Oversampling Rate", nau8825_dac_oversampl_enum),
- 	/* programmable biquad filter */
- 	SOC_ENUM("BIQ Path Select", nau8825_biq_path_enum),
--	SND_SOC_BYTES_EXT("BIQ Coefficeints", 20,
-+	SND_SOC_BYTES_EXT("BIQ Coefficients", 20,
- 		  nau8825_biq_coeff_get, nau8825_biq_coeff_put),
- };
- 
--- 
-2.8.1
+--===============2516003980977649656==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2516003980977649656==--
