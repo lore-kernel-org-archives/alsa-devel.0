@@ -1,16 +1,18 @@
-From: Garlic Tseng <garlic.tseng@mediatek.com>
-Subject: [PATCH v2 8/9] ASoC: mediatek: add BT implementation
-Date: Fri, 3 Jun 2016 12:56:23 +0800
-Message-ID: <1464929784-5489-9-git-send-email-garlic.tseng@mediatek.com>
-References: <1464929784-5489-1-git-send-email-garlic.tseng@mediatek.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: nau8825: correct typo in biquad filter
+	coefficients" to the asoc tree
+Date: Fri, 03 Jun 2016 11:45:03 +0100
+Message-ID: <E1b8mb9-0003Gh-0J@finisterre>
+References: <1464926536-2685-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
- by alsa0.perex.cz (Postfix) with ESMTP id 052EE2652D7
- for <alsa-devel@alsa-project.org>; Fri,  3 Jun 2016 06:56:34 +0200 (CEST)
-In-Reply-To: <1464929784-5489-1-git-send-email-garlic.tseng@mediatek.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D3839265238
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jun 2016 12:45:17 +0200 (CEST)
+In-Reply-To: <1464926536-2685-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,189 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ir.lian@mediatek.com, srv_heupstream@mediatek.com, garlic.tseng@mediatek.com, linux-kernel@vger.kernel.org, koro.chen@mediatek.com, linux-mediatek@lists.infradead.org, PC.Liao@mediatek.com, linux-arm-kernel@lists.infradead.org
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, benzh@chromium.org, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com, yong.zhi@intel.com, mhkuo@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
-Add BT implementation for mt2701 platform driver.
+The patch
 
-Signed-off-by: Garlic Tseng <garlic.tseng@mediatek.com>
+   ASoC: nau8825: correct typo in biquad filter coefficients
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 0cbeccdfb159110f5158c0daf52acf6b2288eaf7 Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Fri, 3 Jun 2016 12:02:16 +0800
+Subject: [PATCH] ASoC: nau8825: correct typo in biquad filter coefficients
+
+There is typo in the name of biquad filter coefficients control.
+The patch is to fix the typo.
+
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 141 +++++++++++++++++++++++++++++
- 1 file changed, 141 insertions(+)
+ sound/soc/codecs/nau8825.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-index 4c22ca0..9215b71 100644
---- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-+++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-@@ -346,6 +346,88 @@ static int mt2701_afe_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	return 0;
- }
- 
-+static int mt2701_btmrg_startup(struct snd_pcm_substream *substream,
-+				struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct mtk_base_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
-+	struct mt2701_afe_private *afe_priv = afe->platform_priv;
-+
-+	regmap_update_bits(afe->regmap, AUDIO_TOP_CON4,
-+			   AUDIO_TOP_CON4_PDN_MRGIF, 0);
-+
-+	afe_priv->mrg_enable[substream->stream] = 1;
-+	return 0;
-+}
-+
-+static int mt2701_btmrg_hw_params(struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *params,
-+				  struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct mtk_base_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
-+	int stream_fs;
-+	u32 val, msk;
-+
-+	pr_debug("%s() cpu_dai id %d\n", __func__, dai->id);
-+	stream_fs = params_rate(params);
-+
-+	if ((stream_fs != 8000) && (stream_fs != 16000)) {
-+		pr_err("%s() btmgr not supprt this stream_fs %d\n",
-+		       __func__, stream_fs);
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(afe->regmap, AFE_MRGIF_CON,
-+			   AFE_MRGIF_CON_I2S_MODE_MASK,
-+			   AFE_MRGIF_CON_I2S_MODE_32K);
-+
-+	val = AFE_DAIBT_CON0_BT_FUNC_EN | AFE_DAIBT_CON0_BT_FUNC_RDY
-+	      | AFE_DAIBT_CON0_MRG_USE;
-+	msk = val;
-+
-+	if (stream_fs == 16000)
-+		val |= AFE_DAIBT_CON0_BT_WIDE_MODE_EN;
-+
-+	msk |= AFE_DAIBT_CON0_BT_WIDE_MODE_EN;
-+
-+	regmap_update_bits(afe->regmap, AFE_DAIBT_CON0, msk, val);
-+
-+	regmap_update_bits(afe->regmap, AFE_DAIBT_CON0,
-+			   AFE_DAIBT_CON0_DAIBT_EN,
-+			   AFE_DAIBT_CON0_DAIBT_EN);
-+	regmap_update_bits(afe->regmap, AFE_MRGIF_CON,
-+			   AFE_MRGIF_CON_MRG_I2S_EN,
-+			   AFE_MRGIF_CON_MRG_I2S_EN);
-+	regmap_update_bits(afe->regmap, AFE_MRGIF_CON,
-+			   AFE_MRGIF_CON_MRG_EN,
-+			   AFE_MRGIF_CON_MRG_EN);
-+	return 0;
-+}
-+
-+static void mt2701_btmrg_shutdown(struct snd_pcm_substream *substream,
-+				  struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct mtk_base_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
-+	struct mt2701_afe_private *afe_priv = afe->platform_priv;
-+
-+	pr_debug("%s() cpu_dai id %d\n", __func__, dai->id);
-+	/* if the other direction stream is not occupied */
-+	if (!afe_priv->mrg_enable[!substream->stream]) {
-+		regmap_update_bits(afe->regmap, AFE_DAIBT_CON0,
-+				   AFE_DAIBT_CON0_DAIBT_EN, 0);
-+		regmap_update_bits(afe->regmap, AFE_MRGIF_CON,
-+				   AFE_MRGIF_CON_MRG_EN, 0);
-+		regmap_update_bits(afe->regmap, AFE_MRGIF_CON,
-+				   AFE_MRGIF_CON_MRG_I2S_EN, 0);
-+		regmap_update_bits(afe->regmap, AUDIO_TOP_CON4,
-+				   AUDIO_TOP_CON4_PDN_MRGIF,
-+				   AUDIO_TOP_CON4_PDN_MRGIF);
-+	}
-+	afe_priv->mrg_enable[substream->stream] = 0;
-+}
-+
- static int mt2701_simple_fe_startup(struct snd_pcm_substream *substream,
- 				    struct snd_soc_dai *dai)
- {
-@@ -529,6 +611,13 @@ static const struct snd_soc_dai_ops mt2701_afe_i2s_ops = {
- 	.set_fmt	= mt2701_afe_i2s_set_fmt,
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index dbb91aae9905..43cb677d3db2 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -386,7 +386,7 @@ static const struct snd_kcontrol_new nau8825_controls[] = {
+ 	SOC_ENUM("DAC Oversampling Rate", nau8825_dac_oversampl_enum),
+ 	/* programmable biquad filter */
+ 	SOC_ENUM("BIQ Path Select", nau8825_biq_path_enum),
+-	SND_SOC_BYTES_EXT("BIQ Coefficeints", 20,
++	SND_SOC_BYTES_EXT("BIQ Coefficients", 20,
+ 		  nau8825_biq_coeff_get, nau8825_biq_coeff_put),
  };
  
-+/* MRG BE DAIs*/
-+static struct snd_soc_dai_ops mt2701_btmrg_ops = {
-+	.startup = mt2701_btmrg_startup,
-+	.shutdown = mt2701_btmrg_shutdown,
-+	.hw_params = mt2701_btmrg_hw_params,
-+};
-+
- static struct snd_soc_dai_driver mt2701_afe_pcm_dais[] = {
- 	/* FE DAIs: memory intefaces to CPU */
- 	{
-@@ -579,6 +668,36 @@ static struct snd_soc_dai_driver mt2701_afe_pcm_dais[] = {
- 		},
- 		.ops = &mt2701_single_memif_dai_ops,
- 	},
-+	{
-+		.name = "PCM_BT_DL",
-+		.id = MT2701_MEMIF_DLBT,
-+		.suspend = mtk_afe_dai_suspend,
-+		.resume = mtk_afe_dai_resume,
-+		.playback = {
-+			.stream_name = "DLBT",
-+			.channels_min = 1,
-+			.channels_max = 1,
-+			.rates = (SNDRV_PCM_RATE_8000
-+				| SNDRV_PCM_RATE_16000),
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		},
-+		.ops = &mt2701_single_memif_dai_ops,
-+	},
-+	{
-+		.name = "PCM_BT_UL",
-+		.id = MT2701_MEMIF_ULBT,
-+		.suspend = mtk_afe_dai_suspend,
-+		.resume = mtk_afe_dai_resume,
-+		.capture = {
-+			.stream_name = "ULBT",
-+			.channels_min = 1,
-+			.channels_max = 1,
-+			.rates = (SNDRV_PCM_RATE_8000
-+				| SNDRV_PCM_RATE_16000),
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		},
-+		.ops = &mt2701_single_memif_dai_ops,
-+	},
- 	/* BE DAIs */
- 	{
- 		.name = "I2S0",
-@@ -678,6 +797,28 @@ static struct snd_soc_dai_driver mt2701_afe_pcm_dais[] = {
- 		.ops = &mt2701_afe_i2s_ops,
- 		.symmetric_rates = 1,
- 	},
-+	{
-+		.name = "MRG BT",
-+		.id = MT2701_IO_MRG,
-+		.playback = {
-+			.stream_name = "BT Playback",
-+			.channels_min = 1,
-+			.channels_max = 1,
-+			.rates = (SNDRV_PCM_RATE_8000
-+				| SNDRV_PCM_RATE_16000),
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		},
-+		.capture = {
-+			.stream_name = "BT Capture",
-+			.channels_min = 1,
-+			.channels_max = 1,
-+			.rates = (SNDRV_PCM_RATE_8000
-+				| SNDRV_PCM_RATE_16000),
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		},
-+		.ops = &mt2701_btmrg_ops,
-+		.symmetric_rates = 1,
-+	}
- };
- 
- static const struct snd_kcontrol_new mt2701_afe_o00_mix[] = {
 -- 
-1.9.1
+2.8.1
