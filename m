@@ -1,20 +1,18 @@
-From: Pietro <pxpert@gmail.com>
-Subject: Re: [PATCH] ASoC: Intel: use 19.2 MCLK instead of the
-	bit clock for bytcr_rt5651.c machine driver
-Date: Fri, 03 Jun 2016 21:47:30 +0200
-Message-ID: <2136089.cfVrPVxj7s@wks-pdc-gentoo>
-References: <1464967985-18355-1-git-send-email-pxpert@gmail.com>
- <6f5f71ae-3e96-628c-ebef-923043cb8e68@linux.intel.com>
+From: <Paul.Handrigan@cirrus.com>
+Subject: [PATCH v6 2/2] ASoC: cs35l33: Add device tree bindings
+	file for cs35l33
+Date: Fri, 3 Jun 2016 15:09:06 -0500
+Message-ID: <1464984546-2672-2-git-send-email-Paul.Handrigan@cirrus.com>
+References: <1464984546-2672-1-git-send-email-Paul.Handrigan@cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 5DC68265554
- for <alsa-devel@alsa-project.org>; Fri,  3 Jun 2016 21:47:33 +0200 (CEST)
-Received: by mail-wm0-f67.google.com with SMTP id e3so1616457wme.2
- for <alsa-devel@alsa-project.org>; Fri, 03 Jun 2016 12:47:33 -0700 (PDT)
-In-Reply-To: <6f5f71ae-3e96-628c-ebef-923043cb8e68@linux.intel.com>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id B4205266812
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jun 2016 22:09:09 +0200 (CEST)
+In-Reply-To: <1464984546-2672-1-git-send-email-Paul.Handrigan@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,156 +22,140 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Paul Handrigan <Paul.Handrigan@cirrus.com>, brian.austin@cirrus.com, broonie@kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Pierre,
+From: Paul Handrigan <Paul.Handrigan@cirrus.com>
 
-If needed I can patch it in one of these ways:
-- Split the driver in one for Baytrail Platforms, and another one for Cherryview
-- Use conditional compilations, with an addictional Kernel option to select between Baytrail and Cherryview
-- Select the proper way to set the clock at runtime by detect the platform in the driver context (Some help needed here to distinguish between the 2 platforms)
+Add device tree bindings file for the cs35l33 8V boosted
+class D amplifier.
 
-Or just tell me if you think this is not needed, because the clock driver you are working on will be released soon.
+Signed-off-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
+---
+ .../devicetree/bindings/sound/cs35l33.txt          | 114 +++++++++++++++++++++
+ 1 file changed, 114 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cs35l33.txt
 
-Pietro
-
-On Friday 03 June 2016 11:15:00 Pierre-Louis Bossart wrote:
-> On 6/3/16 10:33 AM, Pietro Di Costanzo wrote:
-> > Use the MCLK to solve audio quality issues found on some Cherryview-based platforms
-> >
-> > Signed-off-by: Pietro Di Costanzo <pxpert@gmail.com>
-> 
-> Thanks Pietro.
-> this can't be merged as is as it wouldn't work on Baytrail platforms. I 
-> will merge it with the clock driver we are working to have a single 
-> driver that works for both cases.
-> 
-> > ---
-> >  sound/soc/intel/boards/bytcr_rt5651.c | 84 +++++++++++++++++++++++++++++++----
-> >  1 file changed, 75 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-> > index 35f591e..e51ea5b 100644
-> > --- a/sound/soc/intel/boards/bytcr_rt5651.c
-> > +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-> > @@ -31,11 +31,76 @@
-> >  #include "../../codecs/rt5651.h"
-> >  #include "../atom/sst-atom-controls.h"
-> >
-> > +#define CHT_PLAT_CLK_3_HZ       19200000
-> > +#define CHT_CODEC_DAI_5651   "rt5651-aif1"
-> > +
-> > +struct cht_acpi_card {
-> > +	char *codec_id;
-> > +	int codec_type;
-> > +	struct snd_soc_card *soc_card;
-> > +};
-> > +
-> > +struct cht_mc_private {
-> > +	struct snd_soc_jack jack;
-> > +	struct cht_acpi_card *acpi_card;
-> > +};
-> > +
-> > +
-> > +static inline struct snd_soc_dai *cht_get_codec_dai(struct snd_soc_card *card)
-> > +{
-> > +	struct snd_soc_pcm_runtime *rtd;
-> > +
-> > +	list_for_each_entry(rtd, &card->rtd_list, list) {
-> > +		if (!strncmp(rtd->codec_dai->name, CHT_CODEC_DAI_5651,
-> > +			  strlen(CHT_CODEC_DAI_5651)))
-> > +			return rtd->codec_dai;
-> > +	}
-> > +	return NULL;
-> > +}
-> > +
-> > +static int platform_clock_control(struct snd_soc_dapm_widget *w,
-> > +		struct snd_kcontrol *k, int  event)
-> > +{
-> > +	struct snd_soc_dapm_context *dapm = w->dapm;
-> > +	struct snd_soc_card *card = dapm->card;
-> > +	struct snd_soc_dai *codec_dai;
-> > +	int ret;
-> > +
-> > +	codec_dai = cht_get_codec_dai(card);
-> > +	if (!codec_dai) {
-> > +		dev_err(card->dev, "Codec dai not found; Unable to set platform clock\n");
-> > +		return -EIO;
-> > +	}
-> > +
-> > +	if (!SND_SOC_DAPM_EVENT_OFF(event))
-> > +		return 0;
-> > +
-> > +	/* Set codec sysclk source to its internal clock because codec PLL will
-> > +	 * be off when idle and MCLK will also be off by ACPI when codec is
-> > +	 * runtime suspended. Codec needs clock for jack detection and button
-> > +	 * press.
-> > +	 */
-> > +	ret = snd_soc_dai_set_sysclk(codec_dai, RT5651_SCLK_S_RCCLK,
-> > +			0, SND_SOC_CLOCK_IN);
-> > +	if (ret < 0) {
-> > +		dev_err(card->dev, "can't set codec sysclk: %d\n", ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +
-> > +
-> > +
-> >  static const struct snd_soc_dapm_widget byt_rt5651_widgets[] = {
-> >  	SND_SOC_DAPM_HP("Headphone", NULL),
-> >  	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-> >  	SND_SOC_DAPM_MIC("Internal Mic", NULL),
-> >  	SND_SOC_DAPM_SPK("Speaker", NULL),
-> > +	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
-> > +			platform_clock_control, SND_SOC_DAPM_POST_PMD),
-> > +
-> >  };
-> >
-> >  static const struct snd_soc_dapm_route byt_rt5651_audio_map[] = {
-> > @@ -52,6 +117,9 @@ static const struct snd_soc_dapm_route byt_rt5651_audio_map[] = {
-> >  	{"Headphone", NULL, "HPOR"},
-> >  	{"Speaker", NULL, "LOUTL"},
-> >  	{"Speaker", NULL, "LOUTR"},
-> > +	{"Headphone", NULL, "Platform Clock"},
-> > +	{"Speaker", NULL, "Platform Clock"},
-> > +
-> >  };
-> >
-> >  static const struct snd_soc_dapm_route byt_rt5651_intmic_dmic1_map[] = {
-> > @@ -93,7 +161,13 @@ static int byt_rt5651_aif1_hw_params(struct snd_pcm_substream *substream,
-> >  	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-> >  	int ret;
-> >
-> > -	snd_soc_dai_set_bclk_ratio(codec_dai, 50);
-> > +	/* set codec PLL source to the 19.2MHz platform clock (MCLK) */
-> > +	ret = snd_soc_dai_set_pll(codec_dai, 0, RT5651_PLL1_S_MCLK,
-> > +				  CHT_PLAT_CLK_3_HZ, params_rate(params) * 512);
-> > +	if (ret < 0) {
-> > +		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
-> > +		return ret;
-> > +	}
-> >
-> >  	ret = snd_soc_dai_set_sysclk(codec_dai, RT5651_SCLK_S_PLL1,
-> >  				     params_rate(params) * 512,
-> > @@ -103,14 +177,6 @@ static int byt_rt5651_aif1_hw_params(struct snd_pcm_substream *substream,
-> >  		return ret;
-> >  	}
-> >
-> > -	ret = snd_soc_dai_set_pll(codec_dai, 0, RT5651_PLL1_S_BCLK1,
-> > -				  params_rate(params) * 50,
-> > -				  params_rate(params) * 512);
-> > -	if (ret < 0) {
-> > -		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
-> > -		return ret;
-> > -	}
-> > -
-> >  	return 0;
-> >  }
-> >
-> >
-> 
+diff --git a/Documentation/devicetree/bindings/sound/cs35l33.txt b/Documentation/devicetree/bindings/sound/cs35l33.txt
+new file mode 100644
+index 0000000..01fa8fd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cs35l33.txt
+@@ -0,0 +1,114 @@
++CS35L33 Speaker Amplifier
++
++Required properties:
++
++  - compatible : "cirrus,cs35l33"
++
++  - reg : the I2C address of the device for I2C
++
++  - VA-supply, VP-supply : power supplies for the device,
++    as covered in
++    Documentation/devicetree/bindings/regulator/regulator.txt.
++
++Optional properties:
++
++  - reset-gpios : gpio used to reset the amplifier
++
++  - interrupt-parent : Specifies the phandle of the interrupt controller to
++    which the IRQs from CS35L33 are delivered to.
++ -  interrupts : IRQ line info CS35L33.
++    (See Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
++    for further information relating to interrupt properties)
++
++  - boost-ctl : Booster voltage use to supply the amp. If the value is
++    0, then VBST = VP. If greater than 0, the boost voltage will be 3300mV with
++    a value of 1 and will increase at a step size of 100mV until a maximum of
++    8000mV.
++
++  - ramp-rate : On power up, it affects the time from when the power
++    up sequence begins to the time the audio reaches a full-scale output.
++    On power down, it affects the time from when the power-down sequence
++    begins to when the amplifier disables the PWM outputs. If this property
++    is not set then soft ramping will be disabled and ramp time would be
++    20ms. If this property is set to 0,1,2,3 then ramp times would be 40ms,
++    60ms,100ms,175ms respectively for 48KHz sample rate.
++
++  - boost-ipk : The maximum current allowed for the boost converter.
++    The range starts at 1850mA (0xF0) and goes to a maximum of 3600mA (0xE0)
++    with a step size of 15.625mA. The default is 2500mA (0x90).
++
++  - hg-algo : Parameters for internal Class H/G algorithm that
++    controls the amplifier supplies.
++
++  - mem-depth : Memory depth for the Class H/G algorithm measured in LRCLK
++    cycles. If this property is set to 0, 1, 2, or 3 then the memory depths
++    will be 1, 4, 8, 16 LRCLK cycles.  The default is 16 LRCLK cycles.
++
++    release-rate : The number of consecutive LRCLK periods before allowing
++    release condition tracking updates. The number of LRCLK periods start
++    at 3 to a maximum of 255.
++
++  - ldo-thld : Configures the signal threshold at which the PWM output stage
++    enters LDO operation. Starts as a default value of 50mV for a value of 1
++    and increases with a step size of 50mV to a maximum of 750mV (value of
++    0xF).
++
++  - ldo-path-disable : This is a boolean property. If present, the H/G
++    algorithm uses the max detection path.  If not present, the LDO
++    detection path is used.
++
++  - ldo-entry-delay : The LDO entry delay in milliseconds before the H/G
++    algorithm switches to the LDO voltage.  This property can be set to values
++    from 0 to 7 for delays of 5ms, 10ms, 50ms, 100ms, 200ms, 500ms, 1000ms.
++    The default is 100ms.
++
++  - vp-hg-auto : This is a boolean property.  When set, class H/G VPhg
++    automatic updating is enabled.
++
++  - vp-hg :  Class H/G algorithm VPhg.  Controls the H/G algorithm's
++    reference to the VP voltage for when to start generating a boosted VBST.
++    The reference voltage starts at 3000mV with a value of 0x3 and is increased
++    by 100mV per step to a maximum of 5500mV.
++
++  - vp-hg-rate : The rate (number of LRCLK periods) at which the VPhg is
++    allowed to increase to a higher voltage when using VPhg automatic
++    tracking. This property can be set to values from 0 to 3 with rates of 128
++    periods, 2048 periods, 32768 periods, and 524288 periods.
++    The default is 32768 periods.
++
++  - vp-hg-va : VA calculation reference for automatic VPhg tracking using VPMON.
++    This property can be set to values from 0 to 6 starting at 1800mV with a
++    step size of 50mV up to a maximum value of 1750mV.  Default is 1800mV.
++
++
++Example:
++
++cs35l33: cs35l33@40 {
++	compatible = "cirrus,cs35l33";
++	reg = <0x40>;
++
++	VA-supply = <&ldo5_reg>;
++	VP-supply = <&ldo5_reg>;
++
++	interrupt-parent = <&gpio8>;
++	interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
++
++	reset-gpios = <&cs47l91 34 0>;
++
++	ramp-rate = <0x0>;
++	boost-ctl = <0x30>;  /* VBST = 8000mV */
++	boost-ipk = <0xE0>; /* 3600mA */
++
++	hg-algo {
++		mem-depth = <0x3>;
++		release-rate = <0x3>;
++		hd-rm = <0xA>;
++		ldo-thld = <0x1>;
++		ldo-path-disable = <0x0>;
++		ldo-entry-delay=<0x4>;
++		vp-hg-auto;
++		vp-hg=<0xF>;
++		vp-hg-rate=<0x2>;
++		vp-hg-va=<0x0>;
++	};
++};
+-- 
+1.9.1
