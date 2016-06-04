@@ -1,21 +1,21 @@
-From: Alan Young <consult.awy@gmail.com>
-Subject: Re: Improving status timestamp accuracy
-Date: Sat, 4 Jun 2016 17:20:30 +0100
-Message-ID: <5752FFCE.1070301@gmail.com>
-References: <5752A005.2050309@gmail.com>
- <84551786-d910-efa0-3cc7-23a3e8f6ed8f@ladisch.de>
- <5752B0EC.3030605@gmail.com>
- <946c2480-fa6e-3f72-ad04-f585e9648f52@ladisch.de>
+From: Clemens Gruber <clemens.gruber@pqgruber.com>
+Subject: Re: [PATCH] ASoC: sgtl5000: only check VDDD-supply,
+ not revision
+Date: Sat, 4 Jun 2016 19:15:25 +0200
+Message-ID: <20160604171525.GA29266@archie.localdomain>
+References: <20160602124724.7725-1-clemens.gruber@pqgruber.com>
+ <CAOMZO5B20n7Tu3r+BsU2R5BbYj41tf7qBsMLRWxChdWMkHxLNQ@mail.gmail.com>
+ <5751AEF6.40200@nelint.com> <575264A4.2070709@nelint.com>
+ <20160604090324.GA867@archie.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A873260831
- for <alsa-devel@alsa-project.org>; Sat,  4 Jun 2016 18:20:32 +0200 (CEST)
-Received: by mail-wm0-f67.google.com with SMTP id n184so6118810wmn.1
- for <alsa-devel@alsa-project.org>; Sat, 04 Jun 2016 09:20:32 -0700 (PDT)
-In-Reply-To: <946c2480-fa6e-3f72-ad04-f585e9648f52@ladisch.de>
+Received: from mail.pqgruber.com (mail.pqgruber.com [178.189.19.235])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CE1E260831
+ for <alsa-devel@alsa-project.org>; Sat,  4 Jun 2016 19:15:27 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20160604090324.GA867@archie.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,14 +25,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>
+Cc: Eric Nelson <eric@nelint.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/06/16 16:59, Clemens Ladisch wrote:
->> >I want to know, at any given point in wall-clock time, how many samples
->> >have been output.
->  From the buffer, or from the speaker?
-Obviously the speaker would be ideal, but there will likely be 
-components between the output of the DMA and the speaker that will add 
-some delay, such as a DAC and maybe a DSP. However, such components will 
-typically add: (a) a very small delay, (b) a near constant delay,
+Hi Mark, Hi Fabio,
+
+please don't merge the patch yet, I just observed a strange effect when
+resetting the board during playback / just after playback stops.
+At next boot time, sometimes the following error occurs:
+imx-sgtl5000 sound: ASoc: CODEC DAI sgtl5000 not registered
+imx-sgtl5000 sound: snd_soc_register_card failed (-517)
+
+I'll have to investigate further and will report back. Until then,
+please hold off with the patch. I might have overlooked something.
+
+Regards,
+Clemens
