@@ -1,20 +1,21 @@
-From: Clemens Gruber <clemens.gruber@pqgruber.com>
-Subject: Re: [PATCH] ASoC: sgtl5000: only check VDDD-supply,
-	not revision
-Date: Sat, 4 Jun 2016 11:03:24 +0200
-Message-ID: <20160604090324.GA867@archie.localdomain>
-References: <20160602124724.7725-1-clemens.gruber@pqgruber.com>
- <CAOMZO5B20n7Tu3r+BsU2R5BbYj41tf7qBsMLRWxChdWMkHxLNQ@mail.gmail.com>
- <5751AEF6.40200@nelint.com> <575264A4.2070709@nelint.com>
+From: Alan Young <consult.awy@gmail.com>
+Subject: Improving status timestamp accuracy
+Date: Sat, 4 Jun 2016 10:31:49 +0100
+Message-ID: <5752A005.2050309@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.pqgruber.com (mail.pqgruber.com [178.189.19.235])
- by alsa0.perex.cz (Postfix) with ESMTP id 43BB22606D6
- for <alsa-devel@alsa-project.org>; Sat,  4 Jun 2016 11:03:27 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <575264A4.2070709@nelint.com>
+Received: from mail-wm0-f49.google.com (mail-wm0-f49.google.com [74.125.82.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id BEC052606D6
+ for <alsa-devel@alsa-project.org>; Sat,  4 Jun 2016 11:31:50 +0200 (CEST)
+Received: by mail-wm0-f49.google.com with SMTP id z87so21904636wmh.0
+ for <alsa-devel@alsa-project.org>; Sat, 04 Jun 2016 02:31:50 -0700 (PDT)
+Received: from [192.168.11.11] (175.64.199.146.dyn.plus.net. [146.199.64.175])
+ by smtp.googlemail.com with ESMTPSA id
+ d86sm3607788wmh.4.2016.06.04.02.31.49
+ for <alsa-devel@alsa-project.org> (version=TLSv1/SSLv3 cipher=OTHER);
+ Sat, 04 Jun 2016 02:31:49 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,35 +25,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Eric Nelson <eric@nelint.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Eric,
+I am looking at ways to get more accurate status timestamp information 
+for various SoC drivers. The data that is obtained by snd_pcm_status(). 
+One route would be to implement the more accurate timestamp mechanisms 
+that currently are only available for HDA and Skylake (which I think is 
+the SoC version of HDA).
 
-On Sat, Jun 04, 2016 at 07:18:28AM +0200, Eric Nelson wrote:
-> AFAIK, the SGTL5000 versions < 0x11 are like Sasquatch: I've seen
-> no real proof of their existence. I tried to chase down when this
-> code was introduced, but it seems to have been around since
-> the dawn of the driver.
+Looking at the code however, I think that may be unnecessary, at least 
+for my purposes. It may not actually be practical in many cases.
 
-> 
-> Clemens, if you're really trying to control an external regulator,
-> I think you'll need lots more than this patch. There are some
-> fundamental flaws in regulator handling and I put together some
-> RFC patches to address them in February 2015:
-> 	http://mailman.alsa-project.org/pipermail/alsa-devel/2015-February/thread.html#88353
-> 
-> The long and short of it is that at least one of the regulators
-> would need to be initialized before the SGTL5000 probes.
+A call to snd_pcm_status() result in snd_pcm_update_hw_ptr0() being 
+called. This gets the current output position (pos) via 
+substream->ops->pointer(substream) and then makes all the other 
+calculations based on the result. In theory, the result of 
+substream->ops->pointer() could be sample accurate but in practice it is 
+very unlikely to be better than period accurate. In fact, if I read it 
+right, it will just about always be accurate to the point of the last 
+period interrupt. Even when a DMA driver claims support of 
+DMA_RESIDUE_GRANULARITY_BURST, it is often the case that the actual 
+granularity is a period.
 
-Thank you very much for your input on this. So we can assume that no
-user of the sgtl5000 is controlling an external VDDD regulator, because
-this does not work without your patch series from Februar 2015.
+The consequence of all that is that, for most drivers, the accuracy of a 
+status report is period time. The result values, tstamp & audio_tstamp, 
+are calculated using the current time and the pos estimate from above.
 
-As far as not enabling the internal LDO when using external VDDD and
-avoiding the misleading "Using internal LDO..." message at boot, do you
-think my patch would be OK?
+snd_pcm_update_hw_ptr0() is also called when there is a DMA interrupt. 
+At that time the calculate results will be accurate, or at worst 
+consistently inaccurate (there could be a constant offset). It would be 
+useful if a snd_pcm_status() call would simply return the results from 
+the point of the last interrupt, and not try to estimate a current value 
+based on the inaccurate substream->ops->pointer() result. It could 
+either: (a) return the result from the time of the last interrupt, in 
+which case tstamp would be in the past and driver_tstamp would be now; 
+or (b) update audio_tstamp based on the elapsed time since it was 
+recorded. (b) effectively abandons the idea that a current position 
+report will be accurate outside of an interrupt callback but, even if it 
+is, doing so is unlikely to result in any loss of accuracy in practice 
+(assuming a drift of better than 40ppm and period time < 100ms).
 
-Regards,
-Clemens
+Any comments on either of these approaches? I guess (b) is more 
+compatible with the current model.
+
+Alan.
