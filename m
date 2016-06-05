@@ -1,53 +1,56 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: CIP Discontinuity with snd-firewire-digi00x
-Date: Mon, 6 Jun 2016 07:51:53 +0900
-Message-ID: <5754AD09.3080807@sakamocchi.jp>
-References: <alpine.LNX.2.20.1606041726460.13950@anticlack.com>
- <57535D26.2080105@sakamocchi.jp>
- <alpine.LNX.2.20.1606041805260.17774@anticlack.com>
- <5753736F.6010902@sakamocchi.jp>
- <alpine.LNX.2.20.1606050916120.23467@anticlack.com>
+From: Clemens Gruber <clemens.gruber@pqgruber.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: sgtl5000: only check VDDD-supply, not
+ revision
+Date: Mon, 6 Jun 2016 01:16:26 +0200
+Message-ID: <20160605231626.GA4076@archie.localdomain>
+References: <20160602124724.7725-1-clemens.gruber@pqgruber.com>
+ <CAOMZO5B20n7Tu3r+BsU2R5BbYj41tf7qBsMLRWxChdWMkHxLNQ@mail.gmail.com>
+ <5751AEF6.40200@nelint.com>
+ <575264A4.2070709@nelint.com>
+ <20160604090324.GA867@archie.localdomain>
+ <20160604171525.GA29266@archie.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id E34632654EB
- for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2016 00:52:00 +0200 (CEST)
-In-Reply-To: <alpine.LNX.2.20.1606050916120.23467@anticlack.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: lin-alsa@noblejury.com
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20160604171525.GA29266@archie.localdomain>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Eric Nelson <eric@nelint.com>, Fabio Estevam <festevam@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi Eric, Fabio, Mark,
 
-On Jun 5 2016 23:22, lin-alsa@noblejury.com wrote:
-> I know I compiled it from your git repo at one point in the past, and I
-> think that is the version being used (I'm on a lts kernel).
+On Sat, Jun 04, 2016 at 07:15:25PM +0200, Clemens Gruber wrote:
+> please don't merge the patch yet, I just observed a strange effect when
+> resetting the board during playback / just after playback stops.
+> At next boot time, sometimes the following error occurs:
+> imx-sgtl5000 sound: ASoc: CODEC DAI sgtl5000 not registered
+> imx-sgtl5000 sound: snd_soc_register_card failed (-517)
 
-OK. We should check the point in the past.
+I looked into this today and discovered the following:
 
-Please get git-hash of HEAD in your local repository duplicated from my 
-remote repository, like:
-$ cd your-local-repository
-$ git show HEAD
-$ commit xxxx....
+With my patch applied, if I reset the board just after playback, at the
+next boot, the sgtl5000_fill_defaults function does not succeed: Writing
+the default value 0x7060 to register 0x30 (CHIP_ANA_POWER) fails.
 
-As a next step, I'd like to update your build so that we can use the new 
-feature (tracepoints) recently added to snd-firewire-lib in Linux 
-4.7-rc1. I maintain my remote repository for backporting to Linux 3.10 
-or later and you could install the latest feature in your 3.18 kernel.
+How did CHIP_ANA_POWER change with my patch: Before, only
+LINREG_SIMPLE_POWERUP was cleared as is recommended in the datasheet
+when using the internal LDO, now both LINREG_SIMPLE_POWERUP and
+STARTUP_POWERUP are cleared, as is recommended when using external VDDD.
 
+But why does the SGTL5000 nack that default write to CHIP_ANA_POWER
+after a reboot, which interrupted the playback?
 
-Regards
+The following patch from Eric solved the problem; one write fails but it
+continues setting the other registers and thus even if resetting a board
+during playback, the sound still works after reboot:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-February/088356.html
+Another workaround might be to not even write a default value to
+CHIP_ANA_POWER, as in this patch from Eric:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-February/088355.html
 
-Takashi Sakamoto
+What do you think we should do?
+
+Regards,
+Clemens
