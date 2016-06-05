@@ -1,19 +1,15 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Improving status timestamp accuracy
-Date: Sun, 5 Jun 2016 09:14:41 +0800
-Message-ID: <CAN8cciZN=Gjq3Za+Qz31EYoCsTuTNp4au_Upxq8ZvvEJqNdw9w@mail.gmail.com>
-References: <5752A005.2050309@gmail.com>
+From: Kai Chieh Chuang <kaichieh.chuang@mediatek.com>
+Subject: Re: DPCM: skip DAPM_STREAM_STOP event to BE,
+ if still used by other FE
+Date: Sun, 5 Jun 2016 14:58:59 +0800
+Message-ID: <1465109939.29781.2.camel@mtkswgap22>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f68.google.com (mail-lf0-f68.google.com
- [209.85.215.68])
- by alsa0.perex.cz (Postfix) with ESMTP id E9BA6261501
- for <alsa-devel@alsa-project.org>; Sun,  5 Jun 2016 03:14:42 +0200 (CEST)
-Received: by mail-lf0-f68.google.com with SMTP id h68so10784012lfh.3
- for <alsa-devel@alsa-project.org>; Sat, 04 Jun 2016 18:14:42 -0700 (PDT)
-In-Reply-To: <5752A005.2050309@gmail.com>
+Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
+ by alsa0.perex.cz (Postfix) with ESMTP id C32DA261294
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jun 2016 08:59:06 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,68 +19,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alan Young <consult.awy@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: lgirdwood@gmail.com, chipeng.chang@mediatek.com, kaichieh.chuang@mediatek.com
 List-Id: alsa-devel@alsa-project.org
 
-2016-06-04 17:31 GMT+08:00 Alan Young <consult.awy@gmail.com>:
+> If this isn't happening that seems like a bug, I'm a bit surprised
+> nobody else ran into it?  Shouldn't the counts of stream events that
+> happen be symmetric (ie, we get as many stops as starts), or are we
+> possibly missing some from things being switched in and out or
+something?
 
-> I am looking at ways to get more accurate status timestamp information for
-> various SoC drivers. The data that is obtained by snd_pcm_status(). One
-> route would be to implement the more accurate timestamp mechanisms that
-> currently are only available for HDA and Skylake (which I think is the SoC
-> version of HDA).
->
-> Looking at the code however, I think that may be unnecessary, at least for
-> my purposes. It may not actually be practical in many cases.
->
-> A call to snd_pcm_status() result in snd_pcm_update_hw_ptr0() being
-> called. This gets the current output position (pos) via
-> substream->ops->pointer(substream) and then makes all the other
-> calculations based on the result. In theory, the result of
-> substream->ops->pointer() could be sample accurate but in practice it is
-> very unlikely to be better than period accurate. In fact, if I read it
-> right, it will just about always be accurate to the point of the last
-> period interrupt. Even when a DMA driver claims support of
-> DMA_RESIDUE_GRANULARITY_BURST, it is often the case that the actual
-> granularity is a period.
->
+This idea is same as the DPCM BE state control, in
 
-the point only increment in DMA brust size , so it is not sample accurate
+int dpcm_be_dai_hw_free(..)
+{
+......
+                /* do not free hw if this BE is used by other FE */
+                if (be->dpcm[stream].users > 1)
+                        continue;
 
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/include/linux/dmaengine.h
+and
 
-* @DMA_RESIDUE_GRANULARITY_BURST: Residue is updated after each transferred
+int dpcm_be_dai_shutdown(...)
+{
+....
+                if (--be->dpcm[stream].users != 0)
+                        continue;
 
- *  burst. This is typically only supported if the hardware has a
-progress *  register of some sort (E.g. a register with the current
-read/write address *  or a register with the amount of
-bursts/beats/bytes that have been *  transferred or still need to be
-transferred).
+The BE receiving SND_SOC_DAPM_STREAM_STOP event, while still used by a
+FE who is in STREAM_START state. The DAPM will just inactive BE related
+widget/dai without checking. This just doesn't seems right.
+
+And the last FE using the BE calls in to dpcm_fe_dai_shutdown(), will
+run the process normally.
 
 
-if the driver point callback does not read from hardware register , it
-should use
+Actually, i trace the log, when one of the FE sent stop event to "still
+in use BE", the BE power state will not be changed. Until the system
+goes into
+SNDRV_CTL_POWER_D3cold, the BE will be shutdown (i did set the
+ignore_suspend=1). I didn't check why the BE is not turned off at the
+point when receiving the stop event.
 
-
-DMA_RESIDUE_GRANULARITY_DESCRIPTOR: Residue reporting is not support.
-The *  DMA channel is only able to tell whether a descriptor has been
-completed or *  not, which means residue reporting is not supported by
-this channel. The *  residue field of the dma_tx_state field will
-always be 0.
-
-
-
-
->
-> The consequence of all that is that, for most drivers, the accuracy of a
-> status report is period time. The result values, tstamp & audio_tstamp, are
-> calculated using the current time and the pos estimate from above.
->
-
-
-
->
->
->
->
+I'm also curious why no one seems to have the same issue. Probably there
+is not much DPCM architecture system yet on the Linux?
