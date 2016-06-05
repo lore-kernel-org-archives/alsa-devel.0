@@ -1,15 +1,19 @@
-From: Kai Chieh Chuang <kaichieh.chuang@mediatek.com>
-Subject: Re: DPCM: skip DAPM_STREAM_STOP event to BE,
- if still used by other FE
-Date: Sun, 5 Jun 2016 14:58:59 +0800
-Message-ID: <1465109939.29781.2.camel@mtkswgap22>
+From: Alan Young <consult.awy@gmail.com>
+Subject: Re: Improving status timestamp accuracy
+Date: Sun, 5 Jun 2016 11:33:20 +0100
+Message-ID: <5753FFF0.3050200@gmail.com>
+References: <5752A005.2050309@gmail.com>
+ <CAN8cciZN=Gjq3Za+Qz31EYoCsTuTNp4au_Upxq8ZvvEJqNdw9w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
- by alsa0.perex.cz (Postfix) with ESMTP id C32DA261294
- for <alsa-devel@alsa-project.org>; Sun,  5 Jun 2016 08:59:06 +0200 (CEST)
+Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id B2858261294
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jun 2016 12:33:21 +0200 (CEST)
+Received: by mail-wm0-f65.google.com with SMTP id m124so8435538wme.3
+ for <alsa-devel@alsa-project.org>; Sun, 05 Jun 2016 03:33:21 -0700 (PDT)
+In-Reply-To: <CAN8cciZN=Gjq3Za+Qz31EYoCsTuTNp4au_Upxq8ZvvEJqNdw9w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,47 +23,122 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: lgirdwood@gmail.com, chipeng.chang@mediatek.com, kaichieh.chuang@mediatek.com
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> If this isn't happening that seems like a bug, I'm a bit surprised
-> nobody else ran into it?  Shouldn't the counts of stream events that
-> happen be symmetric (ie, we get as many stops as starts), or are we
-> possibly missing some from things being switched in and out or
-something?
-
-This idea is same as the DPCM BE state control, in
-
-int dpcm_be_dai_hw_free(..)
-{
-......
-                /* do not free hw if this BE is used by other FE */
-                if (be->dpcm[stream].users > 1)
-                        continue;
-
-and
-
-int dpcm_be_dai_shutdown(...)
-{
-....
-                if (--be->dpcm[stream].users != 0)
-                        continue;
-
-The BE receiving SND_SOC_DAPM_STREAM_STOP event, while still used by a
-FE who is in STREAM_START state. The DAPM will just inactive BE related
-widget/dai without checking. This just doesn't seems right.
-
-And the last FE using the BE calls in to dpcm_fe_dai_shutdown(), will
-run the process normally.
+On 05/06/16 02:14, Raymond Yau wrote:
+> the point only increment in DMA brust size , so it is not sample accurate
+>
+> https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/include/linux/dmaengine.h
+>
+> |* @DMA_RESIDUE_GRANULARITY_BURST: |Residue is updated after each 
+> transferred
+> |* burst. This is typically only supported if the hardware has a 
+> progress * register of some sort (E.g. a register with the current 
+> read/write address * or a register with the amount of 
+> bursts/beats/bytes that have been * transferred or still need to be 
+> transferred).|
+> ||
+> |if the driver point callback does not read from hardware register , it 
+> should use |
+> ||
+> |
+> |DMA_RESIDUE_GRANULARITY_DESCRIPTOR: Residue reporting is not support. 
+> The * DMA channel is only able to tell whether a descriptor has been 
+> completed or * not, which means residue reporting is not supported by 
+> this channel. The * residue field of the dma_tx_state field will 
+> always be 0.|
+> |
 
 
-Actually, i trace the log, when one of the FE sent stop event to "still
-in use BE", the BE power state will not be changed. Until the system
-goes into
-SNDRV_CTL_POWER_D3cold, the BE will be shutdown (i did set the
-ignore_suspend=1). I didn't check why the BE is not turned off at the
-point when receiving the stop event.
+Yes, I understand that. And that is exactly my point. Because of this a 
+pcm_status() result is only accurate to a granularity of period in most 
+cases.
 
-I'm also curious why no one seems to have the same issue. Probably there
-is not much DPCM architecture system yet on the Linux?
+In fact, some drivers, for example imx sdma, declare 
+DMA_RESIDUE_GRANULARITY_BURST accuracy because sometimes they may have 
+such an accuracy but in practice, at least for audio, they only actually 
+achieve period accuracy.
+
+Regardless of what value of DMA_RESIDUE_GRANULARITY_xxx that a driver 
+claims to support, it is not really defined how fine a burst might be. 
+So the end result is, from the point of view of audio, that the 
+resulting position obtained by the pointer() call is pretty inaccurate. 
+Hence my proposal to attempt to improve the accuracy of the pcm_status() 
+result given the above constraints.
+
+The following patch gives an idea of what I am considering:
+
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index 6b5a811..ea5b525 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -234,7 +234,8 @@ int snd_pcm_update_state(struct snd_pcm_substream 
+*substream,
+
+  static void update_audio_tstamp(struct snd_pcm_substream *substream,
+                  struct timespec *curr_tstamp,
+-                struct timespec *audio_tstamp)
++                struct timespec *audio_tstamp,
++                unsigned int adjust_existing_audio_tstamp)
+  {
+      struct snd_pcm_runtime *runtime = substream->runtime;
+      u64 audio_frames, audio_nsecs;
+@@ -252,17 +253,23 @@ static void update_audio_tstamp(struct 
+snd_pcm_substream *substream,
+           * add delay only if requested
+           */
+
+-        audio_frames = runtime->hw_ptr_wrap + runtime->status->hw_ptr;
++        if (adjust_existing_audio_tstamp && 
+runtime->status->tstamp->tv_sec) {
++            struct timespec delta =
++                timespec_sub(*curr_tstamp, runtime->status->tstamp);
++            *audio_tstamp = timespec_add(*audio_tstamp, delta);
++        } else {
++            audio_frames = runtime->hw_ptr_wrap + runtime->status->hw_ptr;
+
+-        if (runtime->audio_tstamp_config.report_delay) {
+-            if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-                audio_frames -=  runtime->delay;
+-            else
+-                audio_frames +=  runtime->delay;
++            if (runtime->audio_tstamp_config.report_delay) {
++                if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++                    audio_frames -=  runtime->delay;
++                else
++                    audio_frames +=  runtime->delay;
++            }
++            audio_nsecs = div_u64(audio_frames * 1000000000LL,
++                    runtime->rate);
++            *audio_tstamp = ns_to_timespec(audio_nsecs);
+          }
+-        audio_nsecs = div_u64(audio_frames * 1000000000LL,
+-                runtime->rate);
+-        *audio_tstamp = ns_to_timespec(audio_nsecs);
+      }
+      runtime->status->audio_tstamp = *audio_tstamp;
+      runtime->status->tstamp = *curr_tstamp;
+@@ -454,7 +461,7 @@ static int snd_pcm_update_hw_ptr0(struct 
+snd_pcm_substream *substream,
+
+   no_delta_check:
+      if (runtime->status->hw_ptr == new_hw_ptr) {
+-        update_audio_tstamp(substream, &curr_tstamp, &audio_tstamp);
++        update_audio_tstamp(substream, &curr_tstamp, &audio_tstamp, 
+!in_interrupt);
+          return 0;
+      }
+
+@@ -479,7 +486,7 @@ static int snd_pcm_update_hw_ptr0(struct 
+snd_pcm_substream *substream,
+          runtime->hw_ptr_wrap += runtime->boundary;
+      }
+
+-    update_audio_tstamp(substream, &curr_tstamp, &audio_tstamp);
++    update_audio_tstamp(substream, &curr_tstamp, &audio_tstamp, 
+!in_interrupt);
+
+      return snd_pcm_update_state(substream, runtime);
+  }
