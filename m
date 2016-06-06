@@ -1,13 +1,22 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [GIT PULL] Braswell audio firmware update
-Date: Mon, 6 Jun 2016 14:29:52 +0530
-Message-ID: <20160606085952.GY16910@localhost>
+From: Alan Young <consult.awy@gmail.com>
+Subject: Re: Improving status timestamp accuracy
+Date: Mon, 6 Jun 2016 10:40:32 +0100
+Message-ID: <57554510.9070700@gmail.com>
+References: <5752A005.2050309@gmail.com>
+ <CAN8cciZN=Gjq3Za+Qz31EYoCsTuTNp4au_Upxq8ZvvEJqNdw9w@mail.gmail.com>
+ <5753FFF0.3050200@gmail.com>
+ <CAN8cciab89x5ZQaBkSAGxEOzQ7FB3ORJAcd47Gu6EjSVDmk2cA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2950019546642627053=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 6EC1C26574A
- for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2016 10:53:17 +0200 (CEST)
+Received: from mail-lf0-f51.google.com (mail-lf0-f51.google.com
+ [209.85.215.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 01A6926547F
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2016 11:40:35 +0200 (CEST)
+Received: by mail-lf0-f51.google.com with SMTP id w16so90695848lfd.2
+ for <alsa-devel@alsa-project.org>; Mon, 06 Jun 2016 02:40:34 -0700 (PDT)
+In-Reply-To: <CAN8cciab89x5ZQaBkSAGxEOzQ7FB3ORJAcd47Gu6EjSVDmk2cA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -17,80 +26,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-firmware@kernel.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 06/06/16 02:24, Raymond Yau wrote:
+> http://git.alsa-project.org/?p=alsa-lib.git;a=commitdiff;h=cf40ea169aad366b222283f431addafea6327149;hp=4bdb09126a32feb4394eaeb1d400d87e7c968770
+>
+> HDA has hardware specific feature (audio wallclock) for the timestamp 
+> and period wakeup can be disabled
+>
+>
+> only a few pci drivers which read the residue value from hardware 
+> register (e.g. hda-intel, oxygen , .) you have to measure the 
+> granularity since the unit may be different for usb, pcie and firewire 
+> sound card
+>
 
---===============2950019546642627053==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SxgehGEc6vB0cZwN"
-Content-Disposition: inline
+Thank you Raymond. Yes, (I think) I understand all that. Let me restate 
+my understanding of the situation.
 
+The pointer position will generally be inaccurate by up to a period 
+size. Even when a driver claims to support 
+DMA_RESIDUE_GRANULARITY_BURST, the reported data is still unlikely to be 
+sample accurate (as the size of a burst is undefined). For most drivers 
+the reported position will be inaccurate and the actual accuracy cannot 
+be determined.
 
---SxgehGEc6vB0cZwN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The delay is also likely to be inaccurate. It is intended that this 
+could include things such as codec delay but for most drivers this is 
+not included. A few drivers, and in particular USB via an estimate, do 
+try to include the in-flight transfer delay. In some ways this is the 
+worst case: the delay may or may not include the transfer delay AND may 
+or may not include the codec delay; what it actually includes is unknown.
 
-Please PULL to receive the updated BSW firmware binary which contains
-some odd playback noise fixes
+The result of these is that both the position and delay may be 
+inaccurate and the degree to which this is the case is not known.
 
-The following changes since commit f5b546819836f207a6df58d48423ca6112cd2801:
+We can tell that the position has not changed since the last call to 
+snd_pcm_update_hw_ptr0() because new_hw_ptr == old_hw_ptr. We can use 
+this knowledge to adjust the audio_tstamp returned by the time elapsed 
+since the previous call (for SNDRV_PCM_AUDIO_TSTAMP_TYPE_DEFAULT). We 
+can also make such an adjustment even if the position has changed to 
+better deal with the inaccuracy of position reporting.
 
-  linux-firmware: Update firmware patch for Intel Bluetooth 7260 (B5/B6) (2=
-016-06-02 09:51:44 -0700)
+Because of the 2 different types of unknown accuracy in delay, we cannot 
+do the same trick with this. In many ways being able to update the delay 
+in this way would be ideal. If we could, then we could leave 
+audio_tstamp alone and let audio_tstamp_config.report_delay determine if 
+the adjusted delay is also included in that. Since, in practice, most 
+drivers either contain no codec delay value of a constant one, we can 
+still use such a mechanim for most practical cases.
 
-are available in the git repository at:
+Have I got anything wrong above?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git BSW
+I'm going to test a revised patch based on these assumptions.
 
-for you to fetch changes up to 1d079ff33967673e9de44f1ac33de8b62f021b32:
+>
+> as the application is based on the pointer for read/write, you still 
+> need to use small period size and CPU power if you want to determine 
+> the value returned by snd_pcm_rewindable is safe or not
 
-  linux-firmware: update audio firmware for Braswell platform (2016-06-06 1=
-4:24:20 +0530)
+My point is that I want to find a way to get reported delay and/or audio 
+timestamps that are more accurate that a period time even in the absence 
+of hardware that has specific support for this.
 
-----------------------------------------------------------------
-Vinod Koul (1):
-      linux-firmware: update audio firmware for Braswell platform
-
- WHENCE                |   2 +-
- intel/fw_sst_22a8.bin | Bin 701614 -> 701694 bytes
- 2 files changed, 1 insertion(+), 1 deletion(-)
-
-Thanks
---=20
-~Vinod
-
---SxgehGEc6vB0cZwN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJXVTuIAAoJEHwUBw8lI4NH/iQP/RYMgE8/tuBhNzNn61NzvHoQ
-kiSETq8e8uqaY88fibnYtp/62w+q6AysjKPCxcxVO8cYQTqUQ4l6FL7qAXXPuUor
-0SEaLwi5VJ9EjOAyZJB3+T+j8ghJaV+d6k17JlVOwv1zkLQNJsxwWOmzZq+WFGK0
-HzsneoElZwL97YFoEBI18nA9tWrMSWytxHCmgOqKGhU3ozqCRWdZAJG5zaMkdT0d
-nnVvniheQfCsu+StDBG+a5f+vL7OL1m6PZ6zt3XRZZiO0X13oa2gft6i6Z8dhEHl
-ayldMB104RQ6g9J7/NVcNOZSjIhfpTIk9Ro0+xUnLXNknq2dl86h53su8Ef23XWM
-qAGCQCExBz85Qfl/utB5Akdg4kfxsOV945+j2nTau27YVziuPBRFadN7wsAwOun7
-WeKP6bJa8RI6XPj/+Vr2NDZhpsf4CEHZ1iQbANXB6ATLLykK9X9sQ/7di3TsPD8o
-7fIIW59Z+Qt2bpoxKBSdGMB09l41++7i7yWOGWFfmQCj8RliqpH1sseQA/tMc1cQ
-ZCm8wwhWCnhZJK0rndSUpGihA/ZlOU/8OfW6g4b4C5N81D9R4/N23WpK6nsePV9X
-vmFqYdnhmxb6EZQb3v9en4x1MPcHMYuJdz4IpELKSaAxIT34kOXHd/K1pnIe1eZc
-CasXwbq45xpV5ebR2jTJ
-=JE2w
------END PGP SIGNATURE-----
-
---SxgehGEc6vB0cZwN--
-
---===============2950019546642627053==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2950019546642627053==--
+Alan.
