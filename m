@@ -1,34 +1,69 @@
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: Re: [PATCH] ASoC: atmel: fix build failure
-Date: Mon, 06 Jun 2016 21:58:41 +0100
-Message-ID: <5755E401.4050008@gmail.com>
-References: <1465149621-4493-1-git-send-email-sudipm.mukherjee@gmail.com> <20160606101747.GA7510@sirena.org.uk>
+From: Clive Messer <clive.messer@digitaldreamtime.co.uk>
+Subject: Re: [PATCH] ALSA: Add rate defines for 352k8 and 384k
+Date: Mon, 06 Jun 2016 22:22:20 +0100
+Message-ID: <1465248140.11487.65.camel@digitaldreamtime.co.uk>
+References: <1465215540-23084-1-git-send-email-clive.messer@digitaldreamtime.co.uk>
+ <s5h4m96mq1k.wl-tiwai@suse.de>
+ <1465232863.11487.28.camel@digitaldreamtime.co.uk>
+ <s5hporucb7t.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160606101747.GA7510@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.dreamtime.org (barcelona.digitaldreamtime.co.uk
+ [85.158.46.130])
+ by alsa0.perex.cz (Postfix) with ESMTP id 045712652AE
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2016 23:22:27 +0200 (CEST)
+In-Reply-To: <s5hporucb7t.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 06 June 2016 11:17 AM, Mark Brown wrote:
-> On Sun, Jun 05, 2016 at 07:00:21PM +0100, Sudip Mukherjee wrote:
->> m32r allmodconfig build is failing with the error:
->> ERROR: "bad_dma_ops" [sound/soc/atmel/snd-soc-atmel-pcm-pdc.ko] undefined!
->>
->> The code is using DMA but the related dependency is not mentioned in the
->> Kconfig.
->
-> Rather than going through every single driver using DMA adding the
-> dependency might it not be simpler to provide at least a stub DMA
-> implementation for the architectures that don't have it?
->
-
-Yes, i can add them for m32r. but since m32r is orphan i send all m32r 
-patches to Andrew.
-So, Andrew, do you have any objection to it?
-
-Regards
-Sudip
+T24gTW9uLCAyMDE2LTA2LTA2IGF0IDIyOjI5ICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6CgpU
+YWthc2hpLAoKPiBJJ20gYXNraW5nIGFib3V0ICJ0aGUgY3VycmVudCB0cmVlIi7CoMKgSW4gb3Ro
+ZXIgd29yZHMsIGFmdGVyIGFwcGx5aW5nCj4geW91ciBwYXRjaCwgaG93IG1hbnkgY29kZXMgaW4g
+bXkgY3VycmVudCB0cmVlIGNhbiBiZSByZWR1Y2VkPwoKV2VsbCwgaW4gdGhlIGN1cnJlbnQgdHJl
+ZSwgdGhlIHBjbTUxMDJhIGNvZGVjIGlzbid0IGVuYWJsZWQgZm9yIDM4NGsuCllvdSB3YW50IG1l
+IHRvIHN1Ym1pdCBhIHBhdGNoIGZvciBkb2luZyB0aGF0LCB1c2luZyBjb25zdHJhaW50cyBhbmQK
+dGhlbiByZS1zdWJtaXQgbXkgcGF0Y2ggdG8gYWRkIHRoZSBzYW1wbGUgcmF0ZSBkZWZpbmVzIGFu
+ZCB0aGVuIGEgM3JkCnBhdGNoLCByZW1vdmluZyB0aGUgY29uc3RyYWludCBjb2RlIGZyb20gdGhl
+IHBjbTUxMDJhIGNvZGVjLCBub3cgaXQKd291bGQgcmVzdWx0IGluIGEgb25lIGxpbmUgY2hhbmdl
+IHdpdGggdGhlIHNhbXBsZSByYXRlIGRlZmluZXM/Cgo+IFNvLCBwbGVhc2UgcHJvdmUgdGhlIGNs
+ZWFudXAgcmVzdWx0cyBhcyBwYXRjaGVzLCBhbmQgc2VuZCB0b2dldGhlcgo+IHdpdGggeW91ciBw
+YXRjaCBhcyBhIGNvbXBsZXRlIHBhdGNoc2V0LsKgwqBUaGVuIGl0J2xsIGJlY29tZSBtb3JlCj4g
+Y29udmluY2luZy4KClRoZXJlIG11c3QgYmUgc29tZXRoaW5nIEkgYW0gbWlzc2luZy4gSSBkb24n
+dCB1bmRlcnN0YW5kIHdoYXQgdGhpcyBoYXMKdG8gZG8gd2l0aCAiY2xlYW51cCI/IEkgbmV2ZXIg
+cHJvcG9zZWQgYW55dGhpbmcgb3RoZXIgdGhhbiBhZGRpbmcgYQpjb3VwbGUgb2YgZGVmaW5lcywg
+Zm9yIHdoYXQgYXJlIG5vdyBiZWNvbWluZyBtb3JlIGNvbW1vbiBoaWdoLXJlcwpzYW1wbGUgcmF0
+ZXMuCgpUaGVyZSBoYXMgYmVlbiByZXNpc3RhbmNlIHRvIGFkZGluZyB0aGVzZSBkZWZpbmVzIGlu
+IHRoZSBwYXN0LiBJIGRpZG4ndAp1bmRlcnN0YW5kIHdoeSB0aGVuLCBhbmQgSSBkb24ndCB1bmRl
+cnN0YW5kIHdoeSBub3cuIFdoYXQgaXMgaXQgeW91Cm5lZWQgY29udmluY2luZyBvZj8gVGhhdCBE
+WEQgKDM1Mms4LzI0KSBpcyBhIHN0YW5kYXJkIHJlc29sdXRpb24/IFRoYXQKMTkyayB1c2VkIHRv
+IGJlIHRoZSBtYXggZnMgb2YgbW9zdCBEQUMgY2hpcHMuLi4uIFRpbWUgbWFyY2hlcyBvbi4uLi4K
+Tm93IG1hbnkgYXJlIG1heCBmcyAzODRrP8KgCgpUaGUgbGFzdCB0aW1lLCAyMDE2MDEyNywgc29t
+ZW9uZSBmcm9tIENpcnJ1cyB0cmllZCBzdWJtaXR0aW5nIGEgcGF0Y2gKdG8gYWRkIGEgMzg0ayBk
+ZWZpbmUsIHRoZSB0aHJlYWQgZW5kZWQgd2l0aCB5b3UgaW52aXRpbmcgdGhlbSB0byByZS0Kc3Vi
+bWl0IGl0LiBBRkFJSywgaXQgbmV2ZXIgd2FzIHJlLXN1Ym1pdHRlZC7CoAoKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZlbC8yMDE2LUphbnVhcnkvMTAz
+NTA2Lmh0bWwKCkFuZCBhZ2FpbiwgSSBkb24ndCB1bmRlcnN0YW5kIHdoeSB5b3UgYXJlIHRhbGtp
+bmcgYWJvdXQgImNsZWFudXAiLiBJIGFtCm5vdCBwcm9wb3NpbmcgdG8gY2xlYW51cCBhbnkgY29k
+ZSwgb25seSBhZGQgYSBjb3VwbGUgb2YgZGVmaW5lcyB0byBhCmhlYWRlciwgd2hpY2ggd291bGQg
+cmVzdWx0IGluIG9uZSBsaW5lIGNoYW5nZXMsIGF0IHRoZSBwb2ludCBzb21lb25lCndhbnRlZCB0
+byBhZGQgMzUyazgvMzg0ayBzdXBwb3J0IHRvIGFuIGV4aXN0aW5nIGNvZGVjIGRyaXZlciwgcmF0
+aGVyCnRoYW4gYWRkaW5nIG11bHRpcGxlIGxpbmVzIG9mIG1ldGhvZHMvY29kZSB0byBhZGQgMzUy
+azgvMzg0ayBzdXBwb3J0CnZpYSBLTk9UL2NvbnN0cmFpbnRzLiBUaGUgcG9pbnQgSSB3YXMgdHJ5
+aW5nIHRvIHNob3csIHdpdGggdGhlIHBjbTUxMDJhCmV4YW1wbGUuCgpSZWdhcmRzCgpDbGl2ZQot
+LcKgCkNsaXZlIE1lc3NlciA8Y2xpdmUubWVzc2VyQGRpZ2l0YWxkcmVhbXRpbWUuY28udWs+CkRp
+Z2l0YWwgRHJlYW10aW1lIEx0ZAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCg==
