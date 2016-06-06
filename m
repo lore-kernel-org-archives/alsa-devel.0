@@ -1,25 +1,21 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] ASoC: sgtl5000: only check VDDD-supply,
-	not revision
-Date: Sun, 5 Jun 2016 22:22:55 -0300
-Message-ID: <CAOMZO5Bvtpc0umHLDa_kE_a0tfMPZJK-pgUevcTx1RYi_oXphw@mail.gmail.com>
-References: <20160602124724.7725-1-clemens.gruber@pqgruber.com>
- <CAOMZO5B20n7Tu3r+BsU2R5BbYj41tf7qBsMLRWxChdWMkHxLNQ@mail.gmail.com>
- <5751AEF6.40200@nelint.com> <575264A4.2070709@nelint.com>
- <20160604090324.GA867@archie.localdomain>
- <20160604171525.GA29266@archie.localdomain>
- <20160605231626.GA4076@archie.localdomain>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Improving status timestamp accuracy
+Date: Mon, 6 Jun 2016 09:24:20 +0800
+Message-ID: <CAN8cciab89x5ZQaBkSAGxEOzQ7FB3ORJAcd47Gu6EjSVDmk2cA@mail.gmail.com>
+References: <5752A005.2050309@gmail.com>
+ <CAN8cciZN=Gjq3Za+Qz31EYoCsTuTNp4au_Upxq8ZvvEJqNdw9w@mail.gmail.com>
+ <5753FFF0.3050200@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f195.google.com (mail-io0-f195.google.com
- [209.85.223.195])
- by alsa0.perex.cz (Postfix) with ESMTP id B992626573D
- for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2016 03:22:56 +0200 (CEST)
-Received: by mail-io0-f195.google.com with SMTP id 5so674726ioy.0
- for <alsa-devel@alsa-project.org>; Sun, 05 Jun 2016 18:22:56 -0700 (PDT)
-In-Reply-To: <20160605231626.GA4076@archie.localdomain>
+Received: from mail-lf0-f50.google.com (mail-lf0-f50.google.com
+ [209.85.215.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id B56AF26573D
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2016 03:24:21 +0200 (CEST)
+Received: by mail-lf0-f50.google.com with SMTP id b73so85161506lfb.3
+ for <alsa-devel@alsa-project.org>; Sun, 05 Jun 2016 18:24:21 -0700 (PDT)
+In-Reply-To: <5753FFF0.3050200@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,37 +25,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc: Eric Nelson <eric@nelint.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>
+To: Alan Young <consult.awy@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
+2016-06-05 18:33 GMT+08:00 Alan Young <consult.awy@gmail.com>:
 
-On Sun, Jun 5, 2016 at 8:16 PM, Clemens Gruber
-<clemens.gruber@pqgruber.com> wrote:
+> On 05/06/16 02:14, Raymond Yau wrote:
+>
+> the point only increment in DMA brust size , so it is not sample accurate
+>
+>
+> https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/include/linux/dmaengine.h
+>
+> * @DMA_RESIDUE_GRANULARITY_BURST: Residue is updated after each transferred
+>
+>  *  burst. This is typically only supported if the hardware has a progress *  register of some sort (E.g. a register with the current read/write address *  or a register with the amount of bursts/beats/bytes that have been *  transferred or still need to be transferred).
+>
+>  if the driver point callback does not read from hardware register , it should use
+>
+>  DMA_RESIDUE_GRANULARITY_DESCRIPTOR: Residue reporting is not support. The *  DMA channel is only able to tell whether a descriptor has been completed or *  not, which means residue reporting is not supported by this channel. The *  residue field of the dma_tx_state field will always be 0.
+>
+>
+>
+> Yes, I understand that. And that is exactly my point. Because of this a
+> pcm_status() result is only accurate to a granularity of period in most
+> cases.
+>
+> In fact, some drivers, for example imx sdma, declare
+> DMA_RESIDUE_GRANULARITY_BURST accuracy because sometimes they may have such
+> an accuracy but in practice, at least for audio, they only actually achieve
+> period accuracy.
+>
+> Regardless of what value of DMA_RESIDUE_GRANULARITY_xxx that a driver
+> claims to support, it is not really defined how fine a burst might be. So
+> the end result is, from the point of view of audio, that the resulting
+> position obtained by the pointer() call is pretty inaccurate. Hence my
+> proposal to attempt to improve the accuracy of the pcm_status() result
+> given the above constraints.
+>
 
-> I looked into this today and discovered the following:
->
-> With my patch applied, if I reset the board just after playback, at the
-> next boot, the sgtl5000_fill_defaults function does not succeed: Writing
-> the default value 0x7060 to register 0x30 (CHIP_ANA_POWER) fails.
->
-> How did CHIP_ANA_POWER change with my patch: Before, only
-> LINREG_SIMPLE_POWERUP was cleared as is recommended in the datasheet
-> when using the internal LDO, now both LINREG_SIMPLE_POWERUP and
-> STARTUP_POWERUP are cleared, as is recommended when using external VDDD.
->
-> But why does the SGTL5000 nack that default write to CHIP_ANA_POWER
-> after a reboot, which interrupted the playback?
->
-> The following patch from Eric solved the problem; one write fails but it
-> continues setting the other registers and thus even if resetting a board
-> during playback, the sound still works after reboot:
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2015-February/088356.html
-> Another workaround might be to not even write a default value to
-> CHIP_ANA_POWER, as in this patch from Eric:
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2015-February/088355.html
->
-> What do you think we should do?
 
-Shouldn't both patches be applied?
+http://git.alsa-project.org/?p=alsa-lib.git;a=commitdiff;h=cf40ea169aad366b222283f431addafea6327149;hp=4bdb09126a32feb4394eaeb1d400d87e7c968770
+
+HDA has hardware specific feature (audio wallclock) for the timestamp and
+period wakeup can be disabled
+
+
+only a few pci drivers which read the residue value from hardware register
+(e.g. hda-intel, oxygen , .) you have to measure the granularity since the
+unit may be different for usb, pcie and firewire sound card
+
+
+as the application is based on the pointer for read/write, you still need
+to use small period size and CPU power if you want to determine the value
+returned by snd_pcm_rewindable is safe or not
+
+
+>
+>
