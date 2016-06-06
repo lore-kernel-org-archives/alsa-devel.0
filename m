@@ -1,62 +1,79 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: Improving status timestamp accuracy
-Date: Mon, 6 Jun 2016 09:53:58 -0500
-Message-ID: <51c7887a-db2f-ee88-8290-2f2d21d6435d@linux.intel.com>
-References: <5752A005.2050309@gmail.com>
- <CAN8cciZN=Gjq3Za+Qz31EYoCsTuTNp4au_Upxq8ZvvEJqNdw9w@mail.gmail.com>
- <5753FFF0.3050200@gmail.com> <s5hwpm2n2bq.wl-tiwai@suse.de>
- <57554591.20103@gmail.com>
+From: Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: sound: use-after-free in hrtimer_cancel
+Date: Mon, 6 Jun 2016 18:29:25 +0200
+Message-ID: <CACT4Y+ZQn21O6YMphSQs9kM9KREST_MWXOyAbxNiLP7BREJqfg@mail.gmail.com>
+References: <CACT4Y+Z-iJ6QyzyaJZk_oWmBKCjYecSynfsW3OdH5_bfarH=DQ@mail.gmail.com>
+ <CACT4Y+b1YEr5suLfUQVd_U+AU1fJ38DmGWbrLxaNay42-nAxYQ@mail.gmail.com> <s5hoa7emmpy.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D94C265795
- for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2016 16:54:00 +0200 (CEST)
-In-Reply-To: <57554591.20103@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alan Young <consult.awy@gmail.com>, Takashi Iwai <tiwai@suse.de>
-Cc: Raymond Yau <superquad.vortex2@gmail.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hoa7emmpy.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, Sasha Levin <sasha.levin@oracle.com>, Alexander Potapenko <glider@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 6/6/16 4:42 AM, Alan Young wrote:
-> On 06/06/16 09:34, Takashi Iwai wrote:
->> On Sun, 05 Jun 2016 12:33:20 +0200,
->> Alan Young wrote:
->>> Regardless of what value of DMA_RESIDUE_GRANULARITY_xxx that a driver
->>> claims to support, it is not really defined how fine a burst might
->>> be. So the end result is, from the point of view of audio, that the
->>> resulting position obtained by the pointer() call is pretty
->>> inaccurate. Hence my proposal to attempt to improve the accuracy of
->>> the pcm_status() result given the above constraints.
->> Well, the subject appears misleading.  What you want isn't the audio
->> timestamp accuracy.  From API POV, the accurate position is calculated
->> via the (additional) delay.  So, what you want is rather the accurate
->> position delay accounting, and the audio timestamp is merely one of
->> the ways to achieve that.
+On Mon, Jun 6, 2016 at 4:11 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Sat, 04 Jun 2016 20:27:50 +0200,
+> Dmitry Vyukov wrote:
 >>
+>> On Sat, Jun 4, 2016 at 8:00 PM, Dmitry Vyukov <dvyukov@google.com> wrote:
+>> > Hello,
+>> >
+>> > The following program triggers use-after-free:
+>>
+>> Forget to mention that you need to run it in a tight parallel loop. It
+>> takes around 5 minutes to reproduce for me.
 >
-> Well, yes, you could put it that way. Whether an accurate delay,
-> combined with the associated timestamp, or an accurate audio delay, I
-> would have the data needed to track audio drift from wallclock time.
+> Hmm, this again is a bug that is difficult to trigger...  At least, I
+> couldn't reproduce locally.  How many processes are you running with
+> stress program?
 
-I probably need more coffee but how is this patch helping track audio v. 
-wallclock drift? The additional precision is based on wallclock deltas...
+I use a VM with 4 cores and use 20 parallel test processes.
 
+> It seems that there is nothing more than opening /dev/audio and does
+> some mmap in the job.  Is there any other relevant thing there?
+
+
+I think poll with timeout is related. It is poll who sets hrtimer, right?
+
+
+> Also, this assumes that the first sound card is Dummy driver, right?
+> Check /proc/asound/cards.
+
+# cat /proc/asound/cards
+ 0 [Dummy          ]: Dummy - Dummy
+                      Dummy 1
+ 1 [Loopback       ]: Loopback - Loopback
+                      Loopback 1
+ 2 [VirMIDI        ]: VirMIDI - VirMIDI
+                      Virtual MIDI Card 1
+ 3 [pcsp           ]: PC-Speaker - pcsp
+                      Internal PC-Speaker at port 0x61
+ 4 [Intel          ]: HDA-Intel - HDA Intel
+                      HDA Intel at 0xfebf0000 irq 24
+
+
+
+> If it's about snd-dummy driver, one blind shot would be a patch like
+> below.  But even if it would fix, it doesn't explain why it's
+> triggered in that way...
 >
-> See my response to Raymond for more detail.
 >
-> Alan.
+> thanks,
 >
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> Takashi
+>
+> ---
+> diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
+> index c0f8f613f1f1..172dacd925f5 100644
+> --- a/sound/drivers/dummy.c
+> +++ b/sound/drivers/dummy.c
+> @@ -420,6 +420,7 @@ static int dummy_hrtimer_stop(struct snd_pcm_substream *substream)
+>
+>  static inline void dummy_hrtimer_sync(struct dummy_hrtimer_pcm *dpcm)
+>  {
+> +       hrtimer_cancel(&dpcm->timer);
+>         tasklet_kill(&dpcm->tasklet);
+>  }
+>
