@@ -1,53 +1,84 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: rockchip: Add machine driver for
- MAX98357A/RT5514/DA7219
-Date: Tue, 7 Jun 2016 00:50:26 +0100
-Message-ID: <20160606235026.GP7510@sirena.org.uk>
-References: <1464267742-15312-1-git-send-email-zhengxing@rock-chips.com>
- <20160601144542.GA3835@rob-hp-laptop>
- <5751912C.6080904@rock-chips.com>
+Subject: Re: ASoC: sgtl5000: SMALL_POP and loud click noise 5
+ secs after playback stopped
+Date: Tue, 7 Jun 2016 00:52:32 +0100
+Message-ID: <20160606235232.GQ7510@sirena.org.uk>
+References: <20160606220025.GA2308@archie.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="8G1nIWD3RY794FAy"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5751912C.6080904@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Xing Zheng <zhengxing@rock-chips.com>
-Cc: Rob Herring <robh@kernel.org>, linux-rockchip@lists.infradead.org, dianders@chromium.org, heiko@sntech.de, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============2703787107847691613=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C368A265755
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2016 01:52:40 +0200 (CEST)
+In-Reply-To: <20160606220025.GA2308@archie.localdomain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc: Fabio Estevam <festevam@gmail.com>, alsa-devel@alsa-project.org, Axel Lin <axel.lin@ingics.com>, Alexander Stein <alexander.stein@systec-electronic.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---8G1nIWD3RY794FAy
+--===============2703787107847691613==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="XQ/JOjNzrAcf1KaA"
+Content-Disposition: inline
+
+
+--XQ/JOjNzrAcf1KaA
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jun 03, 2016 at 10:16:12PM +0800, Xing Zheng wrote:
+On Tue, Jun 07, 2016 at 12:00:26AM +0200, Clemens Gruber wrote:
 
-> I refered to MTK's mt8173-rt5650-rt5514.txt on upstream, that compatible
-> name is "mediatek,mt8173-rt5650-rt5514".
-> Because our platform need to support 3 codecs (max98357a / da7219 / rt5514).
-> Perhaps, you maybe feel that name is too long? And, could you please tell me
-> what names would be better?
+> since commit b101acfabc9377469af3abfb7cb63112da367284 I can hear a loud
+> click / pop noise, always occuring 5 seconds after playback stopped.
 
-> For example: "rk3399-composite-codecs" ?
+Please include human readable descriptions of things like commits and
+issues being discussed in e-mail in your mails, this makes them much
+easier for humans to read especially when they have no internet access.
+I do frequently catch up on my mail on flights or while otherwise
+travelling so this is even more pressing for me than just being about
+making things a bit easier to read.
 
-It should probably be three compatibles, one per CODEC, if the driver
-needs to handle each separately.
+> Axel: Did changing SGTL5000_SMALL_POP to 1 remove a click/pop noise on
+> your board or did you just notice the error with the mask argument of
+> snd_soc_update_bits and fixed it?
 
---8G1nIWD3RY794FAy
+I would be very surprised if Axel has one of these boards, he does a lot
+of cleanup work based on code/datasheet analysis.  I suspect it's more
+likely that the chip feature simply doesn't work properly and we're
+better off not using it.
+
+--XQ/JOjNzrAcf1KaA
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXVgxBAAoJECTWi3JdVIfQ5igH/jnLX9QnvgwFxKK8BdX/+PAY
-1I5XTG+mUzb1nTvkzdDjlJgveR2i3vvKComkPcWheEJvJlydsEwYu7jm9UHhXxf0
-osExbR9R9nlflVNRVNfFgalNjR2aZ39Xh2SuQrH/uTpVlNWm/FGn55sAwuSkxj3C
-EHTErkoDFWUWlrkxll2q3AN8uax16EUKvwfAnr1tWUzq08zu3OwlRmmX/WUHkt4z
-dxCdAE7XAotvNoIYBJ+8NrZEcMkOVS/EQcctMFBgcgJyvfyI+rOT4Ue2APopDEq3
-FfqYsARth8gr+TN1NjrqL8uroXa34Xj/IRJo65uVw8txvDkxstnjGVwtASrPzoE=
-=Qv6x
+iQEcBAEBCAAGBQJXVgzAAAoJECTWi3JdVIfQ1nUH/0jOcXTWx60H9CvJ7/Kuclha
+tMm+tZkfqkSQQiHMsmeqoGWgmAM0mGOp9sLTNQYVfNy4RFllb7N9PHWUX4X9D6Z9
+fQCHIUiVH6hVMqKQP8QCAtM7IifLWKxozSAv4ka9ohpRc7vAwocszXy7KdnAubt7
+LhOar+bWq0fE8nH70rMxcsUxJFyxst5MYZ4WxkSkuniwaSEBA/0EPt096BUcnFy9
+WMnj0hbl3R1sfgpnLtmqnCoERe/PRUkQs5VZ1EPTGCqcY6m8B/942W1/GQ8cWIA5
+TjZ9h8XMxEWeeToFM+opbT73EiTFGxXqrSk9/GAjFyB7cn5KQos5hCbU/ZdFVRI=
+=LAE4
 -----END PGP SIGNATURE-----
 
---8G1nIWD3RY794FAy--
+--XQ/JOjNzrAcf1KaA--
+
+--===============2703787107847691613==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2703787107847691613==--
