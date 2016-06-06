@@ -1,72 +1,87 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 1/4] dt-bindings: Add A10 I2S controller binding
- documentation
-Date: Mon, 6 Jun 2016 08:08:18 -0500
-Message-ID: <20160606130818.GA6952@rob-hp-laptop>
-References: <20160601175430.11625-1-maxime.ripard@free-electrons.com>
- <20160601175430.11625-2-maxime.ripard@free-electrons.com>
+From: Adam Goode <agoode@google.com>
+Subject: Re: [PATCH - alsa-lib 1/1] Change card/pid get
+ functions to return -ENOSYS if the kernel is too old
+Date: Mon, 6 Jun 2016 09:57:33 -0400
+Message-ID: <CAOf41Nk+_j_AXd9PXOKd6HV3Tv7G+Nsf35+9p0NNrOEwGyN1SQ@mail.gmail.com>
+References: <1459532030-6387-1-git-send-email-agoode@google.com>
+ <20160401211558.GA20661@mail.zuhause> <s5hpou5a0g0.wl-tiwai@suse.de>
+ <CAOf41NmK6V1MMUrQ=UwO=nttYuk3a5b63jH5VTBxeJM9px1yow@mail.gmail.com>
+ <20160407201041.GB26683@mail.zuhause> <s5hpou0mm87.wl-tiwai@suse.de>
+ <5707AA7C.5030804@perex.cz> <s5hegagmekc.wl-tiwai@suse.de>
+ <CAOf41N=vdhUu+y08JZLs7c=DL_LYx4wQgxxnMkWw-eQCUT-etw@mail.gmail.com>
+ <20160408175633.GA14123@mail.zuhause>
+ <CAOf41Nn-vtZp+po5=_5CwejXh+5Q7LyAXeZav82+T3jf1tBJ7A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20160601175430.11625-2-maxime.ripard@free-electrons.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Andrea Venturi <ennesimamail.av@gmail.com>, Code Kipper <codekipper@gmail.com>, gianfranco@moddevices.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vk0-f49.google.com (mail-vk0-f49.google.com
+ [209.85.213.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id B054A265759
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2016 15:58:14 +0200 (CEST)
+Received: by mail-vk0-f49.google.com with SMTP id c66so46552735vkb.3
+ for <alsa-devel@alsa-project.org>; Mon, 06 Jun 2016 06:58:14 -0700 (PDT)
+In-Reply-To: <CAOf41Nn-vtZp+po5=_5CwejXh+5Q7LyAXeZav82+T3jf1tBJ7A@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Martin Koegler <martin.koegler@chello.at>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 01, 2016 at 07:54:27PM +0200, Maxime Ripard wrote:
-> Introduce the device tree binding for the I2S controller found in the
-> Allwinner A10 and later SoCs.
-> 
-> Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
-> ---
->  .../devicetree/bindings/sound/sun4i-i2s.txt        | 33 ++++++++++++++++++++++
->  1 file changed, 33 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-> new file mode 100644
-> index 000000000000..365ca4eede5f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-> @@ -0,0 +1,33 @@
-> +* Allwinner A10 I2S controller
-> +
-> +The I2S bus (Inter-IC sound bus) is a serial link for digital
-> +audio data transfer between devices in the system.
-> +
-> +Required properties:
-> +
-> +- compatible: should be one of the followings
-> +   - "allwinner,sun4i-a10-i2s"
-> +- reg: physical base address of the controller and length of memory mapped
-> +  region.
-> +- interrupts: should contain the I2S interrupt.
-> +- dmas: DMA specifiers for tx and rx dma. See the DMA client binding,
-> +	Documentation/devicetree/bindings/dma/dma.txt
-> +- dma-names: should include "tx" and "rx".
-> +- clocks: a list of phandle + clock-specifer pairs, one for each entry in clock-names.
-> +- clock-names: should contain followings:
-> +   - "apb" : clock for the I2S bus interface
-> +   - "mod" : module clock for the I2S controller
-> +
-> +Example:
-> +
-> +i2s0: i2s@01c22400 {
-> +	#sound-dai-cells = <0>;
+On Fri, Apr 8, 2016 at 3:53 PM, Adam Goode <agoode@google.com> wrote:
 
-This is missing from the property list.
+> On Fri, Apr 8, 2016 at 1:56 PM, Martin Koegler <martin.koegler@chello.at>
+> wrote:
+>
+>> On Fri, Apr 08, 2016 at 11:21:57AM -0400, Adam Goode wrote:
+>> > So there are 2 alternatives I can think of:
+>> >
+>> > option 1: introduce snd_seq_client_info_get_pid_2() and leave the
+>> existing
+>> > function alone. This new function can return a new constant,
+>> > SND_SEQ_CLIENT_INFO_PID_UNKNOWN for missing kernel support. Same for
+>> card.
+>> > option 2: introduce snd_seq_client_info_pid_known() that returns a bool
+>> if
+>> > there is kernel support. Same for card.
+>>
+>> I wouldn't implement option 1. Using that methode for API changes will
+>> result in lots of rarely used functions.
+>>
+>> Chrome will probable need that information to enable a fallback-code - if
+>> a application has no fallback code,
+>> it has no need for different returncodes. In a few years, most
+>> distributions will likely ship kernel including that functions,
+>> so there is no need to for fallback-code and the kernel support check any
+>> more.
+>>
+>> Why not a snd_seq_client_info_get_capatibilites() returing bit flags:
+>> .._CAP_CARD_NUMBER | .._CAP_PID ?
+>>
+>>
+> This approach is fine by me as well, though it does introduce more
+> constants and bitwise logic.
+>
+>
+Since returning to this problem after a while, I've realized that we don't
+need any changes at all to alsa-lib. This test is equivalent to what is
+needed:
 
-> +	compatible = "allwinner,sun4i-a10-i2s";
-> +	reg = <0x01c22400 0x400>;
-> +	interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
-> +	clocks = <&apb0_gates 3>, <&i2s0_clk>;
-> +	clock-names = "apb", "mod";
-> +	dmas = <&dma SUN4I_DMA_NORMAL 3>,
-> +	       <&dma SUN4I_DMA_NORMAL 3>;
-> +	dma-names = "rx", "tx";
-> +};
-> -- 
-> 2.8.3
-> 
+snd_seq_get_client_info(seq, info); // get our client's info
+bool client_pid_supported = snd_seq_client_info_get_pid(info) != -1; // do
+we know our own PID?
+
+It might be helpful to put this into the documentation, but otherwise I
+think this is fine.
+
+
+Thanks,
+
+Adam
