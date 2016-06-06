@@ -1,43 +1,58 @@
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [GIT PULL] Braswell audio firmware update
-Date: Mon, 6 Jun 2016 13:19:54 -0400
-Message-ID: <20160606171954.GM9173@merlin.infradead.org>
-References: <20160606085952.GY16910@localhost>
+From: "Handrigan, Paul" <Paul.Handrigan@cirrus.com>
+Subject: Re: [alsa-devel] [PATCH V2 linux-next] ASoC: cs53l30: include
+ gpio/consumer.h
+Date: Mon, 6 Jun 2016 17:30:31 +0000
+Message-ID: <D37B1CA7.14680%Paul.Handrigan@cirrus.com>
+References: <1465232753-32492-1-git-send-email-fabf@skynet.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
- by alsa0.perex.cz (Postfix) with ESMTP id 7781E2658E5
- for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2016 19:19:56 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20160606085952.GY16910@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, linux-firmware@kernel.org
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1465232753-32492-1-git-send-email-fabf@skynet.be>
+Content-Language: en-US
+Content-ID: <EAB89944596EF54FB4BFD7C9882B8BEF@ad.cirrus.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Fabian Frederick <fabf@skynet.be>, Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "broonie@kernel.org" <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 06, 2016 at 02:29:52PM +0530, Vinod Koul wrote:
-> Please PULL to receive the updated BSW firmware binary which contains
-> some odd playback noise fixes
-> 
-> The following changes since commit f5b546819836f207a6df58d48423ca6112cd2801:
-> 
->   linux-firmware: Update firmware patch for Intel Bluetooth 7260 (B5/B6) (2016-06-02 09:51:44 -0700)
-> 
-> are available in the git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git BSW
-> 
 
-Applied. Thanks Vinod.
 
---Kyle
+On 6/6/16, 12:05 PM, "Fabian Frederick" <fabf@skynet.be> wrote:
+
+>cs53l30 breaks kernel compilation when CONFIG_GPIOLIB is disabled.
+>
+>sound/soc/codecs/cs53l30.c:931:2: error: implicit declaration of
+>function devm_gpiod_get_optional [-Werror=implicit-function-declaration]
+>  cs53l30->reset_gpio = devm_gpiod_get_optional(dev, "reset",
+>  ^
+>sound/soc/codecs/cs53l30.c:932:13: error: GPIOD_OUT_LOW undeclared
+>(first use in this function)
+>
+>Including gpio/consumer.h declares minimal functions in that case.
+>
+>Signed-off-by: Fabian Frederick <fabf@skynet.be>
+>---
+>V2:
+>	Add in alphabetical order (suggested by Nicolin Chen)
+>
+> sound/soc/codecs/cs53l30.c | 1 +
+> 1 file changed, 1 insertion(+)
+>
+>diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
+>index ac90dd7..4f6ede9 100644
+>--- a/sound/soc/codecs/cs53l30.c
+>+++ b/sound/soc/codecs/cs53l30.c
+>@@ -14,6 +14,7 @@
+> 
+> #include <linux/clk.h>
+> #include <linux/delay.h>
+>+#include <linux/gpio/consumer.h>
+> #include <linux/i2c.h>
+> #include <linux/module.h>
+> #include <linux/of_gpio.h>
+>-- 
+>2.1.4
+Thanks!
+
+Acked-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
