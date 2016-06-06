@@ -1,64 +1,43 @@
-From: Clemens Gruber <clemens.gruber@pqgruber.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: sgtl5000: only check VDDD-supply, not
- revision
-Date: Mon, 6 Jun 2016 18:45:47 +0200
-Message-ID: <20160606164547.GA2203@archie.localdomain>
-References: <20160602124724.7725-1-clemens.gruber@pqgruber.com>
- <CAOMZO5B20n7Tu3r+BsU2R5BbYj41tf7qBsMLRWxChdWMkHxLNQ@mail.gmail.com>
- <5751AEF6.40200@nelint.com>
- <575264A4.2070709@nelint.com>
- <20160604090324.GA867@archie.localdomain>
- <20160604171525.GA29266@archie.localdomain>
- <20160605231626.GA4076@archie.localdomain>
- <CAOMZO5Bvtpc0umHLDa_kE_a0tfMPZJK-pgUevcTx1RYi_oXphw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Fabian Frederick <fabf@skynet.be>
+Subject: [PATCH V2 linux-next] ASoC: cs53l30: include gpio/consumer.h
+Date: Mon,  6 Jun 2016 19:05:53 +0200
+Message-ID: <1465232753-32492-1-git-send-email-fabf@skynet.be>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAOMZO5Bvtpc0umHLDa_kE_a0tfMPZJK-pgUevcTx1RYi_oXphw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Eric Nelson <eric@nelint.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, fabf@skynet.be
 List-Id: alsa-devel@alsa-project.org
 
-Hi Fabio,
+cs53l30 breaks kernel compilation when CONFIG_GPIOLIB is disabled.
 
-On Sun, Jun 05, 2016 at 10:22:55PM -0300, Fabio Estevam wrote:
-> Hi Clemens,
-> 
-> On Sun, Jun 5, 2016 at 8:16 PM, Clemens Gruber
-> <clemens.gruber@pqgruber.com> wrote:
-> 
-> > I looked into this today and discovered the following:
-> >
-> > With my patch applied, if I reset the board just after playback, at the
-> > next boot, the sgtl5000_fill_defaults function does not succeed: Writing
-> > the default value 0x7060 to register 0x30 (CHIP_ANA_POWER) fails.
-> >
-> > How did CHIP_ANA_POWER change with my patch: Before, only
-> > LINREG_SIMPLE_POWERUP was cleared as is recommended in the datasheet
-> > when using the internal LDO, now both LINREG_SIMPLE_POWERUP and
-> > STARTUP_POWERUP are cleared, as is recommended when using external VDDD.
-> >
-> > But why does the SGTL5000 nack that default write to CHIP_ANA_POWER
-> > after a reboot, which interrupted the playback?
-> >
-> > The following patch from Eric solved the problem; one write fails but it
-> > continues setting the other registers and thus even if resetting a board
-> > during playback, the sound still works after reboot:
-> > http://mailman.alsa-project.org/pipermail/alsa-devel/2015-February/088356.html
-> > Another workaround might be to not even write a default value to
-> > CHIP_ANA_POWER, as in this patch from Eric:
-> > http://mailman.alsa-project.org/pipermail/alsa-devel/2015-February/088355.html
-> >
-> > What do you think we should do?
-> 
-> Shouldn't both patches be applied?
+sound/soc/codecs/cs53l30.c:931:2: error: implicit declaration of
+function devm_gpiod_get_optional [-Werror=implicit-function-declaration]
+  cs53l30->reset_gpio = devm_gpiod_get_optional(dev, "reset",
+  ^
+sound/soc/codecs/cs53l30.c:932:13: error: GPIOD_OUT_LOW undeclared
+(first use in this function)
 
-Yes, I think so too. However I am unsure if we should also remove
-SGTL5000_CHIP_LINREG_CTRL from the defaults as in Eric's patch 3/6 or
-only keep the parts of the patch dealing with SGTL5000_CHIP_ANA_POWER.
-What do you think?
+Including gpio/consumer.h declares minimal functions in that case.
 
-Regards,
-Clemens
+Signed-off-by: Fabian Frederick <fabf@skynet.be>
+---
+V2:
+	Add in alphabetical order (suggested by Nicolin Chen)
+
+ sound/soc/codecs/cs53l30.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
+index ac90dd7..4f6ede9 100644
+--- a/sound/soc/codecs/cs53l30.c
++++ b/sound/soc/codecs/cs53l30.c
+@@ -14,6 +14,7 @@
+ 
+ #include <linux/clk.h>
+ #include <linux/delay.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/i2c.h>
+ #include <linux/module.h>
+ #include <linux/of_gpio.h>
+-- 
+2.1.4
