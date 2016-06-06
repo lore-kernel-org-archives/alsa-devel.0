@@ -1,89 +1,244 @@
-From: DigitalDreamtime <clive.messer@digitaldreamtime.co.uk>
-Subject: [PATCH] ALSA: Add rate defines for 352k8 and 384k
-Date: Mon,  6 Jun 2016 13:19:00 +0100
-Message-ID: <1465215540-23084-1-git-send-email-clive.messer@digitaldreamtime.co.uk>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [RFC PATCH] drm: msm: Add ASoC generic hdmi audio codec support.
+Date: Mon, 6 Jun 2016 15:23:08 +0300
+Message-ID: <57556B2C.8000403@ti.com>
+References: <1464962161-17337-1-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.dreamtime.org (barcelona.digitaldreamtime.co.uk
- [85.158.46.130])
- by alsa0.perex.cz (Postfix) with ESMTP id CBE582656F6
- for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2016 14:19:14 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: DigitalDreamtime <clive.messer@digitaldreamtime.co.uk>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-Reply-To: <1464962161-17337-1-git-send-email-srinivas.kandagatla@linaro.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, alsa-devel@alsa-project.org
+Cc: David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add SNDRV_PCM_RATE_352800 and SNDRV_PCM_RATE_384000 defines to pcm.h,
- for 352k8 and 384k sample rates.
+On 06/03/16 16:56, Srinivas Kandagatla wrote:
+> This patch adds support to generic audio codec via
+> ASoC hdmi-codec infrastucture which is merged recently.
+> 
 
-Add SNDRV_PCM_RATE_8000_384000 define to pcm.h.
+I know nothing about msm HW, but from the hdmi-codec point of view this
+looks like a correct usage. However, the hdmi-codec could probably do
+more to connect the hdmi audio infoframe's channel allocation field and
+ALSA's channel mapping API together.
 
-Update rates list in pcm_native.c.
+There looks to be a bug in selecting 44100 sample rate bellow.
 
-Yes, we can use CONTINUOUS/KNOT and constraints, to support the x8
- sample rates, but having the defines requires less code in drivers.
-Many more DAC chips are now supporting the x8 44k1/48k multiples.
->From a high-res viewpoint, the DXD standard is 352k8, 24 bit.
-That alone should justify the addition of a define for it.
+BR,
+Jyri
 
-Signed-off-by: DigitalDreamtime <clive.messer@digitaldreamtime.co.uk>
----
- include/sound/pcm.h     | 5 +++++
- sound/core/pcm_native.c | 5 +++--
- 2 files changed, 8 insertions(+), 2 deletions(-)
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  drivers/gpu/drm/msm/Kconfig     |   1 +
+>  drivers/gpu/drm/msm/hdmi/hdmi.c | 120 +++++++++++++++++++++++++++++++++++++++-
+>  drivers/gpu/drm/msm/hdmi/hdmi.h |  14 +++++
+>  3 files changed, 134 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
+> index 167a497..7c7a031 100644
+> --- a/drivers/gpu/drm/msm/Kconfig
+> +++ b/drivers/gpu/drm/msm/Kconfig
+> @@ -10,6 +10,7 @@ config DRM_MSM
+>  	select SHMEM
+>  	select TMPFS
+>  	select QCOM_SCM
+> +	select SND_SOC_HDMI_CODEC if SND_SOC
+>  	default y
+>  	help
+>  	  DRM/KMS driver for MSM/snapdragon.
+> diff --git a/drivers/gpu/drm/msm/hdmi/hdmi.c b/drivers/gpu/drm/msm/hdmi/hdmi.c
+> index 51b9ea5..3281496 100644
+> --- a/drivers/gpu/drm/msm/hdmi/hdmi.c
+> +++ b/drivers/gpu/drm/msm/hdmi/hdmi.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/of_irq.h>
+>  #include <linux/of_gpio.h>
+>  
+> +#include <sound/hdmi-codec.h>
+>  #include "hdmi.h"
+>  
+>  void msm_hdmi_set_mode(struct hdmi *hdmi, bool power_on)
+> @@ -434,6 +435,114 @@ static int msm_hdmi_get_gpio(struct device_node *of_node, const char *name)
+>  	return gpio;
+>  }
+>  
+> +/*
+> + * HDMI audio codec callbacks
+> + */
+> +static int msm_hdmi_audio_hw_params(struct device *dev,
+> +				    struct hdmi_codec_daifmt *daifmt,
+> +				    struct hdmi_codec_params *params)
+> +{
+> +	struct hdmi *hdmi = dev_get_drvdata(dev);
+> +	unsigned int chan;
+> +	unsigned int channel_allocation = 0;
+> +	unsigned int rate;
+> +	unsigned int level_shift  = 0; /* 0dB */
+> +	bool down_mix = false;
+> +
+> +	dev_dbg(dev, "%u Hz, %d bit, %d channels\n", params->sample_rate,
+> +		 params->sample_width, params->cea.channels);
+> +
+> +	switch (params->cea.channels) {
+> +	case 2:
+> +		/* FR and FL speakers */
+> +		channel_allocation  = 0;
+> +		chan = MSM_HDMI_AUDIO_CHANNEL_2;
+> +		break;
+> +	case 4:
+> +		/* FC, LFE, FR and FL speakers */
+> +		channel_allocation  = 0x3;
+> +		chan = MSM_HDMI_AUDIO_CHANNEL_4;
+> +		break;
+> +	case 6:
+> +		/* RR, RL, FC, LFE, FR and FL speakers */
+> +		channel_allocation  = 0x0B;
+> +		chan = MSM_HDMI_AUDIO_CHANNEL_6;
+> +		break;
+> +	case 8:
+> +		/* FRC, FLC, RR, RL, FC, LFE, FR and FL speakers */
+> +		channel_allocation  = 0x1F; 
+> +		chan = MSM_HDMI_AUDIO_CHANNEL_8;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	switch (params->sample_rate) {
+> +	case 32000:
+> +		rate = HDMI_SAMPLE_RATE_32KHZ;
+> +		break;
+> +	case 44100:
+> +		rate = HDMI_SAMPLE_RATE_48KHZ;
+> +		break;
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index af1fb37..86e0bbe 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -129,6 +129,8 @@ struct snd_pcm_ops {
- #define SNDRV_PCM_RATE_96000		(1<<10)		/* 96000Hz */
- #define SNDRV_PCM_RATE_176400		(1<<11)		/* 176400Hz */
- #define SNDRV_PCM_RATE_192000		(1<<12)		/* 192000Hz */
-+#define SNDRV_PCM_RATE_352800		(1<<13)		/* 352800Hz */
-+#define SNDRV_PCM_RATE_384000		(1<<14)		/* 384000Hz */
- 
- #define SNDRV_PCM_RATE_CONTINUOUS	(1<<30)		/* continuous range */
- #define SNDRV_PCM_RATE_KNOT		(1<<31)		/* supports more non-continuos rates */
-@@ -141,6 +143,9 @@ struct snd_pcm_ops {
- 					 SNDRV_PCM_RATE_88200|SNDRV_PCM_RATE_96000)
- #define SNDRV_PCM_RATE_8000_192000	(SNDRV_PCM_RATE_8000_96000|SNDRV_PCM_RATE_176400|\
- 					 SNDRV_PCM_RATE_192000)
-+#define SNDRV_PCM_RATE_8000_384000	(SNDRV_PCM_RATE_8000_192000 |\
-+					 SNDRV_PCM_RATE_352800 |\
-+					 SNDRV_PCM_RATE_384000)
- #define _SNDRV_PCM_FMTBIT(fmt)		(1ULL << (__force int)SNDRV_PCM_FORMAT_##fmt)
- #define SNDRV_PCM_FMTBIT_S8		_SNDRV_PCM_FMTBIT(S8)
- #define SNDRV_PCM_FMTBIT_U8		_SNDRV_PCM_FMTBIT(U8)
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index c61fd50..21cc13d 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -1981,12 +1981,13 @@ static int snd_pcm_hw_rule_sample_bits(struct snd_pcm_hw_params *params,
- 	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
- }
- 
--#if SNDRV_PCM_RATE_5512 != 1 << 0 || SNDRV_PCM_RATE_192000 != 1 << 12
-+#if SNDRV_PCM_RATE_5512 != 1 << 0 || SNDRV_PCM_RATE_384000 != 1 << 14
- #error "Change this table"
- #endif
- 
- static unsigned int rates[] = { 5512, 8000, 11025, 16000, 22050, 32000, 44100,
--                                 48000, 64000, 88200, 96000, 176400, 192000 };
-+				 48000, 64000, 88200, 96000, 176400, 192000,
-+				 352800, 384000 };
- 
- const struct snd_pcm_hw_constraint_list snd_pcm_known_rates = {
- 	.count = ARRAY_SIZE(rates),
--- 
-2.5.5
+This looks like a bug...
+
+> +	case 48000:
+> +		rate = HDMI_SAMPLE_RATE_48KHZ;
+> +		break;
+> +	case 88200:
+> +		rate = HDMI_SAMPLE_RATE_88_2KHZ;
+> +		break;
+> +	case 96000:
+> +		rate = HDMI_SAMPLE_RATE_96KHZ;
+> +		break;
+> +	case 176400:
+> +		rate = HDMI_SAMPLE_RATE_176_4KHZ;
+> +		break;
+> +	case 192000:
+> +		rate = HDMI_SAMPLE_RATE_192KHZ;
+> +		break;
+> +	default:
+> +		dev_err(dev, "rate[%d] not supported!\n",
+> +			params->sample_rate);
+> +		return -EINVAL;
+> +	}
+> +
+> +	msm_hdmi_audio_set_sample_rate(hdmi, rate);
+> +	msm_hdmi_audio_info_setup(hdmi, 1, chan, channel_allocation,
+> +			      level_shift, down_mix);
+> +
+> +	return 0;
+> +}
+> +
+> +static void msm_hdmi_audio_shutdown(struct device *dev)
+> +{
+> +	struct hdmi *hdmi = dev_get_drvdata(dev);
+> +
+> +	msm_hdmi_audio_info_setup(hdmi, 0, 0, 0, 0, 0);
+> +}
+> +
+> +static const struct hdmi_codec_ops msm_hdmi_audio_codec_ops = {
+> +	.hw_params = msm_hdmi_audio_hw_params, 
+> +	.audio_shutdown = msm_hdmi_audio_shutdown,
+> +};
+> +
+> +static struct hdmi_codec_pdata codec_data = {
+> +	.ops = &msm_hdmi_audio_codec_ops,
+> +	.max_i2s_channels = 8,
+> +	.i2s = 1,
+> +};
+> +
+> +static int msm_hdmi_register_audio_driver(struct hdmi *hdmi, struct device *dev)
+> +{
+> +	hdmi->audio_pdev = platform_device_register_data(dev,
+> +							 HDMI_CODEC_DRV_NAME,
+> +							 PLATFORM_DEVID_AUTO,
+> +							 &codec_data,
+> +							 sizeof(codec_data));
+> +	if (IS_ERR(hdmi->audio_pdev))
+> +		return PTR_ERR(hdmi->audio_pdev);
+> +
+> +	return 0;
+> +}
+> +
+>  static int msm_hdmi_bind(struct device *dev, struct device *master, void *data)
+>  {
+>  	struct drm_device *drm = dev_get_drvdata(master);
+> @@ -441,7 +550,7 @@ static int msm_hdmi_bind(struct device *dev, struct device *master, void *data)
+>  	static struct hdmi_platform_config *hdmi_cfg;
+>  	struct hdmi *hdmi;
+>  	struct device_node *of_node = dev->of_node;
+> -	int i;
+> +	int i, err;
+>  
+>  	hdmi_cfg = (struct hdmi_platform_config *)
+>  			of_device_get_match_data(dev);
+> @@ -468,6 +577,12 @@ static int msm_hdmi_bind(struct device *dev, struct device *master, void *data)
+>  		return PTR_ERR(hdmi);
+>  	priv->hdmi = hdmi;
+>  
+> +	err = msm_hdmi_register_audio_driver(hdmi, dev);
+> +	if (err) {
+> +		DRM_ERROR("Failed to attach an audio codec %d\n", err);
+> +		hdmi->audio_pdev = NULL;
+> +	}
+> +
+>  	return 0;
+>  }
+>  
+> @@ -477,6 +592,9 @@ static void msm_hdmi_unbind(struct device *dev, struct device *master,
+>  	struct drm_device *drm = dev_get_drvdata(master);
+>  	struct msm_drm_private *priv = drm->dev_private;
+>  	if (priv->hdmi) {
+> +		if (priv->hdmi->audio_pdev)
+> +			platform_device_unregister(priv->hdmi->audio_pdev);
+> +
+>  		msm_hdmi_destroy(priv->hdmi);
+>  		priv->hdmi = NULL;
+>  	}
+> diff --git a/drivers/gpu/drm/msm/hdmi/hdmi.h b/drivers/gpu/drm/msm/hdmi/hdmi.h
+> index bc7ba0b..accc9a6 100644
+> --- a/drivers/gpu/drm/msm/hdmi/hdmi.h
+> +++ b/drivers/gpu/drm/msm/hdmi/hdmi.h
+> @@ -50,6 +50,7 @@ struct hdmi_hdcp_ctrl;
+>  struct hdmi {
+>  	struct drm_device *dev;
+>  	struct platform_device *pdev;
+> +	struct platform_device *audio_pdev;
+>  
+>  	const struct hdmi_platform_config *config;
+>  
+> @@ -210,6 +211,19 @@ static inline int msm_hdmi_pll_8996_init(struct platform_device *pdev)
+>  /*
+>   * audio:
+>   */
+> +/* Supported HDMI Audio channels and rates */
+> +#define	MSM_HDMI_AUDIO_CHANNEL_2	0
+> +#define	MSM_HDMI_AUDIO_CHANNEL_4	1
+> +#define	MSM_HDMI_AUDIO_CHANNEL_6	2
+> +#define	MSM_HDMI_AUDIO_CHANNEL_8	3
+> +
+> +#define	HDMI_SAMPLE_RATE_32KHZ		0
+> +#define	HDMI_SAMPLE_RATE_44_1KHZ	1
+> +#define	HDMI_SAMPLE_RATE_48KHZ		2
+> +#define	HDMI_SAMPLE_RATE_88_2KHZ	3
+> +#define	HDMI_SAMPLE_RATE_96KHZ		4
+> +#define	HDMI_SAMPLE_RATE_176_4KHZ	5
+> +#define	HDMI_SAMPLE_RATE_192KHZ		6
+>  
+>  int msm_hdmi_audio_update(struct hdmi *hdmi);
+>  int msm_hdmi_audio_info_setup(struct hdmi *hdmi, bool enabled,
+> 
