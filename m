@@ -1,40 +1,44 @@
-From: Clive Messer <clive.messer@digitaldreamtime.co.uk>
-Subject: Re: [PATCH] ALSA: Add rate defines for 352k8 and 384k
-Date: Tue, 07 Jun 2016 00:00:37 +0100
-Message-ID: <1465254037.11487.67.camel@digitaldreamtime.co.uk>
-References: <1465215540-23084-1-git-send-email-clive.messer@digitaldreamtime.co.uk>
- <s5h4m96mq1k.wl-tiwai@suse.de>
- <1465232863.11487.28.camel@digitaldreamtime.co.uk>
- <s5hporucb7t.wl-tiwai@suse.de>
- <1465248140.11487.65.camel@digitaldreamtime.co.uk>
- <s5hlh2ic745.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.dreamtime.org (barcelona.digitaldreamtime.co.uk
- [85.158.46.130])
- by alsa0.perex.cz (Postfix) with ESMTP id B379B265755
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2016 01:00:43 +0200 (CEST)
-In-Reply-To: <s5hlh2ic745.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+From: Clemens Gruber <clemens.gruber@pqgruber.com>
+Subject: [PATCH 0/6] ASoC: sgtl5000: fix use of regulators and internal LDO
+Date: Tue,  7 Jun 2016 01:14:47 +0200
+Message-ID: <20160606231453.19377-1-clemens.gruber@pqgruber.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>, Eric Nelson <eric@nelint.com>, linux-kernel@vger.kernel.org, Clemens Gruber <clemens.gruber@pqgruber.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAyMDE2LTA2LTA2IGF0IDIzOjU4ICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
-WW91IHN1Ym1pdHRlZCBvbmx5IGEgcGF0Y2ggY2hhbmdpbmcgdGhlIGNvcmUgcGFydCB3aXRob3V0
-IHNob3dpbmcgdGhlCj4gZW5kIHJlc3VsdC7CoMKgSXQncyB1bmFjY2VwdGFibGUuCgpPSy4gU29y
-cnkgZm9yIHdhc3RpbmcgeW91ciB0aW1lLgoKQ2xpdmUKLS0gCkNsaXZlIE1lc3NlciA8Y2xpdmUu
-bWVzc2VyQGRpZ2l0YWxkcmVhbXRpbWUuY28udWs+CkRpZ2l0YWwgRHJlYW10aW1lIEx0ZAoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+This patch set addresses a structural problem in the handling of
+regulators for VDDIO, VDDA, and VDDD in the SGTL5000 driver.
+
+The first two of these power rails must be powered on prior to any I2C
+communication, and yet the regulators were tied to the codec, which is
+instantiated only after a fair amount of I2C communication takes place.
+
+In other words, these regulators could never have function, and we can
+surmise that no user of this driver has switched power supply rails
+connected to them.
+
+The third power rail (VDDD) can be derived internally (by using I2C
+registers) though the data sheet says that if an external VDDD is used,
+it should be enabled before MCLK is started and I2C activity begins.
+
+[I rebased Eric's patches from Feb 2015, fixed a few warnings, URLs,
+ etc. and squashed two patches into one. - Clemens]
+
+Clemens Gruber (1):
+  ASoC: sgtl5000: Remove misleading comment
+
+Eric Nelson (5):
+  ASoC: sgtl5000: Fix regulator support
+  ASoC: sgtl5000: Write all default registers
+  ASoC: sgtl5000: Initialize CHIP_ANA_POWER to power-on defaults
+  ASoC: sgtl5000: Disable internal PLL early
+  ASoC: sgtl5000: Do not disable regulators in SND_SOC_BIAS_OFF
+
+ sound/soc/codecs/sgtl5000.c | 421 +++++++++++---------------------------------
+ sound/soc/codecs/sgtl5000.h |   2 +
+ 2 files changed, 102 insertions(+), 321 deletions(-)
+
+-- 
+2.8.3
