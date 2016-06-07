@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Set the pipe state to
-	paused when paused" to the asoc tree
-Date: Tue, 07 Jun 2016 14:27:54 +0100
-Message-ID: <E1bAH2w-0001kT-HJ@debutante>
-References: <1464958783-19344-3-git-send-email-jeeja.kp@intel.com>
+Subject: Applied "ASoC: rt5670: fix HP Playback Volume control"
+	to the asoc tree
+Date: Tue, 07 Jun 2016 14:28:00 +0100
+Message-ID: <E1bAH32-0001mG-NX@debutante>
+References: <1465268588-25478-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E379F2665D9
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2016 15:27:58 +0200 (CEST)
-In-Reply-To: <1464958783-19344-3-git-send-email-jeeja.kp@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E31832665ED
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2016 15:28:09 +0200 (CEST)
+In-Reply-To: <1465268588-25478-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Set the pipe state to paused when paused
+   ASoC: rt5670: fix HP Playback Volume control
 
 has been applied to the asoc tree at
 
@@ -53,34 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From 353f72aa77581926c0634fffe168f206435a8fc6 Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Fri, 3 Jun 2016 18:29:35 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Set the pipe state to paused when
- paused
+>From e1f42a2f255f30c270500f1e6a69970ab45b0b6f Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Tue, 7 Jun 2016 11:03:08 +0800
+Subject: [PATCH] ASoC: rt5670: fix HP Playback Volume control
 
-When pipe is stopped/Paused, set the pipe state to paused instead
-of created.
+The register setting for HP Playback Volume is inverted. So, set
+the invert flag in SOC_DOUBLE_TLV.
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-messages.c | 2 +-
+ sound/soc/codecs/rt5670.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index c6824036fc24..07d2a73ff207 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -1125,7 +1125,7 @@ int skl_stop_pipe(struct skl_sst *ctx, struct skl_pipe *pipe)
- 		return ret;
- 	}
- 
--	pipe->state = SKL_PIPE_CREATED;
-+	pipe->state = SKL_PIPE_PAUSED;
- 
- 	return 0;
- }
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index 49a9e7049e2b..0af5ddbef1da 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -619,7 +619,7 @@ static const struct snd_kcontrol_new rt5670_snd_controls[] = {
+ 		RT5670_L_MUTE_SFT, RT5670_R_MUTE_SFT, 1, 1),
+ 	SOC_DOUBLE_TLV("HP Playback Volume", RT5670_HP_VOL,
+ 		RT5670_L_VOL_SFT, RT5670_R_VOL_SFT,
+-		39, 0, out_vol_tlv),
++		39, 1, out_vol_tlv),
+ 	/* OUTPUT Control */
+ 	SOC_DOUBLE("OUT Channel Switch", RT5670_LOUT1,
+ 		RT5670_VOL_L_SFT, RT5670_VOL_R_SFT, 1, 1),
 -- 
 2.8.1
