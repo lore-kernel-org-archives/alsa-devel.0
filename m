@@ -1,89 +1,83 @@
-From: DigitalDreamtime <clive.messer@digitaldreamtime.co.uk>
-Subject: [PATCH] ALSA: Add rate defines for 352k8 and 384k
-Date: Sun,  5 Jun 2016 15:35:01 +0100
-Message-ID: <1465137301-21042-1-git-send-email-clive.messer@digitaldreamtime.co.uk>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3] ASoC: rockchip: Add machine driver for
+ MAX98357A/RT5514/DA7219
+Date: Tue, 7 Jun 2016 11:47:11 +0100
+Message-ID: <20160607104711.GR7510@sirena.org.uk>
+References: <1464267742-15312-1-git-send-email-zhengxing@rock-chips.com>
+ <20160601144542.GA3835@rob-hp-laptop>
+ <5751912C.6080904@rock-chips.com>
+ <20160606235026.GP7510@sirena.org.uk>
+ <5756363F.40208@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.dreamtime.org (barcelona.digitaldreamtime.co.uk
- [85.158.46.130])
- by alsa0.perex.cz (Postfix) with ESMTP id 750692605B8
- for <alsa-devel@alsa-project.org>; Sun,  5 Jun 2016 16:35:15 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: DigitalDreamtime <clive.messer@digitaldreamtime.co.uk>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="VdnGiXwuH6t1Tqzo"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <5756363F.40208-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Xing Zheng <zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Add SNDRV_PCM_RATE_352800 and SNDRV_PCM_RATE_384000 defines to pcm.h,
- for 352k8 and 384k sample rates.
 
-Add SNDRV_PCM_RATE_8000_384000 define to pcm.h.
+--VdnGiXwuH6t1Tqzo
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Update rates list in pcm_native.c.
+On Tue, Jun 07, 2016 at 10:49:35AM +0800, Xing Zheng wrote:
+> On 2016=E5=B9=B406=E6=9C=8807=E6=97=A5 07:50, Mark Brown wrote:
 
-Yes, we can use CONTINUOUS/KNOT and constraints, to support the x8
- sample rates, but having the defines requires less code in drivers.
-Many more DAC chips are now supporting the x8 44k1/48k multiples.
->From a high-res viewpoint, the DXD standard is 352k8, 24 bit.
-That alone should justify the addition of a define for it.
+> > It should probably be three compatibles, one per CODEC, if the driver
+> > needs to handle each separately.
 
-Signed-off-by: DigitalDreamtime <clive.messer@digitaldreamtime.co.uk>
----
- include/sound/pcm.h     | 5 +++++
- sound/core/pcm_native.c | 5 +++--
- 2 files changed, 8 insertions(+), 2 deletions(-)
+> Do you mean like this:
+> --------
+> sound {
+> compatible =3D "rockchip,rk3399-max98357a-rt5514-da7219";
+>=20
+> dailink-0 {
+> compatible =3D "rockchip,rk3399-max98357a";
+> rockchip,cpu =3D <&i2s0>;
+> rockchip,codec =3D <&max98357a>;
+> };
+>=20
+> dailink-1 {
+> compatible =3D "rockchip,rk3399-rt5514";
+> rockchip,cpu =3D <&i2s0>;
+> rockchip,codec =3D <&headsetcodec>;
+> };
+>=20
+> dailink-2 {
+> compatible =3D "rockchip,rk3399-da7219";
+> rockchip,cpu =3D <&i2s0>;
+> rockchip,codec =3D <&codec>;
+> };
+> };
+> --------
+> Above, the machine drvier will handle them. Please correct me if I
+> misunderstand.
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index af1fb37..86e0bbe 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -129,6 +129,8 @@ struct snd_pcm_ops {
- #define SNDRV_PCM_RATE_96000		(1<<10)		/* 96000Hz */
- #define SNDRV_PCM_RATE_176400		(1<<11)		/* 176400Hz */
- #define SNDRV_PCM_RATE_192000		(1<<12)		/* 192000Hz */
-+#define SNDRV_PCM_RATE_352800		(1<<13)		/* 352800Hz */
-+#define SNDRV_PCM_RATE_384000		(1<<14)		/* 384000Hz */
- 
- #define SNDRV_PCM_RATE_CONTINUOUS	(1<<30)		/* continuous range */
- #define SNDRV_PCM_RATE_KNOT		(1<<31)		/* supports more non-continuos rates */
-@@ -141,6 +143,9 @@ struct snd_pcm_ops {
- 					 SNDRV_PCM_RATE_88200|SNDRV_PCM_RATE_96000)
- #define SNDRV_PCM_RATE_8000_192000	(SNDRV_PCM_RATE_8000_96000|SNDRV_PCM_RATE_176400|\
- 					 SNDRV_PCM_RATE_192000)
-+#define SNDRV_PCM_RATE_8000_384000	(SNDRV_PCM_RATE_8000_192000 |\
-+					 SNDRV_PCM_RATE_352800 |\
-+					 SNDRV_PCM_RATE_384000)
- #define _SNDRV_PCM_FMTBIT(fmt)		(1ULL << (__force int)SNDRV_PCM_FORMAT_##fmt)
- #define SNDRV_PCM_FMTBIT_S8		_SNDRV_PCM_FMTBIT(S8)
- #define SNDRV_PCM_FMTBIT_U8		_SNDRV_PCM_FMTBIT(U8)
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index c61fd50..21cc13d 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -1981,12 +1981,13 @@ static int snd_pcm_hw_rule_sample_bits(struct snd_pcm_hw_params *params,
- 	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
- }
- 
--#if SNDRV_PCM_RATE_5512 != 1 << 0 || SNDRV_PCM_RATE_192000 != 1 << 12
-+#if SNDRV_PCM_RATE_5512 != 1 << 0 || SNDRV_PCM_RATE_384000 != 1 << 14
- #error "Change this table"
- #endif
- 
- static unsigned int rates[] = { 5512, 8000, 11025, 16000, 22050, 32000, 44100,
--                                 48000, 64000, 88200, 96000, 176400, 192000 };
-+				 48000, 64000, 88200, 96000, 176400, 192000,
-+				 352800, 384000 };
- 
- const struct snd_pcm_hw_constraint_list snd_pcm_known_rates = {
- 	.count = ARRAY_SIZE(rates),
--- 
-2.5.5
+No, that'd be one card with all three CODECs on the same board which I'm
+guessing isn't the intention?
+
+--VdnGiXwuH6t1Tqzo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXVqYtAAoJECTWi3JdVIfQEnUH/jYkld4xArmLDUmrUa4dE8po
+flWubc26O/KP8rlBo9SRxNpzwZnL7Ptb7ROX44tbD3pR5L/uCx8zadyYOtk4C8mt
+jKvj/1jBSqbiK4ZAP2wYvqjybbWLM8gvfrbcDUT+b87LkfHTUvHvGH9Mt4IY3Azd
+6LR4755eK0niT/oIcZ8t+KQnij7bpgX40tvd3brmRfFOW9jvpzZUrdrKYgZ1z0Oy
+IVuN23Z1Ml4lS02ROsVZJ9jHUG7Vv8YipErWqFnxLGHnumn0XrIQf6gP3hapQB1g
+yOQ2uU8uM5iGZLJEpTGAE/UqWtXP7FRdtHNO2EEWT1LJSb5RTwMRVocFE/wGONs=
+=7Caj
+-----END PGP SIGNATURE-----
+
+--VdnGiXwuH6t1Tqzo--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
