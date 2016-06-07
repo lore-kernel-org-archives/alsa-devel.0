@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Create Pipe to widget
-	list in soc probe" to the asoc tree
-Date: Tue, 07 Jun 2016 14:27:39 +0100
-Message-ID: <E1bAH2h-0001fa-0x@debutante>
-References: <1464958783-19344-8-git-send-email-jeeja.kp@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Clean up of driver
+	resources in suspend" to the asoc tree
+Date: Tue, 07 Jun 2016 14:27:42 +0100
+Message-ID: <E1bAH2k-0001ga-41@debutante>
+References: <1464958783-19344-7-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id ECE502614E3
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2016 15:27:44 +0200 (CEST)
-In-Reply-To: <1464958783-19344-8-git-send-email-jeeja.kp@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 296D126657D
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2016 15:27:48 +0200 (CEST)
+In-Reply-To: <1464958783-19344-7-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
+To: Dharageswari R <dharageswari.r@intel.com>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Create Pipe to widget list in soc probe
+   ASoC: Intel: Skylake: Clean up of driver resources in suspend
 
 has been applied to the asoc tree at
 
@@ -53,142 +53,172 @@ to this mail.
 Thanks,
 Mark
 
->From 287af4f9f2679fd897e492338e4729c68f0c4a17 Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Fri, 3 Jun 2016 18:29:40 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Create Pipe to widget list in soc probe
+>From fe3f4442e2166453f68f0995fd4a95e98c0cd1c9 Mon Sep 17 00:00:00 2001
+From: Dharageswari R <dharageswari.r@intel.com>
+Date: Fri, 3 Jun 2016 18:29:39 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Clean up of driver resources in suspend
 
-We need to Identify the DSP pipe type and based on it being a pass
-thru pipeline or not, we need to copy the pipeline params.
+On suspend firmware is re-initialized so resources are reset inside
+firmware. Driver should also clear the firmware counters at this time.
 
-Pipe to widget mapping was earlier done in pre PMD widget handler,
-but since the pipe type would now be required in hw_params for
-bypass pipelines we need to move this to be done during the ASoC
-probe of the platform component.
-
+Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 85 ++++++++++++++--------------------
- 1 file changed, 34 insertions(+), 51 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c      | 12 +++++++--
+ sound/soc/intel/skylake/skl-sst-ipc.h  |  1 +
+ sound/soc/intel/skylake/skl-sst.c      | 10 +++++++
+ sound/soc/intel/skylake/skl-topology.c | 49 ++++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl.c          |  1 +
+ sound/soc/intel/skylake/skl.h          |  2 ++
+ 6 files changed, 73 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 263c03df9a2a..761dfc4ec017 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -379,43 +379,6 @@ static void skl_tplg_update_module_params(struct snd_soc_dapm_widget *w,
- }
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index ff0491716e06..1590beff644d 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1197,9 +1197,17 @@ static int skl_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ static int skl_platform_soc_probe(struct snd_soc_platform *platform)
+ {
+ 	struct hdac_ext_bus *ebus = dev_get_drvdata(platform->dev);
++	struct skl *skl = ebus_to_skl(ebus);
++	int ret;
  
- /*
-- * A pipe can have multiple modules, each of them will be a DAPM widget as
-- * well. While managing a pipeline we need to get the list of all the
-- * widgets in a pipelines, so this helper - skl_tplg_get_pipe_widget() helps
-- * to get the SKL type widgets in that pipeline
-- */
--static int skl_tplg_alloc_pipe_widget(struct device *dev,
--	struct snd_soc_dapm_widget *w, struct skl_pipe *pipe)
--{
--	struct skl_module_cfg *src_module = NULL;
--	struct snd_soc_dapm_path *p = NULL;
--	struct skl_pipe_module *p_module = NULL;
--
--	p_module = devm_kzalloc(dev, sizeof(*p_module), GFP_KERNEL);
--	if (!p_module)
--		return -ENOMEM;
--
--	p_module->w = w;
--	list_add_tail(&p_module->node, &pipe->w_list);
--
--	snd_soc_dapm_widget_for_each_sink_path(w, p) {
--		if ((p->sink->priv == NULL)
--				&& (!is_skl_dsp_widget_type(w)))
--			continue;
--
--		if ((p->sink->priv != NULL) && p->connect
--				&& is_skl_dsp_widget_type(p->sink)) {
--
--			src_module = p->sink->priv;
--			if (pipe->ppl_id == src_module->pipe->ppl_id)
--				skl_tplg_alloc_pipe_widget(dev,
--							p->sink, pipe);
--		}
--	}
--	return 0;
--}
--
--/*
-  * some modules can have multiple params set from user control and
-  * need to be set after module is initialized. If set_param flag is
-  * set module params will be done after module is initialised.
-@@ -601,20 +564,6 @@ static int skl_tplg_mixer_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
- 	skl_tplg_alloc_pipe_mem(skl, mconfig);
- 	skl_tplg_alloc_pipe_mcps(skl, mconfig);
- 
--	/*
--	 * we create a w_list of all widgets in that pipe. This list is not
--	 * freed on PMD event as widgets within a pipe are static. This
--	 * saves us cycles to get widgets in pipe every time.
--	 *
--	 * So if we have already initialized all the widgets of a pipeline
--	 * we skip, so check for list_empty and create the list if empty
--	 */
--	if (list_empty(&s_pipe->w_list)) {
--		ret = skl_tplg_alloc_pipe_widget(ctx->dev, w, s_pipe);
--		if (ret < 0)
--			return ret;
--	}
--
- 	/* Init all pipe modules from source to sink */
- 	ret = skl_tplg_init_pipe_modules(skl, s_pipe);
- 	if (ret < 0)
-@@ -1789,6 +1738,37 @@ static struct snd_soc_tplg_ops skl_tplg_ops  = {
- 	.bytes_ext_ops_count = ARRAY_SIZE(skl_tlv_ops),
- };
- 
-+/*
-+ * A pipe can have multiple modules, each of them will be a DAPM widget as
-+ * well. While managing a pipeline we need to get the list of all the
-+ * widgets in a pipelines, so this helper - skl_tplg_create_pipe_widget_list()
-+ * helps to get the SKL type widgets in that pipeline
-+ */
-+static int skl_tplg_create_pipe_widget_list(struct snd_soc_platform *platform)
-+{
-+	struct snd_soc_dapm_widget *w;
-+	struct skl_module_cfg *mcfg = NULL;
-+	struct skl_pipe_module *p_module = NULL;
-+	struct skl_pipe *pipe;
-+
-+	list_for_each_entry(w, &platform->component.card->widgets, list) {
-+		if (is_skl_dsp_widget_type(w) && w->priv != NULL) {
-+			mcfg = w->priv;
-+			pipe = mcfg->pipe;
-+
-+			p_module = devm_kzalloc(platform->dev,
-+						sizeof(*p_module), GFP_KERNEL);
-+			if (!p_module)
-+				return -ENOMEM;
-+
-+			p_module->w = w;
-+			list_add_tail(&p_module->node, &pipe->w_list);
+-	if (ebus->ppcap)
+-		return skl_tplg_init(platform, ebus);
++	if (ebus->ppcap) {
++		ret = skl_tplg_init(platform, ebus);
++		if (ret < 0) {
++			dev_err(platform->dev, "Failed to init topology!\n");
++			return ret;
 +		}
++		skl->platform = platform;
 +	}
-+
-+	return 0;
-+}
-+
- /* This will be read from topology manifest, currently defined here */
- #define SKL_MAX_MCPS 30000000
- #define SKL_FW_MAX_MEM 1000000
-@@ -1831,6 +1811,9 @@ int skl_tplg_init(struct snd_soc_platform *platform, struct hdac_ext_bus *ebus)
- 	skl->resource.max_mem = SKL_FW_MAX_MEM;
- 
- 	skl->tplg = fw;
-+	ret = skl_tplg_create_pipe_widget_list(platform);
-+	if (ret < 0)
-+		return ret;
  
  	return 0;
  }
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
+index 7b55182b7895..9f24261abf3e 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.h
++++ b/sound/soc/intel/skylake/skl-sst-ipc.h
+@@ -139,5 +139,6 @@ void skl_ipc_int_disable(struct sst_dsp *dsp);
+ bool skl_ipc_int_status(struct sst_dsp *dsp);
+ void skl_ipc_free(struct sst_generic_ipc *ipc);
+ int skl_ipc_init(struct device *dev, struct skl_sst *skl);
++void skl_clear_module_cnt(struct sst_dsp *ctx);
+ 
+ #endif /* __SKL_IPC_H */
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index 6021fa6ed80d..4cabae54a71e 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -379,6 +379,16 @@ static int skl_unload_module(struct sst_dsp *ctx, u16 mod_id)
+ 	return ret;
+ }
+ 
++void skl_clear_module_cnt(struct sst_dsp *ctx)
++{
++	struct skl_module_table *module;
++
++	list_for_each_entry(module, &ctx->module_list, list) {
++		module->usage_cnt = 0;
++	}
++}
++EXPORT_SYMBOL_GPL(skl_clear_module_cnt);
++
+ static void skl_clear_module_table(struct sst_dsp *ctx)
+ {
+ 	struct skl_module_table *module, *tmp;
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 67b1ab501918..263c03df9a2a 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -1557,6 +1557,55 @@ static void skl_tplg_fill_fmt(struct skl_module_fmt *dst_fmt,
+ 	}
+ }
+ 
++static void skl_clear_pin_config(struct snd_soc_platform *platform,
++				struct snd_soc_dapm_widget *w)
++{
++	int i;
++	struct skl_module_cfg *mconfig;
++	struct skl_pipe *pipe;
++
++	if (!strncmp(w->dapm->component->name, platform->component.name,
++					strlen(platform->component.name))) {
++		mconfig = w->priv;
++		pipe = mconfig->pipe;
++		for (i = 0; i < mconfig->max_in_queue; i++) {
++			mconfig->m_in_pin[i].in_use = false;
++			mconfig->m_in_pin[i].pin_state = SKL_PIN_UNBIND;
++		}
++		for (i = 0; i < mconfig->max_out_queue; i++) {
++			mconfig->m_out_pin[i].in_use = false;
++			mconfig->m_out_pin[i].pin_state = SKL_PIN_UNBIND;
++		}
++		pipe->state = SKL_PIPE_INVALID;
++		mconfig->m_state = SKL_MODULE_UNINIT;
++	}
++}
++
++void skl_cleanup_resources(struct skl *skl)
++{
++	struct skl_sst *ctx = skl->skl_sst;
++	struct snd_soc_platform *soc_platform = skl->platform;
++	struct snd_soc_dapm_widget *w;
++	struct snd_soc_card *card;
++
++	if (soc_platform == NULL)
++		return;
++
++	card = soc_platform->component.card;
++	if (!card || !card->instantiated)
++		return;
++
++	skl->resource.mem = 0;
++	skl->resource.mcps = 0;
++
++	list_for_each_entry(w, &card->widgets, list) {
++		if (is_skl_dsp_widget_type(w) && (w->priv != NULL))
++			skl_clear_pin_config(soc_platform, w);
++	}
++
++	skl_clear_module_cnt(ctx->dsp);
++}
++
+ /*
+  * Topology core widget load callback
+  *
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index cb3eb41524ec..c0f5d5565dea 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -201,6 +201,7 @@ static int _skl_suspend(struct hdac_ext_bus *ebus)
+ 	skl_enable_miscbdcge(bus->dev, false);
+ 	snd_hdac_bus_enter_link_reset(bus);
+ 	skl_enable_miscbdcge(bus->dev, true);
++	skl_cleanup_resources(skl);
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index 25b8d4897ff5..9064e5b0d676 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -67,6 +67,7 @@ struct skl {
+ 	unsigned int init_failed:1; /* delayed init failed */
+ 	struct platform_device *dmic_dev;
+ 	struct platform_device *i2s_dev;
++	struct snd_soc_platform *platform;
+ 
+ 	struct nhlt_acpi_table *nhlt; /* nhlt ptr */
+ 	struct skl_sst *skl_sst; /* sst skl ctx */
+@@ -121,4 +122,5 @@ int skl_init_dsp(struct skl *skl);
+ int skl_free_dsp(struct skl *skl);
+ int skl_suspend_dsp(struct skl *skl);
+ int skl_resume_dsp(struct skl *skl);
++void skl_cleanup_resources(struct skl *skl);
+ #endif /* __SOUND_SOC_SKL_H */
 -- 
 2.8.1
