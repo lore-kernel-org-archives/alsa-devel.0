@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5670: fix HP Playback Volume control"
-	to the asoc tree
-Date: Tue, 07 Jun 2016 14:28:00 +0100
-Message-ID: <E1bAH32-0001mG-NX@debutante>
-References: <1465268588-25478-1-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: Intel: Skylake: Reset DSP pipe when
+	host/link DMA is reset" to the asoc tree
+Date: Tue, 07 Jun 2016 14:27:57 +0100
+Message-ID: <E1bAH2z-0001lL-K8@debutante>
+References: <1464958783-19344-2-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E31832665ED
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2016 15:28:09 +0200 (CEST)
-In-Reply-To: <1465268588-25478-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 752A72665AF
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2016 15:28:02 +0200 (CEST)
+In-Reply-To: <1464958783-19344-2-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, flove@realtek.com
+To: Jeeja KP <jeeja.kp@intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5670: fix HP Playback Volume control
+   ASoC: Intel: Skylake: Reset DSP pipe when host/link DMA is reset
 
 has been applied to the asoc tree at
 
@@ -53,32 +53,133 @@ to this mail.
 Thanks,
 Mark
 
->From e1f42a2f255f30c270500f1e6a69970ab45b0b6f Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Tue, 7 Jun 2016 11:03:08 +0800
-Subject: [PATCH] ASoC: rt5670: fix HP Playback Volume control
+>From 2004432f946e985fe98b67d515c52d69747016f9 Mon Sep 17 00:00:00 2001
+From: Jeeja KP <jeeja.kp@intel.com>
+Date: Fri, 3 Jun 2016 18:29:34 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Reset DSP pipe when host/link DMA is
+ reset
 
-The register setting for HP Playback Volume is inverted. So, set
-the invert flag in SOC_DOUBLE_TLV.
+In case of XRUN recovery PCM prepare will be called. In this case
+Host/Link DMAs are reset and reconfigured, hence the corresponding
+FE/BE pipe needs to be reset in order to get to a clean state.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5670.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-messages.c | 23 +++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-pcm.c      | 17 +++++++++++++++++
+ sound/soc/intel/skylake/skl-topology.h |  5 ++++-
+ 3 files changed, 44 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 49a9e7049e2b..0af5ddbef1da 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -619,7 +619,7 @@ static const struct snd_kcontrol_new rt5670_snd_controls[] = {
- 		RT5670_L_MUTE_SFT, RT5670_R_MUTE_SFT, 1, 1),
- 	SOC_DOUBLE_TLV("HP Playback Volume", RT5670_HP_VOL,
- 		RT5670_L_VOL_SFT, RT5670_R_VOL_SFT,
--		39, 0, out_vol_tlv),
-+		39, 1, out_vol_tlv),
- 	/* OUTPUT Control */
- 	SOC_DOUBLE("OUT Channel Switch", RT5670_LOUT1,
- 		RT5670_VOL_L_SFT, RT5670_VOL_R_SFT, 1, 1),
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 226db84ba20f..c6824036fc24 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -1130,6 +1130,29 @@ int skl_stop_pipe(struct skl_sst *ctx, struct skl_pipe *pipe)
+ 	return 0;
+ }
+ 
++/*
++ * Reset the pipeline by sending set pipe state IPC this will reset the DMA
++ * from the DSP side
++ */
++int skl_reset_pipe(struct skl_sst *ctx, struct skl_pipe *pipe)
++{
++	int ret;
++
++	/* If pipe was not created in FW, do not try to pause or delete */
++	if (pipe->state < SKL_PIPE_PAUSED)
++		return 0;
++
++	ret = skl_set_pipe_state(ctx, pipe, PPL_RESET);
++	if (ret < 0) {
++		dev_dbg(ctx->dev, "Failed to reset pipe ret=%d\n", ret);
++		return ret;
++	}
++
++	pipe->state = SKL_PIPE_RESET;
++
++	return 0;
++}
++
+ /* Algo parameter set helper function */
+ int skl_set_module_params(struct skl_sst *ctx, u32 *params, int size,
+ 				u32 param_id, struct skl_module_cfg *mcfg)
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 7c81b31748ff..ff0491716e06 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -227,16 +227,25 @@ static int skl_pcm_prepare(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+ 	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
++	struct skl *skl = get_skl_ctx(dai->dev);
+ 	unsigned int format_val;
+ 	int err;
++	struct skl_module_cfg *mconfig;
+ 
+ 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
+ 
++	mconfig = skl_tplg_fe_get_cpr_module(dai, substream->stream);
++
+ 	format_val = skl_get_format(substream, dai);
+ 	dev_dbg(dai->dev, "stream_tag=%d formatvalue=%d\n",
+ 				hdac_stream(stream)->stream_tag, format_val);
+ 	snd_hdac_stream_reset(hdac_stream(stream));
+ 
++	/* In case of XRUN recovery, reset the FW pipe to clean state */
++	if (mconfig && (substream->runtime->status->state ==
++					SNDRV_PCM_STATE_XRUN))
++		skl_reset_pipe(skl->skl_sst, mconfig->pipe);
++
+ 	err = snd_hdac_stream_set_params(hdac_stream(stream), format_val);
+ 	if (err < 0)
+ 		return err;
+@@ -521,6 +530,8 @@ static int skl_link_pcm_prepare(struct snd_pcm_substream *substream,
+ 	struct skl_dma_params *dma_params;
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct hdac_ext_link *link;
++	struct skl *skl = get_skl_ctx(dai->dev);
++	struct skl_module_cfg *mconfig = NULL;
+ 
+ 	dma_params  = (struct skl_dma_params *)
+ 			snd_soc_dai_get_dma_data(codec_dai, substream);
+@@ -535,6 +546,12 @@ static int skl_link_pcm_prepare(struct snd_pcm_substream *substream,
+ 
+ 	snd_hdac_ext_link_stream_reset(link_dev);
+ 
++	/* In case of XRUN recovery, reset the FW pipe to clean state */
++	mconfig = skl_tplg_be_get_cpr_module(dai, substream->stream);
++	if (mconfig && (substream->runtime->status->state ==
++					SNDRV_PCM_STATE_XRUN))
++		skl_reset_pipe(skl->skl_sst, mconfig->pipe);
++
+ 	snd_hdac_ext_link_stream_setup(link_dev, format_val);
+ 
+ 	snd_hdac_ext_link_set_stream_id(link, hdac_stream(link_dev)->stream_tag);
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index e4b399cd7868..d4a58bcd8c7d 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -244,7 +244,8 @@ enum skl_pipe_state {
+ 	SKL_PIPE_INVALID = 0,
+ 	SKL_PIPE_CREATED = 1,
+ 	SKL_PIPE_PAUSED = 2,
+-	SKL_PIPE_STARTED = 3
++	SKL_PIPE_STARTED = 3,
++	SKL_PIPE_RESET = 4
+ };
+ 
+ struct skl_pipe_module {
+@@ -357,6 +358,8 @@ int skl_delete_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
+ 
+ int skl_stop_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
+ 
++int skl_reset_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
++
+ int skl_init_module(struct skl_sst *ctx, struct skl_module_cfg *module_config);
+ 
+ int skl_bind_modules(struct skl_sst *ctx, struct skl_module_cfg
 -- 
 2.8.1
