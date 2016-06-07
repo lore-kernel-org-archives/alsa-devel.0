@@ -1,55 +1,50 @@
-From: Eric Nelson <eric@nelint.com>
-Subject: Re: [PATCH 0/6] ASoC: sgtl5000: fix use of regulators and internal
- LDO
-Date: Tue, 7 Jun 2016 12:49:23 +0200
-Message-ID: <5756A6B3.3030601@nelint.com>
-References: <20160606231453.19377-1-clemens.gruber@pqgruber.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rsnd: adg :: AUDIO-CLKOUTn can synchronizes with
+ L/R clock.
+Date: Tue, 7 Jun 2016 11:54:18 +0100
+Message-ID: <20160607105418.GS7510@sirena.org.uk>
+References: <87oa7dtti3.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160606231453.19377-1-clemens.gruber@pqgruber.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Clemens Gruber <clemens.gruber@pqgruber.com>, alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="dQ2XShfnd5GHxhN7"
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <87oa7dtti3.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Simon <horms@verge.net.au>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Linux-DT <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for taking this up Clemens.
 
-On 06/07/2016 01:14 AM, Clemens Gruber wrote:
-> This patch set addresses a structural problem in the handling of
-> regulators for VDDIO, VDDA, and VDDD in the SGTL5000 driver.
-> 
-> The first two of these power rails must be powered on prior to any I2C
-> communication, and yet the regulators were tied to the codec, which is
-> instantiated only after a fair amount of I2C communication takes place.
-> 
-> In other words, these regulators could never have function, and we can
-> surmise that no user of this driver has switched power supply rails
-> connected to them.
-> 
-> The third power rail (VDDD) can be derived internally (by using I2C
-> registers) though the data sheet says that if an external VDDD is used,
-> it should be enabled before MCLK is started and I2C activity begins.
-> 
-> [I rebased Eric's patches from Feb 2015, fixed a few warnings, URLs,
->  etc. and squashed two patches into one. - Clemens]
-> 
+--dQ2XShfnd5GHxhN7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks also for fixing up my e-mail address (since I'm no longer at
-Boundary Devices).
+On Tue, Jun 07, 2016 at 06:21:33AM +0000, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> AUDIO-CLKOUTn can synchronizes with L/R clock, and Salvator board
+> needs it. Otherwise, specific frequency sound will be noisy.
 
-> Clemens Gruber (1):
->   ASoC: sgtl5000: Remove misleading comment
-> 
-> Eric Nelson (5):
->   ASoC: sgtl5000: Fix regulator support
->   ASoC: sgtl5000: Write all default registers
->   ASoC: sgtl5000: Initialize CHIP_ANA_POWER to power-on defaults
->   ASoC: sgtl5000: Disable internal PLL early
->   ASoC: sgtl5000: Do not disable regulators in SND_SOC_BIAS_OFF
-> 
->  sound/soc/codecs/sgtl5000.c | 421 +++++++++++---------------------------------
->  sound/soc/codecs/sgtl5000.h |   2 +
->  2 files changed, 102 insertions(+), 321 deletions(-)
-> 
+Why would a user not want these clocks to be synchronous?  A lot of
+CODECs will at least have better performance if their master clock is
+synchronous to the audio clocks so it'd be a better default, is there an
+advantage to not doing it?
+
+--dQ2XShfnd5GHxhN7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXVqfZAAoJECTWi3JdVIfQ9+UH/AtRat4T1p40EOeIbRog5Uta
+xxm9vf67ONbc7epr5eLRLcyVp06sy/X5cuRVw1wQwNg1nPKcn83JiAId073TnSQD
+sFCd0DOy3t75+7GgLCg2USnEXPADfTRLdwraacJR+YgSSNVyiVPJFIbRbnYRU8wn
+zOhT3lY7ab6R3CkYfI7MpBf4072eirPoUgCccahIQsyVLS1okV3/310mmdovn6HQ
+lL1Mu8yJsgUgP5oadZZt/eh2kqLXLxqM5jrjagWoU785dpSRcRekO4Fbk+0hbkkZ
+hS/4DIX5pzITUA3J7jFfRRp8cGuEIv4MiN37o5G3kSAzlE8tqcjoltZJH8Bogt8=
+=6wW0
+-----END PGP SIGNATURE-----
+
+--dQ2XShfnd5GHxhN7--
