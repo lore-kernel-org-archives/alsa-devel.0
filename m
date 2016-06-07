@@ -1,87 +1,84 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v3] ASoC: rockchip: Add machine driver for
- MAX98357A/RT5514/DA7219
-Date: Tue, 7 Jun 2016 14:32:47 +0100
-Message-ID: <20160607133247.GY7510@sirena.org.uk>
-References: <1464267742-15312-1-git-send-email-zhengxing@rock-chips.com>
- <20160601144542.GA3835@rob-hp-laptop>
- <5751912C.6080904@rock-chips.com>
- <20160606235026.GP7510@sirena.org.uk>
- <5756363F.40208@rock-chips.com>
- <20160607104711.GR7510@sirena.org.uk>
- <5756B22F.9000105@rock-chips.com>
- <20160607120647.GV7510@sirena.org.uk>
- <5756C245.7010001@rock-chips.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rt5670: fix HP Playback Volume control"
+	to the asoc tree
+Date: Tue, 07 Jun 2016 14:28:03 +0100
+Message-ID: <E1bAH35-0001nB-S3@debutante>
+References: <1465268588-25478-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1940332582863428333=="
-Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <5756C245.7010001-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
-List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: Xing Zheng <zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id EFE8F2665EC
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2016 15:28:10 +0200 (CEST)
+In-Reply-To: <1465268588-25478-1-git-send-email-bardliao@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============1940332582863428333==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="I2k41U2G4dq8LTBU"
-Content-Disposition: inline
+   ASoC: rt5670: fix HP Playback Volume control
 
+has been applied to the asoc tree at
 
---I2k41U2G4dq8LTBU
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Jun 07, 2016 at 08:47:01PM +0800, Xing Zheng wrote:
-> On 2016=E5=B9=B406=E6=9C=8807=E6=97=A5 20:06, Mark Brown wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > OK, then the original name probably makes some sense though really
-> > that's such an unusual design that just naming it after the specific
-> > board might be better, it's not likely to see any reuse I'd guess.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> There are not only one type of board with this audio connection, so I thi=
-nk
-> we don't need to add specific board name.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-I imagine they're all variants on a single reference design though?  The
-name is unweildy.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---I2k41U2G4dq8LTBU
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+>From 572f1f613a109e03b52e72b62df2d2c0e595d3bd Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Tue, 7 Jun 2016 11:03:08 +0800
+Subject: [PATCH] ASoC: rt5670: fix HP Playback Volume control
 
-iQEcBAEBCAAGBQJXVsz+AAoJECTWi3JdVIfQvrAH/jCA/w75f3AhXzKepbheH5MQ
-4epbfT4l2k0Zx7NIl5WmnPFhG7C3RFQHpB0G3SDEoY7aNqVspQRw6fQq9feTauiQ
-xWMt33X6tqHOhgN0VSgcM67N9M84nwNaZM5OoOuNopNCZ9AgMNNScjsmGuRSUrxC
-1h7hY25Cfo3ujwWfgBzeBJ2V8LIL6c5K3IwVHVMW7cHWc8lv6JgfozmyiW53xzR8
-sr3YB0VxbCv95YVUIzzZ+iZ6ZCbkq+WI504urBzWfp8eLbrqtZRbF2TonPL++1KY
-sr7y5DscZMpRnizggOXpGJ/cLiXUo39vAkd3BpR5Ok7o5J5FvjeleTGPVmnlRGY=
-=GnOD
------END PGP SIGNATURE-----
+The register setting for HP Playback Volume is inverted. So, set
+the invert flag in SOC_DOUBLE_TLV.
 
---I2k41U2G4dq8LTBU--
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt5670.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
---===============1940332582863428333==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Linux-rockchip mailing list
-Linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-http://lists.infradead.org/mailman/listinfo/linux-rockchip
-
---===============1940332582863428333==--
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index 49a9e7049e2b..0af5ddbef1da 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -619,7 +619,7 @@ static const struct snd_kcontrol_new rt5670_snd_controls[] = {
+ 		RT5670_L_MUTE_SFT, RT5670_R_MUTE_SFT, 1, 1),
+ 	SOC_DOUBLE_TLV("HP Playback Volume", RT5670_HP_VOL,
+ 		RT5670_L_VOL_SFT, RT5670_R_VOL_SFT,
+-		39, 0, out_vol_tlv),
++		39, 1, out_vol_tlv),
+ 	/* OUTPUT Control */
+ 	SOC_DOUBLE("OUT Channel Switch", RT5670_LOUT1,
+ 		RT5670_VOL_L_SFT, RT5670_VOL_R_SFT, 1, 1),
+-- 
+2.8.1
