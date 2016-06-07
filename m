@@ -1,18 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5670: fix HP Playback Volume control"
-	to the asoc tree
-Date: Tue, 07 Jun 2016 14:28:03 +0100
-Message-ID: <E1bAH35-0001nB-S3@debutante>
-References: <1465268588-25478-1-git-send-email-bardliao@realtek.com>
+From: Xing Zheng <zhengxing@rock-chips.com>
+Subject: Re: [PATCH v3] ASoC: rockchip: Add machine driver for
+	MAX98357A/RT5514/DA7219
+Date: Tue, 07 Jun 2016 21:48:42 +0800
+Message-ID: <5756D0BA.7060702@rock-chips.com>
+References: <1464267742-15312-1-git-send-email-zhengxing@rock-chips.com>
+ <20160601144542.GA3835@rob-hp-laptop> <5751912C.6080904@rock-chips.com>
+ <20160606235026.GP7510@sirena.org.uk> <5756363F.40208@rock-chips.com>
+ <20160607104711.GR7510@sirena.org.uk> <5756B22F.9000105@rock-chips.com>
+ <20160607120647.GV7510@sirena.org.uk> <5756C245.7010001@rock-chips.com>
+ <20160607133247.GY7510@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EFE8F2665EC
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2016 15:28:10 +0200 (CEST)
-In-Reply-To: <1465268588-25478-1-git-send-email-bardliao@realtek.com>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2ACAA2605B8
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2016 15:49:09 +0200 (CEST)
+In-Reply-To: <20160607133247.GY7510@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +26,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, flove@realtek.com
+To: Mark Brown <broonie@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org, heiko@sntech.de, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, dianders@chromium.org, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org, Kumar Gala <galak@codeaurora.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: rt5670: fix HP Playback Volume control
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 572f1f613a109e03b52e72b62df2d2c0e595d3bd Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Tue, 7 Jun 2016 11:03:08 +0800
-Subject: [PATCH] ASoC: rt5670: fix HP Playback Volume control
-
-The register setting for HP Playback Volume is inverted. So, set
-the invert flag in SOC_DOUBLE_TLV.
-
-Signed-off-by: Bard Liao <bardliao@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt5670.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 49a9e7049e2b..0af5ddbef1da 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -619,7 +619,7 @@ static const struct snd_kcontrol_new rt5670_snd_controls[] = {
- 		RT5670_L_MUTE_SFT, RT5670_R_MUTE_SFT, 1, 1),
- 	SOC_DOUBLE_TLV("HP Playback Volume", RT5670_HP_VOL,
- 		RT5670_L_VOL_SFT, RT5670_R_VOL_SFT,
--		39, 0, out_vol_tlv),
-+		39, 1, out_vol_tlv),
- 	/* OUTPUT Control */
- 	SOC_DOUBLE("OUT Channel Switch", RT5670_LOUT1,
- 		RT5670_VOL_L_SFT, RT5670_VOL_R_SFT, 1, 1),
--- 
-2.8.1
+SGkgTWFyaywKCk9uIDIwMTblubQwNuaciDA35pelIDIxOjMyLCBNYXJrIEJyb3duIHdyb3RlOgo+
+IE9uIFR1ZSwgSnVuIDA3LCAyMDE2IGF0IDA4OjQ3OjAxUE0gKzA4MDAsIFhpbmcgWmhlbmcgd3Jv
+dGU6Cj4+IE9uIDIwMTblubQwNuaciDA35pelIDIwOjA2LCBNYXJrIEJyb3duIHdyb3RlOgo+Pj4g
+T0ssIHRoZW4gdGhlIG9yaWdpbmFsIG5hbWUgcHJvYmFibHkgbWFrZXMgc29tZSBzZW5zZSB0aG91
+Z2ggcmVhbGx5Cj4+PiB0aGF0J3Mgc3VjaCBhbiB1bnVzdWFsIGRlc2lnbiB0aGF0IGp1c3QgbmFt
+aW5nIGl0IGFmdGVyIHRoZSBzcGVjaWZpYwo+Pj4gYm9hcmQgbWlnaHQgYmUgYmV0dGVyLCBpdCdz
+IG5vdCBsaWtlbHkgdG8gc2VlIGFueSByZXVzZSBJJ2QgZ3Vlc3MuCj4+IFRoZXJlIGFyZSBub3Qg
+b25seSBvbmUgdHlwZSBvZiBib2FyZCB3aXRoIHRoaXMgYXVkaW8gY29ubmVjdGlvbiwgc28gSSB0
+aGluawo+PiB3ZSBkb24ndCBuZWVkIHRvIGFkZCBzcGVjaWZpYyBib2FyZCBuYW1lLgo+IEkgaW1h
+Z2luZSB0aGV5J3JlIGFsbCB2YXJpYW50cyBvbiBhIHNpbmdsZSByZWZlcmVuY2UgZGVzaWduIHRo
+b3VnaD8gIFRoZQo+IG5hbWUgaXMgdW53ZWlsZHkuClllcywgdGhleSBhcmUgYmFzZWQgb24gYSBz
+aW5nbGUgcmVmZXJlbmNlIGRlc2lnbiB3aGljaCBpcyBjYWxsZWQgZ3J1LCBzbyAKY291bGQgSSB1
+c2UgdGhlIG5hbWUgInJrMzM5OS1ncnUtc291bmQiPwoKVGhhbmtzLgoKLS0gCi0gWGluZyBaaGVu
+ZwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
