@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Avoid freeing up of
-	unallocated memory/mcps" to the asoc tree
-Date: Tue, 07 Jun 2016 14:27:45 +0100
-Message-ID: <E1bAH2n-0001hW-7v@debutante>
-References: <1464958783-19344-6-git-send-email-jeeja.kp@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Disable SRAM Retention
+	before D3" to the asoc tree
+Date: Tue, 07 Jun 2016 14:27:48 +0100
+Message-ID: <E1bAH2q-0001id-Ac@debutante>
+References: <1464958783-19344-5-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DCA0D26658C
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2016 15:27:49 +0200 (CEST)
-In-Reply-To: <1464958783-19344-6-git-send-email-jeeja.kp@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E18792665D1
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2016 15:27:52 +0200 (CEST)
+In-Reply-To: <1464958783-19344-5-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Avoid freeing up of unallocated memory/mcps
+   ASoC: Intel: Skylake: Disable SRAM Retention before D3
 
 has been applied to the asoc tree at
 
@@ -53,84 +53,56 @@ to this mail.
 Thanks,
 Mark
 
->From 260eb73aa252d0cbdfe11523d5def9d6d00625d4 Mon Sep 17 00:00:00 2001
+>From 51a01b8c2ea632ed9a57f98c234a0cd9dafe181a Mon Sep 17 00:00:00 2001
 From: Dharageswari R <dharageswari.r@intel.com>
-Date: Fri, 3 Jun 2016 18:29:38 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Avoid freeing up of unallocated
- memory/mcps
+Date: Fri, 3 Jun 2016 18:29:37 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Disable SRAM Retention before D3
 
-When DSP pipe/module is not initialized successfully, memory/mcps
-is not allocated. So check the pipe/module state to avoid freeing
-up of unallocated memory/mcps. And allocate resources when pipe/
-module is initialized successfully.
+SW needs to set the PGCTL.LSRMD = 1 to disable LPSRAM retention
+feature,otherwise it may lead to SRAM ECC Errors.
 
 Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ sound/soc/intel/skylake/skl.c | 3 +++
+ sound/soc/intel/skylake/skl.h | 2 ++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 44b62e1d79db..67b1ab501918 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -514,8 +514,6 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
- 		if (!skl_is_pipe_mcps_avail(skl, mconfig))
- 			return -ENOMEM;
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 55c301bf786b..cb3eb41524ec 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -186,6 +186,7 @@ static int _skl_suspend(struct hdac_ext_bus *ebus)
+ {
+ 	struct skl *skl = ebus_to_skl(ebus);
+ 	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct pci_dev *pci = to_pci_dev(bus->dev);
+ 	int ret;
  
--		skl_tplg_alloc_pipe_mcps(skl, mconfig);
--
- 		if (mconfig->is_loadable && ctx->dsp->fw_ops.load_mod) {
- 			ret = ctx->dsp->fw_ops.load_mod(ctx->dsp,
- 				mconfig->id.module_id, mconfig->guid);
-@@ -539,6 +537,7 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
- 		if (ret < 0)
- 			return ret;
- 
-+		skl_tplg_alloc_pipe_mcps(skl, mconfig);
- 		ret = skl_tplg_set_module_params(w, ctx);
- 		if (ret < 0)
- 			return ret;
-@@ -591,9 +590,6 @@ static int skl_tplg_mixer_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
- 	if (!skl_is_pipe_mem_avail(skl, mconfig))
- 		return -ENOMEM;
- 
--	skl_tplg_alloc_pipe_mem(skl, mconfig);
--	skl_tplg_alloc_pipe_mcps(skl, mconfig);
--
- 	/*
- 	 * Create a list of modules for pipe.
- 	 * This list contains modules from source to sink
-@@ -602,6 +598,9 @@ static int skl_tplg_mixer_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
- 	if (ret < 0)
+ 	snd_hdac_ext_bus_link_power_down_all(ebus);
+@@ -195,6 +196,8 @@ static int _skl_suspend(struct hdac_ext_bus *ebus)
  		return ret;
  
-+	skl_tplg_alloc_pipe_mem(skl, mconfig);
-+	skl_tplg_alloc_pipe_mcps(skl, mconfig);
-+
- 	/*
- 	 * we create a w_list of all widgets in that pipe. This list is not
- 	 * freed on PMD event as widgets within a pipe are static. This
-@@ -949,13 +948,17 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
- 	struct skl_pipe *s_pipe = mconfig->pipe;
- 	int ret = 0;
+ 	snd_hdac_bus_stop_chip(bus);
++	update_pci_dword(pci, AZX_PCIREG_PGCTL,
++		AZX_PGCTL_LSRMD_MASK, AZX_PGCTL_LSRMD_MASK);
+ 	skl_enable_miscbdcge(bus->dev, false);
+ 	snd_hdac_bus_enter_link_reset(bus);
+ 	skl_enable_miscbdcge(bus->dev, true);
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index f66be173f86b..25b8d4897ff5 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -48,6 +48,8 @@
+ #define AZX_REG_VS_SDXEFIFOS_XBASE	0x1094
+ #define AZX_REG_VS_SDXEFIFOS_XINTERVAL	0x20
  
-+	if (s_pipe->state == SKL_PIPE_INVALID)
-+		return -EINVAL;
-+
- 	skl_tplg_free_pipe_mcps(skl, mconfig);
- 	skl_tplg_free_pipe_mem(skl, mconfig);
++#define AZX_PCIREG_PGCTL		0x44
++#define AZX_PGCTL_LSRMD_MASK		(1 << 4)
+ #define AZX_PCIREG_CGCTL		0x48
+ #define AZX_CGCTL_MISCBDCGE_MASK	(1 << 6)
  
- 	list_for_each_entry(w_module, &s_pipe->w_list, node) {
- 		dst_module = w_module->w->priv;
- 
--		skl_tplg_free_pipe_mcps(skl, dst_module);
-+		if (mconfig->m_state >= SKL_MODULE_INIT_DONE)
-+			skl_tplg_free_pipe_mcps(skl, dst_module);
- 		if (src_module == NULL) {
- 			src_module = dst_module;
- 			continue;
 -- 
 2.8.1
