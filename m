@@ -1,69 +1,52 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rsnd: adg :: AUDIO-CLKOUTn can synchronizes with
- L/R clock.
-Date: Wed, 8 Jun 2016 16:14:59 +0100
-Message-ID: <20160608151459.GL7510@sirena.org.uk>
-References: <87oa7dtti3.wl%kuninori.morimoto.gx@renesas.com>
- <20160607105418.GS7510@sirena.org.uk>
- <87eg88jzt3.wl%kuninori.morimoto.gx@renesas.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: ASoC: Machine Driver Interaction with Codec Drivers
+Date: Wed, 8 Jun 2016 21:14:01 +0200
+Message-ID: <57586E79.4010309@metafoo.de>
+References: <0BE0E679-A120-4330-8291-315750457145@xenotropic.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ibe32dcbQs37CEZO"
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87eg88jzt3.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Simon <horms@verge.net.au>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Linux-DT <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 708082614A7
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2016 21:14:04 +0200 (CEST)
+In-Reply-To: <0BE0E679-A120-4330-8291-315750457145@xenotropic.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jeremy McDermond <mcdermj@xenotropic.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---ibe32dcbQs37CEZO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Jun 08, 2016 at 12:27:48AM +0000, Kuninori Morimoto wrote:
-
-> > Why would a user not want these clocks to be synchronous?  A lot of
-> > CODECs will at least have better performance if their master clock is
-> > synchronous to the audio clocks so it'd be a better default, is there an
-> > advantage to not doing it?
-
-> I'm now confusing. We can set system clock on audio card, for example
-> simple-card case, it is called as "system-clock-frequency".
-> In my understanding, this "system clock" and above "master clock" are sam=
-e clock.
-> but "system clock" is fixed rate (=3D not related to audio clock in many =
-cases).
-> Because of this, some codec doesn't request synchronous between
-> master clock <-> audio clock, but, some codec requests synchronous it.
-> Am I wrong ??
-
-A lot of CODECs can to varying degrees tolerate this but it will tend to
-show up in performance numbers, it's often not immediately obvious just
-=66rom a listening test.  Usually those that don't mind have a FLL or PLL
-they're using to generate the actual audio master clock at a useful rate
-for dividing down, or sometimes fancy digital logic to match things
-up.
-
-It's not a problem to have this configurable, I'm just thinking it might
-be better to have the default be the other way around so that we default
-to synchronous but can turn that off if it's required.
-
---ibe32dcbQs37CEZO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXWDZyAAoJECTWi3JdVIfQxTMH/jBwVgzlvL2W/XfD1S/DPk/Y
-Ij+BqlfC5VHuJ55beOJXJfsi5FQowuyJHWxpUwkFOy6xSCeuWlqUvkhov1GfxO2/
-2kq6IYxN/JiYA8l9fk6vjfzK9X+iMh6T9Xuzdki8eC+GRdNkQBuRiAfEDNVcokch
-RN7W7nNq4gRqF9D6LVvuNhvCMF2DsNxzuaclM1+d+BQJqjNsd2HgXU0WdsZT9n/z
-OYPR6Utje2I0IpsFo5xUq/lMa9yq0X0pCoL8rjEs3WO6WwVuKb1Akjk02Ba9QA9A
-VLAbI7CkIkgRNr4RAca2YHEIcfWZjheiJ9uOglMPI/gT/G6v27JulZC2215HQr0=
-=T038
------END PGP SIGNATURE-----
-
---ibe32dcbQs37CEZO--
+SGksCgpObyB0aGlzIGlzIGN1cnJlbnRseSBub3QgcmVhbGx5IHN1cHBvcnRlZC4gVGhlcmUgd2Vy
+ZSBzb21lIGlkZWFzIGZvciB0aGlzIGEKbG9uZyBsb25nIHRpbWUgYWdvLCBidXQgaXQgbmV2ZXIg
+Z290IGltcGxlbWVudGVkLiBBbmQgdG9kYXkgYmFzaWNhbGx5CmV2ZXJ5Ym9keSB0YWtlcyBjYXJl
+IG9mIGhpZGluZyB0aGUgY29udHJvbHMgZnJvbSB1c2Vyc3BhY2UuCgpUaGF0IGRvZXMgbm90IG1l
+YW4gaXQgZG9lcyBub3QgbWFrZSBzZW5zZSB0byBoYXZlIHN1Y2ggYSBmZWF0dXJlLCBidXQgaXQK
+bmVlZHMgc29tZWJvZHkgd2l0aCBhIG1vdGl2YXRpb24gdG8gaW1wbGVtZW50IGl0LgoKLSBMYXJz
+CgpPbiAwNi8wOC8yMDE2IDA1OjEzIEFNLCBKZXJlbXkgTWNEZXJtb25kIHdyb3RlOgo+IEkgYXBv
+bG9naXplIGluIGFkdmFuY2UgZm9yIHRoZSBwcm9iYWJseSBpZGlvdGljIHF1ZXN0aW9uLgo+IAo+
+IEnigJltIHdvcmtpbmcgd2l0aCB3cml0aW5nIGEgbWFjaGluZSBkcml2ZXIgZm9yIG91ciBwcm9k
+dWN0IGFuZCBkZWFsaW5nIHdpdGggc29tZSBwb3RlbnRpYWwgdXNlciBpbnRlcmZhY2UgaXNzdWVz
+IHN1cnJvdW5kaW5nIHRoZSBudW1iZXIgb2YgY29udHJvbHMgYmVpbmcgcHJlc2VudGVkIGJ5IHRo
+ZSBjb2RlYyBkcml2ZXIgaW4gdGhlIG1peGVyLgo+IAo+IElzIHRoZXJlIGEgd2F5IHRvIOKAnGhh
+cmQtd2lyZeKAnSBrY29udHJvbHMgaW4gdGhlIGNvZGVjIGZyb20gdGhlIG1hY2hpbmUgZHJpdmVy
+IGFuZCBoaWRlIHRoZW0gaW4gdGhlIG1peGVyPyAgRm9yIGV4YW1wbGUsIG91ciBoYXJkd2FyZSBk
+b2VzbuKAmXQgd2lyZSB0aGUgSU4yX0wgYW5kIElOMl9SIHBpbnMgdG8gYW55d2hlcmUsIHNvIHRo
+ZSBjb2RlYyBjb250cm9scyB0aGF0IGRldGVybWluZSB0aGVpciBjb25uZWN0aW9ucyBpbnRvIHRo
+ZSBpbnB1dCBtaXhlciBkbyBub3RoaW5nIG9uIG91ciBoYXJkd2FyZSBhbmQgSeKAmWQgbGlrZSB0
+byBoaWRlIHRoZW0gZnJvbSB0aGUgdXNlciBpbiB0aGUgbWl4ZXIuCj4gCj4gQW0gSSBtaXNzaW5n
+IHNvbWV0aGluZyBvciBpcyB0aGVyZSBqdXN0IG5vIHdheSB0byBnZXQgdGhlcmUgZnJvbSBoZXJl
+Pwo+IAo+IC0tCj4gSmVyZW15IE1jRGVybW9uZCAoTkg2WikKPiBYZW5vdHJvcGljIFN5c3RlbXMK
+PiBtY2Rlcm1qQHhlbm90cm9waWMuY29tCj4gCj4gCj4gCj4gCj4gX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+
+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4gCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
