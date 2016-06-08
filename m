@@ -1,51 +1,49 @@
-From: Jeremy McDermond <mcdermj@xenotropic.com>
-Subject: ASoC:  Machine Driver Interaction with Codec Drivers
-Date: Tue, 7 Jun 2016 20:13:32 -0700
-Message-ID: <0BE0E679-A120-4330-8291-315750457145@xenotropic.com>
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.xenotropic.com (mail.xenotropic.com [198.178.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id A3C63260701
- for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2016 05:13:36 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by mail.xenotropic.com (Postfix) with ESMTP id 4A82F20099
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2016 20:04:04 -0700 (PDT)
-Received: from mail.xenotropic.com ([127.0.0.1])
- by localhost (mail.xenotropic.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id NLqyGJPRgRfC for <alsa-devel@alsa-project.org>;
- Tue,  7 Jun 2016 20:04:02 -0700 (PDT)
-Received: from [192.168.1.180] (c-76-115-126-109.hsd1.or.comcast.net
- [76.115.126.109])
- by mail.xenotropic.com (Postfix) with ESMTPSA id 9071720096
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2016 20:04:02 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Garlic Tseng <garlic.tseng@mediatek.com>
+Subject: Re: [alsa-devel] [PATCH v2 6/9] ASoC: mediatek: add mt2701 platform
+ driver implementation.
+Date: Wed, 8 Jun 2016 11:32:22 +0800
+Message-ID: <1465356742.18601.7.camel@mtksdaap41>
+References: <1464929784-5489-1-git-send-email-garlic.tseng@mediatek.com>
+	 <1464929784-5489-7-git-send-email-garlic.tseng@mediatek.com>
+	 <20160607163112.GD7510@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160607163112.GD7510@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, ir.lian@mediatek.com, srv_heupstream@mediatek.com, tiwai@suse.de, linux-kernel@vger.kernel.org, koro.chen@mediatek.com, linux-mediatek@lists.infradead.org, PC.Liao@mediatek.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-SSBhcG9sb2dpemUgaW4gYWR2YW5jZSBmb3IgdGhlIHByb2JhYmx5IGlkaW90aWMgcXVlc3Rpb24u
-CgpJ4oCZbSB3b3JraW5nIHdpdGggd3JpdGluZyBhIG1hY2hpbmUgZHJpdmVyIGZvciBvdXIgcHJv
-ZHVjdCBhbmQgZGVhbGluZyB3aXRoIHNvbWUgcG90ZW50aWFsIHVzZXIgaW50ZXJmYWNlIGlzc3Vl
-cyBzdXJyb3VuZGluZyB0aGUgbnVtYmVyIG9mIGNvbnRyb2xzIGJlaW5nIHByZXNlbnRlZCBieSB0
-aGUgY29kZWMgZHJpdmVyIGluIHRoZSBtaXhlci4KCklzIHRoZXJlIGEgd2F5IHRvIOKAnGhhcmQt
-d2lyZeKAnSBrY29udHJvbHMgaW4gdGhlIGNvZGVjIGZyb20gdGhlIG1hY2hpbmUgZHJpdmVyIGFu
-ZCBoaWRlIHRoZW0gaW4gdGhlIG1peGVyPyAgRm9yIGV4YW1wbGUsIG91ciBoYXJkd2FyZSBkb2Vz
-buKAmXQgd2lyZSB0aGUgSU4yX0wgYW5kIElOMl9SIHBpbnMgdG8gYW55d2hlcmUsIHNvIHRoZSBj
-b2RlYyBjb250cm9scyB0aGF0IGRldGVybWluZSB0aGVpciBjb25uZWN0aW9ucyBpbnRvIHRoZSBp
-bnB1dCBtaXhlciBkbyBub3RoaW5nIG9uIG91ciBoYXJkd2FyZSBhbmQgSeKAmWQgbGlrZSB0byBo
-aWRlIHRoZW0gZnJvbSB0aGUgdXNlciBpbiB0aGUgbWl4ZXIuCgpBbSBJIG1pc3Npbmcgc29tZXRo
-aW5nIG9yIGlzIHRoZXJlIGp1c3Qgbm8gd2F5IHRvIGdldCB0aGVyZSBmcm9tIGhlcmU/CgotLQpK
-ZXJlbXkgTWNEZXJtb25kIChOSDZaKQpYZW5vdHJvcGljIFN5c3RlbXMKbWNkZXJtakB4ZW5vdHJv
-cGljLmNvbQoKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+On Tue, 2016-06-07 at 17:31 +0100, Mark Brown wrote:
+> On Fri, Jun 03, 2016 at 12:56:21PM +0800, Garlic Tseng wrote:
+> 
+> > +	if (val < 0 || val > MT2701_I2S_NUM) {
+> > +		dev_err(afe->dev, "%s, num not available, num %d, val %d\n",
+> > +			__func__, num, val);
+> > +		return -1;
+> 
+> Real error codes please.
+
+OK I'll fix it.
+
+> 
+> > +static const struct snd_kcontrol_new mt2701_afe_multi_ch_out_asrc3[] = {
+> > +	SOC_DAPM_SINGLE_AUTODISABLE("Multi ch asrc out3", PWR2_TOP_CON, 7, 1,
+> > +				    1),
+> > +};
+> 
+> On/off controls should end in Switch.
+
+Do you means that the name should end in Switch? Something like "Multi
+ch asrc out3 Switch" (or maybe a shorter one)
+
+I'll fix it (if I don't misunderstand the comment)
+
+Thanks!
+
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
