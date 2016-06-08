@@ -1,16 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: ASoC: Machine Driver Interaction with Codec Drivers
-Date: Wed, 8 Jun 2016 21:14:01 +0200
-Message-ID: <57586E79.4010309@metafoo.de>
-References: <0BE0E679-A120-4330-8291-315750457145@xenotropic.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: [PATCH] ASoC: cs53l30: Correct clock inversion check
+Date: Wed,  8 Jun 2016 16:03:00 -0700
+Message-ID: <1465426980-10924-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 708082614A7
- for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2016 21:14:04 +0200 (CEST)
-In-Reply-To: <0BE0E679-A120-4330-8291-315750457145@xenotropic.com>
+Received: from mail-pf0-f195.google.com (mail-pf0-f195.google.com
+ [209.85.192.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F542261687
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2016 01:03:07 +0200 (CEST)
+Received: by mail-pf0-f195.google.com with SMTP id c74so1442991pfb.0
+ for <alsa-devel@alsa-project.org>; Wed, 08 Jun 2016 16:03:06 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,33 +21,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeremy McDermond <mcdermj@xenotropic.com>, alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpObyB0aGlzIGlzIGN1cnJlbnRseSBub3QgcmVhbGx5IHN1cHBvcnRlZC4gVGhlcmUgd2Vy
-ZSBzb21lIGlkZWFzIGZvciB0aGlzIGEKbG9uZyBsb25nIHRpbWUgYWdvLCBidXQgaXQgbmV2ZXIg
-Z290IGltcGxlbWVudGVkLiBBbmQgdG9kYXkgYmFzaWNhbGx5CmV2ZXJ5Ym9keSB0YWtlcyBjYXJl
-IG9mIGhpZGluZyB0aGUgY29udHJvbHMgZnJvbSB1c2Vyc3BhY2UuCgpUaGF0IGRvZXMgbm90IG1l
-YW4gaXQgZG9lcyBub3QgbWFrZSBzZW5zZSB0byBoYXZlIHN1Y2ggYSBmZWF0dXJlLCBidXQgaXQK
-bmVlZHMgc29tZWJvZHkgd2l0aCBhIG1vdGl2YXRpb24gdG8gaW1wbGVtZW50IGl0LgoKLSBMYXJz
-CgpPbiAwNi8wOC8yMDE2IDA1OjEzIEFNLCBKZXJlbXkgTWNEZXJtb25kIHdyb3RlOgo+IEkgYXBv
-bG9naXplIGluIGFkdmFuY2UgZm9yIHRoZSBwcm9iYWJseSBpZGlvdGljIHF1ZXN0aW9uLgo+IAo+
-IEnigJltIHdvcmtpbmcgd2l0aCB3cml0aW5nIGEgbWFjaGluZSBkcml2ZXIgZm9yIG91ciBwcm9k
-dWN0IGFuZCBkZWFsaW5nIHdpdGggc29tZSBwb3RlbnRpYWwgdXNlciBpbnRlcmZhY2UgaXNzdWVz
-IHN1cnJvdW5kaW5nIHRoZSBudW1iZXIgb2YgY29udHJvbHMgYmVpbmcgcHJlc2VudGVkIGJ5IHRo
-ZSBjb2RlYyBkcml2ZXIgaW4gdGhlIG1peGVyLgo+IAo+IElzIHRoZXJlIGEgd2F5IHRvIOKAnGhh
-cmQtd2lyZeKAnSBrY29udHJvbHMgaW4gdGhlIGNvZGVjIGZyb20gdGhlIG1hY2hpbmUgZHJpdmVy
-IGFuZCBoaWRlIHRoZW0gaW4gdGhlIG1peGVyPyAgRm9yIGV4YW1wbGUsIG91ciBoYXJkd2FyZSBk
-b2VzbuKAmXQgd2lyZSB0aGUgSU4yX0wgYW5kIElOMl9SIHBpbnMgdG8gYW55d2hlcmUsIHNvIHRo
-ZSBjb2RlYyBjb250cm9scyB0aGF0IGRldGVybWluZSB0aGVpciBjb25uZWN0aW9ucyBpbnRvIHRo
-ZSBpbnB1dCBtaXhlciBkbyBub3RoaW5nIG9uIG91ciBoYXJkd2FyZSBhbmQgSeKAmWQgbGlrZSB0
-byBoaWRlIHRoZW0gZnJvbSB0aGUgdXNlciBpbiB0aGUgbWl4ZXIuCj4gCj4gQW0gSSBtaXNzaW5n
-IHNvbWV0aGluZyBvciBpcyB0aGVyZSBqdXN0IG5vIHdheSB0byBnZXQgdGhlcmUgZnJvbSBoZXJl
-Pwo+IAo+IC0tCj4gSmVyZW15IE1jRGVybW9uZCAoTkg2WikKPiBYZW5vdHJvcGljIFN5c3RlbXMK
-PiBtY2Rlcm1qQHhlbm90cm9waWMuY29tCj4gCj4gCj4gCj4gCj4gX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+
-IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4gCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+SND_SOC_DAIFMT_IB_NF = 0x3 (11b) | SND_SOC_DAIFMT_IB_IF = 0x4 (100b)
+creates a mask 0x7 (111b) which also includes SND_SOC_DAIFMT_IB_NF
+= 0x2 (10b).
+
+So this patch uses the traditional way to check the clock inversion.
+
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+---
+ sound/soc/codecs/cs53l30.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
+index ac90dd7..62daa0c 100644
+--- a/sound/soc/codecs/cs53l30.c
++++ b/sound/soc/codecs/cs53l30.c
+@@ -598,8 +598,14 @@ static int cs53l30_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	}
+ 
+ 	/* Check to see if the SCLK is inverted */
+-	if (fmt & (SND_SOC_DAIFMT_IB_NF | SND_SOC_DAIFMT_IB_IF))
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_IB_NF:
++	case SND_SOC_DAIFMT_IB_IF:
+ 		aspcfg ^= CS53L30_ASP_SCLK_INV;
++		break;
++	default:
++		break;
++	}
+ 
+ 	regmap_update_bits(priv->regmap, CS53L30_ASPCFG_CTL,
+ 			   CS53L30_ASP_MS | CS53L30_ASP_SCLK_INV, aspcfg);
+-- 
+2.1.4
