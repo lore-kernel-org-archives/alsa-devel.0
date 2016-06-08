@@ -1,16 +1,16 @@
 From: han.lu@intel.com
-Subject: [PATCH 3/4] alsabat: add a single channel sine wave
-	generator
-Date: Thu,  9 Jun 2016 03:42:48 +0800
-Message-ID: <b9544395785f623026f776411755fa5ebd29d869.1465404865.git.han.lu@intel.com>
+Subject: [PATCH 2/4] alsabat: add channels parameter for
+	adjust_waveform()
+Date: Thu,  9 Jun 2016 03:42:47 +0800
+Message-ID: <e03067bf9b55908fd3c3a303f92f80e4b9d643f1.1465404865.git.han.lu@intel.com>
 References: <cover.1465404865.git.han.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 91E772657E5
- for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2016 13:46:39 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4857D265A7F
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2016 13:46:40 +0200 (CEST)
 In-Reply-To: <cover.1465404865.git.han.lu@intel.com>
 In-Reply-To: <cover.1465404865.git.han.lu@intel.com>
 References: <cover.1465404865.git.han.lu@intel.com>
@@ -29,50 +29,44 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Lu, Han" <han.lu@intel.com>
 
-Add function generate_sine_wave_raw_mono(). It serves as a single
-channel sine wave generator, to provide data for calculation (e.g.
-for noise analysis).
-The function is similar to generate_sine_wave(), but a lite revision.
-It has no dependency on bat channels and target frequency, no malloc
-inside, no data conversion from float to integer samples, and supports
-one channel only.
+The function adjust_waveform() is a component of generate_sine_wave(),
+and depended on bat->channels parameter. Add parameter "channels" to
+remove the dependency, and then adjust_waveform() can be applied on
+other use cases, e.g. a single channel sine wave generator.
 
 Signed-off-by: Lu, Han <han.lu@intel.com>
 
-diff --git a/bat/bat-signal.h b/bat/bat-signal.h
-index a295517..3c314a5 100644
---- a/bat/bat-signal.h
-+++ b/bat/bat-signal.h
-@@ -28,3 +28,4 @@ int sin_generator_init(struct sin_generator *, float, float, float);
- float sin_generator_next_sample(struct sin_generator *);
- void sin_generator_vfill(struct sin_generator *, float *, int);
- int generate_sine_wave(struct bat *, int, void *);
-+int generate_sine_wave_raw_mono(struct bat *, float *, float, int);
 diff --git a/bat/signal.c b/bat/signal.c
-index 2047f53..c9b5c7b 100644
+index 15bea0a..2047f53 100644
 --- a/bat/signal.c
 +++ b/bat/signal.c
-@@ -183,3 +183,21 @@ exit:
- 
- 	return err;
+@@ -109,7 +109,8 @@ static int reorder(struct bat *bat, float *val, int frames)
+ 	return 0;
  }
-+
-+/* generate single channel sine waveform without sample conversion */
-+int generate_sine_wave_raw_mono(struct bat *bat, float *buf,
-+		float freq, int nsamples)
-+{
-+	int err = 0;
-+	struct sin_generator sg;
-+
-+	err = sin_generator_init(&sg, 1.0, freq, bat->rate);
-+	if (err < 0)
-+		return err;
-+	sin_generator_vfill(&sg, buf, nsamples);
-+
-+	/* adjust amplitude and offset of waveform */
-+	err = adjust_waveform(bat, buf, nsamples, 1);
-+
-+	return err;
-+}
+ 
+-static int adjust_waveform(struct bat *bat, float *val, int frames)
++static int adjust_waveform(struct bat *bat, float *val, int frames,
++		int channels)
+ {
+ 	int i, nsamples, max;
+ 	float factor, offset = 0.0;
+@@ -134,7 +135,7 @@ static int adjust_waveform(struct bat *bat, float *val, int frames)
+ 	}
+ 
+ 	factor = max * RANGE_FACTOR;
+-	nsamples = bat->channels * frames;
++	nsamples = channels * frames;
+ 
+ 	for (i = 0; i < nsamples; i++)
+ 		val[i] = val[i] * factor + offset;
+@@ -171,7 +172,7 @@ int generate_sine_wave(struct bat *bat, int frames, void *buf)
+ 		goto exit;
+ 
+ 	/* adjust amplitude and offset of waveform */
+-	err = adjust_waveform(bat, sinus_f, frames);
++	err = adjust_waveform(bat, sinus_f, frames, bat->channels);
+ 	if (err != 0)
+ 		goto exit;
+ 
 -- 
 2.5.0
