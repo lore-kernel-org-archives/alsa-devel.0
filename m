@@ -1,127 +1,51 @@
-From: Garlic Tseng <garlic.tseng@mediatek.com>
-Subject: Re: [alsa-devel] [PATCH v2 2/9] ASoC: mediatek: implement mediatek
- common structure
-Date: Wed, 8 Jun 2016 10:06:12 +0800
-Message-ID: <1465351572.4197.17.camel@mtksdaap41>
-References: <1464929784-5489-1-git-send-email-garlic.tseng@mediatek.com>
-	 <1464929784-5489-3-git-send-email-garlic.tseng@mediatek.com>
-	 <20160607155427.GB7510@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160607155427.GB7510@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: tiwai@suse.de, srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, koro.chen@mediatek.com, PC.Liao@mediatek.com, ir.lian@mediatek.com
+From: Jeremy McDermond <mcdermj@xenotropic.com>
+Subject: ASoC:  Machine Driver Interaction with Codec Drivers
+Date: Tue, 7 Jun 2016 20:13:32 -0700
+Message-ID: <0BE0E679-A120-4330-8291-315750457145@xenotropic.com>
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.xenotropic.com (mail.xenotropic.com [198.178.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id A3C63260701
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2016 05:13:36 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by mail.xenotropic.com (Postfix) with ESMTP id 4A82F20099
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2016 20:04:04 -0700 (PDT)
+Received: from mail.xenotropic.com ([127.0.0.1])
+ by localhost (mail.xenotropic.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id NLqyGJPRgRfC for <alsa-devel@alsa-project.org>;
+ Tue,  7 Jun 2016 20:04:02 -0700 (PDT)
+Received: from [192.168.1.180] (c-76-115-126-109.hsd1.or.comcast.net
+ [76.115.126.109])
+ by mail.xenotropic.com (Postfix) with ESMTPSA id 9071720096
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2016 20:04:02 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark, thank for comment.
-
-On Tue, 2016-06-07 at 16:54 +0100, Mark Brown wrote:
-> On Fri, Jun 03, 2016 at 12:56:17PM +0800, Garlic Tseng wrote:
-> 
-> > +	/*enable agent*/
-> 
-> Lots of comments with missing spaces in them, there's quite a few
-> examples of that in here.
-
-I'll check all the code and fix them. 
-
-> 
-> > +EXPORT_SYMBOL(mtk_afe_fe_startup);
-> 
-> All the ASoC and regmap APIs are _GPL(), you really shouldn't export new
-> interfaces based on them without it - the point with the _GPL() is that
-> non-GPL code shouldn't be able to use the APIs.
-
-Thanks for comment, I'll fix them.
-
-
-> 
-> > +EXPORT_SYMBOL(mtk_afe_fe_hw_params);
-> 
-> Do you need to export the individual ops rather than just the ops
-> structure?
-> 
-
-Yes, in 2701 driver we modify some ops.
-
-
-+/* FE DAIs */
-+static const struct snd_soc_dai_ops mt2701_single_memif_dai_ops = {
-+	.startup	= mt2701_simple_fe_startup,
-+	.shutdown	= mtk_afe_fe_shutdown,
-+	.hw_params	= mt2701_simple_fe_hw_params,
-+	.hw_free	= mtk_afe_fe_hw_free,
-+	.prepare	= mtk_afe_fe_prepare,
-+	.trigger	= mtk_afe_fe_trigger,
-+
-+};
-
-And here is one of them. Here MT2701 need one more reg control.
-
-+static int mt2701_simple_fe_hw_params(struct snd_pcm_substream
-*substream,
-+				      struct snd_pcm_hw_params *params,
-+				      struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct mtk_base_afe *afe =
-snd_soc_platform_get_drvdata(rtd->platform);
-+	int stream_dir = substream->stream;
-+
-+	/*single DL use PAIR_INTERLEAVE*/
-+	if (stream_dir == SNDRV_PCM_STREAM_PLAYBACK) {
-+		regmap_update_bits(afe->regmap,
-+				   AFE_MEMIF_PBUF_SIZE,
-+				   AFE_MEMIF_PBUF_SIZE_DLM_MASK,
-+				   AFE_MEMIF_PBUF_SIZE_PAIR_INTERLEAVE);
-+	}
-+	return mtk_afe_fe_hw_params(substream, params, dai);
-+}
-
-MT2701 need some specific reg controls. If the control is
-platform-specific I tend not to put them in the common ops structure.
-
-
-> > +int mtk_afe_fe_trigger(struct snd_pcm_substream *substream, int cmd,
-> > +		       struct snd_soc_dai *dai)
-> > +{
-> > +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> > +	struct snd_pcm_runtime * const runtime = substream->runtime;
-> > +	struct mtk_base_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
-> > +	struct mtk_base_afe_memif *memif = &afe->memif[rtd->cpu_dai->id];
-> > +	struct mtk_base_afe_irq *irqs = &afe->irqs[memif->irq_usage];
-> > +	const struct mtk_base_irq_data *irq_data = irqs->irq_data;
-> > +	unsigned int counter = runtime->period_size;
-> > +	int fs;
-> > +
-> > +	dev_info(afe->dev, "%s %s cmd=%d\n", __func__, memif->data->name, cmd);
-> 
-> That's way too noisy, dev_dbg() at most.
-
-OK. I'll fix it.
-
-> > +static DEFINE_MUTEX(irqs_lock);
-> > +int mtk_dynamic_irq_acquire(struct mtk_base_afe *afe)
-> > +{
-> > +	int i;
-> > +
-> > +	mutex_lock(&irqs_lock);
-> > +	for (i = 0; i < afe->irqs_size; ++i) {
-> 
-> Why is the lock global and not part of the AFE struct?
-
-I'll put it in AFE struct. Thanks.
-
-> 
-> > +void mtk_simple_isr(struct mtk_base_afe *afe, struct mtk_base_afe_memif *memif)
-> > +{
-> > +	snd_pcm_period_elapsed(memif->substream);
-> > +}
-> > +EXPORT_SYMBOL(mtk_simple_isr);
-> 
-> Is this really worth it over just calling _period_elapsed() directly?
-
-I'll remove the function and just calling period_elapsed() directly.
+SSBhcG9sb2dpemUgaW4gYWR2YW5jZSBmb3IgdGhlIHByb2JhYmx5IGlkaW90aWMgcXVlc3Rpb24u
+CgpJ4oCZbSB3b3JraW5nIHdpdGggd3JpdGluZyBhIG1hY2hpbmUgZHJpdmVyIGZvciBvdXIgcHJv
+ZHVjdCBhbmQgZGVhbGluZyB3aXRoIHNvbWUgcG90ZW50aWFsIHVzZXIgaW50ZXJmYWNlIGlzc3Vl
+cyBzdXJyb3VuZGluZyB0aGUgbnVtYmVyIG9mIGNvbnRyb2xzIGJlaW5nIHByZXNlbnRlZCBieSB0
+aGUgY29kZWMgZHJpdmVyIGluIHRoZSBtaXhlci4KCklzIHRoZXJlIGEgd2F5IHRvIOKAnGhhcmQt
+d2lyZeKAnSBrY29udHJvbHMgaW4gdGhlIGNvZGVjIGZyb20gdGhlIG1hY2hpbmUgZHJpdmVyIGFu
+ZCBoaWRlIHRoZW0gaW4gdGhlIG1peGVyPyAgRm9yIGV4YW1wbGUsIG91ciBoYXJkd2FyZSBkb2Vz
+buKAmXQgd2lyZSB0aGUgSU4yX0wgYW5kIElOMl9SIHBpbnMgdG8gYW55d2hlcmUsIHNvIHRoZSBj
+b2RlYyBjb250cm9scyB0aGF0IGRldGVybWluZSB0aGVpciBjb25uZWN0aW9ucyBpbnRvIHRoZSBp
+bnB1dCBtaXhlciBkbyBub3RoaW5nIG9uIG91ciBoYXJkd2FyZSBhbmQgSeKAmWQgbGlrZSB0byBo
+aWRlIHRoZW0gZnJvbSB0aGUgdXNlciBpbiB0aGUgbWl4ZXIuCgpBbSBJIG1pc3Npbmcgc29tZXRo
+aW5nIG9yIGlzIHRoZXJlIGp1c3Qgbm8gd2F5IHRvIGdldCB0aGVyZSBmcm9tIGhlcmU/CgotLQpK
+ZXJlbXkgTWNEZXJtb25kIChOSDZaKQpYZW5vdHJvcGljIFN5c3RlbXMKbWNkZXJtakB4ZW5vdHJv
+cGljLmNvbQoKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cg==
