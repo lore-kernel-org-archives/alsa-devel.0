@@ -1,49 +1,43 @@
-From: Garlic Tseng <garlic.tseng@mediatek.com>
-Subject: Re: [alsa-devel] [PATCH v2 6/9] ASoC: mediatek: add mt2701 platform
- driver implementation.
-Date: Wed, 8 Jun 2016 11:32:22 +0800
-Message-ID: <1465356742.18601.7.camel@mtksdaap41>
-References: <1464929784-5489-1-git-send-email-garlic.tseng@mediatek.com>
-	 <1464929784-5489-7-git-send-email-garlic.tseng@mediatek.com>
-	 <20160607163112.GD7510@sirena.org.uk>
+From: Jeeja KP <jeeja.kp@intel.com>
+Subject: Re: [PATCH 02/10] ASoC: Intel: Skylake: Set the pipe
+ state to paused when paused
+Date: Wed, 8 Jun 2016 15:09:16 +0530
+Message-ID: <20160608093916.GA21387@kpjeeja-desk>
+References: <1464958783-19344-1-git-send-email-jeeja.kp@intel.com>
+ <1464958783-19344-3-git-send-email-jeeja.kp@intel.com>
+ <20160607125621.GW7510@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160607163112.GD7510@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F27D260701
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2016 11:32:51 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20160607125621.GW7510@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, ir.lian@mediatek.com, srv_heupstream@mediatek.com, tiwai@suse.de, linux-kernel@vger.kernel.org, koro.chen@mediatek.com, linux-mediatek@lists.infradead.org, PC.Liao@mediatek.com, linux-arm-kernel@lists.infradead.org
+Cc: patches.audio@intel.com, Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2016-06-07 at 17:31 +0100, Mark Brown wrote:
-> On Fri, Jun 03, 2016 at 12:56:21PM +0800, Garlic Tseng wrote:
+On Tue, Jun 07, 2016 at 01:56:21PM +0100, Mark Brown wrote:
+> On Fri, Jun 03, 2016 at 06:29:35PM +0530, jeeja.kp@intel.com wrote:
+> > From: Jeeja KP <jeeja.kp@intel.com>
+> > 
+> > When pipe is stopped/Paused, set the pipe state to paused instead
+> > of created.
 > 
-> > +	if (val < 0 || val > MT2701_I2S_NUM) {
-> > +		dev_err(afe->dev, "%s, num not available, num %d, val %d\n",
-> > +			__func__, num, val);
-> > +		return -1;
-> 
-> Real error codes please.
+> because...
 
-OK I'll fix it.
+after creation of pipe, pipe can be started and stopped mutiple times.
+So valid state in this case is PAUSED instead of created.
 
-> 
-> > +static const struct snd_kcontrol_new mt2701_afe_multi_ch_out_asrc3[] = {
-> > +	SOC_DAPM_SINGLE_AUTODISABLE("Multi ch asrc out3", PWR2_TOP_CON, 7, 1,
-> > +				    1),
-> > +};
-> 
-> On/off controls should end in Switch.
-
-Do you means that the name should end in Switch? Something like "Multi
-ch asrc out3 Switch" (or maybe a shorter one)
-
-I'll fix it (if I don't misunderstand the comment)
-
-Thanks!
-
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+-- 
