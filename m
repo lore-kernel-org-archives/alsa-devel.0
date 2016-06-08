@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514: add rt5514 SPI driver" to the
-	asoc tree
-Date: Wed, 08 Jun 2016 11:22:12 +0100
-Message-ID: <E1bAacm-0000PU-Ph@debutante>
-References: <1465209211-31340-1-git-send-email-oder_chiou@realtek.com>
+From: Xing Zheng <zhengxing@rock-chips.com>
+Subject: [PATCH v4] ASoC: rockchip: Add machine driver for
+	RK3399 GRU Boards
+Date: Wed,  8 Jun 2016 19:14:24 +0800
+Message-ID: <1465384464-22395-1-git-send-email-zhengxing@rock-chips.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 13F1F261AFF
- for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2016 12:22:25 +0200 (CEST)
-In-Reply-To: <1465209211-31340-1-git-send-email-oder_chiou@realtek.com>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.141])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8190D26519F
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jun 2016 13:14:48 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,822 +19,439 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+To: linux-rockchip@lists.infradead.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Xing Zheng <zhengxing@rock-chips.com>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, dianders@chromium.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, linux-arm-kernel@lists.infradead.org, heiko@sntech.de
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Because we need to support the multiple codecs (MAX98357A/RT5514/DA7219)
+on the RK3399 GRU boards, this patch can help us to support these codecs.
 
-   ASoC: rt5514: add rt5514 SPI driver
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 6eebf35b0e4a02248f7dba5d1719c6896afe41ba Mon Sep 17 00:00:00 2001
-From: Oder Chiou <oder_chiou@realtek.com>
-Date: Mon, 6 Jun 2016 18:33:31 +0800
-Subject: [PATCH] ASoC: rt5514: add rt5514 SPI driver
-
-The device has multiple control interfaces, I2C and SPI. The I2C interface
-mainly controls the register settings of codec. The SPI interface is in
-order to provide the high speed transmission of data. For example, high
-bandwidth memory read/write of DSP. The patch adds the rt5514 SPI driver
-for loading the firmware of DSP and retrieving the voice data from DSP
-after the system is waked up by specific voice.
-
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Xing Zheng <zhengxing@rock-chips.com>
 ---
- sound/soc/codecs/Kconfig      |   3 +
- sound/soc/codecs/Makefile     |   2 +
- sound/soc/codecs/rt5514-spi.c | 459 ++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/rt5514-spi.h |  38 ++++
- sound/soc/codecs/rt5514.c     | 136 ++++++++++++-
- sound/soc/codecs/rt5514.h     |   4 +
- 6 files changed, 640 insertions(+), 2 deletions(-)
- create mode 100644 sound/soc/codecs/rt5514-spi.c
- create mode 100644 sound/soc/codecs/rt5514-spi.h
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 4d82a58ff6b0..7d5afd1ea09b 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -643,6 +643,9 @@ config SND_SOC_RT298
- config SND_SOC_RT5514
- 	tristate
- 
-+config SND_SOC_RT5514_SPI
-+	tristate
-+
- config SND_SOC_RT5616
- 	tristate "Realtek RT5616 CODEC"
- 	depends on I2C
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 0f548fd34ca3..734b68de246c 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -100,6 +100,7 @@ snd-soc-rl6347a-objs := rl6347a.o
- snd-soc-rt286-objs := rt286.o
- snd-soc-rt298-objs := rt298.o
- snd-soc-rt5514-objs := rt5514.o
-+snd-soc-rt5514-spi-objs := rt5514-spi.o
- snd-soc-rt5616-objs := rt5616.o
- snd-soc-rt5631-objs := rt5631.o
- snd-soc-rt5640-objs := rt5640.o
-@@ -314,6 +315,7 @@ obj-$(CONFIG_SND_SOC_RL6347A)	+= snd-soc-rl6347a.o
- obj-$(CONFIG_SND_SOC_RT286)	+= snd-soc-rt286.o
- obj-$(CONFIG_SND_SOC_RT298)	+= snd-soc-rt298.o
- obj-$(CONFIG_SND_SOC_RT5514)	+= snd-soc-rt5514.o
-+obj-$(CONFIG_SND_SOC_RT5514_SPI)	+= snd-soc-rt5514-spi.o
- obj-$(CONFIG_SND_SOC_RT5616)	+= snd-soc-rt5616.o
- obj-$(CONFIG_SND_SOC_RT5631)	+= snd-soc-rt5631.o
- obj-$(CONFIG_SND_SOC_RT5640)	+= snd-soc-rt5640.o
-diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+Changes in v4:
+- the compatible name needs to be based on a single reference design,
+  and the name of the board is called "GRU"
+- use one i2sX card "rockchip,cpu = <&i2s0>" instead of array that is
+  based on GRU
+- rename DOC to rockchip,rk3399-gru-sound.txt
+- rename compatible to rockchip,rk3399-gru-sound
+- rename source code to rk3399_gru_sound.c
+
+Changes in v3:
+- rename DOC to rockchip,rk3399-max98357a-rt5514-da7219.txt
+- rename compatible to rockchip,rk3399-max98357a-rt5514-da7219
+- rename source code to rk3399_max98357a_rt5514_da7219.c
+
+Changes in v2:
+- use the FS 256 to set mclks of the max98357a and rt5514 danamically
+- add more sample rate for da7219
+
+ .../bindings/sound/rockchip,rk3399-gru-sound.txt   |   15 +
+ sound/soc/rockchip/Kconfig                         |   11 +
+ sound/soc/rockchip/Makefile                        |    2 +
+ sound/soc/rockchip/rk3399_gru_sound.c              |  339 ++++++++++++++++++++
+ 4 files changed, 367 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
+ create mode 100644 sound/soc/rockchip/rk3399_gru_sound.c
+
+diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
 new file mode 100644
-index 000000000000..8a9382e9787a
+index 0000000..f19b6c8
 --- /dev/null
-+++ b/sound/soc/codecs/rt5514-spi.c
-@@ -0,0 +1,459 @@
++++ b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
+@@ -0,0 +1,15 @@
++ROCKCHIP with MAX98357A/RT5514/DA7219 codecs on GRU boards
++
++Required properties:
++- compatible: "rockchip,rk3399-gru-sound"
++- rockchip,cpu: The phandle of the Rockchip I2S controller that's
++  connected to the codecs
++- rockchip,codec: The phandle of the MAX98357A/RT5514/DA7219 codecs
++
++Example:
++
++sound {
++	compatible = "rockchip,rk3399-gru-sound";
++	rockchip,cpu = <&i2s0>;
++	rockchip,codec = <&max98357a &rt5514 &da7219>;
++};
+diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
+index f1e0c70..c15dcc8 100644
+--- a/sound/soc/rockchip/Kconfig
++++ b/sound/soc/rockchip/Kconfig
+@@ -41,3 +41,14 @@ config SND_SOC_ROCKCHIP_RT5645
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on Rockchip
+ 	  boards using the RT5645/RT5650 codec, such as Veyron.
++
++config SND_SOC_RK3399_GRU_SOUND
++	tristate "ASoC support multiple codecs for Rockchip RK3399 GRU boards"
++	depends on SND_SOC_ROCKCHIP && GPIOLIB
++	select SND_SOC_ROCKCHIP_I2S
++	select SND_SOC_MAX98357A
++	select SND_SOC_RT5514
++	select SND_SOC_DA7219
++	help
++	  Say Y or M here if you want to add support multiple codecs for SoC
++	  audio on Rockchip RK3399 GRU boards.
+diff --git a/sound/soc/rockchip/Makefile b/sound/soc/rockchip/Makefile
+index c0bf560..84e5c7c 100644
+--- a/sound/soc/rockchip/Makefile
++++ b/sound/soc/rockchip/Makefile
+@@ -7,6 +7,8 @@ obj-$(CONFIG_SND_SOC_ROCKCHIP_SPDIF) += snd-soc-rockchip-spdif.o
+ 
+ snd-soc-rockchip-max98090-objs := rockchip_max98090.o
+ snd-soc-rockchip-rt5645-objs := rockchip_rt5645.o
++snd-soc-rk3399-gru-sound-objs := rk3399_gru_sound.o
+ 
+ obj-$(CONFIG_SND_SOC_ROCKCHIP_MAX98090) += snd-soc-rockchip-max98090.o
+ obj-$(CONFIG_SND_SOC_ROCKCHIP_RT5645) += snd-soc-rockchip-rt5645.o
++obj-$(CONFIG_SND_SOC_RK3399_GRU_SOUND) += snd-soc-rk3399-gru-sound.o
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+new file mode 100644
+index 0000000..cc9b943
+--- /dev/null
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
+@@ -0,0 +1,339 @@
 +/*
-+ * rt5514-spi.c  --  RT5514 SPI driver
++ * Rockchip machine ASoC driver for boards using MAX98357A/RT5514/DA7219
 + *
-+ * Copyright 2015 Realtek Semiconductor Corp.
-+ * Author: Oder Chiou <oder_chiou@realtek.com>
++ * Copyright (c) 2016, ROCKCHIP CORPORATION.  All rights reserved.
 + *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms and conditions of the GNU General Public License,
++ * version 2, as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 + */
 +
 +#include <linux/module.h>
-+#include <linux/input.h>
-+#include <linux/spi/spi.h>
-+#include <linux/device.h>
-+#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/interrupt.h>
-+#include <linux/irq.h>
++#include <linux/platform_device.h>
 +#include <linux/slab.h>
 +#include <linux/gpio.h>
-+#include <linux/sched.h>
-+#include <linux/kthread.h>
-+#include <linux/uaccess.h>
-+#include <linux/miscdevice.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/pm_qos.h>
-+#include <linux/sysfs.h>
-+#include <linux/clk.h>
++#include <linux/of_gpio.h>
++#include <linux/delay.h>
++#include <linux/spi/spi.h>
 +#include <sound/core.h>
++#include <sound/jack.h>
 +#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
 +#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/initval.h>
-+#include <sound/tlv.h>
++#include "rockchip_i2s.h"
++#include "../codecs/da7219.h"
++#include "../codecs/da7219-aad.h"
++#include "../codecs/rt5514.h"
 +
-+#include "rt5514-spi.h"
++#define DRV_NAME "rk3399-gru-sound"
 +
-+static struct spi_device *rt5514_spi;
++#define SOUND_FS	256
 +
-+struct rt5514_dsp {
-+	struct device *dev;
-+	struct delayed_work copy_work;
-+	struct mutex dma_lock;
-+	struct snd_pcm_substream *substream;
-+	unsigned int buf_base, buf_limit, buf_rp;
-+	size_t buf_size;
-+	size_t dma_offset;
-+	size_t dsp_offset;
++static struct snd_soc_jack rockchip_sound_jack;
++
++static const struct snd_soc_dapm_widget rockchip_dapm_widgets[] = {
++	SND_SOC_DAPM_HP("Headphones", NULL),
++	SND_SOC_DAPM_SPK("Speakers", NULL),
++	SND_SOC_DAPM_MIC("Headset Mic", NULL),
++	SND_SOC_DAPM_MIC("Int Mic", NULL),
 +};
 +
-+static const struct snd_pcm_hardware rt5514_spi_pcm_hardware = {
-+	.info			= SNDRV_PCM_INFO_MMAP |
-+				  SNDRV_PCM_INFO_MMAP_VALID |
-+				  SNDRV_PCM_INFO_INTERLEAVED,
-+	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
-+	.period_bytes_min	= PAGE_SIZE,
-+	.period_bytes_max	= 0x20000 / 8,
-+	.periods_min		= 8,
-+	.periods_max		= 8,
-+	.channels_min		= 1,
-+	.channels_max		= 1,
-+	.buffer_bytes_max	= 0x20000,
++static const struct snd_soc_dapm_route rockchip_dapm_routes[] = {
++	/* Input Lines */
++	{"MIC", NULL, "Headset Mic"},
++	{"DMIC1L", NULL, "Int Mic"},
++	{"DMIC1R", NULL, "Int Mic"},
++
++	/* Output Lines */
++	{"Headphones", NULL, "HPL"},
++	{"Headphones", NULL, "HPR"},
++	{"Speakers", NULL, "Speakers"},
 +};
 +
-+static struct snd_soc_dai_driver rt5514_spi_dai = {
-+	.name = "rt5514-dsp-cpu-dai",
-+	.id = 0,
-+	.capture = {
-+		.stream_name = "DSP Capture",
-+		.channels_min = 1,
-+		.channels_max = 1,
-+		.rates = SNDRV_PCM_RATE_16000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
++static const struct snd_kcontrol_new rockchip_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Headphones"),
++	SOC_DAPM_PIN_SWITCH("Speakers"),
++	SOC_DAPM_PIN_SWITCH("Headset Mic"),
++	SOC_DAPM_PIN_SWITCH("Int Mic"),
 +};
 +
-+static void rt5514_spi_copy_work(struct work_struct *work)
++static int rockchip_sound_max98357a_hw_params(struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *params)
 +{
-+	struct rt5514_dsp *rt5514_dsp =
-+		container_of(work, struct rt5514_dsp, copy_work.work);
-+	struct snd_pcm_runtime *runtime = rt5514_dsp->substream->runtime;
-+	size_t period_bytes, truncated_bytes = 0;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dapm_context *dapm = &rtd->card->dapm;
++	unsigned int mclk;
++	int ret;
 +
-+	mutex_lock(&rt5514_dsp->dma_lock);
-+	if (!rt5514_dsp->substream) {
-+		dev_err(rt5514_dsp->dev, "No pcm substream\n");
-+		goto done;
++	snd_soc_dapm_disable_pin(dapm, "Headphones");
++	snd_soc_dapm_enable_pin(dapm, "Speakers");
++	snd_soc_dapm_sync(dapm);
++
++	/* max98357a supports these sample rates */
++	switch (params_rate(params)) {
++	case 8000:
++	case 16000:
++	case 48000:
++	case 96000:
++		mclk = params_rate(params) * SOUND_FS;
++		break;
++	default:
++		dev_err(rtd->card->dev, "%s() doesn't support this sample rate: %d\n",
++				__func__, params_rate(params));
++		return -EINVAL;
 +	}
 +
-+	period_bytes = snd_pcm_lib_period_bytes(rt5514_dsp->substream);
-+
-+	if (rt5514_dsp->buf_size - rt5514_dsp->dsp_offset <  period_bytes)
-+		period_bytes = rt5514_dsp->buf_size - rt5514_dsp->dsp_offset;
-+
-+	if (rt5514_dsp->buf_rp + period_bytes <= rt5514_dsp->buf_limit) {
-+		rt5514_spi_burst_read(rt5514_dsp->buf_rp,
-+			runtime->dma_area + rt5514_dsp->dma_offset,
-+			period_bytes);
-+
-+		if (rt5514_dsp->buf_rp + period_bytes == rt5514_dsp->buf_limit)
-+			rt5514_dsp->buf_rp = rt5514_dsp->buf_base;
-+		else
-+			rt5514_dsp->buf_rp += period_bytes;
-+	} else {
-+		truncated_bytes = rt5514_dsp->buf_limit - rt5514_dsp->buf_rp;
-+		rt5514_spi_burst_read(rt5514_dsp->buf_rp,
-+			runtime->dma_area + rt5514_dsp->dma_offset,
-+			truncated_bytes);
-+
-+		rt5514_spi_burst_read(rt5514_dsp->buf_base,
-+			runtime->dma_area + rt5514_dsp->dma_offset +
-+			truncated_bytes, period_bytes - truncated_bytes);
-+
-+			rt5514_dsp->buf_rp = rt5514_dsp->buf_base +
-+				period_bytes - truncated_bytes;
++	ret = snd_soc_dai_set_sysclk(rtd->cpu_dai, 0, mclk, 0);
++	if (ret) {
++		dev_err(rtd->card->dev, "%s() error setting sysclk to %u: %d\n",
++				__func__, mclk, ret);
++		return ret;
 +	}
-+
-+	rt5514_dsp->dma_offset += period_bytes;
-+	if (rt5514_dsp->dma_offset >= runtime->dma_bytes)
-+		rt5514_dsp->dma_offset = 0;
-+
-+	rt5514_dsp->dsp_offset += period_bytes;
-+
-+	snd_pcm_period_elapsed(rt5514_dsp->substream);
-+
-+	if (rt5514_dsp->dsp_offset < rt5514_dsp->buf_size)
-+		schedule_delayed_work(&rt5514_dsp->copy_work, 5);
-+done:
-+	mutex_unlock(&rt5514_dsp->dma_lock);
-+}
-+
-+/* PCM for streaming audio from the DSP buffer */
-+static int rt5514_spi_pcm_open(struct snd_pcm_substream *substream)
-+{
-+	snd_soc_set_runtime_hwparams(substream, &rt5514_spi_pcm_hardware);
 +
 +	return 0;
 +}
 +
-+static int rt5514_spi_hw_params(struct snd_pcm_substream *substream,
-+			       struct snd_pcm_hw_params *hw_params)
++static int rockchip_sound_rt5514_hw_params(struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *params)
 +{
 +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct rt5514_dsp *rt5514_dsp =
-+			snd_soc_platform_get_drvdata(rtd->platform);
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dapm_context *dapm = &rtd->card->dapm;
++	unsigned int mclk;
 +	int ret;
 +
-+	mutex_lock(&rt5514_dsp->dma_lock);
-+	ret = snd_pcm_lib_alloc_vmalloc_buffer(substream,
-+			params_buffer_bytes(hw_params));
-+	rt5514_dsp->substream = substream;
-+	mutex_unlock(&rt5514_dsp->dma_lock);
++	snd_soc_dapm_disable_pin(dapm, "Headset Mic");
++	snd_soc_dapm_enable_pin(dapm, "Int Mic");
++	snd_soc_dapm_sync(dapm);
++
++	mclk = params_rate(params) * SOUND_FS;
++
++	ret = snd_soc_dai_set_sysclk(cpu_dai, 0, mclk,
++				     SND_SOC_CLOCK_OUT);
++	if (ret < 0) {
++		dev_err(rtd->card->dev, "Can't set cpu clock out %d\n", ret);
++		return ret;
++	}
++
++	ret = snd_soc_dai_set_sysclk(codec_dai, RT5514_SCLK_S_MCLK,
++				     mclk, SND_SOC_CLOCK_IN);
++	if (ret) {
++		dev_err(rtd->card->dev, "%s() error setting sysclk to %u: %d\n",
++				__func__, params_rate(params) * 512, ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int rockchip_sound_da7219_hw_params(struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dapm_context *dapm = &rtd->card->dapm;
++	int mclk, ret;
++
++	snd_soc_dapm_disable_pin(dapm, "Speakers");
++	snd_soc_dapm_disable_pin(dapm, "Int Mic");
++	snd_soc_dapm_enable_pin(dapm, "Headphones");
++	snd_soc_dapm_enable_pin(dapm, "Headset Mic");
++	snd_soc_dapm_sync(dapm);
++
++	/* in bypass mode, the mclk has to be one of the frequencies below */
++	switch (params_rate(params)) {
++	case 8000:
++	case 16000:
++	case 24000:
++	case 32000:
++	case 48000:
++	case 64000:
++	case 96000:
++		mclk = 12288000;
++		break;
++	case 11025:
++	case 22050:
++	case 44100:
++	case 88200:
++		mclk = 11289600;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	ret = snd_soc_dai_set_sysclk(cpu_dai, 0, mclk,
++				     SND_SOC_CLOCK_OUT);
++	if (ret < 0) {
++		dev_err(codec_dai->dev, "Can't set cpu clock out %d\n", ret);
++		return ret;
++	}
++
++	ret = snd_soc_dai_set_sysclk(codec_dai, 0, mclk,
++				     SND_SOC_CLOCK_IN);
++	if (ret < 0) {
++		dev_err(codec_dai->dev, "Can't set codec clock in %d\n", ret);
++		return ret;
++	}
++
++	ret = snd_soc_dai_set_pll(codec_dai, 0, DA7219_SYSCLK_MCLK, 0, 0);
++	if (ret < 0) {
++		dev_err(codec_dai->dev, "Can't set pll sysclk mclk %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int rockchip_sound_da7219_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_codec *codec = rtd->codec_dais[0]->codec;
++	int ret;
++
++	/* Enable Headset and 4 Buttons Jack detection */
++	ret = snd_soc_card_jack_new(rtd->card, "Headset Jack",
++				    SND_JACK_HEADSET |
++				    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++				    SND_JACK_BTN_2 | SND_JACK_BTN_3,
++				    &rockchip_sound_jack, NULL, 0);
++
++	if (ret) {
++		dev_err(rtd->card->dev, "New Headset Jack failed! (%d)\n", ret);
++		return ret;
++	}
++
++	da7219_aad_jack_det(codec, &rockchip_sound_jack);
++
++	return 0;
++}
++
++static struct snd_soc_ops rockchip_sound_max98357a_ops = {
++	.hw_params = rockchip_sound_max98357a_hw_params,
++};
++
++static struct snd_soc_ops rockchip_sound_rt5514_ops = {
++	.hw_params = rockchip_sound_rt5514_hw_params,
++};
++
++static struct snd_soc_ops rockchip_sound_da7219_ops = {
++	.hw_params = rockchip_sound_da7219_hw_params,
++};
++
++enum {
++	DAILINK_MAX98357A,
++	DAILINK_RT5514,
++	DAILINK_DA7219,
++};
++
++static struct snd_soc_dai_link rockchip_dailinks[] = {
++	[DAILINK_MAX98357A] = {
++		.name = "MAX98357A",
++		.stream_name = "MAX98357A PCM",
++		.codec_dai_name = "HiFi",
++		.ops = &rockchip_sound_max98357a_ops,
++		/* set max98357a as slave */
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_CBS_CFS,
++	},
++	[DAILINK_RT5514] = {
++		.name = "RT5514",
++		.stream_name = "RT5514 PCM",
++		.codec_dai_name = "rt5514-aif1",
++		.ops = &rockchip_sound_rt5514_ops,
++		/* set rt5514 as slave */
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_CBS_CFS,
++	},
++	[DAILINK_DA7219] = {
++		.name = "DA7219",
++		.stream_name = "DA7219 PCM",
++		.codec_dai_name = "da7219-hifi",
++		.init = rockchip_sound_da7219_init,
++		.ops = &rockchip_sound_da7219_ops,
++		/* set da7219 as slave */
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_CBS_CFS,
++	},
++};
++
++static struct snd_soc_card rockchip_sound_card = {
++	.name = "rk3399-gru-sound",
++	.owner = THIS_MODULE,
++	.dai_link = rockchip_dailinks,
++	.num_links =  ARRAY_SIZE(rockchip_dailinks),
++	.dapm_widgets = rockchip_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(rockchip_dapm_widgets),
++	.dapm_routes = rockchip_dapm_routes,
++	.num_dapm_routes = ARRAY_SIZE(rockchip_dapm_routes),
++	.controls = rockchip_controls,
++	.num_controls = ARRAY_SIZE(rockchip_controls),
++};
++
++static int rockchip_sound_probe(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = &rockchip_sound_card;
++	struct device_node *cpu_node;
++	int i, ret;
++
++	cpu_node = of_parse_phandle(pdev->dev.of_node, "rockchip,cpu", 0);
++	if (!cpu_node) {
++		dev_err(&pdev->dev, "Property 'rockchip,cpu' missing or invalid\n");
++		return -EINVAL;
++	}
++
++	for (i = 0; i < card->num_links; i++) {
++		rockchip_dailinks[i].platform_of_node = cpu_node;
++		rockchip_dailinks[i].cpu_of_node = cpu_node;
++
++		rockchip_dailinks[i].codec_of_node =
++			of_parse_phandle(pdev->dev.of_node, "rockchip,codec", i);
++		if (!rockchip_dailinks[i].codec_of_node) {
++			dev_err(&pdev->dev,
++				"Property[%d] 'rockchip,codec' missing or invalid\n", i);
++			return -EINVAL;
++		}
++	}
++
++	card->dev = &pdev->dev;
++	platform_set_drvdata(pdev, card);
++
++	ret = devm_snd_soc_register_card(&pdev->dev, card);
++	if (ret)
++		dev_err(&pdev->dev, "%s snd_soc_register_card fail %d\n",
++			__func__, ret);
 +
 +	return ret;
 +}
 +
-+static int rt5514_spi_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct rt5514_dsp *rt5514_dsp =
-+			snd_soc_platform_get_drvdata(rtd->platform);
-+
-+	mutex_lock(&rt5514_dsp->dma_lock);
-+	rt5514_dsp->substream = NULL;
-+	mutex_unlock(&rt5514_dsp->dma_lock);
-+
-+	cancel_delayed_work_sync(&rt5514_dsp->copy_work);
-+
-+	return snd_pcm_lib_free_vmalloc_buffer(substream);
-+}
-+
-+static int rt5514_spi_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct rt5514_dsp *rt5514_dsp =
-+			snd_soc_platform_get_drvdata(rtd->platform);
-+	u8 buf[8];
-+
-+	rt5514_dsp->dma_offset = 0;
-+	rt5514_dsp->dsp_offset = 0;
-+
-+	/**
-+	 * The address area x1800XXXX is the register address, and it cannot
-+	 * support spi burst read perfectly. So we use the spi burst read
-+	 * individually to make sure the data correctly.
-+	*/
-+	rt5514_spi_burst_read(RT5514_BUFFER_VOICE_BASE, (u8 *)&buf,
-+		sizeof(buf));
-+	rt5514_dsp->buf_base = buf[0] | buf[1] << 8 | buf[2] << 16 |
-+				buf[3] << 24;
-+
-+	rt5514_spi_burst_read(RT5514_BUFFER_VOICE_LIMIT, (u8 *)&buf,
-+		sizeof(buf));
-+	rt5514_dsp->buf_limit = buf[0] | buf[1] << 8 | buf[2] << 16 |
-+				buf[3] << 24;
-+
-+	rt5514_spi_burst_read(RT5514_BUFFER_VOICE_RP, (u8 *)&buf,
-+		sizeof(buf));
-+	rt5514_dsp->buf_rp = buf[0] | buf[1] << 8 | buf[2] << 16 |
-+				buf[3] << 24;
-+
-+	rt5514_spi_burst_read(RT5514_BUFFER_VOICE_SIZE, (u8 *)&buf,
-+		sizeof(buf));
-+	rt5514_dsp->buf_size = buf[0] | buf[1] << 8 | buf[2] << 16 |
-+				buf[3] << 24;
-+
-+	return 0;
-+}
-+
-+static int rt5514_spi_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct rt5514_dsp *rt5514_dsp =
-+			snd_soc_platform_get_drvdata(rtd->platform);
-+
-+	if (cmd == SNDRV_PCM_TRIGGER_START) {
-+		if (rt5514_dsp->buf_base && rt5514_dsp->buf_limit &&
-+			rt5514_dsp->buf_rp && rt5514_dsp->buf_size)
-+			schedule_delayed_work(&rt5514_dsp->copy_work, 0);
-+	}
-+
-+	return 0;
-+}
-+
-+static snd_pcm_uframes_t rt5514_spi_pcm_pointer(
-+		struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct rt5514_dsp *rt5514_dsp =
-+		snd_soc_platform_get_drvdata(rtd->platform);
-+
-+	return bytes_to_frames(runtime, rt5514_dsp->dma_offset);
-+}
-+
-+static struct snd_pcm_ops rt5514_spi_pcm_ops = {
-+	.open		= rt5514_spi_pcm_open,
-+	.hw_params	= rt5514_spi_hw_params,
-+	.hw_free	= rt5514_spi_hw_free,
-+	.trigger	= rt5514_spi_trigger,
-+	.prepare	= rt5514_spi_prepare,
-+	.pointer	= rt5514_spi_pcm_pointer,
-+	.mmap		= snd_pcm_lib_mmap_vmalloc,
-+	.page		= snd_pcm_lib_get_vmalloc_page,
-+};
-+
-+static int rt5514_spi_pcm_probe(struct snd_soc_platform *platform)
-+{
-+	struct rt5514_dsp *rt5514_dsp;
-+
-+	rt5514_dsp = devm_kzalloc(platform->dev, sizeof(*rt5514_dsp),
-+			GFP_KERNEL);
-+
-+	rt5514_dsp->dev = &rt5514_spi->dev;
-+	mutex_init(&rt5514_dsp->dma_lock);
-+	INIT_DELAYED_WORK(&rt5514_dsp->copy_work, rt5514_spi_copy_work);
-+	snd_soc_platform_set_drvdata(platform, rt5514_dsp);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_platform_driver rt5514_spi_platform = {
-+	.probe = rt5514_spi_pcm_probe,
-+	.ops = &rt5514_spi_pcm_ops,
-+};
-+
-+static const struct snd_soc_component_driver rt5514_spi_dai_component = {
-+	.name		= "rt5514-spi-dai",
-+};
-+
-+/**
-+ * rt5514_spi_burst_read - Read data from SPI by rt5514 address.
-+ * @addr: Start address.
-+ * @rxbuf: Data Buffer for reading.
-+ * @len: Data length, it must be a multiple of 8.
-+ *
-+ *
-+ * Returns true for success.
-+ */
-+int rt5514_spi_burst_read(unsigned int addr, u8 *rxbuf, size_t len)
-+{
-+	u8 spi_cmd = RT5514_SPI_CMD_BURST_READ;
-+	int status;
-+	u8 write_buf[8];
-+	unsigned int i, end, offset = 0;
-+
-+	struct spi_message message;
-+	struct spi_transfer x[3];
-+
-+	while (offset < len) {
-+		if (offset + RT5514_SPI_BUF_LEN <= len)
-+			end = RT5514_SPI_BUF_LEN;
-+		else
-+			end = len % RT5514_SPI_BUF_LEN;
-+
-+		write_buf[0] = spi_cmd;
-+		write_buf[1] = ((addr + offset) & 0xff000000) >> 24;
-+		write_buf[2] = ((addr + offset) & 0x00ff0000) >> 16;
-+		write_buf[3] = ((addr + offset) & 0x0000ff00) >> 8;
-+		write_buf[4] = ((addr + offset) & 0x000000ff) >> 0;
-+
-+		spi_message_init(&message);
-+		memset(x, 0, sizeof(x));
-+
-+		x[0].len = 5;
-+		x[0].tx_buf = write_buf;
-+		spi_message_add_tail(&x[0], &message);
-+
-+		x[1].len = 4;
-+		x[1].tx_buf = write_buf;
-+		spi_message_add_tail(&x[1], &message);
-+
-+		x[2].len = end;
-+		x[2].rx_buf = rxbuf + offset;
-+		spi_message_add_tail(&x[2], &message);
-+
-+		status = spi_sync(rt5514_spi, &message);
-+
-+		if (status)
-+			return false;
-+
-+		offset += RT5514_SPI_BUF_LEN;
-+	}
-+
-+	for (i = 0; i < len; i += 8) {
-+		write_buf[0] = rxbuf[i + 0];
-+		write_buf[1] = rxbuf[i + 1];
-+		write_buf[2] = rxbuf[i + 2];
-+		write_buf[3] = rxbuf[i + 3];
-+		write_buf[4] = rxbuf[i + 4];
-+		write_buf[5] = rxbuf[i + 5];
-+		write_buf[6] = rxbuf[i + 6];
-+		write_buf[7] = rxbuf[i + 7];
-+
-+		rxbuf[i + 0] = write_buf[7];
-+		rxbuf[i + 1] = write_buf[6];
-+		rxbuf[i + 2] = write_buf[5];
-+		rxbuf[i + 3] = write_buf[4];
-+		rxbuf[i + 4] = write_buf[3];
-+		rxbuf[i + 5] = write_buf[2];
-+		rxbuf[i + 6] = write_buf[1];
-+		rxbuf[i + 7] = write_buf[0];
-+	}
-+
-+	return true;
-+}
-+
-+/**
-+ * rt5514_spi_burst_write - Write data to SPI by rt5514 address.
-+ * @addr: Start address.
-+ * @txbuf: Data Buffer for writng.
-+ * @len: Data length, it must be a multiple of 8.
-+ *
-+ *
-+ * Returns true for success.
-+ */
-+int rt5514_spi_burst_write(u32 addr, const u8 *txbuf, size_t len)
-+{
-+	u8 spi_cmd = RT5514_SPI_CMD_BURST_WRITE;
-+	u8 *write_buf;
-+	unsigned int i, end, offset = 0;
-+
-+	write_buf = kmalloc(RT5514_SPI_BUF_LEN + 6, GFP_KERNEL);
-+
-+	if (write_buf == NULL)
-+		return -ENOMEM;
-+
-+	while (offset < len) {
-+		if (offset + RT5514_SPI_BUF_LEN <= len)
-+			end = RT5514_SPI_BUF_LEN;
-+		else
-+			end = len % RT5514_SPI_BUF_LEN;
-+
-+		write_buf[0] = spi_cmd;
-+		write_buf[1] = ((addr + offset) & 0xff000000) >> 24;
-+		write_buf[2] = ((addr + offset) & 0x00ff0000) >> 16;
-+		write_buf[3] = ((addr + offset) & 0x0000ff00) >> 8;
-+		write_buf[4] = ((addr + offset) & 0x000000ff) >> 0;
-+
-+		for (i = 0; i < end; i += 8) {
-+			write_buf[i + 12] = txbuf[offset + i + 0];
-+			write_buf[i + 11] = txbuf[offset + i + 1];
-+			write_buf[i + 10] = txbuf[offset + i + 2];
-+			write_buf[i +  9] = txbuf[offset + i + 3];
-+			write_buf[i +  8] = txbuf[offset + i + 4];
-+			write_buf[i +  7] = txbuf[offset + i + 5];
-+			write_buf[i +  6] = txbuf[offset + i + 6];
-+			write_buf[i +  5] = txbuf[offset + i + 7];
-+		}
-+
-+		write_buf[end + 5] = spi_cmd;
-+
-+		spi_write(rt5514_spi, write_buf, end + 6);
-+
-+		offset += RT5514_SPI_BUF_LEN;
-+	}
-+
-+	kfree(write_buf);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(rt5514_spi_burst_write);
-+
-+static int rt5514_spi_probe(struct spi_device *spi)
-+{
-+	int ret;
-+
-+	rt5514_spi = spi;
-+
-+	ret = snd_soc_register_platform(&spi->dev, &rt5514_spi_platform);
-+	if (ret < 0) {
-+		dev_err(&spi->dev, "Failed to register platform.\n");
-+		goto err_plat;
-+	}
-+
-+	ret = snd_soc_register_component(&spi->dev, &rt5514_spi_dai_component,
-+					 &rt5514_spi_dai, 1);
-+	if (ret < 0) {
-+		dev_err(&spi->dev, "Failed to register component.\n");
-+		goto err_comp;
-+	}
-+
-+	return 0;
-+err_comp:
-+	snd_soc_unregister_platform(&spi->dev);
-+err_plat:
-+
-+	return 0;
-+}
-+
-+static int rt5514_spi_remove(struct spi_device *spi)
-+{
-+	snd_soc_unregister_component(&spi->dev);
-+	snd_soc_unregister_platform(&spi->dev);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id rt5514_of_match[] = {
-+	{ .compatible = "realtek,rt5514", },
++static const struct of_device_id rockchip_sound_of_match[] = {
++	{ .compatible = "rockchip,rk3399-gru-sound", },
 +	{},
 +};
-+MODULE_DEVICE_TABLE(of, rt5514_of_match);
 +
-+static struct spi_driver rt5514_spi_driver = {
++static struct platform_driver rockchip_sound_driver = {
++	.probe = rockchip_sound_probe,
 +	.driver = {
-+		.name = "rt5514",
-+		.of_match_table = of_match_ptr(rt5514_of_match),
++		.name = DRV_NAME,
++		.of_match_table = rockchip_sound_of_match,
++#ifdef CONFIG_PM
++		.pm = &snd_soc_pm_ops,
++#endif
 +	},
-+	.probe = rt5514_spi_probe,
-+	.remove = rt5514_spi_remove,
 +};
-+module_spi_driver(rt5514_spi_driver);
 +
-+MODULE_DESCRIPTION("RT5514 SPI driver");
-+MODULE_AUTHOR("Oder Chiou <oder_chiou@realtek.com>");
++module_platform_driver(rockchip_sound_driver);
++
++MODULE_AUTHOR("Xing Zheng <zhengxing@rock-chips.com>");
++MODULE_DESCRIPTION("Rockchip ASoC Machine Driver");
 +MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/codecs/rt5514-spi.h b/sound/soc/codecs/rt5514-spi.h
-new file mode 100644
-index 000000000000..f69b1cdf2f9b
---- /dev/null
-+++ b/sound/soc/codecs/rt5514-spi.h
-@@ -0,0 +1,38 @@
-+/*
-+ * rt5514-spi.h  --  RT5514 driver
-+ *
-+ * Copyright 2015 Realtek Semiconductor Corp.
-+ * Author: Oder Chiou <oder_chiou@realtek.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef __RT5514_SPI_H__
-+#define __RT5514_SPI_H__
-+
-+/**
-+ * RT5514_SPI_BUF_LEN is the buffer size of SPI master controller.
-+*/
-+#define RT5514_SPI_BUF_LEN		240
-+
-+#define RT5514_BUFFER_VOICE_BASE	0x18001034
-+#define RT5514_BUFFER_VOICE_LIMIT	0x18001038
-+#define RT5514_BUFFER_VOICE_RP		0x1800103c
-+#define RT5514_BUFFER_VOICE_SIZE	0x18001040
-+
-+/* SPI Command */
-+enum {
-+	RT5514_SPI_CMD_16_READ = 0,
-+	RT5514_SPI_CMD_16_WRITE,
-+	RT5514_SPI_CMD_32_READ,
-+	RT5514_SPI_CMD_32_WRITE,
-+	RT5514_SPI_CMD_BURST_READ,
-+	RT5514_SPI_CMD_BURST_WRITE,
-+};
-+
-+int rt5514_spi_burst_read(unsigned int addr, u8 *rxbuf, size_t len);
-+int rt5514_spi_burst_write(u32 addr, const u8 *txbuf, size_t len);
-+
-+#endif /* __RT5514_SPI_H__ */
-diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index 879bf60f4965..ecb09891b662 100644
---- a/sound/soc/codecs/rt5514.c
-+++ b/sound/soc/codecs/rt5514.c
-@@ -30,6 +30,9 @@
- 
- #include "rl6231.h"
- #include "rt5514.h"
-+#if defined(CONFIG_SND_SOC_RT5514_SPI)
-+#include "rt5514-spi.h"
-+#endif
- 
- static const struct reg_sequence rt5514_i2c_patch[] = {
- 	{0x1800101c, 0x00000000},
-@@ -110,6 +113,35 @@ static const struct reg_default rt5514_reg[] = {
- 	{RT5514_VENDOR_ID2,		0x10ec5514},
- };
- 
-+static void rt5514_enable_dsp_prepare(struct rt5514_priv *rt5514)
-+{
-+	/* Reset */
-+	regmap_write(rt5514->i2c_regmap, 0x18002000, 0x000010ec);
-+	/* LDO_I_limit */
-+	regmap_write(rt5514->i2c_regmap, 0x18002200, 0x00028604);
-+	/* I2C bypass enable */
-+	regmap_write(rt5514->i2c_regmap, 0xfafafafa, 0x00000001);
-+	/* mini-core reset */
-+	regmap_write(rt5514->i2c_regmap, 0x18002f00, 0x0005514b);
-+	regmap_write(rt5514->i2c_regmap, 0x18002f00, 0x00055149);
-+	/* I2C bypass disable */
-+	regmap_write(rt5514->i2c_regmap, 0xfafafafa, 0x00000000);
-+	/* PIN config */
-+	regmap_write(rt5514->i2c_regmap, 0x18002070, 0x00000040);
-+	/* PLL3(QN)=RCOSC*(10+2) */
-+	regmap_write(rt5514->i2c_regmap, 0x18002240, 0x0000000a);
-+	/* PLL3 source=RCOSC, fsi=rt_clk */
-+	regmap_write(rt5514->i2c_regmap, 0x18002100, 0x0000000b);
-+	/* Power on RCOSC, pll3 */
-+	regmap_write(rt5514->i2c_regmap, 0x18002004, 0x00808b81);
-+	/* DSP clk source = pll3, ENABLE DSP clk */
-+	regmap_write(rt5514->i2c_regmap, 0x18002f08, 0x00000005);
-+	/* Enable DSP clk auto switch */
-+	regmap_write(rt5514->i2c_regmap, 0x18001114, 0x00000001);
-+	/* Reduce DSP power */
-+	regmap_write(rt5514->i2c_regmap, 0x18001118, 0x00000001);
-+}
-+
- static bool rt5514_volatile_register(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
-@@ -248,6 +280,74 @@ static const DECLARE_TLV_DB_RANGE(bst_tlv,
- 
- static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
- 
-+static int rt5514_dsp_voice_wake_up_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct rt5514_priv *rt5514 = snd_soc_component_get_drvdata(component);
-+
-+	ucontrol->value.integer.value[0] = rt5514->dsp_enabled;
-+
-+	return 0;
-+}
-+
-+static int rt5514_dsp_voice_wake_up_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct rt5514_priv *rt5514 = snd_soc_component_get_drvdata(component);
-+	struct snd_soc_codec *codec = rt5514->codec;
-+	const struct firmware *fw = NULL;
-+
-+	if (ucontrol->value.integer.value[0] == rt5514->dsp_enabled)
-+		return 0;
-+
-+	if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
-+		rt5514->dsp_enabled = ucontrol->value.integer.value[0];
-+
-+		if (rt5514->dsp_enabled) {
-+			rt5514_enable_dsp_prepare(rt5514);
-+
-+			request_firmware(&fw, RT5514_FIRMWARE1, codec->dev);
-+			if (fw) {
-+#if defined(CONFIG_SND_SOC_RT5514_SPI)
-+				rt5514_spi_burst_write(0x4ff60000, fw->data,
-+					((fw->size/8)+1)*8);
-+#else
-+				dev_err(codec->dev, "There is no SPI driver for"
-+					" loading the firmware\n");
-+#endif
-+				release_firmware(fw);
-+				fw = NULL;
-+			}
-+
-+			request_firmware(&fw, RT5514_FIRMWARE2, codec->dev);
-+			if (fw) {
-+#if defined(CONFIG_SND_SOC_RT5514_SPI)
-+				rt5514_spi_burst_write(0x4ffc0000, fw->data,
-+					((fw->size/8)+1)*8);
-+#else
-+				dev_err(codec->dev, "There is no SPI driver for"
-+					" loading the firmware\n");
-+#endif
-+				release_firmware(fw);
-+				fw = NULL;
-+			}
-+
-+			/* DSP run */
-+			regmap_write(rt5514->i2c_regmap, 0x18002f00,
-+				0x00055148);
-+		} else {
-+			regmap_multi_reg_write(rt5514->i2c_regmap,
-+				rt5514_i2c_patch, ARRAY_SIZE(rt5514_i2c_patch));
-+			regcache_mark_dirty(rt5514->regmap);
-+			regcache_sync(rt5514->regmap);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static const struct snd_kcontrol_new rt5514_snd_controls[] = {
- 	SOC_DOUBLE_TLV("MIC Boost Volume", RT5514_ANA_CTRL_MICBST,
- 		RT5514_SEL_BSTL_SFT, RT5514_SEL_BSTR_SFT, 8, 0, bst_tlv),
-@@ -257,6 +357,8 @@ static const struct snd_kcontrol_new rt5514_snd_controls[] = {
- 	SOC_DOUBLE_R_TLV("ADC2 Capture Volume", RT5514_DOWNFILTER1_CTRL1,
- 		RT5514_DOWNFILTER1_CTRL2, RT5514_AD_GAIN_SFT, 127, 0,
- 		adc_vol_tlv),
-+	SOC_SINGLE_EXT("DSP Voice Wake Up", SND_SOC_NOPM, 0, 1, 0,
-+		rt5514_dsp_voice_wake_up_get, rt5514_dsp_voice_wake_up_put),
- };
- 
- /* ADC Mixer*/
-@@ -365,6 +467,35 @@ static int rt5514_is_sys_clk_from_pll(struct snd_soc_dapm_widget *source,
- 		return 0;
- }
- 
-+static int rt5514_pre_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct rt5514_priv *rt5514 = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		/**
-+		 * If the DSP is enabled in start of recording, the DSP
-+		 * should be disabled, and sync back to normal recording
-+		 * settings to make sure recording properly.
-+		*/
-+		if (rt5514->dsp_enabled) {
-+			rt5514->dsp_enabled = 0;
-+			regmap_multi_reg_write(rt5514->i2c_regmap,
-+				rt5514_i2c_patch, ARRAY_SIZE(rt5514_i2c_patch));
-+			regcache_mark_dirty(rt5514->regmap);
-+			regcache_sync(rt5514->regmap);
-+		}
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dapm_widget rt5514_dapm_widgets[] = {
- 	/* Input Lines */
- 	SND_SOC_DAPM_INPUT("DMIC1L"),
-@@ -472,6 +603,8 @@ static const struct snd_soc_dapm_widget rt5514_dapm_widgets[] = {
- 
- 	/* Audio Interface */
- 	SND_SOC_DAPM_AIF_OUT("AIF1TX", "AIF1 Capture", 0, SND_SOC_NOPM, 0, 0),
-+
-+	SND_SOC_DAPM_PRE("DAPM Pre", rt5514_pre_event),
- };
- 
- static const struct snd_soc_dapm_route rt5514_dapm_routes[] = {
-@@ -871,7 +1004,6 @@ static const struct regmap_config rt5514_i2c_regmap = {
- 	.reg_bits = 32,
- 	.val_bits = 32,
- 
--	.max_register = RT5514_DSP_MAPPING | RT5514_VENDOR_ID2,
- 	.readable_reg = rt5514_i2c_readable_register,
- 
- 	.cache_type = REGCACHE_NONE,
-@@ -944,7 +1076,7 @@ static int rt5514_i2c_probe(struct i2c_client *i2c,
- 		return -ENODEV;
- 	}
- 
--	ret = regmap_register_patch(rt5514->i2c_regmap, rt5514_i2c_patch,
-+	ret = regmap_multi_reg_write(rt5514->i2c_regmap, rt5514_i2c_patch,
- 				    ARRAY_SIZE(rt5514_i2c_patch));
- 	if (ret != 0)
- 		dev_warn(&i2c->dev, "Failed to apply i2c_regmap patch: %d\n",
-diff --git a/sound/soc/codecs/rt5514.h b/sound/soc/codecs/rt5514.h
-index 6ad8a612f659..6e89e7d46a10 100644
---- a/sound/soc/codecs/rt5514.h
-+++ b/sound/soc/codecs/rt5514.h
-@@ -225,6 +225,9 @@
- #define RT5514_PLL_INP_MAX			40000000
- #define RT5514_PLL_INP_MIN			256000
- 
-+#define RT5514_FIRMWARE1	"rt5514_dsp_fw1.bin"
-+#define RT5514_FIRMWARE2	"rt5514_dsp_fw2.bin"
-+
- /* System Clock Source */
- enum {
- 	RT5514_SCLK_S_MCLK,
-@@ -247,6 +250,7 @@ struct rt5514_priv {
- 	int pll_src;
- 	int pll_in;
- 	int pll_out;
-+	int dsp_enabled;
- };
- 
- #endif /* __RT5514_H__ */
++MODULE_ALIAS("platform:" DRV_NAME);
++MODULE_DEVICE_TABLE(of, rockchip_sound_of_match);
 -- 
-2.8.1
+1.7.9.5
