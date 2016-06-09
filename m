@@ -1,79 +1,112 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoc: wm8731: add 32bit mode and normal
- mode with 12MHz XTAL
-Date: Thu, 9 Jun 2016 15:26:37 +0100
-Message-ID: <20160609142637.GX7510@sirena.org.uk>
-References: <57595463.2070700@flatmax.org>
- <20160609115624.GP20422@localhost.localdomain>
+From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH 1/4] dt-bindings: Add A10 I2S controller binding
+ documentation
+Date: Thu, 9 Jun 2016 19:15:59 +0200
+Message-ID: <20160609171559.GF5242@lukather>
+References: <20160601175430.11625-1-maxime.ripard@free-electrons.com>
+ <20160601175430.11625-2-maxime.ripard@free-electrons.com>
+ <20160606130818.GA6952@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1420284215355806415=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A3B5B26070C
- for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2016 16:26:46 +0200 (CEST)
-In-Reply-To: <20160609115624.GP20422@localhost.localdomain>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Matt Flax <flatmax@flatmax.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="c7hkjup166d4FzgN"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20160606130818.GA6952@rob-hp-laptop>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Andrea Venturi <ennesimamail.av-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, gianfranco-25KmuZRQ+wx0ubjbjo6WXg@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1420284215355806415==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="bPWyEuR5EuEA2EVk"
-Content-Disposition: inline
-
-
---bPWyEuR5EuEA2EVk
+--c7hkjup166d4FzgN
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 09, 2016 at 12:56:24PM +0100, Charles Keepax wrote:
-> On Thu, Jun 09, 2016 at 09:34:59PM +1000, Matt Flax wrote:
+Hi Rob,
 
-> > I have ensured that this does not effect the db1200.c machine driver
-> > (the only other driver to use a 12 MHz crystal in USB_MODE). It also
-> > does not effect the other machine drivers which use the wm8731 codec
-> > as they don't use USB_MODE nor 12 MHz crystals.
+On Mon, Jun 06, 2016 at 08:08:18AM -0500, Rob Herring wrote:
+> On Wed, Jun 01, 2016 at 07:54:27PM +0200, Maxime Ripard wrote:
+> > Introduce the device tree binding for the I2S controller found in the
+> > Allwinner A10 and later SoCs.
+> >=20
+> > Signed-off-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+> > ---
+> >  .../devicetree/bindings/sound/sun4i-i2s.txt        | 33 ++++++++++++++=
+++++++++
+> >  1 file changed, 33 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/sound/sun4i-i2s.t=
+xt
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Do=
+cumentation/devicetree/bindings/sound/sun4i-i2s.txt
+> > new file mode 100644
+> > index 000000000000..365ca4eede5f
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+> > @@ -0,0 +1,33 @@
+> > +* Allwinner A10 I2S controller
+> > +
+> > +The I2S bus (Inter-IC sound bus) is a serial link for digital
+> > +audio data transfer between devices in the system.
+> > +
+> > +Required properties:
+> > +
+> > +- compatible: should be one of the followings
+> > +   - "allwinner,sun4i-a10-i2s"
+> > +- reg: physical base address of the controller and length of memory ma=
+pped
+> > +  region.
+> > +- interrupts: should contain the I2S interrupt.
+> > +- dmas: DMA specifiers for tx and rx dma. See the DMA client binding,
+> > +	Documentation/devicetree/bindings/dma/dma.txt
+> > +- dma-names: should include "tx" and "rx".
+> > +- clocks: a list of phandle + clock-specifer pairs, one for each entry=
+ in clock-names.
+> > +- clock-names: should contain followings:
+> > +   - "apb" : clock for the I2S bus interface
+> > +   - "mod" : module clock for the I2S controller
+> > +
+> > +Example:
+> > +
+> > +i2s0: i2s@01c22400 {
+> > +	#sound-dai-cells =3D <0>;
+>=20
+> This is missing from the property list.
 
-> Probably best to split these into two patches, I know they are
-> both simple changes but they appear unrelated and if they arn't
-> you probably need to explain why they need to go in a single
-> patch.
+Indeed, I'll add it.
 
-Yes.
+Thanks!
+Maxime
 
---bPWyEuR5EuEA2EVk
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
+
+--c7hkjup166d4FzgN
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Version: GnuPG v1
 
-iQEcBAEBCAAGBQJXWXybAAoJECTWi3JdVIfQjPUH/RwKpe77nH/K63l3TuCfPVj1
-v/hVa8tNTrAoLhnllvBHHSkmbBTdqKQOfs7w55I4A+n3MhiM4lMjheCAv1KAlvhd
-9nbtUkDaUCVpYR1nMdZIvg/6in318K5y6RIu0eW48m3ezDJL/h2qQ7UxbPD/PFAq
-lJ7SI+VK6h0zkVBd7rcTY+jqspRZUNENt2hAiA0ZcUN8xRPRIdPERSnOfS911Uci
-RK+LCeVxgGKB7qkVw16n8LLeZ05f6gVIE9jwD6qwVbdgBoiSUpBH4Iry9DlY22Ha
-96dGFIkBBxrlvo/JBeO7UVT7J1Md5b9i4nUsLlm1ktSFVKQa/FTr/dY1AwfT50g=
-=riqm
+iQIcBAEBAgAGBQJXWaROAAoJEBx+YmzsjxAgvhwP/37yLDHATzP4f5K3m5qkKmXI
+Lrk4wbQob55iH7vqIGqj6BeMDBJ6BoVoNtk7tS8K/Jis0R3q3ti+WClj2xE5ECTy
+SFLHb39t7eiWE8FSKN5ie5sK+3w9xh8tNHd3zNFlNyIuZ+MtUid9OFXgLk7Ey48d
+QzQc8mvLMXvVt4YM6NSArxwrJ5gjwGoUHtOvzBCgQYa7rJvJ7mKUyylv/6gvmTAc
+VVrwoiPqOyx58vfU1VA2VRbEKTTn4XgRCxdIv+4UIrc0HQ9zYYBMWsi/JnV3NkgH
+TEQuEaIHmHnTSqlJEamCniz+g4OvieutlwW7CnXMz5F9DjQx0ya4vEuOxOo+hIGe
+VPWwAnETLiAZvDKg0HY9o2yWRgZljjAZoTblMGIWnrcdBj/3zglXNqPakQphvXgw
+qtq5HO01uT5VrDlCg5jbIAL+sELDBVAtAHRjUrwhiZu/RqovrmLb4awWvD29xie0
+7qGYUcwsYZmwoXOhD8qWmj4JhCirHfx6vYb1UZdP+4cCVUWngfIB5Zuu3AN0+uAG
+7JbmRpOiWhPhiJh2G6y22KBIHs9rqC34FaE8383t6n5Js8EXUULfXW+HIREUhLqB
+iGHZxIqnY92ajhreadGjojIEzP+/mEc1P3r0b/YXd0VHpegUnPVvkDT8y//vBmaE
+gKiQXU2mQSi29V+/BJFY
+=xSro
 -----END PGP SIGNATURE-----
 
---bPWyEuR5EuEA2EVk--
-
---===============1420284215355806415==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1420284215355806415==--
+--c7hkjup166d4FzgN--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
