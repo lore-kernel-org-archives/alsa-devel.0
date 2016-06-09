@@ -1,56 +1,55 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: ASoC: Machine Driver Interaction with Codec Drivers
-Date: Thu, 9 Jun 2016 12:31:12 +0200
-Message-ID: <57594570.7020100@metafoo.de>
-References: <0BE0E679-A120-4330-8291-315750457145@xenotropic.com>
- <57586E79.4010309@metafoo.de> <s5hinxihetz.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH v2 6/9] ASoC: mediatek: add mt2701 platform
+ driver implementation.
+Date: Thu, 9 Jun 2016 11:44:24 +0100
+Message-ID: <20160609104424.GU7510@sirena.org.uk>
+References: <1464929784-5489-1-git-send-email-garlic.tseng@mediatek.com>
+ <1464929784-5489-7-git-send-email-garlic.tseng@mediatek.com>
+ <20160607163112.GD7510@sirena.org.uk>
+ <1465356742.18601.7.camel@mtksdaap41>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 606232608B3
- for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2016 12:31:15 +0200 (CEST)
-In-Reply-To: <s5hinxihetz.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jeremy McDermond <mcdermj@xenotropic.com>, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="/TDNEY6SkuiyIcFh"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1465356742.18601.7.camel@mtksdaap41>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Garlic Tseng <garlic.tseng@mediatek.com>
+Cc: alsa-devel@alsa-project.org, ir.lian@mediatek.com, srv_heupstream@mediatek.com, tiwai@suse.de, linux-kernel@vger.kernel.org, koro.chen@mediatek.com, linux-mediatek@lists.infradead.org, PC.Liao@mediatek.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/09/2016 11:49 AM, Takashi Iwai wrote:
-> On Wed, 08 Jun 2016 21:14:01 +0200,
-> Lars-Peter Clausen wrote:
->>
->> Hi,
->>
->> No this is currently not really supported. There were some ideas for this a
->> long long time ago, but it never got implemented. And today basically
->> everybody takes care of hiding the controls from userspace.
->>
->> That does not mean it does not make sense to have such a feature, but it
->> needs somebody with a motivation to implement it.
-> 
-> The devils live in details.  Actually a primary question is in which
-> level we should cover it.  For example, can we disable DAPM pins from
-> the machine driver?  This will reduce not only kctls but DAPM paths.
-> Or should we mark kctls just as invisible?  Or, would it be suitable
-> rather to hide such a thing in user-space?
 
-For DAPM we already do this. Even automatically the DAPM core is capable of
-figuring out which paths are unused and will never be powered-up. The path
-will still exist in the graph but it will be ignored for all operations and
-not significantly affect performance.
+--/TDNEY6SkuiyIcFh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-And I think the idea back then was to track which controls are on which
-paths and if it is on a non-connected path disable the control. What's a bit
-tricky is if you have a mixer or mux and only some of the output/input paths
-are not connected. Also for most controls we do not have the information
-where they are placed within the graph.
+On Wed, Jun 08, 2016 at 11:32:22AM +0800, Garlic Tseng wrote:
+> On Tue, 2016-06-07 at 17:31 +0100, Mark Brown wrote:
+
+> > > +	SOC_DAPM_SINGLE_AUTODISABLE("Multi ch asrc out3", PWR2_TOP_CON, 7, 1,
+> > > +				    1),
+> > > +};
+
+> > On/off controls should end in Switch.
+
+> Do you means that the name should end in Switch? Something like "Multi
+> ch asrc out3 Switch" (or maybe a shorter one)
+
+Yes, exactly.
+
+--/TDNEY6SkuiyIcFh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXWUiIAAoJECTWi3JdVIfQB9UH/0Ej7CAci3v4+aqhdCItJnpf
+eorPDVX2csDcxEUIlpXGnxH/MQn0YfloED4aFcmrNlzKdudUuZ0EnmXxEK/b6NR4
+WhLwXp9JbnInDbZDoXkqv9iIB5Xr1I1mpmIREBpMAsNMR2Be6s6PHV2OPId4aMSZ
+j0dpwRrLryH+x0xWEuYzsdYL0ChfjdqkYxeriD0Tva5CJUra64PlxYAOA72x1Iby
+Q9B/Cor/QPrAQ+C0GEnluMATboxlDWjjsr58hGQlSdfRapRuv4Qdj0SOSxaki19t
+rC7KOUayivoLYV0XNO7MF3x6dhag6i7IF47VEYlgIUpE3LnzSqtWXieIHjVA1xI=
+=UR6z
+-----END PGP SIGNATURE-----
+
+--/TDNEY6SkuiyIcFh--
