@@ -1,71 +1,124 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: adau: Factor out shared PLL
-	configuration code
-Date: Thu, 9 Jun 2016 18:41:22 +0100
-Message-ID: <20160609174122.GB7510@sirena.org.uk>
-References: <1465493946-32594-1-git-send-email-lars@metafoo.de>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8062985682743810250=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 071BE26070C
- for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2016 19:41:35 +0200 (CEST)
-In-Reply-To: <1465493946-32594-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Subject: Applied "ASoC: rsnd: adg :: AUDIO-CLKOUTn asynchronizes support" to the asoc tree
+Date: Thu, 09 Jun 2016 18:42:33 +0100
+Message-ID: <E1bB3yT-0003Nq-Ak@debutante>
+References: <87mvmvkq8b.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87mvmvkq8b.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============8062985682743810250==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="f5gZUSgn1tH7xO87"
-Content-Disposition: inline
+   ASoC: rsnd: adg :: AUDIO-CLKOUTn asynchronizes support
 
+has been applied to the asoc tree at
 
---f5gZUSgn1tH7xO87
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Jun 09, 2016 at 07:39:06PM +0200, Lars-Peter Clausen wrote:
-> Multiple devices from the ADAU family share the same PLL structure and
-> configuration register layout. Introduce a new helper module that can be
-> used to calculated the PLL configuration registers based on a specified
-> input frequency and the desired output frequency of the PLL.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Sounds like we may be heading towards an MFD with a clock driver here?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---f5gZUSgn1tH7xO87
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEcBAEBCAAGBQJXWapBAAoJECTWi3JdVIfQ+WoH/236ZHxndbRzQ0T4dInOepFG
-qnVoDZJHoFGWRruLtVaSjYU94w5oxh3VH4AGjU2xn2Vg+SvuCUO0wIzzck69afI5
-vyJXqqAF3PqA2zokKi46XOLHodMyjbbT2a1n5O06I+OPISVBxTNYdU+Em/kI3+p0
-M66FP/fY8029ZBS51/oqDGhexrjr5vZiJnVSo/XhezUew0UchfDLnw5Mqnkr3ifc
-X3uP78+arQ2xxXb6xQf/XYX/5UILlqvk6jh5wgoobOlfoItT00Wbp1vSSgVlbJr0
-j+1HUQ/W/tR1ciuKwuCZDa/53uTCn7oRyiwDEIluyC410/cQ5mUkvmJCvnJTOfk=
-=dm7l
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---f5gZUSgn1tH7xO87--
+>From 7dc20319660d12d2ef642e572e8802c228b6c1cd Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 9 Jun 2016 03:21:37 +0000
+Subject: [PATCH] ASoC: rsnd: adg :: AUDIO-CLKOUTn asynchronizes support
 
---===============8062985682743810250==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+AUDIO-CLKOUTn can asynchronizes with L/R clock.
+AUDIO-CLKOUTn synchronizes with L/R clock is now default behavior.
 
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ .../devicetree/bindings/sound/renesas,rsnd.txt         |  2 ++
+ sound/soc/sh/rcar/adg.c                                | 18 ++++++++++++++++++
+ 2 files changed, 20 insertions(+)
 
---===============8062985682743810250==--
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+index c7b29df4a963..15a7316e4c91 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+@@ -373,6 +373,8 @@ Optional properties:
+ - #clock-cells			: it must be 0 if your system has audio_clkout
+ 				  it must be 1 if your system has audio_clkout0/1/2/3
+ - clock-frequency		: for all audio_clkout0/1/2/3
++- clkout-lr-asynchronous	: boolean property. it indicates that audio_clkoutn
++				  is asynchronizes with lr-clock.
+ 
+ SSI subnode properties:
+ - interrupts			: Should contain SSI interrupt for PIO transfer
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index 49354d17ea55..7d3e0e46d64a 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -33,11 +33,15 @@ struct rsnd_adg {
+ 	struct clk *clkout[CLKOUTMAX];
+ 	struct clk_onecell_data onecell;
+ 	struct rsnd_mod mod;
++	u32 flags;
+ 
+ 	int rbga_rate_for_441khz; /* RBGA */
+ 	int rbgb_rate_for_48khz;  /* RBGB */
+ };
+ 
++#define LRCLK_ASYNC	(1 << 0)
++#define adg_mode_flags(adg)	(adg->flags)
++
+ #define for_each_rsnd_clk(pos, adg, i)		\
+ 	for (i = 0;				\
+ 	     (i < CLKMAX) &&			\
+@@ -355,6 +359,16 @@ found_clock:
+ 
+ 	rsnd_adg_set_ssi_clk(ssi_mod, data);
+ 
++	if (!(adg_mode_flags(adg) & LRCLK_ASYNC)) {
++		struct rsnd_mod *adg_mod = rsnd_mod_get(adg);
++		u32 ckr = 0;
++
++		if (0 == (rate % 8000))
++			ckr = 0x80000000;
++
++		rsnd_mod_bset(adg_mod, SSICKR, 0x80000000, ckr);
++	}
++
+ 	dev_dbg(dev, "ADG: %s[%d] selects 0x%x for %d\n",
+ 		rsnd_mod_name(ssi_mod), rsnd_mod_id(ssi_mod),
+ 		data, rate);
+@@ -532,6 +546,7 @@ int rsnd_adg_probe(struct rsnd_priv *priv)
+ {
+ 	struct rsnd_adg *adg;
+ 	struct device *dev = rsnd_priv_to_dev(priv);
++	struct device_node *np = dev->of_node;
+ 
+ 	adg = devm_kzalloc(dev, sizeof(*adg), GFP_KERNEL);
+ 	if (!adg) {
+@@ -545,6 +560,9 @@ int rsnd_adg_probe(struct rsnd_priv *priv)
+ 	rsnd_adg_get_clkin(priv, adg);
+ 	rsnd_adg_get_clkout(priv, adg);
+ 
++	if (of_get_property(np, "clkout-lr-asynchronous", NULL))
++		adg->flags = LRCLK_ASYNC;
++
+ 	priv->adg = adg;
+ 
+ 	return 0;
+-- 
+2.8.1
