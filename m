@@ -1,110 +1,145 @@
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: Re: [PATCH 2/4] ASoC: sunxi: Add Allwinner A10 Digital
-	Audio driver
-Date: Thu, 9 Jun 2016 23:06:21 +0200
-Message-ID: <20160609210621.GJ5242@lukather>
-References: <20160601175430.11625-1-maxime.ripard@free-electrons.com>
- <20160601175430.11625-3-maxime.ripard@free-electrons.com>
- <CAEKpxBmLb27WYqB5SMhKqTw2cTznNEZVJdxEFKkwCY03JsdyVg@mail.gmail.com>
+From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [RESEND PATCH v2 1/2] device property: Add function to search for
+ named child of device
+Date: Fri, 10 Jun 2016 01:11:06 +0200
+Message-ID: <97f80018-7cc4-0a50-498d-89d27dfa2fd1@intel.com>
+References: <cover.1464802265.git.Adam.Thomson.Opensource@diasemi.com>
+ <7105258db927c65dfa41a8abeef4b9735871d023.1464802265.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5309692295088582965=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (down.free-electrons.com
- [37.187.137.238])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A5D726070C
- for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2016 23:06:22 +0200 (CEST)
-In-Reply-To: <CAEKpxBmLb27WYqB5SMhKqTw2cTznNEZVJdxEFKkwCY03JsdyVg@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Code Kipper <codekipper@gmail.com>
-Cc: devicetree <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org, gianfranco@moddevices.com, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Andrea Venturi <ennesimamail.av@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-acpi-owner@vger.kernel.org>
+In-Reply-To: <7105258db927c65dfa41a8abeef4b9735871d023.1464802265.git.Adam.Thomson.Opensource@diasemi.com>
+Sender: linux-acpi-owner@vger.kernel.org
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Jaroslav Kysela <perex@perex.cz>, Mika Westerberg <mika.westerberg@linux.intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Robert Moore <robert.moore@intel.com>, Lv Zheng <lv.zheng@intel.com>, Len Brown <lenb@kernel.org>, alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org, devel@acpica.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Suravee Suthikulpanit <Suravee.Suthikulpanit@amd.com>, Bjorn Helgaas <bhelgaas@google.com>, Hanjun Guo <hanjun.guo@linaro.org>, Andrew Morton <akpm@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============5309692295088582965==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SCOJXUq1iwCn05li"
-Content-Disposition: inline
-
-
---SCOJXUq1iwCn05li
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Markus,
-
-On Thu, Jun 02, 2016 at 10:03:21AM +0200, Code Kipper wrote:
-> snip
-> > +
-> > +       /* Always favor the highest oversampling rate */
-> > +       for (i =3D (ARRAY_SIZE(sun4i_i2s_oversample_rates) - 1); i >=3D=
- 0; i--) {
-> > +               unsigned int oversample_rate =3D sun4i_i2s_oversample_r=
-ates[i];
-> > +
-> > +               bclk_div =3D sun4i_i2s_get_bclk_div(i2s, oversample_rat=
-e,
-> > +                                                 word_size);
-> > +               mclk_div =3D sun4i_i2s_get_mclk_div(i2s, oversample_rat=
-e,
-> > +                                                 clk_rate,
-> > +                                                 rate);
-> > +
-> > +               if ((bclk_div >=3D 0) && (mclk_div >=3D 0))
-> > +                       break;
-> > +       }
-> > +
-> > +       if (bclk_div < 0 && mclk_div < 0)
+On 6/9/2016 5:13 PM, Adam Thomson wrote:
+> For device nodes in both DT and ACPI, it possible to have named
+> child nodes which contain properties (an existing example being
+> gpio-leds). This adds a function to find a named child node for
+> a device which can be used by drivers for property retrieval.
 >
-> this wouldn't work if one of the divs returns a valid value and I saw
-> this when working with this driver. Use if ((bclk_div < 0) ||
-> (mclk_div < 0)). Rest of the code looks code and I will have a go at
-> testing with it ASAP,
+> For ACPI data node name matching, a helper function is also added
+> which returns false if CONFIG_ACPI is not set, otherwise it
+> performs a string comparison on the data node name. This avoids
+> using the acpi_data_node struct for non CONFIG_ACPI builds,
+> which would otherwise cause a build failure.
+>
+> Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+> Tested-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
 
-Ack, thanks!
-Maxime
+For some reason that didn't make it into the linux-acpi list, or at 
+least I can't see it there.
 
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+> ---
+>
+> Changes in v2:
+>   - Rebase to v4.7-rc1
+>
+>   drivers/base/property.c  | 28 ++++++++++++++++++++++++++++
+>   include/acpi/acpi_bus.h  |  7 +++++++
+>   include/linux/acpi.h     |  6 ++++++
+>   include/linux/property.h |  3 +++
+>   4 files changed, 44 insertions(+)
+>
+> diff --git a/drivers/base/property.c b/drivers/base/property.c
+> index f38c21d..573b361 100644
+> --- a/drivers/base/property.c
+> +++ b/drivers/base/property.c
+> @@ -888,6 +888,34 @@ struct fwnode_handle *device_get_next_child_node(struct device *dev,
+>   EXPORT_SYMBOL_GPL(device_get_next_child_node);
+>
+>   /**
+> + * device_get_named_child_node - Return first matching named child node handle
+> + * @dev: Device to find the named child node for.
+> + * @childname: String to match child node name against.
+> + */
+> +struct fwnode_handle *device_get_named_child_node(struct device *dev,
+> +						  const char *childname)
+> +{
+> +	struct fwnode_handle *child;
+> +
+> +	/*
+> +	 * Find first matching named child node of this device.
+> +	 * For ACPI this will be a data only sub-node.
+> +	 */
+> +	device_for_each_child_node(dev, child) {
+> +		if (is_of_node(child)) {
+> +			if (!strcasecmp(to_of_node(child)->name, childname))
 
---SCOJXUq1iwCn05li
-Content-Type: application/pgp-signature; name="signature.asc"
+Why do you use strcasecmp() here?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+> +				return child;
+> +		} else if (is_acpi_data_node(child)) {
+> +			if (acpi_data_node_match(child, childname))
+> +				return child;
+> +		}
+> +	}
+> +
+> +	return NULL;
+> +}
+> +EXPORT_SYMBOL_GPL(device_get_named_child_node);
+> +
+> +/**
+>    * fwnode_handle_put - Drop reference to a device node
+>    * @fwnode: Pointer to the device node to drop the reference to.
+>    *
+> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> index 788c6c3..993bdd0 100644
+> --- a/include/acpi/acpi_bus.h
+> +++ b/include/acpi/acpi_bus.h
+> @@ -420,6 +420,13 @@ static inline struct acpi_data_node *to_acpi_data_node(struct fwnode_handle *fwn
+>   		container_of(fwnode, struct acpi_data_node, fwnode) : NULL;
+>   }
+>
+> +static inline bool acpi_data_node_match(struct fwnode_handle *fwnode,
+> +					const char *name)
+> +{
+> +	return is_acpi_data_node(fwnode) ?
+> +		(!strcasecmp(to_acpi_data_node(fwnode)->name, name)) : false;
+> +}
 
-iQIcBAEBAgAGBQJXWdpNAAoJEBx+YmzsjxAg0U4P/Rz/GEvQj0piEhhhTjubc/us
-TFkXVvz3cwHExjBCZPFGDq9OISj6NHmGXJbWiqNLocy6b2tu/nRLkINtklof8nNF
-KEIOt/AHg3Uyj6PCWJ+INcYRGgbMy2Rm8zkUPLw9Kp0Pvqg+F7eMksZWrYXAzPjw
-+wRpET87FG3/j7vQ/VuY6egdDkYBJ4uG6DyzMig3FmNHbFuc0Zb05Tml4SPh4sQf
-YMgXTqOVB9ODvUIKYGq5KUaeINjOi1EVmQdh3akaH6LkUY8QjDG5XnjmFrL+VuSi
-QwqxNXFsPXfdjIrwDpnL51WC0yddaZBGj/bDPuAHHFMudAFqRi7HmpZeS7dMFL6q
-0PmupJ0C2NkBv7bkc7gkwMMpQztSQD0v5OqZ22Bi3asGoIqrEO8srUQ2fkU2/uIA
-ZpkFcc8zyooXh0X6mWFE8jts59V3dqUyFOTqI3z6tSNQwaMHUG01f+VATeIFhb05
-I0HhxTLzOjKvqMIDjKEcpnYXkXWVWogrKDt54oYhmkUDQ5vXiNgm0OBKGJAzkHRw
-62aZbfgVMpP4kUUIkF8SSFER4mcSxRidW9ZxmPdnPgMh4Z1oBpQIey/r5Kl1UYhK
-6uInpEbJjWDo+9CnAxWTo0FqIo9wsYNfu84Wxh9tWdmj+ZghiQN1hUlh/JxmqxUH
-REgQOznvXLX9N+xf9rrU
-=fqBm
------END PGP SIGNATURE-----
+Is there any particular reason to introduce this function instead of 
+doing the test in device_get_named_child_node() directly?
 
---SCOJXUq1iwCn05li--
+> +
+>   static inline struct fwnode_handle *acpi_fwnode_handle(struct acpi_device *adev)
+>   {
+>   	return &adev->fwnode;
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index 288fac5..03039c4 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -568,6 +568,12 @@ static inline struct acpi_data_node *to_acpi_data_node(struct fwnode_handle *fwn
+>   	return NULL;
+>   }
+>
+> +static inline bool acpi_data_node_match(struct fwnode_handle *fwnode,
+> +					const char *name)
+> +{
+> +	return false;
+> +}
+> +
+>   static inline struct fwnode_handle *acpi_fwnode_handle(struct acpi_device *adev)
+>   {
+>   	return NULL;
+> diff --git a/include/linux/property.h b/include/linux/property.h
+> index ecab11e..3a2f9ae 100644
+> --- a/include/linux/property.h
+> +++ b/include/linux/property.h
+> @@ -77,6 +77,9 @@ struct fwnode_handle *device_get_next_child_node(struct device *dev,
+>   	for (child = device_get_next_child_node(dev, NULL); child;	\
+>   	     child = device_get_next_child_node(dev, child))
+>
+> +struct fwnode_handle *device_get_named_child_node(struct device *dev,
+> +						  const char *childname);
+> +
+>   void fwnode_handle_put(struct fwnode_handle *fwnode);
+>
+>   unsigned int device_get_child_node_count(struct device *dev);
+> --
 
---===============5309692295088582965==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Mika, Heikki, Andy, any feedback on this one?
 
-
---===============5309692295088582965==--
