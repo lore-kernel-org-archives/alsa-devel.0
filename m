@@ -1,112 +1,307 @@
-From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH 1/4] dt-bindings: Add A10 I2S controller binding
- documentation
-Date: Thu, 9 Jun 2016 19:15:59 +0200
-Message-ID: <20160609171559.GF5242@lukather>
-References: <20160601175430.11625-1-maxime.ripard@free-electrons.com>
- <20160601175430.11625-2-maxime.ripard@free-electrons.com>
- <20160606130818.GA6952@rob-hp-laptop>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: adau: Factor out shared PLL
+	configuration code
+Date: Thu,  9 Jun 2016 19:39:06 +0200
+Message-ID: <1465493946-32594-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="c7hkjup166d4FzgN"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20160606130818.GA6952@rob-hp-laptop>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Andrea Venturi <ennesimamail.av-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, gianfranco-25KmuZRQ+wx0ubjbjo6WXg@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1903F26148F
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2016 19:39:13 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
+Multiple devices from the ADAU family share the same PLL structure and
+configuration register layout. Introduce a new helper module that can be
+used to calculated the PLL configuration registers based on a specified
+input frequency and the desired output frequency of the PLL.
 
---c7hkjup166d4FzgN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The ADAU1761/ADAU1781 and ADAU1373 drivers are updated to make use of this
+new helper module. But future drivers for additional devices from the ADAU
+family are also expected to make use of it.
 
-Hi Rob,
+In anticipation of sharing more infrastructure code between different
+devices from the ADAU family the new module is called adau-utils.
 
-On Mon, Jun 06, 2016 at 08:08:18AM -0500, Rob Herring wrote:
-> On Wed, Jun 01, 2016 at 07:54:27PM +0200, Maxime Ripard wrote:
-> > Introduce the device tree binding for the I2S controller found in the
-> > Allwinner A10 and later SoCs.
-> >=20
-> > Signed-off-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-> > ---
-> >  .../devicetree/bindings/sound/sun4i-i2s.txt        | 33 ++++++++++++++=
-++++++++
-> >  1 file changed, 33 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/sound/sun4i-i2s.t=
-xt
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Do=
-cumentation/devicetree/bindings/sound/sun4i-i2s.txt
-> > new file mode 100644
-> > index 000000000000..365ca4eede5f
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-> > @@ -0,0 +1,33 @@
-> > +* Allwinner A10 I2S controller
-> > +
-> > +The I2S bus (Inter-IC sound bus) is a serial link for digital
-> > +audio data transfer between devices in the system.
-> > +
-> > +Required properties:
-> > +
-> > +- compatible: should be one of the followings
-> > +   - "allwinner,sun4i-a10-i2s"
-> > +- reg: physical base address of the controller and length of memory ma=
-pped
-> > +  region.
-> > +- interrupts: should contain the I2S interrupt.
-> > +- dmas: DMA specifiers for tx and rx dma. See the DMA client binding,
-> > +	Documentation/devicetree/bindings/dma/dma.txt
-> > +- dma-names: should include "tx" and "rx".
-> > +- clocks: a list of phandle + clock-specifer pairs, one for each entry=
- in clock-names.
-> > +- clock-names: should contain followings:
-> > +   - "apb" : clock for the I2S bus interface
-> > +   - "mod" : module clock for the I2S controller
-> > +
-> > +Example:
-> > +
-> > +i2s0: i2s@01c22400 {
-> > +	#sound-dai-cells =3D <0>;
->=20
-> This is missing from the property list.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/Kconfig      |  5 ++++
+ sound/soc/codecs/Makefile     |  2 ++
+ sound/soc/codecs/adau-utils.c | 61 +++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/adau-utils.h |  7 +++++
+ sound/soc/codecs/adau1373.c   | 38 +++++++--------------------
+ sound/soc/codecs/adau17x1.c   | 38 +++------------------------
+ 6 files changed, 89 insertions(+), 62 deletions(-)
+ create mode 100644 sound/soc/codecs/adau-utils.c
+ create mode 100644 sound/soc/codecs/adau-utils.h
 
-Indeed, I'll add it.
-
-Thanks!
-Maxime
-
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
-
---c7hkjup166d4FzgN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJXWaROAAoJEBx+YmzsjxAgvhwP/37yLDHATzP4f5K3m5qkKmXI
-Lrk4wbQob55iH7vqIGqj6BeMDBJ6BoVoNtk7tS8K/Jis0R3q3ti+WClj2xE5ECTy
-SFLHb39t7eiWE8FSKN5ie5sK+3w9xh8tNHd3zNFlNyIuZ+MtUid9OFXgLk7Ey48d
-QzQc8mvLMXvVt4YM6NSArxwrJ5gjwGoUHtOvzBCgQYa7rJvJ7mKUyylv/6gvmTAc
-VVrwoiPqOyx58vfU1VA2VRbEKTTn4XgRCxdIv+4UIrc0HQ9zYYBMWsi/JnV3NkgH
-TEQuEaIHmHnTSqlJEamCniz+g4OvieutlwW7CnXMz5F9DjQx0ya4vEuOxOo+hIGe
-VPWwAnETLiAZvDKg0HY9o2yWRgZljjAZoTblMGIWnrcdBj/3zglXNqPakQphvXgw
-qtq5HO01uT5VrDlCg5jbIAL+sELDBVAtAHRjUrwhiZu/RqovrmLb4awWvD29xie0
-7qGYUcwsYZmwoXOhD8qWmj4JhCirHfx6vYb1UZdP+4cCVUWngfIB5Zuu3AN0+uAG
-7JbmRpOiWhPhiJh2G6y22KBIHs9rqC34FaE8383t6n5Js8EXUULfXW+HIREUhLqB
-iGHZxIqnY92ajhreadGjojIEzP+/mEc1P3r0b/YXd0VHpegUnPVvkDT8y//vBmaE
-gKiQXU2mQSi29V+/BJFY
-=xSro
------END PGP SIGNATURE-----
-
---c7hkjup166d4FzgN--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index cb57f8f..df56003 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -272,8 +272,12 @@ config SND_SOC_AD1980
+ config SND_SOC_AD73311
+ 	tristate
+ 
++config SND_SOC_ADAU_UTILS
++	tristate
++
+ config SND_SOC_ADAU1373
+ 	tristate
++	select SND_SOC_ADAU_UTILS
+ 
+ config SND_SOC_ADAU1701
+ 	tristate "Analog Devices ADAU1701 CODEC"
+@@ -283,6 +287,7 @@ config SND_SOC_ADAU1701
+ config SND_SOC_ADAU17X1
+ 	tristate
+ 	select SND_SOC_SIGMADSP_REGMAP
++	select SND_SOC_ADAU_UTILS
+ 
+ config SND_SOC_ADAU1761
+ 	tristate
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 550a174..c0805a6 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -7,6 +7,7 @@ snd-soc-ad193x-spi-objs := ad193x-spi.o
+ snd-soc-ad193x-i2c-objs := ad193x-i2c.o
+ snd-soc-ad1980-objs := ad1980.o
+ snd-soc-ad73311-objs := ad73311.o
++snd-soc-adau-utils-objs := adau-utils.o
+ snd-soc-adau1373-objs := adau1373.o
+ snd-soc-adau1701-objs := adau1701.o
+ snd-soc-adau17x1-objs := adau17x1.o
+@@ -223,6 +224,7 @@ obj-$(CONFIG_SND_SOC_AD193X_SPI)	+= snd-soc-ad193x-spi.o
+ obj-$(CONFIG_SND_SOC_AD193X_I2C)	+= snd-soc-ad193x-i2c.o
+ obj-$(CONFIG_SND_SOC_AD1980)	+= snd-soc-ad1980.o
+ obj-$(CONFIG_SND_SOC_AD73311) += snd-soc-ad73311.o
++obj-$(CONFIG_SND_SOC_ADAU_UTILS)	+= snd-soc-adau-utils.o
+ obj-$(CONFIG_SND_SOC_ADAU1373)	+= snd-soc-adau1373.o
+ obj-$(CONFIG_SND_SOC_ADAU1701)		+= snd-soc-adau1701.o
+ obj-$(CONFIG_SND_SOC_ADAU17X1)		+= snd-soc-adau17x1.o
+diff --git a/sound/soc/codecs/adau-utils.c b/sound/soc/codecs/adau-utils.c
+new file mode 100644
+index 0000000..19d6a6f
+--- /dev/null
++++ b/sound/soc/codecs/adau-utils.c
+@@ -0,0 +1,61 @@
++/*
++ * Shared helper functions for devices from the ADAU family
++ *
++ * Copyright 2011-2016 Analog Devices Inc.
++ * Author: Lars-Peter Clausen <lars@metafoo.de>
++ *
++ * Licensed under the GPL-2 or later.
++ */
++
++#include <linux/gcd.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++
++#include "adau-utils.h"
++
++int adau_calc_pll_cfg(unsigned int freq_in, unsigned int freq_out,
++	uint8_t regs[5])
++{
++	unsigned int r, n, m, i, j;
++	unsigned int div;
++
++	if (!freq_out) {
++		r = 0;
++		n = 0;
++		m = 0;
++		div = 0;
++	} else {
++		if (freq_out % freq_in != 0) {
++			div = DIV_ROUND_UP(freq_in, 13500000);
++			freq_in /= div;
++			r = freq_out / freq_in;
++			i = freq_out % freq_in;
++			j = gcd(i, freq_in);
++			n = i / j;
++			m = freq_in / j;
++			div--;
++		} else {
++			r = freq_out / freq_in;
++			n = 0;
++			m = 0;
++			div = 0;
++		}
++		if (n > 0xffff || m > 0xffff || div > 3 || r > 8 || r < 2)
++			return -EINVAL;
++	}
++
++	regs[0] = m >> 8;
++	regs[1] = m & 0xff;
++	regs[2] = n >> 8;
++	regs[3] = n & 0xff;
++	regs[4] = (r << 3) | (div << 1);
++	if (m != 0)
++		regs[4] |= 1; /* Fractional mode */
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(adau_calc_pll_cfg);
++
++MODULE_DESCRIPTION("ASoC ADAU audio CODECs shared helper functions");
++MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/codecs/adau-utils.h b/sound/soc/codecs/adau-utils.h
+new file mode 100644
+index 0000000..939b5f3
+--- /dev/null
++++ b/sound/soc/codecs/adau-utils.h
+@@ -0,0 +1,7 @@
++#ifndef SOUND_SOC_CODECS_ADAU_PLL_H
++#define SOUND_SOC_CODECS_ADAU_PLL_H
++
++int adau_calc_pll_cfg(unsigned int freq_in, unsigned int freq_out,
++	uint8_t regs[5]);
++
++#endif
+diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
+index fe1353a..1556b36 100644
+--- a/sound/soc/codecs/adau1373.c
++++ b/sound/soc/codecs/adau1373.c
+@@ -23,6 +23,7 @@
+ #include <sound/adau1373.h>
+ 
+ #include "adau1373.h"
++#include "adau-utils.h"
+ 
+ struct adau1373_dai {
+ 	unsigned int clk_src;
+@@ -1254,7 +1255,8 @@ static int adau1373_set_pll(struct snd_soc_codec *codec, int pll_id,
+ {
+ 	struct adau1373 *adau1373 = snd_soc_codec_get_drvdata(codec);
+ 	unsigned int dpll_div = 0;
+-	unsigned int x, r, n, m, i, j, mode;
++	uint8_t pll_regs[5];
++	int ret;
+ 
+ 	switch (pll_id) {
+ 	case ADAU1373_PLL1:
+@@ -1295,27 +1297,8 @@ static int adau1373_set_pll(struct snd_soc_codec *codec, int pll_id,
+ 		dpll_div++;
+ 	}
+ 
+-	if (freq_out % freq_in != 0) {
+-		/* fout = fin * (r + (n/m)) / x */
+-		x = DIV_ROUND_UP(freq_in, 13500000);
+-		freq_in /= x;
+-		r = freq_out / freq_in;
+-		i = freq_out % freq_in;
+-		j = gcd(i, freq_in);
+-		n = i / j;
+-		m = freq_in / j;
+-		x--;
+-		mode = 1;
+-	} else {
+-		/* fout = fin / r */
+-		r = freq_out / freq_in;
+-		n = 0;
+-		m = 0;
+-		x = 0;
+-		mode = 0;
+-	}
+-
+-	if (r < 2 || r > 8 || x > 3 || m > 0xffff || n > 0xffff)
++	ret = adau_calc_pll_cfg(freq_in, freq_out, pll_regs);
++	if (ret)
+ 		return -EINVAL;
+ 
+ 	if (dpll_div) {
+@@ -1330,12 +1313,11 @@ static int adau1373_set_pll(struct snd_soc_codec *codec, int pll_id,
+ 
+ 	regmap_write(adau1373->regmap, ADAU1373_DPLL_CTRL(pll_id),
+ 		(source << 4) | dpll_div);
+-	regmap_write(adau1373->regmap, ADAU1373_PLL_CTRL1(pll_id), (m >> 8) & 0xff);
+-	regmap_write(adau1373->regmap, ADAU1373_PLL_CTRL2(pll_id), m & 0xff);
+-	regmap_write(adau1373->regmap, ADAU1373_PLL_CTRL3(pll_id), (n >> 8) & 0xff);
+-	regmap_write(adau1373->regmap, ADAU1373_PLL_CTRL4(pll_id), n & 0xff);
+-	regmap_write(adau1373->regmap, ADAU1373_PLL_CTRL5(pll_id),
+-		(r << 3) | (x << 1) | mode);
++	regmap_write(adau1373->regmap, ADAU1373_PLL_CTRL1(pll_id), pll_regs[0]);
++	regmap_write(adau1373->regmap, ADAU1373_PLL_CTRL2(pll_id), pll_regs[1]);
++	regmap_write(adau1373->regmap, ADAU1373_PLL_CTRL3(pll_id), pll_regs[2]);
++	regmap_write(adau1373->regmap, ADAU1373_PLL_CTRL4(pll_id), pll_regs[3]);
++	regmap_write(adau1373->regmap, ADAU1373_PLL_CTRL5(pll_id), pll_regs[4]);
+ 
+ 	/* Set sysclk to pll_rate / 4 */
+ 	regmap_update_bits(adau1373->regmap, ADAU1373_CLK_SRC_DIV(pll_id), 0x3f, 0x09);
+diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
+index fcf05b2..66a6e06 100644
+--- a/sound/soc/codecs/adau17x1.c
++++ b/sound/soc/codecs/adau17x1.c
+@@ -23,6 +23,7 @@
+ 
+ #include "sigmadsp.h"
+ #include "adau17x1.h"
++#include "adau-utils.h"
+ 
+ static const char * const adau17x1_capture_mixer_boost_text[] = {
+ 	"Normal operation", "Boost Level 1", "Boost Level 2", "Boost Level 3",
+@@ -391,45 +392,14 @@ static int adau17x1_set_dai_pll(struct snd_soc_dai *dai, int pll_id,
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct adau *adau = snd_soc_codec_get_drvdata(codec);
+-	unsigned int r, n, m, i, j;
+-	unsigned int div;
+ 	int ret;
+ 
+ 	if (freq_in < 8000000 || freq_in > 27000000)
+ 		return -EINVAL;
+ 
+-	if (!freq_out) {
+-		r = 0;
+-		n = 0;
+-		m = 0;
+-		div = 0;
+-	} else {
+-		if (freq_out % freq_in != 0) {
+-			div = DIV_ROUND_UP(freq_in, 13500000);
+-			freq_in /= div;
+-			r = freq_out / freq_in;
+-			i = freq_out % freq_in;
+-			j = gcd(i, freq_in);
+-			n = i / j;
+-			m = freq_in / j;
+-			div--;
+-		} else {
+-			r = freq_out / freq_in;
+-			n = 0;
+-			m = 0;
+-			div = 0;
+-		}
+-		if (n > 0xffff || m > 0xffff || div > 3 || r > 8 || r < 2)
+-			return -EINVAL;
+-	}
+-
+-	adau->pll_regs[0] = m >> 8;
+-	adau->pll_regs[1] = m & 0xff;
+-	adau->pll_regs[2] = n >> 8;
+-	adau->pll_regs[3] = n & 0xff;
+-	adau->pll_regs[4] = (r << 3) | (div << 1);
+-	if (m != 0)
+-		adau->pll_regs[4] |= 1; /* Fractional mode */
++	ret = adau_calc_pll_cfg(freq_in, freq_out, adau->pll_regs);
++	if (ret < 0)
++		return ret;
+ 
+ 	/* The PLL register is 6 bytes long and can only be written at once. */
+ 	ret = regmap_raw_write(adau->regmap, ADAU17X1_PLL_CONTROL,
+-- 
+2.1.4
