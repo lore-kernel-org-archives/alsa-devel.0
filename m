@@ -1,41 +1,42 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: adau: Factor out shared PLL
-	configuration code
-Date: Thu, 9 Jun 2016 20:40:46 +0200
-Message-ID: <5759B82E.5040801@metafoo.de>
-References: <1465493946-32594-1-git-send-email-lars@metafoo.de>
- <20160609174122.GB7510@sirena.org.uk>
+From: =?UTF-8?Q?Jo=C3=A3o_Paulo_Rechi_Vita?= <jprvita@gmail.com>
+Subject: AMD Carrizo HDMI audio
+Date: Thu, 9 Jun 2016 15:14:23 -0400
+Message-ID: <CA+A7VXXxM_5UAnm7RuXv3-53gci4BAYhcekT4yuOzAbs7OyEqg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id B298626070C
- for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2016 20:41:15 +0200 (CEST)
-In-Reply-To: <20160609174122.GB7510@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Alex Deucher <alexdeucher@gmail.com>, maruthi.srinivas.b@gmail.com
+Cc: alsa-devel@alsa-project.org, maruthi.bayyavarapu@amd.com, =?UTF-8?Q?Jo=C3=A3o_Paulo_Rechi_Vita?= <jprvita@endlessm.com>, dri-devel@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>, linux@endlessm.com
 List-Id: alsa-devel@alsa-project.org
 
-On 06/09/2016 07:41 PM, Mark Brown wrote:
-> On Thu, Jun 09, 2016 at 07:39:06PM +0200, Lars-Peter Clausen wrote:
->> Multiple devices from the ADAU family share the same PLL structure and
->> configuration register layout. Introduce a new helper module that can be
->> used to calculated the PLL configuration registers based on a specified
->> input frequency and the desired output frequency of the PLL.
-> 
-> Sounds like we may be heading towards an MFD with a clock driver here?
-
-Not at the moment, the PLL outputs are only used internally so it makes
-no sense to expose it through the CCF at the moment. The questions on
-IRC were more about how to replace the input clock configuration, which
-is currently done through the set_sysclk callbacks, with the CCF.
+SGVsbG8gQWxleCBhbmQgTWFydXRoaSwKCkknbSB0cnlpbmcgdG8gZ2V0IEhETUkgYXVkaW8gd29y
+a2luZyBvbiBhIEFNRCBDQVJSSVpPIGxhcHRvcCwgd2hpY2ggSQpiZWxpZXZlIG5lZWQgdGhlIEFD
+UCBjaGFuZ2VzIHdoaWNoIGdvdCBtZXJnZWQgaW50byBMaW51eCA0LjYuIEJ1dAp0ZXN0aW5nIHRo
+ZSB2NC42IHRhZywgYW1kX2FjcF9od19pbml0KCkgcmV0dXJucyAtRU5PREVWLCBiZWNhdXNlIGl0
+CnN1Y2NlZWRzIHRoZSAiaWYgKGFjcF9tb2RlICE9IEFDUF9NT0RFX0kyUykiIHRlc3QgaW4gYWNw
+X2h3LmMuIERvZXMKdGhpcyBtZWFuIHRoaXMgY2hpcCBkb2VzIG5vdCB1c2VzIEFDUCwgb3IgaXMg
+dGhlcmUgYW55dGhpbmcgZWxzZQptaXNzaW5nPwoKbHNwY2kgc2hvd3MgbWUgdGhlIGZvbGxvd2lu
+ZyBnZngvYXVkaW8gZGV2aWNlcyAoSSBiZWxpZXZlIHRoaXMgaXMgYQpkdWFsLWdwdSBtYWNoaW5l
+KToKCjAwOjAxLjAgVkdBIGNvbXBhdGlibGUgY29udHJvbGxlcjogQWR2YW5jZWQgTWljcm8gRGV2
+aWNlcyBbQU1EXSBuZWUKQVRJIERldmljZSA5ODc0IChyZXYgYzUpIChwcm9nLWlmIDAwIFtWR0Eg
+Y29udHJvbGxlcl0pCjAwOjAxLjEgQXVkaW8gZGV2aWNlOiBBZHZhbmNlZCBNaWNybyBEZXZpY2Vz
+IFtBTURdIG5lZSBBVEkgRGV2aWNlIDk4NDAKMDA6MDkuMiBBdWRpbyBkZXZpY2U6IEFkdmFuY2Vk
+IE1pY3JvIERldmljZXMgW0FNRF0gRGV2aWNlIDE1N2EKMDM6MDAuMCBEaXNwbGF5IGNvbnRyb2xs
+ZXI6IEFkdmFuY2VkIE1pY3JvIERldmljZXMgW0FNRF0gbmVlIEFUSSBTdW4KW1JhZGVvbiBIRCA4
+NjAwTSBTZXJpZXNdIChyZXYgZmYpCgpCb3RoIGFtZGdwdSBhbmQgcmFkZW9uIGdldCBhdXRvbWF0
+aWNhbGx5IHByb2JlZC4gU29ycnkgaWYgSSdtIG1pc3NpbmcKc29tZXRoaW5nIG9idmlvdXMgaGVy
+ZSwgSSdtIHF1aXRlIG5ldyB0byBkdWFsLWdwdSBtYWNoaW5lcy4KClRoYW5rcyBhbmQgYmVzdCBy
+ZWdhcmRzLAoKLS0KSm/Do28gUGF1bG8gUmVjaGkgVml0YQpodHRwOi8vYWJvdXQubWUvanBydml0
+YQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2
+ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9s
+aXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
