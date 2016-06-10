@@ -1,46 +1,58 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v5 2/7] ARM: OMAP3: hwmod data: Fix
-	McBSP2/3 sidetone data
-Date: Fri, 10 Jun 2016 05:08:30 -0700
-Message-ID: <20160610120830.GM22406@atomide.com>
-References: <20160530082350.24285-1-peter.ujfalusi@ti.com>
- <20160530082350.24285-3-peter.ujfalusi@ti.com>
+From: =?UTF-8?Q?Jo=C3=A3o_Paulo_Rechi_Vita?= <jprvita@gmail.com>
+Subject: Re: AMD Carrizo HDMI audio
+Date: Fri, 10 Jun 2016 11:40:16 -0400
+Message-ID: <CA+A7VXUd-ZHCQU5hSix8qstV1B_24ZG=kLtyuF9Esoh2T=4_mA@mail.gmail.com>
+References: <CA+A7VXXxM_5UAnm7RuXv3-53gci4BAYhcekT4yuOzAbs7OyEqg@mail.gmail.com>
+ <DM2PR12MB01408DED687CB29A2FACF914F75F0@DM2PR12MB0140.namprd12.prod.outlook.com>
+ <CA+A7VXXP6CvVZh2f__1p_Wtve238oNtCsGO8qE-EnQubhu2uiA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from muru.com (muru.com [72.249.23.125])
- by alsa0.perex.cz (Postfix) with ESMTP id 4845A26154F
- for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2016 14:08:35 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20160530082350.24285-3-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: devicetree@vger.kernel.org, paul@pwsan.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, t-kristo@ti.com, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, jarkko.nikula@bitmer.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <CA+A7VXXP6CvVZh2f__1p_Wtve238oNtCsGO8qE-EnQubhu2uiA@mail.gmail.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Cc: alsa-devel@alsa-project.org, "linux@endlessm.com" <linux@endlessm.com>, =?UTF-8?Q?Jo=C3=A3o_Paulo_Rechi_Vita?= <jprvita@endlessm.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-* Peter Ujfalusi <peter.ujfalusi@ti.com> [160530 01:26]:
-> The McBSPLP's sidetone main clock is the McBSPLP's ICLK, not FCLK as the
-> sidetone only receives the ICLK from the main McBSP module.
-> Since the McBSP and sidetone is using the very same clock from PRCM level
-> the sidetone must not have the prcm section to check the clock status since
-> the sidetone is only used when McBSP is already configured.
-> If two separate hwmods looking at the same bit and they would use
-> pm_runtime in nested way (as it must happen with McBSP and it's ST module)
-> the hwmod would warn, because the idlest will not match what it is expected
-> after enable/disable of the clocks.
-
-OK thanks for fixing this. I'm applying patches 2-7 into
-omap-for-v4.8/soc.
-
-Regards,
-
-Tony
+T24gOSBKdW5lIDIwMTYgYXQgMTU6MzIsIEpvw6NvIFBhdWxvIFJlY2hpIFZpdGEgPGpwcnZpdGFA
+Z21haWwuY29tPiB3cm90ZToKPiBPbiA5IEp1bmUgMjAxNiBhdCAxNToyNiwgRGV1Y2hlciwgQWxl
+eGFuZGVyIDxBbGV4YW5kZXIuRGV1Y2hlckBhbWQuY29tPiB3cm90ZToKPj4+IC0tLS0tT3JpZ2lu
+YWwgTWVzc2FnZS0tLS0tCj4+PiBGcm9tOiBKb8OjbyBQYXVsbyBSZWNoaSBWaXRhIFttYWlsdG86
+anBydml0YUBnbWFpbC5jb21dCj4+PiBTZW50OiBUaHVyc2RheSwgSnVuZSAwOSwgMjAxNiAzOjE0
+IFBNCj4+PiBUbzogQWxleCBEZXVjaGVyOyBtYXJ1dGhpLnNyaW5pdmFzLmJAZ21haWwuY29tCj4+
+PiBDYzogZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsgYWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnOyBEZXVjaGVyLAo+Pj4gQWxleGFuZGVyOyBCYXl5YXZhcmFwdSwgTWFydXRoaTsg
+Sm/Do28gUGF1bG8gUmVjaGkgVml0YTsKPj4+IGxpbnV4QGVuZGxlc3NtLmNvbQo+Pj4gU3ViamVj
+dDogQU1EIENhcnJpem8gSERNSSBhdWRpbwo+Pj4KPj4+IEhlbGxvIEFsZXggYW5kIE1hcnV0aGks
+Cj4+Pgo+Pj4gSSdtIHRyeWluZyB0byBnZXQgSERNSSBhdWRpbyB3b3JraW5nIG9uIGEgQU1EIENB
+UlJJWk8gbGFwdG9wLCB3aGljaCBJCj4+PiBiZWxpZXZlIG5lZWQgdGhlIEFDUCBjaGFuZ2VzIHdo
+aWNoIGdvdCBtZXJnZWQgaW50byBMaW51eCA0LjYuIEJ1dAo+Pj4gdGVzdGluZyB0aGUgdjQuNiB0
+YWcsIGFtZF9hY3BfaHdfaW5pdCgpIHJldHVybnMgLUVOT0RFViwgYmVjYXVzZSBpdAo+Pj4gc3Vj
+Y2VlZHMgdGhlICJpZiAoYWNwX21vZGUgIT0gQUNQX01PREVfSTJTKSIgdGVzdCBpbiBhY3BfaHcu
+Yy4gRG9lcwo+Pj4gdGhpcyBtZWFuIHRoaXMgY2hpcCBkb2VzIG5vdCB1c2VzIEFDUCwgb3IgaXMg
+dGhlcmUgYW55dGhpbmcgZWxzZQo+Pj4gbWlzc2luZz8KPj4KPj4gWW91ciBzeXN0ZW0gZG9lcyBu
+b3QgdXNlIEFDUC4gIEl0IHVzZXMgSERBIGF1ZGlvLiAgWW91J2xsIG5lZWQgdG8gdXNlIHRoZSBu
+ZXcgREFMIGRpc3BsYXkgY29kZSB3aGljaCBpcyBub3QgeWV0IHVwc3RyZWFtIGZvciBIRE1JIG9y
+IERQIGF1ZGlvIHN1cHBvcnQuICBZb3UgY2FuIGZpbmQgZGFsIHN1cHBvcnQgb24gbXkgZnJlZWRl
+c2t0b3AgdHJlZS4gIEUuZy4sCj4+IGh0dHBzOi8vY2dpdC5mcmVlZGVza3RvcC5vcmcvfmFnZDVm
+L2xpbnV4L2xvZy8/aD1kcm0tbmV4dC00Ljctd2lwLWRhbAo+Pgo+Cj4gVGhhbmtzIGZvciBzdWNo
+IGEgcXVpY2sgYW5zd2VyISBTbyB0aGF0IG1lYW5zIG5vIGF1ZGlvIG92ZXIgSERNSS9EUAo+IHdp
+dGhvdXQgREFMLCByaWdodD8gSXNuJ3QgYW55IGxlZ2FjeSBjb2RlIHRoYXQgY2FuIHRha2UgY2Fy
+ZSBvZiB0aGF0Pwo+IEknbGwgZ2l2ZSBpdCBhIHRyeSBvbiB5b3VyIGJyYW5jaCBhbmQgcmVwb3J0
+IGJhY2sgaWYgSSBoYXZlIGFueQo+IHByb2JsZW1zLgo+CgpTdGlsbCBubyBzb3VuZCB3aXRoIHRo
+ZSBicmFuY2ggeW91J3ZlIHBvaW50ZWQuIExvZ3MgY2FuIGJlIGZvdW5kIGhlcmUKaW4gY2FzZSB5
+b3UncmUgaW50ZXJlc3RlZDoKaHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vanBydml0YS83OTY2NTMy
+YzdhNGI2N2M3NDYyMWM5Mzc0ZTIwYTQxOAoKLS0KSm/Do28gUGF1bG8gUmVjaGkgVml0YQpodHRw
+Oi8vYWJvdXQubWUvanBydml0YQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVz
+a3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9k
+cmktZGV2ZWwK
