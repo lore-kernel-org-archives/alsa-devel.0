@@ -1,64 +1,31 @@
 From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Subject: RE: [RESEND PATCH v2 1/2] device property: Add function to search
- for named child of device
-Date: Fri, 10 Jun 2016 09:58:39 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A0337D46421B6@SW-EX-MBX01.diasemi.com>
-References: <cover.1464802265.git.Adam.Thomson.Opensource@diasemi.com>
- <7105258db927c65dfa41a8abeef4b9735871d023.1464802265.git.Adam.Thomson.Opensource@diasemi.com>
- <97f80018-7cc4-0a50-498d-89d27dfa2fd1@intel.com>
+Subject: RE: [PATCH 0/3] ASoC: da7219: Add ACPI initialisation support to
+ driver
+Date: Fri, 10 Jun 2016 10:18:45 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A0337D46421CE@SW-EX-MBX01.diasemi.com>
+References: <cover.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <97f80018-7cc4-0a50-498d-89d27dfa2fd1@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
 Content-Language: en-US
-Sender: linux-acpi-owner@vger.kernel.org
-To: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>, Jaroslav Kysela <perex@perex.cz>, Mika Westerberg <mika.westerberg@linux.intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Robert Moore <robert.moore@intel.com>, Lv Zheng <lv.zheng@intel.com>, Len Brown <lenb@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "devel@acpica.org" <devel@acpica.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Support Opensource <Support.Opensource@diasemi.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Suravee Suthikulpanit <Suravee.Suthikulpanit@amd.com>, Bjorn Helgaas <bhelgaas@google.com>, Hanjun Guo <hanjun.guo@linaro.org>, Andrew Morton <akpm@linux-foundation.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Support Opensource <Support.Opensource@diasemi.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTAgSnVuZSAyMDE2IDAwOjExLCBSYWZhZWwgSi4gV3lzb2NraSB3cm90ZToNCg0KPiBGb3Ig
-c29tZSByZWFzb24gdGhhdCBkaWRuJ3QgbWFrZSBpdCBpbnRvIHRoZSBsaW51eC1hY3BpIGxpc3Qs
-IG9yIGF0DQo+IGxlYXN0IEkgY2FuJ3Qgc2VlIGl0IHRoZXJlLg0KDQpUaGF0J3Mgc3RyYW5nZS4g
-SSdtIG5vdCBhIHN1YnNjcmliZXIgdG8gdGhhdCBtYWlsaW5nIGxpc3QsIGJ1dCBJIGFzc3VtZSB0
-aGF0DQpzaG91bGRuJ3QgbWF0dGVyIGhlcmU/IFN0cmFuZ2VseSB0aG91Z2ggdGhlIG9ubHkgbWFp
-bGluZyBsaXN0IHRoZXNlIHNlZW0gdG8gaGF2ZQ0KbWFkZSBpdCB0byBpcyB0aGUgQUxTQSBvbmUu
-IDooIFdpbGwgc2VlIGlmIEkgY2FuIGZpbmQgb3V0IHdoeSBhcyBJJ3ZlIG5vdA0Kc2VlbiB0aGlz
-IHByb2JsZW0gYmVmb3JlLg0KDQo+ID4gKyAqIGRldmljZV9nZXRfbmFtZWRfY2hpbGRfbm9kZSAt
-IFJldHVybiBmaXJzdCBtYXRjaGluZyBuYW1lZCBjaGlsZCBub2RlDQo+IGhhbmRsZQ0KPiA+ICsg
-KiBAZGV2OiBEZXZpY2UgdG8gZmluZCB0aGUgbmFtZWQgY2hpbGQgbm9kZSBmb3IuDQo+ID4gKyAq
-IEBjaGlsZG5hbWU6IFN0cmluZyB0byBtYXRjaCBjaGlsZCBub2RlIG5hbWUgYWdhaW5zdC4NCj4g
-PiArICovDQo+ID4gK3N0cnVjdCBmd25vZGVfaGFuZGxlICpkZXZpY2VfZ2V0X25hbWVkX2NoaWxk
-X25vZGUoc3RydWN0IGRldmljZSAqZGV2LA0KPiA+ICsJCQkJCQkgIGNvbnN0IGNoYXIgKmNoaWxk
-bmFtZSkNCj4gPiArew0KPiA+ICsJc3RydWN0IGZ3bm9kZV9oYW5kbGUgKmNoaWxkOw0KPiA+ICsN
-Cj4gPiArCS8qDQo+ID4gKwkgKiBGaW5kIGZpcnN0IG1hdGNoaW5nIG5hbWVkIGNoaWxkIG5vZGUg
-b2YgdGhpcyBkZXZpY2UuDQo+ID4gKwkgKiBGb3IgQUNQSSB0aGlzIHdpbGwgYmUgYSBkYXRhIG9u
-bHkgc3ViLW5vZGUuDQo+ID4gKwkgKi8NCj4gPiArCWRldmljZV9mb3JfZWFjaF9jaGlsZF9ub2Rl
-KGRldiwgY2hpbGQpIHsNCj4gPiArCQlpZiAoaXNfb2Zfbm9kZShjaGlsZCkpIHsNCj4gPiArCQkJ
-aWYgKCFzdHJjYXNlY21wKHRvX29mX25vZGUoY2hpbGQpLT5uYW1lLCBjaGlsZG5hbWUpKQ0KPg0K
-PiBXaHkgZG8geW91IHVzZSBzdHJjYXNlY21wKCkgaGVyZT8NCg0KRFQgbm9kZSBuYW1lcyBhcmUg
-Y2FzZSBpbnNlbnNpdGl2ZS4gVGhlIG9mLmggaGVhZGVyIGRvZXMgcHJvdmlkZSBhIGhlbHBlciBt
-YWNybw0Kd2hpY2ggaXMgZXF1aXZhbGVudCB0byB0aGlzLCBidXQgdGhhdCBtYWNybyBpcyBwYXJ0
-IG9mIHRoZSAnI2lmZGVmIENPTkZJR19PRicNCmJsb2NrLiBJZiBJIHdlcmUgdG8gdXNlIGl0IHRo
-ZW4gaXQgd291bGQgY2F1c2Ugbm9uLURUIGJ1aWxkcyB0byBmYWlsLiBJIG9wdGVkDQpmb3Igc3Ry
-Y2FzZWNtcCgpIGRpcmVjdGx5IGFzIEkgZGlkbid0IHRoaW5rIGZvciBqdXN0IHRoaXMgb25lIHNj
-ZW5hcmlvIGl0IG1hZGUNCnNlbnNlIHRvIHJlb3JnYW5pc2UgdGhlIG9mLmggaGVhZGVyIHdpdGgg
-cmVnYXJkcyB0byB0aGUgaGVscGVyIG1hY3Jvcy4gT2YgY291cnNlDQppZiB0aGVyZSBhcmUgb3Ro
-ZXIgb3BpbmlvbnMgb24gdGhpcyB0aGVuIGFtIGhhcHB5IHRvIGxpc3Rlbi4NCg0KPiA+ICtzdGF0
-aWMgaW5saW5lIGJvb2wgYWNwaV9kYXRhX25vZGVfbWF0Y2goc3RydWN0IGZ3bm9kZV9oYW5kbGUg
-KmZ3bm9kZSwNCj4gPiArCQkJCQljb25zdCBjaGFyICpuYW1lKQ0KPiA+ICt7DQo+ID4gKwlyZXR1
-cm4gaXNfYWNwaV9kYXRhX25vZGUoZndub2RlKSA/DQo+ID4gKwkJKCFzdHJjYXNlY21wKHRvX2Fj
-cGlfZGF0YV9ub2RlKGZ3bm9kZSktPm5hbWUsIG5hbWUpKSA6IGZhbHNlOw0KPiA+ICt9DQo+DQo+
-IElzIHRoZXJlIGFueSBwYXJ0aWN1bGFyIHJlYXNvbiB0byBpbnRyb2R1Y2UgdGhpcyBmdW5jdGlv
-biBpbnN0ZWFkIG9mDQo+IGRvaW5nIHRoZSB0ZXN0IGluIGRldmljZV9nZXRfbmFtZWRfY2hpbGRf
-bm9kZSgpIGRpcmVjdGx5Pw0KDQpBZ2FpbiB0aGlzIGlzIGEgYnVpbGQgcmVsYXRlZCBkZXNpZ24g
-b3B0aW9uIChJIG1lbnRpb24gaXQgaW4gdGhlIHBhdGNoDQpkZXNjcmlwdGlvbikuIEluIGEgbm9u
-LURUIGJ1aWxkIHRoZXJlIGlzIG5vIGFjY2VzcyB0byB0aGUgYWNwaV9kYXRhX25vZGUgc3RydWN0
-DQoocmV0dXJuZWQgYnkgdG9fYWNwaV9kYXRhX25vZGUoKSBjYWxsKSBzbyBpZiB3ZSBjYWxsIHRo
-aXMgaW4gdGhhdCBzY2VuYXJpbyB0aGVuDQp0aGUgYnVpbGQgd2lsbCBmYWlsLiBJIGNvdWxkIGhh
-dmUgYWRkZWQgc29tZSAjaWZkZWZzIHRvIHRoZQ0KZGV2aWNlX2dldF9uYW1lZF9jaGlsZF9ub2Rl
-KCkgZnVuY3Rpb24gZGlyZWN0bHksIGJ1dCB0aGF0IHdvdWxkIGhhdmUgYmVlbiBhIGJpdA0KbWVz
-c3kgSSB0aGluay4gVG8gbWUgaXQgbWFkZSBtb3JlIHNlbnNlIHRvIGhhdmUgdGhpcyBoZWxwZXIg
-ZnVuY3Rpb24gd2hpY2ggY2FuDQpiZSBjYWxsZWQgcmVnYXJkbGVzcyBvZiBidWlsZCB0eXBlLCBh
-bmQgZm9yIG5vbi1BQ1BJIGJ1aWxkcyBpdHMgZGVmaW5pdGlvbg0KYWx3YXlzIHJldHVybnMgZmFs
-c2UuDQo=
+T24gMTAgSnVuZSAyMDE2IDExOjE2LCBBZGFtIFRob21zb24gd3JvdGU6DQoNCj4gVGhpcyBwYXRj
+aCBzZXQgdXBkYXRlcyB0aGUgZHJpdmVyIHRvIHVzZSBnZW5lcmljIGRldmljZSBwcm9wZXJ0eSAm
+IGZ3bm9kZQ0KPiByZWxhdGVkIGZ1bmN0aW9ucyB0byByZWFkIGluIGVpdGhlciBEVCBhbmQgQUNQ
+SSBkYXRhIGZvciBkcml2ZXIgaW5pdGlhbGlzYXRpb24uDQo+IA0KPiBDaGFuZ2VzIGFyZSBiYXNl
+ZCBvbiB2NC42LXJjNiBMaW51eCBLZXJuZWwuDQo+IA0KPiBBZGFtIFRob21zb24gKDMpOg0KPiAg
+IEFTb0M6IGRhNzIxOTogQ29udmVydCBkcml2ZXIgdG8gdXNlIGdlbmVyaWMgZGV2aWNlL2Z3bm9k
+ZSBmdW5jdGlvbnMNCj4gICBBU29DOiBkYTcyMTk6IEFkZCBBQ1BJIHBhcnNpbmcgc3VwcG9ydA0K
+PiAgIEFTb0M6IGRhNzIxOTogQWRkIGluaXRpYWwgQUNQSSBpZCBmb3IgZGV2aWNlDQo+IA0KPiAg
+c291bmQvc29jL2NvZGVjcy9kYTcyMTktYWFkLmMgfCA5NiArKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrLS0tLS0tLS0tDQo+IC0tLQ0KPiAgc291bmQvc29jL2NvZGVjcy9kYTcyMTkuYyAg
+ICAgfCAzNSArKysrKysrKysrLS0tLS0tDQo+ICAyIGZpbGVzIGNoYW5nZWQsIDkxIGluc2VydGlv
+bnMoKyksIDQwIGRlbGV0aW9ucygtKQ0KPiANCj4gLS0NCj4gMS45LjMNCg0KUExFQVNFIElHTk9S
+RSBUSElTIFBBVENIIFNFVCBNQUlMLiBBcG9sb2dpZXMsIGZpbmdlciB0cm91YmxlIGZyb20gbXkg
+ZW5kIDooDQo=
