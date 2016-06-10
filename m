@@ -1,28 +1,36 @@
-From: Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH v5 1/7] ARM: dts: omap3: Add clocks to McBSP nodes
-Date: Fri, 10 Jun 2016 04:34:40 -0700
-Message-ID: <20160610113440.GD22406@atomide.com>
-References: <20160530082350.24285-1-peter.ujfalusi@ti.com>
- <20160530082350.24285-2-peter.ujfalusi@ti.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH v1 06/14] ARM: dts: omap5-board-common: Add
+ pdmclk binding for audio
+Date: Fri, 10 Jun 2016 04:36:40 -0700
+Message-ID: <20160610113639.GE22406@atomide.com>
+References: <20160530085522.30398-1-peter.ujfalusi@ti.com>
+ <20160530085522.30398-7-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from muru.com (muru.com [72.249.23.125])
+ by alsa0.perex.cz (Postfix) with ESMTP id A559026154F
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2016 13:36:44 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20160530082350.24285-2-peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-Cc: jarkko.nikula-FVTvWyuFUl3QT0dZR+AlfA@public.gmane.org, paul-DWxLp4Yu+b8AvxtiuMwx3w@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, t-kristo-l0cyMroinI0@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+In-Reply-To: <20160530085522.30398-7-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, mturquette@baylibre.com, sboyd@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, t-kristo@ti.com, robh+dt@kernel.org, broonie@kernel.org, linux-omap@vger.kernel.org, lee.jones@linaro.org, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-* Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org> [160530 01:26]:
-> Add clock properties to the McBSP nodes. McBSP2 and 3 need to have ick also
-> since the Sidetone block of these modules are operating using the McBSP
-> interface clock.
+* Peter Ujfalusi <peter.ujfalusi@ti.com> [160530 01:58]:
+> The twl6040 codec is generating the pdmclk, which is used by the McPDM as
+> functional clock.
 
-Applying this patch into omap-for-v4.8/dt thanks.
+Applying patches 6 - 10 into omap-for-v4.8/dt thanks.
 
 Tony
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
