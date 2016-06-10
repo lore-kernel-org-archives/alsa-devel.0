@@ -1,58 +1,71 @@
-From: =?UTF-8?Q?Jo=C3=A3o_Paulo_Rechi_Vita?= <jprvita@gmail.com>
-Subject: Re: AMD Carrizo HDMI audio
-Date: Fri, 10 Jun 2016 11:40:16 -0400
-Message-ID: <CA+A7VXUd-ZHCQU5hSix8qstV1B_24ZG=kLtyuF9Esoh2T=4_mA@mail.gmail.com>
-References: <CA+A7VXXxM_5UAnm7RuXv3-53gci4BAYhcekT4yuOzAbs7OyEqg@mail.gmail.com>
- <DM2PR12MB01408DED687CB29A2FACF914F75F0@DM2PR12MB0140.namprd12.prod.outlook.com>
- <CA+A7VXXP6CvVZh2f__1p_Wtve238oNtCsGO8qE-EnQubhu2uiA@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <CA+A7VXXP6CvVZh2f__1p_Wtve238oNtCsGO8qE-EnQubhu2uiA@mail.gmail.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Cc: alsa-devel@alsa-project.org, "linux@endlessm.com" <linux@endlessm.com>, =?UTF-8?Q?Jo=C3=A3o_Paulo_Rechi_Vita?= <jprvita@endlessm.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 0/2] ASoC: Add support to Qualcomm msm8916-wcd codec
+Date: Fri, 10 Jun 2016 19:18:43 +0100
+Message-ID: <1465582725-30183-1-git-send-email-srinivas.kandagatla@linaro.org>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kwestfie@codeaurora.org, plai@codeaurora.org, linux-arm-msm@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gOSBKdW5lIDIwMTYgYXQgMTU6MzIsIEpvw6NvIFBhdWxvIFJlY2hpIFZpdGEgPGpwcnZpdGFA
-Z21haWwuY29tPiB3cm90ZToKPiBPbiA5IEp1bmUgMjAxNiBhdCAxNToyNiwgRGV1Y2hlciwgQWxl
-eGFuZGVyIDxBbGV4YW5kZXIuRGV1Y2hlckBhbWQuY29tPiB3cm90ZToKPj4+IC0tLS0tT3JpZ2lu
-YWwgTWVzc2FnZS0tLS0tCj4+PiBGcm9tOiBKb8OjbyBQYXVsbyBSZWNoaSBWaXRhIFttYWlsdG86
-anBydml0YUBnbWFpbC5jb21dCj4+PiBTZW50OiBUaHVyc2RheSwgSnVuZSAwOSwgMjAxNiAzOjE0
-IFBNCj4+PiBUbzogQWxleCBEZXVjaGVyOyBtYXJ1dGhpLnNyaW5pdmFzLmJAZ21haWwuY29tCj4+
-PiBDYzogZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsgYWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnOyBEZXVjaGVyLAo+Pj4gQWxleGFuZGVyOyBCYXl5YXZhcmFwdSwgTWFydXRoaTsg
-Sm/Do28gUGF1bG8gUmVjaGkgVml0YTsKPj4+IGxpbnV4QGVuZGxlc3NtLmNvbQo+Pj4gU3ViamVj
-dDogQU1EIENhcnJpem8gSERNSSBhdWRpbwo+Pj4KPj4+IEhlbGxvIEFsZXggYW5kIE1hcnV0aGks
-Cj4+Pgo+Pj4gSSdtIHRyeWluZyB0byBnZXQgSERNSSBhdWRpbyB3b3JraW5nIG9uIGEgQU1EIENB
-UlJJWk8gbGFwdG9wLCB3aGljaCBJCj4+PiBiZWxpZXZlIG5lZWQgdGhlIEFDUCBjaGFuZ2VzIHdo
-aWNoIGdvdCBtZXJnZWQgaW50byBMaW51eCA0LjYuIEJ1dAo+Pj4gdGVzdGluZyB0aGUgdjQuNiB0
-YWcsIGFtZF9hY3BfaHdfaW5pdCgpIHJldHVybnMgLUVOT0RFViwgYmVjYXVzZSBpdAo+Pj4gc3Vj
-Y2VlZHMgdGhlICJpZiAoYWNwX21vZGUgIT0gQUNQX01PREVfSTJTKSIgdGVzdCBpbiBhY3BfaHcu
-Yy4gRG9lcwo+Pj4gdGhpcyBtZWFuIHRoaXMgY2hpcCBkb2VzIG5vdCB1c2VzIEFDUCwgb3IgaXMg
-dGhlcmUgYW55dGhpbmcgZWxzZQo+Pj4gbWlzc2luZz8KPj4KPj4gWW91ciBzeXN0ZW0gZG9lcyBu
-b3QgdXNlIEFDUC4gIEl0IHVzZXMgSERBIGF1ZGlvLiAgWW91J2xsIG5lZWQgdG8gdXNlIHRoZSBu
-ZXcgREFMIGRpc3BsYXkgY29kZSB3aGljaCBpcyBub3QgeWV0IHVwc3RyZWFtIGZvciBIRE1JIG9y
-IERQIGF1ZGlvIHN1cHBvcnQuICBZb3UgY2FuIGZpbmQgZGFsIHN1cHBvcnQgb24gbXkgZnJlZWRl
-c2t0b3AgdHJlZS4gIEUuZy4sCj4+IGh0dHBzOi8vY2dpdC5mcmVlZGVza3RvcC5vcmcvfmFnZDVm
-L2xpbnV4L2xvZy8/aD1kcm0tbmV4dC00Ljctd2lwLWRhbAo+Pgo+Cj4gVGhhbmtzIGZvciBzdWNo
-IGEgcXVpY2sgYW5zd2VyISBTbyB0aGF0IG1lYW5zIG5vIGF1ZGlvIG92ZXIgSERNSS9EUAo+IHdp
-dGhvdXQgREFMLCByaWdodD8gSXNuJ3QgYW55IGxlZ2FjeSBjb2RlIHRoYXQgY2FuIHRha2UgY2Fy
-ZSBvZiB0aGF0Pwo+IEknbGwgZ2l2ZSBpdCBhIHRyeSBvbiB5b3VyIGJyYW5jaCBhbmQgcmVwb3J0
-IGJhY2sgaWYgSSBoYXZlIGFueQo+IHByb2JsZW1zLgo+CgpTdGlsbCBubyBzb3VuZCB3aXRoIHRo
-ZSBicmFuY2ggeW91J3ZlIHBvaW50ZWQuIExvZ3MgY2FuIGJlIGZvdW5kIGhlcmUKaW4gY2FzZSB5
-b3UncmUgaW50ZXJlc3RlZDoKaHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vanBydml0YS83OTY2NTMy
-YzdhNGI2N2M3NDYyMWM5Mzc0ZTIwYTQxOAoKLS0KSm/Do28gUGF1bG8gUmVjaGkgVml0YQpodHRw
-Oi8vYWJvdXQubWUvanBydml0YQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVz
-a3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9k
-cmktZGV2ZWwK
+This patchset aims at adding msm8916-wcd codec support.
+msm8916-wcd codec is found in Qualcomm msm8916 and apq8016 processors.
+This codec IP is split in to two parts(Digital & Analog), Analog part
+is integrated in to PMIC PM8916 and the digital part is integrated into
+Application processor. Register access to the analog part is done via
+SPMI interface to PMIC, and registers on the Application processor are
+memory mapped. Data transfer between Analog and Digital Die is done via
+a internal bus called PDM.
+
+Most of this driver is ported from downstream Andriod v3.10 kernel.
+Jack support and Headset button detection code is not added in to this series.
+
+This codec support:
+ - 3 Microphones: Primary Mic(Handset mic), Headset Mic and Secondary Mic.
+ - 2 Digital Microphones.
+ - 2 Mic Bias Circuits.
+ - Earpiece
+ - Headset
+ - Loud Speaker.
+ - Jack Detect.
+ - Headset Button detection circuit.
+
+Tested this code on v4.6-rc2 with lpass driver capture support patches for
+Headset (Mic and speakers), Secondary Mic and Loudspeaker on DB410C.
+DMIC should work too.
+
+Thanks,
+srini
+
+Changes since RFC v2:
+ - Fixed error handling on regluator_enable suggested by Kenneth.
+ - Fixed compatible strings suggested by Kenneth
+ - make max/min rates inline with actual supported rates,
+ 	spotted by Kenneth
+ - Few minor suggestions by Kenneth.
+
+Changes since RFC v1 (https://lkml.org/lkml/2016/2/16/710)
+- Lot of code cleanup as suggest by Mark Brown.
+- Fixed bindings as suggested by Mark Rutland.
+- merged all the patches to one as spliting the patches did not help review.
+
+Srinivas Kandagatla (2):
+  ASoC: msm8916: Add codec Device Tree bindings.
+  ASoC: msm8916: Add msm8916-wcd codec driver
+
+ .../devicetree/bindings/sound/qcom,msm8916-wcd.txt |  103 ++
+ include/dt-bindings/sound/msm8916-wcd.h            |    7 +
+ sound/soc/codecs/Kconfig                           |    4 +
+ sound/soc/codecs/Makefile                          |    3 +-
+ sound/soc/codecs/msm8916-wcd-registers.h           |  710 +++++++++
+ sound/soc/codecs/msm8916-wcd.c                     | 1575 ++++++++++++++++++++
+ sound/soc/codecs/msm8916-wcd.h                     |  308 ++++
+ 7 files changed, 2709 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,msm8916-wcd.txt
+ create mode 100644 include/dt-bindings/sound/msm8916-wcd.h
+ create mode 100644 sound/soc/codecs/msm8916-wcd-registers.h
+ create mode 100644 sound/soc/codecs/msm8916-wcd.c
+ create mode 100644 sound/soc/codecs/msm8916-wcd.h
+
+--
+2.8.3
