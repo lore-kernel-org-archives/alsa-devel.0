@@ -1,31 +1,28 @@
-From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Subject: RE: [PATCH 0/3] ASoC: da7219: Add ACPI initialisation support to
- driver
-Date: Fri, 10 Jun 2016 10:18:45 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A0337D46421CE@SW-EX-MBX01.diasemi.com>
-References: <cover.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
+From: Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: [PATCH v5 1/7] ARM: dts: omap3: Add clocks to McBSP nodes
+Date: Fri, 10 Jun 2016 04:34:40 -0700
+Message-ID: <20160610113440.GD22406@atomide.com>
+References: <20160530082350.24285-1-peter.ujfalusi@ti.com>
+ <20160530082350.24285-2-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1462285398.git.Adam.Thomson.Opensource@diasemi.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Support Opensource <Support.Opensource@diasemi.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20160530082350.24285-2-peter.ujfalusi-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
+Cc: jarkko.nikula-FVTvWyuFUl3QT0dZR+AlfA@public.gmane.org, paul-DWxLp4Yu+b8AvxtiuMwx3w@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, t-kristo-l0cyMroinI0@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTAgSnVuZSAyMDE2IDExOjE2LCBBZGFtIFRob21zb24gd3JvdGU6DQoNCj4gVGhpcyBwYXRj
-aCBzZXQgdXBkYXRlcyB0aGUgZHJpdmVyIHRvIHVzZSBnZW5lcmljIGRldmljZSBwcm9wZXJ0eSAm
-IGZ3bm9kZQ0KPiByZWxhdGVkIGZ1bmN0aW9ucyB0byByZWFkIGluIGVpdGhlciBEVCBhbmQgQUNQ
-SSBkYXRhIGZvciBkcml2ZXIgaW5pdGlhbGlzYXRpb24uDQo+IA0KPiBDaGFuZ2VzIGFyZSBiYXNl
-ZCBvbiB2NC42LXJjNiBMaW51eCBLZXJuZWwuDQo+IA0KPiBBZGFtIFRob21zb24gKDMpOg0KPiAg
-IEFTb0M6IGRhNzIxOTogQ29udmVydCBkcml2ZXIgdG8gdXNlIGdlbmVyaWMgZGV2aWNlL2Z3bm9k
-ZSBmdW5jdGlvbnMNCj4gICBBU29DOiBkYTcyMTk6IEFkZCBBQ1BJIHBhcnNpbmcgc3VwcG9ydA0K
-PiAgIEFTb0M6IGRhNzIxOTogQWRkIGluaXRpYWwgQUNQSSBpZCBmb3IgZGV2aWNlDQo+IA0KPiAg
-c291bmQvc29jL2NvZGVjcy9kYTcyMTktYWFkLmMgfCA5NiArKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrLS0tLS0tLS0tDQo+IC0tLQ0KPiAgc291bmQvc29jL2NvZGVjcy9kYTcyMTkuYyAg
-ICAgfCAzNSArKysrKysrKysrLS0tLS0tDQo+ICAyIGZpbGVzIGNoYW5nZWQsIDkxIGluc2VydGlv
-bnMoKyksIDQwIGRlbGV0aW9ucygtKQ0KPiANCj4gLS0NCj4gMS45LjMNCg0KUExFQVNFIElHTk9S
-RSBUSElTIFBBVENIIFNFVCBNQUlMLiBBcG9sb2dpZXMsIGZpbmdlciB0cm91YmxlIGZyb20gbXkg
-ZW5kIDooDQo=
+* Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org> [160530 01:26]:
+> Add clock properties to the McBSP nodes. McBSP2 and 3 need to have ick also
+> since the Sidetone block of these modules are operating using the McBSP
+> interface clock.
+
+Applying this patch into omap-for-v4.8/dt thanks.
+
+Tony
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
