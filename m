@@ -1,14 +1,14 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
-Date: Sun, 12 Jun 2016 00:51:07 +0200
+Date: Sun, 12 Jun 2016 00:53:03 +0200
 From: Henrik Austad <henrik@austad.us>
-Message-ID: <20160611225107.GD10685@sisyphus.home.austad.us>
-References: <1465683741-20390-2-git-send-email-henrik@austad.us>
- <20160611.153510.1132155249275383253.davem@davemloft.net>
- <20160611224728.GA10685@sisyphus.home.austad.us>
- <20160611.154942.1952550958882932442.davem@davemloft.net>
+Message-ID: <20160611225303.GE10685@sisyphus.home.austad.us>
+References: <1465683741-20390-1-git-send-email-henrik@austad.us>
+ <1465683741-20390-3-git-send-email-henrik@austad.us>
 MIME-Version: 1.0
-In-Reply-To: <20160611.154942.1952550958882932442.davem@davemloft.net>
-Subject: Re: [alsa-devel] [very-RFC 1/8] TSN: add documentation
+Content-Disposition: inline
+In-Reply-To: <1465683741-20390-3-git-send-email-henrik@austad.us>
+Subject: Re: [alsa-devel] [very-RFC 2/8] TSN: Add the standard formerly
+ known as AVB to the kernel
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -16,70 +16,151 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7555782453318546862=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: henrk@austad.us, linux-kernel@vger.kernel.org, haustad@cisco.com, netdev@vger.kernel.org, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
+Cc: netdev@vger.kernel.org, henrk@austad.us, "David S. Miller" <davem@davemloft.net>, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
 List-ID: <alsa-devel@alsa-project.org>
 
+clearing up netdev-typo
 
---===============7555782453318546862==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="neYutvxvOLaeuPCA"
-Content-Disposition: inline
+On Sun, Jun 12, 2016 at 12:22:15AM +0200, Henrik Austad wrote:
+> TSN provides a mechanism to create reliable, jitter-free, low latency
+> guaranteed bandwidth links over a local network. It does this by
+> reserving a path through the network. Support for TSN must be found in
+> both the NIC as well as in the network itself.
+> 
+> This adds required hooks into netdev_ops so that the core TSN driver can
+> use this when configuring a new NIC or setting up a new link.
+> 
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Signed-off-by: Henrik Austad <henrik@austad.us>
+> ---
+>  include/linux/netdevice.h | 32 ++++++++++++++++++++++++++++++++
+>  net/Kconfig               |  1 +
+>  net/tsn/Kconfig           | 32 ++++++++++++++++++++++++++++++++
+>  3 files changed, 65 insertions(+)
+>  create mode 100644 net/tsn/Kconfig
+> 
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index f45929c..de025eb 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -109,6 +109,13 @@ enum netdev_tx {
+>  };
+>  typedef enum netdev_tx netdev_tx_t;
+>  
+> +#if IS_ENABLED(CONFIG_TSN)
+> +enum sr_class {
+> +	SR_CLASS_A = 1,
+> +	SR_CLASS_B = 2,
+> +};
+> +#endif
+> +
+>  /*
+>   * Current order: NETDEV_TX_MASK > NET_XMIT_MASK >= 0 is significant;
+>   * hard_start_xmit() return < NET_XMIT_MASK means skb was consumed.
+> @@ -902,6 +909,22 @@ struct tc_to_netdev {
+>   *
+>   * void (*ndo_poll_controller)(struct net_device *dev);
+>   *
+> + *	TSN functions (if CONFIG_TSN)
+> + *
+> + * int (*ndo_tsn_capable)(struct net_device *dev);
+> + *	If a particular device is capable of sustaining TSN traffic
+> + *	provided current configuration
+> + * int (*ndo_tsn_link_configure)(struct net_device *dev,
+> + *				 enum sr_class class,
+> + *				 u16 framesize,
+> + *				 u16 vid);
+> + *     - When a new TSN link is either added or removed, this is called to
+> + *       update the bandwidth for the particular stream-class
+> + *     - The framesize is the size of the _entire_ frame, not just the
+> + *       payload since the full size is required to allocate bandwidth through
+> + *       the credit based shaper in the NIC
+> + *     - the vlan_id is the configured vlan for TSN in this session.
+> + *
+>   *	SR-IOV management functions.
+>   * int (*ndo_set_vf_mac)(struct net_device *dev, int vf, u8* mac);
+>   * int (*ndo_set_vf_vlan)(struct net_device *dev, int vf, u16 vlan, u8 qos);
+> @@ -1148,6 +1171,15 @@ struct net_device_ops {
+>  #ifdef CONFIG_NET_RX_BUSY_POLL
+>  	int			(*ndo_busy_poll)(struct napi_struct *dev);
+>  #endif
+> +
+> +#if IS_ENABLED(CONFIG_TSN)
+> +	int			(*ndo_tsn_capable)(struct net_device *dev);
+> +	int			(*ndo_tsn_link_configure)(struct net_device *dev,
+> +							  enum sr_class class,
+> +							  u16 framesize,
+> +							  u16 vid);
+> +#endif	/* CONFIG_TSN */
+> +
+>  	int			(*ndo_set_vf_mac)(struct net_device *dev,
+>  						  int queue, u8 *mac);
+>  	int			(*ndo_set_vf_vlan)(struct net_device *dev,
+> diff --git a/net/Kconfig b/net/Kconfig
+> index ff40562..fa9f691 100644
+> --- a/net/Kconfig
+> +++ b/net/Kconfig
+> @@ -215,6 +215,7 @@ source "net/802/Kconfig"
+>  source "net/bridge/Kconfig"
+>  source "net/dsa/Kconfig"
+>  source "net/8021q/Kconfig"
+> +source "net/tsn/Kconfig"
+>  source "net/decnet/Kconfig"
+>  source "net/llc/Kconfig"
+>  source "net/ipx/Kconfig"
+> diff --git a/net/tsn/Kconfig b/net/tsn/Kconfig
+> new file mode 100644
+> index 0000000..1fc3c1d
+> --- /dev/null
+> +++ b/net/tsn/Kconfig
+> @@ -0,0 +1,32 @@
+> +#
+> +# Configuration for 802.1 Time Sensitive Networking (TSN)
+> +#
+> +
+> +config TSN
+> +	tristate "802.1 TSN Support"
+> +	depends on VLAN_8021Q && PTP_1588_CLOCK && CONFIGFS_FS
+> +	---help---
+> +	  Select this if you want to enable TSN on capable interfaces.
+> +
+> +	  TSN allows you to set up deterministic links on your LAN (only
+> +	  L2 is currently supported). Once loaded, the driver will probe
+> +	  all available interfaces if they are capable of supporting TSN
+> +	  links.
+> +
+> +	  Once loaded, a directory in configfs called tsn/ will expose
+> +	  the capable NICs and allow userspace to create
+> +	  links. Userspace must provide us with a StreamID as well as
+> +	  reserving bandwidth through the network and once this is done,
+> +	  a new link can be created by issuing a mkdir() in configfs and
+> +	  updating the attributes for the new link.
+> +
+> +	  TSN itself does not produce nor consume data, it is dependent
+> +	  upon 'shims' doing this, which can be virtually anything. ALSA
+> +	  is a good candidate.
+> +
+> +	  For more information, refer to the TSN-documentation in the
+> +	  kernel documentation repository.
+> +
+> +	  The resulting module will be called 'tsn'
+> +
+> +	  If unsure, say N.
+> -- 
+> 2.7.4
+> 
 
-
---neYutvxvOLaeuPCA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, Jun 11, 2016 at 03:49:42PM -0700, David Miller wrote:
-> From: Henrik Austad <henrik@austad.us>
-> Date: Sun, 12 Jun 2016 00:47:28 +0200
->=20
-> > What would be the best approach? Resend series to netdev@vger? I don't =
-want=20
-> > to spam too many lists either.
->=20
-> Resend to all the lists.
-
-ok, I'll do that then.
-
-Thanks
-
---=20
+-- 
 Henrik Austad
-
---neYutvxvOLaeuPCA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAldcldsACgkQ6k5VT6v45lkKvwCg0kQNMh4eWx8yCskvVYaA8rOq
-0jAAn06e1PvLgBRbq9d7YC5pQXh9g8Mg
-=hqrh
------END PGP SIGNATURE-----
-
---neYutvxvOLaeuPCA--
 --
 To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
-
-
---===============7555782453318546862==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============7555782453318546862==--
---
-To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
