@@ -1,11 +1,10 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
 From: Henrik Austad <henrik@austad.us>
-Date: Sun, 12 Jun 2016 01:01:30 +0200
-Message-Id: <1465686096-22156-3-git-send-email-henrik@austad.us>
+Date: Sun, 12 Jun 2016 01:01:29 +0200
+Message-Id: <1465686096-22156-2-git-send-email-henrik@austad.us>
 In-Reply-To: <1465686096-22156-1-git-send-email-henrik@austad.us>
 References: <1465686096-22156-1-git-send-email-henrik@austad.us>
-Subject: [alsa-devel] [very-RFC 2/8] TSN: Add the standard formerly known as
-	AVB to the kernel
+Subject: [alsa-devel] [very-RFC 1/8] TSN: add documentation
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,136 +18,214 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: netdev@vger.kernel.org, Henrik Austad <henrik@austad.us>, alsa-devel@vger.kernel.org, henrk@austad.us, "David S. Miller" <davem@davemloft.net>, linux-media@vger.kernel.org
+Cc: netdev@vger.kernel.org, alsa-devel@vger.kernel.org, Henrik Austad <haustad@cisco.com>, henrk@austad.us, "David S. Miller" <davem@davemloft.net>, linux-media@vger.kernel.org
 List-ID: <alsa-devel@alsa-project.org>
 
-TSN provides a mechanism to create reliable, jitter-free, low latency
-guaranteed bandwidth links over a local network. It does this by
-reserving a path through the network. Support for TSN must be found in
-both the NIC as well as in the network itself.
+From: Henrik Austad <haustad@cisco.com>
 
-This adds required hooks into netdev_ops so that the core TSN driver can
-use this when configuring a new NIC or setting up a new link.
+Describe the overall design behind the TSN standard, the TSN-driver,
+requirements to userspace and new functionality introduced.
 
 Cc: "David S. Miller" <davem@davemloft.net>
-Signed-off-by: Henrik Austad <henrik@austad.us>
+Signed-off-by: Henrik Austad <haustad@cisco.com>
 ---
- include/linux/netdevice.h | 32 ++++++++++++++++++++++++++++++++
- net/Kconfig               |  1 +
- net/tsn/Kconfig           | 32 ++++++++++++++++++++++++++++++++
- 3 files changed, 65 insertions(+)
- create mode 100644 net/tsn/Kconfig
+ Documentation/TSN/tsn.txt | 147 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 147 insertions(+)
+ create mode 100644 Documentation/TSN/tsn.txt
 
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index f45929c..de025eb 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -109,6 +109,13 @@ enum netdev_tx {
- };
- typedef enum netdev_tx netdev_tx_t;
- 
-+#if IS_ENABLED(CONFIG_TSN)
-+enum sr_class {
-+	SR_CLASS_A = 1,
-+	SR_CLASS_B = 2,
-+};
-+#endif
-+
- /*
-  * Current order: NETDEV_TX_MASK > NET_XMIT_MASK >= 0 is significant;
-  * hard_start_xmit() return < NET_XMIT_MASK means skb was consumed.
-@@ -902,6 +909,22 @@ struct tc_to_netdev {
-  *
-  * void (*ndo_poll_controller)(struct net_device *dev);
-  *
-+ *	TSN functions (if CONFIG_TSN)
-+ *
-+ * int (*ndo_tsn_capable)(struct net_device *dev);
-+ *	If a particular device is capable of sustaining TSN traffic
-+ *	provided current configuration
-+ * int (*ndo_tsn_link_configure)(struct net_device *dev,
-+ *				 enum sr_class class,
-+ *				 u16 framesize,
-+ *				 u16 vid);
-+ *     - When a new TSN link is either added or removed, this is called to
-+ *       update the bandwidth for the particular stream-class
-+ *     - The framesize is the size of the _entire_ frame, not just the
-+ *       payload since the full size is required to allocate bandwidth through
-+ *       the credit based shaper in the NIC
-+ *     - the vlan_id is the configured vlan for TSN in this session.
-+ *
-  *	SR-IOV management functions.
-  * int (*ndo_set_vf_mac)(struct net_device *dev, int vf, u8* mac);
-  * int (*ndo_set_vf_vlan)(struct net_device *dev, int vf, u16 vlan, u8 qos);
-@@ -1148,6 +1171,15 @@ struct net_device_ops {
- #ifdef CONFIG_NET_RX_BUSY_POLL
- 	int			(*ndo_busy_poll)(struct napi_struct *dev);
- #endif
-+
-+#if IS_ENABLED(CONFIG_TSN)
-+	int			(*ndo_tsn_capable)(struct net_device *dev);
-+	int			(*ndo_tsn_link_configure)(struct net_device *dev,
-+							  enum sr_class class,
-+							  u16 framesize,
-+							  u16 vid);
-+#endif	/* CONFIG_TSN */
-+
- 	int			(*ndo_set_vf_mac)(struct net_device *dev,
- 						  int queue, u8 *mac);
- 	int			(*ndo_set_vf_vlan)(struct net_device *dev,
-diff --git a/net/Kconfig b/net/Kconfig
-index ff40562..fa9f691 100644
---- a/net/Kconfig
-+++ b/net/Kconfig
-@@ -215,6 +215,7 @@ source "net/802/Kconfig"
- source "net/bridge/Kconfig"
- source "net/dsa/Kconfig"
- source "net/8021q/Kconfig"
-+source "net/tsn/Kconfig"
- source "net/decnet/Kconfig"
- source "net/llc/Kconfig"
- source "net/ipx/Kconfig"
-diff --git a/net/tsn/Kconfig b/net/tsn/Kconfig
-new file mode 100644
-index 0000000..1fc3c1d
+Index: linux/Documentation/TSN/tsn.txt
+===================================================================
 --- /dev/null
-+++ b/net/tsn/Kconfig
-@@ -0,0 +1,32 @@
-+#
-+# Configuration for 802.1 Time Sensitive Networking (TSN)
-+#
++++ linux/Documentation/TSN/tsn.txt
+@@ -0,0 +1,188 @@
++		Time Sensitive Networking (TSN)
++		-------------------------------
 +
-+config TSN
-+	tristate "802.1 TSN Support"
-+	depends on VLAN_8021Q && PTP_1588_CLOCK && CONFIGFS_FS
-+	---help---
-+	  Select this if you want to enable TSN on capable interfaces.
++[work in progress]
 +
-+	  TSN allows you to set up deterministic links on your LAN (only
-+	  L2 is currently supported). Once loaded, the driver will probe
-+	  all available interfaces if they are capable of supporting TSN
-+	  links.
++1. Motivation
++=============
 +
-+	  Once loaded, a directory in configfs called tsn/ will expose
-+	  the capable NICs and allow userspace to create
-+	  links. Userspace must provide us with a StreamID as well as
-+	  reserving bandwidth through the network and once this is done,
-+	  a new link can be created by issuing a mkdir() in configfs and
-+	  updating the attributes for the new link.
++TSN is a set of open standards, formerly known as 'AVB' (Audio/Video
++Bridging). It was renamed to TSN to better reflect that it can do much
++more than just media transport.
 +
-+	  TSN itself does not produce nor consume data, it is dependent
-+	  upon 'shims' doing this, which can be virtually anything. ALSA
-+	  is a good candidate.
++TSN is a way to create reliable streams across a network without loss of
++frames due to congestion in the network. By using gPTP (a specialized
++IEEE-1588v2 PTP profile), the time can be synchronized with sub-us
++granularity across all the connected devices in the AVB domain.
 +
-+	  For more information, refer to the TSN-documentation in the
-+	  kernel documentation repository.
++2. Intro to AVB/TSN
++===================
 +
-+	  The resulting module will be called 'tsn'
++The original standards were written with Audio/Video in mind, so the
++initial standards refer to this as 'AVB'. In later standards, this has
++changed to TSN, and AVB now refers to a service you can add on top of
++TSN. Hopefully it will not be too confusing.
 +
-+	  If unsure, say N.
--- 
-2.7.4
-
++In this document, we refer to the infrastructure part as TSN and AVB to
++the ALSA/V4L2 shim which can be added on top of TSN to provide a
++media-service.
++
++TSN operates with 'streams', and one stream can contain pretty much
++whatever you like. Currently, only media has been defined properly
++though, which is why you only have media-subtypes for the
++avtp_subtype-field.
++
++For a media-setup, one stream can contain multiple channels, all going
++to the same destination. A destination can be a single Listener
++(singlecast) or a group of Listeners (multicast).
++
++2.1 Endpoints
++
++A TSN 'endpoint' is where a stream either originates or ends -what
++others would call sources (Talkers) and sinks (Listeners). Looking back
++at pre-TSN when this was called AVB, these names make a bit more sense.
++
++Common for both types, they need to be PTPv2 capable, i.e. you need to
++timestamp gPTP frames upon ingress/egress to improve the accuracy of
++PTP.
++
++2.1.1 Talkers
++
++Hardware requirements:
++- Multiple Tx-queues
++- Credit based shaper on at least one of the queues for pacing the
++  frames onto the network
++- VLAN capable
++
++2.1.2 Listener
++
++A Listener does not have the same requirements as a Talker as it cannot
++control the pace of the incoming frames anyway. It is beneficial if the
++NIC understands VLANs and has a few Rx-queues so that you can steer all
++TSN-frames to a dedicated queue.
++
++2.2 Bridges
++
++What TSN calls switches that are TSN-capable. They must be able to
++prioritize TSN-streams, have the credit-based shaper available for that
++class, support SRP, support gPTP and so on.
++
++2.3 Relevant standards
++
++* IEEE 802.1BA-2011 Audio Video Bridging (AVB) Systems
++
++* IEEE 802.1Q-2011 sec 34 and 35
++
++  What is referred to as:
++  IEEE 802.1Qav (Forwarding and Queueing for Time-sensitive Streams)
++  IEEE 802.1Qat (Stream Registration protocol)
++
++* IEEE 802.1AS gPTP
++
++  A PTPv2 profile (from IEEE 1588) tailored for this domain. Notable
++  changes include the requirement that all nodes in the network must be
++  gPTP capable (i.e. no traversing non-PTP entities), and it allows
++  traffic over a wider range of medium that what "pure" PTPv2 allows.
++
++* IEEE 1722 AVTP Layer 2 Transport Protocol for Time-Sensitive
++  Applications in Bridged Local Area Networks
++
++* IEEE 1722.1 Device Discovery, Connection Management and Control for 1722
++
++  What allows AVB (TSN) devices to handle discovery, enumeration and
++  control, basically let you connect 2 devices from a 3rd
++
++  In this (in the scope of the Linux kernel TSN driver) must be done
++  purely from userspace as we do not want the kernel to suddenly attach
++  to a remote system without the user's knowledge. This is further
++  reflected in how the attributes for the link is managed via ConfigFS.
++
++
++3. Overview and/or design of the TSN-driver
++===========================================
++
++The driver handles the shifting of data for TSN-streams. Anything else
++is left for userspace to handle. This includes stream reservation (using
++some sort of MSRP client), negotiating multicast addresses, finding the
++value of the different attributes and connect application(s) to the
++exposed devices (currently we only have an ALSA-device).
++
++       	       /--------------------\
++       	       |                    |
++	       |  Media application |
++	       |       	       	    |
++	       \--------------------/
++		     | 	      |
++       	  +----------+	      +----+
++	  | 			   |
++	  | 			   |
++     +------------+		   |
++     |   ALSA  	  |		   |
++     +------------+		   |
++	  |			   |
++	  |			   |
++     +------------+          +--------------+
++     | 	avb_alsa  | 	     | tsn_configfs |
++     | (tsn-shim) |	     +--------------+
++     +------------+ 		   |
++       	  |  	    		   |
++	  |    	  		   |
++	  +------+     	  	   |
++	   	 |		   |
++       	       	 |		   |
++            +------------+	   |
++ 	    |  tsn_core  |<--------+
++            +------------+
++       	       	 |
++		 |
++            +------------+
++       	    |  tsn_net   |
++            +------------+
++		 |
++		 |
++	    +------------+
++	    |  network	 |
++       	    | subsystem  |
++	    +------------+
++	       	 |
++		 |
++		...
++
++
++3.1 Terms and concepts
++
++TSN uses the concept of streams and shims.
++
++- A shim is a thin wrapper that binds TSN to another subsystem (or
++  directly to userspace). avb_alsa is an example of such a shim.
++
++- A stream is the only data TSN cares about. What the data inside the
++  stream represents, is left for the associated shim to handle. TSN will
++  verify the headers up to the protocol specific header and then pass it
++  along to the shim.
++
++Note: currently, only the data-unit part is implemented, the control
++part, in which 1722.1 (discovery and enumeration) is part, is not
++handled.
++
++3.2 Userspace requirements
++
++(msrp-client, "tsnctl"-tool
++
++4. Creating a new link from userspace
++=====================================
++
++[coming]
++
++
++5. Creating a new shim
++======================
++
++shim_ops
++[coming]
++
++
++6. Other resources:
++===================
++
++https://en.wikipedia.org/wiki/Audio_Video_Bridging
 --
 To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
 
