@@ -1,12 +1,13 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
-Date: Sun, 12 Jun 2016 00:50:29 +0200
+Date: Sun, 12 Jun 2016 00:51:07 +0200
 From: Henrik Austad <henrik@austad.us>
-Message-ID: <20160611225029.GC10685@sisyphus.home.austad.us>
-References: <1465683741-20390-1-git-send-email-henrik@austad.us>
- <1465683741-20390-2-git-send-email-henrik@austad.us>
+Message-ID: <20160611225107.GD10685@sisyphus.home.austad.us>
+References: <1465683741-20390-2-git-send-email-henrik@austad.us>
+ <20160611.153510.1132155249275383253.davem@davemloft.net>
+ <20160611224728.GA10685@sisyphus.home.austad.us>
+ <20160611.154942.1952550958882932442.davem@davemloft.net>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1465683741-20390-2-git-send-email-henrik@austad.us>
+In-Reply-To: <20160611.154942.1952550958882932442.davem@davemloft.net>
 Subject: Re: [alsa-devel] [very-RFC 1/8] TSN: add documentation
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -15,230 +16,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7555782453318546862=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: netdev@vger.kernel.org, alsa-devel@vger.kernel.org, Henrik Austad <haustad@cisco.com>, henrk@austad.us, "David S. Miller" <davem@davemloft.net>, linux-media@vger.kernel.org
+Cc: henrk@austad.us, linux-kernel@vger.kernel.org, haustad@cisco.com, netdev@vger.kernel.org, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
 List-ID: <alsa-devel@alsa-project.org>
 
-On Sun, Jun 12, 2016 at 12:22:14AM +0200, Henrik Austad wrote:
-> From: Henrik Austad <haustad@cisco.com>
 
-Clearing up the netdev-typo
+--===============7555782453318546862==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="neYutvxvOLaeuPCA"
+Content-Disposition: inline
 
-> 
-> Describe the overall design behind the TSN standard, the TSN-driver,
-> requirements to userspace and new functionality introduced.
-> 
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Signed-off-by: Henrik Austad <haustad@cisco.com>
-> ---
->  Documentation/TSN/tsn.txt | 147 ++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 147 insertions(+)
->  create mode 100644 Documentation/TSN/tsn.txt
-> 
-> Index: linux/Documentation/TSN/tsn.txt
-> ===================================================================
-> --- /dev/null
-> +++ linux/Documentation/TSN/tsn.txt
-> @@ -0,0 +1,188 @@
-> +		Time Sensitive Networking (TSN)
-> +		-------------------------------
-> +
-> +[work in progress]
-> +
-> +1. Motivation
-> +=============
-> +
-> +TSN is a set of open standards, formerly known as 'AVB' (Audio/Video
-> +Bridging). It was renamed to TSN to better reflect that it can do much
-> +more than just media transport.
-> +
-> +TSN is a way to create reliable streams across a network without loss of
-> +frames due to congestion in the network. By using gPTP (a specialized
-> +IEEE-1588v2 PTP profile), the time can be synchronized with sub-us
-> +granularity across all the connected devices in the AVB domain.
-> +
-> +2. Intro to AVB/TSN
-> +===================
-> +
-> +The original standards were written with Audio/Video in mind, so the
-> +initial standards refer to this as 'AVB'. In later standards, this has
-> +changed to TSN, and AVB now refers to a service you can add on top of
-> +TSN. Hopefully it will not be too confusing.
-> +
-> +In this document, we refer to the infrastructure part as TSN and AVB to
-> +the ALSA/V4L2 shim which can be added on top of TSN to provide a
-> +media-service.
-> +
-> +TSN operates with 'streams', and one stream can contain pretty much
-> +whatever you like. Currently, only media has been defined properly
-> +though, which is why you only have media-subtypes for the
-> +avtp_subtype-field.
-> +
-> +For a media-setup, one stream can contain multiple channels, all going
-> +to the same destination. A destination can be a single Listener
-> +(singlecast) or a group of Listeners (multicast).
-> +
-> +2.1 Endpoints
-> +
-> +A TSN 'endpoint' is where a stream either originates or ends -what
-> +others would call sources (Talkers) and sinks (Listeners). Looking back
-> +at pre-TSN when this was called AVB, these names make a bit more sense.
-> +
-> +Common for both types, they need to be PTPv2 capable, i.e. you need to
-> +timestamp gPTP frames upon ingress/egress to improve the accuracy of
-> +PTP.
-> +
-> +2.1.1 Talkers
-> +
-> +Hardware requirements:
-> +- Multiple Tx-queues
-> +- Credit based shaper on at least one of the queues for pacing the
-> +  frames onto the network
-> +- VLAN capable
-> +
-> +2.1.2 Listener
-> +
-> +A Listener does not have the same requirements as a Talker as it cannot
-> +control the pace of the incoming frames anyway. It is beneficial if the
-> +NIC understands VLANs and has a few Rx-queues so that you can steer all
-> +TSN-frames to a dedicated queue.
-> +
-> +2.2 Bridges
-> +
-> +What TSN calls switches that are TSN-capable. They must be able to
-> +prioritize TSN-streams, have the credit-based shaper available for that
-> +class, support SRP, support gPTP and so on.
-> +
-> +2.3 Relevant standards
-> +
-> +* IEEE 802.1BA-2011 Audio Video Bridging (AVB) Systems
-> +
-> +* IEEE 802.1Q-2011 sec 34 and 35
-> +
-> +  What is referred to as:
-> +  IEEE 802.1Qav (Forwarding and Queueing for Time-sensitive Streams)
-> +  IEEE 802.1Qat (Stream Registration protocol)
-> +
-> +* IEEE 802.1AS gPTP
-> +
-> +  A PTPv2 profile (from IEEE 1588) tailored for this domain. Notable
-> +  changes include the requirement that all nodes in the network must be
-> +  gPTP capable (i.e. no traversing non-PTP entities), and it allows
-> +  traffic over a wider range of medium that what "pure" PTPv2 allows.
-> +
-> +* IEEE 1722 AVTP Layer 2 Transport Protocol for Time-Sensitive
-> +  Applications in Bridged Local Area Networks
-> +
-> +* IEEE 1722.1 Device Discovery, Connection Management and Control for 1722
-> +
-> +  What allows AVB (TSN) devices to handle discovery, enumeration and
-> +  control, basically let you connect 2 devices from a 3rd
-> +
-> +  In this (in the scope of the Linux kernel TSN driver) must be done
-> +  purely from userspace as we do not want the kernel to suddenly attach
-> +  to a remote system without the user's knowledge. This is further
-> +  reflected in how the attributes for the link is managed via ConfigFS.
-> +
-> +
-> +3. Overview and/or design of the TSN-driver
-> +===========================================
-> +
-> +The driver handles the shifting of data for TSN-streams. Anything else
-> +is left for userspace to handle. This includes stream reservation (using
-> +some sort of MSRP client), negotiating multicast addresses, finding the
-> +value of the different attributes and connect application(s) to the
-> +exposed devices (currently we only have an ALSA-device).
-> +
-> +       	       /--------------------\
-> +       	       |                    |
-> +	       |  Media application |
-> +	       |       	       	    |
-> +	       \--------------------/
-> +		     | 	      |
-> +       	  +----------+	      +----+
-> +	  | 			   |
-> +	  | 			   |
-> +     +------------+		   |
-> +     |   ALSA  	  |		   |
-> +     +------------+		   |
-> +	  |			   |
-> +	  |			   |
-> +     +------------+          +--------------+
-> +     | 	avb_alsa  | 	     | tsn_configfs |
-> +     | (tsn-shim) |	     +--------------+
-> +     +------------+ 		   |
-> +       	  |  	    		   |
-> +	  |    	  		   |
-> +	  +------+     	  	   |
-> +	   	 |		   |
-> +       	       	 |		   |
-> +            +------------+	   |
-> + 	    |  tsn_core  |<--------+
-> +            +------------+
-> +       	       	 |
-> +		 |
-> +            +------------+
-> +       	    |  tsn_net   |
-> +            +------------+
-> +		 |
-> +		 |
-> +	    +------------+
-> +	    |  network	 |
-> +       	    | subsystem  |
-> +	    +------------+
-> +	       	 |
-> +		 |
-> +		...
-> +
-> +
-> +3.1 Terms and concepts
-> +
-> +TSN uses the concept of streams and shims.
-> +
-> +- A shim is a thin wrapper that binds TSN to another subsystem (or
-> +  directly to userspace). avb_alsa is an example of such a shim.
-> +
-> +- A stream is the only data TSN cares about. What the data inside the
-> +  stream represents, is left for the associated shim to handle. TSN will
-> +  verify the headers up to the protocol specific header and then pass it
-> +  along to the shim.
-> +
-> +Note: currently, only the data-unit part is implemented, the control
-> +part, in which 1722.1 (discovery and enumeration) is part, is not
-> +handled.
-> +
-> +3.2 Userspace requirements
-> +
-> +(msrp-client, "tsnctl"-tool
-> +
-> +4. Creating a new link from userspace
-> +=====================================
-> +
-> +[coming]
-> +
-> +
-> +5. Creating a new shim
-> +======================
-> +
-> +shim_ops
-> +[coming]
-> +
-> +
-> +6. Other resources:
-> +===================
-> +
-> +https://en.wikipedia.org/wiki/Audio_Video_Bridging
 
--- 
+--neYutvxvOLaeuPCA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Jun 11, 2016 at 03:49:42PM -0700, David Miller wrote:
+> From: Henrik Austad <henrik@austad.us>
+> Date: Sun, 12 Jun 2016 00:47:28 +0200
+>=20
+> > What would be the best approach? Resend series to netdev@vger? I don't =
+want=20
+> > to spam too many lists either.
+>=20
+> Resend to all the lists.
+
+ok, I'll do that then.
+
+Thanks
+
+--=20
 Henrik Austad
+
+--neYutvxvOLaeuPCA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAldcldsACgkQ6k5VT6v45lkKvwCg0kQNMh4eWx8yCskvVYaA8rOq
+0jAAn06e1PvLgBRbq9d7YC5pQXh9g8Mg
+=hqrh
+-----END PGP SIGNATURE-----
+
+--neYutvxvOLaeuPCA--
 --
 To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
+
+
+--===============7555782453318546862==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============7555782453318546862==--
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
