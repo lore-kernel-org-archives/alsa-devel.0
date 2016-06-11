@@ -1,10 +1,10 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
 From: Henrik Austad <henrik@austad.us>
-Date: Sun, 12 Jun 2016 00:22:19 +0200
-Message-Id: <1465683741-20390-7-git-send-email-henrik@austad.us>
+Date: Sun, 12 Jun 2016 00:22:14 +0200
+Message-Id: <1465683741-20390-2-git-send-email-henrik@austad.us>
 In-Reply-To: <1465683741-20390-1-git-send-email-henrik@austad.us>
 References: <1465683741-20390-1-git-send-email-henrik@austad.us>
-Subject: [alsa-devel] [very-RFC 6/8] Add TSN event-tracing
+Subject: [alsa-devel] [very-RFC 1/8] TSN: add documentation
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,381 +18,214 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: henrk@austad.us, linux-netdev@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>, alsa-devel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, Henrik Austad <haustad@cisco.com>, "David S. Miller" <davem@davemloft.net>, linux-media@vger.kernel.org
+Cc: henrk@austad.us, linux-netdev@vger.kernel.org, alsa-devel@vger.kernel.org, Henrik Austad <haustad@cisco.com>, "David S. Miller" <davem@davemloft.net>, linux-media@vger.kernel.org
 List-ID: <alsa-devel@alsa-project.org>
 
 From: Henrik Austad <haustad@cisco.com>
 
-This needs refactoring and should be updated to use TRACE_CLASS, but for
-now it provides a fair debug-window into TSN.
+Describe the overall design behind the TSN standard, the TSN-driver,
+requirements to userspace and new functionality introduced.
 
 Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Steven Rostedt <rostedt@goodmis.org> (maintainer:TRACING)
-Cc: Ingo Molnar <mingo@redhat.com> (maintainer:TRACING)
 Signed-off-by: Henrik Austad <haustad@cisco.com>
 ---
- include/trace/events/tsn.h | 349 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 349 insertions(+)
- create mode 100644 include/trace/events/tsn.h
+ Documentation/TSN/tsn.txt | 147 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 147 insertions(+)
+ create mode 100644 Documentation/TSN/tsn.txt
 
-diff --git a/include/trace/events/tsn.h b/include/trace/events/tsn.h
-new file mode 100644
-index 0000000..ac1f31b
+Index: linux/Documentation/TSN/tsn.txt
+===================================================================
 --- /dev/null
-+++ b/include/trace/events/tsn.h
-@@ -0,0 +1,349 @@
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM tsn
-+
-+#if !defined(_TRACE_TSN_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _TRACE_TSN_H
-+
-+#include <linux/tsn.h>
-+#include <linux/tracepoint.h>
-+
-+#include <linux/if_ether.h>
-+#include <linux/if_vlan.h>
-+/* #include <linux/skbuff.h> */
-+
-+/* FIXME: update to TRACE_CLASS to reduce overhead */
-+TRACE_EVENT(tsn_buffer_write,
-+
-+	TP_PROTO(struct tsn_link *link,
-+		size_t bytes),
-+
-+	TP_ARGS(link, bytes),
-+
-+	TP_STRUCT__entry(
-+		__field(u64, stream_id)
-+		__field(size_t, size)
-+		__field(size_t, bsize)
-+		__field(size_t, size_left)
-+		__field(void *, buffer)
-+		__field(void *, head)
-+		__field(void *, tail)
-+		__field(void *, end)
-+		),
-+
-+	TP_fast_assign(
-+		__entry->stream_id = link->stream_id;
-+		__entry->size = bytes;
-+		__entry->bsize = link->used_buffer_size;
-+		__entry->size_left = (link->head - link->tail) % link->used_buffer_size;
-+		__entry->buffer = link->buffer;
-+		__entry->head = link->head;
-+		__entry->tail = link->tail;
-+		__entry->end = link->end;
-+		),
-+
-+	TP_printk("stream_id=%llu, copy=%zd, buffer: %zd, avail=%zd, [buffer=%p, head=%p, tail=%p, end=%p]",
-+		__entry->stream_id, __entry->size, __entry->bsize, __entry->size_left,
-+		__entry->buffer,    __entry->head, __entry->tail,  __entry->end)
-+
-+	);
-+
-+TRACE_EVENT(tsn_buffer_write_net,
-+
-+	TP_PROTO(struct tsn_link *link,
-+		size_t bytes),
-+
-+	TP_ARGS(link, bytes),
-+
-+	TP_STRUCT__entry(
-+		__field(u64, stream_id)
-+		__field(size_t, size)
-+		__field(size_t, bsize)
-+		__field(size_t, size_left)
-+		__field(void *, buffer)
-+		__field(void *, head)
-+		__field(void *, tail)
-+		__field(void *, end)
-+		),
-+
-+	TP_fast_assign(
-+		__entry->stream_id = link->stream_id;
-+		__entry->size = bytes;
-+		__entry->bsize = link->used_buffer_size;
-+		__entry->size_left = (link->head - link->tail) % link->used_buffer_size;
-+		__entry->buffer = link->buffer;
-+		__entry->head = link->head;
-+		__entry->tail = link->tail;
-+		__entry->end = link->end;
-+		),
-+
-+	TP_printk("stream_id=%llu, copy=%zd, buffer: %zd, avail=%zd, [buffer=%p, head=%p, tail=%p, end=%p]",
-+		__entry->stream_id, __entry->size, __entry->bsize, __entry->size_left,
-+		__entry->buffer,    __entry->head, __entry->tail,  __entry->end)
-+
-+	);
-+
-+
-+TRACE_EVENT(tsn_buffer_read,
-+
-+	TP_PROTO(struct tsn_link *link,
-+		size_t bytes),
-+
-+	TP_ARGS(link, bytes),
-+
-+	TP_STRUCT__entry(
-+		__field(u64, stream_id)
-+		__field(size_t, size)
-+		__field(size_t, bsize)
-+		__field(size_t, size_left)
-+		__field(void *, buffer)
-+		__field(void *, head)
-+		__field(void *, tail)
-+		__field(void *, end)
-+		),
-+
-+	TP_fast_assign(
-+		__entry->stream_id = link->stream_id;
-+		__entry->size = bytes;
-+		__entry->bsize = link->used_buffer_size;
-+		__entry->size_left = (link->head - link->tail) % link->used_buffer_size;
-+		__entry->buffer = link->buffer;
-+		__entry->head = link->head;
-+		__entry->tail = link->tail;
-+		__entry->end = link->end;
-+		),
-+
-+	TP_printk("stream_id=%llu, copy=%zd, buffer: %zd, avail=%zd, [buffer=%p, head=%p, tail=%p, end=%p]",
-+		__entry->stream_id, __entry->size, __entry->bsize, __entry->size_left,
-+		__entry->buffer,    __entry->head, __entry->tail,  __entry->end)
-+
-+	);
-+
-+TRACE_EVENT(tsn_refill,
-+
-+	TP_PROTO(struct tsn_link *link,
-+		size_t reported_avail),
-+
-+	TP_ARGS(link, reported_avail),
-+
-+	TP_STRUCT__entry(
-+		__field(u64, stream_id)
-+		__field(size_t, bsize)
-+		__field(size_t, size_left)
-+		__field(size_t, reported_left)
-+		__field(size_t, low_water)
-+		),
-+
-+	TP_fast_assign(
-+		__entry->stream_id = link->stream_id;
-+		__entry->bsize = link->used_buffer_size;
-+		__entry->size_left = (link->head - link->tail) % link->used_buffer_size;
-+		__entry->reported_left = reported_avail;
-+		__entry->low_water = link->low_water_mark;
-+		),
-+
-+	TP_printk("stream_id=%llu, buffer=%zd, avail=%zd, reported=%zd, low=%zd",
-+		__entry->stream_id, __entry->bsize, __entry->size_left, __entry->reported_left, __entry->low_water)
-+	);
-+
-+TRACE_EVENT(tsn_send_batch,
-+
-+	TP_PROTO(struct tsn_link *link,
-+		int num_send,
-+		u64 ts_base_ns,
-+		u64 ts_delta_ns),
-+
-+	TP_ARGS(link, num_send, ts_base_ns, ts_delta_ns),
-+
-+	TP_STRUCT__entry(
-+		__field(u64, stream_id)
-+		__field(int, seqnr)
-+		__field(int, num_send)
-+		__field(u64, ts_base_ns)
-+		__field(u64, ts_delta_ns)
-+		),
-+
-+	TP_fast_assign(
-+		__entry->stream_id   = link->stream_id;
-+		__entry->seqnr	     = (int)link->last_seqnr;
-+		__entry->ts_base_ns  = ts_base_ns;
-+		__entry->ts_delta_ns = ts_delta_ns;
-+		__entry->num_send    = num_send;
-+		),
++++ linux/Documentation/TSN/tsn.txt
+@@ -0,0 +1,188 @@
++		Time Sensitive Networking (TSN)
++		-------------------------------
 +
-+	TP_printk("stream_id=%llu, seqnr=%d, num_send=%d, ts_base_ns=%llu, ts_delta_ns=%llu",
-+		__entry->stream_id, __entry->seqnr, __entry->num_send, __entry->ts_base_ns, __entry->ts_delta_ns)
-+	);
++[work in progress]
 +
++1. Motivation
++=============
 +
-+TRACE_EVENT(tsn_rx_handler,
++TSN is a set of open standards, formerly known as 'AVB' (Audio/Video
++Bridging). It was renamed to TSN to better reflect that it can do much
++more than just media transport.
 +
-+	TP_PROTO(struct tsn_link *link,
-+		const struct ethhdr *ethhdr,
-+		u64 sid),
++TSN is a way to create reliable streams across a network without loss of
++frames due to congestion in the network. By using gPTP (a specialized
++IEEE-1588v2 PTP profile), the time can be synchronized with sub-us
++granularity across all the connected devices in the AVB domain.
 +
-+	TP_ARGS(link, ethhdr, sid),
++2. Intro to AVB/TSN
++===================
 +
-+	TP_STRUCT__entry(
-+		__field(char *, name)
-+		__field(u16, proto)
-+		__field(u64, sid)
-+		__field(u64, link_sid)
-+		),
-+	TP_fast_assign(
-+		__entry->name  = link->nic->name;
-+		__entry->proto = ethhdr->h_proto;
-+		__entry->sid   = sid;
-+		__entry->link_sid = link->stream_id;
-+		),
++The original standards were written with Audio/Video in mind, so the
++initial standards refer to this as 'AVB'. In later standards, this has
++changed to TSN, and AVB now refers to a service you can add on top of
++TSN. Hopefully it will not be too confusing.
 +
-+	TP_printk("name=%s, proto: 0x%04x, stream_id=%llu, link->sid=%llu",
-+		__entry->name, ntohs(__entry->proto), __entry->sid, __entry->link_sid)
-+	);
-+
-+TRACE_EVENT(tsn_du,
-+
-+	TP_PROTO(struct tsn_link *link,
-+		size_t bytes),
-+
-+	TP_ARGS(link, bytes),
-+
-+	TP_STRUCT__entry(
-+		__field(u64, link_sid)
-+		__field(size_t, bytes)
-+		),
-+	TP_fast_assign(
-+		__entry->link_sid = link->stream_id;
-+		__entry->bytes = bytes;
-+		),
-+
-+	TP_printk("stream_id=%llu,bytes=%zu",
-+		__entry->link_sid, __entry->bytes)
-+);
-+
-+TRACE_EVENT(tsn_set_buffer,
-+
-+	TP_PROTO(struct tsn_link *link, size_t bufsize),
-+
-+	TP_ARGS(link, bufsize),
-+
-+	TP_STRUCT__entry(
-+		__field(u64,  stream_id)
-+		__field(size_t, size)
-+		),
-+
-+	TP_fast_assign(
-+		__entry->stream_id = link->stream_id;
-+		__entry->size = bufsize;
-+		),
-+
-+	TP_printk("stream_id=%llu,buffer_size=%zu",
-+		__entry->stream_id, __entry->size)
-+
-+	);
-+
-+TRACE_EVENT(tsn_free_buffer,
-+
-+	TP_PROTO(struct tsn_link *link),
-+
-+	TP_ARGS(link),
-+
-+	TP_STRUCT__entry(
-+		__field(u64,  stream_id)
-+		__field(size_t,	 bufsize)
-+		),
-+
-+	TP_fast_assign(
-+		__entry->stream_id = link->stream_id;
-+		__entry->bufsize = link->buffer_size;
-+		),
-+
-+	TP_printk("stream_id=%llu,size:%zd",
-+		__entry->stream_id, __entry->bufsize)
-+
-+	);
-+
-+TRACE_EVENT(tsn_buffer_drain,
-+
-+	TP_PROTO(struct tsn_link *link, size_t used),
-+
-+	TP_ARGS(link, used),
-+
-+	TP_STRUCT__entry(
-+		__field(u64, stream_id)
-+		__field(size_t, used)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->stream_id = link->stream_id;
-+		__entry->used = used;
-+	),
-+
-+	TP_printk("stream_id=%llu,used=%zu",
-+		__entry->stream_id, __entry->used)
-+
-+);
-+/* TODO: too long, need cleanup.
-+ */
-+TRACE_EVENT(tsn_pre_tx,
-+
-+	TP_PROTO(struct tsn_link *link, struct sk_buff *skb, size_t bytes),
-+
-+	TP_ARGS(link, skb, bytes),
-+
-+	TP_STRUCT__entry(
-+		__field(u64, stream_id)
-+		__field(u32, vlan_tag)
-+		__field(size_t, bytes)
-+		__field(size_t, data_len)
-+		__field(unsigned int, headlen)
-+		__field(u16, protocol)
-+		__field(u16, prot_native)
-+		__field(int, tx_idx)
-+		__field(u16, mac_len)
-+		__field(u16, hdr_len)
-+		__field(u16, vlan_tci)
-+		__field(u16, mac_header)
-+		__field(unsigned int, tail)
-+		__field(unsigned int, end)
-+		__field(unsigned int, truesize)
-+		),
-+
-+	TP_fast_assign(
-+		__entry->stream_id = link->stream_id;
-+		__entry->vlan_tag = (skb_vlan_tag_present(skb) ? skb_vlan_tag_get(skb) : 0);
-+		__entry->bytes = bytes;
-+		__entry->data_len = skb->data_len;
-+		__entry->headlen = skb_headlen(skb);
-+		__entry->protocol = ntohs(vlan_get_protocol(skb));
-+		__entry->prot_native = ntohs(skb->protocol);
-+		__entry->tx_idx = skb_get_queue_mapping(skb);
-+
-+		__entry->mac_len = skb->mac_len;
-+		__entry->hdr_len = skb->hdr_len;
-+		__entry->vlan_tci = skb->vlan_tci;
-+		__entry->mac_header = skb->mac_header;
-+		__entry->tail = (unsigned int)skb->tail;
-+		__entry->end  = (unsigned int)skb->end;
-+		__entry->truesize = skb->truesize;
-+		),
-+
-+	TP_printk("stream_id=%llu,vlan_tag=0x%04x,data_size=%zd,data_len=%zd,headlen=%u,proto=0x%04x (0x%04x),tx_idx=%d,mac_len=%u,hdr_len=%u,vlan_tci=0x%02x,mac_header=0x%02x,tail=%u,end=%u,truesize=%u",
-+		__entry->stream_id,
-+		__entry->vlan_tag,
-+		__entry->bytes,
-+		__entry->data_len,
-+		__entry->headlen,
-+		__entry->protocol,
-+		__entry->prot_native, __entry->tx_idx,
-+		__entry->mac_len,
-+		__entry->hdr_len,
-+		__entry->vlan_tci,
-+		__entry->mac_header,
-+		__entry->tail,
-+		__entry->end,
-+		__entry->truesize)
-+	);
-+
-+#endif	/* _TRACE_TSN_H || TRACE_HEADER_MULTI_READ */
-+
-+#include <trace/define_trace.h>
--- 
-2.7.4
-
++In this document, we refer to the infrastructure part as TSN and AVB to
++the ALSA/V4L2 shim which can be added on top of TSN to provide a
++media-service.
++
++TSN operates with 'streams', and one stream can contain pretty much
++whatever you like. Currently, only media has been defined properly
++though, which is why you only have media-subtypes for the
++avtp_subtype-field.
++
++For a media-setup, one stream can contain multiple channels, all going
++to the same destination. A destination can be a single Listener
++(singlecast) or a group of Listeners (multicast).
++
++2.1 Endpoints
++
++A TSN 'endpoint' is where a stream either originates or ends -what
++others would call sources (Talkers) and sinks (Listeners). Looking back
++at pre-TSN when this was called AVB, these names make a bit more sense.
++
++Common for both types, they need to be PTPv2 capable, i.e. you need to
++timestamp gPTP frames upon ingress/egress to improve the accuracy of
++PTP.
++
++2.1.1 Talkers
++
++Hardware requirements:
++- Multiple Tx-queues
++- Credit based shaper on at least one of the queues for pacing the
++  frames onto the network
++- VLAN capable
++
++2.1.2 Listener
++
++A Listener does not have the same requirements as a Talker as it cannot
++control the pace of the incoming frames anyway. It is beneficial if the
++NIC understands VLANs and has a few Rx-queues so that you can steer all
++TSN-frames to a dedicated queue.
++
++2.2 Bridges
++
++What TSN calls switches that are TSN-capable. They must be able to
++prioritize TSN-streams, have the credit-based shaper available for that
++class, support SRP, support gPTP and so on.
++
++2.3 Relevant standards
++
++* IEEE 802.1BA-2011 Audio Video Bridging (AVB) Systems
++
++* IEEE 802.1Q-2011 sec 34 and 35
++
++  What is referred to as:
++  IEEE 802.1Qav (Forwarding and Queueing for Time-sensitive Streams)
++  IEEE 802.1Qat (Stream Registration protocol)
++
++* IEEE 802.1AS gPTP
++
++  A PTPv2 profile (from IEEE 1588) tailored for this domain. Notable
++  changes include the requirement that all nodes in the network must be
++  gPTP capable (i.e. no traversing non-PTP entities), and it allows
++  traffic over a wider range of medium that what "pure" PTPv2 allows.
++
++* IEEE 1722 AVTP Layer 2 Transport Protocol for Time-Sensitive
++  Applications in Bridged Local Area Networks
++
++* IEEE 1722.1 Device Discovery, Connection Management and Control for 1722
++
++  What allows AVB (TSN) devices to handle discovery, enumeration and
++  control, basically let you connect 2 devices from a 3rd
++
++  In this (in the scope of the Linux kernel TSN driver) must be done
++  purely from userspace as we do not want the kernel to suddenly attach
++  to a remote system without the user's knowledge. This is further
++  reflected in how the attributes for the link is managed via ConfigFS.
++
++
++3. Overview and/or design of the TSN-driver
++===========================================
++
++The driver handles the shifting of data for TSN-streams. Anything else
++is left for userspace to handle. This includes stream reservation (using
++some sort of MSRP client), negotiating multicast addresses, finding the
++value of the different attributes and connect application(s) to the
++exposed devices (currently we only have an ALSA-device).
++
++       	       /--------------------\
++       	       |                    |
++	       |  Media application |
++	       |       	       	    |
++	       \--------------------/
++		     | 	      |
++       	  +----------+	      +----+
++	  | 			   |
++	  | 			   |
++     +------------+		   |
++     |   ALSA  	  |		   |
++     +------------+		   |
++	  |			   |
++	  |			   |
++     +------------+          +--------------+
++     | 	avb_alsa  | 	     | tsn_configfs |
++     | (tsn-shim) |	     +--------------+
++     +------------+ 		   |
++       	  |  	    		   |
++	  |    	  		   |
++	  +------+     	  	   |
++	   	 |		   |
++       	       	 |		   |
++            +------------+	   |
++ 	    |  tsn_core  |<--------+
++            +------------+
++       	       	 |
++		 |
++            +------------+
++       	    |  tsn_net   |
++            +------------+
++		 |
++		 |
++	    +------------+
++	    |  network	 |
++       	    | subsystem  |
++	    +------------+
++	       	 |
++		 |
++		...
++
++
++3.1 Terms and concepts
++
++TSN uses the concept of streams and shims.
++
++- A shim is a thin wrapper that binds TSN to another subsystem (or
++  directly to userspace). avb_alsa is an example of such a shim.
++
++- A stream is the only data TSN cares about. What the data inside the
++  stream represents, is left for the associated shim to handle. TSN will
++  verify the headers up to the protocol specific header and then pass it
++  along to the shim.
++
++Note: currently, only the data-unit part is implemented, the control
++part, in which 1722.1 (discovery and enumeration) is part, is not
++handled.
++
++3.2 Userspace requirements
++
++(msrp-client, "tsnctl"-tool
++
++4. Creating a new link from userspace
++=====================================
++
++[coming]
++
++
++5. Creating a new shim
++======================
++
++shim_ops
++[coming]
++
++
++6. Other resources:
++===================
++
++https://en.wikipedia.org/wiki/Audio_Video_Bridging
 --
 To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
 
