@@ -1,14 +1,14 @@
 From: Henrik Austad <henrik@austad.us>
-Subject: Re: [very-RFC 1/8] TSN: add documentation
-Date: Sun, 12 Jun 2016 00:47:28 +0200
-Message-ID: <20160611224728.GA10685__29706.3907994472$1465685314$gmane$org@sisyphus.home.austad.us>
+Subject: Re: [very-RFC 0/8] TSN driver for the kernel
+Date: Sun, 12 Jun 2016 00:49:54 +0200
+Message-ID: <20160611224954.GB10685__44367.4401184127$1465685446$gmane$org@sisyphus.home.austad.us>
 References: <1465683741-20390-1-git-send-email-henrik@austad.us>
- <1465683741-20390-2-git-send-email-henrik@austad.us>
- <20160611.153510.1132155249275383253.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8825890223083785076=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20160611.153510.1132155249275383253.davem@davemloft.net>
+Content-Disposition: inline
+In-Reply-To: <1465683741-20390-1-git-send-email-henrik@austad.us>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,58 +19,114 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: henrk@austad.us, linux-kernel@vger.kernel.org, haustad@cisco.com, netdev@vger.kernel.org, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
+Cc: netdev@vger.kernel.org, henrk@austad.us, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, Jun 12, 2016 at 12:22:13AM +0200, Henrik Austad wrote:
+> Hi all
 
---===============8825890223083785076==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="x+6KMIRAuhnl3hBn"
-Content-Disposition: inline
+Sorry.. I somehow managed to mess up the address to netdev, so if you feel 
+like replying to this, use this as it has the correct netdev-address.
 
+again, sorry
 
---x+6KMIRAuhnl3hBn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> (series based on v4.7-rc2)
+> 
+> This is a *very* early RFC for a TSN-driver in the kernel. It has been
+> floating around in my repo for a while and I would appreciate some
+> feedback on the overall design to avoid doing some major blunders.
+> 
+> TSN: Time Sensitive Networking, formely known as AVB (Audio/Video
+> Bridging).
+> 
+> There are at least one AVB-driver (the AV-part of TSN) in the kernel
+> already, however this driver aims to solve a wider scope as TSN can do
+> much more than just audio. A very basic ALSA-driver is added to the end
+> that allows you to play music between 2 machines using aplay in one end
+> and arecord | aplay on the other (some fiddling required) We have plans
+> for doing the same for v4l2 eventually (but there are other fishes to
+> fry first). The same goes for a TSN_SOCK type approach as well.
+> 
+> TSN is all about providing infrastructure. Allthough there are a few
+> very interesting uses for TSN (reliable, deterministic network for audio
+> and video), once you have that reliable link, you can do a lot more.
+> 
+> Some notes on the design:
+> 
+> The driver is directed via ConfigFS as we need userspace to handle
+> stream-reservation (MSRP), discovery and enumeration (IEEE 1722.1) and
+> whatever other management is needed. Once we have all the required
+> attributes, we can create link using mkdir, and use write() to set the
+> attributes. Once ready, specify the 'shim' (basically a thin wrapper
+> between TSN and another subsystem) and we start pushing out frames.
+> 
+> The network part: it ties directly into the rx-handler for receive and
+> writes skb's using netdev_start_xmit(). This could probably be
+> improved. 2 new fields in netdev_ops have been introduced, and the Intel
+> igb-driver has been updated (as this is available as a PCI-e card). The
+> igb-driver works-ish
+> 
+> 
+> What remains
+> - tie to (g)PTP properly, currently using ktime_get() for presentation
+>   time
+> - get time from shim into TSN and vice versa
+> - let shim create/manage buffer
+> 
+> Henrik Austad (8):
+>   TSN: add documentation
+>   TSN: Add the standard formerly known as AVB to the kernel
+>   Adding TSN-driver to Intel I210 controller
+>   Add TSN header for the driver
+>   Add TSN machinery to drive the traffic from a shim over the network
+>   Add TSN event-tracing
+>   AVB ALSA - Add ALSA shim for TSN
+>   MAINTAINERS: add TSN/AVB-entries
+> 
+>  Documentation/TSN/tsn.txt                 | 147 +++++
+>  MAINTAINERS                               |  14 +
+>  drivers/media/Kconfig                     |  15 +
+>  drivers/media/Makefile                    |   3 +-
+>  drivers/media/avb/Makefile                |   5 +
+>  drivers/media/avb/avb_alsa.c              | 742 +++++++++++++++++++++++
+>  drivers/media/avb/tsn_iec61883.h          | 124 ++++
+>  drivers/net/ethernet/intel/Kconfig        |  18 +
+>  drivers/net/ethernet/intel/igb/Makefile   |   2 +-
+>  drivers/net/ethernet/intel/igb/igb.h      |  19 +
+>  drivers/net/ethernet/intel/igb/igb_main.c |  10 +-
+>  drivers/net/ethernet/intel/igb/igb_tsn.c  | 396 ++++++++++++
+>  include/linux/netdevice.h                 |  32 +
+>  include/linux/tsn.h                       | 806 ++++++++++++++++++++++++
+>  include/trace/events/tsn.h                | 349 +++++++++++
+>  net/Kconfig                               |   1 +
+>  net/Makefile                              |   1 +
+>  net/tsn/Kconfig                           |  32 +
+>  net/tsn/Makefile                          |   6 +
+>  net/tsn/tsn_configfs.c                    | 623 +++++++++++++++++++
+>  net/tsn/tsn_core.c                        | 975 ++++++++++++++++++++++++++++++
+>  net/tsn/tsn_header.c                      | 203 +++++++
+>  net/tsn/tsn_internal.h                    | 383 ++++++++++++
+>  net/tsn/tsn_net.c                         | 403 ++++++++++++
+>  24 files changed, 5306 insertions(+), 3 deletions(-)
+>  create mode 100644 Documentation/TSN/tsn.txt
+>  create mode 100644 drivers/media/avb/Makefile
+>  create mode 100644 drivers/media/avb/avb_alsa.c
+>  create mode 100644 drivers/media/avb/tsn_iec61883.h
+>  create mode 100644 drivers/net/ethernet/intel/igb/igb_tsn.c
+>  create mode 100644 include/linux/tsn.h
+>  create mode 100644 include/trace/events/tsn.h
+>  create mode 100644 net/tsn/Kconfig
+>  create mode 100644 net/tsn/Makefile
+>  create mode 100644 net/tsn/tsn_configfs.c
+>  create mode 100644 net/tsn/tsn_core.c
+>  create mode 100644 net/tsn/tsn_header.c
+>  create mode 100644 net/tsn/tsn_internal.h
+>  create mode 100644 net/tsn/tsn_net.c
+> 
+> --
+> 2.7.4
 
-On Sat, Jun 11, 2016 at 03:35:10PM -0700, David Miller wrote:
->=20
-> Networking patches not CC:'d to netdev@vger.kernel.org are unlikely to
-> be reviewed by networking developers at all.
-
-Oh no! I messed up git send-email and wrote linux-netdev@vger instead of=20
-netdev@vger.
-
-What would be the best approach? Resend series to netdev@vger? I don't want=
-=20
-to spam too many lists either.
-
---=20
+-- 
 Henrik Austad
-
---x+6KMIRAuhnl3hBn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAldclQAACgkQ6k5VT6v45lmEmgCeIP4AuvPwVEO5MJFJjlcAgEWq
-zdsAoOA+vATHaEMCRhUuEb7uhvKFL2kI
-=p2tc
------END PGP SIGNATURE-----
-
---x+6KMIRAuhnl3hBn--
 --
 To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
-
-
---===============8825890223083785076==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8825890223083785076==--
