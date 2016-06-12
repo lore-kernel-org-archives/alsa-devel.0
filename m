@@ -1,19 +1,16 @@
-From: Matt Flax <flatmax@flatmax.org>
-Subject: Re: [PATCH 2/2] ASoc: wm8731: add normal mode with
-	12MHz XTAL
-Date: Sun, 12 Jun 2016 13:22:26 +1000
-Message-ID: <575CD572.2040700@flatmax.org>
-References: <1465517516-1917-1-git-send-email-flatmax@flatmax.org>
- <1465517516-1917-2-git-send-email-flatmax@flatmax.org>
- <575BD6F2.70600@flatmax.org>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [very-RFC 0/8] TSN driver for the kernel
+Date: Sun, 12 Jun 2016 12:38:36 +0900
+Message-ID: <575CD93C.50006@sakamocchi.jp>
+References: <1465686096-22156-1-git-send-email-henrik@austad.us>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nskntmtas03p.mx.bigpond.com (nskntmtas03p.mx.bigpond.com
- [61.9.168.143]) by alsa0.perex.cz (Postfix) with ESMTP id 996B22604EB
- for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2016 05:22:32 +0200 (CEST)
-In-Reply-To: <575BD6F2.70600@flatmax.org>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 1F7DB2604EB
+ for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2016 05:38:40 +0200 (CEST)
+In-Reply-To: <1465686096-22156-1-git-send-email-henrik@austad.us>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,120 +20,150 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, ckeepax@opensource.wolfsonmicro.com
+To: Henrik Austad <henrik@austad.us>, alsa-devel@alsa-project.org
+Cc: netdev@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@vger.kernel.org, henrk@austad.us
 List-Id: alsa-devel@alsa-project.org
 
-It appears that my logic here is flawed.
- From what I can tell, it isn't possible to get a suitable bit clock out 
-of the codec when using a 12 MHz crystal. For that reason, in my 
-hardware I will change crystals from 12 MHz.
+Hi,
 
-I just want to check ... are there any versions of this codec which 
-output the bit clock when in USB mode on the BCLK pin ?
+I'm one of maintainers for ALSA firewire stack, which handles IEC
+61883-1/6 and vendor-unique packets on IEEE 1394 bus for consumer
+recording equipments.
+(I'm not in MAINTAINERS because I'm a shy boy.)
 
-thanks
-Matt
+IEC 61883-6 describes that one packet can multiplex several types of
+data in its data channels; i.e. Multi Bit Linear Audio data (PCM
+samples), One Bit Audio Data (DSD), MIDI messages and so on.
 
-On 11/06/16 19:16, Matt Flax wrote:
-> I have realised that this second patch may not be necessary. It is 
-> also likely that it will skew the actual sample rate.
->
-> Charles, can you please advise me on the following...
->
-> I notice that I can probably get the correct sample rates by spoofing 
-> the crystal frequencies in my machine driver. For example ...
-> The ratio between the USB and Normal mode fs multipliers with BOSR=0 is :
-> 250/256 = 0.97656
-> Similarly, I can match this with the following crystal frequency ratio 
-> (crystal f in MHz) :
-> 12/12.288 = 0.97656
-> By induction, I assume that I can spoof a 12.288 clock with BOSR=0 for 
-> sample rate = 48kHz, 96 kHz when using a 12 MHz crystal.
->
-> Again, I can match ratios between the following crystal frequecies (in 
-> MHz) :
-> 12/16.9344 = 0.70862
-> With BOSR = 1, I assume that can get 44.1 kHz and 88.2 kHz because the 
-> fs ratio between normal and usb mode is :
-> 272/384 = 0.70833
->
-> Now these two ratios are skew by 0.41% which is equvalent to the skew 
-> in 12 MHz USB mode clocks of 44.1kHz to 44.118kHz as reported in the  
-> wm8731 datasheet.
->
-> Can you advise me whether my idea of spoofing clocks in the machine 
-> driver is perhaps a better way of acquiring the correct sample rates, 
-> rather then this patch ?
->
-> thanks
-> Matt
->
-> On 10/06/16 10:11, Matt Flax wrote:
->> This patch allows a machine to set normal mode when using a
->> 12 MHz crystal. In USB_MODE the 12 MHz crystal signal is output on
->> the BCLK pin. In NORMAL_MODE the bit clock is output on the BCLK pin.
->> The previously ignored direction variable input to the
->> wm8731_set_dai_sysclk function is used to indicate whether crystal
->> or bit clock is output on the BCLK codec pin.
->> I have ensured that this does not effect the db1200.c machine driver
->> (the only other driver to use a 12 MHz crystal in USB_MODE). It also
->> does not effect the other machine drivers which use the wm8731 codec
->> as they don't use USB_MODE nor 12 MHz crystals.
->>
->> When driving the wm8731 in normal mode with a 12 MHz crystal, the
->> DSP filters are expected to be effected. If the filters are activated
->> then it is expected that the filter cut offs are shifted by 2.3% at
->> 250 fs and 29.1% at 272 fs. The assumption is that the filters are
->> linear, which implies a linear shift in rate scaling effects the
->> filter cut off frequencies linearly. If the filters are not active,
->> there will be no effects.
->>
->> Signed-off-by: Matt Flax <flatmax@flatmax.org>
->> ---
->>   sound/soc/codecs/wm8731.c | 14 ++++++++++++--
->>   1 file changed, 12 insertions(+), 2 deletions(-)
->>
->> diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
->> index d18261a..ec98d5a 100644
->> --- a/sound/soc/codecs/wm8731.c
->> +++ b/sound/soc/codecs/wm8731.c
->> @@ -5,6 +5,7 @@
->>    * Copyright 2006-12 Wolfson Microelectronics, plc
->>    *
->>    * Author: Richard Purdie <richard@openedhand.com>
->> + * Author: Matt Flax <flatmax@flatmax.com> 12Mhz XTAL normal mode 
->> and 32bit mode.
->>    *
->>    * Based on wm8753.c by Liam Girdwood
->>    *
->> @@ -53,6 +54,7 @@ struct wm8731_priv {
->>       int sysclk_type;
->>       int playback_fs;
->>       bool deemph;
->> +    bool bclk_12_mhz;
->>         struct mutex lock;
->>   };
->> @@ -341,8 +343,11 @@ static int wm8731_hw_params(struct 
->> snd_pcm_substream *substream,
->>       struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
->>       u16 iface = snd_soc_read(codec, WM8731_IFACE) & 0xfff3;
->>       int i = get_coeff(wm8731->sysclk, params_rate(params));
->> -    u16 srate = (coeff_div[i].sr << 2) |
->> -        (coeff_div[i].bosr << 1) | coeff_div[i].usb;
->> +    u16 srate = (coeff_div[i].sr << 2) | (coeff_div[i].bosr << 1);
->> +
->> +    /* this determines whether to output bit or crystal clk */
->> +    if (wm8731->bclk_12_mhz)
->> +        srate |= coeff_div[i].usb;
->>         wm8731->playback_fs = params_rate(params);
->>   @@ -420,6 +425,11 @@ static int wm8731_set_dai_sysclk(struct 
->> snd_soc_dai *codec_dai,
->>         wm8731->sysclk = freq;
->>   +    if (dir == SND_SOC_CLOCK_IN) /* output the 12 MHz clock */
->> +        wm8731->bclk_12_mhz = 1;
->> +    else /* SND_SOC_CLOCK_OUT, output the bit clock */
->> +        wm8731->bclk_12_mhz = 0;
->> +
->>       snd_soc_dapm_sync(dapm);
->>         return 0;
->
+If you handles packet payload in 'struct snd_pcm_ops.copy', a process
+context of an ALSA PCM applications performs the work. Thus, no chances
+to multiplex data with the other types.
+
+To prevent this situation, current ALSA firewire stack handles packet
+payload in software interrupt context of isochronous context of OHCI
+1394. As a result of this, the software stack supports PCM substreams
+and MIDI substreams.
+
+In your patcset, there's no actual codes about how to handle any
+interrupt contexts (software / hardware), how to handle packet payload,
+and so on. Especially, for recent sound subsystem, the timing of
+generating interrupts and which context does what works are important to
+reduce playback/capture latency and power consumption.
+
+Of source, your intention of this patchset is to show your early concept
+of TSN feature. Nevertheless, both of explaination and codes are
+important to the other developers who have little knowledges about TSN,
+AVB and AES-64 such as me.
+
+And, I might cooperate to prepare for common IEC 61883 layer. For actual
+codes of ALSA firewire stack, please see mainline kernel code. For
+actual devices of IEC 61883-1/6 and IEEE 1394 bus, please refer to my
+report in 2014. At least, you can get to know what to consider about
+developing upper drivers near ALSA userspace applications.
+https://github.com/takaswie/alsa-firewire-report
+
+(But I confirm that the report includes my misunderstandings in clause
+3.4 and 6.2. need more time...)
+
+
+Regards
+
+Takashi Sakamoto
+
+On Jun 12 2016 08:01, Henrik Austad wrote:
+> Hi all
+> (series based on v4.7-rc2, now with the correct netdev)
+> 
+> This is a *very* early RFC for a TSN-driver in the kernel. It has been
+> floating around in my repo for a while and I would appreciate some
+> feedback on the overall design to avoid doing some major blunders.
+> 
+> TSN: Time Sensitive Networking, formely known as AVB (Audio/Video
+> Bridging).
+> 
+> There are at least one AVB-driver (the AV-part of TSN) in the kernel
+> already, however this driver aims to solve a wider scope as TSN can do
+> much more than just audio. A very basic ALSA-driver is added to the end
+> that allows you to play music between 2 machines using aplay in one end
+> and arecord | aplay on the other (some fiddling required) We have plans
+> for doing the same for v4l2 eventually (but there are other fishes to
+> fry first). The same goes for a TSN_SOCK type approach as well.
+> 
+> TSN is all about providing infrastructure. Allthough there are a few
+> very interesting uses for TSN (reliable, deterministic network for audio
+> and video), once you have that reliable link, you can do a lot more.
+> 
+> Some notes on the design:
+> 
+> The driver is directed via ConfigFS as we need userspace to handle
+> stream-reservation (MSRP), discovery and enumeration (IEEE 1722.1) and
+> whatever other management is needed. Once we have all the required
+> attributes, we can create link using mkdir, and use write() to set the
+> attributes. Once ready, specify the 'shim' (basically a thin wrapper
+> between TSN and another subsystem) and we start pushing out frames.
+> 
+> The network part: it ties directly into the rx-handler for receive and
+> writes skb's using netdev_start_xmit(). This could probably be
+> improved. 2 new fields in netdev_ops have been introduced, and the Intel
+> igb-driver has been updated (as this is available as a PCI-e card). The
+> igb-driver works-ish
+> 
+> 
+> What remains
+> - tie to (g)PTP properly, currently using ktime_get() for presentation
+>   time
+> - get time from shim into TSN and vice versa
+> - let shim create/manage buffer
+> 
+> Henrik Austad (8):
+>   TSN: add documentation
+>   TSN: Add the standard formerly known as AVB to the kernel
+>   Adding TSN-driver to Intel I210 controller
+>   Add TSN header for the driver
+>   Add TSN machinery to drive the traffic from a shim over the network
+>   Add TSN event-tracing
+>   AVB ALSA - Add ALSA shim for TSN
+>   MAINTAINERS: add TSN/AVB-entries
+> 
+>  Documentation/TSN/tsn.txt                 | 147 +++++
+>  MAINTAINERS                               |  14 +
+>  drivers/media/Kconfig                     |  15 +
+>  drivers/media/Makefile                    |   3 +-
+>  drivers/media/avb/Makefile                |   5 +
+>  drivers/media/avb/avb_alsa.c              | 742 +++++++++++++++++++++++
+>  drivers/media/avb/tsn_iec61883.h          | 124 ++++
+>  drivers/net/ethernet/intel/Kconfig        |  18 +
+>  drivers/net/ethernet/intel/igb/Makefile   |   2 +-
+>  drivers/net/ethernet/intel/igb/igb.h      |  19 +
+>  drivers/net/ethernet/intel/igb/igb_main.c |  10 +-
+>  drivers/net/ethernet/intel/igb/igb_tsn.c  | 396 ++++++++++++
+>  include/linux/netdevice.h                 |  32 +
+>  include/linux/tsn.h                       | 806 ++++++++++++++++++++++++
+>  include/trace/events/tsn.h                | 349 +++++++++++
+>  net/Kconfig                               |   1 +
+>  net/Makefile                              |   1 +
+>  net/tsn/Kconfig                           |  32 +
+>  net/tsn/Makefile                          |   6 +
+>  net/tsn/tsn_configfs.c                    | 623 +++++++++++++++++++
+>  net/tsn/tsn_core.c                        | 975 ++++++++++++++++++++++++++++++
+>  net/tsn/tsn_header.c                      | 203 +++++++
+>  net/tsn/tsn_internal.h                    | 383 ++++++++++++
+>  net/tsn/tsn_net.c                         | 403 ++++++++++++
+>  24 files changed, 5306 insertions(+), 3 deletions(-)
+>  create mode 100644 Documentation/TSN/tsn.txt
+>  create mode 100644 drivers/media/avb/Makefile
+>  create mode 100644 drivers/media/avb/avb_alsa.c
+>  create mode 100644 drivers/media/avb/tsn_iec61883.h
+>  create mode 100644 drivers/net/ethernet/intel/igb/igb_tsn.c
+>  create mode 100644 include/linux/tsn.h
+>  create mode 100644 include/trace/events/tsn.h
+>  create mode 100644 net/tsn/Kconfig
+>  create mode 100644 net/tsn/Makefile
+>  create mode 100644 net/tsn/tsn_configfs.c
+>  create mode 100644 net/tsn/tsn_core.c
+>  create mode 100644 net/tsn/tsn_header.c
+>  create mode 100644 net/tsn/tsn_internal.h
+>  create mode 100644 net/tsn/tsn_net.c
+> 
+> --
+> 2.7.4
