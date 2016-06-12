@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 05/10] ctl: change former APIs as wrapper
-	functions of element set APIs
-Date: Sun, 12 Jun 2016 17:16:06 +0900
-Message-ID: <1465719371-27721-6-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 06/10] ctl: deprecate APIs to add an element
+	set with a single element
+Date: Sun, 12 Jun 2016 17:16:07 +0900
+Message-ID: <1465719371-27721-7-git-send-email-o-takashi@sakamocchi.jp>
 References: <1465719371-27721-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 00CD02606AC
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 04A81261294
  for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2016 10:16:19 +0200 (CEST)
 In-Reply-To: <1465719371-27721-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,250 +25,128 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In former commit, userspace library gets some APIs for element set. Some
-existed functions can be simple wrappers of them.
+When comparing old APIs (to add a single element) with new APIs (to add
+an element set), the latter has an benefit to get full identical
+information for a first element in the element set. Furthermore, in
+previous commit, the old APIs become simple wrappers to the new APIs.
+Therefore, there's few intentions to use the old APIs.
 
-This commit changes these APIs as wrapper functions. Additionally, this
-commit also adds local variables for identical information of elements.
-This modification is important to keep API consistency.
-
-Some old APIs to add an element have id variables with const type
-qualifier, while some new APIs to add element set changes the content of
-given parameters. This comes from a change in Linux kernel 4.1.
-
-In this commit [1], in-kernel implementation fills all fields of identical
-data in userspace. As a result, when adding a new element set, userspace
-applications can get an identical data for the first element in the set.
-This lost the semantics of const type qualifier in userspace.
-
-[1] http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/core?id=cab2ed7474bffafd2a68a885e03b85526194abcd
+This commit deprecates the old APIs to encourage the usage of new APIs.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/control/control.c | 183 +++++++++++++-------------------------------------
- 1 file changed, 45 insertions(+), 138 deletions(-)
+ include/control.h     | 17 ++++++++++++-----
+ src/control/control.c | 20 ++++++++++++++++++++
+ 2 files changed, 32 insertions(+), 5 deletions(-)
 
+diff --git a/include/control.h b/include/control.h
+index d6069ff..e21a58a 100644
+--- a/include/control.h
++++ b/include/control.h
+@@ -443,14 +443,21 @@ int snd_ctl_elem_add_enumerated_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
+ int snd_ctl_elem_add_bytes_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
+ 			       unsigned int element_count,
+ 			       unsigned int member_count);
+-
+-int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id, unsigned int count, long imin, long imax, long istep);
+-int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id, unsigned int count, long long imin, long long imax, long long istep);
+-int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id, unsigned int count);
+-int snd_ctl_elem_add_enumerated(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id, unsigned int count, unsigned int items, const char *const names[]);
+ int snd_ctl_elem_add_iec958(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id);
+ int snd_ctl_elem_remove(snd_ctl_t *ctl, snd_ctl_elem_id_t *id);
+ 
++int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
++		unsigned int count, long imin, long imax,
++		long istep) __attribute__((deprecated));
++int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
++		unsigned int count, long long imin, long long imax,
++		long long istep) __attribute__((deprecated));
++int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
++		unsigned int count) __attribute__((deprecated));
++int snd_ctl_elem_add_enumerated(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
++		unsigned int count, unsigned int items,
++		const char *const names[]) __attribute__((deprecated));
++
+ size_t snd_ctl_elem_value_sizeof(void);
+ /** \hideinitializer
+  * \brief allocate an invalid #snd_ctl_elem_value_t using standard alloca
 diff --git a/src/control/control.c b/src/control/control.c
-index 9fad0c0..fbc5e18 100644
+index fbc5e18..6893012 100644
 --- a/src/control/control.c
 +++ b/src/control/control.c
-@@ -673,172 +673,79 @@ int snd_ctl_elem_add_bytes_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
- }
- 
- /**
-- * \brief Create and add an user INTEGER CTL element
-- * \param ctl CTL handle
-- * \param id CTL element id to add
-- * \param count number of elements
-- * \param min minimum value
-- * \param max maximum value
-- * \param step value step
-- * \return 0 on success otherwise a negative error code
-+ * \brief Create and add an user-defined control element of integer type.
+@@ -677,6 +677,8 @@ int snd_ctl_elem_add_bytes_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
+  *
+  * This function is a wrapper function to snd_ctl_elem_add_integer_set() for
+  * single control element.
 + *
-+ * This function is a wrapper function to snd_ctl_elem_add_integer_set() for
-+ * single control element.
++ * \deprecated Since 1.1.2. Use snd_ctl_elem_add_integer_set(), instead.
   */
  int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
--			     unsigned int count, long min, long max, long step)
-+			     unsigned int member_count,
-+			     long min, long max, long step)
- {
--	snd_ctl_elem_info_t *info;
--	snd_ctl_elem_value_t *val;
--	unsigned int i;
--	int err;
-+	snd_ctl_elem_id_t *local_id;
- 
--	assert(ctl && id && id->name[0]);
--	snd_ctl_elem_info_alloca(&info);
--	info->id = *id;
--	info->type = SND_CTL_ELEM_TYPE_INTEGER;
--	info->access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
--		SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE;
--	info->count = count;
--	info->value.integer.min = min;
--	info->value.integer.max = max;
--	info->value.integer.step = step;
--	err = ctl->ops->element_add(ctl, info);
--	if (err < 0)
--		return err;
--	snd_ctl_elem_value_alloca(&val);
--	val->id = info->id;
--	for (i = 0; i < count; i++)
--		val->value.integer.value[i] = min;
--	err = ctl->ops->element_write(ctl, val);
--	return err;
-+	snd_ctl_elem_id_alloca(&local_id);
-+	*local_id = *id;
-+
-+	return snd_ctl_elem_add_integer_set(ctl, local_id, 1, member_count,
-+					    min, max, step);
+ 			     unsigned int member_count,
+@@ -690,12 +692,17 @@ int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+ 	return snd_ctl_elem_add_integer_set(ctl, local_id, 1, member_count,
+ 					    min, max, step);
  }
++link_warning(snd_ctl_elem_add_integer,
++	     "Warning: snd_ctl_elem_add_integer is deprecated, "
++	     "Use snd_ctl_elem_add_integer_set, instead.");
  
  /**
-- * \brief Create and add an user INTEGER64 CTL element
-- * \param ctl CTL handle
-- * \param id CTL element id to add
-- * \param count number of elements
-- * \param min minimum value
-- * \param max maximum value
-- * \param step value step
-- * \return 0 on success otherwise a negative error code
-+ * \brief Create and add an user-defined control element of integer64 type.
+  * \brief Create and add an user-defined control element of integer64 type.
+  *
+  * This function is a wrapper function to snd_ctl_elem_add_integer64_set() for
+  * single control element.
 + *
-+ * This function is a wrapper function to snd_ctl_elem_add_integer64_set() for
-+ * single control element.
++ * \deprecated Since 1.1.2. Use snd_ctl_elem_add_integer64_set(), instead.
   */
  int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
--			       unsigned int count, long long min, long long max,
--			       long long step)
-+			       unsigned int member_count,
-+			       long long min, long long max, long long step)
- {
--	snd_ctl_elem_info_t *info;
--	snd_ctl_elem_value_t *val;
--	unsigned int i;
--	int err;
-+	snd_ctl_elem_id_t *local_id;
- 
--	assert(ctl && id && id->name[0]);
--	snd_ctl_elem_info_alloca(&info);
--	info->id = *id;
--	info->type = SND_CTL_ELEM_TYPE_INTEGER64;
--	info->count = count;
--	info->value.integer64.min = min;
--	info->value.integer64.max = max;
--	info->value.integer64.step = step;
--	err = ctl->ops->element_add(ctl, info);
--	if (err < 0)
--		return err;
--	snd_ctl_elem_value_alloca(&val);
--	val->id = info->id;
--	for (i = 0; i < count; i++)
--		val->value.integer64.value[i] = min;
--	err = ctl->ops->element_write(ctl, val);
--	return err;
-+	snd_ctl_elem_id_alloca(&local_id);
-+	*local_id = *id;
-+
-+	return snd_ctl_elem_add_integer64_set(ctl, local_id, 1, member_count,
-+					      min, max, step);
+ 			       unsigned int member_count,
+@@ -709,12 +716,17 @@ int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+ 	return snd_ctl_elem_add_integer64_set(ctl, local_id, 1, member_count,
+ 					      min, max, step);
  }
++link_warning(snd_ctl_elem_add_integer64,
++	     "Warning: snd_ctl_elem_add_integer64 is deprecated, "
++	     "Use snd_ctl_elem_add_integer64_set, instead.");
  
  /**
-- * \brief Create and add an user BOOLEAN CTL element
-- * \param ctl CTL handle
-- * \param id CTL element id to add
-- * \param count number of elements
-- * \return 0 on success otherwise a negative error code
-+ * \brief Create and add an user-defined control element of boolean type.
+  * \brief Create and add an user-defined control element of boolean type.
+  *
+  * This function is a wrapper function to snd_ctl_elem_add_boolean_set() for
+  * single control element.
 + *
-+ * This function is a wrapper function to snd_ctl_elem_add_boolean_set() for
-+ * single control element.
++ * \deprecated Since 1.1.2. Use snd_ctl_elem_add_boolean_set(), instead.
   */
  int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
--			     unsigned int count)
-+			     unsigned int member_count)
- {
--	snd_ctl_elem_info_t *info;
-+	snd_ctl_elem_id_t *local_id;
+ 			     unsigned int member_count)
+@@ -726,6 +738,9 @@ int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
  
--	assert(ctl && id && id->name[0]);
--	snd_ctl_elem_info_alloca(&info);
--	info->id = *id;
--	info->type = SND_CTL_ELEM_TYPE_BOOLEAN;
--	info->count = count;
--	info->value.integer.min = 0;
--	info->value.integer.max = 1;
--	return ctl->ops->element_add(ctl, info);
-+	snd_ctl_elem_id_alloca(&local_id);
-+	*local_id = *id;
-+
-+	return snd_ctl_elem_add_boolean_set(ctl, local_id, 1, member_count);
+ 	return snd_ctl_elem_add_boolean_set(ctl, local_id, 1, member_count);
  }
++link_warning(snd_ctl_elem_add_boolean,
++	     "Warning: snd_ctl_elem_add_boolean is deprecated, "
++	     "Use snd_ctl_elem_add_boolean_set, instead.");
  
  /**
-- * \brief Create and add a user-defined control element of type enumerated.
-- * \param[in] ctl Control device handle.
-- * \param[in] id ID of the new control element.
-- * \param[in] count Number of element values.
-- * \param[in] items Range of possible values (0 ... \a items - 1).
-- * \param[in] names An array containing \a items strings.
-- * \return Zero on success, otherwise a negative error code.
-+ * \brief Create and add a user-defined control element of enumerated type.
+  * \brief Create and add a user-defined control element of enumerated type.
+@@ -734,6 +749,8 @@ int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+  * single control element.
   *
-- * This function creates a user element, i.e., a control element that is not
-- * controlled by the control device's driver but that is just stored together
-- * with the other elements of \a ctl.
-+ * This function is a wrapper function to snd_ctl_elem_add_enumerated_set() for
-+ * single control element.
-  *
-- * The fields of \a id, except numid, must be set to unique values that
-- * identify the new element.
-- *
-- * The new element is locked; its value is initialized as zero.
-- *
-- * \par Errors:
-- * <dl>
-- * <dt>-EBUSY<dd>A control element with ID \a id already exists.
-- * <dt>-EINVAL<dd>\a count is not at least one or greater than 128, or \a items
-- * 	is not at least one, or a string in \a names is empty or longer than 63
-- * 	bytes, or the strings in \a names require more than 64 KB storage.
-- * <dt>-ENOMEM<dd>Out of memory, or there are too many user control elements.
-- * <dt>-ENXIO<dd>This driver does not support (enumerated) user controls.
-- * <dt>-ENODEV<dd>Device unplugged.
-- * </dl>
-- *
-- * \par Compatibility:
-- * snd_ctl_elem_add_enumerated() was introduced in ALSA 1.0.25.
-+ * This function is added in version 1.0.25.
+  * This function is added in version 1.0.25.
++ *
++ * \deprecated Since 1.1.2. Use snd_ctl_elem_add_enumerated_set(), instead.
   */
  int snd_ctl_elem_add_enumerated(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
--				unsigned int count, unsigned int items,
--				const char *const names[])
-+				unsigned int member_count, unsigned int items,
-+				const char *const labels[])
- {
--	snd_ctl_elem_info_t *info;
--	unsigned int i, bytes;
--	char *buf, *p;
--	int err;
--
--	assert(ctl && id && id->name[0] && names);
--
--	snd_ctl_elem_info_alloca(&info);
--	info->id = *id;
--	info->type = SND_CTL_ELEM_TYPE_ENUMERATED;
--	info->count = count;
--	info->value.enumerated.items = items;
--
--	bytes = 0;
--	for (i = 0; i < items; ++i)
--		bytes += strlen(names[i]) + 1;
--	buf = bytes ? malloc(bytes) : NULL;
--	if (!buf)
--		return -ENOMEM;
--	info->value.enumerated.names_ptr = (uintptr_t)buf;
--	info->value.enumerated.names_length = bytes;
--	p = buf;
--	for (i = 0; i < items; ++i) {
--		strcpy(p, names[i]);
--		p += strlen(names[i]) + 1;
--	}
-+	snd_ctl_elem_id_t *local_id;
- 
--	err = ctl->ops->element_add(ctl, info);
-+	snd_ctl_elem_id_alloca(&local_id);
-+	*local_id = *id;
- 
--	free(buf);
--
--	return err;
-+	return snd_ctl_elem_add_enumerated_set(ctl, local_id, 1, member_count,
-+					       items, labels);
+ 				unsigned int member_count, unsigned int items,
+@@ -747,6 +764,9 @@ int snd_ctl_elem_add_enumerated(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+ 	return snd_ctl_elem_add_enumerated_set(ctl, local_id, 1, member_count,
+ 					       items, labels);
  }
++link_warning(snd_ctl_elem_add_enumerated,
++	     "Warning: snd_ctl_elem_add_enumerated is deprecated, "
++	     "Use snd_ctl_elem_add_enumerated_set, instead.");
  
  /**
+  * \brief Create and add a user-defined control element of IEC958 type.
 -- 
 2.7.4
