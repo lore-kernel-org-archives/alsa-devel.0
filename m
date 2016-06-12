@@ -1,106 +1,115 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Subject: Re: [very-RFC 0/8] TSN driver for the kernel
-Date: Sun, 12 Jun 2016 18:14:49 +0900
-Message-ID: <575D2809.9020903@sakamocchi.jp>
+Date: Sun, 12 Jun 2016 19:43:34 +0900
+Message-ID: <575D3CD6.3050001@sakamocchi.jp>
 References: <1465686096-22156-1-git-send-email-henrik@austad.us>
- <575CD93C.50006@sakamocchi.jp> <20160612082852.GA32724@icarus.home.austad.us>
+ <575CD93C.50006@sakamocchi.jp> <575CE560.9090608@sakamocchi.jp>
+ <20160612083122.GB32724@icarus.home.austad.us>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4237115519634769012=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 839C12607F7
- for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2016 11:15:01 +0200 (CEST)
-In-Reply-To: <20160612082852.GA32724@icarus.home.austad.us>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Henrik Austad <henrik@austad.us>
-Cc: netdev@vger.kernel.org, alsa-devel@alsa-project.org, linux-media@vger.kernel.org, alsa-devel@vger.kernel.org, henrk@austad.us
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="UsR84E3dGIn60IX3V7DNPtulHtaLdK7uD"
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20160612083122.GB32724@icarus.home.austad.us>
+Sender: netdev-owner@vger.kernel.org
+To: Henrik Austad <henrik@austad.us>, alsa-devel@alsa-project.org
+Cc: netdev@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---===============4237115519634769012==
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="vH47jvMUfF2lIBf46CLLdkRFuNv9P0Gu6"
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---vH47jvMUfF2lIBf46CLLdkRFuNv9P0Gu6
-Content-Type: multipart/mixed; boundary="6lag9WIGPbQbhbEDSbiR6XOMgx44sk23J"
+--UsR84E3dGIn60IX3V7DNPtulHtaLdK7uD
+Content-Type: multipart/mixed; boundary="K0b4NFlup2Hr3Mf9McNagelra53C3B9tq"
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Henrik Austad <henrik@austad.us>
-Cc: alsa-devel@alsa-project.org, netdev@vger.kernel.org, henrk@austad.us,
- alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
-Message-ID: <575D2809.9020903@sakamocchi.jp>
+To: Henrik Austad <henrik@austad.us>, alsa-devel@alsa-project.org
+Cc: netdev@vger.kernel.org, linux-media@vger.kernel.org
+Message-ID: <575D3CD6.3050001@sakamocchi.jp>
 Subject: Re: [very-RFC 0/8] TSN driver for the kernel
 References: <1465686096-22156-1-git-send-email-henrik@austad.us>
- <575CD93C.50006@sakamocchi.jp> <20160612082852.GA32724@icarus.home.austad.us>
-In-Reply-To: <20160612082852.GA32724@icarus.home.austad.us>
+ <575CD93C.50006@sakamocchi.jp> <575CE560.9090608@sakamocchi.jp>
+ <20160612083122.GB32724@icarus.home.austad.us>
+In-Reply-To: <20160612083122.GB32724@icarus.home.austad.us>
 
---6lag9WIGPbQbhbEDSbiR6XOMgx44sk23J
+--K0b4NFlup2Hr3Mf9McNagelra53C3B9tq
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: quoted-printable
 
-On Jun 12 2016 17:28, Henrik Austad wrote:
-> On Sun, Jun 12, 2016 at 12:38:36PM +0900, Takashi Sakamoto wrote:
->> I'm one of maintainers for ALSA firewire stack, which handles IEC
->> 61883-1/6 and vendor-unique packets on IEEE 1394 bus for consumer
->> recording equipments.
->> (I'm not in MAINTAINERS because I'm a shy boy.)
+On Jun 12 2016 17:31, Henrik Austad wrote:
+> On Sun, Jun 12, 2016 at 01:30:24PM +0900, Takashi Sakamoto wrote:
+>> On Jun 12 2016 12:38, Takashi Sakamoto wrote:
+>>> In your patcset, there's no actual codes about how to handle any
+>>> interrupt contexts (software / hardware), how to handle packet payloa=
+d,
+>>> and so on. Especially, for recent sound subsystem, the timing of
+>>> generating interrupts and which context does what works are important=
+ to
+>>> reduce playback/capture latency and power consumption.
+>>>
+>>> Of source, your intention of this patchset is to show your early conc=
+ept
+>>> of TSN feature. Nevertheless, both of explaination and codes are
+>>> important to the other developers who have little knowledges about TS=
+N,
+>>> AVB and AES-64 such as me.
 >>
->> IEC 61883-6 describes that one packet can multiplex several types of
->> data in its data channels; i.e. Multi Bit Linear Audio data (PCM
->> samples), One Bit Audio Data (DSD), MIDI messages and so on.
+>> Oops. Your 5th patch was skipped by alsa-project.org. I guess that siz=
+e
+>> of the patch is too large to the list service. I can see it:
+>> http://marc.info/?l=3Dlinux-netdev&m=3D146568672728661&w=3D2
+>>
+>> As long as seeing the patch, packets are queueing in hrtimer callbacks=
+
+>> every 1 seconds.
 >=20
-> Hmm, that I did not know, not sure how that applies to AVB, but definat=
-ely=20
-> something I have to look into.
+> Actually, the hrtimer fires every 1ms, and that part is something I hav=
+e to=20
+> do something about, also because it sends of the same number of frames =
 
-For your information, I describe more about it.
-
-You can see pre-standardized specification for IEC 61883-6 in website of
-1394 Trade Association. Let's look for 'Audio and Music Data
-Transmission Protocol 2.3 (October 13, 2010, 1394TA)'
-http://1394ta.org/specifications/
-
-In 'clause 12. AM824 SEQUENCE ADAPTATION LAYERS', you can see that one
-data block includes several types of data.
-
-
-But I can imagine that joint group for AVB loosely refers to IEC
-61883-6. In this case, AVB specification might describe one data block
-transfers one type of data, to drop unreasonable complexities.
-
->> If you handles packet payload in 'struct snd_pcm_ops.copy', a process
->> context of an ALSA PCM applications performs the work. Thus, no chance=
-s
->> to multiplex data with the other types.
+> every time, regardless of how accurate the internal timer is to the res=
+t of=20
+> the network (there's no backpressure from the networking layer).
 >=20
-> The driver is not adhering fully to any standards right now, the amount=
- of=20
-> detail is quite high - but I'm slowly improving as I go through the=20
-> standards. Getting on top of all the standards and all the different=20
-> subsystems are definately a work in progress (it's a lot to digest!)
+>> (This is a high level discussion and it's OK to ignore it for the
+>> moment. When writing packet-oriented drivers for sound subsystem, you
+>> need to pay special attention to accuracy of the number of PCM frames
+>> transferred currently, and granularity of the number of PCM frames
+>> transferred by one operation. In this case, snd_avb_hw,
+>> snd_avb_pcm_pointer(), tsn_buffer_write_net() and tsn_buffer_read_net(=
+)
+>> are involved in this discussion. You can see ALSA developers' struggle=
 
-In my taste, the driver is not necessarily compliant to any standards.
-It's enough just to work its task, without bad side-effects to Linux
-system. Based on this concept, current ALSA firewire stack just support
-PCM frames and MIDI messages.
+>> in USB audio device class drivers and (of cource) IEC 61883-1/6 driver=
+s.)
+>=20
+> Ah, good point. Any particular parts of the USB-subsystem I should star=
+t=20
+> looking at?
 
-Here, I tell you that actual devices tend not to be compliant to any
-standards and lost inter-operability.
+I don't think it's a beter way for you to study USB Audio Device Class
+driver unless you're interested in ALSA or USB subsystem.
 
-(Especially, most of audio and music units on IEEE 1394 bus ignores some
-of items in standards. In short, they already lost inter-operability.)
+(But for your information, snd-usb-audio is in sound/usb/* of Linux
+kernel. IEC 61883-1/6 driver is in sound/firewire/*.)
 
-So here, we just consider about what actual devices do, instead of
-following any standards.
+We need different strategy to achieve it on different transmission backen=
+d.
+
+> Knowing where to start looking is a tremendous help
+
+It's not well-documented, and not well-generalized for packet-oriented
+drivers. Most of developers who have enough knowledge about it work for
+DMA-oriented drivers in mobile platforms and have little interests in
+packet-oriented drivers. You need to find your own way.
+
+Currently I have few advices to you, because I'm also on the way for
+drivers to process IEC 61883-1/6 packets on IEEE 1394 bus with enough
+accuracy and granularity. The paper I introduced is for the way (but not
+mature).
+
+I wish you get more helps from the other developers. Your work is more
+significant to Linux system, than mine.
+
+(And I hope your future work get no ignorance and no unreasonable
+hostility from coarse users.)
 
 
 Regards
@@ -108,9 +117,9 @@ Regards
 Takashi Sakamoto
 
 
---6lag9WIGPbQbhbEDSbiR6XOMgx44sk23J--
+--K0b4NFlup2Hr3Mf9McNagelra53C3B9tq--
 
---vH47jvMUfF2lIBf46CLLdkRFuNv9P0Gu6
+--UsR84E3dGIn60IX3V7DNPtulHtaLdK7uD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -118,28 +127,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBCAAGBQJXXSgPAAoJELWlhsfWb9NBot4P/RqHqRt+ZHC9pmoVKfbDM+Gg
-Uu5my0lQuMnWg2FPuVL6l450S/jsITLV5ERMEVU4vYhTKfit18dxhd+Ur7R7VEaA
-Z+4NjDn0pxJvOCENss1pvRRWFTxbR70g+k0Zzxh2e/bfAvi1tsUvTKPCGfoU6Mvb
-msM04PfZN/+ZFLn8FO8WQpmNIbWaMfbvLwg0TMcUSb93t68BS0dBm1pYX3doBt7T
-5KUqufhgOfZB+o2aFikzXR9J47yZZeMs+2P9DRO6l4Czi3LQur4VxriYsMQpF7oL
-LfG1oZM/jvquGstGUsND0eQHPqDAzlV8wbLya76ieFOW937rMHoMnL1AUFU/8dlP
-zBhEnCbOw/eQtiPLhPKgsky/SfK+/dStx5uSs3cRkeh5VmZkkZJV5gxjlxRooAwK
-ziWvMNdQCz+uHujQB40wCPh1IIwXBzQ61wLtn8X1iMfeOYrvVcyUayBxlJA1Gjm+
-36XpjFhM7ZiO1E2iifid9y6qMmNQ5HR5iQVQeQ3NvWgNW32/eYUMvuVI32OIJr2X
-6SEWvk+g90wGYlsRNyeJgcuYovEsgysSF0WANGN/vewZr5Wq1/7O+1s9uEBGrlXB
-j7I+0CaGo+PyAJGhpBmY/jGVrCQqPIbHXkqfYL7xKKqBu+2u1RiO5dZN89MlSFLx
-u7jhCb2BhyacGkoDVvlU
-=MRQF
+iQIcBAEBCAAGBQJXXTzWAAoJELWlhsfWb9NBiy0P/0l3ILGCvxaE50WGVEFUFJdJ
+tOHBl9Nw2T+VZNxpspbRMZ/03qx7VMCfszn4CzTYuA3nN1h5KxPDJo5/Fq6/v6tA
+eneP2c623wPmzUAPhGE8ThAgmJGUtmq82JYVAWsjTYm7m5LeOhVjckyw9P8uy1od
+DJeqO5oth2HGWb86JaVSMOpVqY+JVwb9qT04yOZ+JRa2VAgsgs/YdhYBHi7RS45O
+vfvNuR2EAvqNQwY4woDefdQJoHA0hlpx0NiCrJuRQebHsXSeTsCloB5bL+xbfS1V
+dFtf66P2BUMQ7u78xQ1Q/GDeYN23s6VhS5KcuRZ5ExC2Mp913Le55ovxOlZflg14
+3xJHt8PCXZp/Xbn0X/46mrSn0kErib6B10ublL6Ocr8rO/DxoHip4MGtrOl66LDa
+qy4DFxniE69b8wPxbf6h8mc7zzXYlYy0vIjsBqR37AvvHZdy2FiyAUO7Al7U0qwl
+NMuglNCDObkTnNF8Zlmyy9gZyMwNkTNguV8YM7Kx9B6H0OzWmqTJXTcJdEf7p0xa
+5i8tOMWoFhNnk6zM0T4tWbSZ84OQx1Y3ER7pDZAZQRnKTun0AQO7cdHqS5jU+CyC
+iuMdo0+83vW8sCc/Bp8YEdyc9crDSlUeMVOPldn90zHyz/69i39FWb4jdczrbDnb
+/I6fs/pYTFIfISTTs6pr
+=zn4h
 -----END PGP SIGNATURE-----
 
---vH47jvMUfF2lIBf46CLLdkRFuNv9P0Gu6--
-
---===============4237115519634769012==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4237115519634769012==--
+--UsR84E3dGIn60IX3V7DNPtulHtaLdK7uD--
