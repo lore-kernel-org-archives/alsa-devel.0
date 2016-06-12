@@ -1,15 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [alsa-lib][PATCH 00/10 v2] ctl: add APIs for control
-	element set
-Date: Sun, 12 Jun 2016 17:16:01 +0900
-Message-ID: <1465719371-27721-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 08/10] ctl: add explaination about threshold
+	level feature
+Date: Sun, 12 Jun 2016 17:16:09 +0900
+Message-ID: <1465719371-27721-9-git-send-email-o-takashi@sakamocchi.jp>
+References: <1465719371-27721-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 8B9F626051F
- for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2016 10:16:17 +0200 (CEST)
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id EFD412605E8
+ for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2016 10:16:18 +0200 (CEST)
+In-Reply-To: <1465719371-27721-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,64 +25,48 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+ALSA ctl feature includes threshold level feature. This is introduced in
+2006, and there's little resources about it.
 
-This patchset is revised version of below one:
+This commit adds a simple explanation about the feature.
 
-[alsa-devel] [alsa-lib][PATCH 0/6] control: add APIs for control element set
-http://mailman.alsa-project.org/pipermail/alsa-devel/2016-February/104795.html
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ src/control/control.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-In this time, I add a program to test the feature.
-
-Changes:
- - Use a model which consists of element set/element/member/value.
- - Add an description about the design of ALSA ctl feature.
- - Obsolete old APIs due to the lack of const semantics.
- - Add an description about threshold level feature and topology framework.
- - Improve comments to threshold level APIs.
- - Add a test program.
-
-Before starting any discussions, please read description of the model, to stand
-on the same basis of understanding.
-
-
-I note that execution of the test program causes an abort to PulseAudio. I can
-see this line below.
-
-pulseaudio: hcontrol.c:745: snd_hctl_handle_event: Assertion `res >= 0 && dir == 0' failed.
+diff --git a/src/control/control.c b/src/control/control.c
+index 6893012..1039dc2 100644
+--- a/src/control/control.c
++++ b/src/control/control.c
+@@ -58,6 +58,28 @@ elements included in the element set.
  
-I guess that quick addition/removal of control element set causes this
-assertion, but I have little time to investigate the cause. I wish to get helps
-of ALSA developers in PulseAudio side.
-
-
-If you need an practical example of the feature, please test one of Python 3    
-samples in my 'alsa-gi'.
-https://github.com/takaswie/alsa-gi/
-
-This works without alsa-lib, by using kernel/userspace interface directly.
-Therefore, this patchet doesn't affect the implementation.
-
-
-Takashi Sakamoto (10):
-  ctl: add an overview for design of ALSA control interface
-  ctl: improve comments for handling element data
-  ctl: add functions to add an element set
-  ctl: improve comments for API to add an element of IEC958 type
-  ctl: change former APIs as wrapper functions of element set APIs
-  ctl: deprecate APIs to add an element set with a single element
-  pcm: use new APIs to add a control element set for softvol plugin
-  ctl: add explaination about threshold level feature
-  ctl: improve API documentation for threshold level operations
-  ctl: add test program for control element set
-
- include/control.h           |  36 +-
- src/control/control.c       | 829 ++++++++++++++++++++++++++++++++------------
- src/pcm/pcm_softvol.c       |   7 +-
- test/Makefile.am            |   5 +-
- test/user-ctl-element-set.c | 561 ++++++++++++++++++++++++++++++
- 5 files changed, 1216 insertions(+), 222 deletions(-)
- create mode 100644 test/user-ctl-element-set.c
-
+ When the value of member is changed, corresponding events are transferred to
+ userspace applications. The applications should subscribe any events in advance.
++
++\section tlv_topology Thredshold level and topology framework
++
++TLV feature is designed to transfer data about threshold level between a driver
++and any userspace applications. The data is for an element set.
++
++At first, this feature was implemented to add pre-defined data readable to
++userspace applications. Soon, it was extended to handle several operations;
++read, write and command. The original implementation remains as the read
++operation. The command operation allows drivers to have own implementations
++against requests from userspace applications. As of 2016, simple write operation
++is not supported yet.
++
++This feature was introduced to ALSA control feature in 2006, at commit
++c7a0708a2362, corresponding to a series of work for Linux kernel (42750b04c5ba
++and 8aa9b586e420).
++
++This feature can transfer arbitrary data in a shape of an array with members of
++unsigned int type. Focusing on this attribute, this feature is utilized as a
++basin of topology framework introduced in 2015. This framework is mainly used to
++describe widget graph of HDA codecs so that ASoC HDA driver can add control
++element sets without retrieve the data from HDA codecs via HDA controller.
+ */
+ 
+ #include <stdio.h>
 -- 
 2.7.4
