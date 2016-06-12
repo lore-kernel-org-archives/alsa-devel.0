@@ -1,17 +1,19 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 06/10] ctl: deprecate APIs to add an element
-	set with a single element
-Date: Sun, 12 Jun 2016 17:16:07 +0900
-Message-ID: <1465719371-27721-7-git-send-email-o-takashi@sakamocchi.jp>
-References: <1465719371-27721-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Henrik Austad <henrik@austad.us>
+Subject: Re: [very-RFC 0/8] TSN driver for the kernel
+Date: Sun, 12 Jun 2016 10:28:52 +0200
+Message-ID: <20160612082852.GA32724@icarus.home.austad.us>
+References: <1465686096-22156-1-git-send-email-henrik@austad.us>
+ <575CD93C.50006@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1621042781918497061=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 04A81261294
- for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2016 10:16:19 +0200 (CEST)
-In-Reply-To: <1465719371-27721-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from mail-lf0-f66.google.com (mail-lf0-f66.google.com
+ [209.85.215.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id D6740260511
+ for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2016 10:28:55 +0200 (CEST)
+Received: by mail-lf0-f66.google.com with SMTP id h68so8957644lfh.3
+ for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2016 01:28:55 -0700 (PDT)
+In-Reply-To: <575CD93C.50006@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,132 +23,111 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: netdev@vger.kernel.org, alsa-devel@alsa-project.org, linux-media@vger.kernel.org, alsa-devel@vger.kernel.org, henrk@austad.us
 List-Id: alsa-devel@alsa-project.org
 
-When comparing old APIs (to add a single element) with new APIs (to add
-an element set), the latter has an benefit to get full identical
-information for a first element in the element set. Furthermore, in
-previous commit, the old APIs become simple wrappers to the new APIs.
-Therefore, there's few intentions to use the old APIs.
 
-This commit deprecates the old APIs to encourage the usage of new APIs.
+--===============1621042781918497061==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="FL5UXtIhxfXey3p5"
+Content-Disposition: inline
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- include/control.h     | 17 ++++++++++++-----
- src/control/control.c | 20 ++++++++++++++++++++
- 2 files changed, 32 insertions(+), 5 deletions(-)
 
-diff --git a/include/control.h b/include/control.h
-index d6069ff..e21a58a 100644
---- a/include/control.h
-+++ b/include/control.h
-@@ -443,14 +443,21 @@ int snd_ctl_elem_add_enumerated_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
- int snd_ctl_elem_add_bytes_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
- 			       unsigned int element_count,
- 			       unsigned int member_count);
--
--int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id, unsigned int count, long imin, long imax, long istep);
--int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id, unsigned int count, long long imin, long long imax, long long istep);
--int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id, unsigned int count);
--int snd_ctl_elem_add_enumerated(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id, unsigned int count, unsigned int items, const char *const names[]);
- int snd_ctl_elem_add_iec958(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id);
- int snd_ctl_elem_remove(snd_ctl_t *ctl, snd_ctl_elem_id_t *id);
- 
-+int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
-+		unsigned int count, long imin, long imax,
-+		long istep) __attribute__((deprecated));
-+int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
-+		unsigned int count, long long imin, long long imax,
-+		long long istep) __attribute__((deprecated));
-+int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
-+		unsigned int count) __attribute__((deprecated));
-+int snd_ctl_elem_add_enumerated(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
-+		unsigned int count, unsigned int items,
-+		const char *const names[]) __attribute__((deprecated));
-+
- size_t snd_ctl_elem_value_sizeof(void);
- /** \hideinitializer
-  * \brief allocate an invalid #snd_ctl_elem_value_t using standard alloca
-diff --git a/src/control/control.c b/src/control/control.c
-index fbc5e18..6893012 100644
---- a/src/control/control.c
-+++ b/src/control/control.c
-@@ -677,6 +677,8 @@ int snd_ctl_elem_add_bytes_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-  *
-  * This function is a wrapper function to snd_ctl_elem_add_integer_set() for
-  * single control element.
-+ *
-+ * \deprecated Since 1.1.2. Use snd_ctl_elem_add_integer_set(), instead.
-  */
- int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- 			     unsigned int member_count,
-@@ -690,12 +692,17 @@ int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- 	return snd_ctl_elem_add_integer_set(ctl, local_id, 1, member_count,
- 					    min, max, step);
- }
-+link_warning(snd_ctl_elem_add_integer,
-+	     "Warning: snd_ctl_elem_add_integer is deprecated, "
-+	     "Use snd_ctl_elem_add_integer_set, instead.");
- 
- /**
-  * \brief Create and add an user-defined control element of integer64 type.
-  *
-  * This function is a wrapper function to snd_ctl_elem_add_integer64_set() for
-  * single control element.
-+ *
-+ * \deprecated Since 1.1.2. Use snd_ctl_elem_add_integer64_set(), instead.
-  */
- int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- 			       unsigned int member_count,
-@@ -709,12 +716,17 @@ int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- 	return snd_ctl_elem_add_integer64_set(ctl, local_id, 1, member_count,
- 					      min, max, step);
- }
-+link_warning(snd_ctl_elem_add_integer64,
-+	     "Warning: snd_ctl_elem_add_integer64 is deprecated, "
-+	     "Use snd_ctl_elem_add_integer64_set, instead.");
- 
- /**
-  * \brief Create and add an user-defined control element of boolean type.
-  *
-  * This function is a wrapper function to snd_ctl_elem_add_boolean_set() for
-  * single control element.
-+ *
-+ * \deprecated Since 1.1.2. Use snd_ctl_elem_add_boolean_set(), instead.
-  */
- int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- 			     unsigned int member_count)
-@@ -726,6 +738,9 @@ int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- 
- 	return snd_ctl_elem_add_boolean_set(ctl, local_id, 1, member_count);
- }
-+link_warning(snd_ctl_elem_add_boolean,
-+	     "Warning: snd_ctl_elem_add_boolean is deprecated, "
-+	     "Use snd_ctl_elem_add_boolean_set, instead.");
- 
- /**
-  * \brief Create and add a user-defined control element of enumerated type.
-@@ -734,6 +749,8 @@ int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
-  * single control element.
-  *
-  * This function is added in version 1.0.25.
-+ *
-+ * \deprecated Since 1.1.2. Use snd_ctl_elem_add_enumerated_set(), instead.
-  */
- int snd_ctl_elem_add_enumerated(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- 				unsigned int member_count, unsigned int items,
-@@ -747,6 +764,9 @@ int snd_ctl_elem_add_enumerated(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- 	return snd_ctl_elem_add_enumerated_set(ctl, local_id, 1, member_count,
- 					       items, labels);
- }
-+link_warning(snd_ctl_elem_add_enumerated,
-+	     "Warning: snd_ctl_elem_add_enumerated is deprecated, "
-+	     "Use snd_ctl_elem_add_enumerated_set, instead.");
- 
- /**
-  * \brief Create and add a user-defined control element of IEC958 type.
--- 
-2.7.4
+--FL5UXtIhxfXey3p5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sun, Jun 12, 2016 at 12:38:36PM +0900, Takashi Sakamoto wrote:
+> Hi,
+>=20
+> I'm one of maintainers for ALSA firewire stack, which handles IEC
+> 61883-1/6 and vendor-unique packets on IEEE 1394 bus for consumer
+> recording equipments.
+> (I'm not in MAINTAINERS because I'm a shy boy.)
+>=20
+> IEC 61883-6 describes that one packet can multiplex several types of
+> data in its data channels; i.e. Multi Bit Linear Audio data (PCM
+> samples), One Bit Audio Data (DSD), MIDI messages and so on.
+
+Hmm, that I did not know, not sure how that applies to AVB, but definately=
+=20
+something I have to look into.
+
+> If you handles packet payload in 'struct snd_pcm_ops.copy', a process
+> context of an ALSA PCM applications performs the work. Thus, no chances
+> to multiplex data with the other types.
+
+Hmm, ok, I didn't know that, that is something I need to look into -and=20
+incidentally one of the reasons why I posted the series now instead of a=20
+few more months down the road - thanks!
+
+The driver is not adhering fully to any standards right now, the amount of=
+=20
+detail is quite high - but I'm slowly improving as I go through the=20
+standards. Getting on top of all the standards and all the different=20
+subsystems are definately a work in progress (it's a lot to digest!)
+
+> To prevent this situation, current ALSA firewire stack handles packet
+> payload in software interrupt context of isochronous context of OHCI
+> 1394. As a result of this, the software stack supports PCM substreams
+> and MIDI substreams.
+>=20
+> In your patcset, there's no actual codes about how to handle any
+> interrupt contexts (software / hardware), how to handle packet payload,
+> and so on. Especially, for recent sound subsystem, the timing of
+> generating interrupts and which context does what works are important to
+> reduce playback/capture latency and power consumption.
+
+See reply in other mail :)
+
+> Of source, your intention of this patchset is to show your early concept
+> of TSN feature. Nevertheless, both of explaination and codes are
+> important to the other developers who have little knowledges about TSN,
+> AVB and AES-64 such as me.
+
+Yes, that is one of the things I aimed for, and also getting feedback on=20
+the overall thinking
+
+> And, I might cooperate to prepare for common IEC 61883 layer. For actual
+> codes of ALSA firewire stack, please see mainline kernel code. For
+> actual devices of IEC 61883-1/6 and IEEE 1394 bus, please refer to my
+> report in 2014. At least, you can get to know what to consider about
+> developing upper drivers near ALSA userspace applications.
+> https://github.com/takaswie/alsa-firewire-report
+
+Thanks, I'll dig into that, much appreciated
+
+> (But I confirm that the report includes my misunderstandings in clause
+> 3.4 and 6.2. need more time...)
+
+ok, good to know
+
+Thank you for your input, very much appreicated!
+
+--=20
+Henrik Austad
+
+--FL5UXtIhxfXey3p5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlddHUQACgkQ6k5VT6v45lkz/QCgv1Kytb0lLnfTKnkXuWq6s/KD
+0R8AniOUfPEJN8rcLNQBH3s/HuBD+FUw
+=MnV+
+-----END PGP SIGNATURE-----
+
+--FL5UXtIhxfXey3p5--
+
+--===============1621042781918497061==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1621042781918497061==--
