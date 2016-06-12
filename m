@@ -1,14 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 03/10] ctl: add functions to add an element set
-Date: Sun, 12 Jun 2016 17:16:04 +0900
-Message-ID: <1465719371-27721-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 02/10] ctl: improve comments for handling
+	element data
+Date: Sun, 12 Jun 2016 17:16:03 +0900
+Message-ID: <1465719371-27721-3-git-send-email-o-takashi@sakamocchi.jp>
 References: <1465719371-27721-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 89D2E260511
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 8FCA6260592
  for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2016 10:16:17 +0200 (CEST)
 In-Reply-To: <1465719371-27721-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,453 +25,519 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-ALSA control core allows userspace applications to add an element set.
-However, in ALSA userspace library, there's no APIs enough to utilize
-the feature. The library has APIs just to add an element set with a single
-element.
+Some parts of control API documentation are described with core-developer
+friendly explanations. To usual developer such as me, they're quite hard
+to understand.
 
-This commit adds functions to add an element set with several elements.
+This commit improves such comments for a part of APIs to handle data of
+each element.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/control.h     |  21 +++
- src/control/control.c | 392 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 413 insertions(+)
+ src/control/control.c | 246 +++++++++++++++++++++++++++-----------------------
+ 1 file changed, 131 insertions(+), 115 deletions(-)
 
-diff --git a/include/control.h b/include/control.h
-index 5fdf379..d6069ff 100644
---- a/include/control.h
-+++ b/include/control.h
-@@ -423,6 +423,27 @@ void snd_ctl_elem_info_set_subdevice(snd_ctl_elem_info_t *obj, unsigned int val)
- void snd_ctl_elem_info_set_name(snd_ctl_elem_info_t *obj, const char *val);
- void snd_ctl_elem_info_set_index(snd_ctl_elem_info_t *obj, unsigned int val);
- 
-+int snd_ctl_elem_add_integer_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-+				 unsigned int element_count,
-+				 unsigned int member_count,
-+				 long min, long max, long step);
-+int snd_ctl_elem_add_integer64_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-+				   unsigned int element_count,
-+				   unsigned int member_count,
-+				   long long min, long long max,
-+				   long long step);
-+int snd_ctl_elem_add_boolean_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-+				 unsigned int element_count,
-+				 unsigned int member_count);
-+int snd_ctl_elem_add_enumerated_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-+				    unsigned int element_count,
-+				    unsigned int member_count,
-+				    unsigned int items,
-+				    const char *const labels[]);
-+int snd_ctl_elem_add_bytes_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-+			       unsigned int element_count,
-+			       unsigned int member_count);
-+
- int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id, unsigned int count, long imin, long imax, long istep);
- int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id, unsigned int count, long long imin, long long imax, long long istep);
- int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id, unsigned int count);
 diff --git a/src/control/control.c b/src/control/control.c
-index 7d1e412..48b0080 100644
+index 504da1f..7d1e412 100644
 --- a/src/control/control.c
 +++ b/src/control/control.c
-@@ -281,6 +281,398 @@ int snd_ctl_elem_info(snd_ctl_t *ctl, snd_ctl_elem_info_t *info)
+@@ -482,7 +482,7 @@ int snd_ctl_elem_remove(snd_ctl_t *ctl, snd_ctl_elem_id_t *id)
+ /**
+  * \brief Get CTL element value
+  * \param ctl CTL handle
+- * \param control CTL element id/value pointer
++ * \param obj Data of an element.
+  * \return 0 on success otherwise a negative error code
+  */
+ int snd_ctl_elem_read(snd_ctl_t *ctl, snd_ctl_elem_value_t *control)
+@@ -494,7 +494,7 @@ int snd_ctl_elem_read(snd_ctl_t *ctl, snd_ctl_elem_value_t *control)
+ /**
+  * \brief Set CTL element value
+  * \param ctl CTL handle
+- * \param control CTL element id/value pointer
++ * \param obj Data of an element.
+  * \retval 0 on success
+  * \retval >0 on success when value was changed
+  * \retval <0 a negative error code
+@@ -2295,8 +2295,8 @@ void snd_ctl_elem_info_set_index(snd_ctl_elem_info_t *obj, unsigned int val)
  }
  
  /**
-+ * \brief Create and add some user-defined control elements of integer type.
-+ * \param ctl A handle of backend module for control interface.
-+ * \param id ID of the first new element.
-+ * \param element_count The number of elements added by this operation.
-+ * \param member_count The number of members which a element has to
-+ *			   represent its states.
-+ * \param min Minimum value for each member of the elements.
-+ * \param max Maximum value for each member of the elements.
-+ * \param step The step of value for each member in the elements.
-+ * \return Zero on success, otherwise a negative error code.
-+ *
-+ * This function creates some user elements with integer type. These elements
-+ * are not controlled by device drivers in kernel. They can be operated by the
-+ * same way as usual elements added by the device drivers.
-+ *
-+ * The name field of \a id must be set with unique value to identify new control
-+ * elements. After returning, all fields of \a id are filled. A element can be
-+ * identified by the combination of name and index, or by numid.
-+ *
-+ * All of members in the new elements are locked. The value of each member is
-+ * initialized with the minimum value.
-+ *
-+ * \par Errors:
-+ * <dl>
-+ * <dt>-EBUSY
-+ * <dd>A element with ID \a id already exists.
-+ * <dt>-EINVAL
-+ * <dd>ID has no name, or the number of members is not between 1 to 127.
-+ * <dt>-ENOMEM
-+ * <dd>Out of memory, or there are too many user elements.
-+ * <dt>-ENXIO
-+ * <dd>This backend module does not support user elements of integer type.
-+ * <dt>-ENODEV
-+ * <dd>Device unplugged.
-+ * </dl>
-+ *
-+ * \par Compatibility:
-+ * This function is added in version 1.1.2.
-+ */
-+int snd_ctl_elem_add_integer_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-+				 unsigned int element_count,
-+				 unsigned int member_count,
-+				 long min, long max, long step)
-+{
-+	snd_ctl_elem_info_t *info;
-+	snd_ctl_elem_value_t *data;
-+	unsigned int i;
-+	unsigned int j;
-+	unsigned int numid;
-+	int err;
-+
-+	assert(ctl && id && id->name[0]);
-+
-+	snd_ctl_elem_info_alloca(&info);
-+	info->id = *id;
-+	info->type = SND_CTL_ELEM_TYPE_INTEGER;
-+	info->access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
-+		       SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE |
-+		       SNDRV_CTL_ELEM_ACCESS_USER;
-+	info->owner = element_count;
-+	info->count = member_count;
-+	info->value.integer.min = min;
-+	info->value.integer.max = max;
-+	info->value.integer.step = step;
-+
-+	err = ctl->ops->element_add(ctl, info);
-+	if (err < 0)
-+		return err;
-+	numid = snd_ctl_elem_id_get_numid(&info->id);
-+
-+	/* Set initial value to all of members in all of added elements. */
-+	snd_ctl_elem_value_alloca(&data);
-+	data->id = info->id;
-+	for (i = 0; i < element_count; i++) {
-+		snd_ctl_elem_id_set_numid(&data->id, numid + i);
-+
-+		for (j = 0; j < member_count; j++)
-+			data->value.integer.value[j] = min;
-+
-+		err = ctl->ops->element_write(ctl, data);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	*id = info->id;
-+	return 0;
-+}
-+
-+/**
-+ * \brief Create and add some user-defined control elements of integer64 type.
-+ * \param ctl A handle of backend module for control interface.
-+ * \param id ID of the first new control element.
-+ * \param element_count The number of elements added by this operation.
-+ * \param member_count The number of members which a element has to
-+ *	    	   represent its states.
-+ * \param min Minimum value for each member of the elements.
-+ * \param max Maximum value for each member of the elements.
-+ * \param step The step of value for each member in the elements.
-+ * \return Zero on success, otherwise a negative error code.
-+ *
-+ * This function creates some user elements with integer64 type. These elements
-+ * are not controlled by device drivers in kernel. They can be operated by the
-+ * same way as usual elements added by the device drivers.
-+ *
-+ * The name field of \a id must be set with unique value to identify new control
-+ * elements. After returning, all fields of \a id are filled. A element can be
-+ * identified by the combination of name and index, or by numid.
-+ *
-+ * All of members in the new elements are locked. The value of each member is
-+ * initialized with the minimum value.
-+ *
-+ * \par Errors:
-+ * <dl>
-+ * <dt>-EBUSY
-+ * <dd>A element with ID \a id already exists.
-+ * <dt>-EINVAL
-+ * <dd>ID has no name, or the number of members is not between 1 to 127.
-+ * <dt>-ENOMEM
-+ * <dd>Out of memory, or there are too many user elements.
-+ * <dt>-ENXIO
-+ * <dd>This backend module does not support user elements of integer64 type.
-+ * <dt>-ENODEV
-+ * <dd>Device unplugged.
-+ * </dl>
-+ *
-+ * \par Compatibility:
-+ * This function is added in version 1.1.2.
-+ */
-+int snd_ctl_elem_add_integer64_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-+				   unsigned int element_count,
-+				   unsigned int member_count,
-+				   long long min, long long max, long long step)
-+{
-+	snd_ctl_elem_info_t *info;
-+	snd_ctl_elem_value_t *data;
-+	unsigned int i;
-+	unsigned int j;
-+	unsigned int numid;
-+	int err;
-+
-+	assert(ctl && id && id->name[0]);
-+
-+	snd_ctl_elem_info_alloca(&info);
-+	info->id = *id;
-+	info->type = SND_CTL_ELEM_TYPE_INTEGER64;
-+	info->access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
-+		       SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE |
-+		       SNDRV_CTL_ELEM_ACCESS_USER;
-+	info->owner = element_count;
-+	info->count = member_count;
-+	info->value.integer64.min = min;
-+	info->value.integer64.max = max;
-+	info->value.integer64.step = step;
-+
-+	err = ctl->ops->element_add(ctl, info);
-+	if (err < 0)
-+		return err;
-+	numid = snd_ctl_elem_id_get_numid(&info->id);
-+
-+	/* Set initial value to all of members in all of added elements. */
-+	snd_ctl_elem_value_alloca(&data);
-+	data->id = info->id;
-+	for (i = 0; i < element_count; i++) {
-+		snd_ctl_elem_id_set_numid(&data->id, numid + i);
-+
-+		for (j = 0; j < member_count; j++)
-+			data->value.integer64.value[j] = min;
-+
-+		err = ctl->ops->element_write(ctl, data);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	*id = info->id;
-+	return 0;
-+}
-+
-+/**
-+ * \brief Create and add some user-defined control elements of boolean type.
-+ * \param ctl A handle of backend module for control interface.
-+ * \param id ID of the new control element.
-+ * \param element_count The number of elements added by this operation.
-+ * \param member_count The number of members which a element has to
-+ *			   represent its states.
-+ *
-+ * This function creates some user elements with boolean type. These elements
-+ * are not controlled by device drivers in kernel. They can be operated by the
-+ * same way as usual elements added by the device drivers.
-+ *
-+ * The name field of \a id must be set with unique value to identify new control
-+ * elements. After returning, all fields of \a id are filled. A element can be
-+ * identified by the combination of name and index, or by numid.
-+ *
-+ * All of members in the new elements are locked. The value of each member is
-+ * initialized with false.
-+ *
-+ * \par Errors:
-+ * <dl>
-+ * <dt>-EBUSY
-+ * <dd>A element with ID \a id already exists.
-+ * <dt>-EINVAL
-+ * <dd>ID has no name, or the number of members is not between 1 to 127.
-+ * <dt>-ENOMEM
-+ * <dd>Out of memory, or there are too many user elements.
-+ * <dt>-ENXIO
-+ * <dd>This backend module does not support user elements of boolean type.
-+ * <dt>-ENODEV
-+ * <dd>Device unplugged.
-+ * </dl>
-+ *
-+ * \par Compatibility:
-+ * This function is added in version 1.1.2.
-+ */
-+int snd_ctl_elem_add_boolean_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-+				 unsigned int element_count,
-+				 unsigned int member_count)
-+{
-+	snd_ctl_elem_info_t *info;
-+	int err;
-+
-+	assert(ctl && id && id->name[0]);
-+
-+	snd_ctl_elem_info_alloca(&info);
-+	info->id = *id;
-+	info->type = SND_CTL_ELEM_TYPE_BOOLEAN;
-+	info->access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
-+		       SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE |
-+		       SNDRV_CTL_ELEM_ACCESS_USER;
-+	info->owner = element_count;
-+	info->count = member_count;
-+	info->value.integer.min = 0;
-+	info->value.integer.max = 1;
-+
-+	err = ctl->ops->element_add(ctl, info);
-+	if (err >= 0)
-+		*id = info->id;
-+
-+	return err;
-+}
-+
-+/**
-+ * \brief Create and add some user-defined control elements of enumerated type.
-+ * \param ctl A handle of backend module for control interface.
-+ * \param id ID of the first new element.
-+ * \param element_count The number of elements added by this operation.
-+ * \param member_count The number of members which a element has to
-+ *	    	   represent its states.
-+ * \param items Range of possible values (0 ... \a items - 1).
-+ * \param labels An array containing \a items strings.
-+ * \return Zero on success, otherwise a negative error code.
-+ *
-+ * This function creates some user elements with enumerated type. These elements
-+ * are not controlled by device drivers in kernel. They can be operated by the
-+ * same way as usual elements added by the device drivers.
-+ *
-+ * The name field of \a id must be set with unique value to identify new control
-+ * elements. After returning, all fields of \a id are filled. A element can be
-+ * identified by the combination of name and index, or by numid.
-+ *
-+ * All of members in the new elements are locked. The value of each member is
-+ * initialized with the first entry of labels.
-+ *
-+ * \par Errors:
-+ * <dl>
-+ * <dt>-EBUSY
-+ * <dd>A control element with ID \a id already exists.
-+ * <dt>-EINVAL
-+ * <dd>\a element_count is not between 1 to 127, or \a items is not at least
-+ *     one, or a string in \a labels is empty, or longer than 63 bytes, or total
-+ *     length of the labels requires more than 64 KiB storage.
-+ * <dt>-ENOMEM
-+ * <dd>Out of memory, or there are too many user control elements.
-+ * <dt>-ENXIO
-+ * <dd>This driver does not support (enumerated) user controls.
-+ * <dt>-ENODEV
-+ * <dd>Device unplugged.
-+ * </dl>
-+ *
-+ * \par Compatibility:
-+ * This function is added in version 1.1.2.
-+ */
-+int snd_ctl_elem_add_enumerated_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-+				    unsigned int element_count,
-+				    unsigned int member_count,
-+				    unsigned int items,
-+				    const char *const labels[])
-+{
-+	snd_ctl_elem_info_t *info;
-+	unsigned int i, bytes;
-+	char *buf, *p;
-+	int err;
-+
-+	assert(ctl && id && id->name[0] && labels);
-+
-+	snd_ctl_elem_info_alloca(&info);
-+	info->id = *id;
-+	info->type = SND_CTL_ELEM_TYPE_ENUMERATED;
-+	info->access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
-+		       SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE |
-+		       SNDRV_CTL_ELEM_ACCESS_USER;
-+	info->owner = element_count;
-+	info->count = member_count;
-+	info->value.enumerated.items = items;
-+
-+	bytes = 0;
-+	for (i = 0; i < items; ++i)
-+		bytes += strlen(labels[i]) + 1;
-+	if (bytes == 0)
-+		return -EINVAL;
-+	buf = malloc(bytes);
-+	if (buf == NULL)
-+		return -ENOMEM;
-+	info->value.enumerated.names_ptr = (uintptr_t)buf;
-+	info->value.enumerated.names_length = bytes;
-+	p = buf;
-+	for (i = 0; i < items; ++i) {
-+		strcpy(p, labels[i]);
-+		p += strlen(labels[i]) + 1;
-+	}
-+
-+	err = ctl->ops->element_add(ctl, info);
-+	if (err >= 0)
-+		*id = info->id;
-+
-+	free(buf);
-+
-+	return err;
-+}
-+
-+/**
-+ * \brief Create and add some user-defined control elements of bytes type.
-+ * \param ctl A handle of backend module for control interface.
-+ * \param id ID of the first new element.
-+ * \param element_count The number of elements added by this operation.
-+ * \param member_count The number of members which a element has to
-+ *			   represent its states.
-+ * \return Zero on success, otherwise a negative error code.
-+ *
-+ * This function creates some user elements with bytes type. These elements are
-+ * not controlled by device drivers in kernel. They can be operated by the same
-+ * way as usual elements added by the device drivers.
-+ *
-+ * The name field of \a id must be set with unique value to identify new control
-+ * elements. After returning, all fields of \a id are filled. A element can be
-+ * identified by the combination of name and index, or by numid.
-+ *
-+ * All of members in the new elements are locked. The value of each member is
-+ * initialized with the minimum value.
-+ *
-+ * \par Errors:
-+ * <dl>
-+ * <dt>-EBUSY
-+ * <dd>A element with ID \a id already exists.
-+ * <dt>-EINVAL
-+ * <dd>ID has no name, or the number of members is not between 1 to 511.
-+ * <dt>-ENOMEM
-+ * <dd>Out of memory, or there are too many user elements.
-+ * <dt>-ENXIO
-+ * <dd>This backend module does not support user elements of bytes type.
-+ * <dt>-ENODEV
-+ * <dd>Device unplugged.
-+ * </dl>
-+ *
-+ * \par Compatibility:
-+ * This function is added in version 1.1.2.
-+ */
-+int snd_ctl_elem_add_bytes_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-+			       unsigned int element_count,
-+			       unsigned int member_count)
-+{
-+	snd_ctl_elem_info_t *info;
-+	int err;
-+
-+	assert(ctl && id && id->name[0]);
-+
-+	snd_ctl_elem_info_alloca(&info);
-+	info->id = *id;
-+	info->type = SND_CTL_ELEM_TYPE_BYTES;
-+	info->access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
-+		       SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE |
-+		       SNDRV_CTL_ELEM_ACCESS_USER;
-+	info->owner = element_count;
-+	info->count = member_count;
-+
-+	err = ctl->ops->element_add(ctl, info);
-+	if (err >= 0)
-+		*id = info->id;
-+
-+	return err;
-+}
-+
-+/**
-  * \brief Create and add an user INTEGER CTL element
-  * \param ctl CTL handle
-  * \param id CTL element id to add
+- * \brief get size of #snd_ctl_elem_value_t
+- * \return size in bytes
++ * \brief Get size of data structure for an element.
++ * \return Size in bytes.
+  */
+ size_t snd_ctl_elem_value_sizeof()
+ {
+@@ -2304,9 +2304,9 @@ size_t snd_ctl_elem_value_sizeof()
+ }
+ 
+ /**
+- * \brief allocate an invalid #snd_ctl_elem_value_t using standard malloc
+- * \param ptr returned pointer
+- * \return 0 on success otherwise negative error code
++ * \brief Allocate an invalid #snd_ctl_elem_value_t using standard malloc(3).
++ * \param ptr Returned pointer for data of an element.
++ * \return 0 on success otherwise negative error code.
+  */
+ int snd_ctl_elem_value_malloc(snd_ctl_elem_value_t **ptr)
+ {
+@@ -2318,8 +2318,8 @@ int snd_ctl_elem_value_malloc(snd_ctl_elem_value_t **ptr)
+ }
+ 
+ /**
+- * \brief frees a previously allocated #snd_ctl_elem_value_t
+- * \param obj pointer to object to free
++ * \brief Frees a previously allocated data of an element.
++ * \param obj Data of an element.
+  */
+ void snd_ctl_elem_value_free(snd_ctl_elem_value_t *obj)
+ {
+@@ -2327,8 +2327,8 @@ void snd_ctl_elem_value_free(snd_ctl_elem_value_t *obj)
+ }
+ 
+ /**
+- * \brief clear given #snd_ctl_elem_value_t object
+- * \param obj pointer to object to clear
++ * \brief Clear given data of an element.
++ * \param obj Data of an element.
+  */
+ void snd_ctl_elem_value_clear(snd_ctl_elem_value_t *obj)
+ {
+@@ -2336,32 +2336,34 @@ void snd_ctl_elem_value_clear(snd_ctl_elem_value_t *obj)
+ }
+ 
+ /**
+- * \brief copy one #snd_ctl_elem_value_t to another
+- * \param dst pointer to destination
+- * \param src pointer to source
++ * \brief Copy two data of elements.
++ * \param dst Pointer to destination.
++ * \param src Pointer to source.
+  */
+-void snd_ctl_elem_value_copy(snd_ctl_elem_value_t *dst, const snd_ctl_elem_value_t *src)
++void snd_ctl_elem_value_copy(snd_ctl_elem_value_t *dst,
++			     const snd_ctl_elem_value_t *src)
+ {
+ 	assert(dst && src);
+ 	*dst = *src;
+ }
+ 
+ /**
+- * \brief compare one #snd_ctl_elem_value_t to another
+- * \param left pointer to first value
+- * \param right pointer to second value
+- * \return 0 on match, less than or greater than otherwise, see memcmp
++ * \brief Compare one data of an element to the other.
++ * \param left Pointer to first data.
++ * \param right Pointer to second data.
++ * \return 0 on match, less than or greater than otherwise, see memcmp(3).
+  */
+-int snd_ctl_elem_value_compare(snd_ctl_elem_value_t *left, const snd_ctl_elem_value_t *right)
++int snd_ctl_elem_value_compare(snd_ctl_elem_value_t *left,
++			       const snd_ctl_elem_value_t *right)
+ {
+ 	assert(left && right);
+ 	return memcmp(left, right, sizeof(*left));
+ }
+ 
+ /**
+- * \brief Get CTL element identifier of a CTL element id/value
+- * \param obj CTL element id/value
+- * \param ptr Pointer to returned CTL element identifier
++ * \brief Get element identifier from given data of an element.
++ * \param obj Data of an element.
++ * \param ptr Pointer for element identifier.
+  */
+ void snd_ctl_elem_value_get_id(const snd_ctl_elem_value_t *obj, snd_ctl_elem_id_t *ptr)
+ {
+@@ -2370,9 +2372,9 @@ void snd_ctl_elem_value_get_id(const snd_ctl_elem_value_t *obj, snd_ctl_elem_id_
+ }
+ 
+ /**
+- * \brief Get element numeric identifier of a CTL element id/value
+- * \param obj CTL element id/value
+- * \return element numeric identifier
++ * \brief Get element numeric identifier from given data of an element.
++ * \param obj Data of an element.
++ * \return Element numeric identifier.
+  */
+ unsigned int snd_ctl_elem_value_get_numid(const snd_ctl_elem_value_t *obj)
+ {
+@@ -2381,9 +2383,10 @@ unsigned int snd_ctl_elem_value_get_numid(const snd_ctl_elem_value_t *obj)
+ }
+ 
+ /**
+- * \brief Get interface part of CTL element identifier of a CTL element id/value
+- * \param obj CTL element id/value
+- * \return interface part of element identifier
++ * \brief Get interface part of element identifier from given data of an
++ *	  element.
++ * \param obj Data of an element.
++ * \return Interface part of element identifier.
+  */
+ snd_ctl_elem_iface_t snd_ctl_elem_value_get_interface(const snd_ctl_elem_value_t *obj)
+ {
+@@ -2392,9 +2395,9 @@ snd_ctl_elem_iface_t snd_ctl_elem_value_get_interface(const snd_ctl_elem_value_t
+ }
+ 
+ /**
+- * \brief Get device part of CTL element identifier of a CTL element id/value
+- * \param obj CTL element id/value
+- * \return device part of element identifier
++ * \brief Get device part of element identifier from given data of an element.
++ * \param obj Data of an element.
++ * \return Device part of element identifier.
+  */
+ unsigned int snd_ctl_elem_value_get_device(const snd_ctl_elem_value_t *obj)
+ {
+@@ -2403,9 +2406,10 @@ unsigned int snd_ctl_elem_value_get_device(const snd_ctl_elem_value_t *obj)
+ }
+ 
+ /**
+- * \brief Get subdevice part of CTL element identifier of a CTL element id/value
+- * \param obj CTL element id/value
+- * \return subdevice part of element identifier
++ * \brief Get subdevice part of element identifier from given data of an
++ *	  element.
++ * \param obj Data of an element.
++ * \return Subdevice part of element identifier.
+  */
+ unsigned int snd_ctl_elem_value_get_subdevice(const snd_ctl_elem_value_t *obj)
+ {
+@@ -2414,9 +2418,9 @@ unsigned int snd_ctl_elem_value_get_subdevice(const snd_ctl_elem_value_t *obj)
+ }
+ 
+ /**
+- * \brief Get name part of CTL element identifier of a CTL element id/value
+- * \param obj CTL element id/value
+- * \return name part of element identifier
++ * \brief Get name part of element identifier from given data of an element.
++ * \param obj Data of an element.
++ * \return Name part of element identifier.
+  */
+ const char *snd_ctl_elem_value_get_name(const snd_ctl_elem_value_t *obj)
+ {
+@@ -2425,9 +2429,9 @@ const char *snd_ctl_elem_value_get_name(const snd_ctl_elem_value_t *obj)
+ }
+ 
+ /**
+- * \brief Get index part of CTL element identifier of a CTL element id/value
+- * \param obj CTL element id/value
+- * \return index part of element identifier
++ * \brief Get index part of element identifier from given data of an element.
++ * \param obj Data of an element.
++ * \return Index part of element identifier.
+  */
+ unsigned int snd_ctl_elem_value_get_index(const snd_ctl_elem_value_t *obj)
+ {
+@@ -2436,9 +2440,9 @@ unsigned int snd_ctl_elem_value_get_index(const snd_ctl_elem_value_t *obj)
+ }
+ 
+ /**
+- * \brief Set CTL element identifier of a CTL element id/value
+- * \param obj CTL element id/value
+- * \param ptr CTL element identifier
++ * \brief Set element identifier to given data of an element.
++ * \param obj Data of an element.
++ * \param ptr Pointer to an element identifier.
+  */
+ void snd_ctl_elem_value_set_id(snd_ctl_elem_value_t *obj, const snd_ctl_elem_id_t *ptr)
+ {
+@@ -2447,9 +2451,9 @@ void snd_ctl_elem_value_set_id(snd_ctl_elem_value_t *obj, const snd_ctl_elem_id_
+ }
+ 
+ /**
+- * \brief Set element numeric identifier of a CTL element id/value
+- * \param obj CTL element id/value
+- * \param val element numeric identifier
++ * \brief Set numeric identifier to given data of an element.
++ * \param obj Data of an element.
++ * \param val Value for numeric identifier.
+  */
+ void snd_ctl_elem_value_set_numid(snd_ctl_elem_value_t *obj, unsigned int val)
+ {
+@@ -2458,9 +2462,9 @@ void snd_ctl_elem_value_set_numid(snd_ctl_elem_value_t *obj, unsigned int val)
+ }
+ 
+ /**
+- * \brief Set interface part of CTL element identifier of a CTL element id/value
+- * \param obj CTL element id/value
+- * \param val interface part of element identifier
++ * \brief Set interface part of element identifier to given data of an element.
++ * \param obj Data of an element.
++ * \param val Value for interface part of element identifier.
+  */
+ void snd_ctl_elem_value_set_interface(snd_ctl_elem_value_t *obj, snd_ctl_elem_iface_t val)
+ {
+@@ -2469,9 +2473,9 @@ void snd_ctl_elem_value_set_interface(snd_ctl_elem_value_t *obj, snd_ctl_elem_if
+ }
+ 
+ /**
+- * \brief Set device part of CTL element identifier of a CTL element id/value
+- * \param obj CTL element id/value
+- * \param val device part of element identifier
++ * \brief Set device part of element identifier to given data of an element.
++ * \param obj Data of an element.
++ * \param val Value for device part of element identifier.
+  */
+ void snd_ctl_elem_value_set_device(snd_ctl_elem_value_t *obj, unsigned int val)
+ {
+@@ -2480,9 +2484,9 @@ void snd_ctl_elem_value_set_device(snd_ctl_elem_value_t *obj, unsigned int val)
+ }
+ 
+ /**
+- * \brief Set subdevice part of CTL element identifier of a CTL element id/value
+- * \param obj CTL element id/value
+- * \param val subdevice part of element identifier
++ * \brief Set subdevice part of element identifier to given data of an element.
++ * \param obj Data of an element.
++ * \param val Value for subdevice part of element identifier.
+  */
+ void snd_ctl_elem_value_set_subdevice(snd_ctl_elem_value_t *obj, unsigned int val)
+ {
+@@ -2491,9 +2495,9 @@ void snd_ctl_elem_value_set_subdevice(snd_ctl_elem_value_t *obj, unsigned int va
+ }
+ 
+ /**
+- * \brief Set name part of CTL element identifier of a CTL element id/value
+- * \param obj CTL element id/value
+- * \param val name part of element identifier
++ * \brief Set name part of element identifier to given data of an element.
++ * \param obj Data of an element.
++ * \param val Value for name part of element identifier,
+  */
+ void snd_ctl_elem_value_set_name(snd_ctl_elem_value_t *obj, const char *val)
+ {
+@@ -2502,9 +2506,9 @@ void snd_ctl_elem_value_set_name(snd_ctl_elem_value_t *obj, const char *val)
+ }
+ 
+ /**
+- * \brief Set index part of CTL element identifier of a CTL element id/value
+- * \param obj CTL element id/value
+- * \param val index part of element identifier
++ * \brief Set index part of element identifier to given data of an element.
++ * \param obj Data of an element.
++ * \param val Value for index part of element identifier.
+  */
+ void snd_ctl_elem_value_set_index(snd_ctl_elem_value_t *obj, unsigned int val)
+ {
+@@ -2513,10 +2517,11 @@ void snd_ctl_elem_value_set_index(snd_ctl_elem_value_t *obj, unsigned int val)
+ }
+ 
+ /**
+- * \brief Get value for an entry of a #SND_CTL_ELEM_TYPE_BOOLEAN CTL element id/value 
+- * \param obj CTL element id/value
+- * \param idx Entry index
+- * \return value for the entry
++ * \brief Get value of a specified member from given data as an element of
++ *	  boolean type.
++ * \param obj Data of an element.
++ * \param idx Index of member in the element.
++ * \return Value for the member.
+  */ 
+ int snd_ctl_elem_value_get_boolean(const snd_ctl_elem_value_t *obj, unsigned int idx)
+ {
+@@ -2526,10 +2531,11 @@ int snd_ctl_elem_value_get_boolean(const snd_ctl_elem_value_t *obj, unsigned int
+ }
+ 
+ /**
+- * \brief Get value for an entry of a #SND_CTL_ELEM_TYPE_INTEGER CTL element id/value 
+- * \param obj CTL element id/value
+- * \param idx Entry index
+- * \return value for the entry
++ * \brief Get value of a specified member from given data as an element of
++ *	  integer type.
++ * \param obj Data of an element.
++ * \param idx Index of member in the element.
++ * \return Value for the member.
+  */ 
+ long snd_ctl_elem_value_get_integer(const snd_ctl_elem_value_t *obj, unsigned int idx)
+ {
+@@ -2539,10 +2545,11 @@ long snd_ctl_elem_value_get_integer(const snd_ctl_elem_value_t *obj, unsigned in
+ }
+ 
+ /**
+- * \brief Get value for an entry of a #SND_CTL_ELEM_TYPE_INTEGER64 CTL element id/value 
+- * \param obj CTL element id/value
+- * \param idx Entry index
+- * \return value for the entry
++ * \brief Get value of a specified member from given data as an element of
++ *	  integer64 type.
++ * \param obj Data of an element.
++ * \param idx Index of member in the element.
++ * \return Value for the member.
+  */ 
+ long long snd_ctl_elem_value_get_integer64(const snd_ctl_elem_value_t *obj, unsigned int idx)
+ {
+@@ -2552,10 +2559,11 @@ long long snd_ctl_elem_value_get_integer64(const snd_ctl_elem_value_t *obj, unsi
+ }
+ 
+ /**
+- * \brief Get value for an entry of a #SND_CTL_ELEM_TYPE_ENUMERATED CTL element id/value 
+- * \param obj CTL element id/value
+- * \param idx Entry index
+- * \return value for the entry
++ * \brief Get value of a specified member from given data as an element of
++ *	  enumerated type.
++ * \param obj Data of an element.
++ * \param idx Index of member in the element.
++ * \return Value for the member. This is an index of name set in the element.
+  */ 
+ unsigned int snd_ctl_elem_value_get_enumerated(const snd_ctl_elem_value_t *obj, unsigned int idx)
+ {
+@@ -2565,10 +2573,11 @@ unsigned int snd_ctl_elem_value_get_enumerated(const snd_ctl_elem_value_t *obj,
+ }
+ 
+ /**
+- * \brief Get value for an entry of a #SND_CTL_ELEM_TYPE_BYTES CTL element id/value 
+- * \param obj CTL element id/value
+- * \param idx Entry index
+- * \return value for the entry
++ * \brief Get value of a specified member from given data as an element of
++ *	  bytes type.
++ * \param obj Data of an element.
++ * \param idx Index of member in the element.
++ * \return Value for the member.
+  */ 
+ unsigned char snd_ctl_elem_value_get_byte(const snd_ctl_elem_value_t *obj, unsigned int idx)
+ {
+@@ -2578,10 +2587,11 @@ unsigned char snd_ctl_elem_value_get_byte(const snd_ctl_elem_value_t *obj, unsig
+ }
+ 
+ /**
+- * \brief Set value for an entry of a #SND_CTL_ELEM_TYPE_BOOLEAN CTL element id/value 
+- * \param obj CTL element id/value
+- * \param idx Entry index
+- * \param val value for the entry
++ * \brief Set value of a specified member to given data as an element of
++ *	  boolean type.
++ * \param obj Data of an element.
++ * \param idx Index of member in the element.
++ * \param val Value for the member.
+  */ 
+ void snd_ctl_elem_value_set_boolean(snd_ctl_elem_value_t *obj, unsigned int idx, long val)
+ {
+@@ -2591,10 +2601,11 @@ void snd_ctl_elem_value_set_boolean(snd_ctl_elem_value_t *obj, unsigned int idx,
+ }
+ 
+ /**
+- * \brief Set value for an entry of a #SND_CTL_ELEM_TYPE_INTEGER CTL element id/value 
+- * \param obj CTL element id/value
+- * \param idx Entry index
+- * \param val value for the entry
++ * \brief Set value of a specified member to given data as an element of
++ *	  integer type.
++ * \param obj Data of an element.
++ * \param idx Index of member in the element.
++ * \param val Value for the member.
+  */ 
+ void snd_ctl_elem_value_set_integer(snd_ctl_elem_value_t *obj, unsigned int idx, long val)
+ {
+@@ -2604,10 +2615,11 @@ void snd_ctl_elem_value_set_integer(snd_ctl_elem_value_t *obj, unsigned int idx,
+ }
+ 
+ /**
+- * \brief Set value for an entry of a #SND_CTL_ELEM_TYPE_INTEGER64 CTL element id/value 
+- * \param obj CTL element id/value
+- * \param idx Entry index
+- * \param val value for the entry
++ * \brief Set value of a specified member to given data as an element of
++ *	  integer64 type.
++ * \param obj Data of an element.
++ * \param idx Index of member in the element.
++ * \param val Value for the member.
+  */ 
+ void snd_ctl_elem_value_set_integer64(snd_ctl_elem_value_t *obj, unsigned int idx, long long val)
+ {
+@@ -2617,10 +2629,11 @@ void snd_ctl_elem_value_set_integer64(snd_ctl_elem_value_t *obj, unsigned int id
+ }
+ 
+ /**
+- * \brief Set value for an entry of a #SND_CTL_ELEM_TYPE_ENUMERATED CTL element id/value 
+- * \param obj CTL element id/value
+- * \param idx Entry index
+- * \param val value for the entry
++ * \brief Set value of a specified member to given data as an element of
++ * 	  enumerated type.
++ * \param obj Data of an element.
++ * \param idx Index of member in the element.
++ * \param val Value for the member.
+  */ 
+ void snd_ctl_elem_value_set_enumerated(snd_ctl_elem_value_t *obj, unsigned int idx, unsigned int val)
+ {
+@@ -2630,10 +2643,11 @@ void snd_ctl_elem_value_set_enumerated(snd_ctl_elem_value_t *obj, unsigned int i
+ }
+ 
+ /**
+- * \brief Set value for an entry of a #SND_CTL_ELEM_TYPE_BYTES CTL element id/value 
+- * \param obj CTL element id/value
+- * \param idx Entry index
+- * \param val value for the entry
++ * \brief Set value for a specified member to given data as an element of byte
++ *	  type.
++ * \param obj Data of an element.
++ * \param idx Index of member in the element.
++ * \param val Value for the member.
+  */ 
+ void snd_ctl_elem_value_set_byte(snd_ctl_elem_value_t *obj, unsigned int idx, unsigned char val)
+ {
+@@ -2643,10 +2657,10 @@ void snd_ctl_elem_value_set_byte(snd_ctl_elem_value_t *obj, unsigned int idx, un
+ }
+ 
+ /**
+- * \brief Set CTL element #SND_CTL_ELEM_TYPE_BYTES value
+- * \param obj CTL handle
+- * \param data Bytes value
+- * \param size Size in bytes
++ * \brief Set values to given data as an element of bytes type.
++ * \param obj Data of an element.
++ * \param data Pointer for byte array.
++ * \param size The number of bytes included in the memory block.
+  */
+ void snd_ctl_elem_set_bytes(snd_ctl_elem_value_t *obj, void *data, size_t size)
+ {
+@@ -2656,9 +2670,9 @@ void snd_ctl_elem_set_bytes(snd_ctl_elem_value_t *obj, void *data, size_t size)
+ }
+ 
+ /**
+- * \brief Get value for a #SND_CTL_ELEM_TYPE_BYTES CTL element id/value 
+- * \param obj CTL element id/value
+- * \return Pointer to CTL element value
++ * \brief Get memory block from given data as an element of bytes type.
++ * \param obj Data of an element.
++ * \return Pointer for byte array.
+  */ 
+ const void * snd_ctl_elem_value_get_bytes(const snd_ctl_elem_value_t *obj)
+ {
+@@ -2667,9 +2681,10 @@ const void * snd_ctl_elem_value_get_bytes(const snd_ctl_elem_value_t *obj)
+ }
+ 
+ /**
+- * \brief Get value for a #SND_CTL_ELEM_TYPE_IEC958 CTL element id/value 
+- * \param obj CTL element id/value
+- * \param ptr Pointer to returned CTL element value
++ * \brief Get value from given data to given pointer as an element of IEC958
++ *	  type.
++ * \param obj Data of an element.
++ * \param ptr Pointer to IEC958 data.
+  */ 
+ void snd_ctl_elem_value_get_iec958(const snd_ctl_elem_value_t *obj, snd_aes_iec958_t *ptr)
+ {
+@@ -2678,9 +2693,10 @@ void snd_ctl_elem_value_get_iec958(const snd_ctl_elem_value_t *obj, snd_aes_iec9
+ }
+ 
+ /**
+- * \brief Set value for a #SND_CTL_ELEM_TYPE_IEC958 CTL element id/value 
+- * \param obj CTL element id/value
+- * \param ptr Pointer to CTL element value
++ * \brief Set value from given pointer to given data as an element of IEC958
++ *	  type.
++ * \param obj Data of an element.
++ * \param ptr Pointer to IEC958 data.
+  */ 
+ void snd_ctl_elem_value_set_iec958(snd_ctl_elem_value_t *obj, const snd_aes_iec958_t *ptr)
+ {
 -- 
 2.7.4
