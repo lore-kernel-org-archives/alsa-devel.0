@@ -1,145 +1,425 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [very-RFC 0/8] TSN driver for the kernel
-Date: Sun, 12 Jun 2016 19:43:34 +0900
-Message-ID: <575D3CD6.3050001@sakamocchi.jp>
+From: Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [very-RFC 6/8] Add TSN event-tracing
+Date: Sun, 12 Jun 2016 12:58:03 -0400
+Message-ID: <20160612125803.27f401cc__44637.0157799267$1465751234$gmane$org@gandalf.local.home>
 References: <1465686096-22156-1-git-send-email-henrik@austad.us>
- <575CD93C.50006@sakamocchi.jp> <575CE560.9090608@sakamocchi.jp>
- <20160612083122.GB32724@icarus.home.austad.us>
+ <1465686096-22156-7-git-send-email-henrik@austad.us>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="UsR84E3dGIn60IX3V7DNPtulHtaLdK7uD"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20160612083122.GB32724@icarus.home.austad.us>
-Sender: netdev-owner@vger.kernel.org
-To: Henrik Austad <henrik@austad.us>, alsa-devel@alsa-project.org
-Cc: netdev@vger.kernel.org, linux-media@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <1465686096-22156-7-git-send-email-henrik@austad.us>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: henrk@austad.us, linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Ingo Molnar <mingo@redhat.com>, Henrik Austad <haustad@cisco.com>, netdev@vger.kernel.org, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---UsR84E3dGIn60IX3V7DNPtulHtaLdK7uD
-Content-Type: multipart/mixed; boundary="K0b4NFlup2Hr3Mf9McNagelra53C3B9tq"
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Henrik Austad <henrik@austad.us>, alsa-devel@alsa-project.org
-Cc: netdev@vger.kernel.org, linux-media@vger.kernel.org
-Message-ID: <575D3CD6.3050001@sakamocchi.jp>
-Subject: Re: [very-RFC 0/8] TSN driver for the kernel
-References: <1465686096-22156-1-git-send-email-henrik@austad.us>
- <575CD93C.50006@sakamocchi.jp> <575CE560.9090608@sakamocchi.jp>
- <20160612083122.GB32724@icarus.home.austad.us>
-In-Reply-To: <20160612083122.GB32724@icarus.home.austad.us>
+On Sun, 12 Jun 2016 01:01:34 +0200
+Henrik Austad <henrik@austad.us> wrote:
 
---K0b4NFlup2Hr3Mf9McNagelra53C3B9tq
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+> From: Henrik Austad <haustad@cisco.com>
+> 
+> This needs refactoring and should be updated to use TRACE_CLASS, but for
+> now it provides a fair debug-window into TSN.
+> 
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Steven Rostedt <rostedt@goodmis.org> (maintainer:TRACING)
+> Cc: Ingo Molnar <mingo@redhat.com> (maintainer:TRACING)
+> Signed-off-by: Henrik Austad <haustad@cisco.com>
+> ---
+>  include/trace/events/tsn.h | 349 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 349 insertions(+)
+>  create mode 100644 include/trace/events/tsn.h
+> 
+> diff --git a/include/trace/events/tsn.h b/include/trace/events/tsn.h
+> new file mode 100644
+> index 0000000..ac1f31b
+> --- /dev/null
+> +++ b/include/trace/events/tsn.h
+> @@ -0,0 +1,349 @@
+> +#undef TRACE_SYSTEM
+> +#define TRACE_SYSTEM tsn
+> +
+> +#if !defined(_TRACE_TSN_H) || defined(TRACE_HEADER_MULTI_READ)
+> +#define _TRACE_TSN_H
+> +
+> +#include <linux/tsn.h>
+> +#include <linux/tracepoint.h>
+> +
+> +#include <linux/if_ether.h>
+> +#include <linux/if_vlan.h>
+> +/* #include <linux/skbuff.h> */
+> +
+> +/* FIXME: update to TRACE_CLASS to reduce overhead */
 
-On Jun 12 2016 17:31, Henrik Austad wrote:
-> On Sun, Jun 12, 2016 at 01:30:24PM +0900, Takashi Sakamoto wrote:
->> On Jun 12 2016 12:38, Takashi Sakamoto wrote:
->>> In your patcset, there's no actual codes about how to handle any
->>> interrupt contexts (software / hardware), how to handle packet payloa=
-d,
->>> and so on. Especially, for recent sound subsystem, the timing of
->>> generating interrupts and which context does what works are important=
- to
->>> reduce playback/capture latency and power consumption.
->>>
->>> Of source, your intention of this patchset is to show your early conc=
-ept
->>> of TSN feature. Nevertheless, both of explaination and codes are
->>> important to the other developers who have little knowledges about TS=
-N,
->>> AVB and AES-64 such as me.
->>
->> Oops. Your 5th patch was skipped by alsa-project.org. I guess that siz=
-e
->> of the patch is too large to the list service. I can see it:
->> http://marc.info/?l=3Dlinux-netdev&m=3D146568672728661&w=3D2
->>
->> As long as seeing the patch, packets are queueing in hrtimer callbacks=
+I'm curious to why I didn't do this now. A class would make less
+duplication of typing too ;-)
 
->> every 1 seconds.
->=20
-> Actually, the hrtimer fires every 1ms, and that part is something I hav=
-e to=20
-> do something about, also because it sends of the same number of frames =
+> +TRACE_EVENT(tsn_buffer_write,
+> +
+> +	TP_PROTO(struct tsn_link *link,
+> +		size_t bytes),
+> +
+> +	TP_ARGS(link, bytes),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(u64, stream_id)
+> +		__field(size_t, size)
+> +		__field(size_t, bsize)
+> +		__field(size_t, size_left)
+> +		__field(void *, buffer)
+> +		__field(void *, head)
+> +		__field(void *, tail)
+> +		__field(void *, end)
+> +		),
+> +
+> +	TP_fast_assign(
+> +		__entry->stream_id = link->stream_id;
+> +		__entry->size = bytes;
+> +		__entry->bsize = link->used_buffer_size;
+> +		__entry->size_left = (link->head - link->tail) % link->used_buffer_size;
 
-> every time, regardless of how accurate the internal timer is to the res=
-t of=20
-> the network (there's no backpressure from the networking layer).
->=20
->> (This is a high level discussion and it's OK to ignore it for the
->> moment. When writing packet-oriented drivers for sound subsystem, you
->> need to pay special attention to accuracy of the number of PCM frames
->> transferred currently, and granularity of the number of PCM frames
->> transferred by one operation. In this case, snd_avb_hw,
->> snd_avb_pcm_pointer(), tsn_buffer_write_net() and tsn_buffer_read_net(=
-)
->> are involved in this discussion. You can see ALSA developers' struggle=
+Move this logic into the print statement, since you save head and tail.
 
->> in USB audio device class drivers and (of cource) IEC 61883-1/6 driver=
-s.)
->=20
-> Ah, good point. Any particular parts of the USB-subsystem I should star=
-t=20
-> looking at?
+> +		__entry->buffer = link->buffer;
+> +		__entry->head = link->head;
+> +		__entry->tail = link->tail;
+> +		__entry->end = link->end;
+> +		),
+> +
+> +	TP_printk("stream_id=%llu, copy=%zd, buffer: %zd, avail=%zd, [buffer=%p, head=%p, tail=%p, end=%p]",
+> +		__entry->stream_id, __entry->size, __entry->bsize, __entry->size_left,
 
-I don't think it's a beter way for you to study USB Audio Device Class
-driver unless you're interested in ALSA or USB subsystem.
+ __entry->stream_id, __entry->size, __entry->bsize,
+ (__entry->head - __entry->tail) % __entry->bsize,
 
-(But for your information, snd-usb-audio is in sound/usb/* of Linux
-kernel. IEC 61883-1/6 driver is in sound/firewire/*.)
+> +		__entry->buffer,    __entry->head, __entry->tail,  __entry->end)
+> +
+> +	);
+> +
+> +TRACE_EVENT(tsn_buffer_write_net,
+> +
+> +	TP_PROTO(struct tsn_link *link,
+> +		size_t bytes),
+> +
+> +	TP_ARGS(link, bytes),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(u64, stream_id)
+> +		__field(size_t, size)
+> +		__field(size_t, bsize)
+> +		__field(size_t, size_left)
+> +		__field(void *, buffer)
+> +		__field(void *, head)
+> +		__field(void *, tail)
+> +		__field(void *, end)
+> +		),
+> +
+> +	TP_fast_assign(
+> +		__entry->stream_id = link->stream_id;
+> +		__entry->size = bytes;
+> +		__entry->bsize = link->used_buffer_size;
+> +		__entry->size_left = (link->head - link->tail) % link->used_buffer_size;
+> +		__entry->buffer = link->buffer;
+> +		__entry->head = link->head;
+> +		__entry->tail = link->tail;
+> +		__entry->end = link->end;
+> +		),
+> +
+> +	TP_printk("stream_id=%llu, copy=%zd, buffer: %zd, avail=%zd, [buffer=%p, head=%p, tail=%p, end=%p]",
+> +		__entry->stream_id, __entry->size, __entry->bsize, __entry->size_left,
+> +		__entry->buffer,    __entry->head, __entry->tail,  __entry->end)
+> +
+> +	);
+> +
+> +
+> +TRACE_EVENT(tsn_buffer_read,
+> +
+> +	TP_PROTO(struct tsn_link *link,
+> +		size_t bytes),
+> +
+> +	TP_ARGS(link, bytes),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(u64, stream_id)
+> +		__field(size_t, size)
+> +		__field(size_t, bsize)
+> +		__field(size_t, size_left)
+> +		__field(void *, buffer)
+> +		__field(void *, head)
+> +		__field(void *, tail)
+> +		__field(void *, end)
+> +		),
+> +
+> +	TP_fast_assign(
+> +		__entry->stream_id = link->stream_id;
+> +		__entry->size = bytes;
+> +		__entry->bsize = link->used_buffer_size;
+> +		__entry->size_left = (link->head - link->tail) % link->used_buffer_size;
+> +		__entry->buffer = link->buffer;
+> +		__entry->head = link->head;
+> +		__entry->tail = link->tail;
+> +		__entry->end = link->end;
+> +		),
+> +
+> +	TP_printk("stream_id=%llu, copy=%zd, buffer: %zd, avail=%zd, [buffer=%p, head=%p, tail=%p, end=%p]",
+> +		__entry->stream_id, __entry->size, __entry->bsize, __entry->size_left,
+> +		__entry->buffer,    __entry->head, __entry->tail,  __entry->end)
+> +
+> +	);
+> +
+> +TRACE_EVENT(tsn_refill,
+> +
+> +	TP_PROTO(struct tsn_link *link,
+> +		size_t reported_avail),
+> +
+> +	TP_ARGS(link, reported_avail),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(u64, stream_id)
+> +		__field(size_t, bsize)
+> +		__field(size_t, size_left)
+> +		__field(size_t, reported_left)
+> +		__field(size_t, low_water)
+> +		),
+> +
+> +	TP_fast_assign(
+> +		__entry->stream_id = link->stream_id;
+> +		__entry->bsize = link->used_buffer_size;
+> +		__entry->size_left = (link->head - link->tail) % link->used_buffer_size;
 
-We need different strategy to achieve it on different transmission backen=
-d.
+As you don't save head and tail here, this logic needs to remain.
 
-> Knowing where to start looking is a tremendous help
+> +		__entry->reported_left = reported_avail;
+> +		__entry->low_water = link->low_water_mark;
+> +		),
+> +
+> +	TP_printk("stream_id=%llu, buffer=%zd, avail=%zd, reported=%zd, low=%zd",
+> +		__entry->stream_id, __entry->bsize, __entry->size_left, __entry->reported_left, __entry->low_water)
+> +	);
+> +
+> +TRACE_EVENT(tsn_send_batch,
+> +
+> +	TP_PROTO(struct tsn_link *link,
+> +		int num_send,
+> +		u64 ts_base_ns,
+> +		u64 ts_delta_ns),
+> +
+> +	TP_ARGS(link, num_send, ts_base_ns, ts_delta_ns),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(u64, stream_id)
+> +		__field(int, seqnr)
+> +		__field(int, num_send)
+> +		__field(u64, ts_base_ns)
+> +		__field(u64, ts_delta_ns)
+> +		),
+> +
+> +	TP_fast_assign(
+> +		__entry->stream_id   = link->stream_id;
+> +		__entry->seqnr	     = (int)link->last_seqnr;
+> +		__entry->ts_base_ns  = ts_base_ns;
+> +		__entry->ts_delta_ns = ts_delta_ns;
+> +		__entry->num_send    = num_send;
+> +		),
+> +
+> +	TP_printk("stream_id=%llu, seqnr=%d, num_send=%d, ts_base_ns=%llu, ts_delta_ns=%llu",
+> +		__entry->stream_id, __entry->seqnr, __entry->num_send, __entry->ts_base_ns, __entry->ts_delta_ns)
+> +	);
+> +
+> +
+> +TRACE_EVENT(tsn_rx_handler,
+> +
+> +	TP_PROTO(struct tsn_link *link,
+> +		const struct ethhdr *ethhdr,
+> +		u64 sid),
+> +
+> +	TP_ARGS(link, ethhdr, sid),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(char *, name)
+> +		__field(u16, proto)
+> +		__field(u64, sid)
+> +		__field(u64, link_sid)
+> +		),
+> +	TP_fast_assign(
+> +		__entry->name  = link->nic->name;
+> +		__entry->proto = ethhdr->h_proto;
+> +		__entry->sid   = sid;
+> +		__entry->link_sid = link->stream_id;
+> +		),
+> +
+> +	TP_printk("name=%s, proto: 0x%04x, stream_id=%llu, link->sid=%llu",
+> +		__entry->name, ntohs(__entry->proto), __entry->sid, __entry->link_sid)
+> +	);
+> +
+> +TRACE_EVENT(tsn_du,
+> +
+> +	TP_PROTO(struct tsn_link *link,
+> +		size_t bytes),
+> +
+> +	TP_ARGS(link, bytes),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(u64, link_sid)
+> +		__field(size_t, bytes)
+> +		),
+> +	TP_fast_assign(
+> +		__entry->link_sid = link->stream_id;
+> +		__entry->bytes = bytes;
+> +		),
+> +
+> +	TP_printk("stream_id=%llu,bytes=%zu",
+> +		__entry->link_sid, __entry->bytes)
+> +);
+> +
+> +TRACE_EVENT(tsn_set_buffer,
+> +
+> +	TP_PROTO(struct tsn_link *link, size_t bufsize),
+> +
+> +	TP_ARGS(link, bufsize),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(u64,  stream_id)
+> +		__field(size_t, size)
+> +		),
+> +
+> +	TP_fast_assign(
+> +		__entry->stream_id = link->stream_id;
+> +		__entry->size = bufsize;
+> +		),
+> +
+> +	TP_printk("stream_id=%llu,buffer_size=%zu",
+> +		__entry->stream_id, __entry->size)
+> +
+> +	);
+> +
+> +TRACE_EVENT(tsn_free_buffer,
+> +
+> +	TP_PROTO(struct tsn_link *link),
+> +
+> +	TP_ARGS(link),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(u64,  stream_id)
+> +		__field(size_t,	 bufsize)
+> +		),
+> +
+> +	TP_fast_assign(
+> +		__entry->stream_id = link->stream_id;
+> +		__entry->bufsize = link->buffer_size;
+> +		),
+> +
+> +	TP_printk("stream_id=%llu,size:%zd",
+> +		__entry->stream_id, __entry->bufsize)
+> +
+> +	);
+> +
+> +TRACE_EVENT(tsn_buffer_drain,
+> +
+> +	TP_PROTO(struct tsn_link *link, size_t used),
+> +
+> +	TP_ARGS(link, used),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(u64, stream_id)
+> +		__field(size_t, used)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->stream_id = link->stream_id;
+> +		__entry->used = used;
+> +	),
+> +
+> +	TP_printk("stream_id=%llu,used=%zu",
+> +		__entry->stream_id, __entry->used)
+> +
+> +);
+> +/* TODO: too long, need cleanup.
+> + */
+> +TRACE_EVENT(tsn_pre_tx,
+> +
+> +	TP_PROTO(struct tsn_link *link, struct sk_buff *skb, size_t bytes),
+> +
+> +	TP_ARGS(link, skb, bytes),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(u64, stream_id)
+> +		__field(u32, vlan_tag)
+> +		__field(size_t, bytes)
+> +		__field(size_t, data_len)
+> +		__field(unsigned int, headlen)
+> +		__field(u16, protocol)
+> +		__field(u16, prot_native)
+> +		__field(int, tx_idx)
+> +		__field(u16, mac_len)
+> +		__field(u16, hdr_len)
+> +		__field(u16, vlan_tci)
+> +		__field(u16, mac_header)
+> +		__field(unsigned int, tail)
+> +		__field(unsigned int, end)
+> +		__field(unsigned int, truesize)
+> +		),
+> +
+> +	TP_fast_assign(
+> +		__entry->stream_id = link->stream_id;
+> +		__entry->vlan_tag = (skb_vlan_tag_present(skb) ? skb_vlan_tag_get(skb) : 0);
+> +		__entry->bytes = bytes;
+> +		__entry->data_len = skb->data_len;
+> +		__entry->headlen = skb_headlen(skb);
+> +		__entry->protocol = ntohs(vlan_get_protocol(skb));
 
-It's not well-documented, and not well-generalized for packet-oriented
-drivers. Most of developers who have enough knowledge about it work for
-DMA-oriented drivers in mobile platforms and have little interests in
-packet-oriented drivers. You need to find your own way.
+Maybe it would be better to do the ntohs() in the TP_printk() as well.
 
-Currently I have few advices to you, because I'm also on the way for
-drivers to process IEC 61883-1/6 packets on IEEE 1394 bus with enough
-accuracy and granularity. The paper I introduced is for the way (but not
-mature).
+> +		__entry->prot_native = ntohs(skb->protocol);
 
-I wish you get more helps from the other developers. Your work is more
-significant to Linux system, than mine.
+here too.
 
-(And I hope your future work get no ignorance and no unreasonable
-hostility from coarse users.)
+> +		__entry->tx_idx = skb_get_queue_mapping(skb);
+> +
+> +		__entry->mac_len = skb->mac_len;
+> +		__entry->hdr_len = skb->hdr_len;
+> +		__entry->vlan_tci = skb->vlan_tci;
+> +		__entry->mac_header = skb->mac_header;
+> +		__entry->tail = (unsigned int)skb->tail;
+> +		__entry->end  = (unsigned int)skb->end;
+> +		__entry->truesize = skb->truesize;
+> +		),
+> +
+> +	TP_printk("stream_id=%llu,vlan_tag=0x%04x,data_size=%zd,data_len=%zd,headlen=%u,proto=0x%04x (0x%04x),tx_idx=%d,mac_len=%u,hdr_len=%u,vlan_tci=0x%02x,mac_header=0x%02x,tail=%u,end=%u,truesize=%u",
+> +		__entry->stream_id,
+> +		__entry->vlan_tag,
+> +		__entry->bytes,
+> +		__entry->data_len,
+> +		__entry->headlen,
+> +		__entry->protocol,
+> +		__entry->prot_native, __entry->tx_idx,
+> +		__entry->mac_len,
+> +		__entry->hdr_len,
+> +		__entry->vlan_tci,
+> +		__entry->mac_header,
 
+Is this an ether mac header? If so we support %M. But as it's defined
+as only u16, it doesn't seem like it can be.
 
-Regards
+-- Steve
 
-Takashi Sakamoto
+> +		__entry->tail,
+> +		__entry->end,
+> +		__entry->truesize)
+> +	);
+> +
+> +#endif	/* _TRACE_TSN_H || TRACE_HEADER_MULTI_READ */
+> +
+> +#include <trace/define_trace.h>
 
-
---K0b4NFlup2Hr3Mf9McNagelra53C3B9tq--
-
---UsR84E3dGIn60IX3V7DNPtulHtaLdK7uD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJXXTzWAAoJELWlhsfWb9NBiy0P/0l3ILGCvxaE50WGVEFUFJdJ
-tOHBl9Nw2T+VZNxpspbRMZ/03qx7VMCfszn4CzTYuA3nN1h5KxPDJo5/Fq6/v6tA
-eneP2c623wPmzUAPhGE8ThAgmJGUtmq82JYVAWsjTYm7m5LeOhVjckyw9P8uy1od
-DJeqO5oth2HGWb86JaVSMOpVqY+JVwb9qT04yOZ+JRa2VAgsgs/YdhYBHi7RS45O
-vfvNuR2EAvqNQwY4woDefdQJoHA0hlpx0NiCrJuRQebHsXSeTsCloB5bL+xbfS1V
-dFtf66P2BUMQ7u78xQ1Q/GDeYN23s6VhS5KcuRZ5ExC2Mp913Le55ovxOlZflg14
-3xJHt8PCXZp/Xbn0X/46mrSn0kErib6B10ublL6Ocr8rO/DxoHip4MGtrOl66LDa
-qy4DFxniE69b8wPxbf6h8mc7zzXYlYy0vIjsBqR37AvvHZdy2FiyAUO7Al7U0qwl
-NMuglNCDObkTnNF8Zlmyy9gZyMwNkTNguV8YM7Kx9B6H0OzWmqTJXTcJdEf7p0xa
-5i8tOMWoFhNnk6zM0T4tWbSZ84OQx1Y3ER7pDZAZQRnKTun0AQO7cdHqS5jU+CyC
-iuMdo0+83vW8sCc/Bp8YEdyc9crDSlUeMVOPldn90zHyz/69i39FWb4jdczrbDnb
-/I6fs/pYTFIfISTTs6pr
-=zn4h
------END PGP SIGNATURE-----
-
---UsR84E3dGIn60IX3V7DNPtulHtaLdK7uD--
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
