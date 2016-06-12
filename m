@@ -1,15 +1,16 @@
-From: Henrik Austad <henrik@austad.us>
-Subject: Re: [very-RFC 5/8] Add TSN machinery to drive the
- traffic from a shim over the network
-Date: Sun, 12 Jun 2016 10:34:32 +0200
-Message-ID: <20160612083432.GC32724__9775.89717736027$1465720511$gmane$org@icarus.home.austad.us>
-References: <1465683741-20390-1-git-send-email-henrik@austad.us>
- <1465683741-20390-6-git-send-email-henrik@austad.us>
- <1465716910.25087.88.camel@perches.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [very-RFC 0/8] TSN driver for the kernel
+Date: Sun, 12 Jun 2016 18:14:49 +0900
+Message-ID: <575D2809.9020903@sakamocchi.jp>
+References: <1465686096-22156-1-git-send-email-henrik@austad.us>
+ <575CD93C.50006@sakamocchi.jp> <20160612082852.GA32724@icarus.home.austad.us>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1436688604006104642=="
+Content-Type: multipart/mixed; boundary="===============4237115519634769012=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1465716910.25087.88.camel@perches.com>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 839C12607F7
+ for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2016 11:15:01 +0200 (CEST)
+In-Reply-To: <20160612082852.GA32724@icarus.home.austad.us>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,85 +20,126 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: henrk@austad.us, linux-netdev@vger.kernel.org, linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Henrik Austad <haustad@cisco.com>, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
+To: Henrik Austad <henrik@austad.us>
+Cc: netdev@vger.kernel.org, alsa-devel@alsa-project.org, linux-media@vger.kernel.org, alsa-devel@vger.kernel.org, henrk@austad.us
 List-Id: alsa-devel@alsa-project.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--===============4237115519634769012==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="vH47jvMUfF2lIBf46CLLdkRFuNv9P0Gu6"
 
---===============1436688604006104642==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Sr1nOIr3CvdE5hEN"
-Content-Disposition: inline
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--vH47jvMUfF2lIBf46CLLdkRFuNv9P0Gu6
+Content-Type: multipart/mixed; boundary="6lag9WIGPbQbhbEDSbiR6XOMgx44sk23J"
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Henrik Austad <henrik@austad.us>
+Cc: alsa-devel@alsa-project.org, netdev@vger.kernel.org, henrk@austad.us,
+ alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
+Message-ID: <575D2809.9020903@sakamocchi.jp>
+Subject: Re: [very-RFC 0/8] TSN driver for the kernel
+References: <1465686096-22156-1-git-send-email-henrik@austad.us>
+ <575CD93C.50006@sakamocchi.jp> <20160612082852.GA32724@icarus.home.austad.us>
+In-Reply-To: <20160612082852.GA32724@icarus.home.austad.us>
 
-
---Sr1nOIr3CvdE5hEN
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+--6lag9WIGPbQbhbEDSbiR6XOMgx44sk23J
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jun 12, 2016 at 12:35:10AM -0700, Joe Perches wrote:
-> On Sun, 2016-06-12 at 00:22 +0200, Henrik Austad wrote:
-> > From: Henrik Austad <haustad@cisco.com>
-> >=20
-> > In short summary:
-> >=20
-> > * tsn_core.c is the main driver of tsn, all new links go through
-> > =A0 here and all data to/form the shims are handled here
-> > =A0 core also manages the shim-interface.
-> []
-> > diff --git a/net/tsn/tsn_configfs.c b/net/tsn/tsn_configfs.c
-> []
-> > +static inline struct tsn_link *to_tsn_link(struct config_item *item)
-> > +{
-> > +	/* this line causes checkpatch to WARN. making checkpatch happy,
-> > +	=A0* makes code messy..
-> > +	=A0*/
-> > +	return item ? container_of(to_config_group(item), struct tsn_link, gr=
-oup) : NULL;
-> > +}
+On Jun 12 2016 17:28, Henrik Austad wrote:
+> On Sun, Jun 12, 2016 at 12:38:36PM +0900, Takashi Sakamoto wrote:
+>> I'm one of maintainers for ALSA firewire stack, which handles IEC
+>> 61883-1/6 and vendor-unique packets on IEEE 1394 bus for consumer
+>> recording equipments.
+>> (I'm not in MAINTAINERS because I'm a shy boy.)
+>>
+>> IEC 61883-6 describes that one packet can multiplex several types of
+>> data in its data channels; i.e. Multi Bit Linear Audio data (PCM
+>> samples), One Bit Audio Data (DSD), MIDI messages and so on.
 >=20
-> How about
+> Hmm, that I did not know, not sure how that applies to AVB, but definat=
+ely=20
+> something I have to look into.
+
+For your information, I describe more about it.
+
+You can see pre-standardized specification for IEC 61883-6 in website of
+1394 Trade Association. Let's look for 'Audio and Music Data
+Transmission Protocol 2.3 (October 13, 2010, 1394TA)'
+http://1394ta.org/specifications/
+
+In 'clause 12. AM824 SEQUENCE ADAPTATION LAYERS', you can see that one
+data block includes several types of data.
+
+
+But I can imagine that joint group for AVB loosely refers to IEC
+61883-6. In this case, AVB specification might describe one data block
+transfers one type of data, to drop unreasonable complexities.
+
+>> If you handles packet payload in 'struct snd_pcm_ops.copy', a process
+>> context of an ALSA PCM applications performs the work. Thus, no chance=
+s
+>> to multiplex data with the other types.
 >=20
-> static inline struct tsn_link *to_tsn_link(struct config_item *item)
-> {
-> 	if (!item)
-> 		return NULL;
-> 	return container_of(to_config_group(item), struct tsn_link, group);
-> }
+> The driver is not adhering fully to any standards right now, the amount=
+ of=20
+> detail is quite high - but I'm slowly improving as I go through the=20
+> standards. Getting on top of all the standards and all the different=20
+> subsystems are definately a work in progress (it's a lot to digest!)
 
-Yes, I mulled over this for a while, but I got the impression that the=20
-ternary-approach was the way used in configfs, and I tried staying in line=
-=20
-with that in tsn_configfs.
+In my taste, the driver is not necessarily compliant to any standards.
+It's enough just to work its task, without bad side-effects to Linux
+system. Based on this concept, current ALSA firewire stack just support
+PCM frames and MIDI messages.
 
-If you see other parts of the TSN-code, I tend to use the if (!item) ...=20
-approach. So, I don't have any technical preferences either way really
+Here, I tell you that actual devices tend not to be compliant to any
+standards and lost inter-operability.
 
---=20
-Henrik Austad
+(Especially, most of audio and music units on IEEE 1394 bus ignores some
+of items in standards. In short, they already lost inter-operability.)
 
---Sr1nOIr3CvdE5hEN
+So here, we just consider about what actual devices do, instead of
+following any standards.
+
+
+Regards
+
+Takashi Sakamoto
+
+
+--6lag9WIGPbQbhbEDSbiR6XOMgx44sk23J--
+
+--vH47jvMUfF2lIBf46CLLdkRFuNv9P0Gu6
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+Version: GnuPG v2
 
-iEYEARECAAYFAlddHpgACgkQ6k5VT6v45lmHfwCg/nSndGOel1ARBcWyifH89EA2
-M30AnjjQkKDyREGszIp8dqDX0uodW0Km
-=dEZu
+iQIcBAEBCAAGBQJXXSgPAAoJELWlhsfWb9NBot4P/RqHqRt+ZHC9pmoVKfbDM+Gg
+Uu5my0lQuMnWg2FPuVL6l450S/jsITLV5ERMEVU4vYhTKfit18dxhd+Ur7R7VEaA
+Z+4NjDn0pxJvOCENss1pvRRWFTxbR70g+k0Zzxh2e/bfAvi1tsUvTKPCGfoU6Mvb
+msM04PfZN/+ZFLn8FO8WQpmNIbWaMfbvLwg0TMcUSb93t68BS0dBm1pYX3doBt7T
+5KUqufhgOfZB+o2aFikzXR9J47yZZeMs+2P9DRO6l4Czi3LQur4VxriYsMQpF7oL
+LfG1oZM/jvquGstGUsND0eQHPqDAzlV8wbLya76ieFOW937rMHoMnL1AUFU/8dlP
+zBhEnCbOw/eQtiPLhPKgsky/SfK+/dStx5uSs3cRkeh5VmZkkZJV5gxjlxRooAwK
+ziWvMNdQCz+uHujQB40wCPh1IIwXBzQ61wLtn8X1iMfeOYrvVcyUayBxlJA1Gjm+
+36XpjFhM7ZiO1E2iifid9y6qMmNQ5HR5iQVQeQ3NvWgNW32/eYUMvuVI32OIJr2X
+6SEWvk+g90wGYlsRNyeJgcuYovEsgysSF0WANGN/vewZr5Wq1/7O+1s9uEBGrlXB
+j7I+0CaGo+PyAJGhpBmY/jGVrCQqPIbHXkqfYL7xKKqBu+2u1RiO5dZN89MlSFLx
+u7jhCb2BhyacGkoDVvlU
+=MRQF
 -----END PGP SIGNATURE-----
 
---Sr1nOIr3CvdE5hEN--
---
-To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
+--vH47jvMUfF2lIBf46CLLdkRFuNv9P0Gu6--
 
-
---===============1436688604006104642==
+--===============4237115519634769012==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1436688604006104642==--
+--===============4237115519634769012==--
