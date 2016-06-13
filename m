@@ -1,23 +1,16 @@
-From: Ihar Filipau <thephilips@gmail.com>
-Subject: Re: dmix produces garbled sound on ARM
-Date: Mon, 13 Jun 2016 14:32:30 +0200
-Message-ID: <CAD08gxJkLYh2VvqVhCu76a=kWUdnkuU7Eoni57bNVUvg0teRnA@mail.gmail.com>
-References: <CAD08gxJmvpJ-DdGpEawmBZ4aZCNj_Gyhqdf7bSbqRrZ4Xa9Lqg@mail.gmail.com>
- <s5hshwmfre1.wl-tiwai@suse.de>
- <CAD08gxL6TVwu63B11_Hs9qbvFgwDjPnv3Y4mV-pMss6mK2kuGg@mail.gmail.com>
- <s5hoa7afq96.wl-tiwai@suse.de>
- <CAD08gxKw2UK9JJ80Pp5icxLC_k-8dGykhHd3DbUvjPJXUGzVtQ@mail.gmail.com>
- <s5hporqe5r2.wl-tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/4] ASoC: arizona: Add a couple of missing
+	consts
+Date: Mon, 13 Jun 2016 13:35:14 +0100
+Message-ID: <1465821317-28449-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
- by alsa0.perex.cz (Postfix) with ESMTP id BC52C265099
- for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 14:32:31 +0200 (CEST)
-Received: by mail-wm0-f67.google.com with SMTP id n184so14542254wmn.1
- for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 05:32:31 -0700 (PDT)
-In-Reply-To: <s5hporqe5r2.wl-tiwai@suse.de>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 02C40265347
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 14:35:09 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,26 +20,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, ajit.pandey@soctronics.com, lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On 6/9/16, Takashi Iwai <tiwai@suse.de> wrote:
-> On Thu, 09 Jun 2016 16:05:42 +0200,
-> Ihar Filipau wrote:
->>
->> The only thing so far I have found is `aplay --dump-hw-params`, but it
->> seem to display the allowed ranges, not the defaults/the params which
->> are used.
->
-> You just need to check what "aplay -v ..." shows.  For example,
-> % aplay -Dplug:dmix -v foo.wav
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-I have just retested it with the "aloop", completely without hardware.
-The garbled sound comes from the software, from the dmix/libasound.
-The problem is not related to (sound) hardware.
-
-I can upload the garbled output which was recorded by "arecord", if it
-would be helpful in analyzing the problem. (12s, ~2MB wav.)
-
-Regards.
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 549161b..8d6dbf3 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -630,7 +630,7 @@ const struct soc_enum arizona_asrc_rate1 =
+ 			      arizona_rate_text, arizona_rate_val);
+ EXPORT_SYMBOL_GPL(arizona_asrc_rate1);
+ 
+-static const char *arizona_vol_ramp_text[] = {
++static const char * const arizona_vol_ramp_text[] = {
+ 	"0ms/6dB", "0.5ms/6dB", "1ms/6dB", "2ms/6dB", "4ms/6dB", "8ms/6dB",
+ 	"15ms/6dB", "30ms/6dB",
+ };
+@@ -659,7 +659,7 @@ SOC_ENUM_SINGLE_DECL(arizona_out_vi_ramp,
+ 		     arizona_vol_ramp_text);
+ EXPORT_SYMBOL_GPL(arizona_out_vi_ramp);
+ 
+-static const char *arizona_lhpf_mode_text[] = {
++static const char * const arizona_lhpf_mode_text[] = {
+ 	"Low-pass", "High-pass"
+ };
+ 
+@@ -687,7 +687,7 @@ SOC_ENUM_SINGLE_DECL(arizona_lhpf4_mode,
+ 		     arizona_lhpf_mode_text);
+ EXPORT_SYMBOL_GPL(arizona_lhpf4_mode);
+ 
+-static const char *arizona_ng_hold_text[] = {
++static const char * const arizona_ng_hold_text[] = {
+ 	"30ms", "120ms", "250ms", "500ms",
+ };
+ 
+@@ -1764,7 +1764,7 @@ restore_aif:
+ 	return ret;
+ }
+ 
+-static const char *arizona_dai_clk_str(int clk_id)
++static const char * const arizona_dai_clk_str(int clk_id)
+ {
+ 	switch (clk_id) {
+ 	case ARIZONA_CLK_SYSCLK:
+-- 
+2.1.4
