@@ -1,17 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt298: Add jack suspend and resume
-	functions.
-Date: Mon, 13 Jun 2016 15:09:23 +0100
-Message-ID: <20160613140923.GH2282@sirena.org.uk>
-References: <1465820919-6105-1-git-send-email-bardliao@realtek.com>
+From: weiyj_lk@163.com
+Subject: [PATCH] ASoC: sti: fix return value check in
+	uni_player_parse_dt_audio_glue()
+Date: Mon, 13 Jun 2016 14:39:57 +0000
+Message-ID: <1465828797-17628-1-git-send-email-weiyj_lk@163.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8835977369501987766=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E7E4265099
- for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 16:09:41 +0200 (CEST)
-In-Reply-To: <1465820919-6105-1-git-send-email-bardliao@realtek.com>
+Received: from m12-11.163.com (m12-11.163.com [220.181.12.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 31AEE265099
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 16:40:04 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,71 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, vinod.koul@intel.com, lgirdwood@gmail.com, senthilnathanx.veppur@intel.com, flove@realtek.com
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Wei Yongjun <yongjun_wei@trendmicro.com.cn>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
---===============8835977369501987766==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="OWym5pP/pDvoNOpg"
-Content-Disposition: inline
+In case of error, the function syscon_regmap_lookup_by_phandle() returns
+ERR_PTR() and never returns NULL. The NULL test in the return value check
+should be replaced with IS_ERR().
 
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+---
+ sound/soc/sti/uniperif_player.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---OWym5pP/pDvoNOpg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jun 13, 2016 at 08:28:39PM +0800, Bard Liao wrote:
-
-> +void rt298_jack_suspend(struct snd_soc_codec *codec)
-> +{
-> +	struct rt298_priv *rt298 = snd_soc_codec_get_drvdata(codec);
-> +	struct snd_soc_dapm_context *dapm;
-> +
-> +	dapm = snd_soc_codec_get_dapm(rt298->codec);
-> +	snd_soc_dapm_disable_pin(dapm, "LDO1");
-> +	snd_soc_dapm_sync(dapm);
-> +}
-> +EXPORT_SYMBOL_GPL(rt298_jack_suspend);
-> +
-> +void rt298_jack_resume(struct snd_soc_codec *codec)
-> +{
-> +	struct rt298_priv *rt298 = snd_soc_codec_get_drvdata(codec);
-> +	bool hp = false;
-> +	bool mic = false;
-> +
-> +	rt298_jack_detect(rt298, &hp, &mic);
-> +}
-> +EXPORT_SYMBOL_GPL(rt298_jack_resume);
-
-This is usually done by having the _jack_detect() function take NULL as
-the jack to disable the detection.  Keeping in line with the existing
-pattern would be good, and would make it easier if we do start to get
-this more standardized.
-
---OWym5pP/pDvoNOpg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXXr6LAAoJECTWi3JdVIfQKwYH+wal36z3qJQkGBjvj09ht5Vl
-6TLCSbx/DIjRPIguOsL9ZFZBfEfBt20kSDtCnNzRTPuROsYUXky8PCIO+fO1wR41
-xS130v4IdHrqj5CEGNGxtB67sjX9auV4LtnXtOFKE5EUitl43dzMMTHI99IsfxNn
-pb1Q84zls7HerzHDZkLCL6t8NPm6a4034vIhD/joptPS/W5+ftv38CdbKi6Nw2dq
-mZYGft3vgujPvkiFflWS5L/2rT7DubHbmmg+DHuPFtIG9d/5lAlIUyzmKaMlzkm3
-R62jQzzQ1EGJK39fnoMZ+fDyk3ecMMazNGK0gmnhpADxOvsaRdRUxyLC91r+HXc=
-=hZQM
------END PGP SIGNATURE-----
-
---OWym5pP/pDvoNOpg--
-
---===============8835977369501987766==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8835977369501987766==--
+diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
+index ee1c7c2..1ac2db2 100644
+--- a/sound/soc/sti/uniperif_player.c
++++ b/sound/soc/sti/uniperif_player.c
+@@ -1029,9 +1029,9 @@ static int uni_player_parse_dt_audio_glue(struct platform_device *pdev,
+ 
+ 	regmap = syscon_regmap_lookup_by_phandle(node, "st,syscfg");
+ 
+-	if (!regmap) {
++	if (IS_ERR(regmap)) {
+ 		dev_err(&pdev->dev, "sti-audio-clk-glue syscf not found\n");
+-		return -EINVAL;
++		return PTR_ERR(regmap);
+ 	}
+ 
+ 	player->clk_sel = regmap_field_alloc(regmap, regfield[0]);
