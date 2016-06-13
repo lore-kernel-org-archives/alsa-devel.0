@@ -1,175 +1,97 @@
-From: Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [very-RFC 6/8] Add TSN event-tracing
-Date: Sun, 12 Jun 2016 22:22:01 -0400
-Message-ID: <20160612222201.00a8aa4c@grimm.local.home>
-References: <1465686096-22156-1-git-send-email-henrik@austad.us>
- <1465686096-22156-7-git-send-email-henrik@austad.us>
- <20160612125803.27f401cc@gandalf.local.home>
- <20160612212510.GD32724@icarus.home.austad.us>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: intel: fix build when ACPI is not
+ enabled
+Date: Mon, 13 Jun 2016 09:52:33 +0530
+Message-ID: <20160613042233.GX16910@localhost>
+References: <575A0362.2080604@infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20160612212510.GD32724@icarus.home.austad.us>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Ingo Molnar <mingo@redhat.com>, Henrik Austad <haustad@cisco.com>, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <575A0362.2080604@infradead.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 12 Jun 2016 23:25:10 +0200
-Henrik Austad <henrik@austad.us> wrote:
-
-> > > +#include <linux/if_ether.h>
-> > > +#include <linux/if_vlan.h>
-> > > +/* #include <linux/skbuff.h> */
-> > > +
-> > > +/* FIXME: update to TRACE_CLASS to reduce overhead */  
-> > 
-> > I'm curious to why I didn't do this now. A class would make less
-> > duplication of typing too ;-)  
+On Thu, Jun 09, 2016 at 05:01:38PM -0700, Randy Dunlap wrote:
+> From: Randy Dunlap <rdunlap@infradead.org>
 > 
-> Yeah, I found this in a really great article written by some tracing-dude, 
-> I hear he talks really, really fast!
-
-I plead the 5th!
-
+> kconfig tools generate the following warning when CONFIG_ACPI is not
+> enabled:
 > 
-> https://lwn.net/Articles/381064/
+> warning: (SND_SOC_INTEL_BYTCR_RT5640_MACH && SND_SOC_INTEL_BYTCR_RT5651_MACH && SND_SOC_INTEL_CHT_BSW_RT5672_MACH && SND_SOC_INTEL_CHT_BSW_RT5645_MACH && SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH) selects SND_SST_IPC_ACPI which has unmet direct dependencies (SOUND && !M68K && !UML && SND && SND_SOC && ACPI)
 > 
-> > > +TRACE_EVENT(tsn_buffer_write,
-> > > +
-> > > +	TP_PROTO(struct tsn_link *link,
-> > > +		size_t bytes),
-> > > +
-> > > +	TP_ARGS(link, bytes),
-> > > +
-> > > +	TP_STRUCT__entry(
-> > > +		__field(u64, stream_id)
-> > > +		__field(size_t, size)
-> > > +		__field(size_t, bsize)
-> > > +		__field(size_t, size_left)
-> > > +		__field(void *, buffer)
-> > > +		__field(void *, head)
-> > > +		__field(void *, tail)
-> > > +		__field(void *, end)
-> > > +		),
-> > > +
-> > > +	TP_fast_assign(
-> > > +		__entry->stream_id = link->stream_id;
-> > > +		__entry->size = bytes;
-> > > +		__entry->bsize = link->used_buffer_size;
-> > > +		__entry->size_left = (link->head - link->tail) % link->used_buffer_size;  
-> > 
-> > Move this logic into the print statement, since you save head and tail.  
+> causing these build errors:
 > 
-> Ok, any particular reason?
+> In file included from ../sound/soc/intel/atom/sst/sst_acpi.c:40:0:
+> ../include/acpi/acpi_bus.h:65:20: error: conflicting types for 'acpi_evaluate_dsm'
+>  union acpi_object *acpi_evaluate_dsm(acpi_handle handle, const u8 *uuid,
+> In file included from ../sound/soc/intel/atom/sst/sst_acpi.c:31:0:
+> ../include/linux/acpi.h:676:34: note: previous definition of 'acpi_evaluate_dsm' was here
+>  static inline union acpi_object *acpi_evaluate_dsm(acpi_handle handle,
+> 
+> I am told that ACPI is a requirement for these drivers, so make that
+> explicit. Also end help text sentences with a period.
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc:	Jie Yang <yang.jie@linux.intel.com>
+> Cc:	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Cc:	alsa-devel@alsa-project.org
+> ---
+>  sound/soc/intel/Kconfig |   12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> Should SND_SOC_INTEL_SST and possibly other similar drivers get this
+> same change?
 
-Because it removes calculations during the trace. The calculations done
-in TP_printk() are done at the time of reading the trace, and
-calculations done in TP_fast_assign() are done during the recording and
-hence adding more overhead to the trace itself.
+The SND_SST_IPC_ACPI has depends on ACPI.
+
+Can you send me your config for this.
 
 
 > 
-> > > +		__entry->buffer = link->buffer;
-> > > +		__entry->head = link->head;
-> > > +		__entry->tail = link->tail;
-> > > +		__entry->end = link->end;
-> > > +		),
-> > > +
-> > > +	TP_printk("stream_id=%llu, copy=%zd, buffer: %zd, avail=%zd, [buffer=%p, head=%p, tail=%p, end=%p]",
-> > > +		__entry->stream_id, __entry->size, __entry->bsize, __entry->size_left,  
-> > 
-> >  __entry->stream_id, __entry->size, __entry->bsize,
-> >  (__entry->head - __entry->tail) % __entry->bsize,
-> >   
-> 
-> Ok, so is this about saving space by dropping one intermediate value, or is 
-> it some other point I'm missing here?
+> --- linux-next-20160607.orig/sound/soc/intel/Kconfig
+> +++ linux-next-20160607/sound/soc/intel/Kconfig
+> @@ -128,28 +128,28 @@ config SND_SOC_INTEL_BROADWELL_MACH
+>  
+>  config SND_SOC_INTEL_BYTCR_RT5640_MACH
+>          tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5640 codec"
+> -	depends on X86 && I2C
+> +	depends on X86 && I2C && ACPI
+>  	select SND_SOC_RT5640
+>  	select SND_SST_MFLD_PLATFORM
+>  	select SND_SST_IPC_ACPI
+> -	select SND_SOC_INTEL_SST_MATCH if ACPI
+> +	select SND_SOC_INTEL_SST_MATCH
+>  	help
+>            This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
+>            platforms with RT5640 audio codec.
+> -          Say Y if you have such a device
+> +          Say Y if you have such a device.
+>            If unsure select "N".
+>  
+>  config SND_SOC_INTEL_BYTCR_RT5651_MACH
+>          tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5651 codec"
+> -	depends on X86 && I2C
+> +	depends on X86 && I2C && ACPI
+>  	select SND_SOC_RT5651
+>  	select SND_SST_MFLD_PLATFORM
+>  	select SND_SST_IPC_ACPI
+> -	select SND_SOC_INTEL_SST_MATCH if ACPI
+> +	select SND_SOC_INTEL_SST_MATCH
+>  	help
+>            This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
+>            platforms with RT5651 audio codec.
+> -          Say Y if you have such a device
+> +          Say Y if you have such a device.
+>            If unsure select "N".
+>  
+>  config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-Nope, just moving the overhead from the recording of the trace to the
-reading of the trace.
-
-> 
-> > > +		__entry->buffer,    __entry->head, __entry->tail,  __entry->end)
-> > > +
-> > > +	);
-> > > +
-
-
-> > > +
-> > > +	TP_fast_assign(
-> > > +		__entry->stream_id = link->stream_id;
-> > > +		__entry->vlan_tag = (skb_vlan_tag_present(skb) ? skb_vlan_tag_get(skb) : 0);
-> > > +		__entry->bytes = bytes;
-> > > +		__entry->data_len = skb->data_len;
-> > > +		__entry->headlen = skb_headlen(skb);
-> > > +		__entry->protocol = ntohs(vlan_get_protocol(skb));  
-> > 
-> > Maybe it would be better to do the ntohs() in the TP_printk() as well.
-> >   
-> > > +		__entry->prot_native = ntohs(skb->protocol);  
-> > 
-> > here too.
-> >   
-> > > +		__entry->tx_idx = skb_get_queue_mapping(skb);
-> > > +
-> > > +		__entry->mac_len = skb->mac_len;
-> > > +		__entry->hdr_len = skb->hdr_len;
-> > > +		__entry->vlan_tci = skb->vlan_tci;
-> > > +		__entry->mac_header = skb->mac_header;
-> > > +		__entry->tail = (unsigned int)skb->tail;
-> > > +		__entry->end  = (unsigned int)skb->end;
-> > > +		__entry->truesize = skb->truesize;
-> > > +		),
-> > > +
-> > > +	TP_printk("stream_id=%llu,vlan_tag=0x%04x,data_size=%zd,data_len=%zd,headlen=%u,proto=0x%04x (0x%04x),tx_idx=%d,mac_len=%u,hdr_len=%u,vlan_tci=0x%02x,mac_header=0x%02x,tail=%u,end=%u,truesize=%u",
-> > > +		__entry->stream_id,
-> > > +		__entry->vlan_tag,
-> > > +		__entry->bytes,
-> > > +		__entry->data_len,
-> > > +		__entry->headlen,
-> > > +		__entry->protocol,
-> > > +		__entry->prot_native, __entry->tx_idx,
-> > > +		__entry->mac_len,
-> > > +		__entry->hdr_len,
-> > > +		__entry->vlan_tci,
-> > > +		__entry->mac_header,  
-> > 
-> > Is this an ether mac header? If so we support %M. But as it's defined
-> > as only u16, it doesn't seem like it can be.  
-> 
-> Actually, looking at the output, I'm not quite sure what it is that I 
-> wanted to grab with that, the skb->mac_header should give an offset into 
-> the header-area of skb, so it should be a constant offset from skb->head 
-> (that is an actual pointer).
-> 
-> I *think* I wanted to make sure I updated things correctly so that the 
-> offset didn't suddenly change, but the fact that I'm no longer sure 
-> indicates that I should just drop that one. That whole printout is too long 
-> anyway..
-> 
-> Thanks for pointing a finger at this!
-> 
-> 
-> I'm still a bit stymied as to why logic should be in TP_printk() and not 
-> TP_fast_assign(). Not that I really have any preferences either way, just 
-> curious.
-
-As said above, it's simply just trying to make tracing have less of an
-effect on what is being traced. The more you can do in the post
-transactions the faster the trace becomes and less invasive the trace
-is on the system performance.
-
--- Steve
-
---
-To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
+-- 
+~Vinod
