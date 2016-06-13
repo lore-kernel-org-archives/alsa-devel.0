@@ -1,46 +1,46 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ASoC: fix ABE_TWL6040 dependency
-Date: Mon, 13 Jun 2016 17:39:43 +0200
-Message-ID: <1465832422-2998958-2-git-send-email-arnd@arndb.de>
+Subject: [PATCH] ASoC: cs53l30: include gpio/consumer.h
+Date: Mon, 13 Jun 2016 17:39:44 +0200
+Message-ID: <1465832422-2998958-3-git-send-email-arnd@arndb.de>
 References: <1465832422-2998958-1-git-send-email-arnd@arndb.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1465832422-2998958-1-git-send-email-arnd@arndb.de>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The TWL6040 ASoC support has recently started turning on CLK_TWL6040,
-but that fails to build when CONFIG_COMMON_CLK is disabled:
+When GPIOLIB is disabled, we don't see the declarations from
+gpio/consumer.h, so we have to include the header explicitly
+to avoid this build error:
 
-warning: (SND_OMAP_SOC_OMAP_ABE_TWL6040) selects CLK_TWL6040 which has unmet direct dependencies (COMMON_CLK && TWL6040_CORE)
-0xF18E38F6 Thu Jun 9 18:57:32 CEST 2016 failed
-In file included from ../include/linux/clocksource.h:18:0,
-                 from ../drivers/clocksource/timer-nps.c:34:
-../include/linux/of.h:1005:20: error: comparison of distinct pointer types lacks a cast [-Werror]
-        .data = (fn == (fn_type)NULL) ? fn : fn  }
-                    ^
-
-This adds a dependency to avoid the invalid configuration.
+sound/soc/codecs/cs53l30.c: In function 'cs53l30_i2c_probe':
+sound/soc/codecs/cs53l30.c:931:24: error: implicit declaration of function 'devm_gpiod_get_optional' [-Werror=implicit-function-declaration]
+  cs53l30->reset_gpio = devm_gpiod_get_optional(dev, reset,
+                        ^~~~~~~~~~~~~~~~~~~~~~~
+sound/soc/codecs/cs53l30.c:932:13: error: 'GPIOD_OUT_LOW' undeclared (first use in this function)
+             GPIOD_OUT_LOW);
+             ^~~~~~~~~~~~~
+sound/soc/codecs/cs53l30.c:932:13: note: each undeclared identifier is reported only once for each function it appears in
+sound/soc/codecs/cs53l30.c:939:3: error: implicit declaration of function 'gpiod_set_value_cansleep' [-Werror=implicit-function-declaration]
+   gpiod_set_value_cansleep(cs53l30->reset_gpio, 1);
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Fixes: 443500a3927a ("ASoC: omap: Kconfig: SND_OMAP_SOC_OMAP_ABE_TWL6040 to select CLK_TWL6040")
 ---
- sound/soc/omap/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/cs53l30.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
-index 5c471d920898..f5451c78ede5 100644
---- a/sound/soc/omap/Kconfig
-+++ b/sound/soc/omap/Kconfig
-@@ -100,7 +100,7 @@ config SND_OMAP_SOC_OMAP_TWL4030
- 
- config SND_OMAP_SOC_OMAP_ABE_TWL6040
- 	tristate "SoC Audio support for OMAP boards using ABE and twl6040 codec"
--	depends on TWL6040_CORE && SND_OMAP_SOC
-+	depends on TWL6040_CORE && SND_OMAP_SOC && COMMON_CLK
- 	depends on ARCH_OMAP4 || (SOC_OMAP5 && MFD_PALMAS) || COMPILE_TEST
- 	select SND_OMAP_SOC_DMIC
- 	select SND_OMAP_SOC_MCPDM
+diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
+index ac90dd79857e..aa511e70099e 100644
+--- a/sound/soc/codecs/cs53l30.c
++++ b/sound/soc/codecs/cs53l30.c
+@@ -17,6 +17,7 @@
+ #include <linux/i2c.h>
+ #include <linux/module.h>
+ #include <linux/of_gpio.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/regulator/consumer.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
 -- 
 2.7.0
