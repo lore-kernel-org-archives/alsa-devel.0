@@ -1,59 +1,49 @@
-From: Matt Flax <flatmax@flatmax.org>
-Subject: Re: [PATCH 2/2] ASoc: wm8731: add normal mode with
-	12MHz XTAL
-Date: Mon, 13 Jun 2016 19:45:22 +1000
-Message-ID: <575E80B2.3040309@flatmax.org>
-References: <1465517516-1917-1-git-send-email-flatmax@flatmax.org>
- <1465517516-1917-2-git-send-email-flatmax@flatmax.org>
- <575BD6F2.70600@flatmax.org> <575CD572.2040700@flatmax.org>
- <20160613083714.GU20422@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nschwmtas02p.mx.bigpond.com (nschwmtas02p.mx.bigpond.com
- [61.9.189.140]) by alsa0.perex.cz (Postfix) with ESMTP id 133652619D7
- for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 11:45:37 +0200 (CEST)
-In-Reply-To: <20160613083714.GU20422@localhost.localdomain>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH RFC 0/6] Sound support for Exynos5433 TM2(E) boards
+Date: Mon, 13 Jun 2016 12:52:34 +0200
+Message-ID: <1465815160-28504-1-git-send-email-s.nawrocki@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: broonie@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Cc: robh@kernel.org, linux-samsung-soc@vger.kernel.org, ideal.song@samsung.com, beomho.seo@samsung.com, inki.dae@samsung.com, k.kozlowski@samsung.com, b.zolnierkie@samsung.com, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 13/06/16 18:37, Charles Keepax wrote:
-> On Sun, Jun 12, 2016 at 01:22:26PM +1000, Matt Flax wrote:
->> It appears that my logic here is flawed.
->>  From what I can tell, it isn't possible to get a suitable bit clock out of
->> the codec when using a 12 MHz crystal. For that reason, in my hardware I
->> will change crystals from 12 MHz.
-> This looks correct the chip only has simple dividers so you won't
-> be able to get a good audio rate clock from a 12MHz crystal.
->
->> I just want to check ... are there any versions of this codec which output
->> the bit clock when in USB mode on the BCLK pin ?
->>
-> Apologies I am not quite sure I follow what USB mode is in this
-> context, and the bit clock surely always comes out of the BCLK
-> pin. Do you simply mean a system with a clock speed that
-> relates to the 48MHz USB clock, such as your 12MHz? Basically any
-> part that has a PLL/FLL should work for that, for example the
-> wm8998:
->
-> http://www.cirrus.com/en/products/pro/detail/P1265.html
+This patch series adds sound supoort for the Exynos 5433 based TM2(E)
+boards.  It includes minimal drivers for the Low Power Audio Subsystem
+(LPASS) and the MAX98504 class D speaker amplifier as well as the actual
+asoc machine driver.
 
-Literally, with the chip set to usb mode (register 0b0001000 bit 0, page 
-41 of the data sheet) it appears that the 12 MHz clock comes out of the 
-BCLK pin, rather then the bit clock.
+Inha Song (2):
+  ASoC: samsung: Add Samsung Low Power Audio Subsystem driver
+  ASoC: samsung: Add machine driver for Exynos5433 based TM2 board
 
-Matt
+Sylwester Nawrocki (4):
+  ASoC: samsung: Add DT bindings documentation for LPASS
+  ASoC: max98504: Add max98504 speaker amplifier driver
+  ASoC: Add DT bindings documentation for max98504 amplifier
+  ASoC: samsung: Add DT bindings documentation for TM2 sound subsystem
 
-> Thanks,
-> Charles
+ .../devicetree/bindings/sound/max98504.txt         |  44 ++
+ .../bindings/sound/samsung,exynos5433-lpass.txt    |   8 +
+ .../bindings/sound/samsung,tm2-wm5110.txt          |  39 ++
+ sound/soc/codecs/Kconfig                           |   4 +
+ sound/soc/codecs/Makefile                          |   2 +
+ sound/soc/codecs/max98504.c                        | 241 +++++++++
+ sound/soc/codecs/max98504.h                        |  94 ++++
+ sound/soc/samsung/Kconfig                          |  13 +
+ sound/soc/samsung/Makefile                         |   4 +
+ sound/soc/samsung/lpass.c                          | 162 ++++++
+ sound/soc/samsung/lpass.h                          |  47 ++
+ sound/soc/samsung/tm2_wm5110.c                     | 553 +++++++++++++++++++++
+ 12 files changed, 1211 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/max98504.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/samsung,exynos5433-lpass.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/samsung,tm2-wm5110.txt
+ create mode 100644 sound/soc/codecs/max98504.c
+ create mode 100644 sound/soc/codecs/max98504.h
+ create mode 100644 sound/soc/samsung/lpass.c
+ create mode 100644 sound/soc/samsung/lpass.h
+ create mode 100644 sound/soc/samsung/tm2_wm5110.c
+
+--
+1.9.1
