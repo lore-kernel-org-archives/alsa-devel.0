@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8985: add i2c dependency" to the asoc tree
-Date: Mon, 13 Jun 2016 17:54:58 +0100
-Message-ID: <E1bCV8c-0004gT-Tj@finisterre>
-References: <1465832422-2998958-1-git-send-email-arnd@arndb.de>
+Subject: Applied "ASoC: fix ABE_TWL6040 dependency" to the asoc tree
+Date: Mon, 13 Jun 2016 17:54:55 +0100
+Message-ID: <E1bCV8Z-0004fa-FT@finisterre>
+References: <1465832422-2998958-2-git-send-email-arnd@arndb.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1465832422-2998958-1-git-send-email-arnd@arndb.de>
+In-Reply-To: <1465832422-2998958-2-git-send-email-arnd@arndb.de>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8985: add i2c dependency
+   ASoC: fix ABE_TWL6040 dependency
 
 has been applied to the asoc tree at
 
@@ -37,42 +37,43 @@ to this mail.
 Thanks,
 Mark
 
->From 05252513fbb9874a292a78aa577e5d42bb4d5ad0 Mon Sep 17 00:00:00 2001
+>From d13e4362dec91304143875d9b8e1348bdfe69e63 Mon Sep 17 00:00:00 2001
 From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 13 Jun 2016 17:39:42 +0200
-Subject: [PATCH] ASoC: wm8985: add i2c dependency
+Date: Mon, 13 Jun 2016 17:39:43 +0200
+Subject: [PATCH] ASoC: fix ABE_TWL6040 dependency
 
-The wm8985 driver is now user-selectable, but building it with
-I2C disabled results in a link failure:
+The TWL6040 ASoC support has recently started turning on CLK_TWL6040,
+but that fails to build when CONFIG_COMMON_CLK is disabled:
 
-sound/built-in.o: In function `wm8985_i2c_probe':
-:(.text+0x44914): undefined reference to `__devm_regmap_init_i2c'
-sound/built-in.o: In function `wm8985_exit':
-:(.exit.text+0x3d8): undefined reference to `i2c_del_driver'
-sound/built-in.o: In function `wm8985_modinit':
-:(.init.text+0x1454): undefined reference to `i2c_register_driver'
+warning: (SND_OMAP_SOC_OMAP_ABE_TWL6040) selects CLK_TWL6040 which has unmet direct dependencies (COMMON_CLK && TWL6040_CORE)
+0xF18E38F6 Thu Jun 9 18:57:32 CEST 2016 failed
+In file included from ../include/linux/clocksource.h:18:0,
+                 from ../drivers/clocksource/timer-nps.c:34:
+../include/linux/of.h:1005:20: error: comparison of distinct pointer types lacks a cast [-Werror]
+        .data = (fn == (fn_type)NULL) ? fn : fn  }
+                    ^
 
-This adds a Kconfig dependency the way that the other codec
-drivers have it.
+This adds a dependency to avoid the invalid configuration.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Fixes: 811e66de2241 ("ASoC: wm8985: add support for WM8758")
+Fixes: 443500a3927a ("ASoC: omap: Kconfig: SND_OMAP_SOC_OMAP_ABE_TWL6040 to select CLK_TWL6040")
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/omap/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 5c635f7ec0aa..f8f6dc6c6a98 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -945,6 +945,7 @@ config SND_SOC_WM8983
+diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
+index 5185a3844da9..c82fa542c9e7 100644
+--- a/sound/soc/omap/Kconfig
++++ b/sound/soc/omap/Kconfig
+@@ -100,7 +100,7 @@ config SND_OMAP_SOC_OMAP_TWL4030
  
- config SND_SOC_WM8985
- 	tristate "Wolfson Microelectronics WM8985 and WM8758 codec driver"
-+	depends on I2C
- 
- config SND_SOC_WM8988
- 	tristate
+ config SND_OMAP_SOC_OMAP_ABE_TWL6040
+ 	tristate "SoC Audio support for OMAP boards using ABE and twl6040 codec"
+-	depends on TWL6040_CORE && SND_OMAP_SOC
++	depends on TWL6040_CORE && SND_OMAP_SOC && COMMON_CLK
+ 	depends on ARCH_OMAP4 || (SOC_OMAP5 && MFD_PALMAS) || COMPILE_TEST
+ 	select SND_OMAP_SOC_DMIC
+ 	select SND_OMAP_SOC_MCPDM
 -- 
 2.8.1
