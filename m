@@ -1,16 +1,17 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/4] ASoC: arizona: Add a couple of missing
-	consts
-Date: Mon, 13 Jun 2016 13:35:14 +0100
-Message-ID: <1465821317-28449-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 4/4] ASoC: wm5102: Revert manual speaker enable
+Date: Mon, 13 Jun 2016 13:35:17 +0100
+Message-ID: <1465821317-28449-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1465821317-28449-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 02C40265347
+ by alsa0.perex.cz (Postfix) with ESMTP id 02AF1265099
  for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 14:35:09 +0200 (CEST)
+In-Reply-To: <1465821317-28449-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,50 +25,100 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, ajit.pandey@soctronics.com, lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+The OUT4L and OUT4R widgets are not registered PRE_PMU or POST_PMD
+events, as such the manual speaker enable on wm5102 does not actually
+ever run. Furthermore since the issue actually only affected rev B of
+the silicon which never shipped in volume, simply remove the work around
+from the code.
+
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/arizona.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/arizona.c | 42 ------------------------------------------
+ sound/soc/codecs/arizona.h |  3 ---
+ 2 files changed, 45 deletions(-)
 
 diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 549161b..8d6dbf3 100644
+index 8d6dbf3..ed04257 100644
 --- a/sound/soc/codecs/arizona.c
 +++ b/sound/soc/codecs/arizona.c
-@@ -630,7 +630,7 @@ const struct soc_enum arizona_asrc_rate1 =
- 			      arizona_rate_text, arizona_rate_val);
- EXPORT_SYMBOL_GPL(arizona_asrc_rate1);
- 
--static const char *arizona_vol_ramp_text[] = {
-+static const char * const arizona_vol_ramp_text[] = {
- 	"0ms/6dB", "0.5ms/6dB", "1ms/6dB", "2ms/6dB", "4ms/6dB", "8ms/6dB",
- 	"15ms/6dB", "30ms/6dB",
- };
-@@ -659,7 +659,7 @@ SOC_ENUM_SINGLE_DECL(arizona_out_vi_ramp,
- 		     arizona_vol_ramp_text);
- EXPORT_SYMBOL_GPL(arizona_out_vi_ramp);
- 
--static const char *arizona_lhpf_mode_text[] = {
-+static const char * const arizona_lhpf_mode_text[] = {
- 	"Low-pass", "High-pass"
- };
- 
-@@ -687,7 +687,7 @@ SOC_ENUM_SINGLE_DECL(arizona_lhpf4_mode,
- 		     arizona_lhpf_mode_text);
- EXPORT_SYMBOL_GPL(arizona_lhpf4_mode);
- 
--static const char *arizona_ng_hold_text[] = {
-+static const char * const arizona_ng_hold_text[] = {
- 	"30ms", "120ms", "250ms", "500ms",
- };
- 
-@@ -1764,7 +1764,7 @@ restore_aif:
- 	return ret;
- }
- 
--static const char *arizona_dai_clk_str(int clk_id)
-+static const char * const arizona_dai_clk_str(int clk_id)
+@@ -85,30 +85,9 @@ static int arizona_spk_ev(struct snd_soc_dapm_widget *w,
  {
- 	switch (clk_id) {
- 	case ARIZONA_CLK_SYSCLK:
+ 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct arizona *arizona = dev_get_drvdata(codec->dev->parent);
+-	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
+-	bool manual_ena = false;
+ 	int val;
+ 
+-	switch (arizona->type) {
+-	case WM5102:
+-		switch (arizona->rev) {
+-		case 0:
+-			break;
+-		default:
+-			manual_ena = true;
+-			break;
+-		}
+-	default:
+-		break;
+-	}
+-
+ 	switch (event) {
+-	case SND_SOC_DAPM_PRE_PMU:
+-		if (!priv->spk_ena && manual_ena) {
+-			regmap_write_async(arizona->regmap, 0x4f5, 0x25a);
+-			priv->spk_ena_pending = true;
+-		}
+-		break;
+ 	case SND_SOC_DAPM_POST_PMU:
+ 		val = snd_soc_read(codec, ARIZONA_INTERRUPT_RAW_STATUS_3);
+ 		if (val & ARIZONA_SPK_OVERHEAT_STS) {
+@@ -120,33 +99,12 @@ static int arizona_spk_ev(struct snd_soc_dapm_widget *w,
+ 		regmap_update_bits_async(arizona->regmap,
+ 					 ARIZONA_OUTPUT_ENABLES_1,
+ 					 1 << w->shift, 1 << w->shift);
+-
+-		if (priv->spk_ena_pending) {
+-			msleep(75);
+-			regmap_write_async(arizona->regmap, 0x4f5, 0xda);
+-			priv->spk_ena_pending = false;
+-			priv->spk_ena++;
+-		}
+ 		break;
+ 	case SND_SOC_DAPM_PRE_PMD:
+-		if (manual_ena) {
+-			priv->spk_ena--;
+-			if (!priv->spk_ena)
+-				regmap_write_async(arizona->regmap,
+-						   0x4f5, 0x25a);
+-		}
+-
+ 		regmap_update_bits_async(arizona->regmap,
+ 					 ARIZONA_OUTPUT_ENABLES_1,
+ 					 1 << w->shift, 0);
+ 		break;
+-	case SND_SOC_DAPM_POST_PMD:
+-		if (manual_ena) {
+-			if (!priv->spk_ena)
+-				regmap_write_async(arizona->regmap,
+-						   0x4f5, 0x0da);
+-		}
+-		break;
+ 	default:
+ 		break;
+ 	}
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index 2caf4d0..69da1ef 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -90,9 +90,6 @@ struct arizona_priv {
+ 	unsigned int out_down_pending;
+ 	unsigned int out_down_delay;
+ 
+-	unsigned int spk_ena:2;
+-	unsigned int spk_ena_pending:1;
+-
+ 	unsigned int dvfs_reqs;
+ 	struct mutex dvfs_lock;
+ 	bool dvfs_cached;
 -- 
 2.1.4
