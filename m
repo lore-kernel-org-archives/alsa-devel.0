@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: use common PREFIX for each DT property" to the asoc tree
-Date: Mon, 13 Jun 2016 16:47:51 +0100
-Message-ID: <E1bCU5f-000315-5F@finisterre>
-References: <87d1o2sj6z.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87d1o2sj6z.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+Subject: Applied "ALSA: compress: Add function to indicate the
+	stream has gone bad" to the asoc tree
+Date: Mon, 13 Jun 2016 16:47:27 +0100
+Message-ID: <E1bCU5H-0002vu-MR@finisterre>
+References: <1465823832-14718-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CF6D265471
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 17:47:48 +0200 (CEST)
+In-Reply-To: <1465823832-14718-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card: use common PREFIX for each DT property
+   ALSA: compress: Add function to indicate the stream has gone bad
 
 has been applied to the asoc tree at
 
@@ -37,105 +53,188 @@ to this mail.
 Thanks,
 Mark
 
->From 548563fa3e430ce61db79aa11331da6e5f535a3b Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 31 May 2016 08:59:01 +0000
-Subject: [PATCH] ASoC: simple-card: use common PREFIX for each DT property
+>From a4f2d87c63571d4cd9467d369f2fbf2362646043 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Mon, 13 Jun 2016 14:17:10 +0100
+Subject: [PATCH] ALSA: compress: Add function to indicate the stream has gone
+ bad
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Currently, the avail IOCTL doesn't pass any error status, which
+means typically on error it simply shows no data available. This
+can lead to situations where user-space is waiting indefinitely
+for data that will never come as the DSP has suffered an
+unrecoverable error.
+
+Add snd_compr_stop_error which end drivers can call to indicate
+the stream has suffered an unrecoverable error and stop it. The
+avail and poll IOCTLs are then updated to report if the stream is
+in an error state to user-space. Allowing the error to propagate
+out. Processing of the actual snd_compr_stop needs to be deferred
+to a worker thread as the end driver may detect the errors during
+an existing operation callback.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-card.c | 24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+ include/sound/compress_driver.h |  5 +++
+ sound/core/compress_offload.c   | 67 +++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 70 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 4e39c0fa78c9..b6e6d9a12ec2 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -40,6 +40,8 @@ struct simple_card_data {
- #define simple_priv_to_link(priv, i) ((priv)->snd_card.dai_link + i)
- #define simple_priv_to_props(priv, i) ((priv)->dai_props + i)
+diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
+index c0abcdc11470..cee8c00f3d3e 100644
+--- a/include/sound/compress_driver.h
++++ b/include/sound/compress_driver.h
+@@ -68,6 +68,7 @@ struct snd_compr_runtime {
+  * @ops: pointer to DSP callbacks
+  * @runtime: pointer to runtime structure
+  * @device: device pointer
++ * @error_work: delayed work used when closing the stream due to an error
+  * @direction: stream direction, playback/recording
+  * @metadata_set: metadata set flag, true when set
+  * @next_track: has userspace signal next track transition, true when set
+@@ -78,6 +79,7 @@ struct snd_compr_stream {
+ 	struct snd_compr_ops *ops;
+ 	struct snd_compr_runtime *runtime;
+ 	struct snd_compr *device;
++	struct delayed_work error_work;
+ 	enum snd_compr_direction direction;
+ 	bool metadata_set;
+ 	bool next_track;
+@@ -187,4 +189,7 @@ static inline void snd_compr_drain_notify(struct snd_compr_stream *stream)
+ 	wake_up(&stream->runtime->sleep);
+ }
  
-+#define PREFIX	"simple-audio-card,"
++int snd_compr_stop_error(struct snd_compr_stream *stream,
++			 snd_pcm_state_t state);
 +
- static int asoc_simple_card_startup(struct snd_pcm_substream *substream)
+ #endif
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index 9b3334be9df2..2c498488af6c 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -67,6 +67,8 @@ struct snd_compr_file {
+ 	struct snd_compr_stream stream;
+ };
+ 
++static void error_delayed_work(struct work_struct *work);
++
+ /*
+  * a note on stream states used:
+  * we use following states in the compressed core
+@@ -123,6 +125,9 @@ static int snd_compr_open(struct inode *inode, struct file *f)
+ 		snd_card_unref(compr->card);
+ 		return -ENOMEM;
+ 	}
++
++	INIT_DELAYED_WORK(&data->stream.error_work, error_delayed_work);
++
+ 	data->stream.ops = compr->ops;
+ 	data->stream.direction = dirn;
+ 	data->stream.private_data = compr->private_data;
+@@ -153,6 +158,8 @@ static int snd_compr_free(struct inode *inode, struct file *f)
+ 	struct snd_compr_file *data = f->private_data;
+ 	struct snd_compr_runtime *runtime = data->stream.runtime;
+ 
++	cancel_delayed_work_sync(&data->stream.error_work);
++
+ 	switch (runtime->state) {
+ 	case SNDRV_PCM_STATE_RUNNING:
+ 	case SNDRV_PCM_STATE_DRAINING:
+@@ -237,6 +244,15 @@ snd_compr_ioctl_avail(struct snd_compr_stream *stream, unsigned long arg)
+ 	avail = snd_compr_calc_avail(stream, &ioctl_avail);
+ 	ioctl_avail.avail = avail;
+ 
++	switch (stream->runtime->state) {
++	case SNDRV_PCM_STATE_OPEN:
++		return -EBADFD;
++	case SNDRV_PCM_STATE_XRUN:
++		return -EPIPE;
++	default:
++		break;
++	}
++
+ 	if (copy_to_user((__u64 __user *)arg,
+ 				&ioctl_avail, sizeof(ioctl_avail)))
+ 		return -EFAULT;
+@@ -346,11 +362,13 @@ static ssize_t snd_compr_read(struct file *f, char __user *buf,
+ 	switch (stream->runtime->state) {
+ 	case SNDRV_PCM_STATE_OPEN:
+ 	case SNDRV_PCM_STATE_PREPARED:
+-	case SNDRV_PCM_STATE_XRUN:
+ 	case SNDRV_PCM_STATE_SUSPENDED:
+ 	case SNDRV_PCM_STATE_DISCONNECTED:
+ 		retval = -EBADFD;
+ 		goto out;
++	case SNDRV_PCM_STATE_XRUN:
++		retval = -EPIPE;
++		goto out;
+ 	}
+ 
+ 	avail = snd_compr_get_avail(stream);
+@@ -399,10 +417,16 @@ static unsigned int snd_compr_poll(struct file *f, poll_table *wait)
+ 	stream = &data->stream;
+ 
+ 	mutex_lock(&stream->device->lock);
+-	if (stream->runtime->state == SNDRV_PCM_STATE_OPEN) {
++
++	switch (stream->runtime->state) {
++	case SNDRV_PCM_STATE_OPEN:
++	case SNDRV_PCM_STATE_XRUN:
+ 		retval = snd_compr_get_poll(stream) | POLLERR;
+ 		goto out;
++	default:
++		break;
+ 	}
++
+ 	poll_wait(f, &stream->runtime->sleep, wait);
+ 
+ 	avail = snd_compr_get_avail(stream);
+@@ -697,6 +721,45 @@ static int snd_compr_stop(struct snd_compr_stream *stream)
+ 	return retval;
+ }
+ 
++static void error_delayed_work(struct work_struct *work)
++{
++	struct snd_compr_stream *stream;
++
++	stream = container_of(work, struct snd_compr_stream, error_work.work);
++
++	mutex_lock(&stream->device->lock);
++
++	stream->ops->trigger(stream, SNDRV_PCM_TRIGGER_STOP);
++	wake_up(&stream->runtime->sleep);
++
++	mutex_unlock(&stream->device->lock);
++}
++
++/*
++ * snd_compr_stop_error: Report a fatal error on a stream
++ * @stream: pointer to stream
++ * @state: state to transition the stream to
++ *
++ * Stop the stream and set its state.
++ *
++ * Should be called with compressed device lock held.
++ */
++int snd_compr_stop_error(struct snd_compr_stream *stream,
++			 snd_pcm_state_t state)
++{
++	if (stream->runtime->state == state)
++		return 0;
++
++	stream->runtime->state = state;
++
++	pr_debug("Changing state to: %d\n", state);
++
++	queue_delayed_work(system_power_efficient_wq, &stream->error_work, 0);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_compr_stop_error);
++
+ static int snd_compress_wait_for_drain(struct snd_compr_stream *stream)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-@@ -344,7 +346,7 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
- 
- 	/* For single DAI link & old style of DT node */
- 	if (is_top_level_node)
--		prefix = "simple-audio-card,";
-+		prefix = PREFIX;
- 
- 	snprintf(prop, sizeof(prop), "%scpu", prefix);
- 	cpu = of_get_child_by_name(node, prop);
-@@ -453,26 +455,26 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 		return -EINVAL;
- 
- 	/* Parse the card name from DT */
--	snd_soc_of_parse_card_name(&priv->snd_card, "simple-audio-card,name");
-+	snd_soc_of_parse_card_name(&priv->snd_card, PREFIX "name");
- 
- 	/* The off-codec widgets */
--	if (of_property_read_bool(node, "simple-audio-card,widgets")) {
-+	if (of_property_read_bool(node, PREFIX "widgets")) {
- 		ret = snd_soc_of_parse_audio_simple_widgets(&priv->snd_card,
--					"simple-audio-card,widgets");
-+					PREFIX "widgets");
- 		if (ret)
- 			return ret;
- 	}
- 
- 	/* DAPM routes */
--	if (of_property_read_bool(node, "simple-audio-card,routing")) {
-+	if (of_property_read_bool(node, PREFIX "routing")) {
- 		ret = snd_soc_of_parse_audio_routing(&priv->snd_card,
--					"simple-audio-card,routing");
-+					PREFIX "routing");
- 		if (ret)
- 			return ret;
- 	}
- 
- 	/* Factor to mclk, used in hw_params() */
--	ret = of_property_read_u32(node, "simple-audio-card,mclk-fs", &val);
-+	ret = of_property_read_u32(node, PREFIX "mclk-fs", &val);
- 	if (ret == 0)
- 		priv->mclk_fs = val;
- 
-@@ -480,7 +482,7 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 		priv->snd_card.name : "");
- 
- 	/* Single/Muti DAI link(s) & New style of DT node */
--	if (of_get_child_by_name(node, "simple-audio-card,dai-link")) {
-+	if (of_get_child_by_name(node, PREFIX "dai-link")) {
- 		struct device_node *np = NULL;
- 		int i = 0;
- 
-@@ -502,13 +504,13 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 	}
- 
- 	priv->gpio_hp_det = of_get_named_gpio_flags(node,
--				"simple-audio-card,hp-det-gpio", 0, &flags);
-+				PREFIX "hp-det-gpio", 0, &flags);
- 	priv->gpio_hp_det_invert = !!(flags & OF_GPIO_ACTIVE_LOW);
- 	if (priv->gpio_hp_det == -EPROBE_DEFER)
- 		return -EPROBE_DEFER;
- 
- 	priv->gpio_mic_det = of_get_named_gpio_flags(node,
--				"simple-audio-card,mic-det-gpio", 0, &flags);
-+				PREFIX "mic-det-gpio", 0, &flags);
- 	priv->gpio_mic_det_invert = !!(flags & OF_GPIO_ACTIVE_LOW);
- 	if (priv->gpio_mic_det == -EPROBE_DEFER)
- 		return -EPROBE_DEFER;
-@@ -543,7 +545,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 	int num_links, ret;
- 
- 	/* Get the number of DAI links */
--	if (np && of_get_child_by_name(np, "simple-audio-card,dai-link"))
-+	if (np && of_get_child_by_name(np, PREFIX "dai-link"))
- 		num_links = of_get_child_count(np);
- 	else
- 		num_links = 1;
+ 	int ret;
 -- 
 2.8.1
