@@ -1,15 +1,11 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
-Date: Tue, 14 Jun 2016 22:38:10 +0200
-From: Henrik Austad <henrik@austad.us>
-Message-ID: <20160614203810.GC21689@sisyphus.home.austad.us>
+Date: Mon, 13 Jun 2016 13:47:13 +0200
+From: Richard Cochran <richardcochran@gmail.com>
+Message-ID: <20160613114713.GA9544@localhost.localdomain>
 References: <1465686096-22156-1-git-send-email-henrik@austad.us>
- <20160613114713.GA9544@localhost.localdomain>
- <20160613130059.GA20320@sisyphus.home.austad.us>
- <20160613193208.GA2441@netboy>
- <20160614093000.GB21689@sisyphus.home.austad.us>
- <20160614182615.GA2741@netboy>
 MIME-Version: 1.0
-In-Reply-To: <20160614182615.GA2741@netboy>
+Content-Disposition: inline
+In-Reply-To: <1465686096-22156-1-git-send-email-henrik@austad.us>
 Subject: Re: [alsa-devel] [very-RFC 0/8] TSN driver for the kernel
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -18,119 +14,124 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7496952745549675809=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: alsa-devel@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>, linux-media@vger.kernel.org
+Cc: henrk@austad.us, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>, netdev@vger.kernel.org, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
 List-ID: <alsa-devel@alsa-project.org>
 
+Henrik,
 
---===============7496952745549675809==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZwgA9U+XZDXt4+m+"
-Content-Disposition: inline
+On Sun, Jun 12, 2016 at 01:01:28AM +0200, Henrik Austad wrote:
+> There are at least one AVB-driver (the AV-part of TSN) in the kernel
+> already,
 
+Which driver is that?
 
---ZwgA9U+XZDXt4+m+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> however this driver aims to solve a wider scope as TSN can do
+> much more than just audio. A very basic ALSA-driver is added to the end
+> that allows you to play music between 2 machines using aplay in one end
+> and arecord | aplay on the other (some fiddling required) We have plans
+> for doing the same for v4l2 eventually (but there are other fishes to
+> fry first). The same goes for a TSN_SOCK type approach as well.
 
-On Tue, Jun 14, 2016 at 08:26:15PM +0200, Richard Cochran wrote:
-> On Tue, Jun 14, 2016 at 11:30:00AM +0200, Henrik Austad wrote:
-> > So loop data from kernel -> userspace -> kernelspace and finally back t=
-o=20
-> > userspace and the media application?
->=20
-> Huh?  I wonder where you got that idea.  Let me show an example of
-> what I mean.
->=20
-> 	void listener()
-> 	{
-> 		int in =3D socket();
-> 		int out =3D open("/dev/dsp");
-> 		char buf[];
->=20
-> 		while (1) {
-> 			recv(in, buf, packetsize);
-> 			write(out, buf + offset, datasize);
-> 		}
-> 	}
->=20
-> See?
+Please, no new socket type for this.
+ 
+> What remains
+> - tie to (g)PTP properly, currently using ktime_get() for presentation
+>   time
+> - get time from shim into TSN and vice versa
 
-Where is your media-application in this? You only loop the audio from=20
-network to the dsp, is the media-application attached to the dsp-device?
+... and a whole lot more, see below.
 
-Whereas I want to do=20
+> - let shim create/manage buffer
 
-aplay some_song.wav
-or mplayer
-or spotify
-or ..
+(BTW, shim is a terrible name for that.)
 
+[sigh]
 
-> > Yes, I know some audio apps "use networking", I can stream netradio, I =
-can=20
-> > use jack to connect devices using RTP and probably a whole lot of other=
-=20
-> > applications do similar things. However, AVB is more about using the=20
-> > network as a virtual sound-card.
->=20
-> That is news to me.  I don't recall ever having seen AVB described
-> like that before.
->=20
-> > For the media application, it should not=20
-> > have to care if the device it is using is a soudncard inside the box or=
- a=20
-> > set of AVB-capable speakers somewhere on the network.
->=20
-> So you would like a remote listener to appear in the system as a local
-> PCM audio sink?  And a remote talker would be like a local media URL?
-> Sounds unworkable to me, but even if you were to implement it, the
-> logic would surely belong in alsa-lib and not in the kernel.  Behind
-> the enulated device, the library would run a loop like the example,
-> above.
->=20
-> In any case, your patches don't implement that sort of thing at all,
-> do they?
+People have been asking me about TSN and Linux, and we've made some
+thoughts about it.  The interest is there, and so I am glad to see
+discussion on this topic.
 
-Subject: [very-RFC 7/8] AVB ALSA - Add ALSA shim for TSN
+Having said that, your series does not even begin to address the real
+issues.  I did not review the patches too carefully (because the
+important stuff is missing), but surely configfs is the wrong
+interface for this.  In the end, we will be able to support TSN using
+the existing networking and audio interfaces, adding appropriate
+extensions.
 
-Did you even bother to look?
+Your patch features a buffer shared by networking and audio.  This
+isn't strictly necessary for TSN, and it may be harmful.  The
+Listeners are supposed to calculate the delay from frame reception to
+the DA conversion.  They can easily include the time needed for a user
+space program to parse the frames, copy (and combine/convert) the
+data, and re-start the audio transfer.  A flexible TSN implementation
+will leave all of the format and encoding task to the userland.  After
+all, TSN will some include more that just AV data, as you know.
 
---=20
-Henrik Austad
+Lets take a look at the big picture.  One aspect of TSN is already
+fully supported, namely the gPTP.  Using the linuxptp user stack and a
+modern kernel, you have a complete 802.1AS-2011 solution.
 
---ZwgA9U+XZDXt4+m+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Here is what is missing to support audio TSN:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+* User Space
 
-iEYEARECAAYFAldgazIACgkQ6k5VT6v45lkBYACePNiLE3TpU9VONnqHAbNfEtBA
-HzIAn3AGu7lakjCHeutRZ7Yn2fDegbSV
-=QsdK
------END PGP SIGNATURE-----
+1. A proper userland stack for AVDECC, MAAP, FQTSS, and so on.  The
+   OpenAVB project does not offer much beyond simple examples.
 
---ZwgA9U+XZDXt4+m+--
+2. A user space audio application that puts it all together, making
+   use of the services in #1, the linuxptp gPTP service, the ALSA
+   services, and the network connections.  This program will have all
+   the knowledge about packet formats, AV encodings, and the local HW
+   capabilities.  This program cannot yet be written, as we still need
+   some kernel work in the audio and networking subsystems.
+
+* Kernel Space
+
+1. Providing frames with a future transmit time.  For normal sockets,
+   this can be in the CMESG data.  For mmap'ed buffers, we will need a
+   new format.  (I think Arnd is working on a new layout.)
+
+2. Time based qdisc for transmitted frames.  For MACs that support
+   this (like the i210), we only have to place the frame into the
+   correct queue.  For normal HW, we want to be able to reserve a time
+   window in which non-TSN frames are blocked.  This is some work, but
+   in the end it should be a generic solution that not only works
+   "perfectly" with TSN HW but also provides best effort service using
+   any NIC.
+
+3. ALSA support for tunable AD/DA clocks.  The rate of the Listener's
+   DA clock must match that of the Talker and the other Listeners.
+   Either you adjust it in HW using a VCO or similar, or you do
+   adaptive sample rate conversion in the application. (And that is
+   another reason for *not* having a shared kernel buffer.)  For the
+   Talker, either you adjust the AD clock to match the PTP time, or
+   you measure the frequency offset.
+
+4. ALSA support for time triggered playback.  The patch series
+   completely ignore the critical issue of media clock recovery.  The
+   Listener must buffer the stream in order to play it exactly at a
+   specified time.  It cannot simply send the stream ASAP to the audio
+   HW, because some other Listener might need longer.  AFAICT, there
+   is nothing in ALSA that allows you to say, sample X should be
+   played at time Y.
+
+These are some ideas about implementing TSN.  Maybe some of it is
+wrong (especially about ALSA), but we definitely need a proper design
+to get the kernel parts right.  There is plenty of work to do, but we
+really don't need some hacky, in-kernel buffer with hard coded audio
+formats.
+
+Thanks,
+Richard
 --
 To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
-
-
---===============7496952745549675809==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============7496952745549675809==--
---
-To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
