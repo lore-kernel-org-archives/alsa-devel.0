@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs53l30: Correct clock inversion check"
-	to the asoc tree
-Date: Mon, 13 Jun 2016 17:54:34 +0100
-Message-ID: <E1bCV8E-0004Z5-Co@finisterre>
-References: <1465426980-10924-1-git-send-email-nicoleotsuka@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A3E326529F
- for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 18:54:48 +0200 (CEST)
-In-Reply-To: <1465426980-10924-1-git-send-email-nicoleotsuka@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, broonie@kernel.org
+Subject: Applied "ASoC: dwc: Add irq parameter to DOCUMENTATION" to the asoc tree
+Date: Mon, 13 Jun 2016 17:54:37 +0100
+Message-ID: <E1bCV8H-0004aa-If@finisterre>
+References: <49fab21a9c10576cb0c5d6a2bb0e19c7bcfb732f.1463996627.git.joabreu@synopsys.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <49fab21a9c10576cb0c5d6a2bb0e19c7bcfb732f.1463996627.git.joabreu@synopsys.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jose Abreu <Jose.Abreu@synopsys.com>
+Cc: Jose Abreu <joabreu@synopsys.com>, Rob Herring <robh@kernel.org>, Carlos Palminha <palminha@synopsys.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>Rob Herring <robh@kernel.org>, Alexey Brodkin <abrodkin@synopsys.com>, linux-snps-arc@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>alsa-devel@alsa-project.orgRob Herring <robh@kernel.org>Liam Girdwood <lgirdwood@gmail.com>linux-kernel@vger.kernel.org, Alexey Brodkin <Alexey.Brodkin@synopsys.com>Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.orgMark Brown <broonie@kernel.org>, Carlos Palminha <CARLOS.PALMINHA@synopsys.com>linux-snps-arc@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs53l30: Correct clock inversion check
+   ASoC: dwc: Add irq parameter to DOCUMENTATION
 
 has been applied to the asoc tree at
 
@@ -53,42 +37,45 @@ to this mail.
 Thanks,
 Mark
 
->From 88b1c01fb42e3d637c7e7f36cd4a30ce39a2add4 Mon Sep 17 00:00:00 2001
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Date: Wed, 8 Jun 2016 16:10:05 -0700
-Subject: [PATCH] ASoC: cs53l30: Correct clock inversion check
+>From 5aa1418defb0e88fb7f70c5b112d531cfcede851 Mon Sep 17 00:00:00 2001
+From: Jose Abreu <Jose.Abreu@synopsys.com>
+Date: Thu, 9 Jun 2016 12:47:06 +0100
+Subject: [PATCH] ASoC: dwc: Add irq parameter to DOCUMENTATION
 
-SND_SOC_DAIFMT_IB_NF = 0x3 (11b) | SND_SOC_DAIFMT_IB_IF = 0x4 (100b)
-creates a mask 0x7 (111b) which also includes SND_SOC_DAIFMT_NB_IF
-= 0x2 (10b).
+A parameter description for the interruptions of the
+I2S controller was added.
 
-So this patch uses the traditional way to check the clock inversion.
-
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Jose Abreu <joabreu@synopsys.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Cc: Carlos Palminha <palminha@synopsys.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Rob Herring <robh@kernel.org>
+Cc: Alexey Brodkin <abrodkin@synopsys.com>
+Cc: linux-snps-arc@lists.infradead.org
+Cc: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs53l30.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/designware-i2s.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
-index aa511e70099e..384a3f79f1c5 100644
---- a/sound/soc/codecs/cs53l30.c
-+++ b/sound/soc/codecs/cs53l30.c
-@@ -599,8 +599,14 @@ static int cs53l30_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	}
+diff --git a/Documentation/devicetree/bindings/sound/designware-i2s.txt b/Documentation/devicetree/bindings/sound/designware-i2s.txt
+index 7bb54247f8e8..6a536d570e29 100644
+--- a/Documentation/devicetree/bindings/sound/designware-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/designware-i2s.txt
+@@ -12,6 +12,10 @@ Required properties:
+    one for receive.
+  - dma-names : "tx" for the transmit channel, "rx" for the receive channel.
  
- 	/* Check to see if the SCLK is inverted */
--	if (fmt & (SND_SOC_DAIFMT_IB_NF | SND_SOC_DAIFMT_IB_IF))
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_IB_NF:
-+	case SND_SOC_DAIFMT_IB_IF:
- 		aspcfg ^= CS53L30_ASP_SCLK_INV;
-+		break;
-+	default:
-+		break;
-+	}
- 
- 	regmap_update_bits(priv->regmap, CS53L30_ASPCFG_CTL,
- 			   CS53L30_ASP_MS | CS53L30_ASP_SCLK_INV, aspcfg);
++Optional properties:
++ - interrupts: The interrupt line number for the I2S controller. Add this
++   parameter if the I2S controller that you are using does not support DMA.
++
+ For more details on the 'dma', 'dma-names', 'clock' and 'clock-names'
+ properties please check:
+ 	* resource-names.txt
 -- 
 2.8.1
