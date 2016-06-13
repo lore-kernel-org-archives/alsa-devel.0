@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RESEND PATCH v2 1/2] device property: Add
- function to search for named child of device
-Date: Mon, 13 Jun 2016 09:47:24 +0100
-Message-ID: <20160613084724.GB2282@sirena.org.uk>
-References: <cover.1464802265.git.Adam.Thomson.Opensource@diasemi.com>
- <7105258db927c65dfa41a8abeef4b9735871d023.1464802265.git.Adam.Thomson.Opensource@diasemi.com>
- <97f80018-7cc4-0a50-498d-89d27dfa2fd1@intel.com>
- <2E89032DDAA8B9408CB92943514A0337D46421B6@SW-EX-MBX01.diasemi.com>
+Subject: Re: [PATCH] ASoC: adau: Factor out shared PLL
+	configuration code
+Date: Mon, 13 Jun 2016 09:56:23 +0100
+Message-ID: <20160613085623.GC2282@sirena.org.uk>
+References: <1465493946-32594-1-git-send-email-lars@metafoo.de>
+ <20160609174122.GB7510@sirena.org.uk> <5759B82E.5040801@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7739345747402256594=="
+Content-Type: multipart/mixed; boundary="===============5016258815772935273=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AFB83265328
- for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 10:47:56 +0200 (CEST)
-In-Reply-To: <2E89032DDAA8B9408CB92943514A0337D46421B6@SW-EX-MBX01.diasemi.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 224632619D7
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 10:56:37 +0200 (CEST)
+In-Reply-To: <5759B82E.5040801@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,57 +22,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Support Opensource <Support.Opensource@diasemi.com>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Robert Moore <robert.moore@intel.com>, Lv Zheng <lv.zheng@intel.com>, Suravee Suthikulpanit <Suravee.Suthikulpanit@amd.com>, Bjorn Helgaas <bhelgaas@google.com>, "devel@acpica.org" <devel@acpica.org>, Takashi Iwai <tiwai@suse.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Mika Westerberg <mika.westerberg@linux.intel.com>, Hanjun Guo <hanjun.guo@linaro.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vg>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7739345747402256594==
+--===============5016258815772935273==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="S96ff6o5osL9bGCL"
+	protocol="application/pgp-signature"; boundary="CPaaJmjEtnx7DmsZ"
 Content-Disposition: inline
 
 
---S96ff6o5osL9bGCL
+--CPaaJmjEtnx7DmsZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jun 10, 2016 at 09:58:39AM +0000, Opensource [Adam Thomson] wrote:
-> On 10 June 2016 00:11, Rafael J. Wysocki wrote:
+On Thu, Jun 09, 2016 at 08:40:46PM +0200, Lars-Peter Clausen wrote:
+> On 06/09/2016 07:41 PM, Mark Brown wrote:
+> > On Thu, Jun 09, 2016 at 07:39:06PM +0200, Lars-Peter Clausen wrote:
+> >> Multiple devices from the ADAU family share the same PLL structure and
+> >> configuration register layout. Introduce a new helper module that can be
+> >> used to calculated the PLL configuration registers based on a specified
+> >> input frequency and the desired output frequency of the PLL.
 
-> > For some reason that didn't make it into the linux-acpi list, or at
-> > least I can't see it there.
+> > Sounds like we may be heading towards an MFD with a clock driver here?
 
-> That's strange. I'm not a subscriber to that mailing list, but I assume that
-> shouldn't matter here? Strangely though the only mailing list these seem to have
-> made it to is the ALSA one. :( Will see if I can find out why as I've not
-> seen this problem before.
+> Not at the moment, the PLL outputs are only used internally so it makes
+> no sense to expose it through the CCF at the moment. The questions on
+> IRC were more about how to replace the input clock configuration, which
+> is currently done through the set_sysclk callbacks, with the CCF.
 
-You have a very large number of people on copy, a lot of the lists have
-restrictions on the number of recipients.
+This was independant of the IRC discussion - it's just the pattern that
+you're describing here.
 
---S96ff6o5osL9bGCL
+--CPaaJmjEtnx7DmsZ
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXXnMaAAoJECTWi3JdVIfQIPUH/RJm8wH/6FB3CIGgzsA+f0ru
-cMUYARou5dK+stqsRtQAqIx0idCEP/IZD1HvcLnj0M8JkJaqjN6xD0xdLQMbjWbs
-L8kjHvL9B/0KW2dIdjhy9DuLtr6Ut9ga7zhZF18vFRT2ebADFkxG5HThs3SXk5JY
-cErqM0Hyd/T48sN26r/7Gn1RBc0nQOwrhhzpW1rCy+MVDEzZaJQaUl+5OF414OVP
-DiJAjXp6+p+wWCVXJQvGcrCv3W2cQRPZDlnOxjn/or6Ixatji+asZrO6GEBu1X9/
-DJyHmCO5QXo/P9vlGK64Gt9WBE5ZXRsHR49H7HViOhO0Ga8YlQtwH2uiTKIqjrU=
-=QqcN
+iQEcBAEBCAAGBQJXXnU2AAoJECTWi3JdVIfQYtgH/jP50C7IjGEv84tSfeka6V81
+xyRnpjcBS5oLpYwrNqFfpm8RiJVsahEIfTTvdaf20MqbzLEfvzwW8GKIR+sX8JGC
+HyUjbGHIRUF6FdI8jGNK9BQfFctuzhmzG2ZaQ3bZIi31ONOKJyqubrnpPEFYLZa5
+lJoOw+KkEhKgbGmY2MdNdYvB9d0Pg5sOmrUJ5SmXgKpP40N4+igQOQaeDMx6ziO7
+C9btklyX1Ojm3KLEURZGUYQ55Hini2ISFPFQcPOWznUc+9Y31o9caMNZ7+nBWBXy
+y/Spzy3FIn3R5qUdF4je05jnLEWiJSvKn5RzFmVd6rRCgzo9zYFf+Wn2AzMU+XM=
+=1pOP
 -----END PGP SIGNATURE-----
 
---S96ff6o5osL9bGCL--
+--CPaaJmjEtnx7DmsZ--
 
---===============7739345747402256594==
+--===============5016258815772935273==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7739345747402256594==--
+--===============5016258815772935273==--
