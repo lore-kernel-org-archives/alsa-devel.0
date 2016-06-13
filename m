@@ -1,16 +1,18 @@
-From: Henrik Austad <henrik@austad.us>
-Subject: Re: [very-RFC 6/8] Add TSN event-tracing
-Date: Mon, 13 Jun 2016 09:20:50 +0200
-Message-ID: <20160613072050.GA19180@sisyphus.home.austad.us>
-References: <1465686096-22156-1-git-send-email-henrik@austad.us>
- <1465686096-22156-7-git-send-email-henrik@austad.us>
- <20160612125803.27f401cc@gandalf.local.home>
- <20160612212510.GD32724@icarus.home.austad.us>
- <20160612222201.00a8aa4c@grimm.local.home>
+From: Kailang <kailang@realtek.com>
+Subject: Re: Support Dell headset mode for ALC891
+Date: Mon, 13 Jun 2016 07:24:45 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A17A3EE49@RTITMBSV09.realtek.com.tw>
+References: <6FAB7C47BCF00940BB0999A99BE3547A17A3EBF3@RTITMBSV09.realtek.com.tw>
+ <s5hlh2ec2h2.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0990673572057120740=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20160612222201.00a8aa4c@grimm.local.home>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18B0F261685
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 09:24:50 +0200 (CEST)
+In-Reply-To: <s5hlh2ec2h2.wl-tiwai@suse.de>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,106 +22,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Ingo Molnar <mingo@redhat.com>, Henrik Austad <haustad@cisco.com>, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+ 
 
---===============0990673572057120740==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="17pEHd4RhPHOinZp"
-Content-Disposition: inline
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de] 
+> Sent: Thursday, June 09, 2016 2:15 PM
+> To: Kailang
+> Cc: (alsa-devel@alsa-project.org)
+> Subject: Re: Support Dell headset mode for ALC891
+> 
+> On Wed, 08 Jun 2016 09:17:12 +0200,
+> Kailang wrote:
+> > 
+> > Hi Takashi,
+> > 
+> > This patch is supported Dell headset mode for ALC891.
+> > It is only support I-phone type headset.
+> > I think this function is only support for DELL.
+> > So, headset mode and platform support is merged.
+> > 
+> > This patch is test passed by Ubuntu team.
+> > 
+> > Many Thanks.
+> (snip)
+> > Date: Tue, 7 Jun 2016 11:31:34 +0800
+> > Subject: [PATCH] ALSA: hda/realtek - ALC891 headset mode for Dell
+> >
+> > New headset mode of ALC891 for Dell.
+> > 
+> > Signed-off-by: Kailang Yang <kailang@realtek.com>
+> 
+> Could you put more comments in the changelog, as what you 
+> gave in the mail?
+> 
+       OK.
+> 
+> > diff --git a/sound/pci/hda/patch_realtek.c 
+> > b/sound/pci/hda/patch_realtek.c index 7960316..9dc641e 100644
+> > --- a/sound/pci/hda/patch_realtek.c
+> > +++ b/sound/pci/hda/patch_realtek.c
+> > @@ -3718,6 +3718,9 @@ static void 
+> alc_headset_mode_unplugged(struct hda_codec *codec)
+> >  	case 0x10ec0295:
+> >  		alc_process_coef_fw(codec, coef0225);
+> >  		break;
+> > +	case 0x10ec0867:
+> > +		alc_update_coefex_idx(codec, 0x57, 0x5, 1<<14, 0);
+> > +		break;
+> >  	}
+> >  	codec_dbg(codec, "Headset jack set to unplugged 
+> mode.\n");  } @@ 
+> > -3805,6 +3808,8 @@ static void 
+> alc_headset_mode_mic_in(struct hda_codec *codec, hda_nid_t hp_pin,
+> >  		alc_process_coef_fw(codec, coef0293);
+> >  		snd_hda_set_pin_ctl_cache(codec, mic_pin, PIN_VREF50);
+> >  		break;
+> > +	case 0x10ec0867:
+> > +		alc_update_coefex_idx(codec, 0x57, 0x5, 0, 1<<14);
+> > 	case 0x10ec0662:
+> 
+> No break between 0867 and 0662?
 
+Yes, no break. ^^
+It is only more one line difference for 0x0867.
 
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sun, Jun 12, 2016 at 10:22:01PM -0400, Steven Rostedt wrote:
-> On Sun, 12 Jun 2016 23:25:10 +0200
-> Henrik Austad <henrik@austad.us> wrote:
->=20
-> > > > +#include <linux/if_ether.h>
-> > > > +#include <linux/if_vlan.h>
-> > > > +/* #include <linux/skbuff.h> */
-> > > > +
-> > > > +/* FIXME: update to TRACE_CLASS to reduce overhead */ =20
-> > >=20
-> > > I'm curious to why I didn't do this now. A class would make less
-> > > duplication of typing too ;-) =20
-> >=20
-> > Yeah, I found this in a really great article written by some tracing-du=
-de,=20
-> > I hear he talks really, really fast!
->=20
-> I plead the 5th!
->=20
-> >=20
-> > https://lwn.net/Articles/381064/
-> >=20
-> > > > +TRACE_EVENT(tsn_buffer_write,
-> > > > +
-> > > > +	TP_PROTO(struct tsn_link *link,
-> > > > +		size_t bytes),
-> > > > +
-> > > > +	TP_ARGS(link, bytes),
-> > > > +
-> > > > +	TP_STRUCT__entry(
-> > > > +		__field(u64, stream_id)
-> > > > +		__field(size_t, size)
-> > > > +		__field(size_t, bsize)
-> > > > +		__field(size_t, size_left)
-> > > > +		__field(void *, buffer)
-> > > > +		__field(void *, head)
-> > > > +		__field(void *, tail)
-> > > > +		__field(void *, end)
-> > > > +		),
-> > > > +
-> > > > +	TP_fast_assign(
-> > > > +		__entry->stream_id =3D link->stream_id;
-> > > > +		__entry->size =3D bytes;
-> > > > +		__entry->bsize =3D link->used_buffer_size;
-> > > > +		__entry->size_left =3D (link->head - link->tail) % link->used_bu=
-ffer_size; =20
-> > >=20
-> > > Move this logic into the print statement, since you save head and tai=
-l. =20
-> >=20
-> > Ok, any particular reason?
->=20
-> Because it removes calculations during the trace. The calculations done
-> in TP_printk() are done at the time of reading the trace, and
-> calculations done in TP_fast_assign() are done during the recording and
-> hence adding more overhead to the trace itself.
-
-Aha! that makes sense, thanks!
-(/me goes and updates the tracing-part)
-
--Henrik
-
---17pEHd4RhPHOinZp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAldeXtIACgkQ6k5VT6v45lmmJwCgwoV2qvp1oqEZC3y+CcunA4vR
-taAAnjprjT9Tawz7dspUySmX4AkaxB4S
-=804g
------END PGP SIGNATURE-----
-
---17pEHd4RhPHOinZp--
---
-To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
-
-
---===============0990673572057120740==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0990673572057120740==--
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> ------Please consider the environment before printing this e-mail.
+> 
