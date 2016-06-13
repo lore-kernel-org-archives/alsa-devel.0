@@ -1,15 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 6/7] ASoC: Intel: Skylake: Update DSP stall bits
-Date: Mon, 13 Jun 2016 17:59:03 +0530
-Message-ID: <1465820944-14774-7-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 7/7] ASoC: Intel: Add support for PM ops in
+	bxt-rt298
+Date: Mon, 13 Jun 2016 17:59:04 +0530
+Message-ID: <1465820944-14774-8-git-send-email-vinod.koul@intel.com>
 References: <1465820944-14774-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 38DBF26587C
- for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 14:22:42 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id F225C2654ED
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 14:22:44 +0200 (CEST)
 In-Reply-To: <1465820944-14774-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,50 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: patches.audio@intel.com, Jayachandran B <jayachandran.b@intel.com>, Ramesh Babu <ramesh.babu@intel.com>, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org
+Cc: patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jayachandran B <jayachandran.b@intel.com>
+From: Jeeja KP <jeeja.kp@intel.com>
 
-The stall bits needs to comprehend the number of DSP cores
-running, so update the stall and unstall register writes to
-comprehend SKL_DSP_CORES_MASK values as well.
+We need card to be early suspended and late resumed, so use prepare and
+complete for card suspend and resume.
 
-Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
-Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-sst-dsp.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ sound/soc/intel/boards/bxt_rt298.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.c b/sound/soc/intel/skylake/skl-sst-dsp.c
-index 37b1d24a9a9d..33c45aa53532 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.c
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.c
-@@ -106,9 +106,9 @@ static bool is_skl_dsp_core_enable(struct sst_dsp *ctx)
- static int skl_dsp_reset_core(struct sst_dsp *ctx)
- {
- 	/* stall core */
--	sst_dsp_shim_write_unlocked(ctx, SKL_ADSP_REG_ADSPCS,
--			 sst_dsp_shim_read_unlocked(ctx, SKL_ADSP_REG_ADSPCS) &
--				SKL_ADSPCS_CSTALL(SKL_DSP_CORES_MASK));
-+	sst_dsp_shim_update_bits_unlocked(ctx, SKL_ADSP_REG_ADSPCS,
-+			SKL_ADSPCS_CSTALL_MASK,
-+			SKL_ADSPCS_CSTALL(SKL_DSP_CORES_MASK));
+diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
+index 8b956500414b..2ef33b113bb5 100644
+--- a/sound/soc/intel/boards/bxt_rt298.c
++++ b/sound/soc/intel/boards/bxt_rt298.c
+@@ -454,10 +454,33 @@ static int broxton_audio_probe(struct platform_device *pdev)
+ 	return devm_snd_soc_register_card(&pdev->dev, &broxton_rt298);
+ }
  
- 	/* set reset state */
- 	return skl_dsp_core_set_reset_state(ctx);
-@@ -127,9 +127,8 @@ int skl_dsp_start_core(struct sst_dsp *ctx)
- 
- 	/* run core */
- 	dev_dbg(ctx->dev, "run core...\n");
--	sst_dsp_shim_write_unlocked(ctx, SKL_ADSP_REG_ADSPCS,
--			 sst_dsp_shim_read_unlocked(ctx, SKL_ADSP_REG_ADSPCS) &
--				~SKL_ADSPCS_CSTALL(SKL_DSP_CORES_MASK));
-+	sst_dsp_shim_update_bits_unlocked(ctx, SKL_ADSP_REG_ADSPCS,
-+			SKL_ADSPCS_CSTALL_MASK, 0);
- 
- 	if (!is_skl_dsp_core_enable(ctx)) {
- 		skl_dsp_reset_core(ctx);
++/*
++ * we want the card to be suspend first and then platform driver. This
++ * allows the DAPM to tear down pipelines on suspend and then platform shuts
++ * down the DSP. For this use .prepare for suspending card
++ *
++ * Similarly, use complete to let DSP download firmware first and then sync
++ * DAPM and restore pipelines to DSP
++ */
++static void broxton_rt298_complete(struct device *dev)
++{
++	snd_soc_resume(dev);
++}
++
++static const struct dev_pm_ops broxton_pm_ops = {
++	.prepare = snd_soc_suspend,
++	.complete = broxton_rt298_complete,
++	.freeze = snd_soc_suspend,
++	.thaw = snd_soc_resume,
++	.poweroff = snd_soc_poweroff,
++	.restore = snd_soc_resume,
++};
++
+ static struct platform_driver broxton_audio = {
+ 	.probe = broxton_audio_probe,
+ 	.driver = {
+ 		.name = "bxt_alc298s_i2s",
++		.pm = &broxton_pm_ops,
+ 	},
+ };
+ module_platform_driver(broxton_audio)
 -- 
 1.9.1
