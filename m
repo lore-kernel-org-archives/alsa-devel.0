@@ -1,91 +1,86 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm1681/pcm1791: fix typo in declaration" to the asoc tree
-Date: Mon, 13 Jun 2016 17:54:48 +0100
-Message-ID: <E1bCV8S-0004dX-Qv@finisterre>
-References: <1465832422-2998958-4-git-send-email-arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1465832422-2998958-4-git-send-email-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Axel Lin <axel.lin@ingics.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: rt298: Add jack suspend and resume
+	functions.
+Date: Mon, 13 Jun 2016 22:34:40 +0530
+Message-ID: <20160613170439.GK16910@localhost>
+References: <1465820919-6105-1-git-send-email-bardliao@realtek.com>
+ <20160613140923.GH2282@sirena.org.uk>
+ <20160613165537.GH16910@localhost>
+ <20160613165046.GL2282@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============6784419655462377637=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 210A1266A72
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 18:58:10 +0200 (CEST)
+In-Reply-To: <20160613165046.GL2282@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, senthilnathanx.veppur@intel.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: pcm1681/pcm1791: fix typo in declaration
+--===============6784419655462377637==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ogUXNSQj4OI1q3LQ"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--ogUXNSQj4OI1q3LQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon, Jun 13, 2016 at 05:50:46PM +0100, Mark Brown wrote:
+> On Mon, Jun 13, 2016 at 10:25:37PM +0530, Vinod Koul wrote:
+>=20
+> > This was based on existing pattern in rt5672.
+>=20
+> Oh dear, that's broken and should be fixed.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Sure, I will try to fix that up :)
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Thanks
+--=20
+~Vinod
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--ogUXNSQj4OI1q3LQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
->From a074ae0ed68385ee403e4247ce8274705fe9c4e0 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 13 Jun 2016 17:39:45 +0200
-Subject: [PATCH] ASoC: pcm1681/pcm1791: fix typo in declaration
+iQIcBAEBAgAGBQJXXuenAAoJEHwUBw8lI4NHwBMP/R3TVUYljKtH2ekMh7w+qTL2
+apSiyavBWYp9QgURKhPSNm7aB2p5fYjB+iiodG+5LSqrwtXAwXtf3Ih0wRgbWAPy
+bdJnutLfjWMnRYi+c7W4Uej+UWxfqE7IAxuGFDWB0GZF3g8aRVRXSrTVZT8IbXpE
+VhceDxCbH6s0UAiAcfiQDzqbyV6IYuKKWeQxZs0JhLtsuaIvXvCPc1XkJphe70gE
+7hg9b1qzM2olnJTHiNyyNZH12etGr6HPueR+CkFfT/pi+8onYgQDjaJyU1IDWOT3
+w5lRrxulgkKkZY0jSqJ+KldbZJ/zpJHeQO2n1kDCfHYrkn9hRCxgWjJfbsPn6JkW
+zIQTNCNK63vaBos2Yy+gX6XFO+q2/q7XAXm8jXGKVPlhTj8uN/VlX3n7D++KfTgQ
+loEFGXY5slRRbKXlGtK8t/Nee/jdDrQGpxURMfL8znlQ1cmIUXMfaz8ksZgYBIRz
+peLZpvEkxowIo0PLRNaL8pGTU0pdIm01v9Nhl07Esm9cH0IE0SjNwtice20Twinf
+czzGjGpofGzKfIQywKH+5Q8URP+cJR+XspTlyWhYg3mJ/x87QfFZZN91XI5Bt1qq
+5iNwDMZ2EqUjLzOy5zmsrCzP2Tp8NGXy0LQbfyGkQBdFHa3y2NpyoxzlqYxpHTCi
+zT6+8OK5IwEC91yAUNI4
+=r7+0
+-----END PGP SIGNATURE-----
 
-gcc -Wextra warns about an obvious but harmless typo in the
-pcm1681_writeable_reg function, which has an extra 'register
-keyword', and in pcm179x, which has a second copy of that
-declaration:
+--ogUXNSQj4OI1q3LQ--
 
-sound/soc/codecs/pcm1681.c:76:42: error: 'register' is not at beginning of declaration [-Werror=old-style-declaration]
-sound/soc/codecs/pcm179x.c:62:42: error: 'register' is not at beginning of declaration [-Werror=old-style-declaration]
+--===============6784419655462377637==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-For consistency with the rest of the file, I'm changing this from
-'unsigned register' to 'unsigned int', which has the same meaning
-but causes no warning.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/pcm1681.c | 2 +-
- sound/soc/codecs/pcm179x.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/pcm1681.c b/sound/soc/codecs/pcm1681.c
-index 58325234285c..33e1fc2d1598 100644
---- a/sound/soc/codecs/pcm1681.c
-+++ b/sound/soc/codecs/pcm1681.c
-@@ -73,7 +73,7 @@ static bool pcm1681_accessible_reg(struct device *dev, unsigned int reg)
- 	return !((reg == 0x00) || (reg == 0x0f));
- }
- 
--static bool pcm1681_writeable_reg(struct device *dev, unsigned register reg)
-+static bool pcm1681_writeable_reg(struct device *dev, unsigned int reg)
- {
- 	return pcm1681_accessible_reg(dev, reg) &&
- 		(reg != PCM1681_ZERO_DETECT_STATUS);
-diff --git a/sound/soc/codecs/pcm179x.c b/sound/soc/codecs/pcm179x.c
-index 06a66579ca6d..88fbdd184aa0 100644
---- a/sound/soc/codecs/pcm179x.c
-+++ b/sound/soc/codecs/pcm179x.c
-@@ -59,7 +59,7 @@ static bool pcm179x_accessible_reg(struct device *dev, unsigned int reg)
- 	return reg >= 0x10 && reg <= 0x17;
- }
- 
--static bool pcm179x_writeable_reg(struct device *dev, unsigned register reg)
-+static bool pcm179x_writeable_reg(struct device *dev, unsigned int reg)
- {
- 	bool accessible;
- 
--- 
-2.8.1
+--===============6784419655462377637==--
