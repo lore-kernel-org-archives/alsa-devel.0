@@ -1,14 +1,11 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
-Date: Tue, 14 Jun 2016 19:04:44 +0200
-From: Richard Cochran <richardcochran@gmail.com>
-Message-ID: <20160614170442.GA1825@netboy>
+From: Arnd Bergmann <arnd@linaro.org>
+Date: Mon, 13 Jun 2016 15:12:24 +0200
+Message-ID: <3650675.mUADb08Tiz@wuerfel>
+In-Reply-To: <20160613114713.GA9544@localhost.localdomain>
 References: <1465686096-22156-1-git-send-email-henrik@austad.us>
  <20160613114713.GA9544@localhost.localdomain>
- <20160613195136.GC2441@netboy>
- <20160614121844.54a125a5@lxorguk.ukuu.org.uk>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20160614121844.54a125a5@lxorguk.ukuu.org.uk>
 Subject: Re: [alsa-devel] [very-RFC 0/8] TSN driver for the kernel
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,31 +19,24 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: netdev@vger.kernel.org, Henrik Austad <henrik@austad.us>, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>, henrk@austad.us, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
+Cc: netdev@vger.kernel.org, Henrik Austad <henrik@austad.us>, linux-kernel@vger.kernel.org, henrk@austad.us, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
 List-ID: <alsa-devel@alsa-project.org>
 
-On Tue, Jun 14, 2016 at 12:18:44PM +0100, One Thousand Gnomes wrote:
-> On Mon, 13 Jun 2016 21:51:36 +0200
-> Richard Cochran <richardcochran@gmail.com> wrote:
-> > 
-> > Actually, we already have support for tunable clock-like HW elements,
-> > namely the dynamic posix clock API.  It is trivial to write a driver
-> > for VCO or the like.  I am just not too familiar with the latest high
-> > end audio devices.
+On Monday, June 13, 2016 1:47:13 PM CEST Richard Cochran wrote:
+> * Kernel Space
 > 
-> Why high end ? Even the most basic USB audio is frame based and
-> isosynchronous to the USB clock. It also reports back the delay
-> properties.
+> 1. Providing frames with a future transmit time.  For normal sockets,
+>    this can be in the CMESG data.  For mmap'ed buffers, we will need a
+>    new format.  (I think Arnd is working on a new layout.)
+> 
 
-Well, I guess I should have said, I am not too familiar with the
-breadth of current audio hardware, high end or low end.  Of course I
-would like to see even consumer devices work with AVB, but it is up to
-the ALSA people to make that happen.  So far, nothing has been done,
-afaict.
+After some back and forth, I think the conclusion for now was that
+the timestamps in the current v3 format are sufficient until 2106
+as long as we treat them as 'unsigned', so we don't need the new
+format for y2038, but if we get a new format, that should definitely
+use 64-bit timestamps because that is the right thing to do.
 
-Thanks,
-Richard
-
+	Arnd
 --
 To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
 
