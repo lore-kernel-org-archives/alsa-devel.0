@@ -1,16 +1,15 @@
 From: Richard Cochran <richardcochran@gmail.com>
 Subject: Re: [very-RFC 0/8] TSN driver for the kernel
-Date: Mon, 13 Jun 2016 21:37:44 +0200
-Message-ID: <20160613193743.GB2441__45731.6726832234$1465971228$gmane$org@netboy>
+Date: Mon, 13 Jun 2016 21:51:36 +0200
+Message-ID: <20160613195136.GC2441__20190.8068069772$1465971257$gmane$org@netboy>
 References: <1465686096-22156-1-git-send-email-henrik@austad.us>
  <20160613114713.GA9544@localhost.localdomain>
- <20160613130059.GA20320@sisyphus.home.austad.us>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Content-Disposition: inline
-In-Reply-To: <20160613130059.GA20320@sisyphus.home.austad.us>
+In-Reply-To: <20160613114713.GA9544@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,25 +20,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: alsa-devel@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>, linux-media@vger.kernel.org
+Cc: henrk@austad.us, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>, netdev@vger.kernel.org, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 13, 2016 at 03:00:59PM +0200, Henrik Austad wrote:
-> On Mon, Jun 13, 2016 at 01:47:13PM +0200, Richard Cochran wrote:
-> > People have been asking me about TSN and Linux, and we've made some
-> > thoughts about it.  The interest is there, and so I am glad to see
-> > discussion on this topic.
-> 
-> I'm not aware of any such discussions, could you point me to where TSN has 
-> been discussed, it would be nice to see other peoples thought on the matter 
-> (which was one of the ideas behind this series in the first place)
+On Mon, Jun 13, 2016 at 01:47:13PM +0200, Richard Cochran wrote:
+> 3. ALSA support for tunable AD/DA clocks.  The rate of the Listener's
+>    DA clock must match that of the Talker and the other Listeners.
+>    Either you adjust it in HW using a VCO or similar, or you do
+>    adaptive sample rate conversion in the application. (And that is
+>    another reason for *not* having a shared kernel buffer.)  For the
+>    Talker, either you adjust the AD clock to match the PTP time, or
+>    you measure the frequency offset.
 
-To my knowledge, there hasn't been any previous TSN talk on lkml.
+Actually, we already have support for tunable clock-like HW elements,
+namely the dynamic posix clock API.  It is trivial to write a driver
+for VCO or the like.  I am just not too familiar with the latest high
+end audio devices.
 
-(You have just now started the discussion ;)
+I have seen audio PLL/multiplier chips that will take, for example, a
+10 kHz input and produce your 48 kHz media clock.  With the right HW
+design, you can tell your PTP Hardware Clock to produce a 10000 PPS,
+and you will have a synchronized AVB endpoint.  The software is all
+there already.  Somebody should tell the ALSA guys about it.
 
-Sorry for not being clear.  
+I don't know if ALSA has anything for sample rate conversion or not,
+but haven't seen anything that addresses distributed synchronized
+audio applications.
 
+Thanks,
 Richard
 --
 To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
