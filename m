@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm5102: Revert manual speaker enable"
-	to the asoc tree
-Date: Mon, 13 Jun 2016 16:47:36 +0100
-Message-ID: <E1bCU5Q-0002xl-UO@finisterre>
-References: <1465821317-28449-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 11CA626529F
- for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 17:47:48 +0200 (CEST)
-In-Reply-To: <1465821317-28449-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, ajit.pandey@soctronics.com
+Subject: Applied "ASoC: sti: fix return value check in uni_player_parse_dt_audio_glue()" to the asoc tree
+Date: Mon, 13 Jun 2016 16:47:33 +0100
+Message-ID: <E1bCU5N-0002ww-Az@finisterre>
+References: <1465828797-17628-1-git-send-email-weiyj_lk@163.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1465828797-17628-1-git-send-email-weiyj_lk@163.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm5102: Revert manual speaker enable
+   ASoC: sti: fix return value check in uni_player_parse_dt_audio_glue()
 
 has been applied to the asoc tree at
 
@@ -53,106 +37,37 @@ to this mail.
 Thanks,
 Mark
 
->From 10867b32a1cc2fb0b370c3d3601fccc587165128 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Mon, 13 Jun 2016 13:35:17 +0100
-Subject: [PATCH] ASoC: wm5102: Revert manual speaker enable
+>From 7d267ddfd560da3232f4deed3427839dd0126a4a Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+Date: Mon, 13 Jun 2016 14:39:57 +0000
+Subject: [PATCH] ASoC: sti: fix return value check in
+ uni_player_parse_dt_audio_glue()
 
-The OUT4L and OUT4R widgets are not registered PRE_PMU or POST_PMD
-events, as such the manual speaker enable on wm5102 does not actually
-ever run. Furthermore since the issue actually only affected rev B of
-the silicon which never shipped in volume, simply remove the work around
-from the code.
+In case of error, the function syscon_regmap_lookup_by_phandle() returns
+ERR_PTR() and never returns NULL. The NULL test in the return value check
+should be replaced with IS_ERR().
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/arizona.c | 42 ------------------------------------------
- sound/soc/codecs/arizona.h |  3 ---
- 2 files changed, 45 deletions(-)
+ sound/soc/sti/uniperif_player.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index e678157388bc..73eab6c462ac 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -85,30 +85,9 @@ static int arizona_spk_ev(struct snd_soc_dapm_widget *w,
- {
- 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct arizona *arizona = dev_get_drvdata(codec->dev->parent);
--	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
--	bool manual_ena = false;
- 	int val;
+diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
+index ee1c7c245bc7..1ac2db205a0d 100644
+--- a/sound/soc/sti/uniperif_player.c
++++ b/sound/soc/sti/uniperif_player.c
+@@ -1029,9 +1029,9 @@ static int uni_player_parse_dt_audio_glue(struct platform_device *pdev,
  
--	switch (arizona->type) {
--	case WM5102:
--		switch (arizona->rev) {
--		case 0:
--			break;
--		default:
--			manual_ena = true;
--			break;
--		}
--	default:
--		break;
--	}
--
- 	switch (event) {
--	case SND_SOC_DAPM_PRE_PMU:
--		if (!priv->spk_ena && manual_ena) {
--			regmap_write_async(arizona->regmap, 0x4f5, 0x25a);
--			priv->spk_ena_pending = true;
--		}
--		break;
- 	case SND_SOC_DAPM_POST_PMU:
- 		val = snd_soc_read(codec, ARIZONA_INTERRUPT_RAW_STATUS_3);
- 		if (val & ARIZONA_SPK_OVERHEAT_STS) {
-@@ -120,33 +99,12 @@ static int arizona_spk_ev(struct snd_soc_dapm_widget *w,
- 		regmap_update_bits_async(arizona->regmap,
- 					 ARIZONA_OUTPUT_ENABLES_1,
- 					 1 << w->shift, 1 << w->shift);
--
--		if (priv->spk_ena_pending) {
--			msleep(75);
--			regmap_write_async(arizona->regmap, 0x4f5, 0xda);
--			priv->spk_ena_pending = false;
--			priv->spk_ena++;
--		}
- 		break;
- 	case SND_SOC_DAPM_PRE_PMD:
--		if (manual_ena) {
--			priv->spk_ena--;
--			if (!priv->spk_ena)
--				regmap_write_async(arizona->regmap,
--						   0x4f5, 0x25a);
--		}
--
- 		regmap_update_bits_async(arizona->regmap,
- 					 ARIZONA_OUTPUT_ENABLES_1,
- 					 1 << w->shift, 0);
- 		break;
--	case SND_SOC_DAPM_POST_PMD:
--		if (manual_ena) {
--			if (!priv->spk_ena)
--				regmap_write_async(arizona->regmap,
--						   0x4f5, 0x0da);
--		}
--		break;
- 	default:
- 		break;
+ 	regmap = syscon_regmap_lookup_by_phandle(node, "st,syscfg");
+ 
+-	if (!regmap) {
++	if (IS_ERR(regmap)) {
+ 		dev_err(&pdev->dev, "sti-audio-clk-glue syscf not found\n");
+-		return -EINVAL;
++		return PTR_ERR(regmap);
  	}
-diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index 02d836cb5fb1..f01d0e7684eb 100644
---- a/sound/soc/codecs/arizona.h
-+++ b/sound/soc/codecs/arizona.h
-@@ -87,9 +87,6 @@ struct arizona_priv {
- 	unsigned int out_down_pending;
- 	unsigned int out_down_delay;
  
--	unsigned int spk_ena:2;
--	unsigned int spk_ena_pending:1;
--
- 	unsigned int dvfs_reqs;
- 	struct mutex dvfs_lock;
- 	bool dvfs_cached;
+ 	player->clk_sel = regmap_field_alloc(regmap, regfield[0]);
 -- 
 2.8.1
