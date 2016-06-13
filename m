@@ -1,15 +1,14 @@
-From: jeeja.kp@intel.com
-Subject: [PATCH] ASoC: dapm: Fix to return correct path list in
-	is_connected_ep.
-Date: Wed, 15 Jun 2016 11:16:55 +0530
-Message-ID: <1465969615-29573-1-git-send-email-jeeja.kp@intel.com>
+From: Richard Cochran <richardcochran@gmail.com>
+Subject: Re: [very-RFC 0/8] TSN driver for the kernel
+Date: Mon, 13 Jun 2016 13:47:13 +0200
+Message-ID: <20160613114713.GA9544__38326.6956349418$1465971120$gmane$org@localhost.localdomain>
+References: <1465686096-22156-1-git-send-email-henrik@austad.us>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 65A9B2651EB
- for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2016 07:40:24 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1465686096-22156-1-git-send-email-henrik@austad.us>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,37 +19,114 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@intel.com
+Cc: henrk@austad.us, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>, netdev@vger.kernel.org, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+Henrik,
 
-In is_connected_ep, when custom_stop_condition is true, need to
-return the correct paths instead of con which is 0.
+On Sun, Jun 12, 2016 at 01:01:28AM +0200, Henrik Austad wrote:
+> There are at least one AVB-driver (the AV-part of TSN) in the kernel
+> already,
 
-Fixes: 6742064aef7f('ASoC: dapm: support user-defined stop condition in dai_get_connected_widgets')
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/soc-dapm.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Which driver is that?
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index db781f6..3c3f027 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1092,8 +1092,10 @@ static __always_inline int is_connected_ep(struct snd_soc_dapm_widget *widget,
- 	if (list)
- 		list_add_tail(&widget->work_list, list);
+> however this driver aims to solve a wider scope as TSN can do
+> much more than just audio. A very basic ALSA-driver is added to the end
+> that allows you to play music between 2 machines using aplay in one end
+> and arecord | aplay on the other (some fiddling required) We have plans
+> for doing the same for v4l2 eventually (but there are other fishes to
+> fry first). The same goes for a TSN_SOCK type approach as well.
+
+Please, no new socket type for this.
  
--	if (custom_stop_condition && custom_stop_condition(widget, dir))
--		return con;
-+	if (custom_stop_condition && custom_stop_condition(widget, dir)) {
-+		widget->endpoints[dir] = 1;
-+		return widget->endpoints[dir];
-+	}
- 
- 	if ((widget->is_ep & SND_SOC_DAPM_DIR_TO_EP(dir)) && widget->connected) {
- 		widget->endpoints[dir] = snd_soc_dapm_suspend_check(widget);
--- 
-2.5.0
+> What remains
+> - tie to (g)PTP properly, currently using ktime_get() for presentation
+>   time
+> - get time from shim into TSN and vice versa
+
+... and a whole lot more, see below.
+
+> - let shim create/manage buffer
+
+(BTW, shim is a terrible name for that.)
+
+[sigh]
+
+People have been asking me about TSN and Linux, and we've made some
+thoughts about it.  The interest is there, and so I am glad to see
+discussion on this topic.
+
+Having said that, your series does not even begin to address the real
+issues.  I did not review the patches too carefully (because the
+important stuff is missing), but surely configfs is the wrong
+interface for this.  In the end, we will be able to support TSN using
+the existing networking and audio interfaces, adding appropriate
+extensions.
+
+Your patch features a buffer shared by networking and audio.  This
+isn't strictly necessary for TSN, and it may be harmful.  The
+Listeners are supposed to calculate the delay from frame reception to
+the DA conversion.  They can easily include the time needed for a user
+space program to parse the frames, copy (and combine/convert) the
+data, and re-start the audio transfer.  A flexible TSN implementation
+will leave all of the format and encoding task to the userland.  After
+all, TSN will some include more that just AV data, as you know.
+
+Lets take a look at the big picture.  One aspect of TSN is already
+fully supported, namely the gPTP.  Using the linuxptp user stack and a
+modern kernel, you have a complete 802.1AS-2011 solution.
+
+Here is what is missing to support audio TSN:
+
+* User Space
+
+1. A proper userland stack for AVDECC, MAAP, FQTSS, and so on.  The
+   OpenAVB project does not offer much beyond simple examples.
+
+2. A user space audio application that puts it all together, making
+   use of the services in #1, the linuxptp gPTP service, the ALSA
+   services, and the network connections.  This program will have all
+   the knowledge about packet formats, AV encodings, and the local HW
+   capabilities.  This program cannot yet be written, as we still need
+   some kernel work in the audio and networking subsystems.
+
+* Kernel Space
+
+1. Providing frames with a future transmit time.  For normal sockets,
+   this can be in the CMESG data.  For mmap'ed buffers, we will need a
+   new format.  (I think Arnd is working on a new layout.)
+
+2. Time based qdisc for transmitted frames.  For MACs that support
+   this (like the i210), we only have to place the frame into the
+   correct queue.  For normal HW, we want to be able to reserve a time
+   window in which non-TSN frames are blocked.  This is some work, but
+   in the end it should be a generic solution that not only works
+   "perfectly" with TSN HW but also provides best effort service using
+   any NIC.
+
+3. ALSA support for tunable AD/DA clocks.  The rate of the Listener's
+   DA clock must match that of the Talker and the other Listeners.
+   Either you adjust it in HW using a VCO or similar, or you do
+   adaptive sample rate conversion in the application. (And that is
+   another reason for *not* having a shared kernel buffer.)  For the
+   Talker, either you adjust the AD clock to match the PTP time, or
+   you measure the frequency offset.
+
+4. ALSA support for time triggered playback.  The patch series
+   completely ignore the critical issue of media clock recovery.  The
+   Listener must buffer the stream in order to play it exactly at a
+   specified time.  It cannot simply send the stream ASAP to the audio
+   HW, because some other Listener might need longer.  AFAICT, there
+   is nothing in ALSA that allows you to say, sample X should be
+   played at time Y.
+
+These are some ideas about implementing TSN.  Maybe some of it is
+wrong (especially about ALSA), but we definitely need a proper design
+to get the kernel parts right.  There is plenty of work to do, but we
+really don't need some hacky, in-kernel buffer with hard coded audio
+formats.
+
+Thanks,
+Richard
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
