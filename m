@@ -1,54 +1,43 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFC 4/6] ASoC: Add DT bindings documentation for max98504
- amplifier
-Date: Mon, 13 Jun 2016 16:32:27 +0100
-Message-ID: <20160613153227.GJ2282@sirena.org.uk>
-References: <1465815160-28504-1-git-send-email-s.nawrocki@samsung.com>
- <1465815160-28504-5-git-send-email-s.nawrocki@samsung.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="O2lvLMQR9k8T/RyB"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1465815160-28504-5-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, robh@kernel.org, linux-samsung-soc@vger.kernel.org, ideal.song@samsung.com, beomho.seo@samsung.com, inki.dae@samsung.com, k.kozlowski@samsung.com, b.zolnierkie@samsung.com
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: wm8985: add i2c dependency
+Date: Mon, 13 Jun 2016 17:39:42 +0200
+Message-ID: <1465832422-2998958-1-git-send-email-arnd@arndb.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+The wm8985 driver is now user-selectable, but building it with
+I2C disabled results in a link failure:
 
---O2lvLMQR9k8T/RyB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+sound/built-in.o: In function `wm8985_i2c_probe':
+:(.text+0x44914): undefined reference to `__devm_regmap_init_i2c'
+sound/built-in.o: In function `wm8985_exit':
+:(.exit.text+0x3d8): undefined reference to `i2c_del_driver'
+sound/built-in.o: In function `wm8985_modinit':
+:(.init.text+0x1454): undefined reference to `i2c_register_driver'
 
-On Mon, Jun 13, 2016 at 12:52:38PM +0200, Sylwester Nawrocki wrote:
+This adds a Kconfig dependency the way that the other codec
+drivers have it.
 
-> + - maxim,rx-path : indicates speaker source interface:
-> +    0 - PCM monomix output,
-> +    1 - Analog input,
-> +    2 - left PDM channel (CH0),
-> +    3 - right PDM channel (CH1)
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: 811e66de2241 ("ASoC: wm8985: add support for WM8758")
+---
+ sound/soc/codecs/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-This should be a DAPM control.
-
-> + - maxim,rx-channel-mask : a bitmask indicating active PCM Rx channels,
-> +   bits b7...b0 correspond to channels CH7...CH0
-
-This should be done using the TDM API.
-
---O2lvLMQR9k8T/RyB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXXtIKAAoJECTWi3JdVIfQQ3wH/iGC1/NmXWiVC4SkBbMZcuX2
-0GjDIjA9FYq7wGRoeAtnCppIm5PP5knmuw+i3GjgGuxtO/PQFEuH1cg+7RLAM7ZO
-8e+8D+GdfEqK4ouHHJ6aKi3bNqilJEBKH8wXw1KzdY1p5nNAukKZaDTnkwJ9M/NK
-PoFQxBpBf5gTOJjWzW9+y2n95ZWGU4GxU38EYi81UeSEJtdFAPQWuj3W00iAb1zN
-odYbq7R/ozR7OD6uJ/wKDgGEwDWv4QQSlflY+d+ceygbC7p6M0b6p4WydXqqcRAc
-kqYo8LqxtXBqe6ngTCZn4tk2cnIK9cnbkPqC1MQ+y5Q7GpDOiVfG7FD1FEHxKA8=
-=WwkU
------END PGP SIGNATURE-----
-
---O2lvLMQR9k8T/RyB--
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index cb57f8fe2690..f555a5a004f7 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -986,6 +986,7 @@ config SND_SOC_WM8983
+ 
+ config SND_SOC_WM8985
+ 	tristate "Wolfson Microelectronics WM8985 and WM8758 codec driver"
++	depends on I2C
+ 
+ config SND_SOC_WM8988
+ 	tristate
+-- 
+2.7.0
