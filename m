@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Use new snd_compr_stop_error
-	to signal stream failure" to the asoc tree
-Date: Mon, 13 Jun 2016 16:50:39 +0100
-Message-ID: <E1bCU8N-0003HZ-GA@finisterre>
-References: <1460384855-10567-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: wm_adsp: Treat missing compressed
+	buffer as a fatal error" to the asoc tree
+Date: Mon, 13 Jun 2016 16:50:35 +0100
+Message-ID: <E1bCU8J-0003Gi-UG@finisterre>
+References: <1465823832-14718-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B9EE026609F
- for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 17:50:51 +0200 (CEST)
-In-Reply-To: <1460384855-10567-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D3E3265E22
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 17:50:49 +0200 (CEST)
+In-Reply-To: <1465823832-14718-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Use new snd_compr_stop_error to signal stream failure
+   ASoC: wm_adsp: Treat missing compressed buffer as a fatal error
 
 has been applied to the asoc tree at
 
@@ -53,60 +53,51 @@ to this mail.
 Thanks,
 Mark
 
->From 8d280664d26538cd37e7c08b1c2b58fe006cc482 Mon Sep 17 00:00:00 2001
+>From 28ee3d73773e2d9ae922f7496723ab5c92cc16de Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Mon, 13 Jun 2016 14:17:11 +0100
-Subject: [PATCH] ASoC: wm_adsp: Use new snd_compr_stop_error to signal stream
- failure
+Date: Mon, 13 Jun 2016 14:17:12 +0100
+Subject: [PATCH] ASoC: wm_adsp: Treat missing compressed buffer as a fatal
+ error
 
-If we encounter a fatal error on the compressed stream call the new
-snd_compr_stop_error to shutdown the stream and allow the core to
-inform user-space that the stream is no longer valid.
+If the DSP is powered down whilst a compressed stream is being processed
+we should treat this as a fatal error, clearly the stream is no longer
+valid.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Reviewed-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index a07bd7c2c587..8ed1cdececf2 100644
+index 8ed1cdececf2..7e42474d7ae4 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -3043,6 +3043,7 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
- 	}
+@@ -3037,12 +3037,7 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
  
- 	if (compr->buf->error) {
-+		snd_compr_stop_error(stream, SNDRV_PCM_STATE_XRUN);
+ 	buf = compr->buf;
+ 
+-	if (!compr->buf) {
+-		ret = -ENXIO;
+-		goto out;
+-	}
+-
+-	if (compr->buf->error) {
++	if (!compr->buf || compr->buf->error) {
+ 		snd_compr_stop_error(stream, SNDRV_PCM_STATE_XRUN);
  		ret = -EIO;
  		goto out;
- 	}
-@@ -3060,8 +3061,12 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
- 		 */
- 		if (buf->avail < wm_adsp_compr_frag_words(compr)) {
- 			ret = wm_adsp_buffer_get_error(buf);
--			if (ret < 0)
-+			if (ret < 0) {
-+				if (compr->buf->error)
-+					snd_compr_stop_error(stream,
-+							SNDRV_PCM_STATE_XRUN);
- 				goto out;
-+			}
+@@ -3161,10 +3156,7 @@ static int wm_adsp_compr_read(struct wm_adsp_compr *compr,
  
- 			ret = wm_adsp_buffer_reenable_irq(buf);
- 			if (ret < 0) {
-@@ -3159,8 +3164,10 @@ static int wm_adsp_compr_read(struct wm_adsp_compr *compr,
- 	if (!compr->buf)
- 		return -ENXIO;
+ 	adsp_dbg(dsp, "Requested read of %zu bytes\n", count);
  
--	if (compr->buf->error)
-+	if (compr->buf->error) {
-+		snd_compr_stop_error(compr->stream, SNDRV_PCM_STATE_XRUN);
+-	if (!compr->buf)
+-		return -ENXIO;
+-
+-	if (compr->buf->error) {
++	if (!compr->buf || compr->buf->error) {
+ 		snd_compr_stop_error(compr->stream, SNDRV_PCM_STATE_XRUN);
  		return -EIO;
-+	}
- 
- 	count /= WM_ADSP_DATA_WORD_SIZE;
- 
+ 	}
 -- 
 2.8.1
