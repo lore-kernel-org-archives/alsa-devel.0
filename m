@@ -1,84 +1,158 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ASoC: rcar: fix 'const static' variables
-Date: Mon, 13 Jun 2016 17:39:46 +0200
-Message-ID: <1465832422-2998958-5-git-send-email-arnd@arndb.de>
-References: <1465832422-2998958-1-git-send-email-arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1465832422-2998958-1-git-send-email-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: wm5102: Revert manual speaker enable"
+	to the asoc tree
+Date: Mon, 13 Jun 2016 16:47:36 +0100
+Message-ID: <E1bCU5Q-0002xl-UO@finisterre>
+References: <1465821317-28449-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 11CA626529F
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 17:47:48 +0200 (CEST)
+In-Reply-To: <1465821317-28449-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, ajit.pandey@soctronics.com
 List-Id: alsa-devel@alsa-project.org
 
-When building with 'make W=1', we get a harmless warning about
-slightly incorrect prototypes in the rcar audio driver:
+The patch
 
-sound/soc/sh/rcar/gen.c: In function 'rsnd_gen2_probe':
-sound/soc/sh/rcar/gen.c:209:2: error: 'static' is not at beginning of declaration [-Werror=old-style-declaration]
+   ASoC: wm5102: Revert manual speaker enable
 
-This changes the 'const static' to 'static const' as it should be.
+has been applied to the asoc tree at
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 10867b32a1cc2fb0b370c3d3601fccc587165128 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Mon, 13 Jun 2016 13:35:17 +0100
+Subject: [PATCH] ASoC: wm5102: Revert manual speaker enable
+
+The OUT4L and OUT4R widgets are not registered PRE_PMU or POST_PMD
+events, as such the manual speaker enable on wm5102 does not actually
+ever run. Furthermore since the issue actually only affected rev B of
+the silicon which never shipped in volume, simply remove the work around
+from the code.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/gen.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/codecs/arizona.c | 42 ------------------------------------------
+ sound/soc/codecs/arizona.h |  3 ---
+ 2 files changed, 45 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
-index 46c0ba7b6414..7d2fdf8dd188 100644
---- a/sound/soc/sh/rcar/gen.c
-+++ b/sound/soc/sh/rcar/gen.c
-@@ -206,7 +206,7 @@ static int _rsnd_gen_regmap_init(struct rsnd_priv *priv,
-  */
- static int rsnd_gen2_probe(struct rsnd_priv *priv)
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index e678157388bc..73eab6c462ac 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -85,30 +85,9 @@ static int arizona_spk_ev(struct snd_soc_dapm_widget *w,
  {
--	const static struct rsnd_regmap_field_conf conf_ssiu[] = {
-+	static const struct rsnd_regmap_field_conf conf_ssiu[] = {
- 		RSND_GEN_S_REG(SSI_MODE0,	0x800),
- 		RSND_GEN_S_REG(SSI_MODE1,	0x804),
- 		RSND_GEN_S_REG(SSI_MODE2,	0x808),
-@@ -221,7 +221,7 @@ static int rsnd_gen2_probe(struct rsnd_priv *priv)
- 		RSND_GEN_M_REG(SSI_INT_ENABLE,	0x18,	0x80),
- 	};
+ 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct arizona *arizona = dev_get_drvdata(codec->dev->parent);
+-	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
+-	bool manual_ena = false;
+ 	int val;
  
--	const static struct rsnd_regmap_field_conf conf_scu[] = {
-+	static const struct rsnd_regmap_field_conf conf_scu[] = {
- 		RSND_GEN_M_REG(SRC_I_BUSIF_MODE,0x0,	0x20),
- 		RSND_GEN_M_REG(SRC_O_BUSIF_MODE,0x4,	0x20),
- 		RSND_GEN_M_REG(SRC_BUSIF_DALIGN,0x8,	0x20),
-@@ -308,7 +308,7 @@ static int rsnd_gen2_probe(struct rsnd_priv *priv)
- 		RSND_GEN_M_REG(DVC_VOL7R,	0xe44,	0x100),
- 		RSND_GEN_M_REG(DVC_DVUER,	0xe48,	0x100),
- 	};
--	const static struct rsnd_regmap_field_conf conf_adg[] = {
-+	static const struct rsnd_regmap_field_conf conf_adg[] = {
- 		RSND_GEN_S_REG(BRRA,		0x00),
- 		RSND_GEN_S_REG(BRRB,		0x04),
- 		RSND_GEN_S_REG(SSICKR,		0x08),
-@@ -328,7 +328,7 @@ static int rsnd_gen2_probe(struct rsnd_priv *priv)
- 		RSND_GEN_S_REG(SRCOUT_TIMSEL4,	0x58),
- 		RSND_GEN_S_REG(CMDOUT_TIMSEL,	0x5c),
- 	};
--	const static struct rsnd_regmap_field_conf conf_ssi[] = {
-+	static const struct rsnd_regmap_field_conf conf_ssi[] = {
- 		RSND_GEN_M_REG(SSICR,		0x00,	0x40),
- 		RSND_GEN_M_REG(SSISR,		0x04,	0x40),
- 		RSND_GEN_M_REG(SSITDR,		0x08,	0x40),
-@@ -359,14 +359,14 @@ static int rsnd_gen2_probe(struct rsnd_priv *priv)
+-	switch (arizona->type) {
+-	case WM5102:
+-		switch (arizona->rev) {
+-		case 0:
+-			break;
+-		default:
+-			manual_ena = true;
+-			break;
+-		}
+-	default:
+-		break;
+-	}
+-
+ 	switch (event) {
+-	case SND_SOC_DAPM_PRE_PMU:
+-		if (!priv->spk_ena && manual_ena) {
+-			regmap_write_async(arizona->regmap, 0x4f5, 0x25a);
+-			priv->spk_ena_pending = true;
+-		}
+-		break;
+ 	case SND_SOC_DAPM_POST_PMU:
+ 		val = snd_soc_read(codec, ARIZONA_INTERRUPT_RAW_STATUS_3);
+ 		if (val & ARIZONA_SPK_OVERHEAT_STS) {
+@@ -120,33 +99,12 @@ static int arizona_spk_ev(struct snd_soc_dapm_widget *w,
+ 		regmap_update_bits_async(arizona->regmap,
+ 					 ARIZONA_OUTPUT_ENABLES_1,
+ 					 1 << w->shift, 1 << w->shift);
+-
+-		if (priv->spk_ena_pending) {
+-			msleep(75);
+-			regmap_write_async(arizona->regmap, 0x4f5, 0xda);
+-			priv->spk_ena_pending = false;
+-			priv->spk_ena++;
+-		}
+ 		break;
+ 	case SND_SOC_DAPM_PRE_PMD:
+-		if (manual_ena) {
+-			priv->spk_ena--;
+-			if (!priv->spk_ena)
+-				regmap_write_async(arizona->regmap,
+-						   0x4f5, 0x25a);
+-		}
+-
+ 		regmap_update_bits_async(arizona->regmap,
+ 					 ARIZONA_OUTPUT_ENABLES_1,
+ 					 1 << w->shift, 0);
+ 		break;
+-	case SND_SOC_DAPM_POST_PMD:
+-		if (manual_ena) {
+-			if (!priv->spk_ena)
+-				regmap_write_async(arizona->regmap,
+-						   0x4f5, 0x0da);
+-		}
+-		break;
+ 	default:
+ 		break;
+ 	}
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index 02d836cb5fb1..f01d0e7684eb 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -87,9 +87,6 @@ struct arizona_priv {
+ 	unsigned int out_down_pending;
+ 	unsigned int out_down_delay;
  
- static int rsnd_gen1_probe(struct rsnd_priv *priv)
- {
--	const static struct rsnd_regmap_field_conf conf_adg[] = {
-+	static const struct rsnd_regmap_field_conf conf_adg[] = {
- 		RSND_GEN_S_REG(BRRA,		0x00),
- 		RSND_GEN_S_REG(BRRB,		0x04),
- 		RSND_GEN_S_REG(SSICKR,		0x08),
- 		RSND_GEN_S_REG(AUDIO_CLK_SEL0,	0x0c),
- 		RSND_GEN_S_REG(AUDIO_CLK_SEL1,	0x10),
- 	};
--	const static struct rsnd_regmap_field_conf conf_ssi[] = {
-+	static const struct rsnd_regmap_field_conf conf_ssi[] = {
- 		RSND_GEN_M_REG(SSICR,		0x00,	0x40),
- 		RSND_GEN_M_REG(SSISR,		0x04,	0x40),
- 		RSND_GEN_M_REG(SSITDR,		0x08,	0x40),
+-	unsigned int spk_ena:2;
+-	unsigned int spk_ena_pending:1;
+-
+ 	unsigned int dvfs_reqs;
+ 	struct mutex dvfs_lock;
+ 	bool dvfs_cached;
 -- 
-2.7.0
+2.8.1
