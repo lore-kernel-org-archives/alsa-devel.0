@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Treat missing compressed
-	buffer as a fatal error" to the asoc tree
-Date: Mon, 13 Jun 2016 16:50:35 +0100
-Message-ID: <E1bCU8J-0003Gi-UG@finisterre>
-References: <1465823832-14718-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: rt298: Add jack suspend and resume
+	functions.
+Date: Mon, 13 Jun 2016 22:25:37 +0530
+Message-ID: <20160613165537.GH16910@localhost>
+References: <1465820919-6105-1-git-send-email-bardliao@realtek.com>
+ <20160613140923.GH2282@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1159009215779927064=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D3E3265E22
- for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 17:50:49 +0200 (CEST)
-In-Reply-To: <1465823832-14718-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 442F7261685
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 18:48:57 +0200 (CEST)
+In-Reply-To: <20160613140923.GH2282@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,82 +21,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, senthilnathanx.veppur@intel.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: wm_adsp: Treat missing compressed buffer as a fatal error
+--===============1159009215779927064==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZG+WKzXzVby2T9Ro"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--ZG+WKzXzVby2T9Ro
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon, Jun 13, 2016 at 03:09:23PM +0100, Mark Brown wrote:
+> On Mon, Jun 13, 2016 at 08:28:39PM +0800, Bard Liao wrote:
+>=20
+> > +void rt298_jack_suspend(struct snd_soc_codec *codec)
+> > +{
+> > +	struct rt298_priv *rt298 =3D snd_soc_codec_get_drvdata(codec);
+> > +	struct snd_soc_dapm_context *dapm;
+> > +
+> > +	dapm =3D snd_soc_codec_get_dapm(rt298->codec);
+> > +	snd_soc_dapm_disable_pin(dapm, "LDO1");
+> > +	snd_soc_dapm_sync(dapm);
+> > +}
+> > +EXPORT_SYMBOL_GPL(rt298_jack_suspend);
+> > +
+> > +void rt298_jack_resume(struct snd_soc_codec *codec)
+> > +{
+> > +	struct rt298_priv *rt298 =3D snd_soc_codec_get_drvdata(codec);
+> > +	bool hp =3D false;
+> > +	bool mic =3D false;
+> > +
+> > +	rt298_jack_detect(rt298, &hp, &mic);
+> > +}
+> > +EXPORT_SYMBOL_GPL(rt298_jack_resume);
+>=20
+> This is usually done by having the _jack_detect() function take NULL as
+> the jack to disable the detection.  Keeping in line with the existing
+> pattern would be good, and would make it easier if we do start to get
+> this more standardized.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+This was based on existing pattern in rt5672.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+But yes I agree with you that we can so this by calling rt298_mic_detect(),
+will try that out
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Thanks
+--=20
+~Vinod
 
-Thanks,
-Mark
+--ZG+WKzXzVby2T9Ro
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
->From 28ee3d73773e2d9ae922f7496723ab5c92cc16de Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Mon, 13 Jun 2016 14:17:12 +0100
-Subject: [PATCH] ASoC: wm_adsp: Treat missing compressed buffer as a fatal
- error
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-If the DSP is powered down whilst a compressed stream is being processed
-we should treat this as a fatal error, clearly the stream is no longer
-valid.
+iQIcBAEBAgAGBQJXXuWJAAoJEHwUBw8lI4NHihgP/2rDV4Rcf2wXar1TJBHf9yEf
+wDmUIEJvICBEWflJsVxBJsJOymobNrPDfG4h1wv/V2lIBr5uytYOwzjfUMGrXutD
+22VRI5AKD/BMUeqy1xh6DMlHSXdXndq5zjhH0xdoobTVe9+pzMvkadSQxxNhOGOy
+OIndci0keOi085difuvYXTs5fVLJ0pwR7Vp540KDH873Iw++F2mBJYThgG6PRPf+
+X1dl8nxdUE2jSZ87189dudmjpEiVsdeky5TeMb5M+G7+9w+ovFD9RcXLWhEFSSl7
++CV58JuQNR5/ZrJcUvKLHUvGIfim2XLMi85IJAXSumGG9P6oZmD8slL0aXp89h+J
+KS560tU4SL06I+sfcnRSchaQAoxTanHOCLJhPHMD2yktweHUVuPszcQOz2UYjWFx
+7mpGrdM3sf792SnAqO57oWLlJ26YP/lVVdpaGDBVliA9kZy0vCyMDxRESmLeLW51
+2uAWGLduZswurmSDKqsiz1I+2+zyuD9jceyrIMSE3nWdV3SS/YSrUDA7kzjZi7h4
+BGbHnI3LzkO2YGixFrGbvPbilsvsFV6oallUUmHRrYkmZiVq6rGRhcHf45/9tTET
+v6o3sTXIPWOK7tKy9iNpZtXAoacjxwcXI03dsWt3KNuQVAZo5r1Wo+knBvzZJOre
+GWGTUYzH9pvGUujeItrj
+=nWX4
+-----END PGP SIGNATURE-----
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/wm_adsp.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+--ZG+WKzXzVby2T9Ro--
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 8ed1cdececf2..7e42474d7ae4 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -3037,12 +3037,7 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
- 
- 	buf = compr->buf;
- 
--	if (!compr->buf) {
--		ret = -ENXIO;
--		goto out;
--	}
--
--	if (compr->buf->error) {
-+	if (!compr->buf || compr->buf->error) {
- 		snd_compr_stop_error(stream, SNDRV_PCM_STATE_XRUN);
- 		ret = -EIO;
- 		goto out;
-@@ -3161,10 +3156,7 @@ static int wm_adsp_compr_read(struct wm_adsp_compr *compr,
- 
- 	adsp_dbg(dsp, "Requested read of %zu bytes\n", count);
- 
--	if (!compr->buf)
--		return -ENXIO;
--
--	if (compr->buf->error) {
-+	if (!compr->buf || compr->buf->error) {
- 		snd_compr_stop_error(compr->stream, SNDRV_PCM_STATE_XRUN);
- 		return -EIO;
- 	}
--- 
-2.8.1
+--===============1159009215779927064==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1159009215779927064==--
