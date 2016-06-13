@@ -1,125 +1,175 @@
-From: Henrik Austad <henrik@austad.us>
-Subject: Re: [very-RFC 0/8] TSN driver for the kernel
-Date: Mon, 13 Jun 2016 00:06:39 +0200
-Message-ID: <20160612220639.GE32724@icarus.home.austad.us>
+From: Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [very-RFC 6/8] Add TSN event-tracing
+Date: Sun, 12 Jun 2016 22:22:01 -0400
+Message-ID: <20160612222201.00a8aa4c@grimm.local.home>
 References: <1465686096-22156-1-git-send-email-henrik@austad.us>
- <575CD93C.50006@sakamocchi.jp>
- <575CE560.9090608@sakamocchi.jp>
- <20160612083122.GB32724@icarus.home.austad.us>
- <575D3CD6.3050001@sakamocchi.jp>
+ <1465686096-22156-7-git-send-email-henrik@austad.us>
+ <20160612125803.27f401cc@gandalf.local.home>
+ <20160612212510.GD32724@icarus.home.austad.us>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="h56sxpGKRmy85csR"
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <575D3CD6.3050001@sakamocchi.jp>
-Sender: netdev-owner@vger.kernel.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org, netdev@vger.kernel.org, linux-media@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <20160612212510.GD32724@icarus.home.austad.us>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Ingo Molnar <mingo@redhat.com>, Henrik Austad <haustad@cisco.com>, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 12 Jun 2016 23:25:10 +0200
+Henrik Austad <henrik@austad.us> wrote:
 
---h56sxpGKRmy85csR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > > +#include <linux/if_ether.h>
+> > > +#include <linux/if_vlan.h>
+> > > +/* #include <linux/skbuff.h> */
+> > > +
+> > > +/* FIXME: update to TRACE_CLASS to reduce overhead */  
+> > 
+> > I'm curious to why I didn't do this now. A class would make less
+> > duplication of typing too ;-)  
+> 
+> Yeah, I found this in a really great article written by some tracing-dude, 
+> I hear he talks really, really fast!
 
-On Sun, Jun 12, 2016 at 07:43:34PM +0900, Takashi Sakamoto wrote:
-> On Jun 12 2016 17:31, Henrik Austad wrote:
-> > On Sun, Jun 12, 2016 at 01:30:24PM +0900, Takashi Sakamoto wrote:
-> >> On Jun 12 2016 12:38, Takashi Sakamoto wrote:
-> >>> In your patcset, there's no actual codes about how to handle any
-> >>> interrupt contexts (software / hardware), how to handle packet payloa=
-d,
-> >>> and so on. Especially, for recent sound subsystem, the timing of
-> >>> generating interrupts and which context does what works are important=
- to
-> >>> reduce playback/capture latency and power consumption.
-> >>>
-> >>> Of source, your intention of this patchset is to show your early conc=
-ept
-> >>> of TSN feature. Nevertheless, both of explaination and codes are
-> >>> important to the other developers who have little knowledges about TS=
-N,
-> >>> AVB and AES-64 such as me.
-> >>
-> >> Oops. Your 5th patch was skipped by alsa-project.org. I guess that size
-> >> of the patch is too large to the list service. I can see it:
-> >> http://marc.info/?l=3Dlinux-netdev&m=3D146568672728661&w=3D2
-> >>
-> >> As long as seeing the patch, packets are queueing in hrtimer callbacks
-> >> every 1 seconds.
-> >=20
-> > Actually, the hrtimer fires every 1ms, and that part is something I hav=
-e to=20
-> > do something about, also because it sends of the same number of frames=
-=20
-> > every time, regardless of how accurate the internal timer is to the res=
-t of=20
-> > the network (there's no backpressure from the networking layer).
-> >=20
-> >> (This is a high level discussion and it's OK to ignore it for the
-> >> moment. When writing packet-oriented drivers for sound subsystem, you
-> >> need to pay special attention to accuracy of the number of PCM frames
-> >> transferred currently, and granularity of the number of PCM frames
-> >> transferred by one operation. In this case, snd_avb_hw,
-> >> snd_avb_pcm_pointer(), tsn_buffer_write_net() and tsn_buffer_read_net()
-> >> are involved in this discussion. You can see ALSA developers' struggle
-> >> in USB audio device class drivers and (of cource) IEC 61883-1/6 driver=
-s.)
-> >=20
-> > Ah, good point. Any particular parts of the USB-subsystem I should star=
-t=20
-> > looking at?
->=20
-> I don't think it's a beter way for you to study USB Audio Device Class
-> driver unless you're interested in ALSA or USB subsystem.
->=20
-> (But for your information, snd-usb-audio is in sound/usb/* of Linux
-> kernel. IEC 61883-1/6 driver is in sound/firewire/*.)
+I plead the 5th!
 
-Ok, thanks, I'll definately be looking at the firewire bit
+> 
+> https://lwn.net/Articles/381064/
+> 
+> > > +TRACE_EVENT(tsn_buffer_write,
+> > > +
+> > > +	TP_PROTO(struct tsn_link *link,
+> > > +		size_t bytes),
+> > > +
+> > > +	TP_ARGS(link, bytes),
+> > > +
+> > > +	TP_STRUCT__entry(
+> > > +		__field(u64, stream_id)
+> > > +		__field(size_t, size)
+> > > +		__field(size_t, bsize)
+> > > +		__field(size_t, size_left)
+> > > +		__field(void *, buffer)
+> > > +		__field(void *, head)
+> > > +		__field(void *, tail)
+> > > +		__field(void *, end)
+> > > +		),
+> > > +
+> > > +	TP_fast_assign(
+> > > +		__entry->stream_id = link->stream_id;
+> > > +		__entry->size = bytes;
+> > > +		__entry->bsize = link->used_buffer_size;
+> > > +		__entry->size_left = (link->head - link->tail) % link->used_buffer_size;  
+> > 
+> > Move this logic into the print statement, since you save head and tail.  
+> 
+> Ok, any particular reason?
 
-> We need different strategy to achieve it on different transmission backen=
-d.
->=20
-> > Knowing where to start looking is a tremendous help
->=20
-> It's not well-documented, and not well-generalized for packet-oriented
-> drivers. Most of developers who have enough knowledge about it work for
-> DMA-oriented drivers in mobile platforms and have little interests in
-> packet-oriented drivers. You need to find your own way.
->=20
-> Currently I have few advices to you, because I'm also on the way for
-> drivers to process IEC 61883-1/6 packets on IEEE 1394 bus with enough
-> accuracy and granularity. The paper I introduced is for the way (but not
-> mature).
->=20
-> I wish you get more helps from the other developers. Your work is more
-> significant to Linux system, than mine.
->=20
-> (And I hope your future work get no ignorance and no unreasonable
-> hostility from coarse users.)
-
-Ah well, I have asbestos-underwear so that should be fine :)
-
-Thanks for the pointers, I really appreciate them!
+Because it removes calculations during the trace. The calculations done
+in TP_printk() are done at the time of reading the trace, and
+calculations done in TP_fast_assign() are done during the recording and
+hence adding more overhead to the trace itself.
 
 
+> 
+> > > +		__entry->buffer = link->buffer;
+> > > +		__entry->head = link->head;
+> > > +		__entry->tail = link->tail;
+> > > +		__entry->end = link->end;
+> > > +		),
+> > > +
+> > > +	TP_printk("stream_id=%llu, copy=%zd, buffer: %zd, avail=%zd, [buffer=%p, head=%p, tail=%p, end=%p]",
+> > > +		__entry->stream_id, __entry->size, __entry->bsize, __entry->size_left,  
+> > 
+> >  __entry->stream_id, __entry->size, __entry->bsize,
+> >  (__entry->head - __entry->tail) % __entry->bsize,
+> >   
+> 
+> Ok, so is this about saving space by dropping one intermediate value, or is 
+> it some other point I'm missing here?
 
---=20
-Henrik Austad
+Nope, just moving the overhead from the recording of the trace to the
+reading of the trace.
 
---h56sxpGKRmy85csR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+> 
+> > > +		__entry->buffer,    __entry->head, __entry->tail,  __entry->end)
+> > > +
+> > > +	);
+> > > +
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
 
-iEYEARECAAYFAldd3O8ACgkQ6k5VT6v45ln6ywCfRfOTsKraUa7CiP1H4mzMckMK
-MjoAnjWImNmwqPpO4bIqb512NkaeIUyT
-=QoZ6
------END PGP SIGNATURE-----
+> > > +
+> > > +	TP_fast_assign(
+> > > +		__entry->stream_id = link->stream_id;
+> > > +		__entry->vlan_tag = (skb_vlan_tag_present(skb) ? skb_vlan_tag_get(skb) : 0);
+> > > +		__entry->bytes = bytes;
+> > > +		__entry->data_len = skb->data_len;
+> > > +		__entry->headlen = skb_headlen(skb);
+> > > +		__entry->protocol = ntohs(vlan_get_protocol(skb));  
+> > 
+> > Maybe it would be better to do the ntohs() in the TP_printk() as well.
+> >   
+> > > +		__entry->prot_native = ntohs(skb->protocol);  
+> > 
+> > here too.
+> >   
+> > > +		__entry->tx_idx = skb_get_queue_mapping(skb);
+> > > +
+> > > +		__entry->mac_len = skb->mac_len;
+> > > +		__entry->hdr_len = skb->hdr_len;
+> > > +		__entry->vlan_tci = skb->vlan_tci;
+> > > +		__entry->mac_header = skb->mac_header;
+> > > +		__entry->tail = (unsigned int)skb->tail;
+> > > +		__entry->end  = (unsigned int)skb->end;
+> > > +		__entry->truesize = skb->truesize;
+> > > +		),
+> > > +
+> > > +	TP_printk("stream_id=%llu,vlan_tag=0x%04x,data_size=%zd,data_len=%zd,headlen=%u,proto=0x%04x (0x%04x),tx_idx=%d,mac_len=%u,hdr_len=%u,vlan_tci=0x%02x,mac_header=0x%02x,tail=%u,end=%u,truesize=%u",
+> > > +		__entry->stream_id,
+> > > +		__entry->vlan_tag,
+> > > +		__entry->bytes,
+> > > +		__entry->data_len,
+> > > +		__entry->headlen,
+> > > +		__entry->protocol,
+> > > +		__entry->prot_native, __entry->tx_idx,
+> > > +		__entry->mac_len,
+> > > +		__entry->hdr_len,
+> > > +		__entry->vlan_tci,
+> > > +		__entry->mac_header,  
+> > 
+> > Is this an ether mac header? If so we support %M. But as it's defined
+> > as only u16, it doesn't seem like it can be.  
+> 
+> Actually, looking at the output, I'm not quite sure what it is that I 
+> wanted to grab with that, the skb->mac_header should give an offset into 
+> the header-area of skb, so it should be a constant offset from skb->head 
+> (that is an actual pointer).
+> 
+> I *think* I wanted to make sure I updated things correctly so that the 
+> offset didn't suddenly change, but the fact that I'm no longer sure 
+> indicates that I should just drop that one. That whole printout is too long 
+> anyway..
+> 
+> Thanks for pointing a finger at this!
+> 
+> 
+> I'm still a bit stymied as to why logic should be in TP_printk() and not 
+> TP_fast_assign(). Not that I really have any preferences either way, just 
+> curious.
 
---h56sxpGKRmy85csR--
+As said above, it's simply just trying to make tracing have less of an
+effect on what is being traced. The more you can do in the post
+transactions the faster the trace becomes and less invasive the trace
+is on the system performance.
+
+-- Steve
+
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
