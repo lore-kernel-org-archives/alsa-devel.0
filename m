@@ -1,17 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 7/7] ASoC: Intel: Add support for PM ops in
-	bxt-rt298
-Date: Mon, 13 Jun 2016 17:59:04 +0530
-Message-ID: <1465820944-14774-8-git-send-email-vinod.koul@intel.com>
-References: <1465820944-14774-1-git-send-email-vinod.koul@intel.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt298: Add jack suspend and resume
+	functions.
+Date: Mon, 13 Jun 2016 20:28:39 +0800
+Message-ID: <1465820919-6105-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id F225C2654ED
- for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 14:22:44 +0200 (CEST)
-In-Reply-To: <1465820944-14774-1-git-send-email-vinod.koul@intel.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 120152650D1
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2016 14:28:58 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +19,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, vinod.koul@intel.com, Bard Liao <bardliao@realtek.com>, senthilnathanx.veppur@intel.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+We need to disable jack detection before entering suspend and
+enable it after resume.
 
-We need card to be early suspended and late resumed, so use prepare and
-complete for card suspend and resume.
+This was essential as headphone jack widget will always
+remain on if a jack is inserted and results in no audio
+after system resumes from a suspend.
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 ---
- sound/soc/intel/boards/bxt_rt298.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ sound/soc/codecs/rt298.c | 20 ++++++++++++++++++++
+ sound/soc/codecs/rt298.h |  2 ++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
-index 8b956500414b..2ef33b113bb5 100644
---- a/sound/soc/intel/boards/bxt_rt298.c
-+++ b/sound/soc/intel/boards/bxt_rt298.c
-@@ -454,10 +454,33 @@ static int broxton_audio_probe(struct platform_device *pdev)
- 	return devm_snd_soc_register_card(&pdev->dev, &broxton_rt298);
+diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
+index d403c20..629b038 100644
+--- a/sound/soc/codecs/rt298.c
++++ b/sound/soc/codecs/rt298.c
+@@ -1270,6 +1270,26 @@ static int rt298_i2c_remove(struct i2c_client *i2c)
+ 	return 0;
  }
  
-+/*
-+ * we want the card to be suspend first and then platform driver. This
-+ * allows the DAPM to tear down pipelines on suspend and then platform shuts
-+ * down the DSP. For this use .prepare for suspending card
-+ *
-+ * Similarly, use complete to let DSP download firmware first and then sync
-+ * DAPM and restore pipelines to DSP
-+ */
-+static void broxton_rt298_complete(struct device *dev)
++void rt298_jack_suspend(struct snd_soc_codec *codec)
 +{
-+	snd_soc_resume(dev);
++	struct rt298_priv *rt298 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_dapm_context *dapm;
++
++	dapm = snd_soc_codec_get_dapm(rt298->codec);
++	snd_soc_dapm_disable_pin(dapm, "LDO1");
++	snd_soc_dapm_sync(dapm);
 +}
++EXPORT_SYMBOL_GPL(rt298_jack_suspend);
 +
-+static const struct dev_pm_ops broxton_pm_ops = {
-+	.prepare = snd_soc_suspend,
-+	.complete = broxton_rt298_complete,
-+	.freeze = snd_soc_suspend,
-+	.thaw = snd_soc_resume,
-+	.poweroff = snd_soc_poweroff,
-+	.restore = snd_soc_resume,
-+};
++void rt298_jack_resume(struct snd_soc_codec *codec)
++{
++	struct rt298_priv *rt298 = snd_soc_codec_get_drvdata(codec);
++	bool hp = false;
++	bool mic = false;
 +
- static struct platform_driver broxton_audio = {
- 	.probe = broxton_audio_probe,
++	rt298_jack_detect(rt298, &hp, &mic);
++}
++EXPORT_SYMBOL_GPL(rt298_jack_resume);
+ 
+ static struct i2c_driver rt298_i2c_driver = {
  	.driver = {
- 		.name = "bxt_alc298s_i2s",
-+		.pm = &broxton_pm_ops,
- 	},
+diff --git a/sound/soc/codecs/rt298.h b/sound/soc/codecs/rt298.h
+index 3638f3d..2de342f 100644
+--- a/sound/soc/codecs/rt298.h
++++ b/sound/soc/codecs/rt298.h
+@@ -211,6 +211,8 @@ enum {
  };
- module_platform_driver(broxton_audio)
+ 
+ int rt298_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack);
++void rt298_jack_suspend(struct snd_soc_codec *codec);
++void rt298_jack_resume(struct snd_soc_codec *codec);
+ 
+ #endif /* __RT298_H__ */
+ 
 -- 
-1.9.1
+1.8.1.1.439.g50a6b54
