@@ -1,69 +1,49 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 2/2] ASoC: nau8825: mark pm functions __maybe_unused
-Date: Tue, 14 Jun 2016 12:19:31 +0200
-Message-ID: <24871235.njqcnbLnL2@wuerfel>
-References: <5926900.hCFXH4RQH6@wuerfel>
+From: One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>
+Subject: Re: [very-RFC 0/8] TSN driver for the kernel
+Date: Tue, 14 Jun 2016 12:18:44 +0100
+Message-ID: <20160614121844.54a125a5__44108.7767169394$1465903188$gmane$org@lxorguk.ukuu.org.uk>
+References: <1465686096-22156-1-git-send-email-henrik@austad.us>
+ <20160613114713.GA9544@localhost.localdomain>
+ <20160613195136.GC2441@netboy>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <5926900.hCFXH4RQH6@wuerfel>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, John Hsu <KCHSU0@nuvoton.com>, Ben Zhang <benzh@chromium.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <20160613195136.GC2441@netboy>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: netdev@vger.kernel.org, Henrik Austad <henrik@austad.us>, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>, henrk@austad.us, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Subject: [PATCH] ASoC: nau8825: mark pm functions __maybe_unused
+On Mon, 13 Jun 2016 21:51:36 +0200
+Richard Cochran <richardcochran@gmail.com> wrote:
 
-The newly added nau8825_dai_is_active() function is only called from
-the PM logic that is build-time conditional in this driver, so we get
-a warning when CONFIG_PM is disabled:
+> On Mon, Jun 13, 2016 at 01:47:13PM +0200, Richard Cochran wrote:
+> > 3. ALSA support for tunable AD/DA clocks.  The rate of the Listener's
+> >    DA clock must match that of the Talker and the other Listeners.
+> >    Either you adjust it in HW using a VCO or similar, or you do
+> >    adaptive sample rate conversion in the application. (And that is
+> >    another reason for *not* having a shared kernel buffer.)  For the
+> >    Talker, either you adjust the AD clock to match the PTP time, or
+> >    you measure the frequency offset.  
+> 
+> Actually, we already have support for tunable clock-like HW elements,
+> namely the dynamic posix clock API.  It is trivial to write a driver
+> for VCO or the like.  I am just not too familiar with the latest high
+> end audio devices.
 
-sound/soc/codecs/nau8825.c:229:13: error: 'nau8825_dai_is_active' defined but not used [-Werror=unused-function]
- static bool nau8825_dai_is_active(struct nau8825 *nau8825)
+Why high end ? Even the most basic USB audio is frame based and
+isosynchronous to the USB clock. It also reports back the delay
+properties.
 
-By replacing the #ifdef around the functions with a __maybe_unused
-annotation, the code becomes more robust to this kind of problem
-and we no longer get the warning while also slightly improving
-readability.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Fixes: b50455fab459 ("ASoC: nau8825: cross talk suppression measurement function")
----
-Like the first patch, this is for a warning that just appeared on today's
-linux-next.
-
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 4b0a1b8d9405..3f30e6ed210c 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -2216,8 +2216,7 @@ static int nau8825_set_bias_level(struct snd_soc_codec *codec,
- 	return 0;
- }
- 
--#ifdef CONFIG_PM
--static int nau8825_suspend(struct snd_soc_codec *codec)
-+static int __maybe_unused nau8825_suspend(struct snd_soc_codec *codec)
- {
- 	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
- 
-@@ -2229,7 +2228,7 @@ static int nau8825_suspend(struct snd_soc_codec *codec)
- 	return 0;
- }
- 
--static int nau8825_resume(struct snd_soc_codec *codec)
-+static int __maybe_unused nau8825_resume(struct snd_soc_codec *codec)
- {
- 	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
- 
-@@ -2253,10 +2252,6 @@ static int nau8825_resume(struct snd_soc_codec *codec)
- 
- 	return 0;
- }
--#else
--#define nau8825_suspend NULL
--#define nau8825_resume NULL
--#endif
- 
- static struct snd_soc_codec_driver nau8825_codec_driver = {
- 	.probe = nau8825_codec_probe,
+Alan
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
