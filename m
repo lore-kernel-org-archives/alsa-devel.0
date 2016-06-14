@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Check for module list
-	being NULL" to the asoc tree
-Date: Tue, 14 Jun 2016 18:01:12 +0100
-Message-ID: <E1bCriC-0002i1-VI@finisterre>
-References: <1465920225-11131-2-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Initialize module list
+	for Broxton" to the asoc tree
+Date: Tue, 14 Jun 2016 18:01:16 +0100
+Message-ID: <E1bCriG-0002ip-Dm@finisterre>
+References: <1465920225-11131-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 748132625D7
+ by alsa0.perex.cz (Postfix) with ESMTP id CF33A2666A0
  for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2016 19:01:25 +0200 (CEST)
-In-Reply-To: <1465920225-11131-2-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <1465920225-11131-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Check for module list being NULL
+   ASoC: Intel: Skylake: Initialize module list for Broxton
 
 has been applied to the asoc tree at
 
@@ -53,34 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From a35aeaee94dd5806907c400caf8293d7d7a60ebc Mon Sep 17 00:00:00 2001
+>From b914bb55f2abd66937c23fa0b89becaf9bcceb37 Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Tue, 14 Jun 2016 21:33:45 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Check for module list being NULL
+Date: Tue, 14 Jun 2016 21:33:44 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Initialize module list for Broxton
 
-While clearing loaded module count, we should check first to see
-if module list is NULL or not. Some distributions can ship with
-no modules and thus list can be empty.
+The module list was not initialized for Broxton DSP code, so
+initialize it.
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-sst.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/intel/skylake/bxt-sst.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
-index dff1076a5f9e..eaf0c9d19782 100644
---- a/sound/soc/intel/skylake/skl-sst.c
-+++ b/sound/soc/intel/skylake/skl-sst.c
-@@ -384,6 +384,9 @@ void skl_clear_module_cnt(struct sst_dsp *ctx)
- {
- 	struct skl_module_table *module;
+diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
+index 965ce40ce752..8b95e09e23e8 100644
+--- a/sound/soc/intel/skylake/bxt-sst.c
++++ b/sound/soc/intel/skylake/bxt-sst.c
+@@ -291,6 +291,7 @@ int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 	sst_dsp_mailbox_init(sst, (BXT_ADSP_SRAM0_BASE + SKL_ADSP_W0_STAT_SZ),
+ 			SKL_ADSP_W0_UP_SZ, BXT_ADSP_SRAM1_BASE, SKL_ADSP_W1_SZ);
  
-+	if (list_empty(&ctx->module_list))
-+		return;
-+
- 	list_for_each_entry(module, &ctx->module_list, list) {
- 		module->usage_cnt = 0;
- 	}
++	INIT_LIST_HEAD(&sst->module_list);
+ 	ret = skl_ipc_init(dev, skl);
+ 	if (ret)
+ 		return ret;
 -- 
 2.8.1
