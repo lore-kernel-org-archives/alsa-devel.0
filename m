@@ -1,23 +1,15 @@
-From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Subject: Re: [RESEND PATCH v2 1/2] device property: Add
- function to search for named child of device
-Date: Tue, 14 Jun 2016 08:39:01 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A0337D4642976@SW-EX-MBX01.diasemi.com>
-References: <cover.1464802265.git.Adam.Thomson.Opensource@diasemi.com>
- <7105258db927c65dfa41a8abeef4b9735871d023.1464802265.git.Adam.Thomson.Opensource@diasemi.com>
- <97f80018-7cc4-0a50-498d-89d27dfa2fd1@intel.com>
- <2E89032DDAA8B9408CB92943514A0337D46421B6@SW-EX-MBX01.diasemi.com>
- <575F0A50.1090107@gmail.com>
+From: Henrik Austad <henrik@austad.us>
+Subject: Re: [very-RFC 0/8] TSN driver for the kernel
+Date: Tue, 14 Jun 2016 11:30:00 +0200
+Message-ID: <20160614093000.GB21689__32087.1154814542$1465896645$gmane$org@sisyphus.home.austad.us>
+References: <1465686096-22156-1-git-send-email-henrik@austad.us>
+ <20160613114713.GA9544@localhost.localdomain>
+ <20160613130059.GA20320@sisyphus.home.austad.us>
+ <20160613193208.GA2441@netboy>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2165846248762334348=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
- [195.245.231.142])
- by alsa0.perex.cz (Postfix) with ESMTP id 546DA266267
- for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2016 10:39:04 +0200 (CEST)
-In-Reply-To: <575F0A50.1090107@gmail.com>
-Content-Language: en-US
+In-Reply-To: <20160613193208.GA2441@netboy>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,23 +19,210 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Frank Rowand <frowand.list@gmail.com>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Jaroslav Kysela <perex@perex.cz>, Mika
- Westerberg <mika.westerberg@linux.intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Rob Herring <rob.herring@linaro.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Support Opensource <Support.Opensource@diasemi.com>, Hanjun Guo <hanjun.guo@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>, Robert Moore <robert.moore@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Lv Zheng <lv.zheng@intel.com>, Suravee Suthikulpanit <Suravee.Suthikulpanit@amd.com>, Bjorn Helgaas <bhelgaas@google.com>, Andrew Morton <akpm@linux-foundation.org>, "devel@acpica.org" <devel@acpica.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Len Brown <lenb@kernel.org>
+To: alsa-devel@alsa-project.org
+Cc: alsa-devel@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 13 June 2016 20:33, Frank Rowand wrote:
 
-> > DT node names are case insensitive. The of.h header does provide a helper macro
-> > which is equivalent to this, but that macro is part of the '#ifdef CONFIG_OF'
-> > block. If I were to use it then it would cause non-DT builds to fail. I opted
-> > for strcasecmp() directly as I didn't think for just this one scenario it made
-> > sense to reorganise the of.h header with regards to the helper macros. Of course
-> > if there are other opinions on this then am happy to listen.
->
-> DT node names are not always case insensitive.  Please us of_node_cmp().
->
-> -Frank
+--===============2165846248762334348==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="BwCQnh7xodEAoBMC"
+Content-Disposition: inline
 
-Ok, fair enough. I'll have to move those definitions in the of.h header out of
-the CONFIG_OF block then.
+
+--BwCQnh7xodEAoBMC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Jun 13, 2016 at 09:32:10PM +0200, Richard Cochran wrote:
+> On Mon, Jun 13, 2016 at 03:00:59PM +0200, Henrik Austad wrote:
+> > On Mon, Jun 13, 2016 at 01:47:13PM +0200, Richard Cochran wrote:
+> > > Which driver is that?
+> >=20
+> > drivers/net/ethernet/renesas/
+>=20
+> That driver is merely a PTP capable MAC driver, nothing more.
+> Although AVB is in the device name, the driver doesn't implement
+> anything beyond the PTP bits.
+
+Yes, I think they do the rest from userspace, not sure though :)
+
+> > What is the rationale for no new sockets? To avoid cluttering? or do=20
+> > sockets have a drawback I'm not aware of?
+>=20
+> The current raw sockets will work just fine.  Again, there should be a
+> application that sits in between with the network socket and the audio
+> interface.
+
+So loop data from kernel -> userspace -> kernelspace and finally back to=20
+userspace and the media application? I agree that you need a way to pipe=20
+the incoming data directly from the network to userspace for those TSN=20
+users that can handle it. But again, for media-applications that don't know=
+=20
+(or care) about AVB, it should be fed to ALSA/v4l2 directly and not jump=20
+between kernel and userspace an extra round.
+
+I get the point of not including every single audio/video encoder in the=20
+kernel, but raw audio should be piped directly to alsa. V4L2 has a way of=
+=20
+piping encoded video through the system and to the media application (in=20
+order to support cameras that to encoding). The same approach should be=20
+doable for AVB, no? (someone from alsa/v4l2 should probably comment on=20
+this)
+
+> > Why is configfs wrong?
+>=20
+> Because the application will use the already existing network and
+> audio interfaces to configure the system.
+
+Configuring this via the audio-interface is going to be a challenge since=
+=20
+you need to configure the stream through the network before you can create=
+=20
+the audio interface. If not, you will have to either drop data or block the=
+=20
+caller until the link has been fully configured.
+
+This is actually the reason why configfs is used in the series now, as it=
+=20
+allows userspace to figure out all the different attributes and configure=
+=20
+the link before letting ALSA start pushing data.
+
+> > > Lets take a look at the big picture.  One aspect of TSN is already
+> > > fully supported, namely the gPTP.  Using the linuxptp user stack and a
+> > > modern kernel, you have a complete 802.1AS-2011 solution.
+> >=20
+> > Yes, I thought so, which is also why I have put that to the side and wh=
+y=20
+> > I'm using ktime_get() for timestamps at the moment. There's also the is=
+sue=20
+> > of hooking the time into ALSA/V4L2
+>=20
+> So lets get that issue solved before anything else.  It is absolutely
+> essential for TSN.  Without the synchronization, you are only playing
+> audio over the network.  We already have software for that.
+
+Yes, I agree, presentation-time and local time needs to be handled=20
+properly. The same for adjusting sample-rate etc. This is a lot of work, so=
+=20
+I hope you can understand why I started out with a simple approach to spark=
+=20
+a discussion before moving on to the larger bits.
+
+> > > 2. A user space audio application that puts it all together, making
+> > >    use of the services in #1, the linuxptp gPTP service, the ALSA
+> > >    services, and the network connections.  This program will have all
+> > >    the knowledge about packet formats, AV encodings, and the local HW
+> > >    capabilities.  This program cannot yet be written, as we still need
+> > >    some kernel work in the audio and networking subsystems.
+> >=20
+> > Why?
+>=20
+> Because user space is right place to place the knowledge of the myriad
+> formats and options.
+
+Se response above, better to let anything but uncompressed raw data trickle=
+=20
+through.
+
+> > the whole point should be to make it as easy for userspace as=20
+> > possible. If you need to tailor each individual media-appliation to use=
+=20
+> > AVB, it is not going to be very useful outside pro-Audio. Sure, there w=
+ill=20
+> > be challenges, but one key element here should be to *not* require=20
+> > upgrading every single media application.
+> >=20
+> > Then, back to the suggestion of adding a TSN_SOCKET (which you didn't l=
+ike,=20
+> > but can we agree on a term "raw interface to TSN", and mode of transpor=
+t=20
+> > can be defined later? ), was to let those applications that are TSN-awa=
+re=20
+> > to do what they need to do, whether it is controlling robots or media=
+=20
+> > streams.
+>=20
+> First you say you don't want ot upgrade media applications, but then
+> you invent a new socket type.  That is a contradiction in terms.
+
+Hehe, no, bad phrasing on my part. I want *both* (hence the shim-interface)=
+=20
+:)
+
+> Audio apps already use networking, and they already use the audio
+> subsystem.  We need to help them get their job done by providing the
+> missing kernel interfaces.  They don't need extra magic buffering the
+> kernel.  They already can buffer audio data by themselves.
+
+Yes, I know some audio apps "use networking", I can stream netradio, I can=
+=20
+use jack to connect devices using RTP and probably a whole lot of other=20
+applications do similar things. However, AVB is more about using the=20
+network as a virtual sound-card. For the media application, it should not=
+=20
+have to care if the device it is using is a soudncard inside the box or a=
+=20
+set of AVB-capable speakers somewhere on the network.
+
+> > > * Kernel Space
+> > >=20
+> > > 1. Providing frames with a future transmit time.  For normal sockets,
+> > >    this can be in the CMESG data.  For mmap'ed buffers, we will need a
+> > >    new format.  (I think Arnd is working on a new layout.)
+> >=20
+> > Ah, I was unaware of this, both CMESG and mmap buffers.
+> >=20
+> > What is the accuracy of deferred transmit? If you have a class A stream=
+,=20
+> > you push out a new frame every 125 us, you may end up with=20
+> > accuracy-constraints lower than that if you want to be able to state "s=
+end=20
+> > frame X at time Y".
+>=20
+> I have no idea what you are asking here.
+
+I assumed that when you had a mmap'd buffer you'd have to specify a point=
+=20
+in time at which the frame should be sent. And since a class A has a 125us=
+=20
+interval of sending frames, you have to be able to send frames with enough=
+=20
+accuray to that. That's a pretty strict deadline coming from userspace. But=
+=20
+as they say, never assume.
+
+I have a lot to dig into, and I've gotten a lot of very useful pointers. I=
+=20
+should be busy for a while
+
+--=20
+Henrik Austad
+
+--BwCQnh7xodEAoBMC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAldfzpgACgkQ6k5VT6v45llNyACg1S6RQAZXdtgThRcX3qXrR0UV
+EH8AoKb4CquWIFkaIKv3fpPLxCKWR4na
+=PTPK
+-----END PGP SIGNATURE-----
+
+--BwCQnh7xodEAoBMC--
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
+
+
+--===============2165846248762334348==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2165846248762334348==--
