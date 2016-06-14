@@ -1,38 +1,86 @@
-From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: Re: [alsa-devel] [PATCH v2 2/2] sound: lpass-platform: Move dma
- channel allocation to pcmops
-Date: Tue, 14 Jun 2016 09:33:07 -0700
-Message-ID: <20160614163248.GA13496@kwestfie-linux.qualcomm.com>
-References: <1465893003-12477-1-git-send-email-srinivas.kandagatla@linaro.org>
- <1465893003-12477-2-git-send-email-srinivas.kandagatla@linaro.org>
- <20160614124908.GA16521@kwestfie-linux.qualcomm.com>
- <576007FA.2050705@linaro.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: Skylake: Check for module list
+	being NULL" to the asoc tree
+Date: Tue, 14 Jun 2016 18:01:12 +0100
+Message-ID: <E1bCriC-0002i1-VI@finisterre>
+References: <1465920225-11131-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <576007FA.2050705@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 748132625D7
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2016 19:01:25 +0200 (CEST)
+In-Reply-To: <1465920225-11131-2-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 14, 2016 at 06:34:50AM -0700, Srinivas Kandagatla wrote:
-> On 14/06/16 13:49, Kenneth Westfield wrote:
-> >On Tue, Jun 14, 2016 at 09:30:03AM +0100, Srinivas Kandagatla wrote:
+The patch
 
-> >>-	data = devm_kzalloc(soc_runtime->dev, sizeof(*data), GFP_KERNEL);
-> >>+	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-> >
-> >Is the reason for changing the dev pointer similar to why it was changed
-> >for snd_dma_alloc_pages() below?
-> Yep, Only reason is that I can fit stuff in single line.
+   ASoC: Intel: Skylake: Check for module list being NULL
 
-The original line fit in one as well.  If that is the reason, maybe
-just leave it unchanged.
+has been applied to the asoc tree at
 
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From a35aeaee94dd5806907c400caf8293d7d7a60ebc Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Tue, 14 Jun 2016 21:33:45 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Check for module list being NULL
+
+While clearing loaded module count, we should check first to see
+if module list is NULL or not. Some distributions can ship with
+no modules and thus list can be empty.
+
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/skylake/skl-sst.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index dff1076a5f9e..eaf0c9d19782 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -384,6 +384,9 @@ void skl_clear_module_cnt(struct sst_dsp *ctx)
+ {
+ 	struct skl_module_table *module;
+ 
++	if (list_empty(&ctx->module_list))
++		return;
++
+ 	list_for_each_entry(module, &ctx->module_list, list) {
+ 		module->usage_cnt = 0;
+ 	}
 -- 
-Kenneth Westfield
-Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
-a Linux Foundation Collaborative Project
+2.8.1
