@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8825: mark pm functions __maybe_unused" to the asoc tree
-Date: Tue, 14 Jun 2016 16:09:19 +0100
-Message-ID: <E1bCpxv-0001Xq-4X@finisterre>
-References: <24871235.njqcnbLnL2@wuerfel>
+Subject: Applied "ASoC: remove one extraneous 'const'" to the asoc tree
+Date: Tue, 14 Jun 2016 16:09:22 +0100
+Message-ID: <E1bCpxy-0001Yn-DT@finisterre>
+References: <5926900.hCFXH4RQH6@wuerfel>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <24871235.njqcnbLnL2@wuerfel>
+In-Reply-To: <5926900.hCFXH4RQH6@wuerfel>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Ben Zhang <benzh@chromium.org>, alsa-devel@alsa-project.org, John Hsu <KCHSU0@nuvoton.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Nikesh Oswal <Nikesh.Oswal@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.orgCharles Keepax <ckeepax@opensource.wolfsonmicro.com>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nau8825: mark pm functions __maybe_unused
+   ASoC: remove one extraneous 'const'
 
 has been applied to the asoc tree at
 
@@ -37,63 +37,39 @@ to this mail.
 Thanks,
 Mark
 
->From 4983d32526ab6db2f8bd2288def8abf2da5f37b2 Mon Sep 17 00:00:00 2001
+>From 8f273aacc070490f2d5e02e52bbaa35d53a4df15 Mon Sep 17 00:00:00 2001
 From: Arnd Bergmann <arnd@arndb.de>
-Date: Tue, 14 Jun 2016 12:19:31 +0200
-Subject: [PATCH] ASoC: nau8825: mark pm functions __maybe_unused
+Date: Tue, 14 Jun 2016 12:17:52 +0200
+Subject: [PATCH] ASoC: remove one extraneous 'const'
 
-The newly added nau8825_dai_is_active() function is only called from
-the PM logic that is build-time conditional in this driver, so we get
-a warning when CONFIG_PM is disabled:
+A recent commit made a few arrays 'const', but also added the
+same attribute to a function return type, where it makes no
+sense, and we get a warning when building with W=1:
 
-sound/soc/codecs/nau8825.c:229:13: error: 'nau8825_dai_is_active' defined but not used [-Werror=unused-function]
- static bool nau8825_dai_is_active(struct nau8825 *nau8825)
+sound/soc/codecs/arizona.c:1725:27: error: type qualifiers ignored on function return type [-Werror=ignored-qualifiers]
+ static const char * const arizona_dai_clk_str(int clk_id)
 
-By replacing the #ifdef around the functions with a __maybe_unused
-annotation, the code becomes more robust to this kind of problem
-and we no longer get the warning while also slightly improving
-readability.
+This removes it again.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Fixes: b50455fab459 ("ASoC: nau8825: cross talk suppression measurement function")
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/nau8825.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ sound/soc/codecs/arizona.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 4b0a1b8d9405..3f30e6ed210c 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -2216,8 +2216,7 @@ static int nau8825_set_bias_level(struct snd_soc_codec *codec,
- 	return 0;
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 73eab6c462ac..1ff0ed2d8de9 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -1711,7 +1711,7 @@ restore_aif:
+ 	return ret;
  }
  
--#ifdef CONFIG_PM
--static int nau8825_suspend(struct snd_soc_codec *codec)
-+static int __maybe_unused nau8825_suspend(struct snd_soc_codec *codec)
+-static const char * const arizona_dai_clk_str(int clk_id)
++static const char *arizona_dai_clk_str(int clk_id)
  {
- 	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
- 
-@@ -2229,7 +2228,7 @@ static int nau8825_suspend(struct snd_soc_codec *codec)
- 	return 0;
- }
- 
--static int nau8825_resume(struct snd_soc_codec *codec)
-+static int __maybe_unused nau8825_resume(struct snd_soc_codec *codec)
- {
- 	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
- 
-@@ -2253,10 +2252,6 @@ static int nau8825_resume(struct snd_soc_codec *codec)
- 
- 	return 0;
- }
--#else
--#define nau8825_suspend NULL
--#define nau8825_resume NULL
--#endif
- 
- static struct snd_soc_codec_driver nau8825_codec_driver = {
- 	.probe = nau8825_codec_probe,
+ 	switch (clk_id) {
+ 	case ARIZONA_CLK_SYSCLK:
 -- 
 2.8.1
