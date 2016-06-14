@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Initialize module list
-	for Broxton" to the asoc tree
-Date: Tue, 14 Jun 2016 18:01:16 +0100
-Message-ID: <E1bCriG-0002ip-Dm@finisterre>
-References: <1465920225-11131-1-git-send-email-vinod.koul@intel.com>
+From: Henrik Austad <henrik@austad.us>
+Subject: Re: [very-RFC 0/8] TSN driver for the kernel
+Date: Tue, 14 Jun 2016 22:38:10 +0200
+Message-ID: <20160614203810.GC21689__2616.64477079666$1465936759$gmane$org@sisyphus.home.austad.us>
+References: <1465686096-22156-1-git-send-email-henrik@austad.us>
+ <20160613114713.GA9544@localhost.localdomain>
+ <20160613130059.GA20320@sisyphus.home.austad.us>
+ <20160613193208.GA2441@netboy>
+ <20160614093000.GB21689@sisyphus.home.austad.us>
+ <20160614182615.GA2741@netboy>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7496952745549675809=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CF33A2666A0
- for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2016 19:01:25 +0200 (CEST)
-In-Reply-To: <1465920225-11131-1-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <20160614182615.GA2741@netboy>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +21,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
+To: alsa-devel@alsa-project.org
+Cc: alsa-devel@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: Intel: Skylake: Initialize module list for Broxton
+--===============7496952745549675809==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZwgA9U+XZDXt4+m+"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--ZwgA9U+XZDXt4+m+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Tue, Jun 14, 2016 at 08:26:15PM +0200, Richard Cochran wrote:
+> On Tue, Jun 14, 2016 at 11:30:00AM +0200, Henrik Austad wrote:
+> > So loop data from kernel -> userspace -> kernelspace and finally back t=
+o=20
+> > userspace and the media application?
+>=20
+> Huh?  I wonder where you got that idea.  Let me show an example of
+> what I mean.
+>=20
+> 	void listener()
+> 	{
+> 		int in =3D socket();
+> 		int out =3D open("/dev/dsp");
+> 		char buf[];
+>=20
+> 		while (1) {
+> 			recv(in, buf, packetsize);
+> 			write(out, buf + offset, datasize);
+> 		}
+> 	}
+>=20
+> See?
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Where is your media-application in this? You only loop the audio from=20
+network to the dsp, is the media-application attached to the dsp-device?
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Whereas I want to do=20
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+aplay some_song.wav
+or mplayer
+or spotify
+or ..
 
-Thanks,
-Mark
 
->From b914bb55f2abd66937c23fa0b89becaf9bcceb37 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Tue, 14 Jun 2016 21:33:44 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Initialize module list for Broxton
+> > Yes, I know some audio apps "use networking", I can stream netradio, I =
+can=20
+> > use jack to connect devices using RTP and probably a whole lot of other=
+=20
+> > applications do similar things. However, AVB is more about using the=20
+> > network as a virtual sound-card.
+>=20
+> That is news to me.  I don't recall ever having seen AVB described
+> like that before.
+>=20
+> > For the media application, it should not=20
+> > have to care if the device it is using is a soudncard inside the box or=
+ a=20
+> > set of AVB-capable speakers somewhere on the network.
+>=20
+> So you would like a remote listener to appear in the system as a local
+> PCM audio sink?  And a remote talker would be like a local media URL?
+> Sounds unworkable to me, but even if you were to implement it, the
+> logic would surely belong in alsa-lib and not in the kernel.  Behind
+> the enulated device, the library would run a loop like the example,
+> above.
+>=20
+> In any case, your patches don't implement that sort of thing at all,
+> do they?
 
-The module list was not initialized for Broxton DSP code, so
-initialize it.
+Subject: [very-RFC 7/8] AVB ALSA - Add ALSA shim for TSN
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/bxt-sst.c | 1 +
- 1 file changed, 1 insertion(+)
+Did you even bother to look?
 
-diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index 965ce40ce752..8b95e09e23e8 100644
---- a/sound/soc/intel/skylake/bxt-sst.c
-+++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -291,6 +291,7 @@ int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
- 	sst_dsp_mailbox_init(sst, (BXT_ADSP_SRAM0_BASE + SKL_ADSP_W0_STAT_SZ),
- 			SKL_ADSP_W0_UP_SZ, BXT_ADSP_SRAM1_BASE, SKL_ADSP_W1_SZ);
- 
-+	INIT_LIST_HEAD(&sst->module_list);
- 	ret = skl_ipc_init(dev, skl);
- 	if (ret)
- 		return ret;
--- 
-2.8.1
+--=20
+Henrik Austad
+
+--ZwgA9U+XZDXt4+m+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAldgazIACgkQ6k5VT6v45lkBYACePNiLE3TpU9VONnqHAbNfEtBA
+HzIAn3AGu7lakjCHeutRZ7Yn2fDegbSV
+=QsdK
+-----END PGP SIGNATURE-----
+
+--ZwgA9U+XZDXt4+m+--
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
+
+
+--===============7496952745549675809==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7496952745549675809==--
