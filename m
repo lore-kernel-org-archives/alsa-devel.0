@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Update FW purge for
-	Broxton" to the asoc tree
-Date: Tue, 14 Jun 2016 16:09:02 +0100
-Message-ID: <E1bCpxe-0001TG-HU@finisterre>
-References: <1465820944-14774-6-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Enable firmware reload
+	in suspend" to the asoc tree
+Date: Tue, 14 Jun 2016 16:09:06 +0100
+Message-ID: <E1bCpxi-0001UB-FO@finisterre>
+References: <1465820944-14774-5-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 82B1C261615
- for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2016 17:09:12 +0200 (CEST)
-In-Reply-To: <1465820944-14774-6-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A0BB2616C9
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2016 17:09:16 +0200 (CEST)
+In-Reply-To: <1465820944-14774-5-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, patches.audio@intel.com
+To: Jayachandran B <jayachandran.b@intel.com>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Update FW purge for Broxton
+   ASoC: Intel: Skylake: Enable firmware reload in suspend
 
 has been applied to the asoc tree at
 
@@ -53,97 +53,93 @@ to this mail.
 Thanks,
 Mark
 
->From 2023576dd74c9afdb25692f7e9ac9a837e8cf3bd Mon Sep 17 00:00:00 2001
-From: Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
-Date: Mon, 13 Jun 2016 17:59:02 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Update FW purge for Broxton
+>From 1665c177abf40338e7b5f1ae465d3aaabe5af9d0 Mon Sep 17 00:00:00 2001
+From: Jayachandran B <jayachandran.b@intel.com>
+Date: Mon, 13 Jun 2016 17:59:01 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Enable firmware reload in suspend
 
-Broxton needs to send Purge firmware IPC to DSP before downloading the
-firmware. The DMA id needs to be updated for that.
+Broxton DSP needs retains code loaded during runtime_pm cycles.
+But it looses that on suspend cycle, so on resume we need to
+download the firmware again.
 
-While at it also update Broxton boot sequence to send purge request after
-power up and before yanking off reset.
+This is done by adding a new flag and based on flag status, we
+download the firmware.
 
+Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
 Signed-off-by: Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/bxt-sst.c     | 16 +++++++++++++---
- sound/soc/intel/skylake/skl-sst-dsp.c |  4 ++--
- sound/soc/intel/skylake/skl-sst-dsp.h |  2 ++
- 3 files changed, 17 insertions(+), 5 deletions(-)
+ sound/soc/intel/skylake/bxt-sst.c     | 9 +++++++++
+ sound/soc/intel/skylake/skl-sst-ipc.h | 3 +++
+ sound/soc/intel/skylake/skl-sst.c     | 1 +
+ sound/soc/intel/skylake/skl.c         | 1 +
+ 4 files changed, 14 insertions(+)
 
 diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index e50bac74f4a8..622da5d3e3b3 100644
+index 46235b93e4f8..e50bac74f4a8 100644
 --- a/sound/soc/intel/skylake/bxt-sst.c
 +++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -58,13 +58,19 @@ static int sst_bxt_prepare_fw(struct sst_dsp *ctx,
- 	ctx->dsp_ops.stream_tag = stream_tag;
- 	memcpy(ctx->dmab.area, fwdata, fwsize);
+@@ -185,6 +185,7 @@ static int bxt_load_base_firmware(struct sst_dsp *ctx)
+ 		} else {
+ 			skl_dsp_set_state_locked(ctx, SKL_DSP_RUNNING);
+ 			ret = 0;
++			skl->fw_loaded = true;
+ 		}
+ 	}
  
-+	ret = skl_dsp_core_power_up(ctx);
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "Boot dsp core failed ret: %d\n", ret);
-+		goto base_fw_load_failed;
+@@ -200,6 +201,14 @@ static int bxt_set_dsp_D0(struct sst_dsp *ctx)
+ 
+ 	skl->boot_complete = false;
+ 
++	if (skl->fw_loaded == false) {
++		dev_dbg(ctx->dev, "Re-loading fw\n");
++		ret = bxt_load_base_firmware(ctx);
++		if (ret < 0)
++			dev_err(ctx->dev, "reload fw failed: %d\n", ret);
++		return ret;
 +	}
 +
- 	/* Purge FW request */
- 	sst_dsp_shim_write(ctx, SKL_ADSP_REG_HIPCI, SKL_ADSP_REG_HIPCI_BUSY |
--					 BXT_IPC_PURGE_FW | (stream_tag - 1));
-+				(BXT_IPC_PURGE_FW | ((stream_tag - 1) << 9)));
+ 	ret = skl_dsp_enable_core(ctx);
+ 	if (ret < 0) {
+ 		dev_err(ctx->dev, "enable dsp core failed ret: %d\n", ret);
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
+index 9f24261abf3e..5102c7b415fe 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.h
++++ b/sound/soc/intel/skylake/skl-sst-ipc.h
+@@ -63,6 +63,9 @@ struct skl_sst {
  
--	ret = skl_dsp_enable_core(ctx);
-+	ret = skl_dsp_start_core(ctx);
- 	if (ret < 0) {
--		dev_err(ctx->dev, "Boot dsp core failed ret: %d\n", ret);
-+		dev_err(ctx->dev, "Start dsp core failed ret: %d\n", ret);
- 		ret = -EIO;
- 		goto base_fw_load_failed;
- 	}
-@@ -161,6 +167,10 @@ static int bxt_load_base_firmware(struct sst_dsp *ctx)
- 	if (ret < 0) {
- 		ret = sst_bxt_prepare_fw(ctx, stripped_fw.data, stripped_fw.size);
- 		if (ret < 0) {
-+			dev_err(ctx->dev, "Error code=0x%x: FW status=0x%x\n",
-+			sst_dsp_shim_read(ctx, BXT_ADSP_ERROR_CODE),
-+			sst_dsp_shim_read(ctx, BXT_ADSP_FW_STATUS));
+ 	/* Populate module information */
+ 	struct list_head uuid_list;
 +
- 			dev_err(ctx->dev, "Core En/ROM load fail:%d\n", ret);
- 			goto sst_load_base_firmware_failed;
- 		}
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.c b/sound/soc/intel/skylake/skl-sst-dsp.c
-index 13c19855ee1a..37b1d24a9a9d 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.c
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.c
-@@ -114,7 +114,7 @@ static int skl_dsp_reset_core(struct sst_dsp *ctx)
- 	return skl_dsp_core_set_reset_state(ctx);
- }
++	/* Is firmware loaded */
++	bool fw_loaded;
+ };
  
--static int skl_dsp_start_core(struct sst_dsp *ctx)
-+int skl_dsp_start_core(struct sst_dsp *ctx)
- {
- 	int ret;
+ struct skl_ipc_init_instance_msg {
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index 4cabae54a71e..dff1076a5f9e 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -153,6 +153,7 @@ static int skl_load_base_firmware(struct sst_dsp *ctx)
  
-@@ -140,7 +140,7 @@ static int skl_dsp_start_core(struct sst_dsp *ctx)
- 	return ret;
- }
+ 		dev_dbg(ctx->dev, "Download firmware successful%d\n", ret);
+ 		skl_dsp_set_state_locked(ctx, SKL_DSP_RUNNING);
++		skl->fw_loaded = true;
+ 	}
+ 	return 0;
+ transfer_firmware_failed:
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index c0f5d5565dea..734072c79205 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -248,6 +248,7 @@ static int skl_suspend(struct device *dev)
+ 		ret = _skl_suspend(ebus);
+ 		if (ret < 0)
+ 			return ret;
++		skl->skl_sst->fw_loaded = false;
+ 	}
  
--static int skl_dsp_core_power_up(struct sst_dsp *ctx)
-+int skl_dsp_core_power_up(struct sst_dsp *ctx)
- {
- 	int ret;
- 
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
-index 7efaf642c10a..22fbe1075cb5 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.h
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.h
-@@ -182,5 +182,7 @@ int snd_skl_parse_uuids(struct sst_dsp *ctx, unsigned int offset);
- void skl_freeup_uuid_list(struct skl_sst *ctx);
- 
- int skl_dsp_strip_extended_manifest(struct firmware *fw);
-+int skl_dsp_start_core(struct sst_dsp *ctx);
-+int skl_dsp_core_power_up(struct sst_dsp *ctx);
- 
- #endif /*__SKL_SST_DSP_H__*/
+ 	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
 -- 
 2.8.1
