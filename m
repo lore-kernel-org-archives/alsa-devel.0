@@ -1,11 +1,15 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
-From: Arnd Bergmann <arnd@linaro.org>
-Date: Mon, 13 Jun 2016 15:12:24 +0200
-Message-ID: <3650675.mUADb08Tiz@wuerfel>
-In-Reply-To: <20160613114713.GA9544@localhost.localdomain>
+Date: Tue, 14 Jun 2016 20:26:15 +0200
+From: Richard Cochran <richardcochran@gmail.com>
+Message-ID: <20160614182615.GA2741@netboy>
 References: <1465686096-22156-1-git-send-email-henrik@austad.us>
  <20160613114713.GA9544@localhost.localdomain>
+ <20160613130059.GA20320@sisyphus.home.austad.us>
+ <20160613193208.GA2441@netboy>
+ <20160614093000.GB21689@sisyphus.home.austad.us>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20160614093000.GB21689@sisyphus.home.austad.us>
 Subject: Re: [alsa-devel] [very-RFC 0/8] TSN driver for the kernel
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -19,24 +23,54 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: netdev@vger.kernel.org, Henrik Austad <henrik@austad.us>, linux-kernel@vger.kernel.org, henrk@austad.us, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
+Cc: alsa-devel@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>, linux-media@vger.kernel.org
 List-ID: <alsa-devel@alsa-project.org>
 
-On Monday, June 13, 2016 1:47:13 PM CEST Richard Cochran wrote:
-> * Kernel Space
-> 
-> 1. Providing frames with a future transmit time.  For normal sockets,
->    this can be in the CMESG data.  For mmap'ed buffers, we will need a
->    new format.  (I think Arnd is working on a new layout.)
-> 
+On Tue, Jun 14, 2016 at 11:30:00AM +0200, Henrik Austad wrote:
+> So loop data from kernel -> userspace -> kernelspace and finally back to 
+> userspace and the media application?
 
-After some back and forth, I think the conclusion for now was that
-the timestamps in the current v3 format are sufficient until 2106
-as long as we treat them as 'unsigned', so we don't need the new
-format for y2038, but if we get a new format, that should definitely
-use 64-bit timestamps because that is the right thing to do.
+Huh?  I wonder where you got that idea.  Let me show an example of
+what I mean.
 
-	Arnd
+	void listener()
+	{
+		int in = socket();
+		int out = open("/dev/dsp");
+		char buf[];
+
+		while (1) {
+			recv(in, buf, packetsize);
+			write(out, buf + offset, datasize);
+		}
+	}
+
+See?
+
+> Yes, I know some audio apps "use networking", I can stream netradio, I can 
+> use jack to connect devices using RTP and probably a whole lot of other 
+> applications do similar things. However, AVB is more about using the 
+> network as a virtual sound-card.
+
+That is news to me.  I don't recall ever having seen AVB described
+like that before.
+
+> For the media application, it should not 
+> have to care if the device it is using is a soudncard inside the box or a 
+> set of AVB-capable speakers somewhere on the network.
+
+So you would like a remote listener to appear in the system as a local
+PCM audio sink?  And a remote talker would be like a local media URL?
+Sounds unworkable to me, but even if you were to implement it, the
+logic would surely belong in alsa-lib and not in the kernel.  Behind
+the enulated device, the library would run a loop like the example,
+above.
+
+In any case, your patches don't implement that sort of thing at all,
+do they?
+
+Thanks,
+Richard
 --
 To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
 
