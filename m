@@ -1,201 +1,86 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 2/2] ASoC: msm8916: Add msm8916-wcd codec driver
-Date: Tue, 14 Jun 2016 16:59:38 +0100
-Message-ID: <20160614155938.GS2282@sirena.org.uk>
+From: Kenneth Westfield <kwestfie@codeaurora.org>
+Subject: Re: [PATCH v3 1/2] ASoC: msm8916: Add codec Device Tree bindings.
+Date: Tue, 14 Jun 2016 09:12:27 -0700
+Message-ID: <20160614161227.GA10893@kwestfie-linux.qualcomm.com>
 References: <1465582725-30183-1-git-send-email-srinivas.kandagatla@linaro.org>
- <1465582725-30183-3-git-send-email-srinivas.kandagatla@linaro.org>
+ <1465582725-30183-2-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="en9/O5YN3eJ0yPaf"
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1465582725-30183-3-git-send-email-srinivas.kandagatla@linaro.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
+In-Reply-To: <1465582725-30183-2-git-send-email-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kwestfie@codeaurora.org, plai@codeaurora.org, linux-arm-msm@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kwestfie@codeaurora.org, plai@codeaurora.org, linux-arm-msm@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-
---en9/O5YN3eJ0yPaf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jun 10, 2016 at 07:18:45PM +0100, Srinivas Kandagatla wrote:
-
-> +config SND_SOC_MSM8916_WCD
-> +	tristate "Qualcomm MSM8916 WCD"
-> +	depends on SPMI && MFD_SYSCON
+On Fri, Jun 10, 2016 at 11:18:44AM -0700, Srinivas Kandagatla wrote:
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd.txt
+> b/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd.txt
+> new file mode 100644
+> index 0000000..0559c1f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd.txt
+> @@ -0,0 +1,103 @@
+> +msm8916 audio CODEC audio CODEC
 > +
+> +Codec IP is divided into two parts, first analog which is integrated in
+> pmic pm8916
+> +and secondly digital part which is integrated into application processor.
+> Codec register
+> +controls are also split across pmic an lpass. Analog part is controlled
+> via spmi bus to pmic.
 
-Normally users select MFD_SYSCON.
+Cleaning up the description:
 
-> @@ -208,7 +209,6 @@ snd-soc-wm9705-objs := wm9705.o
->  snd-soc-wm9712-objs := wm9712.o
->  snd-soc-wm9713-objs := wm9713.o
->  snd-soc-wm-hubs-objs := wm_hubs.o
-> -
->  # Amp
->  snd-soc-max9877-objs := max9877.o
->  snd-soc-tpa6130a2-objs := tpa6130a2.o
+msm8916 audio CODEC
 
-Spurious whitespace change.
+Codec IP is divided into two parts:
+  * analog, which is integrated into pmic pm8916
+  * digital, which is integrated into LPASS on the SOC
+Codec registers are also split across pmic and LPASS.
+Analog codec is controlled via spmi bus to pmic.
 
-> +#include "msm8916-wcd-registers.h"
-> +#include "msm8916-wcd.h"
-> +#include "dt-bindings/sound/msm8916-wcd.h"
-
-What's in here?  There weren't any constants in the bindings.
-
-> +struct msm8916_wcd_chip {
-> +	struct regmap *analog_map;
-> +	struct regmap *digital_map;
-> +	unsigned int analog_offset;
-> +	u16 pmic_rev;
-> +	u16 codec_version;
-
-Why is this one device and not two devices?  The description indicated
-that this was two separate bits of silicon.
-
-> +static int msm8916_wcd_write(struct snd_soc_codec *codec, unsigned int reg,
-> +			     unsigned int val)
-> +{
-> +	int ret = -EINVAL;
-> +	struct msm8916_wcd_chip *chip = dev_get_drvdata(codec->dev);
-> +	u8 *cache = codec->reg_cache;
+> +## Bindings for codec core on pmic:
 > +
-> +	if (!msm8916_wcd_reg_readonly[reg])
-> +		cache[reg] = val;
+> +Required properties
+> + - compatible = "qcom,msm8916-pmic-wcd-codec";
 
-Why is the driver open coding a cache?  Don't do that!
+OK.  Looking at this again, I think its better just to drop the pmic.
 
-> +	case SND_SOC_DAPM_POST_PMU:
-> +		if (w->shift == 5)
-> +			snd_soc_update_bits(codec, LPASS_CDC_RX1_B6_CTL,
-> +					    RXn_B6_CTL_MUTE_MASK, 0);
-> +		else if (w->shift == 4)
-> +			snd_soc_update_bits(codec, LPASS_CDC_RX2_B6_CTL,
-> +					    RXn_B6_CTL_MUTE_MASK, 0);
+> +  "spk_cnp_int" - Speaker click and pop interrupt
+> +  "spk_clip_int" - Speaker clip interrupt
+> +  "spk_ocp_int" - Speaker over current protect interrupt.
+> +  "ins_rem_det1" - jack insert removal detect interrupt 1.
+> +  "but_rel_det" - button release interrupt
+> +  "but_press_det" - button press event
+> +  "ins_rem_det" - jack insert removal detect interrup
+> +  "mbhc_int"	- multi button headset interrupt.
+> +  "ear_ocp_int" - Earphone over current protect interrupt.
+> +  "hphr_ocp_int" - Headphone R over current protect interrupt.
+> +  "hphl_ocp_det" - Headphone L over current protect interrupt
+> +  "ear_cnp_int" - earphone cnp interrupt.
+> +  "hphr_cnp_int" - hphr click and pop interrupt.
+> +  "hphl_cnp_int" - hphl click and pop interrupt
 
-Switch statement.
+Please use labels that more closely match the HW spec:
+  "cdc_spk_cnp_int"
+  "cdc_spk_clip_int"
+  "cdc_spk_ocp_int"
+  "mbhc_ins_rem_det1"
+  "mbhc_but_rel_det"
+  "mbhc_but_press_det"
+  "mbhc_ins_rem_det"
+  "mbhc_switch_int"
+  "cdc_ear_ocp_int"
+  "cdc_hphr_ocp_int"
+  "cdc_hphl_ocp_int"
+  "cdc_ear_cnp_int"
+  "cdc_hphr_cnp_int"
+  "cdc_hphl_cnp_int"
 
-> +	widget_name = kstrndup(w->name, 15, GFP_KERNEL);
-> +	if (!widget_name)
-> +		return -ENOMEM;
-> +	temp = widget_name;
-> +
-> +	dec_name = strsep(&widget_name, " ");
-> +	widget_name = temp;
-> +	if (!dec_name) {
-> +		dev_err(codec->dev, "Invalid decimator = %s\n", w->name);
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	dec_num = strpbrk(dec_name, "12");
-> +	if (dec_num == NULL) {
-> +		dev_err(codec->dev, "Invalid Decimator\n");
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	ret = kstrtouint(dec_num, 10, &decimator);
-> +	if (ret < 0) {
-> +		dev_err(codec->dev, "Invalid decimator = %s\n", dec_name);
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-
-I'm not terribly clear what this is doing, it probably needs some
-comments explaining what's going on at the very least.
-
-> +	/*RX stuff */
-> +	SND_SOC_DAPM_AIF_IN("I2S RX1", "AIF1 Playback", 0, SND_SOC_NOPM, 0, 0),
-> +	SND_SOC_DAPM_AIF_IN("I2S RX2", "AIF1 Playback", 0, SND_SOC_NOPM, 0, 0),
-> +	SND_SOC_DAPM_AIF_IN("I2S RX3", "AIF1 Playback", 0, SND_SOC_NOPM, 0, 0),
-
-Use DAPM routes to connect the widgets in, don't name the DAI in the
-widget.
-
-> +		mclk_rate = clk_get_rate(msm8916_wcd->mclk);
-> +
-> +		if (mclk_rate == 12288000)
-> +			snd_soc_update_bits(codec, LPASS_CDC_TOP_CTL,
-> +					    TOP_CTL_DIG_MCLK_FREQ_MASK,
-> +					    TOP_CTL_DIG_MCLK_FREQ_F_12_288MHZ);
-> +
-> +		else if (mclk_rate == 9600000)
-> +			snd_soc_update_bits(codec, LPASS_CDC_TOP_CTL,
-> +					    TOP_CTL_DIG_MCLK_FREQ_MASK,
-> +					    TOP_CTL_DIG_MCLK_FREQ_F_9_6MHZ);
-
-Switch statement, and this should also handle unexpected rates.
-
-> +static int msm8916_wcd_codec_probe(struct snd_soc_codec *codec)
-> +{
-> +	struct msm8916_wcd_chip *chip = dev_get_drvdata(codec->dev);
-> +	int err, reg;
-> +
-> +	err = regulator_enable(chip->vddio);
-> +	if (err < 0) {
-> +		dev_err(codec->dev,
-> +			"failed to enable VDDIO regulator (%d)\n", err);
-> +		return err;
-> +	}
-> +
-> +	err = regulator_enable(chip->vdd_tx_rx);
-> +	if (err < 0) {
-> +		dev_err(codec->dev,
-> +			"failed to enable VDD_TX_RX regulator (%d)\n", err);
-> +		regulator_disable(chip->vddio);
-> +		return err;
-> +	}
-
-Why is this not using regulator_bulk_enable()?  I'd also expect to see
-most if not all of this initial setup stuff in the main device probe.
-
-> +	if (TOMBAK_IS_1_0(chip->pmic_rev)) {
-> +		for (reg = 0; reg < ARRAY_SIZE(wcd_reg_defaults); reg++)
-> +			snd_soc_write(codec, wcd_reg_defaults[reg].reg,
-> +				      wcd_reg_defaults[reg].val);
-> +	} else {
-> +		for (reg = 0; reg < ARRAY_SIZE(wcd_reg_defaults_2_0); reg++)
-> +			snd_soc_write(codec, wcd_reg_defaults_2_0[reg].reg,
-> +				      wcd_reg_defaults_2_0[reg].val);
-> +	}
-
-Please reset the chip properly.
-
-> +	ret = clk_prepare_enable(chip->mclk);
-> +	if (ret < 0) {
-> +		dev_err(dev, "failed to enable mclk %d\n", ret);
-> +		return ret;
-> +	}
-
-Runtime PM?
-
-> +static const struct of_device_id msm8916_wcd_match_table[] = {
-> +	{.compatible = "qcom,msm8916-pmic-wcd-codec"},
-> +	{}
-> +};
-
-We were peering inside the parent for the register map, why does this
-appear in the device tree as a separate device?  Both the patch
-description and that code suggest that it doesn't really have a separate
-existence independent of the broader IP.
-
---en9/O5YN3eJ0yPaf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXYCnpAAoJECTWi3JdVIfQxqEH/3yWp8YCZbf6h/7YY1R0gr0e
-DNtI6guoUhDlwOytJLd4pGeHyvT/KkMQauFVhY8SsdhYlCL7fhexhsW419h4fZnx
-1BYmmMSw4cqpl9voGqWq6Qr7znDf1W6d4y11RCFTX+3o6jpq4qhiLkKCmvdym3T5
-6wew13Wb87MN1GeWDvD2kL/M1GBAZTBX1VQ//yXsdXbkC+l8rG9qHPQGGWJruv/4
-B5HEltKBiPN35ACVCUgb+ciLml1ZYApzclNixMq27QSx/bbZhIZRZNAoZ2wzxx7L
-MqPcSpWQd1mf7R1CI5NFw06nagwIgo+IUmMU/5Ce+rtNYfRZXjHbk3aX0Htj2Lo=
-=Ra9W
------END PGP SIGNATURE-----
-
---en9/O5YN3eJ0yPaf--
+-- 
+Kenneth Westfield
+Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
+a Linux Foundation Collaborative Project
