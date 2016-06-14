@@ -1,60 +1,57 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 1/2] ASoC: msm8916: Add codec Device Tree bindings.
-Date: Tue, 14 Jun 2016 16:23:18 +0100
-Message-ID: <20160614152318.GR2282@sirena.org.uk>
-References: <1465582725-30183-1-git-send-email-srinivas.kandagatla@linaro.org>
- <1465582725-30183-2-git-send-email-srinivas.kandagatla@linaro.org>
+From: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3 1/2] device property: Add function to search for named
+ child of device
+Date: Tue, 14 Jun 2016 10:49:59 -0500
+Message-ID: <CAL_JsqJ9g7sMALzZs3y2eONf0j=ZrrGvC23Sd7OO+ujcax=5BQ@mail.gmail.com>
+References: <cover.1465908072.git.Adam.Thomson.Opensource@diasemi.com> <866c9edccdd89805f6a0c0aa92f8a78ae616ed61.1465908072.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="htVlOAOs/VIaEhiC"
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1465582725-30183-2-git-send-email-srinivas.kandagatla@linaro.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kwestfie@codeaurora.org, plai@codeaurora.org, linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <866c9edccdd89805f6a0c0aa92f8a78ae616ed61.1465908072.git.Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Adam Thomson <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Cc: Robert Moore <robert.moore-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Lv Zheng <lv.zheng-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, "Rafael J.Wysocki" <rafael.j.wysocki-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Heikki Krogerus <heikki.krogerus-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Mika Westerberg <mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Len Brown <lenb-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Andy Shevchenko <andriy.shevchenko-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Frank Rowand <frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, "linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, devel-E0kO6a4B6psdnm+yROfE0A@public.gmane.org, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Support Opensource <support.opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>, Sathyanarayana Nujella <sathyanarayana.nujella-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Jun 14, 2016 at 8:56 AM, Adam Thomson
+<Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org> wrote:
+> For device nodes in both DT and ACPI, it possible to have named
+> child nodes which contain properties (an existing example being
+> gpio-leds). This adds a function to find a named child node for
+> a device which can be used by drivers for property retrieval.
+>
+> For DT data node name matching, of_node_cmp() and similar functions are made
+> available outside of CONFIG_OF block so the new function can reference these
+> for DT and non-DT builds.
+>
+> For ACPI data node name matching, a helper function is also added
+> which returns false if CONFIG_ACPI is not set, otherwise it
+> performs a string comparison on the data node name. This avoids
+> using the acpi_data_node struct for non CONFIG_ACPI builds,
+> which would otherwise cause a build failure.
+>
+> Signed-off-by: Adam Thomson <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+> Tested-by: Sathyanarayana Nujella <sathyanarayana.nujella-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+> ---
+>
+> Changes in v3:
+>  - Move of_*_cmp() functions in of.h outside of CONFIG_OF block so they are
+>    available for non-DT builds
+>  - In device_get_named_child_node(), use of_node_cmp() helper macro instead of
+>    strcasecmp() (node names not alway case insensitive, depending on platform).
+>
+> Changes in v2:
+>  - Rebase to v4.7-rc1
+>
+>  drivers/base/property.c  | 28 ++++++++++++++++++++++++++++
+>  include/acpi/acpi_bus.h  |  7 +++++++
+>  include/linux/acpi.h     |  6 ++++++
+>  include/linux/of.h       | 14 +++++++-------
+>  include/linux/property.h |  3 +++
+>  5 files changed, 51 insertions(+), 7 deletions(-)
 
---htVlOAOs/VIaEhiC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jun 10, 2016 at 07:18:44PM +0100, Srinivas Kandagatla wrote:
-
-> +Codec IP is divided into two parts, first analog which is integrated in pmic pm8916
-> +and secondly digital part which is integrated into application processor. Codec register
-> +controls are also split across pmic an lpass. Analog part is controlled via spmi bus to pmic.
-
-Please keep things wrapped at less than 80 columns.
-
-> + - interrupt-parent : The parent interrupt controller.
-> + - interrupts: List of interrupts in given SPMI peripheral.
-> + - interrupt-names: Names specified to above list of interrupts in same
-> +		    order. List of supported interrupt names are:
-> +  "spk_cnp_int" - Speaker click and pop interrupt
-
-Please format this more clearly so these don't look like properties,
-more indentation would be good.
-
-> + - vddio-supply: phandle to VDD_CDC_IO regulator device tree node.
-> + - vdd-tx-rx-supply: phandle to VDD_CDC_TX/RX/CX regulator device tree node.
-
-You should name the supplies with the same name as the datasheet uses.
-
---htVlOAOs/VIaEhiC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXYCFiAAoJECTWi3JdVIfQtQwH/iCnUxV1XkjcxF/Z3UQv1Y5Z
-h2EG3PriI+QcxTMZw6dMj63DLsR61voL+RScWtAUmW6kx4qDjaSCU7qpurxJ2eCO
-YtM0oyygIAJER52ReFK8U36AwlGbz+q8w2tKtqFxJve5FAD6EV1Jz/RRWesc094C
-RHbB69Ibu2dEEWgZaDTiQdnPd5kHqTvXFV2ztjTMeXllhZWHLgA14UWpZ2+MNkAH
-bS0UDcy6QPs7FIZbCQT2X/Eipi5Q478k2E7MN2Yzi1sFsjtf9TAzlFCpfoyxdM3w
-/5uMT5xO6Pj367z/kIN/9XEXMYzFZ2iHbiiS54YwBjE3I5ae2RBjJ76d3EvX6Ac=
-=Vr3l
------END PGP SIGNATURE-----
-
---htVlOAOs/VIaEhiC--
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
