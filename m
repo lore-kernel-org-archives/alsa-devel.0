@@ -1,58 +1,111 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH RFC 3/6] ASoC: max98504: Add max98504 speaker amplifier
- driver
-Date: Tue, 14 Jun 2016 16:52:15 +0200
-Message-ID: <57601A1F.5030906@samsung.com>
-References: <1465815160-28504-1-git-send-email-s.nawrocki@samsung.com>
- <1465815160-28504-4-git-send-email-s.nawrocki@samsung.com>
- <20160613151429.GI2282@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: Add support for PM ops in
+	bxt-rt298" to the asoc tree
+Date: Tue, 14 Jun 2016 16:08:55 +0100
+Message-ID: <E1bCpxX-0001QR-QC@finisterre>
+References: <1465820944-14774-8-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <20160613151429.GI2282@sirena.org.uk>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, robh@kernel.org, linux-samsung-soc@vger.kernel.org, ideal.song@samsung.com, beomho.seo@samsung.com, inki.dae@samsung.com, k.kozlowski@samsung.com, b.zolnierkie@samsung.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7158D26145E
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2016 17:09:12 +0200 (CEST)
+In-Reply-To: <1465820944-14774-8-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jeeja KP <jeeja.kp@intel.com>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/13/2016 05:14 PM, Mark Brown wrote:
-> On Mon, Jun 13, 2016 at 12:52:37PM +0200, Sylwester Nawrocki wrote:
-> 
->> [s.nawrocki: removed unused macro definitions and regulator handling
->>  code, rewrote regmap config code, added support for speaker enable
->>  and global chip enable through DAPM, rewritten as component driver,
->>  redesigned DT bindings]
-> 
-> Removed the regulator handling code?  Why?
+The patch
 
-Because it was effectively a dead code (disabled by a DT flag property)
-and didn't make any sense on our test board. It was setting regulator's
-load and voltage on a shared fixed voltage regulator. Even if calls like
-regulator_set_optimum_mode() were added that wouldn't make any difference,
-since the corresponding PMIC driver ops were not implemented.
-I started more or less with something like this [1].
+   ASoC: Intel: Add support for PM ops in bxt-rt298
 
->> +	default:
->> +		/* Analog input, disable PCM, PDM Rx */
->> +		regmap_write(map, MAX98504_REG_PCM_RX_ENABLE, 0);
->> +		regmap_write(map, MAX98504_REG_PDM_RX_ENABLE, 0);
->> +	}
-> 
-> Add a break here please, at least for consistency.
-> 
->> +		ret = PTR_ERR(max98504->regmap);
->> +		dev_err(&client->dev, "regmap initialization failed: %d\n", ret);
->> +		return ret;
->> +	}
->> +
->> +	ret = max98504_probe(max98504);
->> +	if (ret < 0)
->> +		return ret;
-> 
-> Why not just inline this code?
+has been applied to the asoc tree at
 
-Will do in next iteration. Thanks for your review.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-[1]
-https://github.com/halaszk/Perseus-halaszk-universal5433/blob/perseus5433-mm/sound/soc/codecs/max98504a.c
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 3513798ca4bceae7cb66a7f430160f60f788cede Mon Sep 17 00:00:00 2001
+From: Jeeja KP <jeeja.kp@intel.com>
+Date: Mon, 13 Jun 2016 17:59:04 +0530
+Subject: [PATCH] ASoC: Intel: Add support for PM ops in bxt-rt298
+
+We need card to be early suspended and late resumed, so use prepare and
+complete for card suspend and resume.
+
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/bxt_rt298.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+
+diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
+index 8b956500414b..2ef33b113bb5 100644
+--- a/sound/soc/intel/boards/bxt_rt298.c
++++ b/sound/soc/intel/boards/bxt_rt298.c
+@@ -454,10 +454,33 @@ static int broxton_audio_probe(struct platform_device *pdev)
+ 	return devm_snd_soc_register_card(&pdev->dev, &broxton_rt298);
+ }
+ 
++/*
++ * we want the card to be suspend first and then platform driver. This
++ * allows the DAPM to tear down pipelines on suspend and then platform shuts
++ * down the DSP. For this use .prepare for suspending card
++ *
++ * Similarly, use complete to let DSP download firmware first and then sync
++ * DAPM and restore pipelines to DSP
++ */
++static void broxton_rt298_complete(struct device *dev)
++{
++	snd_soc_resume(dev);
++}
++
++static const struct dev_pm_ops broxton_pm_ops = {
++	.prepare = snd_soc_suspend,
++	.complete = broxton_rt298_complete,
++	.freeze = snd_soc_suspend,
++	.thaw = snd_soc_resume,
++	.poweroff = snd_soc_poweroff,
++	.restore = snd_soc_resume,
++};
++
+ static struct platform_driver broxton_audio = {
+ 	.probe = broxton_audio_probe,
+ 	.driver = {
+ 		.name = "bxt_alc298s_i2s",
++		.pm = &broxton_pm_ops,
+ 	},
+ };
+ module_platform_driver(broxton_audio)
+-- 
+2.8.1
