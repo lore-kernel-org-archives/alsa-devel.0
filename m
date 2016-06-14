@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: remove one extraneous 'const'" to the asoc tree
-Date: Tue, 14 Jun 2016 16:09:22 +0100
-Message-ID: <E1bCpxy-0001Yn-DT@finisterre>
-References: <5926900.hCFXH4RQH6@wuerfel>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <5926900.hCFXH4RQH6@wuerfel>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Nikesh Oswal <Nikesh.Oswal@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.orgCharles Keepax <ckeepax@opensource.wolfsonmicro.com>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: Intel: Skylake: Update FW purge for
+	Broxton" to the asoc tree
+Date: Tue, 14 Jun 2016 16:09:02 +0100
+Message-ID: <E1bCpxe-0001TG-HU@finisterre>
+References: <1465820944-14774-6-git-send-email-vinod.koul@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 82B1C261615
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2016 17:09:12 +0200 (CEST)
+In-Reply-To: <1465820944-14774-6-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: remove one extraneous 'const'
+   ASoC: Intel: Skylake: Update FW purge for Broxton
 
 has been applied to the asoc tree at
 
@@ -37,39 +53,97 @@ to this mail.
 Thanks,
 Mark
 
->From 8f273aacc070490f2d5e02e52bbaa35d53a4df15 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Tue, 14 Jun 2016 12:17:52 +0200
-Subject: [PATCH] ASoC: remove one extraneous 'const'
+>From 2023576dd74c9afdb25692f7e9ac9a837e8cf3bd Mon Sep 17 00:00:00 2001
+From: Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
+Date: Mon, 13 Jun 2016 17:59:02 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Update FW purge for Broxton
 
-A recent commit made a few arrays 'const', but also added the
-same attribute to a function return type, where it makes no
-sense, and we get a warning when building with W=1:
+Broxton needs to send Purge firmware IPC to DSP before downloading the
+firmware. The DMA id needs to be updated for that.
 
-sound/soc/codecs/arizona.c:1725:27: error: type qualifiers ignored on function return type [-Werror=ignored-qualifiers]
- static const char * const arizona_dai_clk_str(int clk_id)
+While at it also update Broxton boot sequence to send purge request after
+power up and before yanking off reset.
 
-This removes it again.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/arizona.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/skylake/bxt-sst.c     | 16 +++++++++++++---
+ sound/soc/intel/skylake/skl-sst-dsp.c |  4 ++--
+ sound/soc/intel/skylake/skl-sst-dsp.h |  2 ++
+ 3 files changed, 17 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 73eab6c462ac..1ff0ed2d8de9 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -1711,7 +1711,7 @@ restore_aif:
+diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
+index e50bac74f4a8..622da5d3e3b3 100644
+--- a/sound/soc/intel/skylake/bxt-sst.c
++++ b/sound/soc/intel/skylake/bxt-sst.c
+@@ -58,13 +58,19 @@ static int sst_bxt_prepare_fw(struct sst_dsp *ctx,
+ 	ctx->dsp_ops.stream_tag = stream_tag;
+ 	memcpy(ctx->dmab.area, fwdata, fwsize);
+ 
++	ret = skl_dsp_core_power_up(ctx);
++	if (ret < 0) {
++		dev_err(ctx->dev, "Boot dsp core failed ret: %d\n", ret);
++		goto base_fw_load_failed;
++	}
++
+ 	/* Purge FW request */
+ 	sst_dsp_shim_write(ctx, SKL_ADSP_REG_HIPCI, SKL_ADSP_REG_HIPCI_BUSY |
+-					 BXT_IPC_PURGE_FW | (stream_tag - 1));
++				(BXT_IPC_PURGE_FW | ((stream_tag - 1) << 9)));
+ 
+-	ret = skl_dsp_enable_core(ctx);
++	ret = skl_dsp_start_core(ctx);
+ 	if (ret < 0) {
+-		dev_err(ctx->dev, "Boot dsp core failed ret: %d\n", ret);
++		dev_err(ctx->dev, "Start dsp core failed ret: %d\n", ret);
+ 		ret = -EIO;
+ 		goto base_fw_load_failed;
+ 	}
+@@ -161,6 +167,10 @@ static int bxt_load_base_firmware(struct sst_dsp *ctx)
+ 	if (ret < 0) {
+ 		ret = sst_bxt_prepare_fw(ctx, stripped_fw.data, stripped_fw.size);
+ 		if (ret < 0) {
++			dev_err(ctx->dev, "Error code=0x%x: FW status=0x%x\n",
++			sst_dsp_shim_read(ctx, BXT_ADSP_ERROR_CODE),
++			sst_dsp_shim_read(ctx, BXT_ADSP_FW_STATUS));
++
+ 			dev_err(ctx->dev, "Core En/ROM load fail:%d\n", ret);
+ 			goto sst_load_base_firmware_failed;
+ 		}
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.c b/sound/soc/intel/skylake/skl-sst-dsp.c
+index 13c19855ee1a..37b1d24a9a9d 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.c
++++ b/sound/soc/intel/skylake/skl-sst-dsp.c
+@@ -114,7 +114,7 @@ static int skl_dsp_reset_core(struct sst_dsp *ctx)
+ 	return skl_dsp_core_set_reset_state(ctx);
+ }
+ 
+-static int skl_dsp_start_core(struct sst_dsp *ctx)
++int skl_dsp_start_core(struct sst_dsp *ctx)
+ {
+ 	int ret;
+ 
+@@ -140,7 +140,7 @@ static int skl_dsp_start_core(struct sst_dsp *ctx)
  	return ret;
  }
  
--static const char * const arizona_dai_clk_str(int clk_id)
-+static const char *arizona_dai_clk_str(int clk_id)
+-static int skl_dsp_core_power_up(struct sst_dsp *ctx)
++int skl_dsp_core_power_up(struct sst_dsp *ctx)
  {
- 	switch (clk_id) {
- 	case ARIZONA_CLK_SYSCLK:
+ 	int ret;
+ 
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
+index 7efaf642c10a..22fbe1075cb5 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.h
++++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+@@ -182,5 +182,7 @@ int snd_skl_parse_uuids(struct sst_dsp *ctx, unsigned int offset);
+ void skl_freeup_uuid_list(struct skl_sst *ctx);
+ 
+ int skl_dsp_strip_extended_manifest(struct firmware *fw);
++int skl_dsp_start_core(struct sst_dsp *ctx);
++int skl_dsp_core_power_up(struct sst_dsp *ctx);
+ 
+ #endif /*__SKL_SST_DSP_H__*/
 -- 
 2.8.1
